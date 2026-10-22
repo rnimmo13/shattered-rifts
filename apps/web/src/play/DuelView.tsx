@@ -3,6 +3,7 @@
 // replays the engine's events (see replay.ts). Choosing an action calls session.submit(); the AI then answers
 // and each of its actions is animated before the next one begins.
 
+import { gsap } from 'gsap';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { Action, CardDef, GameView } from '@sr/engine';
 import { CARD_DB, character, enemy } from '@sr/content';
@@ -34,7 +35,9 @@ import {
   WindowPanel,
   type Float,
 } from './Hud';
-import { ChoiceList, MulliganPrompt, YesNoPrompt } from './Prompts';
+import { ChoiceList, HelpPrompt, MulliganPrompt, YesNoPrompt } from './Prompts';
+import { Inspector, type InspectInfo } from './Inspector';
+import { chooseBotAction } from './bot';
 import { optionsFor, pendingTitle } from './promptHelpers';
 import { reconcile, replayBatch, type HudBus } from './replay';
 import { DuelSession, HUMAN, type DuelSetup } from './session';
@@ -76,6 +79,13 @@ export function DuelView(props: { setup: DuelSetup; onExit: () => void; onAgain:
   const modeAtMount = useRef(mode);
   const [speed, setSpeed] = useState<number>(1);
   const [showLog, setShowLog] = useState(true);
+  const [showSettings, setShowSettings] = useState(false);
+  const [showHelp, setShowHelp] = useState(false);
+  const [hoverHand, setHoverHand] = useState<HandCard | null>(null);
+  const [hoverBoard, setHoverBoard] = useState<InspectInfo | null>(null);
+  const hoverId = useRef<string | null>(null);
+  /** ?bot in the address plays the human's side with a simple script, to watch a whole duel run. */
+  const [botOn] = useState(() => window.location.search.includes('bot'));
 
   const selectedRef = useRef<string | null>(null);
   const clearSelection = useCallback(() => {
@@ -337,6 +347,30 @@ export function DuelView(props: { setup: DuelSetup; onExit: () => void; onAgain:
     [selectedId, targetKeys, submit, clearSelection],
   );
 
+  /** Hovering a card on the board shows it in the reader (enemy face-down cards stay hidden). */
+  const onStageMove = useCallback((e: React.PointerEvent) => {
+    const sc = scene.current;
+    const v = viewRef.current;
+    if (!sc || !v) return;
+    const g = sc.slotAtClient(e.clientX, e.clientY);
+    const key = g ? slotKey(g) : null;
+    const id = key ? idAtKey(v, key) : null;
+    if (id === hoverId.current) return;
+    hoverId.current = id;
+    const c = id ? v.cards[id] : undefined;
+    const def = c && c.cardId !== '?' ? CARD_DB[c.cardId] : undefined;
+    if (!id || !def || !key) {
+      setHoverBoard(null);
+      return;
+    }
+    const st = v.stats[id];
+    setHoverBoard({
+      def,
+      stats: st ? { power: st.power, guard: st.guard, maxGuard: st.maxGuard } : undefined,
+      where: key.startsWith('me-') ? 'yours' : "enemy's",
+    });
+  }, []);
+
   const attackFace = useCallback(() => {
     if (selectedId && faceTargetable) {
       void submit({ type: 'attack', player: HUMAN, attacker: selectedId, target: 'face' });
@@ -346,7 +380,7 @@ export function DuelView(props: { setup: DuelSetup; onExit: () => void; onAgain:
   // ---- what the panels show ------------------------------------------------------------------------
   const pending = view?.pending && view.pending.player === HUMAN ? view.pending : null;
   const winOpts = view && view.window?.priority === HUMAN && !pending ? windowOptions(legal) : [];
-  const showWindow = inputOpen && winOpts.length > 0;
+  const showWindow = inputOpen && !pending && view?.window?.priority === HUMAN;
   const end = endTurnAction(legal);
   const sel = selectedId ? fieldActions(legal, selectedId) : [];
   const echoes = echoPlays(legal);
@@ -357,6 +391,44 @@ export function DuelView(props: { setup: DuelSetup; onExit: () => void; onAgain:
       : undefined;
   const myName = character(setup.character).name;
 
+  const idle = inputOpen && !pending && playable.size === 0 && !targets.length;
+  const doEndTurn = useCallback(() => {
+    if (end) void submit(end);
+  }, [end, submit]);
+
+  // E ends the turn when nothing else is open
+  useEffect(() => {
+    const on = (e: KeyboardEvent) => {
+      if ((e.key === 'e' || e.key === 'E') && !e.ctrlKey && !e.metaKey && !e.altKey) {
+        const t = e.target as HTMLElement | null;
+        if (t && /input|select|textarea/i.test(t.tagName)) return;
+        if (inputOpen && end && !pending && !chooser && !showHelp && !showWindow) doEndTurn();
+      }
+    };
+    window.addEventListener('keydown', on);
+    return () => window.removeEventListener('keydown', on);
+  });
+
+  // ?bot: play the human's side with the scripted bot (for watching a duel run end to end)
+  useEffect(() => {
+    if (!botOn) return;
+    // watching a bot duel in a tab that is not drawing frames: also advance animations from a timer
+    const id = window.setInterval(() => {
+      gsap.globalTimeline.time(gsap.globalTimeline.time() + 0.033);
+    }, 33);
+    return () => window.clearInterval(id);
+  }, [botOn]);
+
+  useEffect(() => {
+    if (!botOn || !inputOpen || !view) return;
+    const t = window.setTimeout(() => {
+      const a = chooseBotAction(legal, view);
+      void submit(a);
+    }, 250);
+    return () => window.clearTimeout(t);
+  }, [botOn, inputOpen, legal, view, submit]);
+
+  const stuck = ready && !busy && !!view && view.winner === null && legal.length === 0 && !error;
   const concede = () =>
     setChooser({
       title: 'Concede this duel?',
@@ -365,7 +437,12 @@ export function DuelView(props: { setup: DuelSetup; onExit: () => void; onAgain:
 
   return (
     <div className={`duel play${mode === 'reduced' ? ' reduce-fx' : ''}`}>
-      <div className="duel__stage" ref={host} onPointerDown={onStageDown} />
+      <div
+        className="duel__stage"
+        ref={host}
+        onPointerDown={onStageDown}
+        onPointerMove={onStageMove}
+      />
       {!ready && !error && <div className="loading">Opening the rift…</div>}
       {error && <div className="loading loading--error">The duel hit a problem: {error}</div>}
 
@@ -396,6 +473,7 @@ export function DuelView(props: { setup: DuelSetup; onExit: () => void; onAgain:
             cards={handCards}
             mana={(me?.mana ?? 0) + (me?.tempMana ?? 0)}
             locked={!inputOpen}
+            onHover={setHoverHand}
             canPlay={(c) => playable.has(c.uid)}
             probe={probe}
             onDragStart={(def) => {
@@ -425,12 +503,6 @@ export function DuelView(props: { setup: DuelSetup; onExit: () => void; onAgain:
             />
           )}
 
-          {inputOpen && end && !pending && (
-            <button className="btn btn--primary endturn" onClick={() => void submit(end)}>
-              <span>End turn</span>
-            </button>
-          )}
-
           {showWindow && (
             <WindowPanel
               view={view}
@@ -444,52 +516,118 @@ export function DuelView(props: { setup: DuelSetup; onExit: () => void; onAgain:
           )}
 
           {banner && <Banner {...banner} />}
-
-          <aside className="duel__panel play__panel" aria-label="Display settings">
-            <label className="toggle">
-              <input
-                className="toggle__input"
-                type="checkbox"
-                checked={mode === 'reduced'}
-                onChange={(e) => setMode(e.target.checked ? 'reduced' : 'full')}
-              />
-              <span className="toggle__track" aria-hidden>
-                <span className="toggle__thumb" />
-              </span>
-              <span className="toggle__text">
-                <span className="toggle__label">Reduced effects</span>
-              </span>
-            </label>
-            <label className="toggle">
-              <input
-                className="toggle__input"
-                type="checkbox"
-                checked={showLog}
-                onChange={(e) => setShowLog(e.target.checked)}
-              />
-              <span className="toggle__track" aria-hidden>
-                <span className="toggle__thumb" />
-              </span>
-              <span className="toggle__text">
-                <span className="toggle__label">Duel log</span>
-              </span>
-            </label>
-            <div className="play__speed" role="group" aria-label="Animation speed">
-              <span className="toggle__label">Speed</span>
-              {SPEEDS.map((s) => (
-                <button
-                  key={s}
-                  className={`btn btn--small${speed === s ? ' is-on' : ''}`}
-                  onClick={() => setSpeed(s)}
-                >
-                  <span>{s}×</span>
-                </button>
-              ))}
+          <Inspector
+            info={hoverHand ? { def: hoverHand.def, where: 'in your hand' } : hoverBoard}
+          />
+          {showHelp && <HelpPrompt onClose={() => setShowHelp(false)} />}
+          {stuck && (
+            <div className="modal" role="alertdialog" aria-label="The duel stopped">
+              <div className="modal__panel">
+                <h2 className="modal__title">The duel stopped responding</h2>
+                <p className="modal__hint">
+                  Nothing is waiting for you, but the game is not over. This is a bug. You can leave
+                  and start again.
+                </p>
+                <div className="modal__row">
+                  <button className="btn" onClick={props.onAgain}>
+                    <span>Start a new duel</span>
+                  </button>
+                  <button className="btn btn--ghost" onClick={props.onExit}>
+                    <span>Leave</span>
+                  </button>
+                </div>
+              </div>
             </div>
-            <button className="btn btn--small btn--ghost" disabled={!inputOpen} onClick={concede}>
-              <span>Concede</span>
-            </button>
-          </aside>
+          )}
+
+          <div className="corner">
+            {showSettings && (
+              <div className="corner__settings" role="group" aria-label="Display settings">
+                <label className="toggle">
+                  <input
+                    className="toggle__input"
+                    type="checkbox"
+                    checked={mode === 'reduced'}
+                    onChange={(e) => setMode(e.target.checked ? 'reduced' : 'full')}
+                  />
+                  <span className="toggle__track" aria-hidden>
+                    <span className="toggle__thumb" />
+                  </span>
+                  <span className="toggle__text">
+                    <span className="toggle__label">Reduced effects</span>
+                  </span>
+                </label>
+                <label className="toggle">
+                  <input
+                    className="toggle__input"
+                    type="checkbox"
+                    checked={showLog}
+                    onChange={(e) => setShowLog(e.target.checked)}
+                  />
+                  <span className="toggle__track" aria-hidden>
+                    <span className="toggle__thumb" />
+                  </span>
+                  <span className="toggle__text">
+                    <span className="toggle__label">Duel log</span>
+                  </span>
+                </label>
+                <div className="play__speed" role="group" aria-label="Animation speed">
+                  <span className="toggle__label">Speed</span>
+                  {SPEEDS.map((s) => (
+                    <button
+                      key={s}
+                      className={`btn btn--small${speed === s ? ' is-on' : ''}`}
+                      onClick={() => setSpeed(s)}
+                    >
+                      <span>{s}×</span>
+                    </button>
+                  ))}
+                </div>
+                <button
+                  className="btn btn--small btn--ghost"
+                  disabled={!inputOpen}
+                  onClick={concede}
+                >
+                  <span>Concede</span>
+                </button>
+              </div>
+            )}
+            <div className="corner__row">
+              <button
+                className="btn btn--small"
+                onClick={() => setShowSettings((s) => !s)}
+                aria-expanded={showSettings}
+              >
+                <span>Settings</span>
+              </button>
+              <button className="btn btn--small" onClick={() => setShowHelp(true)}>
+                <span>How to play</span>
+              </button>
+            </div>
+            {view.winner === null && (
+              <div className={`turnbox${view.active === HUMAN ? '' : ' turnbox--foe'}`}>
+                {inputOpen && end && !pending ? (
+                  <button
+                    className={`btn btn--primary endturn${idle ? ' is-pulsing' : ''}`}
+                    onClick={doEndTurn}
+                    aria-keyshortcuts="E"
+                  >
+                    <span>End turn</span>
+                    <kbd>E</kbd>
+                  </button>
+                ) : (
+                  <p className="turnbox__wait">
+                    {view.active === HUMAN && inputOpen
+                      ? 'Your move'
+                      : busy
+                        ? "Enemy's turn…"
+                        : '…'}
+                  </p>
+                )}
+                {idle && <p className="turnbox__hint">Nothing left to play. End your turn.</p>}
+              </div>
+            )}
+          </div>
 
           {inputOpen && pending?.kind === 'mulligan' && (
             <MulliganPrompt view={view} legal={legal} onSubmit={(a) => void submit(a)} />

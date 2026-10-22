@@ -27,6 +27,8 @@ export interface HandProps {
   canPlay?: (card: HandCard) => boolean;
   /** Not your decision right now: cards look neutral (no glow, no dimming) and cannot be dragged. */
   locked?: boolean;
+  /** The card under the pointer (or null), so the screen can show it at a readable size. */
+  onHover?: (card: HandCard | null) => void;
   onDragStart?: (def: CardDef) => void;
   onDragEnd?: () => void;
   onPlay: (card: HandCard, x: number, y: number) => void;
@@ -255,10 +257,12 @@ export function Hand(props: HandProps) {
               onPointerEnter={() => {
                 if (drag) return;
                 setHover(card.uid);
+                props.onHover?.(card);
                 onSound?.('hover');
               }}
               onPointerLeave={() => {
                 setHover((h) => (h === card.uid ? null : h));
+                props.onHover?.(null);
                 if (!dragging) untilt(card.uid);
               }}
               onPointerDown={(e) => startDrag(card, e)}

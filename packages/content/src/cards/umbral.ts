@@ -124,7 +124,7 @@ export const UMBRAL: CardDef[] = [
         effects: [{ op: 'buff', target: { pick: 'eventSource' }, power: -3, duration: 'turn' }],
       },
     ],
-    text: 'Trigger: When an enemy attacks. The attacker gets −3 Power this turn.',
+    text: 'Trigger: When an enemy attacks. The attacker gets −3 Damage this turn.',
     collectible: true,
   },
   {

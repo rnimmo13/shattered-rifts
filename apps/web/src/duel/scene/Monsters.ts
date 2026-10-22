@@ -204,8 +204,9 @@ export class Monsters {
     const r = Math.max(15, geom.width * 0.115);
     const power_ = this.badge(r, power, 'power');
     const guard_ = this.badge(r, guard, 'guard');
-    power_.root.position.set(-geom.width * 0.36, -r * 0.2);
-    guard_.root.position.set(geom.width * 0.36, -r * 0.2);
+    // HP on the left, Damage on the right
+    guard_.root.position.set(-geom.width * 0.36, -r * 0.2);
+    power_.root.position.set(geom.width * 0.36, -r * 0.2);
 
     root.addChild(shadow, ring, body, power_.root, guard_.root);
     this.h.container.addChild(root);

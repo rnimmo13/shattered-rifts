@@ -191,7 +191,7 @@ Consistent wording is what makes a deep game learnable.
 
 - `When summoned:`, `Flip:`, `Trigger: When ...`, `Whenever ...`, `At the start of your turn:`,
   `At the end of your turn:`, `⚡ Quick, N Mana:`, `Once per turn:`.
-- Unit stats are written **Power/Guard**, e.g. "a 3/2 Drone".
+- Unit stats are written **Damage/HP** (the engine calls them Power/Guard), e.g. "a 3/2 Drone" is 3 Damage, 2 HP.
 - "Destroy" triggers death effects. "Banish" sends a card Beyond with no death trigger. "Return"
   sends to hand.
 - "**Fights**": two units deal damage equal to their Power to each other at the same time. It isn't an

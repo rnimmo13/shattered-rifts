@@ -89,7 +89,7 @@ export const WYLDMAW: CardDef[] = [
         },
       },
     ],
-    text: 'Has +1 Power for each other friendly Beast.',
+    text: 'Has +1 Damage for each other friendly Beast.',
     collectible: true,
   },
   {
@@ -146,7 +146,7 @@ export const WYLDMAW: CardDef[] = [
         ],
       },
     ],
-    text: 'Give a friendly unit +3 Power and **Blitz** this turn.',
+    text: 'Give a friendly unit +3 Damage and **Blitz** this turn.',
     collectible: true,
   },
   {
@@ -188,7 +188,7 @@ export const WYLDMAW: CardDef[] = [
         ],
       },
     ],
-    text: 'Trigger: When an enemy attacks. Destroy the attacker if its Guard is 3 or less.',
+    text: 'Trigger: When an enemy attacks. Destroy the attacker if its HP is 3 or less.',
     collectible: true,
   },
   {
@@ -208,7 +208,7 @@ export const WYLDMAW: CardDef[] = [
         effects: [{ op: 'buff', target: { pick: 'self' }, power: 1, duration: 'permanent' }],
       },
     ],
-    text: 'Whenever another friendly unit dies: gain +1 Power.',
+    text: 'Whenever another friendly unit dies: gain +1 Damage.',
     collectible: true,
   },
   {
@@ -420,7 +420,7 @@ export const WYLDMAW: CardDef[] = [
         ],
       },
     ],
-    text: 'Destroy a unit. Your units gain +X/+X where X is its Power.',
+    text: 'Destroy a unit. Your units gain +X/+X where X is its Damage.',
     collectible: true,
     source: 'boss:gorrmaw',
   },

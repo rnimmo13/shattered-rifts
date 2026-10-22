@@ -47,7 +47,7 @@ export const NEXUS: CardDef[] = [
         ],
       },
     ],
-    text: '**Overclock 1:** when summoned, give a friendly Construct +2 Power.',
+    text: '**Overclock 1:** when summoned, give a friendly Construct +2 Damage.',
     collectible: true,
   },
   {
@@ -129,7 +129,7 @@ export const NEXUS: CardDef[] = [
         ],
       },
     ],
-    text: '**Swift**. Give a Construct +3 Power this turn. At the end of turn, it takes 1 damage.',
+    text: '**Swift**. Give a Construct +3 Damage this turn. At the end of turn, it takes 1 damage.',
     collectible: true,
   },
   {

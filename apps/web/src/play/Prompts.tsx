@@ -96,7 +96,7 @@ export function MulliganPrompt(props: {
               aria-pressed={out}
               aria-label={`${def.name}${out ? ', will be replaced' : ', keep'}`}
             >
-              <Card def={def} width={150} playable={!out} dimmed={out} />
+              <Card def={def} width={190} playable={!out} dimmed={out} />
               {out && <span className="mull__tag">Replace</span>}
             </button>
           );
@@ -130,6 +130,47 @@ export function YesNoPrompt(props: {
           <span>No</span>
         </button>
       </div>
+    </Modal>
+  );
+}
+
+/** A short, plain-language guide to a duel. */
+export function HelpPrompt(props: { onClose: () => void }) {
+  return (
+    <Modal title="How to play">
+      <ol className="help">
+        <li>
+          <b>Win</b> by taking the enemy's <b>Essence</b> (the red bar at the top) to 0. Yours is
+          the green bar at the bottom left.
+        </li>
+        <li>
+          <b>Mana</b> (the blue gem) pays for cards. You get 1 more each turn, up to 10. Mana you do
+          not spend stays through the enemy's turn, so you can pay for traps then.
+        </li>
+        <li>
+          <b>Play a card</b> by dragging it from your hand: units and traps onto your board, spells
+          up above the hand. <b>Hover any card or monster</b> to read it on the left.
+        </li>
+        <li>
+          Units show <b>HP</b> on the left (how much damage they can take) and <b>Damage</b> on the
+          right (how hard they hit). A new unit cannot attack on the turn it arrives (unless it has
+          Blitz).
+        </li>
+        <li>
+          <b>Attack</b>: click one of your units, then click a glowing enemy or the enemy portrait.
+          If the enemy has a Guardian, you must hit it first.
+        </li>
+        <li>
+          <b>Traps</b> are set face-down (free). When the enemy does something your trap matches, a{' '}
+          <b>Respond?</b> box appears: spring it, or Pass.
+        </li>
+        <li>
+          When you are done, press <b>End turn</b> (bottom right, or the E key).
+        </li>
+      </ol>
+      <button className="btn modal__confirm" onClick={props.onClose}>
+        <span>Got it</span>
+      </button>
     </Modal>
   );
 }

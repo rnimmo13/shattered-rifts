@@ -172,7 +172,11 @@ export class DuelSession {
         if (p === HUMAN) {
           const legal = this.engine.legalActions(this.state, HUMAN);
           if (legal.length === 0) break;
-          if (isOnlyPassOrSpark(legal, this.state) && !sparkEnablesResponse(this.state)) {
+          const sparkLegal = legal.some((a) => a.type !== 'pass');
+          if (
+            isOnlyPassOrSpark(legal, this.state) &&
+            !(sparkLegal && sparkEnablesResponse(this.state))
+          ) {
             const pass = legal.find((a) => a.type === 'pass');
             if (pass) {
               await this.apply(pass);

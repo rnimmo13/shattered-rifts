@@ -69,11 +69,13 @@ export const Card = memo(
           </div>
           {isUnit && (
             <>
-              <div className="card__stat card__stat--power" aria-label={`Power ${def.power ?? 0}`}>
-                <span>{def.power ?? 0}</span>
-              </div>
-              <div className="card__stat card__stat--guard" aria-label={`Guard ${def.guard ?? 0}`}>
+              <div className="card__stat card__stat--guard" aria-label={`HP ${def.guard ?? 0}`}>
                 <span>{def.guard ?? 0}</span>
+                <small>HP</small>
+              </div>
+              <div className="card__stat card__stat--power" aria-label={`Damage ${def.power ?? 0}`}>
+                <span>{def.power ?? 0}</span>
+                <small>DMG</small>
               </div>
             </>
           )}

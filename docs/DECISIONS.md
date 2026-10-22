@@ -278,3 +278,5 @@ consistent with the docs" rule and can be revisited.
     match the final view, so a missed event can never leave the board wrong. Practice duels let you pick any of the four
     Riftwalkers against any enemy deck. The old art preview stays at `#/duel`.
 
+
+78. **Players see "HP" and "Damage", not Guard and Power (Robert, 2026-10-22) →** HP sits on the left of a card and unit, Damage on the right. Card rules text, the card frame, the board badges and the inspector all use these words. The engine keeps `guard`/`power` internally; the "x/y" shorthand in text stays Damage/HP order as before (`+1/+1`, `a 3/2 Drone` = Damage 3, HP 2).

@@ -242,11 +242,11 @@
   text-shadow: 0 3px 0 rgb(0 0 0 / 0.6);
 }
 .card__stat--power {
-  left: 10px;
+  right: 10px;
   background: radial-gradient(circle at 35% 28%, #ffb48a, var(--c-ember) 40%, #8a2a10 90%);
 }
 .card__stat--guard {
-  right: 10px;
+  left: 10px;
   background: radial-gradient(circle at 35% 28%, #b9f2ff, #2a9ad0 40%, #0f3a6a 90%);
 }
 
@@ -453,4 +453,25 @@
 .reduce-fx .card__gem,
 .reduce-fx .card__fx--holo {
   animation: none !important;
+}
+
+/* tiny HP / DMG captions under the stat numbers */
+.card__stat small {
+  position: absolute;
+  bottom: 9px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 19px;
+  letter-spacing: 0.1em;
+  color: rgb(255 255 255 / 0.85);
+  text-shadow: 0 1px 0 rgb(0 0 0 / 0.7);
+}
+.card__stat span {
+  margin-top: -14px;
+}
+.card__rules {
+  font-size: 34px;
 }
