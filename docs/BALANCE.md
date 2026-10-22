@@ -37,7 +37,11 @@ Wyldmaw deck (Kesh mirrors last ~14 turns). **Proposal:** the second player star
 Kesh would still favour the first player (60%) and may want its own tuning.
 *This is a core-rule change, so it is not applied. See DECISIONS #57.*
 
-## 2. The four starters are not equally strong
+## 2. The four starters are not equally strong *(accepted: see DECISIONS #63)*
+
+> Robert: uneven starters are fine as long as weaker characters even out with a stronger deck (a character may need
+> several clears to collect late-game cards). The thing to measure is **catch-up**, not equal starters: use
+> `pnpm sim tiers` per character and check that every character's deeper decks reach parity.
 
 Row deck's win rate against the column deck (160 games per cell).
 

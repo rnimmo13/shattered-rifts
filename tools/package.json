@@ -8,7 +8,8 @@
     "duel": "tsx src/duel.ts",
     "typecheck": "tsc -p tsconfig.json",
     "sim": "tsx src/sim.ts",
-    "test:property": "tsx src/property.ts"
+    "test:property": "tsx src/property.ts",
+    "deploy:web": "tsx src/deploy.ts"
   },
   "dependencies": {
     "@sr/engine": "workspace:*",

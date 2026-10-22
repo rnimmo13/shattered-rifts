@@ -52,7 +52,8 @@ pnpm typecheck    # tsc per package
 pnpm check        # lint + typecheck + test + build
 pnpm duel         # CLI duel vs AI. Flags (after --): --p1/--p2 maren|rivet|kesh|vesper, --seed X, --auto
 pnpm sim          # balance sims: match | matrix | card | tiers | enemies (see docs/BALANCE.md)
-pnpm test:property # 10,000 random games with invariant checks (also runs in CI)
+pnpm test:property # 10,000 random games with invariant checks
+pnpm deploy:web -- --repo OWNER/NAME   # build + publish the compiled site to GitHub Pages (see tools/src/deploy.ts)
 pnpm build
 ```
 Toolchain: Node 22, pnpm 11 (corepack), TypeScript 6.0 (see DECISIONS #39). Workspace packages export TS source.
@@ -60,5 +61,5 @@ Toolchain: Node 22, pnpm 11 (corepack), TypeScript 6.0 (see DECISIONS #39). Work
 ## Current status
 Design complete; campaign redesigned on 2026-10-22 to run-built decks + weekly PvP seasons (see
 `docs/DECISIONS.md`). Web build = private friends beta for now. **M0, M1 and M2 done** (engine, all 74 cards + 12 signature cards, enemy decks, heuristic AI, balance sim,
-10k-game property gate). **Pending Robert's decision:** first-player advantage and starter balance (`docs/BALANCE.md`).
-**Next: M3** (duel UI in the browser).
+10k-game property gate). **Pending Robert's decision:** first-player advantage (`docs/BALANCE.md` §1). Starter imbalance is accepted (DECISIONS #63).
+**Next: M3 + M4: the browser game, playable through the campaign** (DECISIONS #64–66). Deploy with `pnpm deploy:web`.

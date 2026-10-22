@@ -201,3 +201,21 @@ consistent with the docs" rule and can be revisited.
 62. **Balance sim (`pnpm sim`) →** match / matrix / card (the ±6%/±10% gate) / tiers (a draft-bot *model*) /
     enemies. Runs on worker threads; deterministic for a seed regardless of worker count.
 
+## Browser build & hosting plan (2026-10-22)
+
+63. **Character balance philosophy (Robert) →** characters may be uneven early. A weaker character can need a few
+    clears to gather late-game cards, as long as it **evens out as its deck gets stronger**. So the balance test is
+    "do the weaker characters catch up in the tier model?" (`pnpm sim tiers`), not "make the starters equal".
+    BALANCE.md §2 is therefore accepted, not a bug. The first-player advantage (#57) is still open.
+64. **The browser build is the test vehicle (Robert) →** the terminal duel is a dev tool only. Goal: a browser game
+    playable through the whole campaign, deployed to GitHub-hosted pages for Robert and friends.
+65. **Board tech: DOM/CSS first, PixiJS later →** M3 builds the duel board in React + CSS (fast to build, easy to
+    make accessible and responsive), driven by `viewFor()` / `GameEvent`s. PixiJS + GSAP for the full animation
+    spec (04_VISUALS) arrive with M6 polish, behind the same event interface. *Why:* gets a playable game to
+    friends sooner; the engine/event contract doesn't change.
+66. **Hosting →** the web client is a static site. `pnpm deploy:web -- --repo OWNER/NAME` builds it and pushes
+    only the compiled output to a branch of a GitHub repo for GitHub Pages. It needs no GitHub Actions and no extra
+    token scopes. Because the source repo is private and Pages from a private repo needs a paid plan, the
+    recommended setup is a separate public "play" repo that holds only compiled output. The site is public to
+    anyone with the link either way (not a security boundary).
+

@@ -18,7 +18,8 @@
     "check": "pnpm lint && pnpm typecheck && pnpm test && pnpm build",
     "duel": "pnpm --filter @sr/tools duel",
     "sim": "pnpm --filter @sr/tools sim",
-    "test:property": "pnpm --filter @sr/tools test:property"
+    "test:property": "pnpm --filter @sr/tools test:property",
+    "deploy:web": "pnpm --filter @sr/tools deploy:web"
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",
