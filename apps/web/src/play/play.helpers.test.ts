@@ -6,8 +6,12 @@ import {
   cardPlays,
   describeAction,
   endTurnAction,
+  groupByMode,
   playableIds,
+  targetsOfAction,
+  singleTargetMap,
   windowOptions,
+  type PlayLike,
 } from './actions';
 import {
   fieldKeys,
@@ -114,5 +118,49 @@ describe('slot mapping', () => {
     expect(resolve('b')).toBe('me-unit-2');
     expect(resolve('a')).toBe('me-unit-0'); // destroyed: falls back to the "before" slot
     expect(resolve('zzz')).toBeUndefined();
+  });
+});
+
+describe('targeted plays', () => {
+  const bolt = (target: string, extra: Partial<{ overclock: boolean }> = {}): Action => ({
+    type: 'play',
+    player: 0,
+    card: 'c1',
+    targets: [[target]],
+    ...extra,
+  });
+
+  it('groups a card plays by mode and maps single targets to their play', () => {
+    const plays = [bolt('a'), bolt('b'), bolt('c')].filter(
+      (x): x is Extract<Action, { type: 'play' }> => x.type === 'play',
+    );
+    expect(groupByMode(plays)).toHaveLength(1);
+    const map = singleTargetMap(plays, targetsOfAction);
+    expect(map?.size).toBe(3);
+    expect(map?.get('b')).toBe(plays[1]);
+  });
+
+  it('separates modes (Overclock, Ascend, set face-down) from targets', () => {
+    const plays = [
+      bolt('a'),
+      bolt('a', { overclock: true }),
+      { type: 'setAmbush', player: 0, card: 'c1' } as Action,
+    ].filter((x): x is PlayLike => x.type === 'play' || x.type === 'setAmbush');
+    expect(groupByMode(plays)).toHaveLength(3);
+  });
+
+  it('is not a single-target choice when a play has two targets, none, or the same target twice', () => {
+    const two = { type: 'play', player: 0, card: 'c', targets: [['a'], ['b']] } as Action;
+    const none = { type: 'play', player: 0, card: 'c', targets: [] } as Action;
+    expect(
+      singleTargetMap([two].filter((x) => x.type === 'play') as PlayLike[], targetsOfAction),
+    ).toBeNull();
+    expect(
+      singleTargetMap([none].filter((x) => x.type === 'play') as PlayLike[], targetsOfAction),
+    ).toBeNull();
+    const dup = [bolt('a'), bolt('a', { overclock: true })].filter(
+      (x) => x.type === 'play',
+    ) as PlayLike[];
+    expect(singleTargetMap(dup, targetsOfAction)).toBeNull();
   });
 });

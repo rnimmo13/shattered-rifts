@@ -35,6 +35,9 @@ export const Card = memo(
     const k = width / CARD_W;
     const art = useMemo(() => cardArtUrl(def), [def]);
     const runs = useMemo(() => parseRules(def.text), [def.text]);
+    // longer rules text gets a smaller type size so it always fits the box
+    const n = def.text.replace(/\*\*/g, '').length;
+    const size = n <= 55 ? 's' : n <= 110 ? 'm' : n <= 170 ? 'l' : 'xl';
     const isUnit = def.type === 'unit' || def.type === 'token';
     const style = { '--k': k, width, height: width * (CARD_H / CARD_W) } as CSSProperties;
     return (
@@ -59,13 +62,13 @@ export const Card = memo(
             {TYPE_LABEL[def.type] ?? def.type}
             {def.tribes && def.tribes.length > 0 ? ` · ${def.tribes.join(' ')}` : ''}
           </div>
-          <div className="card__rules">
+          <div className={`card__rules card__rules--${size}`}>
             <p>
               {runs.map((r, i) =>
                 r.bold ? <strong key={i}>{r.text}</strong> : <span key={i}>{r.text}</span>,
               )}
             </p>
-            {def.flavor && <p className="card__flavor">{def.flavor}</p>}
+            {def.flavor && width >= 300 && <p className="card__flavor">{def.flavor}</p>}
           </div>
           {isUnit && (
             <>

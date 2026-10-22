@@ -5,6 +5,12 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added
+- **Bigger card text, "this unit can act" arrows, and no more target menus.** Card rules text is much larger
+  (and the art window shorter to make room). Your units that can attack or use an ability now show a pulsing
+  light at their feet and a bobbing arrow above. Targeted spells now cast the moment you drop them on a valid
+  target; drop one above the hand instead and the valid targets glow so you can just click one. Choices that
+  used to be a list (a unit's "when summoned" target, a trap or ability's target) work the same way: click the
+  glowing target and it goes. Response windows no longer list the spells in your hand; drag them instead.
 - **The campaign (first playable run):** "Begin Run" now starts a real run. Pick a Riftwalker, walk a five-stage map
   (duels, elites, events, shrines, a merchant, and a Warden at the end of each stage), win duels to earn shards and a
   card reward (take one of three, or skip), spend shards at the merchant, rest or trim your deck at shrines, take the

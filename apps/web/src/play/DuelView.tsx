@@ -5,7 +5,7 @@
 
 import { gsap } from 'gsap';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import type { Action, CardDef, GameView } from '@sr/engine';
+import type { Action, CardDef, GameView, InstanceId } from '@sr/engine';
 import { CARD_DB, character, enemy } from '@sr/content';
 import { BattlefieldScene, slotKey } from '../duel/scene/BattlefieldScene';
 import { loadEffectsMode, profileFor, saveEffectsMode, type EffectsMode } from '../duel/effects';
@@ -20,8 +20,14 @@ import {
   cardPlays,
   describeAction,
   echoPlays,
+  chooseTargetsOf,
+  describeMode,
   endTurnAction,
   fieldActions,
+  groupByMode,
+  singleTargetMap,
+  targetsOfAction,
+  type PlayLike,
   playableIds,
   windowOptions,
 } from './actions';
@@ -81,6 +87,15 @@ export function DuelView(props: {
   const [floats, setFloats] = useState<Float[]>([]);
   const [selected, setSelected] = useState<string | null>(null);
   const [chooser, setChooser] = useState<Chooser | null>(null);
+  /** Click-a-target mode: a targeted spell/unit was played and now needs its target chosen on the board. */
+  const [targeting, setTargeting] = useState<{
+    title: string;
+    actions: Map<InstanceId, Action>;
+  } | null>(null);
+  const [forceList, setForceList] = useState(false);
+  const legalRef = useRef<Action[]>([]);
+  /** scene slot key -> the action that picks that target (kept in a ref for the pointer handler) */
+  const targetRef = useRef<Map<string, Action> | null>(null);
   const [mode, setMode] = useState<EffectsMode>(loadEffectsMode);
   const modeAtMount = useRef(mode);
   const [speed, setSpeed] = useState<number>(1);
@@ -255,12 +270,9 @@ export function DuelView(props: {
   }, [view, targets]);
   const faceTargetable = targets.includes('face');
 
-  // the scene shows what can be attacked / what the selected card is
   useEffect(() => {
-    const sc = scene.current;
-    if (!sc) return;
-    sc.highlightSlots(targetKeys.size > 0 ? targetKeys : null);
-  }, [targetKeys, ready]);
+    legalRef.current = legal;
+  }, [legal]);
 
   // ---- acting --------------------------------------------------------------------------------------
   const submit = useCallback(
@@ -270,6 +282,8 @@ export function DuelView(props: {
       setBusy(true);
       setLegal([]);
       setChooser(null);
+      setTargeting(null);
+      setForceList(false);
       clearSelection();
       scene.current?.setDragTargets(null);
       await s.submit(a);
@@ -277,24 +291,80 @@ export function DuelView(props: {
     [clearSelection, setBusy],
   );
 
-  const onPlayCard = useCallback(
-    (card: HandCard) => {
+  /**
+   * Play a card that has several variants. Pick the mode first if there is more than one (Overclock, set face-down...),
+   * then the target: dropped straight onto a target it just goes; otherwise click a glowing target on the board.
+   * Targets that are not on the board fall back to a list.
+   */
+  const resolveActions = useCallback(
+    function resolve(
+      name: string,
+      variants: Action[],
+      drop: { x: number; y: number } | null,
+    ): void {
       const v = viewRef.current;
-      const sc = session.current;
+      const sc = scene.current;
       if (!v || !sc) return;
-      const plays = cardPlays(sc.legal(), card.uid);
-      if (plays.length === 0) return;
-      if (plays.length === 1) {
-        void submit(plays[0] as Action);
+      if (variants.length === 1) {
+        void submit(variants[0] as Action);
+        return;
+      }
+      const groups = groupByMode(variants);
+      if (groups.length > 1) {
+        setChooser({
+          title: name,
+          options: groups.map((g) => ({
+            label: describeMode(g[0] as Action, v),
+            action: g[0] as Action,
+            run: () => resolve(name, g, null),
+          })),
+        });
+        return;
+      }
+      const map = singleTargetMap(variants, targetsOfAction);
+      const keys = fieldKeys(v);
+      if (map && [...map.keys()].every((id) => keys.has(id))) {
+        if (drop) {
+          const g = sc.slotAtClient(drop.x, drop.y);
+          const key = g ? slotKey(g) : null;
+          const id = key ? idAtKey(v, key) : null;
+          const hit = id ? map.get(id) : undefined;
+          if (hit) {
+            void submit(hit);
+            return;
+          }
+        }
+        setChooser(null);
+        setTargeting({ title: name, actions: map });
         return;
       }
       setChooser({
-        title: `Play ${card.def.name}`,
-        options: plays.map((a) => ({ label: describeAction(a, v), action: a })),
+        title: name,
+        options: variants.map((a) => ({ label: describeAction(a, v), action: a })),
       });
     },
     [submit],
   );
+
+  const onPlayCard = useCallback(
+    (card: HandCard, x: number, y: number) => {
+      const plays = cardPlays(legalRef.current, card.uid);
+      if (plays.length > 0)
+        resolveActions(
+          `Play ${card.def.name}`,
+          plays,
+          dropKind(card.def) === 'spell' ? { x, y } : null,
+        );
+    },
+    [resolveActions],
+  );
+
+  /** For a card whose plays differ only by a single target: target id -> the play that picks it. */
+  const cardTargetMap = useCallback((card: HandCard): Map<InstanceId, PlayLike> | null => {
+    const plays = cardPlays(legalRef.current, card.uid);
+    if (plays.length < 2 || groupByMode(plays).length !== 1) return null;
+    return singleTargetMap(plays, targetsOfAction);
+  }, []);
 
   /**
    * Your slots of a kind. A drop may land on any of them: the engine decides the real slot (and whether the play is
@@ -308,11 +378,22 @@ export function DuelView(props: {
   }, []);
 
   const probe = useCallback(
-    (def: CardDef, x: number, y: number): Probe => {
+    (def: CardDef, x: number, y: number, card: HandCard): Probe => {
       const sc = scene.current;
-      if (!sc) return { valid: false };
+      const v = viewRef.current;
+      if (!sc || !v) return { valid: false };
       const kind = dropKind(def);
-      if (kind === 'spell') return { valid: y < window.innerHeight * SPELL_CAST_LINE };
+      if (kind === 'spell') {
+        // a targeted spell dropped right on a valid target casts at once
+        const map = cardTargetMap(card);
+        const g = map ? sc.slotAtClient(x, y) : null;
+        const id = g ? idAtKey(v, slotKey(g)) : null;
+        if (g && id && map?.has(id)) {
+          const snap = sc.slotClientCenter(slotKey(g));
+          return snap ? { valid: true, snap } : { valid: true };
+        }
+        return { valid: y < window.innerHeight * SPELL_CAST_LINE };
+      }
       const g = sc.slotAtClient(x, y);
       if (!g) return { valid: false };
       const key = slotKey(g);
@@ -320,7 +401,7 @@ export function DuelView(props: {
       const snap = sc.slotClientCenter(key);
       return snap ? { valid: true, snap } : { valid: true };
     },
-    [freeKeys],
+    [freeKeys, cardTargetMap],
   );
 
   // click on the board: select your card, or pick an attack target for the selected one
@@ -328,9 +409,20 @@ export function DuelView(props: {
     (e: React.PointerEvent) => {
       const sc = scene.current;
       const v = viewRef.current;
+      if (e.button !== 0) return;
       if (!sc || !v || busyRef.current) return;
       const g = sc.slotAtClient(e.clientX, e.clientY);
       const key = g ? slotKey(g) : null;
+      const tm = targetRef.current;
+      if (tm) {
+        // choosing a target: only a glowing target does anything
+        const act = key ? tm.get(key) : undefined;
+        if (act) {
+          setTargeting(null);
+          void submit(act);
+        }
+        return;
+      }
       if (selectedId && key && targetKeys.has(key)) {
         const target = idAtKey(v, key);
         if (target) {
@@ -385,8 +477,100 @@ export function DuelView(props: {
 
   // ---- what the panels show ------------------------------------------------------------------------
   const pending = view?.pending && view.pending.player === HUMAN ? view.pending : null;
-  const winOpts = view && view.window?.priority === HUMAN && !pending ? windowOptions(legal) : [];
+  const winAll = useMemo(
+    () => (view && view.window?.priority === HUMAN && !pending ? windowOptions(legal) : []),
+    [view, pending, legal],
+  );
+  // Spells in your hand are cast by dragging them (onto their target, if they have one); the panel lists the rest.
+  const winButtons = useMemo(() => {
+    if (!view) return [];
+    const fast = winAll.filter((a) => a.type !== 'play');
+    const groups = new Map<string, Action[]>();
+    for (const a of fast) {
+      const src =
+        a.type === 'activateTrap' || a.type === 'activate'
+          ? a.card
+          : a.type === 'flip'
+            ? a.unit
+            : '';
+      const k = `${a.type}:${src}:${a.type === 'activate' ? a.ability : ''}`;
+      groups.set(k, [...(groups.get(k) ?? []), a]);
+    }
+    return [...groups.values()].map((g) => {
+      const first = g[0] as Action;
+      const label = describeMode(first, view);
+      return { label, run: () => resolveActions(label, g, null) };
+    });
+  }, [view, winAll, resolveActions]);
   const showWindow = inputOpen && !pending && view?.window?.priority === HUMAN;
+
+  // A pending "choose targets" prompt with simple board targets is answered by clicking the board, not a list.
+  const pendingMap = useMemo(() => {
+    if (forceList || !view || !pending || pending.kind !== 'chooseTargets') return null;
+    const acts = legal.filter(
+      (a): a is Extract<Action, { type: 'chooseTargets' }> => a.type === 'chooseTargets',
+    );
+    const m = singleTargetMap(acts, chooseTargetsOf);
+    if (!m) return null;
+    const keys = fieldKeys(view);
+    for (const id of m.keys()) if (!keys.has(id)) return null;
+    return m;
+  }, [view, pending, legal, forceList]);
+  const targetActions = targeting?.actions ?? pendingMap;
+  const targetTitle = targeting
+    ? `Choose a target for ${targeting.title.replace(/^(Play|Spring|Use|Flip) /, '')}`
+    : view && pendingMap
+      ? pendingTitle(view)
+      : '';
+  const targetByKey = useMemo(() => {
+    if (!view || !targetActions) return null;
+    const keys = fieldKeys(view);
+    const out = new Map<string, Action>();
+    for (const [id, act] of targetActions) {
+      const k = keys.get(id);
+      if (k) out.set(k, act);
+    }
+    return out;
+  }, [view, targetActions]);
+  const targetKeySet = useMemo(
+    () => (targetByKey ? new Set(targetByKey.keys()) : null),
+    [targetByKey],
+  );
+  useEffect(() => {
+    targetRef.current = targetByKey;
+  }, [targetByKey]);
+
+  // the scene lights what can be attacked, or what can be targeted right now
+  useEffect(() => {
+    const sc = scene.current;
+    if (!sc) return;
+    const keys = targetKeySet ?? (targetKeys.size > 0 ? targetKeys : null);
+    sc.highlightSlots(keys);
+  }, [targetKeySet, targetKeys, ready]);
+
+  // units that can act now get a glowing indicator
+  const readyKeys = useMemo(() => {
+    const out = new Set<string>();
+    if (!view || !inputOpen || pending || targetActions) return out;
+    view.players[HUMAN].units.forEach((id, i) => {
+      if (id && (canAttackWith(legal, id) || fieldActions(legal, id).length > 0))
+        out.add(`me-unit-${i}`);
+    });
+    return out;
+  }, [view, legal, inputOpen, pending, targetActions]);
+  useEffect(() => {
+    scene.current?.monsters.setReady(readyKeys);
+  }, [readyKeys, ready]);
+
+  // Escape or a right-click backs out of choosing a target for a card you were playing
+  useEffect(() => {
+    if (!targeting) return;
+    const on = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setTargeting(null);
+    };
+    window.addEventListener('keydown', on);
+    return () => window.removeEventListener('keydown', on);
+  }, [targeting]);
   const end = endTurnAction(legal);
   const sel = selectedId ? fieldActions(legal, selectedId) : [];
   const echoes = echoPlays(legal);
@@ -408,7 +592,8 @@ export function DuelView(props: {
       if ((e.key === 'e' || e.key === 'E') && !e.ctrlKey && !e.metaKey && !e.altKey) {
         const t = e.target as HTMLElement | null;
         if (t && /input|select|textarea/i.test(t.tagName)) return;
-        if (inputOpen && end && !pending && !chooser && !showHelp && !showWindow) doEndTurn();
+        if (inputOpen && end && !pending && !chooser && !showHelp && !showWindow && !targetActions)
+          doEndTurn();
       }
     };
     window.addEventListener('keydown', on);
@@ -448,6 +633,12 @@ export function DuelView(props: {
         ref={host}
         onPointerDown={onStageDown}
         onPointerMove={onStageMove}
+        onContextMenu={(e) => {
+          if (targeting) {
+            e.preventDefault();
+            setTargeting(null);
+          }
+        }}
       />
       {!ready && !error && <div className="loading">Opening the rift…</div>}
       {error && (
@@ -494,14 +685,24 @@ export function DuelView(props: {
           <Hand
             cards={handCards}
             mana={(me?.mana ?? 0) + (me?.tempMana ?? 0)}
-            locked={!inputOpen}
+            locked={!inputOpen || !!targetActions}
             onHover={setHoverHand}
             canPlay={(c) => playable.has(c.uid)}
             probe={probe}
-            onDragStart={(def) => {
+            onDragStart={(def, card) => {
               const kind = dropKind(def);
+              const v = viewRef.current;
+              const spellTargets = new Set<string>();
+              if (kind === 'spell' && v) {
+                const map = cardTargetMap(card);
+                const keys = fieldKeys(v);
+                for (const id of map?.keys() ?? []) {
+                  const k = keys.get(id);
+                  if (k) spellTargets.add(k);
+                }
+              }
               scene.current?.setDragTargets(
-                kind === 'spell' ? new Set() : freeKeys(kind === 'unit' ? 'unit' : 'trap'),
+                kind === 'spell' ? spellTargets : freeKeys(kind === 'unit' ? 'unit' : 'trap'),
               );
             }}
             onDragEnd={() => {
@@ -511,9 +712,35 @@ export function DuelView(props: {
             onPlay={onPlayCard}
           />
 
-          {inputOpen && selectedId && targetKeys.size + (faceTargetable ? 1 : 0) > 0 && (
-            <AttackArrow scene={scene} from={selected} valid={targetKeys} />
+          {inputOpen && targetKeySet && (
+            <>
+              <AttackArrow
+                scene={scene}
+                from={null}
+                fromPoint={{ x: window.innerWidth / 2, y: window.innerHeight - 150 }}
+                valid={targetKeySet}
+              />
+              <div className="targetbar" role="status">
+                <b>{targetTitle}</b>
+                <span>Click a glowing target.</span>
+                {targeting ? (
+                  <button className="btn btn--small btn--ghost" onClick={() => setTargeting(null)}>
+                    <span>Cancel</span>
+                  </button>
+                ) : (
+                  <button className="btn btn--small btn--ghost" onClick={() => setForceList(true)}>
+                    <span>Choose from a list</span>
+                  </button>
+                )}
+              </div>
+            </>
           )}
+          {inputOpen &&
+            !targetKeySet &&
+            selectedId &&
+            targetKeys.size + (faceTargetable ? 1 : 0) > 0 && (
+              <AttackArrow scene={scene} from={selected} valid={targetKeys} />
+            )}
 
           {inputOpen && (barActions.length > 0 || attackHint) && (
             <ActionBar
@@ -528,8 +755,8 @@ export function DuelView(props: {
           {showWindow && (
             <WindowPanel
               view={view}
-              options={winOpts}
-              onPick={(a) => void submit(a)}
+              options={winButtons}
+              dragHint={winAll.some((a) => a.type === 'play')}
               onPass={() => {
                 const pass = legal.find((a) => a.type === 'pass');
                 if (pass) void submit(pass);
@@ -539,7 +766,11 @@ export function DuelView(props: {
 
           {banner && <Banner {...banner} />}
           <Inspector
-            info={hoverHand ? { def: hoverHand.def, where: 'in your hand' } : hoverBoard}
+            info={
+              hoverHand && handCards.some((c) => c.uid === hoverHand.uid)
+                ? { def: hoverHand.def, where: 'in your hand' }
+                : hoverBoard
+            }
           />
           {showHelp && <HelpPrompt onClose={() => setShowHelp(false)} />}
           {stuck && (
@@ -628,7 +859,7 @@ export function DuelView(props: {
             </div>
             {view.winner === null && (
               <div className={`turnbox${view.active === HUMAN ? '' : ' turnbox--foe'}`}>
-                {inputOpen && end && !pending ? (
+                {inputOpen && end && !pending && !targetActions ? (
                   <button
                     className={`btn btn--primary endturn${idle ? ' is-pulsing' : ''}`}
                     onClick={doEndTurn}
@@ -665,7 +896,8 @@ export function DuelView(props: {
           {inputOpen &&
             pending &&
             pending.kind !== 'mulligan' &&
-            pending.kind !== 'chooseOptional' && (
+            pending.kind !== 'chooseOptional' &&
+            !pendingMap && (
               <ChoiceList
                 title={pendingTitle(view)}
                 options={optionsFor(legal, view)}
@@ -700,7 +932,8 @@ export function DuelView(props: {
 /** The curved arrow from the selected unit to the pointer while choosing what to attack. */
 function AttackArrow(props: {
   scene: React.RefObject<BattlefieldScene | null>;
-  from: string | null;
+  from?: string | null;
+  fromPoint?: { x: number; y: number };
   valid: ReadonlySet<string>;
 }) {
   const [p, setP] = useState<{ x: number; y: number } | null>(null);
@@ -710,8 +943,8 @@ function AttackArrow(props: {
     return () => window.removeEventListener('pointermove', on);
   }, []);
   const sc = props.scene.current;
-  if (!sc || !props.from || !p) return null;
-  const origin = sc.slotClientCenter(props.from);
+  if (!sc || !p) return null;
+  const origin = props.fromPoint ?? (props.from ? sc.slotClientCenter(props.from) : null);
   if (!origin) return null;
   const g = sc.slotAtClient(p.x, p.y);
   const key = g ? slotKey(g) : null;

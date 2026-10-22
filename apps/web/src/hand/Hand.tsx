@@ -22,14 +22,14 @@ export interface HandProps {
   cards: readonly HandCard[];
   mana: number;
   /** is this point a valid drop for this card? (the scene hit-tests; the engine decides rules later) */
-  probe: (def: CardDef, x: number, y: number) => Probe;
+  probe: (def: CardDef, x: number, y: number, card: HandCard) => Probe;
   /** Overrides the default (cost <= mana) playability, e.g. from the engine's legal actions. */
   canPlay?: (card: HandCard) => boolean;
   /** Not your decision right now: cards look neutral (no glow, no dimming) and cannot be dragged. */
   locked?: boolean;
   /** The card under the pointer (or null), so the screen can show it at a readable size. */
   onHover?: (card: HandCard | null) => void;
-  onDragStart?: (def: CardDef) => void;
+  onDragStart?: (def: CardDef, card: HandCard) => void;
   onDragEnd?: () => void;
   onPlay: (card: HandCard, x: number, y: number) => void;
   /** called when the player tries to drag a card they can't afford */
@@ -163,7 +163,7 @@ export function Hand(props: HandProps) {
     e.currentTarget.setPointerCapture(e.pointerId);
     untilt(card.uid);
     putDrag({ uid: card.uid, x: e.clientX, y: e.clientY, armed: false, origin: originOf() });
-    onDragStart?.(card.def);
+    onDragStart?.(card.def, card);
     onSound?.('pickup');
   };
 
@@ -174,7 +174,7 @@ export function Hand(props: HandProps) {
     const armed = d.armed || o.y - e.clientY > ARM_RISE + cardW * 0.4;
     putDrag({ ...d, x: e.clientX, y: e.clientY, armed });
     if (armed) {
-      const p = probe(card.def, e.clientX, e.clientY);
+      const p = probe(card.def, e.clientX, e.clientY, card);
       const from: Point = { x: o.x, y: o.y - cardW * 1.55 };
       setArrow({
         from,
@@ -191,7 +191,7 @@ export function Hand(props: HandProps) {
     putDrag(null);
     setArrow(null);
     onDragEnd?.();
-    if (!cancelled && wasArmed && probe(card.def, e.clientX, e.clientY).valid) {
+    if (!cancelled && wasArmed && probe(card.def, e.clientX, e.clientY, card).valid) {
       onSound?.('drop');
       onPlay(card, e.clientX, e.clientY);
     }

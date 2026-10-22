@@ -297,4 +297,10 @@ consistent with the docs" rule and can be revisited.
     per-stage sub-seeds (maps and offers currently depend on the run's shared random stream, so they are reproducible for a whole run
     but not independently per stage), and a duel-in-progress save (a reload mid-duel counts the duel as a loss instead). A draw counts
     as a loss. Banked decks stay in the browser save until the player leaves the Deck banked screen, because the Vault does not exist.
+82. **Targeting without menus (Robert's feedback) →** a play whose variants differ only by a single board target is resolved by
+    position: dropping the card directly on a valid target submits that variant at once, dropping it elsewhere above the hand line
+    enters click-a-target mode (valid targets glow, Esc / right-click / Cancel backs out), and a pending "choose targets" prompt
+    with simple board targets is answered the same way. Several modes (Overclock, Ascend, set face-down...) still ask which mode first,
+    and anything with multiple or off-board targets falls back to the list. The client never decides what is legal: every option still
+    comes from `legalActions()`. Units that can attack, flip or use an ability show a ready indicator.
 

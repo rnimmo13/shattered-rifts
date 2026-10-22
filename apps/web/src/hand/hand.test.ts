@@ -79,9 +79,9 @@ describe('art archetypes', () => {
 
 describe('hand footprint', () => {
   it('card width is clamped and the reserve grows with it', () => {
-    expect(handCardWidth(400)).toBe(140);
-    expect(handCardWidth(1600)).toBe(176);
-    expect(handCardWidth(4000)).toBe(220);
+    expect(handCardWidth(400)).toBe(150);
+    expect(handCardWidth(1600)).toBe(189);
+    expect(handCardWidth(4000)).toBe(230);
     expect(handReserve(200)).toBeGreaterThan(handReserve(120));
   });
   it('the reserve covers only the visible part of a resting card, not its full height', () => {

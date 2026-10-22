@@ -152,3 +152,74 @@ export function distinctTargets(variants: readonly PlayLike[], slot = 0): Instan
     if (v.type === 'play') for (const id of v.targets[slot] ?? []) seen.add(id);
   return [...seen];
 }
+
+/** Actions that pick targets (card plays, traps, abilities, flips). */
+export type Targeted = Extract<Action, { type: 'play' | 'activateTrap' | 'activate' | 'flip' }>;
+
+/** The targets an action picks, or undefined when it picks none. */
+export function targetsOfAction(a: Action): readonly (readonly InstanceId[])[] | undefined {
+  return a.type === 'play' ||
+    a.type === 'activateTrap' ||
+    a.type === 'activate' ||
+    a.type === 'flip'
+    ? a.targets
+    : undefined;
+}
+
+/** Everything about an action except what it targets (Overclock, Echo, Ascend, which ability, set face-down...). */
+export function modeKey(a: Action): string {
+  if (a.type === 'play')
+    return JSON.stringify([
+      a.overclock ?? false,
+      a.declined ?? [],
+      a.ascend ?? [],
+      a.echo ?? false,
+    ]);
+  if (a.type === 'activate') return `activate:${a.ability}`;
+  return a.type;
+}
+
+/** Split a set of actions into groups that differ only by target. */
+export function groupByMode<T extends Action>(variants: readonly T[]): T[][] {
+  const groups = new Map<string, T[]>();
+  for (const v of variants) {
+    const k = modeKey(v);
+    const g = groups.get(k);
+    if (g) g.push(v);
+    else groups.set(k, [v]);
+  }
+  return [...groups.values()];
+}
+
+/** A label for a mode, without its target ("Play Rift Bolt", "Overclocked Field Technician"). */
+export function describeMode(a: Action, view: GameView): string {
+  return describeAction(
+    a.type === 'play' || a.type === 'activateTrap' || a.type === 'activate' || a.type === 'flip'
+      ? { ...a, targets: [] }
+      : a,
+    view,
+  );
+}
+
+/**
+ * When every variant picks exactly one target card, map each target to the variant that picks it. Returns null
+ * when the choice is not a simple single target (so the caller falls back to a list).
+ */
+export function singleTargetMap<T extends Action>(
+  variants: readonly T[],
+  targetsOf: (a: T) => readonly (readonly InstanceId[])[] | undefined,
+): Map<InstanceId, T> | null {
+  const out = new Map<InstanceId, T>();
+  for (const v of variants) {
+    const t = targetsOf(v);
+    if (!t || t.length !== 1 || t[0]?.length !== 1) return null;
+    const id = t[0][0] as InstanceId;
+    if (out.has(id)) return null; // two variants for one target: not a pure single-target choice
+    out.set(id, v);
+  }
+  return out;
+}
+
+export const chooseTargetsOf = (
+  a: Extract<Action, { type: 'chooseTargets' }>,
+): readonly (readonly InstanceId[])[] => a.targets;

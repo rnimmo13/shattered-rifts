@@ -130,8 +130,9 @@ export function LogPanel(props: { lines: string[] }) {
 /** Shown when the enemy did something you can answer: lists the chain and your options. */
 export function WindowPanel(props: {
   view: GameView;
-  options: Action[];
-  onPick: (a: Action) => void;
+  options: { label: string; run: () => void }[];
+  /** Some options are cards in your hand: they are cast by dragging, so say so. */
+  dragHint: boolean;
   onPass: () => void;
 }) {
   const { view } = props;
@@ -149,15 +150,18 @@ export function WindowPanel(props: {
         {view.chain.length === 0 && <li>Nothing on the chain yet</li>}
       </ol>
       <div className="respond__row">
-        {props.options.map((a, i) => (
-          <button key={i} className="btn btn--small" onClick={() => props.onPick(a)}>
-            <span>{describeAction(a, view)}</span>
+        {props.options.map((o, i) => (
+          <button key={i} className="btn btn--small" onClick={o.run}>
+            <span>{o.label}</span>
           </button>
         ))}
         <button className="btn btn--small btn--ghost" onClick={props.onPass}>
           <span>Pass</span>
         </button>
       </div>
+      {props.dragHint && (
+        <p className="respond__hint">Or drag a Swift spell from your hand onto its target.</p>
+      )}
     </div>
   );
 }

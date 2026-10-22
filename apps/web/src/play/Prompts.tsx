@@ -9,6 +9,8 @@ import { Card } from '../cards/Card';
 export interface ChoiceOption {
   label: string;
   action: Action;
+  /** Run this instead of submitting the action (used to pick a mode, then a target). */
+  run?: () => void;
 }
 
 /** A centred panel over a dimmed backdrop. */
@@ -37,7 +39,10 @@ export function ChoiceList(props: {
       <ul className="choices">
         {props.options.map((o, i) => (
           <li key={i}>
-            <button className="btn btn--choice" onClick={() => props.onPick(o.action)}>
+            <button
+              className="btn btn--choice"
+              onClick={() => (o.run ? o.run() : props.onPick(o.action))}
+            >
               <span>{o.label}</span>
             </button>
           </li>

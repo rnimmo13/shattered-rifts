@@ -46,6 +46,11 @@ interface Monster {
   guard: Badge;
   phase: number;
   floater: boolean;
+  /** "this unit can act now" indicator: a pulsing pool of light and a bobbing arrow */
+  ready: Container;
+  readyGlow: Sprite;
+  readyArrow: Graphics;
+  readyOn: boolean;
   /** pixel height of the sprite on the stage */
   height: number;
   dying: boolean;
@@ -133,7 +138,7 @@ export class Monsters {
     if (this.selected === key) this.select(null);
     return new Promise((resolve) => {
       this.pending.add(resolve);
-      this.g.to([m.body, m.shadow, m.ring, m.power.root, m.guard.root], {
+      this.g.to([m.body, m.shadow, m.ring, m.ready, m.power.root, m.guard.root], {
         alpha: 0,
         duration: 0.35,
         ease: ease.in.gsap,
@@ -208,7 +213,27 @@ export class Monsters {
     guard_.root.position.set(-geom.width * 0.36, -r * 0.2);
     power_.root.position.set(geom.width * 0.36, -r * 0.2);
 
-    root.addChild(shadow, ring, body, power_.root, guard_.root);
+    // the "can act" indicator
+    const ready = new Container();
+    ready.alpha = 0;
+    ready.visible = false;
+    const readyGlow = new Sprite(this.h.glowTex);
+    readyGlow.anchor.set(0.5);
+    readyGlow.tint = hex(color.cyan);
+    readyGlow.blendMode = 'add';
+    readyGlow.scale.set((geom.width * 1.6) / 128, (geom.width * 1.6 * 0.4) / 128);
+    readyGlow.position.set(0, -2);
+    const readyArrow = new Graphics();
+    const aw = Math.max(14, geom.width * 0.12);
+    readyArrow
+      .poly([-aw, -aw * 0.9, aw, -aw * 0.9, 0, aw * 0.6])
+      .fill({ color: hex(color.goldLight) })
+      .stroke({ width: 2, color: hex(color.cyan), alpha: 0.9 });
+    readyArrow.position.set(0, -height * 0.9);
+    ready.addChild(readyGlow, readyArrow);
+
+    // the ready arrow sits above the art so it is never hidden behind the monster
+    root.addChild(shadow, ring, body, ready, power_.root, guard_.root);
     this.h.container.addChild(root);
 
     const m: Monster = {
@@ -225,6 +250,10 @@ export class Monsters {
       power: power_,
       guard: guard_,
       phase: Math.random() * Math.PI * 2,
+      ready,
+      readyGlow,
+      readyArrow,
+      readyOn: false,
       floater: FLOATERS.has(art.archetype),
       height,
       dying: false,
@@ -353,6 +382,25 @@ export class Monsters {
         },
       },
     );
+  }
+
+  /** Mark which of your units can act right now (attack, flip, use an ability). */
+  setReady(keys: ReadonlySet<string>): void {
+    for (const m of this.units.values()) {
+      const on = !m.dying && keys.has(m.key);
+      if (on === m.readyOn) continue;
+      m.readyOn = on;
+      if (on) m.ready.visible = true;
+      this.g.to(m.ready, {
+        alpha: on ? 1 : 0,
+        duration: 0.3,
+        ease: ease.out.gsap,
+        overwrite: true,
+        onComplete: () => {
+          if (!m.readyOn && !this.destroyed) m.ready.visible = false;
+        },
+      });
+    }
   }
 
   select(key: string | null): void {
@@ -513,7 +561,15 @@ export class Monsters {
         if (this.destroyed) return;
         this.pending.delete(resolve);
         for (const t of shardTex) t.destroy(false);
-        gsap.killTweensOf([m.root, m.body, m.body.scale, m.body.position, m.flash, m.sprite]);
+        gsap.killTweensOf([
+          m.root,
+          m.body,
+          m.body.scale,
+          m.body.position,
+          m.flash,
+          m.sprite,
+          m.ready,
+        ]);
         m.root.destroy({ children: true });
         this.units.delete(key);
         resolve();
@@ -521,7 +577,11 @@ export class Monsters {
       gsap.killTweensOf(m.body.position);
       m.body.position.set(0, 0);
       m.body.scale.set(1, 1);
-      this.g.to([m.power.root, m.guard.root, m.ring], { alpha: 0, duration: 0.2 });
+      this.g.to([m.power.root, m.guard.root, m.ring, m.ready], {
+        alpha: 0,
+        duration: 0.2,
+        overwrite: true,
+      });
       const grey = { t: 0 };
       const full = 0xffffff;
       const dead = 0x4a4a66;
@@ -642,6 +702,12 @@ export class Monsters {
   // ---------------------------------------------------------------------------------------------
   /** Idle life: each monster breathes on its own phase; flyers also hover. */
   tick(t: number, still: boolean): void {
+    for (const m of this.units.values()) {
+      if (m.readyOn && !still) {
+        m.readyGlow.alpha = 0.8 + 0.2 * Math.sin(t * 3.2 + m.phase);
+        m.readyArrow.y = -m.height * 0.9 + 6 * Math.sin(t * 3.2 + m.phase);
+      }
+    }
     if (still) return;
     for (const m of this.units.values()) {
       if (m.dying || m.busy > 0) continue;
@@ -667,6 +733,9 @@ export class Monsters {
         m.sprite,
         m.shadow,
         m.ring,
+        m.ready,
+        m.readyGlow,
+        m.readyArrow,
         m.power.root,
         m.guard.root,
         m.power.root.scale,
