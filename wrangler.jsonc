@@ -3,5 +3,5 @@
   // Build command: pnpm install && pnpm --filter @sr/web build   Deploy command: npx wrangler deploy
   "name": "shattered-rifts",
   "compatibility_date": "2026-10-01",
-  "assets": { "directory": "apps/web/dist" }
+  "assets": { "directory": "apps/web/dist" },
 }
