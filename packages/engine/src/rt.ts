@@ -161,7 +161,7 @@ export function moveCard(
   const cardId = leavingField || zone !== 'units' ? old.baseCardId : old.cardId;
   const d = def(rt, cardId);
   if (d.type === 'token' && zone !== 'units') return null;
-  if (old.echoed && zone === 'void') zone = 'beyond';
+  if (old.echoed && zone !== 'units' && zone !== 'chain') zone = 'beyond';
 
   const controller =
     zone === 'units' || zone === 'backrow' || zone === 'rift'

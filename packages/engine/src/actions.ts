@@ -133,7 +133,11 @@ function unitPlayVariants(
   const out: Action[] = [];
   const summonIdx = idxOf(d, 'onSummon');
   const ocCost = d.params?.overclock;
-  const ocOptions = ocCost !== undefined && budget >= ocCost ? [false, true] : [false];
+  const ocAbilities = summonIdx
+    .map((i) => d.abilities[i] as Ability)
+    .filter((a) => 'overclock' in a && !!a.overclock);
+  const ocUseful = allSlotsHaveOptions(slotSpecs(rt, p, c.id, ocAbilities));
+  const ocOptions = ocCost !== undefined && budget >= ocCost && ocUseful ? [false, true] : [false];
   for (const overclock of ocOptions) {
     const active = summonIdx.filter((i) => {
       const a = d.abilities[i] as Ability;

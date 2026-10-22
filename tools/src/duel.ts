@@ -22,6 +22,14 @@ interface Args {
   maxTurns: number;
 }
 
+function positiveInt(v: string | undefined, fallback: number): number {
+  if (v === undefined) return fallback;
+  const n = Number(v);
+  if (!Number.isInteger(n) || n <= 0)
+    throw new Error(`Expected a positive whole number, got "${v}"`);
+  return n;
+}
+
 function parseArgs(argv: string[]): Args {
   const get = (flag: string) => {
     const i = argv.indexOf(flag);
@@ -39,7 +47,7 @@ function parseArgs(argv: string[]): Args {
     // a CLI default seed may use the clock; the engine itself never does
     seed: get('--seed') ?? `cli-${Date.now().toString(36)}`,
     auto: argv.includes('--auto'),
-    maxTurns: Number(get('--max-turns') ?? 200),
+    maxTurns: positiveInt(get('--max-turns'), 200),
   };
 }
 

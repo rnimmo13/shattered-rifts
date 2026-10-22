@@ -106,9 +106,10 @@ consistent with the docs" rule and can be revisited.
 
 36. **New generic DSL pieces:** ability flag `overclock: true` (the ability only applies, and only asks for targets, if the Overclock cost was paid), condition `resonanceAtLeast`, op `assemble`, op
     `atEndOfTurn` (delayed effects), op `removeCharge`, op `topdeckFromHand`, target picks `linkTarget` and
-    `summonedByThis`, multi-zone targets, event filter `{killer:'self', cause:'combat'}`, a concrete
+    `summonedByThis`, multi-zone targets, event filter `{killedBySelf: true, cause: 'combat'}`, `attackTarget` and `swiftCast` event filters, condition `handCountAtMost`, `oncePerGame` on passives, filters `minCost` and `withoutShield`, `destroy { devour: true }`, `setFrom { zone: 'deck', choose: 'random' }`, a concrete
     `StaticModifier` union (`cantAttack`, `costMod`, `powerPerCount`, ...), ability kind `duelStart` (for Sigils).
-    The `resonance` field is always additive; "instead" cards use `conditional`.
+    The `resonance` field is always additive; "instead" cards use `conditional`. **The authoritative DSL is
+    `packages/engine/src/types.ts`** (mirrored by `packages/content/src/schema.ts`); 02 §2.1 is a summary.
 37. **Engine ↔ content →** DSL types live in `engine`. `content` depends on `engine` + zod. The engine receives
     cards through `createEngine(cardDb)`, which returns the four API functions. *Why:* the engine has no
     dependencies, state is plain JSON, and there's no global registry.
@@ -129,3 +130,8 @@ consistent with the docs" rule and can be revisited.
 44. **2026-10-22 · M1 random AI →** "random-legal-move" with two nudges: it responds in about half of the
     windows where it can, and it rarely ends its turn while it can still act. *Why:* pure uniform choice
     ends turns constantly and produces unreadable games. It's still random, not strategic.
+45. **2026-10-22 · M1 review fixes (reviews/m1-review.md) →** a face-down unit's stats are never put in
+    events or views. A player's own prompt reveals its cards to them (Scry). No action is accepted after the
+    game ends. Corrode stops at 0 Power. An Echoed card that leaves the field for any zone goes Beyond.
+    Views include layered stats. Lifebind heals once per hit even with Pierce. State-based checks repeat
+    until stable.

@@ -415,7 +415,7 @@ function liveSource(rt: Rt, ctx: EffectCtx): InstanceId | null {
 
 function emitStats(rt: Rt, id: InstanceId): void {
   const c = maybeInst(rt, id);
-  if (!c) return;
+  if (!c || c.faceDown) return; // a face-down unit's real stats are hidden information
   const st = computeStats(rt, c);
   emit(rt, { type: 'statsChanged', id, power: st.power, guard: st.guard });
 }

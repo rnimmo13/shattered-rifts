@@ -152,6 +152,9 @@ type EventFilter = { type: 'attackDeclared' | 'unitSummoned' | 'spellCast' | 'tr
               { "op": "draw", "player": "self", "amount": 1 }] }] }
 ```
 
+> **Implementation note (2026-10-22):** this block is a summary. The authoritative DSL is
+> `packages/engine/src/types.ts`, with its extensions listed in `docs/DECISIONS.md` #36.
+
 ### 2.2 Text ↔ data consistency
 `text` is hand-written for quality, but a test (`content.test.ts`) checks that every keyword in
 `keywords` appears in `text`, every number in `text` appears somewhere in the ability data, and every

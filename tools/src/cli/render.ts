@@ -90,7 +90,12 @@ export class Renderer {
   }
 
   private statsOf(s: GameState, c: CardInstance) {
-    const st = this.engine.stats(s, c.id);
+    // a player's client only knows what its view shows; the spectator (AI vs AI) sees everything
+    const st =
+      this.viewer === 'all'
+        ? this.engine.stats(s, c.id)
+        : this.engine.viewFor(s, this.viewer).stats[c.id];
+    if (!st) return { power: 0, guard: 0, maxGuard: 0, keywords: new Set<string>() };
     return { ...st, keywords: new Set<string>(st.keywords) };
   }
 

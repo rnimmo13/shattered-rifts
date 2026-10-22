@@ -212,7 +212,8 @@ export function effectiveCost(
 export function defMatches(d: CardDef, filter: Filter): boolean {
   if (filter.type) {
     const types = Array.isArray(filter.type) ? filter.type : [filter.type];
-    if (!types.includes(d.type)) return false;
+    const tokenAsUnit = d.type === 'token' && types.includes('unit');
+    if (!types.includes(d.type) && !tokenAsUnit) return false;
   }
   if (filter.tribe && !(d.tribes ?? []).includes(filter.tribe)) return false;
   if (filter.minCost !== undefined && d.cost < filter.minCost) return false;

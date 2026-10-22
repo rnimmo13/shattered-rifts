@@ -18,7 +18,7 @@ import { legalActions as enumerate, performAction } from './actions';
 import { advance } from './flow';
 import { nextInt, seedRng, shuffle } from './rng';
 import { clone, hashState, RulesError, stableStringify } from './util';
-import { eventsFor, viewFor } from './view';
+import { eventsFor, viewFor as redact, type GameView } from './view';
 
 export const DEFAULT_RULES: Rules = {
   unitSlots: 5,
@@ -38,7 +38,8 @@ export interface Engine {
   createGame(cfg: GameConfig): GameState;
   legalActions(s: GameState, player: PlayerId): Action[];
   applyAction(s: GameState, a: Action): { state: GameState; events: GameEvent[] };
-  viewFor: typeof viewFor;
+  /** The viewer's redacted view, including layered stats for the units they can see. */
+  viewFor(s: GameState, player: PlayerId): GameView;
   eventsFor: typeof eventsFor;
   hashState(s: GameState): string;
   /** Who must act next (pending prompt, priority, or the active player in Main). */
@@ -134,6 +135,7 @@ export function createEngine(db: CardDb): Engine {
   }
 
   function applyAction(s: GameState, a: Action): { state: GameState; events: GameEvent[] } {
+    if (s.winner !== null) throw new RulesError('The game is over');
     const rt = rtFor(clone(s));
     if (a.type !== 'concede') {
       const key = stableStringify(a);
@@ -159,6 +161,10 @@ export function createEngine(db: CardDb): Engine {
   function stats(s: GameState, id: InstanceId): UnitStats {
     const st = computeStats(rtFor(s), inst(rtFor(s), id));
     return { power: st.power, guard: st.guard, maxGuard: st.maxGuard, keywords: [...st.keywords] };
+  }
+
+  function viewFor(s: GameState, player: PlayerId): GameView {
+    return redact(s, player, (id) => stats(s, id));
   }
 
   return { createGame, legalActions, applyAction, viewFor, eventsFor, hashState, toAct, stats };

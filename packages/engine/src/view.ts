@@ -40,9 +40,22 @@ export interface GameView {
   /** Only the viewer's own prompt (the opponent just sees that they're deciding). */
   pending: GameState['pending'];
   opponentDeciding: boolean;
+  /** Layered stats for every unit the viewer can see face-up (or owns face-down). */
+  stats: Record<InstanceId, ViewStats>;
 }
 
-export function viewFor(s: GameState, viewer: PlayerId): GameView {
+export interface ViewStats {
+  power: number;
+  guard: number;
+  maxGuard: number;
+  keywords: string[];
+}
+
+export function viewFor(
+  s: GameState,
+  viewer: PlayerId,
+  statsOf?: (id: InstanceId) => ViewStats,
+): GameView {
   const cards: Record<InstanceId, CardInstance> = {};
   const show = (id: InstanceId | null) => {
     if (!id) return;
@@ -86,6 +99,9 @@ export function viewFor(s: GameState, viewer: PlayerId): GameView {
   }) as [RedactedPlayer, RedactedPlayer];
   for (const link of s.chain) show(link.sourceId); // spells/traps on the chain are public
   const mine = s.pending?.player === viewer;
+  // the viewer may look at the cards their own prompt is about (Scry: the top of their deck)
+  if (mine && s.pending?.kind === 'scry') s.pending.cards.forEach(show);
+  if (mine && s.pending?.kind === 'chooseCards') s.pending.from.forEach(show);
   return {
     viewer,
     turn: s.turn,
@@ -99,7 +115,24 @@ export function viewFor(s: GameState, viewer: PlayerId): GameView {
     window: s.window ? { ...s.window } : null,
     pending: mine ? clone(s.pending) : null,
     opponentDeciding: !!s.pending && !mine,
+    stats: statsOf ? visibleStats(s, viewer, statsOf) : {},
   };
+}
+
+function visibleStats(
+  s: GameState,
+  viewer: PlayerId,
+  statsOf: (id: InstanceId) => ViewStats,
+): Record<InstanceId, ViewStats> {
+  const out: Record<InstanceId, ViewStats> = {};
+  for (const ps of s.players) {
+    for (const id of ps.units) {
+      const c = id ? s.cards[id] : undefined;
+      if (!c || (c.faceDown && c.controller !== viewer)) continue;
+      out[c.id] = statsOf(c.id);
+    }
+  }
+  return out;
 }
 
 /** Redacts an event stream for one viewer (same rules as viewFor). */
@@ -107,8 +140,9 @@ export function eventsFor(events: readonly GameEvent[], viewer: PlayerId): GameE
   return events.map((e) => {
     switch (e.type) {
       case 'cardDrawn':
-      case 'trapSet':
         return e.player === viewer ? e : { ...e, id: HIDDEN, cardId: HIDDEN };
+      case 'trapSet':
+        return e.player === viewer ? e : { ...e, cardId: HIDDEN };
       case 'ambushSet':
         return e.player === viewer ? e : { ...e, cardId: HIDDEN };
       case 'cardToDeck':

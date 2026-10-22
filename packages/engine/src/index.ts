@@ -11,6 +11,13 @@ export {
   type Engine,
   type UnitStats,
 } from './engine';
-export { viewFor, eventsFor, HIDDEN, type GameView, type RedactedPlayer } from './view';
+export {
+  viewFor,
+  eventsFor,
+  HIDDEN,
+  type GameView,
+  type RedactedPlayer,
+  type ViewStats,
+} from './view';
 export { hashState, stableStringify, RulesError, EngineCapError } from './util';
 export { seedRng, nextInt, nextU32, shuffle, type RngState } from './rng';

@@ -15,6 +15,7 @@ export function dealDamage(
   amount: number,
   sourceId: InstanceId | null,
   cause: 'combat' | 'effect',
+  opts: { lifebind?: boolean } = {},
 ): number {
   if (amount <= 0) return 0;
   const src = maybeInst(rt, sourceId);
@@ -37,7 +38,9 @@ export function dealDamage(
   }
   if (src && src.zone === 'units') {
     src.veiled = false; // Veiled ends when it deals damage
-    if (hasKeyword(rt, src, 'lifebind')) heal(rt, { player: src.controller }, amount);
+    if (opts.lifebind !== false && hasKeyword(rt, src, 'lifebind')) {
+      heal(rt, { player: src.controller }, amount);
+    }
   }
   return amount;
 }
@@ -93,12 +96,17 @@ export function destroyCard(rt: Rt, id: InstanceId): void {
 
 /** State-based checks: units at 0 Guard die. Returns true if the game ended. */
 export function stateBasedChecks(rt: Rt): boolean {
-  for (const p of [rt.s.active, other(rt.s.active)]) {
-    for (const id of unitIds(rt, p)) {
-      const c = inst(rt, id);
-      if (computeStats(rt, c).guard <= 0) {
-        const hit = c.lastHit;
-        killUnit(rt, id, hit?.cause === 'combat' ? 'combat' : 'damage', hit?.by ?? null);
+  // a death can expose another (e.g. a lost aura), so repeat until a pass kills nothing
+  for (let killed = true; killed;) {
+    killed = false;
+    for (const p of [rt.s.active, other(rt.s.active)]) {
+      for (const id of unitIds(rt, p)) {
+        const c = inst(rt, id);
+        if (computeStats(rt, c).guard <= 0) {
+          const hit = c.lastHit;
+          killUnit(rt, id, hit?.cause === 'combat' ? 'combat' : 'damage', hit?.by ?? null);
+          killed = true;
+        }
       }
     }
   }
@@ -114,6 +122,7 @@ export function checkGameOver(rt: Rt): boolean {
 }
 
 export function endGame(rt: Rt, winner: PlayerId | 'draw'): void {
+  if (rt.s.winner !== null) return;
   rt.s.winner = winner;
   rt.s.phase = 'ended';
   // spells/traps still staged on the chain go to the Void so every card stays in a real zone
@@ -146,7 +155,10 @@ export function resolveAttack(rt: Rt, link: Link): boolean {
   dealDamage(rt, { card: d.id }, pa, a.id, 'combat');
   dealDamage(rt, { card: a.id }, pd, d.id, 'combat');
   if (!shielded && pa > guardBefore && rt.s.cards[a.id] && hasKeyword(rt, a, 'pierce')) {
-    dealDamage(rt, { player: defender }, pa - Math.max(0, guardBefore), a.id, 'combat');
+    // the carry-over is part of the same hit: Lifebind already healed for the full Power
+    dealDamage(rt, { player: defender }, pa - Math.max(0, guardBefore), a.id, 'combat', {
+      lifebind: false,
+    });
   }
   return true;
 }

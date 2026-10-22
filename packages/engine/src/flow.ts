@@ -79,7 +79,7 @@ function runTask(rt: Rt, task: Task): void {
       queueTimed(rt, s.active, task.kind);
       if (task.kind === 'endOfTurn') {
         const due = s.delayed.filter((d) => d.turn === s.turn);
-        s.delayed = s.delayed.filter((d) => d.turn !== s.turn);
+        s.delayed = s.delayed.filter((d) => d.turn > s.turn);
         for (const d of due) queueTrigger(rt, d.trigger);
       }
       return;
@@ -387,7 +387,9 @@ function startTurn(rt: Rt, p: PlayerId): void {
   for (const id of unitIds(rt, p)) {
     const c = inst(rt, id);
     if (c.corrode > 0 && !c.faceDown) {
-      c.buffs.push({ power: -c.corrode, guard: 0, duration: 'permanent' });
+      // never below 0: only take Power the unit actually has, so later buffs still count fully
+      const loss = Math.min(c.corrode, computeStats(rt, c).power);
+      if (loss > 0) c.buffs.push({ power: -loss, guard: 0, duration: 'permanent' });
       const st = computeStats(rt, c);
       emit(rt, { type: 'statsChanged', id, power: st.power, guard: st.guard });
     }
@@ -412,7 +414,7 @@ function dusk(rt: Rt): void {
       c.granted = c.granted.filter((g) => g.duration === 'permanent');
       c.tempGuard = 0;
       const after = computeStats(rt, c);
-      if (after.power !== before.power || after.maxGuard !== before.maxGuard) {
+      if (!c.faceDown && (after.power !== before.power || after.maxGuard !== before.maxGuard)) {
         emit(rt, { type: 'statsChanged', id, power: after.power, guard: after.guard });
       }
     }
