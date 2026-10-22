@@ -74,6 +74,8 @@ function emptyPlayer(rules: Rules, essence: number): PlayerState {
     sigil: null,
     mulliganed: false,
     once: {},
+    lastSpell: null,
+    revealedHandTurn: 0,
   };
 }
 

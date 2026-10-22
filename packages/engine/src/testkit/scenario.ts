@@ -18,6 +18,7 @@ import type {
   PlayerId,
 } from '../types';
 import { createEngine, type Engine } from '../engine';
+import { syncBackrow } from '../board';
 import { newInstance, place, type Rt } from '../rt';
 import { computeStats, initEnterStatuses, type Stats } from '../stats';
 import { stableStringify } from '../util';
@@ -178,6 +179,10 @@ export class Scenario {
         const c = newInstance(rt, cardId, p, zone);
         return c;
       };
+      // Rift and Sigil first: statics like Rift: The Hollow Veil change the backrow size
+      if (spec.rift) place(rt, add(spec.rift, 'rift'));
+      if (spec.sigil) place(rt, add(spec.sigil, 'sigil'));
+      syncBackrow(rt);
       for (const id of spec.deck) place(rt, add(id, 'deck'), { position: 'bottom' });
       for (const id of spec.hand) place(rt, add(id, 'hand'));
       for (const id of spec.void) place(rt, add(id, 'void'));
@@ -201,8 +206,6 @@ export class Scenario {
         c.charges = this.db[id]?.params?.charges ?? 0;
         place(rt, c);
       }
-      if (spec.rift) place(rt, add(spec.rift, 'rift'));
-      if (spec.sigil) place(rt, add(spec.sigil, 'sigil'));
     }
     return s;
   }

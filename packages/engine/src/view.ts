@@ -68,9 +68,16 @@ export function viewFor(
     }
     cards[id] = copy;
   };
+  /** Shows a card's real identity (only for cards the viewer's own prompt lets them look at). */
+  const reveal = (id: InstanceId) => {
+    const c = s.cards[id];
+    if (c) cards[id] = clone(c);
+  };
   const players = s.players.map((ps, p) => {
     const own = p === viewer;
-    if (own) ps.hand.forEach(show);
+    // a hand is visible to its owner, and to the opponent while it is revealed (Faceless Courtier)
+    const handVisible = own || ps.revealedHandTurn === s.turn;
+    if (handVisible) ps.hand.forEach((id) => show(id));
     ps.units.forEach(show);
     ps.backrow.forEach(show);
     show(ps.rift);
@@ -86,7 +93,7 @@ export function viewFor(
       resonance: ps.resonance,
       fatigue: ps.fatigue,
       deckCount: ps.deck.length,
-      hand: own ? [...ps.hand] : null,
+      hand: handVisible ? [...ps.hand] : null,
       handCount: ps.hand.length,
       units: [...ps.units],
       backrow: [...ps.backrow],
@@ -101,7 +108,7 @@ export function viewFor(
   const mine = s.pending?.player === viewer;
   // the viewer may look at the cards their own prompt is about (Scry: the top of their deck)
   if (mine && s.pending?.kind === 'scry') s.pending.cards.forEach(show);
-  if (mine && s.pending?.kind === 'chooseCards') s.pending.from.forEach(show);
+  if (mine && s.pending?.kind === 'chooseCards') s.pending.from.forEach((id) => reveal(id));
   return {
     viewer,
     turn: s.turn,

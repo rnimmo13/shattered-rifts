@@ -3,7 +3,7 @@
 
 import type { Ability, Effect, InstanceId, PlayerId, SlotSpec, Target, TargetZone } from './types';
 import { inst, player, type Rt } from './rt';
-import { matchesFilter, sideMatches } from './stats';
+import { hasStatic, matchesFilter, sideMatches } from './stats';
 import { combinations, product } from './util';
 
 function zonesOf(t: Target): TargetZone[] {
@@ -29,6 +29,14 @@ export function candidates(
     const c = inst(rt, id);
     if (!matchesFilter(rt, c, t.filter, sourceId)) return;
     if (targeting && c.veiled && c.controller !== controller) return;
+    // Lantern of Lost Names: enemy effects can't touch (or reveal) your set cards
+    if (
+      c.faceDown &&
+      c.controller !== controller &&
+      hasStatic(rt, c.controller, 'protectSetCards')
+    ) {
+      return;
+    }
     seen.add(id);
     out.push(id);
   };

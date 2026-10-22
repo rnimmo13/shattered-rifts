@@ -45,6 +45,7 @@ export const FilterSchema = z.strictObject({
   damaged: z.boolean().optional(),
   notSelf: z.boolean().optional(),
   withoutShield: z.boolean().optional(),
+  sameNameAsEventSource: z.boolean().optional(),
 });
 
 export const TargetSchema = z.strictObject({
@@ -73,7 +74,14 @@ const AmountSchema = z.union([
     times: z.number().int().optional(),
     plus: z.number().int().optional(),
   }),
+  z.strictObject({
+    powerOf: TargetSchema,
+    times: z.number().int().optional(),
+    plus: z.number().int().optional(),
+  }),
 ]);
+
+const RealmSchema = z.enum(['aurelion', 'nexus', 'wyldmaw', 'umbral', 'neutral']);
 
 const ConditionSchema = z.strictObject({
   targetIsAttacking: z.boolean().optional(),
@@ -94,14 +102,19 @@ export const EffectSchema: z.ZodType<Effect> = z.lazy(() =>
       devour: z.boolean().optional(),
     }),
     z.strictObject({
-      op: z.enum(['banish', 'returnToHand', 'stun', 'corrode', 'takeControl', 'assemble']),
+      op: z.enum(['banish', 'returnToHand', 'stun', 'corrode', 'assemble']),
       target: TargetSchema,
+    }),
+    z.strictObject({
+      op: z.literal('takeControl'),
+      target: TargetSchema,
+      duration: z.enum(['turn', 'permanent']).optional(),
     }),
     z.strictObject({
       op: z.literal('buff'),
       target: TargetSchema,
-      power: z.number().int().optional(),
-      guard: z.number().int().optional(),
+      power: AmountSchema.optional(),
+      guard: AmountSchema.optional(),
       duration: z.enum(['turn', 'permanent']),
     }),
     z.strictObject({
@@ -137,6 +150,26 @@ export const EffectSchema: z.ZodType<Effect> = z.lazy(() =>
       target: TargetSchema,
       amount: z.number().int().positive().optional(),
     }),
+    z.strictObject({
+      op: z.literal('addRandomToHand'),
+      player: PlayerRef,
+      realm: RealmSchema,
+      cardType: CardTypeSchema,
+    }),
+    z.strictObject({
+      op: z.literal('setTrapFrom'),
+      zone: z.enum(['hand', 'deckTop']),
+      n: z.number().int().positive().optional(),
+    }),
+    z.strictObject({ op: z.literal('peekDestroy'), filter: FilterSchema.optional() }),
+    z.strictObject({
+      op: z.literal('copySpell'),
+      which: z.enum(['lastCast', 'eachDifferentInVoid']),
+      targets: z.enum(['choose', 'random']),
+    }),
+    z.strictObject({ op: z.literal('redirect'), link: z.literal('trigger') }),
+    z.strictObject({ op: z.literal('revealHand'), player: PlayerRef }),
+    z.strictObject({ op: z.literal('resetSelf') }),
     z.strictObject({ op: z.literal('atEndOfTurn'), effects: z.array(EffectSchema) }),
     z.strictObject({
       op: z.literal('conditional'),
@@ -156,12 +189,17 @@ const EventFilterSchema = z.strictObject({
     'trapActivated',
     'unitDied',
     'devoured',
+    'trapResolved',
+    'shieldPopped',
+    'assembled',
   ]),
   side: SideSchema,
   filter: FilterSchema.optional(),
   attackTarget: z.enum(['friendlyUnit', 'riftwalker']).optional(),
   killedBySelf: z.boolean().optional(),
   cause: z.literal('combat').optional(),
+  onSelf: z.boolean().optional(),
+  spellTargets: z.literal('friendlyUnit').optional(),
 });
 const EventSpec = z.union([EventFilterSchema, z.array(EventFilterSchema).min(1)]);
 
@@ -173,7 +211,17 @@ const StaticModifierSchema = z.union([
     filter: FilterSchema,
     amount: z.number().int(),
     on: z.enum(['play', 'activate']),
+    firstEachTurn: z.boolean().optional(),
   }),
+  z.strictObject({
+    type: z.literal('selfCost'),
+    per: z.enum(['backrowCards', 'voidTypes']),
+    amount: z.number().int(),
+  }),
+  z.strictObject({ type: z.literal('damageReduction'), amount: z.number().int().positive() }),
+  z.strictObject({ type: z.literal('backrowSlots'), total: z.number().int().positive() }),
+  z.strictObject({ type: z.literal('trapsReady') }),
+  z.strictObject({ type: z.literal('protectSetCards') }),
   z.strictObject({
     type: z.literal('powerPerCount'),
     count: z.strictObject({ side: SideSchema, filter: FilterSchema }),
@@ -200,6 +248,7 @@ export const AbilitySchema = z.union([
       'startOfTurn',
       'endOfTurn',
       'duelStart',
+      'onBreak',
     ]),
     effects: z.array(EffectSchema),
     resonance: z

@@ -141,3 +141,34 @@ consistent with the docs" rule and can be revisited.
     you afford another legal response** (Robert). Implement in the M3 duel UI.
 48. **2026-10-22 · Character names → keep Ser Maren Ashcourt, Rivet, Kesh the Unfed, Vesper Nightlace for now**
     (Robert).
+
+## M2 card implementation (2026-10-22)
+
+49. **Signature card IDs and costs →** the 12 Warden signature cards are AUR-17–19, NEX-17–19, WYL-17–19 and
+    UMB-17–19 (table in 02 §4). Unspecified costs: Seraphine's Oath 3, Kron's Assembly Arm 3, Maw Spawn Egg 3,
+    Gorrmaw's Tooth 2. Gilded Halberdier is a 3-cost 3/3 **with Shield** (its text only makes sense with one),
+    and Maw Spawn is a new token, TOK-MAWSPAWN. *Why:* `03_CAMPAIGN.md` gave text but not every cost. Revisit in
+    balance sims.
+50. **Netrunner Ix, "look then destroy" →** resolves as a prompt at resolution time (`peekDestroy`): you see
+    *all* enemy set cards, then may destroy one costing 3 or less (or none). It is not a pre-chosen target.
+    *Why:* targets for a played card are chosen when you play it, before you could look, so hidden information
+    would leak or the look would be meaningless. Lantern of Lost Names hides set cards from it.
+51. **Rift: The Hollow Veil →** the static is `backrowSlots: 5`. If it leaves, cards in the extra slot are
+    destroyed (to the Void). Its first-Trap discount counts per turn number (either player's turn).
+52. **Mirror of Malice →** "a random enemy unit" means a random unit controlled by the spell's caster that the
+    spell could legally target. If there is none, the spell is negated. *Why:* "enemy" is relative to the
+    Mirror's owner, so the spell turns back on its caster's side.
+53. **CALYX / Prism copies →** "last spell you cast this game" is the last spell *you* cast (Swift spells and
+    Rift Spark count; copies don't). CALYX's copy asks you to choose new targets. Prism's copies pick random
+    targets with the seeded PRNG, one copy per different Spell card in your Void. Prism's cost counts the
+    different *printed* card types in your Void.
+54. **Signature-card details →** Thal'gor and The Hunger Below apply their buff *before* the destroy so the
+    value is read while the units are still there (same result as the text's order). Gorrmaw's Tooth is a
+    separate "whenever you Devour" trigger that gives the devourer +1/+1. Override Virus's stolen unit returns at
+    Dusk (destroyed if its owner has no free slot). Faceless Courtier shows you the hand for the rest of that
+    turn. Nyxara's Web can re-set once per game per player.
+55. **New generic DSL pieces (all card-agnostic, with tests) →** ops `addRandomToHand`, `setTrapFrom`,
+    `peekDestroy`, `copySpell`, `redirect`, `revealHand`, `resetSelf`; `takeControl {duration}`; `buff` amounts
+    can be a count or a unit's Power; statics `selfCost`, `damageReduction`, `backrowSlots`, `trapsReady`,
+    `protectSetCards`, `costMod.firstEachTurn`; events `trapResolved`, `shieldPopped`, `assembled`; ability
+    kind `onBreak`; event filters `onSelf` and `spellTargets`; filter `sameNameAsEventSource`.

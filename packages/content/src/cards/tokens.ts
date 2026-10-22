@@ -71,4 +71,18 @@ export const TOKENS: CardDef[] = [
     text: '**Swift**. Gain 1 temporary Aether.',
     collectible: false,
   },
+  {
+    id: 'TOK-MAWSPAWN',
+    name: 'Maw Spawn',
+    realm: 'wyldmaw',
+    type: 'token',
+    rarity: 'common',
+    cost: 0,
+    power: 6,
+    guard: 6,
+    tribes: ['Beast'],
+    abilities: [],
+    text: '',
+    collectible: false,
+  },
 ];

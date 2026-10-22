@@ -41,7 +41,9 @@ import {
   trapMatch,
 } from './flow';
 import { fire } from './triggers';
-import { endGame, killUnit } from './combat';
+import { consumeCostMods, hasStatic } from './stats';
+import { copyFrameTask } from './effects';
+import { destroyCard, endGame, killUnit } from './combat';
 import { shuffle } from './rng';
 import { combinations, other, permutations, product, RulesError } from './util';
 
@@ -99,12 +101,14 @@ function pendingAnswers(rt: Rt, p: PlayerId): Action[] {
       }
       return out;
     }
-    case 'chooseCards':
-      return combinations(pend.from, pend.count).map((cards) => ({
-        type: 'chooseCards',
-        player: p,
-        cards,
-      }));
+    case 'chooseCards': {
+      const out: Action[] = [];
+      for (let k = pend.min; k <= pend.max; k++) {
+        for (const cards of combinations(pend.eligible, k))
+          out.push({ type: 'chooseCards', player: p, cards });
+      }
+      return out;
+    }
   }
 }
 
@@ -275,7 +279,8 @@ function fastActions(rt: Rt, p: PlayerId): Action[] {
   for (const id of backrowIds(rt, p)) {
     const c = inst(rt, id);
     const d = defOf(rt, c);
-    if (!c.faceDown || d.type !== 'trap' || rt.s.turn <= c.setTurn) continue;
+    if (!c.faceDown || d.type !== 'trap') continue;
+    if (rt.s.turn <= c.setTurn && !hasStatic(rt, p, 'trapsReady')) continue;
     if (budget < effectiveCost(rt, p, d, 'activate')) continue;
     const m = trapMatch(rt, id);
     if (!m) continue;
@@ -420,7 +425,11 @@ export function performAction(rt: Rt, a: Action): void {
       if (pend?.kind !== 'chooseTargets') throw new RulesError('No target prompt');
       s.pending = null;
       if (pend.then.kind === 'trigger') pushTriggerFrame(rt, pend.then.trigger, a.targets);
-      else addFlipLink(rt, pend.then.unitId, a.targets);
+      else if (pend.then.kind === 'copy') {
+        s.tasks.push(
+          copyFrameTask(rt, pend.then.cardId, pend.then.controller, pend.then.sourceId, a.targets),
+        );
+      } else addFlipLink(rt, pend.then.unitId, a.targets);
       return;
     }
     case 'chooseOptional': {
@@ -444,10 +453,31 @@ export function performAction(rt: Rt, a: Action): void {
       const pend = s.pending;
       if (pend?.kind !== 'chooseCards') throw new RulesError('No card prompt');
       s.pending = null;
-      for (const id of a.cards) {
-        const cardId = inst(rt, id).cardId;
-        moveCard(rt, id, 'deck', { position: 'top' });
-        emit(rt, { type: 'cardToDeck', player: a.player, cardId, position: 'top' });
+      if (pend.purpose === 'topdeck') {
+        for (const id of a.cards) {
+          const cardId = inst(rt, id).cardId;
+          moveCard(rt, id, 'deck', { position: 'top' });
+          emit(rt, { type: 'cardToDeck', player: a.player, cardId, position: 'top' });
+        }
+      } else if (pend.purpose === 'setTrap') {
+        for (const id of a.cards) {
+          const c = moveCard(rt, id, 'backrow', { controller: a.player });
+          if (!c) continue;
+          c.faceDown = true;
+          c.setTurn = s.turn;
+          emit(rt, { type: 'trapSet', player: a.player, id: c.id, cardId: c.cardId });
+        }
+      } else {
+        for (const id of a.cards) {
+          const c = inst(rt, id);
+          if (c.zone === 'units') killUnit(rt, id, 'effect', null);
+          else destroyCard(rt, id);
+        }
+      }
+      if (pend.rest === 'bottom') {
+        for (const id of pend.from) {
+          if (!a.cards.includes(id)) moveCard(rt, id, 'deck', { position: 'bottom' });
+        }
       }
       return;
     }
@@ -489,7 +519,11 @@ function doPlay(rt: Rt, a: Extract<Action, { type: 'play' }>): void {
   if (a.ascend) {
     for (const v of a.ascend) if (rt.s.cards[v]) killUnit(rt, v, 'effect', null);
   } else {
-    const base = a.echo ? (d.params?.echo ?? 0) : effectiveCost(rt, p, d, 'play');
+    let base = d.params?.echo ?? 0;
+    if (!a.echo) {
+      base = effectiveCost(rt, p, d, 'play');
+      consumeCostMods(rt, p, d, 'play');
+    }
     pay(rt, p, base + (a.overclock ? (d.params?.overclock ?? 0) : 0));
   }
   addResonance(rt, p);
@@ -537,6 +571,7 @@ function doPlay(rt: Rt, a: Extract<Action, { type: 'play' }>): void {
     if (!c) return;
     c.echoed = !!a.echo;
     const swift = (d.keywords ?? []).includes('swift');
+    player(rt, p).lastSpell = d.id;
     emit(rt, {
       type: 'cardPlayed',
       player: p,
@@ -639,6 +674,7 @@ function doActivateTrap(rt: Rt, p: PlayerId, trapId: InstanceId, targets: Instan
   const m = trapMatch(rt, trapId);
   if (!m) throw new RulesError('Trap trigger does not match');
   pay(rt, p, effectiveCost(rt, p, d, 'activate'));
+  consumeCostMods(rt, p, d, 'activate');
   addResonance(rt, p);
   const c = moveCard(rt, trapId, 'chain');
   if (!c) return;

@@ -16,6 +16,8 @@ export interface TrigEvent {
   killerId?: InstanceId | null;
   cause?: 'combat' | 'effect';
   swift?: boolean;
+  /** spellCast: the units the spell targets. */
+  targets?: InstanceId[];
 }
 
 /** Does an event filter (from an ability controlled by `ctl` on `srcId`) match this event? */
@@ -50,6 +52,10 @@ export function eventMatches(
   }
   if (f.killedBySelf && ev.killerId !== srcId) return false;
   if (f.cause && ev.cause !== f.cause) return false;
+  if (f.onSelf && ev.targetId !== srcId) return false;
+  if (f.spellTargets === 'friendlyUnit') {
+    if (!ev.targets?.some((id) => rt.s.cards[id]?.controller === ctl)) return false;
+  }
   return true;
 }
 
@@ -106,7 +112,7 @@ export function fire(rt: Rt, ev: TrigEvent): void {
 export function queueOwn(
   rt: Rt,
   cardId: string,
-  kind: 'onDeath' | 'onDevoured',
+  kind: 'onDeath' | 'onDevoured' | 'onBreak',
   controller: PlayerId,
   sourceId: InstanceId,
   eventSourceId?: InstanceId,

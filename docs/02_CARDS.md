@@ -1,7 +1,7 @@
 # Shattered Rifts: Cards
 
 Rules live in `01_GAME_DESIGN.md`, visuals in `04_VISUALS_AND_ANIMATION.md`, art in `05_ART_PIPELINE.md`.
-This doc covers the realms, card anatomy and data, the balance budget, the **Core Set (74 cards + 5
+This doc covers the realms, card anatomy and data, the balance budget, the **Core Set (74 cards + 6
 tokens)** and the character starters.
 
 ---
@@ -197,7 +197,7 @@ the card) must not move the win rate more than ±6% for Commons and ±10% for Le
 
 ---
 
-## 4. Core Set: 74 cards + 5 tokens
+## 4. Core Set: 74 cards + 6 tokens
 
 Format: **Unit** stats are Power/Guard. Keywords are bold in text. `src:` marks restricted sources.
 
@@ -304,10 +304,27 @@ Format: **Unit** stats are Power/Guard. Keywords are bold in text. `src:` marks 
 | TOK-LURKER | Lurker | Beast · 4/3 | | WYL-12 |
 | TOK-RAVAGER | Rift Ravager | Beast · 5/4 | **Pierce**. | WYL-02 (Evolve) |
 
-### Boss-only "Warden's Bane" cards (designed later, one per boss)
-Every boss also has 3–5 **signature cards** in its drop pool: the Legendaries above, plus Rare/Epic cards
-designed alongside each boss (see `03_CAMPAIGN.md`). Signature cards are only offered through
-the Warden's Gift, which keeps boss fights meaningful on every loop.
+### Warden signature cards (offered through the Warden's Gift, `src: boss:<id>`)
+Each Warden's signature pool is one Legendary from the Core Set (above) plus three cards below. They sit at the
+normal rarity budget (sidegrades with personality, not power spikes). IDs are stable. **Costs marked † weren't
+specified in `03_CAMPAIGN.md` and were set by the dev (DECISIONS #49).**
+
+| ID | Name | Cost | Type | Rarity | Rules text | Warden |
+|---|---|---|---|---|---|---|
+| AUR-17 | Seraphine's Oath | 3† | Relic | E | Your Shielded units have +1 Power. | Seraphine |
+| AUR-18 | Bell of Judgment | 3 | Trap | R | Trigger: When an enemy unit with 5 or more Power attacks. Destroy it. | Seraphine |
+| AUR-19 | Gilded Halberdier | 3 | Unit — Human Knight · 3/3 | R | **Shield**. When its **Shield** pops, deal 2 damage to the source. | Seraphine |
+| NEX-17 | Kron's Assembly Arm | 3† | Relic | E | Whenever you **Assemble**, draw a card. | Kron |
+| NEX-18 | Override Virus | 3 | Spell | R | Take control of an enemy Construct until end of turn. It gains **Blitz**. | Kron |
+| NEX-19 | Orbital Uplink | 3 | Trap | R | Trigger: When an enemy unit costing 5 or more is summoned. Deal 5 damage to it. | Kron |
+| WYL-17 | The Hunger Below | 5 | Spell | E | Destroy a unit. Your units gain +X/+X where X is its Power. | Gorrmaw |
+| WYL-18 | Maw Spawn Egg | 3† | Relic | R | **Charges 3**. Whenever a friendly unit dies, remove a charge. When this breaks: summon a 6/6 **Maw Spawn**. | Gorrmaw |
+| WYL-19 | Gorrmaw's Tooth | 2† | Relic | R | Your Devour bonuses are +1/+1 higher. | Gorrmaw |
+| UMB-17 | Nyxara's Web | 3 | Trap | E | Trigger: When an enemy attacks. **Negate** it. Set this card again instead of sending it to the Void (once per game). | Nyxara |
+| UMB-18 | Whisper Net | 2 | Trap | R | Trigger: When an enemy casts a spell. They discard a random card. | Nyxara |
+| UMB-19 | Faceless Courtier | 2 | Unit — Human Cultist · 2/2 | R | **Ambush**. Flip: look at the enemy's hand. | Nyxara |
+
+New token: **TOK-MAWSPAWN** Maw Spawn (Beast · 6/6), made by WYL-18. Vorthax's signature is NEU-10 Prism.
 
 ---
 

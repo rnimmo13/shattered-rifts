@@ -369,8 +369,14 @@ export class Renderer {
         return a.accept ? 'Yes' : 'No';
       case 'scry':
         return `Top: ${a.top.map(nm).join(', ') || '—'}  |  Bottom: ${a.bottom.map(nm).join(', ') || '—'}`;
-      case 'chooseCards':
-        return `Put ${a.cards.map(nm).join(', ')} on top of your deck`;
+      case 'chooseCards': {
+        const purpose = s.pending?.kind === 'chooseCards' ? s.pending.purpose : 'topdeck';
+        if (a.cards.length === 0) return purpose === 'topdeck' ? 'Choose nothing' : 'Do nothing';
+        const names = a.cards.map(nm).join(', ');
+        if (purpose === 'setTrap') return `Set ${names} face-down`;
+        if (purpose === 'destroySet') return `Destroy ${names}`;
+        return `Put ${names} on top of your deck`;
+      }
       case 'mulligan':
         return a.cards.length ? `Mulligan: ${a.cards.map(nm).join(', ')}` : 'Keep hand';
       case 'concede':

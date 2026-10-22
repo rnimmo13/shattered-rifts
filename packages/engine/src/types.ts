@@ -54,6 +54,8 @@ export interface Filter {
   damaged?: boolean;
   notSelf?: boolean;
   withoutShield?: boolean;
+  /** Same card name as the event source (Hungering Dark). */
+  sameNameAsEventSource?: boolean;
 }
 
 export interface Target {
@@ -75,11 +77,18 @@ export interface Target {
   slot?: number;
 }
 
-export interface ValueExpr {
+export interface CountExpr {
   countOf: Target;
   times?: number;
   plus?: number;
 }
+/** The (summed) Power of the target(s), read at the moment the effect runs. */
+export interface PowerExpr {
+  powerOf: Target;
+  times?: number;
+  plus?: number;
+}
+export type ValueExpr = CountExpr | PowerExpr;
 export type Amount = number | ValueExpr;
 
 export interface Condition {
@@ -94,11 +103,9 @@ export interface Condition {
 export type Effect =
   | { op: 'damage' | 'heal'; target: Target; amount: Amount }
   | { op: 'destroy'; target: Target; devour?: boolean }
-  | {
-      op: 'banish' | 'returnToHand' | 'stun' | 'corrode' | 'takeControl' | 'assemble';
-      target: Target;
-    }
-  | { op: 'buff'; target: Target; power?: number; guard?: number; duration: Duration }
+  | { op: 'banish' | 'returnToHand' | 'stun' | 'corrode' | 'assemble'; target: Target }
+  | { op: 'takeControl'; target: Target; duration?: Duration }
+  | { op: 'buff'; target: Target; power?: Amount; guard?: Amount; duration: Duration }
   | { op: 'grant'; target: Target; keyword: Keyword; duration: Duration }
   | { op: 'summon'; card: string; count: number; side?: 'friendly' | 'enemy' }
   | {
@@ -113,6 +120,19 @@ export type Effect =
   | { op: 'transform'; target: Target; into: string }
   | { op: 'setFrom'; zone: 'deck'; filter?: Filter; choose: 'random'; free: true }
   | { op: 'removeCharge'; target: Target; amount?: number }
+  /** Adds a random collectible card of the given realm and type to a hand. */
+  | { op: 'addRandomToHand'; player: 'self' | 'enemy'; realm: Realm; cardType: CardType }
+  /** Prompt: set a Trap (free) from your hand, or from among the top N cards of your deck. */
+  | { op: 'setTrapFrom'; zone: 'hand' | 'deckTop'; n?: number }
+  /** Look at all enemy set cards, then you may destroy one that matches the filter. */
+  | { op: 'peekDestroy'; filter?: Filter }
+  /** Cast a copy of a spell: your last cast, or one of each different Spell in your Void. */
+  | { op: 'copySpell'; which: 'lastCast' | 'eachDifferentInVoid'; targets: 'choose' | 'random' }
+  /** Trap: change the sprung spell's target to a random enemy-of-the-trap-owner unit, else negate it. */
+  | { op: 'redirect'; link: 'trigger' }
+  | { op: 'revealHand'; player: 'self' | 'enemy' }
+  /** Trap: instead of going to the Void, set this card again (once per game). */
+  | { op: 'resetSelf' }
   | { op: 'atEndOfTurn'; effects: Effect[] }
   | { op: 'conditional'; if: Condition; then: Effect[]; else?: Effect[] };
 
@@ -123,7 +143,10 @@ export type EventType =
   | 'swiftCast'
   | 'trapActivated'
   | 'unitDied'
-  | 'devoured';
+  | 'devoured'
+  | 'trapResolved'
+  | 'shieldPopped'
+  | 'assembled';
 
 /** `side` is relative to the ability's controller: whose unit / who acted. */
 export interface EventFilter {
@@ -136,6 +159,10 @@ export interface EventFilter {
   /** unitDied only: the ability's source dealt the killing blow. */
   killedBySelf?: boolean;
   cause?: 'combat';
+  /** shieldPopped: the unit whose Shield popped is the ability's source. */
+  onSelf?: boolean;
+  /** spellCast: the spell targets one of the ability controller's units. */
+  spellTargets?: 'friendlyUnit';
 }
 
 export interface ResonanceBonus {
@@ -151,7 +178,8 @@ export type TimedKind =
   | 'onDevoured'
   | 'startOfTurn'
   | 'endOfTurn'
-  | 'duelStart';
+  | 'duelStart'
+  | 'onBreak';
 
 export type Ability =
   | {
@@ -183,7 +211,18 @@ export type StaticModifier =
       amount: number;
       /** 'play' = playing from hand; 'activate' = activating a set Trap. */
       on: 'play' | 'activate';
+      /** Only applies to the first matching card each turn (per source). */
+      firstEachTurn?: boolean;
     }
+  /** This card's own cost changes per card of the given kind you have (Colossus, Prism). */
+  | { type: 'selfCost'; per: 'backrowCards' | 'voidTypes'; amount: number }
+  | { type: 'damageReduction'; amount: number }
+  /** Your backrow has this many slots (Rift: The Hollow Veil). */
+  | { type: 'backrowSlots'; total: number }
+  /** Your set Traps can be activated the turn they are set. */
+  | { type: 'trapsReady' }
+  /** Your set cards can't be destroyed or revealed by enemy effects. */
+  | { type: 'protectSetCards' }
   | { type: 'powerPerCount'; count: { side: Side; filter: Filter }; amount: number }
   | {
       type: 'aura';
@@ -269,6 +308,10 @@ export interface CardInstance {
   usedTurn: Record<string, number>;
   /** Who last damaged this unit, for "destroys an enemy unit in combat" (Evolve). */
   lastHit?: { by: InstanceId | null; cause: 'combat' | 'effect' };
+  /** Taken until end of turn: returns to this controller at Dusk. */
+  revertControl?: PlayerId;
+  /** A Trap that will set itself again instead of going to the Void. */
+  reset?: boolean;
 }
 
 export interface PlayerState {
@@ -290,6 +333,10 @@ export interface PlayerState {
   mulliganed: boolean;
   /** oncePerGame keys already used. */
   once: Record<string, true>;
+  /** The last spell this player cast (card id), for "copy the last spell you cast". */
+  lastSpell: string | null;
+  /** Turn number during which this player's hand is visible to the opponent. */
+  revealedHandTurn: number;
 }
 
 /** What happened that a link represents (used for Trap Trigger matching). */
@@ -337,6 +384,8 @@ export interface EffectCtx {
   /** Who the event target belongs to when it is a face. */
   eventTargetPlayer?: PlayerId;
   triggerLinkId?: string;
+  /** The card id of the event source, for effects that need it after the source has left. */
+  eventSourceCardId?: string;
   summoned: InstanceId[];
 }
 
@@ -380,16 +429,25 @@ export type Pending =
       player: PlayerId;
       slots: SlotSpec[];
       /** What happens with the answer. */
-      then: { kind: 'trigger'; trigger: QueuedTrigger } | { kind: 'flip'; unitId: InstanceId };
+      then:
+        | { kind: 'trigger'; trigger: QueuedTrigger }
+        | { kind: 'flip'; unitId: InstanceId }
+        | { kind: 'copy'; cardId: string; controller: PlayerId; sourceId: InstanceId };
     }
   | { kind: 'chooseOptional'; player: PlayerId; trigger: QueuedTrigger }
   | { kind: 'scry'; player: PlayerId; cards: InstanceId[] }
   | {
       kind: 'chooseCards';
       player: PlayerId;
+      /** Cards the player may look at while choosing. */
       from: InstanceId[];
-      count: number;
-      purpose: 'topdeck';
+      /** Which of them can be chosen. */
+      eligible: InstanceId[];
+      min: number;
+      max: number;
+      purpose: 'topdeck' | 'setTrap' | 'destroySet';
+      /** What happens to the cards of `from` that were not chosen. */
+      rest: 'none' | 'bottom';
     };
 
 export interface Rules {
@@ -570,6 +628,9 @@ export type GameEvent =
   | { type: 'relicBroken'; id: InstanceId; cardId: string }
   | { type: 'riftChanged'; player: PlayerId; id: InstanceId; cardId: string }
   | { type: 'discarded'; player: PlayerId; cardId: string }
+  | { type: 'cardAdded'; player: PlayerId; id: InstanceId; cardId: string }
+  | { type: 'handRevealed'; player: PlayerId }
+  | { type: 'redirected'; linkId: string; to: InstanceId }
   | { type: 'cardToDeck'; player: PlayerId; cardId: string; position: 'top' | 'bottom' }
   | { type: 'scried'; player: PlayerId; top: number; bottom: number }
   | { type: 'gameOver'; winner: PlayerId | 'draw' };

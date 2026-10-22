@@ -80,6 +80,18 @@ function dataNumbers(c: CardDef): Set<number> {
 }
 
 describe('content', () => {
+  it('has the whole Core Set (74 cards) plus the 12 Warden signature cards', () => {
+    const collectible = ALL_CARDS.filter((c) => c.collectible);
+    const signature = collectible.filter(
+      (c) => c.source?.startsWith('boss:') && !['legendary', 'mythic'].includes(c.rarity),
+    );
+    expect(signature).toHaveLength(12);
+    expect(collectible).toHaveLength(74 + 12);
+    const byRarity = (r: string) => collectible.filter((c) => c.rarity === r).length;
+    expect(byRarity('legendary')).toBe(4);
+    expect(byRarity('mythic')).toBe(1);
+  });
+
   it('has all 40 Core Set Commons', () => {
     const commons = ALL_CARDS.filter((c) => c.collectible && c.rarity === 'common');
     expect(commons).toHaveLength(40);

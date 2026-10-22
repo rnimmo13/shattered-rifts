@@ -17,7 +17,10 @@ import {
   type Rt,
 } from './rt';
 import { resolveAttack, stateBasedChecks, endGame } from './combat';
-import { frameTask, stepFrame } from './effects';
+import { effectsAtResolution, frameTask, stepFrame } from './effects';
+import { freeBackrowSlot, freeUnitSlot, place } from './rt';
+import { fire } from './triggers';
+import { killUnit } from './combat';
 import { queueTrigger, takeNextTrigger, type TrigEvent, anyMatches } from './triggers';
 import { revalidate, slotSpecs } from './targeting';
 import { computeStats, hasKeyword } from './stats';
@@ -160,6 +163,14 @@ function resolveTop(rt: Rt): void {
     return;
   }
 
+  if (link.kind === 'trap') {
+    fire(rt, {
+      type: 'trapResolved',
+      player: link.controller,
+      sourceId: link.sourceId,
+      sourceCardId: link.cardId,
+    });
+  }
   const ctx: EffectCtx = {
     controller: link.controller,
     sourceId: link.sourceId,
@@ -172,6 +183,7 @@ function resolveTop(rt: Rt): void {
     const trigger = s.chain.find((l) => l.id === link.triggerLinkId);
     if (trigger) {
       ctx.eventSourceId = trigger.event.sourceId;
+      ctx.eventSourceCardId = trigger.event.sourceCardId;
       if (trigger.event.targetId !== undefined) {
         ctx.eventTargetId = trigger.event.targetId;
         if (trigger.event.targetId === 'face') ctx.eventTargetPlayer = other(trigger.event.player);
@@ -196,21 +208,23 @@ function applyWard(rt: Rt, link: Link, targets: InstanceId[][]): InstanceId[][] 
   );
 }
 
-/** Ability effects plus its Resonance bonus if live now (checked on resolution, §3.3). */
-export function effectsAtResolution(rt: Rt, a: Ability, controller: PlayerId) {
-  if (a.kind === 'static') return [];
-  const base = a.effects;
-  if ('resonance' in a && a.resonance && player(rt, controller).resonance >= a.resonance.n) {
-    return [...base, ...a.resonance.effects];
-  }
-  return base;
-}
-
 function afterResolve(rt: Rt, link: Link): void {
   const s = rt.s;
   if (link.kind === 'spell' || link.kind === 'trap') {
     const c = maybeInst(rt, link.sourceId);
-    if (c && c.zone === 'chain') moveCard(rt, c.id, 'void');
+    if (c && c.zone === 'chain') {
+      // Nyxara's Web: set again instead of going to the Void (once per game)
+      if (c.reset && freeBackrowSlot(rt, c.controller) >= 0) {
+        const back = moveCard(rt, c.id, 'backrow', { controller: c.controller });
+        if (back) {
+          back.faceDown = true;
+          back.setTurn = s.turn;
+          emit(rt, { type: 'trapSet', player: back.controller, id: back.id, cardId: back.cardId });
+        }
+      } else {
+        moveCard(rt, c.id, 'void');
+      }
+    }
   }
   emit(rt, { type: 'chainLinkResolved', linkId: link.id });
   if (s.winner !== null) return;
@@ -234,6 +248,7 @@ export function linkTrigEvent(link: Link): TrigEvent | null {
   };
   if (e.targetId !== undefined) ev.targetId = e.targetId;
   if (e.swift !== undefined) ev.swift = e.swift;
+  if (e.type === 'spellCast') ev.targets = link.targets.flat();
   return ev;
 }
 
@@ -406,6 +421,25 @@ function startTurn(rt: Rt, p: PlayerId): void {
 /** Dusk cleanup: temporary buffs, grants, Guard and Aether expire. */
 function dusk(rt: Rt): void {
   const s = rt.s;
+  // units taken "until end of turn" go home
+  for (const p of [0, 1] as const) {
+    for (const id of unitIds(rt, p)) {
+      const c = inst(rt, id);
+      const to = c.revertControl;
+      if (to === undefined) continue;
+      const slot = freeUnitSlot(rt, to);
+      if (slot < 0) {
+        killUnit(rt, id, 'effect', null);
+        continue;
+      }
+      const from = player(rt, c.controller);
+      from.units[from.units.indexOf(id)] = null;
+      c.controller = to;
+      delete c.revertControl;
+      place(rt, c, { slot });
+      emit(rt, { type: 'controlChanged', id, player: to });
+    }
+  }
   for (const p of [0, 1] as const) {
     for (const id of unitIds(rt, p)) {
       const c = inst(rt, id);

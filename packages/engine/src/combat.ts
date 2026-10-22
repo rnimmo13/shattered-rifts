@@ -2,7 +2,8 @@
 
 import type { InstanceId, Link, PlayerId } from './types';
 import { defOf, emit, inst, maybeInst, moveCard, player, unitIds, type Rt } from './rt';
-import { computeStats, hasKeyword } from './stats';
+import { computeStats, damageReduction, hasKeyword } from './stats';
+import { syncBackrow } from './board';
 import { fire, queueOwn } from './triggers';
 import { other } from './util';
 
@@ -25,9 +26,21 @@ export function dealDamage(
   } else {
     const c = maybeInst(rt, target.card);
     if (!c || c.zone !== 'units') return 0;
+    // static damage reduction (Warframe "Bastion"): applied before Shield
+    amount = Math.max(0, amount - damageReduction(rt, c));
+    if (amount <= 0) return 0;
     if (c.shield) {
       c.shield = false;
       emit(rt, { type: 'shieldPopped', id: c.id });
+      if (src) {
+        fire(rt, {
+          type: 'shieldPopped',
+          player: c.controller,
+          sourceId: src.id,
+          sourceCardId: src.cardId,
+          targetId: c.id,
+        });
+      }
       return 0;
     }
     const absorbed = Math.min(c.tempGuard, amount);
@@ -96,6 +109,7 @@ export function destroyCard(rt: Rt, id: InstanceId): void {
 
 /** State-based checks: units at 0 Guard die. Returns true if the game ended. */
 export function stateBasedChecks(rt: Rt): boolean {
+  syncBackrow(rt);
   // a death can expose another (e.g. a lost aura), so repeat until a pass kills nothing
   for (let killed = true; killed;) {
     killed = false;

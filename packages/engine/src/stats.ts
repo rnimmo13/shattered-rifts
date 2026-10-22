@@ -190,6 +190,46 @@ export function cantAttack(rt: Rt, c: CardInstance): boolean {
   return liveStatics(rt).some((st) => st.sourceId === c.id && st.modifier.type === 'cantAttack');
 }
 
+/** Cost after modifiers, plus which once-per-turn modifier sources were used to get it. */
+function costWithMods(
+  rt: Rt,
+  controller: PlayerId,
+  d: CardDef,
+  on: 'play' | 'activate',
+): { cost: number; used: InstanceId[] } {
+  let cost = d.cost;
+  const used: InstanceId[] = [];
+  for (const st of liveStatics(rt)) {
+    const m = st.modifier;
+    if (m.type !== 'costMod' || m.on !== on) continue;
+    if (!sideMatches(m.side, st.controller, controller)) continue;
+    if (!defMatches(d, m.filter)) continue;
+    if (m.firstEachTurn) {
+      if (rt.s.cards[st.sourceId]?.usedTurn['costMod'] === rt.s.turn) continue;
+      used.push(st.sourceId);
+    }
+    cost += m.amount;
+  }
+  if (on === 'play') {
+    for (const a of d.abilities) {
+      if (a.kind !== 'static' || a.modifier.type !== 'selfCost') continue;
+      cost += a.modifier.amount * selfCostCount(rt, controller, a.modifier.per);
+    }
+  }
+  return { cost: Math.max(0, cost), used };
+}
+
+function selfCostCount(rt: Rt, p: PlayerId, per: 'backrowCards' | 'voidTypes'): number {
+  const ps = rt.s.players[p];
+  if (per === 'backrowCards') return ps.backrow.filter(Boolean).length;
+  const types = new Set<string>();
+  for (const id of ps.void) {
+    const c = rt.s.cards[id];
+    if (c) types.add(def(rt, c.baseCardId).type);
+  }
+  return types.size;
+}
+
 /** Effective cost of playing (from hand) or activating (a Trap), after cost modifiers. */
 export function effectiveCost(
   rt: Rt,
@@ -197,15 +237,32 @@ export function effectiveCost(
   d: CardDef,
   on: 'play' | 'activate',
 ): number {
-  let cost = d.cost;
-  for (const st of liveStatics(rt)) {
-    const m = st.modifier;
-    if (m.type !== 'costMod' || m.on !== on) continue;
-    if (!sideMatches(m.side, st.controller, controller)) continue;
-    if (!defMatches(d, m.filter)) continue;
-    cost += m.amount;
+  return costWithMods(rt, controller, d, on).cost;
+}
+
+/** Marks the once-per-turn cost modifiers that this play/activation used. */
+export function consumeCostMods(
+  rt: Rt,
+  controller: PlayerId,
+  d: CardDef,
+  on: 'play' | 'activate',
+): void {
+  for (const id of costWithMods(rt, controller, d, on).used) {
+    const c = rt.s.cards[id];
+    if (c) c.usedTurn['costMod'] = rt.s.turn;
   }
-  return Math.max(0, cost);
+}
+
+export function hasStatic(rt: Rt, p: PlayerId, type: StaticModifier['type']): boolean {
+  return liveStatics(rt).some((st) => st.controller === p && st.modifier.type === type);
+}
+
+export function damageReduction(rt: Rt, c: CardInstance): number {
+  let n = 0;
+  for (const st of liveStatics(rt)) {
+    if (st.sourceId === c.id && st.modifier.type === 'damageReduction') n += st.modifier.amount;
+  }
+  return n;
 }
 
 /** Printed-characteristics filter on a definition (cards in hand/backrow for cost modifiers). */
