@@ -1,0 +1,15 @@
+node_modules/
+dist/
+build/
+.turbo/
+coverage/
+*.log
+.env
+.env.*
+!.env.example
+.DS_Store
+Thumbs.db
+# Secrets: supporter-code signing key must never be committed
+keys/
+*.pem
+*.key
