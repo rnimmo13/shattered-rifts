@@ -48,3 +48,16 @@ export function fanLayout(n: number, o: FanOptions): FanSlot[] {
   }
   return out;
 }
+
+/** Card width for the hand at the current window size (px). */
+export function handCardWidth(viewportWidth: number): number {
+  return Math.round(Math.max(120, Math.min(200, viewportWidth * 0.1)));
+}
+
+/** How far the resting hand reaches up from the bottom of the screen: the board is fitted above this. */
+export function handReserve(cardWidth: number): number {
+  return Math.round(cardWidth * 1.05 + 12);
+}
+
+/** Resting cards sink this far (fraction of card width) below the screen edge; hovering lifts them clear. */
+export const HAND_SINK = 0.35;

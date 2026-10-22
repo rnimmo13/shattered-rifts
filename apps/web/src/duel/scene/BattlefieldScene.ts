@@ -12,6 +12,7 @@ import { gsap } from 'gsap';
 import { color, ease, hex, stage } from '../../design/tokens';
 import type { EffectsProfile } from '../effects';
 import { FLOOR_SQUASH, floorTop, rows, slotGeometry, type SlotGeom } from './layout';
+import { Monsters, type SoundName } from './Monsters';
 import {
   FULL_W,
   PAD_X,
@@ -48,6 +49,8 @@ interface SlotView {
   glow: Sprite;
   phase: number;
   lit: boolean;
+  /** ring brightness multiplier (drag dims invalid slots); tweened */
+  dim: { k: number };
 }
 
 /** Internal pixels we're willing to shade per frame: a 1080p-ish budget, lower in reduced mode. */
@@ -91,6 +94,11 @@ export class BattlefieldScene {
   /** Child layers later phases draw into (units, traps, effects). */
   readonly layers = { units: new Container(), traps: new Container(), fx: new Container() };
 
+  /** Monsters standing on the field (Phase 3). */
+  readonly monsters: Monsters;
+  /** Sound hook: every major visual event calls this (wired to audio later). */
+  onSound: (name: SoundName) => void = () => undefined;
+  private bottomReserve = 0;
   private time = 0;
   /** Adaptive quality: if frames run slow the render resolution steps down (never back up, so it can't flicker). */
   private resScale = 1;
@@ -180,6 +188,14 @@ export class BattlefieldScene {
 
     // --- later phases draw here ---
     this.world.addChild(this.layers.traps, this.layers.units, this.layers.fx);
+    this.monsters = new Monsters({
+      container: this.layers.units,
+      fx: this.layers.fx,
+      glowTex: this.glowTex,
+      profile: () => this.profile,
+      sound: (n) => this.onSound(n),
+      slot: (key) => this.slotViews.find((v) => slotKey(v.geom) === key)?.geom,
+    });
 
     // --- atmosphere over the board ---
     this.fogMid = this.makeFog(23, color.navyLight, 0.36, floorTop + 20, 600);
@@ -196,6 +212,8 @@ export class BattlefieldScene {
     this.setProfile(profile);
     this.fit();
     window.addEventListener('resize', this.onResize);
+    // resizeTo applies on the next frame: refit once the new size is really in effect
+    app.renderer.on('resize', () => this.fit());
     host.addEventListener('pointermove', this.onPointer);
     app.ticker.add((t) => this.tick(t.deltaMS / 1000));
   }
@@ -251,7 +269,14 @@ export class BattlefieldScene {
       glow.position.set(geom.x, geom.y);
 
       slots.addChild(plate, glow, ring);
-      this.slotViews.push({ geom, ring, glow, phase: Math.random() * Math.PI * 2, lit: false });
+      this.slotViews.push({
+        geom,
+        ring,
+        glow,
+        phase: Math.random() * Math.PI * 2,
+        lit: false,
+        dim: { k: 1 },
+      });
     }
     this.world.addChild(slots);
   }
@@ -266,6 +291,7 @@ export class BattlefieldScene {
         alpha: on ? 0.85 : 0,
         duration: on ? 0.4 : 0.28,
         ease: on ? ease.out.gsap : ease.inOut.gsap,
+        overwrite: true,
       });
     }
   }
@@ -277,9 +303,8 @@ export class BattlefieldScene {
   setDragTargets(valid: ReadonlySet<string> | null): void {
     this.highlightSlots(valid);
     for (const v of this.slotViews) {
-      const base = v.geom.kind === 'trap' ? 0.8 : 0.9;
       const dim = valid !== null && !valid.has(slotKey(v.geom));
-      gsap.to(v.ring, { alpha: dim ? base * 0.3 : base, duration: 0.25, ease: ease.out.gsap });
+      gsap.to(v.dim, { k: dim ? 0.3 : 1, duration: 0.25, ease: ease.out.gsap, overwrite: true });
     }
   }
 
@@ -410,10 +435,12 @@ export class BattlefieldScene {
       this.shards.x = -PAD_X + Math.sin(t * 0.13) * 9;
     }
 
+    this.monsters.tick(t, p.still);
+
     // slot rings shimmer very slightly, each on its own phase
     for (const v of this.slotViews) {
       const base = v.geom.kind === 'trap' ? 0.8 : 0.9;
-      v.ring.alpha = base + pulse * 0.1 * Math.sin(t * 1.1 + v.phase);
+      v.ring.alpha = (base + pulse * 0.1 * Math.sin(t * 1.1 + v.phase)) * v.dim.k;
       if (v.lit)
         v.glow.scale.y =
           ((v.geom.width * 1.18 * 1.7) / 128) *
@@ -466,7 +493,7 @@ export class BattlefieldScene {
   private applyResolution(): void {
     const base = pickResolution(this.host.clientWidth, this.host.clientHeight, this.profile);
     const res = Math.max(0.5, base * this.resScale);
-    this.app.renderer.resize(this.app.screen.width, this.app.screen.height, res);
+    this.app.renderer.resize(this.host.clientWidth, this.host.clientHeight, res);
     this.fit();
   }
 
@@ -474,13 +501,30 @@ export class BattlefieldScene {
     return { ...this.stats, resolution: this.app.renderer.resolution };
   }
 
-  /** Fit the 1920×1080 stage into the host (letterboxed; the vignette hides the bars). */
+  /** Screen px at the bottom that something else (the hand) covers; the board is fitted above it. */
+  setBottomReserve(px: number): void {
+    this.bottomReserve = Math.max(0, px);
+    this.fit();
+  }
+
+  /**
+   * Fit the board into the host above the reserved strip. The playable rows (stage y 150..960) are what must
+   * stay visible; the sky above can be cropped, and the backdrops extend past the stage so nothing shows bars.
+   */
   private fit(): void {
-    const w = this.app.screen.width;
-    const h = this.app.screen.height;
-    const s = Math.min(w / stage.width, h / stage.height);
+    const w = this.host.clientWidth || this.app.screen.width;
+    const h = this.host.clientHeight || this.app.screen.height;
+    const avail = Math.max(100, h - this.bottomReserve);
+    const top = 150;
+    const bottom = 960;
+    const sx = w / stage.width;
+    const sy = avail / (bottom - top);
+    const s = Math.min(sx, sy);
     this.world.scale.set(s);
-    this.world.position.set((w - stage.width * s) / 2, (h - stage.height * s) / 2);
+    this.world.position.set(
+      (w - stage.width * s) / 2,
+      sy <= sx ? avail - bottom * s : (avail - (bottom - top) * s) / 2 - top * s,
+    );
     this.vignette.width = w;
     this.vignette.height = h;
   }
@@ -489,7 +533,8 @@ export class BattlefieldScene {
     this.destroyed = true;
     window.removeEventListener('resize', this.onResize);
     this.host.removeEventListener('pointermove', this.onPointer);
-    gsap.killTweensOf(this.slotViews.flatMap((v) => [v.glow, v.ring]));
+    gsap.killTweensOf(this.slotViews.flatMap((v) => [v.glow, v.dim]));
+    this.monsters.destroy();
     this.app.destroy({ removeView: true }, { children: true, texture: true });
   }
 }

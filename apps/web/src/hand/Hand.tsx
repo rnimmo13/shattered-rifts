@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { CardDef } from '@sr/engine';
 import { Card } from '../cards/Card';
-import { fanLayout } from './fanLayout';
+import { HAND_SINK, fanLayout, handCardWidth } from './fanLayout';
 import { isPlayable } from './dropRules';
 import { TargetingArrow, type ArrowState } from './TargetingArrow';
 import type { Point } from './arrowGeometry';
@@ -44,7 +44,7 @@ function useCardWidth(): number {
   }, []);
   return w;
 }
-const calc = () => Math.round(Math.max(130, Math.min(230, window.innerWidth * 0.115)));
+const calc = () => handCardWidth(window.innerWidth);
 
 export function Hand(props: HandProps) {
   const { cards, mana, probe, onPlay, onRefuse, onDragStart, onDragEnd, onSound } = props;
@@ -62,6 +62,12 @@ export function Hand(props: HandProps) {
     armed: boolean;
     origin: Point;
   } | null>(null);
+  // handlers read the live drag from a ref: fast pointer events can arrive before React re-renders
+  const liveDrag = useRef<typeof dragState>(null);
+  const putDrag = (d: typeof dragState) => {
+    liveDrag.current = d;
+    setDrag(d);
+  };
   const drag = dragState && cards.some((c) => c.uid === dragState.uid) ? dragState : null;
   const [arrowState, setArrow] = useState<{ from: Point; to: Point; state: ArrowState } | null>(
     null,
@@ -148,16 +154,17 @@ export function Hand(props: HandProps) {
     }
     e.currentTarget.setPointerCapture(e.pointerId);
     untilt(card.uid);
-    setDrag({ uid: card.uid, x: e.clientX, y: e.clientY, armed: false, origin: originOf() });
+    putDrag({ uid: card.uid, x: e.clientX, y: e.clientY, armed: false, origin: originOf() });
     onDragStart?.(card.def);
     onSound?.('pickup');
   };
 
   const moveDrag = (card: HandCard, e: React.PointerEvent) => {
-    if (!drag || drag.uid !== card.uid) return tilt(card.uid, e);
-    const o = drag.origin;
-    const armed = drag.armed || o.y - e.clientY > ARM_RISE + cardW * 0.4;
-    setDrag({ ...drag, x: e.clientX, y: e.clientY, armed });
+    const d = liveDrag.current;
+    if (!d || d.uid !== card.uid) return tilt(card.uid, e);
+    const o = d.origin;
+    const armed = d.armed || o.y - e.clientY > ARM_RISE + cardW * 0.4;
+    putDrag({ ...d, x: e.clientX, y: e.clientY, armed });
     if (armed) {
       const p = probe(card.def, e.clientX, e.clientY);
       const from: Point = { x: o.x, y: o.y - cardW * 1.55 };
@@ -170,9 +177,10 @@ export function Hand(props: HandProps) {
   };
 
   const endDrag = (card: HandCard, e: React.PointerEvent, cancelled = false) => {
-    if (!drag || drag.uid !== card.uid) return;
-    const wasArmed = drag.armed;
-    setDrag(null);
+    const d = liveDrag.current;
+    if (!d || d.uid !== card.uid) return;
+    const wasArmed = d.armed || d.origin.y - e.clientY > ARM_RISE + cardW * 0.4;
+    putDrag(null);
     setArrow(null);
     onDragEnd?.();
     if (!cancelled && wasArmed && probe(card.def, e.clientX, e.clientY).valid) {
@@ -198,12 +206,12 @@ export function Hand(props: HandProps) {
           if (dragging) {
             if (drag.armed) {
               x = 0;
-              y = -cardW * 1.55 + cardW * 0.7;
+              y = -cardW * 1.55 + cardW * (0.7 - HAND_SINK);
               rot = 0;
               scale = 0.78;
             } else {
               x = drag.x - o.x;
-              y = drag.y - o.y + cardW * 0.7;
+              y = drag.y - o.y + cardW * (0.7 - HAND_SINK);
               rot = 0;
               scale = 1.12;
             }
@@ -233,6 +241,7 @@ export function Hand(props: HandProps) {
               className={`hand__slot${dragging ? ' is-dragging' : ''}${refuse === card.uid ? ' is-refused' : ''}${isIn ? '' : ' is-dealing'}`}
               style={{
                 width: cardW,
+                bottom: -cardW * HAND_SINK,
                 transform: `translate(calc(-50% + ${x}px), ${y}px) rotate(${rot}deg) scale(${scale})`,
                 zIndex: dragging ? 200 : s.z,
                 opacity: isIn ? 1 : 0,

@@ -12,7 +12,6 @@
 .hand__slot {
   position: absolute;
   left: 0;
-  bottom: 2.6rem;
   transform-origin: 50% 120%;
   pointer-events: auto;
   cursor: grab;

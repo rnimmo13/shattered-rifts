@@ -250,3 +250,9 @@ consistent with the docs" rule and can be revisited.
 
 
 72. **Renamed Aether → Mana (Robert, 2026-10-22) →** the play resource is now called Mana everywhere (rules, cards, engine identifiers, UI). Mechanics unchanged. Older review files keep the old name.
+73. **Phase 3: monsters, and the board no longer sits under the hand (Robert's feedback) →** the board is fitted above a
+    reserved strip equal to the resting hand's height (`handReserve`), the hand rests lower (cards sink 35% below the screen
+    edge and lift fully on hover), and cards are a little smaller. Monsters are cut-outs of the card art with a ground shadow,
+    puppeted with transforms only (`duel/scene/Monsters.ts`): idle breathing, attack lunge, hit, death. The Attack/Hit/Buff/Defeat
+    buttons and the damage maths in `DuelScreen` are a preview harness only; the duel will drive `Monsters` from `GameEvent`s.
+

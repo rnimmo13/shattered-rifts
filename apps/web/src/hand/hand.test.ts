@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { CARD_DB } from '@sr/content';
-import { fanLayout } from './fanLayout';
+import { fanLayout, handCardWidth, handReserve } from './fanLayout';
 import { dropKind, isPlayable, validSlotKeys } from './dropRules';
 import { parseRules } from '../cards/cardText';
 import { archetypeOf } from '../art/proceduralArt';
@@ -74,5 +74,18 @@ describe('art archetypes', () => {
     expect(archetypeOf({ type: 'unit', tribes: ['Dragon'], name: 'x' })).toBe('dragon');
     expect(archetypeOf({ type: 'unit', tribes: ['Human', 'Knight'], name: 'x' })).toBe('knight');
     expect(archetypeOf({ type: 'spell', name: 'x' })).toBe('spell');
+  });
+});
+
+describe('hand footprint', () => {
+  it('card width is clamped and the reserve grows with it', () => {
+    expect(handCardWidth(400)).toBe(120);
+    expect(handCardWidth(1600)).toBe(160);
+    expect(handCardWidth(4000)).toBe(200);
+    expect(handReserve(200)).toBeGreaterThan(handReserve(120));
+  });
+  it('the reserve covers only the visible part of a resting card, not its full height', () => {
+    const w = handCardWidth(1600);
+    expect(handReserve(w)).toBeLessThan(w * 1.4);
   });
 });

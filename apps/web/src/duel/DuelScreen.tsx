@@ -3,6 +3,8 @@ import type { CardDef } from '@sr/engine';
 import { CARD_DB } from '@sr/content';
 import { BattlefieldScene, slotKey } from './scene/BattlefieldScene';
 import { Hand, type HandCard, type Probe } from '../hand/Hand';
+import { handCardWidth, handReserve } from '../hand/fanLayout';
+import { firstFreeUnitSlot, previewDamage, previewTarget } from './previewHarness';
 import { SPELL_CAST_LINE, dropKind, validSlotKeys } from '../hand/dropRules';
 import { loadEffectsMode, profileFor, saveEffectsMode, type EffectsMode } from './effects';
 
@@ -37,6 +39,7 @@ export default function DuelScreen() {
   const [mana, setMana] = useState(6);
   const dealNo = useRef(0);
   const [toast, setToast] = useState<string | null>(null);
+  const [selected, setSelected] = useState<string | null>(null);
 
   useEffect(() => {
     const el = host.current;
@@ -74,6 +77,37 @@ export default function DuelScreen() {
     return () => window.clearTimeout(t);
   }, [hand.length]);
 
+  // the board is fitted above the resting hand so cards never cover the slots
+  useEffect(() => {
+    if (!ready) return;
+    const apply = () =>
+      scene.current?.setBottomReserve(handReserve(handCardWidth(window.innerWidth)));
+    apply();
+    window.addEventListener('resize', apply);
+    return () => window.removeEventListener('resize', apply);
+  }, [ready]);
+
+  // Phase 3 preview: a few enemy monsters to attack
+  useEffect(() => {
+    if (!ready) return;
+    const ids: [string, number][] = [
+      ['WYL-05', 1],
+      ['UMB-06', 2],
+      ['NEX-06', 3],
+    ];
+    const timers = ids.map(([id, idx], i) =>
+      window.setTimeout(
+        () => {
+          const def = CARD_DB[id];
+          if (def)
+            scene.current?.monsters.summon(`opp-unit-${idx}`, def, def.power ?? 0, def.guard ?? 0);
+        },
+        500 + i * 350,
+      ),
+    );
+    return () => timers.forEach((t) => window.clearTimeout(t));
+  }, [ready]);
+
   const probe = useCallback((def: CardDef, x: number, y: number): Probe => {
     const sc = scene.current;
     if (dropKind(def) === 'spell') return { valid: y < window.innerHeight * SPELL_CAST_LINE };
@@ -81,16 +115,64 @@ export default function DuelScreen() {
     if (!sc || !g) return { valid: false };
     const key = slotKey(g);
     if (!validSlotKeys(def).has(key)) return { valid: false };
+    if (dropKind(def) === 'unit' && sc.monsters.has(key)) return { valid: false };
     const snap = sc.slotClientCenter(key);
     return snap ? { valid: true, snap } : { valid: true };
   }, []);
 
-  const onPlay = useCallback((card: HandCard) => {
+  const onPlay = useCallback((card: HandCard, x: number, y: number) => {
+    const sc = scene.current;
+    if (sc && dropKind(card.def) === 'unit') {
+      const g = sc.slotAtClient(x, y);
+      let key = g ? slotKey(g) : null;
+      // keyboard play has no pointer: use the first free unit slot
+      if (!key || sc.monsters.has(key)) key = firstFreeUnitSlot((k) => sc.monsters.has(k));
+      if (key) {
+        sc.monsters.summon(key, card.def, card.def.power ?? 0, card.def.guard ?? 0);
+        setSelected(key);
+        sc.monsters.select(key);
+      }
+    }
     setMana((a) => Math.max(0, a - card.def.cost));
     setHand((h) => h.filter((c) => c.uid !== card.uid));
     setToast(`${card.def.name} played (preview: no rules yet)`);
     window.setTimeout(() => setToast(null), 1800);
   }, []);
+
+  // click a monster to select it, click elsewhere to clear
+  const pick = useCallback((e: React.PointerEvent) => {
+    const sc = scene.current;
+    if (!sc) return;
+    const g = sc.slotAtClient(e.clientX, e.clientY);
+    const key = g ? slotKey(g) : null;
+    const hit = key && sc.monsters.has(key) ? key : null;
+    sc.monsters.select(hit);
+    setSelected(hit);
+  }, []);
+
+  const runSelected = (fn: (key: string, sc: BattlefieldScene) => void) => {
+    const sc = scene.current;
+    if (sc && selected && sc.monsters.has(selected)) fn(selected, sc);
+  };
+  const damage = (key: string, sc: BattlefieldScene, amount: number) => {
+    const st = sc.monsters.stats(key);
+    if (!st) return;
+    const { left, dies } = previewDamage(st.guard, amount);
+    sc.monsters.hit(key, amount, left);
+    if (dies) {
+      setSelected((s) => (s === key ? null : s));
+      window.setTimeout(() => void sc.monsters.die(key), 450);
+    }
+  };
+  const attack = () =>
+    runSelected((key, sc) => {
+      const st = sc.monsters.stats(key);
+      if (!st) return;
+      const target = previewTarget(key, sc.monsters.keys(key.startsWith('me-') ? 'opp' : 'me'));
+      void sc.monsters.attack(key, target, () => {
+        if (target) damage(target, sc, st.power);
+      });
+    });
 
   useEffect(() => {
     scene.current?.highlightSlots(lit ? 'all' : null);
@@ -108,7 +190,7 @@ export default function DuelScreen() {
 
   return (
     <div className={`duel${mode === 'reduced' ? ' reduce-fx' : ''}`}>
-      <div className="duel__stage" ref={host} />
+      <div className="duel__stage" ref={host} onPointerDown={pick} />
       {!ready && !error && <div className="loading">Opening the rift…</div>}
       {error && (
         <div className="loading loading--error">The battlefield could not start: {error}</div>
@@ -118,7 +200,7 @@ export default function DuelScreen() {
         <a className="btn btn--small" href="#/">
           <span>Back</span>
         </a>
-        <p className="duel__label">Phase 2 · The hand and the cards</p>
+        <p className="duel__label">Phase 3 · Monsters on the field</p>
       </header>
 
       {showFps && <p className="duel__fps">{fps}</p>}
@@ -167,6 +249,48 @@ export default function DuelScreen() {
           {toast}
         </p>
       )}
+
+      <aside className="duel__tests" aria-label="Monster animation tests">
+        <p className="duel__testsTitle">
+          {selected ? 'Preview: selected monster' : 'Preview: click a monster'}
+        </p>
+        <div className="duel__testsRow">
+          <button className="btn btn--small" disabled={!selected} onClick={attack}>
+            <span>Attack</span>
+          </button>
+          <button
+            className="btn btn--small"
+            disabled={!selected}
+            onClick={() => runSelected((k, sc) => damage(k, sc, 3))}
+          >
+            <span>Hit 3</span>
+          </button>
+          <button
+            className="btn btn--small"
+            disabled={!selected}
+            onClick={() =>
+              runSelected((k, sc) => {
+                const st = sc.monsters.stats(k);
+                if (st) sc.monsters.setStats(k, st.power + 2, st.guard + 2);
+              })
+            }
+          >
+            <span>Buff +2</span>
+          </button>
+          <button
+            className="btn btn--small"
+            disabled={!selected}
+            onClick={() =>
+              runSelected((k, sc) => {
+                setSelected((s) => (s === k ? null : s));
+                void sc.monsters.die(k);
+              })
+            }
+          >
+            <span>Defeat</span>
+          </button>
+        </div>
+      </aside>
 
       <aside className="duel__panel" aria-label="Display settings">
         <Toggle

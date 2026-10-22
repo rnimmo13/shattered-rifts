@@ -5,6 +5,10 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added
+- **Monsters on the field (preview):** played units now stand on the battlefield as cut-outs of their card art with a
+  ground shadow and attack/health badges. They breathe while idle, lunge when they attack, flash and recoil when hit
+  (with floating damage numbers), and crack apart into rift particles when defeated. Click a monster and use the test
+  buttons to see each animation. The board now sits above your hand so cards no longer cover the slots.
 - **The hand and the cards (preview):** cards with realm-coloured frames and rarity treatments (rare shimmer, epic glint,
   legendary holo foil with an edge glow, mythic prism). Your hand fans out; hovering lifts and tilts a card toward the
   cursor, and dragging shows a curved targeting arrow, lights valid slots and dims the rest. Playable cards glow,

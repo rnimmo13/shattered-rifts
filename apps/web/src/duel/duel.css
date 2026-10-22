@@ -271,3 +271,39 @@
     translate: -50% -10px;
   }
 }
+
+/* ---- Phase 3 demo: monster animation tests ---- */
+.duel__tests {
+  position: absolute;
+  left: 1.25rem;
+  top: 4rem;
+  z-index: 30;
+  display: grid;
+  gap: 0.5rem;
+  padding: 0.7rem 0.9rem;
+  border-radius: 14px;
+  border: 1px solid transparent;
+  background:
+    linear-gradient(160deg, rgb(20 32 74 / 0.82), rgb(8 10 20 / 0.9)) padding-box,
+    linear-gradient(160deg, var(--c-gold-light), var(--c-gold-dark) 55%, rgb(143 91 255 / 0.5))
+      border-box;
+  box-shadow: var(--shadow-deep);
+}
+.duel__testsTitle {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--c-gold-light);
+}
+.duel__testsRow {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+.duel__tests .btn:disabled {
+  opacity: 0.4;
+  pointer-events: none;
+}
