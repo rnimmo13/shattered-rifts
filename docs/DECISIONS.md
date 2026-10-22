@@ -172,3 +172,32 @@ consistent with the docs" rule and can be revisited.
     can be a count or a unit's Power; statics `selfCost`, `damageReduction`, `backrowSlots`, `trapsReady`,
     `protectSetCards`, `costMod.firstEachTurn`; events `trapResolved`, `shieldPopped`, `assembled`; ability
     kind `onBreak`; event filters `onSelf` and `spellTargets`; filter `sameNameAsEventSource`.
+
+## M2 AI, sims and enemies (2026-10-22)
+
+56. **AI design (HeuristicAi) →** a 1-ply search over a *belief state* rebuilt from `viewFor()` only: the
+    opponent's hand, both decks and face-down enemy cards become placeholders (a hidden unit is assumed to be a
+    2/2). It simulates each legal action, lets the chain resolve assuming the opponent passes, evaluates the board,
+    and picks the best, shaped by a Personality (aggression, trap-happiness, card value, caution, mistake rate).
+    A test swaps the opponent's hidden cards and checks its decisions don't change ("no peeking"). Difficulty
+    comes from the mistake rate, not from cheating. *Not yet:* 2-ply search for Elites/Wardens, and boss scripts.
+57. **First-player advantage → NOT changed, flagged for Robert.** Sims show the first player wins 60–73% of
+    mirror matches. The data supports giving the second player one extra opening card (52–60%). The engine has the
+    knob (`Rules.secondPlayerExtraCards`, default 0). Details and options in `docs/BALANCE.md` §1. *Why not
+    applied:* it's a core rule.
+58. **Starter imbalance → NOT changed, flagged for Robert.** Kesh ≫ Maren > Vesper > Rivet (BALANCE.md §2).
+    *Why not applied:* the fix changes character identity, so it's a design call.
+59. **Enemy decks (03 §4.6) →** all 12 regular duelists (20 cards, 14 Essence), 8 Elites (30 cards, 30 Essence),
+    4 Wardens (30 cards, 35/35/40/40 Essence) and Vorthax (30 cards, 50 Essence) are authored in
+    `packages/content/src/enemies.ts` from each theme using realm + Neutral cards. Wardens' signature cards
+    (Aurumclaw, etc.) are left out of their decks because Omens/phases (M5) give them those. Each enemy has an AI
+    personality (Stage 1 regulars lean `novice` for the onboarding duel).
+60. **Deck rules live in `@sr/content` →** `DECK_RULES`, `validateDeck`, `randomLegalDeck`; `@sr/campaign`
+    re-exports `DECK_RULES`. *Why:* enemy decks and property tests need them, and content can't depend on campaign.
+61. **Property gate →** `pnpm test:property` plays 10,000 random legal games (random legal decks from the whole
+    pool, random Sigils) with a strengthened invariant checker (every card in exactly one container matching its
+    zone field, conservation, slot limits, finite numbers, every game ends ≤ 200 turns, safety caps never hit). It
+    runs in CI. `pnpm test` also runs a quicker 300-game version. Verified clean on 30,000 games across two seeds.
+62. **Balance sim (`pnpm sim`) →** match / matrix / card (the ±6%/±10% gate) / tiers (a draft-bot *model*) /
+    enemies. Runs on worker threads; deterministic for a seed regardless of worker count.
+

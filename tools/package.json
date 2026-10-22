@@ -6,7 +6,9 @@
   "description": "Dev tools: CLI duel, sim runner, art grading, supporter codes, card exporter.",
   "scripts": {
     "duel": "tsx src/duel.ts",
-    "typecheck": "tsc -p tsconfig.json"
+    "typecheck": "tsc -p tsconfig.json",
+    "sim": "tsx src/sim.ts",
+    "test:property": "tsx src/property.ts"
   },
   "dependencies": {
     "@sr/engine": "workspace:*",

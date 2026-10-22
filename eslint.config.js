@@ -80,5 +80,11 @@ export default tseslint.config(
     files: ['tools/**/*.ts', '*.js', '*.ts'],
     languageOptions: { globals: globals.node },
   },
+  {
+    // plain JS entry files aren't part of any TS project
+    files: ['**/*.mjs'],
+    extends: [tseslint.configs.disableTypeChecked],
+    languageOptions: { globals: globals.node },
+  },
   prettier,
 );

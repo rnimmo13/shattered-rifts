@@ -5,6 +5,12 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added
+- **Smarter opponents:** the AI now plans: it develops its board, attacks when it's favourable, holds back from
+  attacking into set traps when you're holding Aether, and springs its own traps at good moments. It has
+  personalities (aggressive, controlling, trappy, novice). `pnpm duel` uses it by default (`--ai random` for the old one).
+- **The whole Core Set:** all 74 cards, plus the 12 Warden signature cards (Seraphine's Oath, Override Virus,
+  Nyxara's Web and more), are in the engine and tested.
+- **Enemies:** 12 regular duelists, 8 Elites, the 4 Wardens and Vorthax have decks.
 - **Playable terminal duel** (`pnpm duel`): play a full duel against a random AI with any of the four
   characters' starters, including traps, the Chain, Ambush flips and character Sigils.
 - All 40 Core Set Commons, plus the Drone, Larva, Lurker and Rift Ravager tokens and Rift Spark.

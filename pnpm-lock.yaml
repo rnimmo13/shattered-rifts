@@ -81,6 +81,10 @@ importers:
       '@sr/engine':
         specifier: workspace:*
         version: link:../engine
+    devDependencies:
+      '@sr/content':
+        specifier: workspace:*
+        version: link:../content
 
   packages/campaign:
     dependencies:

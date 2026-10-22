@@ -506,6 +506,7 @@ function doMulligan(rt: Rt, p: PlayerId, cards: InstanceId[]): void {
     player(rt, second).hand.push(spark.id);
     emit(rt, { type: 'cardDrawn', player: second, id: spark.id, cardId: spark.cardId });
   }
+  drawCards(rt, second, s.rules.secondPlayerExtraCards);
   s.tasks.push({ t: 'startTurn', player: s.first }, { t: 'drain' }, { t: 'duelStart' });
 }
 

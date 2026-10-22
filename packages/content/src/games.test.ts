@@ -1,25 +1,18 @@
-// Property tests with the real cards: random legal games between every pair of starters.
+// Property tests with the real cards: random legal games with invariant checks.
 import { describe, expect, it } from 'vitest';
-import { createEngine, hashState, type GameConfig, type GameState } from '@sr/engine';
-import { randomGame, replay } from '@sr/engine/testkit';
-import { CARD_DB, CHARACTERS, starterDeck } from './index';
+import { createEngine, hashState, nextInt, seedRng, type GameConfig } from '@sr/engine';
+import { InvariantChecker, randomGame, replay } from '@sr/engine/testkit';
+import { CARD_DB, CHARACTERS, randomLegalDeck, starterDeck } from './index';
 
 const engine = createEngine(CARD_DB);
 
-function check(s: GameState, owned: [number, number]): void {
-  for (const p of [0, 1] as const) {
-    const ps = s.players[p];
-    if (ps.units.filter(Boolean).length > 5) throw new Error('more than 5 units');
-    if (ps.backrow.filter(Boolean).length > 4) throw new Error('more than 4 backrow');
-    if (ps.hand.length > 9) throw new Error('hand over 9');
-    if (![ps.essence, ps.aether, ps.tempAether, ps.maxAether].every(Number.isFinite))
-      throw new Error('NaN');
-    const real = Object.values(s.cards).filter(
-      (c) => c.owner === p && c.zone !== 'sigil' && CARD_DB[c.baseCardId]?.type !== 'token',
-    );
-    if (real.length !== owned[p])
-      throw new Error(`card conservation p${p}: ${real.length} vs ${owned[p]}`);
-  }
+/** Real cards each player owns at the start (the second player also owns Rift Spark). */
+function initialOwned(cfg: GameConfig): [number, number] {
+  const first = engine.createGame(cfg).first;
+  return [
+    cfg.players[0].deck.length + (first === 1 ? 1 : 0),
+    cfg.players[1].deck.length + (first === 0 ? 1 : 0),
+  ];
 }
 
 describe('random games with the starters', () => {
@@ -37,14 +30,45 @@ describe('random games with the starters', () => {
             { deck: starterDeck(b.id), sigil: b.sigil },
           ],
         };
-        const first = engine.createGame(cfg).first;
-        const owned: [number, number] = [20 + (first === 1 ? 1 : 0), 20 + (first === 0 ? 1 : 0)];
+        const checker = new InvariantChecker(CARD_DB, initialOwned(cfg));
         const g = randomGame(engine, cfg, `drv-${n}`, {
-          check: (s) => s.phase !== 'mulligan' && check(s, owned),
+          check: (s, ev) => s.phase !== 'mulligan' && checker.step(s, ev),
         });
         expect(g.state.winner, `${cfg.seed} did not finish`).not.toBeNull();
         if (i === 0) expect(hashState(replay(engine, cfg, g.log))).toBe(hashState(g.state));
       }
+    }
+  }, 300_000);
+});
+
+describe('random games with decks from the whole card pool', () => {
+  // The full 10,000-game gate runs through `pnpm test:property`; this is the quick in-suite version.
+  const games = 300;
+
+  it(`${games} games keep every invariant, end within 200 turns, and replay identically`, () => {
+    const rng = seedRng('pool-decks');
+    const sigils = CHARACTERS.map((c) => c.sigil);
+    for (let n = 0; n < games; n++) {
+      const cfg: GameConfig = {
+        seed: `pool-${n}`,
+        players: [
+          {
+            deck: randomLegalDeck(CARD_DB, 20 + nextInt(rng, 11), (k) => nextInt(rng, k)),
+            sigil: sigils[nextInt(rng, 4)] as string,
+          },
+          {
+            deck: randomLegalDeck(CARD_DB, 20 + nextInt(rng, 11), (k) => nextInt(rng, k)),
+            sigil: sigils[nextInt(rng, 4)] as string,
+          },
+        ],
+      };
+      const checker = new InvariantChecker(CARD_DB, initialOwned(cfg));
+      const g = randomGame(engine, cfg, `pool-drv-${n}`, {
+        check: (s, ev) => s.phase !== 'mulligan' && checker.step(s, ev),
+      });
+      expect(g.state.winner, `${cfg.seed} did not finish`).not.toBeNull();
+      expect(g.state.turn).toBeLessThanOrEqual(201);
+      if (n % 25 === 0) expect(hashState(replay(engine, cfg, g.log))).toBe(hashState(g.state));
     }
   }, 300_000);
 });

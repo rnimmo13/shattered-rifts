@@ -16,7 +16,9 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "check": "pnpm lint && pnpm typecheck && pnpm test && pnpm build",
-    "duel": "pnpm --filter @sr/tools duel"
+    "duel": "pnpm --filter @sr/tools duel",
+    "sim": "pnpm --filter @sr/tools sim",
+    "test:property": "pnpm --filter @sr/tools test:property"
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",

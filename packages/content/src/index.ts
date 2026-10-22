@@ -10,6 +10,16 @@ import { SIGILS } from './cards/sigils';
 
 export { CardIdSchema, CardDefSchema, EffectSchema, AbilitySchema } from './schema';
 export { CHARACTERS, character, starterDeck, type Character, type CharacterId } from './characters';
+export { DECK_RULES, validateDeck, randomLegalDeck } from './deckRules';
+export {
+  ENEMIES,
+  enemy,
+  deckList,
+  type EnemyDef,
+  type EnemyKind,
+  type EnemyPersonality,
+  type EnemyRealm,
+} from './enemies';
 
 /** Every card definition implemented so far (M1: all Commons + tokens + Rift Spark + Sigils). */
 export const ALL_CARDS: CardDef[] = [

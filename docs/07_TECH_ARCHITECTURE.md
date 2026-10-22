@@ -125,7 +125,7 @@ Each milestone ends with something playable/verifiable and a commit tag.
 |---|---|---|
 | **M0** | Monorepo, TS strict, lint/format, Vitest, CI config, Vite app with a placeholder title screen (deploy config present, not deployed) | `pnpm test` + `pnpm build` green |
 | **M1** | **Engine core:** zones, turn flow, Aether/held Aether, Resonance, units & combat, spells, traps, relics, rifts, the full chain, keywords; **all 40 Commons** + tokens + Rift Spark + character Sigils; the four 20-card starters; **CLI duel** (`pnpm duel`) vs a random AI | Rules tests green; a full game is playable in the terminal |
-| **M2** | All 74 cards + Warden signature cards, content validation, heuristic AI, sim tool (incl. a "tier advantage" sim: Tier I bank vs Tier V bank decks) | Every card tested; 10k-game property test green |
+| **M2** ✅ | All 74 cards + Warden signature cards, content validation, heuristic AI, sim tool (incl. a "tier advantage" sim: Tier I bank vs Tier V bank decks), enemy decks | Every card tested; 10k-game property test green (`pnpm test:property`) |
 | **M3** | **Duel UI v1:** board, hand, drag/target, response windows, chain panel, placeholder art, core animations (draw, generic summon, attack, Shatter, trap spring, chain add/resolve) | A full duel vs the AI in the browser feels good at 1× and 4× |
 | **M4** | **Run v1:** Sanctum, character pick, stage map, nodes, card rewards/skip, Shards & Merchant, Shrine, Resolve, Stage 1 + its Warden, Warden's Gift, local saves + export | **Friends alpha** (single-player) |
 | **M5** | All 5 stages + Vorthax, Bank/Continue, Vault (5 slots), Rift Tiers I–X, Boons, Events, Tempering, permanent unlocks & Codex | A full loop completes; Tier II plays differently; a deck can be banked |

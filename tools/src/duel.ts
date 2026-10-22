@@ -4,6 +4,8 @@
 //   pnpm duel -- --p1 rivet --p2 vesper    pick characters: maren | rivet | kesh | vesper
 //   pnpm duel -- --seed abc                reproducible game
 //   pnpm duel -- --auto                    AI vs AI, printed as a spectator transcript
+//   pnpm duel -- --ai random               use the random-move AI (default: the heuristic AI)
+//   pnpm duel -- --personality aggressive  balanced | aggressive | controlling | trappy | novice
 //
 // Smart auto-pass: when your only legal action is "Pass", it passes for you.
 
@@ -11,7 +13,7 @@ import { createInterface } from 'node:readline/promises';
 import { stdin, stdout } from 'node:process';
 import { createEngine, type Action, type GameState, type PlayerId } from '@sr/engine';
 import { CARD_DB, CHARACTERS, character, starterDeck, type CharacterId } from '@sr/content';
-import { RandomAi } from '@sr/ai';
+import { HeuristicAi, PERSONALITIES, RandomAi, type AiPlayer, type PersonalityId } from '@sr/ai';
 import { Renderer, type Seat, type Viewer } from './cli/render';
 
 interface Args {
@@ -19,6 +21,8 @@ interface Args {
   p2: CharacterId;
   seed: string;
   auto: boolean;
+  ai: 'heuristic' | 'random';
+  personality: PersonalityId;
   maxTurns: number;
 }
 
@@ -28,6 +32,13 @@ function positiveInt(v: string | undefined, fallback: number): number {
   if (!Number.isInteger(n) || n <= 0)
     throw new Error(`Expected a positive whole number, got "${v}"`);
   return n;
+}
+
+function pickPersonality(v: string | undefined): PersonalityId {
+  if (v === undefined) return 'balanced';
+  if (!(v in PERSONALITIES))
+    throw new Error(`Unknown personality "${v}". Choose: ${Object.keys(PERSONALITIES).join(', ')}`);
+  return v as PersonalityId;
 }
 
 function parseArgs(argv: string[]): Args {
@@ -47,6 +58,8 @@ function parseArgs(argv: string[]): Args {
     // a CLI default seed may use the clock; the engine itself never does
     seed: get('--seed') ?? `cli-${Date.now().toString(36)}`,
     auto: argv.includes('--auto'),
+    ai: get('--ai') === 'random' ? 'random' : 'heuristic',
+    personality: pickPersonality(get('--personality')),
     maxTurns: positiveInt(get('--max-turns'), 200),
   };
 }
@@ -63,7 +76,15 @@ async function main(): Promise<void> {
   const human: PlayerId | null = args.auto ? null : 0;
   const viewer: Viewer = human ?? 'all';
   const ui = new Renderer(engine, CARD_DB, seats, viewer);
-  const ais = [new RandomAi(`${args.seed}:p1`), new RandomAi(`${args.seed}:p2`)];
+  const makeAi = (seat: string): AiPlayer =>
+    args.ai === 'random'
+      ? new RandomAi(`${args.seed}:${seat}`)
+      : new HeuristicAi({
+          db: CARD_DB,
+          seed: `${args.seed}:${seat}`,
+          personality: PERSONALITIES[args.personality],
+        });
+  const ais = [makeAi('p1'), makeAi('p2')];
   const rl = args.auto ? null : createInterface({ input: stdin, output: stdout });
 
   let state: GameState = engine.createGame({
@@ -96,7 +117,7 @@ async function main(): Promise<void> {
       if (p === null) break;
       const legal = engine.legalActions(state, p);
       if (p !== human || !rl) {
-        apply((ais[p] as RandomAi).choose(engine, state, p));
+        apply((ais[p] as AiPlayer).choose(engine, state, p));
         continue;
       }
       if (legal.length === 1 && legal[0]?.type === 'pass') {

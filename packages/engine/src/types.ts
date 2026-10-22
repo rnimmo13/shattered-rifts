@@ -461,6 +461,8 @@ export interface Rules {
   triggerCap: number;
   /** Card given to the second player after mulligans (Rift Spark, §3.1). null = none. */
   secondPlayerCard: string | null;
+  /** Extra cards the second player draws at setup, on top of the opening hand and Rift Spark (balance knob). */
+  secondPlayerExtraCards: number;
 }
 
 export interface GameState {

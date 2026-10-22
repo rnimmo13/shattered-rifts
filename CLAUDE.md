@@ -10,6 +10,7 @@ Ko-fi-funded) → Steam full game ($7.99–$9.99) with PvP later. Owner: Robert.
 | `docs/02_CARDS.md` | Realms, card data schema + **effect DSL**, balance budget, all 74 Core Set cards, starter decks |
 | `docs/03_CAMPAIGN.md` | Characters, run structure (5 stages), Resolve, Bank/Continue, Rift Tiers, Wardens, Boons, Vault & seasons |
 | `docs/DECISIONS.md` | Every design decision and rules clarification, with dates and reasons |
+| `docs/BALANCE.md` | Sim results (first-player advantage, starter matrix, tier model, enemy difficulty) and open balance questions |
 | `docs/04_VISUALS_AND_ANIMATION.md` | Card frame spec, tokens, board layout, **animation catalog** with timings |
 | `docs/05_ART_PIPELINE.md` | AI art style bible, prompts, files, per-card art briefs |
 | `docs/06_WEB_PLATFORM.md` | Ko-fi donations, supporter codes, roadmap page, saves, hosting |
@@ -50,12 +51,14 @@ pnpm lint         # ESLint (engine/ai/campaign have purity rules: no Math.random
 pnpm typecheck    # tsc per package
 pnpm check        # lint + typecheck + test + build
 pnpm duel         # CLI duel vs AI. Flags (after --): --p1/--p2 maren|rivet|kesh|vesper, --seed X, --auto
-pnpm sim          # balance simulation (M2+)
+pnpm sim          # balance sims: match | matrix | card | tiers | enemies (see docs/BALANCE.md)
+pnpm test:property # 10,000 random games with invariant checks (also runs in CI)
 pnpm build
 ```
 Toolchain: Node 22, pnpm 11 (corepack), TypeScript 6.0 (see DECISIONS #39). Workspace packages export TS source.
 
 ## Current status
 Design complete; campaign redesigned on 2026-10-22 to run-built decks + weekly PvP seasons (see
-`docs/DECISIONS.md`). Web build = private friends beta for now. **M0 and M1 done** (engine core, 40 Commons, CLI duel). **Next: M2**
-(all 74 cards + signature cards, heuristic AI, sim tool, 10k-game property gate).
+`docs/DECISIONS.md`). Web build = private friends beta for now. **M0, M1 and M2 done** (engine, all 74 cards + 12 signature cards, enemy decks, heuristic AI, balance sim,
+10k-game property gate). **Pending Robert's decision:** first-player advantage and starter balance (`docs/BALANCE.md`).
+**Next: M3** (duel UI in the browser).

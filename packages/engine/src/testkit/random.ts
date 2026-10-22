@@ -14,7 +14,7 @@ export interface RandomGameResult {
 export interface RandomGameOptions {
   maxSteps?: number;
   /** Called after every action (invariant checks). */
-  check?: (s: GameState) => void;
+  check?: (s: GameState, events: GameEvent[]) => void;
   /** Probability (0–1) of ending the turn when other actions exist. Keeps random games moving. */
   endTurnBias?: number;
 }
@@ -49,7 +49,7 @@ export function randomGame(
     state = r.state;
     log.push(action);
     events.push(...r.events);
-    opts.check?.(state);
+    opts.check?.(state, r.events);
   }
   return { state, log, events, steps };
 }

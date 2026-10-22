@@ -25,7 +25,9 @@ pnpm lint         # ESLint
 pnpm typecheck    # tsc in every package
 pnpm build        # production build
 pnpm check        # lint + typecheck + test + build
-pnpm duel         # CLI duel vs AI (M1)
+pnpm duel         # play a duel in the terminal vs the AI
+pnpm sim          # balance simulation (see docs/BALANCE.md)
+pnpm test:property # 10,000 random games with invariant checks
 ```
 
 ## Layout

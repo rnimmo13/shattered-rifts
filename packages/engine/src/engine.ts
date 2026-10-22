@@ -30,6 +30,7 @@ export const DEFAULT_RULES: Rules = {
   chainCap: 64,
   triggerCap: 256,
   secondPlayerCard: 'TOK-SPARK',
+  secondPlayerExtraCards: 0,
 };
 
 export const STARTING_ESSENCE = 30;

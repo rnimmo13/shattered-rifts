@@ -12,5 +12,8 @@
   },
   "dependencies": {
     "@sr/engine": "workspace:*"
+  },
+  "devDependencies": {
+    "@sr/content": "workspace:*"
   }
 }
