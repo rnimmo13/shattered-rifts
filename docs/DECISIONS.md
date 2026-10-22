@@ -135,3 +135,9 @@ consistent with the docs" rule and can be revisited.
     game ends. Corrode stops at 0 Power. An Echoed card that leaves the field for any zone goes Beyond.
     Views include layered stats. Lifebind heals once per hit even with Pierce. State-based checks repeat
     until stable.
+46. **2026-10-22 · Evolve timing → An evolved unit can attack on its owner's next turn, even if it evolved
+    while defending** (Robert). *Why:* evolving should feel like a reward. "Resets Arriving" (#30) stays as-is.
+47. **2026-10-22 · Smart auto-pass and Rift Spark → auto-pass ignores Rift Spark unless its +1 Aether would let
+    you afford another legal response** (Robert). Implement in the M3 duel UI.
+48. **2026-10-22 · Character names → keep Ser Maren Ashcourt, Rivet, Kesh the Unfed, Vesper Nightlace for now**
+    (Robert).
