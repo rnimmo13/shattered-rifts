@@ -118,3 +118,14 @@ consistent with the docs" rule and can be revisited.
     needs a corepack that requires Node ≥ 22.22, and this machine has 22.21. Revisit both when they're unblocked.
 40. **2026-10-22 · Packages consumed as TS source.** Workspace packages export `src/index.ts` directly (no build
     step). Vite, Vitest and tsx all compile TS, which keeps the dev loop instant.
+41. **2026-10-22 · Rift Spark is a rules setting, not engine code →** `Rules.secondPlayerCard` (default
+    `TOK-SPARK`). *Why:* golden rule 2, never special-case a card ID in engine code.
+42. **2026-10-22 · Game ending mid-resolution →** `endGame` sweeps spells/traps still staged on the chain
+    into the Void. *Why:* the property test caught a card stranded in the 'chain' zone when a spell's
+    resolution ended the game.
+43. **2026-10-22 · Client-facing additions →** `engine.stats(state, id)` returns layered stats for
+    rendering, and a `chainLinkResolving` event marks the start of each link's resolution (the animation
+    spec's "chain resolve per link" beat).
+44. **2026-10-22 · M1 random AI →** "random-legal-move" with two nudges: it responds in about half of the
+    windows where it can, and it rarely ends its turn while it can still act. *Why:* pure uniform choice
+    ends turns constantly and produces unreadable games. It's still random, not strategic.

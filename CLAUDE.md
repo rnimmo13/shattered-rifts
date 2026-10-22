@@ -49,7 +49,7 @@ pnpm test         # all tests
 pnpm lint         # ESLint (engine/ai/campaign have purity rules: no Math.random, Date, DOM, node I/O)
 pnpm typecheck    # tsc per package
 pnpm check        # lint + typecheck + test + build
-pnpm duel         # CLI duel vs AI (M1+)
+pnpm duel         # CLI duel vs AI. Flags (after --): --p1/--p2 maren|rivet|kesh|vesper, --seed X, --auto
 pnpm sim          # balance simulation (M2+)
 pnpm build
 ```
@@ -57,4 +57,5 @@ Toolchain: Node 22, pnpm 11 (corepack), TypeScript 6.0 (see DECISIONS #39). Work
 
 ## Current status
 Design complete; campaign redesigned on 2026-10-22 to run-built decks + weekly PvP seasons (see
-`docs/DECISIONS.md`). Web build = private friends beta for now. **Next: M0 (setup) → M1 (engine core + CLI duel).**
+`docs/DECISIONS.md`). Web build = private friends beta for now. **M0 and M1 done** (engine core, 40 Commons, CLI duel). **Next: M2**
+(all 74 cards + signature cards, heuristic AI, sim tool, 10k-game property gate).
