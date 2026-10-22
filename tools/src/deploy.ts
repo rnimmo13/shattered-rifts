@@ -33,7 +33,13 @@ const name = repo.split('/')[1] as string;
 const root = resolve(import.meta.dirname, '../..');
 
 const run = (cmd: string, args: string[], cwd: string, env: NodeJS.ProcessEnv = process.env) => {
-  execFileSync(cmd, args, { cwd, env, stdio: 'inherit', shell: process.platform === 'win32' });
+  // only pnpm is a .cmd shim that needs a shell; git args contain spaces and must not go through one
+  execFileSync(cmd, args, {
+    cwd,
+    env,
+    stdio: 'inherit',
+    shell: process.platform === 'win32' && cmd === 'pnpm',
+  });
 };
 
 console.log(`Building the web client for https://${repo.split('/')[0]}.github.io/${name}/ ...`);
@@ -54,7 +60,9 @@ try {
   if (dryRun) {
     console.log(`Dry run: staged at ${stage} (not pushed, not deleted).`);
   } else {
-    run('git', ['init', '-q', '-b', branch], stage);
+    // (`git init -b` needs git 2.28+, so create the branch separately)
+    run('git', ['init', '-q'], stage);
+    run('git', ['checkout', '-q', '-b', branch], stage);
     run('git', ['add', '-A'], stage);
     run(
       'git',
