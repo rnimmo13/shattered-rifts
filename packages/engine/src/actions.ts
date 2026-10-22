@@ -196,8 +196,7 @@ function mainActions(rt: Rt, p: PlayerId): Action[] {
     const d = defOf(rt, c);
     const cost = effectiveCost(rt, p, d, 'play');
     if (isUnitDef(d)) {
-      if (!unitSlot) continue;
-      if (budget >= cost) {
+      if (unitSlot && budget >= cost) {
         out.push(
           ...unitPlayVariants(rt, p, c, budget - cost, { type: 'play', player: p, card: id }),
         );
@@ -206,13 +205,18 @@ function mainActions(rt: Rt, p: PlayerId): Action[] {
         const victims = unitIds(rt, p).filter((u) =>
           matchesFilter(rt, inst(rt, u), d.ascend?.filter, id),
         );
-        for (const ascend of combinations(victims, d.ascend.destroy)) {
-          out.push(
-            ...unitPlayVariants(rt, p, c, budget, { type: 'play', player: p, card: id, ascend }),
-          );
+        // the sacrifice frees slots, so Ascend works even with a full unit row
+        if (unitSlot || victims.length >= d.ascend.destroy) {
+          for (const ascend of combinations(victims, d.ascend.destroy)) {
+            out.push(
+              ...unitPlayVariants(rt, p, c, budget, { type: 'play', player: p, card: id, ascend }),
+            );
+          }
         }
       }
-      if (d.params?.ambush && budget >= 1) out.push({ type: 'setAmbush', player: p, card: id });
+      if (unitSlot && d.params?.ambush && budget >= 1) {
+        out.push({ type: 'setAmbush', player: p, card: id });
+      }
     } else if (d.type === 'spell') {
       if (budget >= cost) out.push(...spellVariants(rt, p, c, false));
     } else if (d.type === 'trap') {

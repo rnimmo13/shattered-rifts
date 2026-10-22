@@ -22,8 +22,8 @@ import { freeBackrowSlot, freeUnitSlot, place } from './rt';
 import { fire } from './triggers';
 import { killUnit } from './combat';
 import { queueTrigger, takeNextTrigger, type TrigEvent, anyMatches } from './triggers';
-import { revalidate, slotSpecs } from './targeting';
-import { computeStats, hasKeyword } from './stats';
+import { revalidate, slotSpecs, wardFilter } from './targeting';
+import { computeStats } from './stats';
 import { EngineCapError, RulesError, other } from './util';
 
 const MAX_STEPS = 200_000;
@@ -196,16 +196,7 @@ function resolveTop(rt: Rt): void {
 
 /** Ward: the first enemy effect that targets this each turn is negated (for that unit). */
 function applyWard(rt: Rt, link: Link, targets: InstanceId[][]): InstanceId[][] {
-  return targets.map((ids) =>
-    ids.filter((id) => {
-      const c = inst(rt, id);
-      if (c.controller === link.controller || c.zone !== 'units') return true;
-      if (!hasKeyword(rt, c, 'ward') || c.wardTurn === rt.s.turn) return true;
-      c.wardTurn = rt.s.turn;
-      emit(rt, { type: 'statusApplied', id, status: 'warded' });
-      return false;
-    }),
-  );
+  return wardFilter(rt, link.controller, targets);
 }
 
 function afterResolve(rt: Rt, link: Link): void {
@@ -215,8 +206,10 @@ function afterResolve(rt: Rt, link: Link): void {
     if (c && c.zone === 'chain') {
       // Nyxara's Web: set again instead of going to the Void (once per game)
       if (c.reset && freeBackrowSlot(rt, c.controller) >= 0) {
+        const key = `reset:${c.cardId}`;
         const back = moveCard(rt, c.id, 'backrow', { controller: c.controller });
         if (back) {
+          player(rt, back.controller).once[key] = true; // spent only now that it really re-set
           back.faceDown = true;
           back.setTurn = s.turn;
           emit(rt, { type: 'trapSet', player: back.controller, id: back.id, cardId: back.cardId });

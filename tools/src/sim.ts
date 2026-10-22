@@ -13,7 +13,7 @@
 
 import { CARD_DB, CHARACTERS, ENEMIES, character } from '@sr/content';
 import { PERSONALITIES, type PersonalityId } from '@sr/ai';
-import type { Rules } from '@sr/engine';
+import { DEFAULT_RULES, type Rules } from '@sr/engine';
 import { draftDeck, characterIds } from './sim/draft';
 import { cardName, isCharacter, parseDeck, swapOutFor } from './sim/decks';
 import type { AiSpec, DeckSpec } from './sim/play';
@@ -44,6 +44,13 @@ if (ai.kind !== 'heuristic' && ai.kind !== 'random')
 
 const rulesFlag = flag('rules');
 const rules = rulesFlag ? (JSON.parse(rulesFlag) as Partial<Rules>) : undefined;
+for (const k of Object.keys(rules ?? {})) {
+  if (!(k in DEFAULT_RULES)) {
+    throw new Error(
+      `Unknown rule "${k}" in --rules. Known: ${Object.keys(DEFAULT_RULES).join(', ')}`,
+    );
+  }
+}
 
 const pct = (x: number) => `${(100 * x).toFixed(1)}%`;
 const line = (s: MatchSummary) =>

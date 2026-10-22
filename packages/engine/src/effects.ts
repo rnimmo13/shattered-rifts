@@ -32,7 +32,7 @@ import {
   type Rt,
 } from './rt';
 import { computeStats, defMatches, hasStatic, initEnterStatuses, nextTurnOf } from './stats';
-import { allSlotsHaveOptions, candidates, slotSpecs } from './targeting';
+import { allSlotsHaveOptions, candidates, slotSpecs, wardFilter } from './targeting';
 import { dealDamage, destroyCard, fight, heal, killUnit, type DamageTarget } from './combat';
 import { fire, queueOwn } from './triggers';
 import { nextInt, sample } from './rng';
@@ -193,7 +193,7 @@ function runEffect(rt: Rt, e: Effect, ctx: EffectCtx): void {
     case 'returnToHand':
       for (const id of unitRefs(rt, resolveTarget(rt, ctx, e.target))) {
         const c = inst(rt, id);
-        const { cardId, owner } = c;
+        const { cardId, owner, faceDown } = c;
         const moved = toHand(rt, id);
         emit(rt, {
           type: 'returnedToHand',
@@ -201,6 +201,7 @@ function runEffect(rt: Rt, e: Effect, ctx: EffectCtx): void {
           id: moved?.id ?? null,
           cardId,
           player: owner,
+          ...(faceDown ? { faceDown: true } : {}),
         });
       }
       return;
@@ -229,6 +230,8 @@ function runEffect(rt: Rt, e: Effect, ctx: EffectCtx): void {
         c.controller = ctx.controller;
         c.arrivedTurn = s.turn;
         if (e.duration === 'turn') c.revertControl = original;
+        else delete c.revertControl;
+        if (e.grant) c.granted.push({ keyword: e.grant.keyword, duration: e.grant.duration });
         place(rt, c, { slot });
         emit(rt, { type: 'controlChanged', id, player: ctx.controller });
       }
@@ -414,6 +417,8 @@ function runEffect(rt: Rt, e: Effect, ctx: EffectCtx): void {
       if (pool.length === 0) return;
       const cardId = pool[nextInt(s.rng, pool.length)] as string;
       if (player(rt, p).hand.length >= s.rules.handLimit) {
+        // a full hand burns it like any draw: it goes to the (public) Void
+        place(rt, newInstance(rt, cardId, p, 'void'));
         emit(rt, { type: 'cardBurned', player: p, cardId });
         return;
       }
@@ -538,7 +543,6 @@ function runEffect(rt: Rt, e: Effect, ctx: EffectCtx): void {
       const key = `reset:${ctx.sourceCardId}`;
       const ps = player(rt, ctx.controller);
       if (!c || c.zone !== 'chain' || ps.once[key]) return;
-      ps.once[key] = true;
       c.reset = true;
       return;
     }
@@ -603,13 +607,17 @@ export function copyFrameTask(
   targets: InstanceId[][],
 ): Task {
   const abilities = def(rt, cardId).abilities.filter((a) => a.kind === 'onResolve');
+  const warded = wardFilter(rt, controller, targets);
+  const hadTargets = targets.some((t) => t.length > 0);
   const ctx: EffectCtx = {
     controller,
     sourceId,
     sourceCardId: cardId,
-    targets: Array.from({ length: targets.length }, (_, i) => targets[i] ?? []),
+    targets: Array.from({ length: warded.length }, (_, i) => warded[i] ?? []),
     summoned: [],
   };
+  // every chosen target was warded away: the copy does nothing (like a fizzle)
+  if (hadTargets && warded.every((t) => t.length === 0)) return frameTask([], ctx);
   return frameTask(
     abilities.flatMap((a) => effectsAtResolution(rt, a, controller)),
     ctx,

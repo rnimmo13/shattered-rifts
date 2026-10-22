@@ -2,8 +2,8 @@
 // Chosen targets are picked when a link is created and re-validated when it resolves (DECISIONS #25).
 
 import type { Ability, Effect, InstanceId, PlayerId, SlotSpec, Target, TargetZone } from './types';
-import { inst, player, type Rt } from './rt';
-import { hasStatic, matchesFilter, sideMatches } from './stats';
+import { emit, inst, player, type Rt } from './rt';
+import { hasKeyword, hasStatic, matchesFilter, sideMatches } from './stats';
 import { combinations, product } from './util';
 
 function zonesOf(t: Target): TargetZone[] {
@@ -157,4 +157,25 @@ export function revalidate(
     return kept;
   });
   return { targets: out, fizzles: hadAny && remaining === 0 };
+}
+
+/**
+ * Ward: the first enemy effect that targets a unit each turn is negated (for that unit).
+ * Returns the targets that remain. Used by link resolution and by spell copies (CALYX, Prism).
+ */
+export function wardFilter(
+  rt: Rt,
+  controller: PlayerId,
+  targets: readonly InstanceId[][],
+): InstanceId[][] {
+  return targets.map((ids) =>
+    ids.filter((id) => {
+      const c = rt.s.cards[id];
+      if (!c || c.controller === controller || c.zone !== 'units') return true;
+      if (!hasKeyword(rt, c, 'ward') || c.wardTurn === rt.s.turn) return true;
+      c.wardTurn = rt.s.turn;
+      emit(rt, { type: 'statusApplied', id, status: 'warded' });
+      return false;
+    }),
+  );
 }

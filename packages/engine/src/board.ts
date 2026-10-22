@@ -17,7 +17,10 @@ export function syncBackrow(rt: Rt): void {
     while (ps.backrow.length > want) {
       const id = ps.backrow[ps.backrow.length - 1];
       const c = id ? rt.s.cards[id] : undefined;
-      if (id && c) {
+      const free = ps.backrow.findIndex((x, i) => i < want && x === null);
+      if (id && c && free >= 0) {
+        ps.backrow[free] = id; // a slot is free: the card shifts over instead of being destroyed
+      } else if (id && c) {
         const cardId = c.cardId;
         moveCard(rt, id, 'void');
         emit(rt, { type: 'cardDestroyed', id, cardId, player: p });

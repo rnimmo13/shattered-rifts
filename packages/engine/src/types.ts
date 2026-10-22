@@ -104,7 +104,13 @@ export type Effect =
   | { op: 'damage' | 'heal'; target: Target; amount: Amount }
   | { op: 'destroy'; target: Target; devour?: boolean }
   | { op: 'banish' | 'returnToHand' | 'stun' | 'corrode' | 'assemble'; target: Target }
-  | { op: 'takeControl'; target: Target; duration?: Duration }
+  | {
+      op: 'takeControl';
+      target: Target;
+      duration?: Duration;
+      /** Granted to the unit only if control was actually taken (Override Virus: Blitz). */
+      grant?: { keyword: Keyword; duration: Duration };
+    }
   | { op: 'buff'; target: Target; power?: Amount; guard?: Amount; duration: Duration }
   | { op: 'grant'; target: Target; keyword: Keyword; duration: Duration }
   | { op: 'summon'; card: string; count: number; side?: 'friendly' | 'enemy' }
@@ -337,6 +343,8 @@ export interface PlayerState {
   lastSpell: string | null;
   /** Turn number during which this player's hand is visible to the opponent. */
   revealedHandTurn: number;
+  /** "First each turn" cost modifiers already used: card id of the source → turn number. */
+  costModTurn: Record<string, number>;
 }
 
 /** What happened that a link represents (used for Trap Trigger matching). */
@@ -621,6 +629,8 @@ export type GameEvent =
       id: InstanceId | null;
       cardId: string;
       player: PlayerId;
+      /** It was face-down when it left the field (its identity stays hidden from the opponent). */
+      faceDown?: boolean;
     }
   | { type: 'controlChanged'; id: InstanceId; player: PlayerId }
   | { type: 'evolved'; id: InstanceId; from: string; to: string }

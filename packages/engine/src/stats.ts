@@ -196,17 +196,19 @@ function costWithMods(
   controller: PlayerId,
   d: CardDef,
   on: 'play' | 'activate',
-): { cost: number; used: InstanceId[] } {
+): { cost: number; used: { controller: PlayerId; key: string }[] } {
   let cost = d.cost;
-  const used: InstanceId[] = [];
+  const used: { controller: PlayerId; key: string }[] = [];
   for (const st of liveStatics(rt)) {
     const m = st.modifier;
     if (m.type !== 'costMod' || m.on !== on) continue;
     if (!sideMatches(m.side, st.controller, controller)) continue;
     if (!defMatches(d, m.filter)) continue;
     if (m.firstEachTurn) {
-      if (rt.s.cards[st.sourceId]?.usedTurn['costMod'] === rt.s.turn) continue;
-      used.push(st.sourceId);
+      // keyed by the source card's id, so replacing the Rift mid-turn can't earn a second discount
+      const key = rt.s.cards[st.sourceId]?.baseCardId ?? st.sourceId;
+      if (rt.s.players[st.controller].costModTurn[key] === rt.s.turn) continue;
+      used.push({ controller: st.controller, key });
     }
     cost += m.amount;
   }
@@ -247,9 +249,8 @@ export function consumeCostMods(
   d: CardDef,
   on: 'play' | 'activate',
 ): void {
-  for (const id of costWithMods(rt, controller, d, on).used) {
-    const c = rt.s.cards[id];
-    if (c) c.usedTurn['costMod'] = rt.s.turn;
+  for (const u of costWithMods(rt, controller, d, on).used) {
+    rt.s.players[u.controller].costModTurn[u.key] = rt.s.turn;
   }
 }
 

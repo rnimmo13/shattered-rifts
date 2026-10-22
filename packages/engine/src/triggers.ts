@@ -54,7 +54,11 @@ export function eventMatches(
   if (f.cause && ev.cause !== f.cause) return false;
   if (f.onSelf && ev.targetId !== srcId) return false;
   if (f.spellTargets === 'friendlyUnit') {
-    if (!ev.targets?.some((id) => rt.s.cards[id]?.controller === ctl)) return false;
+    const hitsMyUnit = ev.targets?.some((id) => {
+      const t = rt.s.cards[id];
+      return !!t && t.controller === ctl && t.zone === 'units';
+    });
+    if (!hitsMyUnit) return false;
   }
   return true;
 }

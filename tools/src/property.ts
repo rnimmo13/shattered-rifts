@@ -18,6 +18,10 @@ const flag = (name: string): string | undefined => {
   return i >= 0 ? argv[i + 1] : undefined;
 };
 const games = Number(flag('games') ?? 10_000);
+if (!Number.isInteger(games) || games <= 0) {
+  console.error('--games must be a positive whole number');
+  process.exit(1);
+}
 const seed = flag('seed') ?? 'property';
 const workers = Number(flag('workers') ?? defaultWorkers());
 const only = flag('only');

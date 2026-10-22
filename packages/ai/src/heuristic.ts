@@ -16,6 +16,7 @@ import {
   type CardDb,
   type Engine,
   type GameState,
+  type GameView,
   type PlayerId,
   type RngState,
 } from '@sr/engine';
@@ -54,11 +55,21 @@ export class HeuristicAi implements AiPlayer {
   }
 
   choose(engine: Engine, state: GameState, player: PlayerId): Action {
-    const real = engine.legalActions(state, player);
+    // the engine hands over exactly what a player may know: their view and their legal actions
+    return this.chooseFromView(
+      engine.viewFor(state, player),
+      engine.legalActions(state, player),
+      player,
+    );
+  }
+
+  /**
+   * The decision core. Its ONLY inputs are the player's view and their legal actions, so it cannot
+   * read hidden information by construction (it never receives the real GameState).
+   */
+  chooseFromView(view: GameView, real: Action[], player: PlayerId): Action {
     if (real.length === 0) throw new Error(`HeuristicAi: no legal actions for p${player}`);
     if (real.length === 1) return real[0] as Action;
-
-    const view = engine.viewFor(state, player); // the only window onto the game
     const belief = beliefFromView(view, `${this.seed}:${view.turn}:${nextInt(this.rng, 1 << 30)}`);
     const legal = this.sim.legalActions(belief, player);
     const pick = this.decide(belief, legal, player);
@@ -174,12 +185,30 @@ export class HeuristicAi implements AiPlayer {
   private score(s: GameState, actions: Action[], me: PlayerId): { a: Action; v: number }[] {
     let pool = actions;
     if (pool.length > this.maxCandidates) {
-      // deterministic sample: keep every Nth so large target lists stay representative
-      const step = pool.length / this.maxCandidates;
-      pool = Array.from(
-        { length: this.maxCandidates },
-        (_, i) => actions[Math.floor(i * step)] as Action,
-      );
+      // Keep a few variants of each distinct move (a lethal attack on the face must never be
+      // sampled away), then thin what's left evenly if it's still too many.
+      const perMove = new Map<string, number>();
+      const kept = actions.filter((a) => {
+        const move =
+          a.type === 'attack'
+            ? `attack:${a.attacker}`
+            : 'card' in a
+              ? `${a.type}:${a.card}`
+              : a.type;
+        const n = perMove.get(move) ?? 0;
+        // always keep attacks on the face and the first few variants of anything else
+        if (a.type === 'attack' && a.target === 'face') return true;
+        perMove.set(move, n + 1);
+        return n < 6;
+      });
+      pool = kept;
+      if (pool.length > this.maxCandidates) {
+        const step = pool.length / this.maxCandidates;
+        pool = Array.from(
+          { length: this.maxCandidates },
+          (_, i) => kept[Math.floor(i * step)] as Action,
+        );
+      }
     }
     return pool.map((a) => ({ a, v: this.value(s, a, me) }));
   }

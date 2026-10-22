@@ -402,17 +402,7 @@ export const NEXUS: CardDef[] = [
           {
             op: 'takeControl',
             duration: 'turn',
-            target: {
-              pick: 'chosen',
-              side: 'enemy',
-              zone: 'units',
-              filter: { tribe: 'Construct' },
-            },
-          },
-          {
-            op: 'grant',
-            keyword: 'blitz',
-            duration: 'turn',
+            grant: { keyword: 'blitz', duration: 'turn' },
             target: {
               pick: 'chosen',
               side: 'enemy',

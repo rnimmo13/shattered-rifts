@@ -76,7 +76,8 @@ function emptyPlayer(rules: Rules, essence: number): PlayerState {
     mulliganed: false,
     once: {},
     lastSpell: null,
-    revealedHandTurn: 0,
+    revealedHandTurn: -1,
+    costModTurn: {},
   };
 }
 

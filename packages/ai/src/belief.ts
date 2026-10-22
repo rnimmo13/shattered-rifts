@@ -116,7 +116,8 @@ export function beliefFromView(view: GameView, seed: string): GameState {
       mulliganed: true,
       once: {},
       lastSpell: null,
-      revealedHandTurn: 0,
+      revealedHandTurn: -1,
+      costModTurn: {},
     };
     return ps;
   }) as [PlayerState, PlayerState];

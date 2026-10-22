@@ -154,6 +154,10 @@ export function eventsFor(events: readonly GameEvent[], viewer: PlayerId): GameE
         return e.player === viewer ? e : { ...e, cardId: HIDDEN };
       case 'cardToDeck':
         return e.player === viewer ? e : { ...e, cardId: HIDDEN };
+      case 'cardAdded':
+        return e.player === viewer ? e : { ...e, id: HIDDEN, cardId: HIDDEN };
+      case 'returnedToHand':
+        return e.player === viewer || !e.faceDown ? e : { ...e, cardId: HIDDEN };
       default:
         return e;
     }

@@ -109,6 +109,9 @@ export const EffectSchema: z.ZodType<Effect> = z.lazy(() =>
       op: z.literal('takeControl'),
       target: TargetSchema,
       duration: z.enum(['turn', 'permanent']).optional(),
+      grant: z
+        .strictObject({ keyword: KeywordSchema, duration: z.enum(['turn', 'permanent']) })
+        .optional(),
     }),
     z.strictObject({
       op: z.literal('buff'),

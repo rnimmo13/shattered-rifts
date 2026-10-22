@@ -107,4 +107,4 @@ Wardens will be harder than their numbers here.
   ±5 points. Don't read anything smaller than that as real.
 - Everyone alternates who goes first, so first-player advantage cancels out in matchups but **not** in §1.
 - The simulations are deterministic for a given seed and worker count doesn't change results.
-- Speed: roughly 25 games/second on 8 cores with the heuristic AI.
+- Speed: roughly 6–9 games/second on 8 cores with the heuristic AI (the random-AI property gate is much faster).
