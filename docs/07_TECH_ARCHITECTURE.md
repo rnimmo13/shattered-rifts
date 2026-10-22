@@ -7,7 +7,7 @@
 | Monorepo | **pnpm workspaces** | Simple, fast; packages share types |
 | Rules engine | Plain TS, **zero runtime dependencies** | Pure, deterministic, runs in browser/server/workers |
 | Validation | **zod** | Card/enemy/save schemas |
-| Web shell | **Vite + React** | Menus, collection, deckbuilder, map, settings |
+| Web shell | **Vite + React** | Menus, Vault, Codex, map, PvP lobby, settings |
 | Duel board | **PixiJS v8** (WebGL/WebGPU) | Smooth 2D rendering, shaders, particles |
 | Animation | **GSAP** (+ PixiPlugin) | Timelines, easing, sequencing: the backbone of the AnimationDirector |
 | Audio | **Howler.js** | Sprites, fades, music stems |
@@ -48,7 +48,10 @@ createGame(cfg: GameConfig): GameState                         // seed, decks, e
 legalActions(s: GameState, player: PlayerId): Action[]
 applyAction(s: GameState, a: Action): { state: GameState; events: GameEvent[] }  // pure: clones the input
 viewFor(s: GameState, player: PlayerId): PlayerView            // hides opponent hand/deck/face-down cards
+eventsFor(events: GameEvent[], player: PlayerId): GameEvent[]  // same redaction for the event stream
 ```
+These are returned by `createEngine(cardDb)` so the engine stays dependency-free and the state stays plain JSON
+(DECISIONS.md #37).
 - **State** is plain JSON (serialisable, structured-cloneable). Card *instances* have stable
   `instanceId`s; definitions are looked up by `cardId` from `content`.
 - **Every decision is a `pending` prompt** on the state: `mulligan | chooseTarget | responseWindow |
@@ -88,7 +91,7 @@ the engine RNG. Omens are visible state (`omens: [{id, countdown, veiled}]`).
 - **React** renders everything except the duel board. The **Duel screen** mounts one PixiJS
   `Application`.
 - **Card renderer:** card frames are **SVG template functions** per realm × type
-  (`renderCardSVG(cardDef, instanceState, finish)`). The same SVG is used inline in React (collection,
+  (`renderCardSVG(cardDef, instanceState, finish)`). The same SVG is used inline in React (Codex,
   rewards) and rasterised into Pixi textures (board), so cards look identical everywhere. Cache by key.
 - **AnimationDirector:** consumes `GameEvent[]` → builds GSAP timelines per `04_VISUALS_AND_ANIMATION.md`
   (durations, beats, overlaps, speed setting, skip-to-end). Board sprites live in a registry keyed by
@@ -120,11 +123,12 @@ Each milestone ends with something playable/verifiable and a commit tag.
 
 | # | Milestone | Done when |
 |---|---|---|
-| **M0** | Monorepo, TS strict, lint/format, Vitest, CI, Vite app deploying a placeholder page | `pnpm test` + `pnpm build` green; site live |
-| **M1** | **Engine core:** zones, turn flow, Aether/held Aether, Resonance, units & combat, spells, traps, the full chain, keywords; ~20 cards (all starter-deck commons); **CLI duel** (`pnpm duel`) to play in the terminal vs a random AI | Rules tests green; a full game is playable in the terminal |
-| **M2** | All 74 cards + tokens, content validation, heuristic AI, sim tool | Every card tested; 10k-game property test green |
+| **M0** | Monorepo, TS strict, lint/format, Vitest, CI config, Vite app with a placeholder title screen (deploy config present, not deployed) | `pnpm test` + `pnpm build` green |
+| **M1** | **Engine core:** zones, turn flow, Aether/held Aether, Resonance, units & combat, spells, traps, relics, rifts, the full chain, keywords; **all 40 Commons** + tokens + Rift Spark + character Sigils; the four 20-card starters; **CLI duel** (`pnpm duel`) vs a random AI | Rules tests green; a full game is playable in the terminal |
+| **M2** | All 74 cards + Warden signature cards, content validation, heuristic AI, sim tool (incl. a "tier advantage" sim: Tier I bank vs Tier V bank decks) | Every card tested; 10k-game property test green |
 | **M3** | **Duel UI v1:** board, hand, drag/target, response windows, chain panel, placeholder art, core animations (draw, generic summon, attack, Shatter, trap spring, chain add/resolve) | A full duel vs the AI in the browser feels good at 1× and 4× |
-| **M4** | **Campaign v1:** Sanctum, starter pick, Act map, nodes, rewards, collection, deckbuilder, saves + export, Act 1 + its Warden. Ko-fi + Roadmap pages | **Public web alpha** |
-| **M5** | All 4 Acts + Vorthax, Rift Tiers I–X, Boons, Events, Quick Resolve, Rift Forge | A full loop completes; Tier II plays differently |
-| **M6** | Polish: full animation catalog, realm overlays, audio, AI art integration, tutorial, accessibility | Beta; the store-trailer-worthy build |
-| **M7** | Steam prep: Electron + steamworks.js, achievements, cloud saves, store page; PvP prototype server | Steam Early Access candidate |
+| **M4** | **Run v1:** Sanctum, character pick, stage map, nodes, card rewards/skip, Shards & Merchant, Shrine, Resolve, Stage 1 + its Warden, Warden's Gift, local saves + export | **Friends alpha** (single-player) |
+| **M5** | All 5 stages + Vorthax, Bank/Continue, Vault (5 slots), Rift Tiers I–X, Boons, Events, Tempering, permanent unlocks & Codex | A full loop completes; Tier II plays differently; a deck can be banked |
+| **M6** | **Online beta:** accounts, ghost upload + ghost matches, live casual PvP (authoritative server), weekly season + wipe, Weekend Tournament, leaderboard (live + ghost wins), Hall of Fame | **Friends PvP beta**: a full weekly cycle runs |
+| **M7** | Polish: full animation catalog, realm overlays, audio, AI art integration, tutorial, accessibility. Public web launch (Ko-fi, roadmap, server-verified runs) | Public beta; the store-trailer-worthy build |
+| **M8** | Steam prep: Electron + steamworks.js, achievements, cloud saves, store page | Steam Early Access candidate |

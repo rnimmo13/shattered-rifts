@@ -26,17 +26,20 @@ These come first. When a design question is unclear, pick the option that best s
    a deck around one.
 3. **Readable at a glance.** Board units are compact tokens with icons, not walls of text. Full
    card text is one hover away. Icons and colours carry state (Shielded, Stunned, Veiled...).
-4. **Respect the player's time.** Duels take 6–12 minutes, with animation speed controls, smart
-   auto-pass, and Quick Duels against enemies already beaten at your tier.
-5. **Always progress.** Losing a run still earns Shards and keeps every card found. Nothing a
-   player earned is ever taken away.
+4. **Respect the player's time.** Regular duels take ~4 minutes, Wardens and PvP 6–12, and a full
+   campaign loop 60–90 minutes. Animation speed controls and smart auto-pass throughout.
+5. **Decks are seasonal, progress is permanent.** A run deck can be lost (that's the risk you chose), and
+   Vault decks are wiped weekly. Characters, unlocks, cosmetics, finishes, ranks and the Hall of Fame
+   are never taken away.
 6. **Bosses with personality.** Every boss has a voice (taunts, reactions), a signature mechanic,
    and visible **Omens** that telegraph their powers, so players outplay bosses instead of being
    ambushed by hidden rules.
-7. **Collection joy.** Reward reveals, rarity tells, foils and alternate art. Finding a Legendary
-   should feel like an event.
+7. **Deck-building joy.** Every pick shapes a deck that is yours. Reward reveals, rarity tells, foils
+   and alternate art. Finding a Legendary should feel like an event. Finishes unlock permanently.
 8. **Fair forever.** No pay-to-win in the web version or on Steam. Money only buys the game,
    cosmetics, or supporter perks.
+9. **Any deck can win.** A deck banked after one clear must be able to beat a deck that looped five
+   times. Depth buys refinement and choice, not unbeatable power (`03_CAMPAIGN.md §3`).
 
 ## 3. Duel rules
 
@@ -44,8 +47,8 @@ These come first. When a design question is unclear, pick the option that best s
 | Rule | Value |
 |---|---|
 | Starting **Essence** (life) | 30 (bosses vary) |
-| Deck size | Exactly 30 cards |
-| Copies | Max 3 of a card; Legendary and Mythic max 1 |
+| Deck size | Minimum 20, no maximum (run starters are 20) |
+| Copies | Max 3 of a card; Legendary and Mythic max 1 each, and at most 2 Legendary+Mythic in total |
 | Opening hand | 5 cards each, with one **mulligan**: choose any number to shuffle back and redraw |
 | First player | Skips their first draw |
 | Second player | Gets **Rift Spark** in hand (a non-collectible 0-cost Swift spell: gain 1 temporary Aether) |
@@ -166,7 +169,7 @@ Keep this list short. A new keyword must earn its place.
 | **Veiled** | Can't be targeted or attacked until it attacks or deals damage. |
 | **Stun** | A stunned unit can't attack or use abilities during its controller's next turn. |
 | **Corrode** | At the start of its controller's turn, this unit loses 1 Power (to a minimum of 0). |
-| **Ambush** | Can be set face-down in a unit slot for 1 Aether. Flips when attacked, or you may flip it during your Main for free; then its **Flip:** effect triggers. Flipping doesn't count as a summon. |
+| **Ambush** | Can be set face-down in a unit slot for 1 Aether. Flips for free when attacked, or you may flip it during your Main on a later turn by paying its cost − 1; then its **Flip:** effect triggers. Flipping doesn't count as a summon. |
 | **Devour** | When summoned, you may destroy another friendly unit. If you do, the bonus listed applies. Devouring counts as the destroyed unit dying. |
 | **Evolve** | Transforms into the named card when the condition is met. Keeps damage and buffs, resets Arriving. |
 | **Assemble** | When summoned, you may merge it with a friendly Construct: the target leaves (it doesn't die) and this gains its Power, Guard and keywords. |
@@ -218,12 +221,23 @@ The engine is deterministic and fast to clone, so the AI can **simulate before i
 - Response windows: the AI responds with probability weighted by personality and value, and always
   takes "lethal-prevention" responses.
 
-## 6. PvP (Steam phase, designed for now, built later)
-Because of this design:
-- The engine is pure and deterministic, so the same code runs on the server authoritatively.
-- Hidden information (hands, decks, face-down cards) only ever lives on the server.
-- Response windows get a **timer** (e.g. 8 s, plus a turn bank) with auto-pass when you have no
-  legal response, so PvP never stalls.
-- Modes: Casual, Ranked (seasonal), **Weekly Rift Tournament** (Swiss rounds on a fixed day/time,
-  cosmetic prizes).
-- Collection: everything earned in the campaign carries into PvP.
+## 6. PvP (friends beta on the web first, then Steam)
+PvP is where run-built decks meet. Season structure: `03_CAMPAIGN.md §7`.
+
+- **Entry:** PvP unlocks after your first campaign loop clear. You play with decks from your **Vault**
+  (5 slots, wiped weekly).
+- **What carries into PvP:** the deck's cards, its Tempers (max 5), and the character's Sigil. **Boons
+  never carry.** Deck rules (§3.1) apply.
+- **Modes:**
+  - **Casual** (all week): live matchmaking when someone is queued.
+  - **Ghost matches** (all week): fight another player's Vault deck played by the AI. Wins and
+    losses count for both sides, and the ghost's owner earns *ghost wins* while offline.
+  - **Weekend Rift Tournament** (Fri 18:00 – Sun 23:59 UTC): one registered, locked deck, matches any time in
+    the window, standings by record, cosmetic prizes and a Hall of Fame entry.
+- **Leaderboard:** weekly. Score = live wins + ghost wins. One shared pool, with each deck's Tier shown as a badge.
+- **Fairness:** no money buys power. Deck depth buys refinement, not dominance (pillar 9). Before public
+  PvP, run seeds are server-issued and action logs are replay-verified, so decks can't be forged.
+- **Tech:** the engine is pure and deterministic, so the same code runs on the server authoritatively.
+  Hidden information (hands, decks, face-down cards) only ever lives on the server. Response windows
+  get a **timer** (e.g. 8 s, plus a turn bank) with auto-pass when you have no legal response, so PvP
+  never stalls.

@@ -1,8 +1,8 @@
 # Shattered Rifts: Cards
 
 Rules live in `01_GAME_DESIGN.md`, visuals in `04_VISUALS_AND_ANIMATION.md`, art in `05_ART_PIPELINE.md`.
-This doc covers the realms, card anatomy and data, the balance budget, the **Core Set (74 cards + 4
-tokens)** and the starter decks.
+This doc covers the realms, card anatomy and data, the balance budget, the **Core Set (74 cards + 5
+tokens)** and the character starters.
 
 ---
 
@@ -39,7 +39,7 @@ Beasts, kaiju, insect broods. A jungle that eats its own.
 - **Trap style:** snares and ambush predators that punish attacks and summons.
 - **Palette:** crimson `#B3202A`, bone `#E8DCC2`, moss `#4F5D2F`.
 
-### 👁 Umbral Veil: The Hollow Court (eldritch / shadow), unlocked in Act 4
+### 👁 Umbral Veil: The Hollow Court (eldritch / shadow), unlocked by defeating Nyxara (Stage 4)
 Shades, cultists and a queen who never shows her face. A city made of whispers.
 - **Does well:** **traps** (the trap realm), Ambush units, discard, stealing units, chain combos.
 - **Bad at:** raw stats, fighting big units head-on, and anything that removes its backrow.
@@ -194,7 +194,7 @@ the card) must not move the win rate more than ±6% for Commons and ±10% for Le
 
 ---
 
-## 4. Core Set: 74 cards + 4 tokens
+## 4. Core Set: 74 cards + 5 tokens
 
 Format: **Unit** stats are Power/Guard. Keywords are bold in text. `src:` marks restricted sources.
 
@@ -295,6 +295,7 @@ Format: **Unit** stats are Power/Guard. Keywords are bold in text. `src:` marks 
 ### Tokens (not collectible)
 | ID | Name | Stats | Text | Made by |
 |---|---|---|---|---|
+| TOK-SPARK | Rift Spark | Spell · 0 | **Swift**. Gain 1 temporary Aether. | Given to the second player |
 | TOK-DRONE | Drone | Construct Drone · 1/1 | | NEX-01, NEX-09 |
 | TOK-LARVA | Larva | Beast Insect · 1/1 | | WYL-06 |
 | TOK-LURKER | Lurker | Beast · 4/3 | | WYL-12 |
@@ -302,35 +303,43 @@ Format: **Unit** stats are Power/Guard. Keywords are bold in text. `src:` marks 
 
 ### Boss-only "Warden's Bane" cards (designed later, one per boss)
 Every boss also has 3–5 **signature cards** in its drop pool: the Legendaries above, plus Rare/Epic cards
-designed alongside each boss (see `03_CAMPAIGN.md`). Signature cards **can't be crafted**, only
-won, which keeps boss hunting meaningful on every loop.
+designed alongside each boss (see `03_CAMPAIGN.md`). Signature cards are only offered through
+the Warden's Gift, which keeps boss fights meaningful on every loop.
 
 ---
 
-## 5. Starter Grimoires (30 cards each)
+## 5. Character starters (20 cards each, Commons only)
 
-On first launch the player picks one of three. The others unlock by beating that realm's boss once.
-Umbral's starter unlocks from the Act 4 boss.
+Each run starts from the character's starter (see `03_CAMPAIGN.md §1`). They're deliberately plain, so run picks
+define the deck. Maren, Rivet and Kesh are available from the start. Vesper unlocks by defeating Nyxara once.
 
-**Oath of Dawn (Aurelion):** shields and a sturdy midrange
-Gilded Squire ×3, Lightbearer Acolyte ×3, Cleric of the Ninth Bell ×2, Bastion Sentinel ×3,
-Dawnlance Cavalier ×3, Smite ×3, Benediction ×2, Aegis of the Warden ×3, Oathsworn Paladin ×1,
-Rift Wanderer ×2, Rift Bolt ×2, Shardstone Golem ×2, Shatter ×1 → **30**
+**Ser Maren Ashcourt — Oath of Dawn (Aurelion):** shields and a sturdy midrange
+Gilded Squire ×3, Lightbearer Acolyte ×2, Cleric of the Ninth Bell ×2, Bastion Sentinel ×2,
+Dawnlance Cavalier ×2, Smite ×2, Benediction ×1, Aegis of the Warden ×2, Rift Wanderer ×2, Rift Bolt ×2 → **20**
 
-**Iron Protocol (Nexus-9):** go wide, then go big
-Patrol Drone ×3, Field Technician ×3, Sentry Turret ×2, Enforcer Mk.II ×3, Salvage Bot ×3,
-Overcharge ×3, Swarm Protocol ×2, Recompile ×2, Countermeasure Grid ×3, Netrunner Ix ×1,
-Rift Wanderer ×2, Rift Bolt ×2, Shardstone Golem ×1 → **30**
+**Rivet — Iron Protocol (Nexus-9):** go wide, then go big
+Patrol Drone ×3, Field Technician ×2, Sentry Turret ×2, Enforcer Mk.II ×2, Salvage Bot ×2,
+Overcharge ×2, Swarm Protocol ×1, Recompile ×1, Countermeasure Grid ×2, Rift Wanderer ×1, Rift Bolt ×2 → **20**
 
-**Hunger Unleashed (Wyldmaw):** aggressive Devour
-Gnashling ×3, Rift Raptor ×3, Acid Spitter ×2, Ravenous Packhound ×3, Maw Brute ×3,
-Carrion Picker ×2, Ironhide Charger ×2, Blood Frenzy ×3, Primal Feast ×2, Bone Pit ×3,
-Roar of the Maw ×1, Rift Bolt ×2, Rift Wanderer ×1 → **30**
+**Kesh the Unfed — Hunger Unleashed (Wyldmaw):** aggressive Devour
+Gnashling ×3, Rift Raptor ×2, Acid Spitter ×2, Ravenous Packhound ×2, Maw Brute ×2,
+Carrion Picker ×1, Ironhide Charger ×1, Blood Frenzy ×2, Primal Feast ×1, Bone Pit ×2, Rift Bolt ×2 → **20**
 
-**Veil of Snares (Umbral, unlocked):** traps and ambushes
-Veilshade ×3, Whisper Acolyte ×3, Gloomstalker ×3, Hollow Lurcher ×2, Mindrot ×2,
-Whispered Bargain ×3, Shadow Coil ×3, Seer of Hollow Eyes ×1, Snare Cascade ×1, Mirror of Malice ×1,
-Rift Wanderer ×2, Rift Bolt ×2, Shatter ×1, Shardstone Golem ×2, Riftwalker's Codex ×1 → **30**
+**Vesper Nightlace — Veil of Snares (Umbral, unlocked):** traps and ambushes
+Veilshade ×3, Whisper Acolyte ×2, Gloomstalker ×2, Hollow Lurcher ×2, Mindrot ×1,
+Whispered Bargain ×2, Shadow Coil ×3, Rift Wanderer ×1, Rift Bolt ×2, Shatter ×1, Shardstone Golem ×1 → **20**
+
+### 5.1 Character Sigils (data: non-card passives with `duelStart` / `whenever` abilities)
+| ID | Character | Sigil |
+|---|---|---|
+| SIG-MAREN | Ser Maren Ashcourt | **Oathbound:** your first unit each duel gains **Shield** |
+| SIG-RIVET | Rivet | **Spare Parts:** start each duel with a 1/1 **Drone** |
+| SIG-KESH | Kesh the Unfed | **Pack Hunger:** the first time you Devour each duel, draw a card |
+| SIG-VESPER | Vesper Nightlace | **Sleight:** at the start of each duel, set a random Trap from your deck |
+
+### 5.2 Pool size note
+16 cards per realm + 10 Neutral is enough for the beta, but thin for Slay-the-Spire-style replayability. Target
+**~35–40 per realm** by Steam Early Access, mostly added through character-mastery unlocks (`03_CAMPAIGN.md §1`).
 
 ---
 

@@ -8,7 +8,8 @@ Ko-fi-funded) → Steam full game ($7.99–$9.99) with PvP later. Owner: Robert.
 |---|---|
 | `docs/01_GAME_DESIGN.md` | Player-experience pillars, **exact duel rules**, the Chain, keywords |
 | `docs/02_CARDS.md` | Realms, card data schema + **effect DSL**, balance budget, all 74 Core Set cards, starter decks |
-| `docs/03_CAMPAIGN.md` | Loop structure, Act maps, Resolve, Rift Tiers, Wardens, Boons, rewards & economy |
+| `docs/03_CAMPAIGN.md` | Characters, run structure (5 stages), Resolve, Bank/Continue, Rift Tiers, Wardens, Boons, Vault & seasons |
+| `docs/DECISIONS.md` | Every design decision and rules clarification, with dates and reasons |
 | `docs/04_VISUALS_AND_ANIMATION.md` | Card frame spec, tokens, board layout, **animation catalog** with timings |
 | `docs/05_ART_PIPELINE.md` | AI art style bible, prompts, files, per-card art briefs |
 | `docs/06_WEB_PLATFORM.md` | Ko-fi donations, supporter codes, roadmap page, saves, hosting |
@@ -51,4 +52,5 @@ pnpm build
 ```
 
 ## Current status
-Design complete. **Next: M0 (setup) → M1 (engine core + CLI duel).**
+Design complete; campaign redesigned on 2026-10-22 to run-built decks + weekly PvP seasons (see
+`docs/DECISIONS.md`). Web build = private friends beta for now. **Next: M0 (setup) → M1 (engine core + CLI duel).**

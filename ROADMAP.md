@@ -9,17 +9,19 @@ support funds the full game on Steam.
 
 ---
 
-## 🟢 Phase 1: Web Alpha *(in progress)*
+## 🟢 Phase 1: Friends Alpha *(in progress)*
 - The core duel: units, spells, **traps**, and the Chain
-- Three starter Grimoires: Aurelion, Nexus-9, Wyldmaw
-- Act 1 of the campaign and its Warden
-- Collection, deckbuilding, save export/import
+- Three characters: **Ser Maren** (Aurelion), **Rivet** (Nexus-9), **Kesh** (Wyldmaw)
+- Stage 1 of the run and its Warden, card rewards, shops and shrines
+- Save export/import
 
-## 🔵 Phase 2: The Full Loop
-- All four Realms, including the Umbral Veil (the trap realm)
-- The final boss: **Vorthax, Heart of the Rift**
-- **Rift Tiers I–X**: each loop gets harder and the rewards get better
-- Boons, events, the Rift Forge, foil and alternate-art drops
+## 🔵 Phase 2: The Full Run & PvP Beta
+- All five stages, including the Umbral Veil (the trap realm), and the final boss **Vorthax**
+- Unlock a fourth character: **Vesper Nightlace**
+- **Bank or Continue:** keep your deck for PvP, or risk it one Rift Tier deeper
+- **Rift Tiers I–X**, Boons, events, Tempering, foil and alternate-art drops
+- **PvP:** casual matches, ghost duels against other players' decks, the **Weekend Rift Tournament** and a
+  weekly leaderboard
 
 ## 🟣 Phase 3: Polish *(funding goal)*
 - Full animations and effects for every card and realm
@@ -30,8 +32,7 @@ support funds the full game on Steam.
 ## 🟠 Phase 4: Steam Early Access *(funding goal)*
 - Desktop release on Steam (planned price $7.99–$9.99)
 - Achievements, cloud saves, import your web progress
-- **PvP:** casual and ranked duels
-- **Weekly Rift Tournaments** with cosmetic prizes
+- PvP and **Weekly Rift Tournaments** with cosmetic prizes, for everyone
 
 ## ⚪ Phase 5: 1.0 and beyond
 - New Realms: *Ashen Necropolis* (undead) and *Tidebreak* (deep sea)
@@ -43,6 +44,7 @@ support funds the full game on Steam.
 Hero art commissions · music & SFX · Steam fees and store assets · PvP servers · playtesting
 
 ### Our promises
-- **No pay-to-win. Ever.** Cards are earned by playing.
+- **No pay-to-win. Ever.** Every deck is built by playing.
+- Decks are seasonal, but your characters, unlocks and cosmetics are yours forever.
 - The web version stays free.
 - Supporter rewards are cosmetic and carry over to Steam.
