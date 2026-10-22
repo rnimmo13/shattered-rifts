@@ -68,16 +68,16 @@ export class InvariantChecker {
       if (ps.hand.length > s.rules.handLimit) fail(`p${p} hand over the limit`);
       for (const [k, n] of Object.entries({
         essence: ps.essence,
-        aether: ps.aether,
-        tempAether: ps.tempAether,
-        maxAether: ps.maxAether,
+        mana: ps.mana,
+        tempMana: ps.tempMana,
+        maxMana: ps.maxMana,
         resonance: ps.resonance,
         fatigue: ps.fatigue,
       })) {
         if (!Number.isFinite(n)) fail(`p${p}.${k} is ${n}`);
       }
-      if (ps.aether < 0 || ps.tempAether < 0) fail(`p${p} has negative Aether`);
-      if (ps.maxAether > s.rules.maxAether) fail(`p${p} max Aether over the cap`);
+      if (ps.mana < 0 || ps.tempMana < 0) fail(`p${p} has negative Mana`);
+      if (ps.maxMana > s.rules.maxMana) fail(`p${p} max Mana over the cap`);
       const real = Object.values(s.cards).filter(
         (c) => c.owner === p && c.zone !== 'sigil' && this.db[c.baseCardId]?.type !== 'token',
       );

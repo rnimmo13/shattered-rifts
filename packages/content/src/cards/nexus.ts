@@ -328,7 +328,7 @@ export const NEXUS: CardDef[] = [
   },
   {
     id: 'NEX-14',
-    name: 'Aether Reactor',
+    name: 'Mana Reactor',
     realm: 'nexus',
     type: 'relic',
     rarity: 'rare',
@@ -339,12 +339,12 @@ export const NEXUS: CardDef[] = [
       {
         kind: 'startOfTurn',
         effects: [
-          { op: 'gainAether', player: 'self', amount: 1 },
+          { op: 'gainMana', player: 'self', amount: 1 },
           { op: 'removeCharge', target: { pick: 'self' } },
         ],
       },
     ],
-    text: '**Charges 3**. At the start of your turn: gain 1 temporary Aether and remove a charge.',
+    text: '**Charges 3**. At the start of your turn: gain 1 temporary Mana and remove a charge.',
     collectible: true,
   },
   {

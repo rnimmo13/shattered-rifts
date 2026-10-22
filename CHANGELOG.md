@@ -14,7 +14,7 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
   and rune-circle slots for units and traps that glow when a card can be played there. Includes a "reduced
   effects" setting and respects "reduce motion". Open it from the title screen ("Enter the battlefield").
 - **Smarter opponents:** the AI now plans: it develops its board, attacks when it's favourable, holds back from
-  attacking into set traps when you're holding Aether, and springs its own traps at good moments. It has
+  attacking into set traps when you're holding Mana, and springs its own traps at good moments. It has
   personalities (aggressive, controlling, trappy, novice). `pnpm duel` uses it by default (`--ai random` for the old one).
 - **The whole Core Set:** all 74 cards, plus the 12 Warden signature cards (Seraphine's Oath, Override Virus,
   Nyxara's Web and more), are in the engine and tested.

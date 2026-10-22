@@ -7,7 +7,7 @@ import {
   defOf,
   drawCards,
   emit,
-  emitAether,
+  emitMana,
   inst,
   livePermanents,
   maybeInst,
@@ -380,7 +380,7 @@ function startTurn(rt: Rt, p: PlayerId): void {
   }
   s.active = p;
   emit(rt, { type: 'turnStarted', turn: s.turn, player: p });
-  // Dawn: reset Resonance → max Aether +1 → refill (held Aether is lost) → draw → start-of-turn effects
+  // Dawn: reset Resonance → max Mana +1 → refill (held Mana is lost) → draw → start-of-turn effects
   for (const q of [0, 1] as const) {
     if (player(rt, q).resonance !== 0) {
       player(rt, q).resonance = 0;
@@ -388,9 +388,9 @@ function startTurn(rt: Rt, p: PlayerId): void {
     }
   }
   const ps = player(rt, p);
-  ps.maxAether = Math.min(s.rules.maxAether, ps.maxAether + 1);
-  ps.aether = ps.maxAether;
-  emitAether(rt, p);
+  ps.maxMana = Math.min(s.rules.maxMana, ps.maxMana + 1);
+  ps.mana = ps.maxMana;
+  emitMana(rt, p);
   // Corrode: each stack costs 1 Power at the start of its controller's turn
   for (const id of unitIds(rt, p)) {
     const c = inst(rt, id);
@@ -411,7 +411,7 @@ function startTurn(rt: Rt, p: PlayerId): void {
   );
 }
 
-/** Dusk cleanup: temporary buffs, grants, Guard and Aether expire. */
+/** Dusk cleanup: temporary buffs, grants, Guard and Mana expire. */
 function dusk(rt: Rt): void {
   const s = rt.s;
   // units taken "until end of turn" go home
@@ -446,9 +446,9 @@ function dusk(rt: Rt): void {
       }
     }
     const ps = player(rt, p);
-    if (ps.tempAether !== 0) {
-      ps.tempAether = 0;
-      emitAether(rt, p);
+    if (ps.tempMana !== 0) {
+      ps.tempMana = 0;
+      emitMana(rt, p);
     }
   }
   s.tasks.push({ t: 'startTurn', player: other(s.active) }, { t: 'drain' });

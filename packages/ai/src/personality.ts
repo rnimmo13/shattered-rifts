@@ -8,7 +8,7 @@ export interface Personality {
   trapHappiness: number;
   /** How much a card in hand is worth, so spending cards has to buy something. */
   valueHoarding: number;
-  /** Fear of attacking into enemy set cards while they hold Aether (0–1). */
+  /** Fear of attacking into enemy set cards while they hold Mana (0–1). */
   caution: number;
   /** Chance (0–1) to pick a near-best action instead of the best. Difficulty comes from this. */
   mistakeRate: number;

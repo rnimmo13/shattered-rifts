@@ -13,14 +13,14 @@ describe('Nexus-9', () => {
   });
 
   it('NEX-02 Field Technician: Overclock 1 gives a friendly Construct +2 Power', () => {
-    const t = t0().p1.board('NEX-04').hand('NEX-02').aether(3, 3);
+    const t = t0().p1.board('NEX-04').hand('NEX-02').mana(3, 3);
     t.p1.play('NEX-02', { overclock: true, targets: ['p1:NEX-04'] }).resolve();
     expect(t.stats('p1:NEX-04').power).toBe(5);
-    expect(t.aetherOf(1).aether).toBe(0);
+    expect(t.manaOf(1).mana).toBe(0);
   });
 
   it('NEX-02 without Overclock: no bonus', () => {
-    const t = t0().p1.board('NEX-04').hand('NEX-02').aether(3, 3);
+    const t = t0().p1.board('NEX-04').hand('NEX-02').mana(3, 3);
     t.p1.play('NEX-02').resolve();
     expect(t.stats('p1:NEX-04').power).toBe(3);
   });

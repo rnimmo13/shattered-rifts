@@ -34,7 +34,7 @@ export default function DuelScreen() {
   const showFps = window.location.search.includes('fps');
   const [fps, setFps] = useState('');
   const [hand, setHand] = useState<HandCard[]>(() => dealHand(0));
-  const [aether, setAether] = useState(6);
+  const [mana, setMana] = useState(6);
   const dealNo = useRef(0);
   const [toast, setToast] = useState<string | null>(null);
 
@@ -86,7 +86,7 @@ export default function DuelScreen() {
   }, []);
 
   const onPlay = useCallback((card: HandCard) => {
-    setAether((a) => Math.max(0, a - card.def.cost));
+    setMana((a) => Math.max(0, a - card.def.cost));
     setHand((h) => h.filter((c) => c.uid !== card.uid));
     setToast(`${card.def.name} played (preview: no rules yet)`);
     window.setTimeout(() => setToast(null), 1800);
@@ -125,7 +125,7 @@ export default function DuelScreen() {
 
       <Hand
         cards={hand}
-        aether={aether}
+        mana={mana}
         probe={probe}
         onDragStart={(def) =>
           scene.current?.setDragTargets(dropKind(def) === 'spell' ? new Set() : validSlotKeys(def))
@@ -137,26 +137,26 @@ export default function DuelScreen() {
         onPlay={onPlay}
       />
 
-      <div className="aether" aria-label={`Aether ${aether}`}>
+      <div className="mana" aria-label={`Mana ${mana}`}>
         <button
-          className="aether__btn"
-          onClick={() => setAether((a) => Math.max(0, a - 1))}
-          aria-label="Less Aether"
+          className="mana__btn"
+          onClick={() => setMana((a) => Math.max(0, a - 1))}
+          aria-label="Less Mana"
         >
           −
         </button>
-        <div className="aether__gem">
-          <span>{aether}</span>
+        <div className="mana__gem">
+          <span>{mana}</span>
         </div>
         <button
-          className="aether__btn"
-          onClick={() => setAether((a) => Math.min(10, a + 1))}
-          aria-label="More Aether"
+          className="mana__btn"
+          onClick={() => setMana((a) => Math.min(10, a + 1))}
+          aria-label="More Mana"
         >
           +
         </button>
         <button
-          className="btn btn--small aether__deal"
+          className="btn btn--small mana__deal"
           onClick={() => setHand(dealHand(++dealNo.current))}
         >
           <span>Deal new hand</span>

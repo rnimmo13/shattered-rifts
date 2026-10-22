@@ -59,7 +59,7 @@ consistent with the docs" rule and can be revisited.
 
 17. **A1 · Ambush discount → Setting an Ambush unit costs 1. A voluntary flip in your Main costs (printed cost −
     1), minimum 0. A flip caused by being attacked is free.** *Why:* without this, a 4-cost Hollow Lurcher
-    becomes a 1-Aether play. This keeps the "they attacked into it!" moment free while closing the discount.
+    becomes a 1-Mana play. This keeps the "they attacked into it!" moment free while closing the discount.
 18. **A2 · Do effect-made summons/casts open response windows? → No.** Only *actions* open windows: playing a
     card (including Echo/Ascend), declaring an attack, activating a trap or Quick ability, playing a Relic/Rift.
     Summons/casts produced while an effect resolves emit events that fire `whenever` passives only. *Why:*
@@ -70,7 +70,7 @@ consistent with the docs" rule and can be revisited.
     yet.
 21. **Trap trigger matching →** a Trigger matches any link still unresolved on the current chain.
     `negate {link:'trigger'}` cancels the most recent matching link.
-22. **Aether & Dawn order →** max Aether starts at 0, so the first Dawn makes it 1. Dawn order: reset Resonance →
+22. **Mana & Dawn order →** max Mana starts at 0, so the first Dawn makes it 1. Dawn order: reset Resonance →
     max +1 → refill → draw → start-of-turn effects.
 23. **Trap / Ambush readiness →** a set card can be activated (or voluntarily flipped) on any turn after the turn
     it was set.
@@ -137,7 +137,7 @@ consistent with the docs" rule and can be revisited.
     until stable.
 46. **2026-10-22 · Evolve timing → An evolved unit can attack on its owner's next turn, even if it evolved
     while defending** (Robert). *Why:* evolving should feel like a reward. "Resets Arriving" (#30) stays as-is.
-47. **2026-10-22 · Smart auto-pass and Rift Spark → auto-pass ignores Rift Spark unless its +1 Aether would let
+47. **2026-10-22 · Smart auto-pass and Rift Spark → auto-pass ignores Rift Spark unless its +1 Mana would let
     you afford another legal response** (Robert). Implement in the M3 duel UI.
 48. **2026-10-22 · Character names → keep Ser Maren Ashcourt, Rivet, Kesh the Unfed, Vesper Nightlace for now**
     (Robert).
@@ -248,3 +248,5 @@ consistent with the docs" rule and can be revisited.
     `legalActions()`, and `rift`/`sigil` card types get their own handling. Card art is procedural (silhouette per tribe/type,
     seeded by card id) until real art exists; `art/proceduralArt.ts` is the one place to swap it. Review: `reviews/phase2-review.md`.
 
+
+72. **Renamed Aether → Mana (Robert, 2026-10-22) →** the play resource is now called Mana everywhere (rules, cards, engine identifiers, UI). Mechanics unchanged. Older review files keep the old name.

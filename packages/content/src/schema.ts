@@ -133,7 +133,7 @@ export const EffectSchema: z.ZodType<Effect> = z.lazy(() =>
       side: z.enum(['friendly', 'enemy']).optional(),
     }),
     z.strictObject({
-      op: z.enum(['draw', 'discardRandom', 'scry', 'gainAether', 'topdeckFromHand']),
+      op: z.enum(['draw', 'discardRandom', 'scry', 'gainMana', 'topdeckFromHand']),
       player: PlayerRef,
       amount: z.number().int().positive(),
       temporary: z.boolean().optional(),

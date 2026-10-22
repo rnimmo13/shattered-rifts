@@ -58,14 +58,14 @@ export function evaluate(
   score += 2.5 * backrow(mine) + (mine.rift ? 3 : 0);
   score -= 2 * backrow(theirs) + (theirs.rift ? 3 : 0);
 
-  // held Aether is only worth something if I can use it on their turn
+  // held Mana is only worth something if I can use it on their turn
   const holdsResponses =
     mine.backrow.some((id) => id && s.cards[id]?.faceDown) ||
     mine.hand.some((id) => {
       const c = s.cards[id];
       return !!c && !!db[c.cardId]?.keywords?.includes('swift');
     });
-  if (holdsResponses) score += 0.3 * mine.aether;
+  if (holdsResponses) score += 0.3 * mine.mana;
 
   // lethal pressure, both ways
   const ready = (ps: typeof mine) =>

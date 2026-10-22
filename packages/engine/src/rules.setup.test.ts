@@ -1,4 +1,4 @@
-// Rules tests: setup, turn flow, Aether, Resonance, hand limit, fatigue (01_GAME_DESIGN §3.1, §3.3, §3.4).
+// Rules tests: setup, turn flow, Mana, Resonance, hand limit, fatigue (01_GAME_DESIGN §3.1, §3.3, §3.4).
 import { describe, expect, it } from 'vitest';
 import { createEngine } from './engine';
 import { FIXTURE_DB, scenario } from './testkit';
@@ -50,16 +50,16 @@ describe('§3.1 setup', () => {
     expect(p2hand).toHaveLength(6);
   });
 
-  it('second player draws on their first turn; Aether starts at 1 and grows', () => {
+  it('second player draws on their first turn; Mana starts at 1 and grows', () => {
     let s = startedGame();
-    expect(s.players[0].maxAether).toBe(1);
+    expect(s.players[0].maxMana).toBe(1);
     s = engine.applyAction(s, { type: 'endTurn', player: 0 }).state;
     expect(s.active).toBe(1);
-    expect(s.players[1].maxAether).toBe(1);
+    expect(s.players[1].maxMana).toBe(1);
     expect(s.players[1].hand).toHaveLength(7);
     s = engine.applyAction(s, { type: 'endTurn', player: 1 }).state;
-    expect(s.players[0].maxAether).toBe(2);
-    expect(s.players[0].aether).toBe(2);
+    expect(s.players[0].maxMana).toBe(2);
+    expect(s.players[0].mana).toBe(2);
   });
 
   it('runs Sigil duel-start effects before turn 1', () => {
@@ -75,62 +75,62 @@ describe('§3.1 setup', () => {
   });
 });
 
-describe('§3.3 Aether', () => {
-  it('max Aether caps at 10', () => {
+describe('§3.3 Mana', () => {
+  it('max Mana caps at 10', () => {
     const t = scenario(FIXTURE_DB)
-      .p1.aether(10, 10)
+      .p1.mana(10, 10)
       .deck('TST-FILLER', 'TST-FILLER')
       .p2.deck('TST-FILLER', 'TST-FILLER');
     t.p1.endTurn().p2.endTurn();
-    expect(t.aetherOf(1).max).toBe(10);
+    expect(t.manaOf(1).max).toBe(10);
   });
 
-  it('unspent Aether is held through the opponent turn, then refilled at your Dawn', () => {
+  it('unspent Mana is held through the opponent turn, then refilled at your Dawn', () => {
     const t = scenario(FIXTURE_DB)
-      .p1.aether(5, 5)
+      .p1.mana(5, 5)
       .board('TST-3-3')
       .deck('TST-FILLER', 'TST-FILLER')
-      .p2.aether(2, 2)
+      .p2.mana(2, 2)
       .set('TST-PIT')
       .board('TST-2-2')
       .deck('TST-FILLER', 'TST-FILLER');
     t.p1.endTurn(); // p1 holds 5
-    expect(t.aetherOf(1).aether).toBe(5);
+    expect(t.manaOf(1).mana).toBe(5);
     t.p2.attack('TST-2-2', 'p1-face');
-    // p1 can't spend on a trap they don't have, but the held Aether is visible and intact
-    expect(t.aetherOf(1).aether).toBe(5);
+    // p1 can't spend on a trap they don't have, but the held Mana is visible and intact
+    expect(t.manaOf(1).mana).toBe(5);
     t.resolve().p2.endTurn();
-    expect(t.aetherOf(1)).toEqual({ aether: 6, temp: 0, max: 6 });
+    expect(t.manaOf(1)).toEqual({ mana: 6, temp: 0, max: 6 });
   });
 
-  it('pays traps from held Aether on the opponent turn', () => {
+  it('pays traps from held Mana on the opponent turn', () => {
     const t = scenario(FIXTURE_DB)
-      .p1.aether(3, 3)
+      .p1.mana(3, 3)
       .set('TST-PIT')
       .deck('TST-FILLER', 'TST-FILLER')
       .p2.board('TST-3-3')
       .deck('TST-FILLER', 'TST-FILLER');
     t.p1.endTurn().p2.attack('TST-3-3', 'p1-face').p1.respond('TST-PIT').resolve();
-    expect(t.aetherOf(1).aether).toBe(1);
+    expect(t.manaOf(1).mana).toBe(1);
     expect(t.void(2)).toContain('TST-3-3');
     expect(t.essenceOf(1)).toBe(30);
   });
 
-  it('temporary Aether can exceed max and disappears at end of turn', () => {
+  it('temporary Mana can exceed max and disappears at end of turn', () => {
     const t = scenario(FIXTURE_DB)
-      .p1.aether(1, 1)
+      .p1.mana(1, 1)
       .hand('TOK-SPARK')
       .deck('TST-FILLER')
       .p2.deck('TST-FILLER');
     t.p1.play('TOK-SPARK').resolve();
-    expect(t.aetherOf(1)).toEqual({ aether: 1, temp: 1, max: 1 });
+    expect(t.manaOf(1)).toEqual({ mana: 1, temp: 1, max: 1 });
     t.p1.endTurn();
-    expect(t.aetherOf(1).temp).toBe(0);
+    expect(t.manaOf(1).temp).toBe(0);
   });
 
-  it('spends temporary Aether before held Aether', () => {
+  it('spends temporary Mana before held Mana', () => {
     const t = scenario(FIXTURE_DB)
-      .p1.aether(2, 2)
+      .p1.mana(2, 2)
       .hand('TOK-SPARK', 'TST-SLOWBOLT')
       .p2.board('TST-2-2');
     t.p1
@@ -138,7 +138,7 @@ describe('§3.3 Aether', () => {
       .resolve()
       .p1.play('TST-SLOWBOLT', { targets: ['p2:TST-2-2'] })
       .resolve();
-    expect(t.aetherOf(1)).toEqual({ aether: 2, temp: 0, max: 2 });
+    expect(t.manaOf(1)).toEqual({ mana: 2, temp: 0, max: 2 });
   });
 });
 

@@ -9,9 +9,9 @@ export const HIDDEN = '?';
 export interface RedactedPlayer {
   essence: number;
   maxEssence: number;
-  aether: number;
-  tempAether: number;
-  maxAether: number;
+  mana: number;
+  tempMana: number;
+  maxMana: number;
   resonance: number;
   fatigue: number;
   deckCount: number;
@@ -87,9 +87,9 @@ export function viewFor(
     const r: RedactedPlayer = {
       essence: ps.essence,
       maxEssence: ps.maxEssence,
-      aether: ps.aether,
-      tempAether: ps.tempAether,
-      maxAether: ps.maxAether,
+      mana: ps.mana,
+      tempMana: ps.tempMana,
+      maxMana: ps.maxMana,
       resonance: ps.resonance,
       fatigue: ps.fatigue,
       deckCount: ps.deck.length,

@@ -23,8 +23,8 @@ export function validSlotKeys(def: Pick<CardDef, 'type'>): Set<string> {
   return keys;
 }
 
-export function isPlayable(def: Pick<CardDef, 'cost'>, aether: number): boolean {
-  return def.cost <= aether;
+export function isPlayable(def: Pick<CardDef, 'cost'>, mana: number): boolean {
+  return def.cost <= mana;
 }
 
 /** A spell is cast by releasing it above this fraction of the viewport height (clear of the hand). */

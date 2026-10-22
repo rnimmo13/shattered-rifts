@@ -15,9 +15,9 @@ describe('Umbral Veil', () => {
   });
 
   it('UMB-02 Whisper Acolyte: your Traps cost 1 less to activate', () => {
-    const t = t0().p1.board('AUR-05').p2.board('UMB-02').set('WYL-11').aether(1, 1);
+    const t = t0().p1.board('AUR-05').p2.board('UMB-02').set('WYL-11').mana(1, 1);
     t.p1.attack('AUR-05', 'face').p2.respond('WYL-11').resolve();
-    expect(t.aetherOf(2).aether).toBe(0);
+    expect(t.manaOf(2).mana).toBe(0);
     expect(t.void(1)).toContain('AUR-05');
   });
 
@@ -28,10 +28,10 @@ describe('Umbral Veil', () => {
   });
 
   it('UMB-05 Hollow Lurcher: voluntary flip (cost 3) deals 3 damage', () => {
-    const t = t0().p1.ambush('UMB-05').aether(3, 3).p2.board('AUR-05');
+    const t = t0().p1.ambush('UMB-05').mana(3, 3).p2.board('AUR-05');
     t.p1.flip('UMB-05', ['p2:AUR-05']).resolve();
     expect(t.void(2)).toContain('AUR-05');
-    expect(t.aetherOf(1).aether).toBe(0);
+    expect(t.manaOf(1).mana).toBe(0);
   });
 
   it('UMB-08 Mindrot: discard 1, or 2 at Resonance 3', () => {

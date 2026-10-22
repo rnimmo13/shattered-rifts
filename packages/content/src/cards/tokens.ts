@@ -67,8 +67,8 @@ export const TOKENS: CardDef[] = [
     rarity: 'common',
     cost: 0,
     keywords: ['swift'],
-    abilities: [{ kind: 'onResolve', effects: [{ op: 'gainAether', player: 'self', amount: 1 }] }],
-    text: '**Swift**. Gain 1 temporary Aether.',
+    abilities: [{ kind: 'onResolve', effects: [{ op: 'gainMana', player: 'self', amount: 1 }] }],
+    text: '**Swift**. Gain 1 temporary Mana.',
     collectible: false,
   },
   {

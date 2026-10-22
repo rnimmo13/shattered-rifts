@@ -24,7 +24,7 @@ describe('§3.6 response windows and priority', () => {
     const t = scenario(FIXTURE_DB).p1.hand('TST-PIT', 'TST-AMBUSH');
     t.p1.setTrap('TST-PIT').setAmbush('TST-AMBUSH');
     expect(t.state.window).toBeNull();
-    expect(t.aetherOf(1).aether).toBe(9);
+    expect(t.manaOf(1).mana).toBe(9);
   });
 
   it('two passes in a row resolve the top link; the owner may respond after the non-owner passes', () => {
@@ -52,10 +52,10 @@ describe('§3.6 response windows and priority', () => {
   it('non-Swift cards cannot be used in a response window', () => {
     const t = scenario(FIXTURE_DB)
       .p1.hand('TST-SLOWBOLT')
-      .aether(3, 3)
+      .mana(3, 3)
       .p2.board('TST-2-2')
       .hand('TST-RECALL')
-      .aether(2, 2)
+      .mana(2, 2)
       .deck('TST-FILLER');
     t.p1.play('TST-SLOWBOLT', { targets: ['p2:TST-2-2'] });
     // TST-RECALL isn't Swift, so p2 can't respond with it: only pass is legal
@@ -65,7 +65,7 @@ describe('§3.6 response windows and priority', () => {
   it('fizzles when its target is gone; the spell still goes to the Void', () => {
     const t = scenario(FIXTURE_DB)
       .p1.hand('TST-SLOWBOLT')
-      .aether(3, 3)
+      .mana(3, 3)
       .p2.board('TST-2-2')
       .hand('TST-BOLT');
     t.p1
@@ -74,7 +74,7 @@ describe('§3.6 response windows and priority', () => {
       .resolve();
     expect(t.eventTypes()).toContain('fizzled');
     expect(t.void(1)).toContain('TST-SLOWBOLT');
-    expect(t.aetherOf(1).aether).toBe(2);
+    expect(t.manaOf(1).mana).toBe(2);
   });
 
   it('only Fast cards (Swift, set traps, Quick abilities) are offered in a window', () => {
@@ -160,14 +160,14 @@ describe('§3.6 traps', () => {
     const t = scenario(FIXTURE_DB)
       .p1.board('TST-3-3')
       .set('TST-NULL')
-      .aether(3, 3)
+      .mana(3, 3)
       .p2.set('TST-PIT')
-      .aether(2, 2);
+      .mana(2, 2);
     t.p1.attack('TST-3-3', 'p2-face'); // Link 1
     t.p2.respond('TST-PIT'); // Link 2
     t.p1.respond('TST-NULL'); // Link 3
     expect(t.state.chain.map((l) => l.kind)).toEqual(['attack', 'trap', 'trap']);
-    expect(t.legal(1).map((a) => a.type)).toEqual(['pass']); // p2 is out of Aether
+    expect(t.legal(1).map((a) => a.type)).toEqual(['pass']); // p2 is out of Mana
     t.p2.pass().p1.pass(); // Link 3 resolves: negates Bone Pit
     t.resolve();
     expect(t.essenceOf(2)).toBe(27); // the attacker hits for 3

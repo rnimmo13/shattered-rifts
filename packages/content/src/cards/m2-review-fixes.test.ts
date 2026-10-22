@@ -8,7 +8,7 @@ const t0 = () => scenario(CARD_DB);
 
 describe('M2 review fixes', () => {
   it('H1: Archmagister Velle does not reveal the added spell to the opponent', () => {
-    const t = t0().p1.hand('AUR-08').aether(5, 5);
+    const t = t0().p1.hand('AUR-08').mana(5, 5);
     t.p1.play('AUR-08').resolve();
     const mine = eventsFor(t.events, 0).find((e) => e.type === 'cardAdded');
     const theirs = eventsFor(t.events, 1).find((e) => e.type === 'cardAdded');
@@ -19,7 +19,7 @@ describe('M2 review fixes', () => {
   it('H1: with a full hand the added card burns into the Void (and nothing goes missing)', () => {
     const t = t0()
       .p1.hand('AUR-08', ...Array.from({ length: 9 }, () => 'NEU-01'))
-      .aether(5, 5);
+      .mana(5, 5);
     t.p1.play('AUR-08').resolve();
     expect(t.handCards(1)).toHaveLength(9);
     expect(t.void(1)).toHaveLength(1);
@@ -30,7 +30,7 @@ describe('M2 review fixes', () => {
     const t = t0()
       .p1.board('AUR-06', 'AUR-19', 'AUR-01', 'AUR-02', 'AUR-03')
       .hand('AUR-09')
-      .aether(0, 0);
+      .mana(0, 0);
     const ascends = t.legal().filter((a) => a.type === 'play' && a.ascend);
     expect(ascends.length).toBeGreaterThan(0);
     t.p1.play('AUR-09', { ascend: ['AUR-06', 'AUR-19'] }).resolve();
@@ -42,7 +42,7 @@ describe('M2 review fixes', () => {
     const t = t0()
       .p1.board('AUR-01', 'AUR-02', 'AUR-03', 'AUR-04', 'AUR-05')
       .hand('AUR-09')
-      .aether(8, 8);
+      .mana(8, 8);
     expect(t.legal().some((a) => a.type === 'play')).toBe(false);
   });
 
@@ -87,11 +87,11 @@ describe('M2 review fixes', () => {
   });
 
   it('MEDIUM: the first-Construct discount is once per turn even if the Rift is replaced', () => {
-    const t = t0().p1.rift('NEX-15').hand('NEX-04', 'NEX-15', 'NEX-04').aether(10, 10);
+    const t = t0().p1.rift('NEX-15').hand('NEX-04', 'NEX-15', 'NEX-04').mana(10, 10);
     t.p1.play('NEX-04').resolve(); // 3 − 1 = 2
     t.p1.play('NEX-15#1').resolve(); // a new Rift: 2
     t.p1.play('NEX-04#1', { decline: true }).resolve(); // no second discount: 3
-    expect(t.aetherOf(1).aether).toBe(3);
+    expect(t.manaOf(1).mana).toBe(3);
   });
 
   it('MEDIUM: shrinking the backrow shifts a card into a free slot instead of destroying it', () => {

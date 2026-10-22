@@ -22,7 +22,7 @@ placeholder title screen, `.gitignore`, `CHANGELOG.md`, `docs/DECISIONS.md`. `gi
 
 **Step 3: M1 (engine core + CLI duel).** Build `packages/engine` and the parts of `packages/content`
 it needs:
-- Zones, turn flow, Aether (including held Aether on the opponent's turn), Resonance, mulligan, fatigue.
+- Zones, turn flow, Mana (including held Mana on the opponent's turn), Resonance, mulligan, fatigue.
 - Units and combat, spells, traps, relics, rifts, and **the full Chain** with response windows,
   priority, fizzles, negation and the passive trigger queue, exactly per `01_GAME_DESIGN.md §3.6`.
 - The `pending`-prompt model, the seeded PRNG, `GameEvent` output, and `viewFor()` redaction.

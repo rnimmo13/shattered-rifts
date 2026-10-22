@@ -17,7 +17,7 @@ import {
   def,
   defOf,
   emit,
-  emitAether,
+  emitMana,
   freeBackrowSlot,
   freeUnitSlot,
   inst,
@@ -347,12 +347,12 @@ function runEffect(rt: Rt, e: Effect, ctx: EffectCtx): void {
       }
       return;
     }
-    case 'gainAether': {
+    case 'gainMana': {
       const p = playerOf(ctx, e.player);
       const ps = player(rt, p);
-      if (e.temporary === false) ps.aether += e.amount;
-      else ps.tempAether += e.amount;
-      emitAether(rt, p);
+      if (e.temporary === false) ps.mana += e.amount;
+      else ps.tempMana += e.amount;
+      emitMana(rt, p);
       return;
     }
     case 'negate': {

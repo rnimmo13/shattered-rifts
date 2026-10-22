@@ -15,7 +15,7 @@ describe('Neutral', () => {
   });
 
   it('NEU-02 Echo Wisp: Echo 3 from the Void, then Beyond', () => {
-    const t = t0().p1.voidCards('NEU-02').aether(3, 3).p2.hand('NEU-07');
+    const t = t0().p1.voidCards('NEU-02').mana(3, 3).p2.hand('NEU-07');
     t.p1.play('NEU-02', { echo: true }).p2.respond('NEU-07', ['p1:NEU-02']).resolve();
     expect(t.beyond(1)).toEqual(['NEU-02']);
   });
@@ -58,10 +58,10 @@ describe('Neutral', () => {
     expect(t.backrow(1)).toEqual([]); // broke at 0 charges
   });
 
-  it('TOK-SPARK Rift Spark: gain 1 temporary Aether (Swift)', () => {
-    const t = t0().p1.board('AUR-05').p2.hand('TOK-SPARK').aether(0, 0);
+  it('TOK-SPARK Rift Spark: gain 1 temporary Mana (Swift)', () => {
+    const t = t0().p1.board('AUR-05').p2.hand('TOK-SPARK').mana(0, 0);
     t.p1.attack('AUR-05', 'face').p2.respond('TOK-SPARK').resolve();
-    expect(t.aetherOf(2).temp).toBe(1);
+    expect(t.manaOf(2).temp).toBe(1);
   });
 
   it('TOK-RAVAGER Rift Ravager: Pierce', () => {

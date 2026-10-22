@@ -32,8 +32,8 @@ interface PlayerSpec {
   rift: string | null;
   deck: string[];
   void: string[];
-  aether: number;
-  maxAether: number;
+  mana: number;
+  maxMana: number;
   essence: number;
   sigil: string | null;
 }
@@ -47,8 +47,8 @@ const emptySpec = (): PlayerSpec => ({
   rift: null,
   deck: [],
   void: [],
-  aether: 10,
-  maxAether: 10,
+  mana: 10,
+  maxMana: 10,
   essence: 30,
   sigil: null,
 });
@@ -134,10 +134,10 @@ export class Scenario {
   voidCards(...ids: string[]) {
     return this.setup((s) => s.void.push(...ids));
   }
-  aether(n: number, max = Math.max(n, 1)) {
+  mana(n: number, max = Math.max(n, 1)) {
     return this.setup((s) => {
-      s.aether = n;
-      s.maxAether = max;
+      s.mana = n;
+      s.maxMana = max;
     });
   }
   /** Current Essence (max stays 30). */
@@ -173,8 +173,8 @@ export class Scenario {
       const ps = s.players[p];
       ps.mulliganed = true;
       ps.essence = spec.essence; // current only; max stays at the starting value
-      ps.aether = spec.aether;
-      ps.maxAether = spec.maxAether;
+      ps.mana = spec.mana;
+      ps.maxMana = spec.maxMana;
       const add = (cardId: string, zone: CardInstance['zone']) => {
         const c = newInstance(rt, cardId, p, zone);
         return c;
@@ -462,9 +462,9 @@ export class Scenario {
   essenceOf(p: 1 | 2): number {
     return this.ps(p).essence;
   }
-  aetherOf(p: 1 | 2): { aether: number; temp: number; max: number } {
+  manaOf(p: 1 | 2): { mana: number; temp: number; max: number } {
     const ps = this.ps(p);
-    return { aether: ps.aether, temp: ps.tempAether, max: ps.maxAether };
+    return { mana: ps.mana, temp: ps.tempMana, max: ps.maxMana };
   }
   resonanceOf(p: 1 | 2): number {
     return this.ps(p).resonance;

@@ -115,10 +115,10 @@ export type Effect =
   | { op: 'grant'; target: Target; keyword: Keyword; duration: Duration }
   | { op: 'summon'; card: string; count: number; side?: 'friendly' | 'enemy' }
   | {
-      op: 'draw' | 'discardRandom' | 'scry' | 'gainAether' | 'topdeckFromHand';
+      op: 'draw' | 'discardRandom' | 'scry' | 'gainMana' | 'topdeckFromHand';
       player: 'self' | 'enemy';
       amount: number;
-      /** gainAether only: temporary (default) or held Aether. */
+      /** gainMana only: temporary (default) or held Mana. */
       temporary?: boolean;
     }
   | { op: 'negate'; link: 'trigger' }
@@ -250,7 +250,7 @@ export interface CardDef {
   realm: Realm;
   type: CardType;
   rarity: Rarity;
-  /** Aether. Traps: activation cost. */
+  /** Mana. Traps: activation cost. */
   cost: number;
   power?: number;
   guard?: number;
@@ -323,9 +323,9 @@ export interface CardInstance {
 export interface PlayerState {
   essence: number;
   maxEssence: number;
-  aether: number;
-  tempAether: number;
-  maxAether: number;
+  mana: number;
+  tempMana: number;
+  maxMana: number;
   resonance: number;
   fatigue: number;
   deck: InstanceId[]; // index 0 = top
@@ -462,7 +462,7 @@ export interface Rules {
   unitSlots: number;
   backrowSlots: number;
   handLimit: number;
-  maxAether: number;
+  maxMana: number;
   openingHand: number;
   maxTurns: number;
   chainCap: number;
@@ -524,7 +524,7 @@ export type Action =
       /** Optional abilities (by index) the player declined. */
       declined?: number[];
       overclock?: boolean;
-      /** Ascend: friendly units destroyed instead of paying Aether. */
+      /** Ascend: friendly units destroyed instead of paying Mana. */
       ascend?: InstanceId[];
       /** Echo: cast from the Void. */
       echo?: boolean;
@@ -557,7 +557,7 @@ export type GameEvent =
   | { type: 'gameStarted'; first: PlayerId }
   | { type: 'mulliganed'; player: PlayerId; count: number }
   | { type: 'turnStarted'; turn: number; player: PlayerId }
-  | { type: 'aetherChanged'; player: PlayerId; aether: number; temp: number; max: number }
+  | { type: 'manaChanged'; player: PlayerId; mana: number; temp: number; max: number }
   | { type: 'resonanceChanged'; player: PlayerId; value: number }
   | { type: 'cardDrawn'; player: PlayerId; id: InstanceId; cardId: string }
   | { type: 'cardBurned'; player: PlayerId; cardId: string }

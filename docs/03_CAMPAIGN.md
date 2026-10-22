@@ -22,7 +22,7 @@ and a **Sigil**: a starting passive that gives every run an identity from turn 1
 | **Ser Maren Ashcourt**, the Last Oath | ☀ Aurelion | The last knight of an order that died in the Sundering. Dry, stubborn, kind | **Oathbound:** your first unit each duel gains **Shield** | Sturdy midrange: shields, Guardians, punishing attackers |
 | **Rivet** | ⚙ Nexus-9 | A maintenance drone that woke up and built itself friends. Endlessly curious | **Spare Parts:** start each duel with a 1/1 **Drone** | Go wide, Assemble big, burst turns |
 | **Kesh the Unfed** | 🦴 Wyldmaw | Raised by a beast pack and fed on whatever fell. Few words, all teeth | **Pack Hunger:** the first time you Devour each duel, draw a card | Aggro, sacrifice for value, snowball |
-| **Vesper Nightlace** *(unlock: defeat Nyxara once)* | 👁 Umbral | A masked thief who robbed the Hollow Court and is still being hunted | **Sleight:** at the start of each duel, set a random Trap from your deck | Traps, ambushes, bluffing with held Aether |
+| **Vesper Nightlace** *(unlock: defeat Nyxara once)* | 👁 Umbral | A masked thief who robbed the Hollow Court and is still being hunted | **Sleight:** at the start of each duel, set a random Trap from your deck | Traps, ambushes, bluffing with held Mana |
 
 - **Card pool:** reward offers come from your realm + Neutral. About **1 in 10 offers is "Rift-crossed"** (from another
   realm, marked with a rift seam), and Warden signature cards come from the boss's realm. That's how cross-realm decks happen.
@@ -102,7 +102,7 @@ previous tiers' mutators.
 | **VI** | Wardens gain **Phase 2** at half Essence | **Rift-Touched** alt-art can drop (2%) |
 | **VII** | Every enemy starts with a random Trap from its realm set | One free **reroll** per card reward |
 | **VIII** | Omens can be **veiled** ("?") until the turn before. Loop clears restore no Resolve | Shrines offer **two** of their three options |
-| **IX** | Enemies start with +1 max Aether | Shards ×2.0 |
+| **IX** | Enemies start with +1 max Mana | Shards ×2.0 |
 | **X** | **"Shattered":** Vorthax gains Phase 3. Merchant prices +25% | **Prismatic** finish (1%), title *Riftbreaker* |
 | **XI+** | **Endless:** each tier adds +3 enemy Essence and one random stacking mutator (§3.1) | Deck badge shows the tier; cosmetic flair per tier |
 
@@ -112,8 +112,8 @@ deep deck should be more *refined*, not out of reach. If simulations show tier a
 rewards before adding brackets.
 
 ### 3.1 Endless mutator pool (XI+)
-*Fortified* (Wardens +10 Essence) · *Ambushers* (enemies get 1 extra set Trap) · *Aether Surge* (enemy temp +1
-Aether on turn 3) · *Thick Hide* (enemy units +0/+1) · *Hexed* (a **Rift Curse** card, a 0-cost dead draw, is shuffled
+*Fortified* (Wardens +10 Essence) · *Ambushers* (enemies get 1 extra set Trap) · *Mana Surge* (enemy temp +1
+Mana on turn 3) · *Thick Hide* (enemy units +0/+1) · *Hexed* (a **Rift Curse** card, a 0-cost dead draw, is shuffled
 into your deck for that duel) · *Rift Storm* (every 4th turn a random Neutral spell is cast for the enemy) · *Scarcity*
 (Shrine options −1) · *Swift Foes* (enemy Commons gain Blitz on turns 1–3) · *Iron Will* (enemy Guardians gain Shield)
 · *Oblivion* (your Void is banished at the start of each of your turns, which turns off Echo).
@@ -149,7 +149,7 @@ Rules every Warden follows:
 - **Signature, Production Line:** at the end of each of its turns, summon a 1/1 Drone (if it has < 5 units).
 - **Omen, Orbital Strike** (2-turn countdown): deal 4 damage to each of the player's units.
 - **Omen 2 (III+), Firewall:** destroy the player's most recently set card.
-- **Phase 2 (VI+), Core Exposed:** its Constructs gain **Ward**, and Kron gets +1 max Aether.
+- **Phase 2 (VI+), Core Exposed:** its Constructs gain **Ward**, and Kron gets +1 max Mana.
 - **Signature cards:** NEX-07 **CALYX** (L) · **Kron's Assembly Arm** (E Relic: whenever you Assemble, draw a
   card) · **Override Virus** (R Spell 3: take control of an enemy Construct until end of turn; it gains
   Blitz) · **Orbital Uplink** (R Trap 3: Trigger: When an enemy unit costing 5+ is summoned. Deal 5 damage to it.)
@@ -222,15 +222,15 @@ Choose 1 of 3 after Elites, from some Events, in Merchants and in the Warden's G
 
 | Boon | Effect |
 |---|---|
-| Ember Heart | Start each duel with +1 max Aether. |
+| Ember Heart | Start each duel with +1 max Mana. |
 | Trapsmith's Kit | Your first Trap each duel costs 0. |
 | Second Wind | Once per duel, when you'd drop below 10 Essence, heal 8. |
 | Rift Tutor | Your opening hand always contains a card costing 2 or less. |
 | Shard Magnet | +30% Shards this run. |
 | Echoing Grimoire | The first spell you cast each duel is cast twice. |
 | Iron Vanguard | Your first unit each duel gains Guardian and Shield. |
-| Hungry Grimoire | Whenever you Devour, gain 1 temporary Aether. |
-| Patient Hunter | Unspent Aether at the end of the opponent's turn gives +1 Aether next turn (max +2). |
+| Hungry Grimoire | Whenever you Devour, gain 1 temporary Mana. |
+| Patient Hunter | Unspent Mana at the end of the opponent's turn gives +1 Mana next turn (max +2). |
 | Cartographer | See the whole stage map and reroll one node per stage. |
 | Warden's Bane | Deal 5 damage to Wardens at the start of the duel. |
 | Resonant Soul | Your Resonance starts at 1 each turn. |

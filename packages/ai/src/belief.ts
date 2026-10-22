@@ -100,9 +100,9 @@ export function beliefFromView(view: GameView, seed: string): GameState {
     const ps: PlayerState = {
       essence: rp.essence,
       maxEssence: rp.maxEssence,
-      aether: rp.aether,
-      tempAether: rp.tempAether,
-      maxAether: rp.maxAether,
+      mana: rp.mana,
+      tempMana: rp.tempMana,
+      maxMana: rp.maxMana,
       resonance: rp.resonance,
       fatigue: rp.fatigue,
       deck: [...known, ...unknown],

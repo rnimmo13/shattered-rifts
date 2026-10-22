@@ -40,7 +40,7 @@ export const FIXTURE_CARDS: CardDef[] = [
   card('TOK-SPARK', 'spell', 0, {
     keywords: ['swift'],
     collectible: false,
-    abilities: [{ kind: 'onResolve', effects: [{ op: 'gainAether', player: 'self', amount: 1 }] }],
+    abilities: [{ kind: 'onResolve', effects: [{ op: 'gainMana', player: 'self', amount: 1 }] }],
   }),
   unit('TST-FILLER', 1, 1, { cost: 1 }),
   unit('TST-2-2', 2, 2, { cost: 2 }),

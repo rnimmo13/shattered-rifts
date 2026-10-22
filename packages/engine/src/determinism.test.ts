@@ -35,11 +35,11 @@ export function checkInvariants(s: GameState, initialCards: [number, number]): v
     if (ps.backrow.filter(Boolean).length > s.rules.backrowSlots)
       throw new Error('too many backrow');
     if (ps.hand.length > s.rules.handLimit) throw new Error('hand over limit');
-    for (const n of [ps.essence, ps.aether, ps.tempAether, ps.maxAether, ps.resonance]) {
+    for (const n of [ps.essence, ps.mana, ps.tempMana, ps.maxMana, ps.resonance]) {
       if (!Number.isFinite(n)) throw new Error('NaN in player state');
     }
-    if (ps.aether < 0 || ps.tempAether < 0) throw new Error('negative Aether');
-    if (ps.maxAether > s.rules.maxAether) throw new Error('max Aether over cap');
+    if (ps.mana < 0 || ps.tempMana < 0) throw new Error('negative Mana');
+    if (ps.maxMana > s.rules.maxMana) throw new Error('max Mana over cap');
     // card conservation: every non-token card the player owns is in exactly one zone
     const owned = Object.values(s.cards).filter((c) => c.owner === p && c.zone !== 'sigil');
     const real = owned.filter((c) => !c.cardId.startsWith('TST-TOKEN'));

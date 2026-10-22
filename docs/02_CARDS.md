@@ -23,7 +23,7 @@ Knights, clerics, griffins, dragons. A sun-bleached kingdom of marble and gold.
 ### ⚙ Nexus-9: The Iron Foundry (sci-fi)
 Drones, mechs, hackers and an awakened AI. A planet-sized factory under a dead star.
 - **Does well:** going wide with Drone tokens, Assemble into big Constructs, **trap removal**
-  (Netrunner, EMP), temporary Aether.
+  (Netrunner, EMP), temporary Mana.
 - **Bad at:** healing, single big threats it can't Stun, losing its board to sweepers.
 - **Signature combo:** Swarm Protocol at Resonance 3 → Blitz Drones → **Enforcer** Assembles a
   Drone → **Overcharge** → swing.
@@ -71,7 +71,7 @@ interface CardDef {
   realm: Realm;
   type: CardType;
   rarity: Rarity;
-  cost: number;             // Aether. Traps: activation cost.
+  cost: number;             // Mana. Traps: activation cost.
   power?: number;           // units only
   guard?: number;           // units only
   tribes?: string[];        // 'Human', 'Knight', 'Construct', 'Drone', 'Beast', 'Shade'...
@@ -106,7 +106,7 @@ type Effect =
   | { op: 'buff'; target: Target; power?: number; guard?: number; duration: 'turn' | 'permanent' }
   | { op: 'grant'; target: Target; keyword: Keyword; duration: 'turn' | 'permanent' }
   | { op: 'summon'; card: string; count: number; side?: 'friendly' | 'enemy' }
-  | { op: 'draw' | 'discardRandom' | 'scry' | 'gainAether'; player: 'self' | 'enemy'; amount: number }
+  | { op: 'draw' | 'discardRandom' | 'scry' | 'gainMana'; player: 'self' | 'enemy'; amount: number }
   | { op: 'negate'; link: 'trigger' }               // the link that opened the window
   | { op: 'fight'; a: Target; b: Target }            // deal Power to each other, no attack
   | { op: 'transform'; target: Target; into: string }
@@ -185,9 +185,9 @@ type EventFilter = { type: 'attackDeclared' | 'unitSummoned' | 'spellCast' | 'tr
 **Rarity premium:** Common = on budget (±1). Rare = +1. Epic = +2. Legendary = +3 and a
 build-around effect. Mythic = rule-bending, with a real deckbuilding cost.
 
-**Spells and traps:** benchmark against removal. "Deal 3 to a unit" = 2 Aether. "Destroy a unit" =
-5 Aether, or 3–4 with a condition. Traps cost about **1 less** than the equivalent spell, because they
-need setup, are visible as "something," and can be baited. **Hard negate** is ≥ 3 Aether.
+**Spells and traps:** benchmark against removal. "Deal 3 to a unit" = 2 Mana. "Destroy a unit" =
+5 Mana, or 3–4 with a condition. Traps cost about **1 less** than the equivalent spell, because they
+need setup, are visible as "something," and can be baited. **Hard negate** is ≥ 3 Mana.
 
 **Simulation gate:** before a card ships, bot-vs-bot simulation (1,000 games, mirrored decks, ±
 the card) must not move the win rate more than ±6% for Commons and ±10% for Legendaries. See the tech doc.
@@ -237,7 +237,7 @@ Format: **Unit** stats are Power/Guard. Keywords are bold in text. `src:` marks 
 | NEX-11 | Recompile | 2 | Spell | C | Return a friendly unit to your hand. Draw a card. |
 | NEX-12 | Countermeasure Grid | 2 | Trap | C | Trigger: When an enemy unit is summoned. Deal 3 damage to it. |
 | NEX-13 | Lockdown Protocol | 3 | Trap | R | Trigger: When an enemy attacks. **Negate** the attack and **Stun** the attacker. |
-| NEX-14 | Aether Reactor | 2 | Relic | R | **Charges 3**. At the start of your turn: gain 1 temporary Aether and remove a charge. |
+| NEX-14 | Mana Reactor | 2 | Relic | R | **Charges 3**. At the start of your turn: gain 1 temporary Mana and remove a charge. |
 | NEX-15 | Rift: Foundry Nexus-9 | 2 | Rift | R | Your first Construct each turn costs 1 less. |
 | NEX-16 | Salvage Bot | 2 | Unit — Construct · 2/1 | C | When this dies: draw a card. |
 
@@ -288,7 +288,7 @@ Format: **Unit** stats are Power/Guard. Keywords are bold in text. `src:` marks 
 | NEU-02 | Echo Wisp | 2 | Unit — Spirit · 2/2 | C | **Echo 3**. |
 | NEU-03 | Shardstone Golem | 5 | Unit — Construct Elemental · 4/6 | C | **Guardian**. |
 | NEU-04 | Riftborn Colossus | 7 | Unit — Elemental · 7/8 | R | Costs 1 less for each card in your backrow. |
-| NEU-05 | Tear in the Rift | 0 | Spell | R | Gain 2 temporary Aether. **Resonance 4:** gain 3 instead. |
+| NEU-05 | Tear in the Rift | 0 | Spell | R | Gain 2 temporary Mana. **Resonance 4:** gain 3 instead. |
 | NEU-06 | Shatter | 2 | Spell | C | **Swift**. Destroy a Relic or a set card. |
 | NEU-07 | Rift Bolt | 1 | Spell | C | **Swift**. Deal 2 damage to a unit. |
 | NEU-08 | Null Field | 3 | Trap | R | Trigger: When an enemy activates a Trap or casts a Swift spell. **Negate** it. |
@@ -298,7 +298,7 @@ Format: **Unit** stats are Power/Guard. Keywords are bold in text. `src:` marks 
 ### Tokens (not collectible)
 | ID | Name | Stats | Text | Made by |
 |---|---|---|---|---|
-| TOK-SPARK | Rift Spark | Spell · 0 | **Swift**. Gain 1 temporary Aether. | Given to the second player |
+| TOK-SPARK | Rift Spark | Spell · 0 | **Swift**. Gain 1 temporary Mana. | Given to the second player |
 | TOK-DRONE | Drone | Construct Drone · 1/1 | | NEX-01, NEX-09 |
 | TOK-LARVA | Larva | Beast Insect · 1/1 | | WYL-06 |
 | TOK-LURKER | Lurker | Beast · 4/3 | | WYL-12 |

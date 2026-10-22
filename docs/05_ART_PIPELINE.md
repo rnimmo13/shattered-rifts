@@ -120,7 +120,7 @@ One line per card: subject → key visual idea. Combine with the realm modifier 
 - NEX-11 Recompile: a robot dissolving into data cubes being pulled back into a holographic schematic.
 - NEX-12 Countermeasure Grid *(trap, victim POV)*: a grid of red laser lines snapping on around an arriving creature.
 - NEX-13 Lockdown Protocol *(trap, victim POV)*: steel clamps and energy shackles erupting from the floor around the viewer's legs.
-- NEX-14 Aether Reactor: a compact glowing reactor core in a containment cage, cyan plasma.
+- NEX-14 Mana Reactor: a compact glowing reactor core in a containment cage, cyan plasma.
 - NEX-15 Foundry Nexus-9 *(rift, wide)*: a planet-sized factory under a dead black sun, endless conveyor belts, smokestacks, a rift tear.
 - NEX-16 Salvage Bot: a scrappy little robot with mismatched parts carrying a bigger robot's head.
 

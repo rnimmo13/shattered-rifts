@@ -72,7 +72,7 @@ describe('M1 review fixes', () => {
     const t = scenario(DB)
       .p1.voidCards('TST-ECHO')
       .hand('TST-RECALL')
-      .aether(5, 5)
+      .mana(5, 5)
       .deck('TST-FILLER');
     t.p1.play('TST-ECHO', { echo: true }).resolve();
     t.p1.play('TST-RECALL', { targets: ['p1:TST-ECHO'] }).resolve();

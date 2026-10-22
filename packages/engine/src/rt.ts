@@ -1,4 +1,4 @@
-// Runtime context and low-level state helpers (zones, instances, Aether, drawing).
+// Runtime context and low-level state helpers (zones, instances, Mana, drawing).
 // Everything here mutates the working copy `rt.s`; applyAction() clones before calling in.
 
 import type {
@@ -239,31 +239,31 @@ export function livePermanents(rt: Rt, p: PlayerId): CardInstance[] {
   return out;
 }
 
-// --- Aether ---------------------------------------------------------------------------------
+// --- Mana ---------------------------------------------------------------------------------
 
 export function available(rt: Rt, p: PlayerId): number {
   const ps = player(rt, p);
-  return ps.aether + ps.tempAether;
+  return ps.mana + ps.tempMana;
 }
 
 export function pay(rt: Rt, p: PlayerId, amount: number): void {
   if (amount <= 0) return;
   const ps = player(rt, p);
-  if (ps.aether + ps.tempAether < amount) throw new RulesError('Not enough Aether');
-  const fromTemp = Math.min(ps.tempAether, amount);
-  ps.tempAether -= fromTemp;
-  ps.aether -= amount - fromTemp;
-  emitAether(rt, p);
+  if (ps.mana + ps.tempMana < amount) throw new RulesError('Not enough Mana');
+  const fromTemp = Math.min(ps.tempMana, amount);
+  ps.tempMana -= fromTemp;
+  ps.mana -= amount - fromTemp;
+  emitMana(rt, p);
 }
 
-export function emitAether(rt: Rt, p: PlayerId): void {
+export function emitMana(rt: Rt, p: PlayerId): void {
   const ps = player(rt, p);
   emit(rt, {
-    type: 'aetherChanged',
+    type: 'manaChanged',
     player: p,
-    aether: ps.aether,
-    temp: ps.tempAether,
-    max: ps.maxAether,
+    mana: ps.mana,
+    temp: ps.tempMana,
+    max: ps.maxMana,
   });
 }
 

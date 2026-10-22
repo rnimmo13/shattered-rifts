@@ -151,7 +151,7 @@ export class HeuristicAi implements AiPlayer {
     const pend = s.pending;
     if (pend?.kind !== 'scry') return legal[0] as Action;
     const cost = (id: string) => this.db[s.cards[id]?.cardId ?? '']?.cost ?? 0;
-    const limit = Math.max(3, s.players[me].maxAether + 2);
+    const limit = Math.max(3, s.players[me].maxMana + 2);
     const top = pend.cards.filter((id) => cost(id) <= limit).sort((a, b) => cost(a) - cost(b));
     const bottom = pend.cards.filter((id) => cost(id) > limit);
     return (
@@ -238,12 +238,12 @@ export class HeuristicAi implements AiPlayer {
     }
   }
 
-  /** Attacking into set cards while the opponent holds Aether is risky (a human would think so). */
+  /** Attacking into set cards while the opponent holds Mana is risky (a human would think so). */
   private attackFear(s: GameState, a: Extract<Action, { type: 'attack' }>, me: PlayerId): number {
     const opp = s.players[me === 0 ? 1 : 0];
     const sets = opp.backrow.filter((id) => id && s.cards[id]?.faceDown).length;
     if (sets === 0 || this.p.caution <= 0) return 0;
-    const held = opp.aether + opp.tempAether >= 1 ? 1 : 0.3;
+    const held = opp.mana + opp.tempMana >= 1 ? 1 : 0.3;
     return this.p.caution * 0.35 * Math.min(2, sets) * held * unitValue(this.sim, s, a.attacker);
   }
 

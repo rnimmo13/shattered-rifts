@@ -4,10 +4,10 @@ import { FIXTURE_DB, scenario } from './testkit';
 import { viewFor, eventsFor, HIDDEN } from './view';
 
 describe('Ambush (§3.5.5, §3.8, DECISIONS #17 #26)', () => {
-  it('set face-down for 1 Aether; hidden from the opponent', () => {
+  it('set face-down for 1 Mana; hidden from the opponent', () => {
     const t = scenario(FIXTURE_DB).p1.hand('TST-AMBUSH');
     t.p1.setAmbush('TST-AMBUSH');
-    expect(t.aetherOf(1).aether).toBe(9);
+    expect(t.manaOf(1).mana).toBe(9);
     const id = t.id('p1:TST-AMBUSH');
     expect(viewFor(t.state, 1).cards[id]?.cardId).toBe(HIDDEN);
     expect(viewFor(t.state, 0).cards[id]?.cardId).toBe('TST-AMBUSH');
@@ -19,14 +19,14 @@ describe('Ambush (§3.5.5, §3.8, DECISIONS #17 #26)', () => {
     const t = scenario(FIXTURE_DB)
       .p1.hand('TST-AMBUSH')
       .deck('TST-FILLER')
-      .aether(5, 5)
+      .mana(5, 5)
       .p2.board('TST-3-3')
       .deck('TST-FILLER');
     t.p1.setAmbush('TST-AMBUSH');
     expect(t.legal().some((a) => a.type === 'flip')).toBe(false); // not the turn it was set
     t.p1.endTurn().p2.endTurn();
     t.p1.flip('TST-AMBUSH', ['p2:TST-3-3']);
-    expect(t.aetherOf(1).aether).toBe(4); // 6 max − (3 − 1)
+    expect(t.manaOf(1).mana).toBe(4); // 6 max − (3 − 1)
     expect(t.state.chain.map((l) => l.kind)).toEqual(['flip']);
     t.resolve();
     expect(t.stats('p2:TST-3-3').guard).toBe(1);
@@ -49,7 +49,7 @@ describe('Ambush (§3.5.5, §3.8, DECISIONS #17 #26)', () => {
   it('flipping does not count as a summon (no summon window)', () => {
     const t = scenario(FIXTURE_DB)
       .p1.ambush('TST-AMBUSH')
-      .aether(5, 5)
+      .mana(5, 5)
       .p2.set('TST-GRID')
       .board('TST-3-3');
     t.p1.flip('TST-AMBUSH', ['p2:TST-3-3']);
@@ -104,30 +104,27 @@ describe('Relics and Rifts (§3.7)', () => {
 
 describe('cost keywords', () => {
   it('Echo: cast from the Void for N, then it goes Beyond when it leaves', () => {
-    const t = scenario(FIXTURE_DB).p1.voidCards('TST-ECHO').aether(3, 3).p2.hand('TST-BOLT');
+    const t = scenario(FIXTURE_DB).p1.voidCards('TST-ECHO').mana(3, 3).p2.hand('TST-BOLT');
     t.p1.play('TST-ECHO', { echo: true });
-    expect(t.aetherOf(1).aether).toBe(0);
+    expect(t.manaOf(1).mana).toBe(0);
     t.p2.respond('TST-BOLT', ['p1:TST-ECHO']).resolve();
     expect(t.beyond(1)).toEqual(['TST-ECHO']);
     expect(t.void(1)).toEqual([]);
   });
 
-  it('Ascend: destroy the listed units instead of paying Aether', () => {
-    const t = scenario(FIXTURE_DB)
-      .p1.board('TST-2-2', 'TST-FILLER')
-      .hand('TST-ASCEND')
-      .aether(0, 0);
+  it('Ascend: destroy the listed units instead of paying Mana', () => {
+    const t = scenario(FIXTURE_DB).p1.board('TST-2-2', 'TST-FILLER').hand('TST-ASCEND').mana(0, 0);
     t.p1.play('TST-ASCEND', { ascend: ['TST-2-2', 'TST-FILLER'] });
     expect(t.units(1)).toEqual(['TST-ASCEND']);
     expect(t.void(1).sort()).toEqual(['TST-2-2', 'TST-FILLER']);
   });
 
   it('Overclock: optional extra cost; the bonus applies only if paid', () => {
-    const a = scenario(FIXTURE_DB).p1.hand('TST-OVERCLOCK').aether(3, 3);
+    const a = scenario(FIXTURE_DB).p1.hand('TST-OVERCLOCK').mana(3, 3);
     a.p1.play('TST-OVERCLOCK', { overclock: true }).resolve();
     expect(a.stats('p1:TST-OVERCLOCK').power).toBe(4);
-    expect(a.aetherOf(1).aether).toBe(0);
-    const b = scenario(FIXTURE_DB).p1.hand('TST-OVERCLOCK').aether(3, 3);
+    expect(a.manaOf(1).mana).toBe(0);
+    const b = scenario(FIXTURE_DB).p1.hand('TST-OVERCLOCK').mana(3, 3);
     b.p1.play('TST-OVERCLOCK').resolve();
     expect(b.stats('p1:TST-OVERCLOCK').power).toBe(2);
   });

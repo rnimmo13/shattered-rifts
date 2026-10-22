@@ -20,7 +20,7 @@ export interface Probe {
 
 export interface HandProps {
   cards: readonly HandCard[];
-  aether: number;
+  mana: number;
   /** is this point a valid drop for this card? (the scene hit-tests; the engine decides rules later) */
   probe: (def: CardDef, x: number, y: number) => Probe;
   onDragStart?: (def: CardDef) => void;
@@ -47,7 +47,7 @@ function useCardWidth(): number {
 const calc = () => Math.round(Math.max(130, Math.min(230, window.innerWidth * 0.115)));
 
 export function Hand(props: HandProps) {
-  const { cards, aether, probe, onPlay, onRefuse, onDragStart, onDragEnd, onSound } = props;
+  const { cards, mana, probe, onPlay, onRefuse, onDragStart, onDragEnd, onSound } = props;
   const cardW = useCardWidth();
   const anchor = useRef<HTMLDivElement>(null);
   const elOf = (uid: string) =>
@@ -139,7 +139,7 @@ export function Hand(props: HandProps) {
 
   const startDrag = (card: HandCard, e: React.PointerEvent<HTMLDivElement>) => {
     if (e.button !== 0) return;
-    if (!isPlayable(card.def, aether)) {
+    if (!isPlayable(card.def, mana)) {
       setRefuse(card.uid);
       onRefuse?.(card);
       onSound?.('refuse');
@@ -214,14 +214,14 @@ export function Hand(props: HandProps) {
             rot = 0;
             scale = 0.5;
           }
-          const playable = isPlayable(card.def, aether);
+          const playable = isPlayable(card.def, mana);
           return (
             <div
               key={card.uid}
               data-uid={card.uid}
               role="button"
               tabIndex={0}
-              aria-label={`${card.def.name}, cost ${card.def.cost}${playable ? '' : ', not enough Aether'}`}
+              aria-label={`${card.def.name}, cost ${card.def.cost}${playable ? '' : ', not enough Mana'}`}
               aria-disabled={!playable}
               onKeyDown={(e) => {
                 if ((e.key === 'Enter' || e.key === ' ') && playable) {

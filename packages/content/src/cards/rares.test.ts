@@ -30,17 +30,17 @@ describe('Aurelion (rare+)', () => {
   });
 
   it('AUR-08 Archmagister Velle: spells cost 1 less, and adds a random Aurelion spell', () => {
-    const t = t0().p1.hand('AUR-08').aether(5, 5).p2.board('AUR-04');
+    const t = t0().p1.hand('AUR-08').mana(5, 5).p2.board('AUR-04');
     t.p1.play('AUR-08').resolve();
     expect(t.handCards(1)).toHaveLength(1);
     expect(['AUR-10', 'AUR-11', 'AUR-12']).toContain(t.handCards(1)[0]);
-    const u = t0().p1.board('AUR-08').hand('AUR-10').aether(1, 1).p2.board('AUR-04');
+    const u = t0().p1.board('AUR-08').hand('AUR-10').mana(1, 1).p2.board('AUR-04');
     u.p1.play('AUR-10', { targets: ['p2:AUR-04'] }).resolve();
-    expect(u.aetherOf(1).aether).toBe(0);
+    expect(u.manaOf(1).mana).toBe(0);
   });
 
   it('AUR-09 Aurumclaw: Ascend by destroying two Shielded units; all other friendly units gain Shield', () => {
-    const t = t0().p1.board('AUR-06', 'AUR-19', 'AUR-01').hand('AUR-09').aether(0, 0);
+    const t = t0().p1.board('AUR-06', 'AUR-19', 'AUR-01').hand('AUR-09').mana(0, 0);
     // AUR-01 has no Shield, so the only legal Ascend is the two Shielded units
     t.p1.play('AUR-09', { ascend: ['AUR-06', 'AUR-19'] }).resolve();
     expect(t.units(1)).toEqual(['AUR-09', 'AUR-01']); // the Ascend freed the first slots
@@ -50,7 +50,7 @@ describe('Aurelion (rare+)', () => {
   });
 
   it('AUR-09 cannot Ascend without two Shielded units', () => {
-    const t = t0().p1.board('AUR-01', 'AUR-02').hand('AUR-09').aether(0, 0);
+    const t = t0().p1.board('AUR-01', 'AUR-02').hand('AUR-09').mana(0, 0);
     expect(t.legal().some((a) => a.type === 'play')).toBe(false);
   });
 
@@ -62,7 +62,7 @@ describe('Aurelion (rare+)', () => {
   });
 
   it('AUR-14 Divine Rebuke: negates an enemy spell and draws a card', () => {
-    const t = t0().p1.set('AUR-14').board('AUR-04').deck('NEU-03').aether(4, 4).p2.hand('NEU-07');
+    const t = t0().p1.set('AUR-14').board('AUR-04').deck('NEU-03').mana(4, 4).p2.hand('NEU-07');
     t.p1.endTurn();
     t.p2
       .play('NEU-07', { targets: ['p1:AUR-04'] })
@@ -185,24 +185,24 @@ describe('Nexus-9 (rare+)', () => {
     expect(t.legal(0).some((a) => a.type === 'attack')).toBe(false);
   });
 
-  it('NEX-14 Aether Reactor: +1 temporary Aether each turn for 3 turns, then breaks', () => {
+  it('NEX-14 Mana Reactor: +1 temporary Mana each turn for 3 turns, then breaks', () => {
     const t = t0()
       .p1.relic('NEX-14')
       .deck('NEU-03', 'NEU-03', 'NEU-03', 'NEU-03')
       .p2.deck('NEU-03', 'NEU-03', 'NEU-03', 'NEU-03');
     for (let i = 0; i < 3; i++) {
       t.p1.endTurn().p2.endTurn();
-      expect(t.aetherOf(1).temp).toBe(1);
+      expect(t.manaOf(1).temp).toBe(1);
     }
     expect(t.backrow(1)).toEqual([]);
   });
 
   it('NEX-15 Rift: Foundry Nexus-9: your first Construct each turn costs 1 less', () => {
-    const t = t0().p1.rift('NEX-15').hand('NEX-04', 'NEX-16').aether(10, 10);
+    const t = t0().p1.rift('NEX-15').hand('NEX-04', 'NEX-16').mana(10, 10);
     t.p1.play('NEX-04').resolve();
-    expect(t.aetherOf(1).aether).toBe(8);
+    expect(t.manaOf(1).mana).toBe(8);
     t.p1.play('NEX-16').resolve();
-    expect(t.aetherOf(1).aether).toBe(6);
+    expect(t.manaOf(1).mana).toBe(6);
   });
 
   it("NEX-17 Kron's Assembly Arm: draw whenever you Assemble", () => {
@@ -242,7 +242,7 @@ describe('Wyldmaw (rare+)', () => {
   });
 
   it("WYL-07 Thal'gor: destroys all other units and gains +1/+1 for each", () => {
-    const t = t0().p1.board('AUR-04').hand('WYL-07').aether(9, 9).p2.board('AUR-05', 'WYL-16');
+    const t = t0().p1.board('AUR-04').hand('WYL-07').mana(9, 9).p2.board('AUR-05', 'WYL-16');
     t.p1.play('WYL-07').resolve();
     expect(t.units(1)).toEqual(['WYL-07']);
     expect(t.units(2)).toEqual([]);
@@ -253,7 +253,7 @@ describe('Wyldmaw (rare+)', () => {
     const t = t0()
       .p1.board('AUR-01', 'AUR-02', 'AUR-03')
       .hand('WYL-07')
-      .aether(0, 0)
+      .mana(0, 0)
       .p2.board('AUR-05');
     t.p1.play('WYL-07', { ascend: ['AUR-01', 'AUR-02', 'AUR-03'] }).resolve();
     expect(t.units(1)).toEqual(['WYL-07']);
@@ -294,7 +294,7 @@ describe('Wyldmaw (rare+)', () => {
       .board('AUR-01', 'AUR-02')
       .hand('WYL-05', 'WYL-05')
       .deck('NEU-03', 'NEU-03')
-      .aether(8, 8);
+      .mana(8, 8);
     t.p1.play('WYL-05', { targets: ['p1:AUR-01'] }).resolve();
     expect(t.handCards(1)).toHaveLength(2);
     t.p1.play('WYL-05#1', { targets: ['p1:AUR-02'] }).resolve(); // #0 is now on the field
@@ -344,7 +344,7 @@ describe('Umbral Veil (rare+)', () => {
   });
 
   it('UMB-06 The Puppeteer: take control of an enemy unit costing 3 or less (it is Arriving)', () => {
-    const t = t0().p1.hand('UMB-06').aether(6, 6).p2.board('NEX-16', 'NEU-03');
+    const t = t0().p1.hand('UMB-06').mana(6, 6).p2.board('NEX-16', 'NEU-03');
     t.p1.play('UMB-06').resolve();
     expect(t.units(1)).toEqual(['UMB-06', 'NEX-16']);
     expect(t.legal().some((a) => a.type === 'attack' && a.attacker === t.id('p1:NEX-16'))).toBe(
@@ -441,12 +441,12 @@ describe('Umbral Veil (rare+)', () => {
     for (let i = 0; i < 5; i++) t.p1.setTrap(`UMB-10#${i}`); // earlier copies are already set
     expect(t.state.players[0].backrow).toHaveLength(5);
     expect(t.legal().some((a) => a.type === 'setTrap')).toBe(false);
-    // Shadow Coil costs 1; with the Rift the first Trap each turn costs 0, so no held Aether is needed
-    const u = t0().p1.rift('UMB-15').set('UMB-10').deck('NEU-03').aether(0, 0).p2.board('AUR-05');
+    // Shadow Coil costs 1; with the Rift the first Trap each turn costs 0, so no held Mana is needed
+    const u = t0().p1.rift('UMB-15').set('UMB-10').deck('NEU-03').mana(0, 0).p2.board('AUR-05');
     u.p1.endTurn();
     u.p2.attack('AUR-05', 'face');
     expect(u.legal(0).some((a) => a.type === 'activateTrap')).toBe(true);
-    const v = t0().set('UMB-10').deck('NEU-03').aether(0, 0).p2.board('AUR-05');
+    const v = t0().set('UMB-10').deck('NEU-03').mana(0, 0).p2.board('AUR-05');
     v.p1.endTurn();
     v.p2.attack('AUR-05', 'face');
     expect(v.legal(0).some((a) => a.type === 'activateTrap')).toBe(false); // costs 1 without it
@@ -507,21 +507,21 @@ describe('Umbral Veil (rare+)', () => {
 
 describe('Neutral (rare+)', () => {
   it('NEU-04 Riftborn Colossus: costs 1 less for each card in your backrow', () => {
-    const none = t0().p1.hand('NEU-04').aether(6, 6);
+    const none = t0().p1.hand('NEU-04').mana(6, 6);
     expect(none.legal().some((a) => a.type === 'play')).toBe(false);
-    const three = t0().p1.hand('NEU-04').set('UMB-10', 'UMB-10', 'UMB-10').aether(4, 4);
+    const three = t0().p1.hand('NEU-04').set('UMB-10', 'UMB-10', 'UMB-10').mana(4, 4);
     three.p1.play('NEU-04').resolve();
-    expect(three.aetherOf(1).aether).toBe(0);
+    expect(three.manaOf(1).mana).toBe(0);
   });
 
-  it('NEU-05 Tear in the Rift: 2 temporary Aether; 3 at Resonance 4', () => {
-    const a = t0().p1.hand('NEU-05').aether(0, 0);
+  it('NEU-05 Tear in the Rift: 2 temporary Mana; 3 at Resonance 4', () => {
+    const a = t0().p1.hand('NEU-05').mana(0, 0);
     a.p1.play('NEU-05').resolve();
-    expect(a.aetherOf(1).temp).toBe(2);
-    const b = t0().p1.hand('NEU-07', 'NEU-07', 'NEU-07', 'NEU-05').aether(3, 3).p2.board('NEU-03');
+    expect(a.manaOf(1).temp).toBe(2);
+    const b = t0().p1.hand('NEU-07', 'NEU-07', 'NEU-07', 'NEU-05').mana(3, 3).p2.board('NEU-03');
     for (let i = 0; i < 3; i++) b.p1.play('NEU-07', { targets: ['p2:NEU-03'] }).resolve();
     b.p1.play('NEU-05').resolve();
-    expect(b.aetherOf(1).temp).toBe(3);
+    expect(b.manaOf(1).temp).toBe(3);
   });
 
   it('NEU-08 Null Field: negates an enemy Swift spell, or an enemy Trap activation', () => {
@@ -548,7 +548,7 @@ describe('Neutral (rare+)', () => {
     const t = t0()
       .p1.hand('NEU-10')
       .voidCards('NEU-07', 'AUR-10', 'AUR-04', 'UMB-10')
-      .aether(7, 7)
+      .mana(7, 7)
       .p2.board('NEU-03');
     t.p1.play('NEU-10').resolve();
     expect(t.units(1)).toEqual(['NEU-10']);

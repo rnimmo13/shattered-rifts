@@ -149,13 +149,13 @@ On the board, units are **tokens**, not full cards: readable at a glance, with f
 ## 4. Board layout (1920 × 1080 reference)
 ```
 ┌───────────────────────────────────────────────────────────────────────────────┐
-│ [Enemy portrait + Essence orb + held Aether + Resonance ring]   [Omens]  [⚙]  │ y 0–150
+│ [Enemy portrait + Essence orb + held Mana + Resonance ring]   [Omens]  [⚙]  │ y 0–150
 │            [ backrow ▢ ▢ ▢ ▢ ]      [Rift ▭]                    [deck][void]   │ y 150–300
 │            [ unit row  ▣ ▣ ▣ ▣ ▣ ]                                             │ y 300–480
 │ [log ◂]  ═════════════════ RIFT LINE (glowing crack) ═══════════  [CHAIN ▸]    │ y 480–600
 │            [ unit row  ▣ ▣ ▣ ▣ ▣ ]                              [END TURN]     │ y 600–780
 │            [ backrow ▢ ▢ ▢ ▢ ]      [Rift ▭]                    [deck][void]   │ y 780–900
-│ [Your portrait/Essence/Resonance]    [  H A N D  (fan)  ]    [Aether ◆◆◆◇◇]   │ y 880–1080
+│ [Your portrait/Essence/Resonance]    [  H A N D  (fan)  ]    [Mana ◆◆◆◇◇]   │ y 880–1080
 └───────────────────────────────────────────────────────────────────────────────┘
 ```
 - The **Rift line** across the middle is a living crack: it pulses with the active player's realm colour
@@ -200,7 +200,7 @@ Durations at 1×. "VFX" refers to presets in §7; "SFX" names map to audio files
 | **Hand hover** | 120 ms in / 160 ms out | Lift 40 px, scale to 0.35, rotate to 0°, neighbours spread ±30 px; z-top | `card_hover` (very soft, randomised pitch ±5%) |
 | **Drag** | continuous | Card follows the pointer with lerp 0.35/frame; tilt = velocity × 0.04 (clamped ±12°); valid drop zones pulse their outline; the hand closes the gap (200 ms) | `card_pickup` |
 | **Invalid drop** | 260 ms | Springs back to the hand slot (`back.out(1.4)`), small horizontal shake (3× 6 px) | `ui_deny` |
-| **Play commit** | 140 ms | Scale 1.0 → 1.08 → 1.0 punch at the drop point; cost gem flashes; Aether crystals drain (see 6.6) | `card_commit` |
+| **Play commit** | 140 ms | Scale 1.0 → 1.08 → 1.0 punch at the drop point; cost gem flashes; Mana crystals drain (see 6.6) | `card_commit` |
 | **Discard (by effect)** | 450 ms | Card lifts out of the hand, shakes, tears diagonally (2-piece mask split), pieces fade to the Void | `card_tear` |
 
 ### 6.2 Summons
@@ -270,7 +270,7 @@ Durations at 1×. "VFX" refers to presets in §7; "SFX" names map to audio files
 | grant keyword | The keyword icon flies in and lands in the token strip, with a status overlay fade-in, 300 ms |
 | draw | Standard draw, 90 ms stagger |
 | discardRandom | The enemy's hand card backs shuffle; one is pulled out and torn, 500 ms |
-| gainAether | Crystal shards fly into the Aether bar and new crystals form (temporary ones are hollow-outlined and glow), 400 ms |
+| gainMana | Crystal shards fly into the Mana bar and new crystals form (temporary ones are hollow-outlined and glow), 400 ms |
 | summon (token) | Token summon |
 | negate | See 6.5 |
 | scry | Top cards fan out at the deck (only the owner sees faces); choice UI |
@@ -293,9 +293,9 @@ Durations at 1×. "VFX" refers to presets in §7; "SFX" names map to audio files
 | Event | Duration | Beats |
 |---|---|---|
 | **Turn start banner** | 700 ms (300 ms at 2×+) | "YOUR TURN" / "ENEMY TURN" sweeps across the Rift line (a light streak leads the text), the Rift line recolours to the active player's realm |
-| **Aether refill** | 50 ms stagger per crystal | Crystals light left→right with rising chime pitch; a new max crystal "grows" (scale 0→1 with `back.out(2)`) |
-| **Aether spend** | 60 ms stagger | Crystals drain right→left with a crack flicker |
-| **Held Aether (opponent's turn)** | loop | Unspent crystals glow with a slow pulse; the opponent sees the count clearly (this is part of the bluffing game) |
+| **Mana refill** | 50 ms stagger per crystal | Crystals light left→right with rising chime pitch; a new max crystal "grows" (scale 0→1 with `back.out(2)`) |
+| **Mana spend** | 60 ms stagger | Crystals drain right→left with a crack flicker |
+| **Held Mana (opponent's turn)** | loop | Unspent crystals glow with a slow pulse; the opponent sees the count clearly (this is part of the bluffing game) |
 | **Resonance tick** | 250 ms | A rune segment lights on the ring around your portrait; at thresholds (2/3/4/5) the whole ring **ignites** (flare + tone step up a fifth), and cards whose Resonance bonus just turned live flash once in hand |
 | **End turn button** | states | *Has actions:* calm. *No actions left:* gently pulses ("you're done"). *Attacks left unused:* shows a small sword badge; optional "confirm end turn" setting |
 

@@ -189,8 +189,8 @@
   box-shadow: 0 0 0 1px rgb(54 224 255 / 0.35);
 }
 
-/* ---- Phase 2 demo HUD: Aether and the deal button ---- */
-.aether {
+/* ---- Phase 2 demo HUD: Mana and the deal button ---- */
+.mana {
   position: absolute;
   left: 1.25rem;
   bottom: 1.25rem;
@@ -207,7 +207,7 @@
       border-box;
   box-shadow: var(--shadow-deep);
 }
-.aether__gem {
+.mana__gem {
   width: 3.2rem;
   height: 3.2rem;
   display: grid;
@@ -216,13 +216,13 @@
   background: radial-gradient(circle at 35% 28%, #b9f2ff, var(--c-cyan) 35%, #0a5f86 80%);
   filter: drop-shadow(0 0 10px rgb(54 224 255 / 0.55));
 }
-.aether__gem span {
+.mana__gem span {
   font-family: var(--font-numeric);
   font-size: 2.2rem;
   line-height: 1;
   color: #04202e;
 }
-.aether__btn {
+.mana__btn {
   width: 2rem;
   height: 2rem;
   border-radius: 50%;
@@ -236,14 +236,14 @@
     transform var(--t-fast) var(--ease-pop),
     box-shadow var(--t-fast) var(--ease-out);
 }
-.aether__btn:hover {
+.mana__btn:hover {
   transform: scale(1.12);
   box-shadow: var(--glow-gold);
 }
-.aether__btn:active {
+.mana__btn:active {
   transform: scale(0.94);
 }
-.aether__deal {
+.mana__deal {
   margin-left: 0.4rem;
 }
 

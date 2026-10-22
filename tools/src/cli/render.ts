@@ -107,8 +107,8 @@ export class Renderer {
     const playerBlock = (p: PlayerId, mirror: boolean) => {
       const ps = s.players[p];
       const seat = this.seats[p];
-      const header = `${this.who(p)} ${seat.character.padEnd(20)} Essence ${String(ps.essence).padStart(2)}  Aether ${ps.aether}/${ps.maxAether}${
-        ps.tempAether ? ` (+${ps.tempAether} temp)` : ''
+      const header = `${this.who(p)} ${seat.character.padEnd(20)} Essence ${String(ps.essence).padStart(2)}  Mana ${ps.mana}/${ps.maxMana}${
+        ps.tempMana ? ` (+${ps.tempMana} temp)` : ''
       }  Resonance ${ps.resonance}  Hand ${ps.hand.length}  Deck ${ps.deck.length}  Void ${ps.void.length}`;
       const back = ps.backrow
         .map((id) => (id ? this.unitLabel(s, s.cards[id] as CardInstance) : null))

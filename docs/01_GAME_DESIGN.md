@@ -51,7 +51,7 @@ These come first. When a design question is unclear, pick the option that best s
 | Copies | Max 3 of a card; Legendary and Mythic max 1 each, and at most 2 Legendary+Mythic in total |
 | Opening hand | 5 cards each, with one **mulligan**: choose any number to shuffle back and redraw |
 | First player | Skips their first draw |
-| Second player | Gets **Rift Spark** in hand (a non-collectible 0-cost Swift spell: gain 1 temporary Aether) |
+| Second player | Gets **Rift Spark** in hand (a non-collectible 0-cost Swift spell: gain 1 temporary Mana) |
 | Hand limit | 9: extra draws are **burned** (sent to the Void, revealed) |
 | Empty deck | Each draw from an empty deck deals **Fatigue** damage: 1, then 2, then 3... |
 
@@ -64,14 +64,14 @@ These come first. When a design question is unclear, pick the option that best s
 - **Beyond**: exiled cards, public and gone for good.
 
 ### 3.3 Resources
-**Aether** is the only mana:
-- Max Aether starts at 1 and grows by 1 at the start of each of your turns, up to 10.
-- At the start of your turn, Aether refills to max.
-- **Unspent Aether is held through the opponent's turn.** It's the only way to pay for traps and
-  Swift spells when it isn't your turn. Held Aether is visible to the opponent, which creates bluffing:
-  *"they held 3 Aether... what's set back there?"* Held Aether is lost when your next turn starts
+**Mana** is the only resource spent to play cards:
+- Max Mana starts at 1 and grows by 1 at the start of each of your turns, up to 10.
+- At the start of your turn, Mana refills to max.
+- **Unspent Mana is held through the opponent's turn.** It's the only way to pay for traps and
+  Swift spells when it isn't your turn. Held Mana is visible to the opponent, which creates bluffing:
+  *"they held 3 Mana... what's set back there?"* Held Mana is lost when your next turn starts
   and you refill.
-- *Temporary Aether* (from effects) can exceed max and disappears at end of turn.
+- *Temporary Mana* (from effects) can exceed max and disappears at end of turn.
 
 **Resonance** is the combo counter:
 - Each player's Resonance counts the cards they **played or activated this turn**: cards played from
@@ -84,12 +84,12 @@ These come first. When a design question is unclear, pick the option that best s
   hand whose bonus is live glow.
 
 ### 3.4 Turn structure
-1. **Dawn**: max Aether +1, refill Aether, draw 1, resolve "start of turn" effects, reset Resonance.
+1. **Dawn**: max Mana +1, refill Mana, draw 1, resolve "start of turn" effects, reset Resonance.
 2. **Main**: in any order, as many times as you can afford:
    - play a Unit (summon) or a Spell
    - **set** a Trap face-down (costs 0; pay its cost later when it activates)
    - play a Relic, play a Rift
-   - set an **Ambush** unit face-down (1 Aether)
+   - set an **Ambush** unit face-down (1 Mana)
    - attack with each ready unit (once per unit per turn)
    - activate abilities
 3. **Dusk**: resolve "end of turn" effects, temporary buffs expire, then the turn passes.
@@ -131,15 +131,15 @@ This is the heart of the game's depth. Rules are strict so the engine and the pl
   and can't be responded to individually. This keeps chains readable.
 - **Summoning itself can't be negated** unless a card says so. The unit lands, then its summon
   effect goes on the chain.
-- A chain has no length limit, but every link costs Aether, which is the natural limit.
+- A chain has no length limit, but every link costs Mana, which is the natural limit.
 
 #### Example chain
 1. On your turn, **Dawnlance Cavalier** (3/3) attacks the enemy Riftwalker. → **Link 1: Attack**.
-2. The opponent has 2 held Aether and springs **Bone Pit** ("Trigger: When an enemy attacks. Destroy
+2. The opponent has 2 held Mana and springs **Bone Pit** ("Trigger: When an enemy attacks. Destroy
    the attacker if its Guard is 3 or less"). → **Link 2**.
 3. You set **Null Field** last turn ("Trigger: When an enemy activates a Trap or Swift spell. Negate
-   it"). You pay 3 Aether. → **Link 3**.
-4. The opponent has no Aether left and passes, then you pass.
+   it"). You pay 3 Mana. → **Link 3**.
+4. The opponent has no Mana left and passes, then you pass.
 5. Resolution, top-down: Link 3 negates Bone Pit → Link 2 does nothing → Link 1: the Cavalier hits
    for 3.
 
@@ -150,7 +150,7 @@ The UI only highlights *legal* responses, which is how players learn trigger rul
 |---|---|---|
 | **Unit** | Unit row | Has Power and Guard. Summon effects, passives, abilities. |
 | **Spell** | Cast, then Void | One-shot. **Swift** spells can be cast in response windows. |
-| **Trap** | Backrow, face-down | Set for 0. Activate from a later turn when its Trigger matches, paying its cost from held Aether. Then Void. |
+| **Trap** | Backrow, face-down | Set for 0. Activate from a later turn when its Trigger matches, paying its cost from held Mana. Then Void. |
 | **Relic** | Backrow, face-up | Persistent effect. Many have **Charges**: when they hit 0, the relic breaks. |
 | **Rift** | Rift slot | Field card, one per player, with a realm-flavoured rule tweak. |
 | **Token** | Unit row | Created by effects (Drones, Larvae). Never in decks. Shatters into nothing. |
@@ -169,14 +169,14 @@ Keep this list short. A new keyword must earn its place.
 | **Veiled** | Can't be targeted or attacked until it attacks or deals damage. |
 | **Stun** | A stunned unit can't attack or use abilities during its controller's next turn. |
 | **Corrode** | At the start of its controller's turn, this unit loses 1 Power (to a minimum of 0). |
-| **Ambush** | Can be set face-down in a unit slot for 1 Aether. Flips for free when attacked, or you may flip it during your Main on a later turn by paying its cost − 1; then its **Flip:** effect triggers. Flipping doesn't count as a summon. |
+| **Ambush** | Can be set face-down in a unit slot for 1 Mana. Flips for free when attacked, or you may flip it during your Main on a later turn by paying its cost − 1; then its **Flip:** effect triggers. Flipping doesn't count as a summon. |
 | **Devour** | When summoned, you may destroy another friendly unit. If you do, the bonus listed applies. Devouring counts as the destroyed unit dying. |
 | **Evolve** | Transforms into the named card when the condition is met. Keeps damage and buffs, resets Arriving. |
 | **Assemble** | When summoned, you may merge it with a friendly Construct: the target leaves (it doesn't die) and this gains its Power, Guard and keywords. |
 | **Overclock N** | Optional extra cost N when played. If paid, the Overclock bonus applies. |
 | **Resonance N:** | Bonus if your Resonance ≥ N on resolution. |
-| **Echo N** | After this is in your Void, you may cast it from there for N Aether. Then it goes Beyond. |
-| **Ascend:** | Alternative cost: instead of paying Aether, satisfy the listed sacrifice. |
+| **Echo N** | After this is in your Void, you may cast it from there for N Mana. Then it goes Beyond. |
+| **Ascend:** | Alternative cost: instead of paying Mana, satisfy the listed sacrifice. |
 | **Scry N** | Look at your top N cards and put any on the bottom, rest on top in any order. |
 | **Swift** | (Spells) Can be cast in response windows, on either player's turn. |
 | **⚡ Quick** | (Abilities) Can be activated in response windows. |
@@ -190,7 +190,7 @@ Warded, Arriving, Marked (boss mechanics).
 Consistent wording is what makes a deep game learnable.
 
 - `When summoned:`, `Flip:`, `Trigger: When ...`, `Whenever ...`, `At the start of your turn:`,
-  `At the end of your turn:`, `⚡ Quick, N Aether:`, `Once per turn:`.
+  `At the end of your turn:`, `⚡ Quick, N Mana:`, `Once per turn:`.
 - Unit stats are written **Power/Guard**, e.g. "a 3/2 Drone".
 - "Destroy" triggers death effects. "Banish" sends a card Beyond with no death trigger. "Return"
   sends to hand.
@@ -207,7 +207,7 @@ Consistent wording is what makes a deep game learnable.
 - **No infinite loops:** the engine caps chain depth at 64 and the trigger queue at 256 per action.
   A test must fail if any card combination hits the cap.
 - **Turn-1 kills or locks are bugs.**
-- **Every trap needs counterplay:** information (held Aether is visible), backrow removal (Shatter,
+- **Every trap needs counterplay:** information (held Mana is visible), backrow removal (Shatter,
   Netrunner), or ways to bait it out.
 
 ## 5. AI opponents
@@ -217,7 +217,7 @@ The engine is deterministic and fast to clone, so the AI can **simulate before i
 - **Personalities** are weight sets: aggression, trap-happiness, value-hoarding, risk. Each enemy
   and boss has one. Bosses add **scripted Omens** on top.
 - **Difficulty** comes from search depth, mistake rate and deck quality, not cheating. The AI never
-  sees your hand or face-down cards. It infers from held Aether the way a human would.
+  sees your hand or face-down cards. It infers from held Mana the way a human would.
 - Response windows: the AI responds with probability weighted by personality and value, and always
   takes "lethal-prevention" responses.
 

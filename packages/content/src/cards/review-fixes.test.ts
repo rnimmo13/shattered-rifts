@@ -30,7 +30,7 @@ describe('M1 review fixes (real cards)', () => {
   });
 
   it('M3: Echo Wisp + Recompile cannot loop Echo', () => {
-    const t = scenario(CARD_DB).p1.voidCards('NEU-02').hand('NEX-11').aether(5, 5).deck('NEU-03');
+    const t = scenario(CARD_DB).p1.voidCards('NEU-02').hand('NEX-11').mana(5, 5).deck('NEU-03');
     t.p1.play('NEU-02', { echo: true }).resolve();
     t.p1.play('NEX-11', { targets: ['p1:NEU-02'] }).resolve();
     expect(t.beyond(1)).toEqual(['NEU-02']);

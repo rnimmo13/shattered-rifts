@@ -66,7 +66,7 @@ These are returned by `createEngine(cardDb)` so the engine stays dependency-free
 - **Static modifiers** (auras, cost changes) are recomputed through a layered stats function
   (`base → permanent buffs → statics → temporary`), never stored as mutated numbers.
 - **Events** are the only output the client animates from. A discriminated union, roughly:
-  `turnStarted, aetherChanged, resonanceChanged, cardDrawn, cardBurned, cardPlayed, unitSummoned,
+  `turnStarted, manaChanged, resonanceChanged, cardDrawn, cardBurned, cardPlayed, unitSummoned,
   tokenCreated, trapSet, ambushSet, flipped, attackDeclared, responseWindowOpened, chainLinkAdded,
   chainLinkResolved, negated, fizzled, damageDealt, healed, shieldPopped, statsChanged, keywordGranted,
   statusApplied, unitDestroyed, unitBanished, returnedToHand, controlChanged, evolved, assembled,
@@ -83,7 +83,7 @@ the engine RNG. Omens are visible state (`omens: [{id, countdown, veiled}]`).
   info by sampling plausible hands/sets from the unseen card pool.
 - Policy: enumerate legal actions → simulate with `applyAction` (1 ply for normal enemies, 2 for
   elites/bosses, beam-limited) → evaluate (board power, card advantage, Essence, tempo, threat
-  of the opponent's held Aether) → apply personality weights → pick, with a configurable mistake rate.
+  of the opponent's held Mana) → apply personality weights → pick, with a configurable mistake rate.
 - Runs in a **Web Worker** in the client so the UI never stutters.
 - Must answer a response window in < 300 ms (precomputed fast path); "thinking" delay is cosmetic.
 
@@ -98,7 +98,7 @@ the engine RNG. Omens are visible state (`omens: [{id, countdown, veiled}]`).
   `instanceId`. The director, never game logic, moves sprites.
 - **Input:** drag-to-play, click-to-target, right-click inspect, Space = pass/confirm, Esc = cancel.
   Only `legalActions` are ever offered: illegal moves can't be made, not "rejected".
-- **Debug panel** (dev builds, `~` key): state inspector, give card, set Aether, force draw, replay from
+- **Debug panel** (dev builds, `~` key): state inspector, give card, set Mana, force draw, replay from
   action N, copy seed+log, toggle "show hidden info".
 
 ## 5. Testing strategy (non-negotiable)
@@ -124,7 +124,7 @@ Each milestone ends with something playable/verifiable and a commit tag.
 | # | Milestone | Done when |
 |---|---|---|
 | **M0** | Monorepo, TS strict, lint/format, Vitest, CI config, Vite app with a placeholder title screen (deploy config present, not deployed) | `pnpm test` + `pnpm build` green |
-| **M1** | **Engine core:** zones, turn flow, Aether/held Aether, Resonance, units & combat, spells, traps, relics, rifts, the full chain, keywords; **all 40 Commons** + tokens + Rift Spark + character Sigils; the four 20-card starters; **CLI duel** (`pnpm duel`) vs a random AI | Rules tests green; a full game is playable in the terminal |
+| **M1** | **Engine core:** zones, turn flow, Mana/held Mana, Resonance, units & combat, spells, traps, relics, rifts, the full chain, keywords; **all 40 Commons** + tokens + Rift Spark + character Sigils; the four 20-card starters; **CLI duel** (`pnpm duel`) vs a random AI | Rules tests green; a full game is playable in the terminal |
 | **M2** ✅ | All 74 cards + Warden signature cards, content validation, heuristic AI, sim tool (incl. a "tier advantage" sim: Tier I bank vs Tier V bank decks), enemy decks | Every card tested; 10k-game property test green (`pnpm test:property`) |
 | **M3** | **Duel UI v1:** board, hand, drag/target, response windows, chain panel, placeholder art, core animations (draw, generic summon, attack, Shatter, trap spring, chain add/resolve) | A full duel vs the AI in the browser feels good at 1× and 4× |
 | **M4** | **Run v1:** Sanctum, character pick, stage map, nodes, card rewards/skip, Shards & Merchant, Shrine, Resolve, Stage 1 + its Warden, Warden's Gift, local saves + export | **Friends alpha** (single-player) |

@@ -142,13 +142,13 @@ export const NEUTRAL: CardDef[] = [
           {
             op: 'conditional',
             if: { resonanceAtLeast: 4 },
-            then: [{ op: 'gainAether', player: 'self', amount: 3 }],
-            else: [{ op: 'gainAether', player: 'self', amount: 2 }],
+            then: [{ op: 'gainMana', player: 'self', amount: 3 }],
+            else: [{ op: 'gainMana', player: 'self', amount: 2 }],
           },
         ],
       },
     ],
-    text: 'Gain 2 temporary Aether. **Resonance 4:** gain 3 instead.',
+    text: 'Gain 2 temporary Mana. **Resonance 4:** gain 3 instead.',
     collectible: true,
   },
   {
