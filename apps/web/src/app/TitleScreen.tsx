@@ -72,12 +72,12 @@ export function TitleScreen() {
         <a className="btn" href="#/duel">
           Art preview
         </a>
-        <span className="btn" aria-disabled="true" aria-describedby="cta-note">
+        <a className="btn btn--primary" href="#/run">
           Begin Run
-        </span>
+        </a>
       </div>
       <p id="cta-note" className="title__cta-note">
-        Runs open in the friends alpha. For now: a first look at the battlefield.
+        Runs are in early alpha: expect rough edges, and the difficulty is not tuned yet.
       </p>
 
       <p className="title__footer">engine v{ENGINE_VERSION}</p>

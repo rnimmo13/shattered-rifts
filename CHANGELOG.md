@@ -5,6 +5,12 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added
+- **The campaign (first playable run):** "Begin Run" now starts a real run. Pick a Riftwalker, walk a five-stage map
+  (duels, elites, events, shrines, a merchant, and a Warden at the end of each stage), win duels to earn shards and a
+  card reward (take one of three, or skip), spend shards at the merchant, rest or trim your deck at shrines, take the
+  Warden's Gift, and face Vorthax in stage five. Lose a duel and you lose Resolve; lose it all and the run collapses.
+  Clear the loop and choose to Bank the deck or Continue one Rift Tier deeper. Your run autosaves in this browser and
+  can be exported to a file and imported again. The difficulty is not tuned yet.
 - **Easier to read and play:** hover any card in your hand or on the board to read it large on the left, with its HP,
   Damage, cost and a plain-language explanation of every keyword. HP is now on the left and Damage on the right
   (cards and units). A big **End turn** button sits bottom right (shortcut: E) and pulses when you have nothing left

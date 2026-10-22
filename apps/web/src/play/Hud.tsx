@@ -190,6 +190,8 @@ export function GameOver(props: {
   winner: PlayerId | 'draw';
   onAgain: () => void;
   onExit: () => void;
+  /** Campaign mode: one button that carries the result back to the run. */
+  onContinue?: () => void;
 }) {
   const won = props.winner === HUMAN;
   const draw = props.winner === 'draw';
@@ -204,14 +206,20 @@ export function GameOver(props: {
               ? 'The rift bends to your will.'
               : 'The rift takes this one.'}
         </p>
-        <div className="modal__row">
-          <button className="btn" onClick={props.onAgain}>
-            <span>Duel again</span>
+        {props.onContinue ? (
+          <button className="btn btn--primary" onClick={props.onContinue}>
+            <span>Continue</span>
           </button>
-          <button className="btn btn--ghost" onClick={props.onExit}>
-            <span>Back</span>
-          </button>
-        </div>
+        ) : (
+          <div className="modal__row">
+            <button className="btn" onClick={props.onAgain}>
+              <span>Duel again</span>
+            </button>
+            <button className="btn btn--ghost" onClick={props.onExit}>
+              <span>Back</span>
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

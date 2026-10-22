@@ -59,6 +59,9 @@ importers:
       '@sr/ai':
         specifier: workspace:*
         version: link:../../packages/ai
+      '@sr/campaign':
+        specifier: workspace:*
+        version: link:../../packages/campaign
       '@sr/content':
         specifier: workspace:*
         version: link:../../packages/content

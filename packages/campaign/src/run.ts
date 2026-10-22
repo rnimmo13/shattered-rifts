@@ -160,11 +160,19 @@ export function finishDuel(run: RunState, won: boolean): RunState {
       return r;
     }
     const count = r.tier >= 5 ? 4 : 3;
-    r.context = {
-      nodeId: node.id,
-      offers: giftOffers(r.rng, r.character, r.deck, wardenFor(realmOfStage(r, r.stage)).id, count),
-      shardsGained: gain,
-    };
+    const offers = giftOffers(
+      r.rng,
+      r.character,
+      r.deck,
+      wardenFor(realmOfStage(r, r.stage)).id,
+      count,
+    );
+    if (offers.length === 0) {
+      r.phase = 'stageClear';
+      r.context = null;
+      return r;
+    }
+    r.context = { nodeId: node.id, offers, shardsGained: gain };
     r.phase = 'gift';
     return r;
   }
@@ -218,7 +226,7 @@ export function nextStage(run: RunState): RunState {
 // ---- shrine -------------------------------------------------------------------------------------------
 export type ShrineChoice = { kind: 'rest' } | { kind: 'remove'; card: string };
 
-export function useShrine(run: RunState, choice: ShrineChoice): RunState {
+export function takeShrine(run: RunState, choice: ShrineChoice): RunState {
   need(run.phase === 'shrine' && run.context, 'You are not at a shrine');
   const r = clone(run);
   if (choice.kind === 'rest') {

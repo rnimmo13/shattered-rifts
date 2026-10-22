@@ -50,7 +50,13 @@ interface Chooser {
 
 const SPEEDS = [1, 2, 4] as const;
 
-export function DuelView(props: { setup: DuelSetup; onExit: () => void; onAgain: () => void }) {
+export function DuelView(props: {
+  setup: DuelSetup;
+  onExit: () => void;
+  onAgain: () => void;
+  /** Campaign mode: the duel's result goes to the run instead of the practice screen. */
+  campaign?: { onResult: (won: boolean) => void };
+}) {
   const { setup } = props;
   const host = useRef<HTMLDivElement>(null);
   const scene = useRef<BattlefieldScene | null>(null);
@@ -444,14 +450,30 @@ export function DuelView(props: { setup: DuelSetup; onExit: () => void; onAgain:
         onPointerMove={onStageMove}
       />
       {!ready && !error && <div className="loading">Opening the rift…</div>}
-      {error && <div className="loading loading--error">The duel hit a problem: {error}</div>}
+      {error && (
+        <div className="loading loading--error">
+          The duel hit a problem: {error}
+          {props.campaign && (
+            <button className="btn" onClick={props.onExit}>
+              <span>Forfeit duel</span>
+            </button>
+          )}
+        </div>
+      )}
 
       {view && ready && (
         <>
           <header className="duel__top">
-            <button className="btn btn--small" onClick={props.onExit}>
-              <span>Leave</span>
-            </button>
+            {!props.campaign && (
+              <button className="btn btn--small" onClick={props.onExit}>
+                <span>Leave</span>
+              </button>
+            )}
+            {props.campaign && view.winner === null && (
+              <button className="btn btn--small btn--ghost" onClick={props.onExit}>
+                <span>Forfeit duel</span>
+              </button>
+            )}
             <p className="duel__label">
               {view.active === HUMAN ? 'Your turn' : "Enemy's turn"} · Turn {view.turn}
               {busy && view.winner === null ? ' · …' : ''}
@@ -660,7 +682,14 @@ export function DuelView(props: { setup: DuelSetup; onExit: () => void; onAgain:
           )}
 
           {!busy && view.winner !== null && (
-            <GameOver winner={view.winner} onAgain={props.onAgain} onExit={props.onExit} />
+            <GameOver
+              winner={view.winner}
+              onAgain={props.onAgain}
+              onExit={props.onExit}
+              {...(props.campaign
+                ? { onContinue: () => props.campaign?.onResult(view.winner === HUMAN) }
+                : {})}
+            />
           )}
         </>
       )}

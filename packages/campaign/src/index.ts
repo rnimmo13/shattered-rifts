@@ -33,7 +33,7 @@ export {
   newRun,
   nextStage,
   realmOfStage,
-  useShrine,
+  takeShrine,
   type ShrineChoice,
 } from './run';
 export { RUN_SAVE_VERSION, parseRun, serializeRun } from './save';

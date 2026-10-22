@@ -34,6 +34,10 @@ export interface DuelSetup {
   seed: string;
   character: CharacterId;
   enemyId: string;
+  /** Campaign duels bring the run's deck; practice duels use the character's starter. */
+  deck?: string[];
+  /** Campaign duels scale the enemy's starting Essence with the Rift Tier. */
+  enemyEssence?: number;
 }
 
 export interface Batch {
@@ -102,8 +106,12 @@ export class DuelSession {
     this.state = this.engine.createGame({
       seed: setup.seed,
       players: [
-        { deck: starterDeck(setup.character), sigil: mine.sigil, name: mine.name },
-        { deck: deckList(this.enemy), essence: this.enemy.essence, name: this.enemy.name },
+        { deck: setup.deck ?? starterDeck(setup.character), sigil: mine.sigil, name: mine.name },
+        {
+          deck: deckList(this.enemy),
+          essence: setup.enemyEssence ?? this.enemy.essence,
+          name: this.enemy.name,
+        },
       ],
     });
     this.ai = new HeuristicAi({

@@ -21,7 +21,7 @@ import {
   parseRun,
   reachableNodes,
   serializeRun,
-  useShrine,
+  takeShrine,
   type RunState,
   type StageRealm,
 } from './index';
@@ -176,11 +176,11 @@ describe('the run', () => {
       context: { nodeId: base.map.nodes[0]!.id },
       resolve: 1,
     };
-    const rested = useShrine(shrine, { kind: 'rest' });
+    const rested = takeShrine(shrine, { kind: 'rest' });
     expect(rested.resolve).toBe(2);
-    expect(() => useShrine(shrine, { kind: 'remove', card: shrine.deck[0]! })).toThrow(RunError);
+    expect(() => takeShrine(shrine, { kind: 'remove', card: shrine.deck[0]! })).toThrow(RunError);
     const fat = { ...shrine, deck: [...shrine.deck, 'AUR-04'] };
-    expect(useShrine(fat, { kind: 'remove', card: 'AUR-04' }).deck).toHaveLength(20);
+    expect(takeShrine(fat, { kind: 'remove', card: 'AUR-04' }).deck).toHaveLength(20);
   });
 
   it('the merchant sells cards for shards and removes one card', () => {
@@ -270,7 +270,7 @@ function playRun(character: CharacterId, seed: string, wins: (n: number) => bool
         break;
       }
       case 'shrine':
-        r = useShrine(r, { kind: 'rest' });
+        r = takeShrine(r, { kind: 'rest' });
         break;
       case 'merchant':
         r = leaveMerchant(r);
@@ -343,5 +343,30 @@ describe('a whole run', () => {
     const next = reachableNodes(r.map, first.id, []);
     expect(next.map((n) => n.id).sort()).toEqual([...first.next].sort());
     expect(REALMS).toContain(r.map.realm);
+  });
+});
+
+describe('damaged saves', () => {
+  const good = () => JSON.parse(serializeRun(newRun('maren', 'dmg'))) as Record<string, unknown>;
+  const mk = (f: (r: Record<string, unknown>) => void): string => {
+    const r = good();
+    f(r);
+    return JSON.stringify(r);
+  };
+  it('are refused instead of crashing the screens', () => {
+    expect(parseRun(mk(() => undefined))).not.toBeNull();
+    expect(parseRun(mk((r) => ((r['map'] as { nodes: unknown[] }).nodes = [])))).toBeNull();
+    expect(parseRun(mk((r) => ((r['map'] as { nodes: null }).nodes = null)))).toBeNull();
+    expect(
+      parseRun(
+        mk((r) => ((r['map'] as { nodes: { enemyId: string }[] }).nodes[0]!.enemyId = 'nobody')),
+      ),
+    ).toBeNull();
+    expect(parseRun(mk((r) => (r['at'] = 'ghost-node')))).toBeNull();
+    expect(parseRun(mk((r) => (r['cleared'] = ['ghost-node'])))).toBeNull();
+    expect(parseRun(mk((r) => (r['phase'] = 'reward')))).toBeNull(); // reward with no offers
+    expect(parseRun(mk((r) => (r['phase'] = 'duel')))).toBeNull(); // duel with no node
+    expect(parseRun(mk((r) => (r['phase'] = 'merchant')))).toBeNull();
+    expect(parseRun('x'.repeat(2_100_000))).toBeNull();
   });
 });

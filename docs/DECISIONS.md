@@ -286,4 +286,15 @@ consistent with the docs" rule and can be revisited.
     Resolve (elite/Warden 2) and retries the same node; 0 Resolve collapses the run. Win rewards: 12 / 28 / 50 shards and 3 card
     offers (4 from Tier IV), or the Warden's Gift (a signature card). Tier scales enemy Essence (+3, Wardens +5 per tier above I).
     Not in Run v1: Boons, Tempering, Anomalies, Tier mutators beyond Essence, the Vault. Balance is deliberately not tuned (DECISIONS #74).
+80. **Run v1 screens (`apps/web/src/run`, route `#/run`) →** Sanctum (pick a Riftwalker; all four are unlocked for now, Vesper's
+    unlock is a later job), stage map, card reward / Warden's Gift, shrine, merchant, event, stage clear, loop cleared (Bank or
+    Continue), Rift Collapse, Deck banked. The run is autosaved to localStorage after every step (`sr.run.v1`) and can be
+    exported and imported as JSON; a finished run (collapsed or banked) clears the save. A duel in a run uses the run's deck and the
+    enemy's Tier-scaled Essence; its shuffle seed is derived from the run seed, the node and the win/loss count, so a retry after a
+    loss is a fresh shuffle. Conceding counts as a loss. The practice duel (`#/play`) and the art preview (`#/duel`) stay.
+81. **Run v1: what is deliberately not built yet (from the M4 review, `reviews/m4-review.md`) →** Boons, Tempering, Anomaly nodes,
+    Tier shard multipliers and Merchant price rises, the Vorthax gift, the Vault, a guarantee that one path per stage avoids the Elite,
+    per-stage sub-seeds (maps and offers currently depend on the run's shared random stream, so they are reproducible for a whole run
+    but not independently per stage), and a duel-in-progress save (a reload mid-duel counts the duel as a loss instead). A draw counts
+    as a loss. Banked decks stay in the browser save until the player leaves the Deck banked screen, because the Vault does not exist.
 

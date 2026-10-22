@@ -1,0 +1,320 @@
+/* The campaign screens. Shared tokens, same look as the duel. */
+
+.run {
+  min-height: 100vh;
+  padding: 1rem clamp(0.8rem, 3vw, 2.5rem) 3rem;
+  display: grid;
+  align-content: start;
+  gap: 1rem;
+  color: var(--c-ivory);
+  background:
+    radial-gradient(ellipse at 50% -10%, rgb(143 91 255 / 0.28), transparent 60%),
+    linear-gradient(180deg, var(--c-navy), var(--c-void) 75%);
+}
+
+.runbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem 2rem;
+  padding: 0.7rem 1rem;
+  border-radius: 14px;
+  border: 1px solid transparent;
+  background:
+    linear-gradient(160deg, rgb(20 32 74 / 0.9), rgb(8 10 20 / 0.95)) padding-box,
+    linear-gradient(160deg, var(--c-gold-light), var(--c-gold-dark) 55%, rgb(143 91 255 / 0.5))
+      border-box;
+  box-shadow: var(--shadow-deep);
+}
+.runbar__who {
+  display: grid;
+  gap: 0.1rem;
+}
+.runbar__who b {
+  font-family: var(--font-display);
+  letter-spacing: 0.06em;
+  color: var(--c-gold-light);
+}
+.runbar__who span {
+  font-size: 0.8rem;
+  color: var(--c-text-dim);
+}
+.runbar__stats {
+  display: flex;
+  align-items: center;
+  gap: 1.4rem;
+}
+.runbar__actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-left: auto;
+  flex-wrap: wrap;
+}
+.resolve {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+.resolve i {
+  width: 1.05rem;
+  height: 1.05rem;
+  rotate: 45deg;
+  border-radius: 3px;
+  border: 1px solid var(--c-gold-dark);
+  background: rgb(0 0 0 / 0.5);
+}
+.resolve i.is-full {
+  background: linear-gradient(135deg, #ffb48a, var(--c-ember));
+  box-shadow: 0 0 10px rgb(255 138 61 / 0.7);
+}
+.resolve em {
+  margin-left: 0.5rem;
+  font-style: normal;
+  font-size: 0.75rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--c-text-dim);
+}
+.shards b {
+  font-family: var(--font-numeric);
+  font-size: 1.4rem;
+  font-weight: 400;
+  color: var(--c-cyan-glow);
+}
+.run__notice {
+  margin: 0;
+  padding: 0.6rem 0.9rem;
+  border-radius: 10px;
+  background: rgb(209 47 72 / 0.18);
+  border: 1px solid rgb(209 47 72 / 0.6);
+}
+
+/* panels */
+.stage-panel {
+  display: grid;
+  gap: 0.9rem;
+  justify-items: center;
+  text-align: center;
+  padding: 1rem 0;
+}
+.stage-panel__title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: clamp(1.4rem, 3.4vw, 2.2rem);
+  letter-spacing: 0.1em;
+  color: var(--c-gold-light);
+  text-shadow: 0 0 22px rgb(143 91 255 / 0.55);
+}
+.stage-panel--bad .stage-panel__title {
+  color: #ff9aa8;
+}
+.stage-panel__hint {
+  margin: 0;
+  max-width: 44rem;
+  color: var(--c-text-dim);
+  line-height: 1.45;
+}
+.offers {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1.4rem;
+}
+.pick {
+  display: grid;
+  justify-items: center;
+  gap: 0.4rem;
+}
+.pick__card {
+  position: relative;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  transition: transform var(--t-fast) var(--ease-out);
+}
+.pick__card:disabled {
+  cursor: default;
+}
+.pick__card:not(:disabled):hover {
+  transform: translateY(-8px) scale(1.03);
+}
+.pick__badge {
+  position: absolute;
+  right: -0.4rem;
+  top: -0.4rem;
+  padding: 0.1rem 0.5rem;
+  border-radius: 999px;
+  font-family: var(--font-numeric);
+  font-size: 1.1rem;
+  background: var(--c-gold);
+  color: #1a1203;
+}
+.pick__price {
+  margin: 0;
+  font-family: var(--font-numeric);
+  font-size: 1.2rem;
+  color: var(--c-cyan-glow);
+}
+.choices-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1rem;
+}
+.bigchoice {
+  display: grid;
+  gap: 0.3rem;
+  width: min(18rem, 90vw);
+  padding: 1.1rem 1.2rem;
+  text-align: left;
+  color: inherit;
+  cursor: pointer;
+  border-radius: 14px;
+  border: 1px solid transparent;
+  background:
+    linear-gradient(160deg, rgb(31 48 104 / 0.95), rgb(8 10 20 / 0.95)) padding-box,
+    linear-gradient(160deg, var(--c-gold-light), var(--c-gold-dark) 55%, var(--c-violet)) border-box;
+  transition: transform var(--t-fast) var(--ease-out);
+}
+.bigchoice:not(:disabled):hover {
+  transform: translateY(-3px);
+  box-shadow: var(--glow-gold);
+}
+.bigchoice:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+.bigchoice b {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  color: var(--c-gold-light);
+}
+.bigchoice span,
+.bigchoice i {
+  color: var(--c-text-dim);
+  font-size: 0.9rem;
+}
+
+/* deck viewer */
+.deckmodal {
+  width: min(70rem, 96vw);
+}
+.deckmodal .modal__title i {
+  font-style: normal;
+  font-size: 0.8em;
+  color: var(--c-text-dim);
+}
+.deckgrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+  justify-content: center;
+  max-height: 60vh;
+  overflow: auto;
+  padding: 0.5rem;
+}
+
+/* the stage map */
+.mapwrap {
+  max-width: 100%;
+  overflow-x: auto;
+  padding: 1rem 0.5rem 2rem;
+}
+.map {
+  position: relative;
+  margin: 0 auto;
+}
+.map__lines {
+  position: absolute;
+  inset: 0;
+  overflow: visible;
+}
+.map__edge {
+  fill: none;
+  stroke: rgb(143 91 255 / 0.4);
+  stroke-width: 3;
+  stroke-dasharray: 2 9;
+  stroke-linecap: round;
+}
+.map__edge.is-walked {
+  stroke: var(--c-gold);
+  stroke-dasharray: none;
+  opacity: 0.8;
+}
+.mapnode {
+  position: absolute;
+  translate: -50% -50%;
+  width: 4.2rem;
+  height: 4.2rem;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border-radius: 50%;
+  color: var(--c-text-dim);
+  cursor: default;
+  border: 2px solid var(--c-gold-dark);
+  background: radial-gradient(circle at 35% 28%, rgb(31 48 104 / 0.95), rgb(8 10 20 / 0.98));
+  opacity: 0.55;
+}
+.mapnode svg {
+  width: 2.1rem;
+  height: 2.1rem;
+}
+.mapnode.is-open {
+  opacity: 1;
+  cursor: pointer;
+  color: var(--c-gold-light);
+  border-color: var(--c-gold-light);
+  box-shadow: var(--glow-gold);
+  animation: node-pulse 1.6s var(--ease-breathe) infinite;
+}
+.mapnode.is-open:hover {
+  scale: 1.14;
+}
+.mapnode.is-done {
+  opacity: 0.9;
+  color: var(--c-gold);
+  border-color: var(--c-gold);
+  background: radial-gradient(circle at 35% 28%, rgb(122 90 30 / 0.55), rgb(8 10 20 / 0.98));
+}
+.mapnode.is-here {
+  box-shadow: 0 0 0 4px rgb(54 224 255 / 0.5);
+}
+.mapnode--elite {
+  border-color: #ff8aa8;
+}
+.mapnode--warden {
+  width: 5.2rem;
+  height: 5.2rem;
+  border-color: #ff5a86;
+}
+.mapnode--merchant {
+  border-color: var(--c-cyan);
+}
+.mapnode--shrine {
+  border-color: var(--c-heal);
+}
+.mapnode__label {
+  position: absolute;
+  top: calc(100% + 0.35rem);
+  left: 50%;
+  translate: -50% 0;
+  width: 9rem;
+  font-size: 0.72rem;
+  line-height: 1.15;
+  letter-spacing: 0.04em;
+  color: var(--c-text-dim);
+  pointer-events: none;
+}
+@keyframes node-pulse {
+  50% {
+    box-shadow: 0 0 22px rgb(246 220 148 / 0.9);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .mapnode.is-open {
+    animation: none;
+  }
+}

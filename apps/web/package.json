@@ -14,6 +14,7 @@
     "@fontsource/cinzel": "5.3.0",
     "@fontsource/source-sans-3": "5.3.1",
     "@sr/ai": "workspace:*",
+    "@sr/campaign": "workspace:*",
     "@sr/content": "workspace:*",
     "@sr/engine": "workspace:*",
     "gsap": "3.15.0",
