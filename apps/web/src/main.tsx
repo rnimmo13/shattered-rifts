@@ -4,6 +4,7 @@ import '@fontsource/cinzel/700.css';
 import '@fontsource/cinzel/900.css';
 import '@fontsource/source-sans-3/400.css';
 import '@fontsource/source-sans-3/600.css';
+import '@fontsource/bebas-neue/400.css';
 import { applyCssTokens } from './design/tokens';
 import './app/global.css';
 import './duel/duel.css';

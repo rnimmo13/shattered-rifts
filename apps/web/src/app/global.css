@@ -4,6 +4,7 @@
 :root {
   --font-display: 'Cinzel', 'Trajan Pro', serif;
   --font-body: 'Source Sans 3', system-ui, sans-serif;
+  --font-numeric: 'Bebas Neue', 'Cinzel', sans-serif;
   color-scheme: dark;
 }
 

@@ -5,6 +5,10 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added
+- **The hand and the cards (preview):** cards with realm-coloured frames and rarity treatments (rare shimmer, epic glint,
+  legendary holo foil with an edge glow, mythic prism). Your hand fans out; hovering lifts and tilts a card toward the
+  cursor, and dragging shows a curved targeting arrow, lights valid slots and dims the rest. Playable cards glow,
+  unaffordable ones fade. Try it from "Enter the battlefield".
 - **The battlefield (first look):** a painted-style dark-fantasy arena: a rift tearing through the sky, floating
   ruins, a perspective stone floor with glowing cracks and a pulsing Rift line, drifting fog, rising rift motes,
   and rune-circle slots for units and traps that glow when a card can be played there. Includes a "reduced

@@ -270,6 +270,53 @@ export class BattlefieldScene {
     }
   }
 
+  /**
+   * While a card is being dragged: valid slots glow, the others sink into shadow. null restores everything.
+   * (Phase 2 visual; the legal-target rules live outside the scene.)
+   */
+  setDragTargets(valid: ReadonlySet<string> | null): void {
+    this.highlightSlots(valid);
+    for (const v of this.slotViews) {
+      const base = v.geom.kind === 'trap' ? 0.8 : 0.9;
+      const dim = valid !== null && !valid.has(slotKey(v.geom));
+      gsap.to(v.ring, { alpha: dim ? base * 0.3 : base, duration: 0.25, ease: ease.out.gsap });
+    }
+  }
+
+  /** The slot under a screen point (client px), or null. Slots are hit as a tall ellipse so a standing unit counts. */
+  slotAtClient(clientX: number, clientY: number): SlotGeom | null {
+    const rect = this.host.getBoundingClientRect();
+    const k = this.world.scale.x;
+    const sx = (clientX - rect.left - this.world.position.x) / k;
+    const sy = (clientY - rect.top - this.world.position.y) / k;
+    let best: SlotGeom | null = null;
+    let bestD = 1;
+    for (const v of this.slotViews) {
+      const rx = v.geom.width * 0.62;
+      const ry = Math.max(v.geom.width * 0.62 * FLOOR_SQUASH * 1.9, 34);
+      const dx = (sx - v.geom.x) / rx;
+      const dy = (sy - (v.geom.y - ry * 0.35)) / ry;
+      const d = dx * dx + dy * dy;
+      if (d <= bestD) {
+        bestD = d;
+        best = v.geom;
+      }
+    }
+    return best;
+  }
+
+  /** Where a slot sits on screen (client px): arrow endpoints, effects anchored in the DOM. */
+  slotClientCenter(key: string): { x: number; y: number } | null {
+    const v = this.slotViews.find((sv) => slotKey(sv.geom) === key);
+    if (!v) return null;
+    const rect = this.host.getBoundingClientRect();
+    const k = this.world.scale.x;
+    return {
+      x: rect.left + this.world.position.x + v.geom.x * k,
+      y: rect.top + this.world.position.y + v.geom.y * k,
+    };
+  }
+
   setProfile(p: EffectsProfile): void {
     this.profile = p;
     // grow or shrink the mote pool to the cap
@@ -442,7 +489,7 @@ export class BattlefieldScene {
     this.destroyed = true;
     window.removeEventListener('resize', this.onResize);
     this.host.removeEventListener('pointermove', this.onPointer);
-    gsap.killTweensOf(this.slotViews.map((v) => v.glow));
+    gsap.killTweensOf(this.slotViews.flatMap((v) => [v.glow, v.ring]));
     this.app.destroy({ removeView: true }, { children: true, texture: true });
   }
 }

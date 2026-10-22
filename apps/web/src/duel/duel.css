@@ -188,3 +188,86 @@
   background: rgb(4 5 11 / 0.7);
   box-shadow: 0 0 0 1px rgb(54 224 255 / 0.35);
 }
+
+/* ---- Phase 2 demo HUD: Aether and the deal button ---- */
+.aether {
+  position: absolute;
+  left: 1.25rem;
+  bottom: 1.25rem;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.55rem 0.8rem;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  background:
+    linear-gradient(160deg, rgb(20 32 74 / 0.85), rgb(8 10 20 / 0.92)) padding-box,
+    linear-gradient(160deg, var(--c-gold-light), var(--c-gold-dark) 55%, rgb(54 224 255 / 0.5))
+      border-box;
+  box-shadow: var(--shadow-deep);
+}
+.aether__gem {
+  width: 3.2rem;
+  height: 3.2rem;
+  display: grid;
+  place-items: center;
+  clip-path: polygon(50% 0, 100% 28%, 100% 72%, 50% 100%, 0 72%, 0 28%);
+  background: radial-gradient(circle at 35% 28%, #b9f2ff, var(--c-cyan) 35%, #0a5f86 80%);
+  filter: drop-shadow(0 0 10px rgb(54 224 255 / 0.55));
+}
+.aether__gem span {
+  font-family: var(--font-numeric);
+  font-size: 2.2rem;
+  line-height: 1;
+  color: #04202e;
+}
+.aether__btn {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  border: 1px solid var(--c-gold-dark);
+  background: linear-gradient(180deg, var(--c-navy-light), var(--c-navy));
+  color: var(--c-gold-light);
+  font-size: 1.2rem;
+  line-height: 1;
+  cursor: pointer;
+  transition:
+    transform var(--t-fast) var(--ease-pop),
+    box-shadow var(--t-fast) var(--ease-out);
+}
+.aether__btn:hover {
+  transform: scale(1.12);
+  box-shadow: var(--glow-gold);
+}
+.aether__btn:active {
+  transform: scale(0.94);
+}
+.aether__deal {
+  margin-left: 0.4rem;
+}
+
+.duel__toast {
+  position: absolute;
+  left: 50%;
+  top: 4.2rem;
+  translate: -50% 0;
+  margin: 0;
+  padding: 0.5rem 1.1rem;
+  border-radius: 999px;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.85rem;
+  letter-spacing: 0.08em;
+  color: var(--c-gold-pale);
+  background: rgb(8 10 20 / 0.85);
+  border: 1px solid var(--c-gold-dark);
+  box-shadow: var(--glow-gold);
+  animation: toast-in var(--t-slow) var(--ease-pop);
+}
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    translate: -50% -10px;
+  }
+}

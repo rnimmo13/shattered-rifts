@@ -63,5 +63,5 @@ Design complete; campaign redesigned on 2026-10-22 to run-built decks + weekly P
 `docs/DECISIONS.md`). Web build = private friends beta for now. **M0, M1 and M2 done** (engine, all 74 cards + 12 signature cards, enemy decks, heuristic AI, balance sim,
 10k-game property gate). **Pending Robert's decision:** first-player advantage (`docs/BALANCE.md` §1). Starter imbalance is accepted (DECISIONS #63).
 **In progress: the browser game, playable through the campaign** (DECISIONS #64–70). UI art phases (stop after each for Robert):
-**Phase 1 done** (tokens, Pixi battlefield, ambient). Next: 2 hand + card frames · 3 monsters on the field · 4 trap sigils/reveal · 5 juice.
+**Phases 1 and 2 done** (tokens, Pixi battlefield; hand + card frames). Next: 3 monsters on the field · 4 trap sigils/reveal · 5 juice.
 Deploy with `pnpm deploy:web -- --repo rnimmo13/shattered-rifts` (live: https://rnimmo13.github.io/shattered-rifts/).

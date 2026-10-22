@@ -47,12 +47,18 @@ importers:
 
   apps/web:
     dependencies:
+      '@fontsource/bebas-neue':
+        specifier: 5.3.0
+        version: 5.3.0
       '@fontsource/cinzel':
         specifier: 5.3.0
         version: 5.3.0
       '@fontsource/source-sans-3':
         specifier: 5.3.1
         version: 5.3.1
+      '@sr/content':
+        specifier: workspace:*
+        version: link:../../packages/content
       '@sr/engine':
         specifier: workspace:*
         version: link:../../packages/engine
@@ -397,6 +403,9 @@ packages:
   '@eslint/plugin-kit@0.7.3':
     resolution: {integrity: sha512-IkO+/KEUvwbVpiURZg+P7zF74z5Jxe0UgJxVni+RtoHQ6IZieXaO02kmadomap/q+l6bc/jdPGGqTjhuZnuz1Q==}
     engines: {node: ^20.19.0 || ^22.13.0 || >=24}
+
+  '@fontsource/bebas-neue@5.3.0':
+    resolution: {integrity: sha512-nCxMEb9Bg9sjNWm9TIOsvHKDMLRUfEZPWpLgYu6m9KavZZVSA/WoHzI5wROwqA+eNwEi/PNBAcB5Co7HA3S0Cw==}
 
   '@fontsource/cinzel@5.3.0':
     resolution: {integrity: sha512-KEOYTsrRppW0uRIPWBDPrQgunCS6f8u4nzZxYRBfo9SCknKojLYjK7B0ZoVmJhyVLefz271ZQRF9EOpHZlfhRw==}
@@ -1569,6 +1578,8 @@ snapshots:
     dependencies:
       '@eslint/core': 1.2.1
       levn: 0.4.1
+
+  '@fontsource/bebas-neue@5.3.0': {}
 
   '@fontsource/cinzel@5.3.0': {}
 

@@ -243,4 +243,8 @@ consistent with the docs" rule and can be revisited.
     masks, capped particles, and "reduced effects" plus prefers-reduced-motion handled in one profile
     (`duel/effects.ts`). `?fps` in the address shows the frame rate and render scale. Measured in a
     software-rendered browser: 17 fps before, ~40 fps after (a machine with a GPU should be far higher).
+71. **Phase 2 (hand and cards) uses preview-only drop rules →** the demo hand decides "can I afford it / where can it go"
+    on the client (`hand/dropRules.ts`) only to preview the interaction. When the duel is wired (M3) these come from
+    `legalActions()`, and `rift`/`sigil` card types get their own handling. Card art is procedural (silhouette per tribe/type,
+    seeded by card id) until real art exists; `art/proceduralArt.ts` is the one place to swap it. Review: `reviews/phase2-review.md`.
 
