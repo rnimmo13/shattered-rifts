@@ -13,6 +13,7 @@ import { color, ease, hex, stage } from '../../design/tokens';
 import type { EffectsProfile } from '../effects';
 import { FLOOR_SQUASH, floorTop, rows, slotGeometry, type SlotGeom } from './layout';
 import { Monsters, type SoundName } from './Monsters';
+import { Traps } from './Traps';
 import {
   FULL_W,
   PAD_X,
@@ -92,10 +93,18 @@ export class BattlefieldScene {
   private vignette!: Sprite;
 
   /** Child layers later phases draw into (units, traps, effects). */
-  readonly layers = { units: new Container(), traps: new Container(), fx: new Container() };
+  readonly layers = {
+    units: new Container(),
+    traps: new Container(),
+    fx: new Container(),
+    dim: new Container(),
+    reveal: new Container(),
+  };
 
   /** Monsters standing on the field (Phase 3). */
   readonly monsters: Monsters;
+  /** Trap sigils and the reveal sequence (Phase 4). */
+  readonly traps: Traps;
   /** Sound hook: every major visual event calls this (wired to audio later). */
   onSound: (name: SoundName) => void = () => undefined;
   private bottomReserve = 0;
@@ -188,6 +197,24 @@ export class BattlefieldScene {
 
     // --- later phases draw here ---
     this.world.addChild(this.layers.traps, this.layers.units, this.layers.fx);
+    // a huge black sheet that dims the whole board (and beyond the stage) during a trap reveal
+    const dim = new Sprite(Texture.WHITE);
+    dim.tint = 0x000000;
+    dim.alpha = 0;
+    dim.position.set(-3000, -3000);
+    dim.width = 8000;
+    dim.height = 8000;
+    this.layers.dim.addChild(dim);
+    this.traps = new Traps({
+      container: this.layers.traps,
+      reveal: this.layers.reveal,
+      dim,
+      fx: this.layers.fx,
+      glowTex: this.glowTex,
+      profile: () => this.profile,
+      sound: (n) => this.onSound(n),
+      slot: (key) => this.slotViews.find((v) => slotKey(v.geom) === key)?.geom,
+    });
     this.monsters = new Monsters({
       container: this.layers.units,
       fx: this.layers.fx,
@@ -204,6 +231,8 @@ export class BattlefieldScene {
     this.world.addChild(this.moteLayer);
     this.fogNear = this.makeFog(37, color.violetDeep, 0.3, 700, 520);
     this.world.addChild(this.fogNear);
+    // the trap reveal sits above the fog and motes so nothing drifts over the card
+    this.world.addChild(this.layers.dim, this.layers.reveal);
 
     // the vignette lives in SCREEN space so it frames the whole window, not just the 16:9 stage
     this.vignette = new Sprite(tex(vignetteTexture()));
@@ -436,6 +465,7 @@ export class BattlefieldScene {
     }
 
     this.monsters.tick(t, p.still);
+    this.traps.tick(t, dt, p.still);
 
     // slot rings shimmer very slightly, each on its own phase
     for (const v of this.slotViews) {
@@ -535,6 +565,7 @@ export class BattlefieldScene {
     this.host.removeEventListener('pointermove', this.onPointer);
     gsap.killTweensOf(this.slotViews.flatMap((v) => [v.glow, v.dim]));
     this.monsters.destroy();
+    this.traps.destroy();
     this.app.destroy({ removeView: true }, { children: true, texture: true });
   }
 }

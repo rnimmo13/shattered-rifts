@@ -27,3 +27,21 @@ export function previewTarget(attackerKey: string, foes: readonly string[]): str
   const same = `${mine ? 'opp' : 'me'}-unit-${idx}`;
   return foes.includes(same) ? same : (foes[0] ?? null);
 }
+
+export const TRAP_SLOT_COUNT = 4;
+
+/** First free trap slot on my side (keyboard play has no pointer position). */
+export function firstFreeTrapSlot(isTaken: (key: string) => boolean): string | null {
+  for (let i = 0; i < TRAP_SLOT_COUNT; i++) {
+    const key = `me-trap-${i}`;
+    if (!isTaken(key)) return key;
+  }
+  return null;
+}
+
+/** Who a sprung trap hits in the preview: the first opposing monster, or nobody. */
+export function previewSpringTarget(foes: readonly string[]): string | null {
+  return foes[0] ?? null;
+}
+
+export const isTrapKey = (key: string): boolean => key.includes('-trap-');

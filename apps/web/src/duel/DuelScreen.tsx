@@ -1,10 +1,18 @@
+import { gsap } from 'gsap';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { CardDef } from '@sr/engine';
 import { CARD_DB } from '@sr/content';
 import { BattlefieldScene, slotKey } from './scene/BattlefieldScene';
 import { Hand, type HandCard, type Probe } from '../hand/Hand';
 import { handCardWidth, handReserve } from '../hand/fanLayout';
-import { firstFreeUnitSlot, previewDamage, previewTarget } from './previewHarness';
+import {
+  firstFreeTrapSlot,
+  firstFreeUnitSlot,
+  isTrapKey,
+  previewDamage,
+  previewSpringTarget,
+  previewTarget,
+} from './previewHarness';
 import { SPELL_CAST_LINE, dropKind, validSlotKeys } from '../hand/dropRules';
 import { loadEffectsMode, profileFor, saveEffectsMode, type EffectsMode } from './effects';
 
@@ -40,6 +48,11 @@ export default function DuelScreen() {
   const dealNo = useRef(0);
   const [toast, setToast] = useState<string | null>(null);
   const [selected, setSelected] = useState<string | null>(null);
+  /**
+   * PREVIEW ONLY. Which card each face-down trap really is. The real client never has this: it learns the
+   * card from the reveal event, and the scene API deliberately has no way to be given a face-down card.
+   */
+  const trapDefs = useRef(new Map<string, CardDef>());
 
   useEffect(() => {
     const el = host.current;
@@ -54,6 +67,8 @@ export default function DuelScreen() {
         }
         created = s;
         scene.current = s;
+        // dev-only handle for poking the scene from the browser console
+        if (import.meta.env.DEV) Object.assign(window, { __scene: s, __gsap: gsap });
         setReady(true);
       })
       .catch((e: unknown) => setError(e instanceof Error ? e.message : String(e)));
@@ -87,9 +102,17 @@ export default function DuelScreen() {
     return () => window.removeEventListener('resize', apply);
   }, [ready]);
 
-  // Phase 3 preview: a few enemy monsters to attack
+  // Phase 3-4 preview: a few enemy monsters to attack, and two sealed enemy traps
   useEffect(() => {
     if (!ready) return;
+    const trap = CARD_DB['UMB-13'];
+    const trapTimer = window.setTimeout(() => {
+      if (!trap) return;
+      for (const key of ['opp-trap-1', 'opp-trap-2']) {
+        scene.current?.traps.setFaceDown(key);
+        trapDefs.current.set(key, trap);
+      }
+    }, 1300);
     const ids: [string, number][] = [
       ['WYL-05', 1],
       ['UMB-06', 2],
@@ -105,7 +128,10 @@ export default function DuelScreen() {
         500 + i * 350,
       ),
     );
-    return () => timers.forEach((t) => window.clearTimeout(t));
+    return () => {
+      timers.forEach((t) => window.clearTimeout(t));
+      window.clearTimeout(trapTimer);
+    };
   }, [ready]);
 
   const probe = useCallback((def: CardDef, x: number, y: number): Probe => {
@@ -116,12 +142,26 @@ export default function DuelScreen() {
     const key = slotKey(g);
     if (!validSlotKeys(def).has(key)) return { valid: false };
     if (dropKind(def) === 'unit' && sc.monsters.has(key)) return { valid: false };
+    if (dropKind(def) === 'trap' && sc.traps.has(key)) return { valid: false };
     const snap = sc.slotClientCenter(key);
     return snap ? { valid: true, snap } : { valid: true };
   }, []);
 
   const onPlay = useCallback((card: HandCard, x: number, y: number) => {
     const sc = scene.current;
+    if (sc && dropKind(card.def) === 'trap') {
+      const g = sc.slotAtClient(x, y);
+      let key = g ? slotKey(g) : null;
+      if (!key || sc.traps.has(key)) key = firstFreeTrapSlot((k) => sc.traps.has(k));
+      if (key) {
+        if (card.def.type === 'trap') sc.traps.setFaceDown(key);
+        else sc.traps.setFaceUp(key, card.def);
+        trapDefs.current.set(key, card.def);
+        sc.monsters.select(null);
+        sc.traps.select(key);
+        setSelected(key);
+      }
+    }
     if (sc && dropKind(card.def) === 'unit') {
       const g = sc.slotAtClient(x, y);
       let key = g ? slotKey(g) : null;
@@ -145,11 +185,32 @@ export default function DuelScreen() {
     if (!sc) return;
     const g = sc.slotAtClient(e.clientX, e.clientY);
     const key = g ? slotKey(g) : null;
-    const hit = key && sc.monsters.has(key) ? key : null;
-    sc.monsters.select(hit);
-    setSelected(hit);
+    const monster = key && sc.monsters.has(key) ? key : null;
+    const trap = key && !monster && sc.traps.has(key) ? key : null;
+    sc.monsters.select(monster);
+    sc.traps.select(trap);
+    setSelected(monster ?? trap);
   }, []);
 
+  const selectedIsTrap = selected !== null && isTrapKey(selected);
+  const spring = () => {
+    const sc = scene.current;
+    const def = selected ? trapDefs.current.get(selected) : undefined;
+    if (!sc || !selected || !def || !sc.traps.canReveal(selected)) return;
+    const key = selected;
+    void sc.traps
+      .reveal(key, def, () => {
+        const target = previewSpringTarget(sc.monsters.keys(key.startsWith('me-') ? 'opp' : 'me'));
+        if (target) damage(target, sc, 3);
+      })
+      .then(() => {
+        // forget the card once the trap is really gone (a refused reveal keeps it)
+        if (!sc.traps.has(key)) {
+          trapDefs.current.delete(key);
+          setSelected((cur) => (cur === key ? null : cur));
+        }
+      });
+  };
   const runSelected = (fn: (key: string, sc: BattlefieldScene) => void) => {
     const sc = scene.current;
     if (sc && selected && sc.monsters.has(selected)) fn(selected, sc);
@@ -200,7 +261,7 @@ export default function DuelScreen() {
         <a className="btn btn--small" href="#/">
           <span>Back</span>
         </a>
-        <p className="duel__label">Phase 3 · Monsters on the field</p>
+        <p className="duel__label">Phase 4 · Trap sigils</p>
       </header>
 
       {showFps && <p className="duel__fps">{fps}</p>}
@@ -252,22 +313,33 @@ export default function DuelScreen() {
 
       <aside className="duel__tests" aria-label="Monster animation tests">
         <p className="duel__testsTitle">
-          {selected ? 'Preview: selected monster' : 'Preview: click a monster'}
+          {selected
+            ? selectedIsTrap
+              ? 'Preview: selected trap'
+              : 'Preview: selected monster'
+            : 'Preview: click a monster or trap'}
         </p>
         <div className="duel__testsRow">
-          <button className="btn btn--small" disabled={!selected} onClick={attack}>
+          <button className="btn btn--small" disabled={!selectedIsTrap} onClick={spring}>
+            <span>Spring trap</span>
+          </button>
+          <button
+            className="btn btn--small"
+            disabled={!selected || selectedIsTrap}
+            onClick={attack}
+          >
             <span>Attack</span>
           </button>
           <button
             className="btn btn--small"
-            disabled={!selected}
+            disabled={!selected || selectedIsTrap}
             onClick={() => runSelected((k, sc) => damage(k, sc, 3))}
           >
             <span>Hit 3</span>
           </button>
           <button
             className="btn btn--small"
-            disabled={!selected}
+            disabled={!selected || selectedIsTrap}
             onClick={() =>
               runSelected((k, sc) => {
                 const st = sc.monsters.stats(k);
@@ -279,7 +351,7 @@ export default function DuelScreen() {
           </button>
           <button
             className="btn btn--small"
-            disabled={!selected}
+            disabled={!selected || selectedIsTrap}
             onClick={() =>
               runSelected((k, sc) => {
                 setSelected((s) => (s === k ? null : s));

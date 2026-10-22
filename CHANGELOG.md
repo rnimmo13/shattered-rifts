@@ -5,6 +5,9 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added
+- **Trap sigils and the reveal (preview):** set traps appear as glowing sealed sigils with a hovering card back. When one
+  springs, the board dims and slows, the card flips over and flies to the centre with a light burst, its name flashes across
+  the screen, and then the effect lands. Click a trap and press "Spring trap" to see it. Also: a site icon.
 - **Monsters on the field (preview):** played units now stand on the battlefield as cut-outs of their card art with a
   ground shadow and attack/health badges. They breathe while idle, lunge when they attack, flash and recoil when hit
   (with floating damage numbers), and crack apart into rift particles when defeated. Click a monster and use the test

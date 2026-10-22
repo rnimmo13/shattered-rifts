@@ -258,3 +258,13 @@ consistent with the docs" rule and can be revisited.
 
 
 74. **Priority: a playable campaign before balance (Robert, 2026-10-22) →** balance and difficulty tuning are deferred until the campaign is built; it is fine for the first playable campaign to be very easy. The first-player advantage question (#57) stays open and parked. Effect on the plan: after the UI art phases, the duel UI wired to the engine (M3) and the campaign loop (M4/M5) come before any balance work.
+75. **Phase 4: trap sigils and the reveal (`duel/scene/Traps.ts`) →** a set trap is a sealed rune sigil on the floor with a card back
+    hovering over it (cyan for yours, rose for the opponent's). The reveal is the big moment: the board dims and slows, the seal
+    spins up and the card trembles, it flips to its face and flies to the middle of the board with a light burst and shockwave, the
+    name flashes across the screen, the caller's effect lands, then the spent card dissolves. The client only ever learns the card
+    at reveal time (`reveal(key, def, onEffect)` takes the def from the event); the preview's `trapDefs` map is preview-only.
+    Reduced effects / reduced motion skip the slow-mo, shake and most particles. The site now has a favicon (`public/favicon.svg`).
+76. **Hosting moves to Cloudflare (Robert, 2026-10-22) →** domain `shatteredrifts.app` (registered at Cloudflare), site served by
+    Cloudflare Workers Builds from `main` via `wrangler.jsonc` (build `pnpm install && pnpm --filter @sr/web build`, deploy
+    `npx wrangler deploy`). The old GitHub Pages `deploy:web` stays as a fallback.
+

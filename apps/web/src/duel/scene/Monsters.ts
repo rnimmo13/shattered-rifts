@@ -11,7 +11,18 @@ import type { EffectsProfile } from '../effects';
 import type { SlotGeom } from './layout';
 
 export type SoundName =
-  'summon' | 'attackWindup' | 'attackHit' | 'hit' | 'death' | 'buff' | 'select';
+  | 'summon'
+  | 'attackWindup'
+  | 'attackHit'
+  | 'hit'
+  | 'death'
+  | 'buff'
+  | 'select'
+  | 'trapSet'
+  | 'trapCharge'
+  | 'trapReveal'
+  | 'trapEffect'
+  | 'trapSpent';
 
 interface Badge {
   root: Container;
