@@ -1,5 +1,29 @@
-// @sr/content: cards, tokens, enemies, bosses and campaign tables as data, validated with zod.
-import { z } from 'zod';
+// @sr/content: cards, tokens, characters (and later enemies, bosses, campaign tables) as data.
+import type { CardDb, CardDef } from '@sr/engine';
+import { AURELION } from './cards/aurelion';
+import { NEXUS } from './cards/nexus';
+import { WYLDMAW } from './cards/wyldmaw';
+import { UMBRAL } from './cards/umbral';
+import { NEUTRAL } from './cards/neutral';
+import { TOKENS } from './cards/tokens';
+import { SIGILS } from './cards/sigils';
 
-export const CardIdSchema = z.string().regex(/^(AUR|NEX|WYL|UMB|NEU|TOK|SIG)-[A-Z0-9]+$/);
-export type CardId = z.infer<typeof CardIdSchema>;
+export { CardIdSchema, CardDefSchema, EffectSchema, AbilitySchema } from './schema';
+export { CHARACTERS, character, starterDeck, type Character, type CharacterId } from './characters';
+
+/** Every card definition implemented so far (M1: all Commons + tokens + Rift Spark + Sigils). */
+export const ALL_CARDS: CardDef[] = [
+  ...AURELION,
+  ...NEXUS,
+  ...WYLDMAW,
+  ...UMBRAL,
+  ...NEUTRAL,
+  ...TOKENS,
+  ...SIGILS,
+];
+
+export const CARD_DB: CardDb = Object.freeze(Object.fromEntries(ALL_CARDS.map((c) => [c.id, c])));
+
+export function cardByName(name: string): CardDef | undefined {
+  return ALL_CARDS.find((c) => c.name === name);
+}

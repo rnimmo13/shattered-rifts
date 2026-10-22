@@ -104,7 +104,7 @@ consistent with the docs" rule and can be revisited.
 
 ## Engine / DSL (2026-10-22)
 
-36. **New generic DSL pieces:** condition `overclocked`, condition `resonanceAtLeast`, op `assemble`, op
+36. **New generic DSL pieces:** ability flag `overclock: true` (the ability only applies, and only asks for targets, if the Overclock cost was paid), condition `resonanceAtLeast`, op `assemble`, op
     `atEndOfTurn` (delayed effects), op `removeCharge`, op `topdeckFromHand`, target picks `linkTarget` and
     `summonedByThis`, multi-zone targets, event filter `{killer:'self', cause:'combat'}`, a concrete
     `StaticModifier` union (`cantAttack`, `costMod`, `powerPerCount`, ...), ability kind `duelStart` (for Sigils).
