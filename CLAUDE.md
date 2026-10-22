@@ -41,15 +41,19 @@ Ko-fi-funded) → Steam full game ($7.99–$9.99) with PvP later. Owner: Robert.
 - When balance numbers change, update `02_CARDS.md` so the docs stay the source of truth.
 - Windows dev machine (VS Code terminal). Use cross-platform scripts (no bash-only syntax in npm scripts).
 
-## Commands (fill in as they're created)
+## Commands
 ```
 pnpm install
 pnpm dev          # web client
 pnpm test         # all tests
+pnpm lint         # ESLint (engine/ai/campaign have purity rules: no Math.random, Date, DOM, node I/O)
+pnpm typecheck    # tsc per package
+pnpm check        # lint + typecheck + test + build
 pnpm duel         # CLI duel vs AI (M1+)
 pnpm sim          # balance simulation (M2+)
 pnpm build
 ```
+Toolchain: Node 22, pnpm 11 (corepack), TypeScript 6.0 (see DECISIONS #39). Workspace packages export TS source.
 
 ## Current status
 Design complete; campaign redesigned on 2026-10-22 to run-built decks + weekly PvP seasons (see

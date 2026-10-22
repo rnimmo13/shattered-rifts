@@ -1,0 +1,13 @@
+# Not deployed yet (friends beta). Connect the repo in Netlify when ready.
+[build]
+  command = "pnpm --filter @sr/web... build"
+  publish = "apps/web/dist"
+
+[build.environment]
+  NODE_VERSION = "22"
+
+# SPA fallback for client-side routes (/roadmap, /changelog, ...)
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200

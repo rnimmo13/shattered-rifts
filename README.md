@@ -13,8 +13,23 @@ defeat their Wardens, and bind their power into your Grimoire.
 - `ROADMAP.md`: the public roadmap
 
 ## Setup (Windows)
-1. Install **Node.js LTS** (nodejs.org) and **Git**.
-2. In a terminal: `corepack enable` (provides pnpm).
-3. Open this folder in VS Code and run `claude` in the terminal. Paste the prompt from `docs/KICKOFF_PROMPT.md`.
+1. Install **Node.js LTS** (22.12+) and **Git**.
+2. In a terminal: `corepack enable` (provides the pnpm version pinned in `package.json`).
+3. `pnpm install`
+
+## Commands
+```
+pnpm dev          # web client (Vite)
+pnpm test         # all tests (Vitest)
+pnpm lint         # ESLint
+pnpm typecheck    # tsc in every package
+pnpm build        # production build
+pnpm check        # lint + typecheck + test + build
+pnpm duel         # CLI duel vs AI (M1)
+```
+
+## Layout
+`packages/engine` (pure rules engine) · `packages/content` (cards as data) · `packages/ai` · `packages/campaign`
+· `apps/web` (Vite + React client) · `tools` (CLI duel, sims, dev tools)
 
 Recommended VS Code extensions: ESLint, Prettier, Vitest, Claude Code.

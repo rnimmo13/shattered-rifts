@@ -113,3 +113,8 @@ consistent with the docs" rule and can be revisited.
     cards through `createEngine(cardDb)`, which returns the four API functions. *Why:* the engine has no
     dependencies, state is plain JSON, and there's no global registry.
 38. **Redaction →** `eventsFor(events, player)` sits next to `viewFor`. Views strip PRNG state and deck order.
+39. **2026-10-22 · Toolchain versions → TypeScript 6.0.3 (not 7.0) and pnpm 11 (not 12).** typescript-eslint
+    8.72 supports TS < 6.1 only (TS 7 is the native port without the JS API linters need). pnpm 12's packaging
+    needs a corepack that requires Node ≥ 22.22, and this machine has 22.21. Revisit both when they're unblocked.
+40. **2026-10-22 · Packages consumed as TS source.** Workspace packages export `src/index.ts` directly (no build
+    step). Vite, Vitest and tsx all compile TS, which keeps the dev loop instant.

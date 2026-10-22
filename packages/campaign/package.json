@@ -1,0 +1,17 @@
+{
+  "name": "@sr/campaign",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Run state machine, map generation, rewards, Vault and seasons (pure).",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json"
+  },
+  "dependencies": {
+    "@sr/engine": "workspace:*",
+    "@sr/content": "workspace:*"
+  }
+}

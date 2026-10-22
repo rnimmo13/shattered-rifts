@@ -1,0 +1,17 @@
+{
+  "name": "@sr/content",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Card, token, enemy and boss data with zod schemas and content tests.",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json"
+  },
+  "dependencies": {
+    "@sr/engine": "workspace:*",
+    "zod": "4.6.7"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "name": "@sr/engine",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Pure, deterministic rules engine. No DOM, no Math.random, no Date, no I/O.",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json"
+  },
+  "dependencies": {}
+}
