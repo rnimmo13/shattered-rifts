@@ -280,3 +280,10 @@ consistent with the docs" rule and can be revisited.
 
 
 78. **Players see "HP" and "Damage", not Guard and Power (Robert, 2026-10-22) →** HP sits on the left of a card and unit, Damage on the right. Card rules text, the card frame, the board badges and the inspector all use these words. The engine keeps `guard`/`power` internally; the "x/y" shorthand in text stays Damage/HP order as before (`+1/+1`, `a 3/2 Drone` = Damage 3, HP 2).
+79. **Run v1 rules (`packages/campaign`) →** pure, seeded, JSON state; every step returns a new RunState. Maps: stages 1-4 have 5 floors
+    of 2-3 nodes plus the Warden (floor 1 all duels, one elite at most and only on floors 3-4, one merchant at most), stage 5 is
+    Shrine-or-Merchant then Vorthax. Stage order: Aurelion/Nexus/Wyldmaw shuffled, then Umbral, then the Rift. A duel loss costs 1
+    Resolve (elite/Warden 2) and retries the same node; 0 Resolve collapses the run. Win rewards: 12 / 28 / 50 shards and 3 card
+    offers (4 from Tier IV), or the Warden's Gift (a signature card). Tier scales enemy Essence (+3, Wardens +5 per tier above I).
+    Not in Run v1: Boons, Tempering, Anomalies, Tier mutators beyond Essence, the Vault. Balance is deliberately not tuned (DECISIONS #74).
+

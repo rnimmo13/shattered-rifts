@@ -5,6 +5,12 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added
+- **Easier to read and play:** hover any card in your hand or on the board to read it large on the left, with its HP,
+  Damage, cost and a plain-language explanation of every keyword. HP is now on the left and Damage on the right
+  (cards and units). A big **End turn** button sits bottom right (shortcut: E) and pulses when you have nothing left
+  to play, plus a **How to play** guide. Card text now says HP and Damage.
+- **Campaign engine (no screens yet):** the run rules are built and tested: five-stage maps, duels, elites, Wardens,
+  card rewards with skip, shrines, the merchant, events, the Warden's Gift, Resolve, Bank or Continue and saves.
 - **Duel the AI (first playable duel):** a full practice duel in the browser. Pick a Riftwalker and an opponent, keep or
   replace your opening hand, then play cards by dragging them onto the board, click your units to attack (click a
   glowing enemy or the enemy portrait), respond to the enemy with traps and Swift spells in response windows, and end
