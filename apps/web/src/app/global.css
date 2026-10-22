@@ -131,7 +131,8 @@ body {
 }
 
 .title__card--locked {
-  filter: grayscale(0.8) brightness(0.6);
+  filter: grayscale(0.8);
+  opacity: 0.75;
 }
 
 .title__glyph {
@@ -160,9 +161,22 @@ body {
   color: var(--text);
 }
 
-.title__cta:disabled {
+.title__cta[aria-disabled='true'] {
   opacity: 0.5;
   cursor: not-allowed;
+}
+
+.title__cta-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.title__cta-note {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--text-dim);
 }
 
 .title__footer {

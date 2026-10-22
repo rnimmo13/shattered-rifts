@@ -1,4 +1,4 @@
-# Not deployed yet (friends beta). Connect the repo in Netlify when ready.
+# Not deployed yet (friends alpha). Connect the repo in Netlify when ready.
 [build]
   command = "pnpm --filter @sr/web... build"
   publish = "apps/web/dist"

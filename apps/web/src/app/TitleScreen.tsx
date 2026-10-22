@@ -13,7 +13,7 @@ const CHARACTERS: CharacterTeaser[] = [
   { name: 'Ser Maren Ashcourt', realm: 'Aurelion', glyph: '☀', accent: 'var(--aurelion)' },
   { name: 'Rivet', realm: 'Nexus-9', glyph: '⚙', accent: 'var(--nexus)' },
   { name: 'Kesh the Unfed', realm: 'Wyldmaw', glyph: '🦴', accent: 'var(--wyldmaw)' },
-  { name: '???', realm: 'Umbral Veil', glyph: '👁', accent: 'var(--umbral)', locked: true },
+  { name: 'Locked', realm: 'Umbral Veil', glyph: '👁', accent: 'var(--umbral)', locked: true },
 ];
 
 /** Placeholder title screen (M0). The jagged SVG crack is the game's "shattering" motif. */
@@ -61,17 +61,27 @@ export function TitleScreen() {
             <span className="title__glyph" aria-hidden>
               {c.glyph}
             </span>
-            <span className="title__card-name">{c.name}</span>
+            <span className="title__card-name">{c.locked ? 'Locked Riftwalker' : c.name}</span>
             <span className="title__card-realm">{c.realm}</span>
           </li>
         ))}
       </ul>
 
-      <button className="title__cta" type="button" disabled title="Runs arrive in M4">
-        Begin Run
-      </button>
+      <div className="title__cta-group">
+        <button
+          className="title__cta"
+          type="button"
+          aria-disabled="true"
+          aria-describedby="cta-note"
+        >
+          Begin Run
+        </button>
+        <p id="cta-note" className="title__cta-note">
+          Runs open in the friends alpha.
+        </p>
+      </div>
 
-      <footer className="title__footer">engine v{ENGINE_VERSION}</footer>
+      <p className="title__footer">engine v{ENGINE_VERSION}</p>
     </main>
   );
 }

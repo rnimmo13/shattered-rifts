@@ -26,12 +26,11 @@ const purityRules = {
   'no-restricted-imports': [
     'error',
     {
-      patterns: [
-        {
-          group: ['node:*', 'fs', 'path', 'os', 'child_process'],
-          message: 'The engine does no I/O.',
-        },
-      ],
+      paths: ['fs', 'path', 'os', 'child_process', 'http', 'https', 'net'].map((name) => ({
+        name,
+        message: 'The engine does no I/O.',
+      })),
+      patterns: [{ group: ['node:*'], message: 'The engine does no I/O.' }],
     },
   ],
 };
@@ -54,11 +53,14 @@ export default tseslint.config(
         { argsIgnorePattern: '^_', varsIgnorePattern: '^_' },
       ],
       eqeqeq: ['error', 'always'],
+      // `InstanceId | 'face'` documents intent even though InstanceId is a string.
+      '@typescript-eslint/no-redundant-type-constituents': 'off',
     },
   },
   {
     files: [
       'packages/engine/src/**/*.ts',
+      'packages/content/src/**/*.ts',
       'packages/campaign/src/**/*.ts',
       'packages/ai/src/**/*.ts',
     ],
