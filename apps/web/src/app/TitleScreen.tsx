@@ -66,8 +66,11 @@ export function TitleScreen() {
       </ul>
 
       <div className="title__actions">
-        <a className="btn btn--primary" href="#/duel">
-          Enter the battlefield
+        <a className="btn btn--primary" href="#/play">
+          Duel the AI
+        </a>
+        <a className="btn" href="#/duel">
+          Art preview
         </a>
         <span className="btn" aria-disabled="true" aria-describedby="cta-note">
           Begin Run

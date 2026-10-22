@@ -3,6 +3,7 @@ import { TitleScreen } from './TitleScreen';
 
 // The duel screen pulls in the whole Pixi renderer, so it loads on demand.
 const DuelScreen = lazy(() => import('../duel/DuelScreen'));
+const PlayScreen = lazy(() => import('../play/PlayScreen'));
 
 function useHash(): string {
   const [hash, setHash] = useState(() => window.location.hash);
@@ -20,6 +21,13 @@ export function App() {
     return (
       <Suspense fallback={<div className="loading">Opening the rift…</div>}>
         <DuelScreen />
+      </Suspense>
+    );
+  }
+  if (hash === '#/play') {
+    return (
+      <Suspense fallback={<div className="loading">Opening the rift…</div>}>
+        <PlayScreen />
       </Suspense>
     );
   }

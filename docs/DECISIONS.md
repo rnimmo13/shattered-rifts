@@ -267,4 +267,14 @@ consistent with the docs" rule and can be revisited.
 76. **Hosting moves to Cloudflare (Robert, 2026-10-22) →** domain `shatteredrifts.app` (registered at Cloudflare), site served by
     Cloudflare Workers Builds from `main` via `wrangler.jsonc` (build `pnpm install && pnpm --filter @sr/web build`, deploy
     `npx wrangler deploy`). The old GitHub Pages `deploy:web` stays as a fallback.
+77. **M3: the real duel in the browser (`apps/web/src/play`, route `#/play`) →** a `DuelSession` runs the pure engine and the
+    heuristic AI (the human is always seat 0). After every applied action it emits a Batch (events redacted with `eventsFor`,
+    plus the views before and after) and waits for the UI to animate it before the AI moves again, so the board always shows the
+    game in order while the logic is already resolved (golden rule 4). The UI only ever offers `legalActions()`: cards are grouped
+    by card id, several variants (Overclock, Echo, Ascend, targets, set-as-Ambush) go through a chooser, and every `pending`
+    prompt kind has a dialog (mulligan, targets, optional, scry, choose cards). Auto-pass: when the only legal action is Pass (or a
+    free Rift Spark), the session passes for you. The AI runs on the main thread for now (one action per tick); moving it to a Web
+    Worker is a later optimisation. A `replay` layer animates events on the scene and a `reconcile` step then forces the scene to
+    match the final view, so a missed event can never leave the board wrong. Practice duels let you pick any of the four
+    Riftwalkers against any enemy deck. The old art preview stays at `#/duel`.
 

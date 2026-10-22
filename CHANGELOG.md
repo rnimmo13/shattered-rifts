@@ -5,6 +5,11 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added
+- **Duel the AI (first playable duel):** a full practice duel in the browser. Pick a Riftwalker and an opponent, keep or
+  replace your opening hand, then play cards by dragging them onto the board, click your units to attack (click a
+  glowing enemy or the enemy portrait), respond to the enemy with traps and Swift spells in response windows, and end
+  your turn. The enemy AI answers, with every summon, attack, trap reveal and death animated in order. Includes a duel log,
+  Mana and Essence displays, an animation speed setting, and a game-over screen.
 - **Trap sigils and the reveal (preview):** set traps appear as glowing sealed sigils with a hovering card back. When one
   springs, the board dims and slows, the card flips over and flies to the centre with a light burst, its name flashes across
   the screen, and then the effect lands. Click a trap and press "Spring trap" to see it. Also: a site icon.

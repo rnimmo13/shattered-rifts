@@ -376,6 +376,38 @@ export class Traps {
     });
   }
 
+  /**
+   * A spell (or Rift) being cast: its card flies to the middle of the board, holds for a beat, then fades.
+   * No dimming or slow-mo: this is a flourish, not a reveal.
+   */
+  cast(def: CardDef, side: 'me' | 'opp'): Promise<void> {
+    const p = this.h.profile();
+    const sprite = new Sprite(this.tex(cardFaceCanvas(def)));
+    sprite.anchor.set(0.5);
+    const w = 150;
+    const k = w / FACE_W;
+    sprite.scale.set(k * (p.still ? 1.3 : 0.7));
+    const startY = side === 'me' ? 820 : 140;
+    sprite.position.set(960, p.still ? 470 : startY);
+    sprite.alpha = 0;
+    this.h.reveal.addChild(sprite);
+    return new Promise((resolve) => {
+      this.pending.add(resolve);
+      const tl = this.g.timeline({
+        onComplete: () => {
+          if (this.destroyed) return;
+          this.pending.delete(resolve);
+          sprite.destroy();
+          resolve();
+        },
+      });
+      tl.to(sprite, { alpha: 1, duration: 0.15, ease: ease.out.gsap }, 0);
+      tl.to(sprite.scale, { x: k * 1.35, y: k * 1.35, duration: 0.4, ease: ease.pop.gsap }, 0);
+      tl.to(sprite, { y: 470, duration: 0.4, ease: ease.out.gsap }, 0);
+      tl.to(sprite, { alpha: 0, y: 440, duration: 0.3, ease: ease.in.gsap }, 0.95);
+    });
+  }
+
   private endSlowMo(): void {
     if (this.slowTimer !== null) window.clearTimeout(this.slowTimer);
     this.slowTimer = null;

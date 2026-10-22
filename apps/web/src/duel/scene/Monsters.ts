@@ -119,6 +119,35 @@ export class Monsters {
     return !!m && !m.dying;
   }
 
+  /** The card id standing in a slot (to notice an Evolve or transform), or null. */
+  defOf(key: string): string | null {
+    const m = this.units.get(key);
+    return m && !m.dying ? m.def.id : null;
+  }
+
+  /** Remove a monster without a death animation (banished, bounced, taken): it fades out. */
+  vanish(key: string): Promise<void> {
+    const m = this.units.get(key);
+    if (!m || m.dying) return Promise.resolve();
+    m.dying = true;
+    if (this.selected === key) this.select(null);
+    return new Promise((resolve) => {
+      this.pending.add(resolve);
+      this.g.to([m.body, m.shadow, m.ring, m.power.root, m.guard.root], {
+        alpha: 0,
+        duration: 0.35,
+        ease: ease.in.gsap,
+        onComplete: () => {
+          if (this.destroyed) return;
+          this.pending.delete(resolve);
+          m.root.destroy({ children: true });
+          this.units.delete(key);
+          resolve();
+        },
+      });
+    });
+  }
+
   stats(key: string): { power: number; guard: number } | null {
     const m = this.units.get(key);
     return m && !m.dying ? { power: m.power.value, guard: m.guard.value } : null;
@@ -345,7 +374,10 @@ export class Monsters {
    */
   attack(key: string, targetKey: string | null, onImpact?: () => void): Promise<void> {
     const m = this.units.get(key);
-    if (!m || m.dying || m.busy > 0) return Promise.resolve();
+    if (!m || m.dying || m.busy > 0) {
+      onImpact?.();
+      return Promise.resolve();
+    }
     const tg = targetKey ? this.h.slot(targetKey) : undefined;
     const dir = m.side === 'me' ? -1 : 1;
     // face: aim at the middle of the enemy's back line

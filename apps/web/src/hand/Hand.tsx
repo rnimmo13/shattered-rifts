@@ -23,6 +23,10 @@ export interface HandProps {
   mana: number;
   /** is this point a valid drop for this card? (the scene hit-tests; the engine decides rules later) */
   probe: (def: CardDef, x: number, y: number) => Probe;
+  /** Overrides the default (cost <= mana) playability, e.g. from the engine's legal actions. */
+  canPlay?: (card: HandCard) => boolean;
+  /** Not your decision right now: cards look neutral (no glow, no dimming) and cannot be dragged. */
+  locked?: boolean;
   onDragStart?: (def: CardDef) => void;
   onDragEnd?: () => void;
   onPlay: (card: HandCard, x: number, y: number) => void;
@@ -48,6 +52,8 @@ const calc = () => handCardWidth(window.innerWidth);
 
 export function Hand(props: HandProps) {
   const { cards, mana, probe, onPlay, onRefuse, onDragStart, onDragEnd, onSound } = props;
+  const locked = props.locked ?? false;
+  const canPlay = props.canPlay ?? ((c: HandCard) => isPlayable(c.def, mana));
   const cardW = useCardWidth();
   const anchor = useRef<HTMLDivElement>(null);
   const elOf = (uid: string) =>
@@ -144,8 +150,8 @@ export function Hand(props: HandProps) {
   };
 
   const startDrag = (card: HandCard, e: React.PointerEvent<HTMLDivElement>) => {
-    if (e.button !== 0) return;
-    if (!isPlayable(card.def, mana)) {
+    if (e.button !== 0 || locked) return;
+    if (!canPlay(card)) {
       setRefuse(card.uid);
       onRefuse?.(card);
       onSound?.('refuse');
@@ -222,7 +228,7 @@ export function Hand(props: HandProps) {
             rot = 0;
             scale = 0.5;
           }
-          const playable = isPlayable(card.def, mana);
+          const playable = !locked && canPlay(card);
           return (
             <div
               key={card.uid}
