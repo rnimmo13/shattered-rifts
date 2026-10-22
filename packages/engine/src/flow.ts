@@ -134,9 +134,11 @@ function linkAbilities(rt: Rt, link: Link): Ability[] {
 /** Both players passed in a row: the top link resolves (LIFO). */
 function resolveTop(rt: Rt): void {
   const s = rt.s;
+  const index = s.chain.length;
   const link = s.chain.pop();
   if (!link) return;
   s.window = null;
+  emit(rt, { type: 'chainLinkResolving', linkId: link.id, index });
   s.tasks.push({ t: 'afterResolve', link }, { t: 'drain' });
   if (link.negated) return;
 

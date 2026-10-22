@@ -6,11 +6,14 @@ import type {
   GameConfig,
   GameEvent,
   GameState,
+  InstanceId,
+  Keyword,
   PlayerId,
   PlayerState,
   Rules,
 } from './types';
-import { newInstance, type Rt } from './rt';
+import { inst, newInstance, type Rt } from './rt';
+import { computeStats } from './stats';
 import { legalActions as enumerate, performAction } from './actions';
 import { advance } from './flow';
 import { nextInt, seedRng, shuffle } from './rng';
@@ -40,6 +43,15 @@ export interface Engine {
   hashState(s: GameState): string;
   /** Who must act next (pending prompt, priority, or the active player in Main). */
   toAct(s: GameState): PlayerId | null;
+  /** Layered stats of a card on the field (for rendering). */
+  stats(s: GameState, id: InstanceId): UnitStats;
+}
+
+export interface UnitStats {
+  power: number;
+  guard: number;
+  maxGuard: number;
+  keywords: Keyword[];
 }
 
 function emptyPlayer(rules: Rules, essence: number): PlayerState {
@@ -144,5 +156,10 @@ export function createEngine(db: CardDb): Engine {
     return s.phase === 'main' ? s.active : null;
   }
 
-  return { createGame, legalActions, applyAction, viewFor, eventsFor, hashState, toAct };
+  function stats(s: GameState, id: InstanceId): UnitStats {
+    const st = computeStats(rtFor(s), inst(rtFor(s), id));
+    return { power: st.power, guard: st.guard, maxGuard: st.maxGuard, keywords: [...st.keywords] };
+  }
+
+  return { createGame, legalActions, applyAction, viewFor, eventsFor, hashState, toAct, stats };
 }

@@ -531,6 +531,7 @@ export type GameEvent =
       cardId: string;
       targets: InstanceId[];
     }
+  | { type: 'chainLinkResolving'; linkId: string; index: number }
   | { type: 'chainLinkResolved'; linkId: string }
   | { type: 'negated'; linkId: string; byId: InstanceId }
   | { type: 'fizzled'; linkId: string }
