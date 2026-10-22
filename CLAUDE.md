@@ -61,7 +61,7 @@ Toolchain: Node 22, pnpm 11 (corepack), TypeScript 6.0 (see DECISIONS #39). Work
 ## Current status
 Design complete; campaign redesigned on 2026-10-22 to run-built decks + weekly PvP seasons (see
 `docs/DECISIONS.md`). Web build = private friends beta for now. **M0, M1 and M2 done** (engine, all 74 cards + 12 signature cards, enemy decks, heuristic AI, balance sim,
-10k-game property gate). **Pending Robert's decision:** first-player advantage (`docs/BALANCE.md` §1). Starter imbalance is accepted (DECISIONS #63).
+10k-game property gate). First-player advantage (`docs/BALANCE.md` §1) is parked: balance waits until a playable campaign exists, even an easy one (DECISIONS #74). Starter imbalance is accepted (DECISIONS #63).
 **In progress: the browser game, playable through the campaign** (DECISIONS #64–70). UI art phases (stop after each for Robert):
 **Phases 1-3 done** (tokens, Pixi battlefield; hand + card frames; monsters). Next: 4 trap sigils/reveal · 5 juice.
 Deploy with `pnpm deploy:web -- --repo rnimmo13/shattered-rifts` (live: https://rnimmo13.github.io/shattered-rifts/).

@@ -256,3 +256,5 @@ consistent with the docs" rule and can be revisited.
     puppeted with transforms only (`duel/scene/Monsters.ts`): idle breathing, attack lunge, hit, death. The Attack/Hit/Buff/Defeat
     buttons and the damage maths in `DuelScreen` are a preview harness only; the duel will drive `Monsters` from `GameEvent`s.
 
+
+74. **Priority: a playable campaign before balance (Robert, 2026-10-22) →** balance and difficulty tuning are deferred until the campaign is built; it is fine for the first playable campaign to be very easy. The first-player advantage question (#57) stays open and parked. Effect on the plan: after the UI art phases, the duel UI wired to the engine (M3) and the campaign loop (M4/M5) come before any balance work.
