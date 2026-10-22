@@ -5,6 +5,10 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added
+- **The battlefield (first look):** a painted-style dark-fantasy arena: a rift tearing through the sky, floating
+  ruins, a perspective stone floor with glowing cracks and a pulsing Rift line, drifting fog, rising rift motes,
+  and rune-circle slots for units and traps that glow when a card can be played there. Includes a "reduced
+  effects" setting and respects "reduce motion". Open it from the title screen ("Enter the battlefield").
 - **Smarter opponents:** the AI now plans: it develops its board, attacks when it's favourable, holds back from
   attacking into set traps when you're holding Aether, and springs its own traps at good moments. It has
   personalities (aggressive, controlling, trappy, novice). `pnpm duel` uses it by default (`--ai random` for the old one).

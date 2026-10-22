@@ -1,5 +1,9 @@
 # Shattered Rifts: Visual Design & Animation Spec
 
+> **Implementation status (2026-10-22):** the browser UI follows Robert's art-direction brief (DECISIONS #67–70): a PixiJS
+> battlefield + web-element hand/HUD, tokens in `apps/web/src/design/tokens.ts`, built in five reviewed phases. Where this
+> document and a later decision differ (e.g. the board is a perspective arena, not a flat top-down grid), the decision wins.
+
 **Art direction in one line:** painted illustrations inside crisp, code-built frames, on a dark board
 lit by glowing rifts. The frames, UI, icons and all effects are made in code (SVG + PixiJS shaders), so
 they stay sharp at every size, are fully animatable, and stay consistent. Only the illustrations are

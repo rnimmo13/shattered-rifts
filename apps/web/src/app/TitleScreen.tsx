@@ -1,31 +1,31 @@
 import type { CSSProperties } from 'react';
 import { ENGINE_VERSION } from '@sr/engine';
+import { color } from '../design/tokens';
 
-type CharacterTeaser = {
+interface CharacterTeaser {
   name: string;
   realm: string;
-  glyph: string;
   accent: string;
   locked?: boolean;
-};
+}
 
 const CHARACTERS: CharacterTeaser[] = [
-  { name: 'Ser Maren Ashcourt', realm: 'Aurelion', glyph: '☀', accent: 'var(--aurelion)' },
-  { name: 'Rivet', realm: 'Nexus-9', glyph: '⚙', accent: 'var(--nexus)' },
-  { name: 'Kesh the Unfed', realm: 'Wyldmaw', glyph: '🦴', accent: 'var(--wyldmaw)' },
-  { name: 'Locked', realm: 'Umbral Veil', glyph: '👁', accent: 'var(--umbral)', locked: true },
+  { name: 'Ser Maren Ashcourt', realm: 'Aurelion', accent: color.gold },
+  { name: 'Rivet', realm: 'Nexus-9', accent: color.cyan },
+  { name: 'Kesh the Unfed', realm: 'Wyldmaw', accent: color.blood },
+  { name: 'Locked Riftwalker', realm: 'Umbral Veil', accent: color.violet, locked: true },
 ];
 
-/** Placeholder title screen (M0). The jagged SVG crack is the game's "shattering" motif. */
+/** Title screen. The jagged SVG crack is the game's "shattering" motif. */
 export function TitleScreen() {
   return (
     <main className="title">
       <svg className="title__crack" viewBox="0 0 1200 200" preserveAspectRatio="none" aria-hidden>
         <defs>
           <linearGradient id="seam" x1="0" x2="1" y1="0" y2="0">
-            <stop offset="0%" stopColor="#FF4FD8" />
-            <stop offset="50%" stopColor="#4FC3FF" />
-            <stop offset="100%" stopColor="#7CFF6B" />
+            <stop offset="0%" stopColor={color.magenta} />
+            <stop offset="50%" stopColor={color.cyan} />
+            <stop offset="100%" stopColor={color.heal} />
           </linearGradient>
           <filter id="glow" x="-20%" y="-200%" width="140%" height="500%">
             <feGaussianBlur stdDeviation="6" result="blur" />
@@ -58,28 +58,24 @@ export function TitleScreen() {
             className={`title__card${c.locked ? ' title__card--locked' : ''}`}
             style={{ '--accent': c.accent } as CSSProperties}
           >
-            <span className="title__glyph" aria-hidden>
-              {c.glyph}
-            </span>
-            <span className="title__card-name">{c.locked ? 'Locked Riftwalker' : c.name}</span>
+            <span className="title__sigil" aria-hidden />
+            <span className="title__card-name">{c.name}</span>
             <span className="title__card-realm">{c.realm}</span>
           </li>
         ))}
       </ul>
 
-      <div className="title__cta-group">
-        <button
-          className="title__cta"
-          type="button"
-          aria-disabled="true"
-          aria-describedby="cta-note"
-        >
+      <div className="title__actions">
+        <a className="btn btn--primary" href="#/duel">
+          Enter the battlefield
+        </a>
+        <span className="btn" aria-disabled="true" aria-describedby="cta-note">
           Begin Run
-        </button>
-        <p id="cta-note" className="title__cta-note">
-          Runs open in the friends alpha.
-        </p>
+        </span>
       </div>
+      <p id="cta-note" className="title__cta-note">
+        Runs open in the friends alpha. For now: a first look at the battlefield.
+      </p>
 
       <p className="title__footer">engine v{ENGINE_VERSION}</p>
     </main>

@@ -219,3 +219,28 @@ consistent with the docs" rule and can be revisited.
     recommended setup is a separate public "play" repo that holds only compiled output. The site is public to
     anyone with the link either way (not a security boundary).
 
+## Browser UI: art direction and renderer (2026-10-22)
+
+67. **Renderer: hybrid PixiJS + web elements (Robert approved) →** the battlefield is a PixiJS v8 WebGL scene
+    (background, arena floor, fog and rift particles, slots, later monsters, traps and effects), with GSAP for
+    timing. The hand, card frames, HUD, banners and menus stay as web elements (crisp text, accessibility, 3D tilt).
+    **Supersedes #65** ("DOM first"). The engine/event contract is unchanged: the UI renders `viewFor()` and replays
+    `GameEvent`s, and never decides rules.
+68. **Art direction (Robert's brief) →** dark-fantasy rifts. Palette: deep obsidian/navy, warm gold trim, electric
+    violet and cyan rift energy, no default browser colours. Feel target: Slay the Spire 2, i.e. hand-painted 2D
+    characters standing on the battlefield, constant subtle motion, punchy feedback on every action. No flat
+    rectangles or emoji placeholders. All colours, glows, shadows and easing/timing live in
+    `apps/web/src/design/tokens.ts` (CSS reads them as `--c-*`, `--glow-*`, `--t-*`, `--ease-*`; Pixi reads the same values).
+    Phases: 1 tokens + battlefield + ambient · 2 hand + card frames · 3 monsters on the field · 4 trap sigils and
+    reveal · 5 juice (shake, hit-stop, numbers, banners, animation queue). Stop after each for review.
+69. **No art exists yet, so the scene is procedural →** the sky, ruins, stone floor, cracks, fog and rune rings are
+    generated from seeded noise and gradients at load (deterministic). Real painted backgrounds and card art replace
+    them later behind the same layer interface. Monsters will use stylized silhouettes until real art exists;
+    generated card art will need a background-removal step before it can stand on the floor.
+70. **Performance rules for the scene →** one canvas, backdrops extended past the 16:9 stage so wide windows have no
+    bars, a pixel budget (about 1080p worth of shaded pixels; less in reduced mode), **adaptive quality** (if frames
+    run slow the render scale steps down by itself, never back up so it can't flicker), baked fog fades instead of
+    masks, capped particles, and "reduced effects" plus prefers-reduced-motion handled in one profile
+    (`duel/effects.ts`). `?fps` in the address shows the frame rate and render scale. Measured in a
+    software-rendered browser: 17 fps before, ~40 fps after (a machine with a GPU should be far higher).
+
