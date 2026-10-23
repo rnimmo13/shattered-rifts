@@ -18,13 +18,13 @@ export function useWidth(): [(el: HTMLElement | null) => void, number] {
   return [setEl, w];
 }
 
-const PAGE_PAD = 44; // a page's side padding plus the book's edge, px
-const FLIPS = 130; // the two page-turn buttons and the cover, px
+const PAGE_PAD = 64; // a page's side padding plus the book's edge, px
+const FLIPS = 150; // the two page-turn buttons and the cover, px
 const GAP = 14.4;
 
 /**
  * How the book lays out in a box `width` px wide: one page or two, how many cards across, and how big they can be (as large as
- * fits, up to 280 px, so they can be read). Measured from the box the book sits in, so pages never run into each other.
+ * fits, up to 240 px, and never so tall that two rows run off the bottom of the window). Measured from the box the book sits in, so pages never run into each other.
  */
 export function bookLayout(
   width: number,
@@ -35,7 +35,10 @@ export function bookLayout(
   const spread: 1 | 2 = fixedSpread ?? (width >= 1000 ? 2 : 1);
   const cols = fixedCols ?? (width < 560 ? 2 : 3);
   const perPage = (width - FLIPS) / spread - PAGE_PAD;
-  const cardWidth = Math.max(110, Math.min(280, Math.floor((perPage - (cols - 1) * GAP) / cols)));
+  const byWidth = Math.floor((perPage - (cols - 1) * GAP) / cols);
+  // two rows of cards (1.4 x as tall as wide, plus the page header and the book's edges) must fit in the window
+  const byHeight = Math.floor((window.innerHeight - 380) / 2.9);
+  const cardWidth = Math.max(110, Math.min(240, byWidth, Math.max(150, byHeight)));
   return { spread, cols, cardWidth };
 }
 

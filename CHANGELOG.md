@@ -5,6 +5,7 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **The grimoire is a bit smaller** (cards up to 240 px, down from 280) and sized so two rows of cards always fit in the window, so nothing runs off the bottom of the book.
 - **Ancestral cards.** Twelve powerful cards that belong to no class (Ancestral Blade, Elder's Bulwark, Forebear's Gift, The Long Memory, Wrath of Ages, Unbroken Line...), with a jade-teal "ANCESTRAL" frame. One copy per deck, never in ordinary card rewards. They turn up in: the **Ancestors' Offering** event (take one for 12 HP), the Warden's Gift (sometimes), the merchant (rarely, 240 shards) and a new "Call on the Ancestors" bargain at the start of a run or stage.
 - **Summon cards now say what you are getting**: "Summon Patrol Drone (7 HP). At the end of your turn it will: Deal 4 damage."
 - **Every companion and enemy has its own model.** Units that used to be the same model with a different name now differ in colour, build, crown, horns, wings, weapon, glow and a chest emblem. (Dev page: #/models shows them all.)
