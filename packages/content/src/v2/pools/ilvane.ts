@@ -1,5 +1,5 @@
 // Ilvane, the Glyphwright (Nexus-9). Carves runes into the air. Three lanes:
-//   Spark   - damage runes: chip every turn, burst when pushed out
+//   Spark   - damage runes: chip every turn, burst when pushed out (Spark hits one enemy, Splinter hits every enemy)
 //   Ward    - Barrier runes: defence that accumulates
 //   Hollow  - charging runes that build for a huge evoke, and Resonance to make every rune stronger
 // Evoke cards (glue) cash runes in early. Runes sit in 3 slots; a fourth pushes the oldest out and evokes it.
@@ -29,6 +29,13 @@ export const RUNES: RuneDef[] = [
     text: 'Passive: 3 damage to a random enemy at the end of your turn. Release: 9 damage to the front enemy.',
     passive: [dmg(3, 'randomFoe')],
     evoke: [dmg(9, 'front')],
+  },
+  {
+    id: 'splinter',
+    name: 'Splinter',
+    text: 'Passive: 2 damage to every enemy at the end of your turn. Release: 6 damage to every enemy.',
+    passive: [dmg(2, 'allFoes')],
+    evoke: [dmg(6, 'allFoes')],
   },
   {
     id: 'ward',
@@ -67,6 +74,15 @@ export const ILVANE: CardDef[] = [
   i('common', 'spark-lance', 'Spark Lance', 'attack', 2, 'foe', [dmg(12), channel('spark')]),
   i('common', 'spark-cluster', 'Spark Cluster', 'skill', 2, 'none', [channel('spark', 2)]),
   i('common', 'static-guard', 'Static Guard', 'skill', 1, 'none', [barrier(5), channel('spark')]),
+  i('common', 'splinter-cast', 'Splinter Cast', 'skill', 1, 'none', [channel('splinter')]),
+  i('uncommon', 'prismatic-burst', 'Prismatic Burst', 'attack', 2, 'none', [
+    dmg(6, 'allFoes'),
+    channel('splinter'),
+  ]),
+  i('uncommon', 'shard-chorus', 'Shard Chorus', 'skill', 2, 'none', [channel('splinter', 2)]),
+  i('rare', 'glasswright', 'Glasswright', 'power', 2, 'none', [
+    on('turnStart', [channel('splinter')]),
+  ]),
   i('uncommon', 'glyph-lattice', 'Glyph Lattice', 'skill', 1, 'none', [
     { op: 'runeSlots', amount: 2 },
   ]),

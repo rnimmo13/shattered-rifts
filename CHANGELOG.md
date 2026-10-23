@@ -5,6 +5,7 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **A new rune for Ilvane: Splinter.** It chips every enemy for 2 at the end of your turn and releases for 6 to every enemy. New cards: Splinter Cast, Prismatic Burst, Shard Chorus and the rare Glasswright (a Splinter every turn). Ilvane's HP is 74 (was 56).
 - **Astra and Sehra are stronger.** Astra starts with 3 Lumen, gains 3 each turn and has a second Lumen Bolt in her starting deck; her Lumen spenders, Starforged Blade, Ray of Light and Cosmic Lance hit harder. Sehra has 104 HP (was 90). In the bot sim Astra went from 5% to about 23% of Normal runs and Sehra from 17% to about 33%.
 - **Runes sit beside the hero** (in a curved column towards the enemies) instead of on top of the buffs under the health bar.
 - **Enemies attack your minions first** (front-most first) and only then you. An enemy's own summons now stand in front of the summoner, never behind it. Because minions soak damage, Normal enemies are a little tougher (124% HP / 116% damage) and the companion heroes lost some HP (Rivet 46, Kesh 80, Mire 76) and Rivet's Tinkerer heals 1.

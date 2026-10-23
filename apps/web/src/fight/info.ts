@@ -152,6 +152,7 @@ export const STATUS_INFO: Record<
 /** One glyph per rune, for the rune row. */
 export const RUNE_GLYPH: Record<string, string> = {
   spark: '⚡',
+  splinter: '✦',
   ward: '◈',
   hollow: '●',
   prism: '◇',

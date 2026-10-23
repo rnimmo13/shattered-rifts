@@ -40,7 +40,7 @@ export const TIP_RULES: TipRule[] = [
   {
     id: 'runes',
     title: 'Runes',
-    text: 'Your runes sit in the curved row under you. At the end of every turn each one fires a small effect. A new rune in a full row pushes the oldest out, and it fires its big effect. Cards that Release runes fire them early.',
+    text: 'Your runes sit in the curved column beside you. At the end of every turn each one fires a small effect. A new rune in a full row pushes the oldest out, and it fires its big effect. Cards that Release runes fire them early.',
     when: (v, c) => c.usesRunes || v.sides.a.runes.length > 0,
   },
   {

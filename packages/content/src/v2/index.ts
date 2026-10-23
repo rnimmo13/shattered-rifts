@@ -163,7 +163,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     hero: {
       id: 'ilvane',
       name: 'Ilvane, the Glyphwright',
-      maxHp: 56,
+      maxHp: 74,
       mana: 3,
       handSize: 5,
       sigil: [channel('spark')],
@@ -171,9 +171,13 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     starter: [...rep('strike', 4), ...rep('defend', 3), ...rep('spark-cast', 2), 'twin-evocation'],
     blurb:
       'Carves runes into the air. Starts every fight with a Spark rune. Runes fire every turn, then burst when evoked.',
-    lanes: ['Spark: damage runes', 'Ward: Barrier runes', 'Hollow: charge and Resonance'],
+    lanes: [
+      'Spark: damage runes (one enemy or all)',
+      'Ward: Barrier runes',
+      'Hollow: charge and Resonance',
+    ],
     howTo: [
-      'You start with a Spark rune. Runes sit in a row of 3 slots under you.',
+      'You start with a Spark rune. Runes sit in a column of 3 slots beside you.',
       'At the end of your turn every rune fires a small effect. A 4th rune pushes the oldest out and it fires its big effect.',
       'Release cards fire runes early. Resonance makes every rune stronger.',
     ],

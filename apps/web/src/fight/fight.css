@@ -866,6 +866,11 @@
   border-color: #ffe27a;
   box-shadow: 0 0 12px rgb(255 226 122 / 0.6);
 }
+.rune--splinter {
+  background: radial-gradient(circle at 35% 30%, #f4fffb, #3fae9a 72%);
+  border-color: #c8fff2;
+  box-shadow: 0 0 12px rgb(120 255 220 / 0.55);
+}
 .rune--ward {
   background: radial-gradient(circle at 35% 30%, #d9f8ff, #2a7fb8 70%);
   border-color: #a6f4ff;
