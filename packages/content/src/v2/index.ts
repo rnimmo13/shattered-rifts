@@ -417,6 +417,15 @@ export const encounter = (id: string): Encounter => {
   return e;
 };
 
+// two cards sharing an id would silently overwrite each other in the table below
+{
+  const seen = new Set<string>();
+  for (const c of V2_CARDS) {
+    if (seen.has(c.id)) throw new Error(`Duplicate card id "${c.id}"`);
+    seen.add(c.id);
+  }
+}
+
 export const COMBAT_DB: CombatDb = {
   runes: Object.fromEntries(RUNES.map((r) => [r.id, r])),
   // (also answers for sanctified ids like "hi~strike": derived on demand, never listed)

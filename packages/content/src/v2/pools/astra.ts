@@ -132,7 +132,7 @@ export const ASTRA: CardDef[] = [
     on('created', [status('might', 1)]),
   ]),
   a('rare', 'collapsing-star', 'Collapsing Star', 'attack', 2, 'foe', [
-    scaled(dmg(5), per('created', 3)),
+    scaled(dmg(5), per('created', 2)),
   ]),
 
   // --- Stars ---

@@ -1204,6 +1204,7 @@ function decay(r: Run, side: Side): void {
     if (plated > 0) {
       u.barrier += plated;
       r.ev.push({ type: 'barrier', target: u.id, amount: plated, total: u.barrier });
+      if (u.kind === 'hero') fireTriggers(r, r.s.sides[u.side], 'barrier');
     }
     const ritual = stacks(u, 'ritual');
     if (ritual > 0) addStatus(r, u, 'might', ritual);

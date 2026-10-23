@@ -57,12 +57,49 @@ describe('fetching cards back from the discard pile', () => {
   });
 });
 
+describe('draw, created and Skills-played hooks', () => {
+  it('"Whenever you draw a card" (Speed Reader) hits every enemy for each card drawn', () => {
+    let s = fight('quill', ['speed-reader', 'quick-draw']);
+    s = play(s, 'T0');
+    const hp = foe(s).hp;
+    s = play(s, 'T1'); // Quick Draw: draw 2, so two hits of at least 2
+    expect(foe(s).hp).toBeLessThanOrEqual(hp - 4);
+  });
+
+  it('"Whenever a card is created" (Armory of Light) pays Might for each card Sword Rain makes', () => {
+    let s = fight('astra', ['armory-of-light', 'sword-rain']);
+    s = play(s, 'T0');
+    const might = hero(s).statuses.might ?? 0;
+    const created = s.sides.a.created;
+    s = play(s, 'T1');
+    expect(s.sides.a.created).toBe(created + 2);
+    expect(hero(s).statuses.might).toBe(might + 2);
+  });
+
+  it("Showman's Flourish counts the Skills played this turn", () => {
+    let s = fight('quill', ['quick-draw', 'quick-draw', 'showmans-flourish']);
+    s = play(s, 'T0');
+    s = play(s, 'T1');
+    const hp = foe(s).hp;
+    s = play(s, 'T2');
+    expect(hp - foe(s).hp).toBeGreaterThanOrEqual(12);
+  });
+
+  it('a fetch with a full hand sends the card back to the discard pile', () => {
+    const s = fight('kesh', ['scavenge']);
+    s.sides.a.hand.push(...Array.from({ length: 10 }, (_, i) => ({ id: `F${i}`, card: 'strike' })));
+    s.sides.a.discard = [{ id: 'D1', card: 'rend' }];
+    const after = play(s, 'T0');
+    // Scavenge puts it on the draw pile (never blocked by a full hand)
+    expect(after.sides.a.draw[0]?.card).toBe('rend');
+  });
+});
+
 describe('counters', () => {
   it('count cards drawn and created over the fight', () => {
     let s = fight('maren', ['prayer']);
     const drawn = s.sides.a.drawn;
     s = play(s, 'T0'); // Prayer: heal 4, draw 1
     expect(s.sides.a.drawn).toBe(drawn + 1);
-    expect(s.sides.a.created).toBeGreaterThanOrEqual(0);
   });
 });

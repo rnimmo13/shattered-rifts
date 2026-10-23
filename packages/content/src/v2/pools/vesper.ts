@@ -308,9 +308,9 @@ export const VESPER: CardDef[] = [
     exhaust: true,
   }),
   // (more Bluff)
-  v('common', 'slip-away', 'Slip Away', 'skill', 1, 'none', [barrier(5), drawNext(1)]),
+  v('common', 'step-aside', 'Step Aside', 'skill', 1, 'none', [barrier(5), drawNext(1)]),
   v('common', 'quick-study', 'Quick Study', 'skill', 0, 'none', [draw(1), discard(1)]),
-  v('uncommon', 'tumble', 'Tumble', 'skill', 1, 'none', [draw(3), discard(1)]),
+  v('uncommon', 'roll-with-it', 'Roll with It', 'skill', 1, 'none', [draw(3), discard(1)]),
   v('uncommon', 'sleight-of-hand', 'Sleight of Hand', 'skill', 1, 'none', [draw(2)], {
     onDiscard: [draw(2)],
   }),
@@ -327,7 +327,7 @@ export const VESPER: CardDef[] = [
     [discard(9, 'any'), scaled(draw(0), per('discarded'))],
     { exhaust: true },
   ),
-  v('rare', 'encore', 'Encore', 'skill', 1, 'none', [status('twinned', 1)]),
+  v('rare', 'second-act', 'Second Act', 'skill', 1, 'none', [status('twinned', 1)]),
   v('rare', 'frozen-moment', 'Frozen Moment', 'skill', 2, 'none', [cheapen(9, 'hand')], {
     exhaust: true,
   }),

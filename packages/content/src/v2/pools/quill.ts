@@ -181,7 +181,7 @@ export const QUILL: CardDef[] = [
   q('uncommon', 'caustic-vial', 'Caustic Vial', 'skill', 2, 'none', [
     status('seared', 4, 'allFoes'),
   ]),
-  q('uncommon', 'choking-haze', 'Choking Haze', 'power', 1, 'none', [
+  q('uncommon', 'noxious-haze', 'Noxious Haze', 'power', 1, 'none', [
     on('turnStart', [status('seared', 2, 'allFoes')]),
   ]),
   q('rare', 'tainted-edge', 'Tainted Edge', 'power', 2, 'none', [
@@ -288,6 +288,10 @@ export const QUILL: CardDef[] = [
   ),
   q('uncommon', 'light-fingers', 'Light Fingers', 'skill', 1, 'none', [mana(2), discard(1)]),
   // (more Sleight)
+  q('rare', 'speed-reader', 'Speed Reader', 'power', 1, 'none', [on('draw', [dmg(2, 'allFoes')])]),
+  q('uncommon', 'showmans-flourish', "Showman's Flourish", 'attack', 1, 'foe', [
+    scaled(dmg(4), per('skillsPlayed', 4)),
+  ]),
   q('common', 'dart-throw', 'Dart Throw', 'attack', 1, 'foe', [dmg(9), draw(1), discard(1)]),
   q('common', 'tangle-wire', 'Tangle Wire', 'attack', 1, 'foe', [
     dmg(8),
@@ -295,11 +299,11 @@ export const QUILL: CardDef[] = [
   ]),
   q('common', 'quick-draw', 'Quick Draw', 'skill', 1, 'none', [barrier(5), draw(2)]),
   q('uncommon', 'light-feet', 'Light Feet', 'power', 1, 'none', [status('bracing', 2)]),
-  q('rare', 'shadow-step', 'Shadow Step', 'skill', 1, 'none', [
+  q('rare', 'blur-step', 'Blur Step', 'skill', 1, 'none', [
     discard(9, 'any'),
     status('twinned', 1),
   ]),
-  q('rare', 'quick-hands', 'Quick Hands', 'skill', 1, 'none', [status('mirrored', 1)]),
+  q('rare', 'nimble-fingers', 'Nimble Fingers', 'skill', 1, 'none', [status('mirrored', 1)]),
   q('rare', 'lingering-blur', 'Lingering Blur', 'power', 1, 'none', [on('play', [barrier(1)])]),
   q('rare', 'adrenaline-rush', 'Adrenaline Rush', 'skill', 0, 'none', [mana(1), draw(2)], {
     exhaust: true,
@@ -308,7 +312,9 @@ export const QUILL: CardDef[] = [
     on('turnStart', [draw(1)]),
   ]),
   q('rare', 'careful-plan', 'Careful Plan', 'skill', 1, 'none', [draw(1), status('holdfast', 1)]),
-  q('rare', 'cold-killing', 'Cold Killing', 'attack', 1, 'foe', [scaled(dmg(1), per('drawn', 1))]),
+  q('rare', 'cold-killing', 'Cold Killing', 'attack', 1, 'foe', [
+    scaled(dmg(1), per('drawn', 0.25)),
+  ]),
   q('rare', 'coiled-strike', 'Coiled Strike', 'power', 3, 'none', [
     on('play', [dmg(4, 'randomFoe')]),
   ]),

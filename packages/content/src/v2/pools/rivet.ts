@@ -157,7 +157,7 @@ export const RIVET: CardDef[] = [
   r('uncommon', 'resonant-pulse', 'Resonant Pulse', 'power', 1, 'none', [
     on('play', [heal(1, 'allFriends')], { filter: 'skill' }),
   ]),
-  r('rare', 'overload', 'Overload', 'skill', 1, 'none', [ACT, ACT, ACT], { exhaust: true }),
+  r('rare', 'overload', 'Overload', 'skill', 2, 'none', [ACT, ACT, ACT], { exhaust: true }),
   r('rare', 'chain-reaction', 'Chain Reaction', 'skill', 2, 'none', [ACT, ACT, draw(1)]),
   r('rare', 'command-chip', 'Command Chip', 'power', 3, 'none', [
     on('play', [ACT], { filter: 'summon' }),
