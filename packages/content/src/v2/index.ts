@@ -65,7 +65,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     hero: { id: 'vesper', name: 'Vesper Nightlace', maxHp: 68, mana: 3, handSize: 5 },
     starter: [...rep('strike', 3), ...rep('defend', 4), ...rep('veil-strike', 2), 'set-the-web'],
     blurb: 'A masked trapper. No companions: Snares, Exposed and patience.',
-    lanes: ['Snares: traps of every trigger', 'Exposed: mark, then spend the mark', 'Bluff: Retain, Scry, held Mana'],
+    lanes: ['Snares: traps of every trigger', 'Exposed: mark, then spend the mark', 'Bluff: Hold, Foresee, held Mana'],
   },
   quill: {
     realm: 'umbral',
@@ -78,8 +78,8 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
       sigil: [addTo('sleeve-knife')],
     },
     starter: [...rep('strike', 4), ...rep('defend', 3), ...rep('quick-jab', 2), 'slip-away'],
-    blurb: 'A cutpurse with a sleeve full of blades. Starts every fight with a Shiv. Shivs, Seared and discard tricks.',
-    lanes: ['Shivs: 0-cost blades', 'Seared: stack, double, cash out', 'Sleight: discard and cycle'],
+    blurb: 'A cutpurse with a sleeve full of blades. Starts every fight with a Sleeve Knife. Knives, Seared and discard tricks.',
+    lanes: ['Knives: 0-cost blades', 'Seared: stack, double, cash out', 'Sleight: discard and cycle'],
   },
   ilvane: {
     realm: 'nexus',
@@ -228,3 +228,22 @@ export { validateDb };
 export const V2_DECK_RULES = { minSize: 8, maxCopies: 4, vaultSlots: 5 } as const;
 
 export { BOONS, POTIONS };
+
+/** The playable realms in the order every screen lists them, with the name players read. */
+export const REALMS: { id: RealmId; name: string }[] = [
+  { id: 'aurelion', name: 'Aurelion' },
+  { id: 'nexus', name: 'Nexus-9' },
+  { id: 'wyldmaw', name: 'Wyldmaw' },
+  { id: 'umbral', name: 'Umbral Veil' },
+  { id: 'starfall', name: 'Starfall' },
+];
+
+/** Riftwalkers grouped by realm (every screen that lists characters uses this, so they always group alike). */
+export function heroesByRealm(): { realm: RealmId; name: string; heroes: HeroId[] }[] {
+  const all = Object.keys(RIFTWALKERS) as HeroId[];
+  return REALMS.map((r) => ({
+    realm: r.id,
+    name: r.name,
+    heroes: all.filter((h) => RIFTWALKERS[h].realm === r.id),
+  })).filter((g) => g.heroes.length > 0);
+}

@@ -68,7 +68,7 @@ export const FightCard = memo(
             <span>{def.x ? 'X' : def.cost}</span>
           </div>
           {def.starCost ? (
-            <div className="card__stars" aria-label={`Costs ${def.starCost} Stars`}>
+            <div className="card__stars" aria-label={`Costs ${def.starCost} Lumen`}>
               <span>★{def.starCost}</span>
             </div>
           ) : null}

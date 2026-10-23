@@ -774,3 +774,27 @@
   border: 1px solid var(--c-gold-dark);
   background: rgb(10 12 28 / 0.6);
 }
+
+/* characters grouped by realm */
+.picker__realms {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 1.2rem 2rem;
+}
+.picker__realm-group {
+  display: grid;
+  gap: 0.5rem;
+  justify-items: center;
+}
+.picker__realm-name {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 0.78rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--c-cyan-glow);
+  border-bottom: 1px solid rgb(212 168 75 / 0.35);
+  padding-bottom: 0.25rem;
+}

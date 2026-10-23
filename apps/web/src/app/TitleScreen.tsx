@@ -1,22 +1,18 @@
 import type { CSSProperties } from 'react';
+import { RIFTWALKERS, heroesByRealm } from '@sr/content/v2';
 import { color } from '../design/tokens';
 
-interface CharacterTeaser {
-  name: string;
-  realm: string;
-  accent: string;
-  locked?: boolean;
-}
-
-const CHARACTERS: CharacterTeaser[] = [
-  { name: 'Ser Maren Ashcourt', realm: 'Aurelion', accent: color.gold },
-  { name: 'Rivet', realm: 'Nexus-9', accent: color.cyan },
-  { name: 'Kesh the Unfed', realm: 'Wyldmaw', accent: color.blood },
-  { name: 'Vesper Nightlace', realm: 'Umbral Veil', accent: color.violet },
-];
+const ACCENT: Record<string, string> = {
+  aurelion: color.gold,
+  nexus: color.cyan,
+  wyldmaw: color.blood,
+  umbral: color.violet,
+  starfall: '#ffe9a0',
+};
 
 /** Title screen. The jagged SVG crack is the game's "shattering" motif. */
 export function TitleScreen() {
+  const groups = heroesByRealm();
   return (
     <main className="title">
       <svg className="title__crack" viewBox="0 0 1200 200" preserveAspectRatio="none" aria-hidden>
@@ -52,19 +48,28 @@ export function TitleScreen() {
         </p>
       </header>
 
-      <ul className="title__roster" aria-label="Riftwalkers">
-        {CHARACTERS.map((c) => (
-          <li
-            key={c.realm}
-            className={`title__card${c.locked ? ' title__card--locked' : ''}`}
-            style={{ '--accent': c.accent } as CSSProperties}
+      <div className="title__realms" aria-label="Riftwalkers by realm">
+        {groups.map((g) => (
+          <section
+            key={g.realm}
+            className="title__realm"
+            style={{ '--accent': ACCENT[g.realm] ?? color.gold } as CSSProperties}
           >
-            <span className="title__sigil" aria-hidden />
-            <span className="title__card-name">{c.name}</span>
-            <span className="title__card-realm">{c.realm}</span>
-          </li>
+            <h2 className="title__realm-name">{g.name}</h2>
+            <ul className="title__roster">
+              {g.heroes.map((h) => (
+                <li key={h} className="title__card">
+                  <span className="title__sigil" aria-hidden />
+                  <span className="title__card-name">{RIFTWALKERS[h].hero.name}</span>
+                  <span className="title__card-realm">
+                    {RIFTWALKERS[h].lanes.map((l) => l.split(':')[0]).join(' · ')}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </section>
         ))}
-      </ul>
+      </div>
 
       <div className="title__actions">
         <a className="btn btn--primary" href="#/run">

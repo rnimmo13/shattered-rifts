@@ -225,15 +225,42 @@ a {
   color: var(--c-text-dim);
 }
 
+.title__realms {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 1.4rem 2rem;
+  width: min(100%, 64rem);
+}
+.title__realm {
+  display: grid;
+  gap: 0.6rem;
+  justify-items: center;
+}
+.title__realm-name {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--accent);
+  text-shadow: 0 0 14px color-mix(in srgb, var(--accent) 60%, transparent);
+}
 .title__roster {
   position: relative;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(10.5rem, 1fr));
-  gap: 1rem;
-  width: min(100%, 50rem);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.8rem;
   margin: 0;
   padding: 0;
   list-style: none;
+}
+.title__roster .title__card {
+  width: 10.5rem;
 }
 
 /* character cards: gold-edged glass with the realm's colour pooled at the bottom */

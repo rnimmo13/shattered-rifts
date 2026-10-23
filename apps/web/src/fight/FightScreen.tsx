@@ -1,7 +1,14 @@
 // #/fight: pick a Riftwalker and an encounter, then fight it on the new Combat v2 stage.
 
 import { useState } from 'react';
-import { COMBAT_DB, ENCOUNTERS, RIFTWALKERS, encounter, type HeroId } from '@sr/content/v2';
+import {
+  COMBAT_DB,
+  ENCOUNTERS,
+  RIFTWALKERS,
+  encounter,
+  heroesByRealm,
+  type HeroId,
+} from '@sr/content/v2';
 import type { CombatSetup } from '@sr/combat';
 import { FightView } from './FightView';
 import '../play/play.css';
@@ -57,21 +64,26 @@ export default function FightScreen() {
       </p>
       <section>
         <h2 className="setup__h">Riftwalker</h2>
-        <div className="setup__chars">
-          {(Object.keys(RIFTWALKERS) as HeroId[]).map((h) => (
-            <button
-              key={h}
-              className={`setup__char${hero === h ? ' is-on' : ''}`}
-              onClick={() => setHero(h)}
-            >
-              <span className="setup__charName">{RIFTWALKERS[h].hero.name}</span>
-              <span>
-                {RIFTWALKERS[h].hero.maxHp} HP · {REALM_NAME[RIFTWALKERS[h].realm]}
-              </span>
-              <span>{RIFTWALKERS[h].blurb}</span>
-            </button>
-          ))}
-        </div>
+        {heroesByRealm().map((g) => (
+          <div key={g.realm} className="setup__realm">
+            <h3 className="setup__realmName">{g.name}</h3>
+            <div className="setup__chars">
+              {g.heroes.map((h) => (
+                <button
+                  key={h}
+                  className={`setup__char${hero === h ? ' is-on' : ''}`}
+                  onClick={() => setHero(h)}
+                >
+                  <span className="setup__charName">{RIFTWALKERS[h].hero.name}</span>
+                  <span>
+                    {RIFTWALKERS[h].hero.maxHp} HP · {REALM_NAME[RIFTWALKERS[h].realm]}
+                  </span>
+                  <span>{RIFTWALKERS[h].blurb}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+        ))}
       </section>
       <section>
         <h2 className="setup__h">Encounter</h2>

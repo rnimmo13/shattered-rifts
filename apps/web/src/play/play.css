@@ -1184,3 +1184,18 @@
     height: 8rem;
   }
 }
+
+/* the practice-fight picker, grouped by realm */
+.setup__realm {
+  display: grid;
+  gap: 0.4rem;
+  margin-bottom: 0.9rem;
+}
+.setup__realmName {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 0.78rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--c-cyan-glow);
+}

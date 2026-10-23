@@ -48,7 +48,7 @@ export function SidePanel(props: {
             const c = db.cards[p.card];
             return (
               <span key={p.id} className="aux__power" title={c ? cardText(db, c) : ''}>
-                {c?.name ?? 'Power'}
+                {c?.name ?? 'Aura'}
               </span>
             );
           })}
