@@ -1,20 +1,31 @@
 // Combat v2 content: heroes, starter decks, cards, companions and encounters (docs/08_COMBAT_V2.md).
 
 import { validateDb, type CombatDb, type HeroDef } from '@sr/combat';
+import { addTo, channel, stance, stars } from './build';
 import { BOONS } from './boons';
 import { V2_CARDS } from './cards';
+import { RUNES } from './pools/ilvane';
 import { POTIONS } from './potions';
 import { ALLIES, ENEMY_UNITS } from './units';
 
-export type RealmId = 'aurelion' | 'nexus' | 'wyldmaw' | 'umbral';
-export type HeroId = 'maren' | 'rivet' | 'kesh' | 'vesper';
+export type RealmId = 'aurelion' | 'nexus' | 'wyldmaw' | 'umbral' | 'starfall';
+export type HeroId =
+  | 'maren'
+  | 'rivet'
+  | 'kesh'
+  | 'vesper'
+  | 'quill'
+  | 'ilvane'
+  | 'sehra'
+  | 'astra';
 
 export interface Riftwalker {
   hero: HeroDef;
   realm: RealmId;
-  /** which card ids it may draft from (its realm + neutral) */
   starter: string[];
   blurb: string;
+  /** the three lanes of its card pool, shown on the character screen (docs/09_ROSTER.md) */
+  lanes: [string, string, string];
 }
 
 const rep = (id: string, n: number): string[] => Array<string>(n).fill(id);
@@ -25,6 +36,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     hero: { id: 'maren', name: 'Ser Maren Ashcourt', maxHp: 80, mana: 3, handSize: 5 },
     starter: [...rep('strike', 4), ...rep('defend', 4), 'dawn-smite', 'oathbound'],
     blurb: 'A knight of the Gilded Order. No companions: Barrier, Thorns and punishing Snares.',
+    lanes: ['Bulwark: hit with your Barrier', 'Thorns: punish attackers', 'Sanctified: heal and Shielded'],
   },
   rivet: {
     realm: 'nexus',
@@ -32,6 +44,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     starter: [...rep('strike', 4), ...rep('defend', 3), ...rep('deploy-drone', 2), 'overclock'],
     blurb:
       'A scrap-built tinkerer. Starts every fight with a Drone and builds an army of machines.',
+    lanes: ['Swarm: many cheap bodies', 'Assemble: allies act again', 'Core: a few big constructs'],
   },
   kesh: {
     realm: 'wyldmaw',
@@ -45,12 +58,70 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     },
     starter: [...rep('strike', 4), ...rep('defend', 3), ...rep('savage-bite', 2), 'blood-frenzy'],
     blurb: 'A hunter with a Hound. Pays HP to buff the whole pack with Might.',
+    lanes: ['Bloodrage: HP for Might', 'Pack: feed the companions', 'Feast: Exhaust and Devour'],
   },
   vesper: {
     realm: 'umbral',
     hero: { id: 'vesper', name: 'Vesper Nightlace', maxHp: 68, mana: 3, handSize: 5 },
     starter: [...rep('strike', 3), ...rep('defend', 4), ...rep('veil-strike', 2), 'set-the-web'],
-    blurb: 'A masked trapper. No companions: Snares, Exposed and Seared.',
+    blurb: 'A masked trapper. No companions: Snares, Exposed and patience.',
+    lanes: ['Snares: traps of every trigger', 'Exposed: mark, then spend the mark', 'Bluff: Retain, Scry, held Mana'],
+  },
+  quill: {
+    realm: 'umbral',
+    hero: {
+      id: 'quill',
+      name: 'Quill, the Knife-Dancer',
+      maxHp: 66,
+      mana: 3,
+      handSize: 5,
+      sigil: [addTo('shiv')],
+    },
+    starter: [...rep('strike', 4), ...rep('defend', 3), ...rep('quick-jab', 2), 'slip-away'],
+    blurb: 'A cutpurse with a sleeve full of blades. Starts every fight with a Shiv. Shivs, Seared and discard tricks.',
+    lanes: ['Shivs: 0-cost blades', 'Seared: stack, double, cash out', 'Sleight: discard and cycle'],
+  },
+  ilvane: {
+    realm: 'nexus',
+    hero: {
+      id: 'ilvane',
+      name: 'Ilvane, the Glyphwright',
+      maxHp: 70,
+      mana: 3,
+      handSize: 5,
+      sigil: [channel('spark')],
+    },
+    starter: [...rep('strike', 4), ...rep('defend', 3), ...rep('spark-cast', 2), 'dual-cast'],
+    blurb: 'Carves runes into the air. Starts every fight with a Spark rune. Runes fire every turn, then burst when evoked.',
+    lanes: ['Spark: damage runes', 'Ward: Barrier runes', 'Hollow: charge and Resonance'],
+  },
+  sehra: {
+    realm: 'aurelion',
+    hero: {
+      id: 'sehra',
+      name: 'Sehra, the Still Flame',
+      maxHp: 72,
+      mana: 3,
+      handSize: 5,
+      sigil: [stance('calm')],
+    },
+    starter: [...rep('strike', 4), ...rep('defend', 4), 'eruption', 'vigilance'],
+    blurb: 'A monk who fights in stances. Starts every fight in Calm. Wrath for burst, Calm for tempo, Mantra for Radiance.',
+    lanes: ['Wrath: burst', 'Calm: Mana and cards', 'Mantra: build to Radiant'],
+  },
+  astra: {
+    realm: 'starfall',
+    hero: {
+      id: 'astra',
+      name: 'Astra, the Starcaller',
+      maxHp: 74,
+      mana: 3,
+      handSize: 5,
+      sigil: [stars(2), addTo('sovereign-blade')],
+    },
+    starter: [...rep('strike', 4), ...rep('defend', 4), 'falling-star', 'venerate'],
+    blurb: 'A scholar of fallen stars. Starts with 2 Stars and a Sovereign Blade that every Forge sharpens for good.',
+    lanes: ['Blade: forge one weapon', 'Stars: spend for finishers', 'Constellations: ticking Powers'],
   },
 };
 
@@ -120,6 +191,7 @@ export const encounter = (id: string): Encounter => {
 };
 
 export const COMBAT_DB: CombatDb = {
+  runes: Object.fromEntries(RUNES.map((r) => [r.id, r])),
   cards: Object.fromEntries(V2_CARDS.map((c) => [c.id, c])),
   boons: Object.fromEntries(BOONS.map((b) => [b.id, b])),
   potions: Object.fromEntries(POTIONS.map((p) => [p.id, p])),
@@ -127,18 +199,21 @@ export const COMBAT_DB: CombatDb = {
   heroes: Object.fromEntries(Object.values(RIFTWALKERS).map((r) => [r.hero.id, r.hero])),
 };
 
-/** Cards a Riftwalker may be offered as rewards: their realm and Neutral, never basics or junk. */
+/** Cards a Riftwalker may be offered as rewards: their own pool and Neutral, never basics, tokens or junk. */
 export function rewardPool(hero: HeroId): string[] {
-  const realm = RIFTWALKERS[hero].realm;
   return V2_CARDS.filter(
     (c) =>
-      (c.realm === realm || c.realm === 'neutral') &&
+      (c.hero === hero || c.hero === 'neutral') &&
       c.rarity !== 'basic' &&
       !c.id.endsWith('+') &&
-      !c.unplayable &&
+      // a card that cannot be played is only worth offering if discarding it pays (Reflex, Tactician)
+      (!c.unplayable || c.onDiscard !== undefined) &&
       !c.source,
   ).map((c) => c.id);
 }
+
+/** The pool a card belongs to (a Riftwalker id, or 'neutral'). */
+export const poolOf = (cardId: string): string => COMBAT_DB.cards[cardId]?.hero ?? 'neutral';
 
 /** A Warden's signature cards (the Warden's Gift). The id is the encounter id. */
 export function signatureCards(encounterId: string): string[] {

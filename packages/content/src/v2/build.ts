@@ -7,9 +7,13 @@ import type {
   Move,
   Op,
   Pattern,
+  Metric,
   Rarity,
+  Scale,
   Sel,
+  Stance,
   StatusId,
+  TriggerWhen,
   UnitDef,
 } from '@sr/combat';
 
@@ -37,11 +41,102 @@ export const wound = (side: 'self' | 'foe' = 'foe', card = 'wound'): Op => ({
 export const ACT: Op = { op: 'actAllies' };
 export const PREVENT: Op = { op: 'prevent' };
 
+// --- ops for the lanes (docs/09_ROSTER.md) --------------------------------------------------------------------------
+/** A scale: "+mult per metric". `of`: self (default) / the card's target / each unit hit. */
+export const per = (
+  by: Metric,
+  mult = 1,
+  of?: Scale['of'],
+  into?: Scale['into'],
+): Scale => ({ by, ...(mult !== 1 ? { mult } : {}), ...(of ? { of } : {}), ...(into ? { into } : {}) });
+/** Attach a scale to any op that has an amount. */
+export const scaled = <T extends Op>(o: T, scale: Scale): T => ({ ...o, scale });
+export const discard = (amount: number, mode: 'choose' | 'random' | 'any' = 'choose'): Op => ({
+  op: 'discard',
+  amount,
+  ...(mode === 'random' ? { random: true } : mode === 'any' ? { any: true } : {}),
+});
+export const exhaustN = (amount: number, mode: 'choose' | 'random' | 'any' = 'choose'): Op => ({
+  op: 'exhaustCards',
+  amount,
+  ...(mode === 'random' ? { random: true } : mode === 'any' ? { any: true } : {}),
+});
+export const scry = (amount: number): Op => ({ op: 'scry', amount });
+export const stars = (amount: number): Op => ({ op: 'stars', amount });
+export const stance = (st: Stance | 'none'): Op => ({ op: 'stance', stance: st });
+export const channel = (rune: string, times?: number): Op => ({
+  op: 'channel',
+  rune,
+  ...(times ? { times } : {}),
+});
+export const evoke = (count = 1, times = 1, keep = false): Op => ({
+  op: 'evoke',
+  ...(count !== 1 ? { count } : {}),
+  ...(times !== 1 ? { times } : {}),
+  ...(keep ? { keep } : {}),
+});
+export const forge = (cardId: string, amount: number): Op => ({ op: 'forge', card: cardId, amount });
+export const sacrifice: Op = { op: 'sacrifice' };
+/** Unblockable HP loss for the target that depends on the board (Cash In: its Seared). */
+export const loseHpScaled = (scale: Scale, to: Sel = 'target'): Op => ({
+  op: 'loseHp',
+  amount: 0,
+  to,
+  scale,
+});
+export const doubleSt = (st: StatusId, to: Sel = 'target', mult = 2): Op => ({
+  op: 'scaleStatus',
+  status: st,
+  mult,
+  to,
+});
+export const addTo = (
+  cardId: string,
+  times = 1,
+  to: 'hand' | 'discard' | 'draw' = 'hand',
+  scale?: Scale,
+): Op => ({
+  op: 'addCard',
+  card: cardId,
+  to,
+  side: 'self',
+  ...(times !== 1 || scale ? { times } : {}),
+  ...(scale ? { scale } : {}),
+});
+/** A Power's trigger: run `ops` whenever `when` happens. */
+export const on = (
+  when: TriggerWhen,
+  ops: Op[],
+  narrow: { filter?: CardKind; tag?: string; stance?: Stance } = {},
+): Op => ({ op: 'power', when, ops, ...narrow });
+
 // --- cards ---------------------------------------------------------------------------------------------------------
 
 type Extra = Partial<
-  Pick<CardDef, 'exhaust' | 'retain' | 'unplayable' | 'trigger' | 'text' | 'source'>
->;
+  Pick<
+    CardDef,
+    | 'exhaust'
+    | 'retain'
+    | 'unplayable'
+    | 'trigger'
+    | 'text'
+    | 'source'
+    | 'hero'
+    | 'tags'
+    | 'starCost'
+    | 'x'
+    | 'innate'
+    | 'ethereal'
+    | 'onDiscard'
+    | 'onExhaust'
+  >
+> & {
+  /** a hand-written "+" version: fields that replace the card's (instead of the generic rule in plus()) */
+  up?: Partial<CardDef>;
+};
+
+/** Hand-written upgrades, by card id (read by plus()). Kept out of CardDef so card data stays pure. */
+const CUSTOM_UP = new Map<string, Partial<CardDef>>();
 
 export function card(
   realm: string,
@@ -54,7 +149,26 @@ export function card(
   effects: Op[],
   extra: Extra = {},
 ): CardDef {
-  return { id, name, realm, rarity, kind, cost, target, effects, ...extra };
+  const { up, ...rest } = extra;
+  if (up) CUSTOM_UP.set(id, up);
+  return { id, name, realm, rarity, kind, cost, target, effects, ...rest };
+}
+
+/**
+ * A constructor for one Riftwalker's pool: every card it makes belongs to `hero` (its reward pool) and comes from `realm`
+ * (flavour). Usage: `const m = pool('maren', 'aurelion'); m('common', 'strike', 'Strike', 'attack', 1, 'foe', [dmg(6)])`.
+ */
+export function pool(hero: string, realm: string) {
+  return (
+    rarity: Rarity,
+    id: string,
+    name: string,
+    kind: CardKind,
+    cost: number,
+    target: CardTarget,
+    effects: Op[],
+    extra: Extra = {},
+  ): CardDef => card(realm, rarity, id, name, kind, cost, target, effects, { hero, ...extra });
 }
 
 /**
@@ -63,20 +177,55 @@ export function card(
  * nothing to improve gets cheaper, or loses Exhaust.
  */
 export function plus(c: CardDef): CardDef {
+  const custom = CUSTOM_UP.get(c.id);
+  if (custom) {
+    const up: CardDef = { ...c, ...custom, id: `${c.id}+`, name: `${c.name}+` };
+    delete up.upgrade;
+    return up;
+  }
   let changed = false;
-  const effects = c.effects.map((o): Op => {
+  const upOp = (o: Op): Op => {
     switch (o.op) {
       case 'damage':
+        // "damage equal to X" has no flat part to improve
+        if (o.amount === 0 && o.scale) return o;
         changed = true;
-        return { ...o, amount: o.amount + (o.hits && o.hits > 1 ? 1 : o.to === 'allFoes' ? 3 : 3) };
+        return { ...o, amount: o.amount + (o.hits && o.hits > 1 ? 1 : 3) };
       case 'barrier':
+        if (o.amount === 0 && o.scale) return o;
         changed = true;
         return { ...o, amount: o.amount + 3 };
+      case 'scry':
+        changed = true;
+        return { ...o, amount: o.amount + 1 };
+      case 'stars':
+        if (o.amount > 0) {
+          changed = true;
+          return { ...o, amount: o.amount + 1 };
+        }
+        return o;
+      case 'addCard':
+        if (o.times && o.times > 0 && !o.scale) {
+          changed = true;
+          return { ...o, times: o.times + 1 };
+        }
+        return o;
+      case 'forge':
+        changed = true;
+        return { ...o, amount: o.amount + 2 };
+      case 'channel':
+      case 'evoke':
+        // an X card gets one more X
+        if (o.scale?.by === 'x') {
+          changed = true;
+          return { ...o, times: (o.times ?? 0) + 1 };
+        }
+        return o;
       case 'heal':
         changed = true;
         return { ...o, amount: o.amount + 3 };
       case 'status':
-        if (o.amount > 0 && o.status !== 'stunned' && o.status !== 'shielded') {
+        if (o.amount > 0 && o.status !== 'stunned' && o.status !== 'shielded' && !(o.amount === 0 && o.scale)) {
           changed = true;
           return { ...o, amount: o.amount + 1 };
         }
@@ -95,8 +244,16 @@ export function plus(c: CardDef): CardDef {
       default:
         return o;
     }
-  });
-  const up: CardDef = { ...c, id: `${c.id}+`, name: `${c.name}+`, effects };
+  };
+  const up: CardDef = {
+    ...c,
+    id: `${c.id}+`,
+    name: `${c.name}+`,
+    effects: c.effects.map(upOp),
+    // what a card does when discarded or exhausted improves too
+    ...(c.onDiscard ? { onDiscard: c.onDiscard.map(upOp) } : {}),
+    ...(c.onExhaust ? { onExhaust: c.onExhaust.map(upOp) } : {}),
+  };
   delete up.upgrade;
   if (!changed) {
     if (c.cost > 0) up.cost = c.cost - 1;
@@ -108,10 +265,9 @@ export function plus(c: CardDef): CardDef {
 /** Cards plus their "+" versions, with the upgrade link filled in. */
 export function withUpgrades(cards: CardDef[]): CardDef[] {
   return cards.flatMap((c) => {
-    if (c.unplayable || c.rarity === 'basic') {
-      // basics upgrade too (Strike+ / Defend+), junk does not
-      if (c.unplayable) return [c];
-    }
+    // basics upgrade too (Strike+ / Defend+); junk and tokens (made mid-fight by other cards) do not
+    if (c.unplayable && !c.onDiscard) return [c];
+    if (c.source === 'token') return [c];
     const up = plus(c);
     return [{ ...c, upgrade: up.id }, up];
   });

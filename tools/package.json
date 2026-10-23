@@ -9,7 +9,8 @@
     "typecheck": "tsc -p tsconfig.json",
     "sim": "tsx src/sim.ts",
     "deploy:web": "tsx src/deploy.ts",
-    "artlist": "tsx src/artlist.ts"
+    "artlist": "tsx src/artlist.ts",
+    "cardlist": "tsx src/cardlist.ts"
   },
   "dependencies": {
     "@sr/combat": "workspace:*",

@@ -17,6 +17,7 @@ import {
   type CombatDb,
   type CombatState,
   type Op,
+  type TriggerWhen,
   type Unit,
 } from './index';
 
@@ -37,7 +38,7 @@ const strike = c('strike', {
   target: 'foe',
   effects: [{ op: 'damage', amount: 6, to: 'target' }],
 });
-const power = (id: string, when: 'turnStart' | 'turnEnd' | 'play' | 'exhaust' | 'discard', ops: Op[], extra = {}) =>
+const power = (id: string, when: TriggerWhen, ops: Op[], extra = {}) =>
   c(id, { kind: 'power', effects: [{ op: 'power', when, ops, ...extra }] });
 
 const DB: CombatDb = {
@@ -411,7 +412,7 @@ describe('scaling amounts', () => {
 
   it('rules text reads sensibly', () => {
     expect(cardText(DB, DB.cards.slam as CardDef)).toBe('Deal damage equal to your Barrier.');
-    expect(cardText(DB, DB.cards.finisher as CardDef)).toContain('per Attack played this turn');
+    expect(cardText(DB, DB.cards.finisher as CardDef)).toContain('6 times the Attacks played this turn');
     expect(cardText(DB, DB.cards.catalyst as CardDef)).toBe('Double the Seared on the target.');
   });
 });

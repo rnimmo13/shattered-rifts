@@ -25,7 +25,9 @@ describe('Combat v2 content', () => {
     for (const c of Object.values(db.cards)) {
       if (c.unplayable) continue;
       expect(cardText(db, c).length, c.id).toBeGreaterThan(3);
-      if (!c.id.endsWith('+')) expect(c.upgrade && db.cards[c.upgrade], c.id).toBeTruthy();
+      // tokens (a Shiv, the Sovereign Blade) are made mid-fight and have no "+"
+      if (!c.id.endsWith('+') && c.source !== 'token')
+        expect(c.upgrade && db.cards[c.upgrade], c.id).toBeTruthy();
     }
   });
 
@@ -34,8 +36,8 @@ describe('Combat v2 content', () => {
       if (!c.upgrade) continue;
       const u = db.cards[c.upgrade]!;
       const same =
-        JSON.stringify({ e: c.effects, cost: c.cost, x: c.exhaust }) ===
-        JSON.stringify({ e: u.effects, cost: u.cost, x: u.exhaust });
+        JSON.stringify({ e: c.effects, cost: c.cost, x: c.exhaust, d: c.onDiscard, o: c.onExhaust }) ===
+        JSON.stringify({ e: u.effects, cost: u.cost, x: u.exhaust, d: u.onDiscard, o: u.onExhaust });
       expect(same, `${c.id} upgrade changes nothing`).toBe(false);
     }
   });
@@ -96,7 +98,7 @@ describe('Riftwalker identities (docs/08 §5)', () => {
   });
   it('Kesh starts with a Hound and mostly buffs it instead of summoning more', () => {
     expect(RIFTWALKERS.kesh.hero.startUnits).toEqual(['hound']);
-    expect(summonCards('wyldmaw').length).toBeLessThanOrEqual(2);
+    expect(summonCards('wyldmaw').length).toBeLessThanOrEqual(4);
     const buffs = Object.values(db.cards).filter(
       (c) => c.realm === 'wyldmaw' && c.effects.some((o) => 'to' in o && o.to === 'allFriends'),
     );

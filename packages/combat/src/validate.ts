@@ -48,7 +48,11 @@ export function validateDb(db: CombatDb): string[] {
       }
       if (o.op === 'status' && ['calm', 'wrath', 'radiant'].includes(o.status))
         errs.push(`${where}: use the stance op for stances`);
-      if (o.op === 'damage' && o.hits !== undefined && (!Number.isInteger(o.hits) || o.hits < 1))
+      if (
+        o.op === 'damage' &&
+        o.hits !== undefined &&
+        (!Number.isInteger(o.hits) || o.hits < (o.scale?.into === 'hits' ? 0 : 1))
+      )
         errs.push(`${where}: bad hit count`);
     }
   };

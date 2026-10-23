@@ -19,7 +19,8 @@
     "fight": "pnpm --filter @sr/tools fight",
     "sim": "pnpm --filter @sr/tools sim",
     "deploy:web": "pnpm --filter @sr/tools deploy:web",
-    "artlist": "pnpm --filter @sr/tools artlist"
+    "artlist": "pnpm --filter @sr/tools artlist",
+    "cardlist": "pnpm --filter @sr/tools cardlist"
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",

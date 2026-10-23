@@ -29,11 +29,14 @@ const RAW_ALLIES: UnitDef[] = [
   ally('repair-bot', 'Repair Bot', 6, [heal(3, 'hero')]),
   ally('enforcer', 'Enforcer Mk.II', 14, [dmg(6)]),
   ally('war-engine', 'War Engine', 22, [dmg(9)]),
+  ally('micro-drone', 'Micro Drone', 4, [dmg(3)]),
+  ally('siege-engine', 'Siege Engine', 16, [dmg(13)]),
   // Wyldmaw: the pack
   // Warden signature companions
   ally('gilded-guard', 'Gilded Guard', 16, [dmg(4), barrier(4, 'hero')], { taunt: true }),
   ally('maw-hatchling', 'Maw Hatchling', 12, [dmg(7)]),
   ally('hound', 'Hound', 10, [dmg(5)]),
+  ally('dire-wolf', 'Dire Wolf', 18, [dmg(9)]),
   ally('gnashling', 'Gnashling', 4, [dmg(3)]),
 ];
 

@@ -76,6 +76,7 @@ export type Metric =
   | 'might'
   | 'thorns'
   | 'mantra'
+  | 'resonance'
   | 'calm' // 1 while in that stance
   | 'wrath'
   | 'radiant'

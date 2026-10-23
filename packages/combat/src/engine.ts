@@ -319,7 +319,7 @@ function resolve(r: Run, a: Act, sel: Sel): Unit[] {
 }
 
 /** The value of a metric for `a` (`t` is the unit an op is being applied to, for metrics "of the target"). */
-function metricValue(r: Run, a: Act, m: Metric, of: 'self' | 'target' | undefined, t: Unit | null): number {
+function metricValue(r: Run, a: Act, m: Metric, of: Scale['of'], t: Unit | null): number {
   const sd = r.s.sides[a.actor.side];
   const u = of === 'each' ? (t ?? a.target) : of === 'target' ? a.target : a.actor;
   switch (m) {
@@ -334,6 +334,7 @@ function metricValue(r: Run, a: Act, m: Metric, of: 'self' | 'target' | undefine
     case 'might':
     case 'thorns':
     case 'mantra':
+    case 'resonance':
     case 'calm':
     case 'wrath':
     case 'radiant':

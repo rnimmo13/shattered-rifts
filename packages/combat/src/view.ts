@@ -198,6 +198,7 @@ const WHO_ENEMY: Record<Sel, string> = {
   attacker: ' to the attacker',
 };
 const cap = (s: string): string => s.charAt(0).toUpperCase() + s.slice(1);
+const article = (word: string): string => (/^[aeiou]/i.test(word) ? 'an' : 'a');
 
 /** How a metric reads in a card: `per` ("+2 per Barrier") and `equal` ("equal to your Barrier"). */
 const METRIC_WORDS: Record<Metric, { per: string; equal: string }> = {
@@ -209,6 +210,7 @@ const METRIC_WORDS: Record<Metric, { per: string; equal: string }> = {
   might: { per: 'Might', equal: 'Might' },
   thorns: { per: 'Thorns', equal: 'Thorns' },
   mantra: { per: 'Mantra', equal: 'Mantra' },
+  resonance: { per: 'Resonance', equal: 'Resonance' },
   calm: { per: 'Calm', equal: 'Calm' },
   wrath: { per: 'Wrath', equal: 'Wrath' },
   radiant: { per: 'Radiant', equal: 'Radiant' },
@@ -241,6 +243,7 @@ const UNIT_METRICS: readonly Metric[] = [
   'might',
   'thorns',
   'mantra',
+  'resonance',
   'calm',
   'wrath',
   'radiant',
@@ -253,10 +256,14 @@ function amountText(n: number, sc: Scale | undefined): { num: string; equal: boo
   const m = sc.mult ?? 1;
   const unit = UNIT_METRICS.includes(sc.by);
   const whose = unit ? (sc.of === 'target' ? "the target's " : sc.of === 'each' ? 'their ' : 'your ') : '';
-  if (n === 0 && m === 1) return { num: `${whose}${w.equal}`, equal: true };
-  const times = m === 1 ? '' : `${m} `;
+  if (n === 0) {
+    const mult =
+      m === 1 ? '' : m === 0.5 ? 'half ' : m === 0.25 ? 'a quarter ' : m > 1 ? `${m} times ` : `${Math.round(m * 100)}% of `;
+    return { num: `${mult}${mult && !/ of $/.test(mult) && m < 1 ? 'of ' : ''}${whose}${w.equal}`, equal: true };
+  }
   const on = unit && sc.of === 'target' ? ' on the target' : unit && sc.of === 'each' ? ' on each' : '';
-  return { num: `${n}${n ? ' ' : ''}(+${times}per ${w.per}${on})`.trim(), equal: false };
+  const per = m >= 1 ? `+${m} per ${w.per}` : `+1 per ${Math.round(1 / m)} ${w.per}`;
+  return { num: `${n} (${per}${on})`, equal: false };
 }
 
 const WHEN_TEXT: Record<string, string> = {
@@ -278,33 +285,53 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
   switch (o.op) {
     case 'damage': {
       const a = amountText(o.amount, o.scale);
-      const hitsMore =
-        o.scale?.into === 'hits'
-          ? ` ${(o.hits ?? 1) + 0} time${(o.hits ?? 1) === 1 ? '' : 's'} (+1 more per ${METRIC_WORDS[o.scale.by].per})`
-          : '';
-      const times = o.hits && o.hits > 1 && !hitsMore ? ` ${o.hits} times` : hitsMore;
+      let times = o.hits && o.hits > 1 ? ` ${o.hits} times` : '';
+      if (o.scale?.into === 'hits') {
+        const w = METRIC_WORDS[o.scale.by];
+        times =
+          o.scale.by === 'x'
+            ? ' X times'
+            : (o.hits ?? 1) === 0
+              ? ` for each ${w.per}`
+              : `, 1 more time per ${w.per}`;
+      }
       return a.equal
         ? `Deal damage equal to ${a.num}${times}${who[o.to]}.`
         : `Deal ${a.num} damage${times}${who[o.to]}.`;
     }
-    case 'loseHp':
-      return `${o.to === 'self' ? 'Lose' : 'Take'} ${at(o.amount, o.scale)} HP${o.to === 'self' ? '' : who[o.to]}.`;
+    case 'loseHp': {
+      const a = amountText(o.amount, o.scale);
+      if (a.equal) return `${o.to === 'self' ? 'Lose' : 'The target loses'} HP equal to ${a.num}.`;
+      return `${o.to === 'self' ? 'Lose' : 'Take'} ${a.num} HP${o.to === 'self' ? '' : who[o.to]}.`;
+    }
     case 'barrier':
       return amountText(o.amount, o.scale).equal
         ? `Gain Barrier equal to ${amountText(o.amount, o.scale).num}${o.to === 'self' ? '' : who[o.to]}.`
         : `Gain ${at(o.amount, o.scale)} Barrier${o.to === 'self' ? '' : who[o.to]}.`;
-    case 'heal':
-      return `Heal ${at(o.amount, o.scale)}${o.to === 'self' ? '' : who[o.to]}.`;
+    case 'heal': {
+      const a = amountText(o.amount, o.scale);
+      return `Heal ${a.equal ? `HP equal to ${a.num}` : a.num}${o.to === 'self' ? '' : who[o.to]}.`;
+    }
     case 'status':
       return `${o.amount < 0 ? 'Remove' : 'Apply'} ${at(Math.abs(o.amount), o.scale)} ${cap(o.status)}${o.to === 'self' ? '' : who[o.to]}.`;
     case 'scaleStatus':
       return `${o.mult === 2 ? 'Double' : o.mult === 3 ? 'Triple' : `Multiply by ${o.mult}`} the ${cap(o.status)}${who[o.to] || ' on the target'}.`;
-    case 'draw':
-      return `Draw ${at(o.amount, o.scale)} card${o.amount === 1 && !o.scale ? '' : 's'}.`;
-    case 'mana':
-      return `Gain ${at(o.amount, o.scale)} Mana.`;
-    case 'stars':
-      return `${o.amount < 0 ? 'Spend' : 'Gain'} ${at(Math.abs(o.amount), o.scale)} Star${Math.abs(o.amount) === 1 && !o.scale ? '' : 's'}.`;
+    case 'draw': {
+      const a = amountText(o.amount, o.scale);
+      return a.equal
+        ? `Draw cards equal to ${a.num}.`
+        : `Draw ${a.num} card${o.amount === 1 && !o.scale ? '' : 's'}.`;
+    }
+    case 'mana': {
+      const a = amountText(o.amount, o.scale);
+      return a.equal ? `Gain Mana equal to ${a.num}.` : `Gain ${a.num} Mana.`;
+    }
+    case 'stars': {
+      const a = amountText(Math.abs(o.amount), o.scale);
+      const verb = o.amount < 0 ? 'Spend' : 'Gain';
+      if (a.equal) return `${verb} Stars equal to ${a.num}.`;
+      return `${verb} ${a.num} Star${Math.abs(o.amount) === 1 && !o.scale ? '' : 's'}.`;
+    }
     case 'summon':
       return `Summon ${db.units[o.unit]?.name ?? o.unit}.`;
     case 'addCard': {
@@ -315,19 +342,21 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
         return a.equal ? `Add ${nm}s to ${dest} equal to ${a.num}.` : `Add ${a.num} ${nm}s to ${dest}.`;
       }
       const n = o.times ?? 1;
-      return `Add ${n > 1 ? `${n} ${nm}s` : nm} to ${dest}.`;
+      return `Add ${n > 1 ? `${n} ${nm}s` : `${article(nm)} ${nm}`} to ${dest}.`;
     }
     case 'actAllies':
       return 'All your allies act now.';
     case 'prevent':
       return 'Cancel that attack.';
     case 'discard':
+      if (o.amount >= 9 && !o.random && !o.any) return 'Discard your hand.';
       return o.random
         ? `Discard ${o.amount} random card${o.amount === 1 ? '' : 's'}.`
         : o.any
           ? 'Discard any number of cards.'
           : `Discard ${o.amount} card${o.amount === 1 ? '' : 's'}.`;
     case 'exhaustCards':
+      if (o.amount >= 9 && !o.random && !o.any) return 'Exhaust your hand.';
       return o.random
         ? `Exhaust ${o.amount} random card${o.amount === 1 ? '' : 's'}.`
         : o.any
@@ -336,11 +365,23 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
     case 'scry':
       return `Scry ${o.amount}.`;
     case 'power':
-      return `${WHEN_TEXT[o.when] ?? o.when}${o.filter ? ` (${o.filter})` : ''}${o.tag ? ` (${o.tag})` : ''}${o.stance ? ` (${cap(o.stance)})` : ''}: ${o.ops.map((x) => opText(db, x, who)).join(' ')}`;
+    {
+      const TAGS: Record<string, string> = { shiv: 'Shiv', blade: 'Sovereign Blade' };
+      const when =
+        o.when === 'play'
+          ? `Whenever you play ${o.tag ? `${article(TAGS[o.tag] ?? o.tag)} ${TAGS[o.tag] ?? o.tag}` : o.filter ? `${article(o.filter)} ${cap(o.filter)}` : 'a card'}`
+          : o.when === 'stance'
+            ? `Whenever you enter ${o.stance ? cap(o.stance) : 'a stance'}`
+            : (WHEN_TEXT[o.when] ?? o.when);
+      return `${when}: ${o.ops.map((x) => opText(db, x, who)).join(' ')}`;
+    }
     case 'channel': {
       const nm = db.runes?.[o.rune]?.name ?? o.rune;
-      const a = o.scale ? amountText(o.times ?? 0, o.scale) : null;
-      return a ? `Channel ${nm} ${a.equal ? a.num : `x ${a.num}`}.` : (o.times ?? 1) > 1 ? `Channel ${nm} ${o.times} times.` : `Channel ${nm}.`;
+      if (o.scale)
+        return o.scale.by === 'x'
+          ? `Channel ${nm} X times.`
+          : `Channel ${nm} once per ${METRIC_WORDS[o.scale.by].per}.`;
+      return (o.times ?? 1) > 1 ? `Channel ${nm} ${o.times} times.` : `Channel ${nm}.`;
     }
     case 'evoke': {
       const n = o.count ?? 1;
@@ -375,8 +416,11 @@ export function cardText(db: CombatDb, c: CardDef): string {
             : 'At the start of the enemy turn:',
     );
   }
+  if (c.unplayable) parts.push('Unplayable.');
   if (c.starCost) parts.push(`Costs ${c.starCost} Star${c.starCost === 1 ? '' : 's'}.`);
-  parts.push(...c.effects.map((o) => opText(db, o)));
+  const who: Record<Sel, string> =
+    c.target === 'ally' || c.target === 'friend' ? { ...WHO, target: ' to the ally' } : WHO;
+  parts.push(...c.effects.map((o) => opText(db, o, who)));
   if (c.exhaust) parts.push('Exhaust.');
   if (c.retain) parts.push('Retain.');
   if (c.innate) parts.push('Innate.');
