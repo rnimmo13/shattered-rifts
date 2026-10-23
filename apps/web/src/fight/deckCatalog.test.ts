@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { applyAction, cardText, chooseAction, createCombat } from '@sr/combat';
-import { COMBAT_DB as db, ENCOUNTERS, RIFTWALKERS, type HeroId } from '@sr/content/v2';
+import { COMBAT_DB as db, ENCOUNTERS, RIFTWALKERS, laneOf, type HeroId } from '@sr/content/v2';
 import {
   TABS,
   catalog,
@@ -97,10 +97,17 @@ describe('the grimoire', () => {
       const own = tabCards(all, r.realm).filter((c) => c.pool === h);
       expect(own.length, h).toBeGreaterThan(20);
       const rank = ['basic', 'common', 'uncommon', 'rare', 'legendary'];
+      // sorted by lane first, so rarity only climbs within a lane
       let last = 0;
+      let lane: number | undefined = -2;
       for (const c of own) {
+        const l = laneOf(c.def.id);
+        if (l !== lane) {
+          lane = l;
+          last = 0;
+        }
         const k = rank.indexOf(c.def.rarity ?? 'common');
-        expect(k).toBeGreaterThanOrEqual(last);
+        expect(k, c.def.id).toBeGreaterThanOrEqual(last);
         last = k;
       }
     }

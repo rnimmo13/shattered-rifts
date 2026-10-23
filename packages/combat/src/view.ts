@@ -313,6 +313,7 @@ const WHEN_TEXT: Record<string, string> = {
   exhaust: 'Whenever a card is consumed',
   discard: 'Whenever you discard a card',
   summon: 'Whenever you summon an ally',
+  allyDies: 'Whenever one of your allies dies',
   snare: 'Whenever one of your Snares springs',
   stance: 'Whenever you enter a stance',
 };
@@ -459,6 +460,10 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
       return o.stance === 'none' ? 'Leave your stance.' : `Enter ${sname(o.stance)}.`;
     case 'sacrifice':
       return 'Sacrifice the chosen ally.';
+    case 'reclaim':
+      return `Return ${o.amount === 1 ? 'a random Consumed card' : `${o.amount} random Consumed cards`} to your hand.`;
+    case 'revive':
+      return 'Your most recently fallen ally returns with half its HP.';
     case 'manaNext':
       return o.amount < 0
         ? `Next turn, lose ${-o.amount} Mana.`

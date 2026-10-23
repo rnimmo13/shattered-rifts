@@ -66,6 +66,7 @@ export interface EventOption {
     | 'bleed'
     | 'boon'
     | 'ancestor'
+    | 'cross'
     | 'sanctify'
     | 'bet'
     | 'help'

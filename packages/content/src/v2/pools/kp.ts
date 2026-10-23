@@ -35,7 +35,10 @@ export const KP: CardDef[] = [
     dmg(6),
     status('brittle', 1, 'target'),
   ]),
-  p('basic', 'pane-up', 'Pane Up', 'skill', 1, 'none', [barrier(6), status('thorns', 1)]),
+  p('basic', 'pane-up', 'Pane Up', 'skill', 1, 'none', [
+    barrier(6),
+    scaled(barrier(0), per('missingHp', 0.1)),
+  ]),
   p(
     'basic',
     'bottle-tripwire',
@@ -86,9 +89,12 @@ export const KP: CardDef[] = [
   ),
 
   // --- Glass: Barrier and Thorns ---
-  p('common', 'window-pane', 'Window Pane', 'skill', 1, 'none', [barrier(7), status('thorns', 1)]),
+  p('common', 'window-pane', 'Window Pane', 'skill', 1, 'none', [
+    barrier(7),
+    scaled(barrier(0), per('missingHp', 0.15)),
+  ]),
   p('common', 'pane-in-the-face', 'Pane in the Face', 'attack', 1, 'foe', [
-    scaled(dmg(5), per('thorns', 2)),
+    scaled(dmg(5), per('missingHp', 0.2)),
   ]),
   p('common', 'shard-toss', 'Shard Toss', 'attack', 1, 'none', [
     dmg(4, 'allFoes'),
@@ -101,11 +107,11 @@ export const KP: CardDef[] = [
   p('common', 'sob-story', 'Sob Story', 'skill', 1, 'none', [barrier(4), draw(2)]),
   p('uncommon', 'double-glazing', 'Double Glazing', 'skill', 2, 'none', [
     barrier(12),
-    status('thorns', 2),
+    scaled(barrier(0), per('missingHp', 0.2)),
   ]),
-  p('uncommon', 'shatter', 'Shatter', 'attack', 2, 'foe', [scaled(dmg(8), per('thorns', 3))]),
+  p('uncommon', 'shatter', 'Shatter', 'attack', 2, 'foe', [scaled(dmg(8), per('missingHp', 0.3))]),
   p('uncommon', 'stained-glass', 'Stained Glass', 'power', 1, 'none', [
-    on('turnStart', [status('thorns', 1), barrier(2)]),
+    on('turnStart', [barrier(3), scaled(barrier(0), per('missingHp', 0.1))]),
   ]),
   p('uncommon', 'glazier', 'Glazier', 'power', 1, 'none', [
     on('play', [barrier(3)], { filter: 'skill' }),
@@ -117,11 +123,11 @@ export const KP: CardDef[] = [
     'skill',
     2,
     'none',
-    [barrier(14), status('thorns', 3)],
+    [barrier(14), scaled(barrier(0), per('missingHp', 0.3))],
     { exhaust: true },
   ),
   p('rare', 'broken-window-theory', 'Broken Window Theory', 'power', 2, 'none', [
-    on('turnEnd', [scaled(dmg(0, 'allFoes'), per('thorns', 1))]),
+    on('turnEnd', [scaled(dmg(0, 'allFoes'), per('missingHp', 0.2))]),
   ]),
 
   // --- Shells: the 12 gauge ---
@@ -196,8 +202,7 @@ export const KP: CardDef[] = [
     on('turnStart', [addTo('buckshot-shell', 3), heal(3)]),
   ]),
   p('legendary', 'the-glass-palace', 'The Glass Palace', 'power', 3, 'none', [
-    status('thorns', 4),
-    on('turnStart', [barrier(6)]),
+    on('turnStart', [barrier(6), scaled(barrier(0), per('missingHp', 0.2))]),
   ]),
 
   // --- the Old Twelve Gauge: a weapon that hits every enemy and gets sharper (Sharpen), with its own interactions ---

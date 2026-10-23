@@ -167,7 +167,9 @@ export function DeckBuilder(props: {
             {visible.map((p, i) => (
               <section key={i} className="grim__page">
                 <h4 className="grim__pagehead">
-                  {searching ? 'Search results' : p.heroes.join(' · ') || tabName}
+                  {searching
+                    ? 'Search results'
+                    : [p.heroes.join(' · '), p.lane].filter(Boolean).join(' · ') || tabName}
                 </h4>
                 <ul
                   className="grim__cards"

@@ -2,7 +2,7 @@
 // Used by the Sanctum (campaign).
 
 import { useState } from 'react';
-import { RIFTWALKERS, heroesByRealm, type HeroId } from '@sr/content/v2';
+import { RIFTWALKERS, heroesByRealm, laneSizes, type HeroId } from '@sr/content/v2';
 import { HeroIcon } from '../ui/HeroIcon';
 import { DeckStrip } from './Pickers';
 import './run.css';
@@ -71,8 +71,10 @@ export function CharacterPicker(props: { value: HeroId; onChange: (id: HeroId) =
             ))}
           </ul>
           <ul className="picker__lanes" aria-label="Card lanes">
-            {c.lanes.map((l) => (
-              <li key={l}>{l}</li>
+            {c.lanes.map((l, i) => (
+              <li key={l}>
+                {l} <small>· {laneSizes(props.value)[i]} cards</small>
+              </li>
             ))}
           </ul>
           <p className="picker__deckname">

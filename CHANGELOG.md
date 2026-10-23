@@ -5,6 +5,11 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **Every Riftwalker's three lanes are now shown in the grimoire.** Cards are grouped by character, then by lane ("Ser Maren Ashcourt · Bulwark"), then basic to legendary; the character picker shows how many cards each lane has. KP's lanes are now Gun, Shells and Hangover, and his glass cards scale with missing HP instead of Thorns, so Maren keeps Thorns to herself.
+- **Mire can bring the dead back.** New cards: Grave Robbery and Bone Pile (return Consumed cards to your hand), Reanimate (a fallen Thrall returns with half its HP) and Death Feeds (each time a Thrall dies: Barrier and a card).
+- **Rivet is sturdier:** 72 HP (was 58) and the Tinkerer heals 3 (was 2).
+- **The class icon is gone from the lower-left of cards** (it hid the rules text).
+- **Rift-crossed cards are rare:** the visiting merchant is 7.5% of merchants, 3% of ordinary card offers cross over, and a new event, "A traveller from another world", can leave you one.
 - **A proper character icon on every card** (lower left): a dark plate with a ring and the Riftwalker's emblem in their colour, bigger than before so it reads at a glance. Neutral cards have none.
 - Review fixes: a long line of enemies stays on the stage, an event's result is always shown, and a few save-safety and wording fixes.
 - **More events, and a gamble: the Sanctum of Change.** Step into the white fire and your whole deck is *sanctified*: every card with numbers is re-rolled, roughly half 25% stronger and half 25% weaker, and you do not choose which. You can say no. (Idea borrowed from Path of Exile.) Rolled cards show a ▲ or ▼ and their changed numbers.

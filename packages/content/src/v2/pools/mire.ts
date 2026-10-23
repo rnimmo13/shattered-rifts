@@ -19,6 +19,8 @@ import {
   on,
   per,
   pool,
+  reclaim,
+  revive,
   sacrifice,
   scaled,
   status,
@@ -185,4 +187,25 @@ export const MIRE: CardDef[] = [
   g('uncommon', 'soul-tithe', 'Soul Tithe', 'skill', 0, 'none', [lose(4), mana(2)], {
     exhaust: true,
   }),
+
+  // --- the dead come back: the pieces the lanes were missing ---
+  g('uncommon', 'grave-robbery', 'Grave Robbery', 'skill', 1, 'none', [reclaim(1), barrier(4)], {
+    exhaust: true,
+  }),
+  g('uncommon', 'reanimate', 'Reanimate', 'skill', 2, 'none', [revive, barrier(5)]),
+  g('rare', 'death-feeds', 'Death Feeds', 'power', 1, 'none', [
+    on('allyDies', [barrier(8), draw(1)]),
+  ]),
+  g(
+    'common',
+    'bone-pile',
+    'Bone Pile',
+    'skill',
+    1,
+    'foe',
+    [status('doom', 4, 'target'), reclaim(1)],
+    {
+      exhaust: true,
+    },
+  ),
 ];

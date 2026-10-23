@@ -3,7 +3,15 @@
 // resolveEvent carries out the player's choice and says what happened.
 
 import { nextInt } from '@sr/combat';
-import { COMBAT_DB, canRoll, rolledId, stripRoll, V2_DECK_RULES } from '@sr/content/v2';
+import {
+  COMBAT_DB,
+  RIFTWALKERS,
+  canRoll,
+  rolledId,
+  stripRoll,
+  V2_DECK_RULES,
+  type HeroId,
+} from '@sr/content/v2';
 import { MAX_POTIONS, ancestralPool, canAdd, offerBoon, offerCards, offerPotion } from './rewards';
 import type { EventOption, NodeContext, RunState } from './types';
 
@@ -107,6 +115,44 @@ export const EVENTS: EventDef[] = [
           leave,
         ],
         cardOffer: id,
+      };
+    },
+  },
+  {
+    id: 'stranger',
+    weight: 1.5,
+    // a gift from another Riftwalker's world: free, but it was not made for your deck
+    when: () => true,
+    build: (r) => {
+      const others = (Object.keys(RIFTWALKERS) as HeroId[]).filter((h) => h !== r.character);
+      const from = others[nextInt(r.rng, others.length)] as HeroId;
+      let card = '';
+      for (let g = 0; g < 30 && !card; g++)
+        for (const id of offerCards(r.rng, from, r.deck, 'elite', 3, r.luck))
+          if (
+            !card &&
+            COMBAT_DB.cards[id]?.hero === from &&
+            COMBAT_DB.cards[id]?.rarity !== 'legendary'
+          )
+            card = id;
+      if (!card)
+        return {
+          title: 'A traveller from another world',
+          text: 'Someone passed through here long ago; only footprints are left.',
+          options: [leave],
+          cardOffer: '',
+        };
+      return {
+        title: 'A traveller from another world',
+        text: `${RIFTWALKERS[from].hero.name.split(',')[0]} left a card on the road. It is theirs, not yours: it works in your deck, but it leans on mechanics you may not build around.`,
+        options: [
+          {
+            id: 'cross',
+            label: `Take ${COMBAT_DB.cards[card]?.name ?? 'it'} (a ${RIFTWALKERS[from].role}'s card)`,
+          },
+          leave,
+        ],
+        cardOffer: card,
       };
     },
   },
@@ -258,6 +304,11 @@ export function resolveEvent(
       r.hp -= 12;
       r.deck.push(ev.cardOffer);
       return `The stones go quiet. You carry away ${COMBAT_DB.cards[ev.cardOffer]?.name ?? 'the card'}.`;
+    case 'cross':
+      if (!ev.cardOffer) return fail('There is nothing to take');
+      if (!canAdd(r.deck, ev.cardOffer)) return fail('That card would break the deck rules');
+      r.deck.push(ev.cardOffer);
+      return `You take ${COMBAT_DB.cards[ev.cardOffer]?.name ?? 'the card'}: not your class's card, but yours now.`;
     case 'bleed':
       if (r.hp <= 10) fail('You are too hurt for that');
       r.hp -= 10;

@@ -32,3 +32,20 @@ describe('the visiting merchant', () => {
     expect(own).toBeGreaterThan(crossed * 4);
   });
 });
+
+describe('Rift-crossed cards are the exception', () => {
+  it('turn up in about 3% of ordinary card offers, so rewards are nearly always for your own deck', async () => {
+    const { offerCards } = await import('./index');
+    const { seedRng } = await import('@sr/combat');
+    let crossed = 0;
+    let total = 0;
+    for (let i = 0; i < 1500; i++)
+      for (const id of offerCards(seedRng(`x${i}`), 'maren', [], 'duel', 3)) {
+        total++;
+        const h = COMBAT_DB.cards[id]?.hero;
+        if (h && h !== 'maren' && h !== 'neutral') crossed++;
+      }
+    expect(crossed / total).toBeLessThan(0.06);
+    expect(crossed).toBeGreaterThan(0);
+  });
+});

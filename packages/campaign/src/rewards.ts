@@ -86,7 +86,8 @@ export function offerCards(
   const crossed = crossedPool(hero).filter((id) => canAdd(deck, id));
   const out: string[] = [];
   for (let guard = 0; out.length < count && guard < 200; guard++) {
-    const fromCrossed = nextInt(rng, 10) === 0 && crossed.length > 0;
+    // a Rift-crossed card (another class's) is rare: about 3 in 100, so rewards are nearly always for your own deck
+    const fromCrossed = nextInt(rng, 100) < 3 && crossed.length > 0;
     const pool = (fromCrossed ? crossed : own).filter((id) => !out.includes(id));
     if (pool.length === 0) continue;
     let from = LADDER.indexOf(rollRarity(rng, quality, luck));

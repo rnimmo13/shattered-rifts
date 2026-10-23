@@ -214,7 +214,7 @@ export function enterNode(run: RunState, nodeId: string): RunState {
       // now and then the merchant is a stranger from another Riftwalker's world, selling only that Riftwalker's cards
       const others = (Object.keys(RIFTWALKERS) as HeroId[]).filter((h) => h !== r.character);
       const crossed =
-        nextInt(r.rng, 100) < CROSSED_MERCHANT_CHANCE
+        nextInt(r.rng, 1000) < CROSSED_MERCHANT_CHANCE * 10
           ? (others[nextInt(r.rng, others.length)] as HeroId)
           : undefined;
       // (a visitor's table is only that Riftwalker's own cards: no Neutral cards, no further crossings)
@@ -599,7 +599,7 @@ export function takeShrine(run: RunState, choice: ShrineChoice): RunState {
 }
 
 /** Chance (percent) that a merchant is a stranger selling another Riftwalker's cards. */
-export const CROSSED_MERCHANT_CHANCE = 8;
+export const CROSSED_MERCHANT_CHANCE = 7.5;
 
 /** Putting a merchant's card on hold: pay this share of its price now... */
 export const HOLD_DEPOSIT = 0.2;

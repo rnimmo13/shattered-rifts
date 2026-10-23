@@ -153,6 +153,7 @@ export type TriggerWhen =
   | 'exhaust'
   | 'discard'
   | 'summon' // you summoned an ally
+  | 'allyDies' // one of your allies died (or was sacrificed)
   | 'snare' // one of your Snares sprang
   | 'stance'; // you entered a stance
 
@@ -204,6 +205,8 @@ export type Op =
   | { op: 'forge'; card: CardId; amount: number }
   /** the targeted ally leaves the fight (put it after any effect that reads the target) */
   | { op: 'sacrifice' }
+  | { op: 'reclaim'; amount: number } // bring random Consumed cards back to your hand (never Auras)
+  | { op: 'revive' } // your most recently fallen ally returns at half its HP
   // --- tempo and tricks
   | { op: 'manaNext'; amount: number } // extra Mana at the start of your next turn (negative: Mana you owe)
   | { op: 'maxMana'; amount: number } // more (or less) Mana every turn for the rest of the fight; gain it now too
@@ -477,6 +480,8 @@ export interface SideState {
   draw: CardInst[];
   discard: CardInst[];
   exhausted: CardInst[];
+  /** the def ids of allies that have died this fight, most recent last (for Revive) */
+  fallen: string[];
   mana: number;
   maxMana: number;
   handSize: number;

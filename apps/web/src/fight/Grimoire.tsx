@@ -101,7 +101,9 @@ export function Grimoire(props: {
             )}
             {visible.map((p, i) => (
               <section key={i} className="grim__page">
-                <h4 className="grim__pagehead">{p.heroes.join(' · ') || 'Cards'}</h4>
+                <h4 className="grim__pagehead">
+                  {[p.heroes.join(' · '), p.lane].filter(Boolean).join(' · ') || 'Cards'}
+                </h4>
                 <ul
                   className="grim__cards"
                   style={{ gridTemplateColumns: `repeat(${cols}, ${cardWidth}px)` }}

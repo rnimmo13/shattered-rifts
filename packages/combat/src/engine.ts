@@ -723,6 +723,33 @@ function execOp(r: Run, a: Act, op: Op): void {
     case 'copySelf':
       if (a.card) addCardTo(r, side, a.card.id, op.to);
       return;
+    case 'reclaim': {
+      const pool = side.exhausted.filter((c) => r.db.cards[c.card]?.kind !== 'power');
+      for (let i = 0; i < op.amount && pool.length; i++) {
+        const pick = pool.splice(nextInt(r.s.rng, pool.length), 1)[0] as CardInst;
+        side.exhausted = side.exhausted.filter((c) => c.id !== pick.id);
+        // a full hand sends it to the discard pile instead (the same "burn" as a card drawn into a full hand)
+        if (side.hand.length >= MAX_HAND) {
+          side.discard.push(pick);
+          r.ev.push({ type: 'burn', side: side.id, card: pick.id, def: pick.card });
+        } else {
+          side.hand.push(pick);
+          r.ev.push({ type: 'draw', side: side.id, card: pick.id, def: pick.card });
+        }
+      }
+      return;
+    }
+    case 'revive': {
+      const def = (side.fallen ??= []).pop();
+      if (!def) return;
+      const u = spawn(r, side, def);
+      if (u) {
+        // it comes back hurt: half its HP
+        applyDamage(r, null, u, Math.floor(u.maxHp / 2), 'direct');
+        if (a.actor.kind === 'hero') fireTriggers(r, side, 'summon');
+      } else side.fallen.push(def);
+      return;
+    }
     case 'sacrifice': {
       const t = a.target;
       if (t && t.kind === 'ally' && t.side === a.actor.side && t.hp > 0) t.hp = 0;
@@ -924,6 +951,10 @@ function reap(r: Run): void {
     if (!dead.length) continue;
     sd.units = sd.units.filter((u) => u.hp > 0);
     for (const u of dead) r.ev.push({ type: 'died', unit: u.id });
+    // an ally that falls is remembered (Revive) and its owner's Auras hear about it
+    const fell = dead.filter((u) => u.kind === 'ally');
+    for (const u of fell) (sd.fallen ??= []).push(u.def);
+    for (let i = 0; i < fell.length; i++) fireTriggers(r, sd, 'allyDies');
   }
   const lost = (side: Side): boolean => {
     const sd = r.s.sides[side];
@@ -1232,6 +1263,7 @@ const blankSide = (id: Side): SideState => ({
   draw: [],
   discard: [],
   exhausted: [],
+  fallen: [],
   mana: 0,
   maxMana: 0,
   handSize: 0,

@@ -278,3 +278,25 @@ describe('pool shape (docs/09_ROSTER.md §1)', () => {
     expect(count((c) => c.exhaust === true)).toBeGreaterThanOrEqual(6);
   });
 });
+
+describe('lanes (each character has three, each with room to build a deck)', async () => {
+  const { laneOf, laneSizes } = await import('./index');
+  it('every Riftwalker has three lanes of at least 7 cards each, and most of their cards belong to one', () => {
+    for (const h of HEROES) {
+      const sizes = laneSizes(h);
+      for (const n of sizes) expect(n, `${h} lanes ${sizes.join('/')}`).toBeGreaterThanOrEqual(7);
+      const own = rewardPool(h).filter(
+        (id) => db.cards[id]?.hero === h && db.cards[id]?.rarity !== 'legendary',
+      );
+      const laned = own.filter((id) => laneOf(id) !== undefined).length;
+      expect(laned / own.length, h).toBeGreaterThan(0.55); // the rest is shared glue
+    }
+  });
+
+  it('a lane belongs to its own character: no lane name is shared by two characters', () => {
+    const names = HEROES.flatMap((h) =>
+      RIFTWALKERS[h].lanes.map((l) => l.split(':')[0]!.toLowerCase()),
+    );
+    expect(new Set(names).size).toBe(names.length);
+  });
+});

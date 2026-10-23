@@ -82,6 +82,8 @@ export const forge = (cardId: string, amount: number): Op => ({
   amount,
 });
 export const sacrifice: Op = { op: 'sacrifice' };
+export const reclaim = (amount: number): Op => ({ op: 'reclaim', amount });
+export const revive: Op = { op: 'revive' };
 export const manaNext = (amount: number): Op => ({ op: 'manaNext', amount });
 export const maxMana = (amount: number): Op => ({ op: 'maxMana', amount });
 export const drawNext = (amount: number): Op => ({ op: 'drawNext', amount });
@@ -240,6 +242,9 @@ export function plus(c: CardDef): CardDef {
       case 'forge':
         changed = true;
         return { ...o, amount: o.amount + 2 };
+      case 'reclaim':
+        changed = true;
+        return { ...o, amount: o.amount + 1 };
       case 'manaNext':
         // owed Mana shrinks by one but never reaches 0
         if (o.amount < 0 && o.amount > -2) return o;

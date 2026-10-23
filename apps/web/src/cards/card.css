@@ -236,7 +236,7 @@
   left: 34px;
   right: 34px;
   top: 580px;
-  bottom: 128px;
+  bottom: 112px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -743,18 +743,4 @@
     inset 0 0 0 12px color-mix(in srgb, var(--rar) 70%, transparent),
     inset 0 0 60px rgb(0 0 0 / 0.5),
     0 0 32px color-mix(in srgb, var(--rar) 75%, transparent);
-}
-
-/* whose card it is: the Riftwalker's icon, lower left */
-.card__owner {
-  position: absolute;
-  left: 14px;
-  bottom: 10px;
-  width: 118px;
-  height: 118px;
-  z-index: 3;
-  filter: drop-shadow(0 3px 6px rgb(0 0 0 / 0.7));
-}
-.card__owner svg {
-  display: block;
 }

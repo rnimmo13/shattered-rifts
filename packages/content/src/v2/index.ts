@@ -6,7 +6,7 @@ import { BOONS } from './boons';
 import { V2_CARDS } from './cards';
 import { RUNES } from './pools/ilvane';
 import { POTIONS } from './potions';
-import { withRolls } from './sanctify';
+import { stripRoll, withRolls } from './sanctify';
 import { ALLIES, ENEMY_UNITS } from './units';
 
 export type RealmId =
@@ -61,10 +61,10 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     role: 'Engineer',
     trait: {
       name: 'Tinkerer',
-      text: 'At the start of your turn, you and your companions heal 2.',
-      turnStart: [heal(2, 'allFriends')],
+      text: 'At the start of your turn, you and your companions heal 3.',
+      turnStart: [heal(3, 'allFriends')],
     },
-    hero: { id: 'rivet', name: 'Rivet', maxHp: 58, mana: 3, handSize: 5, startUnits: ['drone'] },
+    hero: { id: 'rivet', name: 'Rivet', maxHp: 72, mana: 3, handSize: 5, startUnits: ['drone'] },
     starter: [...rep('strike', 5), ...rep('defend', 3), 'deploy-drone', 'overclock'],
     blurb:
       'A scrap-built tinkerer. Starts every fight with a Drone and builds an army of machines.',
@@ -261,12 +261,12 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     blurb:
       'A short, fat, bald dwarf with a hammer, an Old Twelve Gauge that hits every enemy and gets sharper, and a trolley of window panes. Booby traps, glass and buckshot.',
     lanes: [
-      'Junk Traps: bottles and glass booby traps',
-      'Glass: Barrier and Thorns, then break it',
-      'Shells: 12 gauge buckshot that hits everyone',
+      'Gun: sharpen the Old Twelve Gauge',
+      'Shells: buckshot that hits everyone',
+      'Hangover: the more it hurts, the harder you hit',
     ],
     howTo: [
-      'Window panes give Barrier and Thorns: anything that hits you cuts itself. Some cards hit harder for each Thorns you have.',
+      'Window panes and hammer blows get stronger the more HP you are missing, and Clutch Genes makes you hit even harder below half HP.',
       'You start every fight with the Old Twelve Gauge: it hits EVERY enemy, you keep it in hand, and every Sharpen card (Rack the Slide...) makes it hit harder for the whole fight.',
       'Shells are 0-cost attacks that hit every enemy and are consumed. Playing one can sharpen the gun (Hair Trigger).',
       'Swigs heal and hit harder for a turn. KP has a few Snares, but he is not the trapper Vesper is.',
@@ -449,6 +449,25 @@ export function signatureCards(encounterId: string): string[] {
 
 export { validateDb };
 export { canRoll, rolledId, rollOf, stripRoll } from './sanctify';
+import { LANE_OF } from './lanes.generated';
+
+/** Which of its Riftwalker's three lanes (0, 1 or 2 in `Riftwalker.lanes`) a card belongs to, or undefined (basics, glue, legendaries). */
+export function laneOf(cardId: string): number | undefined {
+  return LANE_OF[stripRoll(cardId).replace(/\+$/, '')];
+}
+
+/** The short name of a lane ("Bulwark"), and the whole line ("Bulwark: hit with your Barrier"). */
+export function laneName(hero: HeroId, lane: number): string {
+  return (RIFTWALKERS[hero].lanes[lane] ?? '').split(':')[0] ?? '';
+}
+
+/** How many cards (base versions) a Riftwalker has in each of its lanes. */
+export function laneSizes(hero: HeroId): [number, number, number] {
+  const n: [number, number, number] = [0, 0, 0];
+  for (const [id, lane] of Object.entries(LANE_OF))
+    if (COMBAT_DB.cards[id]?.hero === hero && lane >= 0 && lane <= 2) n[lane as 0 | 1 | 2]++;
+  return n;
+}
 
 /** Deck rules for Combat v2 runs: a deck never drops below minSize cards, and no non-basic card has more than maxCopies copies. */
 export const V2_DECK_RULES = { minSize: 8, maxCopies: 4, vaultSlots: 5 } as const;

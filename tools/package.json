@@ -13,7 +13,8 @@
     "cardlist": "tsx src/cardlist.ts",
     "balance": "tsx src/balance.ts",
     "runsim": "tsx src/runsim.ts",
-    "cardscan": "tsx src/cardscan.ts"
+    "cardscan": "tsx src/cardscan.ts",
+    "lanes": "tsx src/lanes.ts"
   },
   "dependencies": {
     "@sr/campaign": "workspace:*",
