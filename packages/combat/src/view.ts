@@ -388,8 +388,14 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
       if (a.equal) return `${verb} Lumen equal to ${a.num}.`;
       return `${verb} ${a.num} Lumen.`;
     }
-    case 'summon':
-      return `Summon ${db.units[o.unit]?.name ?? o.unit}.`;
+    case 'summon': {
+      // say what you are getting before you take it: its HP, and what it does at the end of your turn
+      const u = db.units[o.unit];
+      if (!u) return `Summon ${o.unit}.`;
+      const acts =
+        u.brain.kind === 'ally' ? u.brain.act.map((x) => opText(db, x, who)).join(' ') : '';
+      return `Summon ${u.name} (${u.maxHp} HP${u.taunt ? ', Taunt' : ''}).${acts ? ` At the end of your turn it will: ${acts}` : ''}`;
+    }
     case 'addCard': {
       const nm = db.cards[o.card]?.name ?? o.card;
       const dest = `${o.side === 'self' ? 'your' : 'the enemy'} ${o.to === 'hand' ? 'hand' : o.to === 'draw' ? 'draw pile' : 'discard pile'}`;

@@ -13,6 +13,7 @@ const rarityWord = {
   uncommon: 'uncommon',
   rare: 'rare',
   legendary: 'legendary',
+  ancestral: 'ancestral',
 } as const;
 
 /** Plain-language text for one effect. */
@@ -114,6 +115,15 @@ function bargains(stage: number): PreludeOption[] {
       [
         { k: 'hp', n: 15 },
         { k: 'card', rarity: 'legendary' },
+      ],
+      true,
+    ),
+    opt(
+      'call-ancestors',
+      'Call on the Ancestors',
+      [
+        { k: 'hp', n: 12 },
+        { k: 'card', rarity: 'ancestral' },
       ],
       true,
     ),

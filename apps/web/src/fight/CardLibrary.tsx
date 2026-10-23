@@ -16,7 +16,7 @@ const KINDS: { id: CardDef['kind'] | 'all'; label: string }[] = [
   { id: 'summon', label: 'Summons' },
   { id: 'snare', label: 'Snares' },
 ];
-const RARITIES = ['all', 'basic', 'common', 'uncommon', 'rare', 'legendary'] as const;
+const RARITIES = ['all', 'basic', 'common', 'uncommon', 'rare', 'legendary', 'ancestral'] as const;
 
 const POOL_LABEL = (p: PoolKey): string =>
   p === 'all'

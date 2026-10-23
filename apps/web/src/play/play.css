@@ -1837,3 +1837,29 @@
 .lib__filters {
   margin: 0.6rem 0 1.2rem;
 }
+
+/* the models page */
+.bestiary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 1.6rem;
+}
+.bestiary__fig {
+  display: grid;
+  justify-items: center;
+  gap: 0.3rem;
+  margin: 0;
+  padding: 0.6rem;
+  border-radius: 12px;
+  background: rgb(8 10 20 / 0.6);
+  border: 1px solid rgb(212 168 75 / 0.25);
+}
+.bestiary__fig figcaption {
+  display: grid;
+  text-align: center;
+  max-width: 200px;
+}
+.bestiary__fig small {
+  color: var(--c-text-dim);
+}

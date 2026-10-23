@@ -274,3 +274,61 @@ export const JUNK: CardDef[] = [
     hero: 'junk',
   }),
 ];
+
+// Ancestral cards: powerful, no class, one copy per deck. They are never in the ordinary card rewards: they turn up only in the
+// Ancestors' Offering event, the Warden's Gift, the merchant (rarely, and dear) and the "Call on the Ancestors" bargain.
+const anc = (
+  id: string,
+  name: string,
+  kind: Parameters<typeof card>[4],
+  cost: number,
+  target: Parameters<typeof card>[6],
+  effects: Parameters<typeof card>[7],
+  extra: Parameters<typeof card>[8] = {},
+): CardDef =>
+  n('ancestral', id, name, kind, cost, target, effects, { source: 'ancestral', ...extra });
+
+export const ANCESTRAL: CardDef[] = [
+  anc('ancestral-blade', 'Ancestral Blade', 'attack', 2, 'foe', [dmg(22)], { exhaust: true }),
+  anc('elders-bulwark', "Elder's Bulwark", 'skill', 2, 'none', [barrier(22)], {
+    exhaust: true,
+    retain: true,
+  }),
+  anc('forebears-gift', "Forebear's Gift", 'skill', 0, 'none', [mana(2), draw(2)], {
+    exhaust: true,
+  }),
+  anc(
+    'echo-of-ages',
+    'Echo of Ages',
+    'skill',
+    1,
+    'none',
+    [status('might', 3), status('thorns', 2)],
+    { exhaust: true },
+  ),
+  anc('rite-of-renewal', 'Rite of Renewal', 'skill', 2, 'none', [heal(14), barrier(10)], {
+    exhaust: true,
+  }),
+  anc('ancient-pact', 'Ancient Pact', 'power', 1, 'none', [on('turnStart', [mana(1), lose(2)])]),
+  anc('ancestral-memory', 'Ancestral Memory', 'skill', 1, 'none', [draw(2), upgradeOp('hand')], {
+    exhaust: true,
+  }),
+  anc('spirit-hunt', 'Spirit Hunt', 'attack', 1, 'none', [dmg(12, 'allFoes')], { exhaust: true }),
+  anc('lineage', 'Lineage', 'power', 2, 'none', [on('play', [draw(1)], { filter: 'power' })]),
+  anc(
+    'wrath-of-ages',
+    'Wrath of Ages',
+    'attack',
+    3,
+    'foe',
+    [dmg(40), status('exposed', 2, 'target')],
+    { exhaust: true },
+  ),
+  anc('the-long-memory', 'The Long Memory', 'skill', 1, 'none', [maxMana(1)], {
+    exhaust: true,
+    retain: true,
+  }),
+  anc('unbroken-line', 'Unbroken Line', 'power', 3, 'none', [
+    on('turnStart', [barrier(6), heal(2)]),
+  ]),
+];

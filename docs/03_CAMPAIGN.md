@@ -317,3 +317,7 @@ future deck.
    each keyword shows up (max one per turn).
 4. The first card reward is guaranteed to include a Rare that synergises with the character.
 5. The Bank / Continue choice gets a one-time explainer the first time it appears.
+
+## Ancestral cards
+
+A twelve-card classless set (rarity `ancestral`, jade frame): powerful, one copy per deck, never in ordinary reward rolls. Offered by the Ancestors' Offering event, the Warden's Gift (sometimes), the merchant (rarely, 240 shards) and the "Call on the Ancestors" bargain. See DECISIONS #119.

@@ -3,7 +3,7 @@
 import { useMemo, useState } from 'react';
 import type { CardDef } from '@sr/combat';
 import { COMBAT_DB, V2_DECK_RULES } from '@sr/content/v2';
-import { REST_HEAL, upgradable, type RunState } from '@sr/campaign';
+import { REST_HEAL, upgradable, type EventOption, type RunState } from '@sr/campaign';
 import { FightCard } from '../fight/FightCard';
 import { CardHover } from '../fight/CardHover';
 import { Grimoire } from '../fight/Grimoire';
@@ -397,10 +397,7 @@ export function MerchantView(props: {
   );
 }
 
-export function EventView(props: {
-  run: RunState;
-  onChoose: (id: 'shards' | 'card' | 'heal' | 'upgrade' | 'bleed' | 'boon' | 'leave') => void;
-}) {
+export function EventView(props: { run: RunState; onChoose: (id: EventOption['id']) => void }) {
   const ev = props.run.context?.event;
   const [hover, setHover] = useState<CardDef | null>(null);
   if (!ev) return null;

@@ -5,6 +5,9 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **Ancestral cards.** Twelve powerful cards that belong to no class (Ancestral Blade, Elder's Bulwark, Forebear's Gift, The Long Memory, Wrath of Ages, Unbroken Line...), with a jade-teal "ANCESTRAL" frame. One copy per deck, never in ordinary card rewards. They turn up in: the **Ancestors' Offering** event (take one for 12 HP), the Warden's Gift (sometimes), the merchant (rarely, 240 shards) and a new "Call on the Ancestors" bargain at the start of a run or stage.
+- **Summon cards now say what you are getting**: "Summon Patrol Drone (7 HP). At the end of your turn it will: Deal 4 damage."
+- **Every companion and enemy has its own model.** Units that used to be the same model with a different name now differ in colour, build, crown, horns, wings, weapon, glow and a chest emblem. (Dev page: #/models shows them all.)
 - **Card library** (title screen, or #/cards): every card in the game in the grimoire, with search, character, type and rarity filters, and a switch between base cards, upgraded cards or both.
 - **Rarity and upgrades you can read at a glance.** The name banner, the frame ring and the word on the type line (BASIC · COMMON · UNCOMMON · RARE · LEGENDARY) wear the rarity colour (silver, blue, gold, orange), and an upgraded card has a green name and a green UPGRADED ribbon.
 - **Grimoire:** every copy of a card is its own card (no more stacked numbers), the book is laid out from the box it sits in so the pages no longer overlap, and the starting deck in the Sanctum shows large cards.

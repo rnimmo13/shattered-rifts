@@ -44,7 +44,7 @@ export function catalog(db: CombatDb): CatalogCard[] {
 
 export interface CatalogFilter {
   pool: PoolKey;
-  rarity: 'all' | 'basic' | 'common' | 'uncommon' | 'rare' | 'legendary';
+  rarity: 'all' | 'basic' | 'common' | 'uncommon' | 'rare' | 'legendary' | 'ancestral';
   text: string;
   /** show "+" versions instead of the plain ones */
   upgraded: boolean;

@@ -5,6 +5,7 @@ import type { CardDef, UnitDef } from '@sr/combat';
 import type { Motif } from '../art/motifs';
 import { realCardArt, realFigure } from '../art/assets';
 import { HERO_EMBLEM } from '../art/emblems';
+import { LOOKS, applyLook } from '../art/unitLooks';
 import { bespokeHero } from '../art/heroFigures';
 import {
   avatarCutout,
@@ -93,11 +94,21 @@ export function heroFigure(heroId: string): HTMLCanvasElement {
   return avatarCutout(kind, realm, `char:${heroId}`);
 }
 
+const unitCache = new Map<string, HTMLCanvasElement>();
+
 export function unitFigure(defId: string): HTMLCanvasElement {
-  const real = realFigure(`unit:${base(defId)}`);
+  const id = base(defId);
+  const real = realFigure(`unit:${id}`);
   if (real) return real;
-  const [kind, realm] = UNIT[base(defId)] ?? ['wanderer', 'neutral'];
-  return avatarCutout(kind, realm, `unit:${base(defId)}`);
+  const hit = unitCache.get(id);
+  if (hit) return hit;
+  const [kind, realm] = UNIT[id] ?? ['wanderer', 'neutral'];
+  let fig = avatarCutout(kind, realm, `unit:${id}`);
+  // units that share a silhouette are told apart by their Look (colour, build, crown or horns, badge...)
+  const look = LOOKS[id];
+  if (look) fig = applyLook(fig, look);
+  unitCache.set(id, fig);
+  return fig;
 }
 
 /** How tall a unit stands on the stage (stage px): companions are small, bosses are big. */

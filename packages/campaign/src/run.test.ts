@@ -374,7 +374,11 @@ describe('the other rooms and the rules around them', () => {
     expect(won.phase).toBe('gift');
     expect(won.hp).toBeGreaterThanOrEqual(20 + Math.floor(RIFTWALKERS.maren.hero.maxHp * 0.3)); // a Warden falls: you catch your breath (a boon may add more)
     expect(won.resolve).toBe(2);
-    expect(won.context!.offers!.every((id) => COMBAT_DB.cards[id]?.rarity === 'rare')).toBe(true);
+    expect(
+      won.context!.offers!.every((id) =>
+        ['rare', 'legendary', 'ancestral'].includes(COMBAT_DB.cards[id]?.rarity ?? ''),
+      ),
+    ).toBe(true);
     expect(() => chooseCard(won, null)).toThrow(RunError);
     const picked = chooseCard(won, won.context!.offers![0]!);
     expect(picked.phase).toBe('stageClear');

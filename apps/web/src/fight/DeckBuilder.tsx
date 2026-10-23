@@ -19,7 +19,7 @@ import {
 
 type Counts = Record<string, number>;
 
-const RARITIES = ['all', 'basic', 'common', 'uncommon', 'rare', 'legendary'] as const;
+const RARITIES = ['all', 'basic', 'common', 'uncommon', 'rare', 'legendary', 'ancestral'] as const;
 
 export function DeckBuilder(props: {
   db: CombatDb;

@@ -19,6 +19,7 @@ const RARITY_LABEL: Record<string, string> = {
   uncommon: 'Uncommon',
   rare: 'Rare',
   legendary: 'Legendary',
+  ancestral: 'Ancestral',
 };
 
 const KEYWORDS =

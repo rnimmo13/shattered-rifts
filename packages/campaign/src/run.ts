@@ -13,7 +13,9 @@ import {
   BOON_PRICE,
   MAX_POTIONS,
   POTION_PRICE,
+  PRICE,
   REMOVE_PRICE,
+  ancestralPool,
   offerPotion,
   boonOfRarity,
   canAdd,
@@ -211,6 +213,15 @@ export function enterNode(run: RunState, nodeId: string): RunState {
       const items: MerchantItem[] = offerCards(r.rng, r.character, r.deck, 'elite', 4, r.luck).map(
         (cardId) => ({ cardId, price: priceOf(cardId), sold: false }),
       );
+      // now and then an ancestral card is on the table, at a price
+      const ancestors = ancestralPool(r.deck);
+      if (
+        ancestors.length &&
+        nextInt(r.rng, 100) < (r.luck === 'blessed' ? 55 : r.luck === 'lucky' ? 40 : 28)
+      ) {
+        const id = ancestors[nextInt(r.rng, ancestors.length)] as string;
+        items.push({ cardId: id, price: PRICE['ancestral'] ?? 240, sold: false });
+      }
       const potions = [offerPotion(r.rng), offerPotion(r.rng)].map((id) => ({
         id,
         price: POTION_PRICE[COMBAT_DB.potions[id]?.rarity ?? 'common'] ?? 40,
@@ -239,7 +250,22 @@ export function enterNode(run: RunState, nodeId: string): RunState {
       const cardOffer = offerCards(r.rng, r.character, r.deck, 'duel', 1, r.luck)[0] ?? '';
       const kind = nextInt(r.rng, 3);
       const leave: EventOption = { id: 'leave', label: 'Walk away' };
-      if (kind === 1 && upgradable(r.deck).length > 0) {
+      const ancestors = ancestralPool(r.deck);
+      if (ancestors.length > 0 && r.hp > 20 && nextInt(r.rng, 100) < 18) {
+        const id = ancestors[nextInt(r.rng, ancestors.length)] as string;
+        r.context.event = {
+          title: "The Ancestors' Offering",
+          text: 'A circle of old stones hums. Something that was a Riftwalker before you left a gift here, and it will cost you some of your own strength to lift.',
+          options: [
+            {
+              id: 'ancestor',
+              label: `Take ${COMBAT_DB.cards[id]?.name ?? 'the card'}: lose 12 HP`,
+            },
+            leave,
+          ],
+          cardOffer: id,
+        };
+      } else if (kind === 1 && upgradable(r.deck).length > 0) {
         r.context.event = {
           title: 'The wandering smith',
           text: 'A smith has set up a forge in the ruins. "One piece of yours, tempered free. I choose."',
@@ -691,6 +717,13 @@ export function chooseEvent(run: RunState, option: EventOption['id']): RunState 
     const pick = ups[nextInt(r.rng, ups.length)] as string;
     const i = r.deck.indexOf(pick);
     r.deck[i] = COMBAT_DB.cards[pick]?.upgrade ?? pick;
+  }
+  if (option === 'ancestor') {
+    need(ev.cardOffer, 'There is nothing to take');
+    need(r.hp > 12, 'You are too hurt for that');
+    need(canAdd(r.deck, ev.cardOffer), 'That card would break the deck rules');
+    r.hp -= 12;
+    r.deck.push(ev.cardOffer);
   }
   if (option === 'bleed') {
     need(r.hp > 10, 'You are too hurt for that');

@@ -408,6 +408,11 @@ export function rewardPool(hero: HeroId): string[] {
 /** The pool a card belongs to (a Riftwalker id, or 'neutral'). */
 export const poolOf = (cardId: string): string => COMBAT_DB.cards[cardId]?.hero ?? 'neutral';
 
+/** The ancestral cards (base versions): powerful, classless, offered only by special events (docs/03_CAMPAIGN.md). */
+export function ancestralCards(): string[] {
+  return V2_CARDS.filter((c) => c.rarity === 'ancestral' && !c.id.endsWith('+')).map((c) => c.id);
+}
+
 /** A Warden's signature cards (the Warden's Gift). The id is the encounter id. */
 export function signatureCards(encounterId: string): string[] {
   return V2_CARDS.filter((c) => c.source === `boss:${encounterId}` && !c.id.endsWith('+')).map(

@@ -54,7 +54,7 @@ export interface MerchantItem {
 }
 
 export interface EventOption {
-  id: 'shards' | 'card' | 'heal' | 'upgrade' | 'bleed' | 'boon' | 'leave';
+  id: 'shards' | 'card' | 'heal' | 'upgrade' | 'bleed' | 'boon' | 'ancestor' | 'leave';
   label: string;
 }
 
@@ -76,7 +76,7 @@ export type PreludeEffect =
   | { k: 'heal'; pct: number }
   | { k: 'hp'; n: number } // lose HP (never below 1)
   | { k: 'shards'; n: number }
-  | { k: 'card'; rarity: 'common' | 'uncommon' | 'rare' | 'legendary' }
+  | { k: 'card'; rarity: 'common' | 'uncommon' | 'rare' | 'legendary' | 'ancestral' }
   | { k: 'upgrade'; n: number }
   | { k: 'remove'; n: number } // Slash / Guard only
   | { k: 'boon'; rarity: 'common' | 'uncommon' | 'rare' }

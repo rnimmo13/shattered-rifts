@@ -6,7 +6,7 @@ import { cardText } from '@sr/combat';
 import { COMBAT_DB as db, RIFTWALKERS, type HeroId } from '@sr/content/v2';
 
 const cards = Object.values(db.cards).filter((c) => !c.id.endsWith('+') && c.hero !== 'junk');
-const order = { basic: 0, common: 1, uncommon: 2, rare: 3, legendary: 4 } as const;
+const order = { basic: 0, common: 1, uncommon: 2, rare: 3, legendary: 4, ancestral: 5 } as const;
 
 const row = (c: (typeof cards)[number]): string => {
   const cost = c.x ? 'X' : String(c.cost) + (c.starCost ? `+${c.starCost}★` : '');

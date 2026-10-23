@@ -220,7 +220,7 @@ export type Op =
 export type CardKind = 'attack' | 'skill' | 'power' | 'summon' | 'snare';
 /** foe = an enemy; friend = any unit of yours (hero or ally); ally = one of your allies, never the hero */
 export type CardTarget = 'foe' | 'friend' | 'ally' | 'none';
-export type Rarity = 'basic' | 'common' | 'uncommon' | 'rare' | 'legendary';
+export type Rarity = 'basic' | 'common' | 'uncommon' | 'rare' | 'legendary' | 'ancestral';
 
 export type SnareTrigger =
   | { on: 'attacked' } // an enemy attack is about to hit your hero or an ally

@@ -8,6 +8,7 @@ import {
   POTIONS,
   RIFTWALKERS,
   V2_DECK_RULES,
+  ancestralCards,
   rewardPool,
   signatureCards,
   type HeroId,
@@ -26,7 +27,7 @@ export function canAdd(deck: readonly string[], cardId: string): boolean {
   if (c.rarity === 'basic') return true;
   // a card and its "+" version share one limit; a legendary is one of a kind
   const base = (id: string): string => id.replace(/\+$/, '');
-  const limit = c.rarity === 'legendary' ? 1 : V2_DECK_RULES.maxCopies;
+  const limit = c.rarity === 'legendary' || c.rarity === 'ancestral' ? 1 : V2_DECK_RULES.maxCopies;
   return deck.filter((x) => base(x) === base(cardId)).length < limit;
 }
 
@@ -100,13 +101,22 @@ export function offerCards(
   return out;
 }
 
+/** Ancestral cards the deck can still take (one copy each). They are offered only by special events, never as ordinary rewards. */
+export function ancestralPool(deck: readonly string[]): string[] {
+  return ancestralCards().filter((id) => canAdd(deck, id));
+}
+
 /** A random card of one rarity from the Riftwalker's own pool that the deck can still take, or null. */
 export function cardOfRarity(
   rng: RngState,
   hero: HeroId,
   deck: readonly string[],
-  rarity: 'common' | 'uncommon' | 'rare' | 'legendary',
+  rarity: 'common' | 'uncommon' | 'rare' | 'legendary' | 'ancestral',
 ): string | null {
+  if (rarity === 'ancestral') {
+    const a = ancestralPool(deck);
+    return a.length ? (a[nextInt(rng, a.length)] as string) : null;
+  }
   const pool = rewardPool(hero).filter((id) => rarityOf(id) === rarity && canAdd(deck, id));
   return pool.length ? (pool[nextInt(rng, pool.length)] as string) : null;
 }
@@ -147,6 +157,11 @@ export function giftOffers(
   const chance = luck === 'blessed' ? 85 : luck === 'lucky' ? 55 : 30;
   if (legends.length && nextInt(rng, 100) < chance)
     out.push(legends[nextInt(rng, legends.length)] as string);
+  // and now and then an ancestral card as well
+  const ancestors = ancestralPool(deck).filter((id) => !out.includes(id));
+  const aChance = luck === 'blessed' ? 60 : luck === 'lucky' ? 40 : 22;
+  if (ancestors.length && nextInt(rng, 100) < aChance)
+    out.push(ancestors[nextInt(rng, ancestors.length)] as string);
   const target = Math.min(count, out.length + rares.length);
   for (let guard = 0; out.length < target && guard < 100; guard++) {
     const pick = rares[nextInt(rng, rares.length)] as string;
@@ -210,7 +225,13 @@ export const MAX_POTIONS = 3;
 
 export const BOON_PRICE: Record<string, number> = { common: 70, uncommon: 120, rare: 200 };
 
-export const PRICE: Record<string, number> = { common: 30, uncommon: 55, rare: 95, legendary: 260 };
+export const PRICE: Record<string, number> = {
+  common: 30,
+  uncommon: 55,
+  rare: 95,
+  legendary: 260,
+  ancestral: 240,
+};
 export const priceOf = (id: string): number => PRICE[rarityOf(id)] ?? 60;
 export const REMOVE_PRICE = 40;
 
