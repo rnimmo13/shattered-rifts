@@ -732,8 +732,8 @@
 /* the potion belt: three slots, flask icons, clearly potions */
 .fight__potions {
   position: absolute;
-  left: 1rem;
-  top: 3.4rem;
+  left: 7.4rem;
+  bottom: 6.6rem;
   display: grid;
   gap: 0.25rem;
   z-index: 30;
@@ -1216,4 +1216,22 @@
 }
 .pile--exhaust {
   right: 7.6rem;
+}
+
+/* Auras hang under the hero's plate; the potion belt sits by the Mana orb */
+.fight__aux--auras {
+  width: 11rem;
+  justify-items: center;
+}
+.fight__aux--auras .aux--powers {
+  justify-items: center;
+  text-align: center;
+}
+.chip__icon {
+  vertical-align: -0.12em;
+}
+.fight__aux--auras,
+.fight__aux--auras .aux--powers {
+  justify-items: end;
+  text-align: right;
 }

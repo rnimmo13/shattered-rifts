@@ -4,6 +4,7 @@ import {
   RunError,
   buyBoon,
   buyPotion,
+  sellPotion,
   chooseEvent,
   enterNode,
   finishDuel,
@@ -179,6 +180,11 @@ describe('potions in a run', () => {
     expect(bought.potions).toEqual(['fire-flask']);
     expect(bought.shards).toBe(170);
     expect(() => buyPotion(bought, 0)).toThrow(RunError);
+    // and a potion from the belt can be sold back for half its price
+    const sold = sellPotion(bought, 0);
+    expect(sold.potions).toEqual([]);
+    expect(sold.shards).toBe(170 + 15);
+    expect(() => sellPotion(sold, 0)).toThrow(RunError);
     expect(() =>
       buyPotion({ ...shop, potions: ['a', 'b', 'c'].map(() => 'fire-flask') }, 0),
     ).toThrow(RunError);

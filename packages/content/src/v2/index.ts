@@ -42,7 +42,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
       text: 'Start every turn with 2 Barrier.',
       turnStart: [barrier(2)],
     },
-    hero: { id: 'maren', name: 'Ser Maren Ashcourt', maxHp: 66, mana: 3, handSize: 5 },
+    hero: { id: 'maren', name: 'Maren', maxHp: 66, mana: 3, handSize: 5 },
     starter: [...rep('strike', 4), ...rep('defend', 4), 'dawn-smite', 'oathbound'],
     blurb: 'A knight of the Gilded Order. No companions: Barrier, Thorns and punishing Snares.',
     lanes: [
@@ -132,7 +132,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     },
     hero: {
       id: 'quill',
-      name: 'Quill, the Knife-Dancer',
+      name: 'Quill',
       maxHp: 78,
       mana: 3,
       handSize: 5,
@@ -162,7 +162,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     },
     hero: {
       id: 'ilvane',
-      name: 'Ilvane, the Glyphwright',
+      name: 'Ilvane Glyphwright',
       maxHp: 74,
       mana: 3,
       handSize: 5,
@@ -192,7 +192,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     },
     hero: {
       id: 'sehra',
-      name: 'Sehra, the Still Flame',
+      name: 'Ragnar',
       maxHp: 104,
       mana: 3,
       handSize: 5,
@@ -218,7 +218,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     },
     hero: {
       id: 'astra',
-      name: 'Astra, the Starcaller',
+      name: 'Astra',
       maxHp: 112,
       mana: 3,
       handSize: 5,
@@ -300,7 +300,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     },
     hero: {
       id: 'mire',
-      name: 'Mire, the Gravewarden',
+      name: 'Dorian Blackthorn',
       maxHp: 86,
       mana: 3,
       handSize: 5,

@@ -6,6 +6,7 @@ import { COMBAT_DB, RIFTWALKERS, V2_DECK_RULES } from '@sr/content/v2';
 import {
   HOLD_DEPOSIT,
   HOLD_LATER,
+  potionSellPrice,
   REST_HEAL,
   upgradable,
   type EventOption,
@@ -292,6 +293,7 @@ export function MerchantView(props: {
   onHold: (index: number) => void;
   onBuyBoon: () => void;
   onBuyPotion: (index: number) => void;
+  onSellPotion: (index: number) => void;
   onRemove: (card: string) => void;
   onLeave: () => void;
 }) {
@@ -414,6 +416,31 @@ export function MerchantView(props: {
               })}
             </div>
             <p className="shop__note">Your belt holds {props.run.potions.length} of 3 potions.</p>
+          </div>
+        )}
+        {props.run.potions.length > 0 && (
+          <div className="shop__block">
+            <h3 className="shop__h">Sell your potions</h3>
+            <div className="shop__rows">
+              {props.run.potions.map((id, i) => {
+                const def = COMBAT_DB.potions[id];
+                if (!def) return null;
+                return (
+                  <ShopRow
+                    key={`${id}-${i}`}
+                    tone={`potion--${def.rarity}`}
+                    icon={<PotionIcon potion={def} size={36} />}
+                    name={def.name}
+                    kind={`potion · ${def.rarity}`}
+                    text={def.text}
+                    price={null}
+                    button={`Sell for ${potionSellPrice(id)}`}
+                    disabled={false}
+                    onBuy={() => props.onSellPotion(i)}
+                  />
+                );
+              })}
+            </div>
           </div>
         )}
         {m.boon && boon && (

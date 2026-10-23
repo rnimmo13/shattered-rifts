@@ -658,6 +658,22 @@ export function buyPotion(run: RunState, index: number): RunState {
   return r;
 }
 
+/** What the merchant pays for a potion from your belt: half its shop price. */
+export function potionSellPrice(id: string): number {
+  return Math.floor((POTION_PRICE[COMBAT_DB.potions[id]?.rarity ?? 'common'] ?? 40) / 2);
+}
+
+/** Sell the potion at `index` of your belt to the merchant. */
+export function sellPotion(run: RunState, index: number): RunState {
+  need(run.phase === 'merchant' && run.context?.merchant, 'There is no merchant here');
+  const r = clone(run);
+  const id = r.potions[index];
+  need(id !== undefined, 'You have no potion there');
+  r.potions.splice(index, 1);
+  r.shards += potionSellPrice(id);
+  return r;
+}
+
 export function buyBoon(run: RunState): RunState {
   need(run.phase === 'merchant' && run.context?.merchant?.boon, 'There is no boon for sale');
   const r = clone(run);

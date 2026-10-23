@@ -2,7 +2,7 @@
 
 995 cards. Design rules for pools are in `09_ROSTER.md`.
 
-## Ser Maren Ashcourt (aurelion, 66 HP)
+## Maren (aurelion, 66 HP)
 
 A knight of the Gilded Order. No companions: Barrier, Thorns and punishing Snares.
 
@@ -423,7 +423,7 @@ Starter: Slash, Slash, Slash, Guard, Guard, Guard, Guard, Veil Strike, Veil Stri
 | The Perfect Trap | 3 | snare | legendary | When you or an ally is attacked: Cancel that attack. Deal 22 damage to the attacker. Apply 1 Stunned to the attacker. Apply 2 Shielded. |
 | Masquerade | 2 | power | legendary | Whenever one of your Snares springs: Draw 2 cards. Gain 1 Mana. Deal 4 damage to ALL enemies. |
 
-## Quill, the Knife-Dancer (umbral, 78 HP)
+## Quill (umbral, 78 HP)
 
 A cutpurse with a sleeve full of blades. Starts every fight with a Sleeve Knife. Knives, Bleed and discard tricks.
 
@@ -536,7 +536,7 @@ Tokens (made by other cards):
 |---|---|---|---|---|
 | Sleeve Knife | 0 | attack | common | Deal 4 damage. Consume. |
 
-## Ilvane, the Glyphwright (nexus, 74 HP)
+## Ilvane Glyphwright (nexus, 74 HP)
 
 Carves runes into the air. Starts every fight with a Spark rune. Runes fire every turn, then burst when evoked.
 
@@ -642,7 +642,7 @@ Starter: Slash, Slash, Slash, Slash, Guard, Guard, Guard, Spark Cast, Spark Cast
 | The Grand Design | 3 | power | legendary | Gain 3 rune slots. Apply 3 Resonance. At the start of your turn: Conjure Hollow. |
 | Cataclysm Glyph | 2 | attack | legendary | Deal 10 damage to ALL enemies. Release your first 10 runes 2 times. Consume. |
 
-## Sehra, the Still Flame (aurelion, 104 HP)
+## Ragnar (aurelion, 104 HP)
 
 A barbarian who fights in stances. Starts every fight Serene. Fury for burst, Serene for tempo, Fervor for Radiance.
 
@@ -745,7 +745,7 @@ Starter: Slash, Slash, Slash, Slash, Guard, Guard, Guard, Guard, Kindle Fury, St
 | Perfect Balance | 2 | power | legendary | Whenever you enter a stance: Draw 1 card. Gain 5 Barrier. Apply 1 Fervor. |
 | Still Flame Ascendant | 3 | skill | legendary | Enter Radiant. Apply 4 Primed. Draw 2 cards. Consume. |
 
-## Astra, the Starcaller (starfall, 112 HP)
+## Astra (starfall, 112 HP)
 
 A scholar of fallen stars. Starts with 3 Lumen and a Starforged Blade that every Sharpen improves for good.
 
@@ -961,7 +961,7 @@ Tokens (made by other cards):
 | Buckshot Shell | 0 | attack | common | Deal 4 damage to ALL enemies. Consume. |
 | Old Twelve Gauge | 1 | attack | common | Deal 5 (+1 per point of sharpening) damage to ALL enemies. Hold. |
 
-## Mire, the Gravewarden (gloomfen, 86 HP)
+## Dorian Blackthorn (gloomfen, 86 HP)
 
 A warden of the drowned dead. Starts with a Bone Thrall. Curses enemies with Fate until the end comes for them.
 

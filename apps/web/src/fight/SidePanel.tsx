@@ -67,11 +67,16 @@ export function RuneArc(props: { db: CombatDb; me: SideView; x: number; cy: numb
 }
 
 /** Auras (Powers) in play, as a small list at the top left. */
-export function AuraList(props: { db: CombatDb; me: SideView }) {
+/** Auras sit under the hero's plate (`x`, `top` in host px). */
+export function AuraList(props: { db: CombatDb; me: SideView; x: number; top: number }) {
   const { db, me } = props;
   if (me.powers.length === 0) return null;
   return (
-    <div className="fight__aux" aria-label="Auras in play">
+    <div
+      className="fight__aux fight__aux--auras"
+      style={{ left: props.x, top: props.top }}
+      aria-label="Auras in play"
+    >
       <div className="aux aux--powers">
         {me.powers.map((p) => {
           const c = db.cards[p.card];

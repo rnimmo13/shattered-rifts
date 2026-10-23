@@ -31,6 +31,8 @@ export {
   bank,
   buyBoon,
   buyPotion,
+  potionSellPrice,
+  sellPotion,
   buyCard,
   buyRemoval,
   chooseCard,

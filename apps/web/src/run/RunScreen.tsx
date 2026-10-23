@@ -14,6 +14,7 @@ import {
   buyCard,
   holdCard,
   buyPotion,
+  sellPotion,
   buyRemoval,
   chooseCard,
   chooseEvent,
@@ -517,6 +518,7 @@ function Body(props: {
           onHold={(i) => act((r) => holdCard(r, i))}
           onBuyBoon={() => act((r) => buyBoon(r))}
           onBuyPotion={(i) => act((r) => buyPotion(r, i))}
+          onSellPotion={(i) => act((r) => sellPotion(r, i))}
           onRemove={(card) => act((r) => buyRemoval(r, card))}
           onLeave={() => act((r) => leaveMerchant(r))}
         />

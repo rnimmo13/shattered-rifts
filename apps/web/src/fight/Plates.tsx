@@ -26,6 +26,25 @@ export interface PlatesProps {
   preview?: { id: string; text: string } | null;
 }
 
+/** Thorns: a bramble stem with barbs, drawn instead of a text glyph so it reads at chip size. */
+function ThornIcon() {
+  return (
+    <svg className="chip__icon" viewBox="0 0 24 24" width="1em" height="1em" aria-hidden>
+      <path
+        d="M3 21 Q9 15 12 12 T21 3"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+      />
+      <path
+        d="M6.5 17.5 L3 13 L9.5 15 Z M10.5 13.5 L9 6.5 L15 10.5 Z M15 8.5 L16 2 L20.5 7.5 Z"
+        fill="currentColor"
+      />
+    </svg>
+  );
+}
+
 export function UnitPlates({ items, targetable, hover, preview, heroId }: PlatesProps) {
   // plates that would run into their neighbours get narrower, and a crowd staggers up and down, so no two ever overlap
   const lane = new Map<string, { width: number; dy: number }>();
@@ -118,7 +137,7 @@ export function UnitPlates({ items, targetable, hover, preview, heroId }: Plates
                       className={`chip chip--${info.tone}`}
                       {...tipAttrs(statusTip(id, n))}
                     >
-                      {info.glyph}
+                      {id === 'thorns' ? <ThornIcon /> : info.glyph}
                       <b>{n}</b>
                     </span>
                   );
