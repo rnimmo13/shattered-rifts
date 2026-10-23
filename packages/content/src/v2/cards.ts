@@ -9,6 +9,7 @@ import { ILVANE } from './pools/ilvane';
 import { KESH } from './pools/kesh';
 import { JUNK, NEUTRAL, SIGNATURES } from './pools/neutral';
 import { MAREN } from './pools/maren';
+import { MIRE } from './pools/mire';
 import { QUILL } from './pools/quill';
 import { RIVET } from './pools/rivet';
 import { SEHRA } from './pools/sehra';
@@ -26,6 +27,7 @@ export const V2_CARDS: CardDef[] = [
     ...ILVANE,
     ...SEHRA,
     ...ASTRA,
+    ...MIRE,
     ...SIGNATURES,
   ]),
   ...JUNK,

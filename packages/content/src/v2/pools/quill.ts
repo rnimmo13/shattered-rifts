@@ -8,6 +8,8 @@ import type { CardDef } from '@sr/combat';
 import {
   addTo,
   barrier,
+  cheapen,
+  discoverOp,
   dmg,
   doubleSt,
   discard,
@@ -29,7 +31,7 @@ export const QUILL: CardDef[] = [
   q('basic', 'slip-away', 'Slip Away', 'skill', 1, 'none', [barrier(7), discard(1)]),
   q('common', 'sleeve-knife', 'Sleeve Knife', 'attack', 0, 'foe', [dmg(4)], {
     exhaust: true,
-    tags: ['sleeve-knife'],
+    tags: ['knife'],
     source: 'token',
   }),
 
@@ -44,7 +46,7 @@ export const QUILL: CardDef[] = [
   ]),
   q('uncommon', 'keen-edge', 'Keen Edge', 'power', 1, 'none', [status('edge', 3)]),
   q('uncommon', 'razor-halo', 'Razor Halo', 'power', 2, 'none', [
-    on('play', [dmg(3, 'allFoes')], { tag: 'sleeve-knife' }),
+    on('play', [dmg(3, 'allFoes')], { tag: 'knife' }),
   ]),
   q('uncommon', 'empty-the-sleeves', 'Empty the Sleeves', 'skill', 1, 'none', [
     discard(9),
@@ -81,7 +83,7 @@ export const QUILL: CardDef[] = [
     on('turnStart', [status('seared', 2, 'allFoes')]),
   ]),
   q('uncommon', 'tainted-edges', 'Tainted Edges', 'power', 1, 'none', [
-    on('play', [status('seared', 1, 'target')], { tag: 'sleeve-knife' }),
+    on('play', [status('seared', 1, 'target')], { tag: 'knife' }),
   ]),
   q('uncommon', 'hungering-dark', 'Hungering Dark', 'skill', 2, 'none', [
     status('seared', 3, 'allFoes'),
@@ -137,4 +139,11 @@ export const QUILL: CardDef[] = [
     dmg(5, 'attacker'),
     addTo('sleeve-knife', 2),
   ], { trigger: { on: 'foeDefends' } }),
+  q('uncommon', 'encore', 'Encore', 'skill', 1, 'none', [status('mirrored', 1)]),
+  q('uncommon', 'palmed-card', 'Palmed Card', 'skill', 0, 'none', [discoverOp('attack')], {
+    exhaust: true,
+  }),
+  q('uncommon', 'nimble-hands', 'Nimble Hands', 'skill', 0, 'none', [cheapen(1, 'random'), draw(1)], {
+    exhaust: true,
+  }),
 ];

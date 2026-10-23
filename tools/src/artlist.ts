@@ -16,6 +16,8 @@ const REALM_STYLE: Record<string, string> = {
   umbral: 'moonlit ballroom of shadows, violet and teal mist, masks and mirrors, quiet menace',
   starfall:
     'a night sky of fallen stars, deep indigo and pale gold, scholars of constellations, silver circlets and astrolabes',
+  gloomfen:
+    'a drowned fen of green witch-light, bone and reeds, quiet wardens of the dead, pale mist over black water',
   neutral: 'a shattered rift between worlds, violet and cyan energy, fractured crystal',
   junk: 'a dull grey curse, scratched and dim',
 };

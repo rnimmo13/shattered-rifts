@@ -12,6 +12,7 @@ import {
   dmg,
   draw,
   forge,
+  manaNext,
   on,
   per,
   pool,
@@ -103,4 +104,9 @@ export const ASTRA: CardDef[] = [
   a('uncommon', 'lumen-trap', 'Lumen Trap', 'snare', 1, 'none', [stars(2), dmg(6, 'allFoes')], {
     trigger: { on: 'foeTurn' },
   }),
+  a('uncommon', 'star-chart', 'Star Chart', 'power', 1, 'none', [on('discard', [stars(1)])]),
+  a('uncommon', 'chart-the-orbit', 'Chart the Orbit', 'skill', 1, 'none', [
+    manaNext(2),
+    forge('starforged-blade', 1),
+  ]),
 ];

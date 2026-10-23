@@ -21,6 +21,7 @@ const HERO: Record<string, [Archetype, Realm]> = {
   ilvane: ['mage', 'nexus'],
   sehra: ['cleric', 'aurelion'],
   astra: ['mage', 'starfall'],
+  mire: ['shade', 'gloomfen'],
 };
 
 const UNIT: Record<string, [Archetype, Realm]> = {
@@ -35,6 +36,8 @@ const UNIT: Record<string, [Archetype, Realm]> = {
   'micro-drone': ['drone', 'nexus'],
   'siege-engine': ['mech', 'nexus'],
   'dire-wolf': ['beast', 'wyldmaw'],
+  'bone-thrall': ['spirit', 'gloomfen'],
+  'grave-colossus': ['mech', 'gloomfen'],
   hound: ['beast', 'wyldmaw'],
   'gilded-guard': ['knight', 'aurelion'],
   'maw-hatchling': ['beast', 'wyldmaw'],
@@ -114,6 +117,7 @@ const REALM_TRIBES: Record<string, string[]> = {
   aurelion: ['Knight'],
   umbral: ['Shade'],
   starfall: ['Spirit'],
+  gloomfen: ['Spirit'],
 };
 
 /** What a card does, as a picture: chosen from its effects, never from its name. */

@@ -12,11 +12,13 @@ import {
   draw,
   evoke,
   mana,
+  manaNext,
   on,
   per,
   pool,
   scaled,
   status,
+  upgradeOp,
 } from '../build';
 
 export const RUNES: RuneDef[] = [
@@ -135,4 +137,6 @@ export const ILVANE: CardDef[] = [
   i('uncommon', 'glyph-trap', 'Glyph Trap', 'snare', 1, 'none', [dmg(5, 'attacker'), channel('ward')], {
     trigger: { on: 'attacked' },
   }),
+  i('uncommon', 'retune', 'Retune', 'skill', 1, 'none', [upgradeOp('random')], { exhaust: true }),
+  i('uncommon', 'stored-charge', 'Stored Charge', 'skill', 1, 'none', [manaNext(2), channel('ward')]),
 ];

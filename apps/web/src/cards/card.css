@@ -46,6 +46,14 @@
   --trim-lo: #3f2f78;
   --accent: #b99aff;
 }
+.card--gloomfen {
+  --ink-a: #14301f;
+  --ink-b: #050e08;
+  --trim: #8fb87a;
+  --trim-hi: #d8ffb8;
+  --trim-lo: #3a5a2a;
+  --accent: #9be86a;
+}
 .card--starfall {
   --ink-a: #1a2060;
   --ink-b: #070920;

@@ -159,4 +159,15 @@ export const VESPER: CardDef[] = [
   v('rare', 'gleeful-trapsmith', 'Gleeful Trapsmith', 'power', 1, 'none', [
     on('play', [dmg(4, 'allFoes')], { filter: 'snare' }),
   ]),
+  v('common', 'break-the-guard', 'Break the Guard', 'skill', 1, 'foe', [
+    status('brittle', 3, 'target'),
+    status('exposed', 1, 'target'),
+  ]),
+  v('uncommon', 'mask-of-faces', 'Mask of Faces', 'skill', 1, 'none', [status('steadfast', 2)]),
+  v('uncommon', 'marked-cards', 'Marked Cards', 'power', 1, 'none', [
+    on('discard', [dmg(3, 'randomFoe')]),
+  ]),
+  v('rare', 'between-worlds', 'Between Worlds', 'skill', 2, 'none', [status('ghostly', 2)], {
+    exhaust: true,
+  }),
 ];

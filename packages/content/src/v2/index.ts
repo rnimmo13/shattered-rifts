@@ -8,7 +8,7 @@ import { RUNES } from './pools/ilvane';
 import { POTIONS } from './potions';
 import { ALLIES, ENEMY_UNITS } from './units';
 
-export type RealmId = 'aurelion' | 'nexus' | 'wyldmaw' | 'umbral' | 'starfall';
+export type RealmId = 'aurelion' | 'nexus' | 'wyldmaw' | 'umbral' | 'starfall' | 'gloomfen';
 export type HeroId =
   | 'maren'
   | 'rivet'
@@ -17,7 +17,8 @@ export type HeroId =
   | 'quill'
   | 'ilvane'
   | 'sehra'
-  | 'astra';
+  | 'astra'
+  | 'mire';
 
 export interface Riftwalker {
   hero: HeroDef;
@@ -123,6 +124,21 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     starter: [...rep('strike', 3), ...rep('defend', 4), 'meteor-jab', 'gather-light', 'lumen-bolt'],
     blurb: 'A scholar of fallen stars. Starts with 2 Lumen and a Starforged Blade that every Sharpen improves for good.',
     lanes: ['Blade: sharpen one weapon', 'Lumen: spend for finishers', 'Constellations: ticking Auras'],
+  },
+  mire: {
+    realm: 'gloomfen',
+    hero: {
+      id: 'mire',
+      name: 'Mire, the Gravewarden',
+      maxHp: 70,
+      mana: 3,
+      handSize: 5,
+      startUnits: ['bone-thrall'],
+    },
+    starter: [...rep('strike', 3), ...rep('defend', 3), ...rep('grave-touch', 2), ...rep('bone-ward', 2)],
+    blurb:
+      'A warden of the drowned dead. Starts with a Bone Thrall. Stacks Doom on enemies until the end comes for them.',
+    lanes: ['Doom: stack it, double it, cash it in', 'Thralls: the dead fight for you', 'Ashes: consumed cards fuel you'],
   },
 };
 
@@ -237,6 +253,7 @@ export const REALMS: { id: RealmId; name: string }[] = [
   { id: 'wyldmaw', name: 'Wyldmaw' },
   { id: 'umbral', name: 'Umbral Veil' },
   { id: 'starfall', name: 'Starfall' },
+  { id: 'gloomfen', name: 'Gloomfen' },
 ];
 
 /** Riftwalkers grouped by realm (every screen that lists characters uses this, so they always group alike). */

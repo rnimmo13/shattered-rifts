@@ -7,15 +7,21 @@ import {
   PREVENT,
   barrier,
   card,
+  cheapen,
+  copySelf,
+  discoverOp,
   dmg,
   draw,
   exhaustN,
   heal,
   lose,
   mana,
+  manaNext,
+  drawNext,
   scry,
   status,
   summon,
+  upgradeOp,
 } from '../build';
 
 const N = 'neutral';
@@ -68,6 +74,19 @@ export const NEUTRAL: CardDef[] = [
     status('faltering', 2, 'attacker'),
     barrier(4),
   ], { trigger: { on: 'foeSummons' } }),
+  n('common', 'heave', 'Heave', 'skill', 0, 'none', [status('might', 3, 'self', true)]),
+  n('common', 'needling-blow', 'Needling Blow', 'attack', 0, 'foe', [dmg(6), copySelf('discard')]),
+  n('uncommon', 'rift-windfall', 'Rift Windfall', 'skill', 1, 'none', [discoverOp(undefined, 1, true)], {
+    exhaust: true,
+  }),
+  n('uncommon', 'plan-ahead', 'Plan Ahead', 'skill', 1, 'none', [manaNext(2), drawNext(1)]),
+  n('uncommon', 'fever-dream', 'Fever Dream', 'skill', 0, 'none', [cheapen(2, 'random')], {
+    exhaust: true,
+  }),
+  n('rare', 'echoing-blow', 'Echoing Blow', 'skill', 1, 'none', [status('twinned', 1)]),
+  n('rare', 'rift-smithing', 'Rift Smithing', 'skill', 2, 'none', [upgradeOp('hand')], {
+    exhaust: true,
+  }),
 ];
 
 // Warden signature cards: one set per Warden, offered as the Warden's Gift. Any Riftwalker can take them.

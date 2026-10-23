@@ -11,6 +11,7 @@ const REALM_NAME: Record<string, string> = {
   wyldmaw: 'Wyldmaw',
   umbral: 'Umbral Veil',
   starfall: 'Starfall',
+  gloomfen: 'Gloomfen',
 };
 
 export function CharacterPicker(props: { value: HeroId; onChange: (id: HeroId) => void }) {

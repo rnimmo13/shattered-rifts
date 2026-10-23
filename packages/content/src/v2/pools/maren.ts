@@ -114,4 +114,11 @@ export const MAREN: CardDef[] = [
     status('faltering', 1, 'allFoes'),
   ]),
   m('rare', 'dawns-verdict', "Dawn's Verdict", 'attack', 3, 'foe', [dmg(24), status('exposed', 2, 'target')]),
+  m('common', 'shell-cracker', 'Shell Cracker', 'attack', 1, 'foe', [
+    dmg(4),
+    status('brittle', 2, 'target'),
+  ]),
+  m('uncommon', 'plated-resolve', 'Plated Resolve', 'skill', 1, 'none', [status('armored', 3)]),
+  m('uncommon', 'sure-footing', 'Sure Footing', 'power', 1, 'none', [status('bracing', 2)]),
+  m('rare', 'unbroken-wall', 'Unbroken Wall', 'power', 2, 'none', [status('fortified', 1)]),
 ];

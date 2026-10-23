@@ -37,6 +37,9 @@ const RAW_ALLIES: UnitDef[] = [
   ally('maw-hatchling', 'Maw Hatchling', 12, [dmg(7)]),
   ally('hound', 'Hound', 10, [dmg(5)]),
   ally('dire-wolf', 'Dire Wolf', 18, [dmg(9)]),
+  // Gloomfen: Mire's dead
+  ally('bone-thrall', 'Bone Thrall', 12, [dmg(4)]),
+  ally('grave-colossus', 'Grave Colossus', 22, [dmg(9)]),
   ally('gnashling', 'Gnashling', 4, [dmg(3)]),
 ];
 

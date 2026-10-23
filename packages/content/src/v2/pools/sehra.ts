@@ -92,4 +92,9 @@ export const SEHRA: CardDef[] = [
     dmg(9, 'attacker'),
     stance('wrath'),
   ], { trigger: { on: 'attacked' } }),
+  s('uncommon', 'held-breath', 'Held Breath', 'skill', 1, 'none', [status('holdfast', 1)]),
+  s('uncommon', 'poise', 'Poise', 'power', 1, 'none', [status('bracing', 2)]),
+  s('uncommon', 'reading-the-signs', 'Reading the Signs', 'power', 1, 'none', [
+    on('discard', [status('mantra', 1)]),
+  ]),
 ];

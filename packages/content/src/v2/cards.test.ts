@@ -45,7 +45,13 @@ function setup(card: CardDef, hero: HeroId): CombatState {
   me.hp = Math.floor(me.maxHp * 0.6);
   for (const k of ['calm', 'wrath', 'radiant'] as const) delete me.statuses[k];
   Object.assign(me.statuses, { might: 2, thorns: 2, mantra: 1, resonance: 1 });
-  for (const u of s.sides.b.units) u.statuses.seared = 3;
+  for (const u of s.sides.b.units) Object.assign(u.statuses, { seared: 3, doom: 2 });
+  // a few cards already consumed, for cards that count them
+  sd.exhausted = [
+    { id: 'X1', card: 'strike' },
+    { id: 'X2', card: 'strike' },
+    { id: 'X3', card: 'defend' },
+  ];
   // an ally on the board for cards that aim at one (a copy of the first enemy re-sided is overkill: use the real thing)
   if (!sd.units.some((u) => u.kind === 'ally') && db.units['patrol-drone']) {
     const hero0 = sd.units[sd.units.length - 1]!;
@@ -97,7 +103,10 @@ describe('every card plays', () => {
       const fx = [...events];
       fx.splice(fx.findIndex((e) => e.type === 'play'), 1);
       fx.splice(fx.findIndex((e) => e.type === 'mana'), 1);
-      const stateChange = after.sides.a.runeSlots !== s0.sides.a.runeSlots;
+      const stateChange =
+        after.sides.a.runeSlots !== s0.sides.a.runeSlots ||
+        after.sides.a.nextMana !== s0.sides.a.nextMana ||
+        after.sides.a.nextDraw !== s0.sides.a.nextDraw;
       expect(
         stateChange || fx.some((e) => !['exhaust', 'discard'].includes(e.type)),
         `${c.id} did nothing`,
@@ -135,6 +144,45 @@ describe('second resources have a way in and a way out from the first hand', () 
   });
 });
 
+describe('real card data, end to end', () => {
+  it('Keen Edge makes Sleeve Knives hit harder (and only knives)', () => {
+    const s0 = setup(db.cards['keen-edge']!, 'quill');
+    s0.sides.a.hand = [
+      { id: 'K', card: 'keen-edge' },
+      { id: 'N', card: 'sleeve-knife' },
+      { id: 'S', card: 'strike' },
+    ];
+    const foeId = s0.sides.b.units[0]!.id;
+    const dealt = (s: CombatState, card: string): number => {
+      const before = s.sides.b.units[0]!.hp + s.sides.b.units[0]!.barrier;
+      const r = applyAction(db, s, { type: 'play', card, target: foeId });
+      const u = r.state.sides.b.units[0];
+      return before - (u ? u.hp + u.barrier : 0);
+    };
+    s0.sides.b.units[0]!.hp = 99;
+    s0.sides.b.units[0]!.maxHp = 99;
+    const base = dealt(s0, 'N');
+    const buffed = applyAction(db, s0, { type: 'play', card: 'K' }).state;
+    expect(dealt(buffed, 'N')).toBe(base + 3);
+    expect(dealt(buffed, 'S')).toBe(dealt(s0, 'S'));
+  });
+
+  it('Mire starts with a Bone Thrall and Doom kills at the end of an enemy turn', () => {
+    const { state } = createCombat(db, {
+      seed: 'doom-real',
+      a: { hero: 'mire', deck: RIFTWALKERS.mire.starter },
+      b: { enemies: ['squire'] },
+    });
+    expect(state.sides.a.units.some((u) => u.kind === 'ally')).toBe(true);
+    const s = clone(state);
+    const e = s.sides.b.units[0]!;
+    e.hp = 10;
+    e.statuses.doom = 10;
+    const r = applyAction(db, s, { type: 'endTurn' });
+    expect(r.state.winner).toBe('a');
+  });
+});
+
 describe('pool shape (docs/09_ROSTER.md §1)', () => {
   const lanes = (h: HeroId) => rewardPool(h).map((id) => db.cards[id]!);
 
@@ -161,7 +209,16 @@ describe('pool shape (docs/09_ROSTER.md §1)', () => {
     owns((c) => uses(c, 'channel') || uses(c, 'evoke') || uses(c, 'runeSlots'), 'ilvane');
     owns((c) => uses(c, 'stance'), 'sehra');
     owns((c) => uses(c, 'forge') || c.starCost !== undefined, 'astra');
-    owns((c) => c.tags?.includes('sleeve-knife') === true, 'quill');
+    owns((c) => c.tags?.includes('knife') === true, 'quill');
+    owns(
+      (c) =>
+        c.effects.some((o) => o.op === 'status' && o.status === 'doom') ||
+        c.effects.some(
+          (o) => o.op === 'power' && o.ops.some((x) => x.op === 'status' && x.status === 'doom'),
+        ) ||
+        (c.kind === 'snare' && c.effects.some((o) => o.op === 'status' && o.status === 'doom')),
+      'mire',
+    );
     owns(
       (c) =>
         c.effects.some(

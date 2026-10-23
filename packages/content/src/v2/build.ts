@@ -22,11 +22,12 @@ export const dmg = (amount: number, to: Sel = 'target', hits?: number): Op =>
   hits && hits > 1 ? { op: 'damage', amount, hits, to } : { op: 'damage', amount, to };
 export const barrier = (amount: number, to: Sel = 'self'): Op => ({ op: 'barrier', amount, to });
 export const heal = (amount: number, to: Sel = 'self'): Op => ({ op: 'heal', amount, to });
-export const status = (st: StatusId, amount: number, to: Sel = 'self'): Op => ({
+export const status = (st: StatusId, amount: number, to: Sel = 'self', temp = false): Op => ({
   op: 'status',
   status: st,
   amount,
   to,
+  ...(temp ? { temp } : {}),
 });
 export const lose = (amount: number, to: Sel = 'self'): Op => ({ op: 'loseHp', amount, to });
 export const draw = (amount: number): Op => ({ op: 'draw', amount });
@@ -77,6 +78,21 @@ export const evoke = (count = 1, times = 1, keep = false): Op => ({
 });
 export const forge = (cardId: string, amount: number): Op => ({ op: 'forge', card: cardId, amount });
 export const sacrifice: Op = { op: 'sacrifice' };
+export const manaNext = (amount: number): Op => ({ op: 'manaNext', amount });
+export const drawNext = (amount: number): Op => ({ op: 'drawNext', amount });
+export const discoverOp = (kind?: CardKind, count = 1, free = false): Op => ({
+  op: 'discover',
+  ...(kind ? { kind } : {}),
+  ...(count !== 1 ? { count } : {}),
+  ...(free ? { free } : {}),
+});
+export const upgradeOp = (scope: 'hand' | 'random'): Op => ({ op: 'upgrade', scope });
+export const cheapen = (amount: number, scope: 'hand' | 'random'): Op => ({
+  op: 'cheapen',
+  amount,
+  scope,
+});
+export const copySelf = (to: 'hand' | 'discard' | 'draw' = 'discard'): Op => ({ op: 'copySelf', to });
 /** Unblockable HP loss for the target that depends on the board (Cash In: its Seared). */
 export const loseHpScaled = (scale: Scale, to: Sel = 'target'): Op => ({
   op: 'loseHp',
@@ -216,6 +232,10 @@ export function plus(c: CardDef): CardDef {
       case 'forge':
         changed = true;
         return { ...o, amount: o.amount + 2 };
+      case 'manaNext':
+      case 'drawNext':
+        changed = true;
+        return { ...o, amount: o.amount + 1 };
       case 'channel':
       case 'evoke':
         // an X card gets one more X

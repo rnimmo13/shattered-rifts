@@ -113,4 +113,7 @@ export const KESH: CardDef[] = [
     dmg(6, 'attacker'),
     status('might', 1, 'allFriends'),
   ], { trigger: { on: 'attacked' } }),
+  k('common', 'whet-the-fangs', 'Whet the Fangs', 'skill', 0, 'none', [status('vigor', 6)]),
+  k('rare', 'bloodsong', 'Bloodsong', 'power', 1, 'none', [lose(2), status('ritual', 1)]),
+  k('rare', 'hunger-unbound', 'Hunger Unbound', 'power', 2, 'none', [status('unbound', 1)]),
 ];
