@@ -55,6 +55,7 @@ interface Result {
   stage: number;
   lost: number;
   fights: { kind: string; hpFrac: number; won: boolean; enc: string }[];
+  stalled: boolean;
 }
 
 function fight(run: RunState): { won: boolean; hp: number } {
@@ -73,7 +74,7 @@ function fight(run: RunState): { won: boolean; hp: number } {
 
 function playRun(h: HeroId, d: Difficulty, i: number): Result {
   let run = newRun(h, `runsim-${h}-${d}-${i}`, d, LUCK);
-  const res: Result = { cleared: false, stage: 1, lost: 0, fights: [] };
+  const res: Result = { cleared: false, stage: 1, lost: 0, fights: [], stalled: true };
   for (let step = 0; step < 4000; step++) {
     const hpFrac = run.hp / run.maxHp;
     switch (run.phase) {
@@ -152,9 +153,11 @@ function playRun(h: HeroId, d: Difficulty, i: number): Result {
         break;
       case 'loopCleared':
         res.cleared = true;
+        res.stalled = false;
         return res;
       case 'collapsed':
       case 'banked':
+        res.stalled = false;
         return res;
     }
   }
@@ -175,11 +178,13 @@ for (const d of DIFFS) {
       'HP entering duel/elite/warden',
   );
   let allCleared = 0;
+  let stalledRuns = 0;
   let all = 0;
   for (const h of HEROES) {
     const rs = Array.from({ length: N }, (_, i) => playRun(h, d, i));
     const cleared = rs.filter((r) => r.cleared).length;
     allCleared += cleared;
+    stalledRuns += rs.filter((r) => r.stalled).length;
     all += rs.length;
     const avg = (f: (r: Result) => number): number => rs.reduce((n, r) => n + f(r), 0) / rs.length;
     const hpOf = (k: string): string => {
@@ -209,5 +214,7 @@ for (const d of DIFFS) {
         worst,
     );
   }
-  console.log(`overall cleared: ${Math.round((allCleared / all) * 100)}%\n`);
+  console.log(
+    `overall cleared: ${Math.round((allCleared / all) * 100)}%  (${stalledRuns} runs hit the step cap and count as failures)\n`,
+  );
 }

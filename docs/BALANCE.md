@@ -137,7 +137,9 @@ encounter, Normal difficulty). Findings and changes:
   single fights.
 - **Bot limits:** the greedy bot sets up engines badly (stances, runes, Lumen), so low numbers for those characters are partly the
   bot. Treat the table as a floor for them and a ceiling for companion decks. Human playtests decide the next pass.
-- **Still open:** Hollow runes scale without bound; Serene/Fury loops with Surge of Ire are strong; starter-only Wardens are very
+- **Notes:** runsim prints the difficulty percent before the stage ramp (real fights are 92-150% of it by stage); cardscan models a mid-run fight (about stage 2-3). Runs already in progress keep their saved max HP and, if they were Easy, face the new Easy numbers (about 15-20% tougher than before).
+
+**Still open:** Hollow runes scale without bound; Serene/Fury loops with Surge of Ire are strong; starter-only Wardens are very
   hard for most characters (intended: you are meant to draft), but Rivet/Kesh/Sehra start well ahead of the rest.
 
 ## Full balance review and difficulty modes (2026-10-23)
@@ -169,12 +171,12 @@ killed weak decks at the start of the run).
 **Cards (outliers found by cardscan, then rescanned):**
 - Snares: the "cancel that attack" ones were the best cards in the game (Perfect Trap +26, Booby-Trapped Window +26, Silencing
   Snare +17, Mirror Veil +11). Mirror Veil and Silencing Snare cost 2, Perfect Trap 3 (22 damage), Hollow Snare 8 damage, Time
-  Bomb 9, Pain Link 6, KP's Pit of Bottles 6, Booby-Trapped Window 10 damage and no Stun. Vesper gets +6 HP per Veil Strike and
-  more HP (104) and a longer Ambusher.
+  Bomb 9, Pain Link 6, KP's Pit of Bottles 6, Booby-Trapped Window 10 damage and no Stun. Vesper gets a stronger Veil Strike
+  (6 damage), more HP (104) and a longer Ambusher (Exposed for 2 turns).
 - Defence made everything else pointless: Maren Sure Footing Bracing 1, Plated Resolve Armored 2, Aegis 6 Barrier at 2 Mana, Last
   Oath thorns 3 / bracing 1, Dawn Incarnate x2 Barrier; Ilvane's Ward rune (passive 1, release 6), Glacial Bastion, Stored Charge,
   Cold Snap (cost 1), Glimmer (cost 1), Glyph Guard, Frostglass, Hollow charges by 2; KP Glass Palace, Pass Out; Drowned King
-  (no taunt, 22 HP, 10 damage, 1 Might); Still Flame Ascendant (cost 3, 4 Primed); Supernova 46, Falling Sky 7 x3, Lyra costs 2.
+  (no taunt, 22 HP, 10 damage, 4 Barrier, 1 Might); Still Flame Ascendant (cost 3, 4 Primed); Supernova 46, Falling Sky 7 x3, Lyra costs 2.
 - Buffed the weakest: Maren Anvil Strike, Vengeful Light, Dawn's Verdict; Ion Lance; Reactor; Reinforce; Death Mark; Coup de
   Grace; Nightfall (cost 2); Hone; Royal Decree; Harmonic Wave; Cataclysm Glyph (cost 2); Deathless; KP Shatter, Barroom Brawl,
   Boomstick, Rack and Ruin.

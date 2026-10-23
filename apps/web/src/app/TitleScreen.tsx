@@ -114,7 +114,7 @@ export function TitleScreen() {
         </a>
       </div>
       <p id="cta-note" className="title__cta-note">
-        Runs are in early alpha: expect rough edges, and the difficulty is not tuned yet.
+        Runs are in early alpha: expect rough edges. Pick Easy, Normal or Hard when you begin.
       </p>
 
       <p className="title__footer">combat v2 preview · {BUILD.label}</p>

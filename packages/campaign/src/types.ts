@@ -147,7 +147,7 @@ export interface RunState {
   v: 2;
   seed: string;
   character: HeroId;
-  /** The run's difficulty setting (see DIFFICULTY): easy while the game is being built and tested. */
+  /** The run's difficulty setting (see DIFFICULTY): Normal unless chosen otherwise (see DIFFICULTY). */
   difficulty: Difficulty;
   /** Card luck: shifts card offers (and the merchant's stock) towards uncommon and rare cards. Missing in old saves = normal. */
   luck?: Luck;
