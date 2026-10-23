@@ -44,8 +44,13 @@ export const KESH: CardDef[] = [
   k('uncommon', 'blood-tithe', 'Blood Tithe', 'skill', 0, 'none', [lose(6), mana(2), draw(3)], {
     exhaust: true,
   }),
-  k('uncommon', 'crushing-blow', 'Crushing Blow', 'attack', 2, 'foe', [scaled(dmg(8), per('might', 2))]),
-  k('uncommon', 'run-wild', 'Run Wild', 'attack', 2, 'foe', [dmg(6, 'target', 2), status('might', 1)]),
+  k('uncommon', 'crushing-blow', 'Crushing Blow', 'attack', 2, 'foe', [
+    scaled(dmg(8), per('might', 2)),
+  ]),
+  k('uncommon', 'run-wild', 'Run Wild', 'attack', 2, 'foe', [
+    dmg(6, 'target', 2),
+    status('might', 1),
+  ]),
   k('uncommon', 'ravage', 'Ravage', 'attack', 2, 'none', [dmg(7, 'allFoes'), lose(3)]),
   k('rare', 'the-hunger', 'The Hunger', 'power', 1, 'none', [lose(4), status('might', 3)]),
   k('rare', 'slip-the-leash', 'Slip the Leash', 'skill', 1, 'none', [doubleSt('might', 'self')], {
@@ -73,7 +78,9 @@ export const KESH: CardDef[] = [
     ACT,
     status('might', 1, 'allFriends'),
   ]),
-  k('uncommon', 'pack-bond', 'Pack Bond', 'power', 2, 'none', [on('turnStart', [barrier(3, 'allFriends')])]),
+  k('uncommon', 'pack-bond', 'Pack Bond', 'power', 2, 'none', [
+    on('turnStart', [barrier(3, 'allFriends')]),
+  ]),
   k('rare', 'alpha-call', 'Alpha Call', 'summon', 2, 'none', [
     summon('hound'),
     status('might', 1, 'allFriends'),
@@ -92,7 +99,11 @@ export const KESH: CardDef[] = [
     dmg(5),
     status('might', 1, 'allFriends'),
   ]),
-  k('uncommon', 'crimson-pact', 'Crimson Pact', 'skill', 1, 'none', [lose(3), exhaustN(1), draw(2)]),
+  k('uncommon', 'crimson-pact', 'Crimson Pact', 'skill', 1, 'none', [
+    lose(3),
+    exhaustN(1),
+    draw(2),
+  ]),
   k('uncommon', 'gnaw', 'Gnaw', 'attack', 1, 'foe', [scaled(dmg(5), per('exhausted', 2))]),
   k('uncommon', 'devour', 'Devour', 'attack', 2, 'foe', [dmg(14), heal(5)]),
   k('uncommon', 'devour-ally', 'Devour Ally', 'skill', 1, 'ally', [
@@ -109,11 +120,32 @@ export const KESH: CardDef[] = [
     exhaustN(9),
     scaled(dmg(0), per('exhausted', 2)),
   ]),
-  k('uncommon', 'gnarltooth-trap', 'Gnarltooth Trap', 'snare', 1, 'none', [
-    dmg(6, 'attacker'),
-    status('might', 1, 'allFriends'),
-  ], { trigger: { on: 'attacked' } }),
+  k(
+    'uncommon',
+    'gnarltooth-trap',
+    'Gnarltooth Trap',
+    'snare',
+    1,
+    'none',
+    [dmg(6, 'attacker'), status('might', 1, 'allFriends')],
+    { trigger: { on: 'attacked' } },
+  ),
   k('common', 'whet-the-fangs', 'Whet the Fangs', 'skill', 0, 'none', [status('vigor', 6)]),
   k('rare', 'bloodsong', 'Bloodsong', 'power', 1, 'none', [lose(2), status('ritual', 1)]),
   k('rare', 'hunger-unbound', 'Hunger Unbound', 'power', 2, 'none', [status('unbound', 1)]),
+  k('legendary', 'hunger-unleashed', 'The Hunger Unleashed', 'power', 2, 'none', [
+    lose(6),
+    status('might', 4, 'allFriends'),
+    status('ritual', 2),
+  ]),
+  k(
+    'legendary',
+    'apex-maw',
+    'Apex Maw',
+    'attack',
+    3,
+    'foe',
+    [scaled(dmg(10), per('might', 4)), heal(10)],
+    { exhaust: true },
+  ),
 ];

@@ -1417,3 +1417,388 @@
   font-weight: 400;
   color: var(--c-cyan-glow);
 }
+
+/* ---- the grimoire: the practice deck builder as an open book ---- */
+.grim {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 17rem;
+  gap: 1rem;
+  text-align: left;
+  align-items: start;
+}
+@media (max-width: 62rem) {
+  .grim {
+    grid-template-columns: 1fr;
+  }
+}
+.grim__main {
+  display: grid;
+  gap: 0.6rem;
+  min-width: 0;
+}
+.grim__filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.7rem;
+  align-items: end;
+}
+.grim__filters label {
+  display: grid;
+  gap: 0.15rem;
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--c-text-dim);
+}
+.grim__filters select,
+.grim__filters input[type='search'] {
+  padding: 0.3rem 0.5rem;
+  border-radius: 6px;
+  border: 1px solid var(--c-gold-dark);
+  background: rgb(8 10 20 / 0.8);
+  color: var(--c-ivory);
+  font: inherit;
+  font-size: 0.9rem;
+}
+.grim__search {
+  flex: 1 1 14rem;
+}
+.grim__check {
+  display: flex !important;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+/* ribbon bookmarks, one per realm, sticking out of the top of the book */
+.grim__tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  padding: 0 1.2rem;
+  margin-bottom: -0.65rem;
+  position: relative;
+  z-index: 2;
+}
+.grim__ribbon {
+  --rib: #8a6f3a;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.35rem 0.8rem 0.55rem;
+  font: inherit;
+  font-family: var(--font-display);
+  font-size: 0.74rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #f4ead2;
+  background: linear-gradient(180deg, var(--rib), color-mix(in srgb, var(--rib) 60%, #000));
+  border: 0;
+  border-radius: 6px 6px 0 0;
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 82%, 0 100%);
+  cursor: pointer;
+  opacity: 0.72;
+  transform: translateY(6px);
+  transition:
+    transform 0.15s ease,
+    opacity 0.15s ease;
+}
+.grim__ribbon:hover {
+  opacity: 0.95;
+  transform: translateY(2px);
+}
+.grim__ribbon.is-open {
+  opacity: 1;
+  transform: translateY(-2px);
+}
+.grim__ribbon b {
+  min-width: 1.3rem;
+  padding: 0 0.3rem;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  text-align: center;
+  color: #231b0c;
+  background: #f1d88f;
+}
+.grim__ribbon--aurelion {
+  --rib: #b48a2c;
+}
+.grim__ribbon--nexus {
+  --rib: #2f8aa8;
+}
+.grim__ribbon--wyldmaw {
+  --rib: #a8452f;
+}
+.grim__ribbon--umbral {
+  --rib: #6a3fa8;
+}
+.grim__ribbon--starfall {
+  --rib: #3f5fc0;
+}
+.grim__ribbon--gloomfen {
+  --rib: #3c8a5a;
+}
+.grim__ribbon--neutral {
+  --rib: #7c7c88;
+}
+.grim__ribbon--wardens {
+  --rib: #9c2f4a;
+}
+.grim__ribbon--tokens {
+  --rib: #6b5a48;
+}
+.grim__ribbon--other {
+  --rib: #55555e;
+}
+
+/* the book: leather cover, brass edge, a spine shadow where the pages meet */
+.grim__book {
+  position: relative;
+  display: grid;
+  grid-template-columns: 2.4rem minmax(0, 1fr) 2.4rem;
+  align-items: center;
+  padding: 1.1rem 0.5rem;
+  border-radius: 16px;
+  background:
+    radial-gradient(120% 90% at 50% 0%, rgb(255 255 255 / 0.07), transparent 60%),
+    linear-gradient(160deg, #4a2b18, #2a160c 70%);
+  border: 2px solid #8a6a2c;
+  box-shadow:
+    0 14px 40px rgb(0 0 0 / 0.55),
+    inset 0 0 0 4px rgb(0 0 0 / 0.25),
+    inset 0 0 0 5px rgb(212 168 75 / 0.35);
+}
+.grim__flip {
+  width: 2.2rem;
+  height: 4.2rem;
+  border-radius: 10px;
+  border: 1px solid #8a6a2c;
+  background: rgb(20 10 4 / 0.7);
+  color: #f1d88f;
+  font-size: 1.8rem;
+  line-height: 1;
+  cursor: pointer;
+}
+.grim__flip:hover:not(:disabled) {
+  background: rgb(60 34 14 / 0.9);
+}
+.grim__flip:disabled {
+  opacity: 0.25;
+  cursor: default;
+}
+.grim__spread {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
+  min-width: 0;
+  position: relative;
+  border-radius: 6px;
+  box-shadow: 0 2px 10px rgb(0 0 0 / 0.5);
+}
+.grim__spread--next {
+  animation: grim-next 0.32s ease both;
+}
+.grim__spread--prev {
+  animation: grim-prev 0.32s ease both;
+}
+@keyframes grim-next {
+  from {
+    opacity: 0;
+    transform: perspective(1400px) rotateY(-14deg) translateX(18px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes grim-prev {
+  from {
+    opacity: 0;
+    transform: perspective(1400px) rotateY(14deg) translateX(-18px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .grim__spread {
+    animation: none !important;
+  }
+}
+.grim__page {
+  position: relative;
+  min-height: 32rem;
+  padding: 0.8rem 1rem 1.6rem;
+  color: #2b1d0e;
+  background:
+    radial-gradient(90% 70% at 50% 40%, rgb(255 244 214 / 0.55), transparent 80%),
+    repeating-linear-gradient(0deg, rgb(120 84 30 / 0.04) 0 2px, transparent 2px 5px), #e7d6ad;
+}
+/* the gutter: each page darkens towards the spine */
+.grim__page:first-child {
+  border-radius: 6px 0 0 6px;
+  box-shadow: inset -26px 0 28px -18px rgb(70 40 8 / 0.55);
+}
+.grim__page:last-child {
+  border-radius: 0 6px 6px 0;
+  box-shadow: inset 26px 0 28px -18px rgb(70 40 8 / 0.55);
+}
+.grim__page:only-child {
+  border-radius: 6px;
+  box-shadow: inset 0 0 40px rgb(70 40 8 / 0.25);
+}
+.grim__pagehead {
+  margin: 0 0 0.6rem;
+  padding-bottom: 0.3rem;
+  text-align: center;
+  font-family: var(--font-display);
+  font-size: 0.82rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #5a3a14;
+  border-bottom: 1px solid rgb(90 58 20 / 0.4);
+}
+.grim__cards {
+  display: grid;
+  grid-template-columns: repeat(3, 176px);
+  justify-content: center;
+  gap: 0.7rem 0.9rem;
+}
+.grim__slot {
+  display: grid;
+  justify-items: center;
+  gap: 0.25rem;
+}
+.grim__card {
+  position: relative;
+  padding: 0;
+  border: 0;
+  background: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition:
+    transform 0.12s ease,
+    box-shadow 0.12s ease;
+}
+.grim__card:hover,
+.grim__card:focus-visible {
+  transform: translateY(-3px);
+}
+.grim__slot:not(.is-in) .grim__card .card {
+  filter: saturate(0.85) brightness(0.93);
+}
+.grim__slot.is-in .grim__card {
+  box-shadow:
+    0 0 0 3px #f1c85a,
+    0 0 18px 4px rgb(241 200 90 / 0.75);
+}
+.grim__badge {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  min-width: 2rem;
+  padding: 0.1rem 0.4rem;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: #231b0c;
+  background: #f1c85a;
+  border: 2px solid #7a5a1c;
+  box-shadow: 0 2px 6px rgb(0 0 0 / 0.5);
+}
+.grim__ctl {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+.grim__ctl button {
+  width: 1.6rem;
+  height: 1.6rem;
+  border-radius: 50%;
+  border: 1px solid #7a5a1c;
+  background: #f4e7c2;
+  color: #3a2810;
+  font-size: 1rem;
+  line-height: 1;
+  cursor: pointer;
+}
+.grim__ctl button:hover:not(:disabled) {
+  background: #f1c85a;
+}
+.grim__ctl button:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+.grim__ctl b {
+  min-width: 1.2rem;
+  text-align: center;
+  color: #3a2810;
+}
+.grim__slot.is-in .grim__ctl b {
+  color: #8a4a00;
+}
+.grim__folio {
+  position: absolute;
+  bottom: 0.45rem;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-family: var(--font-display);
+  font-size: 0.8rem;
+  color: #6a4a1c;
+}
+.grim__empty {
+  margin: 4rem 0;
+  text-align: center;
+  font-style: italic;
+  color: #6a4a1c;
+}
+.grim__deck {
+  padding: 0.8rem 0.9rem;
+  border-radius: 12px;
+  background: rgb(8 10 20 / 0.6);
+  border: 1px solid rgb(212 168 75 / 0.3);
+  position: sticky;
+  top: 0.8rem;
+}
+.grim__deck h3 {
+  margin: 0 0 0.5rem;
+  font-family: var(--font-display);
+  color: var(--c-gold-light);
+}
+.grim__deck h3 small {
+  color: var(--c-text-dim);
+}
+/* narrow window: one page, two cards across */
+@media (max-width: 640px) {
+  .grim__book {
+    grid-template-columns: 1.8rem minmax(0, 1fr) 1.8rem;
+  }
+  .grim__flip {
+    width: 1.7rem;
+  }
+  .grim__cards {
+    grid-template-columns: repeat(2, 176px);
+  }
+}
+
+/* a grimoire used to look at cards (deck, piles, starter) rather than to build a deck */
+.grim--view {
+  display: block;
+}
+.grim__slot--view {
+  gap: 0;
+}
+.grim__slot.is-off .grim__card {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.fight__modalBody--book {
+  width: min(78rem, 96vw);
+  max-height: 94vh;
+  overflow: auto;
+}
+.deckmodal .grim__page {
+  min-height: 26rem;
+}

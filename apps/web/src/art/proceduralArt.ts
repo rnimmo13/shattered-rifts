@@ -5,7 +5,8 @@
 // card always looks the same. Swapping in real art later means replacing cardArt() only.
 
 /** The five colour families of the game. */
-export type Realm = 'aurelion' | 'nexus' | 'wyldmaw' | 'umbral' | 'starfall' | 'gloomfen' | 'neutral';
+export type Realm =
+  'aurelion' | 'nexus' | 'wyldmaw' | 'umbral' | 'starfall' | 'gloomfen' | 'neutral';
 
 /** What the painters need to know about a card. */
 export interface ArtCard {

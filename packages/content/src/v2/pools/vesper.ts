@@ -76,10 +76,16 @@ export const VESPER: CardDef[] = [
   v('common', 'snare-kit', 'Snare Kit', 'skill', 1, 'none', [addTo('trip-line', 2)], {
     exhaust: true,
   }),
-  v('uncommon', 'mirror-veil', 'Mirror Veil', 'snare', 1, 'none', [
-    PREVENT,
-    status('faltering', 2, 'attacker'),
-  ], { trigger: { on: 'attacked' } }),
+  v(
+    'uncommon',
+    'mirror-veil',
+    'Mirror Veil',
+    'snare',
+    1,
+    'none',
+    [PREVENT, status('faltering', 2, 'attacker')],
+    { trigger: { on: 'attacked' } },
+  ),
   v('uncommon', 'pain-link', 'Pain Link', 'snare', 0, 'none', [dmg(8, 'allFoes')], {
     trigger: { on: 'hpLost', min: 5 },
   }),
@@ -92,9 +98,18 @@ export const VESPER: CardDef[] = [
   v('uncommon', 'master-trapper', 'Master Trapper', 'power', 1, 'none', [
     on('play', [draw(1)], { filter: 'snare' }),
   ]),
-  v('rare', 'bait-and-switch', 'Bait and Switch', 'snare', 2, 'none', [PREVENT, dmg(12, 'attacker')], {
-    trigger: { on: 'attacked' },
-  }),
+  v(
+    'rare',
+    'bait-and-switch',
+    'Bait and Switch',
+    'snare',
+    2,
+    'none',
+    [PREVENT, dmg(12, 'attacker')],
+    {
+      trigger: { on: 'attacked' },
+    },
+  ),
   v(
     'rare',
     'silencing-snare',
@@ -105,9 +120,7 @@ export const VESPER: CardDef[] = [
     [status('stunned', 1, 'attacker'), status('shielded', 1)],
     { trigger: { on: 'attacked' } },
   ),
-  v('rare', 'echo-trap', 'Echo Trap', 'power', 2, 'none', [
-    on('snare', [barrier(5), draw(1)]),
-  ]),
+  v('rare', 'echo-trap', 'Echo Trap', 'power', 2, 'none', [on('snare', [barrier(5), draw(1)])]),
 
   // --- Exposed ---
   v('common', 'mark-prey', 'Mark Prey', 'skill', 0, 'foe', [status('exposed', 2, 'target')]),
@@ -170,4 +183,17 @@ export const VESPER: CardDef[] = [
   v('rare', 'between-worlds', 'Between Worlds', 'skill', 2, 'none', [status('ghostly', 2)], {
     exhaust: true,
   }),
+  v(
+    'legendary',
+    'the-perfect-trap',
+    'The Perfect Trap',
+    'snare',
+    2,
+    'none',
+    [PREVENT, dmg(30, 'attacker'), status('stunned', 1, 'attacker'), status('shielded', 2)],
+    { trigger: { on: 'attacked' } },
+  ),
+  v('legendary', 'masquerade', 'Masquerade', 'power', 2, 'none', [
+    on('snare', [draw(2), mana(1), dmg(4, 'allFoes')]),
+  ]),
 ];

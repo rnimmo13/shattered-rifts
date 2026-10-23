@@ -5,6 +5,9 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **Legendary cards.** 20 new one-of-a-kind cards (two per Riftwalker, two Neutral): build-arounds like The Last Oath, Deck of a Thousand Knives, The Last Toll and Rift Collapse. Max one copy per deck, never in a starting deck, found rarely: elite fights (about 1%), the Warden's Gift (sometimes), the merchant (260 shards) and a new "A Legend's Price" bargain; Card luck makes them likelier.
+- **Your deck, piles and starter decks are grimoires too** (run deck view, shrine upgrade/remove picks, the draw/discard/consume piles, the character picker). Rift Collapse costs 15 HP. A Warden may leave one extra legendary in its Gift.
+- **The practice deck builder is now a grimoire.** An open book with real card visuals, one ribbon bookmark per realm (plus Neutral, Warden gifts, Tokens), cards grouped by character and rarity. Click a card to add a copy; chosen cards glow with a count, with − / + under each. Search reads the whole book; hover for a big preview.
 - **Build number.** A small label in the bottom-right corner of every screen (and on the title screen) shows the version, the commit it was built from and when, e.g. `v0.1.0 · 44fc840 · 23 Oct 2026, 14:05`. Hover it for details. A `+` after the commit means the build had uncommitted changes. Please include it in bug reports.
 - **Role tags.** Every Riftwalker now has a one-word role so you can tell at a glance what they are: Knight (Maren), Engineer (Rivet), Barbarian (Kesh), Trapper (Vesper), Assassin (Quill), Runecaster (Ilvane), Monk (Sehra), Spellblade (Astra), Necromancer (Mire).
 - **Card luck setting.** On the Sanctum screen, choose Card luck: normal, lucky (about 2.5x as many rares in offers) or blessed (mostly rares). It also stocks the merchant with better cards. Great for testing strong decks; normal stays the designed game.

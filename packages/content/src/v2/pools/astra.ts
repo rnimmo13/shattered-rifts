@@ -45,14 +45,29 @@ export const ASTRA: CardDef[] = [
 
   // --- Blade ---
   a('common', 'hone', 'Hone', 'skill', 1, 'none', [forge('starforged-blade', 3)]),
-  a('common', 'honed-strike', 'Honed Strike', 'attack', 1, 'foe', [dmg(6), forge('starforged-blade', 2)]),
-  a('common', 'blade-ward', 'Blade Ward', 'skill', 1, 'none', [barrier(5), forge('starforged-blade', 1)]),
+  a('common', 'honed-strike', 'Honed Strike', 'attack', 1, 'foe', [
+    dmg(6),
+    forge('starforged-blade', 2),
+  ]),
+  a('common', 'blade-ward', 'Blade Ward', 'skill', 1, 'none', [
+    barrier(5),
+    forge('starforged-blade', 1),
+  ]),
   a('common', 'whetstone', 'Whetstone', 'skill', 0, 'none', [forge('starforged-blade', 4)], {
     exhaust: true,
   }),
-  a('uncommon', 'crown-strike', 'Crown Strike', 'attack', 1, 'foe', [dmg(7), forge('starforged-blade', 1)]),
-  a('uncommon', 'edgewise', 'Edgewise', 'skill', 1, 'none', [barrier(7), forge('starforged-blade', 2)]),
-  a('uncommon', 'royal-decree', 'Royal Decree', 'skill', 2, 'none', [forge('starforged-blade', 5), draw(1)]),
+  a('uncommon', 'crown-strike', 'Crown Strike', 'attack', 1, 'foe', [
+    dmg(7),
+    forge('starforged-blade', 1),
+  ]),
+  a('uncommon', 'edgewise', 'Edgewise', 'skill', 1, 'none', [
+    barrier(7),
+    forge('starforged-blade', 2),
+  ]),
+  a('uncommon', 'royal-decree', 'Royal Decree', 'skill', 2, 'none', [
+    forge('starforged-blade', 5),
+    draw(1),
+  ]),
   a('uncommon', 'knights-oath', "Knight's Oath", 'power', 1, 'none', [
     on('play', [stars(1)], { tag: 'blade' }),
   ]),
@@ -71,11 +86,21 @@ export const ASTRA: CardDef[] = [
   a('uncommon', 'falling-sky', 'Falling Sky', 'attack', 1, 'none', [dmg(9, 'allFoes', 3)], {
     starCost: 3,
   }),
-  a('uncommon', 'solar-flare', 'Solar Flare', 'attack', 1, 'none', [
-    dmg(12, 'allFoes'),
-    status('exposed', 1, 'allFoes'),
-  ], { starCost: 2 }),
-  a('uncommon', 'orbit', 'Orbit', 'skill', 1, 'none', [stars(1), forge('starforged-blade', 1), draw(1)]),
+  a(
+    'uncommon',
+    'solar-flare',
+    'Solar Flare',
+    'attack',
+    1,
+    'none',
+    [dmg(12, 'allFoes'), status('exposed', 1, 'allFoes')],
+    { starCost: 2 },
+  ),
+  a('uncommon', 'orbit', 'Orbit', 'skill', 1, 'none', [
+    stars(1),
+    forge('starforged-blade', 1),
+    draw(1),
+  ]),
   a('uncommon', 'cosmic-lance', 'Cosmic Lance', 'attack', 2, 'foe', [dmg(12), stars(1)]),
   a('uncommon', 'gravity-well', 'Gravity Well', 'skill', 1, 'foe', [
     status('exposed', 2, 'target'),
@@ -86,20 +111,35 @@ export const ASTRA: CardDef[] = [
     status('faltering', 1, 'allFoes'),
   ]),
   a('uncommon', 'starlight', 'Starlight', 'skill', 1, 'none', [stars(3)], { exhaust: true }),
-  a('rare', 'supernova', 'Supernova', 'attack', 3, 'foe', [dmg(55), status('exposed', 2, 'target')], {
-    starCost: 4,
-  }),
+  a(
+    'rare',
+    'supernova',
+    'Supernova',
+    'attack',
+    3,
+    'foe',
+    [dmg(55), status('exposed', 2, 'target')],
+    {
+      starCost: 4,
+    },
+  ),
   a('rare', 'dawn-of-stars', 'Dawn of Stars', 'skill', 2, 'none', [stars(5), draw(2)], {
     exhaust: true,
   }),
 
   // --- Constellations ---
   a('uncommon', 'orion', 'Orion', 'power', 2, 'none', [on('turnStart', [stars(1)])]),
-  a('uncommon', 'lyra', 'Lyra', 'power', 1, 'none', [on('turnEnd', [scaled(barrier(0), per('stars'))])]),
+  a('uncommon', 'lyra', 'Lyra', 'power', 1, 'none', [
+    on('turnEnd', [scaled(barrier(0), per('stars'))]),
+  ]),
   a('uncommon', 'draco', 'Draco', 'power', 2, 'none', [on('turnStart', [dmg(3, 'allFoes')])]),
-  a('uncommon', 'cygnus', 'Cygnus', 'power', 1, 'none', [on('play', [barrier(2)], { filter: 'skill' })]),
+  a('uncommon', 'cygnus', 'Cygnus', 'power', 1, 'none', [
+    on('play', [barrier(2)], { filter: 'skill' }),
+  ]),
   a('uncommon', 'ursa', 'Ursa', 'power', 1, 'none', [on('turnEnd', [barrier(3)])]),
-  a('rare', 'cassiopeia', 'Cassiopeia', 'power', 2, 'none', [on('play', [stars(1)], { filter: 'attack' })]),
+  a('rare', 'cassiopeia', 'Cassiopeia', 'power', 2, 'none', [
+    on('play', [stars(1)], { filter: 'attack' }),
+  ]),
   a('rare', 'gemini', 'Gemini', 'power', 3, 'none', [on('turnStart', [draw(1), stars(1)])]),
   a('uncommon', 'lumen-trap', 'Lumen Trap', 'snare', 1, 'none', [stars(2), dmg(6, 'allFoes')], {
     trigger: { on: 'foeTurn' },
@@ -109,4 +149,18 @@ export const ASTRA: CardDef[] = [
     manaNext(2),
     forge('starforged-blade', 1),
   ]),
+  a('legendary', 'the-sovereigns-crown', "The Sovereign's Crown", 'power', 2, 'none', [
+    forge('starforged-blade', 8),
+    on('turnStart', [forge('starforged-blade', 3), stars(1)]),
+  ]),
+  a(
+    'legendary',
+    'birth-of-a-star',
+    'Birth of a Star',
+    'skill',
+    3,
+    'none',
+    [stars(8), draw(3), barrier(20)],
+    { exhaust: true },
+  ),
 ];

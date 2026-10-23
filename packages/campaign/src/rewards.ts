@@ -24,33 +24,38 @@ export function canAdd(deck: readonly string[], cardId: string): boolean {
   // a card that cannot be played is only worth having if discarding it pays (Reflex, Tactician)
   if (!c || (c.unplayable && !c.onDiscard)) return false;
   if (c.rarity === 'basic') return true;
-  // a card and its "+" version share one limit
+  // a card and its "+" version share one limit; a legendary is one of a kind
   const base = (id: string): string => id.replace(/\+$/, '');
-  return deck.filter((x) => base(x) === base(cardId)).length < V2_DECK_RULES.maxCopies;
+  const limit = c.rarity === 'legendary' ? 1 : V2_DECK_RULES.maxCopies;
+  return deck.filter((x) => base(x) === base(cardId)).length < limit;
 }
 
 /** Cards of every other Riftwalker's pool (the Rift-crossed pool). */
 export function crossedPool(hero: HeroId): string[] {
   return (Object.keys(RIFTWALKERS) as HeroId[])
     .filter((h) => h !== hero)
-    .flatMap((h) => rewardPool(h).filter((id) => COMBAT_DB.cards[id]?.hero === h));
+    .flatMap((h) =>
+      rewardPool(h).filter(
+        (id) => COMBAT_DB.cards[id]?.hero === h && COMBAT_DB.cards[id]?.rarity !== 'legendary',
+      ),
+    );
 }
 
 const WEIGHTS: Record<OfferQuality, Record<string, number>> = {
-  duel: { common: 65, uncommon: 28, rare: 7 },
-  elite: { common: 30, uncommon: 50, rare: 20 },
+  duel: { common: 65, uncommon: 28, rare: 7, legendary: 0 },
+  elite: { common: 30, uncommon: 50, rare: 19, legendary: 1 },
 };
 
 /** Card luck: the same offers, tilted towards better cards (a setting; Normal is the designed game). */
 export const LUCK_WEIGHTS: Record<Luck, Record<OfferQuality, Record<string, number>>> = {
   normal: WEIGHTS,
   lucky: {
-    duel: { common: 45, uncommon: 38, rare: 17 },
-    elite: { common: 15, uncommon: 50, rare: 35 },
+    duel: { common: 45, uncommon: 38, rare: 16, legendary: 1 },
+    elite: { common: 15, uncommon: 48, rare: 33, legendary: 4 },
   },
   blessed: {
-    duel: { common: 20, uncommon: 45, rare: 35 },
-    elite: { common: 5, uncommon: 40, rare: 55 },
+    duel: { common: 20, uncommon: 45, rare: 31, legendary: 4 },
+    elite: { common: 5, uncommon: 38, rare: 50, legendary: 7 },
   },
 };
 
@@ -65,7 +70,7 @@ function rollRarity(rng: RngState, quality: OfferQuality, luck: Luck = 'normal')
   return 'common';
 }
 
-const LADDER = ['rare', 'uncommon', 'common'];
+const LADDER = ['legendary', 'rare', 'uncommon', 'common'];
 
 /** `count` distinct cards to choose from, falling down the rarity ladder when a rarity has nothing left. */
 export function offerCards(
@@ -100,7 +105,7 @@ export function cardOfRarity(
   rng: RngState,
   hero: HeroId,
   deck: readonly string[],
-  rarity: 'common' | 'uncommon' | 'rare',
+  rarity: 'common' | 'uncommon' | 'rare' | 'legendary',
 ): string | null {
   const pool = rewardPool(hero).filter((id) => rarityOf(id) === rarity && canAdd(deck, id));
   return pool.length ? (pool[nextInt(rng, pool.length)] as string) : null;
@@ -119,13 +124,14 @@ export function boonOfRarity(
   return (from[nextInt(rng, from.length)] as (typeof BOONS)[number]).id;
 }
 
-/** The Warden's Gift: a choice among rare cards of your realm (Warden signature cards come later). */
+/** The Warden's Gift: the Warden's signature cards, rare cards of your realm, and sometimes a legendary of yours. */
 export function giftOffers(
   rng: RngState,
   hero: HeroId,
   deck: readonly string[],
   count: number,
   bossId = '',
+  luck: Luck = 'normal',
 ): string[] {
   // the Warden's own cards first, then rare cards of your realm to fill the choice
   const out: string[] = signatureCards(bossId)
@@ -134,6 +140,13 @@ export function giftOffers(
   const rares = rewardPool(hero).filter(
     (id) => rarityOf(id) === 'rare' && canAdd(deck, id) && !out.includes(id),
   );
+  // sometimes the Warden leaves one extra, legendary choice on top (more often with better luck)
+  const legends = rewardPool(hero).filter(
+    (id) => rarityOf(id) === 'legendary' && canAdd(deck, id) && !out.includes(id),
+  );
+  const chance = luck === 'blessed' ? 85 : luck === 'lucky' ? 55 : 30;
+  if (legends.length && nextInt(rng, 100) < chance)
+    out.push(legends[nextInt(rng, legends.length)] as string);
   const target = Math.min(count, out.length + rares.length);
   for (let guard = 0; out.length < target && guard < 100; guard++) {
     const pick = rares[nextInt(rng, rares.length)] as string;
@@ -197,7 +210,7 @@ export const MAX_POTIONS = 3;
 
 export const BOON_PRICE: Record<string, number> = { common: 70, uncommon: 120, rare: 200 };
 
-export const PRICE: Record<string, number> = { common: 30, uncommon: 55, rare: 95 };
+export const PRICE: Record<string, number> = { common: 30, uncommon: 55, rare: 95, legendary: 260 };
 export const priceOf = (id: string): number => PRICE[rarityOf(id)] ?? 60;
 export const REMOVE_PRICE = 40;
 

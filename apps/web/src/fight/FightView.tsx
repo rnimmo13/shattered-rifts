@@ -31,6 +31,7 @@ import { reduceEvent, startingDisplay } from './display';
 import { heroFigure, unitFigure, unitHeight } from './art';
 import { FightHand, type HandCard } from './FightHand';
 import { FightCard } from './FightCard';
+import { Grimoire } from './Grimoire';
 import { UnitPlates, type Placed } from './Plates';
 import { keywordsOf } from './info';
 import { BoonChip } from './BoonChip';
@@ -1052,7 +1053,10 @@ function PileModal(props: { db: CombatDb; title: string; cards: CardDef[]; onClo
       role="dialog"
       aria-label={props.title}
     >
-      <div className="fight__modalBody" onPointerDown={(e) => e.stopPropagation()}>
+      <div
+        className="fight__modalBody fight__modalBody--book"
+        onPointerDown={(e) => e.stopPropagation()}
+      >
         <header>
           <h3>
             {props.title} <small>({props.cards.length})</small>
@@ -1061,13 +1065,19 @@ function PileModal(props: { db: CombatDb; title: string; cards: CardDef[]; onClo
             <span>Close</span>
           </button>
         </header>
-        <div className="fight__grid">
-          {props.cards.map((c, i) => (
-            <FightCard key={`${c.id}-${i}`} db={props.db} def={c} width={150} />
-          ))}
-          {props.cards.length === 0 && <p>Empty.</p>}
-        </div>
+        <Grimoire cards={tallyDefs(props.cards)} cardWidth={150} emptyText="Empty." />
       </div>
     </div>
   );
+}
+
+/** Cards (already resolved to definitions, one per copy) as counted book entries. */
+function tallyDefs(cards: readonly CardDef[]): { def: CardDef; n: number }[] {
+  const m = new Map<string, { def: CardDef; n: number }>();
+  for (const c of cards) {
+    const e = m.get(c.id);
+    if (e) e.n++;
+    else m.set(c.id, { def: c, n: 1 });
+  }
+  return [...m.values()];
 }

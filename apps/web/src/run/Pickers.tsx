@@ -6,6 +6,8 @@ import { COMBAT_DB, V2_DECK_RULES } from '@sr/content/v2';
 import { REST_HEAL, upgradable, type RunState } from '@sr/campaign';
 import { FightCard } from '../fight/FightCard';
 import { CardHover } from '../fight/CardHover';
+import { Grimoire } from '../fight/Grimoire';
+import { tally } from '../fight/grimoireData';
 import { BoonCard, BoonChip } from '../fight/BoonChip';
 import { PotionCard, PotionIcon } from '../fight/PotionChip';
 
@@ -68,31 +70,16 @@ function Pickable(props: {
   );
 }
 
-function grouped(deck: readonly string[]): [string, number][] {
-  const m = new Map<string, number>();
-  for (const id of deck) m.set(id, (m.get(id) ?? 0) + 1);
-  return [...m.entries()].sort(
-    (a, b) => (defOf(a[0])?.cost ?? 0) - (defOf(b[0])?.cost ?? 0) || a[0].localeCompare(b[0]),
-  );
-}
-
 /** A compact, readable list of a deck's cards (grouped, with counts). Hover any card to read it. */
 export function DeckStrip(props: { deck: readonly string[]; width?: number }) {
-  const [hover, setHover] = useState<CardDef | null>(null);
-  const groups = useMemo(() => grouped(props.deck), [props.deck]);
   return (
-    <div className="deckstrip">
-      {groups.map(([id, n]) => (
-        <Pickable
-          key={id}
-          id={id}
-          width={props.width ?? 120}
-          onHover={setHover}
-          badge={n > 1 ? `×${n}` : ''}
-        />
-      ))}
-      <CardHover def={hover} />
-    </div>
+    <Grimoire
+      cards={tally(props.deck, COMBAT_DB)}
+      cardWidth={props.width ?? 120}
+      cols={5}
+      rows={1}
+      spread={1}
+    />
   );
 }
 
@@ -149,8 +136,6 @@ export function DeckModal(props: {
   pickable?: ReadonlySet<string>;
   onClose: () => void;
 }) {
-  const [hover, setHover] = useState<CardDef | null>(null);
-  const groups = useMemo(() => grouped(props.deck), [props.deck]);
   return (
     <div className="modal" role="dialog" aria-modal="true" aria-label={props.title}>
       <div className="modal__panel deckmodal">
@@ -158,26 +143,15 @@ export function DeckModal(props: {
           {props.title} <i>({props.deck.length} cards)</i>
         </h2>
         {props.hint && <p className="modal__hint">{props.hint}</p>}
-        <div className="deckgrid">
-          {groups.map(([id, n]) => {
-            const ok = !props.pickable || props.pickable.has(id);
-            return (
-              <Pickable
-                key={id}
-                id={id}
-                width={190}
-                onHover={setHover}
-                {...(props.onPick && ok ? { onClick: () => props.onPick?.(id) } : {})}
-                badge={n > 1 ? `×${n}` : ''}
-              />
-            );
-          })}
-        </div>
+        <Grimoire
+          cards={tally(props.deck, COMBAT_DB)}
+          {...(props.onPick ? { onPick: props.onPick } : {})}
+          {...(props.pickable ? { pickable: props.pickable } : {})}
+        />
         <button className="btn" onClick={props.onClose}>
           <span>{props.onPick ? 'Cancel' : 'Close'}</span>
         </button>
       </div>
-      <CardHover def={hover} />
     </div>
   );
 }

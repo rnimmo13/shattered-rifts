@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { BOONS, RIFTWALKERS, signatureCards } from '@sr/content/v2';
+import { BOONS, COMBAT_DB, RIFTWALKERS, signatureCards } from '@sr/content/v2';
 import {
   RunError,
   buyBoon,
@@ -91,7 +91,11 @@ describe("the Warden's Gift", () => {
       const nodes = base.map.nodes.map((n) => (n.kind === 'warden' ? { ...n, enemyId: boss } : n));
       const run = { ...inFight({ ...base, map: { ...base.map, nodes } }, 'warden'), hp: 30 };
       const offers = finishDuel(run, true, 30).context?.offers ?? [];
-      expect([...offers].sort()).toEqual([...signatureCards(boss)].sort());
+      const sig = signatureCards(boss);
+      for (const id of sig) expect(offers).toContain(id);
+      // anything beyond the signatures is a legendary the Warden left behind
+      for (const id of offers.filter((o) => !sig.includes(o)))
+        expect(COMBAT_DB.cards[id]?.rarity).toBe('legendary');
     }
   });
 });

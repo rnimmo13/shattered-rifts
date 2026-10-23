@@ -350,7 +350,14 @@ export function finishDuel(
       r.phase = 'loopCleared';
       return r;
     }
-    const offers = giftOffers(r.rng, r.character, r.deck, r.tier >= 5 ? 4 : 3, node.enemyId);
+    const offers = giftOffers(
+      r.rng,
+      r.character,
+      r.deck,
+      r.tier >= 5 ? 4 : 3,
+      node.enemyId,
+      r.luck,
+    );
     if (offers.length === 0) {
       r.phase = 'stageClear';
       r.context = null;

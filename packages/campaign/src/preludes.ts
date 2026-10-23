@@ -8,7 +8,12 @@ import { nextInt, type RngState } from '@sr/combat';
 import { REALM_LABEL } from './rewards';
 import type { PreludeEffect, PreludeKind, PreludeOffer, PreludeOption, StageRealm } from './types';
 
-const rarityWord = { common: 'common', uncommon: 'uncommon', rare: 'rare' } as const;
+const rarityWord = {
+  common: 'common',
+  uncommon: 'uncommon',
+  rare: 'rare',
+  legendary: 'legendary',
+} as const;
 
 /** Plain-language text for one effect. */
 export function describeEffect(e: PreludeEffect): string {
@@ -100,6 +105,15 @@ function bargains(stage: number): PreludeOption[] {
         { k: 'hp', n: 15 },
         { k: 'card', rarity: 'uncommon' },
         { k: 'card', rarity: 'uncommon' },
+      ],
+      true,
+    ),
+    opt(
+      'legends-price',
+      "A Legend's Price",
+      [
+        { k: 'hp', n: 15 },
+        { k: 'card', rarity: 'legendary' },
       ],
       true,
     ),

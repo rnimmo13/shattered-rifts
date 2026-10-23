@@ -6,7 +6,7 @@ import { cardText } from '@sr/combat';
 import { COMBAT_DB as db, RIFTWALKERS, type HeroId } from '@sr/content/v2';
 
 const cards = Object.values(db.cards).filter((c) => !c.id.endsWith('+') && c.hero !== 'junk');
-const order = { basic: 0, common: 1, uncommon: 2, rare: 3 } as const;
+const order = { basic: 0, common: 1, uncommon: 2, rare: 3, legendary: 4 } as const;
 
 const row = (c: (typeof cards)[number]): string => {
   const cost = c.x ? 'X' : String(c.cost) + (c.starCost ? `+${c.starCost}★` : '');
@@ -17,9 +17,7 @@ const row = (c: (typeof cards)[number]): string => {
 const table = (list: typeof cards): string[] => [
   '| Card | Cost | Type | Rarity | Text |',
   '|---|---|---|---|---|',
-  ...[...list]
-    .sort((a, b) => order[a.rarity ?? 'common'] - order[b.rarity ?? 'common'])
-    .map(row),
+  ...[...list].sort((a, b) => order[a.rarity ?? 'common'] - order[b.rarity ?? 'common']).map(row),
   '',
 ];
 
@@ -40,10 +38,19 @@ for (const [id, r] of Object.entries(RIFTWALKERS)) {
   if (tokens.length) out.push('Tokens (made by other cards):', '', ...table(tokens));
 }
 out.push('## Neutral', '', ...table(cards.filter((c) => c.hero === 'neutral' && !c.source)));
-out.push('## Warden signature cards', '', ...table(cards.filter((c) => c.source?.startsWith('boss:'))));
+out.push(
+  '## Warden signature cards',
+  '',
+  ...table(cards.filter((c) => c.source?.startsWith('boss:'))),
+);
 
 const count = (h: HeroId): number => cards.filter((c) => c.hero === h && !c.source).length;
-out.push('## Pool sizes', '', ...(Object.keys(RIFTWALKERS) as HeroId[]).map((h) => `- ${h}: ${count(h)}`), '');
+out.push(
+  '## Pool sizes',
+  '',
+  ...(Object.keys(RIFTWALKERS) as HeroId[]).map((h) => `- ${h}: ${count(h)}`),
+  '',
+);
 
 writeFileSync(new URL('../../docs/10_CARD_LIST.md', import.meta.url), out.join('\n'));
 console.log(`Wrote docs/10_CARD_LIST.md (${cards.length} cards)`);

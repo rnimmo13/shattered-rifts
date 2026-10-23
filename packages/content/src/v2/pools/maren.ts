@@ -5,18 +5,7 @@
 // Glue cards (marked) serve two lanes. Numbers assume 3 Mana and a 5-card hand.
 
 import type { CardDef } from '@sr/combat';
-import {
-  PREVENT,
-  barrier,
-  dmg,
-  draw,
-  heal,
-  on,
-  per,
-  pool,
-  scaled,
-  status,
-} from '../build';
+import { PREVENT, barrier, dmg, draw, heal, on, per, pool, scaled, status } from '../build';
 
 const m = pool('maren', 'aurelion');
 
@@ -29,9 +18,7 @@ export const MAREN: CardDef[] = [
   m('common', 'stand-firm', 'Stand Firm', 'skill', 1, 'none', [barrier(10)], { retain: true }),
   m('common', 'gilded-bastion', 'Gilded Bastion', 'skill', 2, 'none', [barrier(16)]),
   m('common', 'brace-up', 'Brace Up', 'skill', 0, 'none', [barrier(4)]),
-  m('common', 'bulwark-blow', 'Bulwark Blow', 'attack', 1, 'foe', [
-    scaled(dmg(2), per('barrier')),
-  ]),
+  m('common', 'bulwark-blow', 'Bulwark Blow', 'attack', 1, 'foe', [scaled(dmg(2), per('barrier'))]),
   m('uncommon', 'anvil-strike', 'Anvil Strike', 'attack', 2, 'foe', [
     scaled(dmg(8), per('barrier', 0.5)),
   ]),
@@ -41,9 +28,18 @@ export const MAREN: CardDef[] = [
   m('uncommon', 'plate-discipline', 'Plate Discipline', 'power', 1, 'none', [
     on('turnEnd', [barrier(4)]),
   ]),
-  m('rare', 'impregnable', 'Impregnable', 'skill', 2, 'none', [scaled(barrier(0), per('barrier', 2))], {
-    exhaust: true,
-  }),
+  m(
+    'rare',
+    'impregnable',
+    'Impregnable',
+    'skill',
+    2,
+    'none',
+    [scaled(barrier(0), per('barrier', 2))],
+    {
+      exhaust: true,
+    },
+  ),
 
   // --- Thorns ---
   m('common', 'thornmail', 'Thornmail', 'skill', 1, 'none', [status('thorns', 3)]),
@@ -84,22 +80,33 @@ export const MAREN: CardDef[] = [
   m('uncommon', 'benediction', 'Benediction', 'skill', 2, 'none', [heal(10), barrier(6)], {
     exhaust: true,
   }),
-  m('uncommon', 'ward-of-ages', 'Ward of Ages', 'skill', 1, 'none', [status('shielded', 1), draw(1)]),
+  m('uncommon', 'ward-of-ages', 'Ward of Ages', 'skill', 1, 'none', [
+    status('shielded', 1),
+    draw(1),
+  ]),
   m('uncommon', 'sacred-vow', 'Sacred Vow', 'power', 2, 'none', [on('turnEnd', [heal(3)])]),
   m('rare', 'hallowed-ground', 'Hallowed Ground', 'power', 2, 'none', [status('shielded', 2)]),
   m('rare', 'halo', 'Halo', 'power', 3, 'none', [on('turnStart', [status('shielded', 1)])]),
-  m('rare', 'absolution', 'Absolution', 'skill', 3, 'none', [
-    heal(12),
-    barrier(12),
-    status('shielded', 1),
-  ], { exhaust: true }),
+  m(
+    'rare',
+    'absolution',
+    'Absolution',
+    'skill',
+    3,
+    'none',
+    [heal(12), barrier(12), status('shielded', 1)],
+    { exhaust: true },
+  ),
 
   // --- glue and plain strikes ---
   m('common', 'bell-toll', 'Bell Toll', 'attack', 1, 'none', [dmg(5, 'allFoes'), barrier(3)]),
   m('common', 'dawnlance', 'Dawnlance', 'attack', 2, 'foe', [dmg(12), barrier(6)]),
   m('common', 'zealous-charge', 'Zealous Charge', 'attack', 1, 'foe', [dmg(4, 'target', 3)]),
   m('common', 'gilded-blow', 'Gilded Blow', 'attack', 1, 'foe', [dmg(8), barrier(2)]),
-  m('common', 'spiked-aegis', 'Spiked Aegis', 'skill', 1, 'none', [barrier(6), status('thorns', 1)]), // Bulwark + Thorns
+  m('common', 'spiked-aegis', 'Spiked Aegis', 'skill', 1, 'none', [
+    barrier(6),
+    status('thorns', 1),
+  ]), // Bulwark + Thorns
   m('uncommon', 'radiant-bulwark', 'Radiant Bulwark', 'skill', 2, 'none', [barrier(12), heal(4)]), // Bulwark + Sanctified
   m('uncommon', 'vengeful-light', 'Vengeful Light', 'attack', 2, 'foe', [
     dmg(9),
@@ -113,7 +120,10 @@ export const MAREN: CardDef[] = [
     dmg(9, 'allFoes'),
     status('faltering', 1, 'allFoes'),
   ]),
-  m('rare', 'dawns-verdict', "Dawn's Verdict", 'attack', 3, 'foe', [dmg(24), status('exposed', 2, 'target')]),
+  m('rare', 'dawns-verdict', "Dawn's Verdict", 'attack', 3, 'foe', [
+    dmg(24),
+    status('exposed', 2, 'target'),
+  ]),
   m('common', 'shell-cracker', 'Shell Cracker', 'attack', 1, 'foe', [
     dmg(4),
     status('brittle', 2, 'target'),
@@ -121,4 +131,19 @@ export const MAREN: CardDef[] = [
   m('uncommon', 'plated-resolve', 'Plated Resolve', 'skill', 1, 'none', [status('armored', 3)]),
   m('uncommon', 'sure-footing', 'Sure Footing', 'power', 1, 'none', [status('bracing', 2)]),
   m('rare', 'unbroken-wall', 'Unbroken Wall', 'power', 2, 'none', [status('fortified', 1)]),
+  m('legendary', 'the-last-oath', 'The Last Oath', 'power', 3, 'none', [
+    status('fortified', 1),
+    status('thorns', 5),
+    status('bracing', 2),
+  ]),
+  m(
+    'legendary',
+    'dawn-incarnate',
+    'Dawn Incarnate',
+    'attack',
+    3,
+    'none',
+    [scaled(dmg(0, 'allFoes'), per('barrier', 3))],
+    { exhaust: true },
+  ),
 ];

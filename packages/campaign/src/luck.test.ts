@@ -19,7 +19,7 @@ describe('card luck', () => {
   it('every setting is a full set of weights', () => {
     for (const l of Object.values(LUCK_WEIGHTS))
       for (const q of Object.values(l)) {
-        expect(Object.keys(q).sort()).toEqual(['common', 'rare', 'uncommon']);
+        expect(Object.keys(q).sort()).toEqual(['common', 'legendary', 'rare', 'uncommon']);
         expect(Object.values(q).reduce((a, b) => a + b, 0)).toBe(100);
       }
   });

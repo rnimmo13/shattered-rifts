@@ -58,10 +58,16 @@ export const RIVET: CardDef[] = [
   // --- Assemble ---
   r('common', 'ping', 'Ping', 'skill', 0, 'none', [ACT], { exhaust: true }),
   r('common', 'jumpstart', 'Jumpstart', 'skill', 1, 'none', [ACT, barrier(4)]),
-  r('common', 'countermeasure-grid', 'Countermeasure Grid', 'snare', 1, 'none', [
-    dmg(5, 'attacker'),
-    barrier(5),
-  ], { trigger: { on: 'attacked' } }),
+  r(
+    'common',
+    'countermeasure-grid',
+    'Countermeasure Grid',
+    'snare',
+    1,
+    'none',
+    [dmg(5, 'attacker'), barrier(5)],
+    { trigger: { on: 'attacked' } },
+  ),
   r('uncommon', 'assemble', 'Assemble', 'skill', 1, 'none', [ACT, draw(1)]),
   r('uncommon', 'double-time', 'Double Time', 'skill', 2, 'none', [ACT, ACT]),
   r('uncommon', 'overdrive', 'Overdrive', 'skill', 2, 'none', [
@@ -104,4 +110,17 @@ export const RIVET: CardDef[] = [
   ]),
   r('common', 'ion-lance', 'Ion Lance', 'attack', 2, 'foe', [dmg(12)]),
   r('rare', 'railgun', 'Railgun', 'attack', 3, 'foe', [dmg(30)]),
+  r('legendary', 'foundry-awakens', 'The Foundry Awakens', 'power', 3, 'none', [
+    on('turnStart', [summon('siege-engine'), ACT]),
+  ]),
+  r(
+    'legendary',
+    'overclocked-legion',
+    'Overclocked Legion',
+    'skill',
+    2,
+    'none',
+    [status('might', 3, 'allFriends'), ACT, ACT],
+    { exhaust: true },
+  ),
 ];

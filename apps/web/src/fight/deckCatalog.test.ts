@@ -1,7 +1,18 @@
 import { describe, expect, it } from 'vitest';
 import { applyAction, cardText, chooseAction, createCombat } from '@sr/combat';
 import { COMBAT_DB as db, ENCOUNTERS, RIFTWALKERS, type HeroId } from '@sr/content/v2';
-import { catalog, countsOf, filterCatalog, flatten, poolOf, randomDeck } from './deckCatalog';
+import {
+  TABS,
+  catalog,
+  countsOf,
+  filterCatalog,
+  flatten,
+  paginate,
+  poolOf,
+  randomDeck,
+  tabCards,
+  tabOf,
+} from './deckCatalog';
 
 const HEROES = Object.keys(RIFTWALKERS) as HeroId[];
 const describe_ = (c: Parameters<typeof cardText>[1]) => cardText(db, c);
@@ -67,5 +78,38 @@ describe('the practice deck builder', () => {
       }
     }
     expect(fights).toBe(HEROES.length * 12);
+  });
+});
+
+describe('the grimoire', () => {
+  const all = catalog(db);
+
+  it('files every card under exactly one bookmark', () => {
+    const ids = new Set(TABS.map((t) => t.id));
+    let n = 0;
+    for (const t of TABS) n += tabCards(all, t.id).length;
+    for (const c of all) expect(ids.has(tabOf(c.def)), c.def.id).toBe(true);
+    expect(n).toBe(all.length);
+  });
+
+  it("puts a Riftwalker's cards under that Riftwalker's realm, sorted basic to legendary", () => {
+    for (const [h, r] of Object.entries(RIFTWALKERS)) {
+      const own = tabCards(all, r.realm).filter((c) => c.pool === h);
+      expect(own.length, h).toBeGreaterThan(20);
+      const rank = ['basic', 'common', 'uncommon', 'rare', 'legendary'];
+      let last = 0;
+      for (const c of own) {
+        const k = rank.indexOf(c.def.rarity ?? 'common');
+        expect(k).toBeGreaterThanOrEqual(last);
+        last = k;
+      }
+    }
+  });
+
+  it('cuts pages and names their heroes', () => {
+    const pages = paginate(tabCards(all, 'umbral'), 6);
+    expect(pages.length).toBeGreaterThan(2);
+    expect(pages.every((p) => p.cards.length <= 6)).toBe(true);
+    expect(pages[0]?.heroes.length).toBeGreaterThan(0);
   });
 });

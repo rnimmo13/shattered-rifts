@@ -1,33 +1,26 @@
-// The practice fight's deck builder: every card in the game, filterable, with any number of copies; plus the deck you have so far.
+// The practice fight's deck builder, drawn as an open grimoire: every card in the game on parchment pages, one ribbon bookmark per
+// realm, click a card to add a copy, − / + under it to take one away; chosen cards glow. Logic lives in deckCatalog.ts.
 
 import { useMemo, useState } from 'react';
-import { cardText, type CombatDb } from '@sr/combat';
-import { RIFTWALKERS } from '@sr/content/v2';
+import { cardText, type CardDef, type CombatDb } from '@sr/combat';
+import { CardHover } from './CardHover';
+import { FightCard } from './FightCard';
+import { useSpread } from './grimoireData';
 import {
+  TABS,
   catalog,
   filterCatalog,
-  poolOf,
+  paginate,
   randomDeck,
+  sortCards,
+  tabCards,
   type CatalogFilter,
-  type PoolKey,
 } from './deckCatalog';
 
 type Counts = Record<string, number>;
 
-const POOL_LABEL = (p: PoolKey): string =>
-  p === 'all'
-    ? 'Every card'
-    : p === 'neutral'
-      ? 'Neutral'
-      : p === 'wardens'
-        ? 'Warden gifts'
-        : p === 'tokens'
-          ? 'Tokens'
-          : p === 'other'
-            ? 'Other'
-            : (RIFTWALKERS[p as keyof typeof RIFTWALKERS]?.hero.name ?? p);
-
-const SHOW_LIMIT = 250;
+const PER_PAGE = 6;
+const RARITIES = ['all', 'basic', 'common', 'uncommon', 'rare', 'legendary'] as const;
 
 export function DeckBuilder(props: {
   db: CombatDb;
@@ -37,19 +30,35 @@ export function DeckBuilder(props: {
   heroName: string;
 }) {
   const { db, counts } = props;
+  const spread = useSpread();
   const all = useMemo(() => catalog(db), [db]);
-  const [filter, setFilter] = useState<CatalogFilter>({
-    pool: 'all',
+  const [tab, setTab] = useState<string>(TABS[0]?.id ?? 'aurelion');
+  const [leaf, setLeaf] = useState(0); // which spread is open
+  const [dir, setDir] = useState<'next' | 'prev'>('next');
+  const [hover, setHover] = useState<CardDef | null>(null);
+  const [filter, setFilter] = useState<Omit<CatalogFilter, 'pool'>>({
     rarity: 'all',
     text: '',
     upgraded: false,
   });
-  const shown = useMemo(
-    () => filterCatalog(all, filter, (c) => cardText(db, c)),
-    [all, filter, db],
-  );
-  const total = Object.values(counts).reduce((n, x) => n + x, 0);
 
+  const searching = filter.text.trim() !== '';
+  const pages = useMemo(() => {
+    const shown = filterCatalog(all, { ...filter, pool: 'all' }, (c) => cardText(db, c));
+    // a search reads through the whole book; otherwise only the open bookmark
+    return paginate(searching ? sortCards(shown) : tabCards(shown, tab), PER_PAGE);
+  }, [all, filter, db, tab, searching]);
+  const spreads = Math.max(1, Math.ceil(pages.length / spread));
+  const at = Math.min(leaf, spreads - 1);
+  const visible = pages.slice(at * spread, at * spread + spread);
+  const tabTotals = useMemo(() => {
+    const out: Record<string, number> = {};
+    for (const t of TABS)
+      out[t.id] = tabCards(all, t.id).reduce((n, c) => n + (counts[c.def.id] ?? 0), 0);
+    return out;
+  }, [all, counts]);
+
+  const total = Object.values(counts).reduce((n, x) => n + x, 0);
   const add = (id: string, by: number): void => {
     const n = Math.max(0, (counts[id] ?? 0) + by);
     const next = { ...counts };
@@ -57,119 +66,159 @@ export function DeckBuilder(props: {
     else next[id] = n;
     props.onChange(next);
   };
-  const addShown = (): void => {
-    const next = { ...counts };
-    for (const c of shown.slice(0, SHOW_LIMIT)) next[c.def.id] = (next[c.def.id] ?? 0) + 1;
-    props.onChange(next);
+  const turn = (by: number): void => {
+    setDir(by > 0 ? 'next' : 'prev');
+    setHover(null);
+    setLeaf(Math.max(0, Math.min(spreads - 1, at + by)));
+  };
+  const open = (id: string): void => {
+    setDir(
+      TABS.findIndex((t) => t.id === id) >= TABS.findIndex((t) => t.id === tab) ? 'next' : 'prev',
+    );
+    setTab(id);
+    setHover(null);
+    setLeaf(0);
+  };
+  const refilter = (next: Omit<CatalogFilter, 'pool'>): void => {
+    setFilter(next);
+    setHover(null);
+    setLeaf(0);
   };
   const inDeck = Object.keys(counts)
     .map((id) => db.cards[id])
     .filter((c): c is NonNullable<typeof c> => !!c)
     .sort((a, b) => a.cost - b.cost || a.name.localeCompare(b.name));
-
-  const pools: PoolKey[] = [
-    'all',
-    ...Object.keys(RIFTWALKERS),
-    'neutral',
-    'wardens',
-    'tokens',
-    'other',
-  ];
+  const tabName = TABS.find((t) => t.id === tab)?.name ?? '';
 
   return (
-    <div className="db">
-      <div className="db__list">
-        <div className="db__filters">
-          <label>
-            <span>Cards from</span>
-            <select
-              value={filter.pool}
-              onChange={(e) => setFilter({ ...filter, pool: e.target.value })}
-            >
-              {pools.map((p) => (
-                <option key={p} value={p}>
-                  {POOL_LABEL(p)}
-                </option>
-              ))}
-            </select>
+    <div className="grim">
+      <div className="grim__main">
+        <div className="grim__filters">
+          <label className="grim__search">
+            <span>Search the whole book</span>
+            <input
+              type="search"
+              placeholder="name or rules text"
+              value={filter.text}
+              onChange={(e) => refilter({ ...filter, text: e.target.value })}
+            />
           </label>
           <label>
             <span>Rarity</span>
             <select
               value={filter.rarity}
               onChange={(e) =>
-                setFilter({ ...filter, rarity: e.target.value as CatalogFilter['rarity'] })
+                refilter({ ...filter, rarity: e.target.value as CatalogFilter['rarity'] })
               }
             >
-              {['all', 'basic', 'common', 'uncommon', 'rare'].map((r) => (
+              {RARITIES.map((r) => (
                 <option key={r} value={r}>
                   {r === 'all' ? 'Any' : r}
                 </option>
               ))}
             </select>
           </label>
-          <label className="db__search">
-            <span>Search</span>
-            <input
-              type="search"
-              placeholder="name or rules text"
-              value={filter.text}
-              onChange={(e) => setFilter({ ...filter, text: e.target.value })}
-            />
-          </label>
-          <label className="db__check">
+          <label className="grim__check">
             <input
               type="checkbox"
               checked={filter.upgraded}
-              onChange={(e) => setFilter({ ...filter, upgraded: e.target.checked })}
+              onChange={(e) => refilter({ ...filter, upgraded: e.target.checked })}
             />
             <span>Upgraded (+)</span>
           </label>
-          <button className="btn btn--small" onClick={addShown}>
-            <span>Add all shown ×1</span>
-          </button>
         </div>
-        <p className="db__count">
-          {shown.length} card{shown.length === 1 ? '' : 's'}
-          {shown.length > SHOW_LIMIT ? ` (showing the first ${SHOW_LIMIT}: narrow the filter)` : ''}
-        </p>
-        <ul className="db__rows">
-          {shown.slice(0, SHOW_LIMIT).map(({ def }) => {
-            const n = counts[def.id] ?? 0;
+
+        <div className="grim__tabs" role="tablist" aria-label="Realms">
+          {TABS.map((t) => {
+            const on = !searching && t.id === tab;
             return (
-              <li key={def.id} className={`db__row${n > 0 ? ' is-in' : ''}`}>
-                <span className="db__cost" title="Mana cost">
-                  {def.x ? 'X' : def.cost}
-                  {def.starCost ? <small>★{def.starCost}</small> : null}
-                </span>
-                <span className="db__name">
-                  {def.name}
-                  <small>
-                    {def.kind === 'power' ? 'aura' : def.kind} · {def.rarity ?? 'common'} ·{' '}
-                    {POOL_LABEL(poolOf(def))}
-                  </small>
-                </span>
-                <span className="db__text">{cardText(db, def)}</span>
-                <span className="db__ctl">
-                  <button
-                    aria-label={`Remove one ${def.name}`}
-                    disabled={n === 0}
-                    onClick={() => add(def.id, -1)}
-                  >
-                    −
-                  </button>
-                  <b>{n}</b>
-                  <button aria-label={`Add one ${def.name}`} onClick={() => add(def.id, 1)}>
-                    +
-                  </button>
-                </span>
-              </li>
+              <button
+                key={t.id}
+                role="tab"
+                aria-selected={on}
+                className={`grim__ribbon grim__ribbon--${t.id}${on ? ' is-open' : ''}`}
+                onClick={() => open(t.id)}
+              >
+                <span>{t.name}</span>
+                {tabTotals[t.id] ? <b>{tabTotals[t.id]}</b> : null}
+              </button>
             );
           })}
-        </ul>
+        </div>
+
+        <div className={`grim__book grim__book--${spread}`}>
+          <button
+            className="grim__flip"
+            disabled={at === 0}
+            onClick={() => turn(-1)}
+            aria-label="Previous pages"
+          >
+            ‹
+          </button>
+          <div
+            key={`${tab}-${at}-${searching}-${filter.rarity}-${filter.upgraded}`}
+            className={`grim__spread grim__spread--${dir}`}
+          >
+            {visible.length === 0 && (
+              <section className="grim__page">
+                <p className="grim__empty">No cards match.</p>
+              </section>
+            )}
+            {visible.map((p, i) => (
+              <section key={i} className="grim__page">
+                <h4 className="grim__pagehead">
+                  {searching ? 'Search results' : p.heroes.join(' · ') || tabName}
+                </h4>
+                <ul className="grim__cards">
+                  {p.cards.map(({ def }) => {
+                    const n = counts[def.id] ?? 0;
+                    return (
+                      <li key={def.id} className={`grim__slot${n > 0 ? ' is-in' : ''}`}>
+                        <button
+                          className="grim__card"
+                          aria-label={`Add ${def.name}`}
+                          onClick={() => add(def.id, 1)}
+                          onMouseEnter={() => setHover(def)}
+                          onMouseLeave={() => setHover(null)}
+                          onFocus={() => setHover(def)}
+                          onBlur={() => setHover(null)}
+                        >
+                          <FightCard db={db} def={def} width={176} />
+                          {n > 0 && <span className="grim__badge">×{n}</span>}
+                        </button>
+                        <span className="grim__ctl">
+                          <button
+                            aria-label={`Remove one ${def.name}`}
+                            disabled={n === 0}
+                            onClick={() => add(def.id, -1)}
+                          >
+                            −
+                          </button>
+                          <b>{n}</b>
+                          <button aria-label={`Add one ${def.name}`} onClick={() => add(def.id, 1)}>
+                            +
+                          </button>
+                        </span>
+                      </li>
+                    );
+                  })}
+                </ul>
+                <span className="grim__folio">{at * spread + i + 1}</span>
+              </section>
+            ))}
+          </div>
+          <button
+            className="grim__flip"
+            disabled={at >= spreads - 1}
+            onClick={() => turn(1)}
+            aria-label="Next pages"
+          >
+            ›
+          </button>
+        </div>
       </div>
 
-      <aside className="db__deck" aria-label="Your deck">
+      <aside className="grim__deck" aria-label="Your deck">
         <h3>
           Your deck <small>({total} cards)</small>
         </h3>
@@ -183,9 +232,9 @@ export function DeckBuilder(props: {
           <button
             className="btn btn--small"
             onClick={() => {
-              const deck = randomDeck(db, 20, `${Date.now()}-${Math.random()}`);
               const next: Counts = {};
-              for (const id of deck) next[id] = (next[id] ?? 0) + 1;
+              for (const id of randomDeck(db, 20, `${Date.now()}-${Math.random()}`))
+                next[id] = (next[id] ?? 0) + 1;
               props.onChange(next);
             }}
           >
@@ -193,11 +242,13 @@ export function DeckBuilder(props: {
           </button>
         </div>
         {total === 0 && (
-          <p className="db__empty">Add cards from the list. A deck needs at least one.</p>
+          <p className="db__empty">
+            Click cards in the book to add them. A deck needs at least one.
+          </p>
         )}
         <ul className="db__deckrows">
           {inDeck.map((def) => (
-            <li key={def.id}>
+            <li key={def.id} onMouseEnter={() => setHover(def)} onMouseLeave={() => setHover(null)}>
               <span>
                 {def.x ? 'X' : def.cost} {def.name}
               </span>
@@ -214,6 +265,7 @@ export function DeckBuilder(props: {
           ))}
         </ul>
       </aside>
+      <CardHover def={hover} />
     </div>
   );
 }

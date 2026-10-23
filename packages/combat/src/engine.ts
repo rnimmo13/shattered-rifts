@@ -631,6 +631,7 @@ function execOp(r: Run, a: Act, op: Op): void {
           (c) =>
             (c.hero === hid || c.hero === 'neutral') &&
             c.rarity !== 'basic' &&
+            c.rarity !== 'legendary' &&
             !!c.upgrade &&
             !c.source &&
             !c.unplayable &&

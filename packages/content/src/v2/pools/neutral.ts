@@ -18,6 +18,7 @@ import {
   mana,
   manaNext,
   drawNext,
+  on,
   scry,
   status,
   summon,
@@ -48,15 +49,24 @@ export const NEUTRAL: CardDef[] = [
   n('common', 'stagger', 'Stagger', 'attack', 1, 'foe', [dmg(4), status('faltering', 2, 'target')]),
   n('common', 'glimpse-ahead', 'Glimpse Ahead', 'skill', 1, 'none', [scry(4), draw(1)]),
   n('uncommon', 'rift-storm', 'Rift Storm', 'attack', 2, 'none', [dmg(7, 'allFoes')]),
-  n('uncommon', 'rift-whirl', 'Rift Whirl', 'attack', 0, 'none', [
-    {
-      op: 'damage',
-      amount: 4,
-      hits: 0,
-      to: 'allFoes',
-      scale: { by: 'x', into: 'hits' },
-    },
-  ], { x: true }),
+  n(
+    'uncommon',
+    'rift-whirl',
+    'Rift Whirl',
+    'attack',
+    0,
+    'none',
+    [
+      {
+        op: 'damage',
+        amount: 4,
+        hits: 0,
+        to: 'allFoes',
+        scale: { by: 'x', into: 'hits' },
+      },
+    ],
+    { x: true },
+  ),
   n('uncommon', 'wanderers-draught', "Wanderer's Draught", 'skill', 1, 'none', [heal(6)], {
     exhaust: true,
   }),
@@ -69,16 +79,30 @@ export const NEUTRAL: CardDef[] = [
   n('common', 'pitfall', 'Hidden Pitfall', 'snare', 1, 'none', [dmg(7, 'attacker')], {
     trigger: { on: 'attacked' },
   }),
-  n('common', 'alarm-bell', 'Alarm Bell', 'snare', 1, 'none', [
-    dmg(6, 'attacker'),
-    status('faltering', 2, 'attacker'),
-    barrier(4),
-  ], { trigger: { on: 'foeSummons' } }),
+  n(
+    'common',
+    'alarm-bell',
+    'Alarm Bell',
+    'snare',
+    1,
+    'none',
+    [dmg(6, 'attacker'), status('faltering', 2, 'attacker'), barrier(4)],
+    { trigger: { on: 'foeSummons' } },
+  ),
   n('common', 'heave', 'Heave', 'skill', 0, 'none', [status('might', 3, 'self', true)]),
   n('common', 'needling-blow', 'Needling Blow', 'attack', 0, 'foe', [dmg(6), copySelf('discard')]),
-  n('uncommon', 'rift-windfall', 'Rift Windfall', 'skill', 1, 'none', [discoverOp(undefined, 1, true)], {
-    exhaust: true,
-  }),
+  n(
+    'uncommon',
+    'rift-windfall',
+    'Rift Windfall',
+    'skill',
+    1,
+    'none',
+    [discoverOp(undefined, 1, true)],
+    {
+      exhaust: true,
+    },
+  ),
   n('uncommon', 'plan-ahead', 'Plan Ahead', 'skill', 1, 'none', [manaNext(2), drawNext(1)]),
   n('uncommon', 'fever-dream', 'Fever Dream', 'skill', 0, 'none', [cheapen(2, 'random')], {
     exhaust: true,
@@ -88,6 +112,21 @@ export const NEUTRAL: CardDef[] = [
   n('rare', 'rift-smithing', 'Rift Smithing', 'skill', 2, 'none', [upgradeOp('hand')], {
     exhaust: true,
   }),
+  n('legendary', 'heart-of-the-rift', 'Heart of the Rift', 'power', 3, 'none', [
+    on('turnStart', [mana(1), draw(1)]),
+  ]),
+  n(
+    'legendary',
+    'rift-collapse',
+    'Rift Collapse',
+    'attack',
+    3,
+    'none',
+    [dmg(40, 'allFoes'), lose(15)],
+    {
+      exhaust: true,
+    },
+  ),
 ];
 
 // Warden signature cards: one set per Warden, offered as the Warden's Gift. Any Riftwalker can take them.
@@ -104,7 +143,17 @@ export const SIGNATURES: CardDef[] = [
     [dmg(20, 'attacker'), status('exposed', 2, 'attacker')],
     { trigger: { on: 'attacked' }, ...sig('seraphine') },
   ),
-  card(N, 'rare', 'gilded-guard', 'Gilded Guard', 'summon', 2, 'none', [summon('gilded-guard')], sig('seraphine')),
+  card(
+    N,
+    'rare',
+    'gilded-guard',
+    'Gilded Guard',
+    'summon',
+    2,
+    'none',
+    [summon('gilded-guard')],
+    sig('seraphine'),
+  ),
   card(
     N,
     'rare',
@@ -116,17 +165,10 @@ export const SIGNATURES: CardDef[] = [
     [status('thorns', 3), status('shielded', 1)],
     sig('seraphine'),
   ),
-  card(
-    N,
-    'rare',
-    'orbital-uplink',
-    'Orbital Uplink',
-    'snare',
-    1,
-    'none',
-    [dmg(14, 'attacker')],
-    { trigger: { on: 'foeSummons' }, ...sig('kron') },
-  ),
+  card(N, 'rare', 'orbital-uplink', 'Orbital Uplink', 'snare', 1, 'none', [dmg(14, 'attacker')], {
+    trigger: { on: 'foeSummons' },
+    ...sig('kron'),
+  }),
   card(
     N,
     'rare',
@@ -149,8 +191,28 @@ export const SIGNATURES: CardDef[] = [
     [status('might', 1, 'allFriends'), draw(1)],
     sig('kron'),
   ),
-  card(N, 'rare', 'the-hunger-below', 'The Hunger Below', 'attack', 3, 'foe', [dmg(22), heal(8)], sig('gorrmaw')),
-  card(N, 'rare', 'maw-spawn-egg', 'Maw Spawn Egg', 'summon', 2, 'none', [summon('maw-hatchling')], sig('gorrmaw')),
+  card(
+    N,
+    'rare',
+    'the-hunger-below',
+    'The Hunger Below',
+    'attack',
+    3,
+    'foe',
+    [dmg(22), heal(8)],
+    sig('gorrmaw'),
+  ),
+  card(
+    N,
+    'rare',
+    'maw-spawn-egg',
+    'Maw Spawn Egg',
+    'summon',
+    2,
+    'none',
+    [summon('maw-hatchling')],
+    sig('gorrmaw'),
+  ),
   card(
     N,
     'rare',
@@ -198,6 +260,12 @@ export const SIGNATURES: CardDef[] = [
 ];
 
 export const JUNK: CardDef[] = [
-  card('junk', 'basic', 'wound', 'Wound', 'skill', 0, 'none', [], { unplayable: true, hero: 'junk' }),
-  card('junk', 'basic', 'static', 'Static', 'skill', 0, 'none', [], { unplayable: true, hero: 'junk' }),
+  card('junk', 'basic', 'wound', 'Wound', 'skill', 0, 'none', [], {
+    unplayable: true,
+    hero: 'junk',
+  }),
+  card('junk', 'basic', 'static', 'Static', 'skill', 0, 'none', [], {
+    unplayable: true,
+    hero: 'junk',
+  }),
 ];

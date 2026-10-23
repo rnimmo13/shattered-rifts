@@ -66,21 +66,35 @@ export const ILVANE: CardDef[] = [
   i('common', 'spark-lance', 'Spark Lance', 'attack', 2, 'foe', [dmg(12), channel('spark')]),
   i('common', 'spark-cluster', 'Spark Cluster', 'skill', 2, 'none', [channel('spark', 2)]),
   i('common', 'static-guard', 'Static Guard', 'skill', 1, 'none', [barrier(5), channel('spark')]),
-  i('uncommon', 'glyph-lattice', 'Glyph Lattice', 'skill', 1, 'none', [{ op: 'runeSlots', amount: 2 }]),
+  i('uncommon', 'glyph-lattice', 'Glyph Lattice', 'skill', 1, 'none', [
+    { op: 'runeSlots', amount: 2 },
+  ]),
   i('uncommon', 'thundercall', 'Thundercall', 'power', 1, 'none', [
     on('play', [channel('spark')], { filter: 'power' }),
   ]),
   i('uncommon', 'charged-blow', 'Charged Blow', 'attack', 1, 'foe', [
     scaled(dmg(4), per('runes', 2)),
   ]),
-  i('uncommon', 'shatter-the-row', 'Shatter the Row', 'skill', 0, 'none', [
-    scaled(mana(0), per('runes')),
-    scaled(draw(0), per('runes')),
-    evoke(10),
-  ], { exhaust: true }),
-  i('rare', 'glyphstorm', 'Glyphstorm', 'skill', 0, 'none', [
-    { op: 'channel', rune: 'spark', times: 0, scale: per('x') },
-  ], { x: true }),
+  i(
+    'uncommon',
+    'shatter-the-row',
+    'Shatter the Row',
+    'skill',
+    0,
+    'none',
+    [scaled(mana(0), per('runes')), scaled(draw(0), per('runes')), evoke(10)],
+    { exhaust: true },
+  ),
+  i(
+    'rare',
+    'glyphstorm',
+    'Glyphstorm',
+    'skill',
+    0,
+    'none',
+    [{ op: 'channel', rune: 'spark', times: 0, scale: per('x') }],
+    { x: true },
+  ),
   i('rare', 'grand-glyph', 'Grand Glyph', 'skill', 3, 'none', [
     channel('spark'),
     channel('ward'),
@@ -91,15 +105,27 @@ export const ILVANE: CardDef[] = [
   i('common', 'glyph-guard', 'Glyph Guard', 'skill', 1, 'none', [barrier(6), channel('ward')]),
   i('common', 'frostglass', 'Frostglass', 'skill', 2, 'none', [barrier(7), channel('ward', 2)]),
   i('common', 'ward-strike', 'Ward Strike', 'attack', 1, 'foe', [dmg(6), channel('ward')]),
-  i('common', 'cold-snap', 'Cold Snap', 'skill', 0, 'none', [
-    { op: 'channel', rune: 'ward', times: 0, scale: per('foes') },
-  ], { exhaust: true }),
+  i(
+    'common',
+    'cold-snap',
+    'Cold Snap',
+    'skill',
+    0,
+    'none',
+    [{ op: 'channel', rune: 'ward', times: 0, scale: per('foes') }],
+    { exhaust: true },
+  ),
   i('uncommon', 'chilled-focus', 'Chilled Focus', 'skill', 1, 'none', [channel('ward'), draw(1)]),
   i('uncommon', 'rune-carapace', 'Rune Carapace', 'power', 1, 'none', [
     on('turnEnd', [scaled(barrier(0), per('runes'))]),
   ]),
-  i('uncommon', 'rune-shield', 'Rune Shield', 'skill', 1, 'none', [scaled(barrier(0), per('runes', 3))]),
-  i('rare', 'glacial-bastion', 'Glacial Bastion', 'skill', 2, 'none', [barrier(12), channel('ward', 3)]),
+  i('uncommon', 'rune-shield', 'Rune Shield', 'skill', 1, 'none', [
+    scaled(barrier(0), per('runes', 3)),
+  ]),
+  i('rare', 'glacial-bastion', 'Glacial Bastion', 'skill', 2, 'none', [
+    barrier(12),
+    channel('ward', 3),
+  ]),
 
   // --- Hollow and Resonance ---
   i('common', 'umbra-glyph', 'Umbra Glyph', 'skill', 1, 'none', [channel('hollow')]),
@@ -109,7 +135,9 @@ export const ILVANE: CardDef[] = [
     channel('hollow'),
   ]),
   i('uncommon', 'echo-chamber', 'Echo Chamber', 'skill', 1, 'none', [evoke(1, 1, true)]),
-  i('uncommon', 'tune-the-lattice', 'Tune the Lattice', 'power', 1, 'none', [status('resonance', 1)]),
+  i('uncommon', 'tune-the-lattice', 'Tune the Lattice', 'power', 1, 'none', [
+    status('resonance', 1),
+  ]),
   i('uncommon', 'overtune', 'Overtune', 'skill', 1, 'none', [status('resonance', 1), draw(1)], {
     exhaust: true,
   }),
@@ -129,14 +157,53 @@ export const ILVANE: CardDef[] = [
   i('common', 'rune-burst', 'Rune Burst', 'skill', 1, 'none', [evoke(), draw(1)]),
   i('common', 'glimmer', 'Glimmer', 'skill', 0, 'none', [channel('prism')], { exhaust: true }),
   i('uncommon', 'prism-cut', 'Prism Cut', 'skill', 1, 'none', [channel('prism'), draw(1)]),
-  i('uncommon', 'harmonic-wave', 'Harmonic Wave', 'attack', 2, 'none', [dmg(6, 'allFoes'), evoke()]),
-  i('uncommon', 'many-voices', 'Many Voices', 'skill', 0, 'none', [
-    { op: 'evoke', times: 0, scale: per('x') },
-  ], { x: true }),
-  i('rare', 'glyph-engine', 'Glyph Engine', 'power', 2, 'none', [on('turnStart', [channel('spark')])]),
-  i('uncommon', 'glyph-trap', 'Glyph Trap', 'snare', 1, 'none', [dmg(5, 'attacker'), channel('ward')], {
-    trigger: { on: 'attacked' },
-  }),
+  i('uncommon', 'harmonic-wave', 'Harmonic Wave', 'attack', 2, 'none', [
+    dmg(6, 'allFoes'),
+    evoke(),
+  ]),
+  i(
+    'uncommon',
+    'many-voices',
+    'Many Voices',
+    'skill',
+    0,
+    'none',
+    [{ op: 'evoke', times: 0, scale: per('x') }],
+    { x: true },
+  ),
+  i('rare', 'glyph-engine', 'Glyph Engine', 'power', 2, 'none', [
+    on('turnStart', [channel('spark')]),
+  ]),
+  i(
+    'uncommon',
+    'glyph-trap',
+    'Glyph Trap',
+    'snare',
+    1,
+    'none',
+    [dmg(5, 'attacker'), channel('ward')],
+    {
+      trigger: { on: 'attacked' },
+    },
+  ),
   i('uncommon', 'retune', 'Retune', 'skill', 1, 'none', [upgradeOp('random')], { exhaust: true }),
-  i('uncommon', 'stored-charge', 'Stored Charge', 'skill', 1, 'none', [manaNext(2), channel('ward')]),
+  i('uncommon', 'stored-charge', 'Stored Charge', 'skill', 1, 'none', [
+    manaNext(2),
+    channel('ward'),
+  ]),
+  i('legendary', 'the-grand-design', 'The Grand Design', 'power', 3, 'none', [
+    { op: 'runeSlots', amount: 3 },
+    status('resonance', 3),
+    on('turnStart', [channel('hollow')]),
+  ]),
+  i(
+    'legendary',
+    'cataclysm-glyph',
+    'Cataclysm Glyph',
+    'attack',
+    3,
+    'none',
+    [dmg(10, 'allFoes'), evoke(10, 2)],
+    { exhaust: true },
+  ),
 ];
