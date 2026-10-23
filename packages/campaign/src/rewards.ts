@@ -14,7 +14,9 @@ export function canAdd(deck: readonly string[], cardId: string): boolean {
   const c = COMBAT_DB.cards[cardId];
   if (!c || c.unplayable) return false;
   if (c.rarity === 'basic') return true;
-  return deck.filter((x) => x === cardId).length < V2_DECK_RULES.maxCopies;
+  // a card and its "+" version share one limit
+  const base = (id: string): string => id.replace(/\+$/, '');
+  return deck.filter((x) => base(x) === base(cardId)).length < V2_DECK_RULES.maxCopies;
 }
 
 /** Cards of the other three playable realms (the Rift-crossed pool). */
@@ -89,7 +91,6 @@ export function giftOffers(
 export const PRICE: Record<string, number> = { common: 30, uncommon: 55, rare: 95 };
 export const priceOf = (id: string): number => PRICE[rarityOf(id)] ?? 60;
 export const REMOVE_PRICE = 40;
-export const MIN_DECK = V2_DECK_RULES.minSize;
 
 /** For the stage-clear screen and the map: the realm's display name. */
 export const REALM_LABEL: Record<StageRealm, string> = {

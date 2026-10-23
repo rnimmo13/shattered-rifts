@@ -2,7 +2,8 @@
 // and the deck rules, so a hand-edited or damaged save is refused instead of crashing the game.
 
 import { COMBAT_DB, ENCOUNTERS, RIFTWALKERS, V2_DECK_RULES } from '@sr/content/v2';
-const CARD_DB = COMBAT_DB.cards;
+const hasCard = (id: unknown): boolean =>
+  typeof id === 'string' && Object.hasOwn(COMBAT_DB.cards, id);
 import type { MapNode, NodeKind, RunPhase, RunState } from './types';
 
 export const RUN_SAVE_VERSION = 2;
@@ -60,8 +61,7 @@ function validContext(r: RunState): boolean {
   if (!needsNode.includes(r.phase)) return true;
   const c = r.context;
   if (!isObj(c) || typeof c['nodeId'] !== 'string' || !ids.has(c['nodeId'])) return false;
-  const cards = (x: unknown): x is string[] =>
-    isStrArray(x) && x.length > 0 && x.every((id) => !!CARD_DB[id]);
+  const cards = (x: unknown): x is string[] => isStrArray(x) && x.every((id) => hasCard(id));
   switch (r.phase) {
     case 'duel': {
       const node = r.map.nodes.find((n) => n.id === c['nodeId']);
@@ -79,7 +79,7 @@ function validContext(r: RunState): boolean {
           (it) =>
             isObj(it) &&
             typeof it['cardId'] === 'string' &&
-            !!CARD_DB[it['cardId']] &&
+            hasCard(it['cardId']) &&
             isInt(it['price'], 0, 100000),
         ) &&
         isInt(m['removePrice'], 0, 100000)
@@ -107,13 +107,12 @@ export function parseRun(text: string): RunState | null {
   const r = raw as Partial<RunState>;
   if (r.v !== RUN_SAVE_VERSION) return null;
   if (typeof r.seed !== 'string') return null;
-  if (typeof r.character !== 'string' || !(r.character in RIFTWALKERS)) return null;
+  if (typeof r.character !== 'string' || !Object.hasOwn(RIFTWALKERS, r.character)) return null;
   if (!isInt(r.maxHp, 1, 9999) || !isInt(r.hp, 1, r.maxHp)) return null;
   if (!isInt(r.tier, 1, 99) || !isInt(r.stage, 1, 5)) return null;
   if (!isInt(r.maxResolve, 1, 9) || !isInt(r.resolve, 0, r.maxResolve)) return null;
   if (!isInt(r.shards, 0, 1_000_000)) return null;
-  if (!Array.isArray(r.deck) || r.deck.some((id) => typeof id !== 'string' || !CARD_DB[id]))
-    return null;
+  if (!Array.isArray(r.deck) || r.deck.some((id) => !hasCard(id))) return null;
   if (r.deck.length < V2_DECK_RULES.minSize || r.deck.length > 200) return null;
   if (typeof r.phase !== 'string' || !PHASES.includes(r.phase)) return null;
   if (!validMap(r.map)) return null;

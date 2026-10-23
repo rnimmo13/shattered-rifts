@@ -247,7 +247,7 @@ function botRun(hero: HeroId, seed: string): { run: RunState; fights: number } {
 }
 
 describe('a whole run, played by the bot', () => {
-  it('always ends in a legal state (cleared, banked or collapsed) and never throws', () => {
+  it('always ends banked or collapsed and never throws', () => {
     for (const h of HEROES) {
       const { run, fights } = botRun(h, `bot-${h}`);
       expect(['banked', 'collapsed']).toContain(run.phase);
@@ -270,7 +270,112 @@ describe('a whole run, played by the bot', () => {
     expect(c.tier).toBe(2);
     expect(c.hp).toBe(10 + 40);
     expect(c.stage).toBe(1);
-    expect(buyCard).toBeDefined();
-    expect(buyRemoval).toBeDefined();
+  });
+});
+
+describe('the other rooms and the rules around them', () => {
+  const at = (run: RunState, phase: RunState['phase'], context: RunState['context']): RunState => ({
+    ...run,
+    phase,
+    at: run.map.nodes[0]!.id,
+    context,
+  });
+  const nodeId = (r: RunState) => r.map.nodes[0]!.id;
+
+  it('the merchant sells cards and one removal, and refuses what you cannot afford', () => {
+    const base = newRun('maren', 'shop');
+    const card = offerCards(seedRng('shop'), 'maren', base.deck, 'duel', 1)[0]!;
+    const shop = (shards: number): RunState => ({
+      ...at(base, 'merchant', {
+        nodeId: nodeId(base),
+        merchant: {
+          items: [{ cardId: card, price: 50, sold: false }],
+          removePrice: 40,
+          removed: false,
+        },
+      }),
+      shards,
+    });
+    expect(() => buyCard(shop(10), 0)).toThrow(RunError);
+    const bought = buyCard(shop(80), 0);
+    expect(bought.deck).toContain(card);
+    expect(bought.shards).toBe(30);
+    expect(() => buyCard(bought, 0)).toThrow(RunError); // sold
+    const removed = buyRemoval(shop(80), 'strike');
+    expect(removed.deck).toHaveLength(9);
+    expect(removed.shards).toBe(40);
+    expect(() => buyRemoval(removed, 'strike')).toThrow(RunError); // one per visit
+    expect(leaveMerchant(shop(0)).phase).toBe('map');
+  });
+
+  it('events pay shards, heal, give the card, or do nothing', () => {
+    const base = { ...newRun('rivet', 'ev'), hp: 20 };
+    const ev = at(base, 'event', {
+      nodeId: nodeId(base),
+      event: {
+        title: 't',
+        text: 't',
+        cardOffer: 'rift-bolt',
+        options: [
+          { id: 'shards', label: 's' },
+          { id: 'heal', label: 'h' },
+          { id: 'card', label: 'c' },
+          { id: 'leave', label: 'l' },
+        ],
+      },
+    });
+    expect(chooseEvent(ev, 'shards').shards).toBe(30);
+    expect(chooseEvent(ev, 'heal').hp).toBe(20 + Math.ceil(72 * 0.2));
+    expect(chooseEvent(ev, 'card').deck).toContain('rift-bolt');
+    expect(chooseEvent(ev, 'leave').phase).toBe('map');
+  });
+
+  it('a Warden win heals, restores Resolve and offers a rare gift that cannot be skipped', () => {
+    const base = newRun('maren', 'boss');
+    const wardenNode = base.map.nodes.find((n) => n.kind === 'warden')!;
+    const run: RunState = {
+      ...base,
+      hp: 20,
+      resolve: 1,
+      phase: 'duel',
+      at: wardenNode.id,
+      context: { nodeId: wardenNode.id },
+    };
+    const won = finishDuel(run, true, 20);
+    expect(won.phase).toBe('gift');
+    expect(won.hp).toBe(20 + 24);
+    expect(won.resolve).toBe(2);
+    expect(won.context!.offers!.every((id) => COMBAT_DB.cards[id]?.rarity === 'rare')).toBe(true);
+    expect(() => chooseCard(won, null)).toThrow(RunError);
+    const picked = chooseCard(won, won.context!.offers![0]!);
+    expect(picked.phase).toBe('stageClear');
+    expect(nextStage(picked).stage).toBe(2);
+  });
+
+  it('elites heal a little, losing an elite costs 2 Resolve', () => {
+    const base = newRun('kesh', 'elite');
+    const el = base.map.nodes.find((n) => n.kind === 'elite');
+    if (!el) return; // this seed's stage 1 has no elite
+    const run: RunState = { ...base, hp: 40, phase: 'duel', at: el.id, context: { nodeId: el.id } };
+    expect(finishDuel(run, true, 40).hp).toBe(40 + Math.ceil(76 * 0.1));
+    expect(finishDuel(run, false).resolve).toBe(1);
+  });
+
+  it('the copy limit counts a card and its upgrade together', () => {
+    expect(canAdd(['rift-bolt', 'rift-bolt+', 'rift-bolt+', 'rift-bolt'], 'rift-bolt')).toBe(false);
+    expect(canAdd(['rift-bolt', 'rift-bolt+', 'rift-bolt+'], 'rift-bolt')).toBe(true);
+  });
+
+  it('a save cannot smuggle in prototype keys', () => {
+    const r = newRun('maren', 'proto');
+    expect(parseRun(JSON.stringify({ ...r, character: 'constructor' }))).toBeNull();
+    expect(parseRun(JSON.stringify({ ...r, deck: ['toString', ...r.deck] }))).toBeNull();
+  });
+
+  it('Bank ends the run with the deck, Continue goes a tier deeper', () => {
+    const cleared: RunState = { ...newRun('vesper', 'end'), phase: 'loopCleared' };
+    expect(bank(cleared).phase).toBe('banked');
+    expect(continueLoop(cleared).tier).toBe(2);
+    expect(() => bank(newRun('vesper', 'end'))).toThrow(RunError);
   });
 });

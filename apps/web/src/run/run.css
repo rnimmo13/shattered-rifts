@@ -593,3 +593,11 @@
   letter-spacing: 0.14em;
   text-transform: uppercase;
 }
+
+.run__notice--fight {
+  position: fixed;
+  left: 50%;
+  top: 0.8rem;
+  transform: translateX(-50%);
+  z-index: 100;
+}

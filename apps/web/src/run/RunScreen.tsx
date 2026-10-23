@@ -2,7 +2,7 @@
 // The run state lives in @sr/campaign (pure); this screen only calls its functions and shows the result.
 // The run is saved to this browser after every step and can be exported to a file.
 
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { COMBAT_DB, RIFTWALKERS, encounter, type HeroId } from '@sr/content/v2';
 import {
   REALM_LABEL,
@@ -60,7 +60,13 @@ export default function RunScreen() {
     }
     return { run: saved, notice: null as string | null };
   });
-  const [run, setRun] = useState<RunState | null>(initial.run);
+  const runRef = useRef<RunState | null>(initial.run);
+  const [run, setRunState] = useState<RunState | null>(initial.run);
+  const [confirmForfeit, setConfirmForfeit] = useState(false);
+  const setRun = useCallback((r: RunState | null) => {
+    runRef.current = r;
+    setRunState(r);
+  }, []);
   const [notice, setNotice] = useState<string | null>(initial.notice);
   const [showDeck, setShowDeck] = useState(false);
   const [confirmAbandon, setConfirmAbandon] = useState(false);
@@ -75,18 +81,21 @@ export default function RunScreen() {
   }, [run]);
 
   /** Apply a rule function, showing its message instead of crashing if the rules refuse. */
-  const act = useCallback((fn: (r: RunState) => RunState) => {
-    setRun((cur) => {
-      if (!cur) return cur;
+  const act = useCallback(
+    (fn: (r: RunState) => RunState) => {
+      const cur = runRef.current;
+      if (!cur) return;
       try {
+        const next = fn(cur);
+        runRef.current = next; // so two quick clicks never both act on the old state
         setNotice(null);
-        return fn(cur);
+        setRun(next);
       } catch (e) {
         setNotice(e instanceof RunError ? e.message : 'Something went wrong with that choice.');
-        return cur;
       }
-    });
-  }, []);
+    },
+    [setRun],
+  );
 
   const reportResult = useCallback(
     (won: boolean, hp?: number) => {
@@ -122,20 +131,49 @@ export default function RunScreen() {
     const plan = duelPlan(run);
     if (plan) {
       return (
-        <FightView
-          key={plan.seed}
-          db={COMBAT_DB}
-          setup={{
-            seed: plan.seed,
-            a: { hero: run.character, deck: plan.deck, hp: plan.hp },
-            b: { enemies: plan.units, tier: plan.tier },
-          }}
-          title={encounter(plan.encounterId).name}
-          exitLabel="Forfeit"
-          // there is no "leave" in a campaign fight: giving up counts as a loss
-          onExit={() => reportResult(false)}
-          onDone={(r) => reportResult(r.winner === 'a', r.winner === 'a' ? r.hp : undefined)}
-        />
+        <>
+          {notice && (
+            <p className="run__notice run__notice--fight" role="alert">
+              {notice}
+            </p>
+          )}
+          {confirmForfeit && (
+            <div className="modal" role="alertdialog" aria-label="Forfeit this fight?">
+              <div className="modal__panel">
+                <h2 className="modal__title">Forfeit this fight?</h2>
+                <p className="modal__hint">It counts as a loss and costs Resolve.</p>
+                <div className="modal__row">
+                  <button
+                    className="btn"
+                    onClick={() => {
+                      setConfirmForfeit(false);
+                      reportResult(false);
+                    }}
+                  >
+                    <span>Forfeit</span>
+                  </button>
+                  <button className="btn btn--ghost" onClick={() => setConfirmForfeit(false)}>
+                    <span>Keep fighting</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+          <FightView
+            key={plan.seed}
+            db={COMBAT_DB}
+            setup={{
+              seed: plan.seed,
+              a: { hero: run.character, deck: plan.deck, hp: plan.hp },
+              b: { enemies: plan.units, tier: plan.tier },
+            }}
+            title={encounter(plan.encounterId).name}
+            exitLabel="Forfeit"
+            // there is no "leave" in a campaign fight: giving up counts as a loss
+            onExit={() => setConfirmForfeit(true)}
+            onDone={(r) => reportResult(r.winner === 'a', r.winner === 'a' ? r.hp : undefined)}
+          />
+        </>
       );
     }
   }

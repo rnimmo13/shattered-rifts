@@ -19,6 +19,8 @@ flags: --ai heuristic|random  --personality …  --rules '{"secondPlayerExtraCar
 
 ---
 
+> **Legacy section.** The commands below belong to the deleted Essence-duel engine (see DECISIONS #90); the current sim is `pnpm sim` (Combat v2, last section).
+
 ## 1. First player wins too often — **needs a decision from Robert**
 
 Mirror matches (same deck both sides, alternating who goes first), 500 games each. The number is how often the

@@ -157,7 +157,7 @@ export function duelPlan(run: RunState): FightPlan | null {
     maxHp: run.maxHp,
     tier: run.tier,
     kind: node.kind,
-    seed: `${run.seed}:${node.id}:${run.stats.duelsLost}`,
+    seed: `${run.seed}:t${run.tier}:${node.id}:${run.stats.duelsLost}`,
   };
 }
 
@@ -185,6 +185,7 @@ export function finishDuel(run: RunState, won: boolean, hpLeft = run.hp): RunSta
   r.hp = hpLeft;
   const gain = node.kind === 'duel' ? 12 : node.kind === 'elite' ? 28 : 50;
   r.shards += gain;
+  if (node.kind === 'elite') heal(r, r.maxHp * 0.1); // an elite leaves you a little breathing room
   if (node.kind === 'warden') {
     clearNode(r, node.id);
     // a Warden falls: you catch your breath

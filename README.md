@@ -25,13 +25,12 @@ pnpm lint         # ESLint
 pnpm typecheck    # tsc in every package
 pnpm build        # production build
 pnpm check        # lint + typecheck + test + build
-pnpm duel         # play a duel in the terminal vs the AI
-pnpm sim          # balance simulation (see docs/BALANCE.md)
-pnpm test:property # 10,000 random games with invariant checks
+pnpm fight        # play a fight in the terminal (sample ruleset)
+pnpm sim          # Combat v2 balance simulation (see docs/BALANCE.md)
 ```
 
 ## Layout
-`packages/engine` (pure rules engine) · `packages/content` (cards as data) · `packages/ai` · `packages/campaign`
-· `apps/web` (Vite + React client) · `tools` (CLI duel, sims, dev tools)
+`packages/combat` (pure Combat v2 engine) · `packages/content` (cards, companions, enemies as data) · `packages/campaign` (runs)
+· `apps/web` (Vite + React + Pixi client) · `tools` (CLI fight, balance sim, deploy)
 
 Recommended VS Code extensions: ESLint, Prettier, Vitest, Claude Code.

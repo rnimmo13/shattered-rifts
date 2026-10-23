@@ -1,5 +1,5 @@
 import { Component, type ReactNode } from 'react';
-import { clearSavedRun } from './saves';
+import { clearDuelStarted, clearSavedRun } from './saves';
 
 /** If a screen of the run ever crashes, show a way out instead of a blank page. */
 export class RunErrorBoundary extends Component<{ children: ReactNode }, { failed: boolean }> {
@@ -19,7 +19,14 @@ export class RunErrorBoundary extends Component<{ children: ReactNode }, { faile
           reloading does not help, clear it and start a new run.
         </p>
         <div className="modal__row">
-          <button className="btn" onClick={() => window.location.reload()}>
+          <button
+            className="btn"
+            onClick={() => {
+              // a crash is not the player's fault: reloading must not count the fight as left unfinished
+              clearDuelStarted();
+              window.location.reload();
+            }}
+          >
             <span>Reload</span>
           </button>
           <button
