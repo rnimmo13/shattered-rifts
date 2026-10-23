@@ -140,6 +140,33 @@ const DB: CombatDb = {
     c('tripwire', { kind: 'snare', effects: [{ op: 'damage', amount: 7, to: 'attacker' }], trigger: { on: 'foeDefends' } }),
     c('timebomb', { kind: 'snare', effects: [{ op: 'damage', amount: 9, to: 'allFoes' }], trigger: { on: 'foeTurn' } }),
     c('born-ready', { innate: true, effects: [] }),
+    // allies and the later hooks
+    c('deploy', { effects: [{ op: 'summon', unit: 'bot' }] }),
+    c('recycle', {
+      cost: 0,
+      target: 'ally',
+      effects: [
+        { op: 'barrier', amount: 0, to: 'self', scale: { by: 'hp', of: 'target' } },
+        { op: 'sacrifice' },
+      ],
+    }),
+    power('legion', 'summon', [{ op: 'status', status: 'might', amount: 1, to: 'allFriends' }]),
+    power('echo', 'snare', [{ op: 'draw', amount: 1 }]),
+    power('rushdown', 'stance', [{ op: 'draw', amount: 2 }], { stance: 'wrath' }),
+    power('envenom', 'play', [{ op: 'status', status: 'seared', amount: 1, to: 'target' }], { filter: 'attack' }),
+    c('storm-steel', {
+      effects: [
+        { op: 'discard', amount: 9 },
+        { op: 'addCard', card: 'shiv', to: 'hand', side: 'self', times: 0, scale: { by: 'discarded' } },
+      ],
+    }),
+    c('tempest', { cost: 0, x: true, effects: [{ op: 'channel', rune: 'spark', times: 0, scale: { by: 'x' } }] }),
+    c('multi', { cost: 0, x: true, effects: [{ op: 'evoke', times: 0, scale: { by: 'x' } }] }),
+    c('wrath-slam', {
+      kind: 'attack',
+      target: 'foe',
+      effects: [{ op: 'damage', amount: 4, to: 'target', scale: { by: 'wrath', mult: 5 } }],
+    }),
   ]),
   boons: {},
   potions: {},
@@ -161,6 +188,12 @@ const DB: CombatDb = {
     },
   },
   units: {
+    bot: {
+      id: 'bot',
+      name: 'Bot',
+      maxHp: 7,
+      brain: { kind: 'ally', act: [{ op: 'damage', amount: 3, to: 'target' }] },
+    },
     dummy: {
       id: 'dummy',
       name: 'Dummy',
@@ -625,6 +658,69 @@ describe('Snare triggers', () => {
 });
 
 // --- misc -------------------------------------------------------------------------------------------------------------------
+
+describe('allies, sacrifice and the later hooks', () => {
+  it('an ally-only card cannot be aimed at the hero, and cannot be played with no allies', () => {
+    let s = start(['recycle', 'deploy'], { mana: 3 });
+    expect(legalActions(DB, s).some((a) => a.type === 'play' && a.card === 'h0')).toBe(false);
+    s = play(s, 'h1').state;
+    const ally = s.sides.a.units.find((u) => u.kind === 'ally') as Unit;
+    const targets = legalActions(DB, s).filter((a) => a.type === 'play' && a.card === 'h0');
+    expect(targets).toHaveLength(1);
+    expect(() => play(s, 'h0', hero(s).id)).toThrow();
+    s = play(s, 'h0', ally.id).state;
+    expect(hero(s).barrier).toBe(7); // read the ally's HP before it left
+    expect(s.sides.a.units.some((u) => u.kind === 'ally')).toBe(false);
+  });
+
+  it('"when you summon" Powers fire for the hero, not for enemy summons', () => {
+    let s = start(['legion', 'deploy']);
+    s = play(s, 'h0').state;
+    s = play(s, 'h1').state;
+    const ally = s.sides.a.units.find((u) => u.kind === 'ally') as Unit;
+    expect(ally.statuses.might).toBe(1);
+  });
+
+  it('"when a Snare springs" and "when you enter a stance" Powers', () => {
+    let s = start(['echo', 'timebomb', 'rushdown', 'wrath'], { mana: 5 });
+    s = play(s, 'h0').state;
+    s = play(s, 'h1').state;
+    const handBefore = s.sides.a.hand.length;
+    s = end(s).state; // the Snare springs at the start of the enemy turn and draws a card
+    expect(s.sides.a.discard.map((x) => x.card)).toContain('timebomb');
+    expect(handBefore).toBe(2);
+    s = start(['rushdown', 'wrath'], { mana: 5 });
+    s = play(s, 'h0').state;
+    s = play(s, 'h1').state;
+    expect(s.sides.a.hand).toHaveLength(2); // drew 2
+  });
+
+  it('a "when you play" Power can use the card\'s target', () => {
+    let s = start(['envenom', 'strike'], { mana: 3 });
+    s = play(s, 'h0').state;
+    s = play(s, 'h1', foe(s).id).state;
+    expect(foe(s).statuses.seared).toBe(1);
+  });
+
+  it('scaled counts: Shivs per discard, runes and evokes per X, damage per Wrath', () => {
+    let s = start(['storm-steel', 'strike', 'defend', 'filler']);
+    s = play(s, 'h0').state;
+    expect(s.sides.a.hand.filter((x) => x.card === 'shiv')).toHaveLength(3);
+    s = start(['tempest'], { mana: 2 });
+    s = play(s, 'h0').state;
+    expect(s.sides.a.runes).toHaveLength(2);
+    s = start(['c-spark', 'multi'], { mana: 3 });
+    s = play(s, 'h0').state;
+    const hp = foe(s).hp;
+    s = play(s, 'h1').state; // 2 Mana left -> evoke twice
+    expect(hp - foe(s).hp).toBe(12);
+    s = start(['wrath', 'wrath-slam']);
+    s = play(s, 'h0').state;
+    const hp2 = foe(s).hp;
+    s = play(s, 'h1', foe(s).id).state;
+    expect(hp2 - foe(s).hp).toBe((4 + 5) * 2);
+  });
+});
 
 describe('innate and invariants', () => {
   it('innate cards are drawn first', () => {

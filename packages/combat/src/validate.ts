@@ -36,7 +36,7 @@ export function validateDb(db: CombatDb): string[] {
         errs.push(`${where}: "${o.op}" asks the player to choose, so only a card's own effects may use it`);
       if (o.op === 'power') {
         if (!opts.card) errs.push(`${where}: "power" only works in a card`);
-        checkOps(`${where}.power`, o.ops, { aimed: false, snare: false });
+        checkOps(`${where}.power`, o.ops, { aimed: o.when === 'play', snare: false });
       }
       if (o.op === 'channel' && !db.runes?.[o.rune]) errs.push(`${where}: channels unknown rune "${o.rune}"`);
       if (o.op === 'forge' && !db.cards[o.card]) errs.push(`${where}: forges unknown card "${o.card}"`);

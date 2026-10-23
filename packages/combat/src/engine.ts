@@ -158,6 +158,7 @@ function enterStance(r: Run, u: Unit, to: Stance | 'none'): void {
     if (to === 'radiant') gainMana(r, sd, RADIANT_ENTER_MANA);
   }
   r.ev.push({ type: 'stance', unit: u.id, stance: to });
+  if (to !== 'none' && u.kind === 'hero') fireTriggers(r, sd, 'stance', { stance: to });
 }
 
 function gainMana(r: Run, sd: SideState, n: number): void {
@@ -287,6 +288,7 @@ function fireSnare(r: Run, side: Side, t: Trig): void {
     cd.effects,
   );
   sd.discard.push({ id: sn.id, card: sn.card });
+  fireTriggers(r, sd, 'snare');
 }
 
 // --- selectors & ops ----------------------------------------------------------------------------------------------
@@ -319,7 +321,7 @@ function resolve(r: Run, a: Act, sel: Sel): Unit[] {
 /** The value of a metric for `a` (`t` is the unit an op is being applied to, for metrics "of the target"). */
 function metricValue(r: Run, a: Act, m: Metric, of: 'self' | 'target' | undefined, t: Unit | null): number {
   const sd = r.s.sides[a.actor.side];
-  const u = of === 'target' ? (t ?? a.target) : a.actor;
+  const u = of === 'each' ? (t ?? a.target) : of === 'target' ? a.target : a.actor;
   switch (m) {
     case 'barrier':
       return u?.barrier ?? 0;
@@ -332,6 +334,9 @@ function metricValue(r: Run, a: Act, m: Metric, of: 'self' | 'target' | undefine
     case 'might':
     case 'thorns':
     case 'mantra':
+    case 'calm':
+    case 'wrath':
+    case 'radiant':
       return u ? stacks(u, m) : 0;
     case 'hand':
       return sd.hand.length;
@@ -465,13 +470,17 @@ function execOp(r: Run, a: Act, op: Op): void {
       return;
     case 'summon': {
       const u = spawn(r, side, op.unit);
-      if (u) fireSnare(r, other(side.id), { on: 'foeSummons', summoned: u });
+      if (u) {
+        fireSnare(r, other(side.id), { on: 'foeSummons', summoned: u });
+        if (a.actor.kind === 'hero') fireTriggers(r, side, 'summon');
+      }
       return;
     }
     case 'addCard': {
       const dest = op.side === 'self' ? side : r.s.sides[other(side.id)];
       if (dest.hero === null) return; // enemies have no deck
-      for (let i = 0; i < (op.times ?? 1); i++) addCardTo(r, dest, op.card, op.to);
+      const n = amountOf(r, a, op.times ?? 1, op.scale, null);
+      for (let i = 0; i < n; i++) addCardTo(r, dest, op.card, op.to);
       return;
     }
     case 'actAllies':
@@ -535,16 +544,20 @@ function execOp(r: Run, a: Act, op: Op): void {
         ops: op.ops,
         ...(op.filter ? { filter: op.filter } : {}),
         ...(op.tag ? { tag: op.tag } : {}),
+        ...(op.stance ? { stance: op.stance } : {}),
       });
       r.ev.push({ type: 'power', side: side.id, card: a.card?.id ?? '' });
       return;
-    case 'channel':
-      channel(r, side, op.rune);
+    case 'channel': {
+      const n = amountOf(r, a, op.times ?? 1, op.scale, null);
+      for (let i = 0; i < n && !r.s.winner; i++) channel(r, side, op.rune);
       return;
+    }
     case 'evoke': {
       const batch = side.runes.slice(0, op.count ?? 1);
       for (const rs of batch) {
-        for (let i = 0; i < (op.times ?? 1); i++) fireRune(r, side, rs, 'evoke');
+        const times = amountOf(r, a, op.times ?? 1, op.scale, null);
+        for (let i = 0; i < times && !r.s.winner; i++) fireRune(r, side, rs, 'evoke');
         if (!op.keep) removeRune(r, side, rs);
         if (r.s.winner) return;
       }
@@ -561,6 +574,11 @@ function execOp(r: Run, a: Act, op: Op): void {
     case 'stance': {
       const hero = heroOf(side);
       if (hero) enterStance(r, hero, op.stance);
+      return;
+    }
+    case 'sacrifice': {
+      const t = a.target;
+      if (t && t.kind === 'ally' && t.side === a.actor.side && t.hp > 0) t.hp = 0;
       return;
     }
     case 'forge': {
@@ -685,7 +703,13 @@ function exhaustCard(r: Run, sd: SideState, c: CardInst): void {
 }
 
 /** Powers: run every trigger of `sd` for `when` (for 'play', only those that match the card). */
-function fireTriggers(r: Run, sd: SideState, when: TriggerWhen, played?: CardDef): void {
+function fireTriggers(
+  r: Run,
+  sd: SideState,
+  when: TriggerWhen,
+  ctx: { card?: CardDef; target?: Unit | null; stance?: Stance } = {},
+): void {
+  const played = ctx.card;
   const hero = heroOf(sd);
   if (!hero || hero.hp <= 0 || r.depth >= MAX_DEPTH) return;
   r.depth++;
@@ -696,7 +720,8 @@ function fireTriggers(r: Run, sd: SideState, when: TriggerWhen, played?: CardDef
       if (p.filter && p.filter !== played.kind) continue;
       if (p.tag && !played.tags?.includes(p.tag)) continue;
     }
-    runOps(r, mkAct(hero), p.ops);
+    if (when === 'stance' && p.stance && p.stance !== ctx.stance) continue;
+    runOps(r, mkAct(hero, { target: ctx.target ?? null }), p.ops);
   }
   r.depth--;
 }
@@ -1141,6 +1166,7 @@ export function canPlay(
   if (cd.kind === 'snare' && sd.snares.length >= MAX_SNARES) return false;
   if (cd.target === 'foe' && legalFoes({ ...r, ev: [], depth: 0 }, side, cd).length === 0)
     return false;
+  if (cd.target === 'ally' && !sd.units.some((u) => u.kind === 'ally' && u.hp > 0)) return false;
   return true;
 }
 
@@ -1178,7 +1204,9 @@ export function legalActions(db: CombatDb, s: CombatState): Action[] {
     else if (cd.target === 'foe')
       for (const t of legalFoes(r, side, cd)) out.push({ type: 'play', card: c.id, target: t.id });
     else
-      for (const t of sd.units) if (t.hp > 0) out.push({ type: 'play', card: c.id, target: t.id });
+      for (const t of sd.units)
+        if (t.hp > 0 && (cd.target === 'friend' || t.kind === 'ally'))
+          out.push({ type: 'play', card: c.id, target: t.id });
   }
   sd.potions.forEach((id, index) => {
     const p = db.potions[id];
@@ -1196,7 +1224,13 @@ export function legalActions(db: CombatDb, s: CombatState): Action[] {
 }
 
 /** The card is done: it goes to its pile, the turn's counters tick, and "when you play" Powers fire. */
-function finishCard(r: Run, sd: SideState, inst: CardInst, cd: CardDef): void {
+function finishCard(
+  r: Run,
+  sd: SideState,
+  inst: CardInst,
+  cd: CardDef,
+  target: Unit | null,
+): void {
   if (cd.kind === 'power') {
     // a Power stays in effect for the fight and leaves the deck (without counting as "exhausted")
     sd.exhausted.push(inst);
@@ -1205,7 +1239,7 @@ function finishCard(r: Run, sd: SideState, inst: CardInst, cd: CardDef): void {
   else sd.discard.push(inst);
   sd.played++;
   if (cd.kind === 'attack') sd.attacksPlayed++;
-  fireTriggers(r, sd, 'play', cd);
+  fireTriggers(r, sd, 'play', { card: cd, target });
 }
 
 function playCard(r: Run, action: Extract<Action, { type: 'play' }>): void {
@@ -1224,7 +1258,7 @@ function playCard(r: Run, action: Extract<Action, { type: 'play' }>): void {
       target.hp > 0 &&
       (cd.target === 'foe'
         ? legalFoes(r, side, cd).some((u) => u.id === target?.id)
-        : target.side === side);
+        : target.side === side && (cd.target === 'friend' || target.kind === 'ally'));
     if (!legal) throw new RulesError('Choose a legal target');
   }
   const hero = heroOf(sd);
@@ -1253,7 +1287,7 @@ function playCard(r: Run, action: Extract<Action, { type: 'play' }>): void {
     r.s.pending.finish = inst;
     return;
   }
-  finishCard(r, sd, inst, cd);
+  finishCard(r, sd, inst, cd, target);
 }
 
 /** The answer to a pending choice: carry it out, then let the card finish. */
@@ -1300,7 +1334,7 @@ function pickCards(r: Run, action: Extract<Action, { type: 'pick' }>): void {
     again.finish = fin;
     return;
   }
-  if (fin && cd) finishCard(r, sd, fin, cd);
+  if (fin && cd) finishCard(r, sd, fin, cd, findUnit(r.s, p.target) ?? null);
 }
 
 function usePotion(r: Run, action: Extract<Action, { type: 'potion' }>): void {

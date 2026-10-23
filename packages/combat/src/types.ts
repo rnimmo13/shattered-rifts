@@ -63,8 +63,8 @@ export type Sel =
   'target' | 'self' | 'hero' | 'allFoes' | 'randomFoe' | 'front' | 'allFriends' | 'attacker';
 
 /**
- * A number that depends on the board: `amount + floor(mult * metric)`. Unit metrics read `of` (default: the actor; "target"
- * is whichever unit the op is being applied to). `into: 'hits'` adds the result to a damage op's hit count instead.
+ * A number that depends on the board: `amount + floor(mult * metric)`. Unit metrics read `of` (default: the actor; "target" is the
+ * card's chosen target; "each" is whichever unit the op is being applied to). `into: 'hits'` adds the result to a damage op's hit count instead.
  */
 export type Metric =
   // about a unit
@@ -76,6 +76,9 @@ export type Metric =
   | 'might'
   | 'thorns'
   | 'mantra'
+  | 'calm' // 1 while in that stance
+  | 'wrath'
+  | 'radiant'
   // about the acting side
   | 'hand'
   | 'drawPile'
@@ -97,12 +100,20 @@ export type Metric =
 export interface Scale {
   by: Metric;
   mult?: number;
-  of?: 'self' | 'target';
+  of?: 'self' | 'target' | 'each';
   into?: 'amount' | 'hits';
 }
 
 /** When a Power's trigger fires. */
-export type TriggerWhen = 'turnStart' | 'turnEnd' | 'play' | 'exhaust' | 'discard';
+export type TriggerWhen =
+  | 'turnStart'
+  | 'turnEnd'
+  | 'play'
+  | 'exhaust'
+  | 'discard'
+  | 'summon' // you summoned an ally
+  | 'snare' // one of your Snares sprang
+  | 'stance'; // you entered a stance
 
 export type Op =
   | { op: 'damage'; amount: number; hits?: number; to: Sel; scale?: Scale }
@@ -116,7 +127,15 @@ export type Op =
   | { op: 'mana'; amount: number; scale?: Scale }
   | { op: 'stars'; amount: number; scale?: Scale }
   | { op: 'summon'; unit: string }
-  | { op: 'addCard'; card: CardId; to: 'hand' | 'discard' | 'draw'; side: 'self' | 'foe'; times?: number }
+  | {
+      op: 'addCard';
+      card: CardId;
+      to: 'hand' | 'discard' | 'draw';
+      side: 'self' | 'foe';
+      /** how many copies (default 1; with a scale this is the base) */
+      times?: number;
+      scale?: Scale;
+    }
   | { op: 'actAllies' } // every ally of the actor acts now
   | { op: 'prevent' } // Snare only: cancel the attack that sprang it
   // --- choices and card movement (card effects only; a choice asks the player and the card resumes afterwards)
@@ -124,18 +143,29 @@ export type Op =
   | { op: 'exhaustCards'; amount: number; random?: boolean; any?: boolean }
   | { op: 'scry'; amount: number }
   // --- Powers: run `ops` whenever `when` happens (`filter`/`tag` narrow 'play')
-  | { op: 'power'; when: TriggerWhen; ops: Op[]; filter?: CardKind; tag?: string }
+  | {
+      op: 'power';
+      when: TriggerWhen;
+      ops: Op[];
+      /** 'play': only cards of this kind / with this tag; 'stance': only entering this stance */
+      filter?: CardKind;
+      tag?: string;
+      stance?: Stance;
+    }
   // --- runes
-  | { op: 'channel'; rune: string }
-  | { op: 'evoke'; count?: number; times?: number; keep?: boolean }
+  | { op: 'channel'; rune: string; times?: number; scale?: Scale }
+  | { op: 'evoke'; count?: number; times?: number; keep?: boolean; scale?: Scale }
   | { op: 'runeSlots'; amount: number }
   // --- stances
   | { op: 'stance'; stance: Stance | 'none' }
   // --- scaling cards
-  | { op: 'forge'; card: CardId; amount: number };
+  | { op: 'forge'; card: CardId; amount: number }
+  /** the targeted ally leaves the fight (put it after any effect that reads the target) */
+  | { op: 'sacrifice' };
 
 export type CardKind = 'attack' | 'skill' | 'power' | 'summon' | 'snare';
-export type CardTarget = 'foe' | 'friend' | 'none';
+/** foe = an enemy; friend = any unit of yours (hero or ally); ally = one of your allies, never the hero */
+export type CardTarget = 'foe' | 'friend' | 'ally' | 'none';
 export type Rarity = 'basic' | 'common' | 'uncommon' | 'rare';
 
 export type SnareTrigger =
@@ -342,6 +372,7 @@ export interface PowerState {
   ops: Op[];
   filter?: CardKind;
   tag?: string;
+  stance?: Stance;
 }
 
 /** A choice the acting player owes before anything else happens. */
