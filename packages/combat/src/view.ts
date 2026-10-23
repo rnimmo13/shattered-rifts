@@ -388,14 +388,8 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
       if (a.equal) return `${verb} Lumen equal to ${a.num}.`;
       return `${verb} ${a.num} Lumen.`;
     }
-    case 'summon': {
-      // say what you are getting before you take it: its HP, and what it does at the end of your turn
-      const u = db.units[o.unit];
-      if (!u) return `Summon ${o.unit}.`;
-      const acts =
-        u.brain.kind === 'ally' ? u.brain.act.map((x) => opText(db, x, who)).join(' ') : '';
-      return `Summon ${u.name} (${u.maxHp} HP${u.taunt ? ', Taunt' : ''}).${acts ? ` At the end of your turn it will: ${acts}` : ''}`;
-    }
+    case 'summon':
+      return summonText(db, o.unit, 1, who);
     case 'addCard': {
       const nm = db.cards[o.card]?.name ?? o.card;
       const dest = `${o.side === 'self' ? 'your' : 'the enemy'} ${o.to === 'hand' ? 'hand' : o.to === 'draw' ? 'draw pile' : 'discard pile'}`;
@@ -489,6 +483,24 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
   }
 }
 
+/** "Summon X (12 HP). At the end of your turn it will: ..." (or "Summon 3 Xs (12 HP each)..." for several of the same). */
+function summonText(db: CombatDb, unit: string, n: number, who: Record<Sel, string>): string {
+  const u = db.units[unit];
+  if (!u) return `Summon ${unit}.`;
+  const acts =
+    u.brain.kind === 'ally'
+      ? u.brain.act
+          .filter((x) => x.op !== 'summon')
+          .map((x) => opText(db, x, who))
+          .join(' ')
+      : '';
+  const head =
+    n > 1
+      ? `Summon ${n} ${u.name}s (${u.maxHp} HP each${u.taunt ? ', Taunt' : ''}).`
+      : `Summon ${u.name} (${u.maxHp} HP${u.taunt ? ', Taunt' : ''}).`;
+  return `${head}${acts ? ` At the end of your turn ${n > 1 ? 'each' : 'it'} will: ${acts}` : ''}`;
+}
+
 export function cardText(db: CombatDb, c: CardDef): string {
   if (c.text) return c.text;
   const parts: string[] = [];
@@ -509,7 +521,20 @@ export function cardText(db: CombatDb, c: CardDef): string {
   if (c.starCost) parts.push(`Costs ${c.starCost} Lumen.`);
   const who: Record<Sel, string> =
     c.target === 'ally' || c.target === 'friend' ? { ...WHO, target: ' to the ally' } : WHO;
-  parts.push(...c.effects.map((o) => opText(db, o, who)));
+  // several of the same summon in a row read as one line ("Summon 3 Bone Thralls...")
+  for (let i = 0; i < c.effects.length; i++) {
+    const o = c.effects[i] as Op;
+    if (o.op === 'summon') {
+      let n = 1;
+      while (
+        c.effects[i + n]?.op === 'summon' &&
+        (c.effects[i + n] as { unit?: string }).unit === o.unit
+      )
+        n++;
+      parts.push(summonText(db, o.unit, n, who));
+      i += n - 1;
+    } else parts.push(opText(db, o, who));
+  }
   if (c.exhaust) parts.push('Consume.');
   if (c.retain) parts.push('Hold.');
   if (c.innate) parts.push('Opening hand.');

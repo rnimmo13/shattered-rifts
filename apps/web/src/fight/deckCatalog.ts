@@ -121,6 +121,7 @@ const RARITY_RANK: Record<string, number> = {
   uncommon: 2,
   rare: 3,
   legendary: 4,
+  ancestral: 5,
 };
 
 /** The cards on one bookmark: grouped by character, then rarity (basic to legendary), cost, name. */

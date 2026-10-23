@@ -86,7 +86,7 @@ Starter: Slash, Slash, Slash, Slash, Slash, Guard, Guard, Guard, Deploy Drone, O
 | Plating | 1 | skill | common | Gain 6 Barrier to all friends. |
 | Arc Welder | 1 | attack | common | Deal 7 damage. Apply 1 Faltering. |
 | Ion Lance | 2 | attack | common | Deal 16 damage. |
-| Swarm Protocol | 2 | summon | uncommon | Summon Patrol Drone (7 HP). At the end of your turn it will: Deal 4 damage. Summon Patrol Drone (7 HP). At the end of your turn it will: Deal 4 damage. |
+| Swarm Protocol | 2 | summon | uncommon | Summon 2 Patrol Drones (7 HP each). At the end of your turn each will: Deal 4 damage. |
 | Recycle | 0 | skill | uncommon | Gain Barrier equal to the target's HP. Draw 1 card. Sacrifice the chosen ally. |
 | Overcharge Blast | 2 | attack | uncommon | Deal 8 (+2 per ally) damage to ALL enemies. |
 | Assembly Line | 2 | power | uncommon | At the start of your turn: Summon Micro Drone (4 HP). At the end of your turn it will: Deal 3 damage. |
@@ -123,7 +123,7 @@ Starter: Slash, Slash, Slash, Slash, Slash, Guard, Guard, Guard, Savage Bite, Bl
 | Feral Instinct | 0 | skill | common | Lose 2 HP. Draw 2 cards. |
 | Pain Ward | 1 | skill | common | Gain 5 Barrier. Gain Barrier equal to a quarter of your missing HP. |
 | Heel | 1 | summon | common | Summon Hound (10 HP). At the end of your turn it will: Deal 4 damage. |
-| Call Gnashlings | 1 | summon | common | Summon Gnashling (4 HP). At the end of your turn it will: Deal 3 damage. Summon Gnashling (4 HP). At the end of your turn it will: Deal 3 damage. |
+| Call Gnashlings | 1 | summon | common | Summon 2 Gnashlings (4 HP each). At the end of your turn each will: Deal 3 damage. |
 | Pack Tactics | 1 | skill | common | Apply 1 Might to all friends. Gain 4 Barrier to all friends. |
 | Sic 'Em | 1 | skill | common | Apply 2 Might to the ally. Heal 4 to the ally. |
 | Howl | 1 | skill | common | All your allies act now. |
@@ -548,7 +548,7 @@ Starter: Slash, Slash, Slash, Guard, Guard, Guard, Grave Touch, Grave Touch, Bon
 | Soul Tithe | 0 | skill | uncommon | Lose 4 HP. Gain 2 Mana. Consume. |
 | The Final Hour | 3 | skill | rare | Curse ALL enemies with 14 Fate. Consume. |
 | The Long Night | 2 | power | rare | Whenever you play an Attack: Curse the target with 2 Fate. |
-| Army of the Drowned | 3 | summon | rare | Summon Bone Thrall (12 HP). At the end of your turn it will: Deal 4 damage. Summon Bone Thrall (12 HP). At the end of your turn it will: Deal 4 damage. Summon Bone Thrall (12 HP). At the end of your turn it will: Deal 4 damage. Consume. |
+| Army of the Drowned | 3 | summon | rare | Summon 3 Bone Thralls (12 HP each). At the end of your turn each will: Deal 4 damage. Consume. |
 | Deathless | 2 | power | rare | Whenever you summon an ally: Gain 6 Barrier to all friends. |
 | Requiem | 2 | attack | rare | Deal damage equal to 3 times the number of cards you have consumed. |
 | The Last Toll | 3 | skill | legendary | Curse ALL enemies with 25 Fate. Consume. |

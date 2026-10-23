@@ -330,7 +330,7 @@ export function applyLook(src: HTMLCanvasElement, look: Look): HTMLCanvasElement
   const work = document.createElement('canvas');
   work.width = W;
   work.height = H;
-  const g = work.getContext('2d') as G;
+  const g = work.getContext('2d', { willReadFrequently: true }) as G;
   g.save();
   if (look.flip) {
     g.translate(W, 0);

@@ -251,7 +251,7 @@ export function enterNode(run: RunState, nodeId: string): RunState {
       const kind = nextInt(r.rng, 3);
       const leave: EventOption = { id: 'leave', label: 'Walk away' };
       const ancestors = ancestralPool(r.deck);
-      if (ancestors.length > 0 && r.hp > 20 && nextInt(r.rng, 100) < 18) {
+      if (ancestors.length > 0 && r.hp - 12 >= r.maxHp * 0.25 && nextInt(r.rng, 100) < 18) {
         const id = ancestors[nextInt(r.rng, ancestors.length)] as string;
         r.context.event = {
           title: "The Ancestors' Offering",
