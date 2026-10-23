@@ -246,7 +246,7 @@ export function cardArtV2(c: CardDef): string {
   const unit = c.effects.find((o) => o.op === 'summon');
   const summoned = unit && unit.op === 'summon' ? UNIT[base(unit.unit)]?.[0] : undefined;
   const fake = {
-    id: c.id.replace(/\+$/, ''),
+    id: c.id.replace(/^(hi|lo)~/, '').replace(/\+$/, ''),
     name: c.name,
     realm: (c.realm === 'junk' ? 'neutral' : (c.realm ?? 'neutral')) as Realm,
     rarity: c.rarity === 'basic' || c.rarity === undefined ? 'common' : c.rarity,

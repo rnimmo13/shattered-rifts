@@ -8,6 +8,7 @@ import { nextInt, seedRng, shuffle } from '@sr/combat';
 import { COMBAT_DB, RIFTWALKERS, V2_DECK_RULES, encounter, type HeroId } from '@sr/content/v2';
 import { generateStageMap, reachableNodes } from './mapgen';
 import { makeKits } from './kits';
+import { rollEvent, resolveEvent } from './events';
 import { makePrelude } from './preludes';
 import {
   BOON_PRICE,
@@ -272,57 +273,7 @@ export function enterNode(run: RunState, nodeId: string): RunState {
       break;
     }
     case 'event': {
-      const cardOffer = offerCards(r.rng, r.character, r.deck, 'duel', 1, r.luck)[0] ?? '';
-      const kind = nextInt(r.rng, 3);
-      const leave: EventOption = { id: 'leave', label: 'Walk away' };
-      const ancestors = ancestralPool(r.deck);
-      if (ancestors.length > 0 && r.hp - 12 >= r.maxHp * 0.25 && nextInt(r.rng, 100) < 18) {
-        const id = ancestors[nextInt(r.rng, ancestors.length)] as string;
-        r.context.event = {
-          title: "The Ancestors' Offering",
-          text: 'A circle of old stones hums. Something that was a Riftwalker before you left a gift here, and it will cost you some of your own strength to lift.',
-          options: [
-            {
-              id: 'ancestor',
-              label: `Take ${COMBAT_DB.cards[id]?.name ?? 'the card'}: lose 12 HP`,
-            },
-            leave,
-          ],
-          cardOffer: id,
-        };
-      } else if (kind === 1 && upgradable(r.deck).length > 0) {
-        r.context.event = {
-          title: 'The wandering smith',
-          text: 'A smith has set up a forge in the ruins. "One piece of yours, tempered free. I choose."',
-          options: [{ id: 'upgrade', label: 'Let the smith temper a random card' }, leave],
-          cardOffer: '',
-        };
-      } else if (kind === 2 && r.hp > 20) {
-        const boonOffer = offerBoon(r.rng, r.boons, 'elite') ?? undefined;
-        r.context.event = {
-          title: 'The blood altar',
-          text: 'An altar drinks what you give it, and gives back. The rift rewards those who bleed for it.',
-          options: [
-            { id: 'bleed', label: 'Give 10 HP: gain 60 shards' },
-            ...(boonOffer ? [{ id: 'boon' as const, label: 'Give 15 HP: take the Boon' }] : []),
-            leave,
-          ],
-          cardOffer: '',
-          ...(boonOffer ? { boonOffer } : {}),
-        };
-      } else {
-        r.context.event = {
-          title: 'A rift cache',
-          text: 'A seam in the world has split open, and something glints inside. You can only carry one thing away.',
-          options: [
-            { id: 'shards', label: 'Take the shards (+30)' },
-            { id: 'heal', label: 'Drink from the spring (heal 20% of your HP)' },
-            ...(cardOffer ? [{ id: 'card' as const, label: 'Take the relic card' }] : []),
-            leave,
-          ],
-          cardOffer,
-        };
-      }
+      r.context.event = rollEvent(r);
       r.phase = 'event';
       break;
     }
@@ -762,34 +713,12 @@ export function chooseEvent(run: RunState, option: EventOption['id']): RunState 
     ev.options.some((o) => o.id === option),
     'That is not an option',
   );
-  if (option === 'shards') r.shards += 30;
-  if (option === 'heal') heal(r, r.maxHp * 0.2);
-  if (option === 'card' && ev.cardOffer && canAdd(r.deck, ev.cardOffer)) r.deck.push(ev.cardOffer);
-  if (option === 'upgrade') {
-    const ups = upgradable(r.deck);
-    need(ups.length > 0, 'Nothing to upgrade');
-    const pick = ups[nextInt(r.rng, ups.length)] as string;
-    const i = r.deck.indexOf(pick);
-    r.deck[i] = COMBAT_DB.cards[pick]?.upgrade ?? pick;
-  }
-  if (option === 'ancestor') {
-    need(ev.cardOffer, 'There is nothing to take');
-    need(r.hp > 12, 'You are too hurt for that');
-    need(canAdd(r.deck, ev.cardOffer), 'That card would break the deck rules');
-    r.hp -= 12;
-    r.deck.push(ev.cardOffer);
-  }
-  if (option === 'bleed') {
-    need(r.hp > 10, 'You are too hurt for that');
-    r.hp -= 10;
-    r.shards += 60;
-  }
-  if (option === 'boon') {
-    need(ev.boonOffer, 'There is no boon here');
-    need(r.hp > 15, 'You are too hurt for that');
-    r.hp -= 15;
-    gainBoon(r, ev.boonOffer);
-  }
+  r.eventResult = resolveEvent(r, option, ev, {
+    gainBoon,
+    fail: (msg) => {
+      throw new RunError(msg);
+    },
+  });
   clearNode(r, (r.context as NonNullable<RunState['context']>).nodeId);
   r.phase = 'map';
   return r;

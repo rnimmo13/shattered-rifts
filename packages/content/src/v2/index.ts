@@ -6,6 +6,7 @@ import { BOONS } from './boons';
 import { V2_CARDS } from './cards';
 import { RUNES } from './pools/ilvane';
 import { POTIONS } from './potions';
+import { withRolls } from './sanctify';
 import { ALLIES, ENEMY_UNITS } from './units';
 
 export type RealmId =
@@ -408,7 +409,8 @@ export const encounter = (id: string): Encounter => {
 
 export const COMBAT_DB: CombatDb = {
   runes: Object.fromEntries(RUNES.map((r) => [r.id, r])),
-  cards: Object.fromEntries(V2_CARDS.map((c) => [c.id, c])),
+  // (also answers for sanctified ids like "hi~strike": derived on demand, never listed)
+  cards: withRolls(Object.fromEntries(V2_CARDS.map((c) => [c.id, c]))),
   boons: Object.fromEntries(BOONS.map((b) => [b.id, b])),
   potions: Object.fromEntries(POTIONS.map((p) => [p.id, p])),
   units: Object.fromEntries([...ALLIES, ...ENEMY_UNITS].map((u) => [u.id, u])),
@@ -446,6 +448,7 @@ export function signatureCards(encounterId: string): string[] {
 }
 
 export { validateDb };
+export { canRoll, rolledId, rollOf, stripRoll } from './sanctify';
 
 /** Deck rules for Combat v2 runs: a deck never drops below minSize cards, and no non-basic card has more than maxCopies copies. */
 export const V2_DECK_RULES = { minSize: 8, maxCopies: 4, vaultSlots: 5 } as const;

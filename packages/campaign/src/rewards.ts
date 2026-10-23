@@ -9,6 +9,7 @@ import {
   RIFTWALKERS,
   V2_DECK_RULES,
   ancestralCards,
+  stripRoll,
   rewardPool,
   type HeroId,
 } from '@sr/content/v2';
@@ -25,7 +26,7 @@ export function canAdd(deck: readonly string[], cardId: string): boolean {
   if (!c || (c.unplayable && !c.onDiscard)) return false;
   if (c.rarity === 'basic') return true;
   // a card and its "+" version share one limit; a legendary is one of a kind
-  const base = (id: string): string => id.replace(/\+$/, '');
+  const base = (id: string): string => stripRoll(id).replace(/\+$/, '');
   const limit = c.rarity === 'legendary' || c.rarity === 'ancestral' ? 1 : V2_DECK_RULES.maxCopies;
   return deck.filter((x) => base(x) === base(cardId)).length < limit;
 }

@@ -58,7 +58,24 @@ export interface MerchantItem {
 }
 
 export interface EventOption {
-  id: 'shards' | 'card' | 'heal' | 'upgrade' | 'bleed' | 'boon' | 'ancestor' | 'leave';
+  id:
+    | 'shards'
+    | 'card'
+    | 'heal'
+    | 'upgrade'
+    | 'bleed'
+    | 'boon'
+    | 'ancestor'
+    | 'sanctify'
+    | 'bet'
+    | 'help'
+    | 'rob'
+    | 'idol'
+    | 'drink'
+    | 'mirror'
+    | 'scrap'
+    | 'sell'
+    | 'leave';
   label: string;
 }
 
@@ -185,4 +202,6 @@ export interface RunState {
   context: NodeContext | null;
   rng: RngState;
   stats: RunStats;
+  /** what the last event did, in a sentence (shown once it is over) */
+  eventResult?: string;
 }

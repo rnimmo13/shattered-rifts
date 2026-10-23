@@ -1,9 +1,10 @@
 // Saving a run: plain JSON text, so it can go to localStorage and to an export file. Loading checks the whole shape
 // and the deck rules, so a hand-edited or damaged save is refused instead of crashing the game.
 
-import { COMBAT_DB, ENCOUNTERS, RIFTWALKERS, V2_DECK_RULES } from '@sr/content/v2';
+import { COMBAT_DB, ENCOUNTERS, RIFTWALKERS, V2_DECK_RULES, rollOf } from '@sr/content/v2';
 const hasCard = (id: unknown): boolean =>
-  typeof id === 'string' && Object.hasOwn(COMBAT_DB.cards, id);
+  typeof id === 'string' &&
+  (Object.hasOwn(COMBAT_DB.cards, id) || (rollOf(id) !== 0 && COMBAT_DB.cards[id] !== undefined));
 import type { MapNode, NodeKind, RunPhase, RunState } from './types';
 
 export const RUN_SAVE_VERSION = 2;

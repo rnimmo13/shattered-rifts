@@ -114,7 +114,10 @@ export default function RunScreen() {
       try {
         const next = fn(cur);
         runRef.current = next; // so two quick clicks never both act on the old state
-        setNotice(null);
+        // what an event just did is worth reading: show it once
+        setNotice(
+          next.eventResult && next.eventResult !== cur.eventResult ? next.eventResult : null,
+        );
         setRun(next);
       } catch (e) {
         setNotice(e instanceof RunError ? e.message : 'Something went wrong with that choice.');
