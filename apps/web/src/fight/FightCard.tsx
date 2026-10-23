@@ -69,7 +69,7 @@ export const FightCard = memo(
           </div>
           {def.starCost ? (
             <div className="card__stars" aria-label={`Costs ${def.starCost} Lumen`}>
-              <span>★{def.starCost}</span>
+              <span>★ {def.starCost}</span>
             </div>
           ) : null}
           <div className="card__type">{KIND_LABEL[def.kind]}</div>

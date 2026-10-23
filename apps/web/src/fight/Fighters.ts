@@ -14,11 +14,11 @@ export const LINE_Y = 830;
 export const HERO_X = 230;
 const CENTRE = 960;
 const ALLY_PITCH = 205;
-const FOE_PITCH = 225;
+const FOE_PITCH = 195;
 
 export function slotX(side: FighterSide, slot: number, isHero: boolean): number {
   if (isHero) return HERO_X;
-  return side === 'a' ? CENTRE - 150 - slot * ALLY_PITCH : CENTRE + 150 + slot * FOE_PITCH;
+  return side === 'a' ? CENTRE - 150 - slot * ALLY_PITCH : CENTRE + 260 + slot * FOE_PITCH;
 }
 
 export interface FighterSpec {

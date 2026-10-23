@@ -120,6 +120,21 @@ describe('every card plays', () => {
   });
 });
 
+describe('second resources have a way in and a way out from the first hand', () => {
+  it("Astra's opening hand can both make Lumen and spend it", () => {
+    for (let i = 0; i < 20; i++) {
+      const { state } = createCombat(db, {
+        seed: `lumen-${i}`,
+        a: { hero: 'astra', deck: RIFTWALKERS.astra.starter },
+        b: { enemies: ['squire'] },
+      });
+      const hand = state.sides.a.hand.map((c) => db.cards[c.card]!);
+      expect(hand.some((c) => c.effects.some((o) => o.op === 'stars' && o.amount > 0)), `seed ${i} makes`).toBe(true);
+      expect(hand.some((c) => (c.starCost ?? 0) > 0), `seed ${i} spends`).toBe(true);
+    }
+  });
+});
+
 describe('pool shape (docs/09_ROSTER.md §1)', () => {
   const lanes = (h: HeroId) => rewardPool(h).map((id) => db.cards[id]!);
 

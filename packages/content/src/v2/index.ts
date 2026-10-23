@@ -119,7 +119,8 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
       handSize: 5,
       sigil: [stars(2), addTo('starforged-blade')],
     },
-    starter: [...rep('strike', 4), ...rep('defend', 4), 'meteor-jab', 'gather-light'],
+    // Gather Light (makes Lumen) and Lumen Bolt (spends it) are Innate: the opening hand can always do both
+    starter: [...rep('strike', 3), ...rep('defend', 4), 'meteor-jab', 'gather-light', 'lumen-bolt'],
     blurb: 'A scholar of fallen stars. Starts with 2 Lumen and a Starforged Blade that every Sharpen improves for good.',
     lanes: ['Blade: sharpen one weapon', 'Lumen: spend for finishers', 'Constellations: ticking Auras'],
   },

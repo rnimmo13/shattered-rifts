@@ -898,3 +898,56 @@
   text-shadow: 0 2px 6px #000;
   pointer-events: none;
 }
+
+/* ---- Lumen sits beside Mana ---- */
+.fight__lumen {
+  position: absolute;
+  left: 7.4rem;
+  bottom: 7rem;
+  width: 4rem;
+  height: 4rem;
+  border-radius: 50%;
+  display: grid;
+  place-content: center;
+  text-align: center;
+  background: radial-gradient(circle at 35% 30%, #fff6c8, #e0b24a 45%, #6a4a12 100%);
+  border: 3px solid #fff0b0;
+  box-shadow: 0 0 16px rgb(255 226 122 / 0.6);
+  z-index: 22;
+  cursor: help;
+  pointer-events: auto;
+}
+.fight__lumen span {
+  position: absolute;
+  top: -0.55rem;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 1rem;
+  color: #fff0b0;
+  text-shadow: 0 0 8px #000;
+}
+.fight__lumen b {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  line-height: 1;
+  color: #3a2706;
+}
+.fight__lumen small {
+  font-size: 0.55rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-weight: 800;
+  color: #3a2706;
+}
+
+/* ---- runes: a curved row under the hero ---- */
+.runearc {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 21;
+}
+.runearc .rune {
+  position: absolute;
+  pointer-events: auto;
+}

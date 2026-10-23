@@ -58,19 +58,24 @@
   position: absolute;
   left: 8px;
   top: 106px;
-  min-width: 68px;
-  height: 40px;
-  padding: 0 10px;
+  width: 88px;
+  height: 88px;
   display: grid;
   place-items: center;
-  border-radius: 999px;
-  background: linear-gradient(180deg, #3a3170, #14103a);
-  border: 3px solid #ffe9a0;
-  color: #fff0b0;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 28%, #fff6c8, #e0b24a 45%, #6a4a12 100%);
+  border: 5px solid #fff0b0;
+  box-shadow:
+    0 0 0 3px rgb(0 0 0 / 0.55),
+    0 0 18px rgb(255 226 122 / 0.8);
+  z-index: 3;
+}
+.card__stars span {
   font-family: var(--font-numeric);
-  font-size: 26px;
+  font-size: 46px;
   line-height: 1;
-  box-shadow: 0 0 12px rgb(255 233 160 / 0.5);
+  color: #3a2706;
+  text-shadow: 0 1px 0 rgb(255 255 255 / 0.5);
 }
 .card--neutral {
   --ink-a: #262a4a;

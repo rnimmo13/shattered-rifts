@@ -26,7 +26,11 @@ const a = pool('astra', 'starfall');
 export const ASTRA: CardDef[] = [
   // --- basics and the token ---
   a('basic', 'meteor-jab', 'Meteor Jab', 'attack', 1, 'foe', [dmg(6), stars(1)]),
-  a('basic', 'gather-light', 'Gather Light', 'skill', 1, 'none', [stars(2)]),
+  a('basic', 'gather-light', 'Gather Light', 'skill', 1, 'none', [stars(2)], { innate: true }),
+  a('basic', 'lumen-bolt', 'Lumen Bolt', 'attack', 1, 'foe', [dmg(12)], {
+    starCost: 1,
+    innate: true,
+  }),
   a(
     'common',
     'starforged-blade',

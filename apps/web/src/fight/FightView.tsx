@@ -36,7 +36,7 @@ import { BoonChip } from './BoonChip';
 import { preloadArt } from '../art/assets';
 import { PotionButton } from './PotionChip';
 import { PickModal } from './PickModal';
-import { SidePanel } from './SidePanel';
+import { AuraList, LumenCounter, RuneArc } from './SidePanel';
 import type { FighterSpec } from './Fighters';
 import '../duel/duel.css';
 import '../play/play.css';
@@ -598,6 +598,7 @@ export function FightView(props: {
       }
     }
   }
+  const heroPlaced = placed.find((p) => p.unit.kind === 'hero' && p.unit.side === 'a') ?? null;
   const floatPos = (f: Float): { left: number; top: number } | null => {
     if (!sc) return null;
     const p = sc.stageToHost(f.x, f.y);
@@ -851,8 +852,10 @@ export function FightView(props: {
               </button>
             )}
           </div>
-          {me && (showStars || showRunes || me.powers.length > 0) && (
-            <SidePanel db={db} me={me} showStars={showStars} showRunes={showRunes} />
+          {me && <AuraList db={db} me={me} />}
+          {me && showStars && <LumenCounter value={me.stars} />}
+          {me && showRunes && heroPlaced && (
+            <RuneArc db={db} me={me} cx={heroPlaced.x} top={heroPlaced.y + 78} />
           )}
           {me && me.snares.length > 0 && (
             <div className="fight__snares" title="Face-down Snares spring on their own">
