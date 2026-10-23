@@ -110,6 +110,9 @@ importers:
 
   tools:
     dependencies:
+      '@sr/campaign':
+        specifier: workspace:*
+        version: link:../packages/campaign
       '@sr/combat':
         specifier: workspace:*
         version: link:../packages/combat

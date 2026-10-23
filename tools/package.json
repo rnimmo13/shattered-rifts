@@ -11,9 +11,12 @@
     "deploy:web": "tsx src/deploy.ts",
     "artlist": "tsx src/artlist.ts",
     "cardlist": "tsx src/cardlist.ts",
-    "balance": "tsx src/balance.ts"
+    "balance": "tsx src/balance.ts",
+    "runsim": "tsx src/runsim.ts",
+    "cardscan": "tsx src/cardscan.ts"
   },
   "dependencies": {
+    "@sr/campaign": "workspace:*",
     "@sr/combat": "workspace:*",
     "@sr/content": "workspace:*"
   },

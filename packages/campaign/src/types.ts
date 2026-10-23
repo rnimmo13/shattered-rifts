@@ -5,7 +5,7 @@
 import type { RngState } from '@sr/combat';
 import type { HeroId } from '@sr/content/v2';
 
-export type Difficulty = 'easy' | 'normal';
+export type Difficulty = 'easy' | 'normal' | 'hard';
 
 /** How kind card rewards are: a setting for testing and for players who want a stronger deck sooner. */
 export type Luck = 'normal' | 'lucky' | 'blessed';

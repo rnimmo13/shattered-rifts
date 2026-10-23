@@ -21,7 +21,9 @@
     "deploy:web": "pnpm --filter @sr/tools deploy:web",
     "artlist": "pnpm --filter @sr/tools artlist",
     "cardlist": "pnpm --filter @sr/tools cardlist",
-    "balance": "pnpm --filter @sr/tools balance"
+    "balance": "pnpm --filter @sr/tools balance",
+    "runsim": "pnpm --filter @sr/tools runsim",
+    "cardscan": "pnpm --filter @sr/tools cardscan"
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",

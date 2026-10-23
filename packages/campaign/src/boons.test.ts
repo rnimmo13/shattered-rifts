@@ -32,7 +32,7 @@ describe('boons in a run', () => {
       expect(won.boons).toEqual([id]);
       const b = BOONS.find((x) => x.id === id);
       expect(b).toBeDefined();
-      expect(won.maxHp).toBe(80 + (b?.maxHp ?? 0));
+      expect(won.maxHp).toBe(RIFTWALKERS.maren.hero.maxHp + (b?.maxHp ?? 0));
     }
   });
 

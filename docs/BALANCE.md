@@ -139,3 +139,48 @@ encounter, Normal difficulty). Findings and changes:
   bot. Treat the table as a floor for them and a ceiling for companion decks. Human playtests decide the next pass.
 - **Still open:** Hollow runes scale without bound; Serene/Fury loops with Surge of Ire are strong; starter-only Wardens are very
   hard for most characters (intended: you are meant to draft), but Rivet/Kesh/Sehra start well ahead of the rest.
+
+## Full balance review and difficulty modes (2026-10-23)
+
+Why: friends found the game too easy. They were playing Easy (the default then), where a bot clears 100% of runs losing no fights;
+and a full-run sim showed Normal was lopsided (Maren and Ilvane ~90-100% clears, Sehra, Astra and Vesper ~25-35%).
+
+**New tools** (greedy bot, so read as directions, not verdicts):
+- `pnpm runsim -- --n 40 --difficulty easy,normal,hard`: whole runs (kit, prelude, map, fights, rewards, shrines, events) with a
+  decent-not-great bot (best-rarity drafting, rests when hurt, elites when healthy, no potions). Reports clear rate, average
+  stage reached, fights lost, HP walking into duels/elites/Wardens, and which encounters beat each hero. `--hp --dmg --resolve`
+  try a setting without editing the table.
+- `pnpm cardscan -- --seeds 30`: every card of a pool added twice to a starter+8 random cards deck against elites/Wardens;
+  score = share of HP left; shows the strongest and weakest per hero. Noise is ±8, so only the extremes matter.
+- `pnpm balance -- --only snare|nosnare`: draft only (or never) Snares.
+
+**Difficulty** (`DIFFICULTY` in packages/campaign/src/run.ts, percent of designed enemy HP/damage; Normal is the default now):
+
+| Mode | Enemies | Resolve | Bot clear rate |
+|---|---|---|---|
+| Easy | 85% / 80% | 5 (+100 shards) | 99% (relaxed) |
+| Normal | 115% / 110% | 3 | 50% overall, heroes 43-68% |
+| Hard | 125% / 118% | 2 | 20% |
+
+On top of that, **enemies ramp by stage** (`STAGE_SCALE`): 80/85%, 95/95%, 110/105%, 120/115%, 130/125% of HP/damage for
+stages 1-5, so the opening is gentle and the Rift is the real test (before, a stage-1 Warden was as hard as a stage-3 one and
+killed weak decks at the start of the run).
+
+**Cards (outliers found by cardscan, then rescanned):**
+- Snares: the "cancel that attack" ones were the best cards in the game (Perfect Trap +26, Booby-Trapped Window +26, Silencing
+  Snare +17, Mirror Veil +11). Mirror Veil and Silencing Snare cost 2, Perfect Trap 3 (22 damage), Hollow Snare 8 damage, Time
+  Bomb 9, Pain Link 6, KP's Pit of Bottles 6, Booby-Trapped Window 10 damage and no Stun. Vesper gets +6 HP per Veil Strike and
+  more HP (104) and a longer Ambusher.
+- Defence made everything else pointless: Maren Sure Footing Bracing 1, Plated Resolve Armored 2, Aegis 6 Barrier at 2 Mana, Last
+  Oath thorns 3 / bracing 1, Dawn Incarnate x2 Barrier; Ilvane's Ward rune (passive 1, release 6), Glacial Bastion, Stored Charge,
+  Cold Snap (cost 1), Glimmer (cost 1), Glyph Guard, Frostglass, Hollow charges by 2; KP Glass Palace, Pass Out; Drowned King
+  (no taunt, 22 HP, 10 damage, 1 Might); Still Flame Ascendant (cost 3, 4 Primed); Supernova 46, Falling Sky 7 x3, Lyra costs 2.
+- Buffed the weakest: Maren Anvil Strike, Vengeful Light, Dawn's Verdict; Ion Lance; Reactor; Reinforce; Death Mark; Coup de
+  Grace; Nightfall (cost 2); Hone; Royal Decree; Harmonic Wave; Cataclysm Glyph (cost 2); Deathless; KP Shatter, Barroom Brawl,
+  Boomstick, Rack and Ruin.
+- Heroes: HP Maren 66, Rivet 58, Kesh 92, Vesper 104, Quill 66, Ilvane 56, Sehra 90, Astra 102, KP 80, Mire 96; Maren
+  Oathkeeper 2 Barrier, Astra Starborn 2 Lumen, Mire Grave Chill 3 Fate.
+
+**Still open:** the bot cannot pilot engines well (Astra, Kesh, Vesper, Kp sit at 43-48% vs Maren 68%), so a human will do better
+with them; Mana-trick cards (Overcharge, Saved Breath...) score low because the bot does not value Mana. Re-run after every
+content change.

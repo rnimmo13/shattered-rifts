@@ -2,7 +2,7 @@
 
 470 cards. Design rules for pools are in `09_ROSTER.md`.
 
-## Ser Maren Ashcourt (aurelion, 80 HP)
+## Ser Maren Ashcourt (aurelion, 66 HP)
 
 A knight of the Gilded Order. No companions: Barrier, Thorns and punishing Snares.
 
@@ -29,23 +29,23 @@ Starter: Slash, Slash, Slash, Slash, Guard, Guard, Guard, Guard, Dawn Smite, Oat
 | Gilded Blow | 1 | attack | common | Deal 8 damage. Gain 2 Barrier. |
 | Spiked Aegis | 1 | skill | common | Gain 6 Barrier. Apply 1 Thorns. |
 | Shell Cracker | 1 | attack | common | Deal 4 damage. Apply 2 Brittle. |
-| Anvil Strike | 2 | attack | uncommon | Deal 8 (+1 per 2 Barrier) damage. |
+| Anvil Strike | 2 | attack | uncommon | Deal 11 (+1 per Barrier) damage. |
 | Gilded Wall | 2 | skill | uncommon | Gain Barrier equal to your Barrier. |
 | Plate Discipline | 1 | power | uncommon | At the end of your turn: Gain 4 Barrier. |
 | Retribution | 1 | attack | uncommon | Deal damage equal to 3 times your Thorns. |
 | Barbed Oath | 1 | power | uncommon | At the start of your turn: Apply 1 Thorns. |
 | Mirror Shield | 1 | snare | uncommon | When you or an ally is attacked: Deal 4 damage to the attacker. Deal damage equal to 2 times your Thorns to the attacker. |
-| Aegis of the Warden | 1 | skill | uncommon | Gain 8 Barrier. Apply 1 Shielded. |
+| Aegis of the Warden | 2 | skill | uncommon | Gain 6 Barrier. Apply 1 Shielded. |
 | Benediction | 2 | skill | uncommon | Heal 10. Gain 6 Barrier. Consume. |
 | Ward of Ages | 1 | skill | uncommon | Apply 1 Shielded. Draw 1 card. |
 | Sacred Vow | 2 | power | uncommon | At the end of your turn: Heal 3. |
 | Radiant Bulwark | 2 | skill | uncommon | Gain 12 Barrier. Heal 4. |
-| Vengeful Light | 2 | attack | uncommon | Deal 9 damage. Heal HP equal to your Thorns. |
+| Vengeful Light | 2 | attack | uncommon | Deal 11 damage. Heal HP equal to your Thorns. |
 | Crusade | 2 | attack | uncommon | Deal 7 damage 2 times. Gain 4 Barrier. |
 | Sanctuary | 2 | snare | uncommon | When you or an ally is attacked: Cancel that attack. Gain 8 Barrier. |
 | Sunburst | 2 | attack | uncommon | Deal 9 damage to ALL enemies. Apply 1 Faltering to ALL enemies. |
-| Plated Resolve | 1 | skill | uncommon | Apply 3 Armored. |
-| Sure Footing | 1 | power | uncommon | Apply 2 Bracing. |
+| Plated Resolve | 1 | skill | uncommon | Apply 2 Armored. |
+| Sure Footing | 1 | power | uncommon | Apply 1 Bracing. |
 | Steady Resolve | 1 | skill | uncommon | Gain 5 Barrier. Next turn, gain 2 extra Mana. |
 | Impregnable | 2 | skill | rare | Gain Barrier equal to 2 times your Barrier. Consume. |
 | Radiant Oath | 2 | power | rare | Apply 4 Thorns. |
@@ -53,12 +53,12 @@ Starter: Slash, Slash, Slash, Slash, Guard, Guard, Guard, Guard, Dawn Smite, Oat
 | Hallowed Ground | 2 | power | rare | Apply 2 Shielded. |
 | Halo | 3 | power | rare | At the start of your turn: Apply 1 Shielded. |
 | Absolution | 3 | skill | rare | Heal 12. Gain 12 Barrier. Apply 1 Shielded. Consume. |
-| Dawn's Verdict | 3 | attack | rare | Deal 24 damage. Apply 2 Exposed. |
+| Dawn's Verdict | 3 | attack | rare | Deal 28 damage. Apply 2 Exposed. |
 | Unbroken Wall | 2 | power | rare | Apply 1 Fortified. |
-| The Last Oath | 3 | power | legendary | Apply 1 Fortified. Apply 5 Thorns. Apply 2 Bracing. |
-| Dawn Incarnate | 3 | attack | legendary | Deal damage equal to 3 times your Barrier to ALL enemies. Consume. |
+| The Last Oath | 3 | power | legendary | Apply 1 Fortified. Apply 3 Thorns. Apply 1 Bracing. |
+| Dawn Incarnate | 3 | attack | legendary | Deal damage equal to 2 times your Barrier to ALL enemies. Consume. |
 
-## Rivet (nexus, 66 HP)
+## Rivet (nexus, 58 HP)
 
 A scrap-built tinkerer. Starts every fight with a Drone and builds an army of machines.
 
@@ -80,12 +80,12 @@ Starter: Slash, Slash, Slash, Slash, Slash, Guard, Guard, Guard, Deploy Drone, O
 | Countermeasure Grid | 1 | snare | common | When you or an ally is attacked: Deal 5 damage to the attacker. Gain 5 Barrier. |
 | Repair Bot | 1 | summon | common | Summon Repair Bot. |
 | Build Enforcer | 2 | summon | common | Summon Enforcer Mk.II. |
-| Reinforce | 1 | skill | common | Gain 8 Barrier to the ally. Apply 1 Might to the ally. |
+| Reinforce | 1 | skill | common | Gain 8 Barrier to the ally. Apply 2 Might to the ally. |
 | Recompile | 1 | skill | common | Heal 4 to all friends. |
 | Static Field | 1 | attack | common | Deal 3 damage to ALL enemies. Apply 1 Faltering to ALL enemies. |
 | Plating | 1 | skill | common | Gain 6 Barrier to all friends. |
 | Arc Welder | 1 | attack | common | Deal 7 damage. Apply 1 Faltering. |
-| Ion Lance | 2 | attack | common | Deal 12 damage. |
+| Ion Lance | 2 | attack | common | Deal 16 damage. |
 | Swarm Protocol | 2 | summon | uncommon | Summon Patrol Drone. Summon Patrol Drone. |
 | Recycle | 0 | skill | uncommon | Gain Barrier equal to the target's HP. Draw 1 card. Sacrifice the chosen ally. |
 | Overcharge Blast | 2 | attack | uncommon | Deal 8 (+2 per ally) damage to ALL enemies. |
@@ -100,13 +100,13 @@ Starter: Slash, Slash, Slash, Slash, Slash, Guard, Guard, Guard, Deploy Drone, O
 | Legion | 2 | power | rare | Whenever you summon an ally: Apply 1 Might to all friends. |
 | Perpetual Motion | 3 | power | rare | At the start of your turn: All your allies act now. |
 | War Engine | 3 | summon | rare | Summon War Engine. |
-| Reactor | 2 | power | rare | Apply 2 Might to all friends. |
+| Reactor | 2 | power | rare | Apply 3 Might to all friends. |
 | Overclock Core | 3 | power | rare | At the start of your turn: Apply 1 Might to all friends. |
 | Railgun | 3 | attack | rare | Deal 30 damage. |
 | The Foundry Awakens | 3 | power | legendary | At the start of your turn: Summon Siege Engine. All your allies act now. |
 | Overclocked Legion | 2 | skill | legendary | Apply 3 Might to all friends. All your allies act now. All your allies act now. Consume. |
 
-## Kesh the Unfed (wyldmaw, 70 HP)
+## Kesh the Unfed (wyldmaw, 92 HP)
 
 A hunter with a Hound. Pays HP to buff the whole pack with Might.
 
@@ -160,7 +160,7 @@ Starter: Slash, Slash, Slash, Slash, Slash, Guard, Guard, Guard, Savage Bite, Bl
 | The Hunger Unleashed | 2 | power | legendary | Lose 6 HP. Apply 4 Might to all friends. Apply 2 Cadence. |
 | Apex Maw | 3 | attack | legendary | Deal 10 (+4 per Might) damage. Heal 10. Consume. |
 
-## Vesper Nightlace (umbral, 76 HP)
+## Vesper Nightlace (umbral, 104 HP)
 
 A masked trapper. No companions: Snares, Exposed and patience.
 
@@ -170,10 +170,10 @@ Starter: Slash, Slash, Slash, Guard, Guard, Guard, Guard, Veil Strike, Veil Stri
 
 | Card | Cost | Type | Rarity | Text |
 |---|---|---|---|---|
-| Veil Strike | 1 | attack | basic | Deal 5 damage. Apply 1 Exposed. |
+| Veil Strike | 1 | attack | basic | Deal 6 damage. Apply 1 Exposed. |
 | Set the Web | 1 | snare | basic | When you or an ally is attacked: Deal 8 damage to the attacker. Apply 2 Exposed to the attacker. |
 | Trip Line | 0 | snare | common | When you or an ally is attacked: Deal 6 damage to the attacker. |
-| Hollow Snare | 1 | snare | common | When you or an ally is attacked: Deal 10 damage to the attacker. Apply 1 Faltering to the attacker. |
+| Hollow Snare | 1 | snare | common | When you or an ally is attacked: Deal 8 damage to the attacker. Apply 1 Faltering to the attacker. |
 | Whisper Net | 1 | snare | common | When the enemy summons: Deal 8 damage to the attacker. Apply 1 Stunned to the attacker. |
 | Cage | 1 | snare | common | When an enemy gains Barrier: Deal 10 damage to the attacker. Apply 1 Faltering to the attacker. |
 | Snare Kit | 1 | skill | common | Add 2 Trip Lines to your hand. Consume. |
@@ -188,12 +188,12 @@ Starter: Slash, Slash, Slash, Guard, Guard, Guard, Guard, Veil Strike, Veil Stri
 | Shadow Cloak | 1 | skill | common | Gain 6 Barrier. Draw 1 card. |
 | Dark Study | 1 | skill | common | Draw 2 cards. |
 | Break the Guard | 1 | skill | common | Apply 3 Brittle. Apply 1 Exposed. |
-| Mirror Veil | 1 | snare | uncommon | When you or an ally is attacked: Cancel that attack. Apply 2 Faltering to the attacker. |
-| Pain Link | 0 | snare | uncommon | When you lose 5+ HP at once: Deal 8 damage to ALL enemies. |
-| Time Bomb | 1 | snare | uncommon | At the start of the enemy turn: Deal 12 damage to ALL enemies. |
+| Mirror Veil | 2 | snare | uncommon | When you or an ally is attacked: Cancel that attack. Apply 2 Faltering to the attacker. |
+| Pain Link | 0 | snare | uncommon | When you lose 5+ HP at once: Deal 6 damage to ALL enemies. |
+| Time Bomb | 1 | snare | uncommon | At the start of the enemy turn: Deal 9 damage to ALL enemies. |
 | Spring-Loaded | 1 | skill | uncommon | Gain Barrier equal to 5 times the number of Snares you have set. |
 | Master Trapper | 1 | power | uncommon | Whenever you play a Snare: Draw 1 card. |
-| Death Mark | 2 | attack | uncommon | Deal 10 damage. Apply 3 Exposed. |
+| Death Mark | 2 | attack | uncommon | Deal 12 damage. Apply 3 Exposed. |
 | Shadow Volley | 1 | attack | uncommon | Deal 4 damage 3 times to a random enemy. |
 | Spotlight | 1 | skill | uncommon | Apply 3 Exposed. Apply 1 Faltering. |
 | Banked Breath | 1 | power | uncommon | At the end of your turn: Gain Barrier equal to 2 times your Mana. |
@@ -205,16 +205,16 @@ Starter: Slash, Slash, Slash, Guard, Guard, Guard, Guard, Veil Strike, Veil Stri
 | Marked Cards | 1 | power | uncommon | Whenever you discard a card: Deal 3 damage to a random enemy. |
 | Saved Breath | 0 | skill | uncommon | Next turn, gain 2 extra Mana. Foresee 2. Consume. |
 | Bait and Switch | 2 | snare | rare | When you or an ally is attacked: Cancel that attack. Deal 12 damage to the attacker. |
-| Silencing Snare | 1 | snare | rare | When you or an ally is attacked: Apply 1 Stunned to the attacker. Apply 1 Shielded. |
+| Silencing Snare | 2 | snare | rare | When you or an ally is attacked: Apply 1 Stunned to the attacker. Apply 1 Shielded. |
 | Echo Trap | 2 | power | rare | Whenever one of your Snares springs: Gain 5 Barrier. Draw 1 card. |
-| Coup de Grace | 3 | attack | rare | Deal 14 (+6 per Exposed on the target) damage. |
+| Coup de Grace | 3 | attack | rare | Deal 16 (+6 per Exposed on the target) damage. |
 | The Long Game | 2 | power | rare | At the start of your turn: Draw 1 card. |
 | Gleeful Trapsmith | 1 | power | rare | Whenever you play a Snare: Deal 4 damage to ALL enemies. |
 | Between Worlds | 2 | skill | rare | Apply 2 Ghostly. Consume. |
-| The Perfect Trap | 2 | snare | legendary | When you or an ally is attacked: Cancel that attack. Deal 30 damage to the attacker. Apply 1 Stunned to the attacker. Apply 2 Shielded. |
+| The Perfect Trap | 3 | snare | legendary | When you or an ally is attacked: Cancel that attack. Deal 22 damage to the attacker. Apply 1 Stunned to the attacker. Apply 2 Shielded. |
 | Masquerade | 2 | power | legendary | Whenever one of your Snares springs: Draw 2 cards. Gain 1 Mana. Deal 4 damage to ALL enemies. |
 
-## Quill, the Knife-Dancer (umbral, 72 HP)
+## Quill, the Knife-Dancer (umbral, 66 HP)
 
 A cutpurse with a sleeve full of blades. Starts every fight with a Sleeve Knife. Knives, Seared and discard tricks.
 
@@ -264,7 +264,7 @@ Starter: Slash, Slash, Slash, Slash, Guard, Guard, Guard, Quick Jab, Quick Jab, 
 | Light Fingers | 1 | skill | uncommon | Gain 2 Mana. Discard 1 card. |
 | Countless Nicks | 2 | power | rare | Whenever you play a card: Deal 1 damage to ALL enemies. |
 | Plague Bloom | 2 | skill | rare | Triple the Seared to ALL enemies. Consume. |
-| Nightfall | 3 | skill | rare | Apply 5 Seared to ALL enemies. Apply 2 Exposed to ALL enemies. Consume. |
+| Nightfall | 2 | skill | rare | Apply 5 Seared to ALL enemies. Apply 2 Exposed to ALL enemies. Consume. |
 | Lingering Step | 1 | power | rare | Whenever you play a card: Gain 1 Barrier. |
 | Deck of a Thousand Knives | 2 | power | legendary | At the start of your turn: Add 3 Sleeve Knifes to your hand. Apply 2 Edge. |
 | Death Warrant | 1 | skill | legendary | The target loses HP equal to 3 times the target's Seared. Consume. |
@@ -275,7 +275,7 @@ Tokens (made by other cards):
 |---|---|---|---|---|
 | Sleeve Knife | 0 | attack | common | Deal 4 damage. Consume. |
 
-## Ilvane, the Glyphwright (nexus, 70 HP)
+## Ilvane, the Glyphwright (nexus, 56 HP)
 
 Carves runes into the air. Starts every fight with a Spark rune. Runes fire every turn, then burst when evoked.
 
@@ -292,14 +292,14 @@ Starter: Slash, Slash, Slash, Slash, Guard, Guard, Guard, Spark Cast, Spark Cast
 | Spark Lance | 2 | attack | common | Deal 12 damage. Conjure Spark. |
 | Spark Cluster | 2 | skill | common | Conjure Spark 2 times. |
 | Static Guard | 1 | skill | common | Gain 5 Barrier. Conjure Spark. |
-| Glyph Guard | 1 | skill | common | Gain 6 Barrier. Conjure Ward. |
-| Frostglass | 2 | skill | common | Gain 7 Barrier. Conjure Ward 2 times. |
+| Glyph Guard | 1 | skill | common | Gain 5 Barrier. Conjure Ward. |
+| Frostglass | 2 | skill | common | Gain 6 Barrier. Conjure Ward 2 times. |
 | Ward Strike | 1 | attack | common | Deal 6 damage. Conjure Ward. |
-| Cold Snap | 0 | skill | common | Conjure Ward once per enemy. Consume. |
+| Cold Snap | 1 | skill | common | Conjure Ward once per enemy. Consume. |
 | Umbra Glyph | 1 | skill | common | Conjure Hollow. |
 | Hollow Strike | 1 | attack | common | Deal 7 damage. Conjure Hollow. |
 | Rune Burst | 1 | skill | common | Release your first rune. Draw 1 card. |
-| Glimmer | 0 | skill | common | Conjure Prism. Consume. |
+| Glimmer | 1 | skill | common | Conjure Prism. Consume. |
 | Glyph Lattice | 1 | skill | uncommon | Gain 2 rune slots. |
 | Thundercall | 1 | power | uncommon | Whenever you play an Aura: Conjure Spark. |
 | Charged Blow | 1 | attack | uncommon | Deal 4 (+2 per rune) damage. |
@@ -313,22 +313,22 @@ Starter: Slash, Slash, Slash, Slash, Guard, Guard, Guard, Spark Cast, Spark Cast
 | Overtune | 1 | skill | uncommon | Apply 1 Resonance. Draw 1 card. Consume. |
 | Resonant Strike | 1 | attack | uncommon | Deal 6 (+3 per Resonance) damage. |
 | Prism Cut | 1 | skill | uncommon | Conjure Prism. Draw 1 card. |
-| Harmonic Wave | 2 | attack | uncommon | Deal 6 damage to ALL enemies. Release your first rune. |
+| Harmonic Wave | 2 | attack | uncommon | Deal 8 damage to ALL enemies. Release your first rune. |
 | Many Voices | X | skill | uncommon | Release your first rune X times. |
 | Glyph Trap | 1 | snare | uncommon | When you or an ally is attacked: Deal 5 damage to the attacker. Conjure Ward. |
 | Retune | 1 | skill | uncommon | Upgrade a random card in your hand for this fight. Consume. |
-| Stored Charge | 1 | skill | uncommon | Next turn, gain 2 extra Mana. Conjure Ward. |
+| Stored Charge | 1 | skill | uncommon | Next turn, gain 1 extra Mana. Conjure Ward. |
 | Glyphstorm | X | skill | rare | Conjure Spark X times. |
 | Grand Glyph | 3 | skill | rare | Conjure Spark. Conjure Ward. Conjure Hollow. |
-| Glacial Bastion | 2 | skill | rare | Gain 12 Barrier. Conjure Ward 3 times. |
+| Glacial Bastion | 2 | skill | rare | Gain 10 Barrier. Conjure Ward 2 times. |
 | Fevered Attunement | 1 | power | rare | Apply 4 Resonance. At the start of your turn: Remove 1 Resonance. |
 | Chorus of Glyphs | 2 | power | rare | Apply 2 Resonance. Gain 1 rune slot. |
 | Glyph Engine | 2 | power | rare | At the start of your turn: Conjure Spark. |
 | Leyline Tap | 2 | skill | rare | Gain 1 maximum Mana for the rest of the fight (and 1 now). Gain 6 Barrier. Consume. |
 | The Grand Design | 3 | power | legendary | Gain 3 rune slots. Apply 3 Resonance. At the start of your turn: Conjure Hollow. |
-| Cataclysm Glyph | 3 | attack | legendary | Deal 10 damage to ALL enemies. Release your first 10 runes 2 times. Consume. |
+| Cataclysm Glyph | 2 | attack | legendary | Deal 10 damage to ALL enemies. Release your first 10 runes 2 times. Consume. |
 
-## Sehra, the Still Flame (aurelion, 72 HP)
+## Sehra, the Still Flame (aurelion, 90 HP)
 
 A monk who fights in stances. Starts every fight Serene. Fury for burst, Serene for tempo, Fervor for Radiance.
 
@@ -379,9 +379,9 @@ Starter: Slash, Slash, Slash, Slash, Guard, Guard, Guard, Guard, Kindle Fury, St
 | Daily Rite | 1 | power | rare | At the start of your turn: Apply 2 Fervor. |
 | Rise Radiant | 2 | skill | rare | Enter Radiant. Consume. |
 | Perfect Balance | 2 | power | legendary | Whenever you enter a stance: Draw 1 card. Gain 5 Barrier. Apply 1 Fervor. |
-| Still Flame Ascendant | 2 | skill | legendary | Enter Radiant. Apply 8 Primed. Draw 2 cards. Consume. |
+| Still Flame Ascendant | 3 | skill | legendary | Enter Radiant. Apply 4 Primed. Draw 2 cards. Consume. |
 
-## Astra, the Starcaller (starfall, 80 HP)
+## Astra, the Starcaller (starfall, 102 HP)
 
 A scholar of fallen stars. Starts with 2 Lumen and a Starforged Blade that every Sharpen improves for good.
 
@@ -394,7 +394,7 @@ Starter: Slash, Slash, Slash, Guard, Guard, Guard, Guard, Meteor Jab, Gather Lig
 | Meteor Jab | 1 | attack | basic | Deal 7 damage. Gain 1 Lumen. |
 | Gather Light | 1 | skill | basic | Gain 2 Lumen. Opening hand. |
 | Lumen Bolt | 1+1★ | attack | basic | Costs 1 Lumen. Deal 14 damage. Opening hand. |
-| Hone | 1 | skill | common | Sharpen 3 (Starforged Blade gains 3 damage). |
+| Hone | 1 | skill | common | Sharpen 4 (Starforged Blade gains 4 damage). |
 | Honed Strike | 1 | attack | common | Deal 6 damage. Sharpen 2 (Starforged Blade gains 2 damage). |
 | Blade Ward | 1 | skill | common | Gain 5 Barrier. Sharpen 1 (Starforged Blade gains 1 damage). |
 | Whetstone | 0 | skill | common | Sharpen 4 (Starforged Blade gains 4 damage). Consume. |
@@ -406,10 +406,10 @@ Starter: Slash, Slash, Slash, Guard, Guard, Guard, Guard, Meteor Jab, Gather Lig
 | Star Barrier | 1+1★ | skill | common | Costs 1 Lumen. Gain 16 Barrier. |
 | Crown Strike | 1 | attack | uncommon | Deal 7 damage. Sharpen 1 (Starforged Blade gains 1 damage). |
 | Edgewise | 1 | skill | uncommon | Gain 7 Barrier. Sharpen 2 (Starforged Blade gains 2 damage). |
-| Royal Decree | 2 | skill | uncommon | Sharpen 5 (Starforged Blade gains 5 damage). Draw 1 card. |
+| Royal Decree | 2 | skill | uncommon | Sharpen 6 (Starforged Blade gains 6 damage). Draw 1 card. |
 | Knight's Oath | 1 | power | uncommon | Whenever you play a Starforged Blade: Gain 1 Lumen. |
 | Nova | 2+2★ | attack | uncommon | Costs 2 Lumen. Deal 30 damage. |
-| Falling Sky | 1+3★ | attack | uncommon | Costs 3 Lumen. Deal 9 damage 3 times to ALL enemies. |
+| Falling Sky | 1+3★ | attack | uncommon | Costs 3 Lumen. Deal 7 damage 3 times to ALL enemies. |
 | Solar Flare | 1+2★ | attack | uncommon | Costs 2 Lumen. Deal 12 damage to ALL enemies. Apply 1 Exposed to ALL enemies. |
 | Orbit | 1 | skill | uncommon | Gain 1 Lumen. Sharpen 1 (Starforged Blade gains 1 damage). Draw 1 card. |
 | Cosmic Lance | 2 | attack | uncommon | Deal 12 damage. Gain 1 Lumen. |
@@ -417,7 +417,7 @@ Starter: Slash, Slash, Slash, Guard, Guard, Guard, Guard, Meteor Jab, Gather Lig
 | Eclipse | 2 | skill | uncommon | Gain 10 Barrier. Apply 1 Faltering to ALL enemies. |
 | Starlight | 1 | skill | uncommon | Gain 3 Lumen. Consume. |
 | Orion | 2 | power | uncommon | At the start of your turn: Gain 1 Lumen. |
-| Lyra | 1 | power | uncommon | At the end of your turn: Gain Barrier equal to your Lumen. |
+| Lyra | 2 | power | uncommon | At the end of your turn: Gain Barrier equal to your Lumen. |
 | Draco | 2 | power | uncommon | At the start of your turn: Deal 3 damage to ALL enemies. |
 | Cygnus | 1 | power | uncommon | Whenever you play a Skill: Gain 2 Barrier. |
 | Ursa | 1 | power | uncommon | At the end of your turn: Gain 3 Barrier. |
@@ -426,7 +426,7 @@ Starter: Slash, Slash, Slash, Guard, Guard, Guard, Guard, Meteor Jab, Gather Lig
 | Chart the Orbit | 1 | skill | uncommon | Next turn, gain 2 extra Mana. Sharpen 1 (Starforged Blade gains 1 damage). |
 | Borrowed Light | 0 | skill | uncommon | Gain 2 Mana. Next turn, lose 1 Mana. Gain 1 Lumen. Consume. |
 | Ever-Sharpening | 2 | power | rare | At the start of your turn: Sharpen 2 (Starforged Blade gains 2 damage). |
-| Supernova | 3+4★ | attack | rare | Costs 4 Lumen. Deal 55 damage. Apply 2 Exposed. |
+| Supernova | 3+4★ | attack | rare | Costs 4 Lumen. Deal 46 damage. Apply 2 Exposed. |
 | Dawn of Stars | 2 | skill | rare | Gain 5 Lumen. Draw 2 cards. Consume. |
 | Cassiopeia | 2 | power | rare | Whenever you play an Attack: Gain 1 Lumen. |
 | Gemini | 3 | power | rare | At the start of your turn: Draw 1 card. Gain 1 Lumen. |
@@ -439,7 +439,7 @@ Tokens (made by other cards):
 |---|---|---|---|---|
 | Starforged Blade | 1 | attack | common | Deal 7 (+1 per point of sharpening) damage. Hold. |
 
-## KP, the Homeless Drunk (midden, 88 HP)
+## KP, the Homeless Drunk (midden, 80 HP)
 
 A short, fat, bald dwarf with a hammer, an Old Twelve Gauge that hits every enemy and gets sharper, and a trolley of window panes. Booby traps, glass and buckshot.
 
@@ -470,14 +470,14 @@ Starter: Slash, Slash, Slash, Guard, Guard, Guard, Hammer Swing, Hammer Swing, P
 | Pistol Whip | 1 | attack | common | Deal 6 damage. Sharpen 2 (Old Twelve Gauge gains 2 damage). |
 | Pit of Bottles | 1 | snare | uncommon | At the start of the enemy turn: Deal 8 damage to ALL enemies. Apply 1 Brittle to ALL enemies. |
 | Double Glazing | 2 | skill | uncommon | Gain 12 Barrier. Apply 2 Thorns. |
-| Shatter | 2 | attack | uncommon | Deal 7 (+3 per Thorns) damage. |
+| Shatter | 2 | attack | uncommon | Deal 8 (+3 per Thorns) damage. |
 | Stained Glass | 1 | power | uncommon | At the start of your turn: Apply 1 Thorns. Gain 2 Barrier. |
 | Glazier | 1 | power | uncommon | Whenever you play a Skill: Gain 3 Barrier. |
 | Double Barrel | 2 | attack | uncommon | Deal 9 damage 2 times. |
 | Pump Action | 1 | skill | uncommon | Add 2 Buckshot Shells to your hand. Draw 1 card. |
 | Shotgun Wedding | 2 | attack | uncommon | Deal 6 damage 2 times to ALL enemies. |
 | Shell Game | 1 | power | uncommon | At the start of your turn: Add a Buckshot Shell to your hand. |
-| Barroom Brawl | 2 | attack | uncommon | Deal 9 damage to ALL enemies. Lose 3 HP. |
+| Barroom Brawl | 2 | attack | uncommon | Deal 10 damage to ALL enemies. Lose 2 HP. |
 | Dutch Courage | 1 | power | uncommon | At the start of your turn: Heal 2. Apply 1 Might until the end of your turn. |
 | Dumpster Dive | 1 | skill | uncommon | Draw 3 cards. Discard 1 card. |
 | Spare Change | 0 | skill | uncommon | Draw 1 card. Gain 1 Mana. Foresee 2. Consume. |
@@ -485,19 +485,19 @@ Starter: Slash, Slash, Slash, Guard, Guard, Guard, Hammer Swing, Hammer Swing, P
 | Hair Trigger | 1 | power | uncommon | Whenever you play a shell: Sharpen 1 (Old Twelve Gauge gains 1 damage). |
 | Reload | 1 | skill | uncommon | Sharpen 2 (Old Twelve Gauge gains 2 damage). Draw 1 card. |
 | Liquid Lunch | 0 | skill | uncommon | Gain 2 Mana. Next turn, lose 1 Mana. Consume. |
-| Booby-Trapped Window | 2 | snare | rare | When you or an ally is attacked: Cancel that attack. Deal 14 damage to the attacker. Apply 1 Stunned to the attacker. |
+| Booby-Trapped Window | 2 | snare | rare | When you or an ally is attacked: Cancel that attack. Deal 10 damage to the attacker. |
 | Panorama Window | 2 | skill | rare | Gain 14 Barrier. Apply 3 Thorns. Consume. |
 | Broken Window Theory | 2 | power | rare | At the end of your turn: Deal damage equal to your Thorns to ALL enemies. |
-| Boomstick | 3 | attack | rare | Deal 10 (+2 per consumed card) damage to ALL enemies. |
+| Boomstick | 3 | attack | rare | Deal 12 (+3 per consumed card) damage to ALL enemies. |
 | The Last Shell | 2 | attack | rare | Deal 24 damage. Apply 1 Exposed. Consume. Hold. |
 | Hammer Time | 2 | attack | rare | Deal 22 damage. Apply 2 Brittle. |
 | Bottomless Flask | 2 | power | rare | At the start of your turn: Heal 3. Draw 1 card. |
-| Pass Out | 2 | skill | rare | Gain 22 Barrier. Heal 8. Consume. |
+| Pass Out | 2 | skill | rare | Gain 18 Barrier. Heal 6. Consume. |
 | Extended Mag | 2 | power | rare | At the start of your turn: Sharpen 2 (Old Twelve Gauge gains 2 damage). Add a Buckshot Shell to your hand. |
-| Rack and Ruin | 2 | attack | rare | Deal 8 damage to ALL enemies. Sharpen 3 (Old Twelve Gauge gains 3 damage). |
+| Rack and Ruin | 2 | attack | rare | Deal 10 damage to ALL enemies. Sharpen 4 (Old Twelve Gauge gains 4 damage). |
 | Last Call | 2 | skill | rare | Gain 1 maximum Mana for the rest of the fight (and 1 now). Heal 6. Consume. |
 | One More Round | 3 | power | legendary | At the start of your turn: Add 3 Buckshot Shells to your hand. Heal 3. |
-| The Glass Palace | 3 | power | legendary | Apply 6 Thorns. At the start of your turn: Gain 8 Barrier. |
+| The Glass Palace | 3 | power | legendary | Apply 4 Thorns. At the start of your turn: Gain 6 Barrier. |
 
 Tokens (made by other cards):
 
@@ -506,7 +506,7 @@ Tokens (made by other cards):
 | Buckshot Shell | 0 | attack | common | Deal 4 damage to ALL enemies. Consume. |
 | Old Twelve Gauge | 1 | attack | common | Deal 5 (+1 per point of sharpening) damage to ALL enemies. Hold. |
 
-## Mire, the Gravewarden (gloomfen, 76 HP)
+## Mire, the Gravewarden (gloomfen, 96 HP)
 
 A warden of the drowned dead. Starts with a Bone Thrall. Curses enemies with Fate until the end comes for them.
 
@@ -549,10 +549,10 @@ Starter: Slash, Slash, Slash, Guard, Guard, Guard, Grave Touch, Grave Touch, Bon
 | The Final Hour | 3 | skill | rare | Curse ALL enemies with 14 Fate. Consume. |
 | The Long Night | 2 | power | rare | Whenever you play an Attack: Curse the target with 2 Fate. |
 | Army of the Drowned | 3 | summon | rare | Summon Bone Thrall. Summon Bone Thrall. Summon Bone Thrall. Consume. |
-| Deathless | 2 | power | rare | Whenever you summon an ally: Gain 5 Barrier to all friends. |
+| Deathless | 2 | power | rare | Whenever you summon an ally: Gain 6 Barrier to all friends. |
 | Requiem | 2 | attack | rare | Deal damage equal to 3 times the number of cards you have consumed. |
 | The Last Toll | 3 | skill | legendary | Curse ALL enemies with 25 Fate. Consume. |
-| The Drowned King | 3 | summon | legendary | Summon The Drowned King. Apply 2 Might to all friends. |
+| The Drowned King | 3 | summon | legendary | Summon The Drowned King. Apply 1 Might to all friends. |
 
 Tokens (made by other cards):
 

@@ -5,6 +5,8 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **Difficulty: Easy / Normal / Hard** (Normal is the default now). Easy is relaxed (weaker enemies, 5 Resolve, a few shards), Normal is the intended game, Hard has tougher enemies and only 2 Resolve. Enemies also get tougher as a run goes deeper (stage 1 is gentle, stage 5 is the real test).
+- **Balance pass.** Snares that cancel an attack cost more or hit softer (Mirror Veil, Silencing Snare, Perfect Trap, Booby-Trapped Window...), the strongest defence cards were trimmed (Maren, Ilvane's Ward rune, KP), the weakest cards and characters were lifted, hero HP was evened out. See docs/BALANCE.md. Version 0.3.0.
 - **Version 0.2.0**: the build label now reads v0.2.0 (new characters KP, traits, art pass, grimoire, legendaries, Mana tools).
 - **Hand limit explained.** Your hand holds at most 10 cards (cards drawn beyond that go to the discard pile; added cards too). The draw-pile tooltip and the first tip now say so.
 - **Innate traits.** Every Riftwalker has a passive they always have: Maren *Oathkeeper* (3 Barrier every turn), Rivet *Tinkerer* (heal 2 you and your companions each turn), Kesh *Pack Instinct* (start with 1 Might for the pack), Vesper *Ambusher* (enemies start Exposed), Quill *Weak Spot* (a random enemy is Exposed each turn), Ilvane *Attuned* (start with 1 Resonance), Sehra *Inner Fire* (start with 2 Fervor), Astra *Starborn* (1 Lumen each turn), Mire *Grave Chill* (enemies start with 2 Fate) and KP *Clutch Genes* (deals 50% more attack damage at or below half HP; a status shows when it is active). Shown on the character screens and when you hover your name in a fight.

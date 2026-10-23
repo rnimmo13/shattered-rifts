@@ -163,7 +163,7 @@ export function parseRun(text: string): RunState | null {
   if (!isInt(r.maxHp, 1, 9999) || !isInt(r.hp, 1, r.maxHp)) return null;
   // saves from before the difficulty setting were all played on Easy
   if (r.difficulty === undefined) r.difficulty = 'easy';
-  if (r.difficulty !== 'easy' && r.difficulty !== 'normal') return null;
+  if (r.difficulty !== 'easy' && r.difficulty !== 'normal' && r.difficulty !== 'hard') return null;
   // saves from before card luck existed were all normal
   if (r.luck === undefined) r.luck = 'normal';
   if (r.luck !== 'normal' && r.luck !== 'lucky' && r.luck !== 'blessed') return null;

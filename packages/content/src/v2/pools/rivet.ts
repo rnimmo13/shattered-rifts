@@ -86,7 +86,7 @@ export const RIVET: CardDef[] = [
   r('common', 'build-enforcer', 'Build Enforcer', 'summon', 2, 'none', [summon('enforcer')]),
   r('common', 'reinforce', 'Reinforce', 'skill', 1, 'ally', [
     barrier(8, 'target'),
-    status('might', 1, 'target'),
+    status('might', 2, 'target'),
   ]),
   r('uncommon', 'upgrade-chip', 'Upgrade Chip', 'skill', 1, 'ally', [
     status('might', 2, 'target'),
@@ -94,7 +94,7 @@ export const RIVET: CardDef[] = [
   ]),
   r('uncommon', 'siege-engine', 'Siege Engine', 'summon', 2, 'none', [summon('siege-engine')]),
   r('rare', 'war-engine', 'War Engine', 'summon', 3, 'none', [summon('war-engine')]),
-  r('rare', 'reactor', 'Reactor', 'power', 2, 'none', [status('might', 2, 'allFriends')]),
+  r('rare', 'reactor', 'Reactor', 'power', 2, 'none', [status('might', 3, 'allFriends')]),
   r('rare', 'overclock-core', 'Overclock Core', 'power', 3, 'none', [
     on('turnStart', [status('might', 1, 'allFriends')]),
   ]),
@@ -110,7 +110,7 @@ export const RIVET: CardDef[] = [
     dmg(7),
     status('faltering', 1, 'target'),
   ]),
-  r('common', 'ion-lance', 'Ion Lance', 'attack', 2, 'foe', [dmg(12)]),
+  r('common', 'ion-lance', 'Ion Lance', 'attack', 2, 'foe', [dmg(16)]),
   r('rare', 'railgun', 'Railgun', 'attack', 3, 'foe', [dmg(30)]),
   r('legendary', 'foundry-awakens', 'The Foundry Awakens', 'power', 3, 'none', [
     on('turnStart', [summon('siege-engine'), ACT]),

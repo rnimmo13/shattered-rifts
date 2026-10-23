@@ -33,15 +33,15 @@ export const RUNES: RuneDef[] = [
   {
     id: 'ward',
     name: 'Ward',
-    text: 'Passive: 2 Barrier at the end of your turn. Release: 8 Barrier.',
-    passive: [barrier(2)],
-    evoke: [barrier(8)],
+    text: 'Passive: 1 Barrier at the end of your turn. Release: 6 Barrier.',
+    passive: [barrier(1)],
+    evoke: [barrier(6)],
   },
   {
     id: 'hollow',
     name: 'Hollow',
-    text: 'Charges by 3 at the end of each of your turns. Release: damage equal to its charge to the front enemy.',
-    grow: 3,
+    text: 'Charges by 2 at the end of each of your turns. Release: damage equal to its charge to the front enemy.',
+    grow: 2,
     passive: [],
     evoke: [scaled(dmg(0, 'front'), per('charge'))],
   },
@@ -103,15 +103,15 @@ export const ILVANE: CardDef[] = [
   ]),
 
   // --- Ward ---
-  i('common', 'glyph-guard', 'Glyph Guard', 'skill', 1, 'none', [barrier(6), channel('ward')]),
-  i('common', 'frostglass', 'Frostglass', 'skill', 2, 'none', [barrier(7), channel('ward', 2)]),
+  i('common', 'glyph-guard', 'Glyph Guard', 'skill', 1, 'none', [barrier(5), channel('ward')]),
+  i('common', 'frostglass', 'Frostglass', 'skill', 2, 'none', [barrier(6), channel('ward', 2)]),
   i('common', 'ward-strike', 'Ward Strike', 'attack', 1, 'foe', [dmg(6), channel('ward')]),
   i(
     'common',
     'cold-snap',
     'Cold Snap',
     'skill',
-    0,
+    1,
     'none',
     [{ op: 'channel', rune: 'ward', times: 0, scale: per('foes') }],
     { exhaust: true },
@@ -124,8 +124,8 @@ export const ILVANE: CardDef[] = [
     scaled(barrier(0), per('runes', 3)),
   ]),
   i('rare', 'glacial-bastion', 'Glacial Bastion', 'skill', 2, 'none', [
-    barrier(12),
-    channel('ward', 3),
+    barrier(10),
+    channel('ward', 2),
   ]),
 
   // --- Hollow and Resonance ---
@@ -156,10 +156,10 @@ export const ILVANE: CardDef[] = [
 
   // --- evoke glue ---
   i('common', 'rune-burst', 'Rune Burst', 'skill', 1, 'none', [evoke(), draw(1)]),
-  i('common', 'glimmer', 'Glimmer', 'skill', 0, 'none', [channel('prism')], { exhaust: true }),
+  i('common', 'glimmer', 'Glimmer', 'skill', 1, 'none', [channel('prism')], { exhaust: true }),
   i('uncommon', 'prism-cut', 'Prism Cut', 'skill', 1, 'none', [channel('prism'), draw(1)]),
   i('uncommon', 'harmonic-wave', 'Harmonic Wave', 'attack', 2, 'none', [
-    dmg(6, 'allFoes'),
+    dmg(8, 'allFoes'),
     evoke(),
   ]),
   i(
@@ -189,7 +189,7 @@ export const ILVANE: CardDef[] = [
   ),
   i('uncommon', 'retune', 'Retune', 'skill', 1, 'none', [upgradeOp('random')], { exhaust: true }),
   i('uncommon', 'stored-charge', 'Stored Charge', 'skill', 1, 'none', [
-    manaNext(2),
+    manaNext(1),
     channel('ward'),
   ]),
   i('legendary', 'the-grand-design', 'The Grand Design', 'power', 3, 'none', [
@@ -202,7 +202,7 @@ export const ILVANE: CardDef[] = [
     'cataclysm-glyph',
     'Cataclysm Glyph',
     'attack',
-    3,
+    2,
     'none',
     [dmg(10, 'allFoes'), evoke(10, 2)],
     { exhaust: true },

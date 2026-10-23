@@ -13,10 +13,23 @@ const N = arg('n', 12);
 const DRAFT = arg('draft', 10);
 const HP = arg('hp', 100);
 const DMG = arg('dmg', 100);
+// --only snare / --only nosnare: draft only (or never) Snares, to see how strong a card type is on its own
+const ONLY = (() => {
+  const i = process.argv.indexOf('--only');
+  return i >= 0 ? process.argv[i + 1] : undefined;
+})();
 
 function deckFor(h: HeroId, seed: number): string[] {
   const deck = [...RIFTWALKERS[h].starter];
-  const pool = rewardPool(h).filter((id) => db.cards[id]?.hero === h || seed % 5 === 0);
+  const pool = rewardPool(h)
+    .filter((id) => db.cards[id]?.hero === h || seed % 5 === 0)
+    .filter((id) =>
+      ONLY === 'snare'
+        ? db.cards[id]?.kind === 'snare'
+        : ONLY === 'nosnare'
+          ? db.cards[id]?.kind !== 'snare'
+          : true,
+    );
   let x = seed * 2654435761 + 1;
   for (let i = 0; i < DRAFT; i++) {
     x = (Math.imul(x, 1103515245) + 12345) >>> 0;

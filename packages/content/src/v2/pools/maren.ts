@@ -32,7 +32,7 @@ export const MAREN: CardDef[] = [
   m('common', 'brace-up', 'Brace Up', 'skill', 0, 'none', [barrier(4)]),
   m('common', 'bulwark-blow', 'Bulwark Blow', 'attack', 1, 'foe', [scaled(dmg(2), per('barrier'))]),
   m('uncommon', 'anvil-strike', 'Anvil Strike', 'attack', 2, 'foe', [
-    scaled(dmg(8), per('barrier', 0.5)),
+    scaled(dmg(11), per('barrier', 1)),
   ]),
   m('uncommon', 'gilded-wall', 'Gilded Wall', 'skill', 2, 'none', [
     scaled(barrier(0), per('barrier')),
@@ -85,8 +85,8 @@ export const MAREN: CardDef[] = [
   // --- Sanctified ---
   m('common', 'lightbearer', 'Lightbearer', 'skill', 1, 'none', [heal(4), barrier(5)]),
   m('common', 'prayer', 'Prayer', 'skill', 0, 'none', [heal(4), draw(1)], { exhaust: true }),
-  m('uncommon', 'aegis-of-the-warden', 'Aegis of the Warden', 'skill', 1, 'none', [
-    barrier(8),
+  m('uncommon', 'aegis-of-the-warden', 'Aegis of the Warden', 'skill', 2, 'none', [
+    barrier(6),
     status('shielded', 1),
   ]),
   m('uncommon', 'benediction', 'Benediction', 'skill', 2, 'none', [heal(10), barrier(6)], {
@@ -121,7 +121,7 @@ export const MAREN: CardDef[] = [
   ]), // Bulwark + Thorns
   m('uncommon', 'radiant-bulwark', 'Radiant Bulwark', 'skill', 2, 'none', [barrier(12), heal(4)]), // Bulwark + Sanctified
   m('uncommon', 'vengeful-light', 'Vengeful Light', 'attack', 2, 'foe', [
-    dmg(9),
+    dmg(11),
     scaled(heal(0), per('thorns')),
   ]), // Thorns + Sanctified
   m('uncommon', 'crusade', 'Crusade', 'attack', 2, 'foe', [dmg(7, 'target', 2), barrier(4)]),
@@ -133,20 +133,20 @@ export const MAREN: CardDef[] = [
     status('faltering', 1, 'allFoes'),
   ]),
   m('rare', 'dawns-verdict', "Dawn's Verdict", 'attack', 3, 'foe', [
-    dmg(24),
+    dmg(28),
     status('exposed', 2, 'target'),
   ]),
   m('common', 'shell-cracker', 'Shell Cracker', 'attack', 1, 'foe', [
     dmg(4),
     status('brittle', 2, 'target'),
   ]),
-  m('uncommon', 'plated-resolve', 'Plated Resolve', 'skill', 1, 'none', [status('armored', 3)]),
-  m('uncommon', 'sure-footing', 'Sure Footing', 'power', 1, 'none', [status('bracing', 2)]),
+  m('uncommon', 'plated-resolve', 'Plated Resolve', 'skill', 1, 'none', [status('armored', 2)]),
+  m('uncommon', 'sure-footing', 'Sure Footing', 'power', 1, 'none', [status('bracing', 1)]),
   m('rare', 'unbroken-wall', 'Unbroken Wall', 'power', 2, 'none', [status('fortified', 1)]),
   m('legendary', 'the-last-oath', 'The Last Oath', 'power', 3, 'none', [
     status('fortified', 1),
-    status('thorns', 5),
-    status('bracing', 2),
+    status('thorns', 3),
+    status('bracing', 1),
   ]),
   m(
     'legendary',
@@ -155,7 +155,7 @@ export const MAREN: CardDef[] = [
     'attack',
     3,
     'none',
-    [scaled(dmg(0, 'allFoes'), per('barrier', 3))],
+    [scaled(dmg(0, 'allFoes'), per('barrier', 2))],
     { exhaust: true },
   ),
   m('uncommon', 'steady-resolve', 'Steady Resolve', 'skill', 1, 'none', [barrier(5), manaNext(2)]),

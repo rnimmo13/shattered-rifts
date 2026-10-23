@@ -48,21 +48,21 @@ describe('legendary effects', () => {
 
   it('The Last Toll puts 25 Fate on every enemy', () => {
     const s = play('mire', 'the-last-toll');
-    // 25 from the card, plus Mire's Grave Chill trait (2)
-    for (const u of s.sides.b.units) expect(u.statuses.doom).toBe(27);
+    // 25 from the card, plus Mire's Grave Chill trait (3)
+    for (const u of s.sides.b.units) expect(u.statuses.doom).toBe(28);
   });
 
   it('The Drowned King summons the king and gives every friend Might', () => {
     const s = play('mire', 'the-drowned-king');
     expect(s.sides.a.units.some((u) => u.def === 'drowned-king')).toBe(true);
-    for (const u of s.sides.a.units) expect(u.statuses.might).toBeGreaterThanOrEqual(2);
+    for (const u of s.sides.a.units) expect(u.statuses.might).toBeGreaterThanOrEqual(1);
   });
 
-  it('Dawn Incarnate deals three times your Barrier to everything', () => {
+  it('Dawn Incarnate deals twice your Barrier to everything', () => {
     const s = play('maren', 'dawn-incarnate', (st) => {
       heroUnit(st).barrier = 10;
     });
-    for (const u of s.sides.b.units) expect(u.hp).toBe(200 - 30);
+    for (const u of s.sides.b.units) expect(u.hp).toBe(200 - 20);
   });
 
   it('Death Warrant takes three HP per Seared', () => {

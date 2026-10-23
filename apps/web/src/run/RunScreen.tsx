@@ -260,7 +260,7 @@ function Sanctum(props: {
     setPickState(h);
     rememberHero(h);
   };
-  const [difficulty, setDifficulty] = useState<Difficulty>('easy');
+  const [difficulty, setDifficulty] = useState<Difficulty>('normal');
   const [luck, setLuck] = useState<Luck>('normal');
   return (
     <main className="setup setup--wide">
@@ -286,8 +286,8 @@ function Sanctum(props: {
           <span className="sr-only">Difficulty</span>
           <select value={difficulty} onChange={(e) => setDifficulty(e.target.value as Difficulty)}>
             {(Object.keys(DIFFICULTY) as Difficulty[]).map((d) => (
-              <option key={d} value={d}>
-                {DIFFICULTY[d].label}
+              <option key={d} value={d} title={DIFFICULTY[d].blurb}>
+                {DIFFICULTY[d].label}: {DIFFICULTY[d].blurb}
               </option>
             ))}
           </select>

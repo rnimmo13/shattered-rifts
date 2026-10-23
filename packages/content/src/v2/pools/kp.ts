@@ -81,7 +81,7 @@ export const KP: CardDef[] = [
     'snare',
     2,
     'none',
-    [PREVENT, dmg(14, 'attacker'), status('stunned', 1, 'attacker')],
+    [PREVENT, dmg(10, 'attacker')],
     { trigger: { on: 'attacked' } },
   ),
 
@@ -103,7 +103,7 @@ export const KP: CardDef[] = [
     barrier(12),
     status('thorns', 2),
   ]),
-  p('uncommon', 'shatter', 'Shatter', 'attack', 2, 'foe', [scaled(dmg(7), per('thorns', 3))]),
+  p('uncommon', 'shatter', 'Shatter', 'attack', 2, 'foe', [scaled(dmg(8), per('thorns', 3))]),
   p('uncommon', 'stained-glass', 'Stained Glass', 'power', 1, 'none', [
     on('turnStart', [status('thorns', 1), barrier(2)]),
   ]),
@@ -144,7 +144,7 @@ export const KP: CardDef[] = [
     on('turnStart', [addTo('buckshot-shell')]),
   ]),
   p('rare', 'boomstick', 'Boomstick', 'attack', 3, 'none', [
-    scaled(dmg(10, 'allFoes'), per('exhausted', 2)),
+    scaled(dmg(12, 'allFoes'), per('exhausted', 3)),
   ]),
   p(
     'rare',
@@ -170,8 +170,8 @@ export const KP: CardDef[] = [
     status('faltering', 1),
   ]),
   p('uncommon', 'barroom-brawl', 'Barroom Brawl', 'attack', 2, 'none', [
-    dmg(9, 'allFoes'),
-    lose(3),
+    dmg(10, 'allFoes'),
+    lose(2),
   ]),
   p('uncommon', 'dutch-courage', 'Dutch Courage', 'power', 1, 'none', [
     on('turnStart', [heal(2), status('might', 1, 'self', true)]),
@@ -187,7 +187,7 @@ export const KP: CardDef[] = [
   p('rare', 'bottomless-flask', 'Bottomless Flask', 'power', 2, 'none', [
     on('turnStart', [heal(3), draw(1)]),
   ]),
-  p('rare', 'pass-out', 'Pass Out', 'skill', 2, 'none', [barrier(22), heal(8)], {
+  p('rare', 'pass-out', 'Pass Out', 'skill', 2, 'none', [barrier(18), heal(6)], {
     exhaust: true,
   }),
 
@@ -196,8 +196,8 @@ export const KP: CardDef[] = [
     on('turnStart', [addTo('buckshot-shell', 3), heal(3)]),
   ]),
   p('legendary', 'the-glass-palace', 'The Glass Palace', 'power', 3, 'none', [
-    status('thorns', 6),
-    on('turnStart', [barrier(8)]),
+    status('thorns', 4),
+    on('turnStart', [barrier(6)]),
   ]),
 
   // --- the Old Twelve Gauge: a weapon that hits every enemy and gets sharper (Sharpen), with its own interactions ---
@@ -237,8 +237,8 @@ export const KP: CardDef[] = [
     on('turnStart', [forge('old-twelve-gauge', 2), addTo('buckshot-shell')]),
   ]),
   p('rare', 'rack-and-ruin', 'Rack and Ruin', 'attack', 2, 'none', [
-    dmg(8, 'allFoes'),
-    forge('old-twelve-gauge', 3),
+    dmg(10, 'allFoes'),
+    forge('old-twelve-gauge', 4),
   ]),
   p('uncommon', 'liquid-lunch', 'Liquid Lunch', 'skill', 0, 'none', [mana(2), manaNext(-1)], {
     exhaust: true,

@@ -26,7 +26,7 @@ const v = pool('vesper', 'umbral');
 export const VESPER: CardDef[] = [
   // --- basics ---
   v('basic', 'veil-strike', 'Veil Strike', 'attack', 1, 'foe', [
-    dmg(5),
+    dmg(6),
     status('exposed', 1, 'target'),
   ]),
   v(
@@ -51,7 +51,7 @@ export const VESPER: CardDef[] = [
     'snare',
     1,
     'none',
-    [dmg(10, 'attacker'), status('faltering', 1, 'attacker')],
+    [dmg(8, 'attacker'), status('faltering', 1, 'attacker')],
     { trigger: { on: 'attacked' } },
   ),
   v(
@@ -82,15 +82,15 @@ export const VESPER: CardDef[] = [
     'mirror-veil',
     'Mirror Veil',
     'snare',
-    1,
+    2,
     'none',
     [PREVENT, status('faltering', 2, 'attacker')],
     { trigger: { on: 'attacked' } },
   ),
-  v('uncommon', 'pain-link', 'Pain Link', 'snare', 0, 'none', [dmg(8, 'allFoes')], {
+  v('uncommon', 'pain-link', 'Pain Link', 'snare', 0, 'none', [dmg(6, 'allFoes')], {
     trigger: { on: 'hpLost', min: 5 },
   }),
-  v('uncommon', 'time-bomb', 'Time Bomb', 'snare', 1, 'none', [dmg(12, 'allFoes')], {
+  v('uncommon', 'time-bomb', 'Time Bomb', 'snare', 1, 'none', [dmg(9, 'allFoes')], {
     trigger: { on: 'foeTurn' },
   }),
   v('uncommon', 'spring-loaded', 'Spring-Loaded', 'skill', 1, 'none', [
@@ -116,7 +116,7 @@ export const VESPER: CardDef[] = [
     'silencing-snare',
     'Silencing Snare',
     'snare',
-    1,
+    2,
     'none',
     [status('stunned', 1, 'attacker'), status('shielded', 1)],
     { trigger: { on: 'attacked' } },
@@ -139,7 +139,7 @@ export const VESPER: CardDef[] = [
     barrier(5),
   ]),
   v('uncommon', 'death-mark', 'Death Mark', 'attack', 2, 'foe', [
-    dmg(10),
+    dmg(12),
     status('exposed', 3, 'target'),
   ]),
   v('uncommon', 'shadow-volley', 'Shadow Volley', 'attack', 1, 'none', [dmg(4, 'randomFoe', 3)]),
@@ -148,7 +148,7 @@ export const VESPER: CardDef[] = [
     status('faltering', 1, 'target'),
   ]),
   v('rare', 'coup-de-grace', 'Coup de Grace', 'attack', 3, 'foe', [
-    scaled(dmg(14), per('exposed', 6, 'target')),
+    scaled(dmg(16), per('exposed', 6, 'target')),
   ]),
 
   // --- Bluff ---
@@ -189,9 +189,9 @@ export const VESPER: CardDef[] = [
     'the-perfect-trap',
     'The Perfect Trap',
     'snare',
-    2,
+    3,
     'none',
-    [PREVENT, dmg(30, 'attacker'), status('stunned', 1, 'attacker'), status('shielded', 2)],
+    [PREVENT, dmg(22, 'attacker'), status('stunned', 1, 'attacker'), status('shielded', 2)],
     { trigger: { on: 'attacked' } },
   ),
   v('legendary', 'masquerade', 'Masquerade', 'power', 2, 'none', [

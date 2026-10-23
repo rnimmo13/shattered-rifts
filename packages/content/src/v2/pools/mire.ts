@@ -121,7 +121,7 @@ export const MIRE: CardDef[] = [
     { exhaust: true },
   ),
   g('rare', 'deathless', 'Deathless', 'power', 2, 'none', [
-    on('summon', [barrier(5, 'allFriends')]),
+    on('summon', [barrier(6, 'allFriends')]),
   ]),
 
   // --- Ashes ---
@@ -180,7 +180,7 @@ export const MIRE: CardDef[] = [
   ),
   g('legendary', 'the-drowned-king', 'The Drowned King', 'summon', 3, 'none', [
     summon('drowned-king'),
-    status('might', 2, 'allFriends'),
+    status('might', 1, 'allFriends'),
   ]),
   g('uncommon', 'soul-tithe', 'Soul Tithe', 'skill', 0, 'none', [lose(4), mana(2)], {
     exhaust: true,

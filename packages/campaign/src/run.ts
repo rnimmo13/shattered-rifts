@@ -45,16 +45,53 @@ function need(cond: unknown, msg: string): asserts cond {
 export const MAX_RESOLVE = 3;
 
 /**
- * Difficulty settings. Easy is the default while the game is built and tested: enemies have 60% HP and hit for 55%, you have
- * more Resolve and some shards to start. Change these numbers (and re-run `pnpm sim`) when it is time to balance.
+ * Difficulty settings (percent of the designed enemy HP and damage, on top of the per-stage ramp in STAGE_SCALE). Normal is
+ * the intended game; Easy is relaxed (weaker enemies, more Resolve, a few shards to start); Hard is for people who have
+ * beaten Normal (fewer Resolve). Re-measure with `pnpm runsim` after any change (docs/BALANCE.md).
  */
 export const DIFFICULTY: Record<
   Difficulty,
-  { label: string; hpPct: number; dmgPct: number; resolve: number; shards: number }
+  { label: string; blurb: string; hpPct: number; dmgPct: number; resolve: number; shards: number }
 > = {
-  easy: { label: 'Easy (for testing)', hpPct: 60, dmgPct: 55, resolve: 5, shards: 100 },
-  normal: { label: 'Normal', hpPct: 100, dmgPct: 100, resolve: MAX_RESOLVE, shards: 0 },
+  easy: {
+    label: 'Easy',
+    blurb: 'Weaker enemies, 5 Resolve and a few shards to start. Relaxed.',
+    hpPct: 85,
+    dmgPct: 80,
+    resolve: 5,
+    shards: 100,
+  },
+  normal: {
+    label: 'Normal',
+    blurb: 'The intended game: 3 Resolve, and the Wardens are real fights.',
+    hpPct: 115,
+    dmgPct: 110,
+    resolve: MAX_RESOLVE,
+    shards: 0,
+  },
+  hard: {
+    label: 'Hard',
+    blurb: 'Tougher, harder-hitting enemies and only 2 Resolve.',
+    hpPct: 125,
+    dmgPct: 118,
+    resolve: 2,
+    shards: 0,
+  },
 };
+/**
+ * Enemies grow tougher as a run goes deeper (percent of the difficulty's HP and damage), so Stage 1 is a gentle opening and
+ * the Rift at Stage 5 is the real test. The deck, HP and Boons you have gathered grow too.
+ */
+export const STAGE_SCALE: Record<number, { hp: number; dmg: number }> = {
+  1: { hp: 80, dmg: 85 },
+  2: { hp: 95, dmg: 95 },
+  3: { hp: 110, dmg: 105 },
+  4: { hp: 120, dmg: 115 },
+  5: { hp: 130, dmg: 125 },
+};
+const stageScale = (stage: number): { hp: number; dmg: number } =>
+  STAGE_SCALE[Math.max(1, Math.min(5, stage))] ?? { hp: 100, dmg: 100 };
+
 /** Fraction of max HP a shrine rest heals. */
 export const REST_HEAL = 0.35;
 
@@ -66,7 +103,7 @@ export function realmOfStage(run: Pick<RunState, 'stageRealms'>, stage: number):
 export function newRun(
   hero: HeroId,
   seed: string,
-  difficulty: Difficulty = 'easy',
+  difficulty: Difficulty = 'normal',
   luck: Luck = 'normal',
 ): RunState {
   const rng = seedRng(`run:${seed}`);
@@ -275,8 +312,8 @@ export function duelPlan(run: RunState): FightPlan | null {
     tier: run.tier,
     boons: [...run.boons],
     potions: [...run.potions],
-    hpPct: DIFFICULTY[run.difficulty].hpPct,
-    dmgPct: DIFFICULTY[run.difficulty].dmgPct,
+    hpPct: Math.round((DIFFICULTY[run.difficulty].hpPct * stageScale(run.stage).hp) / 100),
+    dmgPct: Math.round((DIFFICULTY[run.difficulty].dmgPct * stageScale(run.stage).dmg) / 100),
     kind: node.kind,
     seed: `${run.seed}:t${run.tier}:${node.id}:${run.stats.duelsLost}`,
   };

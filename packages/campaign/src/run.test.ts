@@ -129,15 +129,18 @@ describe('the run', () => {
     }
   });
 
-  it('easy is the default: weaker enemies, more Resolve, some shards', () => {
-    const e = open(newRun('maren', 'easy'));
+  it('normal is the default; easy has weaker enemies, more Resolve and some shards; hard has less Resolve', () => {
+    expect(newRun('maren', 'default-diff').difficulty).toBe('normal');
+    const e = open(newRun('maren', 'easy', 'easy'));
     expect(e.difficulty).toBe('easy');
     expect(e.resolve).toBe(5);
     expect(e.shards).toBe(100);
+    // stage 1 is eased further by the stage ramp (80% HP, 85% damage)
     expect(duelPlan(enterNode(e, availableNodes(e)[0]!.id))).toMatchObject({
-      hpPct: 60,
-      dmgPct: 55,
+      hpPct: 68,
+      dmgPct: 68,
     });
+    expect(newRun('maren', 'hard', 'hard').resolve).toBe(2);
     expect(parseRun(JSON.stringify({ ...e, difficulty: undefined }))?.difficulty).toBe('easy');
     expect(parseRun(JSON.stringify({ ...e, difficulty: 'brutal' }))).toBeNull();
   });
@@ -192,7 +195,7 @@ describe('the run', () => {
       context: { nodeId: base.map.nodes[0]!.id },
     });
     const rested = takeShrine(shrineRun(), { kind: 'rest' });
-    expect(rested.hp).toBe(30 + Math.ceil(80 * 0.35));
+    expect(rested.hp).toBe(30 + Math.ceil(RIFTWALKERS.maren.hero.maxHp * 0.35));
     const up = takeShrine(shrineRun(), { kind: 'upgrade', card: 'dawn-smite' });
     expect(up.deck).toContain('dawn-smite+');
     expect(up.deck).not.toContain('dawn-smite');
@@ -294,7 +297,7 @@ describe('a whole run, played by the bot', () => {
     const r = { ...fresh('maren', 'loop'), phase: 'loopCleared' as const, hp: 10 };
     const c = continueLoop(r);
     expect(c.tier).toBe(2);
-    expect(c.hp).toBe(10 + 40);
+    expect(c.hp).toBe(10 + Math.ceil(RIFTWALKERS.maren.hero.maxHp * 0.5));
     expect(c.stage).toBe(1);
   });
 });
@@ -369,7 +372,7 @@ describe('the other rooms and the rules around them', () => {
     };
     const won = finishDuel(run, true, 20);
     expect(won.phase).toBe('gift');
-    expect(won.hp).toBeGreaterThanOrEqual(20 + 24); // a Warden falls: you catch your breath (a boon may add more)
+    expect(won.hp).toBeGreaterThanOrEqual(20 + Math.floor(RIFTWALKERS.maren.hero.maxHp * 0.3)); // a Warden falls: you catch your breath (a boon may add more)
     expect(won.resolve).toBe(2);
     expect(won.context!.offers!.every((id) => COMBAT_DB.cards[id]?.rarity === 'rare')).toBe(true);
     expect(() => chooseCard(won, null)).toThrow(RunError);

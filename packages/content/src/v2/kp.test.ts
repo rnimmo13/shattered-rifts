@@ -111,9 +111,9 @@ describe('innate traits', () => {
   it("Maren's Oathkeeper gives Barrier every turn, Mire's Grave Chill curses every enemy", () => {
     const m = fight('maren', []);
     const hero = m.sides.a.units[m.sides.a.units.length - 1]!;
-    expect(hero.barrier).toBeGreaterThanOrEqual(3);
+    expect(hero.barrier).toBeGreaterThanOrEqual(2);
     const g = fight('mire', []);
-    for (const u of g.sides.b.units) expect(u.statuses.doom).toBe(2);
+    for (const u of g.sides.b.units) expect(u.statuses.doom).toBe(3);
   });
 
   it('Clutch Genes: KP deals 50% more attack damage at or below half HP, and not above', () => {

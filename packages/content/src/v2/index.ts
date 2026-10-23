@@ -38,10 +38,10 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     role: 'Knight',
     trait: {
       name: 'Oathkeeper',
-      text: 'Start every turn with 3 Barrier.',
-      turnStart: [barrier(3)],
+      text: 'Start every turn with 2 Barrier.',
+      turnStart: [barrier(2)],
     },
-    hero: { id: 'maren', name: 'Ser Maren Ashcourt', maxHp: 80, mana: 3, handSize: 5 },
+    hero: { id: 'maren', name: 'Ser Maren Ashcourt', maxHp: 66, mana: 3, handSize: 5 },
     starter: [...rep('strike', 4), ...rep('defend', 4), 'dawn-smite', 'oathbound'],
     blurb: 'A knight of the Gilded Order. No companions: Barrier, Thorns and punishing Snares.',
     lanes: [
@@ -63,7 +63,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
       text: 'At the start of your turn, you and your companions heal 2.',
       turnStart: [heal(2, 'allFriends')],
     },
-    hero: { id: 'rivet', name: 'Rivet', maxHp: 66, mana: 3, handSize: 5, startUnits: ['drone'] },
+    hero: { id: 'rivet', name: 'Rivet', maxHp: 58, mana: 3, handSize: 5, startUnits: ['drone'] },
     starter: [...rep('strike', 5), ...rep('defend', 3), 'deploy-drone', 'overclock'],
     blurb:
       'A scrap-built tinkerer. Starts every fight with a Drone and builds an army of machines.',
@@ -85,7 +85,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     hero: {
       id: 'kesh',
       name: 'Kesh the Unfed',
-      maxHp: 70,
+      maxHp: 92,
       mana: 3,
       handSize: 5,
       startUnits: ['hound'],
@@ -104,10 +104,10 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     role: 'Trapper',
     trait: {
       name: 'Ambusher',
-      text: 'Every enemy starts the fight Exposed.',
-      fightStart: [status('exposed', 1, 'allFoes')],
+      text: 'Every enemy starts the fight Exposed for 2 turns.',
+      fightStart: [status('exposed', 2, 'allFoes')],
     },
-    hero: { id: 'vesper', name: 'Vesper Nightlace', maxHp: 76, mana: 3, handSize: 5 },
+    hero: { id: 'vesper', name: 'Vesper Nightlace', maxHp: 104, mana: 3, handSize: 5 },
     starter: [...rep('strike', 3), ...rep('defend', 4), ...rep('veil-strike', 2), 'set-the-web'],
     blurb: 'A masked trapper. No companions: Snares, Exposed and patience.',
     lanes: [
@@ -132,7 +132,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     hero: {
       id: 'quill',
       name: 'Quill, the Knife-Dancer',
-      maxHp: 72,
+      maxHp: 66,
       mana: 3,
       handSize: 5,
       sigil: [addTo('sleeve-knife')],
@@ -162,7 +162,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     hero: {
       id: 'ilvane',
       name: 'Ilvane, the Glyphwright',
-      maxHp: 70,
+      maxHp: 56,
       mana: 3,
       handSize: 5,
       sigil: [channel('spark')],
@@ -188,7 +188,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     hero: {
       id: 'sehra',
       name: 'Sehra, the Still Flame',
-      maxHp: 72,
+      maxHp: 90,
       mana: 3,
       handSize: 5,
       sigil: [stance('calm')],
@@ -208,13 +208,13 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     role: 'Spellblade',
     trait: {
       name: 'Starborn',
-      text: 'Gain 1 Lumen at the start of your turn.',
-      turnStart: [stars(1)],
+      text: 'Gain 2 Lumen at the start of your turn.',
+      turnStart: [stars(2)],
     },
     hero: {
       id: 'astra',
       name: 'Astra, the Starcaller',
-      maxHp: 80,
+      maxHp: 102,
       mana: 3,
       handSize: 5,
       sigil: [stars(2), addTo('starforged-blade')],
@@ -245,7 +245,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     hero: {
       id: 'kp',
       name: 'KP, the Homeless Drunk',
-      maxHp: 88,
+      maxHp: 80,
       mana: 3,
       handSize: 5,
       sigil: [addTo('old-twelve-gauge')],
@@ -284,13 +284,13 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     role: 'Necromancer',
     trait: {
       name: 'Grave Chill',
-      text: 'Every enemy starts the fight with 2 Fate.',
-      fightStart: [status('doom', 2, 'allFoes')],
+      text: 'Every enemy starts the fight with 3 Fate.',
+      fightStart: [status('doom', 3, 'allFoes')],
     },
     hero: {
       id: 'mire',
       name: 'Mire, the Gravewarden',
-      maxHp: 76,
+      maxHp: 96,
       mana: 3,
       handSize: 5,
       startUnits: ['bone-thrall'],

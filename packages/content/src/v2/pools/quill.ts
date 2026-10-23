@@ -134,7 +134,7 @@ export const QUILL: CardDef[] = [
     'nightfall',
     'Nightfall',
     'skill',
-    3,
+    2,
     'none',
     [status('seared', 5, 'allFoes'), status('exposed', 2, 'allFoes')],
     { exhaust: true },

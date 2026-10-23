@@ -45,7 +45,7 @@ export const ASTRA: CardDef[] = [
   ),
 
   // --- Blade ---
-  a('common', 'hone', 'Hone', 'skill', 1, 'none', [forge('starforged-blade', 3)]),
+  a('common', 'hone', 'Hone', 'skill', 1, 'none', [forge('starforged-blade', 4)]),
   a('common', 'honed-strike', 'Honed Strike', 'attack', 1, 'foe', [
     dmg(6),
     forge('starforged-blade', 2),
@@ -66,7 +66,7 @@ export const ASTRA: CardDef[] = [
     forge('starforged-blade', 2),
   ]),
   a('uncommon', 'royal-decree', 'Royal Decree', 'skill', 2, 'none', [
-    forge('starforged-blade', 5),
+    forge('starforged-blade', 6),
     draw(1),
   ]),
   a('uncommon', 'knights-oath', "Knight's Oath", 'power', 1, 'none', [
@@ -84,7 +84,7 @@ export const ASTRA: CardDef[] = [
   a('common', 'skybolt', 'Skybolt', 'attack', 1, 'foe', [dmg(18)], { starCost: 1 }),
   a('common', 'star-barrier', 'Star Barrier', 'skill', 1, 'none', [barrier(16)], { starCost: 1 }),
   a('uncommon', 'nova', 'Nova', 'attack', 2, 'foe', [dmg(30)], { starCost: 2 }),
-  a('uncommon', 'falling-sky', 'Falling Sky', 'attack', 1, 'none', [dmg(9, 'allFoes', 3)], {
+  a('uncommon', 'falling-sky', 'Falling Sky', 'attack', 1, 'none', [dmg(7, 'allFoes', 3)], {
     starCost: 3,
   }),
   a(
@@ -119,7 +119,7 @@ export const ASTRA: CardDef[] = [
     'attack',
     3,
     'foe',
-    [dmg(55), status('exposed', 2, 'target')],
+    [dmg(46), status('exposed', 2, 'target')],
     {
       starCost: 4,
     },
@@ -130,7 +130,7 @@ export const ASTRA: CardDef[] = [
 
   // --- Constellations ---
   a('uncommon', 'orion', 'Orion', 'power', 2, 'none', [on('turnStart', [stars(1)])]),
-  a('uncommon', 'lyra', 'Lyra', 'power', 1, 'none', [
+  a('uncommon', 'lyra', 'Lyra', 'power', 2, 'none', [
     on('turnEnd', [scaled(barrier(0), per('stars'))]),
   ]),
   a('uncommon', 'draco', 'Draco', 'power', 2, 'none', [on('turnStart', [dmg(3, 'allFoes')])]),

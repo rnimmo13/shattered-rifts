@@ -40,7 +40,7 @@ const RAW_ALLIES: UnitDef[] = [
   // Gloomfen: Mire's dead
   ally('bone-thrall', 'Bone Thrall', 12, [dmg(4)]),
   ally('grave-colossus', 'Grave Colossus', 22, [dmg(9)]),
-  ally('drowned-king', 'The Drowned King', 30, [dmg(14), barrier(6, 'hero')], { taunt: true }),
+  ally('drowned-king', 'The Drowned King', 22, [dmg(10), barrier(4, 'hero')]),
   ally('gnashling', 'Gnashling', 4, [dmg(3)]),
 ];
 
