@@ -1,0 +1,95 @@
+// The DOM layer over the fighters: HP bars with Barrier, status chips and enemy intents. Pure presentation.
+
+import type { CSSProperties } from 'react';
+import type { StatusId, UnitView } from '@sr/combat';
+import { INTENT_GLYPH, STATUS_INFO } from './info';
+
+export interface Placed {
+  unit: UnitView;
+  /** host-relative px of the figure's feet, and its height in px */
+  x: number;
+  y: number;
+  h: number;
+  w: number;
+}
+
+export interface PlatesProps {
+  items: Placed[];
+  heroId: string | null;
+  targetable: ReadonlySet<string>;
+  hover: string | null;
+  names: boolean;
+}
+
+export function UnitPlates({ items, targetable, hover }: PlatesProps) {
+  return (
+    <div className="plates" aria-hidden={false}>
+      {items.map(({ unit: u, x, y, h, w }) => {
+        const pct = Math.max(0, Math.min(100, (u.hp / u.maxHp) * 100));
+        const iv = u.intentView;
+        const width = Math.max(96, Math.min(190, w * 0.9));
+        const style: CSSProperties = { left: x, top: y + 10, width };
+        const intentStyle: CSSProperties = { left: x, top: y - h - 8 };
+        return (
+          <div key={u.id}>
+            {u.kind === 'enemy' && iv && (
+              <div
+                className={`intent intent--${iv.icons[0] ?? 'special'}`}
+                style={intentStyle}
+                title={`${iv.name}`}
+              >
+                <span className="intent__icons">
+                  {iv.icons.map((i) => INTENT_GLYPH[i]).join('')}
+                </span>
+                {iv.damage !== null && (
+                  <b className="intent__num">
+                    {iv.damage}
+                    {iv.hits > 1 && <small>×{iv.hits}</small>}
+                  </b>
+                )}
+                <span className="intent__name">{iv.name}</span>
+              </div>
+            )}
+            <div
+              className={`plate${targetable.has(u.id) ? ' is-target' : ''}${hover === u.id ? ' is-hover' : ''}${u.kind === 'hero' ? ' plate--hero' : ''}`}
+              style={style}
+            >
+              <div className="plate__name">{u.name}</div>
+              <div className={`bar${u.barrier > 0 ? ' has-barrier' : ''}`}>
+                <div className="bar__fill" style={{ width: `${pct}%` }} />
+                <div className="bar__text">
+                  {u.hp}/{u.maxHp}
+                </div>
+                {u.barrier > 0 && (
+                  <div className="bar__barrier" title="Barrier absorbs damage until your next turn">
+                    ⛨ {u.barrier}
+                  </div>
+                )}
+              </div>
+              <div className="chips">
+                {(Object.entries(u.statuses) as [StatusId, number][]).map(([id, n]) => {
+                  const info = STATUS_INFO[id];
+                  return (
+                    <span
+                      key={id}
+                      className={`chip chip--${info.tone}`}
+                      title={`${info.name}: ${info.text}`}
+                    >
+                      {info.glyph}
+                      <b>{n}</b>
+                    </span>
+                  );
+                })}
+                {u.taunt && (
+                  <span className="chip chip--good" title="Taunt: enemies must attack this first.">
+                    ▣
+                  </span>
+                )}
+              </div>
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}

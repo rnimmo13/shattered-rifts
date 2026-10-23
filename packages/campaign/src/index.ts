@@ -1,24 +1,26 @@
 // @sr/campaign: run state machine, stage maps, rewards, Vault and seasons. Pure, like the engine.
 
-/** Deck rules shared by runs and PvP (01_GAME_DESIGN.md §3.1). They live in content so enemy decks use them too. */
-export { DECK_RULES } from '@sr/content';
+/** Deck rules for runs (and later PvP). They live in content so every system shares them. */
+export { V2_DECK_RULES as DECK_RULES } from '@sr/content/v2';
 
 export type * from './types';
 export { generateStageMap, reachableNodes, wardenFor } from './mapgen';
 export {
   PRICE,
+  priceOf,
   REMOVE_PRICE,
   REALM_LABEL,
   canAdd,
   giftOffers,
   offerCards,
-  ownPool,
   crossedPool,
-  signatureCards,
 } from './rewards';
 export {
   MAX_RESOLVE,
+  REST_HEAL,
   RunError,
+  upgradable,
+  type FightPlan,
   availableNodes,
   bank,
   buyCard,

@@ -62,6 +62,9 @@ importers:
       '@sr/campaign':
         specifier: workspace:*
         version: link:../../packages/campaign
+      '@sr/combat':
+        specifier: workspace:*
+        version: link:../../packages/combat
       '@sr/content':
         specifier: workspace:*
         version: link:../../packages/content
@@ -106,12 +109,12 @@ importers:
 
   packages/campaign:
     dependencies:
+      '@sr/combat':
+        specifier: workspace:*
+        version: link:../combat
       '@sr/content':
         specifier: workspace:*
         version: link:../content
-      '@sr/engine':
-        specifier: workspace:*
-        version: link:../engine
 
   packages/combat: {}
 

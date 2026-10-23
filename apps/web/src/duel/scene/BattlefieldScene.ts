@@ -15,6 +15,7 @@ import { FLOOR_SQUASH, floorTop, rows, slotGeometry, type SlotGeom } from './lay
 import { Monsters, type SoundName } from './Monsters';
 import { Traps } from './Traps';
 import { Avatars, type AvatarSide } from './Avatars';
+import { Fighters } from '../../fight/Fighters';
 import {
   getBaseSpeed,
   hitStopFor,
@@ -72,6 +73,11 @@ function pickResolution(w: number, h: number, profile: EffectsProfile): number {
   return Math.max(0.5, Math.min(dpr, profile.maxResolution, byBudget));
 }
 
+export interface SceneOptions {
+  /** draw the old unit/trap slots (default true); Combat v2 turns them off */
+  slots?: boolean;
+}
+
 export interface SceneStats {
   fps: number;
   resolution: number;
@@ -117,8 +123,12 @@ export class BattlefieldScene {
   readonly traps: Traps;
   /** The two Riftwalkers standing on the field. */
   readonly avatars: Avatars;
+  /** Combat v2: the combatants standing in a line (the old slots and avatars are not used then). */
+  readonly fighters: Fighters;
   /** Sound hook: every major visual event calls this (wired to audio later). */
   onSound: (name: SoundName) => void = () => undefined;
+  /** called after the board is refitted to its host (DOM overlays must be placed again) */
+  onFit: () => void = () => undefined;
   private bottomReserve = 0;
   private baseX = 0;
   private baseY = 0;
@@ -142,7 +152,11 @@ export class BattlefieldScene {
     this.pointer.y = ((e.clientY - r.top) / Math.max(1, r.height)) * 2 - 1;
   };
 
-  static async create(host: HTMLElement, profile: EffectsProfile): Promise<BattlefieldScene> {
+  static async create(
+    host: HTMLElement,
+    profile: EffectsProfile,
+    opts: SceneOptions = {},
+  ): Promise<BattlefieldScene> {
     const app = new Application();
     await app.init({
       background: hex(color.void),
@@ -152,10 +166,15 @@ export class BattlefieldScene {
       resolution: pickResolution(host.clientWidth, host.clientHeight, profile),
       powerPreference: 'high-performance',
     });
-    return new BattlefieldScene(app, host, profile);
+    return new BattlefieldScene(app, host, profile, opts);
   }
 
-  private constructor(app: Application, host: HTMLElement, profile: EffectsProfile) {
+  private constructor(
+    app: Application,
+    host: HTMLElement,
+    profile: EffectsProfile,
+    opts: SceneOptions,
+  ) {
     this.app = app;
     this.host = host;
     this.profile = profile;
@@ -210,7 +229,7 @@ export class BattlefieldScene {
     this.world.addChild(this.branchCracks, this.riftCrack);
 
     // --- slots ---
-    this.buildSlots();
+    if (opts.slots !== false) this.buildSlots();
 
     // --- later phases draw here ---
     this.world.addChild(this.layers.avatars, this.layers.traps, this.layers.units, this.layers.fx);
@@ -237,6 +256,12 @@ export class BattlefieldScene {
       container: this.layers.avatars,
       glowTex: this.glowTex,
       profile: () => this.profile,
+    });
+    this.fighters = new Fighters({
+      container: this.layers.units,
+      glowTex: this.glowTex,
+      profile: () => this.profile,
+      sound: (n) => this.onSound(n as SoundName),
     });
     this.monsters = new Monsters({
       container: this.layers.units,
@@ -384,6 +409,22 @@ export class BattlefieldScene {
     return best;
   }
 
+  /** Screen point (client px) -> stage coordinates. */
+  clientToStage(clientX: number, clientY: number): { x: number; y: number } {
+    const rect = this.host.getBoundingClientRect();
+    const k = this.world.scale.x;
+    return {
+      x: (clientX - rect.left - this.world.position.x) / k,
+      y: (clientY - rect.top - this.world.position.y) / k,
+    };
+  }
+
+  /** Stage coordinates -> position inside the host element (px), for DOM overlays. */
+  stageToHost(x: number, y: number): { x: number; y: number; k: number } {
+    const k = this.world.scale.x;
+    return { x: this.world.position.x + x * k, y: this.world.position.y + y * k, k };
+  }
+
   /** Which Riftwalker (if any) is under a screen point: clicking one attacks that player. */
   avatarAtClient(clientX: number, clientY: number): AvatarSide | null {
     const rect = this.host.getBoundingClientRect();
@@ -514,6 +555,7 @@ export class BattlefieldScene {
 
     this.monsters.tick(t, p.still);
     this.avatars.tick(t, p.still);
+    this.fighters.tick(t, p.still);
     this.traps.tick(t, dt, p.still);
 
     // slot rings shimmer very slightly, each on its own phase
@@ -605,6 +647,7 @@ export class BattlefieldScene {
     this.world.position.set(this.baseX, this.baseY);
     this.vignette.width = w;
     this.vignette.height = h;
+    this.onFit();
   }
 
   /** Shake the whole board by up to `amount` px (damped). Ignored under reduced motion. */
@@ -646,6 +689,7 @@ export class BattlefieldScene {
     this.monsters.destroy();
     this.traps.destroy();
     this.avatars.destroy();
+    this.fighters.destroy();
     this.app.destroy({ removeView: true }, { children: true, texture: true });
   }
 }

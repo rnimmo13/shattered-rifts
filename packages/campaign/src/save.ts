@@ -1,10 +1,11 @@
 // Saving a run: plain JSON text, so it can go to localStorage and to an export file. Loading checks the whole shape
 // and the deck rules, so a hand-edited or damaged save is refused instead of crashing the game.
 
-import { CARD_DB, CHARACTERS, ENEMIES, validateDeck } from '@sr/content';
+import { COMBAT_DB, ENCOUNTERS, RIFTWALKERS, V2_DECK_RULES } from '@sr/content/v2';
+const CARD_DB = COMBAT_DB.cards;
 import type { MapNode, NodeKind, RunPhase, RunState } from './types';
 
-export const RUN_SAVE_VERSION = 1;
+export const RUN_SAVE_VERSION = 2;
 
 const PHASES: readonly RunPhase[] = [
   'map',
@@ -20,7 +21,7 @@ const PHASES: readonly RunPhase[] = [
   'banked',
 ];
 const KINDS: readonly NodeKind[] = ['duel', 'elite', 'event', 'shrine', 'merchant', 'warden'];
-const ENEMY_IDS = new Set(ENEMIES.map((e) => e.id));
+const ENEMY_IDS = new Set(ENCOUNTERS.map((e) => e.id));
 
 export function serializeRun(run: RunState): string {
   return JSON.stringify(run);
@@ -106,13 +107,14 @@ export function parseRun(text: string): RunState | null {
   const r = raw as Partial<RunState>;
   if (r.v !== RUN_SAVE_VERSION) return null;
   if (typeof r.seed !== 'string') return null;
-  if (!CHARACTERS.some((c) => c.id === r.character)) return null;
+  if (typeof r.character !== 'string' || !(r.character in RIFTWALKERS)) return null;
+  if (!isInt(r.maxHp, 1, 9999) || !isInt(r.hp, 1, r.maxHp)) return null;
   if (!isInt(r.tier, 1, 99) || !isInt(r.stage, 1, 5)) return null;
   if (!isInt(r.maxResolve, 1, 9) || !isInt(r.resolve, 0, r.maxResolve)) return null;
   if (!isInt(r.shards, 0, 1_000_000)) return null;
   if (!Array.isArray(r.deck) || r.deck.some((id) => typeof id !== 'string' || !CARD_DB[id]))
     return null;
-  if (validateDeck(r.deck, CARD_DB, 0).length > 0) return null;
+  if (r.deck.length < V2_DECK_RULES.minSize || r.deck.length > 200) return null;
   if (typeof r.phase !== 'string' || !PHASES.includes(r.phase)) return null;
   if (!validMap(r.map)) return null;
   if (!isStrArray(r.cleared)) return null;

@@ -1,7 +1,7 @@
 // The stage map: floors run left to right, the Warden at the end. Click a glowing node to go there.
 
 import type { MapNode, NodeKind, StageMap } from '@sr/campaign';
-import { enemy } from '@sr/content';
+import { encounter } from '@sr/content/v2';
 
 const KIND_LABEL: Record<NodeKind, string> = {
   duel: 'Duel',
@@ -80,7 +80,7 @@ function NodeIcon({ kind }: { kind: NodeKind }) {
 function labelOf(n: MapNode): string {
   if (n.enemyId) {
     try {
-      return enemy(n.enemyId).name;
+      return encounter(n.enemyId).name;
     } catch {
       /* fall through */
     }

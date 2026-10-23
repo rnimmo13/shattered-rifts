@@ -1,9 +1,9 @@
-// Run state for the campaign (docs/03_CAMPAIGN.md). Plain JSON so it can be saved, exported and replayed.
-// Everything that looks random comes from the seeded PRNG kept inside the run, so a seed and the choices made
-// reproduce the same run.
+// Run state for the campaign (docs/03_CAMPAIGN.md, adapted to Combat v2 in docs/08). Plain JSON so it can be saved,
+// exported and replayed. Everything that looks random comes from the seeded PRNG kept inside the run, so a seed and the
+// choices made reproduce the same run.
 
-import type { RngState } from '@sr/engine';
-import type { CharacterId } from '@sr/content';
+import type { RngState } from '@sr/combat';
+import type { HeroId } from '@sr/content/v2';
 
 export type NodeKind = 'duel' | 'elite' | 'event' | 'shrine' | 'merchant' | 'warden';
 
@@ -12,7 +12,7 @@ export interface MapNode {
   /** 1-based floor within the stage; the Warden sits one floor above the last. */
   floor: number;
   kind: NodeKind;
-  /** Duel, Elite and Warden nodes: which enemy waits here. */
+  /** Duel, Elite and Warden nodes: the encounter that waits here (an id from the content's ENCOUNTERS). */
   enemyId?: string;
   /** Ids of the nodes on the next floor this one connects to. */
   next: string[];
@@ -29,9 +29,9 @@ export interface StageMap {
 
 export type RunPhase =
   | 'map' // choose the next node
-  | 'duel' // a duel is waiting to be played at the current node
+  | 'duel' // a fight is waiting to be played at the current node
   | 'reward' // pick a card (or skip)
-  | 'gift' // the Warden's Gift: pick one signature card
+  | 'gift' // the Warden's Gift: pick one rare card
   | 'shrine'
   | 'merchant'
   | 'event'
@@ -47,7 +47,7 @@ export interface MerchantItem {
 }
 
 export interface EventOption {
-  id: 'shards' | 'card' | 'leave';
+  id: 'shards' | 'card' | 'heal' | 'leave';
   label: string;
 }
 
@@ -70,18 +70,21 @@ export interface RunStats {
 }
 
 export interface RunState {
-  v: 1;
+  v: 2;
   seed: string;
-  character: CharacterId;
+  character: HeroId;
   /** Rift Tier: loops cleared + 1. */
   tier: number;
   /** 1..5 */
   stage: number;
+  /** HP carries from fight to fight, as in Slay the Spire. A lost fight restarts at the HP you entered it with. */
+  hp: number;
+  maxHp: number;
   resolve: number;
   maxResolve: number;
   deck: string[];
   shards: number;
-  /** Run passives (Boons) are part of the design but not in Run v1. */
+  /** Run passives (Boons) are part of the design but not built yet. */
   boons: string[];
   /** The realm order for stages 1-3 (stage 4 is always Umbral Veil, stage 5 the Rift). */
   stageRealms: StageRealm[];

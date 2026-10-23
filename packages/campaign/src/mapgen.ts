@@ -1,27 +1,27 @@
 // Stage maps: 5 floors plus the Warden for stages 1-4, a single floor plus Vorthax for stage 5 (03_CAMPAIGN §2.1).
 // Generated from the run seed, so a run always has the same maps.
 
-import { nextInt, type RngState } from '@sr/engine';
-import { ENEMIES, type EnemyDef } from '@sr/content';
+import { nextInt, type RngState } from '@sr/combat';
+import { ENCOUNTERS, type Encounter } from '@sr/content/v2';
 import type { MapNode, NodeKind, StageMap, StageRealm } from './types';
 
 const WARDEN_OF: Record<StageRealm, string> = {
-  aurelion: 'aur-seraphine',
-  nexus: 'nex-kron',
-  wyldmaw: 'wyl-gorrmaw',
-  umbral: 'umb-nyxara',
+  aurelion: 'seraphine',
+  nexus: 'kron',
+  wyldmaw: 'gorrmaw',
+  umbral: 'nyxara',
   rift: 'vorthax',
 };
 
-export function wardenFor(realm: StageRealm): EnemyDef {
+export function wardenFor(realm: StageRealm): Encounter {
   const id = WARDEN_OF[realm];
-  const e = ENEMIES.find((x) => x.id === id);
+  const e = ENCOUNTERS.find((x) => x.id === id);
   if (!e) throw new Error(`No warden for ${realm}`);
   return e;
 }
 
-function enemiesOf(realm: StageRealm, kind: EnemyDef['kind']): EnemyDef[] {
-  return ENEMIES.filter((e) => e.realm === realm && e.kind === kind);
+function enemiesOf(realm: StageRealm, kind: Encounter['kind']): Encounter[] {
+  return ENCOUNTERS.filter((e) => e.realm === realm && e.kind === kind);
 }
 
 function pick<T>(rng: RngState, list: readonly T[]): T {

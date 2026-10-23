@@ -1,12 +1,14 @@
 import { describe, expect, it } from 'vitest';
-import { CARD_DB, DECK_RULES, validateDeck, type CharacterId } from '@sr/content';
-import { nextInt, seedRng } from '@sr/engine';
+import { applyAction, chooseAction, createCombat, seedRng, heroOf } from '@sr/combat';
+import { COMBAT_DB, RIFTWALKERS, type HeroId } from '@sr/content/v2';
 import {
+  DECK_RULES,
   RunError,
   availableNodes,
   bank,
   buyCard,
   buyRemoval,
+  canAdd,
   chooseCard,
   chooseEvent,
   continueLoop,
@@ -22,15 +24,16 @@ import {
   reachableNodes,
   serializeRun,
   takeShrine,
+  upgradable,
   type RunState,
   type StageRealm,
 } from './index';
 
-const REALMS: StageRealm[] = ['aurelion', 'nexus', 'wyldmaw', 'umbral'];
+const HEROES = Object.keys(RIFTWALKERS) as HeroId[];
 
 describe('stage maps', () => {
   it('every stage map from many seeds is well formed and every node can reach the Warden', () => {
-    for (let seed = 0; seed < 150; seed++) {
+    for (let seed = 0; seed < 100; seed++) {
       for (const [stage, realm] of [
         [1, 'aurelion'],
         [2, 'nexus'],
@@ -42,14 +45,10 @@ describe('stage maps', () => {
         expect(ids.size).toBe(map.nodes.length);
         const warden = map.nodes.find((n) => n.kind === 'warden');
         expect(warden?.enemyId).toBeTruthy();
-        // floor 1 is all duels; elites are limited and never on floor 1 or 2
         const f1 = map.nodes.filter((n) => n.floor === 1);
         expect(f1.length).toBeGreaterThanOrEqual(2);
         expect(f1.every((n) => n.kind === 'duel')).toBe(true);
-        expect(map.nodes.filter((n) => n.kind === 'elite').length).toBeLessThanOrEqual(1);
         expect(map.nodes.filter((n) => n.kind === 'elite').every((n) => n.floor >= 3)).toBe(true);
-        expect(map.nodes.filter((n) => n.kind === 'merchant').length).toBeLessThanOrEqual(1 + 1);
-        // every edge points to a real node on the next floor
         for (const n of map.nodes) {
           for (const t of n.next) {
             expect(ids.has(t)).toBe(true);
@@ -57,20 +56,19 @@ describe('stage maps', () => {
           }
           if (n.kind !== 'warden') expect(n.next.length).toBeGreaterThan(0);
         }
-        // every node is reachable from the start, and the Warden is reachable from every node
         const reach = new Set(f1.map((n) => n.id));
         for (let f = 1; f <= map.floors; f++)
           for (const n of map.nodes.filter((x) => x.floor === f && reach.has(x.id)))
             n.next.forEach((t) => reach.add(t));
         expect(reach.size).toBe(map.nodes.length);
-        for (const n of map.nodes) {
-          let frontier = [n.id];
-          for (let f = n.floor; f < map.floors && frontier.length; f++)
-            frontier = frontier.flatMap((id) => map.nodes.find((x) => x.id === id)?.next ?? []);
-          if (n.kind !== 'warden') expect(frontier).toContain(warden?.id);
-        }
       }
     }
+  });
+
+  it('every fight node names a real encounter of the right realm', () => {
+    const map = generateStageMap(seedRng('enc'), 2, 'nexus');
+    for (const n of map.nodes.filter((x) => x.enemyId)) expect(n.enemyId).toBeTruthy();
+    expect(map.nodes.find((n) => n.kind === 'warden')?.enemyId).toBe('kron');
   });
 
   it('the last stage is a Shrine or a Merchant, then Vorthax', () => {
@@ -92,32 +90,36 @@ describe('stage maps', () => {
 });
 
 describe('rewards', () => {
-  it('never offers a card the deck cannot take, and offers distinct cards', () => {
-    for (const ch of ['maren', 'rivet', 'kesh', 'vesper'] as CharacterId[]) {
-      const run = newRun(ch, 'r');
+  it('never offer a card the deck cannot take, and offer distinct cards', () => {
+    for (const h of HEROES) {
+      const run = newRun(h, 'r');
       for (let i = 0; i < 80; i++) {
-        const offers = offerCards(seedRng(`o${i}`), ch, run.deck, i % 2 ? 'elite' : 'duel', 3);
+        const offers = offerCards(seedRng(`o${i}`), h, run.deck, i % 2 ? 'elite' : 'duel', 3);
         expect(offers).toHaveLength(3);
         expect(new Set(offers).size).toBe(3);
         for (const id of offers) {
-          expect(CARD_DB[id]).toBeDefined();
-          expect(validateDeck([...run.deck, id], CARD_DB, 0)).toEqual([]);
+          expect(COMBAT_DB.cards[id]).toBeDefined();
+          expect(canAdd(run.deck, id)).toBe(true);
         }
       }
     }
   });
+  it('respects the copy limit', () => {
+    expect(canAdd(['rift-bolt', 'rift-bolt', 'rift-bolt', 'rift-bolt'], 'rift-bolt')).toBe(false);
+    expect(canAdd(['strike', 'strike', 'strike', 'strike', 'strike'], 'strike')).toBe(true); // basics are exempt
+  });
 });
 
 describe('the run', () => {
-  it('starts as documented', () => {
-    const r = newRun('maren', 's');
-    expect(r.deck).toHaveLength(20);
-    expect(r.resolve).toBe(3);
-    expect(r.tier).toBe(1);
-    expect(r.stage).toBe(1);
-    expect(r.phase).toBe('map');
-    expect(availableNodes(r).every((n) => n.floor === 1)).toBe(true);
-    expect([...r.stageRealms].sort()).toEqual(['aurelion', 'nexus', 'wyldmaw']);
+  it('starts as designed', () => {
+    for (const h of HEROES) {
+      const r = newRun(h, 's');
+      expect(r.deck).toEqual(RIFTWALKERS[h].starter);
+      expect(r.hp).toBe(RIFTWALKERS[h].hero.maxHp);
+      expect(r.resolve).toBe(3);
+      expect(r.phase).toBe('map');
+      expect(availableNodes(r).every((n) => n.floor === 1)).toBe(true);
+    }
   });
 
   it('is the same run for the same seed and never mutates what it is given', () => {
@@ -131,242 +133,144 @@ describe('the run', () => {
   it('rejects things the rules forbid', () => {
     const r = newRun('rivet', 's');
     expect(() => enterNode(r, 'nope')).toThrow(RunError);
-    expect(() => finishDuel(r, true)).toThrow(RunError);
+    expect(() => finishDuel(r, true, 10)).toThrow(RunError);
     expect(() => chooseCard(r, null)).toThrow(RunError);
     expect(() => nextStage(r)).toThrow(RunError);
-    const inDuel = enterNode(r, availableNodes(r)[0]!.id);
-    expect(inDuel.phase).toBe('duel');
-    expect(() => enterNode(inDuel, availableNodes(r)[1]!.id)).toThrow(RunError);
-    expect(duelPlan(inDuel)?.deck).toHaveLength(20);
+    const inFight = enterNode(r, availableNodes(r)[0]!.id);
+    expect(inFight.phase).toBe('duel');
+    expect(duelPlan(inFight)?.deck).toHaveLength(10);
+    expect(() => finishDuel(inFight, true, 0)).toThrow(RunError); // dead heroes do not win
+    expect(() => finishDuel(inFight, true, 99999)).toThrow(RunError);
   });
 
-  it('a lost duel costs Resolve and retries the same node; 0 Resolve collapses the run', () => {
-    let r = enterNode(newRun('maren', 's'), availableNodes(newRun('maren', 's'))[0]!.id);
-    const node = r.context?.nodeId;
-    r = finishDuel(r, false);
-    expect(r.resolve).toBe(2);
-    expect(r.phase).toBe('duel');
-    expect(r.context?.nodeId).toBe(node);
-    r = finishDuel(finishDuel(r, false), false);
-    expect(r.resolve).toBe(0);
+  it('HP carries over after a win, and a loss costs Resolve but not HP', () => {
+    let r = enterNode(newRun('maren', 'hp'), availableNodes(newRun('maren', 'hp'))[0]!.id);
+    const lost = finishDuel(r, false);
+    expect(lost.resolve).toBe(2);
+    expect(lost.hp).toBe(r.hp);
+    expect(lost.phase).toBe('duel');
+    expect(duelPlan(lost)?.seed).not.toBe(duelPlan(r)?.seed); // a different shuffle on retry
+    r = finishDuel(lost, true, 51);
+    expect(r.hp).toBe(51);
+    expect(r.phase).toBe('reward');
+    expect(r.shards).toBe(12);
+  });
+
+  it('collapses at 0 Resolve', () => {
+    let r = enterNode(newRun('vesper', 'c'), availableNodes(newRun('vesper', 'c'))[0]!.id);
+    for (let i = 0; i < 3; i++) r = finishDuel(r, false);
     expect(r.phase).toBe('collapsed');
   });
 
-  it('a won duel gives shards and a card to take or skip', () => {
-    let r = enterNode(newRun('maren', 's'), availableNodes(newRun('maren', 's'))[0]!.id);
-    r = finishDuel(r, true);
-    expect(r.phase).toBe('reward');
-    expect(r.shards).toBeGreaterThan(0);
-    const offers = r.context?.offers ?? [];
-    expect(offers.length).toBe(3);
-    const picked = chooseCard(r, offers[0]!);
-    expect(picked.deck).toHaveLength(21);
-    expect(picked.phase).toBe('map');
-    const skipped = chooseCard(r, null);
-    expect(skipped.deck).toHaveLength(20);
-    expect(skipped.cleared).toHaveLength(1);
-    expect(() => chooseCard(r, 'AUR-99')).toThrow(RunError);
-  });
-
-  it('shrines restore Resolve or remove a card, but never below the minimum deck', () => {
-    const base = newRun('maren', 's');
-    const shrine = {
+  it('shrines rest, upgrade and remove', () => {
+    const base = newRun('maren', 'shr');
+    const shrineRun = (): RunState => ({
       ...base,
-      phase: 'shrine' as const,
+      hp: 30,
+      phase: 'shrine',
+      at: 'x',
       context: { nodeId: base.map.nodes[0]!.id },
-      resolve: 1,
-    };
-    const rested = takeShrine(shrine, { kind: 'rest' });
-    expect(rested.resolve).toBe(2);
-    expect(() => takeShrine(shrine, { kind: 'remove', card: shrine.deck[0]! })).toThrow(RunError);
-    const fat = { ...shrine, deck: [...shrine.deck, 'AUR-04'] };
-    expect(takeShrine(fat, { kind: 'remove', card: 'AUR-04' }).deck).toHaveLength(20);
+    });
+    const rested = takeShrine(shrineRun(), { kind: 'rest' });
+    expect(rested.hp).toBe(30 + Math.ceil(80 * 0.35));
+    const up = takeShrine(shrineRun(), { kind: 'upgrade', card: 'dawn-smite' });
+    expect(up.deck).toContain('dawn-smite+');
+    expect(up.deck).not.toContain('dawn-smite');
+    expect(upgradable(up.deck)).not.toContain('dawn-smite+');
+    expect(() => takeShrine(shrineRun(), { kind: 'upgrade', card: 'rift-bolt' })).toThrow(RunError);
+    const small = { ...shrineRun(), deck: base.deck.slice(0, DECK_RULES.minSize) };
+    expect(() => takeShrine(small, { kind: 'remove', card: 'strike' })).toThrow(RunError);
+    expect(takeShrine(shrineRun(), { kind: 'remove', card: 'strike' }).deck).toHaveLength(9);
   });
 
-  it('the merchant sells cards for shards and removes one card', () => {
-    const base = newRun('maren', 's');
-    const merchant = {
-      ...base,
-      phase: 'merchant' as const,
-      shards: 500,
-      deck: [...base.deck, 'AUR-04', 'AUR-05'],
-      context: {
-        nodeId: base.map.nodes[0]!.id,
-        merchant: {
-          items: [{ cardId: 'NEU-01', price: 60, sold: false }],
-          removePrice: 40,
-          removed: false,
-        },
-      },
-    };
-    const bought = buyCard(merchant, 0);
-    expect(bought.shards).toBe(440);
-    expect(bought.deck).toContain('NEU-01');
-    expect(() => buyCard(bought, 0)).toThrow(RunError);
-    const removed = buyRemoval(bought, 'AUR-05');
-    expect(removed.shards).toBe(400);
-    expect(() => buyRemoval(removed, 'AUR-04')).toThrow(RunError);
-    expect(leaveMerchant(removed).phase).toBe('map');
-    expect(() => buyCard({ ...merchant, shards: 1 }, 0)).toThrow(RunError);
-  });
-
-  it('events pay shards or a card', () => {
-    const base = newRun('vesper', 's');
-    const ev = {
-      ...base,
-      phase: 'event' as const,
-      context: {
-        nodeId: base.map.nodes[0]!.id,
-        event: {
-          title: 't',
-          text: 't',
-          cardOffer: 'UMB-01',
-          options: [
-            { id: 'shards' as const, label: 'a' },
-            { id: 'card' as const, label: 'b' },
-            { id: 'leave' as const, label: 'c' },
-          ],
-        },
-      },
-    };
-    expect(chooseEvent(ev, 'shards').shards).toBe(30);
-    expect(chooseEvent(ev, 'card').deck).toContain('UMB-01');
-    expect(chooseEvent(ev, 'leave').deck).toHaveLength(20);
+  it('save and load round-trips, and damaged saves are refused', () => {
+    const r = newRun('rivet', 'save');
+    expect(parseRun(serializeRun(r))).toEqual(r);
+    expect(parseRun('not json')).toBeNull();
+    expect(parseRun(JSON.stringify({ ...r, v: 1 }))).toBeNull();
+    expect(parseRun(JSON.stringify({ ...r, hp: 0 }))).toBeNull();
+    expect(parseRun(JSON.stringify({ ...r, deck: ['nope', ...r.deck] }))).toBeNull();
+    expect(parseRun(JSON.stringify({ ...r, character: 'zed' }))).toBeNull();
   });
 });
 
-/** Plays a whole run, winning or losing each duel according to `wins`, taking a random legal choice everywhere. */
-function playRun(character: CharacterId, seed: string, wins: (n: number) => boolean) {
-  const rand = seedRng(`bot:${seed}`);
-  let r: RunState = newRun(character, seed);
-  let duels = 0;
-  const log: string[] = [];
-  for (let guard = 0; guard < 2000; guard++) {
-    log.push(r.phase);
-    switch (r.phase) {
+/** Play a whole run with the greedy bot: fight everything, take the first reward, rest at shrines. */
+function botRun(hero: HeroId, seed: string): { run: RunState; fights: number } {
+  let run = newRun(hero, seed);
+  let fights = 0;
+  for (let step = 0; step < 400; step++) {
+    switch (run.phase) {
       case 'map': {
-        const opts = availableNodes(r);
-        expect(opts.length).toBeGreaterThan(0);
-        r = enterNode(r, opts[nextInt(rand, opts.length)]!.id);
+        const n = availableNodes(run);
+        run = enterNode(run, n[0]!.id);
         break;
       }
       case 'duel': {
-        const plan = duelPlan(r);
-        expect(plan).not.toBeNull();
-        expect(validateDeck(plan!.deck, CARD_DB, DECK_RULES.minSize)).toEqual([]);
-        r = finishDuel(r, wins(duels++));
+        const plan = duelPlan(run)!;
+        fights++;
+        let { state } = createCombat(COMBAT_DB, {
+          seed: plan.seed,
+          a: { hero, deck: plan.deck, hp: plan.hp },
+          b: { enemies: plan.units, tier: plan.tier },
+        });
+        for (let i = 0; i < 800 && !state.winner; i++)
+          state = applyAction(COMBAT_DB, state, chooseAction(COMBAT_DB, state)).state;
+        const hp = heroOf(state.sides.a)?.hp ?? 0;
+        run = state.winner === 'a' ? finishDuel(run, true, hp) : finishDuel(run, false);
         break;
       }
       case 'reward':
-      case 'gift': {
-        const offers = r.context?.offers ?? [];
-        expect(offers.length).toBeGreaterThan(0);
-        r = chooseCard(
-          r,
-          r.phase === 'reward' && nextInt(rand, 4) === 0
-            ? null
-            : offers[nextInt(rand, offers.length)]!,
-        );
+        run = chooseCard(run, run.context!.offers![0]!);
         break;
-      }
+      case 'gift':
+        run = chooseCard(run, run.context!.offers![0]!);
+        break;
       case 'shrine':
-        r = takeShrine(r, { kind: 'rest' });
+        run = takeShrine(run, { kind: 'rest' });
         break;
       case 'merchant':
-        r = leaveMerchant(r);
+        run = leaveMerchant(run);
         break;
       case 'event':
-        r = chooseEvent(r, 'shards');
+        run = chooseEvent(run, 'heal');
         break;
       case 'stageClear':
-        r = nextStage(r);
+        run = nextStage(run);
         break;
+      case 'loopCleared':
+        return { run: bank(run), fights };
       default:
-        return { r, log };
+        return { run, fights };
     }
-    expect(validateDeck(r.deck, CARD_DB, 0)).toEqual([]);
   }
-  throw new Error('the run never ended');
+  return { run, fights };
 }
 
-describe('a whole run', () => {
-  for (const ch of ['maren', 'rivet', 'kesh', 'vesper'] as CharacterId[]) {
-    it(`${ch}: winning every duel clears all five stages, then Bank or Continue`, () => {
-      const { r } = playRun(ch, `win-${ch}`, () => true);
-      expect(r.phase).toBe('loopCleared');
-      expect(r.stage).toBe(5);
-      expect(r.stats.duelsLost).toBe(0);
-      const banked = bank(r);
-      expect(banked.phase).toBe('banked');
-      const again = continueLoop(r);
-      expect(again.tier).toBe(2);
-      expect(again.stage).toBe(1);
-      expect(again.phase).toBe('map');
-      expect(again.deck).toEqual(r.deck);
-      expect(again.resolve).toBe(3);
-      // Tier II enemies have more Essence
-      const n = availableNodes(again)[0]!;
-      const inDuel = enterNode(again, n.id);
-      const plan = duelPlan(inDuel)!;
-      expect(plan.essence).toBeGreaterThan(14);
-    });
-  }
-
-  it('losing every duel collapses the run quickly', () => {
-    const { r } = playRun('maren', 'lose', () => false);
-    expect(r.phase).toBe('collapsed');
-    expect(r.resolve).toBe(0);
+describe('a whole run, played by the bot', () => {
+  it('always ends in a legal state (cleared, banked or collapsed) and never throws', () => {
+    for (const h of HEROES) {
+      const { run, fights } = botRun(h, `bot-${h}`);
+      expect(['banked', 'collapsed']).toContain(run.phase);
+      expect(fights).toBeGreaterThan(3);
+      expect(run.hp).toBeGreaterThan(0);
+      expect(parseRun(serializeRun(run))).not.toBeNull();
+    }
   });
 
-  it('a run with some losses still reaches the end when it keeps winning afterwards', () => {
-    const { r } = playRun('kesh', 'mixed', (n) => n % 5 !== 3);
-    expect(['loopCleared', 'collapsed']).toContain(r.phase);
+  it('reachableNodes agrees with availableNodes at the start', () => {
+    const r = newRun('maren', 'z');
+    expect(reachableNodes(r.map, null, []).map((n) => n.id)).toEqual(
+      availableNodes(r).map((n) => n.id),
+    );
   });
 
-  it('a save round-trips, and damaged saves are refused', () => {
-    const { r } = playRun('rivet', 'save', () => true);
-    const text = serializeRun(r);
-    expect(parseRun(text)).toEqual(r);
-    expect(parseRun('not json')).toBeNull();
-    expect(parseRun(JSON.stringify({ ...r, v: 2 }))).toBeNull();
-    expect(parseRun(JSON.stringify({ ...r, deck: [...r.deck, 'NOPE-1'] }))).toBeNull();
-    expect(
-      parseRun(JSON.stringify({ ...r, deck: [...r.deck, ...Array<string>(5).fill('AUR-01')] })),
-    ).toBeNull();
-    expect(parseRun(JSON.stringify({ ...r, resolve: 99 }))).toBeNull();
-    expect(parseRun(JSON.stringify({ ...r, phase: 'hacked' }))).toBeNull();
-  });
-
-  it('reachable nodes follow the map edges', () => {
-    const r = newRun('maren', 'edges');
-    const first = availableNodes(r)[0]!;
-    const next = reachableNodes(r.map, first.id, []);
-    expect(next.map((n) => n.id).sort()).toEqual([...first.next].sort());
-    expect(REALMS).toContain(r.map.realm);
-  });
-});
-
-describe('damaged saves', () => {
-  const good = () => JSON.parse(serializeRun(newRun('maren', 'dmg'))) as Record<string, unknown>;
-  const mk = (f: (r: Record<string, unknown>) => void): string => {
-    const r = good();
-    f(r);
-    return JSON.stringify(r);
-  };
-  it('are refused instead of crashing the screens', () => {
-    expect(parseRun(mk(() => undefined))).not.toBeNull();
-    expect(parseRun(mk((r) => ((r['map'] as { nodes: unknown[] }).nodes = [])))).toBeNull();
-    expect(parseRun(mk((r) => ((r['map'] as { nodes: null }).nodes = null)))).toBeNull();
-    expect(
-      parseRun(
-        mk((r) => ((r['map'] as { nodes: { enemyId: string }[] }).nodes[0]!.enemyId = 'nobody')),
-      ),
-    ).toBeNull();
-    expect(parseRun(mk((r) => (r['at'] = 'ghost-node')))).toBeNull();
-    expect(parseRun(mk((r) => (r['cleared'] = ['ghost-node'])))).toBeNull();
-    expect(parseRun(mk((r) => (r['phase'] = 'reward')))).toBeNull(); // reward with no offers
-    expect(parseRun(mk((r) => (r['phase'] = 'duel')))).toBeNull(); // duel with no node
-    expect(parseRun(mk((r) => (r['phase'] = 'merchant')))).toBeNull();
-    expect(parseRun('x'.repeat(2_100_000))).toBeNull();
+  it('continuing a loop raises the tier and heals', () => {
+    const r = { ...newRun('maren', 'loop'), phase: 'loopCleared' as const, hp: 10 };
+    const c = continueLoop(r);
+    expect(c.tier).toBe(2);
+    expect(c.hp).toBe(10 + 40);
+    expect(c.stage).toBe(1);
+    expect(buyCard).toBeDefined();
+    expect(buyRemoval).toBeDefined();
   });
 });

@@ -5,6 +5,7 @@ import { TitleScreen } from './TitleScreen';
 const DuelScreen = lazy(() => import('../duel/DuelScreen'));
 const PlayScreen = lazy(() => import('../play/PlayScreen'));
 const RunScreen = lazy(() => import('../run/RunScreen'));
+const FightScreen = lazy(() => import('../fight/FightScreen'));
 import { RunErrorBoundary } from '../run/ErrorBoundary';
 
 function useHash(): string {
@@ -32,6 +33,13 @@ export function App() {
         <RunErrorBoundary>
           <RunScreen />
         </RunErrorBoundary>
+      </Suspense>
+    );
+  }
+  if (hash === '#/fight') {
+    return (
+      <Suspense fallback={<div className="loading">Opening the rift…</div>}>
+        <FightScreen />
       </Suspense>
     );
   }

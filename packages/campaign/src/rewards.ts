@@ -1,59 +1,33 @@
-// Card rewards (03_CAMPAIGN §2.3, §2.4). Offers come from the character's realm plus Neutral; about 1 in 10 is
-// "Rift-crossed" (another realm). Cards that would break the deck rules are never offered.
+// Card rewards (03_CAMPAIGN §2.3, §2.4) for Combat v2. Offers come from the Riftwalker's realm plus Neutral; about 1 in 10
+// is "Rift-crossed" (another realm). A card that would exceed the copy limit is never offered.
 
-import { nextInt, type CardDef, type RngState } from '@sr/engine';
-import {
-  ALL_CARDS,
-  CARD_DB,
-  DECK_RULES,
-  validateDeck,
-  character,
-  type CharacterId,
-} from '@sr/content';
+import { nextInt, type RngState } from '@sr/combat';
+import { COMBAT_DB, RIFTWALKERS, V2_DECK_RULES, rewardPool, type HeroId } from '@sr/content/v2';
 import type { StageRealm } from './types';
 
 export type OfferQuality = 'duel' | 'elite';
 
-const PLAYABLE_TYPES = new Set(['unit', 'spell', 'trap', 'relic', 'rift']);
+const rarityOf = (id: string): string => COMBAT_DB.cards[id]?.rarity ?? 'common';
 
-/** Cards that can show up as ordinary rewards: collectible, not a Warden signature, a real playable type. */
-function isRewardCard(c: CardDef): boolean {
-  return c.collectible && !c.source && PLAYABLE_TYPES.has(c.type);
-}
-
-/** Warden signature cards, keyed by the boss id used in `source` ("boss:seraphine"). */
-const BOSS_SOURCE: Record<string, string> = {
-  'aur-seraphine': 'boss:seraphine',
-  'nex-kron': 'boss:kron',
-  'wyl-gorrmaw': 'boss:gorrmaw',
-  'umb-nyxara': 'boss:nyxara',
-  vorthax: 'boss:vorthax',
-};
-
-export function signatureCards(enemyId: string): CardDef[] {
-  const src = BOSS_SOURCE[enemyId];
-  return src ? ALL_CARDS.filter((c) => c.collectible && c.source === src) : [];
-}
-
+/** A card can be added unless the deck already holds the copy limit of it (basic cards are exempt). */
 export function canAdd(deck: readonly string[], cardId: string): boolean {
-  return validateDeck([...deck, cardId], CARD_DB, 0).length === 0;
+  const c = COMBAT_DB.cards[cardId];
+  if (!c || c.unplayable) return false;
+  if (c.rarity === 'basic') return true;
+  return deck.filter((x) => x === cardId).length < V2_DECK_RULES.maxCopies;
 }
 
-/** Your card pool: realm + Neutral. */
-export function ownPool(characterId: CharacterId): CardDef[] {
-  const realm = character(characterId).realm;
-  return ALL_CARDS.filter((c) => isRewardCard(c) && (c.realm === realm || c.realm === 'neutral'));
-}
-
-/** Rift-crossed pool: every other playable realm's cards. */
-export function crossedPool(characterId: CharacterId): CardDef[] {
-  const realm = character(characterId).realm;
-  return ALL_CARDS.filter((c) => isRewardCard(c) && c.realm !== realm && c.realm !== 'neutral');
+/** Cards of the other three playable realms (the Rift-crossed pool). */
+export function crossedPool(hero: HeroId): string[] {
+  const mine = RIFTWALKERS[hero].realm;
+  return (Object.keys(RIFTWALKERS) as HeroId[])
+    .filter((h) => RIFTWALKERS[h].realm !== mine)
+    .flatMap((h) => rewardPool(h).filter((id) => COMBAT_DB.cards[id]?.realm !== 'neutral'));
 }
 
 const WEIGHTS: Record<OfferQuality, Record<string, number>> = {
-  duel: { common: 70, rare: 25, epic: 5 },
-  elite: { common: 25, rare: 50, epic: 20, legendary: 4, mythic: 1 },
+  duel: { common: 65, uncommon: 28, rare: 7 },
+  elite: { common: 30, uncommon: 50, rare: 20 },
 };
 
 function rollRarity(rng: RngState, quality: OfferQuality): string {
@@ -67,68 +41,55 @@ function rollRarity(rng: RngState, quality: OfferQuality): string {
   return 'common';
 }
 
-const LADDER = ['mythic', 'legendary', 'epic', 'rare', 'common'];
+const LADDER = ['rare', 'uncommon', 'common'];
 
-/**
- * `count` distinct cards to choose from. Never offers a card the deck cannot legally take.
- * Falls back down the rarity ladder when a rarity has nothing left to offer.
- */
+/** `count` distinct cards to choose from, falling down the rarity ladder when a rarity has nothing left. */
 export function offerCards(
   rng: RngState,
-  characterId: CharacterId,
+  hero: HeroId,
   deck: readonly string[],
   quality: OfferQuality,
   count: number,
 ): string[] {
-  const own = ownPool(characterId).filter((c) => canAdd(deck, c.id));
-  const crossed = crossedPool(characterId).filter((c) => canAdd(deck, c.id));
+  const own = rewardPool(hero).filter((id) => canAdd(deck, id));
+  const crossed = crossedPool(hero).filter((id) => canAdd(deck, id));
   const out: string[] = [];
   for (let guard = 0; out.length < count && guard < 200; guard++) {
     const fromCrossed = nextInt(rng, 10) === 0 && crossed.length > 0;
-    const pool = (fromCrossed ? crossed : own).filter((c) => !out.includes(c.id));
+    const pool = (fromCrossed ? crossed : own).filter((id) => !out.includes(id));
     if (pool.length === 0) continue;
-    const want = rollRarity(rng, quality);
-    let from = LADDER.indexOf(want);
-    let candidates: CardDef[] = [];
+    let from = LADDER.indexOf(rollRarity(rng, quality));
+    let candidates: string[] = [];
     while (from < LADDER.length && candidates.length === 0) {
-      candidates = pool.filter((c) => c.rarity === LADDER[from]);
+      candidates = pool.filter((id) => rarityOf(id) === LADDER[from]);
       from++;
     }
     if (candidates.length === 0) candidates = pool;
-    out.push((candidates[nextInt(rng, candidates.length)] as CardDef).id);
+    out.push(candidates[nextInt(rng, candidates.length)] as string);
   }
   return out;
 }
 
-/** The Warden's Gift: one of that Warden's signature cards (padded with rare+ cards if there are too few). */
+/** The Warden's Gift: a choice among rare cards of your realm (Warden signature cards come later). */
 export function giftOffers(
   rng: RngState,
-  characterId: CharacterId,
+  hero: HeroId,
   deck: readonly string[],
-  bossId: string,
   count: number,
 ): string[] {
-  const sig = signatureCards(bossId).filter((c) => canAdd(deck, c.id));
-  const out = sig.slice(0, count).map((c) => c.id);
-  if (out.length < count) {
-    for (const id of offerCards(rng, characterId, deck, 'elite', count * 2)) {
-      if (out.length >= count) break;
-      if (!out.includes(id)) out.push(id);
-    }
+  const rares = rewardPool(hero).filter((id) => rarityOf(id) === 'rare' && canAdd(deck, id));
+  const out: string[] = [];
+  for (let guard = 0; out.length < count && out.length < rares.length && guard < 100; guard++) {
+    const pick = rares[nextInt(rng, rares.length)] as string;
+    if (!out.includes(pick)) out.push(pick);
   }
   return out;
 }
 
-export const PRICE: Record<string, number> = {
-  common: 30,
-  rare: 60,
-  epic: 110,
-  legendary: 200,
-  mythic: 220,
-};
-
+export const PRICE: Record<string, number> = { common: 30, uncommon: 55, rare: 95 };
+export const priceOf = (id: string): number => PRICE[rarityOf(id)] ?? 60;
 export const REMOVE_PRICE = 40;
-export const MIN_DECK = DECK_RULES.minSize;
+export const MIN_DECK = V2_DECK_RULES.minSize;
 
 /** For the stage-clear screen and the map: the realm's display name. */
 export const REALM_LABEL: Record<StageRealm, string> = {

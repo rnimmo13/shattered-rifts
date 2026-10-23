@@ -729,3 +729,20 @@ describe('phases only move forward', () => {
     expect(foe(s).intent?.move).toBe('slam'); // still the second phase's cycle (rage, slam, slam)
   });
 });
+
+describe('rift tiers', () => {
+  it('scale enemy HP and Might, including summoned enemies', () => {
+    const { state } = createCombat(db, {
+      seed: 'tier',
+      a: { hero: 'knight', deck: SAMPLE_DECK },
+      b: { enemies: ['summoner'], tier: 3 },
+    });
+    const boss = state.sides.b.units[0] as Unit;
+    expect(boss.maxHp).toBe(Math.round(30 * 1.24));
+    expect(boss.statuses.might).toBe(2);
+    const after = end(state).state; // the Rift Caller summons a slime
+    const slime = after.sides.b.units.find((u) => u.def === 'slime') as Unit;
+    expect(slime.maxHp).toBe(Math.round(14 * 1.24));
+    expect(slime.statuses.might).toBe(2);
+  });
+});

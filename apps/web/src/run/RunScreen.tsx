@@ -3,7 +3,7 @@
 // The run is saved to this browser after every step and can be exported to a file.
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { character, type CharacterId } from '@sr/content';
+import { COMBAT_DB, RIFTWALKERS, encounter, type HeroId } from '@sr/content/v2';
 import {
   REALM_LABEL,
   RunError,
@@ -25,7 +25,7 @@ import {
   takeShrine,
   type RunState,
 } from '@sr/campaign';
-import { DuelView } from '../play/DuelView';
+import { FightView } from '../fight/FightView';
 import { CharacterPicker } from './CharacterPicker';
 import { MapLegend, MapView } from './MapView';
 import { CardOffer, DeckModal, EventView, MerchantView, ShrineView } from './Pickers';
@@ -89,14 +89,14 @@ export default function RunScreen() {
   }, []);
 
   const reportResult = useCallback(
-    (won: boolean) => {
+    (won: boolean, hp?: number) => {
       clearDuelStarted();
-      act((r) => finishDuel(r, won));
+      act((r) => finishDuel(r, won, hp));
     },
     [act],
   );
 
-  const startRun = (c: CharacterId) => setRun(newRun(c, newSeed()));
+  const startRun = (c: HeroId) => setRun(newRun(c, newSeed()));
   const leaveRun = () => {
     clearSavedRun();
     setRun(null);
@@ -122,19 +122,19 @@ export default function RunScreen() {
     const plan = duelPlan(run);
     if (plan) {
       return (
-        <DuelView
-          key={`${run.context.nodeId}:${run.stats.duelsWon}:${run.stats.duelsLost}`}
+        <FightView
+          key={plan.seed}
+          db={COMBAT_DB}
           setup={{
-            seed: `${run.seed}:${run.context.nodeId}:${run.stats.duelsWon}:${run.stats.duelsLost}`,
-            character: run.character,
-            enemyId: plan.enemyId,
-            deck: plan.deck,
-            enemyEssence: plan.essence,
+            seed: plan.seed,
+            a: { hero: run.character, deck: plan.deck, hp: plan.hp },
+            b: { enemies: plan.units, tier: plan.tier },
           }}
-          // there is no "leave" in a campaign duel: giving up counts as a loss
+          title={encounter(plan.encounterId).name}
+          exitLabel="Forfeit"
+          // there is no "leave" in a campaign fight: giving up counts as a loss
           onExit={() => reportResult(false)}
-          onAgain={() => reportResult(false)}
-          campaign={{ onResult: reportResult }}
+          onDone={(r) => reportResult(r.winner === 'a', r.winner === 'a' ? r.hp : undefined)}
         />
       );
     }
@@ -178,11 +178,11 @@ export default function RunScreen() {
 }
 
 function Sanctum(props: {
-  onStart: (c: CharacterId) => void;
+  onStart: (c: HeroId) => void;
   onImport: (f: File | undefined) => void;
   notice: string | null;
 }) {
-  const [pick, setPick] = useState<CharacterId>('maren');
+  const [pick, setPick] = useState<HeroId>('maren');
   return (
     <main className="setup setup--wide">
       <a className="btn btn--small setup__back" href="#/">
@@ -191,9 +191,9 @@ function Sanctum(props: {
       <header className="setup__head">
         <h1 className="setup__title">The Sanctum</h1>
         <p className="setup__lead">
-          Choose a Riftwalker and begin a run: five stages, each ending in a Warden. Win duels, add
-          cards to your deck, and survive. Lose a duel and you lose Resolve; lose all of it and the
-          run collapses.
+          Choose a Riftwalker and begin a run: five stages, each ending in a Warden. Win fights, add
+          cards to your deck, and survive: your HP carries from fight to fight. Lose a fight and you
+          lose Resolve; lose all of it and the run collapses.
         </p>
       </header>
       <CharacterPicker value={pick} onChange={setPick} />
@@ -231,7 +231,7 @@ function RunBar(props: {
   return (
     <header className="runbar">
       <div className="runbar__who">
-        <b>{character(run.character).name}</b>
+        <b>{RIFTWALKERS[run.character].hero.name}</b>
         <span>
           Tier {run.tier} · Stage {run.stage}/5 · {REALM_LABEL[realmOfStage(run, run.stage)]}
         </span>
@@ -242,6 +242,12 @@ function RunBar(props: {
             <i key={i} className={i < run.resolve ? 'is-full' : ''} />
           ))}
           <em>Resolve</em>
+        </span>
+        <span className="shards" aria-label={`HP ${run.hp} of ${run.maxHp}`}>
+          <b>
+            {run.hp}/{run.maxHp}
+          </b>{' '}
+          HP
         </span>
         <span className="shards">
           <b>{run.shards}</b> shards
@@ -318,6 +324,7 @@ function Body(props: {
         <ShrineView
           run={run}
           onRest={() => act((r) => takeShrine(r, { kind: 'rest' }))}
+          onUpgrade={(card) => act((r) => takeShrine(r, { kind: 'upgrade', card }))}
           onRemove={(card) => act((r) => takeShrine(r, { kind: 'remove', card }))}
         />
       );

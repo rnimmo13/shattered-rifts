@@ -1,12 +1,13 @@
-// The run state machine (03_CAMPAIGN §2). Every function takes a RunState and returns a new one (the input is never
-// changed), so a run can be saved after every step and the UI can never put it in a state the rules forbid.
-// Run v1 covers: character start, the five stage maps, duels/elites/Wardens, card rewards with skip, shrines,
-// the merchant, a small event, the Warden's Gift, Resolve, Bank and Continue. Boons and Tempering come later.
+// The run state machine (03_CAMPAIGN §2, adapted to Combat v2). Every function takes a RunState and returns a new one
+// (the input is never changed), so a run can be saved after every step and the UI can never put it in a state the rules
+// forbid. Covers: Riftwalker start, the five stage maps, fights/elites/Wardens, HP that carries between fights, card
+// rewards with skip, shrines (rest, upgrade, remove), the merchant, a small event, the Warden's Gift, Resolve, Bank and
+// Continue. Boons come later.
 
-import { seedRng, shuffle } from '@sr/engine';
-import { CARD_DB, DECK_RULES, character, enemy, starterDeck, type CharacterId } from '@sr/content';
-import { generateStageMap, reachableNodes, wardenFor } from './mapgen';
-import { PRICE, REMOVE_PRICE, canAdd, giftOffers, offerCards } from './rewards';
+import { seedRng, shuffle } from '@sr/combat';
+import { COMBAT_DB, RIFTWALKERS, V2_DECK_RULES, encounter, type HeroId } from '@sr/content/v2';
+import { generateStageMap, reachableNodes } from './mapgen';
+import { REMOVE_PRICE, canAdd, giftOffers, offerCards, priceOf } from './rewards';
 import type { EventOption, MapNode, MerchantItem, RunState, StageRealm } from './types';
 
 const clone = <T>(x: T): T => JSON.parse(JSON.stringify(x)) as T;
@@ -18,26 +19,31 @@ function need(cond: unknown, msg: string): asserts cond {
 }
 
 export const MAX_RESOLVE = 3;
+/** Fraction of max HP a shrine rest heals. */
+export const REST_HEAL = 0.35;
 
 export function realmOfStage(run: Pick<RunState, 'stageRealms'>, stage: number): StageRealm {
   if (stage <= 3) return run.stageRealms[stage - 1] as StageRealm;
   return stage === 4 ? 'umbral' : 'rift';
 }
 
-export function newRun(characterId: CharacterId, seed: string): RunState {
+export function newRun(hero: HeroId, seed: string): RunState {
   const rng = seedRng(`run:${seed}`);
   const stageRealms = shuffle(rng, ['aurelion', 'nexus', 'wyldmaw'] as StageRealm[]);
   const map = generateStageMap(rng, 1, stageRealms[0] as StageRealm);
-  character(characterId); // throws on an unknown character
+  const rw = RIFTWALKERS[hero]; // throws on an unknown hero
+  need(rw, `Unknown Riftwalker ${hero}`);
   return {
-    v: 1,
+    v: 2,
     seed,
-    character: characterId,
+    character: hero,
     tier: 1,
     stage: 1,
+    hp: rw.hero.maxHp,
+    maxHp: rw.hero.maxHp,
     resolve: MAX_RESOLVE,
     maxResolve: MAX_RESOLVE,
-    deck: starterDeck(characterId),
+    deck: [...rw.starter],
     shards: 0,
     boons: [],
     stageRealms,
@@ -50,6 +56,10 @@ export function newRun(characterId: CharacterId, seed: string): RunState {
     stats: { duelsWon: 0, duelsLost: 0, nodesCleared: 0 },
   };
 }
+
+const heal = (r: RunState, n: number): void => {
+  r.hp = Math.min(r.maxHp, r.hp + Math.ceil(n));
+};
 
 export function availableNodes(run: RunState): MapNode[] {
   return run.phase === 'map' ? reachableNodes(run.map, run.at, run.cleared) : [];
@@ -92,11 +102,7 @@ export function enterNode(run: RunState, nodeId: string): RunState {
       break;
     case 'merchant': {
       const items: MerchantItem[] = offerCards(r.rng, r.character, r.deck, 'elite', 4).map(
-        (cardId) => ({
-          cardId,
-          price: PRICE[CARD_DB[cardId]?.rarity ?? 'common'] ?? 60,
-          sold: false,
-        }),
+        (cardId) => ({ cardId, price: priceOf(cardId), sold: false }),
       );
       r.context.merchant = { items, removePrice: REMOVE_PRICE, removed: false };
       r.phase = 'merchant';
@@ -106,6 +112,7 @@ export function enterNode(run: RunState, nodeId: string): RunState {
       const cardOffer = offerCards(r.rng, r.character, r.deck, 'duel', 1)[0] ?? '';
       const options: EventOption[] = [
         { id: 'shards', label: 'Take the shards (+30)' },
+        { id: 'heal', label: 'Drink from the spring (heal 20% of your HP)' },
         ...(cardOffer ? [{ id: 'card' as const, label: 'Take the relic card' }] : []),
         { id: 'leave', label: 'Leave it' },
       ];
@@ -122,21 +129,41 @@ export function enterNode(run: RunState, nodeId: string): RunState {
   return r;
 }
 
-/** What the duel at the current node is: the enemy, its Essence (Tier-scaled), and your deck. */
-export function duelPlan(
-  run: RunState,
-): { enemyId: string; essence: number; deck: string[]; kind: MapNode['kind'] } | null {
+export interface FightPlan {
+  encounterId: string;
+  /** enemy unit ids, front to back */
+  units: string[];
+  deck: string[];
+  /** the HP you enter with (and restart with after a loss) */
+  hp: number;
+  maxHp: number;
+  tier: number;
+  kind: MapNode['kind'];
+  /** a seed that changes on each retry, so a lost fight is not replayed identically */
+  seed: string;
+}
+
+/** What the fight at the current node is. */
+export function duelPlan(run: RunState): FightPlan | null {
   if (run.phase !== 'duel' || !run.context) return null;
   const node = nodeOf(run, run.context.nodeId);
   if (!node.enemyId) return null;
-  const e = enemy(node.enemyId);
-  const bonus = (run.tier - 1) * (e.kind === 'warden' || e.kind === 'finale' ? 5 : 3);
-  return { enemyId: e.id, essence: e.essence + bonus, deck: [...run.deck], kind: node.kind };
+  const e = encounter(node.enemyId);
+  return {
+    encounterId: e.id,
+    units: [...e.units],
+    deck: [...run.deck],
+    hp: run.hp,
+    maxHp: run.maxHp,
+    tier: run.tier,
+    kind: node.kind,
+    seed: `${run.seed}:${node.id}:${run.stats.duelsLost}`,
+  };
 }
 
-/** Report the result of the duel at the current node. */
-export function finishDuel(run: RunState, won: boolean): RunState {
-  need(run.phase === 'duel' && run.context, 'No duel is in progress');
+/** Report the result of the fight at the current node. `hpLeft` is your hero's HP at the end of a win. */
+export function finishDuel(run: RunState, won: boolean, hpLeft = run.hp): RunState {
+  need(run.phase === 'duel' && run.context, 'No fight is in progress');
   const r = clone(run);
   const ctx = r.context as NonNullable<RunState['context']>;
   const node = nodeOf(r, ctx.nodeId);
@@ -147,26 +174,27 @@ export function finishDuel(run: RunState, won: boolean): RunState {
       r.phase = 'collapsed';
       r.context = null;
     }
-    // otherwise the same node is retried with a fresh shuffle: the phase stays 'duel'
+    // otherwise the same fight is retried at the HP you entered with: the phase stays 'duel'
     return r;
   }
+  need(
+    Number.isInteger(hpLeft) && hpLeft >= 1 && hpLeft <= r.maxHp,
+    'Invalid HP at the end of a fight',
+  );
   r.stats.duelsWon++;
+  r.hp = hpLeft;
   const gain = node.kind === 'duel' ? 12 : node.kind === 'elite' ? 28 : 50;
   r.shards += gain;
   if (node.kind === 'warden') {
     clearNode(r, node.id);
+    // a Warden falls: you catch your breath
+    heal(r, r.maxHp * 0.3);
+    r.resolve = Math.min(r.maxResolve, r.resolve + 1);
     if (r.stage === 5) {
       r.phase = 'loopCleared';
       return r;
     }
-    const count = r.tier >= 5 ? 4 : 3;
-    const offers = giftOffers(
-      r.rng,
-      r.character,
-      r.deck,
-      wardenFor(realmOfStage(r, r.stage)).id,
-      count,
-    );
+    const offers = giftOffers(r.rng, r.character, r.deck, r.tier >= 5 ? 4 : 3);
     if (offers.length === 0) {
       r.phase = 'stageClear';
       r.context = null;
@@ -224,15 +252,30 @@ export function nextStage(run: RunState): RunState {
 }
 
 // ---- shrine -------------------------------------------------------------------------------------------
-export type ShrineChoice = { kind: 'rest' } | { kind: 'remove'; card: string };
+export type ShrineChoice =
+  { kind: 'rest' } | { kind: 'upgrade'; card: string } | { kind: 'remove'; card: string };
+
+/** Which cards in a deck can be upgraded at a shrine. */
+export function upgradable(deck: readonly string[]): string[] {
+  return [...new Set(deck.filter((id) => !!COMBAT_DB.cards[id]?.upgrade))];
+}
 
 export function takeShrine(run: RunState, choice: ShrineChoice): RunState {
   need(run.phase === 'shrine' && run.context, 'You are not at a shrine');
   const r = clone(run);
   if (choice.kind === 'rest') {
-    r.resolve = Math.min(r.maxResolve, r.resolve + 1);
+    heal(r, r.maxHp * REST_HEAL);
+  } else if (choice.kind === 'upgrade') {
+    const i = r.deck.indexOf(choice.card);
+    need(i >= 0, 'That card is not in your deck');
+    const up = COMBAT_DB.cards[choice.card]?.upgrade;
+    need(up, 'That card cannot be upgraded');
+    r.deck[i] = up;
   } else {
-    need(r.deck.length > DECK_RULES.minSize, `A deck cannot go below ${DECK_RULES.minSize} cards`);
+    need(
+      r.deck.length > V2_DECK_RULES.minSize,
+      `A deck cannot go below ${V2_DECK_RULES.minSize} cards`,
+    );
     const i = r.deck.indexOf(choice.card);
     need(i >= 0, 'That card is not in your deck');
     r.deck.splice(i, 1);
@@ -267,7 +310,10 @@ export function buyRemoval(run: RunState, card: string): RunState {
   >;
   need(!m.removed, 'The merchant only removes one card per visit');
   need(r.shards >= m.removePrice, 'Not enough shards');
-  need(r.deck.length > DECK_RULES.minSize, `A deck cannot go below ${DECK_RULES.minSize} cards`);
+  need(
+    r.deck.length > V2_DECK_RULES.minSize,
+    `A deck cannot go below ${V2_DECK_RULES.minSize} cards`,
+  );
   const i = r.deck.indexOf(card);
   need(i >= 0, 'That card is not in your deck');
   r.shards -= m.removePrice;
@@ -296,6 +342,7 @@ export function chooseEvent(run: RunState, option: EventOption['id']): RunState 
     'That is not an option',
   );
   if (option === 'shards') r.shards += 30;
+  if (option === 'heal') heal(r, r.maxHp * 0.2);
   if (option === 'card' && ev.cardOffer && canAdd(r.deck, ev.cardOffer)) r.deck.push(ev.cardOffer);
   clearNode(r, (r.context as NonNullable<RunState['context']>).nodeId);
   r.phase = 'map';
@@ -317,6 +364,7 @@ export function continueLoop(run: RunState): RunState {
   const r = clone(run);
   r.tier += 1;
   if (r.tier < 8) r.resolve = Math.min(r.maxResolve, r.resolve + 1);
+  heal(r, r.maxHp * 0.5);
   r.stage = 1;
   r.stageRealms = shuffle(r.rng, ['aurelion', 'nexus', 'wyldmaw'] as StageRealm[]);
   r.map = generateStageMap(r.rng, 1, r.stageRealms[0] as StageRealm);

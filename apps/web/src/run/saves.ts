@@ -3,7 +3,7 @@
 
 import { parseRun, serializeRun, type RunState } from '@sr/campaign';
 
-const KEY = 'sr.run.v1';
+const KEY = 'sr.run.v2';
 
 export function loadSavedRun(): RunState | null {
   try {

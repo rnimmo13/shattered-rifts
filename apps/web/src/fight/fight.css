@@ -1,0 +1,590 @@
+/* Combat v2 fight screen. Everything uses the shared design tokens. */
+
+.fight {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  background: var(--c-void);
+  color: var(--c-ivory);
+  user-select: none;
+}
+.fight__stage {
+  position: absolute;
+  inset: 0;
+}
+.fight > * {
+  pointer-events: none;
+}
+.fight > .fight__stage,
+.fight button,
+.fight select,
+.fight__modal,
+.fight__result,
+.fhand__slot {
+  pointer-events: auto;
+}
+
+/* ---- top bar ---- */
+.fight__top {
+  position: absolute;
+  inset: 0.8rem 1rem auto 1rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  z-index: 30;
+}
+.fight__top > * {
+  pointer-events: auto;
+}
+.fight__title {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: baseline;
+  gap: 0.8rem;
+  font-family: var(--font-display);
+  letter-spacing: 0.1em;
+  text-shadow: 0 2px 8px #000;
+  pointer-events: none;
+}
+.fight__title b {
+  color: var(--c-gold-light);
+  font-size: 1.05rem;
+}
+.fight__title span {
+  color: var(--c-text-dim);
+  font-size: 0.85rem;
+}
+.fight__opts {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+.fight__opts select {
+  background: rgb(8 10 20 / 0.85);
+  color: var(--c-ivory);
+  border: 1px solid var(--c-gold-dark);
+  border-radius: 8px;
+  padding: 0.3rem 0.5rem;
+  font: inherit;
+}
+
+/* ---- unit plates ---- */
+.plates {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+}
+.plate {
+  position: absolute;
+  transform: translateX(-50%);
+  display: grid;
+  gap: 0.2rem;
+  text-align: center;
+}
+.plate__name {
+  font-family: var(--font-display);
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  color: var(--c-ivory);
+  text-shadow: 0 2px 6px #000;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.plate--hero .plate__name {
+  color: var(--c-gold-light);
+}
+.bar {
+  position: relative;
+  height: 1.15rem;
+  border-radius: 999px;
+  background: rgb(4 5 11 / 0.85);
+  border: 1px solid rgb(255 255 255 / 0.18);
+  box-shadow: 0 2px 10px rgb(0 0 0 / 0.6);
+  overflow: hidden;
+}
+.bar.has-barrier {
+  border-color: var(--c-cyan);
+  box-shadow:
+    0 0 10px rgb(54 224 255 / 0.55),
+    0 2px 10px rgb(0 0 0 / 0.6);
+}
+.bar__fill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  background: linear-gradient(180deg, #ff6b7f, var(--c-blood) 70%, #8d1f31);
+  transition: width 0.35s var(--ease-out);
+}
+.bar__text {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-size: 0.74rem;
+  font-weight: 700;
+  text-shadow: 0 1px 3px #000;
+}
+.bar__barrier {
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  padding: 0 0.45rem;
+  display: grid;
+  place-items: center;
+  font-size: 0.74rem;
+  font-weight: 800;
+  color: #041018;
+  background: linear-gradient(180deg, var(--c-cyan-glow), var(--c-cyan));
+  border-radius: 999px 0 0 999px;
+}
+.chips {
+  display: flex;
+  gap: 0.25rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  min-height: 1.2rem;
+}
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+  padding: 0.05rem 0.4rem;
+  border-radius: 999px;
+  font-size: 0.74rem;
+  background: rgb(4 5 11 / 0.85);
+  border: 1px solid rgb(255 255 255 / 0.2);
+  pointer-events: auto;
+  cursor: help;
+}
+.chip--good {
+  color: var(--c-gold-light);
+  border-color: var(--c-gold-dark);
+}
+.chip--bad {
+  color: #ff8a9a;
+  border-color: #7a2030;
+}
+.plate.is-target .bar {
+  border-color: #ff4a6e;
+  box-shadow: 0 0 14px rgb(255 74 110 / 0.8);
+}
+.plate.is-hover .plate__name {
+  color: #ffd1da;
+}
+
+/* ---- intents ---- */
+.intent {
+  position: absolute;
+  transform: translate(-50%, -100%);
+  display: grid;
+  justify-items: center;
+  gap: 0.05rem;
+  padding: 0.25rem 0.7rem 0.3rem;
+  border-radius: 14px;
+  background: rgb(8 10 20 / 0.82);
+  border: 1px solid rgb(255 255 255 / 0.22);
+  box-shadow: 0 4px 14px rgb(0 0 0 / 0.55);
+  z-index: 11;
+  animation: intent-bob 2.4s var(--ease-breathe) infinite;
+  white-space: nowrap;
+}
+.intent__icons {
+  font-size: 1.5rem;
+  line-height: 1;
+}
+.intent__num {
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  line-height: 1;
+  text-shadow: 0 2px 4px #000;
+}
+.intent__num small {
+  font-size: 0.8rem;
+  margin-left: 0.1rem;
+  opacity: 0.85;
+}
+.intent__name {
+  font-size: 0.66rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--c-text-dim);
+}
+.intent--attack {
+  border-color: #b8344c;
+}
+.intent--attack .intent__icons,
+.intent--attack .intent__num {
+  color: #ff7d8f;
+}
+.intent--defend {
+  border-color: var(--c-cyan);
+}
+.intent--defend .intent__icons {
+  color: var(--c-cyan);
+}
+.intent--buff {
+  border-color: var(--c-gold);
+}
+.intent--buff .intent__icons {
+  color: var(--c-gold-light);
+}
+.intent--debuff {
+  border-color: var(--c-violet);
+}
+.intent--debuff .intent__icons {
+  color: var(--c-violet-glow);
+}
+.intent--summon {
+  border-color: var(--c-heal);
+}
+.intent--summon .intent__icons {
+  color: var(--c-heal);
+}
+@keyframes intent-bob {
+  50% {
+    margin-top: -5px;
+  }
+}
+
+/* ---- floating numbers ---- */
+.floats {
+  position: absolute;
+  inset: 0;
+  z-index: 25;
+}
+.float {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 1.9rem;
+  text-shadow:
+    0 2px 0 #000,
+    0 0 12px rgb(0 0 0 / 0.8);
+  animation: float-up 1.05s var(--ease-out) forwards;
+  white-space: nowrap;
+}
+.float--dmg {
+  color: #ff5a6e;
+}
+.float--block {
+  color: var(--c-cyan-glow);
+  font-size: 1.4rem;
+}
+.float--heal {
+  color: var(--c-heal);
+}
+.float--good {
+  color: var(--c-gold-light);
+  font-size: 1.3rem;
+}
+.float--bad {
+  color: var(--c-violet-glow);
+  font-size: 1.3rem;
+}
+@keyframes float-up {
+  0% {
+    opacity: 0;
+    margin-top: 10px;
+    scale: 0.6;
+  }
+  15% {
+    opacity: 1;
+    scale: 1.15;
+  }
+  100% {
+    opacity: 0;
+    margin-top: -70px;
+    scale: 1;
+  }
+}
+
+/* ---- banners ---- */
+.fight__banner {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 22%;
+  display: grid;
+  place-items: center;
+  z-index: 40;
+}
+.fight__banner span {
+  font-family: var(--font-display);
+  font-weight: 900;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  font-size: clamp(1.4rem, 3vw, 2.4rem);
+  color: var(--c-gold-light);
+  padding: 0.4rem 2.4rem;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgb(8 10 20 / 0.82) 20%,
+    rgb(8 10 20 / 0.82) 80%,
+    transparent
+  );
+  text-shadow: 0 0 20px rgb(143 91 255 / 0.7);
+  animation: banner-in 0.25s var(--ease-out);
+}
+@keyframes banner-in {
+  from {
+    opacity: 0;
+    transform: scaleX(0.7);
+  }
+}
+.fight__flourish {
+  position: absolute;
+  left: 50%;
+  top: 36%;
+  transform: translate(-50%, -50%);
+  z-index: 35;
+  animation: flourish 0.65s var(--ease-out) forwards;
+}
+@keyframes flourish {
+  0% {
+    opacity: 0;
+    scale: 0.7;
+    translate: 0 120px;
+  }
+  25% {
+    opacity: 1;
+    scale: 1;
+    translate: 0 0;
+  }
+  100% {
+    opacity: 0;
+    scale: 1.12;
+    translate: 0 -30px;
+  }
+}
+
+/* ---- hand ---- */
+.fhand {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: 0;
+  height: 0;
+  z-index: 20;
+}
+.fhand__slot {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  transform-origin: 50% 100%;
+  transition:
+    transform 0.22s var(--ease-out),
+    opacity 0.2s;
+  cursor: grab;
+  touch-action: none;
+  animation: draw-in 0.35s var(--ease-out);
+}
+.fhand__slot.is-dragging {
+  cursor: grabbing;
+}
+.fhand__slot.is-selected {
+  filter: drop-shadow(0 0 14px var(--c-gold));
+}
+@keyframes draw-in {
+  from {
+    opacity: 0;
+    translate: 40vw 10vh;
+  }
+}
+
+/* ---- mana, piles, end turn ---- */
+.fight__mana {
+  position: absolute;
+  left: 1.2rem;
+  bottom: calc(var(--cw, 190px) * 1.05 + 1rem);
+  width: 5.2rem;
+  height: 5.2rem;
+  border-radius: 50%;
+  display: grid;
+  place-content: center;
+  text-align: center;
+  background: radial-gradient(
+    circle at 35% 30%,
+    var(--c-cyan-glow),
+    var(--c-cyan) 40%,
+    #0a5a78 100%
+  );
+  border: 3px solid var(--c-gold);
+  box-shadow: var(--glow-cyan);
+  z-index: 22;
+}
+.fight__mana b {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  line-height: 1;
+  color: #04202c;
+}
+.fight__mana small {
+  font-size: 0.8rem;
+  color: #04202c;
+  font-weight: 700;
+}
+.fight__piles {
+  position: absolute;
+  right: 1.2rem;
+  bottom: calc(var(--cw, 190px) * 1.05 + 5.4rem);
+  display: grid;
+  gap: 0.4rem;
+  z-index: 22;
+}
+.pile {
+  padding: 0.35rem 0.8rem;
+  border-radius: 10px;
+  background: rgb(8 10 20 / 0.85);
+  border: 1px solid var(--c-gold-dark);
+  color: var(--c-ivory);
+  font: inherit;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+.pile b {
+  color: var(--c-gold-light);
+  margin-left: 0.3rem;
+}
+.fight__snares {
+  position: absolute;
+  left: 1.2rem;
+  bottom: calc(var(--cw, 190px) * 1.05 + 6.6rem);
+  display: flex;
+  gap: 0.4rem;
+  z-index: 22;
+}
+.snare {
+  width: 2rem;
+  height: 2rem;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--c-violet-deep), #0a0620);
+  border: 1px solid var(--c-violet);
+  color: var(--c-violet-glow);
+  box-shadow: var(--glow-violet);
+  pointer-events: auto;
+  cursor: help;
+}
+.fight__end {
+  position: absolute;
+  right: 1.2rem;
+  bottom: calc(var(--cw, 190px) * 1.05 + 1rem);
+  z-index: 22;
+  display: inline-flex;
+  gap: 0.6rem;
+  align-items: center;
+}
+.fight__end kbd {
+  font-size: 0.7rem;
+  padding: 0.05rem 0.4rem;
+  border-radius: 5px;
+  border: 1px solid rgb(255 255 255 / 0.3);
+  opacity: 0.8;
+}
+.fight__end.is-ready {
+  animation: end-pulse 1.4s var(--ease-breathe) infinite;
+}
+@keyframes end-pulse {
+  50% {
+    box-shadow: var(--glow-gold);
+    scale: 1.05;
+  }
+}
+
+/* ---- aiming ---- */
+.fight__arrow {
+  position: absolute;
+  inset: 0;
+  z-index: 19;
+  filter: drop-shadow(0 0 6px rgb(246 220 148 / 0.8));
+}
+.fight__aimbar {
+  position: absolute;
+  left: 50%;
+  top: 4.2rem;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 0.8rem;
+  align-items: center;
+  padding: 0.4rem 1rem;
+  border-radius: 999px;
+  background: rgb(8 10 20 / 0.88);
+  border: 1px solid var(--c-gold);
+  z-index: 30;
+  pointer-events: auto;
+}
+.fight__hint {
+  display: none;
+}
+
+/* ---- modal & result ---- */
+.fight__modal {
+  position: absolute;
+  inset: 0;
+  background: rgb(4 5 11 / 0.78);
+  display: grid;
+  place-items: center;
+  z-index: 60;
+}
+.fight__modalBody {
+  width: min(1100px, 94vw);
+  max-height: 86vh;
+  overflow: auto;
+  padding: 1rem 1.2rem 1.4rem;
+  border-radius: 16px;
+  background: linear-gradient(160deg, rgb(20 32 74 / 0.96), rgb(8 10 20 / 0.98));
+  border: 1px solid var(--c-gold-dark);
+}
+.fight__modalBody header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.8rem;
+}
+.fight__modalBody h3 {
+  margin: 0;
+  font-family: var(--font-display);
+  color: var(--c-gold-light);
+}
+.fight__grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+.fight__result {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: rgb(4 5 11 / 0.6);
+  z-index: 70;
+  animation: banner-in 0.4s var(--ease-out);
+}
+.fight__resultCard {
+  display: grid;
+  gap: 0.6rem;
+  justify-items: center;
+  padding: 1.6rem 3rem;
+  border-radius: 18px;
+  background: linear-gradient(160deg, rgb(31 48 104 / 0.95), rgb(8 10 20 / 0.97));
+  border: 1px solid var(--c-gold);
+  box-shadow: var(--glow-gold);
+}
+.fight__resultCard h2 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 2.4rem;
+  letter-spacing: 0.2em;
+  color: var(--c-gold-light);
+}
+@media (prefers-reduced-motion: reduce) {
+  .intent,
+  .fight__end.is-ready {
+    animation: none;
+  }
+}

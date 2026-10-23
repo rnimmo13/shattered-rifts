@@ -205,6 +205,8 @@ export interface CombatState {
   seed: string;
   rng: RngState;
   mode: 'pve' | 'pvp';
+  /** Rift Tier of the enemies (1 = normal): each tier above 1 gives enemies +12% HP and +1 Might */
+  tier: number;
   turn: number; // counts every turn taken, both sides
   active: Side;
   sides: Record<Side, SideState>;
@@ -216,6 +218,10 @@ export const MAX_ALLIES = 3;
 export const MAX_ENEMIES = 4;
 export const MAX_SNARES = 3;
 export const MAX_HAND = 10;
+
+/** HP multiplier and Might for enemies at a Rift Tier. */
+export const tierHp = (tier: number): number => 1 + 0.12 * Math.max(0, tier - 1);
+export const tierMight = (tier: number): number => Math.min(6, Math.max(0, tier - 1));
 
 // --- setup -------------------------------------------------------------------------------------------------
 
@@ -230,7 +236,7 @@ export interface CombatSetup {
   seed: string;
   a: HeroSetup;
   /** PvE: a list of unit def ids. PvP: the second hero. */
-  b: { enemies: string[] } | HeroSetup;
+  b: { enemies: string[]; tier?: number } | HeroSetup;
 }
 
 // --- actions & events ----------------------------------------------------------------------------------------

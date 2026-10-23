@@ -136,3 +136,6 @@ export function rewardPool(hero: HeroId): string[] {
 }
 
 export { validateDb };
+
+/** Deck rules for Combat v2 runs: a deck never drops below minSize cards, and no non-basic card has more than maxCopies copies. */
+export const V2_DECK_RULES = { minSize: 8, maxCopies: 4, vaultSlots: 5 } as const;

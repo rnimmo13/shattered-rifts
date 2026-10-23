@@ -3,6 +3,7 @@
 export * from './types';
 export { validateDb } from './validate';
 export { chooseAction, evaluate } from './bot';
+export { nextInt, seedRng, shuffle, type RngState } from './rng';
 export {
   applyAction,
   createCombat,

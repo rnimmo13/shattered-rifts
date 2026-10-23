@@ -9,6 +9,8 @@ import {
   MAX_SNARES,
   RulesError,
   other,
+  tierHp,
+  tierMight,
   clone,
   type Action,
   type CardDef,
@@ -355,6 +357,11 @@ function spawn(r: Run, sd: SideState, defId: string, quiet = false): Unit | null
   const u = makeUnit(r, sd.id, d);
   const index = sd.units.length - (heroOf(sd) ? 1 : 0);
   sd.units.splice(index, 0, u);
+  if (sd.hero === null && r.s.tier > 1) {
+    u.maxHp = u.hp = Math.round(u.maxHp * tierHp(r.s.tier));
+    if (d.brain.kind === 'enemy' && tierMight(r.s.tier) > 0)
+      u.statuses.might = (u.statuses.might ?? 0) + tierMight(r.s.tier);
+  }
   if (!quiet) r.ev.push({ type: 'summon', side: sd.id, unit: u.id, def: d.id, index });
   if (d.brain.kind === 'enemy') chooseIntent(r, u);
   return u;
@@ -567,6 +574,7 @@ function endTurn(r: Run): void {
     }
   }
   sd.hand = keep;
+  if (sd.mana > 0) r.ev.push({ type: 'mana', side, mana: 0 });
   sd.mana = 0;
   for (const u of [...sd.units]) {
     if (r.s.winner) return;
@@ -650,6 +658,7 @@ export function createCombat(db: CombatDb, setup: CombatSetup): StepResult {
     seed: setup.seed,
     rng: seedRng(setup.seed),
     mode: 'enemies' in setup.b ? 'pve' : 'pvp',
+    tier: 'enemies' in setup.b ? Math.max(1, setup.b.tier ?? 1) : 1,
     turn: 0,
     active: 'a',
     sides: { a: emptySide('a'), b: emptySide('b') },
