@@ -79,6 +79,9 @@ export function TitleScreen() {
         <a className="btn" href="#/fight">
           Practice fight
         </a>
+        <a className="btn" href="#/learn">
+          How to play
+        </a>
       </div>
       <p id="cta-note" className="title__cta-note">
         Runs are in early alpha: expect rough edges, and the difficulty is not tuned yet.

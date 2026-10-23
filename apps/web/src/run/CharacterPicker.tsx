@@ -50,6 +50,11 @@ export function CharacterPicker(props: { value: HeroId; onChange: (id: HeroId) =
         <div className="picker__about">
           <h2 className="picker__title">{c.hero.name}</h2>
           <p className="picker__style">{c.blurb}</p>
+          <ul className="picker__how" aria-label="How it works">
+            {c.howTo.map((l) => (
+              <li key={l}>{l}</li>
+            ))}
+          </ul>
           <ul className="picker__lanes" aria-label="Card lanes">
             {c.lanes.map((l) => (
               <li key={l}>{l}</li>

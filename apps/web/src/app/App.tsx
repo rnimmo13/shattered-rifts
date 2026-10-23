@@ -1,4 +1,5 @@
 import { Suspense, lazy, useEffect, useState } from 'react';
+import { LearnScreen } from './LearnScreen';
 import { TitleScreen } from './TitleScreen';
 
 // The duel screen pulls in the whole Pixi renderer, so it loads on demand.
@@ -27,6 +28,7 @@ export function App() {
       </Suspense>
     );
   }
+  if (hash === '#/learn') return <LearnScreen />;
   if (hash === '#/fight') {
     return (
       <Suspense fallback={<div className="loading">Opening the rift…</div>}>

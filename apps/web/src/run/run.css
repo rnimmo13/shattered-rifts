@@ -798,3 +798,12 @@
   border-bottom: 1px solid rgb(212 168 75 / 0.35);
   padding-bottom: 0.25rem;
 }
+
+.picker__how {
+  margin: 0.2rem 0 0.7rem;
+  padding-left: 1.1rem;
+  display: grid;
+  gap: 0.25rem;
+  font-size: 0.9rem;
+  color: var(--c-ivory);
+}

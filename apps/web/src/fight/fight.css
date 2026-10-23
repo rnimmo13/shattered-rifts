@@ -951,3 +951,35 @@
   position: absolute;
   pointer-events: auto;
 }
+
+/* ---- teaching tips ---- */
+.fight__tip {
+  position: absolute;
+  right: 1.4rem;
+  top: 4.2rem;
+  width: min(21rem, 30vw);
+  display: grid;
+  gap: 0.35rem;
+  padding: 0.8rem 1rem;
+  border-radius: 12px;
+  background: linear-gradient(160deg, rgb(24 40 92 / 0.96), rgb(8 10 22 / 0.97));
+  border: 1px solid var(--c-gold);
+  box-shadow: var(--glow-gold);
+  z-index: 40;
+  pointer-events: auto;
+  animation: banner-in 0.4s var(--ease-out);
+}
+.fight__tip b {
+  font-family: var(--font-display);
+  color: var(--c-gold-light);
+  letter-spacing: 0.06em;
+}
+.fight__tip p {
+  margin: 0;
+  font-size: 0.88rem;
+  line-height: 1.4;
+  color: var(--c-ivory);
+}
+.fight__tip .btn {
+  justify-self: end;
+}

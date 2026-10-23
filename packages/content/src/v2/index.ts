@@ -10,15 +10,7 @@ import { ALLIES, ENEMY_UNITS } from './units';
 
 export type RealmId = 'aurelion' | 'nexus' | 'wyldmaw' | 'umbral' | 'starfall' | 'gloomfen';
 export type HeroId =
-  | 'maren'
-  | 'rivet'
-  | 'kesh'
-  | 'vesper'
-  | 'quill'
-  | 'ilvane'
-  | 'sehra'
-  | 'astra'
-  | 'mire';
+  'maren' | 'rivet' | 'kesh' | 'vesper' | 'quill' | 'ilvane' | 'sehra' | 'astra' | 'mire';
 
 export interface Riftwalker {
   hero: HeroDef;
@@ -27,6 +19,8 @@ export interface Riftwalker {
   blurb: string;
   /** the three lanes of its card pool, shown on the character screen (docs/09_ROSTER.md) */
   lanes: [string, string, string];
+  /** a few plain sentences on how this character plays (shown on the character screen and the Learn page) */
+  howTo: string[];
 }
 
 const rep = (id: string, n: number): string[] => Array<string>(n).fill(id);
@@ -37,7 +31,16 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     hero: { id: 'maren', name: 'Ser Maren Ashcourt', maxHp: 80, mana: 3, handSize: 5 },
     starter: [...rep('strike', 4), ...rep('defend', 4), 'dawn-smite', 'oathbound'],
     blurb: 'A knight of the Gilded Order. No companions: Barrier, Thorns and punishing Snares.',
-    lanes: ['Bulwark: hit with your Barrier', 'Thorns: punish attackers', 'Sanctified: heal and Shielded'],
+    lanes: [
+      'Bulwark: hit with your Barrier',
+      'Thorns: punish attackers',
+      'Sanctified: heal and Shielded',
+    ],
+    howTo: [
+      'Barrier soaks damage, but it falls away at the start of your next turn.',
+      'Thorns hurt whatever attacks you, so being hit can be part of the plan.',
+      'Pick a lane: hit with your Barrier (Bulwark), punish attackers (Thorns), or heal and stay Shielded (Sanctified).',
+    ],
   },
   rivet: {
     realm: 'nexus',
@@ -46,6 +49,11 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     blurb:
       'A scrap-built tinkerer. Starts every fight with a Drone and builds an army of machines.',
     lanes: ['Swarm: many cheap bodies', 'Assemble: allies act again', 'Core: a few big constructs'],
+    howTo: [
+      'You start with a Drone. Allies attack for you when you end your turn.',
+      'You can have 3 allies. Buff them with Might, or make them act again (Assemble).',
+      'Enemies can hit your allies too; an ally with Taunt has to be attacked first.',
+    ],
   },
   kesh: {
     realm: 'wyldmaw',
@@ -60,13 +68,27 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     starter: [...rep('strike', 5), ...rep('defend', 3), 'savage-bite', 'blood-frenzy'],
     blurb: 'A hunter with a Hound. Pays HP to buff the whole pack with Might.',
     lanes: ['Bloodrage: HP for Might', 'Pack: feed the companions', 'Feast: Exhaust and Devour'],
+    howTo: [
+      'You start with a Hound. Might makes every attack hit harder, permanently.',
+      'Many of your cards cost HP. Spend it to buff the pack, then heal with Devour and Feast cards.',
+      'Consume cards (they leave the fight) to power the Feast lane.',
+    ],
   },
   vesper: {
     realm: 'umbral',
     hero: { id: 'vesper', name: 'Vesper Nightlace', maxHp: 76, mana: 3, handSize: 5 },
     starter: [...rep('strike', 3), ...rep('defend', 4), ...rep('veil-strike', 2), 'set-the-web'],
     blurb: 'A masked trapper. No companions: Snares, Exposed and patience.',
-    lanes: ['Snares: traps of every trigger', 'Exposed: mark, then spend the mark', 'Bluff: Hold, Foresee, held Mana'],
+    lanes: [
+      'Snares: traps of every trigger',
+      'Exposed: mark, then spend the mark',
+      'Bluff: Hold, Foresee, held Mana',
+    ],
+    howTo: [
+      'A Snare is played face down and springs on its own when its trigger happens.',
+      'Read the icon above each enemy and set the Snare that answers what it is about to do.',
+      'Exposed enemies take 50% more damage: mark them, then spend the mark.',
+    ],
   },
   quill: {
     realm: 'umbral',
@@ -79,8 +101,18 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
       sigil: [addTo('sleeve-knife')],
     },
     starter: [...rep('strike', 4), ...rep('defend', 3), ...rep('quick-jab', 2), 'slip-away'],
-    blurb: 'A cutpurse with a sleeve full of blades. Starts every fight with a Sleeve Knife. Knives, Seared and discard tricks.',
-    lanes: ['Knives: 0-cost blades', 'Seared: stack, double, cash out', 'Sleight: discard and cycle'],
+    blurb:
+      'A cutpurse with a sleeve full of blades. Starts every fight with a Sleeve Knife. Knives, Seared and discard tricks.',
+    lanes: [
+      'Knives: 0-cost blades',
+      'Seared: stack, double, cash out',
+      'Sleight: discard and cycle',
+    ],
+    howTo: [
+      'You start with a Sleeve Knife: a 0-cost Attack that is consumed when played.',
+      'Seared burns for its stacks every turn and then shrinks. Double it, then cash it out.',
+      'Discarding is a resource: Foresee and Discard cards trigger payoffs.',
+    ],
   },
   ilvane: {
     realm: 'nexus',
@@ -93,8 +125,14 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
       sigil: [channel('spark')],
     },
     starter: [...rep('strike', 4), ...rep('defend', 3), ...rep('spark-cast', 2), 'twin-evocation'],
-    blurb: 'Carves runes into the air. Starts every fight with a Spark rune. Runes fire every turn, then burst when evoked.',
+    blurb:
+      'Carves runes into the air. Starts every fight with a Spark rune. Runes fire every turn, then burst when evoked.',
     lanes: ['Spark: damage runes', 'Ward: Barrier runes', 'Hollow: charge and Resonance'],
+    howTo: [
+      'You start with a Spark rune. Runes sit in a row of 3 slots under you.',
+      'At the end of your turn every rune fires a small effect. A 4th rune pushes the oldest out and it fires its big effect.',
+      'Evoke cards fire runes early. Resonance makes every rune stronger.',
+    ],
   },
   sehra: {
     realm: 'aurelion',
@@ -107,8 +145,14 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
       sigil: [stance('calm')],
     },
     starter: [...rep('strike', 4), ...rep('defend', 4), 'kindle-fury', 'still-guard'],
-    blurb: 'A monk who fights in stances. Starts every fight Serene. Fury for burst, Serene for tempo, Fervor for Radiance.',
+    blurb:
+      'A monk who fights in stances. Starts every fight Serene. Fury for burst, Serene for tempo, Fervor for Radiance.',
     lanes: ['Fury: burst', 'Serene: Mana and cards', 'Fervor: build to Radiant'],
+    howTo: [
+      'You start Serene. You are in at most one stance at a time.',
+      'Fury doubles the damage you deal, but you take 50% more. Leaving Serene gives you 2 Mana.',
+      'Fervor builds to 5, then you enter Radiant: triple damage until your turn ends.',
+    ],
   },
   astra: {
     realm: 'starfall',
@@ -122,8 +166,18 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     },
     // Gather Light (makes Lumen) and Lumen Bolt (spends it) are Innate: the opening hand can always do both
     starter: [...rep('strike', 3), ...rep('defend', 4), 'meteor-jab', 'gather-light', 'lumen-bolt'],
-    blurb: 'A scholar of fallen stars. Starts with 2 Lumen and a Starforged Blade that every Sharpen improves for good.',
-    lanes: ['Blade: sharpen one weapon', 'Lumen: spend for finishers', 'Constellations: ticking Auras'],
+    blurb:
+      'A scholar of fallen stars. Starts with 2 Lumen and a Starforged Blade that every Sharpen improves for good.',
+    lanes: [
+      'Blade: sharpen one weapon',
+      'Lumen: spend for finishers',
+      'Constellations: ticking Auras',
+    ],
+    howTo: [
+      'Lumen is a second resource. Cards with a gold orb spend it; others gain it.',
+      'You start with a Starforged Blade. Every Sharpen card makes every copy hit harder for the whole fight.',
+      'Auras (your constellations) keep working until the fight ends.',
+    ],
   },
   mire: {
     realm: 'gloomfen',
@@ -135,10 +189,24 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
       handSize: 5,
       startUnits: ['bone-thrall'],
     },
-    starter: [...rep('strike', 3), ...rep('defend', 3), ...rep('grave-touch', 2), ...rep('bone-ward', 2)],
+    starter: [
+      ...rep('strike', 3),
+      ...rep('defend', 3),
+      ...rep('grave-touch', 2),
+      ...rep('bone-ward', 2),
+    ],
     blurb:
       'A warden of the drowned dead. Starts with a Bone Thrall. Stacks Doom on enemies until the end comes for them.',
-    lanes: ['Doom: stack it, double it, cash it in', 'Thralls: the dead fight for you', 'Ashes: consumed cards fuel you'],
+    lanes: [
+      'Doom: stack it, double it, cash it in',
+      'Thralls: the dead fight for you',
+      'Ashes: consumed cards fuel you',
+    ],
+    howTo: [
+      'You start with a Bone Thrall, which attacks when you end your turn.',
+      'Doom kills an enemy at the end of its turn if its HP is at or below its Doom. Stack it, double it, finish it.',
+      'Cards you consume fuel your Ashes lane: Gravesouls, Requiem and more.',
+    ],
   },
 };
 

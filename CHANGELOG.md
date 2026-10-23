@@ -5,6 +5,11 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **A ninth Riftwalker: Mire, the Gravewarden** (Gloomfen). Starts with a Bone Thrall and stacks **Doom** on enemies: when an enemy's turn ends with its HP at or below its Doom, it dies. Lanes: Doom, Thralls, and Ashes (consumed cards fuel her).
+- **Many new card mechanics, shared across decks:** Bracing, Brittle, Ghostly, Steadfast, Armored, Ritual, Vigor, Twinned, Mirrored, Unbound, Fortified, Holdfast; temporary buffs, banking Mana and cards for next turn, discovering random cards, upgrading or cheapening your hand mid-fight, and copying a card.
+- **Foresee is worth taking now:** cards it throws away count as real discards, so discard payoffs fire. Three new payoff Auras (Marked Cards, Reading the Signs, Star Chart).
+- **Teaching:** one-time tips appear in fights the first time you meet something new (turn them off with the Tips button), each character shows how it plays on the picker, and a **How to play** page on the title screen lists every mechanic.
+- **Balance pass:** Vesper, Astra and Mire strengthened; Rivet and Kesh starters trimmed so the nine characters are closer in strength (see docs/BALANCE.md).
 - **Eight Riftwalkers.** Four new characters join Maren, Rivet, Kesh and Vesper: **Quill** (Sleeve Knives, Seared and discard tricks), **Ilvane** (runes that fire every turn and burst when evoked), **Sehra** (stances: Fury for burst, Serene for tempo, Fervor to Radiant) and **Astra** (Lumen and a Starforged Blade that every Sharpen improves for good).
 - **Every character now has three card lanes** (about 35-40 cards each, over 300 in all) so reward screens are real choices, like Silent's poison, shivs and discard. Common tools (draw, Barrier, Scry, Exhaust) are shared; engines like Sleeve Knives, Runes, Stances and Lumen belong to one character each.
 - **New card abilities:** choose cards to discard or exhaust, Scry, cards that scale with the board ("damage equal to your Barrier"), X-cost cards, Auras that trigger on events, Snares that spring when an enemy defends or when the enemy turn begins, and sacrificing an ally.

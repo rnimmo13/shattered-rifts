@@ -1,4 +1,4 @@
-# Shattered Rifts: The Roster (8 Riftwalkers)
+# Shattered Rifts: The Roster (9 Riftwalkers)
 
 > Decision log: `DECISIONS.md` #95-#97. Status of the build is at the bottom.
 
@@ -46,9 +46,10 @@ deck takes one and a half of them. Our pools were ~16 cards and one lane each. T
 | 5 | **Quill, the Knife-Dancer** | Umbral | 66 | **Sleeve Knives:** 0-cost, many hits | **Seared:** stack, double, cash out | **Sleight:** discard / cycle payoffs |
 | 6 | **Ilvane, the Glyphwright** | Nexus-9 | 70 | **Spark:** damage runes | **Ward:** Barrier runes | **Hollow:** charging runes, Resonance |
 | 7 | **Sehra, the Still Flame** | Aurelion | 72 | **Fury:** burst | **Serene:** Mana and cards | **Fervor:** Retain/Foresee to a payoff |
-| 8 | **Astra, the Starcaller** | Starfall | 74 | **Starforged Blade:** one growing weapon | **Lumen:** spend for finishers | **Constellations:** Powers that tick |
+| 8 | **Astra, the Starcaller** | Starfall | 80 | **Blade:** sharpen one weapon | **Lumen:** spend for finishers | **Constellations:** Auras that tick |
+| 9 | **Mire, the Gravewarden** | Gloomfen | 76 | **Doom:** stack, double, cash in | **Thralls:** the dead fight for you | **Ashes:** consumed cards fuel you |
 
-Stretch (to reach 10): **Cinder** (Consume engine) and **Mire** (Doom / an undying minion).
+Mire was the stretch character and is now built (Doom is hers alone). Still open: **Cinder** (a Consume engine) for a tenth.
 
 Sigils (a passive on turn 1, so each run has an identity). The original four use starting companions or their starter cards
 (Rivet starts with a Drone, Kesh with a Hound; Maren's and Vesper's Sigils from `03_CAMPAIGN.md` are not built yet). The new four have real Sigils: **Quill** *Sleeve Knives* (start each
@@ -90,3 +91,32 @@ Player-facing words: Barrier, Exposed, Faltering, Might, Seared, Thorns, Shielde
 fight), Consume (the card leaves the fight), Hold (stays in hand), Fleeting, Foresee, Fury / Serene / Radiant (stances), Fervor
 (builds to Radiant), Lumen (the second resource), Sharpen (grow the Starforged Blade), Sleeve Knife (the 0-cost knife).
 Internal ids in code (`exhaust`, `scry`, `forge`, `stars`, `wrath`, `calm`, `mantra`) are not renamed: only what the player reads.
+
+## 6. Mechanic coverage (2026-10-23)
+
+The goal: every card *mechanic* a Slay the Spire player expects exists, with our own names (DECISIONS #99). Where it lives:
+
+| Mechanic | Ours | Where |
+|---|---|---|
+| Block / Strength / Vulnerable / Weak / Thorns / Buffer / Poison | Barrier / Might / Exposed / Faltering / Thorns / Shielded / Seared | everyone (Seared: Quill) |
+| Dexterity / Frail | **Bracing** / **Brittle** (Brittle also shrinks an enemy's Barrier moves) | Maren, Sehra / Maren, Vesper |
+| Intangible / Artifact / Plated Armor / Ritual | **Ghostly** / **Steadfast** / **Armored** / **Ritual** | Vesper / Vesper / Maren / Kesh |
+| Barricade / Corruption / Metallicize | **Fortified** / **Unbound** / end-of-turn Barrier Aura | Maren / Kesh / Maren |
+| Double Tap / Burst | **Twinned** / **Mirrored** | Neutral (Echoing Blow) / Quill (Encore) |
+| Vigor, Flex | **Vigor**, temporary statuses (`temp`) | Kesh, Neutral (Heave) |
+| Exhaust / Ethereal / Retain / Innate | Consume / Fleeting / Hold / Opening hand | shared |
+| Sly (discard triggers) | `onDiscard` | Quill |
+| Scry | **Foresee**, and cards it discards are real discards (payoffs fire) | shared; payoffs: Marked Cards (Vesper), Reading the Signs (Sehra), Star Chart (Astra), Quill's discard cards |
+| X-cost, Unplayable, 0-cost chains | `x`, `unplayable`, cost 0 | shared |
+| Draw / Mana now / Mana and cards next turn | draw, mana, **manaNext**, **drawNext** | shared |
+| Discovery / Madness / Armaments / Anger | **discover**, **cheapen**, **upgrade** (hand), **copySelf** | Neutral, Quill, Ilvane |
+| Orbs and Focus | Runes and Resonance | Ilvane |
+| Stances, Mantra | Fury / Serene / Radiant, Fervor | Sehra |
+| Stars, Forge, the Sovereign Blade | Lumen, Sharpen, the Starforged Blade | Astra |
+| Osty, Doom, Souls | Bone Thrall (a companion), **Doom**, Gravesouls | Mire |
+| Minions, Sacrifice | allies, `sacrifice` | Rivet, Kesh, Mire |
+| Traps (ours) | Snares | Vesper masters them; everyone has a few |
+
+**Deliberately not built:** card Enchantments (permanent per-card modifiers chosen out of combat), dynamic "costs less per X" cards
+(we use `cheapen` instead), and choose-one-of-three Discovery (ours adds one random card; a choice of three would need a new
+pending kind). Say the word if you want them.

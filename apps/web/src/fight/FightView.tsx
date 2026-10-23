@@ -37,6 +37,7 @@ import { BoonChip } from './BoonChip';
 import { preloadArt } from '../art/assets';
 import { PotionButton } from './PotionChip';
 import { PickModal } from './PickModal';
+import { loadSeen, loadTipsOn, nextTip, saveSeen, saveTipsOn } from './tips';
 import { AuraList, LumenCounter, RuneArc } from './SidePanel';
 import type { FighterSpec } from './Fighters';
 import '../duel/duel.css';
@@ -123,6 +124,8 @@ export function FightView(props: {
   const [legal, setLegal] = useState<Action[]>([]);
   // the engine's real state, for previews (the refs behind it must not be read while rendering)
   const [live, setLive] = useState<CombatState | null>(null);
+  const [seenTips, setSeenTips] = useState<Set<string>>(loadSeen);
+  const [tipsOn, setTipsOn] = useState(loadTipsOn);
 
   // --- floating numbers ------------------------------------------------------------------------------
   const float = useCallback((unitId: string, text: string, tone: Float['tone']) => {
@@ -623,6 +626,16 @@ export function FightView(props: {
   const usesRunes = useMemo(() => deckUsesRunes(db, setup), [db, setup]);
   const showStars = usesStars || (me?.stars ?? 0) > 0;
   const showRunes = usesRunes || (me?.runes.length ?? 0) > 0;
+  const tip =
+    view && tipsOn && !result && !view.pending
+      ? nextTip(view, { usesRunes, usesStars }, seenTips)
+      : null;
+  const dismissTip = (id: string): void =>
+    setSeenTips((prev) => {
+      const next = new Set(prev).add(id);
+      saveSeen(next);
+      return next;
+    });
 
   // what the card being aimed would do to the unit under the pointer
   const aimCard = dragCard ?? selectedCard;
@@ -630,7 +643,10 @@ export function FightView(props: {
   if (aimCard && hoverUnit && aimSet.has(hoverUnit) && view && heroUnit && live) {
     const dealt = previewDamage(db, live, aimCard.inst.id, hoverUnit, heroUnit.id);
     if (dealt && dealt.total > 0)
-      preview = { id: hoverUnit, text: dealt.lethal ? `−${dealt.total} LETHAL` : `−${dealt.total}` };
+      preview = {
+        id: hoverUnit,
+        text: dealt.lethal ? `−${dealt.total} LETHAL` : `−${dealt.total}`,
+      };
   }
   const keywords = hoverCard
     ? keywordsOf(hoverCard.def, (unit) => db.units[unit]?.taunt === true)
@@ -690,6 +706,16 @@ export function FightView(props: {
                   </option>
                 ))}
               </select>
+              <button
+                className="btn btn--small btn--ghost"
+                aria-pressed={tipsOn}
+                onClick={() => {
+                  saveTipsOn(!tipsOn);
+                  setTipsOn(!tipsOn);
+                }}
+              >
+                <span>{tipsOn ? 'Tips on' : 'Tips off'}</span>
+              </button>
               <button
                 className="btn btn--small btn--ghost"
                 aria-pressed={sound}
@@ -881,6 +907,15 @@ export function FightView(props: {
             <kbd>E</kbd>
           </button>
 
+          {tip && !flourish && (
+            <aside className="fight__tip" role="note" aria-live="polite">
+              <b>{tip.title}</b>
+              <p>{tip.text}</p>
+              <button className="btn btn--small" onClick={() => dismissTip(tip.id)}>
+                <span>Got it</span>
+              </button>
+            </aside>
+          )}
           {view.pending && !finished && (
             <PickModal
               key={view.pending.pool.map((c) => c.id).join()}
@@ -957,7 +992,9 @@ function previewDamage(
     for (const e of r.events)
       if (e.type === 'damage' && e.target === targetId && e.source === heroId && !e.shielded)
         total += e.amount;
-    const alive = [...r.state.sides.a.units, ...r.state.sides.b.units].some((u) => u.id === targetId);
+    const alive = [...r.state.sides.a.units, ...r.state.sides.b.units].some(
+      (u) => u.id === targetId,
+    );
     return { total, lethal: !alive };
   } catch {
     return null;

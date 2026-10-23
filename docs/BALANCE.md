@@ -119,3 +119,23 @@ regular fights 5-25 HP, Elites 15-45, Wardens 40-60 with Seraphine/Kron/Nyxara b
 two non-summon characters (40-60% after the C2 review fixes); Vorthax with a 10-card draft is ~10% (the finale expects a full-run deck).
 Known skew: summon/pack decks (Rivet, Kesh) beat Wardens more reliably than Maren/Vesper, whose damage is low per card.
 The bot drafts randomly, so this is a floor for human play; real balance waits for playable runs (DECISIONS #74).
+
+## Roster balance pass 1 (2026-10-23)
+
+Tool: `pnpm balance -- --n 10 --draft 10` (greedy bot, random drafted cards from the hero's own pool, every regular/elite/Warden
+encounter, Normal difficulty). Findings and changes:
+
+- **Before:** with a 10-card draft, Wardens were beaten 90-100% by Rivet and Kesh but only 43-57% by Vesper, Astra and Mire; with
+  starter decks only, Rivet won 95% of Warden fights and the rest 0-15%.
+- **Changes:** Rivet and Kesh starters one companion card leaner, their starting Drone (4 to 3 damage) and Hound (5 to 4) weaker,
+  Rivet 72 to 66 HP, Kesh 76 to 70; Vesper (68 to 76 HP), Quill (66 to 72), Ilvane (70 to 70 after a detour), Astra (74 to 80) and Mire
+  (70 to 76) tougher; Vesper's Snares +2-4 damage; Astra's Lumen spenders hit harder (Lumen Bolt 14, Skybolt 18, Nova 30, Supernova
+  55, Falling Sky 3 hits) and her Blade starts at 7; Mire's Doom numbers up (Grave Touch 4, Tolling Bell 7, Last Rites 10,
+  Deathknell 14, Inevitable 3); Eruption 8 to 7. Fury's "take 50% more" stays (2x was far too harsh in the sim).
+- **After (10-card draft, Warden win rate):** Maren 90, Rivet 85, Kesh 95, Vesper 65, Quill 93, Ilvane 93, Sehra 73, Astra 70, Mire 85.
+  Elites and regular fights are won 93-100% by everyone: the campaign's pressure is in the Wardens and in HP across a run, not
+  single fights.
+- **Bot limits:** the greedy bot sets up engines badly (stances, runes, Lumen), so low numbers for those characters are partly the
+  bot. Treat the table as a floor for them and a ceiling for companion decks. Human playtests decide the next pass.
+- **Still open:** Hollow runes scale without bound; Serene/Fury loops with Surge of Ire are strong; starter-only Wardens are very
+  hard for most characters (intended: you are meant to draft), but Rivet/Kesh/Sehra start well ahead of the rest.
