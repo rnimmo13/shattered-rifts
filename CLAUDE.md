@@ -51,6 +51,7 @@ pnpm lint         # ESLint (engine/ai/campaign have purity rules: no Math.random
 pnpm typecheck    # tsc per package
 pnpm check        # lint + typecheck + test + build
 pnpm duel         # CLI duel vs AI. Flags (after --): --p1/--p2 maren|rivet|kesh|vesper, --seed X, --auto
+pnpm fight        # Combat v2 CLI fight on the sample ruleset (--hero knight|tinker, --enemies slime,cultist,summoner,warden, --seed X, --auto)
 pnpm sim          # balance sims: match | matrix | card | tiers | enemies (see docs/BALANCE.md)
 pnpm test:property # 10,000 random games with invariant checks
 pnpm deploy:web -- --repo OWNER/NAME   # build + publish the compiled site to GitHub Pages (see tools/src/deploy.ts)
@@ -59,6 +60,7 @@ pnpm build
 Toolchain: Node 22, pnpm 11 (corepack), TypeScript 6.0 (see DECISIONS #39). Workspace packages export TS source.
 
 ## Current status
+**DIRECTION CHANGE (2026-10-23, DECISIONS #86): the game is being rebuilt as Slay-the-Spire-style combat and runs (hero with HP, Mana/hand/Barrier, enemy intents, side-to-side, auto-firing Snares, PvP as a variant). Read `docs/08_COMBAT_V2.md` first; its milestones C1-C6 replace M5+ below. The Essence/slot/chain rules in `01_GAME_DESIGN.md` are legacy until C4 removes the old engine.**
 Design complete; campaign redesigned on 2026-10-22 to run-built decks + weekly PvP seasons (see
 `docs/DECISIONS.md`). Web build = private friends beta for now. **M0, M1 and M2 done** (engine, all 74 cards + 12 signature cards, enemy decks, heuristic AI, balance sim,
 10k-game property gate). First-player advantage (`docs/BALANCE.md` §1) is parked: balance waits until a playable campaign exists, even an easy one (DECISIONS #74). Starter imbalance is accepted (DECISIONS #63).

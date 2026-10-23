@@ -1,0 +1,15 @@
+{
+  "name": "@sr/combat",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Combat v2 (Slay-the-Spire-style): pure, deterministic fight engine. No DOM, no Math.random, no Date, no I/O.",
+  "exports": {
+    ".": "./src/index.ts",
+    "./sample": "./src/sample.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json"
+  },
+  "dependencies": {}
+}

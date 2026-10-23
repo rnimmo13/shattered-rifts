@@ -113,6 +113,8 @@ importers:
         specifier: workspace:*
         version: link:../engine
 
+  packages/combat: {}
+
   packages/content:
     dependencies:
       '@sr/engine':
@@ -129,6 +131,9 @@ importers:
       '@sr/ai':
         specifier: workspace:*
         version: link:../packages/ai
+      '@sr/combat':
+        specifier: workspace:*
+        version: link:../packages/combat
       '@sr/content':
         specifier: workspace:*
         version: link:../packages/content
