@@ -324,10 +324,13 @@ export const UI_TIPS = {
     title: 'Empty slot',
     text: 'A rune you conjure goes here. A new rune in a full row pushes the oldest out and it fires its big effect.',
   } as TipContent,
-  snare: (name: string | null): TipContent => ({
+  snare: (name: string | null, rules?: string): TipContent => ({
     kicker: 'Snare',
     title: name ?? 'A face-down Snare',
-    text: 'Set face down. It springs on its own when its trigger happens, then returns to your discard pile.',
+    text:
+      rules ??
+      'Set face down. It springs on its own when its trigger happens, then returns to your discard pile.',
+    hint: 'Springs on its own, then goes to your discard pile.',
   }),
   potionSlot: {
     kicker: 'Potion belt',

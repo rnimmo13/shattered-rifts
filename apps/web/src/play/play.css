@@ -1811,3 +1811,24 @@
 .grim__ribbon--midden {
   --rib: #b0682a;
 }
+
+/* character icons */
+.heroicon {
+  flex: none;
+  filter: drop-shadow(0 2px 4px rgb(0 0 0 / 0.55));
+}
+.picker__title .heroicon {
+  margin-right: 0.6rem;
+  vertical-align: middle;
+}
+.plate__name .heroicon {
+  margin-right: 0.3rem;
+  vertical-align: middle;
+}
+.title__card .heroicon {
+  display: block;
+  margin: 0 auto 0.25rem;
+}
+.setup__char {
+  align-items: center;
+}

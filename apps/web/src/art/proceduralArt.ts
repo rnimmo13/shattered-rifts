@@ -20,9 +20,14 @@ export interface ArtCard {
   motif?: Motif;
   /** force a figure (a summon card shows its companion) */
   archetype?: Archetype;
+  /** what the card is about, as a big symbol behind the picture (see art/emblems.ts) */
+  emblem?: string;
+  /** the owning Riftwalker's emblem, stamped in the corner like a maker's mark */
+  seal?: string;
 }
 type CardDef = ArtCard;
 import { color, rgba } from '../design/tokens';
+import { paintEmblem } from './emblems';
 import { paintMotif, type Motif } from './motifs';
 import { rng } from '../duel/scene/noise';
 
@@ -1096,6 +1101,18 @@ export function cardArt(def: CardDef): CardArt {
   g.fillStyle = halo;
   g.fillRect(0, 0, WW, WH);
   g.globalCompositeOperation = 'source-over';
+  // what the card is about: one big symbol behind the picture, lit from within
+  if (def.emblem) {
+    const size = WH * (def.motif ? 0.92 : 0.8);
+    const ex = WW * (0.3 + r() * 0.4);
+    g.save();
+    g.globalCompositeOperation = 'lighter';
+    g.globalAlpha = 0.22;
+    paintEmblem(g, def.emblem, ex, WH * 0.52, size * 1.12, palette.glow);
+    g.globalAlpha = 0.5;
+    paintEmblem(g, def.emblem, ex, WH * 0.52, size, palette.rim ?? palette.glow);
+    g.restore();
+  }
 
   if (def.motif) {
     paintMotif(g, WW, WH, palette, def.motif, r);
@@ -1123,6 +1140,14 @@ export function cardArt(def: CardDef): CardArt {
     const k = (WH * 0.96) / CH;
     const dw = CW * k;
     g.drawImage(cutout, (WW - dw) / 2, WH * 0.04, dw, CH * k);
+  }
+  // the maker's mark: the owning Riftwalker's emblem, small, bottom corner
+  if (def.seal) {
+    g.save();
+    g.globalAlpha = 0.9;
+    paintEmblem(g, def.seal, WW - 52, WH - 52, 62, 'rgba(0,0,0,0.65)');
+    paintEmblem(g, def.seal, WW - 54, WH - 54, 58, palette.rim ?? palette.glow);
+    g.restore();
   }
   // soft vignette at the window's edges
   const vg = g.createRadialGradient(WW / 2, WH / 2, WH * 0.35, WW / 2, WH / 2, WH * 0.85);

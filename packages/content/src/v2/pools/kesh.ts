@@ -14,6 +14,7 @@ import {
   heal,
   lose,
   mana,
+  maxMana,
   on,
   per,
   pool,
@@ -148,4 +149,7 @@ export const KESH: CardDef[] = [
     [scaled(dmg(10), per('might', 4)), heal(10)],
     { exhaust: true },
   ),
+  k('rare', 'blood-pact', 'Blood Pact', 'skill', 1, 'none', [lose(6), maxMana(1)], {
+    exhaust: true,
+  }),
 ];

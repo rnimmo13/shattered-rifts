@@ -454,7 +454,13 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
     case 'sacrifice':
       return 'Sacrifice the chosen ally.';
     case 'manaNext':
-      return `Next turn, gain ${o.amount} extra Mana.`;
+      return o.amount < 0
+        ? `Next turn, lose ${-o.amount} Mana.`
+        : `Next turn, gain ${o.amount} extra Mana.`;
+    case 'maxMana':
+      return o.amount >= 0
+        ? `Gain ${o.amount} maximum Mana for the rest of the fight (and ${o.amount} now).`
+        : `Lose ${-o.amount} maximum Mana for the rest of the fight.`;
     case 'drawNext':
       return `Next turn, draw ${o.amount} extra card${o.amount === 1 ? '' : 's'}.`;
     case 'discover': {

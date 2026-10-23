@@ -222,7 +222,9 @@ describe('pool shape (docs/09_ROSTER.md §1)', () => {
       );
     owns((c) => uses(c, 'channel') || uses(c, 'evoke') || uses(c, 'runeSlots'), 'ilvane');
     owns((c) => uses(c, 'stance'), 'sehra');
-    owns((c) => uses(c, 'forge') || c.starCost !== undefined, 'astra');
+    owns((c) => c.starCost !== undefined, 'astra');
+    owns((c) => uses(c, 'forge'), ['astra', 'kp']);
+    owns((c) => c.tags?.includes('gun') === true, 'kp');
     owns((c) => c.tags?.includes('knife') === true, 'quill');
     owns((c) => c.tags?.includes('shell') === true, 'kp');
     owns(

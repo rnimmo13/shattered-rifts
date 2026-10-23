@@ -2,6 +2,7 @@
 
 import type { CSSProperties } from 'react';
 import type { StatusId, UnitView } from '@sr/combat';
+import { HeroIcon } from '../ui/HeroIcon';
 import { tipAttrs } from '../ui/tip';
 import { INTENT_GLYPH, STATUS_INFO, UI_TIPS, statusTip } from './info';
 
@@ -24,7 +25,7 @@ export interface PlatesProps {
   preview?: { id: string; text: string } | null;
 }
 
-export function UnitPlates({ items, targetable, hover, preview }: PlatesProps) {
+export function UnitPlates({ items, targetable, hover, preview, heroId }: PlatesProps) {
   return (
     <div className="plates" aria-hidden={false}>
       {items.map(({ unit: u, x, y, h, w }) => {
@@ -62,7 +63,10 @@ export function UnitPlates({ items, targetable, hover, preview }: PlatesProps) {
               style={style}
             >
               {preview?.id === u.id && <div className="plate__preview">{preview.text}</div>}
-              <div className="plate__name">{u.name}</div>
+              <div className="plate__name">
+                {u.kind === 'hero' && heroId ? <HeroIcon hero={heroId} size={22} /> : null}
+                {u.name}
+              </div>
               <div
                 className={`bar${u.barrier > 0 ? ' has-barrier' : ''}`}
                 {...tipAttrs(UI_TIPS.hp(u.hp, u.maxHp))}

@@ -34,13 +34,13 @@ export function fanLayout(n: number, o: FanOptions): FanSlot[] {
     let z = i;
     if (o.focus !== null) {
       if (i === o.focus) {
-        y = -w * 0.62;
+        y = -w * 0.4;
         rot = 0;
-        scale = 1.5;
+        scale = 1.28;
         z = 100;
       } else {
         const d = i - o.focus;
-        const push = (w * 0.5) / Math.abs(d) ** 0.7;
+        const push = (w * 0.36) / Math.abs(d) ** 0.7;
         x += Math.sign(d) * push;
       }
     }

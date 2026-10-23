@@ -50,11 +50,13 @@ export const FightCard = memo(
     const size = n <= 55 ? 's' : n <= 110 ? 'm' : n <= 170 ? 'l' : 'xl';
     const rarity = def.rarity === 'basic' || !def.rarity ? 'common' : def.rarity;
     const realm = def.realm === 'junk' || !def.realm ? 'neutral' : def.realm;
+    // a class colour: the owner's, or Neutral grey (Warden gifts keep their realm's colours)
+    const owner = def.hero && !def.source?.startsWith('boss:') ? def.hero : undefined;
     const style = { '--k': k, width, height: width * (CARD_H / CARD_W) } as CSSProperties;
     return (
       <div
         ref={ref}
-        className={`card card--${realm} card--${rarity}${playable ? ' is-playable' : ''}${dimmed ? ' is-dimmed' : ''}`}
+        className={`card card--${realm}${owner ? ` card--hero-${owner}` : ''} card--${rarity}${playable ? ' is-playable' : ''}${dimmed ? ' is-dimmed' : ''}`}
         style={style}
         data-card={def.id}
       >

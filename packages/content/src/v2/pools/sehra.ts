@@ -12,6 +12,7 @@ import {
   draw,
   lose,
   mana,
+  manaNext,
   on,
   per,
   pool,
@@ -132,4 +133,5 @@ export const SEHRA: CardDef[] = [
     [stance('radiant'), status('vigor', 8), draw(2)],
     { exhaust: true },
   ),
+  s('uncommon', 'deep-breath', 'Deep Breath', 'skill', 1, 'none', [manaNext(2), draw(1)]),
 ];

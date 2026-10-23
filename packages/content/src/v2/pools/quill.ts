@@ -219,4 +219,5 @@ export const QUILL: CardDef[] = [
     [loseHpScaled(per('seared', 3, 'target'))],
     { exhaust: true },
   ),
+  q('uncommon', 'light-fingers', 'Light Fingers', 'skill', 1, 'none', [mana(2), discard(1)]),
 ];

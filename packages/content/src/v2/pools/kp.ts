@@ -7,21 +7,24 @@
 
 import type { CardDef } from '@sr/combat';
 import {
-  PREVENT,
   addTo,
   barrier,
+  discard,
   dmg,
   draw,
+  forge,
   heal,
   lose,
   mana,
+  manaNext,
+  maxMana,
   on,
   per,
   pool,
+  PREVENT,
   scaled,
   scry,
   status,
-  discard,
 } from '../build';
 
 const p = pool('kp', 'midden');
@@ -126,7 +129,7 @@ export const KP: CardDef[] = [
   p('common', 'shell-pocket', 'Shell Pocket', 'skill', 0, 'none', [addTo('buckshot-shell', 2)], {
     exhaust: true,
   }),
-  p('common', 'twelve-gauge', 'Twelve Gauge', 'attack', 2, 'foe', [dmg(16)]),
+  p('common', 'slug-round', 'Slug Round', 'attack', 2, 'foe', [dmg(16)]),
   p('common', 'rock-salt', 'Rock Salt', 'attack', 1, 'none', [
     dmg(4, 'allFoes'),
     status('faltering', 1, 'allFoes'),
@@ -196,4 +199,49 @@ export const KP: CardDef[] = [
     status('thorns', 6),
     on('turnStart', [barrier(8)]),
   ]),
+
+  // --- the Old Twelve Gauge: a weapon that hits every enemy and gets sharper (Sharpen), with its own interactions ---
+  p(
+    'common',
+    'old-twelve-gauge',
+    'Old Twelve Gauge',
+    'attack',
+    1,
+    'none',
+    [scaled(dmg(5, 'allFoes'), per('bonus'))],
+    {
+      retain: true,
+      tags: ['gun'],
+      source: 'token',
+    },
+  ),
+  p('common', 'rack-the-slide', 'Rack the Slide', 'skill', 1, 'none', [
+    forge('old-twelve-gauge', 3),
+  ]),
+  p('common', 'powder-load', 'Powder Load', 'skill', 0, 'none', [forge('old-twelve-gauge', 4)], {
+    exhaust: true,
+  }),
+  p('common', 'pistol-whip', 'Pistol Whip', 'attack', 1, 'foe', [
+    dmg(6),
+    forge('old-twelve-gauge', 2),
+  ]),
+  p('uncommon', 'glass-cover', 'Glass Cover', 'skill', 1, 'none', [
+    barrier(7),
+    forge('old-twelve-gauge', 2),
+  ]),
+  p('uncommon', 'hair-trigger', 'Hair Trigger', 'power', 1, 'none', [
+    on('play', [forge('old-twelve-gauge', 1)], { tag: 'shell' }),
+  ]),
+  p('uncommon', 'reload', 'Reload', 'skill', 1, 'none', [forge('old-twelve-gauge', 2), draw(1)]),
+  p('rare', 'extended-mag', 'Extended Mag', 'power', 2, 'none', [
+    on('turnStart', [forge('old-twelve-gauge', 2), addTo('buckshot-shell')]),
+  ]),
+  p('rare', 'rack-and-ruin', 'Rack and Ruin', 'attack', 2, 'none', [
+    dmg(8, 'allFoes'),
+    forge('old-twelve-gauge', 3),
+  ]),
+  p('uncommon', 'liquid-lunch', 'Liquid Lunch', 'skill', 0, 'none', [mana(2), manaNext(-1)], {
+    exhaust: true,
+  }),
+  p('rare', 'last-call', 'Last Call', 'skill', 2, 'none', [maxMana(1), heal(6)], { exhaust: true }),
 ];

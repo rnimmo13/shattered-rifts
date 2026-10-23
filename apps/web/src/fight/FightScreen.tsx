@@ -12,6 +12,7 @@ import {
 import type { CombatSetup } from '@sr/combat';
 import { DeckBuilder } from './DeckBuilder';
 import { countsOf, flatten } from './deckCatalog';
+import { HeroIcon } from '../ui/HeroIcon';
 import { FightView } from './FightView';
 import '../play/play.css';
 import '../duel/duel.css';
@@ -87,6 +88,7 @@ export default function FightScreen() {
                     setCounts(countsOf(RIFTWALKERS[h].starter));
                   }}
                 >
+                  <HeroIcon hero={h} size={40} />
                   <span className="setup__charName">
                     {RIFTWALKERS[h].hero.name}{' '}
                     <small className="setup__charRole">{RIFTWALKERS[h].role}</small>

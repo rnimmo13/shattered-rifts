@@ -4,6 +4,8 @@
 import type { CardDef, UnitDef } from '@sr/combat';
 import type { Motif } from '../art/motifs';
 import { realCardArt, realFigure } from '../art/assets';
+import { HERO_EMBLEM } from '../art/emblems';
+import { bespokeHero } from '../art/heroFigures';
 import {
   avatarCutout,
   cardArtUrl,
@@ -85,6 +87,8 @@ const base = (id: string): string => id.replace(/\+$/, '');
 export function heroFigure(heroId: string): HTMLCanvasElement {
   const real = realFigure(`hero:${heroId}`);
   if (real) return real;
+  const own = bespokeHero(heroId);
+  if (own) return own;
   const [kind, realm] = HERO[heroId] ?? ['wanderer', 'neutral'];
   return avatarCutout(kind, realm, `char:${heroId}`);
 }
@@ -121,6 +125,60 @@ const REALM_TRIBES: Record<string, string[]> = {
   gloomfen: ['Spirit'],
   midden: ['Drone'],
 };
+
+/** What a card is ABOUT, as a symbol: by what its name says first, then by what it does. */
+const EMBLEM_WORDS: [RegExp, string][] = [
+  [/shell|buckshot|gauge|barrel|boomstick|shotgun|pump/, 'shell'],
+  [/window|pane|glass|glaz|shatter|stained|shard/, 'pane'],
+  [/bottle|swig|flask|brawl|rotgut|courage|drunk|toast|round$/, 'bottle'],
+  [/hammer|anvil|crush|smith|mallet|pound/, 'hammer'],
+  [/knife|knives|dagger|sleeve|razor|stab|jab|sleight/, 'daggers'],
+  [/rune|glyph|sigil|hollow|resonan|ward-?stone|spark/, 'rune'],
+  [/star|lumen|nova|comet|meteor|constellation|astral|cosmos|sovereign/, 'star8'],
+  [/crown|king|queen|throne|sovereign|regal/, 'crown'],
+  [/doom|fate|grave|thrall|skull|toll|ash|soul|dead|requiem|reap|undead|colossus|bone/, 'skull'],
+  [/bell|chime|knell/, 'bell'],
+  [/web|snare|trap|net\b|cage|trip|wire|bait|noose|tangle/, 'web'],
+  [/mask|veil|shadow|mirror|bluff|disguise|masquerade|ghost|phantom/, 'mask'],
+  [/\beye|mark|prey|sight|gaze|spotlight|unmask|read|watch/, 'eye'],
+  [/fist|palm|stance|fury|serene|fervor|monk|punch|ire\b|stillness|balance/, 'fist'],
+  [/arrow|bow\b|hunt|volley|pierce|quiver|stalk|track/, 'bow'],
+  [/gear|drone|bot\b|turret|engine|assembl|core|spring|rivet|machine|clock|legion|foundry/, 'cog'],
+  [/flame|burn|sear|fire|ember|cinder|blaze|scorch|pyre|inferno/, 'flame'],
+  [/bite|maw|fang|claw|rend|feral|savage|hunger|rav|gnash|wild/, 'claw'],
+  [/heal|mend|heart|feast|devour|blood|tithe|vital|swallow/, 'heart'],
+  [/thorn|oath|spike|barb|vow/, 'thorn'],
+  [/sun|dawn|radiant|light|hymn|prayer|halo|smite|sanct|aurora/, 'sunshield'],
+  [/shield|ward|guard|brace|barrier|bulwark|barricade|bastion|aegis|fort|steadfast/, 'shield'],
+  [/coin|gold|purse|bargain|tribute|loot|salvage/, 'coin'],
+  [/time|patien|moment|hourglass|wait|delay|long\b/, 'hourglass'],
+  [/moon|night|dusk|twilight/, 'moon'],
+  [/book|tome|study|lore|page|scroll|foresee|cold read/, 'book'],
+  [/bolt|lightning|shock|storm|thunder|surge|overclock|charge/, 'bolt'],
+  [/wave|tide|drown|fen|mire|flood|bog|swamp/, 'wave'],
+  [/key|unlock|lock\b/, 'key'],
+  [/blade|sword|strike|slash|cut|edge|saber|cleave|lunge|riposte/, 'sword'],
+];
+const MOTIF_EMBLEM: Record<Motif, string> = {
+  slash: 'sword',
+  flurry: 'daggers',
+  burst: 'bolt',
+  shield: 'shield',
+  heal: 'heart',
+  flame: 'flame',
+  curse: 'eye',
+  draw: 'book',
+  power: 'crown',
+  snare: 'web',
+  crystal: 'star8',
+  rune: 'rune',
+};
+function emblemOf(c: CardDef, motif: Motif | undefined): string {
+  const text = `${c.id.replace(/\+$/, '')} ${c.name}`.toLowerCase().replace(/-/g, ' ');
+  for (const [re, name] of EMBLEM_WORDS)
+    if (new RegExp(String.raw`\b(?:${re.source})`).test(text)) return name;
+  return MOTIF_EMBLEM[motif ?? 'rune'];
+}
 
 /** What a card does, as a picture: chosen from its effects, never from its name. */
 function motifOf(c: CardDef): Motif {
@@ -180,6 +238,8 @@ export function cardArtV2(c: CardDef): string {
     type: KIND_TYPE[c.kind],
     tribes: c.kind === 'summon' ? (REALM_TRIBES[c.realm ?? ''] ?? []) : [],
     ...(summoned ? { archetype: summoned } : { motif: motifOf(c) }),
+    emblem: emblemOf(c, summoned ? undefined : motifOf(c)),
+    ...(c.hero && HERO_EMBLEM[c.hero] ? { seal: HERO_EMBLEM[c.hero] as string } : {}),
   } satisfies ArtCard;
   return cardArtUrl(fake);
 }

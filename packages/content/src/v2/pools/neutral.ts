@@ -4,7 +4,6 @@
 
 import type { CardDef } from '@sr/combat';
 import {
-  PREVENT,
   barrier,
   card,
   cheapen,
@@ -12,13 +11,15 @@ import {
   discoverOp,
   dmg,
   draw,
+  drawNext,
   exhaustN,
   heal,
   lose,
   mana,
   manaNext,
-  drawNext,
+  maxMana,
   on,
+  PREVENT,
   scry,
   status,
   summon,
@@ -127,6 +128,10 @@ export const NEUTRAL: CardDef[] = [
       exhaust: true,
     },
   ),
+  n('uncommon', 'borrowed-time', 'Borrowed Time', 'skill', 0, 'none', [mana(3), manaNext(-2)], {
+    exhaust: true,
+  }),
+  n('rare', 'attunement', 'Attunement', 'skill', 2, 'none', [maxMana(1)], { exhaust: true }),
 ];
 
 // Warden signature cards: one set per Warden, offered as the Warden's Gift. Any Riftwalker can take them.

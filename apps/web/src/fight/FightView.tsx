@@ -7,6 +7,7 @@ import {
   applyAction,
   costOf,
   clone,
+  cardText,
   createCombat,
   legalActions,
   viewFor,
@@ -39,7 +40,7 @@ import { CardTips } from './CardTips';
 import { preloadArt } from '../art/assets';
 import { PotionButton } from './PotionChip';
 import { PickModal } from './PickModal';
-import { tipAttrs } from '../ui/tip';
+import { tipAttrs, type TipContent } from '../ui/tip';
 import { UI_TIPS } from './info';
 import { loadSeen, loadTipsOn, nextTip, saveSeen, saveTipsOn } from './tips';
 import { AuraList, LumenCounter, RuneArc } from './SidePanel';
@@ -915,13 +916,9 @@ export function FightView(props: {
             <RuneArc db={db} me={me} cx={heroPlaced.x} top={heroPlaced.y + 78} />
           )}
           {me && me.snares.length > 0 && (
-            <div className="fight__snares" title="Face-down Snares spring on their own">
+            <div className="fight__snares">
               {me.snares.map((s) => (
-                <span
-                  key={s.id}
-                  className="snare"
-                  title={s.card ? (db.cards[s.card]?.name ?? 'Snare') : 'Snare'}
-                >
+                <span key={s.id} className="snare" tabIndex={0} {...tipAttrs(snareTip(db, s.card))}>
                   ✧
                 </span>
               ))}
@@ -1080,4 +1077,10 @@ function tallyDefs(cards: readonly CardDef[]): { def: CardDef; n: number }[] {
     else m.set(c.id, { def: c, n: 1 });
   }
   return [...m.values()];
+}
+
+/** The tooltip for a face-down Snare: its name and what it does when it springs. */
+function snareTip(db: CombatDb, card: string | null): TipContent {
+  const def = card ? db.cards[card] : undefined;
+  return UI_TIPS.snare(def?.name ?? null, def ? cardText(db, def) : undefined);
 }

@@ -83,6 +83,7 @@ export const forge = (cardId: string, amount: number): Op => ({
 });
 export const sacrifice: Op = { op: 'sacrifice' };
 export const manaNext = (amount: number): Op => ({ op: 'manaNext', amount });
+export const maxMana = (amount: number): Op => ({ op: 'maxMana', amount });
 export const drawNext = (amount: number): Op => ({ op: 'drawNext', amount });
 export const discoverOp = (kind?: CardKind, count = 1, free = false): Op => ({
   op: 'discover',

@@ -5,16 +5,17 @@
 
 import type { CardDef } from '@sr/combat';
 import {
-  PREVENT,
   addTo,
   barrier,
   dmg,
   draw,
   lose,
   mana,
+  manaNext,
   on,
   per,
   pool,
+  PREVENT,
   scaled,
   scry,
   status,
@@ -196,4 +197,7 @@ export const VESPER: CardDef[] = [
   v('legendary', 'masquerade', 'Masquerade', 'power', 2, 'none', [
     on('snare', [draw(2), mana(1), dmg(4, 'allFoes')]),
   ]),
+  v('uncommon', 'saved-breath', 'Saved Breath', 'skill', 0, 'none', [manaNext(2), scry(2)], {
+    exhaust: true,
+  }),
 ];

@@ -195,7 +195,14 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
   kp: {
     realm: 'midden',
     role: 'Drunkard',
-    hero: { id: 'kp', name: 'KP, the Homeless Drunk', maxHp: 88, mana: 3, handSize: 5 },
+    hero: {
+      id: 'kp',
+      name: 'KP, the Homeless Drunk',
+      maxHp: 88,
+      mana: 3,
+      handSize: 5,
+      sigil: [addTo('old-twelve-gauge')],
+    },
     starter: [
       ...rep('strike', 3),
       ...rep('defend', 3),
@@ -204,7 +211,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
       'bottle-tripwire',
     ],
     blurb:
-      'A short, fat, bald dwarf with a hammer, a sawed-off 12 gauge and a trolley of window panes. Booby traps, glass and buckshot.',
+      'A short, fat, bald dwarf with a hammer, an Old Twelve Gauge that hits every enemy and gets sharper, and a trolley of window panes. Booby traps, glass and buckshot.',
     lanes: [
       'Junk Traps: bottles and glass booby traps',
       'Glass: Barrier and Thorns, then break it',
@@ -212,7 +219,8 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     ],
     howTo: [
       'Window panes give Barrier and Thorns: anything that hits you cuts itself. Some cards hit harder for each Thorns you have.',
-      'Shells are 0-cost attacks that hit EVERY enemy and are consumed. Load them, then fire them (Boomstick loves consumed cards).',
+      'You start every fight with the Old Twelve Gauge: it hits EVERY enemy, you keep it in hand, and every Sharpen card (Rack the Slide...) makes it hit harder for the whole fight.',
+      'Shells are 0-cost attacks that hit every enemy and are consumed. Playing one can sharpen the gun (Hair Trigger).',
       'Swigs heal and hit harder for a turn. KP has a few Snares, but he is not the trapper Vesper is.',
     ],
     quotes: [

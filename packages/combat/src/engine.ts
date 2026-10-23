@@ -620,6 +620,10 @@ function execOp(r: Run, a: Act, op: Op): void {
     case 'manaNext':
       side.nextMana += op.amount;
       return;
+    case 'maxMana':
+      side.maxMana = Math.max(0, side.maxMana + op.amount);
+      gainMana(r, side, Math.max(0, op.amount));
+      return;
     case 'drawNext':
       side.nextDraw += op.amount;
       return;
@@ -1048,7 +1052,8 @@ function beginHeroTurn(r: Run, side: Side): void {
   sd.discarded = 0;
   // the second PvP player gets a small head start on their first turn
   const first = r.s.mode === 'pvp' && side === 'b' && r.s.turn === 2;
-  sd.mana = sd.maxMana + (first ? 1 : 0) + sd.nextMana;
+  // Mana owed from a borrowed turn comes off the top, but a turn never starts below 0
+  sd.mana = Math.max(0, sd.maxMana + (first ? 1 : 0) + sd.nextMana);
   const extraDraw = sd.nextDraw;
   sd.nextMana = 0;
   sd.nextDraw = 0;

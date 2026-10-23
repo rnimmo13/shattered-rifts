@@ -564,3 +564,93 @@
   --trim-lo: #6a4318;
   --accent: #ff9a3c;
 }
+
+/* class colours: a Riftwalker's cards wear their own colours whatever realm they come from */
+.card--hero-maren {
+  --ink-a: #1d2f78;
+  --ink-b: #08102e;
+  --trim: #e8c14a;
+  --trim-hi: #fff0b0;
+  --trim-lo: #7a5a14;
+  --accent: #ffe08a;
+}
+.card--hero-rivet {
+  --ink-a: #0b4a5c;
+  --ink-b: #041218;
+  --trim: #6fb8d0;
+  --trim-hi: #d6f6ff;
+  --trim-lo: #2c5a6a;
+  --accent: #6fe6ff;
+}
+.card--hero-kesh {
+  --ink-a: #5a1a1a;
+  --ink-b: #1a0606;
+  --trim: #d8603a;
+  --trim-hi: #ffc09a;
+  --trim-lo: #7a2a14;
+  --accent: #ff8a6a;
+}
+.card--hero-vesper {
+  --ink-a: #2e1a66;
+  --ink-b: #0a0618;
+  --trim: #9a7ee0;
+  --trim-hi: #e0d4ff;
+  --trim-lo: #43308a;
+  --accent: #b99aff;
+}
+.card--hero-quill {
+  --ink-a: #5a1648;
+  --ink-b: #17051a;
+  --trim: #e0609e;
+  --trim-hi: #ffc4e4;
+  --trim-lo: #7a2a5e;
+  --accent: #f08acb;
+}
+.card--hero-ilvane {
+  --ink-a: #0f3a7a;
+  --ink-b: #040c20;
+  --trim: #4aa8f0;
+  --trim-hi: #cfeaff;
+  --trim-lo: #1f5a9a;
+  --accent: #4fb8ff;
+}
+.card--hero-sehra {
+  --ink-a: #6a3210;
+  --ink-b: #1c0e04;
+  --trim: #e89a3a;
+  --trim-hi: #ffd9a0;
+  --trim-lo: #8a4a14;
+  --accent: #ffb060;
+}
+.card--hero-astra {
+  --ink-a: #1a1f58;
+  --ink-b: #05061a;
+  --trim: #c4cce8;
+  --trim-hi: #ffffff;
+  --trim-lo: #5a6290;
+  --accent: #ffe9a0;
+}
+.card--hero-mire {
+  --ink-a: #15401f;
+  --ink-b: #04100a;
+  --trim: #7ad04a;
+  --trim-hi: #d8ffb8;
+  --trim-lo: #2f6a22;
+  --accent: #9be86a;
+}
+.card--hero-kp {
+  --ink-a: #4a3010;
+  --ink-b: #140c04;
+  --trim: #c88a3a;
+  --trim-hi: #ffe0a8;
+  --trim-lo: #6a4a18;
+  --accent: #ffa83c;
+}
+.card--hero-neutral {
+  --ink-a: #2a2d3a;
+  --ink-b: #0c0d14;
+  --trim: #a0a4b4;
+  --trim-hi: #eceef8;
+  --trim-lo: #4a4d5c;
+  --accent: #d6dcff;
+}

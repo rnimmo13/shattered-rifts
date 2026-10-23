@@ -5,7 +5,19 @@
 // Glue cards (marked) serve two lanes. Numbers assume 3 Mana and a 5-card hand.
 
 import type { CardDef } from '@sr/combat';
-import { PREVENT, barrier, dmg, draw, heal, on, per, pool, scaled, status } from '../build';
+import {
+  barrier,
+  dmg,
+  draw,
+  heal,
+  manaNext,
+  on,
+  per,
+  pool,
+  PREVENT,
+  scaled,
+  status,
+} from '../build';
 
 const m = pool('maren', 'aurelion');
 
@@ -146,4 +158,5 @@ export const MAREN: CardDef[] = [
     [scaled(dmg(0, 'allFoes'), per('barrier', 3))],
     { exhaust: true },
   ),
+  m('uncommon', 'steady-resolve', 'Steady Resolve', 'skill', 1, 'none', [barrier(5), manaNext(2)]),
 ];

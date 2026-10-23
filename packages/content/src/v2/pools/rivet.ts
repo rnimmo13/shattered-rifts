@@ -10,6 +10,8 @@ import {
   dmg,
   draw,
   heal,
+  mana,
+  manaNext,
   on,
   per,
   pool,
@@ -123,4 +125,7 @@ export const RIVET: CardDef[] = [
     [status('might', 3, 'allFriends'), ACT, ACT],
     { exhaust: true },
   ),
+  r('uncommon', 'overcharge', 'Overcharge', 'skill', 0, 'none', [mana(2), manaNext(-1)], {
+    exhaust: true,
+  }),
 ];

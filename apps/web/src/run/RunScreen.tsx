@@ -34,6 +34,7 @@ import {
 } from '@sr/campaign';
 import { FightView } from '../fight/FightView';
 import { BoonChip } from '../fight/BoonChip';
+import { BoonToast } from './BoonToast';
 import { PotionChip } from '../fight/PotionChip';
 import { CharacterPicker } from './CharacterPicker';
 import { MapLegend, MapView } from './MapView';
@@ -80,10 +81,16 @@ export default function RunScreen() {
   const runRef = useRef<RunState | null>(initial.run);
   const [run, setRunState] = useState<RunState | null>(initial.run);
   const [confirmForfeit, setConfirmForfeit] = useState(false);
+  // Boons that just arrived, waiting to be shown (one banner at a time)
+  const [gained, setGained] = useState<string[]>([]);
   const setRun = useCallback((r: RunState | null) => {
+    const had = runRef.current?.boons ?? [];
+    const fresh = r ? r.boons.filter((b) => !had.includes(b)) : [];
+    if (fresh.length) setGained((g) => [...g, ...fresh]);
     runRef.current = r;
     setRunState(r);
   }, []);
+  const nextGained = useCallback(() => setGained((g) => g.slice(1)), []);
   const [notice, setNotice] = useState<string | null>(initial.notice);
   const [showDeck, setShowDeck] = useState(false);
   const [confirmAbandon, setConfirmAbandon] = useState(false);
@@ -218,6 +225,7 @@ export default function RunScreen() {
         </p>
       )}
       <Body run={run} act={act} onLeave={leaveRun} />
+      {gained[0] && <BoonToast id={gained[0]} more={gained.length - 1} onDone={nextGained} />}
       {showDeck && (
         <DeckModal deck={run.deck} title="Your deck" onClose={() => setShowDeck(false)} />
       )}

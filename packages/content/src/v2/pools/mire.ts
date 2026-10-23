@@ -14,6 +14,8 @@ import {
   draw,
   exhaustN,
   heal,
+  lose,
+  mana,
   on,
   per,
   pool,
@@ -180,4 +182,7 @@ export const MIRE: CardDef[] = [
     summon('drowned-king'),
     status('might', 2, 'allFriends'),
   ]),
+  g('uncommon', 'soul-tithe', 'Soul Tithe', 'skill', 0, 'none', [lose(4), mana(2)], {
+    exhaust: true,
+  }),
 ];

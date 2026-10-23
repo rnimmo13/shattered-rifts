@@ -1,6 +1,7 @@
 import type { CSSProperties } from 'react';
 import { RIFTWALKERS, heroesByRealm } from '@sr/content/v2';
 import { BUILD } from '../build';
+import { HeroIcon } from '../ui/HeroIcon';
 import { color } from '../design/tokens';
 
 const ACCENT: Record<string, string> = {
@@ -62,7 +63,7 @@ export function TitleScreen() {
             <ul className="title__roster">
               {g.heroes.map((h) => (
                 <li key={h} className="title__card">
-                  <span className="title__sigil" aria-hidden />
+                  <HeroIcon hero={h} size={52} />
                   <span className="title__card-name">{RIFTWALKERS[h].hero.name}</span>
                   <span className="title__card-role">{RIFTWALKERS[h].role}</span>
                   <span className="title__card-realm">

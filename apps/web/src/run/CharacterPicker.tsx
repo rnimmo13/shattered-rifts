@@ -3,6 +3,7 @@
 
 import { useState } from 'react';
 import { RIFTWALKERS, heroesByRealm, type HeroId } from '@sr/content/v2';
+import { HeroIcon } from '../ui/HeroIcon';
 import { DeckStrip } from './Pickers';
 import './run.css';
 
@@ -41,9 +42,7 @@ export function CharacterPicker(props: { value: HeroId; onChange: (id: HeroId) =
                       props.onChange(id);
                     }}
                   >
-                    <span className={`crest crest--${x.realm}`} aria-hidden>
-                      <b>{x.hero.name.charAt(0)}</b>
-                    </span>
+                    <HeroIcon hero={id} size={58} />
                     <span className="picker__name">{x.hero.name}</span>
                     <span className="picker__role">{x.role}</span>
                     <span className="picker__realm">{REALM_NAME[x.realm]}</span>
@@ -58,6 +57,7 @@ export function CharacterPicker(props: { value: HeroId; onChange: (id: HeroId) =
       <div className="picker__detail">
         <div className="picker__about">
           <h2 className="picker__title">
+            <HeroIcon hero={props.value} size={44} />
             {c.hero.name} <small className="picker__titlerole">{c.role}</small>
           </h2>
           <p className="picker__style">{c.blurb}</p>

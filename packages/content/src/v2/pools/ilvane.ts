@@ -13,6 +13,7 @@ import {
   evoke,
   mana,
   manaNext,
+  maxMana,
   on,
   per,
   pool,
@@ -206,4 +207,7 @@ export const ILVANE: CardDef[] = [
     [dmg(10, 'allFoes'), evoke(10, 2)],
     { exhaust: true },
   ),
+  i('rare', 'leyline-tap', 'Leyline Tap', 'skill', 2, 'none', [maxMana(1), barrier(6)], {
+    exhaust: true,
+  }),
 ];
