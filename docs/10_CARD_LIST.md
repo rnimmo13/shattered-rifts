@@ -468,7 +468,7 @@ Starter: Slash, Slash, Slash, Guard, Guard, Guard, Hammer Swing, Hammer Swing, P
 | Rack the Slide | 1 | skill | common | Sharpen 3 (Old Twelve Gauge gains 3 damage). |
 | Powder Load | 0 | skill | common | Sharpen 4 (Old Twelve Gauge gains 4 damage). Consume. |
 | Pistol Whip | 1 | attack | common | Deal 6 damage. Sharpen 2 (Old Twelve Gauge gains 2 damage). |
-| Pit of Bottles | 1 | snare | uncommon | At the start of the enemy turn: Deal 8 damage to ALL enemies. Apply 1 Brittle to ALL enemies. |
+| Pit of Bottles | 1 | snare | uncommon | At the start of the enemy turn: Deal 6 damage to ALL enemies. Apply 1 Brittle to ALL enemies. |
 | Double Glazing | 2 | skill | uncommon | Gain 12 Barrier. Apply 2 Thorns. |
 | Shatter | 2 | attack | uncommon | Deal 8 (+3 per Thorns) damage. |
 | Stained Glass | 1 | power | uncommon | At the start of your turn: Apply 1 Thorns. Gain 2 Barrier. |

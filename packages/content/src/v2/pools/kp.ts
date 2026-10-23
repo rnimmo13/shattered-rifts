@@ -71,7 +71,7 @@ export const KP: CardDef[] = [
     'snare',
     1,
     'none',
-    [dmg(8, 'allFoes'), status('brittle', 1, 'allFoes')],
+    [dmg(6, 'allFoes'), status('brittle', 1, 'allFoes')],
     { trigger: { on: 'foeTurn' } },
   ),
   p(
