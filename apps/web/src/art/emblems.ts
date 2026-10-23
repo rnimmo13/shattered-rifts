@@ -272,7 +272,7 @@ export const HERO_COLOR: Record<string, string> = {
   rivet: '#6fe6ff',
   kesh: '#ff8a6a',
   vesper: '#b99aff',
-  quill: '#f08acb',
+  quill: '#e0384f',
   ilvane: '#4fb8ff',
   sehra: '#ffb060',
   astra: '#ffe9a0',

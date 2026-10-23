@@ -597,3 +597,101 @@ body:has(.learn) {
 .title__playing b {
   color: var(--c-gold-light);
 }
+
+/* ---- the Learn page: tabs, steps and fold-away lists ---- */
+.learn__tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  padding: 0.5rem 0;
+  background: linear-gradient(180deg, var(--c-navy) 70%, transparent);
+}
+.learn__tab {
+  padding: 0.4rem 0.9rem;
+  border-radius: 999px;
+  border: 1px solid rgb(212 168 75 / 0.4);
+  background: rgb(10 12 28 / 0.7);
+  color: var(--c-ivory);
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  cursor: pointer;
+}
+.learn__tab:hover,
+.learn__tab:focus-visible {
+  border-color: var(--c-gold-light);
+}
+.learn__tab.is-on {
+  background: linear-gradient(160deg, var(--c-gold-light), var(--c-gold-dark));
+  color: #1a1206;
+  border-color: transparent;
+}
+.learn section {
+  display: grid;
+  gap: 0.6rem;
+  align-content: start;
+  max-width: 44rem;
+}
+.learn section p,
+.learn section li {
+  line-height: 1.55;
+  color: var(--c-ivory);
+}
+.learn__steps {
+  margin: 0;
+  padding-left: 1.3rem;
+  display: grid;
+  gap: 0.5rem;
+}
+.learn__steps b {
+  color: var(--c-gold-light);
+}
+.learn section p.learn__note {
+  padding: 0.6rem 0.9rem;
+  border-left: 3px solid var(--c-cyan-glow);
+  background: rgb(10 12 28 / 0.6);
+  color: var(--c-text-dim);
+}
+.learn__more {
+  border: 1px solid rgb(212 168 75 / 0.3);
+  border-radius: 10px;
+  padding: 0.5rem 0.9rem;
+  background: rgb(10 12 28 / 0.5);
+}
+.learn__more + .learn__more {
+  margin-top: 0.4rem;
+}
+.learn__more summary {
+  cursor: pointer;
+  font-family: var(--font-display);
+  color: var(--c-gold-light);
+}
+.learn__more[open] summary {
+  margin-bottom: 0.4rem;
+}
+.learn h5 {
+  margin: 0.6rem 0 0.1rem;
+  font-family: var(--font-display);
+  font-size: 0.9rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--c-cyan-glow);
+}
+.learn__trait {
+  margin: 0;
+}
+.learn {
+  align-content: start;
+}
+.learn > .btn {
+  justify-self: start;
+}
+.learn__tabs {
+  align-items: center;
+  align-self: start;
+}
+.learn__tab {
+  white-space: nowrap;
+}

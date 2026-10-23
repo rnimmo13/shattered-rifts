@@ -136,7 +136,12 @@ function validContext(r: RunState): boolean {
         isObj(e) &&
         Array.isArray(e['options']) &&
         (e['options'] as unknown[]).length > 0 &&
-        (e['options'] as unknown[]).every((o) => isObj(o) && typeof o['id'] === 'string') &&
+        (e['options'] as unknown[]).every(
+          (o) =>
+            isObj(o) &&
+            typeof o['id'] === 'string' &&
+            (o['deal'] === undefined || validDeal(o['deal'])),
+        ) &&
         okOffer(e['cardOffer']) &&
         (e['boonOffer'] === undefined ||
           (typeof e['boonOffer'] === 'string' && Object.hasOwn(COMBAT_DB.boons, e['boonOffer'])))
@@ -145,6 +150,35 @@ function validContext(r: RunState): boolean {
     default:
       return true;
   }
+}
+
+const DEAL_KINDS = new Set([
+  'hurt',
+  'hurtPct',
+  'heal',
+  'maxHp',
+  'shards',
+  'wound',
+  'potion',
+  'boon',
+  'upgrade',
+  'remove',
+  'transform',
+  'copy',
+  'gift',
+  'chance',
+]);
+/** An event option's effect steps (see deals.ts): known kinds, whole numbers, chance branches that are step lists too. */
+function validDeal(steps: unknown, depth = 0): boolean {
+  if (!Array.isArray(steps) || depth > 3) return false;
+  return steps.every((s) => {
+    if (!isObj(s) || typeof s['k'] !== 'string' || !DEAL_KINDS.has(s['k'])) return false;
+    for (const f of ['n', 'pct'] as const)
+      if (s[f] !== undefined && !isInt(s[f], -100000, 100000)) return false;
+    if (s['k'] === 'chance')
+      return validDeal(s['win'], depth + 1) && validDeal(s['lose'], depth + 1);
+    return true;
+  });
 }
 
 /** Returns the run, or null when the text is not a valid save. */

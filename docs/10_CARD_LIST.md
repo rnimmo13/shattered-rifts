@@ -104,9 +104,9 @@ Starter: Slash, Slash, Slash, Slash, Guard, Guard, Guard, Guard, Dawn Smite, Oat
 | The Last Oath | 3 | power | legendary | Apply 1 Fortified. Apply 3 Thorns. Apply 1 Bracing. |
 | Dawn Incarnate | 3 | attack | legendary | Deal damage equal to 2 times your Barrier to ALL enemies. Consume. |
 
-## Rivet (nexus, 46 HP)
+## Rivet (nexus, 60 HP)
 
-A scrap-built tinkerer. Starts every fight with a Drone and builds an army of machines.
+A tinkerer of machines. She starts every fight with a Drone and builds an army of them.
 
 Lanes: Swarm: many cheap bodies / Assemble: allies act again / Core: a few big constructs
 
@@ -314,7 +314,7 @@ Starter: Slash, Slash, Slash, Slash, Slash, Guard, Guard, Guard, Savage Bite, Bl
 | The Hunger Unleashed | 2 | power | legendary | Lose 6 HP. Apply 4 Might to all friends. Apply 2 Cadence. |
 | Apex Maw | 3 | attack | legendary | Deal 10 (+4 per Might) damage. Heal 10. Consume. |
 
-## Vesper Nightlace (umbral, 104 HP)
+## Vesper Nightlace (umbral, 134 HP)
 
 A masked trapper. No companions: Snares, Exposed and patience.
 
@@ -423,7 +423,7 @@ Starter: Slash, Slash, Slash, Guard, Guard, Guard, Guard, Veil Strike, Veil Stri
 | The Perfect Trap | 3 | snare | legendary | When you or an ally is attacked: Cancel that attack. Deal 22 damage to the attacker. Apply 1 Stunned to the attacker. Apply 2 Shielded. |
 | Masquerade | 2 | power | legendary | Whenever one of your Snares springs: Draw 2 cards. Gain 1 Mana. Deal 4 damage to ALL enemies. |
 
-## Quill (umbral, 78 HP)
+## Scarlet (umbral, 78 HP)
 
 A cutpurse with a sleeve full of blades. Starts every fight with a Sleeve Knife. Knives, Bleed and discard tricks.
 
@@ -536,7 +536,7 @@ Tokens (made by other cards):
 |---|---|---|---|---|
 | Sleeve Knife | 0 | attack | common | Deal 4 damage. Consume. |
 
-## Ilvane Glyphwright (nexus, 74 HP)
+## Ilvane Glyphwright (nexus, 100 HP)
 
 Carves runes into the air. Starts every fight with a Spark rune. Runes fire every turn, then burst when evoked.
 
@@ -855,7 +855,7 @@ Tokens (made by other cards):
 |---|---|---|---|---|
 | Starforged Blade | 1 | attack | common | Deal 9 (+1 per point of sharpening) damage. Hold. |
 
-## KP, the Homeless Drunk (midden, 96 HP)
+## KP, the Homeless Drunk (midden, 106 HP)
 
 A short, fat, bald dwarf with a hammer, an Old Twelve Gauge that hits every enemy and gets sharper, and a trolley of window panes. Booby traps, glass and buckshot.
 

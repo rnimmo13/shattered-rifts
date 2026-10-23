@@ -5,6 +5,10 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **30 new events (50 in all):** a ferry, a bone collector, a locked reliquary, a pact with the Hollow, a wishing stone, a bell tower and more. Most are a choice between two deals (HP, shards, cards, potions, Boons, max HP), and an event never shows up if you could not afford its choices.
+- **Starting kits are now three fixed choices, one per lane:** your usual starter with two plain cards swapped for two uncommon cards that show off the lane (for example Maren: Bulwark, Thorns or Sanctified). Same cards every run.
+- **0.8.0:** All ten hero models redrawn (Scarlet, Astra and Rivet are women; Quill is now Scarlet, the necromancer is Dorian Blackthorn), 30 new events (50 in all), three preset lane starter kits per hero, tougher Ilvane, Rivet, Vesper and KP.
+- **How to play** is now tabs (Start here, A run, Combat, Card words, Statuses, Riftwalkers) with fold-away character entries instead of one long page.
 - **0.7.0:** Rift Tiers stop at 20, and continuing a loop heals you fully.
 - **0.6.0:** Sell potions to merchants for half price. Maren is now just "Maren" and the barbarian is Ragnar (was Sehra), the necromancer is Dorian Blackthorn (was Mire), and Quill, Astra and Ilvane Glyphwright have short names; potions sit by the Mana orb, Auras by your hero, and Thorns has a proper icon.
 - **0.5.0:** X cards now upgrade to X+1. Weaker Riftwalkers (KP, Vesper, Astra, Mire, Quill) are tougher or hit harder; a few free-loop cards cost more or are Consumed. KP's lanes are Gun / Shells / Hangover.

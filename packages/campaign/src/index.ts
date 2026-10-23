@@ -56,5 +56,5 @@ export {
   type ShrineChoice,
 } from './run';
 export { makePrelude, describeEffect } from './preludes';
-export { makeKits, mechanicsOf } from './kits';
+export { KIT_CARDS, makeKits } from './kits';
 export { RUN_SAVE_VERSION, parseRun, serializeRun } from './save';

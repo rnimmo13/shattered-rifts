@@ -13,31 +13,20 @@ import {
   type HeroId,
 } from '@sr/content/v2';
 import { MAX_POTIONS, ancestralPool, canAdd, offerBoon, offerCards, offerPotion } from './rewards';
-import type { EventOption, NodeContext, RunState } from './types';
-
-type EventCtx = NonNullable<NodeContext['event']>;
+import { applyDeal, basics, healBy, nonBasic, upgradable, type EventCtx } from './deals';
+import { DEAL_EVENTS } from './eventDeals';
+import type { EventOption, RunState } from './types';
 
 const leave: EventOption = { id: 'leave', label: 'Walk away' };
 
 /** The hand that weighs and builds an event for this run. */
-interface EventDef {
+export interface EventDef {
   id: string;
   weight: number;
   /** can it happen right now? */
   when: (r: RunState) => boolean;
   build: (r: RunState) => EventCtx;
 }
-
-const basics = (deck: readonly string[]): string[] =>
-  deck.filter((id) => COMBAT_DB.cards[id]?.rarity === 'basic');
-const nonBasic = (deck: readonly string[]): string[] =>
-  deck.filter((id) => {
-    const c = COMBAT_DB.cards[id];
-    return !!c && c.rarity !== 'basic' && !id.includes('~') && canAdd(deck, id);
-  });
-const upgradable = (deck: readonly string[]): string[] => [
-  ...new Set(deck.filter((id) => !!COMBAT_DB.cards[id]?.upgrade)),
-];
 
 export const EVENTS: EventDef[] = [
   {
@@ -378,6 +367,8 @@ export const EVENTS: EventDef[] = [
       cardOffer: '',
     }),
   },
+  // the data-driven ones (eventDeals.ts)
+  ...DEAL_EVENTS,
 ];
 
 /** Pick a random event, weighted, from those that can happen to this run now. */
@@ -393,10 +384,6 @@ export function rollEvent(r: RunState): EventCtx {
   return (pool[pool.length - 1] as EventDef).build(r);
 }
 
-const healBy = (r: RunState, n: number): void => {
-  r.hp = Math.min(r.maxHp, r.hp + Math.ceil(n));
-};
-
 /** Carry out one option; returns what happened, in a sentence. Throws (via `fail`) when the option is not allowed right now. */
 export function resolveEvent(
   r: RunState,
@@ -405,6 +392,8 @@ export function resolveEvent(
   helpers: { gainBoon: (r: RunState, id: string) => void; fail: (msg: string) => never },
 ): string {
   const { fail } = helpers;
+  const chosen = ev.options.find((o) => o.id === option);
+  if (chosen?.deal) return applyDeal(r, chosen, ev, helpers);
   switch (option) {
     case 'shards':
       r.shards += 30;

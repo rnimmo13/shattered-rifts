@@ -145,7 +145,7 @@ export function newRun(
   };
   // the very start: choose one of two starting decks, and then meet The Threshold
   run.phase = 'kit';
-  run.context = { nodeId: '', kits: makeKits(run.rng, hero) };
+  run.context = { nodeId: '', kits: makeKits(hero) };
   return run;
 }
 
@@ -472,7 +472,7 @@ export function nextStage(run: RunState): RunState {
 }
 
 // ---- the starting deck
-/** Take one of the two starting decks on offer; The Threshold follows. */
+/** Take one of the three starting decks on offer; The Threshold follows. */
 export function chooseKit(run: RunState, kitId: string): RunState {
   need(run.phase === 'kit' && run.context?.kits, 'There is no starting deck to choose');
   const kit = run.context.kits.find((k) => k.id === kitId);

@@ -1,11 +1,11 @@
 import { describe, expect, it } from 'vitest';
-import { seedRng } from '@sr/combat';
-import { COMBAT_DB, RIFTWALKERS, V2_DECK_RULES, type HeroId } from '@sr/content/v2';
+import { COMBAT_DB, RIFTWALKERS, V2_DECK_RULES, laneOf, type HeroId } from '@sr/content/v2';
 import {
+  KIT_CARDS,
   RunError,
+  canAdd,
   chooseKit,
   makeKits,
-  mechanicsOf,
   newRun,
   parseRun,
   serializeRun,
@@ -14,77 +14,54 @@ import {
 const HEROES = Object.keys(RIFTWALKERS) as HeroId[];
 
 describe('starting kits', () => {
-  it('every run opens by offering two starting decks', () => {
+  it('every run opens by offering three starting decks, one per lane', () => {
     for (const h of HEROES) {
       const r = newRun(h, `kit-${h}`, 'normal');
       expect(r.phase).toBe('kit');
-      expect(r.context?.kits).toHaveLength(2);
+      expect(r.context?.kits?.map((k) => k.id)).toEqual(['a', 'b', 'c']);
     }
   });
 
-  it('each kit is a real deck: the starter with three plain cards swapped for three of your own', () => {
+  it('each kit is two uncommon cards of its lane swapped in for two plain cards, all legal', () => {
     for (const h of HEROES) {
-      for (let i = 0; i < 20; i++) {
-        const kits = makeKits(seedRng(`k${h}${i}`), h);
-        expect(kits).toHaveLength(2);
-        for (const k of kits) {
-          expect(k.added).toHaveLength(3);
-          expect(k.deck.length).toBe(RIFTWALKERS[h].starter.length - k.removed.length + 3);
-          expect(k.deck.length).toBeGreaterThanOrEqual(V2_DECK_RULES.minSize);
-          for (const id of k.added) {
-            expect(COMBAT_DB.cards[id]?.hero, `${h} ${id}`).toBe(h);
-            expect(['common', 'uncommon']).toContain(COMBAT_DB.cards[id]?.rarity);
-          }
-          for (const id of k.removed) {
-            expect(COMBAT_DB.cards[id]?.hero).toBe('neutral');
-            expect(COMBAT_DB.cards[id]?.rarity).toBe('basic');
-          }
-          expect(k.leans.length).toBeGreaterThan(2);
+      const kits = makeKits(h);
+      expect(kits).toHaveLength(3);
+      kits.forEach((k, lane) => {
+        expect(k.added, `${h} lane ${lane}`).toHaveLength(2);
+        expect(k.removed).toHaveLength(2);
+        expect(k.leans).toBe(RIFTWALKERS[h].lanes[lane]?.split(':')[0]);
+        expect(k.deck.length).toBe(RIFTWALKERS[h].starter.length);
+        expect(k.deck.length).toBeGreaterThanOrEqual(V2_DECK_RULES.minSize);
+        for (const id of k.added) {
+          const c = COMBAT_DB.cards[id];
+          expect(c?.hero, `${h} ${id}`).toBe(h);
+          expect(c?.rarity, `${h} ${id}`).toBe('uncommon');
+          expect(laneOf(id), `${h} ${id}`).toBe(lane);
+          expect(c?.unplayable).toBeFalsy();
         }
-      }
+        for (const id of k.removed) {
+          expect(COMBAT_DB.cards[id]?.hero).toBe('neutral');
+          expect(COMBAT_DB.cards[id]?.rarity).toBe('basic');
+        }
+        // the deck is legal card by card
+        const built: string[] = [];
+        for (const id of k.deck) {
+          expect(canAdd(built, id), `${h} kit ${k.id}: ${id}`).toBe(true);
+          built.push(id);
+        }
+      });
     }
   });
 
-  it('the two kits differ: no shared added card, and they lean differently', () => {
-    let differentLean = 0;
-    let total = 0;
+  it('the three kits of a Riftwalker share no added card', () => {
     for (const h of HEROES) {
-      for (let i = 0; i < 20; i++) {
-        const [a, b] = makeKits(seedRng(`d${h}${i}`), h) as [
-          ReturnType<typeof makeKits>[0],
-          ReturnType<typeof makeKits>[0],
-        ];
-        expect(a.added.some((c) => b.added.includes(c))).toBe(false);
-        total++;
-        if (a.leans !== b.leans) differentLean++;
-      }
+      const all = KIT_CARDS[h].flat();
+      expect(new Set(all).size).toBe(6);
     }
-    expect(differentLean / total).toBeGreaterThan(0.8);
   });
 
-  it('a kit is built around a shared mechanic', () => {
-    // for a Riftwalker with plenty of Snare cards in the pool, a Snare-leaning kit holds at least two of them
-    let leaning = 0;
-    for (let i = 0; i < 40; i++) {
-      for (const k of makeKits(seedRng(`s${i}`), 'vesper')) {
-        if (k.leans === 'Snares') {
-          leaning++;
-          expect(
-            k.added.filter((c) => mechanicsOf(c).includes('snare')).length,
-          ).toBeGreaterThanOrEqual(2);
-        }
-      }
-    }
-    expect(leaning).toBeGreaterThan(0);
-  });
-
-  it('is the same offer for the same seed, and varies between seeds', () => {
-    const sig = (s: string) =>
-      makeKits(seedRng(s), 'kesh')
-        .map((k) => k.added.join('+'))
-        .join('|');
-    expect(sig('same')).toBe(sig('same'));
-    expect(new Set(Array.from({ length: 30 }, (_, i) => sig(`v${i}`))).size).toBeGreaterThan(10);
+  it('is the same offer every time (no randomness)', () => {
+    for (const h of HEROES) expect(makeKits(h)).toEqual(makeKits(h));
   });
 
   it('choosing a kit sets the deck and opens The Threshold; the input is not changed', () => {

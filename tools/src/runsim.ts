@@ -79,7 +79,7 @@ function playRun(h: HeroId, d: Difficulty, i: number): Result {
     const hpFrac = run.hp / run.maxHp;
     switch (run.phase) {
       case 'kit':
-        run = chooseKit(run, i % 2 ? 'b' : 'a');
+        run = chooseKit(run, (['a', 'b', 'c'] as const)[i % 3] as string);
         break;
       case 'prelude': {
         const opts = run.context?.prelude?.options ?? [];

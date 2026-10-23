@@ -570,7 +570,7 @@ export function PreludeView(props: { run: RunState; onChoose: (id: string) => vo
   );
 }
 
-/** The first choice of a run: one of two starting decks. */
+/** The first choice of a run: one of three starting decks, one per lane of your Riftwalker. */
 export function KitView(props: { run: RunState; onChoose: (id: string) => void }) {
   const kits = props.run.context?.kits;
   const [hover, setHover] = useState<CardDef | null>(null);
@@ -579,19 +579,19 @@ export function KitView(props: { run: RunState; onChoose: (id: string) => void }
     <section className="stage-panel" aria-label="Choose your starting deck">
       <h2 className="stage-panel__title">Choose your starting deck</h2>
       <p className="stage-panel__hint">
-        Two ways to begin. Each swaps {kits[0]?.removed.length ?? 3} plain cards of your usual
-        starter for three that lean one way.
+        Three ways to begin, one for each of your lanes. Each swaps {kits[0]?.removed.length ?? 2}{' '}
+        plain cards of your usual starter for two that lean that way.
       </p>
       <div className="kits">
         {kits.map((k) => (
           <article key={k.id} className="kit">
             <h3 className="kit__lean">
-              Leans toward <b>{k.leans}</b>
+              Lane: <b>{k.leans}</b>
             </h3>
-            <p className="kit__sub">Adds these three to your starter:</p>
+            <p className="kit__sub">Adds these two to your starter:</p>
             <div className="kit__cards">
               {k.added.map((id, i) => (
-                <Pickable key={`${id}-${i}`} id={id} width={200} onHover={setHover} />
+                <Pickable key={`${id}-${i}`} id={id} width={170} onHover={setHover} />
               ))}
             </div>
             <p className="kit__sub">

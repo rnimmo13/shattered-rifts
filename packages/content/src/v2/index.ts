@@ -64,10 +64,10 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
       text: 'At the start of your turn, you and your companions heal 1.',
       turnStart: [heal(1, 'allFriends')],
     },
-    hero: { id: 'rivet', name: 'Rivet', maxHp: 46, mana: 3, handSize: 5, startUnits: ['drone'] },
+    hero: { id: 'rivet', name: 'Rivet', maxHp: 60, mana: 3, handSize: 5, startUnits: ['drone'] },
     starter: [...rep('strike', 5), ...rep('defend', 3), 'deploy-drone', 'overclock'],
     blurb:
-      'A scrap-built tinkerer. Starts every fight with a Drone and builds an army of machines.',
+      'A tinkerer of machines. She starts every fight with a Drone and builds an army of them.',
     lanes: ['Swarm: many cheap bodies', 'Assemble: allies act again', 'Core: a few big constructs'],
     howTo: [
       'You start with a Drone. Allies attack for you when you end your turn.',
@@ -108,7 +108,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
       text: 'Every enemy starts the fight Exposed for 3 turns, and you start with 6 Barrier.',
       fightStart: [status('exposed', 3, 'allFoes'), barrier(6)],
     },
-    hero: { id: 'vesper', name: 'Vesper Nightlace', maxHp: 104, mana: 3, handSize: 5 },
+    hero: { id: 'vesper', name: 'Vesper Nightlace', maxHp: 134, mana: 3, handSize: 5 },
     starter: [...rep('strike', 3), ...rep('defend', 4), ...rep('veil-strike', 2), 'set-the-web'],
     blurb: 'A masked trapper. No companions: Snares, Exposed and patience.',
     lanes: [
@@ -132,7 +132,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     },
     hero: {
       id: 'quill',
-      name: 'Quill',
+      name: 'Scarlet',
       maxHp: 78,
       mana: 3,
       handSize: 5,
@@ -157,13 +157,13 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     role: 'Runecaster',
     trait: {
       name: 'Attuned',
-      text: 'Start every fight with 1 Resonance.',
-      fightStart: [status('resonance', 1)],
+      text: 'Start every fight with 2 Resonance.',
+      fightStart: [status('resonance', 2)],
     },
     hero: {
       id: 'ilvane',
       name: 'Ilvane Glyphwright',
-      maxHp: 74,
+      maxHp: 100,
       mana: 3,
       handSize: 5,
       sigil: [channel('spark')],
@@ -256,7 +256,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     hero: {
       id: 'kp',
       name: 'KP, the Homeless Drunk',
-      maxHp: 96,
+      maxHp: 106,
       mana: 3,
       handSize: 5,
       sigil: [addTo('old-twelve-gauge')],

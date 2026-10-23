@@ -1,86 +1,260 @@
+import { useState } from 'react';
 import { COMBAT_DB, RIFTWALKERS, heroesByRealm } from '@sr/content/v2';
 import { KEYWORD_INFO, STATUS_INFO } from '../fight/info';
 import { TIP_RULES } from '../fight/tips';
 
-/** #/learn: every mechanic in plain words, for anyone who wants to read it before (or between) fights. */
+/** The keywords worth a place in the combat tab, in the order a new player meets them. */
+const CORE_KEYWORDS = ['mana', 'barrier', 'companion', 'taunt', 'snare', 'power'];
+/** Card words (what a card's text says it does) */
+const CARD_WORDS = ['exhaust', 'retain', 'ethereal', 'innate', 'discard', 'scry'];
+/** Mechanics that belong to one Riftwalker's way of playing */
+const SIGNATURE_WORDS = ['rune', 'stance', 'stars', 'forge', 'sleeve-knife', 'buckshot-shell'];
+
+const TABS = [
+  { id: 'start', label: 'Start here' },
+  { id: 'run', label: 'A run' },
+  { id: 'combat', label: 'Combat' },
+  { id: 'cards', label: 'Card words' },
+  { id: 'status', label: 'Statuses' },
+  { id: 'heroes', label: 'Riftwalkers' },
+] as const;
+type Tab = (typeof TABS)[number]['id'];
+
+function Words(props: { ids: string[] }) {
+  return (
+    <dl>
+      {props.ids.map((id) => {
+        const k = KEYWORD_INFO[id];
+        return k ? (
+          <div key={id} className="learn__row">
+            <dt>{k.name}</dt>
+            <dd>{k.text}</dd>
+          </div>
+        ) : null;
+      })}
+    </dl>
+  );
+}
+
+function Steps(props: { items: [string, string][] }) {
+  return (
+    <ol className="learn__steps">
+      {props.items.map(([head, text]) => (
+        <li key={head}>
+          <b>{head}</b> <span>{text}</span>
+        </li>
+      ))}
+    </ol>
+  );
+}
+
+/** #/learn: every mechanic in plain words, one short tab at a time. */
 export function LearnScreen() {
+  const [tab, setTab] = useState<Tab>('start');
   const basics = TIP_RULES.find((t) => t.id === 'basics');
   const runes = Object.values(COMBAT_DB.runes ?? {});
+  const statuses = Object.values(STATUS_INFO);
   return (
     <main className="learn">
       <a className="btn btn--small" href="#/">
         <span>Back</span>
       </a>
       <h1 className="learn__title">How to play</h1>
-
-      <section>
-        <h2>The basics</h2>
-        <p>{basics?.text}</p>
-        <p>
-          A run is five stages. Between fights you add cards to your deck, rest, shop, and face
-          events. Win a fight and you keep your HP; lose and you spend Resolve. Clear all five
-          stages and you can bank your deck or press on at a higher Rift Tier.
-        </p>
-      </section>
-
-      <section>
-        <h2>Your Riftwalker</h2>
-        {heroesByRealm().map((g) => (
-          <div key={g.realm} className="learn__realm">
-            <h3>{g.name}</h3>
-            {g.heroes.map((h) => (
-              <article key={h} className="learn__hero">
-                <h4>
-                  {RIFTWALKERS[h].hero.name} <small>{RIFTWALKERS[h].role}</small>
-                </h4>
-                <ul>
-                  {RIFTWALKERS[h].howTo.map((l) => (
-                    <li key={l}>{l}</li>
-                  ))}
-                </ul>
-              </article>
-            ))}
-          </div>
+      <nav className="learn__tabs" aria-label="How to play">
+        {TABS.map((t) => (
+          <button
+            key={t.id}
+            aria-pressed={tab === t.id}
+            className={`learn__tab${tab === t.id ? ' is-on' : ''}`}
+            onClick={() => setTab(t.id)}
+          >
+            {t.label}
+          </button>
         ))}
-      </section>
+      </nav>
 
-      <section>
-        <h2>Statuses</h2>
-        <dl>
-          {Object.values(STATUS_INFO).map((s) => (
-            <div key={s.name} className="learn__row">
-              <dt>
-                {s.glyph} {s.name}
-              </dt>
-              <dd>{s.text}</dd>
+      {tab === 'start' && (
+        <section>
+          <h2>Start here</h2>
+          <p>
+            Shattered Rifts is a card-fighting game. You pick a Riftwalker, build a deck as you go,
+            and fight through five stages. Every fight is a short card battle, and your HP carries
+            from one to the next.
+          </p>
+          <h3>One turn, step by step</h3>
+          <Steps
+            items={[
+              ['Look at the enemies.', 'The icon above each one shows what it will do next turn.'],
+              [
+                'Play cards.',
+                'Drag a card up, click it, or press 1-9. You have 3 Mana a turn and every card shows its cost.',
+              ],
+              [
+                'End your turn.',
+                'Press E. Your companions act, then the enemies do what their icons showed.',
+              ],
+              ['Repeat', 'until every enemy is down. Lose all your HP and the fight is lost.'],
+            ]}
+          />
+          <p className="learn__note">{basics?.text}</p>
+          <h3>Where to go next</h3>
+          <ul>
+            <li>
+              <b>A run</b>: what the map, rewards and Resolve are.
+            </li>
+            <li>
+              <b>Combat</b>: Barrier, companions, Snares and the rest of the rules.
+            </li>
+            <li>
+              <b>Riftwalkers</b>: how each character wants to play.
+            </li>
+          </ul>
+        </section>
+      )}
+
+      {tab === 'run' && (
+        <section>
+          <h2>A run</h2>
+          <p>
+            A run is five stages. Each stage is a map: pick a path from the bottom up, and the
+            Warden waits at the top.
+          </p>
+          <h3>Places on the map</h3>
+          <dl>
+            {[
+              ['Fight', 'A normal fight. Win it and pick a card for your deck.'],
+              ['Elite', 'A tougher fight with a better reward, including a Boon.'],
+              ['Event', 'A short story with a choice. Some cost HP, some give a gift.'],
+              ['Shrine', 'Rest to heal, upgrade a card, or remove one for good.'],
+              ['Merchant', 'Spend shards on cards, potions and Boons. You can also sell potions.'],
+              ['Warden', 'The stage boss. Beat it to heal a little and win back 1 Resolve.'],
+            ].map(([n, t]) => (
+              <div key={n} className="learn__row">
+                <dt>{n}</dt>
+                <dd>{t}</dd>
+              </div>
+            ))}
+          </dl>
+          <h3>Resolve</h3>
+          <p>
+            Losing a fight does not end the run: you retry it at the HP you started with, and spend
+            Resolve (1 for a normal fight, 2 for an Elite or Warden). When Resolve hits 0 the run
+            collapses.
+          </p>
+          <h3>Rift Tiers</h3>
+          <p>
+            Clear all five stages and you can <b>Bank</b> your deck to keep it for PvP, or{' '}
+            <b>Continue</b> to the next Rift Tier: you heal fully and keep your deck, but enemies
+            have more HP and hit harder. The climb ends at Tier 20.
+          </p>
+          <h3>Your deck</h3>
+          <ul>
+            <li>You start with a small deck. Rewards, shops and events add cards.</li>
+            <li>A thin deck draws its best cards more often. Skipping a reward is fine.</li>
+            <li>Upgrading a card at a Shrine gives it a "+" version that is better or cheaper.</li>
+          </ul>
+        </section>
+      )}
+
+      {tab === 'combat' && (
+        <section>
+          <h2>Combat</h2>
+          <h3>The basics</h3>
+          <Words ids={CORE_KEYWORDS} />
+          <h3>Special rules of one Riftwalker</h3>
+          <p>
+            Some mechanics belong to one character. You will only meet these on that character's
+            cards (or against enemies that use them).
+          </p>
+          <Words ids={SIGNATURE_WORDS} />
+          <details className="learn__more">
+            <summary>The runes (Ilvane Glyphwright)</summary>
+            <dl>
+              {runes.map((r) => (
+                <div key={r.id} className="learn__row">
+                  <dt>{r.name}</dt>
+                  <dd>{r.text}</dd>
+                </div>
+              ))}
+            </dl>
+          </details>
+        </section>
+      )}
+
+      {tab === 'cards' && (
+        <section>
+          <h2>Card words</h2>
+          <p>Short words on a card. Hover one in a fight to see it again.</p>
+          <Words ids={CARD_WORDS} />
+        </section>
+      )}
+
+      {tab === 'status' && (
+        <section>
+          <h2>Statuses</h2>
+          <p>Little badges next to a unit's HP bar. The number is how many stacks it has.</p>
+          <h3>Good for whoever has them</h3>
+          <dl>
+            {statuses
+              .filter((s) => s.tone === 'good')
+              .map((s) => (
+                <div key={s.name} className="learn__row">
+                  <dt>
+                    {s.glyph} {s.name}
+                  </dt>
+                  <dd>{s.text}</dd>
+                </div>
+              ))}
+          </dl>
+          <h3>Bad for whoever has them</h3>
+          <dl>
+            {statuses
+              .filter((s) => s.tone === 'bad')
+              .map((s) => (
+                <div key={s.name} className="learn__row">
+                  <dt>
+                    {s.glyph} {s.name}
+                  </dt>
+                  <dd>{s.text}</dd>
+                </div>
+              ))}
+          </dl>
+        </section>
+      )}
+
+      {tab === 'heroes' && (
+        <section>
+          <h2>Riftwalkers</h2>
+          <p>Open a character to see how they play and what their three card lanes are.</p>
+          {heroesByRealm().map((g) => (
+            <div key={g.realm} className="learn__realm">
+              <h3>{g.name}</h3>
+              {g.heroes.map((h) => (
+                <details key={h} className="learn__hero learn__more">
+                  <summary>
+                    {RIFTWALKERS[h].hero.name} <small>{RIFTWALKERS[h].role}</small>
+                  </summary>
+                  <p className="learn__trait">
+                    <b>{RIFTWALKERS[h].trait.name}.</b> {RIFTWALKERS[h].trait.text}
+                  </p>
+                  <h5>How they play</h5>
+                  <ul>
+                    {RIFTWALKERS[h].howTo.map((l) => (
+                      <li key={l}>{l}</li>
+                    ))}
+                  </ul>
+                  <h5>Card lanes</h5>
+                  <ul>
+                    {RIFTWALKERS[h].lanes.map((l) => (
+                      <li key={l}>{l}</li>
+                    ))}
+                  </ul>
+                </details>
+              ))}
             </div>
           ))}
-        </dl>
-      </section>
-
-      <section>
-        <h2>Keywords</h2>
-        <dl>
-          {Object.values(KEYWORD_INFO).map((k) => (
-            <div key={k.name} className="learn__row">
-              <dt>{k.name}</dt>
-              <dd>{k.text}</dd>
-            </div>
-          ))}
-        </dl>
-      </section>
-
-      <section>
-        <h2>Runes</h2>
-        <dl>
-          {runes.map((r) => (
-            <div key={r.id} className="learn__row">
-              <dt>{r.name}</dt>
-              <dd>{r.text}</dd>
-            </div>
-          ))}
-        </dl>
-      </section>
+        </section>
+      )}
     </main>
   );
 }

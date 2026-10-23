@@ -87,18 +87,49 @@ export interface EventOption {
     | 'burn'
     | 'lab'
     | 'transform'
+    | 'd1'
+    | 'd2'
+    | 'd3'
+    | 'd4'
     | 'leave';
   label: string;
+  /** data-driven options (d1..d4): what choosing it does, step by step (see deals.ts) */
+  deal?: DealStep[];
+  /** a line of story shown before what happened, for a data-driven option */
+  say?: string;
 }
 
-/** One of the two starting decks offered at the start of a run. */
+/** One effect of a data-driven event option. They run in order; if one cannot happen the option is not allowed. */
+export type DealStep =
+  | { k: 'hurt'; n: number }
+  | { k: 'hurtPct'; n: number }
+  | { k: 'heal'; pct: number }
+  | { k: 'maxHp'; n: number }
+  /** negative n: pay shards */
+  | { k: 'shards'; n: number }
+  | { k: 'wound'; n: number }
+  | { k: 'potion'; n: number }
+  /** the event's Boon */
+  | { k: 'boon' }
+  | { k: 'upgrade'; n: number }
+  /** 'wound': a Wound, else a basic card; 'basic': a basic card; 'any': any card */
+  | { k: 'remove'; of: 'wound' | 'basic' | 'any'; n: number }
+  /** a random basic card becomes a random card of your class */
+  | { k: 'transform' }
+  /** a random non-basic card is copied */
+  | { k: 'copy' }
+  /** a random card of your class and that rarity joins the deck */
+  | { k: 'gift'; rarity: 'common' | 'uncommon' | 'rare' }
+  | { k: 'chance'; pct: number; win: DealStep[]; lose: DealStep[] };
+
+/** One of the three starting decks (one per lane) offered at the start of a run. */
 export interface KitOption {
-  id: 'a' | 'b';
+  id: 'a' | 'b' | 'c';
   /** what it leans toward, in the player's words ("Snares", "Fate"...) */
   leans: string;
   /** the whole deck you would start with */
   deck: string[];
-  /** the three cards this kit adds, and the plain cards it replaces */
+  /** the two cards this kit adds, and the plain cards it replaces */
   added: string[];
   removed: string[];
 }

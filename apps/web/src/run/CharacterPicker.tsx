@@ -7,16 +7,6 @@ import { HeroIcon } from '../ui/HeroIcon';
 import { DeckStrip } from './Pickers';
 import './run.css';
 
-const REALM_NAME: Record<string, string> = {
-  aurelion: 'Aurelion',
-  nexus: 'Nexus-9',
-  wyldmaw: 'Wyldmaw',
-  umbral: 'Umbral Veil',
-  starfall: 'Starfall',
-  gloomfen: 'Gloomfen',
-  midden: 'The Midden',
-};
-
 export function CharacterPicker(props: { value: HeroId; onChange: (id: HeroId) => void }) {
   const c = RIFTWALKERS[props.value];
   // a line of their own; picking a character draws a new one
@@ -45,7 +35,7 @@ export function CharacterPicker(props: { value: HeroId; onChange: (id: HeroId) =
                     <HeroIcon hero={id} size={58} />
                     <span className="picker__name">{x.hero.name}</span>
                     <span className="picker__role">{x.role}</span>
-                    <span className="picker__realm">{REALM_NAME[x.realm]}</span>
+                    <span className="picker__realm">{x.lanes.map((l) => l.split(':')[0]).join(' · ')}</span>
                   </button>
                 );
               })}
