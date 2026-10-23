@@ -175,9 +175,6 @@ export default function RunScreen() {
               {notice}
             </p>
           )}
-          <button className="btn btn--ghost mapbtn" onClick={() => setShowMap(true)}>
-            <span>View map</span>
-          </button>
           {showMap && (
             <div
               className="mapmodal"
@@ -245,6 +242,11 @@ export default function RunScreen() {
             }}
             title={encounter(plan.encounterId).name}
             exitLabel="Forfeit"
+            topExtra={
+              <button className="btn btn--small btn--ghost" onClick={() => setShowMap(true)}>
+                <span>View map</span>
+              </button>
+            }
             // there is no "leave" in a campaign fight: giving up counts as a loss
             onExit={() => setConfirmForfeit(true)}
             onDone={(r) =>

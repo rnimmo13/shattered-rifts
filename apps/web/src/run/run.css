@@ -301,12 +301,6 @@
   width: 1.7rem;
   height: 1.7rem;
 }
-.mapbtn {
-  position: fixed;
-  left: 0.75rem;
-  top: 3.4rem;
-  z-index: 300;
-}
 .mapmodal {
   position: fixed;
   inset: 0;

@@ -96,6 +96,8 @@ export function FightView(props: {
   onDone: (r: FightResult) => void;
   onExit: () => void;
   exitLabel?: string;
+  /** extra controls beside the Leave button in the top bar (the campaign's View map) */
+  topExtra?: React.ReactNode;
 }) {
   const { db, setup } = props;
   const host = useRef<HTMLDivElement>(null);
@@ -690,6 +692,7 @@ export function FightView(props: {
             <button className="btn btn--small btn--ghost" onClick={props.onExit}>
               <span>{props.exitLabel ?? 'Leave'}</span>
             </button>
+            {props.topExtra}
             <div className="fight__title">
               <b>{props.title}</b>
               <span>Turn {Math.max(1, Math.ceil(view.turn / (view.mode === 'pve' ? 2 : 1)))}</span>
