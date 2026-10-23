@@ -240,7 +240,9 @@ export function resolveEvent(
       healBy(r, r.maxHp * 0.2);
       return 'The water is cold and clean. You feel better.';
     case 'card':
-      if (ev.cardOffer && canAdd(r.deck, ev.cardOffer)) r.deck.push(ev.cardOffer);
+      if (!ev.cardOffer || !canAdd(r.deck, ev.cardOffer))
+        return 'You cannot take that card: your deck already holds all it can.';
+      r.deck.push(ev.cardOffer);
       return `You take ${COMBAT_DB.cards[ev.cardOffer]?.name ?? 'the card'}.`;
     case 'upgrade': {
       const ups = upgradable(r.deck);

@@ -186,3 +186,9 @@ killed weak decks at the start of the run).
 **Still open:** the bot cannot pilot engines well (Astra, Kesh, Vesper, Kp sit at 43-48% vs Maren 68%), so a human will do better
 with them; Mana-trick cards (Overcharge, Saved Breath...) score low because the bot does not value Mana. Re-run after every
 content change.
+
+## v0.3.12-13 changes (2026-10-23)
+
+- The Warden's Gift is now the hero's own rare cards (plus a 30/55/85% chance of an own legendary); Warden signature cards, Neutral rares and the ancestral card are gone from it, and it can be skipped. (`giftOffers`'s boss parameter is unused now and kept for callers.)
+- New crowd fights (Drone Swarm 6 Scrap Drones, Page Troop 6 Gilded Pages of 6 HP and 2 damage, Raptor Horde 4). The first version (five Squires, five Raptors) dropped Normal from 33% to 16%; Pages and four raptors bring it back. Current `pnpm runsim -- --n 40`: Easy 97-98%, Normal 28-33%, Hard 9-11%.
+- Eleven events (the bot only takes heal, upgrade or leave, so event value is not in these numbers).

@@ -5,6 +5,8 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **A proper character icon on every card** (lower left): a dark plate with a ring and the Riftwalker's emblem in their colour, bigger than before so it reads at a glance. Neutral cards have none.
+- Review fixes: a long line of enemies stays on the stage, an event's result is always shown, and a few save-safety and wording fixes.
 - **More events, and a gamble: the Sanctum of Change.** Step into the white fire and your whole deck is *sanctified*: every card with numbers is re-rolled, roughly half 25% stronger and half 25% weaker, and you do not choose which. You can say no. (Idea borrowed from Path of Exile.) Rolled cards show a ▲ or ▼ and their changed numbers.
 - **Eleven kinds of event now**, picked at random and weighted: the rift cache (its card is only sometimes on the table), the smith, the blood altar, the Ancestors' Offering, the Sanctum of Change, the gambler's table (bet 30 shards), a wounded traveller (help for a potion, or rob them for shards and a Wound), the whispering idol (a Boon for two Wounds), the whispering well (60% heal, 40% hurt), the mirror pool (copy a card for 15 HP) and the scrapyard (shed a basic card or sell scrap). Some are generous, some are traps. What an event did is shown when it ends.
 - **Card images cleaned up.** Each card now shows one crisp symbol on a calm background (dark plate, dark outline, bright fill) instead of two layers of colour fighting each other; the action backdrop is faint behind it. Attacks are never drawn as shields.

@@ -19,8 +19,10 @@ const FOE_PITCH = 195;
 export function slotX(side: FighterSide, slot: number, isHero: boolean, count = 4): number {
   if (isHero) return HERO_X;
   // a crowd packs closer so it still fits on the stage (and the plates under it are narrowed to match)
-  const pitch = count <= 4 ? FOE_PITCH : Math.max(112, Math.floor(640 / (count - 1)));
-  return side === 'a' ? CENTRE - 150 - slot * ALLY_PITCH : CENTRE + 260 + slot * pitch;
+  const pitch = count <= 4 ? FOE_PITCH : Math.max(104, Math.floor(640 / (count - 1)));
+  // (a very long line starts a little further left so its last figure and plate stay on the stage)
+  const start = CENTRE + 260 - Math.max(0, count - 6) * 40;
+  return side === 'a' ? CENTRE - 150 - slot * ALLY_PITCH : start + slot * pitch;
 }
 
 export interface FighterSpec {

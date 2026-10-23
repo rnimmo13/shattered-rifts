@@ -273,6 +273,7 @@ export function enterNode(run: RunState, nodeId: string): RunState {
       break;
     }
     case 'event': {
+      delete r.eventResult; // (so the next event's result is shown even if its words are the same)
       r.context.event = rollEvent(r);
       r.phase = 'event';
       break;

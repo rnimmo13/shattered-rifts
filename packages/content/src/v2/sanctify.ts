@@ -75,15 +75,22 @@ export function withRolls(cards: Record<string, CardDef>): Record<string, CardDe
     const hit = made.get(id);
     if (hit) return hit;
     const dir = rollOf(id);
-    const base = dir ? cards[stripRoll(id)] : undefined;
+    const baseId = stripRoll(id);
+    // (only real cards: an id like "hi~constructor" must not reach inherited object members)
+    const base = dir && Object.hasOwn(cards, baseId) ? cards[baseId] : undefined;
     if (!dir || !base || !canRoll(base)) return undefined;
     const v = rolledVariant(base, dir);
+    // if the upgrade has no number to roll, the rolled card upgrades into the plain upgrade
+    if (base.upgrade) {
+      const up = cards[base.upgrade];
+      if (!up || !canRoll(up)) v.upgrade = base.upgrade;
+    }
     made.set(id, v);
     return v;
   };
   return new Proxy(cards, {
     get(t, p, r) {
-      if (typeof p === 'string' && !(p in t)) return derive(p);
+      if (typeof p === 'string' && !Object.hasOwn(t, p) && rollOf(p) !== 0) return derive(p);
       return Reflect.get(t, p, r) as unknown;
     },
     has(t, p) {
