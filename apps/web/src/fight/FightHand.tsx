@@ -29,7 +29,7 @@ export interface FightHandProps {
   onPlay: (card: HandCard, target: string | null) => void;
   onSelect: (card: HandCard | null) => void;
   /** highlight these units while a card is being dragged (null = none) */
-  onDragTargets: (ids: ReadonlySet<string> | null) => void;
+  onDragTargets: (ids: ReadonlySet<string> | null, card?: HandCard | null) => void;
   onRefuse: (card: HandCard) => void;
   onHover: (card: HandCard | null) => void;
 }
@@ -60,7 +60,7 @@ export function FightHand(p: FightHandProps) {
       : hover;
   const slots = fanLayout(n, {
     cardWidth: p.cardWidth,
-    maxSpread: Math.min(window.innerWidth * 0.62, p.cardWidth * 0.66 * 9),
+    maxSpread: Math.min(window.innerWidth * 0.72, p.cardWidth * 0.8 * 9),
     focus: drag ? null : focusIdx !== null && focusIdx >= 0 ? focusIdx : null,
   });
 
@@ -77,7 +77,7 @@ export function FightHand(p: FightHandProps) {
       setDrag(nd);
       if (moved && !d.moved) {
         const c = propsRef.current.cards.find((x) => x.inst.id === d.id);
-        if (c) propsRef.current.onDragTargets(new Set(c.targets));
+        if (c) propsRef.current.onDragTargets(new Set(c.targets), c);
       }
     };
     const onUp = (e: PointerEvent) => {

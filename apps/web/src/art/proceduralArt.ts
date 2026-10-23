@@ -15,9 +15,14 @@ export interface ArtCard {
   rarity: string;
   type: 'unit' | 'spell' | 'trap' | 'relic' | 'rift' | 'token' | 'sigil';
   tribes?: string[];
+  /** paint a picture of what the card does instead of a standing figure */
+  motif?: Motif;
+  /** force a figure (a summon card shows its companion) */
+  archetype?: Archetype;
 }
 type CardDef = ArtCard;
 import { color, rgba } from '../design/tokens';
+import { paintMotif, type Motif } from './motifs';
 import { rng } from '../duel/scene/noise';
 
 export type Archetype =
@@ -1012,7 +1017,7 @@ export function cardArt(def: CardDef): CardArt {
   const hit = cache.get(def.id);
   if (hit) return hit;
   const palette = PALETTE[def.realm];
-  const archetype = archetypeOf(def);
+  const archetype = def.archetype ?? archetypeOf(def);
   const r = rng(hashSeed(def.id));
 
   // --- cut-out ---
@@ -1067,7 +1072,9 @@ export function cardArt(def: CardDef): CardArt {
   g.fillRect(0, 0, WW, WH);
   g.globalCompositeOperation = 'source-over';
 
-  if (archetype === 'rift') {
+  if (def.motif) {
+    paintMotif(g, WW, WH, palette, def.motif, r);
+  } else if (archetype === 'rift') {
     // a landscape with a tear: no single subject
     g.fillStyle = '#05060c';
     g.beginPath();

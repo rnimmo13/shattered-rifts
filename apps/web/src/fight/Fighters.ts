@@ -10,15 +10,15 @@ import type { EffectsProfile } from '../duel/effects';
 export type FighterSide = 'a' | 'b';
 
 /** Stage coordinates (1920x1080 reference). Slot 0 is the one nearest the centre. */
-export const LINE_Y = 800;
+export const LINE_Y = 830;
 export const HERO_X = 230;
 const CENTRE = 960;
-const ALLY_PITCH = 190;
-const FOE_PITCH = 205;
+const ALLY_PITCH = 205;
+const FOE_PITCH = 225;
 
 export function slotX(side: FighterSide, slot: number, isHero: boolean): number {
   if (isHero) return HERO_X;
-  return side === 'a' ? CENTRE - 170 - slot * ALLY_PITCH : CENTRE + 170 + slot * FOE_PITCH;
+  return side === 'a' ? CENTRE - 150 - slot * ALLY_PITCH : CENTRE + 150 + slot * FOE_PITCH;
 }
 
 export interface FighterSpec {

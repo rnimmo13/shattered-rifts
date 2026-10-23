@@ -4,6 +4,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
+  modifiedDamage,
   applyAction,
   clone,
   createCombat,
@@ -29,6 +30,7 @@ import { heroFigure, unitFigure, unitHeight } from './art';
 import { FightHand, type HandCard } from './FightHand';
 import { FightCard } from './FightCard';
 import { UnitPlates, type Placed } from './Plates';
+import { keywordsOf } from './info';
 import { BoonChip } from './BoonChip';
 import type { FighterSpec } from './Fighters';
 import '../duel/duel.css';
@@ -98,6 +100,7 @@ export function FightView(props: {
   const [hoverCard, setHoverCard] = useState<HandCard | null>(null);
   const [hoverUnit, setHoverUnit] = useState<string | null>(null);
   const [dragTargets, setDragTargets] = useState<ReadonlySet<string> | null>(null);
+  const [dragCard, setDragCard] = useState<HandCard | null>(null);
   const [floats, setFloats] = useState<Float[]>([]);
   const [banner, setBanner] = useState<string | null>(null);
   const [flourish, setFlourish] = useState<CardDef | null>(null);
@@ -556,6 +559,27 @@ export function FightView(props: {
     });
 
   const heroUnit = view?.sides.a.units.find((u) => u.kind === 'hero');
+
+  // what the card being aimed would do to the unit under the pointer
+  const aimCard = dragCard ?? selectedCard;
+  let preview: { id: string; text: string } | null = null;
+  if (aimCard && hoverUnit && aimSet.has(hoverUnit) && view && heroUnit) {
+    const target = [...view.sides.a.units, ...view.sides.b.units].find((u) => u.id === hoverUnit);
+    if (target) {
+      let total = 0;
+      for (const o of aimCard.def.effects)
+        if (o.op === 'damage' && o.to === 'target')
+          total += modifiedDamage(o.amount, heroUnit, target) * (o.hits ?? 1);
+      if (total > 0)
+        preview = {
+          id: hoverUnit,
+          text: total >= target.hp + target.barrier ? `−${total} LETHAL` : `−${total}`,
+        };
+    }
+  }
+  const keywords = hoverCard
+    ? keywordsOf(hoverCard.def, (unit) => db.units[unit]?.taunt === true)
+    : [];
   const finished = result !== null;
 
   return (
@@ -624,6 +648,7 @@ export function FightView(props: {
           </header>
 
           <UnitPlates
+            preview={preview}
             items={placed}
             heroId={heroUnit?.id ?? null}
             targetable={aimSet}
@@ -664,7 +689,10 @@ export function FightView(props: {
               setHoverCard(null);
             }}
             onSelect={(c) => setSelected(c ? c.inst.id : null)}
-            onDragTargets={setDragTargets}
+            onDragTargets={(ids, c) => {
+              setDragTargets(ids);
+              setDragCard(c ?? null);
+            }}
             onRefuse={(c) => {
               play('refuse');
               setBanner(
@@ -677,7 +705,15 @@ export function FightView(props: {
             }}
             onHover={setHoverCard}
           />
-          {hoverCard && !selected && <div className="fight__hint">{hoverCard.def.name}</div>}
+          {hoverCard && !selected && !dragCard && keywords.length > 0 && (
+            <aside className="fight__tips" aria-hidden>
+              {keywords.map((k) => (
+                <p key={k.name}>
+                  <b>{k.name}</b> {k.text}
+                </p>
+              ))}
+            </aside>
+          )}
 
           {selectedCard && (
             <svg className="fight__arrow" width="100%" height="100%" aria-hidden>
@@ -719,14 +755,14 @@ export function FightView(props: {
             <small>/{me?.maxMana ?? 0}</small>
           </div>
           <div className="fight__piles">
-            <button className="pile" onClick={() => openPile('draw')}>
+            <button className="pile pile--draw" onClick={() => openPile('draw')}>
               Draw <b>{me?.drawCount ?? 0}</b>
             </button>
-            <button className="pile" onClick={() => openPile('discard')}>
+            <button className="pile pile--discard" onClick={() => openPile('discard')}>
               Discard <b>{me?.discardCount ?? 0}</b>
             </button>
             {(me?.exhaustedCount ?? 0) > 0 && (
-              <button className="pile" onClick={() => openPile('exhausted')}>
+              <button className="pile pile--exhaust" onClick={() => openPile('exhausted')}>
                 Exhaust <b>{me?.exhaustedCount ?? 0}</b>
               </button>
             )}

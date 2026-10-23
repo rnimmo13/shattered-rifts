@@ -2,6 +2,7 @@
 // Riftwalker, companion and enemy stands as, and a card-art adapter for the v2 card format.
 
 import type { CardDef, UnitDef } from '@sr/combat';
+import type { Motif } from '../art/motifs';
 import {
   avatarCutout,
   cardArtUrl,
@@ -81,10 +82,10 @@ export function unitFigure(defId: string): HTMLCanvasElement {
 
 /** How tall a unit stands on the stage (stage px): companions are small, bosses are big. */
 export function unitHeight(d: UnitDef | undefined, kind: 'ally' | 'enemy' | 'hero'): number {
-  if (kind === 'hero') return 380;
-  if (kind === 'ally') return d && d.maxHp >= 18 ? 270 : 220;
+  if (kind === 'hero') return 520;
+  if (kind === 'ally') return d && d.maxHp >= 18 ? 340 : 280;
   const hp = d?.maxHp ?? 30;
-  return hp >= 120 ? 470 : hp >= 55 ? 370 : hp >= 20 ? 310 : 240;
+  return hp >= 120 ? 600 : hp >= 55 ? 470 : hp >= 20 ? 390 : 300;
 }
 
 const KIND_TYPE: Record<CardDef['kind'], ArtCard['type']> = {
@@ -102,8 +103,42 @@ const REALM_TRIBES: Record<string, string[]> = {
   umbral: ['Shade'],
 };
 
-/** The art window for a v2 card (a data URL), via the old card-art painters. */
+/** What a card does, as a picture: chosen from its effects, never from its name. */
+function motifOf(c: CardDef): Motif {
+  if (c.kind === 'snare') return 'snare';
+  if (c.kind === 'power') return 'power';
+  const ops = c.effects;
+  const dmg = ops.find((o) => o.op === 'damage');
+  if (dmg && dmg.op === 'damage') {
+    if (dmg.to === 'allFoes') return 'burst';
+    return (dmg.hits ?? 1) > 1 || dmg.to === 'randomFoe' ? 'flurry' : 'slash';
+  }
+  if (ops.some((o) => o.op === 'status' && o.status === 'seared')) return 'flame';
+  if (
+    ops.some(
+      (o) =>
+        o.op === 'status' &&
+        ['exposed', 'faltering', 'stunned'].includes(o.status) &&
+        o.to !== 'self',
+    )
+  )
+    return 'curse';
+  if (
+    ops.some((o) => o.op === 'barrier') ||
+    ops.some((o) => o.op === 'status' && (o.status === 'shielded' || o.status === 'thorns'))
+  )
+    return 'shield';
+  if (ops.some((o) => o.op === 'heal')) return 'heal';
+  if (ops.some((o) => o.op === 'draw')) return 'draw';
+  if (ops.some((o) => o.op === 'mana')) return 'crystal';
+  if (ops.some((o) => o.op === 'status' && o.status === 'might')) return 'power';
+  return 'rune';
+}
+
+/** The art window for a v2 card (a data URL), via the card-art painters. */
 export function cardArtV2(c: CardDef): string {
+  const unit = c.effects.find((o) => o.op === 'summon');
+  const summoned = unit && unit.op === 'summon' ? UNIT[base(unit.unit)]?.[0] : undefined;
   const fake = {
     id: c.id.replace(/\+$/, ''),
     name: c.name,
@@ -111,6 +146,7 @@ export function cardArtV2(c: CardDef): string {
     rarity: c.rarity === 'basic' || c.rarity === undefined ? 'common' : c.rarity,
     type: KIND_TYPE[c.kind],
     tribes: c.kind === 'summon' ? (REALM_TRIBES[c.realm ?? ''] ?? []) : [],
+    ...(summoned ? { archetype: summoned } : { motif: motifOf(c) }),
   } satisfies ArtCard;
   return cardArtUrl(fake);
 }

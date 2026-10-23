@@ -19,9 +19,11 @@ export interface PlatesProps {
   targetable: ReadonlySet<string>;
   hover: string | null;
   names: boolean;
+  /** the damage the card being aimed would do to this unit */
+  preview?: { id: string; text: string } | null;
 }
 
-export function UnitPlates({ items, targetable, hover }: PlatesProps) {
+export function UnitPlates({ items, targetable, hover, preview }: PlatesProps) {
   return (
     <div className="plates" aria-hidden={false}>
       {items.map(({ unit: u, x, y, h, w }) => {
@@ -54,6 +56,7 @@ export function UnitPlates({ items, targetable, hover }: PlatesProps) {
               className={`plate${targetable.has(u.id) ? ' is-target' : ''}${hover === u.id ? ' is-hover' : ''}${u.kind === 'hero' ? ' plate--hero' : ''}`}
               style={style}
             >
+              {preview?.id === u.id && <div className="plate__preview">{preview.text}</div>}
               <div className="plate__name">{u.name}</div>
               <div className={`bar${u.barrier > 0 ? ' has-barrier' : ''}`}>
                 <div className="bar__fill" style={{ width: `${pct}%` }} />
