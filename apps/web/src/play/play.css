@@ -1204,3 +1204,207 @@
   text-transform: uppercase;
   color: var(--c-cyan-glow);
 }
+
+/* ---- the practice deck builder ---- */
+.db {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 19rem;
+  gap: 1rem;
+  text-align: left;
+}
+@media (max-width: 62rem) {
+  .db {
+    grid-template-columns: 1fr;
+  }
+}
+.db__filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem 0.9rem;
+  align-items: end;
+}
+.db__filters label {
+  display: grid;
+  gap: 0.15rem;
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--c-text-dim);
+}
+.db__filters select,
+.db__filters input[type='search'] {
+  padding: 0.35rem 0.5rem;
+  border-radius: 8px;
+  border: 1px solid var(--c-gold-dark);
+  background: rgb(8 10 20 / 0.85);
+  color: var(--c-ivory);
+  font: inherit;
+  text-transform: none;
+  letter-spacing: 0;
+}
+.db__search {
+  flex: 1;
+  min-width: 11rem;
+}
+.db__check {
+  display: flex !important;
+  align-items: center;
+  gap: 0.4rem !important;
+  text-transform: none !important;
+  letter-spacing: 0 !important;
+  font-size: 0.9rem !important;
+  color: var(--c-ivory) !important;
+}
+.db__count {
+  margin: 0.5rem 0 0.3rem;
+  font-size: 0.85rem;
+  color: var(--c-text-dim);
+}
+.db__rows,
+.db__deckrows {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.db__rows {
+  max-height: 26rem;
+  overflow: auto;
+  display: grid;
+  gap: 0.25rem;
+  padding-right: 0.3rem;
+}
+.db__row {
+  display: grid;
+  grid-template-columns: 2.6rem minmax(7rem, 11rem) 1fr auto;
+  gap: 0.6rem;
+  align-items: center;
+  padding: 0.35rem 0.55rem;
+  border-radius: 8px;
+  background: rgb(14 20 46 / 0.7);
+  border: 1px solid transparent;
+}
+.db__row.is-in {
+  border-color: var(--c-gold-dark);
+  background: rgb(31 48 104 / 0.55);
+}
+.db__cost {
+  display: grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  font-family: var(--font-numeric);
+  background: radial-gradient(circle at 35% 28%, #d9f8ff, var(--c-cyan) 40%, #07506f 92%);
+  color: #04202c;
+  position: relative;
+}
+.db__cost small {
+  position: absolute;
+  bottom: -0.55rem;
+  font-size: 0.6rem;
+  color: #fff0b0;
+  text-shadow: 0 0 4px #000;
+}
+.db__name {
+  display: grid;
+  font-weight: 700;
+}
+.db__name small {
+  font-weight: 400;
+  font-size: 0.7rem;
+  color: var(--c-text-dim);
+}
+.db__text {
+  font-size: 0.85rem;
+  color: var(--c-ivory);
+}
+.db__ctl {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+.db__ctl button {
+  width: 1.7rem;
+  height: 1.7rem;
+  border-radius: 50%;
+  border: 1px solid var(--c-gold-dark);
+  background: rgb(8 10 20 / 0.9);
+  color: var(--c-gold-light);
+  font-size: 1rem;
+  line-height: 1;
+  cursor: pointer;
+}
+.db__ctl button:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+.db__ctl b {
+  min-width: 1.4rem;
+  text-align: center;
+}
+.db__deck {
+  padding: 0.8rem 0.9rem;
+  border-radius: 12px;
+  background: rgb(8 10 20 / 0.6);
+  border: 1px solid rgb(212 168 75 / 0.3);
+  align-self: start;
+  position: sticky;
+  top: 0.8rem;
+}
+.db__deck h3 {
+  margin: 0 0 0.5rem;
+  font-family: var(--font-display);
+  color: var(--c-gold-light);
+}
+.db__deck h3 small {
+  color: var(--c-text-dim);
+}
+.db__deckbtns {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-bottom: 0.6rem;
+}
+.db__deckrows {
+  max-height: 22rem;
+  overflow: auto;
+  display: grid;
+  gap: 0.2rem;
+}
+.db__deckrows li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.88rem;
+}
+.db__empty {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--c-text-dim);
+}
+.db__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 0.3rem 0 0.7rem;
+}
+.db__chip {
+  padding: 0.25rem 0.7rem;
+  border-radius: 999px;
+  border: 1px solid var(--c-gold-dark);
+  background: rgb(8 10 20 / 0.8);
+  color: var(--c-ivory);
+  font: inherit;
+  font-size: 0.82rem;
+  cursor: pointer;
+}
+.db__chip.is-on {
+  background: rgb(31 48 104 / 0.95);
+  border-color: var(--c-gold-light);
+  color: var(--c-gold-light);
+}
+.db__chip--potion.is-on {
+  border-color: #6df0a8;
+  color: #bdf8d4;
+}

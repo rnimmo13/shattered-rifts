@@ -10,6 +10,8 @@ import {
   type HeroId,
 } from '@sr/content/v2';
 import type { CombatSetup } from '@sr/combat';
+import { DeckBuilder } from './DeckBuilder';
+import { countsOf, flatten } from './deckCatalog';
 import { FightView } from './FightView';
 import '../play/play.css';
 import '../duel/duel.css';
@@ -36,6 +38,12 @@ const newSeed = (): string =>
 
 export default function FightScreen() {
   const [hero, setHero] = useState<HeroId>('maren');
+  // the practice deck: any cards from the whole game, any number of copies
+  const [counts, setCounts] = useState<Record<string, number>>(() =>
+    countsOf(RIFTWALKERS.maren.starter),
+  );
+  const [boons, setBoons] = useState<string[]>([]);
+  const [potions, setPotions] = useState<string[]>(['fire-flask', 'guard-draught']);
   const [easy, setEasy] = useState(true);
   const [enc, setEnc] = useState<string>(ENCOUNTERS[0]?.id ?? '');
   const [setup, setSetup] = useState<{ cfg: CombatSetup; title: string } | null>(null);
@@ -73,7 +81,10 @@ export default function FightScreen() {
                 <button
                   key={h}
                   className={`setup__char${hero === h ? ' is-on' : ''}`}
-                  onClick={() => setHero(h)}
+                  onClick={() => {
+                    setHero(h);
+                    setCounts(countsOf(RIFTWALKERS[h].starter));
+                  }}
                 >
                   <span className="setup__charName">{RIFTWALKERS[h].hero.name}</span>
                   <span>
@@ -85,6 +96,57 @@ export default function FightScreen() {
             </div>
           </div>
         ))}
+      </section>
+      <section>
+        <h2 className="setup__h">Deck</h2>
+        <p className="setup__lead">
+          Build any deck from every card in the game: another Riftwalker’s cards, Neutral, Warden
+          gifts, tokens, upgraded versions, as many copies as you like.
+        </p>
+        <DeckBuilder
+          db={COMBAT_DB}
+          counts={counts}
+          onChange={setCounts}
+          onReset={() => setCounts(countsOf(RIFTWALKERS[hero].starter))}
+          heroName={RIFTWALKERS[hero].hero.name}
+        />
+      </section>
+      <section>
+        <h2 className="setup__h">Boons and Potions</h2>
+        <div className="db__chips" aria-label="Boons">
+          {Object.values(COMBAT_DB.boons).map((b) => (
+            <button
+              key={b.id}
+              className={`db__chip${boons.includes(b.id) ? ' is-on' : ''}`}
+              title={b.text}
+              onClick={() =>
+                setBoons(boons.includes(b.id) ? boons.filter((x) => x !== b.id) : [...boons, b.id])
+              }
+            >
+              {b.name}
+            </button>
+          ))}
+        </div>
+        <div className="db__chips" aria-label="Potions (up to 3)">
+          {Object.values(COMBAT_DB.potions).map((p) => (
+            <button
+              key={p.id}
+              className={`db__chip db__chip--potion${potions.includes(p.id) ? ' is-on' : ''}`}
+              title={p.text}
+              onClick={() =>
+                setPotions(
+                  potions.includes(p.id)
+                    ? potions.filter((x) => x !== p.id)
+                    : potions.length < 3
+                      ? [...potions, p.id]
+                      : potions,
+                )
+              }
+            >
+              {p.name}
+            </button>
+          ))}
+        </div>
       </section>
       <section>
         <h2 className="setup__h">Encounter</h2>
@@ -109,6 +171,7 @@ export default function FightScreen() {
       </label>
       <button
         className="btn btn--primary setup__go"
+        disabled={Object.keys(counts).length === 0}
         onClick={() => {
           const e = encounter(enc);
           setSetup({
@@ -117,8 +180,9 @@ export default function FightScreen() {
               seed: newSeed(),
               a: {
                 hero,
-                deck: RIFTWALKERS[hero].starter,
-                potions: ['fire-flask', 'guard-draught'],
+                deck: flatten(counts),
+                potions,
+                ...(boons.length ? { boons } : {}),
               },
               b: { enemies: e.units, hpPct: easy ? 60 : 100, dmgPct: easy ? 55 : 100 },
             },
