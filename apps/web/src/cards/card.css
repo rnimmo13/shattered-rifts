@@ -333,7 +333,7 @@
     0 0 20px #ffb23a;
 }
 .card--mythic .card__gem {
-  background: conic-gradient(from 0deg, #ff4fd8, #36e0ff, #fff1c4, #8f5bff, #ff4fd8);
+  background: linear-gradient(135deg, #fff1c4, #ffb23a 50%, #a05a00);
   box-shadow:
     0 0 0 3px rgb(0 0 0 / 0.55),
     0 0 22px #ff4fd8;
@@ -391,23 +391,21 @@
   }
 }
 
-/* legendary / mythic: holographic foil that follows the pointer, plus an amber edge glow */
+/* legendary: a warm ember-gold sheen that follows the pointer (one hue family, no rainbow), plus an amber edge glow */
 .card--legendary .card__fx--holo,
 .card--mythic .card__fx--holo {
-  opacity: 0.5;
-  mix-blend-mode: color-dodge;
+  opacity: 0.4;
+  mix-blend-mode: soft-light;
   background:
     repeating-linear-gradient(
       115deg,
-      rgb(255 80 200 / 0.55) 0 6%,
-      rgb(255 220 80 / 0.5) 9%,
-      rgb(80 255 200 / 0.55) 13%,
-      rgb(80 140 255 / 0.55) 17%,
-      rgb(255 80 200 / 0.55) 21%
+      rgb(255 120 40 / 0.5) 0 8%,
+      rgb(255 200 90 / 0.45) 14%,
+      rgb(255 120 40 / 0.5) 22%
     ),
     radial-gradient(
       circle at calc(var(--mx) * 100%) calc(var(--my) * 100%),
-      rgb(255 255 255 / 0.9),
+      rgb(255 236 190 / 0.85),
       transparent 45%
     );
   background-size:

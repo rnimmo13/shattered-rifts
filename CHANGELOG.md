@@ -5,6 +5,7 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **Legendary cards lose the rainbow.** The holographic rainbow foil is replaced by a warm ember-gold sheen and an amber glow.
 - **The green UPGRADED ribbon is gone** from cards; an upgraded card is still marked by its "+" and its green name and banner glow.
 - **Seared is now Bleed** (the status that hurts at the start of its turn and then shrinks), everywhere it is named: cards, tooltips, character screens, the Learn page.
 - **Hold a merchant card for later.** Pay a 20% deposit to put one card on hold; at your next merchant it is waiting, first in the row, for 70% of its price (90% in all). One card at a time; it stays on hold until you buy it.
