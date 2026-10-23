@@ -46,6 +46,32 @@
   --trim-lo: #3f2f78;
   --accent: #b99aff;
 }
+.card--starfall {
+  --ink-a: #1a2060;
+  --ink-b: #070920;
+  --trim: #d9b45c;
+  --trim-hi: #fff0b0;
+  --trim-lo: #6a5420;
+  --accent: #ffe9a0;
+}
+.card__stars {
+  position: absolute;
+  left: 8px;
+  top: 106px;
+  min-width: 68px;
+  height: 40px;
+  padding: 0 10px;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #3a3170, #14103a);
+  border: 3px solid #ffe9a0;
+  color: #fff0b0;
+  font-family: var(--font-numeric);
+  font-size: 26px;
+  line-height: 1;
+  box-shadow: 0 0 12px rgb(255 233 160 / 0.5);
+}
 .card--neutral {
   --ink-a: #262a4a;
   --ink-b: #0c0e1c;

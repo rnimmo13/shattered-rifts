@@ -1,5 +1,5 @@
-// Card rewards (03_CAMPAIGN §2.3, §2.4) for Combat v2. Offers come from the Riftwalker's realm plus Neutral; about 1 in 10
-// is "Rift-crossed" (another realm). A card that would exceed the copy limit is never offered.
+// Card rewards (03_CAMPAIGN §2.3, §2.4) for Combat v2. Offers come from the Riftwalker's own pool plus Neutral; about 1 in 10
+// is "Rift-crossed" (another Riftwalker's pool). A card that would exceed the copy limit is never offered.
 
 import { nextInt, type RngState } from '@sr/combat';
 import {
@@ -21,19 +21,19 @@ const rarityOf = (id: string): string => COMBAT_DB.cards[id]?.rarity ?? 'common'
 /** A card can be added unless the deck already holds the copy limit of it (basic cards are exempt). */
 export function canAdd(deck: readonly string[], cardId: string): boolean {
   const c = COMBAT_DB.cards[cardId];
-  if (!c || c.unplayable) return false;
+  // a card that cannot be played is only worth having if discarding it pays (Reflex, Tactician)
+  if (!c || (c.unplayable && !c.onDiscard)) return false;
   if (c.rarity === 'basic') return true;
   // a card and its "+" version share one limit
   const base = (id: string): string => id.replace(/\+$/, '');
   return deck.filter((x) => base(x) === base(cardId)).length < V2_DECK_RULES.maxCopies;
 }
 
-/** Cards of the other three playable realms (the Rift-crossed pool). */
+/** Cards of every other Riftwalker's pool (the Rift-crossed pool). */
 export function crossedPool(hero: HeroId): string[] {
-  const mine = RIFTWALKERS[hero].realm;
   return (Object.keys(RIFTWALKERS) as HeroId[])
-    .filter((h) => RIFTWALKERS[h].realm !== mine)
-    .flatMap((h) => rewardPool(h).filter((id) => COMBAT_DB.cards[id]?.realm !== 'neutral'));
+    .filter((h) => h !== hero)
+    .flatMap((h) => rewardPool(h).filter((id) => COMBAT_DB.cards[id]?.hero === h));
 }
 
 const WEIGHTS: Record<OfferQuality, Record<string, number>> = {

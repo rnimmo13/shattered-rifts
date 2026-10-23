@@ -825,6 +825,11 @@
   --crest-b: #2b1654;
   --crest-glow: rgb(143 91 255 / 0.65);
 }
+.crest--starfall {
+  --crest-a: #ffe9a0;
+  --crest-b: #1a2166;
+  --crest-glow: rgb(255 233 160 / 0.6);
+}
 .crest--all {
   --crest-a: #ff4fd8;
   --crest-b: #1f3068;

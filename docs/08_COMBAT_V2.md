@@ -93,6 +93,13 @@ draw 5, +1 draw for the second player in PvP (§8).
 | **Kesh the Unfed** (Wyldmaw) | **Buffed, not summoned.** Cards give his Pack (1–2 pups, from one card) Might and feed them. | Hit hard, hurt yourself, snowball. |
 | **Vesper Nightlace** (Umbral) | **None** (shadows are Snares, not bodies). | Snares, Exposed/Faltering, bluffing. |
 
+| **Quill** (Umbral) | **None.** Shivs are cards, not bodies. | Shivs, Seared, discard (docs/09). |
+| **Ilvane** (Nexus-9) | **None.** Runes sit in a row. | Channel, evoke, Resonance. |
+| **Sehra** (Aurelion) | **None.** | Stances and Mantra. |
+| **Astra** (Starfall) | **None.** | Stars and the Sovereign Blade. |
+
+See `09_ROSTER.md` for the lanes of all eight and the rules every pool follows.
+
 Enemies mirror this: Aurelion enemies stack Shielded and Barrier; Nexus enemies bring Drones; Wyldmaw enemies come in
 packs; Umbral enemies set Snares of their own and debuff.
 

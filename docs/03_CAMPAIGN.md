@@ -14,6 +14,8 @@ Players should feel three pulls: *"this deck is becoming mine"*, *"one more loop
 
 ## 1. Characters
 
+> **Combat v2 update:** there are now eight Riftwalkers with three-lane card pools; see `09_ROSTER.md` (the table below is the original four).
+
 Each realm has one Riftwalker. A character sets your **starter Grimoire**, your **card pool** (their realm + Neutral),
 and a **Sigil**: a starting passive that gives every run an identity from turn 1. *(Names are placeholders.)*
 

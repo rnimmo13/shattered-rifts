@@ -756,3 +756,21 @@
     animation: none;
   }
 }
+
+.picker__lanes {
+  margin: 0.4rem 0 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+.picker__lanes li {
+  padding: 0.15rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  letter-spacing: 0.03em;
+  color: var(--c-gold-light);
+  border: 1px solid var(--c-gold-dark);
+  background: rgb(10 12 28 / 0.6);
+}

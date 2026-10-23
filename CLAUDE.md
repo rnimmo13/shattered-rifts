@@ -10,6 +10,7 @@ Ko-fi-funded) → Steam full game ($7.99–$9.99) with PvP later. Owner: Robert.
 | `docs/01_GAME_DESIGN.md` | LEGACY (old duel rules: Essence, slots, the Chain). Pillars in §2 still apply; the rules do not |
 | `docs/02_CARDS.md` | LEGACY card list and DSL for the old engine; realms and flavour still apply. Real data: `packages/content/src/v2` |
 | `docs/03_CAMPAIGN.md` | Characters, run structure (5 stages), Resolve, Bank/Continue, Rift Tiers, Wardens, Boons, Vault & seasons |
+| `docs/09_ROSTER.md` | **The 8 Riftwalkers**: pool rules (3 lanes, shared toolkit, owned signatures), lanes per character, engine pieces. `10_CARD_LIST.md` is the generated card list (`pnpm cardlist`) |
 | `docs/DECISIONS.md` | Every design decision and rules clarification, with dates and reasons |
 | `docs/BALANCE.md` | Sim results (first-player advantage, starter matrix, tier model, enemy difficulty) and open balance questions |
 | `docs/04_VISUALS_AND_ANIMATION.md` | Card frame spec, tokens, board layout, **animation catalog** with timings |
@@ -60,6 +61,7 @@ Toolchain: Node 22, pnpm 11 (corepack), TypeScript 6.0 (see DECISIONS #39). Work
 
 ## Current status
 **Combat v2 (Slay-the-Spire-style) replaced the old duel on 2026-10-23** (DECISIONS #86-90, design in `docs/08_COMBAT_V2.md`).
+**Roster of 8 (2026-10-23, DECISIONS #95-98):** Maren, Rivet, Kesh, Vesper + Quill (Shivs/Seared/discard), Ilvane (runes), Sehra (stances), Astra (Stars/forge); pools belong to a character (`CardDef.hero`), ~35-40 cards in three lanes each; engine gained choices (`pending`/`pick`), scaling amounts, Powers as triggers, runes, stances, Stars, forge. Next: balance, art for the new four, enemy counterparts, stretch characters Cinder and Mire.
 Done: **C1** engine (`packages/combat`: pure, seeded, events, intents, allies, Snares, tiers, PvP mode, greedy bot) ·
 **C2** content (`packages/content/src/v2`: 4 Riftwalkers, ~80 cards with "+" upgrades, 12 companions, 26 encounters incl. Wardens and
 Vorthax) · **C3** the side-to-side fight screen (`apps/web/src/fight`, route `#/fight`) · **C4** campaign Run v2 (`packages/campaign`,

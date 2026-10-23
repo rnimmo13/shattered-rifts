@@ -4,7 +4,6 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
-  modifiedDamage,
   applyAction,
   clone,
   createCombat,
@@ -17,6 +16,7 @@ import {
   type CombatSetup,
   type CombatState,
   type CombatView,
+  type Op,
   type Winner,
 } from '@sr/combat';
 import { COMBAT_DB } from '@sr/content/v2';
@@ -35,6 +35,8 @@ import { keywordsOf } from './info';
 import { BoonChip } from './BoonChip';
 import { preloadArt } from '../art/assets';
 import { PotionButton } from './PotionChip';
+import { PickModal } from './PickModal';
+import { SidePanel } from './SidePanel';
 import type { FighterSpec } from './Fighters';
 import '../duel/duel.css';
 import '../play/play.css';
@@ -118,6 +120,8 @@ export function FightView(props: {
   const [, bump] = useState(0);
   const [pointer, setPointer] = useState({ x: 0, y: 0 });
   const [legal, setLegal] = useState<Action[]>([]);
+  // the engine's real state, for previews (the refs behind it must not be read while rendering)
+  const [live, setLive] = useState<CombatState | null>(null);
 
   // --- floating numbers ------------------------------------------------------------------------------
   const float = useCallback((unitId: string, text: string, tone: Float['tone']) => {
@@ -398,6 +402,7 @@ export function FightView(props: {
         setBaseSpeed(speedRef.current);
         const start = createCombat(db, setup);
         game.current = { state: start.state, display: startingDisplay(start.state) };
+        setLive(start.state);
         s.fighters.sync(specsFrom(db, game.current.display), { instant: true });
         show(game.current.display);
         setReady(true);
@@ -441,6 +446,12 @@ export function FightView(props: {
       try {
         const r = applyAction(db, g.state, a);
         g.state = r.state;
+        setLive(r.state);
+        // the answer to a choice closes it on screen straight away (the display state lags the engine)
+        if (a.type === 'pick') {
+          g.display.pending = null;
+          show(g.display);
+        }
         setLegal(legalActions(db, r.state));
         setSelected(null);
         setAimPotion(null);
@@ -450,7 +461,7 @@ export function FightView(props: {
         play('refuse');
       }
     },
-    [db, enqueue],
+    [db, enqueue, show],
   );
 
   // keep the legal list fresh whenever the real state changes
@@ -459,7 +470,7 @@ export function FightView(props: {
   }, [db, ready]);
 
   const endTurn = useCallback(() => {
-    if (locked) return;
+    if (locked || game.current?.state.pending) return;
     act({ type: 'endTurn' });
   }, [act, locked]);
 
@@ -473,7 +484,15 @@ export function FightView(props: {
       if (!def) return [];
       const mine = legal.filter((a) => a.type === 'play' && a.card === inst.id);
       const targets = mine.flatMap((a) => (a.type === 'play' && a.target ? [a.target] : []));
-      return [{ inst, def, playable: mine.length > 0, targets }];
+      return [
+        {
+          inst,
+          def,
+          playable: mine.length > 0,
+          targets,
+          aim: def.target === 'ally' || def.target === 'friend',
+        },
+      ];
     });
   }, [view, legal, db]);
 
@@ -534,7 +553,7 @@ export function FightView(props: {
         const c = handCards[Number(e.key) - 1];
         if (!c) return;
         if (!c.playable) return void play('refuse');
-        if (c.targets.length <= 1)
+        if (c.targets.length <= 1 && !c.aim)
           act({ type: 'play', card: c.inst.id, ...(c.targets[0] ? { target: c.targets[0] } : {}) });
         else setSelected(c.inst.id);
       }
@@ -597,23 +616,18 @@ export function FightView(props: {
     });
 
   const heroUnit = view?.sides.a.units.find((u) => u.kind === 'hero');
+  const usesStars = useMemo(() => deckUsesStars(db, setup), [db, setup]);
+  const usesRunes = useMemo(() => deckUsesRunes(db, setup), [db, setup]);
+  const showStars = usesStars || (me?.stars ?? 0) > 0;
+  const showRunes = usesRunes || (me?.runes.length ?? 0) > 0;
 
   // what the card being aimed would do to the unit under the pointer
   const aimCard = dragCard ?? selectedCard;
   let preview: { id: string; text: string } | null = null;
-  if (aimCard && hoverUnit && aimSet.has(hoverUnit) && view && heroUnit) {
-    const target = [...view.sides.a.units, ...view.sides.b.units].find((u) => u.id === hoverUnit);
-    if (target) {
-      let total = 0;
-      for (const o of aimCard.def.effects)
-        if (o.op === 'damage' && o.to === 'target')
-          total += modifiedDamage(o.amount, heroUnit, target) * (o.hits ?? 1);
-      if (total > 0)
-        preview = {
-          id: hoverUnit,
-          text: total >= target.hp + target.barrier ? `−${total} LETHAL` : `−${total}`,
-        };
-    }
+  if (aimCard && hoverUnit && aimSet.has(hoverUnit) && view && heroUnit && live) {
+    const dealt = previewDamage(db, live, aimCard.inst.id, hoverUnit, heroUnit.id);
+    if (dealt && dealt.total > 0)
+      preview = { id: hoverUnit, text: dealt.lethal ? `−${dealt.total} LETHAL` : `−${dealt.total}` };
   }
   const keywords = hoverCard
     ? keywordsOf(hoverCard.def, (unit) => db.units[unit]?.taunt === true)
@@ -837,6 +851,9 @@ export function FightView(props: {
               </button>
             )}
           </div>
+          {me && (showStars || showRunes || me.powers.length > 0) && (
+            <SidePanel db={db} me={me} showStars={showStars} showRunes={showRunes} />
+          )}
           {me && me.snares.length > 0 && (
             <div className="fight__snares" title="Face-down Snares spring on their own">
               {me.snares.map((s) => (
@@ -852,13 +869,22 @@ export function FightView(props: {
           )}
           <button
             className={`btn btn--primary fight__end${!anyPlay && !locked ? ' is-ready' : ''}`}
-            disabled={locked || finished}
+            disabled={locked || finished || view.pending !== null}
             onClick={endTurn}
           >
             <span>{locked ? 'Enemy turn…' : 'End turn'}</span>
             <kbd>E</kbd>
           </button>
 
+          {view.pending && !finished && (
+            <PickModal
+              key={view.pending.pool.map((c) => c.id).join()}
+              db={db}
+              pending={view.pending}
+              width={Math.min(190, cw)}
+              onSubmit={(cards) => act({ type: 'pick', cards })}
+            />
+          )}
           {pile && (
             <PileModal
               db={db}
@@ -889,6 +915,48 @@ export function FightView(props: {
       )}
     </div>
   );
+}
+
+/** Every op the deck (and its hero's Sigil) can run, Powers' triggers included. */
+function deckOps(db: CombatDb, setup: CombatSetup): Op[] {
+  const nested = (ops: readonly Op[]): Op[] =>
+    ops.flatMap((o) => (o.op === 'power' ? [o, ...nested(o.ops)] : [o]));
+  return [
+    ...nested(db.heroes[setup.a.hero]?.sigil ?? []),
+    ...setup.a.deck.flatMap((id) => nested(db.cards[id]?.effects ?? [])),
+  ];
+}
+
+/** Decides which parts of the side panel show: a Riftwalker without runes never sees an empty rune row. */
+function deckUsesStars(db: CombatDb, setup: CombatSetup): boolean {
+  return (
+    deckOps(db, setup).some((o) => o.op === 'stars') ||
+    setup.a.deck.some((id) => (db.cards[id]?.starCost ?? 0) > 0)
+  );
+}
+function deckUsesRunes(db: CombatDb, setup: CombatSetup): boolean {
+  return deckOps(db, setup).some((o) => o.op === 'channel');
+}
+
+/** What a card would deal to one unit right now: play it on a copy of the real state. Exact, scaling and all. */
+function previewDamage(
+  db: CombatDb,
+  state: CombatState,
+  cardId: string,
+  targetId: string,
+  heroId: string,
+): { total: number; lethal: boolean } | null {
+  try {
+    const r = applyAction(db, state, { type: 'play', card: cardId, target: targetId });
+    let total = 0;
+    for (const e of r.events)
+      if (e.type === 'damage' && e.target === targetId && e.source === heroId && !e.shielded)
+        total += e.amount;
+    const alive = [...r.state.sides.a.units, ...r.state.sides.b.units].some((u) => u.id === targetId);
+    return { total, lethal: !alive };
+  } catch {
+    return null;
+  }
 }
 
 const COMBAT_DB_POTION_NAME = (id: string): string => COMBAT_DB.potions[id]?.name ?? 'Potion';

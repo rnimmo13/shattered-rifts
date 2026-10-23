@@ -5,7 +5,7 @@
 // card always looks the same. Swapping in real art later means replacing cardArt() only.
 
 /** The five colour families of the game. */
-export type Realm = 'aurelion' | 'nexus' | 'wyldmaw' | 'umbral' | 'neutral';
+export type Realm = 'aurelion' | 'nexus' | 'wyldmaw' | 'umbral' | 'starfall' | 'neutral';
 
 /** What the painters need to know about a card. */
 export interface ArtCard {
@@ -115,6 +115,14 @@ const PALETTE: Record<Realm, Palette> = {
     dark: '#07050f',
     rim: '#8ff5e0',
     eye: '#8ff5e0',
+  },
+  starfall: {
+    sky: ['#060820', '#1a2166', '#ffd36a'],
+    glow: '#ffe9a0',
+    body: ['#e8ecff', '#4b57a8'],
+    dark: '#07091c',
+    rim: '#ffe9a0',
+    eye: '#fff3c0',
   },
   neutral: {
     sky: ['#0a0c17', '#252845', '#ff4fd8'],

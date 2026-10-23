@@ -14,7 +14,11 @@ export interface HandCard {
   playable: boolean;
   /** unit ids it may target (empty = it takes no target) */
   targets: string[];
+  /** aim it by hand even when only one target is legal (a card that does something drastic to one of your allies) */
+  aim?: boolean;
 }
+
+const needsAim = (c: HandCard): boolean => c.aim === true || c.targets.length > 1;
 
 export interface FightHandProps {
   db: CombatDb;
@@ -95,12 +99,12 @@ export function FightHand(p: FightHandProps) {
       if (!d.moved) {
         // a click
         if (!c.playable) return pr.onRefuse(c);
-        if (c.targets.length <= 1) return pr.onPlay(c, c.targets[0] ?? null);
+        if (!needsAim(c)) return pr.onPlay(c, c.targets[0] ?? null);
         return pr.onSelect(pr.selectedId === c.inst.id ? null : c);
       }
       if (!aboveHand(e.clientY)) return; // dropped back on the hand: cancel
       if (!c.playable) return pr.onRefuse(c);
-      if (c.targets.length <= 1) return pr.onPlay(c, c.targets[0] ?? null);
+      if (!needsAim(c)) return pr.onPlay(c, c.targets[0] ?? null);
       const over = pr.unitAt(e.clientX, e.clientY);
       if (over && c.targets.includes(over)) return pr.onPlay(c, over);
       pr.onSelect(c); // dropped in the open with several targets: go on to aim it

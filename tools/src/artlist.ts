@@ -14,6 +14,8 @@ const REALM_STYLE: Record<string, string> = {
   wyldmaw:
     'bioluminescent jungle ribcage, blood red and acid green, feral and hungry, bone and teeth',
   umbral: 'moonlit ballroom of shadows, violet and teal mist, masks and mirrors, quiet menace',
+  starfall:
+    'a night sky of fallen stars, deep indigo and pale gold, scholars of constellations, silver circlets and astrolabes',
   neutral: 'a shattered rift between worlds, violet and cyan energy, fractured crystal',
   junk: 'a dull grey curse, scratched and dim',
 };

@@ -26,6 +26,15 @@ function compare(shown: CombatState, real: CombatState, where: string): void {
       `${where} snares ${side}`,
     ).toEqual(b.snares.map((x) => x.id));
     expect(a.mana, `${where} mana ${side}`).toBe(b.mana);
+    expect(a.stars, `${where} stars ${side}`).toBe(b.stars);
+    expect(
+      a.runes.map((r) => r.rune),
+      `${where} runes ${side}`,
+    ).toEqual(b.runes.map((r) => r.rune));
+    expect(
+      a.powers.map((p) => p.card),
+      `${where} powers ${side}`,
+    ).toEqual(b.powers.map((p) => p.card));
   }
   expect(shown.winner).toEqual(real.winner);
 }

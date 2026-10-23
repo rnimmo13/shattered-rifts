@@ -10,6 +10,7 @@ const REALM_NAME: Record<string, string> = {
   nexus: 'Nexus-9',
   wyldmaw: 'Wyldmaw',
   umbral: 'Umbral Veil',
+  starfall: 'Starfall',
 };
 
 const HEROES = Object.keys(RIFTWALKERS) as HeroId[];
@@ -43,6 +44,11 @@ export function CharacterPicker(props: { value: HeroId; onChange: (id: HeroId) =
         <div className="picker__about">
           <h2 className="picker__title">{c.hero.name}</h2>
           <p className="picker__style">{c.blurb}</p>
+          <ul className="picker__lanes" aria-label="Card lanes">
+            {c.lanes.map((l) => (
+              <li key={l}>{l}</li>
+            ))}
+          </ul>
           <p className="picker__deckname">
             {c.hero.maxHp} HP · {c.hero.mana} Mana · starter deck of {c.starter.length} cards
             {c.hero.startUnits?.length ? ' · starts with a companion' : ''}

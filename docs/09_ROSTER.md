@@ -70,13 +70,14 @@ Calm); **Astra** *Starlit* (start each fight with 2 Stars).
 | `forge` op; per-card `bonus` | Grow every copy of a scaling card | Astra |
 | More Snare triggers: `foeDefends`, `foeTurn` | Vesper's lane needs variety | Vesper |
 
-## 4. Build status
+## 4. Build status (2026-10-23)
 
-- [ ] Engine tier 1: choices, discard/exhaust/scry, scale, power triggers, extra Snare triggers
-- [ ] Reorganise existing 4 into character pools; deepen each to ~40 cards in 3 lanes
-- [ ] Quill (needs tier 1)
-- [ ] Ilvane (runes)
-- [ ] Sehra (stances)
-- [ ] Astra (stars + forge)
-- [ ] UI: pick modal, rune row, stars, power list, character picker for 8
-- [ ] Sim + balance pass (`pnpm sim`), docs, changelog
+- [x] Engine: choices, discard/exhaust/scry, scale, Powers as triggers, runes, stances, Stars, forge, sacrifice, extra Snare triggers (DECISIONS #97)
+- [x] Existing 4 reorganised into character pools and deepened to 3 lanes (34-38 cards each)
+- [x] Quill, Ilvane, Sehra, Astra: 34-39 cards each
+- [x] UI: pick modal, side panel (Stars, runes, Powers), exact damage preview, character picker for 8 with lanes
+- [x] First-pass sim; per-card scenario tests; generated `10_CARD_LIST.md`
+- [ ] Balance pass (waits for the content set to settle, DECISIONS #91)
+- [ ] Stretch characters: Cinder (Exhaust engine), Mire (Doom / undying minion)
+- [ ] Real art for the four new Riftwalkers (placeholders reuse existing silhouettes)
+- [ ] Enemy counterparts that use the new mechanics (runes, stances...) and a Starfall stage realm

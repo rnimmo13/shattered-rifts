@@ -506,7 +506,7 @@
 .fight__aimbar {
   position: absolute;
   left: 50%;
-  top: 4.2rem;
+  top: 7rem;
   transform: translateX(-50%);
   display: flex;
   gap: 0.8rem;
@@ -749,4 +749,152 @@
 .potionbtn:disabled {
   opacity: 0.45;
   cursor: default;
+}
+
+/* ---- board extras: Stars, runes, Powers ---- */
+.fight__aux {
+  position: absolute;
+  left: 1.2rem;
+  top: 7rem;
+  display: grid;
+  gap: 0.45rem;
+  justify-items: start;
+  z-index: 22;
+  pointer-events: none;
+}
+.aux {
+  pointer-events: auto;
+  cursor: help;
+}
+.aux--stars {
+  padding: 0.2rem 0.7rem;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #3a3170, #14103a);
+  border: 1px solid #ffe9a0;
+  color: #fff0b0;
+  font-family: var(--font-numeric);
+  font-size: 1.15rem;
+  box-shadow: 0 0 10px rgb(255 233 160 / 0.4);
+}
+.aux--runes {
+  display: flex;
+  gap: 0.35rem;
+}
+.rune {
+  position: relative;
+  width: 2.3rem;
+  height: 2.3rem;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  font-size: 1.2rem;
+  color: #fff;
+  background: radial-gradient(circle at 35% 30%, #8affff, #0a5f86 70%);
+  border: 2px solid #a6f4ff;
+  box-shadow: 0 0 12px rgb(54 224 255 / 0.55);
+  animation: rune-in 0.4s var(--ease-out);
+}
+.rune small {
+  position: absolute;
+  right: -0.25rem;
+  bottom: -0.25rem;
+  min-width: 1.1rem;
+  padding: 0 0.2rem;
+  border-radius: 999px;
+  background: #0a0620;
+  border: 1px solid #a6f4ff;
+  font-size: 0.7rem;
+  line-height: 1.1rem;
+  text-align: center;
+}
+.rune--spark {
+  background: radial-gradient(circle at 35% 30%, #fff6b0, #c98a1c 70%);
+  border-color: #ffe27a;
+  box-shadow: 0 0 12px rgb(255 226 122 / 0.6);
+}
+.rune--ward {
+  background: radial-gradient(circle at 35% 30%, #d9f8ff, #2a7fb8 70%);
+  border-color: #a6f4ff;
+}
+.rune--hollow {
+  background: radial-gradient(circle at 35% 30%, #b99aff, #2b1654 75%);
+  border-color: #b99aff;
+  box-shadow: 0 0 12px rgb(143 91 255 / 0.6);
+}
+.rune--prism {
+  background: radial-gradient(circle at 35% 30%, #ffd1f4, #8a2f7a 75%);
+  border-color: #ff9fe6;
+  box-shadow: 0 0 12px rgb(255 79 216 / 0.5);
+}
+.rune--empty {
+  background: transparent;
+  border: 2px dashed rgb(166 244 255 / 0.35);
+  box-shadow: none;
+  animation: none;
+}
+@keyframes rune-in {
+  from {
+    transform: scale(0.3);
+    opacity: 0;
+  }
+}
+.aux--powers {
+  display: grid;
+  gap: 0.2rem;
+  max-width: 11rem;
+}
+.aux__power {
+  pointer-events: auto;
+  cursor: help;
+  padding: 0.12rem 0.55rem;
+  border-radius: 6px;
+  background: rgb(10 12 28 / 0.82);
+  border: 1px solid var(--c-gold-dark);
+  color: var(--c-gold-light);
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+}
+
+/* ---- choosing cards (discard / exhaust / scry) ---- */
+.fight__modal--pick {
+  z-index: 65;
+}
+.fight__modalBody h3 small {
+  margin-left: 0.8rem;
+  font-family: var(--font-body, inherit);
+  font-size: 0.85rem;
+  font-weight: 400;
+  color: var(--c-text-dim);
+  letter-spacing: 0;
+}
+.pick {
+  position: relative;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  border-radius: 12px;
+  transition:
+    transform 0.12s var(--ease-out),
+    filter 0.12s;
+}
+.pick:hover {
+  transform: translateY(-4px);
+}
+.pick.is-on {
+  filter: drop-shadow(0 0 14px #ff6a52);
+  transform: translateY(-8px);
+}
+.pick__tag {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0.4rem;
+  text-align: center;
+  font-family: var(--font-display);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #fff;
+  text-shadow: 0 2px 6px #000;
+  pointer-events: none;
 }

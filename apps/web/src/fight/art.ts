@@ -17,6 +17,10 @@ const HERO: Record<string, [Archetype, Realm]> = {
   rivet: ['drone', 'nexus'],
   kesh: ['beast', 'wyldmaw'],
   vesper: ['cultist', 'umbral'],
+  quill: ['wanderer', 'umbral'],
+  ilvane: ['mage', 'nexus'],
+  sehra: ['cleric', 'aurelion'],
+  astra: ['mage', 'starfall'],
 };
 
 const UNIT: Record<string, [Archetype, Realm]> = {
@@ -28,6 +32,9 @@ const UNIT: Record<string, [Archetype, Realm]> = {
   'repair-bot': ['drone', 'nexus'],
   enforcer: ['mech', 'nexus'],
   'war-engine': ['mech', 'nexus'],
+  'micro-drone': ['drone', 'nexus'],
+  'siege-engine': ['mech', 'nexus'],
+  'dire-wolf': ['beast', 'wyldmaw'],
   hound: ['beast', 'wyldmaw'],
   'gilded-guard': ['knight', 'aurelion'],
   'maw-hatchling': ['beast', 'wyldmaw'],
@@ -106,6 +113,7 @@ const REALM_TRIBES: Record<string, string[]> = {
   wyldmaw: ['Beast'],
   aurelion: ['Knight'],
   umbral: ['Shade'],
+  starfall: ['Spirit'],
 };
 
 /** What a card does, as a picture: chosen from its effects, never from its name. */
@@ -118,6 +126,13 @@ function motifOf(c: CardDef): Motif {
     if (dmg.to === 'allFoes') return 'burst';
     return (dmg.hits ?? 1) > 1 || dmg.to === 'randomFoe' ? 'flurry' : 'slash';
   }
+  const has = (op: string): boolean =>
+    [...ops, ...ops.flatMap((o) => (o.op === 'power' ? o.ops : []))].some((o) => o.op === op);
+  if (ops.some((o) => o.op === 'addCard' && o.card === 'shiv')) return 'flurry';
+  if (has('channel') || has('evoke') || has('runeSlots')) return 'rune';
+  if (has('stars') || has('forge')) return 'crystal';
+  if (has('stance')) return 'power';
+  if (has('scry') || has('discard')) return 'draw';
   if (ops.some((o) => o.op === 'status' && o.status === 'seared')) return 'flame';
   if (
     ops.some(

@@ -110,6 +110,23 @@ export function reduceEvent(db: CombatDb, s: CombatState, e: CombatEvent): void 
     case 'mana':
       s.sides[e.side].mana = e.mana;
       return;
+    case 'stars':
+      s.sides[e.side].stars = e.stars;
+      return;
+    case 'runeChannel':
+      s.sides[e.side].runes.push({ rune: e.rune, charge: 0 });
+      return;
+    case 'runeGone': {
+      const row = s.sides[e.side].runes;
+      const i = row.findIndex((r) => r.rune === e.rune);
+      if (i >= 0) row.splice(i, 1);
+      return;
+    }
+    case 'power': {
+      const sd = s.sides[e.side];
+      sd.powers.push({ id: `shown${sd.powers.length}`, card: e.card, when: 'turnStart', ops: [] });
+      return;
+    }
     case 'play':
       moveCard(s, e.side, e.card, e.def, 'discard');
       return;
@@ -206,6 +223,10 @@ export function startingDisplay(s: CombatState): CombatState {
     d.sides[side].draw = [...d.sides[side].draw, ...d.sides[side].hand];
     d.sides[side].hand = [];
     d.sides[side].mana = 0;
+    // the Sigil's stars, runes and the like replay as events too
+    d.sides[side].stars = 0;
+    d.sides[side].runes = [];
+    d.sides[side].powers = [];
   }
   return d;
 }

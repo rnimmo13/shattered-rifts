@@ -14,7 +14,7 @@ const KIND_LABEL: Record<CardDef['kind'], string> = {
 };
 
 const KEYWORDS =
-  /\b(Barrier|Exposed|Faltering|Might|Seared|Stunned|Thorns|Shielded|Exhaust|Retain|Mana)\b/g;
+  /\b(Barrier|Exposed|Faltering|Might|Seared|Stunned|Thorns|Shielded|Exhaust|Retain|Mana|Resonance|Edge|Mantra|Calm|Wrath|Radiant|Stars?|Scry|Forge|Innate|Ethereal|Unplayable)\b/g;
 
 /** Rules text with the keywords marked **bold** for the card renderer. */
 function rulesFor(db: CombatDb, c: CardDef): string {
@@ -59,9 +59,14 @@ export const FightCard = memo(
           <div className="card__banner">
             <span className="card__name">{def.name}</span>
           </div>
-          <div className="card__cost" aria-label={`Cost ${def.cost}`}>
-            <span>{def.cost}</span>
+          <div className="card__cost" aria-label={`Cost ${def.x ? 'X' : def.cost}`}>
+            <span>{def.x ? 'X' : def.cost}</span>
           </div>
+          {def.starCost ? (
+            <div className="card__stars" aria-label={`Costs ${def.starCost} Stars`}>
+              <span>★{def.starCost}</span>
+            </div>
+          ) : null}
           <div className="card__type">{KIND_LABEL[def.kind]}</div>
           <div className={`card__rules card__rules--${size}`}>
             <p>
