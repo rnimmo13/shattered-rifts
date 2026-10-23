@@ -15,6 +15,14 @@ import { FLOOR_SQUASH, floorTop, rows, slotGeometry, type SlotGeom } from './lay
 import { Monsters, type SoundName } from './Monsters';
 import { Traps } from './Traps';
 import {
+  getBaseSpeed,
+  hitStopFor,
+  holdSlow,
+  releaseSlow,
+  resetTimeScale,
+  shakeFor,
+} from './timescale';
+import {
   FULL_W,
   PAD_X,
   floorTextures,
@@ -108,6 +116,11 @@ export class BattlefieldScene {
   /** Sound hook: every major visual event calls this (wired to audio later). */
   onSound: (name: SoundName) => void = () => undefined;
   private bottomReserve = 0;
+  private baseX = 0;
+  private baseY = 0;
+  private shakeAmp = 0;
+  private hitStopTimer: number | null = null;
+  private hitStopCooldownUntil = 0;
   private time = 0;
   /** Adaptive quality: if frames run slow the render resolution steps down (never back up, so it can't flicker). */
   private resScale = 1;
@@ -214,6 +227,7 @@ export class BattlefieldScene {
       profile: () => this.profile,
       sound: (n) => this.onSound(n),
       slot: (key) => this.slotViews.find((v) => slotKey(v.geom) === key)?.geom,
+      impact: (n) => this.impact(n),
     });
     this.monsters = new Monsters({
       container: this.layers.units,
@@ -222,6 +236,7 @@ export class BattlefieldScene {
       profile: () => this.profile,
       sound: (n) => this.onSound(n),
       slot: (key) => this.slotViews.find((v) => slotKey(v.geom) === key)?.geom,
+      impact: (n) => this.impact(n),
     });
 
     // --- atmosphere over the board ---
@@ -441,6 +456,19 @@ export class BattlefieldScene {
     this.time += dt;
     const t = this.time;
 
+    // screen shake: a damped random offset on the whole board
+    if (this.shakeAmp > 0.25) {
+      const a = this.shakeAmp;
+      this.world.position.set(
+        this.baseX + (Math.random() - 0.5) * 2 * a,
+        this.baseY + (Math.random() - 0.5) * 1.4 * a,
+      );
+      this.shakeAmp *= Math.exp(-dt * 9);
+    } else if (this.shakeAmp > 0) {
+      this.shakeAmp = 0;
+      this.world.position.set(this.baseX, this.baseY);
+    }
+
     this.watchFrameRate(dt);
 
     // fog drift: three depths at three speeds, in opposite directions for depth
@@ -551,16 +579,46 @@ export class BattlefieldScene {
     const sy = avail / (bottom - top);
     const s = Math.min(sx, sy);
     this.world.scale.set(s);
-    this.world.position.set(
-      (w - stage.width * s) / 2,
-      sy <= sx ? avail - bottom * s : (avail - (bottom - top) * s) / 2 - top * s,
-    );
+    this.baseX = (w - stage.width * s) / 2;
+    this.baseY = sy <= sx ? avail - bottom * s : (avail - (bottom - top) * s) / 2 - top * s;
+    this.world.position.set(this.baseX, this.baseY);
     this.vignette.width = w;
     this.vignette.height = h;
   }
 
+  /** Shake the whole board by up to `amount` px (damped). Ignored under reduced motion. */
+  shake(amount: number): void {
+    if (this.profile.still) return;
+    this.shakeAmp = Math.min(30, Math.max(this.shakeAmp, amount));
+  }
+
+  /** Freeze the world for a few real milliseconds on a heavy blow. */
+  hitStop(ms: number): void {
+    if (this.profile.still || ms <= 0) return;
+    // a stop is a rare accent: after one, nothing may freeze the board again for a while (multi-hit sequences stay fluid)
+    const now = performance.now();
+    if (now < this.hitStopCooldownUntil || this.hitStopTimer !== null) return;
+    const real = ms / getBaseSpeed();
+    this.hitStopCooldownUntil = now + real + 600;
+    holdSlow('hitstop', 0.04);
+    this.hitStopTimer = window.setTimeout(() => {
+      this.hitStopTimer = null;
+      releaseSlow('hitstop');
+    }, real);
+  }
+
+  /** A blow landed: shake and (for big ones) freeze, scaled by its size. Reduced effects halve the shake and skip the freeze. */
+  impact(amount: number): void {
+    if (this.profile.still) return;
+    const reduced = this.profile.mode === 'reduced';
+    this.shake(shakeFor(amount) * (reduced ? 0.5 : 1));
+    if (!reduced) this.hitStop(hitStopFor(amount));
+  }
+
   destroy(): void {
     this.destroyed = true;
+    if (this.hitStopTimer !== null) window.clearTimeout(this.hitStopTimer);
+    resetTimeScale();
     window.removeEventListener('resize', this.onResize);
     this.host.removeEventListener('pointermove', this.onPointer);
     gsap.killTweensOf(this.slotViews.flatMap((v) => [v.glow, v.dim]));

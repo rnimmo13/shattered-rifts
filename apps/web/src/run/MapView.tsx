@@ -3,9 +3,6 @@
 import type { MapNode, NodeKind, StageMap } from '@sr/campaign';
 import { enemy } from '@sr/content';
 
-const COL_W = 170;
-const ROW_H = 150;
-
 const KIND_LABEL: Record<NodeKind, string> = {
   duel: 'Duel',
   elite: 'Elite',
@@ -99,6 +96,9 @@ export function MapView(props: {
   onEnter: (id: string) => void;
 }) {
   const { map } = props;
+  // fill the screen: the spacing grows with the window
+  const COL_W = Math.max(150, Math.min(290, Math.floor((window.innerWidth * 0.84) / map.floors)));
+  const ROW_H = Math.max(130, Math.min(200, Math.floor(window.innerHeight * 0.22)));
   const rows = Math.max(
     ...map.nodes.map((n) => map.nodes.filter((m) => m.floor === n.floor).length),
   );
@@ -152,5 +152,29 @@ export function MapView(props: {
         );
       })}
     </div>
+  );
+}
+
+/** What each node means. */
+export function MapLegend() {
+  const items: [NodeKind, string][] = [
+    ['duel', 'Duel'],
+    ['elite', 'Elite (harder, better reward)'],
+    ['event', 'Event'],
+    ['shrine', 'Shrine (rest or trim)'],
+    ['merchant', 'Merchant'],
+    ['warden', 'Warden (stage boss)'],
+  ];
+  return (
+    <ul className="maplegend" aria-label="Map legend">
+      {items.map(([k, label]) => (
+        <li key={k} className={`maplegend__item mapnode--${k}`}>
+          <span className="maplegend__icon">
+            <NodeIcon kind={k} />
+          </span>
+          {label}
+        </li>
+      ))}
+    </ul>
   );
 }

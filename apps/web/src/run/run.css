@@ -318,3 +318,254 @@
     animation: none;
   }
 }
+
+/* ======================= Phase 5 polish: screens ======================= */
+
+/* the realm tints the background of its stage map */
+.run[data-realm='aurelion'] {
+  --tint: rgb(212 168 75 / 0.22);
+}
+.run[data-realm='nexus'] {
+  --tint: rgb(54 224 255 / 0.2);
+}
+.run[data-realm='wyldmaw'] {
+  --tint: rgb(255 106 82 / 0.22);
+}
+.run[data-realm='umbral'] {
+  --tint: rgb(143 91 255 / 0.3);
+}
+.run[data-realm='rift'] {
+  --tint: rgb(255 79 216 / 0.24);
+}
+.run {
+  background:
+    radial-gradient(ellipse at 50% -5%, var(--tint, rgb(143 91 255 / 0.28)), transparent 62%),
+    linear-gradient(180deg, var(--c-navy), var(--c-void) 80%);
+}
+
+.mapwrap {
+  min-height: 56vh;
+  display: grid;
+  align-items: center;
+}
+.mapnode {
+  width: 5rem;
+  height: 5rem;
+}
+.mapnode svg {
+  width: 2.5rem;
+  height: 2.5rem;
+}
+.mapnode--warden {
+  width: 6.2rem;
+  height: 6.2rem;
+}
+.mapnode__label {
+  width: 10.5rem;
+  font-size: 0.85rem;
+  color: var(--c-ivory);
+  opacity: 0.85;
+  text-shadow: 0 1px 4px rgb(0 0 0 / 0.9);
+}
+.maplegend {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.6rem 1.4rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.85rem;
+  color: var(--c-text-dim);
+}
+.maplegend__item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+.maplegend__icon {
+  width: 1.7rem;
+  height: 1.7rem;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  border: 1.5px solid var(--c-gold-dark);
+  color: var(--c-gold-light);
+  background: rgb(8 10 20 / 0.8);
+}
+.maplegend__icon svg {
+  width: 1rem;
+  height: 1rem;
+}
+.maplegend__item.mapnode--elite .maplegend__icon {
+  border-color: #ff8aa8;
+}
+.maplegend__item.mapnode--merchant .maplegend__icon {
+  border-color: var(--c-cyan);
+}
+.maplegend__item.mapnode--shrine .maplegend__icon {
+  border-color: var(--c-heal);
+}
+.maplegend__item.mapnode--warden .maplegend__icon {
+  border-color: #ff5a86;
+}
+
+/* setup / sanctum: centred, with room for the character details */
+.setup--wide {
+  justify-items: center;
+  text-align: center;
+  max-width: 78rem;
+  margin: 0 auto;
+}
+.setup__head {
+  display: grid;
+  gap: 0.6rem;
+  justify-items: center;
+}
+.setup--wide .setup__lead {
+  max-width: 46rem;
+}
+.setup--wide .setup__back {
+  justify-self: start;
+}
+.setup__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.8rem;
+}
+.setup__note {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--c-text-dim);
+}
+.setup--wide .setup__select {
+  justify-self: center;
+}
+
+.picker {
+  display: grid;
+  gap: 1.2rem;
+  width: 100%;
+}
+.picker__row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.9rem;
+}
+.picker__char {
+  display: grid;
+  justify-items: center;
+  gap: 0.35rem;
+  width: 11.5rem;
+  padding: 1rem 0.8rem 0.9rem;
+  color: inherit;
+  cursor: pointer;
+  border-radius: 16px;
+  border: 1px solid transparent;
+  background:
+    linear-gradient(160deg, rgb(20 32 74 / 0.9), rgb(8 10 20 / 0.95)) padding-box,
+    linear-gradient(160deg, var(--c-gold-dark), rgb(255 255 255 / 0.08)) border-box;
+  transition:
+    transform var(--t-fast) var(--ease-out),
+    box-shadow var(--t-fast) var(--ease-out);
+}
+.picker__char:hover {
+  transform: translateY(-4px);
+}
+.picker__char.is-on {
+  background:
+    linear-gradient(160deg, rgb(31 48 104 / 0.95), rgb(8 10 20 / 0.95)) padding-box,
+    linear-gradient(160deg, var(--c-gold-light), var(--c-gold) 55%, var(--c-violet)) border-box;
+  box-shadow: var(--glow-gold);
+}
+.picker__char .crest {
+  width: 4.2rem;
+  height: 4.2rem;
+}
+.picker__name {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.95rem;
+  line-height: 1.2;
+}
+.picker__realm {
+  font-size: 0.72rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--c-cyan-glow);
+}
+.picker__detail {
+  display: grid;
+  gap: 1rem;
+  padding: 1.2rem 1.4rem;
+  border-radius: 16px;
+  background: rgb(8 10 20 / 0.55);
+  border: 1px solid rgb(212 168 75 / 0.25);
+  text-align: left;
+}
+.picker__title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  color: var(--c-gold-light);
+}
+.picker__style {
+  margin: 0.2rem 0 0.6rem;
+  color: var(--c-ivory);
+}
+.picker__sigil {
+  display: grid;
+  gap: 0.15rem;
+  margin: 0 0 0.5rem;
+  padding: 0.55rem 0.8rem;
+  border-left: 3px solid var(--c-violet);
+  background: rgb(143 91 255 / 0.1);
+  border-radius: 0 10px 10px 0;
+}
+.picker__sigil b {
+  color: var(--c-violet-glow);
+  font-family: var(--font-display);
+}
+.picker__sigil span {
+  color: var(--c-text-dim);
+  font-size: 0.9rem;
+}
+.picker__deckname {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--c-text-dim);
+}
+.deckstrip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+.title__actions .btn--ghost {
+  opacity: 0.85;
+}
+
+/* keep the background full width; only the content column is narrow */
+.setup--wide {
+  max-width: none;
+  margin: 0;
+}
+.setup--wide > .picker,
+.setup--wide > .setup__head,
+.setup--wide > .setup__select,
+.setup--wide > section {
+  width: 100%;
+  max-width: 78rem;
+}
+.setup--wide > .setup__back {
+  justify-self: start;
+  width: auto;
+}
+
+.setup--wide .setup__go {
+  justify-self: center;
+}
+.setup--wide .setup__h {
+  text-align: center;
+}

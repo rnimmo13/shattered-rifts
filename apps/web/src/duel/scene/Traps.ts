@@ -11,6 +11,7 @@ import { color, ease, hex } from '../../design/tokens';
 import type { EffectsProfile } from '../effects';
 import { FLOOR_SQUASH, type SlotGeom } from './layout';
 import { runeRingTexture } from './textures';
+import { holdSlow, releaseSlow } from './timescale';
 import type { SoundName } from './Monsters';
 
 interface Trap {
@@ -44,6 +45,8 @@ export interface TrapHost {
   profile: () => EffectsProfile;
   sound: (name: SoundName) => void;
   slot: (key: string) => SlotGeom | undefined;
+  /** a blow landed: shake the screen / stop time a moment, scaled by size */
+  impact: (amount: number) => void;
 }
 
 const MINE = color.cyan;
@@ -301,7 +304,7 @@ export class Traps {
       });
       if (!still) {
         // slow-mo for the charge: real-time timer restores it so it can never get stuck
-        gsap.globalTimeline.timeScale(0.35);
+        holdSlow('trap', 0.35);
         this.slowTimer = window.setTimeout(() => this.endSlowMo(), 650);
       }
 
@@ -411,12 +414,13 @@ export class Traps {
   private endSlowMo(): void {
     if (this.slowTimer !== null) window.clearTimeout(this.slowTimer);
     this.slowTimer = null;
-    gsap.globalTimeline.timeScale(1);
+    releaseSlow('trap');
   }
 
   /** Radial light burst, expanding shockwave ring and rays. */
   private burst(p: EffectsProfile, cx: number, y: number, reduced: boolean): void {
     this.h.sound('trapReveal');
+    this.h.impact(9);
     // no flashes or shockwaves under prefers-reduced-motion
     if (p.still) return;
     const flash = new Sprite(this.h.glowTex);

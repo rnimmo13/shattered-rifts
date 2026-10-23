@@ -2,6 +2,7 @@
 // the game-over panel. All of it reads the redacted view and the legal actions; none of it decides a rule.
 
 import { useEffect, useRef } from 'react';
+import { play } from '../audio/sfx';
 import type { Action, GameView, PlayerId } from '@sr/engine';
 import { cardName, describeAction } from './actions';
 import { AI_SEAT, HUMAN } from './session';
@@ -13,12 +14,14 @@ export interface Float {
   kind: 'damage' | 'heal';
 }
 
+/** The Essence (life) bar. A paler "ghost" bar trails behind the real one so you can see how much you just lost. */
 function EssenceBar(props: { value: number; max: number; tone: 'me' | 'foe' }) {
   const pct = props.max > 0 ? Math.max(0, Math.min(100, (props.value / props.max) * 100)) : 0;
   return (
     <div className={`ess ess--${props.tone}`}>
+      <div className="ess__ghost" style={{ width: `${pct}%` }} />
       <div className="ess__fill" style={{ width: `${pct}%` }} />
-      <span className="ess__num">
+      <span className="ess__num" key={props.value}>
         {props.value}
         <i>/{props.max}</i>
       </span>
@@ -40,71 +43,130 @@ function FloatNumbers(props: { floats: Float[]; player: PlayerId }) {
   );
 }
 
+/** A round crest in the realm's colours: a stand-in for a portrait until there is art. */
+function Crest(props: { realm: string; label: string; tone: 'me' | 'foe' }) {
+  return (
+    <span className={`crest crest--${props.realm} crest--${props.tone}`} aria-hidden>
+      <b>{props.label.trim().charAt(0).toUpperCase()}</b>
+    </span>
+  );
+}
+
 /** The opponent: name, Essence, deck and hand. Click it (when highlighted) to attack the player directly. */
 export function FoePanel(props: {
   view: GameView;
   name: string;
+  realm: string;
   targetable: boolean;
   floats: Float[];
   onFace: () => void;
 }) {
   const foe = props.view.players[AI_SEAT];
+  const backs = Math.min(foe.handCount, 9);
   return (
-    <button
-      className={`foe${props.targetable ? ' is-targetable' : ''}`}
-      onClick={props.onFace}
-      disabled={!props.targetable}
-      aria-label={props.targetable ? `Attack ${props.name} directly` : props.name}
-    >
-      <span className="foe__name">{props.name}</span>
-      <EssenceBar value={foe.essence} max={foe.maxEssence} tone="foe" />
-      <span className="foe__counts">
-        <span title="Cards in hand">
-          <b>{foe.handCount}</b> in hand
+    <div className="foewrap">
+      <button
+        className={`foe${props.targetable ? ' is-targetable' : ''}`}
+        onClick={props.onFace}
+        disabled={!props.targetable}
+        aria-label={props.targetable ? `Attack ${props.name} directly` : props.name}
+      >
+        <Crest realm={props.realm} label={props.name} tone="foe" />
+        <span className="foe__body">
+          <span className="foe__name">{props.name}</span>
+          <EssenceBar value={foe.essence} max={foe.maxEssence} tone="foe" />
+          <span className="foe__counts">
+            <span title="Cards in hand">
+              <b>{foe.handCount}</b> hand
+            </span>
+            <span title="Cards in deck">
+              <b>{foe.deckCount}</b> deck
+            </span>
+            <span title="Mana">
+              <b>{foe.mana + foe.tempMana}</b>/{foe.maxMana} mana
+            </span>
+          </span>
         </span>
-        <span title="Cards in deck">
-          <b>{foe.deckCount}</b> in deck
-        </span>
-        <span title="Mana">
-          <b>{foe.mana + foe.tempMana}</b>/{foe.maxMana} mana
-        </span>
-      </span>
+        <FloatNumbers floats={props.floats} player={AI_SEAT} />
+      </button>
       <span className="foe__backs" aria-hidden>
-        {Array.from({ length: Math.min(foe.handCount, 9) }, (_, i) => (
-          <i key={i} style={{ rotate: `${(i - (Math.min(foe.handCount, 9) - 1) / 2) * 5}deg` }} />
+        {Array.from({ length: backs }, (_, i) => (
+          <i key={i} style={{ rotate: `${(i - (backs - 1) / 2) * 6}deg` }} />
         ))}
       </span>
-      <FloatNumbers floats={props.floats} player={AI_SEAT} />
-    </button>
-  );
-}
-
-/** You: Essence, Mana and deck. */
-export function SelfPanel(props: { view: GameView; name: string; floats: Float[] }) {
-  const me = props.view.players[HUMAN];
-  return (
-    <div className="self" aria-label="Your status">
-      <div className="self__top">
-        <span className="self__name">{props.name}</span>
-        <EssenceBar value={me.essence} max={me.maxEssence} tone="me" />
-        <FloatNumbers floats={props.floats} player={HUMAN} />
-      </div>
-      <div className="self__mana">
-        <div className="mana__gem" aria-label={`Mana ${me.mana + me.tempMana} of ${me.maxMana}`}>
-          <span>{me.mana + me.tempMana}</span>
-        </div>
-        <span className="self__manaMax">/ {me.maxMana} mana</span>
-        <span className="self__counts">
-          <b>{me.deckCount}</b> deck · <b>{me.void.length}</b> void
-        </span>
-      </div>
     </div>
   );
 }
 
-export function Banner(props: { text: string; tone: 'me' | 'opp' | 'neutral'; id: number }) {
+/** You: Essence, Mana and deck. */
+export function SelfPanel(props: { view: GameView; name: string; realm: string; floats: Float[] }) {
+  const me = props.view.players[HUMAN];
+  const mana = me.mana + me.tempMana;
   return (
-    <div key={props.id} className={`banner banner--${props.tone}`} role="status" aria-live="polite">
+    <div className="self" aria-label="Your status">
+      <div className="self__head">
+        <Crest realm={props.realm} label={props.name} tone="me" />
+        <div className="self__top">
+          <span className="self__name">{props.name}</span>
+          <EssenceBar value={me.essence} max={me.maxEssence} tone="me" />
+          <FloatNumbers floats={props.floats} player={HUMAN} />
+        </div>
+      </div>
+      <div className="self__mana">
+        <div className="mana__gem" aria-label={`Mana ${mana} of ${me.maxMana}`}>
+          <span key={mana}>{mana}</span>
+        </div>
+        <div className="pips" aria-hidden>
+          {Array.from({ length: Math.max(me.maxMana, 1) }, (_, i) => (
+            <i key={i} className={i < mana ? 'is-full' : ''} />
+          ))}
+        </div>
+      </div>
+      <p className="self__counts">
+        <span>
+          <b>{me.deckCount}</b> deck
+        </span>
+        <span>
+          <b>{me.void.length}</b> void
+        </span>
+      </p>
+    </div>
+  );
+}
+
+/** Whose turn it is, always visible. */
+export function TurnPill(props: { turn: number; mine: boolean; thinking: boolean; over: boolean }) {
+  return (
+    <div className={`turnpill turnpill--${props.mine ? 'me' : 'foe'}`} role="status">
+      <span className={`turnpill__dot${props.thinking ? ' is-busy' : ''}`} aria-hidden />
+      <b>{props.over ? 'Duel over' : props.mine ? 'Your turn' : 'Enemy turn'}</b>
+      <i>Turn {props.turn}</i>
+    </div>
+  );
+}
+
+/** A quick colour wash over the screen edges when someone takes damage. */
+export function DamageFlash(props: { id: number; kind: 'hurt' | 'strike' }) {
+  if (props.id === 0) return null;
+  return <div key={props.id} className={`dmgflash dmgflash--${props.kind}`} aria-hidden />;
+}
+
+export function Banner(props: {
+  text: string;
+  tone: 'me' | 'opp' | 'neutral';
+  id: number;
+  /** animation speed setting: the sweep lasts as long as the banner stays */
+  speed: number;
+}) {
+  return (
+    <div
+      key={props.id}
+      className={`banner banner--${props.tone}`}
+      style={{ '--banner-ms': `${900 / props.speed}ms` } as React.CSSProperties}
+      role="status"
+      aria-live="polite"
+    >
+      <i className="banner__streak" aria-hidden />
       <span>{props.text}</span>
     </div>
   );
@@ -114,12 +176,15 @@ export function LogPanel(props: { lines: string[] }) {
   const end = useRef<HTMLDivElement>(null);
   useEffect(() => {
     end.current?.scrollIntoView({ block: 'end' });
-  }, [props.lines.length]);
+  }, [props.lines]);
   return (
     <aside className="log" aria-label="Duel log">
+      <p className="log__title">Duel log</p>
       <div className="log__scroll">
         {props.lines.map((l, i) => (
-          <p key={i}>{l}</p>
+          <p key={i} className={l.startsWith('Turn ') ? 'is-turn' : ''}>
+            {l}
+          </p>
         ))}
         <div ref={end} />
       </div>
@@ -199,6 +264,9 @@ export function GameOver(props: {
 }) {
   const won = props.winner === HUMAN;
   const draw = props.winner === 'draw';
+  useEffect(() => {
+    play(won ? 'win' : 'lose');
+  }, [won]);
   return (
     <div className="modal" role="dialog" aria-label="Duel over">
       <div className={`modal__panel gameover ${won ? 'gameover--win' : 'gameover--lose'}`}>

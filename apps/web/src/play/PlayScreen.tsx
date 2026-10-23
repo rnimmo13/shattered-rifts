@@ -1,7 +1,8 @@
 // #/play: pick a character and an opponent, then duel the AI on the real battlefield.
 
 import { useState } from 'react';
-import { CHARACTERS, ENEMIES, type CharacterId } from '@sr/content';
+import { ENEMIES, type CharacterId } from '@sr/content';
+import { CharacterPicker } from '../run/CharacterPicker';
 import { DuelView } from './DuelView';
 import type { DuelSetup } from './session';
 import './play.css';
@@ -42,7 +43,7 @@ export default function PlayScreen() {
   }
 
   return (
-    <main className="setup">
+    <main className="setup setup--wide">
       <a className="btn btn--small setup__back" href="#/">
         <span>Back</span>
       </a>
@@ -52,26 +53,7 @@ export default function PlayScreen() {
         duel: the campaign is built on top of it.
       </p>
 
-      <section aria-labelledby="who">
-        <h2 id="who" className="setup__h">
-          Your Riftwalker
-        </h2>
-        <div className="setup__chars" role="radiogroup" aria-labelledby="who">
-          {CHARACTERS.map((c) => (
-            <button
-              key={c.id}
-              role="radio"
-              aria-checked={char === c.id}
-              className={`setup__char realm--${c.realm}${char === c.id ? ' is-on' : ''}`}
-              onClick={() => setChar(c.id)}
-            >
-              <span className="setup__charName">{c.name}</span>
-              <span className="setup__charRealm">{REALM_NAME[c.realm]}</span>
-              <span className="setup__charDeck">{c.starterName}</span>
-            </button>
-          ))}
-        </div>
-      </section>
+      <CharacterPicker value={char} onChange={setChar} />
 
       <section aria-labelledby="vs">
         <h2 id="vs" className="setup__h">

@@ -64,6 +64,9 @@ export function MulliganPrompt(props: {
   onSubmit: (a: Action) => void;
 }) {
   const hand = props.view.players[props.view.viewer].hand ?? [];
+  // every card of the hand fits on one row, whatever the window size
+  const inner = Math.min(960, window.innerWidth * 0.96) - 56 - 13 * Math.max(0, hand.length - 1);
+  const cardW = Math.max(110, Math.min(190, Math.floor(inner / Math.max(1, hand.length))));
   const [replace, setReplace] = useState<ReadonlySet<InstanceId>>(new Set());
   const toggle = (id: InstanceId) =>
     setReplace((prev) => {
@@ -101,7 +104,7 @@ export function MulliganPrompt(props: {
               aria-pressed={out}
               aria-label={`${def.name}${out ? ', will be replaced' : ', keep'}`}
             >
-              <Card def={def} width={190} playable={!out} dimmed={out} />
+              <Card def={def} width={cardW} playable={!out} dimmed={out} />
               {out && <span className="mull__tag">Replace</span>}
             </button>
           );

@@ -3,7 +3,7 @@
 // The run is saved to this browser after every step and can be exported to a file.
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { CHARACTERS, character, type CharacterId } from '@sr/content';
+import { character, type CharacterId } from '@sr/content';
 import {
   REALM_LABEL,
   RunError,
@@ -26,7 +26,8 @@ import {
   type RunState,
 } from '@sr/campaign';
 import { DuelView } from '../play/DuelView';
-import { MapView } from './MapView';
+import { CharacterPicker } from './CharacterPicker';
+import { MapLegend, MapView } from './MapView';
 import { CardOffer, DeckModal, EventView, MerchantView, ShrineView } from './Pickers';
 import {
   clearDuelStarted,
@@ -45,13 +46,6 @@ const newSeed = (): string =>
 
 const duelKey = (r: RunState): string =>
   `${r.seed}:${r.context?.nodeId ?? ''}:${r.stats.duelsWon}:${r.stats.duelsLost}`;
-
-const REALM_NAME: Record<string, string> = {
-  aurelion: 'Aurelion',
-  nexus: 'Nexus-9',
-  wyldmaw: 'Wyldmaw',
-  umbral: 'Umbral Veil',
-};
 
 export default function RunScreen() {
   // Resuming into a duel that was already begun counts as a loss: closing the page is not a free retry.
@@ -147,7 +141,7 @@ export default function RunScreen() {
   }
 
   return (
-    <main className="run">
+    <main className="run" data-realm={run.phase === 'map' ? run.map.realm : undefined}>
       <RunBar
         run={run}
         onDeck={() => setShowDeck(true)}
@@ -189,42 +183,26 @@ function Sanctum(props: {
   notice: string | null;
 }) {
   const [pick, setPick] = useState<CharacterId>('maren');
-  const c = character(pick);
   return (
-    <main className="setup">
+    <main className="setup setup--wide">
       <a className="btn btn--small setup__back" href="#/">
         <span>Back</span>
       </a>
-      <h1 className="setup__title">The Sanctum</h1>
-      <p className="setup__lead">
-        Choose a Riftwalker and begin a run: five stages, each ending in a Warden. Win duels, add
-        cards to your deck, and survive. Lose a duel and you lose Resolve; lose all of it and the
-        run collapses. Early alpha: the difficulty is not tuned yet.
-      </p>
-      <div className="setup__chars" role="radiogroup" aria-label="Riftwalker">
-        {CHARACTERS.map((x) => (
-          <button
-            key={x.id}
-            role="radio"
-            aria-checked={pick === x.id}
-            className={`setup__char realm--${x.realm}${pick === x.id ? ' is-on' : ''}`}
-            onClick={() => setPick(x.id)}
-          >
-            <span className="setup__charName">{x.name}</span>
-            <span className="setup__charRealm">{REALM_NAME[x.realm]}</span>
-            <span className="setup__charDeck">{x.starterName}</span>
-          </button>
-        ))}
-      </div>
-      <p className="setup__lead">
-        <b>{c.name}</b> starts with a 20-card deck, <i>{c.starterName}</i>.
-      </p>
+      <header className="setup__head">
+        <h1 className="setup__title">The Sanctum</h1>
+        <p className="setup__lead">
+          Choose a Riftwalker and begin a run: five stages, each ending in a Warden. Win duels, add
+          cards to your deck, and survive. Lose a duel and you lose Resolve; lose all of it and the
+          run collapses.
+        </p>
+      </header>
+      <CharacterPicker value={pick} onChange={setPick} />
       {props.notice && (
         <p className="run__notice" role="alert">
           {props.notice}
         </p>
       )}
-      <div className="modal__row">
+      <div className="setup__actions">
         <button className="btn btn--primary setup__go" onClick={() => props.onStart(pick)}>
           <span>Begin the run</span>
         </button>
@@ -238,6 +216,7 @@ function Sanctum(props: {
           />
         </label>
       </div>
+      <p className="setup__note">Early alpha: the difficulty is not tuned yet.</p>
     </main>
   );
 }
@@ -310,6 +289,7 @@ function Body(props: {
               onEnter={(id) => act((r) => enterNode(r, id))}
             />
           </div>
+          <MapLegend />
         </section>
       );
     case 'reward':

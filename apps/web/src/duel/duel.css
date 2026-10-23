@@ -307,3 +307,29 @@
   opacity: 0.4;
   pointer-events: none;
 }
+
+/* loading: a ring that turns, so a slow start never looks frozen */
+.loading::before {
+  content: '';
+  display: block;
+  width: 2.2rem;
+  height: 2.2rem;
+  margin: 0 auto 0.9rem;
+  border-radius: 50%;
+  border: 3px solid rgb(143 91 255 / 0.3);
+  border-top-color: var(--c-gold-light);
+  animation: spin 900ms linear infinite;
+}
+.loading--error::before {
+  display: none;
+}
+@keyframes spin {
+  to {
+    rotate: 360deg;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .loading::before {
+    animation-duration: 2.5s;
+  }
+}

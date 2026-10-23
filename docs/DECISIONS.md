@@ -303,4 +303,9 @@ consistent with the docs" rule and can be revisited.
     with simple board targets is answered the same way. Several modes (Overclock, Ascend, set face-down...) still ask which mode first,
     and anything with multiple or off-board targets falls back to the list. The client never decides what is legal: every option still
     comes from `legalActions()`. Units that can attack, flip or use an ability show a ready indicator.
+83. **Phase 5 (juice) →** one owner for the animation clock (`duel/scene/timescale.ts`): the effective GSAP timeline scale is the
+    speed setting times the slowest active hold (trap-reveal slow-mo, hit-stop). Screen shake and hit-stop scale with damage
+    (`shakeFor`, `hitStopFor`); reduced effects halves the shake and drops hit-stop, and prefers-reduced-motion drops both. Sound is
+    synthesized with the Web Audio API (`audio/sfx.ts`), so there are no audio assets; it is on by default at half volume and can be
+    muted. Every scene event already had a sound hook; they now play. Real recorded sound can replace the recipes later.
 

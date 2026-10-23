@@ -112,6 +112,7 @@ export async function replayBatch(b: Batch, env: ReplayEnv): Promise<void> {
       case 'cardPlayed': {
         const d = defOf(e.cardId);
         if (d && (d.type === 'spell' || d.type === 'rift')) {
+          scene.onSound('cast');
           await scene.traps.cast(d, sideOf(e.player));
         }
         break;

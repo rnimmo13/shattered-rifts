@@ -4,6 +4,8 @@
 // and each of its actions is animated before the next one begins.
 
 import { gsap } from 'gsap';
+import { getSound, play, setSound } from '../audio/sfx';
+import { setBaseSpeed } from '../duel/scene/timescale';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { Action, CardDef, GameView, InstanceId } from '@sr/engine';
 import { CARD_DB, character, enemy } from '@sr/content';
@@ -34,6 +36,8 @@ import {
 import {
   ActionBar,
   Banner,
+  DamageFlash,
+  TurnPill,
   FoePanel,
   GameOver,
   LogPanel,
@@ -102,6 +106,11 @@ export function DuelView(props: {
   const [showLog, setShowLog] = useState(true);
   const [showSettings, setShowSettings] = useState(false);
   const [showHelp, setShowHelp] = useState(false);
+  const [sound, setSoundState] = useState(getSound);
+  const [flash, setFlash] = useState<{ id: number; kind: 'hurt' | 'strike' }>({
+    id: 0,
+    kind: 'hurt',
+  });
   const [hoverHand, setHoverHand] = useState<HandCard | null>(null);
   const [hoverBoard, setHoverBoard] = useState<InspectInfo | null>(null);
   const hoverId = useRef<string | null>(null);
@@ -131,6 +140,7 @@ export function DuelView(props: {
 
   useEffect(() => {
     speedRef.current = speed;
+    setBaseSpeed(speed);
   }, [speed]);
 
   // ---- boot: the scene, then the session --------------------------------------------------------
@@ -145,6 +155,7 @@ export function DuelView(props: {
       banner: (text, tone) =>
         new Promise<void>((resolve) => {
           setBanner({ text, tone, id: ++bannerId.current });
+          play('turn');
           window.setTimeout(() => {
             setBanner(null);
             resolve();
@@ -154,6 +165,12 @@ export function DuelView(props: {
         const f: Float = { id: ++floatId.current, player, text: String(amount), kind };
         setFloats((cur) => [...cur, f]);
         window.setTimeout(() => setFloats((cur) => cur.filter((x) => x.id !== f.id)), 1400);
+        if (kind === 'damage') {
+          // taking a hit shakes the board and washes the screen red; dealing one is a gold flash
+          scene.current?.impact(amount * 1.3);
+          setFlash({ id: ++floatId.current, kind: player === HUMAN ? 'hurt' : 'strike' });
+          play('hit');
+        }
       },
       log: (line) => setLog((cur) => [...cur.slice(-80), line]),
     };
@@ -167,6 +184,7 @@ export function DuelView(props: {
         created = s;
         scene.current = s;
         s.setBottomReserve(handReserve(handCardWidth(window.innerWidth)));
+        s.onSound = play;
         const env = {
           scene: s,
           hud: bus,
@@ -665,24 +683,34 @@ export function DuelView(props: {
                 <span>Forfeit duel</span>
               </button>
             )}
-            <p className="duel__label">
-              {view.active === HUMAN ? 'Your turn' : "Enemy's turn"} · Turn {view.turn}
-              {busy && view.winner === null ? ' · …' : ''}
-            </p>
+            <TurnPill
+              turn={view.turn}
+              mine={view.active === HUMAN}
+              thinking={busy && view.winner === null}
+              over={view.winner !== null}
+            />
           </header>
 
           <FoePanel
             view={view}
             name={enemy(setup.enemyId).name}
+            realm={enemy(setup.enemyId).realm}
             targetable={inputOpen && faceTargetable}
             floats={floats}
             onFace={attackFace}
           />
-          <SelfPanel view={view} name={myName} floats={floats} />
+          <SelfPanel
+            view={view}
+            name={myName}
+            realm={character(setup.character).realm}
+            floats={floats}
+          />
+          {mode !== 'reduced' && <DamageFlash id={flash.id} kind={flash.kind} />}
 
           {showLog && <LogPanel lines={log} />}
 
           <Hand
+            onSound={play}
             cards={handCards}
             mana={(me?.mana ?? 0) + (me?.tempMana ?? 0)}
             locked={!inputOpen || !!targetActions}
@@ -764,7 +792,7 @@ export function DuelView(props: {
             />
           )}
 
-          {banner && <Banner {...banner} />}
+          {banner && <Banner {...banner} speed={speed} />}
           <Inspector
             info={
               hoverHand && handCards.some((c) => c.uid === hoverHand.uid)
@@ -823,6 +851,41 @@ export function DuelView(props: {
                   <span className="toggle__text">
                     <span className="toggle__label">Duel log</span>
                   </span>
+                </label>
+                <label className="toggle">
+                  <input
+                    className="toggle__input"
+                    type="checkbox"
+                    checked={sound.on}
+                    onChange={(e) => {
+                      setSound({ on: e.target.checked });
+                      setSoundState(getSound());
+                      if (e.target.checked) play('click');
+                    }}
+                  />
+                  <span className="toggle__track" aria-hidden>
+                    <span className="toggle__thumb" />
+                  </span>
+                  <span className="toggle__text">
+                    <span className="toggle__label">Sound</span>
+                  </span>
+                </label>
+                <label className="play__volume">
+                  <span className="toggle__label">Volume</span>
+                  <input
+                    type="range"
+                    min={0}
+                    max={1}
+                    step={0.05}
+                    value={sound.volume}
+                    disabled={!sound.on}
+                    onChange={(e) => {
+                      setSound({ volume: Number(e.target.value) });
+                      setSoundState(getSound());
+                    }}
+                    onPointerUp={() => play('hit')}
+                    aria-label="Volume"
+                  />
                 </label>
                 <div className="play__speed" role="group" aria-label="Animation speed">
                   <span className="toggle__label">Speed</span>

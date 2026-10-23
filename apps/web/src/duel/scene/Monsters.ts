@@ -18,6 +18,7 @@ export type SoundName =
   | 'death'
   | 'buff'
   | 'select'
+  | 'cast'
   | 'trapSet'
   | 'trapCharge'
   | 'trapReveal'
@@ -88,6 +89,8 @@ export interface MonsterHost {
   profile: () => EffectsProfile;
   sound: (name: SoundName) => void;
   slot: (key: string) => SlotGeom | undefined;
+  /** a blow landed: shake the screen / stop time a moment, scaled by size */
+  impact: (amount: number) => void;
 }
 
 export class Monsters {
@@ -484,6 +487,15 @@ export class Monsters {
     if (!m || m.dying) return;
     const p = this.h.profile();
     this.h.sound('hit');
+    this.h.impact(amount);
+    if (!p.still && p.particles > 0 && amount > 0)
+      this.sparks(
+        m.geom.x,
+        m.geom.y - m.height * 0.5,
+        Math.min(10, 3 + amount * 1.5),
+        hex(color.emberGlow),
+        90,
+      );
     gsap.killTweensOf(m.flash);
     m.flash.tint = 0xffffff;
     this.g.fromTo(m.flash, { alpha: 1 }, { alpha: 0, duration: 0.28, ease: ease.out.gsap });
@@ -510,7 +522,12 @@ export class Monsters {
       tl.to(m.body.scale, { x: 1, y: 1, duration: 0.2, ease: ease.pop.gsap }, '<');
     }
     if (amount > 0)
-      this.floatText(m, `-${amount}`, hex(color.blood), 1 + Math.min(0.8, amount * 0.08));
+      this.floatText(
+        m,
+        `-${amount}`,
+        amount >= 4 ? hex(color.emberGlow) : hex(color.blood),
+        1 + Math.min(1.2, amount * 0.12),
+      );
     if (newGuard !== undefined) this.setBadge(m.guard, newGuard);
   }
 
@@ -554,6 +571,7 @@ export class Monsters {
     if (this.selected === key) this.select(null);
     const p = this.h.profile();
     this.h.sound('death');
+    this.h.impact(3.5);
     return new Promise((resolve) => {
       this.pending.add(resolve);
       const shardTex: Texture[] = [];

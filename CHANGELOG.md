@@ -5,6 +5,16 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added
+- **Juice pass.** Hits now land with weight: the screen shakes in proportion to the damage, big blows freeze the game
+  for a beat (hit-stop), struck monsters throw sparks and bigger damage numbers, and taking damage washes the screen red.
+  Essence bars trail a pale "ghost" so you can see what you just lost, numbers pop when they change, and the turn
+  banner sweeps in. There is now sound (all synthesized, no files): summons, attacks, hits, deaths, spells, trap
+  reveals, turn changes and a win/lose fanfare, with a Sound toggle and Volume slider in Settings. The 1x/2x/4x speed
+  setting now speeds up the animations too, not just the pauses between them.
+- **Interface polish.** The duel has a proper opponent and player panel (crest, Essence bar, Mana crystals), an
+  always-visible "Your turn / Enemy turn" pill and a titled log. The opening hand always fits on one row. The Sanctum
+  and practice setup are centred and show each Riftwalker's Sigil, playstyle and full starter deck. The stage map is
+  larger, tinted by realm, and has a legend. The title screen shows all four Riftwalkers and leads with Begin Run.
 - **Bigger card text, "this unit can act" arrows, and no more target menus.** Card rules text is much larger
   (and the art window shorter to make room). Your units that can attack or use an ability now show a pulsing
   light at their feet and a bobbing arrow above. Targeted spells now cast the moment you drop them on a valid

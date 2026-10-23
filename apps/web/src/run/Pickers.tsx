@@ -41,6 +41,32 @@ function Pickable(props: {
   );
 }
 
+/** A compact, readable list of a deck's cards (grouped, with counts). Hover any card to read it. */
+export function DeckStrip(props: { deck: readonly string[]; width?: number }) {
+  const [hover, setHover] = useState<InspectInfo | null>(null);
+  const groups = useMemo(() => {
+    const m = new Map<string, number>();
+    for (const id of props.deck) m.set(id, (m.get(id) ?? 0) + 1);
+    return [...m.entries()].sort(
+      (a, b) => (defOf(a[0])?.cost ?? 0) - (defOf(b[0])?.cost ?? 0) || a[0].localeCompare(b[0]),
+    );
+  }, [props.deck]);
+  return (
+    <div className="deckstrip">
+      {groups.map(([id, n]) => (
+        <Pickable
+          key={id}
+          id={id}
+          width={props.width ?? 96}
+          onHover={setHover}
+          badge={n > 1 ? `×${n}` : ''}
+        />
+      ))}
+      <Inspector info={hover} />
+    </div>
+  );
+}
+
 export function CardOffer(props: {
   title: string;
   hint: string;

@@ -777,3 +777,393 @@
   font-size: 0.8rem;
   color: var(--c-text-dim);
 }
+
+/* ======================= Phase 5 polish: HUD, juice ======================= */
+
+/* crest: a round stand-in portrait in the realm's colours */
+.crest {
+  flex: none;
+  width: 3.4rem;
+  height: 3.4rem;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  border: 2px solid var(--c-gold);
+  background: radial-gradient(
+    circle at 35% 28%,
+    var(--crest-a, #3a4a8a),
+    var(--crest-b, #0c1330) 75%
+  );
+  box-shadow:
+    0 0 0 3px rgb(0 0 0 / 0.5),
+    0 0 14px var(--crest-glow, rgb(212 168 75 / 0.5));
+}
+.crest b {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 900;
+  color: var(--c-ivory);
+  text-shadow: 0 2px 4px rgb(0 0 0 / 0.8);
+}
+.crest--aurelion {
+  --crest-a: #f3d58a;
+  --crest-b: #3a3d8a;
+  --crest-glow: rgb(246 220 148 / 0.6);
+}
+.crest--nexus {
+  --crest-a: #6fe6ff;
+  --crest-b: #0b3f55;
+  --crest-glow: rgb(54 224 255 / 0.6);
+}
+.crest--wyldmaw {
+  --crest-a: #ff8a6a;
+  --crest-b: #5a1020;
+  --crest-glow: rgb(255 106 82 / 0.6);
+}
+.crest--umbral {
+  --crest-a: #b99aff;
+  --crest-b: #2b1654;
+  --crest-glow: rgb(143 91 255 / 0.65);
+}
+.crest--all {
+  --crest-a: #ff4fd8;
+  --crest-b: #1f3068;
+  --crest-glow: rgb(255 79 216 / 0.6);
+}
+.crest--foe {
+  border-color: #ff8aa8;
+}
+
+/* the opponent's panel */
+.foewrap {
+  position: absolute;
+  left: 50%;
+  top: 0.7rem;
+  translate: -50% 0;
+  z-index: 25;
+  display: grid;
+  justify-items: center;
+}
+.foewrap .foe {
+  position: relative;
+  left: auto;
+  top: auto;
+  translate: none;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  min-width: 22rem;
+  padding: 0.55rem 1.1rem 0.6rem 0.6rem;
+}
+.foe__body {
+  flex: 1;
+  display: grid;
+  gap: 0.3rem;
+}
+.foe__name {
+  font-size: 1.02rem;
+}
+.foe__counts {
+  gap: 0.7rem;
+}
+.foewrap .foe__backs {
+  position: static;
+  display: flex;
+  margin-top: 0.15rem;
+  height: 1.4rem;
+}
+.foewrap .foe__backs i {
+  width: 1.1rem;
+  height: 1.6rem;
+  margin-left: -0.55rem;
+  transform-origin: 50% 0;
+}
+
+/* essence bar: a pale ghost trails behind the real bar */
+.ess {
+  height: 1.5rem;
+}
+.ess__ghost {
+  position: absolute;
+  inset: 0 auto 0 0;
+  border-radius: inherit;
+  background: rgb(255 255 255 / 0.55);
+  transition: width 900ms var(--ease-out) 380ms;
+}
+.ess__fill {
+  transition: width 260ms var(--ease-out);
+}
+.ess__num {
+  animation: num-pop 380ms var(--ease-pop);
+}
+@keyframes num-pop {
+  0% {
+    transform: scale(1.5);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* your panel */
+.self {
+  min-width: 17rem;
+}
+.self__head {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+}
+.self__head .self__top {
+  flex: 1;
+}
+.self__mana {
+  gap: 0.7rem;
+}
+.mana__gem span {
+  display: block;
+  animation: num-pop 380ms var(--ease-pop);
+}
+.pips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.22rem;
+  max-width: 9rem;
+}
+.pips i {
+  width: 0.6rem;
+  height: 0.6rem;
+  rotate: 45deg;
+  border-radius: 2px;
+  border: 1px solid rgb(54 224 255 / 0.45);
+  background: rgb(0 0 0 / 0.4);
+  transition:
+    background var(--t-base) var(--ease-out),
+    box-shadow var(--t-base) var(--ease-out);
+}
+.pips i.is-full {
+  background: linear-gradient(135deg, #b9f2ff, var(--c-cyan));
+  box-shadow: 0 0 8px rgb(54 224 255 / 0.8);
+}
+.self__counts {
+  display: flex;
+  gap: 1rem;
+  margin: 0;
+  font-size: 0.78rem;
+  color: var(--c-text-dim);
+}
+.self__counts b {
+  color: var(--c-ivory);
+}
+
+/* whose turn it is */
+.turnpill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.4rem 1rem 0.4rem 0.8rem;
+  border-radius: 999px;
+  font-family: var(--font-display);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  background: rgb(8 10 20 / 0.82);
+  border: 1px solid var(--c-gold);
+  box-shadow: var(--shadow-soft);
+}
+.turnpill b {
+  font-size: 0.85rem;
+  color: var(--c-gold-light);
+}
+.turnpill i {
+  font-style: normal;
+  font-size: 0.7rem;
+  color: var(--c-text-dim);
+  letter-spacing: 0.06em;
+}
+.turnpill--foe {
+  border-color: #ff8aa8;
+}
+.turnpill--foe b {
+  color: #ff9aa8;
+}
+.turnpill__dot {
+  width: 0.6rem;
+  height: 0.6rem;
+  border-radius: 50%;
+  background: var(--c-gold);
+  box-shadow: 0 0 8px currentColor;
+}
+.turnpill--foe .turnpill__dot {
+  background: #ff5a86;
+}
+.turnpill__dot.is-busy {
+  animation: dot-pulse 0.9s var(--ease-breathe) infinite;
+}
+@keyframes dot-pulse {
+  50% {
+    opacity: 0.25;
+    scale: 0.7;
+  }
+}
+
+/* damage wash over the screen edges */
+.dmgflash {
+  position: fixed;
+  inset: 0;
+  z-index: 55;
+  pointer-events: none;
+  animation: flash-out 520ms var(--ease-out) forwards;
+}
+.dmgflash--hurt {
+  background: radial-gradient(ellipse at center, transparent 45%, rgb(209 47 72 / 0.55) 100%);
+}
+.dmgflash--strike {
+  background: radial-gradient(ellipse at center, transparent 55%, rgb(246 220 148 / 0.32) 100%);
+}
+@keyframes flash-out {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+/* turn banner: a bright line sweeps in behind the words */
+.banner__streak {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--c-gold-light), transparent);
+  box-shadow: 0 0 18px var(--c-gold);
+  animation: streak 900ms var(--ease-out) forwards;
+}
+.banner--opp .banner__streak {
+  background: linear-gradient(90deg, transparent, #ff8aa8, transparent);
+  box-shadow: 0 0 18px #ff5a86;
+}
+@keyframes streak {
+  0% {
+    transform: scaleX(0);
+    opacity: 1;
+  }
+  60% {
+    opacity: 1;
+  }
+  100% {
+    transform: scaleX(1);
+    opacity: 0;
+  }
+}
+.banner span {
+  animation: banner-word 900ms var(--ease-out) forwards;
+}
+@keyframes banner-word {
+  0% {
+    letter-spacing: 0.7em;
+    opacity: 0;
+  }
+  30% {
+    opacity: 1;
+  }
+  100% {
+    letter-spacing: 0.2em;
+  }
+}
+
+/* the log */
+.log {
+  display: grid;
+  grid-template-rows: auto 1fr;
+}
+.log__title {
+  margin: 0;
+  padding: 0.35rem 0.7rem;
+  font-family: var(--font-display);
+  font-size: 0.68rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--c-gold-light);
+  border-bottom: 1px solid rgb(212 168 75 / 0.25);
+}
+.log .is-turn {
+  margin-top: 0.4rem;
+  color: var(--c-gold-light);
+  font-weight: 600;
+}
+.log__scroll {
+  min-height: 0;
+}
+
+/* settings extras */
+.play__volume {
+  display: grid;
+  gap: 0.25rem;
+}
+.play__volume input[type='range'] {
+  width: 100%;
+  accent-color: var(--c-gold);
+}
+
+/* opening hand: all cards on one row */
+.mull {
+  flex-wrap: nowrap;
+  gap: 0.8rem;
+}
+
+/* ---- review fixes ---- */
+/* the card reader is anchored to the screen, wherever it is used */
+.inspect {
+  position: fixed;
+  max-height: calc(100vh - 17rem);
+}
+/* the action bar sits above the (taller) player panel */
+.actionbar {
+  bottom: 12.6rem;
+}
+@media (max-width: 1280px) {
+  .self {
+    min-width: 0;
+    width: 14.5rem;
+  }
+  .self__counts {
+    display: none;
+  }
+  .pips {
+    max-width: 6rem;
+  }
+}
+/* banner / streak follow the speed setting */
+.banner {
+  animation-duration: var(--banner-ms, 900ms);
+}
+.banner span,
+.banner__streak {
+  animation-duration: var(--banner-ms, 900ms);
+}
+/* respect "reduce motion" for the new effects */
+@media (prefers-reduced-motion: reduce) {
+  .dmgflash,
+  .banner__streak {
+    display: none;
+  }
+  .banner span {
+    animation: none;
+  }
+  .turnpill__dot.is-busy,
+  .foe.is-targetable,
+  .endturn.is-pulsing,
+  .ess__num,
+  .mana__gem span {
+    animation: none;
+  }
+  .ess__ghost,
+  .ess__fill {
+    transition: none;
+  }
+}
+.reduce-fx .dmgflash {
+  display: none;
+}

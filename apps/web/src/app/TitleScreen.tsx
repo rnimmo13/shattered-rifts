@@ -13,7 +13,7 @@ const CHARACTERS: CharacterTeaser[] = [
   { name: 'Ser Maren Ashcourt', realm: 'Aurelion', accent: color.gold },
   { name: 'Rivet', realm: 'Nexus-9', accent: color.cyan },
   { name: 'Kesh the Unfed', realm: 'Wyldmaw', accent: color.blood },
-  { name: 'Locked Riftwalker', realm: 'Umbral Veil', accent: color.violet, locked: true },
+  { name: 'Vesper Nightlace', realm: 'Umbral Veil', accent: color.violet },
 ];
 
 /** Title screen. The jagged SVG crack is the game's "shattering" motif. */
@@ -66,14 +66,14 @@ export function TitleScreen() {
       </ul>
 
       <div className="title__actions">
-        <a className="btn btn--primary" href="#/play">
-          Duel the AI
-        </a>
-        <a className="btn" href="#/duel">
-          Art preview
-        </a>
         <a className="btn btn--primary" href="#/run">
           Begin Run
+        </a>
+        <a className="btn" href="#/play">
+          Duel the AI
+        </a>
+        <a className="btn btn--ghost" href="#/duel">
+          Art preview
         </a>
       </div>
       <p id="cta-note" className="title__cta-note">

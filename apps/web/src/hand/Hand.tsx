@@ -121,7 +121,7 @@ export function Hand(props: HandProps) {
     () =>
       fanLayout(cards.length, {
         cardWidth: cardW,
-        maxSpread: Math.min(window.innerWidth * 0.62, cardW * 6.4),
+        maxSpread: Math.min(window.innerWidth * 0.54, cardW * 6.4),
         focus: drag?.armed ? null : focusIdx >= 0 ? focusIdx : null,
       }),
     [cards.length, cardW, focusIdx, drag?.armed],
