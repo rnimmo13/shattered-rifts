@@ -305,7 +305,7 @@ export class Traps {
       if (!still) {
         // slow-mo for the charge: real-time timer restores it so it can never get stuck
         holdSlow('trap', 0.35);
-        this.slowTimer = window.setTimeout(() => this.endSlowMo(), 650);
+        this.slowTimer = window.setTimeout(() => this.endSlowMo(), 380);
       }
 
       const tl = this.g.timeline({
@@ -318,6 +318,7 @@ export class Traps {
           resolve();
         },
       });
+      tl.timeScale(1.7);
       t.reveal = { tl, resolve };
 
       // 1. charge: the seal spins up, the core swells, the card rises and trembles
@@ -405,9 +406,9 @@ export class Traps {
         },
       });
       tl.to(sprite, { alpha: 1, duration: 0.15, ease: ease.out.gsap }, 0);
-      tl.to(sprite.scale, { x: k * 1.35, y: k * 1.35, duration: 0.4, ease: ease.pop.gsap }, 0);
-      tl.to(sprite, { y: 470, duration: 0.4, ease: ease.out.gsap }, 0);
-      tl.to(sprite, { alpha: 0, y: 440, duration: 0.3, ease: ease.in.gsap }, 0.95);
+      tl.to(sprite.scale, { x: k * 1.35, y: k * 1.35, duration: 0.24, ease: ease.pop.gsap }, 0);
+      tl.to(sprite, { y: 470, duration: 0.24, ease: ease.out.gsap }, 0);
+      tl.to(sprite, { alpha: 0, y: 445, duration: 0.2, ease: ease.in.gsap }, 0.42);
     });
   }
 

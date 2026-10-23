@@ -14,6 +14,7 @@ import type { EffectsProfile } from '../effects';
 import { FLOOR_SQUASH, floorTop, rows, slotGeometry, type SlotGeom } from './layout';
 import { Monsters, type SoundName } from './Monsters';
 import { Traps } from './Traps';
+import { Avatars, type AvatarSide } from './Avatars';
 import {
   getBaseSpeed,
   hitStopFor,
@@ -102,6 +103,7 @@ export class BattlefieldScene {
 
   /** Child layers later phases draw into (units, traps, effects). */
   readonly layers = {
+    avatars: new Container(),
     units: new Container(),
     traps: new Container(),
     fx: new Container(),
@@ -113,6 +115,8 @@ export class BattlefieldScene {
   readonly monsters: Monsters;
   /** Trap sigils and the reveal sequence (Phase 4). */
   readonly traps: Traps;
+  /** The two Riftwalkers standing on the field. */
+  readonly avatars: Avatars;
   /** Sound hook: every major visual event calls this (wired to audio later). */
   onSound: (name: SoundName) => void = () => undefined;
   private bottomReserve = 0;
@@ -209,7 +213,7 @@ export class BattlefieldScene {
     this.buildSlots();
 
     // --- later phases draw here ---
-    this.world.addChild(this.layers.traps, this.layers.units, this.layers.fx);
+    this.world.addChild(this.layers.avatars, this.layers.traps, this.layers.units, this.layers.fx);
     // a huge black sheet that dims the whole board (and beyond the stage) during a trap reveal
     const dim = new Sprite(Texture.WHITE);
     dim.tint = 0x000000;
@@ -229,6 +233,11 @@ export class BattlefieldScene {
       slot: (key) => this.slotViews.find((v) => slotKey(v.geom) === key)?.geom,
       impact: (n) => this.impact(n),
     });
+    this.avatars = new Avatars({
+      container: this.layers.avatars,
+      glowTex: this.glowTex,
+      profile: () => this.profile,
+    });
     this.monsters = new Monsters({
       container: this.layers.units,
       fx: this.layers.fx,
@@ -237,6 +246,7 @@ export class BattlefieldScene {
       sound: (n) => this.onSound(n),
       slot: (key) => this.slotViews.find((v) => slotKey(v.geom) === key)?.geom,
       impact: (n) => this.impact(n),
+      facePos: (side) => this.avatars.facePos(side),
     });
 
     // --- atmosphere over the board ---
@@ -374,6 +384,16 @@ export class BattlefieldScene {
     return best;
   }
 
+  /** Which Riftwalker (if any) is under a screen point: clicking one attacks that player. */
+  avatarAtClient(clientX: number, clientY: number): AvatarSide | null {
+    const rect = this.host.getBoundingClientRect();
+    const k = this.world.scale.x;
+    return this.avatars.hitTest(
+      (clientX - rect.left - this.world.position.x) / k,
+      (clientY - rect.top - this.world.position.y) / k,
+    );
+  }
+
   /** Where a slot sits on screen (client px): arrow endpoints, effects anchored in the DOM. */
   slotClientCenter(key: string): { x: number; y: number } | null {
     const v = this.slotViews.find((sv) => slotKey(sv.geom) === key);
@@ -493,6 +513,7 @@ export class BattlefieldScene {
     }
 
     this.monsters.tick(t, p.still);
+    this.avatars.tick(t, p.still);
     this.traps.tick(t, dt, p.still);
 
     // slot rings shimmer very slightly, each on its own phase
@@ -624,6 +645,7 @@ export class BattlefieldScene {
     gsap.killTweensOf(this.slotViews.flatMap((v) => [v.glow, v.dim]));
     this.monsters.destroy();
     this.traps.destroy();
+    this.avatars.destroy();
     this.app.destroy({ removeView: true }, { children: true, texture: true });
   }
 }

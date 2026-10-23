@@ -1106,3 +1106,15 @@ export function cardArtUrl(def: CardDef): string {
   }
   return u;
 }
+
+const avatarCache = new Map<string, HTMLCanvasElement>();
+/** A standing figure for a Riftwalker or enemy: a cut-out like a monster's, painted in a realm's colours. */
+export function avatarCutout(kind: Archetype, realm: Realm, seedKey: string): HTMLCanvasElement {
+  const key = `${kind}:${realm}:${seedKey}`;
+  const hit = avatarCache.get(key);
+  if (hit) return hit;
+  const [c, g] = canvas(420, 560);
+  PAINT[kind]({ g, W: 420, H: 560, p: PALETTE[realm], r: rng(hashSeed(seedKey)) });
+  avatarCache.set(key, c);
+  return c;
+}

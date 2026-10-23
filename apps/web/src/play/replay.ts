@@ -113,7 +113,10 @@ export async function replayBatch(b: Batch, env: ReplayEnv): Promise<void> {
         const d = defOf(e.cardId);
         if (d && (d.type === 'spell' || d.type === 'rift')) {
           scene.onSound('cast');
-          await scene.traps.cast(d, sideOf(e.player));
+          scene.avatars.cast(sideOf(e.player));
+          // the card flies in and fades on its own: the next thing happens straight away
+          void scene.traps.cast(d, sideOf(e.player));
+          await wait(140);
         }
         break;
       }
@@ -124,7 +127,7 @@ export async function replayBatch(b: Batch, env: ReplayEnv): Promise<void> {
         if (d && !scene.monsters.has(k)) {
           const st = b.after.stats[e.id];
           scene.monsters.summon(k, d, st?.power ?? d.power ?? 0, st?.guard ?? d.guard ?? 0);
-          await wait(260);
+          await wait(110);
         }
         break;
       }
@@ -133,7 +136,7 @@ export async function replayBatch(b: Batch, env: ReplayEnv): Promise<void> {
         const k = key(e.id);
         if (k && !scene.traps.has(k)) {
           scene.traps.setFaceDown(k);
-          await wait(320);
+          await wait(130);
         }
         break;
       }
@@ -142,7 +145,7 @@ export async function replayBatch(b: Batch, env: ReplayEnv): Promise<void> {
         const k = unitKey(e.player, e.slot);
         if (!scene.traps.has(k) && !scene.monsters.has(k)) {
           scene.traps.setFaceDown(k);
-          await wait(320);
+          await wait(130);
         }
         break;
       }
@@ -179,7 +182,7 @@ export async function replayBatch(b: Batch, env: ReplayEnv): Promise<void> {
             if (l) hud.log(l);
           }
         });
-        await wait(180);
+        await wait(50);
         break;
       }
 
@@ -206,11 +209,12 @@ export async function replayBatch(b: Batch, env: ReplayEnv): Promise<void> {
       case 'unitDestroyed':
       case 'cardDestroyed':
         impact(e);
-        await wait(e.type === 'unitDestroyed' ? 220 : 120);
+        await wait(e.type === 'unitDestroyed' ? 80 : 45);
         break;
 
       case 'gameOver':
-        await wait(600);
+        scene.avatars.finish(e.winner === 'draw' ? null : sideOf(e.winner));
+        await wait(400);
         break;
 
       default:

@@ -5,6 +5,8 @@
 
 import { gsap } from 'gsap';
 import { getSound, play, setSound } from '../audio/sfx';
+import { SPEEDS, loadSpeed, saveSpeed } from './prefs';
+import { characterAvatar, enemyAvatar } from '../art/avatars';
 import { setBaseSpeed } from '../duel/scene/timescale';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { Action, CardDef, GameView, InstanceId } from '@sr/engine';
@@ -58,8 +60,6 @@ interface Chooser {
   options: { label: string; action: Action }[];
 }
 
-const SPEEDS = [1, 2, 4] as const;
-
 export function DuelView(props: {
   setup: DuelSetup;
   onExit: () => void;
@@ -100,13 +100,20 @@ export function DuelView(props: {
   const legalRef = useRef<Action[]>([]);
   /** scene slot key -> the action that picks that target (kept in a ref for the pointer handler) */
   const targetRef = useRef<Map<string, Action> | null>(null);
+  const attackFaceRef = useRef<() => void>(() => undefined);
   const [mode, setMode] = useState<EffectsMode>(loadEffectsMode);
   const modeAtMount = useRef(mode);
-  const [speed, setSpeed] = useState<number>(1);
+  const [speed, setSpeedState] = useState<number>(loadSpeed);
+  const setSpeed = useCallback((v: number) => {
+    saveSpeed(v);
+    setSpeedState(v);
+  }, []);
   const [showLog, setShowLog] = useState(true);
   const [showSettings, setShowSettings] = useState(false);
   const [showHelp, setShowHelp] = useState(false);
   const [sound, setSoundState] = useState(getSound);
+  /** true while any batch of events is still being animated (the result screen waits for it) */
+  const [animating, setAnimating] = useState(false);
   const [flash, setFlash] = useState<{ id: number; kind: 'hurt' | 'strike' }>({
     id: 0,
     kind: 'hurt',
@@ -150,16 +157,18 @@ export function DuelView(props: {
     let cancelled = false;
     let created: BattlefieldScene | null = null;
     let sess: DuelSession | null = null;
+    let queue: Promise<void> = Promise.resolve();
+    let latest = 0;
+    let pendingReplays = 0;
 
     const bus: HudBus = {
       banner: (text, tone) =>
         new Promise<void>((resolve) => {
           setBanner({ text, tone, id: ++bannerId.current });
           play('turn');
-          window.setTimeout(() => {
-            setBanner(null);
-            resolve();
-          }, 900 / speedRef.current);
+          // the banner keeps sweeping for its full length, but the game moves on after a short beat
+          window.setTimeout(resolve, 260 / speedRef.current);
+          window.setTimeout(() => setBanner(null), 650 / speedRef.current);
         }),
       playerHit: (player, amount, kind) => {
         const f: Float = { id: ++floatId.current, player, text: String(amount), kind };
@@ -168,6 +177,7 @@ export function DuelView(props: {
         if (kind === 'damage') {
           // taking a hit shakes the board and washes the screen red; dealing one is a gold flash
           scene.current?.impact(amount * 1.3);
+          scene.current?.avatars.flinch(player === HUMAN ? 'me' : 'opp', amount);
           setFlash({ id: ++floatId.current, kind: player === HUMAN ? 'hurt' : 'strike' });
           play('hit');
         }
@@ -185,6 +195,8 @@ export function DuelView(props: {
         scene.current = s;
         s.setBottomReserve(handReserve(handCardWidth(window.innerWidth)));
         s.onSound = play;
+        s.avatars.set('me', characterAvatar(setup.character));
+        s.avatars.set('opp', enemyAvatar(enemy(setup.enemyId)));
         const env = {
           scene: s,
           hud: bus,
@@ -192,27 +204,52 @@ export function DuelView(props: {
           cancelled: () => cancelled,
         };
         sess = new DuelSession(setup, {
-          onBatch: async (b) => {
-            // your own action updates the hand and Mana at once; the enemy's land after their animation
+          onBatch: (b) => {
+            const mine = ++latest;
+            // your own action updates the hand and Mana at once
             if (b.actor === HUMAN) setView(b.after);
             // Animation is only a replay of an already-resolved game: if it throws or hangs, force the board
             // to match the real state and carry on. It must never end or freeze the duel.
-            try {
-              await Promise.race([
-                replayBatch(b, env),
-                new Promise<never>((_, reject) =>
-                  window.setTimeout(() => reject(new Error('animation timed out')), 25_000),
-                ),
-              ]);
-            } catch (e) {
-              console.warn('[duel] replay failed; resyncing the board', e);
+            pendingReplays++;
+            if (!cancelled) setAnimating(true);
+            const run = async () => {
+              // each replay can be told to stop (the watchdog): a timed-out replay must not keep touching the board
+              const abort = { v: false };
+              const benv = { ...env, cancelled: () => cancelled || abort.v };
+              let timer: number | undefined;
               try {
-                await reconcile(s, b.after, env);
-              } catch (e2) {
-                console.warn('[duel] resync failed', e2);
+                await Promise.race([
+                  replayBatch(b, benv),
+                  new Promise<never>((_, reject) => {
+                    timer = window.setTimeout(() => {
+                      abort.v = true;
+                      reject(new Error('animation timed out'));
+                    }, 25_000);
+                  }),
+                ]);
+              } catch (e) {
+                console.warn('[duel] replay failed; resyncing the board', e);
+                try {
+                  // the resync itself is bounded too, so nothing can block the queue forever
+                  await Promise.race([
+                    reconcile(s, b.after, { cancelled: () => cancelled }),
+                    new Promise<void>((r) => window.setTimeout(r, 5_000)),
+                  ]);
+                } catch (e2) {
+                  console.warn('[duel] resync failed', e2);
+                }
+              } finally {
+                if (timer !== undefined) window.clearTimeout(timer);
+                pendingReplays--;
+                if (pendingReplays === 0 && !cancelled) setAnimating(false);
               }
-            }
-            if (!cancelled) setView(b.after);
+              // only the newest batch may set the view, so a slow replay never rolls the screen back
+              if (!cancelled && mine === latest) setView(b.after);
+            };
+            // replays run one after another, in order; but YOUR actions never wait for them:
+            // you can chain the next play while the last one is still animating
+            queue = queue.then(run);
+            return b.actor === HUMAN ? Promise.resolve() : queue;
           },
           onIdle: () => {
             if (cancelled || !sess) return;
@@ -431,6 +468,11 @@ export function DuelView(props: {
       if (!sc || !v || busyRef.current) return;
       const g = sc.slotAtClient(e.clientX, e.clientY);
       const key = g ? slotKey(g) : null;
+      // clicking the enemy Riftwalker attacks them directly (same as the portrait)
+      if (!targetRef.current && scene.current?.avatarAtClient(e.clientX, e.clientY) === 'opp') {
+        attackFaceRef.current();
+        return;
+      }
       const tm = targetRef.current;
       if (tm) {
         // choosing a target: only a glowing target does anything
@@ -492,6 +534,11 @@ export function DuelView(props: {
       void submit({ type: 'attack', player: HUMAN, attacker: selectedId, target: 'face' });
     }
   }, [selectedId, faceTargetable, submit]);
+  useEffect(() => {
+    attackFaceRef.current = attackFace;
+    // the enemy Riftwalker glows when you can attack them
+    scene.current?.avatars.setTargetable('opp', inputOpen && faceTargetable);
+  }, [attackFace, inputOpen, faceTargetable, ready]);
 
   // ---- what the panels show ------------------------------------------------------------------------
   const pending = view?.pending && view.pending.player === HUMAN ? view.pending : null;
@@ -637,7 +684,8 @@ export function DuelView(props: {
     return () => window.clearTimeout(t);
   }, [botOn, inputOpen, legal, view, submit]);
 
-  const stuck = ready && !busy && !!view && view.winner === null && legal.length === 0 && !error;
+  const stuck =
+    ready && !busy && !animating && !!view && view.winner === null && legal.length === 0 && !error;
   const concede = () =>
     setChooser({
       title: 'Concede this duel?',
@@ -976,7 +1024,7 @@ export function DuelView(props: {
             />
           )}
 
-          {!busy && view.winner !== null && (
+          {!busy && !animating && view.winner !== null && (
             <GameOver
               winner={view.winner}
               onAgain={props.onAgain}

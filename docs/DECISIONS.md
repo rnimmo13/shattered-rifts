@@ -308,4 +308,12 @@ consistent with the docs" rule and can be revisited.
     (`shakeFor`, `hitStopFor`); reduced effects halves the shake and drops hit-stop, and prefers-reduced-motion drops both. Sound is
     synthesized with the Web Audio API (`audio/sfx.ts`), so there are no audio assets; it is on by default at half volume and can be
     muted. Every scene event already had a sound hook; they now play. Real recorded sound can replace the recipes later.
+84. **Pacing and input never blocked by animation (Robert's feedback: "drawn out", "can't chain actions") →** the duel screen keeps an
+    ordered animation queue: every batch of engine events replays in order, but a batch caused by the HUMAN returns to the session at
+    once, so `onIdle` re-opens input immediately and the player can chain actions while earlier animations play. A batch caused by
+    the AI is awaited, so the AI never acts faster than the screen can show. Only the newest batch may set the HUD view. Default animation
+    speed is 1.5x; beats were shortened (attacks ~0.5s, trap reveal ~1.7x faster, spell flourish ~0.7s and non-blocking, banner ~0.65s).
+85. **Riftwalker avatars on the field →** each side's Riftwalker is a standing figure (placeholder art from the same painters as monsters;
+    Maren knight, Rivet drone, Kesh beast, Vesper masked cultist; enemies by realm) at AVATAR_POS (me front-left, opponent back-right).
+    They are the visual target for attacks on the player, so a unit attacking "face" lunges at the opposing avatar.
 

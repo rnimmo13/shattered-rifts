@@ -162,7 +162,7 @@ export function Banner(props: {
     <div
       key={props.id}
       className={`banner banner--${props.tone}`}
-      style={{ '--banner-ms': `${900 / props.speed}ms` } as React.CSSProperties}
+      style={{ '--banner-ms': `${650 / props.speed}ms` } as React.CSSProperties}
       role="status"
       aria-live="polite"
     >

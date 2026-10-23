@@ -91,6 +91,8 @@ export interface MonsterHost {
   slot: (key: string) => SlotGeom | undefined;
   /** a blow landed: shake the screen / stop time a moment, scaled by size */
   impact: (amount: number) => void;
+  /** where an attack on that side's player lands (stage coordinates) */
+  facePos: (side: 'me' | 'opp') => { x: number; y: number };
 }
 
 export class Monsters {
@@ -275,6 +277,7 @@ export class Monsters {
     m.shadow.alpha = 0;
     m.busy++;
     const tl = this.g.timeline({ onComplete: () => void m.busy-- });
+    tl.timeScale(1.4);
     // fall in, land with a squash, settle with a little overshoot
     tl.fromTo(m.body, { y: -drop }, { y: 0, duration: 0.32, ease: ease.in.gsap }, 0);
     tl.to(m.body, { alpha: 1, duration: 0.16, ease: ease.out.gsap }, 0);
@@ -433,8 +436,9 @@ export class Monsters {
     const tg = targetKey ? this.h.slot(targetKey) : undefined;
     const dir = m.side === 'me' ? -1 : 1;
     // face: aim at the middle of the enemy's back line
-    const tx = tg ? tg.x : 960;
-    const ty = tg ? tg.y : m.side === 'me' ? 420 : 900;
+    const face = this.h.facePos(m.side === 'me' ? 'opp' : 'me');
+    const tx = tg ? tg.x : face.x;
+    const ty = tg ? tg.y : face.y;
     const dx = tx - m.geom.x;
     const dy = ty - m.geom.y;
     const stop = 0.82;
@@ -455,6 +459,7 @@ export class Monsters {
           resolve();
         },
       });
+      tl.timeScale(1.6);
       this.h.sound('attackWindup');
       // anticipation: crouch and pull back
       tl.to(m.root, { x: m.geom.x + bx, y: m.geom.y + 4 + by, duration: 0.2, ease: ease.out.gsap });
@@ -636,7 +641,8 @@ export class Monsters {
           shards.push(s);
         }
       }
-      const tl = this.g.timeline({ delay: 0.3, onComplete: finish });
+      const tl = this.g.timeline({ delay: 0.12, onComplete: finish });
+      tl.timeScale(1.35);
       tl.call(() => {
         m.sprite.visible = false;
         m.flash.visible = false;

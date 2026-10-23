@@ -5,6 +5,16 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added
+- **Faster, snappier fights (Slay the Spire 2 pacing).** Attacks, summons, deaths, trap reveals and spell flourishes are
+  all much shorter, and the default animation speed is now 1.5x (Settings offers 1x, 1.5x, 2x and 4x and remembers
+  your choice). Spell cards no longer hold the board: they fly in and fade while the next thing already happens. And
+  your own actions never wait for animations: you can play your next card, attack, or end your turn while the last
+  play is still animating. (The enemy still waits its turn so you can follow what it does.)
+- **You can see the Riftwalkers.** Your character stands at the front left of the battlefield and the enemy at the back
+  right, each with a glowing aura. They breathe, flinch when they take damage, swell when they cast a spell, and the
+  loser crumples when the duel ends. The enemy Riftwalker lights up when you can attack them: click them (or their
+  portrait) to hit them directly.
+- **Card frames** now have a round cost orb at the top left and a centred name banner.
 - **Juice pass.** Hits now land with weight: the screen shakes in proportion to the damage, big blows freeze the game
   for a beat (hit-stop), struck monsters throw sparks and bigger damage numbers, and taking damage washes the screen red.
   Essence bars trail a pale "ghost" so you can see what you just lost, numbers pop when they change, and the turn

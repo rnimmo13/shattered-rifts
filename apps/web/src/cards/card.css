@@ -484,3 +484,35 @@
 .card__stat span {
   margin-top: -14px;
 }
+
+/* ---- Slay-the-Spire-style layout: a round cost orb top-left, a centred name banner ---- */
+.card__cost {
+  left: 4px;
+  right: auto;
+  top: 4px;
+  width: 96px;
+  height: 96px;
+  clip-path: none;
+  border-radius: 50%;
+  border: 6px solid var(--trim-hi);
+  background: radial-gradient(circle at 35% 28%, #d9f8ff, var(--c-cyan) 40%, #07506f 92%);
+  box-shadow:
+    0 0 0 4px rgb(0 0 0 / 0.6),
+    0 6px 14px rgb(0 0 0 / 0.6),
+    inset 0 -8px 16px rgb(0 0 0 / 0.25);
+  filter: none;
+  z-index: 3;
+}
+.card__cost span {
+  font-size: 70px;
+}
+.card__banner {
+  left: 100px;
+  right: 12px;
+  justify-content: center;
+  padding: 0 12px;
+}
+.card__name {
+  text-align: center;
+  font-size: 40px;
+}

@@ -87,3 +87,9 @@ export function slotGeometry(): SlotGeom[] {
 
 /** How squashed a circle on the floor looks at this camera (the floor is seen at a steep angle). */
 export const FLOOR_SQUASH = 0.46;
+
+/** Where each Riftwalker stands (stage coordinates, feet position) and how tall they are. */
+export const AVATAR_POS = {
+  me: { x: 215, y: 900, h: 380 },
+  opp: { x: 1700, y: 470, h: 280 },
+} as const;

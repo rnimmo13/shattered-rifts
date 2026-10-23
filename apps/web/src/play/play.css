@@ -1167,3 +1167,15 @@
 .reduce-fx .dmgflash {
   display: none;
 }
+
+/* the log sits below the enemy Riftwalker, not on top of them */
+.log {
+  top: 21rem;
+  height: 10rem;
+}
+@media (max-height: 800px) {
+  .log {
+    top: 19rem;
+    height: 8rem;
+  }
+}
