@@ -1332,3 +1332,40 @@
 .shop__foreign b {
   color: #ffc88a;
 }
+
+/* the Sanctum: the tiles on the left, the chosen Riftwalker standing on the right */
+.picker__stage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+}
+.picker__stage .picker__realms {
+  flex: 1 1 54rem;
+  max-width: 56rem;
+}
+.picker__figure {
+  flex: none;
+  margin: 0;
+  display: grid;
+  place-items: end center;
+}
+.picker__figure img {
+  height: min(24rem, 50vh);
+  width: auto;
+  filter: drop-shadow(0 12px 18px rgb(0 0 0 / 0.6));
+  animation: panel-in 0.35s var(--ease-out);
+}
+@media (max-width: 70rem) {
+  .picker__stage {
+    flex-direction: column;
+  }
+  .picker__figure img {
+    height: 14rem;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .picker__figure img {
+    animation: none;
+  }
+}

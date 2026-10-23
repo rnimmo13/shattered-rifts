@@ -65,6 +65,36 @@ function blessings(stage: number): PreludeOption[] {
     opt('keepsake', "Traveller's Keepsake", [{ k: 'potion' }, { k: 'shards', n: 40 }]),
     opt('trinket', 'A Trinket of the Road', [{ k: 'boon', rarity: 'common' }]),
     opt('nerve', 'Steeled Nerves', [{ k: 'resolve', n: 1 }]),
+    opt('whetstone', 'Whetstone and Oil', [
+      { k: 'upgrade', n: 1 },
+      { k: 'shards', n: 50 },
+    ]),
+    opt('frame', 'Sturdy Frame', [
+      { k: 'maxHp', n: 5 },
+      { k: 'shards', n: 40 },
+    ]),
+    opt('clear-out', 'A Clear-Out', [
+      { k: 'remove', n: 1 },
+      { k: 'card', rarity: 'common' },
+    ]),
+    opt('two-gifts', "Wayfinder's Gifts", [
+      { k: 'card', rarity: 'common' },
+      { k: 'card', rarity: 'common' },
+    ]),
+    opt('pilgrim', "Pilgrim's Blessing", [
+      { k: 'maxHp', n: 4 },
+      { k: 'upgrade', n: 1 },
+    ]),
+    opt('cache', 'A Hidden Cache', [{ k: 'shards', n: 110 + stage * 15 }]),
+    opt('lucky-find', 'A Lucky Find', [
+      { k: 'boon', rarity: 'common' },
+      { k: 'shards', n: 30 },
+    ]),
+    opt('calm-mind', 'A Calm Mind', [
+      { k: 'resolve', n: 1 },
+      { k: 'shards', n: 30 },
+    ]),
+    opt('apothecary', "Apothecary's Satchel", [{ k: 'potion' }, { k: 'upgrade', n: 1 }]),
   ];
 }
 
@@ -124,6 +154,75 @@ function bargains(stage: number): PreludeOption[] {
       [
         { k: 'hp', n: 12 },
         { k: 'card', rarity: 'ancestral' },
+      ],
+      true,
+    ),
+    opt(
+      'silver-sale',
+      'Sell the Silver',
+      [
+        { k: 'hp', n: 8 },
+        { k: 'shards', n: 150 + stage * 20 },
+      ],
+      true,
+    ),
+    opt(
+      'haunted-gift',
+      'A Haunted Gift',
+      [
+        { k: 'boon', rarity: 'uncommon' },
+        { k: 'wound', n: 1 },
+      ],
+      true,
+    ),
+    opt(
+      'blood-for-steel',
+      'Blood for Steel',
+      [
+        { k: 'hp', n: 10 },
+        { k: 'upgrade', n: 3 },
+      ],
+      true,
+    ),
+    opt(
+      'hollow-bargain',
+      'A Hollow Bargain',
+      [
+        { k: 'maxHp', n: -10 },
+        { k: 'card', rarity: 'rare' },
+      ],
+      true,
+    ),
+    opt(
+      'cursed-crown',
+      'The Cursed Crown',
+      [
+        { k: 'wound', n: 2 },
+        { k: 'boon', rarity: 'rare' },
+      ],
+      true,
+    ),
+    opt(
+      'fire-sale',
+      'Fire Sale',
+      [
+        { k: 'hp', n: 8 },
+        { k: 'remove', n: 3 },
+      ],
+      true,
+    ),
+    opt(
+      'reckless-haste',
+      'Reckless Haste',
+      [{ k: 'hp', n: 10 }, { k: 'potion' }, { k: 'potion' }],
+      true,
+    ),
+    opt(
+      'rift-tithe',
+      'The Rift-Tithe',
+      [
+        { k: 'maxHp', n: -6 },
+        { k: 'shards', n: 220 },
       ],
       true,
     ),

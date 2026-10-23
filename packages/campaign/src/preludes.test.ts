@@ -181,3 +181,18 @@ describe('what each effect does', () => {
     expect(parseRun(JSON.stringify(broken))).toBeNull();
   });
 });
+
+describe('the Threshold draws from a wide pool', () => {
+  it('always offers four options (three blessings and a bargain) but over many runs shows many different ones', () => {
+    const seen = new Set<string>();
+    const risky = new Set<string>();
+    for (let i = 0; i < 200; i++) {
+      const o = makePrelude(seedRng(`t${i}`), 'threshold', 1, 'aurelion').options;
+      expect(o).toHaveLength(4);
+      expect(o.filter((x) => x.risky)).toHaveLength(1);
+      for (const x of o) (x.risky ? risky : seen).add(x.id);
+    }
+    expect(seen.size).toBeGreaterThanOrEqual(15);
+    expect(risky.size).toBeGreaterThanOrEqual(14);
+  });
+});

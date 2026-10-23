@@ -7,6 +7,7 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ### Added (newest)
 - **30 new events (50 in all):** a ferry, a bone collector, a locked reliquary, a pact with the Hollow, a wishing stone, a bell tower and more. Most are a choice between two deals (HP, shards, cards, potions, Boons, max HP), and an event never shows up if you could not afford its choices.
 - **Starting kits are now three fixed choices, one per lane:** your usual starter with two plain cards swapped for two uncommon cards that show off the lane (for example Maren: Bulwark, Thorns or Sanctified). Same cards every run.
+- **0.9.0:** The Sanctum shows the chosen Riftwalker beside the tiles, and the Threshold draws from a bigger pool (17 blessings, 16 bargains).
 - **0.8.0:** All ten hero models redrawn (Scarlet, Astra and Rivet are women; Quill is now Scarlet, the necromancer is Dorian Blackthorn), 30 new events (50 in all), three preset lane starter kits per hero, tougher Ilvane, Rivet, Vesper and KP.
 - **How to play** is now tabs (Start here, A run, Combat, Card words, Statuses, Riftwalkers) with fold-away character entries instead of one long page.
 - **0.7.0:** Rift Tiers stop at 20, and continuing a loop heals you fully.
