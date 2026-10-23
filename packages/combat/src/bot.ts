@@ -1,0 +1,77 @@
+// A simple greedy bot: try every legal action one step ahead and keep the one that improves the position most.
+// Used by balance sims, the CLI and tests (it knows nothing about specific cards, only about the state).
+
+import { applyAction, legalActions } from './engine';
+import { describeIntent } from './view';
+import type { Action, CombatDb, CombatState, Side } from './types';
+import { other } from './types';
+
+function incoming(db: CombatDb, s: CombatState, me: Side): number {
+  let total = 0;
+  for (const u of s.sides[other(me)].units) {
+    const iv = describeIntent(db, s, u);
+    if (iv && iv.damage !== null) total += iv.damage * iv.hits;
+  }
+  return total;
+}
+
+/** How good the position is for `me` (higher is better). */
+export function evaluate(db: CombatDb, s: CombatState, me: Side): number {
+  if (s.winner === me) return 1e6;
+  if (s.winner) return -1e6;
+  const mine = s.sides[me];
+  const theirs = s.sides[other(me)];
+  const threat = s.mode === 'pve' ? incoming(db, s, me) : 0;
+  let v = 0;
+  for (const u of mine.units) {
+    if (u.kind === 'hero') {
+      v += u.hp + Math.min(u.barrier, threat) * 0.9;
+      // being low on HP is worse than the raw number says
+      v -= Math.max(0, 20 - u.hp) * 0.8;
+    } else {
+      v += 4 + u.hp * 0.35 + Math.min(u.barrier, 6) * 0.2;
+    }
+    v +=
+      (u.statuses.might ?? 0) * 3 + (u.statuses.thorns ?? 0) * 1.5 + (u.statuses.shielded ?? 0) * 4;
+    v -=
+      (u.statuses.exposed ?? 0) * 2 +
+      (u.statuses.faltering ?? 0) * 2 +
+      (u.statuses.seared ?? 0) * 1.5;
+  }
+  for (const u of theirs.units) {
+    v -= u.hp * 1.0 + u.barrier * 0.5 + 6;
+    v +=
+      (u.statuses.exposed ?? 0) * 2.5 +
+      (u.statuses.faltering ?? 0) * 2 +
+      (u.statuses.seared ?? 0) * 3;
+    v += (u.statuses.stunned ?? 0) * 6;
+    v -=
+      (u.statuses.might ?? 0) * 3 + (u.statuses.thorns ?? 0) * 1.5 + (u.statuses.shielded ?? 0) * 3;
+  }
+  v += mine.snares.length * 5;
+  return v;
+}
+
+/** The bot's choice for the side whose turn it is. */
+export function chooseAction(db: CombatDb, s: CombatState): Action {
+  const me = s.active;
+  const base = evaluate(db, s, me);
+  let best: Action = { type: 'endTurn' };
+  let bestGain = 0.5; // must beat doing nothing by a little
+  for (const a of legalActions(db, s)) {
+    if (a.type !== 'play') continue;
+    const after = applyAction(db, s, a).state;
+    // the card itself leaves the hand; drawing more is worth something
+    const handDelta = after.sides[me].hand.length - (s.sides[me].hand.length - 1);
+    const gain =
+      evaluate(db, after, me) -
+      base +
+      handDelta * 1.2 +
+      (after.sides[me].mana > s.sides[me].mana ? 2 : 0);
+    if (gain > bestGain) {
+      bestGain = gain;
+      best = a;
+    }
+  }
+  return best;
+}

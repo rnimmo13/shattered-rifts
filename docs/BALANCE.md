@@ -108,3 +108,12 @@ Wardens will be harder than their numbers here.
 - Everyone alternates who goes first, so first-player advantage cancels out in matchups but **not** in §1.
 - The simulations are deterministic for a given seed and worker count doesn't change results.
 - Speed: roughly 6–9 games/second on 8 cores with the heuristic AI (the random-AI property gate is much faster).
+
+## Combat v2 (C2 first pass, 2026-10-23)
+`pnpm sim2 -- --n 30 --draft 10` plays each Riftwalker's starter deck plus 10 random reward cards with a greedy 1-ply bot
+(`@sr/combat` `chooseAction`) against every encounter. Tuning knobs: `ENEMY_SCALE` in `packages/content/src/v2/units.ts`
+(regular/elite damage and HP multipliers) and hand-tuned Warden numbers. First-pass results (average HP lost on a win):
+regular fights 5-25 HP, Elites 15-45, Wardens 40-60 with Seraphine/Kron/Nyxara beatable (45-100%) and Gorrmaw hard for the
+two non-summon characters (40-60% after the C2 review fixes); Vorthax with a 10-card draft is ~10% (the finale expects a full-run deck).
+Known skew: summon/pack decks (Rivet, Kesh) beat Wardens more reliably than Maren/Vesper, whose damage is low per card.
+The bot drafts randomly, so this is a floor for human play; real balance waits for playable runs (DECISIONS #74).

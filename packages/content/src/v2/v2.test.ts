@@ -1,0 +1,135 @@
+import { describe, expect, it } from 'vitest';
+import { applyAction, cardText, chooseAction, createCombat, validateDb } from '@sr/combat';
+import { COMBAT_DB as db, ENCOUNTERS, RIFTWALKERS, rewardPool, type HeroId } from './index';
+
+describe('Combat v2 content', () => {
+  it('passes validation', () => {
+    expect(validateDb(db)).toEqual([]);
+  });
+
+  it('has the four Riftwalkers with 10-card starters of valid cards', () => {
+    for (const [id, r] of Object.entries(RIFTWALKERS)) {
+      expect(r.starter).toHaveLength(10);
+      for (const c of r.starter) expect(db.cards[c], `${id}: ${c}`).toBeDefined();
+    }
+  });
+
+  it('every playable card has readable rules text and an upgrade', () => {
+    for (const c of Object.values(db.cards)) {
+      if (c.unplayable) continue;
+      expect(cardText(db, c).length, c.id).toBeGreaterThan(3);
+      if (!c.id.endsWith('+')) expect(c.upgrade && db.cards[c.upgrade], c.id).toBeTruthy();
+    }
+  });
+
+  it('upgrades are strictly better or cheaper', () => {
+    for (const c of Object.values(db.cards)) {
+      if (!c.upgrade) continue;
+      const u = db.cards[c.upgrade]!;
+      const same =
+        JSON.stringify({ e: c.effects, cost: c.cost, x: c.exhaust }) ===
+        JSON.stringify({ e: u.effects, cost: u.cost, x: u.exhaust });
+      expect(same, `${c.id} upgrade changes nothing`).toBe(false);
+    }
+  });
+
+  it('each realm has a deep enough reward pool, with all rarities', () => {
+    for (const h of Object.keys(RIFTWALKERS) as HeroId[]) {
+      const pool = rewardPool(h).map((id) => db.cards[id]!);
+      expect(pool.length).toBeGreaterThanOrEqual(24);
+      for (const r of ['common', 'uncommon', 'rare'])
+        expect(
+          pool.some((c) => c.rarity === r),
+          `${h} ${r}`,
+        ).toBe(true);
+    }
+  });
+
+  it('has regulars, two elites and a Warden per realm, plus the finale', () => {
+    for (const realm of ['aurelion', 'nexus', 'wyldmaw', 'umbral']) {
+      const here = ENCOUNTERS.filter((e) => e.realm === realm);
+      expect(here.filter((e) => e.kind === 'regular').length).toBeGreaterThanOrEqual(3);
+      expect(here.filter((e) => e.kind === 'elite')).toHaveLength(2);
+      expect(here.filter((e) => e.kind === 'warden')).toHaveLength(1);
+    }
+    expect(ENCOUNTERS.filter((e) => e.kind === 'finale')).toHaveLength(1);
+  });
+
+  it('every hero can finish a fight against every encounter without errors (bot play)', () => {
+    for (const h of Object.keys(RIFTWALKERS) as HeroId[]) {
+      for (const e of ENCOUNTERS) {
+        let { state } = createCombat(db, {
+          seed: `${h}-${e.id}`,
+          a: { hero: h, deck: RIFTWALKERS[h].starter },
+          b: { enemies: e.units },
+        });
+        for (let i = 0; i < 600 && !state.winner; i++)
+          state = applyAction(db, state, chooseAction(db, state)).state;
+        expect(state.winner, `${h} vs ${e.id} did not finish`).not.toBeNull();
+      }
+    }
+  });
+});
+
+describe('Riftwalker identities (docs/08 §5)', () => {
+  const summonCards = (realm: string) =>
+    Object.values(db.cards).filter(
+      (c) => c.realm === realm && c.kind === 'summon' && !c.id.endsWith('+'),
+    );
+  it('Maren and Vesper have no companions at all', () => {
+    for (const h of ['maren', 'vesper'] as const) {
+      expect(RIFTWALKERS[h].hero.startUnits ?? []).toEqual([]);
+    }
+    expect(summonCards('aurelion')).toHaveLength(0);
+    expect(summonCards('umbral')).toHaveLength(0);
+  });
+  it('Rivet starts with a Drone and has many summon cards', () => {
+    expect(RIFTWALKERS.rivet.hero.startUnits).toEqual(['drone']);
+    expect(summonCards('nexus').length).toBeGreaterThanOrEqual(6);
+  });
+  it('Kesh starts with a Hound and mostly buffs it instead of summoning more', () => {
+    expect(RIFTWALKERS.kesh.hero.startUnits).toEqual(['hound']);
+    expect(summonCards('wyldmaw').length).toBeLessThanOrEqual(2);
+    const buffs = Object.values(db.cards).filter(
+      (c) => c.realm === 'wyldmaw' && c.effects.some((o) => 'to' in o && o.to === 'allFriends'),
+    );
+    expect(buffs.length).toBeGreaterThanOrEqual(6);
+  });
+  it('"+" summon cards summon the "+" companion', () => {
+    expect(db.cards['deploy-drone+']?.effects).toEqual([{ op: 'summon', unit: 'patrol-drone+' }]);
+    expect(db.units['patrol-drone+']?.maxHp).toBe(11);
+  });
+});
+
+describe('enemy debuffs land before they are needed', () => {
+  it('Ghostwire, Lamplighter and Nyxara amplify an attack they set up', () => {
+    for (const [id, hero] of [
+      ['ghostwire', 'maren'],
+      ['lamplighter', 'maren'],
+      ['nyxara', 'maren'],
+    ] as const) {
+      let { state } = createCombat(db, {
+        seed: id,
+        a: { hero, deck: RIFTWALKERS[hero].starter },
+        b: { enemies: [id] },
+      });
+      let sawAmplified = false;
+      for (let i = 0; i < 12 && !state.winner; i++) {
+        const r = applyAction(db, state, { type: 'endTurn' });
+        sawAmplified ||= r.events.some(
+          (e) =>
+            e.type === 'damage' &&
+            e.kind === 'attack' &&
+            e.target === state.sides.a.units.at(-1)?.id &&
+            e.amount > 0,
+        );
+        state = r.state;
+        const h = state.sides.a.units.at(-1);
+        if (h) {
+          h.hp = h.maxHp = 9999; // let the fight run
+        }
+      }
+      expect(sawAmplified, id).toBe(true);
+    }
+  });
+});

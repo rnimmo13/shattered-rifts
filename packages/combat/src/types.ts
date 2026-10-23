@@ -169,6 +169,8 @@ export interface Unit {
   /** which pattern/phase it is in, and how many moves it has made in it (cycles restart on a phase change) */
   pat: string;
   patCount: number;
+  /** lowest HP% it has been at when choosing a move: phases only move forward, healing never undoes one */
+  lowPct: number;
   lastMoves: string[];
 }
 

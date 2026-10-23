@@ -1,6 +1,8 @@
 // @sr/combat: Combat v2 (Slay-the-Spire-style). Pure and deterministic, like the original engine.
 
 export * from './types';
+export { validateDb } from './validate';
+export { chooseAction, evaluate } from './bot';
 export {
   applyAction,
   createCombat,

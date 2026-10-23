@@ -342,6 +342,7 @@ function makeUnit(r: Run, side: Side, d: UnitDef): Unit {
     moveCount: 0,
     pat: '',
     patCount: 0,
+    lowPct: 100,
     lastMoves: [],
   };
 }
@@ -430,7 +431,8 @@ function chooseIntent(r: Run, u: Unit): void {
   const d = def(r, u.def);
   if (d.brain.kind !== 'enemy') return;
   const b = d.brain;
-  const pct = (u.hp / u.maxHp) * 100;
+  u.lowPct = Math.min(u.lowPct, (u.hp / u.maxHp) * 100);
+  const pct = u.lowPct;
   const key = String(phaseIndex(b.pattern, pct));
   if (u.pat !== key) {
     u.pat = key;
@@ -622,6 +624,7 @@ function buildHeroSide(r: Run, id: Side, h: HeroSetup): SideState {
     moveCount: 0,
     pat: '',
     patCount: 0,
+    lowPct: 100,
     lastMoves: [],
   });
   r.s.sides[id] = sd;

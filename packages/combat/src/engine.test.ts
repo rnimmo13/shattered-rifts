@@ -4,6 +4,7 @@ import {
   applyAction,
   createCombat,
   hashState,
+  validateDb,
   heroOf,
   legalActions,
   viewFor,
@@ -696,5 +697,35 @@ describe('property: random play', () => {
     let again = createCombat(db, setup).state;
     for (const a of log) again = applyAction(db, again, a).state;
     expect(hashState(again)).toBe(hashState(state));
+  });
+});
+
+describe('validateDb', () => {
+  it('accepts the sample ruleset', () => {
+    expect(validateDb(db)).toEqual([]);
+  });
+  it('flags broken data', () => {
+    const bad = clone(db);
+    bad.cards.strike!.effects = [{ op: 'summon', unit: 'nope' }];
+    bad.units.slime = {
+      ...bad.units.slime!,
+      brain: { kind: 'enemy', moves: {}, pattern: { kind: 'cycle', order: ['x'] } },
+    };
+    const errs = validateDb(bad);
+    expect(errs.some((e) => e.includes('unknown unit "nope"'))).toBe(true);
+    expect(errs.some((e) => e.includes('unknown move "x"'))).toBe(true);
+  });
+});
+
+describe('phases only move forward', () => {
+  it('healing back over the threshold does not restart an earlier phase', () => {
+    let s = start(['warden']);
+    foe(s).hp = 30; // below 50%
+    hero(s).hp = hero(s).maxHp = 9999;
+    s = end(s).state;
+    expect(foe(s).intent?.move).toBe('rage');
+    foe(s).hp = 79; // healed above 50%
+    s = end(s).state;
+    expect(foe(s).intent?.move).toBe('slam'); // still the second phase's cycle (rage, slam, slam)
   });
 });

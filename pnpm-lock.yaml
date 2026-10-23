@@ -117,6 +117,9 @@ importers:
 
   packages/content:
     dependencies:
+      '@sr/combat':
+        specifier: workspace:*
+        version: link:../combat
       '@sr/engine':
         specifier: workspace:*
         version: link:../engine

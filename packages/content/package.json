@@ -5,12 +5,14 @@
   "type": "module",
   "description": "Card, token, enemy and boss data with zod schemas and content tests.",
   "exports": {
-    ".": "./src/index.ts"
+    ".": "./src/index.ts",
+    "./v2": "./src/v2/index.ts"
   },
   "scripts": {
     "typecheck": "tsc -p tsconfig.json"
   },
   "dependencies": {
+    "@sr/combat": "workspace:*",
     "@sr/engine": "workspace:*",
     "zod": "4.6.7"
   },

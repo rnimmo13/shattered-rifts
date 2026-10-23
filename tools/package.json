@@ -7,6 +7,7 @@
   "scripts": {
     "duel": "tsx src/duel.ts",
     "fight": "tsx src/fight.ts",
+    "sim2": "tsx src/sim2.ts",
     "typecheck": "tsc -p tsconfig.json",
     "sim": "tsx src/sim.ts",
     "test:property": "tsx src/property.ts",
