@@ -1,6 +1,6 @@
 import { forwardRef, memo, useMemo, type CSSProperties } from 'react';
 import { cardText, type CardDef, type CombatDb } from '@sr/combat';
-import { CARD_H, CARD_W } from '../cards/Card';
+import { CARD_H, CARD_W } from '../cards/size';
 import { parseRules } from '../cards/cardText';
 import { cardArtV2 } from './art';
 import '../cards/card.css';

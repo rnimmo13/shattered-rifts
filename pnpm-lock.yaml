@@ -56,9 +56,6 @@ importers:
       '@fontsource/source-sans-3':
         specifier: 5.3.1
         version: 5.3.1
-      '@sr/ai':
-        specifier: workspace:*
-        version: link:../../packages/ai
       '@sr/campaign':
         specifier: workspace:*
         version: link:../../packages/campaign
@@ -68,9 +65,6 @@ importers:
       '@sr/content':
         specifier: workspace:*
         version: link:../../packages/content
-      '@sr/engine':
-        specifier: workspace:*
-        version: link:../../packages/engine
       gsap:
         specifier: 3.15.0
         version: 3.15.0
@@ -97,16 +91,6 @@ importers:
         specifier: 8.3.5
         version: 8.3.5(@types/node@22.20.5)(esbuild@0.28.2)(tsx@4.23.15)
 
-  packages/ai:
-    dependencies:
-      '@sr/engine':
-        specifier: workspace:*
-        version: link:../engine
-    devDependencies:
-      '@sr/content':
-        specifier: workspace:*
-        version: link:../content
-
   packages/campaign:
     dependencies:
       '@sr/combat':
@@ -123,29 +107,15 @@ importers:
       '@sr/combat':
         specifier: workspace:*
         version: link:../combat
-      '@sr/engine':
-        specifier: workspace:*
-        version: link:../engine
-      zod:
-        specifier: 4.6.7
-        version: 4.6.7
-
-  packages/engine: {}
 
   tools:
     dependencies:
-      '@sr/ai':
-        specifier: workspace:*
-        version: link:../packages/ai
       '@sr/combat':
         specifier: workspace:*
         version: link:../packages/combat
       '@sr/content':
         specifier: workspace:*
         version: link:../packages/content
-      '@sr/engine':
-        specifier: workspace:*
-        version: link:../packages/engine
     devDependencies:
       tsx:
         specifier: 4.23.15

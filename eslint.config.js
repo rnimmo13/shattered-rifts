@@ -59,11 +59,9 @@ export default tseslint.config(
   },
   {
     files: [
-      'packages/engine/src/**/*.ts',
       'packages/content/src/**/*.ts',
       'packages/campaign/src/**/*.ts',
       'packages/combat/src/**/*.ts',
-      'packages/ai/src/**/*.ts',
     ],
     ignores: ['**/*.test.ts'],
     rules: purityRules,

@@ -366,7 +366,7 @@ export function FightView(props: {
     cancelledRef.current = false;
     let cancelled = false; // this effect run only (StrictMode mounts, unmounts and mounts again)
     let created: BattlefieldScene | null = null;
-    BattlefieldScene.create(el, profileFor(loadEffectsMode()), { slots: false })
+    BattlefieldScene.create(el, profileFor(loadEffectsMode()))
       .then((s) => {
         if (cancelled) {
           s.destroy();

@@ -4,6 +4,18 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 
 ## [Unreleased]
 
+### Changed (the big one)
+- **Combat is rebuilt like Slay the Spire.** Your Riftwalker is a fighter on the field with HP; you play cards with Mana (3 a turn,
+  a 5-card hand); every enemy shows what it will do next as an icon and a number; Barrier soaks damage until your next turn; and
+  fights are side to side, your hero and companions on the left, the enemies on the right. With one possible target a card just
+  plays: no aiming. Companions fight for you (Rivet's drones, Kesh's Hound) or buff you; Maren and Vesper go without. Traps became
+  Snares: face-down sigils that spring on their own when the enemy attacks, summons, or hurts you.
+- **Runs carry HP between fights.** Win a fight and you keep the HP you ended with; shrines heal, upgrade a card (Temper) or remove
+  one. Losing a fight costs Resolve and you retry at the HP you entered with. Maps, rewards, the merchant, Wardens and Bank/Continue
+  are the same shape as before.
+- 4 Riftwalkers, about 80 cards (each with a "+" version), 12 companions and 26 encounters including all four Wardens and Vorthax.
+  The old duel (Essence, slots, the Chain) and its practice mode are gone; `#/fight` is the new practice fight.
+
 ### Added
 - **Faster, snappier fights (Slay the Spire 2 pacing).** Attacks, summons, deaths, trap reveals and spell flourishes are
   all much shorter, and the default animation speed is now 1.5x (Settings offers 1x, 1.5x, 2x and 4x and remembers

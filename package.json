@@ -16,11 +16,8 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "check": "pnpm lint && pnpm typecheck && pnpm test && pnpm build",
-    "duel": "pnpm --filter @sr/tools duel",
     "fight": "pnpm --filter @sr/tools fight",
-    "sim2": "pnpm --filter @sr/tools sim2",
     "sim": "pnpm --filter @sr/tools sim",
-    "test:property": "pnpm --filter @sr/tools test:property",
     "deploy:web": "pnpm --filter @sr/tools deploy:web"
   },
   "devDependencies": {

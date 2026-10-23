@@ -8,13 +8,9 @@
 // EffectsProfile, so "reduced effects" and prefers-reduced-motion are handled in one place.
 
 import { Application, Container, Sprite, Texture, TilingSprite } from 'pixi.js';
-import { gsap } from 'gsap';
-import { color, ease, hex, stage } from '../../design/tokens';
+import { color, hex, stage } from '../../design/tokens';
 import type { EffectsProfile } from '../effects';
-import { FLOOR_SQUASH, floorTop, rows, slotGeometry, type SlotGeom } from './layout';
-import { Monsters, type SoundName } from './Monsters';
-import { Traps } from './Traps';
-import { Avatars, type AvatarSide } from './Avatars';
+import { floorTop, rows } from './layout';
 import { Fighters } from '../../fight/Fighters';
 import {
   getBaseSpeed,
@@ -31,7 +27,6 @@ import {
   fogTexture,
   glowTexture,
   ruinsTexture,
-  runeRingTexture,
   shardsTexture,
   skyTexture,
   vignetteTexture,
@@ -54,16 +49,6 @@ interface Mote {
   peak: number;
 }
 
-interface SlotView {
-  geom: SlotGeom;
-  ring: Sprite;
-  glow: Sprite;
-  phase: number;
-  lit: boolean;
-  /** ring brightness multiplier (drag dims invalid slots); tweened */
-  dim: { k: number };
-}
-
 /** Internal pixels we're willing to shade per frame: a 1080p-ish budget, lower in reduced mode. */
 const PIXEL_BUDGET = { full: 2_400_000, reduced: 1_000_000 } as const;
 
@@ -73,18 +58,25 @@ function pickResolution(w: number, h: number, profile: EffectsProfile): number {
   return Math.max(0.5, Math.min(dpr, profile.maxResolution, byBudget));
 }
 
-export interface SceneOptions {
-  /** draw the old unit/trap slots (default true); Combat v2 turns them off */
-  slots?: boolean;
-}
+export type SoundName =
+  | 'summon'
+  | 'attackWindup'
+  | 'attackHit'
+  | 'hit'
+  | 'death'
+  | 'buff'
+  | 'select'
+  | 'cast'
+  | 'trapSet'
+  | 'trapCharge'
+  | 'trapReveal'
+  | 'trapEffect'
+  | 'trapSpent';
 
 export interface SceneStats {
   fps: number;
   resolution: number;
 }
-
-export const slotKey = (g: { side: string; kind: string; index: number }) =>
-  `${g.side}-${g.kind}-${g.index}`;
 
 export class BattlefieldScene {
   private readonly app: Application;
@@ -101,29 +93,18 @@ export class BattlefieldScene {
   private readonly riftCrack!: Sprite;
   private readonly branchCracks!: Sprite;
   private readonly riftGlow!: Sprite;
-  private readonly slotViews: SlotView[] = [];
   private readonly motes: Mote[] = [];
   private readonly moteLayer = new Container();
   private readonly glowTex: Texture;
   private vignette!: Sprite;
 
-  /** Child layers later phases draw into (units, traps, effects). */
+  /** Child layers: the combatants stand in `units`, effects in `fx`. */
   readonly layers = {
-    avatars: new Container(),
     units: new Container(),
-    traps: new Container(),
     fx: new Container(),
-    dim: new Container(),
-    reveal: new Container(),
   };
 
-  /** Monsters standing on the field (Phase 3). */
-  readonly monsters: Monsters;
-  /** Trap sigils and the reveal sequence (Phase 4). */
-  readonly traps: Traps;
-  /** The two Riftwalkers standing on the field. */
-  readonly avatars: Avatars;
-  /** Combat v2: the combatants standing in a line (the old slots and avatars are not used then). */
+  /** Combat v2: the combatants standing in a line. */
   readonly fighters: Fighters;
   /** Sound hook: every major visual event calls this (wired to audio later). */
   onSound: (name: SoundName) => void = () => undefined;
@@ -152,11 +133,7 @@ export class BattlefieldScene {
     this.pointer.y = ((e.clientY - r.top) / Math.max(1, r.height)) * 2 - 1;
   };
 
-  static async create(
-    host: HTMLElement,
-    profile: EffectsProfile,
-    opts: SceneOptions = {},
-  ): Promise<BattlefieldScene> {
+  static async create(host: HTMLElement, profile: EffectsProfile): Promise<BattlefieldScene> {
     const app = new Application();
     await app.init({
       background: hex(color.void),
@@ -166,15 +143,10 @@ export class BattlefieldScene {
       resolution: pickResolution(host.clientWidth, host.clientHeight, profile),
       powerPreference: 'high-performance',
     });
-    return new BattlefieldScene(app, host, profile, opts);
+    return new BattlefieldScene(app, host, profile);
   }
 
-  private constructor(
-    app: Application,
-    host: HTMLElement,
-    profile: EffectsProfile,
-    opts: SceneOptions,
-  ) {
+  private constructor(app: Application, host: HTMLElement, profile: EffectsProfile) {
     this.app = app;
     this.host = host;
     this.profile = profile;
@@ -228,50 +200,13 @@ export class BattlefieldScene {
     this.riftCrack.blendMode = 'add';
     this.world.addChild(this.branchCracks, this.riftCrack);
 
-    // --- slots ---
-    if (opts.slots !== false) this.buildSlots();
-
-    // --- later phases draw here ---
-    this.world.addChild(this.layers.avatars, this.layers.traps, this.layers.units, this.layers.fx);
-    // a huge black sheet that dims the whole board (and beyond the stage) during a trap reveal
-    const dim = new Sprite(Texture.WHITE);
-    dim.tint = 0x000000;
-    dim.alpha = 0;
-    dim.position.set(-3000, -3000);
-    dim.width = 8000;
-    dim.height = 8000;
-    this.layers.dim.addChild(dim);
-    this.traps = new Traps({
-      container: this.layers.traps,
-      reveal: this.layers.reveal,
-      dim,
-      fx: this.layers.fx,
-      glowTex: this.glowTex,
-      profile: () => this.profile,
-      sound: (n) => this.onSound(n),
-      slot: (key) => this.slotViews.find((v) => slotKey(v.geom) === key)?.geom,
-      impact: (n) => this.impact(n),
-    });
-    this.avatars = new Avatars({
-      container: this.layers.avatars,
-      glowTex: this.glowTex,
-      profile: () => this.profile,
-    });
+    // --- the combatants ---
+    this.world.addChild(this.layers.units, this.layers.fx);
     this.fighters = new Fighters({
       container: this.layers.units,
       glowTex: this.glowTex,
       profile: () => this.profile,
       sound: (n) => this.onSound(n as SoundName),
-    });
-    this.monsters = new Monsters({
-      container: this.layers.units,
-      fx: this.layers.fx,
-      glowTex: this.glowTex,
-      profile: () => this.profile,
-      sound: (n) => this.onSound(n),
-      slot: (key) => this.slotViews.find((v) => slotKey(v.geom) === key)?.geom,
-      impact: (n) => this.impact(n),
-      facePos: (side) => this.avatars.facePos(side),
     });
 
     // --- atmosphere over the board ---
@@ -281,8 +216,6 @@ export class BattlefieldScene {
     this.world.addChild(this.moteLayer);
     this.fogNear = this.makeFog(37, color.violetDeep, 0.3, 700, 520);
     this.world.addChild(this.fogNear);
-    // the trap reveal sits above the fog and motes so nothing drifts over the card
-    this.world.addChild(this.layers.dim, this.layers.reveal);
 
     // the vignette lives in SCREEN space so it frames the whole window, not just the 16:9 stage
     this.vignette = new Sprite(tex(vignetteTexture()));
@@ -316,99 +249,6 @@ export class BattlefieldScene {
     return f;
   }
 
-  private buildSlots(): void {
-    const ringTex = {
-      unit: Texture.from(runeRingTexture(256, 'unit')),
-      trap: Texture.from(runeRingTexture(256, 'trap')),
-    };
-    const slots = new Container();
-    for (const geom of slotGeometry()) {
-      const w = geom.width * 1.18;
-      // a dark inlaid plate gives the slot depth: it reads as carved into the stone
-      const plate = new Sprite(this.glowTex);
-      plate.anchor.set(0.5);
-      plate.tint = hex(color.void);
-      plate.alpha = 0.62;
-      plate.scale.set((w * 1.05) / 128, ((w * 1.05) / 128) * FLOOR_SQUASH);
-      plate.position.set(geom.x, geom.y);
-      const ring = new Sprite(ringTex[geom.kind]);
-      ring.anchor.set(0.5);
-      ring.tint = hex(geom.kind === 'trap' ? color.violetGlow : color.gold);
-      ring.alpha = geom.kind === 'trap' ? 0.8 : 0.9;
-      ring.scale.set(w / 256, (w / 256) * FLOOR_SQUASH);
-      ring.position.set(geom.x, geom.y);
-
-      // the "you can play here" glow: a soft pool of light that fades in on demand
-      const glow = new Sprite(this.glowTex);
-      glow.anchor.set(0.5);
-      glow.tint = hex(geom.kind === 'trap' ? color.violet : color.cyan);
-      glow.blendMode = 'add';
-      glow.alpha = 0;
-      glow.scale.set((w * 1.7) / 128, ((w * 1.7) / 128) * FLOOR_SQUASH);
-      glow.position.set(geom.x, geom.y);
-
-      slots.addChild(plate, glow, ring);
-      this.slotViews.push({
-        geom,
-        ring,
-        glow,
-        phase: Math.random() * Math.PI * 2,
-        lit: false,
-        dim: { k: 1 },
-      });
-    }
-    this.world.addChild(slots);
-  }
-
-  /** Light up the slots a card could be played into (keys from slotKey()), or none. */
-  highlightSlots(keys: ReadonlySet<string> | 'all' | null): void {
-    for (const v of this.slotViews) {
-      const on = keys === 'all' || (keys !== null && keys.has(slotKey(v.geom)));
-      if (on === v.lit) continue;
-      v.lit = on;
-      gsap.to(v.glow, {
-        alpha: on ? 0.85 : 0,
-        duration: on ? 0.4 : 0.28,
-        ease: on ? ease.out.gsap : ease.inOut.gsap,
-        overwrite: true,
-      });
-    }
-  }
-
-  /**
-   * While a card is being dragged: valid slots glow, the others sink into shadow. null restores everything.
-   * (Phase 2 visual; the legal-target rules live outside the scene.)
-   */
-  setDragTargets(valid: ReadonlySet<string> | null): void {
-    this.highlightSlots(valid);
-    for (const v of this.slotViews) {
-      const dim = valid !== null && !valid.has(slotKey(v.geom));
-      gsap.to(v.dim, { k: dim ? 0.3 : 1, duration: 0.25, ease: ease.out.gsap, overwrite: true });
-    }
-  }
-
-  /** The slot under a screen point (client px), or null. Slots are hit as a tall ellipse so a standing unit counts. */
-  slotAtClient(clientX: number, clientY: number): SlotGeom | null {
-    const rect = this.host.getBoundingClientRect();
-    const k = this.world.scale.x;
-    const sx = (clientX - rect.left - this.world.position.x) / k;
-    const sy = (clientY - rect.top - this.world.position.y) / k;
-    let best: SlotGeom | null = null;
-    let bestD = 1;
-    for (const v of this.slotViews) {
-      const rx = v.geom.width * 0.62;
-      const ry = Math.max(v.geom.width * 0.62 * FLOOR_SQUASH * 1.9, 34);
-      const dx = (sx - v.geom.x) / rx;
-      const dy = (sy - (v.geom.y - ry * 0.35)) / ry;
-      const d = dx * dx + dy * dy;
-      if (d <= bestD) {
-        bestD = d;
-        best = v.geom;
-      }
-    }
-    return best;
-  }
-
   /** Screen point (client px) -> stage coordinates. */
   clientToStage(clientX: number, clientY: number): { x: number; y: number } {
     const rect = this.host.getBoundingClientRect();
@@ -423,28 +263,6 @@ export class BattlefieldScene {
   stageToHost(x: number, y: number): { x: number; y: number; k: number } {
     const k = this.world.scale.x;
     return { x: this.world.position.x + x * k, y: this.world.position.y + y * k, k };
-  }
-
-  /** Which Riftwalker (if any) is under a screen point: clicking one attacks that player. */
-  avatarAtClient(clientX: number, clientY: number): AvatarSide | null {
-    const rect = this.host.getBoundingClientRect();
-    const k = this.world.scale.x;
-    return this.avatars.hitTest(
-      (clientX - rect.left - this.world.position.x) / k,
-      (clientY - rect.top - this.world.position.y) / k,
-    );
-  }
-
-  /** Where a slot sits on screen (client px): arrow endpoints, effects anchored in the DOM. */
-  slotClientCenter(key: string): { x: number; y: number } | null {
-    const v = this.slotViews.find((sv) => slotKey(sv.geom) === key);
-    if (!v) return null;
-    const rect = this.host.getBoundingClientRect();
-    const k = this.world.scale.x;
-    return {
-      x: rect.left + this.world.position.x + v.geom.x * k,
-      y: rect.top + this.world.position.y + v.geom.y * k,
-    };
   }
 
   setProfile(p: EffectsProfile): void {
@@ -553,21 +371,7 @@ export class BattlefieldScene {
       this.shards.x = -PAD_X + Math.sin(t * 0.13) * 9;
     }
 
-    this.monsters.tick(t, p.still);
-    this.avatars.tick(t, p.still);
     this.fighters.tick(t, p.still);
-    this.traps.tick(t, dt, p.still);
-
-    // slot rings shimmer very slightly, each on its own phase
-    for (const v of this.slotViews) {
-      const base = v.geom.kind === 'trap' ? 0.8 : 0.9;
-      v.ring.alpha = (base + pulse * 0.1 * Math.sin(t * 1.1 + v.phase)) * v.dim.k;
-      if (v.lit)
-        v.glow.scale.y =
-          ((v.geom.width * 1.18 * 1.7) / 128) *
-          FLOOR_SQUASH *
-          (1 + pulse * 0.05 * Math.sin(t * 2.2 + v.phase));
-    }
 
     // pointer parallax: the far layers shift a little more than the near ones
     if (p.parallax > 0) {
@@ -685,10 +489,6 @@ export class BattlefieldScene {
     resetTimeScale();
     window.removeEventListener('resize', this.onResize);
     this.host.removeEventListener('pointermove', this.onPointer);
-    gsap.killTweensOf(this.slotViews.flatMap((v) => [v.glow, v.dim]));
-    this.monsters.destroy();
-    this.traps.destroy();
-    this.avatars.destroy();
     this.fighters.destroy();
     this.app.destroy({ removeView: true }, { children: true, texture: true });
   }

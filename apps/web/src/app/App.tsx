@@ -2,8 +2,6 @@ import { Suspense, lazy, useEffect, useState } from 'react';
 import { TitleScreen } from './TitleScreen';
 
 // The duel screen pulls in the whole Pixi renderer, so it loads on demand.
-const DuelScreen = lazy(() => import('../duel/DuelScreen'));
-const PlayScreen = lazy(() => import('../play/PlayScreen'));
 const RunScreen = lazy(() => import('../run/RunScreen'));
 const FightScreen = lazy(() => import('../fight/FightScreen'));
 import { RunErrorBoundary } from '../run/ErrorBoundary';
@@ -20,13 +18,6 @@ function useHash(): string {
 
 export function App() {
   const hash = useHash();
-  if (hash === '#/duel') {
-    return (
-      <Suspense fallback={<div className="loading">Opening the rift…</div>}>
-        <DuelScreen />
-      </Suspense>
-    );
-  }
   if (hash === '#/run') {
     return (
       <Suspense fallback={<div className="loading">Opening the rift…</div>}>
@@ -40,13 +31,6 @@ export function App() {
     return (
       <Suspense fallback={<div className="loading">Opening the rift…</div>}>
         <FightScreen />
-      </Suspense>
-    );
-  }
-  if (hash === '#/play') {
-    return (
-      <Suspense fallback={<div className="loading">Opening the rift…</div>}>
-        <PlayScreen />
       </Suspense>
     );
   }

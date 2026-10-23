@@ -1,9 +1,14 @@
 // Placeholder art for Combat v2, painted by the same procedural painters as the rest of the game: which silhouette each
 // Riftwalker, companion and enemy stands as, and a card-art adapter for the v2 card format.
 
-import type { CardDef as EngineCardDef, Realm } from '@sr/engine';
 import type { CardDef, UnitDef } from '@sr/combat';
-import { avatarCutout, cardArtUrl, type Archetype } from '../art/proceduralArt';
+import {
+  avatarCutout,
+  cardArtUrl,
+  type ArtCard,
+  type Archetype,
+  type Realm,
+} from '../art/proceduralArt';
 
 const HERO: Record<string, [Archetype, Realm]> = {
   maren: ['knight', 'aurelion'],
@@ -80,7 +85,7 @@ export function unitHeight(d: UnitDef | undefined, kind: 'ally' | 'enemy' | 'her
   return hp >= 120 ? 470 : hp >= 55 ? 370 : hp >= 20 ? 310 : 240;
 }
 
-const KIND_TYPE: Record<CardDef['kind'], EngineCardDef['type']> = {
+const KIND_TYPE: Record<CardDef['kind'], ArtCard['type']> = {
   attack: 'spell',
   skill: 'spell',
   power: 'relic',
@@ -104,8 +109,6 @@ export function cardArtV2(c: CardDef): string {
     rarity: c.rarity === 'basic' || c.rarity === undefined ? 'common' : c.rarity,
     type: KIND_TYPE[c.kind],
     tribes: c.kind === 'summon' ? (REALM_TRIBES[c.realm ?? ''] ?? []) : [],
-    text: '',
-    cost: c.cost,
-  } as unknown as EngineCardDef;
+  } satisfies ArtCard;
   return cardArtUrl(fake);
 }

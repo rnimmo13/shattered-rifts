@@ -1,5 +1,4 @@
 import type { CSSProperties } from 'react';
-import { ENGINE_VERSION } from '@sr/engine';
 import { color } from '../design/tokens';
 
 interface CharacterTeaser {
@@ -48,7 +47,9 @@ export function TitleScreen() {
       <header className="title__header">
         <p className="title__eyebrow">Friends alpha · working title</p>
         <h1 className="title__name">Shattered Rifts</h1>
-        <p className="title__tagline">Walk the broken worlds. Build a Grimoire. Spring the trap.</p>
+        <p className="title__tagline">
+          Walk the broken worlds. Build a deck. Read the rift. Spring the snare.
+        </p>
       </header>
 
       <ul className="title__roster" aria-label="Riftwalkers">
@@ -69,18 +70,15 @@ export function TitleScreen() {
         <a className="btn btn--primary" href="#/run">
           Begin Run
         </a>
-        <a className="btn" href="#/play">
-          Duel the AI
-        </a>
-        <a className="btn btn--ghost" href="#/duel">
-          Art preview
+        <a className="btn" href="#/fight">
+          Practice fight
         </a>
       </div>
       <p id="cta-note" className="title__cta-note">
         Runs are in early alpha: expect rough edges, and the difficulty is not tuned yet.
       </p>
 
-      <p className="title__footer">engine v{ENGINE_VERSION}</p>
+      <p className="title__footer">combat v2 preview</p>
     </main>
   );
 }

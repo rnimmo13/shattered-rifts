@@ -6,8 +6,9 @@ Ko-fi-funded) → Steam full game ($7.99–$9.99) with PvP later. Owner: Robert.
 ## Read before doing anything
 | Doc | What's in it |
 |---|---|
-| `docs/01_GAME_DESIGN.md` | Player-experience pillars, **exact duel rules**, the Chain, keywords |
-| `docs/02_CARDS.md` | Realms, card data schema + **effect DSL**, balance budget, all 74 Core Set cards, starter decks |
+| `docs/08_COMBAT_V2.md` | **The current game**: Slay-the-Spire-style combat (Mana, intents, Barrier, allies, Snares), PvP variant, milestones C0-C6 |
+| `docs/01_GAME_DESIGN.md` | LEGACY (old duel rules: Essence, slots, the Chain). Pillars in §2 still apply; the rules do not |
+| `docs/02_CARDS.md` | LEGACY card list and DSL for the old engine; realms and flavour still apply. Real data: `packages/content/src/v2` |
 | `docs/03_CAMPAIGN.md` | Characters, run structure (5 stages), Resolve, Bank/Continue, Rift Tiers, Wardens, Boons, Vault & seasons |
 | `docs/DECISIONS.md` | Every design decision and rules clarification, with dates and reasons |
 | `docs/BALANCE.md` | Sim results (first-player advantage, starter matrix, tier model, enemy difficulty) and open balance questions |
@@ -18,7 +19,7 @@ Ko-fi-funded) → Steam full game ($7.99–$9.99) with PvP later. Owner: Robert.
 | `ROADMAP.md` | Player-facing roadmap |
 
 ## Golden rules
-1. **The engine is pure and deterministic.** `packages/engine` has no DOM, no `Math.random`, no
+1. **The engine is pure and deterministic.** `packages/combat` has no DOM, no `Math.random`, no
    `Date`, no I/O. All randomness goes through the seeded PRNG in state. Seed + action log = identical game.
 2. **Cards are data.** Behaviour lives in the effect DSL. Never special-case a card ID in engine code.
    A new behaviour = a new generic `op` + tests.
@@ -47,23 +48,22 @@ Ko-fi-funded) → Steam full game ($7.99–$9.99) with PvP later. Owner: Robert.
 pnpm install
 pnpm dev          # web client
 pnpm test         # all tests
-pnpm lint         # ESLint (engine/ai/campaign have purity rules: no Math.random, Date, DOM, node I/O)
+pnpm lint         # ESLint (combat/content/campaign have purity rules: no Math.random, Date, DOM, node I/O)
 pnpm typecheck    # tsc per package
 pnpm check        # lint + typecheck + test + build
-pnpm duel         # CLI duel vs AI. Flags (after --): --p1/--p2 maren|rivet|kesh|vesper, --seed X, --auto
-pnpm fight        # Combat v2 CLI fight on the sample ruleset (--hero knight|tinker, --enemies slime,cultist,summoner,warden, --seed X, --auto)
-pnpm sim          # balance sims: match | matrix | card | tiers | enemies (see docs/BALANCE.md)
-pnpm test:property # 10,000 random games with invariant checks
+pnpm fight        # CLI fight on the sample ruleset (--hero knight|tinker, --enemies slime,cultist,summoner,warden, --seed X, --auto)
+pnpm sim          # Combat v2 balance sim: starter decks (+ --draft N random reward cards) vs every encounter (see docs/BALANCE.md)
 pnpm deploy:web -- --repo OWNER/NAME   # build + publish the compiled site to GitHub Pages (see tools/src/deploy.ts)
 pnpm build
 ```
 Toolchain: Node 22, pnpm 11 (corepack), TypeScript 6.0 (see DECISIONS #39). Workspace packages export TS source.
 
 ## Current status
-**DIRECTION CHANGE (2026-10-23, DECISIONS #86): the game is being rebuilt as Slay-the-Spire-style combat and runs (hero with HP, Mana/hand/Barrier, enemy intents, side-to-side, auto-firing Snares, PvP as a variant). Read `docs/08_COMBAT_V2.md` first; its milestones C1-C6 replace M5+ below. The Essence/slot/chain rules in `01_GAME_DESIGN.md` are legacy until C4 removes the old engine.**
-Design complete; campaign redesigned on 2026-10-22 to run-built decks + weekly PvP seasons (see
-`docs/DECISIONS.md`). Web build = private friends beta for now. **M0, M1 and M2 done** (engine, all 74 cards + 12 signature cards, enemy decks, heuristic AI, balance sim,
-10k-game property gate). First-player advantage (`docs/BALANCE.md` §1) is parked: balance waits until a playable campaign exists, even an easy one (DECISIONS #74). Starter imbalance is accepted (DECISIONS #63).
-**In progress: the browser game, playable through the campaign** (DECISIONS #64–70). UI art phases (stop after each for Robert):
-**Phases 1-4 done** (tokens, Pixi battlefield; hand + card frames; monsters; trap sigils + reveal). **M3 first playable duel done** (`#/play`: any Riftwalker vs any enemy deck, vs the heuristic AI). **M4 Run v1 playable** (`#/run`: five stages, map, rewards, shrine/merchant/event, Wardens, Resolve, Bank/Continue, saves; difficulty untuned). Next: finish M5 pieces (Boons, Tempering, Anomalies, Vault, Tier mutators) . Phase 5 (juice + interface polish) done.
+**Combat v2 (Slay-the-Spire-style) replaced the old duel on 2026-10-23** (DECISIONS #86-90, design in `docs/08_COMBAT_V2.md`).
+Done: **C1** engine (`packages/combat`: pure, seeded, events, intents, allies, Snares, tiers, PvP mode, greedy bot) ·
+**C2** content (`packages/content/src/v2`: 4 Riftwalkers, ~80 cards with "+" upgrades, 12 companions, 26 encounters incl. Wardens and
+Vorthax) · **C3** the side-to-side fight screen (`apps/web/src/fight`, route `#/fight`) · **C4** campaign Run v2 (`packages/campaign`,
+route `#/run`: map, HP carries between fights, rewards, shrine rest/upgrade/remove, merchant, event, Resolve, Bank/Continue) and the old
+Essence/slot/chain engine, AI and UI were deleted. Next: **C5** (more enemies/Boons/Warden signature cards/upgrade polish/art) and **C6** (PvP on the same
+engine). Balance is a first pass (`pnpm sim`, docs/BALANCE.md); first-player advantage is a PvP question for C6.
 Deploy with `pnpm deploy:web -- --repo rnimmo13/shattered-rifts` (live: https://rnimmo13.github.io/shattered-rifts/).

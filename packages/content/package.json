@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "type": "module",
-  "description": "Card, token, enemy and boss data with zod schemas and content tests.",
+  "description": "Combat v2 content: cards, companions, enemies, Riftwalkers and encounters.",
   "exports": {
     ".": "./src/index.ts",
     "./v2": "./src/v2/index.ts"
@@ -12,9 +12,7 @@
     "typecheck": "tsc -p tsconfig.json"
   },
   "dependencies": {
-    "@sr/combat": "workspace:*",
-    "@sr/engine": "workspace:*",
-    "zod": "4.6.7"
+    "@sr/combat": "workspace:*"
   },
   "sideEffects": false
 }

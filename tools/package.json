@@ -3,21 +3,16 @@
   "version": "0.0.0",
   "private": true,
   "type": "module",
-  "description": "Dev tools: CLI duel, sim runner, art grading, supporter codes, card exporter.",
+  "description": "Dev tools: CLI fight, balance sim, site deploy.",
   "scripts": {
-    "duel": "tsx src/duel.ts",
     "fight": "tsx src/fight.ts",
-    "sim2": "tsx src/sim2.ts",
     "typecheck": "tsc -p tsconfig.json",
     "sim": "tsx src/sim.ts",
-    "test:property": "tsx src/property.ts",
     "deploy:web": "tsx src/deploy.ts"
   },
   "dependencies": {
-    "@sr/engine": "workspace:*",
     "@sr/combat": "workspace:*",
-    "@sr/content": "workspace:*",
-    "@sr/ai": "workspace:*"
+    "@sr/content": "workspace:*"
   },
   "devDependencies": {
     "tsx": "4.23.15"

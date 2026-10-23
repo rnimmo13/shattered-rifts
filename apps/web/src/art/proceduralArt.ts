@@ -4,7 +4,19 @@
 // The subject is chosen from the card's tribes and type. Everything is seeded by the card id, so a
 // card always looks the same. Swapping in real art later means replacing cardArt() only.
 
-import type { CardDef, Realm } from '@sr/engine';
+/** The five colour families of the game. */
+export type Realm = 'aurelion' | 'nexus' | 'wyldmaw' | 'umbral' | 'neutral';
+
+/** What the painters need to know about a card. */
+export interface ArtCard {
+  id: string;
+  name: string;
+  realm: Realm;
+  rarity: string;
+  type: 'unit' | 'spell' | 'trap' | 'relic' | 'rift' | 'token' | 'sigil';
+  tribes?: string[];
+}
+type CardDef = ArtCard;
 import { color, rgba } from '../design/tokens';
 import { rng } from '../duel/scene/noise';
 
