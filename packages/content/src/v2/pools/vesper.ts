@@ -23,6 +23,9 @@ import {
   discard,
   cheapen,
   discoverOp,
+  doubleSt,
+  fetchCards,
+  maxMana,
 } from '../build';
 
 const v = pool('vesper', 'umbral');
@@ -349,4 +352,133 @@ export const VESPER: CardDef[] = [
     on('turnStart', [draw(1), barrier(4)]),
   ]),
   v('rare', 'perfect-alibi', 'Perfect Alibi', 'skill', 1, 'none', [barrier(20), discard(1)]),
+
+  // --- Snares (more traps) ---
+  v(
+    'common',
+    'fang-pit',
+    'Fang Pit',
+    'snare',
+    1,
+    'none',
+    [dmg(5, 'allFoes'), status('exposed', 1, 'allFoes')],
+    { trigger: { on: 'hpLost', min: 3 } },
+  ),
+  v(
+    'common',
+    'false-floor',
+    'False Floor',
+    'snare',
+    1,
+    'none',
+    [dmg(12, 'attacker'), status('exposed', 2, 'attacker')],
+    { trigger: { on: 'foeSummons' } },
+  ),
+  v(
+    'uncommon',
+    'poison-pantry',
+    'Poison Pantry',
+    'snare',
+    1,
+    'none',
+    [dmg(8, 'attacker'), status('brittle', 2, 'attacker')],
+    { trigger: { on: 'foeDefends' } },
+  ),
+  v(
+    'uncommon',
+    'metronome-trap',
+    'Metronome Trap',
+    'snare',
+    0,
+    'none',
+    [dmg(4, 'allFoes'), barrier(4)],
+    {
+      trigger: { on: 'foeTurn' },
+    },
+  ),
+  v('common', 'trapline-rider', 'Trapline Rider', 'attack', 1, 'foe', [
+    scaled(dmg(4), per('snares', 1, 'self', 'hits')),
+  ]),
+  v(
+    'uncommon',
+    'patchwork-traps',
+    'Patchwork Traps',
+    'skill',
+    1,
+    'none',
+    [addTo('hollow-snare'), barrier(5)],
+    { exhaust: true },
+  ),
+  v('uncommon', 'grim-collection', 'Grim Collection', 'attack', 2, 'foe', [
+    dmg(10),
+    scaled(barrier(0), per('snares', 4)),
+  ]),
+  v('rare', 'trap-door', 'Trap Door', 'power', 1, 'none', [on('turnStart', [addTo('trip-line')])]),
+
+  // --- Exposed (more marks) ---
+  v('common', 'pressure-point', 'Pressure Point', 'attack', 1, 'foe', [
+    scaled(dmg(4), per('exposed', 2, 'target')),
+    status('exposed', 1, 'target'),
+  ]),
+  v('common', 'twin-fangs', 'Twin Fangs', 'attack', 1, 'foe', [
+    dmg(4, 'target', 2),
+    status('exposed', 1, 'target'),
+  ]),
+  v('uncommon', 'dread-gaze', 'Dread Gaze', 'skill', 0, 'foe', [status('exposed', 4, 'target')], {
+    exhaust: true,
+  }),
+  v('uncommon', 'compound-fear', 'Compound Fear', 'skill', 1, 'foe', [doubleSt('exposed')], {
+    exhaust: true,
+  }),
+  v('uncommon', 'opportunist', 'Opportunist', 'power', 1, 'none', [
+    on('exhaust', [dmg(5, 'randomFoe'), status('exposed', 1, 'randomFoe')]),
+  ]),
+  v('common', 'slit-and-run', 'Slit and Run', 'attack', 1, 'foe', [
+    dmg(7),
+    barrier(4),
+    status('exposed', 1, 'target'),
+  ]),
+  v('rare', 'culling', 'Culling', 'attack', 2, 'none', [
+    scaled(dmg(6, 'allFoes'), per('exposed', 3, 'each')),
+  ]),
+  v('common', 'cripple', 'Cripple', 'skill', 1, 'foe', [
+    status('faltering', 2, 'target'),
+    status('exposed', 2, 'target'),
+    barrier(5),
+  ]),
+
+  // --- Bluff (more patience) ---
+  v('common', 'bated-breath', 'Bated Breath', 'skill', 1, 'none', [barrier(8)], { retain: true }),
+  v('rare', 'deep-pockets', 'Deep Pockets', 'power', 3, 'none', [maxMana(1)]),
+  v('common', 'read-the-room', 'Read the Room', 'skill', 1, 'none', [scry(3), draw(1), barrier(4)]),
+  v(
+    'uncommon',
+    'long-con',
+    'Long Con',
+    'attack',
+    2,
+    'foe',
+    [dmg(14), status('exposed', 1, 'target')],
+    {
+      retain: true,
+    },
+  ),
+  v('common', 'discarded-hand', 'Discarded Hand', 'skill', 0, 'none', [discard(2), draw(2)]),
+  v('uncommon', 'sandbag', 'Sandbag', 'attack', 1, 'foe', [scaled(dmg(5), per('mana', 3))]),
+  v('rare', 'curtain-call', 'Curtain Call', 'skill', 1, 'none', [draw(1), fetchCards(2, 'hand', 'snare')], {
+    exhaust: true,
+  }),
+  v(
+    'uncommon',
+    'trick-of-the-light',
+    'Trick of the Light',
+    'skill',
+    0,
+    'none',
+    [scry(2), draw(1)],
+    {
+      onDiscard: [barrier(6)],
+    },
+  ),
+  v('uncommon', 'house-edge', 'House Edge', 'power', 1, 'none', [on('draw', [barrier(1)])]),
 ];

@@ -240,7 +240,7 @@ export default function RunScreen() {
               },
               b: { enemies: plan.units, tier: plan.tier, hpPct: plan.hpPct, dmgPct: plan.dmgPct },
             }}
-            title={encounter(plan.encounterId).name}
+            title={`${encounter(plan.encounterId).name} · Stage ${run.stage}${floorLabel(run) && ` · ${floorLabel(run)}`}`}
             exitLabel="Forfeit"
             topExtra={
               <button className="btn btn--small btn--ghost" onClick={() => setShowMap(true)}>
@@ -373,6 +373,14 @@ function Sanctum(props: {
   );
 }
 
+/** "Floor 4/9" for the node the player stands on ("" before the first step of a stage). */
+function floorLabel(run: RunState): string {
+  const node = run.map.nodes.find((n) => n.id === run.at);
+  if (!node) return '';
+  const top = Math.max(...run.map.nodes.map((n) => n.floor));
+  return `Floor ${node.floor}/${top}`;
+}
+
 function RunBar(props: {
   run: RunState;
   onDeck: () => void;
@@ -385,7 +393,8 @@ function RunBar(props: {
       <div className="runbar__who">
         <b>{RIFTWALKERS[run.character].hero.name}</b>
         <span>
-          Tier {run.tier} · Stage {run.stage}/5 · {REALM_LABEL[realmOfStage(run, run.stage)]}
+          Tier {run.tier} · Stage {run.stage}/5
+          {floorLabel(run) && ` · ${floorLabel(run)}`} · {REALM_LABEL[realmOfStage(run, run.stage)]}
         </span>
       </div>
       <div className="runbar__stats">

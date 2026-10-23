@@ -19,6 +19,7 @@ import {
   on,
   per,
   pool,
+  reclaim,
   sacrifice,
   scaled,
   status,
@@ -237,4 +238,96 @@ export const KESH: CardDef[] = [
     scaled(dmg(0, 'allFoes'), per('exhausted', 2)),
   ]),
   k('rare', 'wolfhide', 'Wolfhide', 'skill', 2, 'none', [barrier(30)], { exhaust: true }),
+
+  // --- Bloodrage (batch 3) ---
+  k('common', 'maddened-lunge', 'Maddened Lunge', 'attack', 1, 'foe', [
+    scaled(dmg(5), per('missingHp', 0.25)),
+  ]),
+  k('common', 'open-a-vein', 'Open a Vein', 'skill', 0, 'none', [
+    lose(3),
+    status('might', 1),
+    draw(1),
+  ], { exhaust: true }),
+  k('common', 'bloodied-howl', 'Bloodied Howl', 'skill', 1, 'none', [
+    lose(2),
+    status('exposed', 2, 'allFoes'),
+  ]),
+  k('uncommon', 'blood-haze', 'Blood Haze', 'attack', 2, 'none', [
+    scaled(dmg(6, 'allFoes'), per('might', 2)),
+    lose(2),
+  ]),
+  k('uncommon', 'tear-loose', 'Tear Loose', 'attack', 1, 'foe', [
+    dmg(7),
+    lose(2),
+    status('vigor', 4),
+  ]),
+  k('uncommon', 'frothing-rage', 'Frothing Rage', 'skill', 1, 'none', [
+    lose(3),
+    status('might', 3, 'self', true),
+    draw(2),
+  ]),
+  k('uncommon', 'wounded-wrath', 'Wounded Wrath', 'power', 1, 'none', [
+    on('loseHp', [dmg(4, 'randomFoe')]),
+  ]),
+  k(
+    'rare',
+    'death-or-glory',
+    'Death or Glory',
+    'attack',
+    2,
+    'foe',
+    [scaled(dmg(10), per('missingHp', 0.5))],
+    { exhaust: true },
+  ),
+
+  // --- Pack (batch 3) ---
+  k('common', 'guard-dog', 'Guard Dog', 'skill', 1, 'none', [summon('hound'), barrier(5)]),
+  k('common', 'bared-teeth', 'Bared Teeth', 'skill', 1, 'none', [
+    scaled(barrier(3), per('allies', 3)),
+  ]),
+  k('common', 'lead-the-charge', 'Lead the Charge', 'attack', 1, 'foe', [
+    scaled(dmg(5), per('allies', 3)),
+  ]),
+  k('uncommon', 'blood-bond', 'Blood Bond', 'skill', 1, 'ally', [
+    lose(2),
+    status('might', 2, 'target'),
+    barrier(6, 'target'),
+  ]),
+  k('uncommon', 'litter', 'Litter', 'skill', 2, 'none', [
+    summon('gnashling'),
+    summon('gnashling'),
+    summon('gnashling'),
+  ]),
+  k('uncommon', 'bone-collar', 'Bone Collar', 'power', 1, 'none', [
+    on('allyDies', [status('might', 2), heal(4)]),
+  ]),
+  k('rare', 'hunters-call', "Hunter's Call", 'power', 2, 'none', [
+    on('turnStart', [status('might', 1, 'allFriends')]),
+  ]),
+  k('rare', 'pack-leader', 'Pack Leader', 'power', 2, 'none', [
+    on('play', [barrier(2, 'allFriends')], { filter: 'attack' }),
+  ]),
+
+  // --- Feast (batch 3) ---
+  k('common', 'marrow-suck', 'Marrow Suck', 'attack', 1, 'foe', [
+    dmg(7),
+    scaled(heal(2), per('exhausted', 0.5)),
+  ]),
+  k('common', 'throw-scraps', 'Throw Scraps', 'skill', 0, 'none', [exhaustN(1), mana(1)]),
+  k('uncommon', 'feast-on-fear', 'Feast on Fear', 'attack', 2, 'foe', [
+    dmg(12),
+    scaled(heal(3), per('exposed', 2, 'target')),
+  ]),
+  k('uncommon', 'gore-and-gulp', 'Gore and Gulp', 'attack', 1, 'foe', [dmg(10), heal(4)], {
+    exhaust: true,
+  }),
+  k('uncommon', 'ossuary', 'Ossuary', 'power', 1, 'none', [on('exhaust', [dmg(3, 'randomFoe')])]),
+  k('uncommon', 'famine', 'Famine', 'skill', 2, 'none', [exhaustN(2, 'any'), mana(2), heal(4)]),
+  k('uncommon', 'gut-trap', 'Gut Trap', 'snare', 1, 'none', [dmg(8, 'allFoes'), heal(4)], {
+    trigger: { on: 'hpLost', min: 5 },
+  }),
+  k('rare', 'second-helping', 'Second Helping', 'skill', 1, 'none', [lose(2), reclaim(1)], {
+    exhaust: true,
+  }),
+  k('rare', 'grave-hunger', 'Grave Hunger', 'power', 2, 'none', [on('exhaust', [heal(2)])]),
 ];

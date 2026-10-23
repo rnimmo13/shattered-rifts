@@ -135,6 +135,7 @@ const KP_GUN = [
   'steady-hands',
   'ironsights',
   'gunmetal-soul',
+  'hot-brass',
 ];
 const KP_SHELLS = [
   'buckshot-shell',
@@ -156,6 +157,10 @@ const KP_SHELLS = [
   'shellshocked',
   'fire-in-the-hole',
   'ammo-dump',
+  'sawn-off',
+  'tin-can-alley',
+  'pick-up-the-brass',
+  'spray-and-pray',
   'rolling-thunder',
 ];
 const kpFile = readFileSync(

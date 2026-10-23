@@ -78,6 +78,8 @@ export function TitleScreen() {
                     onClick={() => {
                       setPicked(h);
                       rememberHero(h);
+                      // straight to the Sanctum, where this Riftwalker is already chosen
+                      window.location.hash = '#/run';
                     }}
                   >
                     <HeroIcon hero={h} size={52} />
@@ -101,11 +103,9 @@ export function TitleScreen() {
 
       <div className="title__actions">
         <p className="title__playing">
-          Playing as <b>{RIFTWALKERS[picked].hero.name}</b>
+          Pick a Riftwalker above to enter the Sanctum. Practice fights use{' '}
+          <b>{RIFTWALKERS[picked].hero.name}</b>.
         </p>
-        <a className="btn btn--primary" href="#/run">
-          Begin Run
-        </a>
         <a className="btn" href="#/fight">
           Practice fight
         </a>

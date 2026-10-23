@@ -15,6 +15,7 @@ import {
   manaNext,
   maxMana,
   on,
+  PREVENT,
   per,
   pool,
   scaled,
@@ -319,4 +320,112 @@ export const ILVANE: CardDef[] = [
   i('rare', 'leyline-tap', 'Leyline Tap', 'skill', 2, 'none', [maxMana(1), barrier(6)], {
     exhaust: true,
   }),
+
+  // --- Spark (more) ---
+  i('common', 'live-wire', 'Live Wire', 'attack', 0, 'foe', [dmg(3), channel('spark')], {
+    exhaust: true,
+  }),
+  i('common', 'forked-current', 'Forked Current', 'attack', 2, 'none', [
+    dmg(8, 'allFoes'),
+    channel('spark'),
+  ]),
+  i('uncommon', 'spent-coil', 'Spent Coil', 'skill', 1, 'none', [evoke(), channel('spark')]),
+  i('uncommon', 'conduit', 'Conduit', 'power', 1, 'none', [
+    on('play', [dmg(2, 'randomFoe')], { filter: 'attack' }),
+  ]),
+  i('rare', 'sparkstorm', 'Sparkstorm', 'power', 2, 'none', [
+    on('turnEnd', [scaled(dmg(0, 'allFoes'), per('runes'))]),
+  ]),
+  i('uncommon', 'arc-reactor', 'Arc Reactor', 'attack', 2, 'foe', [
+    dmg(6, 'target', 2),
+    channel('spark'),
+  ]),
+  i('rare', 'blazing-aperture', 'Blazing Aperture', 'attack', 3, 'none', [
+    dmg(14, 'allFoes'),
+    evoke(3),
+  ]),
+  i(
+    'uncommon',
+    'static-snare',
+    'Static Snare',
+    'snare',
+    1,
+    'none',
+    [dmg(6, 'allFoes'), channel('splinter')],
+    { trigger: { on: 'foeTurn' } },
+  ),
+
+  // --- Ward (more) ---
+  i('common', 'crystal-ward', 'Crystal Ward', 'skill', 1, 'none', [barrier(7), channel('ward')], {
+    retain: true,
+  }),
+  i('common', 'frost-nova', 'Frost Nova', 'attack', 1, 'none', [
+    dmg(5, 'allFoes'),
+    status('faltering', 1, 'allFoes'),
+    channel('ward'),
+  ]),
+  i('uncommon', 'bulwark-glyph', 'Bulwark Glyph', 'skill', 2, 'none', [
+    scaled(barrier(4), per('runes', 3)),
+    status('bracing', 1),
+  ]),
+  i('uncommon', 'sentinel-sigil', 'Sentinel Sigil', 'power', 2, 'none', [
+    status('shielded', 1),
+    on('turnStart', [barrier(3)]),
+  ]),
+  i(
+    'common',
+    'rune-recall',
+    'Rune Recall',
+    'skill',
+    0,
+    'none',
+    [barrier(3), fetchCards(1, 'hand', 'skill')],
+    { exhaust: true },
+  ),
+  i('rare', 'aegis-array', 'Aegis Array', 'skill', 3, 'none', [barrier(8), channel('ward', 3)]),
+  i('rare', 'frozen-ledger', 'Frozen Ledger', 'power', 1, 'none', [on('exhaust', [barrier(4)])]),
+  i('uncommon', 'rune-snare', 'Rune Snare', 'snare', 2, 'none', [PREVENT, channel('ward')], {
+    trigger: { on: 'attacked' },
+  }),
+
+  // --- Hollow (more) ---
+  i('common', 'bleed-the-void', 'Bleed the Void', 'skill', 0, 'none', [channel('hollow'), lose(2)]),
+  i('uncommon', 'hollow-tide', 'Hollow Tide', 'attack', 2, 'foe', [
+    scaled(dmg(6), per('resonance', 4)),
+    channel('hollow'),
+  ]),
+  i('uncommon', 'tuning-fork', 'Tuning Fork', 'skill', 1, 'none', [
+    status('resonance', 1),
+    channel('prism'),
+  ]),
+  i('rare', 'echo-cascade', 'Echo Cascade', 'skill', 2, 'none', [evoke(1, 3, true)], {
+    exhaust: true,
+  }),
+  i(
+    'rare',
+    'lattice-collapse',
+    'Lattice Collapse',
+    'attack',
+    2,
+    'none',
+    [scaled(dmg(8, 'allFoes'), per('runes', 4)), evoke(3)],
+    { exhaust: true },
+  ),
+  i('rare', 'gathering-dark', 'Gathering Dark', 'power', 2, 'none', [
+    on('play', [channel('hollow')], { filter: 'skill' }),
+  ]),
+  i('uncommon', 'void-dividend', 'Void Dividend', 'skill', 1, 'none', [
+    scaled(draw(0), per('runes')),
+    cheapen(1, 'random'),
+  ]),
+  i(
+    'common',
+    'silent-glyph',
+    'Silent Glyph',
+    'skill',
+    1,
+    'none',
+    [barrier(5), channel('hollow')],
+    { onDiscard: [channel('hollow')] },
+  ),
 ];

@@ -871,6 +871,49 @@
   border: 1px solid #ff8aa8;
 }
 
+/* ---- events: a readable column of text and option cards ---- */
+.stage-panel__hint--event {
+  max-width: 34rem;
+  font-size: 1.05rem;
+  line-height: 1.6;
+}
+.eventopts {
+  display: grid;
+  gap: 0.7rem;
+  width: min(34rem, 100%);
+}
+.eventopt {
+  display: grid;
+  gap: 0.25rem;
+  padding: 0.85rem 1.1rem;
+  text-align: left;
+  color: inherit;
+  cursor: pointer;
+  border-radius: 12px;
+  border: 1px solid transparent;
+  background:
+    linear-gradient(160deg, rgb(20 32 74 / 0.92), rgb(8 10 20 / 0.96)) padding-box,
+    linear-gradient(160deg, var(--c-gold-light), var(--c-gold-dark)) border-box;
+  transition:
+    transform var(--t-fast) var(--ease-out),
+    box-shadow var(--t-fast) var(--ease-out);
+}
+.eventopt:hover,
+.eventopt:focus-visible {
+  transform: translateX(4px);
+  box-shadow: var(--glow-gold);
+}
+.eventopt__name {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  color: var(--c-gold-light);
+}
+.eventopt__text {
+  font-size: 0.9rem;
+  line-height: 1.4;
+  color: var(--c-text-dim);
+}
+
 /* ---- choosing a starting deck ---- */
 .kits {
   display: flex;

@@ -10,6 +10,7 @@ import {
   dmg,
   draw,
   heal,
+  lose,
   mana,
   manaNext,
   on,
@@ -108,6 +109,43 @@ export const RIVET: CardDef[] = [
   ),
   r('rare', 'factory-floor', 'Factory Floor', 'power', 2, 'none', [on('summon', [draw(1)])]),
 
+  // (even more Swarm)
+  r('common', 'scrap-rush', 'Scrap Rush', 'attack', 0, 'foe', [scaled(dmg(1), per('allies', 3))]),
+  r('common', 'breach-charge', 'Breach Charge', 'attack', 1, 'foe', [
+    dmg(5),
+    summon('micro-drone'),
+  ]),
+  r('common', 'rapid-prototype', 'Rapid Prototype', 'summon', 0, 'none', [summon('micro-drone')], {
+    ethereal: true,
+  }),
+  r('uncommon', 'mob-rule', 'Mob Rule', 'attack', 2, 'none', [
+    scaled(dmg(5, 'allFoes'), per('allies', 3)),
+  ]),
+  r('uncommon', 'cannibalise', 'Cannibalise', 'skill', 1, 'ally', [mana(1), draw(1), sacrifice]),
+  r(
+    'uncommon',
+    'drone-ambush',
+    'Drone Ambush',
+    'snare',
+    1,
+    'none',
+    [dmg(4, 'allFoes'), summon('micro-drone')],
+    { trigger: { on: 'foeTurn' } },
+  ),
+  r(
+    'rare',
+    'swarm-surge',
+    'Swarm Surge',
+    'skill',
+    2,
+    'none',
+    [summon('patrol-drone'), scaled(draw(0), per('allies', 1))],
+    { exhaust: true },
+  ),
+  r('rare', 'scrapyard-king', 'Scrapyard King', 'power', 2, 'none', [
+    on('allyDies', [status('might', 1, 'allFriends')]),
+  ]),
+
   // --- Assemble ---
   r('common', 'ping', 'Ping', 'skill', 0, 'none', [ACT], { exhaust: true }),
   r('common', 'jumpstart', 'Jumpstart', 'skill', 1, 'none', [ACT, barrier(4)]),
@@ -163,6 +201,31 @@ export const RIVET: CardDef[] = [
     on('play', [ACT], { filter: 'summon' }),
   ]),
 
+  // (even more Assemble)
+  r('common', 'tandem-strike', 'Tandem Strike', 'attack', 1, 'foe', [
+    scaled(dmg(3), per('played', 2)),
+  ]),
+  r('uncommon', 'arc-relay', 'Arc Relay', 'attack', 2, 'none', [dmg(5, 'allFoes'), ACT]),
+  r('uncommon', 'overtime', 'Overtime', 'skill', 0, 'none', [ACT, lose(3)], { exhaust: true }),
+  r('uncommon', 'clockwork-snare', 'Clockwork Snare', 'snare', 1, 'none', [ACT, barrier(8)], {
+    trigger: { on: 'hpLost', min: 5 },
+  }),
+  r(
+    'uncommon',
+    'surge-protocol',
+    'Surge Protocol',
+    'skill',
+    0,
+    'none',
+    [scaled(status('might', 0, 'allFriends'), per('x')), ACT],
+    { x: true },
+  ),
+  r('rare', 'relay-network', 'Relay Network', 'power', 2, 'none', [on('snare', [ACT])]),
+  r('rare', 'echo-command', 'Echo Command', 'skill', 1, 'none', [ACT, ACT, manaNext(-1)], {
+    exhaust: true,
+    retain: true,
+  }),
+
   // --- Core ---
   r('common', 'repair-bot', 'Repair Bot', 'summon', 1, 'none', [summon('repair-bot')]),
   r('common', 'build-enforcer', 'Build Enforcer', 'summon', 2, 'none', [summon('enforcer')]),
@@ -217,6 +280,38 @@ export const RIVET: CardDef[] = [
   r('rare', 'heavy-industry', 'Heavy Industry', 'power', 2, 'none', [
     on('turnStart', [barrier(4, 'allFriends')]),
   ]),
+
+  // (even more Core)
+  r('common', 'hardened-chassis', 'Hardened Chassis', 'skill', 1, 'ally', [
+    barrier(9, 'target'),
+    draw(1),
+  ]),
+  r('common', 'field-engineer', 'Field Engineer', 'summon', 1, 'none', [
+    summon('repair-bot'),
+    barrier(5),
+  ]),
+  r('common', 'armor-piercer', 'Armor Piercer', 'attack', 1, 'foe', [
+    dmg(6),
+    status('exposed', 1, 'target'),
+  ]),
+  r('uncommon', 'calibrate', 'Calibrate', 'skill', 0, 'ally', [
+    status('might', 1, 'target'),
+    barrier(4, 'target'),
+  ]),
+  r('uncommon', 'siege-protocol', 'Siege Protocol', 'attack', 2, 'foe', [
+    scaled(dmg(6), per('might', 3)),
+  ]),
+  r(
+    'rare',
+    'titan-forge',
+    'Titan Forge',
+    'summon',
+    2,
+    'none',
+    [summon('enforcer'), status('might', 2, 'allFriends')],
+    { exhaust: true },
+  ),
+  r('rare', 'backup-core', 'Backup Core', 'power', 2, 'none', [on('allyDies', [revive])]),
 
   // --- shared tools ---
   r('common', 'recompile', 'Recompile', 'skill', 1, 'none', [heal(4, 'allFriends')]),

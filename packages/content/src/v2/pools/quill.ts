@@ -14,6 +14,9 @@ import {
   doubleSt,
   discard,
   draw,
+  drawNext,
+  fetchCards,
+  reclaim,
   mana,
   on,
   per,
@@ -101,6 +104,36 @@ export const QUILL: CardDef[] = [
       exhaust: true,
     },
   ),
+
+  // (Knives, round three)
+  q('common', 'rising-tempo', 'Rising Tempo', 'attack', 0, 'foe', [
+    scaled(dmg(2), per('played', 1)),
+  ]),
+  q('common', 'whetstone-pass', 'Whetstone Pass', 'skill', 0, 'none', [
+    status('edge', 2, 'self', true),
+  ]),
+  q('uncommon', 'spent-steel', 'Spent Steel', 'attack', 1, 'foe', [
+    scaled(dmg(5), per('created', 0.2)),
+  ]),
+  q('uncommon', 'gather-the-blades', 'Gather the Blades', 'skill', 1, 'none', [reclaim(3)], {
+    exhaust: true,
+  }),
+  q('uncommon', 'jugglers-poise', "Juggler's Poise", 'power', 1, 'none', [
+    on('play', [barrier(2)], { tag: 'knife' }),
+  ]),
+  q(
+    'rare',
+    'knife-storm',
+    'Knife Storm',
+    'attack',
+    0,
+    'foe',
+    [scaled({ op: 'damage', amount: 4, hits: 0, to: 'target' }, per('x', 1, undefined, 'hits'))],
+    { x: true },
+  ),
+  q('rare', 'spent-blades-sing', 'Spent Blades Sing', 'power', 1, 'none', [
+    on('exhaust', [dmg(3, 'randomFoe')]),
+  ]),
 
   // --- Seared ---
   q('common', 'needle-jab', 'Needle Jab', 'attack', 0, 'foe', [
@@ -206,6 +239,42 @@ export const QUILL: CardDef[] = [
     },
   ),
   q('rare', 'fatal-dose', 'Fatal Dose', 'skill', 1, 'foe', [doubleSt('seared', 'target')]),
+
+  // (Bleed, round three)
+  q('common', 'scatter-shot', 'Scatter Shot', 'attack', 1, 'none', [
+    dmg(3, 'allFoes'),
+    status('seared', 2, 'allFoes'),
+  ]),
+  q('common', 'withering-slash', 'Withering Slash', 'attack', 1, 'foe', [
+    dmg(6),
+    status('seared', 2, 'target'),
+    status('faltering', 1, 'target'),
+  ]),
+  q('common', 'slow-poison', 'Slow Poison', 'skill', 0, 'foe', [status('seared', 3, 'target')], {
+    exhaust: true,
+  }),
+  q('uncommon', 'open-veins', 'Open Veins', 'attack', 1, 'foe', [
+    scaled(dmg(2), per('seared', 1, 'target')),
+  ]),
+  q(
+    'uncommon',
+    'contagion',
+    'Contagion',
+    'skill',
+    2,
+    'foe',
+    [
+      status('seared', 2, 'target'),
+      scaled(status('seared', 0, 'allFoes'), per('seared', 1, 'target')),
+    ],
+    { exhaust: true },
+  ),
+  q('uncommon', 'sour-sleight', 'Sour Sleight', 'power', 1, 'none', [
+    on('discard', [status('seared', 2, 'randomFoe')]),
+  ]),
+  q('rare', 'compounding-interest', 'Compounding Interest', 'power', 2, 'none', [
+    on('turnStart', [doubleSt('seared', 'allFoes', 1.5)]),
+  ]),
 
   // --- Sleight ---
   q('common', 'quick-hands', 'Quick Hands', 'skill', 0, 'none', [draw(1), discard(1)]),
@@ -329,5 +398,40 @@ export const QUILL: CardDef[] = [
     {
       exhaust: true,
     },
+  ),
+
+  // (Sleight, round three)
+  q('common', 'cold-open', 'Cold Open', 'attack', 0, 'foe', [dmg(6), discard(1)]),
+  q('uncommon', 'magicians-exit', "Magician's Exit", 'skill', 1, 'none', [
+    discard(9, 'any'),
+    scaled(barrier(0), per('discarded', 3)),
+  ]),
+  q('uncommon', 'loaded-die', 'Loaded Die', 'skill', 0, 'none', [], {
+    unplayable: true,
+    onDiscard: [dmg(6, 'allFoes')],
+  }),
+  q('uncommon', 'cut-and-shuffle', 'Cut and Shuffle', 'skill', 1, 'none', [
+    fetchCards(2),
+    discard(1),
+  ]),
+  q('uncommon', 'fortunes-edge', "Fortune's Edge", 'attack', 1, 'foe', [
+    scaled(dmg(6), per('discarded', 2)),
+  ]),
+  q('rare', 'jokers-gambit', "Joker's Gambit", 'skill', 0, 'none', [], {
+    unplayable: true,
+    onDiscard: [addTo('sleeve-knife', 3)],
+  }),
+  q('rare', 'showy-reflex', 'Showy Reflex', 'power', 1, 'none', [
+    on('discard', [dmg(4, 'randomFoe')]),
+  ]),
+  q(
+    'rare',
+    'tricksters-vanish',
+    "Trickster's Vanish",
+    'skill',
+    1,
+    'none',
+    [barrier(12), drawNext(2)],
+    { exhaust: true },
   ),
 ];

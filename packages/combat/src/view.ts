@@ -544,6 +544,7 @@ export function cardText(db: CombatDb, c: CardDef): string {
   }
   if (c.unplayable) parts.push('Unplayable.');
   if (c.starCost) parts.push(`Costs ${c.starCost} Lumen.`);
+  if (c.xBonus) parts.push(`X is ${c.xBonus} higher.`);
   const who: Record<Sel, string> =
     c.target === 'ally' || c.target === 'friend' ? { ...WHO, target: ' to the ally' } : WHO;
   // several of the same summon in a row read as one line ("Summon 3 Bone Thralls...")

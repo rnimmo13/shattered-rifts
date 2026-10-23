@@ -23,6 +23,7 @@ import {
   status,
   drawNext,
   addTo,
+  discard,
 } from '../build';
 
 const a = pool('astra', 'starfall');
@@ -293,4 +294,82 @@ export const ASTRA: CardDef[] = [
     on('created', [barrier(4)]),
   ]),
   a('rare', 'orrery', 'Orrery', 'power', 3, 'none', [on('play', [stars(1)])]),
+
+  // --- more Blade (batch 3) ---
+  a('common', 'quenching-strike', 'Quenching Strike', 'attack', 1, 'foe', [
+    dmg(5, 'target', 2),
+    forge('starforged-blade', 2),
+  ]),
+  a(
+    'common',
+    'grindstone',
+    'Grindstone',
+    'skill',
+    0,
+    'none',
+    [forge('starforged-blade', 2), draw(1)],
+    { exhaust: true },
+  ),
+  a('uncommon', 'blade-oath', 'Blade Oath', 'skill', 1, 'none', [
+    addTo('starforged-blade'),
+    status('might', 1),
+  ]),
+  a('uncommon', 'sparring-partner', 'Sparring Partner', 'power', 2, 'none', [
+    on('play', [draw(1)], { tag: 'blade' }),
+  ]),
+  a('rare', 'kingsbane', 'Kingsbane', 'attack', 3, 'foe', [
+    dmg(8, 'target', 3),
+    forge('starforged-blade', 4),
+  ]),
+  a(
+    'rare',
+    'starforged-legion',
+    'Starforged Legion',
+    'skill',
+    2,
+    'none',
+    [addTo('starforged-blade', 3)],
+    {
+      exhaust: true,
+    },
+  ),
+
+  // --- more Stars (batch 3) ---
+  a('common', 'pale-beacon', 'Pale Beacon', 'skill', 1, 'none', [barrier(5), scry(2), stars(1)]),
+  a('common', 'lodestar-strike', 'Lodestar Strike', 'attack', 1, 'foe', [
+    scaled(dmg(4), per('stars', 1)),
+  ]),
+  a('common', 'wishing-star', 'Wishing Star', 'skill', 0, 'none', [stars(2), manaNext(-1)]),
+  a('common', 'stellar-wind', 'Stellar Wind', 'skill', 1, 'none', [draw(2), stars(1), discard(1)]),
+  a('uncommon', 'meteor-shower', 'Meteor Shower', 'attack', 2, 'none', [
+    dmg(5, 'allFoes', 3),
+    stars(1),
+  ]),
+  a(
+    'rare',
+    'event-horizon',
+    'Event Horizon',
+    'attack',
+    2,
+    'foe',
+    [dmg(20), status('exposed', 2, 'target'), status('faltering', 2, 'target')],
+    { starCost: 2 },
+  ),
+  a('rare', 'zenith', 'Zenith', 'attack', 1, 'foe', [scaled(dmg(0), per('stars', 3))]),
+
+  // --- more Constellations (batch 3) ---
+  a('uncommon', 'perseus', 'Perseus', 'power', 2, 'none', [
+    on('play', [dmg(4, 'randomFoe')], { filter: 'attack' }),
+  ]),
+  a('uncommon', 'pleiades', 'Pleiades', 'power', 1, 'none', [
+    on('turnStart', [barrier(4), draw(1)]),
+  ]),
+  a('uncommon', 'polaris', 'Polaris', 'power', 1, 'none', [on('exhaust', [stars(1)])]),
+  a('uncommon', 'vega', 'Vega', 'power', 1, 'none', [on('discard', [dmg(4, 'randomFoe')])]),
+  a('rare', 'andromeda', 'Andromeda', 'power', 2, 'none', [
+    on('turnEnd', [scaled(dmg(0, 'allFoes'), per('stars', 0.5))]),
+  ]),
+  a('rare', 'sirius', 'Sirius', 'power', 3, 'none', [
+    on('turnStart', [mana(1), forge('starforged-blade', 2)]),
+  ]),
 ];

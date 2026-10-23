@@ -22,6 +22,7 @@ import {
   per,
   pool,
   PREVENT,
+  reclaim,
   scaled,
   scry,
   status,
@@ -336,4 +337,74 @@ export const KP: CardDef[] = [
     exhaust: true,
   }),
   p('rare', 'last-call', 'Last Call', 'skill', 2, 'none', [maxMana(1), heal(6)], { exhaust: true }),
+  // --- Junk Traps (more) ---
+  p(
+    'uncommon',
+    'rusty-nail-board',
+    'Rusty Nail Board',
+    'snare',
+    1,
+    'none',
+    [dmg(5, 'allFoes'), status('faltering', 1, 'allFoes')],
+    { trigger: { on: 'foeTurn' } },
+  ),
+  p(
+    'uncommon',
+    'trolley-barricade',
+    'Trolley Barricade',
+    'snare',
+    1,
+    'none',
+    [barrier(12), dmg(10, 'attacker')],
+    { trigger: { on: 'hpLost', min: 6 } },
+  ),
+  p(
+    'rare',
+    'molotov-cocktail',
+    'Molotov Cocktail',
+    'snare',
+    1,
+    'none',
+    [dmg(12, 'allFoes'), status('brittle', 1, 'allFoes')],
+    { trigger: { on: 'foeSummons' } },
+  ),
+
+  // --- Glass (more) ---
+  p('common', 'sheet-of-glass', 'Sheet of Glass', 'skill', 1, 'none', [
+    barrier(6),
+    status('thorns', 2),
+  ]),
+  p('common', 'splinters', 'Splinters', 'attack', 1, 'foe', [
+    scaled(dmg(3), per('thorns', 2)),
+  ]),
+  p('uncommon', 'glass-underfoot', 'Glass Underfoot', 'power', 1, 'none', [
+    on('turnStart', [status('thorns', 2)]),
+  ]),
+  p('rare', 'glass-jaw', 'Glass Jaw', 'power', 1, 'none', [
+    on('loseHp', [dmg(6, 'allFoes'), barrier(4)]),
+  ]),
+
+  // --- Shells (more) ---
+  p('uncommon', 'sawn-off', 'Sawn-Off', 'attack', 1, 'none', [dmg(7, 'allFoes'), lose(2)]),
+  p('uncommon', 'tin-can-alley', 'Tin Can Alley', 'attack', 1, 'none', [dmg(3, 'allFoes', 3)]),
+  p('uncommon', 'pick-up-the-brass', 'Pick Up the Brass', 'skill', 1, 'none', [reclaim(2)], {
+    exhaust: true,
+  }),
+  p('rare', 'hot-brass', 'Hot Brass', 'power', 1, 'none', [
+    on('exhaust', [barrier(2), forge('old-twelve-gauge', 1)]),
+  ]),
+  p('rare', 'spray-and-pray', 'Spray and Pray', 'attack', 2, 'none', [
+    scaled(dmg(4, 'allFoes'), per('created', 0.5)),
+  ]),
+
+  // --- liquid courage (more) ---
+  p('common', 'chaser', 'Chaser', 'skill', 0, 'none', [lose(2), mana(1), draw(1)], {
+    exhaust: true,
+  }),
+  p('uncommon', 'bar-tab', 'Bar Tab', 'skill', 0, 'none', [draw(2), manaNext(-1)], {
+    exhaust: true,
+  }),
+  p('rare', 'mean-drunk', 'Mean Drunk', 'power', 1, 'none', [
+    on('loseHp', [status('might', 1)]),
+  ]),
 ];

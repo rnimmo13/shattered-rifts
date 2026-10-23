@@ -8,8 +8,10 @@ import type { CardDef } from '@sr/combat';
 import {
   barrier,
   dmg,
+  doubleSt,
   draw,
   heal,
+  lose,
   manaNext,
   on,
   per,
@@ -256,4 +258,113 @@ export const MAREN: CardDef[] = [
     { exhaust: true },
   ),
   m('uncommon', 'steady-resolve', 'Steady Resolve', 'skill', 1, 'none', [barrier(5), manaNext(2)]),
+
+  // --- Bulwark (more) ---
+  m('uncommon', 'bulwark-sweep', 'Bulwark Sweep', 'attack', 2, 'none', [
+    scaled(dmg(4, 'allFoes'), per('barrier', 0.5)),
+  ]),
+  m(
+    'uncommon',
+    'hold-the-line',
+    'Hold the Line',
+    'skill',
+    1,
+    'none',
+    [scaled(barrier(4), per('skillsPlayed', 3))],
+    { retain: true },
+  ),
+  m(
+    'rare',
+    'forged-in-iron',
+    'Forged in Iron',
+    'skill',
+    0,
+    'none',
+    [scaled(barrier(0), per('x', 6))],
+    { x: true },
+  ),
+  m('uncommon', 'tower-shield', 'Tower Shield', 'power', 1, 'none', [
+    on('play', [barrier(3)], { filter: 'skill' }),
+  ]),
+  m('common', 'iron-tithe', 'Iron Tithe', 'skill', 1, 'none', [
+    barrier(6),
+    scaled(barrier(0), per('exhausted', 2)),
+  ]),
+  m('common', 'crushing-weight', 'Crushing Weight', 'attack', 2, 'foe', [
+    scaled(dmg(6), per('barrier', 0.5)),
+    status('exposed', 1, 'target'),
+  ]),
+  m('rare', 'endless-vigil', 'Endless Vigil', 'power', 2, 'none', [
+    on('turnEnd', [scaled(barrier(0), per('hand', 2))]),
+  ]),
+
+  // --- Thorns (more) ---
+  m(
+    'common',
+    'spiked-retort',
+    'Spiked Retort',
+    'snare',
+    1,
+    'none',
+    [dmg(6, 'attacker'), status('thorns', 2)],
+    { trigger: { on: 'attacked' } },
+  ),
+  m('uncommon', 'thorn-volley', 'Thorn Volley', 'attack', 1, 'none', [
+    scaled(dmg(2, 'allFoes'), per('thorns', 1)),
+  ]),
+  m('uncommon', 'thorn-covenant', 'Thorn Covenant', 'power', 1, 'none', [
+    on('snare', [status('thorns', 2)]),
+  ]),
+  m('uncommon', 'barbed-bastion', 'Barbed Bastion', 'skill', 2, 'none', [
+    scaled(barrier(6), per('thorns', 2)),
+  ]),
+  m('common', 'lacerate', 'Lacerate', 'attack', 1, 'foe', [
+    dmg(7),
+    status('faltering', 1, 'target'),
+  ]),
+  m('rare', 'briar-bloom', 'Briar Bloom', 'skill', 1, 'none', [doubleSt('thorns', 'self')], {
+    exhaust: true,
+  }),
+  m(
+    'uncommon',
+    'punishing-gale',
+    'Punishing Gale',
+    'snare',
+    2,
+    'none',
+    [dmg(8, 'allFoes'), scaled(dmg(0, 'allFoes'), per('thorns', 1))],
+    { trigger: { on: 'foeTurn' } },
+  ),
+
+  // --- Sanctified (more) ---
+  m('common', 'quick-orison', 'Quick Orison', 'skill', 0, 'none', [heal(3), draw(1)], {
+    retain: true,
+  }),
+  m('uncommon', 'sunforged-edge', 'Sunforged Edge', 'attack', 2, 'foe', [
+    scaled(dmg(8), per('missingHp', 0.25)),
+  ]),
+  m('uncommon', 'vigil-of-dawn', 'Vigil of Dawn', 'power', 1, 'none', [on('exhaust', [heal(2)])]),
+  m('uncommon', 'consecrate', 'Consecrate', 'skill', 2, 'none', [
+    heal(5, 'allFriends'),
+    barrier(5, 'allFriends'),
+    draw(1),
+  ]),
+  m('common', 'blessed-onslaught', 'Blessed Onslaught', 'attack', 1, 'foe', [
+    dmg(5),
+    scaled(heal(0), per('attacksPlayed', 1)),
+  ]),
+  m(
+    'rare',
+    'martyrs-grace',
+    "Martyr's Grace",
+    'skill',
+    1,
+    'none',
+    [lose(5), barrier(15), status('shielded', 2)],
+    { exhaust: true },
+  ),
+  m('rare', 'radiance-eternal', 'Radiance Eternal', 'power', 3, 'none', [
+    on('turnStart', [heal(2)]),
+    on('turnEnd', [status('shielded', 1)]),
+  ]),
 ];

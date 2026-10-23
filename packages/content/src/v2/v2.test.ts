@@ -40,6 +40,7 @@ describe('Combat v2 content', () => {
           e: c.effects,
           cost: c.cost,
           x: c.exhaust,
+          b: c.xBonus,
           d: c.onDiscard,
           o: c.onExhaust,
         }) ===
@@ -47,6 +48,7 @@ describe('Combat v2 content', () => {
           e: u.effects,
           cost: u.cost,
           x: u.exhaust,
+          b: u.xBonus,
           d: u.onDiscard,
           o: u.onExhaust,
         });

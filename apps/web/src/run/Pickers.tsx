@@ -483,23 +483,39 @@ export function EventView(props: { run: RunState; onChoose: (id: EventOption['id
   return (
     <section className="stage-panel" aria-label="Event">
       <h2 className="stage-panel__title">{ev.title}</h2>
-      <p className="stage-panel__hint">{ev.text}</p>
+      <p className="stage-panel__hint stage-panel__hint--event">{ev.text}</p>
       {ev.boonOffer && <BoonCard id={ev.boonOffer} />}
       {card && (
         <div className="offers">
           <Pickable id={card.id} width={270} own={props.run.character} onHover={setHover} />
         </div>
       )}
-      <div className="choices-row">
-        {ev.options.map((o) => (
-          <button key={o.id} className="btn" onClick={() => props.onChoose(o.id)}>
-            <span>{o.label}</span>
-          </button>
-        ))}
+      <div className="eventopts">
+        {ev.options.map((o) => {
+          const { head, detail } = splitOption(o.label);
+          return (
+            <button key={o.id} className="eventopt" onClick={() => props.onChoose(o.id)}>
+              <b className="eventopt__name">{head}</b>
+              {detail && <span className="eventopt__text">{detail}</span>}
+            </button>
+          );
+        })}
       </div>
       <CardHover def={hover} />
     </section>
   );
+}
+
+/** "Help them (lose 8 HP): they give you a potion" -> a short headline and the price/reward underneath. */
+function splitOption(label: string): { head: string; detail: string } {
+  const at = label.search(/:| \(/);
+  if (at < 0) return { head: label, detail: '' };
+  const detail = label
+    .slice(at)
+    .replace(/^[:\s(]+/, '')
+    .replace(/\)\s*:\s*(.)/, (_m, c: string) => `. ${c.toUpperCase()}`)
+    .replace(/\)$/, '');
+  return { head: label.slice(0, at), detail: detail.charAt(0).toUpperCase() + detail.slice(1) };
 }
 
 /** The choice at the start of a run (The Threshold) or of a stage (a Waymark): one option, taken once. */

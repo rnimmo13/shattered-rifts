@@ -199,4 +199,127 @@ export const SEHRA: CardDef[] = [
   s('rare', 'radiant-heart', 'Radiant Heart', 'power', 2, 'none', [
     on('stance', [draw(2), mana(1)], { stance: 'radiant' }),
   ]),
+
+  // --- Wrath (more) ---
+  s(
+    'common',
+    'ember-jab',
+    'Ember Jab',
+    'attack',
+    0,
+    'foe',
+    [dmg(4), status('exposed', 1, 'target')],
+    {
+      exhaust: true,
+    },
+  ),
+  s('common', 'rending-hands', 'Rending Hands', 'attack', 1, 'foe', [dmg(5, 'target', 2), lose(2)]),
+  s('uncommon', 'hot-blooded', 'Hot-Blooded', 'attack', 1, 'foe', [
+    scaled(dmg(8), per('missingHp', 0.2)),
+    stance('wrath'),
+  ]),
+  s(
+    'uncommon',
+    'berserk-tide',
+    'Berserk Tide',
+    'attack',
+    0,
+    'foe',
+    [
+      scaled({ op: 'damage', amount: 4, hits: 0, to: 'target' }, per('x', 1, undefined, 'hits')),
+      stance('wrath'),
+    ],
+    { x: true },
+  ),
+  s('uncommon', 'unleashed-roar', 'Unleashed Roar', 'skill', 1, 'none', [
+    status('exposed', 1, 'allFoes'),
+    stance('wrath'),
+  ]),
+  s(
+    'uncommon',
+    'cornered-beast',
+    'Cornered Beast',
+    'snare',
+    1,
+    'none',
+    [dmg(12, 'attacker'), status('vigor', 4), stance('wrath')],
+    { trigger: { on: 'hpLost', min: 5 } },
+  ),
+  s('rare', 'blood-on-the-sand', 'Blood on the Sand', 'power', 1, 'none', [
+    on('stance', [lose(2), status('vigor', 3)], { stance: 'wrath' }),
+  ]),
+  s('rare', 'ashes-of-restraint', 'Ashes of Restraint', 'attack', 2, 'foe', [
+    scaled(dmg(6), per('exhausted', 3)),
+    stance('wrath'),
+  ]),
+
+  // --- Calm (more) ---
+  s('common', 'settled-palms', 'Settled Palms', 'skill', 0, 'none', [barrier(3), scry(2)]),
+  s('common', 'quiet-strike', 'Quiet Strike', 'attack', 1, 'foe', [
+    dmg(7),
+    barrier(3),
+    stance('calm'),
+  ]),
+  s('uncommon', 'still-water', 'Still Water', 'skill', 1, 'none', [
+    scaled(barrier(4), per('calm', 6)),
+    draw(1),
+  ]),
+  s('uncommon', 'exhale', 'Exhale', 'skill', 0, 'none', [stance('none'), mana(1), draw(1)], {
+    exhaust: true,
+  }),
+  s(
+    'uncommon',
+    'mirror-pool',
+    'Mirror Pool',
+    'skill',
+    1,
+    'none',
+    [scaled(barrier(0), per('mana', 3)), stance('calm')],
+    { retain: true },
+  ),
+  s('uncommon', 'gentle-return', 'Gentle Return', 'power', 1, 'none', [
+    on('stance', [heal(2), barrier(3)], { stance: 'calm' }),
+  ]),
+  s(
+    'rare',
+    'tide-of-peace',
+    'Tide of Peace',
+    'skill',
+    0,
+    'none',
+    [scaled(barrier(0), per('x', 5)), scaled(draw(0), per('x', 1)), stance('calm')],
+    { x: true },
+  ),
+  s('rare', 'breath-between-blows', 'Breath Between Blows', 'power', 1, 'none', [
+    on('play', [barrier(2)], { filter: 'skill' }),
+  ]),
+
+  // --- Mantra (more) ---
+  s('common', 'candle-vigil', 'Candle Vigil', 'skill', 1, 'none', [status('mantra', 2), draw(1)]),
+  s('common', 'chanted-blow', 'Chanted Blow', 'attack', 1, 'foe', [dmg(6), status('mantra', 2)]),
+  s('uncommon', 'foretold-flame', 'Foretold Flame', 'attack', 1, 'foe', [
+    scaled(dmg(5), per('mantra', 1)),
+    scry(2),
+  ]),
+  s('uncommon', 'faith-kept', 'Faith Kept', 'skill', 0, 'none', [status('mantra', 2)], {
+    retain: true,
+    onExhaust: [status('mantra', 3)],
+  }),
+  s('uncommon', 'mantra-engine', 'Mantra Engine', 'power', 1, 'none', [
+    on('turnEnd', [scaled(barrier(0), per('mantra', 1))]),
+  ]),
+  s(
+    'rare',
+    'burning-litany',
+    'Burning Litany',
+    'skill',
+    2,
+    'none',
+    [scaled(dmg(0, 'allFoes'), per('mantra', 1)), stance('radiant')],
+    { exhaust: true },
+  ),
+  s('rare', 'unwavering', 'Unwavering', 'power', 2, 'none', [
+    on('discard', [barrier(4), status('mantra', 1)]),
+    on('exhaust', [barrier(4), status('mantra', 1)]),
+  ]),
 ];

@@ -268,6 +268,8 @@ export interface CardDef {
   starCost?: number;
   /** an X card: costs all your remaining Mana and the Metric 'x' is how much was spent (give it cost 0) */
   x?: boolean;
+  /** an X card's "+1": X counts as this much more than the Mana spent (the "+" version of every X card has 1) */
+  xBonus?: number;
   /** starts in your opening hand */
   innate?: boolean;
   /** exhausts if it is still in your hand at the end of your turn */

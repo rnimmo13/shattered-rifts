@@ -13,6 +13,7 @@ import {
   doubleSt,
   draw,
   exhaustN,
+  fetchCards,
   heal,
   lose,
   mana,
@@ -23,6 +24,7 @@ import {
   revive,
   sacrifice,
   scaled,
+  scry,
   status,
   summon,
 } from '../build';
@@ -341,4 +343,100 @@ export const MIRE: CardDef[] = [
       exhaust: true,
     },
   ),
+
+  // --- Doom: more ---
+  g('common', 'tomb-chill', 'Tomb Chill', 'attack', 1, 'foe', [
+    dmg(4),
+    status('doom', 3, 'target'),
+    draw(1),
+  ]),
+  g('common', 'dirge', 'Dirge', 'skill', 1, 'foe', [
+    scaled(status('doom', 4, 'target'), per('foes', 2)),
+  ]),
+  g(
+    'common',
+    'fatal-omen',
+    'Fatal Omen',
+    'skill',
+    0,
+    'foe',
+    [status('doom', 3, 'target'), status('exposed', 1, 'target')],
+    { exhaust: true },
+  ),
+  g('common', 'gravesight', 'Gravesight', 'skill', 1, 'none', [
+    scry(2),
+    status('doom', 3, 'randomFoe'),
+  ]),
+  g('uncommon', 'reaping-scythe', 'Reaping Scythe', 'attack', 2, 'none', [
+    scaled(dmg(5, 'allFoes'), per('doom', 0.5, 'each')),
+  ]),
+  g('uncommon', 'grim-tally', 'Grim Tally', 'attack', 1, 'foe', [
+    scaled(dmg(3), per('played', 2)),
+    status('doom', 3, 'target'),
+  ]),
+  g('uncommon', 'toll-in-advance', 'Toll in Advance', 'skill', 1, 'foe', [
+    status('doom', 9, 'target'),
+    lose(4),
+  ]),
+  g('rare', 'ominous-chimes', 'Ominous Chimes', 'power', 2, 'none', [
+    on('draw', [status('doom', 1, 'randomFoe')]),
+  ]),
+  g(
+    'rare',
+    'final-reckoning',
+    'Final Reckoning',
+    'attack',
+    3,
+    'foe',
+    [scaled(dmg(0), per('doom', 2, 'target'))],
+    { exhaust: true },
+  ),
+
+  // --- Thralls: more ---
+  g('common', 'crypt-recruit', 'Crypt Recruit', 'summon', 1, 'none', [
+    summon('bone-thrall'),
+    barrier(4),
+  ]),
+  g('common', 'rally-the-dead', 'Rally the Dead', 'skill', 1, 'none', [
+    ACT,
+    status('might', 1, 'allFriends', true),
+  ]),
+  g('common', 'tithe-of-bone', 'Tithe of Bone', 'attack', 1, 'foe', [
+    scaled(dmg(4), per('allies', 4)),
+  ]),
+  g('common', 'grim-mending', 'Grim Mending', 'skill', 1, 'ally', [
+    heal(12, 'target'),
+    barrier(6, 'target'),
+  ]),
+  g('uncommon', 'bone-rain', 'Bone Rain', 'skill', 1, 'ally', [
+    dmg(10, 'allFoes'),
+    status('doom', 3, 'allFoes'),
+    sacrifice,
+  ]),
+  g('uncommon', 'pallbearer', 'Pallbearer', 'power', 1, 'none', [
+    on('summon', [dmg(5, 'randomFoe')]),
+  ]),
+  g('uncommon', 'second-death', 'Second Death', 'skill', 2, 'none', [revive, ACT]),
+  g('rare', 'bonded-dead', 'Bonded Dead', 'power', 2, 'none', [
+    on('allyDies', [status('doom', 4, 'allFoes')]),
+  ]),
+
+  // --- Ashes: more ---
+  g('common', 'bone-sift', 'Bone Sift', 'skill', 0, 'none', [exhaustN(1), draw(2)]),
+  g('common', 'ember-grasp', 'Ember Grasp', 'attack', 0, 'foe', [
+    scaled(dmg(3), per('exhausted', 1)),
+  ]),
+  g('common', 'tomb-feast', 'Tomb Feast', 'attack', 1, 'foe', [dmg(8), exhaustN(1), heal(4)]),
+  g('uncommon', 'wake-the-ashes', 'Wake the Ashes', 'skill', 1, 'none', [reclaim(2)], {
+    exhaust: true,
+  }),
+  g('uncommon', 'exhume', 'Exhume', 'skill', 2, 'none', [fetchCards(2), addTo('gravesoul')]),
+  g('uncommon', 'ashfall', 'Ashfall', 'power', 1, 'none', [on('exhaust', [dmg(3, 'randomFoe')])]),
+  g('rare', 'last-embers', 'Last Embers', 'skill', 1, 'none', [
+    exhaustN(9, 'any'),
+    scaled(mana(0), per('exhausted', 0.5)),
+  ]),
+  g('rare', 'soul-furnace', 'Soul Furnace', 'power', 2, 'none', [
+    on('turnStart', [addTo('gravesoul')]),
+  ]),
 ];

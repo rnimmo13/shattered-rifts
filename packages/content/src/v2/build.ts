@@ -209,6 +209,12 @@ export function pool(hero: string, realm: string) {
  * nothing to improve gets cheaper, or loses Exhaust.
  */
 export function plus(c: CardDef): CardDef {
+  // every X card upgrades the same way, as in Slay the Spire: X counts as one more
+  if (c.x) {
+    const up: CardDef = { ...c, id: `${c.id}+`, name: `${c.name}+`, xBonus: (c.xBonus ?? 0) + 1 };
+    delete up.upgrade;
+    return up;
+  }
   const custom = CUSTOM_UP.get(c.id);
   if (custom) {
     const up: CardDef = { ...c, ...custom, id: `${c.id}+`, name: `${c.name}+` };

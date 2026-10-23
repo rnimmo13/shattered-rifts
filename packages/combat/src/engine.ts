@@ -1552,7 +1552,7 @@ function playCard(r: Run, action: Extract<Action, { type: 'play' }>): void {
   sd.mana -= costOf(r.db, sd, inst);
   let x = 0;
   if (cd.x) {
-    x = sd.mana;
+    x = sd.mana + (cd.xBonus ?? 0);
     sd.mana = 0;
   }
   if (cd.starCost) {
