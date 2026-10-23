@@ -34,6 +34,8 @@ and a **Sigil**: a starting passive that gives every run an identity from turn 1
 
 ## 2. Run structure
 
+> **Update (DECISIONS #106):** every run opens on **The Threshold** (3 blessings and 1 bargain), and every stage and new loop opens on a **Waymark** (a rest, two blessings, sometimes a bargain), before the map appears.
+
 ```
 Choose character ──► RUN at Rift Tier I (fresh 20-card starter, 3 Resolve)
    Stage 1 ─ realm A  (first run: the character's own realm)

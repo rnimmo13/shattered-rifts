@@ -206,7 +206,14 @@ const KIND_PLURAL: Record<string, string[]> = {
 };
 const cap = (s: string): string => s.charAt(0).toUpperCase() + s.slice(1);
 /** What the player reads for a status or stance (the ids stay as they are in the data). */
-const STATUS_NAME: Record<string, string> = { calm: 'Serene', wrath: 'Fury', mantra: 'Fervor' };
+const STATUS_NAME: Record<string, string> = {
+  calm: 'Serene',
+  wrath: 'Fury',
+  mantra: 'Fervor',
+  doom: 'Knell',
+  ritual: 'Cadence',
+  vigor: 'Primed',
+};
 const sname = (s: string): string => STATUS_NAME[s] ?? cap(s);
 const article = (word: string): string => (/^[aeiou]/i.test(word) ? 'an' : 'a');
 
@@ -221,7 +228,7 @@ const METRIC_WORDS: Record<Metric, { per: string; equal: string }> = {
   thorns: { per: 'Thorns', equal: 'Thorns' },
   mantra: { per: 'Fervor', equal: 'Fervor' },
   resonance: { per: 'Resonance', equal: 'Resonance' },
-  doom: { per: 'Doom', equal: 'Doom' },
+  doom: { per: 'Knell', equal: 'Knell' },
   calm: { per: 'Serene', equal: 'Serene' },
   wrath: { per: 'Fury', equal: 'Fury' },
   radiant: { per: 'Radiant', equal: 'Radiant' },
@@ -392,15 +399,15 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
       const nm = db.runes?.[o.rune]?.name ?? o.rune;
       if (o.scale)
         return o.scale.by === 'x'
-          ? `Channel ${nm} X times.`
-          : `Channel ${nm} once per ${METRIC_WORDS[o.scale.by].per}.`;
-      return (o.times ?? 1) > 1 ? `Channel ${nm} ${o.times} times.` : `Channel ${nm}.`;
+          ? `Conjure ${nm} X times.`
+          : `Conjure ${nm} once per ${METRIC_WORDS[o.scale.by].per}.`;
+      return (o.times ?? 1) > 1 ? `Conjure ${nm} ${o.times} times.` : `Conjure ${nm}.`;
     }
     case 'evoke': {
       const n = o.count ?? 1;
       const t = o.times ?? 1;
       const xs = o.scale?.by === 'x' ? ' X times' : t > 1 ? ` ${t} times` : '';
-      return `Evoke your ${n === 1 ? 'first rune' : `first ${n} runes`}${xs}${o.keep ? ' (it stays)' : ''}.`;
+      return `Release your ${n === 1 ? 'first rune' : `first ${n} runes`}${xs}${o.keep ? ' (it stays)' : ''}.`;
     }
     case 'runeSlots':
       return `${o.amount >= 0 ? 'Gain' : 'Lose'} ${Math.abs(o.amount)} rune slot${Math.abs(o.amount) === 1 ? '' : 's'}.`;

@@ -247,7 +247,7 @@ export interface CardDef {
   realm?: string;
   /** whose pool it is in (a Riftwalker id), or 'neutral' */
   hero?: string;
-  /** free-form tags; "shiv" cards gain damage from the Edge status */
+  /** free-form tags; "knife" cards gain damage from the Edge status */
   tags?: string[];
   /** Stars paid on top of the Mana cost */
   starCost?: number;
@@ -442,6 +442,8 @@ export interface Pending {
   /** the card being played, put away when the choice (and everything after it) is done */
   finish: CardInst | null;
   x: number;
+  /** the card is played a second time when it finishes (a Twinned attack or Mirrored skill) */
+  again?: 'twinned' | 'mirrored' | null;
 }
 
 export interface SnareState {
@@ -586,7 +588,7 @@ export type CombatEvent =
   | { type: 'runeGone'; side: Side; rune: string }
   | { type: 'stance'; unit: UnitId; stance: Stance | 'none' }
   | { type: 'power'; side: Side; card: CardId }
-  | { type: 'transform'; side: Side; card: InstId; def: CardId }
+  | { type: 'transform'; side: Side; card: InstId; def: CardId; costMod?: number }
   | { type: 'forge'; side: Side; card: CardId; amount: number }
   | { type: 'scry'; side: Side; cards: InstId[] }
   | { type: 'pending'; side: Side; kind: Pending['kind'] }

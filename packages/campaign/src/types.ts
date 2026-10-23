@@ -37,6 +37,7 @@ export type RunPhase =
   | 'shrine'
   | 'merchant'
   | 'event'
+  | 'prelude' // the choice at the start of a run or a stage
   | 'stageClear' // a stage was just cleared; the next stage begins when the player continues
   | 'loopCleared' // all five stages done: Bank or Continue
   | 'collapsed' // Resolve reached 0: the run and its deck are lost
@@ -51,6 +52,40 @@ export interface MerchantItem {
 export interface EventOption {
   id: 'shards' | 'card' | 'heal' | 'upgrade' | 'bleed' | 'boon' | 'leave';
   label: string;
+}
+
+/** One thing a prelude option does. Amounts are fixed; "random" ones are rolled when the option is taken. */
+export type PreludeEffect =
+  | { k: 'maxHp'; n: number }
+  | { k: 'heal'; pct: number }
+  | { k: 'hp'; n: number } // lose HP (never below 1)
+  | { k: 'shards'; n: number }
+  | { k: 'card'; rarity: 'common' | 'uncommon' | 'rare' }
+  | { k: 'upgrade'; n: number }
+  | { k: 'remove'; n: number } // Slash / Guard only
+  | { k: 'boon'; rarity: 'common' | 'uncommon' | 'rare' }
+  | { k: 'potion' }
+  | { k: 'resolve'; n: number }
+  | { k: 'wound'; n: number }
+  | { k: 'transform'; n: number }; // Slash / Guard into random cards
+
+export interface PreludeOption {
+  id: string;
+  name: string;
+  /** generated from the effects */
+  text: string;
+  effects: PreludeEffect[];
+  /** has a price: shown in a warning colour */
+  risky?: boolean;
+}
+
+export type PreludeKind = 'threshold' | 'stage';
+
+export interface PreludeOffer {
+  kind: PreludeKind;
+  title: string;
+  text: string;
+  options: PreludeOption[];
 }
 
 /** What the current node is asking for. Only the field matching `phase` is meaningful. */
@@ -80,6 +115,8 @@ export interface NodeContext {
     boonOffer?: string;
   };
   shrineUsed?: boolean;
+  /** prelude: the choice on offer (nodeId is empty) */
+  prelude?: PreludeOffer;
 }
 
 export interface RunStats {

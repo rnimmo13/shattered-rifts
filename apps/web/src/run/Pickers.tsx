@@ -349,3 +349,28 @@ export function EventView(props: {
     </section>
   );
 }
+
+/** The choice at the start of a run (The Threshold) or of a stage (a Waymark): one option, taken once. */
+export function PreludeView(props: { run: RunState; onChoose: (id: string) => void }) {
+  const offer = props.run.context?.prelude;
+  if (!offer) return null;
+  return (
+    <section className="stage-panel" aria-label={offer.title}>
+      <h2 className="stage-panel__title">{offer.title}</h2>
+      <p className="stage-panel__hint">{offer.text}</p>
+      <div className="prelude">
+        {offer.options.map((o) => (
+          <button
+            key={o.id}
+            className={`prelude__opt${o.risky ? ' is-risky' : ''}`}
+            onClick={() => props.onChoose(o.id)}
+          >
+            <b className="prelude__name">{o.name}</b>
+            <span className="prelude__text">{o.text}</span>
+            {o.risky && <span className="prelude__tag">At a price</span>}
+          </button>
+        ))}
+      </div>
+    </section>
+  );
+}

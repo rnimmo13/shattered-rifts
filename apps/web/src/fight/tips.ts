@@ -40,7 +40,7 @@ export const TIP_RULES: TipRule[] = [
   {
     id: 'runes',
     title: 'Runes',
-    text: 'Your runes sit in the curved row under you. At the end of every turn each one fires a small effect. A new rune in a full row pushes the oldest out, and it fires its big effect. Cards that Evoke fire runes early.',
+    text: 'Your runes sit in the curved row under you. At the end of every turn each one fires a small effect. A new rune in a full row pushes the oldest out, and it fires its big effect. Cards that Release runes fire them early.',
     when: (v, c) => c.usesRunes || v.sides.a.runes.length > 0,
   },
   {
@@ -66,8 +66,8 @@ export const TIP_RULES: TipRule[] = [
   },
   {
     id: 'doom',
-    title: 'Doom',
-    text: 'Doom does nothing until the end of that unit’s turn: then if its HP is at or below its Doom, it dies. Stack it, double it, or hit it to bring the HP down to meet it.',
+    title: 'Knell',
+    text: 'Knell does nothing until the end of that unit’s turn: then if its HP is at or below its Knell, it dies. Stack it, double it, or hit it to bring the HP down to meet it.',
     when: (v) => anyUnit(v, (u) => !!u.statuses.doom),
   },
   {

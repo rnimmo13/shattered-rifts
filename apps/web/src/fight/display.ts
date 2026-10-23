@@ -76,7 +76,7 @@ function moveCard(
     }
   }
   if (!def) def = inst.card;
-  inst = { id, card: inst.card || def };
+  inst = { ...inst, id, card: inst.card || def };
   if (front) sd[to].unshift(inst);
   else sd[to].push(inst);
 }
@@ -126,7 +126,10 @@ export function reduceEvent(db: CombatDb, s: CombatState, e: CombatEvent): void 
       const inst = [...s.sides[e.side].hand, ...s.sides[e.side].draw, ...s.sides[e.side].discard].find(
         (c) => c.id === e.card,
       );
-      if (inst) inst.card = e.def;
+      if (inst) {
+        inst.card = e.def;
+        if (e.costMod !== undefined) inst.costMod = e.costMod;
+      }
       return;
     }
     case 'power': {

@@ -131,7 +131,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     howTo: [
       'You start with a Spark rune. Runes sit in a row of 3 slots under you.',
       'At the end of your turn every rune fires a small effect. A 4th rune pushes the oldest out and it fires its big effect.',
-      'Evoke cards fire runes early. Resonance makes every rune stronger.',
+      'Release cards fire runes early. Resonance makes every rune stronger.',
     ],
   },
   sehra: {
@@ -196,15 +196,15 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
       ...rep('bone-ward', 2),
     ],
     blurb:
-      'A warden of the drowned dead. Starts with a Bone Thrall. Stacks Doom on enemies until the end comes for them.',
+      'A warden of the drowned dead. Starts with a Bone Thrall. Stacks Knell on enemies until the end comes for them.',
     lanes: [
-      'Doom: stack it, double it, cash it in',
+      'Knell: stack it, double it, cash it in',
       'Thralls: the dead fight for you',
       'Ashes: consumed cards fuel you',
     ],
     howTo: [
       'You start with a Bone Thrall, which attacks when you end your turn.',
-      'Doom kills an enemy at the end of its turn if its HP is at or below its Doom. Stack it, double it, finish it.',
+      'Knell kills an enemy at the end of its turn if its HP is at or below its Knell. Stack it, double it, finish it.',
       'Cards you consume fuel your Ashes lane: Gravesouls, Requiem and more.',
     ],
   },

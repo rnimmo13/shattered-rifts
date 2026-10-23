@@ -66,9 +66,9 @@ export const STATUS_INFO: Record<
   ghostly: { name: 'Ghostly', glyph: '☁', tone: 'good', text: 'Each hit it takes is capped at 1 damage. Fades each turn.' },
   steadfast: { name: 'Steadfast', glyph: '⛉', tone: 'good', text: 'Ignores the next debuff put on it, per stack.' },
   armored: { name: 'Armored', glyph: '▣', tone: 'good', text: 'Gains Barrier equal to its stacks at the end of its turn. Loses a stack each time an attack gets through.' },
-  ritual: { name: 'Ritual', glyph: '☥', tone: 'good', text: 'Gains that much Might at the end of its turn.' },
-  vigor: { name: 'Vigor', glyph: '↯', tone: 'good', text: 'Its next attack deals that much more damage, then it is spent.' },
-  doom: { name: 'Doom', glyph: '☠', tone: 'bad', text: 'If its HP is at or below its Doom at the end of its turn, it dies.' },
+  ritual: { name: 'Cadence', glyph: '☥', tone: 'good', text: 'Gains that much Might at the end of its turn.' },
+  vigor: { name: 'Primed', glyph: '↯', tone: 'good', text: 'Its next Attack card deals that much more damage on every hit, then it is spent.' },
+  doom: { name: 'Knell', glyph: '☠', tone: 'bad', text: 'If its HP is at or below its Knell at the end of its turn, it dies.' },
   twinned: { name: 'Twinned', glyph: '⧉', tone: 'good', text: 'Your next Attack card is played twice.' },
   mirrored: { name: 'Mirrored', glyph: '⟷', tone: 'good', text: 'Your next Skill card is played twice.' },
   unbound: { name: 'Unbound', glyph: '⚯', tone: 'good', text: 'Your Skills cost 0 and are consumed when played.' },
@@ -78,7 +78,7 @@ export const STATUS_INFO: Record<
     name: 'Edge',
     glyph: '†',
     tone: 'good',
-    text: 'Your Shivs deal 1 more damage per stack.',
+    text: 'Your Sleeve Knives deal 1 more damage per stack.',
   },
 };
 
@@ -132,7 +132,7 @@ export const KEYWORD_INFO: Record<string, { name: string; text: string }> = {
   },
   rune: {
     name: 'Rune',
-    text: 'Runes sit in a row (3 slots). Each fires a small effect at the end of your turn. A rune pushed out of a full row, or evoked by a card, fires its big effect and is gone.',
+    text: 'Runes sit in a row (3 slots). Each fires a small effect at the end of your turn. A rune pushed out of a full row, or released by a card, fires its big effect and is gone.',
   },
   stance: {
     name: 'Stance',

@@ -81,6 +81,30 @@ export function offerCards(
   return out;
 }
 
+/** A random card of one rarity from the Riftwalker's own pool that the deck can still take, or null. */
+export function cardOfRarity(
+  rng: RngState,
+  hero: HeroId,
+  deck: readonly string[],
+  rarity: 'common' | 'uncommon' | 'rare',
+): string | null {
+  const pool = rewardPool(hero).filter((id) => rarityOf(id) === rarity && canAdd(deck, id));
+  return pool.length ? (pool[nextInt(rng, pool.length)] as string) : null;
+}
+
+/** A Boon of one rarity the player does not own (any rarity if that one is used up), or null if they own them all. */
+export function boonOfRarity(
+  rng: RngState,
+  owned: readonly string[],
+  rarity: 'common' | 'uncommon' | 'rare',
+): string | null {
+  const left = BOONS.filter((b) => !owned.includes(b.id));
+  if (left.length === 0) return null;
+  const same = left.filter((b) => b.rarity === rarity);
+  const from = same.length ? same : left;
+  return (from[nextInt(rng, from.length)] as (typeof BOONS)[number]).id;
+}
+
 /** The Warden's Gift: a choice among rare cards of your realm (Warden signature cards come later). */
 export function giftOffers(
   rng: RngState,

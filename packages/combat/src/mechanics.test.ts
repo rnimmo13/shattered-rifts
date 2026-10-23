@@ -164,6 +164,7 @@ const DB: CombatDb = {
     c('give-hold1', { cost: 0, effects: [{ op: 'status', status: 'holdfast', amount: 1, to: 'self' }] }),
     c('self-expose', { cost: 0, effects: [{ op: 'status', status: 'exposed', amount: 2, to: 'self' }] }),
     c('doom60', { cost: 0, target: 'foe', effects: [{ op: 'status', status: 'doom', amount: 60, to: 'target' }] }),
+    c('encore', { effects: [{ op: 'status', status: 'mirrored', amount: 1, to: 'self' }] }),
     c('flex', { cost: 0, effects: [{ op: 'status', status: 'might', amount: 3, to: 'self', temp: true }] }),
     c('plan', { cost: 0, effects: [{ op: 'manaNext', amount: 2 }, { op: 'drawNext', amount: 1 }] }),
     c('find', { effects: [{ op: 'discover', count: 1, free: true }] }),
@@ -995,6 +996,45 @@ describe('tier 3: statuses and tricks', () => {
     expect(s.sides.a.discarded).toBe(1);
     // Reflex drew 2 when it was thrown away, and Peek's own draw added 1
     expect(s.sides.a.hand).toHaveLength(3);
+  });
+});
+
+describe('review fixes, round two', () => {
+  it('a card that gives Mirrored does not spend it on itself', () => {
+    let s = start(['encore']);
+    s = play(s, 'h0').state;
+    expect(hero(s).statuses.mirrored).toBe(1);
+    let t = start(['give-mirrored']); // gives 2
+    t = play(t, 'h0').state;
+    expect(hero(t).statuses.mirrored).toBe(2);
+  });
+
+  it('Mirrored also doubles a Skill that asks for a choice, once the choice is made', () => {
+    let s = start(['give-mirror1', 'survivor', 'strike', 'defend', 'filler']);
+    s = play(s, 'h0').state;
+    s = play(s, 'h1').state; // Survivor: Barrier 8, discard 1, draw 1
+    s = pick(s, 'h2').state;
+    expect(hero(s).barrier).toBe(16); // played twice
+    expect(hero(s).statuses.mirrored).toBeUndefined();
+  });
+
+  it('Ghostly caps attacks but not Doom', () => {
+    let s = start(['doom60']);
+    foe(s).hp = 28;
+    foe(s).statuses.ghostly = 2;
+    s = play(s, 'h0', foe(s).id).state;
+    s = end(s).state;
+    expect(s.winner).toBe('a');
+  });
+
+  it('a free discovery is a modest card and never the card that found it', () => {
+    for (let i = 0; i < 25; i++) {
+      const base = start(['find']);
+      base.seed = 'f' + i;
+      const s = play(base, 'h0').state;
+      const got = s.sides.a.hand.find((c) => c.card.startsWith('pool-'));
+      expect(got?.card).toBeDefined();
+    }
   });
 });
 

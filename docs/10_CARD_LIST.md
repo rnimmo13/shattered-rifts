@@ -126,7 +126,7 @@ Starter: Slash, Slash, Slash, Slash, Slash, Guard, Guard, Guard, Savage Bite, Bl
 | Primal Feast | 1 | skill | common | Heal 5 to all friends. |
 | Bonepicker | 0 | skill | common | Gain 3 Barrier. Consume. If consumed: Heal 2. |
 | Bloodscent | 1 | attack | common | Deal 5 damage. Apply 1 Might to all friends. |
-| Whet the Fangs | 0 | skill | common | Apply 6 Vigor. |
+| Whet the Fangs | 0 | skill | common | Apply 6 Primed. |
 | Blood Tithe | 0 | skill | uncommon | Lose 6 HP. Gain 2 Mana. Draw 3 cards. Consume. |
 | Crushing Blow | 2 | attack | uncommon | Deal 8 (+2 per Might) damage. |
 | Run Wild | 2 | attack | uncommon | Deal 6 damage 2 times. Apply 1 Might. |
@@ -148,7 +148,7 @@ Starter: Slash, Slash, Slash, Slash, Slash, Guard, Guard, Guard, Savage Bite, Bl
 | Unchained | 2 | power | rare | Apply 3 Might to all friends. |
 | Den Mother | 3 | summon | rare | Summon Dire Wolf. |
 | The Maw Opens | 2 | attack | rare | Consume your hand. Deal damage equal to 2 times the number of cards you have consumed. |
-| Bloodsong | 1 | power | rare | Lose 2 HP. Apply 1 Ritual. |
+| Bloodsong | 1 | power | rare | Lose 2 HP. Apply 1 Cadence. |
 | Hunger Unbound | 2 | power | rare | Apply 1 Unbound. |
 
 ## Vesper Nightlace (umbral, 76 HP)
@@ -270,45 +270,45 @@ Starter: Slash, Slash, Slash, Slash, Guard, Guard, Guard, Spark Cast, Spark Cast
 
 | Card | Cost | Type | Rarity | Text |
 |---|---|---|---|---|
-| Spark Cast | 1 | skill | basic | Channel Spark. |
-| Twin Evocation | 1 | skill | basic | Evoke your first rune 2 times. |
-| Crackling Orb | 1 | attack | common | Deal 7 damage. Channel Spark. |
-| Arc Flash | 1 | attack | common | Deal 4 damage to ALL enemies. Channel Spark. |
-| Spark Lance | 2 | attack | common | Deal 12 damage. Channel Spark. |
-| Spark Cluster | 2 | skill | common | Channel Spark 2 times. |
-| Static Guard | 1 | skill | common | Gain 5 Barrier. Channel Spark. |
-| Glyph Guard | 1 | skill | common | Gain 6 Barrier. Channel Ward. |
-| Frostglass | 2 | skill | common | Gain 7 Barrier. Channel Ward 2 times. |
-| Ward Strike | 1 | attack | common | Deal 6 damage. Channel Ward. |
-| Cold Snap | 0 | skill | common | Channel Ward once per enemy. Consume. |
-| Umbra Glyph | 1 | skill | common | Channel Hollow. |
-| Hollow Strike | 1 | attack | common | Deal 7 damage. Channel Hollow. |
-| Rune Burst | 1 | skill | common | Evoke your first rune. Draw 1 card. |
-| Glimmer | 0 | skill | common | Channel Prism. Consume. |
+| Spark Cast | 1 | skill | basic | Conjure Spark. |
+| Twin Evocation | 1 | skill | basic | Release your first rune 2 times. |
+| Crackling Orb | 1 | attack | common | Deal 7 damage. Conjure Spark. |
+| Arc Flash | 1 | attack | common | Deal 4 damage to ALL enemies. Conjure Spark. |
+| Spark Lance | 2 | attack | common | Deal 12 damage. Conjure Spark. |
+| Spark Cluster | 2 | skill | common | Conjure Spark 2 times. |
+| Static Guard | 1 | skill | common | Gain 5 Barrier. Conjure Spark. |
+| Glyph Guard | 1 | skill | common | Gain 6 Barrier. Conjure Ward. |
+| Frostglass | 2 | skill | common | Gain 7 Barrier. Conjure Ward 2 times. |
+| Ward Strike | 1 | attack | common | Deal 6 damage. Conjure Ward. |
+| Cold Snap | 0 | skill | common | Conjure Ward once per enemy. Consume. |
+| Umbra Glyph | 1 | skill | common | Conjure Hollow. |
+| Hollow Strike | 1 | attack | common | Deal 7 damage. Conjure Hollow. |
+| Rune Burst | 1 | skill | common | Release your first rune. Draw 1 card. |
+| Glimmer | 0 | skill | common | Conjure Prism. Consume. |
 | Glyph Lattice | 1 | skill | uncommon | Gain 2 rune slots. |
-| Thundercall | 1 | power | uncommon | Whenever you play an Aura: Channel Spark. |
+| Thundercall | 1 | power | uncommon | Whenever you play an Aura: Conjure Spark. |
 | Charged Blow | 1 | attack | uncommon | Deal 4 (+2 per rune) damage. |
-| Shatter the Row | 0 | skill | uncommon | Gain Mana equal to the number of your runes. Draw cards equal to the number of your runes. Evoke your first 10 runes. Consume. |
-| Chilled Focus | 1 | skill | uncommon | Channel Ward. Draw 1 card. |
+| Shatter the Row | 0 | skill | uncommon | Gain Mana equal to the number of your runes. Draw cards equal to the number of your runes. Release your first 10 runes. Consume. |
+| Chilled Focus | 1 | skill | uncommon | Conjure Ward. Draw 1 card. |
 | Rune Carapace | 1 | power | uncommon | At the end of your turn: Gain Barrier equal to the number of your runes. |
 | Rune Shield | 1 | skill | uncommon | Gain Barrier equal to 3 times the number of your runes. |
-| Gloomwave | 2 | attack | uncommon | Deal 10 damage to ALL enemies. Channel Hollow. |
-| Echo Chamber | 1 | skill | uncommon | Evoke your first rune (it stays). |
+| Gloomwave | 2 | attack | uncommon | Deal 10 damage to ALL enemies. Conjure Hollow. |
+| Echo Chamber | 1 | skill | uncommon | Release your first rune (it stays). |
 | Tune the Lattice | 1 | power | uncommon | Apply 1 Resonance. |
 | Overtune | 1 | skill | uncommon | Apply 1 Resonance. Draw 1 card. Consume. |
 | Resonant Strike | 1 | attack | uncommon | Deal 6 (+3 per Resonance) damage. |
-| Prism Cut | 1 | skill | uncommon | Channel Prism. Draw 1 card. |
-| Harmonic Wave | 2 | attack | uncommon | Deal 6 damage to ALL enemies. Evoke your first rune. |
-| Many Voices | X | skill | uncommon | Evoke your first rune X times. |
-| Glyph Trap | 1 | snare | uncommon | When you or an ally is attacked: Deal 5 damage to the attacker. Channel Ward. |
+| Prism Cut | 1 | skill | uncommon | Conjure Prism. Draw 1 card. |
+| Harmonic Wave | 2 | attack | uncommon | Deal 6 damage to ALL enemies. Release your first rune. |
+| Many Voices | X | skill | uncommon | Release your first rune X times. |
+| Glyph Trap | 1 | snare | uncommon | When you or an ally is attacked: Deal 5 damage to the attacker. Conjure Ward. |
 | Retune | 1 | skill | uncommon | Upgrade a random card in your hand for this fight. Consume. |
-| Stored Charge | 1 | skill | uncommon | Next turn, gain 2 extra Mana. Channel Ward. |
-| Glyphstorm | X | skill | rare | Channel Spark X times. |
-| Grand Glyph | 3 | skill | rare | Channel Spark. Channel Ward. Channel Hollow. |
-| Glacial Bastion | 2 | skill | rare | Gain 12 Barrier. Channel Ward 3 times. |
+| Stored Charge | 1 | skill | uncommon | Next turn, gain 2 extra Mana. Conjure Ward. |
+| Glyphstorm | X | skill | rare | Conjure Spark X times. |
+| Grand Glyph | 3 | skill | rare | Conjure Spark. Conjure Ward. Conjure Hollow. |
+| Glacial Bastion | 2 | skill | rare | Gain 12 Barrier. Conjure Ward 3 times. |
 | Fevered Attunement | 1 | power | rare | Apply 4 Resonance. At the start of your turn: Remove 1 Resonance. |
 | Chorus of Glyphs | 2 | power | rare | Apply 2 Resonance. Gain 1 rune slot. |
-| Glyph Engine | 2 | power | rare | At the start of your turn: Channel Spark. |
+| Glyph Engine | 2 | power | rare | At the start of your turn: Conjure Spark. |
 
 ## Sehra, the Still Flame (aurelion, 72 HP)
 
@@ -417,20 +417,20 @@ Tokens (made by other cards):
 
 ## Mire, the Gravewarden (gloomfen, 76 HP)
 
-A warden of the drowned dead. Starts with a Bone Thrall. Stacks Doom on enemies until the end comes for them.
+A warden of the drowned dead. Starts with a Bone Thrall. Stacks Knell on enemies until the end comes for them.
 
-Lanes: Doom: stack it, double it, cash it in / Thralls: the dead fight for you / Ashes: consumed cards fuel you
+Lanes: Knell: stack it, double it, cash it in / Thralls: the dead fight for you / Ashes: consumed cards fuel you
 
 Starter: Slash, Slash, Slash, Guard, Guard, Guard, Grave Touch, Grave Touch, Bone Ward, Bone Ward
 
 | Card | Cost | Type | Rarity | Text |
 |---|---|---|---|---|
-| Grave Touch | 1 | attack | basic | Deal 5 damage. Apply 4 Doom. |
+| Grave Touch | 1 | attack | basic | Deal 5 damage. Apply 4 Knell. |
 | Bone Ward | 1 | skill | basic | Gain 5 Barrier to all friends. |
-| Tolling Bell | 1 | attack | common | Deal 3 damage. Apply 7 Doom. |
-| Withering Word | 1 | skill | common | Apply 5 Doom. Apply 1 Faltering. |
-| Creeping End | 1 | skill | common | Apply 4 Doom to ALL enemies. |
-| Last Rites | 2 | attack | common | Deal 8 damage. Apply 10 Doom. |
+| Tolling Bell | 1 | attack | common | Deal 3 damage. Apply 7 Knell. |
+| Withering Word | 1 | skill | common | Apply 5 Knell. Apply 1 Faltering. |
+| Creeping End | 1 | skill | common | Apply 4 Knell to ALL enemies. |
+| Last Rites | 2 | attack | common | Deal 8 damage. Apply 10 Knell. |
 | Raise Thrall | 1 | summon | common | Summon Bone Thrall. |
 | Bone Chorus | 1 | skill | common | Apply 2 Might to the ally. Heal 4 to the ally. |
 | Shared Marrow | 1 | skill | common | Heal 4 to all friends. Gain 3 Barrier to all friends. |
@@ -440,22 +440,22 @@ Starter: Slash, Slash, Slash, Guard, Guard, Guard, Grave Touch, Grave Touch, Bon
 | Ghost Light | 0 | skill | common | Heal 3. Draw 1 card. Consume. |
 | Bone Shard | 1 | attack | common | Deal 8 damage. |
 | Burial Rites | 1 | skill | common | Gain 8 Barrier. |
-| Sepulchral Gaze | 2 | attack | common | Deal 6 damage to ALL enemies. Apply 2 Doom to ALL enemies. |
-| Hasten the End | 1 | skill | uncommon | Double the Doom on the target. Consume. |
-| Inevitable | 1 | power | uncommon | At the start of your turn: Apply 3 Doom to ALL enemies. |
-| Harvest | 1 | attack | uncommon | Deal 4 (+1 per Doom on the target) damage. |
-| Deathknell | 2 | skill | uncommon | Apply 14 Doom. |
+| Sepulchral Gaze | 2 | attack | common | Deal 6 damage to ALL enemies. Apply 2 Knell to ALL enemies. |
+| Hasten the End | 1 | skill | uncommon | Double the Knell on the target. Consume. |
+| Inevitable | 1 | power | uncommon | At the start of your turn: Apply 3 Knell to ALL enemies. |
+| Harvest | 1 | attack | uncommon | Deal 4 (+1 per Knell on the target) damage. |
+| Deathknell | 2 | skill | uncommon | Apply 14 Knell. |
 | Grave Colossus | 2 | summon | uncommon | Summon Grave Colossus. |
 | Unquiet Rest | 2 | power | uncommon | At the start of your turn: Heal 3 to all friends. |
-| Fen Offering | 0 | skill | uncommon | Apply 6 Doom to ALL enemies. Gain 6 Barrier. Sacrifice the chosen ally. |
+| Fen Offering | 0 | skill | uncommon | Apply 6 Knell to ALL enemies. Gain 6 Barrier. Sacrifice the chosen ally. |
 | Spectral Ledger | 1 | skill | uncommon | Draw cards equal to half of the number of cards you have consumed. |
 | Soulbind | 1 | power | uncommon | Whenever a card is consumed: Gain 3 Barrier. |
-| Ashen Bargain | 1 | skill | uncommon | Consume any number of cards. Apply equal to the number of cards you have consumed Doom to ALL enemies. |
+| Ashen Bargain | 1 | skill | uncommon | Consume any number of cards. Apply equal to the number of cards you have consumed Knell to ALL enemies. |
 | Dredge | 1 | skill | uncommon | Draw 2 cards. Gain 3 Barrier. |
-| Rattling Charge | 2 | attack | uncommon | Deal 7 damage 2 times. Apply 3 Doom. |
-| Grave Trap | 1 | snare | uncommon | When you or an ally is attacked: Deal 5 damage to the attacker. Apply 4 Doom to the attacker. |
-| The Final Hour | 3 | skill | rare | Apply 14 Doom to ALL enemies. Consume. |
-| The Long Night | 2 | power | rare | Whenever you play an Attack: Apply 2 Doom. |
+| Rattling Charge | 2 | attack | uncommon | Deal 7 damage 2 times. Apply 3 Knell. |
+| Grave Trap | 1 | snare | uncommon | When you or an ally is attacked: Deal 5 damage to the attacker. Apply 4 Knell to the attacker. |
+| The Final Hour | 3 | skill | rare | Apply 14 Knell to ALL enemies. Consume. |
+| The Long Night | 2 | power | rare | Whenever you play an Attack: Apply 2 Knell. |
 | Army of the Drowned | 3 | summon | rare | Summon Bone Thrall. Summon Bone Thrall. Summon Bone Thrall. Consume. |
 | Deathless | 2 | power | rare | Whenever you summon an ally: Gain 5 Barrier to all friends. |
 | Requiem | 2 | attack | rare | Deal damage equal to 3 times the number of cards you have consumed. |

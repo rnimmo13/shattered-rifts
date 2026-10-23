@@ -630,12 +630,11 @@ export function FightView(props: {
     view && tipsOn && !result && !view.pending
       ? nextTip(view, { usesRunes, usesStars }, seenTips)
       : null;
-  const dismissTip = (id: string): void =>
-    setSeenTips((prev) => {
-      const next = new Set(prev).add(id);
-      saveSeen(next);
-      return next;
-    });
+  const dismissTip = (id: string): void => {
+    const next = new Set(seenTips).add(id);
+    saveSeen(next);
+    setSeenTips(next);
+  };
 
   // what the card being aimed would do to the unit under the pointer
   const aimCard = dragCard ?? selectedCard;
@@ -781,7 +780,7 @@ export function FightView(props: {
             onRefuse={(c) => {
               play('refuse');
               setBanner(
-                c.def.cost > (game.current?.state.sides.a.mana ?? 0)
+                (c.cost ?? c.def.cost) > (game.current?.state.sides.a.mana ?? 0)
                   ? 'Not enough Mana'
                   : 'You cannot play that now',
               );

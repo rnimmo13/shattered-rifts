@@ -127,15 +127,16 @@ const stacks = (u: Unit, st: StatusId): number => u.statuses[st] ?? 0;
 
 // --- statuses ---------------------------------------------------------------------------------------------------
 
-function addStatus(r: Run, u: Unit, st: StatusId, amount: number): void {
-  if (amount === 0) return;
+/** Returns whether the stacks were applied (a Steadfast unit ignores a debuff). */
+function addStatus(r: Run, u: Unit, st: StatusId, amount: number): boolean {
+  if (amount === 0) return false;
   // Steadfast: the next debuff put on this unit is ignored
   if (amount > 0 && DEBUFFS.includes(st) && stacks(u, 'steadfast') > 0) {
     const left = stacks(u, 'steadfast') - 1;
     if (left <= 0) delete u.statuses.steadfast;
     else u.statuses.steadfast = left;
     r.ev.push({ type: 'status', target: u.id, status: 'steadfast', amount: -1, total: left });
-    return;
+    return false;
   }
   let total = stacks(u, st) + amount;
   if (st === 'stunned') total = Math.min(1, total);
@@ -151,6 +152,7 @@ function addStatus(r: Run, u: Unit, st: StatusId, amount: number): void {
     r.ev.push({ type: 'status', target: u.id, status: 'mantra', amount: -MANTRA_GOAL, total });
     enterStance(r, u, 'radiant');
   }
+  return true;
 }
 
 /** Stances are exclusive statuses: leaving one and entering another both have effects. */
@@ -209,7 +211,7 @@ function applyDamage(
   kind: 'attack' | 'direct',
 ): number {
   if (t.hp <= 0) return 0;
-  if (stacks(t, 'ghostly') > 0 && amount > 1) amount = 1;
+  if (kind === 'attack' && stacks(t, 'ghostly') > 0 && amount > 1) amount = 1;
   if (kind === 'attack' && amount > 0 && stacks(t, 'shielded') > 0) {
     addStatus(r, t, 'shielded', -1);
     r.ev.push({
@@ -475,8 +477,13 @@ function execOp(r: Run, a: Act, op: Op): void {
     case 'status':
       for (const t of resolve(r, a, op.to)) {
         const n = amountOf(r, a, op.amount, op.scale, t);
-        addStatus(r, t, op.status, op.status === 'seared' ? scaledByDifficulty(a.actor, t, n) : n);
-        if (op.temp && n > 0) side.temps.push({ unit: t.id, status: op.status, amount: n });
+        const applied = addStatus(
+          r,
+          t,
+          op.status,
+          op.status === 'seared' ? scaledByDifficulty(a.actor, t, n) : n,
+        );
+        if (op.temp && n > 0 && applied) side.temps.push({ unit: t.id, status: op.status, amount: n });
       }
       return;
     case 'scaleStatus':
@@ -627,6 +634,8 @@ function execOp(r: Run, a: Act, op: Op): void {
             !!c.upgrade &&
             !c.source &&
             !c.unplayable &&
+            c.id !== a.card?.id &&
+            (!op.free || (c.cost <= 2 && c.rarity !== 'rare')) &&
             (!op.kind || c.kind === op.kind),
         )
         .sort((x, y) => (x.id < y.id ? -1 : 1));
@@ -668,7 +677,7 @@ function execOp(r: Run, a: Act, op: Op): void {
       for (const c of chosen) {
         const d = cardDef(r.db, c.card);
         c.costMod = Math.max(-d.cost, (c.costMod ?? 0) - op.amount);
-        r.ev.push({ type: 'transform', side: side.id, card: c.id, def: c.card });
+        r.ev.push({ type: 'transform', side: side.id, card: c.id, def: c.card, costMod: c.costMod });
       }
       return;
     }
@@ -1135,8 +1144,8 @@ function endTurn(r: Run): void {
   const holdAll = !!hero && stacks(hero, 'holdfast') > 0;
   for (const c of hand) {
     const cd = cardDef(r.db, c.card);
-    if (cd.retain || holdAll) keep.push(c);
-    else if (cd.ethereal) exhaustCard(r, sd, c);
+    if (cd.ethereal && !cd.retain) exhaustCard(r, sd, c);
+    else if (cd.retain || holdAll) keep.push(c);
     else {
       sd.discard.push(c);
       r.ev.push({ type: 'discard', side, card: c.id, def: c.card });
@@ -1433,16 +1442,18 @@ function playCard(r: Run, action: Extract<Action, { type: 'play' }>): void {
     fireTriggers(r, sd, 'play', { card: cd, target: null });
     return;
   }
-  runOps(r, mkAct(hero, { target, card: cd, inst, x, pick: true }), cd.effects);
-  if (r.s.pending) {
-    r.s.pending.finish = inst;
-    return;
-  }
-  // Twinned attacks and Mirrored skills happen twice (the second time without asking for choices)
+  // Twinned attacks and Mirrored skills happen twice (the second time without asking for choices). Whether this card is
+  // doubled is decided before it runs, so a card that gives the status does not spend it on itself.
   const again =
     (cd.kind === 'attack' && stacks(hero, 'twinned') > 0 && 'twinned') ||
     (cd.kind === 'skill' && stacks(hero, 'mirrored') > 0 && 'mirrored') ||
     null;
+  runOps(r, mkAct(hero, { target, card: cd, inst, x, pick: true }), cd.effects);
+  if (r.s.pending) {
+    r.s.pending.finish = inst;
+    r.s.pending.again = again;
+    return;
+  }
   if (again && !r.s.winner) {
     addStatus(r, hero, again, -1);
     runOps(r, mkAct(hero, { target, card: cd, inst, x }), cd.effects);
@@ -1486,10 +1497,19 @@ function pickCards(r: Run, action: Extract<Action, { type: 'pick' }>): void {
       p.rest,
     );
   // the rest of the card may have asked for another choice
-  const again = r.s.pending as CombatState['pending'];
-  if (again) {
-    again.finish = fin;
+  const more = r.s.pending as CombatState['pending'];
+  if (more) {
+    more.finish = fin;
+    more.again = p.again ?? null;
     return;
+  }
+  if (p.again && hero && cd && !r.s.winner) {
+    addStatus(r, hero, p.again, -1);
+    runOps(
+      r,
+      mkAct(hero, { target: findUnit(r.s, p.target) ?? null, card: cd, inst: fin, x: p.x }),
+      cd.effects,
+    );
   }
   if (fin && cd) finishCard(r, sd, fin, cd, findUnit(r.s, p.target) ?? null);
 }

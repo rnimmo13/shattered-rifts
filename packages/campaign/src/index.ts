@@ -34,6 +34,7 @@ export {
   buyRemoval,
   chooseCard,
   chooseEvent,
+  choosePrelude,
   continueLoop,
   duelPlan,
   enterNode,
@@ -45,4 +46,5 @@ export {
   takeShrine,
   type ShrineChoice,
 } from './run';
+export { makePrelude, describeEffect } from './preludes';
 export { RUN_SAVE_VERSION, parseRun, serializeRun } from './save';

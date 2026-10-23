@@ -142,6 +142,7 @@ export const QUILL: CardDef[] = [
   q('uncommon', 'encore', 'Encore', 'skill', 1, 'none', [status('mirrored', 1)]),
   q('uncommon', 'palmed-card', 'Palmed Card', 'skill', 0, 'none', [discoverOp('attack')], {
     exhaust: true,
+    up: { effects: [discoverOp('attack', 1, true)] },
   }),
   q('uncommon', 'nimble-hands', 'Nimble Hands', 'skill', 0, 'none', [cheapen(1, 'random'), draw(1)], {
     exhaust: true,

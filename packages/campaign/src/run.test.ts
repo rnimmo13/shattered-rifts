@@ -11,6 +11,7 @@ import {
   canAdd,
   chooseCard,
   chooseEvent,
+  choosePrelude,
   continueLoop,
   duelPlan,
   enterNode,
@@ -29,8 +30,10 @@ import {
   type StageRealm,
 } from './index';
 
+/** Most tests are about the map and what is on it: step past the opening choice without taking anything from it. */
+const open = (r: RunState): RunState => ({ ...r, phase: 'map', context: null });
 const fresh = (h: HeroId, seed: string, d: 'easy' | 'normal' = 'normal'): RunState =>
-  newRun(h, seed, d);
+  open(newRun(h, seed, d));
 
 const HEROES = Object.keys(RIFTWALKERS) as HeroId[];
 
@@ -126,7 +129,7 @@ describe('the run', () => {
   });
 
   it('easy is the default: weaker enemies, more Resolve, some shards', () => {
-    const e = newRun('maren', 'easy');
+    const e = open(newRun('maren', 'easy'));
     expect(e.difficulty).toBe('easy');
     expect(e.resolve).toBe(5);
     expect(e.shards).toBe(100);
@@ -249,6 +252,9 @@ function botRun(hero: HeroId, seed: string): { run: RunState; fights: number } {
         break;
       case 'event':
         run = chooseEvent(run, run.context!.event!.options[0]!.id);
+        break;
+      case 'prelude':
+        run = choosePrelude(run, run.context!.prelude!.options[0]!.id);
         break;
       case 'stageClear':
         run = nextStage(run);

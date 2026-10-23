@@ -12,8 +12,10 @@ import {
   type RunState,
 } from './index';
 
+/** Most tests are about the map and what is on it: step past the opening choice without taking anything from it. */
+const open = (r: RunState): RunState => ({ ...r, phase: 'map', context: null });
 const fresh = (hero: 'maren' | 'kesh' | 'vesper', seed: string): RunState =>
-  newRun(hero, seed, 'normal');
+  open(newRun(hero, seed, 'normal'));
 
 const inFight = (base: RunState, kind: 'elite' | 'warden' | 'duel'): RunState => {
   const n = base.map.nodes.find((x) => x.kind === kind);
@@ -98,7 +100,7 @@ describe('events', () => {
   it('a seed variety of events all resolve, and the altar and smith do what they say', () => {
     const seen = new Set<string>();
     for (let i = 0; i < 60; i++) {
-      let r = newRun('maren', `event-${i}`, 'normal');
+      let r = open(newRun('maren', `event-${i}`, 'normal'));
       // walk to the first event node by forcing one
       const ev = r.map.nodes.find((n) => n.kind === 'event');
       if (!ev) continue;

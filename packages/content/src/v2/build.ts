@@ -249,7 +249,14 @@ export function plus(c: CardDef): CardDef {
         changed = true;
         return { ...o, amount: o.amount + 3 };
       case 'status':
-        if (o.amount > 0 && o.status !== 'stunned' && o.status !== 'shielded') {
+        // on/off statuses have nothing to gain from more stacks: their upgrade is a cheaper card instead
+        if (
+          o.amount > 0 &&
+          o.status !== 'stunned' &&
+          o.status !== 'shielded' &&
+          o.status !== 'unbound' &&
+          o.status !== 'fortified'
+        ) {
           changed = true;
           return { ...o, amount: o.amount + 1 };
         }

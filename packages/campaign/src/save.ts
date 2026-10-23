@@ -16,6 +16,7 @@ const PHASES: readonly RunPhase[] = [
   'shrine',
   'merchant',
   'event',
+  'prelude',
   'stageClear',
   'loopCleared',
   'collapsed',
@@ -57,6 +58,15 @@ function validMap(map: unknown): map is RunState['map'] {
 /** The context must be what the phase needs, so no screen can be handed missing data. */
 function validContext(r: RunState): boolean {
   const ids = new Set(r.map.nodes.map((n) => n.id));
+  if (r.phase === 'prelude') {
+    const p = isObj(r.context) ? r.context['prelude'] : undefined;
+    return (
+      isObj(p) &&
+      Array.isArray(p['options']) &&
+      p['options'].length > 0 &&
+      p['options'].every((o) => isObj(o) && typeof o['id'] === 'string' && Array.isArray(o['effects']))
+    );
+  }
   const needsNode: RunPhase[] = ['duel', 'reward', 'gift', 'shrine', 'merchant', 'event'];
   if (!needsNode.includes(r.phase)) return true;
   const c = r.context;

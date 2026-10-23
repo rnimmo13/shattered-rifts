@@ -7,19 +7,30 @@
 import { nextInt, seedRng, shuffle } from '@sr/combat';
 import { COMBAT_DB, RIFTWALKERS, V2_DECK_RULES, encounter, type HeroId } from '@sr/content/v2';
 import { generateStageMap, reachableNodes } from './mapgen';
+import { makePrelude } from './preludes';
 import {
   BOON_PRICE,
   MAX_POTIONS,
   POTION_PRICE,
   REMOVE_PRICE,
   offerPotion,
+  boonOfRarity,
   canAdd,
+  cardOfRarity,
   giftOffers,
   offerBoon,
   offerCards,
   priceOf,
 } from './rewards';
-import type { Difficulty, EventOption, MapNode, MerchantItem, RunState, StageRealm } from './types';
+import type {
+  Difficulty,
+  EventOption,
+  MapNode,
+  MerchantItem,
+  PreludeEffect,
+  RunState,
+  StageRealm,
+} from './types';
 
 const clone = <T>(x: T): T => JSON.parse(JSON.stringify(x)) as T;
 
@@ -56,7 +67,7 @@ export function newRun(hero: HeroId, seed: string, difficulty: Difficulty = 'eas
   const map = generateStageMap(rng, 1, stageRealms[0] as StageRealm);
   const rw = RIFTWALKERS[hero]; // throws on an unknown hero
   need(rw, `Unknown Riftwalker ${hero}`);
-  return {
+  const run: RunState = {
     v: 2,
     seed,
     character: hero,
@@ -79,6 +90,17 @@ export function newRun(hero: HeroId, seed: string, difficulty: Difficulty = 'eas
     context: null,
     rng,
     stats: { duelsWon: 0, duelsLost: 0, nodesCleared: 0 },
+  };
+  openPrelude(run, 'threshold');
+  return run;
+}
+
+/** Put the start-of-run / start-of-stage choice in front of the player (changes `run`, which must be a copy). */
+function openPrelude(run: RunState, kind: 'threshold' | 'stage'): void {
+  run.phase = 'prelude';
+  run.context = {
+    nodeId: '',
+    prelude: makePrelude(run.rng, kind, run.stage, realmOfStage(run, run.stage)),
   };
 }
 
@@ -378,9 +400,91 @@ export function nextStage(run: RunState): RunState {
   r.map = generateStageMap(r.rng, r.stage, realmOfStage(r, r.stage));
   r.cleared = [];
   r.at = null;
+  openPrelude(r, 'stage');
+  return r;
+}
+
+// ---- the choice at the start of a run or a stage
+/** Take one of the options on offer: its effects happen now, then the map opens. */
+export function choosePrelude(run: RunState, optionId: string): RunState {
+  need(run.phase === 'prelude' && run.context?.prelude, 'There is no choice to make here');
+  const offer = run.context.prelude;
+  const option = offer.options.find((o) => o.id === optionId);
+  need(option, 'That is not one of the options');
+  const r = clone(run);
+  for (const e of option.effects) applyEffect(r, e);
   r.phase = 'map';
   r.context = null;
   return r;
+}
+
+/** The Slash and Guard cards a deck can still lose or change: Neutral basics. */
+const isPlainBasic = (id: string): boolean =>
+  COMBAT_DB.cards[id]?.hero === 'neutral' && COMBAT_DB.cards[id]?.rarity === 'basic';
+
+function applyEffect(r: RunState, e: PreludeEffect): void {
+  switch (e.k) {
+    case 'maxHp':
+      r.maxHp = Math.max(10, r.maxHp + e.n);
+      r.hp = e.n > 0 ? r.hp + e.n : Math.min(r.hp, r.maxHp);
+      return;
+    case 'heal':
+      heal(r, (r.maxHp * e.pct) / 100);
+      return;
+    case 'hp':
+      r.hp = Math.max(1, r.hp - e.n);
+      return;
+    case 'shards':
+      r.shards += e.n;
+      return;
+    case 'card': {
+      const id = cardOfRarity(r.rng, r.character, r.deck, e.rarity);
+      if (id) r.deck.push(id);
+      return;
+    }
+    case 'upgrade': {
+      for (let i = 0; i < e.n; i++) {
+        const slots = r.deck.flatMap((id, at) => (COMBAT_DB.cards[id]?.upgrade ? [at] : []));
+        if (!slots.length) break;
+        const at = slots[nextInt(r.rng, slots.length)] as number;
+        r.deck[at] = COMBAT_DB.cards[r.deck[at] as string]?.upgrade ?? (r.deck[at] as string);
+      }
+      return;
+    }
+    case 'remove': {
+      for (let i = 0; i < e.n && r.deck.length > V2_DECK_RULES.minSize; i++) {
+        const at = r.deck.findIndex(isPlainBasic);
+        if (at < 0) break;
+        r.deck.splice(at, 1);
+      }
+      return;
+    }
+    case 'boon': {
+      const id = boonOfRarity(r.rng, r.boons, e.rarity);
+      if (id) gainBoon(r, id);
+      return;
+    }
+    case 'potion':
+      if (r.potions.length < MAX_POTIONS) r.potions.push(offerPotion(r.rng));
+      return;
+    case 'resolve':
+      r.resolve = Math.min(r.maxResolve, r.resolve + e.n);
+      return;
+    case 'wound':
+      for (let i = 0; i < e.n; i++) r.deck.push('wound');
+      return;
+    case 'transform': {
+      for (let i = 0; i < e.n; i++) {
+        const at = r.deck.findIndex(isPlainBasic);
+        if (at < 0) break;
+        r.deck.splice(at, 1);
+        const rarity = nextInt(r.rng, 3) === 0 ? 'uncommon' : 'common';
+        const id = cardOfRarity(r.rng, r.character, r.deck, rarity);
+        if (id) r.deck.push(id);
+      }
+      return;
+    }
+  }
 }
 
 // ---- shrine -------------------------------------------------------------------------------------------
@@ -551,7 +655,6 @@ export function continueLoop(run: RunState): RunState {
   r.map = generateStageMap(r.rng, 1, r.stageRealms[0] as StageRealm);
   r.cleared = [];
   r.at = null;
-  r.phase = 'map';
-  r.context = null;
+  openPrelude(r, 'stage');
   return r;
 }

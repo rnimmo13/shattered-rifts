@@ -82,6 +82,7 @@ export const NEUTRAL: CardDef[] = [
   n('uncommon', 'plan-ahead', 'Plan Ahead', 'skill', 1, 'none', [manaNext(2), drawNext(1)]),
   n('uncommon', 'fever-dream', 'Fever Dream', 'skill', 0, 'none', [cheapen(2, 'random')], {
     exhaust: true,
+    up: { effects: [cheapen(3, 'random')] },
   }),
   n('rare', 'echoing-blow', 'Echoing Blow', 'skill', 1, 'none', [status('twinned', 1)]),
   n('rare', 'rift-smithing', 'Rift Smithing', 'skill', 2, 'none', [upgradeOp('hand')], {

@@ -25,21 +25,21 @@ export const RUNES: RuneDef[] = [
   {
     id: 'spark',
     name: 'Spark',
-    text: 'Passive: 3 damage to a random enemy at the end of your turn. Evoke: 9 damage to the front enemy.',
+    text: 'Passive: 3 damage to a random enemy at the end of your turn. Release: 9 damage to the front enemy.',
     passive: [dmg(3, 'randomFoe')],
     evoke: [dmg(9, 'front')],
   },
   {
     id: 'ward',
     name: 'Ward',
-    text: 'Passive: 2 Barrier at the end of your turn. Evoke: 8 Barrier.',
+    text: 'Passive: 2 Barrier at the end of your turn. Release: 8 Barrier.',
     passive: [barrier(2)],
     evoke: [barrier(8)],
   },
   {
     id: 'hollow',
     name: 'Hollow',
-    text: 'Charges by 3 at the end of each of your turns. Evoke: damage equal to its charge to the front enemy.',
+    text: 'Charges by 3 at the end of each of your turns. Release: damage equal to its charge to the front enemy.',
     grow: 3,
     passive: [],
     evoke: [scaled(dmg(0, 'front'), per('charge'))],
@@ -47,7 +47,7 @@ export const RUNES: RuneDef[] = [
   {
     id: 'prism',
     name: 'Prism',
-    text: 'Passive: 1 Barrier at the end of your turn. Evoke: gain 1 Mana and draw a card.',
+    text: 'Passive: 1 Barrier at the end of your turn. Release: gain 1 Mana and draw a card.',
     passive: [barrier(1)],
     evoke: [mana(1), draw(1)],
   },
