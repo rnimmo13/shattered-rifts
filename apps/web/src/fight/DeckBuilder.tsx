@@ -5,7 +5,7 @@ import { useMemo, useState } from 'react';
 import { cardText, type CardDef, type CombatDb } from '@sr/combat';
 import { CardHover } from './CardHover';
 import { FightCard } from './FightCard';
-import { useSpread } from './grimoireData';
+import { useBookLayout } from './grimoireData';
 import {
   TABS,
   catalog,
@@ -19,7 +19,6 @@ import {
 
 type Counts = Record<string, number>;
 
-const PER_PAGE = 6;
 const RARITIES = ['all', 'basic', 'common', 'uncommon', 'rare', 'legendary'] as const;
 
 export function DeckBuilder(props: {
@@ -30,7 +29,7 @@ export function DeckBuilder(props: {
   heroName: string;
 }) {
   const { db, counts } = props;
-  const spread = useSpread();
+  const { spread, cols, cardWidth } = useBookLayout(340, 99999);
   const all = useMemo(() => catalog(db), [db]);
   const [tab, setTab] = useState<string>(TABS[0]?.id ?? 'aurelion');
   const [leaf, setLeaf] = useState(0); // which spread is open
@@ -46,8 +45,8 @@ export function DeckBuilder(props: {
   const pages = useMemo(() => {
     const shown = filterCatalog(all, { ...filter, pool: 'all' }, (c) => cardText(db, c));
     // a search reads through the whole book; otherwise only the open bookmark
-    return paginate(searching ? sortCards(shown) : tabCards(shown, tab), PER_PAGE);
-  }, [all, filter, db, tab, searching]);
+    return paginate(searching ? sortCards(shown) : tabCards(shown, tab), cols * 2);
+  }, [all, filter, db, tab, searching, cols]);
   const spreads = Math.max(1, Math.ceil(pages.length / spread));
   const at = Math.min(leaf, spreads - 1);
   const visible = pages.slice(at * spread, at * spread + spread);
@@ -169,7 +168,10 @@ export function DeckBuilder(props: {
                 <h4 className="grim__pagehead">
                   {searching ? 'Search results' : p.heroes.join(' · ') || tabName}
                 </h4>
-                <ul className="grim__cards">
+                <ul
+                  className="grim__cards"
+                  style={{ gridTemplateColumns: `repeat(${cols}, ${cardWidth}px)` }}
+                >
                   {p.cards.map(({ def }) => {
                     const n = counts[def.id] ?? 0;
                     return (
@@ -183,7 +185,7 @@ export function DeckBuilder(props: {
                           onFocus={() => setHover(def)}
                           onBlur={() => setHover(null)}
                         >
-                          <FightCard db={db} def={def} width={176} />
+                          <FightCard db={db} def={def} width={cardWidth} />
                           {n > 0 && <span className="grim__badge">×{n}</span>}
                         </button>
                         <span className="grim__ctl">

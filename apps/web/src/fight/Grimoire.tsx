@@ -6,7 +6,7 @@ import type { CardDef } from '@sr/combat';
 import { COMBAT_DB } from '@sr/content/v2';
 import { CardHover } from './CardHover';
 import { FightCard } from './FightCard';
-import { useSpread, type GrimoireCard } from './grimoireData';
+import { useBookLayout, type GrimoireCard } from './grimoireData';
 import { TABS, paginate, poolOf, sortCards, tabOf, type CatalogCard } from './deckCatalog';
 
 export function Grimoire(props: {
@@ -21,10 +21,14 @@ export function Grimoire(props: {
   /** force one page (or two) whatever the window width */
   spread?: 1 | 2;
   emptyText?: string;
+  /** the widest the book may be (a modal is narrower than the window) */
+  maxWidth?: number;
 }) {
-  const { cardWidth = 176, cols = 3, rows = 2 } = props;
-  const auto = useSpread();
-  const spread = props.spread ?? auto;
+  const layout = useBookLayout(120, props.maxWidth);
+  const { rows = 2 } = props;
+  const cardWidth = props.cardWidth ?? layout.cardWidth;
+  const cols = props.cols ?? layout.cols;
+  const spread = props.spread ?? layout.spread;
   const entries = useMemo(
     () =>
       sortCards(

@@ -5,6 +5,7 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **Bigger cards where you read them.** The grimoire (deck builder, deck view, piles) fills the window with cards up to 280 px wide, the merchant, rewards and starting-deck cards are about 40% larger, and the hover preview (including the upgraded version when you pick a card to upgrade) is 330 px.
 - **Bigger text everywhere.** Names, HP and Barrier numbers, intents and every small label are larger (a 14px minimum in the UI), and statuses (buffs and debuffs) are big tinted icons with the number beside them: gold for good, red for bad. Hand cards are a little larger. The Snare tiles no longer cover the card you are hovering.
 - **Fixed:** the Snare tiles drew on top of a hovered hand card.
 - **Normal is tougher: 2 Resolve and about a third of runs clear** (Hard: 1 Resolve, one lost fight ends the run; Easy is unchanged). A lost duel costs 1 Resolve; a lost Elite or Warden costs 2.

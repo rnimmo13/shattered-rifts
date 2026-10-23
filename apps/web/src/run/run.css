@@ -1029,7 +1029,7 @@
   display: grid;
   gap: 0.5rem;
   justify-items: center;
-  width: 190px;
+  width: 270px;
 }
 .shop__item.is-sold {
   opacity: 0.45;

@@ -17,6 +17,30 @@ export function useSpread(): 1 | 2 {
   return wide ? 2 : 1;
 }
 
+/**
+ * How big the book's cards can be: as large as the window allows (3 across, 2 on a phone), up to 280 px, so they can be read.
+ * `sidePx` is room taken by a side panel; `maxPx` is the widest the book itself may be (a modal).
+ */
+export function useBookLayout(
+  sidePx: number,
+  maxPx = 1440,
+): { spread: 1 | 2; cols: number; cardWidth: number } {
+  const spread = useSpread();
+  const [vw, setVw] = useState(() => window.innerWidth);
+  useEffect(() => {
+    const on = (): void => setVw(window.innerWidth);
+    window.addEventListener('resize', on);
+    return () => window.removeEventListener('resize', on);
+  }, []);
+  const cols = vw < 700 ? 2 : 3;
+  const room = Math.min(vw, maxPx) - sidePx - 130;
+  const cardWidth = Math.max(
+    150,
+    Math.min(280, Math.floor((room / spread - 44 - (cols - 1) * 14) / cols)),
+  );
+  return { spread, cols, cardWidth };
+}
+
 export interface GrimoireCard {
   def: CardDef;
   /** copies of it (shown as a badge when more than one) */

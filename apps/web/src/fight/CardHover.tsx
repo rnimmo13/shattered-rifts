@@ -11,7 +11,7 @@ export function CardHover(props: { def: CardDef | null }) {
   return (
     <div className="cardhover" aria-hidden>
       <div className="cardhover__main">
-        <FightCard db={COMBAT_DB} def={props.def} width={300} />
+        <FightCard db={COMBAT_DB} def={props.def} width={330} />
         {keys.length > 0 && (
           <ul className="cardhover__keys">
             {keys.map((k) => (
@@ -28,7 +28,7 @@ export function CardHover(props: { def: CardDef | null }) {
           <FightCard
             db={COMBAT_DB}
             def={COMBAT_DB.cards[props.def.upgrade] as CardDef}
-            width={190}
+            width={330}
           />
         </div>
       )}

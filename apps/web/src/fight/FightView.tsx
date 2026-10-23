@@ -1062,7 +1062,7 @@ function PileModal(props: { db: CombatDb; title: string; cards: CardDef[]; onClo
             <span>Close</span>
           </button>
         </header>
-        <Grimoire cards={tallyDefs(props.cards)} cardWidth={150} emptyText="Empty." />
+        <Grimoire cards={tallyDefs(props.cards)} maxWidth={1200} emptyText="Empty." />
       </div>
     </div>
   );

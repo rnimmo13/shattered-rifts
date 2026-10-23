@@ -110,7 +110,7 @@ export function CardOffer(props: {
           <Pickable
             key={id}
             id={id}
-            width={240}
+            width={290}
             onHover={setHover}
             onClick={() => props.onPick(id)}
           />
@@ -282,7 +282,7 @@ export function MerchantView(props: {
             <div key={i} className={`shop__item${it.sold ? ' is-sold' : ''}`}>
               <Pickable
                 id={it.cardId}
-                width={190}
+                width={270}
                 onHover={setHover}
                 preview
                 badge={it.sold ? 'SOLD' : ''}
@@ -411,7 +411,7 @@ export function EventView(props: {
       {ev.boonOffer && <BoonCard id={ev.boonOffer} />}
       {card && (
         <div className="offers">
-          <Pickable id={card.id} width={220} onHover={setHover} />
+          <Pickable id={card.id} width={270} onHover={setHover} />
         </div>
       )}
       <div className="choices-row">
@@ -472,7 +472,7 @@ export function KitView(props: { run: RunState; onChoose: (id: string) => void }
             <p className="kit__sub">Adds these three to your starter:</p>
             <div className="kit__cards">
               {k.added.map((id, i) => (
-                <Pickable key={`${id}-${i}`} id={id} width={150} onHover={setHover} />
+                <Pickable key={`${id}-${i}`} id={id} width={200} onHover={setHover} />
               ))}
             </div>
             <p className="kit__sub">
