@@ -6,7 +6,7 @@ import type { CardDef } from '@sr/combat';
 import { COMBAT_DB } from '@sr/content/v2';
 import { CardHover } from './CardHover';
 import { FightCard } from './FightCard';
-import { useBookLayout, type GrimoireCard } from './grimoireData';
+import { bookLayout, useWidth, type GrimoireCard } from './grimoireData';
 import { TABS, paginate, poolOf, sortCards, tabOf, type CatalogCard } from './deckCatalog';
 
 export function Grimoire(props: {
@@ -21,26 +21,27 @@ export function Grimoire(props: {
   /** force one page (or two) whatever the window width */
   spread?: 1 | 2;
   emptyText?: string;
-  /** the widest the book may be (a modal is narrower than the window) */
-  maxWidth?: number;
 }) {
-  const layout = useBookLayout(120, props.maxWidth);
+  const [rootRef, width] = useWidth();
+  const layout = bookLayout(width, props.cols, props.spread);
   const { rows = 2 } = props;
   const cardWidth = props.cardWidth ?? layout.cardWidth;
   const cols = props.cols ?? layout.cols;
   const spread = props.spread ?? layout.spread;
+  // every copy gets its own card: three Slashes are three cards on the page, never one card with a number on it
   const entries = useMemo(
     () =>
       sortCards(
-        props.cards.map((c): CatalogCard => ({
-          def: c.def,
-          pool: poolOf(c.def),
-          upgraded: c.def.id.endsWith('+'),
-        })),
+        props.cards.flatMap((c): CatalogCard[] =>
+          Array.from({ length: Math.max(1, c.n) }, () => ({
+            def: c.def,
+            pool: poolOf(c.def),
+            upgraded: c.def.id.endsWith('+'),
+          })),
+        ),
       ),
     [props.cards],
   );
-  const counts = useMemo(() => new Map(props.cards.map((c) => [c.def.id, c.n])), [props.cards]);
   const tabs = useMemo(() => {
     const present = new Set(entries.map((e) => tabOf(e.def)));
     return TABS.filter((t) => present.has(t.id));
@@ -59,12 +60,10 @@ export function Grimoire(props: {
     setDir(by > 0 ? 'next' : 'prev');
     setLeaf(Math.max(0, Math.min(spreads - 1, at + by)));
   };
-  const total = props.cards.reduce((n, c) => n + c.n, 0);
-  const tabCount = (id: string): number =>
-    entries.filter((e) => tabOf(e.def) === id).reduce((n, e) => n + (counts.get(e.def.id) ?? 0), 0);
-
+  const total = entries.length;
+  const tabCount = (id: string): number => entries.filter((e) => tabOf(e.def) === id).length;
   return (
-    <div className="grim grim--view">
+    <div className="grim grim--view" ref={rootRef}>
       <div className="grim__main">
         {tabs.length > 1 && (
           <div className="grim__tabs" role="tablist" aria-label="Realms">
@@ -107,12 +106,11 @@ export function Grimoire(props: {
                   className="grim__cards"
                   style={{ gridTemplateColumns: `repeat(${cols}, ${cardWidth}px)` }}
                 >
-                  {p.cards.map(({ def }) => {
-                    const n = counts.get(def.id) ?? 1;
+                  {p.cards.map(({ def }, idx) => {
                     const ok = !!props.onPick && (!props.pickable || props.pickable.has(def.id));
                     return (
                       <li
-                        key={def.id}
+                        key={`${def.id}-${idx}`}
                         className={`grim__slot grim__slot--view${props.onPick && !ok ? ' is-off' : ''}`}
                       >
                         <button
@@ -126,7 +124,6 @@ export function Grimoire(props: {
                           onBlur={() => setHover(null)}
                         >
                           <FightCard db={COMBAT_DB} def={def} width={cardWidth} />
-                          {n > 1 && <span className="grim__badge">×{n}</span>}
                         </button>
                       </li>
                     );

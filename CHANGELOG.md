@@ -5,6 +5,8 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **Rarity and upgrades you can read at a glance.** The name banner, the frame ring and the word on the type line (BASIC · COMMON · UNCOMMON · RARE · LEGENDARY) wear the rarity colour (silver, blue, gold, orange), and an upgraded card has a green name and a green UPGRADED ribbon.
+- **Grimoire:** every copy of a card is its own card (no more stacked numbers), the book is laid out from the box it sits in so the pages no longer overlap, and the starting deck in the Sanctum shows large cards.
 - **Bigger cards where you read them.** The grimoire (deck builder, deck view, piles) fills the window with cards up to 280 px wide, the merchant, rewards and starting-deck cards are about 40% larger, and the hover preview (including the upgraded version when you pick a card to upgrade) is 330 px.
 - **Bigger text everywhere.** Names, HP and Barrier numbers, intents and every small label are larger (a 14px minimum in the UI), and statuses (buffs and debuffs) are big tinted icons with the number beside them: gold for good, red for bad. Hand cards are a little larger. The Snare tiles no longer cover the card you are hovering.
 - **Fixed:** the Snare tiles drew on top of a hovered hand card.

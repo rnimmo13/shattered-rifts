@@ -72,12 +72,13 @@ function Pickable(props: {
 
 /** A compact, readable list of a deck's cards (grouped, with counts). Hover any card to read it. */
 export function DeckStrip(props: { deck: readonly string[]; width?: number }) {
+  // a starting deck is ten or so cards: show them all on one page, five across, as big as the box allows
   return (
     <Grimoire
       cards={tally(props.deck, COMBAT_DB)}
-      cardWidth={props.width ?? 120}
+      {...(props.width ? { cardWidth: props.width } : {})}
       cols={5}
-      rows={1}
+      rows={Math.max(2, Math.ceil(props.deck.length / 5))}
       spread={1}
     />
   );

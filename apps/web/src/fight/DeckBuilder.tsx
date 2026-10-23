@@ -5,7 +5,7 @@ import { useMemo, useState } from 'react';
 import { cardText, type CardDef, type CombatDb } from '@sr/combat';
 import { CardHover } from './CardHover';
 import { FightCard } from './FightCard';
-import { useBookLayout } from './grimoireData';
+import { bookLayout, useWidth } from './grimoireData';
 import {
   TABS,
   catalog,
@@ -29,7 +29,8 @@ export function DeckBuilder(props: {
   heroName: string;
 }) {
   const { db, counts } = props;
-  const { spread, cols, cardWidth } = useBookLayout(340, 99999);
+  const [mainRef, mainWidth] = useWidth();
+  const { spread, cols, cardWidth } = bookLayout(mainWidth);
   const all = useMemo(() => catalog(db), [db]);
   const [tab, setTab] = useState<string>(TABS[0]?.id ?? 'aurelion');
   const [leaf, setLeaf] = useState(0); // which spread is open
@@ -91,7 +92,7 @@ export function DeckBuilder(props: {
 
   return (
     <div className="grim">
-      <div className="grim__main">
+      <div className="grim__main" ref={mainRef}>
         <div className="grim__filters">
           <label className="grim__search">
             <span>Search the whole book</span>

@@ -13,6 +13,14 @@ const KIND_LABEL: Record<CardDef['kind'], string> = {
   snare: 'Snare',
 };
 
+const RARITY_LABEL: Record<string, string> = {
+  basic: 'Basic',
+  common: 'Common',
+  uncommon: 'Uncommon',
+  rare: 'Rare',
+  legendary: 'Legendary',
+};
+
 const KEYWORDS =
   /\b(Barrier|Exposed|Faltering|Might|Seared|Stunned|Thorns|Shielded|Exhaust|Retain|Mana|Resonance|Edge|Fervor|Serene|Fury|Radiant|Lumen|Foresee|Sharpen|Sharpened|Consume|Hold|Fleeting|Unplayable)\b/g;
 
@@ -49,6 +57,8 @@ export const FightCard = memo(
     const n = text.replace(/\*\*/g, '').length;
     const size = n <= 55 ? 's' : n <= 110 ? 'm' : n <= 170 ? 'l' : 'xl';
     const rarity = def.rarity === 'basic' || !def.rarity ? 'common' : def.rarity;
+    const rarityRaw = def.rarity ?? 'common';
+    const upgraded = def.id.endsWith('+');
     const realm = def.realm === 'junk' || !def.realm ? 'neutral' : def.realm;
     // a class colour: the owner's, or Neutral grey (Warden gifts keep their realm's colours)
     const owner = def.hero && !def.source?.startsWith('boss:') ? def.hero : undefined;
@@ -56,7 +66,7 @@ export const FightCard = memo(
     return (
       <div
         ref={ref}
-        className={`card card--${realm}${owner ? ` card--hero-${owner}` : ''} card--${rarity}${playable ? ' is-playable' : ''}${dimmed ? ' is-dimmed' : ''}`}
+        className={`card card--${realm}${owner ? ` card--hero-${owner}` : ''} card--${rarity} card--rar-${rarityRaw}${upgraded ? ' card--upgraded' : ''}${playable ? ' is-playable' : ''}${dimmed ? ' is-dimmed' : ''}`}
         style={style}
         data-card={def.id}
       >
@@ -76,7 +86,11 @@ export const FightCard = memo(
               <span>★ {def.starCost}</span>
             </div>
           ) : null}
-          <div className="card__type">{KIND_LABEL[def.kind]}</div>
+          <div className="card__type">
+            {KIND_LABEL[def.kind]}
+            <span className="card__rar"> · {RARITY_LABEL[rarityRaw] ?? rarityRaw}</span>
+          </div>
+          {upgraded && <div className="card__upgraded">Upgraded</div>}
           <div className={`card__rules card__rules--${size}`}>
             <p>
               {runs.map((r, i) =>
