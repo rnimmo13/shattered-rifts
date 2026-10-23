@@ -36,6 +36,9 @@ export function validateDb(db: CombatDb): string[] {
         errs.push(`${where}: "${o.op}" asks the player to choose, so only a card's own effects may use it`);
       if (opts.rune && (o.op === 'evoke' || o.op === 'channel'))
         errs.push(`${where}: a rune's own effects cannot evoke or channel (they would call themselves)`);
+      if (o.op === 'copySelf' && !opts.card) errs.push(`${where}: "copySelf" only works in a card`);
+      if (o.op === 'discover' && (o.count !== undefined && (!Number.isInteger(o.count) || o.count < 1)))
+        errs.push(`${where}: bad discover count`);
       if (o.op === 'power') {
         if (!opts.card) errs.push(`${where}: "power" only works in a card`);
         checkOps(`${where}.power`, o.ops, { aimed: o.when === 'play', snare: false });

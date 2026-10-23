@@ -40,11 +40,24 @@ export function evaluate(db: CombatDb, s: CombatState, me: Side): number {
       (u.statuses.edge ?? 0) * 3 +
       (u.statuses.wrath ?? 0) * 3 +
       (u.statuses.calm ?? 0) * 2 +
-      (u.statuses.radiant ?? 0) * 6;
+      (u.statuses.radiant ?? 0) * 6 +
+      (u.statuses.bracing ?? 0) * 4 +
+      (u.statuses.ghostly ?? 0) * 5 +
+      (u.statuses.steadfast ?? 0) * 3 +
+      (u.statuses.armored ?? 0) * 3 +
+      (u.statuses.ritual ?? 0) * 5 +
+      (u.statuses.vigor ?? 0) * 1 +
+      (u.statuses.twinned ?? 0) * 6 +
+      (u.statuses.mirrored ?? 0) * 5 +
+      (u.statuses.unbound ?? 0) * 8 +
+      (u.statuses.fortified ?? 0) * 8 +
+      (u.statuses.holdfast ?? 0) * 2;
     v -=
       (u.statuses.exposed ?? 0) * 2 +
       (u.statuses.faltering ?? 0) * 2 +
-      (u.statuses.seared ?? 0) * 1.5;
+      (u.statuses.seared ?? 0) * 1.5 +
+      (u.statuses.brittle ?? 0) * 1 +
+      (u.statuses.doom ?? 0) * 0.5;
   }
   for (const u of theirs.units) {
     v -= u.hp * 1.0 + u.barrier * 0.5 + 6;
@@ -53,6 +66,7 @@ export function evaluate(db: CombatDb, s: CombatState, me: Side): number {
       (u.statuses.faltering ?? 0) * 2 +
       (u.statuses.seared ?? 0) * 3;
     v += (u.statuses.stunned ?? 0) * 6;
+    v += (u.statuses.brittle ?? 0) * 1.5 + (u.statuses.doom ?? 0) * 1.2;
     v -=
       (u.statuses.might ?? 0) * 3 + (u.statuses.thorns ?? 0) * 1.5 + (u.statuses.shielded ?? 0) * 3;
   }

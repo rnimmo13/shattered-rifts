@@ -122,6 +122,13 @@ export function reduceEvent(db: CombatDb, s: CombatState, e: CombatEvent): void 
       if (i >= 0) row.splice(i, 1);
       return;
     }
+    case 'transform': {
+      const inst = [...s.sides[e.side].hand, ...s.sides[e.side].draw, ...s.sides[e.side].discard].find(
+        (c) => c.id === e.card,
+      );
+      if (inst) inst.card = e.def;
+      return;
+    }
     case 'power': {
       const sd = s.sides[e.side];
       sd.powers.push({ id: `shown${sd.powers.length}`, card: e.card, when: 'turnStart', ops: [] });

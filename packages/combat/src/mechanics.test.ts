@@ -43,7 +43,7 @@ const power = (id: string, when: TriggerWhen, ops: Op[], extra = {}) =>
 
 const DB: CombatDb = {
   cards: Object.fromEntries([
-    strike,
+    [strike[0], { ...strike[1], upgrade: 'strike+' }],
     c('defend', { effects: [{ op: 'barrier', amount: 5, to: 'self' }] }),
     c('filler', { cost: 0, effects: [{ op: 'barrier', amount: 1, to: 'self' }] }),
     // choices
@@ -141,6 +141,45 @@ const DB: CombatDb = {
     c('tripwire', { kind: 'snare', effects: [{ op: 'damage', amount: 7, to: 'attacker' }], trigger: { on: 'foeDefends' } }),
     c('timebomb', { kind: 'snare', effects: [{ op: 'damage', amount: 9, to: 'allFoes' }], trigger: { on: 'foeTurn' } }),
     c('born-ready', { innate: true, effects: [] }),
+    // tier 3: statuses given to yourself, and tricks
+    ...(
+      [
+        'bracing',
+        'brittle',
+        'ghostly',
+        'steadfast',
+        'armored',
+        'ritual',
+        'vigor',
+        'twinned',
+        'mirrored',
+        'unbound',
+        'fortified',
+        'holdfast',
+      ] as const
+    ).map((st) => c('give-' + st, { cost: 0, effects: [{ op: 'status', status: st, amount: 2, to: 'self' }] })),
+    c('give-vigor5', { cost: 0, effects: [{ op: 'status', status: 'vigor', amount: 5, to: 'self' }] }),
+    c('give-twin1', { cost: 0, effects: [{ op: 'status', status: 'twinned', amount: 1, to: 'self' }] }),
+    c('give-mirror1', { cost: 0, effects: [{ op: 'status', status: 'mirrored', amount: 1, to: 'self' }] }),
+    c('give-hold1', { cost: 0, effects: [{ op: 'status', status: 'holdfast', amount: 1, to: 'self' }] }),
+    c('self-expose', { cost: 0, effects: [{ op: 'status', status: 'exposed', amount: 2, to: 'self' }] }),
+    c('doom60', { cost: 0, target: 'foe', effects: [{ op: 'status', status: 'doom', amount: 60, to: 'target' }] }),
+    c('flex', { cost: 0, effects: [{ op: 'status', status: 'might', amount: 3, to: 'self', temp: true }] }),
+    c('plan', { cost: 0, effects: [{ op: 'manaNext', amount: 2 }, { op: 'drawNext', amount: 1 }] }),
+    c('find', { effects: [{ op: 'discover', count: 1, free: true }] }),
+    c('retune', { effects: [{ op: 'upgrade', scope: 'hand' }] }),
+    c('cheap', { effects: [{ op: 'cheapen', amount: 1, scope: 'hand' }] }),
+    c('anger', {
+      kind: 'attack',
+      target: 'foe',
+      cost: 0,
+      effects: [{ op: 'damage', amount: 6, to: 'target' }, { op: 'copySelf', to: 'discard' }],
+    }),
+    c('pool-a', { hero: 'tester', rarity: 'common', upgrade: 'pool-a+', effects: [{ op: 'barrier', amount: 1, to: 'self' }] }),
+    c('pool-a+', { hero: 'tester', effects: [{ op: 'barrier', amount: 2, to: 'self' }] }),
+    c('pool-b', { hero: 'tester', rarity: 'common', upgrade: 'pool-b+', effects: [{ op: 'barrier', amount: 3, to: 'self' }] }),
+    c('pool-b+', { hero: 'tester', effects: [{ op: 'barrier', amount: 4, to: 'self' }] }),
+    c('strike+', { kind: 'attack', target: 'foe', effects: [{ op: 'damage', amount: 9, to: 'target' }] }),
     c('gnaw', {
       kind: 'attack',
       target: 'foe',
@@ -208,6 +247,16 @@ const DB: CombatDb = {
         kind: 'enemy',
         moves: { hit: { id: 'hit', name: 'Hit', effects: foeAtk }, guard: { id: 'guard', name: 'Guard', effects: [{ op: 'barrier', amount: 4, to: 'self' }] } },
         pattern: { kind: 'cycle', order: ['hit'] },
+      },
+    },
+    brute: {
+      id: 'brute',
+      name: 'Brute',
+      maxHp: 300,
+      brain: {
+        kind: 'enemy',
+        moves: { smash: { id: 'smash', name: 'Smash', effects: [{ op: 'damage', amount: 9, to: 'target' }] } },
+        pattern: { kind: 'cycle', order: ['smash'] },
       },
     },
     guarder: {
@@ -781,6 +830,171 @@ describe('review fixes', () => {
     s = play(s, 'h0').state;
     expect(s.pending?.kind).toBe('scry');
     expect(s.pending?.pool.length).toBe(3);
+  });
+});
+
+describe('tier 3: statuses and tricks', () => {
+  it('Bracing adds to every Barrier you gain; Brittle shrinks it by a quarter', () => {
+    let s = start(['give-bracing', 'defend']);
+    s = play(s, 'h0').state;
+    s = play(s, 'h1').state;
+    expect(hero(s).barrier).toBe(5 + 2);
+    let t = start(['give-brittle', 'defend']);
+    t = play(t, 'h0').state;
+    t = play(t, 'h1').state;
+    expect(hero(t).barrier).toBe(3);
+  });
+
+  it('Ghostly caps every hit at 1 damage', () => {
+    let s = start(['give-ghostly'], { enemies: ['brute'] });
+    s = play(s, 'h0').state;
+    const out = end(s);
+    expect(out.events.some((e) => e.type === 'damage' && e.target === hero(s).id && e.amount === 1)).toBe(true);
+    expect(hero(out.state).hp).toBe(99);
+  });
+
+  it('Steadfast ignores the next debuff, once per stack', () => {
+    let s = start(['give-steadfast', 'self-expose', 'self-expose', 'self-expose']);
+    s = play(s, 'h0').state; // 2 stacks
+    s = play(s, 'h1').state;
+    s = play(s, 'h2').state;
+    expect(hero(s).statuses.exposed).toBeUndefined();
+    expect(hero(s).statuses.steadfast).toBeUndefined();
+    s = play(s, 'h3').state;
+    expect(hero(s).statuses.exposed).toBe(2);
+  });
+
+  it('Armored gives Barrier at the end of the turn and wears thin when hit', () => {
+    let s = start(['give-armored'], { enemies: ['brute'] });
+    s = play(s, 'h0').state;
+    const out = end(s);
+    expect(out.events.some((e) => e.type === 'barrier' && e.amount === 2)).toBe(true);
+    // the Brute's 9 gets through the 2 Barrier: one stack is lost
+    expect(hero(out.state).statuses.armored).toBe(1);
+  });
+
+  it('Ritual grows Might at the end of your turn', () => {
+    let s = start(['give-ritual']);
+    s = play(s, 'h0').state;
+    s = end(s).state;
+    expect(hero(s).statuses.might).toBe(2);
+  });
+
+  it('Vigor makes the next attack stronger, once', () => {
+    let s = start(['give-vigor5', 'strike', 'strike']);
+    s = play(s, 'h0').state;
+    let hp = foe(s).hp;
+    s = play(s, 'h1', foe(s).id).state;
+    expect(hp - foe(s).hp).toBe(11);
+    hp = foe(s).hp;
+    s = play(s, 'h2', foe(s).id).state;
+    expect(hp - foe(s).hp).toBe(6);
+  });
+
+  it('Doom kills a unit at or below its Doom at the end of its own turn', () => {
+    let s = start(['doom60']);
+    foe(s).hp = 50;
+    s = play(s, 'h0', foe(s).id).state;
+    expect(s.winner).toBeNull();
+    s = end(s).state;
+    expect(s.winner).toBe('a');
+  });
+
+  it('Twinned plays the next Attack twice; Mirrored plays the next Skill twice', () => {
+    let s = start(['give-twin1', 'strike', 'strike']);
+    s = play(s, 'h0').state;
+    let hp = foe(s).hp;
+    s = play(s, 'h1', foe(s).id).state;
+    expect(hp - foe(s).hp).toBe(12);
+    hp = foe(s).hp;
+    s = play(s, 'h2', foe(s).id).state;
+    expect(hp - foe(s).hp).toBe(6);
+    let t = start(['give-mirror1', 'defend']);
+    t = play(t, 'h0').state;
+    t = play(t, 'h1').state;
+    expect(hero(t).barrier).toBe(10);
+  });
+
+  it('Unbound makes Skills free and consumes them', () => {
+    let s = start(['give-unbound', 'defend']);
+    s = play(s, 'h0').state;
+    const mana = s.sides.a.mana;
+    s = play(s, 'h1').state;
+    expect(s.sides.a.mana).toBe(mana);
+    expect(s.sides.a.exhausted.map((x) => x.card)).toContain('defend');
+  });
+
+  it('Fortified keeps your Barrier into the next turn', () => {
+    let s = start(['give-fortified', 'defend']);
+    s = play(s, 'h0').state;
+    s = play(s, 'h1').state;
+    s = end(s).state;
+    expect(hero(s).barrier).toBeGreaterThan(0);
+  });
+
+  it('Holdfast keeps the whole hand for one turn per stack', () => {
+    let s = start(['give-hold1', 'strike', 'defend']);
+    s = play(s, 'h0').state;
+    s = end(s).state;
+    const held = s.sides.a.hand.filter((c) => ['strike', 'defend'].includes(c.card)).length;
+    expect(held).toBe(2);
+    s = end(s).state;
+    // the second turn's end does not hold them any more
+    expect(s.sides.a.hand.filter((c) => ['strike', 'defend'].includes(c.card))).toHaveLength(0);
+    expect(hero(s).statuses.holdfast).toBeUndefined();
+  });
+
+  it('a temporary status wears off at the end of your turn', () => {
+    let s = start(['flex', 'strike']);
+    s = play(s, 'h0').state;
+    const hp = foe(s).hp;
+    s = play(s, 'h1', foe(s).id).state;
+    expect(hp - foe(s).hp).toBe(9);
+    s = end(s).state;
+    expect(hero(s).statuses.might).toBeUndefined();
+  });
+
+  it('banks Mana and cards for the next turn', () => {
+    let s = start(['plan']);
+    s = play(s, 'h0').state;
+    s = end(s).state;
+    expect(s.sides.a.mana).toBe(3 + 2);
+    expect(s.sides.a.hand.length).toBe(6);
+  });
+
+  it('discover adds a random card from your own pool, free if asked', () => {
+    let s = start(['find']);
+    s = play(s, 'h0').state;
+    const got = s.sides.a.hand.find((c) => c.card.startsWith('pool-'));
+    expect(got).toBeDefined();
+    expect(got?.costMod).toBe(-1); // pool cards cost 1; 'free' takes all of it off
+  });
+
+  it('upgrading and cheapening the hand last for the fight', () => {
+    let s = start(['retune', 'strike']);
+    s = play(s, 'h0').state;
+    expect(s.sides.a.hand.map((c) => c.card)).toEqual(['strike+']);
+    let t = start(['cheap', 'strike', 'defend']);
+    t = play(t, 'h0').state;
+    expect(t.sides.a.hand.every((c) => (c.costMod ?? 0) === -1)).toBe(true);
+    const mana = t.sides.a.mana;
+    t = play(t, 'h1', foe(t).id).state;
+    expect(t.sides.a.mana).toBe(mana); // Strike now costs 0
+  });
+
+  it('copySelf adds another copy of the card', () => {
+    let s = start(['anger']);
+    s = play(s, 'h0', foe(s).id).state;
+    expect(s.sides.a.discard.filter((c) => c.card === 'anger')).toHaveLength(2);
+  });
+
+  it('cards Foresee throws away count as discards: payoffs fire', () => {
+    let s = start(['peek'], { draw: ['reflex', 'filler', 'filler', 'filler', 'filler', 'filler', 'filler'] });
+    s = play(s, 'h0').state;
+    s = pick(s, 'd0').state; // throw away Reflex: "if discarded, draw 2"
+    expect(s.sides.a.discarded).toBe(1);
+    // Reflex drew 2 when it was thrown away, and Peek's own draw added 1
+    expect(s.sides.a.hand).toHaveLength(3);
   });
 });
 

@@ -197,6 +197,13 @@ const WHO_ENEMY: Record<Sel, string> = {
   allFriends: ' to all its allies',
   attacker: ' to the attacker',
 };
+const KIND_PLURAL: Record<string, string[]> = {
+  attack: ['Attack'],
+  skill: ['Skill'],
+  power: ['Aura'],
+  summon: ['Summon'],
+  snare: ['Snare'],
+};
 const cap = (s: string): string => s.charAt(0).toUpperCase() + s.slice(1);
 /** What the player reads for a status or stance (the ids stay as they are in the data). */
 const STATUS_NAME: Record<string, string> = { calm: 'Serene', wrath: 'Fury', mantra: 'Fervor' };
@@ -214,6 +221,7 @@ const METRIC_WORDS: Record<Metric, { per: string; equal: string }> = {
   thorns: { per: 'Thorns', equal: 'Thorns' },
   mantra: { per: 'Fervor', equal: 'Fervor' },
   resonance: { per: 'Resonance', equal: 'Resonance' },
+  doom: { per: 'Doom', equal: 'Doom' },
   calm: { per: 'Serene', equal: 'Serene' },
   wrath: { per: 'Fury', equal: 'Fury' },
   radiant: { per: 'Radiant', equal: 'Radiant' },
@@ -247,6 +255,7 @@ const UNIT_METRICS: readonly Metric[] = [
   'thorns',
   'mantra',
   'resonance',
+  'doom',
   'calm',
   'wrath',
   'radiant',
@@ -316,7 +325,7 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
       return `Heal ${a.equal ? `HP equal to ${a.num}` : a.num}${o.to === 'self' ? '' : who[o.to]}.`;
     }
     case 'status':
-      return `${o.amount < 0 ? 'Remove' : 'Apply'} ${at(Math.abs(o.amount), o.scale)} ${sname(o.status)}${o.to === 'self' ? '' : who[o.to]}.`;
+      return `${o.amount < 0 ? 'Remove' : 'Apply'} ${at(Math.abs(o.amount), o.scale)} ${sname(o.status)}${o.to === 'self' ? '' : who[o.to]}${o.temp ? ' until the end of your turn' : ''}.`;
     case 'scaleStatus':
       return `${o.mult === 2 ? 'Double' : o.mult === 3 ? 'Triple' : `Multiply by ${o.mult}`} the ${sname(o.status)}${who[o.to] || ' on the target'}.`;
     case 'draw': {
@@ -399,6 +408,26 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
       return o.stance === 'none' ? 'Leave your stance.' : `Enter ${sname(o.stance)}.`;
     case 'sacrifice':
       return 'Sacrifice the chosen ally.';
+    case 'manaNext':
+      return `Next turn, gain ${o.amount} extra Mana.`;
+    case 'drawNext':
+      return `Next turn, draw ${o.amount} extra card${o.amount === 1 ? '' : 's'}.`;
+    case 'discover': {
+      const kind = o.kind ? `${KIND_PLURAL[o.kind]?.[0] ?? o.kind} ` : '';
+      const what =
+        (o.count ?? 1) > 1 ? `${o.count} random ${kind}cards` : `a random ${kind}card`;
+      return `Add ${what} from your pool to your hand${o.free ? ' (it costs 0 this fight)' : ''}.`;
+    }
+    case 'upgrade':
+      return o.scope === 'hand'
+        ? 'Upgrade every card in your hand for this fight.'
+        : 'Upgrade a random card in your hand for this fight.';
+    case 'cheapen':
+      return o.scope === 'hand'
+        ? `Cards in your hand cost ${o.amount} less this fight.`
+        : `A random card in your hand costs ${o.amount} less this fight.`;
+    case 'copySelf':
+      return `Add a copy of this card to your ${o.to === 'hand' ? 'hand' : o.to === 'draw' ? 'draw pile' : 'discard pile'}.`;
     case 'forge':
       return `Sharpen ${o.amount} (${db.cards[o.card]?.name ?? o.card} gains ${o.amount} damage).`;
   }

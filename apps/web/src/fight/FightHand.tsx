@@ -16,6 +16,8 @@ export interface HandCard {
   targets: string[];
   /** aim it by hand even when only one target is legal (a card that does something drastic to one of your allies) */
   aim?: boolean;
+  /** what it costs now (a cost change or Unbound), when different from the printed one */
+  cost?: number;
 }
 
 const needsAim = (c: HandCard): boolean => c.aim === true || c.targets.length > 1;
@@ -184,6 +186,7 @@ export function FightHand(p: FightHandProps) {
               playable={c.playable && !p.locked}
               dimmed={!c.playable}
               {...(c.inst.bonus ? { bonus: c.inst.bonus } : {})}
+              {...(c.cost !== undefined && c.cost !== c.def.cost ? { cost: c.cost } : {})}
             />
           </div>
         );

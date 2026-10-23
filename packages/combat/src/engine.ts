@@ -4,6 +4,7 @@
 import { nextInt, seedRng, shuffle } from './rng';
 import {
   CALM_EXIT_MANA,
+  DEBUFFS,
   EDGE_TAG,
   DEFAULT_RUNE_SLOTS,
   MANTRA_GOAL,
@@ -128,6 +129,14 @@ const stacks = (u: Unit, st: StatusId): number => u.statuses[st] ?? 0;
 
 function addStatus(r: Run, u: Unit, st: StatusId, amount: number): void {
   if (amount === 0) return;
+  // Steadfast: the next debuff put on this unit is ignored
+  if (amount > 0 && DEBUFFS.includes(st) && stacks(u, 'steadfast') > 0) {
+    const left = stacks(u, 'steadfast') - 1;
+    if (left <= 0) delete u.statuses.steadfast;
+    else u.statuses.steadfast = left;
+    r.ev.push({ type: 'status', target: u.id, status: 'steadfast', amount: -1, total: left });
+    return;
+  }
   let total = stacks(u, st) + amount;
   if (st === 'stunned') total = Math.min(1, total);
   if (total <= 0) delete u.statuses[st];
@@ -198,8 +207,9 @@ function applyDamage(
   t: Unit,
   amount: number,
   kind: 'attack' | 'direct',
-): void {
-  if (t.hp <= 0) return;
+): number {
+  if (t.hp <= 0) return 0;
+  if (stacks(t, 'ghostly') > 0 && amount > 1) amount = 1;
   if (kind === 'attack' && amount > 0 && stacks(t, 'shielded') > 0) {
     addStatus(r, t, 'shielded', -1);
     r.ev.push({
@@ -212,7 +222,7 @@ function applyDamage(
       shielded: true,
       kind,
     });
-    return;
+    return 0;
   }
   const blocked = kind === 'attack' ? Math.min(t.barrier, amount) : 0;
   t.barrier -= blocked;
@@ -230,6 +240,7 @@ function applyDamage(
   });
   if (lost > 0 && t.kind === 'hero')
     fireSnare(r, t.side, { on: 'hpLost', lost, attacker: source, hit: null });
+  return lost;
 }
 
 /** One attack hit from `a.actor` on `t`: Snares may spring first and may cancel it. */
@@ -245,7 +256,9 @@ function attackHit(r: Run, a: Act, t: Unit, base: number): void {
     }
   }
   const amount = modifiedDamage(base, a.actor, t);
-  applyDamage(r, a.actor, t, amount, 'attack');
+  const lost = applyDamage(r, a.actor, t, amount, 'attack');
+  // Armored wears thin each time an attack gets through
+  if (lost > 0 && stacks(t, 'armored') > 0) addStatus(r, t, 'armored', -1);
   const thorns = stacks(t, 'thorns');
   if (thorns > 0 && a.actor.hp > 0 && t.side !== a.actor.side)
     applyDamage(r, t, a.actor, thorns, 'direct');
@@ -337,6 +350,7 @@ function metricValue(r: Run, a: Act, m: Metric, of: Scale['of'], t: Unit | null)
     case 'thorns':
     case 'mantra':
     case 'resonance':
+    case 'doom':
     case 'calm':
     case 'wrath':
     case 'radiant':
@@ -410,15 +424,22 @@ function execOp(r: Run, a: Act, op: Op): void {
           (op.scale.mult ?? 1) * metricValue(r, a, op.scale.by, op.scale.of, a.target),
         );
       const edge = a.card?.tags?.includes(EDGE_TAG) ? stacks(a.actor, 'edge') : 0;
+      const vigor = a.card?.kind === 'attack' ? stacks(a.actor, 'vigor') : 0;
       for (let i = 0; i < hits; i++) {
         if (r.s.winner) return;
         // a target that died mid-attack: the remaining hits find a new one
         if (op.to === 'target' && (!a.target || a.target.hp <= 0))
           a.target = pickFoe(r, a.actor, 'hero');
         for (const t of resolve(r, a, op.to))
-          attackHit(r, a, t, amountOf(r, a, op.amount, op.scale, t) + edge + resonanceOf(a));
+          attackHit(
+            r,
+            a,
+            t,
+            amountOf(r, a, op.amount, op.scale, t) + edge + vigor + resonanceOf(a),
+          );
         reap(r);
       }
+      if (vigor > 0) addStatus(r, a.actor, 'vigor', -vigor);
       return;
     }
     case 'loseHp':
@@ -433,7 +454,9 @@ function execOp(r: Run, a: Act, op: Op): void {
       return;
     case 'barrier':
       for (const t of resolve(r, a, op.to)) {
-        const n = amountOf(r, a, op.amount, op.scale, t) + resonanceOf(a);
+        let n = amountOf(r, a, op.amount, op.scale, t) + resonanceOf(a);
+        if (n > 0) n += stacks(a.actor, 'bracing');
+        if (n > 0 && stacks(t, 'brittle') > 0) n = Math.floor(n * 0.75);
         // a Snare that punishes defending springs first, so the Barrier cannot soak what it deals
         if (n > 0) fireSnare(r, other(t.side), { on: 'foeDefends', unit: t });
         if (t.hp <= 0 || r.s.winner) continue;
@@ -453,6 +476,7 @@ function execOp(r: Run, a: Act, op: Op): void {
       for (const t of resolve(r, a, op.to)) {
         const n = amountOf(r, a, op.amount, op.scale, t);
         addStatus(r, t, op.status, op.status === 'seared' ? scaledByDifficulty(a.actor, t, n) : n);
+        if (op.temp && n > 0) side.temps.push({ unit: t.id, status: op.status, amount: n });
       }
       return;
     case 'scaleStatus':
@@ -585,6 +609,72 @@ function execOp(r: Run, a: Act, op: Op): void {
       if (hero) enterStance(r, hero, op.stance);
       return;
     }
+    case 'manaNext':
+      side.nextMana += op.amount;
+      return;
+    case 'drawNext':
+      side.nextDraw += op.amount;
+      return;
+    case 'discover': {
+      const hid = side.hero;
+      if (!hid) return;
+      // base, playable cards of your own pool and Neutral (a "+" card has no upgrade of its own; tokens have none either)
+      const pool = Object.values(r.db.cards)
+        .filter(
+          (c) =>
+            (c.hero === hid || c.hero === 'neutral') &&
+            c.rarity !== 'basic' &&
+            !!c.upgrade &&
+            !c.source &&
+            !c.unplayable &&
+            (!op.kind || c.kind === op.kind),
+        )
+        .sort((x, y) => (x.id < y.id ? -1 : 1));
+      for (let i = 0; i < (op.count ?? 1) && pool.length; i++) {
+        const pick = pool[nextInt(r.s.rng, pool.length)] as CardDef;
+        const made = addCardTo(r, side, pick.id, 'hand');
+        if (op.free && pick.cost > 0) made.costMod = -pick.cost;
+      }
+      return;
+    }
+    case 'upgrade': {
+      const upgradable = side.hand.filter((c) => {
+        const up = cardDef(r.db, c.card).upgrade;
+        return !!up && !!r.db.cards[up];
+      });
+      const chosen =
+        op.scope === 'hand'
+          ? upgradable
+          : upgradable.length
+            ? [upgradable[nextInt(r.s.rng, upgradable.length)] as CardInst]
+            : [];
+      for (const c of chosen) {
+        c.card = cardDef(r.db, c.card).upgrade as CardId;
+        r.ev.push({ type: 'transform', side: side.id, card: c.id, def: c.card });
+      }
+      return;
+    }
+    case 'cheapen': {
+      const eligible = side.hand.filter((c) => {
+        const d = cardDef(r.db, c.card);
+        return !d.x && !d.unplayable && d.cost + (c.costMod ?? 0) > 0;
+      });
+      const chosen =
+        op.scope === 'hand'
+          ? eligible
+          : eligible.length
+            ? [eligible[nextInt(r.s.rng, eligible.length)] as CardInst]
+            : [];
+      for (const c of chosen) {
+        const d = cardDef(r.db, c.card);
+        c.costMod = Math.max(-d.cost, (c.costMod ?? 0) - op.amount);
+        r.ev.push({ type: 'transform', side: side.id, card: c.id, def: c.card });
+      }
+      return;
+    }
+    case 'copySelf':
+      if (a.card) addCardTo(r, side, a.card.id, op.to);
+      return;
     case 'sacrifice': {
       const t = a.target;
       if (t && t.kind === 'ally' && t.side === a.actor.side && t.hp > 0) t.hp = 0;
@@ -912,7 +1002,7 @@ function actEnemy(r: Run, u: Unit): void {
 function startOfTurn(r: Run, side: Side): void {
   const sd = r.s.sides[side];
   for (const u of sd.units) {
-    if (u.barrier > 0) {
+    if (u.barrier > 0 && stacks(u, 'fortified') === 0) {
       u.barrier = 0;
       r.ev.push({ type: 'barrierDrop', target: u.id });
     }
@@ -942,9 +1032,12 @@ function beginHeroTurn(r: Run, side: Side): void {
   sd.discarded = 0;
   // the second PvP player gets a small head start on their first turn
   const first = r.s.mode === 'pvp' && side === 'b' && r.s.turn === 2;
-  sd.mana = sd.maxMana + (first ? 1 : 0);
+  sd.mana = sd.maxMana + (first ? 1 : 0) + sd.nextMana;
+  const extraDraw = sd.nextDraw;
+  sd.nextMana = 0;
+  sd.nextDraw = 0;
   r.ev.push({ type: 'mana', side, mana: sd.mana });
-  drawCards(r, sd, sd.handSize + (first ? 1 : 0));
+  drawCards(r, sd, sd.handSize + (first ? 1 : 0) + extraDraw);
   const hero = heroOf(sd);
   if (!hero) return;
   const opening = r.s.turn === (side === 'a' ? 1 : 2);
@@ -972,6 +1065,30 @@ function decay(r: Run, side: Side): void {
     if (stacks(u, 'faltering') > 0) addStatus(r, u, 'faltering', -1);
   for (const u of r.s.sides[other(side)].units)
     if (stacks(u, 'exposed') > 0) addStatus(r, u, 'exposed', -1);
+  const sd = r.s.sides[side];
+  for (const u of [...sd.units]) {
+    if (u.hp <= 0) continue;
+    const plated = stacks(u, 'armored');
+    if (plated > 0) {
+      u.barrier += plated;
+      r.ev.push({ type: 'barrier', target: u.id, amount: plated, total: u.barrier });
+    }
+    const ritual = stacks(u, 'ritual');
+    if (ritual > 0) addStatus(r, u, 'might', ritual);
+    if (stacks(u, 'ghostly') > 0) addStatus(r, u, 'ghostly', -1);
+    if (stacks(u, 'brittle') > 0) addStatus(r, u, 'brittle', -1);
+  }
+  // Flex-style statuses wear off
+  for (const t of sd.temps.splice(0)) {
+    const u = findUnit(r.s, t.unit);
+    if (u && u.hp > 0) addStatus(r, u, t.status, -t.amount);
+  }
+  // Doom: a unit at or below its Doom at the end of its own turn is gone
+  for (const u of [...sd.units]) {
+    const doom = stacks(u, 'doom');
+    if (doom > 0 && u.hp > 0 && u.hp <= doom) applyDamage(r, null, u, u.hp, 'direct');
+  }
+  reap(r);
 }
 
 function enemyPhase(r: Run): void {
@@ -992,6 +1109,7 @@ function enemyPhase(r: Run): void {
   }
   if (r.s.winner) return;
   decay(r, 'b');
+  if (r.s.winner) return;
   // units that just acted (or were stunned) pick their next move; summoned ones already chose theirs
   for (const u of sd.units) if (!u.intent) chooseIntent(r, u);
   r.ev.push({ type: 'turnEnd', side: 'b' });
@@ -1014,9 +1132,10 @@ function endTurn(r: Run): void {
   const keep: CardInst[] = [];
   const hand = sd.hand;
   sd.hand = [];
+  const holdAll = !!hero && stacks(hero, 'holdfast') > 0;
   for (const c of hand) {
     const cd = cardDef(r.db, c.card);
-    if (cd.retain) keep.push(c);
+    if (cd.retain || holdAll) keep.push(c);
     else if (cd.ethereal) exhaustCard(r, sd, c);
     else {
       sd.discard.push(c);
@@ -1024,6 +1143,7 @@ function endTurn(r: Run): void {
     }
   }
   sd.hand = [...keep, ...sd.hand];
+  if (hero && holdAll) addStatus(r, hero, 'holdfast', -1);
   if (sd.mana > 0) r.ev.push({ type: 'mana', side, mana: 0 });
   sd.mana = 0;
   for (const u of [...sd.units]) {
@@ -1035,6 +1155,7 @@ function endTurn(r: Run): void {
   }
   if (r.s.winner) return;
   decay(r, side);
+  if (r.s.winner) return;
   r.ev.push({ type: 'turnEnd', side });
   if (r.s.mode === 'pve') {
     enemyPhase(r);
@@ -1061,6 +1182,9 @@ const blankSide = (id: Side): SideState => ({
   boons: [],
   potions: [],
   stars: 0,
+  nextMana: 0,
+  nextDraw: 0,
+  temps: [],
   runes: [],
   runeSlots: DEFAULT_RUNE_SLOTS,
   powers: [],
@@ -1163,6 +1287,18 @@ function legalFoes(r: Run, side: Side, cd: CardDef): Unit[] {
   return taunters.length ? taunters : foes;
 }
 
+/** What a card costs right now: its cost, any change to this copy, and free skills while Unbound. */
+export function costOf(
+  db: CombatDb,
+  sd: Pick<SideState, 'units'>,
+  c: Pick<CardInst, 'card' | 'costMod'>,
+): number {
+  const cd = cardDef(db, c.card);
+  const hero = sd.units.find((u) => u.kind === 'hero');
+  if (cd.kind === 'skill' && hero && stacks(hero, 'unbound') > 0) return 0;
+  return Math.max(0, cd.cost + (c.costMod ?? 0));
+}
+
 export function canPlay(
   r: { db: CombatDb; s: CombatState },
   side: Side,
@@ -1171,7 +1307,7 @@ export function canPlay(
   const cd = cardDef(r.db, c.card);
   const sd = r.s.sides[side];
   if (r.s.pending) return false;
-  if (cd.unplayable || cd.cost > sd.mana || (cd.starCost ?? 0) > sd.stars) return false;
+  if (cd.unplayable || costOf(r.db, sd, c) > sd.mana || (cd.starCost ?? 0) > sd.stars) return false;
   if (cd.kind === 'snare' && sd.snares.length >= MAX_SNARES) return false;
   if (cd.target === 'foe' && legalFoes({ ...r, ev: [], depth: 0 }, side, cd).length === 0)
     return false;
@@ -1233,6 +1369,11 @@ export function legalActions(db: CombatDb, s: CombatState): Action[] {
 }
 
 /** The card is done: it goes to its pile, the turn's counters tick, and "when you play" Powers fire. */
+const unbound = (sd: SideState): boolean => {
+  const h = heroOf(sd);
+  return !!h && stacks(h, 'unbound') > 0;
+};
+
 function finishCard(
   r: Run,
   sd: SideState,
@@ -1244,7 +1385,7 @@ function finishCard(
     // a Power stays in effect for the fight and leaves the deck (without counting as "exhausted")
     sd.exhausted.push(inst);
     r.ev.push({ type: 'exhaust', side: sd.id, card: inst.id, def: inst.card });
-  } else if (cd.exhaust) exhaustCard(r, sd, inst);
+  } else if (cd.exhaust || (cd.kind === 'skill' && unbound(sd))) exhaustCard(r, sd, inst);
   else sd.discard.push(inst);
   sd.played++;
   if (cd.kind === 'attack') sd.attacksPlayed++;
@@ -1273,7 +1414,7 @@ function playCard(r: Run, action: Extract<Action, { type: 'play' }>): void {
   const hero = heroOf(sd);
   if (!hero) throw new RulesError('No hero to play cards');
   sd.hand.splice(i, 1);
-  sd.mana -= cd.cost;
+  sd.mana -= costOf(r.db, sd, inst);
   let x = 0;
   if (cd.x) {
     x = sd.mana;
@@ -1296,6 +1437,15 @@ function playCard(r: Run, action: Extract<Action, { type: 'play' }>): void {
   if (r.s.pending) {
     r.s.pending.finish = inst;
     return;
+  }
+  // Twinned attacks and Mirrored skills happen twice (the second time without asking for choices)
+  const again =
+    (cd.kind === 'attack' && stacks(hero, 'twinned') > 0 && 'twinned') ||
+    (cd.kind === 'skill' && stacks(hero, 'mirrored') > 0 && 'mirrored') ||
+    null;
+  if (again && !r.s.winner) {
+    addStatus(r, hero, again, -1);
+    runOps(r, mkAct(hero, { target, card: cd, inst, x }), cd.effects);
   }
   finishCard(r, sd, inst, cd, target);
 }
@@ -1324,10 +1474,7 @@ function pickCards(r: Run, action: Extract<Action, { type: 'pick' }>): void {
   }
   if (p.kind === 'scry') {
     r.ev.push({ type: 'scry', side, cards: picked.map((c) => c.id) });
-    for (const c of picked) {
-      sd.discard.push(c);
-      r.ev.push({ type: 'discard', side, card: c.id, def: c.card });
-    }
+    for (const c of picked) moveFromHand(r, sd, c, 'discard');
   } else for (const c of picked) moveFromHand(r, sd, c, p.kind);
   const hero = findUnit(r.s, p.actor);
   const fin = p.finish;

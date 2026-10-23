@@ -9,6 +9,7 @@ export {
   createCombat,
   legalActions,
   canPlay,
+  costOf,
   heroOf,
   modifiedDamage,
   activePattern,

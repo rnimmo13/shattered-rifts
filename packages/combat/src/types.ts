@@ -24,7 +24,20 @@ export type StatusId =
   | 'wrath' // stance: you deal double attack damage and take 50% more
   | 'radiant' // stance: you deal triple attack damage; it ends with your turn
   | 'mantra' // builds towards Radiant: at MANTRA_GOAL you enter it
-  | 'edge'; // +1 damage per stack to your attacks tagged "shiv" (permanent)
+  | 'edge' // +1 damage per stack to your attacks tagged "knife" (permanent)
+  | 'bracing' // +1 Barrier from every Barrier you gain, per stack (permanent)
+  | 'brittle' // Barrier it gains is 25% smaller (turns)
+  | 'ghostly' // each hit it takes is capped at 1 damage (turns)
+  | 'steadfast' // the next debuff put on it is ignored, per stack
+  | 'armored' // at the end of its turn it gains stacks Barrier; losing HP to an attack costs 1 stack
+  | 'ritual' // at the end of its turn it gains stacks Might
+  | 'vigor' // its next attack deals stacks more damage, then it is spent
+  | 'doom' // if its HP is at or below its Doom at the end of its turn, it dies
+  | 'twinned' // your next attack card is played twice, per stack
+  | 'mirrored' // your next skill card is played twice, per stack
+  | 'unbound' // your skills cost 0 and are consumed when played
+  | 'fortified' // your Barrier does not fall away at the start of your turn
+  | 'holdfast'; // your whole hand is held at the end of your turn, per stack (one turn each)
 export const STATUS_IDS: readonly StatusId[] = [
   'exposed',
   'faltering',
@@ -39,6 +52,28 @@ export const STATUS_IDS: readonly StatusId[] = [
   'radiant',
   'mantra',
   'edge',
+  'bracing',
+  'brittle',
+  'ghostly',
+  'steadfast',
+  'armored',
+  'ritual',
+  'vigor',
+  'doom',
+  'twinned',
+  'mirrored',
+  'unbound',
+  'fortified',
+  'holdfast',
+];
+/** Debuffs: a Steadfast unit ignores the next one put on it. */
+export const DEBUFFS: readonly StatusId[] = [
+  'exposed',
+  'faltering',
+  'seared',
+  'stunned',
+  'brittle',
+  'doom',
 ];
 export const STANCES = ['calm', 'wrath', 'radiant'] as const;
 export type Stance = (typeof STANCES)[number];
@@ -79,6 +114,7 @@ export type Metric =
   | 'thorns'
   | 'mantra'
   | 'resonance'
+  | 'doom'
   | 'calm' // 1 while in that stance
   | 'wrath'
   | 'radiant'
@@ -123,7 +159,8 @@ export type Op =
   | { op: 'loseHp'; amount: number; to: Sel; scale?: Scale } // unblockable, unmodified
   | { op: 'barrier'; amount: number; to: Sel; scale?: Scale }
   | { op: 'heal'; amount: number; to: Sel; scale?: Scale }
-  | { op: 'status'; status: StatusId; amount: number; to: Sel; scale?: Scale }
+  /** `temp`: the stacks wear off again at the end of the acting side's turn (a Flex) */
+  | { op: 'status'; status: StatusId; amount: number; to: Sel; scale?: Scale; temp?: boolean }
   /** multiply the stacks of a status already on the target (floor); 2 doubles it */
   | { op: 'scaleStatus'; status: StatusId; mult: number; to: Sel }
   | { op: 'draw'; amount: number; scale?: Scale }
@@ -164,7 +201,18 @@ export type Op =
   // --- scaling cards
   | { op: 'forge'; card: CardId; amount: number }
   /** the targeted ally leaves the fight (put it after any effect that reads the target) */
-  | { op: 'sacrifice' };
+  | { op: 'sacrifice' }
+  // --- tempo and tricks
+  | { op: 'manaNext'; amount: number } // extra Mana at the start of your next turn
+  | { op: 'drawNext'; amount: number } // extra cards at the start of your next turn
+  /** add random cards from your own pool (and Neutral) to your hand; `free`: they cost 0 for the rest of the fight */
+  | { op: 'discover'; kind?: CardKind; count?: number; free?: boolean }
+  /** replace cards in your hand with their "+" versions for the rest of the fight */
+  | { op: 'upgrade'; scope: 'hand' | 'random' }
+  /** cards in your hand cost less for the rest of the fight (one random card, or all of them) */
+  | { op: 'cheapen'; amount: number; scope: 'hand' | 'random' }
+  /** add a copy of the card being played */
+  | { op: 'copySelf'; to: 'hand' | 'discard' | 'draw' };
 
 export type CardKind = 'attack' | 'skill' | 'power' | 'summon' | 'snare';
 /** foe = an enemy; friend = any unit of yours (hero or ally); ally = one of your allies, never the hero */
@@ -360,6 +408,8 @@ export interface CardInst {
   card: CardId;
   /** forge bonus (see the forge op) */
   bonus?: number;
+  /** cost change for the rest of the fight (negative = cheaper) */
+  costMod?: number;
 }
 
 /** A rune on the board. */
@@ -417,6 +467,11 @@ export interface SideState {
   /** Potion ids carried (the rest of the run keeps whatever is unused) */
   potions: string[];
   stars: number;
+  /** Mana and cards that arrive at the start of your next turn */
+  nextMana: number;
+  nextDraw: number;
+  /** statuses that wear off at the end of this side's turn */
+  temps: { unit: UnitId; status: StatusId; amount: number }[];
   runes: RuneState[];
   runeSlots: number;
   powers: PowerState[];
@@ -531,6 +586,7 @@ export type CombatEvent =
   | { type: 'runeGone'; side: Side; rune: string }
   | { type: 'stance'; unit: UnitId; stance: Stance | 'none' }
   | { type: 'power'; side: Side; card: CardId }
+  | { type: 'transform'; side: Side; card: InstId; def: CardId }
   | { type: 'forge'; side: Side; card: CardId; amount: number }
   | { type: 'scry'; side: Side; cards: InstId[] }
   | { type: 'pending'; side: Side; kind: Pending['kind'] }

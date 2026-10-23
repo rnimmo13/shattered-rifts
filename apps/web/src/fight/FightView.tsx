@@ -5,6 +5,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   applyAction,
+  costOf,
   clone,
   createCombat,
   legalActions,
@@ -491,6 +492,7 @@ export function FightView(props: {
           playable: mine.length > 0,
           targets,
           aim: def.target === 'ally' || def.target === 'friend',
+          cost: costOf(db, view.sides.a, inst),
         },
       ];
     });

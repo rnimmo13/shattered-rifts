@@ -29,12 +29,14 @@ export interface FightCardProps {
   dimmed?: boolean;
   /** the forge bonus this copy carries (shown, because the card text alone cannot) */
   bonus?: number;
+  /** what it costs right now, when that differs from the printed cost */
+  cost?: number;
 }
 
 /** A Combat v2 card, drawn with the shared card frame (same canonical size and scaling as every other card). */
 export const FightCard = memo(
   forwardRef<HTMLDivElement, FightCardProps>(function FightCard(
-    { db, def, width, playable, dimmed, bonus },
+    { db, def, width, playable, dimmed, bonus, cost },
     ref,
   ) {
     const k = width / CARD_W;
@@ -64,8 +66,8 @@ export const FightCard = memo(
           <div className="card__banner">
             <span className="card__name">{def.name}</span>
           </div>
-          <div className="card__cost" aria-label={`Cost ${def.x ? 'X' : def.cost}`}>
-            <span>{def.x ? 'X' : def.cost}</span>
+          <div className="card__cost" aria-label={`Cost ${def.x ? 'X' : (cost ?? def.cost)}`}>
+            <span>{def.x ? 'X' : (cost ?? def.cost)}</span>
           </div>
           {def.starCost ? (
             <div className="card__stars" aria-label={`Costs ${def.starCost} Lumen`}>
