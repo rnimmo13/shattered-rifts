@@ -5,6 +5,7 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **0.5.0:** X cards now upgrade to X+1. Weaker Riftwalkers (KP, Vesper, Astra, Mire, Quill) are tougher or hit harder; a few free-loop cards cost more or are Consumed. KP's lanes are Gun / Shells / Hangover.
 - **About 90 cards per Riftwalker (was 70).** 221 new cards, 15-25 per character, spread across each lane with new rares and build-arounds (Maren's Tower Shield and Radiance Eternal, Rivet's Relay Network and Backup Core, Kesh's Pack Leader and Grave Hunger, Vesper's four new Snare triggers, Quill's Knife Storm and Compounding Interest, Ilvane's Echo Cascade, Sehra's Mantra Engine, Astra's constellations, Mire's Ominous Chimes and Soul Furnace, KP's Hot Brass and Glass Jaw).
 - **Events read better:** the text is a narrow column and each choice is a card with a short headline and its price or reward underneath. The run bar and the fight title now show the floor you are on.
 - **Home screen:** clicking a Riftwalker takes you straight to the Sanctum with them chosen.

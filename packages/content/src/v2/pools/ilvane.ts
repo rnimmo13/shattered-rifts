@@ -389,7 +389,18 @@ export const ILVANE: CardDef[] = [
   }),
 
   // --- Hollow (more) ---
-  i('common', 'bleed-the-void', 'Bleed the Void', 'skill', 0, 'none', [channel('hollow'), lose(2)]),
+  i(
+    'common',
+    'bleed-the-void',
+    'Bleed the Void',
+    'skill',
+    0,
+    'none',
+    [channel('hollow'), lose(2)],
+    {
+      exhaust: true,
+    },
+  ),
   i('uncommon', 'hollow-tide', 'Hollow Tide', 'attack', 2, 'foe', [
     scaled(dmg(6), per('resonance', 4)),
     channel('hollow'),
@@ -418,14 +429,7 @@ export const ILVANE: CardDef[] = [
     scaled(draw(0), per('runes')),
     cheapen(1, 'random'),
   ]),
-  i(
-    'common',
-    'silent-glyph',
-    'Silent Glyph',
-    'skill',
-    1,
-    'none',
-    [barrier(5), channel('hollow')],
-    { onDiscard: [channel('hollow')] },
-  ),
+  i('common', 'silent-glyph', 'Silent Glyph', 'skill', 1, 'none', [barrier(5), channel('hollow')], {
+    onDiscard: [channel('hollow')],
+  }),
 ];

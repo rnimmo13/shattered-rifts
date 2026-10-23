@@ -105,8 +105,8 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     role: 'Trapper',
     trait: {
       name: 'Ambusher',
-      text: 'Every enemy starts the fight Exposed for 2 turns.',
-      fightStart: [status('exposed', 2, 'allFoes')],
+      text: 'Every enemy starts the fight Exposed for 3 turns, and you start with 6 Barrier.',
+      fightStart: [status('exposed', 3, 'allFoes'), barrier(6)],
     },
     hero: { id: 'vesper', name: 'Vesper Nightlace', maxHp: 104, mana: 3, handSize: 5 },
     starter: [...rep('strike', 3), ...rep('defend', 4), ...rep('veil-strike', 2), 'set-the-web'],
@@ -133,7 +133,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     hero: {
       id: 'quill',
       name: 'Quill, the Knife-Dancer',
-      maxHp: 66,
+      maxHp: 78,
       mana: 3,
       handSize: 5,
       sigil: [addTo('sleeve-knife')],
@@ -219,7 +219,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     hero: {
       id: 'astra',
       name: 'Astra, the Starcaller',
-      maxHp: 102,
+      maxHp: 112,
       mana: 3,
       handSize: 5,
       sigil: [stars(3), addTo('starforged-blade')],
@@ -250,13 +250,13 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     role: 'Drunkard',
     trait: {
       name: 'Clutch Genes',
-      text: 'While at or below half HP, you deal 50% more attack damage.',
-      clutch: { below: 50, damagePct: 50 },
+      text: 'While at or below 60% HP, you deal 60% more attack damage.',
+      clutch: { below: 60, damagePct: 60 },
     },
     hero: {
       id: 'kp',
       name: 'KP, the Homeless Drunk',
-      maxHp: 80,
+      maxHp: 96,
       mana: 3,
       handSize: 5,
       sigil: [addTo('old-twelve-gauge')],
@@ -295,13 +295,13 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     role: 'Necromancer',
     trait: {
       name: 'Grave Chill',
-      text: 'Every enemy starts the fight with 3 Fate.',
-      fightStart: [status('doom', 3, 'allFoes')],
+      text: 'Every enemy starts the fight with 4 Fate.',
+      fightStart: [status('doom', 4, 'allFoes')],
     },
     hero: {
       id: 'mire',
       name: 'Mire, the Gravewarden',
-      maxHp: 76,
+      maxHp: 86,
       mana: 3,
       handSize: 5,
       startUnits: ['bone-thrall'],

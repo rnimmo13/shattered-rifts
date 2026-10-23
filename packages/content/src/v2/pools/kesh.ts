@@ -243,11 +243,16 @@ export const KESH: CardDef[] = [
   k('common', 'maddened-lunge', 'Maddened Lunge', 'attack', 1, 'foe', [
     scaled(dmg(5), per('missingHp', 0.25)),
   ]),
-  k('common', 'open-a-vein', 'Open a Vein', 'skill', 0, 'none', [
-    lose(3),
-    status('might', 1),
-    draw(1),
-  ], { exhaust: true }),
+  k(
+    'common',
+    'open-a-vein',
+    'Open a Vein',
+    'skill',
+    0,
+    'none',
+    [lose(3), status('might', 1), draw(1)],
+    { exhaust: true },
+  ),
   k('common', 'bloodied-howl', 'Bloodied Howl', 'skill', 1, 'none', [
     lose(2),
     status('exposed', 2, 'allFoes'),

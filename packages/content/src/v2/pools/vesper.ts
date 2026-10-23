@@ -465,9 +465,18 @@ export const VESPER: CardDef[] = [
   ),
   v('common', 'discarded-hand', 'Discarded Hand', 'skill', 0, 'none', [discard(2), draw(2)]),
   v('uncommon', 'sandbag', 'Sandbag', 'attack', 1, 'foe', [scaled(dmg(5), per('mana', 3))]),
-  v('rare', 'curtain-call', 'Curtain Call', 'skill', 1, 'none', [draw(1), fetchCards(2, 'hand', 'snare')], {
-    exhaust: true,
-  }),
+  v(
+    'rare',
+    'curtain-call',
+    'Curtain Call',
+    'skill',
+    1,
+    'none',
+    [draw(1), fetchCards(2, 'hand', 'snare')],
+    {
+      exhaust: true,
+    },
+  ),
   v(
     'uncommon',
     'trick-of-the-light',

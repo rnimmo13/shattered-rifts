@@ -126,7 +126,7 @@ Starter: Slash, Slash, Slash, Slash, Slash, Guard, Guard, Guard, Deploy Drone, O
 | Scrap Storm | 1 | attack | common | Deal 2 (+1 per ally) damage to ALL enemies. |
 | Scrap Rush | 0 | attack | common | Deal 1 (+3 per ally) damage. |
 | Breach Charge | 1 | attack | common | Deal 5 damage. Summon Micro Drone (4 HP). At the end of your turn it will: Deal 3 damage. |
-| Rapid Prototype | 0 | summon | common | Summon Micro Drone (4 HP). At the end of your turn it will: Deal 3 damage. Fleeting. |
+| Rapid Prototype | 0 | summon | common | Summon Micro Drone (4 HP). At the end of your turn it will: Deal 3 damage. Consume. Fleeting. |
 | Ping | 0 | skill | common | All your allies act now. Consume. |
 | Jumpstart | 1 | skill | common | All your allies act now. Gain 4 Barrier. |
 | Countermeasure Grid | 1 | snare | common | When you or an ally is attacked: Deal 5 damage to the attacker. Gain 5 Barrier. |
@@ -423,7 +423,7 @@ Starter: Slash, Slash, Slash, Guard, Guard, Guard, Guard, Veil Strike, Veil Stri
 | The Perfect Trap | 3 | snare | legendary | When you or an ally is attacked: Cancel that attack. Deal 22 damage to the attacker. Apply 1 Stunned to the attacker. Apply 2 Shielded. |
 | Masquerade | 2 | power | legendary | Whenever one of your Snares springs: Draw 2 cards. Gain 1 Mana. Deal 4 damage to ALL enemies. |
 
-## Quill, the Knife-Dancer (umbral, 66 HP)
+## Quill, the Knife-Dancer (umbral, 78 HP)
 
 A cutpurse with a sleeve full of blades. Starts every fight with a Sleeve Knife. Knives, Bleed and discard tricks.
 
@@ -574,7 +574,7 @@ Starter: Slash, Slash, Slash, Slash, Guard, Guard, Guard, Spark Cast, Spark Cast
 | Crystal Ward | 1 | skill | common | Gain 7 Barrier. Conjure Ward. Hold. |
 | Frost Nova | 1 | attack | common | Deal 5 damage to ALL enemies. Apply 1 Faltering to ALL enemies. Conjure Ward. |
 | Rune Recall | 0 | skill | common | Gain 3 Barrier. Return a random skill card from your discard pile to your hand. Consume. |
-| Bleed the Void | 0 | skill | common | Conjure Hollow. Lose 2 HP. |
+| Bleed the Void | 0 | skill | common | Conjure Hollow. Lose 2 HP. Consume. |
 | Silent Glyph | 1 | skill | common | Gain 5 Barrier. Conjure Hollow. If discarded: Conjure Hollow. |
 | Prismatic Burst | 2 | attack | uncommon | Deal 6 damage to ALL enemies. Conjure Splinter. |
 | Shard Chorus | 2 | skill | uncommon | Conjure Splinter 2 times. |
@@ -719,7 +719,7 @@ Starter: Slash, Slash, Slash, Slash, Guard, Guard, Guard, Guard, Kindle Fury, St
 | Mirror Pool | 1 | skill | uncommon | Gain Barrier equal to 3 times your Mana. Enter Serene. Hold. |
 | Gentle Return | 1 | power | uncommon | Whenever you enter Serene: Heal 2. Gain 3 Barrier. |
 | Foretold Flame | 1 | attack | uncommon | Deal 5 (+1 per Fervor) damage. Foresee 2. |
-| Faith Kept | 0 | skill | uncommon | Apply 2 Fervor. Hold. If consumed: Apply 3 Fervor. |
+| Faith Kept | 1 | skill | uncommon | Apply 2 Fervor. Hold. If consumed: Apply 3 Fervor. |
 | Mantra Engine | 1 | power | uncommon | At the end of your turn: Gain Barrier equal to your Fervor. |
 | Rage of Ages | 3 | attack | rare | Deal 5 damage 5 times to a random enemy. |
 | Wrath Incarnate | 2 | power | rare | At the start of your turn: Enter Fury. |
@@ -736,7 +736,7 @@ Starter: Slash, Slash, Slash, Slash, Guard, Guard, Guard, Guard, Kindle Fury, St
 | Scrawl | 1 | skill | rare | Draw 7 cards. Consume. |
 | Last Rites of the Flame | 3 | attack | rare | Deal 14 damage to ALL enemies. Apply 5 Fervor. |
 | Radiant Heart | 2 | power | rare | Whenever you enter Radiant: Draw 2 cards. Gain 1 Mana. |
-| Blood on the Sand | 1 | power | rare | Whenever you enter Fury: Lose 2 HP. Apply 3 Primed. |
+| Blood on the Sand | 1 | power | rare | Whenever you enter Fury: Lose 2 HP. Apply 2 Primed. |
 | Ashes of Restraint | 2 | attack | rare | Deal 6 (+3 per consumed card) damage. Enter Fury. |
 | Tide of Peace | X | skill | rare | Gain Barrier equal to 5 times the Mana spent. Draw cards equal to the Mana spent. Enter Serene. |
 | Breath Between Blows | 1 | power | rare | Whenever you play a Skill: Gain 2 Barrier. |
@@ -745,7 +745,7 @@ Starter: Slash, Slash, Slash, Slash, Guard, Guard, Guard, Guard, Kindle Fury, St
 | Perfect Balance | 2 | power | legendary | Whenever you enter a stance: Draw 1 card. Gain 5 Barrier. Apply 1 Fervor. |
 | Still Flame Ascendant | 3 | skill | legendary | Enter Radiant. Apply 4 Primed. Draw 2 cards. Consume. |
 
-## Astra, the Starcaller (starfall, 102 HP)
+## Astra, the Starcaller (starfall, 112 HP)
 
 A scholar of fallen stars. Starts with 3 Lumen and a Starforged Blade that every Sharpen improves for good.
 
@@ -855,7 +855,7 @@ Tokens (made by other cards):
 |---|---|---|---|---|
 | Starforged Blade | 1 | attack | common | Deal 9 (+1 per point of sharpening) damage. Hold. |
 
-## KP, the Homeless Drunk (midden, 80 HP)
+## KP, the Homeless Drunk (midden, 96 HP)
 
 A short, fat, bald dwarf with a hammer, an Old Twelve Gauge that hits every enemy and gets sharper, and a trolley of window panes. Booby traps, glass and buckshot.
 
@@ -947,10 +947,10 @@ Starter: Slash, Slash, Slash, Guard, Guard, Guard, Hammer Swing, Hammer Swing, P
 | Whiskey Miracle | 1 | skill | rare | Heal 15. Consume. |
 | Last Call | 2 | skill | rare | Gain 1 maximum Mana for the rest of the fight (and 1 now). Heal 6. Consume. |
 | Molotov Cocktail | 1 | snare | rare | When the enemy summons: Deal 12 damage to ALL enemies. Apply 1 Brittle to ALL enemies. |
-| Glass Jaw | 1 | power | rare | Whenever you lose HP to your own cards: Deal 6 damage to ALL enemies. Gain 4 Barrier. |
+| Glass Jaw | 1 | power | rare | Whenever you lose HP to your own cards: Deal 4 damage to ALL enemies. Gain 3 Barrier. |
 | Hot Brass | 1 | power | rare | Whenever a card is consumed: Gain 2 Barrier. Sharpen 1 (Old Twelve Gauge gains 1 damage). |
-| Spray and Pray | 2 | attack | rare | Deal 4 (+1 per 2 card created this fight) damage to ALL enemies. |
-| Mean Drunk | 1 | power | rare | Whenever you lose HP to your own cards: Apply 1 Might. |
+| Spray and Pray | 2 | attack | rare | Deal 4 (+1 per 4 card created this fight) damage to ALL enemies. |
+| Mean Drunk | 2 | power | rare | Whenever you lose HP to your own cards: Apply 1 Might. |
 | One More Round | 3 | power | legendary | At the start of your turn: Add 3 Buckshot Shells to your hand. Heal 3. |
 | The Glass Palace | 3 | power | legendary | At the start of your turn: Gain 6 Barrier. Gain Barrier equal to 20% of your missing HP. |
 
@@ -961,7 +961,7 @@ Tokens (made by other cards):
 | Buckshot Shell | 0 | attack | common | Deal 4 damage to ALL enemies. Consume. |
 | Old Twelve Gauge | 1 | attack | common | Deal 5 (+1 per point of sharpening) damage to ALL enemies. Hold. |
 
-## Mire, the Gravewarden (gloomfen, 76 HP)
+## Mire, the Gravewarden (gloomfen, 86 HP)
 
 A warden of the drowned dead. Starts with a Bone Thrall. Curses enemies with Fate until the end comes for them.
 

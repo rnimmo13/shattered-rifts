@@ -374,14 +374,12 @@ export const KP: CardDef[] = [
     barrier(6),
     status('thorns', 2),
   ]),
-  p('common', 'splinters', 'Splinters', 'attack', 1, 'foe', [
-    scaled(dmg(3), per('thorns', 2)),
-  ]),
+  p('common', 'splinters', 'Splinters', 'attack', 1, 'foe', [scaled(dmg(3), per('thorns', 2))]),
   p('uncommon', 'glass-underfoot', 'Glass Underfoot', 'power', 1, 'none', [
     on('turnStart', [status('thorns', 2)]),
   ]),
   p('rare', 'glass-jaw', 'Glass Jaw', 'power', 1, 'none', [
-    on('loseHp', [dmg(6, 'allFoes'), barrier(4)]),
+    on('loseHp', [dmg(4, 'allFoes'), barrier(3)]),
   ]),
 
   // --- Shells (more) ---
@@ -394,7 +392,7 @@ export const KP: CardDef[] = [
     on('exhaust', [barrier(2), forge('old-twelve-gauge', 1)]),
   ]),
   p('rare', 'spray-and-pray', 'Spray and Pray', 'attack', 2, 'none', [
-    scaled(dmg(4, 'allFoes'), per('created', 0.5)),
+    scaled(dmg(4, 'allFoes'), per('created', 0.25)),
   ]),
 
   // --- liquid courage (more) ---
@@ -404,7 +402,5 @@ export const KP: CardDef[] = [
   p('uncommon', 'bar-tab', 'Bar Tab', 'skill', 0, 'none', [draw(2), manaNext(-1)], {
     exhaust: true,
   }),
-  p('rare', 'mean-drunk', 'Mean Drunk', 'power', 1, 'none', [
-    on('loseHp', [status('might', 1)]),
-  ]),
+  p('rare', 'mean-drunk', 'Mean Drunk', 'power', 2, 'none', [on('loseHp', [status('might', 1)])]),
 ];

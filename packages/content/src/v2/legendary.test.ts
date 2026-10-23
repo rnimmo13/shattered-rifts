@@ -48,8 +48,8 @@ describe('legendary effects', () => {
 
   it('The Last Toll puts 25 Fate on every enemy', () => {
     const s = play('mire', 'the-last-toll');
-    // 25 from the card, plus Mire's Grave Chill trait (3)
-    for (const u of s.sides.b.units) expect(u.statuses.doom).toBe(28);
+    // 25 from the card, plus Mire's Grave Chill trait (4)
+    for (const u of s.sides.b.units) expect(u.statuses.doom).toBe(29);
   });
 
   it('The Drowned King summons the king and gives every friend Might', () => {

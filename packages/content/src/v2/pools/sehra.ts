@@ -246,7 +246,7 @@ export const SEHRA: CardDef[] = [
     { trigger: { on: 'hpLost', min: 5 } },
   ),
   s('rare', 'blood-on-the-sand', 'Blood on the Sand', 'power', 1, 'none', [
-    on('stance', [lose(2), status('vigor', 3)], { stance: 'wrath' }),
+    on('stance', [lose(2), status('vigor', 2)], { stance: 'wrath' }),
   ]),
   s('rare', 'ashes-of-restraint', 'Ashes of Restraint', 'attack', 2, 'foe', [
     scaled(dmg(6), per('exhausted', 3)),
@@ -301,7 +301,7 @@ export const SEHRA: CardDef[] = [
     scaled(dmg(5), per('mantra', 1)),
     scry(2),
   ]),
-  s('uncommon', 'faith-kept', 'Faith Kept', 'skill', 0, 'none', [status('mantra', 2)], {
+  s('uncommon', 'faith-kept', 'Faith Kept', 'skill', 1, 'none', [status('mantra', 2)], {
     retain: true,
     onExhaust: [status('mantra', 3)],
   }),

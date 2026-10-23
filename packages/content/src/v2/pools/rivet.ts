@@ -117,6 +117,7 @@ export const RIVET: CardDef[] = [
   ]),
   r('common', 'rapid-prototype', 'Rapid Prototype', 'summon', 0, 'none', [summon('micro-drone')], {
     ethereal: true,
+    exhaust: true,
   }),
   r('uncommon', 'mob-rule', 'Mob Rule', 'attack', 2, 'none', [
     scaled(dmg(5, 'allFoes'), per('allies', 3)),
