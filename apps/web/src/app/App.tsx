@@ -1,6 +1,7 @@
 import { Suspense, lazy, useEffect, useState } from 'react';
 import { BuildBadge } from '../ui/BuildBadge';
 import { TooltipLayer } from '../ui/Tooltip';
+import { CardLibrary } from '../fight/CardLibrary';
 import { LearnScreen } from './LearnScreen';
 import { TitleScreen } from './TitleScreen';
 
@@ -41,6 +42,7 @@ function Screens({ hash }: { hash: string }) {
     );
   }
   if (hash === '#/learn') return <LearnScreen />;
+  if (hash === '#/cards') return <CardLibrary />;
   if (hash === '#/fight') {
     return (
       <Suspense fallback={<div className="loading">Opening the rift…</div>}>

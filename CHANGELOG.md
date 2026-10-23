@@ -5,6 +5,7 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **Card library** (title screen, or #/cards): every card in the game in the grimoire, with search, character, type and rarity filters, and a switch between base cards, upgraded cards or both.
 - **Rarity and upgrades you can read at a glance.** The name banner, the frame ring and the word on the type line (BASIC · COMMON · UNCOMMON · RARE · LEGENDARY) wear the rarity colour (silver, blue, gold, orange), and an upgraded card has a green name and a green UPGRADED ribbon.
 - **Grimoire:** every copy of a card is its own card (no more stacked numbers), the book is laid out from the box it sits in so the pages no longer overlap, and the starting deck in the Sanctum shows large cards.
 - **Bigger cards where you read them.** The grimoire (deck builder, deck view, piles) fills the window with cards up to 280 px wide, the merchant, rewards and starting-deck cards are about 40% larger, and the hover preview (including the upgraded version when you pick a card to upgrade) is 330 px.
