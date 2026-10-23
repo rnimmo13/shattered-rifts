@@ -123,7 +123,7 @@ describe('the run', () => {
       const r = fresh(h, 's');
       expect(r.deck).toEqual(RIFTWALKERS[h].starter);
       expect(r.hp).toBe(RIFTWALKERS[h].hero.maxHp);
-      expect(r.resolve).toBe(3);
+      expect(r.resolve).toBe(2);
       expect(r.phase).toBe('map');
       expect(availableNodes(r).every((n) => n.floor === 1)).toBe(true);
     }
@@ -140,7 +140,7 @@ describe('the run', () => {
       hpPct: 68,
       dmgPct: 68,
     });
-    expect(newRun('maren', 'hard', 'hard').resolve).toBe(2);
+    expect(newRun('maren', 'hard', 'hard').resolve).toBe(1);
     expect(parseRun(JSON.stringify({ ...e, difficulty: undefined }))?.difficulty).toBe('easy');
     expect(parseRun(JSON.stringify({ ...e, difficulty: 'brutal' }))).toBeNull();
   });
@@ -169,7 +169,7 @@ describe('the run', () => {
   it('HP carries over after a win, and a loss costs Resolve but not HP', () => {
     let r = enterNode(fresh('maren', 'hp'), availableNodes(fresh('maren', 'hp'))[0]!.id);
     const lost = finishDuel(r, false);
-    expect(lost.resolve).toBe(2);
+    expect(lost.resolve).toBe(1);
     expect(lost.hp).toBe(r.hp);
     expect(lost.phase).toBe('duel');
     expect(duelPlan(lost)?.seed).not.toBe(duelPlan(r)?.seed); // a different shuffle on retry
@@ -181,7 +181,7 @@ describe('the run', () => {
 
   it('collapses at 0 Resolve', () => {
     let r = enterNode(fresh('vesper', 'c'), availableNodes(fresh('vesper', 'c'))[0]!.id);
-    for (let i = 0; i < 3; i++) r = finishDuel(r, false);
+    for (let i = 0; i < 2; i++) r = finishDuel(r, false);
     expect(r.phase).toBe('collapsed');
   });
 
@@ -387,7 +387,7 @@ describe('the other rooms and the rules around them', () => {
     if (!el) return; // this seed's stage 1 has no elite
     const run: RunState = { ...base, hp: 40, phase: 'duel', at: el.id, context: { nodeId: el.id } };
     expect(finishDuel(run, true, 40).hp).toBe(40 + Math.ceil(76 * 0.1));
-    expect(finishDuel(run, false).resolve).toBe(1);
+    expect(finishDuel(run, false).resolve).toBe(0);
   });
 
   it('the copy limit counts a card and its upgrade together', () => {

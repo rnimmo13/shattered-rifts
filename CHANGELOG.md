@@ -5,6 +5,7 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **Normal is tougher: 2 Resolve and about a third of runs clear** (Hard: 1 Resolve, one lost fight ends the run; Easy is unchanged). A lost duel costs 1 Resolve; a lost Elite or Warden costs 2.
 - **Difficulty: Easy / Normal / Hard** (Normal is the default now). Easy is relaxed (weaker enemies, 5 Resolve, a few shards), Normal is the intended game, Hard has tougher enemies and only 2 Resolve. Enemies also get tougher as a run goes deeper (stage 1 is gentle, stage 5 is the real test).
 - **Balance pass.** Snares that cancel an attack cost more or hit softer (Mirror Veil, Silencing Snare, Perfect Trap, Booby-Trapped Window...), the strongest defence cards were trimmed (Maren, Ilvane's Ward rune, KP), the weakest cards and characters were lifted, hero HP was evened out. See docs/BALANCE.md. Version 0.3.0.
 - **Version 0.2.0**: the build label now reads v0.2.0 (new characters KP, traits, art pass, grimoire, legendaries, Mana tools).

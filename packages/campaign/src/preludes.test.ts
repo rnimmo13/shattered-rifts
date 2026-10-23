@@ -114,7 +114,7 @@ describe('what each effect does', () => {
     expect(healed.hp).toBe(10 + Math.ceil(base.maxHp * 0.3));
     expect(take(offering([{ k: 'shards', n: 90 }])).shards).toBe(base.shards + 90);
     const low = { ...offering([{ k: 'resolve', n: 2 }]), resolve: 1 };
-    expect(take(low).resolve).toBe(3);
+    expect(take(low).resolve).toBe(2);
   });
 
   it('cards come from your own pool at the rarity promised', () => {

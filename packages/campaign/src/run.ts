@@ -42,7 +42,7 @@ function need(cond: unknown, msg: string): asserts cond {
   if (!cond) throw new RunError(msg);
 }
 
-export const MAX_RESOLVE = 3;
+export const MAX_RESOLVE = 2;
 
 /**
  * Difficulty settings (percent of the designed enemy HP and damage, on top of the per-stage ramp in STAGE_SCALE). Normal is
@@ -63,18 +63,19 @@ export const DIFFICULTY: Record<
   },
   normal: {
     label: 'Normal',
-    blurb: 'The intended game: 3 Resolve, and the Wardens are real fights.',
-    hpPct: 115,
-    dmgPct: 110,
-    resolve: MAX_RESOLVE,
+    blurb: 'The intended game: 2 Resolve, and the Wardens are real fights.',
+    hpPct: 117,
+    dmgPct: 111,
+    resolve: 2,
     shards: 0,
   },
   hard: {
     label: 'Hard',
-    blurb: 'Tougher, harder-hitting enemies and only 2 Resolve.',
-    hpPct: 125,
-    dmgPct: 118,
-    resolve: 2,
+    blurb:
+      'Tougher, harder-hitting enemies and only 1 Resolve: lose one fight and the run is over.',
+    hpPct: 128,
+    dmgPct: 120,
+    resolve: 1,
     shards: 0,
   },
 };

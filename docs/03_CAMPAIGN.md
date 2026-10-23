@@ -39,7 +39,7 @@ and a **Sigil**: a starting passive that gives every run an identity from turn 1
 > **Update (DECISIONS #106):** every run opens on **The Threshold** (3 blessings and 1 bargain), and every stage and new loop opens on a **Waymark** (a rest, two blessings, sometimes a bargain), before the map appears.
 
 ```
-Choose character ──► RUN at Rift Tier I (fresh 20-card starter, 3 Resolve)
+Choose character ──► RUN at Rift Tier I (fresh 20-card starter, 2 Resolve on Normal: see DIFFICULTY)
    Stage 1 ─ realm A  (first run: the character's own realm)
    Stage 2 ─ realm B
    Stage 3 ─ realm C      (A–C: Aurelion / Nexus-9 / Wyldmaw in seeded order)
@@ -70,7 +70,7 @@ and merge, generated from the run seed. Stage 5 is a single floor (Shrine or Mer
 
 ### 2.2 Resolve (run lives)
 Duels always start at full Essence. Run tension comes from **Resolve**:
-- A run starts with **3 Resolve**.
+- A run starts with **2 Resolve** on Normal (Easy 5, Hard 1; DECISIONS #118). A lost duel costs 1, a lost Elite or Warden costs 2, so one lost Elite or Warden ends a Normal run.
 - Losing a duel costs 1 (an Elite or Warden costs 2). You **retry the same node** with a fresh shuffle.
 - Clearing a loop and choosing Continue restores **+1 Resolve** (max 3). From Tier VIII on, it restores 0.
 - At 0 Resolve: **Rift Collapse**. The run deck is lost. You still keep XP, mastery progress, cosmetics found and
