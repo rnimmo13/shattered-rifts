@@ -153,4 +153,10 @@ export const VESPER: CardDef[] = [
     exhaust: true,
   }),
   v('rare', 'long-game', 'The Long Game', 'power', 2, 'none', [on('turnStart', [draw(1)])]),
+  v('uncommon', 'spare-traps', 'Spare Traps', 'skill', 0, 'none', [addTo('trip-line'), draw(1)], {
+    exhaust: true,
+  }),
+  v('rare', 'gleeful-trapsmith', 'Gleeful Trapsmith', 'power', 1, 'none', [
+    on('play', [dmg(4, 'allFoes')], { filter: 'snare' }),
+  ]),
 ];

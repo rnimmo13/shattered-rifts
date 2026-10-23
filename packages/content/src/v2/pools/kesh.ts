@@ -109,4 +109,8 @@ export const KESH: CardDef[] = [
     exhaustN(9),
     scaled(dmg(0), per('exhausted', 2)),
   ]),
+  k('uncommon', 'gnarltooth-trap', 'Gnarltooth Trap', 'snare', 1, 'none', [
+    dmg(6, 'attacker'),
+    status('might', 1, 'allFriends'),
+  ], { trigger: { on: 'attacked' } }),
 ];

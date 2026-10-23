@@ -96,4 +96,7 @@ export const ASTRA: CardDef[] = [
   a('uncommon', 'ursa', 'Ursa', 'power', 1, 'none', [on('turnEnd', [barrier(3)])]),
   a('rare', 'cassiopeia', 'Cassiopeia', 'power', 2, 'none', [on('play', [stars(1)], { filter: 'attack' })]),
   a('rare', 'gemini', 'Gemini', 'power', 3, 'none', [on('turnStart', [draw(1), stars(1)])]),
+  a('uncommon', 'lumen-trap', 'Lumen Trap', 'snare', 1, 'none', [stars(2), dmg(6, 'allFoes')], {
+    trigger: { on: 'foeTurn' },
+  }),
 ];

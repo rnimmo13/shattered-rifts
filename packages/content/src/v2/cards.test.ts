@@ -167,6 +167,15 @@ describe('pool shape (docs/09_ROSTER.md §1)', () => {
     }
   });
 
+  it('Snares are a shared tool: everyone can have a few, Vesper has by far the most', () => {
+    const own = (h: string) => cards.filter((c) => c.hero === h && c.kind === 'snare' && !c.id.endsWith('+')).length;
+    const counts = HEROES.map((h) => [h, own(h)] as const);
+    for (const [h, n] of counts) expect(n, `${h} snares`).toBeGreaterThanOrEqual(h === 'vesper' ? 10 : 1);
+    const others = Math.max(...counts.filter(([h]) => h !== 'vesper').map(([, n]) => n));
+    expect(own('vesper')).toBeGreaterThanOrEqual(others * 2);
+    expect(own('neutral')).toBeGreaterThanOrEqual(2);
+  });
+
   it('shared tools show up in several pools (draw, Barrier, Scry, Exhaust)', () => {
     const count = (pred: (c: CardDef) => boolean) =>
       new Set(cards.filter((c) => c.hero !== 'neutral' && pred(c)).map((c) => c.hero)).size;

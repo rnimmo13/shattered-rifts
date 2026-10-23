@@ -27,7 +27,7 @@ deck takes one and a half of them. Our pools were ~16 cards and one lane each. T
 | **Drones** and Assemble | Rivet | |
 | **Pack** buffs | Kesh | |
 | **Thorns** and Barrier-scaling | Maren | Barrier is shared; Thorns is Maren's |
-| **Snares** (face-down, auto-springing) | Vesper | Maren has retaliation Snares; Rivet has two |
+| **Snares** (face-down, auto-springing) | Vesper gets the most (14, with payoffs for setting them) | **Shared toolkit** like Might or Consume: every deck has a trap or two in its own flavour (Maren 4, Rivet 2, Quill 2 incl. a Seared needle, Kesh, Ilvane, Sehra, Astra 1 each) and Neutral has 2. Enforced by `cards.test.ts` |
 | **Foresee** | Vesper, Sehra, Astra | a Neutral common |
 | **Consume payoffs** | Kesh (Feast lane) | Neutral Consume-on-play is common |
 

@@ -88,4 +88,8 @@ export const SEHRA: CardDef[] = [
   s('rare', 'daily-rite', 'Daily Rite', 'power', 1, 'none', [on('turnStart', [status('mantra', 2)])]),
   s('rare', 'rise-radiant', 'Rise Radiant', 'skill', 2, 'none', [stance('radiant')], { exhaust: true }),
   s('uncommon', 'martyrs-vow', "Martyr's Vow", 'skill', 0, 'none', [lose(3), status('mantra', 3)]),
+  s('uncommon', 'poised-riposte', 'Poised Riposte', 'snare', 1, 'none', [
+    dmg(9, 'attacker'),
+    stance('wrath'),
+  ], { trigger: { on: 'attacked' } }),
 ];

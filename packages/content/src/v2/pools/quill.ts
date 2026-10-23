@@ -129,4 +129,12 @@ export const QUILL: CardDef[] = [
     scaled({ op: 'damage', amount: 7, to: 'target' }, per('discarded', 1, undefined, 'hits')),
   ]),
   q('rare', 'lingering-step', 'Lingering Step', 'power', 1, 'none', [on('play', [barrier(1)])]),
+  q('common', 'poisoned-needle', 'Poisoned Needle', 'snare', 1, 'none', [
+    dmg(3, 'attacker'),
+    status('seared', 4, 'attacker'),
+  ], { trigger: { on: 'attacked' } }),
+  q('uncommon', 'knife-in-the-dark', 'Knife in the Dark', 'snare', 1, 'none', [
+    dmg(5, 'attacker'),
+    addTo('sleeve-knife', 2),
+  ], { trigger: { on: 'foeDefends' } }),
 ];

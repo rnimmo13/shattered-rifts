@@ -132,4 +132,7 @@ export const ILVANE: CardDef[] = [
     { op: 'evoke', times: 0, scale: per('x') },
   ], { x: true }),
   i('rare', 'glyph-engine', 'Glyph Engine', 'power', 2, 'none', [on('turnStart', [channel('spark')])]),
+  i('uncommon', 'glyph-trap', 'Glyph Trap', 'snare', 1, 'none', [dmg(5, 'attacker'), channel('ward')], {
+    trigger: { on: 'attacked' },
+  }),
 ];

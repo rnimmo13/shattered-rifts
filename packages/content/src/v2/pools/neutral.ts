@@ -60,6 +60,14 @@ export const NEUTRAL: CardDef[] = [
   }),
   n('uncommon', 'cull-the-hand', 'Cull the Hand', 'skill', 1, 'none', [exhaustN(1), draw(2)]),
   n('rare', 'rift-resonance', 'Rift Resonance', 'power', 2, 'none', [status('might', 2)]),
+  n('common', 'pitfall', 'Hidden Pitfall', 'snare', 1, 'none', [dmg(7, 'attacker')], {
+    trigger: { on: 'attacked' },
+  }),
+  n('common', 'alarm-bell', 'Alarm Bell', 'snare', 1, 'none', [
+    dmg(6, 'attacker'),
+    status('faltering', 2, 'attacker'),
+    barrier(4),
+  ], { trigger: { on: 'foeSummons' } }),
 ];
 
 // Warden signature cards: one set per Warden, offered as the Warden's Gift. Any Riftwalker can take them.
