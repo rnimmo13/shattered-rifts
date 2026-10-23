@@ -98,19 +98,25 @@ export function MapView(props: {
   onEnter: (id: string) => void;
 }) {
   const { map } = props;
-  // fill the screen: the spacing grows with the window
-  const COL_W = Math.max(150, Math.min(290, Math.floor((window.innerWidth * 0.84) / map.floors)));
+  // fill the screen: the spacing grows with the window. PAD is the room left and right of the first and last floor, so the
+  // map sits dead centre and a hovered node's glow is never cut off.
+  const PAD = 90;
+  const gaps = Math.max(1, map.floors - 1);
+  const COL_W = Math.max(
+    150,
+    Math.min(290, Math.floor((window.innerWidth * 0.9 - 2 * PAD) / gaps)),
+  );
   const ROW_H = Math.max(130, Math.min(200, Math.floor(window.innerHeight * 0.22)));
   const rows = Math.max(
     ...map.nodes.map((n) => map.nodes.filter((m) => m.floor === n.floor).length),
   );
-  const W = map.floors * COL_W + 60;
+  const W = gaps * COL_W + 2 * PAD;
   const H = rows * ROW_H + 40;
   const pos = new Map<string, { x: number; y: number }>();
   for (let f = 1; f <= map.floors; f++) {
     const col = map.nodes.filter((n) => n.floor === f);
     col.forEach((n, i) => {
-      pos.set(n.id, { x: 50 + (f - 1) * COL_W, y: ((i + 1) / (col.length + 1)) * H });
+      pos.set(n.id, { x: PAD + (f - 1) * COL_W, y: ((i + 1) / (col.length + 1)) * H });
     });
   }
   return (

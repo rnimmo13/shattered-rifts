@@ -260,7 +260,8 @@ function front(g: G, b: Box, acc: Accessory[], trim: string, badge?: string): vo
         break;
       case 'shield':
         g.save();
-        g.translate(b.x0 + 4, b.y0 + hgt * 0.62);
+        // held in front of the figure's left side, so the whole shield stays on the canvas even when the figure fills it
+        g.translate(Math.max(b.x0 + 46, 50), b.y0 + hgt * 0.62);
         poly(g, '#14182e', [
           [-44, -52],
           [44, -52],

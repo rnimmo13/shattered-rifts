@@ -216,6 +216,9 @@ export default function RunScreen() {
                     onClick={() => {
                       setConfirmForfeit(false);
                       reportResult(false);
+                      // the fight restarts, so say plainly that the forfeit counted
+                      if (runRef.current?.phase === 'duel')
+                        setNotice('You forfeited: Resolve was spent and the fight starts again.');
                     }}
                   >
                     <span>Forfeit</span>
@@ -226,6 +229,9 @@ export default function RunScreen() {
                 </div>
               </div>
             </div>
+          )}
+          {confirmAbandon && (
+            <AbandonDialog onConfirm={leaveRun} onCancel={() => setConfirmAbandon(false)} />
           )}
           <FightView
             key={plan.seed}
@@ -245,9 +251,17 @@ export default function RunScreen() {
             title={`${encounter(plan.encounterId).name} · Stage ${run.stage}${floorLabel(run) && ` · ${floorLabel(run)}`}`}
             exitLabel="Forfeit"
             topExtra={
-              <button className="btn btn--small btn--ghost" onClick={() => setShowMap(true)}>
-                <span>View map</span>
-              </button>
+              <>
+                <button className="btn btn--small btn--ghost" onClick={() => setShowMap(true)}>
+                  <span>View map</span>
+                </button>
+                <button
+                  className="btn btn--small btn--ghost"
+                  onClick={() => setConfirmAbandon(true)}
+                >
+                  <span>Abandon run</span>
+                </button>
+              </>
             }
             // there is no "leave" in a campaign fight: giving up counts as a loss
             onExit={() => setConfirmForfeit(true)}
@@ -279,22 +293,29 @@ export default function RunScreen() {
         <DeckModal deck={run.deck} title="Your deck" onClose={() => setShowDeck(false)} />
       )}
       {confirmAbandon && (
-        <div className="modal" role="alertdialog" aria-label="Abandon this run?">
-          <div className="modal__panel">
-            <h2 className="modal__title">Abandon this run?</h2>
-            <p className="modal__hint">Your deck and progress in this run will be lost.</p>
-            <div className="modal__row">
-              <button className="btn" onClick={leaveRun}>
-                <span>Abandon</span>
-              </button>
-              <button className="btn btn--ghost" onClick={() => setConfirmAbandon(false)}>
-                <span>Keep playing</span>
-              </button>
-            </div>
-          </div>
-        </div>
+        <AbandonDialog onConfirm={leaveRun} onCancel={() => setConfirmAbandon(false)} />
       )}
     </main>
+  );
+}
+
+/** "Abandon this run?": the whole run is thrown away, so it asks first. */
+function AbandonDialog(props: { onConfirm: () => void; onCancel: () => void }) {
+  return (
+    <div className="modal" role="alertdialog" aria-label="Abandon this run?">
+      <div className="modal__panel">
+        <h2 className="modal__title">Abandon this run?</h2>
+        <p className="modal__hint">Your deck and progress in this run will be lost.</p>
+        <div className="modal__row">
+          <button className="btn" onClick={props.onConfirm}>
+            <span>Abandon</span>
+          </button>
+          <button className="btn btn--ghost" onClick={props.onCancel}>
+            <span>Keep playing</span>
+          </button>
+        </div>
+      </div>
+    </div>
   );
 }
 

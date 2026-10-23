@@ -220,7 +220,10 @@
 .mapwrap {
   max-width: 100%;
   overflow-x: auto;
-  padding: 1rem 0.5rem 2rem;
+  /* room for the hover glow and the labels under the nodes, so nothing is clipped */
+  padding: 2rem 1rem 3rem;
+  display: grid;
+  justify-content: safe center;
 }
 .map {
   position: relative;
