@@ -1248,3 +1248,13 @@
 .picker__trait b {
   color: var(--c-gold-light);
 }
+
+.shop__hold {
+  font-size: 0.9rem;
+}
+.shop__item.is-onhold {
+  opacity: 0.8;
+}
+.shop__item.is-onhold .pick__badge {
+  background: var(--c-cyan);
+}

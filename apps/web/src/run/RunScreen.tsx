@@ -12,6 +12,7 @@ import {
   bank,
   buyBoon,
   buyCard,
+  holdCard,
   buyPotion,
   buyRemoval,
   chooseCard,
@@ -456,6 +457,7 @@ function Body(props: {
         <MerchantView
           run={run}
           onBuy={(i) => act((r) => buyCard(r, i))}
+          onHold={(i) => act((r) => holdCard(r, i))}
           onBuyBoon={() => act((r) => buyBoon(r))}
           onBuyPotion={(i) => act((r) => buyPotion(r, i))}
           onRemove={(card) => act((r) => buyRemoval(r, card))}

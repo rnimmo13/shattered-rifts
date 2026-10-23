@@ -213,6 +213,12 @@ export function enterNode(run: RunState, nodeId: string): RunState {
       const items: MerchantItem[] = offerCards(r.rng, r.character, r.deck, 'elite', 4, r.luck).map(
         (cardId) => ({ cardId, price: priceOf(cardId), sold: false }),
       );
+      // a card you put on hold earlier is waiting for you, at the price you were promised
+      if (r.held) {
+        if (canAdd(r.deck, r.held.cardId))
+          items.unshift({ cardId: r.held.cardId, price: r.held.price, sold: false, held: true });
+        else delete r.held;
+      }
       // now and then an ancestral card is on the table, at a price
       const ancestors = ancestralPool(r.deck);
       if (
@@ -621,6 +627,30 @@ export function takeShrine(run: RunState, choice: ShrineChoice): RunState {
   return r;
 }
 
+/** Putting a merchant's card on hold: pay this share of its price now... */
+export const HOLD_DEPOSIT = 0.2;
+/** ...and it waits at the next merchant for this share of its price (so holding it costs 90% in all). */
+export const HOLD_LATER = 0.7;
+
+/** Put a card the merchant is selling on hold: pay a deposit now, and buy it for less at your next merchant. One card at a time. */
+export function holdCard(run: RunState, index: number): RunState {
+  need(run.phase === 'merchant' && run.context?.merchant, 'You are not at a merchant');
+  const r = clone(run);
+  const m = (r.context as NonNullable<RunState['context']>).merchant as NonNullable<
+    NonNullable<RunState['context']>['merchant']
+  >;
+  const item = m.items[index];
+  need(item && !item.sold && !item.onHold, 'That cannot be put on hold');
+  need(!item.held, 'That card is already on hold for you');
+  need(!r.held, 'You already have a card on hold');
+  const deposit = Math.ceil(item.price * HOLD_DEPOSIT);
+  need(r.shards >= deposit, 'Not enough shards for the deposit');
+  r.shards -= deposit;
+  r.held = { cardId: item.cardId, price: Math.ceil(item.price * HOLD_LATER) };
+  item.onHold = true;
+  return r;
+}
+
 // ---- merchant -----------------------------------------------------------------------------------------
 export function buyCard(run: RunState, index: number): RunState {
   need(run.phase === 'merchant' && run.context?.merchant, 'You are not at a merchant');
@@ -629,12 +659,14 @@ export function buyCard(run: RunState, index: number): RunState {
     NonNullable<RunState['context']>['merchant']
   >;
   const item = m.items[index];
-  need(item && !item.sold, 'That is not for sale');
+  need(item && !item.sold && !item.onHold, 'That is not for sale');
   need(r.shards >= item.price, 'Not enough shards');
   need(canAdd(r.deck, item.cardId), 'That card would break the deck rules');
   r.shards -= item.price;
   item.sold = true;
   r.deck.push(item.cardId);
+  // buying the card you put on hold ends the hold
+  if (item.held) delete r.held;
   return r;
 }
 

@@ -51,6 +51,10 @@ export interface MerchantItem {
   cardId: string;
   price: number;
   sold: boolean;
+  /** a card you put on hold at an earlier visit, back for the reduced price you were promised */
+  held?: boolean;
+  /** you put this card on hold at this visit: it will be waiting at the next merchant */
+  onHold?: boolean;
 }
 
 export interface EventOption {
@@ -161,6 +165,8 @@ export interface RunState {
   resolve: number;
   maxResolve: number;
   deck: string[];
+  /** a merchant card put on hold (deposit paid): it is for sale again, cheaper, at the next merchant */
+  held?: { cardId: string; price: number };
   shards: number;
   /** Run passives (Boons) are part of the design but not built yet. */
   boons: string[];

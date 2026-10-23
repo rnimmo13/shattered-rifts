@@ -3,7 +3,14 @@
 import { useMemo, useState } from 'react';
 import type { CardDef } from '@sr/combat';
 import { COMBAT_DB, V2_DECK_RULES } from '@sr/content/v2';
-import { REST_HEAL, upgradable, type EventOption, type RunState } from '@sr/campaign';
+import {
+  HOLD_DEPOSIT,
+  HOLD_LATER,
+  REST_HEAL,
+  upgradable,
+  type EventOption,
+  type RunState,
+} from '@sr/campaign';
 import { FightCard } from '../fight/FightCard';
 import { CardHover } from '../fight/CardHover';
 import { Grimoire } from '../fight/Grimoire';
@@ -253,6 +260,7 @@ function ShopRow(props: {
 export function MerchantView(props: {
   run: RunState;
   onBuy: (index: number) => void;
+  onHold: (index: number) => void;
   onBuyBoon: () => void;
   onBuyPotion: (index: number) => void;
   onRemove: (card: string) => void;
@@ -280,24 +288,49 @@ export function MerchantView(props: {
         <h3 className="shop__h">Cards</h3>
         <div className="shop__cards">
           {m.items.map((it, i) => (
-            <div key={i} className={`shop__item${it.sold ? ' is-sold' : ''}`}>
+            <div
+              key={i}
+              className={`shop__item${it.sold ? ' is-sold' : ''}${it.onHold ? ' is-onhold' : ''}`}
+            >
               <Pickable
                 id={it.cardId}
                 width={270}
                 onHover={setHover}
                 preview
-                badge={it.sold ? 'SOLD' : ''}
+                badge={it.sold ? 'SOLD' : it.onHold ? 'ON HOLD' : it.held ? 'HELD FOR YOU' : ''}
               />
               <div className="shop__price">
                 <span aria-hidden>◈</span> {it.price}
               </div>
               <button
                 className="btn btn--small shop__buy"
-                disabled={it.sold || shards < it.price}
+                disabled={it.sold || it.onHold || shards < it.price}
                 onClick={() => props.onBuy(i)}
               >
-                <span>{it.sold ? 'Sold' : shards < it.price ? 'Too expensive' : 'Buy'}</span>
+                <span>
+                  {it.sold
+                    ? 'Sold'
+                    : it.onHold
+                      ? 'On hold'
+                      : shards < it.price
+                        ? 'Too expensive'
+                        : 'Buy'}
+                </span>
               </button>
+              {!it.sold && !it.onHold && !it.held && (
+                <button
+                  className="btn btn--small btn--ghost shop__hold"
+                  disabled={!!props.run.held || shards < Math.ceil(it.price * HOLD_DEPOSIT)}
+                  onClick={() => props.onHold(i)}
+                  title={`Pay ${Math.ceil(it.price * HOLD_DEPOSIT)} shards now to keep this card for your next merchant at ${Math.ceil(it.price * HOLD_LATER)} shards. The deposit is not refunded. One card at a time.`}
+                >
+                  <span>
+                    {props.run.held
+                      ? 'A card is already on hold'
+                      : `Hold for later (${Math.ceil(it.price * HOLD_DEPOSIT)})`}
+                  </span>
+                </button>
+              )}
             </div>
           ))}
         </div>
