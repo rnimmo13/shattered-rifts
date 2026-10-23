@@ -29,7 +29,7 @@
   margin: 0;
   font-family: var(--font-display);
   font-weight: 700;
-  font-size: 0.8rem;
+  font-size: 0.96rem;
   letter-spacing: 0.28em;
   text-transform: uppercase;
   color: var(--c-gold-light);
@@ -127,13 +127,13 @@
 .toggle__label {
   font-family: var(--font-display);
   font-weight: 700;
-  font-size: 0.88rem;
+  font-size: 1.06rem;
   letter-spacing: 0.06em;
   color: var(--c-ivory);
 }
 
 .toggle__hint {
-  font-size: 0.74rem;
+  font-size: 0.9rem;
   color: var(--c-text-dim);
 }
 
@@ -182,7 +182,7 @@
   margin: 0;
   padding: 0.3rem 0.7rem;
   border-radius: 8px;
-  font-size: 0.78rem;
+  font-size: 0.94rem;
   letter-spacing: 0.08em;
   color: var(--c-cyan-glow);
   background: rgb(4 5 11 / 0.7);
@@ -257,7 +257,7 @@
   border-radius: 999px;
   font-family: var(--font-display);
   font-weight: 700;
-  font-size: 0.85rem;
+  font-size: 1.02rem;
   letter-spacing: 0.08em;
   color: var(--c-gold-pale);
   background: rgb(8 10 20 / 0.85);
@@ -293,7 +293,7 @@
   margin: 0;
   font-family: var(--font-display);
   font-weight: 700;
-  font-size: 0.72rem;
+  font-size: 0.9rem;
   letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--c-gold-light);

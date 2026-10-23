@@ -53,7 +53,7 @@
 }
 .fight__title span {
   color: var(--c-text-dim);
-  font-size: 0.85rem;
+  font-size: 1.02rem;
 }
 .fight__opts {
   display: flex;
@@ -84,7 +84,7 @@
 }
 .plate__name {
   font-family: var(--font-display);
-  font-size: 0.78rem;
+  font-size: 0.94rem;
   letter-spacing: 0.08em;
   color: var(--c-ivory);
   text-shadow: 0 2px 6px #000;
@@ -121,7 +121,7 @@
   inset: 0;
   display: grid;
   place-items: center;
-  font-size: 0.74rem;
+  font-size: 0.9rem;
   font-weight: 700;
   text-shadow: 0 1px 3px #000;
 }
@@ -133,7 +133,7 @@
   padding: 0 0.45rem;
   display: grid;
   place-items: center;
-  font-size: 0.74rem;
+  font-size: 0.9rem;
   font-weight: 800;
   color: #041018;
   background: linear-gradient(180deg, var(--c-cyan-glow), var(--c-cyan));
@@ -152,7 +152,7 @@
   gap: 0.2rem;
   padding: 0.05rem 0.4rem;
   border-radius: 999px;
-  font-size: 0.74rem;
+  font-size: 0.9rem;
   background: rgb(4 5 11 / 0.85);
   border: 1px solid rgb(255 255 255 / 0.2);
   pointer-events: auto;
@@ -201,12 +201,12 @@
   text-shadow: 0 2px 4px #000;
 }
 .intent__num small {
-  font-size: 0.8rem;
+  font-size: 0.96rem;
   margin-left: 0.1rem;
   opacity: 0.85;
 }
 .intent__name {
-  font-size: 0.66rem;
+  font-size: 0.9rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--c-text-dim);
@@ -448,7 +448,7 @@
   color: #04202c;
 }
 .fight__mana small {
-  font-size: 0.8rem;
+  font-size: 0.96rem;
   color: #04202c;
   font-weight: 700;
 }
@@ -467,7 +467,7 @@
   border: 1px solid var(--c-gold-dark);
   color: var(--c-ivory);
   font: inherit;
-  font-size: 0.85rem;
+  font-size: 1.02rem;
   cursor: pointer;
 }
 .pile b {
@@ -505,7 +505,7 @@
   align-items: center;
 }
 .fight__end kbd {
-  font-size: 0.7rem;
+  font-size: 0.9rem;
   padding: 0.05rem 0.4rem;
   border-radius: 5px;
   border: 1px solid rgb(255 255 255 / 0.3);
@@ -638,7 +638,7 @@
   border-radius: 10px;
   background: linear-gradient(160deg, rgb(31 48 104 / 0.95), rgb(8 10 20 / 0.95));
   border: 1px solid var(--c-gold-dark);
-  font-size: 0.7rem;
+  font-size: 0.9rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   line-height: 1.1;
@@ -680,7 +680,7 @@
   background: rgb(8 10 20 / 0.92);
   border: 1px solid var(--c-gold-dark);
   z-index: 45;
-  font-size: 0.85rem;
+  font-size: 1.02rem;
   line-height: 1.35;
 }
 .fight__tips p {
@@ -715,7 +715,7 @@
   border-radius: 10px;
   background: rgb(8 10 20 / 0.96);
   border: 1px solid var(--c-gold-dark);
-  font-size: 0.8rem;
+  font-size: 0.96rem;
   line-height: 1.35;
   white-space: normal;
   text-align: left;
@@ -744,7 +744,7 @@
 }
 .fight__beltLabel {
   font-family: var(--font-display);
-  font-size: 0.68rem;
+  font-size: 0.9rem;
   letter-spacing: 0.2em;
   text-transform: uppercase;
   color: #8ff0b4;
@@ -791,7 +791,7 @@
 }
 .potionbtn small {
   max-width: 4.3rem;
-  font-size: 0.62rem;
+  font-size: 0.9rem;
   line-height: 1.1;
   letter-spacing: 0.03em;
   text-align: center;
@@ -857,7 +857,7 @@
   border-radius: 999px;
   background: #0a0620;
   border: 1px solid #a6f4ff;
-  font-size: 0.7rem;
+  font-size: 0.9rem;
   line-height: 1.1rem;
   text-align: center;
 }
@@ -905,7 +905,7 @@
   background: rgb(10 12 28 / 0.82);
   border: 1px solid var(--c-gold-dark);
   color: var(--c-gold-light);
-  font-size: 0.78rem;
+  font-size: 0.94rem;
   letter-spacing: 0.04em;
 }
 
@@ -916,7 +916,7 @@
 .fight__modalBody h3 small {
   margin-left: 0.8rem;
   font-family: var(--font-body, inherit);
-  font-size: 0.85rem;
+  font-size: 1.02rem;
   font-weight: 400;
   color: var(--c-text-dim);
   letter-spacing: 0;
@@ -987,7 +987,7 @@
   color: #3a2706;
 }
 .fight__lumen small {
-  font-size: 0.55rem;
+  font-size: 0.9rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   font-weight: 800;
@@ -1030,7 +1030,7 @@
 }
 .fight__tip p {
   margin: 0;
-  font-size: 0.88rem;
+  font-size: 1.06rem;
   line-height: 1.4;
   color: var(--c-ivory);
 }
@@ -1048,7 +1048,7 @@
 .snarerow__label {
   position: absolute;
   font-family: var(--font-display);
-  font-size: 0.7rem;
+  font-size: 0.9rem;
   letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--c-violet-glow);
@@ -1087,7 +1087,7 @@
   filter: drop-shadow(0 0 6px rgb(190 150 255 / 0.9));
 }
 .snaretile small {
-  font-size: 0.56rem;
+  font-size: 0.9rem;
   line-height: 1;
   letter-spacing: 0.04em;
   text-transform: uppercase;
@@ -1117,4 +1117,80 @@
   .snaretile {
     animation: none;
   }
+}
+
+/* readable plates: names, HP and statuses are what you read the whole fight */
+.plate__name {
+  font-size: 1.1rem;
+  letter-spacing: 0.06em;
+}
+.plate {
+  gap: 0.3rem;
+}
+.bar {
+  height: 1.7rem;
+  border-width: 2px;
+}
+.bar__text {
+  font-size: 1.1rem;
+  font-weight: 800;
+}
+.bar__barrier {
+  font-size: 1.05rem;
+  padding: 0 0.6rem;
+}
+.chips {
+  gap: 0.35rem;
+  min-height: 1.8rem;
+}
+.chip {
+  gap: 0.3rem;
+  padding: 0.15rem 0.6rem;
+  font-size: 1.05rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+.intent__name {
+  font-size: 0.85rem;
+}
+.intent__num {
+  font-size: 1.6rem;
+}
+.intent__num small {
+  font-size: 1rem;
+}
+/* the Snare tiles sit under the hand so a hovered card is never covered */
+.snarerow {
+  z-index: 15;
+}
+
+/* statuses: big icons with the number beside them, tinted so a buff and a debuff are different at a glance */
+.chips {
+  gap: 0.45rem;
+  min-height: 2.6rem;
+}
+.chip {
+  gap: 0.3rem;
+  padding: 0.15rem 0.7rem 0.15rem 0.5rem;
+  min-height: 2.5rem;
+  font-size: 1.9rem;
+  line-height: 1;
+  border-width: 2px;
+  box-shadow: 0 2px 8px rgb(0 0 0 / 0.6);
+}
+.chip b {
+  font-size: 1.45rem;
+  font-weight: 800;
+  font-family: var(--font-display);
+  text-shadow: 0 2px 3px #000;
+}
+.chip--good {
+  color: #ffe9a0;
+  background: linear-gradient(180deg, rgb(120 90 20 / 0.85), rgb(30 24 8 / 0.9));
+  border-color: #e8c14a;
+}
+.chip--bad {
+  color: #ffb0bd;
+  background: linear-gradient(180deg, rgb(130 24 44 / 0.88), rgb(34 6 12 / 0.92));
+  border-color: #ff5a78;
 }

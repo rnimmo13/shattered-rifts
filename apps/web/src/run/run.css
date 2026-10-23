@@ -36,7 +36,7 @@
   color: var(--c-gold-light);
 }
 .runbar__who span {
-  font-size: 0.8rem;
+  font-size: 0.96rem;
   color: var(--c-text-dim);
 }
 .runbar__stats {
@@ -70,7 +70,7 @@
 .resolve em {
   margin-left: 0.5rem;
   font-style: normal;
-  font-size: 0.75rem;
+  font-size: 0.9rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--c-text-dim);
@@ -302,7 +302,7 @@
   left: 50%;
   translate: -50% 0;
   width: 9rem;
-  font-size: 0.72rem;
+  font-size: 0.9rem;
   line-height: 1.15;
   letter-spacing: 0.04em;
   color: var(--c-text-dim);
@@ -362,7 +362,7 @@
 }
 .mapnode__label {
   width: 10.5rem;
-  font-size: 0.85rem;
+  font-size: 1.02rem;
   color: var(--c-ivory);
   opacity: 0.85;
   text-shadow: 0 1px 4px rgb(0 0 0 / 0.9);
@@ -375,7 +375,7 @@
   margin: 0;
   padding: 0;
   list-style: none;
-  font-size: 0.85rem;
+  font-size: 1.02rem;
   color: var(--c-text-dim);
 }
 .maplegend__item {
@@ -436,7 +436,7 @@
 }
 .setup__note {
   margin: 0;
-  font-size: 0.85rem;
+  font-size: 1.02rem;
   color: var(--c-text-dim);
 }
 .setup--wide .setup__select {
@@ -491,7 +491,7 @@
   line-height: 1.2;
 }
 .picker__realm {
-  font-size: 0.72rem;
+  font-size: 0.9rem;
   letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--c-cyan-glow);
@@ -534,7 +534,7 @@
 }
 .picker__deckname {
   margin: 0;
-  font-size: 0.85rem;
+  font-size: 1.02rem;
   color: var(--c-text-dim);
 }
 .deckstrip {
@@ -675,7 +675,7 @@
 }
 .booncard em {
   color: var(--c-heal);
-  font-size: 0.85rem;
+  font-size: 1.02rem;
 }
 .shopboon {
   display: flex;
@@ -768,7 +768,7 @@
 .picker__lanes li {
   padding: 0.15rem 0.6rem;
   border-radius: 999px;
-  font-size: 0.78rem;
+  font-size: 0.94rem;
   letter-spacing: 0.03em;
   color: var(--c-gold-light);
   border: 1px solid var(--c-gold-dark);
@@ -791,7 +791,7 @@
 .picker__realm-name {
   margin: 0;
   font-family: var(--font-display);
-  font-size: 0.78rem;
+  font-size: 0.94rem;
   letter-spacing: 0.22em;
   text-transform: uppercase;
   color: var(--c-cyan-glow);
@@ -858,7 +858,7 @@
   justify-self: start;
   padding: 0.1rem 0.55rem;
   border-radius: 999px;
-  font-size: 0.7rem;
+  font-size: 0.9rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: #ffd0da;
@@ -894,7 +894,7 @@
 }
 .kit__sub {
   margin: 0;
-  font-size: 0.85rem;
+  font-size: 1.02rem;
   color: var(--c-text-dim);
 }
 .kit__cards {
@@ -952,7 +952,7 @@
   border-radius: 10px;
   background: rgb(8 10 22 / 0.95);
   border: 1px solid var(--c-gold-dark);
-  font-size: 0.82rem;
+  font-size: 0.98rem;
   line-height: 1.35;
   color: var(--c-ivory);
 }
@@ -1014,7 +1014,7 @@
 .shop__h {
   margin: 0;
   font-family: var(--font-display);
-  font-size: 0.8rem;
+  font-size: 0.96rem;
   letter-spacing: 0.22em;
   text-transform: uppercase;
   color: var(--c-gold-light);
@@ -1054,7 +1054,7 @@
 }
 .shop__note {
   margin: 0;
-  font-size: 0.8rem;
+  font-size: 0.96rem;
   color: var(--c-text-dim);
 }
 .shoprow {
@@ -1075,7 +1075,7 @@
   display: grid;
   gap: 0.1rem;
   min-width: 0;
-  font-size: 0.85rem;
+  font-size: 1.02rem;
   color: var(--c-ivory);
 }
 .shoprow__what b {
@@ -1085,7 +1085,7 @@
 .shoprow__what small {
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  font-size: 0.66rem;
+  font-size: 0.9rem;
   color: var(--c-text-dim);
 }
 .shoprow__price {
@@ -1125,7 +1125,7 @@
 .picker__role {
   padding: 0.05rem 0.6rem;
   border-radius: 999px;
-  font-size: 0.7rem;
+  font-size: 0.9rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--c-gold-light);
@@ -1135,7 +1135,7 @@
 .picker__titlerole {
   margin-left: 0.5rem;
   font-family: var(--font-body, inherit);
-  font-size: 0.8rem;
+  font-size: 0.96rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--c-cyan-glow);
@@ -1207,7 +1207,7 @@
   font-size: 1.5rem;
 }
 .boontoast__body i {
-  font-size: 0.78rem;
+  font-size: 0.94rem;
   color: var(--c-text-dim);
 }
 @keyframes boontoast-in {

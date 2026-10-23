@@ -108,7 +108,7 @@ a {
 
 .btn--small {
   padding: 0.45rem 1.2rem;
-  font-size: 0.78rem;
+  font-size: 0.94rem;
   letter-spacing: 0.2em;
 }
 
@@ -193,7 +193,7 @@ a {
 
 .title__eyebrow {
   margin: 0 0 0.6rem;
-  font-size: 0.8rem;
+  font-size: 0.96rem;
   letter-spacing: 0.34em;
   text-transform: uppercase;
   color: var(--c-text-dim);
@@ -242,7 +242,7 @@ a {
 .title__realm-name {
   margin: 0;
   font-family: var(--font-display);
-  font-size: 0.8rem;
+  font-size: 0.96rem;
   font-weight: 700;
   letter-spacing: 0.22em;
   text-transform: uppercase;
@@ -330,7 +330,7 @@ a {
 }
 
 .title__card-realm {
-  font-size: 0.82rem;
+  font-size: 0.98rem;
   color: var(--c-text-dim);
 }
 
@@ -344,13 +344,13 @@ a {
 
 .title__cta-note {
   margin: 0.5rem 0 0;
-  font-size: 0.88rem;
+  font-size: 1.06rem;
   color: var(--c-text-dim);
 }
 
 .title__footer {
   margin: 0;
-  font-size: 0.75rem;
+  font-size: 0.9rem;
   color: var(--c-text-dim);
 }
 
@@ -396,7 +396,7 @@ a {
   margin-bottom: 0.6rem;
 }
 .learn h3 {
-  font-size: 0.8rem;
+  font-size: 0.96rem;
   letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--c-cyan-glow);
@@ -456,11 +456,11 @@ body:has(.learn) {
   color: var(--c-ivory);
   pointer-events: none;
   text-align: left;
-  font-size: 0.88rem;
+  font-size: 1.06rem;
   line-height: 1.4;
 }
 .tip__kicker {
-  font-size: 0.68rem;
+  font-size: 0.9rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--c-text-dim);
@@ -496,7 +496,7 @@ body:has(.learn) {
 .tip__hint {
   margin-top: 0.15rem;
   color: var(--c-cyan-glow);
-  font-size: 0.78rem;
+  font-size: 0.94rem;
 }
 
 [data-tip] {
@@ -511,7 +511,7 @@ body:has(.learn) {
   justify-self: center;
   padding: 0.05rem 0.6rem;
   border-radius: 999px;
-  font-size: 0.7rem;
+  font-size: 0.9rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--accent);
@@ -520,7 +520,7 @@ body:has(.learn) {
 }
 .learn h4 small {
   margin-left: 0.5rem;
-  font-size: 0.7rem;
+  font-size: 0.9rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   font-weight: 400;
@@ -534,7 +534,7 @@ body:has(.learn) {
   bottom: 2px;
   z-index: 900;
   padding: 0 0.4rem;
-  font-size: 10px;
+  font-size: 13px;
   line-height: 14px;
   letter-spacing: 0.04em;
   color: rgb(214 220 255 / 0.55);
@@ -581,7 +581,7 @@ body:has(.learn) {
   top: -0.7rem;
   padding: 0.1rem 0.7rem;
   border-radius: 999px;
-  font-size: 0.7rem;
+  font-size: 0.9rem;
   letter-spacing: 0.16em;
   text-transform: uppercase;
   font-weight: 700;

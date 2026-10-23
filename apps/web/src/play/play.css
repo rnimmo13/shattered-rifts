@@ -41,7 +41,7 @@
 .setup__h {
   margin: 0 0 0.7rem;
   font-family: var(--font-display);
-  font-size: 0.85rem;
+  font-size: 1.02rem;
   letter-spacing: 0.24em;
   text-transform: uppercase;
   color: var(--c-gold-light);
@@ -82,7 +82,7 @@
   font-size: 1.05rem;
 }
 .setup__charRealm {
-  font-size: 0.75rem;
+  font-size: 0.9rem;
   letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--c-cyan-glow);
@@ -163,7 +163,7 @@
 .foe__counts {
   display: flex;
   gap: 0.9rem;
-  font-size: 0.78rem;
+  font-size: 0.94rem;
   color: var(--c-text-dim);
 }
 .foe__counts b {
@@ -220,7 +220,7 @@
 }
 .self__manaMax,
 .self__counts {
-  font-size: 0.78rem;
+  font-size: 0.94rem;
   color: var(--c-text-dim);
 }
 .self__counts {
@@ -379,7 +379,7 @@
   height: 100%;
   overflow-y: auto;
   padding: 0.5rem 0.7rem;
-  font-size: 0.78rem;
+  font-size: 0.94rem;
   color: var(--c-text-dim);
 }
 .log p {
@@ -414,7 +414,7 @@
 .respond__chain {
   margin: 0 0 0.6rem;
   padding-left: 1.2rem;
-  font-size: 0.85rem;
+  font-size: 1.02rem;
   color: var(--c-text-dim);
 }
 .respond__chain i {
@@ -445,14 +445,14 @@
   margin: 0;
   font-family: var(--font-display);
   font-weight: 700;
-  font-size: 0.8rem;
+  font-size: 0.96rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--c-gold-light);
 }
 .actionbar__hint {
   margin: 0.25rem 0 0.4rem;
-  font-size: 0.8rem;
+  font-size: 0.96rem;
   color: var(--c-text-dim);
 }
 .endturn {
@@ -602,7 +602,7 @@
   border-radius: 12px;
   background: rgb(8 10 20 / 0.92);
   border: 1px solid rgb(212 168 75 / 0.45);
-  font-size: 0.82rem;
+  font-size: 0.98rem;
   line-height: 1.35;
 }
 .inspect__title {
@@ -613,7 +613,7 @@
 .inspect__title i {
   font-style: normal;
   color: var(--c-text-dim);
-  font-size: 0.75rem;
+  font-size: 0.9rem;
 }
 .inspect__stats {
   display: flex;
@@ -699,7 +699,7 @@
   padding: 0.05rem 0.45rem;
   border-radius: 6px;
   border: 1px solid rgb(255 255 255 / 0.4);
-  font-size: 0.75rem;
+  font-size: 0.9rem;
   opacity: 0.85;
 }
 .endturn.is-pulsing {
@@ -728,7 +728,7 @@
 }
 .turnbox__hint {
   margin: 0;
-  font-size: 0.8rem;
+  font-size: 0.96rem;
   color: var(--c-gold-light);
 }
 
@@ -769,12 +769,12 @@
 }
 .targetbar span {
   color: var(--c-text-dim);
-  font-size: 0.85rem;
+  font-size: 1.02rem;
 }
 
 .respond__hint {
   margin: 0.5rem 0 0;
-  font-size: 0.8rem;
+  font-size: 0.96rem;
   color: var(--c-text-dim);
 }
 
@@ -959,7 +959,7 @@
   display: flex;
   gap: 1rem;
   margin: 0;
-  font-size: 0.78rem;
+  font-size: 0.94rem;
   color: var(--c-text-dim);
 }
 .self__counts b {
@@ -981,12 +981,12 @@
   box-shadow: var(--shadow-soft);
 }
 .turnpill b {
-  font-size: 0.85rem;
+  font-size: 1.02rem;
   color: var(--c-gold-light);
 }
 .turnpill i {
   font-style: normal;
-  font-size: 0.7rem;
+  font-size: 0.9rem;
   color: var(--c-text-dim);
   letter-spacing: 0.06em;
 }
@@ -1092,7 +1092,7 @@
   margin: 0;
   padding: 0.35rem 0.7rem;
   font-family: var(--font-display);
-  font-size: 0.68rem;
+  font-size: 0.9rem;
   letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--c-gold-light);
@@ -1199,7 +1199,7 @@
 .setup__realmName {
   margin: 0;
   font-family: var(--font-display);
-  font-size: 0.78rem;
+  font-size: 0.94rem;
   letter-spacing: 0.22em;
   text-transform: uppercase;
   color: var(--c-cyan-glow);
@@ -1226,7 +1226,7 @@
 .db__filters label {
   display: grid;
   gap: 0.15rem;
-  font-size: 0.75rem;
+  font-size: 0.9rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--c-text-dim);
@@ -1257,7 +1257,7 @@
 }
 .db__count {
   margin: 0.5rem 0 0.3rem;
-  font-size: 0.85rem;
+  font-size: 1.02rem;
   color: var(--c-text-dim);
 }
 .db__rows,
@@ -1301,7 +1301,7 @@
 .db__cost small {
   position: absolute;
   bottom: -0.55rem;
-  font-size: 0.6rem;
+  font-size: 0.9rem;
   color: #fff0b0;
   text-shadow: 0 0 4px #000;
 }
@@ -1311,11 +1311,11 @@
 }
 .db__name small {
   font-weight: 400;
-  font-size: 0.7rem;
+  font-size: 0.9rem;
   color: var(--c-text-dim);
 }
 .db__text {
-  font-size: 0.85rem;
+  font-size: 1.02rem;
   color: var(--c-ivory);
 }
 .db__ctl {
@@ -1376,11 +1376,11 @@
   justify-content: space-between;
   align-items: center;
   gap: 0.5rem;
-  font-size: 0.88rem;
+  font-size: 1.06rem;
 }
 .db__empty {
   margin: 0;
-  font-size: 0.85rem;
+  font-size: 1.02rem;
   color: var(--c-text-dim);
 }
 .db__chips {
@@ -1396,7 +1396,7 @@
   background: rgb(8 10 20 / 0.8);
   color: var(--c-ivory);
   font: inherit;
-  font-size: 0.82rem;
+  font-size: 0.98rem;
   cursor: pointer;
 }
 .db__chip.is-on {
@@ -1411,7 +1411,7 @@
 
 .setup__charRole {
   margin-left: 0.4rem;
-  font-size: 0.7rem;
+  font-size: 0.9rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   font-weight: 400;
@@ -1445,7 +1445,7 @@
 .grim__filters label {
   display: grid;
   gap: 0.15rem;
-  font-size: 0.72rem;
+  font-size: 0.9rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--c-text-dim);
@@ -1488,7 +1488,7 @@
   padding: 0.35rem 0.8rem 0.55rem;
   font: inherit;
   font-family: var(--font-display);
-  font-size: 0.74rem;
+  font-size: 0.9rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: #f4ead2;
@@ -1515,7 +1515,7 @@
   min-width: 1.3rem;
   padding: 0 0.3rem;
   border-radius: 999px;
-  font-size: 0.7rem;
+  font-size: 0.9rem;
   text-align: center;
   color: #231b0c;
   background: #f1d88f;
@@ -1653,7 +1653,7 @@
   padding-bottom: 0.3rem;
   text-align: center;
   font-family: var(--font-display);
-  font-size: 0.82rem;
+  font-size: 0.98rem;
   letter-spacing: 0.2em;
   text-transform: uppercase;
   color: #5a3a14;
@@ -1745,7 +1745,7 @@
   right: 0;
   text-align: center;
   font-family: var(--font-display);
-  font-size: 0.8rem;
+  font-size: 0.96rem;
   color: #6a4a1c;
 }
 .grim__empty {

@@ -32,7 +32,7 @@ export function UnitPlates({ items, targetable, hover, preview, heroId }: Plates
       {items.map(({ unit: u, x, y, h, w }) => {
         const pct = Math.max(0, Math.min(100, (u.hp / u.maxHp) * 100));
         const iv = u.intentView;
-        const width = Math.max(96, Math.min(190, w * 0.9));
+        const width = Math.max(165, Math.min(215, w * 1.05));
         const style: CSSProperties = { left: x, top: y + 10, width };
         const intentStyle: CSSProperties = { left: x, top: y - h - 8 };
         return (
