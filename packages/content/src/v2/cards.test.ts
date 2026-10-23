@@ -101,8 +101,14 @@ describe('every card plays', () => {
       s = after;
       // something visible happened beyond paying for it: drop the play itself and its Mana payment
       const fx = [...events];
-      fx.splice(fx.findIndex((e) => e.type === 'play'), 1);
-      fx.splice(fx.findIndex((e) => e.type === 'mana'), 1);
+      fx.splice(
+        fx.findIndex((e) => e.type === 'play'),
+        1,
+      );
+      fx.splice(
+        fx.findIndex((e) => e.type === 'mana'),
+        1,
+      );
       const stateChange =
         after.sides.a.runeSlots !== s0.sides.a.runeSlots ||
         after.sides.a.nextMana !== s0.sides.a.nextMana ||
@@ -113,7 +119,9 @@ describe('every card plays', () => {
       ).toBe(true);
       for (const side of ['a', 'b'] as const)
         for (const u of s.sides[side].units) {
-          expect(Number.isFinite(u.hp) && Number.isFinite(u.barrier), `${c.id} ${u.name}`).toBe(true);
+          expect(Number.isFinite(u.hp) && Number.isFinite(u.barrier), `${c.id} ${u.name}`).toBe(
+            true,
+          );
           expect(u.hp).toBeGreaterThan(0);
         }
       expect(cardText(db, c).length).toBeGreaterThan(3);
@@ -138,8 +146,14 @@ describe('second resources have a way in and a way out from the first hand', () 
         b: { enemies: ['squire'] },
       });
       const hand = state.sides.a.hand.map((c) => db.cards[c.card]!);
-      expect(hand.some((c) => c.effects.some((o) => o.op === 'stars' && o.amount > 0)), `seed ${i} makes`).toBe(true);
-      expect(hand.some((c) => (c.starCost ?? 0) > 0), `seed ${i} spends`).toBe(true);
+      expect(
+        hand.some((c) => c.effects.some((o) => o.op === 'stars' && o.amount > 0)),
+        `seed ${i} makes`,
+      ).toBe(true);
+      expect(
+        hand.some((c) => (c.starCost ?? 0) > 0),
+        `seed ${i} spends`,
+      ).toBe(true);
     }
   });
 });
@@ -210,6 +224,7 @@ describe('pool shape (docs/09_ROSTER.md §1)', () => {
     owns((c) => uses(c, 'stance'), 'sehra');
     owns((c) => uses(c, 'forge') || c.starCost !== undefined, 'astra');
     owns((c) => c.tags?.includes('knife') === true, 'quill');
+    owns((c) => c.tags?.includes('shell') === true, 'kp');
     owns(
       (c) =>
         c.effects.some((o) => o.op === 'status' && o.status === 'doom') ||
@@ -240,9 +255,11 @@ describe('pool shape (docs/09_ROSTER.md §1)', () => {
   });
 
   it('Snares are a shared tool: everyone can have a few, Vesper has by far the most', () => {
-    const own = (h: string) => cards.filter((c) => c.hero === h && c.kind === 'snare' && !c.id.endsWith('+')).length;
+    const own = (h: string) =>
+      cards.filter((c) => c.hero === h && c.kind === 'snare' && !c.id.endsWith('+')).length;
     const counts = HEROES.map((h) => [h, own(h)] as const);
-    for (const [h, n] of counts) expect(n, `${h} snares`).toBeGreaterThanOrEqual(h === 'vesper' ? 10 : 1);
+    for (const [h, n] of counts)
+      expect(n, `${h} snares`).toBeGreaterThanOrEqual(h === 'vesper' ? 10 : 1);
     const others = Math.max(...counts.filter(([h]) => h !== 'vesper').map(([, n]) => n));
     expect(own('vesper')).toBeGreaterThanOrEqual(others * 2);
     expect(own('neutral')).toBeGreaterThanOrEqual(2);

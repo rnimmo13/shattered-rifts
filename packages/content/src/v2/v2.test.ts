@@ -36,8 +36,20 @@ describe('Combat v2 content', () => {
       if (!c.upgrade) continue;
       const u = db.cards[c.upgrade]!;
       const same =
-        JSON.stringify({ e: c.effects, cost: c.cost, x: c.exhaust, d: c.onDiscard, o: c.onExhaust }) ===
-        JSON.stringify({ e: u.effects, cost: u.cost, x: u.exhaust, d: u.onDiscard, o: u.onExhaust });
+        JSON.stringify({
+          e: c.effects,
+          cost: c.cost,
+          x: c.exhaust,
+          d: c.onDiscard,
+          o: c.onExhaust,
+        }) ===
+        JSON.stringify({
+          e: u.effects,
+          cost: u.cost,
+          x: u.exhaust,
+          d: u.onDiscard,
+          o: u.onExhaust,
+        });
       expect(same, `${c.id} upgrade changes nothing`).toBe(false);
     }
   });

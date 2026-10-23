@@ -1140,3 +1140,10 @@
   text-transform: uppercase;
   color: var(--c-cyan-glow);
 }
+
+/* what a character says */
+.picker__quote {
+  margin: 0.2rem 0 0.6rem;
+  font-style: italic;
+  color: var(--c-gold-light);
+}

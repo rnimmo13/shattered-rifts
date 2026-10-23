@@ -22,6 +22,7 @@ const HERO: Record<string, [Archetype, Realm]> = {
   sehra: ['cleric', 'aurelion'],
   astra: ['mage', 'starfall'],
   mire: ['shade', 'gloomfen'],
+  kp: ['engineer', 'nexus'],
 };
 
 const UNIT: Record<string, [Archetype, Realm]> = {

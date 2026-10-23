@@ -10,7 +10,7 @@ import { ALLIES, ENEMY_UNITS } from './units';
 
 export type RealmId = 'aurelion' | 'nexus' | 'wyldmaw' | 'umbral' | 'starfall' | 'gloomfen';
 export type HeroId =
-  'maren' | 'rivet' | 'kesh' | 'vesper' | 'quill' | 'ilvane' | 'sehra' | 'astra' | 'mire';
+  'maren' | 'rivet' | 'kesh' | 'vesper' | 'quill' | 'ilvane' | 'sehra' | 'astra' | 'mire' | 'kp';
 
 export interface Riftwalker {
   hero: HeroDef;
@@ -23,6 +23,8 @@ export interface Riftwalker {
   lanes: [string, string, string];
   /** a few plain sentences on how this character plays (shown on the character screen and the Learn page) */
   howTo: string[];
+  /** things the character says (shown on the character screen, one at random) */
+  quotes?: string[];
 }
 
 const rep = (id: string, n: number): string[] => Array<string>(n).fill(id);
@@ -187,6 +189,38 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
       'Lumen is a second resource. Cards with a gold orb spend it; others gain it.',
       'You start with a Starforged Blade. Every Sharpen card makes every copy hit harder for the whole fight.',
       'Auras (your constellations) keep working until the fight ends.',
+    ],
+  },
+  kp: {
+    realm: 'nexus',
+    role: 'Drunkard',
+    hero: { id: 'kp', name: 'KP, the Homeless Drunk', maxHp: 88, mana: 3, handSize: 5 },
+    starter: [
+      ...rep('strike', 3),
+      ...rep('defend', 3),
+      ...rep('hammer-swing', 2),
+      'pane-up',
+      'bottle-tripwire',
+    ],
+    blurb:
+      'A short, fat, bald dwarf with a hammer, a sawed-off 12 gauge and a trolley of window panes. Booby traps, glass and buckshot.',
+    lanes: [
+      'Junk Traps: bottles and glass booby traps',
+      'Glass: Barrier and Thorns, then break it',
+      'Shells: 12 gauge buckshot that hits everyone',
+    ],
+    howTo: [
+      'Window panes give Barrier and Thorns: anything that hits you cuts itself. Some cards hit harder for each Thorns you have.',
+      'Shells are 0-cost attacks that hit EVERY enemy and are consumed. Load them, then fire them (Boomstick loves consumed cards).',
+      'Swigs heal and hit harder for a turn. KP has a few Snares, but he is not the trapper Vesper is.',
+    ],
+    quotes: [
+      '"I ain\'t homeless. I\'m between windows."',
+      '"This is a 12 gauge. That\'s how many friends I have."',
+      '"Mind the glass. Or don\'t. It\'s mostly insurance."',
+      '"I\'m not drunk. The floor is just very enthusiastic."',
+      '"Back off, I got a hammer and a bad attitude."',
+      '"Everybody\'s got a trolley full of problems. Mine\'s got wheels."',
     ],
   },
   mire: {

@@ -5,6 +5,7 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **KP, the Homeless Drunk** (Nexus-9, role Drunkard): a short, fat, bald dwarf with a hammer, a 12 gauge and a trolley of window panes. Lanes: Junk Traps (a few booby-trap Snares), Glass (Barrier and Thorns, then break it) and Shells (Buckshot Shells that hit every enemy, plus swigs and liquid courage). He says things. 42 cards including two legendaries. Art is a placeholder for now.
 - **Legendary cards.** 20 new one-of-a-kind cards (two per Riftwalker, two Neutral): build-arounds like The Last Oath, Deck of a Thousand Knives, The Last Toll and Rift Collapse. Max one copy per deck, never in a starting deck, found rarely: elite fights (about 1%), the Warden's Gift (sometimes), the merchant (260 shards) and a new "A Legend's Price" bargain; Card luck makes them likelier.
 - **Your deck, piles and starter decks are grimoires too** (run deck view, shrine upgrade/remove picks, the draw/discard/consume piles, the character picker). Rift Collapse costs 15 HP. A Warden may leave one extra legendary in its Gift.
 - **The practice deck builder is now a grimoire.** An open book with real card visuals, one ribbon bookmark per realm (plus Neutral, Warden gifts, Tokens), cards grouped by character and rarity. Click a card to add a copy; chosen cards glow with a count, with − / + under each. Search reads the whole book; hover for a big preview.

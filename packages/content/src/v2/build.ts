@@ -44,12 +44,12 @@ export const PREVENT: Op = { op: 'prevent' };
 
 // --- ops for the lanes (docs/09_ROSTER.md) --------------------------------------------------------------------------
 /** A scale: "+mult per metric". `of`: self (default) / the card's target / each unit hit. */
-export const per = (
-  by: Metric,
-  mult = 1,
-  of?: Scale['of'],
-  into?: Scale['into'],
-): Scale => ({ by, ...(mult !== 1 ? { mult } : {}), ...(of ? { of } : {}), ...(into ? { into } : {}) });
+export const per = (by: Metric, mult = 1, of?: Scale['of'], into?: Scale['into']): Scale => ({
+  by,
+  ...(mult !== 1 ? { mult } : {}),
+  ...(of ? { of } : {}),
+  ...(into ? { into } : {}),
+});
 /** Attach a scale to any op that has an amount. */
 export const scaled = <T extends Op>(o: T, scale: Scale): T => ({ ...o, scale });
 export const discard = (amount: number, mode: 'choose' | 'random' | 'any' = 'choose'): Op => ({
@@ -76,7 +76,11 @@ export const evoke = (count = 1, times = 1, keep = false): Op => ({
   ...(times !== 1 ? { times } : {}),
   ...(keep ? { keep } : {}),
 });
-export const forge = (cardId: string, amount: number): Op => ({ op: 'forge', card: cardId, amount });
+export const forge = (cardId: string, amount: number): Op => ({
+  op: 'forge',
+  card: cardId,
+  amount,
+});
 export const sacrifice: Op = { op: 'sacrifice' };
 export const manaNext = (amount: number): Op => ({ op: 'manaNext', amount });
 export const drawNext = (amount: number): Op => ({ op: 'drawNext', amount });
@@ -92,7 +96,10 @@ export const cheapen = (amount: number, scope: 'hand' | 'random'): Op => ({
   amount,
   scope,
 });
-export const copySelf = (to: 'hand' | 'discard' | 'draw' = 'discard'): Op => ({ op: 'copySelf', to });
+export const copySelf = (to: 'hand' | 'discard' | 'draw' = 'discard'): Op => ({
+  op: 'copySelf',
+  to,
+});
 /** Unblockable HP loss for the target that depends on the board (Cash In: its Seared). */
 export const loseHpScaled = (scale: Scale, to: Sel = 'target'): Op => ({
   op: 'loseHp',

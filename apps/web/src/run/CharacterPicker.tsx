@@ -1,6 +1,7 @@
 // Choose a Riftwalker: a row of crests, then the chosen character's playstyle and starter deck.
 // Used by the Sanctum (campaign).
 
+import { useState } from 'react';
 import { RIFTWALKERS, heroesByRealm, type HeroId } from '@sr/content/v2';
 import { DeckStrip } from './Pickers';
 import './run.css';
@@ -16,6 +17,9 @@ const REALM_NAME: Record<string, string> = {
 
 export function CharacterPicker(props: { value: HeroId; onChange: (id: HeroId) => void }) {
   const c = RIFTWALKERS[props.value];
+  // a line of their own; picking a character draws a new one
+  const [pick, setPick] = useState(0);
+  const quote = c.quotes?.[pick % c.quotes.length];
   return (
     <div className="picker">
       <div className="picker__realms" role="radiogroup" aria-label="Riftwalker">
@@ -31,7 +35,10 @@ export function CharacterPicker(props: { value: HeroId; onChange: (id: HeroId) =
                     role="radio"
                     aria-checked={props.value === id}
                     className={`picker__char realm--${x.realm}${props.value === id ? ' is-on' : ''}`}
-                    onClick={() => props.onChange(id)}
+                    onClick={() => {
+                      setPick(Math.floor(Math.random() * 1000));
+                      props.onChange(id);
+                    }}
                   >
                     <span className={`crest crest--${x.realm}`} aria-hidden>
                       <b>{x.hero.name.charAt(0)}</b>
@@ -53,6 +60,7 @@ export function CharacterPicker(props: { value: HeroId; onChange: (id: HeroId) =
             {c.hero.name} <small className="picker__titlerole">{c.role}</small>
           </h2>
           <p className="picker__style">{c.blurb}</p>
+          {quote && <p className="picker__quote">{quote}</p>}
           <ul className="picker__how" aria-label="How it works">
             {c.howTo.map((l) => (
               <li key={l}>{l}</li>
