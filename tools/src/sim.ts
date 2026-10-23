@@ -2,7 +2,8 @@
 // encounter. Win rate and average HP lost on a win, per Riftwalker.
 //
 //   pnpm sim                    starter decks, 40 fights each
-//   pnpm sim -- --n 100 --draft 8   add 8 random reward cards (seeded) to each deck first
+//   pnpm sim -- --n 100 --draft 8
+//   pnpm sim -- --hp 60 --dmg 55   Easy mode numbers (see DIFFICULTY in packages/campaign)   add 8 random reward cards (seeded) to each deck first
 
 import { applyAction, chooseAction, createCombat, heroOf } from '@sr/combat';
 import { COMBAT_DB as db, ENCOUNTERS, RIFTWALKERS, rewardPool, type HeroId } from '@sr/content/v2';
@@ -13,6 +14,8 @@ function arg(name: string, fallback: number): number {
 }
 const N = arg('n', 40);
 const DRAFT = arg('draft', 0);
+const HP = arg('hp', 100); // difficulty: percent of normal enemy HP
+const DMG = arg('dmg', 100); // difficulty: percent of normal enemy damage
 
 function deckFor(h: HeroId, seed: number): string[] {
   const deck = [...RIFTWALKERS[h].starter];
@@ -40,7 +43,7 @@ for (const e of ENCOUNTERS) {
       let { state } = createCombat(db, {
         seed: `${h}-${e.id}-${i}`,
         a: { hero: h, deck: deckFor(h, i) },
-        b: { enemies: e.units },
+        b: { enemies: e.units, hpPct: HP, dmgPct: DMG },
       });
       const maxHp = heroOf(state.sides.a)?.maxHp ?? 0;
       for (let t = 0; t < 800 && !state.winner; t++)

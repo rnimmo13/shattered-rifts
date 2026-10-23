@@ -17,6 +17,7 @@ export {
 } from './rewards';
 export {
   MAX_RESOLVE,
+  DIFFICULTY,
   REST_HEAL,
   RunError,
   upgradable,

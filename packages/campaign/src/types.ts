@@ -5,6 +5,8 @@
 import type { RngState } from '@sr/combat';
 import type { HeroId } from '@sr/content/v2';
 
+export type Difficulty = 'easy' | 'normal';
+
 export type NodeKind = 'duel' | 'elite' | 'event' | 'shrine' | 'merchant' | 'warden';
 
 export interface MapNode {
@@ -73,6 +75,8 @@ export interface RunState {
   v: 2;
   seed: string;
   character: HeroId;
+  /** The run's difficulty setting (see DIFFICULTY): easy while the game is being built and tested. */
+  difficulty: Difficulty;
   /** Rift Tier: loops cleared + 1. */
   tier: number;
   /** 1..5 */

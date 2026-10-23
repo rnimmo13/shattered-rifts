@@ -27,6 +27,7 @@ const newSeed = (): string =>
 
 export default function FightScreen() {
   const [hero, setHero] = useState<HeroId>('maren');
+  const [easy, setEasy] = useState(true);
   const [enc, setEnc] = useState<string>(ENCOUNTERS[0]?.id ?? '');
   const [setup, setSetup] = useState<{ cfg: CombatSetup; title: string } | null>(null);
 
@@ -88,6 +89,10 @@ export default function FightScreen() {
           </select>
         </label>
       </section>
+      <label className="setup__select">
+        <input type="checkbox" checked={easy} onChange={(e) => setEasy(e.target.checked)} /> Easy
+        mode (weaker enemies)
+      </label>
       <button
         className="btn btn--primary setup__go"
         onClick={() => {

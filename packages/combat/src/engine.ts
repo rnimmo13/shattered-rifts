@@ -9,7 +9,7 @@ import {
   MAX_SNARES,
   RulesError,
   other,
-  tierHp,
+  scaledEnemyHp,
   tierMight,
   clone,
   type Action,
@@ -101,6 +101,7 @@ export function modifiedDamage(base: number, attacker: Unit | null, target: Unit
   let n = base + (attacker ? stacks(attacker, 'might') : 0);
   if (attacker && stacks(attacker, 'faltering') > 0) n = Math.floor(n * 0.75);
   if (target && stacks(target, 'exposed') > 0) n = Math.floor(n * 1.5);
+  if (attacker && attacker.dmgPct !== 100) n = Math.floor((n * attacker.dmgPct) / 100);
   return Math.max(0, n);
 }
 
@@ -345,6 +346,7 @@ function makeUnit(r: Run, side: Side, d: UnitDef): Unit {
     pat: '',
     patCount: 0,
     lowPct: 100,
+    dmgPct: 100,
     lastMoves: [],
   };
 }
@@ -357,8 +359,9 @@ function spawn(r: Run, sd: SideState, defId: string, quiet = false): Unit | null
   const u = makeUnit(r, sd.id, d);
   const index = sd.units.length - (heroOf(sd) ? 1 : 0);
   sd.units.splice(index, 0, u);
-  if (sd.hero === null && r.s.tier > 1) {
-    u.maxHp = u.hp = Math.round(u.maxHp * tierHp(r.s.tier));
+  if (sd.hero === null) {
+    u.maxHp = u.hp = scaledEnemyHp(u.maxHp, r.s.tier, r.s.enemyHpPct);
+    u.dmgPct = r.s.enemyDmgPct;
     if (d.brain.kind === 'enemy' && tierMight(r.s.tier) > 0)
       u.statuses.might = (u.statuses.might ?? 0) + tierMight(r.s.tier);
   }
@@ -633,6 +636,7 @@ function buildHeroSide(r: Run, id: Side, h: HeroSetup): SideState {
     pat: '',
     patCount: 0,
     lowPct: 100,
+    dmgPct: 100,
     lastMoves: [],
   });
   r.s.sides[id] = sd;
@@ -659,6 +663,8 @@ export function createCombat(db: CombatDb, setup: CombatSetup): StepResult {
     rng: seedRng(setup.seed),
     mode: 'enemies' in setup.b ? 'pve' : 'pvp',
     tier: 'enemies' in setup.b ? Math.max(1, setup.b.tier ?? 1) : 1,
+    enemyHpPct: 'enemies' in setup.b ? Math.max(10, setup.b.hpPct ?? 100) : 100,
+    enemyDmgPct: 'enemies' in setup.b ? Math.max(10, setup.b.dmgPct ?? 100) : 100,
     turn: 0,
     active: 'a',
     sides: { a: emptySide('a'), b: emptySide('b') },

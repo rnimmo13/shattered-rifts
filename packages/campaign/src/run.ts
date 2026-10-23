@@ -8,7 +8,7 @@ import { seedRng, shuffle } from '@sr/combat';
 import { COMBAT_DB, RIFTWALKERS, V2_DECK_RULES, encounter, type HeroId } from '@sr/content/v2';
 import { generateStageMap, reachableNodes } from './mapgen';
 import { REMOVE_PRICE, canAdd, giftOffers, offerCards, priceOf } from './rewards';
-import type { EventOption, MapNode, MerchantItem, RunState, StageRealm } from './types';
+import type { Difficulty, EventOption, MapNode, MerchantItem, RunState, StageRealm } from './types';
 
 const clone = <T>(x: T): T => JSON.parse(JSON.stringify(x)) as T;
 
@@ -19,6 +19,18 @@ function need(cond: unknown, msg: string): asserts cond {
 }
 
 export const MAX_RESOLVE = 3;
+
+/**
+ * Difficulty settings. Easy is the default while the game is built and tested: enemies have 60% HP and hit for 55%, you have
+ * more Resolve and some shards to start. Change these numbers (and re-run `pnpm sim`) when it is time to balance.
+ */
+export const DIFFICULTY: Record<
+  Difficulty,
+  { label: string; hpPct: number; dmgPct: number; resolve: number; shards: number }
+> = {
+  easy: { label: 'Easy (for testing)', hpPct: 60, dmgPct: 55, resolve: 5, shards: 100 },
+  normal: { label: 'Normal', hpPct: 100, dmgPct: 100, resolve: MAX_RESOLVE, shards: 0 },
+};
 /** Fraction of max HP a shrine rest heals. */
 export const REST_HEAL = 0.35;
 
@@ -27,7 +39,7 @@ export function realmOfStage(run: Pick<RunState, 'stageRealms'>, stage: number):
   return stage === 4 ? 'umbral' : 'rift';
 }
 
-export function newRun(hero: HeroId, seed: string): RunState {
+export function newRun(hero: HeroId, seed: string, difficulty: Difficulty = 'easy'): RunState {
   const rng = seedRng(`run:${seed}`);
   const stageRealms = shuffle(rng, ['aurelion', 'nexus', 'wyldmaw'] as StageRealm[]);
   const map = generateStageMap(rng, 1, stageRealms[0] as StageRealm);
@@ -37,14 +49,15 @@ export function newRun(hero: HeroId, seed: string): RunState {
     v: 2,
     seed,
     character: hero,
+    difficulty,
     tier: 1,
     stage: 1,
     hp: rw.hero.maxHp,
     maxHp: rw.hero.maxHp,
-    resolve: MAX_RESOLVE,
-    maxResolve: MAX_RESOLVE,
+    resolve: DIFFICULTY[difficulty].resolve,
+    maxResolve: DIFFICULTY[difficulty].resolve,
     deck: [...rw.starter],
-    shards: 0,
+    shards: DIFFICULTY[difficulty].shards,
     boons: [],
     stageRealms,
     map,
@@ -138,6 +151,9 @@ export interface FightPlan {
   hp: number;
   maxHp: number;
   tier: number;
+  /** percent of normal enemy HP and damage (the difficulty setting) */
+  hpPct: number;
+  dmgPct: number;
   kind: MapNode['kind'];
   /** a seed that changes on each retry, so a lost fight is not replayed identically */
   seed: string;
@@ -156,6 +172,8 @@ export function duelPlan(run: RunState): FightPlan | null {
     hp: run.hp,
     maxHp: run.maxHp,
     tier: run.tier,
+    hpPct: DIFFICULTY[run.difficulty].hpPct,
+    dmgPct: DIFFICULTY[run.difficulty].dmgPct,
     kind: node.kind,
     seed: `${run.seed}:t${run.tier}:${node.id}:${run.stats.duelsLost}`,
   };

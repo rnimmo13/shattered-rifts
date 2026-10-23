@@ -5,6 +5,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { COMBAT_DB, RIFTWALKERS, encounter, type HeroId } from '@sr/content/v2';
 import {
+  DIFFICULTY,
   REALM_LABEL,
   RunError,
   availableNodes,
@@ -23,6 +24,7 @@ import {
   parseRun,
   realmOfStage,
   takeShrine,
+  type Difficulty,
   type RunState,
 } from '@sr/campaign';
 import { FightView } from '../fight/FightView';
@@ -105,7 +107,7 @@ export default function RunScreen() {
     [act],
   );
 
-  const startRun = (c: HeroId) => setRun(newRun(c, newSeed()));
+  const startRun = (c: HeroId, d: Difficulty) => setRun(newRun(c, newSeed(), d));
   const leaveRun = () => {
     clearSavedRun();
     setRun(null);
@@ -165,7 +167,7 @@ export default function RunScreen() {
             setup={{
               seed: plan.seed,
               a: { hero: run.character, deck: plan.deck, hp: plan.hp },
-              b: { enemies: plan.units, tier: plan.tier },
+              b: { enemies: plan.units, tier: plan.tier, hpPct: plan.hpPct, dmgPct: plan.dmgPct },
             }}
             title={encounter(plan.encounterId).name}
             exitLabel="Forfeit"
@@ -216,11 +218,12 @@ export default function RunScreen() {
 }
 
 function Sanctum(props: {
-  onStart: (c: HeroId) => void;
+  onStart: (c: HeroId, d: Difficulty) => void;
   onImport: (f: File | undefined) => void;
   notice: string | null;
 }) {
   const [pick, setPick] = useState<HeroId>('maren');
+  const [difficulty, setDifficulty] = useState<Difficulty>('easy');
   return (
     <main className="setup setup--wide">
       <a className="btn btn--small setup__back" href="#/">
@@ -241,7 +244,20 @@ function Sanctum(props: {
         </p>
       )}
       <div className="setup__actions">
-        <button className="btn btn--primary setup__go" onClick={() => props.onStart(pick)}>
+        <label className="setup__select">
+          <span className="sr-only">Difficulty</span>
+          <select value={difficulty} onChange={(e) => setDifficulty(e.target.value as Difficulty)}>
+            {(Object.keys(DIFFICULTY) as Difficulty[]).map((d) => (
+              <option key={d} value={d}>
+                {DIFFICULTY[d].label}
+              </option>
+            ))}
+          </select>
+        </label>
+        <button
+          className="btn btn--primary setup__go"
+          onClick={() => props.onStart(pick, difficulty)}
+        >
           <span>Begin the run</span>
         </button>
         <label className="btn btn--ghost">
@@ -254,7 +270,10 @@ function Sanctum(props: {
           />
         </label>
       </div>
-      <p className="setup__note">Early alpha: the difficulty is not tuned yet.</p>
+      <p className="setup__note">
+        Early alpha. Easy mode is on by default so the whole game can be tested quickly: enemies are
+        weaker and you start with extra Resolve and shards.
+      </p>
     </main>
   );
 }

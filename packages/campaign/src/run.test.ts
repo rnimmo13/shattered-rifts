@@ -29,6 +29,9 @@ import {
   type StageRealm,
 } from './index';
 
+const fresh = (h: HeroId, seed: string, d: 'easy' | 'normal' = 'normal'): RunState =>
+  newRun(h, seed, d);
+
 const HEROES = Object.keys(RIFTWALKERS) as HeroId[];
 
 describe('stage maps', () => {
@@ -92,7 +95,7 @@ describe('stage maps', () => {
 describe('rewards', () => {
   it('never offer a card the deck cannot take, and offer distinct cards', () => {
     for (const h of HEROES) {
-      const run = newRun(h, 'r');
+      const run = fresh(h, 'r');
       for (let i = 0; i < 80; i++) {
         const offers = offerCards(seedRng(`o${i}`), h, run.deck, i % 2 ? 'elite' : 'duel', 3);
         expect(offers).toHaveLength(3);
@@ -113,7 +116,7 @@ describe('rewards', () => {
 describe('the run', () => {
   it('starts as designed', () => {
     for (const h of HEROES) {
-      const r = newRun(h, 's');
+      const r = fresh(h, 's');
       expect(r.deck).toEqual(RIFTWALKERS[h].starter);
       expect(r.hp).toBe(RIFTWALKERS[h].hero.maxHp);
       expect(r.resolve).toBe(3);
@@ -122,16 +125,29 @@ describe('the run', () => {
     }
   });
 
+  it('easy is the default: weaker enemies, more Resolve, some shards', () => {
+    const e = newRun('maren', 'easy');
+    expect(e.difficulty).toBe('easy');
+    expect(e.resolve).toBe(5);
+    expect(e.shards).toBe(100);
+    expect(duelPlan(enterNode(e, availableNodes(e)[0]!.id))).toMatchObject({
+      hpPct: 60,
+      dmgPct: 55,
+    });
+    expect(parseRun(JSON.stringify({ ...e, difficulty: undefined }))?.difficulty).toBe('easy');
+    expect(parseRun(JSON.stringify({ ...e, difficulty: 'brutal' }))).toBeNull();
+  });
+
   it('is the same run for the same seed and never mutates what it is given', () => {
-    const a = newRun('kesh', 'seed-1');
+    const a = fresh('kesh', 'seed-1');
     const snapshot = JSON.stringify(a);
     enterNode(a, availableNodes(a)[0]!.id);
     expect(JSON.stringify(a)).toBe(snapshot);
-    expect(JSON.stringify(newRun('kesh', 'seed-1'))).toBe(snapshot);
+    expect(JSON.stringify(fresh('kesh', 'seed-1'))).toBe(snapshot);
   });
 
   it('rejects things the rules forbid', () => {
-    const r = newRun('rivet', 's');
+    const r = fresh('rivet', 's');
     expect(() => enterNode(r, 'nope')).toThrow(RunError);
     expect(() => finishDuel(r, true, 10)).toThrow(RunError);
     expect(() => chooseCard(r, null)).toThrow(RunError);
@@ -144,7 +160,7 @@ describe('the run', () => {
   });
 
   it('HP carries over after a win, and a loss costs Resolve but not HP', () => {
-    let r = enterNode(newRun('maren', 'hp'), availableNodes(newRun('maren', 'hp'))[0]!.id);
+    let r = enterNode(fresh('maren', 'hp'), availableNodes(fresh('maren', 'hp'))[0]!.id);
     const lost = finishDuel(r, false);
     expect(lost.resolve).toBe(2);
     expect(lost.hp).toBe(r.hp);
@@ -157,13 +173,13 @@ describe('the run', () => {
   });
 
   it('collapses at 0 Resolve', () => {
-    let r = enterNode(newRun('vesper', 'c'), availableNodes(newRun('vesper', 'c'))[0]!.id);
+    let r = enterNode(fresh('vesper', 'c'), availableNodes(fresh('vesper', 'c'))[0]!.id);
     for (let i = 0; i < 3; i++) r = finishDuel(r, false);
     expect(r.phase).toBe('collapsed');
   });
 
   it('shrines rest, upgrade and remove', () => {
-    const base = newRun('maren', 'shr');
+    const base = fresh('maren', 'shr');
     const shrineRun = (): RunState => ({
       ...base,
       hp: 30,
@@ -184,7 +200,7 @@ describe('the run', () => {
   });
 
   it('save and load round-trips, and damaged saves are refused', () => {
-    const r = newRun('rivet', 'save');
+    const r = fresh('rivet', 'save');
     expect(parseRun(serializeRun(r))).toEqual(r);
     expect(parseRun('not json')).toBeNull();
     expect(parseRun(JSON.stringify({ ...r, v: 1 }))).toBeNull();
@@ -196,7 +212,7 @@ describe('the run', () => {
 
 /** Play a whole run with the greedy bot: fight everything, take the first reward, rest at shrines. */
 function botRun(hero: HeroId, seed: string): { run: RunState; fights: number } {
-  let run = newRun(hero, seed);
+  let run = fresh(hero, seed);
   let fights = 0;
   for (let step = 0; step < 400; step++) {
     switch (run.phase) {
@@ -258,14 +274,14 @@ describe('a whole run, played by the bot', () => {
   });
 
   it('reachableNodes agrees with availableNodes at the start', () => {
-    const r = newRun('maren', 'z');
+    const r = fresh('maren', 'z');
     expect(reachableNodes(r.map, null, []).map((n) => n.id)).toEqual(
       availableNodes(r).map((n) => n.id),
     );
   });
 
   it('continuing a loop raises the tier and heals', () => {
-    const r = { ...newRun('maren', 'loop'), phase: 'loopCleared' as const, hp: 10 };
+    const r = { ...fresh('maren', 'loop'), phase: 'loopCleared' as const, hp: 10 };
     const c = continueLoop(r);
     expect(c.tier).toBe(2);
     expect(c.hp).toBe(10 + 40);
@@ -283,7 +299,7 @@ describe('the other rooms and the rules around them', () => {
   const nodeId = (r: RunState) => r.map.nodes[0]!.id;
 
   it('the merchant sells cards and one removal, and refuses what you cannot afford', () => {
-    const base = newRun('maren', 'shop');
+    const base = fresh('maren', 'shop');
     const card = offerCards(seedRng('shop'), 'maren', base.deck, 'duel', 1)[0]!;
     const shop = (shards: number): RunState => ({
       ...at(base, 'merchant', {
@@ -309,7 +325,7 @@ describe('the other rooms and the rules around them', () => {
   });
 
   it('events pay shards, heal, give the card, or do nothing', () => {
-    const base = { ...newRun('rivet', 'ev'), hp: 20 };
+    const base = { ...fresh('rivet', 'ev'), hp: 20 };
     const ev = at(base, 'event', {
       nodeId: nodeId(base),
       event: {
@@ -331,7 +347,7 @@ describe('the other rooms and the rules around them', () => {
   });
 
   it('a Warden win heals, restores Resolve and offers a rare gift that cannot be skipped', () => {
-    const base = newRun('maren', 'boss');
+    const base = fresh('maren', 'boss');
     const wardenNode = base.map.nodes.find((n) => n.kind === 'warden')!;
     const run: RunState = {
       ...base,
@@ -353,7 +369,7 @@ describe('the other rooms and the rules around them', () => {
   });
 
   it('elites heal a little, losing an elite costs 2 Resolve', () => {
-    const base = newRun('kesh', 'elite');
+    const base = fresh('kesh', 'elite');
     const el = base.map.nodes.find((n) => n.kind === 'elite');
     if (!el) return; // this seed's stage 1 has no elite
     const run: RunState = { ...base, hp: 40, phase: 'duel', at: el.id, context: { nodeId: el.id } };
@@ -367,15 +383,15 @@ describe('the other rooms and the rules around them', () => {
   });
 
   it('a save cannot smuggle in prototype keys', () => {
-    const r = newRun('maren', 'proto');
+    const r = fresh('maren', 'proto');
     expect(parseRun(JSON.stringify({ ...r, character: 'constructor' }))).toBeNull();
     expect(parseRun(JSON.stringify({ ...r, deck: ['toString', ...r.deck] }))).toBeNull();
   });
 
   it('Bank ends the run with the deck, Continue goes a tier deeper', () => {
-    const cleared: RunState = { ...newRun('vesper', 'end'), phase: 'loopCleared' };
+    const cleared: RunState = { ...fresh('vesper', 'end'), phase: 'loopCleared' };
     expect(bank(cleared).phase).toBe('banked');
     expect(continueLoop(cleared).tier).toBe(2);
-    expect(() => bank(newRun('vesper', 'end'))).toThrow(RunError);
+    expect(() => bank(fresh('vesper', 'end'))).toThrow(RunError);
   });
 });

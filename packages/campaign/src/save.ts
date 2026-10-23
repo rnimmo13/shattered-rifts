@@ -109,6 +109,9 @@ export function parseRun(text: string): RunState | null {
   if (typeof r.seed !== 'string') return null;
   if (typeof r.character !== 'string' || !Object.hasOwn(RIFTWALKERS, r.character)) return null;
   if (!isInt(r.maxHp, 1, 9999) || !isInt(r.hp, 1, r.maxHp)) return null;
+  // saves from before the difficulty setting were all played on Easy
+  if (r.difficulty === undefined) r.difficulty = 'easy';
+  if (r.difficulty !== 'easy' && r.difficulty !== 'normal') return null;
   if (!isInt(r.tier, 1, 99) || !isInt(r.stage, 1, 5)) return null;
   if (!isInt(r.maxResolve, 1, 9) || !isInt(r.resolve, 0, r.maxResolve)) return null;
   if (!isInt(r.shards, 0, 1_000_000)) return null;

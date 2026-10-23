@@ -4,7 +4,7 @@
 
 import {
   clone,
-  tierHp,
+  scaledEnemyHp,
   tierMight,
   type CombatDb,
   type CombatEvent,
@@ -18,13 +18,14 @@ function unitFromDef(
   id: string,
   defId: string,
   side: Side,
-  tier: number,
+  s: CombatState,
   hero: boolean,
 ): Unit {
   const d = db.units[defId];
   if (!d) throw new Error(`display: unknown unit "${defId}"`);
-  const scaled = !hero && tier > 1;
-  const hp = scaled ? Math.round(d.maxHp * tierHp(tier)) : d.maxHp;
+  const tier = s.tier;
+  const scaled = !hero;
+  const hp = scaled ? scaledEnemyHp(d.maxHp, tier, s.enemyHpPct) : d.maxHp;
   const statuses = { ...(d.statuses ?? {}) };
   if (scaled && d.brain.kind === 'enemy' && tierMight(tier) > 0)
     statuses.might = (statuses.might ?? 0) + tierMight(tier);
@@ -44,6 +45,7 @@ function unitFromDef(
     pat: '',
     patCount: 0,
     lowPct: 100,
+    dmgPct: scaled ? s.enemyDmgPct : 100,
     lastMoves: [],
   };
 }
@@ -155,7 +157,7 @@ export function reduceEvent(db: CombatDb, s: CombatState, e: CombatEvent): void 
     }
     case 'summon': {
       const sd = s.sides[e.side];
-      const u = unitFromDef(db, e.unit, e.def, e.side, s.tier, sd.hero !== null);
+      const u = unitFromDef(db, e.unit, e.def, e.side, s, sd.hero !== null);
       sd.units.splice(Math.min(e.index, sd.units.length), 0, u);
       return;
     }

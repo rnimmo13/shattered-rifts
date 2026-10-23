@@ -746,3 +746,18 @@ describe('rift tiers', () => {
     expect(slime.statuses.might).toBe(2);
   });
 });
+
+describe('difficulty percentages', () => {
+  it('scale enemy HP and attack damage, and the intent shows the scaled number', () => {
+    const { state } = createCombat(db, {
+      seed: 'diff',
+      a: { hero: 'knight', deck: SAMPLE_DECK },
+      b: { enemies: ['slime'], hpPct: 50, dmgPct: 50 },
+    });
+    const slime = state.sides.b.units[0] as Unit;
+    expect(slime.maxHp).toBe(7);
+    expect(viewFor(db, state, 'a').sides.b.units[0]?.intentView?.damage).toBe(3); // smack 6 -> 3
+    const after = end(state);
+    expect(hero(after.state).hp).toBe(60 - 3);
+  });
+});

@@ -171,6 +171,8 @@ export interface Unit {
   patCount: number;
   /** lowest HP% it has been at when choosing a move: phases only move forward, healing never undoes one */
   lowPct: number;
+  /** percent of normal attack damage this unit deals (enemies are scaled by the difficulty setting) */
+  dmgPct: number;
   lastMoves: string[];
 }
 
@@ -207,6 +209,9 @@ export interface CombatState {
   mode: 'pve' | 'pvp';
   /** Rift Tier of the enemies (1 = normal): each tier above 1 gives enemies +12% HP and +1 Might */
   tier: number;
+  /** difficulty: percent of normal enemy HP and attack damage (100 = normal) */
+  enemyHpPct: number;
+  enemyDmgPct: number;
   turn: number; // counts every turn taken, both sides
   active: Side;
   sides: Record<Side, SideState>;
@@ -221,6 +226,9 @@ export const MAX_HAND = 10;
 
 /** HP multiplier and Might for enemies at a Rift Tier. */
 export const tierHp = (tier: number): number => 1 + 0.12 * Math.max(0, tier - 1);
+/** Enemy HP after the Rift Tier and the difficulty setting. */
+export const scaledEnemyHp = (base: number, tier: number, hpPct: number): number =>
+  Math.max(1, Math.round(base * tierHp(tier) * (hpPct / 100)));
 export const tierMight = (tier: number): number => Math.min(6, Math.max(0, tier - 1));
 
 // --- setup -------------------------------------------------------------------------------------------------
@@ -236,7 +244,7 @@ export interface CombatSetup {
   seed: string;
   a: HeroSetup;
   /** PvE: a list of unit def ids. PvP: the second hero. */
-  b: { enemies: string[]; tier?: number } | HeroSetup;
+  b: { enemies: string[]; tier?: number; hpPct?: number; dmgPct?: number } | HeroSetup;
 }
 
 // --- actions & events ----------------------------------------------------------------------------------------
