@@ -6,7 +6,9 @@
 
 import { nextInt, seedRng, shuffle } from '@sr/combat';
 import { COMBAT_DB, RIFTWALKERS, V2_DECK_RULES, encounter, type HeroId } from '@sr/content/v2';
-import { generateStageMap, reachableNodes } from './mapgen';
+import { CROSSED_MERCHANT_CHANCE, generateStageMap, reachableNodes } from './mapgen';
+
+export { CROSSED_MERCHANT_CHANCE };
 import { makeKits } from './kits';
 import { rollEvent, resolveEvent } from './events';
 import { makePrelude } from './preludes';
@@ -67,8 +69,8 @@ export const DIFFICULTY: Record<
   normal: {
     label: 'Normal',
     blurb: 'The intended game: 2 Resolve, and the Wardens are real fights.',
-    hpPct: 117,
-    dmgPct: 111,
+    hpPct: 124,
+    dmgPct: 116,
     resolve: 2,
     shards: 0,
   },
@@ -112,7 +114,7 @@ export function newRun(
 ): RunState {
   const rng = seedRng(`run:${seed}`);
   const stageRealms = shuffle(rng, ['aurelion', 'nexus', 'wyldmaw'] as StageRealm[]);
-  const map = generateStageMap(rng, 1, stageRealms[0] as StageRealm);
+  const map = generateStageMap(rng, 1, stageRealms[0] as StageRealm, hero);
   const rw = RIFTWALKERS[hero]; // throws on an unknown hero
   need(rw, `Unknown Riftwalker ${hero}`);
   const run: RunState = {
@@ -211,11 +213,10 @@ export function enterNode(run: RunState, nodeId: string): RunState {
       r.phase = 'shrine';
       break;
     case 'merchant': {
-      // now and then the merchant is a stranger from another Riftwalker's world, selling only that Riftwalker's cards
-      const others = (Object.keys(RIFTWALKERS) as HeroId[]).filter((h) => h !== r.character);
+      // the map already said whether this merchant is a stranger from another Riftwalker's world
       const crossed =
-        nextInt(r.rng, 1000) < CROSSED_MERCHANT_CHANCE * 10
-          ? (others[nextInt(r.rng, others.length)] as HeroId)
+        node.crossed && node.crossed !== r.character && node.crossed in RIFTWALKERS
+          ? (node.crossed as HeroId)
           : undefined;
       // (a visitor's table is only that Riftwalker's own cards: no Neutral cards, no further crossings)
       let stock: string[];
@@ -462,7 +463,7 @@ export function nextStage(run: RunState): RunState {
   need(run.phase === 'stageClear', 'The stage is not cleared yet');
   const r = clone(run);
   r.stage += 1;
-  r.map = generateStageMap(r.rng, r.stage, realmOfStage(r, r.stage));
+  r.map = generateStageMap(r.rng, r.stage, realmOfStage(r, r.stage), r.character);
   r.cleared = [];
   r.at = null;
   openPrelude(r, 'stage');
@@ -597,9 +598,6 @@ export function takeShrine(run: RunState, choice: ShrineChoice): RunState {
   r.phase = 'map';
   return r;
 }
-
-/** Chance (percent) that a merchant is a stranger selling another Riftwalker's cards. */
-export const CROSSED_MERCHANT_CHANCE = 7.5;
 
 /** Putting a merchant's card on hold: pay this share of its price now... */
 export const HOLD_DEPOSIT = 0.2;
@@ -743,7 +741,7 @@ export function continueLoop(run: RunState): RunState {
   heal(r, r.maxHp * 0.5);
   r.stage = 1;
   r.stageRealms = shuffle(r.rng, ['aurelion', 'nexus', 'wyldmaw'] as StageRealm[]);
-  r.map = generateStageMap(r.rng, 1, r.stageRealms[0] as StageRealm);
+  r.map = generateStageMap(r.rng, 1, r.stageRealms[0] as StageRealm, r.character);
   r.cleared = [];
   r.at = null;
   openPrelude(r, 'stage');

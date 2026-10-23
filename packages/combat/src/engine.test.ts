@@ -230,8 +230,9 @@ describe('damage, barrier and statuses', () => {
     const s0 = start(['summoner']);
     foe(s0).statuses.seared = 3;
     const s1 = end(s0).state; // enemy turn start: 3 damage, seared 2
-    expect(foe(s1).hp).toBe(30 - 3);
-    expect(foe(s1).statuses.seared).toBe(2);
+    const summoner = s1.sides.b.units.find((u) => u.def === 'summoner') as Unit;
+    expect(summoner.hp).toBe(30 - 3);
+    expect(summoner.statuses.seared).toBe(2);
   });
 
   it('Stunned makes an enemy skip its action', () => {
@@ -282,7 +283,21 @@ describe('allies', () => {
     const e = end(s1);
     expect(types(e.events)).toContain('act');
     // drone hits the front enemy for 3 before the enemy turn
-    expect(e.state.sides.b.units[0]?.hp).toBe(30 - 3);
+    expect(e.state.sides.b.units.find((u) => u.def === 'summoner')?.hp).toBe(30 - 3);
+  });
+
+  it('enemies hit your minions before they hit you, even one summoned after the intent was chosen', () => {
+    const s1 = play(start(['slime'], ['call-drone']), 't0').state;
+    const c = clone(s1);
+    // the slime had chosen to hit the hero; the drone now stands in front
+    foe(c).intent = { move: 'smack', target: hero(c).id };
+    const ally = c.sides.a.units.find((u) => u.kind === 'ally');
+    const hp = ally?.hp ?? 0;
+    const heroHp = hero(c).hp;
+    const after = end(c).state;
+    expect(hero(after).hp).toBe(heroHp);
+    const hit = after.sides.a.units.find((u) => u.id === ally?.id);
+    expect(!hit || hit.hp + hit.barrier < hp + (ally?.barrier ?? 0)).toBe(true);
   });
 
   it('max three allies', () => {
@@ -390,8 +405,9 @@ describe('enemies and intents', () => {
     s = r.state;
     expect(s.sides.b.units).toHaveLength(2);
     expect(types(r.events)).toContain('summon');
-    expect(s.sides.b.units[1]?.intent).not.toBeNull();
-    expect(s.sides.b.units.map((u) => u.def)).toEqual(['summoner', 'slime']);
+    expect(s.sides.b.units[0]?.intent).not.toBeNull();
+    // the minion stands in front of its summoner
+    expect(s.sides.b.units.map((u) => u.def)).toEqual(['slime', 'summoner']);
   });
 
   it('phase patterns change below the HP threshold', () => {
@@ -467,7 +483,7 @@ describe('review fixes', () => {
   it('H1: a summoned enemy keeps the intent it chose when it arrived', () => {
     const s0 = start(['summoner']);
     const r = end(s0);
-    const slime = r.state.sides.b.units[1] as Unit;
+    const slime = r.state.sides.b.units[0] as Unit;
     expect(slime.def).toBe('slime');
     expect(slime.intent?.move).toBe('smack'); // its first move, not its second
     expect(r.events.filter((e) => e.type === 'intent' && e.unit === slime.id)).toHaveLength(1);

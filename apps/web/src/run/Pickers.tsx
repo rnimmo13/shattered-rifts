@@ -269,12 +269,12 @@ function ShopRow(props: {
   return (
     <div className={`shoprow${props.tone ? ` ${props.tone}` : ''}`}>
       <span className="shoprow__icon">{props.icon}</span>
-      <span className="shoprow__what">
+      <span className="shoprow__head">
         <b>{props.name}</b>
         <small>{props.kind}</small>
-        <span>{props.text}</span>
       </span>
       <span className="shoprow__price">{props.price === null ? '' : `${props.price}`}</span>
+      <p className="shoprow__text">{props.text}</p>
       <button
         className="btn btn--small shoprow__buy"
         disabled={props.disabled}

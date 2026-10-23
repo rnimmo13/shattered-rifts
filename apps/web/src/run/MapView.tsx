@@ -1,7 +1,8 @@
 // The stage map: floors run left to right, the Warden at the end. Click a glowing node to go there.
 
 import type { MapNode, NodeKind, StageMap } from '@sr/campaign';
-import { encounter } from '@sr/content/v2';
+import { RIFTWALKERS, encounter } from '@sr/content/v2';
+import { HeroIcon } from '../ui/HeroIcon';
 
 const KIND_LABEL: Record<NodeKind, string> = {
   duel: 'Duel',
@@ -78,6 +79,7 @@ function NodeIcon({ kind }: { kind: NodeKind }) {
 }
 
 function labelOf(n: MapNode): string {
+  if (n.kind === 'merchant' && n.crossed) return 'Stranger';
   if (n.enemyId) {
     try {
       return encounter(n.enemyId).name;
@@ -144,9 +146,17 @@ export function MapView(props: {
             style={{ left: p.x, top: p.y }}
             disabled={!open}
             onClick={() => props.onEnter(n.id)}
-            aria-label={`${KIND_LABEL[n.kind]}: ${labelOf(n)}${done ? ' (cleared)' : ''}`}
+            aria-label={`${KIND_LABEL[n.kind]}: ${labelOf(n)}${n.crossed ? ` (Rift-crossed: sells ${RIFTWALKERS[n.crossed as keyof typeof RIFTWALKERS]?.hero.name ?? 'another'}'s cards)` : ''}${done ? ' (cleared)' : ''}`}
           >
             <NodeIcon kind={n.kind} />
+            {n.crossed && (
+              <span
+                className="mapnode__crossed"
+                title="Rift-crossed merchant: sells another Riftwalker's cards"
+              >
+                <HeroIcon hero={n.crossed} size={26} />
+              </span>
+            )}
             <span className="mapnode__label">{labelOf(n)}</span>
           </button>
         );
@@ -162,7 +172,7 @@ export function MapLegend() {
     ['elite', 'Elite (harder, better reward)'],
     ['event', 'Event'],
     ['shrine', 'Shrine (rest or trim)'],
-    ['merchant', 'Merchant'],
+    ['merchant', 'Merchant (a badge means a Rift-crossed stranger: other classes’ cards)'],
     ['warden', 'Warden (stage boss)'],
   ];
   return (

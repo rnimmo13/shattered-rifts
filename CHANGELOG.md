@@ -5,6 +5,11 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **Enemies attack your minions first** (front-most first) and only then you. An enemy's own summons now stand in front of the summoner, never behind it. Because minions soak damage, Normal enemies are a little tougher (124% HP / 116% damage) and Rivet's HP is 62 with a Tinkerer heal of 2.
+- **The map shows a Rift-crossed merchant** (a badge with that Riftwalker's icon, labelled "Stranger") before you walk to it, and **View map** during a fight opens the stage map. Maps are wider (2-4 choices per floor, more forks, a second Elite, a second Merchant and mid-map Shrines are possible) but stay five floors; **never more than two Events in a row** on any path.
+- **Eight new events:** the drowned shoal (heal, or +6 max HP and a Wound), the rift healer (pay to heal or cleanse), the hot anvil (two cards upgraded for 12 HP), the wheel of the rift (gold, heal or a Wound), the gilded idol (120 shards, the roof falls), the bonfire spirits (burn a card for healing by rarity), the alchemist's bench (two potions) and the shifting wall (a basic card becomes a new card of your class).
+- **Sanctify can leave a card alone** (about a fifth of cards are untouched; costs never change).
+- **Shop rows redesigned:** name and price on top, the description below, the button full width at the bottom. The upgrade preview in the grimoire no longer runs off the right edge of the screen.
 - **Every Riftwalker's three lanes are now shown in the grimoire.** Cards are grouped by character, then by lane ("Ser Maren Ashcourt · Bulwark"), then basic to legendary; the character picker shows how many cards each lane has. KP's lanes are now Gun, Shells and Hangover, and his glass cards scale with missing HP instead of Thorns, so Maren keeps Thorns to herself.
 - **Mire can bring the dead back.** New cards: Grave Robbery and Bone Pile (return Consumed cards to your hand), Reanimate (a fallen Thrall returns with half its HP) and Death Feeds (each time a Thrall dies: Barrier and a card).
 - **Rivet is sturdier:** 72 HP (was 58) and the Tinkerer heals 3 (was 2).

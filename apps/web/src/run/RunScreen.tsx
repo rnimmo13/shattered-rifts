@@ -83,6 +83,15 @@ export default function RunScreen() {
   const runRef = useRef<RunState | null>(initial.run);
   const [run, setRunState] = useState<RunState | null>(initial.run);
   const [confirmForfeit, setConfirmForfeit] = useState(false);
+  const [showMap, setShowMap] = useState(false);
+  useEffect(() => {
+    if (!showMap) return;
+    const onKey = (e: KeyboardEvent): void => {
+      if (e.key === 'Escape') setShowMap(false);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [showMap]);
   // Boons that just arrived, waiting to be shown (one banner at a time)
   const [gained, setGained] = useState<string[]>([]);
   const setRun = useCallback((r: RunState | null) => {
@@ -165,6 +174,37 @@ export default function RunScreen() {
             <p className="run__notice run__notice--fight" role="alert">
               {notice}
             </p>
+          )}
+          <button className="btn btn--ghost mapbtn" onClick={() => setShowMap(true)}>
+            <span>View map</span>
+          </button>
+          {showMap && (
+            <div
+              className="mapmodal"
+              role="dialog"
+              aria-label="Stage map"
+              data-realm={run.map.realm}
+              onClick={() => setShowMap(false)}
+            >
+              <div className="mapmodal__panel" onClick={(e) => e.stopPropagation()}>
+                <h2 className="stage-panel__title">
+                  Stage {run.stage}: {REALM_LABEL[realmOfStage(run, run.stage)]}
+                </h2>
+                <div className="mapwrap">
+                  <MapView
+                    map={run.map}
+                    at={run.at}
+                    cleared={run.cleared}
+                    available={new Set()}
+                    onEnter={() => undefined}
+                  />
+                </div>
+                <MapLegend />
+                <button className="btn" onClick={() => setShowMap(false)}>
+                  <span>Back to the fight</span>
+                </button>
+              </div>
+            </div>
           )}
           {confirmForfeit && (
             <div className="modal" role="alertdialog" aria-label="Forfeit this fight?">

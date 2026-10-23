@@ -81,7 +81,7 @@ draw 5, +1 draw for the second player in PvP (§8).
   **Fighter** (attacks the front-most or lowest-HP enemy), **Guard** (gains Barrier for you / takes hits for you),
   **Support** (heals or buffs), or **Fixed** (a one-off effect when it arrives, then it is just a body).
 - Allies act when you press **End turn**, left to right, before the enemy turn. Enemies choose their targets by
-  their own rule (default: the hero; some prefer the lowest-HP target; **Taunt** allies must be hit first).
+  their own rule (default: minions first, front-most first, then the hero; some prefer the lowest-HP target; **Taunt** allies must be hit first).
 - Allies are **summoned by cards** (they cost Mana like any card) or **granted by a Sigil** at the start of a fight.
 - Enemy summoners add enemies to their side the same way (up to 4).
 

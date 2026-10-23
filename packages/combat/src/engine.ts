@@ -523,7 +523,7 @@ function execOp(r: Run, a: Act, op: Op): void {
       r.ev.push({ type: 'stars', side: side.id, stars: side.stars });
       return;
     case 'summon': {
-      const u = spawn(r, side, op.unit);
+      const u = spawn(r, side, op.unit, false, a.actor);
       if (u) {
         fireSnare(r, other(side.id), { on: 'foeSummons', summoned: u });
         if (a.actor.kind === 'hero') fireTriggers(r, side, 'summon');
@@ -923,14 +923,22 @@ function makeUnit(r: Run, side: Side, d: UnitDef): Unit {
   };
 }
 
-/** Add a unit to a side (nearest the centre after existing ones, always in front of the hero). */
-function spawn(r: Run, sd: SideState, defId: string, quiet = false): Unit | null {
+/** Add a unit to a side (allies: nearest the centre after existing ones, in front of the hero; an enemy summoner's minions: just in front of it). */
+function spawn(
+  r: Run,
+  sd: SideState,
+  defId: string,
+  quiet = false,
+  summoner?: Unit,
+): Unit | null {
   const d = def(r, defId);
   const count = sd.units.filter((u) => u.kind !== 'hero').length;
   if (count >= (sd.hero !== null ? MAX_ALLIES : quiet ? MAX_START_ENEMIES : MAX_ENEMIES))
     return null;
   const u = makeUnit(r, sd.id, d);
-  const index = sd.units.length - (heroOf(sd) ? 1 : 0);
+  // an enemy's summons stand in front of the summoner (nearer the centre), never behind it
+  const at = summoner && sd.hero === null ? sd.units.indexOf(summoner) : -1;
+  const index = at >= 0 ? at : sd.units.length - (heroOf(sd) ? 1 : 0);
   sd.units.splice(index, 0, u);
   if (sd.hero === null) {
     u.maxHp = u.hp = scaledEnemyHp(u.maxHp, r.s.tier, r.s.enemyHpPct);
@@ -1012,7 +1020,8 @@ function pickFoe(r: Run, u: Unit, rule: FoeRule): Unit | null {
   if (!pool.length) return null;
   if (rule === 'random') return pool[nextInt(r.s.rng, pool.length)] as Unit;
   if (rule === 'lowest') return pool.reduce((m, x) => (x.hp < m.hp ? x : m));
-  return pool.find((x) => x.kind === 'hero') ?? (pool[0] as Unit);
+  // the default: minions stand in front, so the hero is only hit once no ally is left standing
+  return pool.find((x) => x.kind !== 'hero') ?? (pool[0] as Unit);
 }
 
 function chooseIntent(r: Run, u: Unit): void {
@@ -1068,7 +1077,12 @@ function actEnemy(r: Run, u: Unit): void {
   if (!mv) throw new RulesError(`${d.id} has no move "${it.move}"`);
   let target = findUnit(r.s, it.target);
   const taunted = r.s.sides[other(u.side)].units.some((x) => x.taunt && x.hp > 0) && !target?.taunt;
-  if (!target || target.hp <= 0 || target.side === u.side || taunted)
+  // an ally summoned after the intent was chosen still stands in front of the hero
+  const bypassed =
+    target?.kind === 'hero' &&
+    (d.brain.foe ?? 'hero') === 'hero' &&
+    r.s.sides[other(u.side)].units.some((x) => x.kind === 'ally' && x.hp > 0);
+  if (!target || target.hp <= 0 || target.side === u.side || taunted || bypassed)
     target = pickFoe(r, u, d.brain.foe ?? 'hero') ?? undefined;
   r.ev.push({ type: 'act', unit: u.id, move: it.move });
   u.intent = null;

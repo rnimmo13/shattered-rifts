@@ -51,6 +51,7 @@ function validMap(map: unknown): map is RunState['map'] {
     const n = raw as Partial<MapNode>;
     if (!n.kind || !KINDS.includes(n.kind) || !isInt(n.floor, 1, 20)) return false;
     if (!isStrArray(n.next) || n.next.some((t) => !ids.has(t))) return false;
+    if (n.crossed !== undefined && typeof n.crossed !== 'string') return false;
     const fights = n.kind === 'duel' || n.kind === 'elite' || n.kind === 'warden';
     if (fights && (typeof n.enemyId !== 'string' || !ENEMY_IDS.has(n.enemyId))) return false;
   }

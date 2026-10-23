@@ -19,6 +19,8 @@ export interface MapNode {
   kind: NodeKind;
   /** Duel, Elite and Warden nodes: the encounter that waits here (an id from the content's ENCOUNTERS). */
   enemyId?: string;
+  /** Merchant nodes: the Riftwalker whose cards this visiting merchant sells (a Rift-crossed stranger), shown on the map. */
+  crossed?: string;
   /** Ids of the nodes on the next floor this one connects to. */
   next: string[];
 }
@@ -76,6 +78,15 @@ export interface EventOption {
     | 'mirror'
     | 'scrap'
     | 'sell'
+    | 'maxhp'
+    | 'tend'
+    | 'purge'
+    | 'temper'
+    | 'spin'
+    | 'grab'
+    | 'burn'
+    | 'lab'
+    | 'transform'
     | 'leave';
   label: string;
 }

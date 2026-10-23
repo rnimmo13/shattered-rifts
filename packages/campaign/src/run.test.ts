@@ -72,6 +72,19 @@ describe('stage maps', () => {
     }
   });
 
+  it('never puts more than two Events in a row on any path', () => {
+    for (let seed = 0; seed < 300; seed++) {
+      const map = generateStageMap(seedRng(`ev${seed}`), 1 + (seed % 4), 'nexus');
+      const longest = new Map<string, number>();
+      for (let f = 1; f <= map.floors; f++)
+        for (const n of map.nodes.filter((x) => x.floor === f)) {
+          const here = n.kind === 'event' ? (longest.get(n.id) ?? 0) + 1 : 0;
+          expect(here, n.id).toBeLessThanOrEqual(2);
+          for (const t of n.next) longest.set(t, Math.max(longest.get(t) ?? 0, here));
+        }
+    }
+  });
+
   it('every fight node names a real encounter of the right realm', () => {
     const map = generateStageMap(seedRng('enc'), 2, 'nexus');
     for (const n of map.nodes.filter((x) => x.enemyId)) expect(n.enemyId).toBeTruthy();

@@ -16,12 +16,13 @@ export interface Anchor {
 const PREVIEW_W = 330;
 const PREVIEW_H = 480;
 
-function beside(at: Anchor): React.CSSProperties {
+/** The preview is one card wide, or two (the card and its upgrade side by side) when choosing a card to upgrade. */
+function beside(at: Anchor, width: number): React.CSSProperties {
   const vw = window.innerWidth;
   const vh = window.innerHeight;
   // to the right of the card when there is room, otherwise to its left; never off the screen
-  const left =
-    vw - at.right >= PREVIEW_W + 24 ? at.right + 12 : Math.max(8, at.left - PREVIEW_W - 12);
+  const raw = vw - at.right >= width + 24 ? at.right + 12 : at.left - width - 12;
+  const left = Math.max(8, Math.min(raw, vw - width - 8));
   const top = Math.max(8, Math.min(at.top - 30, vh - PREVIEW_H - 8));
   return { left, top, right: 'auto', bottom: 'auto' };
 }
@@ -29,9 +30,19 @@ function beside(at: Anchor): React.CSSProperties {
 export function CardHover(props: { def: CardDef | null; at?: Anchor | null; plus?: boolean }) {
   if (!props.def) return null;
   const showPlus = props.plus ?? !props.at;
+  // on a narrow screen there is no room for the card and its upgrade side by side
+  const wide =
+    showPlus &&
+    !!props.def.upgrade &&
+    !!COMBAT_DB.cards[props.def.upgrade] &&
+    window.innerWidth >= PREVIEW_W * 2 + 40;
   const keys = keywordsOf(props.def, (u) => COMBAT_DB.units[u]?.taunt === true);
   return (
-    <div className="cardhover" aria-hidden style={props.at ? beside(props.at) : undefined}>
+    <div
+      className="cardhover"
+      aria-hidden
+      style={props.at ? beside(props.at, wide ? PREVIEW_W * 2 + 13 : PREVIEW_W) : undefined}
+    >
       <div className="cardhover__main">
         <FightCard db={COMBAT_DB} def={props.def} width={330} />
         {keys.length > 0 && (
@@ -44,7 +55,7 @@ export function CardHover(props: { def: CardDef | null; at?: Anchor | null; plus
           </ul>
         )}
       </div>
-      {showPlus && props.def.upgrade && COMBAT_DB.cards[props.def.upgrade] && (
+      {wide && props.def.upgrade && COMBAT_DB.cards[props.def.upgrade] && (
         <div className="cardhover__plus">
           <small>Upgraded</small>
           <FightCard

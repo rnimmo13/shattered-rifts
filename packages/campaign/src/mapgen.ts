@@ -2,8 +2,14 @@
 // Generated from the run seed, so a run always has the same maps.
 
 import { nextInt, type RngState } from '@sr/combat';
-import { ENCOUNTERS, type Encounter } from '@sr/content/v2';
+import { ENCOUNTERS, RIFTWALKERS, type Encounter } from '@sr/content/v2';
 import type { MapNode, NodeKind, StageMap, StageRealm } from './types';
+
+/** The chance (percent) that a merchant on the map is a Rift-crossed stranger selling another Riftwalker's cards. */
+export const CROSSED_MERCHANT_CHANCE = 7.5;
+
+/** at most this many Events in a row along any path */
+export const MAX_EVENTS_IN_A_ROW = 2;
 
 const WARDEN_OF: Record<StageRealm, string> = {
   aurelion: 'seraphine',
@@ -37,19 +43,38 @@ function rollKind(
   merchantsPlaced: number,
 ): NodeKind {
   const r = nextInt(rng, 100);
-  if (floor >= 3 && elitesPlaced < 1 && r < 22) return 'elite';
-  if (merchantsPlaced < 1 && r >= 22 && r < 34) return 'merchant';
-  if (r >= 34 && r < 56) return 'event';
+  if (floor >= 3 && elitesPlaced < 2 && r < (elitesPlaced < 1 ? 22 : 12)) return 'elite';
+  if (merchantsPlaced < 2 && r >= 22 && r < 33) return 'merchant';
+  if (floor >= 3 && r >= 33 && r < 41) return 'shrine';
+  if (r >= 41 && r < 65) return 'event';
   return 'duel';
 }
 
-export function generateStageMap(rng: RngState, stage: number, realm: StageRealm): StageMap {
+/** A merchant is now and then a stranger from another world; decided with the map so the map can say so. */
+function crossedFor(rng: RngState, character: string | undefined): string | undefined {
+  if (nextInt(rng, 1000) >= CROSSED_MERCHANT_CHANCE * 10) return undefined;
+  const others = Object.keys(RIFTWALKERS).filter((h) => h !== character);
+  return others.length ? pick(rng, others) : undefined;
+}
+
+export function generateStageMap(
+  rng: RngState,
+  stage: number,
+  realm: StageRealm,
+  character?: string,
+): StageMap {
   if (stage === 5) {
     // the final stage: Shrine or Merchant (the player's choice), then Vorthax
     const boss = wardenFor('rift');
     const nodes: MapNode[] = [
       { id: 's5-f1-a', floor: 1, kind: 'shrine', next: ['s5-warden'] },
-      { id: 's5-f1-b', floor: 1, kind: 'merchant', next: ['s5-warden'] },
+      {
+        id: 's5-f1-b',
+        floor: 1,
+        kind: 'merchant',
+        next: ['s5-warden'],
+        ...((c) => (c ? { crossed: c } : {}))(crossedFor(rng, character)),
+      },
       { id: 's5-warden', floor: 2, kind: 'warden', enemyId: boss.id, next: [] },
     ];
     return { stage, realm, floors: 2, nodes };
@@ -70,7 +95,7 @@ export function generateStageMap(rng: RngState, stage: number, realm: StageRealm
   let elites_ = 0;
   let merchants = 0;
   for (let floor = 1; floor <= FLOORS; floor++) {
-    const count = floor === FLOORS ? 2 : 2 + nextInt(rng, 2); // 2-3 nodes
+    const count = floor === FLOORS ? 2 : floor === 1 ? 2 + nextInt(rng, 2) : 2 + nextInt(rng, 3); // 2-4 nodes (2-3 on the first floor)
     const row: MapNode[] = [];
     for (let i = 0; i < count; i++) {
       const id = `s${stage}-f${floor}-${String.fromCharCode(97 + i)}`;
@@ -81,6 +106,10 @@ export function generateStageMap(rng: RngState, stage: number, realm: StageRealm
       if (kind === 'elite') elites_++;
       if (kind === 'merchant') merchants++;
       const node: MapNode = { id, floor, kind, next: [] };
+      if (kind === 'merchant') {
+        const crossed = crossedFor(rng, character);
+        if (crossed) node.crossed = crossed;
+      }
       if (kind === 'duel') node.enemyId = regular();
       if (kind === 'elite') node.enemyId = pick(rng, elites).id;
       row.push(node);
@@ -108,7 +137,7 @@ export function generateStageMap(rng: RngState, stage: number, realm: StageRealm
       const a = nextRow[t] as MapNode;
       n.next.push(a.id);
       // sometimes branch to a neighbour too
-      if (nextRow.length > 1 && nextInt(rng, 100) < 45) {
+      if (nextRow.length > 1 && nextInt(rng, 100) < 55) {
         const alt = nextRow[t + 1 < nextRow.length ? t + 1 : t - 1] as MapNode;
         if (!n.next.includes(alt.id)) n.next.push(alt.id);
       }
@@ -119,6 +148,19 @@ export function generateStageMap(rng: RngState, stage: number, realm: StageRealm
         const j = Math.min(row.length - 1, nextRow.indexOf(m));
         (row[j] as MapNode).next.push(m.id);
       }
+    }
+  }
+
+  // never more than MAX_EVENTS_IN_A_ROW Events in a row on any path: a third becomes a Duel
+  const run = new Map<string, number>();
+  for (let f = 0; f < FLOORS; f++) {
+    for (const n of byFloor[f] as MapNode[]) {
+      if (n.kind === 'event' && (run.get(n.id) ?? 1) > MAX_EVENTS_IN_A_ROW) {
+        n.kind = 'duel';
+        n.enemyId = regular();
+      }
+      const mine = n.kind === 'event' ? (run.get(n.id) ?? 1) : 0;
+      for (const t of n.next) run.set(t, Math.max(run.get(t) ?? 1, mine + 1));
     }
   }
 

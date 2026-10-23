@@ -5,31 +5,42 @@ import { availableNodes, enterNode, newRun, type RunState } from './index';
 const open = (r: RunState): RunState => ({ ...r, phase: 'map', context: null });
 
 describe('the visiting merchant', () => {
-  it("sometimes sells only another Riftwalker's cards, and says so", () => {
+  it("is decided on the map (about 7.5% of merchants), and sells only that Riftwalker's cards", async () => {
+    const { generateStageMap } = await import('./index');
+    const { seedRng } = await import('@sr/combat');
     let crossed = 0;
-    let own = 0;
-    for (let i = 0; i < 400; i++) {
-      const base = open(newRun('maren', `cross-${i}`));
-      const node = availableNodes(base)[0]!;
-      const asMerchant: RunState = {
-        ...base,
-        map: {
-          ...base.map,
-          nodes: base.map.nodes.map((n) => (n.id === node.id ? { ...n, kind: 'merchant' } : n)),
-        },
-      };
-      const m = enterNode(asMerchant, node.id).context!.merchant!;
-      if (m.crossed) {
+    let merchants = 0;
+    for (let i = 0; i < 600; i++) {
+      const map = generateStageMap(seedRng(`cm-${i}`), 2, 'nexus', 'maren');
+      for (const n of map.nodes) {
+        if (n.kind !== 'merchant') continue;
+        merchants++;
+        if (!n.crossed) continue;
         crossed++;
-        expect(m.crossed).not.toBe('maren');
-        expect(Object.keys(RIFTWALKERS)).toContain(m.crossed as HeroId);
-        // the whole table is that Riftwalker's own cards
+        expect(n.crossed).not.toBe('maren');
+        expect(Object.keys(RIFTWALKERS)).toContain(n.crossed as HeroId);
+        // walking in gives that stranger's table: all of that Riftwalker's own cards
+        const base = open(newRun('maren', `cross-${i}`));
+        const first = availableNodes(base)[0]!;
+        const m = enterNode(
+          {
+            ...base,
+            map: {
+              ...base.map,
+              nodes: base.map.nodes.map((x) =>
+                x.id === first.id ? { ...x, kind: 'merchant', crossed: n.crossed as string } : x,
+              ),
+            },
+          },
+          first.id,
+        ).context!.merchant!;
+        expect(m.crossed).toBe(n.crossed);
         expect(m.items.length).toBeGreaterThanOrEqual(3);
         for (const x of m.items) expect(COMBAT_DB.cards[x.cardId]?.hero, x.cardId).toBe(m.crossed);
-      } else own++;
+      }
     }
-    expect(crossed).toBeGreaterThan(10);
-    expect(own).toBeGreaterThan(crossed * 4);
+    expect(crossed / merchants).toBeGreaterThan(0.04);
+    expect(crossed / merchants).toBeLessThan(0.12);
   });
 });
 

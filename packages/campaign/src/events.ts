@@ -162,7 +162,7 @@ export const EVENTS: EventDef[] = [
     when: (r) => r.deck.some((id) => canRoll(COMBAT_DB.cards[stripRoll(id)]!)),
     build: () => ({
       title: 'The Sanctum of Change',
-      text: 'A basin of white fire. Step in and your whole deck is sanctified: every card is re-rolled, about half of them 25% stronger and the rest 25% weaker. It cannot be undone, and you do not choose which.',
+      text: 'A basin of white fire. Step in and your whole deck is sanctified: every card with numbers is re-rolled: some are left as they were, about half of the rest become 25% stronger and the others 25% weaker. Costs never change. It cannot be undone, and you do not choose which.',
       options: [
         { id: 'sanctify', label: 'Sanctify the whole deck' },
         { id: 'leave', label: 'No: keep the deck as it is' },
@@ -251,6 +251,133 @@ export const EVENTS: EventDef[] = [
       cardOffer: '',
     }),
   },
+  {
+    id: 'shoal',
+    weight: 1.5,
+    when: () => true,
+    build: () => ({
+      title: 'The drowned shoal',
+      text: 'Pale fish crowd a rift-pool, unafraid. They are fat, and strange, and they watch you.',
+      options: [
+        { id: 'heal', label: 'Eat your fill (heal 20% of your HP)' },
+        { id: 'maxhp', label: 'Keep a scale: +6 max HP, and a Wound joins your deck' },
+        leave,
+      ],
+      cardOffer: '',
+    }),
+  },
+  {
+    id: 'healer',
+    weight: 1.5,
+    when: (r) => r.shards >= 35,
+    build: () => ({
+      title: 'The rift healer',
+      text: 'A calm figure in grey, a bowl of salt and a price list nailed to a post.',
+      options: [
+        { id: 'tend', label: 'Be tended (35 shards): heal 30% of your HP' },
+        {
+          id: 'purge',
+          label: 'Be cleansed (50 shards): a Wound, else a basic card, is taken from your deck',
+        },
+        leave,
+      ],
+      cardOffer: '',
+    }),
+  },
+  {
+    id: 'forge',
+    weight: 1,
+    when: (r) => r.hp > 14 && upgradable(r.deck).length >= 2,
+    build: () => ({
+      title: 'The hot anvil',
+      text: 'A forge still burning with nobody to mind it. The tongs are warm. It will work for you, at a cost to you.',
+      options: [
+        { id: 'temper', label: 'Work the bellows (lose 12 HP): two random cards are upgraded' },
+        leave,
+      ],
+      cardOffer: '',
+    }),
+  },
+  {
+    id: 'wheel',
+    weight: 1.5,
+    when: () => true,
+    build: () => ({
+      title: 'The wheel of the rift',
+      text: 'A huge wooden wheel, painted in three colours, turns by itself. Put a hand on it.',
+      options: [
+        {
+          id: 'spin',
+          label: 'Spin it: win 80 shards, or heal 30%, or lose 12% HP and gain a Wound',
+        },
+        leave,
+      ],
+      cardOffer: '',
+    }),
+  },
+  {
+    id: 'gilded',
+    weight: 1,
+    when: (r) => r.hp > 20,
+    build: () => ({
+      title: 'The gilded idol',
+      text: 'A golden idol on a pedestal, in a room that is far too quiet. The floor under it has a seam.',
+      options: [
+        {
+          id: 'grab',
+          label: 'Grab it: +120 shards, and the roof comes down (lose 15% of your max HP)',
+        },
+        leave,
+      ],
+      cardOffer: '',
+    }),
+  },
+  {
+    id: 'bonfire',
+    weight: 1,
+    when: (r) => nonBasic(r.deck).length > 0 && r.deck.length > V2_DECK_RULES.minSize,
+    build: () => ({
+      title: 'The bonfire spirits',
+      text: 'Small lights circle a fire that does not need fuel. They will take a card from you and be grateful, in proportion.',
+      options: [
+        {
+          id: 'burn',
+          label: 'Feed the fire a random card (not a basic): common heals 6, uncommon 12, rare 20',
+        },
+        leave,
+      ],
+      cardOffer: '',
+    }),
+  },
+  {
+    id: 'alchemist',
+    weight: 1.2,
+    when: (r) => r.potions.length < MAX_POTIONS,
+    build: () => ({
+      title: "The alchemist's bench",
+      text: 'A bench of cracked glass and steaming dishes. A note: "Help yourself. Mind the green one."',
+      options: [{ id: 'lab', label: 'Fill your belt: take two potions' }, leave],
+      cardOffer: '',
+    }),
+  },
+  {
+    id: 'shifter',
+    weight: 1,
+    when: (r) => basics(r.deck).some((id) => id !== 'wound'),
+    build: () => ({
+      title: 'The shifting wall',
+      text: 'A wall of grey stone ripples as you pass. Press a card against it and it comes back as something else.',
+      options: [
+        {
+          id: 'transform',
+          label:
+            'Press a basic card to it: a random Slash or Guard becomes a new card of your class',
+        },
+        leave,
+      ],
+      cardOffer: '',
+    }),
+  },
 ];
 
 /** Pick a random event, weighted, from those that can happen to this run now. */
@@ -323,16 +450,22 @@ export function resolveEvent(
     case 'sanctify': {
       let up = 0;
       let down = 0;
+      let same = 0;
       r.deck = r.deck.map((id) => {
         const base = COMBAT_DB.cards[stripRoll(id)];
         if (!base || !canRoll(base)) return id;
-        // slightly kind to the player: 55% of rolls go up
+        // a fifth of the cards are untouched; of the rest, slightly kind to the player: 55% go up
+        // (only numbers change: a card's cost is never rolled)
+        if (nextInt(r.rng, 100) < 20) {
+          same++;
+          return id;
+        }
         const dir = nextInt(r.rng, 100) < 55 ? 1 : -1;
         if (dir > 0) up++;
         else down++;
         return rolledId(id, dir);
       });
-      return `The fire takes your deck: ${up} cards rise 25%, ${down} fall 25%.`;
+      return `The fire takes your deck: ${up} cards rise 25%, ${down} fall 25%, ${same} are left as they were.`;
     }
     case 'bet':
       if (r.shards < 30) fail('You need 30 shards to bet');
@@ -389,6 +522,97 @@ export function resolveEvent(
     case 'sell':
       r.shards += 25;
       return 'You sell some scrap for 25 shards.';
+    case 'maxhp':
+      r.maxHp += 6;
+      r.hp += 6;
+      r.deck.push('wound');
+      return 'The scale is cold in your pocket. +6 max HP, and a Wound joins your deck.';
+    case 'tend':
+      if (r.shards < 35) fail('You need 35 shards');
+      r.shards -= 35;
+      healBy(r, r.maxHp * 0.3);
+      return 'Salt, then warmth. You heal 30% of your HP.';
+    case 'purge': {
+      if (r.shards < 50) fail('You need 50 shards');
+      const wound = r.deck.indexOf('wound');
+      const pool = basics(r.deck);
+      if (wound < 0 && (!pool.length || r.deck.length <= V2_DECK_RULES.minSize))
+        fail('There is nothing to cleanse');
+      r.shards -= 50;
+      if (wound >= 0) {
+        r.deck.splice(wound, 1);
+        return 'The healer draws out a Wound. It leaves your deck.';
+      }
+      const pick = pool[nextInt(r.rng, pool.length)] as string;
+      r.deck.splice(r.deck.indexOf(pick), 1);
+      return `The healer lifts ${COMBAT_DB.cards[pick]?.name ?? 'a card'} out of your deck.`;
+    }
+    case 'temper': {
+      if (r.hp <= 12) fail('You are too hurt for that');
+      const done: string[] = [];
+      for (let i = 0; i < 2; i++) {
+        const ups = upgradable(r.deck);
+        if (!ups.length) break;
+        const pick = ups[nextInt(r.rng, ups.length)] as string;
+        r.deck[r.deck.indexOf(pick)] = COMBAT_DB.cards[pick]?.upgrade ?? pick;
+        done.push(COMBAT_DB.cards[pick]?.name ?? 'a card');
+      }
+      if (!done.length) fail('Nothing to upgrade');
+      r.hp -= 12;
+      return `The bellows roar. ${done.join(' and ')} come out tempered.`;
+    }
+    case 'spin': {
+      const roll = nextInt(r.rng, 3);
+      if (roll === 0) {
+        r.shards += 80;
+        return 'The wheel stops on gold: +80 shards.';
+      }
+      if (roll === 1) {
+        healBy(r, r.maxHp * 0.3);
+        return 'The wheel stops on green: you heal 30% of your HP.';
+      }
+      r.hp = Math.max(1, r.hp - Math.ceil(r.maxHp * 0.12));
+      r.deck.push('wound');
+      return 'The wheel stops on black: you lose 12% of your HP, and a Wound joins your deck.';
+    }
+    case 'grab': {
+      if (r.hp <= 20) fail('You are too hurt for that');
+      r.shards += 120;
+      r.hp = Math.max(1, r.hp - Math.ceil(r.maxHp * 0.15));
+      return 'You snatch the idol and run. The roof does not forgive: +120 shards, and you lose 15% of your max HP in bruises.';
+    }
+    case 'burn': {
+      const pool = nonBasic(r.deck);
+      if (!pool.length || r.deck.length <= V2_DECK_RULES.minSize) fail('There is nothing to burn');
+      const pick = pool[nextInt(r.rng, pool.length)] as string;
+      const rarity = COMBAT_DB.cards[pick]?.rarity;
+      const heal =
+        rarity === 'rare' || rarity === 'legendary' ? 20 : rarity === 'uncommon' ? 12 : 6;
+      r.deck.splice(r.deck.indexOf(pick), 1);
+      healBy(r, heal);
+      return `The spirits take ${COMBAT_DB.cards[pick]?.name ?? 'a card'} and warm you: heal ${heal}.`;
+    }
+    case 'lab': {
+      let n = 0;
+      while (r.potions.length < MAX_POTIONS && n < 2) {
+        r.potions.push(offerPotion(r.rng));
+        n++;
+      }
+      if (!n) fail('Your belt is full');
+      return `You fill your belt: ${n} potion${n > 1 ? 's' : ''}.`;
+    }
+    case 'transform': {
+      const pool = basics(r.deck).filter((id) => id !== 'wound');
+      if (!pool.length) fail('You have no basic card to press');
+      const out = pool[nextInt(r.rng, pool.length)] as string;
+      let made = '';
+      for (let g = 0; g < 20 && !made; g++)
+        for (const id of offerCards(r.rng, r.character, r.deck, 'duel', 3, r.luck))
+          if (!made && COMBAT_DB.cards[id]?.hero === r.character && canAdd(r.deck, id)) made = id;
+      if (!made) fail('The wall stays grey');
+      r.deck[r.deck.indexOf(out)] = made;
+      return `${COMBAT_DB.cards[out]?.name ?? 'A card'} comes back as ${COMBAT_DB.cards[made]?.name ?? 'something new'}.`;
+    }
     case 'leave':
       return 'You walk on.';
   }

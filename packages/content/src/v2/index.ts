@@ -61,10 +61,10 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     role: 'Engineer',
     trait: {
       name: 'Tinkerer',
-      text: 'At the start of your turn, you and your companions heal 3.',
-      turnStart: [heal(3, 'allFriends')],
+      text: 'At the start of your turn, you and your companions heal 2.',
+      turnStart: [heal(2, 'allFriends')],
     },
-    hero: { id: 'rivet', name: 'Rivet', maxHp: 72, mana: 3, handSize: 5, startUnits: ['drone'] },
+    hero: { id: 'rivet', name: 'Rivet', maxHp: 62, mana: 3, handSize: 5, startUnits: ['drone'] },
     starter: [...rep('strike', 5), ...rep('defend', 3), 'deploy-drone', 'overclock'],
     blurb:
       'A scrap-built tinkerer. Starts every fight with a Drone and builds an army of machines.',
