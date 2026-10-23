@@ -2,7 +2,8 @@
 
 import type { CSSProperties } from 'react';
 import type { StatusId, UnitView } from '@sr/combat';
-import { INTENT_GLYPH, STATUS_INFO } from './info';
+import { tipAttrs } from '../ui/tip';
+import { INTENT_GLYPH, STATUS_INFO, UI_TIPS, statusTip } from './info';
 
 export interface Placed {
   unit: UnitView;
@@ -62,13 +63,16 @@ export function UnitPlates({ items, targetable, hover, preview }: PlatesProps) {
             >
               {preview?.id === u.id && <div className="plate__preview">{preview.text}</div>}
               <div className="plate__name">{u.name}</div>
-              <div className={`bar${u.barrier > 0 ? ' has-barrier' : ''}`}>
+              <div
+                className={`bar${u.barrier > 0 ? ' has-barrier' : ''}`}
+                {...tipAttrs(UI_TIPS.hp(u.hp, u.maxHp))}
+              >
                 <div className="bar__fill" style={{ width: `${pct}%` }} />
                 <div className="bar__text">
                   {u.hp}/{u.maxHp}
                 </div>
                 {u.barrier > 0 && (
-                  <div className="bar__barrier" title="Barrier absorbs damage until your next turn">
+                  <div className="bar__barrier" {...tipAttrs(UI_TIPS.barrier(u.barrier))}>
                     ⛨ {u.barrier}
                   </div>
                 )}
@@ -80,7 +84,7 @@ export function UnitPlates({ items, targetable, hover, preview }: PlatesProps) {
                     <span
                       key={id}
                       className={`chip chip--${info.tone}`}
-                      title={`${info.name}: ${info.text}`}
+                      {...tipAttrs(statusTip(id, n))}
                     >
                       {info.glyph}
                       <b>{n}</b>
@@ -88,7 +92,7 @@ export function UnitPlates({ items, targetable, hover, preview }: PlatesProps) {
                   );
                 })}
                 {u.taunt && (
-                  <span className="chip chip--good" title="Taunt: enemies must attack this first.">
+                  <span className="chip chip--good" {...tipAttrs(UI_TIPS.taunt)}>
                     ▣
                   </span>
                 )}

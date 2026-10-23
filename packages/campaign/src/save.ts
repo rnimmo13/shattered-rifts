@@ -80,7 +80,9 @@ function validContext(r: RunState): boolean {
       isObj(p) &&
       Array.isArray(p['options']) &&
       p['options'].length > 0 &&
-      p['options'].every((o) => isObj(o) && typeof o['id'] === 'string' && Array.isArray(o['effects']))
+      p['options'].every(
+        (o) => isObj(o) && typeof o['id'] === 'string' && Array.isArray(o['effects']),
+      )
     );
   }
   const needsNode: RunPhase[] = ['duel', 'reward', 'gift', 'shrine', 'merchant', 'event'];
@@ -161,6 +163,9 @@ export function parseRun(text: string): RunState | null {
   // saves from before the difficulty setting were all played on Easy
   if (r.difficulty === undefined) r.difficulty = 'easy';
   if (r.difficulty !== 'easy' && r.difficulty !== 'normal') return null;
+  // saves from before card luck existed were all normal
+  if (r.luck === undefined) r.luck = 'normal';
+  if (r.luck !== 'normal' && r.luck !== 'lucky' && r.luck !== 'blessed') return null;
   if (!isInt(r.tier, 1, 99) || !isInt(r.stage, 1, 5)) return null;
   if (!isInt(r.maxResolve, 1, 9) || !isInt(r.resolve, 0, r.maxResolve)) return null;
   if (!isInt(r.shards, 0, 1_000_000)) return null;

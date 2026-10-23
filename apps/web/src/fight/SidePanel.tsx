@@ -3,7 +3,8 @@
 // empty rune row.
 
 import { cardText, type CombatDb, type SideView } from '@sr/combat';
-import { RUNE_GLYPH } from './info';
+import { tipAttrs } from '../ui/tip';
+import { RUNE_GLYPH, UI_TIPS } from './info';
 
 /** The second resource, next to the Mana orb. */
 export function LumenCounter(props: { value: number }) {
@@ -11,7 +12,7 @@ export function LumenCounter(props: { value: number }) {
     <div
       className="fight__lumen"
       aria-label={`Lumen ${props.value}`}
-      title="Lumen: a second resource. Some cards gain it and some spend it (shown as a gold badge on the card). It lasts the whole fight."
+      {...tipAttrs(UI_TIPS.lumen(props.value))}
     >
       <span aria-hidden>★</span>
       <b>{props.value}</b>
@@ -42,13 +43,22 @@ export function RuneArc(props: { db: CombatDb; me: SideView; cx: number; top: nu
             key={i}
             className={`rune rune--${r.rune}`}
             style={style}
-            title={`${def?.name ?? r.rune}${r.charge ? ` (charge ${r.charge})` : ''}: ${def?.text ?? ''}`}
+            {...tipAttrs({
+              kicker: 'Rune',
+              title: `${def?.name ?? r.rune}${r.charge ? ` (charge ${r.charge})` : ''}`,
+              text: def?.text ?? '',
+            })}
           >
             {RUNE_GLYPH[r.rune] ?? '◆'}
             {r.charge > 0 && <small>{r.charge}</small>}
           </span>
         ) : (
-          <span key={i} className="rune rune--empty" style={style} title="An empty rune slot" />
+          <span
+            key={i}
+            className="rune rune--empty"
+            style={style}
+            {...tipAttrs(UI_TIPS.emptyRune)}
+          />
         );
       })}
     </div>
@@ -65,7 +75,15 @@ export function AuraList(props: { db: CombatDb; me: SideView }) {
         {me.powers.map((p) => {
           const c = db.cards[p.card];
           return (
-            <span key={p.id} className="aux__power" title={c ? cardText(db, c) : ''}>
+            <span
+              key={p.id}
+              className="aux__power"
+              {...tipAttrs({
+                kicker: 'Aura',
+                title: c?.name ?? 'Aura',
+                text: c ? cardText(db, c) : '',
+              })}
+            >
               {c?.name ?? 'Aura'}
             </span>
           );

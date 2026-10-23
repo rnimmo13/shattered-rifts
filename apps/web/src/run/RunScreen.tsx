@@ -29,6 +29,7 @@ import {
   realmOfStage,
   takeShrine,
   type Difficulty,
+  type Luck,
   type RunState,
 } from '@sr/campaign';
 import { FightView } from '../fight/FightView';
@@ -121,7 +122,7 @@ export default function RunScreen() {
     [act],
   );
 
-  const startRun = (c: HeroId, d: Difficulty) => setRun(newRun(c, newSeed(), d));
+  const startRun = (c: HeroId, d: Difficulty, l: Luck) => setRun(newRun(c, newSeed(), d, l));
   const leaveRun = () => {
     clearSavedRun();
     setRun(null);
@@ -241,12 +242,13 @@ export default function RunScreen() {
 }
 
 function Sanctum(props: {
-  onStart: (c: HeroId, d: Difficulty) => void;
+  onStart: (c: HeroId, d: Difficulty, l: Luck) => void;
   onImport: (f: File | undefined) => void;
   notice: string | null;
 }) {
   const [pick, setPick] = useState<HeroId>('maren');
   const [difficulty, setDifficulty] = useState<Difficulty>('easy');
+  const [luck, setLuck] = useState<Luck>('normal');
   return (
     <main className="setup setup--wide">
       <a className="btn btn--small setup__back" href="#/">
@@ -277,9 +279,20 @@ function Sanctum(props: {
             ))}
           </select>
         </label>
+        <label
+          className="setup__select"
+          title="Tilts card rewards and the merchant's stock towards better cards. Handy for testing strong decks."
+        >
+          <span className="sr-only">Card luck</span>
+          <select value={luck} onChange={(e) => setLuck(e.target.value as Luck)}>
+            <option value="normal">Card luck: normal</option>
+            <option value="lucky">Card luck: lucky (more rares)</option>
+            <option value="blessed">Card luck: blessed (mostly rares)</option>
+          </select>
+        </label>
         <button
           className="btn btn--primary setup__go"
-          onClick={() => props.onStart(pick, difficulty)}
+          onClick={() => props.onStart(pick, difficulty, luck)}
         >
           <span>Begin the run</span>
         </button>

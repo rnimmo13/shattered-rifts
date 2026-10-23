@@ -1,6 +1,8 @@
-// A Boon as a small round token with its name and effect on hover.
+// A Boon: a medallion in a rarity colour with a symbol for what it does, and a tooltip with its name and effect.
 
 import { COMBAT_DB } from '@sr/content/v2';
+import { tipAttrs } from '../ui/tip';
+import { glyphOf } from './boonGlyph';
 
 export function BoonChip(props: { id: string; size?: 'small' | 'large' }) {
   const b = COMBAT_DB.boons[props.id];
@@ -8,11 +10,17 @@ export function BoonChip(props: { id: string; size?: 'small' | 'large' }) {
   return (
     <span
       className={`boon boon--${b.rarity}${props.size === 'large' ? ' boon--large' : ''}`}
-      title={`${b.name}: ${b.text}`}
       aria-label={`${b.name}: ${b.text}`}
       tabIndex={0}
+      {...tipAttrs({
+        kicker: `Boon (${b.rarity})`,
+        title: b.name,
+        tone: 'boon',
+        text: b.text,
+        hint: 'A passive that lasts the whole run.',
+      })}
     >
-      {b.name.charAt(0)}
+      {glyphOf(b)}
     </span>
   );
 }
@@ -26,7 +34,7 @@ export function BoonCard(props: { id: string; note?: string }) {
       <BoonChip id={props.id} size="large" />
       <div>
         <b>{b.name}</b>
-        <small>{b.rarity}</small>
+        <small>boon · {b.rarity}</small>
         <p>{b.text}</p>
         {props.note && <em>{props.note}</em>}
       </div>

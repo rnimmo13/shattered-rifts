@@ -77,7 +77,11 @@ describe('the choice at the start of a run', () => {
   });
 
   it('a new stage and a new loop open a Waymark with a rest, blessings, and sometimes a bargain', () => {
-    const base = { ...newRun('maren', 'waymark', 'normal'), phase: 'stageClear' as const, context: null };
+    const base = {
+      ...newRun('maren', 'waymark', 'normal'),
+      phase: 'stageClear' as const,
+      context: null,
+    };
     const next = nextStage(base);
     expect(next.phase).toBe('prelude');
     expect(next.context?.prelude?.kind).toBe('stage');
@@ -149,7 +153,10 @@ describe('what each effect does', () => {
     expect(COMBAT_DB.boons[boon.boons[0] as string]).toBeDefined();
     const potion = take(offering([{ k: 'potion' }]));
     expect(potion.potions).toHaveLength(1);
-    const full = { ...offering([{ k: 'potion' }]), potions: ['fire-flask', 'fire-flask', 'fire-flask'] };
+    const full = {
+      ...offering([{ k: 'potion' }]),
+      potions: ['fire-flask', 'fire-flask', 'fire-flask'],
+    };
     expect(take(full).potions).toHaveLength(3);
     const wound = take(offering([{ k: 'wound', n: 2 }]));
     expect(wound.deck.filter((c) => c === 'wound')).toHaveLength(2);
@@ -167,7 +174,10 @@ describe('what each effect does', () => {
     const standing = chooseKit(newRun('quill', 'save-me', 'normal'), 'a');
     expect(parseRun(serializeRun(standing))?.phase).toBe('prelude');
     const broken = JSON.parse(serializeRun(standing)) as RunState;
-    broken.context = { nodeId: '', prelude: { kind: 'threshold', title: 't', text: 't', options: [] } };
+    broken.context = {
+      nodeId: '',
+      prelude: { kind: 'threshold', title: 't', text: 't', options: [] },
+    };
     expect(parseRun(JSON.stringify(broken))).toBeNull();
   });
 });

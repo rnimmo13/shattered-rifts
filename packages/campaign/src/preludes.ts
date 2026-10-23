@@ -40,12 +40,7 @@ export function describeEffect(e: PreludeEffect): string {
   }
 }
 
-const opt = (
-  id: string,
-  name: string,
-  effects: PreludeEffect[],
-  risky = false,
-): PreludeOption => ({
+const opt = (id: string, name: string, effects: PreludeEffect[], risky = false): PreludeOption => ({
   id,
   name,
   text: effects.map(describeEffect).join('. ') + '.',
@@ -70,12 +65,53 @@ function blessings(stage: number): PreludeOption[] {
 /** Bigger rewards with a price. */
 function bargains(stage: number): PreludeOption[] {
   return [
-    opt('blood-price', 'Blood Price', [{ k: 'hp', n: 12 }, { k: 'card', rarity: 'rare' }], true),
-    opt('heavy-purse', 'Heavy Purse', [{ k: 'shards', n: 200 + stage * 30 }, { k: 'wound', n: 1 }], true),
-    opt('hungry-rift', 'The Rift Is Hungry', [{ k: 'maxHp', n: -8 }, { k: 'boon', rarity: 'uncommon' }], true),
+    opt(
+      'blood-price',
+      'Blood Price',
+      [
+        { k: 'hp', n: 12 },
+        { k: 'card', rarity: 'rare' },
+      ],
+      true,
+    ),
+    opt(
+      'heavy-purse',
+      'Heavy Purse',
+      [
+        { k: 'shards', n: 200 + stage * 30 },
+        { k: 'wound', n: 1 },
+      ],
+      true,
+    ),
+    opt(
+      'hungry-rift',
+      'The Rift Is Hungry',
+      [
+        { k: 'maxHp', n: -8 },
+        { k: 'boon', rarity: 'uncommon' },
+      ],
+      true,
+    ),
     opt('trade-up', 'Trade Up', [{ k: 'transform', n: 3 }], true),
-    opt('double-or-nothing', 'Double or Nothing', [{ k: 'hp', n: 15 }, { k: 'card', rarity: 'uncommon' }, { k: 'card', rarity: 'uncommon' }], true),
-    opt('heavy-heart', 'Heavy Heart', [{ k: 'maxHp', n: 18 }, { k: 'wound', n: 2 }], true),
+    opt(
+      'double-or-nothing',
+      'Double or Nothing',
+      [
+        { k: 'hp', n: 15 },
+        { k: 'card', rarity: 'uncommon' },
+        { k: 'card', rarity: 'uncommon' },
+      ],
+      true,
+    ),
+    opt(
+      'heavy-heart',
+      'Heavy Heart',
+      [
+        { k: 'maxHp', n: 18 },
+        { k: 'wound', n: 2 },
+      ],
+      true,
+    ),
   ];
 }
 

@@ -12,7 +12,7 @@ import {
   signatureCards,
   type HeroId,
 } from '@sr/content/v2';
-import type { StageRealm } from './types';
+import type { Luck, StageRealm } from './types';
 
 export type OfferQuality = 'duel' | 'elite';
 
@@ -41,8 +41,21 @@ const WEIGHTS: Record<OfferQuality, Record<string, number>> = {
   elite: { common: 30, uncommon: 50, rare: 20 },
 };
 
-function rollRarity(rng: RngState, quality: OfferQuality): string {
-  const w = WEIGHTS[quality];
+/** Card luck: the same offers, tilted towards better cards (a setting; Normal is the designed game). */
+export const LUCK_WEIGHTS: Record<Luck, Record<OfferQuality, Record<string, number>>> = {
+  normal: WEIGHTS,
+  lucky: {
+    duel: { common: 45, uncommon: 38, rare: 17 },
+    elite: { common: 15, uncommon: 50, rare: 35 },
+  },
+  blessed: {
+    duel: { common: 20, uncommon: 45, rare: 35 },
+    elite: { common: 5, uncommon: 40, rare: 55 },
+  },
+};
+
+function rollRarity(rng: RngState, quality: OfferQuality, luck: Luck = 'normal'): string {
+  const w = LUCK_WEIGHTS[luck][quality];
   const total = Object.values(w).reduce((a, b) => a + b, 0);
   let r = nextInt(rng, total);
   for (const [rarity, weight] of Object.entries(w)) {
@@ -61,6 +74,7 @@ export function offerCards(
   deck: readonly string[],
   quality: OfferQuality,
   count: number,
+  luck: Luck = 'normal',
 ): string[] {
   const own = rewardPool(hero).filter((id) => canAdd(deck, id));
   const crossed = crossedPool(hero).filter((id) => canAdd(deck, id));
@@ -69,7 +83,7 @@ export function offerCards(
     const fromCrossed = nextInt(rng, 10) === 0 && crossed.length > 0;
     const pool = (fromCrossed ? crossed : own).filter((id) => !out.includes(id));
     if (pool.length === 0) continue;
-    let from = LADDER.indexOf(rollRarity(rng, quality));
+    let from = LADDER.indexOf(rollRarity(rng, quality, luck));
     let candidates: string[] = [];
     while (from < LADDER.length && candidates.length === 0) {
       candidates = pool.filter((id) => rarityOf(id) === LADDER[from]);

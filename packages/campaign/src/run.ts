@@ -25,6 +25,7 @@ import {
 } from './rewards';
 import type {
   Difficulty,
+  Luck,
   EventOption,
   MapNode,
   MerchantItem,
@@ -62,7 +63,12 @@ export function realmOfStage(run: Pick<RunState, 'stageRealms'>, stage: number):
   return stage === 4 ? 'umbral' : 'rift';
 }
 
-export function newRun(hero: HeroId, seed: string, difficulty: Difficulty = 'easy'): RunState {
+export function newRun(
+  hero: HeroId,
+  seed: string,
+  difficulty: Difficulty = 'easy',
+  luck: Luck = 'normal',
+): RunState {
   const rng = seedRng(`run:${seed}`);
   const stageRealms = shuffle(rng, ['aurelion', 'nexus', 'wyldmaw'] as StageRealm[]);
   const map = generateStageMap(rng, 1, stageRealms[0] as StageRealm);
@@ -73,6 +79,7 @@ export function newRun(hero: HeroId, seed: string, difficulty: Difficulty = 'eas
     seed,
     character: hero,
     difficulty,
+    luck,
     tier: 1,
     stage: 1,
     hp: rw.hero.maxHp,
@@ -163,7 +170,7 @@ export function enterNode(run: RunState, nodeId: string): RunState {
       r.phase = 'shrine';
       break;
     case 'merchant': {
-      const items: MerchantItem[] = offerCards(r.rng, r.character, r.deck, 'elite', 4).map(
+      const items: MerchantItem[] = offerCards(r.rng, r.character, r.deck, 'elite', 4, r.luck).map(
         (cardId) => ({ cardId, price: priceOf(cardId), sold: false }),
       );
       const potions = [offerPotion(r.rng), offerPotion(r.rng)].map((id) => ({
@@ -191,7 +198,7 @@ export function enterNode(run: RunState, nodeId: string): RunState {
       break;
     }
     case 'event': {
-      const cardOffer = offerCards(r.rng, r.character, r.deck, 'duel', 1)[0] ?? '';
+      const cardOffer = offerCards(r.rng, r.character, r.deck, 'duel', 1, r.luck)[0] ?? '';
       const kind = nextInt(r.rng, 3);
       const leave: EventOption = { id: 'leave', label: 'Walk away' };
       if (kind === 1 && upgradable(r.deck).length > 0) {
@@ -362,7 +369,14 @@ export function finishDuel(
   const count = r.tier >= 4 ? 4 : 3;
   r.context = {
     nodeId: node.id,
-    offers: offerCards(r.rng, r.character, r.deck, node.kind === 'elite' ? 'elite' : 'duel', count),
+    offers: offerCards(
+      r.rng,
+      r.character,
+      r.deck,
+      node.kind === 'elite' ? 'elite' : 'duel',
+      count,
+      r.luck,
+    ),
     shardsGained: gain,
     ...(boonGained ? { boonGained } : {}),
     ...(potionGained ? { potionGained } : {}),

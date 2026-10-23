@@ -1,4 +1,5 @@
 import { Suspense, lazy, useEffect, useState } from 'react';
+import { TooltipLayer } from '../ui/Tooltip';
 import { LearnScreen } from './LearnScreen';
 import { TitleScreen } from './TitleScreen';
 
@@ -19,6 +20,15 @@ function useHash(): string {
 
 export function App() {
   const hash = useHash();
+  return (
+    <>
+      <Screens hash={hash} />
+      <TooltipLayer />
+    </>
+  );
+}
+
+function Screens({ hash }: { hash: string }) {
   if (hash === '#/run') {
     return (
       <Suspense fallback={<div className="loading">Opening the rift…</div>}>

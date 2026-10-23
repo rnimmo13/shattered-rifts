@@ -37,7 +37,8 @@ export interface FightHandProps {
   /** highlight these units while a card is being dragged (null = none) */
   onDragTargets: (ids: ReadonlySet<string> | null, card?: HandCard | null) => void;
   onRefuse: (card: HandCard) => void;
-  onHover: (card: HandCard | null) => void;
+  /** the card under the pointer (or null), and where it rests, so a tooltip can sit beside it */
+  onHover: (card: HandCard | null, rect?: DOMRect) => void;
 }
 
 interface Drag {
@@ -64,11 +65,17 @@ export function FightHand(p: FightHandProps) {
     : p.selectedId
       ? p.cards.findIndex((c) => c.inst.id === p.selectedId)
       : hover;
-  const slots = fanLayout(n, {
+  const layout = {
     cardWidth: p.cardWidth,
     maxSpread: Math.min(window.innerWidth * 0.72, p.cardWidth * 0.8 * 9),
+  };
+  const slots = fanLayout(n, {
+    ...layout,
     focus: drag ? null : focusIdx !== null && focusIdx >= 0 ? focusIdx : null,
   });
+  // where each card rests when nothing is lifted: the pointer is tested against THIS, so a card that lifts or grows
+  // never moves out from under the pointer (which made it twitch up and down)
+  const rest = fanLayout(n, { ...layout, focus: null });
 
   const aboveHand = (y: number): boolean => y < window.innerHeight - p.cardWidth * 1.5;
 
@@ -133,7 +140,8 @@ export function FightHand(p: FightHandProps) {
     <div className="fhand" style={{ '--cw': `${w}px` } as CSSProperties}>
       {p.cards.map((c, i) => {
         const s = slots[i];
-        if (!s) return null;
+        const r0 = rest[i];
+        if (!s || !r0) return null;
         const dragging = drag?.id === c.inst.id && drag.moved;
         const sel = p.selectedId === c.inst.id;
         const style: CSSProperties = {
@@ -151,43 +159,57 @@ export function FightHand(p: FightHandProps) {
           style.transition = 'none';
           style.pointerEvents = 'none';
         }
+        // an invisible stand-in at the resting spot takes the pointer; the card you see just follows the layout
+        const hitStyle: CSSProperties = {
+          width: w,
+          height: w * 1.4,
+          zIndex: hover === i ? 300 : r0.z,
+          transform: `translate(calc(-50% + ${r0.x}px), ${r0.y + w * HAND_SINK}px) rotate(${r0.rot}deg)`,
+        };
         return (
-          <div
-            key={c.inst.id}
-            className={`fhand__slot${dragging ? ' is-dragging' : ''}${sel ? ' is-selected' : ''}${c.playable && !p.locked ? ' is-playable' : ''}`}
-            style={style}
-            onPointerEnter={() => {
-              setHover(i);
-              p.onHover(c);
-            }}
-            onPointerLeave={() => {
-              setHover((h) => (h === i ? null : h));
-              p.onHover(null);
-            }}
-            onPointerDown={(e) => {
-              if (p.locked || e.button !== 0) return;
-              e.preventDefault();
-              const d: Drag = {
-                id: c.inst.id,
-                x: e.clientX,
-                y: e.clientY,
-                moved: false,
-                startX: e.clientX,
-                startY: e.clientY,
-              };
-              dragRef.current = d;
-              setDrag(d);
-            }}
-          >
-            <FightCard
-              db={p.db}
-              def={c.def}
-              width={w}
-              playable={c.playable && !p.locked}
-              dimmed={!c.playable}
-              {...(c.inst.bonus ? { bonus: c.inst.bonus } : {})}
-              {...(c.cost !== undefined && c.cost !== c.def.cost ? { cost: c.cost } : {})}
-            />
+          <div key={c.inst.id} className="fhand__pair">
+            <div
+              className={`fhand__slot${dragging ? ' is-dragging' : ''}${sel ? ' is-selected' : ''}${c.playable && !p.locked ? ' is-playable' : ''}`}
+              style={style}
+            >
+              <FightCard
+                db={p.db}
+                def={c.def}
+                width={w}
+                playable={c.playable && !p.locked}
+                dimmed={!c.playable}
+                {...(c.inst.bonus ? { bonus: c.inst.bonus } : {})}
+                {...(c.cost !== undefined && c.cost !== c.def.cost ? { cost: c.cost } : {})}
+              />
+            </div>
+            <div
+              className={`fhand__hit${dragging ? ' is-dragging' : ''}`}
+              style={dragging ? { ...hitStyle, pointerEvents: 'none' } : hitStyle}
+              onPointerEnter={(e) => {
+                setHover(i);
+                p.onHover(c, e.currentTarget.getBoundingClientRect());
+              }}
+              onPointerLeave={() => {
+                setHover((h) => (h === i ? null : h));
+                p.onHover(null);
+              }}
+              onPointerDown={(e) => {
+                if (p.locked || e.button !== 0) return;
+                e.preventDefault();
+                const d: Drag = {
+                  id: c.inst.id,
+                  x: e.clientX,
+                  y: e.clientY,
+                  moved: false,
+                  startX: e.clientX,
+                  startY: e.clientY,
+                };
+                dragRef.current = d;
+                setDrag(d);
+              }}
+            >
+              {hover === i && !drag && <span className="fhand__zone" aria-hidden />}
+            </div>
           </div>
         );
       })}

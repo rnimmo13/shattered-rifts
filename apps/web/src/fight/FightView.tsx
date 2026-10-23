@@ -34,9 +34,12 @@ import { FightCard } from './FightCard';
 import { UnitPlates, type Placed } from './Plates';
 import { keywordsOf } from './info';
 import { BoonChip } from './BoonChip';
+import { CardTips } from './CardTips';
 import { preloadArt } from '../art/assets';
 import { PotionButton } from './PotionChip';
 import { PickModal } from './PickModal';
+import { tipAttrs } from '../ui/tip';
+import { UI_TIPS } from './info';
 import { loadSeen, loadTipsOn, nextTip, saveSeen, saveTipsOn } from './tips';
 import { AuraList, LumenCounter, RuneArc } from './SidePanel';
 import type { FighterSpec } from './Fighters';
@@ -107,6 +110,7 @@ export function FightView(props: {
   const [locked, setLocked] = useState(true);
   const [selected, setSelected] = useState<string | null>(null);
   const [hoverCard, setHoverCard] = useState<HandCard | null>(null);
+  const [hoverRect, setHoverRect] = useState<DOMRect | null>(null);
   const [hoverUnit, setHoverUnit] = useState<string | null>(null);
   const [dragTargets, setDragTargets] = useState<ReadonlySet<string> | null>(null);
   const [dragCard, setDragCard] = useState<HandCard | null>(null);
@@ -787,16 +791,13 @@ export function FightView(props: {
               if (refuseTimer.current) window.clearTimeout(refuseTimer.current);
               refuseTimer.current = window.setTimeout(() => setBanner(null), 700);
             }}
-            onHover={setHoverCard}
+            onHover={(c, r) => {
+              setHoverCard(c);
+              setHoverRect(c && r ? r : null);
+            }}
           />
-          {hoverCard && !selected && !dragCard && keywords.length > 0 && (
-            <aside className="fight__tips" aria-hidden>
-              {keywords.map((k) => (
-                <p key={k.name}>
-                  <b>{k.name}</b> {k.text}
-                </p>
-              ))}
-            </aside>
+          {hoverCard && hoverRect && !selected && !dragCard && keywords.length > 0 && (
+            <CardTips items={keywords} rect={hoverRect} cardWidth={cw} />
           )}
 
           {selectedCard && (
@@ -825,24 +826,36 @@ export function FightView(props: {
               />
             </svg>
           )}
-          {(me?.potions?.length ?? 0) > 0 && (
-            <div className="fight__potions" aria-label="Potions">
-              {me?.potions?.map((id, i) => (
-                <PotionButton
-                  key={`${id}-${i}`}
-                  id={id}
-                  disabled={locked || finished}
-                  active={aimPotion === id}
-                  onUse={() => {
-                    const needs = legal.some(
-                      (a) => a.type === 'potion' && a.potion === id && a.target,
-                    );
-                    setSelected(null);
-                    if (!needs) act({ type: 'potion', index: i, potion: id });
-                    else setAimPotion(aimPotion === id ? null : id);
-                  }}
-                />
-              ))}
+          {me && (
+            <div className="fight__potions" aria-label="Potion belt">
+              <span className="fight__beltLabel">Potions</span>
+              <div className="fight__belt">
+                {Array.from({ length: 3 }, (_, i) => {
+                  const id = me.potions?.[i];
+                  return id ? (
+                    <PotionButton
+                      key={`${id}-${i}`}
+                      id={id}
+                      disabled={locked || finished}
+                      active={aimPotion === id}
+                      onUse={() => {
+                        const needs = legal.some(
+                          (x) => x.type === 'potion' && x.potion === id && x.target,
+                        );
+                        setSelected(null);
+                        if (!needs) act({ type: 'potion', index: i, potion: id });
+                        else setAimPotion(aimPotion === id ? null : id);
+                      }}
+                    />
+                  ) : (
+                    <span
+                      key={`empty-${i}`}
+                      className="potionslot"
+                      {...tipAttrs(UI_TIPS.potionSlot)}
+                    />
+                  );
+                })}
+              </div>
             </div>
           )}
           {aimPotion !== null && me?.potions?.includes(aimPotion) && (
@@ -862,19 +875,35 @@ export function FightView(props: {
             </div>
           )}
 
-          <div className="fight__mana" aria-label={`Mana ${me?.mana ?? 0} of ${me?.maxMana ?? 0}`}>
+          <div
+            className="fight__mana"
+            aria-label={`Mana ${me?.mana ?? 0} of ${me?.maxMana ?? 0}`}
+            {...tipAttrs(UI_TIPS.mana(me?.mana ?? 0, me?.maxMana ?? 0))}
+          >
             <b>{me?.mana ?? 0}</b>
             <small>/{me?.maxMana ?? 0}</small>
           </div>
           <div className="fight__piles">
-            <button className="pile pile--draw" onClick={() => openPile('draw')}>
+            <button
+              className="pile pile--draw"
+              onClick={() => openPile('draw')}
+              {...tipAttrs(UI_TIPS.draw)}
+            >
               Draw <b>{me?.drawCount ?? 0}</b>
             </button>
-            <button className="pile pile--discard" onClick={() => openPile('discard')}>
+            <button
+              className="pile pile--discard"
+              onClick={() => openPile('discard')}
+              {...tipAttrs(UI_TIPS.discard)}
+            >
               Discard <b>{me?.discardCount ?? 0}</b>
             </button>
             {(me?.exhaustedCount ?? 0) > 0 && (
-              <button className="pile pile--exhaust" onClick={() => openPile('exhausted')}>
+              <button
+                className="pile pile--exhaust"
+                onClick={() => openPile('exhausted')}
+                {...tipAttrs(UI_TIPS.consumed)}
+              >
                 Consumed <b>{me?.exhaustedCount ?? 0}</b>
               </button>
             )}

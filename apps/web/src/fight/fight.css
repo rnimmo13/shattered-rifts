@@ -20,7 +20,7 @@
 .fight select,
 .fight__modal,
 .fight__result,
-.fhand__slot {
+.fhand__hit {
   pointer-events: auto;
 }
 
@@ -382,6 +382,31 @@
   touch-action: none;
   animation: draw-in 0.35s var(--ease-out);
 }
+.fhand__slot {
+  /* the picture of the card never takes the pointer: the hit area below it does */
+  pointer-events: none;
+}
+.fhand__pair {
+  display: contents;
+}
+.fhand__hit {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  transform-origin: 50% 100%;
+  cursor: grab;
+  touch-action: none;
+}
+/* while a card is lifted, the area it was lifted into still counts as "on the card" */
+.fhand__zone {
+  position: absolute;
+  left: -30%;
+  right: -30%;
+  top: -135%;
+  bottom: 100%;
+  pointer-events: auto;
+}
+.fhand__hit.is-dragging,
 .fhand__slot.is-dragging {
   cursor: grabbing;
 }
@@ -704,43 +729,72 @@
   display: block;
 }
 
-/* the potion belt */
+/* the potion belt: three slots, flask icons, clearly potions */
 .fight__potions {
   position: absolute;
   left: 1rem;
   top: 3.4rem;
+  display: grid;
+  gap: 0.25rem;
+  z-index: 30;
+  padding: 0.35rem 0.5rem 0.45rem;
+  border-radius: 12px;
+  background: rgb(8 10 20 / 0.55);
+  border: 1px solid rgb(109 240 168 / 0.35);
+}
+.fight__beltLabel {
+  font-family: var(--font-display);
+  font-size: 0.68rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #8ff0b4;
+}
+.fight__belt {
   display: flex;
   gap: 0.4rem;
-  z-index: 30;
 }
-.potionbtn {
+.potionbtn,
+.potionslot {
   display: grid;
   justify-items: center;
-  gap: 0.1rem;
-  min-width: 4rem;
-  padding: 0.3rem 0.5rem;
+  align-content: center;
+  gap: 0.05rem;
+  width: 4.6rem;
+  height: 4.6rem;
   border-radius: 12px;
   color: var(--c-ivory);
-  background: rgb(8 10 20 / 0.88);
-  border: 1px solid var(--c-gold-dark);
   font: inherit;
+}
+.potionbtn {
+  background: linear-gradient(180deg, rgb(20 44 36 / 0.92), rgb(8 14 14 / 0.95));
+  border: 1px solid #4fb77e;
   cursor: pointer;
   pointer-events: auto;
+  transition:
+    transform var(--t-fast) var(--ease-out),
+    box-shadow var(--t-fast) var(--ease-out);
 }
-.potionbtn span {
-  font-size: 1.4rem;
-  line-height: 1;
-  color: #6df0a8;
+.potionbtn:not(:disabled):hover {
+  transform: translateY(-3px);
+  box-shadow: 0 0 14px rgb(109 240 168 / 0.5);
 }
-.potionbtn.potion--uncommon span {
-  color: #ffb347;
+.potionbtn.potion--uncommon {
+  border-color: #e0b24a;
 }
-.potionbtn.potion--rare span {
-  color: #c89bff;
+.potionbtn.potion--rare {
+  border-color: #b98aff;
+}
+.potionslot {
+  border: 1px dashed rgb(109 240 168 / 0.3);
+  background: rgb(8 14 14 / 0.4);
+  pointer-events: auto;
 }
 .potionbtn small {
-  font-size: 0.68rem;
-  letter-spacing: 0.04em;
+  max-width: 4.3rem;
+  font-size: 0.62rem;
+  line-height: 1.1;
+  letter-spacing: 0.03em;
+  text-align: center;
 }
 .potionbtn.is-active {
   border-color: var(--c-gold-light);
@@ -751,11 +805,12 @@
   cursor: default;
 }
 
+
 /* ---- board extras: Stars, runes, Powers ---- */
 .fight__aux {
   position: absolute;
   left: 1.2rem;
-  top: 7rem;
+  top: 10.6rem;
   display: grid;
   gap: 0.45rem;
   justify-items: start;

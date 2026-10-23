@@ -69,7 +69,7 @@ export function DeckBuilder(props: {
 
   const pools: PoolKey[] = [
     'all',
-    ...(Object.keys(RIFTWALKERS)),
+    ...Object.keys(RIFTWALKERS),
     'neutral',
     'wardens',
     'tokens',
@@ -217,4 +217,3 @@ export function DeckBuilder(props: {
     </div>
   );
 }
-

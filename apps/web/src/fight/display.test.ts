@@ -16,9 +16,10 @@ function compare(shown: CombatState, real: CombatState, where: string): void {
     expect(ids(a.hand), `${where} hand ${side}`).toEqual(ids(b.hand));
     // a card whose effects are waiting on a choice is in limbo in the engine, but already shown as played
     const limbo = real.active === side ? real.pending?.finish?.id : undefined;
-    expect(ids(a.discard).filter((id) => id !== limbo), `${where} discard ${side}`).toEqual(
-      ids(b.discard),
-    );
+    expect(
+      ids(a.discard).filter((id) => id !== limbo),
+      `${where} discard ${side}`,
+    ).toEqual(ids(b.discard));
     expect(ids(a.exhausted), `${where} exhausted ${side}`).toEqual(ids(b.exhausted));
     expect(a.draw.length, `${where} draw ${side}`).toBe(b.draw.length);
     expect(

@@ -438,3 +438,71 @@ a {
 body:has(.learn) {
   background: linear-gradient(180deg, var(--c-navy), var(--c-void) 80%);
 }
+
+/* ---- the tooltip layer ---- */
+.tip {
+  position: fixed;
+  z-index: 1000;
+  display: grid;
+  gap: 0.25rem;
+  max-width: min(22rem, 90vw);
+  padding: 0.65rem 0.85rem;
+  border-radius: 10px;
+  background: linear-gradient(160deg, rgb(24 38 88 / 0.98), rgb(8 10 22 / 0.98));
+  border: 1px solid var(--c-gold-dark);
+  box-shadow:
+    0 10px 30px rgb(0 0 0 / 0.65),
+    0 0 18px rgb(212 168 75 / 0.18);
+  color: var(--c-ivory);
+  pointer-events: none;
+  text-align: left;
+  font-size: 0.88rem;
+  line-height: 1.4;
+}
+.tip__kicker {
+  font-size: 0.68rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--c-text-dim);
+}
+.tip__title {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  letter-spacing: 0.04em;
+  color: var(--c-gold-light);
+}
+.tip--good .tip__title {
+  color: #8ff0b4;
+}
+.tip--bad .tip__title {
+  color: #ff9aa8;
+}
+.tip--potion {
+  border-color: #6df0a8;
+}
+.tip--potion .tip__title {
+  color: #8ff0b4;
+}
+.tip--boon .tip__title {
+  color: var(--c-gold-light);
+}
+.tip__text,
+.tip__line {
+  margin: 0;
+}
+.tip__line b {
+  color: var(--c-gold-light);
+}
+.tip__hint {
+  margin-top: 0.15rem;
+  color: var(--c-cyan-glow);
+  font-size: 0.78rem;
+}
+
+[data-tip] {
+  pointer-events: auto;
+}
+
+.tip--keywords {
+  gap: 0.4rem;
+}
