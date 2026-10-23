@@ -22,7 +22,7 @@ const HERO: Record<string, [Archetype, Realm]> = {
   sehra: ['cleric', 'aurelion'],
   astra: ['mage', 'starfall'],
   mire: ['shade', 'gloomfen'],
-  kp: ['engineer', 'nexus'],
+  kp: ['engineer', 'midden'],
 };
 
 const UNIT: Record<string, [Archetype, Realm]> = {
@@ -119,6 +119,7 @@ const REALM_TRIBES: Record<string, string[]> = {
   umbral: ['Shade'],
   starfall: ['Spirit'],
   gloomfen: ['Spirit'],
+  midden: ['Drone'],
 };
 
 /** What a card does, as a picture: chosen from its effects, never from its name. */

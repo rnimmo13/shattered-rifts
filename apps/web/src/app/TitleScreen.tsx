@@ -10,6 +10,7 @@ const ACCENT: Record<string, string> = {
   umbral: color.violet,
   starfall: '#ffe9a0',
   gloomfen: '#9be86a',
+  midden: '#ff9a3c',
 };
 
 /** Title screen. The jagged SVG crack is the game's "shattering" motif. */

@@ -555,3 +555,12 @@
   text-align: center;
   font-size: 40px;
 }
+
+.card--midden {
+  --ink-a: #3a2410;
+  --ink-b: #120a04;
+  --trim: #c98a3c;
+  --trim-hi: #ffd9a0;
+  --trim-lo: #6a4318;
+  --accent: #ff9a3c;
+}

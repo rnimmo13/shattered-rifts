@@ -48,7 +48,7 @@ deck takes one and a half of them. Our pools were ~16 cards and one lane each. T
 | 7 | **Sehra, the Still Flame** | Aurelion | 72 | **Fury:** burst | **Serene:** Mana and cards | **Fervor:** Retain/Foresee to a payoff |
 | 8 | **Astra, the Starcaller** | Starfall | 80 | **Blade:** sharpen one weapon | **Lumen:** spend for finishers | **Constellations:** Auras that tick |
 | 9 | **Mire, the Gravewarden** | Gloomfen | 76 | **Doom:** stack, double, cash in | **Thralls:** the dead fight for you | **Ashes:** consumed cards fuel you |
-| 10 | **KP, the Homeless Drunk** | Nexus-9 | 88 | **Junk Traps:** a few booby-trap Snares | **Glass:** Barrier + Thorns, then break it | **Shells:** 12 gauge buckshot that hits every enemy; swigs and liquid courage |
+| 10 | **KP, the Homeless Drunk** | The Midden | 88 | **Junk Traps:** a few booby-trap Snares | **Glass:** Barrier + Thorns, then break it | **Shells:** 12 gauge buckshot that hits every enemy; swigs and liquid courage |
 
 **KP's look (art brief):** short, fat, bald dwarf; ragged coat, ruddy drunk's nose; a hammer in one hand, a sawed-off 12 gauge across his back, a shopping trolley loaded with window panes and glass. Sigil/colour: bottle green and rust. He is a Drunkard (role): the Trapper role stays Vesper's, KP only has a few Snares. His signature is the Buckshot Shell (tag `shell`, 0-cost, hits every enemy, consumed), tested like Quill's knives.
 
@@ -59,7 +59,7 @@ Sigils (a passive on turn 1, so each run has an identity). The original four use
 fight with a Sleeve Knife in hand); **Ilvane** *Primed* (start each fight with one Spark rune); **Sehra** *Centred* (start each fight in
 Serene); **Astra** *Starlit* (start each fight with 2 Lumen).
 
-Role tags (what kind of fighter, shown on every character screen): Maren **Knight**, Rivet **Engineer**, Kesh **Barbarian**, Vesper **Trapper**, Quill **Assassin**, Ilvane **Runecaster**, Sehra **Monk**, Astra **Spellblade**, Mire **Necromancer**. One word, unique per character (`Riftwalker.role`, tested).
+Role tags (what kind of fighter, shown on every character screen): Maren **Knight**, Rivet **Engineer**, Kesh **Hunter**, Vesper **Trapper**, Quill **Assassin**, Ilvane **Runecaster**, Sehra **Barbarian**, Astra **Spellblade**, Mire **Necromancer**. One word, unique per character (`Riftwalker.role`, tested).
 
 ## 3. Engine pieces (all generic ops; never a card id in engine code)
 

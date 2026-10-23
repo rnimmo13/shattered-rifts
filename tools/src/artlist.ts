@@ -18,6 +18,8 @@ const REALM_STYLE: Record<string, string> = {
     'a night sky of fallen stars, deep indigo and pale gold, scholars of constellations, silver circlets and astrolabes',
   gloomfen:
     'a drowned fen of green witch-light, bone and reeds, quiet wardens of the dead, pale mist over black water',
+  midden:
+    "the rift's rubbish heap: rusted trolleys, broken windows and green bottle glass, amber firelight in an oil drum, a drunk's kingdom of junk",
   neutral: 'a shattered rift between worlds, violet and cyan energy, fractured crystal',
   junk: 'a dull grey curse, scratched and dim',
 };

@@ -1802,3 +1802,12 @@
 .deckmodal .grim__page {
   min-height: 26rem;
 }
+
+.crest--midden {
+  --crest-a: #ffb35c;
+  --crest-b: #3a2410;
+  --crest-glow: rgb(255 154 60 / 0.55);
+}
+.grim__ribbon--midden {
+  --rib: #b0682a;
+}

@@ -274,13 +274,31 @@ function amountText(n: number, sc: Scale | undefined): { num: string; equal: boo
   const w = METRIC_WORDS[sc.by];
   const m = sc.mult ?? 1;
   const unit = UNIT_METRICS.includes(sc.by);
-  const whose = unit ? (sc.of === 'target' ? "the target's " : sc.of === 'each' ? 'their ' : 'your ') : '';
+  const whose = unit
+    ? sc.of === 'target'
+      ? "the target's "
+      : sc.of === 'each'
+        ? 'their '
+        : 'your '
+    : '';
   if (n === 0) {
     const mult =
-      m === 1 ? '' : m === 0.5 ? 'half ' : m === 0.25 ? 'a quarter ' : m > 1 ? `${m} times ` : `${Math.round(m * 100)}% of `;
-    return { num: `${mult}${mult && !/ of $/.test(mult) && m < 1 ? 'of ' : ''}${whose}${w.equal}`, equal: true };
+      m === 1
+        ? ''
+        : m === 0.5
+          ? 'half '
+          : m === 0.25
+            ? 'a quarter '
+            : m > 1
+              ? `${m} times `
+              : `${Math.round(m * 100)}% of `;
+    return {
+      num: `${mult}${mult && !/ of $/.test(mult) && m < 1 ? 'of ' : ''}${whose}${w.equal}`,
+      equal: true,
+    };
   }
-  const on = unit && sc.of === 'target' ? ' on the target' : unit && sc.of === 'each' ? ' on each' : '';
+  const on =
+    unit && sc.of === 'target' ? ' on the target' : unit && sc.of === 'each' ? ' on each' : '';
   const per = m >= 1 ? `+${m} per ${w.per}` : `+1 per ${Math.round(1 / m)} ${w.per}`;
   return { num: `${n} (${per}${on})`, equal: false };
 }
@@ -348,7 +366,8 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
     case 'scaleStatus': {
       const times = o.mult === 2 ? 'Double' : o.mult === 3 ? 'Triple' : `Multiply by ${o.mult}`;
       if (o.status === 'doom') {
-        const noun = o.to === 'target' ? 'the target' : who[o.to].replace(/^ to /, '') || 'the target';
+        const noun =
+          o.to === 'target' ? 'the target' : who[o.to].replace(/^ to /, '') || 'the target';
         return `${times} the Fate cursing ${noun}.`;
       }
       return `${times} the ${sname(o.status)}${who[o.to] || ' on the target'}.`;
@@ -376,7 +395,9 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
       const dest = `${o.side === 'self' ? 'your' : 'the enemy'} ${o.to === 'hand' ? 'hand' : o.to === 'draw' ? 'draw pile' : 'discard pile'}`;
       if (o.scale) {
         const a = amountText(o.times ?? 0, o.scale);
-        return a.equal ? `Add ${nm}s to ${dest} equal to ${a.num}.` : `Add ${a.num} ${nm}s to ${dest}.`;
+        return a.equal
+          ? `Add ${nm}s to ${dest} equal to ${a.num}.`
+          : `Add ${a.num} ${nm}s to ${dest}.`;
       }
       const n = o.times ?? 1;
       return `Add ${n > 1 ? `${n} ${nm}s` : `${article(nm)} ${nm}`} to ${dest}.`;
@@ -401,8 +422,7 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
           : `Consume ${o.amount} card${o.amount === 1 ? '' : 's'}.`;
     case 'scry':
       return `Foresee ${o.amount}.`;
-    case 'power':
-    {
+    case 'power': {
       const TAGS: Record<string, string> = { knife: 'Sleeve Knife', blade: 'Starforged Blade' };
       const KIND_WORD: Record<string, string> = { power: 'Aura' };
       const when =
@@ -439,8 +459,7 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
       return `Next turn, draw ${o.amount} extra card${o.amount === 1 ? '' : 's'}.`;
     case 'discover': {
       const kind = o.kind ? `${KIND_PLURAL[o.kind]?.[0] ?? o.kind} ` : '';
-      const what =
-        (o.count ?? 1) > 1 ? `${o.count} random ${kind}cards` : `a random ${kind}card`;
+      const what = (o.count ?? 1) > 1 ? `${o.count} random ${kind}cards` : `a random ${kind}card`;
       return `Add ${what} from your pool to your hand${o.free ? ' (it costs 0 this fight)' : ''}.`;
     }
     case 'upgrade':
@@ -468,10 +487,10 @@ export function cardText(db: CombatDb, c: CardDef): string {
         : c.trigger.on === 'hpLost'
           ? `When you lose ${c.trigger.min}+ HP at once:`
           : c.trigger.on === 'foeSummons'
-          ? 'When the enemy summons:'
-          : c.trigger.on === 'foeDefends'
-            ? 'When an enemy gains Barrier:'
-            : 'At the start of the enemy turn:',
+            ? 'When the enemy summons:'
+            : c.trigger.on === 'foeDefends'
+              ? 'When an enemy gains Barrier:'
+              : 'At the start of the enemy turn:',
     );
   }
   if (c.unplayable) parts.push('Unplayable.');

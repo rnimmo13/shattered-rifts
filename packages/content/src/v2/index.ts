@@ -8,7 +8,8 @@ import { RUNES } from './pools/ilvane';
 import { POTIONS } from './potions';
 import { ALLIES, ENEMY_UNITS } from './units';
 
-export type RealmId = 'aurelion' | 'nexus' | 'wyldmaw' | 'umbral' | 'starfall' | 'gloomfen';
+export type RealmId =
+  'aurelion' | 'nexus' | 'wyldmaw' | 'umbral' | 'starfall' | 'gloomfen' | 'midden';
 export type HeroId =
   'maren' | 'rivet' | 'kesh' | 'vesper' | 'quill' | 'ilvane' | 'sehra' | 'astra' | 'mire' | 'kp';
 
@@ -63,7 +64,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
   },
   kesh: {
     realm: 'wyldmaw',
-    role: 'Barbarian',
+    role: 'Hunter',
     hero: {
       id: 'kesh',
       name: 'Kesh the Unfed',
@@ -146,7 +147,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
   },
   sehra: {
     realm: 'aurelion',
-    role: 'Monk',
+    role: 'Barbarian',
     hero: {
       id: 'sehra',
       name: 'Sehra, the Still Flame',
@@ -192,7 +193,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     ],
   },
   kp: {
-    realm: 'nexus',
+    realm: 'midden',
     role: 'Drunkard',
     hero: { id: 'kp', name: 'KP, the Homeless Drunk', maxHp: 88, mana: 3, handSize: 5 },
     starter: [
@@ -367,6 +368,7 @@ export const REALMS: { id: RealmId; name: string }[] = [
   { id: 'umbral', name: 'Umbral Veil' },
   { id: 'starfall', name: 'Starfall' },
   { id: 'gloomfen', name: 'Gloomfen' },
+  { id: 'midden', name: 'The Midden' },
 ];
 
 /** Riftwalkers grouped by realm (every screen that lists characters uses this, so they always group alike). */

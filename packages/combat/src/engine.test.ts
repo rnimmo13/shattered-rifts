@@ -291,8 +291,10 @@ describe('allies', () => {
       ['call-drone', 'call-drone', 'call-drone', 'call-drone'],
       10,
     );
-    for (let i = 0; i < 4; i++) s = play(s, `t${i}`).state;
+    for (let i = 0; i < 3; i++) s = play(s, `t${i}`).state;
     expect(s.sides.a.units.filter((u) => u.kind === 'ally')).toHaveLength(3);
+    // with the board full, a summon card cannot be played at all
+    expect(legalActions(db, s).some((a) => a.type === 'play' && a.card === 't3')).toBe(false);
   });
 
   it('a hero can start with allies (Tinker begins with a Drone)', () => {

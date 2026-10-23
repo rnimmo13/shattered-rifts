@@ -431,7 +431,7 @@ Tokens (made by other cards):
 |---|---|---|---|---|
 | Starforged Blade | 1 | attack | common | Deal 7 (+1 per point of sharpening) damage. Hold. |
 
-## KP, the Homeless Drunk (nexus, 88 HP)
+## KP, the Homeless Drunk (midden, 88 HP)
 
 A short, fat, bald dwarf with a hammer, a sawed-off 12 gauge and a trolley of window panes. Booby traps, glass and buckshot.
 

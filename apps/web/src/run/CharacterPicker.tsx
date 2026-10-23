@@ -13,6 +13,7 @@ const REALM_NAME: Record<string, string> = {
   umbral: 'Umbral Veil',
   starfall: 'Starfall',
   gloomfen: 'Gloomfen',
+  midden: 'The Midden',
 };
 
 export function CharacterPicker(props: { value: HeroId; onChange: (id: HeroId) => void }) {

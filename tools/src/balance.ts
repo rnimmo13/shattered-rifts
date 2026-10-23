@@ -26,7 +26,9 @@ function deckFor(h: HeroId, seed: number): string[] {
 }
 
 const kinds = ['regular', 'elite', 'warden'] as const;
-console.log(`balance: ${N} fights per encounter, +${DRAFT} drafted cards, enemies ${HP}% HP / ${DMG}% damage\n`);
+console.log(
+  `balance: ${N} fights per encounter, +${DRAFT} drafted cards, enemies ${HP}% HP / ${DMG}% damage\n`,
+);
 console.log('hero'.padEnd(10) + kinds.map((k) => k.padEnd(18)).join('') + 'overall');
 for (const h of Object.keys(RIFTWALKERS) as HeroId[]) {
   let row = h.padEnd(10);
@@ -55,7 +57,8 @@ for (const h of Object.keys(RIFTWALKERS) as HeroId[]) {
     }
     totalWins += wins;
     totalFights += fights;
-    row += `${Math.round((wins / fights) * 100)}% / -${wins ? Math.round(lost / wins) : '-'}`.padEnd(18);
+    row +=
+      `${Math.round((wins / fights) * 100)}% / -${wins ? Math.round(lost / wins) : '-'}`.padEnd(18);
   }
   row += `${Math.round((totalWins / totalFights) * 100)}%`;
   console.log(row);

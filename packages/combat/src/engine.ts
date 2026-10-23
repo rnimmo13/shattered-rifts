@@ -483,7 +483,8 @@ function execOp(r: Run, a: Act, op: Op): void {
           op.status,
           op.status === 'seared' ? scaledByDifficulty(a.actor, t, n) : n,
         );
-        if (op.temp && n > 0 && applied) side.temps.push({ unit: t.id, status: op.status, amount: n });
+        if (op.temp && n > 0 && applied)
+          side.temps.push({ unit: t.id, status: op.status, amount: n });
       }
       return;
     case 'scaleStatus':
@@ -678,7 +679,13 @@ function execOp(r: Run, a: Act, op: Op): void {
       for (const c of chosen) {
         const d = cardDef(r.db, c.card);
         c.costMod = Math.max(-d.cost, (c.costMod ?? 0) - op.amount);
-        r.ev.push({ type: 'transform', side: side.id, card: c.id, def: c.card, costMod: c.costMod });
+        r.ev.push({
+          type: 'transform',
+          side: side.id,
+          card: c.id,
+          def: c.card,
+          costMod: c.costMod,
+        });
       }
       return;
     }
@@ -738,18 +745,17 @@ function fireRune(r: Run, sd: SideState, rs: RuneState, how: 'passive' | 'evoke'
   const hero = heroOf(sd);
   if (!hero || hero.hp <= 0) return;
   r.ev.push({ type: 'runeFire', side: sd.id, rune: rs.rune, how });
-  runOps(r, mkAct(hero, { rune: true, charge: rs.charge }), how === 'passive' ? d.passive : d.evoke);
+  runOps(
+    r,
+    mkAct(hero, { rune: true, charge: rs.charge }),
+    how === 'passive' ? d.passive : d.evoke,
+  );
   if (how === 'passive' && d.grow) rs.charge += d.grow + stacks(hero, 'resonance');
 }
 
 // --- cards & piles -----------------------------------------------------------------------------------------------
 
-function addCardTo(
-  r: Run,
-  sd: SideState,
-  card: CardId,
-  to: 'hand' | 'discard' | 'draw',
-): CardInst {
+function addCardTo(r: Run, sd: SideState, card: CardId, to: 'hand' | 'discard' | 'draw'): CardInst {
   cardDef(r.db, card);
   const inst: CardInst = { id: newId(r.s, 'c'), card };
   let where = to;
@@ -1309,16 +1315,19 @@ export function costOf(
   return Math.max(0, cd.cost + (c.costMod ?? 0));
 }
 
-export function canPlay(
-  r: { db: CombatDb; s: CombatState },
-  side: Side,
-  c: CardInst,
-): boolean {
+export function canPlay(r: { db: CombatDb; s: CombatState }, side: Side, c: CardInst): boolean {
   const cd = cardDef(r.db, c.card);
   const sd = r.s.sides[side];
   if (r.s.pending) return false;
   if (cd.unplayable || costOf(r.db, sd, c) > sd.mana || (cd.starCost ?? 0) > sd.stars) return false;
   if (cd.kind === 'snare' && sd.snares.length >= MAX_SNARES) return false;
+  // no room for another companion: a card that summons one cannot be played
+  if (
+    cd.effects.some((o) => o.op === 'summon') &&
+    sd.hero !== null &&
+    sd.units.filter((u) => u.kind !== 'hero').length >= MAX_ALLIES
+  )
+    return false;
   if (cd.target === 'foe' && legalFoes({ ...r, ev: [], depth: 0 }, side, cd).length === 0)
     return false;
   if (cd.target === 'ally' && !sd.units.some((u) => u.kind === 'ally' && u.hp > 0)) return false;
@@ -1384,13 +1393,7 @@ const unbound = (sd: SideState): boolean => {
   return !!h && stacks(h, 'unbound') > 0;
 };
 
-function finishCard(
-  r: Run,
-  sd: SideState,
-  inst: CardInst,
-  cd: CardDef,
-  target: Unit | null,
-): void {
+function finishCard(r: Run, sd: SideState, inst: CardInst, cd: CardDef, target: Unit | null): void {
   if (cd.kind === 'power') {
     // a Power stays in effect for the fight and leaves the deck (without counting as "exhausted")
     sd.exhausted.push(inst);
@@ -1494,7 +1497,13 @@ function pickCards(r: Run, action: Extract<Action, { type: 'pick' }>): void {
   if (hero && !r.s.winner)
     runOps(
       r,
-      mkAct(hero, { target: findUnit(r.s, p.target) ?? null, card: cd, inst: fin, x: p.x, pick: true }),
+      mkAct(hero, {
+        target: findUnit(r.s, p.target) ?? null,
+        card: cd,
+        inst: fin,
+        x: p.x,
+        pick: true,
+      }),
       p.rest,
     );
   // the rest of the card may have asked for another choice

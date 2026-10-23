@@ -33,23 +33,35 @@ export function validateDb(db: CombatDb): string[] {
       )
         errs.push(`${where}: negative amount`);
       if ((o.op === 'discard' || o.op === 'exhaustCards' || o.op === 'scry') && !opts.pick)
-        errs.push(`${where}: "${o.op}" asks the player to choose, so only a card's own effects may use it`);
+        errs.push(
+          `${where}: "${o.op}" asks the player to choose, so only a card's own effects may use it`,
+        );
       if (opts.rune && (o.op === 'evoke' || o.op === 'channel'))
-        errs.push(`${where}: a rune's own effects cannot evoke or channel (they would call themselves)`);
+        errs.push(
+          `${where}: a rune's own effects cannot evoke or channel (they would call themselves)`,
+        );
       if (o.op === 'copySelf' && !opts.card) errs.push(`${where}: "copySelf" only works in a card`);
-      if (o.op === 'discover' && (o.count !== undefined && (!Number.isInteger(o.count) || o.count < 1)))
+      if (
+        o.op === 'discover' &&
+        o.count !== undefined &&
+        (!Number.isInteger(o.count) || o.count < 1)
+      )
         errs.push(`${where}: bad discover count`);
       if (o.op === 'power') {
         if (!opts.card) errs.push(`${where}: "power" only works in a card`);
         checkOps(`${where}.power`, o.ops, { aimed: o.when === 'play', snare: false });
       }
-      if (o.op === 'channel' && !db.runes?.[o.rune]) errs.push(`${where}: channels unknown rune "${o.rune}"`);
-      if (o.op === 'forge' && !db.cards[o.card]) errs.push(`${where}: forges unknown card "${o.card}"`);
+      if (o.op === 'channel' && !db.runes?.[o.rune])
+        errs.push(`${where}: channels unknown rune "${o.rune}"`);
+      if (o.op === 'forge' && !db.cards[o.card])
+        errs.push(`${where}: forges unknown card "${o.card}"`);
       if ('scale' in o && o.scale) {
-        if (o.scale.by === 'charge' && !opts.rune) errs.push(`${where}: "charge" only works in a rune`);
+        if (o.scale.by === 'charge' && !opts.rune)
+          errs.push(`${where}: "charge" only works in a rune`);
         if ((o.scale.by === 'x' || o.scale.by === 'bonus') && !opts.card)
           errs.push(`${where}: "${o.scale.by}" only works in a card`);
-        if (o.scale.into === 'hits' && o.op !== 'damage') errs.push(`${where}: only damage has hits`);
+        if (o.scale.into === 'hits' && o.op !== 'damage')
+          errs.push(`${where}: only damage has hits`);
       }
       if (o.op === 'status' && ['calm', 'wrath', 'radiant'].includes(o.status))
         errs.push(`${where}: use the stance op for stances`);
@@ -78,8 +90,10 @@ export function validateDb(db: CombatDb): string[] {
       card: true,
       pick: c.kind !== 'snare',
     });
-    if (c.onDiscard) checkOps(`${id}.onDiscard`, c.onDiscard, { aimed: false, snare: false, card: true });
-    if (c.onExhaust) checkOps(`${id}.onExhaust`, c.onExhaust, { aimed: false, snare: false, card: true });
+    if (c.onDiscard)
+      checkOps(`${id}.onDiscard`, c.onDiscard, { aimed: false, snare: false, card: true });
+    if (c.onExhaust)
+      checkOps(`${id}.onExhaust`, c.onExhaust, { aimed: false, snare: false, card: true });
     if (c.x && c.cost !== 0) errs.push(`${id}: an X card must have cost 0`);
     const flat = [...c.effects, ...c.effects.flatMap((o) => (o.op === 'power' ? o.ops : []))];
     const readsX = flat.some((o) => 'scale' in o && o.scale?.by === 'x');
@@ -92,7 +106,8 @@ export function validateDb(db: CombatDb): string[] {
       c.effects.some((o) => o.op === 'damage' && o.to === 'target')
     )
       errs.push(`${id}: aims at your own unit but deals it damage`);
-    if (c.starCost !== undefined && (!Number.isInteger(c.starCost) || c.starCost < 0)) errs.push(`${id}: bad star cost`);
+    if (c.starCost !== undefined && (!Number.isInteger(c.starCost) || c.starCost < 0))
+      errs.push(`${id}: bad star cost`);
     if (
       c.kind === 'snare' &&
       c.trigger !== undefined &&

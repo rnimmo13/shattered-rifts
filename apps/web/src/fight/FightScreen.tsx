@@ -23,6 +23,7 @@ const REALM_NAME: Record<string, string> = {
   umbral: 'Umbral Veil',
   starfall: 'Starfall',
   gloomfen: 'Gloomfen',
+  midden: 'The Midden',
   all: 'All realms',
 };
 const KINDS = ['regular', 'elite', 'warden', 'finale'] as const;

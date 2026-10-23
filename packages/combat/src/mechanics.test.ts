@@ -54,20 +54,39 @@ const DB: CombatDb = {
         { op: 'draw', amount: 1 },
       ],
     }),
-    c('purge', { effects: [{ op: 'discard', amount: 9, any: true }, { op: 'draw', amount: 2 }] }),
+    c('purge', {
+      effects: [
+        { op: 'discard', amount: 9, any: true },
+        { op: 'draw', amount: 2 },
+      ],
+    }),
     c('gamble', { effects: [{ op: 'discard', amount: 2, random: true }] }),
     c('reflex', {
       unplayable: true,
       effects: [],
       onDiscard: [{ op: 'draw', amount: 2 }],
     }),
-    c('pact', { effects: [{ op: 'exhaustCards', amount: 1 }, { op: 'draw', amount: 2 }] }),
+    c('pact', {
+      effects: [
+        { op: 'exhaustCards', amount: 1 },
+        { op: 'draw', amount: 2 },
+      ],
+    }),
     c('ember', { ethereal: true, effects: [{ op: 'barrier', amount: 1, to: 'self' }] }),
     c('husk', { effects: [], onExhaust: [{ op: 'barrier', amount: 4, to: 'self' }] }),
-    c('peek', { effects: [{ op: 'scry', amount: 3 }, { op: 'draw', amount: 1 }] }),
+    c('peek', {
+      effects: [
+        { op: 'scry', amount: 3 },
+        { op: 'draw', amount: 1 },
+      ],
+    }),
     c('burn-out', { exhaust: true, effects: [{ op: 'barrier', amount: 1, to: 'self' }] }),
     // scaling
-    c('slam', { kind: 'attack', target: 'foe', effects: [{ op: 'damage', amount: 0, to: 'target', scale: { by: 'barrier' } }] }),
+    c('slam', {
+      kind: 'attack',
+      target: 'foe',
+      effects: [{ op: 'damage', amount: 0, to: 'target', scale: { by: 'barrier' } }],
+    }),
     c('whirl', {
       kind: 'attack',
       cost: 0,
@@ -80,8 +99,14 @@ const DB: CombatDb = {
       target: 'foe',
       effects: [{ op: 'damage', amount: 0, to: 'target', scale: { by: 'attacksPlayed', mult: 6 } }],
     }),
-    c('toxin', { target: 'foe', effects: [{ op: 'status', status: 'seared', amount: 4, to: 'target' }] }),
-    c('catalyst', { target: 'foe', effects: [{ op: 'scaleStatus', status: 'seared', mult: 2, to: 'target' }] }),
+    c('toxin', {
+      target: 'foe',
+      effects: [{ op: 'status', status: 'seared', amount: 4, to: 'target' }],
+    }),
+    c('catalyst', {
+      target: 'foe',
+      effects: [{ op: 'scaleStatus', status: 'seared', mult: 2, to: 'target' }],
+    }),
     c('cash-out', {
       target: 'foe',
       effects: [{ op: 'loseHp', amount: 0, to: 'target', scale: { by: 'seared', of: 'target' } }],
@@ -101,7 +126,10 @@ const DB: CombatDb = {
       tags: ['knife'],
       effects: [{ op: 'damage', amount: 4, to: 'target' }],
     }),
-    c('accuracy', { kind: 'power', effects: [{ op: 'status', status: 'edge', amount: 3, to: 'self' }] }),
+    c('accuracy', {
+      kind: 'power',
+      effects: [{ op: 'status', status: 'edge', amount: 3, to: 'self' }],
+    }),
     // runes
     c('c-spark', { effects: [{ op: 'channel', rune: 'spark' }] }),
     c('c-dark', { effects: [{ op: 'channel', rune: 'dark' }] }),
@@ -138,8 +166,16 @@ const DB: CombatDb = {
       ],
     }),
     // snares
-    c('tripwire', { kind: 'snare', effects: [{ op: 'damage', amount: 7, to: 'attacker' }], trigger: { on: 'foeDefends' } }),
-    c('timebomb', { kind: 'snare', effects: [{ op: 'damage', amount: 9, to: 'allFoes' }], trigger: { on: 'foeTurn' } }),
+    c('tripwire', {
+      kind: 'snare',
+      effects: [{ op: 'damage', amount: 7, to: 'attacker' }],
+      trigger: { on: 'foeDefends' },
+    }),
+    c('timebomb', {
+      kind: 'snare',
+      effects: [{ op: 'damage', amount: 9, to: 'allFoes' }],
+      trigger: { on: 'foeTurn' },
+    }),
     c('born-ready', { innate: true, effects: [] }),
     // tier 3: statuses given to yourself, and tricks
     ...(
@@ -157,16 +193,46 @@ const DB: CombatDb = {
         'fortified',
         'holdfast',
       ] as const
-    ).map((st) => c('give-' + st, { cost: 0, effects: [{ op: 'status', status: st, amount: 2, to: 'self' }] })),
-    c('give-vigor5', { cost: 0, effects: [{ op: 'status', status: 'vigor', amount: 5, to: 'self' }] }),
-    c('give-twin1', { cost: 0, effects: [{ op: 'status', status: 'twinned', amount: 1, to: 'self' }] }),
-    c('give-mirror1', { cost: 0, effects: [{ op: 'status', status: 'mirrored', amount: 1, to: 'self' }] }),
-    c('give-hold1', { cost: 0, effects: [{ op: 'status', status: 'holdfast', amount: 1, to: 'self' }] }),
-    c('self-expose', { cost: 0, effects: [{ op: 'status', status: 'exposed', amount: 2, to: 'self' }] }),
-    c('doom60', { cost: 0, target: 'foe', effects: [{ op: 'status', status: 'doom', amount: 60, to: 'target' }] }),
+    ).map((st) =>
+      c('give-' + st, { cost: 0, effects: [{ op: 'status', status: st, amount: 2, to: 'self' }] }),
+    ),
+    c('give-vigor5', {
+      cost: 0,
+      effects: [{ op: 'status', status: 'vigor', amount: 5, to: 'self' }],
+    }),
+    c('give-twin1', {
+      cost: 0,
+      effects: [{ op: 'status', status: 'twinned', amount: 1, to: 'self' }],
+    }),
+    c('give-mirror1', {
+      cost: 0,
+      effects: [{ op: 'status', status: 'mirrored', amount: 1, to: 'self' }],
+    }),
+    c('give-hold1', {
+      cost: 0,
+      effects: [{ op: 'status', status: 'holdfast', amount: 1, to: 'self' }],
+    }),
+    c('self-expose', {
+      cost: 0,
+      effects: [{ op: 'status', status: 'exposed', amount: 2, to: 'self' }],
+    }),
+    c('doom60', {
+      cost: 0,
+      target: 'foe',
+      effects: [{ op: 'status', status: 'doom', amount: 60, to: 'target' }],
+    }),
     c('encore', { effects: [{ op: 'status', status: 'mirrored', amount: 1, to: 'self' }] }),
-    c('flex', { cost: 0, effects: [{ op: 'status', status: 'might', amount: 3, to: 'self', temp: true }] }),
-    c('plan', { cost: 0, effects: [{ op: 'manaNext', amount: 2 }, { op: 'drawNext', amount: 1 }] }),
+    c('flex', {
+      cost: 0,
+      effects: [{ op: 'status', status: 'might', amount: 3, to: 'self', temp: true }],
+    }),
+    c('plan', {
+      cost: 0,
+      effects: [
+        { op: 'manaNext', amount: 2 },
+        { op: 'drawNext', amount: 1 },
+      ],
+    }),
     c('find', { effects: [{ op: 'discover', count: 1, free: true }] }),
     c('retune', { effects: [{ op: 'upgrade', scope: 'hand' }] }),
     c('cheap', { effects: [{ op: 'cheapen', amount: 1, scope: 'hand' }] }),
@@ -174,13 +240,30 @@ const DB: CombatDb = {
       kind: 'attack',
       target: 'foe',
       cost: 0,
-      effects: [{ op: 'damage', amount: 6, to: 'target' }, { op: 'copySelf', to: 'discard' }],
+      effects: [
+        { op: 'damage', amount: 6, to: 'target' },
+        { op: 'copySelf', to: 'discard' },
+      ],
     }),
-    c('pool-a', { hero: 'tester', rarity: 'common', upgrade: 'pool-a+', effects: [{ op: 'barrier', amount: 1, to: 'self' }] }),
+    c('pool-a', {
+      hero: 'tester',
+      rarity: 'common',
+      upgrade: 'pool-a+',
+      effects: [{ op: 'barrier', amount: 1, to: 'self' }],
+    }),
     c('pool-a+', { hero: 'tester', effects: [{ op: 'barrier', amount: 2, to: 'self' }] }),
-    c('pool-b', { hero: 'tester', rarity: 'common', upgrade: 'pool-b+', effects: [{ op: 'barrier', amount: 3, to: 'self' }] }),
+    c('pool-b', {
+      hero: 'tester',
+      rarity: 'common',
+      upgrade: 'pool-b+',
+      effects: [{ op: 'barrier', amount: 3, to: 'self' }],
+    }),
     c('pool-b+', { hero: 'tester', effects: [{ op: 'barrier', amount: 4, to: 'self' }] }),
-    c('strike+', { kind: 'attack', target: 'foe', effects: [{ op: 'damage', amount: 9, to: 'target' }] }),
+    c('strike+', {
+      kind: 'attack',
+      target: 'foe',
+      effects: [{ op: 'damage', amount: 9, to: 'target' }],
+    }),
     c('gnaw', {
       kind: 'attack',
       target: 'foe',
@@ -199,14 +282,27 @@ const DB: CombatDb = {
     power('legion', 'summon', [{ op: 'status', status: 'might', amount: 1, to: 'allFriends' }]),
     power('echo', 'snare', [{ op: 'draw', amount: 1 }]),
     power('rushdown', 'stance', [{ op: 'draw', amount: 2 }], { stance: 'wrath' }),
-    power('envenom', 'play', [{ op: 'status', status: 'seared', amount: 1, to: 'target' }], { filter: 'attack' }),
+    power('envenom', 'play', [{ op: 'status', status: 'seared', amount: 1, to: 'target' }], {
+      filter: 'attack',
+    }),
     c('storm-steel', {
       effects: [
         { op: 'discard', amount: 9 },
-        { op: 'addCard', card: 'shiv', to: 'hand', side: 'self', times: 0, scale: { by: 'discarded' } },
+        {
+          op: 'addCard',
+          card: 'shiv',
+          to: 'hand',
+          side: 'self',
+          times: 0,
+          scale: { by: 'discarded' },
+        },
       ],
     }),
-    c('tempest', { cost: 0, x: true, effects: [{ op: 'channel', rune: 'spark', times: 0, scale: { by: 'x' } }] }),
+    c('tempest', {
+      cost: 0,
+      x: true,
+      effects: [{ op: 'channel', rune: 'spark', times: 0, scale: { by: 'x' } }],
+    }),
     c('multi', { cost: 0, x: true, effects: [{ op: 'evoke', times: 0, scale: { by: 'x' } }] }),
     c('wrath-slam', {
       kind: 'attack',
@@ -246,7 +342,14 @@ const DB: CombatDb = {
       maxHp: 300,
       brain: {
         kind: 'enemy',
-        moves: { hit: { id: 'hit', name: 'Hit', effects: foeAtk }, guard: { id: 'guard', name: 'Guard', effects: [{ op: 'barrier', amount: 4, to: 'self' }] } },
+        moves: {
+          hit: { id: 'hit', name: 'Hit', effects: foeAtk },
+          guard: {
+            id: 'guard',
+            name: 'Guard',
+            effects: [{ op: 'barrier', amount: 4, to: 'self' }],
+          },
+        },
         pattern: { kind: 'cycle', order: ['hit'] },
       },
     },
@@ -256,7 +359,13 @@ const DB: CombatDb = {
       maxHp: 300,
       brain: {
         kind: 'enemy',
-        moves: { smash: { id: 'smash', name: 'Smash', effects: [{ op: 'damage', amount: 9, to: 'target' }] } },
+        moves: {
+          smash: {
+            id: 'smash',
+            name: 'Smash',
+            effects: [{ op: 'damage', amount: 9, to: 'target' }],
+          },
+        },
         pattern: { kind: 'cycle', order: ['smash'] },
       },
     },
@@ -266,7 +375,13 @@ const DB: CombatDb = {
       maxHp: 300,
       brain: {
         kind: 'enemy',
-        moves: { guard: { id: 'guard', name: 'Guard', effects: [{ op: 'barrier', amount: 4, to: 'self' }] } },
+        moves: {
+          guard: {
+            id: 'guard',
+            name: 'Guard',
+            effects: [{ op: 'barrier', amount: 4, to: 'self' }],
+          },
+        },
         pattern: { kind: 'cycle', order: ['guard'] },
       },
     },
@@ -290,7 +405,10 @@ const DB: CombatDb = {
 
 // --- helpers --------------------------------------------------------------------------------------------------
 
-function start(hand: string[], opts: { enemies?: string[]; hero?: string; draw?: string[]; mana?: number } = {}): CombatState {
+function start(
+  hand: string[],
+  opts: { enemies?: string[]; hero?: string; draw?: string[]; mana?: number } = {},
+): CombatState {
   const { state } = createCombat(DB, {
     seed: 'm',
     a: { hero: opts.hero ?? 'tester', deck: Array<string>(12).fill('filler') },
@@ -298,7 +416,10 @@ function start(hand: string[], opts: { enemies?: string[]; hero?: string; draw?:
   });
   const s = clone(state);
   s.sides.a.hand = hand.map((card, i) => ({ id: `h${i}`, card }));
-  s.sides.a.draw = (opts.draw ?? Array<string>(10).fill('filler')).map((card, i) => ({ id: `d${i}`, card }));
+  s.sides.a.draw = (opts.draw ?? Array<string>(10).fill('filler')).map((card, i) => ({
+    id: `d${i}`,
+    card,
+  }));
   s.sides.a.discard = [];
   s.sides.a.mana = opts.mana ?? 3;
   return s;
@@ -372,7 +493,9 @@ describe('choices (discard, exhaust, scry)', () => {
   });
 
   it('a discarded card can pay off (onDiscard) and counts for "discarded this turn"', () => {
-    let s = start(['survivor', 'reflex', 'strike'], { draw: ['filler', 'filler', 'defend', 'strike'] });
+    let s = start(['survivor', 'reflex', 'strike'], {
+      draw: ['filler', 'filler', 'defend', 'strike'],
+    });
     s = play(s, 'h0').state;
     s = pick(s, 'h1').state;
     // reflex drew 2, survivor drew 1
@@ -396,7 +519,9 @@ describe('choices (discard, exhaust, scry)', () => {
     expect(hero(s).barrier).toBe(1 + 3);
     const before = hero(s).barrier;
     s = end(s).state; // the Ethereal card exhausts at end of turn (barrier is then wiped by the new turn)
-    expect(s.sides.a.exhausted.map((x) => x.card)).toEqual(expect.arrayContaining(['burn-out', 'ember']));
+    expect(s.sides.a.exhausted.map((x) => x.card)).toEqual(
+      expect.arrayContaining(['burn-out', 'ember']),
+    );
     expect(before).toBe(4);
   });
 
@@ -467,7 +592,9 @@ describe('scaling amounts', () => {
 
   it('rules text reads sensibly', () => {
     expect(cardText(DB, DB.cards.slam as CardDef)).toBe('Deal damage equal to your Barrier.');
-    expect(cardText(DB, DB.cards.finisher as CardDef)).toContain('6 times the Attacks played this turn');
+    expect(cardText(DB, DB.cards.finisher as CardDef)).toContain(
+      '6 times the Attacks played this turn',
+    );
     expect(cardText(DB, DB.cards.catalyst as CardDef)).toBe('Double the Seared on the target.');
   });
 });
@@ -641,7 +768,14 @@ describe('stances', () => {
 
   it('cannot be applied as a plain status (validation)', () => {
     const bad: CombatDb = clone(DB);
-    bad.cards.bad = { id: 'bad', name: 'Bad', kind: 'skill', cost: 0, target: 'none', effects: [{ op: 'status', status: 'wrath', amount: 1, to: 'self' }] };
+    bad.cards.bad = {
+      id: 'bad',
+      name: 'Bad',
+      kind: 'skill',
+      cost: 0,
+      target: 'none',
+      effects: [{ op: 'status', status: 'wrath', amount: 1, to: 'self' }],
+    };
     expect(validateDb(bad).join()).toContain('stance op');
   });
 });
@@ -798,7 +932,15 @@ describe('review fixes', () => {
 
   it('validation catches X cards that never read X, scaling by X on a non-X card, and bad sacrifices', () => {
     const bad: CombatDb = clone(DB);
-    bad.cards['x1'] = { id: 'x1', name: 'x', kind: 'skill', cost: 0, x: true, target: 'none', effects: [] };
+    bad.cards['x1'] = {
+      id: 'x1',
+      name: 'x',
+      kind: 'skill',
+      cost: 0,
+      x: true,
+      target: 'none',
+      effects: [],
+    };
     bad.cards['x2'] = {
       id: 'x2',
       name: 'x',
@@ -807,7 +949,14 @@ describe('review fixes', () => {
       target: 'foe',
       effects: [{ op: 'damage', amount: 1, to: 'target', scale: { by: 'x' } }],
     };
-    bad.cards['x3'] = { id: 'x3', name: 'x', kind: 'skill', cost: 0, target: 'none', effects: [{ op: 'sacrifice' }] };
+    bad.cards['x3'] = {
+      id: 'x3',
+      name: 'x',
+      kind: 'skill',
+      cost: 0,
+      target: 'none',
+      effects: [{ op: 'sacrifice' }],
+    };
     const errs = validateDb(bad).join('\n');
     expect(errs).toContain('x1: an X card must scale something by x');
     expect(errs).toContain('x2: scales by x but is not an X card');
@@ -850,7 +999,9 @@ describe('tier 3: statuses and tricks', () => {
     let s = start(['give-ghostly'], { enemies: ['brute'] });
     s = play(s, 'h0').state;
     const out = end(s);
-    expect(out.events.some((e) => e.type === 'damage' && e.target === hero(s).id && e.amount === 1)).toBe(true);
+    expect(
+      out.events.some((e) => e.type === 'damage' && e.target === hero(s).id && e.amount === 1),
+    ).toBe(true);
     expect(hero(out.state).hp).toBe(99);
   });
 
@@ -990,7 +1141,9 @@ describe('tier 3: statuses and tricks', () => {
   });
 
   it('cards Foresee throws away count as discards: payoffs fire', () => {
-    let s = start(['peek'], { draw: ['reflex', 'filler', 'filler', 'filler', 'filler', 'filler', 'filler'] });
+    let s = start(['peek'], {
+      draw: ['reflex', 'filler', 'filler', 'filler', 'filler', 'filler', 'filler'],
+    });
     s = play(s, 'h0').state;
     s = pick(s, 'd0').state; // throw away Reflex: "if discarded, draw 2"
     expect(s.sides.a.discarded).toBe(1);
@@ -1051,7 +1204,10 @@ describe('innate and invariants', () => {
   it('random play never throws and never leaves a stuck choice', () => {
     const cards = Object.keys(DB.cards).filter((k) => !DB.cards[k]?.unplayable);
     for (let seed = 0; seed < 25; seed++) {
-      const deck = Array.from({ length: 24 }, (_, i) => cards[(i * 7 + seed * 3) % cards.length] as string);
+      const deck = Array.from(
+        { length: 24 },
+        (_, i) => cards[(i * 7 + seed * 3) % cards.length] as string,
+      );
       let { state } = createCombat(DB, {
         seed: `r${seed}`,
         a: { hero: 'tester', deck },
@@ -1061,7 +1217,8 @@ describe('innate and invariants', () => {
         const acts = legalActions(DB, state);
         expect(acts.length).toBeGreaterThan(0);
         // alternate between the bot and an arbitrary legal action
-        const a: Action = i % 2 ? (acts[(i * 31 + seed) % acts.length] as Action) : chooseAction(DB, state);
+        const a: Action =
+          i % 2 ? (acts[(i * 31 + seed) % acts.length] as Action) : chooseAction(DB, state);
         state = applyAction(DB, state, a).state;
         expect(hero(state)?.hp ?? 1).toBeGreaterThanOrEqual(0);
       }

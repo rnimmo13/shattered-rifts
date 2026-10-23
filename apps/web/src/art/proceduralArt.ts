@@ -6,7 +6,7 @@
 
 /** The five colour families of the game. */
 export type Realm =
-  'aurelion' | 'nexus' | 'wyldmaw' | 'umbral' | 'starfall' | 'gloomfen' | 'neutral';
+  'aurelion' | 'nexus' | 'wyldmaw' | 'umbral' | 'starfall' | 'gloomfen' | 'midden' | 'neutral';
 
 /** What the painters need to know about a card. */
 export interface ArtCard {
@@ -132,6 +132,14 @@ const PALETTE: Record<Realm, Palette> = {
     dark: '#06100a',
     rim: '#8ff09a',
     eye: '#d6ff9a',
+  },
+  midden: {
+    sky: ['#140c06', '#4a2a10', '#ff9a3c'],
+    glow: '#ffb35c',
+    body: ['#d9b98a', '#5a3a1c'],
+    dark: '#0f0804',
+    rim: '#ffb35c',
+    eye: '#ffe2a8',
   },
   neutral: {
     sky: ['#0a0c17', '#252845', '#ff4fd8'],

@@ -1,4 +1,4 @@
-// KP, the Homeless Drunk (Nexus-9). A short, fat, bald dwarf with a hammer, a sawed-off 12 gauge and a shopping trolley of
+// KP, the Homeless Drunk (the Midden, the rift's rubbish heap). A short, fat, bald dwarf with a hammer, a sawed-off 12 gauge and a shopping trolley of
 // window panes. No companions. Three lanes:
 //   Junk Traps - a few booby traps built from bottles and glass (Snares are a shared tool; Vesper still owns the most)
 //   Glass      - hang panes of glass: Barrier and Thorns, then break them over someone's head
@@ -24,7 +24,7 @@ import {
   discard,
 } from '../build';
 
-const p = pool('kp', 'nexus');
+const p = pool('kp', 'midden');
 
 export const KP: CardDef[] = [
   // --- basics ---
