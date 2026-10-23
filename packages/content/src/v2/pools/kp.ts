@@ -249,7 +249,7 @@ export const KP: CardDef[] = [
     forge('old-twelve-gauge', 3),
     barrier(4),
   ]),
-  p('uncommon', 'trigger-discipline', 'Trigger Discipline', 'power', 1, 'none', [
+  p('rare', 'trigger-discipline', 'Trigger Discipline', 'power', 2, 'none', [
     on('play', [forge('old-twelve-gauge', 1)], { filter: 'attack' }),
   ]),
   p('common', 'shell-shock', 'Shell Shock', 'attack', 1, 'none', [

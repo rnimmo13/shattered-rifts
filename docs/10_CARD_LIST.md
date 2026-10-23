@@ -158,7 +158,7 @@ Starter: Slash, Slash, Slash, Slash, Slash, Guard, Guard, Guard, Savage Bite, Bl
 | Crushing Blow | 2 | attack | uncommon | Deal 8 (+2 per Might) damage. |
 | Run Wild | 2 | attack | uncommon | Deal 6 damage 2 times. Apply 1 Might. |
 | Ravage | 2 | attack | uncommon | Deal 7 damage to ALL enemies. Lose 3 HP. |
-| Berserk | 1 | skill | uncommon | Lose 4 HP. Apply 3 Might. |
+| Berserk | 1 | skill | uncommon | Lose 4 HP. Apply 3 Might. Consume. |
 | Savage Command | 2 | skill | uncommon | All your allies act now. Apply 1 Might to all friends. |
 | Pack Bond | 2 | power | uncommon | At the start of your turn: Gain 3 Barrier to all friends. |
 | Feeding Time | 1 | skill | uncommon | Heal 8 to the ally. Apply 1 Might to the ally. |
@@ -527,7 +527,6 @@ Starter: Slash, Slash, Slash, Guard, Guard, Guard, Hammer Swing, Hammer Swing, P
 | Hair Trigger | 1 | power | uncommon | Whenever you play a shell: Sharpen 1 (Old Twelve Gauge gains 1 damage). |
 | Reload | 1 | skill | uncommon | Sharpen 2 (Old Twelve Gauge gains 2 damage). Draw 1 card. |
 | Gunmetal Polish | 1 | skill | uncommon | Sharpen 3 (Old Twelve Gauge gains 3 damage). Gain 4 Barrier. |
-| Trigger Discipline | 1 | power | uncommon | Whenever you play an Attack: Sharpen 1 (Old Twelve Gauge gains 1 damage). |
 | Liquid Lunch | 0 | skill | uncommon | Gain 2 Mana. Next turn, lose 1 Mana. Consume. |
 | Booby-Trapped Window | 2 | snare | rare | When you or an ally is attacked: Cancel that attack. Deal 10 damage to the attacker. |
 | Panorama Window | 2 | skill | rare | Gain 14 Barrier. Gain Barrier equal to 30% of your missing HP. Consume. |
@@ -539,6 +538,7 @@ Starter: Slash, Slash, Slash, Guard, Guard, Guard, Hammer Swing, Hammer Swing, P
 | Pass Out | 2 | skill | rare | Gain 18 Barrier. Heal 6. Consume. |
 | Extended Mag | 2 | power | rare | At the start of your turn: Sharpen 2 (Old Twelve Gauge gains 2 damage). Add a Buckshot Shell to your hand. |
 | Rack and Ruin | 2 | attack | rare | Deal 10 damage to ALL enemies. Sharpen 4 (Old Twelve Gauge gains 4 damage). |
+| Trigger Discipline | 2 | power | rare | Whenever you play an Attack: Sharpen 1 (Old Twelve Gauge gains 1 damage). |
 | Last Call | 2 | skill | rare | Gain 1 maximum Mana for the rest of the fight (and 1 now). Heal 6. Consume. |
 | One More Round | 3 | power | legendary | At the start of your turn: Add 3 Buckshot Shells to your hand. Heal 3. |
 | The Glass Palace | 3 | power | legendary | At the start of your turn: Gain 6 Barrier. Gain Barrier equal to 20% of your missing HP. |

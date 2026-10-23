@@ -59,7 +59,9 @@ export const KESH: CardDef[] = [
   }),
   k('rare', 'berserker', 'Berserker', 'power', 1, 'none', [on('turnStart', [lose(2), mana(1)])]),
 
-  k('uncommon', 'berserk', 'Berserk', 'skill', 1, 'none', [lose(4), status('might', 3)]),
+  k('uncommon', 'berserk', 'Berserk', 'skill', 1, 'none', [lose(4), status('might', 3)], {
+    exhaust: true,
+  }),
 
   // --- Pack ---
   k('common', 'heel', 'Heel', 'summon', 1, 'none', [summon('hound')]),
