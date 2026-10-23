@@ -6,6 +6,7 @@ import { COMBAT_DB, V2_DECK_RULES } from '@sr/content/v2';
 import { REST_HEAL, upgradable, type RunState } from '@sr/campaign';
 import { FightCard } from '../fight/FightCard';
 import { CardHover } from '../fight/CardHover';
+import { BoonCard } from '../fight/BoonChip';
 
 const defOf = (id: string): CardDef | undefined => COMBAT_DB.cards[id];
 
@@ -79,6 +80,8 @@ export function CardOffer(props: {
   hint: string;
   offers: string[];
   shards?: number | undefined;
+  /** a Boon this fight dropped */
+  boon?: string | undefined;
   onPick: (id: string) => void;
   onSkip?: (() => void) | undefined;
 }) {
@@ -90,6 +93,7 @@ export function CardOffer(props: {
         {props.hint}
         {props.shards ? ` You also found ${props.shards} shards.` : ''}
       </p>
+      {props.boon && <BoonCard id={props.boon} note="A new Boon, yours for the rest of the run." />}
       <div className="offers">
         {props.offers.map((id) => (
           <Pickable
@@ -218,6 +222,7 @@ export function ShrineView(props: {
 export function MerchantView(props: {
   run: RunState;
   onBuy: (index: number) => void;
+  onBuyBoon: () => void;
   onRemove: (card: string) => void;
   onLeave: () => void;
 }) {
@@ -251,6 +256,18 @@ export function MerchantView(props: {
           </Pickable>
         ))}
       </div>
+      {m.boon && (
+        <div className="shopboon">
+          <BoonCard id={m.boon.id} />
+          <button
+            className="btn"
+            disabled={m.boon.sold || props.run.shards < m.boon.price}
+            onClick={props.onBuyBoon}
+          >
+            <span>{m.boon.sold ? 'Sold' : `Buy for ${m.boon.price} shards`}</span>
+          </button>
+        </div>
+      )}
       <div className="choices-row">
         <button className="btn" disabled={!canRemove} onClick={() => setPicking(true)}>
           <span>{m.removed ? 'Card removed' : `Remove a card (${m.removePrice} shards)`}</span>
@@ -278,7 +295,7 @@ export function MerchantView(props: {
 
 export function EventView(props: {
   run: RunState;
-  onChoose: (id: 'shards' | 'card' | 'heal' | 'leave') => void;
+  onChoose: (id: 'shards' | 'card' | 'heal' | 'upgrade' | 'bleed' | 'boon' | 'leave') => void;
 }) {
   const ev = props.run.context?.event;
   const [hover, setHover] = useState<CardDef | null>(null);
@@ -288,6 +305,7 @@ export function EventView(props: {
     <section className="stage-panel" aria-label="Event">
       <h2 className="stage-panel__title">{ev.title}</h2>
       <p className="stage-panel__hint">{ev.text}</p>
+      {ev.boonOffer && <BoonCard id={ev.boonOffer} />}
       {card && (
         <div className="offers">
           <Pickable id={card.id} width={220} onHover={setHover} />

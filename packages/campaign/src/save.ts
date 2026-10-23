@@ -82,12 +82,26 @@ function validContext(r: RunState): boolean {
             hasCard(it['cardId']) &&
             isInt(it['price'], 0, 100000),
         ) &&
-        isInt(m['removePrice'], 0, 100000)
+        isInt(m['removePrice'], 0, 100000) &&
+        (m['boon'] === undefined ||
+          (isObj(m['boon']) &&
+            typeof m['boon']['id'] === 'string' &&
+            Object.hasOwn(COMBAT_DB.boons, m['boon']['id']) &&
+            isInt(m['boon']['price'], 0, 100000)))
       );
     }
     case 'event': {
       const e = c['event'];
-      return isObj(e) && Array.isArray(e['options']) && (e['options'] as unknown[]).length > 0;
+      const okOffer = (x: unknown): boolean => x === undefined || x === '' || hasCard(x);
+      return (
+        isObj(e) &&
+        Array.isArray(e['options']) &&
+        (e['options'] as unknown[]).length > 0 &&
+        (e['options'] as unknown[]).every((o) => isObj(o) && typeof o['id'] === 'string') &&
+        okOffer(e['cardOffer']) &&
+        (e['boonOffer'] === undefined ||
+          (typeof e['boonOffer'] === 'string' && Object.hasOwn(COMBAT_DB.boons, e['boonOffer'])))
+      );
     }
     default:
       return true;
@@ -127,7 +141,12 @@ export function parseRun(text: string): RunState | null {
     return null;
   if (!isStrArray(r.stageRealms) || r.stageRealms.length !== 3) return null;
   if (!isObj(r.stats)) return null;
-  if (!isStrArray(r.boons)) return null;
+  if (
+    !isStrArray(r.boons) ||
+    r.boons.some((id) => !Object.hasOwn(COMBAT_DB.boons, id)) ||
+    new Set(r.boons).size !== r.boons.length
+  )
+    return null;
   const run = r as RunState;
   if (!validContext(run)) return null;
   return run;

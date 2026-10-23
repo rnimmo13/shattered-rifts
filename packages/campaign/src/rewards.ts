@@ -2,7 +2,15 @@
 // is "Rift-crossed" (another realm). A card that would exceed the copy limit is never offered.
 
 import { nextInt, type RngState } from '@sr/combat';
-import { COMBAT_DB, RIFTWALKERS, V2_DECK_RULES, rewardPool, type HeroId } from '@sr/content/v2';
+import {
+  BOONS,
+  COMBAT_DB,
+  RIFTWALKERS,
+  V2_DECK_RULES,
+  rewardPool,
+  signatureCards,
+  type HeroId,
+} from '@sr/content/v2';
 import type { StageRealm } from './types';
 
 export type OfferQuality = 'duel' | 'elite';
@@ -78,15 +86,56 @@ export function giftOffers(
   hero: HeroId,
   deck: readonly string[],
   count: number,
+  bossId = '',
 ): string[] {
-  const rares = rewardPool(hero).filter((id) => rarityOf(id) === 'rare' && canAdd(deck, id));
-  const out: string[] = [];
-  for (let guard = 0; out.length < count && out.length < rares.length && guard < 100; guard++) {
+  // the Warden's own cards first, then rare cards of your realm to fill the choice
+  const out: string[] = signatureCards(bossId)
+    .filter((id) => canAdd(deck, id))
+    .slice(0, count);
+  const rares = rewardPool(hero).filter(
+    (id) => rarityOf(id) === 'rare' && canAdd(deck, id) && !out.includes(id),
+  );
+  const target = Math.min(count, out.length + rares.length);
+  for (let guard = 0; out.length < target && guard < 100; guard++) {
     const pick = rares[nextInt(rng, rares.length)] as string;
     if (!out.includes(pick)) out.push(pick);
   }
   return out;
 }
+
+const BOON_WEIGHTS: Record<OfferQuality, Record<string, number>> = {
+  duel: { common: 70, uncommon: 25, rare: 5 },
+  elite: { common: 45, uncommon: 40, rare: 15 },
+};
+
+/** A Boon the player does not own yet (falls down the rarity ladder when a rarity is used up), or null if they have them all. */
+export function offerBoon(
+  rng: RngState,
+  owned: readonly string[],
+  quality: OfferQuality,
+): string | null {
+  const left = BOONS.filter((b) => !owned.includes(b.id));
+  if (left.length === 0) return null;
+  const w = BOON_WEIGHTS[quality];
+  const total = Object.values(w).reduce((a, b) => a + b, 0);
+  let r = nextInt(rng, total);
+  let want = 'common';
+  for (const [rarity, weight] of Object.entries(w)) {
+    if (r < weight) {
+      want = rarity;
+      break;
+    }
+    r -= weight;
+  }
+  const order = ['rare', 'uncommon', 'common'];
+  for (let i = order.indexOf(want); i < order.length; i++) {
+    const pool = left.filter((b) => b.rarity === order[i]);
+    if (pool.length > 0) return (pool[nextInt(rng, pool.length)] as (typeof BOONS)[number]).id;
+  }
+  return (left[nextInt(rng, left.length)] as (typeof BOONS)[number]).id;
+}
+
+export const BOON_PRICE: Record<string, number> = { common: 70, uncommon: 120, rare: 200 };
 
 export const PRICE: Record<string, number> = { common: 30, uncommon: 55, rare: 95 };
 export const priceOf = (id: string): number => PRICE[rarityOf(id)] ?? 60;

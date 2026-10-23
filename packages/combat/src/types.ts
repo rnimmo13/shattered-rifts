@@ -84,6 +84,8 @@ export interface CardDef {
   upgrade?: CardId;
   /** realm for deck rules, or 'neutral' */
   realm?: string;
+  /** where a special card comes from (e.g. 'boss:seraphine'); such cards are never ordinary rewards */
+  source?: string;
 }
 
 // --- units -------------------------------------------------------------------------------------------------
@@ -138,8 +140,29 @@ export interface HeroDef {
   art?: string;
 }
 
+/**
+ * A Boon: a passive that lasts a whole run. The engine uses `mana`, `handSize`, `fightStart` (applied to the hero as the
+ * first turn begins) and `turnStart` (every one of your turns, after the draw). `maxHp`, `healAfterFight` and `shardsPerFight`
+ * are for the campaign.
+ */
+export interface BoonDef {
+  id: string;
+  name: string;
+  rarity: 'common' | 'uncommon' | 'rare';
+  /** shown to the player; written by hand because some boons mix engine and campaign effects */
+  text: string;
+  mana?: number;
+  handSize?: number;
+  fightStart?: Op[];
+  turnStart?: Op[];
+  maxHp?: number;
+  healAfterFight?: number;
+  shardsPerFight?: number;
+}
+
 export interface CombatDb {
   cards: Record<CardId, CardDef>;
+  boons: Record<string, BoonDef>;
   units: Record<string, UnitDef>;
   heroes: Record<string, HeroDef>;
 }
@@ -199,6 +222,8 @@ export interface SideState {
   handSize: number;
   snares: SnareState[];
   hero: string | null; // hero def id
+  /** Boon ids active for this side (a run-long passive; see BoonDef) */
+  boons: string[];
 }
 
 export type Winner = Side | 'draw';
@@ -238,6 +263,10 @@ export interface HeroSetup {
   deck: CardId[];
   /** start the fight at this HP (HP carries between fights in a run) */
   hp?: number;
+  /** the hero's max HP in this run (Boons and the blood altar can raise it); defaults to the hero's base */
+  maxHp?: number;
+  /** the Boons the hero carries */
+  boons?: string[];
 }
 
 export interface CombatSetup {

@@ -761,3 +761,74 @@ describe('difficulty percentages', () => {
     expect(hero(after.state).hp).toBe(60 - 3);
   });
 });
+
+describe('boons', () => {
+  const withBoons = (boons: string[]) =>
+    createCombat(db, {
+      seed: 'boon',
+      a: { hero: 'knight', deck: SAMPLE_DECK, boons },
+      b: { enemies: ['slime'] },
+    });
+
+  it('fight-start effects apply once, turn-start effects every turn', () => {
+    const { state, events } = withBoons(['iron-sigil', 'ember-lamp']);
+    expect(hero(state).barrier).toBe(8);
+    expect(events.some((e) => e.type === 'barrier')).toBe(true);
+    const next = end(state).state; // barrier falls, the lamp gives 2 again, the iron sigil does not return
+    expect(hero(next).barrier).toBe(2);
+  });
+
+  it('mana and hand size bonuses change the turn', () => {
+    const { state } = withBoons(['satchel', 'rift-core']);
+    expect(state.sides.a.maxMana).toBe(4);
+    expect(state.sides.a.mana).toBe(4);
+    expect(state.sides.a.hand).toHaveLength(6);
+  });
+
+  it('refuses an unknown boon', () => {
+    expect(() => withBoons(['nope'])).toThrow();
+  });
+});
+
+describe('difficulty and max HP details', () => {
+  it('a raised max HP reaches the fight', () => {
+    const { state } = createCombat(db, {
+      seed: 'mh',
+      a: { hero: 'knight', deck: SAMPLE_DECK, hp: 70, maxHp: 72 },
+      b: { enemies: ['slime'] },
+    });
+    expect(hero(state).maxHp).toBe(72);
+    expect(hero(state).hp).toBe(70);
+  });
+
+  it('easy never rounds an enemy hit down to nothing, and scales unblockable damage and Seared', () => {
+    const cheap = clone(db);
+    cheap.units.slime = {
+      ...cheap.units.slime!,
+      brain: {
+        kind: 'enemy',
+        pattern: { kind: 'cycle', order: ['nick'] },
+        moves: {
+          nick: {
+            id: 'nick',
+            name: 'Nick',
+            effects: [
+              { op: 'damage', amount: 1, to: 'target' },
+              { op: 'loseHp', amount: 10, to: 'target' },
+              { op: 'status', status: 'seared', amount: 4, to: 'target' },
+            ],
+          },
+        },
+      },
+    };
+    const { state } = createCombat(cheap, {
+      seed: 'easy',
+      a: { hero: 'knight', deck: SAMPLE_DECK },
+      b: { enemies: ['slime'], dmgPct: 50 },
+    });
+    const next = applyAction(cheap, state, { type: 'endTurn' });
+    // 1 (never 0) + 5 unblockable, and Seared 2
+    expect(hero(next.state).hp).toBe(60 - 1 - 5 - 2);
+    expect(hero(next.state).statuses.seared).toBe(1);
+  });
+});

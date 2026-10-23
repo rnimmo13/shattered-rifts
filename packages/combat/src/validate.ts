@@ -87,6 +87,15 @@ export function validateDb(db: CombatDb): string[] {
     }
   }
 
+  for (const [id, b] of Object.entries(db.boons)) {
+    if (b.id !== id) errs.push(`boon key "${id}" does not match its id`);
+    checkOps(`boon ${id}`, [...(b.fightStart ?? []), ...(b.turnStart ?? [])], {
+      aimed: false,
+      snare: false,
+    });
+    if (!b.text) errs.push(`boon ${id}: needs text`);
+  }
+
   for (const [id, h] of Object.entries(db.heroes)) {
     if (h.id !== id) errs.push(`hero key "${id}" does not match its id`);
     for (const s of h.startUnits ?? []) {

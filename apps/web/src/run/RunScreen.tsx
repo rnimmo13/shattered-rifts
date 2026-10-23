@@ -10,6 +10,7 @@ import {
   RunError,
   availableNodes,
   bank,
+  buyBoon,
   buyCard,
   buyRemoval,
   chooseCard,
@@ -28,6 +29,7 @@ import {
   type RunState,
 } from '@sr/campaign';
 import { FightView } from '../fight/FightView';
+import { BoonChip } from '../fight/BoonChip';
 import { CharacterPicker } from './CharacterPicker';
 import { MapLegend, MapView } from './MapView';
 import { CardOffer, DeckModal, EventView, MerchantView, ShrineView } from './Pickers';
@@ -166,7 +168,13 @@ export default function RunScreen() {
             db={COMBAT_DB}
             setup={{
               seed: plan.seed,
-              a: { hero: run.character, deck: plan.deck, hp: plan.hp },
+              a: {
+                hero: run.character,
+                deck: plan.deck,
+                hp: plan.hp,
+                maxHp: plan.maxHp,
+                boons: plan.boons,
+              },
               b: { enemies: plan.units, tier: plan.tier, hpPct: plan.hpPct, dmgPct: plan.dmgPct },
             }}
             title={encounter(plan.encounterId).name}
@@ -294,6 +302,13 @@ function RunBar(props: {
         </span>
       </div>
       <div className="runbar__stats">
+        {run.boons.length > 0 && (
+          <span className="boons" aria-label="Boons">
+            {run.boons.map((id) => (
+              <BoonChip key={id} id={id} />
+            ))}
+          </span>
+        )}
         <span className="resolve" aria-label={`Resolve ${run.resolve} of ${run.maxResolve}`}>
           {Array.from({ length: run.maxResolve }, (_, i) => (
             <i key={i} className={i < run.resolve ? 'is-full' : ''} />
@@ -362,6 +377,7 @@ function Body(props: {
           hint="Add one to your deck, or skip: a thin deck draws its best cards more often."
           offers={run.context?.offers ?? []}
           shards={run.context?.shardsGained}
+          boon={run.context?.boonGained}
           onPick={(id) => act((r) => chooseCard(r, id))}
           onSkip={() => act((r) => chooseCard(r, null))}
         />
@@ -370,9 +386,10 @@ function Body(props: {
       return (
         <CardOffer
           title="The Warden's Gift"
-          hint="The Warden falls. Take one of their signature cards."
+          hint="The Warden falls. Take one of their signature cards, or another rare."
           offers={run.context?.offers ?? []}
           shards={run.context?.shardsGained}
+          boon={run.context?.boonGained}
           onPick={(id) => act((r) => chooseCard(r, id))}
         />
       );
@@ -390,6 +407,7 @@ function Body(props: {
         <MerchantView
           run={run}
           onBuy={(i) => act((r) => buyCard(r, i))}
+          onBuyBoon={() => act((r) => buyBoon(r))}
           onRemove={(card) => act((r) => buyRemoval(r, card))}
           onLeave={() => act((r) => leaveMerchant(r))}
         />

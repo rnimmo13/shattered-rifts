@@ -1,6 +1,7 @@
 // Combat v2 content: heroes, starter decks, cards, companions and encounters (docs/08_COMBAT_V2.md).
 
 import { validateDb, type CombatDb, type HeroDef } from '@sr/combat';
+import { BOONS } from './boons';
 import { V2_CARDS } from './cards';
 import { ALLIES, ENEMY_UNITS } from './units';
 
@@ -119,6 +120,7 @@ export const encounter = (id: string): Encounter => {
 
 export const COMBAT_DB: CombatDb = {
   cards: Object.fromEntries(V2_CARDS.map((c) => [c.id, c])),
+  boons: Object.fromEntries(BOONS.map((b) => [b.id, b])),
   units: Object.fromEntries([...ALLIES, ...ENEMY_UNITS].map((u) => [u.id, u])),
   heroes: Object.fromEntries(Object.values(RIFTWALKERS).map((r) => [r.hero.id, r.hero])),
 };
@@ -131,11 +133,21 @@ export function rewardPool(hero: HeroId): string[] {
       (c.realm === realm || c.realm === 'neutral') &&
       c.rarity !== 'basic' &&
       !c.id.endsWith('+') &&
-      !c.unplayable,
+      !c.unplayable &&
+      !c.source,
   ).map((c) => c.id);
+}
+
+/** A Warden's signature cards (the Warden's Gift). The id is the encounter id. */
+export function signatureCards(encounterId: string): string[] {
+  return V2_CARDS.filter((c) => c.source === `boss:${encounterId}` && !c.id.endsWith('+')).map(
+    (c) => c.id,
+  );
 }
 
 export { validateDb };
 
 /** Deck rules for Combat v2 runs: a deck never drops below minSize cards, and no non-basic card has more than maxCopies copies. */
 export const V2_DECK_RULES = { minSize: 8, maxCopies: 4, vaultSlots: 5 } as const;
+
+export { BOONS };

@@ -27,6 +27,8 @@ const UNIT: Record<string, [Archetype, Realm]> = {
   enforcer: ['mech', 'nexus'],
   'war-engine': ['mech', 'nexus'],
   hound: ['beast', 'wyldmaw'],
+  'gilded-guard': ['knight', 'aurelion'],
+  'maw-hatchling': ['beast', 'wyldmaw'],
   gnashling: ['beast', 'wyldmaw'],
   // Aurelion
   squire: ['knight', 'aurelion'],

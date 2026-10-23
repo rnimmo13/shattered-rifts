@@ -1,7 +1,7 @@
 // A tiny sample ruleset used by the tests and the CLI fight. The real cards, heroes and enemies live in
 // packages/content (milestone C2); nothing here ships in the game.
 
-import type { CardDef, CombatDb, HeroDef, UnitDef } from './types';
+import type { BoonDef, CardDef, CombatDb, HeroDef, UnitDef } from './types';
 
 const card = (c: CardDef): [string, CardDef] => [c.id, c];
 
@@ -269,8 +269,40 @@ export const SAMPLE_HEROES: Record<string, HeroDef> = {
   },
 };
 
+export const SAMPLE_BOONS: Record<string, BoonDef> = {
+  'iron-sigil': {
+    id: 'iron-sigil',
+    name: 'Iron Sigil',
+    rarity: 'common',
+    text: 'Start each fight with 6 Barrier.',
+    fightStart: [{ op: 'barrier', amount: 6, to: 'self' }],
+  },
+  'ember-lamp': {
+    id: 'ember-lamp',
+    name: 'Ember Lamp',
+    rarity: 'common',
+    text: 'Gain 2 Barrier at the start of each of your turns.',
+    turnStart: [{ op: 'barrier', amount: 2, to: 'self' }],
+  },
+  satchel: {
+    id: 'satchel',
+    name: 'Rift Satchel',
+    rarity: 'uncommon',
+    text: 'Draw 1 more card each turn.',
+    handSize: 1,
+  },
+  'rift-core': {
+    id: 'rift-core',
+    name: 'Rift Core',
+    rarity: 'rare',
+    text: '+1 Mana each turn.',
+    mana: 1,
+  },
+};
+
 export const SAMPLE_DB: CombatDb = {
   cards: SAMPLE_CARDS,
+  boons: SAMPLE_BOONS,
   units: SAMPLE_UNITS,
   heroes: SAMPLE_HEROES,
 };

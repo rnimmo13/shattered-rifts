@@ -49,7 +49,7 @@ export interface MerchantItem {
 }
 
 export interface EventOption {
-  id: 'shards' | 'card' | 'heal' | 'leave';
+  id: 'shards' | 'card' | 'heal' | 'upgrade' | 'bleed' | 'boon' | 'leave';
   label: string;
 }
 
@@ -60,8 +60,22 @@ export interface NodeContext {
   offers?: string[];
   /** reward: shards already granted for the win */
   shardsGained?: number;
-  merchant?: { items: MerchantItem[]; removePrice: number; removed: boolean };
-  event?: { title: string; text: string; options: EventOption[]; cardOffer: string };
+  /** reward: a Boon the fight dropped (already added to the run) */
+  boonGained?: string;
+  merchant?: {
+    items: MerchantItem[];
+    removePrice: number;
+    removed: boolean;
+    boon?: { id: string; price: number; sold: boolean };
+  };
+  event?: {
+    title: string;
+    text: string;
+    options: EventOption[];
+    cardOffer: string;
+    /** an event that offers a Boon */
+    boonOffer?: string;
+  };
   shrineUsed?: boolean;
 }
 

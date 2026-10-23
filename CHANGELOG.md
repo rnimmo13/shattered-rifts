@@ -4,6 +4,12 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 
 ## [Unreleased]
 
+### Added (latest)
+- **Easy mode** is the default for now (enemies at 60% HP and 55% damage, 5 Resolve, 100 shards) so the whole game can be tested quickly; Normal is one dropdown away on the Sanctum screen.
+- **Boons**: 12 run-long passives (start fights with Barrier or Thorns, heal after fights, +1 Mana, a bigger hand, max HP...). Elites and Wardens drop them and the merchant sells one. They show in the run bar and during fights.
+- **Warden signature cards**: each Warden (Seraphine, Kron, Gorrmaw, Nyxara) offers three unique cards as the Warden's Gift, some with their own companions.
+- **New events**: a wandering smith who upgrades a random card, and a blood altar that trades HP for shards or a Boon.
+
 ### Changed (the big one)
 - **Combat is rebuilt like Slay the Spire.** Your Riftwalker is a fighter on the field with HP; you play cards with Mana (3 a turn,
   a 5-card hand); every enemy shows what it will do next as an icon and a number; Barrier soaks damage until your next turn; and

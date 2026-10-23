@@ -133,3 +133,41 @@ describe('enemy debuffs land before they are needed', () => {
     }
   });
 });
+
+describe('Warden signature cards', () => {
+  const wardens = ['seraphine', 'kron', 'gorrmaw', 'nyxara'];
+  it('each Warden has three, with upgrades, and they are never ordinary rewards', async () => {
+    const { signatureCards, rewardPool } = await import('./index');
+    for (const w of wardens) {
+      const ids = signatureCards(w);
+      expect(ids, w).toHaveLength(3);
+      for (const id of ids) {
+        expect(db.cards[id]?.upgrade).toBeTruthy();
+        for (const h of Object.keys(RIFTWALKERS) as HeroId[])
+          expect(rewardPool(h)).not.toContain(id);
+      }
+    }
+  });
+
+  it('a deck holding every signature card still plays through a fight', () => {
+    const all = wardens.flatMap((w) =>
+      Object.values(db.cards)
+        .filter((c) => c.source === `boss:${w}` && !c.id.endsWith('+'))
+        .map((c) => c.id),
+    );
+    for (const h of Object.keys(RIFTWALKERS) as HeroId[]) {
+      let { state } = createCombat(db, {
+        seed: `sig-${h}`,
+        a: { hero: h, deck: [...RIFTWALKERS[h].starter, ...all] },
+        b: {
+          enemies: ['squire-pair', 'drone-nest']
+            .flatMap((e) => ENCOUNTERS.find((x) => x.id === e)?.units ?? [])
+            .slice(0, 3),
+        },
+      });
+      for (let i = 0; i < 800 && !state.winner; i++)
+        state = applyAction(db, state, chooseAction(db, state)).state;
+      expect(state.winner).not.toBeNull();
+    }
+  });
+});

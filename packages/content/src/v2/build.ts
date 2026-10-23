@@ -39,7 +39,9 @@ export const PREVENT: Op = { op: 'prevent' };
 
 // --- cards ---------------------------------------------------------------------------------------------------------
 
-type Extra = Partial<Pick<CardDef, 'exhaust' | 'retain' | 'unplayable' | 'trigger' | 'text'>>;
+type Extra = Partial<
+  Pick<CardDef, 'exhaust' | 'retain' | 'unplayable' | 'trigger' | 'text' | 'source'>
+>;
 
 export function card(
   realm: string,

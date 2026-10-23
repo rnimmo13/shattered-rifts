@@ -29,6 +29,7 @@ import { heroFigure, unitFigure, unitHeight } from './art';
 import { FightHand, type HandCard } from './FightHand';
 import { FightCard } from './FightCard';
 import { UnitPlates, type Placed } from './Plates';
+import { BoonChip } from './BoonChip';
 import type { FighterSpec } from './Fighters';
 import '../duel/duel.css';
 import '../play/play.css';
@@ -590,6 +591,13 @@ export function FightView(props: {
               <b>{props.title}</b>
               <span>Turn {Math.max(1, Math.ceil(view.turn / (view.mode === 'pve' ? 2 : 1)))}</span>
             </div>
+            {(setup.a.boons?.length ?? 0) > 0 && (
+              <div className="fight__boons" aria-label="Boons">
+                {setup.a.boons?.map((id) => (
+                  <BoonChip key={id} id={id} />
+                ))}
+              </div>
+            )}
             <div className="fight__opts">
               <select
                 aria-label="Animation speed"

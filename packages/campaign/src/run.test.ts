@@ -212,7 +212,7 @@ describe('the run', () => {
 
 /** Play a whole run with the greedy bot: fight everything, take the first reward, rest at shrines. */
 function botRun(hero: HeroId, seed: string): { run: RunState; fights: number } {
-  let run = fresh(hero, seed);
+  let run = fresh(hero, seed, 'easy');
   let fights = 0;
   for (let step = 0; step < 400; step++) {
     switch (run.phase) {
@@ -226,7 +226,7 @@ function botRun(hero: HeroId, seed: string): { run: RunState; fights: number } {
         fights++;
         let { state } = createCombat(COMBAT_DB, {
           seed: plan.seed,
-          a: { hero, deck: plan.deck, hp: plan.hp },
+          a: { hero, deck: plan.deck, hp: plan.hp, boons: plan.boons },
           b: { enemies: plan.units, tier: plan.tier },
         });
         for (let i = 0; i < 800 && !state.winner; i++)
@@ -248,7 +248,7 @@ function botRun(hero: HeroId, seed: string): { run: RunState; fights: number } {
         run = leaveMerchant(run);
         break;
       case 'event':
-        run = chooseEvent(run, 'heal');
+        run = chooseEvent(run, run.context!.event!.options[0]!.id);
         break;
       case 'stageClear':
         run = nextStage(run);

@@ -12,6 +12,7 @@ export {
   REALM_LABEL,
   canAdd,
   giftOffers,
+  offerBoon,
   offerCards,
   crossedPool,
 } from './rewards';
@@ -24,6 +25,7 @@ export {
   type FightPlan,
   availableNodes,
   bank,
+  buyBoon,
   buyCard,
   buyRemoval,
   chooseCard,

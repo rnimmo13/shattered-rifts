@@ -96,12 +96,19 @@ function addStatus(r: Run, u: Unit, st: StatusId, amount: number): void {
 
 // --- damage ---------------------------------------------------------------------------------------------------
 
+/** Unblockable damage and Seared dealt by an enemy to the other side follow the difficulty percent too (never below 1). */
+function scaledByDifficulty(actor: Unit, target: Unit, amount: number): number {
+  if (actor.side === target.side || actor.dmgPct === 100 || amount <= 0) return amount;
+  return Math.max(1, Math.floor((amount * actor.dmgPct) / 100));
+}
+
 /** attack damage after the attacker's Might / Faltering and the target's Exposed */
 export function modifiedDamage(base: number, attacker: Unit | null, target: Unit | null): number {
   let n = base + (attacker ? stacks(attacker, 'might') : 0);
   if (attacker && stacks(attacker, 'faltering') > 0) n = Math.floor(n * 0.75);
   if (target && stacks(target, 'exposed') > 0) n = Math.floor(n * 1.5);
-  if (attacker && attacker.dmgPct !== 100) n = Math.floor((n * attacker.dmgPct) / 100);
+  if (attacker && attacker.dmgPct !== 100 && n > 0)
+    n = Math.max(1, Math.floor((n * attacker.dmgPct) / 100));
   return Math.max(0, n);
 }
 
@@ -248,7 +255,8 @@ function execOp(r: Run, a: Act, op: Op): void {
       return;
     }
     case 'loseHp':
-      for (const t of resolve(r, a, op.to)) applyDamage(r, a.actor, t, op.amount, 'direct');
+      for (const t of resolve(r, a, op.to))
+        applyDamage(r, a.actor, t, scaledByDifficulty(a.actor, t, op.amount), 'direct');
       return;
     case 'barrier':
       for (const t of resolve(r, a, op.to)) {
@@ -265,7 +273,13 @@ function execOp(r: Run, a: Act, op: Op): void {
       }
       return;
     case 'status':
-      for (const t of resolve(r, a, op.to)) addStatus(r, t, op.status, op.amount);
+      for (const t of resolve(r, a, op.to))
+        addStatus(
+          r,
+          t,
+          op.status,
+          op.status === 'seared' ? scaledByDifficulty(a.actor, t, op.amount) : op.amount,
+        );
       return;
     case 'draw':
       drawCards(r, side, op.amount);
@@ -530,6 +544,17 @@ function beginHeroTurn(r: Run, side: Side): void {
   sd.mana = sd.maxMana + (first ? 1 : 0);
   r.ev.push({ type: 'mana', side, mana: sd.mana });
   drawCards(r, sd, sd.handSize + (first ? 1 : 0));
+  // Boons: the fight-start effects once, the turn-start effects every turn
+  const hero = heroOf(sd);
+  if (hero && sd.boons.length > 0) {
+    const act: Act = { actor: hero, target: null, attacker: null, hit: null };
+    for (const id of sd.boons) {
+      const b = r.db.boons[id];
+      if (!b) continue;
+      if (b.fightStart && r.s.turn === (side === 'a' ? 1 : 2)) runOps(r, act, b.fightStart);
+      if (b.turnStart) runOps(r, act, b.turnStart);
+    }
+  }
 }
 
 /**
@@ -617,9 +642,18 @@ function buildHeroSide(r: Run, id: Side, h: HeroSetup): SideState {
     handSize: hd.handSize,
     snares: [],
     hero: hd.id,
+    boons: [],
   };
+  for (const id of h.boons ?? []) {
+    const b = r.db.boons[id];
+    if (!b) throw new RulesError(`Unknown boon "${id}"`);
+    sd.boons.push(id);
+    sd.maxMana += b.mana ?? 0;
+    sd.handSize += b.handSize ?? 0;
+  }
   shuffle(r.s.rng, sd.draw);
-  const hp = Math.max(1, Math.min(hd.maxHp, h.hp ?? hd.maxHp));
+  const maxHp = Math.max(1, h.maxHp ?? hd.maxHp);
+  const hp = Math.max(1, Math.min(maxHp, h.hp ?? maxHp));
   sd.units.push({
     id: newId(r.s, 'u'),
     def: hd.id,
@@ -627,7 +661,7 @@ function buildHeroSide(r: Run, id: Side, h: HeroSetup): SideState {
     kind: 'hero',
     side: id,
     hp,
-    maxHp: hd.maxHp,
+    maxHp,
     barrier: 0,
     statuses: {},
     taunt: false,
@@ -657,6 +691,7 @@ export function createCombat(db: CombatDb, setup: CombatSetup): StepResult {
     handSize: 0,
     snares: [],
     hero: null,
+    boons: [],
   });
   const s: CombatState = {
     seed: setup.seed,

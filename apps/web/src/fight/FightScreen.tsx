@@ -102,7 +102,7 @@ export default function FightScreen() {
             cfg: {
               seed: newSeed(),
               a: { hero, deck: RIFTWALKERS[hero].starter },
-              b: { enemies: e.units },
+              b: { enemies: e.units, hpPct: easy ? 60 : 100, dmgPct: easy ? 55 : 100 },
             },
           });
         }}

@@ -4,10 +4,18 @@
 // rewards with skip, shrines (rest, upgrade, remove), the merchant, a small event, the Warden's Gift, Resolve, Bank and
 // Continue. Boons come later.
 
-import { seedRng, shuffle } from '@sr/combat';
+import { nextInt, seedRng, shuffle } from '@sr/combat';
 import { COMBAT_DB, RIFTWALKERS, V2_DECK_RULES, encounter, type HeroId } from '@sr/content/v2';
 import { generateStageMap, reachableNodes } from './mapgen';
-import { REMOVE_PRICE, canAdd, giftOffers, offerCards, priceOf } from './rewards';
+import {
+  BOON_PRICE,
+  REMOVE_PRICE,
+  canAdd,
+  giftOffers,
+  offerBoon,
+  offerCards,
+  priceOf,
+} from './rewards';
 import type { Difficulty, EventOption, MapNode, MerchantItem, RunState, StageRealm } from './types';
 
 const clone = <T>(x: T): T => JSON.parse(JSON.stringify(x)) as T;
@@ -70,6 +78,18 @@ export function newRun(hero: HeroId, seed: string, difficulty: Difficulty = 'eas
   };
 }
 
+/** Add a Boon to the run, applying its campaign-side effects (max HP). */
+function gainBoon(r: RunState, id: string): void {
+  const b = COMBAT_DB.boons[id];
+  need(b, `Unknown boon ${id}`);
+  need(!r.boons.includes(id), 'You already have that boon');
+  r.boons.push(id);
+  if (b.maxHp) {
+    r.maxHp += b.maxHp;
+    r.hp += b.maxHp;
+  }
+}
+
 const heal = (r: RunState, n: number): void => {
   r.hp = Math.min(r.maxHp, r.hp + Math.ceil(n));
 };
@@ -117,24 +137,61 @@ export function enterNode(run: RunState, nodeId: string): RunState {
       const items: MerchantItem[] = offerCards(r.rng, r.character, r.deck, 'elite', 4).map(
         (cardId) => ({ cardId, price: priceOf(cardId), sold: false }),
       );
-      r.context.merchant = { items, removePrice: REMOVE_PRICE, removed: false };
+      const boon = offerBoon(r.rng, r.boons, 'elite');
+      r.context.merchant = {
+        items,
+        removePrice: REMOVE_PRICE,
+        removed: false,
+        ...(boon
+          ? {
+              boon: {
+                id: boon,
+                price: BOON_PRICE[COMBAT_DB.boons[boon]?.rarity ?? 'common'] ?? 100,
+                sold: false,
+              },
+            }
+          : {}),
+      };
       r.phase = 'merchant';
       break;
     }
     case 'event': {
       const cardOffer = offerCards(r.rng, r.character, r.deck, 'duel', 1)[0] ?? '';
-      const options: EventOption[] = [
-        { id: 'shards', label: 'Take the shards (+30)' },
-        { id: 'heal', label: 'Drink from the spring (heal 20% of your HP)' },
-        ...(cardOffer ? [{ id: 'card' as const, label: 'Take the relic card' }] : []),
-        { id: 'leave', label: 'Leave it' },
-      ];
-      r.context.event = {
-        title: 'A rift cache',
-        text: 'A seam in the world has split open, and something glints inside. You can only carry one thing away.',
-        options,
-        cardOffer,
-      };
+      const kind = nextInt(r.rng, 3);
+      const leave: EventOption = { id: 'leave', label: 'Walk away' };
+      if (kind === 1 && upgradable(r.deck).length > 0) {
+        r.context.event = {
+          title: 'The wandering smith',
+          text: 'A smith has set up a forge in the ruins. "One piece of yours, tempered free. I choose."',
+          options: [{ id: 'upgrade', label: 'Let the smith temper a random card' }, leave],
+          cardOffer: '',
+        };
+      } else if (kind === 2 && r.hp > 20) {
+        const boonOffer = offerBoon(r.rng, r.boons, 'elite') ?? undefined;
+        r.context.event = {
+          title: 'The blood altar',
+          text: 'An altar drinks what you give it, and gives back. The rift rewards those who bleed for it.',
+          options: [
+            { id: 'bleed', label: 'Give 10 HP: gain 60 shards' },
+            ...(boonOffer ? [{ id: 'boon' as const, label: 'Give 15 HP: take the Boon' }] : []),
+            leave,
+          ],
+          cardOffer: '',
+          ...(boonOffer ? { boonOffer } : {}),
+        };
+      } else {
+        r.context.event = {
+          title: 'A rift cache',
+          text: 'A seam in the world has split open, and something glints inside. You can only carry one thing away.',
+          options: [
+            { id: 'shards', label: 'Take the shards (+30)' },
+            { id: 'heal', label: 'Drink from the spring (heal 20% of your HP)' },
+            ...(cardOffer ? [{ id: 'card' as const, label: 'Take the relic card' }] : []),
+            leave,
+          ],
+          cardOffer,
+        };
+      }
       r.phase = 'event';
       break;
     }
@@ -151,6 +208,7 @@ export interface FightPlan {
   hp: number;
   maxHp: number;
   tier: number;
+  boons: string[];
   /** percent of normal enemy HP and damage (the difficulty setting) */
   hpPct: number;
   dmgPct: number;
@@ -172,6 +230,7 @@ export function duelPlan(run: RunState): FightPlan | null {
     hp: run.hp,
     maxHp: run.maxHp,
     tier: run.tier,
+    boons: [...run.boons],
     hpPct: DIFFICULTY[run.difficulty].hpPct,
     dmgPct: DIFFICULTY[run.difficulty].dmgPct,
     kind: node.kind,
@@ -203,6 +262,19 @@ export function finishDuel(run: RunState, won: boolean, hpLeft = run.hp): RunSta
   r.hp = hpLeft;
   const gain = node.kind === 'duel' ? 12 : node.kind === 'elite' ? 28 : 50;
   r.shards += gain;
+  for (const id of r.boons) {
+    const b = COMBAT_DB.boons[id];
+    if (b?.healAfterFight) heal(r, b.healAfterFight);
+    if (b?.shardsPerFight) r.shards += b.shardsPerFight;
+  }
+  let boonGained: string | undefined;
+  if (node.kind === 'elite' || (node.kind === 'warden' && r.stage < 5)) {
+    const id = offerBoon(r.rng, r.boons, 'elite');
+    if (id) {
+      gainBoon(r, id);
+      boonGained = id;
+    }
+  }
   if (node.kind === 'elite') heal(r, r.maxHp * 0.1); // an elite leaves you a little breathing room
   if (node.kind === 'warden') {
     clearNode(r, node.id);
@@ -213,13 +285,18 @@ export function finishDuel(run: RunState, won: boolean, hpLeft = run.hp): RunSta
       r.phase = 'loopCleared';
       return r;
     }
-    const offers = giftOffers(r.rng, r.character, r.deck, r.tier >= 5 ? 4 : 3);
+    const offers = giftOffers(r.rng, r.character, r.deck, r.tier >= 5 ? 4 : 3, node.enemyId);
     if (offers.length === 0) {
       r.phase = 'stageClear';
       r.context = null;
       return r;
     }
-    r.context = { nodeId: node.id, offers, shardsGained: gain };
+    r.context = {
+      nodeId: node.id,
+      offers,
+      shardsGained: gain,
+      ...(boonGained ? { boonGained } : {}),
+    };
     r.phase = 'gift';
     return r;
   }
@@ -228,6 +305,7 @@ export function finishDuel(run: RunState, won: boolean, hpLeft = run.hp): RunSta
     nodeId: node.id,
     offers: offerCards(r.rng, r.character, r.deck, node.kind === 'elite' ? 'elite' : 'duel', count),
     shardsGained: gain,
+    ...(boonGained ? { boonGained } : {}),
   };
   r.phase = 'reward';
   return r;
@@ -321,6 +399,21 @@ export function buyCard(run: RunState, index: number): RunState {
   return r;
 }
 
+export function buyBoon(run: RunState): RunState {
+  need(run.phase === 'merchant' && run.context?.merchant?.boon, 'There is no boon for sale');
+  const r = clone(run);
+  const m = (r.context as NonNullable<RunState['context']>).merchant as NonNullable<
+    NonNullable<RunState['context']>['merchant']
+  >;
+  const b = m.boon as NonNullable<typeof m.boon>;
+  need(!b.sold, 'That is sold');
+  need(r.shards >= b.price, 'Not enough shards');
+  r.shards -= b.price;
+  b.sold = true;
+  gainBoon(r, b.id);
+  return r;
+}
+
 export function buyRemoval(run: RunState, card: string): RunState {
   need(run.phase === 'merchant' && run.context?.merchant, 'You are not at a merchant');
   const r = clone(run);
@@ -363,6 +456,24 @@ export function chooseEvent(run: RunState, option: EventOption['id']): RunState 
   if (option === 'shards') r.shards += 30;
   if (option === 'heal') heal(r, r.maxHp * 0.2);
   if (option === 'card' && ev.cardOffer && canAdd(r.deck, ev.cardOffer)) r.deck.push(ev.cardOffer);
+  if (option === 'upgrade') {
+    const ups = upgradable(r.deck);
+    need(ups.length > 0, 'Nothing to upgrade');
+    const pick = ups[nextInt(r.rng, ups.length)] as string;
+    const i = r.deck.indexOf(pick);
+    r.deck[i] = COMBAT_DB.cards[pick]?.upgrade ?? pick;
+  }
+  if (option === 'bleed') {
+    need(r.hp > 10, 'You are too hurt for that');
+    r.hp -= 10;
+    r.shards += 60;
+  }
+  if (option === 'boon') {
+    need(ev.boonOffer, 'There is no boon here');
+    need(r.hp > 15, 'You are too hurt for that');
+    r.hp -= 15;
+    gainBoon(r, ev.boonOffer);
+  }
   clearNode(r, (r.context as NonNullable<RunState['context']>).nodeId);
   r.phase = 'map';
   return r;
