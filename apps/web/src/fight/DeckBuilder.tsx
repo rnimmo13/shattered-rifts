@@ -3,7 +3,7 @@
 
 import { useMemo, useState } from 'react';
 import { cardText, type CardDef, type CombatDb } from '@sr/combat';
-import { CardHover } from './CardHover';
+import { CardHover, type Anchor } from './CardHover';
 import { FightCard } from './FightCard';
 import { bookLayout, useWidth } from './grimoireData';
 import {
@@ -35,7 +35,7 @@ export function DeckBuilder(props: {
   const [tab, setTab] = useState<string>(TABS[0]?.id ?? 'aurelion');
   const [leaf, setLeaf] = useState(0); // which spread is open
   const [dir, setDir] = useState<'next' | 'prev'>('next');
-  const [hover, setHover] = useState<CardDef | null>(null);
+  const [hover, setHover] = useState<{ def: CardDef; at?: Anchor } | null>(null);
   const [filter, setFilter] = useState<Omit<CatalogFilter, 'pool'>>({
     rarity: 'all',
     text: '',
@@ -181,9 +181,13 @@ export function DeckBuilder(props: {
                           className="grim__card"
                           aria-label={`Add ${def.name}`}
                           onClick={() => add(def.id, 1)}
-                          onMouseEnter={() => setHover(def)}
+                          onMouseEnter={(e) =>
+                            setHover({ def, at: e.currentTarget.getBoundingClientRect() })
+                          }
                           onMouseLeave={() => setHover(null)}
-                          onFocus={() => setHover(def)}
+                          onFocus={(e) =>
+                            setHover({ def, at: e.currentTarget.getBoundingClientRect() })
+                          }
                           onBlur={() => setHover(null)}
                         >
                           <FightCard db={db} def={def} width={cardWidth} />
@@ -251,7 +255,11 @@ export function DeckBuilder(props: {
         )}
         <ul className="db__deckrows">
           {inDeck.map((def) => (
-            <li key={def.id} onMouseEnter={() => setHover(def)} onMouseLeave={() => setHover(null)}>
+            <li
+              key={def.id}
+              onMouseEnter={() => setHover({ def })}
+              onMouseLeave={() => setHover(null)}
+            >
               <span>
                 {def.x ? 'X' : def.cost} {def.name}
               </span>
@@ -268,7 +276,7 @@ export function DeckBuilder(props: {
           ))}
         </ul>
       </aside>
-      <CardHover def={hover} />
+      <CardHover def={hover?.def ?? null} at={hover?.at ?? null} />
     </div>
   );
 }

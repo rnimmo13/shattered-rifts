@@ -216,6 +216,8 @@ const STATUS_NAME: Record<string, string> = {
   seared: 'Bleed',
 };
 const sname = (s: string): string => STATUS_NAME[s] ?? cap(s);
+const plural = (word: string): string =>
+  /fe$/.test(word) ? word.replace(/fe$/, 'ves') : `${word}s`;
 const article = (word: string): string => (/^[aeiou]/i.test(word) ? 'an' : 'a');
 
 /** How a metric reads in a card: `per` ("+2 per Barrier") and `equal` ("equal to your Barrier"). */
@@ -362,6 +364,9 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
         const a = amountText(o.amount, o.scale);
         return `Curse ${noun} with ${a.equal ? `Fate equal to ${a.num}` : `${a.num} Fate`}.`;
       }
+      // Edge is what makes Sleeve Knives hit harder: say so on the card instead of leaving it to a tooltip
+      if (o.status === 'edge' && o.to === 'self' && !o.scale && o.amount > 0)
+        return `Gain ${o.amount} Edge: your Sleeve Knives deal ${o.amount} more damage for the rest of the fight.`;
       return `${o.amount < 0 ? 'Remove' : 'Apply'} ${at(Math.abs(o.amount), o.scale)} ${sname(o.status)}${o.to === 'self' ? '' : who[o.to]}${o.temp ? ' until the end of your turn' : ''}.`;
     }
     case 'scaleStatus': {
@@ -397,11 +402,11 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
       if (o.scale) {
         const a = amountText(o.times ?? 0, o.scale);
         return a.equal
-          ? `Add ${nm}s to ${dest} equal to ${a.num}.`
-          : `Add ${a.num} ${nm}s to ${dest}.`;
+          ? `Add ${plural(nm)} to ${dest} equal to ${a.num}.`
+          : `Add ${a.num} ${plural(nm)} to ${dest}.`;
       }
       const n = o.times ?? 1;
-      return `Add ${n > 1 ? `${n} ${nm}s` : `${article(nm)} ${nm}`} to ${dest}.`;
+      return `Add ${n > 1 ? `${n} ${plural(nm)}` : `${article(nm)} ${nm}`} to ${dest}.`;
     }
     case 'actAllies':
       return 'All your allies act now.';

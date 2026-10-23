@@ -1605,7 +1605,7 @@
 @keyframes grim-next {
   from {
     opacity: 0;
-    transform: translateX(28px);
+    transform: none;
   }
   to {
     opacity: 1;
@@ -1615,7 +1615,7 @@
 @keyframes grim-prev {
   from {
     opacity: 0;
-    transform: translateX(-28px);
+    transform: none;
   }
   to {
     opacity: 1;
@@ -1863,4 +1863,9 @@
 }
 .bestiary__fig small {
   color: var(--c-text-dim);
+}
+
+/* nothing in the book may draw outside it */
+.grim__book {
+  overflow: hidden;
 }

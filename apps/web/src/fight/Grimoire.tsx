@@ -4,7 +4,7 @@
 import { useMemo, useState } from 'react';
 import type { CardDef } from '@sr/combat';
 import { COMBAT_DB } from '@sr/content/v2';
-import { CardHover } from './CardHover';
+import { CardHover, type Anchor } from './CardHover';
 import { FightCard } from './FightCard';
 import { bookLayout, useWidth, type GrimoireCard } from './grimoireData';
 import { TABS, paginate, poolOf, sortCards, tabOf, type CatalogCard } from './deckCatalog';
@@ -49,7 +49,7 @@ export function Grimoire(props: {
   const [tab, setTab] = useState<string | 'all'>('all');
   const [leaf, setLeaf] = useState(0);
   const [dir, setDir] = useState<'next' | 'prev'>('next');
-  const [hover, setHover] = useState<CardDef | null>(null);
+  const [hover, setHover] = useState<{ def: CardDef; at: Anchor } | null>(null);
 
   const shown = tab === 'all' ? entries : entries.filter((e) => tabOf(e.def) === tab);
   const pages = useMemo(() => paginate(shown, cols * rows), [shown, cols, rows]);
@@ -118,9 +118,13 @@ export function Grimoire(props: {
                           disabled={!!props.onPick && !ok}
                           aria-label={props.onPick ? `Choose ${def.name}` : def.name}
                           onClick={() => ok && props.onPick?.(def.id)}
-                          onMouseEnter={() => setHover(def)}
+                          onMouseEnter={(e) =>
+                            setHover({ def, at: e.currentTarget.getBoundingClientRect() })
+                          }
                           onMouseLeave={() => setHover(null)}
-                          onFocus={() => setHover(def)}
+                          onFocus={(e) =>
+                            setHover({ def, at: e.currentTarget.getBoundingClientRect() })
+                          }
                           onBlur={() => setHover(null)}
                         >
                           <FightCard db={COMBAT_DB} def={def} width={cardWidth} />
@@ -143,7 +147,7 @@ export function Grimoire(props: {
           </button>
         </div>
       </div>
-      <CardHover def={hover} />
+      <CardHover def={hover?.def ?? null} at={hover?.at ?? null} plus={!!props.onPick} />
     </div>
   );
 }

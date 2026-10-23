@@ -226,9 +226,9 @@ Starter: Slash, Slash, Slash, Slash, Guard, Guard, Guard, Quick Jab, Quick Jab, 
 |---|---|---|---|---|
 | Quick Jab | 0 | attack | basic | Deal 3 damage. Apply 1 Faltering. |
 | Slip Away | 1 | skill | basic | Gain 7 Barrier. Discard 1 card. |
-| Palmed Knives | 1 | skill | common | Add 3 Sleeve Knifes to your hand. |
+| Palmed Knives | 1 | skill | common | Add 3 Sleeve Knives to your hand. |
 | Hidden Blade | 1 | skill | common | Gain 6 Barrier. Add a Sleeve Knife to your hand. |
-| Sleeve Flick | 0 | skill | common | Add 2 Sleeve Knifes to your hand. Consume. |
+| Sleeve Flick | 0 | skill | common | Add 2 Sleeve Knives to your hand. Consume. |
 | Whirling Knives | 1 | attack | common | Deal 4 damage 2 times to ALL enemies. |
 | Knife Volley | 1 | attack | common | Deal 3 damage 3 times. |
 | Needle Jab | 0 | attack | common | Deal 4 damage. Apply 1 Bleed. |
@@ -240,9 +240,9 @@ Starter: Slash, Slash, Slash, Slash, Guard, Guard, Guard, Quick Jab, Quick Jab, 
 | Roll Clear | 1 | skill | common | Gain 5 Barrier. Draw 2 cards. |
 | Poisoned Needle | 1 | snare | common | When you or an ally is attacked: Deal 3 damage to the attacker. Apply 4 Bleed to the attacker. |
 | Endless Edges | 1 | power | uncommon | At the start of your turn: Add a Sleeve Knife to your hand. |
-| Keen Edge | 1 | power | uncommon | Apply 3 Edge. |
+| Keen Edge | 1 | power | uncommon | Gain 3 Edge: your Sleeve Knives deal 3 more damage for the rest of the fight. |
 | Razor Halo | 2 | power | uncommon | Whenever you play a Sleeve Knife: Deal 3 damage to ALL enemies. |
-| Empty the Sleeves | 1 | skill | uncommon | Discard your hand. Add Sleeve Knifes to your hand equal to the cards discarded this turn. |
+| Empty the Sleeves | 1 | skill | uncommon | Discard your hand. Add Sleeve Knives to your hand equal to the cards discarded this turn. |
 | Killing Flourish | 1 | attack | uncommon | Deal 6 damage for each Attack played this turn. |
 | Mindrot | 1 | skill | uncommon | Apply 4 Bleed. Apply 1 Exposed. |
 | Flashpoint | 1 | skill | uncommon | Double the Bleed on the target. Consume. |
@@ -257,7 +257,7 @@ Starter: Slash, Slash, Slash, Slash, Guard, Guard, Guard, Quick Jab, Quick Jab, 
 | All In | 0 | skill | uncommon | Discard your hand. Draw cards equal to the cards discarded this turn. Consume. |
 | Hidden Palm | 1 | power | uncommon | Whenever you discard a card: Gain 2 Barrier. |
 | Flaying Spree | 2 | attack | uncommon | Deal 7 damage, 1 more time per card discarded this turn. |
-| Knife in the Dark | 1 | snare | uncommon | When an enemy gains Barrier: Deal 5 damage to the attacker. Add 2 Sleeve Knifes to your hand. |
+| Knife in the Dark | 1 | snare | uncommon | When an enemy gains Barrier: Deal 5 damage to the attacker. Add 2 Sleeve Knives to your hand. |
 | Encore | 1 | skill | uncommon | Apply 1 Mirrored. |
 | Palmed Card | 0 | skill | uncommon | Add a random Attack card from your pool to your hand. Consume. |
 | Nimble Hands | 0 | skill | uncommon | A random card in your hand costs 1 less this fight. Draw 1 card. Consume. |
@@ -266,7 +266,7 @@ Starter: Slash, Slash, Slash, Slash, Guard, Guard, Guard, Quick Jab, Quick Jab, 
 | Plague Bloom | 2 | skill | rare | Triple the Bleed to ALL enemies. Consume. |
 | Nightfall | 2 | skill | rare | Apply 5 Bleed to ALL enemies. Apply 2 Exposed to ALL enemies. Consume. |
 | Lingering Step | 1 | power | rare | Whenever you play a card: Gain 1 Barrier. |
-| Deck of a Thousand Knives | 2 | power | legendary | At the start of your turn: Add 3 Sleeve Knifes to your hand. Apply 2 Edge. |
+| Deck of a Thousand Knives | 2 | power | legendary | At the start of your turn: Add 3 Sleeve Knives to your hand. Gain 2 Edge: your Sleeve Knives deal 2 more damage for the rest of the fight. |
 | Death Warrant | 1 | skill | legendary | The target loses HP equal to 3 times the target's Bleed. Consume. |
 
 Tokens (made by other cards):
