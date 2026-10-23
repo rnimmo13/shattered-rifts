@@ -22,7 +22,7 @@ const LABEL: Record<string, string> = {
   discard: 'Discarding',
   exhaustCards: 'Consuming cards',
   'status:doom': 'Fate',
-  'status:seared': 'Seared',
+  'status:seared': 'Bleed',
   'status:thorns': 'Thorns',
   'status:might': 'Might',
   'status:exposed': 'Exposed',

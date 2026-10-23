@@ -139,15 +139,15 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     },
     starter: [...rep('strike', 4), ...rep('defend', 3), ...rep('quick-jab', 2), 'slip-away'],
     blurb:
-      'A cutpurse with a sleeve full of blades. Starts every fight with a Sleeve Knife. Knives, Seared and discard tricks.',
+      'A cutpurse with a sleeve full of blades. Starts every fight with a Sleeve Knife. Knives, Bleed and discard tricks.',
     lanes: [
       'Knives: 0-cost blades',
-      'Seared: stack, double, cash out',
+      'Bleed: stack, double, cash out',
       'Sleight: discard and cycle',
     ],
     howTo: [
       'You start with a Sleeve Knife: a 0-cost Attack that is consumed when played.',
-      'Seared burns for its stacks every turn and then shrinks. Double it, then cash it out.',
+      'Bleed hurts for its stacks every turn and then shrinks. Double it, then cash it out.',
       'Discarding is a resource: Foresee and Discard cards trigger payoffs.',
     ],
   },

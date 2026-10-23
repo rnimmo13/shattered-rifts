@@ -68,7 +68,7 @@ draw 5, +1 draw for the second player in PvP (§8).
 | **Exposed** | Takes 50% more damage from attacks. |
 | **Faltering** | Deals 25% less damage with attacks. |
 | **Might** | +1 damage per stack on every attack (permanent for the fight). |
-| **Seared** | Takes damage equal to stacks at the start of its turn, then loses 1 stack. |
+| **Bleed** | Takes damage equal to stacks at the start of its turn, then loses 1 stack. |
 | **Stunned** | Skips its next action (its intent is cancelled). |
 | **Thorns** | Deals stacks damage back to anything that hits it with an attack. |
 | **Shielded** | Ignores the next instance of damage, then pops. |
@@ -93,7 +93,7 @@ draw 5, +1 draw for the second player in PvP (§8).
 | **Kesh the Unfed** (Wyldmaw) | **Buffed, not summoned.** Cards give his Pack (1–2 pups, from one card) Might and feed them. | Hit hard, hurt yourself, snowball. |
 | **Vesper Nightlace** (Umbral) | **None** (shadows are Snares, not bodies). | Snares, Exposed/Faltering, bluffing. |
 
-| **Quill** (Umbral) | **None.** Shivs are cards, not bodies. | Shivs, Seared, discard (docs/09). |
+| **Quill** (Umbral) | **None.** Shivs are cards, not bodies. | Shivs, Bleed, discard (docs/09). |
 | **Ilvane** (Nexus-9) | **None.** Runes sit in a row. | Channel, evoke, Resonance. |
 | **Sehra** (Aurelion) | **None.** | Stances and Mantra. |
 | **Astra** (Starfall) | **None.** | Stars and the Sovereign Blade. |
@@ -162,4 +162,4 @@ C4, not before.
 2. HP persists between fights (StS) instead of resetting; Resolve as lives. [yes]
 3. Allies act automatically on End turn, in order. [yes; Fighters hit the front-most enemy]
 4. Companion mixes per Riftwalker as in §5. [as listed]
-5. Status names (Exposed, Faltering, Might, Seared, Stunned, Thorns, Shielded) and "Barrier". [as listed]
+5. Status names (Exposed, Faltering, Might, Bleed, Stunned, Thorns, Shielded) and "Barrier". [as listed]

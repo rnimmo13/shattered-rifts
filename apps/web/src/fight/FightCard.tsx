@@ -23,7 +23,7 @@ const RARITY_LABEL: Record<string, string> = {
 };
 
 const KEYWORDS =
-  /\b(Barrier|Exposed|Faltering|Might|Seared|Stunned|Thorns|Shielded|Exhaust|Retain|Mana|Resonance|Edge|Fervor|Serene|Fury|Radiant|Lumen|Foresee|Sharpen|Sharpened|Consume|Hold|Fleeting|Unplayable)\b/g;
+  /\b(Barrier|Exposed|Faltering|Might|Bleed|Stunned|Thorns|Shielded|Exhaust|Retain|Mana|Resonance|Edge|Fervor|Serene|Fury|Radiant|Lumen|Foresee|Sharpen|Sharpened|Consume|Hold|Fleeting|Unplayable)\b/g;
 
 /** Rules text with the keywords marked **bold** for the card renderer. */
 function rulesFor(db: CombatDb, c: CardDef): string {
@@ -91,7 +91,6 @@ export const FightCard = memo(
             {KIND_LABEL[def.kind]}
             <span className="card__rar"> · {RARITY_LABEL[rarityRaw] ?? rarityRaw}</span>
           </div>
-          {upgraded && <div className="card__upgraded">Upgraded</div>}
           <div className={`card__rules card__rules--${size}`}>
             <p>
               {runs.map((r, i) =>

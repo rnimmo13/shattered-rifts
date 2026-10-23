@@ -216,9 +216,9 @@ Starter: Slash, Slash, Slash, Guard, Guard, Guard, Guard, Veil Strike, Veil Stri
 
 ## Quill, the Knife-Dancer (umbral, 66 HP)
 
-A cutpurse with a sleeve full of blades. Starts every fight with a Sleeve Knife. Knives, Seared and discard tricks.
+A cutpurse with a sleeve full of blades. Starts every fight with a Sleeve Knife. Knives, Bleed and discard tricks.
 
-Lanes: Knives: 0-cost blades / Seared: stack, double, cash out / Sleight: discard and cycle
+Lanes: Knives: 0-cost blades / Bleed: stack, double, cash out / Sleight: discard and cycle
 
 Starter: Slash, Slash, Slash, Slash, Guard, Guard, Guard, Quick Jab, Quick Jab, Slip Away
 
@@ -231,26 +231,26 @@ Starter: Slash, Slash, Slash, Slash, Guard, Guard, Guard, Quick Jab, Quick Jab, 
 | Sleeve Flick | 0 | skill | common | Add 2 Sleeve Knifes to your hand. Consume. |
 | Whirling Knives | 1 | attack | common | Deal 4 damage 2 times to ALL enemies. |
 | Knife Volley | 1 | attack | common | Deal 3 damage 3 times. |
-| Needle Jab | 0 | attack | common | Deal 4 damage. Apply 1 Seared. |
-| Ember Dose | 1 | skill | common | Apply 5 Seared. |
-| Choking Haze | 2 | skill | common | Apply 4 Seared to ALL enemies. Apply 2 Faltering to ALL enemies. |
-| Scattered Vials | 2 | skill | common | Apply 3 Seared to a random enemy. Apply 3 Seared to a random enemy. Apply 3 Seared to a random enemy. |
+| Needle Jab | 0 | attack | common | Deal 4 damage. Apply 1 Bleed. |
+| Ember Dose | 1 | skill | common | Apply 5 Bleed. |
+| Choking Haze | 2 | skill | common | Apply 4 Bleed to ALL enemies. Apply 2 Faltering to ALL enemies. |
+| Scattered Vials | 2 | skill | common | Apply 3 Bleed to a random enemy. Apply 3 Bleed to a random enemy. Apply 3 Bleed to a random enemy. |
 | Quick Hands | 0 | skill | common | Draw 1 card. Discard 1 card. |
 | Tumble | 1 | skill | common | Draw 3 cards. Discard 1 card. |
 | Roll Clear | 1 | skill | common | Gain 5 Barrier. Draw 2 cards. |
-| Poisoned Needle | 1 | snare | common | When you or an ally is attacked: Deal 3 damage to the attacker. Apply 4 Seared to the attacker. |
+| Poisoned Needle | 1 | snare | common | When you or an ally is attacked: Deal 3 damage to the attacker. Apply 4 Bleed to the attacker. |
 | Endless Edges | 1 | power | uncommon | At the start of your turn: Add a Sleeve Knife to your hand. |
 | Keen Edge | 1 | power | uncommon | Apply 3 Edge. |
 | Razor Halo | 2 | power | uncommon | Whenever you play a Sleeve Knife: Deal 3 damage to ALL enemies. |
 | Empty the Sleeves | 1 | skill | uncommon | Discard your hand. Add Sleeve Knifes to your hand equal to the cards discarded this turn. |
 | Killing Flourish | 1 | attack | uncommon | Deal 6 damage for each Attack played this turn. |
-| Mindrot | 1 | skill | uncommon | Apply 4 Seared. Apply 1 Exposed. |
-| Flashpoint | 1 | skill | uncommon | Double the Seared on the target. Consume. |
-| Smouldering Air | 1 | power | uncommon | At the start of your turn: Apply 2 Seared to ALL enemies. |
-| Tainted Edges | 1 | power | uncommon | Whenever you play a Sleeve Knife: Apply 1 Seared. |
-| Hungering Dark | 2 | skill | uncommon | Apply 3 Seared to ALL enemies. |
-| Venom Fang | 2 | attack | uncommon | Deal 10 damage. Apply 5 Seared. |
-| Cash In | 1 | skill | uncommon | The target loses HP equal to the target's Seared. Consume. |
+| Mindrot | 1 | skill | uncommon | Apply 4 Bleed. Apply 1 Exposed. |
+| Flashpoint | 1 | skill | uncommon | Double the Bleed on the target. Consume. |
+| Smouldering Air | 1 | power | uncommon | At the start of your turn: Apply 2 Bleed to ALL enemies. |
+| Tainted Edges | 1 | power | uncommon | Whenever you play a Sleeve Knife: Apply 1 Bleed. |
+| Hungering Dark | 2 | skill | uncommon | Apply 3 Bleed to ALL enemies. |
+| Venom Fang | 2 | attack | uncommon | Deal 10 damage. Apply 5 Bleed. |
+| Cash In | 1 | skill | uncommon | The target loses HP equal to the target's Bleed. Consume. |
 | Ace Up the Sleeve | 0 | skill | uncommon | Unplayable. If discarded: Draw 2 cards. |
 | Pilfered Time | 0 | skill | uncommon | Unplayable. If discarded: Gain 1 Mana. |
 | Fold the Hand | 0 | skill | uncommon | Discard 3 cards. Gain 2 Mana. |
@@ -263,11 +263,11 @@ Starter: Slash, Slash, Slash, Slash, Guard, Guard, Guard, Quick Jab, Quick Jab, 
 | Nimble Hands | 0 | skill | uncommon | A random card in your hand costs 1 less this fight. Draw 1 card. Consume. |
 | Light Fingers | 1 | skill | uncommon | Gain 2 Mana. Discard 1 card. |
 | Countless Nicks | 2 | power | rare | Whenever you play a card: Deal 1 damage to ALL enemies. |
-| Plague Bloom | 2 | skill | rare | Triple the Seared to ALL enemies. Consume. |
-| Nightfall | 2 | skill | rare | Apply 5 Seared to ALL enemies. Apply 2 Exposed to ALL enemies. Consume. |
+| Plague Bloom | 2 | skill | rare | Triple the Bleed to ALL enemies. Consume. |
+| Nightfall | 2 | skill | rare | Apply 5 Bleed to ALL enemies. Apply 2 Exposed to ALL enemies. Consume. |
 | Lingering Step | 1 | power | rare | Whenever you play a card: Gain 1 Barrier. |
 | Deck of a Thousand Knives | 2 | power | legendary | At the start of your turn: Add 3 Sleeve Knifes to your hand. Apply 2 Edge. |
-| Death Warrant | 1 | skill | legendary | The target loses HP equal to 3 times the target's Seared. Consume. |
+| Death Warrant | 1 | skill | legendary | The target loses HP equal to 3 times the target's Bleed. Consume. |
 
 Tokens (made by other cards):
 
@@ -610,7 +610,7 @@ Tokens (made by other cards):
 | Gorrmaw's Tooth | 1 | power | rare | Apply 2 Might. Lose 3 HP. |
 | Nyxara's Web | 1 | snare | rare | When you or an ally is attacked: Cancel that attack. Apply 2 Exposed to the attacker. Gain 6 Barrier. |
 | Faceless Courtier | 1 | skill | rare | Apply 2 Exposed to ALL enemies. Apply 1 Faltering to ALL enemies. |
-| Unmasking | 2 | attack | rare | Deal 12 damage. Apply 4 Seared. |
+| Unmasking | 2 | attack | rare | Deal 12 damage. Apply 4 Bleed. |
 
 ## Pool sizes
 

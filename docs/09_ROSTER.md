@@ -20,14 +20,14 @@ deck takes one and a half of them. Our pools were ~16 cards and one lane each. T
 | Signature mechanic | Owner | Everyone else gets |
 |---|---|---|
 | **Sleeve Knives** + discard payoffs | Quill | one or two 0-cost attacks, never the engine |
-| **Seared** stacking (our poison): double, spread, cash out | Quill | a Seared hit now and then (Neutral, enemies) |
+| **Bleed** stacking (our poison): double, spread, cash out | Quill | a Bleed hit now and then (Neutral, enemies) |
 | **Runes** (channel / evoke / Resonance) | Ilvane | nothing |
 | **Stances** and Fervor | Sehra | nothing |
 | **Lumen** and the Starforged Blade (sharpen) | Astra | nothing |
 | **Drones** and Assemble | Rivet | |
 | **Pack** buffs | Kesh | |
 | **Thorns** and Barrier-scaling | Maren | Barrier is shared; Thorns is Maren's |
-| **Snares** (face-down, auto-springing) | Vesper gets the most (14, with payoffs for setting them) | **Shared toolkit** like Might or Consume: every deck has a trap or two in its own flavour (Maren 4, Rivet 2, Quill 2 incl. a Seared needle, Kesh, Ilvane, Sehra, Astra 1 each) and Neutral has 2. Enforced by `cards.test.ts` |
+| **Snares** (face-down, auto-springing) | Vesper gets the most (14, with payoffs for setting them) | **Shared toolkit** like Might or Consume: every deck has a trap or two in its own flavour (Maren 4, Rivet 2, Quill 2 incl. a Bleed needle, Kesh, Ilvane, Sehra, Astra 1 each) and Neutral has 2. Enforced by `cards.test.ts` |
 | **Foresee** | Vesper, Sehra, Astra | a Neutral common |
 | **Consume payoffs** | Kesh (Feast lane) | Neutral Consume-on-play is common |
 
@@ -43,7 +43,7 @@ deck takes one and a half of them. Our pools were ~16 cards and one lane each. T
 | 2 | **Rivet** | Nexus-9 | 72 | **Swarm:** many cheap Drones | **Assemble:** make allies act again, burst turns | **Core:** a few big constructs, Might, upgrades |
 | 3 | **Kesh the Unfed** | Wyldmaw | 76 | **Bloodrage:** Might and self-damage | **Pack:** buffed companions | **Feast:** Consume, Devour, lifesteal |
 | 4 | **Vesper Nightlace** | Umbral | 68 | **Snares:** many, varied triggers | **Exposed:** debuff burst, Faltering control | **Bluff:** Retain, Foresee, held Mana |
-| 5 | **Quill, the Knife-Dancer** | Umbral | 66 | **Sleeve Knives:** 0-cost, many hits | **Seared:** stack, double, cash out | **Sleight:** discard / cycle payoffs |
+| 5 | **Quill, the Knife-Dancer** | Umbral | 66 | **Sleeve Knives:** 0-cost, many hits | **Bleed:** stack, double, cash out | **Sleight:** discard / cycle payoffs |
 | 6 | **Ilvane, the Glyphwright** | Nexus-9 | 70 | **Spark:** damage runes | **Ward:** Barrier runes | **Hollow:** charging runes, Resonance |
 | 7 | **Sehra, the Still Flame** | Aurelion | 72 | **Fury:** burst | **Serene:** Mana and cards | **Fervor:** Retain/Foresee to a payoff |
 | 8 | **Astra, the Starcaller** | Starfall | 80 | **Blade:** sharpen one weapon | **Lumen:** spend for finishers | **Constellations:** Auras that tick |
@@ -67,8 +67,8 @@ Role tags (what kind of fighter, shown on every character screen): Maren **Knigh
 |---|---|---|
 | **Choices** (`pending`, action `pick`) | An op can ask the player to choose cards (discard / exhaust N from hand, scry) and the rest of the card resumes after. | Quill, Vesper, Sehra, Astra, Kesh |
 | `discard`, `exhaustCards`, `scry` ops; `onDiscard` / `onExhaust` on a card | Cycling and payoffs (Sly-style) | Quill, Kesh |
-| `scale` on any amount | "Deal 1 per Barrier / per card exhausted / per Seared on the target ..." One field, a list of metrics | everyone |
-| `scaleStatus` op | Double Seared, triple it, etc. | Quill |
+| `scale` on any amount | "Deal 1 per Barrier / per card exhausted / per Bleed on the target ..." One field, a list of metrics | everyone |
+| `scaleStatus` op | Double Bleed, triple it, etc. | Quill |
 | `power` op | Register a trigger: turn start / turn end / on play / on exhaust / on discard | all Power cards |
 | **Runes**: `channel`, `evoke`, `runeSlots`; `RuneDef` in the DB | Passive at your turn end, evoke when pushed out or on demand | Ilvane |
 | **Stances**: `stance` op; statuses `calm`, `wrath`, `radiant`; `mantra` | Exclusive statuses with enter/exit effects and damage multipliers | Sehra |
@@ -92,7 +92,7 @@ Role tags (what kind of fighter, shown on every character screen): Maren **Knigh
 
 Card and keyword names are original to Shattered Rifts. Mechanics are free to share with other deckbuilders; names, keyword
 vocabulary and trade dress are not. When adding a card, give it a name nobody else's game uses, and check `10_CARD_LIST.md`.
-Player-facing words: Barrier, Exposed, Faltering, Might, Seared, Thorns, Shielded, Snare, Aura (a card whose effect lasts the
+Player-facing words: Barrier, Exposed, Faltering, Might, Bleed, Thorns, Shielded, Snare, Aura (a card whose effect lasts the
 fight), Consume (the card leaves the fight), Hold (stays in hand), Fleeting, Foresee, Fury / Serene / Radiant (stances), Fervor
 (builds to Radiant), Lumen (the second resource), Sharpen (grow the Starforged Blade), Sleeve Knife (the 0-cost knife).
 Internal ids in code (`exhaust`, `scry`, `forge`, `stars`, `wrath`, `calm`, `mantra`) are not renamed: only what the player reads.
@@ -103,7 +103,7 @@ The goal: every card *mechanic* a Slay the Spire player expects exists, with our
 
 | Mechanic | Ours | Where |
 |---|---|---|
-| Block / Strength / Vulnerable / Weak / Thorns / Buffer / Poison | Barrier / Might / Exposed / Faltering / Thorns / Shielded / Seared | everyone (Seared: Quill) |
+| Block / Strength / Vulnerable / Weak / Thorns / Buffer / Poison | Barrier / Might / Exposed / Faltering / Thorns / Shielded / Bleed | everyone (Bleed: Quill) |
 | Dexterity / Frail | **Bracing** / **Brittle** (Brittle also shrinks an enemy's Barrier moves) | Maren, Sehra / Maren, Vesper |
 | Intangible / Artifact / Plated Armor / Ritual | **Ghostly** / **Steadfast** / **Armored** / **Ritual** | Vesper / Vesper / Maren / Kesh |
 | Barricade / Corruption / Metallicize | **Fortified** / **Unbound** / end-of-turn Barrier Aura | Maren / Kesh / Maren |

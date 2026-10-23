@@ -213,6 +213,7 @@ const STATUS_NAME: Record<string, string> = {
   doom: 'Fate',
   ritual: 'Cadence',
   vigor: 'Primed',
+  seared: 'Bleed',
 };
 const sname = (s: string): string => STATUS_NAME[s] ?? cap(s);
 const article = (word: string): string => (/^[aeiou]/i.test(word) ? 'an' : 'a');
@@ -222,7 +223,7 @@ const METRIC_WORDS: Record<Metric, { per: string; equal: string }> = {
   barrier: { per: 'Barrier', equal: 'Barrier' },
   hp: { per: 'HP', equal: 'HP' },
   missingHp: { per: 'missing HP', equal: 'missing HP' },
-  seared: { per: 'Seared', equal: 'Seared' },
+  seared: { per: 'Bleed', equal: 'Bleed' },
   exposed: { per: 'Exposed', equal: 'Exposed' },
   might: { per: 'Might', equal: 'Might' },
   thorns: { per: 'Thorns', equal: 'Thorns' },

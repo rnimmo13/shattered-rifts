@@ -595,7 +595,7 @@ describe('scaling amounts', () => {
     expect(cardText(DB, DB.cards.finisher as CardDef)).toContain(
       '6 times the Attacks played this turn',
     );
-    expect(cardText(DB, DB.cards.catalyst as CardDef)).toBe('Double the Seared on the target.');
+    expect(cardText(DB, DB.cards.catalyst as CardDef)).toBe('Double the Bleed on the target.');
   });
 });
 

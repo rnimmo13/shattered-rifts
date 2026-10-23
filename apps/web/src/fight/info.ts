@@ -19,10 +19,10 @@ export const STATUS_INFO: Record<
   },
   might: { name: 'Might', glyph: '✦', tone: 'good', text: 'Attacks deal 1 more damage per stack.' },
   seared: {
-    name: 'Seared',
-    glyph: '♨',
+    name: 'Bleed',
+    glyph: '❣',
     tone: 'bad',
-    text: 'Takes damage equal to its stacks at the start of its turn, then loses 1 stack.',
+    text: 'Bleeding: takes damage equal to its stacks at the start of its turn, then loses 1 stack.',
   },
   stunned: { name: 'Stunned', glyph: '✖', tone: 'bad', text: 'Skips its next action.' },
   thorns: {
