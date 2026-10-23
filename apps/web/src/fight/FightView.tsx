@@ -41,7 +41,7 @@ import { preloadArt } from '../art/assets';
 import { PotionButton } from './PotionChip';
 import { PickModal } from './PickModal';
 import { tipAttrs, type TipContent } from '../ui/tip';
-import { UI_TIPS } from './info';
+import { STATUS_INFO, UI_TIPS } from './info';
 import { loadSeen, loadTipsOn, nextTip, saveSeen, saveTipsOn } from './tips';
 import { AuraList, LumenCounter, RuneArc, SnareRow } from './SidePanel';
 import type { FighterSpec } from './Fighters';
@@ -276,7 +276,7 @@ export function FightView(props: {
             sc.fighters.pulse(e.target, bad ? '#d12f48' : '#f6dc94');
             float(
               e.target,
-              `${e.status[0]?.toUpperCase()}${e.status.slice(1)} ${e.amount}`,
+              `${STATUS_INFO[e.status]?.name ?? e.status} ${e.amount}`,
               bad ? 'bad' : 'good',
             );
             await wait(110);
@@ -915,12 +915,12 @@ export function FightView(props: {
           {me && showRunes && heroPlaced && (
             <RuneArc db={db} me={me} cx={heroPlaced.x} top={heroPlaced.y + 78} />
           )}
-          {me && heroPlaced && (
+          {me && (
             <SnareRow
               db={db}
               me={me}
-              cx={heroPlaced.x}
-              top={heroPlaced.y - 44}
+              cx={heroPlaced?.x ?? 140}
+              top={Math.max(30, (heroPlaced?.y ?? 360) - 44)}
               tip={(card) => snareTip(db, card)}
             />
           )}

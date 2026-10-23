@@ -86,7 +86,11 @@ export function TitleScreen() {
                     <span className="title__card-realm">
                       {RIFTWALKERS[h].lanes.map((l) => l.split(':')[0]).join(' · ')}
                     </span>
-                    {picked === h && <span className="title__chosen">Chosen</span>}
+                    {picked === h && (
+                      <span className="title__chosen" aria-hidden>
+                        Chosen
+                      </span>
+                    )}
                   </button>
                 </li>
               ))}

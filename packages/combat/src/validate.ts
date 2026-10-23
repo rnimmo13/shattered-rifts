@@ -173,6 +173,13 @@ export function validateDb(db: CombatDb): string[] {
   for (const [id, h] of Object.entries(db.heroes)) {
     if (h.id !== id) errs.push(`hero key "${id}" does not match its id`);
     if (h.sigil) checkOps(`hero ${id} sigil`, h.sigil, { aimed: false, snare: false });
+    if (h.trait?.clutch) {
+      const c = h.trait.clutch;
+      if (!(c.below > 0 && c.below <= 100) || !(c.damagePct > 0))
+        errs.push(`hero ${id}: clutch needs below in 1-100 and damagePct above 0`);
+    }
+    if (h.trait && !h.trait.fightStart?.length && !h.trait.turnStart?.length && !h.trait.clutch)
+      errs.push(`hero ${id}: trait "${h.trait.name}" does nothing`);
     if (h.trait?.fightStart)
       checkOps(`hero ${id} trait`, h.trait.fightStart, { aimed: false, snare: false });
     if (h.trait?.turnStart)

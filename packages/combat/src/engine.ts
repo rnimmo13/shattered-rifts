@@ -638,9 +638,17 @@ function execOp(r: Run, a: Act, op: Op): void {
       side.nextMana += op.amount;
       return;
     case 'maxMana':
-      side.maxMana = Math.max(0, Math.min(MAX_MAX_MANA, side.maxMana + op.amount));
-      r.ev.push({ type: 'maxMana', side: side.id, max: side.maxMana });
-      gainMana(r, side, Math.max(0, op.amount));
+      {
+        const before = side.maxMana;
+        // raising stops at the cap (and never lowers a maximum that boons already put above it)
+        side.maxMana =
+          op.amount >= 0
+            ? Math.max(before, Math.min(MAX_MAX_MANA, before + op.amount))
+            : Math.max(0, before + op.amount);
+        r.ev.push({ type: 'maxMana', side: side.id, max: side.maxMana });
+        // only the part that really raised the maximum is paid out now
+        gainMana(r, side, Math.max(0, side.maxMana - before));
+      }
       return;
     case 'drawNext':
       side.nextDraw += op.amount;

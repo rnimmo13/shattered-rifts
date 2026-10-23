@@ -131,6 +131,37 @@ describe('innate traits', () => {
     expect(hit(40)).toBe(9);
   });
 
+  it('Clutch Genes clears when KP is healed back above half', () => {
+    const s = fight('kp', ['liquid-lunch']);
+    const hero = s.sides.a.units[s.sides.a.units.length - 1]!;
+    hero.hp = 30;
+    hero.statuses.clutch = 50;
+    s.sides.a.hand = [{ id: 'T0', card: 'last-call' }];
+    const after = playCard(s, 'T0'); // heals 6: still under half
+    expect(after.sides.a.units[after.sides.a.units.length - 1]!.statuses.clutch).toBe(50);
+    const h2 = fight('kp', ['last-call']);
+    const hero2 = h2.sides.a.units[h2.sides.a.units.length - 1]!;
+    hero2.hp = Math.floor(hero2.maxHp / 2) - 2; // 42: one heal of 6 crosses the line
+    hero2.statuses.clutch = 50;
+    const healed = playCard(h2, 'T0');
+    expect(healed.sides.a.units[healed.sides.a.units.length - 1]!.statuses.clutch ?? 0).toBe(0);
+  });
+
+  it('a fight that begins hurt starts with Clutch Genes already on', () => {
+    const { state } = createCombat(db, {
+      seed: 'c',
+      a: { hero: 'kp', deck: RIFTWALKERS.kp.starter },
+      b: { enemies: ['squire'] },
+    });
+    const s = clone(state);
+    const hero = s.sides.a.units[s.sides.a.units.length - 1]!;
+    hero.hp = 30;
+    const after = applyAction(db, s, { type: 'endTurn' }).state;
+    const h = after.sides.a.units[after.sides.a.units.length - 1]!;
+    expect(h.hp).toBeLessThan(h.maxHp / 2);
+    expect(h.statuses.clutch).toBe(50);
+  });
+
   it('Clutch Genes switches on when damage drops KP under half, and off when healed', () => {
     const s = fight('kp', []);
     const hero = s.sides.a.units[s.sides.a.units.length - 1]!;

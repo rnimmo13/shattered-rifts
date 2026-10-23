@@ -302,7 +302,7 @@ export const UI_TIPS = {
   draw: {
     kicker: 'Pile',
     title: 'Draw pile',
-    text: 'The cards you will draw from. When it runs out, your discard pile is shuffled back into it. Click to see what is left (the order is hidden).',
+    text: 'The cards you will draw from. When it runs out, your discard pile is shuffled back into it. Your hand holds at most 10 cards: any card you would draw beyond that goes straight to the discard pile. Click to see what is left (the order is hidden).',
   } as TipContent,
   discard: {
     kicker: 'Pile',

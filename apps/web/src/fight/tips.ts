@@ -28,7 +28,7 @@ export const TIP_RULES: TipRule[] = [
   {
     id: 'basics',
     title: 'Your turn',
-    text: 'Drag a card up (or click it, or press 1-9) to play it. You have 3 Mana a turn, and each card shows its cost. Above every enemy is what it will do next. Press E to end your turn.',
+    text: 'Drag a card up (or click it, or press 1-9) to play it. You have 3 Mana a turn, and each card shows its cost. Above every enemy is what it will do next. Press E to end your turn. Your hand holds at most 10 cards.',
     when: () => true,
   },
   {

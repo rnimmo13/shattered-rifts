@@ -5,6 +5,7 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **Hand limit explained.** Your hand holds at most 10 cards (cards drawn beyond that go to the discard pile; added cards too). The draw-pile tooltip and the first tip now say so.
 - **Innate traits.** Every Riftwalker has a passive they always have: Maren *Oathkeeper* (3 Barrier every turn), Rivet *Tinkerer* (heal 2 you and your companions each turn), Kesh *Pack Instinct* (start with 1 Might for the pack), Vesper *Ambusher* (enemies start Exposed), Quill *Weak Spot* (a random enemy is Exposed each turn), Ilvane *Attuned* (start with 1 Resonance), Sehra *Inner Fire* (start with 2 Fervor), Astra *Starborn* (1 Lumen each turn), Mire *Grave Chill* (enemies start with 2 Fate) and KP *Clutch Genes* (deals 50% more attack damage at or below half HP; a status shows when it is active). Shown on the character screens and when you hover your name in a fight.
 - **Pick your character on the title screen**, then Begin Run or Practice fight starts with them (the Sanctum and practice setup open on your choice).
 - **Snares are easy to see**: each face-down Snare is a violet trap tile on the floor in front of you with a web on it, a pulsing ring, and what sets it off written underneath.
