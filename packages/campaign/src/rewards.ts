@@ -215,6 +215,8 @@ export function offerPotion(rng: RngState): string {
 
 export const POTION_PRICE: Record<string, number> = { common: 30, uncommon: 50, rare: 80 };
 export const MAX_POTIONS = 3;
+/** The deepest Rift Tier for now: clearing this one ends the climb (Bank is the only choice left). */
+export const MAX_TIER = 20;
 
 export const BOON_PRICE: Record<string, number> = { common: 70, uncommon: 120, rare: 200 };
 

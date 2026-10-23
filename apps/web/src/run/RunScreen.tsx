@@ -14,6 +14,7 @@ import {
   buyCard,
   holdCard,
   buyPotion,
+  MAX_TIER,
   sellPotion,
   buyRemoval,
   chooseCard,
@@ -555,10 +556,16 @@ function Body(props: {
               <b>Bank the deck</b>
               <span>End the run and keep this deck.</span>
             </button>
-            <button className="bigchoice" onClick={() => act((r) => continueLoop(r))}>
-              <b>Continue to Tier {run.tier + 1}</b>
-              <span>Keep your deck, go back to stage 1, one deeper.</span>
-            </button>
+            {run.tier < MAX_TIER ? (
+              <button className="bigchoice" onClick={() => act((r) => continueLoop(r))}>
+                <b>Continue to Tier {run.tier + 1}</b>
+                <span>Keep your deck, heal fully, go back to stage 1, one deeper.</span>
+              </button>
+            ) : (
+              <p className="stage-panel__hint">
+                Rift Tier {MAX_TIER} is as deep as the rift goes for now.
+              </p>
+            )}
           </div>
         </section>
       );

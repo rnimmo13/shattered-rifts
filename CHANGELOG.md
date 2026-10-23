@@ -5,6 +5,7 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **0.7.0:** Rift Tiers stop at 20, and continuing a loop heals you fully.
 - **0.6.0:** Sell potions to merchants for half price. Maren is now just "Maren" and the barbarian is Ragnar (was Sehra), the necromancer is Dorian Blackthorn (was Mire), and Quill, Astra and Ilvane Glyphwright have short names; potions sit by the Mana orb, Auras by your hero, and Thorns has a proper icon.
 - **0.5.0:** X cards now upgrade to X+1. Weaker Riftwalkers (KP, Vesper, Astra, Mire, Quill) are tougher or hit harder; a few free-loop cards cost more or are Consumed. KP's lanes are Gun / Shells / Hangover.
 - **About 90 cards per Riftwalker (was 70).** 221 new cards, 15-25 per character, spread across each lane with new rares and build-arounds (Maren's Tower Shield and Radiance Eternal, Rivet's Relay Network and Backup Core, Kesh's Pack Leader and Grave Hunger, Vesper's four new Snare triggers, Quill's Knife Storm and Compounding Interest, Ilvane's Echo Cascade, Sehra's Mantra Engine, Astra's constellations, Mire's Ominous Chimes and Soul Furnace, KP's Hot Brass and Glass Jaw).

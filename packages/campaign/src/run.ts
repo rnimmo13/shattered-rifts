@@ -15,6 +15,7 @@ import { makePrelude } from './preludes';
 import {
   BOON_PRICE,
   MAX_POTIONS,
+  MAX_TIER,
   POTION_PRICE,
   PRICE,
   REMOVE_PRICE,
@@ -751,10 +752,12 @@ export function bank(run: RunState): RunState {
 /** Push on: one Rift Tier deeper, same deck, back to Stage 1. */
 export function continueLoop(run: RunState): RunState {
   need(run.phase === 'loopCleared', 'You can only continue a cleared loop');
+  need(run.tier < MAX_TIER, `Rift Tier ${MAX_TIER} is as deep as it goes`);
   const r = clone(run);
   r.tier += 1;
   if (r.tier < 8) r.resolve = Math.min(r.maxResolve, r.resolve + 1);
-  heal(r, r.maxHp * 0.5);
+  // a loop cleared is a loop rested: back to full HP for the next one
+  heal(r, r.maxHp);
   r.stage = 1;
   r.stageRealms = shuffle(r.rng, ['aurelion', 'nexus', 'wyldmaw'] as StageRealm[]);
   r.map = generateStageMap(r.rng, 1, r.stageRealms[0] as StageRealm, r.character);

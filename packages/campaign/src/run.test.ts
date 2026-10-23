@@ -310,8 +310,14 @@ describe('a whole run, played by the bot', () => {
     const r = { ...fresh('maren', 'loop'), phase: 'loopCleared' as const, hp: 10 };
     const c = continueLoop(r);
     expect(c.tier).toBe(2);
-    expect(c.hp).toBe(10 + Math.ceil(RIFTWALKERS.maren.hero.maxHp * 0.5));
+    expect(c.hp).toBe(c.maxHp);
     expect(c.stage).toBe(1);
+  });
+
+  it('Rift Tier 20 is the last: you can only bank there', () => {
+    const r = { ...fresh('maren', 'cap'), phase: 'loopCleared' as const, tier: 20 };
+    expect(() => continueLoop(r)).toThrow(RunError);
+    expect(continueLoop({ ...r, tier: 19 }).tier).toBe(20);
   });
 });
 

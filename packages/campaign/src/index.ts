@@ -15,6 +15,7 @@ export {
   offerBoon,
   offerPotion,
   MAX_POTIONS,
+  MAX_TIER,
   POTION_PRICE,
   offerCards,
   crossedPool,
