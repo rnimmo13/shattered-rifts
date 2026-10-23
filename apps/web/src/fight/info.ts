@@ -210,7 +210,11 @@ export const KEYWORD_INFO: Record<string, { name: string; text: string }> = {
     name: 'Sharpen',
     text: 'Every copy of the Starforged Blade permanently gains damage. If you have none, you get one.',
   },
-  shiv: { name: 'Sleeve Knife', text: 'A 0-cost Attack that is consumed.' },
+  'sleeve-knife': { name: 'Sleeve Knife', text: 'A 0-cost Attack that is consumed.' },
+  'buckshot-shell': {
+    name: 'Buckshot Shell',
+    text: 'A 0-cost Attack that hits every enemy and is consumed.',
+  },
   power: { name: 'Aura', text: 'Played once: its effect lasts for the rest of the fight.' },
 };
 
@@ -251,6 +255,7 @@ export function keywordsOf(
     if (o.op === 'stars') add(KEYWORD_INFO['stars']);
     if (o.op === 'forge') add(KEYWORD_INFO['forge']);
     if (o.op === 'addCard' && o.card === 'sleeve-knife') add(KEYWORD_INFO['sleeve-knife']);
+    if (o.op === 'addCard' && o.card === 'buckshot-shell') add(KEYWORD_INFO['buckshot-shell']);
     if (o.op === 'summon' && o.unit && taunting(o.unit)) add(KEYWORD_INFO['taunt']);
     if (o.op === 'status' && o.status) {
       const s = STATUS_INFO[o.status as StatusId];

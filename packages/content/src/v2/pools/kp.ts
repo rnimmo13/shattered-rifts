@@ -44,7 +44,7 @@ export const KP: CardDef[] = [
     { trigger: { on: 'attacked' } },
   ),
   // the token every shell card makes
-  p('common', 'buckshot-shell', 'Buckshot Shell', 'attack', 0, 'none', [dmg(5, 'allFoes')], {
+  p('common', 'buckshot-shell', 'Buckshot Shell', 'attack', 0, 'none', [dmg(4, 'allFoes')], {
     exhaust: true,
     tags: ['shell'],
     source: 'token',
@@ -141,7 +141,7 @@ export const KP: CardDef[] = [
     on('turnStart', [addTo('buckshot-shell')]),
   ]),
   p('rare', 'boomstick', 'Boomstick', 'attack', 3, 'none', [
-    scaled(dmg(10, 'allFoes'), per('exhausted', 1)),
+    scaled(dmg(10, 'allFoes'), per('exhausted', 2)),
   ]),
   p(
     'rare',

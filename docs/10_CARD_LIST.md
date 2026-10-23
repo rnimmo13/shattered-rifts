@@ -473,7 +473,7 @@ Starter: Slash, Slash, Slash, Guard, Guard, Guard, Hammer Swing, Hammer Swing, P
 | Booby-Trapped Window | 2 | snare | rare | When you or an ally is attacked: Cancel that attack. Deal 14 damage to the attacker. Apply 1 Stunned to the attacker. |
 | Panorama Window | 2 | skill | rare | Gain 14 Barrier. Apply 3 Thorns. Consume. |
 | Broken Window Theory | 2 | power | rare | At the end of your turn: Deal damage equal to your Thorns to ALL enemies. |
-| Boomstick | 3 | attack | rare | Deal 10 (+1 per consumed card) damage to ALL enemies. |
+| Boomstick | 3 | attack | rare | Deal 10 (+2 per consumed card) damage to ALL enemies. |
 | The Last Shell | 2 | attack | rare | Deal 24 damage. Apply 1 Exposed. Consume. Hold. |
 | Hammer Time | 2 | attack | rare | Deal 22 damage. Apply 2 Brittle. |
 | Bottomless Flask | 2 | power | rare | At the start of your turn: Heal 3. Draw 1 card. |
@@ -485,7 +485,7 @@ Tokens (made by other cards):
 
 | Card | Cost | Type | Rarity | Text |
 |---|---|---|---|---|
-| Buckshot Shell | 0 | attack | common | Deal 5 damage to ALL enemies. Consume. |
+| Buckshot Shell | 0 | attack | common | Deal 4 damage to ALL enemies. Consume. |
 
 ## Mire, the Gravewarden (gloomfen, 76 HP)
 

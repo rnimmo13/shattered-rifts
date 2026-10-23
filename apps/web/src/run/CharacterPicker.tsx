@@ -18,7 +18,7 @@ const REALM_NAME: Record<string, string> = {
 export function CharacterPicker(props: { value: HeroId; onChange: (id: HeroId) => void }) {
   const c = RIFTWALKERS[props.value];
   // a line of their own; picking a character draws a new one
-  const [pick, setPick] = useState(0);
+  const [pick, setPick] = useState(() => Math.floor(Math.random() * 1000));
   const quote = c.quotes?.[pick % c.quotes.length];
   return (
     <div className="picker">

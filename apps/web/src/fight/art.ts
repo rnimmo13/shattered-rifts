@@ -133,7 +133,12 @@ function motifOf(c: CardDef): Motif {
   }
   const has = (op: string): boolean =>
     [...ops, ...ops.flatMap((o) => (o.op === 'power' ? o.ops : []))].some((o) => o.op === op);
-  if (ops.some((o) => o.op === 'addCard' && o.card === 'sleeve-knife')) return 'flurry';
+  if (
+    ops.some(
+      (o) => o.op === 'addCard' && (o.card === 'sleeve-knife' || o.card === 'buckshot-shell'),
+    )
+  )
+    return 'flurry';
   if (has('channel') || has('evoke') || has('runeSlots')) return 'rune';
   if (has('stars') || has('forge')) return 'crystal';
   if (has('stance')) return 'power';
