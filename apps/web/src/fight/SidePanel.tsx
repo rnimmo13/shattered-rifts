@@ -1,4 +1,4 @@
-// What your Riftwalker has going beyond cards: the Lumen counter (beside Mana), the runes (a curved row under the hero)
+// What your Riftwalker has going beyond cards: the Lumen counter (beside Mana), the runes (a curved column beside the hero)
 // and the Auras in play. Each part only shows once it matters to the deck, so a Riftwalker without runes never sees an
 // empty rune row.
 
@@ -22,8 +22,8 @@ export function LumenCounter(props: { value: number }) {
   );
 }
 
-/** The rune slots in a smile-shaped row below the hero, centred on `cx` (host px), starting `top` px down. */
-export function RuneArc(props: { db: CombatDb; me: SideView; cx: number; top: number }) {
+/** The rune slots in a curved column beside the hero (towards the enemies), so they never sit on the buffs under the health bar: `x` is where the column bows out to, `cy` its vertical centre (host px). */
+export function RuneArc(props: { db: CombatDb; me: SideView; x: number; cy: number }) {
   const { db, me } = props;
   const n = Math.max(me.runeSlots, me.runes.length);
   if (n === 0) return null;
@@ -35,9 +35,9 @@ export function RuneArc(props: { db: CombatDb; me: SideView; cx: number; top: nu
         const def = r ? db.runes?.[r.rune] : undefined;
         const t = n === 1 ? 0 : (i / (n - 1)) * 2 - 1; // -1 .. 1
         const style = {
-          left: props.cx + (i - (n - 1) / 2) * gap,
-          top: props.top + (1 - t * t) * 26,
-          transform: `translate(-50%, 0) rotate(${t * 14}deg)`,
+          left: props.x - (1 - (1 - t * t)) * 22,
+          top: props.cy + (i - (n - 1) / 2) * gap,
+          transform: `translate(-50%, -50%) rotate(${t * 14}deg)`,
         };
         return r ? (
           <span

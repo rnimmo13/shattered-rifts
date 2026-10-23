@@ -189,7 +189,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     hero: {
       id: 'sehra',
       name: 'Sehra, the Still Flame',
-      maxHp: 90,
+      maxHp: 104,
       mana: 3,
       handSize: 5,
       sigil: [stance('calm')],
@@ -209,8 +209,8 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     role: 'Spellblade',
     trait: {
       name: 'Starborn',
-      text: 'Gain 2 Lumen at the start of your turn.',
-      turnStart: [stars(2)],
+      text: 'Gain 3 Lumen at the start of your turn.',
+      turnStart: [stars(3)],
     },
     hero: {
       id: 'astra',
@@ -218,12 +218,18 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
       maxHp: 102,
       mana: 3,
       handSize: 5,
-      sigil: [stars(2), addTo('starforged-blade')],
+      sigil: [stars(3), addTo('starforged-blade')],
     },
     // Gather Light (makes Lumen) and Lumen Bolt (spends it) are Innate: the opening hand can always do both
-    starter: [...rep('strike', 3), ...rep('defend', 4), 'meteor-jab', 'gather-light', 'lumen-bolt'],
+    starter: [
+      ...rep('strike', 2),
+      ...rep('defend', 4),
+      'meteor-jab',
+      'gather-light',
+      ...rep('lumen-bolt', 2),
+    ],
     blurb:
-      'A scholar of fallen stars. Starts with 2 Lumen and a Starforged Blade that every Sharpen improves for good.',
+      'A scholar of fallen stars. Starts with 3 Lumen and a Starforged Blade that every Sharpen improves for good.',
     lanes: [
       'Blade: sharpen one weapon',
       'Lumen: spend for finishers',

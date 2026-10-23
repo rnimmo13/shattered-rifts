@@ -28,8 +28,8 @@ const a = pool('astra', 'starfall');
 export const ASTRA: CardDef[] = [
   // --- basics and the token ---
   a('basic', 'meteor-jab', 'Meteor Jab', 'attack', 1, 'foe', [dmg(7), stars(1)]),
-  a('basic', 'gather-light', 'Gather Light', 'skill', 1, 'none', [stars(2)], { innate: true }),
-  a('basic', 'lumen-bolt', 'Lumen Bolt', 'attack', 1, 'foe', [dmg(14)], {
+  a('basic', 'gather-light', 'Gather Light', 'skill', 1, 'none', [stars(3)], { innate: true }),
+  a('basic', 'lumen-bolt', 'Lumen Bolt', 'attack', 1, 'foe', [dmg(16)], {
     starCost: 1,
     innate: true,
   }),
@@ -40,7 +40,7 @@ export const ASTRA: CardDef[] = [
     'attack',
     1,
     'foe',
-    [scaled(dmg(7), per('bonus'))],
+    [scaled(dmg(9), per('bonus'))],
     { retain: true, tags: ['blade'], source: 'token' },
   ),
 
@@ -79,12 +79,12 @@ export const ASTRA: CardDef[] = [
   // --- Stars ---
   a('common', 'stargaze', 'Stargaze', 'skill', 0, 'none', [stars(1), draw(1)], { exhaust: true }),
   a('common', 'starshield', 'Starshield', 'skill', 1, 'none', [barrier(6), stars(1)]),
-  a('common', 'ray-of-light', 'Ray of Light', 'attack', 1, 'foe', [dmg(8)]),
+  a('common', 'ray-of-light', 'Ray of Light', 'attack', 1, 'foe', [dmg(9)]),
   a('common', 'gleam', 'Gleam', 'attack', 1, 'foe', [dmg(7), scry(2)]),
-  a('common', 'skybolt', 'Skybolt', 'attack', 1, 'foe', [dmg(18)], { starCost: 1 }),
+  a('common', 'skybolt', 'Skybolt', 'attack', 1, 'foe', [dmg(20)], { starCost: 1 }),
   a('common', 'star-barrier', 'Star Barrier', 'skill', 1, 'none', [barrier(16)], { starCost: 1 }),
-  a('uncommon', 'nova', 'Nova', 'attack', 2, 'foe', [dmg(30)], { starCost: 2 }),
-  a('uncommon', 'falling-sky', 'Falling Sky', 'attack', 1, 'none', [dmg(7, 'allFoes', 3)], {
+  a('uncommon', 'nova', 'Nova', 'attack', 2, 'foe', [dmg(34)], { starCost: 2 }),
+  a('uncommon', 'falling-sky', 'Falling Sky', 'attack', 1, 'none', [dmg(8, 'allFoes', 3)], {
     starCost: 3,
   }),
   a(
@@ -94,7 +94,7 @@ export const ASTRA: CardDef[] = [
     'attack',
     1,
     'none',
-    [dmg(12, 'allFoes'), status('exposed', 1, 'allFoes')],
+    [dmg(14, 'allFoes'), status('exposed', 1, 'allFoes')],
     { starCost: 2 },
   ),
   a('uncommon', 'orbit', 'Orbit', 'skill', 1, 'none', [
@@ -102,7 +102,7 @@ export const ASTRA: CardDef[] = [
     forge('starforged-blade', 1),
     draw(1),
   ]),
-  a('uncommon', 'cosmic-lance', 'Cosmic Lance', 'attack', 2, 'foe', [dmg(12), stars(1)]),
+  a('uncommon', 'cosmic-lance', 'Cosmic Lance', 'attack', 2, 'foe', [dmg(14), stars(1)]),
   a('uncommon', 'gravity-well', 'Gravity Well', 'skill', 1, 'foe', [
     status('exposed', 2, 'target'),
     stars(1),
@@ -119,7 +119,7 @@ export const ASTRA: CardDef[] = [
     'attack',
     3,
     'foe',
-    [dmg(46), status('exposed', 2, 'target')],
+    [dmg(54), status('exposed', 2, 'target')],
     {
       starCost: 4,
     },

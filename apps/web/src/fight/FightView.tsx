@@ -918,7 +918,7 @@ export function FightView(props: {
           {me && <AuraList db={db} me={me} />}
           {me && showStars && <LumenCounter value={me.stars} />}
           {me && showRunes && heroPlaced && (
-            <RuneArc db={db} me={me} cx={heroPlaced.x} top={heroPlaced.y + 78} />
+            <RuneArc db={db} me={me} x={heroPlaced.x + 185} cy={heroPlaced.y - 110} />
           )}
           {me && (
             <SnareRow
