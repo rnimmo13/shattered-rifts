@@ -11,6 +11,7 @@ import {
   canAdd,
   chooseCard,
   chooseEvent,
+  chooseKit,
   choosePrelude,
   continueLoop,
   duelPlan,
@@ -252,6 +253,9 @@ function botRun(hero: HeroId, seed: string): { run: RunState; fights: number } {
         break;
       case 'event':
         run = chooseEvent(run, run.context!.event!.options[0]!.id);
+        break;
+      case 'kit':
+        run = chooseKit(run, run.context!.kits![0]!.id);
         break;
       case 'prelude':
         run = choosePrelude(run, run.context!.prelude!.options[0]!.id);

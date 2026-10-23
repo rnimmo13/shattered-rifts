@@ -9,6 +9,7 @@ import type { MapNode, NodeKind, RunPhase, RunState } from './types';
 export const RUN_SAVE_VERSION = 2;
 
 const PHASES: readonly RunPhase[] = [
+  'kit',
   'map',
   'duel',
   'reward',
@@ -58,6 +59,21 @@ function validMap(map: unknown): map is RunState['map'] {
 /** The context must be what the phase needs, so no screen can be handed missing data. */
 function validContext(r: RunState): boolean {
   const ids = new Set(r.map.nodes.map((n) => n.id));
+  if (r.phase === 'kit') {
+    const k = isObj(r.context) ? r.context['kits'] : undefined;
+    return (
+      Array.isArray(k) &&
+      k.length > 0 &&
+      k.every(
+        (x) =>
+          isObj(x) &&
+          typeof x['id'] === 'string' &&
+          Array.isArray(x['deck']) &&
+          x['deck'].length >= V2_DECK_RULES.minSize &&
+          x['deck'].every((id) => hasCard(id)),
+      )
+    );
+  }
   if (r.phase === 'prelude') {
     const p = isObj(r.context) ? r.context['prelude'] : undefined;
     return (

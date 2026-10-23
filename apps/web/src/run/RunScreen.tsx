@@ -16,6 +16,7 @@ import {
   buyRemoval,
   chooseCard,
   chooseEvent,
+  chooseKit,
   choosePrelude,
   continueLoop,
   duelPlan,
@@ -35,7 +36,15 @@ import { BoonChip } from '../fight/BoonChip';
 import { PotionChip } from '../fight/PotionChip';
 import { CharacterPicker } from './CharacterPicker';
 import { MapLegend, MapView } from './MapView';
-import { CardOffer, DeckModal, EventView, MerchantView, PreludeView, ShrineView } from './Pickers';
+import {
+  CardOffer,
+  DeckModal,
+  EventView,
+  KitView,
+  MerchantView,
+  PreludeView,
+  ShrineView,
+} from './Pickers';
 import {
   clearDuelStarted,
   clearSavedRun,
@@ -429,6 +438,8 @@ function Body(props: {
       );
     case 'event':
       return <EventView run={run} onChoose={(id) => act((r) => chooseEvent(r, id))} />;
+    case 'kit':
+      return <KitView run={run} onChoose={(id) => act((r) => chooseKit(r, id))} />;
     case 'prelude':
       return <PreludeView run={run} onChoose={(id) => act((r) => choosePrelude(r, id))} />;
     case 'stageClear':

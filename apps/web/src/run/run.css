@@ -864,3 +864,40 @@
   color: #ffd0da;
   border: 1px solid #ff8aa8;
 }
+
+/* ---- choosing a starting deck ---- */
+.kits {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1.4rem;
+}
+.kit {
+  display: grid;
+  gap: 0.7rem;
+  justify-items: center;
+  padding: 1.1rem 1.3rem 1.3rem;
+  border-radius: 16px;
+  border: 1px solid transparent;
+  background:
+    linear-gradient(160deg, rgb(20 32 74 / 0.92), rgb(8 10 20 / 0.96)) padding-box,
+    linear-gradient(160deg, var(--c-gold-light), var(--c-gold-dark)) border-box;
+}
+.kit__lean {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 400;
+  color: var(--c-ivory);
+}
+.kit__lean b {
+  color: var(--c-gold-light);
+}
+.kit__sub {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--c-text-dim);
+}
+.kit__cards {
+  display: flex;
+  gap: 0.6rem;
+}

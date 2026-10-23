@@ -374,3 +374,41 @@ export function PreludeView(props: { run: RunState; onChoose: (id: string) => vo
     </section>
   );
 }
+
+/** The first choice of a run: one of two starting decks. */
+export function KitView(props: { run: RunState; onChoose: (id: string) => void }) {
+  const kits = props.run.context?.kits;
+  const [hover, setHover] = useState<CardDef | null>(null);
+  if (!kits) return null;
+  return (
+    <section className="stage-panel" aria-label="Choose your starting deck">
+      <h2 className="stage-panel__title">Choose your starting deck</h2>
+      <p className="stage-panel__hint">
+        Two ways to begin. Each swaps {kits[0]?.removed.length ?? 3} plain cards of your usual
+        starter for three that lean one way.
+      </p>
+      <div className="kits">
+        {kits.map((k) => (
+          <article key={k.id} className="kit">
+            <h3 className="kit__lean">
+              Leans toward <b>{k.leans}</b>
+            </h3>
+            <p className="kit__sub">Adds these three to your starter:</p>
+            <div className="kit__cards">
+              {k.added.map((id, i) => (
+                <Pickable key={`${id}-${i}`} id={id} width={150} onHover={setHover} />
+              ))}
+            </div>
+            <p className="kit__sub">
+              Everything else is your usual starting deck ({k.deck.length} cards in all).
+            </p>
+            <button className="btn btn--primary" onClick={() => props.onChoose(k.id)}>
+              <span>Take this deck</span>
+            </button>
+          </article>
+        ))}
+      </div>
+      <CardHover def={hover} />
+    </section>
+  );
+}

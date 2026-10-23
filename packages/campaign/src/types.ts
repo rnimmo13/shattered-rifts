@@ -30,6 +30,7 @@ export interface StageMap {
 }
 
 export type RunPhase =
+  | 'kit' // choose one of two starting decks (the very start of a run)
   | 'map' // choose the next node
   | 'duel' // a fight is waiting to be played at the current node
   | 'reward' // pick a card (or skip)
@@ -52,6 +53,18 @@ export interface MerchantItem {
 export interface EventOption {
   id: 'shards' | 'card' | 'heal' | 'upgrade' | 'bleed' | 'boon' | 'leave';
   label: string;
+}
+
+/** One of the two starting decks offered at the start of a run. */
+export interface KitOption {
+  id: 'a' | 'b';
+  /** what it leans toward, in the player's words ("Snares", "Fate"...) */
+  leans: string;
+  /** the whole deck you would start with */
+  deck: string[];
+  /** the three cards this kit adds, and the plain cards it replaces */
+  added: string[];
+  removed: string[];
 }
 
 /** One thing a prelude option does. Amounts are fixed; "random" ones are rolled when the option is taken. */
@@ -117,6 +130,8 @@ export interface NodeContext {
   shrineUsed?: boolean;
   /** prelude: the choice on offer (nodeId is empty) */
   prelude?: PreludeOffer;
+  /** kit: the two starting decks on offer (nodeId is empty) */
+  kits?: KitOption[];
 }
 
 export interface RunStats {

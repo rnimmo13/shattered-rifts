@@ -7,6 +7,7 @@
 import { nextInt, seedRng, shuffle } from '@sr/combat';
 import { COMBAT_DB, RIFTWALKERS, V2_DECK_RULES, encounter, type HeroId } from '@sr/content/v2';
 import { generateStageMap, reachableNodes } from './mapgen';
+import { makeKits } from './kits';
 import { makePrelude } from './preludes';
 import {
   BOON_PRICE,
@@ -91,7 +92,9 @@ export function newRun(hero: HeroId, seed: string, difficulty: Difficulty = 'eas
     rng,
     stats: { duelsWon: 0, duelsLost: 0, nodesCleared: 0 },
   };
-  openPrelude(run, 'threshold');
+  // the very start: choose one of two starting decks, and then meet The Threshold
+  run.phase = 'kit';
+  run.context = { nodeId: '', kits: makeKits(run.rng, hero) };
   return run;
 }
 
@@ -401,6 +404,18 @@ export function nextStage(run: RunState): RunState {
   r.cleared = [];
   r.at = null;
   openPrelude(r, 'stage');
+  return r;
+}
+
+// ---- the starting deck
+/** Take one of the two starting decks on offer; The Threshold follows. */
+export function chooseKit(run: RunState, kitId: string): RunState {
+  need(run.phase === 'kit' && run.context?.kits, 'There is no starting deck to choose');
+  const kit = run.context.kits.find((k) => k.id === kitId);
+  need(kit, 'That is not one of the starting decks');
+  const r = clone(run);
+  r.deck = [...kit.deck];
+  openPrelude(r, 'threshold');
   return r;
 }
 

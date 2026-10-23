@@ -3,6 +3,7 @@ import { seedRng } from '@sr/combat';
 import { COMBAT_DB, RIFTWALKERS, V2_DECK_RULES, type HeroId } from '@sr/content/v2';
 import {
   RunError,
+  chooseKit,
   choosePrelude,
   continueLoop,
   makePrelude,
@@ -21,6 +22,7 @@ function offering(effects: PreludeEffect[], hero: HeroId = 'maren'): RunState {
   const r = newRun(hero, 'prelude-test', 'normal');
   return {
     ...r,
+    phase: 'prelude',
     context: {
       nodeId: '',
       prelude: {
@@ -35,9 +37,11 @@ function offering(effects: PreludeEffect[], hero: HeroId = 'maren'): RunState {
 const take = (r: RunState): RunState => choosePrelude(r, 'x');
 
 describe('the choice at the start of a run', () => {
-  it('every new run opens on The Threshold: three blessings and one bargain', () => {
+  it('after the starting deck, every run meets The Threshold: three blessings and one bargain', () => {
     for (const h of HEROES) {
-      const r = newRun(h, `thr-${h}`, 'normal');
+      const r0 = newRun(h, `thr-${h}`, 'normal');
+      expect(r0.phase).toBe('kit');
+      const r = chooseKit(r0, 'a');
       expect(r.phase).toBe('prelude');
       const offer = r.context?.prelude;
       expect(offer?.kind).toBe('threshold');
@@ -50,7 +54,7 @@ describe('the choice at the start of a run', () => {
 
   it('is the same offer for the same seed, and varies between seeds', () => {
     const ids = (s: string) =>
-      newRun('maren', s, 'normal')
+      chooseKit(newRun('maren', s, 'normal'), 'a')
         .context?.prelude?.options.map((o) => o.id)
         .join();
     expect(ids('same')).toBe(ids('same'));
@@ -58,7 +62,7 @@ describe('the choice at the start of a run', () => {
   });
 
   it('taking an option applies it and opens the map', () => {
-    const r = newRun('maren', 'take', 'normal');
+    const r = chooseKit(newRun('maren', 'take', 'normal'), 'a');
     const pick = r.context?.prelude?.options[0]?.id as string;
     const after = choosePrelude(r, pick);
     expect(after.phase).toBe('map');
@@ -67,7 +71,7 @@ describe('the choice at the start of a run', () => {
   });
 
   it('refuses anything that is not on offer', () => {
-    const r = newRun('maren', 'bad', 'normal');
+    const r = chooseKit(newRun('maren', 'bad', 'normal'), 'a');
     expect(() => choosePrelude(r, 'nope')).toThrow(RunError);
     expect(() => choosePrelude({ ...r, phase: 'map', context: null }, 'x')).toThrow(RunError);
   });
@@ -160,7 +164,7 @@ describe('what each effect does', () => {
   it('a Wound-bearing deck is still a valid save, and so is a run standing at a prelude', () => {
     const r = take(offering([{ k: 'wound', n: 1 }]));
     expect(parseRun(serializeRun(r))).not.toBeNull();
-    const standing = newRun('quill', 'save-me', 'normal');
+    const standing = chooseKit(newRun('quill', 'save-me', 'normal'), 'a');
     expect(parseRun(serializeRun(standing))?.phase).toBe('prelude');
     const broken = JSON.parse(serializeRun(standing)) as RunState;
     broken.context = { nodeId: '', prelude: { kind: 'threshold', title: 't', text: 't', options: [] } };

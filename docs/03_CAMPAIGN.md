@@ -34,6 +34,8 @@ and a **Sigil**: a starting passive that gives every run an identity from turn 1
 
 ## 2. Run structure
 
+> **Update (DECISIONS #108):** a run now opens by choosing one of two starting decks (a kit), then meets The Threshold.
+>
 > **Update (DECISIONS #106):** every run opens on **The Threshold** (3 blessings and 1 bargain), and every stage and new loop opens on a **Waymark** (a rest, two blessings, sometimes a bargain), before the map appears.
 
 ```

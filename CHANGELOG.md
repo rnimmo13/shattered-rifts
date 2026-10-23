@@ -5,6 +5,7 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **Choose your starting deck.** A run now opens with a choice between two semi-random starting decks. Each swaps three plain Slash/Guard cards of your usual starter for three of your own cards that lean the same way (Snares, Exposed, Fate, runes, companions, Lumen, stances...), and the two kits always lean differently. Then The Threshold follows.
 - **Choices at the start of a run and of every stage.** Every run opens on **The Threshold**: three blessings (more max HP, a full purse, a free uncommon card, two upgrades, thinner deck, a potion, a trinket, extra Resolve) and one bargain with a price (a rare card for 12 HP, double the shards for a Wound, a Boon for max HP, three starter cards transformed, and more). Each new stage begins at a **Waymark** themed to its realm: a rest, two blessings, and sometimes a bargain. Offers are seeded, so a seed and your choices reproduce the run.
 - **A ninth Riftwalker: Mire, the Gravewarden** (Gloomfen). Starts with a Bone Thrall and stacks **Doom** on enemies: when an enemy's turn ends with its HP at or below its Doom, it dies. Lanes: Doom, Thralls, and Ashes (consumed cards fuel her).
 - **Many new card mechanics, shared across decks:** Bracing, Brittle, Ghostly, Steadfast, Armored, Ritual, Vigor, Twinned, Mirrored, Unbound, Fortified, Holdfast; temporary buffs, banking Mana and cards for next turn, discovering random cards, upgrading or cheapening your hand mid-fight, and copying a card.
