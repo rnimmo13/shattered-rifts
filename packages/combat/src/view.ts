@@ -210,7 +210,7 @@ const STATUS_NAME: Record<string, string> = {
   calm: 'Serene',
   wrath: 'Fury',
   mantra: 'Fervor',
-  doom: 'Knell',
+  doom: 'Fate',
   ritual: 'Cadence',
   vigor: 'Primed',
 };
@@ -228,7 +228,7 @@ const METRIC_WORDS: Record<Metric, { per: string; equal: string }> = {
   thorns: { per: 'Thorns', equal: 'Thorns' },
   mantra: { per: 'Fervor', equal: 'Fervor' },
   resonance: { per: 'Resonance', equal: 'Resonance' },
-  doom: { per: 'Knell', equal: 'Knell' },
+  doom: { per: 'Fate', equal: 'Fate' },
   calm: { per: 'Serene', equal: 'Serene' },
   wrath: { per: 'Fury', equal: 'Fury' },
   radiant: { per: 'Radiant', equal: 'Radiant' },
@@ -331,10 +331,28 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
       const a = amountText(o.amount, o.scale);
       return `Heal ${a.equal ? `HP equal to ${a.num}` : a.num}${o.to === 'self' ? '' : who[o.to]}.`;
     }
-    case 'status':
+    case 'status': {
+      // Fate is a curse: "Curse the target with 6 Fate"
+      if (o.status === 'doom' && o.amount >= 0) {
+        const noun =
+          o.to === 'self'
+            ? 'yourself'
+            : o.to === 'target'
+              ? 'the target'
+              : who[o.to].replace(/^ to /, '') || 'the target';
+        const a = amountText(o.amount, o.scale);
+        return `Curse ${noun} with ${a.equal ? `Fate equal to ${a.num}` : `${a.num} Fate`}.`;
+      }
       return `${o.amount < 0 ? 'Remove' : 'Apply'} ${at(Math.abs(o.amount), o.scale)} ${sname(o.status)}${o.to === 'self' ? '' : who[o.to]}${o.temp ? ' until the end of your turn' : ''}.`;
-    case 'scaleStatus':
-      return `${o.mult === 2 ? 'Double' : o.mult === 3 ? 'Triple' : `Multiply by ${o.mult}`} the ${sname(o.status)}${who[o.to] || ' on the target'}.`;
+    }
+    case 'scaleStatus': {
+      const times = o.mult === 2 ? 'Double' : o.mult === 3 ? 'Triple' : `Multiply by ${o.mult}`;
+      if (o.status === 'doom') {
+        const noun = o.to === 'target' ? 'the target' : who[o.to].replace(/^ to /, '') || 'the target';
+        return `${times} the Fate cursing ${noun}.`;
+      }
+      return `${times} the ${sname(o.status)}${who[o.to] || ' on the target'}.`;
+    }
     case 'draw': {
       const a = amountText(o.amount, o.scale);
       return a.equal

@@ -66,8 +66,8 @@ export const TIP_RULES: TipRule[] = [
   },
   {
     id: 'doom',
-    title: 'Knell',
-    text: 'Knell does nothing until the end of that unit’s turn: then if its HP is at or below its Knell, it dies. Stack it, double it, or hit it to bring the HP down to meet it.',
+    title: 'Fate',
+    text: 'Cursing a unit with Fate does nothing until the end of its turn: then, if its HP is at or below its Fate, it dies. Stack it, double it, or hit it to bring the HP down to meet it.',
     when: (v) => anyUnit(v, (u) => !!u.statuses.doom),
   },
   {

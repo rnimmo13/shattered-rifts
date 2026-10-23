@@ -417,20 +417,20 @@ Tokens (made by other cards):
 
 ## Mire, the Gravewarden (gloomfen, 76 HP)
 
-A warden of the drowned dead. Starts with a Bone Thrall. Stacks Knell on enemies until the end comes for them.
+A warden of the drowned dead. Starts with a Bone Thrall. Curses enemies with Fate until the end comes for them.
 
-Lanes: Knell: stack it, double it, cash it in / Thralls: the dead fight for you / Ashes: consumed cards fuel you
+Lanes: Fate: curse, double, cash in / Thralls: the dead fight for you / Ashes: consumed cards fuel you
 
 Starter: Slash, Slash, Slash, Guard, Guard, Guard, Grave Touch, Grave Touch, Bone Ward, Bone Ward
 
 | Card | Cost | Type | Rarity | Text |
 |---|---|---|---|---|
-| Grave Touch | 1 | attack | basic | Deal 5 damage. Apply 4 Knell. |
+| Grave Touch | 1 | attack | basic | Deal 5 damage. Curse the target with 4 Fate. |
 | Bone Ward | 1 | skill | basic | Gain 5 Barrier to all friends. |
-| Tolling Bell | 1 | attack | common | Deal 3 damage. Apply 7 Knell. |
-| Withering Word | 1 | skill | common | Apply 5 Knell. Apply 1 Faltering. |
-| Creeping End | 1 | skill | common | Apply 4 Knell to ALL enemies. |
-| Last Rites | 2 | attack | common | Deal 8 damage. Apply 10 Knell. |
+| Tolling Bell | 1 | attack | common | Deal 3 damage. Curse the target with 7 Fate. |
+| Withering Word | 1 | skill | common | Curse the target with 5 Fate. Apply 1 Faltering. |
+| Creeping End | 1 | skill | common | Curse ALL enemies with 4 Fate. |
+| Last Rites | 2 | attack | common | Deal 8 damage. Curse the target with 10 Fate. |
 | Raise Thrall | 1 | summon | common | Summon Bone Thrall. |
 | Bone Chorus | 1 | skill | common | Apply 2 Might to the ally. Heal 4 to the ally. |
 | Shared Marrow | 1 | skill | common | Heal 4 to all friends. Gain 3 Barrier to all friends. |
@@ -440,22 +440,22 @@ Starter: Slash, Slash, Slash, Guard, Guard, Guard, Grave Touch, Grave Touch, Bon
 | Ghost Light | 0 | skill | common | Heal 3. Draw 1 card. Consume. |
 | Bone Shard | 1 | attack | common | Deal 8 damage. |
 | Burial Rites | 1 | skill | common | Gain 8 Barrier. |
-| Sepulchral Gaze | 2 | attack | common | Deal 6 damage to ALL enemies. Apply 2 Knell to ALL enemies. |
-| Hasten the End | 1 | skill | uncommon | Double the Knell on the target. Consume. |
-| Inevitable | 1 | power | uncommon | At the start of your turn: Apply 3 Knell to ALL enemies. |
-| Harvest | 1 | attack | uncommon | Deal 4 (+1 per Knell on the target) damage. |
-| Deathknell | 2 | skill | uncommon | Apply 14 Knell. |
+| Sepulchral Gaze | 2 | attack | common | Deal 6 damage to ALL enemies. Curse ALL enemies with 2 Fate. |
+| Hasten the End | 1 | skill | uncommon | Double the Fate cursing the target. Consume. |
+| Inevitable | 1 | power | uncommon | At the start of your turn: Curse ALL enemies with 3 Fate. |
+| Harvest | 1 | attack | uncommon | Deal 4 (+1 per Fate on the target) damage. |
+| Deathknell | 2 | skill | uncommon | Curse the target with 14 Fate. |
 | Grave Colossus | 2 | summon | uncommon | Summon Grave Colossus. |
 | Unquiet Rest | 2 | power | uncommon | At the start of your turn: Heal 3 to all friends. |
-| Fen Offering | 0 | skill | uncommon | Apply 6 Knell to ALL enemies. Gain 6 Barrier. Sacrifice the chosen ally. |
+| Fen Offering | 0 | skill | uncommon | Curse ALL enemies with 6 Fate. Gain 6 Barrier. Sacrifice the chosen ally. |
 | Spectral Ledger | 1 | skill | uncommon | Draw cards equal to half of the number of cards you have consumed. |
 | Soulbind | 1 | power | uncommon | Whenever a card is consumed: Gain 3 Barrier. |
-| Ashen Bargain | 1 | skill | uncommon | Consume any number of cards. Apply equal to the number of cards you have consumed Knell to ALL enemies. |
+| Ashen Bargain | 1 | skill | uncommon | Consume any number of cards. Curse ALL enemies with Fate equal to the number of cards you have consumed. |
 | Dredge | 1 | skill | uncommon | Draw 2 cards. Gain 3 Barrier. |
-| Rattling Charge | 2 | attack | uncommon | Deal 7 damage 2 times. Apply 3 Knell. |
-| Grave Trap | 1 | snare | uncommon | When you or an ally is attacked: Deal 5 damage to the attacker. Apply 4 Knell to the attacker. |
-| The Final Hour | 3 | skill | rare | Apply 14 Knell to ALL enemies. Consume. |
-| The Long Night | 2 | power | rare | Whenever you play an Attack: Apply 2 Knell. |
+| Rattling Charge | 2 | attack | uncommon | Deal 7 damage 2 times. Curse the target with 3 Fate. |
+| Grave Trap | 1 | snare | uncommon | When you or an ally is attacked: Deal 5 damage to the attacker. Curse the attacker with 4 Fate. |
+| The Final Hour | 3 | skill | rare | Curse ALL enemies with 14 Fate. Consume. |
+| The Long Night | 2 | power | rare | Whenever you play an Attack: Curse the target with 2 Fate. |
 | Army of the Drowned | 3 | summon | rare | Summon Bone Thrall. Summon Bone Thrall. Summon Bone Thrall. Consume. |
 | Deathless | 2 | power | rare | Whenever you summon an ally: Gain 5 Barrier to all friends. |
 | Requiem | 2 | attack | rare | Deal damage equal to 3 times the number of cards you have consumed. |
