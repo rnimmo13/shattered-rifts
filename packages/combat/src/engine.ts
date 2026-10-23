@@ -399,6 +399,12 @@ function metricValue(r: Run, a: Act, m: Metric, of: Scale['of'], t: Unit | null)
       return sd.played;
     case 'attacksPlayed':
       return sd.attacksPlayed;
+    case 'skillsPlayed':
+      return sd.skillsPlayed;
+    case 'drawn':
+      return sd.drawn;
+    case 'created':
+      return sd.created;
     case 'discarded':
       return sd.discarded;
     case 'x':
@@ -462,7 +468,7 @@ function execOp(r: Run, a: Act, op: Op): void {
       return;
     }
     case 'loseHp':
-      for (const t of resolve(r, a, op.to))
+      for (const t of resolve(r, a, op.to)) {
         applyDamage(
           r,
           a.actor,
@@ -470,6 +476,10 @@ function execOp(r: Run, a: Act, op: Op): void {
           scaledByDifficulty(a.actor, t, amountOf(r, a, op.amount, op.scale, t) + resonanceOf(a)),
           'direct',
         );
+        // paying HP for your own card is something Powers can react to
+        if (t.kind === 'hero' && a.actor === t && t.hp > 0)
+          fireTriggers(r, r.s.sides[t.side], 'loseHp');
+      }
       return;
     case 'barrier':
       for (const t of resolve(r, a, op.to)) {
@@ -481,6 +491,7 @@ function execOp(r: Run, a: Act, op: Op): void {
         if (t.hp <= 0 || r.s.winner) continue;
         t.barrier += n;
         r.ev.push({ type: 'barrier', target: t.id, amount: n, total: t.barrier });
+        if (n > 0 && t.kind === 'hero') fireTriggers(r, r.s.sides[t.side], 'barrier');
       }
       return;
     case 'heal':
@@ -739,6 +750,25 @@ function execOp(r: Run, a: Act, op: Op): void {
       }
       return;
     }
+    case 'fetch': {
+      for (let i = 0; i < op.amount; i++) {
+        const pool = side.discard.filter((c) => !op.kind || r.db.cards[c.card]?.kind === op.kind);
+        if (!pool.length) break;
+        const pick = pool[nextInt(r.s.rng, pool.length)] as CardInst;
+        side.discard = side.discard.filter((c) => c.id !== pick.id);
+        if (op.to === 'draw') {
+          side.draw.unshift(pick);
+          r.ev.push({ type: 'addCard', side: side.id, card: pick.id, def: pick.card, to: 'draw' });
+        } else if (side.hand.length >= MAX_HAND) {
+          side.discard.push(pick);
+          r.ev.push({ type: 'burn', side: side.id, card: pick.id, def: pick.card });
+        } else {
+          side.hand.push(pick);
+          r.ev.push({ type: 'draw', side: side.id, card: pick.id, def: pick.card });
+        }
+      }
+      return;
+    }
     case 'revive': {
       const def = (side.fallen ??= []).pop();
       if (!def) return;
@@ -822,6 +852,8 @@ function addCardTo(r: Run, sd: SideState, card: CardId, to: 'hand' | 'discard' |
   else if (where === 'discard') sd.discard.push(inst);
   else sd.draw.unshift(inst);
   r.ev.push({ type: 'addCard', side: sd.id, card: inst.id, def: card, to: where });
+  sd.created++;
+  fireTriggers(r, sd, 'created');
   return inst;
 }
 
@@ -840,6 +872,8 @@ function drawCards(r: Run, sd: SideState, n: number): void {
     } else {
       sd.hand.push(c);
       r.ev.push({ type: 'draw', side: sd.id, card: c.id, def: c.card });
+      sd.drawn++;
+      fireTriggers(r, sd, 'draw');
     }
   }
 }
@@ -924,13 +958,7 @@ function makeUnit(r: Run, side: Side, d: UnitDef): Unit {
 }
 
 /** Add a unit to a side (allies: nearest the centre after existing ones, in front of the hero; an enemy summoner's minions: just in front of it). */
-function spawn(
-  r: Run,
-  sd: SideState,
-  defId: string,
-  quiet = false,
-  summoner?: Unit,
-): Unit | null {
+function spawn(r: Run, sd: SideState, defId: string, quiet = false, summoner?: Unit): Unit | null {
   const d = def(r, defId);
   const count = sd.units.filter((u) => u.kind !== 'hero').length;
   if (count >= (sd.hero !== null ? MAX_ALLIES : quiet ? MAX_START_ENEMIES : MAX_ENEMIES))
@@ -1122,6 +1150,7 @@ function beginHeroTurn(r: Run, side: Side): void {
   if (r.s.winner) return;
   sd.played = 0;
   sd.attacksPlayed = 0;
+  sd.skillsPlayed = 0;
   sd.discarded = 0;
   // the second PvP player gets a small head start on their first turn
   const first = r.s.mode === 'pvp' && side === 'b' && r.s.turn === 2;
@@ -1294,7 +1323,10 @@ const blankSide = (id: Side): SideState => ({
   powers: [],
   played: 0,
   attacksPlayed: 0,
+  skillsPlayed: 0,
   discarded: 0,
+  drawn: 0,
+  created: 0,
 });
 
 function buildHeroSide(r: Run, id: Side, h: HeroSetup): SideState {
@@ -1490,6 +1522,7 @@ function finishCard(r: Run, sd: SideState, inst: CardInst, cd: CardDef, target: 
   else sd.discard.push(inst);
   sd.played++;
   if (cd.kind === 'attack') sd.attacksPlayed++;
+  if (cd.kind === 'skill') sd.skillsPlayed++;
   fireTriggers(r, sd, 'play', { card: cd, target });
 }
 

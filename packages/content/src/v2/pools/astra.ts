@@ -21,6 +21,8 @@ import {
   scry,
   stars,
   status,
+  drawNext,
+  addTo,
 } from '../build';
 
 const a = pool('astra', 'starfall');
@@ -85,6 +87,54 @@ export const ASTRA: CardDef[] = [
     forge('starforged-blade', 3),
   ]),
 
+  // (more Blade)
+  a('common', 'temper-edge', 'Temper Edge', 'skill', 1, 'none', [
+    forge('starforged-blade', 5),
+    manaNext(1),
+  ]),
+  a('common', 'spoils', 'Spoils', 'skill', 1, 'none', [forge('starforged-blade', 3), draw(2)]),
+  a('common', 'forged-in-fury', 'Forged in Fury', 'attack', 1, 'foe', [
+    dmg(7),
+    forge('starforged-blade', 3),
+  ]),
+  a('uncommon', 'bladewall', 'Bladewall', 'skill', 2, 'none', [
+    barrier(12),
+    forge('starforged-blade', 4),
+  ]),
+  a('uncommon', 'call-the-blade', 'Call the Blade', 'skill', 1, 'none', [
+    addTo('starforged-blade'),
+    forge('starforged-blade', 3),
+  ]),
+  a('uncommon', 'warm-anvil', 'Warm Anvil', 'power', 1, 'none', [
+    on('turnStart', [forge('starforged-blade', 1)]),
+  ]),
+  a('uncommon', 'parry', 'Parry', 'power', 1, 'none', [on('play', [barrier(6)], { tag: 'blade' })]),
+  a('uncommon', 'sword-rain', 'Sword Rain', 'skill', 1, 'none', [addTo('starforged-blade', 2)]),
+  a('rare', 'hammer-and-anvil', 'Hammer and Anvil', 'attack', 2, 'foe', [
+    dmg(6, 'target', 2),
+    forge('starforged-blade', 4),
+  ]),
+  a('rare', 'conqueror', 'Conqueror', 'skill', 1, 'none', [
+    forge('starforged-blade', 4),
+    status('twinned', 1),
+  ]),
+  a(
+    'rare',
+    'big-bang',
+    'Big Bang',
+    'skill',
+    2,
+    'none',
+    [draw(1), mana(1), stars(2), forge('starforged-blade', 4)],
+    { exhaust: true },
+  ),
+  a('rare', 'armory-of-light', 'Armory of Light', 'power', 2, 'none', [
+    on('created', [status('might', 1)]),
+  ]),
+  a('rare', 'collapsing-star', 'Collapsing Star', 'attack', 2, 'foe', [
+    scaled(dmg(5), per('created', 3)),
+  ]),
+
   // --- Stars ---
   a('common', 'stargaze', 'Stargaze', 'skill', 0, 'none', [stars(1), draw(1)], { exhaust: true }),
   a('common', 'starshield', 'Starshield', 'skill', 1, 'none', [barrier(6), stars(1)]),
@@ -137,6 +187,58 @@ export const ASTRA: CardDef[] = [
     exhaust: true,
   }),
 
+  // (more Lumen)
+  a('common', 'faint-glow', 'Faint Glow', 'skill', 1, 'none', [stars(1), draw(1), drawNext(1)]),
+  a('common', 'astral-pulse', 'Astral Pulse', 'attack', 1, 'none', [dmg(6, 'allFoes', 2)]),
+  a('common', 'heavenly-might', 'Heavenly Might', 'attack', 2, 'foe', [dmg(6, 'target', 3)]),
+  a('common', 'sunstrike', 'Sunstrike', 'attack', 1, 'foe', [dmg(9), stars(1)]),
+  a('common', 'crushing-light', 'Crushing Light', 'attack', 2, 'none', [
+    dmg(8, 'allFoes'),
+    status('faltering', 1, 'allFoes'),
+  ]),
+  a(
+    'common',
+    'humble',
+    'Humble',
+    'skill',
+    1,
+    'foe',
+    [status('faltering', 1, 'target'), status('exposed', 1, 'target')],
+    { exhaust: true },
+  ),
+  a('uncommon', 'radiance', 'Radiance', 'attack', 1, 'none', [
+    scaled(dmg(3, 'allFoes'), per('stars', 1)),
+  ]),
+  a('uncommon', 'sovereign-strike', 'Sovereign Strike', 'attack', 2, 'foe', [dmg(15), manaNext(2)]),
+  a('uncommon', 'devastate', 'Devastate', 'attack', 2, 'foe', [dmg(34)], { starCost: 2 }),
+  a('rare', 'gamma-burst', 'Gamma Burst', 'attack', 2, 'foe', [
+    dmg(13),
+    status('faltering', 2, 'target'),
+    status('exposed', 2, 'target'),
+  ]),
+  a('rare', 'killing-light', 'Killing Light', 'attack', 2, 'foe', [dmg(30)], { starCost: 3 }),
+  a('rare', 'starburst', 'Starburst', 'skill', 1, 'none', [stars(6)], { exhaust: true }),
+  a(
+    'rare',
+    'comet',
+    'Comet',
+    'attack',
+    3,
+    'foe',
+    [dmg(33), status('faltering', 3, 'target'), status('exposed', 3, 'target')],
+    { starCost: 3 },
+  ),
+  a(
+    'rare',
+    'dying-star',
+    'Dying Star',
+    'attack',
+    1,
+    'none',
+    [dmg(10, 'allFoes'), status('faltering', 2, 'allFoes')],
+    { ethereal: true },
+  ),
+
   // --- Constellations ---
   a('uncommon', 'orion', 'Orion', 'power', 2, 'none', [on('turnStart', [stars(1)])]),
   a('uncommon', 'lyra', 'Lyra', 'power', 2, 'none', [
@@ -183,4 +285,12 @@ export const ASTRA: CardDef[] = [
     [mana(2), manaNext(-1), stars(1)],
     { exhaust: true },
   ),
+  // (more Constellations)
+  a('rare', 'dawn-engine', 'Dawn Engine', 'power', 2, 'none', [
+    on('turnStart', [stars(2), barrier(3)]),
+  ]),
+  a('rare', 'pillar-of-light', 'Pillar of Light', 'power', 1, 'none', [
+    on('created', [barrier(4)]),
+  ]),
+  a('rare', 'orrery', 'Orrery', 'power', 3, 'none', [on('play', [stars(1)])]),
 ];

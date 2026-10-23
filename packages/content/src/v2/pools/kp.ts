@@ -257,6 +257,81 @@ export const KP: CardDef[] = [
     addTo('buckshot-shell'),
   ]),
 
+  // (more Shells)
+  p('common', 'birdshot', 'Birdshot', 'attack', 0, 'none', [dmg(3, 'allFoes')], { exhaust: true }),
+  p(
+    'common',
+    'shell-casing',
+    'Shell Casing',
+    'skill',
+    0,
+    'none',
+    [addTo('buckshot-shell'), draw(1)],
+    { exhaust: true },
+  ),
+  p('uncommon', 'slugfest', 'Slugfest', 'attack', 2, 'foe', [dmg(5, 'target', 4)]),
+  p('uncommon', 'magazine', 'Magazine', 'skill', 1, 'none', [addTo('buckshot-shell', 4)], {
+    exhaust: true,
+  }),
+  p('uncommon', 'shellshocked', 'Shellshocked', 'power', 1, 'none', [
+    on('exhaust', [dmg(2, 'allFoes')]),
+  ]),
+  p('rare', 'fire-in-the-hole', 'Fire in the Hole', 'attack', 2, 'none', [
+    scaled(dmg(6, 'allFoes'), per('exhausted', 0.5)),
+  ]),
+  p('rare', 'ammo-dump', 'Ammo Dump', 'skill', 2, 'none', [addTo('buckshot-shell', 8)], {
+    exhaust: true,
+  }),
+  p('rare', 'rolling-thunder', 'Rolling Thunder', 'power', 2, 'none', [
+    on('turnStart', [addTo('buckshot-shell', 2)]),
+  ]),
+  // (more Gun)
+  p('common', 'barrel-roll', 'Barrel Roll', 'skill', 1, 'none', [
+    barrier(6),
+    forge('old-twelve-gauge', 2),
+  ]),
+  p('common', 'aim', 'Aim', 'skill', 0, 'none', [forge('old-twelve-gauge', 2)], { retain: true }),
+  p('uncommon', 'scope', 'Scope', 'power', 1, 'none', [
+    on('turnStart', [forge('old-twelve-gauge', 1)]),
+  ]),
+  p('uncommon', 'steady-hands', 'Steady Hands', 'skill', 1, 'none', [
+    forge('old-twelve-gauge', 3),
+    draw(1),
+  ]),
+  p(
+    'rare',
+    'ironsights',
+    'Ironsights',
+    'skill',
+    1,
+    'none',
+    [forge('old-twelve-gauge', 5), addTo('buckshot-shell', 2)],
+    { exhaust: true },
+  ),
+  p('rare', 'gunmetal-soul', 'Gunmetal Soul', 'power', 2, 'none', [
+    on('turnEnd', [forge('old-twelve-gauge', 1), barrier(3)]),
+  ]),
+  // (more Hangover)
+  p('common', 'hair-of-the-dog', 'Hair of the Dog', 'skill', 0, 'none', [
+    heal(3),
+    status('might', 1, 'self', true),
+  ]),
+  p('uncommon', 'black-out', 'Black Out', 'skill', 1, 'none', [barrier(14), lose(3)]),
+  p('uncommon', 'bar-stool', 'Bar Stool', 'attack', 1, 'foe', [
+    scaled(dmg(10), per('missingHp', 0.2)),
+  ]),
+  p('uncommon', 'liquid-dinner', 'Liquid Dinner', 'skill', 1, 'none', [heal(8), draw(1)]),
+  p('rare', 'last-orders', 'Last Orders', 'attack', 2, 'none', [
+    scaled(dmg(8, 'allFoes'), per('missingHp', 0.3)),
+  ]),
+  p('rare', 'rock-bottom', 'Rock Bottom', 'power', 2, 'none', [
+    status('might', 2),
+    on('turnStart', [lose(1)]),
+  ]),
+  p('rare', 'whiskey-miracle', 'Whiskey Miracle', 'skill', 1, 'none', [heal(15)], {
+    exhaust: true,
+  }),
+
   p('uncommon', 'liquid-lunch', 'Liquid Lunch', 'skill', 0, 'none', [mana(2), manaNext(-1)], {
     exhaust: true,
   }),

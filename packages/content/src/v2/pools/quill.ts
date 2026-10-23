@@ -75,6 +75,33 @@ export const QUILL: CardDef[] = [
     addTo('sleeve-knife'),
   ]),
 
+  // (more Knives)
+  q('common', 'cut-low', 'Cut Low', 'attack', 0, 'foe', [dmg(5)]),
+  q('common', 'smoke-and-slip', 'Smoke and Slip', 'skill', 1, 'none', [
+    barrier(6),
+    addTo('sleeve-knife'),
+  ]),
+  q('uncommon', 'ambush-cut', 'Ambush Cut', 'attack', 0, 'foe', [dmg(11)], {
+    innate: true,
+    exhaust: true,
+  }),
+  q('rare', 'knife-cascade', 'Knife Cascade', 'power', 3, 'none', [
+    on('turnStart', [addTo('sleeve-knife', 3)]),
+  ]),
+  q(
+    'rare',
+    'assassins-mark',
+    "Assassin's Mark",
+    'attack',
+    0,
+    'foe',
+    [dmg(10), status('exposed', 1, 'target')],
+    {
+      innate: true,
+      exhaust: true,
+    },
+  ),
+
   // --- Seared ---
   q('common', 'needle-jab', 'Needle Jab', 'attack', 0, 'foe', [
     dmg(4),
@@ -144,6 +171,41 @@ export const QUILL: CardDef[] = [
     [status('seared', 5, 'allFoes'), status('exposed', 2, 'allFoes')],
     { exhaust: true },
   ),
+
+  // (more Bleed)
+  q('common', 'poison-tip', 'Poison Tip', 'attack', 1, 'foe', [
+    dmg(6),
+    status('seared', 3, 'target'),
+  ]),
+  q('common', 'deadly-vial', 'Deadly Vial', 'skill', 1, 'foe', [status('seared', 5, 'target')]),
+  q('uncommon', 'caustic-vial', 'Caustic Vial', 'skill', 2, 'none', [
+    status('seared', 4, 'allFoes'),
+  ]),
+  q('uncommon', 'choking-haze', 'Choking Haze', 'power', 1, 'none', [
+    on('turnStart', [status('seared', 2, 'allFoes')]),
+  ]),
+  q('rare', 'tainted-edge', 'Tainted Edge', 'power', 2, 'none', [
+    on('play', [status('seared', 1, 'allFoes')], { filter: 'attack' }),
+  ]),
+  q('rare', 'plague-cloud', 'Plague Cloud', 'skill', 2, 'none', [status('seared', 9, 'allFoes')], {
+    exhaust: true,
+  }),
+  q('rare', 'festering-wound', 'Festering Wound', 'attack', 2, 'foe', [
+    scaled(dmg(8), per('seared', 1, 'target')),
+  ]),
+  q(
+    'rare',
+    'mirage',
+    'Mirage',
+    'skill',
+    1,
+    'foe',
+    [status('faltering', 1, 'target'), scaled(barrier(0), per('seared', 1, 'target'))],
+    {
+      exhaust: true,
+    },
+  ),
+  q('rare', 'fatal-dose', 'Fatal Dose', 'skill', 1, 'foe', [doubleSt('seared', 'target')]),
 
   // --- Sleight ---
   q('common', 'quick-hands', 'Quick Hands', 'skill', 0, 'none', [draw(1), discard(1)]),
@@ -225,4 +287,41 @@ export const QUILL: CardDef[] = [
     { exhaust: true },
   ),
   q('uncommon', 'light-fingers', 'Light Fingers', 'skill', 1, 'none', [mana(2), discard(1)]),
+  // (more Sleight)
+  q('common', 'dart-throw', 'Dart Throw', 'attack', 1, 'foe', [dmg(9), draw(1), discard(1)]),
+  q('common', 'tangle-wire', 'Tangle Wire', 'attack', 1, 'foe', [
+    dmg(8),
+    status('faltering', 1, 'target'),
+  ]),
+  q('common', 'quick-draw', 'Quick Draw', 'skill', 1, 'none', [barrier(5), draw(2)]),
+  q('uncommon', 'light-feet', 'Light Feet', 'power', 1, 'none', [status('bracing', 2)]),
+  q('rare', 'shadow-step', 'Shadow Step', 'skill', 1, 'none', [
+    discard(9, 'any'),
+    status('twinned', 1),
+  ]),
+  q('rare', 'quick-hands', 'Quick Hands', 'skill', 1, 'none', [status('mirrored', 1)]),
+  q('rare', 'lingering-blur', 'Lingering Blur', 'power', 1, 'none', [on('play', [barrier(1)])]),
+  q('rare', 'adrenaline-rush', 'Adrenaline Rush', 'skill', 0, 'none', [mana(1), draw(2)], {
+    exhaust: true,
+  }),
+  q('rare', 'tricks-of-the-trade', 'Tricks of the Trade', 'power', 2, 'none', [
+    on('turnStart', [draw(1)]),
+  ]),
+  q('rare', 'careful-plan', 'Careful Plan', 'skill', 1, 'none', [draw(1), status('holdfast', 1)]),
+  q('rare', 'cold-killing', 'Cold Killing', 'attack', 1, 'foe', [scaled(dmg(1), per('drawn', 1))]),
+  q('rare', 'coiled-strike', 'Coiled Strike', 'power', 3, 'none', [
+    on('play', [dmg(4, 'randomFoe')]),
+  ]),
+  q(
+    'rare',
+    'veil-of-dust',
+    'Veil of Dust',
+    'skill',
+    1,
+    'none',
+    [scaled(barrier(0), per('barrier', 1))],
+    {
+      exhaust: true,
+    },
+  ),
 ];

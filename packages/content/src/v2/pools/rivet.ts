@@ -19,6 +19,8 @@ import {
   scaled,
   status,
   summon,
+  discoverOp,
+  revive,
 } from '../build';
 
 const r = pool('rivet', 'nexus');
@@ -62,6 +64,50 @@ export const RIVET: CardDef[] = [
   ]),
   r('uncommon', 'parts-bin', 'Parts Bin', 'skill', 1, 'none', [summon('micro-drone'), draw(1)]),
 
+  // (more Swarm)
+  r(
+    'common',
+    'nanoswarm',
+    'Nanoswarm',
+    'skill',
+    1,
+    'none',
+    [summon('micro-drone'), summon('micro-drone'), summon('micro-drone')],
+    { exhaust: true },
+  ),
+  r('common', 'scrap-storm', 'Scrap Storm', 'attack', 1, 'none', [
+    scaled(dmg(2, 'allFoes'), per('allies', 1)),
+  ]),
+  r('uncommon', 'scrap-heap', 'Scrap Heap', 'skill', 1, 'none', [
+    summon('micro-drone'),
+    summon('micro-drone'),
+  ]),
+  r('uncommon', 'swarm-tactics', 'Swarm Tactics', 'power', 1, 'none', [
+    on('summon', [dmg(3, 'randomFoe')]),
+  ]),
+  r('uncommon', 'salvage-rights', 'Salvage Rights', 'power', 1, 'none', [
+    on('allyDies', [draw(1)]),
+  ]),
+  r('uncommon', 'detonate', 'Detonate', 'skill', 0, 'ally', [dmg(10, 'allFoes'), sacrifice]),
+  r('uncommon', 'blueprint', 'Blueprint', 'skill', 1, 'none', [discoverOp('summon', 1, false)]),
+  r('rare', 'hive-mind', 'Hive Mind', 'power', 2, 'none', [
+    on('allyDies', [draw(1), summon('micro-drone')]),
+  ]),
+  r('rare', 'mass-production', 'Mass Production', 'power', 3, 'none', [
+    on('turnStart', [summon('patrol-drone')]),
+  ]),
+  r(
+    'rare',
+    'drone-carrier',
+    'Drone Carrier',
+    'summon',
+    3,
+    'none',
+    [summon('patrol-drone'), summon('patrol-drone'), summon('patrol-drone')],
+    { exhaust: true },
+  ),
+  r('rare', 'factory-floor', 'Factory Floor', 'power', 2, 'none', [on('summon', [draw(1)])]),
+
   // --- Assemble ---
   r('common', 'ping', 'Ping', 'skill', 0, 'none', [ACT], { exhaust: true }),
   r('common', 'jumpstart', 'Jumpstart', 'skill', 1, 'none', [ACT, barrier(4)]),
@@ -102,6 +148,21 @@ export const RIVET: CardDef[] = [
     { exhaust: true },
   ),
 
+  // (more Assemble)
+  r('uncommon', 'link-up', 'Link Up', 'skill', 1, 'none', [ACT, barrier(4, 'allFriends')]),
+  r('uncommon', 'synchronise', 'Synchronise', 'skill', 1, 'none', [
+    ACT,
+    status('might', 1, 'allFriends'),
+  ]),
+  r('uncommon', 'resonant-pulse', 'Resonant Pulse', 'power', 1, 'none', [
+    on('play', [heal(1, 'allFriends')], { filter: 'skill' }),
+  ]),
+  r('rare', 'overload', 'Overload', 'skill', 1, 'none', [ACT, ACT, ACT], { exhaust: true }),
+  r('rare', 'chain-reaction', 'Chain Reaction', 'skill', 2, 'none', [ACT, ACT, draw(1)]),
+  r('rare', 'command-chip', 'Command Chip', 'power', 3, 'none', [
+    on('play', [ACT], { filter: 'summon' }),
+  ]),
+
   // --- Core ---
   r('common', 'repair-bot', 'Repair Bot', 'summon', 1, 'none', [summon('repair-bot')]),
   r('common', 'build-enforcer', 'Build Enforcer', 'summon', 2, 'none', [summon('enforcer')]),
@@ -131,6 +192,30 @@ export const RIVET: CardDef[] = [
   r('rare', 'forge-titan', 'Forge Titan', 'summon', 3, 'none', [
     summon('war-engine'),
     status('might', 1, 'allFriends'),
+  ]),
+
+  // (more Core)
+  r('common', 'patch-job', 'Patch Job', 'skill', 0, 'ally', [
+    heal(8, 'target'),
+    barrier(3, 'target'),
+  ]),
+  r('uncommon', 'bulwark-frame', 'Bulwark Frame', 'skill', 1, 'ally', [barrier(14, 'target')]),
+  r('uncommon', 'self-repair', 'Self-Repair', 'power', 1, 'none', [
+    on('turnStart', [heal(2, 'allFriends')]),
+  ]),
+  r(
+    'rare',
+    'reactor-meltdown',
+    'Reactor Meltdown',
+    'skill',
+    0,
+    'ally',
+    [dmg(25, 'allFoes'), sacrifice],
+    { exhaust: true },
+  ),
+  r('rare', 'rebuild', 'Rebuild', 'skill', 1, 'none', [revive, barrier(6)], { exhaust: true }),
+  r('rare', 'heavy-industry', 'Heavy Industry', 'power', 2, 'none', [
+    on('turnStart', [barrier(4, 'allFriends')]),
   ]),
 
   // --- shared tools ---

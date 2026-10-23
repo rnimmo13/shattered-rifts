@@ -96,6 +96,53 @@ export const MIRE: CardDef[] = [
   ]),
   g('uncommon', 'omen', 'Omen', 'skill', 1, 'none', [status('doom', 3, 'allFoes'), draw(1)]),
 
+  // (more Doom)
+  g(
+    'common',
+    'mark-of-ending',
+    'Mark of Ending',
+    'skill',
+    0,
+    'foe',
+    [status('doom', 4, 'target')],
+    { exhaust: true },
+  ),
+  g('common', 'creeping-dread', 'Creeping Dread', 'attack', 1, 'none', [
+    dmg(3, 'allFoes'),
+    status('doom', 3, 'allFoes'),
+  ]),
+  g('uncommon', 'countdown', 'Countdown', 'power', 1, 'none', [
+    on('turnStart', [status('doom', 2, 'randomFoe')]),
+  ]),
+  g('uncommon', 'veilpiercer', 'Veilpiercer', 'attack', 1, 'foe', [
+    dmg(7),
+    status('exposed', 2, 'target'),
+    status('doom', 2, 'target'),
+  ]),
+  g('rare', 'oblivion', 'Oblivion', 'skill', 2, 'foe', [status('doom', 25, 'target')], {
+    exhaust: true,
+  }),
+  g(
+    'rare',
+    'wailing-cry',
+    'Wailing Cry',
+    'attack',
+    2,
+    'none',
+    [dmg(12, 'allFoes'), status('doom', 8, 'allFoes')],
+    { exhaust: true },
+  ),
+  g(
+    'rare',
+    'thin-the-veil',
+    'Thin the Veil',
+    'skill',
+    2,
+    'none',
+    [doubleSt('doom', 'allFoes', 1.5)],
+    { exhaust: true },
+  ),
+
   // --- Thralls ---
   g('common', 'raise-thrall', 'Raise Thrall', 'summon', 1, 'none', [summon('bone-thrall')]),
   g('common', 'bone-chorus', 'Bone Chorus', 'skill', 1, 'ally', [
@@ -137,6 +184,41 @@ export const MIRE: CardDef[] = [
     status('might', 1, 'target'),
   ]),
 
+  // (more Thralls)
+  g('common', 'bone-guard', 'Bone Guard', 'skill', 1, 'ally', [
+    barrier(9, 'target'),
+    barrier(4, 'hero'),
+  ]),
+  g('common', 'unleash-the-dead', 'Unleash the Dead', 'attack', 1, 'foe', [
+    scaled(dmg(4), per('allies', 3)),
+  ]),
+  g('uncommon', 'calcify', 'Calcify', 'power', 1, 'none', [
+    on('turnEnd', [barrier(3, 'allFriends')]),
+  ]),
+  g('uncommon', 'legion-of-bone', 'Legion of Bone', 'summon', 2, 'none', [
+    summon('bone-thrall'),
+    summon('bone-thrall'),
+  ]),
+  g('rare', 'blood-sacrifice', 'Blood Sacrifice', 'skill', 0, 'ally', [
+    mana(2),
+    draw(2),
+    sacrifice,
+  ]),
+  g('rare', 'phylactery', 'Phylactery', 'power', 3, 'none', [
+    on('turnStart', [summon('bone-thrall')]),
+  ]),
+  g('rare', 'bone-choir', 'Bone Choir', 'power', 2, 'none', [on('allyDies', [dmg(8, 'allFoes')])]),
+  g(
+    'rare',
+    'marrow-tide',
+    'Marrow Tide',
+    'skill',
+    2,
+    'none',
+    [heal(10, 'allFriends'), status('might', 2, 'allFriends')],
+    { exhaust: true },
+  ),
+
   // --- Ashes ---
   g('common', 'gather-souls', 'Gather Souls', 'skill', 1, 'none', [addTo('gravesoul', 2)]),
   g('common', 'bone-cairn', 'Bone Cairn', 'skill', 1, 'none', [
@@ -168,6 +250,34 @@ export const MIRE: CardDef[] = [
   g('rare', 'ash-ritual', 'Ash Ritual', 'power', 2, 'none', [
     on('exhaust', [status('doom', 2, 'allFoes')]),
   ]),
+
+  // (more Ashes)
+  g('common', 'rattle-the-bones', 'Rattle the Bones', 'attack', 1, 'foe', [
+    dmg(6),
+    addTo('gravesoul'),
+  ]),
+  g('uncommon', 'cremation', 'Cremation', 'skill', 0, 'none', [exhaustN(1), mana(1)]),
+  g('uncommon', 'soul-siphon', 'Soul Siphon', 'attack', 1, 'foe', [
+    dmg(7),
+    scaled(heal(0), per('exhausted', 0.5)),
+  ]),
+  g('uncommon', 'ashen-visage', 'Ashen Visage', 'skill', 1, 'none', [
+    scaled(barrier(0), per('exhausted', 1)),
+    draw(1),
+  ]),
+  g('rare', 'pyre-of-the-dead', 'Pyre of the Dead', 'attack', 2, 'none', [
+    exhaustN(9, 'any'),
+    scaled(dmg(0, 'allFoes'), per('exhausted', 3)),
+  ]),
+  g('rare', 'necrotic-return', 'Necrotic Return', 'skill', 1, 'none', [reclaim(3)], {
+    exhaust: true,
+  }),
+  g('rare', 'soul-harvest', 'Soul Harvest', 'power', 2, 'none', [
+    on('exhaust', [heal(2), status('doom', 1, 'allFoes')]),
+  ]),
+  g('rare', 'ghostform', 'Ghostform', 'skill', 1, 'none', [status('ghostly', 1)], {
+    exhaust: true,
+  }),
 
   // --- shared tools and glue ---
   g('common', 'bone-shard', 'Bone Shard', 'attack', 1, 'foe', [dmg(8)]),

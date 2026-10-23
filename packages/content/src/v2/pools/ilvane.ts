@@ -20,6 +20,11 @@ import {
   scaled,
   status,
   upgradeOp,
+  fetchCards,
+  discoverOp,
+  lose,
+  cheapen,
+  discard,
 } from '../build';
 
 export const RUNES: RuneDef[] = [
@@ -118,6 +123,28 @@ export const ILVANE: CardDef[] = [
     channel('hollow'),
   ]),
 
+  // (more Spark)
+  i('common', 'rune-barrage', 'Rune Barrage', 'attack', 1, 'foe', [
+    scaled({ op: 'damage', amount: 4, hits: 0, to: 'target' }, per('runes', 1, undefined, 'hits')),
+  ]),
+  i('common', 'sweeping-ray', 'Sweeping Ray', 'attack', 1, 'none', [dmg(6, 'allFoes'), draw(1)]),
+  i('uncommon', 'driver-of-runes', 'Driver of Runes', 'attack', 1, 'foe', [
+    dmg(7),
+    scaled(draw(0), per('runes', 0.5)),
+  ]),
+  i('rare', 'hyperbeam', 'Hyperbeam', 'attack', 2, 'none', [dmg(24, 'allFoes')], { exhaust: true }),
+  i('rare', 'meteor-glyph', 'Meteor Glyph', 'attack', 3, 'foe', [dmg(28), channel('prism', 2)]),
+  i(
+    'rare',
+    'rainbow-glyph',
+    'Rainbow Glyph',
+    'skill',
+    2,
+    'none',
+    [channel('spark'), channel('ward'), channel('splinter')],
+    { exhaust: true },
+  ),
+
   // --- Ward ---
   i('common', 'glyph-guard', 'Glyph Guard', 'skill', 1, 'none', [barrier(5), channel('ward')]),
   i('common', 'frostglass', 'Frostglass', 'skill', 2, 'none', [barrier(6), channel('ward', 2)]),
@@ -158,6 +185,22 @@ export const ILVANE: CardDef[] = [
     draw(1),
   ]),
 
+  // (more Ward)
+  i('common', 'skim-the-weave', 'Skim the Weave', 'skill', 1, 'none', [draw(3)]),
+  i('common', 'echo-of-glyphs', 'Echo of Glyphs', 'skill', 1, 'none', [barrier(4), fetchCards(1)], {
+    exhaust: true,
+  }),
+  i('uncommon', 'streamlined-strike', 'Streamlined Strike', 'attack', 2, 'foe', [
+    dmg(14),
+    cheapen(1, 'random'),
+  ]),
+  i('rare', 'machine-learning', 'Machine Learning', 'power', 2, 'none', [
+    on('turnStart', [draw(1)]),
+  ]),
+  i('rare', 'echoing-loop', 'Echoing Loop', 'power', 2, 'none', [
+    on('turnEnd', [evoke(1, 1, true)]),
+  ]),
+
   // --- Hollow and Resonance ---
   i('common', 'umbra-glyph', 'Umbra Glyph', 'skill', 1, 'none', [channel('hollow')]),
   i('common', 'hollow-strike', 'Hollow Strike', 'attack', 1, 'foe', [dmg(7), channel('hollow')]),
@@ -187,6 +230,38 @@ export const ILVANE: CardDef[] = [
   i('common', 'void-pulse', 'Void Pulse', 'skill', 1, 'none', [channel('hollow'), barrier(4)]),
   i('uncommon', 'deep-charge', 'Deep Charge', 'skill', 1, 'none', [channel('hollow'), draw(1)]),
   i('rare', 'abyssal-glyph', 'Abyssal Glyph', 'skill', 2, 'none', [channel('hollow', 2)]),
+
+  // (more Hollow)
+  i('uncommon', 'prism-beam', 'Prism Beam', 'attack', 0, 'foe', [
+    dmg(3),
+    status('exposed', 1, 'target'),
+  ]),
+  i(
+    'rare',
+    'reset-the-weave',
+    'Reset the Weave',
+    'skill',
+    0,
+    'none',
+    [discard(9, 'any'), draw(4)],
+    { exhaust: true },
+  ),
+  i('rare', 'echoing-form', 'Echoing Form', 'power', 3, 'none', [
+    on('turnStart', [status('twinned', 1)]),
+  ]),
+  i('rare', 'white-noise', 'White Noise', 'skill', 1, 'none', [discoverOp('power', 1, true)], {
+    exhaust: true,
+  }),
+  i('rare', 'creative-engine', 'Creative Engine', 'power', 3, 'none', [
+    on('turnStart', [discoverOp(undefined, 1, false)]),
+  ]),
+  i('rare', 'consuming-dark', 'Consuming Dark', 'power', 2, 'none', [
+    on('turnEnd', [channel('hollow')]),
+  ]),
+  i('rare', 'biased-weave', 'Biased Weave', 'power', 2, 'none', [
+    status('resonance', 3),
+    on('turnStart', [lose(2)]),
+  ]),
 
   // --- evoke glue ---
   i('common', 'rune-burst', 'Rune Burst', 'skill', 1, 'none', [evoke(), draw(1)]),

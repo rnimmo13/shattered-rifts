@@ -97,6 +97,8 @@ export function chooseAction(db: CombatDb, s: CombatState): Action {
     }
     return pick ?? { type: 'pick', cards: [] };
   }
+  // two free draw cards can feed each other for ever: the bot always ends a turn after a generous number of plays
+  if (s.sides[me].played >= 60) return { type: 'endTurn' };
   let best: Action = { type: 'endTurn' };
   let bestGain = 0.5; // must beat doing nothing by a little
   for (const a of legalActions(db, s)) {

@@ -250,6 +250,9 @@ const METRIC_WORDS: Record<Metric, { per: string; equal: string }> = {
   mana: { per: 'Mana left', equal: 'your Mana' },
   played: { per: 'card played this turn', equal: 'the cards played this turn' },
   attacksPlayed: { per: 'Attack played this turn', equal: 'the Attacks played this turn' },
+  skillsPlayed: { per: 'Skill played this turn', equal: 'the Skills played this turn' },
+  drawn: { per: 'card drawn this fight', equal: 'the cards you have drawn this fight' },
+  created: { per: 'card created this fight', equal: 'the cards you have created this fight' },
   discarded: { per: 'card discarded this turn', equal: 'the cards discarded this turn' },
   x: { per: 'Mana spent', equal: 'the Mana spent' },
   charge: { per: 'charge', equal: 'its charge' },
@@ -316,6 +319,10 @@ const WHEN_TEXT: Record<string, string> = {
   allyDies: 'Whenever one of your allies dies',
   snare: 'Whenever one of your Snares springs',
   stance: 'Whenever you enter a stance',
+  barrier: 'Whenever you gain Barrier',
+  loseHp: 'Whenever you lose HP to your own cards',
+  draw: 'Whenever you draw a card',
+  created: 'Whenever a card is created',
 };
 
 export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): string {
@@ -464,6 +471,13 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
       return `Return ${o.amount === 1 ? 'a random Consumed card' : `${o.amount} random Consumed cards`} to your hand.`;
     case 'revive':
       return 'Your most recently fallen ally returns with half its HP.';
+    case 'fetch': {
+      const what = o.kind ? `${o.kind} card` : 'card';
+      const n = o.amount === 1 ? `a random ${what}` : `${o.amount} random ${what}s`;
+      return o.to === 'draw'
+        ? `Put ${n} from your discard pile on top of your draw pile.`
+        : `Return ${n} from your discard pile to your hand.`;
+    }
     case 'manaNext':
       return o.amount < 0
         ? `Next turn, lose ${-o.amount} Mana.`

@@ -129,6 +129,12 @@ const KP_GUN = [
   'one-more-round',
   'gunmetal-polish',
   'trigger-discipline',
+  'barrel-roll',
+  'aim',
+  'scope',
+  'steady-hands',
+  'ironsights',
+  'gunmetal-soul',
 ];
 const KP_SHELLS = [
   'buckshot-shell',
@@ -143,6 +149,14 @@ const KP_SHELLS = [
   'boomstick',
   'last-shell',
   'shell-shock',
+  'birdshot',
+  'shell-casing',
+  'slugfest',
+  'magazine',
+  'shellshocked',
+  'fire-in-the-hole',
+  'ammo-dump',
+  'rolling-thunder',
 ];
 const kpFile = readFileSync(
   new URL('../../packages/content/src/v2/pools/kp.ts', import.meta.url),

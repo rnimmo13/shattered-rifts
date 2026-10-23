@@ -19,6 +19,10 @@ import {
   scaled,
   scry,
   status,
+  drawNext,
+  discard,
+  cheapen,
+  discoverOp,
 } from '../build';
 
 const v = pool('vesper', 'umbral');
@@ -123,6 +127,50 @@ export const VESPER: CardDef[] = [
   ),
   v('rare', 'echo-trap', 'Echo Trap', 'power', 2, 'none', [on('snare', [barrier(5), draw(1)])]),
 
+  // (more Snares)
+  v(
+    'uncommon',
+    'tripwire-garrote',
+    'Tripwire Garrote',
+    'snare',
+    1,
+    'none',
+    [dmg(7, 'attacker'), status('exposed', 2, 'attacker')],
+    {
+      trigger: { on: 'attacked' },
+    },
+  ),
+  v(
+    'uncommon',
+    'snare-net',
+    'Snare Net',
+    'snare',
+    2,
+    'none',
+    [dmg(4, 'allFoes'), status('faltering', 1, 'allFoes')],
+    {
+      trigger: { on: 'foeTurn' },
+    },
+  ),
+  v(
+    'rare',
+    'death-trap',
+    'Death Trap',
+    'snare',
+    2,
+    'none',
+    [PREVENT, dmg(18, 'attacker'), status('exposed', 2, 'attacker')],
+    {
+      trigger: { on: 'attacked' },
+    },
+  ),
+  v('rare', 'trappers-dividend', "Trapper's Dividend", 'power', 2, 'none', [
+    on('snare', [draw(1), barrier(5)]),
+  ]),
+  v('rare', 'spring-the-trap', 'Spring the Trap', 'attack', 1, 'foe', [
+    scaled(dmg(6), per('snares', 8)),
+  ]),
+
   // --- Exposed ---
   v('common', 'mark-prey', 'Mark Prey', 'skill', 0, 'foe', [status('exposed', 2, 'target')]),
   v('common', 'unmask', 'Unmask', 'skill', 1, 'none', [status('exposed', 2, 'allFoes')]),
@@ -158,6 +206,57 @@ export const VESPER: CardDef[] = [
   v('uncommon', 'patient-hunter', 'Patient Hunter', 'power', 1, 'none', [
     on('turnStart', [status('exposed', 1, 'allFoes')]),
   ]),
+
+  // (more Exposed)
+  v('common', 'low-blow', 'Low Blow', 'attack', 0, 'foe', [
+    dmg(3),
+    status('faltering', 1, 'target'),
+  ]),
+  v('common', 'cheap-shot', 'Cheap Shot', 'attack', 1, 'foe', [
+    dmg(8),
+    status('faltering', 1, 'target'),
+  ]),
+  v('common', 'stalk', 'Stalk', 'attack', 2, 'foe', [dmg(15), drawNext(2)]),
+  v('uncommon', 'sweep-the-legs', 'Sweep the Legs', 'skill', 2, 'foe', [
+    status('faltering', 2, 'target'),
+    barrier(12),
+  ]),
+  v('uncommon', 'strip-the-guard', 'Strip the Guard', 'skill', 1, 'foe', [
+    status('exposed', 3, 'target'),
+    status('brittle', 2, 'target'),
+  ]),
+  v('uncommon', 'smoke-bomb', 'Smoke Bomb', 'skill', 1, 'none', [
+    status('faltering', 1, 'allFoes'),
+    status('exposed', 1, 'allFoes'),
+    barrier(4),
+  ]),
+  v('uncommon', 'pin-cushion', 'Pin Cushion', 'attack', 1, 'foe', [scaled(dmg(4), per('hand', 1))]),
+  v(
+    'rare',
+    'opening-strike',
+    'Opening Strike',
+    'attack',
+    0,
+    'foe',
+    [dmg(12), status('exposed', 2, 'target')],
+    {
+      innate: true,
+      exhaust: true,
+    },
+  ),
+  v('rare', 'hunters-eye', "Hunter's Eye", 'power', 2, 'none', [
+    on('play', [status('exposed', 1, 'target')], { filter: 'attack' }),
+  ]),
+  v(
+    'rare',
+    'blindside',
+    'Blindside',
+    'attack',
+    2,
+    'foe',
+    [dmg(22), status('exposed', 3, 'target')],
+    { exhaust: true },
+  ),
 
   // --- Bluff ---
   v('common', 'cold-read', 'Cold Read', 'skill', 0, 'none', [scry(4)]),
@@ -208,4 +307,46 @@ export const VESPER: CardDef[] = [
   v('uncommon', 'saved-breath', 'Saved Breath', 'skill', 0, 'none', [manaNext(2), scry(2)], {
     exhaust: true,
   }),
+  // (more Bluff)
+  v('common', 'slip-away', 'Slip Away', 'skill', 1, 'none', [barrier(5), drawNext(1)]),
+  v('common', 'quick-study', 'Quick Study', 'skill', 0, 'none', [draw(1), discard(1)]),
+  v('uncommon', 'tumble', 'Tumble', 'skill', 1, 'none', [draw(3), discard(1)]),
+  v('uncommon', 'sleight-of-hand', 'Sleight of Hand', 'skill', 1, 'none', [draw(2)], {
+    onDiscard: [draw(2)],
+  }),
+  v('uncommon', 'calculated-move', 'Calculated Move', 'skill', 0, 'none', [mana(1)], {
+    onDiscard: [mana(2)],
+  }),
+  v(
+    'uncommon',
+    'gambit',
+    'Gambit',
+    'skill',
+    0,
+    'none',
+    [discard(9, 'any'), scaled(draw(0), per('discarded'))],
+    { exhaust: true },
+  ),
+  v('rare', 'encore', 'Encore', 'skill', 1, 'none', [status('twinned', 1)]),
+  v('rare', 'frozen-moment', 'Frozen Moment', 'skill', 2, 'none', [cheapen(9, 'hand')], {
+    exhaust: true,
+  }),
+  v('rare', 'fade-away', 'Fade Away', 'skill', 1, 'none', [status('ghostly', 1)], {
+    exhaust: true,
+  }),
+  v('rare', 'misdirection', 'Misdirection', 'power', 1, 'none', [on('discard', [barrier(4)])]),
+  v(
+    'rare',
+    'pickpocket-master',
+    'Pickpocket Master',
+    'skill',
+    2,
+    'none',
+    [discoverOp(undefined, 2, true)],
+    { exhaust: true },
+  ),
+  v('rare', 'shadow-pace', 'Shadow Pace', 'power', 2, 'none', [
+    on('turnStart', [draw(1), barrier(4)]),
+  ]),
+  v('rare', 'perfect-alibi', 'Perfect Alibi', 'skill', 1, 'none', [barrier(20), discard(1)]),
 ];

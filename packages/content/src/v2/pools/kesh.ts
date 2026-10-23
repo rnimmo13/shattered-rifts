@@ -11,6 +11,7 @@ import {
   doubleSt,
   draw,
   exhaustN,
+  fetchCards,
   heal,
   lose,
   mana,
@@ -63,6 +64,49 @@ export const KESH: CardDef[] = [
     exhaust: true,
   }),
 
+  // (more Bloodrage)
+  k('common', 'blood-rush', 'Blood Rush', 'attack', 0, 'foe', [dmg(4), lose(1)]),
+  k('common', 'ripping-claws', 'Ripping Claws', 'attack', 1, 'none', [dmg(5, 'allFoes'), lose(1)]),
+  k('common', 'scavenge', 'Scavenge', 'attack', 1, 'foe', [dmg(9), fetchCards(1, 'draw')]),
+  k('common', 'pound', 'Pound', 'attack', 1, 'foe', [dmg(9), draw(1)]),
+  k('common', 'bone-crack', 'Bone Crack', 'attack', 1, 'foe', [
+    dmg(7),
+    status('exposed', 2, 'target'),
+  ]),
+  k('common', 'flesh-wound', 'Flesh Wound', 'skill', 1, 'none', [lose(2), barrier(14)]),
+  k('uncommon', 'scar-tissue', 'Scar Tissue', 'power', 1, 'none', [
+    on('loseHp', [status('might', 1)]),
+  ]),
+  k(
+    'uncommon',
+    'whirling-maul',
+    'Whirling Maul',
+    'attack',
+    0,
+    'none',
+    [scaled({ op: 'damage', amount: 5, hits: 0, to: 'allFoes' }, per('x', 1, undefined, 'hits'))],
+    { x: true },
+  ),
+  k('uncommon', 'reckless-blow', 'Reckless Blow', 'attack', 1, 'foe', [lose(2), dmg(15)]),
+  k('uncommon', 'frenzied-gulp', 'Frenzied Gulp', 'skill', 0, 'none', [draw(3), lose(2)]),
+  k('uncommon', 'hamstring-slam', 'Hamstring Slam', 'attack', 2, 'foe', [
+    dmg(13),
+    status('faltering', 1, 'target'),
+    status('exposed', 1, 'target'),
+  ]),
+  k('rare', 'ancient-fury', 'Ancient Fury', 'power', 3, 'none', [
+    on('turnStart', [status('might', 2)]),
+  ]),
+  k('rare', 'skullcrusher', 'Skullcrusher', 'attack', 3, 'foe', [dmg(34)]),
+  k('rare', 'scarred-warrior', 'Scarred Warrior', 'power', 1, 'none', [
+    on('turnStart', [lose(1), barrier(8)]),
+  ]),
+  k('rare', 'unleash', 'Unleash', 'skill', 0, 'none', [lose(1), exhaustN(1), status('might', 1)]),
+  k('rare', 'frenzied-thrash', 'Frenzied Thrash', 'attack', 1, 'foe', [
+    dmg(4, 'target', 2),
+    exhaustN(1, 'random'),
+  ]),
+
   // --- Pack ---
   k('common', 'heel', 'Heel', 'summon', 1, 'none', [summon('hound')]),
   k('common', 'call-gnashlings', 'Call Gnashlings', 'summon', 1, 'none', [
@@ -97,6 +141,23 @@ export const KESH: CardDef[] = [
     heal(8, 'target'),
     status('might', 1, 'target'),
   ]),
+
+  // (more Pack)
+  k('uncommon', 'rally-the-pack', 'Rally the Pack', 'skill', 2, 'none', [summon('hound'), ACT]),
+  k('uncommon', 'trail-of-blood', 'Trail of Blood', 'power', 1, 'none', [
+    on('summon', [status('might', 1, 'allFriends')]),
+  ]),
+  k(
+    'rare',
+    'pack-frenzy',
+    'Pack Frenzy',
+    'skill',
+    2,
+    'none',
+    [status('might', 2, 'allFriends'), ACT],
+    { exhaust: true },
+  ),
+  k('rare', 'wild-hunt', 'Wild Hunt', 'power', 3, 'none', [on('turnStart', [ACT])]),
 
   // --- Feast ---
   k('common', 'burn-the-weak', 'Burn the Weak', 'skill', 1, 'none', [exhaustN(1), barrier(8)]),
@@ -161,4 +222,19 @@ export const KESH: CardDef[] = [
   k('rare', 'blood-pact', 'Blood Pact', 'skill', 1, 'none', [lose(6), maxMana(1)], {
     exhaust: true,
   }),
+  // (more Feast)
+  k('uncommon', 'bone-offering', 'Bone Offering', 'skill', 1, 'none', [exhaustN(1), draw(2)]),
+  k('uncommon', 'gorge', 'Gorge', 'skill', 1, 'none', [
+    barrier(8),
+    scaled(barrier(0), per('exhausted', 0.5)),
+  ]),
+  k('uncommon', 'rotten-meal', 'Rotten Meal', 'skill', 1, 'none', [
+    barrier(7),
+    exhaustN(1, 'random'),
+  ]),
+  k('rare', 'carrion-engine', 'Carrion Engine', 'power', 3, 'none', [status('unbound', 1)]),
+  k('rare', 'last-gasp', 'Last Gasp', 'attack', 2, 'none', [
+    scaled(dmg(0, 'allFoes'), per('exhausted', 2)),
+  ]),
+  k('rare', 'wolfhide', 'Wolfhide', 'skill', 2, 'none', [barrier(30)], { exhaust: true }),
 ];

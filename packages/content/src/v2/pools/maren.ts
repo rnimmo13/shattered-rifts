@@ -64,6 +64,22 @@ export const MAREN: CardDef[] = [
     on('turnEnd', [scaled(dmg(0, 'allFoes'), per('barrier', 0.25))]),
   ]),
 
+  // (more Bulwark)
+  m('uncommon', 'oath-of-iron', 'Oath of Iron', 'skill', 1, 'none', [barrier(8), draw(1)], {
+    retain: true,
+  }),
+  m('uncommon', 'shield-charge', 'Shield Charge', 'attack', 2, 'foe', [dmg(12), barrier(8)]),
+  m('rare', 'bastion-engine', 'Bastion Engine', 'power', 2, 'none', [
+    on('barrier', [dmg(4, 'randomFoe')]),
+  ]),
+  m('rare', 'immovable-oath', 'Immovable Oath', 'skill', 2, 'none', [barrier(30)], {
+    exhaust: true,
+  }),
+  m('rare', 'colossus-blow', 'Colossus Blow', 'attack', 3, 'foe', [
+    scaled(dmg(0), per('barrier', 1.5)),
+  ]),
+  m('rare', 'rampart-of-ages', 'Rampart of Ages', 'power', 2, 'none', [status('bracing', 2)]),
+
   // --- Thorns ---
   m('common', 'thornmail', 'Thornmail', 'skill', 1, 'none', [status('thorns', 3)]),
   m('common', 'righteous-rebuke', 'Righteous Rebuke', 'snare', 1, 'none', [dmg(10, 'attacker')], {
@@ -112,6 +128,19 @@ export const MAREN: CardDef[] = [
     on('turnEnd', [scaled(dmg(0, 'allFoes'), per('thorns', 0.5))]),
   ]),
 
+  // (more Thorns)
+  m('uncommon', 'ember-ward', 'Ember Ward', 'skill', 1, 'none', [
+    barrier(10),
+    status('thorns', 4, 'self', true),
+  ]),
+  m('uncommon', 'mirrored-aegis', 'Mirrored Aegis', 'skill', 2, 'none', [
+    barrier(14),
+    status('thorns', 2),
+  ]),
+  m('rare', 'briar-heart', 'Briar Heart', 'power', 3, 'none', [
+    on('barrier', [status('thorns', 1)]),
+  ]),
+
   // --- Sanctified ---
   m('common', 'lightbearer', 'Lightbearer', 'skill', 1, 'none', [heal(4), barrier(5)]),
   m('common', 'prayer', 'Prayer', 'skill', 0, 'none', [heal(4), draw(1)], { exhaust: true }),
@@ -147,6 +176,36 @@ export const MAREN: CardDef[] = [
   m('rare', 'radiant-renewal', 'Radiant Renewal', 'skill', 2, 'none', [heal(8), draw(2)], {
     exhaust: true,
   }),
+
+  // (more Sanctified)
+  m('uncommon', 'heartening-hymn', 'Heartening Hymn', 'skill', 1, 'none', [
+    heal(6, 'allFriends'),
+    barrier(4, 'allFriends'),
+  ]),
+  m('rare', 'crown-of-light', 'Crown of Light', 'power', 2, 'none', [
+    on('turnStart', [heal(2), barrier(4)]),
+  ]),
+  m(
+    'rare',
+    'dawn-chorus',
+    'Dawn Chorus',
+    'skill',
+    2,
+    'none',
+    [heal(10, 'allFriends'), status('shielded', 1)],
+    { exhaust: true },
+  ),
+  m('rare', 'holy-reckoning', 'Holy Reckoning', 'attack', 2, 'none', [dmg(8, 'allFoes'), heal(6)]),
+  m(
+    'rare',
+    'last-stand',
+    'Last Stand',
+    'skill',
+    1,
+    'none',
+    [barrier(8), scaled(barrier(0), per('missingHp', 0.5))],
+    { exhaust: true },
+  ),
 
   // --- glue and plain strikes ---
   m('common', 'bell-toll', 'Bell Toll', 'attack', 1, 'none', [dmg(5, 'allFoes'), barrier(3)]),

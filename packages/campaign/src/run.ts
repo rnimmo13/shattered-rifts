@@ -69,8 +69,8 @@ export const DIFFICULTY: Record<
   normal: {
     label: 'Normal',
     blurb: 'The intended game: 2 Resolve, and the Wardens are real fights.',
-    hpPct: 124,
-    dmgPct: 116,
+    hpPct: 128,
+    dmgPct: 118,
     resolve: 2,
     shards: 0,
   },

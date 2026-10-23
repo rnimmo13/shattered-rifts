@@ -20,6 +20,9 @@ import {
   scry,
   stance,
   status,
+  fetchCards,
+  discoverOp,
+  heal,
 } from '../build';
 
 const s = pool('sehra', 'aurelion');
@@ -56,6 +59,30 @@ export const SEHRA: CardDef[] = [
 
   s('common', 'red-mist', 'Red Mist', 'attack', 1, 'none', [dmg(5, 'allFoes'), stance('wrath')]),
 
+  // (more Fury)
+  s('common', 'flurry-of-palms', 'Flurry of Palms', 'attack', 0, 'foe', [dmg(3, 'target', 2)]),
+  s('common', 'crushing-palm', 'Crushing Palm', 'attack', 1, 'foe', [
+    dmg(8),
+    status('exposed', 1, 'target'),
+  ]),
+  s('uncommon', 'wheel-kick', 'Wheel Kick', 'attack', 2, 'foe', [dmg(15), draw(2)]),
+  s('uncommon', 'cut-through-fate', 'Cut Through Fate', 'attack', 1, 'foe', [
+    dmg(7),
+    scry(2),
+    draw(1),
+  ]),
+  s('uncommon', 'wrathful-guard', 'Wrathful Guard', 'skill', 1, 'none', [
+    barrier(6),
+    stance('wrath'),
+  ]),
+  s('rare', 'brilliance', 'Brilliance', 'attack', 1, 'foe', [scaled(dmg(12), per('mantra', 1))]),
+  s('rare', 'rampage-of-ire', 'Rampage of Ire', 'power', 2, 'none', [
+    on('stance', [dmg(6, 'allFoes')], { stance: 'wrath' }),
+  ]),
+  s('rare', 'rage-unbound', 'Rage Unbound', 'skill', 0, 'none', [stance('wrath'), mana(1)], {
+    exhaust: true,
+  }),
+
   // --- Calm ---
   s('common', 'centre-yourself', 'Centre Yourself', 'skill', 1, 'none', [draw(2), stance('calm')]),
   s('common', 'unburdened-guard', 'Unburdened Guard', 'skill', 1, 'none', [
@@ -83,6 +110,26 @@ export const SEHRA: CardDef[] = [
     barrier(12),
     stance('calm'),
     draw(1),
+  ]),
+
+  // (more Serene)
+  s('common', 'vigilance', 'Vigilance', 'skill', 1, 'none', [barrier(8), stance('calm')]),
+  s('common', 'empty-vessel', 'Empty Vessel', 'skill', 1, 'none', [barrier(7), stance('none')]),
+  s('common', 'empty-fist', 'Empty Fist', 'attack', 1, 'foe', [dmg(9), stance('none')]),
+  s('uncommon', 'inner-calm', 'Inner Calm', 'skill', 1, 'none', [stance('calm'), draw(2)]),
+  s('uncommon', 'fearless', 'Fearless', 'attack', 1, 'foe', [dmg(8), stance('calm')]),
+  s('uncommon', 'meditate', 'Meditate', 'skill', 1, 'none', [fetchCards(1), stance('calm')], {
+    retain: true,
+  }),
+  s('uncommon', 'sanctity', 'Sanctity', 'skill', 1, 'none', [barrier(6), draw(2)]),
+  s('rare', 'spirit-shield', 'Spirit Shield', 'skill', 2, 'none', [
+    scaled(barrier(0), per('hand', 3)),
+  ]),
+  s('rare', 'all-seeing', 'All-Seeing', 'skill', 3, 'none', [discoverOp(undefined, 2, true)], {
+    exhaust: true,
+  }),
+  s('rare', 'serenity-incarnate', 'Serenity Incarnate', 'power', 3, 'none', [
+    on('turnEnd', [heal(3), barrier(6)]),
   ]),
 
   // --- Mantra ---
@@ -136,4 +183,20 @@ export const SEHRA: CardDef[] = [
     { exhaust: true },
   ),
   s('uncommon', 'deep-breath', 'Deep Breath', 'skill', 1, 'none', [manaNext(2), draw(1)]),
+  // (more Fervor)
+  s('common', 'prostrate', 'Prostrate', 'skill', 0, 'none', [status('mantra', 2), barrier(4)]),
+  s('common', 'pray', 'Pray', 'skill', 1, 'none', [status('mantra', 3), barrier(3)]),
+  s('uncommon', 'worship', 'Worship', 'skill', 2, 'none', [status('mantra', 5)]),
+  s('uncommon', 'devotion', 'Devotion', 'power', 1, 'none', [
+    on('turnStart', [status('mantra', 2)]),
+  ]),
+  s('uncommon', 'wreath-of-flame', 'Wreath of Flame', 'skill', 1, 'none', [status('vigor', 6)]),
+  s('rare', 'scrawl', 'Scrawl', 'skill', 1, 'none', [draw(7)], { exhaust: true }),
+  s('rare', 'last-rites-of-flame', 'Last Rites of the Flame', 'attack', 3, 'none', [
+    dmg(14, 'allFoes'),
+    status('mantra', 5),
+  ]),
+  s('rare', 'radiant-heart', 'Radiant Heart', 'power', 2, 'none', [
+    on('stance', [draw(2), mana(1)], { stance: 'radiant' }),
+  ]),
 ];

@@ -133,6 +133,9 @@ export type Metric =
   | 'mana'
   | 'played' // cards played this turn (before this one)
   | 'attacksPlayed'
+  | 'skillsPlayed' // Skills played this turn (before this one)
+  | 'drawn' // cards drawn this fight
+  | 'created' // cards created (added to a pile by an effect) this fight
   | 'discarded' // cards discarded by effects this turn
   // about the thing being resolved
   | 'x' // Mana spent on an X card
@@ -155,7 +158,11 @@ export type TriggerWhen =
   | 'summon' // you summoned an ally
   | 'allyDies' // one of your allies died (or was sacrificed)
   | 'snare' // one of your Snares sprang
-  | 'stance'; // you entered a stance
+  | 'stance' // you entered a stance
+  | 'barrier' // your hero gained Barrier (from anything)
+  | 'loseHp' // your hero lost HP to one of your own effects
+  | 'draw' // you drew a card
+  | 'created'; // a card was created in one of your piles
 
 export type Op =
   | { op: 'damage'; amount: number; hits?: number; to: Sel; scale?: Scale }
@@ -217,6 +224,8 @@ export type Op =
   | { op: 'upgrade'; scope: 'hand' | 'random' }
   /** cards in your hand cost less for the rest of the fight (one random card, or all of them) */
   | { op: 'cheapen'; amount: number; scope: 'hand' | 'random' }
+  /** move random cards from your discard pile to your hand (or the top of your draw pile); `kind` narrows which */
+  | { op: 'fetch'; amount: number; to: 'hand' | 'draw'; kind?: CardKind }
   /** add a copy of the card being played */
   | { op: 'copySelf'; to: 'hand' | 'discard' | 'draw' };
 
@@ -503,7 +512,11 @@ export interface SideState {
   /** counters for this turn, reset when it starts */
   played: number;
   attacksPlayed: number;
+  skillsPlayed: number;
   discarded: number;
+  /** counters for the whole fight */
+  drawn: number;
+  created: number;
 }
 
 export type Winner = Side | 'draw';
