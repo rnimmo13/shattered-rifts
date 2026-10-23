@@ -10,7 +10,6 @@ import {
   V2_DECK_RULES,
   ancestralCards,
   rewardPool,
-  signatureCards,
   type HeroId,
 } from '@sr/content/v2';
 import type { Luck, StageRealm } from './types';
@@ -134,36 +133,28 @@ export function boonOfRarity(
   return (from[nextInt(rng, from.length)] as (typeof BOONS)[number]).id;
 }
 
-/** The Warden's Gift: the Warden's signature cards, rare cards of your realm, and sometimes a legendary of yours. */
+/**
+ * The Warden's Gift: rare cards of YOUR class (never Neutral, Warden or other classes' cards), and sometimes one of your
+ * legendaries as well (more often with better luck). It can be skipped like any card reward.
+ */
 export function giftOffers(
   rng: RngState,
   hero: HeroId,
   deck: readonly string[],
   count: number,
-  bossId = '',
+  _bossId = '',
   luck: Luck = 'normal',
 ): string[] {
-  // the Warden's own cards first, then rare cards of your realm to fill the choice
-  const out: string[] = signatureCards(bossId)
-    .filter((id) => canAdd(deck, id))
-    .slice(0, count);
-  const rares = rewardPool(hero).filter(
-    (id) => rarityOf(id) === 'rare' && canAdd(deck, id) && !out.includes(id),
+  const own = rewardPool(hero).filter(
+    (id) => COMBAT_DB.cards[id]?.hero === hero && canAdd(deck, id),
   );
-  // sometimes the Warden leaves one extra, legendary choice on top (more often with better luck)
-  const legends = rewardPool(hero).filter(
-    (id) => rarityOf(id) === 'legendary' && canAdd(deck, id) && !out.includes(id),
-  );
+  const out: string[] = [];
+  const legends = own.filter((id) => rarityOf(id) === 'legendary');
   const chance = luck === 'blessed' ? 85 : luck === 'lucky' ? 55 : 30;
   if (legends.length && nextInt(rng, 100) < chance)
     out.push(legends[nextInt(rng, legends.length)] as string);
-  // and now and then an ancestral card as well
-  const ancestors = ancestralPool(deck).filter((id) => !out.includes(id));
-  const aChance = luck === 'blessed' ? 60 : luck === 'lucky' ? 40 : 22;
-  if (ancestors.length && nextInt(rng, 100) < aChance)
-    out.push(ancestors[nextInt(rng, ancestors.length)] as string);
-  const target = Math.min(count, out.length + rares.length);
-  for (let guard = 0; out.length < target && guard < 100; guard++) {
+  const rares = own.filter((id) => rarityOf(id) === 'rare' && !out.includes(id));
+  for (let guard = 0; out.length < count && rares.length && guard < 100; guard++) {
     const pick = rares[nextInt(rng, rares.length)] as string;
     if (!out.includes(pick)) out.push(pick);
   }

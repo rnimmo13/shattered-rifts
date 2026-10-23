@@ -72,6 +72,7 @@ function specsFrom(db: CombatDb, s: CombatState): FighterSpec[] {
   const out: FighterSpec[] = [];
   for (const side of ['a', 'b'] as const) {
     let slot = 0;
+    const crowd = s.sides[side].units.filter((x) => x.kind !== 'hero').length;
     for (const u of s.sides[side].units) {
       const hero = u.kind === 'hero';
       out.push({
@@ -79,8 +80,9 @@ function specsFrom(db: CombatDb, s: CombatState): FighterSpec[] {
         side,
         isHero: hero,
         slot: hero ? 0 : slot++,
+        count: crowd,
         canvas: hero ? heroFigure(u.def) : unitFigure(u.def),
-        height: unitHeight(db.units[u.def], u.kind),
+        height: unitHeight(db.units[u.def], u.kind) * (!hero && crowd > 5 ? 0.82 : 1),
       });
     }
   }

@@ -49,6 +49,7 @@ const UNIT: Record<string, [Archetype, Realm]> = {
   // Aurelion
   squire: ['knight', 'aurelion'],
   'squire-recruit': ['knight', 'aurelion'],
+  'gilded-page': ['knight', 'aurelion'],
   'bell-cleric': ['cleric', 'aurelion'],
   'wandering-knight': ['knight', 'aurelion'],
   'templar-aldric': ['knight', 'aurelion'],
@@ -187,7 +188,10 @@ const MOTIF_EMBLEM: Record<Motif, string> = {
 function emblemOf(c: CardDef, motif: Motif | undefined): string {
   const text = `${c.id.replace(/\+$/, '')} ${c.name}`.toLowerCase().replace(/-/g, ' ');
   for (const [re, name] of EMBLEM_WORDS)
-    if (new RegExp(String.raw`\b(?:${re.source})`).test(text)) return name;
+    if (new RegExp(String.raw`\b(?:${re.source})`).test(text)) {
+      // an attack is never pictured as a shield, whatever its name says
+      return c.kind === 'attack' && (name === 'sunshield' || name === 'shield') ? 'sword' : name;
+    }
   return MOTIF_EMBLEM[motif ?? 'rune'];
 }
 

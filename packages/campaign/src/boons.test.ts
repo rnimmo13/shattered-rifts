@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { BOONS, COMBAT_DB, RIFTWALKERS, signatureCards } from '@sr/content/v2';
+import { BOONS, COMBAT_DB, RIFTWALKERS } from '@sr/content/v2';
 import {
   RunError,
   buyBoon,
@@ -85,17 +85,17 @@ describe('boons in a run', () => {
 });
 
 describe("the Warden's Gift", () => {
-  it("offers that Warden's own signature cards", () => {
+  it('offers only rare (or legendary) cards of your own class, whichever Warden fell', () => {
     for (const boss of ['seraphine', 'kron', 'gorrmaw', 'nyxara']) {
       const base = fresh('maren', `gift-${boss}`);
       const nodes = base.map.nodes.map((n) => (n.kind === 'warden' ? { ...n, enemyId: boss } : n));
       const run = { ...inFight({ ...base, map: { ...base.map, nodes } }, 'warden'), hp: 30 };
       const offers = finishDuel(run, true, 30).context?.offers ?? [];
-      const sig = signatureCards(boss);
-      for (const id of sig) expect(offers).toContain(id);
-      // anything beyond the signatures is a legendary the Warden left behind
-      for (const id of offers.filter((o) => !sig.includes(o)))
-        expect(COMBAT_DB.cards[id]?.rarity).toBe('legendary');
+      expect(offers.length).toBeGreaterThanOrEqual(3);
+      for (const id of offers) {
+        expect(COMBAT_DB.cards[id]?.hero, id).toBe('maren');
+        expect(['rare', 'legendary']).toContain(COMBAT_DB.cards[id]?.rarity);
+      }
     }
   });
 });

@@ -359,7 +359,7 @@ describe('the other rooms and the rules around them', () => {
     expect(chooseEvent(ev, 'leave').phase).toBe('map');
   });
 
-  it('a Warden win heals, restores Resolve and offers a rare gift that cannot be skipped', () => {
+  it("a Warden win heals, restores Resolve and offers your class's rare cards, which can be skipped", () => {
     const base = fresh('maren', 'boss');
     const wardenNode = base.map.nodes.find((n) => n.kind === 'warden')!;
     const run: RunState = {
@@ -375,11 +375,15 @@ describe('the other rooms and the rules around them', () => {
     expect(won.hp).toBeGreaterThanOrEqual(20 + Math.floor(RIFTWALKERS.maren.hero.maxHp * 0.3)); // a Warden falls: you catch your breath (a boon may add more)
     expect(won.resolve).toBe(2);
     expect(
-      won.context!.offers!.every((id) =>
-        ['rare', 'legendary', 'ancestral'].includes(COMBAT_DB.cards[id]?.rarity ?? ''),
+      won.context!.offers!.every(
+        (id) =>
+          ['rare', 'legendary'].includes(COMBAT_DB.cards[id]?.rarity ?? '') &&
+          COMBAT_DB.cards[id]?.hero === 'maren',
       ),
     ).toBe(true);
-    expect(() => chooseCard(won, null)).toThrow(RunError);
+    const skipped = chooseCard(won, null);
+    expect(skipped.phase).toBe('stageClear');
+    expect(skipped.deck).toEqual(won.deck);
     const picked = chooseCard(won, won.context!.offers![0]!);
     expect(picked.phase).toBe('stageClear');
     expect(nextStage(picked).stage).toBe(2);

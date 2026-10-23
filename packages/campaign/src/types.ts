@@ -121,6 +121,8 @@ export interface NodeContext {
   potionGained?: string;
   merchant?: {
     items: MerchantItem[];
+    /** a visiting merchant from another Riftwalker's world: every card here is that Riftwalker's (a hero id) */
+    crossed?: string;
     removePrice: number;
     removed: boolean;
     boon?: { id: string; price: number; sold: boolean };

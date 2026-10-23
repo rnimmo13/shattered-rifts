@@ -5,6 +5,11 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **Card images cleaned up.** Each card now shows one crisp symbol on a calm background (dark plate, dark outline, bright fill) instead of two layers of colour fighting each other; the action backdrop is faint behind it. Attacks are never drawn as shields.
+- **Whose card is it?** Every Riftwalker's cards show their icon in the lower-left corner. A card offered from another class is tagged "Rift-crossed" with that character's icon (rewards, events, merchant), and now and then (8%) a **visiting merchant** sells only another Riftwalker's cards, with a banner saying so.
+- **The Warden's Gift is your class only** (rare and sometimes legendary cards of your own class, no Neutral, Warden or other-class cards) and **every card reward, the Gift included, can be skipped.**
+- **Big crowds.** New fights start with up to six enemies (Drone Swarm, Page Troop of tiny Gilded Pages, Raptor Horde); the figures pack closer, and enemy plates narrow or stagger so no two overlap (fixes the Kron fight). Summons in a fight still stop at four.
+- **Fixed:** the "Consumed" pile box and the other piles are wide enough for their words.
 - **Fixed the card library overflow.** The big hover preview had no styles on that page, so it was drawn below the book (and vanished when you moved away). It now floats beside the card you are pointing at. Also: "Sleeve Knifes" is now "Sleeve Knives".
 - **Keen Edge, Deck of a Thousand Knives and friends now say what Edge does** on the card: "Gain 3 Edge: your Sleeve Knives deal 3 more damage for the rest of the fight." (Quill already had the card; it just did not explain itself.)
 - **Grimoire:** page turns are a fade, and the book clips its pages, so no card can draw outside it.

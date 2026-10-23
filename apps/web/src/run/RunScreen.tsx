@@ -425,6 +425,7 @@ function Body(props: {
           title="Choose a card"
           hint="Add one to your deck, or skip: a thin deck draws its best cards more often."
           offers={run.context?.offers ?? []}
+          character={run.character}
           shards={run.context?.shardsGained}
           boon={run.context?.boonGained}
           potion={run.context?.potionGained}
@@ -436,11 +437,13 @@ function Body(props: {
       return (
         <CardOffer
           title="The Warden's Gift"
-          hint="The Warden falls. Take one of their signature cards, or another rare."
+          hint="The Warden falls. Take one of your class's rare cards, or skip it."
           offers={run.context?.offers ?? []}
+          character={run.character}
           shards={run.context?.shardsGained}
           boon={run.context?.boonGained}
           onPick={(id) => act((r) => chooseCard(r, id))}
+          onSkip={() => act((r) => chooseCard(r, null))}
         />
       );
     case 'shrine':

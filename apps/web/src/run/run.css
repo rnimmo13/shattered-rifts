@@ -1213,3 +1213,47 @@
 .shop__item.is-onhold .pick__badge {
   background: var(--c-cyan);
 }
+
+/* a card from another Riftwalker: a tag you cannot miss */
+.pick__cross {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.4rem;
+  padding: 0.25rem 0.8rem 0.25rem 0.4rem;
+  border-radius: 999px;
+  background: rgb(8 10 22 / 0.92);
+  border: 2px solid #ff9a3c;
+  box-shadow: 0 0 14px rgb(255 154 60 / 0.45);
+  text-align: left;
+  line-height: 1.1;
+}
+.pick__cross b {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 0.9rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #ffc88a;
+}
+.pick__cross small {
+  display: block;
+  font-size: 0.9rem;
+  color: var(--c-ivory);
+}
+/* a visiting merchant from another world */
+.shop__foreign {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  margin: 0 0 1rem;
+  padding: 0.8rem 1.1rem;
+  border-radius: 14px;
+  background: linear-gradient(90deg, rgb(255 154 60 / 0.22), rgb(8 10 22 / 0.9));
+  border: 2px solid #ff9a3c;
+  font-size: 1.05rem;
+  text-align: left;
+}
+.shop__foreign b {
+  color: #ffc88a;
+}

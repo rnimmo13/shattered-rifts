@@ -210,9 +210,26 @@ export function enterNode(run: RunState, nodeId: string): RunState {
       r.phase = 'shrine';
       break;
     case 'merchant': {
-      const items: MerchantItem[] = offerCards(r.rng, r.character, r.deck, 'elite', 4, r.luck).map(
-        (cardId) => ({ cardId, price: priceOf(cardId), sold: false }),
-      );
+      // now and then the merchant is a stranger from another Riftwalker's world, selling only that Riftwalker's cards
+      const others = (Object.keys(RIFTWALKERS) as HeroId[]).filter((h) => h !== r.character);
+      const crossed =
+        nextInt(r.rng, 100) < CROSSED_MERCHANT_CHANCE
+          ? (others[nextInt(r.rng, others.length)] as HeroId)
+          : undefined;
+      // (a visitor's table is only that Riftwalker's own cards: no Neutral cards, no further crossings)
+      let stock: string[];
+      if (crossed) {
+        stock = [];
+        for (let g = 0; g < 40 && stock.length < 4; g++)
+          for (const id of offerCards(r.rng, crossed, r.deck, 'elite', 4, r.luck))
+            if (COMBAT_DB.cards[id]?.hero === crossed && !stock.includes(id) && stock.length < 4)
+              stock.push(id);
+      } else stock = offerCards(r.rng, r.character, r.deck, 'elite', 4, r.luck);
+      const items: MerchantItem[] = stock.map((cardId) => ({
+        cardId,
+        price: priceOf(cardId),
+        sold: false,
+      }));
       // a card you put on hold earlier is waiting for you, at the price you were promised
       if (r.held) {
         if (canAdd(r.deck, r.held.cardId))
@@ -222,6 +239,7 @@ export function enterNode(run: RunState, nodeId: string): RunState {
       // now and then an ancestral card is on the table, at a price
       const ancestors = ancestralPool(r.deck);
       if (
+        !crossed &&
         ancestors.length &&
         nextInt(r.rng, 100) < (r.luck === 'blessed' ? 55 : r.luck === 'lucky' ? 40 : 28)
       ) {
@@ -236,6 +254,7 @@ export function enterNode(run: RunState, nodeId: string): RunState {
       const boon = offerBoon(r.rng, r.boons, 'elite');
       r.context.merchant = {
         items,
+        ...(crossed ? { crossed } : {}),
         removePrice: REMOVE_PRICE,
         removed: false,
         potions,
@@ -462,7 +481,7 @@ export function finishDuel(
   return r;
 }
 
-/** Pick a card from the reward or the Warden's Gift, or skip a reward (null). Gifts cannot be skipped. */
+/** Pick a card from the reward or the Warden's Gift, or skip it (null): every card reward can be skipped. */
 export function chooseCard(run: RunState, cardId: string | null): RunState {
   need(run.phase === 'reward' || run.phase === 'gift', 'There is no card reward to choose from');
   const ctx = run.context;
@@ -470,7 +489,7 @@ export function chooseCard(run: RunState, cardId: string | null): RunState {
   const r = clone(run);
   const c = r.context as NonNullable<RunState['context']>;
   if (cardId === null) {
-    need(run.phase === 'reward', 'A Warden’s Gift cannot be skipped');
+    // any card reward, the Warden's Gift included, can be skipped
   } else {
     need(c.offers?.includes(cardId), 'That card is not on offer');
     need(canAdd(r.deck, cardId), 'That card would break the deck rules');
@@ -626,6 +645,9 @@ export function takeShrine(run: RunState, choice: ShrineChoice): RunState {
   r.phase = 'map';
   return r;
 }
+
+/** Chance (percent) that a merchant is a stranger selling another Riftwalker's cards. */
+export const CROSSED_MERCHANT_CHANCE = 8;
 
 /** Putting a merchant's card on hold: pay this share of its price now... */
 export const HOLD_DEPOSIT = 0.2;

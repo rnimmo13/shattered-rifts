@@ -524,7 +524,10 @@ export interface CombatState {
 export const MAX_ALLIES = 3;
 /** Maximum Mana can be raised during a fight, but never past this */
 export const MAX_MAX_MANA = 6;
+/** How many enemies a fight can bring in at once through summons. */
 export const MAX_ENEMIES = 4;
+/** How many a fight may START with (a swarm), though summons stop at MAX_ENEMIES. */
+export const MAX_START_ENEMIES = 7;
 export const MAX_SNARES = 3;
 export const MAX_HAND = 10;
 export const MAX_RUNES = 10;

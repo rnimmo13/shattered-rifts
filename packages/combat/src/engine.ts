@@ -11,6 +11,7 @@ import {
   MAX_ALLIES,
   MAX_MAX_MANA,
   MAX_ENEMIES,
+  MAX_START_ENEMIES,
   MAX_HAND,
   MAX_RUNES,
   MAX_SNARES,
@@ -899,7 +900,8 @@ function makeUnit(r: Run, side: Side, d: UnitDef): Unit {
 function spawn(r: Run, sd: SideState, defId: string, quiet = false): Unit | null {
   const d = def(r, defId);
   const count = sd.units.filter((u) => u.kind !== 'hero').length;
-  if (count >= (sd.hero !== null ? MAX_ALLIES : MAX_ENEMIES)) return null;
+  if (count >= (sd.hero !== null ? MAX_ALLIES : quiet ? MAX_START_ENEMIES : MAX_ENEMIES))
+    return null;
   const u = makeUnit(r, sd.id, d);
   const index = sd.units.length - (heroOf(sd) ? 1 : 0);
   sd.units.splice(index, 0, u);

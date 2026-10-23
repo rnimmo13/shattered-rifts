@@ -2,6 +2,8 @@ import { forwardRef, memo, useMemo, type CSSProperties } from 'react';
 import { cardText, type CardDef, type CombatDb } from '@sr/combat';
 import { CARD_H, CARD_W } from '../cards/size';
 import { parseRules } from '../cards/cardText';
+import { RIFTWALKERS } from '@sr/content/v2';
+import { HeroIcon } from '../ui/HeroIcon';
 import { cardArtV2 } from './art';
 import '../cards/card.css';
 
@@ -98,6 +100,14 @@ export const FightCard = memo(
               )}
             </p>
           </div>
+          {owner && Object.hasOwn(RIFTWALKERS, owner) && (
+            <div
+              className="card__owner"
+              title={RIFTWALKERS[owner as keyof typeof RIFTWALKERS].hero.name}
+            >
+              <HeroIcon hero={owner} size={104} />
+            </div>
+          )}
           <div className="card__gem" title={rarity} />
           <div className="card__fx card__fx--shimmer" />
           <div className="card__fx card__fx--holo" />

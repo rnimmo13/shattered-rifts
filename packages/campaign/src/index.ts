@@ -37,6 +37,7 @@ export {
   chooseEvent,
   chooseKit,
   choosePrelude,
+  CROSSED_MERCHANT_CHANCE,
   HOLD_DEPOSIT,
   HOLD_LATER,
   holdCard,

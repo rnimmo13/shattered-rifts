@@ -44,21 +44,10 @@ describe('ancestral cards', () => {
             expect(rarityOf(id), id).not.toBe('ancestral');
   });
 
-  it("the Warden's Gift sometimes holds one, more often with better luck", () => {
-    const rate = (luck: 'normal' | 'lucky' | 'blessed') => {
-      let n = 0;
-      for (let i = 0; i < 300; i++)
-        if (
-          giftOffers(seedRng(`g${luck}${i}`), 'kesh', [], 3, 'kron', luck).some(
-            (id) => rarityOf(id) === 'ancestral',
-          )
-        )
-          n++;
-      return n / 300;
-    };
-    const a = rate('normal');
-    expect(a).toBeGreaterThan(0.08);
-    expect(rate('blessed')).toBeGreaterThan(a);
+  it("the Warden's Gift never holds one (it is your class's cards only)", () => {
+    for (let i = 0; i < 200; i++)
+      for (const id of giftOffers(seedRng(`g${i}`), 'kesh', [], 3, 'kron', 'blessed'))
+        expect(rarityOf(id), id).not.toBe('ancestral');
   });
 
   it("the merchant sometimes sells one, dear, and the Ancestors' Offering event can be taken (for 12 HP)", () => {

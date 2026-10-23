@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from 'react';
 import type { CardDef } from '@sr/combat';
-import { COMBAT_DB, V2_DECK_RULES } from '@sr/content/v2';
+import { COMBAT_DB, RIFTWALKERS, V2_DECK_RULES } from '@sr/content/v2';
 import {
   HOLD_DEPOSIT,
   HOLD_LATER,
@@ -13,6 +13,7 @@ import {
 } from '@sr/campaign';
 import { FightCard } from '../fight/FightCard';
 import { CardHover } from '../fight/CardHover';
+import { HeroIcon } from '../ui/HeroIcon';
 import { Grimoire } from '../fight/Grimoire';
 import { tally } from '../fight/grimoireData';
 import { BoonCard, BoonChip } from '../fight/BoonChip';
@@ -20,9 +21,32 @@ import { PotionCard, PotionIcon } from '../fight/PotionChip';
 
 const defOf = (id: string): CardDef | undefined => COMBAT_DB.cards[id];
 
+/** A tag for a card that belongs to another Riftwalker: it still works in your deck, but it was not made for it. */
+function CrossTag(props: { def: CardDef; own?: string | undefined }) {
+  const h = props.def.hero;
+  if (!props.own || !h || h === props.own || !Object.hasOwn(RIFTWALKERS, h)) return null;
+  const r = RIFTWALKERS[h as keyof typeof RIFTWALKERS];
+  return (
+    <span
+      className="pick__cross"
+      title={`This card belongs to ${r.hero.name}, the ${r.role}. It works in your deck, but it leans on mechanics your Riftwalker does not build around.`}
+    >
+      <HeroIcon hero={h} size={26} />
+      <span>
+        <b>Rift-crossed</b>
+        <small>
+          {r.hero.name.split(',')[0]} · {r.role}
+        </small>
+      </span>
+    </span>
+  );
+}
+
 /** A card you can hover to read at full size. */
 function Pickable(props: {
   id: string;
+  /** the player's own Riftwalker: a card from another one gets a "Rift-crossed" tag */
+  own?: string | undefined;
   width: number;
   onHover: (def: CardDef | null) => void;
   onClick?: () => void;
@@ -49,6 +73,7 @@ function Pickable(props: {
           <FightCard db={COMBAT_DB} def={def} width={props.width} />
           {props.badge && <span className="pick__badge">{props.badge}</span>}
         </div>
+        <CrossTag def={def} own={props.own} />
         {props.children}
       </div>
     );
@@ -72,6 +97,7 @@ function Pickable(props: {
         />
         {props.badge && <span className="pick__badge">{props.badge}</span>}
       </button>
+      <CrossTag def={def} own={props.own} />
       {props.children}
     </div>
   );
@@ -102,6 +128,8 @@ export function CardOffer(props: {
   potion?: string | undefined;
   onPick: (id: string) => void;
   onSkip?: (() => void) | undefined;
+  /** the player's Riftwalker, to tag cards from another one */
+  character?: string | undefined;
 }) {
   const [hover, setHover] = useState<CardDef | null>(null);
   return (
@@ -119,6 +147,7 @@ export function CardOffer(props: {
             key={id}
             id={id}
             width={290}
+            own={props.character}
             onHover={setHover}
             onClick={() => props.onPick(id)}
           />
@@ -278,12 +307,27 @@ export function MerchantView(props: {
   return (
     <section className="stage-panel shop" aria-label="Merchant">
       <header className="shop__head">
-        <h2 className="stage-panel__title">The rift merchant</h2>
+        <h2 className="stage-panel__title">
+          {m.crossed
+            ? `A stranger from ${RIFTWALKERS[m.crossed as keyof typeof RIFTWALKERS]?.hero.name.split(',')[0] ?? 'another world'}'s world`
+            : 'The rift merchant'}
+        </h2>
         <div className="shop__purse" aria-label={`${shards} shards`}>
           <span aria-hidden>◈</span> <b>{shards}</b> shards
         </div>
       </header>
 
+      {m.crossed && (
+        <p className="shop__foreign" role="note">
+          <HeroIcon hero={m.crossed} size={34} />
+          <span>
+            <b>A visiting merchant.</b> Every card on this table belongs to{' '}
+            {RIFTWALKERS[m.crossed as keyof typeof RIFTWALKERS]?.hero.name}, the{' '}
+            {RIFTWALKERS[m.crossed as keyof typeof RIFTWALKERS]?.role}. They work in your deck, but
+            they lean on mechanics your Riftwalker does not build around.
+          </span>
+        </p>
+      )}
       <div className="shop__block">
         <h3 className="shop__h">Cards</h3>
         <div className="shop__cards">
@@ -294,6 +338,7 @@ export function MerchantView(props: {
             >
               <Pickable
                 id={it.cardId}
+                own={props.run.character}
                 width={270}
                 onHover={setHover}
                 preview
@@ -442,7 +487,7 @@ export function EventView(props: { run: RunState; onChoose: (id: EventOption['id
       {ev.boonOffer && <BoonCard id={ev.boonOffer} />}
       {card && (
         <div className="offers">
-          <Pickable id={card.id} width={270} onHover={setHover} />
+          <Pickable id={card.id} width={270} own={props.run.character} onHover={setHover} />
         </div>
       )}
       <div className="choices-row">

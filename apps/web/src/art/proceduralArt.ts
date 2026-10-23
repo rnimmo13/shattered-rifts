@@ -151,7 +151,7 @@ const PALETTE: Record<Realm, Palette> = {
     glow: color.cyanGlow,
     body: ['#d6dcff', '#3a406a'],
     dark: '#0c0e1c',
-    rim: color.magenta,
+    rim: '#dfe6ff',
     eye: color.cyanGlow,
   },
 };
@@ -1096,26 +1096,40 @@ export function cardArt(def: CardDef): CardArt {
   // halo behind the subject
   g.globalCompositeOperation = 'lighter';
   const halo = g.createRadialGradient(WW / 2, WH * 0.5, 0, WW / 2, WH * 0.5, WH * 0.62);
-  halo.addColorStop(0, rgba(palette.glow, 0.5));
+  halo.addColorStop(0, rgba(palette.glow, 0.26));
   halo.addColorStop(1, rgba(palette.glow, 0));
   g.fillStyle = halo;
   g.fillRect(0, 0, WW, WH);
   g.globalCompositeOperation = 'source-over';
-  // what the card is about: one big symbol behind the picture, lit from within
-  if (def.emblem) {
-    const size = WH * (def.motif ? 0.92 : 0.8);
-    const ex = WW * (0.3 + r() * 0.4);
-    g.save();
-    g.globalCompositeOperation = 'lighter';
-    g.globalAlpha = 0.22;
-    paintEmblem(g, def.emblem, ex, WH * 0.52, size * 1.12, palette.glow);
-    g.globalAlpha = 0.5;
-    paintEmblem(g, def.emblem, ex, WH * 0.52, size, palette.rim ?? palette.glow);
-    g.restore();
-  }
-
   if (def.motif) {
+    // the action (a slash, a burst...) is a quiet backdrop...
+    g.save();
+    g.globalAlpha = def.emblem ? 0.34 : 1;
     paintMotif(g, WW, WH, palette, def.motif, r);
+    g.restore();
+    // ...and what the card is ABOUT is the one clear subject on top: a dark plate for contrast, then a dark outline and a
+    // bright flat fill, so nothing blends into the colours behind it
+    if (def.emblem) {
+      const size = WH * 0.7;
+      const ex = WW / 2;
+      const ey = WH * 0.53;
+      const plate = g.createRadialGradient(ex, ey, size * 0.1, ex, ey, size * 0.66);
+      plate.addColorStop(0, 'rgba(4,6,14,0.62)');
+      plate.addColorStop(1, 'rgba(4,6,14,0)');
+      g.fillStyle = plate;
+      g.fillRect(0, 0, WW, WH);
+      g.save();
+      g.shadowColor = rgba(palette.glow, 0.7);
+      g.shadowBlur = 26;
+      paintEmblem(g, def.emblem, ex, ey, size * 1.07, 'rgba(6,8,18,0.95)');
+      g.restore();
+      paintEmblem(g, def.emblem, ex, ey, size, palette.rim ?? '#ffffff');
+      // a thin dark core line keeps the shape readable on bright backgrounds
+      g.save();
+      g.globalAlpha = 0.18;
+      paintEmblem(g, def.emblem, ex, ey, size * 0.9, '#000000');
+      g.restore();
+    }
   } else if (archetype === 'rift') {
     // a landscape with a tear: no single subject
     g.fillStyle = '#05060c';
@@ -1137,6 +1151,12 @@ export function cardArt(def: CardDef): CardArt {
     g.stroke();
     g.globalCompositeOperation = 'source-over';
   } else {
+    if (def.emblem) {
+      g.save();
+      g.globalAlpha = 0.14;
+      paintEmblem(g, def.emblem, WW / 2, WH * 0.5, WH * 0.8, palette.rim ?? '#ffffff');
+      g.restore();
+    }
     const k = (WH * 0.96) / CH;
     const dw = CW * k;
     g.drawImage(cutout, (WW - dw) / 2, WH * 0.04, dw, CH * k);

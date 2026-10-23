@@ -16,9 +16,11 @@ const CENTRE = 960;
 const ALLY_PITCH = 205;
 const FOE_PITCH = 195;
 
-export function slotX(side: FighterSide, slot: number, isHero: boolean): number {
+export function slotX(side: FighterSide, slot: number, isHero: boolean, count = 4): number {
   if (isHero) return HERO_X;
-  return side === 'a' ? CENTRE - 150 - slot * ALLY_PITCH : CENTRE + 260 + slot * FOE_PITCH;
+  // a crowd packs closer so it still fits on the stage (and the plates under it are narrowed to match)
+  const pitch = count <= 4 ? FOE_PITCH : Math.max(112, Math.floor(640 / (count - 1)));
+  return side === 'a' ? CENTRE - 150 - slot * ALLY_PITCH : CENTRE + 260 + slot * pitch;
 }
 
 export interface FighterSpec {
@@ -27,6 +29,8 @@ export interface FighterSpec {
   isHero: boolean;
   /** 0 = nearest the centre (allies and enemies); ignored for heroes */
   slot: number;
+  /** how many non-hero units stand on this side (a big crowd stands closer together) */
+  count: number;
   canvas: HTMLCanvasElement;
   /** figure height in stage px */
   height: number;
@@ -112,7 +116,7 @@ export class Fighters {
     for (const f of [...this.all.values()])
       if (!keep.has(f.spec.id) && !f.dying) this.remove(f.spec.id);
     for (const spec of list) {
-      const x = slotX(spec.side, spec.slot, spec.isHero);
+      const x = slotX(spec.side, spec.slot, spec.isHero, spec.count);
       const f = this.all.get(spec.id);
       if (!f) {
         this.add(spec, x, !opts.instant);

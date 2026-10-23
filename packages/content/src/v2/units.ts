@@ -74,6 +74,8 @@ const RAW_ENEMY_UNITS: UnitDef[] = [
     [slash(6), move('guard', 'Raise Shield', barrier(7))],
     cycle('slash', 'guard', 'slash'),
   ),
+  // a swarm unit: many of them at once (Page Troop), each weak
+  foe('gilded-page', 'Gilded Page', 6, [move('poke', 'Poke', dmg(2))], cycle('poke')),
   foe(
     'squire-recruit',
     'Squire Recruit',

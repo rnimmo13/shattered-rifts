@@ -471,6 +471,16 @@ export const LOOKS: Record<string, Look> = {
   },
   // ---- Aurelion enemies
   squire: { accessories: ['shield'], trim: STEEL, hue: -10 },
+  'gilded-page': {
+    hue: 35,
+    sat: 1.1,
+    w: 0.62,
+    h: 0.66,
+    accessories: ['spikes'],
+    badge: 'sword',
+    trim: GOLD,
+    flip: true,
+  },
   'squire-recruit': {
     hue: 25,
     light: 0.9,
