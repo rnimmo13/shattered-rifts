@@ -24,6 +24,7 @@ export {
   type SideView,
   type UnitView,
   type IntentView,
+  type PendingView,
   type IntentIcon,
 } from './view';
 

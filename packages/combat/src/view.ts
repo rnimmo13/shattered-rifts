@@ -10,7 +10,12 @@ import {
   type CombatDb,
   type CombatEvent,
   type CombatState,
+  type Metric,
   type Op,
+  type Pending,
+  type PowerState,
+  type RuneState,
+  type Scale,
   type Sel,
   type Side,
   type Unit,
@@ -53,9 +58,23 @@ export interface SideView {
   /** Potion ids (your own side only) and how many each side holds */
   potions: string[] | null;
   potionCount: number;
+  stars: number;
+  runes: RuneState[];
+  runeSlots: number;
+  powers: { id: string; card: string; when: PowerState['when'] }[];
+}
+
+/** A choice you owe: the cards to choose among, resolved to their instances. */
+export interface PendingView {
+  kind: Pending['kind'];
+  pool: CardInst[];
+  min: number;
+  max: number;
 }
 
 export interface CombatView {
+  /** set when `me` must choose cards before anything else can happen */
+  pending: PendingView | null;
   mode: 'pve' | 'pvp';
   turn: number;
   active: Side;
@@ -75,6 +94,8 @@ function opIcons(ops: readonly Op[]): IntentIcon[] {
     else if (o.op === 'status') out.add(foeSel(o.to) ? 'debuff' : 'buff');
     else if (o.op === 'heal') out.add('buff');
     else if (o.op === 'addCard') out.add('debuff');
+    else if (o.op === 'draw' || o.op === 'mana' || o.op === 'stars' || o.op === 'stance')
+      out.add('buff');
     else out.add('special');
   }
   return [...out];
@@ -101,6 +122,19 @@ export function describeIntent(db: CombatDb, s: CombatState, u: Unit): IntentVie
   };
 }
 
+function pendingView(s: CombatState, me: Side): PendingView | null {
+  const p = s.pending;
+  if (!p || s.active !== me) return null;
+  const sd = s.sides[me];
+  const pile = p.kind === 'scry' ? sd.draw : sd.hand;
+  const pool: CardInst[] = [];
+  for (const id of p.pool) {
+    const c = pile.find((x) => x.id === id);
+    if (c) pool.push(clone(c));
+  }
+  return { kind: p.kind, pool, min: p.min, max: p.max };
+}
+
 /** A hero's-eye view: the other side's hand, draw order and Snares stay hidden. */
 export function viewFor(db: CombatDb, s: CombatState, me: Side): CombatView {
   const side = (id: Side): SideView => {
@@ -121,9 +155,14 @@ export function viewFor(db: CombatDb, s: CombatState, me: Side): CombatView {
       hero: sd.hero,
       potions: own ? [...sd.potions] : null,
       potionCount: sd.potions.length,
+      stars: sd.stars,
+      runes: clone(sd.runes),
+      runeSlots: sd.runeSlots,
+      powers: sd.powers.map((p) => ({ id: p.id, card: p.card, when: p.when })),
     };
   };
   return {
+    pending: pendingView(s, me),
     mode: s.mode,
     turn: s.turn,
     active: s.active,
@@ -160,30 +199,143 @@ const WHO_ENEMY: Record<Sel, string> = {
 };
 const cap = (s: string): string => s.charAt(0).toUpperCase() + s.slice(1);
 
+/** How a metric reads in a card: `per` ("+2 per Barrier") and `equal` ("equal to your Barrier"). */
+const METRIC_WORDS: Record<Metric, { per: string; equal: string }> = {
+  barrier: { per: 'Barrier', equal: 'Barrier' },
+  hp: { per: 'HP', equal: 'HP' },
+  missingHp: { per: 'missing HP', equal: 'missing HP' },
+  seared: { per: 'Seared', equal: 'Seared' },
+  exposed: { per: 'Exposed', equal: 'Exposed' },
+  might: { per: 'Might', equal: 'Might' },
+  thorns: { per: 'Thorns', equal: 'Thorns' },
+  mantra: { per: 'Mantra', equal: 'Mantra' },
+  hand: { per: 'card in hand', equal: 'the number of cards in your hand' },
+  drawPile: { per: 'card in your draw pile', equal: 'the number of cards in your draw pile' },
+  discardPile: {
+    per: 'card in your discard pile',
+    equal: 'the number of cards in your discard pile',
+  },
+  exhausted: { per: 'exhausted card', equal: 'the number of cards you have exhausted' },
+  allies: { per: 'ally', equal: 'the number of your allies' },
+  foes: { per: 'enemy', equal: 'the number of enemies' },
+  snares: { per: 'Snare set', equal: 'the number of Snares you have set' },
+  stars: { per: 'Star', equal: 'your Stars' },
+  runes: { per: 'rune', equal: 'the number of your runes' },
+  mana: { per: 'Mana left', equal: 'your Mana' },
+  played: { per: 'card played this turn', equal: 'the cards played this turn' },
+  attacksPlayed: { per: 'Attack played this turn', equal: 'the Attacks played this turn' },
+  discarded: { per: 'card discarded this turn', equal: 'the cards discarded this turn' },
+  x: { per: 'Mana spent', equal: 'the Mana spent' },
+  charge: { per: 'charge', equal: 'its charge' },
+  bonus: { per: 'forge bonus', equal: 'its forge bonus' },
+};
+const UNIT_METRICS: readonly Metric[] = [
+  'barrier',
+  'hp',
+  'missingHp',
+  'seared',
+  'exposed',
+  'might',
+  'thorns',
+  'mantra',
+];
+
+/** Text for a number that may depend on the board: "6", "6 (+2 per Barrier)" or "equal to your Barrier". */
+function amountText(n: number, sc: Scale | undefined): { num: string; equal: boolean } {
+  if (!sc || sc.into === 'hits') return { num: String(n), equal: false };
+  const w = METRIC_WORDS[sc.by];
+  const m = sc.mult ?? 1;
+  const unit = UNIT_METRICS.includes(sc.by);
+  const whose = unit ? (sc.of === 'target' ? "the target's " : 'your ') : '';
+  if (n === 0 && m === 1) return { num: `${whose}${w.equal}`, equal: true };
+  const times = m === 1 ? '' : `${m} `;
+  const on = unit && sc.of === 'target' ? ' on the target' : '';
+  return { num: `${n}${n ? ' ' : ''}(+${times}per ${w.per}${on})`.trim(), equal: false };
+}
+
+const WHEN_TEXT: Record<string, string> = {
+  turnStart: 'At the start of your turn',
+  turnEnd: 'At the end of your turn',
+  play: 'Whenever you play a card',
+  exhaust: 'Whenever a card is exhausted',
+  discard: 'Whenever you discard a card',
+};
+
 export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): string {
+  const at = (n: number, sc: Scale | undefined): string => {
+    const a = amountText(n, sc);
+    return a.equal ? `equal to ${a.num}` : a.num;
+  };
   switch (o.op) {
-    case 'damage':
-      return `Deal ${o.amount} damage${o.hits && o.hits > 1 ? ` ${o.hits} times` : ''}${who[o.to]}.`;
+    case 'damage': {
+      const a = amountText(o.amount, o.scale);
+      const hitsMore =
+        o.scale?.into === 'hits'
+          ? ` ${(o.hits ?? 1) + 0} time${(o.hits ?? 1) === 1 ? '' : 's'} (+1 more per ${METRIC_WORDS[o.scale.by].per})`
+          : '';
+      const times = o.hits && o.hits > 1 && !hitsMore ? ` ${o.hits} times` : hitsMore;
+      return a.equal
+        ? `Deal damage equal to ${a.num}${times}${who[o.to]}.`
+        : `Deal ${a.num} damage${times}${who[o.to]}.`;
+    }
     case 'loseHp':
-      return `${o.to === 'self' ? 'Lose' : 'Take'} ${o.amount} HP${o.to === 'self' ? '' : who[o.to]}.`;
+      return `${o.to === 'self' ? 'Lose' : 'Take'} ${at(o.amount, o.scale)} HP${o.to === 'self' ? '' : who[o.to]}.`;
     case 'barrier':
-      return `Gain ${o.amount} Barrier${o.to === 'self' ? '' : who[o.to]}.`;
+      return amountText(o.amount, o.scale).equal
+        ? `Gain Barrier equal to ${amountText(o.amount, o.scale).num}${o.to === 'self' ? '' : who[o.to]}.`
+        : `Gain ${at(o.amount, o.scale)} Barrier${o.to === 'self' ? '' : who[o.to]}.`;
     case 'heal':
-      return `Heal ${o.amount}${o.to === 'self' ? '' : who[o.to]}.`;
+      return `Heal ${at(o.amount, o.scale)}${o.to === 'self' ? '' : who[o.to]}.`;
     case 'status':
-      return `${o.amount < 0 ? 'Remove' : 'Apply'} ${Math.abs(o.amount)} ${cap(o.status)}${o.to === 'self' ? '' : who[o.to]}.`;
+      return `${o.amount < 0 ? 'Remove' : 'Apply'} ${at(Math.abs(o.amount), o.scale)} ${cap(o.status)}${o.to === 'self' ? '' : who[o.to]}.`;
+    case 'scaleStatus':
+      return `${o.mult === 2 ? 'Double' : o.mult === 3 ? 'Triple' : `Multiply by ${o.mult}`} the ${cap(o.status)}${who[o.to] || ' on the target'}.`;
     case 'draw':
-      return `Draw ${o.amount} card${o.amount === 1 ? '' : 's'}.`;
+      return `Draw ${at(o.amount, o.scale)} card${o.amount === 1 && !o.scale ? '' : 's'}.`;
     case 'mana':
-      return `Gain ${o.amount} Mana.`;
+      return `Gain ${at(o.amount, o.scale)} Mana.`;
+    case 'stars':
+      return `${o.amount < 0 ? 'Spend' : 'Gain'} ${at(Math.abs(o.amount), o.scale)} Star${Math.abs(o.amount) === 1 && !o.scale ? '' : 's'}.`;
     case 'summon':
       return `Summon ${db.units[o.unit]?.name ?? o.unit}.`;
-    case 'addCard':
-      return `Add ${db.cards[o.card]?.name ?? o.card} to ${o.side === 'self' ? 'your' : 'the enemy'} ${o.to === 'hand' ? 'hand' : o.to === 'draw' ? 'draw pile' : 'discard pile'}.`;
+    case 'addCard': {
+      const n = o.times && o.times > 1 ? `${o.times} ` : '';
+      const nm = db.cards[o.card]?.name ?? o.card;
+      return `Add ${n}${nm}${n ? 's' : ''} to ${o.side === 'self' ? 'your' : 'the enemy'} ${o.to === 'hand' ? 'hand' : o.to === 'draw' ? 'draw pile' : 'discard pile'}.`;
+    }
     case 'actAllies':
       return 'All your allies act now.';
     case 'prevent':
       return 'Cancel that attack.';
+    case 'discard':
+      return o.random
+        ? `Discard ${o.amount} random card${o.amount === 1 ? '' : 's'}.`
+        : o.any
+          ? 'Discard any number of cards.'
+          : `Discard ${o.amount} card${o.amount === 1 ? '' : 's'}.`;
+    case 'exhaustCards':
+      return o.random
+        ? `Exhaust ${o.amount} random card${o.amount === 1 ? '' : 's'}.`
+        : o.any
+          ? 'Exhaust any number of cards.'
+          : `Exhaust ${o.amount} card${o.amount === 1 ? '' : 's'}.`;
+    case 'scry':
+      return `Scry ${o.amount}.`;
+    case 'power':
+      return `${WHEN_TEXT[o.when] ?? o.when}${o.filter ? ` (${o.filter})` : ''}${o.tag ? ` (${o.tag})` : ''}: ${o.ops.map((x) => opText(db, x, who)).join(' ')}`;
+    case 'channel':
+      return `Channel ${db.runes?.[o.rune]?.name ?? o.rune}.`;
+    case 'evoke': {
+      const n = o.count ?? 1;
+      const t = o.times ?? 1;
+      return `Evoke your ${n === 1 ? 'first rune' : `first ${n} runes`}${t > 1 ? ` ${t} times` : ''}${o.keep ? ' (it stays)' : ''}.`;
+    }
+    case 'runeSlots':
+      return `${o.amount >= 0 ? 'Gain' : 'Lose'} ${Math.abs(o.amount)} rune slot${Math.abs(o.amount) === 1 ? '' : 's'}.`;
+    case 'stance':
+      return o.stance === 'none' ? 'Leave your stance.' : `Enter ${cap(o.stance)}.`;
+    case 'forge':
+      return `Forge ${o.amount} (${db.cards[o.card]?.name ?? o.card} gains ${o.amount} damage).`;
   }
 }
 
@@ -196,12 +348,21 @@ export function cardText(db: CombatDb, c: CardDef): string {
         ? 'When you or an ally is attacked:'
         : c.trigger.on === 'hpLost'
           ? `When you lose ${c.trigger.min}+ HP at once:`
-          : 'When the enemy summons:',
+          : c.trigger.on === 'foeSummons'
+          ? 'When the enemy summons:'
+          : c.trigger.on === 'foeDefends'
+            ? 'When an enemy gains Barrier:'
+            : 'At the start of the enemy turn:',
     );
   }
+  if (c.starCost) parts.push(`Costs ${c.starCost} Star${c.starCost === 1 ? '' : 's'}.`);
   parts.push(...c.effects.map((o) => opText(db, o)));
   if (c.exhaust) parts.push('Exhaust.');
   if (c.retain) parts.push('Retain.');
+  if (c.innate) parts.push('Innate.');
+  if (c.ethereal) parts.push('Ethereal.');
+  if (c.onDiscard) parts.push(`If discarded: ${c.onDiscard.map((o) => opText(db, o)).join(' ')}`);
+  if (c.onExhaust) parts.push(`If exhausted: ${c.onExhaust.map((o) => opText(db, o)).join(' ')}`);
   return parts.join(' ');
 }
 

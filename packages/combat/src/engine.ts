@@ -3,11 +3,17 @@
 
 import { nextInt, seedRng, shuffle } from './rng';
 import {
+  CALM_EXIT_MANA,
+  DEFAULT_RUNE_SLOTS,
+  MANTRA_GOAL,
   MAX_ALLIES,
   MAX_ENEMIES,
   MAX_HAND,
+  MAX_RUNES,
   MAX_SNARES,
+  RADIANT_ENTER_MANA,
   RulesError,
+  STANCES,
   other,
   scaledEnemyHp,
   tierMight,
@@ -22,13 +28,18 @@ import {
   type CombatState,
   type FoeRule,
   type HeroSetup,
+  type Metric,
   type Op,
   type Pattern,
+  type RuneState,
+  type Scale,
   type Sel,
   type Side,
   type SideState,
   type SimplePattern,
+  type Stance,
   type StatusId,
+  type TriggerWhen,
   type Unit,
   type UnitDef,
   type UnitId,
@@ -38,6 +49,8 @@ interface Run {
   db: CombatDb;
   s: CombatState;
   ev: CombatEvent[];
+  /** how deep triggers are nested (a guard against a Power that feeds itself) */
+  depth: number;
 }
 
 /** Who is acting and what they are acting on. */
@@ -47,12 +60,39 @@ interface Act {
   attacker: Unit | null;
   /** set while a hit is being resolved, so a Snare can cancel it */
   hit: { prevented: boolean } | null;
+  /** the card being played (null for anything else) and its instance */
+  card: CardDef | null;
+  inst: CardInst | null;
+  /** Mana spent on an X card */
+  x: number;
+  /** the charge of the rune being fired */
+  charge: number;
+  /** a rune is firing: Resonance adds to its damage and Barrier */
+  rune: boolean;
+  /** this frame may ask the player to choose (only a card's own effects can) */
+  pick: boolean;
 }
+
+const mkAct = (actor: Unit, extra: Partial<Act> = {}): Act => ({
+  actor,
+  target: null,
+  attacker: null,
+  hit: null,
+  card: null,
+  inst: null,
+  x: 0,
+  charge: 0,
+  rune: false,
+  pick: false,
+  ...extra,
+});
 
 export interface StepResult {
   state: CombatState;
   events: CombatEvent[];
 }
+
+const MAX_DEPTH = 6;
 
 // --- small helpers ------------------------------------------------------------------------------------------
 
@@ -92,6 +132,37 @@ function addStatus(r: Run, u: Unit, st: StatusId, amount: number): void {
   if (total <= 0) delete u.statuses[st];
   else u.statuses[st] = total;
   r.ev.push({ type: 'status', target: u.id, status: st, amount, total: Math.max(0, total) });
+  // Mantra builds towards Radiant and is spent on entering it
+  if (st === 'mantra' && total >= MANTRA_GOAL) {
+    total -= MANTRA_GOAL;
+    if (total <= 0) delete u.statuses.mantra;
+    else u.statuses.mantra = total;
+    r.ev.push({ type: 'status', target: u.id, status: 'mantra', amount: -MANTRA_GOAL, total });
+    enterStance(r, u, 'radiant');
+  }
+}
+
+/** Stances are exclusive statuses: leaving one and entering another both have effects. */
+function enterStance(r: Run, u: Unit, to: Stance | 'none'): void {
+  const cur = STANCES.find((x) => stacks(u, x) > 0);
+  if (cur === to || (!cur && to === 'none')) return;
+  const sd = r.s.sides[u.side];
+  if (cur) {
+    delete u.statuses[cur];
+    r.ev.push({ type: 'status', target: u.id, status: cur, amount: -1, total: 0 });
+    if (cur === 'calm') gainMana(r, sd, CALM_EXIT_MANA);
+  }
+  if (to !== 'none') {
+    u.statuses[to] = 1;
+    r.ev.push({ type: 'status', target: u.id, status: to, amount: 1, total: 1 });
+    if (to === 'radiant') gainMana(r, sd, RADIANT_ENTER_MANA);
+  }
+  r.ev.push({ type: 'stance', unit: u.id, stance: to });
+}
+
+function gainMana(r: Run, sd: SideState, n: number): void {
+  sd.mana = Math.max(0, sd.mana + n);
+  r.ev.push({ type: 'mana', side: sd.id, mana: sd.mana });
 }
 
 // --- damage ---------------------------------------------------------------------------------------------------
@@ -102,10 +173,16 @@ function scaledByDifficulty(actor: Unit, target: Unit, amount: number): number {
   return Math.max(1, Math.floor((amount * actor.dmgPct) / 100));
 }
 
-/** attack damage after the attacker's Might / Faltering and the target's Exposed */
+/**
+ * attack damage after the attacker's Might / Faltering / stance and the target's Wrath / Exposed
+ * (Radiant triples, Wrath doubles what you deal; Wrath makes you take 50% more)
+ */
 export function modifiedDamage(base: number, attacker: Unit | null, target: Unit | null): number {
   let n = base + (attacker ? stacks(attacker, 'might') : 0);
   if (attacker && stacks(attacker, 'faltering') > 0) n = Math.floor(n * 0.75);
+  if (attacker && stacks(attacker, 'radiant') > 0) n *= 3;
+  else if (attacker && stacks(attacker, 'wrath') > 0) n *= 2;
+  if (target && stacks(target, 'wrath') > 0) n = Math.floor(n * 1.5);
   if (target && stacks(target, 'exposed') > 0) n = Math.floor(n * 1.5);
   if (attacker && attacker.dmgPct !== 100 && n > 0)
     n = Math.max(1, Math.floor((n * attacker.dmgPct) / 100));
@@ -176,7 +253,9 @@ function attackHit(r: Run, a: Act, t: Unit, base: number): void {
 type Trig =
   | { on: 'attacked'; victim: Unit; attacker: Unit; hit: { prevented: boolean } }
   | { on: 'hpLost'; lost: number; attacker: Unit | null; hit: null }
-  | { on: 'foeSummons'; summoned: Unit };
+  | { on: 'foeSummons'; summoned: Unit }
+  | { on: 'foeDefends'; unit: Unit }
+  | { on: 'foeTurn' };
 
 /** The oldest matching Snare on `side` springs (at most one per event). */
 function fireSnare(r: Run, side: Side, t: Trig): void {
@@ -194,10 +273,17 @@ function fireSnare(r: Run, side: Side, t: Trig): void {
   if (!sn) return;
   r.ev.push({ type: 'snareSprung', side, snare: sn.id, card: sn.card });
   const cd = cardDef(r.db, sn.card);
-  const attacker = t.on === 'foeSummons' ? t.summoned : t.attacker;
+  const attacker =
+    t.on === 'foeSummons'
+      ? t.summoned
+      : t.on === 'foeDefends'
+        ? t.unit
+        : t.on === 'foeTurn'
+          ? null
+          : t.attacker;
   runOps(
     r,
-    { actor: hero, target: attacker, attacker, hit: t.on === 'attacked' ? t.hit : null },
+    mkAct(hero, { target: attacker, attacker, hit: t.on === 'attacked' ? t.hit : null }),
     cd.effects,
   );
   sd.discard.push({ id: sn.id, card: sn.card });
@@ -230,12 +316,78 @@ function resolve(r: Run, a: Act, sel: Sel): Unit[] {
   }
 }
 
+/** The value of a metric for `a` (`t` is the unit an op is being applied to, for metrics "of the target"). */
+function metricValue(r: Run, a: Act, m: Metric, of: 'self' | 'target' | undefined, t: Unit | null): number {
+  const sd = r.s.sides[a.actor.side];
+  const u = of === 'target' ? (t ?? a.target) : a.actor;
+  switch (m) {
+    case 'barrier':
+      return u?.barrier ?? 0;
+    case 'hp':
+      return u?.hp ?? 0;
+    case 'missingHp':
+      return u ? u.maxHp - u.hp : 0;
+    case 'seared':
+    case 'exposed':
+    case 'might':
+    case 'thorns':
+    case 'mantra':
+      return u ? stacks(u, m) : 0;
+    case 'hand':
+      return sd.hand.length;
+    case 'drawPile':
+      return sd.draw.length;
+    case 'discardPile':
+      return sd.discard.length;
+    case 'exhausted':
+      return sd.exhausted.length;
+    case 'allies':
+      return sd.units.filter((x) => x.kind === 'ally' && x.hp > 0).length;
+    case 'foes':
+      return r.s.sides[other(sd.id)].units.filter((x) => x.hp > 0).length;
+    case 'snares':
+      return sd.snares.length;
+    case 'stars':
+      return sd.stars;
+    case 'runes':
+      return sd.runes.length;
+    case 'mana':
+      return sd.mana;
+    case 'played':
+      return sd.played;
+    case 'attacksPlayed':
+      return sd.attacksPlayed;
+    case 'discarded':
+      return sd.discarded;
+    case 'x':
+      return a.x;
+    case 'charge':
+      return a.charge;
+    case 'bonus':
+      return a.inst?.bonus ?? 0;
+  }
+}
+
+/** `amount` plus whatever its scale adds (never below 0 for amounts that cannot be negative). */
+function amountOf(r: Run, a: Act, base: number, sc: Scale | undefined, t: Unit | null): number {
+  if (!sc || sc.into === 'hits') return base;
+  return base + Math.floor((sc.mult ?? 1) * metricValue(r, a, sc.by, sc.of, t));
+}
+
+/** Rune effects get +1 damage / Barrier per Resonance. */
+const resonanceOf = (a: Act): number => (a.rune ? stacks(a.actor, 'resonance') : 0);
+
 function runOps(r: Run, a: Act, ops: readonly Op[]): void {
-  for (const op of ops) {
+  for (let i = 0; i < ops.length; i++) {
     if (r.s.winner) return;
     if (a.actor.hp <= 0 && a.actor.kind !== 'hero') return;
-    execOp(r, a, op);
+    execOp(r, a, ops[i] as Op);
     reap(r);
+    if (r.s.pending) {
+      // a choice was asked for: the rest of this card waits for the answer
+      r.s.pending.rest = ops.slice(i + 1);
+      return;
+    }
   }
 }
 
@@ -243,50 +395,73 @@ function execOp(r: Run, a: Act, op: Op): void {
   const side = r.s.sides[a.actor.side];
   switch (op.op) {
     case 'damage': {
-      const hits = op.hits ?? 1;
+      let hits = op.hits ?? 1;
+      if (op.scale?.into === 'hits')
+        hits += Math.floor(
+          (op.scale.mult ?? 1) * metricValue(r, a, op.scale.by, op.scale.of, a.target),
+        );
+      const edge = a.card?.tags?.includes('shiv') ? stacks(a.actor, 'edge') : 0;
       for (let i = 0; i < hits; i++) {
         if (r.s.winner) return;
         // a target that died mid-attack: the remaining hits find a new one
         if (op.to === 'target' && (!a.target || a.target.hp <= 0))
           a.target = pickFoe(r, a.actor, 'hero');
-        for (const t of resolve(r, a, op.to)) attackHit(r, a, t, op.amount);
+        for (const t of resolve(r, a, op.to))
+          attackHit(r, a, t, amountOf(r, a, op.amount, op.scale, t) + edge + resonanceOf(a));
         reap(r);
       }
       return;
     }
     case 'loseHp':
       for (const t of resolve(r, a, op.to))
-        applyDamage(r, a.actor, t, scaledByDifficulty(a.actor, t, op.amount), 'direct');
+        applyDamage(
+          r,
+          a.actor,
+          t,
+          scaledByDifficulty(a.actor, t, amountOf(r, a, op.amount, op.scale, t) + resonanceOf(a)),
+          'direct',
+        );
       return;
     case 'barrier':
       for (const t of resolve(r, a, op.to)) {
-        t.barrier += op.amount;
-        r.ev.push({ type: 'barrier', target: t.id, amount: op.amount, total: t.barrier });
+        const n = amountOf(r, a, op.amount, op.scale, t) + resonanceOf(a);
+        // a Snare that punishes defending springs first, so the Barrier cannot soak what it deals
+        if (n > 0) fireSnare(r, other(t.side), { on: 'foeDefends', unit: t });
+        if (t.hp <= 0 || r.s.winner) continue;
+        t.barrier += n;
+        r.ev.push({ type: 'barrier', target: t.id, amount: n, total: t.barrier });
       }
       return;
     case 'heal':
       for (const t of resolve(r, a, op.to)) {
-        const n = Math.min(op.amount, t.maxHp - t.hp);
+        const n = Math.min(amountOf(r, a, op.amount, op.scale, t), t.maxHp - t.hp);
         if (n <= 0) continue;
         t.hp += n;
         r.ev.push({ type: 'heal', target: t.id, amount: n });
       }
       return;
     case 'status':
-      for (const t of resolve(r, a, op.to))
-        addStatus(
-          r,
-          t,
-          op.status,
-          op.status === 'seared' ? scaledByDifficulty(a.actor, t, op.amount) : op.amount,
-        );
+      for (const t of resolve(r, a, op.to)) {
+        const n = amountOf(r, a, op.amount, op.scale, t);
+        addStatus(r, t, op.status, op.status === 'seared' ? scaledByDifficulty(a.actor, t, n) : n);
+      }
+      return;
+    case 'scaleStatus':
+      for (const t of resolve(r, a, op.to)) {
+        const n = stacks(t, op.status);
+        const next = Math.floor(n * op.mult);
+        if (n > 0 && next !== n) addStatus(r, t, op.status, next - n);
+      }
       return;
     case 'draw':
-      drawCards(r, side, op.amount);
+      drawCards(r, side, amountOf(r, a, op.amount, op.scale, null));
       return;
     case 'mana':
-      side.mana = Math.max(0, side.mana + op.amount);
-      r.ev.push({ type: 'mana', side: side.id, mana: side.mana });
+      gainMana(r, side, amountOf(r, a, op.amount, op.scale, null));
+      return;
+    case 'stars':
+      side.stars = Math.max(0, side.stars + amountOf(r, a, op.amount, op.scale, null));
+      r.ev.push({ type: 'stars', side: side.id, stars: side.stars });
       return;
     case 'summon': {
       const u = spawn(r, side, op.unit);
@@ -296,7 +471,7 @@ function execOp(r: Run, a: Act, op: Op): void {
     case 'addCard': {
       const dest = op.side === 'self' ? side : r.s.sides[other(side.id)];
       if (dest.hero === null) return; // enemies have no deck
-      addCardTo(r, dest, op.card, op.to);
+      for (let i = 0; i < (op.times ?? 1); i++) addCardTo(r, dest, op.card, op.to);
       return;
     }
     case 'actAllies':
@@ -306,12 +481,148 @@ function execOp(r: Run, a: Act, op: Op): void {
     case 'prevent':
       if (a.hit) a.hit.prevented = true;
       return;
+    case 'discard':
+    case 'exhaustCards': {
+      const kind = op.op === 'discard' ? 'discard' : 'exhaust';
+      const n = Math.min(op.amount, side.hand.length);
+      if (n <= 0) return;
+      if (op.random || !a.pick || (!op.any && n >= side.hand.length)) {
+        // no choice to make (or no one to ask): random cards, or the whole hand when it is no bigger than the number
+        for (let i = 0; i < n; i++) {
+          if (!side.hand.length) break;
+          const [c] = side.hand.splice(nextInt(r.s.rng, side.hand.length), 1);
+          if (c) moveFromHand(r, side, c, kind);
+        }
+        return;
+      }
+      r.s.pending = {
+        kind,
+        pool: side.hand.map((c) => c.id),
+        min: op.any ? 0 : n,
+        max: n,
+        rest: [],
+        actor: a.actor.id,
+        target: a.target?.id ?? null,
+        finish: null,
+        x: a.x,
+      };
+      r.ev.push({ type: 'pending', side: side.id, kind });
+      return;
+    }
+    case 'scry': {
+      if (!a.pick) return;
+      const top = side.draw.slice(0, op.amount);
+      if (!top.length) return;
+      r.s.pending = {
+        kind: 'scry',
+        pool: top.map((c) => c.id),
+        min: 0,
+        max: top.length,
+        rest: [],
+        actor: a.actor.id,
+        target: a.target?.id ?? null,
+        finish: null,
+        x: a.x,
+      };
+      r.ev.push({ type: 'pending', side: side.id, kind: 'scry' });
+      return;
+    }
+    case 'power':
+      side.powers.push({
+        id: newId(r.s, 'p'),
+        card: a.card?.id ?? '',
+        when: op.when,
+        ops: op.ops,
+        ...(op.filter ? { filter: op.filter } : {}),
+        ...(op.tag ? { tag: op.tag } : {}),
+      });
+      r.ev.push({ type: 'power', side: side.id, card: a.card?.id ?? '' });
+      return;
+    case 'channel':
+      channel(r, side, op.rune);
+      return;
+    case 'evoke': {
+      const batch = side.runes.slice(0, op.count ?? 1);
+      for (const rs of batch) {
+        for (let i = 0; i < (op.times ?? 1); i++) fireRune(r, side, rs, 'evoke');
+        if (!op.keep) removeRune(r, side, rs);
+        if (r.s.winner) return;
+      }
+      return;
+    }
+    case 'runeSlots':
+      side.runeSlots = Math.max(0, Math.min(MAX_RUNES, side.runeSlots + op.amount));
+      while (side.runes.length > side.runeSlots) {
+        const first = side.runes[0] as RuneState;
+        fireRune(r, side, first, 'evoke');
+        removeRune(r, side, first);
+      }
+      return;
+    case 'stance': {
+      const hero = heroOf(side);
+      if (hero) enterStance(r, hero, op.stance);
+      return;
+    }
+    case 'forge': {
+      const all = [...side.hand, ...side.draw, ...side.discard];
+      if (a.inst && a.inst.card === op.card) all.push(a.inst);
+      const mine = all.filter((c) => c.card === op.card);
+      if (!mine.length) {
+        const made = addCardTo(r, side, op.card, 'hand');
+        made.bonus = op.amount;
+      } else for (const c of mine) c.bonus = (c.bonus ?? 0) + op.amount;
+      r.ev.push({ type: 'forge', side: side.id, card: op.card, amount: op.amount });
+      return;
+    }
   }
+}
+
+// --- runes -----------------------------------------------------------------------------------------------------------
+
+function runeDef(r: Run, id: string) {
+  const d = r.db.runes?.[id];
+  if (!d) throw new RulesError(`Unknown rune "${id}"`);
+  return d;
+}
+
+function channel(r: Run, sd: SideState, id: string): void {
+  runeDef(r, id);
+  if (sd.runeSlots <= 0) return;
+  // a full row pushes the oldest rune out, and it is evoked
+  while (sd.runes.length >= sd.runeSlots) {
+    const first = sd.runes[0] as RuneState;
+    fireRune(r, sd, first, 'evoke');
+    removeRune(r, sd, first);
+    if (r.s.winner) return;
+  }
+  sd.runes.push({ rune: id, charge: 0 });
+  r.ev.push({ type: 'runeChannel', side: sd.id, rune: id, index: sd.runes.length - 1 });
+}
+
+function removeRune(r: Run, sd: SideState, rs: RuneState): void {
+  const i = sd.runes.indexOf(rs);
+  if (i < 0) return;
+  sd.runes.splice(i, 1);
+  r.ev.push({ type: 'runeGone', side: sd.id, rune: rs.rune });
+}
+
+function fireRune(r: Run, sd: SideState, rs: RuneState, how: 'passive' | 'evoke'): void {
+  const d = runeDef(r, rs.rune);
+  const hero = heroOf(sd);
+  if (!hero || hero.hp <= 0) return;
+  r.ev.push({ type: 'runeFire', side: sd.id, rune: rs.rune, how });
+  runOps(r, mkAct(hero, { rune: true, charge: rs.charge }), how === 'passive' ? d.passive : d.evoke);
+  if (how === 'passive' && d.grow) rs.charge += d.grow + stacks(hero, 'resonance');
 }
 
 // --- cards & piles -----------------------------------------------------------------------------------------------
 
-function addCardTo(r: Run, sd: SideState, card: CardId, to: 'hand' | 'discard' | 'draw'): void {
+function addCardTo(
+  r: Run,
+  sd: SideState,
+  card: CardId,
+  to: 'hand' | 'discard' | 'draw',
+): CardInst {
   cardDef(r.db, card);
   const inst: CardInst = { id: newId(r.s, 'c'), card };
   let where = to;
@@ -320,6 +631,7 @@ function addCardTo(r: Run, sd: SideState, card: CardId, to: 'hand' | 'discard' |
   else if (where === 'discard') sd.discard.push(inst);
   else sd.draw.unshift(inst);
   r.ev.push({ type: 'addCard', side: sd.id, card: inst.id, def: card, to: where });
+  return inst;
 }
 
 function drawCards(r: Run, sd: SideState, n: number): void {
@@ -339,6 +651,54 @@ function drawCards(r: Run, sd: SideState, n: number): void {
       r.ev.push({ type: 'draw', side: sd.id, card: c.id, def: c.card });
     }
   }
+}
+
+/** A card that an effect (not the end-of-turn sweep) sends away from the hand. It has already left the hand. */
+function moveFromHand(r: Run, sd: SideState, c: CardInst, kind: 'discard' | 'exhaust'): void {
+  if (kind === 'discard') {
+    sd.discard.push(c);
+    sd.discarded++;
+    r.ev.push({ type: 'discard', side: sd.id, card: c.id, def: c.card });
+    const cd = cardDef(r.db, c.card);
+    const hero = heroOf(sd);
+    if (cd.onDiscard && hero && r.depth < MAX_DEPTH) {
+      r.depth++;
+      runOps(r, mkAct(hero), cd.onDiscard);
+      r.depth--;
+    }
+    fireTriggers(r, sd, 'discard');
+  } else exhaustCard(r, sd, c);
+}
+
+/** Puts a card (already out of every pile) into the exhaust pile and runs what exhausting it does. */
+function exhaustCard(r: Run, sd: SideState, c: CardInst): void {
+  sd.exhausted.push(c);
+  r.ev.push({ type: 'exhaust', side: sd.id, card: c.id, def: c.card });
+  const cd = cardDef(r.db, c.card);
+  const hero = heroOf(sd);
+  if (cd.onExhaust && hero && r.depth < MAX_DEPTH) {
+    r.depth++;
+    runOps(r, mkAct(hero), cd.onExhaust);
+    r.depth--;
+  }
+  fireTriggers(r, sd, 'exhaust');
+}
+
+/** Powers: run every trigger of `sd` for `when` (for 'play', only those that match the card). */
+function fireTriggers(r: Run, sd: SideState, when: TriggerWhen, played?: CardDef): void {
+  const hero = heroOf(sd);
+  if (!hero || hero.hp <= 0 || r.depth >= MAX_DEPTH) return;
+  r.depth++;
+  for (const p of [...sd.powers]) {
+    if (r.s.winner) break;
+    if (p.when !== when) continue;
+    if (when === 'play' && played) {
+      if (p.filter && p.filter !== played.kind) continue;
+      if (p.tag && !played.tags?.includes(p.tag)) continue;
+    }
+    runOps(r, mkAct(hero), p.ops);
+  }
+  r.depth--;
 }
 
 // --- units ---------------------------------------------------------------------------------------------------------
@@ -401,6 +761,7 @@ function reap(r: Run): void {
   const lb = lost('b');
   if (la || lb) {
     r.s.winner = la && lb ? 'draw' : la ? 'b' : 'a';
+    r.s.pending = null;
     r.ev.push({ type: 'gameOver', winner: r.s.winner });
   }
 }
@@ -486,7 +847,7 @@ function actAlly(r: Run, u: Unit): void {
   }
   const front = r.s.sides[other(u.side)].units.find((x) => x.hp > 0) ?? null;
   r.ev.push({ type: 'act', unit: u.id, move: null });
-  runOps(r, { actor: u, target: front, attacker: null, hit: null }, d.brain.act);
+  runOps(r, mkAct(u, { target: front }), d.brain.act);
 }
 
 function actEnemy(r: Run, u: Unit): void {
@@ -508,7 +869,7 @@ function actEnemy(r: Run, u: Unit): void {
     target = pickFoe(r, u, d.brain.foe ?? 'hero') ?? undefined;
   r.ev.push({ type: 'act', unit: u.id, move: it.move });
   u.intent = null;
-  runOps(r, { actor: u, target: target ?? null, attacker: null, hit: null }, mv.effects);
+  runOps(r, mkAct(u, { target: target ?? null }), mv.effects);
 }
 
 // --- turns ------------------------------------------------------------------------------------------------------------
@@ -539,22 +900,32 @@ function beginHeroTurn(r: Run, side: Side): void {
   r.ev.push({ type: 'turnStart', side, turn: r.s.turn });
   startOfTurn(r, side);
   if (r.s.winner) return;
+  // the opposing Snares that wait for your turn to begin
+  fireSnare(r, other(side), { on: 'foeTurn' });
+  if (r.s.winner) return;
+  sd.played = 0;
+  sd.attacksPlayed = 0;
+  sd.discarded = 0;
   // the second PvP player gets a small head start on their first turn
   const first = r.s.mode === 'pvp' && side === 'b' && r.s.turn === 2;
   sd.mana = sd.maxMana + (first ? 1 : 0);
   r.ev.push({ type: 'mana', side, mana: sd.mana });
   drawCards(r, sd, sd.handSize + (first ? 1 : 0));
-  // Boons: the fight-start effects once, the turn-start effects every turn
   const hero = heroOf(sd);
-  if (hero && sd.boons.length > 0) {
-    const act: Act = { actor: hero, target: null, attacker: null, hit: null };
-    for (const id of sd.boons) {
-      const b = r.db.boons[id];
-      if (!b) continue;
-      if (b.fightStart && r.s.turn === (side === 'a' ? 1 : 2)) runOps(r, act, b.fightStart);
-      if (b.turnStart) runOps(r, act, b.turnStart);
-    }
+  if (!hero) return;
+  const opening = r.s.turn === (side === 'a' ? 1 : 2);
+  // the Sigil, then Boons: the fight-start effects once, the turn-start effects every turn
+  if (opening) {
+    const sigil = sd.hero ? r.db.heroes[sd.hero]?.sigil : undefined;
+    if (sigil) runOps(r, mkAct(hero), sigil);
   }
+  for (const id of sd.boons) {
+    const b = r.db.boons[id];
+    if (!b) continue;
+    if (b.fightStart && opening) runOps(r, mkAct(hero), b.fightStart);
+    if (b.turnStart) runOps(r, mkAct(hero), b.turnStart);
+  }
+  fireTriggers(r, sd, 'turnStart');
 }
 
 /**
@@ -575,6 +946,9 @@ function enemyPhase(r: Run): void {
   r.s.turn++;
   r.ev.push({ type: 'turnStart', side: 'b', turn: r.s.turn });
   startOfTurn(r, 'b');
+  if (r.s.winner) return;
+  fireSnare(r, 'a', { on: 'foeTurn' });
+  reap(r);
   const order = sd.units.map((u) => u.id);
   for (const id of order) {
     if (r.s.winner) return;
@@ -592,16 +966,30 @@ function enemyPhase(r: Run): void {
 function endTurn(r: Run): void {
   const side = r.s.active;
   const sd = r.s.sides[side];
-  // hand: retained cards stay, the rest go to the discard pile
+  // end-of-turn Powers, then every rune's passive, then Radiant fades
+  fireTriggers(r, sd, 'turnEnd');
+  if (r.s.winner) return;
+  for (const rs of [...sd.runes]) {
+    if (r.s.winner) return;
+    if (sd.runes.includes(rs)) fireRune(r, sd, rs, 'passive');
+  }
+  if (r.s.winner) return;
+  const hero = heroOf(sd);
+  if (hero && stacks(hero, 'radiant') > 0) enterStance(r, hero, 'none');
+  // hand: retained cards stay, ethereal ones exhaust, the rest go to the discard pile
   const keep: CardInst[] = [];
-  for (const c of sd.hand) {
-    if (cardDef(r.db, c.card).retain) keep.push(c);
+  const hand = sd.hand;
+  sd.hand = [];
+  for (const c of hand) {
+    const cd = cardDef(r.db, c.card);
+    if (cd.retain) keep.push(c);
+    else if (cd.ethereal) exhaustCard(r, sd, c);
     else {
       sd.discard.push(c);
       r.ev.push({ type: 'discard', side, card: c.id, def: c.card });
     }
   }
-  sd.hand = keep;
+  sd.hand = [...keep, ...sd.hand];
   if (sd.mana > 0) r.ev.push({ type: 'mana', side, mana: 0 });
   sd.mana = 0;
   for (const u of [...sd.units]) {
@@ -624,26 +1012,41 @@ function endTurn(r: Run): void {
 
 // --- setup ---------------------------------------------------------------------------------------------------------
 
+const blankSide = (id: Side): SideState => ({
+  id,
+  units: [],
+  hand: [],
+  draw: [],
+  discard: [],
+  exhausted: [],
+  mana: 0,
+  maxMana: 0,
+  handSize: 0,
+  snares: [],
+  hero: null,
+  boons: [],
+  potions: [],
+  stars: 0,
+  runes: [],
+  runeSlots: DEFAULT_RUNE_SLOTS,
+  powers: [],
+  played: 0,
+  attacksPlayed: 0,
+  discarded: 0,
+});
+
 function buildHeroSide(r: Run, id: Side, h: HeroSetup): SideState {
   const hd = r.db.heroes[h.hero];
   if (!hd) throw new RulesError(`Unknown hero "${h.hero}"`);
   const sd: SideState = {
-    id,
-    units: [],
-    hand: [],
+    ...blankSide(id),
     draw: h.deck.map((card) => {
       cardDef(r.db, card);
       return { id: newId(r.s, 'c'), card };
     }),
-    discard: [],
-    exhausted: [],
-    mana: 0,
     maxMana: hd.mana,
     handSize: hd.handSize,
-    snares: [],
     hero: hd.id,
-    boons: [],
-    potions: [],
   };
   for (const id of h.potions ?? []) {
     if (!r.db.potions[id]) throw new RulesError(`Unknown potion "${id}"`);
@@ -657,6 +1060,9 @@ function buildHeroSide(r: Run, id: Side, h: HeroSetup): SideState {
     sd.handSize += b.handSize ?? 0;
   }
   shuffle(r.s.rng, sd.draw);
+  // innate cards are drawn first (the shuffle order is otherwise kept)
+  const innate = sd.draw.filter((c) => cardDef(r.db, c.card).innate);
+  if (innate.length) sd.draw = [...innate, ...sd.draw.filter((c) => !innate.includes(c))];
   const maxHp = Math.max(1, h.maxHp ?? hd.maxHp);
   const hp = Math.max(1, Math.min(maxHp, h.hp ?? maxHp));
   sd.units.push({
@@ -684,21 +1090,6 @@ function buildHeroSide(r: Run, id: Side, h: HeroSetup): SideState {
 }
 
 export function createCombat(db: CombatDb, setup: CombatSetup): StepResult {
-  const emptySide = (id: Side): SideState => ({
-    id,
-    units: [],
-    hand: [],
-    draw: [],
-    discard: [],
-    exhausted: [],
-    mana: 0,
-    maxMana: 0,
-    handSize: 0,
-    snares: [],
-    hero: null,
-    boons: [],
-    potions: [],
-  });
   const s: CombatState = {
     seed: setup.seed,
     rng: seedRng(setup.seed),
@@ -708,11 +1099,12 @@ export function createCombat(db: CombatDb, setup: CombatSetup): StepResult {
     enemyDmgPct: 'enemies' in setup.b ? Math.max(10, setup.b.dmgPct ?? 100) : 100,
     turn: 0,
     active: 'a',
-    sides: { a: emptySide('a'), b: emptySide('b') },
+    sides: { a: blankSide('a'), b: blankSide('b') },
     winner: null,
     nextId: 1,
+    pending: null,
   };
-  const r: Run = { db, s, ev: [] };
+  const r: Run = { db, s, ev: [], depth: 0 };
   buildHeroSide(r, 'a', setup.a);
   if ('enemies' in setup.b) {
     for (const e of setup.b.enemies) {
@@ -737,20 +1129,47 @@ function legalFoes(r: Run, side: Side, cd: CardDef): Unit[] {
   return taunters.length ? taunters : foes;
 }
 
-export function canPlay(r: { db: CombatDb; s: CombatState }, side: Side, c: CardInst): boolean {
+export function canPlay(
+  r: { db: CombatDb; s: CombatState },
+  side: Side,
+  c: CardInst,
+): boolean {
   const cd = cardDef(r.db, c.card);
   const sd = r.s.sides[side];
-  if (cd.unplayable || cd.cost > sd.mana) return false;
+  if (r.s.pending) return false;
+  if (cd.unplayable || cd.cost > sd.mana || (cd.starCost ?? 0) > sd.stars) return false;
   if (cd.kind === 'snare' && sd.snares.length >= MAX_SNARES) return false;
-  if (cd.target === 'foe' && legalFoes({ ...r, ev: [] }, side, cd).length === 0) return false;
+  if (cd.target === 'foe' && legalFoes({ ...r, ev: [], depth: 0 }, side, cd).length === 0)
+    return false;
   return true;
+}
+
+/** Every way to answer a pending choice (capped so a "discard any number" prompt cannot explode). */
+function pickOptions(p: NonNullable<CombatState['pending']>): string[][] {
+  const out: string[][] = [];
+  const cap = 80;
+  const walk = (start: number, chosen: string[], size: number): void => {
+    if (out.length >= cap) return;
+    if (chosen.length === size) {
+      out.push([...chosen]);
+      return;
+    }
+    for (let i = start; i < p.pool.length; i++) {
+      chosen.push(p.pool[i] as string);
+      walk(i + 1, chosen, size);
+      chosen.pop();
+    }
+  };
+  for (let size = p.min; size <= p.max; size++) walk(0, [], size);
+  return out;
 }
 
 export function legalActions(db: CombatDb, s: CombatState): Action[] {
   if (s.winner) return [];
+  if (s.pending) return pickOptions(s.pending).map((cards): Action => ({ type: 'pick', cards }));
   const side = s.active;
   const sd = s.sides[side];
-  const r: Run = { db, s, ev: [] };
+  const r: Run = { db, s, ev: [], depth: 0 };
   const out: Action[] = [];
   for (const c of sd.hand) {
     if (!canPlay(r, side, c)) continue;
@@ -776,6 +1195,19 @@ export function legalActions(db: CombatDb, s: CombatState): Action[] {
   return out;
 }
 
+/** The card is done: it goes to its pile, the turn's counters tick, and "when you play" Powers fire. */
+function finishCard(r: Run, sd: SideState, inst: CardInst, cd: CardDef): void {
+  if (cd.kind === 'power') {
+    // a Power stays in effect for the fight and leaves the deck (without counting as "exhausted")
+    sd.exhausted.push(inst);
+    r.ev.push({ type: 'exhaust', side: sd.id, card: inst.id, def: inst.card });
+  } else if (cd.exhaust) exhaustCard(r, sd, inst);
+  else sd.discard.push(inst);
+  sd.played++;
+  if (cd.kind === 'attack') sd.attacksPlayed++;
+  fireTriggers(r, sd, 'play', cd);
+}
+
 function playCard(r: Run, action: Extract<Action, { type: 'play' }>): void {
   const side = r.s.active;
   const sd = r.s.sides[side];
@@ -799,20 +1231,76 @@ function playCard(r: Run, action: Extract<Action, { type: 'play' }>): void {
   if (!hero) throw new RulesError('No hero to play cards');
   sd.hand.splice(i, 1);
   sd.mana -= cd.cost;
+  let x = 0;
+  if (cd.x) {
+    x = sd.mana;
+    sd.mana = 0;
+  }
+  if (cd.starCost) {
+    sd.stars -= cd.starCost;
+    r.ev.push({ type: 'stars', side, stars: sd.stars });
+  }
   r.ev.push({ type: 'play', side, card: inst.id, def: inst.card, target: target?.id ?? null });
   r.ev.push({ type: 'mana', side, mana: sd.mana });
   if (cd.kind === 'snare') {
     sd.snares.push({ id: inst.id, card: inst.card });
     r.ev.push({ type: 'snareSet', side, snare: inst.id });
+    sd.played++;
     return;
   }
-  runOps(r, { actor: hero, target, attacker: null, hit: null }, cd.effects);
-  if (cd.kind === 'power' || cd.exhaust) {
-    sd.exhausted.push(inst);
-    r.ev.push({ type: 'exhaust', side, card: inst.id, def: inst.card });
-  } else {
-    sd.discard.push(inst);
+  runOps(r, mkAct(hero, { target, card: cd, inst, x, pick: true }), cd.effects);
+  if (r.s.pending) {
+    r.s.pending.finish = inst;
+    return;
   }
+  finishCard(r, sd, inst, cd);
+}
+
+/** The answer to a pending choice: carry it out, then let the card finish. */
+function pickCards(r: Run, action: Extract<Action, { type: 'pick' }>): void {
+  const p = r.s.pending;
+  if (!p) throw new RulesError('There is nothing to choose');
+  const side = r.s.active;
+  const sd = r.s.sides[side];
+  const ids = action.cards;
+  if (
+    new Set(ids).size !== ids.length ||
+    ids.length < p.min ||
+    ids.length > p.max ||
+    !ids.every((id) => p.pool.includes(id))
+  )
+    throw new RulesError('That is not a legal choice');
+  r.s.pending = null;
+  const picked: CardInst[] = [];
+  for (const id of ids) {
+    const pile = p.kind === 'scry' ? sd.draw : sd.hand;
+    const k = pile.findIndex((c) => c.id === id);
+    const [c] = k >= 0 ? pile.splice(k, 1) : [];
+    if (c) picked.push(c);
+  }
+  if (p.kind === 'scry') {
+    r.ev.push({ type: 'scry', side, cards: picked.map((c) => c.id) });
+    for (const c of picked) {
+      sd.discard.push(c);
+      r.ev.push({ type: 'discard', side, card: c.id, def: c.card });
+    }
+  } else for (const c of picked) moveFromHand(r, sd, c, p.kind);
+  const hero = findUnit(r.s, p.actor);
+  const fin = p.finish;
+  const cd = fin ? cardDef(r.db, fin.card) : null;
+  if (hero && !r.s.winner)
+    runOps(
+      r,
+      mkAct(hero, { target: findUnit(r.s, p.target) ?? null, card: cd, inst: fin, x: p.x, pick: true }),
+      p.rest,
+    );
+  // the rest of the card may have asked for another choice
+  const again = r.s.pending as CombatState['pending'];
+  if (again) {
+    again.finish = fin;
+    return;
+  }
+  if (fin && cd) finishCard(r, sd, fin, cd);
 }
 
 function usePotion(r: Run, action: Extract<Action, { type: 'potion' }>): void {
@@ -835,15 +1323,17 @@ function usePotion(r: Run, action: Extract<Action, { type: 'potion' }>): void {
   }
   sd.potions.splice(index, 1);
   r.ev.push({ type: 'potion', side, index, potion: id, target: target?.id ?? null });
-  runOps(r, { actor: hero, target, attacker: null, hit: null }, p.effects);
+  runOps(r, mkAct(hero, { target }), p.effects);
 }
 
 export function applyAction(db: CombatDb, state: CombatState, action: Action): StepResult {
   if (state.winner) throw new RulesError('The fight is over');
+  if (state.pending && action.type !== 'pick') throw new RulesError('Make your choice first');
   const s = clone(state);
-  const r: Run = { db, s, ev: [] };
+  const r: Run = { db, s, ev: [], depth: 0 };
   if (action.type === 'endTurn') endTurn(r);
   else if (action.type === 'play') playCard(r, action);
+  else if (action.type === 'pick') pickCards(r, action);
   else if (action.type === 'potion') usePotion(r, action);
   else throw new RulesError('Unknown action');
   return { state: s, events: r.ev };

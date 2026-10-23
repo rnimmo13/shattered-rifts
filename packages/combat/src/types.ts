@@ -18,7 +18,13 @@ export type StatusId =
   | 'seared' // takes stacks damage at the start of its turn, then loses 1
   | 'stunned' // skips its next action
   | 'thorns' // reflects stacks damage to attackers (permanent)
-  | 'shielded'; // ignores the next instance of damage per stack
+  | 'shielded' // ignores the next instance of damage per stack
+  | 'resonance' // runes: +1 to the damage/Barrier of every rune effect per stack (permanent)
+  | 'calm' // stance: leaving it grants Mana
+  | 'wrath' // stance: you deal double attack damage and take 50% more
+  | 'radiant' // stance: you deal triple attack damage; it ends with your turn
+  | 'mantra' // builds towards Radiant: at MANTRA_GOAL you enter it
+  | 'edge'; // +1 damage per stack to your attacks tagged "shiv" (permanent)
 export const STATUS_IDS: readonly StatusId[] = [
   'exposed',
   'faltering',
@@ -27,7 +33,20 @@ export const STATUS_IDS: readonly StatusId[] = [
   'stunned',
   'thorns',
   'shielded',
+  'resonance',
+  'calm',
+  'wrath',
+  'radiant',
+  'mantra',
+  'edge',
 ];
+export const STANCES = ['calm', 'wrath', 'radiant'] as const;
+export type Stance = (typeof STANCES)[number];
+/** Mantra needed to enter Radiant (the stack is spent). */
+export const MANTRA_GOAL = 5;
+/** Mana gained when leaving Calm, and on entering Radiant. */
+export const CALM_EXIT_MANA = 2;
+export const RADIANT_ENTER_MANA = 2;
 
 // --- effects (the op DSL) -------------------------------------------------------------------------------
 
@@ -43,18 +62,77 @@ export const STATUS_IDS: readonly StatusId[] = [
 export type Sel =
   'target' | 'self' | 'hero' | 'allFoes' | 'randomFoe' | 'front' | 'allFriends' | 'attacker';
 
+/**
+ * A number that depends on the board: `amount + floor(mult * metric)`. Unit metrics read `of` (default: the actor; "target"
+ * is whichever unit the op is being applied to). `into: 'hits'` adds the result to a damage op's hit count instead.
+ */
+export type Metric =
+  // about a unit
+  | 'barrier'
+  | 'hp'
+  | 'missingHp'
+  | 'seared'
+  | 'exposed'
+  | 'might'
+  | 'thorns'
+  | 'mantra'
+  // about the acting side
+  | 'hand'
+  | 'drawPile'
+  | 'discardPile'
+  | 'exhausted'
+  | 'allies'
+  | 'foes'
+  | 'snares'
+  | 'stars'
+  | 'runes'
+  | 'mana'
+  | 'played' // cards played this turn (before this one)
+  | 'attacksPlayed'
+  | 'discarded' // cards discarded by effects this turn
+  // about the thing being resolved
+  | 'x' // Mana spent on an X card
+  | 'charge' // a rune's charge
+  | 'bonus'; // the forge bonus of the card being played
+export interface Scale {
+  by: Metric;
+  mult?: number;
+  of?: 'self' | 'target';
+  into?: 'amount' | 'hits';
+}
+
+/** When a Power's trigger fires. */
+export type TriggerWhen = 'turnStart' | 'turnEnd' | 'play' | 'exhaust' | 'discard';
+
 export type Op =
-  | { op: 'damage'; amount: number; hits?: number; to: Sel }
-  | { op: 'loseHp'; amount: number; to: Sel } // unblockable, unmodified
-  | { op: 'barrier'; amount: number; to: Sel }
-  | { op: 'heal'; amount: number; to: Sel }
-  | { op: 'status'; status: StatusId; amount: number; to: Sel }
-  | { op: 'draw'; amount: number }
-  | { op: 'mana'; amount: number }
+  | { op: 'damage'; amount: number; hits?: number; to: Sel; scale?: Scale }
+  | { op: 'loseHp'; amount: number; to: Sel; scale?: Scale } // unblockable, unmodified
+  | { op: 'barrier'; amount: number; to: Sel; scale?: Scale }
+  | { op: 'heal'; amount: number; to: Sel; scale?: Scale }
+  | { op: 'status'; status: StatusId; amount: number; to: Sel; scale?: Scale }
+  /** multiply the stacks of a status already on the target (floor); 2 doubles it */
+  | { op: 'scaleStatus'; status: StatusId; mult: number; to: Sel }
+  | { op: 'draw'; amount: number; scale?: Scale }
+  | { op: 'mana'; amount: number; scale?: Scale }
+  | { op: 'stars'; amount: number; scale?: Scale }
   | { op: 'summon'; unit: string }
-  | { op: 'addCard'; card: CardId; to: 'hand' | 'discard' | 'draw'; side: 'self' | 'foe' }
+  | { op: 'addCard'; card: CardId; to: 'hand' | 'discard' | 'draw'; side: 'self' | 'foe'; times?: number }
   | { op: 'actAllies' } // every ally of the actor acts now
-  | { op: 'prevent' }; // Snare only: cancel the attack that sprang it
+  | { op: 'prevent' } // Snare only: cancel the attack that sprang it
+  // --- choices and card movement (card effects only; a choice asks the player and the card resumes afterwards)
+  | { op: 'discard'; amount: number; random?: boolean; any?: boolean }
+  | { op: 'exhaustCards'; amount: number; random?: boolean; any?: boolean }
+  | { op: 'scry'; amount: number }
+  // --- Powers: run `ops` whenever `when` happens (`filter`/`tag` narrow 'play')
+  | { op: 'power'; when: TriggerWhen; ops: Op[]; filter?: CardKind; tag?: string }
+  // --- runes
+  | { op: 'channel'; rune: string }
+  | { op: 'evoke'; count?: number; times?: number; keep?: boolean }
+  | { op: 'runeSlots'; amount: number }
+  // --- stances
+  | { op: 'stance'; stance: Stance | 'none' }
+  // --- scaling cards
+  | { op: 'forge'; card: CardId; amount: number };
 
 export type CardKind = 'attack' | 'skill' | 'power' | 'summon' | 'snare';
 export type CardTarget = 'foe' | 'friend' | 'none';
@@ -63,7 +141,9 @@ export type Rarity = 'basic' | 'common' | 'uncommon' | 'rare';
 export type SnareTrigger =
   | { on: 'attacked' } // an enemy attack is about to hit your hero or an ally
   | { on: 'hpLost'; min: number } // your hero loses at least `min` HP in one hit
-  | { on: 'foeSummons' }; // the other side summons a unit
+  | { on: 'foeSummons' } // the other side summons a unit
+  | { on: 'foeDefends' } // an enemy gains Barrier
+  | { on: 'foeTurn' }; // the enemy phase begins
 
 export interface CardDef {
   id: CardId;
@@ -82,8 +162,24 @@ export interface CardDef {
   unplayable?: boolean;
   /** the "+" version of this card */
   upgrade?: CardId;
-  /** realm for deck rules, or 'neutral' */
+  /** flavour: the realm the card comes from, or 'neutral' */
   realm?: string;
+  /** whose pool it is in (a Riftwalker id), or 'neutral' */
+  hero?: string;
+  /** free-form tags; "shiv" cards gain damage from the Edge status */
+  tags?: string[];
+  /** Stars paid on top of the Mana cost */
+  starCost?: number;
+  /** an X card: costs all your remaining Mana and the Metric 'x' is how much was spent (give it cost 0) */
+  x?: boolean;
+  /** starts in your opening hand */
+  innate?: boolean;
+  /** exhausts if it is still in your hand at the end of your turn */
+  ethereal?: boolean;
+  /** runs when an effect discards this card (not the end-of-turn discard) */
+  onDiscard?: Op[];
+  /** runs when this card is exhausted */
+  onExhaust?: Op[];
   /** where a special card comes from (e.g. 'boss:seraphine'); such cards are never ordinary rewards */
   source?: string;
 }
@@ -137,6 +233,8 @@ export interface HeroDef {
   handSize: number;
   /** allies it starts every fight with */
   startUnits?: string[];
+  /** the Sigil: ops run when the fight begins (after the first draw) */
+  sigil?: Op[];
   art?: string;
 }
 
@@ -171,7 +269,20 @@ export interface PotionDef {
   effects: Op[];
 }
 
+/** A rune: its passive happens at the end of your turn; its evoke happens when it is pushed out or evoked by a card. */
+export interface RuneDef {
+  id: string;
+  name: string;
+  /** shown to the player */
+  text: string;
+  passive: Op[];
+  evoke: Op[];
+  /** charge gained each time the passive fires (Metric 'charge' in either list of ops) */
+  grow?: number;
+}
+
 export interface CombatDb {
+  runes?: Record<string, RuneDef>;
   cards: Record<CardId, CardDef>;
   potions: Record<string, PotionDef>;
   boons: Record<string, BoonDef>;
@@ -214,6 +325,39 @@ export interface Unit {
 export interface CardInst {
   id: InstId;
   card: CardId;
+  /** forge bonus (see the forge op) */
+  bonus?: number;
+}
+
+/** A rune on the board. */
+export interface RuneState {
+  rune: string;
+  charge: number;
+}
+
+export interface PowerState {
+  id: string;
+  card: CardId;
+  when: TriggerWhen;
+  ops: Op[];
+  filter?: CardKind;
+  tag?: string;
+}
+
+/** A choice the acting player owes before anything else happens. */
+export interface Pending {
+  kind: 'discard' | 'exhaust' | 'scry';
+  /** the cards to choose among (your hand, or the top of your draw pile for scry) */
+  pool: InstId[];
+  min: number;
+  max: number;
+  /** what the card still has to do once the choice is made */
+  rest: Op[];
+  actor: UnitId;
+  target: UnitId | null;
+  /** the card being played, put away when the choice (and everything after it) is done */
+  finish: CardInst | null;
+  x: number;
 }
 
 export interface SnareState {
@@ -238,6 +382,14 @@ export interface SideState {
   boons: string[];
   /** Potion ids carried (the rest of the run keeps whatever is unused) */
   potions: string[];
+  stars: number;
+  runes: RuneState[];
+  runeSlots: number;
+  powers: PowerState[];
+  /** counters for this turn, reset when it starts */
+  played: number;
+  attacksPlayed: number;
+  discarded: number;
 }
 
 export type Winner = Side | 'draw';
@@ -256,12 +408,16 @@ export interface CombatState {
   sides: Record<Side, SideState>;
   winner: Winner | null;
   nextId: number;
+  /** a choice the active player must make before anything else (see Pending) */
+  pending: Pending | null;
 }
 
 export const MAX_ALLIES = 3;
 export const MAX_ENEMIES = 4;
 export const MAX_SNARES = 3;
 export const MAX_HAND = 10;
+export const MAX_RUNES = 10;
+export const DEFAULT_RUNE_SLOTS = 3;
 
 /** HP multiplier and Might for enemies at a Rift Tier. */
 export const tierHp = (tier: number): number => 1 + 0.12 * Math.max(0, tier - 1);
@@ -297,7 +453,9 @@ export type Action =
   | { type: 'play'; card: InstId; target?: UnitId }
   /** `potion` names the potion meant, so a belt that has since shifted can never drink the wrong one */
   | { type: 'potion'; index: number; potion?: string; target?: UnitId }
-  | { type: 'endTurn' };
+  | { type: 'endTurn' }
+  /** answer a pending choice with the cards picked (their ids, in any order) */
+  | { type: 'pick'; cards: InstId[] };
 
 export type CombatEvent =
   | { type: 'turnStart'; side: Side; turn: number }
@@ -333,6 +491,15 @@ export type CombatEvent =
   | { type: 'snareSet'; side: Side; snare: string }
   | { type: 'snareSprung'; side: Side; snare: string; card: CardId }
   | { type: 'prevented'; unit: UnitId }
+  | { type: 'stars'; side: Side; stars: number }
+  | { type: 'runeChannel'; side: Side; rune: string; index: number }
+  | { type: 'runeFire'; side: Side; rune: string; how: 'passive' | 'evoke' }
+  | { type: 'runeGone'; side: Side; rune: string }
+  | { type: 'stance'; unit: UnitId; stance: Stance | 'none' }
+  | { type: 'power'; side: Side; card: CardId }
+  | { type: 'forge'; side: Side; card: CardId; amount: number }
+  | { type: 'scry'; side: Side; cards: InstId[] }
+  | { type: 'pending'; side: Side; kind: Pending['kind'] }
   | { type: 'gameOver'; winner: Winner };
 
 export class RulesError extends Error {}

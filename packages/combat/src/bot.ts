@@ -32,7 +32,15 @@ export function evaluate(db: CombatDb, s: CombatState, me: Side): number {
       v += 4 + u.hp * 0.35 + Math.min(u.barrier, 6) * 0.2;
     }
     v +=
-      (u.statuses.might ?? 0) * 3 + (u.statuses.thorns ?? 0) * 1.5 + (u.statuses.shielded ?? 0) * 4;
+      (u.statuses.might ?? 0) * 3 +
+      (u.statuses.thorns ?? 0) * 1.5 +
+      (u.statuses.shielded ?? 0) * 4 +
+      (u.statuses.resonance ?? 0) * 3 +
+      (u.statuses.mantra ?? 0) * 1.5 +
+      (u.statuses.edge ?? 0) * 3 +
+      (u.statuses.wrath ?? 0) * 3 +
+      (u.statuses.calm ?? 0) * 2 +
+      (u.statuses.radiant ?? 0) * 6;
     v -=
       (u.statuses.exposed ?? 0) * 2 +
       (u.statuses.faltering ?? 0) * 2 +
@@ -49,6 +57,8 @@ export function evaluate(db: CombatDb, s: CombatState, me: Side): number {
       (u.statuses.might ?? 0) * 3 + (u.statuses.thorns ?? 0) * 1.5 + (u.statuses.shielded ?? 0) * 3;
   }
   v += mine.snares.length * 5;
+  v += mine.stars * 1.5 + mine.powers.length * 4;
+  for (const rs of mine.runes) v += 3 + rs.charge * 0.5;
   return v;
 }
 
@@ -56,6 +66,19 @@ export function evaluate(db: CombatDb, s: CombatState, me: Side): number {
 export function chooseAction(db: CombatDb, s: CombatState): Action {
   const me = s.active;
   const base = evaluate(db, s, me);
+  if (s.pending) {
+    // a choice is owed: take the best-looking answer (there is always at least one)
+    let pick: Action | null = null;
+    let top = -Infinity;
+    for (const a of legalActions(db, s)) {
+      const v = evaluate(db, applyAction(db, s, a).state, me);
+      if (v > top) {
+        top = v;
+        pick = a;
+      }
+    }
+    return pick ?? { type: 'pick', cards: [] };
+  }
   let best: Action = { type: 'endTurn' };
   let bestGain = 0.5; // must beat doing nothing by a little
   for (const a of legalActions(db, s)) {

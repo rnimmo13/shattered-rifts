@@ -31,6 +31,42 @@ export const STATUS_INFO: Record<
     text: 'Deals damage back to whatever attacks it.',
   },
   shielded: { name: 'Shielded', glyph: '◈', tone: 'good', text: 'Ignores the next hit.' },
+  resonance: {
+    name: 'Resonance',
+    glyph: '❖',
+    tone: 'good',
+    text: 'Your runes deal 1 more damage and give 1 more Barrier per stack, and Hollow runes charge faster.',
+  },
+  calm: {
+    name: 'Calm',
+    glyph: '☾',
+    tone: 'good',
+    text: 'A stance. Leaving it gives you 2 Mana.',
+  },
+  wrath: {
+    name: 'Wrath',
+    glyph: '♦',
+    tone: 'bad',
+    text: 'A stance. You deal double attack damage and take 50% more.',
+  },
+  radiant: {
+    name: 'Radiant',
+    glyph: '☀',
+    tone: 'good',
+    text: 'A stance. You deal triple attack damage. It ends when your turn ends.',
+  },
+  mantra: {
+    name: 'Mantra',
+    glyph: '❂',
+    tone: 'good',
+    text: 'At 5 you spend it to enter Radiant.',
+  },
+  edge: {
+    name: 'Edge',
+    glyph: '†',
+    tone: 'good',
+    text: 'Your Shivs deal 1 more damage per stack.',
+  },
 };
 
 export const INTENT_GLYPH: Record<IntentIcon, string> = {
@@ -63,6 +99,31 @@ export const KEYWORD_INFO: Record<string, { name: string; text: string }> = {
     text: 'An ally that stands beside you and acts automatically when you end your turn.',
   },
   taunt: { name: 'Taunt', text: 'Enemies must attack this unit before anything else.' },
+  innate: { name: 'Innate', text: 'It starts in your opening hand.' },
+  ethereal: { name: 'Ethereal', text: 'If it is still in your hand when you end your turn, it is exhausted.' },
+  discard: {
+    name: 'Discard',
+    text: 'Choose cards from your hand to put in your discard pile. Some cards have a bonus when discarded.',
+  },
+  scry: {
+    name: 'Scry',
+    text: 'Look at the top cards of your draw pile and discard any you do not want.',
+  },
+  rune: {
+    name: 'Rune',
+    text: 'Runes sit in a row (3 slots). Each fires a small effect at the end of your turn. A rune pushed out of a full row, or evoked by a card, fires its big effect and is gone.',
+  },
+  stance: {
+    name: 'Stance',
+    text: 'You are in at most one stance. Entering a new one leaves the old one.',
+  },
+  stars: { name: 'Stars', text: 'A second resource. Cards gain them and spend them; they last the whole fight.' },
+  forge: {
+    name: 'Forge',
+    text: 'Every copy of the Sovereign Blade permanently gains damage. If you have none, you get one.',
+  },
+  shiv: { name: 'Shiv', text: 'A 0-cost Attack that exhausts.' },
+  power: { name: 'Power', text: 'Played once: its effect lasts for the rest of the fight.' },
 };
 
 /** The keywords a card uses, in reading order. */
@@ -71,7 +132,11 @@ export function keywordsOf(
     kind: string;
     exhaust?: boolean | undefined;
     retain?: boolean | undefined;
-    effects: readonly { op: string; status?: string; unit?: string }[];
+    innate?: boolean | undefined;
+    ethereal?: boolean | undefined;
+    starCost?: number | undefined;
+    x?: boolean | undefined;
+    effects: readonly { op: string; status?: string; unit?: string; card?: string; stance?: string }[];
   },
   taunting: (unit: string) => boolean,
 ): { name: string; text: string }[] {
@@ -84,6 +149,14 @@ export function keywordsOf(
   for (const o of c.effects) {
     if (o.op === 'barrier') add(KEYWORD_INFO['barrier']);
     if (o.op === 'mana') add(KEYWORD_INFO['mana']);
+    if (o.op === 'discard') add(KEYWORD_INFO['discard']);
+    if (o.op === 'scry') add(KEYWORD_INFO['scry']);
+    if (o.op === 'exhaustCards') add(KEYWORD_INFO['exhaust']);
+    if (o.op === 'channel' || o.op === 'evoke' || o.op === 'runeSlots') add(KEYWORD_INFO['rune']);
+    if (o.op === 'stance') add(KEYWORD_INFO['stance']);
+    if (o.op === 'stars') add(KEYWORD_INFO['stars']);
+    if (o.op === 'forge') add(KEYWORD_INFO['forge']);
+    if (o.op === 'addCard' && o.card === 'shiv') add(KEYWORD_INFO['shiv']);
     if (o.op === 'summon' && o.unit && taunting(o.unit)) add(KEYWORD_INFO['taunt']);
     if (o.op === 'status' && o.status) {
       const s = STATUS_INFO[o.status as StatusId];
@@ -92,5 +165,8 @@ export function keywordsOf(
   }
   if (c.exhaust || c.kind === 'power') add(KEYWORD_INFO['exhaust']);
   if (c.retain) add(KEYWORD_INFO['retain']);
+  if (c.innate) add(KEYWORD_INFO['innate']);
+  if (c.ethereal) add(KEYWORD_INFO['ethereal']);
+  if (c.starCost) add(KEYWORD_INFO['stars']);
   return out;
 }

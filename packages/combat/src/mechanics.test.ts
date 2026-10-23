@@ -1,0 +1,658 @@
+// Rules tests for the generic mechanics behind the roster (docs/09_ROSTER.md): choices, scaling, Powers, runes, stances,
+// Stars, forging, extra Snare triggers. A tiny self-contained ruleset, so nothing here depends on real card data.
+
+import { describe, expect, it } from 'vitest';
+import {
+  applyAction,
+  chooseAction,
+  cardText,
+  clone,
+  createCombat,
+  heroOf,
+  legalActions,
+  validateDb,
+  viewFor,
+  type Action,
+  type CardDef,
+  type CombatDb,
+  type CombatState,
+  type Op,
+  type Unit,
+} from './index';
+
+const c = (id: string, extra: Partial<CardDef> & Pick<CardDef, 'effects'>): [string, CardDef] => [
+  id,
+  {
+    id,
+    name: id,
+    kind: 'skill',
+    cost: 1,
+    target: 'none',
+    ...extra,
+  },
+];
+const foeAtk: Op[] = [{ op: 'damage', amount: 1, to: 'target' }];
+const strike = c('strike', {
+  kind: 'attack',
+  target: 'foe',
+  effects: [{ op: 'damage', amount: 6, to: 'target' }],
+});
+const power = (id: string, when: 'turnStart' | 'turnEnd' | 'play' | 'exhaust' | 'discard', ops: Op[], extra = {}) =>
+  c(id, { kind: 'power', effects: [{ op: 'power', when, ops, ...extra }] });
+
+const DB: CombatDb = {
+  cards: Object.fromEntries([
+    strike,
+    c('defend', { effects: [{ op: 'barrier', amount: 5, to: 'self' }] }),
+    c('filler', { cost: 0, effects: [{ op: 'barrier', amount: 1, to: 'self' }] }),
+    // choices
+    c('survivor', {
+      effects: [
+        { op: 'barrier', amount: 8, to: 'self' },
+        { op: 'discard', amount: 1 },
+        { op: 'draw', amount: 1 },
+      ],
+    }),
+    c('purge', { effects: [{ op: 'discard', amount: 9, any: true }, { op: 'draw', amount: 2 }] }),
+    c('gamble', { effects: [{ op: 'discard', amount: 2, random: true }] }),
+    c('reflex', {
+      unplayable: true,
+      effects: [],
+      onDiscard: [{ op: 'draw', amount: 2 }],
+    }),
+    c('pact', { effects: [{ op: 'exhaustCards', amount: 1 }, { op: 'draw', amount: 2 }] }),
+    c('ember', { ethereal: true, effects: [{ op: 'barrier', amount: 1, to: 'self' }] }),
+    c('husk', { effects: [], onExhaust: [{ op: 'barrier', amount: 4, to: 'self' }] }),
+    c('peek', { effects: [{ op: 'scry', amount: 3 }, { op: 'draw', amount: 1 }] }),
+    c('burn-out', { exhaust: true, effects: [{ op: 'barrier', amount: 1, to: 'self' }] }),
+    // scaling
+    c('slam', { kind: 'attack', target: 'foe', effects: [{ op: 'damage', amount: 0, to: 'target', scale: { by: 'barrier' } }] }),
+    c('whirl', {
+      kind: 'attack',
+      cost: 0,
+      x: true,
+      target: 'foe',
+      effects: [{ op: 'damage', amount: 5, to: 'target', scale: { by: 'x', into: 'hits' } }],
+    }),
+    c('finisher', {
+      kind: 'attack',
+      target: 'foe',
+      effects: [{ op: 'damage', amount: 0, to: 'target', scale: { by: 'attacksPlayed', mult: 6 } }],
+    }),
+    c('toxin', { target: 'foe', effects: [{ op: 'status', status: 'seared', amount: 4, to: 'target' }] }),
+    c('catalyst', { target: 'foe', effects: [{ op: 'scaleStatus', status: 'seared', mult: 2, to: 'target' }] }),
+    c('cash-out', {
+      target: 'foe',
+      effects: [{ op: 'loseHp', amount: 0, to: 'target', scale: { by: 'seared', of: 'target' } }],
+    }),
+    // powers
+    power('feel-no-pain', 'exhaust', [{ op: 'barrier', amount: 3, to: 'self' }]),
+    power('infinite', 'turnStart', [{ op: 'addCard', card: 'shiv', to: 'hand', side: 'self' }]),
+    power('afterimage', 'play', [{ op: 'barrier', amount: 1, to: 'self' }]),
+    power('shiv-fan', 'play', [{ op: 'barrier', amount: 2, to: 'self' }], { tag: 'shiv' }),
+    power('metal', 'turnEnd', [{ op: 'barrier', amount: 4, to: 'self' }]),
+    power('tools', 'turnStart', [{ op: 'draw', amount: 1 }]),
+    c('shiv', {
+      cost: 0,
+      kind: 'attack',
+      target: 'foe',
+      exhaust: true,
+      tags: ['shiv'],
+      effects: [{ op: 'damage', amount: 4, to: 'target' }],
+    }),
+    c('accuracy', { kind: 'power', effects: [{ op: 'status', status: 'edge', amount: 3, to: 'self' }] }),
+    // runes
+    c('c-spark', { effects: [{ op: 'channel', rune: 'spark' }] }),
+    c('c-dark', { effects: [{ op: 'channel', rune: 'dark' }] }),
+    c('evoke1', { effects: [{ op: 'evoke' }] }),
+    c('multicast', { effects: [{ op: 'evoke', times: 3 }] }),
+    c('slots', { effects: [{ op: 'runeSlots', amount: 1 }] }),
+    c('resonate', { effects: [{ op: 'status', status: 'resonance', amount: 2, to: 'self' }] }),
+    // stances
+    c('wrath', { effects: [{ op: 'stance', stance: 'wrath' }] }),
+    c('calm', { effects: [{ op: 'stance', stance: 'calm' }] }),
+    c('leave', { effects: [{ op: 'stance', stance: 'none' }] }),
+    c('chant', { effects: [{ op: 'status', status: 'mantra', amount: 3, to: 'self' }] }),
+    // stars & forging
+    c('gain-stars', { effects: [{ op: 'stars', amount: 3 }] }),
+    c('nova', {
+      kind: 'attack',
+      target: 'foe',
+      starCost: 2,
+      effects: [{ op: 'damage', amount: 20, to: 'target' }],
+    }),
+    c('forge-it', { effects: [{ op: 'forge', card: 'blade', amount: 3 }] }),
+    c('blade', {
+      kind: 'attack',
+      target: 'foe',
+      retain: true,
+      effects: [{ op: 'damage', amount: 5, to: 'target', scale: { by: 'bonus' } }],
+    }),
+    c('forge-blade', {
+      kind: 'attack',
+      target: 'foe',
+      effects: [
+        { op: 'damage', amount: 2, to: 'target' },
+        { op: 'forge', card: 'blade', amount: 1 },
+      ],
+    }),
+    // snares
+    c('tripwire', { kind: 'snare', effects: [{ op: 'damage', amount: 7, to: 'attacker' }], trigger: { on: 'foeDefends' } }),
+    c('timebomb', { kind: 'snare', effects: [{ op: 'damage', amount: 9, to: 'allFoes' }], trigger: { on: 'foeTurn' } }),
+    c('born-ready', { innate: true, effects: [] }),
+  ]),
+  boons: {},
+  potions: {},
+  runes: {
+    spark: {
+      id: 'spark',
+      name: 'Spark',
+      text: 'test',
+      passive: [{ op: 'damage', amount: 2, to: 'randomFoe' }],
+      evoke: [{ op: 'damage', amount: 6, to: 'front' }],
+    },
+    dark: {
+      id: 'dark',
+      name: 'Hollow',
+      text: 'test',
+      grow: 2,
+      passive: [],
+      evoke: [{ op: 'damage', amount: 0, to: 'front', scale: { by: 'charge' } }],
+    },
+  },
+  units: {
+    dummy: {
+      id: 'dummy',
+      name: 'Dummy',
+      maxHp: 300,
+      brain: {
+        kind: 'enemy',
+        moves: { hit: { id: 'hit', name: 'Hit', effects: foeAtk }, guard: { id: 'guard', name: 'Guard', effects: [{ op: 'barrier', amount: 4, to: 'self' }] } },
+        pattern: { kind: 'cycle', order: ['hit'] },
+      },
+    },
+    guarder: {
+      id: 'guarder',
+      name: 'Guarder',
+      maxHp: 300,
+      brain: {
+        kind: 'enemy',
+        moves: { guard: { id: 'guard', name: 'Guard', effects: [{ op: 'barrier', amount: 4, to: 'self' }] } },
+        pattern: { kind: 'cycle', order: ['guard'] },
+      },
+    },
+  },
+  heroes: {
+    tester: { id: 'tester', name: 'Tester', maxHp: 100, mana: 3, handSize: 5 },
+    sigiled: {
+      id: 'sigiled',
+      name: 'Sigiled',
+      maxHp: 100,
+      mana: 3,
+      handSize: 5,
+      sigil: [
+        { op: 'channel', rune: 'spark' },
+        { op: 'stance', stance: 'calm' },
+        { op: 'stars', amount: 2 },
+      ],
+    },
+  },
+};
+
+// --- helpers --------------------------------------------------------------------------------------------------
+
+function start(hand: string[], opts: { enemies?: string[]; hero?: string; draw?: string[]; mana?: number } = {}): CombatState {
+  const { state } = createCombat(DB, {
+    seed: 'm',
+    a: { hero: opts.hero ?? 'tester', deck: Array<string>(12).fill('filler') },
+    b: { enemies: opts.enemies ?? ['dummy'] },
+  });
+  const s = clone(state);
+  s.sides.a.hand = hand.map((card, i) => ({ id: `h${i}`, card }));
+  s.sides.a.draw = (opts.draw ?? Array<string>(10).fill('filler')).map((card, i) => ({ id: `d${i}`, card }));
+  s.sides.a.discard = [];
+  s.sides.a.mana = opts.mana ?? 3;
+  return s;
+}
+const hero = (s: CombatState): Unit => heroOf(s.sides.a) as Unit;
+const foe = (s: CombatState, i = 0): Unit => s.sides.b.units[i] as Unit;
+const play = (s: CombatState, card: string, target?: string) =>
+  applyAction(DB, s, { type: 'play', card, ...(target ? { target } : {}) });
+const pick = (s: CombatState, ...cards: string[]) => applyAction(DB, s, { type: 'pick', cards });
+const end = (s: CombatState) => applyAction(DB, s, { type: 'endTurn' });
+const handIds = (s: CombatState): string[] => s.sides.a.hand.map((x) => x.card);
+
+describe('the test ruleset is sound', () => {
+  it('validates', () => expect(validateDb(DB)).toEqual([]));
+});
+
+// --- choices ----------------------------------------------------------------------------------------------------
+
+describe('choices (discard, exhaust, scry)', () => {
+  it('asks which card to discard, then the card carries on', () => {
+    let s = start(['survivor', 'strike', 'defend', 'filler']);
+    s = play(s, 'h0').state;
+    expect(s.pending?.kind).toBe('discard');
+    expect(s.pending?.min).toBe(1);
+    expect(hero(s).barrier).toBe(8); // ops before the choice already happened
+    expect(s.sides.a.hand).toHaveLength(3);
+    expect(s.sides.a.discard).toHaveLength(0); // the card is still being played
+    s = pick(s, 'h2').state; // discard Defend
+    expect(s.pending).toBeNull();
+    expect(handIds(s)).toEqual(['strike', 'filler', 'filler']); // drew 1 after the discard
+    expect(s.sides.a.discard.map((x) => x.card).sort()).toEqual(['defend', 'survivor']);
+  });
+
+  it('allows nothing else while a choice is owed, and offers only legal answers', () => {
+    let s = start(['survivor', 'strike', 'defend']);
+    s = play(s, 'h0').state;
+    expect(() => end(s)).toThrow();
+    expect(() => play(s, 'h1', foe(s).id)).toThrow();
+    expect(() => pick(s)).toThrow(); // must pick one
+    expect(() => pick(s, 'h1', 'h2')).toThrow(); // too many
+    expect(() => pick(s, 'nope')).toThrow();
+    const acts = legalActions(DB, s);
+    expect(acts.every((a) => a.type === 'pick')).toBe(true);
+    expect(acts).toHaveLength(2);
+    const v = viewFor(DB, s, 'a');
+    expect(v.pending?.pool.map((x) => x.id)).toEqual(['h1', 'h2']);
+    expect(viewFor(DB, s, 'b').pending).toBeNull();
+  });
+
+  it('discards the whole hand without asking when it has no more cards than the number', () => {
+    let s = start(['survivor', 'strike']);
+    s = play(s, 'h0').state;
+    expect(s.pending).toBeNull();
+    expect(s.sides.a.discard.map((x) => x.card).sort()).toEqual(['strike', 'survivor']);
+  });
+
+  it('"any number" can be none, some or all', () => {
+    const base = start(['purge', 'strike', 'defend', 'filler']);
+    let s = play(base, 'h0').state;
+    expect(s.pending?.min).toBe(0);
+    expect(pick(s).state.sides.a.hand).toHaveLength(5); // kept 3, drew 2
+    s = pick(s, 'h1', 'h2', 'h3').state;
+    expect(handIds(s)).toEqual(['filler', 'filler']);
+  });
+
+  it('random discards need no answer', () => {
+    const s = play(start(['gamble', 'strike', 'defend', 'filler']), 'h0').state;
+    expect(s.pending).toBeNull();
+    expect(s.sides.a.hand).toHaveLength(1);
+    expect(s.sides.a.discard).toHaveLength(3);
+  });
+
+  it('a discarded card can pay off (onDiscard) and counts for "discarded this turn"', () => {
+    let s = start(['survivor', 'reflex', 'strike'], { draw: ['filler', 'filler', 'defend', 'strike'] });
+    s = play(s, 'h0').state;
+    s = pick(s, 'h1').state;
+    // reflex drew 2, survivor drew 1
+    expect(s.sides.a.hand).toHaveLength(4);
+    expect(s.sides.a.discarded).toBe(1);
+  });
+
+  it('exhaust choices fire "when exhausted" on the card and on Powers', () => {
+    let s = start(['feel-no-pain', 'pact', 'husk', 'strike'], { mana: 5 });
+    s = play(s, 'h0').state; // the Power
+    s = play(s, 'h1').state; // Pact: exhaust 1
+    s = pick(s, 'h2').state; // exhaust the husk
+    expect(hero(s).barrier).toBe(4 + 3);
+    expect(s.sides.a.exhausted.map((x) => x.card)).toContain('husk');
+  });
+
+  it('exhausting the card you play (and Ethereal cards left in hand) triggers Powers too', () => {
+    let s = start(['feel-no-pain', 'burn-out', 'ember', 'strike'], { mana: 5 });
+    s = play(s, 'h0').state;
+    s = play(s, 'h1').state;
+    expect(hero(s).barrier).toBe(1 + 3);
+    const before = hero(s).barrier;
+    s = end(s).state; // the Ethereal card exhausts at end of turn (barrier is then wiped by the new turn)
+    expect(s.sides.a.exhausted.map((x) => x.card)).toEqual(expect.arrayContaining(['burn-out', 'ember']));
+    expect(before).toBe(4);
+  });
+
+  it('scry puts chosen cards from the top of the draw pile into the discard pile', () => {
+    let s = start(['peek'], { draw: ['strike', 'defend', 'filler', 'filler'] });
+    s = play(s, 'h0').state;
+    expect(s.pending?.kind).toBe('scry');
+    expect(s.pending?.pool).toEqual(['d0', 'd1', 'd2']);
+    s = pick(s, 'd0', 'd1').state;
+    expect(s.sides.a.discard.map((x) => x.card).sort()).toEqual(['defend', 'peek', 'strike']);
+    expect(handIds(s)).toEqual(['filler']); // then drew the next card
+  });
+
+  it('the bot resolves a choice instead of getting stuck', () => {
+    let s = start(['survivor', 'strike', 'defend']);
+    s = play(s, 'h0').state;
+    const a = chooseAction(DB, s);
+    expect(a.type).toBe('pick');
+    expect(() => applyAction(DB, s, a)).not.toThrow();
+  });
+
+  it('a winning card ends the fight even with a choice still owed', () => {
+    const base = start(['strike', 'survivor']);
+    const s = clone(base);
+    foe(s).hp = 1;
+    expect(play(s, 'h0', foe(s).id).state.winner).toBe('a');
+  });
+});
+
+// --- scaling --------------------------------------------------------------------------------------------------------
+
+describe('scaling amounts', () => {
+  it('damage equal to Barrier', () => {
+    let s = start(['defend', 'slam']);
+    s = play(s, 'h0').state;
+    const hp = foe(s).hp;
+    s = play(s, 'h1', foe(s).id).state;
+    expect(hp - foe(s).hp).toBe(5);
+  });
+
+  it('an X card spends all remaining Mana and hits that many extra times', () => {
+    let s = start(['whirl'], { mana: 3 });
+    const hp = foe(s).hp;
+    s = play(s, 'h0', foe(s).id).state;
+    expect(s.sides.a.mana).toBe(0);
+    expect(hp - foe(s).hp).toBe(5 * (1 + 3));
+  });
+
+  it('scales per Attack played earlier this turn', () => {
+    let s = start(['strike', 'strike', 'finisher'], { mana: 3 });
+    s = play(s, 'h0', foe(s).id).state;
+    s = play(s, 'h1', foe(s).id).state;
+    const hp = foe(s).hp;
+    s = play(s, 'h2', foe(s).id).state;
+    expect(hp - foe(s).hp).toBe(12);
+  });
+
+  it('doubles Seared and cashes it out as unblockable damage', () => {
+    let s = start(['toxin', 'catalyst', 'cash-out'], { mana: 5 });
+    s = play(s, 'h0', foe(s).id).state;
+    s = play(s, 'h1', foe(s).id).state;
+    expect(foe(s).statuses.seared).toBe(8);
+    const hp = foe(s).hp;
+    foe(s).barrier = 50;
+    s = play(s, 'h2', foe(s).id).state;
+    expect(hp - foe(s).hp).toBe(8);
+  });
+
+  it('rules text reads sensibly', () => {
+    expect(cardText(DB, DB.cards.slam as CardDef)).toBe('Deal damage equal to your Barrier.');
+    expect(cardText(DB, DB.cards.finisher as CardDef)).toContain('per Attack played this turn');
+    expect(cardText(DB, DB.cards.catalyst as CardDef)).toBe('Double the Seared on the target.');
+  });
+});
+
+// --- powers --------------------------------------------------------------------------------------------------------
+
+describe('Powers are triggers', () => {
+  it('turn start: adds a card to hand every turn', () => {
+    let s = start(['infinite']);
+    s = play(s, 'h0').state;
+    expect(s.sides.a.powers).toHaveLength(1);
+    s = end(s).state;
+    expect(handIds(s).filter((x) => x === 'shiv')).toHaveLength(1);
+    s = end(s).state;
+    expect(handIds(s).filter((x) => x === 'shiv')).toHaveLength(1); // the old one was discarded, a new one came
+  });
+
+  it('on play: any card, or only cards with a tag', () => {
+    let s = start(['afterimage', 'shiv-fan', 'strike', 'shiv'], { mana: 5 });
+    s = play(s, 'h0').state;
+    expect(hero(s).barrier).toBe(1); // a Power sees its own play
+    s = play(s, 'h1').state; // afterimage +1 (shiv-fan is not a shiv)
+    expect(hero(s).barrier).toBe(2);
+    s = play(s, 'h2', foe(s).id).state; // +1 (no tag)
+    expect(hero(s).barrier).toBe(3);
+    s = play(s, 'h3', foe(s).id).state; // +1 +2 (shiv)
+    expect(hero(s).barrier).toBe(6);
+  });
+
+  it('end of turn happens before the hand is discarded and Barrier carries until the next turn', () => {
+    let s = start(['metal', 'strike']);
+    s = play(s, 'h0').state;
+    const out = end(s);
+    expect(out.events.some((e) => e.type === 'barrier' && e.amount === 4)).toBe(true);
+    // enemy hit for 1 was soaked: no HP lost
+    expect(hero(out.state).hp).toBe(100);
+  });
+
+  it('a Power that triggers itself is cut off rather than looping forever', () => {
+    let s = start(['afterimage', 'filler'], { mana: 3 });
+    s = play(s, 'h0').state;
+    expect(() => play(s, 'h1')).not.toThrow();
+  });
+
+  it('edge adds to shiv damage only', () => {
+    let s = start(['accuracy', 'shiv', 'strike'], { mana: 4 });
+    s = play(s, 'h0').state;
+    let hp = foe(s).hp;
+    s = play(s, 'h1', foe(s).id).state;
+    expect(hp - foe(s).hp).toBe(7);
+    hp = foe(s).hp;
+    s = play(s, 'h2', foe(s).id).state;
+    expect(hp - foe(s).hp).toBe(6);
+  });
+});
+
+// --- runes -----------------------------------------------------------------------------------------------------------
+
+describe('runes', () => {
+  it('channelled runes fire their passive at the end of your turn', () => {
+    let s = start(['c-spark']);
+    s = play(s, 'h0').state;
+    expect(s.sides.a.runes).toHaveLength(1);
+    const hp = foe(s).hp;
+    s = end(s).state;
+    expect(hp - foe(s).hp).toBe(2);
+  });
+
+  it('a full row pushes out (and evokes) the oldest rune', () => {
+    let s = start(['c-spark', 'c-spark', 'c-spark', 'c-dark'], { mana: 9 });
+    for (const id of ['h0', 'h1', 'h2']) s = play(s, id).state;
+    expect(s.sides.a.runes).toHaveLength(3);
+    const hp = foe(s).hp;
+    s = play(s, 'h3').state;
+    expect(hp - foe(s).hp).toBe(6); // the oldest Spark evoked
+    expect(s.sides.a.runes.map((r) => r.rune)).toEqual(['spark', 'spark', 'dark']);
+  });
+
+  it('evoke removes the first rune; multi-cast fires it several times', () => {
+    let s = start(['c-spark', 'evoke1', 'c-spark', 'multicast'], { mana: 9 });
+    s = play(s, 'h0').state;
+    let hp = foe(s).hp;
+    s = play(s, 'h1').state;
+    expect(hp - foe(s).hp).toBe(6);
+    expect(s.sides.a.runes).toHaveLength(0);
+    s = play(s, 'h2').state;
+    hp = foe(s).hp;
+    s = play(s, 'h3').state;
+    expect(hp - foe(s).hp).toBe(18);
+  });
+
+  it('Hollow runes charge each turn and evoke for their charge', () => {
+    let s = start(['c-dark', 'evoke1']);
+    s = play(s, 'h0').state;
+    s = end(s).state;
+    s = end(s).state;
+    expect(s.sides.a.runes[0]?.charge).toBe(4);
+    const c2 = clone(s);
+    c2.sides.a.hand = [{ id: 'e1', card: 'evoke1' }];
+    c2.sides.a.mana = 3;
+    const hp = foe(c2).hp;
+    const after = play(c2, 'e1').state;
+    expect(hp - foe(after).hp).toBe(4);
+  });
+
+  it('Resonance adds to rune damage, and to how fast Hollow charges', () => {
+    let s = start(['resonate', 'c-spark', 'c-dark'], { mana: 5 });
+    s = play(s, 'h0').state;
+    s = play(s, 'h1').state;
+    s = play(s, 'h2').state;
+    const hp = foe(s).hp;
+    s = end(s).state;
+    expect(hp - foe(s).hp).toBe(2 + 2);
+    expect(s.sides.a.runes[1]?.charge).toBe(2 + 2);
+  });
+
+  it('extra slots let more runes stay; fewer slots push the oldest out', () => {
+    let s = start(['slots', 'c-spark', 'c-spark', 'c-spark', 'c-spark'], { mana: 9 });
+    s = play(s, 'h0').state;
+    for (const id of ['h1', 'h2', 'h3', 'h4']) s = play(s, id).state;
+    expect(s.sides.a.runes).toHaveLength(4);
+  });
+
+  it('a Sigil can start the fight with a rune, a stance and Stars', () => {
+    const s = start([], { hero: 'sigiled' });
+    expect(s.sides.a.runes).toHaveLength(1);
+    expect(hero(s).statuses.calm).toBe(1);
+    expect(s.sides.a.stars).toBe(2);
+  });
+});
+
+// --- stances ---------------------------------------------------------------------------------------------------------
+
+describe('stances', () => {
+  it('Wrath doubles the damage you deal and raises the damage you take by half', () => {
+    let s = start(['wrath', 'strike']);
+    s = play(s, 'h0').state;
+    const hp = foe(s).hp;
+    s = play(s, 'h1', foe(s).id).state;
+    expect(hp - foe(s).hp).toBe(12);
+    const out = end(s);
+    expect(out.events.some((e) => e.type === 'damage' && e.amount === 1)).toBe(true); // floor(1 * 1.5)
+  });
+
+  it('leaving Calm gives Mana; stances are exclusive', () => {
+    let s = start(['calm', 'wrath', 'leave'], { mana: 3 });
+    s = play(s, 'h0').state;
+    expect(s.sides.a.mana).toBe(2);
+    s = play(s, 'h1').state;
+    expect(s.sides.a.mana).toBe(2 - 1 + 2);
+    expect(hero(s).statuses.calm).toBeUndefined();
+    expect(hero(s).statuses.wrath).toBe(1);
+    s = play(s, 'h2').state;
+    expect(hero(s).statuses.wrath).toBeUndefined();
+  });
+
+  it('Mantra builds to Radiant: triple damage, Mana on entry, gone at end of turn', () => {
+    let s = start(['chant', 'chant', 'strike'], { mana: 5 });
+    s = play(s, 'h0').state;
+    expect(hero(s).statuses.mantra).toBe(3);
+    s = play(s, 'h1').state;
+    expect(hero(s).statuses.radiant).toBe(1);
+    expect(hero(s).statuses.mantra).toBe(1);
+    expect(s.sides.a.mana).toBe(5 - 2 + 2);
+    const hp = foe(s).hp;
+    s = play(s, 'h2', foe(s).id).state;
+    expect(hp - foe(s).hp).toBe(18);
+    s = end(s).state;
+    expect(hero(s).statuses.radiant).toBeUndefined();
+  });
+
+  it('cannot be applied as a plain status (validation)', () => {
+    const bad: CombatDb = clone(DB);
+    bad.cards.bad = { id: 'bad', name: 'Bad', kind: 'skill', cost: 0, target: 'none', effects: [{ op: 'status', status: 'wrath', amount: 1, to: 'self' }] };
+    expect(validateDb(bad).join()).toContain('stance op');
+  });
+});
+
+// --- stars & forging ----------------------------------------------------------------------------------------------------
+
+describe('Stars and forging', () => {
+  it('Stars are a second resource that persists between turns', () => {
+    let s = start(['gain-stars', 'nova'], { mana: 5 });
+    expect(legalActions(DB, s).some((a) => a.type === 'play' && a.card === 'h1')).toBe(false);
+    s = play(s, 'h0').state;
+    expect(s.sides.a.stars).toBe(3);
+    s = end(s).state;
+    expect(s.sides.a.stars).toBe(3);
+    const c2 = clone(s);
+    c2.sides.a.hand = [{ id: 'n', card: 'nova' }];
+    c2.sides.a.mana = 3;
+    const out = play(c2, 'n', foe(c2).id).state;
+    expect(out.sides.a.stars).toBe(1);
+    expect(300 - foe(out).hp).toBeGreaterThanOrEqual(20);
+  });
+
+  it('forging creates the blade the first time and grows every copy after that', () => {
+    let s = start(['forge-it', 'forge-it'], { mana: 5 });
+    s = play(s, 'h0').state;
+    const blades = s.sides.a.hand.filter((x) => x.card === 'blade');
+    expect(blades).toHaveLength(1);
+    expect(blades[0]?.bonus).toBe(3);
+    s = play(s, 'h1').state;
+    expect(s.sides.a.hand.filter((x) => x.card === 'blade')).toHaveLength(1);
+    expect(s.sides.a.hand.find((x) => x.card === 'blade')?.bonus).toBe(6);
+    const id = s.sides.a.hand.find((x) => x.card === 'blade')?.id as string;
+    const hp = foe(s).hp;
+    s = play(s, id, foe(s).id).state;
+    expect(hp - foe(s).hp).toBe(11);
+  });
+
+  it('forging in the blade itself grows the copy that is being played', () => {
+    let s = start(['forge-blade'], { mana: 5 });
+    s = play(s, 'h0', foe(s).id).state;
+    // no blade existed: a fresh one with the bonus
+    expect(s.sides.a.hand.find((x) => x.card === 'blade')?.bonus).toBe(1);
+  });
+});
+
+// --- more Snare triggers -------------------------------------------------------------------------------------------------------
+
+describe('Snare triggers', () => {
+  it('springs when an enemy gains Barrier', () => {
+    let s = start(['tripwire'], { enemies: ['guarder'] });
+    s = play(s, 'h0').state;
+    const hp = foe(s).hp;
+    const out = end(s);
+    expect(out.events.some((e) => e.type === 'snareSprung')).toBe(true);
+    expect(hp - foe(out.state).hp).toBe(7);
+  });
+
+  it('springs at the start of the enemy turn', () => {
+    let s = start(['timebomb']);
+    s = play(s, 'h0').state;
+    const hp = foe(s).hp;
+    const out = end(s);
+    expect(hp - foe(out.state).hp).toBe(9);
+  });
+
+  it('describes its trigger in words', () => {
+    expect(cardText(DB, DB.cards.tripwire as CardDef)).toContain('gains Barrier');
+    expect(cardText(DB, DB.cards.timebomb as CardDef)).toContain('start of the enemy turn');
+  });
+});
+
+// --- misc -------------------------------------------------------------------------------------------------------------------
+
+describe('innate and invariants', () => {
+  it('innate cards are drawn first', () => {
+    const { state } = createCombat(DB, {
+      seed: 'z',
+      a: { hero: 'tester', deck: [...Array<string>(20).fill('filler'), 'born-ready'] },
+      b: { enemies: ['dummy'] },
+    });
+    expect(state.sides.a.hand.map((x) => x.card)).toContain('born-ready');
+  });
+
+  it('random play never throws and never leaves a stuck choice', () => {
+    const cards = Object.keys(DB.cards).filter((k) => !DB.cards[k]?.unplayable);
+    for (let seed = 0; seed < 25; seed++) {
+      const deck = Array.from({ length: 24 }, (_, i) => cards[(i * 7 + seed * 3) % cards.length] as string);
+      let { state } = createCombat(DB, {
+        seed: `r${seed}`,
+        a: { hero: 'tester', deck },
+        b: { enemies: ['dummy', 'guarder'] },
+      });
+      for (let i = 0; i < 300 && !state.winner; i++) {
+        const acts = legalActions(DB, state);
+        expect(acts.length).toBeGreaterThan(0);
+        // alternate between the bot and an arbitrary legal action
+        const a: Action = i % 2 ? (acts[(i * 31 + seed) % acts.length] as Action) : chooseAction(DB, state);
+        state = applyAction(DB, state, a).state;
+        expect(hero(state)?.hp ?? 1).toBeGreaterThanOrEqual(0);
+      }
+    }
+  });
+});

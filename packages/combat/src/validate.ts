@@ -14,7 +14,7 @@ export function validateDb(db: CombatDb): string[] {
   const checkOps = (
     where: string,
     ops: readonly Op[],
-    opts: { aimed: boolean; snare: boolean },
+    opts: { aimed: boolean; snare: boolean; pick?: boolean; card?: boolean; rune?: boolean },
   ): void => {
     for (const o of ops) {
       if (o.op === 'summon' && !db.units[o.unit])
@@ -32,6 +32,22 @@ export function validateDb(db: CombatDb): string[] {
         o.amount < 0
       )
         errs.push(`${where}: negative amount`);
+      if ((o.op === 'discard' || o.op === 'exhaustCards' || o.op === 'scry') && !opts.pick)
+        errs.push(`${where}: "${o.op}" asks the player to choose, so only a card's own effects may use it`);
+      if (o.op === 'power') {
+        if (!opts.card) errs.push(`${where}: "power" only works in a card`);
+        checkOps(`${where}.power`, o.ops, { aimed: false, snare: false });
+      }
+      if (o.op === 'channel' && !db.runes?.[o.rune]) errs.push(`${where}: channels unknown rune "${o.rune}"`);
+      if (o.op === 'forge' && !db.cards[o.card]) errs.push(`${where}: forges unknown card "${o.card}"`);
+      if ('scale' in o && o.scale) {
+        if (o.scale.by === 'charge' && !opts.rune) errs.push(`${where}: "charge" only works in a rune`);
+        if ((o.scale.by === 'x' || o.scale.by === 'bonus') && !opts.card)
+          errs.push(`${where}: "${o.scale.by}" only works in a card`);
+        if (o.scale.into === 'hits' && o.op !== 'damage') errs.push(`${where}: only damage has hits`);
+      }
+      if (o.op === 'status' && ['calm', 'wrath', 'radiant'].includes(o.status))
+        errs.push(`${where}: use the stance op for stances`);
       if (o.op === 'damage' && o.hits !== undefined && (!Number.isInteger(o.hits) || o.hits < 1))
         errs.push(`${where}: bad hit count`);
     }
@@ -47,7 +63,16 @@ export function validateDb(db: CombatDb): string[] {
     } else if (c.trigger) errs.push(`${id}: only Snares have triggers`);
     const aimed = c.target !== 'none';
     // inside a Snare "target" is the attacker, so it counts as aimed
-    checkOps(id, c.effects, { aimed: aimed || c.kind === 'snare', snare: c.kind === 'snare' });
+    checkOps(id, c.effects, {
+      aimed: aimed || c.kind === 'snare',
+      snare: c.kind === 'snare',
+      card: true,
+      pick: c.kind !== 'snare',
+    });
+    if (c.onDiscard) checkOps(`${id}.onDiscard`, c.onDiscard, { aimed: false, snare: false, card: true });
+    if (c.onExhaust) checkOps(`${id}.onExhaust`, c.onExhaust, { aimed: false, snare: false, card: true });
+    if (c.x && c.cost !== 0) errs.push(`${id}: an X card must have cost 0`);
+    if (c.starCost !== undefined && (!Number.isInteger(c.starCost) || c.starCost < 0)) errs.push(`${id}: bad star cost`);
     if (
       c.kind === 'snare' &&
       c.trigger !== undefined &&
@@ -103,8 +128,16 @@ export function validateDb(db: CombatDb): string[] {
     if (!b.text) errs.push(`boon ${id}: needs text`);
   }
 
+  for (const [id, rd] of Object.entries(db.runes ?? {})) {
+    if (rd.id !== id) errs.push(`rune key "${id}" does not match its id`);
+    checkOps(`rune ${id}.passive`, rd.passive, { aimed: false, snare: false, rune: true });
+    checkOps(`rune ${id}.evoke`, rd.evoke, { aimed: false, snare: false, rune: true });
+    if (!rd.text) errs.push(`rune ${id}: needs text`);
+  }
+
   for (const [id, h] of Object.entries(db.heroes)) {
     if (h.id !== id) errs.push(`hero key "${id}" does not match its id`);
+    if (h.sigil) checkOps(`hero ${id} sigil`, h.sigil, { aimed: false, snare: false });
     for (const s of h.startUnits ?? []) {
       const u = db.units[s];
       if (!u) errs.push(`hero ${id}: unknown start unit "${s}"`);
