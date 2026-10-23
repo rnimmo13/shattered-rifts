@@ -90,7 +90,7 @@ const DB: CombatDb = {
     power('feel-no-pain', 'exhaust', [{ op: 'barrier', amount: 3, to: 'self' }]),
     power('infinite', 'turnStart', [{ op: 'addCard', card: 'shiv', to: 'hand', side: 'self' }]),
     power('afterimage', 'play', [{ op: 'barrier', amount: 1, to: 'self' }]),
-    power('shiv-fan', 'play', [{ op: 'barrier', amount: 2, to: 'self' }], { tag: 'shiv' }),
+    power('shiv-fan', 'play', [{ op: 'barrier', amount: 2, to: 'self' }], { tag: 'knife' }),
     power('metal', 'turnEnd', [{ op: 'barrier', amount: 4, to: 'self' }]),
     power('tools', 'turnStart', [{ op: 'draw', amount: 1 }]),
     c('shiv', {
@@ -98,7 +98,7 @@ const DB: CombatDb = {
       kind: 'attack',
       target: 'foe',
       exhaust: true,
-      tags: ['shiv'],
+      tags: ['knife'],
       effects: [{ op: 'damage', amount: 4, to: 'target' }],
     }),
     c('accuracy', { kind: 'power', effects: [{ op: 'status', status: 'edge', amount: 3, to: 'self' }] }),
@@ -141,6 +141,11 @@ const DB: CombatDb = {
     c('tripwire', { kind: 'snare', effects: [{ op: 'damage', amount: 7, to: 'attacker' }], trigger: { on: 'foeDefends' } }),
     c('timebomb', { kind: 'snare', effects: [{ op: 'damage', amount: 9, to: 'allFoes' }], trigger: { on: 'foeTurn' } }),
     c('born-ready', { innate: true, effects: [] }),
+    c('gnaw', {
+      kind: 'attack',
+      target: 'foe',
+      effects: [{ op: 'damage', amount: 0, to: 'target', scale: { by: 'exhausted' } }],
+    }),
     // allies and the later hooks
     c('deploy', { effects: [{ op: 'summon', unit: 'bot' }] }),
     c('recycle', {
@@ -720,6 +725,62 @@ describe('allies, sacrifice and the later hooks', () => {
     const hp2 = foe(s).hp;
     s = play(s, 'h1', foe(s).id).state;
     expect(hp2 - foe(s).hp).toBe((4 + 5) * 2);
+  });
+});
+
+describe('review fixes', () => {
+  it('playing a Snare counts as playing a card for "when you play" Powers', () => {
+    let s = start(['afterimage', 'tripwire'], { enemies: ['guarder'] });
+    s = play(s, 'h0').state; // a Power sees its own play: +1
+    s = play(s, 'h1').state; // the Snare is a played card too: +1
+    expect(hero(s).barrier).toBe(2);
+    expect(s.sides.a.played).toBe(2);
+  });
+
+  it('a Power in play is not an "exhausted card" for scaling, though it leaves the deck', () => {
+    let s = start(['feel-no-pain', 'burn-out', 'gnaw'], { mana: 4 });
+    s = play(s, 'h0').state;
+    s = play(s, 'h1').state; // a real exhaust (and Feel No Pain triggers)
+    const hp = foe(s).hp;
+    s = play(s, 'h2', foe(s).id).state;
+    expect(hp - foe(s).hp).toBe(1);
+  });
+
+  it('validation catches X cards that never read X, scaling by X on a non-X card, and bad sacrifices', () => {
+    const bad: CombatDb = clone(DB);
+    bad.cards['x1'] = { id: 'x1', name: 'x', kind: 'skill', cost: 0, x: true, target: 'none', effects: [] };
+    bad.cards['x2'] = {
+      id: 'x2',
+      name: 'x',
+      kind: 'attack',
+      cost: 1,
+      target: 'foe',
+      effects: [{ op: 'damage', amount: 1, to: 'target', scale: { by: 'x' } }],
+    };
+    bad.cards['x3'] = { id: 'x3', name: 'x', kind: 'skill', cost: 0, target: 'none', effects: [{ op: 'sacrifice' }] };
+    const errs = validateDb(bad).join('\n');
+    expect(errs).toContain('x1: an X card must scale something by x');
+    expect(errs).toContain('x2: scales by x but is not an X card');
+    expect(errs).toContain('x3: sacrifice needs a card that targets an ally');
+  });
+
+  it('a rune that evokes or channels from its own effects is rejected', () => {
+    const bad: CombatDb = clone(DB);
+    bad.runes = {
+      loop: { id: 'loop', name: 'Loop', text: 't', passive: [], evoke: [{ op: 'evoke' }] },
+    };
+    expect(validateDb(bad).join()).toContain('cannot evoke or channel');
+  });
+
+  it('scry looks into a reshuffled discard pile when the draw pile is short', () => {
+    let s = start(['peek'], { draw: ['strike'] });
+    s.sides.a.discard = [
+      { id: 'z1', card: 'defend' },
+      { id: 'z2', card: 'filler' },
+    ];
+    s = play(s, 'h0').state;
+    expect(s.pending?.kind).toBe('scry');
+    expect(s.pending?.pool.length).toBe(3);
   });
 });
 

@@ -17,7 +17,7 @@ export function SidePanel(props: {
       {props.showStars && (
         <span
           className="aux aux--stars"
-          title="Stars: a second resource. Cards gain and spend them; they last the whole fight."
+          title="Lumen: a second resource. Cards gain and spend it; it lasts the whole fight."
         >
           ★ <b>{me.stars}</b>
         </span>
@@ -43,7 +43,7 @@ export function SidePanel(props: {
         </div>
       )}
       {me.powers.length > 0 && (
-        <div className="aux aux--powers" aria-label="Powers in play">
+        <div className="aux aux--powers" aria-label="Auras in play">
           {me.powers.map((p) => {
             const c = db.cards[p.card];
             return (

@@ -41,14 +41,14 @@ export const KESH: CardDef[] = [
     barrier(5),
     scaled(barrier(0), per('missingHp', 0.25)),
   ]),
-  k('uncommon', 'blood-offering', 'Blood Offering', 'skill', 0, 'none', [lose(6), mana(2), draw(3)], {
+  k('uncommon', 'blood-tithe', 'Blood Tithe', 'skill', 0, 'none', [lose(6), mana(2), draw(3)], {
     exhaust: true,
   }),
-  k('uncommon', 'heavy-blow', 'Heavy Blow', 'attack', 2, 'foe', [scaled(dmg(8), per('might', 2))]),
-  k('uncommon', 'rampage', 'Rampage', 'attack', 2, 'foe', [dmg(6, 'target', 2), status('might', 1)]),
+  k('uncommon', 'crushing-blow', 'Crushing Blow', 'attack', 2, 'foe', [scaled(dmg(8), per('might', 2))]),
+  k('uncommon', 'run-wild', 'Run Wild', 'attack', 2, 'foe', [dmg(6, 'target', 2), status('might', 1)]),
   k('uncommon', 'ravage', 'Ravage', 'attack', 2, 'none', [dmg(7, 'allFoes'), lose(3)]),
   k('rare', 'the-hunger', 'The Hunger', 'power', 1, 'none', [lose(4), status('might', 3)]),
-  k('rare', 'limit-break', 'Limit Break', 'skill', 1, 'none', [doubleSt('might', 'self')], {
+  k('rare', 'slip-the-leash', 'Slip the Leash', 'skill', 1, 'none', [doubleSt('might', 'self')], {
     exhaust: true,
   }),
   k('rare', 'berserker', 'Berserker', 'power', 1, 'none', [on('turnStart', [lose(2), mana(1)])]),
@@ -95,7 +95,7 @@ export const KESH: CardDef[] = [
   k('uncommon', 'crimson-pact', 'Crimson Pact', 'skill', 1, 'none', [lose(3), exhaustN(1), draw(2)]),
   k('uncommon', 'gnaw', 'Gnaw', 'attack', 1, 'foe', [scaled(dmg(5), per('exhausted', 2))]),
   k('uncommon', 'devour', 'Devour', 'attack', 2, 'foe', [dmg(14), heal(5)]),
-  k('uncommon', 'devour-ally', 'Devour Ally', 'skill', 0, 'ally', [
+  k('uncommon', 'devour-ally', 'Devour Ally', 'skill', 1, 'ally', [
     heal(8, 'hero'),
     status('might', 2, 'hero'),
     sacrifice,

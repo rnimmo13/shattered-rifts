@@ -25,12 +25,12 @@ const a = pool('astra', 'starfall');
 
 export const ASTRA: CardDef[] = [
   // --- basics and the token ---
-  a('basic', 'falling-star', 'Falling Star', 'attack', 1, 'foe', [dmg(6), stars(1)]),
-  a('basic', 'venerate', 'Venerate', 'skill', 1, 'none', [stars(2)]),
+  a('basic', 'meteor-jab', 'Meteor Jab', 'attack', 1, 'foe', [dmg(6), stars(1)]),
+  a('basic', 'gather-light', 'Gather Light', 'skill', 1, 'none', [stars(2)]),
   a(
     'common',
-    'sovereign-blade',
-    'Sovereign Blade',
+    'starforged-blade',
+    'Starforged Blade',
     'attack',
     1,
     'foe',
@@ -39,20 +39,20 @@ export const ASTRA: CardDef[] = [
   ),
 
   // --- Blade ---
-  a('common', 'hone', 'Hone', 'skill', 1, 'none', [forge('sovereign-blade', 3)]),
-  a('common', 'honed-strike', 'Honed Strike', 'attack', 1, 'foe', [dmg(6), forge('sovereign-blade', 2)]),
-  a('common', 'blade-ward', 'Blade Ward', 'skill', 1, 'none', [barrier(5), forge('sovereign-blade', 1)]),
-  a('common', 'whetstone', 'Whetstone', 'skill', 0, 'none', [forge('sovereign-blade', 4)], {
+  a('common', 'hone', 'Hone', 'skill', 1, 'none', [forge('starforged-blade', 3)]),
+  a('common', 'honed-strike', 'Honed Strike', 'attack', 1, 'foe', [dmg(6), forge('starforged-blade', 2)]),
+  a('common', 'blade-ward', 'Blade Ward', 'skill', 1, 'none', [barrier(5), forge('starforged-blade', 1)]),
+  a('common', 'whetstone', 'Whetstone', 'skill', 0, 'none', [forge('starforged-blade', 4)], {
     exhaust: true,
   }),
-  a('uncommon', 'crown-strike', 'Crown Strike', 'attack', 1, 'foe', [dmg(7), forge('sovereign-blade', 1)]),
-  a('uncommon', 'edgewise', 'Edgewise', 'skill', 1, 'none', [barrier(7), forge('sovereign-blade', 2)]),
-  a('uncommon', 'royal-decree', 'Royal Decree', 'skill', 2, 'none', [forge('sovereign-blade', 5), draw(1)]),
+  a('uncommon', 'crown-strike', 'Crown Strike', 'attack', 1, 'foe', [dmg(7), forge('starforged-blade', 1)]),
+  a('uncommon', 'edgewise', 'Edgewise', 'skill', 1, 'none', [barrier(7), forge('starforged-blade', 2)]),
+  a('uncommon', 'royal-decree', 'Royal Decree', 'skill', 2, 'none', [forge('starforged-blade', 5), draw(1)]),
   a('uncommon', 'knights-oath', "Knight's Oath", 'power', 1, 'none', [
     on('play', [stars(1)], { tag: 'blade' }),
   ]),
-  a('rare', 'seeking-edge', 'Seeking Edge', 'power', 2, 'none', [
-    on('turnStart', [forge('sovereign-blade', 2)]),
+  a('rare', 'ever-sharpening', 'Ever-Sharpening', 'power', 2, 'none', [
+    on('turnStart', [forge('starforged-blade', 2)]),
   ]),
 
   // --- Stars ---
@@ -60,17 +60,17 @@ export const ASTRA: CardDef[] = [
   a('common', 'starshield', 'Starshield', 'skill', 1, 'none', [barrier(6), stars(1)]),
   a('common', 'ray-of-light', 'Ray of Light', 'attack', 1, 'foe', [dmg(8)]),
   a('common', 'gleam', 'Gleam', 'attack', 1, 'foe', [dmg(7), scry(2)]),
-  a('common', 'comet', 'Comet', 'attack', 1, 'foe', [dmg(15)], { starCost: 1 }),
+  a('common', 'skybolt', 'Skybolt', 'attack', 1, 'foe', [dmg(15)], { starCost: 1 }),
   a('common', 'star-barrier', 'Star Barrier', 'skill', 1, 'none', [barrier(14)], { starCost: 1 }),
   a('uncommon', 'nova', 'Nova', 'attack', 2, 'foe', [dmg(24)], { starCost: 2 }),
-  a('uncommon', 'meteor-shower', 'Meteor Shower', 'attack', 1, 'none', [dmg(8, 'allFoes', 2)], {
+  a('uncommon', 'falling-sky', 'Falling Sky', 'attack', 1, 'none', [dmg(8, 'allFoes', 2)], {
     starCost: 3,
   }),
   a('uncommon', 'solar-flare', 'Solar Flare', 'attack', 1, 'none', [
     dmg(12, 'allFoes'),
     status('exposed', 1, 'allFoes'),
   ], { starCost: 2 }),
-  a('uncommon', 'orbit', 'Orbit', 'skill', 1, 'none', [stars(1), forge('sovereign-blade', 1), draw(1)]),
+  a('uncommon', 'orbit', 'Orbit', 'skill', 1, 'none', [stars(1), forge('starforged-blade', 1), draw(1)]),
   a('uncommon', 'cosmic-lance', 'Cosmic Lance', 'attack', 2, 'foe', [dmg(12), stars(1)]),
   a('uncommon', 'gravity-well', 'Gravity Well', 'skill', 1, 'foe', [
     status('exposed', 2, 'target'),

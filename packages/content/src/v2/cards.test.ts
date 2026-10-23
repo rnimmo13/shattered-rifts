@@ -146,7 +146,7 @@ describe('pool shape (docs/09_ROSTER.md §1)', () => {
     owns((c) => uses(c, 'channel') || uses(c, 'evoke') || uses(c, 'runeSlots'), 'ilvane');
     owns((c) => uses(c, 'stance'), 'sehra');
     owns((c) => uses(c, 'forge') || c.starCost !== undefined, 'astra');
-    owns((c) => c.tags?.includes('shiv') === true, 'quill');
+    owns((c) => c.tags?.includes('sleeve-knife') === true, 'quill');
     owns(
       (c) =>
         c.effects.some(
@@ -163,7 +163,7 @@ describe('pool shape (docs/09_ROSTER.md §1)', () => {
       for (const o of c.effects) {
         expect(['channel', 'evoke', 'stance', 'forge', 'stars', 'sacrifice']).not.toContain(o.op);
       }
-      expect(c.tags ?? []).not.toContain('shiv');
+      expect(c.tags ?? []).not.toContain('sleeve-knife');
     }
   });
 

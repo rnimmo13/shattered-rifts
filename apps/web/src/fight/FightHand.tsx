@@ -183,6 +183,7 @@ export function FightHand(p: FightHandProps) {
               width={w}
               playable={c.playable && !p.locked}
               dimmed={!c.playable}
+              {...(c.inst.bonus ? { bonus: c.inst.bonus } : {})}
             />
           </div>
         );

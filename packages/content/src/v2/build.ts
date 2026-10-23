@@ -190,7 +190,10 @@ export function plus(c: CardDef): CardDef {
         // "damage equal to X" has no flat part to improve
         if (o.amount === 0 && o.scale) return o;
         changed = true;
-        return { ...o, amount: o.amount + (o.hits && o.hits > 1 ? 1 : 3) };
+        return {
+          ...o,
+          amount: o.amount + ((o.hits && o.hits > 1) || o.scale?.into === 'hits' ? 1 : 3),
+        };
       case 'barrier':
         if (o.amount === 0 && o.scale) return o;
         changed = true;
@@ -222,10 +225,11 @@ export function plus(c: CardDef): CardDef {
         }
         return o;
       case 'heal':
+        if (o.amount === 0 && o.scale) return o;
         changed = true;
         return { ...o, amount: o.amount + 3 };
       case 'status':
-        if (o.amount > 0 && o.status !== 'stunned' && o.status !== 'shielded' && !(o.amount === 0 && o.scale)) {
+        if (o.amount > 0 && o.status !== 'stunned' && o.status !== 'shielded') {
           changed = true;
           return { ...o, amount: o.amount + 1 };
         }
@@ -234,9 +238,11 @@ export function plus(c: CardDef): CardDef {
         changed = true;
         return { ...o, unit: `${o.unit}+` };
       case 'draw':
+        if (o.amount === 0 && o.scale) return o;
         changed = true;
         return { ...o, amount: o.amount + 1 };
       case 'mana':
+        if (o.amount === 0 && o.scale) return o;
         changed = true;
         return { ...o, amount: o.amount + 1 };
       case 'loseHp':

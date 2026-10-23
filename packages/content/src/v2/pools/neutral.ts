@@ -31,16 +31,16 @@ const n = (
 ): CardDef => card(N, rarity, id, name, kind, cost, target, effects, { hero: N, ...extra });
 
 export const NEUTRAL: CardDef[] = [
-  n('basic', 'strike', 'Strike', 'attack', 1, 'foe', [dmg(6)]),
-  n('basic', 'defend', 'Defend', 'skill', 1, 'none', [barrier(5)]),
+  n('basic', 'strike', 'Slash', 'attack', 1, 'foe', [dmg(6)]),
+  n('basic', 'defend', 'Guard', 'skill', 1, 'none', [barrier(5)]),
   n('common', 'rift-bolt', 'Rift Bolt', 'attack', 0, 'foe', [dmg(5)], { exhaust: true }),
-  n('common', 'second-wind', 'Second Wind', 'skill', 1, 'none', [draw(2)]),
+  n('common', 'catch-breath', 'Catch Breath', 'skill', 1, 'none', [draw(2)]),
   n('common', 'steady-guard', 'Steady Guard', 'skill', 1, 'none', [barrier(8)], { retain: true }),
-  n('common', 'pommel-strike', 'Pommel Strike', 'attack', 1, 'foe', [dmg(8), draw(1)]),
+  n('common', 'haft-strike', 'Haft Strike', 'attack', 1, 'foe', [dmg(8), draw(1)]),
   n('common', 'shatter-strike', 'Shatter Strike', 'attack', 2, 'foe', [dmg(14)]),
   n('common', 'reckless-swing', 'Reckless Swing', 'attack', 0, 'foe', [dmg(9), lose(3)]),
   n('common', 'stagger', 'Stagger', 'attack', 1, 'foe', [dmg(4), status('faltering', 2, 'target')]),
-  n('common', 'foresight', 'Foresight', 'skill', 1, 'none', [scry(4), draw(1)]),
+  n('common', 'glimpse-ahead', 'Glimpse Ahead', 'skill', 1, 'none', [scry(4), draw(1)]),
   n('uncommon', 'rift-storm', 'Rift Storm', 'attack', 2, 'none', [dmg(7, 'allFoes')]),
   n('uncommon', 'rift-whirl', 'Rift Whirl', 'attack', 0, 'none', [
     {
@@ -55,10 +55,10 @@ export const NEUTRAL: CardDef[] = [
     exhaust: true,
   }),
   n('uncommon', 'rift-surge', 'Rift Surge', 'skill', 0, 'none', [mana(2)], { exhaust: true }),
-  n('uncommon', 'adrenaline', 'Adrenaline', 'skill', 0, 'none', [draw(2), mana(1)], {
+  n('uncommon', 'nerve-surge', 'Nerve Surge', 'skill', 0, 'none', [draw(2), mana(1)], {
     exhaust: true,
   }),
-  n('uncommon', 'sacrificial-pact', 'Sacrificial Pact', 'skill', 1, 'none', [exhaustN(1), draw(2)]),
+  n('uncommon', 'cull-the-hand', 'Cull the Hand', 'skill', 1, 'none', [exhaustN(1), draw(2)]),
   n('rare', 'rift-resonance', 'Rift Resonance', 'power', 2, 'none', [status('might', 2)]),
 ];
 

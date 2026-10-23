@@ -4,6 +4,7 @@
 import { nextInt, seedRng, shuffle } from './rng';
 import {
   CALM_EXIT_MANA,
+  EDGE_TAG,
   DEFAULT_RUNE_SLOTS,
   MANTRA_GOAL,
   MAX_ALLIES,
@@ -134,6 +135,7 @@ function addStatus(r: Run, u: Unit, st: StatusId, amount: number): void {
   r.ev.push({ type: 'status', target: u.id, status: st, amount, total: Math.max(0, total) });
   // Mantra builds towards Radiant and is spent on entering it
   if (st === 'mantra' && total >= MANTRA_GOAL) {
+    // one Radiant per goal reached; anything left over stays as Mantra
     total -= MANTRA_GOAL;
     if (total <= 0) delete u.statuses.mantra;
     else u.statuses.mantra = total;
@@ -346,7 +348,8 @@ function metricValue(r: Run, a: Act, m: Metric, of: Scale['of'], t: Unit | null)
     case 'discardPile':
       return sd.discard.length;
     case 'exhausted':
-      return sd.exhausted.length;
+      // a Power that is in play has left the deck but was not consumed: it does not count
+      return sd.exhausted.filter((c) => r.db.cards[c.card]?.kind !== 'power').length;
     case 'allies':
       return sd.units.filter((x) => x.kind === 'ally' && x.hp > 0).length;
     case 'foes':
@@ -406,7 +409,7 @@ function execOp(r: Run, a: Act, op: Op): void {
         hits += Math.floor(
           (op.scale.mult ?? 1) * metricValue(r, a, op.scale.by, op.scale.of, a.target),
         );
-      const edge = a.card?.tags?.includes('shiv') ? stacks(a.actor, 'edge') : 0;
+      const edge = a.card?.tags?.includes(EDGE_TAG) ? stacks(a.actor, 'edge') : 0;
       for (let i = 0; i < hits; i++) {
         if (r.s.winner) return;
         // a target that died mid-attack: the remaining hits find a new one
@@ -521,6 +524,11 @@ function execOp(r: Run, a: Act, op: Op): void {
     }
     case 'scry': {
       if (!a.pick) return;
+      if (side.draw.length < op.amount && side.discard.length > 0) {
+        side.draw = [...side.draw, ...shuffle(r.s.rng, side.discard)];
+        side.discard = [];
+        r.ev.push({ type: 'shuffle', side: side.id });
+      }
       const top = side.draw.slice(0, op.amount);
       if (!top.length) return;
       r.s.pending = {
@@ -1281,6 +1289,7 @@ function playCard(r: Run, action: Extract<Action, { type: 'play' }>): void {
     sd.snares.push({ id: inst.id, card: inst.card });
     r.ev.push({ type: 'snareSet', side, snare: inst.id });
     sd.played++;
+    fireTriggers(r, sd, 'play', { card: cd, target: null });
     return;
   }
   runOps(r, mkAct(hero, { target, card: cd, inst, x, pick: true }), cd.effects);

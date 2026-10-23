@@ -5,11 +5,11 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
-- **Eight Riftwalkers.** Four new characters join Maren, Rivet, Kesh and Vesper: **Quill** (Shivs, Seared and discard tricks), **Ilvane** (runes that fire every turn and burst when evoked), **Sehra** (stances: Wrath for burst, Calm for tempo, Mantra to Radiant) and **Astra** (Stars and a Sovereign Blade that every Forge sharpens for good).
-- **Every character now has three card lanes** (about 35-40 cards each, over 300 in all) so reward screens are real choices, like Silent's poison, shivs and discard. Common tools (draw, Barrier, Scry, Exhaust) are shared; engines like Shivs, Runes, Stances and Stars belong to one character each.
-- **New card abilities:** choose cards to discard or exhaust, Scry, cards that scale with the board ("damage equal to your Barrier"), X-cost cards, Powers that trigger on events, Snares that spring when an enemy defends or when the enemy turn begins, and sacrificing an ally.
+- **Eight Riftwalkers.** Four new characters join Maren, Rivet, Kesh and Vesper: **Quill** (Sleeve Knives, Seared and discard tricks), **Ilvane** (runes that fire every turn and burst when evoked), **Sehra** (stances: Fury for burst, Serene for tempo, Fervor to Radiant) and **Astra** (Lumen and a Starforged Blade that every Sharpen improves for good).
+- **Every character now has three card lanes** (about 35-40 cards each, over 300 in all) so reward screens are real choices, like Silent's poison, shivs and discard. Common tools (draw, Barrier, Scry, Exhaust) are shared; engines like Sleeve Knives, Runes, Stances and Lumen belong to one character each.
+- **New card abilities:** choose cards to discard or exhaust, Scry, cards that scale with the board ("damage equal to your Barrier"), X-cost cards, Auras that trigger on events, Snares that spring when an enemy defends or when the enemy turn begins, and sacrificing an ally.
 - **Choosing cards** opens a picker (discard, exhaust, scry); aiming a card now shows the exact damage it will do, scaling included.
-- **A board panel** shows your Stars, your row of runes (with their charge) and the Powers in play.
+- **A board panel** shows your Lumen, your row of runes (with their charge) and the Auras in play.
 
 ### Added (earlier)
 - **Potions**: carry up to three, use them for free on your turn (Fire Flask, Guard Draught, Mana Vial, Frost Phial...). Fights can drop them and the merchant sells two.

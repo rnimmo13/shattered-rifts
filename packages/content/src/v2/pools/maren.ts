@@ -29,7 +29,7 @@ export const MAREN: CardDef[] = [
   m('common', 'stand-firm', 'Stand Firm', 'skill', 1, 'none', [barrier(10)], { retain: true }),
   m('common', 'gilded-bastion', 'Gilded Bastion', 'skill', 2, 'none', [barrier(16)]),
   m('common', 'brace-up', 'Brace Up', 'skill', 0, 'none', [barrier(4)]),
-  m('common', 'shield-bash', 'Shield Bash', 'attack', 1, 'foe', [
+  m('common', 'bulwark-blow', 'Bulwark Blow', 'attack', 1, 'foe', [
     scaled(dmg(2), per('barrier')),
   ]),
   m('uncommon', 'anvil-strike', 'Anvil Strike', 'attack', 2, 'foe', [
@@ -113,5 +113,5 @@ export const MAREN: CardDef[] = [
     dmg(9, 'allFoes'),
     status('faltering', 1, 'allFoes'),
   ]),
-  m('rare', 'judgment', 'Judgment', 'attack', 3, 'foe', [dmg(24), status('exposed', 2, 'target')]),
+  m('rare', 'dawns-verdict', "Dawn's Verdict", 'attack', 3, 'foe', [dmg(24), status('exposed', 2, 'target')]),
 ];

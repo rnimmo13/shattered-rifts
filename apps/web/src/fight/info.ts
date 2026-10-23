@@ -38,13 +38,13 @@ export const STATUS_INFO: Record<
     text: 'Your runes deal 1 more damage and give 1 more Barrier per stack, and Hollow runes charge faster.',
   },
   calm: {
-    name: 'Calm',
+    name: 'Serene',
     glyph: '☾',
     tone: 'good',
     text: 'A stance. Leaving it gives you 2 Mana.',
   },
   wrath: {
-    name: 'Wrath',
+    name: 'Fury',
     glyph: '♦',
     tone: 'bad',
     text: 'A stance. You deal double attack damage and take 50% more.',
@@ -56,7 +56,7 @@ export const STATUS_INFO: Record<
     text: 'A stance. You deal triple attack damage. It ends when your turn ends.',
   },
   mantra: {
-    name: 'Mantra',
+    name: 'Fervor',
     glyph: '❂',
     tone: 'good',
     text: 'At 5 you spend it to enter Radiant.',
@@ -93,10 +93,10 @@ export const KEYWORD_INFO: Record<string, { name: string; text: string }> = {
     text: 'Absorbs damage before HP. It falls away at the start of its owner’s next turn.',
   },
   exhaust: {
-    name: 'Exhaust',
+    name: 'Consume',
     text: 'After you play it, it is removed from the rest of this fight.',
   },
-  retain: { name: 'Retain', text: 'It stays in your hand when you end your turn.' },
+  retain: { name: 'Hold', text: 'It stays in your hand when you end your turn.' },
   mana: { name: 'Mana', text: 'What you spend to play cards. It refills every turn.' },
   snare: {
     name: 'Snare',
@@ -107,14 +107,14 @@ export const KEYWORD_INFO: Record<string, { name: string; text: string }> = {
     text: 'An ally that stands beside you and acts automatically when you end your turn.',
   },
   taunt: { name: 'Taunt', text: 'Enemies must attack this unit before anything else.' },
-  innate: { name: 'Innate', text: 'It starts in your opening hand.' },
-  ethereal: { name: 'Ethereal', text: 'If it is still in your hand when you end your turn, it is exhausted.' },
+  innate: { name: 'Opening hand', text: 'It starts in your opening hand.' },
+  ethereal: { name: 'Fleeting', text: 'If it is still in your hand when you end your turn, it is consumed.' },
   discard: {
     name: 'Discard',
     text: 'Choose cards from your hand to put in your discard pile. Some cards have a bonus when discarded.',
   },
   scry: {
-    name: 'Scry',
+    name: 'Foresee',
     text: 'Look at the top cards of your draw pile and discard any you do not want.',
   },
   rune: {
@@ -125,13 +125,13 @@ export const KEYWORD_INFO: Record<string, { name: string; text: string }> = {
     name: 'Stance',
     text: 'You are in at most one stance. Entering a new one leaves the old one.',
   },
-  stars: { name: 'Stars', text: 'A second resource. Cards gain them and spend them; they last the whole fight.' },
+  stars: { name: 'Lumen', text: 'A second resource. Cards gain it and spend it; it lasts the whole fight.' },
   forge: {
-    name: 'Forge',
-    text: 'Every copy of the Sovereign Blade permanently gains damage. If you have none, you get one.',
+    name: 'Sharpen',
+    text: 'Every copy of the Starforged Blade permanently gains damage. If you have none, you get one.',
   },
-  shiv: { name: 'Shiv', text: 'A 0-cost Attack that exhausts.' },
-  power: { name: 'Power', text: 'Played once: its effect lasts for the rest of the fight.' },
+  shiv: { name: 'Sleeve Knife', text: 'A 0-cost Attack that is consumed.' },
+  power: { name: 'Aura', text: 'Played once: its effect lasts for the rest of the fight.' },
 };
 
 /** The keywords a card uses, in reading order. */
@@ -164,7 +164,7 @@ export function keywordsOf(
     if (o.op === 'stance') add(KEYWORD_INFO['stance']);
     if (o.op === 'stars') add(KEYWORD_INFO['stars']);
     if (o.op === 'forge') add(KEYWORD_INFO['forge']);
-    if (o.op === 'addCard' && o.card === 'shiv') add(KEYWORD_INFO['shiv']);
+    if (o.op === 'addCard' && o.card === 'sleeve-knife') add(KEYWORD_INFO['sleeve-knife']);
     if (o.op === 'summon' && o.unit && taunting(o.unit)) add(KEYWORD_INFO['taunt']);
     if (o.op === 'status' && o.status) {
       const s = STATUS_INFO[o.status as StatusId];

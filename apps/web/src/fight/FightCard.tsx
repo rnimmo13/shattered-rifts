@@ -8,13 +8,13 @@ import '../cards/card.css';
 const KIND_LABEL: Record<CardDef['kind'], string> = {
   attack: 'Attack',
   skill: 'Skill',
-  power: 'Power',
+  power: 'Aura',
   summon: 'Summon',
   snare: 'Snare',
 };
 
 const KEYWORDS =
-  /\b(Barrier|Exposed|Faltering|Might|Seared|Stunned|Thorns|Shielded|Exhaust|Retain|Mana|Resonance|Edge|Mantra|Calm|Wrath|Radiant|Stars?|Scry|Forge|Innate|Ethereal|Unplayable)\b/g;
+  /\b(Barrier|Exposed|Faltering|Might|Seared|Stunned|Thorns|Shielded|Exhaust|Retain|Mana|Resonance|Edge|Fervor|Serene|Fury|Radiant|Lumen|Foresee|Sharpen|Sharpened|Consume|Hold|Fleeting|Unplayable)\b/g;
 
 /** Rules text with the keywords marked **bold** for the card renderer. */
 function rulesFor(db: CombatDb, c: CardDef): string {
@@ -27,17 +27,22 @@ export interface FightCardProps {
   width: number;
   playable?: boolean;
   dimmed?: boolean;
+  /** the forge bonus this copy carries (shown, because the card text alone cannot) */
+  bonus?: number;
 }
 
 /** A Combat v2 card, drawn with the shared card frame (same canonical size and scaling as every other card). */
 export const FightCard = memo(
   forwardRef<HTMLDivElement, FightCardProps>(function FightCard(
-    { db, def, width, playable, dimmed },
+    { db, def, width, playable, dimmed, bonus },
     ref,
   ) {
     const k = width / CARD_W;
     const art = useMemo(() => cardArtV2(def), [def]);
-    const text = useMemo(() => rulesFor(db, def), [db, def]);
+    const text = useMemo(
+      () => rulesFor(db, def) + (bonus ? ` Sharpened: +${bonus}.` : ''),
+      [db, def, bonus],
+    );
     const runs = useMemo(() => parseRules(text), [text]);
     const n = text.replace(/\*\*/g, '').length;
     const size = n <= 55 ? 's' : n <= 110 ? 'm' : n <= 170 ? 'l' : 'xl';

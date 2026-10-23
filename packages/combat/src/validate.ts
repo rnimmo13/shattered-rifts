@@ -34,6 +34,8 @@ export function validateDb(db: CombatDb): string[] {
         errs.push(`${where}: negative amount`);
       if ((o.op === 'discard' || o.op === 'exhaustCards' || o.op === 'scry') && !opts.pick)
         errs.push(`${where}: "${o.op}" asks the player to choose, so only a card's own effects may use it`);
+      if (opts.rune && (o.op === 'evoke' || o.op === 'channel'))
+        errs.push(`${where}: a rune's own effects cannot evoke or channel (they would call themselves)`);
       if (o.op === 'power') {
         if (!opts.card) errs.push(`${where}: "power" only works in a card`);
         checkOps(`${where}.power`, o.ops, { aimed: o.when === 'play', snare: false });
@@ -76,6 +78,17 @@ export function validateDb(db: CombatDb): string[] {
     if (c.onDiscard) checkOps(`${id}.onDiscard`, c.onDiscard, { aimed: false, snare: false, card: true });
     if (c.onExhaust) checkOps(`${id}.onExhaust`, c.onExhaust, { aimed: false, snare: false, card: true });
     if (c.x && c.cost !== 0) errs.push(`${id}: an X card must have cost 0`);
+    const flat = [...c.effects, ...c.effects.flatMap((o) => (o.op === 'power' ? o.ops : []))];
+    const readsX = flat.some((o) => 'scale' in o && o.scale?.by === 'x');
+    if (c.x && !readsX) errs.push(`${id}: an X card must scale something by x`);
+    if (!c.x && readsX) errs.push(`${id}: scales by x but is not an X card`);
+    if (c.effects.some((o) => o.op === 'sacrifice') && c.target !== 'ally')
+      errs.push(`${id}: sacrifice needs a card that targets an ally`);
+    if (
+      (c.target === 'ally' || c.target === 'friend') &&
+      c.effects.some((o) => o.op === 'damage' && o.to === 'target')
+    )
+      errs.push(`${id}: aims at your own unit but deals it damage`);
     if (c.starCost !== undefined && (!Number.isInteger(c.starCost) || c.starCost < 0)) errs.push(`${id}: bad star cost`);
     if (
       c.kind === 'snare' &&

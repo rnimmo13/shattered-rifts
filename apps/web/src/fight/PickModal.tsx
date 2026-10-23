@@ -7,14 +7,14 @@ import { FightCard } from './FightCard';
 
 const TITLE: Record<PendingView['kind'], string> = {
   discard: 'Discard',
-  exhaust: 'Exhaust',
-  scry: 'Scry',
+  exhaust: 'Consume',
+  scry: 'Foresee',
 };
 
 function prompt(p: PendingView): string {
   const many = p.max > 1 ? `${p.max} cards` : 'a card';
   if (p.kind === 'scry') return 'Choose any cards from the top of your draw pile to discard.';
-  const verb = p.kind === 'discard' ? 'Discard' : 'Exhaust';
+  const verb = p.kind === 'discard' ? 'Discard' : 'Consume';
   if (p.min === 0) return `${verb} up to ${p.max} cards.`;
   return `${verb} ${many}.`;
 }
@@ -63,7 +63,13 @@ export function PickModal(props: {
                 aria-pressed={on}
                 onClick={() => toggle(c.id)}
               >
-                <FightCard db={props.db} def={def} width={props.width} dimmed={!on && chosen.length >= p.max} />
+                <FightCard
+                  db={props.db}
+                  def={def}
+                  width={props.width}
+                  dimmed={!on && chosen.length >= p.max}
+                  {...(c.bonus ? { bonus: c.bonus } : {})}
+                />
                 <span className="pick__tag">{on ? TITLE[p.kind] : ''}</span>
               </button>
             );

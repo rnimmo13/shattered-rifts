@@ -584,7 +584,7 @@ describe('rules text', () => {
   it('is generated from the effects', () => {
     expect(cardText(db, db.cards.strike!)).toBe('Deal 6 damage.');
     expect(cardText(db, db.cards.bash!)).toBe('Deal 8 damage. Apply 2 Exposed.');
-    expect(cardText(db, db.cards['quick-draw']!)).toBe('Draw 2 cards. Exhaust.');
+    expect(cardText(db, db.cards['quick-draw']!)).toBe('Draw 2 cards. Consume.');
     expect(cardText(db, db.cards.tripwire!)).toBe(
       'When you or an ally is attacked: Deal 8 damage to the attacker.',
     );

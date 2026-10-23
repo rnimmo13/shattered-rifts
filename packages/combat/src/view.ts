@@ -198,6 +198,9 @@ const WHO_ENEMY: Record<Sel, string> = {
   attacker: ' to the attacker',
 };
 const cap = (s: string): string => s.charAt(0).toUpperCase() + s.slice(1);
+/** What the player reads for a status or stance (the ids stay as they are in the data). */
+const STATUS_NAME: Record<string, string> = { calm: 'Serene', wrath: 'Fury', mantra: 'Fervor' };
+const sname = (s: string): string => STATUS_NAME[s] ?? cap(s);
 const article = (word: string): string => (/^[aeiou]/i.test(word) ? 'an' : 'a');
 
 /** How a metric reads in a card: `per` ("+2 per Barrier") and `equal` ("equal to your Barrier"). */
@@ -209,10 +212,10 @@ const METRIC_WORDS: Record<Metric, { per: string; equal: string }> = {
   exposed: { per: 'Exposed', equal: 'Exposed' },
   might: { per: 'Might', equal: 'Might' },
   thorns: { per: 'Thorns', equal: 'Thorns' },
-  mantra: { per: 'Mantra', equal: 'Mantra' },
+  mantra: { per: 'Fervor', equal: 'Fervor' },
   resonance: { per: 'Resonance', equal: 'Resonance' },
-  calm: { per: 'Calm', equal: 'Calm' },
-  wrath: { per: 'Wrath', equal: 'Wrath' },
+  calm: { per: 'Serene', equal: 'Serene' },
+  wrath: { per: 'Fury', equal: 'Fury' },
   radiant: { per: 'Radiant', equal: 'Radiant' },
   hand: { per: 'card in hand', equal: 'the number of cards in your hand' },
   drawPile: { per: 'card in your draw pile', equal: 'the number of cards in your draw pile' },
@@ -220,11 +223,11 @@ const METRIC_WORDS: Record<Metric, { per: string; equal: string }> = {
     per: 'card in your discard pile',
     equal: 'the number of cards in your discard pile',
   },
-  exhausted: { per: 'exhausted card', equal: 'the number of cards you have exhausted' },
+  exhausted: { per: 'consumed card', equal: 'the number of cards you have consumed' },
   allies: { per: 'ally', equal: 'the number of your allies' },
   foes: { per: 'enemy', equal: 'the number of enemies' },
   snares: { per: 'Snare set', equal: 'the number of Snares you have set' },
-  stars: { per: 'Star', equal: 'your Stars' },
+  stars: { per: 'Lumen', equal: 'your Lumen' },
   runes: { per: 'rune', equal: 'the number of your runes' },
   mana: { per: 'Mana left', equal: 'your Mana' },
   played: { per: 'card played this turn', equal: 'the cards played this turn' },
@@ -232,7 +235,7 @@ const METRIC_WORDS: Record<Metric, { per: string; equal: string }> = {
   discarded: { per: 'card discarded this turn', equal: 'the cards discarded this turn' },
   x: { per: 'Mana spent', equal: 'the Mana spent' },
   charge: { per: 'charge', equal: 'its charge' },
-  bonus: { per: 'forge bonus', equal: 'its forge bonus' },
+  bonus: { per: 'point of sharpening', equal: 'its sharpening' },
 };
 const UNIT_METRICS: readonly Metric[] = [
   'barrier',
@@ -270,7 +273,7 @@ const WHEN_TEXT: Record<string, string> = {
   turnStart: 'At the start of your turn',
   turnEnd: 'At the end of your turn',
   play: 'Whenever you play a card',
-  exhaust: 'Whenever a card is exhausted',
+  exhaust: 'Whenever a card is consumed',
   discard: 'Whenever you discard a card',
   summon: 'Whenever you summon an ally',
   snare: 'Whenever one of your Snares springs',
@@ -313,9 +316,9 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
       return `Heal ${a.equal ? `HP equal to ${a.num}` : a.num}${o.to === 'self' ? '' : who[o.to]}.`;
     }
     case 'status':
-      return `${o.amount < 0 ? 'Remove' : 'Apply'} ${at(Math.abs(o.amount), o.scale)} ${cap(o.status)}${o.to === 'self' ? '' : who[o.to]}.`;
+      return `${o.amount < 0 ? 'Remove' : 'Apply'} ${at(Math.abs(o.amount), o.scale)} ${sname(o.status)}${o.to === 'self' ? '' : who[o.to]}.`;
     case 'scaleStatus':
-      return `${o.mult === 2 ? 'Double' : o.mult === 3 ? 'Triple' : `Multiply by ${o.mult}`} the ${cap(o.status)}${who[o.to] || ' on the target'}.`;
+      return `${o.mult === 2 ? 'Double' : o.mult === 3 ? 'Triple' : `Multiply by ${o.mult}`} the ${sname(o.status)}${who[o.to] || ' on the target'}.`;
     case 'draw': {
       const a = amountText(o.amount, o.scale);
       return a.equal
@@ -329,8 +332,8 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
     case 'stars': {
       const a = amountText(Math.abs(o.amount), o.scale);
       const verb = o.amount < 0 ? 'Spend' : 'Gain';
-      if (a.equal) return `${verb} Stars equal to ${a.num}.`;
-      return `${verb} ${a.num} Star${Math.abs(o.amount) === 1 && !o.scale ? '' : 's'}.`;
+      if (a.equal) return `${verb} Lumen equal to ${a.num}.`;
+      return `${verb} ${a.num} Lumen.`;
     }
     case 'summon':
       return `Summon ${db.units[o.unit]?.name ?? o.unit}.`;
@@ -356,22 +359,23 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
           ? 'Discard any number of cards.'
           : `Discard ${o.amount} card${o.amount === 1 ? '' : 's'}.`;
     case 'exhaustCards':
-      if (o.amount >= 9 && !o.random && !o.any) return 'Exhaust your hand.';
+      if (o.amount >= 9 && !o.random && !o.any) return 'Consume your hand.';
       return o.random
-        ? `Exhaust ${o.amount} random card${o.amount === 1 ? '' : 's'}.`
+        ? `Consume ${o.amount} random card${o.amount === 1 ? '' : 's'}.`
         : o.any
-          ? 'Exhaust any number of cards.'
-          : `Exhaust ${o.amount} card${o.amount === 1 ? '' : 's'}.`;
+          ? 'Consume any number of cards.'
+          : `Consume ${o.amount} card${o.amount === 1 ? '' : 's'}.`;
     case 'scry':
-      return `Scry ${o.amount}.`;
+      return `Foresee ${o.amount}.`;
     case 'power':
     {
-      const TAGS: Record<string, string> = { shiv: 'Shiv', blade: 'Sovereign Blade' };
+      const TAGS: Record<string, string> = { knife: 'Sleeve Knife', blade: 'Starforged Blade' };
+      const KIND_WORD: Record<string, string> = { power: 'Aura' };
       const when =
         o.when === 'play'
-          ? `Whenever you play ${o.tag ? `${article(TAGS[o.tag] ?? o.tag)} ${TAGS[o.tag] ?? o.tag}` : o.filter ? `${article(o.filter)} ${cap(o.filter)}` : 'a card'}`
+          ? `Whenever you play ${o.tag ? `${article(TAGS[o.tag] ?? o.tag)} ${TAGS[o.tag] ?? o.tag}` : o.filter ? `${article(KIND_WORD[o.filter] ?? o.filter)} ${KIND_WORD[o.filter] ?? cap(o.filter)}` : 'a card'}`
           : o.when === 'stance'
-            ? `Whenever you enter ${o.stance ? cap(o.stance) : 'a stance'}`
+            ? `Whenever you enter ${o.stance ? sname(o.stance) : 'a stance'}`
             : (WHEN_TEXT[o.when] ?? o.when);
       return `${when}: ${o.ops.map((x) => opText(db, x, who)).join(' ')}`;
     }
@@ -392,11 +396,11 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
     case 'runeSlots':
       return `${o.amount >= 0 ? 'Gain' : 'Lose'} ${Math.abs(o.amount)} rune slot${Math.abs(o.amount) === 1 ? '' : 's'}.`;
     case 'stance':
-      return o.stance === 'none' ? 'Leave your stance.' : `Enter ${cap(o.stance)}.`;
+      return o.stance === 'none' ? 'Leave your stance.' : `Enter ${sname(o.stance)}.`;
     case 'sacrifice':
       return 'Sacrifice the chosen ally.';
     case 'forge':
-      return `Forge ${o.amount} (${db.cards[o.card]?.name ?? o.card} gains ${o.amount} damage).`;
+      return `Sharpen ${o.amount} (${db.cards[o.card]?.name ?? o.card} gains ${o.amount} damage).`;
   }
 }
 
@@ -417,16 +421,16 @@ export function cardText(db: CombatDb, c: CardDef): string {
     );
   }
   if (c.unplayable) parts.push('Unplayable.');
-  if (c.starCost) parts.push(`Costs ${c.starCost} Star${c.starCost === 1 ? '' : 's'}.`);
+  if (c.starCost) parts.push(`Costs ${c.starCost} Lumen.`);
   const who: Record<Sel, string> =
     c.target === 'ally' || c.target === 'friend' ? { ...WHO, target: ' to the ally' } : WHO;
   parts.push(...c.effects.map((o) => opText(db, o, who)));
-  if (c.exhaust) parts.push('Exhaust.');
-  if (c.retain) parts.push('Retain.');
-  if (c.innate) parts.push('Innate.');
-  if (c.ethereal) parts.push('Ethereal.');
+  if (c.exhaust) parts.push('Consume.');
+  if (c.retain) parts.push('Hold.');
+  if (c.innate) parts.push('Opening hand.');
+  if (c.ethereal) parts.push('Fleeting.');
   if (c.onDiscard) parts.push(`If discarded: ${c.onDiscard.map((o) => opText(db, o)).join(' ')}`);
-  if (c.onExhaust) parts.push(`If exhausted: ${c.onExhaust.map((o) => opText(db, o)).join(' ')}`);
+  if (c.onExhaust) parts.push(`If consumed: ${c.onExhaust.map((o) => opText(db, o)).join(' ')}`);
   return parts.join(' ');
 }
 

@@ -44,6 +44,8 @@ export const STANCES = ['calm', 'wrath', 'radiant'] as const;
 export type Stance = (typeof STANCES)[number];
 /** Mantra needed to enter Radiant (the stack is spent). */
 export const MANTRA_GOAL = 5;
+/** Attacks from cards with this tag gain the Edge status's bonus damage. */
+export const EDGE_TAG = 'knife';
 /** Mana gained when leaving Calm, and on entering Radiant. */
 export const CALM_EXIT_MANA = 2;
 export const RADIANT_ENTER_MANA = 2;

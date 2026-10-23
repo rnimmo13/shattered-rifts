@@ -611,7 +611,7 @@ export function FightView(props: {
           ? 'Draw pile (order hidden)'
           : kind === 'discard'
             ? 'Discard pile'
-            : 'Exhausted',
+            : 'Consumed',
       cards: pileCards(game.current?.display ?? null, kind, db),
     });
 
@@ -847,7 +847,7 @@ export function FightView(props: {
             </button>
             {(me?.exhaustedCount ?? 0) > 0 && (
               <button className="pile pile--exhaust" onClick={() => openPile('exhausted')}>
-                Exhaust <b>{me?.exhaustedCount ?? 0}</b>
+                Consumed <b>{me?.exhaustedCount ?? 0}</b>
               </button>
             )}
           </div>
