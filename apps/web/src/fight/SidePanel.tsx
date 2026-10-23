@@ -2,8 +2,9 @@
 // and the Auras in play. Each part only shows once it matters to the deck, so a Riftwalker without runes never sees an
 // empty rune row.
 
-import { cardText, type CombatDb, type SideView } from '@sr/combat';
-import { tipAttrs } from '../ui/tip';
+import { emblemSvg } from '../art/emblems';
+import { MAX_SNARES, cardText, type CombatDb, type SideView } from '@sr/combat';
+import { tipAttrs, type TipContent } from '../ui/tip';
 import { RUNE_GLYPH, UI_TIPS } from './info';
 
 /** The second resource, next to the Mana orb. */
@@ -89,6 +90,57 @@ export function AuraList(props: { db: CombatDb; me: SideView }) {
           );
         })}
       </div>
+    </div>
+  );
+}
+
+const TRIGGER_LABEL: Record<string, string> = {
+  attacked: 'when attacked',
+  hpLost: 'when hurt',
+  foeSummons: 'on a summon',
+  foeDefends: 'on Barrier',
+  foeTurn: 'enemy turn',
+};
+
+/**
+ * Face-down Snares laid as trap tiles on the floor in front of the hero: a violet trap plate with a web on it, a pulsing ring so
+ * they cannot be missed, and what sets each one off written underneath ("when attacked"). Hover for what it does.
+ */
+export function SnareRow(props: {
+  db: CombatDb;
+  me: SideView;
+  cx: number;
+  top: number;
+  tip: (card: string | null) => TipContent;
+}) {
+  const { db, me } = props;
+  if (me.snares.length === 0) return null;
+  const gap = 66;
+  return (
+    <div className="snarerow" aria-label="Your Snares">
+      <span className="snarerow__label" style={{ left: props.cx + 118, top: props.top - 22 }}>
+        Snares {me.snares.length}/{MAX_SNARES}
+      </span>
+      {me.snares.map((s, i) => {
+        const def = s.card ? db.cards[s.card] : undefined;
+        const on = def?.trigger?.on;
+        return (
+          <span
+            key={s.id}
+            className="snaretile"
+            tabIndex={0}
+            style={{ left: props.cx + 118 + i * gap, top: props.top }}
+            {...tipAttrs(props.tip(s.card))}
+          >
+            <svg
+              viewBox="0 0 64 64"
+              aria-hidden
+              dangerouslySetInnerHTML={{ __html: emblemSvg('web', '#e6d8ff') }}
+            />
+            <small>{on ? (TRIGGER_LABEL[on] ?? on) : 'trap'}</small>
+          </span>
+        );
+      })}
     </div>
   );
 }

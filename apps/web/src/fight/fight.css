@@ -1037,3 +1037,84 @@
 .fight__tip .btn {
   justify-self: end;
 }
+
+/* Snares: trap tiles on the floor in front of the hero */
+.snarerow {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 21;
+}
+.snarerow__label {
+  position: absolute;
+  font-family: var(--font-display);
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--c-violet-glow);
+  text-shadow: 0 1px 4px #000;
+  white-space: nowrap;
+}
+.snaretile {
+  position: absolute;
+  width: 3.9rem;
+  height: 5rem;
+  display: grid;
+  grid-template-rows: 1fr auto;
+  justify-items: center;
+  padding: 0.35rem 0.2rem 0.25rem;
+  border-radius: 8px;
+  border: 2px solid var(--c-violet);
+  background:
+    repeating-linear-gradient(45deg, rgb(255 255 255 / 0.05) 0 4px, transparent 4px 9px),
+    radial-gradient(circle at 50% 35%, #5a3aa8, #160a38 80%);
+  box-shadow:
+    0 6px 14px rgb(0 0 0 / 0.6),
+    0 0 16px rgb(143 91 255 / 0.7);
+  transform: rotate(-4deg) perspective(300px) rotateX(14deg);
+  pointer-events: auto;
+  cursor: help;
+  animation:
+    snare-drop 0.45s cubic-bezier(0.2, 1.5, 0.4, 1) both,
+    snare-pulse 1.8s ease-in-out 0.5s infinite;
+}
+.snaretile:nth-child(even) {
+  transform: rotate(3deg) perspective(300px) rotateX(14deg);
+}
+.snaretile svg {
+  width: 2.6rem;
+  height: 2.6rem;
+  filter: drop-shadow(0 0 6px rgb(190 150 255 / 0.9));
+}
+.snaretile small {
+  font-size: 0.56rem;
+  line-height: 1;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  text-align: center;
+  color: #efe4ff;
+}
+@keyframes snare-drop {
+  from {
+    opacity: 0;
+    translate: 0 -40px;
+    scale: 1.4;
+  }
+  to {
+    opacity: 1;
+    translate: 0 0;
+    scale: 1;
+  }
+}
+@keyframes snare-pulse {
+  50% {
+    box-shadow:
+      0 6px 14px rgb(0 0 0 / 0.6),
+      0 0 28px 4px rgb(170 120 255 / 0.95);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .snaretile {
+    animation: none;
+  }
+}

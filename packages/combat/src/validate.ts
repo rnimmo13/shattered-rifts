@@ -173,6 +173,10 @@ export function validateDb(db: CombatDb): string[] {
   for (const [id, h] of Object.entries(db.heroes)) {
     if (h.id !== id) errs.push(`hero key "${id}" does not match its id`);
     if (h.sigil) checkOps(`hero ${id} sigil`, h.sigil, { aimed: false, snare: false });
+    if (h.trait?.fightStart)
+      checkOps(`hero ${id} trait`, h.trait.fightStart, { aimed: false, snare: false });
+    if (h.trait?.turnStart)
+      checkOps(`hero ${id} trait`, h.trait.turnStart, { aimed: false, snare: false });
     for (const s of h.startUnits ?? []) {
       const u = db.units[s];
       if (!u) errs.push(`hero ${id}: unknown start unit "${s}"`);

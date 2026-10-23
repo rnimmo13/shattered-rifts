@@ -9,6 +9,7 @@ import {
   DEFAULT_RUNE_SLOTS,
   MANTRA_GOAL,
   MAX_ALLIES,
+  MAX_MAX_MANA,
   MAX_ENEMIES,
   MAX_HAND,
   MAX_RUNES,
@@ -193,6 +194,8 @@ function scaledByDifficulty(actor: Unit, target: Unit, amount: number): number {
  */
 export function modifiedDamage(base: number, attacker: Unit | null, target: Unit | null): number {
   let n = base + (attacker ? stacks(attacker, 'might') : 0);
+  if (attacker && stacks(attacker, 'clutch') > 0)
+    n = Math.floor((n * (100 + stacks(attacker, 'clutch'))) / 100);
   if (attacker && stacks(attacker, 'faltering') > 0) n = Math.floor(n * 0.75);
   if (attacker && stacks(attacker, 'radiant') > 0) n *= 3;
   else if (attacker && stacks(attacker, 'wrath') > 0) n *= 2;
@@ -201,6 +204,17 @@ export function modifiedDamage(base: number, attacker: Unit | null, target: Unit
   if (attacker && attacker.dmgPct !== 100 && n > 0)
     n = Math.max(1, Math.floor((n * attacker.dmgPct) / 100));
   return Math.max(0, n);
+}
+
+/** An innate trait that depends on HP (Clutch Genes): switch the hero's `clutch` status on or off as their HP crosses the line. */
+function syncClutch(r: Run, sd: SideState): void {
+  const c = sd.hero ? r.db.heroes[sd.hero]?.trait?.clutch : undefined;
+  const hero = heroOf(sd);
+  if (!c || !hero || hero.hp <= 0) return;
+  const on = hero.hp * 100 <= hero.maxHp * c.below;
+  const cur = stacks(hero, 'clutch');
+  if (on && cur !== c.damagePct) addStatus(r, hero, 'clutch', c.damagePct - cur);
+  else if (!on && cur > 0) addStatus(r, hero, 'clutch', -cur);
 }
 
 function applyDamage(
@@ -240,8 +254,10 @@ function applyDamage(
     shielded: false,
     kind,
   });
-  if (lost > 0 && t.kind === 'hero')
+  if (lost > 0 && t.kind === 'hero') {
+    syncClutch(r, r.s.sides[t.side]);
     fireSnare(r, t.side, { on: 'hpLost', lost, attacker: source, hit: null });
+  }
   return lost;
 }
 
@@ -472,6 +488,7 @@ function execOp(r: Run, a: Act, op: Op): void {
         if (n <= 0) continue;
         t.hp += n;
         r.ev.push({ type: 'heal', target: t.id, amount: n });
+        if (t.kind === 'hero') syncClutch(r, r.s.sides[t.side]);
       }
       return;
     case 'status':
@@ -621,7 +638,8 @@ function execOp(r: Run, a: Act, op: Op): void {
       side.nextMana += op.amount;
       return;
     case 'maxMana':
-      side.maxMana = Math.max(0, side.maxMana + op.amount);
+      side.maxMana = Math.max(0, Math.min(MAX_MAX_MANA, side.maxMana + op.amount));
+      r.ev.push({ type: 'maxMana', side: side.id, max: side.maxMana });
       gainMana(r, side, Math.max(0, op.amount));
       return;
     case 'drawNext':
@@ -1053,9 +1071,11 @@ function beginHeroTurn(r: Run, side: Side): void {
   // the second PvP player gets a small head start on their first turn
   const first = r.s.mode === 'pvp' && side === 'b' && r.s.turn === 2;
   // Mana owed from a borrowed turn comes off the top, but a turn never starts below 0
-  sd.mana = Math.max(0, sd.maxMana + (first ? 1 : 0) + sd.nextMana);
+  const rawMana = sd.maxMana + (first ? 1 : 0) + sd.nextMana;
+  sd.mana = Math.max(0, rawMana);
   const extraDraw = sd.nextDraw;
-  sd.nextMana = 0;
+  // debt beyond this turn's Mana is carried to the next, not forgiven
+  sd.nextMana = Math.min(0, rawMana);
   sd.nextDraw = 0;
   r.ev.push({ type: 'mana', side, mana: sd.mana });
   drawCards(r, sd, sd.handSize + (first ? 1 : 0) + extraDraw);
@@ -1066,6 +1086,13 @@ function beginHeroTurn(r: Run, side: Side): void {
   if (opening) {
     const sigil = sd.hero ? r.db.heroes[sd.hero]?.sigil : undefined;
     if (sigil) runOps(r, mkAct(hero), sigil);
+    const trait = sd.hero ? r.db.heroes[sd.hero]?.trait : undefined;
+    if (trait?.fightStart) runOps(r, mkAct(hero), trait.fightStart);
+  }
+  {
+    const trait = sd.hero ? r.db.heroes[sd.hero]?.trait : undefined;
+    if (trait?.turnStart) runOps(r, mkAct(hero), trait.turnStart);
+    syncClutch(r, sd);
   }
   for (const id of sd.boons) {
     const b = r.db.boons[id];

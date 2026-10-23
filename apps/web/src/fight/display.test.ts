@@ -27,6 +27,7 @@ function compare(shown: CombatState, real: CombatState, where: string): void {
       `${where} snares ${side}`,
     ).toEqual(b.snares.map((x) => x.id));
     expect(a.mana, `${where} mana ${side}`).toBe(b.mana);
+    expect(a.maxMana, `${where} max mana ${side}`).toBe(b.maxMana);
     expect(a.stars, `${where} stars ${side}`).toBe(b.stars);
     expect(
       a.runes.map((r) => r.rune),

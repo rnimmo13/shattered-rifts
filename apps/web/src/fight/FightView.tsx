@@ -43,7 +43,7 @@ import { PickModal } from './PickModal';
 import { tipAttrs, type TipContent } from '../ui/tip';
 import { UI_TIPS } from './info';
 import { loadSeen, loadTipsOn, nextTip, saveSeen, saveTipsOn } from './tips';
-import { AuraList, LumenCounter, RuneArc } from './SidePanel';
+import { AuraList, LumenCounter, RuneArc, SnareRow } from './SidePanel';
 import type { FighterSpec } from './Fighters';
 import '../duel/duel.css';
 import '../play/play.css';
@@ -915,14 +915,14 @@ export function FightView(props: {
           {me && showRunes && heroPlaced && (
             <RuneArc db={db} me={me} cx={heroPlaced.x} top={heroPlaced.y + 78} />
           )}
-          {me && me.snares.length > 0 && (
-            <div className="fight__snares">
-              {me.snares.map((s) => (
-                <span key={s.id} className="snare" tabIndex={0} {...tipAttrs(snareTip(db, s.card))}>
-                  ✧
-                </span>
-              ))}
-            </div>
+          {me && heroPlaced && (
+            <SnareRow
+              db={db}
+              me={me}
+              cx={heroPlaced.x}
+              top={heroPlaced.y - 44}
+              tip={(card) => snareTip(db, card)}
+            />
           )}
           <button
             className={`btn btn--primary fight__end${!anyPlay && !locked ? ' is-ready' : ''}`}

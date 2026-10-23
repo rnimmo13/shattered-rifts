@@ -241,6 +241,10 @@ export function plus(c: CardDef): CardDef {
         changed = true;
         return { ...o, amount: o.amount + 2 };
       case 'manaNext':
+        // owed Mana shrinks by one but never reaches 0
+        if (o.amount < 0 && o.amount > -2) return o;
+        changed = true;
+        return { ...o, amount: o.amount + 1 };
       case 'drawNext':
         changed = true;
         return { ...o, amount: o.amount + 1 };

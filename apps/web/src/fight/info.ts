@@ -129,6 +129,12 @@ export const STATUS_INFO: Record<
     tone: 'good',
     text: 'Your Barrier does not fall away at the start of your turn.',
   },
+  clutch: {
+    name: 'Clutch Genes',
+    glyph: '✊',
+    tone: 'good',
+    text: 'You are hurt, and fight harder for it: you deal more attack damage (the number is the bonus, in %).',
+  },
   holdfast: {
     name: 'Holdfast',
     glyph: '✋',

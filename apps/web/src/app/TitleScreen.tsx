@@ -1,7 +1,9 @@
-import type { CSSProperties } from 'react';
+import { useState, type CSSProperties } from 'react';
 import { RIFTWALKERS, heroesByRealm } from '@sr/content/v2';
 import { BUILD } from '../build';
+import { getHero, rememberHero } from './heroChoice';
 import { HeroIcon } from '../ui/HeroIcon';
+import { tipAttrs } from '../ui/tip';
 import { color } from '../design/tokens';
 
 const ACCENT: Record<string, string> = {
@@ -17,6 +19,7 @@ const ACCENT: Record<string, string> = {
 /** Title screen. The jagged SVG crack is the game's "shattering" motif. */
 export function TitleScreen() {
   const groups = heroesByRealm();
+  const [picked, setPicked] = useState(getHero);
   return (
     <main className="title">
       <svg className="title__crack" viewBox="0 0 1200 200" preserveAspectRatio="none" aria-hidden>
@@ -62,13 +65,29 @@ export function TitleScreen() {
             <h2 className="title__realm-name">{g.name}</h2>
             <ul className="title__roster">
               {g.heroes.map((h) => (
-                <li key={h} className="title__card">
-                  <HeroIcon hero={h} size={52} />
-                  <span className="title__card-name">{RIFTWALKERS[h].hero.name}</span>
-                  <span className="title__card-role">{RIFTWALKERS[h].role}</span>
-                  <span className="title__card-realm">
-                    {RIFTWALKERS[h].lanes.map((l) => l.split(':')[0]).join(' · ')}
-                  </span>
+                <li key={h} className={`title__card${picked === h ? ' is-picked' : ''}`}>
+                  <button
+                    type="button"
+                    className="title__pick"
+                    aria-pressed={picked === h}
+                    {...tipAttrs({
+                      kicker: `Innate · ${RIFTWALKERS[h].role}`,
+                      title: RIFTWALKERS[h].trait.name,
+                      text: RIFTWALKERS[h].trait.text,
+                    })}
+                    onClick={() => {
+                      setPicked(h);
+                      rememberHero(h);
+                    }}
+                  >
+                    <HeroIcon hero={h} size={52} />
+                    <span className="title__card-name">{RIFTWALKERS[h].hero.name}</span>
+                    <span className="title__card-role">{RIFTWALKERS[h].role}</span>
+                    <span className="title__card-realm">
+                      {RIFTWALKERS[h].lanes.map((l) => l.split(':')[0]).join(' · ')}
+                    </span>
+                    {picked === h && <span className="title__chosen">Chosen</span>}
+                  </button>
                 </li>
               ))}
             </ul>
@@ -77,6 +96,9 @@ export function TitleScreen() {
       </div>
 
       <div className="title__actions">
+        <p className="title__playing">
+          Playing as <b>{RIFTWALKERS[picked].hero.name}</b>
+        </p>
         <a className="btn btn--primary" href="#/run">
           Begin Run
         </a>

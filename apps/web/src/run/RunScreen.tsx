@@ -34,6 +34,7 @@ import {
 } from '@sr/campaign';
 import { FightView } from '../fight/FightView';
 import { BoonChip } from '../fight/BoonChip';
+import { getHero, rememberHero } from '../app/heroChoice';
 import { BoonToast } from './BoonToast';
 import { PotionChip } from '../fight/PotionChip';
 import { CharacterPicker } from './CharacterPicker';
@@ -254,7 +255,11 @@ function Sanctum(props: {
   onImport: (f: File | undefined) => void;
   notice: string | null;
 }) {
-  const [pick, setPick] = useState<HeroId>('maren');
+  const [pick, setPickState] = useState<HeroId>(getHero);
+  const setPick = (h: HeroId): void => {
+    setPickState(h);
+    rememberHero(h);
+  };
   const [difficulty, setDifficulty] = useState<Difficulty>('easy');
   const [luck, setLuck] = useState<Luck>('normal');
   return (

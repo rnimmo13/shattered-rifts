@@ -12,6 +12,7 @@ import {
 import type { CombatSetup } from '@sr/combat';
 import { DeckBuilder } from './DeckBuilder';
 import { countsOf, flatten } from './deckCatalog';
+import { getHero, rememberHero } from '../app/heroChoice';
 import { HeroIcon } from '../ui/HeroIcon';
 import { FightView } from './FightView';
 import '../play/play.css';
@@ -39,10 +40,14 @@ const newSeed = (): string =>
   `fight-${Date.now().toString(36)}-${Math.floor(Math.random() * 1e6).toString(36)}`;
 
 export default function FightScreen() {
-  const [hero, setHero] = useState<HeroId>('maren');
+  const [hero, setHeroState] = useState<HeroId>(getHero);
+  const setHero = (h: HeroId): void => {
+    setHeroState(h);
+    rememberHero(h);
+  };
   // the practice deck: any cards from the whole game, any number of copies
   const [counts, setCounts] = useState<Record<string, number>>(() =>
-    countsOf(RIFTWALKERS.maren.starter),
+    countsOf(RIFTWALKERS[getHero()].starter),
   );
   const [boons, setBoons] = useState<string[]>([]);
   const [potions, setPotions] = useState<string[]>(['fire-flask', 'guard-draught']);

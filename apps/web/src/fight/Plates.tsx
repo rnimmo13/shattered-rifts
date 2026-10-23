@@ -2,6 +2,7 @@
 
 import type { CSSProperties } from 'react';
 import type { StatusId, UnitView } from '@sr/combat';
+import { RIFTWALKERS, type HeroId } from '@sr/content/v2';
 import { HeroIcon } from '../ui/HeroIcon';
 import { tipAttrs } from '../ui/tip';
 import { INTENT_GLYPH, STATUS_INFO, UI_TIPS, statusTip } from './info';
@@ -63,7 +64,16 @@ export function UnitPlates({ items, targetable, hover, preview, heroId }: Plates
               style={style}
             >
               {preview?.id === u.id && <div className="plate__preview">{preview.text}</div>}
-              <div className="plate__name">
+              <div
+                className="plate__name"
+                {...(u.kind === 'hero' && heroId && RIFTWALKERS[heroId as HeroId]
+                  ? tipAttrs({
+                      kicker: 'Innate',
+                      title: RIFTWALKERS[heroId as HeroId].trait.name,
+                      text: RIFTWALKERS[heroId as HeroId].trait.text,
+                    })
+                  : {})}
+              >
                 {u.kind === 'hero' && heroId ? <HeroIcon hero={heroId} size={22} /> : null}
                 {u.name}
               </div>

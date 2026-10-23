@@ -125,3 +125,7 @@ The goal: every card *mechanic* a Slay the Spire player expects exists, with our
 **Deliberately not built:** card Enchantments (permanent per-card modifiers chosen out of combat), dynamic "costs less per X" cards
 (we use `cheapen` instead), and choose-one-of-three Discovery (ours adds one random card; a choice of three would need a new
 pending kind). Say the word if you want them.
+
+## Innate traits
+
+Every Riftwalker has one passive (`Riftwalker.trait`): Maren Oathkeeper (3 Barrier each turn), Rivet Tinkerer (heal 2 for you and your companions each turn), Kesh Pack Instinct (start with 1 Might for the pack), Vesper Ambusher (enemies start Exposed), Quill Weak Spot (a random enemy Exposed each turn), Ilvane Attuned (1 Resonance at the start), Sehra Inner Fire (2 Fervor at the start), Astra Starborn (1 Lumen each turn), Mire Grave Chill (enemies start with 2 Fate), KP Clutch Genes (+50% attack damage at or below half HP). Numbers are a first pass.

@@ -150,7 +150,8 @@ export function parseRun(text: string): RunState | null {
   if (text.length > 2_000_000) return null;
   let raw: unknown;
   try {
-    raw = JSON.parse(text);
+    // a card that was renamed keeps working in old saves
+    raw = JSON.parse(text.replace(/"twelve-gauge(\+?)"/g, '"slug-round$1"'));
   } catch {
     return null;
   }

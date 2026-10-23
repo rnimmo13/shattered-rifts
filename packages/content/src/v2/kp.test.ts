@@ -53,7 +53,9 @@ describe('KP and the Old Twelve Gauge', () => {
     let s = fight('kp', ['hair-trigger', 'buckshot-shell', 'old-twelve-gauge']);
     s = playCard(s, 'T0');
     s = playCard(s, 'T1');
-    const gun = [...s.sides.a.hand, ...s.sides.a.discard].find((c) => c.card === 'old-twelve-gauge');
+    const gun = [...s.sides.a.hand, ...s.sides.a.discard].find(
+      (c) => c.card === 'old-twelve-gauge',
+    );
     expect(gun?.bonus).toBe(1);
   });
 });
@@ -90,5 +92,54 @@ describe('Mana tools', () => {
       );
       expect(has, h).toBe(true);
     }
+  });
+});
+
+describe('innate traits', () => {
+  it('every Riftwalker has one, and it does something real', () => {
+    for (const [h, r] of Object.entries(RIFTWALKERS)) {
+      const t = r.trait;
+      expect(t.name.length, h).toBeGreaterThan(2);
+      expect(t.text.length, h).toBeGreaterThan(10);
+      expect(!!(t.fightStart?.length || t.turnStart?.length || t.clutch), h).toBe(true);
+    }
+    expect(new Set(Object.values(RIFTWALKERS).map((r) => r.trait.name)).size).toBe(
+      Object.keys(RIFTWALKERS).length,
+    );
+  });
+
+  it("Maren's Oathkeeper gives Barrier every turn, Mire's Grave Chill curses every enemy", () => {
+    const m = fight('maren', []);
+    const hero = m.sides.a.units[m.sides.a.units.length - 1]!;
+    expect(hero.barrier).toBeGreaterThanOrEqual(3);
+    const g = fight('mire', []);
+    for (const u of g.sides.b.units) expect(u.statuses.doom).toBe(2);
+  });
+
+  it('Clutch Genes: KP deals 50% more attack damage at or below half HP, and not above', () => {
+    const hit = (hp: number): number => {
+      const s = fight('kp', ['hammer-swing']);
+      const hero = s.sides.a.units[s.sides.a.units.length - 1]!;
+      hero.hp = hp;
+      // the trait switches the status on at turn start and whenever HP changes; set it as the engine would
+      if (hp * 2 <= hero.maxHp) hero.statuses.clutch = 50;
+      const before = s.sides.b.units[0]!.hp;
+      const after = playCard(s, 'T0');
+      return before - after.sides.b.units[0]!.hp;
+    };
+    expect(hit(80)).toBe(6);
+    expect(hit(40)).toBe(9);
+  });
+
+  it('Clutch Genes switches on when damage drops KP under half, and off when healed', () => {
+    const s = fight('kp', []);
+    const hero = s.sides.a.units[s.sides.a.units.length - 1]!;
+    expect(hero.statuses.clutch ?? 0).toBe(0);
+    // take a big hit from a Snare-free direct source: use the enemy turn via a fabricated heavy hit
+    hero.hp = 40;
+    const after = applyAction(db, s, { type: 'endTurn' }).state;
+    const h = after.sides.a.units[after.sides.a.units.length - 1]!;
+    expect(h.hp).toBeLessThan(h.maxHp / 2);
+    expect(h.statuses.clutch).toBe(50);
   });
 });

@@ -1,7 +1,7 @@
 // Combat v2 content: heroes, starter decks, cards, companions and encounters (docs/08_COMBAT_V2.md).
 
-import { validateDb, type CombatDb, type HeroDef } from '@sr/combat';
-import { addTo, channel, stance, stars } from './build';
+import { validateDb, type CombatDb, type HeroDef, type HeroTrait } from '@sr/combat';
+import { addTo, barrier, channel, heal, stance, stars, status } from './build';
 import { BOONS } from './boons';
 import { V2_CARDS } from './cards';
 import { RUNES } from './pools/ilvane';
@@ -21,6 +21,8 @@ export interface Riftwalker {
   /** the three lanes of its card pool, shown on the character screen (docs/09_ROSTER.md) */
   /** what kind of fighter this is, in one word players know ("Knight", "Assassin"...) */
   role: string;
+  /** the innate trait every one of this character's fights starts with (shown on the character screens) */
+  trait: HeroTrait;
   lanes: [string, string, string];
   /** a few plain sentences on how this character plays (shown on the character screen and the Learn page) */
   howTo: string[];
@@ -34,6 +36,11 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
   maren: {
     realm: 'aurelion',
     role: 'Knight',
+    trait: {
+      name: 'Oathkeeper',
+      text: 'Start every turn with 3 Barrier.',
+      turnStart: [barrier(3)],
+    },
     hero: { id: 'maren', name: 'Ser Maren Ashcourt', maxHp: 80, mana: 3, handSize: 5 },
     starter: [...rep('strike', 4), ...rep('defend', 4), 'dawn-smite', 'oathbound'],
     blurb: 'A knight of the Gilded Order. No companions: Barrier, Thorns and punishing Snares.',
@@ -51,6 +58,11 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
   rivet: {
     realm: 'nexus',
     role: 'Engineer',
+    trait: {
+      name: 'Tinkerer',
+      text: 'At the start of your turn, you and your companions heal 2.',
+      turnStart: [heal(2, 'allFriends')],
+    },
     hero: { id: 'rivet', name: 'Rivet', maxHp: 66, mana: 3, handSize: 5, startUnits: ['drone'] },
     starter: [...rep('strike', 5), ...rep('defend', 3), 'deploy-drone', 'overclock'],
     blurb:
@@ -65,6 +77,11 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
   kesh: {
     realm: 'wyldmaw',
     role: 'Hunter',
+    trait: {
+      name: 'Pack Instinct',
+      text: 'Start every fight with 1 Might for you and your companions.',
+      fightStart: [status('might', 1, 'allFriends')],
+    },
     hero: {
       id: 'kesh',
       name: 'Kesh the Unfed',
@@ -85,6 +102,11 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
   vesper: {
     realm: 'umbral',
     role: 'Trapper',
+    trait: {
+      name: 'Ambusher',
+      text: 'Every enemy starts the fight Exposed.',
+      fightStart: [status('exposed', 1, 'allFoes')],
+    },
     hero: { id: 'vesper', name: 'Vesper Nightlace', maxHp: 76, mana: 3, handSize: 5 },
     starter: [...rep('strike', 3), ...rep('defend', 4), ...rep('veil-strike', 2), 'set-the-web'],
     blurb: 'A masked trapper. No companions: Snares, Exposed and patience.',
@@ -102,6 +124,11 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
   quill: {
     realm: 'umbral',
     role: 'Assassin',
+    trait: {
+      name: 'Weak Spot',
+      text: 'At the start of your turn, a random enemy becomes Exposed.',
+      turnStart: [status('exposed', 1, 'randomFoe')],
+    },
     hero: {
       id: 'quill',
       name: 'Quill, the Knife-Dancer',
@@ -127,6 +154,11 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
   ilvane: {
     realm: 'nexus',
     role: 'Runecaster',
+    trait: {
+      name: 'Attuned',
+      text: 'Start every fight with 1 Resonance.',
+      fightStart: [status('resonance', 1)],
+    },
     hero: {
       id: 'ilvane',
       name: 'Ilvane, the Glyphwright',
@@ -148,6 +180,11 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
   sehra: {
     realm: 'aurelion',
     role: 'Barbarian',
+    trait: {
+      name: 'Inner Fire',
+      text: 'Start every fight with 2 Fervor.',
+      fightStart: [status('mantra', 2)],
+    },
     hero: {
       id: 'sehra',
       name: 'Sehra, the Still Flame',
@@ -169,6 +206,11 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
   astra: {
     realm: 'starfall',
     role: 'Spellblade',
+    trait: {
+      name: 'Starborn',
+      text: 'Gain 1 Lumen at the start of your turn.',
+      turnStart: [stars(1)],
+    },
     hero: {
       id: 'astra',
       name: 'Astra, the Starcaller',
@@ -195,6 +237,11 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
   kp: {
     realm: 'midden',
     role: 'Drunkard',
+    trait: {
+      name: 'Clutch Genes',
+      text: 'While at or below half HP, you deal 50% more attack damage.',
+      clutch: { below: 50, damagePct: 50 },
+    },
     hero: {
       id: 'kp',
       name: 'KP, the Homeless Drunk',
@@ -235,6 +282,11 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
   mire: {
     realm: 'gloomfen',
     role: 'Necromancer',
+    trait: {
+      name: 'Grave Chill',
+      text: 'Every enemy starts the fight with 2 Fate.',
+      fightStart: [status('doom', 2, 'allFoes')],
+    },
     hero: {
       id: 'mire',
       name: 'Mire, the Gravewarden',
@@ -335,7 +387,9 @@ export const COMBAT_DB: CombatDb = {
   boons: Object.fromEntries(BOONS.map((b) => [b.id, b])),
   potions: Object.fromEntries(POTIONS.map((p) => [p.id, p])),
   units: Object.fromEntries([...ALLIES, ...ENEMY_UNITS].map((u) => [u.id, u])),
-  heroes: Object.fromEntries(Object.values(RIFTWALKERS).map((r) => [r.hero.id, r.hero])),
+  heroes: Object.fromEntries(
+    Object.values(RIFTWALKERS).map((r) => [r.hero.id, { ...r.hero, trait: r.trait }]),
+  ),
 };
 
 /** Cards a Riftwalker may be offered as rewards: their own pool and Neutral, never basics, tokens or junk. */

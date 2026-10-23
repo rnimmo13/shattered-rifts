@@ -1,13 +1,14 @@
 // A Riftwalker's own icon: their emblem on a round plate in their colour. Every character has a different symbol and colour,
 // so they can be told apart at a glance on the title screen, the pickers, the fight plates and the card book.
 
+import { useId } from 'react';
 import { HERO_COLOR, HERO_EMBLEM, emblemSvg } from '../art/emblems';
 
 export function HeroIcon(props: { hero: string; size?: number; plate?: boolean; title?: string }) {
   const { hero, size = 40, plate = true } = props;
   const color = HERO_COLOR[hero] ?? '#d4a84b';
   const markup = emblemSvg(HERO_EMBLEM[hero] ?? 'shield', plate ? '#10142a' : color);
-  const id = `hi-${hero}`;
+  const id = `hi-${useId().replace(/:/g, '')}`;
   return (
     <svg
       className="heroicon"

@@ -62,6 +62,9 @@ export function CharacterPicker(props: { value: HeroId; onChange: (id: HeroId) =
           </h2>
           <p className="picker__style">{c.blurb}</p>
           {quote && <p className="picker__quote">{quote}</p>}
+          <p className="picker__trait">
+            <b>Innate: {c.trait.name}</b> {c.trait.text}
+          </p>
           <ul className="picker__how" aria-label="How it works">
             {c.howTo.map((l) => (
               <li key={l}>{l}</li>

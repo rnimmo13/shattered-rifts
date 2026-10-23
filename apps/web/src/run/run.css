@@ -1237,3 +1237,14 @@
     animation: none;
   }
 }
+
+.picker__trait {
+  margin: 0 0 0.7rem;
+  padding: 0.45rem 0.7rem;
+  border-left: 3px solid var(--c-gold);
+  background: rgb(212 168 75 / 0.08);
+  font-size: 0.92rem;
+}
+.picker__trait b {
+  color: var(--c-gold-light);
+}

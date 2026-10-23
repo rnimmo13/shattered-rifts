@@ -37,7 +37,8 @@ export type StatusId =
   | 'mirrored' // your next skill card is played twice, per stack
   | 'unbound' // your skills cost 0 and are consumed when played
   | 'fortified' // your Barrier does not fall away at the start of your turn
-  | 'holdfast'; // your whole hand is held at the end of your turn, per stack (one turn each)
+  | 'holdfast' // your whole hand is held at the end of your turn, per stack (one turn each)
+  | 'clutch'; // an innate trait's state: you deal this % more attack damage (set by the engine while you are hurt)
 export const STATUS_IDS: readonly StatusId[] = [
   'exposed',
   'faltering',
@@ -65,6 +66,7 @@ export const STATUS_IDS: readonly StatusId[] = [
   'unbound',
   'fortified',
   'holdfast',
+  'clutch',
 ];
 /** Debuffs: a Steadfast unit ignores the next one put on it. */
 export const DEBUFFS: readonly StatusId[] = [
@@ -307,6 +309,19 @@ export interface UnitDef {
   art?: string;
 }
 
+/**
+ * An innate trait: a passive every Riftwalker has. `fightStart` ops run once as the fight begins, `turnStart` ops every one
+ * of their turns, and `clutch` makes them deal `damagePct`% more attack damage while at or below `below`% of their HP.
+ */
+export interface HeroTrait {
+  name: string;
+  /** what it does, in a sentence (shown on the character screens and the hero's plate) */
+  text: string;
+  fightStart?: Op[];
+  turnStart?: Op[];
+  clutch?: { below: number; damagePct: number };
+}
+
 export interface HeroDef {
   id: string;
   name: string;
@@ -317,6 +332,8 @@ export interface HeroDef {
   startUnits?: string[];
   /** the Sigil: ops run when the fight begins (after the first draw) */
   sigil?: Op[];
+  /** the innate trait: something this character always has (see HeroTrait) */
+  trait?: HeroTrait;
   art?: string;
 }
 
@@ -505,6 +522,8 @@ export interface CombatState {
 }
 
 export const MAX_ALLIES = 3;
+/** Maximum Mana can be raised during a fight, but never past this */
+export const MAX_MAX_MANA = 6;
 export const MAX_ENEMIES = 4;
 export const MAX_SNARES = 3;
 export const MAX_HAND = 10;
@@ -559,6 +578,7 @@ export type CombatEvent =
   | { type: 'exhaust'; side: Side; card: InstId; def: CardId }
   | { type: 'addCard'; side: Side; card: InstId; def: CardId; to: 'hand' | 'discard' | 'draw' }
   | { type: 'mana'; side: Side; mana: number }
+  | { type: 'maxMana'; side: Side; max: number }
   | { type: 'play'; side: Side; card: InstId; def: CardId; target: UnitId | null }
   | { type: 'potion'; side: Side; index: number; potion: string; target: UnitId | null }
   | { type: 'act'; unit: UnitId; move: string | null } // a unit begins its action (lunge animation)

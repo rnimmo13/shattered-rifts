@@ -11,7 +11,7 @@ export function BoonToast(props: { id: string; more: number; onDone: () => void 
   useEffect(() => {
     const t = window.setTimeout(onDone, 6500);
     return () => window.clearTimeout(t);
-  }, [props.id, onDone]);
+  }, [props.id, props.more, onDone]);
   if (!b) return null;
   return (
     <button
