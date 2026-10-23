@@ -5,6 +5,8 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **Build number.** A small label in the bottom-right corner of every screen (and on the title screen) shows the version, the commit it was built from and when, e.g. `v0.1.0 · 44fc840 · 23 Oct 2026, 14:05`. Hover it for details. A `+` after the commit means the build had uncommitted changes. Please include it in bug reports.
+- **Role tags.** Every Riftwalker now has a one-word role so you can tell at a glance what they are: Knight (Maren), Engineer (Rivet), Barbarian (Kesh), Trapper (Vesper), Assassin (Quill), Runecaster (Ilvane), Monk (Sehra), Spellblade (Astra), Necromancer (Mire).
 - **Card luck setting.** On the Sanctum screen, choose Card luck: normal, lucky (about 2.5x as many rares in offers) or blessed (mostly rares). It also stocks the merchant with better cards. Great for testing strong decks; normal stays the designed game.
 - **Tooltips everywhere.** Hover Barrier, HP, status chips, Mana, Lumen, runes, Auras, Snares and the card piles for a proper explanation. Keyword explanations now appear beside the card you are holding, and the big card preview on shop, reward and deck screens lists them too.
 - **Boons and potions are clearer.** Boons are medallions with a symbol and a rich tooltip; potions are real flask icons coloured by what they do, on a labelled belt with three slots, so they cannot be mistaken for anything else.

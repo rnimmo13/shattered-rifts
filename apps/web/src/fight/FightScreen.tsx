@@ -86,7 +86,10 @@ export default function FightScreen() {
                     setCounts(countsOf(RIFTWALKERS[h].starter));
                   }}
                 >
-                  <span className="setup__charName">{RIFTWALKERS[h].hero.name}</span>
+                  <span className="setup__charName">
+                    {RIFTWALKERS[h].hero.name}{' '}
+                    <small className="setup__charRole">{RIFTWALKERS[h].role}</small>
+                  </span>
                   <span>
                     {RIFTWALKERS[h].hero.maxHp} HP · {REALM_NAME[RIFTWALKERS[h].realm]}
                   </span>

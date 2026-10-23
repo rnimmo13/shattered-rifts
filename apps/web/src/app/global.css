@@ -506,3 +506,44 @@ body:has(.learn) {
 .tip--keywords {
   gap: 0.4rem;
 }
+
+.title__card-role {
+  justify-self: center;
+  padding: 0.05rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent);
+  border: 1px solid color-mix(in srgb, var(--accent) 60%, transparent);
+  background: rgb(8 10 22 / 0.55);
+}
+.learn h4 small {
+  margin-left: 0.5rem;
+  font-size: 0.7rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-weight: 400;
+  color: var(--c-cyan-glow);
+}
+
+/* the build label */
+.buildbadge {
+  position: fixed;
+  right: 6px;
+  bottom: 2px;
+  z-index: 900;
+  padding: 0 0.4rem;
+  font-size: 10px;
+  line-height: 14px;
+  letter-spacing: 0.04em;
+  color: rgb(214 220 255 / 0.55);
+  background: rgb(4 5 11 / 0.45);
+  border-radius: 4px;
+  user-select: text;
+  pointer-events: auto;
+  cursor: help;
+}
+.buildbadge:hover {
+  color: var(--c-ivory);
+}

@@ -1120,3 +1120,23 @@
     text-align: left;
   }
 }
+
+/* what kind of fighter: one word */
+.picker__role {
+  padding: 0.05rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--c-gold-light);
+  border: 1px solid var(--c-gold-dark);
+  background: rgb(8 10 22 / 0.7);
+}
+.picker__titlerole {
+  margin-left: 0.5rem;
+  font-family: var(--font-body, inherit);
+  font-size: 0.8rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--c-cyan-glow);
+}

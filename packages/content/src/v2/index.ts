@@ -18,6 +18,8 @@ export interface Riftwalker {
   starter: string[];
   blurb: string;
   /** the three lanes of its card pool, shown on the character screen (docs/09_ROSTER.md) */
+  /** what kind of fighter this is, in one word players know ("Knight", "Assassin"...) */
+  role: string;
   lanes: [string, string, string];
   /** a few plain sentences on how this character plays (shown on the character screen and the Learn page) */
   howTo: string[];
@@ -28,6 +30,7 @@ const rep = (id: string, n: number): string[] => Array<string>(n).fill(id);
 export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
   maren: {
     realm: 'aurelion',
+    role: 'Knight',
     hero: { id: 'maren', name: 'Ser Maren Ashcourt', maxHp: 80, mana: 3, handSize: 5 },
     starter: [...rep('strike', 4), ...rep('defend', 4), 'dawn-smite', 'oathbound'],
     blurb: 'A knight of the Gilded Order. No companions: Barrier, Thorns and punishing Snares.',
@@ -44,6 +47,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
   },
   rivet: {
     realm: 'nexus',
+    role: 'Engineer',
     hero: { id: 'rivet', name: 'Rivet', maxHp: 66, mana: 3, handSize: 5, startUnits: ['drone'] },
     starter: [...rep('strike', 5), ...rep('defend', 3), 'deploy-drone', 'overclock'],
     blurb:
@@ -57,6 +61,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
   },
   kesh: {
     realm: 'wyldmaw',
+    role: 'Barbarian',
     hero: {
       id: 'kesh',
       name: 'Kesh the Unfed',
@@ -76,6 +81,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
   },
   vesper: {
     realm: 'umbral',
+    role: 'Trapper',
     hero: { id: 'vesper', name: 'Vesper Nightlace', maxHp: 76, mana: 3, handSize: 5 },
     starter: [...rep('strike', 3), ...rep('defend', 4), ...rep('veil-strike', 2), 'set-the-web'],
     blurb: 'A masked trapper. No companions: Snares, Exposed and patience.',
@@ -92,6 +98,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
   },
   quill: {
     realm: 'umbral',
+    role: 'Assassin',
     hero: {
       id: 'quill',
       name: 'Quill, the Knife-Dancer',
@@ -116,6 +123,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
   },
   ilvane: {
     realm: 'nexus',
+    role: 'Runecaster',
     hero: {
       id: 'ilvane',
       name: 'Ilvane, the Glyphwright',
@@ -136,6 +144,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
   },
   sehra: {
     realm: 'aurelion',
+    role: 'Monk',
     hero: {
       id: 'sehra',
       name: 'Sehra, the Still Flame',
@@ -156,6 +165,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
   },
   astra: {
     realm: 'starfall',
+    role: 'Spellblade',
     hero: {
       id: 'astra',
       name: 'Astra, the Starcaller',
@@ -181,6 +191,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
   },
   mire: {
     realm: 'gloomfen',
+    role: 'Necromancer',
     hero: {
       id: 'mire',
       name: 'Mire, the Gravewarden',

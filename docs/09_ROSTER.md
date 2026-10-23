@@ -56,6 +56,8 @@ Sigils (a passive on turn 1, so each run has an identity). The original four use
 fight with a Sleeve Knife in hand); **Ilvane** *Primed* (start each fight with one Spark rune); **Sehra** *Centred* (start each fight in
 Serene); **Astra** *Starlit* (start each fight with 2 Lumen).
 
+Role tags (what kind of fighter, shown on every character screen): Maren **Knight**, Rivet **Engineer**, Kesh **Barbarian**, Vesper **Trapper**, Quill **Assassin**, Ilvane **Runecaster**, Sehra **Monk**, Astra **Spellblade**, Mire **Necromancer**. One word, unique per character (`Riftwalker.role`, tested).
+
 ## 3. Engine pieces (all generic ops; never a card id in engine code)
 
 | Piece | What | Used by |

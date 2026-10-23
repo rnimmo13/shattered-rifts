@@ -1408,3 +1408,12 @@
   border-color: #6df0a8;
   color: #bdf8d4;
 }
+
+.setup__charRole {
+  margin-left: 0.4rem;
+  font-size: 0.7rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-weight: 400;
+  color: var(--c-cyan-glow);
+}

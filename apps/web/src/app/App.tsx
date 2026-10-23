@@ -1,4 +1,5 @@
 import { Suspense, lazy, useEffect, useState } from 'react';
+import { BuildBadge } from '../ui/BuildBadge';
 import { TooltipLayer } from '../ui/Tooltip';
 import { LearnScreen } from './LearnScreen';
 import { TitleScreen } from './TitleScreen';
@@ -23,6 +24,7 @@ export function App() {
   return (
     <>
       <Screens hash={hash} />
+      <BuildBadge />
       <TooltipLayer />
     </>
   );

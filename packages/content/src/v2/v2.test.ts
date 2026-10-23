@@ -201,3 +201,11 @@ describe('potions', () => {
     }
   });
 });
+
+describe('every Riftwalker says what kind of fighter it is', () => {
+  it('has a one-word role, and no two share one', () => {
+    const roles = Object.values(RIFTWALKERS).map((r) => r.role);
+    for (const role of roles) expect(role).toMatch(/^[A-Z][a-z]+$/);
+    expect(new Set(roles).size).toBe(roles.length);
+  });
+});

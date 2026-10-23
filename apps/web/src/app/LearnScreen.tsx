@@ -30,7 +30,9 @@ export function LearnScreen() {
             <h3>{g.name}</h3>
             {g.heroes.map((h) => (
               <article key={h} className="learn__hero">
-                <h4>{RIFTWALKERS[h].hero.name}</h4>
+                <h4>
+                  {RIFTWALKERS[h].hero.name} <small>{RIFTWALKERS[h].role}</small>
+                </h4>
                 <ul>
                   {RIFTWALKERS[h].howTo.map((l) => (
                     <li key={l}>{l}</li>

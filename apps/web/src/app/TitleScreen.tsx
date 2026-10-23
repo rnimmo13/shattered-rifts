@@ -1,5 +1,6 @@
 import type { CSSProperties } from 'react';
 import { RIFTWALKERS, heroesByRealm } from '@sr/content/v2';
+import { BUILD } from '../build';
 import { color } from '../design/tokens';
 
 const ACCENT: Record<string, string> = {
@@ -62,6 +63,7 @@ export function TitleScreen() {
                 <li key={h} className="title__card">
                   <span className="title__sigil" aria-hidden />
                   <span className="title__card-name">{RIFTWALKERS[h].hero.name}</span>
+                  <span className="title__card-role">{RIFTWALKERS[h].role}</span>
                   <span className="title__card-realm">
                     {RIFTWALKERS[h].lanes.map((l) => l.split(':')[0]).join(' · ')}
                   </span>
@@ -87,7 +89,7 @@ export function TitleScreen() {
         Runs are in early alpha: expect rough edges, and the difficulty is not tuned yet.
       </p>
 
-      <p className="title__footer">combat v2 preview</p>
+      <p className="title__footer">combat v2 preview · {BUILD.label}</p>
     </main>
   );
 }
