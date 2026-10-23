@@ -281,10 +281,10 @@ describe('pool shape (docs/09_ROSTER.md §1)', () => {
 
 describe('lanes (each character has three, each with room to build a deck)', async () => {
   const { laneOf, laneSizes } = await import('./index');
-  it('every Riftwalker has three lanes of at least 7 cards each, and most of their cards belong to one', () => {
+  it('every Riftwalker has three lanes of at least 12 cards each, and most of their cards belong to one', () => {
     for (const h of HEROES) {
       const sizes = laneSizes(h);
-      for (const n of sizes) expect(n, `${h} lanes ${sizes.join('/')}`).toBeGreaterThanOrEqual(7);
+      for (const n of sizes) expect(n, `${h} lanes ${sizes.join('/')}`).toBeGreaterThanOrEqual(12);
       const own = rewardPool(h).filter(
         (id) => db.cards[id]?.hero === h && db.cards[id]?.rarity !== 'legendary',
       );

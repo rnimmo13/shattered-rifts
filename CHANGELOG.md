@@ -5,6 +5,8 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **Every build now has at least 12 cards.** About 40 new cards fill out the thinner lanes of Maren, Rivet, Ilvane, Mire, Astra, Kesh, Vesper, Quill, Sehra and KP (for example Maren's Rampart, Citadel March, Caltrops, Bramble Storm and Radiant Renewal; Rivet's Overwatch, Grand Assembly and Forge Titan; Ilvane's Permafrost and Abyssal Glyph; Mire's Funeral Pyre and Ash Ritual; Astra's Celestial Edge). A test keeps every lane at 12 or more.
+- Sehra is now called a barbarian everywhere (the old "monk" wording is gone from her blurb).
 - **A new rune for Ilvane: Splinter.** It chips every enemy for 2 at the end of your turn and releases for 6 to every enemy. New cards: Splinter Cast, Prismatic Burst, Shard Chorus and the rare Glasswright (a Splinter every turn). Ilvane's HP is 74 (was 56).
 - **Astra and Sehra are stronger.** Astra starts with 3 Lumen, gains 3 each turn and has a second Lumen Bolt in her starting deck; her Lumen spenders, Starforged Blade, Ray of Light and Cosmic Lance hit harder. Sehra has 104 HP (was 90). In the bot sim Astra went from 5% to about 23% of Normal runs and Sehra from 17% to about 33%.
 - **Runes sit beside the hero** (in a curved column towards the enemies) instead of on top of the buffs under the health bar.

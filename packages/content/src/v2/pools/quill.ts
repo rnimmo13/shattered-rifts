@@ -70,6 +70,11 @@ export const QUILL: CardDef[] = [
     on('play', [dmg(1, 'allFoes')]),
   ]),
 
+  q('common', 'knife-fan', 'Knife Fan', 'attack', 1, 'none', [
+    dmg(3, 'allFoes'),
+    addTo('sleeve-knife'),
+  ]),
+
   // --- Seared ---
   q('common', 'needle-jab', 'Needle Jab', 'attack', 0, 'foe', [
     dmg(4),

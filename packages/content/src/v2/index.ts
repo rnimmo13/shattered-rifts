@@ -200,7 +200,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     },
     starter: [...rep('strike', 4), ...rep('defend', 4), 'kindle-fury', 'still-guard'],
     blurb:
-      'A monk who fights in stances. Starts every fight Serene. Fury for burst, Serene for tempo, Fervor for Radiance.',
+      'A barbarian who fights in stances. Starts every fight Serene. Fury for burst, Serene for tempo, Fervor for Radiance.',
     lanes: ['Fury: burst', 'Serene: Mana and cards', 'Fervor: build to Radiant'],
     howTo: [
       'You start Serene. You are in at most one stance at a time.',

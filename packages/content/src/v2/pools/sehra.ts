@@ -1,4 +1,4 @@
-// Sehra, the Still Flame (Aurelion). A monk of the Gilded Order's silent branch. No companions. Starts the fight in Calm.
+// Sehra, the Still Flame (Aurelion). A barbarian of the Gilded Order's silent branch. No companions. Starts the fight in Calm.
 // Stances: Calm (leaving it gives 2 Mana), Wrath (deal double, take 50% more), Radiant (deal triple, ends with your turn).
 // Three lanes:
 //   Wrath   - burst: enter Wrath, hit hard, get out
@@ -53,6 +53,8 @@ export const SEHRA: CardDef[] = [
   s('rare', 'wrath-incarnate', 'Wrath Incarnate', 'power', 2, 'none', [
     on('turnStart', [stance('wrath')]),
   ]),
+
+  s('common', 'red-mist', 'Red Mist', 'attack', 1, 'none', [dmg(5, 'allFoes'), stance('wrath')]),
 
   // --- Calm ---
   s('common', 'centre-yourself', 'Centre Yourself', 'skill', 1, 'none', [draw(2), stance('calm')]),

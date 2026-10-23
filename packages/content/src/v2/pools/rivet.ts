@@ -57,6 +57,11 @@ export const RIVET: CardDef[] = [
     on('summon', [status('might', 1, 'allFriends')]),
   ]),
 
+  r('common', 'drone-barrage', 'Drone Barrage', 'attack', 1, 'foe', [
+    scaled(dmg(3), per('allies', 2)),
+  ]),
+  r('uncommon', 'parts-bin', 'Parts Bin', 'skill', 1, 'none', [summon('micro-drone'), draw(1)]),
+
   // --- Assemble ---
   r('common', 'ping', 'Ping', 'skill', 0, 'none', [ACT], { exhaust: true }),
   r('common', 'jumpstart', 'Jumpstart', 'skill', 1, 'none', [ACT, barrier(4)]),
@@ -81,6 +86,22 @@ export const RIVET: CardDef[] = [
   }),
   r('rare', 'perpetual-motion', 'Perpetual Motion', 'power', 3, 'none', [on('turnStart', [ACT])]),
 
+  r('common', 'sync-pulse', 'Sync Pulse', 'skill', 1, 'none', [ACT, heal(3, 'allFriends')]),
+  r('common', 'relay-strike', 'Relay Strike', 'attack', 1, 'foe', [dmg(6), ACT]),
+  r('uncommon', 'overwatch', 'Overwatch', 'snare', 1, 'none', [ACT, dmg(6, 'attacker')], {
+    trigger: { on: 'attacked' },
+  }),
+  r(
+    'rare',
+    'grand-assembly',
+    'Grand Assembly',
+    'skill',
+    2,
+    'none',
+    [ACT, ACT, status('might', 1, 'allFriends')],
+    { exhaust: true },
+  ),
+
   // --- Core ---
   r('common', 'repair-bot', 'Repair Bot', 'summon', 1, 'none', [summon('repair-bot')]),
   r('common', 'build-enforcer', 'Build Enforcer', 'summon', 2, 'none', [summon('enforcer')]),
@@ -97,6 +118,19 @@ export const RIVET: CardDef[] = [
   r('rare', 'reactor', 'Reactor', 'power', 2, 'none', [status('might', 3, 'allFriends')]),
   r('rare', 'overclock-core', 'Overclock Core', 'power', 3, 'none', [
     on('turnStart', [status('might', 1, 'allFriends')]),
+  ]),
+
+  r('common', 'weld-armor', 'Weld Armor', 'skill', 1, 'ally', [
+    barrier(10, 'target'),
+    heal(4, 'target'),
+  ]),
+  r('uncommon', 'heavy-plating', 'Heavy Plating', 'power', 1, 'none', [
+    on('summon', [barrier(5, 'allFriends')]),
+  ]),
+  r('uncommon', 'retrofit', 'Retrofit', 'skill', 1, 'ally', [status('might', 3, 'target')]),
+  r('rare', 'forge-titan', 'Forge Titan', 'summon', 3, 'none', [
+    summon('war-engine'),
+    status('might', 1, 'allFriends'),
   ]),
 
   // --- shared tools ---

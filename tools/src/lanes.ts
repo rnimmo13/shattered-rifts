@@ -127,6 +127,8 @@ const KP_GUN = [
   'extended-mag',
   'rack-and-ruin',
   'one-more-round',
+  'gunmetal-polish',
+  'trigger-discipline',
 ];
 const KP_SHELLS = [
   'buckshot-shell',
@@ -140,6 +142,7 @@ const KP_SHELLS = [
   'shell-game',
   'boomstick',
   'last-shell',
+  'shell-shock',
 ];
 const kpFile = readFileSync(
   new URL('../../packages/content/src/v2/pools/kp.ts', import.meta.url),

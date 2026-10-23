@@ -151,6 +151,14 @@ export const VESPER: CardDef[] = [
     scaled(dmg(16), per('exposed', 6, 'target')),
   ]),
 
+  v('common', 'hamstring', 'Hamstring', 'attack', 1, 'foe', [
+    dmg(6),
+    status('exposed', 2, 'target'),
+  ]),
+  v('uncommon', 'patient-hunter', 'Patient Hunter', 'power', 1, 'none', [
+    on('turnStart', [status('exposed', 1, 'allFoes')]),
+  ]),
+
   // --- Bluff ---
   v('common', 'cold-read', 'Cold Read', 'skill', 0, 'none', [scry(4)]),
   v('common', 'patient-blade', 'Patient Blade', 'attack', 1, 'foe', [dmg(9)], { retain: true }),

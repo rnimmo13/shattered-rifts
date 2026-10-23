@@ -53,6 +53,17 @@ export const MAREN: CardDef[] = [
     },
   ),
 
+  m('common', 'iron-vigil', 'Iron Vigil', 'skill', 1, 'none', [barrier(6), draw(1)]),
+  m('common', 'shield-bash', 'Shield Bash', 'attack', 1, 'foe', [
+    scaled(dmg(3), per('barrier', 0.5)),
+  ]),
+  m('uncommon', 'rampart', 'Rampart', 'power', 1, 'none', [
+    on('play', [barrier(2)], { filter: 'attack' }),
+  ]),
+  m('rare', 'citadel-march', 'Citadel March', 'power', 2, 'none', [
+    on('turnEnd', [scaled(dmg(0, 'allFoes'), per('barrier', 0.25))]),
+  ]),
+
   // --- Thorns ---
   m('common', 'thornmail', 'Thornmail', 'skill', 1, 'none', [status('thorns', 3)]),
   m('common', 'righteous-rebuke', 'Righteous Rebuke', 'snare', 1, 'none', [dmg(10, 'attacker')], {
@@ -82,6 +93,25 @@ export const MAREN: CardDef[] = [
     on('play', [status('thorns', 1)], { filter: 'skill' }),
   ]),
 
+  m('common', 'barbed-guard', 'Barbed Guard', 'skill', 1, 'none', [
+    barrier(5),
+    status('thorns', 2),
+  ]),
+  m('common', 'thorn-lash', 'Thorn Lash', 'attack', 1, 'foe', [scaled(dmg(4), per('thorns', 1))]),
+  m(
+    'uncommon',
+    'caltrops',
+    'Caltrops',
+    'snare',
+    1,
+    'none',
+    [dmg(5, 'attacker'), status('faltering', 1, 'attacker')],
+    { trigger: { on: 'attacked' } },
+  ),
+  m('rare', 'bramble-storm', 'Bramble Storm', 'power', 2, 'none', [
+    on('turnEnd', [scaled(dmg(0, 'allFoes'), per('thorns', 0.5))]),
+  ]),
+
   // --- Sanctified ---
   m('common', 'lightbearer', 'Lightbearer', 'skill', 1, 'none', [heal(4), barrier(5)]),
   m('common', 'prayer', 'Prayer', 'skill', 0, 'none', [heal(4), draw(1)], { exhaust: true }),
@@ -109,6 +139,14 @@ export const MAREN: CardDef[] = [
     [heal(12), barrier(12), status('shielded', 1)],
     { exhaust: true },
   ),
+
+  m('common', 'sunlit-blow', 'Sunlit Blow', 'attack', 1, 'foe', [dmg(6), heal(2)]),
+  m('uncommon', 'gracebound', 'Gracebound', 'power', 1, 'none', [
+    on('play', [heal(1)], { filter: 'skill' }),
+  ]),
+  m('rare', 'radiant-renewal', 'Radiant Renewal', 'skill', 2, 'none', [heal(8), draw(2)], {
+    exhaust: true,
+  }),
 
   // --- glue and plain strikes ---
   m('common', 'bell-toll', 'Bell Toll', 'attack', 1, 'none', [dmg(5, 'allFoes'), barrier(3)]),

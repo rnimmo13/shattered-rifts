@@ -59,6 +59,8 @@ export const KESH: CardDef[] = [
   }),
   k('rare', 'berserker', 'Berserker', 'power', 1, 'none', [on('turnStart', [lose(2), mana(1)])]),
 
+  k('uncommon', 'berserk', 'Berserk', 'skill', 1, 'none', [lose(4), status('might', 3)]),
+
   // --- Pack ---
   k('common', 'heel', 'Heel', 'summon', 1, 'none', [summon('hound')]),
   k('common', 'call-gnashlings', 'Call Gnashlings', 'summon', 1, 'none', [
@@ -88,6 +90,11 @@ export const KESH: CardDef[] = [
   ]),
   k('rare', 'unchained', 'Unchained', 'power', 2, 'none', [status('might', 3, 'allFriends')]),
   k('rare', 'den-mother', 'Den Mother', 'summon', 3, 'none', [summon('dire-wolf')]),
+
+  k('uncommon', 'feeding-time', 'Feeding Time', 'skill', 1, 'ally', [
+    heal(8, 'target'),
+    status('might', 1, 'target'),
+  ]),
 
   // --- Feast ---
   k('common', 'burn-the-weak', 'Burn the Weak', 'skill', 1, 'none', [exhaustN(1), barrier(8)]),

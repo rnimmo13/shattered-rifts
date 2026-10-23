@@ -90,6 +90,12 @@ export const MIRE: CardDef[] = [
     on('play', [status('doom', 2, 'target')], { filter: 'attack' }),
   ]),
 
+  g('common', 'grave-whisper', 'Grave Whisper', 'attack', 1, 'foe', [
+    dmg(5),
+    status('doom', 5, 'target'),
+  ]),
+  g('uncommon', 'omen', 'Omen', 'skill', 1, 'none', [status('doom', 3, 'allFoes'), draw(1)]),
+
   // --- Thralls ---
   g('common', 'raise-thrall', 'Raise Thrall', 'summon', 1, 'none', [summon('bone-thrall')]),
   g('common', 'bone-chorus', 'Bone Chorus', 'skill', 1, 'ally', [
@@ -126,6 +132,11 @@ export const MIRE: CardDef[] = [
     on('summon', [barrier(6, 'allFriends')]),
   ]),
 
+  g('uncommon', 'bone-bulwark', 'Bone Bulwark', 'skill', 1, 'ally', [
+    barrier(10, 'target'),
+    status('might', 1, 'target'),
+  ]),
+
   // --- Ashes ---
   g('common', 'gather-souls', 'Gather Souls', 'skill', 1, 'none', [addTo('gravesoul', 2)]),
   g('common', 'bone-cairn', 'Bone Cairn', 'skill', 1, 'none', [
@@ -145,6 +156,18 @@ export const MIRE: CardDef[] = [
     scaled(status('doom', 0, 'allFoes'), per('exhausted')),
   ]),
   g('rare', 'requiem', 'Requiem', 'attack', 2, 'foe', [scaled(dmg(0), per('exhausted', 3))]),
+
+  g('common', 'burial-shroud', 'Burial Shroud', 'skill', 1, 'none', [
+    exhaustN(1),
+    barrier(8),
+    draw(1),
+  ]),
+  g('uncommon', 'funeral-pyre', 'Funeral Pyre', 'attack', 1, 'none', [
+    scaled(dmg(3, 'allFoes'), per('exhausted', 1)),
+  ]),
+  g('rare', 'ash-ritual', 'Ash Ritual', 'power', 2, 'none', [
+    on('exhaust', [status('doom', 2, 'allFoes')]),
+  ]),
 
   // --- shared tools and glue ---
   g('common', 'bone-shard', 'Bone Shard', 'attack', 1, 'foe', [dmg(8)]),

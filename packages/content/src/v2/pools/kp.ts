@@ -245,6 +245,18 @@ export const KP: CardDef[] = [
     dmg(10, 'allFoes'),
     forge('old-twelve-gauge', 4),
   ]),
+  p('uncommon', 'gunmetal-polish', 'Gunmetal Polish', 'skill', 1, 'none', [
+    forge('old-twelve-gauge', 3),
+    barrier(4),
+  ]),
+  p('uncommon', 'trigger-discipline', 'Trigger Discipline', 'power', 1, 'none', [
+    on('play', [forge('old-twelve-gauge', 1)], { filter: 'attack' }),
+  ]),
+  p('common', 'shell-shock', 'Shell Shock', 'attack', 1, 'none', [
+    dmg(3, 'allFoes'),
+    addTo('buckshot-shell'),
+  ]),
+
   p('uncommon', 'liquid-lunch', 'Liquid Lunch', 'skill', 0, 'none', [mana(2), manaNext(-1)], {
     exhaust: true,
   }),

@@ -76,6 +76,15 @@ export const ASTRA: CardDef[] = [
     on('turnStart', [forge('starforged-blade', 2)]),
   ]),
 
+  a('common', 'sunsteel', 'Sunsteel', 'attack', 1, 'foe', [dmg(8), forge('starforged-blade', 1)]),
+  a('uncommon', 'astral-edge', 'Astral Edge', 'power', 1, 'none', [
+    on('play', [forge('starforged-blade', 1)], { tag: 'blade' }),
+  ]),
+  a('rare', 'celestial-edge', 'Celestial Edge', 'attack', 2, 'foe', [
+    dmg(12),
+    forge('starforged-blade', 3),
+  ]),
+
   // --- Stars ---
   a('common', 'stargaze', 'Stargaze', 'skill', 0, 'none', [stars(1), draw(1)], { exhaust: true }),
   a('common', 'starshield', 'Starshield', 'skill', 1, 'none', [barrier(6), stars(1)]),

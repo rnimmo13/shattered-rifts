@@ -144,6 +144,20 @@ export const ILVANE: CardDef[] = [
     channel('ward', 2),
   ]),
 
+  i('common', 'rime-strike', 'Rime Strike', 'attack', 1, 'foe', [
+    dmg(5),
+    barrier(4),
+    channel('ward'),
+  ]),
+  i('common', 'ice-shell', 'Ice Shell', 'skill', 2, 'none', [barrier(14), channel('ward')]),
+  i('uncommon', 'permafrost', 'Permafrost', 'power', 2, 'none', [
+    on('turnStart', [channel('ward')]),
+  ]),
+  i('uncommon', 'glacial-memory', 'Glacial Memory', 'skill', 1, 'none', [
+    scaled(barrier(0), per('runes', 4)),
+    draw(1),
+  ]),
+
   // --- Hollow and Resonance ---
   i('common', 'umbra-glyph', 'Umbra Glyph', 'skill', 1, 'none', [channel('hollow')]),
   i('common', 'hollow-strike', 'Hollow Strike', 'attack', 1, 'foe', [dmg(7), channel('hollow')]),
@@ -169,6 +183,10 @@ export const ILVANE: CardDef[] = [
     status('resonance', 2),
     { op: 'runeSlots', amount: 1 },
   ]),
+
+  i('common', 'void-pulse', 'Void Pulse', 'skill', 1, 'none', [channel('hollow'), barrier(4)]),
+  i('uncommon', 'deep-charge', 'Deep Charge', 'skill', 1, 'none', [channel('hollow'), draw(1)]),
+  i('rare', 'abyssal-glyph', 'Abyssal Glyph', 'skill', 2, 'none', [channel('hollow', 2)]),
 
   // --- evoke glue ---
   i('common', 'rune-burst', 'Rune Burst', 'skill', 1, 'none', [evoke(), draw(1)]),
