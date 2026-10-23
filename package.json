@@ -18,7 +18,8 @@
     "check": "pnpm lint && pnpm typecheck && pnpm test && pnpm build",
     "fight": "pnpm --filter @sr/tools fight",
     "sim": "pnpm --filter @sr/tools sim",
-    "deploy:web": "pnpm --filter @sr/tools deploy:web"
+    "deploy:web": "pnpm --filter @sr/tools deploy:web",
+    "artlist": "pnpm --filter @sr/tools artlist"
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",

@@ -101,7 +101,11 @@ export default function FightScreen() {
             title: e.name,
             cfg: {
               seed: newSeed(),
-              a: { hero, deck: RIFTWALKERS[hero].starter },
+              a: {
+                hero,
+                deck: RIFTWALKERS[hero].starter,
+                potions: ['fire-flask', 'guard-draught'],
+              },
               b: { enemies: e.units, hpPct: easy ? 60 : 100, dmgPct: easy ? 55 : 100 },
             },
           });

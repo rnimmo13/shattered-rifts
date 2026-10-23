@@ -643,7 +643,12 @@ function buildHeroSide(r: Run, id: Side, h: HeroSetup): SideState {
     snares: [],
     hero: hd.id,
     boons: [],
+    potions: [],
   };
+  for (const id of h.potions ?? []) {
+    if (!r.db.potions[id]) throw new RulesError(`Unknown potion "${id}"`);
+    sd.potions.push(id);
+  }
   for (const id of h.boons ?? []) {
     const b = r.db.boons[id];
     if (!b) throw new RulesError(`Unknown boon "${id}"`);
@@ -692,6 +697,7 @@ export function createCombat(db: CombatDb, setup: CombatSetup): StepResult {
     snares: [],
     hero: null,
     boons: [],
+    potions: [],
   });
   const s: CombatState = {
     seed: setup.seed,
@@ -755,6 +761,17 @@ export function legalActions(db: CombatDb, s: CombatState): Action[] {
     else
       for (const t of sd.units) if (t.hp > 0) out.push({ type: 'play', card: c.id, target: t.id });
   }
+  sd.potions.forEach((id, index) => {
+    const p = db.potions[id];
+    if (!p) return;
+    if (p.target === 'none') {
+      out.push({ type: 'potion', index, potion: id });
+    } else {
+      const pool = p.target === 'foe' ? s.sides[other(side)].units : sd.units;
+      for (const t of pool)
+        if (t.hp > 0) out.push({ type: 'potion', index, potion: id, target: t.id });
+    }
+  });
   out.push({ type: 'endTurn' });
   return out;
 }
@@ -798,12 +815,36 @@ function playCard(r: Run, action: Extract<Action, { type: 'play' }>): void {
   }
 }
 
+function usePotion(r: Run, action: Extract<Action, { type: 'potion' }>): void {
+  const side = r.s.active;
+  const sd = r.s.sides[side];
+  const index = action.potion !== undefined ? sd.potions.indexOf(action.potion) : action.index;
+  const id = sd.potions[index];
+  const p = id ? r.db.potions[id] : undefined;
+  if (!id || !p) throw new RulesError('You have no such potion');
+  const hero = heroOf(sd);
+  if (!hero) throw new RulesError('No hero to use a potion');
+  let target: Unit | null = null;
+  if (p.target !== 'none') {
+    target = findUnit(r.s, action.target) ?? null;
+    const ok =
+      target !== null &&
+      target.hp > 0 &&
+      (p.target === 'foe' ? target.side !== side : target.side === side);
+    if (!ok) throw new RulesError('Choose a legal target');
+  }
+  sd.potions.splice(index, 1);
+  r.ev.push({ type: 'potion', side, index, potion: id, target: target?.id ?? null });
+  runOps(r, { actor: hero, target, attacker: null, hit: null }, p.effects);
+}
+
 export function applyAction(db: CombatDb, state: CombatState, action: Action): StepResult {
   if (state.winner) throw new RulesError('The fight is over');
   const s = clone(state);
   const r: Run = { db, s, ev: [] };
   if (action.type === 'endTurn') endTurn(r);
   else if (action.type === 'play') playCard(r, action);
+  else if (action.type === 'potion') usePotion(r, action);
   else throw new RulesError('Unknown action');
   return { state: s, events: r.ev };
 }

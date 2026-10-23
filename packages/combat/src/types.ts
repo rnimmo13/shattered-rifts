@@ -160,8 +160,20 @@ export interface BoonDef {
   shardsPerFight?: number;
 }
 
+/** A Potion: a one-use item carried between fights. Using one is free and takes no Mana. */
+export interface PotionDef {
+  id: string;
+  name: string;
+  rarity: 'common' | 'uncommon' | 'rare';
+  text: string;
+  /** what it must be aimed at: an enemy, one of your units, or nothing */
+  target: CardTarget;
+  effects: Op[];
+}
+
 export interface CombatDb {
   cards: Record<CardId, CardDef>;
+  potions: Record<string, PotionDef>;
   boons: Record<string, BoonDef>;
   units: Record<string, UnitDef>;
   heroes: Record<string, HeroDef>;
@@ -224,6 +236,8 @@ export interface SideState {
   hero: string | null; // hero def id
   /** Boon ids active for this side (a run-long passive; see BoonDef) */
   boons: string[];
+  /** Potion ids carried (the rest of the run keeps whatever is unused) */
+  potions: string[];
 }
 
 export type Winner = Side | 'draw';
@@ -267,6 +281,7 @@ export interface HeroSetup {
   maxHp?: number;
   /** the Boons the hero carries */
   boons?: string[];
+  potions?: string[];
 }
 
 export interface CombatSetup {
@@ -278,7 +293,11 @@ export interface CombatSetup {
 
 // --- actions & events ----------------------------------------------------------------------------------------
 
-export type Action = { type: 'play'; card: InstId; target?: UnitId } | { type: 'endTurn' };
+export type Action =
+  | { type: 'play'; card: InstId; target?: UnitId }
+  /** `potion` names the potion meant, so a belt that has since shifted can never drink the wrong one */
+  | { type: 'potion'; index: number; potion?: string; target?: UnitId }
+  | { type: 'endTurn' };
 
 export type CombatEvent =
   | { type: 'turnStart'; side: Side; turn: number }
@@ -291,6 +310,7 @@ export type CombatEvent =
   | { type: 'addCard'; side: Side; card: InstId; def: CardId; to: 'hand' | 'discard' | 'draw' }
   | { type: 'mana'; side: Side; mana: number }
   | { type: 'play'; side: Side; card: InstId; def: CardId; target: UnitId | null }
+  | { type: 'potion'; side: Side; index: number; potion: string; target: UnitId | null }
   | { type: 'act'; unit: UnitId; move: string | null } // a unit begins its action (lunge animation)
   | { type: 'skip'; unit: UnitId; reason: 'stunned' }
   | {

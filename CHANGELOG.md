@@ -5,6 +5,10 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (latest)
+- **Potions**: carry up to three, use them for free on your turn (Fire Flask, Guard Draught, Mana Vial, Frost Phial...). Fights can drop them and the merchant sells two.
+- **Enemy move tooltips**: point at an enemy's intent to read what its move does. Aiming a card shows the damage it will deal. Hovering a card explains its keywords.
+- **Readable cards**: the whole card shows in your hand, and each card has its own picture (a slash, a shield, a burst, the companion it summons).
+- **Rewards arrive with a little ceremony**: screens fade in and cards deal in one at a time.
 - **Easy mode** is the default for now (enemies at 60% HP and 55% damage, 5 Resolve, 100 shards) so the whole game can be tested quickly; Normal is one dropdown away on the Sanctum screen.
 - **Boons**: 12 run-long passives (start fights with Barrier or Thorns, heal after fights, +1 Mana, a bigger hand, max HP...). Elites and Wardens drop them and the merchant sells one. They show in the run bar and during fights.
 - **Warden signature cards**: each Warden (Seraphine, Kron, Gorrmaw, Nyxara) offers three unique cards as the Warden's Gift, some with their own companions.

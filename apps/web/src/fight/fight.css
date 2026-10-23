@@ -673,3 +673,80 @@
   text-shadow: 0 2px 6px #000;
   animation: banner-in 0.15s var(--ease-out);
 }
+
+/* the intent words, shown when you point at it */
+.intent {
+  pointer-events: auto;
+}
+.intent__tip {
+  pointer-events: none;
+  display: none;
+  position: absolute;
+  top: calc(100% + 0.4rem);
+  left: 50%;
+  transform: translateX(-50%);
+  width: 14rem;
+  padding: 0.5rem 0.7rem;
+  border-radius: 10px;
+  background: rgb(8 10 20 / 0.96);
+  border: 1px solid var(--c-gold-dark);
+  font-size: 0.8rem;
+  line-height: 1.35;
+  white-space: normal;
+  text-align: left;
+  z-index: 50;
+}
+.intent__tip b {
+  color: var(--c-gold-light);
+}
+.intent:hover .intent__tip,
+.intent:focus-within .intent__tip {
+  display: block;
+}
+
+/* the potion belt */
+.fight__potions {
+  position: absolute;
+  left: 1rem;
+  top: 3.4rem;
+  display: flex;
+  gap: 0.4rem;
+  z-index: 30;
+}
+.potionbtn {
+  display: grid;
+  justify-items: center;
+  gap: 0.1rem;
+  min-width: 4rem;
+  padding: 0.3rem 0.5rem;
+  border-radius: 12px;
+  color: var(--c-ivory);
+  background: rgb(8 10 20 / 0.88);
+  border: 1px solid var(--c-gold-dark);
+  font: inherit;
+  cursor: pointer;
+  pointer-events: auto;
+}
+.potionbtn span {
+  font-size: 1.4rem;
+  line-height: 1;
+  color: #6df0a8;
+}
+.potionbtn.potion--uncommon span {
+  color: #ffb347;
+}
+.potionbtn.potion--rare span {
+  color: #c89bff;
+}
+.potionbtn small {
+  font-size: 0.68rem;
+  letter-spacing: 0.04em;
+}
+.potionbtn.is-active {
+  border-color: var(--c-gold-light);
+  box-shadow: var(--glow-gold);
+}
+.potionbtn:disabled {
+  opacity: 0.45;
+  cursor: default;
+}

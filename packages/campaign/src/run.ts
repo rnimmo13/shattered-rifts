@@ -9,7 +9,10 @@ import { COMBAT_DB, RIFTWALKERS, V2_DECK_RULES, encounter, type HeroId } from '@
 import { generateStageMap, reachableNodes } from './mapgen';
 import {
   BOON_PRICE,
+  MAX_POTIONS,
+  POTION_PRICE,
   REMOVE_PRICE,
+  offerPotion,
   canAdd,
   giftOffers,
   offerBoon,
@@ -67,6 +70,7 @@ export function newRun(hero: HeroId, seed: string, difficulty: Difficulty = 'eas
     deck: [...rw.starter],
     shards: DIFFICULTY[difficulty].shards,
     boons: [],
+    potions: [],
     stageRealms,
     map,
     cleared: [],
@@ -137,11 +141,17 @@ export function enterNode(run: RunState, nodeId: string): RunState {
       const items: MerchantItem[] = offerCards(r.rng, r.character, r.deck, 'elite', 4).map(
         (cardId) => ({ cardId, price: priceOf(cardId), sold: false }),
       );
+      const potions = [offerPotion(r.rng), offerPotion(r.rng)].map((id) => ({
+        id,
+        price: POTION_PRICE[COMBAT_DB.potions[id]?.rarity ?? 'common'] ?? 40,
+        sold: false,
+      }));
       const boon = offerBoon(r.rng, r.boons, 'elite');
       r.context.merchant = {
         items,
         removePrice: REMOVE_PRICE,
         removed: false,
+        potions,
         ...(boon
           ? {
               boon: {
@@ -209,6 +219,7 @@ export interface FightPlan {
   maxHp: number;
   tier: number;
   boons: string[];
+  potions: string[];
   /** percent of normal enemy HP and damage (the difficulty setting) */
   hpPct: number;
   dmgPct: number;
@@ -231,6 +242,7 @@ export function duelPlan(run: RunState): FightPlan | null {
     maxHp: run.maxHp,
     tier: run.tier,
     boons: [...run.boons],
+    potions: [...run.potions],
     hpPct: DIFFICULTY[run.difficulty].hpPct,
     dmgPct: DIFFICULTY[run.difficulty].dmgPct,
     kind: node.kind,
@@ -239,7 +251,12 @@ export function duelPlan(run: RunState): FightPlan | null {
 }
 
 /** Report the result of the fight at the current node. `hpLeft` is your hero's HP at the end of a win. */
-export function finishDuel(run: RunState, won: boolean, hpLeft = run.hp): RunState {
+export function finishDuel(
+  run: RunState,
+  won: boolean,
+  hpLeft = run.hp,
+  potionsLeft: readonly string[] = run.potions,
+): RunState {
   need(run.phase === 'duel' && run.context, 'No fight is in progress');
   const r = clone(run);
   const ctx = r.context as NonNullable<RunState['context']>;
@@ -260,6 +277,22 @@ export function finishDuel(run: RunState, won: boolean, hpLeft = run.hp): RunSta
   );
   r.stats.duelsWon++;
   r.hp = hpLeft;
+  // whatever you did not drink comes with you (never more than you started with)
+  const left = [...run.potions];
+  r.potions = [];
+  for (const id of potionsLeft) {
+    const i = left.indexOf(id);
+    if (i >= 0) {
+      left.splice(i, 1);
+      r.potions.push(id);
+    }
+  }
+  let potionGained: string | undefined;
+  const dropChance = node.kind === 'duel' ? 40 : 75;
+  if (r.potions.length < MAX_POTIONS && nextInt(r.rng, 100) < dropChance) {
+    potionGained = offerPotion(r.rng);
+    r.potions.push(potionGained);
+  }
   const gain = node.kind === 'duel' ? 12 : node.kind === 'elite' ? 28 : 50;
   r.shards += gain;
   for (const id of r.boons) {
@@ -296,6 +329,7 @@ export function finishDuel(run: RunState, won: boolean, hpLeft = run.hp): RunSta
       offers,
       shardsGained: gain,
       ...(boonGained ? { boonGained } : {}),
+      ...(potionGained ? { potionGained } : {}),
     };
     r.phase = 'gift';
     return r;
@@ -306,6 +340,7 @@ export function finishDuel(run: RunState, won: boolean, hpLeft = run.hp): RunSta
     offers: offerCards(r.rng, r.character, r.deck, node.kind === 'elite' ? 'elite' : 'duel', count),
     shardsGained: gain,
     ...(boonGained ? { boonGained } : {}),
+    ...(potionGained ? { potionGained } : {}),
   };
   r.phase = 'reward';
   return r;
@@ -396,6 +431,22 @@ export function buyCard(run: RunState, index: number): RunState {
   r.shards -= item.price;
   item.sold = true;
   r.deck.push(item.cardId);
+  return r;
+}
+
+export function buyPotion(run: RunState, index: number): RunState {
+  need(run.phase === 'merchant' && run.context?.merchant?.potions, 'There are no potions for sale');
+  const r = clone(run);
+  const m = (r.context as NonNullable<RunState['context']>).merchant as NonNullable<
+    NonNullable<RunState['context']>['merchant']
+  >;
+  const item = m.potions?.[index];
+  need(item && !item.sold, 'That is not for sale');
+  need(r.potions.length < MAX_POTIONS, `You can only carry ${MAX_POTIONS} potions`);
+  need(r.shards >= item.price, 'Not enough shards');
+  r.shards -= item.price;
+  item.sold = true;
+  r.potions.push(item.id);
   return r;
 }
 

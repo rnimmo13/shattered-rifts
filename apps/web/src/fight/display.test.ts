@@ -49,3 +49,26 @@ describe('display reducer', () => {
     }
   });
 });
+
+describe('display reducer: potions', () => {
+  it('drinking a potion removes it from the belt', () => {
+    const start = createCombat(db, {
+      seed: 'pot',
+      a: {
+        hero: 'maren',
+        deck: RIFTWALKERS.maren.starter,
+        potions: ['fire-flask', 'guard-draught'],
+      },
+      b: {
+        enemies: ['squire-pair'].flatMap((id) => ENCOUNTERS.find((e) => e.id === id)?.units ?? []),
+      },
+    });
+    const shown = startingDisplay(start.state);
+    for (const e of start.events) reduceEvent(db, shown, e);
+    expect(shown.sides.a.potions).toEqual(['fire-flask', 'guard-draught']);
+    const r = applyAction(db, start.state, { type: 'potion', index: 1 });
+    for (const e of r.events) reduceEvent(db, shown, e);
+    compare(shown, r.state, 'after potion');
+    expect(shown.sides.a.potions).toEqual(['fire-flask']);
+  });
+});

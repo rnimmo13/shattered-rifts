@@ -1,7 +1,7 @@
 // A tiny sample ruleset used by the tests and the CLI fight. The real cards, heroes and enemies live in
 // packages/content (milestone C2); nothing here ships in the game.
 
-import type { BoonDef, CardDef, CombatDb, HeroDef, UnitDef } from './types';
+import type { PotionDef, BoonDef, CardDef, CombatDb, HeroDef, UnitDef } from './types';
 
 const card = (c: CardDef): [string, CardDef] => [c.id, c];
 
@@ -300,9 +300,29 @@ export const SAMPLE_BOONS: Record<string, BoonDef> = {
   },
 };
 
+export const SAMPLE_POTIONS: Record<string, PotionDef> = {
+  'fire-flask': {
+    id: 'fire-flask',
+    name: 'Fire Flask',
+    rarity: 'common',
+    text: 'Deal 12 damage to an enemy.',
+    target: 'foe',
+    effects: [{ op: 'damage', amount: 12, to: 'target' }],
+  },
+  'guard-draught': {
+    id: 'guard-draught',
+    name: 'Guard Draught',
+    rarity: 'common',
+    text: 'Gain 12 Barrier.',
+    target: 'none',
+    effects: [{ op: 'barrier', amount: 12, to: 'self' }],
+  },
+};
+
 export const SAMPLE_DB: CombatDb = {
   cards: SAMPLE_CARDS,
   boons: SAMPLE_BOONS,
+  potions: SAMPLE_POTIONS,
   units: SAMPLE_UNITS,
   heroes: SAMPLE_HEROES,
 };

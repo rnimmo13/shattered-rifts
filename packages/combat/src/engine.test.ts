@@ -832,3 +832,67 @@ describe('difficulty and max HP details', () => {
     expect(hero(next.state).statuses.seared).toBe(1);
   });
 });
+
+describe('potions', () => {
+  const start = () =>
+    createCombat(db, {
+      seed: 'potion',
+      a: { hero: 'knight', deck: SAMPLE_DECK, potions: ['fire-flask', 'guard-draught'] },
+      b: { enemies: ['slime', 'cultist'] },
+    }).state;
+
+  it('are offered as free actions, aimed when they need a target', () => {
+    const s = start();
+    const acts = legalActions(db, s).filter((a) => a.type === 'potion');
+    expect(acts.filter((a) => a.type === 'potion' && a.index === 0)).toHaveLength(2); // one per enemy
+    expect(acts.filter((a) => a.type === 'potion' && a.index === 1)).toHaveLength(1);
+  });
+
+  it('cost no Mana, apply their effect, and are used up', () => {
+    const s = start();
+    const target = foe(s, 1);
+    const r = applyAction(db, s, { type: 'potion', index: 0, target: target.id });
+    expect(r.events.some((e) => e.type === 'potion')).toBe(true);
+    expect(foe(r.state, 1).hp).toBe(22 - 12);
+    expect(r.state.sides.a.mana).toBe(s.sides.a.mana);
+    expect(r.state.sides.a.potions).toEqual(['guard-draught']);
+    const g = applyAction(db, r.state, { type: 'potion', index: 0 });
+    expect(hero(g.state).barrier).toBe(12);
+    expect(g.state.sides.a.potions).toEqual([]);
+  });
+
+  it('refuse bad targets and unknown potions', () => {
+    const s = start();
+    expect(() => applyAction(db, s, { type: 'potion', index: 0, target: hero(s).id })).toThrow();
+    expect(() => applyAction(db, s, { type: 'potion', index: 5 })).toThrow();
+    expect(() =>
+      createCombat(db, {
+        seed: 'p',
+        a: { hero: 'knight', deck: SAMPLE_DECK, potions: ['nope'] },
+        b: { enemies: ['slime'] },
+      }),
+    ).toThrow();
+  });
+
+  it('a potion can win the fight', () => {
+    const c = clone(start());
+    foe(c, 0).hp = 5;
+    foe(c, 1).hp = 5;
+    const first = applyAction(db, c, { type: 'potion', index: 0, target: foe(c, 0).id }).state;
+    expect(first.winner).toBeNull();
+    const solo = clone(start());
+    solo.sides.b.units = [solo.sides.b.units[0] as Unit];
+    foe(solo, 0).hp = 5;
+    const won = applyAction(db, solo, { type: 'potion', index: 0, target: foe(solo, 0).id });
+    expect(won.state.winner).toBe('a');
+    expect(won.events.some((e) => e.type === 'gameOver')).toBe(true);
+  });
+
+  it('names the potion, so a shifted belt never drinks the wrong one', () => {
+    const s = start(); // belt: fire-flask, guard-draught
+    const r = applyAction(db, s, { type: 'potion', index: 0, potion: 'guard-draught' });
+    expect(r.state.sides.a.potions).toEqual(['fire-flask']);
+    expect(hero(r.state).barrier).toBe(12);
+    expect(() => applyAction(db, s, { type: 'potion', index: 0, potion: 'mana-vial' })).toThrow();
+  });
+});

@@ -38,7 +38,8 @@ export function UnitPlates({ items, targetable, hover, preview }: PlatesProps) {
               <div
                 className={`intent intent--${iv.icons[0] ?? 'special'}`}
                 style={intentStyle}
-                title={`${iv.name}`}
+                aria-label={`${iv.name}: ${iv.text}`}
+                tabIndex={0}
               >
                 <span className="intent__icons">
                   {iv.icons.map((i) => INTENT_GLYPH[i]).join('')}
@@ -50,6 +51,9 @@ export function UnitPlates({ items, targetable, hover, preview }: PlatesProps) {
                   </b>
                 )}
                 <span className="intent__name">{iv.name}</span>
+                <span className="intent__tip" role="tooltip">
+                  <b>{iv.name}</b> {iv.text}
+                </span>
               </div>
             )}
             <div

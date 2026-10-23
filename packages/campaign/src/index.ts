@@ -13,6 +13,9 @@ export {
   canAdd,
   giftOffers,
   offerBoon,
+  offerPotion,
+  MAX_POTIONS,
+  POTION_PRICE,
   offerCards,
   crossedPool,
 } from './rewards';
@@ -26,6 +29,7 @@ export {
   availableNodes,
   bank,
   buyBoon,
+  buyPotion,
   buyCard,
   buyRemoval,
   chooseCard,

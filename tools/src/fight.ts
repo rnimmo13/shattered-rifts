@@ -60,6 +60,8 @@ function render(s: CombatState): string {
 
 function describe(s: CombatState, a: Action): string {
   if (a.type === 'endTurn') return 'End turn';
+  if (a.type === 'potion')
+    return `Potion #${a.index + 1}${a.target ? ' -> ' + ([...s.sides.a.units, ...s.sides.b.units].find((u) => u.id === a.target)?.name ?? '?') : ''}`;
   const inst = s.sides.a.hand.find((c) => c.id === a.card);
   const cd = db.cards[inst?.card ?? ''];
   const target = a.target

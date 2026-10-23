@@ -177,6 +177,14 @@ export function reduceEvent(db: CombatDb, s: CombatState, e: CombatEvent): void 
       if (u && u.kind === 'enemy') u.intent = null;
       return;
     }
+    case 'potion':
+      {
+        // by name, not position: the belt on screen may lag the engine's
+        const belt = s.sides[e.side].potions;
+        const i = belt.indexOf(e.potion);
+        if (i >= 0) belt.splice(i, 1);
+      }
+      return;
     case 'gameOver':
       s.winner = e.winner;
       return;

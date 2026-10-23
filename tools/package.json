@@ -8,7 +8,8 @@
     "fight": "tsx src/fight.ts",
     "typecheck": "tsc -p tsconfig.json",
     "sim": "tsx src/sim.ts",
-    "deploy:web": "tsx src/deploy.ts"
+    "deploy:web": "tsx src/deploy.ts",
+    "artlist": "tsx src/artlist.ts"
   },
   "dependencies": {
     "@sr/combat": "workspace:*",

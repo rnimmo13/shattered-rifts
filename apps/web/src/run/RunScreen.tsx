@@ -12,6 +12,7 @@ import {
   bank,
   buyBoon,
   buyCard,
+  buyPotion,
   buyRemoval,
   chooseCard,
   chooseEvent,
@@ -30,6 +31,7 @@ import {
 } from '@sr/campaign';
 import { FightView } from '../fight/FightView';
 import { BoonChip } from '../fight/BoonChip';
+import { PotionChip } from '../fight/PotionChip';
 import { CharacterPicker } from './CharacterPicker';
 import { MapLegend, MapView } from './MapView';
 import { CardOffer, DeckModal, EventView, MerchantView, ShrineView } from './Pickers';
@@ -102,9 +104,9 @@ export default function RunScreen() {
   );
 
   const reportResult = useCallback(
-    (won: boolean, hp?: number) => {
+    (won: boolean, hp?: number, potions?: string[]) => {
       clearDuelStarted();
-      act((r) => finishDuel(r, won, hp));
+      act((r) => finishDuel(r, won, hp, potions));
     },
     [act],
   );
@@ -174,6 +176,7 @@ export default function RunScreen() {
                 hp: plan.hp,
                 maxHp: plan.maxHp,
                 boons: plan.boons,
+                potions: plan.potions,
               },
               b: { enemies: plan.units, tier: plan.tier, hpPct: plan.hpPct, dmgPct: plan.dmgPct },
             }}
@@ -181,7 +184,9 @@ export default function RunScreen() {
             exitLabel="Forfeit"
             // there is no "leave" in a campaign fight: giving up counts as a loss
             onExit={() => setConfirmForfeit(true)}
-            onDone={(r) => reportResult(r.winner === 'a', r.winner === 'a' ? r.hp : undefined)}
+            onDone={(r) =>
+              reportResult(r.winner === 'a', r.winner === 'a' ? r.hp : undefined, r.potions)
+            }
           />
         </>
       );
@@ -302,6 +307,13 @@ function RunBar(props: {
         </span>
       </div>
       <div className="runbar__stats">
+        {run.potions.length > 0 && (
+          <span className="boons" aria-label="Potions">
+            {run.potions.map((id, i) => (
+              <PotionChip key={`${id}-${i}`} id={id} />
+            ))}
+          </span>
+        )}
         {run.boons.length > 0 && (
           <span className="boons" aria-label="Boons">
             {run.boons.map((id) => (
@@ -378,6 +390,7 @@ function Body(props: {
           offers={run.context?.offers ?? []}
           shards={run.context?.shardsGained}
           boon={run.context?.boonGained}
+          potion={run.context?.potionGained}
           onPick={(id) => act((r) => chooseCard(r, id))}
           onSkip={() => act((r) => chooseCard(r, null))}
         />
@@ -408,6 +421,7 @@ function Body(props: {
           run={run}
           onBuy={(i) => act((r) => buyCard(r, i))}
           onBuyBoon={() => act((r) => buyBoon(r))}
+          onBuyPotion={(i) => act((r) => buyPotion(r, i))}
           onRemove={(card) => act((r) => buyRemoval(r, card))}
           onLeave={() => act((r) => leaveMerchant(r))}
         />

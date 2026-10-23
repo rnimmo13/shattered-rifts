@@ -1,5 +1,12 @@
 import { describe, expect, it } from 'vitest';
-import { applyAction, cardText, chooseAction, createCombat, validateDb } from '@sr/combat';
+import {
+  applyAction,
+  cardText,
+  chooseAction,
+  createCombat,
+  legalActions,
+  validateDb,
+} from '@sr/combat';
 import { COMBAT_DB as db, ENCOUNTERS, RIFTWALKERS, rewardPool, type HeroId } from './index';
 
 describe('Combat v2 content', () => {
@@ -168,6 +175,27 @@ describe('Warden signature cards', () => {
       for (let i = 0; i < 800 && !state.winner; i++)
         state = applyAction(db, state, chooseAction(db, state)).state;
       expect(state.winner).not.toBeNull();
+    }
+  });
+});
+
+describe('potions', () => {
+  it('every potion can be used in a fight and is used up', async () => {
+    const { POTIONS } = await import('./index');
+    for (const p of POTIONS) {
+      const { state } = createCombat(db, {
+        seed: `potion-${p.id}`,
+        a: { hero: 'maren', deck: RIFTWALKERS.maren.starter, potions: [p.id], hp: 40 },
+        b: {
+          enemies: ['squire-pair', 'drone-nest']
+            .flatMap((e) => ENCOUNTERS.find((x) => x.id === e)?.units ?? [])
+            .slice(0, 3),
+        },
+      });
+      const use = legalActions(db, state).find((a) => a.type === 'potion');
+      expect(use, p.id).toBeDefined();
+      const after = applyAction(db, state, use!).state;
+      expect(after.sides.a.potions, p.id).toEqual([]);
     }
   });
 });

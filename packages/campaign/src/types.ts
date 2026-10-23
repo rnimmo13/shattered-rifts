@@ -62,11 +62,14 @@ export interface NodeContext {
   shardsGained?: number;
   /** reward: a Boon the fight dropped (already added to the run) */
   boonGained?: string;
+  /** reward: a Potion the fight dropped (already in your belt) */
+  potionGained?: string;
   merchant?: {
     items: MerchantItem[];
     removePrice: number;
     removed: boolean;
     boon?: { id: string; price: number; sold: boolean };
+    potions?: { id: string; price: number; sold: boolean }[];
   };
   event?: {
     title: string;
@@ -104,6 +107,8 @@ export interface RunState {
   shards: number;
   /** Run passives (Boons) are part of the design but not built yet. */
   boons: string[];
+  /** Potions carried (up to MAX_POTIONS); a lost fight does not use them up */
+  potions: string[];
   /** The realm order for stages 1-3 (stage 4 is always Umbral Veil, stage 5 the Rift). */
   stageRealms: StageRealm[];
   map: StageMap;

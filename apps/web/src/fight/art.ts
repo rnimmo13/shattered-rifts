@@ -3,6 +3,7 @@
 
 import type { CardDef, UnitDef } from '@sr/combat';
 import type { Motif } from '../art/motifs';
+import { realCardArt, realFigure } from '../art/assets';
 import {
   avatarCutout,
   cardArtUrl,
@@ -71,11 +72,15 @@ const UNIT: Record<string, [Archetype, Realm]> = {
 const base = (id: string): string => id.replace(/\+$/, '');
 
 export function heroFigure(heroId: string): HTMLCanvasElement {
+  const real = realFigure(`hero:${heroId}`);
+  if (real) return real;
   const [kind, realm] = HERO[heroId] ?? ['wanderer', 'neutral'];
   return avatarCutout(kind, realm, `char:${heroId}`);
 }
 
 export function unitFigure(defId: string): HTMLCanvasElement {
+  const real = realFigure(`unit:${base(defId)}`);
+  if (real) return real;
   const [kind, realm] = UNIT[base(defId)] ?? ['wanderer', 'neutral'];
   return avatarCutout(kind, realm, `unit:${base(defId)}`);
 }
@@ -137,6 +142,8 @@ function motifOf(c: CardDef): Motif {
 
 /** The art window for a v2 card (a data URL), via the card-art painters. */
 export function cardArtV2(c: CardDef): string {
+  const real = realCardArt(c.id);
+  if (real) return real;
   const unit = c.effects.find((o) => o.op === 'summon');
   const summoned = unit && unit.op === 'summon' ? UNIT[base(unit.unit)]?.[0] : undefined;
   const fake = {

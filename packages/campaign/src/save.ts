@@ -83,6 +83,15 @@ function validContext(r: RunState): boolean {
             isInt(it['price'], 0, 100000),
         ) &&
         isInt(m['removePrice'], 0, 100000) &&
+        (m['potions'] === undefined ||
+          (Array.isArray(m['potions']) &&
+            (m['potions'] as unknown[]).every(
+              (p) =>
+                isObj(p) &&
+                typeof p['id'] === 'string' &&
+                Object.hasOwn(COMBAT_DB.potions, p['id']) &&
+                isInt(p['price'], 0, 100000),
+            ))) &&
         (m['boon'] === undefined ||
           (isObj(m['boon']) &&
             typeof m['boon']['id'] === 'string' &&
@@ -141,6 +150,13 @@ export function parseRun(text: string): RunState | null {
     return null;
   if (!isStrArray(r.stageRealms) || r.stageRealms.length !== 3) return null;
   if (!isObj(r.stats)) return null;
+  if (r.potions === undefined) r.potions = [];
+  if (
+    !isStrArray(r.potions) ||
+    r.potions.length > 3 ||
+    r.potions.some((id) => !Object.hasOwn(COMBAT_DB.potions, id))
+  )
+    return null;
   if (
     !isStrArray(r.boons) ||
     r.boons.some((id) => !Object.hasOwn(COMBAT_DB.boons, id)) ||

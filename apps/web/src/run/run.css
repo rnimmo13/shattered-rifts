@@ -684,3 +684,75 @@
   justify-content: center;
   flex-wrap: wrap;
 }
+
+/* Potions */
+.potion {
+  display: inline-grid;
+  place-items: center;
+  width: 1.7rem;
+  height: 1.7rem;
+  border-radius: 50% 50% 40% 40%;
+  font-size: 1rem;
+  background: radial-gradient(circle at 35% 30%, #d9ffe9, #6df0a8 60%, #19704a);
+  border: 1px solid #b8ffd8;
+  color: #04301d;
+  cursor: help;
+  pointer-events: auto;
+}
+.potion.potion--uncommon {
+  background: radial-gradient(circle at 35% 30%, #fff1c4, #ffb347 60%, #8a4a10);
+  border-color: #ffe0a0;
+}
+.potion.potion--rare {
+  background: radial-gradient(circle at 35% 30%, #f1e0ff, #b46dff 60%, #4a1a8a);
+  border-color: #dcb8ff;
+  color: #fff;
+}
+.booncard .potion {
+  width: 3rem;
+  height: 3rem;
+  font-size: 1.6rem;
+  flex: none;
+}
+
+/* screens arrive instead of snapping in; rewards deal in one by one */
+.stage-panel {
+  animation: panel-in 0.35s var(--ease-out);
+}
+@keyframes panel-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+}
+.offers .pick {
+  animation: card-deal 0.5s var(--ease-pop) backwards;
+}
+.offers .pick:nth-child(2) {
+  animation-delay: 0.12s;
+}
+.offers .pick:nth-child(3) {
+  animation-delay: 0.24s;
+}
+.offers .pick:nth-child(4) {
+  animation-delay: 0.36s;
+}
+@keyframes card-deal {
+  from {
+    opacity: 0;
+    transform: translateY(40px) rotate(-4deg) scale(0.9);
+  }
+}
+.booncard {
+  animation: panel-in 0.45s var(--ease-pop) 0.05s backwards;
+}
+.booncard + .booncard {
+  animation-delay: 0.2s;
+}
+@media (prefers-reduced-motion: reduce) {
+  .stage-panel,
+  .offers .pick,
+  .booncard {
+    animation: none;
+  }
+}

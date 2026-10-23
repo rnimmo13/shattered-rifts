@@ -7,6 +7,7 @@ import { REST_HEAL, upgradable, type RunState } from '@sr/campaign';
 import { FightCard } from '../fight/FightCard';
 import { CardHover } from '../fight/CardHover';
 import { BoonCard } from '../fight/BoonChip';
+import { PotionCard } from '../fight/PotionChip';
 
 const defOf = (id: string): CardDef | undefined => COMBAT_DB.cards[id];
 
@@ -82,6 +83,8 @@ export function CardOffer(props: {
   shards?: number | undefined;
   /** a Boon this fight dropped */
   boon?: string | undefined;
+  /** a Potion this fight dropped */
+  potion?: string | undefined;
   onPick: (id: string) => void;
   onSkip?: (() => void) | undefined;
 }) {
@@ -94,6 +97,7 @@ export function CardOffer(props: {
         {props.shards ? ` You also found ${props.shards} shards.` : ''}
       </p>
       {props.boon && <BoonCard id={props.boon} note="A new Boon, yours for the rest of the run." />}
+      {props.potion && <PotionCard id={props.potion} note="Added to your belt." />}
       <div className="offers">
         {props.offers.map((id) => (
           <Pickable
@@ -223,6 +227,7 @@ export function MerchantView(props: {
   run: RunState;
   onBuy: (index: number) => void;
   onBuyBoon: () => void;
+  onBuyPotion: (index: number) => void;
   onRemove: (card: string) => void;
   onLeave: () => void;
 }) {
@@ -256,6 +261,28 @@ export function MerchantView(props: {
           </Pickable>
         ))}
       </div>
+      {m.potions && m.potions.length > 0 && (
+        <div className="shopboon">
+          {m.potions.map((p, i) => (
+            <div key={i} className="shopboon">
+              <PotionCard id={p.id} />
+              <button
+                className="btn"
+                disabled={p.sold || props.run.shards < p.price || props.run.potions.length >= 3}
+                onClick={() => props.onBuyPotion(i)}
+              >
+                <span>
+                  {p.sold
+                    ? 'Sold'
+                    : props.run.potions.length >= 3
+                      ? 'Belt full (3/3)'
+                      : `Buy for ${p.price} shards`}
+                </span>
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
       {m.boon && (
         <div className="shopboon">
           <BoonCard id={m.boon.id} />

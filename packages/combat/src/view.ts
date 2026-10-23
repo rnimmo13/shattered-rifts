@@ -22,6 +22,8 @@ export type IntentIcon = 'attack' | 'defend' | 'buff' | 'debuff' | 'summon' | 's
 export interface IntentView {
   move: string;
   name: string;
+  /** what the move does, in words (shown on hover) */
+  text: string;
   icons: IntentIcon[];
   /** damage per hit as it will land on its current target, or null if it does not attack */
   damage: number | null;
@@ -48,6 +50,9 @@ export interface SideView {
   /** a Snare's card is only known to its owner */
   snares: { id: string; card: CardId | null }[];
   hero: string | null;
+  /** Potion ids (your own side only) and how many each side holds */
+  potions: string[] | null;
+  potionCount: number;
 }
 
 export interface CombatView {
@@ -88,6 +93,7 @@ export function describeIntent(db: CombatDb, s: CombatState, u: Unit): IntentVie
   return {
     move: mv.id,
     name: mv.name,
+    text: mv.effects.map((o) => opText(db, o, WHO_ENEMY)).join(' '),
     icons: opIcons(mv.effects),
     damage: first ? modifiedDamage(first.amount, u, first.to === 'target' ? target : null) : null,
     hits: first ? dmg.reduce((n, o) => n + (o.hits ?? 1), 0) : 0,
@@ -113,6 +119,8 @@ export function viewFor(db: CombatDb, s: CombatState, me: Side): CombatView {
       maxMana: sd.maxMana,
       snares: sd.snares.map((sn) => ({ id: sn.id, card: own ? sn.card : null })),
       hero: sd.hero,
+      potions: own ? [...sd.potions] : null,
+      potionCount: sd.potions.length,
     };
   };
   return {
@@ -139,20 +147,31 @@ const WHO: Record<Sel, string> = {
   allFriends: ' to all friends',
   attacker: ' to the attacker',
 };
+/** The same targets as seen from an enemy's move: "you" are the other side. */
+const WHO_ENEMY: Record<Sel, string> = {
+  target: '',
+  self: ' to itself',
+  hero: ' to its hero',
+  allFoes: ' to ALL your units',
+  randomFoe: ' to a random unit of yours',
+  front: ' to your front unit',
+  allFriends: ' to all its allies',
+  attacker: ' to the attacker',
+};
 const cap = (s: string): string => s.charAt(0).toUpperCase() + s.slice(1);
 
-export function opText(db: CombatDb, o: Op): string {
+export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): string {
   switch (o.op) {
     case 'damage':
-      return `Deal ${o.amount} damage${o.hits && o.hits > 1 ? ` ${o.hits} times` : ''}${WHO[o.to]}.`;
+      return `Deal ${o.amount} damage${o.hits && o.hits > 1 ? ` ${o.hits} times` : ''}${who[o.to]}.`;
     case 'loseHp':
-      return `${o.to === 'self' ? 'Lose' : 'Take'} ${o.amount} HP${o.to === 'self' ? '' : WHO[o.to]}.`;
+      return `${o.to === 'self' ? 'Lose' : 'Take'} ${o.amount} HP${o.to === 'self' ? '' : who[o.to]}.`;
     case 'barrier':
-      return `Gain ${o.amount} Barrier${o.to === 'self' ? '' : WHO[o.to]}.`;
+      return `Gain ${o.amount} Barrier${o.to === 'self' ? '' : who[o.to]}.`;
     case 'heal':
-      return `Heal ${o.amount}${o.to === 'self' ? '' : WHO[o.to]}.`;
+      return `Heal ${o.amount}${o.to === 'self' ? '' : who[o.to]}.`;
     case 'status':
-      return `${o.amount < 0 ? 'Remove' : 'Apply'} ${Math.abs(o.amount)} ${cap(o.status)}${o.to === 'self' ? '' : WHO[o.to]}.`;
+      return `${o.amount < 0 ? 'Remove' : 'Apply'} ${Math.abs(o.amount)} ${cap(o.status)}${o.to === 'self' ? '' : who[o.to]}.`;
     case 'draw':
       return `Draw ${o.amount} card${o.amount === 1 ? '' : 's'}.`;
     case 'mana':

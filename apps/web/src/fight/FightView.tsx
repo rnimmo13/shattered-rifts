@@ -19,6 +19,7 @@ import {
   type CombatView,
   type Winner,
 } from '@sr/combat';
+import { COMBAT_DB } from '@sr/content/v2';
 import { BattlefieldScene } from '../duel/scene/BattlefieldScene';
 import { loadEffectsMode, profileFor } from '../duel/effects';
 import { setBaseSpeed } from '../duel/scene/timescale';
@@ -32,6 +33,8 @@ import { FightCard } from './FightCard';
 import { UnitPlates, type Placed } from './Plates';
 import { keywordsOf } from './info';
 import { BoonChip } from './BoonChip';
+import { preloadArt } from '../art/assets';
+import { PotionButton } from './PotionChip';
 import type { FighterSpec } from './Fighters';
 import '../duel/duel.css';
 import '../play/play.css';
@@ -41,6 +44,8 @@ export interface FightResult {
   winner: Winner;
   /** your hero's HP when it ended (for HP that carries between fights) */
   hp: number;
+  /** the potions you did not use */
+  potions: string[];
 }
 
 interface Float {
@@ -101,6 +106,7 @@ export function FightView(props: {
   const [hoverUnit, setHoverUnit] = useState<string | null>(null);
   const [dragTargets, setDragTargets] = useState<ReadonlySet<string> | null>(null);
   const [dragCard, setDragCard] = useState<HandCard | null>(null);
+  const [aimPotion, setAimPotion] = useState<string | null>(null);
   const [floats, setFloats] = useState<Float[]>([]);
   const [banner, setBanner] = useState<string | null>(null);
   const [flourish, setFlourish] = useState<CardDef | null>(null);
@@ -354,7 +360,12 @@ export function FightView(props: {
         if (after.winner && pending.current.all === 0 && !cancelledRef.current) {
           const hero = after.sides.a.units.find((u) => u.kind === 'hero');
           window.setTimeout(
-            () => setResult({ winner: after.winner as Winner, hp: hero?.hp ?? 0 }),
+            () =>
+              setResult({
+                winner: after.winner as Winner,
+                hp: hero?.hp ?? 0,
+                potions: [...after.sides.a.potions],
+              }),
             300,
           );
         }
@@ -370,7 +381,9 @@ export function FightView(props: {
     cancelledRef.current = false;
     let cancelled = false; // this effect run only (StrictMode mounts, unmounts and mounts again)
     let created: BattlefieldScene | null = null;
-    BattlefieldScene.create(el, profileFor(loadEffectsMode()))
+    // real artwork (if any was supplied) is loaded before the first figure or card is drawn
+    preloadArt()
+      .then(() => BattlefieldScene.create(el, profileFor(loadEffectsMode())))
       .then((s) => {
         if (cancelled) {
           s.destroy();
@@ -430,6 +443,7 @@ export function FightView(props: {
         g.state = r.state;
         setLegal(legalActions(db, r.state));
         setSelected(null);
+        setAimPotion(null);
         enqueue(r.events, r.state);
       } catch (err) {
         console.warn('[fight] illegal action', err);
@@ -467,8 +481,15 @@ export function FightView(props: {
 
   const selectedCard = handCards.find((c) => c.inst.id === selected) ?? null;
   const aimSet = useMemo(
-    () => dragTargets ?? (selectedCard ? new Set(selectedCard.targets) : new Set<string>()),
-    [selectedCard, dragTargets],
+    () =>
+      aimPotion !== null
+        ? new Set(
+            legal.flatMap((a) =>
+              a.type === 'potion' && a.potion === aimPotion && a.target ? [a.target] : [],
+            ),
+          )
+        : (dragTargets ?? (selectedCard ? new Set(selectedCard.targets) : new Set<string>())),
+    [selectedCard, dragTargets, aimPotion, legal],
   );
 
   useEffect(() => {
@@ -504,7 +525,10 @@ export function FightView(props: {
       if (pile && e.key !== 'Escape') return;
       if (e.key === 'Escape') {
         if (pile) setPile(null);
-        else setSelected(null);
+        else {
+          setSelected(null);
+          setAimPotion(null);
+        }
       } else if (e.key === 'e' || e.key === 'E') endTurn();
       else if (/^[1-9]$/.test(e.key) && !locked) {
         const c = handCards[Number(e.key) - 1];
@@ -520,6 +544,20 @@ export function FightView(props: {
   }, [act, endTurn, handCards, locked, pile]);
 
   const onStagePointerDown = (e: React.PointerEvent) => {
+    if (aimPotion !== null) {
+      if (e.button !== 0) return setAimPotion(null);
+      const u = unitAt(e.clientX, e.clientY);
+      if (u && aimSet.has(u)) {
+        act({
+          type: 'potion',
+          index: me?.potions?.indexOf(aimPotion) ?? 0,
+          potion: aimPotion,
+          target: u,
+        });
+        setAimPotion(null);
+      } else setAimPotion(null);
+      return;
+    }
     if (!selectedCard) return;
     if (e.button !== 0) return setSelected(null);
     const u = unitAt(e.clientX, e.clientY);
@@ -589,9 +627,10 @@ export function FightView(props: {
         ref={host}
         onPointerDown={onStagePointerDown}
         onContextMenu={(e) => {
-          if (selected) {
+          if (selected || aimPotion !== null) {
             e.preventDefault();
             setSelected(null);
+            setAimPotion(null);
           }
         }}
       />
@@ -688,7 +727,10 @@ export function FightView(props: {
               act({ type: 'play', card: c.inst.id, ...(target ? { target } : {}) });
               setHoverCard(null);
             }}
-            onSelect={(c) => setSelected(c ? c.inst.id : null)}
+            onSelect={(c) => {
+              setAimPotion(null);
+              setSelected(c ? c.inst.id : null);
+            }}
             onDragTargets={(ids, c) => {
               setDragTargets(ids);
               setDragCard(c ?? null);
@@ -740,6 +782,34 @@ export function FightView(props: {
                 markerEnd="url(#ah)"
               />
             </svg>
+          )}
+          {(me?.potions?.length ?? 0) > 0 && (
+            <div className="fight__potions" aria-label="Potions">
+              {me?.potions?.map((id, i) => (
+                <PotionButton
+                  key={`${id}-${i}`}
+                  id={id}
+                  disabled={locked || finished}
+                  active={aimPotion === id}
+                  onUse={() => {
+                    const needs = legal.some(
+                      (a) => a.type === 'potion' && a.potion === id && a.target,
+                    );
+                    setSelected(null);
+                    if (!needs) act({ type: 'potion', index: i, potion: id });
+                    else setAimPotion(aimPotion === id ? null : id);
+                  }}
+                />
+              ))}
+            </div>
+          )}
+          {aimPotion !== null && me?.potions?.includes(aimPotion) && (
+            <div className="fight__aimbar" role="status">
+              <b>{COMBAT_DB_POTION_NAME(aimPotion)}</b> <span>Click a glowing target.</span>
+              <button className="btn btn--small btn--ghost" onClick={() => setAimPotion(null)}>
+                <span>Cancel</span>
+              </button>
+            </div>
           )}
           {selectedCard && (
             <div className="fight__aimbar" role="status">
@@ -820,6 +890,8 @@ export function FightView(props: {
     </div>
   );
 }
+
+const COMBAT_DB_POTION_NAME = (id: string): string => COMBAT_DB.potions[id]?.name ?? 'Potion';
 
 function pileCards(
   d: CombatState | null,

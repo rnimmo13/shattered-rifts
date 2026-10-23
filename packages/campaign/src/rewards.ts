@@ -5,6 +5,7 @@ import { nextInt, type RngState } from '@sr/combat';
 import {
   BOONS,
   COMBAT_DB,
+  POTIONS,
   RIFTWALKERS,
   V2_DECK_RULES,
   rewardPool,
@@ -134,6 +135,27 @@ export function offerBoon(
   }
   return (left[nextInt(rng, left.length)] as (typeof BOONS)[number]).id;
 }
+
+/** A random Potion, weighted toward common ones. */
+export function offerPotion(rng: RngState): string {
+  const weights = { common: 60, uncommon: 30, rare: 10 } as const;
+  const total = 100;
+  let r = nextInt(rng, total);
+  let want: keyof typeof weights = 'common';
+  for (const k of Object.keys(weights) as (keyof typeof weights)[]) {
+    if (r < weights[k]) {
+      want = k;
+      break;
+    }
+    r -= weights[k];
+  }
+  const pool = POTIONS.filter((p) => p.rarity === want);
+  const from = pool.length > 0 ? pool : POTIONS;
+  return (from[nextInt(rng, from.length)] as (typeof POTIONS)[number]).id;
+}
+
+export const POTION_PRICE: Record<string, number> = { common: 30, uncommon: 50, rare: 80 };
+export const MAX_POTIONS = 3;
 
 export const BOON_PRICE: Record<string, number> = { common: 70, uncommon: 120, rare: 200 };
 

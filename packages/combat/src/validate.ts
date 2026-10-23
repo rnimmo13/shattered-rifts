@@ -87,6 +87,13 @@ export function validateDb(db: CombatDb): string[] {
     }
   }
 
+  for (const [id, p] of Object.entries(db.potions)) {
+    if (p.id !== id) errs.push(`potion key "${id}" does not match its id`);
+    checkOps(`potion ${id}`, p.effects, { aimed: p.target !== 'none', snare: false });
+    if (p.target === 'foe' && !p.effects.some((o) => 'to' in o && o.to === 'target'))
+      errs.push(`potion ${id}: asks for a target but no effect uses it`);
+  }
+
   for (const [id, b] of Object.entries(db.boons)) {
     if (b.id !== id) errs.push(`boon key "${id}" does not match its id`);
     checkOps(`boon ${id}`, [...(b.fightStart ?? []), ...(b.turnStart ?? [])], {

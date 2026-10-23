@@ -3,6 +3,7 @@ import { BOONS, signatureCards } from '@sr/content/v2';
 import {
   RunError,
   buyBoon,
+  buyPotion,
   chooseEvent,
   enterNode,
   finishDuel,
@@ -120,5 +121,67 @@ describe('events', () => {
       }
     }
     expect(seen.size).toBeGreaterThanOrEqual(2);
+  });
+});
+
+describe('potions in a run', () => {
+  it('unused potions come with you, used ones are gone, and a lost fight keeps them all', () => {
+    const base = {
+      ...fresh('maren', 'pots'),
+      potions: ['fire-flask', 'guard-draught', 'mana-vial'],
+    };
+    const fight = inFight(base, 'duel');
+    const won = finishDuel(fight, true, 40, ['guard-draught']);
+    // 'fire-flask' and 'mana-vial' were drunk; a new one may have dropped into a free slot
+    expect(won.potions[0]).toBe('guard-draught');
+    expect(won.potions.length).toBeLessThanOrEqual(3);
+    const lost = finishDuel(fight, false);
+    expect(lost.potions).toEqual(['fire-flask', 'guard-draught', 'mana-vial']);
+  });
+
+  it('never carries more than three, and cannot invent potions', () => {
+    const base = {
+      ...fresh('maren', 'full'),
+      potions: ['fire-flask', 'guard-draught', 'mana-vial'],
+    };
+    for (let i = 0; i < 10; i++) {
+      const won = finishDuel(inFight({ ...base, seed: `s${i}` }, 'duel'), true, 40, base.potions);
+      expect(won.potions).toHaveLength(3);
+    }
+    const won = finishDuel(inFight(base, 'duel'), true, 40, ['stun-tonic', 'fire-flask']);
+    expect(won.potions.includes('stun-tonic')).toBe(false);
+  });
+
+  it('the merchant sells potions while there is room', () => {
+    const base = { ...fresh('kesh', 'shop'), shards: 200 };
+    const first = base.map.nodes[0] as RunState['map']['nodes'][number];
+    const shop: RunState = {
+      ...base,
+      phase: 'merchant',
+      at: first.id,
+      context: {
+        nodeId: first.id,
+        merchant: {
+          items: [],
+          removePrice: 40,
+          removed: false,
+          potions: [{ id: 'fire-flask', price: 30, sold: false }],
+        },
+      },
+    };
+    const bought = buyPotion(shop, 0);
+    expect(bought.potions).toEqual(['fire-flask']);
+    expect(bought.shards).toBe(170);
+    expect(() => buyPotion(bought, 0)).toThrow(RunError);
+    expect(() =>
+      buyPotion({ ...shop, potions: ['a', 'b', 'c'].map(() => 'fire-flask') }, 0),
+    ).toThrow(RunError);
+  });
+
+  it('saves refuse unknown potions or more than three', () => {
+    const r = fresh('vesper', 'sp');
+    expect(parseRun(JSON.stringify({ ...r, potions: ['nope'] }))).toBeNull();
+    expect(parseRun(JSON.stringify({ ...r, potions: Array(4).fill('fire-flask') }))).toBeNull();
+    expect(parseRun(JSON.stringify({ ...r, potions: ['fire-flask'] }))).not.toBeNull();
   });
 });
