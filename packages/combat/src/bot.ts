@@ -60,17 +60,21 @@ export function evaluate(db: CombatDb, s: CombatState, me: Side): number {
       (u.statuses.doom ?? 0) * 0.5;
   }
   for (const u of theirs.units) {
-    v -= u.hp * 1.0 + u.barrier * 0.5 + 6;
+    const doomed = (u.statuses.doom ?? 0) >= u.hp;
+    v -= (doomed ? 0 : u.hp * 1.0 + u.barrier * 0.5 + 6) + (doomed ? 2 : 0);
     v +=
       (u.statuses.exposed ?? 0) * 2.5 +
       (u.statuses.faltering ?? 0) * 2 +
       (u.statuses.seared ?? 0) * 3;
     v += (u.statuses.stunned ?? 0) * 6;
-    v += (u.statuses.brittle ?? 0) * 1.5 + (u.statuses.doom ?? 0) * 1.2;
+    v += (u.statuses.brittle ?? 0) * 1.5;
+    if (!doomed) v += Math.min(u.statuses.doom ?? 0, u.hp) * 0.9;
     v -=
       (u.statuses.might ?? 0) * 3 + (u.statuses.thorns ?? 0) * 1.5 + (u.statuses.shielded ?? 0) * 3;
   }
-  v += mine.snares.length * 5;
+  v += mine.snares.length * 7;
+  v += mine.nextMana * 3 + mine.nextDraw * 2.5;
+  for (const c of [...mine.hand, ...mine.draw, ...mine.discard]) v += (c.bonus ?? 0) * 1.6;
   v += mine.stars * 1.5 + mine.powers.length * 4;
   for (const rs of mine.runes) v += 3 + rs.charge * 0.5;
   return v;

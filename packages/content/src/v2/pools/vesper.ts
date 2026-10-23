@@ -35,12 +35,12 @@ export const VESPER: CardDef[] = [
     'snare',
     1,
     'none',
-    [dmg(6, 'attacker'), status('exposed', 2, 'attacker')],
+    [dmg(8, 'attacker'), status('exposed', 2, 'attacker')],
     { trigger: { on: 'attacked' } },
   ),
 
   // --- Snares ---
-  v('common', 'trip-line', 'Trip Line', 'snare', 0, 'none', [dmg(4, 'attacker')], {
+  v('common', 'trip-line', 'Trip Line', 'snare', 0, 'none', [dmg(6, 'attacker')], {
     trigger: { on: 'attacked' },
   }),
   v(
@@ -50,7 +50,7 @@ export const VESPER: CardDef[] = [
     'snare',
     1,
     'none',
-    [dmg(8, 'attacker'), status('faltering', 1, 'attacker')],
+    [dmg(10, 'attacker'), status('faltering', 1, 'attacker')],
     { trigger: { on: 'attacked' } },
   ),
   v(
@@ -60,7 +60,7 @@ export const VESPER: CardDef[] = [
     'snare',
     1,
     'none',
-    [dmg(6, 'attacker'), status('stunned', 1, 'attacker')],
+    [dmg(8, 'attacker'), status('stunned', 1, 'attacker')],
     { trigger: { on: 'foeSummons' } },
   ),
   v(
@@ -70,7 +70,7 @@ export const VESPER: CardDef[] = [
     'snare',
     1,
     'none',
-    [dmg(8, 'attacker'), status('faltering', 1, 'attacker')],
+    [dmg(10, 'attacker'), status('faltering', 1, 'attacker')],
     { trigger: { on: 'foeDefends' } },
   ),
   v('common', 'snare-kit', 'Snare Kit', 'skill', 1, 'none', [addTo('trip-line', 2)], {
@@ -80,10 +80,10 @@ export const VESPER: CardDef[] = [
     PREVENT,
     status('faltering', 2, 'attacker'),
   ], { trigger: { on: 'attacked' } }),
-  v('uncommon', 'pain-link', 'Pain Link', 'snare', 0, 'none', [dmg(6, 'allFoes')], {
+  v('uncommon', 'pain-link', 'Pain Link', 'snare', 0, 'none', [dmg(8, 'allFoes')], {
     trigger: { on: 'hpLost', min: 5 },
   }),
-  v('uncommon', 'time-bomb', 'Time Bomb', 'snare', 1, 'none', [dmg(10, 'allFoes')], {
+  v('uncommon', 'time-bomb', 'Time Bomb', 'snare', 1, 'none', [dmg(12, 'allFoes')], {
     trigger: { on: 'foeTurn' },
   }),
   v('uncommon', 'spring-loaded', 'Spring-Loaded', 'skill', 1, 'none', [

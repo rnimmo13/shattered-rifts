@@ -20,7 +20,8 @@
     "sim": "pnpm --filter @sr/tools sim",
     "deploy:web": "pnpm --filter @sr/tools deploy:web",
     "artlist": "pnpm --filter @sr/tools artlist",
-    "cardlist": "pnpm --filter @sr/tools cardlist"
+    "cardlist": "pnpm --filter @sr/tools cardlist",
+    "balance": "pnpm --filter @sr/tools balance"
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",

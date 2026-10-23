@@ -341,7 +341,7 @@ describe('the other rooms and the rules around them', () => {
       },
     });
     expect(chooseEvent(ev, 'shards').shards).toBe(30);
-    expect(chooseEvent(ev, 'heal').hp).toBe(20 + Math.ceil(72 * 0.2));
+    expect(chooseEvent(ev, 'heal').hp).toBe(20 + Math.ceil(RIFTWALKERS.rivet.hero.maxHp * 0.2));
     expect(chooseEvent(ev, 'card').deck).toContain('rift-bolt');
     expect(chooseEvent(ev, 'leave').phase).toBe('map');
   });

@@ -26,9 +26,9 @@ const a = pool('astra', 'starfall');
 
 export const ASTRA: CardDef[] = [
   // --- basics and the token ---
-  a('basic', 'meteor-jab', 'Meteor Jab', 'attack', 1, 'foe', [dmg(6), stars(1)]),
+  a('basic', 'meteor-jab', 'Meteor Jab', 'attack', 1, 'foe', [dmg(7), stars(1)]),
   a('basic', 'gather-light', 'Gather Light', 'skill', 1, 'none', [stars(2)], { innate: true }),
-  a('basic', 'lumen-bolt', 'Lumen Bolt', 'attack', 1, 'foe', [dmg(12)], {
+  a('basic', 'lumen-bolt', 'Lumen Bolt', 'attack', 1, 'foe', [dmg(14)], {
     starCost: 1,
     innate: true,
   }),
@@ -39,7 +39,7 @@ export const ASTRA: CardDef[] = [
     'attack',
     1,
     'foe',
-    [scaled(dmg(6), per('bonus'))],
+    [scaled(dmg(7), per('bonus'))],
     { retain: true, tags: ['blade'], source: 'token' },
   ),
 
@@ -65,10 +65,10 @@ export const ASTRA: CardDef[] = [
   a('common', 'starshield', 'Starshield', 'skill', 1, 'none', [barrier(6), stars(1)]),
   a('common', 'ray-of-light', 'Ray of Light', 'attack', 1, 'foe', [dmg(8)]),
   a('common', 'gleam', 'Gleam', 'attack', 1, 'foe', [dmg(7), scry(2)]),
-  a('common', 'skybolt', 'Skybolt', 'attack', 1, 'foe', [dmg(15)], { starCost: 1 }),
-  a('common', 'star-barrier', 'Star Barrier', 'skill', 1, 'none', [barrier(14)], { starCost: 1 }),
-  a('uncommon', 'nova', 'Nova', 'attack', 2, 'foe', [dmg(24)], { starCost: 2 }),
-  a('uncommon', 'falling-sky', 'Falling Sky', 'attack', 1, 'none', [dmg(8, 'allFoes', 2)], {
+  a('common', 'skybolt', 'Skybolt', 'attack', 1, 'foe', [dmg(18)], { starCost: 1 }),
+  a('common', 'star-barrier', 'Star Barrier', 'skill', 1, 'none', [barrier(16)], { starCost: 1 }),
+  a('uncommon', 'nova', 'Nova', 'attack', 2, 'foe', [dmg(30)], { starCost: 2 }),
+  a('uncommon', 'falling-sky', 'Falling Sky', 'attack', 1, 'none', [dmg(9, 'allFoes', 3)], {
     starCost: 3,
   }),
   a('uncommon', 'solar-flare', 'Solar Flare', 'attack', 1, 'none', [
@@ -86,7 +86,7 @@ export const ASTRA: CardDef[] = [
     status('faltering', 1, 'allFoes'),
   ]),
   a('uncommon', 'starlight', 'Starlight', 'skill', 1, 'none', [stars(3)], { exhaust: true }),
-  a('rare', 'supernova', 'Supernova', 'attack', 3, 'foe', [dmg(45), status('exposed', 2, 'target')], {
+  a('rare', 'supernova', 'Supernova', 'attack', 3, 'foe', [dmg(55), status('exposed', 2, 'target')], {
     starCost: 4,
   }),
   a('rare', 'dawn-of-stars', 'Dawn of Stars', 'skill', 2, 'none', [stars(5), draw(2)], {

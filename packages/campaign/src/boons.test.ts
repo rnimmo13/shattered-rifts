@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { BOONS, signatureCards } from '@sr/content/v2';
+import { BOONS, RIFTWALKERS, signatureCards } from '@sr/content/v2';
 import {
   RunError,
   buyBoon,
@@ -68,7 +68,7 @@ describe('boons in a run', () => {
     };
     const bought = buyBoon(shop);
     expect(bought.boons).toEqual(['crystal-heart']);
-    expect(bought.maxHp).toBe(76 + 12);
+    expect(bought.maxHp).toBe(RIFTWALKERS.kesh.hero.maxHp + 12);
     expect(bought.shards).toBe(380);
     expect(() => buyBoon(bought)).toThrow(RunError);
     expect(() => buyBoon({ ...shop, shards: 10 })).toThrow(RunError);

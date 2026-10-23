@@ -41,8 +41,8 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
   },
   rivet: {
     realm: 'nexus',
-    hero: { id: 'rivet', name: 'Rivet', maxHp: 72, mana: 3, handSize: 5, startUnits: ['drone'] },
-    starter: [...rep('strike', 4), ...rep('defend', 3), ...rep('deploy-drone', 2), 'overclock'],
+    hero: { id: 'rivet', name: 'Rivet', maxHp: 66, mana: 3, handSize: 5, startUnits: ['drone'] },
+    starter: [...rep('strike', 5), ...rep('defend', 3), 'deploy-drone', 'overclock'],
     blurb:
       'A scrap-built tinkerer. Starts every fight with a Drone and builds an army of machines.',
     lanes: ['Swarm: many cheap bodies', 'Assemble: allies act again', 'Core: a few big constructs'],
@@ -52,18 +52,18 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     hero: {
       id: 'kesh',
       name: 'Kesh the Unfed',
-      maxHp: 76,
+      maxHp: 70,
       mana: 3,
       handSize: 5,
       startUnits: ['hound'],
     },
-    starter: [...rep('strike', 4), ...rep('defend', 3), ...rep('savage-bite', 2), 'blood-frenzy'],
+    starter: [...rep('strike', 5), ...rep('defend', 3), 'savage-bite', 'blood-frenzy'],
     blurb: 'A hunter with a Hound. Pays HP to buff the whole pack with Might.',
     lanes: ['Bloodrage: HP for Might', 'Pack: feed the companions', 'Feast: Exhaust and Devour'],
   },
   vesper: {
     realm: 'umbral',
-    hero: { id: 'vesper', name: 'Vesper Nightlace', maxHp: 68, mana: 3, handSize: 5 },
+    hero: { id: 'vesper', name: 'Vesper Nightlace', maxHp: 76, mana: 3, handSize: 5 },
     starter: [...rep('strike', 3), ...rep('defend', 4), ...rep('veil-strike', 2), 'set-the-web'],
     blurb: 'A masked trapper. No companions: Snares, Exposed and patience.',
     lanes: ['Snares: traps of every trigger', 'Exposed: mark, then spend the mark', 'Bluff: Hold, Foresee, held Mana'],
@@ -73,7 +73,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     hero: {
       id: 'quill',
       name: 'Quill, the Knife-Dancer',
-      maxHp: 66,
+      maxHp: 72,
       mana: 3,
       handSize: 5,
       sigil: [addTo('sleeve-knife')],
@@ -115,7 +115,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     hero: {
       id: 'astra',
       name: 'Astra, the Starcaller',
-      maxHp: 74,
+      maxHp: 80,
       mana: 3,
       handSize: 5,
       sigil: [stars(2), addTo('starforged-blade')],
@@ -130,7 +130,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     hero: {
       id: 'mire',
       name: 'Mire, the Gravewarden',
-      maxHp: 70,
+      maxHp: 76,
       mana: 3,
       handSize: 5,
       startUnits: ['bone-thrall'],

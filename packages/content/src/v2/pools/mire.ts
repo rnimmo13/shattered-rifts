@@ -27,7 +27,7 @@ const g = pool('mire', 'gloomfen');
 
 export const MIRE: CardDef[] = [
   // --- basics and the token ---
-  g('basic', 'grave-touch', 'Grave Touch', 'attack', 1, 'foe', [dmg(5), status('doom', 3, 'target')]),
+  g('basic', 'grave-touch', 'Grave Touch', 'attack', 1, 'foe', [dmg(5), status('doom', 4, 'target')]),
   g('basic', 'bone-ward', 'Bone Ward', 'skill', 1, 'none', [barrier(5, 'allFriends')]),
   g('common', 'gravesoul', 'Gravesoul', 'skill', 0, 'none', [draw(2)], {
     exhaust: true,
@@ -35,21 +35,21 @@ export const MIRE: CardDef[] = [
   }),
 
   // --- Doom ---
-  g('common', 'tolling-bell', 'Tolling Bell', 'attack', 1, 'foe', [dmg(3), status('doom', 6, 'target')]),
+  g('common', 'tolling-bell', 'Tolling Bell', 'attack', 1, 'foe', [dmg(3), status('doom', 7, 'target')]),
   g('common', 'withering-word', 'Withering Word', 'skill', 1, 'foe', [
     status('doom', 5, 'target'),
     status('faltering', 1, 'target'),
   ]),
-  g('common', 'creeping-end', 'Creeping End', 'skill', 1, 'none', [status('doom', 3, 'allFoes')]),
-  g('common', 'last-rites', 'Last Rites', 'attack', 2, 'foe', [dmg(8), status('doom', 8, 'target')]),
+  g('common', 'creeping-end', 'Creeping End', 'skill', 1, 'none', [status('doom', 4, 'allFoes')]),
+  g('common', 'last-rites', 'Last Rites', 'attack', 2, 'foe', [dmg(8), status('doom', 10, 'target')]),
   g('uncommon', 'hasten-the-end', 'Hasten the End', 'skill', 1, 'foe', [doubleSt('doom', 'target')], {
     exhaust: true,
   }),
   g('uncommon', 'inevitable', 'Inevitable', 'power', 1, 'none', [
-    on('turnStart', [status('doom', 2, 'allFoes')]),
+    on('turnStart', [status('doom', 3, 'allFoes')]),
   ]),
   g('uncommon', 'harvest', 'Harvest', 'attack', 1, 'foe', [scaled(dmg(4), per('doom', 1, 'target'))]),
-  g('uncommon', 'deathknell', 'Deathknell', 'skill', 2, 'foe', [status('doom', 12, 'target')]),
+  g('uncommon', 'deathknell', 'Deathknell', 'skill', 2, 'foe', [status('doom', 14, 'target')]),
   g('rare', 'the-final-hour', 'The Final Hour', 'skill', 3, 'none', [status('doom', 14, 'allFoes')], {
     exhaust: true,
   }),
