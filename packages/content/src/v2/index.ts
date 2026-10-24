@@ -494,7 +494,7 @@ export const REALMS: { id: RealmId; name: string }[] = [
   { id: 'nexus', name: 'Nexus-9' },
   { id: 'wyldmaw', name: 'Wyldmaw' },
   { id: 'umbral', name: 'Umbral Veil' },
-  { id: 'starfall', name: 'The Glasswaste' },
+  { id: 'starfall', name: 'The Hollow Crown' },
   { id: 'gloomfen', name: 'Gloomfen' },
   { id: 'midden', name: 'The Midden' },
 ];

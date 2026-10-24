@@ -96,7 +96,7 @@ draw 5, +1 draw for the second player in PvP (§8).
 | **Quill** (Umbral) | **None.** Shivs are cards, not bodies. | Shivs, Bleed, discard (docs/09). |
 | **Ilvane** (Nexus-9) | **None.** Runes sit in a row. | Channel, evoke, Resonance. |
 | **Sehra** (Aurelion) | **None.** | Stances and Mantra. |
-| **Obsidia** (The Glasswaste; id astra) | **None.** | Arcana and the Obsidian Blade. |
+| **Obsidia** (The Hollow Crown; id astra) | **None.** | Arcana and the Obsidian Blade. |
 
 See `09_ROSTER.md` for the lanes of all eight and the rules every pool follows.
 

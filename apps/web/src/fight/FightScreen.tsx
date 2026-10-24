@@ -24,7 +24,7 @@ const REALM_NAME: Record<string, string> = {
   nexus: 'Nexus',
   wyldmaw: 'Wyldmaw',
   umbral: 'Umbral Veil',
-  starfall: 'The Glasswaste',
+  starfall: 'The Hollow Crown',
   gloomfen: 'Gloomfen',
   midden: 'The Midden',
   all: 'All realms',

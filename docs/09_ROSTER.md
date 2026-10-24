@@ -46,7 +46,7 @@ deck takes one and a half of them. Our pools were ~16 cards and one lane each. T
 | 5 | **Quill, the Knife-Dancer** | Umbral | 66 | **Sleeve Knives:** 0-cost, many hits | **Bleed:** stack, double, cash out | **Sleight:** discard / cycle payoffs |
 | 6 | **Ilvane** (id `ilvane`) | Nexus-9 | 70 | **Hawk:** damage totems | **Bear:** Barrier totems | **Elder:** charging totems, Spirit |
 | 7 | **Sehra, the Still Flame** | Aurelion | 72 | **Fury:** burst | **Serene:** Mana and cards | **Fervor:** Retain/Foresee to a payoff |
-| 8 | **Obsidia, the Glasswaste Spellblade** (id `astra`) | The Glasswaste (id `starfall`) | 80 | **Blade:** sharpen one weapon | **Arcana:** spend for finishers | **Sigils:** Auras that tick |
+| 8 | **Obsidia, Spellblade of the Hollow Crown** (id `astra`) | The Hollow Crown (id `starfall`) | 80 | **Blade:** sharpen one weapon | **Arcana:** spend for finishers | **Sigils:** Auras that tick |
 | 9 | **Mire, the Gravewarden** | Gloomfen | 76 | **Doom:** stack, double, cash in | **Thralls:** the dead fight for you | **Ashes:** consumed cards fuel you |
 | 10 | **KP, the Homeless Drunk** | The Midden | 88 | **Gun:** sharpen the Old Twelve Gauge | **Shells:** buckshot and booby traps that hit every enemy | **Hangover:** the more it hurts the harder you hit: glass, Thorns, swigs, self-damage |
 

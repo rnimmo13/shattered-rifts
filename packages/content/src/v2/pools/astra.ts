@@ -1,4 +1,4 @@
-// Obsidia, the Glasswaste Spellblade (display name; the id stays 'astra', DECISIONS #140). A spellblade of black glass and ember. No companions.
+// Obsidia, Spellblade of the Hollow Crown (display name; the id stays 'astra', DECISIONS #140). A spellblade of black glass and ember. No companions.
 // Arcana (the `stars` op) is a second resource: cards gain it and spend it, and it lasts the whole fight.
 // The Obsidian Blade (id 'starforged-blade') is one card that every Sharpen permanently improves (it Retains, so it waits for you).
 // Three lanes:
