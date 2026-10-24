@@ -5,6 +5,7 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **0.15.0:** Credits page, How to play in two columns.
 - **How to play** reads in two columns and every section is open: no more expanding Riftwalkers or totems one at a time.
 - **Credits page:** the title screen footer links to a Credits page thanking the artists behind the cave, rarity gems, card backs and effects.
 - **0.14.0:** cave stage, sprite effects (fire, frost, portals), and real art for rarity gems and card backs.
