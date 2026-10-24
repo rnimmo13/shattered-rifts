@@ -192,6 +192,27 @@ async function refusals(): Promise<void> {
   send(p1, { type: 'resign' });
   await until(() => p1.ended !== null && p2.ended !== null, 'the resignation');
   console.log('  resign: ended');
+  // nothing is accepted after the end
+  send(p2, { type: 'action', seq: p2.match!.log.length + 1, action: { type: 'endTurn' } });
+  await until(
+    () => p2.inbox.some((m) => m.type === 'error' && m.code === 'no-match'),
+    'a refusal after the end',
+  );
+  console.log('  a move after the end: refused as expected');
+  // a player who leaves before the match starts does not leave a ghost in the seat
+  const ghostRoom = `GHOST${rnd()}`;
+  const g1 = await connect(`/pvp/room/${ghostRoom}`, 'g1', 'g1');
+  send(g1, { type: 'join', playerId: 'g1', entry: entryOf('maren', 'g1') });
+  await until(() => g1.inbox.some((m) => m.type === 'waiting'), 'g1 waiting');
+  g1.ws.close();
+  await sleep(300);
+  const g2 = await connect(`/pvp/room/${ghostRoom}`, 'g2', 'g2');
+  send(g2, { type: 'join', playerId: 'g2', entry: entryOf('kesh', 'g2') });
+  await until(() => g2.inbox.length > 0, 'a reply for g2');
+  if (g2.inbox.some((m) => m.type === 'start'))
+    throw new Error('a match started against a player who had left');
+  console.log('  a player who left before the start: not matched with a ghost');
+  g2.ws.close();
   for (const b of [bad, p1, p2, p3]) b.ws.close();
 }
 

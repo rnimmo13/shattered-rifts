@@ -15,7 +15,7 @@ import {
   setName as saveName,
   setServerSetting,
 } from './config';
-import { PvpSession, newRoomCode, type Snapshot } from './session';
+import { PvpSession, newRoomCode, savedRoom, type Snapshot } from './session';
 import {
   VAULT_SLOTS,
   dropFrom,
@@ -62,10 +62,19 @@ export default function PvpScreen() {
   const [copied, setCopied] = useState(false);
   const session = useRef<PvpSession | null>(null);
 
+  // reloading the page in the middle of a match puts you back in it
+  useEffect(() => {
+    const saved = savedRoom();
+    if (!saved || session.current) return;
+    const s = new PvpSession(serverBase(), playerId(), setSnap);
+    session.current = s;
+    s.joinRoom(saved.room, saved.entry);
+  }, []);
+
   // leaving the page ends whatever connection is open
   useEffect(
     () => () => {
-      session.current?.leave();
+      session.current?.close();
       session.current = null;
     },
     [],

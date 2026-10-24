@@ -48,6 +48,7 @@ browser (apps/web/src/pvp)  ──WebSocket──►  Cloudflare Worker (apps/se
 ```
 pnpm pvp:dev          # the server on ws://127.0.0.1:8787 (wrangler dev, local Durable Objects)
 pnpm dev              # the web client; in dev it connects to the local server by itself
+pnpm pvpbalance       # bot-vs-bot: does moving first win? (docs/BALANCE.md)
 pnpm pvpsmoke         # plays whole matches against the local server with two bots (queue, room, reconnect, refusals)
 ```
 

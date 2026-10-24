@@ -632,8 +632,17 @@ export function FightView(props: {
       if (pvp) {
         // the server decides: send the move, and play it when it comes back (with the opponent's)
         if (g.state.active !== mySide || awaiting.current) return;
+        if (!pvp.send(seqRef.current + 1, a)) {
+          // the connection is down: the move is not lost into the air, the player is told
+          play('refuse');
+          setBanner('Reconnecting…');
+          if (refuseTimer.current) window.clearTimeout(refuseTimer.current);
+          refuseTimer.current = window.setTimeout(() => setBanner(null), 1200);
+          return;
+        }
         awaiting.current = true;
-        pvp.send(seqRef.current + 1, a);
+        // (if the answer never comes, my next click may try again: the server refuses a repeat)
+        window.setTimeout(() => (awaiting.current = false), 4000);
         return;
       }
       if (!applyMove(a, mySide, false)) play('refuse');
@@ -992,7 +1001,7 @@ export function FightView(props: {
           {desync && (
             <div className="fight__desync" role="alert">
               <b>This match has gone out of step with the server.</b>
-              <span>Leave and rejoin with the same room code to catch up.</span>
+              <span>Reload this page: you are put straight back into the match.</span>
             </div>
           )}
           {banner && (

@@ -216,3 +216,10 @@ Cardscan (`--seeds 10`) before the pass: summons are the strongest cards for Riv
 a core-rule question for Robert). Aegis Eternal (+31) and Radiance Eternal (+34) led Maren; Eternal Rage (-7) and Final Round
 (-8) were the weakest new legendaries. Ilvane's cards barely move his score (baseline 78% HP left): his strength was HP and the
 free Hawk totem, so his HP came down and his weakest attacks went up.
+
+## PvP, first look (2026-10-24, `pnpm pvpbalance 6`)
+
+540 matches between starting decks, the greedy bot on both seats, average length 8.5 turns.
+
+- **Moving first wins 57%, moving second 43%**, even though the second player already gets +1 Mana and +1 card on their first turn. A person plays differently from this bot, so read it as a hint: going first looks worth more than the head start pays for.
+- **Starting decks are far apart in PvP:** winning share across all pairings (moving first / second): Vesper 96% / 93%, Obsidia 85% / 83%, KP 87% / 81%, Kesh 69% / 43%, Quill 65% / 48%, Sehra 61% / 48%, Mire 35% / 11%, Ilvane 31% / 7%, Rivet 28% / 13%, Valeria 13% / 2%. The starting decks were tuned against enemies (runs), not against each other, and a PvP deck is a banked deck, so this is not the real picture yet; it says where to look when PvP balance starts.

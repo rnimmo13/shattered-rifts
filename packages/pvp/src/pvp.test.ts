@@ -46,6 +46,14 @@ describe('checkEntry', () => {
     expect(checkEntry({ ...entryOf('maren'), deck }).ok).toBe(false);
   });
 
+  it('does not allow a pile of one basic card', () => {
+    const many = Array<string>(11).fill('strike');
+    expect(checkEntry({ ...entryOf('maren'), deck: many }).ok).toBe(false);
+    expect(checkEntry({ ...entryOf('maren'), deck: Array<string>(10).fill('strike') }).ok).toBe(
+      true,
+    );
+  });
+
   it('clamps the tier', () => {
     const r = checkEntry({ ...entryOf('maren'), tier: 999 });
     expect(r.ok && r.entry.tier).toBeLessThanOrEqual(20);
@@ -154,6 +162,26 @@ describe('a match', () => {
     m.end('b', 'resign');
     expect(m.submit('a', 1, { type: 'endTurn' }, 0)).toMatchObject({ ok: false, code: 'no-match' });
     expect(m.over).toMatchObject({ winner: 'b', reason: 'resign' });
+  });
+
+  it('a rebuilt match keeps its ending and its missed turns', () => {
+    const a = entryOf('maren');
+    const b = entryOf('kesh');
+    const m = new Match('seed-6', a, b, 0);
+    m.timeout(TURN_MS); // a misses one turn
+    const outcome = m.end('b', 'resign');
+    // the room rebuilds a match by replaying its moves, then puts back what the moves cannot say
+    const again = new Match('seed-6', a, b, 0);
+    for (const { seat, action } of m.log) again.submit(seat, again.log.length + 1, action, 0);
+    expect(again.over).toBeNull();
+    expect(again.missed.a).toBe(0); // the replay alone forgets
+    again.restore(outcome, m.missed);
+    expect(again.over).toMatchObject({ winner: 'b', reason: 'resign' });
+    expect(again.missed.a).toBe(1);
+    expect(again.submit(again.active, again.log.length + 1, { type: 'endTurn' }, 0)).toMatchObject({
+      ok: false,
+      code: 'no-match',
+    });
   });
 
   it('every Riftwalker can fight another to a finish', () => {

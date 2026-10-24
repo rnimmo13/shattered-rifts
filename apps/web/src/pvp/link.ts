@@ -44,8 +44,8 @@ export interface PvpLink {
   seat: Side;
   names: Record<Side, string>;
   feed: MoveFeed;
-  /** ask the server to make this move (`seq` is the number you expect it to get) */
-  send: (seq: number, action: Action) => void;
+  /** ask the server to make this move (`seq` is the number you expect it to get); false if there is no connection right now */
+  send: (seq: number, action: Action) => boolean;
   /** how many moves arrive at once as history (you came back to a match in progress); 0 for a new one */
   replay: number;
   /** epoch ms (server clock) by which whoever is to move must move; null before it is known */

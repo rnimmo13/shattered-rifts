@@ -14,7 +14,9 @@ function normalise(raw: string): string {
   if (/^wss?:\/\//i.test(v)) return v;
   if (/^https?:\/\//i.test(v)) return v.replace(/^http/i, 'ws');
   // a bare host: local addresses speak plain ws, the rest wss
-  return /^(localhost|127\.|192\.168\.|10\.)/.test(v) ? `ws://${v}` : `wss://${v}`;
+  return /^(localhost|127\.\d+\.\d+\.\d+|192\.168\.\d+\.\d+|10\.\d+\.\d+\.\d+)(:\d+)?$/.test(v)
+    ? `ws://${v}`
+    : `wss://${v}`;
 }
 
 /** The server a browser should connect to (see README of the PvP setup in docs/DECISIONS.md #161). */

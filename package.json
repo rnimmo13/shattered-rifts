@@ -28,6 +28,7 @@
     "traitscan": "pnpm --filter @sr/tools traitscan",
     "lanes": "pnpm --filter @sr/tools lanes",
     "pvpsmoke": "pnpm --filter @sr/tools pvpsmoke",
+    "pvpbalance": "pnpm --filter @sr/tools pvpbalance",
     "pvp:dev": "pnpm --filter @sr/server dev"
   },
   "devDependencies": {

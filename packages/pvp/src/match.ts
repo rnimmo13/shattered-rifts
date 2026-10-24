@@ -51,7 +51,8 @@ export class Match {
   readonly log: { seat: Seat; action: Action }[] = [];
   deadline: number;
   private outcome: Outcome | null = null;
-  private missed: Record<Seat, number> = { a: 0, b: 0 };
+  /** turns each seat has let run out in a row (kept by the room, so it survives a sleep) */
+  missed: Record<Seat, number> = { a: 0, b: 0 };
 
   constructor(
     readonly seed: string,
@@ -152,6 +153,12 @@ export class Match {
       if (action.type === 'endTurn') break;
     }
     return { moves, outcome: this.outcome };
+  }
+
+  /** Put back what a rebuilt match cannot learn from its moves: how it ended, and who has been away from the table. */
+  restore(outcome: Outcome | null, missed: Record<Seat, number>): void {
+    this.outcome = outcome;
+    this.missed = { ...missed };
   }
 
   /** A player gives up, or is gone for good. */

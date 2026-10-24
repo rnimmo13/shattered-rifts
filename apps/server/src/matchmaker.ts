@@ -14,6 +14,11 @@ interface Place {
 }
 
 export class Matchmaker extends DurableObject<Env> {
+  constructor(ctx: DurableObjectState, env: Env) {
+    super(ctx, env);
+    ctx.setWebSocketAutoResponse(new WebSocketRequestResponsePair('ping', 'pong'));
+  }
+
   override fetch(request: Request): Response {
     if (request.headers.get('Upgrade') !== 'websocket')
       return new Response('Expected a WebSocket.', { status: 426 });
@@ -42,9 +47,12 @@ export class Matchmaker extends DurableObject<Env> {
       ws.close(1008, 'bad deck');
       return;
     }
-    // one place per player: a second tab replaces the first
+    // one place per player: a second tab replaces the first (its place is cleared at once, before its socket finishes closing)
     for (const w of this.waiting())
-      if (w.place.playerId === msg.playerId && w.ws !== ws) w.ws.close(1000, 'replaced');
+      if (w.place.playerId === msg.playerId && w.ws !== ws) {
+        w.ws.serializeAttachment(null);
+        w.ws.close(1000, 'replaced');
+      }
     const place: Place = { playerId: msg.playerId, tier: checked.entry.tier, since: Date.now() };
     ws.serializeAttachment(place);
     send(ws, { type: 'queued', waiting: this.waiting().length });
@@ -68,6 +76,15 @@ export class Matchmaker extends DurableObject<Env> {
   }
 
   private async pairAll(): Promise<void> {
+    const now = Date.now();
+    // a waiting player who has gone quiet (no ping for a minute) is dropped, so nobody is paired with a ghost
+    for (const w of this.waiting()) {
+      const last = this.ctx.getWebSocketAutoResponseTimestamp(w.ws);
+      if (last && now - last.getTime() > 60_000) {
+        w.ws.serializeAttachment(null);
+        w.ws.close(1001, 'quiet');
+      }
+    }
     const all = this.waiting();
     const byId = new Map(all.map((w) => [w.place.playerId, w]));
     const queue: Waiting[] = all.map((w) => ({
@@ -85,7 +102,8 @@ export class Matchmaker extends DurableObject<Env> {
         sock.close(1000, 'matched');
       }
     }
-    // those still waiting are looked at again soon: the tier gap widens with time
-    if (rest.length > 1) await this.ctx.storage.setAlarm(Date.now() + 2000);
+    // those still waiting are looked at again soon: the tier gap widens with time, and a quiet player is found out
+    if (rest.length > 0)
+      await this.ctx.storage.setAlarm(Date.now() + (rest.length > 1 ? 2000 : 8000));
   }
 }

@@ -1,5 +1,6 @@
 // Small helpers shared by the two Durable Objects: parsing what a browser sends and sending what the server says.
 
+import type { Action } from '@sr/combat';
 import type { ClientMsg, ServerMsg } from '@sr/pvp';
 
 /** Biggest message accepted (a deck of 80 cards is about 2 KB). */
@@ -43,6 +44,42 @@ export function parse(message: string | ArrayBuffer): ClientMsg | null {
       return { type: 'resign' };
     default:
       return null;
+  }
+}
+
+/** An action as the engine knows it, and nothing else a client might have stuck on it. */
+export function cleanAction(a: Action): Action {
+  const o = a as unknown as Record<string, unknown>;
+  const str = (v: unknown): string | undefined =>
+    typeof v === 'string' ? v.slice(0, 64) : undefined;
+  const num = (v: unknown): number | undefined =>
+    typeof v === 'number' && Number.isInteger(v) && Math.abs(v) < 1e6 ? v : undefined;
+  switch (o['type']) {
+    case 'endTurn':
+      return { type: 'endTurn' };
+    case 'play': {
+      const target = str(o['target']);
+      return { type: 'play', card: str(o['card']) ?? '', ...(target ? { target } : {}) };
+    }
+    case 'potion': {
+      const target = str(o['target']);
+      const potion = str(o['potion']);
+      return {
+        type: 'potion',
+        index: num(o['index']) ?? -1,
+        ...(potion ? { potion } : {}),
+        ...(target ? { target } : {}),
+      };
+    }
+    case 'pick':
+      return {
+        type: 'pick',
+        cards: Array.isArray(o['cards'])
+          ? (o['cards'] as unknown[]).slice(0, 40).map((c) => str(c) ?? '')
+          : [],
+      };
+    default:
+      return { type: 'endTurn' };
   }
 }
 

@@ -17,11 +17,14 @@ import {
   type ServerMsg,
 } from '@sr/pvp';
 import type { Env } from './env';
-import { parse, send } from './wire';
+import { cleanAction, parse, send } from './wire';
 
 /** A room nobody joins, or whose result nobody collects, is cleared after this long. */
 const IDLE_MS = 15 * 60_000;
 const LINGER_MS = 5 * 60_000;
+/** A browser pings every 20 s; one silent for this long is treated as gone, and how often we look. */
+const QUIET_MS = 60_000;
+const HEARTBEAT_CHECK_MS = 30_000;
 
 interface Saved {
   created: number;
@@ -35,6 +38,8 @@ interface Saved {
   over: Outcome | null;
   /** when each seat's last connection dropped (ms), if it is away */
   away: Partial<Record<Seat, number>>;
+  /** turns each seat has let run out in a row */
+  missed: Record<Seat, number>;
 }
 
 interface Attach {
@@ -52,6 +57,7 @@ const fresh = (): Saved => ({
   deadline: 0,
   over: null,
   away: {},
+  missed: { a: 0, b: 0 },
 });
 
 export class MatchRoom extends DurableObject<Env> {
@@ -61,6 +67,8 @@ export class MatchRoom extends DurableObject<Env> {
 
   constructor(ctx: DurableObjectState, env: Env) {
     super(ctx, env);
+    // a browser sends 'ping' now and then; the answer is made without waking the object, and its time tells us who has gone quiet
+    ctx.setWebSocketAutoResponse(new WebSocketRequestResponsePair('ping', 'pong'));
     void ctx.blockConcurrencyWhile(async () => {
       const saved = await ctx.storage.get<Saved>('room');
       if (saved) {
@@ -86,10 +94,22 @@ export class MatchRoom extends DurableObject<Env> {
     const a = d.entries.a;
     const b = d.entries.b;
     if (!d.started || !a || !b) return;
-    const m = new Match(d.seed, a, b, Date.now());
-    for (const { seat, action } of d.log) m.submit(seat, m.log.length + 1, action, Date.now());
-    m.deadline = d.deadline;
-    this.match = m;
+    try {
+      const m = new Match(d.seed, a, b, Date.now());
+      for (const { seat, action } of d.log) {
+        const r = m.submit(seat, m.log.length + 1, action, Date.now());
+        if (!r.ok) throw new Error(`replay refused move ${m.log.length + 1}: ${r.message}`);
+      }
+      m.deadline = d.deadline;
+      // what the moves alone cannot tell: whether it was already over, and how many turns each seat has missed
+      m.restore(d.over, d.missed);
+      this.match = m;
+    } catch (err) {
+      // (a card changed in a new version, say) the match cannot be rebuilt: end it rather than leave the room stuck
+      console.error('[room] cannot rebuild the match', err);
+      d.over ??= { winner: 'draw', reason: 'disconnect' };
+      this.match = null;
+    }
   }
 
   private async save(): Promise<void> {
@@ -117,6 +137,8 @@ export class MatchRoom extends DurableObject<Env> {
     else {
       at = d.deadline;
       for (const t of Object.values(d.away)) at = Math.min(at, t + RECONNECT_MS);
+      // look for players who have gone quiet (a closed laptop sends no goodbye) at least this often
+      at = Math.min(at, Date.now() + HEARTBEAT_CHECK_MS);
     }
     await this.ctx.storage.setAlarm(Math.max(Date.now() + 250, at));
   }
@@ -126,7 +148,16 @@ export class MatchRoom extends DurableObject<Env> {
     const a = d.entries.a;
     const b = d.entries.b;
     if (!d.started || !a || !b) return null;
-    return { type: 'start', seat, seed: d.seed, a, b, deadline: d.deadline, replay: d.log.length, now: Date.now() };
+    return {
+      type: 'start',
+      seat,
+      seed: d.seed,
+      a,
+      b,
+      deadline: d.deadline,
+      replay: d.log.length,
+      now: Date.now(),
+    };
   }
 
   private actionMessage(i: number, m: Accepted | null): ServerMsg {
@@ -192,6 +223,7 @@ export class MatchRoom extends DurableObject<Env> {
       d.seed = crypto.randomUUID();
       this.match = new Match(d.seed, d.entries.a as Entry, d.entries.b as Entry, Date.now());
       d.deadline = this.match.deadline;
+      d.missed = { a: 0, b: 0 };
       for (const s of this.sockets()) {
         const seatOf = d.ids.a === s.at.playerId ? 'a' : 'b';
         s.ws.serializeAttachment({ playerId: s.at.playerId, seat: seatOf } satisfies Attach);
@@ -200,6 +232,9 @@ export class MatchRoom extends DurableObject<Env> {
         playerId: msg.playerId,
         seat: d.ids.a === msg.playerId ? 'a' : 'b',
       } satisfies Attach);
+      // a seat nobody is connected to (the first player left while waiting) is away from the start
+      for (const seatOf of ['a', 'b'] as const)
+        if (this.sockets(seatOf).length === 0) d.away[seatOf] = Date.now();
       await this.save();
       for (const s of this.sockets()) {
         const m = this.startMessage(s.at.seat as Seat);
@@ -225,18 +260,25 @@ export class MatchRoom extends DurableObject<Env> {
     }
 
     if (msg.type === 'action') {
-      const r = match.submit(seat, msg.seq, msg.action, Date.now());
+      // nothing is accepted once a match is over, whatever the moves say
+      if (d.over) {
+        send(ws, { type: 'error', code: 'no-match', message: 'The match is over.' });
+        return;
+      }
+      const action = cleanAction(msg.action);
+      const r = match.submit(seat, msg.seq, action, Date.now());
       if (!r.ok) {
         send(ws, { type: 'error', code: r.code, message: r.message });
         return;
       }
-      d.log.push({ seat, action: msg.action });
+      d.log.push({ seat, action });
       d.deadline = r.deadline;
+      d.missed = { ...match.missed };
       this.broadcast({
         type: 'action',
         seq: r.seq,
         seat,
-        action: msg.action,
+        action,
         hash: r.hash,
         deadline: r.deadline,
         now: Date.now(),
@@ -265,20 +307,24 @@ export class MatchRoom extends DurableObject<Env> {
     this.broadcast({ type: 'end', winner: outcome.winner, reason: outcome.reason });
   }
 
-  override async webSocketClose(ws: WebSocket): Promise<void> {
+  override async webSocketClose(ws: WebSocket, _code = 1000): Promise<void> {
     const at = ws.deserializeAttachment() as Attach | null;
     try {
       ws.close(1000, 'bye');
     } catch {
       /* already closed */
     }
-    if (!at?.seat || this.data.over || !this.data.started) return;
-    // away only if they have no other connection (a second tab)
-    const stillThere = this.sockets(at.seat).some((s) => s.ws !== ws);
-    if (!stillThere) {
-      this.data.away[at.seat] = Date.now();
-      await this.save();
-    }
+    if (!at?.seat || this.data.over) return;
+    // gone only if they have no other connection (a second tab)
+    ws.serializeAttachment(null);
+    const stillThere = this.sockets(at.seat).length > 0;
+    if (stillThere) return;
+    if (!this.data.started) {
+      // a player who leaves before the match starts gives up their seat, so nobody is matched with an empty chair
+      delete this.data.ids[at.seat];
+      delete this.data.entries[at.seat];
+    } else this.data.away[at.seat] = Date.now();
+    await this.save();
   }
 
   override async webSocketError(ws: WebSocket): Promise<void> {
@@ -298,6 +344,12 @@ export class MatchRoom extends DurableObject<Env> {
     }
     const match = this.match;
     if (!match) return;
+    // a player whose connection went quiet without closing (a closed laptop, a dead network) is as good as gone
+    for (const { ws, at } of this.sockets()) {
+      const last = this.ctx.getWebSocketAutoResponseTimestamp(ws);
+      if (last && now - last.getTime() > QUIET_MS) await this.webSocketClose(ws, 1001);
+      void at;
+    }
     // a player who has been gone too long forfeits (both gone: nobody wins)
     const gone = (['a', 'b'] as const).filter((s) => {
       const t = d.away[s];
@@ -327,6 +379,7 @@ export class MatchRoom extends DurableObject<Env> {
         });
       }
       d.deadline = match.deadline;
+      d.missed = { ...match.missed };
       if (t.outcome) {
         await this.finish(t.outcome);
         return;

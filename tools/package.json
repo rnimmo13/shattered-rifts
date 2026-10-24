@@ -17,7 +17,8 @@
     "cardscan": "tsx src/cardscan.ts",
     "traitscan": "tsx src/traitscan.ts",
     "lanes": "tsx src/lanes.ts",
-    "pvpsmoke": "tsx src/pvpsmoke.ts"
+    "pvpsmoke": "tsx src/pvpsmoke.ts",
+    "pvpbalance": "tsx src/pvpbalance.ts"
   },
   "dependencies": {
     "@sr/campaign": "workspace:*",

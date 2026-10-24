@@ -39,6 +39,37 @@ export function newRoomCode(len = 5): string {
   return Array.from(bytes, (b) => LETTERS[b % LETTERS.length]).join('');
 }
 
+const ROOM_KEY = 'sr-pvp-room';
+
+/** The room this tab is in, remembered so that reloading the page puts the player back in their match. */
+function remember(v: { room: string; entry: Entry }): void {
+  try {
+    sessionStorage.setItem(ROOM_KEY, JSON.stringify(v));
+  } catch {
+    /* not remembered */
+  }
+}
+function forget(): void {
+  try {
+    sessionStorage.removeItem(ROOM_KEY);
+  } catch {
+    /* nothing to forget */
+  }
+}
+/** The room a reload should return to, if any. */
+export function savedRoom(): { room: string; entry: Entry } | null {
+  try {
+    const raw = sessionStorage.getItem(ROOM_KEY);
+    if (!raw) return null;
+    const v = JSON.parse(raw) as { room?: unknown; entry?: unknown };
+    return typeof v.room === 'string' && typeof v.entry === 'object' && v.entry !== null
+      ? { room: v.room, entry: v.entry as Entry }
+      : null;
+  } catch {
+    return null;
+  }
+}
+
 export class PvpSession {
   private snap: Snapshot = IDLE;
   private ws: WebSocket | null = null;
@@ -49,6 +80,10 @@ export class PvpSession {
   private retries = 0;
   private closing = false;
   private retryTimer: number | undefined;
+  private pingTimer: number | undefined;
+  private waitTimer: number | undefined;
+  /** the last time the server said anything (a pong counts), to notice a connection that died without closing */
+  private lastHeard = 0;
 
   constructor(
     private readonly base: string,
@@ -82,9 +117,21 @@ export class PvpSession {
     this.ws = ws;
     ws.addEventListener('open', () => {
       this.retries = 0;
+      this.lastHeard = Date.now();
+      // a ping every 15 s keeps the server's idea of us fresh, and a silence of 45 s means the line is dead: close it, which
+      // starts the usual reconnection
+      window.clearInterval(this.pingTimer);
+      this.pingTimer = window.setInterval(() => {
+        if (this.ws !== ws) return;
+        if (Date.now() - this.lastHeard > 45_000) ws.close();
+        else if (ws.readyState === WebSocket.OPEN) ws.send('ping');
+      }, 15_000);
       onOpen();
     });
     ws.addEventListener('message', (e) => {
+      if (this.ws !== ws) return; // a late message from a socket we have already let go
+      this.lastHeard = Date.now();
+      if (e.data === 'pong') return;
       try {
         this.handle(JSON.parse(String(e.data)) as ServerMsg);
       } catch (err) {
@@ -103,6 +150,7 @@ export class PvpSession {
 
   private closeSocket(): void {
     window.clearTimeout(this.retryTimer);
+    window.clearInterval(this.pingTimer);
     const ws = this.ws;
     this.ws = null;
     if (ws) {
@@ -141,8 +189,11 @@ export class PvpSession {
       this.set({ ...IDLE, phase: 'error', message: 'The connection to the server was lost.' });
   }
 
-  private send(m: ClientMsg): void {
-    if (this.ws?.readyState === WebSocket.OPEN) this.ws.send(JSON.stringify(m));
+  /** False when there is no open connection (nothing was sent). */
+  private send(m: ClientMsg): boolean {
+    if (this.ws?.readyState !== WebSocket.OPEN) return false;
+    this.ws.send(JSON.stringify(m));
+    return true;
   }
 
   // ---- what the player can do ----------------------------------------------------------------------------------
@@ -156,21 +207,37 @@ export class PvpSession {
   }
 
   /** Take a seat in a room (a code from a friend, or one you just made). */
-  joinRoom(code: string, entry: Entry): void {
+  joinRoom(code: string, entry: Entry, fromQueue = false): void {
     this.reset();
     this.entry = entry;
     this.room = code.toUpperCase();
+    remember({ room: this.room, entry });
     this.set({ phase: 'waiting', room: this.room, message: null });
+    // a room the queue opened is for someone who may never arrive: after a while, go back to looking
+    if (fromQueue)
+      this.waitTimer = window.setTimeout(() => {
+        if (this.snap.phase === 'waiting') {
+          this.queue(entry);
+          this.set({ message: 'Your opponent did not arrive. Looking for another…' });
+        }
+      }, 45_000);
     this.open(`/pvp/room/${this.room}`, () =>
       this.send({ type: 'join', playerId: this.playerId, entry }),
     );
   }
 
   /** The move sender the fight screen uses. */
-  sendMove = (seq: number, action: Action): void => this.send({ type: 'action', seq, action });
+  sendMove = (seq: number, action: Action): boolean => this.send({ type: 'action', seq, action });
 
   resign(): void {
     this.send({ type: 'resign' });
+  }
+
+  /** Drop the connection but remember the room: used when the page is left, so coming back (or reloading) rejoins. */
+  close(): void {
+    this.closing = true;
+    window.clearTimeout(this.waitTimer);
+    this.closeSocket();
   }
 
   /** Leave whatever is going on and go back to the lobby. */
@@ -181,6 +248,9 @@ export class PvpSession {
 
   private reset(): void {
     this.closing = true;
+    window.clearTimeout(this.waitTimer);
+    forget();
+    this.entry = null;
     this.closeSocket();
     this.lastSeq = 0;
     this.retries = 0;
@@ -197,13 +267,14 @@ export class PvpSession {
         return;
       case 'matched':
         // the queue found someone: leave it and take a seat in the room it opened
-        if (this.entry) this.joinRoom(m.room, this.entry);
+        if (this.entry) this.joinRoom(m.room, this.entry, true);
         return;
       case 'waiting':
         this.set({ phase: 'waiting', room: m.room });
         return;
       case 'start': {
         const skew = m.now - Date.now();
+        window.clearTimeout(this.waitTimer);
         if (this.snap.match) {
           // a reconnection: the same match; moves already seen are skipped
           this.setMatch({ deadline: m.deadline, skew });

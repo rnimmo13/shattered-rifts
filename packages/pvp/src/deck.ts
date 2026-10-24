@@ -7,6 +7,8 @@ import type { Entry } from './protocol';
 
 export const MAX_DECK = 80;
 export const MAX_NAME = 24;
+/** Basic cards have no copy limit in a run, but 80 of the best one is not a deck. */
+export const MAX_BASIC_COPIES = 10;
 
 export interface Checked {
   ok: true;
@@ -50,6 +52,7 @@ export function checkEntry(raw: unknown): Checked | Rejected {
     };
   const cards: string[] = deck;
   const held: string[] = [];
+  const copies = new Map<string, number>();
   for (const id of cards) {
     // (a Sanctum-rolled copy like "hi~strike" is derived on demand; nothing else off the table is a card)
     if (!isCardId(id)) return { ok: false, message: `Unknown card "${id.slice(0, 40)}".` };
@@ -58,6 +61,10 @@ export function checkEntry(raw: unknown): Checked | Rejected {
         ok: false,
         message: `The deck breaks the deck rules at "${COMBAT_DB.cards[id]?.name ?? id}".`,
       };
+    const n = (copies.get(id) ?? 0) + 1;
+    copies.set(id, n);
+    if (n > MAX_BASIC_COPIES)
+      return { ok: false, message: `Too many copies of "${COMBAT_DB.cards[id]?.name ?? id}".` };
     held.push(id);
   }
   const tier = e['tier'];

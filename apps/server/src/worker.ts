@@ -21,6 +21,15 @@ const ORIGINS = [
   /^http:\/\/127\.0\.0\.1(:\d+)?$/,
 ];
 
+/** A page served from the Worker's own address (a custom domain) is always welcome. */
+const sameHost = (origin: string, host: string): boolean => {
+  try {
+    return new URL(origin).host === host;
+  } catch {
+    return false;
+  }
+};
+
 const json = (body: unknown, status = 200): Response =>
   new Response(JSON.stringify(body), {
     status,
@@ -34,7 +43,7 @@ export default {
 
     // a browser says where the page came from; other clients (a test script) say nothing
     const origin = request.headers.get('Origin');
-    if (origin && !ORIGINS.some((re) => re.test(origin)))
+    if (origin && !ORIGINS.some((re) => re.test(origin)) && !sameHost(origin, url.host))
       return json({ ok: false, error: 'origin not allowed' }, 403);
 
     if (url.pathname === '/pvp/queue') {
