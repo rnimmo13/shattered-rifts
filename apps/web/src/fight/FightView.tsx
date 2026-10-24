@@ -834,7 +834,10 @@ export function FightView(props: {
             </svg>
           )}
           {me && (
-            <div className="fight__potions" aria-label="Potion belt">
+            <div
+              className={`fight__potions${showStars ? ' fight__potions--withLumen' : ''}`}
+              aria-label="Potion belt"
+            >
               <span className="fight__beltLabel">Potions</span>
               <div className="fight__belt">
                 {Array.from({ length: 3 }, (_, i) => {

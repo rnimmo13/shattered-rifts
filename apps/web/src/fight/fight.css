@@ -742,6 +742,10 @@
   background: rgb(8 10 20 / 0.55);
   border: 1px solid rgb(109 240 168 / 0.35);
 }
+/* Lumen orb occupies the slot beside Mana: slide the belt past it (4rem orb + gap) */
+.fight__potions--withLumen {
+  left: 12.2rem;
+}
 .fight__beltLabel {
   font-family: var(--font-display);
   font-size: 0.9rem;
