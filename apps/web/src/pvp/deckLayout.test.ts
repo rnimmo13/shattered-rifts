@@ -29,5 +29,6 @@ describe('the deck report', () => {
     expect(dateLabel(Date.UTC(2026, 9, 24, 12))).toMatch(/2026/);
     expect(tierLabel({ id: 'a:t2', tier: 2 })).toBe('Rift Tier 2');
     expect(tierLabel({ id: 'a:t1:s1', tier: 1 })).toBe('Rift Tier 1, after stage 1');
+    expect(tierLabel({ id: 'a:t3:s0', tier: 3 })).toBe('Rift Tier 3, at the start');
   });
 });

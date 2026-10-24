@@ -65,8 +65,11 @@ export const dateLabel = (ms: number): string =>
 export const heroName = (hero: string): string =>
   Object.hasOwn(RIFTWALKERS, hero) ? RIFTWALKERS[hero as HeroId].hero.name : hero;
 
-/** "Rift Tier 2" or "Rift Tier 1, after stage 1" for a copy taken mid-run. */
+/** "Rift Tier 2", or for a copy taken mid-run "Rift Tier 1, after stage 1" / "Rift Tier 2, at the start". */
 export function tierLabel(d: Pick<VaultDeck, 'id' | 'tier'>): string {
   const stage = /:s(\d)$/.exec(d.id)?.[1];
-  return stage ? `Rift Tier ${d.tier}, after stage ${stage}` : `Rift Tier ${d.tier}`;
+  if (stage === undefined) return `Rift Tier ${d.tier}`;
+  return stage === '0'
+    ? `Rift Tier ${d.tier}, at the start`
+    : `Rift Tier ${d.tier}, after stage ${stage}`;
 }

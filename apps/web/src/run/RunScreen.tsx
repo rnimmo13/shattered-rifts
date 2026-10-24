@@ -478,7 +478,7 @@ function RunBar(props: {
             title={
               canSaveForArena(run)
                 ? 'Copy this deck into your Vault to play it in the Arena'
-                : 'Test build: you can save a deck for the Arena once stage 1 is cleared, before the next stage begins'
+                : 'Test build: you can save a deck for the Arena just before a new stage begins (after stage 1 or 2, or at the start of a Rift Tier beyond the first), not in the middle of one'
             }
             onClick={props.onSave}
           >
