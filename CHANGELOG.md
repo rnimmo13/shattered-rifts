@@ -5,6 +5,7 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **Test build: save a deck at any time.** The Save deck button now works in every part of a run, so the Arena and deck saving can be tried freely. This is temporary.
 - **Save a deck without ending the run, and park runs:** at the end of a Rift Tier you now choose Save this deck (a copy goes to your Vault, the run carries on), then Continue to the next tier or Leave it for now. The Save deck button in the run bar also works at the start of the next tier before its stage 1. Home takes you out of a run and leaves it parked: you can keep up to 3 unfinished runs and carry on any of them from the home page.
 - **Test build: Save deck works at more points.** It is now enabled just before a new stage begins: after stage 1 or after stage 2, and on a Rift Tier beyond the first just before its stage 1 begins. Never in the middle of a stage.
 - **Saved decks page:** a new Saved decks page (from the home page and the Arena) shows each saved deck like a post-game report: its Riftwalker, tier and date, the Boons it was saved with, and its cards by rarity, best first, as small cards with counts. Hover a card for a big copy. Decks can be removed there (with a confirmation). The Arena lists the same decks in short, with a View full deck link. Saved decks now remember their Boons, and their Boons are in effect in Arena matches. The Vault now holds 10 decks (was 5).

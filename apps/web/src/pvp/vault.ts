@@ -42,6 +42,16 @@ export function deckFromStage(
   return { ...deckFromRun(run, now), id: safeId(`${run.seed}:t${run.tier}:s${after}`) };
 }
 
+/** TEST BUILD ONLY: a copy of the deck as it is right now, at any point. The id follows the deck's contents, so saving the same deck twice is one entry. */
+export function deckSnapshot(
+  run: Pick<RunState, 'seed' | 'tier' | 'stage' | 'character' | 'deck' | 'boons'>,
+  now: number,
+): VaultDeck {
+  let h = 5381;
+  for (const ch of `${run.deck.join(',')}|${run.boons.join(',')}`) h = (h * 33 + ch.charCodeAt(0)) >>> 0;
+  return { ...deckFromRun(run, now), id: safeId(`${run.seed}:t${run.tier}:n${run.stage}:${h.toString(36)}`) };
+}
+
 /** What a PvP match is told about a deck. */
 export function entryFor(d: VaultDeck, name: string): Entry {
   return { name, hero: d.hero, deck: [...d.deck], boons: [...d.boons], tier: d.tier };

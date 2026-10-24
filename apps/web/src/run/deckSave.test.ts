@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { RunState } from '@sr/campaign';
-import { MID_RUN_SAVES, savePoint } from './deckSave';
+import { MID_RUN_SAVES, SAVE_ANYTIME, savePoint } from './deckSave';
 
 const at = (phase: string, stage: number, tier: number): RunState =>
   ({ phase, stage, tier }) as unknown as RunState;
@@ -22,11 +22,14 @@ describe('where a deck can be saved', () => {
     expect(savePoint(at('stageClear', 2, 3))).toBe(MID_RUN_SAVES ? 2 : null);
   });
 
-  it('never at the start of the first tier, at the start of later stages, or in the middle of a stage', () => {
-    expect(savePoint(at('prelude', 1, 1))).toBeNull();
-    expect(savePoint(at('prelude', 2, 1))).toBeNull();
-    expect(savePoint(at('prelude', 2, 3))).toBeNull();
-    for (const phase of ['map', 'reward', 'duel', 'shrine', 'merchant', 'event', 'kit', 'banked'])
-      expect(savePoint(at(phase, 1, 2)), phase).toBeNull();
+  it('never at the start of the first tier, at the start of later stages, or in the middle of a stage (unless any time is allowed)', () => {
+    const expected = SAVE_ANYTIME ? 'now' : null;
+    expect(savePoint(at('prelude', 1, 1))).toBe(expected);
+    expect(savePoint(at('prelude', 2, 1))).toBe(expected);
+    expect(savePoint(at('prelude', 2, 3))).toBe(expected);
+    for (const phase of ['map', 'reward', 'duel', 'shrine', 'merchant', 'event', 'kit'])
+      expect(savePoint(at(phase, 1, 2)), phase).toBe(expected);
+    expect(savePoint(at('banked', 1, 2))).toBeNull();
+    expect(savePoint(at('collapsed', 1, 2))).toBeNull();
   });
 });
