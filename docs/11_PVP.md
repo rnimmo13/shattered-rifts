@@ -61,7 +61,7 @@ Workers Build (build `pnpm install && pnpm --filter @sr/web build`, deploy `npx 
 server with the site. Durable Objects with SQLite storage are available on the free plan.
 
 - A page served by that Worker needs no setting: it connects to its own address.
-- A page served from GitHub Pages (`gh-pages`) is on another address. Set the server at build time with
-  `VITE_PVP_SERVER=your-worker.workers.dev` (a `.env.production` file in `apps/web`), or players paste the address into the
-  **Server** box on the Duel screen (it is remembered).
+- The game lives at https://shatteredrifts.app, and the server is the same Worker. `PRODUCTION_SERVER` in
+  `apps/web/src/pvp/config.ts` points every production build (including the GitHub Pages copy) there; a build can override it
+  with `VITE_PVP_SERVER`, and a player can type another address into the **Server** box on the Duel screen (remembered).
 - The Worker only accepts browsers from the game's own addresses (`worker.ts`, `ORIGINS`); add a domain there if the game moves.

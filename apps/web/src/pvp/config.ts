@@ -1,6 +1,8 @@
-// Where the PvP server is, and who this browser is. A player has no account yet: a random id (per tab, so a refresh keeps
+// Where the PvP server is (shatteredrifts.app unless changed), and who this browser is. A player has no account yet: a random id (per tab, so a refresh keeps
 // you in your match) and a display name.
 
+/** Where the server is for everyone who has not set another address. */
+const PRODUCTION_SERVER = 'shatteredrifts.app';
 const SERVER_KEY = 'sr-pvp-server';
 const NAME_KEY = 'sr-pvp-name';
 const ID_KEY = 'sr-player-id';
@@ -27,8 +29,8 @@ export function serverBase(): string {
   if (built) return normalise(built);
   // `pnpm pvp:dev` runs the server here
   if (import.meta.env.DEV) return 'ws://127.0.0.1:8787';
-  // served by the Worker itself (Cloudflare): the server is wherever the page came from
-  return normalise(window.location.host);
+  // the game's own address: the Cloudflare Worker that serves the game also runs the server (docs/11_PVP.md)
+  return normalise(PRODUCTION_SERVER);
 }
 
 export function getServerSetting(): string {

@@ -13,6 +13,7 @@ export { MatchRoom } from './room';
 
 /** Pages allowed to open a socket from a browser (the game is also served from GitHub Pages). */
 const ORIGINS = [
+  /^https:\/\/(www\.)?shatteredrifts\.app$/,
   /^https:\/\/rnimmo13\.github\.io$/,
   /^https:\/\/[a-z0-9-]+\.workers\.dev$/,
   /^https:\/\/[a-z0-9-]+\.pages\.dev$/,
