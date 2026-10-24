@@ -105,7 +105,7 @@ export const FightCard = memo(
               className="card__owner"
               title={RIFTWALKERS[owner as keyof typeof RIFTWALKERS].hero.name}
             >
-              <HeroIcon hero={owner} size={118} tone="dark" />
+              <HeroIcon hero={owner} size={92} tone="dark" />
             </div>
           )}
           <div className="card__gem" title={rarity} />

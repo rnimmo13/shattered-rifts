@@ -70,7 +70,7 @@ export function CharacterPicker(props: { value: HeroId; onChange: (id: HeroId) =
               <li key={l}>{l}</li>
             ))}
           </ul>
-          <ul className="picker__lanes" aria-label="Card lanes">
+          <ul className="picker__lanes" aria-label="Card builds">
             {c.lanes.map((l, i) => (
               <li key={l}>
                 {l} <small>· {laneSizes(props.value)[i]} cards</small>

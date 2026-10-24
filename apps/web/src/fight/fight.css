@@ -1350,3 +1350,145 @@
   font-size: 0.8rem;
   opacity: 0.85;
 }
+
+/* ---- stances: an aura around the character and a banner naming the stance ---- */
+.stance {
+  --c: 255 255 255;
+  position: absolute;
+  z-index: 11;
+  translate: -50% -50%;
+  pointer-events: none;
+}
+.stance--wrath {
+  --c: 255 70 60;
+}
+.stance--calm {
+  --c: 90 190 255;
+}
+.stance--radiant {
+  --c: 255 205 80;
+}
+.stance__glow {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgb(var(--c) / 0.5) 0%,
+    rgb(var(--c) / 0.28) 40%,
+    rgb(var(--c) / 0) 70%
+  );
+  mix-blend-mode: screen;
+  animation: stance-pulse 2.4s ease-in-out infinite;
+}
+.stance--wrath .stance__glow {
+  animation-duration: 0.9s;
+}
+.stance--radiant .stance__glow {
+  background: radial-gradient(
+    circle,
+    rgb(var(--c) / 0.55) 0%,
+    rgb(var(--c) / 0.28) 42%,
+    rgb(var(--c) / 0) 72%
+  );
+  animation-duration: 1.6s;
+}
+.stance__rays {
+  position: absolute;
+  inset: -6%;
+  border-radius: 50%;
+  background: repeating-conic-gradient(
+    from 0deg,
+    rgb(var(--c) / 0.38) 0deg 7deg,
+    rgb(var(--c) / 0) 7deg 22deg
+  );
+  -webkit-mask-image: radial-gradient(circle, transparent 18%, #000 38%, transparent 72%);
+  mask-image: radial-gradient(circle, transparent 18%, #000 38%, transparent 72%);
+  mix-blend-mode: screen;
+  animation: stance-spin 14s linear infinite;
+}
+.stance__spark {
+  position: absolute;
+  left: calc(50% + (var(--i) - 4) * 9%);
+  bottom: 18%;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #fff3c4;
+  box-shadow: 0 0 10px 3px rgb(var(--c) / 0.9);
+  opacity: 0;
+  animation: stance-rise 2.2s ease-in infinite;
+  animation-delay: calc(var(--i) * -0.27s);
+}
+.stance__banner {
+  position: absolute;
+  z-index: 14;
+  translate: -50% -100%;
+  display: grid;
+  justify-items: center;
+  gap: 0.05rem;
+  padding: 0.25rem 0.9rem 0.3rem;
+  border-radius: 10px;
+  border: 2px solid rgb(var(--c) / 0.9);
+  background: rgb(8 10 20 / 0.82);
+  color: #fff;
+  text-align: center;
+  white-space: nowrap;
+  pointer-events: none;
+  box-shadow: 0 0 16px rgb(var(--c) / 0.55);
+}
+.stance__banner b {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgb(var(--c));
+  text-shadow: 0 0 10px rgb(var(--c) / 0.8);
+}
+.stance__banner small {
+  font-size: 0.8rem;
+  opacity: 0.9;
+}
+.stance__banner--wrath {
+  --c: 255 90 80;
+}
+.stance__banner--calm {
+  --c: 110 200 255;
+}
+.stance__banner--radiant {
+  --c: 255 210 90;
+}
+@keyframes stance-pulse {
+  50% {
+    transform: scale(1.12);
+    opacity: 0.7;
+  }
+}
+@keyframes stance-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes stance-rise {
+  0% {
+    transform: translateY(0) scale(0.6);
+    opacity: 0;
+  }
+  15% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-190px) scale(1.1);
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .stance__glow,
+  .stance__rays,
+  .stance__spark {
+    animation: none;
+  }
+  .stance__spark {
+    display: none;
+  }
+}

@@ -508,6 +508,7 @@ export function choosePrelude(run: RunState, optionId: string): RunState {
   const option = offer.options.find((o) => o.id === optionId);
   need(option, 'That is not one of the options');
   const r = clone(run);
+  delete r.eventResult; // (so the result is shown even when its words match an earlier one)
   // a bargain that pays HP for a Legendary must be able to give one (the deck may already hold its limit)
   for (const e of option.effects)
     if (e.k === 'card' && e.rarity === 'legendary')
@@ -515,77 +516,113 @@ export function choosePrelude(run: RunState, optionId: string): RunState {
         cardOfRarity(clone(r.rng), r.character, r.deck, 'legendary'),
         'Your deck already holds as many Legendary cards as it can',
       );
-  for (const e of option.effects) applyEffect(r, e);
+  const told: string[] = [];
+  for (const e of option.effects) {
+    const line = applyEffect(r, e);
+    if (line) told.push(line);
+  }
+  // what chance decided (which card was upgraded, what came up) is told once, so nothing happens out of sight
+  if (told.length) r.eventResult = told.join(' ');
+  else delete r.eventResult;
   r.phase = 'map';
   r.context = null;
   return r;
 }
 
+const nameOfCard = (id: string): string => COMBAT_DB.cards[id]?.name ?? id;
+const listOf = (all: readonly string[]): string => {
+  // (two of the same card read "Strike (x2)", never "Strike and Strike")
+  const counts = new Map<string, number>();
+  for (const n of all) counts.set(n, (counts.get(n) ?? 0) + 1);
+  const names = [...counts].map(([n, c]) => (c > 1 ? `${n} (x${c})` : n));
+  return names.length <= 1
+    ? (names[0] ?? '')
+    : `${names.slice(0, -1).join(', ')} and ${names.at(-1)}`;
+};
+
 /** The Attack and Defend cards a deck can still lose or change: Neutral basics. */
 const isPlainBasic = (id: string): boolean =>
   COMBAT_DB.cards[id]?.hero === 'neutral' && COMBAT_DB.cards[id]?.rarity === 'basic';
 
-function applyEffect(r: RunState, e: PreludeEffect): void {
+/** Apply one effect; the answer says what chance decided (null when the option's own text already says it all). */
+function applyEffect(r: RunState, e: PreludeEffect): string | null {
   switch (e.k) {
     case 'maxHp':
       r.maxHp = Math.max(10, r.maxHp + e.n);
       r.hp = e.n > 0 ? r.hp + e.n : Math.min(r.hp, r.maxHp);
-      return;
+      return null;
     case 'heal':
       heal(r, (r.maxHp * e.pct) / 100);
-      return;
+      return null;
     case 'hp':
       r.hp = Math.max(1, r.hp - e.n);
-      return;
+      return null;
     case 'shards':
       r.shards += e.n;
-      return;
+      return null;
     case 'card': {
       const id = cardOfRarity(r.rng, r.character, r.deck, e.rarity);
-      if (id) r.deck.push(id);
-      return;
+      if (!id) return null;
+      r.deck.push(id);
+      return `${nameOfCard(id)} joins your deck.`;
     }
     case 'upgrade': {
+      const done: string[] = [];
       for (let i = 0; i < e.n; i++) {
         const slots = r.deck.flatMap((id, at) => (COMBAT_DB.cards[id]?.upgrade ? [at] : []));
         if (!slots.length) break;
         const at = slots[nextInt(r.rng, slots.length)] as number;
-        r.deck[at] = COMBAT_DB.cards[r.deck[at] as string]?.upgrade ?? (r.deck[at] as string);
+        const was = r.deck[at] as string;
+        r.deck[at] = COMBAT_DB.cards[was]?.upgrade ?? was;
+        done.push(nameOfCard(was));
       }
-      return;
+      if (!done.length) return 'There was no card left to upgrade.';
+      return `${listOf(done)} ${new Set(done).size === 1 && done.length === 1 ? 'is' : 'are'} upgraded.`;
     }
     case 'remove': {
+      const gone: string[] = [];
       for (let i = 0; i < e.n && r.deck.length > V2_DECK_RULES.minSize; i++) {
         const at = r.deck.findIndex(isPlainBasic);
         if (at < 0) break;
+        gone.push(nameOfCard(r.deck[at] as string));
         r.deck.splice(at, 1);
       }
-      return;
+      return gone.length ? `${listOf(gone)} leave${gone.length === 1 ? 's' : ''} your deck.` : null;
     }
     case 'boon': {
       const id = boonOfRarity(r.rng, r.boons, e.rarity);
-      if (id) gainBoon(r, id);
-      return;
+      if (!id) return null;
+      gainBoon(r, id);
+      return `You gain the Boon ${COMBAT_DB.boons[id]?.name ?? id}.`;
     }
-    case 'potion':
-      if (r.potions.length < MAX_POTIONS) r.potions.push(offerPotion(r.rng));
-      return;
+    case 'potion': {
+      if (r.potions.length >= MAX_POTIONS)
+        return 'Your belt is full, so the potion is left behind.';
+      const id = offerPotion(r.rng);
+      r.potions.push(id);
+      return `You take ${COMBAT_DB.potions[id]?.name ?? 'a potion'}.`;
+    }
     case 'resolve':
       r.resolve = Math.min(r.maxResolve, r.resolve + e.n);
-      return;
+      return null;
     case 'wound':
       for (let i = 0; i < e.n; i++) r.deck.push('wound');
-      return;
+      return null;
     case 'transform': {
+      const made: string[] = [];
       for (let i = 0; i < e.n; i++) {
         const at = r.deck.findIndex(isPlainBasic);
         if (at < 0) break;
+        const from = nameOfCard(r.deck[at] as string);
         r.deck.splice(at, 1);
         const rarity = nextInt(r.rng, 3) === 0 ? 'uncommon' : 'common';
         const id = cardOfRarity(r.rng, r.character, r.deck, rarity);
-        if (id) r.deck.push(id);
+        if (id) {
+          r.deck.push(id);
+          made.push(`${from} becomes ${nameOfCard(id)}.`);
+        }
       }
-      return;
+      return made.length ? made.join(' ') : null;
     }
   }
 }
@@ -645,6 +682,24 @@ export function holdCard(run: RunState, index: number): RunState {
   r.shards -= deposit;
   r.held = { cardId: item.cardId, price: Math.ceil(item.price * HOLD_LATER) };
   item.onHold = true;
+  return r;
+}
+
+/**
+ * Let a hold go: you no longer want that card. A card put on hold at this visit goes back on sale at its full price; a card that was
+ * waiting for you from an earlier visit is taken off the table. Either way the hold is over, and the deposit is not refunded.
+ */
+export function releaseHold(run: RunState, index: number): RunState {
+  need(run.phase === 'merchant' && run.context?.merchant, 'You are not at a merchant');
+  const r = clone(run);
+  const m = (r.context as NonNullable<RunState['context']>).merchant as NonNullable<
+    NonNullable<RunState['context']>['merchant']
+  >;
+  const item = m.items[index];
+  need(item && (item.onHold || item.held) && !item.sold, 'There is no hold on that card');
+  delete r.held;
+  if (item.held) m.items.splice(index, 1);
+  else delete item.onHold;
   return r;
 }
 

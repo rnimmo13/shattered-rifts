@@ -223,7 +223,7 @@ export function ShrineView(props: {
           disabled={ups.size === 0}
           onClick={() => setPicking('upgrade')}
         >
-          <b>Temper</b>
+          <b>Upgrade</b>
           <span>Upgrade a card in your deck</span>
           {ups.size === 0 && <i>Nothing left to upgrade</i>}
         </button>
@@ -292,6 +292,8 @@ export function MerchantView(props: {
   run: RunState;
   onBuy: (index: number) => void;
   onHold: (index: number) => void;
+  /** let a hold go (no longer wanted) */
+  onRelease: (index: number) => void;
   onBuyBoon: () => void;
   onBuyPotion: (index: number) => void;
   onSellPotion: (index: number) => void;
@@ -365,6 +367,19 @@ export function MerchantView(props: {
                         : 'Buy'}
                 </span>
               </button>
+              {!it.sold && (it.onHold || it.held) && (
+                <button
+                  className="btn btn--small btn--ghost shop__hold"
+                  onClick={() => props.onRelease(i)}
+                  title={
+                    it.held
+                      ? 'Turn this card down. It leaves the table and is no longer kept for you.'
+                      : 'Cancel the hold. The card goes back on sale now at its full price; the deposit is not refunded.'
+                  }
+                >
+                  <span>{it.held ? 'Turn it down' : 'Cancel hold'}</span>
+                </button>
+              )}
               {!it.sold && !it.onHold && !it.held && (
                 <button
                   className="btn btn--small btn--ghost shop__hold"
@@ -586,7 +601,7 @@ export function PreludeView(props: { run: RunState; onChoose: (id: string) => vo
   );
 }
 
-/** The first choice of a run: one of three starting decks, one per lane of your Riftwalker. */
+/** The first choice of a run: one of three starting decks, one per build of your Riftwalker. */
 export function KitView(props: { run: RunState; onChoose: (id: string) => void }) {
   const kits = props.run.context?.kits;
   const [hover, setHover] = useState<CardDef | null>(null);
@@ -595,14 +610,14 @@ export function KitView(props: { run: RunState; onChoose: (id: string) => void }
     <section className="stage-panel" aria-label="Choose your starting deck">
       <h2 className="stage-panel__title">Choose your starting deck</h2>
       <p className="stage-panel__hint">
-        Three ways to begin, one for each of your lanes. Each swaps {kits[0]?.removed.length ?? 2}{' '}
+        Three ways to begin, one for each of your builds. Each swaps {kits[0]?.removed.length ?? 2}{' '}
         plain cards of your usual starter for two that lean that way.
       </p>
       <div className="kits">
         {kits.map((k) => (
           <article key={k.id} className="kit">
             <h3 className="kit__lean">
-              Lane: <b>{k.leans}</b>
+              Build: <b>{k.leans}</b>
             </h3>
             <p className="kit__sub">Adds these two to your starter:</p>
             <div className="kit__cards">

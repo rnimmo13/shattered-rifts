@@ -5,6 +5,7 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **Playtest round:** card lanes are now called Builds; merchants let you cancel a hold; the map never puts two merchants in a row; the start-of-run choices tell you which card was upgraded or added; stances show on the character (Radiant glows); card hovers explain every keyword on the card; event options read as full sentences; the card owner icon is smaller and bottom right; save and result messages are green when they work.
 - **One saved deck per run:** saving a run again replaces its earlier save instead of adding a second. Saved decks show Tier and Stage progress.
 - **Card library:** the book shows many more cards at once, in one run sorted by rarity (rarest first) with no lane sections; page headers show character icons, realm tabs stay on one row, and cards show their character icon again (bottom left).
 - **Saved decks page** is centred again.

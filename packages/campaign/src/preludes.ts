@@ -28,21 +28,25 @@ export function describeEffect(e: PreludeEffect): string {
     case 'shards':
       return `+${e.n} shards`;
     case 'card':
-      return `A random ${rarityWord[e.rarity]} card`;
+      return `Add a random ${rarityWord[e.rarity]} card to your deck`;
     case 'upgrade':
-      return e.n === 1 ? 'Upgrade a random card' : `Upgrade ${e.n} random cards`;
+      return e.n === 1
+        ? 'Upgrade a random card in your deck'
+        : `Upgrade ${e.n} random cards in your deck`;
     case 'remove':
-      return e.n === 1 ? 'Remove an Attack or Defend' : `Remove ${e.n} Attacks or Defends`;
+      return e.n === 1
+        ? 'Remove an Attack or Defend from your deck'
+        : `Remove ${e.n} Attacks or Defends from your deck`;
     case 'boon':
-      return `A random ${rarityWord[e.rarity]} Boon`;
+      return `Gain a random ${rarityWord[e.rarity]} Boon`;
     case 'potion':
-      return 'A random Potion';
+      return 'Take a random Potion';
     case 'resolve':
       return `+${e.n} Resolve`;
     case 'wound':
       return e.n === 1 ? 'Add a Wound to your deck' : `Add ${e.n} Wounds to your deck`;
     case 'transform':
-      return `Transform ${e.n} Attacks or Defends into random cards`;
+      return `Transform ${e.n} Attacks or Defends in your deck into random cards`;
   }
 }
 

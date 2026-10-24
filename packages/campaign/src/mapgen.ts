@@ -151,6 +151,21 @@ export function generateStageMap(
     }
   }
 
+  // never two Merchants in a row on any path: the earlier one becomes a Duel
+  for (let f = FLOORS - 2; f >= 0; f--) {
+    const after = byFloor[f + 1] as MapNode[];
+    for (const n of byFloor[f] as MapNode[]) {
+      if (
+        n.kind === 'merchant' &&
+        n.next.some((id) => after.find((m) => m.id === id)?.kind === 'merchant')
+      ) {
+        n.kind = 'duel';
+        delete n.crossed;
+        n.enemyId = regular();
+      }
+    }
+  }
+
   // never more than MAX_EVENTS_IN_A_ROW Events in a row on any path: a third becomes a Duel
   const run = new Map<string, number>();
   for (let f = 0; f < FLOORS; f++) {

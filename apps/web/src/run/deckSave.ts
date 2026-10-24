@@ -39,9 +39,13 @@ export function savePoint(run: RunState): SavePoint {
 export const canSaveForArena = (run: RunState): boolean => savePoint(run) !== null;
 
 /** Copy the deck into the Vault (and the online copy); the answer is a line to show the player. */
-export async function saveForArena(run: RunState): Promise<string> {
+export async function saveForArena(run: RunState): Promise<{ ok: boolean; text: string }> {
   const at = savePoint(run);
-  if (at === null) return 'You can save a deck between Rift Tiers, not in the middle of a stage.';
+  if (at === null)
+    return {
+      ok: false,
+      text: 'You can save a deck between Rift Tiers, not in the middle of a stage.',
+    };
   const deck =
     at === 'cleared'
       ? deckFromRun(run, Date.now())
@@ -53,15 +57,24 @@ export async function saveForArena(run: RunState): Promise<string> {
   const replaced = before.some((x) => runOf(x.id) === runOf(deck.id));
   const r = bankInto(before, deck);
   if (!r.ok)
-    return `Your Vault is full (${VAULT_SLOTS} decks). Remove one on the Saved decks page (from the home page) first, then save.`;
+    return {
+      ok: false,
+      text: `Your Vault is full (${VAULT_SLOTS} decks). Remove one on the Saved decks page (from the home page) first, then save.`,
+    };
   saveVault(r.list);
-  if (r.already) return 'This deck is already in your Vault.';
+  if (r.already) return { ok: true, text: 'This deck is already in your Vault.' };
   // the online copy follows (the server replaces the run's earlier save too); the deck is saved in this browser either way
   await whoAmI();
   const online = await syncVault(vaultKey(), r.list);
   if (!online.ok || !online.complete)
-    return 'Saved in this browser. It will be saved online when you open the Arena.';
-  return replaced
-    ? 'Updated your saved deck for this run. Your run carries on.'
-    : 'Saved to your Vault. You can play it in the Arena, and your run carries on.';
+    return {
+      ok: true,
+      text: 'Saved in this browser. It will be saved online when you open the Arena.',
+    };
+  return {
+    ok: true,
+    text: replaced
+      ? 'Updated your saved deck for this run. Your run carries on.'
+      : 'Saved to your Vault. You can play it in the Arena, and your run carries on.',
+  };
 }

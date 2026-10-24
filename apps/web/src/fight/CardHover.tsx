@@ -2,7 +2,7 @@
 
 import { useLayoutEffect, useRef } from 'react';
 import { COMBAT_DB } from '@sr/content/v2';
-import type { CardDef } from '@sr/combat';
+import { cardText, type CardDef } from '@sr/combat';
 import { FightCard } from './FightCard';
 import { keywordsOf } from './info';
 import './cardhover.css';
@@ -47,7 +47,11 @@ export function CardHover(props: { def: CardDef | null; at?: Anchor | null; plus
     !!props.def.upgrade &&
     !!COMBAT_DB.cards[props.def.upgrade] &&
     window.innerWidth >= PREVIEW_W * 2 + 40;
-  const keys = keywordsOf(props.def, (u) => COMBAT_DB.units[u]?.taunt === true);
+  const keys = keywordsOf(
+    props.def,
+    (u) => COMBAT_DB.units[u]?.taunt === true,
+    cardText(COMBAT_DB, props.def),
+  );
   return (
     <div
       ref={box}

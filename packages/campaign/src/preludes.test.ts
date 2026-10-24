@@ -36,6 +36,23 @@ function offering(effects: PreludeEffect[], hero: HeroId = 'maren'): RunState {
 }
 const take = (r: RunState): RunState => choosePrelude(r, 'x');
 
+describe('what a choice did is told', () => {
+  it('names the card that was upgraded, and the card that was added', () => {
+    const up = take(offering([{ k: 'upgrade', n: 2 }]));
+    expect(up.eventResult).toMatch(/ and .* are upgraded\.$/);
+    const card = take(offering([{ k: 'card', rarity: 'common' }]));
+    expect(card.eventResult).toMatch(/ joins your deck\.$/);
+    // a choice with nothing left to chance says nothing extra
+    expect(take(offering([{ k: 'shards', n: 50 }])).eventResult).toBeUndefined();
+  });
+
+  it('every offered line reads as a full sentence about the deck', () => {
+    for (let i = 0; i < 20; i++)
+      for (const o of makePrelude(seedRng(`wording-${i}`), 'threshold', 1, 'aurelion').options)
+        for (const part of o.text.split('. ')) expect(part, o.id).not.toMatch(/^(A|An) random/);
+  });
+});
+
 describe('the choice at the start of a run', () => {
   it('after the starting deck, every run meets The Threshold: three blessings and one bargain', () => {
     for (const h of HEROES) {

@@ -104,6 +104,21 @@ describe('stage maps', () => {
       'wyldmaw',
     ]);
     expect(map.floors).toBe(floorsOf(FINAL_STAGE) + 1);
+    // no path ever has two Merchants in a row
+    for (let s = 0; s < 150; s++)
+      for (const stage of [1, 2, FINAL_STAGE]) {
+        const m = generateStageMap(
+          seedRng(`merch-${s}`),
+          stage,
+          stage >= FINAL_STAGE ? 'rift' : 'aurelion',
+        );
+        for (const n of m.nodes)
+          if (n.kind === 'merchant')
+            for (const id of n.next)
+              expect(m.nodes.find((x) => x.id === id)?.kind, `${n.id} -> ${id}`).not.toBe(
+                'merchant',
+              );
+      }
     // the floor before the Warden is a Shrine and a Merchant
     expect(
       map.nodes

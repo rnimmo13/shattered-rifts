@@ -12,6 +12,7 @@ import {
   buyBoon,
   buyCard,
   holdCard,
+  releaseHold,
   buyPotion,
   MAX_TIER,
   sellPotion,
@@ -120,8 +121,14 @@ export default function RunScreen() {
   }, []);
   const nextGained = useCallback(() => setGained((g) => g.slice(1)), []);
   const [notice, setNotice] = useState<string | null>(initial.notice);
+  /** a result worth reading (what an event or a choice did) is shown green; a refusal or an error stays red */
+  const [noticeGood, setNoticeGood] = useState(false);
+  const say = (text: string | null, good = false): void => {
+    setNotice(text);
+    setNoticeGood(good);
+  };
   /** what the Save button answered (test build), shown only while the stage-cleared screen is up */
-  const [saveNote, setSaveNote] = useState<{ at: string; text: string } | null>(null);
+  const [saveNote, setSaveNote] = useState<{ at: string; text: string; ok: boolean } | null>(null);
   const [saving, setSaving] = useState(false);
   const [showDeck, setShowDeck] = useState(false);
   const [confirmAbandon, setConfirmAbandon] = useState(false);
@@ -151,12 +158,13 @@ export default function RunScreen() {
         const next = fn(cur);
         runRef.current = next; // so two quick clicks never both act on the old state
         // what an event just did is worth reading: show it once
-        setNotice(
+        say(
           next.eventResult && next.eventResult !== cur.eventResult ? next.eventResult : null,
+          true,
         );
         setRun(next);
       } catch (e) {
-        setNotice(e instanceof RunError ? e.message : 'Something went wrong with that choice.');
+        say(e instanceof RunError ? e.message : 'Something went wrong with that choice.');
       }
     },
     [setRun],
@@ -173,7 +181,7 @@ export default function RunScreen() {
   /** Start a run from a new or imported state: it takes a free slot; if every slot is taken it is refused (nothing is thrown away). */
   const begin = (r: RunState): boolean => {
     if (runCount() >= RUN_SLOTS) {
-      setNotice(
+      say(
         `You have ${RUN_SLOTS} runs in progress. Finish or abandon one (on the home page) before starting another.`,
       );
       return false;
@@ -181,7 +189,7 @@ export default function RunScreen() {
     // (with storage blocked there is no slot, and the run is played without being kept)
     slotRef.current = startRunSlot(r);
     loadedRef.current = null;
-    setNotice(null);
+    say(null);
     setRun(r);
     return true;
   };
@@ -198,7 +206,7 @@ export default function RunScreen() {
     const at = `${run.seed}:${run.phase}:${run.stage}:${run.tier}`;
     setSaving(true);
     void saveForArena(run)
-      .then((text) => setSaveNote({ at, text }))
+      .then((r) => setSaveNote({ at, ...r }))
       .finally(() => setSaving(false));
   };
   const leaveRun = () => {
@@ -212,7 +220,7 @@ export default function RunScreen() {
     if (!file) return;
     const parsed = parseRun(await file.text());
     if (!parsed) {
-      setNotice('That file is not a valid run save.');
+      say('That file is not a valid run save.');
       return;
     }
     begin(parsed);
@@ -273,7 +281,7 @@ export default function RunScreen() {
                       reportResult(false);
                       // the fight restarts, so say plainly that the forfeit counted
                       if (runRef.current?.phase === 'duel')
-                        setNotice('You forfeited: Resolve was spent and the fight starts again.');
+                        say('You forfeited: Resolve was spent and the fight starts again.');
                     }}
                   >
                     <span>Forfeit</span>
@@ -340,12 +348,12 @@ export default function RunScreen() {
         onAbandon={() => setConfirmAbandon(true)}
       />
       {notice && (
-        <p className="run__notice" role="alert">
+        <p className={`run__notice${noticeGood ? ' run__notice--good' : ''}`} role="alert">
           {notice}
         </p>
       )}
       {saveNote && saveNote.at === `${run.seed}:${run.phase}:${run.stage}:${run.tier}` && (
-        <p className="run__notice" role="status">
+        <p className={`run__notice${saveNote.ok ? ' run__notice--good' : ''}`} role="status">
           {saveNote.text}
         </p>
       )}
@@ -619,6 +627,7 @@ function Body(props: {
           run={run}
           onBuy={(i) => act((r) => buyCard(r, i))}
           onHold={(i) => act((r) => holdCard(r, i))}
+          onRelease={(i) => act((r) => releaseHold(r, i))}
           onBuyBoon={() => act((r) => buyBoon(r))}
           onBuyPotion={(i) => act((r) => buyPotion(r, i))}
           onSellPotion={(i) => act((r) => sellPotion(r, i))}

@@ -51,6 +51,7 @@ import { tipAttrs, type TipContent } from '../ui/tip';
 import { STATUS_INFO, UI_TIPS } from './info';
 import { loadSeen, loadTipsOn, nextTip, saveSeen, saveTipsOn } from './tips';
 import { AuraList, LumenCounter, RuneArc, SnareRow } from './SidePanel';
+import { StanceAura } from './StanceAura';
 import type { FighterSpec } from './Fighters';
 import { attackFor } from './attackStyles';
 import type { FeedItem, PvpLink } from '../pvp/link';
@@ -888,7 +889,11 @@ export function FightView(props: {
       };
   }
   const keywords = hoverCard
-    ? keywordsOf(hoverCard.def, (unit) => db.units[unit]?.taunt === true)
+    ? keywordsOf(
+        hoverCard.def,
+        (unit) => db.units[unit]?.taunt === true,
+        cardText(db, hoverCard.def),
+      )
     : [];
   const finished = result !== null;
 
@@ -1015,6 +1020,20 @@ export function FightView(props: {
                 </div>
               ) : null;
             })}
+          {([mySide, ...(pvp ? [foeSide] : [])] as const).map((s) => {
+            const at = s === mySide ? heroPlaced : foePlaced;
+            return at ? (
+              <StanceAura
+                key={s}
+                unit={at.unit}
+                x={at.x}
+                y={at.y}
+                h={at.h}
+                w={at.w}
+                lift={pvp ? 54 : 0}
+              />
+            ) : null;
+          })}
           {pvp && <FoeBadge side={view.sides[foeSide]} name={foeName} />}
           {pvp && foePlaced && view.sides[foeSide].runes.length > 0 && (
             <RuneArc

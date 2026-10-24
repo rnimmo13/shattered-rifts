@@ -65,8 +65,11 @@ export const EVENTS: EventDef[] = [
     when: (r) => upgradable(r.deck).length > 0,
     build: () => ({
       title: 'The wandering smith',
-      text: 'A smith has set up a forge in the ruins. "One piece of yours, tempered free. I choose."',
-      options: [{ id: 'upgrade', label: 'Let the smith temper a random card' }, leave],
+      text: 'A smith has set up a forge in the ruins. "One piece of yours, upgraded free. I choose."',
+      options: [
+        { id: 'upgrade', label: 'Let the smith upgrade a random card in your deck' },
+        leave,
+      ],
       cardOffer: '',
     }),
   },
@@ -219,7 +222,7 @@ export const EVENTS: EventDef[] = [
       title: 'The mirror pool',
       text: 'Your reflection moves a moment late, and holds out its hand.',
       options: [
-        { id: 'mirror', label: 'Reach in (lose 15 HP): a random card of yours is copied' },
+        { id: 'mirror', label: 'Reach in (lose 15 HP): a random card in your deck is copied' },
         leave,
       ],
       cardOffer: '',
@@ -281,7 +284,10 @@ export const EVENTS: EventDef[] = [
       title: 'The hot anvil',
       text: 'A forge still burning with nobody to mind it. The tongs are warm. It will work for you, at a cost to you.',
       options: [
-        { id: 'temper', label: 'Work the bellows (lose 12 HP): two random cards are upgraded' },
+        {
+          id: 'temper',
+          label: 'Work the bellows (lose 12 HP): two random cards in your deck are upgraded',
+        },
         leave,
       ],
       cardOffer: '',
@@ -411,7 +417,7 @@ export function resolveEvent(
       if (!ups.length) fail('Nothing to upgrade');
       const pick = ups[nextInt(r.rng, ups.length)] as string;
       r.deck[r.deck.indexOf(pick)] = COMBAT_DB.cards[pick]?.upgrade ?? pick;
-      return `The smith tempers ${COMBAT_DB.cards[pick]?.name ?? 'a card'}.`;
+      return `The smith upgrades ${COMBAT_DB.cards[pick]?.name ?? 'a card'}.`;
     }
     case 'ancestor':
       if (!ev.cardOffer) return fail('There is nothing to take');
@@ -549,7 +555,7 @@ export function resolveEvent(
       }
       if (!done.length) fail('Nothing to upgrade');
       r.hp -= 12;
-      return `The bellows roar. ${done.join(' and ')} come out tempered.`;
+      return `The bellows roar. ${done.join(' and ')} ${done.length === 1 ? 'is' : 'are'} upgraded.`;
     }
     case 'spin': {
       const roll = nextInt(r.rng, 3);

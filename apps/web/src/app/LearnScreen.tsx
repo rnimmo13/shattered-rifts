@@ -229,7 +229,7 @@ export function LearnScreen() {
       {tab === 'heroes' && (
         <section>
           <h2>Riftwalkers</h2>
-          <p>How each character plays, and what their three card lanes are.</p>
+          <p>How each character plays, and what their three card builds are.</p>
           {heroesByRealm().map((g) => (
             <div key={g.realm} className="learn__realm">
               <h3>{g.name}</h3>
@@ -247,7 +247,7 @@ export function LearnScreen() {
                       <li key={l}>{l}</li>
                     ))}
                   </ul>
-                  <h5>Card lanes</h5>
+                  <h5>Card builds</h5>
                   <ul>
                     {RIFTWALKERS[h].lanes.map((l) => (
                       <li key={l}>{l}</li>

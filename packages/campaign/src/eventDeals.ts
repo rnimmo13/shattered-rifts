@@ -101,8 +101,14 @@ export const DEAL_EVENTS: EventDef[] = (
       title: 'The bone collector',
       text: 'A stooped figure sorts cards into jars by the sound they make. "Spare some? I pay by the piece."',
       opts: [
-        ['Sell one card (a random card of yours goes): +45 shards', [remove('any', 1), shards(45)]],
-        ['Sell two cards (two random cards go): +100 shards', [remove('any', 2), shards(100)]],
+        [
+          'Sell one card: a random card leaves your deck, and you gain 45 shards',
+          [remove('any', 1), shards(45)],
+        ],
+        [
+          'Sell two cards: two random cards leave your deck, and you gain 100 shards',
+          [remove('any', 2), shards(100)],
+        ],
       ],
     },
     {
@@ -125,9 +131,13 @@ export const DEAL_EVENTS: EventDef[] = (
       title: 'The cracked hourglass',
       text: 'An hourglass taller than you, its sand falling upward. Whoever holds it owns a little time.',
       opts: [
-        ['Turn it (lose 6 HP): take a potion', [hurt(6), potion()], 'The sand reverses.'],
         [
-          'Shatter it (an even chance): two cards upgraded, or a Wound',
+          'Turn it (lose 6 HP): you take a random potion',
+          [hurt(6), potion()],
+          'The sand reverses.',
+        ],
+        [
+          'Shatter it (an even chance): two random cards in your deck are upgraded, or a Wound is added to it',
           [chance(50, [upgrade(2)], [wound()])],
           'The glass goes everywhere.',
         ],
@@ -153,8 +163,14 @@ export const DEAL_EVENTS: EventDef[] = (
       title: 'The rift beggar',
       text: 'A beggar sits on a crate of broken glass, hand out. Their eyes are far too clever.',
       opts: [
-        ['Give a little (25 shards): a common card', [shards(-25), gift('common')]],
-        ['Give a lot (60 shards): an uncommon card', [shards(-60), gift('uncommon')]],
+        [
+          'Give a little (25 shards): a random common card is added to your deck',
+          [shards(-25), gift('common')],
+        ],
+        [
+          'Give a lot (60 shards): a random uncommon card is added to your deck',
+          [shards(-60), gift('uncommon')],
+        ],
       ],
     },
     {
@@ -165,7 +181,7 @@ export const DEAL_EVENTS: EventDef[] = (
       opts: [
         ['Take the coin (a Wound joins your deck): +90 shards', [wound(), shards(90)]],
         [
-          'Lighten your load (pay 40 shards): a Wound, else a basic card, leaves your deck',
+          'Lighten your load (pay 40 shards): a Wound leaves your deck, or a basic card if you have none',
           [shards(-40), remove('wound', 1)],
         ],
       ],
@@ -177,7 +193,7 @@ export const DEAL_EVENTS: EventDef[] = (
       text: 'A stone casket bound in chain and wax. Something inside has been waiting a long time.',
       boon: true,
       opts: [
-        ['Break it open (lose 14 HP): take the Boon', [hurt(14), boon]],
+        ['Break it open (lose 14 HP): you gain the Boon', [hurt(14), boon]],
         [
           'Pick the lock (an even chance): the Boon, or two Wounds',
           [chance(50, [boon], [wound(2)])],
@@ -194,7 +210,10 @@ export const DEAL_EVENTS: EventDef[] = (
           'Feed it a basic card (a random Attack or Defend goes): +60 shards and heal 10%',
           [remove('basic', 1), shards(60), heal(10)],
         ],
-        ['Feed it your shards (50 shards): upgrade a random card', [shards(-50), upgrade()]],
+        [
+          'Feed it your shards (50 shards): a random card in your deck is upgraded',
+          [shards(-50), upgrade()],
+        ],
       ],
     },
     {
@@ -217,8 +236,8 @@ export const DEAL_EVENTS: EventDef[] = (
       title: "The tinker's wagon",
       text: 'A wagon hung with bottles, and a tinker who has stopped asking where the road goes.',
       opts: [
-        ['Buy one potion (35 shards): +1 potion', [shards(-35), potion(1)]],
-        ['Buy two potions (60 shards): +2 potions', [shards(-60), potion(2)]],
+        ['Buy one potion (35 shards): you take a random potion', [shards(-35), potion(1)]],
+        ['Buy two potions (60 shards): you take two random potions', [shards(-60), potion(2)]],
       ],
     },
     {
@@ -227,8 +246,11 @@ export const DEAL_EVENTS: EventDef[] = (
       title: 'The moth shrine',
       text: 'A tiny shrine alive with pale moths. They land on you, and wait.',
       opts: [
-        ['Offer blood (lose 12 HP): upgrade a random card', [hurt(12), upgrade()]],
-        ['Offer shards (pay 50 shards): upgrade a random card', [shards(-50), upgrade()]],
+        ['Offer blood (lose 12 HP): a random card in your deck is upgraded', [hurt(12), upgrade()]],
+        [
+          'Offer shards (pay 50 shards): a random card in your deck is upgraded',
+          [shards(-50), upgrade()],
+        ],
       ],
     },
     {
@@ -242,7 +264,7 @@ export const DEAL_EVENTS: EventDef[] = (
           [chance(50, [shards(90)], [hurtPct(15)])],
         ],
         ['Take the right road: heal 20% of your HP', [heal(20)]],
-        ['Follow the footprints: a common card', [gift('common')]],
+        ['Follow the footprints: a random common card is added to your deck', [gift('common')]],
       ],
     },
     {
@@ -268,7 +290,7 @@ export const DEAL_EVENTS: EventDef[] = (
           [hurt(12), shards(80)],
           'It crumbles, and its pockets are full.',
         ],
-        ['Bargain (pay 30 shards): take a potion', [shards(-30), potion()]],
+        ['Bargain (pay 30 shards): you take a random potion', [shards(-30), potion()]],
       ],
     },
     {
@@ -300,8 +322,14 @@ export const DEAL_EVENTS: EventDef[] = (
       title: 'The rust-eater',
       text: 'A beast the colour of old iron gnaws a broken gate. It looks up, hopeful.',
       opts: [
-        ['Feed it a Wound, or a basic card: +25 shards', [remove('wound', 1), shards(25)]],
-        ['Feed it any card: two random cards are upgraded', [remove('any', 1), upgrade(2)]],
+        [
+          'Feed it a Wound, or a basic card: it leaves your deck, and you gain 25 shards',
+          [remove('wound', 1), shards(25)],
+        ],
+        [
+          'Feed it any card: it leaves your deck, and two random cards in your deck are upgraded',
+          [remove('any', 1), upgrade(2)],
+        ],
       ],
     },
     {
@@ -321,8 +349,11 @@ export const DEAL_EVENTS: EventDef[] = (
       text: 'A page of black paper, a quill, and a space for a name. The Hollow is generous, and it is patient.',
       boon: true,
       opts: [
-        ['Sign (lose 8 max HP): take the Boon', [maxHp(-8), boon]],
-        ['Sign in blood (lose 15 HP and take a Wound): take the Boon', [hurt(15), wound(), boon]],
+        ['Sign (lose 8 max HP): you gain the Boon', [maxHp(-8), boon]],
+        [
+          'Sign in blood (lose 15 HP and take a Wound): you gain the Boon',
+          [hurt(15), wound(), boon],
+        ],
       ],
     },
     {
@@ -341,9 +372,12 @@ export const DEAL_EVENTS: EventDef[] = (
       title: 'The patient mirror',
       text: 'A tall mirror in an empty hall. Your reflection stands very still and does not blink.',
       opts: [
-        ['Look closer (lose 8 HP): a random non-basic card is copied', [hurt(8), copy]],
         [
-          'Break it (an even chance): a card upgraded, or a Wound',
+          'Look closer (lose 8 HP): a random non-basic card in your deck is copied',
+          [hurt(8), copy],
+        ],
+        [
+          'Break it (an even chance): a random card in your deck is upgraded, or a Wound is added to it',
           [chance(50, [upgrade()], [wound()])],
         ],
       ],
@@ -354,7 +388,7 @@ export const DEAL_EVENTS: EventDef[] = (
       title: 'The lantern thief',
       text: 'A small thing with a stolen lantern darts between the pillars, laughing.',
       opts: [
-        ['Give chase (lose 6 HP): take a potion', [hurt(6), potion()]],
+        ['Give chase (lose 6 HP): you take a random potion', [hurt(6), potion()]],
         [
           'Throw a coin (pay 15 shards): it leaves its lantern for you, heal 15%',
           [shards(-15), heal(15)],
@@ -406,9 +440,9 @@ export const DEAL_EVENTS: EventDef[] = (
       title: 'The frost garden',
       text: 'Flowers made of ice, each ringing faintly in the draught. They look like they would be sorry to be picked.',
       opts: [
-        ['Pick a bloom (lose 5 HP): upgrade a random card', [hurt(5), upgrade()]],
+        ['Pick a bloom (lose 5 HP): a random card in your deck is upgraded', [hurt(5), upgrade()]],
         [
-          'Dig up a root (pay 20 shards): a Wound, else a basic card, leaves your deck',
+          'Dig up a root (pay 20 shards): a Wound leaves your deck, or a basic card if you have none',
           [shards(-20), remove('wound', 1)],
         ],
       ],
@@ -446,7 +480,7 @@ export const DEAL_EVENTS: EventDef[] = (
       text: 'Stalls of grey cloth in a drifting snow of ash. Every trader sells a single thing, and wants a single thing back.',
       opts: [
         [
-          'Trade a card (a random card goes): a random uncommon card joins you',
+          'Trade a card: a random card leaves your deck, and a random uncommon card is added to it',
           [remove('any', 1), gift('uncommon')],
         ],
         [

@@ -8,6 +8,7 @@ import {
   holdCard,
   leaveMerchant,
   newRun,
+  releaseHold,
   type RunState,
 } from './index';
 
@@ -29,6 +30,34 @@ function atMerchant(seed: string, shards: number, prev?: RunState): RunState {
   };
   return enterNode(asMerchant, node.id);
 }
+
+describe('letting a hold go', () => {
+  it('puts a card held at this visit back on sale, and keeps the deposit', () => {
+    const m = atMerchant('hold-release-1', 500);
+    const held = holdCard(m, 0);
+    const back = releaseHold(held, 0);
+    expect(back.held).toBeUndefined();
+    expect(back.shards).toBe(held.shards);
+    expect(back.context!.merchant!.items[0]!.onHold).toBeUndefined();
+    expect(buyCard(back, 0).deck.length).toBe(back.deck.length + 1);
+    // and another card can be held now
+    expect(() => holdCard(back, 1)).not.toThrow();
+  });
+
+  it('takes a card that was waiting from an earlier visit off the table', () => {
+    const held = holdCard(atMerchant('hold-release-2', 500), 0);
+    const next = atMerchant('hold-release-2-next', 500, leaveMerchant(held));
+    const n = next.context!.merchant!.items.length;
+    const gone = releaseHold(next, 0);
+    expect(gone.held).toBeUndefined();
+    expect(gone.context!.merchant!.items).toHaveLength(n - 1);
+  });
+
+  it('only works on a card that is on hold', () => {
+    const m = atMerchant('hold-release-3', 500);
+    expect(() => releaseHold(m, 0)).toThrow();
+  });
+});
 
 describe('holding a merchant card for later', () => {
   it('costs a deposit now and sells the card cheaper at the next merchant', () => {

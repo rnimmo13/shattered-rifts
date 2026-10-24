@@ -53,7 +53,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     howTo: [
       'Barrier soaks damage, but it falls away at the start of your next turn. Your Plating keeps some of it through the first turns.',
       'Thorns hurt whatever attacks you, so being hit can be part of the plan.',
-      'Pick a lane: hit with your Barrier (Bulwark), punish attackers (Thorns), or heal and stay Shielded (Devotion).',
+      'Pick a build: hit with your Barrier (Bulwark), punish attackers (Thorns), or heal and stay Shielded (Devotion).',
     ],
   },
   rivet: {
@@ -97,7 +97,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     howTo: [
       'You start with a Hound. Might makes every attack hit harder, permanently.',
       'Many of your cards cost HP. Spend it to buff the pack, then heal with Devour and Feast cards.',
-      'Consume cards (they leave the fight) to power the Feast lane.',
+      'Consume cards (they leave the fight) to power the Feast build.',
     ],
   },
   vesper: {
@@ -317,7 +317,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     howTo: [
       'You start with a Bone Thrall, which attacks when you end your turn.',
       'Cursed with Fate, an enemy dies at the end of its turn if its HP is at or below its Fate. Curse it, double it, finish it.',
-      'Cards you consume fuel your Ashes lane: Gravesouls, Requiem and more.',
+      'Cards you consume fuel your Ashes build: Gravesouls, Requiem and more.',
     ],
   },
 };

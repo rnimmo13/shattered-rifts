@@ -44,6 +44,7 @@ export {
   HOLD_DEPOSIT,
   HOLD_LATER,
   holdCard,
+  releaseHold,
   continueLoop,
   duelPlan,
   enterNode,

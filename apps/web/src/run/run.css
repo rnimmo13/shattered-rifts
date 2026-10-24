@@ -88,6 +88,10 @@
   background: rgb(209 47 72 / 0.18);
   border: 1px solid rgb(209 47 72 / 0.6);
 }
+.run__notice--good {
+  background: rgb(46 160 90 / 0.22);
+  border-color: rgb(80 200 120 / 0.7);
+}
 
 /* panels */
 .stage-panel {

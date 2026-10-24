@@ -231,6 +231,20 @@ export const KEYWORD_INFO: Record<string, { name: string; text: string }> = {
   power: { name: 'Aura', text: 'Played once: its effect lasts for the rest of the fight.' },
 };
 
+const WORDS = new Map<string, RegExp>();
+/**
+ * A keyword as it appears in rules text: capitalised as in the keyword's name (so "discard pile" is not the Discard keyword), whole
+ * word, with the plural or a past tense ("Traps", "Consumed").
+ */
+function wordOf(name: string): RegExp {
+  let re = WORDS.get(name);
+  if (!re) {
+    re = new RegExp(`\\b${name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}(?:s|es|ed|ing)?\\b`);
+    WORDS.set(name, re);
+  }
+  return re;
+}
+
 /** The keywords a card uses, in reading order. */
 export function keywordsOf(
   c: {
@@ -250,6 +264,8 @@ export function keywordsOf(
     }[];
   },
   taunting: (unit: string) => boolean,
+  /** the card's rules text as the player reads it: any status or keyword named there is explained too (Radiant, Fervor, Hold...) */
+  text?: string,
 ): { name: string; text: string }[] {
   const out: { name: string; text: string }[] = [];
   const add = (k: { name: string; text: string } | undefined) => {
@@ -280,6 +296,16 @@ export function keywordsOf(
   if (c.innate) add(KEYWORD_INFO['innate']);
   if (c.ethereal) add(KEYWORD_INFO['ethereal']);
   if (c.starCost) add(KEYWORD_INFO['stars']);
+  // whatever else the rules text names, so no word on a card is left unexplained
+  const names = (hay: string, name: string): boolean => wordOf(name).test(hay);
+  if (text) {
+    const hay = text.replace(/\*\*/g, '');
+    for (const s of Object.values(STATUS_INFO)) if (names(hay, s.name)) add(s);
+    for (const k of Object.values(KEYWORD_INFO)) if (names(hay, k.name)) add(k);
+  }
+  // ...and what those explanations name in turn (Fervor ends in "enter Radiant": so Radiant is explained too)
+  for (const k of [...out])
+    for (const s of Object.values(STATUS_INFO)) if (names(k.text, s.name)) add(s);
   return out;
 }
 
