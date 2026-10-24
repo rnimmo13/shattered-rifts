@@ -43,6 +43,7 @@ browser (apps/web/src/pvp)  ──WebSocket──►  Cloudflare Worker (apps/se
   opponent's hand. The server still decides every move, so nobody can break the rules. Fix later: the room keeps the state and
   sends each player only their own view (`viewFor` / `eventsFor` already exist for it).
 - No accounts: the player id is random per tab, and the **Vault code** is the only key to the saved decks (whoever has it can read and change that Vault). No ratings, history or leaderboards.
+- A match never changes the Vault: losing, forfeiting or disconnecting costs no deck (decision #166). Decks leave only when the player removes them or replaces one in a full Vault.
 - Boons, Potions and run HP do not come into PvP (a banked deck is cards only).
 
 ## Running it
