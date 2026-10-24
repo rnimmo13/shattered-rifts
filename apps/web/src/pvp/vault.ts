@@ -33,7 +33,7 @@ export function deckFromRun(
   };
 }
 
-/** TEST BUILD ONLY: a copy of the deck taken after stage `after` (0 = the start of the tier; see run/MidRunSave.ts). It has its own id, so it never clashes with the Bank at the end. */
+/** TEST BUILD ONLY: a copy of the deck taken after stage `after` (0 = the start of the tier; see run/deckSave.ts). It has its own id, so it never clashes with the Bank at the end. */
 export function deckFromStage(
   run: Pick<RunState, 'seed' | 'tier' | 'character' | 'deck' | 'boons'>,
   now: number,

@@ -4,7 +4,7 @@ import { useEffect, useMemo, useRef, useState, type CSSProperties } from 'react'
 import { REALMS, RIFTWALKERS, heroesByRealm, type HeroId } from '@sr/content/v2';
 import { BUILD } from '../build';
 import { heroFigure } from '../fight/art';
-import { clearSavedRun, loadSavedRun } from '../run/saves';
+import { RUN_SLOTS, clearSavedRun, listRuns, runCount, setActiveRun } from '../run/saves';
 import { AccountBox } from '../pvp/AccountBox';
 import { whoAmI, type Me } from '../pvp/vaultSync';
 import { HeroIcon } from '../ui/HeroIcon';
@@ -35,11 +35,24 @@ export function TitleScreen() {
   const groups = heroesByRealm();
   const [picked, setPicked] = useState(getHero);
   const [me, setMe] = useState<Me>({ signedIn: false, available: false });
-  const [saved, setSaved] = useState(loadSavedRun);
-  const [confirmNew, setConfirmNew] = useState(false);
+  const [runs, setRuns] = useState(listRuns);
+  const [dropping, setDropping] = useState<string | null>(null);
+  // a run that cannot be read still takes a slot, so it counts toward the limit
+  const full = runs.length >= RUN_SLOTS || runCount() >= RUN_SLOTS;
   const hero = RIFTWALKERS[picked];
   const color = HERO_COLOR[picked] ?? '#d4a84b';
   const realm = useMemo(() => REALMS.find((r) => r.id === hero.realm)?.name ?? '', [hero.realm]);
+
+  // another window may have started, finished or abandoned a run
+  useEffect(() => {
+    const refresh = (): void => setRuns(listRuns());
+    window.addEventListener('focus', refresh);
+    window.addEventListener('storage', refresh);
+    return () => {
+      window.removeEventListener('focus', refresh);
+      window.removeEventListener('storage', refresh);
+    };
+  }, []);
 
   useEffect(() => {
     let live = true;
@@ -56,6 +69,8 @@ export function TitleScreen() {
     rememberHero(h);
   };
   const startNew = (): void => {
+    // a fresh run (not one of the saved ones): it takes a slot when it is first saved
+    setActiveRun(null);
     window.location.hash = '#/run';
   };
 
@@ -78,43 +93,75 @@ export function TitleScreen() {
             Walk the broken worlds. Build a deck. Read the rift. Spring the trap.
           </p>
 
-          {saved && (
-            <a className="home__play home__play--continue" href="#/run">
-              <b>Continue run</b>
-              <small>
-                {RIFTWALKERS[saved.character].hero.name} · Stage {saved.stage} · Rift Tier{' '}
-                {saved.tier}
-              </small>
-            </a>
-          )}
-          {saved && confirmNew ? (
-            <div className="home__confirm" role="alertdialog" aria-label="Start a new run?">
-              <span>Starting a new run throws away your current one.</span>
+          {runs.map((r) => (
+            <div key={r.id} className="home__runrow">
               <button
                 type="button"
-                className="btn btn--small"
+                className="home__play home__play--continue"
+                aria-label={`Continue the ${RIFTWALKERS[r.run.character].hero.name} run, Rift Tier ${r.run.tier}`}
                 onClick={() => {
-                  clearSavedRun();
-                  setSaved(null);
-                  startNew();
+                  setActiveRun(r.id);
+                  window.location.hash = '#/run';
                 }}
               >
-                <span>Abandon it and start over</span>
+                <b>Continue run</b>
+                <small>
+                  {RIFTWALKERS[r.run.character].hero.name} · Rift Tier {r.run.tier} ·{' '}
+                  {r.run.phase === 'loopCleared'
+                    ? 'Tier cleared'
+                    : r.run.phase === 'banked'
+                      ? 'Banked'
+                      : `Stage ${r.run.stage}`}
+                </small>
               </button>
-              <button type="button" className="btn btn--small" onClick={() => setConfirmNew(false)}>
-                <span>Keep it</span>
-              </button>
+              {dropping === r.id ? (
+                <span className="home__confirm" role="alertdialog" aria-label="Abandon this run?">
+                  Abandon it for good?
+                  <button
+                    type="button"
+                    className="btn btn--small"
+                    onClick={() => {
+                      clearSavedRun(r.id);
+                      setRuns(listRuns());
+                      setDropping(null);
+                    }}
+                  >
+                    <span>Abandon</span>
+                  </button>
+                  <button
+                    type="button"
+                    className="btn btn--small"
+                    autoFocus
+                    onClick={() => setDropping(null)}
+                  >
+                    <span>Keep</span>
+                  </button>
+                </span>
+              ) : (
+                <button
+                  type="button"
+                  className="btn btn--small btn--ghost"
+                  aria-label={`Abandon the ${RIFTWALKERS[r.run.character].hero.name} run at Rift Tier ${r.run.tier}`}
+                  onClick={() => setDropping(r.id)}
+                >
+                  <span>Abandon</span>
+                </button>
+              )}
             </div>
-          ) : (
-            <button
-              type="button"
-              className={`home__play${saved ? ' home__play--quiet' : ' home__play--primary'}`}
-              onClick={() => (saved ? setConfirmNew(true) : startNew())}
-            >
-              <b>New Run</b>
-              <small>Three stages as {hero.hero.name}. Build a deck and face Vorthax.</small>
-            </button>
-          )}
+          ))}
+          <button
+            type="button"
+            className={`home__play${runs.length > 0 ? ' home__play--quiet' : ' home__play--primary'}`}
+            disabled={full}
+            onClick={startNew}
+          >
+            <b>New Run</b>
+            <small>
+              {full
+                ? `You have ${RUN_SLOTS} runs in progress. Finish or abandon one to start another.`
+                : `Three stages as ${hero.hero.name}. Build a deck and face Vorthax.`}
+            </small>
+          </button>
           <a className="home__play" href="#/arena">
             <b>Arena</b>
             <small>Duel another player with a deck you banked.</small>

@@ -9,7 +9,6 @@ import {
   REALM_LABEL,
   RunError,
   availableNodes,
-  bank,
   buyBoon,
   buyCard,
   holdCard,
@@ -43,7 +42,7 @@ import { getHero, rememberHero } from '../app/heroChoice';
 import { BoonToast } from './BoonToast';
 import { PotionChip } from '../fight/PotionChip';
 import { BankedPanel } from './BankedPanel';
-import { MID_RUN_SAVES, canSaveForArena, saveForArena } from './MidRunSave';
+import { canSaveForArena, saveForArena } from './deckSave';
 import { CharacterPicker } from './CharacterPicker';
 import { MapLegend, MapView } from './MapView';
 import {
@@ -60,9 +59,13 @@ import {
   clearSavedRun,
   duelWasStarted,
   exportRun,
-  loadSavedRun,
+  RUN_SLOTS,
+  loadActiveRun,
+  runCount,
+  saveRunSlot,
+  startRunSlot,
   markDuelStarted,
-  saveRun,
+  setActiveRun,
 } from './saves';
 import '../play/play.css';
 import './run.css';
@@ -76,16 +79,24 @@ const duelKey = (r: RunState): string =>
 export default function RunScreen() {
   // Resuming into a duel that was already begun counts as a loss: closing the page is not a free retry.
   const [initial] = useState(() => {
-    const saved = loadSavedRun();
+    const found = loadActiveRun();
+    const saved = found?.run ?? null;
+    const slot = found?.id ?? null;
     if (saved && saved.phase === 'duel' && saved.context && duelWasStarted(duelKey(saved))) {
-      clearDuelStarted();
+      clearDuelStarted(duelKey(saved));
       return {
         run: finishDuel(saved, false),
+        slot,
+        loaded: null as RunState | null,
         notice: 'You left the last duel unfinished, so it counted as a loss.',
       };
     }
-    return { run: saved, notice: null as string | null };
+    return { run: saved, slot, loaded: saved, notice: null as string | null };
   });
+  /** the saved slot this run is kept in (null: not kept, as when storage is blocked); it only ever writes to this one */
+  const slotRef = useRef<string | null>(initial.slot);
+  /** the run as it was loaded, which needs no save until something changes */
+  const loadedRef = useRef<RunState | null>(initial.loaded);
   const runRef = useRef<RunState | null>(initial.run);
   const [run, setRunState] = useState<RunState | null>(initial.run);
   const [confirmForfeit, setConfirmForfeit] = useState(false);
@@ -110,17 +121,25 @@ export default function RunScreen() {
   const nextGained = useCallback(() => setGained((g) => g.slice(1)), []);
   const [notice, setNotice] = useState<string | null>(initial.notice);
   /** what the Save button answered (test build), shown only while the stage-cleared screen is up */
-  const [saveNote, setSaveNote] = useState<string | null>(null);
+  const [saveNote, setSaveNote] = useState<{ at: string; text: string } | null>(null);
+  const [saving, setSaving] = useState(false);
   const [showDeck, setShowDeck] = useState(false);
   const [confirmAbandon, setConfirmAbandon] = useState(false);
 
   // autosave after every step; a finished run (collapsed or banked) is not kept as a save
   useEffect(() => {
     if (!run) return;
-    // a collapsed run is gone; a banked deck stays saved until the player leaves it (it is also copied into the Vault)
-    if (run.phase === 'collapsed') clearSavedRun();
-    else saveRun(run);
     if (run.phase === 'duel' && run.context) markDuelStarted(duelKey(run));
+    const id = slotRef.current;
+    if (!id || run === loadedRef.current) return;
+    // a collapsed run is gone, and a banked one (an older save) is finished: neither is kept as a parked run
+    if (run.phase === 'collapsed' || run.phase === 'banked') {
+      clearSavedRun(id);
+      slotRef.current = null;
+    } else if (!saveRunSlot(id, run)) {
+      // the slot is gone (the run was abandoned in another window): do not bring it back
+      slotRef.current = null;
+    }
   }, [run]);
 
   /** Apply a rule function, showing its message instead of crashing if the rules refuse. */
@@ -145,15 +164,46 @@ export default function RunScreen() {
 
   const reportResult = useCallback(
     (won: boolean, hp?: number, potions?: string[]) => {
-      clearDuelStarted();
+      if (runRef.current) clearDuelStarted(duelKey(runRef.current));
       act((r) => finishDuel(r, won, hp, potions));
     },
     [act],
   );
 
-  const startRun = (c: HeroId, d: Difficulty, l: Luck) => setRun(newRun(c, newSeed(), d, l));
+  /** Start a run from a new or imported state: it takes a free slot; if every slot is taken it is refused (nothing is thrown away). */
+  const begin = (r: RunState): boolean => {
+    if (runCount() >= RUN_SLOTS) {
+      setNotice(
+        `You have ${RUN_SLOTS} runs in progress. Finish or abandon one (on the home page) before starting another.`,
+      );
+      return false;
+    }
+    // (with storage blocked there is no slot, and the run is played without being kept)
+    slotRef.current = startRunSlot(r);
+    loadedRef.current = null;
+    setNotice(null);
+    setRun(r);
+    return true;
+  };
+  const startRun = (c: HeroId, d: Difficulty, l: Luck) => {
+    begin(newRun(c, newSeed(), d, l));
+  };
+  /** Back to the home page with the run parked: it is already saved, and can be carried on from there. */
+  const goHome = () => {
+    setActiveRun(null);
+    window.location.hash = '#/';
+  };
+  const saveDeck = () => {
+    if (!run || saving) return;
+    const at = `${run.seed}:${run.phase}:${run.stage}:${run.tier}`;
+    setSaving(true);
+    void saveForArena(run)
+      .then((text) => setSaveNote({ at, text }))
+      .finally(() => setSaving(false));
+  };
   const leaveRun = () => {
-    clearSavedRun();
+    if (slotRef.current) clearSavedRun(slotRef.current);
+    slotRef.current = null;
     setRun(null);
     setConfirmAbandon(false);
   };
@@ -165,8 +215,7 @@ export default function RunScreen() {
       setNotice('That file is not a valid run save.');
       return;
     }
-    setNotice(null);
-    setRun(parsed);
+    begin(parsed);
   };
 
   if (!run)
@@ -286,10 +335,8 @@ export default function RunScreen() {
       <RunBar
         run={run}
         onDeck={() => setShowDeck(true)}
-        onExport={() => exportRun(run)}
-        onSave={() => {
-          void saveForArena(run).then(setSaveNote);
-        }}
+        onSave={saveDeck}
+        onHome={goHome}
         onAbandon={() => setConfirmAbandon(true)}
       />
       {notice && (
@@ -297,12 +344,12 @@ export default function RunScreen() {
           {notice}
         </p>
       )}
-      {saveNote && run.phase === 'stageClear' && (
+      {saveNote && saveNote.at === `${run.seed}:${run.phase}:${run.stage}:${run.tier}` && (
         <p className="run__notice" role="status">
-          {saveNote}
+          {saveNote.text}
         </p>
       )}
-      <Body run={run} act={act} onLeave={leaveRun} />
+      <Body run={run} act={act} onLeave={leaveRun} onSave={saveDeck} onHome={goHome} />
       {gained[0] && <BoonToast id={gained[0]} more={gained.length - 1} onDone={nextGained} />}
       {showDeck && (
         <DeckModal deck={run.deck} title="Your deck" onClose={() => setShowDeck(false)} />
@@ -423,7 +470,7 @@ function RunBar(props: {
   run: RunState;
   onDeck: () => void;
   onSave: () => void;
-  onExport: () => void;
+  onHome: () => void;
   onAbandon: () => void;
 }) {
   const { run } = props;
@@ -471,24 +518,25 @@ function RunBar(props: {
         <button className="btn btn--small" onClick={props.onDeck}>
           <span>Deck ({run.deck.length})</span>
         </button>
-        {MID_RUN_SAVES ? (
-          <button
-            className="btn btn--small"
-            disabled={!canSaveForArena(run)}
-            title={
-              canSaveForArena(run)
-                ? 'Copy this deck into your Vault to play it in the Arena'
-                : 'Test build: you can save a deck for the Arena just before a new stage begins (after stage 1 or 2, or at the start of a Rift Tier beyond the first), not in the middle of one'
-            }
-            onClick={props.onSave}
-          >
-            <span>Save deck</span>
-          </button>
-        ) : (
-          <button className="btn btn--small btn--ghost" onClick={props.onExport}>
-            <span>Export run</span>
-          </button>
-        )}
+        <button
+          className="btn btn--small"
+          disabled={!canSaveForArena(run)}
+          title={
+            canSaveForArena(run)
+              ? 'Copy this deck into your Vault to play it in the Arena. Your run carries on.'
+              : 'You can save a deck between Rift Tiers: when one is cleared, or at the start of the next, before its first stage. Not in the middle of a stage.'
+          }
+          onClick={props.onSave}
+        >
+          <span>Save deck</span>
+        </button>
+        <button
+          className="btn btn--small btn--ghost"
+          title="Leave for now. This run is kept, and you can carry on from the home page."
+          onClick={props.onHome}
+        >
+          <span>Home</span>
+        </button>
         <button className="btn btn--small btn--ghost" onClick={props.onAbandon}>
           <span>Abandon</span>
         </button>
@@ -501,6 +549,8 @@ function Body(props: {
   run: RunState;
   act: (fn: (r: RunState) => RunState) => void;
   onLeave: () => void;
+  onSave: () => void;
+  onHome: () => void;
 }) {
   const { run, act } = props;
   const available = useMemo(() => new Set(availableNodes(run).map((n) => n.id)), [run]);
@@ -599,14 +649,15 @@ function Body(props: {
         <section className="stage-panel" aria-label="Loop cleared">
           <h2 className="stage-panel__title">The Heart of the Rift is silent</h2>
           <p className="stage-panel__hint">
-            You cleared all three stages at Rift Tier {run.tier}. <b>Bank</b> this deck to keep it
-            safe for PvP, or <b>Continue</b> one Tier deeper: harder enemies and better rewards, and
-            if Resolve runs out the deck is lost.
+            You cleared all three stages at Rift Tier {run.tier}. <b>Save</b> this deck to your
+            Vault to keep it for the Arena: that copy is yours for good. Then <b>Continue</b> one
+            Tier deeper for harder enemies and better rewards, but the deck in this run can be lost
+            if Resolve runs out. Or leave the run parked and come back to it later.
           </p>
           <div className="choices-row">
-            <button className="bigchoice" onClick={() => act((r) => bank(r))}>
-              <b>Bank the deck</b>
-              <span>End the run and keep this deck.</span>
+            <button className="bigchoice" onClick={props.onSave}>
+              <b>Save this deck</b>
+              <span>Copy it into your Vault. The run carries on.</span>
             </button>
             {run.tier < MAX_TIER ? (
               <button className="bigchoice" onClick={() => act((r) => continueLoop(r))}>
@@ -618,6 +669,10 @@ function Body(props: {
                 Rift Tier {MAX_TIER} is as deep as the rift goes for now.
               </p>
             )}
+            <button className="bigchoice" onClick={props.onHome}>
+              <b>Leave it for now</b>
+              <span>Go home. The run is kept, parked here, to carry on later.</span>
+            </button>
           </div>
         </section>
       );

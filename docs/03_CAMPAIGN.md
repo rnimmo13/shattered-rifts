@@ -45,7 +45,9 @@ Choose character ──► RUN at Rift Tier I (fresh 20-card starter, 2 Resolve 
    Stage 3 ─ the Rift  (eight floors of the two realms not yet visited, then Vorthax, Heart of the Rift)
    (the four realms, Aurelion / Nexus-9 / Wyldmaw / Umbral Veil, are shuffled by the run seed)
 ──► LOOP CLEARED: choose
-      BANK      → the deck goes to your Vault (10 slots) and the run ends. Eligible for PvP.
+      SAVE      → a copy of the deck goes to your Vault (10 slots), eligible for PvP; the run carries on (decision #173).
+      (Save is also offered at the start of the next tier, before its stage 1.)
+      LEAVE     → the run is parked (you can keep up to 3 unfinished runs) and carried on later from the home page.
       CONTINUE  → Tier +1, +1 Resolve (max 3), keep deck & Boons, Stage 1 again (harder, better loot)
    Resolve reaches 0 at any point → RIFT COLLAPSE: the run and its deck are lost.
 ```
@@ -292,7 +294,7 @@ future deck.
   deck you entered in a tournament, with its record. You can view it or replay it against the AI.
 
 ## 7. The Vault & Seasons (PvP-facing; full PvP rules in `01_GAME_DESIGN.md §6`)
-- **Vault:** 10 deck slots. Banking into a full Vault asks which deck to replace.
+- **Vault:** 10 deck slots. Saving into a full Vault asks the player to remove a deck first (on the Saved decks page).
 - **Season = 1 week.** The Vault is wiped Monday 00:00 UTC. Runs in progress carry over.
 - **PvP unlocks** after your first loop clear (your first Bank, or your first Continue).
 - **Casual** (all week): live matchmaking, plus **ghost matches** against other players' Vault decks played by the AI.

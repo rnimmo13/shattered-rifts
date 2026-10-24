@@ -20,7 +20,7 @@ import { VAULT_SLOTS, entryFor, loadVault, saveVault, type VaultDeck } from './v
 import { ChoosePanel, CoinFlip } from './PvpParts';
 import { VaultCode, type Online } from './VaultCode';
 import { AccountBox } from './AccountBox';
-import { MID_RUN_SAVES } from '../run/MidRunSave';
+import { MID_RUN_SAVES } from '../run/deckSave';
 import { RarityTally } from './DeckReport';
 import { dateLabel, heroName, tierLabel } from './deckLayout';
 import './decks.css';
@@ -329,11 +329,12 @@ export default function PvpScreen() {
                 <>
                   <h2>You need a saved deck to play in the Arena</h2>
                   <p>
-                    The Arena is played with decks you have built in the campaign. Win a run, choose{' '}
-                    <b>Bank</b> at the end, and that deck is yours to bring here. You keep it
-                    whether you win or lose a match.
+                    The Arena is played with decks you have built in the campaign. Clear a Rift Tier
+                    and choose <b>Save this deck</b> (or use <b>Save deck</b> between Rift Tiers),
+                    and that deck is yours to bring here. You keep it whether you win or lose a
+                    match.
                     {MID_RUN_SAVES &&
-                      ' In this test build you can also save a copy of your deck each time you clear a stage.'}
+                      ' In this test build you can also save a copy of your deck between stages.'}
                   </p>
                   <p>
                     Banked decks on another device?{' '}

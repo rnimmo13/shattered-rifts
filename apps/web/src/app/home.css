@@ -316,3 +316,18 @@
     transition: none;
   }
 }
+
+/* a parked run: the Continue button and its Abandon beside it */
+.home__runrow {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.5rem;
+  align-items: center;
+}
+.home__runrow .home__confirm {
+  grid-column: 1 / -1;
+}
+.home__play:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}

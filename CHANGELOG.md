@@ -5,10 +5,12 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **Save a deck without ending the run, and park runs:** at the end of a Rift Tier you now choose Save this deck (a copy goes to your Vault, the run carries on), then Continue to the next tier or Leave it for now. The Save deck button in the run bar also works at the start of the next tier before its stage 1. Home takes you out of a run and leaves it parked: you can keep up to 3 unfinished runs and carry on any of them from the home page.
 - **Test build: Save deck works at more points.** It is now enabled just before a new stage begins: after stage 1 or after stage 2, and on a Rift Tier beyond the first just before its stage 1 begins. Never in the middle of a stage.
 - **Saved decks page:** a new Saved decks page (from the home page and the Arena) shows each saved deck like a post-game report: its Riftwalker, tier and date, the Boons it was saved with, and its cards by rarity, best first, as small cards with counts. Hover a card for a big copy. Decks can be removed there (with a confirmation). The Arena lists the same decks in short, with a View full deck link. Saved decks now remember their Boons, and their Boons are in effect in Arena matches. The Vault now holds 10 decks (was 5).
 - **Test build: save a deck after stage 1.** The run bar's Save deck button (in place of Export run) copies your deck into the Vault, only on the Stage 1 cleared screen before stage 2 starts, so the Arena can be tried without finishing a whole run. The real game will only save decks when a Rift Tier is cleared.
 - **Arena needs a saved deck:** the Riftwalker starting decks are gone from the Arena. With no banked deck the screen explains how to get one (win a run and choose Bank) and links to a New Run.
+- **0.30.0:** save a deck without ending the run, park up to 3 runs, Home button.
 - **0.29.0:** Save deck works after stage 1 and 2, and at the start of later Rift Tiers.
 - **0.28.0:** a Saved decks page, Boons saved with decks and used in the Arena, and 10 deck slots.
 - **0.27.0:** the Arena needs a banked deck, and the home page sign-in is spaced properly.
