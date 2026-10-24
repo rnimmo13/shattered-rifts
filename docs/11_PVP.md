@@ -5,7 +5,7 @@ First playable version (friends test). Two players, each with a banked deck, pla
 
 ## What a player does
 
-1. Clear a run and choose **Bank**: the deck goes into the **Vault** (5 slots; a full Vault asks which deck to give up). The Vault is kept in this browser and also on the server under a **Vault code** (see below). The Arena only offers banked decks: with an empty Vault the screen says so and points to a New Run (decision #167). **Test build only:** the run bar's **Save deck** button (it replaces Export run; `apps/web/src/run/MidRunSave.ts`, flag `MID_RUN_SAVES`) is enabled only on the Stage 1 cleared screen, before stage 2 begins, so the Arena can be tried without a full run (decision #168). Remove it before release.
+1. Clear a run and choose **Bank**: the deck goes into the **Vault** (10 slots; a full Vault asks which deck to give up). The Vault is kept in this browser and also on the server under a **Vault code** (see below). The Arena only offers banked decks: with an empty Vault the screen says so and points to a New Run (decision #167). **Test build only:** the run bar's **Save deck** button (it replaces Export run; `apps/web/src/run/MidRunSave.ts`, flag `MID_RUN_SAVES`) is enabled only on the Stage 1 cleared screen, before stage 2 begins, so the Arena can be tried without a full run (decision #168). Remove it before release.
 2. Title screen → **Arena** (`#/arena`, also `#/pvp`). Pick a name and a deck.
 3. **Find a match** (the queue), **Make a room for a friend** (shows a 5-letter code to send), or **Join a room** (type a code).
 4. **Who goes first?** Both players are asked: *I will go first* or *I will go second (+10 HP)*. Different answers: everyone gets what they asked for. The same answer (or no answer in 20 s): the server flips a coin, and both players watch it spin and land on the portrait and name of whoever goes first.
@@ -56,6 +56,10 @@ pnpm pvpsmoke         # plays whole matches against the local server with two bo
 ```
 
 To try it alone: open `#/pvp` in two tabs (each tab is its own player), make a room in one, join its code in the other.
+
+## Saved decks page
+
+`#/decks` (`apps/web/src/pvp/SavedDecksScreen.tsx`, `DeckReport.tsx`): each saved deck as a report. Decks have no names: they are told apart by Riftwalker, Rift Tier and the date saved. Cards are sorted by rarity, best first, then dearer first, with repeats stacked (`deckLayout.ts`, tested). The Boons the run held are saved with the deck (`VaultDeck.boons`, kept by the server too) and shown on the report; **they are in effect in a match** (decision #171: `Entry.boons`, checked in `checkEntry`, passed to both seats by `setupFor`). The Arena lists the decks in short (tier, date, card count, rarity tally, Boons) with a link here; removing a deck is only done on this page, behind a confirmation. The Vault holds 10 decks (`V2_DECK_RULES.vaultSlots`, decision #171), and both screens say how many are used.
 
 ## The Vault online
 

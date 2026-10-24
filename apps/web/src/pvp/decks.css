@@ -1,0 +1,164 @@
+/* saved decks: the full report page and the short rows in the Arena */
+.decks__list {
+  display: grid;
+  gap: 1.2rem;
+  width: min(100%, 72rem);
+}
+.decks__links {
+  margin: 0.3rem 0 0;
+}
+.decks__links a {
+  color: var(--c-gold-light);
+}
+.deckrep {
+  display: grid;
+  gap: 0.7rem;
+  padding: 0.9rem 1rem 1rem;
+  border-radius: 12px;
+  border: 1px solid rgb(212 168 75 / 0.4);
+  background: linear-gradient(180deg, rgb(20 32 74 / 0.7), rgb(8 10 20 / 0.9));
+  text-align: left;
+}
+.deckrep__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem 1rem;
+}
+.deckrep__who {
+  display: grid;
+  line-height: 1.2;
+}
+.deckrep__who b {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  letter-spacing: 0.06em;
+  color: var(--c-gold-pale);
+}
+.deckrep__who span {
+  color: var(--c-text-dim);
+}
+.deckrep__tally {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem 0.7rem;
+  margin-inline-start: auto;
+}
+.deckrep__rar {
+  font-size: 0.9rem;
+  text-transform: capitalize;
+  color: var(--c-ivory);
+}
+.deckrep__rar--ancestral {
+  color: #ff9a4a;
+}
+.deckrep__rar--legendary {
+  color: #ffd35e;
+}
+.deckrep__rar--rare {
+  color: #6fb4ff;
+}
+.deckrep__rar--uncommon {
+  color: #7be08d;
+}
+.deckrep__rar--common,
+.deckrep__rar--basic {
+  color: var(--c-text-dim);
+}
+.deckrep__confirm {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  align-items: center;
+}
+.deckrep__boons {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+  margin: 0;
+  color: var(--c-text-dim);
+}
+.deckrep__boons > span:first-child {
+  margin-inline-end: 0.3rem;
+  font-size: 0.9rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.deckrep__cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.deckrep__card {
+  position: relative;
+}
+.deckrep__cardbtn {
+  all: unset;
+  position: relative;
+  display: block;
+  cursor: help;
+  border-radius: 8px;
+}
+.deckrep__cardbtn:focus-visible {
+  outline: 2px solid var(--c-gold-light);
+  outline-offset: 2px;
+}
+.deckrep__n {
+  position: absolute;
+  right: -0.25rem;
+  bottom: -0.35rem;
+  padding: 0 0.4rem;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: #231b0c;
+  background: var(--c-gold-light);
+  box-shadow: 0 1px 4px rgb(0 0 0 / 0.6);
+}
+
+/* the short list in the Arena */
+.pvp__deckmeta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.2rem 0.8rem;
+}
+.pvp__deckboons {
+  display: inline-flex;
+  gap: 0.2rem;
+}
+.pvp__deckslot {
+  margin: 0;
+  color: var(--c-text-dim);
+}
+
+.pvp__decks li {
+  align-items: center;
+}
+.pvp__viewdeck {
+  flex: none;
+  white-space: nowrap;
+  color: var(--c-gold-light);
+  text-decoration: underline;
+}
+.pvp__deck {
+  min-width: 0;
+}
+.pvp__deck > span {
+  display: grid;
+  justify-items: start;
+  gap: 0.15rem;
+}
+.pvp__deck .pvp__deckmeta {
+  display: flex;
+}
+.pvp__deck .pvp__deckboons,
+.pvp__deck .deckrep__tally {
+  display: inline-flex;
+  flex-wrap: wrap;
+  margin: 0;
+}

@@ -16,20 +16,15 @@ import {
   setServerSetting,
 } from './config';
 import { PvpSession, newRoomCode, savedRoom, type Snapshot } from './session';
-import {
-  VAULT_SLOTS,
-  dropFrom,
-  entryFor,
-  labelOf,
-  loadVault,
-  saveVault,
-  type VaultDeck,
-} from './vault';
+import { VAULT_SLOTS, entryFor, loadVault, saveVault, type VaultDeck } from './vault';
 import { ChoosePanel, CoinFlip } from './PvpParts';
 import { VaultCode, type Online } from './VaultCode';
 import { AccountBox } from './AccountBox';
 import { MID_RUN_SAVES } from '../run/MidRunSave';
-import { remoteVault, syncVault, vaultKey, whoAmI, type Me } from './vaultSync';
+import { RarityTally } from './DeckReport';
+import { dateLabel, heroName, tierLabel } from './deckLayout';
+import './decks.css';
+import { syncVault, vaultKey, whoAmI, type Me } from './vaultSync';
 import './pvp.css';
 
 const ARENAS: VenueId[] = [
@@ -222,25 +217,26 @@ export default function PvpScreen() {
           >
             <HeroIcon hero={d.hero} size={36} />
             <span>
-              <b>{labelOf(d)}</b>
-              <small>{d.deck.length} cards · banked</small>
+              <b>
+                {heroName(d.hero)} · {tierLabel(d)}
+              </b>
+              <small>
+                {dateLabel(d.bankedAt)} · {d.deck.length} cards
+              </small>
+              <span className="pvp__deckmeta">
+                <RarityTally deck={d.deck} />
+                {d.boons.length > 0 && (
+                  <span className="pvp__deckboons">
+                    {d.boons.length} {d.boons.length === 1 ? 'Boon' : 'Boons'}
+                  </span>
+                )}
+              </span>
             </span>
           </button>
           {!busy && (
-            <button
-              type="button"
-              className="btn btn--small btn--ghost"
-              onClick={() => {
-                const next = dropFrom(vault, d.id);
-                setVault(next);
-                saveVault(next);
-                touched.current = true;
-                void whoAmI().then(() => remoteVault.drop(vaultKey(), d.id));
-                if (deckId === d.id) setDeckId(next[0]?.id ?? '');
-              }}
-            >
-              <span>Remove</span>
-            </button>
+            <a className="pvp__viewdeck" href="#/decks">
+              <span>View full deck</span>
+            </a>
           )}
         </li>
       ))}
@@ -353,6 +349,9 @@ export default function PvpScreen() {
           ) : (
             <>
               <h2 className="pvp__h">Choose a deck</h2>
+              <p className="pvp__deckslot">
+                {decks.length} of {VAULT_SLOTS} saved decks · <a href="#/decks">Saved decks</a>
+              </p>
               {deckList}
               {problem && <p className="pvp__error">{problem}</p>}
               <div className="pvp__actions">

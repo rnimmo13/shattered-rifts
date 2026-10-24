@@ -8,7 +8,13 @@ import { Match } from '@sr/pvp';
 
 const PER = Number(process.argv[2] ?? 6);
 const heroes = Object.keys(RIFTWALKERS) as HeroId[];
-const entry = (h: HeroId) => ({ name: h, hero: h, deck: [...RIFTWALKERS[h].starter], tier: 1 });
+const entry = (h: HeroId) => ({
+  name: h,
+  hero: h,
+  deck: [...RIFTWALKERS[h].starter],
+  boons: [],
+  tier: 1,
+});
 
 let first = 0;
 let second = 0;

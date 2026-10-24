@@ -7,6 +7,8 @@ import type { Entry } from './protocol';
 
 export const MAX_DECK = 80;
 export const MAX_NAME = 24;
+/** A run holds at most five Boons; a little headroom for the ones a later build may allow. */
+export const MAX_BOONS = 8;
 /** Basic cards have no copy limit in a run, but 80 of the best one is not a deck. */
 export const MAX_BASIC_COPIES = 10;
 
@@ -67,8 +69,19 @@ export function checkEntry(raw: unknown): Checked | Rejected {
       return { ok: false, message: `Too many copies of "${COMBAT_DB.cards[id]?.name ?? id}".` };
     held.push(id);
   }
+  // Boons that are not in the game (a retired one, a made-up id) are left out rather than refusing the deck
+  const boons: string[] = [];
+  if (Array.isArray(e['boons']))
+    for (const b of e['boons'] as unknown[])
+      if (
+        typeof b === 'string' &&
+        Object.hasOwn(COMBAT_DB.boons, b) &&
+        !boons.includes(b) &&
+        boons.length < MAX_BOONS
+      )
+        boons.push(b);
   const tier = e['tier'];
   const t =
     typeof tier === 'number' && Number.isInteger(tier) ? Math.min(MAX_TIER, Math.max(1, tier)) : 1;
-  return { ok: true, entry: { name: cleanName(e['name']), hero, deck: cards, tier: t } };
+  return { ok: true, entry: { name: cleanName(e['name']), hero, deck: cards, boons, tier: t } };
 }

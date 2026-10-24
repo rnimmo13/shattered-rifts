@@ -17,7 +17,7 @@ export async function saveForArena(run: RunState): Promise<string> {
   if (!canSaveForArena(run)) return 'You can save a deck once stage 1 is cleared.';
   const r = bankInto(loadVault(), deckFromStage(run, Date.now()));
   if (!r.ok)
-    return `Your Vault is full (${VAULT_SLOTS} decks). Remove one on the Arena screen first, then save.`;
+    return `Your Vault is full (${VAULT_SLOTS} decks). Remove one on the Saved decks page (from the home page) first, then save.`;
   saveVault(r.list);
   if (r.already) return 'This deck is already in your Vault.';
   // the online copy follows; the deck is saved in this browser either way

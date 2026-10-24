@@ -16,6 +16,7 @@ const deck = (id: string): VaultDeck => ({
   hero: 'maren',
   tier: 1,
   deck: [...RIFTWALKERS.maren.starter],
+  boons: [],
   bankedAt: 5,
 });
 
@@ -47,6 +48,22 @@ describe('Vault rules', () => {
     expect(cleanDeck('deck')).toBeNull();
     // a missing or wild time is tolerated, and stripped to a number
     expect(cleanDeck({ ...deck('x'), bankedAt: 'soon' })?.bankedAt).toBe(0);
+  });
+
+  it('keeps the Boons a deck was saved with, as plain ids only', () => {
+    const d = cleanDeck({
+      ...deck('b'),
+      boons: ['iron-will', 'iron-will', 7, 'has space', null, 'a'.repeat(50)],
+    });
+    expect(d?.boons).toEqual(['iron-will']);
+    expect(
+      cleanDeck({ ...deck('b'), boons: ['__proto__', 'constructor', 'toString', 'ok'] })?.boons,
+    ).toEqual(['ok']);
+    expect(cleanDeck({ ...deck('b'), boons: 'nope' })?.boons).toEqual([]);
+    expect(cleanDeck({ ...deck('b'), boons: undefined })?.boons).toEqual([]);
+    expect(
+      cleanDeck({ ...deck('b'), boons: Array.from({ length: 60 }, (_, i) => `b${i}`) })?.boons,
+    ).toHaveLength(40);
   });
 
   it('cleans a whole list: no repeats, no junk, no more than the slots', () => {

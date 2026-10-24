@@ -11,11 +11,20 @@ interface Row extends Record<string, SqlStorageValue> {
   hero: string;
   tier: number;
   deck: string;
+  boons: string;
   banked_at: number;
 }
 
 const json = (body: unknown, status = 200): Response =>
   new Response(JSON.stringify(body), { status, headers: { 'content-type': 'application/json' } });
+
+const parseJson = (text: string): unknown => {
+  try {
+    return JSON.parse(text);
+  } catch {
+    return null;
+  }
+};
 
 export class Vault extends DurableObject<Env> {
   constructor(ctx: DurableObjectState, env: Env) {
@@ -29,28 +38,38 @@ export class Vault extends DurableObject<Env> {
          banked_at INTEGER NOT NULL
        )`,
     );
+    // Vaults made before decks carried Boons gain the column (an existing column makes this fail harmlessly)
+    const columns = ctx.storage.sql.exec<{ name: string }>('PRAGMA table_info(decks)').toArray();
+    if (!columns.some((c) => c.name === 'boons'))
+      ctx.storage.sql.exec(`ALTER TABLE decks ADD COLUMN boons TEXT NOT NULL DEFAULT '[]'`);
   }
 
   private list(): VaultDeck[] {
     const rows = this.ctx.storage.sql
-      .exec<Row>('SELECT id, hero, tier, deck, banked_at FROM decks ORDER BY banked_at, id')
+      .exec<Row>('SELECT id, hero, tier, deck, boons, banked_at FROM decks ORDER BY banked_at, id')
       .toArray();
-    return rows.map((r) => ({
-      id: r.id,
-      hero: r.hero,
-      tier: r.tier,
-      deck: JSON.parse(r.deck) as string[],
-      bankedAt: r.banked_at,
-    }));
+    // a row that cannot be read is left out rather than failing the whole Vault
+    return rows.flatMap((r): VaultDeck[] => {
+      const d = cleanDeck({
+        id: r.id,
+        hero: r.hero,
+        tier: r.tier,
+        deck: parseJson(r.deck),
+        boons: parseJson(r.boons),
+        bankedAt: r.banked_at,
+      });
+      return d ? [d] : [];
+    });
   }
 
   private put(d: VaultDeck): void {
     this.ctx.storage.sql.exec(
-      'INSERT OR REPLACE INTO decks (id, hero, tier, deck, banked_at) VALUES (?, ?, ?, ?, ?)',
+      'INSERT OR REPLACE INTO decks (id, hero, tier, deck, boons, banked_at) VALUES (?, ?, ?, ?, ?, ?)',
       d.id,
       d.hero,
       d.tier,
       JSON.stringify(d.deck),
+      JSON.stringify(d.boons),
       d.bankedAt,
     );
   }

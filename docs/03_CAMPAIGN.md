@@ -45,7 +45,7 @@ Choose character ──► RUN at Rift Tier I (fresh 20-card starter, 2 Resolve 
    Stage 3 ─ the Rift  (eight floors of the two realms not yet visited, then Vorthax, Heart of the Rift)
    (the four realms, Aurelion / Nexus-9 / Wyldmaw / Umbral Veil, are shuffled by the run seed)
 ──► LOOP CLEARED: choose
-      BANK      → the deck goes to your Vault (5 slots) and the run ends. Eligible for PvP.
+      BANK      → the deck goes to your Vault (10 slots) and the run ends. Eligible for PvP.
       CONTINUE  → Tier +1, +1 Resolve (max 3), keep deck & Boons, Stage 1 again (harder, better loot)
    Resolve reaches 0 at any point → RIFT COLLAPSE: the run and its deck are lost.
 ```
@@ -85,7 +85,7 @@ Duels always start at full Essence. Run tension comes from **Resolve**:
   *gain Shield* (units) or *+1 to its main number* (spells/traps). Tempered cards get a glowing ember frame edge.
   **Max 5 Tempered cards per deck.** Re-Tempering a sixth means removing a Temper from another card.
 - **Boons** (run passives, max 5): from Elites, Events, Merchants and the Warden's Gift. They last for the whole run,
-  across loops. **Boons never go into PvP.** A banked deck is cards + Tempers + the character's Sigil only.
+  across loops. **Boons go into PvP with the deck** (decision #171): a banked deck is its cards, its Boons and the character's Sigil.
 - **Shards** are the run currency for Merchants. They're earned in duels and events and **reset when the run ends**.
 
 ### 2.4 Warden's Gift (the unique reward after each boss)
@@ -292,7 +292,7 @@ future deck.
   deck you entered in a tournament, with its record. You can view it or replay it against the AI.
 
 ## 7. The Vault & Seasons (PvP-facing; full PvP rules in `01_GAME_DESIGN.md §6`)
-- **Vault:** 5 deck slots. Banking into a full Vault asks which deck to replace.
+- **Vault:** 10 deck slots. Banking into a full Vault asks which deck to replace.
 - **Season = 1 week.** The Vault is wiped Monday 00:00 UTC. Runs in progress carry over.
 - **PvP unlocks** after your first loop clear (your first Bank, or your first Continue).
 - **Casual** (all week): live matchmaking, plus **ghost matches** against other players' Vault decks played by the AI.

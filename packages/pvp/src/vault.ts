@@ -10,6 +10,8 @@ export interface VaultDeck {
   hero: string;
   tier: number;
   deck: string[];
+  /** the Boons the run held when it was saved (shown with the deck; a match does not use them) */
+  boons: string[];
   bankedAt: number;
 }
 
@@ -37,6 +39,18 @@ export function dropFrom(list: readonly VaultDeck[], id: string): VaultDeck[] {
 /** A deck id made safe to use as a key: letters, digits and `:.~-` only, at most 100 long (a typed run seed can hold anything). */
 export const safeId = (raw: string): string => raw.replace(/[^\w:.~-]/g, '_').slice(0, 100);
 
+const BOON_ID = /^[\w-]{1,40}$/;
+
+/** Boon ids as they arrive from outside: a short list of plain ids (whether they exist is for whoever shows them to say). */
+function cleanBoons(raw: unknown): string[] {
+  if (!Array.isArray(raw)) return [];
+  const out: string[] = [];
+  for (const b of raw as unknown[])
+    if (typeof b === 'string' && BOON_ID.test(b) && !(b in Object.prototype) && !out.includes(b))
+      out.push(b);
+  return out.slice(0, 40);
+}
+
 /** One deck as it arrives from outside (a browser's saved list, a request): a clean copy if it is a legal deck, else null. */
 export function cleanDeck(raw: unknown): VaultDeck | null {
   if (typeof raw !== 'object' || raw === null) return null;
@@ -51,6 +65,7 @@ export function cleanDeck(raw: unknown): VaultDeck | null {
     hero: checked.entry.hero,
     tier: checked.entry.tier,
     deck: checked.entry.deck,
+    boons: cleanBoons(o['boons']),
     bankedAt: typeof at === 'number' && Number.isFinite(at) ? at : 0,
   };
 }

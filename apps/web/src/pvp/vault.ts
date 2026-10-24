@@ -19,7 +19,7 @@ const KEY = 'sr-vault-v1';
 
 /** The deck a banked run leaves in the Vault. */
 export function deckFromRun(
-  run: Pick<RunState, 'seed' | 'tier' | 'character' | 'deck'>,
+  run: Pick<RunState, 'seed' | 'tier' | 'character' | 'deck' | 'boons'>,
   now: number,
 ): VaultDeck {
   return {
@@ -28,13 +28,14 @@ export function deckFromRun(
     hero: run.character,
     tier: run.tier,
     deck: [...run.deck],
+    boons: [...run.boons],
     bankedAt: now,
   };
 }
 
 /** TEST BUILD ONLY: a copy of the deck taken after a stage (see run/MidRunSave.tsx). It has its own id, so it never clashes with the Bank at the end. */
 export function deckFromStage(
-  run: Pick<RunState, 'seed' | 'tier' | 'stage' | 'character' | 'deck'>,
+  run: Pick<RunState, 'seed' | 'tier' | 'stage' | 'character' | 'deck' | 'boons'>,
   now: number,
 ): VaultDeck {
   return { ...deckFromRun(run, now), id: safeId(`${run.seed}:t${run.tier}:s${run.stage}`) };
@@ -42,7 +43,7 @@ export function deckFromStage(
 
 /** What a PvP match is told about a deck. */
 export function entryFor(d: VaultDeck, name: string): Entry {
-  return { name, hero: d.hero, deck: [...d.deck], tier: d.tier };
+  return { name, hero: d.hero, deck: [...d.deck], boons: [...d.boons], tier: d.tier };
 }
 
 /** A readable name for a deck. */

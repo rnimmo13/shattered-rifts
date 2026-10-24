@@ -56,8 +56,9 @@ export function setupFor(seed: string, a: Entry, b: Entry): CombatSetup {
   const second = base > 0 ? { hp: base + SECOND_PLAYER_HP, maxHp: base + SECOND_PLAYER_HP } : {};
   return {
     seed,
-    a: { hero: a.hero, deck: [...a.deck] },
-    b: { hero: b.hero, deck: [...b.deck], ...second },
+    // (an entry kept from before Boons came to PvP has none)
+    a: { hero: a.hero, deck: [...a.deck], boons: [...(a.boons ?? [])] },
+    b: { hero: b.hero, deck: [...b.deck], boons: [...(b.boons ?? [])], ...second },
   };
 }
 

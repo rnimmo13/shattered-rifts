@@ -17,6 +17,7 @@ const run = (seed: string, tier = 1) => ({
   tier,
   character: 'maren' as const,
   deck: [...RIFTWALKERS.maren.starter],
+  boons: ['iron-will'],
 });
 
 describe('the Vault', () => {

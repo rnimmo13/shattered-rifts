@@ -20,6 +20,8 @@ export interface Entry {
   /** a Riftwalker id */
   hero: string;
   deck: string[];
+  /** the Boons the deck was saved with: they are in effect for the whole match */
+  boons: string[];
   /** the Rift Tier the deck was banked at (the matchmaker pairs similar tiers first) */
   tier: number;
 }

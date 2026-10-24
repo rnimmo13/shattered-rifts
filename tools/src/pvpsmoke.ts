@@ -12,6 +12,7 @@ const entryOf = (hero: HeroId, name: string, tier = 1): Entry => ({
   name,
   hero,
   deck: [...RIFTWALKERS[hero].starter],
+  boons: [],
   tier,
 });
 
@@ -187,7 +188,7 @@ async function refusals(): Promise<void> {
   send(bad, {
     type: 'join',
     playerId: bad.id,
-    entry: { name: 'Eve', hero: 'maren', deck: ['strike'], tier: 1 },
+    entry: { name: 'Eve', hero: 'maren', deck: ['strike'], boons: [], tier: 1 },
   });
   await until(() => bad.inbox.some((m) => m.type === 'error'), 'a deck error');
   console.log(`  a one-card deck: ${(bad.inbox[0] as { message: string }).message}`);
@@ -259,20 +260,21 @@ async function vault(): Promise<void> {
     hero: 'maren',
     tier: 1,
     deck: [...RIFTWALKERS.maren.starter],
+    boons: ['iron-sigil'],
     bankedAt: 1,
   });
   const need = (c: boolean, what: string) => {
     if (!c) throw new Error(`vault: ${what}`);
   };
   need((await post('list', {})).decks?.length === 0, 'a new Vault is empty');
-  for (let i = 0; i < 5; i++) need((await post('bank', { deck: mk(`d${i}`) })).ok, 'bank');
-  need((await post('bank', { deck: mk('d0') })).decks?.length === 5, 'banking twice keeps one');
-  const full = await post('bank', { deck: mk('d9') });
+  for (let i = 0; i < 10; i++) need((await post('bank', { deck: mk(`d${i}`) })).ok, 'bank');
+  need((await post('bank', { deck: mk('d0') })).decks?.length === 10, 'banking twice keeps one');
+  const full = await post('bank', { deck: mk('dx') });
   need(full.status === 409 && full.error === 'full', 'a full Vault refuses');
-  const swap = await post('bank', { deck: mk('d9'), replaceId: 'd0' });
+  const swap = await post('bank', { deck: mk('dx'), replaceId: 'd0' });
   need(
     swap.ok &&
-      swap.decks?.some((d) => d.id === 'd9') === true &&
+      swap.decks?.some((d) => d.id === 'dx') === true &&
       !swap.decks?.some((d) => d.id === 'd0'),
     'replace',
   );
@@ -280,7 +282,7 @@ async function vault(): Promise<void> {
     (await post('bank', { deck: { ...mk('bad'), deck: ['nope'] } })).status === 400,
     'a bad deck is refused',
   );
-  need((await post('drop', { id: 'd9' })).decks?.length === 4, 'drop');
+  need((await post('drop', { id: 'dx' })).decks?.length === 9, 'drop');
   const other = await fetch(`${http}/pvp/vault/list`, {
     method: 'POST',
     body: JSON.stringify({ code: 'short' }),
@@ -288,6 +290,12 @@ async function vault(): Promise<void> {
   need(other.status === 400, 'a bad code is refused');
   const get = await fetch(`${http}/pvp/vault/list`);
   need(get.status === 404, 'only POST');
+  const kept = await post('list', {});
+  need(
+    JSON.stringify((kept.decks as { boons?: string[] }[] | undefined)?.[0]?.boons) ===
+      JSON.stringify(['iron-sigil']),
+    'Boons are kept with the deck',
+  );
   console.log('  save, list, replace, drop, refusals: as expected');
 }
 

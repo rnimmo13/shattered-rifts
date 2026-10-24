@@ -7,6 +7,7 @@ import {
   enqueue,
   leave,
   Match,
+  MAX_BOONS,
   MAX_MISSED_TURNS,
   pairUp,
   QUEUE_WIDEN_MS,
@@ -22,6 +23,7 @@ const entryOf = (hero: HeroId, name: string = hero, tier = 1): Entry => ({
   name,
   hero,
   deck: [...RIFTWALKERS[hero].starter],
+  boons: [],
   tier,
 });
 
@@ -195,6 +197,46 @@ describe('a match', () => {
       const m = new Match(`pairs-${h}`, entryOf(h), entryOf(o), 0);
       playOut(m);
       expect(m.over, `${h} v ${o}`).not.toBeNull();
+    }
+  });
+});
+
+describe('Boons in a match', () => {
+  const ids = Object.keys(COMBAT_DB.boons);
+
+  it('are checked: unknown, repeated and prototype ids are left out, and there is a cap', () => {
+    const r = checkEntry({
+      ...entryOf('maren'),
+      boons: [ids[0], ids[0], 'nope', '__proto__', 'constructor', 7, ...ids],
+    });
+    expect(r.ok && r.entry.boons.every((b) => ids.includes(b))).toBe(true);
+    expect(r.ok && new Set(r.entry.boons).size === r.entry.boons.length).toBe(true);
+    expect(r.ok && r.entry.boons.length).toBe(MAX_BOONS);
+    expect(checkEntry({ ...entryOf('maren'), boons: 'x' })).toMatchObject({
+      ok: true,
+      entry: { boons: [] },
+    });
+    expect(checkEntry({ ...entryOf('maren'), boons: undefined })).toMatchObject({
+      ok: true,
+      entry: { boons: [] },
+    });
+  });
+
+  it('are in effect: the setup carries them for both players', () => {
+    const a = { ...entryOf('maren'), boons: [ids[0] as string] };
+    const b = { ...entryOf('kesh'), boons: [ids[1] as string, ids[2] as string] };
+    const s = setupFor('s', a, b);
+    expect(s.a.boons).toEqual(a.boons);
+    expect((s.b as { boons?: string[] }).boons).toEqual(b.boons);
+  });
+
+  it('every Boon can be carried through a whole match without a refusal or a crash', () => {
+    for (const [i, id] of ids.entries()) {
+      const a = { ...entryOf('maren', 'A'), boons: [id] };
+      const b = { ...entryOf('kesh', 'B'), boons: [ids[(i + 1) % ids.length] as string] };
+      const m = new Match(`boon-${id}`, a, b, 0);
+      playOut(m);
+      expect(m.over, id).not.toBeNull();
     }
   });
 });

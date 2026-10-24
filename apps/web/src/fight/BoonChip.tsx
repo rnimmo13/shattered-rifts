@@ -6,7 +6,7 @@ import { RarityGem } from '../ui/RarityGem';
 import { glyphOf } from './boonGlyph';
 
 export function BoonChip(props: { id: string; size?: 'small' | 'large' }) {
-  const b = COMBAT_DB.boons[props.id];
+  const b = Object.hasOwn(COMBAT_DB.boons, props.id) ? COMBAT_DB.boons[props.id] : undefined;
   if (!b) return null;
   return (
     <span
