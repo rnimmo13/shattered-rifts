@@ -6,10 +6,13 @@
 import { DurableObject } from 'cloudflare:workers';
 import type { Action } from '@sr/combat';
 import {
+  CHOOSE_MS,
   checkEntry,
+  decideOrder,
   Match,
   other,
   RECONNECT_MS,
+  seatsFor,
   type Accepted,
   type Entry,
   type Outcome,
@@ -40,6 +43,12 @@ interface Saved {
   away: Partial<Record<Seat, number>>;
   /** turns each seat has let run out in a row */
   missed: Record<Seat, number>;
+  /** both players are in and being asked who goes first (seats a and b are the order they arrived in until it is settled) */
+  choosing: boolean;
+  choices: Partial<Record<Seat, boolean>>;
+  chooseBy: number;
+  /** how the order was settled */
+  toss: { random: boolean };
 }
 
 interface Attach {
@@ -58,6 +67,10 @@ const fresh = (): Saved => ({
   over: null,
   away: {},
   missed: { a: 0, b: 0 },
+  choosing: false,
+  choices: {},
+  chooseBy: 0,
+  toss: { random: false },
 });
 
 export class MatchRoom extends DurableObject<Env> {
@@ -133,6 +146,7 @@ export class MatchRoom extends DurableObject<Env> {
     const d = this.data;
     let at: number;
     if (d.over) at = Date.now() + LINGER_MS;
+    else if (d.choosing) at = d.chooseBy;
     else if (!d.started) at = d.created + IDLE_MS;
     else {
       at = d.deadline;
@@ -157,7 +171,64 @@ export class MatchRoom extends DurableObject<Env> {
       deadline: d.deadline,
       replay: d.log.length,
       now: Date.now(),
+      toss: d.toss,
     };
+  }
+
+  /** Ask one player whether they want to go first. */
+  private askOrder(ws: WebSocket, seat: Seat): void {
+    const d = this.data;
+    const me = d.entries[seat];
+    const foe = d.entries[other(seat)];
+    if (!me || !foe) return;
+    send(ws, {
+      type: 'choose',
+      me,
+      foe,
+      deadline: d.chooseBy,
+      now: Date.now(),
+      chosen: d.choices[seat] !== undefined,
+    });
+  }
+
+  /** The answers are in (or time ran out): settle who goes first, seat everyone and start the match. */
+  private async begin(): Promise<void> {
+    const d = this.data;
+    const coin = (crypto.getRandomValues(new Uint8Array(1))[0] ?? 0) % 2 === 0 ? 'a' : 'b';
+    const order = decideOrder(d.choices, coin);
+    const seats = seatsFor(order.first);
+    const ids: Partial<Record<Seat, string>> = {};
+    const entries: Partial<Record<Seat, Entry>> = {};
+    for (const arrival of ['a', 'b'] as const) {
+      const id = d.ids[arrival];
+      const entry = d.entries[arrival];
+      if (id && entry) {
+        ids[seats[arrival]] = id;
+        entries[seats[arrival]] = entry;
+      }
+    }
+    d.ids = ids;
+    d.entries = entries;
+    d.choosing = false;
+    d.choices = {};
+    d.started = true;
+    d.toss = { random: order.random };
+    d.seed = crypto.randomUUID();
+    this.match = new Match(d.seed, entries.a as Entry, entries.b as Entry, Date.now());
+    d.deadline = this.match.deadline;
+    d.missed = { a: 0, b: 0 };
+    for (const s of this.sockets()) {
+      const seatOf: Seat = d.ids.a === s.at.playerId ? 'a' : 'b';
+      s.ws.serializeAttachment({ playerId: s.at.playerId, seat: seatOf } satisfies Attach);
+    }
+    // a seat nobody is connected to is away from the start
+    for (const seatOf of ['a', 'b'] as const)
+      if (this.sockets(seatOf).length === 0) d.away[seatOf] = Date.now();
+    await this.save();
+    for (const s of this.sockets()) {
+      const m = this.startMessage(s.at.seat as Seat);
+      if (m) send(s.ws, m);
+    }
   }
 
   private actionMessage(i: number, m: Accepted | null): ServerMsg {
@@ -200,46 +271,27 @@ export class MatchRoom extends DurableObject<Env> {
         this.welcome(ws, seat);
         return;
       }
-      if (d.started || (d.ids.a && d.ids.b) || d.over) {
+      // a free place (a and b are the order of arrival; the real seats are settled once both have answered)
+      const free = !d.ids.a ? 'a' : !d.ids.b ? 'b' : null;
+      if (d.started || d.over || !free) {
         send(ws, { type: 'error', code: 'room-full', message: 'That room is full.' });
         ws.close(1008, 'full');
         return;
       }
-      if (!d.ids.a) {
-        d.ids.a = msg.playerId;
-        d.entries.a = checked.entry;
-        ws.serializeAttachment({ playerId: msg.playerId, seat: 'a' } satisfies Attach);
+      d.ids[free] = msg.playerId;
+      d.entries[free] = checked.entry;
+      ws.serializeAttachment({ playerId: msg.playerId, seat: free } satisfies Attach);
+      if (!(d.ids.a && d.ids.b)) {
         await this.save();
         send(ws, { type: 'waiting', room: this.code });
         return;
       }
-      // the second player: the seats are drawn by lot, then the match begins
-      const first = d.entries.a as Entry;
-      const firstId = d.ids.a;
-      const flip = (crypto.getRandomValues(new Uint8Array(1))[0] ?? 0) % 2 === 1;
-      d.ids = flip ? { a: msg.playerId, b: firstId } : { a: firstId, b: msg.playerId };
-      d.entries = flip ? { a: checked.entry, b: first } : { a: first, b: checked.entry };
-      d.started = true;
-      d.seed = crypto.randomUUID();
-      this.match = new Match(d.seed, d.entries.a as Entry, d.entries.b as Entry, Date.now());
-      d.deadline = this.match.deadline;
-      d.missed = { a: 0, b: 0 };
-      for (const s of this.sockets()) {
-        const seatOf = d.ids.a === s.at.playerId ? 'a' : 'b';
-        s.ws.serializeAttachment({ playerId: s.at.playerId, seat: seatOf } satisfies Attach);
-      }
-      ws.serializeAttachment({
-        playerId: msg.playerId,
-        seat: d.ids.a === msg.playerId ? 'a' : 'b',
-      } satisfies Attach);
-      // a seat nobody is connected to (the first player left while waiting) is away from the start
-      for (const seatOf of ['a', 'b'] as const)
-        if (this.sockets(seatOf).length === 0) d.away[seatOf] = Date.now();
+      // both are here: each is asked whether to go first
+      d.choosing = true;
+      d.choices = {};
+      d.chooseBy = Date.now() + CHOOSE_MS;
       await this.save();
-      for (const s of this.sockets()) {
-        const m = this.startMessage(s.at.seat as Seat);
-        if (m) send(s.ws, m);
-      }
+      for (const s of this.sockets()) this.askOrder(s.ws, s.at.seat as Seat);
       return;
     }
 
@@ -248,6 +300,16 @@ export class MatchRoom extends DurableObject<Env> {
       return;
     }
     const seat = at.seat;
+    if (msg.type === 'order') {
+      if (!d.choosing) {
+        send(ws, { type: 'error', code: 'no-match', message: 'Nobody is choosing the order now.' });
+        return;
+      }
+      d.choices[seat] = msg.first;
+      await this.save();
+      if (d.choices.a !== undefined && d.choices.b !== undefined) await this.begin();
+      return;
+    }
     const match = this.match;
     if (!match || !d.started) {
       send(ws, { type: 'error', code: 'no-match', message: 'The match has not started.' });
@@ -291,6 +353,10 @@ export class MatchRoom extends DurableObject<Env> {
   /** Bring a (re)connecting player up to date: the start, then every move so far. */
   private welcome(ws: WebSocket, seat: Seat): void {
     const d = this.data;
+    if (d.choosing) {
+      this.askOrder(ws, seat);
+      return;
+    }
     if (!d.started) {
       send(ws, { type: 'waiting', room: this.code });
       return;
@@ -323,6 +389,12 @@ export class MatchRoom extends DurableObject<Env> {
       // a player who leaves before the match starts gives up their seat, so nobody is matched with an empty chair
       delete this.data.ids[at.seat];
       delete this.data.entries[at.seat];
+      if (this.data.choosing) {
+        // the other player goes back to waiting for someone
+        this.data.choosing = false;
+        this.data.choices = {};
+        for (const rest of this.sockets()) send(rest.ws, { type: 'waiting', room: this.code });
+      }
     } else this.data.away[at.seat] = Date.now();
     await this.save();
   }
@@ -334,6 +406,12 @@ export class MatchRoom extends DurableObject<Env> {
   override async alarm(): Promise<void> {
     const d = this.data;
     const now = Date.now();
+    if (d.choosing) {
+      // time to answer ran out: whoever did not answer leaves it to the coin
+      if (now >= d.chooseBy) await this.begin();
+      else await this.save();
+      return;
+    }
     if (d.over || !d.started) {
       // nothing more will happen here: clear the room
       for (const { ws } of this.sockets()) ws.close(1000, 'room closed');

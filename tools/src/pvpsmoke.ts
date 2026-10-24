@@ -33,9 +33,12 @@ interface Bot {
   replay: number;
   /** stop playing (to test a rejoin) */
   paused: boolean;
+  /** what this player answers when asked who goes first */
+  wantsFirst: boolean;
+  toss: { random: boolean } | null;
 }
 
-function connect(path: string, name: string, id: string): Promise<Bot> {
+function connect(path: string, name: string, id: string, wantsFirst = true): Promise<Bot> {
   return new Promise((resolve, reject) => {
     const ws = new WebSocket(`${BASE}${path}`);
     const bot: Bot = {
@@ -50,6 +53,8 @@ function connect(path: string, name: string, id: string): Promise<Bot> {
       moves: 0,
       replay: 0,
       paused: false,
+      wantsFirst,
+      toss: null,
     };
     ws.addEventListener('open', () => resolve(bot));
     ws.addEventListener('error', () => reject(new Error(`could not connect to ${BASE}${path}`)));
@@ -64,7 +69,10 @@ function connect(path: string, name: string, id: string): Promise<Bot> {
 const send = (b: Bot, m: ClientMsg): void => b.ws.send(JSON.stringify(m));
 
 function handle(b: Bot, m: ServerMsg): void {
-  if (m.type === 'start') {
+  if (m.type === 'choose') {
+    if (!m.chosen) send(b, { type: 'order', first: b.wantsFirst });
+  } else if (m.type === 'start') {
+    b.toss = m.toss;
     b.seat = m.seat;
     b.replay = m.replay;
     b.match = new Match(m.seed, m.a, m.b, Date.now());
@@ -103,7 +111,8 @@ async function playRoom(code: string, label: string, rejoin = false): Promise<vo
   const b = await connect(`/pvp/room/${code}`, 'Bob', 'player-bob');
   send(b, { type: 'join', playerId: b.id, entry: entryOf('kesh', 'Bob') });
   await until(() => a.match !== null && b.match !== null, 'both starts');
-  console.log(`  seats: Ann is ${a.seat}, Bob is ${b.seat}`);
+  if (a.toss?.random !== true) throw new Error('both wanted first: the coin should have decided');
+  console.log(`  both wanted to go first: the coin made Ann seat ${a.seat}, Bob seat ${b.seat}`);
   if (rejoin) {
     await until(() => (a.match?.log.length ?? 0) >= 4, 'a few moves');
     a.paused = true;
@@ -151,10 +160,20 @@ async function playQueue(): Promise<void> {
   ).room;
   if (room !== other) throw new Error('the two players were sent to different rooms');
   console.log(`  matched into ${room}`);
-  const ca = await connect(`/pvp/room/${room}`, 'Cat', a.id);
+  const ca = await connect(`/pvp/room/${room}`, 'Cat', a.id, true);
   send(ca, { type: 'join', playerId: ca.id, entry: entryOf('vesper', 'Cat', 1) });
-  const cb = await connect(`/pvp/room/${room}`, 'Dan', b.id);
+  const cb = await connect(`/pvp/room/${room}`, 'Dan', b.id, false);
   send(cb, { type: 'join', playerId: cb.id, entry: entryOf('rivet', 'Dan', 2) });
+  await until(() => ca.match !== null && cb.match !== null, 'both starts');
+  // they asked for different things, so they get them: no coin, Cat first, Dan second with 10 more HP
+  if (ca.seat !== 'a' || cb.seat !== 'b' || ca.toss?.random !== false)
+    throw new Error(`wrong order: Cat ${ca.seat}, Dan ${cb.seat}, coin ${JSON.stringify(ca.toss)}`);
+  const hp = (bot: Bot): number =>
+    (bot.match!.state.sides.b.units.find((u) => u.kind === 'hero') as { maxHp: number }).maxHp;
+  const base = RIFTWALKERS.rivet.hero.maxHp;
+  if (hp(cb) !== base + 10)
+    throw new Error(`the second player has ${hp(cb)} HP, expected ${base + 10}`);
+  console.log(`  order: Cat first, Dan second with ${hp(cb)} HP (no coin)`);
   await until(() => ca.ended !== null && cb.ended !== null, 'the end');
   if (ca.desync || cb.desync) throw new Error(`desync: ${ca.desync ?? cb.desync}`);
   console.log(`  ok: ${ca.match?.log.length} moves`);

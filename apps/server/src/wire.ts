@@ -40,6 +40,8 @@ export function parse(message: string | ArrayBuffer): ClientMsg | null {
         typeof (m['action'] as Record<string, unknown>)['type'] === 'string'
         ? (m as unknown as ClientMsg)
         : null;
+    case 'order':
+      return typeof m['first'] === 'boolean' ? { type: 'order', first: m['first'] } : null;
     case 'resign':
       return { type: 'resign' };
     default:

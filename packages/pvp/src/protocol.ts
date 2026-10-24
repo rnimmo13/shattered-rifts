@@ -30,6 +30,8 @@ export type ClientMsg =
   /** to a room: take a seat (a code from a friend, or the room the queue made) */
   | { type: 'join'; playerId: string; entry: Entry }
   | { type: 'action'; seq: number; action: Action }
+  /** your answer to "who goes first?": true = I will go first, false = I will go second (and have more HP) */
+  | { type: 'order'; first: boolean }
   | { type: 'resign' };
 
 export type EndReason = 'win' | 'resign' | 'timeout' | 'disconnect';
@@ -40,6 +42,18 @@ export type ServerMsg =
   | { type: 'matched'; room: string }
   /** in a room, waiting for the second player (a friend code is this room's name) */
   | { type: 'waiting'; room: string }
+  /** both players are in: each is asked who should go first (see order.ts) */
+  | {
+      type: 'choose';
+      /** you, and who you are playing */
+      me: Entry;
+      foe: Entry;
+      /** epoch ms by which to answer (no answer means the coin decides) */
+      deadline: number;
+      now: number;
+      /** true when you have already answered (you came back to the screen) */
+      chosen: boolean;
+    }
   | {
       type: 'start';
       seat: Seat;
@@ -52,6 +66,8 @@ export type ServerMsg =
       replay: number;
       /** the server's clock (epoch ms) when this was sent, so a browser can show a correct countdown */
       now: number;
+      /** how the order was settled: `random` means both wanted the same and the coin chose (seat a is the winner) */
+      toss: { random: boolean };
     }
   | {
       type: 'action';
@@ -76,6 +92,10 @@ export type ErrorCode =
   | 'out-of-order'
   | 'no-match';
 
+/** The player who goes second starts with this much more HP (and max HP). */
+export const SECOND_PLAYER_HP = 10;
+/** How long each player has to say whether they want to go first, ms. */
+export const CHOOSE_MS = 20_000;
 /** How long the active player has for a turn, ms. */
 export const TURN_MS = 75_000;
 /** How long a disconnected player has to come back before forfeiting, ms. */

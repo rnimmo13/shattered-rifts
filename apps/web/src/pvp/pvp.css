@@ -143,3 +143,158 @@
   border: 1px solid var(--c-gold-dark);
   text-align: center;
 }
+
+/* ---- who goes first: the question and the coin ---- */
+.portrait {
+  border-radius: 50%;
+  background: radial-gradient(circle at 40% 30%, #3a4170, #10142a 75%);
+  border: 3px solid var(--c-gold);
+  box-shadow: 0 0 18px rgb(246 220 148 / 0.35);
+  display: block;
+}
+.pvp__choose {
+  max-width: 40rem;
+}
+.pvp__versus {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.4rem;
+}
+.pvp__versus figure {
+  margin: 0;
+  display: grid;
+  justify-items: center;
+  gap: 0.35rem;
+}
+.pvp__versus figcaption {
+  display: grid;
+  line-height: 1.15;
+}
+.pvp__versus figcaption small {
+  color: var(--c-text-dim);
+}
+.pvp__vs {
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  color: var(--c-gold-pale);
+}
+.pvp__count,
+.pvp__waiting {
+  color: var(--c-text-dim);
+}
+
+.coinscreen {
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  gap: 1.1rem;
+  text-align: center;
+  background: radial-gradient(ellipse at 50% 45%, var(--c-navy), var(--c-void) 72%);
+  color: var(--c-ivory);
+}
+.coinscreen h2 {
+  margin: 0 0 2.6rem;
+  font-size: 1.5rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--c-gold-pale);
+}
+.coinstage {
+  perspective: 900px;
+  width: 210px;
+  height: 210px;
+  display: grid;
+  place-items: center;
+}
+.coin {
+  position: relative;
+  width: 190px;
+  height: 190px;
+  transform-style: preserve-3d;
+  animation:
+    coin-spin 2.6s cubic-bezier(0.2, 0.7, 0.25, 1) forwards,
+    coin-toss 2.6s ease-in-out forwards;
+}
+.coin.is-landed {
+  animation: none;
+  transform: rotateY(var(--end, 0deg));
+}
+.coin--still {
+  animation: none;
+  transform: none;
+}
+.coin__face {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  backface-visibility: hidden;
+  background: radial-gradient(circle at 35% 30%, #ffe9a8, #c89a3c 60%, #7a5a1c);
+  box-shadow:
+    inset 0 0 0 6px #e8c668,
+    inset 0 0 0 9px #8a6a24,
+    0 8px 30px rgb(0 0 0 / 0.55);
+}
+.coin__face .portrait {
+  border: 0;
+  box-shadow: none;
+  width: 150px !important;
+  height: 150px !important;
+}
+.coin__face--back {
+  transform: rotateY(180deg);
+}
+@keyframes coin-spin {
+  from {
+    transform: rotateY(0deg);
+  }
+  to {
+    transform: rotateY(var(--end));
+  }
+}
+@keyframes coin-toss {
+  0% {
+    translate: 0 40px;
+    scale: 0.8;
+  }
+  45% {
+    translate: 0 -55px;
+    scale: 1.12;
+  }
+  100% {
+    translate: 0 0;
+    scale: 1;
+  }
+}
+.coinname,
+.coinsub {
+  margin: 0;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+.coinname {
+  display: grid;
+  gap: 0.1rem;
+  font-size: 1.7rem;
+}
+.coinname b {
+  font-family: var(--font-display);
+}
+.coinname small {
+  font-size: 1rem;
+  color: var(--c-text-dim);
+}
+.coinname.is-shown,
+.coinsub.is-shown {
+  opacity: 1;
+}
+@media (prefers-reduced-motion: reduce) {
+  .coin {
+    animation: none;
+  }
+}

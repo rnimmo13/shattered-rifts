@@ -5,7 +5,7 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
-- **Duel a player (PvP, first test version):** bank a deck at the end of a run, then take it into a match from the title screen: Find a match (queue), or make a room and send the code to a friend. Turns alternate, each has a 75-second clock. Needs the PvP server (see docs/11_PVP.md).
+- **Duel a player (PvP, first test version):** bank a deck at the end of a run, then take it into a match from the title screen: Find a match (queue), or make a room and send the code to a friend. Turns alternate, each has a 75-second clock. Before a match both players choose to go first or go second with 10 more HP; if they choose the same, a coin flip decides. Needs the PvP server (see docs/11_PVP.md).
 - **0.22.1:** more card art (396 cards), the grimoire size fix, Kesh's paw icon and Rivet's new look.
 - **More card art:** 396 cards now have illustrated art (every Legendary, every Rare among the first batches, and many Uncommons). The rest keep their painted placeholders until their art arrives.
 - **Rivet's new look:** a rustier, gas-masked engineer with a bigger wrench (the drone is still drawn as his companion).

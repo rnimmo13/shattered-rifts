@@ -27,6 +27,7 @@ import {
   starterDecks,
   type VaultDeck,
 } from './vault';
+import { ChoosePanel, CoinFlip } from './PvpParts';
 import './pvp.css';
 
 const ARENAS: VenueId[] = [
@@ -47,7 +48,14 @@ function arenaFor(seed: string): VenueId {
   return ARENAS[h % ARENAS.length] as VenueId;
 }
 
-const EMPTY: Snapshot = { phase: 'idle', room: null, waiting: 0, message: null, match: null };
+const EMPTY: Snapshot = {
+  phase: 'idle',
+  room: null,
+  waiting: 0,
+  message: null,
+  choose: null,
+  match: null,
+};
 
 export default function PvpScreen() {
   const [vault, setVault] = useState<VaultDeck[]>(loadVault);
@@ -60,6 +68,8 @@ export default function PvpScreen() {
   const [server, setServer] = useState(getServerSetting);
   const [confirmResign, setConfirmResign] = useState(false);
   const [copied, setCopied] = useState(false);
+  /** the match whose coin has been shown (the match opens behind it, then stands ready) */
+  const [tossShown, setTossShown] = useState<string | null>(null);
   const session = useRef<PvpSession | null>(null);
 
   // reloading the page in the middle of a match puts you back in it
@@ -103,6 +113,20 @@ export default function PvpScreen() {
   if (snap.phase === 'match' && match) {
     const link = session.current?.link();
     const over = match.end !== null;
+    // the coin (or the agreed order) comes first; the match waits behind it with its moves held
+    if (match.toss && tossShown !== match.setup.seed) {
+      const meSeat = match.seat;
+      const foeSeat = meSeat === 'a' ? 'b' : 'a';
+      return (
+        <CoinFlip
+          me={{ name: match.names[meSeat], hero: match.heroes[meSeat] }}
+          foe={{ name: match.names[foeSeat], hero: match.heroes[foeSeat] }}
+          first={meSeat === 'a' ? 'me' : 'foe'}
+          random={match.toss.random}
+          onDone={() => setTossShown(match.setup.seed)}
+        />
+      );
+    }
     if (link)
       return (
         <>
@@ -208,7 +232,13 @@ export default function PvpScreen() {
         </p>
       )}
 
-      {busy ? (
+      {snap.phase === 'choose' && snap.choose ? (
+        <ChoosePanel
+          info={snap.choose}
+          onChoose={(first) => session.current?.chooseOrder(first)}
+          onCancel={back}
+        />
+      ) : busy ? (
         <section className="pvp__status" aria-live="polite">
           {snap.phase === 'queue' && (
             <>
@@ -243,9 +273,11 @@ export default function PvpScreen() {
             </>
           )}
           {snap.phase === 'match' && <h2>Connecting to the match…</h2>}
-          <button className="btn" onClick={back}>
-            <span>Cancel</span>
-          </button>
+          {snap.phase !== 'choose' && (
+            <button className="btn" onClick={back}>
+              <span>Cancel</span>
+            </button>
+          )}
         </section>
       ) : (
         <>

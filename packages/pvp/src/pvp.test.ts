@@ -3,12 +3,16 @@ import { chooseAction, hashState } from '@sr/combat';
 import { COMBAT_DB, RIFTWALKERS, type HeroId } from '@sr/content/v2';
 import {
   checkEntry,
+  decideOrder,
   enqueue,
   leave,
   Match,
   MAX_MISSED_TURNS,
   pairUp,
   QUEUE_WIDEN_MS,
+  SECOND_PLAYER_HP,
+  seatsFor,
+  setupFor,
   TURN_MS,
   type Entry,
   type Waiting,
@@ -192,5 +196,36 @@ describe('a match', () => {
       playOut(m);
       expect(m.over, `${h} v ${o}`).not.toBeNull();
     }
+  });
+});
+
+describe('who goes first', () => {
+  it('gives each player what they asked for when they asked for different things', () => {
+    expect(decideOrder({ a: true, b: false }, 'b')).toEqual({ first: 'a', random: false });
+    expect(decideOrder({ a: false, b: true }, 'a')).toEqual({ first: 'b', random: false });
+  });
+
+  it('lets the coin decide when both want the same, or someone did not answer', () => {
+    expect(decideOrder({ a: true, b: true }, 'b')).toEqual({ first: 'b', random: true });
+    expect(decideOrder({ a: false, b: false }, 'a')).toEqual({ first: 'a', random: true });
+    expect(decideOrder({ a: true }, 'b')).toEqual({ first: 'b', random: true });
+    expect(decideOrder({}, 'a')).toEqual({ first: 'a', random: true });
+  });
+
+  it('seats the one who goes first in seat a', () => {
+    expect(seatsFor('a')).toEqual({ a: 'a', b: 'b' });
+    expect(seatsFor('b')).toEqual({ a: 'b', b: 'a' });
+  });
+
+  it('gives the second seat more HP, and only the second seat', () => {
+    const a = entryOf('maren');
+    const b = entryOf('kesh');
+    const setup = setupFor('hp', a, b);
+    const m = new Match('hp', a, b, 0);
+    const hero = (side: 'a' | 'b') => m.state.sides[side].units.find((u) => u.kind === 'hero');
+    expect(hero('a')?.maxHp).toBe(COMBAT_DB.heroes.maren?.maxHp);
+    expect(hero('b')?.maxHp).toBe((COMBAT_DB.heroes.kesh?.maxHp ?? 0) + SECOND_PLAYER_HP);
+    expect(hero('b')?.hp).toBe(hero('b')?.maxHp);
+    expect(setup.b).toMatchObject({ hero: 'kesh' });
   });
 });

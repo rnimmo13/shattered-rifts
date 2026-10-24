@@ -9,7 +9,8 @@ First playable version (friends test). Two players, each with a banked deck, pla
    give up). Or skip the run: every Riftwalker's starting deck is always offered, so a match can be tried at once.
 2. Title screen → **Duel a player** (`#/pvp`). Pick a name and a deck.
 3. **Find a match** (the queue), **Make a room for a friend** (shows a 5-letter code to send), or **Join a room** (type a code).
-4. Play. Turns alternate; each turn has **75 s**. Two missed turns in a row forfeit. **Resign** is in the top bar.
+4. **Who goes first?** Both players are asked: *I will go first* or *I will go second (+10 HP)*. Different answers: everyone gets what they asked for. The same answer (or no answer in 20 s): the server flips a coin, and both players watch it spin and land on the portrait and name of whoever goes first.
+5. Play. Turns alternate; each turn has **75 s**. Two missed turns in a row forfeit. **Resign** is in the top bar.
    Closing the tab is not a forfeit for 60 s: reload the page and join the same room to come back.
 
 ## How it is built
@@ -26,7 +27,9 @@ browser (apps/web/src/pvp)  ──WebSocket──►  Cloudflare Worker (apps/se
   "my move". The room checks it (their turn? legal? the right move number?) by running the engine too, then tells BOTH
   browsers the accepted move and a hash of the state after it. The engine is deterministic, so the two screens stay in step;
   a hash that differs shows an out-of-step warning.
-- **Seats.** The two players' seats (who moves first) are drawn by lot when the second player joins. You always stand on the
+- **Seats.** Who moves first is settled by the question above (`packages/pvp/src/order.ts`); seat a moves first, and seat b
+  moves second with `SECOND_PLAYER_HP` (10) more HP and max HP, applied in `setupFor` so both browsers and the server agree. The
+  engine's own second-player head start (+1 Mana, +1 card on their first turn) is kept. You always stand on the
   left; the opponent (mirrored, facing you) on the right. The arena is picked from the seed, so both see the same one.
 - **Reconnecting.** The room saves its decks, seed and move list; a player who joins again is sent the moves so far (replayed
   silently) and carries on.

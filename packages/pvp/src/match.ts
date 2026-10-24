@@ -13,7 +13,14 @@ import {
   type CombatState,
 } from '@sr/combat';
 import { COMBAT_DB } from '@sr/content/v2';
-import { MAX_MISSED_TURNS, TURN_MS, type EndReason, type Entry, type Seat } from './protocol';
+import {
+  MAX_MISSED_TURNS,
+  SECOND_PLAYER_HP,
+  TURN_MS,
+  type EndReason,
+  type Entry,
+  type Seat,
+} from './protocol';
 
 export interface Outcome {
   winner: Seat | 'draw';
@@ -40,9 +47,18 @@ export type Refused = {
 
 export const other = (s: Seat): Seat => (s === 'a' ? 'b' : 'a');
 
-/** The engine's setup for two entries: seat a is side a, seat b is side b. */
+/**
+ * The engine's setup for two entries: seat a is side a (moves first), seat b is side b (moves second, and starts with
+ * SECOND_PLAYER_HP more HP and max HP).
+ */
 export function setupFor(seed: string, a: Entry, b: Entry): CombatSetup {
-  return { seed, a: { hero: a.hero, deck: [...a.deck] }, b: { hero: b.hero, deck: [...b.deck] } };
+  const base = COMBAT_DB.heroes[b.hero]?.maxHp ?? 0;
+  const second = base > 0 ? { hp: base + SECOND_PLAYER_HP, maxHp: base + SECOND_PLAYER_HP } : {};
+  return {
+    seed,
+    a: { hero: a.hero, deck: [...a.deck] },
+    b: { hero: b.hero, deck: [...b.deck], ...second },
+  };
 }
 
 export class Match {

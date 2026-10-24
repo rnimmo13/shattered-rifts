@@ -5,18 +5,32 @@ import type { Action, CombatSetup, Side } from '@sr/combat';
 import { setupFor, type ClientMsg, type Entry, type ServerMsg } from '@sr/pvp';
 import { MoveFeed, type PvpLink } from './link';
 
-export type Phase = 'idle' | 'queue' | 'waiting' | 'match' | 'error';
+export type Phase = 'idle' | 'queue' | 'waiting' | 'choose' | 'match' | 'error';
+
+/** The question "who goes first?" while it is open. */
+export interface ChooseInfo {
+  me: Entry;
+  foe: Entry;
+  deadline: number;
+  skew: number;
+  /** you have answered and are waiting for the other player */
+  chosen: boolean;
+}
 
 export interface MatchInfo {
   room: string;
   seat: Side;
   names: Record<Side, string>;
+  /** the Riftwalker each seat plays */
+  heroes: Record<Side, string>;
   setup: CombatSetup;
   /** how many moves arrived as history when this player (re)joined */
   replay: number;
   deadline: number | null;
   skew: number;
   end: { winner: Side | 'draw'; reason: string } | null;
+  /** how the order was settled, for a match that has just begun (null when you come back to one in progress) */
+  toss: { random: boolean } | null;
   feed: MoveFeed;
 }
 
@@ -27,10 +41,18 @@ export interface Snapshot {
   /** players waiting in the queue, including you */
   waiting: number;
   message: string | null;
+  choose: ChooseInfo | null;
   match: MatchInfo | null;
 }
 
-const IDLE: Snapshot = { phase: 'idle', room: null, waiting: 0, message: null, match: null };
+const IDLE: Snapshot = {
+  phase: 'idle',
+  room: null,
+  waiting: 0,
+  message: null,
+  choose: null,
+  match: null,
+};
 
 /** Room codes people can read out loud: no 0/O or 1/I. */
 const LETTERS = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
@@ -226,6 +248,12 @@ export class PvpSession {
     );
   }
 
+  /** Answer "who goes first?" */
+  chooseOrder(first: boolean): void {
+    if (this.send({ type: 'order', first }) && this.snap.choose)
+      this.set({ choose: { ...this.snap.choose, chosen: true } });
+  }
+
   /** The move sender the fight screen uses. */
   sendMove = (seq: number, action: Action): boolean => this.send({ type: 'action', seq, action });
 
@@ -270,7 +298,19 @@ export class PvpSession {
         if (this.entry) this.joinRoom(m.room, this.entry, true);
         return;
       case 'waiting':
-        this.set({ phase: 'waiting', room: m.room });
+        this.set({ phase: 'waiting', room: m.room, choose: null });
+        return;
+      case 'choose':
+        this.set({
+          phase: 'choose',
+          choose: {
+            me: m.me,
+            foe: m.foe,
+            deadline: m.deadline,
+            skew: m.now - Date.now(),
+            chosen: m.chosen,
+          },
+        });
         return;
       case 'start': {
         const skew = m.now - Date.now();
@@ -288,13 +328,16 @@ export class PvpSession {
             room: this.room ?? '',
             seat: m.seat,
             names: { a: m.a.name, b: m.b.name },
+            heroes: { a: m.a.hero, b: m.b.hero },
             setup: setupFor(m.seed, m.a, m.b),
             replay: m.replay,
             deadline: m.deadline,
             skew,
             end: null,
+            toss: m.replay === 0 ? m.toss : null,
             feed,
           },
+          choose: null,
         });
         return;
       }
