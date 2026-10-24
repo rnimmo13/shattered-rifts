@@ -5,6 +5,7 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **0.23.1:** PvP is now called the Arena.
 - **0.23.0:** PvP (the Arena), the Vault for banked decks, no-overlap fighters, Devotion, copyable error screens and 396 illustrated cards.
 - **The Arena (PvP, first test version):** bank a deck at the end of a run, then take it into a match from the title screen: Find a match (queue), or make a room and send the code to a friend. Turns alternate, each has a 75-second clock. Before a match both players choose to go first or go second with 10 more HP; if they choose the same, a coin flip decides. Needs the PvP server (see docs/11_PVP.md).
 - **0.22.1:** more card art (396 cards), the grimoire size fix, Kesh's paw icon and Rivet's new look.
