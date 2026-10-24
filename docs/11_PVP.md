@@ -73,6 +73,23 @@ browser's list with that Vault's decks so the same decks appear on another devic
 - This is a Durable Object per Vault rather than the D1 database `shattered-rifts-db`: it needs no setup or migration by hand and
   cannot break a deploy. Moving to D1 (to list or search decks across players) is possible later if accounts arrive.
 
+## Signing in (Google)
+
+An account owns a Vault too, so decks follow the player without a Vault code. `apps/server/src/auth.ts`:
+
+- `GET /auth/google/start` → Google (scope `openid` only: no email, no name) → `GET /auth/google/callback`. A state cookie (`sr_oauth`, 10 min) ties
+  the answer to the browser that asked. The server exchanges the code for an id token and reads only the permanent user id (`sub`).
+- The account id is `SHA-256("google:" + sub)`; nothing else about the person is stored. The Vault object is named by a further hash of it.
+- The session is a signed cookie (`sr_session`: HttpOnly, Secure, SameSite=Lax, 30 days; HMAC-SHA256 with `SESSION_SECRET`). `GET /auth/me`
+  says who is signed in; `POST /auth/logout` clears it. The Vault routes use the account when the body has no `code`.
+- Because the session is a cookie, only the game's own address can sign in (shatteredrifts.app). The GitHub Pages copy keeps the guest Vault code.
+- On sign-in the browser's decks are uploaded to the account (the same sync as for a code). Guest decks that are only under a Vault code
+  are not pulled in automatically: load the code first, then sign in.
+- **Secrets** (Cloudflare → the Worker → Settings → Variables and Secrets; never in the repo): `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`,
+  `SESSION_SECRET` (a long random string). Without all three, `/auth/me` says `available: false` and no sign-in button is shown.
+  Google Cloud: an OAuth client (Web application) with the redirect URI `https://shatteredrifts.app/auth/google/callback`.
+- Locally: `wrangler dev --var SESSION_SECRET:x --var GOOGLE_CLIENT_ID:x --var GOOGLE_CLIENT_SECRET:x`. Discord is not built yet.
+
 ## Putting it online (Cloudflare)
 
 `wrangler.jsonc` at the repo root declares the Worker (`apps/server/src/worker.ts`), the three Durable Object classes (queue, match room, Vault) and

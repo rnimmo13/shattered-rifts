@@ -29,7 +29,8 @@ import {
 } from './vault';
 import { ChoosePanel, CoinFlip } from './PvpParts';
 import { VaultCode, type Online } from './VaultCode';
-import { getVaultCode, remoteVault, syncVault, ensureVaultCode } from './vaultSync';
+import { AccountBox } from './AccountBox';
+import { remoteVault, syncVault, vaultKey, whoAmI, type Me } from './vaultSync';
 import './pvp.css';
 
 const ARENAS: VenueId[] = [
@@ -62,6 +63,9 @@ const EMPTY: Snapshot = {
 export default function PvpScreen() {
   const [vault, setVault] = useState<VaultDeck[]>(loadVault);
   const [online, setOnline] = useState<Online>('checking');
+  const [me, setMe] = useState<Me>({ signedIn: false, available: false });
+  /** who is signed in has been found out (until then no Vault code is shown or made) */
+  const [known, setKnown] = useState(false);
   /** the player changed the Vault by hand, so a sync still on its way must not overwrite it */
   const touched = useRef(false);
   const starters = useMemo(starterDecks, []);
@@ -87,20 +91,30 @@ export default function PvpScreen() {
   }, []);
 
   // the decks saved on the server and the ones in this browser are brought together
+  const alive = useRef(true);
+  const runSync = useRef((_local: VaultDeck[]): void => undefined);
   useEffect(() => {
-    let live = true;
-    const key = ensureVaultCode();
-    void syncVault(key, loadVault()).then((r) => {
-      // the answer is stale if the page was left, the code was changed, or a deck was removed while it was on its way
-      if (!live || getVaultCode() !== key || touched.current) return;
-      setOnline(r.ok ? (r.complete ? 'saved' : 'partial') : 'offline');
-      if (r.ok) {
-        setVault(r.decks);
-        saveVault(r.decks);
-      }
-    });
+    alive.current = true;
+    runSync.current = (local) => {
+      void (async () => {
+        const who = await whoAmI();
+        if (!alive.current) return;
+        setMe(who);
+        setKnown(true);
+        const key = vaultKey();
+        const r = await syncVault(key, local);
+        // the answer is stale if the page was left, the Vault was changed, or a deck was removed while it was on its way
+        if (!alive.current || vaultKey() !== key || touched.current) return;
+        setOnline(r.ok ? (r.complete ? 'saved' : 'partial') : 'offline');
+        if (r.ok) {
+          setVault(r.decks);
+          saveVault(r.decks);
+        }
+      })();
+    };
+    runSync.current(loadVault());
     return () => {
-      live = false;
+      alive.current = false;
     };
   }, []);
 
@@ -225,8 +239,7 @@ export default function PvpScreen() {
                 setVault(next);
                 saveVault(next);
                 touched.current = true;
-                const key = getVaultCode();
-                if (key) void remoteVault.drop(key, d.id);
+                void whoAmI().then(() => remoteVault.drop(vaultKey(), d.id));
                 if (deckId === d.id) setDeckId(next[0]?.id ?? starters[0]?.id ?? '');
               }}
             >
@@ -351,17 +364,31 @@ export default function PvpScreen() {
               </button>
             </span>
           </div>
-          <VaultCode
-            online={online}
-            local={vault}
-            onRestore={(decks, complete) => {
-              touched.current = true;
-              setVault(decks);
-              saveVault(decks);
-              setOnline(complete ? 'saved' : 'partial');
-              setDeckId(decks[0]?.id ?? starters[0]?.id ?? '');
+          <AccountBox
+            me={me}
+            onSignedOut={() => {
+              // the account's decks must not stay here to be uploaded to a guest Vault
+              setMe({ signedIn: false, available: true });
+              setOnline('checking');
+              setVault([]);
+              saveVault([]);
+              touched.current = false;
+              runSync.current([]);
             }}
           />
+          {known && !me.signedIn && (
+            <VaultCode
+              online={online}
+              local={vault}
+              onRestore={(decks, complete) => {
+                touched.current = true;
+                setVault(decks);
+                saveVault(decks);
+                setOnline(complete ? 'saved' : 'partial');
+                setDeckId(decks[0]?.id ?? starters[0]?.id ?? '');
+              }}
+            />
+          )}
           <details className="pvp__server">
             <summary>Server</summary>
             <p>

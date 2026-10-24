@@ -12,7 +12,7 @@ import {
   saveVault,
   type VaultDeck,
 } from '../pvp/vault';
-import { ensureVaultCode, getVaultCode, remoteVault, syncVault } from '../pvp/vaultSync';
+import { remoteVault, syncVault, vaultKey, whoAmI } from '../pvp/vaultSync';
 
 export function BankedPanel(props: { run: RunState; onExport: () => void; onLeave: () => void }) {
   const { run } = props;
@@ -34,9 +34,11 @@ export function BankedPanel(props: { run: RunState; onExport: () => void; onLeav
   // a second copy goes to the server (the Vault code on the Arena screen is the key to it)
   useEffect(() => {
     let live = true;
-    void syncVault(ensureVaultCode(), state.list).then((r) => {
-      if (live) setOnline(r.ok ? (r.complete ? 'saved' : 'partial') : 'offline');
-    });
+    void whoAmI()
+      .then(() => syncVault(vaultKey(), state.list))
+      .then((r) => {
+        if (live) setOnline(r.ok ? (r.complete ? 'saved' : 'partial') : 'offline');
+      });
     return () => {
       live = false;
     };
@@ -48,8 +50,8 @@ export function BankedPanel(props: { run: RunState; onExport: () => void; onLeav
     saveVault(r.list);
     setState({ list: r.list, saved: true });
     // the deck given up leaves the server copy too, or it would fill the slot there
-    const key = getVaultCode();
-    if (key) await remoteVault.drop(key, id);
+    await whoAmI();
+    await remoteVault.drop(vaultKey(), id);
     setTick((t) => t + 1);
   };
 

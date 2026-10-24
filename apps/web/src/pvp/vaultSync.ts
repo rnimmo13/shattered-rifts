@@ -75,6 +75,11 @@ async function call(action: string, body: Record<string, unknown>): Promise<Remo
     const decks = cleanVault(data.decks);
     if (data.ok) return { ok: true, decks };
     const e = data.error;
+    // the session ended (it expired, or was cleared elsewhere): treat this browser as a guest again
+    if (e === 'signin') {
+      signedIn = false;
+      me = null;
+    }
     return {
       ok: false,
       error: e === 'full' || e === 'bad-deck' || e === 'bad-code' ? e : 'offline',
@@ -85,12 +90,65 @@ async function call(action: string, body: Record<string, unknown>): Promise<Remo
   }
 }
 
+/** Whose Vault: a Vault code, or null for the signed-in account (the server knows them from their session cookie). */
+export type Key = string | null;
+
+const withKey = (key: Key, rest: Record<string, unknown>): Record<string, unknown> =>
+  key === null ? rest : { code: key, ...rest };
+
 export const remoteVault = {
-  list: (code: string): Promise<Remote> => call('list', { code }),
-  bank: (code: string, deck: VaultDeck, replaceId?: string): Promise<Remote> =>
-    call('bank', replaceId === undefined ? { code, deck } : { code, deck, replaceId }),
-  drop: (code: string, id: string): Promise<Remote> => call('drop', { code, id }),
+  list: (key: Key): Promise<Remote> => call('list', withKey(key, {})),
+  bank: (key: Key, deck: VaultDeck, replaceId?: string): Promise<Remote> =>
+    call('bank', withKey(key, replaceId === undefined ? { deck } : { deck, replaceId })),
+  drop: (key: Key, id: string): Promise<Remote> => call('drop', withKey(key, { id })),
 };
+
+// ---- signing in (Google, on the game's own address) ----
+
+let signedIn = false;
+let me: Promise<Me> | null = null;
+
+export interface Me {
+  signedIn: boolean;
+  /** this server has sign-in set up and this page is on its address (sign-in uses a cookie, so no other address can use it) */
+  available: boolean;
+}
+
+/** Who is using this browser. Asked once; `refreshMe` asks again (after signing out). */
+export function whoAmI(): Promise<Me> {
+  me ??= (async (): Promise<Me> => {
+    try {
+      const base = httpBase();
+      if (new URL(base).origin !== window.location.origin)
+        return { signedIn: false, available: false };
+      const r = (await (await fetch(`${base}/auth/me`)).json()) as {
+        signedIn?: boolean;
+        available?: boolean;
+      };
+      signedIn = r.signedIn === true;
+      return { signedIn, available: r.available === true };
+    } catch {
+      me = null; // not remembered, so a failed check is asked again
+      return { signedIn: false, available: false };
+    }
+  })();
+  return me;
+}
+
+export async function signOut(): Promise<void> {
+  try {
+    await fetch(`${httpBase()}/auth/logout`, { method: 'POST' });
+  } catch {
+    /* the cookie stays until it expires */
+  }
+  signedIn = false;
+  me = null;
+}
+
+export const signInUrl = (): string => `${httpBase()}/auth/google/start`;
+
+/** The key to use for the Vault now: null when signed in (call `whoAmI` first), else this browser's Vault code. */
+export const vaultKey = (): Key => (signedIn ? null : ensureVaultCode());
 
 export type Synced =
   | { ok: true; decks: VaultDeck[]; complete: boolean }
@@ -100,7 +158,7 @@ export type Synced =
  * Bring the browser's decks and the server's together: whatever the browser has that the server lacks goes up (as far as the
  * slots allow), and the result is what the server now holds. If the server can't be reached the browser's list stands.
  */
-export async function syncVault(code: string, local: readonly VaultDeck[]): Promise<Synced> {
+export async function syncVault(code: Key, local: readonly VaultDeck[]): Promise<Synced> {
   let r = await remoteVault.list(code);
   if (!r.ok) return { ok: false, error: r.error, decks: [...local] };
   for (const d of local) {

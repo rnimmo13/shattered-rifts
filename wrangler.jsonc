@@ -7,7 +7,7 @@
   "assets": {
     "directory": "apps/web/dist",
     // only the PvP routes reach the Worker; everything else is a static file
-    "run_worker_first": ["/pvp/*"],
+    "run_worker_first": ["/pvp/*", "/auth/*"],
   },
   "durable_objects": {
     "bindings": [

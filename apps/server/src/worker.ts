@@ -4,10 +4,12 @@
 //   GET /pvp/health            a quick "is the server up"
 //   GET /pvp/queue  (WebSocket)  the matchmaking queue
 //   GET /pvp/room/CODE (WebSocket)  a match room (a friend code, or the room the queue picked)
-//   POST /pvp/vault/list|bank|drop  a player's saved decks, under their Vault code (JSON body: {code, ...})
+//   POST /pvp/vault/list|bank|drop  a player's saved decks: under the signed-in account, or else the Vault code in the JSON body {code, ...}
+//   /auth/*                         sign in with Google (auth.ts)
 
 import type { Env } from './env';
 import { normaliseCode } from '@sr/pvp';
+import { authRoute, sessionOf, sha256 } from './auth';
 import { ROOM_CODE } from './wire';
 
 export { Matchmaker } from './matchmaker';
@@ -65,9 +67,18 @@ async function vault(request: Request, env: Env, action: string): Promise<Respon
   if (typeof parsed !== 'object' || parsed === null || Array.isArray(parsed))
     return json({ ok: false, error: 'bad-body' }, 400);
   const body = parsed as Record<string, unknown>;
-  const code = typeof body['code'] === 'string' ? normaliseCode(body['code']) : null;
-  if (!code) return json({ ok: false, error: 'bad-code' }, 400);
-  const stub = env.VAULT.get(env.VAULT.idFromName(await vaultName(code)));
+  // a signed-in account has its own Vault; a guest names theirs with a Vault code
+  let name: string;
+  if (body['code'] === undefined) {
+    const s = await sessionOf(request, env);
+    if (!s) return json({ ok: false, error: 'signin' }, 401);
+    name = await sha256(`shattered-rifts-account-vault:${s.account}`);
+  } else {
+    const code = typeof body['code'] === 'string' ? normaliseCode(body['code']) : null;
+    if (!code) return json({ ok: false, error: 'bad-code' }, 400);
+    name = await vaultName(code);
+  }
+  const stub = env.VAULT.get(env.VAULT.idFromName(name));
   try {
     const res = await stub.fetch(
       new Request(`https://vault.invalid/${action}`, {
@@ -91,6 +102,8 @@ export default {
     if (origin && !ORIGINS.some((re) => re.test(origin)) && !sameHost(origin, url.host))
       return json({ ok: false, error: 'origin not allowed' }, 403);
 
+    const auth = await authRoute(request, env);
+    if (auth) return auth;
     const vaultAction = /^\/pvp\/vault\/(\w+)$/.exec(url.pathname)?.[1];
     if (vaultAction !== undefined) {
       if (request.method === 'OPTIONS')

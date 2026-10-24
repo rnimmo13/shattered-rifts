@@ -315,3 +315,13 @@
 .pvp__vaultcode .btn {
   user-select: none;
 }
+
+/* the account box */
+.pvp__account {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+  align-items: center;
+  justify-content: center;
+  color: var(--c-text-dim);
+}

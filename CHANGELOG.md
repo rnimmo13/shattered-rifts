@@ -5,6 +5,8 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **0.25.0:** Sign in with Google.
+- **Sign in with Google:** on shatteredrifts.app the Arena has a Sign in with Google button; your saved decks then follow your account to any device. No name or email is kept. Guests still use the Vault code.
 - **0.24.0:** Vault online.
 - **Vault online:** banked decks are now also saved on the server under a Vault code (shown in the Arena, with Copy), so your decks appear in the Arena on any device that has the code. The browser copy still works if the server can't be reached.
 - **0.23.1:** PvP is now called the Arena.
