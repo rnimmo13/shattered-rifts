@@ -43,7 +43,7 @@ import { getHero, rememberHero } from '../app/heroChoice';
 import { BoonToast } from './BoonToast';
 import { PotionChip } from '../fight/PotionChip';
 import { BankedPanel } from './BankedPanel';
-import { MID_RUN_SAVES, MidRunSave } from './MidRunSave';
+import { MID_RUN_SAVES, canSaveForArena, saveForArena } from './MidRunSave';
 import { CharacterPicker } from './CharacterPicker';
 import { MapLegend, MapView } from './MapView';
 import {
@@ -109,6 +109,8 @@ export default function RunScreen() {
   }, []);
   const nextGained = useCallback(() => setGained((g) => g.slice(1)), []);
   const [notice, setNotice] = useState<string | null>(initial.notice);
+  /** what the Save button answered (test build), shown only while the stage-cleared screen is up */
+  const [saveNote, setSaveNote] = useState<string | null>(null);
   const [showDeck, setShowDeck] = useState(false);
   const [confirmAbandon, setConfirmAbandon] = useState(false);
 
@@ -285,11 +287,19 @@ export default function RunScreen() {
         run={run}
         onDeck={() => setShowDeck(true)}
         onExport={() => exportRun(run)}
+        onSave={() => {
+          void saveForArena(run).then(setSaveNote);
+        }}
         onAbandon={() => setConfirmAbandon(true)}
       />
       {notice && (
         <p className="run__notice" role="alert">
           {notice}
+        </p>
+      )}
+      {saveNote && run.phase === 'stageClear' && (
+        <p className="run__notice" role="status">
+          {saveNote}
         </p>
       )}
       <Body run={run} act={act} onLeave={leaveRun} />
@@ -412,6 +422,7 @@ function floorLabel(run: RunState): string {
 function RunBar(props: {
   run: RunState;
   onDeck: () => void;
+  onSave: () => void;
   onExport: () => void;
   onAbandon: () => void;
 }) {
@@ -460,9 +471,24 @@ function RunBar(props: {
         <button className="btn btn--small" onClick={props.onDeck}>
           <span>Deck ({run.deck.length})</span>
         </button>
-        <button className="btn btn--small btn--ghost" onClick={props.onExport}>
-          <span>Export run</span>
-        </button>
+        {MID_RUN_SAVES ? (
+          <button
+            className="btn btn--small"
+            disabled={!canSaveForArena(run)}
+            title={
+              canSaveForArena(run)
+                ? 'Copy this deck into your Vault to play it in the Arena'
+                : 'Test build: you can save a deck for the Arena once stage 1 is cleared, before the next stage begins'
+            }
+            onClick={props.onSave}
+          >
+            <span>Save deck</span>
+          </button>
+        ) : (
+          <button className="btn btn--small btn--ghost" onClick={props.onExport}>
+            <span>Export run</span>
+          </button>
+        )}
         <button className="btn btn--small btn--ghost" onClick={props.onAbandon}>
           <span>Abandon</span>
         </button>
@@ -563,7 +589,6 @@ function Body(props: {
           <p className="stage-panel__hint">
             The Warden is beaten and the rift seals behind you. Onward to stage {run.stage + 1}.
           </p>
-          {MID_RUN_SAVES && <MidRunSave run={run} />}
           <button className="btn btn--primary" onClick={() => act((r) => nextStage(r))}>
             <span>Onward</span>
           </button>
