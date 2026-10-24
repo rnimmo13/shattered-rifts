@@ -42,7 +42,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
       text: 'Start every fight with 6 Barrier and 6 Plating: your Barrier survives each turn up to your Plating, which shrinks by 1 a turn.',
       fightStart: [barrier(6), status('plating', 6)],
     },
-    hero: { id: 'maren', name: 'Ashencourte', maxHp: 66, mana: 3, handSize: 5 },
+    hero: { id: 'maren', name: 'Valeria', maxHp: 66, mana: 3, handSize: 5 },
     starter: [...rep('strike', 4), ...rep('defend', 4), 'dawn-smite', 'oathbound'],
     blurb: 'A knight of the Gilded Order. No companions: Barrier, Thorns and punishing Snares.',
     lanes: [

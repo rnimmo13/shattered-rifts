@@ -234,7 +234,7 @@ function groundShadow(g: G, rx: number): void {
 /** `g` is the body (shaded and outlined); `fx` is an additive layer drawn over it for glows */
 type Painter = (g: G, fx: G) => void;
 
-// ---- Ashencourte (id maren): a female knight in dawn-gold plate, a blue cape, a sunburst shield and a longsword ----
+// ---- Valeria (id maren): a female knight in dawn-gold plate, a blue cape, a sunburst shield and a longsword ----
 const maren: Painter = (g, fx) => {
   // cape
   gpoly(

@@ -108,7 +108,7 @@ describe('innate traits', () => {
     );
   });
 
-  it("Ashencourte's Oathkeeper gives 6 Barrier and 6 Plating, Mire's Grave Chill curses every enemy", () => {
+  it("Valeria's Oathkeeper gives 6 Barrier and 6 Plating, Mire's Grave Chill curses every enemy", () => {
     const m = fight('maren', []);
     const hero = m.sides.a.units[m.sides.a.units.length - 1]!;
     expect(hero.barrier).toBeGreaterThanOrEqual(6);
