@@ -371,7 +371,7 @@ a {
 /* ---- the Learn page ---- */
 .learn {
   min-height: 100vh;
-  max-width: 54rem;
+  max-width: 84rem;
   margin: 0 auto;
   padding: 1.5rem 1.2rem 4rem;
   display: grid;
@@ -417,7 +417,7 @@ a {
 }
 .learn__row {
   display: grid;
-  grid-template-columns: 10rem 1fr;
+  grid-template-columns: 8.5rem 1fr;
   gap: 0.8rem;
 }
 .learn dt {
@@ -694,4 +694,40 @@ body:has(.learn) {
 }
 .learn__tab {
   white-space: nowrap;
+}
+
+/* ---- the Learn page reads in two columns, with everything open ---- */
+.learn section {
+  display: block;
+  max-width: none;
+  columns: 2 26rem;
+  column-gap: 3rem;
+}
+.learn section > * + * {
+  margin-top: 0.6rem;
+}
+.learn section > h2 {
+  column-span: all;
+}
+.learn section h3,
+.learn section h5 {
+  break-after: avoid;
+}
+.learn section p,
+.learn section li,
+.learn__row,
+.learn__steps li,
+.learn__hero {
+  break-inside: avoid;
+}
+.learn__hero {
+  margin-top: 0.5rem;
+}
+.learn__heroName {
+  font-size: 1.05rem;
+  color: var(--c-gold-light);
+  margin-bottom: 0.3rem;
+}
+.learn__realm {
+  margin-bottom: 0.6rem;
 }

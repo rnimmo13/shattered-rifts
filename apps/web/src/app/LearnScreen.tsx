@@ -173,17 +173,15 @@ export function LearnScreen() {
             cards (or against enemies that use them).
           </p>
           <Words ids={SIGNATURE_WORDS} />
-          <details className="learn__more">
-            <summary>The totems (Ilvane)</summary>
-            <dl>
-              {runes.map((r) => (
-                <div key={r.id} className="learn__row">
-                  <dt>{r.name}</dt>
-                  <dd>{r.text}</dd>
-                </div>
-              ))}
-            </dl>
-          </details>
+          <h3>The totems (Ilvane)</h3>
+          <dl>
+            {runes.map((r) => (
+              <div key={r.id} className="learn__row">
+                <dt>{r.name}</dt>
+                <dd>{r.text}</dd>
+              </div>
+            ))}
+          </dl>
         </section>
       )}
 
@@ -231,15 +229,15 @@ export function LearnScreen() {
       {tab === 'heroes' && (
         <section>
           <h2>Riftwalkers</h2>
-          <p>Open a character to see how they play and what their three card lanes are.</p>
+          <p>How each character plays, and what their three card lanes are.</p>
           {heroesByRealm().map((g) => (
             <div key={g.realm} className="learn__realm">
               <h3>{g.name}</h3>
               {g.heroes.map((h) => (
-                <details key={h} className="learn__hero learn__more">
-                  <summary>
+                <div key={h} className="learn__hero learn__more">
+                  <h4 className="learn__heroName">
                     {RIFTWALKERS[h].hero.name} <small>{RIFTWALKERS[h].role}</small>
-                  </summary>
+                  </h4>
                   <p className="learn__trait">
                     <b>{RIFTWALKERS[h].trait.name}.</b> {RIFTWALKERS[h].trait.text}
                   </p>
@@ -255,7 +253,7 @@ export function LearnScreen() {
                       <li key={l}>{l}</li>
                     ))}
                   </ul>
-                </details>
+                </div>
               ))}
             </div>
           ))}
