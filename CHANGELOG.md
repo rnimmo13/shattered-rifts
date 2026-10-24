@@ -5,6 +5,7 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **Credits page:** the title screen footer links to a Credits page thanking the artists behind the cave, rarity gems, card backs and effects.
 - **0.14.0:** cave stage, sprite effects (fire, frost, portals), and real art for rarity gems and card backs.
 - **Cave stage:** fights in Umbral Veil and Gloomfen now take place in a hand-drawn cavern (rock walls, columns, glowing mushrooms, a cobbled cave floor) instead of the Rift arena.
 - **Sprite effects:** big hits (10+) on enemies burst in flames, big Barrier gains (12+) flash with frost, and summoned allies step out of an arcane portal. Rarity gems and card-back piles now use real art.

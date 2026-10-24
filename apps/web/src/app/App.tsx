@@ -3,6 +3,7 @@ import { BuildBadge } from '../ui/BuildBadge';
 import { TooltipLayer } from '../ui/Tooltip';
 import { Bestiary } from '../fight/Bestiary';
 import { CardLibrary } from '../fight/CardLibrary';
+import { CreditsScreen } from './CreditsScreen';
 import { LearnScreen } from './LearnScreen';
 import { TitleScreen } from './TitleScreen';
 
@@ -43,6 +44,7 @@ function Screens({ hash }: { hash: string }) {
     );
   }
   if (hash === '#/learn') return <LearnScreen />;
+  if (hash === '#/credits') return <CreditsScreen />;
   if (hash === '#/cards') return <CardLibrary />;
   if (hash === '#/models') return <Bestiary />;
   if (hash === '#/fight') {

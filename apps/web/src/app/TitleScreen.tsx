@@ -120,7 +120,9 @@ export function TitleScreen() {
         Runs are in early alpha: expect rough edges. Pick Easy, Normal or Hard when you begin.
       </p>
 
-      <p className="title__footer">combat v2 preview · {BUILD.label}</p>
+      <p className="title__footer">
+        <a href="#/credits">Credits</a> · combat v2 preview · {BUILD.label}
+      </p>
     </main>
   );
 }
