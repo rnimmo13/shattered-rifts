@@ -40,7 +40,7 @@ export function BankedPanel(props: { run: RunState; onExport: () => void; onLeav
       {state.saved ? (
         <p className="stage-panel__hint">
           This {run.deck.length}-card deck is in your Vault ({state.list.length} of {VAULT_SLOTS}{' '}
-          slots used). Take it into a match from <b>Duel</b> on the title screen.
+          slots used). Take it into a match from <b>Arena</b> on the title screen.
         </p>
       ) : (
         <>

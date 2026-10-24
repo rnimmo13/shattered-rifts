@@ -7,7 +7,7 @@ First playable version (friends test). Two players, each with a banked deck, pla
 
 1. Clear a run and choose **Bank**: the deck goes into the **Vault** (this browser, 5 slots; a full Vault asks which deck to
    give up). Or skip the run: every Riftwalker's starting deck is always offered, so a match can be tried at once.
-2. Title screen → **Duel a player** (`#/pvp`). Pick a name and a deck.
+2. Title screen → **Arena** (`#/arena`, also `#/pvp`). Pick a name and a deck.
 3. **Find a match** (the queue), **Make a room for a friend** (shows a 5-letter code to send), or **Join a room** (type a code).
 4. **Who goes first?** Both players are asked: *I will go first* or *I will go second (+10 HP)*. Different answers: everyone gets what they asked for. The same answer (or no answer in 20 s): the server flips a coin, and both players watch it spin and land on the portrait and name of whoever goes first.
 5. Play. Turns alternate; each turn has **75 s**. Two missed turns in a row forfeit. **Resign** is in the top bar.
@@ -67,5 +67,5 @@ server with the site. Durable Objects with SQLite storage are available on the f
 - A page served by that Worker needs no setting: it connects to its own address.
 - The game lives at https://shatteredrifts.app, and the server is the same Worker. `PRODUCTION_SERVER` in
   `apps/web/src/pvp/config.ts` points every production build (including the GitHub Pages copy) there; a build can override it
-  with `VITE_PVP_SERVER`, and a player can type another address into the **Server** box on the Duel screen (remembered).
+  with `VITE_PVP_SERVER`, and a player can type another address into the **Server** box on the Arena screen (remembered).
 - The Worker only accepts browsers from the game's own addresses (`worker.ts`, `ORIGINS`); add a domain there if the game moves.

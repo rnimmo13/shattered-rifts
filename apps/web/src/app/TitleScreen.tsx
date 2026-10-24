@@ -109,8 +109,8 @@ export function TitleScreen() {
         <a className="btn" href="#/fight">
           Practice fight
         </a>
-        <a className="btn" href="#/pvp">
-          Duel a player
+        <a className="btn" href="#/arena">
+          Arena
         </a>
         <a className="btn" href="#/cards">
           Card library

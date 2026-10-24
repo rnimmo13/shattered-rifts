@@ -48,7 +48,8 @@ function Screens({ hash }: { hash: string }) {
   if (hash === '#/credits') return <CreditsScreen />;
   if (hash === '#/cards') return <CardLibrary />;
   if (hash === '#/models') return <Bestiary />;
-  if (hash === '#/pvp') {
+  // the PvP mode is called the Arena (#/pvp keeps working for links already shared)
+  if (hash === '#/arena' || hash === '#/pvp') {
     return (
       <Suspense fallback={<div className="loading">Opening the rift…</div>}>
         <PvpScreen />

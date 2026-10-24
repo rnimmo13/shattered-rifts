@@ -218,7 +218,7 @@ export default function PvpScreen() {
         <span>Back</span>
       </a>
       <header className="setup__head">
-        <h1 className="setup__title">Duel</h1>
+        <h1 className="setup__title">Arena</h1>
         <p className="setup__lead">
           Take a banked deck into a match against another player. Turns alternate, there are no
           enemy intents, and each turn has a time limit. Clear a run and choose <b>Bank</b> to add
