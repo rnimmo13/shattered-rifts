@@ -73,7 +73,7 @@ public static class HeroKey {
 
 # hero id -> regions of the sheet to wipe to background first (x, y, w, h)
 $wipe = @{
-  rivet = @(, @(690, 395, 258, 310))   # the hovering drone (a companion in the game already)
+  rivet = @(, @(0, 0, 345, 300))   # the hovering drone, top left (a companion in the game already)
 }
 
 foreach ($f in Get-ChildItem $srcDir -Filter *.png | Sort-Object Name) {
