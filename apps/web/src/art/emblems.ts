@@ -59,6 +59,16 @@ export const EMBLEMS: Record<string, Emblem> = {
   },
   // Rivet: a gear with a bolt
   cog: { f: [gear(32, 32, 28, 8, 0) + circle(32, 32, 10), ngon(32, 32, 5, 6)] },
+  // Kesh the hunter: a bold paw print (the Hound and the pack); thin strokes were lost at icon size
+  paw: {
+    f: [
+      'M32 28C21 28 11 38 14 48C16 55 25 54 32 51C39 54 48 55 50 48C53 38 43 28 32 28Z',
+      circle(12, 28, 6.5),
+      circle(24, 14, 7),
+      circle(40, 14, 7),
+      circle(52, 28, 6.5),
+    ],
+  },
   // Kesh the hunter: a bow, drawn, with an arrow
   bow: {
     f: ['M44 6L60 4L56 20L52 14L36 30L33 27L49 11Z', 'M10 50L14 54L6 58Z'],
@@ -267,7 +277,7 @@ export function paintEmblem(
 export const HERO_EMBLEM: Record<string, string> = {
   maren: 'sunshield',
   rivet: 'cog',
-  kesh: 'bow',
+  kesh: 'paw',
   vesper: 'mask',
   quill: 'daggers',
   ilvane: 'totem',
