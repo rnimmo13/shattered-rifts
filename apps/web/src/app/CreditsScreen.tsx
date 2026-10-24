@@ -10,6 +10,12 @@ interface Credit {
 /** Third-party art used in the game. Keep in step with CREDITS.md. */
 const CREDITS: Credit[] = [
   {
+    work: 'Moss, hanging plants, slimes and the little wizard (cave and swamp stages, Spitter, Maw Spawn, Hooded Acolyte)',
+    author: 'Maaot',
+    url: 'https://maaot.itch.io/mossy-cavern',
+    note: 'Mossy Cavern.',
+  },
+  {
     work: 'Monster illustrations (the Whisperer, Vorthax, Nyxara, Gorrmaw and other enemies)',
     author: 'Tania Herrero',
     url: 'https://tania-herrero.itch.io/',

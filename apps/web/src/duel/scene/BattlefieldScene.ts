@@ -14,6 +14,8 @@ import { floorTop, rows } from './layout';
 import { Fighters } from '../../fight/Fighters';
 import {
   caveColumns,
+  foliageFor,
+  type Foliage,
   sceneWall,
   caveFloor,
   caveProps,
@@ -108,6 +110,7 @@ export class BattlefieldScene {
   private readonly moteLayer = new Container();
   private readonly glowTex: Texture;
   private vignette!: Sprite;
+  private foliage: Foliage | null = null;
   /** where the backdrop's top edge sits (the cave wall starts above the stage) */
   private skyY = 0;
 
@@ -237,6 +240,8 @@ export class BattlefieldScene {
     this.world.addChild(this.branchCracks, this.riftCrack);
 
     if (cave) this.world.addChild(caveProps(cave, this.glowTex));
+    this.foliage = art ? foliageFor(art) : null;
+    if (this.foliage) this.world.addChild(this.foliage.container);
 
     // --- the combatants ---
     this.world.addChild(this.layers.units, this.layers.fx);
@@ -410,6 +415,7 @@ export class BattlefieldScene {
     }
 
     this.fighters.tick(t, p.still);
+    this.foliage?.update(t, p.still);
 
     // pointer parallax: the far layers shift a little more than the near ones
     if (p.parallax > 0) {

@@ -59,9 +59,15 @@ const CAVE_FILES = [
 ] as const;
 type CaveFile = (typeof CAVE_FILES)[number];
 
+const MOSS_FILES = ['hang1', 'hang2', 'hangMoss', 'leaf', 'plantA', 'plantB', 'flower'] as const;
+type MossFile = (typeof MOSS_FILES)[number];
+/** Hanging fronds and floor plants (Mossy Cavern by Maaot), shared by the cave and the swamp. */
+export type MossArt = Record<MossFile, HTMLImageElement>;
+
 export interface CaveArt {
   id: 'cave';
   img: Record<CaveFile, HTMLImageElement>;
+  moss: MossArt | null;
 }
 
 export interface SceneArt {
@@ -72,6 +78,7 @@ export interface SceneArt {
   dark: string;
   glow: string;
   floorTint: number;
+  moss: MossArt | null;
 }
 
 export type VenueArt = CaveArt | SceneArt;
@@ -86,15 +93,27 @@ function loadImage(url: string): Promise<HTMLImageElement | null> {
 }
 
 /** Load a venue's images; null (so the Rift arena is used) if the venue is 'rift' or any file is missing. */
+async function loadMoss(): Promise<MossArt | null> {
+  const base = `${import.meta.env.BASE_URL}art/venues/moss/`;
+  const loaded = await Promise.all(MOSS_FILES.map((f) => loadImage(`${base}${f}.png`)));
+  if (loaded.some((i) => i === null)) return null;
+  const img = {} as MossArt;
+  MOSS_FILES.forEach((f, i) => (img[f] = loaded[i] as HTMLImageElement));
+  return img;
+}
+
 export async function loadVenueArt(id: VenueId): Promise<VenueArt | null> {
   if (id === 'rift') return null;
-  if (id !== 'cave') return { id: 'scene', ...SCENE_VENUES[id] };
+  if (id !== 'cave') {
+    const look = SCENE_VENUES[id];
+    return { id: 'scene', ...look, moss: look.scene === 'mire' ? await loadMoss() : null };
+  }
   const base = `${import.meta.env.BASE_URL}art/venues/cave/`;
   const loaded = await Promise.all(CAVE_FILES.map((f) => loadImage(`${base}${f}.png`)));
   if (loaded.some((i) => i === null)) return null;
   const img = {} as Record<CaveFile, HTMLImageElement>;
   CAVE_FILES.forEach((f, i) => (img[f] = loaded[i] as HTMLImageElement));
-  return { id: 'cave', img };
+  return { id: 'cave', img, moss: await loadMoss() };
 }
 
 /** The back wall: the rock tile across the whole backdrop, graded dark violet toward the ceiling. */
@@ -267,4 +286,57 @@ export function sceneWall(art: SceneArt): HTMLCanvasElement {
   g.fillStyle = haze;
   g.fillRect(0, H * 0.6, W, H * 0.4);
   return c;
+}
+
+/** Hanging fronds and floor plants that sway a little; they stand between the floor and the fighters. */
+export class Foliage {
+  readonly container = new Container();
+  private readonly items: { sp: Sprite; base: number; amp: number; rate: number; phase: number }[] = [];
+
+  constructor(moss: MossArt, tone: number) {
+    const hang: [MossFile, number, number, number][] = [
+      ['hang1', 140, 0.5, 1],
+      ['hangMoss', 470, 0.45, -1],
+      ['hang2', 800, 0.5, 1],
+      ['hang1', 1130, 0.42, -1],
+      ['hangMoss', 1460, 0.5, 1],
+      ['hang2', 1780, 0.46, -1],
+    ];
+    hang.forEach(([name, x, s, flip], i) => {
+      const sp = new Sprite(Texture.from(moss[name]));
+      sp.anchor.set(0.5, 0);
+      sp.scale.set(s * flip, s);
+      sp.tint = tone;
+      sp.position.set(x, 110);
+      this.container.addChild(sp);
+      this.items.push({ sp, base: 0, amp: 0.035, rate: 0.55 + (i % 3) * 0.12, phase: i * 1.7 });
+    });
+    const floor: [MossFile, number, number, number][] = [
+      ['plantA', 330, 438, 0.55],
+      ['flower', 700, 428, 0.5],
+      ['plantB', 1010, 440, 0.5],
+      ['plantA', 1320, 430, 0.5],
+      ['flower', 1500, 442, 0.55],
+      ['plantB', 1790, 436, 0.55],
+    ];
+    floor.forEach(([name, x, y, s], i) => {
+      const sp = new Sprite(Texture.from(moss[name]));
+      sp.anchor.set(0.5, 1);
+      sp.scale.set(s);
+      sp.tint = tone;
+      sp.position.set(x, y);
+      this.container.addChild(sp);
+      this.items.push({ sp, base: 0, amp: 0.05, rate: 0.8 + (i % 3) * 0.15, phase: i * 2.3 });
+    });
+  }
+
+  update(t: number, still: boolean): void {
+    if (still) return;
+    for (const i of this.items) i.sp.rotation = i.base + Math.sin(t * i.rate + i.phase) * i.amp;
+  }
+}
+
+export function foliageFor(art: VenueArt): Foliage | null {
+  if (art.id === 'cave') return art.moss ? new Foliage(art.moss, 0x9fb8c8) : null;
+  return art.scene === 'mire' && art.moss ? new Foliage(art.moss, 0xc8dca0) : null;
 }

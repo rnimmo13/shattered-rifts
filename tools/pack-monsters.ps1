@@ -1,5 +1,5 @@
-# Cuts the monsters-herrero illustrations (assets-src, gitignored) into enemy figures in apps/web/public/art/figures and
-# writes the figures part of apps/web/public/art/manifest.json (the game's real-art hook, see src/art/assets.ts).
+# Cuts the monsters-herrero illustrations (assets-src, gitignored) into enemy figures in apps/web/public/art/figures
+# and refreshes manifest.json (the game's real-art hook, see src/art/assets.ts).
 # Art: "Monstrous Menagerie #1" by Tania Herrero (CC-BY-4.0, credited in CREDITS.md and the Credits page).
 # Each figure is trimmed to its outline, flipped to face left when needed (enemies stand on the right), scaled to
 # 640px tall and given a soft light rim so dark ink reads against dark stages.
@@ -30,7 +30,6 @@ $rim.Matrix40 = 0.725; $rim.Matrix41 = 0.659; $rim.Matrix42 = 1.0
 $tint = New-Object System.Drawing.Imaging.ImageAttributes
 $tint.SetColorMatrix($rim)
 
-$manifest = [ordered]@{}
 foreach ($m in $monsters) {
   $b = New-Object System.Drawing.Bitmap (Join-Path $src $m.file)
   if ($m.flip) { $b.RotateFlip([System.Drawing.RotateFlipType]::RotateNoneFlipX) }
@@ -68,9 +67,7 @@ foreach ($m in $monsters) {
   $g.Dispose()
   $o.Save((Join-Path $out "$($m.id).png"), [System.Drawing.Imaging.ImageFormat]::Png)
   "$($m.id) $($o.Width)x$($o.Height)"
-  $manifest["unit:$($m.id)"] = "figures/$($m.id).png"
   $o.Dispose(); $b.Dispose()
 }
-$json = [ordered]@{ figures = $manifest } | ConvertTo-Json -Depth 4
-[System.IO.File]::WriteAllText((Join-Path $root 'apps/web/public/art/manifest.json'), $json, (New-Object System.Text.UTF8Encoding($false)))
+& (Join-Path $PSScriptRoot 'pack-manifest.ps1')
 Get-ChildItem $out | Select-Object Name, Length

@@ -1,12 +1,15 @@
 {
     "figures":  {
-                    "unit:vorthax":  "figures/vorthax.png",
-                    "unit:gorrmaw":  "figures/gorrmaw.png",
-                    "unit:nyxara":  "figures/nyxara.png",
-                    "unit:whisperer":  "figures/whisperer.png",
-                    "unit:packmother-ruhn":  "figures/packmother-ruhn.png",
-                    "unit:feral-riftling":  "figures/feral-riftling.png",
+                    "unit:acid-spitter":  "figures/acid-spitter.png",
                     "unit:bloated-one":  "figures/bloated-one.png",
-                    "unit:choir-of-silence":  "figures/choir-of-silence.png"
+                    "unit:choir-of-silence":  "figures/choir-of-silence.png",
+                    "unit:feral-riftling":  "figures/feral-riftling.png",
+                    "unit:gorrmaw":  "figures/gorrmaw.png",
+                    "unit:hooded-acolyte":  "figures/hooded-acolyte.png",
+                    "unit:maw-spawn":  "figures/maw-spawn.png",
+                    "unit:nyxara":  "figures/nyxara.png",
+                    "unit:packmother-ruhn":  "figures/packmother-ruhn.png",
+                    "unit:vorthax":  "figures/vorthax.png",
+                    "unit:whisperer":  "figures/whisperer.png"
                 }
 }
