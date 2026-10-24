@@ -5,6 +5,7 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **0.26.0:** a new home page (New Run, Arena, Practice, the Riftwalker on show) with sign-in.
 - **0.25.0:** Sign in with Google.
 - **Sign in with Google:** on shatteredrifts.app the Arena has a Sign in with Google button; your saved decks then follow your account to any device. No name or email is kept. Guests still use the Vault code.
 - **0.24.0:** Vault online.

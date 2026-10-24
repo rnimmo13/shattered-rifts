@@ -1,129 +1,181 @@
-import { useState, type CSSProperties } from 'react';
-import { RIFTWALKERS, heroesByRealm } from '@sr/content/v2';
+// The home page: the Riftwalker you have picked on show, the three ways to play (New Run, Arena, Practice), and sign-in.
+
+import { useEffect, useMemo, useRef, useState, type CSSProperties } from 'react';
+import { REALMS, RIFTWALKERS, heroesByRealm, type HeroId } from '@sr/content/v2';
 import { BUILD } from '../build';
-import { getHero, rememberHero } from './heroChoice';
+import { heroFigure } from '../fight/art';
+import { clearSavedRun, loadSavedRun } from '../run/saves';
+import { AccountBox } from '../pvp/AccountBox';
+import { whoAmI, type Me } from '../pvp/vaultSync';
 import { HeroIcon } from '../ui/HeroIcon';
+import { HERO_COLOR } from '../art/emblems';
 import { tipAttrs } from '../ui/tip';
-import { color } from '../design/tokens';
+import { getHero, rememberHero } from './heroChoice';
+import './home.css';
 
-const ACCENT: Record<string, string> = {
-  aurelion: color.gold,
-  nexus: color.cyan,
-  wyldmaw: color.blood,
-  umbral: color.violet,
-  starfall: '#ff9a4a',
-  gloomfen: '#9be86a',
-  midden: '#ff9a3c',
-};
+/** A Riftwalker standing on show, drawn from their full-length figure. */
+function HeroStage(props: { hero: HeroId }) {
+  const ref = useRef<HTMLCanvasElement>(null);
+  useEffect(() => {
+    const c = ref.current;
+    const g = c?.getContext('2d');
+    if (!c || !g) return;
+    const src = heroFigure(props.hero);
+    const h = 560;
+    const w = Math.max(1, Math.round((src.width / src.height) * h));
+    c.width = w;
+    c.height = h;
+    g.clearRect(0, 0, w, h);
+    g.drawImage(src, 0, 0, w, h);
+  }, [props.hero]);
+  return <canvas ref={ref} className="home__figure" aria-hidden />;
+}
 
-/** Title screen. The jagged SVG crack is the game's "shattering" motif. */
 export function TitleScreen() {
   const groups = heroesByRealm();
   const [picked, setPicked] = useState(getHero);
+  const [me, setMe] = useState<Me>({ signedIn: false, available: false });
+  const [saved, setSaved] = useState(loadSavedRun);
+  const [confirmNew, setConfirmNew] = useState(false);
+  const hero = RIFTWALKERS[picked];
+  const color = HERO_COLOR[picked] ?? '#d4a84b';
+  const realm = useMemo(() => REALMS.find((r) => r.id === hero.realm)?.name ?? '', [hero.realm]);
+
+  useEffect(() => {
+    let live = true;
+    void whoAmI().then((m) => {
+      if (live) setMe(m);
+    });
+    return () => {
+      live = false;
+    };
+  }, []);
+
+  const pick = (h: HeroId): void => {
+    setPicked(h);
+    rememberHero(h);
+  };
+  const startNew = (): void => {
+    window.location.hash = '#/run';
+  };
+
   return (
-    <main className="title">
-      <svg className="title__crack" viewBox="0 0 1200 200" preserveAspectRatio="none" aria-hidden>
-        <defs>
-          <linearGradient id="seam" x1="0" x2="1" y1="0" y2="0">
-            <stop offset="0%" stopColor={color.magenta} />
-            <stop offset="50%" stopColor={color.cyan} />
-            <stop offset="100%" stopColor={color.heal} />
-          </linearGradient>
-          <filter id="glow" x="-20%" y="-200%" width="140%" height="500%">
-            <feGaussianBlur stdDeviation="6" result="blur" />
-            <feMerge>
-              <feMergeNode in="blur" />
-              <feMergeNode in="SourceGraphic" />
-            </feMerge>
-          </filter>
-        </defs>
-        <polyline
-          className="title__crack-line"
-          points="0,104 140,96 210,118 330,88 420,110 520,82 600,104 690,92 760,122 880,86 960,108 1070,94 1200,102"
-          fill="none"
-          stroke="url(#seam)"
-          strokeWidth="3"
-          filter="url(#glow)"
+    <main className="home" style={{ '--accent': color } as CSSProperties}>
+      <div className="home__bar">
+        <span className="home__eyebrow">Friends alpha · working title</span>
+        <AccountBox
+          me={me}
+          to="home"
+          compact
+          onSignedOut={() => setMe({ signedIn: false, available: true })}
         />
-      </svg>
+      </div>
 
-      <header className="title__header">
-        <p className="title__eyebrow">Friends alpha · working title</p>
-        <h1 className="title__name">Shattered Rifts</h1>
-        <p className="title__tagline">
-          Walk the broken worlds. Build a deck. Read the rift. Spring the trap.
-        </p>
-      </header>
+      <div className="home__body">
+        <section className="home__menu" aria-label="Play">
+          <h1 className="home__name">Shattered Rifts</h1>
+          <p className="home__tagline">
+            Walk the broken worlds. Build a deck. Read the rift. Spring the trap.
+          </p>
 
-      <div className="title__realms" aria-label="Riftwalkers by realm">
-        {groups.map((g) => (
-          <section
-            key={g.realm}
-            className="title__realm"
-            style={{ '--accent': ACCENT[g.realm] ?? color.gold } as CSSProperties}
-          >
-            <h2 className="title__realm-name">{g.name}</h2>
-            <ul className="title__roster">
-              {g.heroes.map((h) => (
-                <li key={h} className={`title__card${picked === h ? ' is-picked' : ''}`}>
+          {saved && (
+            <a className="home__play home__play--continue" href="#/run">
+              <b>Continue run</b>
+              <small>
+                {RIFTWALKERS[saved.character].hero.name} · Stage {saved.stage} · Rift Tier{' '}
+                {saved.tier}
+              </small>
+            </a>
+          )}
+          {saved && confirmNew ? (
+            <div className="home__confirm" role="alertdialog" aria-label="Start a new run?">
+              <span>Starting a new run throws away your current one.</span>
+              <button
+                type="button"
+                className="btn btn--small"
+                onClick={() => {
+                  clearSavedRun();
+                  setSaved(null);
+                  startNew();
+                }}
+              >
+                <span>Abandon it and start over</span>
+              </button>
+              <button type="button" className="btn btn--small" onClick={() => setConfirmNew(false)}>
+                <span>Keep it</span>
+              </button>
+            </div>
+          ) : (
+            <button
+              type="button"
+              className={`home__play${saved ? ' home__play--quiet' : ' home__play--primary'}`}
+              onClick={() => (saved ? setConfirmNew(true) : startNew())}
+            >
+              <b>New Run</b>
+              <small>Three stages as {hero.hero.name}. Build a deck and face Vorthax.</small>
+            </button>
+          )}
+          <a className="home__play" href="#/arena">
+            <b>Arena</b>
+            <small>Duel another player with a deck you banked.</small>
+          </a>
+          <a className="home__play" href="#/fight">
+            <b>Practice</b>
+            <small>Try any fight as {hero.hero.name}, no run needed.</small>
+          </a>
+
+          <nav className="home__links" aria-label="More">
+            <a href="#/cards">Card library</a>
+            <a href="#/learn">How to play</a>
+            <a href="#/credits">Credits</a>
+          </nav>
+        </section>
+
+        <section className="home__stage" aria-label="Riftwalkers">
+          <div className="home__show">
+            <HeroStage hero={picked} />
+            <div className="home__floor" aria-hidden />
+          </div>
+          <div className="home__info">
+            <h2 className="home__hero">{hero.hero.name}</h2>
+            <p className="home__role">
+              {hero.role} · {realm}
+            </p>
+            <p className="home__lanes">
+              {hero.lanes.map((l) => (
+                <span key={l}>{l.split(':')[0]}</span>
+              ))}
+            </p>
+            <p className="home__trait">
+              <b>{hero.trait.name}.</b> {hero.trait.text}
+            </p>
+          </div>
+          <ul className="home__roster" aria-label="Choose a Riftwalker">
+            {groups
+              .flatMap((g) => g.heroes)
+              .map((h) => (
+                <li key={h}>
                   <button
                     type="button"
-                    className="title__pick"
+                    className={`home__pick${picked === h ? ' is-picked' : ''}`}
                     aria-pressed={picked === h}
+                    aria-label={RIFTWALKERS[h].hero.name}
                     {...tipAttrs({
                       kicker: `Innate · ${RIFTWALKERS[h].role}`,
-                      title: RIFTWALKERS[h].trait.name,
+                      title: RIFTWALKERS[h].hero.name,
                       text: RIFTWALKERS[h].trait.text,
                     })}
-                    onClick={() => {
-                      setPicked(h);
-                      rememberHero(h);
-                      // straight to the Sanctum, where this Riftwalker is already chosen
-                      window.location.hash = '#/run';
-                    }}
+                    onClick={() => pick(h)}
                   >
                     <HeroIcon hero={h} size={52} />
-                    <span className="title__card-name">{RIFTWALKERS[h].hero.name}</span>
-                    <span className="title__card-role">{RIFTWALKERS[h].role}</span>
-                    <span className="title__card-realm">
-                      {RIFTWALKERS[h].lanes.map((l) => l.split(':')[0]).join(' · ')}
-                    </span>
-                    {picked === h && (
-                      <span className="title__chosen" aria-hidden>
-                        Chosen
-                      </span>
-                    )}
                   </button>
                 </li>
               ))}
-            </ul>
-          </section>
-        ))}
+          </ul>
+        </section>
       </div>
 
-      <div className="title__actions">
-        <p className="title__playing">
-          Pick a Riftwalker above to enter the Sanctum. Practice fights use{' '}
-          <b>{RIFTWALKERS[picked].hero.name}</b>.
-        </p>
-        <a className="btn" href="#/fight">
-          Practice fight
-        </a>
-        <a className="btn" href="#/arena">
-          Arena
-        </a>
-        <a className="btn" href="#/cards">
-          Card library
-        </a>
-        <a className="btn" href="#/learn">
-          How to play
-        </a>
-      </div>
-      <p id="cta-note" className="title__cta-note">
-        Runs are in early alpha: expect rough edges. Pick Easy, Normal or Hard when you begin.
-      </p>
-
-      <p className="title__footer">
+      <p className="home__footer">
         <a href="#/credits">Credits</a> · combat v2 preview · {BUILD.label}
       </p>
     </main>

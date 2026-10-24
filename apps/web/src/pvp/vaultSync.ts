@@ -145,7 +145,8 @@ export async function signOut(): Promise<void> {
   me = null;
 }
 
-export const signInUrl = (): string => `${httpBase()}/auth/google/start`;
+export const signInUrl = (to: 'home' | 'arena' = 'arena'): string =>
+  `${httpBase()}/auth/google/start?to=${to}`;
 
 /** The key to use for the Vault now: null when signed in (call `whoAmI` first), else this browser's Vault code. */
 export const vaultKey = (): Key => (signedIn ? null : ensureVaultCode());

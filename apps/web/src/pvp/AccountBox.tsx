@@ -4,20 +4,32 @@
 import { useState } from 'react';
 import { signInUrl, signOut, type Me } from './vaultSync';
 
-export function AccountBox(props: { me: Me; onSignedOut: () => void }) {
+export function AccountBox(props: {
+  me: Me;
+  onSignedOut: () => void;
+  /** where to land after signing in */
+  to?: 'home' | 'arena';
+  /** a short version, for the top bar of the home page */
+  compact?: boolean;
+}) {
   const [busy, setBusy] = useState(false);
-  const { me } = props;
+  const { me, compact } = props;
   if (me.signedIn)
     return (
       <section className="pvp__account" aria-label="Account">
-        <span>Signed in with Google. Your decks are saved to your account.</span>
+        <span>
+          {compact ? 'Signed in' : 'Signed in with Google. Your decks are saved to your account.'}
+        </span>
         <button
           type="button"
           className="btn btn--small"
           disabled={busy}
           onClick={() => {
             setBusy(true);
-            void signOut().then(props.onSignedOut);
+            void signOut().then(() => {
+              setBusy(false);
+              props.onSignedOut();
+            });
           }}
         >
           <span>Sign out</span>
@@ -27,8 +39,8 @@ export function AccountBox(props: { me: Me; onSignedOut: () => void }) {
   if (!me.available) return null;
   return (
     <section className="pvp__account" aria-label="Account">
-      <span>Sign in to keep your decks on any device. We keep no name or email.</span>
-      <a className="btn btn--small" href={signInUrl()}>
+      {!compact && <span>Sign in to keep your decks on any device. We keep no name or email.</span>}
+      <a className="btn btn--small" href={signInUrl(props.to ?? 'arena')}>
         <span>Sign in with Google</span>
       </a>
     </section>

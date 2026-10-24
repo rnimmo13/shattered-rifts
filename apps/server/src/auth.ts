@@ -119,6 +119,8 @@ const ready = (env: Env): boolean =>
   Boolean(env.GOOGLE_CLIENT_ID && env.GOOGLE_CLIENT_SECRET && env.SESSION_SECRET);
 
 function googleStart(request: Request, env: Env): Response {
+  // where to land afterwards: the home page or the Arena (only these two, so it can't be made to go anywhere else)
+  const to = new URL(request.url).searchParams.get('to') === 'home' ? 'home' : 'arena';
   if (!ready(env)) return text('Sign-in is not set up on this server.', 503);
   const state = hex(crypto.getRandomValues(new Uint8Array(16)));
   const url = new URL('https://accounts.google.com/o/oauth2/v2/auth');
@@ -129,7 +131,7 @@ function googleStart(request: Request, env: Env): Response {
   url.searchParams.set('state', state);
   url.searchParams.set('prompt', 'select_account');
   return redirect(url.toString(), [
-    setCookie(request, STATE_COOKIE, `${state}.${Date.now()}`, STATE_MS / 1000, '/auth'),
+    setCookie(request, STATE_COOKIE, `${state}.${Date.now()}.${to}`, STATE_MS / 1000, '/auth'),
   ]);
 }
 
@@ -161,7 +163,8 @@ export async function googleCallback(
   if (!ready(env)) return text('Sign-in is not set up on this server.', 503);
   const url = new URL(request.url);
   const clear = setCookie(request, STATE_COOKIE, '', 0, '/auth');
-  const [state, at] = (cookies(request)[STATE_COOKIE] ?? '').split('.');
+  const [state, at, to] = (cookies(request)[STATE_COOKIE] ?? '').split('.');
+  const back = to === 'home' ? '/#/' : '/#/arena';
   const code = url.searchParams.get('code');
   // the state ties the answer to the browser that asked, and a refused or stale attempt just goes back to the game
   if (
@@ -171,7 +174,7 @@ export async function googleCallback(
     !same(state, url.searchParams.get('state') ?? '') ||
     !(now - Number(at) <= STATE_MS)
   )
-    return redirect('/#/arena', [clear]);
+    return redirect(back, [clear]);
 
   let sub: string | null = null;
   try {
@@ -194,14 +197,14 @@ export async function googleCallback(
   } catch {
     sub = null;
   }
-  if (!sub) return redirect('/#/arena', [clear]);
+  if (!sub) return redirect(back, [clear]);
 
   const token = await makeSession(
     env.SESSION_SECRET as string,
     { account: await sha256(`google:${sub}`), provider: 'google' },
     now,
   );
-  return redirect('/#/arena', [
+  return redirect(back, [
     clear,
     setCookie(request, SESSION_COOKIE, token, SESSION_DAYS * 86_400, '/'),
   ]);

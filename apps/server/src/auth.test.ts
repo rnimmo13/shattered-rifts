@@ -115,6 +115,23 @@ describe('Google sign-in', () => {
     ).toBe(false);
   });
 
+  it('returns to the home page when sign-in began there, and only ever to the two known pages', async () => {
+    const start = await authRoute(new Request('https://game.test/auth/google/start?to=home'), env);
+    const state = new URL(start?.headers.get('location') ?? '').searchParams.get('state');
+    const cookie = start?.headers.get('set-cookie')?.split(';')[0] ?? '';
+    const ok = (() =>
+      Promise.resolve(
+        new Response(JSON.stringify({ id_token: idToken('u') })),
+      )) as unknown as typeof fetch;
+    const home = await googleCallback(cb(`code=a&state=${state}`, cookie), env, ok, Date.now());
+    expect(home.headers.get('location')).toBe('/#/');
+    const odd = await authRoute(
+      new Request('https://game.test/auth/google/start?to=https://evil.test'),
+      env,
+    );
+    expect(odd?.headers.get('set-cookie')).toMatch(/\.arena;/);
+  });
+
   it('logs out by clearing the cookie', async () => {
     const res = await authRoute(
       new Request('https://game.test/auth/logout', { method: 'POST' }),
