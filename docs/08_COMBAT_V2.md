@@ -16,7 +16,7 @@ character in the fight, and with one enemy you should not have to aim.
 2. **Every turn is a small puzzle** with a clear best line, not a chain of prompts. **No response windows**: nothing
    interrupts your turn.
 3. **Your Riftwalker is a person on the field**, not a life counter. Their deck, Sigil and companions are who they are.
-4. **Traps survive, as Snares.** The trap-driven identity of the game stays, but Snares fire automatically (§6), so
+4. **Traps survive, as Traps.** The trap-driven identity of the game stays, but Traps fire automatically (§6), so
    they add surprise without stopping the game.
 5. **One engine for runs and PvP.** Enemies are scripted "players" that telegraph; a PvP opponent is a human (or AI)
    playing cards. Same rules, same cards, same animations.
@@ -30,7 +30,7 @@ character in the fight, and with one enemy you should not have to aim.
   Hero  Ally1  Ally2  Ally3          |          Enemy1  Enemy2  Enemy3  Enemy4
   [HP]  [HP]   [HP]   [HP]         centre         [HP]    [HP]    [HP]    [HP]
         intent arrows above enemies ->  (what each will do next turn)
-  Snares: face-down sigils on the ground below your side (max 3)
+  Traps: face-down sigils on the ground below your side (max 3)
 ```
 
 - The **hero** stands at the far end of their side; **allies** (companions/minions) stand between hero and centre
@@ -91,7 +91,7 @@ draw 5, +1 draw for the second player in PvP (§8).
 | **Ser Maren Ashcourt** (Aurelion) | **None.** A few cards give an ally **Shielded**; mostly Barrier and retaliation. | Sturdy: Barrier, Thorns, punish attackers. |
 | **Rivet** (Nexus) | **Fighting drones.** Starts each fight with one Drone (Sigil); many cards make more and upgrade them. | Go wide, then Assemble. |
 | **Kesh the Unfed** (Wyldmaw) | **Buffed, not summoned.** Cards give his Pack (1–2 pups, from one card) Might and feed them. | Hit hard, hurt yourself, snowball. |
-| **Vesper Nightlace** (Umbral) | **None** (shadows are Snares, not bodies). | Snares, Exposed/Faltering, bluffing. |
+| **Vesper Nightlace** (Umbral) | **None** (shadows are Traps, not bodies). | Traps, Exposed/Faltering, bluffing. |
 
 | **Quill** (Umbral) | **None.** Shivs are cards, not bodies. | Shivs, Bleed, discard (docs/09). |
 | **Ilvane** (Nexus-9) | **None.** Runes sit in a row. | Channel, evoke, Resonance. |
@@ -101,17 +101,17 @@ draw 5, +1 draw for the second player in PvP (§8).
 See `09_ROSTER.md` for the lanes of all eight and the rules every pool follows.
 
 Enemies mirror this: Aurelion enemies stack Shielded and Barrier; Nexus enemies bring Drones; Wyldmaw enemies come in
-packs; Umbral enemies set Snares of their own and debuff.
+packs; Umbral enemies set Traps of their own and debuff.
 
-## 6. Snares (our traps)
+## 6. Traps (our traps)
 
-- A **Snare** is a face-down card set from your hand (costs its Mana to set). It shows as a sealed sigil.
+- A **Trap** is a face-down card set from your hand (costs its Mana to set). It shows as a sealed sigil.
 - It has a **trigger** printed on it ("when an enemy attacks you", "when you take 10+ damage", "when an enemy
   gains Barrier"). When the trigger happens it **springs automatically**, with the reveal animation, and its effect
   resolves at once. No window, no choice, no waiting.
-- Max **3** Snares set; a sprung Snare is spent. Against the AI you can read intents and set the right Snare;
-  against a human it is bluffing. Enemies can have Snares too (shown as sealed sigils on their side).
-- Because intents are visible, Snares are *planning* tools against enemies and *reads* in PvP.
+- Max **3** Traps set; a sprung Trap is spent. Against the AI you can read intents and set the right Trap;
+  against a human it is bluffing. Enemies can have Traps too (shown as sealed sigils on their side).
+- Because intents are visible, Traps are *planning* tools against enemies and *reads* in PvP.
 
 ## 7. Enemies and intents
 
@@ -124,9 +124,9 @@ packs; Umbral enemies set Snares of their own and debuff.
 
 ## 8. PvP
 
-- Two heroes, each with their run deck and Sigil, each with up to 3 allies and 3 Snares. Turns **alternate**; your turn
+- Two heroes, each with their run deck and Sigil, each with up to 3 allies and 3 Traps. Turns **alternate**; your turn
   is the player turn in §3, and during it you pick targets on the other side (hero or ally; Taunt applies).
-- No intents (the opponent is a person); you see their board, their Snares as sealed sigils, and their hand size.
+- No intents (the opponent is a person); you see their board, their Traps as sealed sigils, and their hand size.
 - The second player draws 1 extra card on their first turn and gets 1 free Mana of "Rift Spark" on turn 1 (confirm,
   balance later). Turn timer 60 s with a bank.
 - The engine is the same, so the existing PvP plans (ghosts, seasons, tournaments) still apply; only the duel rules change.
@@ -146,7 +146,7 @@ Keeps the structure of `03_CAMPAIGN.md` (map, rewards, shrines, merchant, events
 | | What | Notes |
 |---|---|---|
 | **C0** | This document + decision #86 | done |
-| **C1** | `packages/combat`: pure, seeded engine: entities, turn loop, Mana/draw/discard, damage/Barrier/statuses, card effect DSL v2, allies, Snares, enemy intents. Unit + property tests, a CLI fight. | old engine untouched |
+| **C1** | `packages/combat`: pure, seeded engine: entities, turn loop, Mana/draw/discard, damage/Barrier/statuses, card effect DSL v2, allies, Traps, enemy intents. Unit + property tests, a CLI fight. | old engine untouched |
 | **C2** | Content v2 in `packages/content`: card schema v2 + the four starter decks + ~25 cards each; ~15 enemies with intent patterns, 2 elites, 1 Warden to prove it. | rewrite of the 74 cards in the new model |
 | **C3** | New fight screen: side-to-side Pixi scene (reuse monsters, avatars, juice, reveal), intents, targeting-by-drop, auto-aim, hand, HUD. | reuses most of `apps/web/src/duel` |
 | **C4** | Campaign wired to the new fights (map/rewards/shrine/merchant already built), HP persistence, Resolve rules. | reuses `packages/campaign` |

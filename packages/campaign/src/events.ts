@@ -233,7 +233,7 @@ export const EVENTS: EventDef[] = [
       title: 'The scrapyard',
       text: 'Heaps of broken armour and rusted blades. Whatever you leave here, someone will pay for.',
       options: [
-        { id: 'scrap', label: 'Leave a basic card behind (a random Slash or Guard goes)' },
+        { id: 'scrap', label: 'Leave a basic card behind (a random Attack or Defend goes)' },
         { id: 'sell', label: 'Sell some scrap: +25 shards' },
         leave,
       ],
@@ -360,7 +360,7 @@ export const EVENTS: EventDef[] = [
         {
           id: 'transform',
           label:
-            'Press a basic card to it: a random Slash or Guard becomes a new card of your class',
+            'Press a basic card to it: a random Attack or Defend becomes a new card of your class',
         },
         leave,
       ],

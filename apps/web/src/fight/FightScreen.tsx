@@ -78,7 +78,7 @@ export default function FightScreen() {
       <h1 className="setup__title">Fight the rift</h1>
       <p className="setup__lead">
         The new combat: play cards with Mana, read what each enemy is about to do, and bring
-        companions and Snares. This is a preview of the rebuilt game.
+        companions and Traps. This is a preview of the rebuilt game.
       </p>
       <section>
         <h2 className="setup__h">Riftwalker</h2>

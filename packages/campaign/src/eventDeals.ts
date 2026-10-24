@@ -191,7 +191,7 @@ export const DEAL_EVENTS: EventDef[] = (
       text: 'A door with a mouth where the handle should be. It looks at your pockets and licks its lip.',
       opts: [
         [
-          'Feed it a basic card (a random Slash or Guard goes): +60 shards and heal 10%',
+          'Feed it a basic card (a random Attack or Defend goes): +60 shards and heal 10%',
           [remove('basic', 1), shards(60), heal(10)],
         ],
         ['Feed it your shards (50 shards): upgrade a random card', [shards(-50), upgrade()]],

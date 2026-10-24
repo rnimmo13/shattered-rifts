@@ -203,7 +203,7 @@ content change.
 | Rivet | 43% | 40% |
 | Kesh | 28% | 38% |
 | Vesper | 53% | 43% |
-| Scarlet (quill) | 33% | 45% |
+| Sylas (quill) | 33% | 45% |
 | Ilvane | 60% | 53% |
 | Ragnar (sehra) | 35% | 45% |
 | Obsidia (astra) | 43% | 48% |

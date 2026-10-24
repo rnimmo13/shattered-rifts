@@ -9,6 +9,12 @@ foreach ($f in Get-ChildItem $dir -Filter *.png | Sort-Object Name) {
   $key = if ($f.BaseName -like 'hero-*') { "hero:" + $f.BaseName.Substring(5) } else { "unit:$($f.BaseName)" }
   $figures[$key] = "figures/$($f.Name)"
 }
-$json = [ordered]@{ figures = $figures } | ConvertTo-Json -Depth 4
+# cards/<cardId>.jpg is a card's art window (written by pack-cards.ps1); upgrades share their base card's art in the game
+$cards = [ordered]@{}
+$cardDir = Join-Path $root 'apps/web/public/art/cards'
+if (Test-Path $cardDir) { foreach ($f in Get-ChildItem $cardDir -Include *.jpg, *.png, *.webp -Recurse | Sort-Object Name) { $cards[$f.BaseName] = "cards/$($f.Name)" } }
+$manifest = [ordered]@{ figures = $figures }
+if ($cards.Count -gt 0) { $manifest['cards'] = $cards }
+$json = $manifest | ConvertTo-Json -Depth 4
 [System.IO.File]::WriteAllText((Join-Path $root 'apps/web/public/art/manifest.json'), $json, (New-Object System.Text.UTF8Encoding($false)))
-"manifest: $($figures.Count) figures"
+"manifest: $($figures.Count) figures, $($cards.Count) cards"

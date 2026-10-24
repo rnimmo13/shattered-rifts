@@ -27,16 +27,31 @@ export type FighterSide = 'a' | 'b';
 export const LINE_Y = 830;
 export const HERO_X = 230;
 const CENTRE = 960;
-const ALLY_PITCH = 205;
+const ALLY_PITCH = 195;
+/** how far each line stands back from the centre: the gap between the two sides */
+const ALLY_BACK = 250;
+const FOE_BACK = 340;
+/** the right-most a foe may stand (its figure and plate must stay on the stage) */
+const FOE_RIGHT = 1800;
 const FOE_PITCH = 195;
 
-export function slotX(side: FighterSide, slot: number, isHero: boolean, count = 4): number {
+export function slotX(
+  side: FighterSide,
+  slot: number,
+  isHero: boolean,
+  count = 4,
+  flying = false,
+): number {
   if (isHero) return HERO_X;
   // a crowd packs closer so it still fits on the stage (and the plates under it are narrowed to match)
   const pitch = count <= 4 ? FOE_PITCH : Math.max(104, Math.floor(640 / (count - 1)));
   // (a very long line starts a little further left so its last figure and plate stay on the stage)
-  const start = CENTRE + 260 - Math.max(0, count - 6) * 40;
-  return side === 'a' ? CENTRE - 150 - slot * ALLY_PITCH : start + slot * pitch;
+  const crowdStart = CENTRE + 260 - Math.max(0, count - 6) * 40;
+  const start =
+    count <= 4 ? Math.min(CENTRE + FOE_BACK, FOE_RIGHT - (count - 1) * pitch) : crowdStart;
+  // flyers hover in their own row, a half step along, so they fill the gaps above the ground line instead of queueing behind it
+  const half = flying ? (side === 'a' ? -ALLY_PITCH : pitch) / 2 : 0;
+  return (side === 'a' ? CENTRE - ALLY_BACK - slot * ALLY_PITCH : start + slot * pitch) + half;
 }
 
 export interface FighterSpec {
@@ -50,6 +65,8 @@ export interface FighterSpec {
   canvas: HTMLCanvasElement;
   /** figure height in stage px */
   height: number;
+  /** a flyer hovers this many stage px above the floor (its shadow stays on the ground); 0 or absent = stands */
+  hover?: number;
   /** how its attacks look (a slash, a shot, a spell...): presentation only */
   attack: AttackSpec;
   /** something that floats beside the figure while `on` (a blade in her hand): a cut-out and where it hovers, in figure pixels */
@@ -59,7 +76,11 @@ export interface FighterSpec {
 interface Fighter {
   spec: FighterSpec;
   root: Container;
+  /** carries the body up to the figure's hover height and bobs it; the shadow stays on the floor */
+  air: Container;
   body: Container;
+  shadow: Sprite;
+  contact: Sprite;
   sprite: Sprite;
   flash: Sprite;
   prop: Sprite | null;
@@ -78,6 +99,8 @@ interface Fighter {
 export interface FighterHost {
   container: Container;
   glowTex: Texture;
+  /** a tighter, darker blob than glowTex, for the shadow under a figure's feet */
+  contactTex?: Texture;
   profile: () => EffectsProfile;
   sound: (name: string) => void;
 }
@@ -115,13 +138,21 @@ export class Fighters {
   anchor(id: string): { x: number; y: number; h: number; w: number } | null {
     const f = this.all.get(id);
     if (!f) return null;
-    return { x: f.root.x, y: f.root.y, h: f.spec.height, w: f.width };
+    return { x: f.root.x, y: f.root.y, h: f.spec.height + (f.spec.hover ?? 0), w: f.width };
   }
 
   /** Where a figure stands when at rest (its slot), unaffected by a lunge in progress. */
-  home(id: string): { x: number; y: number; h: number; w: number } | null {
+  home(id: string): { x: number; y: number; h: number; w: number; hover: number } | null {
     const f = this.all.get(id);
-    return f ? { x: f.x, y: LINE_Y, h: f.spec.height, w: f.width } : null;
+    return f
+      ? {
+          x: f.x,
+          y: LINE_Y,
+          h: f.spec.height + (f.spec.hover ?? 0),
+          w: f.width,
+          hover: f.spec.hover ?? 0,
+        }
+      : null;
   }
 
   /** Which figure is under this stage point, if any (the nearest wins). */
@@ -134,7 +165,7 @@ export class Fighters {
       if (
         dx <= f.width * 0.55 &&
         y <= f.root.y + 24 &&
-        y >= f.root.y - f.spec.height - 10 &&
+        y >= f.root.y - f.spec.height - (f.spec.hover ?? 0) - 10 &&
         dx < bestD
       ) {
         best = f.spec.id;
@@ -150,7 +181,7 @@ export class Fighters {
     for (const f of [...this.all.values()])
       if (!keep.has(f.spec.id) && !f.dying) this.remove(f.spec.id);
     for (const spec of list) {
-      const x = slotX(spec.side, spec.slot, spec.isHero, spec.count);
+      const x = slotX(spec.side, spec.slot, spec.isHero, spec.count, (spec.hover ?? 0) > 0);
       const f = this.all.get(spec.id);
       if (!f) {
         this.add(spec, x, !opts.instant);
@@ -172,21 +203,30 @@ export class Fighters {
     const tex = Texture.from(spec.canvas);
     const root = new Container();
     root.position.set(x, LINE_Y);
-    root.zIndex = LINE_Y;
+    root.zIndex = LINE_Y + (spec.hover ? 1 : 0);
 
+    const hover = spec.hover ?? 0;
+    const w = spec.canvas.width * k;
+    // two shadows pin a figure to the floor: a wide soft one, and a small dark one hugging the feet
     const shadow = new Sprite(this.h.glowTex);
     shadow.anchor.set(0.5);
     shadow.tint = 0x000000;
-    shadow.alpha = 0.55;
-    const w = spec.canvas.width * k;
-    shadow.scale.set((w * 0.95) / 128, (w * 0.95 * 0.24) / 128);
+    shadow.alpha = hover ? 0.3 : 0.6;
+    shadow.scale.set((w * 1.15) / 128, (w * 1.15 * 0.24) / 128);
+    shadow.position.y = 2;
+    const contact = new Sprite(this.h.contactTex ?? this.h.glowTex);
+    contact.anchor.set(0.5);
+    contact.tint = 0x000000;
+    contact.alpha = hover ? 0.32 : 1;
+    contact.scale.set((w * 0.8) / 128, (w * 0.8 * 0.2) / 128);
+    contact.position.y = 6;
 
     const tint = spec.side === 'a' ? color.cyan : '#ff5a86';
     const aura = new Sprite(this.h.glowTex);
     aura.anchor.set(0.5, 0.5);
     aura.tint = hex(tint);
     aura.blendMode = 'add';
-    aura.alpha = spec.isHero ? 0.42 : 0.22;
+    aura.alpha = spec.isHero ? 0.24 : 0.14;
     aura.scale.set((w * 1.1) / 128, (w * 1.1 * 0.34) / 128);
 
     const ring = new Sprite(this.h.glowTex);
@@ -196,7 +236,10 @@ export class Fighters {
     ring.alpha = 0;
     ring.scale.set((w * 1.3) / 128, (w * 1.3 * 0.4) / 128);
 
+    const air = new Container();
+    air.y = -hover;
     const body = new Container();
+    air.addChild(body);
     const sprite = new Sprite(tex);
     sprite.anchor.set(0.5, 1);
     sprite.scale.set(k);
@@ -211,18 +254,24 @@ export class Fighters {
       prop = new Sprite(Texture.from(spec.prop.canvas));
       prop.anchor.set(0.5);
       prop.scale.set(k);
-      prop.position.set((spec.prop.x - spec.canvas.width / 2) * k, (spec.prop.y - spec.canvas.height) * k);
+      prop.position.set(
+        (spec.prop.x - spec.canvas.width / 2) * k,
+        (spec.prop.y - spec.canvas.height) * k,
+      );
       prop.alpha = spec.prop.on ? 1 : 0;
       prop.visible = spec.prop.on;
       body.addChild(prop);
     }
-    root.addChild(shadow, aura, ring, body);
+    root.addChild(shadow, contact, aura, ring, air);
     this.h.container.addChild(root);
     this.h.container.sortableChildren = true;
     const f: Fighter = {
       spec,
       root,
+      air,
       body,
+      shadow,
+      contact,
       sprite,
       flash,
       prop,
@@ -269,7 +318,9 @@ export class Fighters {
       p.visible = true;
       this.track(gsap.fromTo(p, { alpha: 0 }, { alpha: 1, duration: 0.3 }));
     } else {
-      this.track(gsap.to(p, { alpha: 0, duration: 0.25, onComplete: () => void (p.visible = false) }));
+      this.track(
+        gsap.to(p, { alpha: 0, duration: 0.25, onComplete: () => void (p.visible = false) }),
+      );
     }
   }
 
@@ -278,6 +329,7 @@ export class Fighters {
     if (!f) return;
     gsap.killTweensOf([
       f.root,
+      f.air,
       f.body,
       f.body.position,
       f.body.scale,
@@ -312,7 +364,7 @@ export class Fighters {
 
   /** The middle of a figure's body, where effects land. */
   private chest(f: Fighter, dx = 0): Pt {
-    return { x: f.root.x + dx, y: f.root.y - f.spec.height * 0.55 };
+    return { x: f.root.x + dx, y: f.root.y - (f.spec.hover ?? 0) - f.spec.height * 0.55 };
   }
 
   /** Rush at the target: the same beats for every melee style, with a different windup, pose and effect at contact. */
@@ -323,7 +375,10 @@ export class Fighters {
     onHit?: () => void,
   ): Promise<void> {
     const kind = f.spec.attack.kind;
-    const m = kind === 'slash' || kind === 'stab' || kind === 'claw' || kind === 'smash' ? MELEE[kind] : MELEE.lunge;
+    const m =
+      kind === 'slash' || kind === 'stab' || kind === 'claw' || kind === 'smash'
+        ? MELEE[kind]
+        : MELEE.lunge;
     const dx = t ? (t.root.x - f.root.x) * 0.78 : dir * 160;
     return new Promise((resolve) => {
       f.busy++;
@@ -332,7 +387,7 @@ export class Fighters {
         gsap.timeline({
           onComplete: () => {
             f.busy--;
-            f.root.zIndex = LINE_Y;
+            f.root.zIndex = LINE_Y + (f.spec.hover ? 1 : 0);
             resolve(); // (already resolved at contact; harmless)
           },
         }),
@@ -363,7 +418,9 @@ export class Fighters {
   private meleeFx(f: Fighter, t: Fighter | undefined, dir: number): void {
     const { kind, tint, hits = 1 } = f.spec.attack;
     const c = this.fxCtx();
-    const at = t ? this.chest(t) : { x: f.root.x + dir * 70, y: f.root.y - f.spec.height * 0.55 };
+    const at = t
+      ? this.chest(t)
+      : { x: f.root.x + dir * 70, y: f.root.y - (f.spec.hover ?? 0) - f.spec.height * 0.55 };
     const size = Math.max(70, Math.min(150, (t?.spec.height ?? 220) * 0.55));
     switch (kind) {
       case 'slash':
@@ -376,7 +433,14 @@ export class Fighters {
         burst(c, at, tint, 5, 34);
         break;
       case 'stab':
-        void streak(c, { x: at.x - dir * 120, y: at.y }, { x: at.x + dir * 20, y: at.y }, tint, 0.08, 5);
+        void streak(
+          c,
+          { x: at.x - dir * 120, y: at.y },
+          { x: at.x + dir * 20, y: at.y },
+          tint,
+          0.08,
+          5,
+        );
         burst(c, at, tint, 6, 36);
         break;
       case 'smash':
@@ -432,7 +496,9 @@ export class Fighters {
             const runs: Promise<void>[] = [];
             for (let i = 0; i < hits; i++) {
               const off = (i - (hits - 1) / 2) * 15;
-              runs.push(streak(c, from, { x: to.x, y: to.y + off }, tint, Math.max(0.1, dist / 3800), 3));
+              runs.push(
+                streak(c, from, { x: to.x, y: to.y + off }, tint, Math.max(0.1, dist / 3800), 3),
+              );
             }
             void Promise.all(runs).then(land);
           } else if (kind === 'throw') {
@@ -445,7 +511,13 @@ export class Fighters {
         }
       });
       // a gun kicks back as it fires; a thrower or caster follows through
-      if (kind === 'shoot') tl.fromTo(f.body.position, { x: -dir * 16 }, { x: 0, duration: 0.25, ease: ease.out.gsap, immediateRender: false }, '<');
+      if (kind === 'shoot')
+        tl.fromTo(
+          f.body.position,
+          { x: -dir * 16 },
+          { x: 0, duration: 0.25, ease: ease.out.gsap, immediateRender: false },
+          '<',
+        );
       tl.to(f.body.scale, { x: 1, y: 1, duration: 0.2, ease: ease.pop.gsap }, '<');
       tl.to(f.body, { rotation: 0, duration: 0.2, ease: ease.pop.gsap }, '<');
     });
@@ -467,13 +539,24 @@ export class Fighters {
   }
 
   /** A sprite-sheet effect at a figure's feet (ground effects sit in front, others behind). Resolves when it ends. */
-  vfx(id: string, name: FxName, o: { scale?: number; from?: number; rate?: number; behind?: boolean } = {}): Promise<void> {
+  vfx(
+    id: string,
+    name: FxName,
+    o: { scale?: number; from?: number; rate?: number; behind?: boolean } = {},
+  ): Promise<void> {
     const f = this.all.get(id);
     if (!f || this.destroyed || this.h.profile().still) return Promise.resolve();
     return playSpriteFx(
       this.h.container,
       name,
-      { x: f.root.x, y: f.root.y, scale: o.scale, from: o.from, rate: o.rate, zIndex: f.root.y + (o.behind ? -1 : 2) },
+      {
+        x: f.root.x,
+        y: f.root.y,
+        scale: o.scale,
+        from: o.from,
+        rate: o.rate,
+        zIndex: f.root.y + (o.behind ? -1 : 2),
+      },
       (a) => this.track(a),
     );
   }
@@ -563,8 +646,16 @@ export class Fighters {
       if (f.targetable) f.ring.alpha = 0.32 + 0.3 * Math.sin(t * 5);
       if (still || f.dying || f.busy > 0) continue;
       const w = Math.sin(t * 1.5 + f.phase);
+      const hover = f.spec.hover ?? 0;
+      if (hover) {
+        // a flyer rides on the air: it drifts up and down while its shadow on the floor breathes the other way
+        const b = Math.sin(t * 1.3 + f.phase);
+        f.air.y = -hover + b * 9;
+        f.contact.alpha = 0.32 - 0.06 * b;
+        f.shadow.alpha = 0.3 - 0.05 * b;
+      }
       f.sprite.scale.y = (f.spec.height / f.spec.canvas.height) * (1 + 0.014 * w);
-      f.aura.alpha = (f.spec.isHero ? 0.36 : 0.18) + 0.1 * Math.sin(t * 1.9 + f.phase);
+      f.aura.alpha = (f.spec.isHero ? 0.2 : 0.1) + 0.06 * Math.sin(t * 1.9 + f.phase);
       if (f.prop?.visible && f.spec.prop) {
         const k = f.spec.height / f.spec.canvas.height;
         f.prop.y = (f.spec.prop.y - f.spec.canvas.height) * k + Math.sin(t * 1.8 + f.phase) * 7 * k;

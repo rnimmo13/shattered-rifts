@@ -62,7 +62,7 @@ interface Act {
   actor: Unit;
   target: Unit | null;
   attacker: Unit | null;
-  /** set while a hit is being resolved, so a Snare can cancel it */
+  /** set while a hit is being resolved, so a Trap can cancel it */
   hit: { prevented: boolean } | null;
   /** the card being played (null for anything else) and its instance */
   card: CardDef | null;
@@ -262,7 +262,7 @@ function applyDamage(
   return lost;
 }
 
-/** One attack hit from `a.actor` on `t`: Snares may spring first and may cancel it. */
+/** One attack hit from `a.actor` on `t`: Traps may spring first and may cancel it. */
 function attackHit(r: Run, a: Act, t: Unit, base: number): void {
   if (t.hp <= 0) return;
   if (t.side !== a.actor.side) {
@@ -292,7 +292,7 @@ type Trig =
   | { on: 'foeDefends'; unit: Unit }
   | { on: 'foeTurn' };
 
-/** The oldest matching Snare on `side` springs (at most one per event). */
+/** The oldest matching Trap on `side` springs (at most one per event). */
 function fireSnare(r: Run, side: Side, t: Trig): void {
   const sd = r.s.sides[side];
   const hero = heroOf(sd);
@@ -486,7 +486,7 @@ function execOp(r: Run, a: Act, op: Op): void {
         let n = amountOf(r, a, op.amount, op.scale, t) + resonanceOf(a);
         if (n > 0) n += stacks(a.actor, 'bracing');
         if (n > 0 && stacks(t, 'brittle') > 0) n = Math.floor(n * 0.75);
-        // a Snare that punishes defending springs first, so the Barrier cannot soak what it deals
+        // a Trap that punishes defending springs first, so the Barrier cannot soak what it deals
         if (n > 0) fireSnare(r, other(t.side), { on: 'foeDefends', unit: t });
         if (t.hp <= 0 || r.s.winner) continue;
         t.barrier += n;
@@ -1153,7 +1153,7 @@ function beginHeroTurn(r: Run, side: Side): void {
   r.ev.push({ type: 'turnStart', side, turn: r.s.turn });
   startOfTurn(r, side);
   if (r.s.winner) return;
-  // the opposing Snares that wait for your turn to begin
+  // the opposing Traps that wait for your turn to begin
   fireSnare(r, other(side), { on: 'foeTurn' });
   if (r.s.winner) return;
   sd.played = 0;

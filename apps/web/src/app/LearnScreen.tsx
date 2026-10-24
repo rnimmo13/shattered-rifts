@@ -103,7 +103,7 @@ export function LearnScreen() {
               <b>A run</b>: what the map, rewards and Resolve are.
             </li>
             <li>
-              <b>Combat</b>: Barrier, companions, Snares and the rest of the rules.
+              <b>Combat</b>: Barrier, companions, Traps and the rest of the rules.
             </li>
             <li>
               <b>Riftwalkers</b>: how each character wants to play.

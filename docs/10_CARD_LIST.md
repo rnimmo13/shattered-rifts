@@ -4,11 +4,11 @@
 
 ## Valeria (aurelion, 66 HP)
 
-A knight of the Gilded Order. No companions: Barrier, Thorns and punishing Snares.
+A knight of the Gilded Order. No companions: Barrier, Thorns and punishing Traps.
 
 Lanes: Bulwark: hit with your Barrier / Thorns: punish attackers / Sanctified: heal and Shielded
 
-Starter: Slash, Slash, Slash, Slash, Guard, Guard, Guard, Guard, Dawn Smite, Oathbound
+Starter: Attack, Attack, Attack, Attack, Defend, Defend, Defend, Defend, Dawn Smite, Oathbound
 
 | Card | Cost | Type | Rarity | Text |
 |---|---|---|---|---|
@@ -70,7 +70,7 @@ Starter: Slash, Slash, Slash, Slash, Guard, Guard, Guard, Guard, Dawn Smite, Oat
 | Hold the Line | 1 | skill | uncommon | Gain 4 (+3 per Skill played this turn) Barrier. Hold. |
 | Tower Shield | 1 | power | uncommon | Whenever you play a Skill: Gain 3 Barrier. |
 | Thorn Volley | 1 | attack | uncommon | Deal 2 (+1 per Thorns) damage to ALL enemies. |
-| Thorn Covenant | 1 | power | uncommon | Whenever one of your Snares springs: Apply 2 Thorns. |
+| Thorn Covenant | 1 | power | uncommon | Whenever one of your Traps springs: Apply 2 Thorns. |
 | Barbed Bastion | 2 | skill | uncommon | Gain 6 (+2 per Thorns) Barrier. |
 | Punishing Gale | 2 | snare | uncommon | At the start of the enemy turn: Deal 8 damage to ALL enemies. Deal damage equal to your Thorns to ALL enemies. |
 | Sunforged Edge | 2 | attack | uncommon | Deal 8 (+1 per 4 missing HP) damage. |
@@ -111,7 +111,7 @@ A tinkerer of machines. She starts every fight with a Drone and builds an army o
 
 Lanes: Swarm: many cheap bodies / Assemble: allies act again / Core: a few big constructs
 
-Starter: Slash, Slash, Slash, Slash, Slash, Guard, Guard, Guard, Deploy Drone, Overclock
+Starter: Attack, Attack, Attack, Attack, Attack, Defend, Defend, Defend, Deploy Drone, Overclock
 
 | Card | Cost | Type | Rarity | Text |
 |---|---|---|---|---|
@@ -170,7 +170,7 @@ Starter: Slash, Slash, Slash, Slash, Slash, Guard, Guard, Guard, Deploy Drone, O
 | Resonant Pulse | 1 | power | uncommon | Whenever you play a Skill: Heal 1 to all friends. |
 | Arc Relay | 2 | attack | uncommon | Deal 5 damage to ALL enemies. All your allies act now. |
 | Overtime | 0 | skill | uncommon | All your allies act now. Lose 3 HP. Consume. |
-| Clockwork Snare | 1 | snare | uncommon | When you lose 5+ HP at once: All your allies act now. Gain 8 Barrier. |
+| Clockwork Trap | 1 | snare | uncommon | When you lose 5+ HP at once: All your allies act now. Gain 8 Barrier. |
 | Surge Protocol | X | skill | uncommon | Apply equal to the Mana spent Might to all friends. All your allies act now. |
 | Upgrade Chip | 1 | skill | uncommon | Apply 2 Might to the ally. Heal 6 to the ally. |
 | Siege Engine | 2 | summon | uncommon | Summon Siege Engine (16 HP). At the end of your turn it will: Deal 13 damage. |
@@ -193,7 +193,7 @@ Starter: Slash, Slash, Slash, Slash, Slash, Guard, Guard, Guard, Deploy Drone, O
 | Overload | 2 | skill | rare | All your allies act now. All your allies act now. All your allies act now. Consume. |
 | Chain Reaction | 2 | skill | rare | All your allies act now. All your allies act now. Draw 1 card. |
 | Command Chip | 3 | power | rare | Whenever you play a Summon: All your allies act now. |
-| Relay Network | 2 | power | rare | Whenever one of your Snares springs: All your allies act now. |
+| Relay Network | 2 | power | rare | Whenever one of your Traps springs: All your allies act now. |
 | Echo Command | 1 | skill | rare | All your allies act now. All your allies act now. Next turn, lose 1 Mana. Consume. Hold. |
 | War Engine | 3 | summon | rare | Summon War Engine (22 HP). At the end of your turn it will: Deal 9 damage. |
 | Reactor | 2 | power | rare | Apply 3 Might to all friends. |
@@ -215,7 +215,7 @@ A hunter with a Hound. Pays HP to buff the whole pack with Might.
 
 Lanes: Bloodrage: HP for Might / Pack: feed the companions / Feast: Exhaust and Devour
 
-Starter: Slash, Slash, Slash, Slash, Slash, Guard, Guard, Guard, Savage Bite, Blood Frenzy
+Starter: Attack, Attack, Attack, Attack, Attack, Defend, Defend, Defend, Savage Bite, Blood Frenzy
 
 | Card | Cost | Type | Rarity | Text |
 |---|---|---|---|---|
@@ -319,21 +319,21 @@ Starter: Slash, Slash, Slash, Slash, Slash, Guard, Guard, Guard, Savage Bite, Bl
 
 ## Vesper Nightlace (umbral, 124 HP)
 
-A masked trapper. No companions: Snares, Exposed and patience.
+A masked trapper. No companions: Traps, Exposed and patience.
 
-Lanes: Snares: traps of every trigger / Exposed: mark, then spend the mark / Bluff: Hold, Foresee, held Mana
+Lanes: Traps: one for every trigger / Exposed: mark, then spend the mark / Bluff: Hold, Foresee, held Mana
 
-Starter: Slash, Slash, Slash, Guard, Guard, Guard, Guard, Veil Strike, Veil Strike, Set the Web
+Starter: Attack, Attack, Attack, Defend, Defend, Defend, Defend, Veil Strike, Veil Strike, Set the Web
 
 | Card | Cost | Type | Rarity | Text |
 |---|---|---|---|---|
 | Veil Strike | 1 | attack | basic | Deal 6 damage. Apply 1 Exposed. |
 | Set the Web | 1 | snare | basic | When you or an ally is attacked: Deal 8 damage to the attacker. Apply 2 Exposed to the attacker. |
 | Trip Line | 0 | snare | common | When you or an ally is attacked: Deal 6 damage to the attacker. |
-| Hollow Snare | 1 | snare | common | When you or an ally is attacked: Deal 8 damage to the attacker. Apply 1 Faltering to the attacker. |
+| Hollow Trap | 1 | snare | common | When you or an ally is attacked: Deal 8 damage to the attacker. Apply 1 Faltering to the attacker. |
 | Whisper Net | 1 | snare | common | When the enemy summons: Deal 8 damage to the attacker. Apply 1 Stunned to the attacker. |
 | Cage | 1 | snare | common | When an enemy gains Barrier: Deal 10 damage to the attacker. Apply 1 Faltering to the attacker. |
-| Snare Kit | 1 | skill | common | Add 2 Trip Lines to your hand. Consume. |
+| Trap Kit | 1 | skill | common | Add 2 Trip Lines to your hand. Consume. |
 | Mark Prey | 0 | skill | common | Apply 2 Exposed. |
 | Unmask | 1 | skill | common | Apply 2 Exposed to ALL enemies. |
 | Exploit Weakness | 1 | attack | common | Deal 5 (+3 per Exposed on the target) damage. |
@@ -353,7 +353,7 @@ Starter: Slash, Slash, Slash, Guard, Guard, Guard, Guard, Veil Strike, Veil Stri
 | Quick Study | 0 | skill | common | Draw 1 card. Discard 1 card. |
 | Fang Pit | 1 | snare | common | When you lose 3+ HP at once: Deal 5 damage to ALL enemies. Apply 1 Exposed to ALL enemies. |
 | False Floor | 1 | snare | common | When the enemy summons: Deal 12 damage to the attacker. Apply 2 Exposed to the attacker. |
-| Trapline Rider | 1 | attack | common | Deal 4 damage, 1 more time per Snare set. |
+| Trapline Rider | 1 | attack | common | Deal 4 damage, 1 more time per Trap set. |
 | Pressure Point | 1 | attack | common | Deal 4 (+2 per Exposed on the target) damage. Apply 1 Exposed. |
 | Twin Fangs | 1 | attack | common | Deal 4 damage 2 times. Apply 1 Exposed. |
 | Slit and Run | 1 | attack | common | Deal 7 damage. Gain 4 Barrier. Apply 1 Exposed. |
@@ -364,10 +364,10 @@ Starter: Slash, Slash, Slash, Guard, Guard, Guard, Guard, Veil Strike, Veil Stri
 | Mirror Veil | 2 | snare | uncommon | When you or an ally is attacked: Cancel that attack. Apply 2 Faltering to the attacker. |
 | Pain Link | 0 | snare | uncommon | When you lose 5+ HP at once: Deal 6 damage to ALL enemies. |
 | Time Bomb | 1 | snare | uncommon | At the start of the enemy turn: Deal 9 damage to ALL enemies. |
-| Spring-Loaded | 1 | skill | uncommon | Gain Barrier equal to 5 times the number of Snares you have set. |
+| Spring-Loaded | 1 | skill | uncommon | Gain Barrier equal to 5 times the number of Traps you have set. |
 | Master Trapper | 1 | power | uncommon | Whenever you play a Snare: Draw 1 card. |
 | Tripwire Garrote | 1 | snare | uncommon | When you or an ally is attacked: Deal 7 damage to the attacker. Apply 2 Exposed to the attacker. |
-| Snare Net | 2 | snare | uncommon | At the start of the enemy turn: Deal 4 damage to ALL enemies. Apply 1 Faltering to ALL enemies. |
+| Trap Net | 2 | snare | uncommon | At the start of the enemy turn: Deal 4 damage to ALL enemies. Apply 1 Faltering to ALL enemies. |
 | Death Mark | 2 | attack | uncommon | Deal 12 damage. Apply 3 Exposed. |
 | Shadow Volley | 1 | attack | uncommon | Deal 4 damage 3 times to a random enemy. |
 | Spotlight | 1 | skill | uncommon | Apply 3 Exposed. Apply 1 Faltering. |
@@ -390,8 +390,8 @@ Starter: Slash, Slash, Slash, Guard, Guard, Guard, Guard, Veil Strike, Veil Stri
 | Gambit | 0 | skill | uncommon | Discard any number of cards. Draw cards equal to the cards discarded this turn. Consume. |
 | Poison Pantry | 1 | snare | uncommon | When an enemy gains Barrier: Deal 8 damage to the attacker. Apply 2 Brittle to the attacker. |
 | Metronome Trap | 0 | snare | uncommon | At the start of the enemy turn: Deal 4 damage to ALL enemies. Gain 4 Barrier. |
-| Patchwork Traps | 1 | skill | uncommon | Add a Hollow Snare to your hand. Gain 5 Barrier. Consume. |
-| Grim Collection | 2 | attack | uncommon | Deal 10 damage. Gain Barrier equal to 4 times the number of Snares you have set. |
+| Patchwork Traps | 1 | skill | uncommon | Add a Hollow Trap to your hand. Gain 5 Barrier. Consume. |
+| Grim Collection | 2 | attack | uncommon | Deal 10 damage. Gain Barrier equal to 4 times the number of Traps you have set. |
 | Dread Gaze | 0 | skill | uncommon | Apply 4 Exposed. Consume. |
 | Compound Fear | 1 | skill | uncommon | Double the Exposed on the target. Consume. |
 | Opportunist | 1 | power | uncommon | Whenever a card is consumed: Deal 5 damage to a random enemy. Apply 1 Exposed to a random enemy. |
@@ -400,11 +400,11 @@ Starter: Slash, Slash, Slash, Guard, Guard, Guard, Guard, Veil Strike, Veil Stri
 | Trick of the Light | 0 | skill | uncommon | Foresee 2. Draw 1 card. If discarded: Gain 6 Barrier. |
 | House Edge | 1 | power | uncommon | Whenever you draw a card: Gain 1 Barrier. |
 | Bait and Switch | 2 | snare | rare | When you or an ally is attacked: Cancel that attack. Deal 12 damage to the attacker. |
-| Silencing Snare | 2 | snare | rare | When you or an ally is attacked: Apply 1 Stunned to the attacker. Apply 1 Shielded. |
-| Echo Trap | 2 | power | rare | Whenever one of your Snares springs: Gain 5 Barrier. Draw 1 card. |
+| Silencing Trap | 2 | snare | rare | When you or an ally is attacked: Apply 1 Stunned to the attacker. Apply 1 Shielded. |
+| Echo Trap | 2 | power | rare | Whenever one of your Traps springs: Gain 5 Barrier. Draw 1 card. |
 | Death Trap | 2 | snare | rare | When you or an ally is attacked: Cancel that attack. Deal 18 damage to the attacker. Apply 2 Exposed to the attacker. |
-| Trapper's Dividend | 2 | power | rare | Whenever one of your Snares springs: Draw 1 card. Gain 5 Barrier. |
-| Spring the Trap | 1 | attack | rare | Deal 6 (+8 per Snare set) damage. |
+| Trapper's Dividend | 2 | power | rare | Whenever one of your Traps springs: Draw 1 card. Gain 5 Barrier. |
+| Spring the Trap | 1 | attack | rare | Deal 6 (+8 per Trap set) damage. |
 | Coup de Grace | 3 | attack | rare | Deal 16 (+6 per Exposed on the target) damage. |
 | Opening Strike | 0 | attack | rare | Deal 12 damage. Apply 2 Exposed. Consume. Opening hand. |
 | Hunter's Eye | 2 | power | rare | Whenever you play an Attack: Apply 1 Exposed. |
@@ -424,16 +424,16 @@ Starter: Slash, Slash, Slash, Guard, Guard, Guard, Guard, Veil Strike, Veil Stri
 | Deep Pockets | 3 | power | rare | Gain 1 maximum Mana for the rest of the fight (and 1 now). |
 | Curtain Call | 1 | skill | rare | Draw 1 card. Return 2 random snare cards from your discard pile to your hand. Consume. |
 | The Perfect Trap | 3 | snare | legendary | When you or an ally is attacked: Cancel that attack. Deal 22 damage to the attacker. Apply 1 Stunned to the attacker. Apply 2 Shielded. |
-| Masquerade | 2 | power | legendary | Whenever one of your Snares springs: Draw 2 cards. Gain 1 Mana. Deal 4 damage to ALL enemies. |
+| Masquerade | 2 | power | legendary | Whenever one of your Traps springs: Draw 2 cards. Gain 1 Mana. Deal 4 damage to ALL enemies. |
 | The Long Ambush | 3 | snare | legendary | At the start of the enemy turn: Deal 25 damage to ALL enemies. Apply 1 Stunned to ALL enemies. |
 
-## Scarlet (umbral, 84 HP)
+## Sylas (umbral, 84 HP)
 
 A cutpurse with a sleeve full of blades. Starts every fight with a Sleeve Knife. Knives, Bleed and discard tricks.
 
 Lanes: Knives: 0-cost blades / Bleed: stack, double, cash out / Sleight: discard and cycle
 
-Starter: Slash, Slash, Slash, Slash, Guard, Guard, Guard, Quick Jab, Quick Jab, Slip Away
+Starter: Attack, Attack, Attack, Attack, Defend, Defend, Defend, Quick Jab, Quick Jab, Slip Away
 
 | Card | Cost | Type | Rarity | Text |
 |---|---|---|---|---|
@@ -547,7 +547,7 @@ A stone golem who plants carved totems and calls the spirits inside them to do h
 
 Lanes: Hawk: damage totems (one enemy or all) / Bear: Barrier totems / Elder: charge and Spirit
 
-Starter: Slash, Slash, Slash, Slash, Guard, Guard, Guard, Plant Hawk, Plant Hawk, Twin Awakening
+Starter: Attack, Attack, Attack, Attack, Defend, Defend, Defend, Plant Hawk, Plant Hawk, Twin Awakening
 
 | Card | Cost | Type | Rarity | Text |
 |---|---|---|---|---|
@@ -610,10 +610,10 @@ Starter: Slash, Slash, Slash, Slash, Guard, Guard, Guard, Plant Hawk, Plant Hawk
 | Spent Husk | 1 | skill | uncommon | Awaken your first totem. Plant Hawk. |
 | Spirit Conduit | 1 | power | uncommon | Whenever you play an Attack: Deal 2 damage to a random enemy. |
 | Heartwood | 2 | attack | uncommon | Deal 6 damage 2 times. Plant Hawk. |
-| Static Snare | 1 | snare | uncommon | At the start of the enemy turn: Deal 6 damage to ALL enemies. Plant Splinter. |
+| Static Trap | 1 | snare | uncommon | At the start of the enemy turn: Deal 6 damage to ALL enemies. Plant Splinter. |
 | Bulwark Totem | 2 | skill | uncommon | Gain 4 (+3 per totem) Barrier. Apply 1 Bracing. |
 | Sentinel Totem | 2 | power | uncommon | Apply 1 Shielded. At the start of your turn: Gain 3 Barrier. |
-| Totem Snare | 2 | snare | uncommon | When you or an ally is attacked: Cancel that attack. Plant Bear. |
+| Totem Trap | 2 | snare | uncommon | When you or an ally is attacked: Cancel that attack. Plant Bear. |
 | Elder Tide | 2 | attack | uncommon | Deal 6 (+4 per Spirit) damage. Plant Elder. |
 | Spirit Drum | 1 | skill | uncommon | Apply 1 Spirit. Plant Owl. |
 | Void Dividend | 1 | skill | uncommon | Draw cards equal to the number of your totems. A random card in your hand costs 1 less this fight. |
@@ -648,13 +648,13 @@ Starter: Slash, Slash, Slash, Slash, Guard, Guard, Guard, Plant Hawk, Plant Hawk
 | Cataclysm Totem | 2 | attack | legendary | Deal 10 damage to ALL enemies. Awaken your first 10 totems 2 times. Consume. |
 | The Spirit Council | 3 | skill | legendary | Plant Hawk. Plant Bear. Plant Elder. Apply 2 Spirit. Consume. |
 
-## Ragnar (aurelion, 116 HP)
+## Sehra (aurelion, 116 HP)
 
 A barbarian who fights in stances. Starts every fight Serene. Fury for burst, Serene for tempo, Fervor for Radiance.
 
 Lanes: Fury: burst / Serene: Mana and cards / Fervor: build to Radiant
 
-Starter: Slash, Slash, Slash, Slash, Guard, Guard, Guard, Guard, Kindle Fury, Still Guard
+Starter: Attack, Attack, Attack, Attack, Defend, Defend, Defend, Defend, Kindle Fury, Still Guard
 
 | Card | Cost | Type | Rarity | Text |
 |---|---|---|---|---|
@@ -758,7 +758,7 @@ A spellblade of black glass and ember. Starts with 3 Arcana and an Obsidian Blad
 
 Lanes: Blade: sharpen one weapon / Arcana: spend for finishers / Sigils: ticking Auras
 
-Starter: Slash, Slash, Guard, Guard, Guard, Guard, Glass Jab, Gather Arcana, Arcane Bolt, Arcane Bolt
+Starter: Attack, Attack, Defend, Defend, Defend, Defend, Glass Jab, Gather Arcana, Arcane Bolt, Arcane Bolt
 
 | Card | Cost | Type | Rarity | Text |
 |---|---|---|---|---|
@@ -869,7 +869,7 @@ A short, fat, bald dwarf with a hammer, an Old Twelve Gauge that hits every enem
 
 Lanes: Gun: sharpen the Old Twelve Gauge / Shells: buckshot that hits everyone / Hangover: the more it hurts, the harder you hit
 
-Starter: Slash, Slash, Slash, Guard, Guard, Guard, Hammer Swing, Hammer Swing, Pane Up, Bottle Tripwire
+Starter: Attack, Attack, Attack, Defend, Defend, Defend, Hammer Swing, Hammer Swing, Pane Up, Bottle Tripwire
 
 | Card | Cost | Type | Rarity | Text |
 |---|---|---|---|---|
@@ -976,7 +976,7 @@ A warden of the drowned dead. Starts with a Bone Thrall. Curses enemies with Fat
 
 Lanes: Fate: curse, double, cash in / Thralls: the dead fight for you / Ashes: consumed cards fuel you
 
-Starter: Slash, Slash, Slash, Guard, Guard, Guard, Grave Touch, Grave Touch, Bone Ward, Bone Ward
+Starter: Attack, Attack, Attack, Defend, Defend, Defend, Grave Touch, Grave Touch, Bone Ward, Bone Ward
 
 | Card | Cost | Type | Rarity | Text |
 |---|---|---|---|---|
@@ -1087,8 +1087,8 @@ Tokens (made by other cards):
 
 | Card | Cost | Type | Rarity | Text |
 |---|---|---|---|---|
-| Slash | 1 | attack | basic | Deal 6 damage. |
-| Guard | 1 | skill | basic | Gain 5 Barrier. |
+| Attack | 1 | attack | basic | Deal 6 damage. |
+| Defend | 1 | skill | basic | Gain 5 Barrier. |
 | Rift Bolt | 0 | attack | common | Deal 5 damage. Consume. |
 | Catch Breath | 1 | skill | common | Draw 2 cards. |
 | Steady Guard | 1 | skill | common | Gain 8 Barrier. Hold. |

@@ -10,7 +10,7 @@ const KIND_LABEL: Record<CardDef['kind'], string> = {
   skill: 'Skill',
   power: 'Aura',
   summon: 'Summon',
-  snare: 'Snare',
+  snare: 'Trap',
 };
 
 const RARITY_LABEL: Record<string, string> = {

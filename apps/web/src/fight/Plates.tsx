@@ -49,19 +49,24 @@ export function UnitPlates({ items, targetable, hover, preview, heroId }: Plates
   // plates that would run into their neighbours get narrower, and a crowd staggers up and down, so no two ever overlap
   const lane = new Map<string, { width: number; dy: number }>();
   for (const side of ['a', 'b'] as const) {
-    const row = items.filter((i) => i.unit.side === side).sort((p, q) => p.x - q.x);
-    row.forEach((it, idx) => {
-      const prev = row[idx - 1];
-      const next = row[idx + 1];
-      const gap = Math.min(prev ? it.x - prev.x : Infinity, next ? next.x - it.x : Infinity);
-      const want = Math.max(165, Math.min(215, it.w * 1.05));
-      const tight = gap < want + 8;
-      lane.set(it.unit.id, {
-        width: tight ? Math.max(118, Math.min(want, gap - 8)) : want,
-        // when even the narrow plates would touch, every other one drops a line
-        dy: gap < 126 && idx % 2 === 1 ? 54 : 0,
+    // (a flyer's plate hangs under the flyer, so each height is its own row)
+    for (const band of new Set(items.map((i) => Math.round(i.y / 8)))) {
+      const row = items
+        .filter((i) => i.unit.side === side && Math.round(i.y / 8) === band)
+        .sort((p, q) => p.x - q.x);
+      row.forEach((it, idx) => {
+        const prev = row[idx - 1];
+        const next = row[idx + 1];
+        const gap = Math.min(prev ? it.x - prev.x : Infinity, next ? next.x - it.x : Infinity);
+        const want = Math.max(165, Math.min(215, it.w * 1.05));
+        const tight = gap < want + 8;
+        lane.set(it.unit.id, {
+          width: tight ? Math.max(118, Math.min(want, gap - 8)) : want,
+          // when even the narrow plates would touch, every other one drops a line
+          dy: gap < 126 && idx % 2 === 1 ? 54 : 0,
+        });
       });
-    });
+    }
   }
   return (
     <div className="plates" aria-hidden={false}>
@@ -71,7 +76,8 @@ export function UnitPlates({ items, targetable, hover, preview, heroId }: Plates
         const slot = lane.get(u.id) ?? { width: Math.max(165, Math.min(215, w * 1.05)), dy: 0 };
         const width = slot.width;
         const style: CSSProperties = { left: x, top: y + 10 + slot.dy, width };
-        const intentStyle: CSSProperties = { left: x, top: y - h - 8 };
+        // (a tall figure never pushes its next move off the top of the screen)
+        const intentStyle: CSSProperties = { left: x, top: Math.max(y - h - 8, 64) };
         return (
           <div key={u.id}>
             {u.kind === 'enemy' && iv && (

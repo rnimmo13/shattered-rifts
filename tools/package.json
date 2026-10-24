@@ -10,6 +10,7 @@
     "sim": "tsx src/sim.ts",
     "deploy:web": "tsx src/deploy.ts",
     "artlist": "tsx src/artlist.ts",
+    "cardprompts": "tsx src/cardprompts.ts",
     "cardlist": "tsx src/cardlist.ts",
     "balance": "tsx src/balance.ts",
     "runsim": "tsx src/runsim.ts",

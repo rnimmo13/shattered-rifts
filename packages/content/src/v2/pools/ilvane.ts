@@ -345,7 +345,7 @@ export const ILVANE: CardDef[] = [
   i(
     'uncommon',
     'static-snare',
-    'Static Snare',
+    'Static Trap',
     'snare',
     1,
     'none',
@@ -382,7 +382,7 @@ export const ILVANE: CardDef[] = [
   ),
   i('rare', 'aegis-array', 'Totem Ring', 'skill', 3, 'none', [barrier(8), channel('ward', 3)]),
   i('rare', 'frozen-ledger', 'Frozen Grove', 'power', 1, 'none', [on('exhaust', [barrier(4)])]),
-  i('uncommon', 'rune-snare', 'Totem Snare', 'snare', 2, 'none', [PREVENT, channel('ward')], {
+  i('uncommon', 'rune-snare', 'Totem Trap', 'snare', 2, 'none', [PREVENT, channel('ward')], {
     trigger: { on: 'attacked' },
   }),
 

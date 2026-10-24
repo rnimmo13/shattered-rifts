@@ -5,6 +5,13 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **0.21.0:** grounded fighters and flyers, per-arena scenery, Traps, Attack and Defend, Sehra and Sylas, screen-fit fixes.
+- **Fits the screen:** cards in your hand are a little smaller, a tall or flying monster's next move always stays on screen, and flyers no longer rise out of view.
+- **Traps:** Snares are now called Traps everywhere you read them (card type, tips, shop and event text, card names).
+- **Attack and Defend:** the basic cards every Riftwalker starts with are now simply called Attack and Defend.
+- **Grounded fighters and flyers:** figures stand on the floor with a proper shadow; drones, spirits and other flyers hover above the line in their own row (with their health bars hanging under them), which makes room for bigger crowds. Potions moved above the Mana orb. Each arena sets out its scenery differently and keeps it on the floor.
+- **Wider battlefield:** the two sides stand further apart, and a pack of wide creatures is drawn a little smaller so it no longer melts together.
+- **Sehra and Sylas:** the stance fighter is called Sehra again (was Ragnar), and the knife rogue is Sylas (was Scarlet).
 - **0.20.0:** illustrated models for every enemy, three Legendaries per Riftwalker.
 - **Three Legendary cards per Riftwalker** (down from five): the two originals plus one of the 0.12.0 additions. A deck still holds at most two.
 - **0.19.0:** painted arenas, companion art and new hero art.

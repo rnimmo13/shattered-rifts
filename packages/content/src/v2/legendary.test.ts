@@ -108,7 +108,7 @@ describe('three Legendary cards per Riftwalker', () => {
         `${hero} legendaries`,
       ).toHaveLength(3);
       for (const c of own) {
-        if (c.kind === 'snare') continue; // a Snare is set, not played for an effect
+        if (c.kind === 'snare') continue; // a Trap is set, not played for an effect
         play(hero, c.id);
       }
     }

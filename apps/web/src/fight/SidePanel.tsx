@@ -108,7 +108,7 @@ const TRIGGER_LABEL: Record<string, string> = {
 };
 
 /**
- * Face-down Snares laid as trap tiles on the floor in front of the hero: a violet trap plate with a web on it, a pulsing ring so
+ * Face-down Traps laid as trap tiles on the floor in front of the hero: a violet trap plate with a web on it, a pulsing ring so
  * they cannot be missed, and what sets each one off written underneath ("when attacked"). Hover for what it does.
  */
 export function SnareRow(props: {
@@ -122,9 +122,9 @@ export function SnareRow(props: {
   if (me.snares.length === 0) return null;
   const gap = 66;
   return (
-    <div className="snarerow" aria-label="Your Snares">
+    <div className="snarerow" aria-label="Your Traps">
       <span className="snarerow__label" style={{ left: props.cx + 118, top: props.top - 22 }}>
-        Snares {me.snares.length}/{MAX_SNARES}
+        Traps {me.snares.length}/{MAX_SNARES}
       </span>
       {me.snares.map((s, i) => {
         const def = s.card ? db.cards[s.card] : undefined;

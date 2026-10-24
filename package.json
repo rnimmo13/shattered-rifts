@@ -20,6 +20,7 @@
     "sim": "pnpm --filter @sr/tools sim",
     "deploy:web": "pnpm --filter @sr/tools deploy:web",
     "artlist": "pnpm --filter @sr/tools artlist",
+    "cardprompts": "pnpm --filter @sr/tools cardprompts",
     "cardlist": "pnpm --filter @sr/tools cardlist",
     "balance": "pnpm --filter @sr/tools balance",
     "runsim": "pnpm --filter @sr/tools runsim",

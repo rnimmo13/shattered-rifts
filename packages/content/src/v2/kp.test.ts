@@ -167,7 +167,7 @@ describe('innate traits', () => {
     const s = fight('kp', []);
     const hero = s.sides.a.units[s.sides.a.units.length - 1]!;
     expect(hero.statuses.clutch ?? 0).toBe(0);
-    // take a big hit from a Snare-free direct source: use the enemy turn via a fabricated heavy hit
+    // take a big hit from a Trap-free direct source: use the enemy turn via a fabricated heavy hit
     hero.hp = 40;
     const after = applyAction(db, s, { type: 'endTurn' }).state;
     const h = after.sides.a.units[after.sides.a.units.length - 1]!;

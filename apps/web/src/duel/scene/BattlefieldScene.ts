@@ -39,6 +39,7 @@ import {
   PAD_Y,
   floorTextures,
   fogTexture,
+  contactTexture,
   glowTexture,
   ruinsTexture,
   shardsTexture,
@@ -206,7 +207,7 @@ export class BattlefieldScene {
             : tex(skyTexture()),
     );
     this.shards = new Sprite(art || painted ? Texture.EMPTY : tex(shardsTexture()));
-    if (painted) this.arenaProps = new ArenaProps(painted, arenaLook, this.glowTex);
+    if (painted) this.arenaProps = new ArenaProps(painted, arenaLook, this.glowTex, venue);
     this.ruins = this.arenaProps
       ? this.arenaProps.far
       : cave
@@ -267,6 +268,7 @@ export class BattlefieldScene {
     this.fighters = new Fighters({
       container: this.layers.units,
       glowTex: this.glowTex,
+      contactTex: tex(contactTexture(128)),
       profile: () => this.profile,
       sound: (n) => this.onSound(n as SoundName),
     });

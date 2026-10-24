@@ -32,7 +32,7 @@ export function describeEffect(e: PreludeEffect): string {
     case 'upgrade':
       return e.n === 1 ? 'Upgrade a random card' : `Upgrade ${e.n} random cards`;
     case 'remove':
-      return e.n === 1 ? 'Remove a Slash or Guard' : `Remove ${e.n} Slashes or Guards`;
+      return e.n === 1 ? 'Remove an Attack or Defend' : `Remove ${e.n} Attacks or Defends`;
     case 'boon':
       return `A random ${rarityWord[e.rarity]} Boon`;
     case 'potion':

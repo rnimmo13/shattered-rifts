@@ -13,7 +13,7 @@ export interface DealHelpers {
   fail: (msg: string) => never;
 }
 
-/** The plain Slash / Guard cards (Neutral basics): never a Riftwalker's own starter card, never a Wound. */
+/** The plain Attack / Defend cards (Neutral basics): never a Riftwalker's own starter card, never a Wound. */
 export const basics = (deck: readonly string[]): string[] =>
   deck.filter(
     (id) => COMBAT_DB.cards[id]?.rarity === 'basic' && COMBAT_DB.cards[id]?.hero === 'neutral',

@@ -1056,7 +1056,7 @@ const vesper: Painter = (g, fx) => {
   glowHex(fx, '#b99aff', 224, 190, 30, 0.45);
 };
 
-// ---- Scarlet: a female assassin in a crimson hood and veil, a dagger in each hand, mid-lunge ----
+// ---- Sylas: a female assassin in a crimson hood and veil, a dagger in each hand, mid-lunge ----
 const quill: Painter = (g, fx) => {
   // cloak tails and a whipping ponytail behind her
   gpoly(
@@ -1537,7 +1537,7 @@ const ilvane: Painter = (g, fx) => {
   glowHex(fx, '#5a8a3a', CX, 420, 150, 0.1);
 };
 
-// ---- Ragnar: a barbarian, bare to the waist, braided beard, fists wrapped, in a roaring stance ----
+// ---- Sehra: a barbarian, bare to the waist, braided beard, fists wrapped, in a roaring stance ----
 const sehra: Painter = (g, fx) => {
   // fur cloak behind
   gpoly(

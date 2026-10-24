@@ -1,6 +1,6 @@
 // KP, the Homeless Drunk (the Midden, the rift's rubbish heap). A short, fat, bald dwarf with a hammer, a sawed-off 12 gauge and a shopping trolley of
 // window panes. No companions. Three lanes:
-//   Junk Traps - a few booby traps built from bottles and glass (Snares are a shared tool; Vesper still owns the most)
+//   Junk Traps - a few booby traps built from bottles and glass (Traps are a shared tool; Vesper still owns the most)
 //   Glass      - hang panes of glass: Barrier and Thorns, then break them over someone's head
 //   Shells     - Buckshot Shells (0-cost, hit EVERY enemy, consumed) and liquid courage to keep swinging
 // Shells are KP's alone, the way Sleeve Knives are Quill's: a shell hits the whole room for a little, a knife one enemy.
@@ -57,7 +57,7 @@ export const KP: CardDef[] = [
     source: 'token',
   }),
 
-  // --- Junk Traps (a few Snares; Vesper has the real arsenal) ---
+  // --- Junk Traps (a few Traps; Vesper has the real arsenal) ---
   p(
     'common',
     'glass-trap',

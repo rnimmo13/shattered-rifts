@@ -21,9 +21,9 @@ export function validateDb(db: CombatDb): string[] {
         errs.push(`${where}: summons unknown unit "${o.unit}"`);
       if (o.op === 'addCard' && !db.cards[o.card])
         errs.push(`${where}: adds unknown card "${o.card}"`);
-      if (o.op === 'prevent' && !opts.snare) errs.push(`${where}: "prevent" only works in a Snare`);
+      if (o.op === 'prevent' && !opts.snare) errs.push(`${where}: "prevent" only works in a Trap`);
       if ('to' in o && o.to === 'attacker' && !opts.snare)
-        errs.push(`${where}: "attacker" only works in a Snare`);
+        errs.push(`${where}: "attacker" only works in a Trap`);
       if ('to' in o && o.to === 'target' && !opts.aimed)
         errs.push(`${where}: uses "target" but nothing is aimed`);
       if ('amount' in o && !Number.isFinite(o.amount)) errs.push(`${where}: bad amount`);
@@ -79,11 +79,11 @@ export function validateDb(db: CombatDb): string[] {
     if (!Number.isInteger(c.cost) || c.cost < 0) errs.push(`${id}: bad cost`);
     if (c.upgrade && !db.cards[c.upgrade]) errs.push(`${id}: unknown upgrade "${c.upgrade}"`);
     if (c.kind === 'snare') {
-      if (!c.trigger) errs.push(`${id}: a Snare needs a trigger`);
-      if (c.target !== 'none') errs.push(`${id}: a Snare cannot take a target`);
-    } else if (c.trigger) errs.push(`${id}: only Snares have triggers`);
+      if (!c.trigger) errs.push(`${id}: a Trap needs a trigger`);
+      if (c.target !== 'none') errs.push(`${id}: a Trap cannot take a target`);
+    } else if (c.trigger) errs.push(`${id}: only Traps have triggers`);
     const aimed = c.target !== 'none';
-    // inside a Snare "target" is the attacker, so it counts as aimed
+    // inside a Trap "target" is the attacker, so it counts as aimed
     checkOps(id, c.effects, {
       aimed: aimed || c.kind === 'snare',
       snare: c.kind === 'snare',

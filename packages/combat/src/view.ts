@@ -52,7 +52,7 @@ export interface SideView {
   discard: CardInst[] | null;
   mana: number;
   maxMana: number;
-  /** a Snare's card is only known to its owner */
+  /** a Trap's card is only known to its owner */
   snares: { id: string; card: CardId | null }[];
   hero: string | null;
   /** Potion ids (your own side only) and how many each side holds */
@@ -135,7 +135,7 @@ function pendingView(s: CombatState, me: Side): PendingView | null {
   return { kind: p.kind, pool, min: p.min, max: p.max };
 }
 
-/** A hero's-eye view: the other side's hand, draw order and Snares stay hidden. */
+/** A hero's-eye view: the other side's hand, draw order and Traps stay hidden. */
 export function viewFor(db: CombatDb, s: CombatState, me: Side): CombatView {
   const side = (id: Side): SideView => {
     const sd = s.sides[id];
@@ -202,7 +202,7 @@ const KIND_PLURAL: Record<string, string[]> = {
   skill: ['Skill'],
   power: ['Aura'],
   summon: ['Summon'],
-  snare: ['Snare'],
+  snare: ['Trap'],
 };
 const cap = (s: string): string => s.charAt(0).toUpperCase() + s.slice(1);
 /** What the player reads for a status or stance (the ids stay as they are in the data). */
@@ -245,7 +245,7 @@ const METRIC_WORDS: Record<Metric, { per: string; equal: string }> = {
   exhausted: { per: 'consumed card', equal: 'the number of cards you have consumed' },
   allies: { per: 'ally', equal: 'the number of your allies' },
   foes: { per: 'enemy', equal: 'the number of enemies' },
-  snares: { per: 'Snare set', equal: 'the number of Snares you have set' },
+  snares: { per: 'Trap set', equal: 'the number of Traps you have set' },
   stars: { per: 'Arcana', equal: 'your Arcana' },
   runes: { per: 'totem', equal: 'the number of your totems' },
   mana: { per: 'Mana left', equal: 'your Mana' },
@@ -318,7 +318,7 @@ const WHEN_TEXT: Record<string, string> = {
   discard: 'Whenever you discard a card',
   summon: 'Whenever you summon an ally',
   allyDies: 'Whenever one of your allies dies',
-  snare: 'Whenever one of your Snares springs',
+  snare: 'Whenever one of your Traps springs',
   stance: 'Whenever you enter a stance',
   barrier: 'Whenever you gain Barrier',
   loseHp: 'Whenever you lose HP to your own cards',
@@ -573,7 +573,7 @@ export function cardText(db: CombatDb, c: CardDef): string {
 
 /**
  * Events as `viewer` may see them: the other side's draws, discards and added cards lose their card identity, and a
- * Snare being set is just "a Snare" until it springs. Use this for anything sent to or shown to one player (PvP).
+ * Trap being set is just "a Trap" until it springs. Use this for anything sent to or shown to one player (PvP).
  */
 export function eventsFor(
   db: CombatDb,

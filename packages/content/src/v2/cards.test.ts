@@ -96,7 +96,7 @@ describe('every card plays', () => {
       const hero = heroOf(c);
       const s0 = setup(c, hero);
       let s = s0;
-      // a Snare needs room; a card that only works with a rune or Seared on board still resolves without error
+      // a Trap needs room; a card that only works with a rune or Seared on board still resolves without error
       const { s: after, events } = playOut(s, 'T0');
       s = after;
       // something visible happened beyond paying for it: drop the play itself and its Mana payment
@@ -258,7 +258,7 @@ describe('pool shape (docs/09_ROSTER.md §1)', () => {
     }
   });
 
-  it('Snares are a shared tool: everyone can have a few, Vesper has by far the most', () => {
+  it('Traps are a shared tool: everyone can have a few, Vesper has by far the most', () => {
     const own = (h: string) =>
       cards.filter((c) => c.hero === h && c.kind === 'snare' && !c.id.endsWith('+')).length;
     const counts = HEROES.map((h) => [h, own(h)] as const);

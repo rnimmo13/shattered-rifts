@@ -760,6 +760,20 @@ export function fogTexture(seed: number, base = 6, fadeV = false): HTMLCanvasEle
 }
 
 /** A soft round glow (white; tint on the sprite). */
+/** A dark blob with a firm core and a short falloff: the contact shadow under a figure's feet. */
+export function contactTexture(size = 128): HTMLCanvasElement {
+  const c = makeCanvas(size, size);
+  const g = ctx2d(c);
+  const gr = g.createRadialGradient(size / 2, size / 2, 0, size / 2, size / 2, size / 2);
+  gr.addColorStop(0, 'rgba(255,255,255,1)');
+  gr.addColorStop(0.4, 'rgba(255,255,255,0.9)');
+  gr.addColorStop(0.7, 'rgba(255,255,255,0.4)');
+  gr.addColorStop(1, 'rgba(255,255,255,0)');
+  g.fillStyle = gr;
+  g.fillRect(0, 0, size, size);
+  return c;
+}
+
 export function glowTexture(size = 128, hardness = 0): HTMLCanvasElement {
   const c = makeCanvas(size, size);
   const g = ctx2d(c);

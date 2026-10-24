@@ -51,7 +51,7 @@ export function TitleScreen() {
         <p className="title__eyebrow">Friends alpha · working title</p>
         <h1 className="title__name">Shattered Rifts</h1>
         <p className="title__tagline">
-          Walk the broken worlds. Build a deck. Read the rift. Spring the snare.
+          Walk the broken worlds. Build a deck. Read the rift. Spring the trap.
         </p>
       </header>
 

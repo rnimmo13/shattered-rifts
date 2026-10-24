@@ -125,7 +125,7 @@ export type DealStep =
 /** One of the three starting decks (one per lane) offered at the start of a run. */
 export interface KitOption {
   id: 'a' | 'b' | 'c';
-  /** what it leans toward, in the player's words ("Snares", "Fate"...) */
+  /** what it leans toward, in the player's words ("Traps", "Fate"...) */
   leans: string;
   /** the whole deck you would start with */
   deck: string[];
@@ -142,12 +142,12 @@ export type PreludeEffect =
   | { k: 'shards'; n: number }
   | { k: 'card'; rarity: 'common' | 'uncommon' | 'rare' | 'legendary' | 'ancestral' }
   | { k: 'upgrade'; n: number }
-  | { k: 'remove'; n: number } // Slash / Guard only
+  | { k: 'remove'; n: number } // Attack / Defend only
   | { k: 'boon'; rarity: 'common' | 'uncommon' | 'rare' }
   | { k: 'potion' }
   | { k: 'resolve'; n: number }
   | { k: 'wound'; n: number }
-  | { k: 'transform'; n: number }; // Slash / Guard into random cards
+  | { k: 'transform'; n: number }; // Attack / Defend into random cards
 
 export interface PreludeOption {
   id: string;

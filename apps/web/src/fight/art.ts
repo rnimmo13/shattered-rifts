@@ -115,6 +115,30 @@ export function unitFigure(defId: string): HTMLCanvasElement {
   return fig;
 }
 
+/**
+ * Flyers hover this many stage px above the floor. They stand in their own row above the ground line, so a growing
+ * crowd does not run out of room; their shadow stays on the floor. Presentation only: the rules do not change.
+ */
+const HOVER: Record<string, number> = {
+  drone: 140,
+  'patrol-drone': 140,
+  'micro-drone': 170,
+  'repair-bot': 140,
+  'scrap-drone': 150,
+  'hive-7': 120,
+  'rift-shard': 130,
+  ghostwire: 140,
+  whisperer: 120,
+  'choir-of-silence': 130,
+  gorrmaw: 110,
+  'lost-courtier': 70,
+  seraphine: 60,
+};
+
+export function hoverOf(defId: string): number {
+  return HOVER[base(defId)] ?? 0;
+}
+
 /** How tall a unit stands on the stage (stage px): companions are small, bosses are big. */
 export function unitHeight(d: UnitDef | undefined, kind: 'ally' | 'enemy' | 'hero'): number {
   if (kind === 'hero') return 520;
@@ -286,15 +310,13 @@ function effectEmblems(c: CardDef): string[] {
   return out;
 }
 
-/** The art window for a v2 card (a data URL), via the card-art painters. */
-export function cardArtV2(c: CardDef): string {
-  const real = realCardArt(c.id);
-  if (real) return real;
+/** What the painters are told about a card (its figure or motif, symbols, scene and seal): no canvas needed. */
+export function cardArtSpec(c: CardDef): ArtCard {
   const unit = c.effects.find((o) => o.op === 'summon');
   const summoned = unit && unit.op === 'summon' ? UNIT[base(unit.unit)]?.[0] : undefined;
   const emblem = emblemOf(c, summoned ? undefined : motifOf(c));
   const accent = summoned ? undefined : effectEmblems(c).find((e) => e !== emblem);
-  const fake = {
+  const fake: ArtCard = {
     id: c.id.replace(/^(hi|lo)~/, '').replace(/\+$/, ''),
     name: c.name,
     realm: (c.realm === 'junk' ? 'neutral' : (c.realm ?? 'neutral')) as Realm,
@@ -306,6 +328,13 @@ export function cardArtV2(c: CardDef): string {
     ...(accent ? { accent } : {}),
     ...(c.hero ? { scene: c.hero } : {}),
     ...(c.hero && HERO_EMBLEM[c.hero] ? { seal: HERO_EMBLEM[c.hero] as string } : {}),
-  } satisfies ArtCard;
-  return cardArtUrl(fake);
+  };
+  return fake;
+}
+
+/** The art window for a v2 card (a data URL), via the card-art painters. */
+export function cardArtV2(c: CardDef): string {
+  const real = realCardArt(c.id);
+  if (real) return real;
+  return cardArtUrl(cardArtSpec(c));
 }

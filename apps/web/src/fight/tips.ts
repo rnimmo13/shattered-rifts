@@ -72,8 +72,8 @@ export const TIP_RULES: TipRule[] = [
   },
   {
     id: 'snare',
-    title: 'Snares',
-    text: 'A Snare is played face down. It springs on its own the moment its trigger happens (an enemy attacks, summons, defends...), then returns to your discard pile. You can have up to 3 set.',
+    title: 'Traps',
+    text: 'A Trap is played face down. It springs on its own the moment its trigger happens (an enemy attacks, summons, defends...), then returns to your discard pile. You can have up to 3 set.',
     when: (v) => v.sides.a.snares.length > 0,
   },
   {

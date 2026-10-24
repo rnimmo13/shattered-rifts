@@ -729,11 +729,11 @@
   display: block;
 }
 
-/* the potion belt: three slots, flask icons, clearly potions */
+/* the potion belt: three slots, flask icons, clearly potions. It sits above the Mana orb, out of the way of the hand */
 .fight__potions {
   position: absolute;
-  left: 7.4rem;
-  bottom: 6.6rem;
+  left: 1.2rem;
+  bottom: 12.9rem;
   display: grid;
   gap: 0.25rem;
   z-index: 30;
@@ -742,9 +742,15 @@
   background: rgb(8 10 20 / 0.55);
   border: 1px solid rgb(109 240 168 / 0.35);
 }
-/* the Arcana orb occupies the slot beside Mana: slide the belt past it (4rem orb + gap) */
-.fight__potions--withLumen {
-  left: 12.2rem;
+/* the belt is a compact row, so it never reaches the hero's plate */
+.fight__potions .potionbtn,
+.fight__potions .potionslot {
+  width: 3.7rem;
+  height: 3.7rem;
+}
+.fight__potions .potionbtn small {
+  max-width: 3.5rem;
+  font-size: 0.8rem;
 }
 .fight__beltLabel {
   font-family: var(--font-display);

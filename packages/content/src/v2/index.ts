@@ -44,7 +44,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     },
     hero: { id: 'maren', name: 'Valeria', maxHp: 66, mana: 3, handSize: 5 },
     starter: [...rep('strike', 4), ...rep('defend', 4), 'dawn-smite', 'oathbound'],
-    blurb: 'A knight of the Gilded Order. No companions: Barrier, Thorns and punishing Snares.',
+    blurb: 'A knight of the Gilded Order. No companions: Barrier, Thorns and punishing Traps.',
     lanes: [
       'Bulwark: hit with your Barrier',
       'Thorns: punish attackers',
@@ -110,15 +110,15 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     },
     hero: { id: 'vesper', name: 'Vesper Nightlace', maxHp: 124, mana: 3, handSize: 5 },
     starter: [...rep('strike', 3), ...rep('defend', 4), ...rep('veil-strike', 2), 'set-the-web'],
-    blurb: 'A masked trapper. No companions: Snares, Exposed and patience.',
+    blurb: 'A masked trapper. No companions: Traps, Exposed and patience.',
     lanes: [
-      'Snares: traps of every trigger',
+      'Traps: one for every trigger',
       'Exposed: mark, then spend the mark',
       'Bluff: Hold, Foresee, held Mana',
     ],
     howTo: [
-      'A Snare is played face down and springs on its own when its trigger happens.',
-      'Read the icon above each enemy and set the Snare that answers what it is about to do.',
+      'A Trap is played face down and springs on its own when its trigger happens.',
+      'Read the icon above each enemy and set the Trap that answers what it is about to do.',
       'Exposed enemies take 50% more damage: mark them, then spend the mark.',
     ],
   },
@@ -132,7 +132,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     },
     hero: {
       id: 'quill',
-      name: 'Scarlet',
+      name: 'Sylas',
       maxHp: 84,
       mana: 3,
       handSize: 5,
@@ -191,7 +191,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     },
     hero: {
       id: 'sehra',
-      name: 'Ragnar',
+      name: 'Sehra',
       maxHp: 116,
       mana: 3,
       handSize: 5,
@@ -274,7 +274,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
       'Window panes and hammer blows get stronger the more HP you are missing, and Clutch Genes makes you hit even harder below half HP.',
       'You start every fight with the Old Twelve Gauge: it hits EVERY enemy, you keep it in hand, and every Sharpen card (Rack the Slide...) makes it hit harder for the whole fight.',
       'Shells are 0-cost attacks that hit every enemy and are consumed. Playing one can sharpen the gun (Hair Trigger).',
-      'Swigs heal and hit harder for a turn. KP has a few Snares, but he is not the trapper Vesper is.',
+      'Swigs heal and hit harder for a turn. KP has a few Traps, but he is not the trapper Vesper is.',
     ],
     quotes: [
       '"I ain\'t homeless. I\'m between windows."',

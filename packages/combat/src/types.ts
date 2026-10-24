@@ -98,7 +98,7 @@ export const RADIANT_ENTER_MANA = 2;
  *  hero        the hero on the actor's side (an ally guarding its hero)
  *  allFoes / randomFoe / front   foes on the other side (front = the one nearest the centre)
  *  allFriends  everyone on the actor's side, including the actor
- *  attacker    inside a Snare: the unit whose attack sprang it
+ *  attacker    inside a Trap: the unit whose attack sprang it
  */
 export type Sel =
   'target' | 'self' | 'hero' | 'allFoes' | 'randomFoe' | 'front' | 'allFriends' | 'attacker';
@@ -159,7 +159,7 @@ export type TriggerWhen =
   | 'discard'
   | 'summon' // you summoned an ally
   | 'allyDies' // one of your allies died (or was sacrificed)
-  | 'snare' // one of your Snares sprang
+  | 'snare' // one of your Traps sprang
   | 'stance' // you entered a stance
   | 'barrier' // your hero gained Barrier (from anything)
   | 'loseHp' // your hero lost HP to one of your own effects
@@ -189,7 +189,7 @@ export type Op =
       scale?: Scale;
     }
   | { op: 'actAllies' } // every ally of the actor acts now
-  | { op: 'prevent' } // Snare only: cancel the attack that sprang it
+  | { op: 'prevent' } // Trap only: cancel the attack that sprang it
   // --- choices and card movement (card effects only; a choice asks the player and the card resumes afterwards)
   | { op: 'discard'; amount: number; random?: boolean; any?: boolean }
   | { op: 'exhaustCards'; amount: number; random?: boolean; any?: boolean }

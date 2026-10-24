@@ -1220,7 +1220,7 @@ export function cardArt(def: CardDef): CardArt {
       paintEmblem(g, def.emblem, ex, ey, size * 0.9, '#000000');
       g.restore();
       // a shield carries a heraldic device, picked by the seed, so plain Barrier cards are not all the same blank shield;
-      // a web holds what the Snare does when it springs (its second symbol) at its heart
+      // a web holds what the Trap does when it springs (its second symbol) at its heart
       const inWeb = def.emblem === 'web' && def.accent !== undefined;
       if (def.emblem === 'shield') {
         const device = DEVICES[Math.floor(r() * DEVICES.length)] as string;

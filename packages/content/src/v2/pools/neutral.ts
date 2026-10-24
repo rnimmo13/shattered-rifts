@@ -39,8 +39,8 @@ const n = (
 ): CardDef => card(N, rarity, id, name, kind, cost, target, effects, { hero: N, ...extra });
 
 export const NEUTRAL: CardDef[] = [
-  n('basic', 'strike', 'Slash', 'attack', 1, 'foe', [dmg(6)]),
-  n('basic', 'defend', 'Guard', 'skill', 1, 'none', [barrier(5)]),
+  n('basic', 'strike', 'Attack', 'attack', 1, 'foe', [dmg(6)]),
+  n('basic', 'defend', 'Defend', 'skill', 1, 'none', [barrier(5)]),
   n('common', 'rift-bolt', 'Rift Bolt', 'attack', 0, 'foe', [dmg(5)], { exhaust: true }),
   n('common', 'catch-breath', 'Catch Breath', 'skill', 1, 'none', [draw(2)]),
   n('common', 'steady-guard', 'Steady Guard', 'skill', 1, 'none', [barrier(8)], { retain: true }),

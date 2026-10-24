@@ -6,7 +6,7 @@
 import { Container, Sprite, Texture } from 'pixi.js';
 import { camera, floorTop } from './layout';
 import { PAD_X, makeCanvas } from './textures';
-import { lerp, smoothstep } from './noise';
+import { lerp, rng, smoothstep } from './noise';
 import type { VenueId } from './venue';
 
 export interface ArenaPack {
@@ -22,7 +22,12 @@ interface GroundProp {
   glow?: { color: number; at: number };
 }
 
+/** How an arena scatters its scenery: each realm has its own, so no two arenas set their props out alike. */
+export type Pattern = 'flanks' | 'left' | 'right' | 'scatter' | 'gap';
+
 interface ArenaLook {
+  /** where the scenery clusters (see Pattern) */
+  pattern: Pattern;
   /** tall silhouettes standing at the horizon (they move with the pointer) */
   far: number[];
   /** props along the back edge of the floor */
@@ -43,6 +48,7 @@ const AMBER = 0xffc060;
 
 export const ARENA_LOOK: Record<VenueId, ArenaLook> = {
   castle: {
+    pattern: 'flanks',
     far: [0, 1, 2],
     ground: [
       { i: 3, glow: { color: FIRE, at: 0.3 } },
@@ -57,6 +63,7 @@ export const ARENA_LOOK: Record<VenueId, ArenaLook> = {
     tile: 5,
   },
   factory: {
+    pattern: 'right',
     far: [0, 1, 2],
     ground: [
       { i: 3, glow: { color: CYAN, at: 0.35 } },
@@ -71,6 +78,7 @@ export const ARENA_LOOK: Record<VenueId, ArenaLook> = {
     tile: 4,
   },
   forest: {
+    pattern: 'scatter',
     far: [0, 1, 2],
     ground: [{ i: 3 }, { i: 4 }, { i: 5 }, { i: 7 }, { i: 8 }],
     hang: [],
@@ -79,6 +87,7 @@ export const ARENA_LOOK: Record<VenueId, ArenaLook> = {
     tile: 5,
   },
   cave: {
+    pattern: 'left',
     far: [0, 1, 2],
     ground: [
       { i: 3, glow: { color: TEAL, at: 0.3 } },
@@ -93,6 +102,7 @@ export const ARENA_LOOK: Record<VenueId, ArenaLook> = {
     tile: 5,
   },
   glass: {
+    pattern: 'scatter',
     far: [],
     ground: [],
     hang: [],
@@ -101,6 +111,7 @@ export const ARENA_LOOK: Record<VenueId, ArenaLook> = {
     tile: 4,
   },
   swamp: {
+    pattern: 'gap',
     far: [0, 1, 2],
     ground: [
       { i: 3, glow: { color: AMBER, at: 0.5 } },
@@ -115,6 +126,7 @@ export const ARENA_LOOK: Record<VenueId, ArenaLook> = {
     tile: 4,
   },
   alley: {
+    pattern: 'right',
     far: [],
     ground: [],
     hang: [],
@@ -123,6 +135,7 @@ export const ARENA_LOOK: Record<VenueId, ArenaLook> = {
     tile: 4,
   },
   rift: {
+    pattern: 'scatter',
     far: [],
     ground: [],
     hang: [],
@@ -230,6 +243,62 @@ function stand(sp: Sprite, h: number): void {
   sp.scale.set(h / sp.texture.height);
 }
 
+/** Half the width of the lit floor at stage row y: scenery must stand inside this, or it hangs over the board's edge. */
+function floorHalf(y: number): number {
+  return (8.6 * camera.f * (y - camera.vpY)) / camera.A;
+}
+
+/** How likely a spot across the floor (0 = far left edge, 1 = far right edge) is for a pattern. */
+const WEIGHT: Record<Pattern, (u: number) => number> = {
+  flanks: (u) => Math.abs(u - 0.5) * 2 + 0.12,
+  left: (u) => (1 - u) ** 2 + 0.08,
+  right: (u) => u ** 2 + 0.08,
+  scatter: () => 1,
+  gap: (u) => (Math.abs(u - 0.5) > 0.2 ? 1 : 0.06),
+};
+
+function hashSeed(s: string): number {
+  let h = 2166136261;
+  for (let i = 0; i < s.length; i++) h = Math.imul(h ^ s.charCodeAt(i), 16777619);
+  return h >>> 0;
+}
+
+interface Spot {
+  x: number;
+  y: number;
+  w: number;
+  /** index of the thing placed here, in the order asked for */
+  k: number;
+}
+
+/**
+ * Find places for things of the given widths: spread by the pattern, inside the floor's edge at their depth, and never
+ * piled on one another. `ys` is the band of rows they may stand on. Fewer come back if the floor is full.
+ */
+function place(
+  r: () => number,
+  pattern: Pattern,
+  widths: number[],
+  ys: [number, number],
+  gap: number,
+): Spot[] {
+  const out: Spot[] = [];
+  widths.forEach((w, k) => {
+    for (let tries = 0; tries < 40; tries++) {
+      const y = lerp(ys[0], ys[1], r());
+      let u = r();
+      while (r() > WEIGHT[pattern](u)) u = r();
+      const room = floorHalf(y) - w * 0.5;
+      if (room <= 0) continue;
+      const x = camera.cx + (u * 2 - 1) * room;
+      if (out.some((o) => Math.abs(o.x - x) < (o.w + w) * gap && Math.abs(o.y - y) < 26)) continue;
+      out.push({ x, y, w, k });
+      break;
+    }
+  });
+  return out;
+}
+
 /** The scenery of an arena: far silhouettes, glowing props along the back edge, and hanging items that sway. */
 export class ArenaProps {
   /** far silhouettes; move with the pointer (local y = 360, local x = PAD_X + stage x) */
@@ -241,70 +310,87 @@ export class ArenaProps {
   private readonly halos: { s: Sprite; base: number; rate: number; phase: number }[] = [];
   private readonly swayers: { s: Sprite; amp: number; rate: number; phase: number }[] = [];
 
-  constructor(pack: ArenaPack, look: ArenaLook, glow: Texture) {
+  constructor(pack: ArenaPack, look: ArenaLook, glow: Texture, seed: string) {
+    const r = rng(hashSeed(seed));
     const tex = (i: number): Texture | null => {
       const img = pack.props[i];
       return img ? Texture.from(img) : null;
     };
-    // far silhouettes: centre one distinct, the rest repeated and mirrored toward the edges
-    const farXs = [150, 560, 960, 1360, 1790];
-    const farOrder = [0, 1, 2, 1, 0];
-    if (look.far.length > 0)
-      farXs.forEach((x, k) => {
-        const t = tex(look.far[(farOrder[k] as number) % look.far.length] as number);
-        if (!t) return;
-        const sp = new Sprite(t);
-        stand(sp, 290 + (k % 2) * 30);
-        if (k > 2) sp.scale.x *= -1;
+    const aspect = (t: Texture): number => t.width / t.height;
+    const cycle = <T>(list: T[], n: number): T[] => {
+      const start = Math.floor(r() * list.length);
+      return Array.from({ length: n }, (_, k) => list[(start + k) % list.length] as T);
+    };
+
+    // far silhouettes: a few tall shapes at the horizon, never past the floor's far edge
+    const farTex = look.far.map(tex).filter((t): t is Texture => t !== null);
+    if (farTex.length > 0) {
+      const picks = cycle(farTex, 3 + (r() < 0.5 ? 1 : 0) + (r() < 0.3 ? 1 : 0));
+      const heights = picks.map(() => 260 + r() * 90);
+      const widths = picks.map((t, k) => aspect(t) * (heights[k] as number));
+      for (const spot of place(r, look.pattern, widths, [342, 342], 0.42)) {
+        const sp = new Sprite(picks[spot.k] as Texture);
+        stand(sp, heights[spot.k] as number);
+        if (r() < 0.5) sp.scale.x *= -1;
         sp.tint = 0xb4b8c8;
         sp.alpha = 0.92;
-        sp.position.set(PAD_X + x, 360);
+        sp.position.set(PAD_X + spot.x, 360);
         this.far.addChild(sp);
-      });
-    // props along the back edge
-    const spots: [number, number, number][] = [
-      [120, 440, 175],
-      [430, 424, 150],
-      [770, 408, 130],
-      [1170, 408, 130],
-      [1500, 426, 150],
-      [1800, 442, 175],
-    ];
-    if (look.ground.length > 0)
-      spots.forEach(([x, y, h], k) => {
-        const g = look.ground[k % look.ground.length] as GroundProp;
-        const t = tex(g.i);
-        if (!t) return;
-        const sp = new Sprite(t);
-        stand(sp, h);
-        sp.position.set(x, y);
-        if (g.glow) {
+      }
+    }
+
+    // props along the back edge, nearer ones a little bigger
+    const groundTex = look.ground
+      .map((g) => ({ g, t: tex(g.i) }))
+      .filter((e): e is { g: GroundProp; t: Texture } => e.t !== null);
+    if (groundTex.length > 0) {
+      const picks = cycle(groundTex, 4 + (r() < 0.5 ? 1 : 0) + (r() < 0.4 ? 1 : 0));
+      const base = picks.map(() => 125 + r() * 65);
+      const widths = picks.map((e, k) => aspect(e.t) * (base[k] as number));
+      const spots = place(r, look.pattern, widths, [398, 446], 0.4).sort((p, q) => p.y - q.y);
+      for (const spot of spots) {
+        const e = picks[spot.k] as { g: GroundProp; t: Texture };
+        const depth = (spot.y - camera.vpY) / (440 - camera.vpY);
+        const sp = new Sprite(e.t);
+        stand(sp, (base[spot.k] as number) * depth);
+        if (r() < 0.4) sp.scale.x *= -1;
+        sp.position.set(spot.x, spot.y);
+        if (e.g.glow) {
           const halo = new Sprite(glow);
           halo.anchor.set(0.5);
-          halo.tint = g.glow.color;
+          halo.tint = e.g.glow.color;
           halo.blendMode = 'add';
           halo.alpha = 0.5;
           halo.scale.set((sp.width / 128) * 1.9, (sp.height / 128) * 1.3);
-          halo.position.set(x, y - sp.height * (1 - g.glow.at));
+          halo.position.set(spot.x, spot.y - sp.height * (1 - e.g.glow.at));
           this.ground.addChild(halo);
-          this.halos.push({ s: halo, base: 0.5, rate: 2 + (k % 3) * 0.7, phase: k * 1.9 });
+          this.halos.push({ s: halo, base: 0.5, rate: 1.6 + r() * 1.6, phase: r() * 6 });
         }
         this.ground.addChild(sp);
-      });
-    // hanging items, inside the backdrop's own edge banners
-    const hangXs = [470, 1450];
-    look.hang.forEach((i, n) => {
-      const t = tex(i);
-      if (!t) return;
-      hangXs.forEach((x, k) => {
+      }
+    }
+
+    // hanging items, kept clear of the backdrop's own banners at the edges
+    const hangTex = look.hang.map(tex).filter((t): t is Texture => t !== null);
+    if (hangTex.length > 0) {
+      const n = 1 + (r() < 0.6 ? 1 : 0);
+      const pattern = look.pattern === 'flanks' ? 'scatter' : look.pattern;
+      for (const spot of place(
+        r,
+        pattern,
+        Array.from({ length: n }, () => 380),
+        [400, 400],
+        0.7,
+      )) {
+        const t = hangTex[spot.k % hangTex.length] as Texture;
         const sp = new Sprite(t);
         sp.anchor.set(0.5, 0);
-        sp.scale.set((270 - k * 20) / t.height);
-        sp.position.set(x, 100);
+        sp.scale.set((250 + r() * 50) / t.height);
+        sp.position.set(Math.max(380, Math.min(1540, spot.x)), 100);
         this.hang.addChild(sp);
-        this.swayers.push({ s: sp, amp: 0.03, rate: 0.6 + k * 0.15 + n * 0.1, phase: k * 2.1 });
-      });
-    });
+        this.swayers.push({ s: sp, amp: 0.03, rate: 0.5 + r() * 0.3, phase: r() * 6 });
+      }
+    }
   }
 
   update(t: number, still: boolean): void {

@@ -137,7 +137,7 @@ describe('what each effect does', () => {
     expect(after.deck).toHaveLength(before.deck.length);
   });
 
-  it('removal only takes plain Slash/Guard cards and never drops the deck below the minimum', () => {
+  it('removal only takes plain Attack/Defend cards and never drops the deck below the minimum', () => {
     const before = offering([{ k: 'remove', n: 2 }]);
     const after = take(before);
     expect(after.deck).toHaveLength(before.deck.length - 2);

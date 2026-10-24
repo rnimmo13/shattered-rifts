@@ -27,7 +27,7 @@ deck takes one and a half of them. Our pools were ~16 cards and one lane each. T
 | **Drones** and Assemble | Rivet | |
 | **Pack** buffs | Kesh | |
 | **Thorns** and Barrier-scaling | Maren | Barrier is shared; Thorns is Maren's |
-| **Snares** (face-down, auto-springing) | Vesper gets the most (14, with payoffs for setting them) | **Shared toolkit** like Might or Consume: every deck has a trap or two in its own flavour (Maren 4, Rivet 2, Quill 2 incl. a Bleed needle, Kesh, Ilvane, Sehra, Obsidia 1 each) and Neutral has 2. Enforced by `cards.test.ts` |
+| **Traps** (face-down, auto-springing) | Vesper gets the most (14, with payoffs for setting them) | **Shared toolkit** like Might or Consume: every deck has a trap or two in its own flavour (Maren 4, Rivet 2, Quill 2 incl. a Bleed needle, Kesh, Ilvane, Sehra, Obsidia 1 each) and Neutral has 2. Enforced by `cards.test.ts` |
 | **Foresee** | Vesper, Sehra, Obsidia | a Neutral common |
 | **Consume payoffs** | Kesh (Feast lane) | Neutral Consume-on-play is common |
 
@@ -42,7 +42,7 @@ deck takes one and a half of them. Our pools were ~16 cards and one lane each. T
 | 1 | **Ser Maren Ashcourt** | Aurelion | 80 | **Bulwark:** Barrier scaling, hits for your Barrier | **Thorns:** retaliation, punishing attackers | **Sanctified:** heal, Shielded, Radiant powers |
 | 2 | **Rivet** | Nexus-9 | 72 | **Swarm:** many cheap Drones | **Assemble:** make allies act again, burst turns | **Core:** a few big constructs, Might, upgrades |
 | 3 | **Kesh the Unfed** | Wyldmaw | 76 | **Bloodrage:** Might and self-damage | **Pack:** buffed companions | **Feast:** Consume, Devour, lifesteal |
-| 4 | **Vesper Nightlace** | Umbral | 68 | **Snares:** many, varied triggers | **Exposed:** debuff burst, Faltering control | **Bluff:** Retain, Foresee, held Mana |
+| 4 | **Vesper Nightlace** | Umbral | 68 | **Traps:** many, varied triggers | **Exposed:** debuff burst, Faltering control | **Bluff:** Retain, Foresee, held Mana |
 | 5 | **Quill, the Knife-Dancer** | Umbral | 66 | **Sleeve Knives:** 0-cost, many hits | **Bleed:** stack, double, cash out | **Sleight:** discard / cycle payoffs |
 | 6 | **Ilvane** (id `ilvane`) | Nexus-9 | 70 | **Hawk:** damage totems | **Bear:** Barrier totems | **Elder:** charging totems, Spirit |
 | 7 | **Sehra, the Still Flame** | Aurelion | 72 | **Fury:** burst | **Serene:** Mana and cards | **Fervor:** Retain/Foresee to a payoff |
@@ -50,7 +50,7 @@ deck takes one and a half of them. Our pools were ~16 cards and one lane each. T
 | 9 | **Mire, the Gravewarden** | Gloomfen | 76 | **Doom:** stack, double, cash in | **Thralls:** the dead fight for you | **Ashes:** consumed cards fuel you |
 | 10 | **KP, the Homeless Drunk** | The Midden | 88 | **Gun:** sharpen the Old Twelve Gauge | **Shells:** buckshot and booby traps that hit every enemy | **Hangover:** the more it hurts the harder you hit: glass, Thorns, swigs, self-damage |
 
-**KP's look (art brief):** short, fat, bald dwarf; ragged coat, ruddy drunk's nose; a hammer in one hand, a sawed-off 12 gauge across his back, a shopping trolley loaded with window panes and glass. Sigil/colour: bottle green and rust. He is a Drunkard (role): the Trapper role stays Vesper's, KP only has a few Snares. His signature is the Buckshot Shell (tag `shell`, 0-cost, hits every enemy, consumed), tested like Quill's knives.
+**KP's look (art brief):** short, fat, bald dwarf; ragged coat, ruddy drunk's nose; a hammer in one hand, a sawed-off 12 gauge across his back, a shopping trolley loaded with window panes and glass. Sigil/colour: bottle green and rust. He is a Drunkard (role): the Trapper role stays Vesper's, KP only has a few Traps. His signature is the Buckshot Shell (tag `shell`, 0-cost, hits every enemy, consumed), tested like Quill's knives.
 
 Mire was the stretch character and is now built (Doom is hers alone). Still open: **Cinder** (a Consume engine) for a tenth.
 
@@ -74,11 +74,11 @@ Role tags (what kind of fighter, shown on every character screen): Maren **Knigh
 | **Stances**: `stance` op; statuses `calm`, `wrath`, `radiant`; `mantra` | Exclusive statuses with enter/exit effects and damage multipliers | Sehra |
 | **Arcana** (`stars` op, `starCost` on a card) | Second resource that persists between turns | Obsidia |
 | `sharpen` op; per-card `bonus` | Grow every copy of a scaling card | Obsidia |
-| More Snare triggers: `foeDefends`, `foeTurn` | Vesper's lane needs variety | Vesper |
+| More Trap triggers: `foeDefends`, `foeTurn` | Vesper's lane needs variety | Vesper |
 
 ## 4. Build status (2026-10-23)
 
-- [x] Engine: choices, discard/exhaust/scry, scale, Powers as triggers, runes, stances, Arcana, sharpen, sacrifice, extra Snare triggers (DECISIONS #97)
+- [x] Engine: choices, discard/exhaust/scry, scale, Powers as triggers, runes, stances, Arcana, sharpen, sacrifice, extra Trap triggers (DECISIONS #97)
 - [x] Existing 4 reorganised into character pools and deepened to 3 lanes (34-38 cards each)
 - [x] Quill, Ilvane, Sehra, Obsidia: 34-39 cards each
 - [x] UI: pick modal, side panel (Arcana, totems, Powers), exact damage preview, character picker for 8 with lanes
@@ -92,7 +92,7 @@ Role tags (what kind of fighter, shown on every character screen): Maren **Knigh
 
 Card and keyword names are original to Shattered Rifts. Mechanics are free to share with other deckbuilders; names, keyword
 vocabulary and trade dress are not. When adding a card, give it a name nobody else's game uses, and check `10_CARD_LIST.md`.
-Player-facing words: Barrier, Exposed, Faltering, Might, Bleed, Thorns, Shielded, Snare, Aura (a card whose effect lasts the
+Player-facing words: Barrier, Exposed, Faltering, Might, Bleed, Thorns, Shielded, Trap, Aura (a card whose effect lasts the
 fight), Consume (the card leaves the fight), Hold (stays in hand), Fleeting, Foresee, Fury / Serene / Radiant (stances), Fervor
 (builds to Radiant), Arcana (the second resource), Sharpen (grow the Obsidian Blade), Sleeve Knife (the 0-cost knife).
 Internal ids in code (`exhaust`, `scry`, `forge`, `stars`, `wrath`, `calm`, `mantra`) are not renamed: only what the player reads.
@@ -120,7 +120,7 @@ The goal: every card *mechanic* a Slay the Spire player expects exists, with our
 | Stars, Forge, the Sovereign Blade | Arcana, Sharpen, the Obsidian Blade | Obsidia |
 | Osty, Doom, Souls | Bone Thrall (a companion), **Doom**, Gravesouls | Mire |
 | Minions, Sacrifice | allies, `sacrifice` | Rivet, Kesh, Mire |
-| Traps (ours) | Snares | Vesper masters them; everyone has a few |
+| Traps (ours) | Traps | Vesper masters them; everyone has a few |
 
 **Deliberately not built:** card Enchantments (permanent per-card modifiers chosen out of combat), dynamic "costs less per X" cards
 (we use `cheapen` instead), and choose-one-of-three Discovery (ours adds one random card; a choice of three would need a new

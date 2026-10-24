@@ -13,7 +13,7 @@ const N = arg('n', 12);
 const DRAFT = arg('draft', 10);
 const HP = arg('hp', 100);
 const DMG = arg('dmg', 100);
-// --only snare / --only nosnare: draft only (or never) Snares, to see how strong a card type is on its own
+// --only snare / --only nosnare: draft only (or never) Traps, to see how strong a card type is on its own
 const ONLY = (() => {
   const i = process.argv.indexOf('--only');
   return i >= 0 ? process.argv[i + 1] : undefined;

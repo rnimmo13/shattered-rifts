@@ -214,7 +214,7 @@ export const RIVET: CardDef[] = [
   ]),
   r('uncommon', 'arc-relay', 'Arc Relay', 'attack', 2, 'none', [dmg(5, 'allFoes'), ACT]),
   r('uncommon', 'overtime', 'Overtime', 'skill', 0, 'none', [ACT, lose(3)], { exhaust: true }),
-  r('uncommon', 'clockwork-snare', 'Clockwork Snare', 'snare', 1, 'none', [ACT, barrier(8)], {
+  r('uncommon', 'clockwork-snare', 'Clockwork Trap', 'snare', 1, 'none', [ACT, barrier(8)], {
     trigger: { on: 'hpLost', min: 5 },
   }),
   r(

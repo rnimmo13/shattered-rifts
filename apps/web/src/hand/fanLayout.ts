@@ -51,7 +51,7 @@ export function fanLayout(n: number, o: FanOptions): FanSlot[] {
 
 /** Card width for the hand at the current window size (px). */
 export function handCardWidth(viewportWidth: number): number {
-  return Math.round(Math.max(180, Math.min(260, viewportWidth * 0.135)));
+  return Math.round(Math.max(168, Math.min(238, viewportWidth * 0.122)));
 }
 
 /** How far the resting hand reaches up from the bottom of the screen: the board is fitted above this. */

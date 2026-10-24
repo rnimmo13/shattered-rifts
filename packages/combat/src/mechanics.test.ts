@@ -1,5 +1,5 @@
 // Rules tests for the generic mechanics behind the roster (docs/09_ROSTER.md): choices, scaling, Powers, runes, stances,
-// Stars, forging, extra Snare triggers. A tiny self-contained ruleset, so nothing here depends on real card data.
+// Stars, forging, extra Trap triggers. A tiny self-contained ruleset, so nothing here depends on real card data.
 
 import { describe, expect, it } from 'vitest';
 import {
@@ -822,9 +822,9 @@ describe('Stars and forging', () => {
   });
 });
 
-// --- more Snare triggers -------------------------------------------------------------------------------------------------------
+// --- more Trap triggers -------------------------------------------------------------------------------------------------------
 
-describe('Snare triggers', () => {
+describe('Trap triggers', () => {
   it('springs when an enemy gains Barrier', () => {
     let s = start(['tripwire'], { enemies: ['guarder'] });
     s = play(s, 'h0').state;
@@ -872,12 +872,12 @@ describe('allies, sacrifice and the later hooks', () => {
     expect(ally.statuses.might).toBe(1);
   });
 
-  it('"when a Snare springs" and "when you enter a stance" Powers', () => {
+  it('"when a Trap springs" and "when you enter a stance" Powers', () => {
     let s = start(['echo', 'timebomb', 'rushdown', 'wrath'], { mana: 5 });
     s = play(s, 'h0').state;
     s = play(s, 'h1').state;
     const handBefore = s.sides.a.hand.length;
-    s = end(s).state; // the Snare springs at the start of the enemy turn and draws a card
+    s = end(s).state; // the Trap springs at the start of the enemy turn and draws a card
     expect(s.sides.a.discard.map((x) => x.card)).toContain('timebomb');
     expect(handBefore).toBe(2);
     s = start(['rushdown', 'wrath'], { mana: 5 });
@@ -914,10 +914,10 @@ describe('allies, sacrifice and the later hooks', () => {
 });
 
 describe('review fixes', () => {
-  it('playing a Snare counts as playing a card for "when you play" Powers', () => {
+  it('playing a Trap counts as playing a card for "when you play" Powers', () => {
     let s = start(['afterimage', 'tripwire'], { enemies: ['guarder'] });
     s = play(s, 'h0').state; // a Power sees its own play: +1
-    s = play(s, 'h1').state; // the Snare is a played card too: +1
+    s = play(s, 'h1').state; // the Trap is a played card too: +1
     expect(hero(s).barrier).toBe(2);
     expect(s.sides.a.played).toBe(2);
   });

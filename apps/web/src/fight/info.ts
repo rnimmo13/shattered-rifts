@@ -186,7 +186,7 @@ export const KEYWORD_INFO: Record<string, { name: string; text: string }> = {
   retain: { name: 'Hold', text: 'It stays in your hand when you end your turn.' },
   mana: { name: 'Mana', text: 'What you spend to play cards. It refills every turn.' },
   snare: {
-    name: 'Snare',
+    name: 'Trap',
     text: 'Played face down. It springs on its own when its trigger happens, then returns to your discard pile.',
   },
   companion: {
@@ -338,8 +338,8 @@ export const UI_TIPS = {
     text: 'A totem you plant goes here. A new totem in a full row pushes the oldest out and it bursts with its big effect.',
   } as TipContent,
   snare: (name: string | null, rules?: string): TipContent => ({
-    kicker: 'Snare',
-    title: name ?? 'A face-down Snare',
+    kicker: 'Trap',
+    title: name ?? 'A face-down Trap',
     text:
       rules ??
       'Set face down. It springs on its own when its trigger happens, then returns to your discard pile.',

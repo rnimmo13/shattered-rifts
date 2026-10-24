@@ -28,7 +28,7 @@ export function Grimoire(props: {
   const cardWidth = props.cardWidth ?? layout.cardWidth;
   const cols = props.cols ?? layout.cols;
   const spread = props.spread ?? layout.spread;
-  // every copy gets its own card: three Slashes are three cards on the page, never one card with a number on it
+  // every copy gets its own card: three Attacks are three cards on the page, never one card with a number on it
   const entries = useMemo(
     () =>
       sortCards(

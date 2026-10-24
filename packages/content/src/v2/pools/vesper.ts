@@ -1,5 +1,5 @@
 // Vesper Nightlace (Umbral). No companions. Three lanes:
-//   Snares  - set traps with different triggers; payoffs for having them out
+//   Traps  - set traps with different triggers; payoffs for having them out
 //   Exposed - mark the enemy, then spend the mark
 //   Bluff   - hold Mana and cards back: Retain, Scry, patience
 
@@ -47,14 +47,14 @@ export const VESPER: CardDef[] = [
     { trigger: { on: 'attacked' } },
   ),
 
-  // --- Snares ---
+  // --- Traps ---
   v('common', 'trip-line', 'Trip Line', 'snare', 0, 'none', [dmg(6, 'attacker')], {
     trigger: { on: 'attacked' },
   }),
   v(
     'common',
     'hollow-snare',
-    'Hollow Snare',
+    'Hollow Trap',
     'snare',
     1,
     'none',
@@ -81,7 +81,7 @@ export const VESPER: CardDef[] = [
     [dmg(10, 'attacker'), status('faltering', 1, 'attacker')],
     { trigger: { on: 'foeDefends' } },
   ),
-  v('common', 'snare-kit', 'Snare Kit', 'skill', 1, 'none', [addTo('trip-line', 2)], {
+  v('common', 'snare-kit', 'Trap Kit', 'skill', 1, 'none', [addTo('trip-line', 2)], {
     exhaust: true,
   }),
   v(
@@ -121,7 +121,7 @@ export const VESPER: CardDef[] = [
   v(
     'rare',
     'silencing-snare',
-    'Silencing Snare',
+    'Silencing Trap',
     'snare',
     2,
     'none',
@@ -130,7 +130,7 @@ export const VESPER: CardDef[] = [
   ),
   v('rare', 'echo-trap', 'Echo Trap', 'power', 2, 'none', [on('snare', [barrier(5), draw(1)])]),
 
-  // (more Snares)
+  // (more Traps)
   v(
     'uncommon',
     'tripwire-garrote',
@@ -146,7 +146,7 @@ export const VESPER: CardDef[] = [
   v(
     'uncommon',
     'snare-net',
-    'Snare Net',
+    'Trap Net',
     'snare',
     2,
     'none',
@@ -353,7 +353,7 @@ export const VESPER: CardDef[] = [
   ]),
   v('rare', 'perfect-alibi', 'Perfect Alibi', 'skill', 1, 'none', [barrier(20), discard(1)]),
 
-  // --- Snares (more traps) ---
+  // --- Traps (more traps) ---
   v(
     'common',
     'fang-pit',

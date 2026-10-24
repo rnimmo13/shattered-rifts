@@ -504,7 +504,7 @@ export function choosePrelude(run: RunState, optionId: string): RunState {
   return r;
 }
 
-/** The Slash and Guard cards a deck can still lose or change: Neutral basics. */
+/** The Attack and Defend cards a deck can still lose or change: Neutral basics. */
 const isPlainBasic = (id: string): boolean =>
   COMBAT_DB.cards[id]?.hero === 'neutral' && COMBAT_DB.cards[id]?.rarity === 'basic';
 

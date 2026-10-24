@@ -14,7 +14,7 @@ const KINDS: { id: CardDef['kind'] | 'all'; label: string }[] = [
   { id: 'skill', label: 'Skills' },
   { id: 'power', label: 'Auras' },
   { id: 'summon', label: 'Summons' },
-  { id: 'snare', label: 'Snares' },
+  { id: 'snare', label: 'Traps' },
 ];
 const RARITIES = ['all', 'basic', 'common', 'uncommon', 'rare', 'legendary', 'ancestral'] as const;
 
@@ -83,7 +83,7 @@ export function CardLibrary() {
           <span>Search names and rules text</span>
           <input
             type="search"
-            placeholder="for example: Barrier, Snare, draw"
+            placeholder="for example: Barrier, Trap, draw"
             value={text}
             onChange={(e) => setText(e.target.value)}
           />

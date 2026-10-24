@@ -499,7 +499,7 @@ describe('review fixes', () => {
     expect(hero(after).statuses.exposed).toBe(1); // still one more enemy turn
   });
 
-  it('H3: a Snare set by the other player is anonymous in their event feed', () => {
+  it('H3: a Trap set by the other player is anonymous in their event feed', () => {
     const s0 = start(['slime'], ['tripwire', 'strike']);
     const set = play(s0, 't0').events;
     expect(JSON.stringify(eventsFor(db, set, 'b'))).not.toContain('tripwire');

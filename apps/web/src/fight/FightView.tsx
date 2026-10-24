@@ -30,7 +30,7 @@ import { getSound, play, setSound } from '../audio/sfx';
 import { SPEEDS, loadSpeed, saveSpeed } from '../play/prefs';
 import { handCardWidth, handReserve } from '../hand/fanLayout';
 import { reduceEvent, startingDisplay } from './display';
-import { heroFigure, heroProp, unitFigure, unitHeight } from './art';
+import { heroFigure, heroProp, hoverOf, unitFigure, unitHeight } from './art';
 import { FightHand, type HandCard } from './FightHand';
 import { FightCard } from './FightCard';
 import { Grimoire } from './Grimoire';
@@ -70,13 +70,38 @@ interface Float {
 const sleep = (ms: number): Promise<void> =>
   new Promise((r) => window.setTimeout(r, Math.max(0, ms)));
 
+/** In a pack, a wide creature (a raptor, a wolf) is kept to a width the line has room for, so the pack does not melt into one long beast. */
+function fitHeight(canvas: HTMLCanvasElement, height: number, crowded: boolean): number {
+  return !crowded ? height : Math.min(height, (MAX_FIGURE_W * canvas.height) / canvas.width);
+}
+
+const MAX_FIGURE_W = 300;
+/** how far above the floor the top of a flyer's head may be (stage px) */
+const MAX_TOP = 640;
+
 function specsFrom(db: CombatDb, s: CombatState): FighterSpec[] {
   const out: FighterSpec[] = [];
   for (const side of ['a', 'b'] as const) {
+    // the ground line and the row of flyers above it each count and space their own units
     let slot = 0;
-    const crowd = s.sides[side].units.filter((x) => x.kind !== 'hero').length;
+    let airSlot = 0;
+    const others = s.sides[side].units.filter((x) => x.kind !== 'hero');
+    const airCount = others.filter((x) => hoverOf(x.def) > 0).length;
     for (const u of s.sides[side].units) {
       const hero = u.kind === 'hero';
+      const flies = !hero && hoverOf(u.def) > 0;
+      const crowd = flies ? airCount : others.length - airCount;
+      const canvas = hero ? heroFigure(u.def) : unitFigure(u.def);
+      const height = fitHeight(
+        canvas,
+        unitHeight(db.units[u.def], u.kind) * (!hero && crowd > 5 ? 0.82 : 1),
+        !hero && crowd > 1,
+      );
+      // every other flyer rides higher, so a swarm stands in two layers instead of one tangle; a big one never rises so
+      // far that its head (and the next move shown above it) leaves the screen
+      const hover = flies
+        ? Math.min(hoverOf(u.def) + (airSlot % 2) * 75, Math.max(30, MAX_TOP - height))
+        : 0;
       const prop = hero ? heroProp(u.def) : undefined;
       // the floating blade shows while a card tagged 'blade' is in her hand
       const holding = s.sides[side].hand.some((c) => db.cards[c.card]?.tags?.includes('blade'));
@@ -84,10 +109,11 @@ function specsFrom(db: CombatDb, s: CombatState): FighterSpec[] {
         id: u.id,
         side,
         isHero: hero,
-        slot: hero ? 0 : slot++,
+        slot: hero ? 0 : hover > 0 ? airSlot++ : slot++,
         count: crowd,
-        canvas: hero ? heroFigure(u.def) : unitFigure(u.def),
-        height: unitHeight(db.units[u.def], u.kind) * (!hero && crowd > 5 ? 0.82 : 1),
+        canvas,
+        height,
+        ...(hover > 0 ? { hover } : {}),
         attack: attackFor(u.def, hero),
         ...(prop ? { prop: { ...prop, on: holding } } : {}),
       });
@@ -302,9 +328,9 @@ export function FightView(props: {
         case 'summon':
           reduceEvent(db, d, e);
           respec();
-          void sc.fighters.vfx(e.unit, 'portalOpen', { behind: true }).then(() =>
-            sc.fighters.vfx(e.unit, 'portalClose', { behind: true }),
-          );
+          void sc.fighters
+            .vfx(e.unit, 'portalOpen', { behind: true })
+            .then(() => sc.fighters.vfx(e.unit, 'portalClose', { behind: true }));
           await wait(400);
           return;
         case 'died':
@@ -319,8 +345,8 @@ export function FightView(props: {
           return;
         case 'snareSprung': {
           reduceEvent(db, d, e);
-          const name = db.cards[e.card]?.name ?? 'Snare';
-          setBanner(`Snare! ${name}`);
+          const name = db.cards[e.card]?.name ?? 'Trap';
+          setBanner(`Trap! ${name}`);
           play('trapReveal');
           await wait(800);
           setBanner(null);
@@ -624,7 +650,14 @@ export function FightView(props: {
         const home = sc.fighters.home(u.id);
         if (!home) continue;
         const p = sc.stageToHost(home.x, home.y);
-        placed.push({ unit: u, x: p.x, y: p.y, h: home.h * p.k, w: home.w * p.k });
+        // a flyer's plate and intent hang from the flyer itself, not from the floor under it
+        placed.push({
+          unit: u,
+          x: p.x,
+          y: p.y - home.hover * p.k,
+          h: (home.h - home.hover) * p.k,
+          w: home.w * p.k,
+        });
       }
     }
   }
@@ -849,10 +882,7 @@ export function FightView(props: {
             </svg>
           )}
           {me && (
-            <div
-              className={`fight__potions${showStars ? ' fight__potions--withLumen' : ''}`}
-              aria-label="Potion belt"
-            >
+            <div className="fight__potions" aria-label="Potion belt">
               <span className="fight__beltLabel">Potions</span>
               <div className="fight__belt">
                 {Array.from({ length: 3 }, (_, i) => {
@@ -1109,7 +1139,7 @@ function tallyDefs(cards: readonly CardDef[]): { def: CardDef; n: number }[] {
   return [...m.values()];
 }
 
-/** The tooltip for a face-down Snare: its name and what it does when it springs. */
+/** The tooltip for a face-down Trap: its name and what it does when it springs. */
 function snareTip(db: CombatDb, card: string | null): TipContent {
   const def = card ? db.cards[card] : undefined;
   return UI_TIPS.snare(def?.name ?? null, def ? cardText(db, def) : undefined);
