@@ -1,8 +1,8 @@
-# Cuts the nine Riftwalker concept sheets in assets-src/heroes (one standing figure on a flat dark background each, named
+# Cuts the ten Riftwalker figures in assets-src/heroes (one standing figure on a flat dark background each, named
 # <heroId>.png) into transparent figures at apps/web/public/art/figures/hero-<heroId>.png, then rebuilds the manifest.
 # The background is removed by flood-filling from the edges (colour sampled from the corner), so dark clothing inside the
-# figure is kept. The sheet of Mire also shows his Bone Thrall and Rivet's shows his drone; both are companions in the game
-# already, so those corners are wiped first. Valeria (hero-maren.png) has her own script: tools/pack-valeria.ps1.
+# figure is kept. Rivet's drone is a companion in the game already, so that corner is wiped first.
+# (Valeria's old gritty sheet had its own script, tools/pack-valeria.ps1; her new art goes through this one as maren.png.)
 # Run: powershell -File tools/pack-heroes.ps1
 Add-Type -AssemblyName System.Drawing
 $ErrorActionPreference = 'Stop'
@@ -73,8 +73,7 @@ public static class HeroKey {
 
 # hero id -> regions of the sheet to wipe to background first (x, y, w, h)
 $wipe = @{
-  mire  = @(, @(670, 730, 278, 760))   # the Bone Thrall crouching at the right
-  rivet = @(, @(690, 150, 258, 500))   # the hovering drone
+  rivet = @(, @(690, 395, 258, 310))   # the hovering drone (a companion in the game already)
 }
 
 foreach ($f in Get-ChildItem $srcDir -Filter *.png | Sort-Object Name) {

@@ -2,12 +2,12 @@
 // cavern built from the CaveEnviro pack (public/art/venues/cave, cut by tools/pack-cave.ps1). A venue only swaps the
 // backdrop, floor and scenery: the board geometry, fighters and effects are the same everywhere.
 import { Container, Sprite, Texture } from 'pixi.js';
-import { camera, floorTop } from './layout';
+import { floorTop } from './layout';
 import { FULL_W, PAD_X, PAD_Y, makeCanvas } from './textures';
-import { lerp, smoothstep } from './noise';
 import { stage } from '../../design/tokens';
 import { paintScene } from '../../art/scenes';
 import { rng } from './noise';
+import { tiledFloor } from './arena';
 
 export type VenueId = 'rift' | 'cave' | 'castle' | 'factory' | 'forest' | 'glass' | 'swamp' | 'alley';
 
@@ -200,60 +200,7 @@ export function caveProps(art: CaveArt, glow: Texture): Container {
 
 /** The cave floor, in the same layout as the Rift arena's (half resolution; the caller sizes it like floorTextures). */
 export function caveFloor(art: CaveArt, W: number, H: number, half: number): HTMLCanvasElement {
-  // mip chain of the rock tile as raw pixels
-  const mips: ImageData[] = [];
-  for (let s = 256; s >= 16; s = s >> 1) {
-    const c = makeCanvas(s, s);
-    const g = c.getContext('2d') as CanvasRenderingContext2D;
-    g.drawImage(art.img.rock, 0, 0, s, s);
-    mips.push(g.getImageData(0, 0, s, s));
-  }
-  const out = makeCanvas(W, H);
-  const og = out.getContext('2d') as CanvasRenderingContext2D;
-  const img = og.createImageData(W, H);
-  const px = img.data;
-  const TILE = 3; // world units per rock tile
-  const EDGE = 9.4;
-  const rift = camera.A / (640 - camera.vpY);
-  for (let py = 0; py < H; py++) {
-    const y = floorTop + py * half;
-    const Z = camera.A / (y - camera.vpY);
-    const pxPerUnit = camera.f / Z / half;
-    const footprint = 256 / TILE / pxPerUnit; // source texels covered by one output pixel
-    const lod = Math.max(0, Math.log2(Math.max(1, footprint)));
-    const mip = mips[Math.min(mips.length - 1, Math.round(lod))] as ImageData;
-    const ms = mip.width;
-    const far = 1 - smoothstep(floorTop, floorTop + 200, y);
-    const riftBand = Math.exp(-(((Z - rift) / 0.5) ** 2));
-    const vZ = (Z / TILE) % 1;
-    const sy = Math.min(ms - 1, Math.floor(vZ * ms));
-    for (let pxl = 0; pxl < W; pxl++) {
-      const x = pxl * half - PAD_X;
-      const X = ((x - camera.cx) * Z) / camera.f;
-      const u = (((X / TILE) % 1) + 1) % 1;
-      const si = (sy * ms + Math.min(ms - 1, Math.floor(u * ms))) * 4;
-      const lx = (x - camera.cx) / 1250;
-      const light = 0.42 + 0.8 * Math.exp(-lx * lx) * (0.72 + 0.28 * riftBand);
-      let r = (mip.data[si] as number) * 0.62 * light;
-      let g = (mip.data[si + 1] as number) * 0.58 * light;
-      let b = (mip.data[si + 2] as number) * 0.95 * light;
-      r += 140 * riftBand * 0.26;
-      g += 100 * riftBand * 0.26;
-      b += 255 * riftBand * 0.36;
-      r = lerp(r, 40, far * 0.7);
-      g = lerp(g, 34, far * 0.7);
-      b = lerp(b, 110, far * 0.7);
-      const edgeX = EDGE - Math.abs(X);
-      const alpha = smoothstep(0, 0.9, edgeX) * smoothstep(floorTop, floorTop + 70, y);
-      const i = (py * W + pxl) * 4;
-      px[i] = Math.max(0, Math.min(255, r));
-      px[i + 1] = Math.max(0, Math.min(255, g));
-      px[i + 2] = Math.max(0, Math.min(255, b));
-      px[i + 3] = Math.max(0, Math.min(255, alpha * 255));
-    }
-  }
-  og.putImageData(img, 0, 0);
-  return out;
+  return tiledFloor(art.img.rock, W, H, half, { tone: [0.62, 0.58, 0.95], rift: [140, 100, 255], tile: 3 });
 }
 
 /** A painted skyline backdrop: sky gradient, then the Riftwalker's card-art scene scaled up, then a haze at the horizon. */

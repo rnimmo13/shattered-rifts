@@ -5,7 +5,10 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
-- **Real hero art:** Rivet, Kesh, Vesper, Scarlet, Ilvane, Ragnar, Obsidia, Mire and KP now stand on the stage as illustrated figures (cut out by `tools/pack-heroes.ps1` from `assets-src/heroes`).
+- **0.19.0:** painted arenas, companion art and new hero art.
+- **New arenas:** six realms (Aurelion, Nexus-9, Wyldmaw, Umbral Veil, Gloomfen, the Rift) have painted backdrops with scenery that drifts with your mouse, glowing braziers and lanterns, and swaying banners; all eight realms have a new floor surface. The floor is still lit live and pulses along the Rift line.
+- **Companion art:** the Nexus drones and machines, the Wyldmaw beasts, the Gilded Guard and the Gloomfen undead have illustrated figures (cut out by `tools/pack-arenas.ps1`).
+- **New hero art:** all ten Riftwalkers now have cartoony illustrated figures in one bold-outline style (cut out by `tools/pack-heroes.ps1` from `assets-src/heroes`).
 - **0.18.0:** per-hero attack animations and real art for nine Riftwalkers.
 - **Attack animations:** every Riftwalker and most enemies attack in their own style (sword slashes, claw marks, stabs, heavy smashes, shotgun spreads, thrown knives, spell orbs). Cards and numbers are unchanged; Strike is still Strike.
 - **0.17.0:** Valeria (the knight) with real art, trait balance (Plating, three-totem Ilvane, 1-Arcana Obsidia), The Hollow Crown.

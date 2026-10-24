@@ -12,6 +12,7 @@ import { color, hex, stage } from '../../design/tokens';
 import type { EffectsProfile } from '../effects';
 import { floorTop, rows } from './layout';
 import { Fighters } from '../../fight/Fighters';
+import { ARENA_LOOK, ArenaProps, loadArena, tiledFloor, type ArenaPack } from './arena';
 import {
   caveColumns,
   foliageFor,
@@ -111,6 +112,7 @@ export class BattlefieldScene {
   private readonly glowTex: Texture;
   private vignette!: Sprite;
   private foliage: Foliage | null = null;
+  private arenaProps: ArenaProps | null = null;
   /** where the backdrop's top edge sits (the cave wall starts above the stage) */
   private skyY = 0;
 
@@ -154,7 +156,7 @@ export class BattlefieldScene {
     profile: EffectsProfile,
     venue: VenueId = 'rift',
   ): Promise<BattlefieldScene> {
-    const art = await loadVenueArt(venue);
+    const [art, arena] = await Promise.all([loadVenueArt(venue), loadArena(venue)]);
     const app = new Application();
     await app.init({
       background: hex(color.void),
@@ -164,7 +166,7 @@ export class BattlefieldScene {
       resolution: pickResolution(host.clientWidth, host.clientHeight, profile),
       powerPreference: 'high-performance',
     });
-    return new BattlefieldScene(app, host, profile, art);
+    return new BattlefieldScene(app, host, profile, art, arena, venue);
   }
 
   private constructor(
@@ -172,6 +174,8 @@ export class BattlefieldScene {
     host: HTMLElement,
     profile: EffectsProfile,
     art: VenueArt | null,
+    arena: ArenaPack | null,
+    venue: VenueId,
   ) {
     this.app = app;
     this.host = host;
@@ -187,19 +191,31 @@ export class BattlefieldScene {
 
     // --- backdrop ---
     // (the cave swaps the sky for a rock wall, the shards for nothing and the ruins for columns)
-    const cave = art?.id === 'cave' ? art : null;
+    // (a painted arena backdrop replaces all of that, and brings its own scenery)
+    const painted = arena?.backdrop ? arena : null;
+    const arenaLook = ARENA_LOOK[venue];
+    const cave = !painted && art?.id === 'cave' ? art : null;
     const look = art?.id === 'scene' ? art : null;
     this.sky = new Sprite(
-      cave ? tex(caveWall(cave)) : look ? tex(sceneWall(look)) : tex(skyTexture()),
+      painted?.backdrop
+        ? Texture.from(painted.backdrop)
+        : cave
+          ? tex(caveWall(cave))
+          : look
+            ? tex(sceneWall(look))
+            : tex(skyTexture()),
     );
-    this.shards = new Sprite(art ? Texture.EMPTY : tex(shardsTexture()));
-    this.ruins = cave
-      ? caveColumns(cave, 360)
-      : look
-        ? new Container()
-        : new Sprite(tex(ruinsTexture()));
+    this.shards = new Sprite(art || painted ? Texture.EMPTY : tex(shardsTexture()));
+    if (painted) this.arenaProps = new ArenaProps(painted, arenaLook, this.glowTex);
+    this.ruins = this.arenaProps
+      ? this.arenaProps.far
+      : cave
+        ? caveColumns(cave, 360)
+        : look
+          ? new Container()
+          : new Sprite(tex(ruinsTexture()));
     this.sky.x = -PAD_X;
-    if (art) this.skyY = -PAD_Y;
+    if (art || painted) this.skyY = -PAD_Y;
     this.sky.y = this.skyY;
     this.shards.x = -PAD_X;
     this.ruins.x = -PAD_X;
@@ -215,8 +231,10 @@ export class BattlefieldScene {
     const floor = new Sprite(tex(ft.floor));
     floor.position.set(ft.originX, ft.originY);
     floor.scale.set(ft.scale);
-    if (cave) floor.texture = tex(caveFloor(cave, ft.floor.width, ft.floor.height, 2));
-    if (look) floor.tint = look.floorTint;
+    if (arena?.floor)
+      floor.texture = tex(tiledFloor(arena.floor, ft.floor.width, ft.floor.height, 2, arenaLook));
+    else if (cave) floor.texture = tex(caveFloor(cave, ft.floor.width, ft.floor.height, 2));
+    else if (look) floor.tint = look.floorTint;
     this.world.addChild(floor);
 
     // a pool of violet light along the Rift line
@@ -239,8 +257,9 @@ export class BattlefieldScene {
     this.riftCrack.blendMode = 'add';
     this.world.addChild(this.branchCracks, this.riftCrack);
 
-    if (cave) this.world.addChild(caveProps(cave, this.glowTex));
-    this.foliage = art ? foliageFor(art) : null;
+    if (this.arenaProps) this.world.addChild(this.arenaProps.ground, this.arenaProps.hang);
+    else if (cave) this.world.addChild(caveProps(cave, this.glowTex));
+    this.foliage = art && !painted ? foliageFor(art) : null;
     if (this.foliage) this.world.addChild(this.foliage.container);
 
     // --- the combatants ---
@@ -416,6 +435,7 @@ export class BattlefieldScene {
 
     this.fighters.tick(t, p.still);
     this.foliage?.update(t, p.still);
+    this.arenaProps?.update(t, p.still);
 
     // pointer parallax: the far layers shift a little more than the near ones
     if (p.parallax > 0) {
