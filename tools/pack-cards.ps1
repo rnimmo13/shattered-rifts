@@ -69,13 +69,15 @@ foreach ($sh in $sheets) {
   $mode = 'gutters'
   if ($null -eq $cells) {
     $mode = 'equal cells'
+    Write-Warning "$($sh.name): could not find the gutters; cutting equal cells (check the result)"
     $cells = New-Object System.Collections.ArrayList
     $cw = $img.Width / $sh.cols; $ch = $img.Height / $sh.rows
     for ($r = 0; $r -lt $sh.rows; $r++) { for ($c = 0; $c -lt $sh.cols; $c++) { [void]$cells.Add(@([int]($c * $cw), [int]($r * $ch), [int](($c + 1) * $cw), [int](($r + 1) * $ch))) } }
   }
   for ($i = 0; $i -lt $sh.ids.Count; $i++) {
     $cell = $cells[$i]
-    $inset = 4
+    # the pictures sit a little inside their cells, so an equal-cell cut needs a wider inset than a gutter cut
+    $inset = if ($mode -eq 'gutters') { 4 } else { [int](($cell[2] - $cell[0]) * 0.035) }
     $sx = $cell[0] + $inset; $sy = $cell[1] + $inset; $sw = $cell[2] - $cell[0] - 2 * $inset; $sh2 = $cell[3] - $cell[1] - 2 * $inset
     # crop to 4:3 around the middle if the picture is not exactly that shape
     $want = 4.0 / 3.0

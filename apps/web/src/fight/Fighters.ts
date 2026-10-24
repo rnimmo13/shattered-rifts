@@ -50,7 +50,8 @@ export function slotX(
   const start =
     count <= 4 ? Math.min(CENTRE + FOE_BACK, FOE_RIGHT - (count - 1) * pitch) : crowdStart;
   // flyers hover in their own row, a half step along, so they fill the gaps above the ground line instead of queueing behind it
-  const half = flying ? (side === 'a' ? -ALLY_PITCH : pitch) / 2 : 0;
+  // (toward the centre on both sides, so the last foe's figure and plate still fit on the stage)
+  const half = flying ? -(side === 'a' ? ALLY_PITCH : pitch) / 2 : 0;
   return (side === 'a' ? CENTRE - ALLY_BACK - slot * ALLY_PITCH : start + slot * pitch) + half;
 }
 
@@ -551,7 +552,7 @@ export class Fighters {
       name,
       {
         x: f.root.x,
-        y: f.root.y,
+        y: f.root.y - (f.spec.hover ?? 0),
         scale: o.scale,
         from: o.from,
         rate: o.rate,

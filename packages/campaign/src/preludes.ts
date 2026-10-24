@@ -42,7 +42,7 @@ export function describeEffect(e: PreludeEffect): string {
     case 'wound':
       return e.n === 1 ? 'Add a Wound to your deck' : `Add ${e.n} Wounds to your deck`;
     case 'transform':
-      return `Transform ${e.n} Slashes or Guards into random cards`;
+      return `Transform ${e.n} Attacks or Defends into random cards`;
   }
 }
 
