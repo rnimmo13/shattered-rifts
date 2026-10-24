@@ -247,20 +247,51 @@ function Flip-X($bmp) { $c = $bmp.Clone(); $c.RotateFlip('RotateNoneFlipX'); $c 
 # ---------------------------------------------------------------- minions (companions)
 # sheet file -> grid (cols, rows), the unit ids in reading order, and which of them face left on the sheet (flipped to face right)
 $minions = @(
-  @{ file = 'mechs.png'; cols = 3; rows = 3
+  @{ file = 'minions/mechs.png'; cols = 3; rows = 3
      ids = 'drone', 'patrol-drone', 'sentry-turret', 'salvage-bot', 'repair-bot', 'enforcer', 'war-engine', 'micro-drone', 'siege-engine'; flip = @() },
-  @{ file = 'beasts.png'; cols = 3; rows = 2
+  @{ file = 'minions/beasts.png'; cols = 3; rows = 2
      ids = 'hound', 'dire-wolf', 'maw-hatchling', 'gnashling', 'gilded-guard'; flip = @() },
-  @{ file = 'gloomfen.png'; cols = 3; rows = 1
-     ids = 'bone-thrall', 'grave-colossus', 'drowned-king'; flip = @() }
+  @{ file = 'minions/gloomfen.png'; cols = 3; rows = 1
+     ids = 'bone-thrall', 'grave-colossus', 'drowned-king'; flip = @() },
+  # enemies (assets-src/enemies, see docs/enemy-prompts.md): they face LEFT on the sheet, toward the player
+  @{ file = 'enemies/aurelion.png'; cols = 3; rows = 3
+     ids = 'squire', 'squire-recruit', 'gilded-page', 'gilded-halberdier', 'bell-cleric', 'wandering-knight', 'templar-aldric', 'inquisitor-maelis', 'seraphine'; flip = @() },
+  @{ file = 'enemies/nexus.png'; cols = 3; rows = 2
+     ids = 'scrap-drone', 'line-technician', 'patrol-unit', 'scrap-collector', 'hive-7', 'kron'; flip = @() },
+  @{ file = 'enemies/rift.png'; frac = 0.1; cols = 2; rows = 2
+     ids = 'raptor', 'lost-courtier', 'lamplighter', 'rift-shard'; flip = @() },
+  @{ file = 'enemies/redo-1.png'; frac = 0.1; cols = 3; rows = 2
+     ids = 'acid-spitter', 'maw-spawn', 'hooded-acolyte', 'ghostwire', 'feral-riftling', 'bloated-one'; flip = @() },
+  @{ file = 'enemies/redo-2.png'; frac = 0.1; cols = 3; rows = 2
+     ids = 'whisperer', 'choir-of-silence', 'nyxara', 'packmother-ruhn', 'gorrmaw', 'vorthax'; flip = @() }
 )
 $figDir = Join-Path $pub 'figures'
 foreach ($m in $minions) {
-  $path = Join-Path $src "minions/$($m.file)"
+  $path = Join-Path $src $m.file
   if (-not (Test-Path $path)) { "skip $($m.file) (missing)"; continue }
   $sheet = Open-Bmp $path
   $keyed = Key-Sheet $sheet 26 0
-  $parts = @(Order-Pieces ([ArtCut]::Objects($keyed, 140, 2, 8, 0.04)) $sheet.Width $sheet.Height $m.cols $m.rows)
+  $found = @([ArtCut]::Objects($keyed, 140, 2, 8, $(if ($m.frac) { $m.frac } else { 0.04 })))
+  if ($found.Count -gt $m.ids.Count) {
+    # more pieces than figures (a lantern apart from its bearer): join the pieces that share a cell of the sheet
+    $cells = @{}
+    foreach ($pc in $found) {
+      $ci = [int]([math]::Floor(($pc.Y + $pc.H / 2) / ($sheet.Height / $m.rows)) * 100 + [math]::Floor(($pc.X + $pc.W / 2) / ($sheet.Width / $m.cols)))
+      if (-not $cells.ContainsKey($ci)) { $cells[$ci] = @() }
+      $cells[$ci] += $pc
+    }
+    $found = @(foreach ($ci in $cells.Keys) {
+      $grp = $cells[$ci]
+      $x0 = ($grp | Measure-Object X -Minimum).Minimum; $y0 = ($grp | Measure-Object Y -Minimum).Minimum
+      $x1 = ($grp | ForEach-Object { $_.X + $_.W } | Measure-Object -Maximum).Maximum; $y1 = ($grp | ForEach-Object { $_.Y + $_.H } | Measure-Object -Maximum).Maximum
+      $u = New-Object System.Drawing.Bitmap ($x1 - $x0), ($y1 - $y0), ([System.Drawing.Imaging.PixelFormat]::Format32bppArgb)
+      $ug = [System.Drawing.Graphics]::FromImage($u)
+      foreach ($pc in $grp) { $ug.DrawImage($pc.Bmp, $pc.X - $x0, $pc.Y - $y0) }
+      $ug.Dispose()
+      New-Object Piece -Property @{ Bmp = $u; X = $x0; Y = $y0; W = ($x1 - $x0); H = ($y1 - $y0) }
+    })
+  }
+  $parts = @(Order-Pieces $found $sheet.Width $sheet.Height $m.cols $m.rows)
   if ($parts.Count -ne $m.ids.Count) { Write-Warning "$($m.file): found $($parts.Count) pieces, expected $($m.ids.Count): sheet skipped"; continue }
   for ($i = 0; $i -lt [math]::Min($parts.Count, $m.ids.Count); $i++) {
     $id = $m.ids[$i]; $bm = $parts[$i].Bmp

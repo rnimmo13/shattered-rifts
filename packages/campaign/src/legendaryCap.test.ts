@@ -11,7 +11,7 @@ const legends = Object.values(COMBAT_DB.cards)
 
 describe('the Legendary limit', () => {
   it('a deck stops accepting Legendaries once it holds the limit', () => {
-    expect(legends.length).toBeGreaterThanOrEqual(5);
+    expect(legends.length).toBeGreaterThanOrEqual(3);
     const deck = [...RIFTWALKERS.maren.starter];
     for (let n = 0; n < V2_DECK_RULES.maxLegendary; n++) {
       expect(canAdd(deck, legends[n] as string)).toBe(true);

@@ -97,8 +97,8 @@ describe('legendary effects', () => {
   });
 });
 
-describe('five Legendary cards per Riftwalker', () => {
-  it('every Riftwalker owns exactly five, and each is playable', () => {
+describe('three Legendary cards per Riftwalker', () => {
+  it('every Riftwalker owns exactly three, and each is playable', () => {
     for (const hero of Object.keys(RIFTWALKERS) as HeroId[]) {
       const own = Object.values(db.cards).filter(
         (c) => c.hero === hero && c.rarity === 'legendary' && !c.id.endsWith('+'),
@@ -106,7 +106,7 @@ describe('five Legendary cards per Riftwalker', () => {
       expect(
         own.map((c) => c.id),
         `${hero} legendaries`,
-      ).toHaveLength(5);
+      ).toHaveLength(3);
       for (const c of own) {
         if (c.kind === 'snare') continue; // a Snare is set, not played for an effect
         play(hero, c.id);

@@ -5,6 +5,8 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **0.20.0:** illustrated models for every enemy, three Legendaries per Riftwalker.
+- **Three Legendary cards per Riftwalker** (down from five): the two originals plus one of the 0.12.0 additions. A deck still holds at most two.
 - **0.19.0:** painted arenas, companion art and new hero art.
 - **New arenas:** six realms (Aurelion, Nexus-9, Wyldmaw, Umbral Veil, Gloomfen, the Rift) have painted backdrops with scenery that drifts with your mouse, glowing braziers and lanterns, and swaying banners; all eight realms have a new floor surface. The floor is still lit live and pulses along the Rift line.
 - **Companion art:** the Nexus drones and machines, the Wyldmaw beasts, the Gilded Guard and the Gloomfen undead have illustrated figures (cut out by `tools/pack-arenas.ps1`).

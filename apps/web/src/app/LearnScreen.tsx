@@ -137,7 +137,7 @@ export function LearnScreen() {
           </dl>
           <h3>Legendary cards</h3>
           <p>
-            Every Riftwalker has five Legendary cards, but a deck can hold only two at a time. Once
+            Every Riftwalker has three Legendary cards, but a deck can hold only two at a time. Once
             you have two, no more are offered, so taking one is a real choice: it uses a slot a
             better fit might have taken.
           </p>
