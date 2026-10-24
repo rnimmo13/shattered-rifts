@@ -37,6 +37,7 @@ export type StatusId =
   | 'mirrored' // your next skill card is played twice, per stack
   | 'unbound' // your skills cost 0 and are consumed when played
   | 'fortified' // you keep 75% of your Barrier at the start of your turn instead of losing it all
+  | 'plating' // you keep up to this much Barrier through each turn change, and it shrinks by 1 every turn
   | 'holdfast' // your whole hand is held at the end of your turn, per stack (one turn each)
   | 'clutch'; // an innate trait's state: you deal this % more attack damage (set by the engine while you are hurt)
 export const STATUS_IDS: readonly StatusId[] = [
@@ -65,6 +66,7 @@ export const STATUS_IDS: readonly StatusId[] = [
   'mirrored',
   'unbound',
   'fortified',
+  'plating',
   'holdfast',
   'clutch',
 ];

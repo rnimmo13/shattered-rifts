@@ -1127,12 +1127,15 @@ function startOfTurn(r: Run, side: Side): void {
   const sd = r.s.sides[side];
   for (const u of sd.units) {
     if (u.barrier > 0) {
-      // Fortified keeps a share of your Barrier through the turn change; without it all of it falls away
-      const kept = stacks(u, 'fortified') > 0 ? Math.floor(u.barrier * FORTIFIED_KEEP) : 0;
+      // Fortified keeps a share of your Barrier through the turn change, Plating keeps up to its stacks; otherwise all of it falls away
+      const fort = stacks(u, 'fortified') > 0 ? Math.floor(u.barrier * FORTIFIED_KEEP) : 0;
+      const kept = Math.min(u.barrier, Math.max(fort, stacks(u, 'plating')));
       u.barrier = kept;
       r.ev.push({ type: 'barrierDrop', target: u.id, total: kept });
     }
   }
+  // Plating wears thinner every turn
+  for (const u of sd.units) if (stacks(u, 'plating') > 0) addStatus(r, u, 'plating', -1);
   for (const u of [...sd.units]) {
     const sear = stacks(u, 'seared');
     if (sear > 0 && u.hp > 0) {

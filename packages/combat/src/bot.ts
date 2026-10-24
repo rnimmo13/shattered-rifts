@@ -51,6 +51,7 @@ export function evaluate(db: CombatDb, s: CombatState, me: Side): number {
       (u.statuses.mirrored ?? 0) * 5 +
       (u.statuses.unbound ?? 0) * 8 +
       (u.statuses.fortified ?? 0) * 8 +
+      (u.statuses.plating ?? 0) * 1 +
       (u.statuses.holdfast ?? 0) * 2;
     v -=
       (u.statuses.exposed ?? 0) * 2 +

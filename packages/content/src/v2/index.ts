@@ -39,10 +39,10 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     role: 'Knight',
     trait: {
       name: 'Oathkeeper',
-      text: 'Start every turn with 2 Barrier.',
-      turnStart: [barrier(2)],
+      text: 'Start every fight with 6 Barrier and 6 Plating: your Barrier survives each turn up to your Plating, which shrinks by 1 a turn.',
+      fightStart: [barrier(6), status('plating', 6)],
     },
-    hero: { id: 'maren', name: 'Maren', maxHp: 66, mana: 3, handSize: 5 },
+    hero: { id: 'maren', name: 'Ashencourte', maxHp: 66, mana: 3, handSize: 5 },
     starter: [...rep('strike', 4), ...rep('defend', 4), 'dawn-smite', 'oathbound'],
     blurb: 'A knight of the Gilded Order. No companions: Barrier, Thorns and punishing Snares.',
     lanes: [
@@ -51,7 +51,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
       'Sanctified: heal and Shielded',
     ],
     howTo: [
-      'Barrier soaks damage, but it falls away at the start of your next turn.',
+      'Barrier soaks damage, but it falls away at the start of your next turn. Your Plating keeps some of it through the first turns.',
       'Thorns hurt whatever attacks you, so being hit can be part of the plan.',
       'Pick a lane: hit with your Barrier (Bulwark), punish attackers (Thorns), or heal and stay Shielded (Sanctified).',
     ],
@@ -156,9 +156,9 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     realm: 'nexus',
     role: 'Totemist',
     trait: {
-      name: 'Spirit-touched',
-      text: 'Start every fight with 2 Spirit.',
-      fightStart: [status('resonance', 2)],
+      name: 'Totem-bound',
+      text: 'Start every fight with three different totems: Hawk, Bear and Splinter.',
+      fightStart: [channel('spark'), channel('ward'), channel('splinter')],
     },
     hero: {
       id: 'ilvane',
@@ -166,18 +166,17 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
       maxHp: 84,
       mana: 3,
       handSize: 5,
-      sigil: [channel('spark')],
     },
     starter: [...rep('strike', 4), ...rep('defend', 3), ...rep('spark-cast', 2), 'twin-evocation'],
     blurb:
-      'A stone golem who plants carved totems and calls the spirits inside them to do his bidding. Starts every fight with a Hawk totem. Totems pulse every turn, then burst when awakened.',
+      'A stone golem who plants carved totems and calls the spirits inside them to do his bidding. Starts every fight with three totems (Hawk, Bear and Splinter). Totems pulse every turn, then burst when awakened.',
     lanes: [
       'Hawk: damage totems (one enemy or all)',
       'Bear: Barrier totems',
       'Elder: charge and Spirit',
     ],
     howTo: [
-      'You start with a Hawk totem. Totems stand in a column of 3 slots beside you.',
+      'You start with a Hawk, a Bear and a Splinter totem. Totems stand in a column of 3 slots beside you.',
       'At the end of your turn every totem pulses a small effect. A 4th totem pushes the oldest out and it bursts with its big effect.',
       'Awaken cards burst totems early. Spirit makes every totem stronger.',
     ],
@@ -213,8 +212,8 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     role: 'Spellblade',
     trait: {
       name: 'Kindled',
-      text: 'Gain 3 Arcana at the start of your turn.',
-      turnStart: [stars(3)],
+      text: 'Gain 1 Arcana at the start of your turn.',
+      turnStart: [stars(1)],
     },
     hero: {
       id: 'astra',

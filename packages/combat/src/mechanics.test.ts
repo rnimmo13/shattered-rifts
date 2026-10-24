@@ -191,6 +191,7 @@ const DB: CombatDb = {
         'mirrored',
         'unbound',
         'fortified',
+        'plating',
         'holdfast',
       ] as const
     ).map((st) =>
@@ -1084,6 +1085,20 @@ describe('tier 3: statuses and tricks', () => {
     expect(before).toBeGreaterThan(0);
     s = end(s).state;
     expect(hero(s).barrier).toBe(Math.floor(before * 0.75));
+  });
+
+  it('Plating keeps Barrier through the turn change up to its stacks, then shrinks by 1 each turn', () => {
+    let s = start(['give-plating', 'defend', 'defend']);
+    s = play(s, 'h0').state; // Plating 2
+    s = play(s, 'h1').state;
+    s = play(s, 'h2').state;
+    expect(hero(s).barrier).toBeGreaterThan(2);
+    s = end(s).state;
+    expect(hero(s).barrier).toBe(2);
+    expect(hero(s).statuses.plating).toBe(1);
+    s = end(s).state;
+    expect(hero(s).barrier).toBe(1);
+    expect(hero(s).statuses.plating).toBeUndefined();
   });
 
   it('Holdfast keeps the whole hand for one turn per stack', () => {

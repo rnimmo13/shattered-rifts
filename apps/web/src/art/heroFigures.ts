@@ -234,7 +234,7 @@ function groundShadow(g: G, rx: number): void {
 /** `g` is the body (shaded and outlined); `fx` is an additive layer drawn over it for glows */
 type Painter = (g: G, fx: G) => void;
 
-// ---- Maren: a knight in dawn-gold plate, a blue cape, a sunburst shield and a longsword ----
+// ---- Ashencourte (id maren): a female knight in dawn-gold plate, a blue cape, a sunburst shield and a longsword ----
 const maren: Painter = (g, fx) => {
   // cape
   gpoly(
@@ -417,6 +417,27 @@ const maren: Painter = (g, fx) => {
     );
   }
   gell(g, '#8aa0d0', 100, 258, 8, 5);
+  // ash-pale hair swept out behind the helm
+  gpoly(
+    g,
+    '#d9d2e6',
+    [
+      [168, 150],
+      [140, 158],
+      [104, 182],
+      [72, 232],
+      [96, 224],
+      [126, 204],
+      [168, 196],
+    ],
+    1.2,
+    0.75,
+  );
+  line(g, 'rgba(120,100,150,0.5)', 3, [
+    [150, 164],
+    [110, 196],
+    [90, 224],
+  ]);
   // helm: dome, visor slit, cheek guards, plume
   gpoly(
     g,

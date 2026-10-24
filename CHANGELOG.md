@@ -5,6 +5,7 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **Maren is now Ashencourte**, a woman in dawn-gold plate with ash-pale hair. Her trait is 6 Barrier and a new Plating that keeps it through the first turns (instead of 2 Barrier every turn); Ilvane starts with three totems (Hawk, Bear, Splinter) instead of 2 Spirit; Obsidia gains 1 Arcana a turn instead of 3.
 - **0.16.0:** a castle, factory, forest, glass, swamp and alley stage per realm, real monster art for twelve enemies, mossy cave props, Boon and potion rarity gems, more credits.
 - **Ghostwire** now is a one-eyed, tentacled horror (art by TheRealFusion, from the Jitsu-Koan collection).
 - **Mossy cave:** the cave and swamp stages have swaying hanging fronds and plants, and the Acid Spitter, Maw Spawn and Hooded Acolyte are now a green slime, an orange slime and a little wizard (art by Maaot).

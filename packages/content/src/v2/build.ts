@@ -284,7 +284,8 @@ export function plus(c: CardDef): CardDef {
           o.status !== 'stunned' &&
           o.status !== 'shielded' &&
           o.status !== 'unbound' &&
-          o.status !== 'fortified'
+          o.status !== 'fortified' &&
+          o.status !== 'plating'
         ) {
           changed = true;
           return { ...o, amount: o.amount + 1 };

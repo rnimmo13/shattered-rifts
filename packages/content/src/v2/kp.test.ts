@@ -108,10 +108,11 @@ describe('innate traits', () => {
     );
   });
 
-  it("Maren's Oathkeeper gives Barrier every turn, Mire's Grave Chill curses every enemy", () => {
+  it("Ashencourte's Oathkeeper gives 6 Barrier and 6 Plating, Mire's Grave Chill curses every enemy", () => {
     const m = fight('maren', []);
     const hero = m.sides.a.units[m.sides.a.units.length - 1]!;
-    expect(hero.barrier).toBeGreaterThanOrEqual(2);
+    expect(hero.barrier).toBeGreaterThanOrEqual(6);
+    expect(hero.statuses.plating).toBe(6);
     const g = fight('mire', []);
     for (const u of g.sides.b.units) expect(u.statuses.doom).toBe(4);
   });

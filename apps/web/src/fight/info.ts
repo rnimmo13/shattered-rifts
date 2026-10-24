@@ -129,6 +129,12 @@ export const STATUS_INFO: Record<
     tone: 'good',
     text: 'You keep 75% of your Barrier at the start of your turn instead of losing all of it.',
   },
+  plating: {
+    name: 'Plating',
+    glyph: '⛉',
+    tone: 'good',
+    text: 'Your Barrier survives each turn change up to this much, and the number shrinks by 1 every turn.',
+  },
   clutch: {
     name: 'Clutch Genes',
     glyph: '✊',
