@@ -742,7 +742,7 @@
   background: rgb(8 10 20 / 0.55);
   border: 1px solid rgb(109 240 168 / 0.35);
 }
-/* Lumen orb occupies the slot beside Mana: slide the belt past it (4rem orb + gap) */
+/* the Arcana orb occupies the slot beside Mana: slide the belt past it (4rem orb + gap) */
 .fight__potions--withLumen {
   left: 12.2rem;
 }
@@ -809,7 +809,7 @@
   cursor: default;
 }
 
-/* ---- board extras: Stars, runes, Powers ---- */
+/* ---- board extras: Arcana, totems, Powers ---- */
 .fight__aux {
   position: absolute;
   left: 1.2rem;
@@ -866,18 +866,18 @@
   text-align: center;
 }
 .rune--spark {
-  background: radial-gradient(circle at 35% 30%, #fff6b0, #c98a1c 70%);
-  border-color: #ffe27a;
-  box-shadow: 0 0 12px rgb(255 226 122 / 0.6);
+  background: radial-gradient(circle at 35% 30%, #ffe0a8, #a8602a 70%);
+  border-color: #f0b878;
+  box-shadow: 0 0 12px rgb(240 160 80 / 0.55);
 }
 .rune--splinter {
-  background: radial-gradient(circle at 35% 30%, #f4fffb, #3fae9a 72%);
-  border-color: #c8fff2;
-  box-shadow: 0 0 12px rgb(120 255 220 / 0.55);
+  background: radial-gradient(circle at 35% 30%, #e8ffd0, #5a9a3a 72%);
+  border-color: #c8f0a0;
+  box-shadow: 0 0 12px rgb(150 230 100 / 0.5);
 }
 .rune--ward {
-  background: radial-gradient(circle at 35% 30%, #d9f8ff, #2a7fb8 70%);
-  border-color: #a6f4ff;
+  background: radial-gradient(circle at 35% 30%, #e0d0bc, #6a4a30 70%);
+  border-color: #d8b890;
 }
 .rune--hollow {
   background: radial-gradient(circle at 35% 30%, #b99aff, #2b1654 75%);
@@ -891,7 +891,7 @@
 }
 .rune--empty {
   background: transparent;
-  border: 2px dashed rgb(166 244 255 / 0.35);
+  border: 2px dashed rgb(216 184 144 / 0.4);
   box-shadow: none;
   animation: none;
 }
@@ -962,7 +962,7 @@
   pointer-events: none;
 }
 
-/* ---- Lumen sits beside Mana ---- */
+/* ---- Arcana sits beside Mana ---- */
 .fight__lumen {
   position: absolute;
   left: 7.4rem;
@@ -973,9 +973,9 @@
   display: grid;
   place-content: center;
   text-align: center;
-  background: radial-gradient(circle at 35% 30%, #fff6c8, #e0b24a 45%, #6a4a12 100%);
-  border: 3px solid #fff0b0;
-  box-shadow: 0 0 16px rgb(255 226 122 / 0.6);
+  background: radial-gradient(circle at 35% 30%, #ffd9a8, #ee7a2a 45%, #6a2a08 100%);
+  border: 3px solid #ffc890;
+  box-shadow: 0 0 16px rgb(255 140 60 / 0.6);
   z-index: 22;
   cursor: help;
   pointer-events: auto;
@@ -986,14 +986,14 @@
   left: 50%;
   transform: translateX(-50%);
   font-size: 1rem;
-  color: #fff0b0;
+  color: #ffd9a8;
   text-shadow: 0 0 8px #000;
 }
 .fight__lumen b {
   font-family: var(--font-display);
   font-size: 1.6rem;
   line-height: 1;
-  color: #3a2706;
+  color: #2a0e02;
 }
 .fight__lumen small {
   font-size: 0.9rem;
@@ -1003,7 +1003,7 @@
   color: #3a2706;
 }
 
-/* ---- runes: a curved row under the hero ---- */
+/* ---- totems: a curved row beside the hero ---- */
 .runearc {
   position: absolute;
   inset: 0;

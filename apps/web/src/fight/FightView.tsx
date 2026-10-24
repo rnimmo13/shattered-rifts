@@ -29,7 +29,7 @@ import { getSound, play, setSound } from '../audio/sfx';
 import { SPEEDS, loadSpeed, saveSpeed } from '../play/prefs';
 import { handCardWidth, handReserve } from '../hand/fanLayout';
 import { reduceEvent, startingDisplay } from './display';
-import { heroFigure, unitFigure, unitHeight } from './art';
+import { heroFigure, heroProp, unitFigure, unitHeight } from './art';
 import { FightHand, type HandCard } from './FightHand';
 import { FightCard } from './FightCard';
 import { Grimoire } from './Grimoire';
@@ -75,6 +75,9 @@ function specsFrom(db: CombatDb, s: CombatState): FighterSpec[] {
     const crowd = s.sides[side].units.filter((x) => x.kind !== 'hero').length;
     for (const u of s.sides[side].units) {
       const hero = u.kind === 'hero';
+      const prop = hero ? heroProp(u.def) : undefined;
+      // the floating blade shows while a card tagged 'blade' is in her hand
+      const holding = s.sides[side].hand.some((c) => db.cards[c.card]?.tags?.includes('blade'));
       out.push({
         id: u.id,
         side,
@@ -83,6 +86,7 @@ function specsFrom(db: CombatDb, s: CombatState): FighterSpec[] {
         count: crowd,
         canvas: hero ? heroFigure(u.def) : unitFigure(u.def),
         height: unitHeight(db.units[u.def], u.kind) * (!hero && crowd > 5 ? 0.82 : 1),
+        ...(prop ? { prop: { ...prop, on: holding } } : {}),
       });
     }
   }
@@ -1008,7 +1012,7 @@ function deckOps(db: CombatDb, setup: CombatSetup): Op[] {
   ];
 }
 
-/** Decides which parts of the side panel show: a Riftwalker without runes never sees an empty rune row. */
+/** Decides which parts of the side panel show: a Riftwalker without totems never sees an empty totem row. */
 function deckUsesStars(db: CombatDb, setup: CombatSetup): boolean {
   return (
     deckOps(db, setup).some((o) => o.op === 'stars') ||

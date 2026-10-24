@@ -41,7 +41,7 @@ character in the fight, and with one enemy you should not have to aim.
 
 ## 3. Turn structure
 
-**Your turn**
+1. Barrier you had falls away, unless you are **Fortified**, which keeps 75% of it (rounded down).
 1. Barrier you had falls away (unless a card says it stays).
 2. Gain **Mana** equal to your max (base **3**); draw up to **5** cards (hand limit 10).
 3. Play cards in any order, as many as you can pay for. Allies act automatically when you press **End turn**
@@ -96,7 +96,7 @@ draw 5, +1 draw for the second player in PvP (§8).
 | **Quill** (Umbral) | **None.** Shivs are cards, not bodies. | Shivs, Bleed, discard (docs/09). |
 | **Ilvane** (Nexus-9) | **None.** Runes sit in a row. | Channel, evoke, Resonance. |
 | **Sehra** (Aurelion) | **None.** | Stances and Mantra. |
-| **Astra** (Starfall) | **None.** | Stars and the Sovereign Blade. |
+| **Obsidia** (The Glasswaste; id astra) | **None.** | Arcana and the Obsidian Blade. |
 
 See `09_ROSTER.md` for the lanes of all eight and the rules every pool follows.
 

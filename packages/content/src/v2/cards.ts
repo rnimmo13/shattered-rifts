@@ -5,6 +5,7 @@
 import type { CardDef } from '@sr/combat';
 import { withUpgrades } from './build';
 import { ASTRA } from './pools/astra';
+import { LEGENDARIES } from './pools/legendary';
 import { ILVANE } from './pools/ilvane';
 import { KESH } from './pools/kesh';
 import { KP } from './pools/kp';
@@ -28,6 +29,7 @@ export const V2_CARDS: CardDef[] = [
     ...ILVANE,
     ...SEHRA,
     ...ASTRA,
+    ...LEGENDARIES,
     ...MIRE,
     ...KP,
     ...SIGNATURES,

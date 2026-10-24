@@ -23,7 +23,7 @@ const RARITY_LABEL: Record<string, string> = {
 };
 
 const KEYWORDS =
-  /\b(Barrier|Exposed|Faltering|Might|Bleed|Stunned|Thorns|Shielded|Exhaust|Retain|Mana|Resonance|Edge|Fervor|Serene|Fury|Radiant|Lumen|Foresee|Sharpen|Sharpened|Consume|Hold|Fleeting|Unplayable)\b/g;
+  /\b(Barrier|Exposed|Faltering|Might|Bleed|Stunned|Thorns|Shielded|Exhaust|Retain|Mana|Spirit|Edge|Fervor|Serene|Fury|Radiant|Arcana|Foresee|Sharpen|Sharpened|Consume|Hold|Fleeting|Unplayable)\b/g;
 
 /** Rules text with the keywords marked **bold** for the card renderer. */
 function rulesFor(db: CombatDb, c: CardDef): string {
@@ -83,8 +83,8 @@ export const FightCard = memo(
             <span>{def.x ? 'X' : (cost ?? def.cost)}</span>
           </div>
           {def.starCost ? (
-            <div className="card__stars" aria-label={`Costs ${def.starCost} Lumen`}>
-              <span>★ {def.starCost}</span>
+            <div className="card__stars" aria-label={`Costs ${def.starCost} Arcana`}>
+              <span>◆ {def.starCost}</span>
             </div>
           ) : null}
           <div className="card__type">

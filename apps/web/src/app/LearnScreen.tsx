@@ -135,6 +135,12 @@ export function LearnScreen() {
               </div>
             ))}
           </dl>
+          <h3>Legendary cards</h3>
+          <p>
+            Every Riftwalker has five Legendary cards, but a deck can hold only two at a time. Once
+            you have two, no more are offered, so taking one is a real choice: it uses a slot a
+            better fit might have taken.
+          </p>
           <h3>Resolve</h3>
           <p>
             Losing a fight does not end the run: you retry it at the HP you started with, and spend
@@ -168,7 +174,7 @@ export function LearnScreen() {
           </p>
           <Words ids={SIGNATURE_WORDS} />
           <details className="learn__more">
-            <summary>The runes (Ilvane Glyphwright)</summary>
+            <summary>The totems (Ilvane)</summary>
             <dl>
               {runes.map((r) => (
                 <div key={r.id} className="learn__row">

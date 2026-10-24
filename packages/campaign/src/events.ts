@@ -493,7 +493,8 @@ export function resolveEvent(
       return 'The water burns going down. You lose 10% of your HP.';
     case 'mirror': {
       if (r.hp <= 15) fail('You are too hurt for that');
-      const pool = nonBasic(r.deck);
+      // a copy still obeys the deck rules (the copy limit, and the Legendary limit)
+      const pool = nonBasic(r.deck).filter((id) => canAdd(r.deck, id));
       if (!pool.length) fail('There is nothing to copy');
       const pick = pool[nextInt(r.rng, pool.length)] as string;
       r.hp -= 15;

@@ -154,15 +154,15 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
   },
   ilvane: {
     realm: 'nexus',
-    role: 'Runecaster',
+    role: 'Totemist',
     trait: {
-      name: 'Attuned',
-      text: 'Start every fight with 2 Resonance.',
+      name: 'Spirit-touched',
+      text: 'Start every fight with 2 Spirit.',
       fightStart: [status('resonance', 2)],
     },
     hero: {
       id: 'ilvane',
-      name: 'Ilvane Glyphwright',
+      name: 'Ilvane',
       maxHp: 100,
       mana: 3,
       handSize: 5,
@@ -170,16 +170,16 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     },
     starter: [...rep('strike', 4), ...rep('defend', 3), ...rep('spark-cast', 2), 'twin-evocation'],
     blurb:
-      'Carves runes into the air. Starts every fight with a Spark rune. Runes fire every turn, then burst when evoked.',
+      'A stone golem who plants carved totems and calls the spirits inside them to do his bidding. Starts every fight with a Hawk totem. Totems pulse every turn, then burst when awakened.',
     lanes: [
-      'Spark: damage runes (one enemy or all)',
-      'Ward: Barrier runes',
-      'Hollow: charge and Resonance',
+      'Hawk: damage totems (one enemy or all)',
+      'Bear: Barrier totems',
+      'Elder: charge and Spirit',
     ],
     howTo: [
-      'You start with a Spark rune. Runes sit in a column of 3 slots beside you.',
-      'At the end of your turn every rune fires a small effect. A 4th rune pushes the oldest out and it fires its big effect.',
-      'Release cards fire runes early. Resonance makes every rune stronger.',
+      'You start with a Hawk totem. Totems stand in a column of 3 slots beside you.',
+      'At the end of your turn every totem pulses a small effect. A 4th totem pushes the oldest out and it bursts with its big effect.',
+      'Awaken cards burst totems early. Spirit makes every totem stronger.',
     ],
   },
   sehra: {
@@ -212,19 +212,19 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     realm: 'starfall',
     role: 'Spellblade',
     trait: {
-      name: 'Starborn',
-      text: 'Gain 3 Lumen at the start of your turn.',
+      name: 'Kindled',
+      text: 'Gain 3 Arcana at the start of your turn.',
       turnStart: [stars(3)],
     },
     hero: {
       id: 'astra',
-      name: 'Astra',
+      name: 'Obsidia',
       maxHp: 112,
       mana: 3,
       handSize: 5,
       sigil: [stars(3), addTo('starforged-blade')],
     },
-    // Gather Light (makes Lumen) and Lumen Bolt (spends it) are Innate: the opening hand can always do both
+    // Gather Arcana (makes Arcana) and Arcane Bolt (spends it) are Innate: the opening hand can always do both
     starter: [
       ...rep('strike', 2),
       ...rep('defend', 4),
@@ -233,16 +233,16 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
       ...rep('lumen-bolt', 2),
     ],
     blurb:
-      'A scholar of fallen stars. Starts with 3 Lumen and a Starforged Blade that every Sharpen improves for good.',
+      'A spellblade of black glass and ember. Starts with 3 Arcana and an Obsidian Blade that every Sharpen improves for good.',
     lanes: [
       'Blade: sharpen one weapon',
-      'Lumen: spend for finishers',
-      'Constellations: ticking Auras',
+      'Arcana: spend for finishers',
+      'Sigils: ticking Auras',
     ],
     howTo: [
-      'Lumen is a second resource. Cards with a gold orb spend it; others gain it.',
-      'You start with a Starforged Blade. Every Sharpen card makes every copy hit harder for the whole fight.',
-      'Auras (your constellations) keep working until the fight ends.',
+      'Arcana is a second resource. Cards with an orange orb spend it; others gain it.',
+      'You start with an Obsidian Blade. Every Sharpen card makes every copy hit harder for the whole fight.',
+      'Auras (your sigils) keep working until the fight ends.',
     ],
   },
   kp: {
@@ -488,8 +488,8 @@ export function laneSizes(hero: HeroId): [number, number, number] {
   return n;
 }
 
-/** Deck rules for Combat v2 runs: a deck never drops below minSize cards, and no non-basic card has more than maxCopies copies. */
-export const V2_DECK_RULES = { minSize: 8, maxCopies: 4, vaultSlots: 5 } as const;
+/** Deck rules for Combat v2 runs: a deck never drops below minSize cards, and no non-basic card has more than maxCopies copies, and at most maxLegendary Legendary cards fit in the deck at once. */
+export const V2_DECK_RULES = { minSize: 8, maxCopies: 4, vaultSlots: 5, maxLegendary: 2 } as const;
 
 export { BOONS, POTIONS };
 
@@ -499,7 +499,7 @@ export const REALMS: { id: RealmId; name: string }[] = [
   { id: 'nexus', name: 'Nexus-9' },
   { id: 'wyldmaw', name: 'Wyldmaw' },
   { id: 'umbral', name: 'Umbral Veil' },
-  { id: 'starfall', name: 'Starfall' },
+  { id: 'starfall', name: 'The Glasswaste' },
   { id: 'gloomfen', name: 'Gloomfen' },
   { id: 'midden', name: 'The Midden' },
 ];

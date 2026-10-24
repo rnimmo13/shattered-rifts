@@ -127,7 +127,8 @@ function step(r: RunState, s: DealStep, ev: EventCtx, h: DealHelpers, out: strin
       return;
     }
     case 'copy': {
-      const pool = nonBasic(r.deck);
+      // a copy still obeys the deck rules (the copy limit, and the Legendary limit)
+      const pool = nonBasic(r.deck).filter((id) => canAdd(r.deck, id));
       if (!pool.length) fail('There is nothing to copy');
       const pick = pool[nextInt(r.rng, pool.length)] as string;
       r.deck.push(pick);

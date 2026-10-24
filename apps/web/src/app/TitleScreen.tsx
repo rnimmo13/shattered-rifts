@@ -11,7 +11,7 @@ const ACCENT: Record<string, string> = {
   nexus: color.cyan,
   wyldmaw: color.blood,
   umbral: color.violet,
-  starfall: '#ffe9a0',
+  starfall: '#ff9a4a',
   gloomfen: '#9be86a',
   midden: '#ff9a3c',
 };

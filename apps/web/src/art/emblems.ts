@@ -83,7 +83,12 @@ export const EMBLEMS: Record<string, Emblem> = {
       'M29 44H35V60H29Z',
     ],
   },
-  // Ilvane: a rune ring around a glyph
+  // Ilvane: a carved totem pole (three stacked bands and spread wings)
+  totem: {
+    f: ['M26 4H38V60H26Z'],
+    s: ['M26 20H38', 'M26 36H38', 'M26 52H38', 'M26 12L10 8V24L26 28', 'M38 12L54 8V24L38 28', 'M29 14H35'],
+  },
+  // a rune ring around a glyph (kept for other uses)
   runering: {
     f: [
       circle(32, 32, 28) + circle(32, 32, 24),
@@ -99,7 +104,12 @@ export const EMBLEMS: Record<string, Emblem> = {
     ],
     s: ['M20 40H46', 'M20 46H46', 'M24 30V36', 'M32 28V36', 'M40 28V36'],
   },
-  // Astra: an eight-point star with a bright core
+  // Obsidia (Astra): a faceted obsidian shard
+  shard: {
+    f: ['M32 4L54 26L32 60L10 26Z'],
+    s: ['M10 26H54', 'M32 4L24 26L32 60', 'M32 4L40 26L32 60'],
+  },
+  // an eight-point star with a bright core (crystals)
   star8: { f: [star(32, 32, 30, 10, 8), circle(32, 32, 6)] },
   // Mire: a skull with a lantern flame in the brow
   skull: {
@@ -260,9 +270,9 @@ export const HERO_EMBLEM: Record<string, string> = {
   kesh: 'bow',
   vesper: 'mask',
   quill: 'daggers',
-  ilvane: 'runering',
+  ilvane: 'totem',
   sehra: 'fist',
-  astra: 'star8',
+  astra: 'shard',
   mire: 'skull',
   kp: 'bottlepane',
 };
@@ -273,9 +283,9 @@ export const HERO_COLOR: Record<string, string> = {
   kesh: '#ff8a6a',
   vesper: '#b99aff',
   quill: '#e0384f',
-  ilvane: '#4fb8ff',
+  ilvane: '#7fd08a',
   sehra: '#ffb060',
-  astra: '#ffe9a0',
+  astra: '#ff9a4a',
   mire: '#9be86a',
   kp: '#ff9a3c',
 };

@@ -36,6 +36,8 @@ export interface FighterSpec {
   canvas: HTMLCanvasElement;
   /** figure height in stage px */
   height: number;
+  /** something that floats beside the figure while `on` (a blade in her hand): a cut-out and where it hovers, in figure pixels */
+  prop?: { canvas: HTMLCanvasElement; x: number; y: number; on: boolean };
 }
 
 interface Fighter {
@@ -44,6 +46,9 @@ interface Fighter {
   body: Container;
   sprite: Sprite;
   flash: Sprite;
+  prop: Sprite | null;
+  /** whether the prop is shown (or fading in) as of the last sync */
+  propOn: boolean;
   ring: Sprite;
   aura: Sprite;
   x: number;
@@ -124,6 +129,7 @@ export class Fighters {
         this.add(spec, x, !opts.instant);
       } else if (!f.dying) {
         f.spec = spec;
+        this.showProp(f, opts.instant === true);
         if (Math.abs(f.x - x) > 1) {
           f.x = x;
           gsap.killTweensOf(f.root, 'x');
@@ -173,6 +179,16 @@ export class Fighters {
     flash.blendMode = 'add';
     flash.alpha = 0;
     body.addChild(sprite, flash);
+    let prop: Sprite | null = null;
+    if (spec.prop) {
+      prop = new Sprite(Texture.from(spec.prop.canvas));
+      prop.anchor.set(0.5);
+      prop.scale.set(k);
+      prop.position.set((spec.prop.x - spec.canvas.width / 2) * k, (spec.prop.y - spec.canvas.height) * k);
+      prop.alpha = spec.prop.on ? 1 : 0;
+      prop.visible = spec.prop.on;
+      body.addChild(prop);
+    }
     root.addChild(shadow, aura, ring, body);
     this.h.container.addChild(root);
     this.h.container.sortableChildren = true;
@@ -182,6 +198,8 @@ export class Fighters {
       body,
       sprite,
       flash,
+      prop,
+      propOn: spec.prop?.on === true,
       ring,
       aura,
       x,
@@ -207,10 +225,31 @@ export class Fighters {
     }
   }
 
+  /** Fade a floating prop in or out to match the spec (the blade comes only while she holds one). */
+  private showProp(f: Fighter, instant: boolean): void {
+    const want = f.spec.prop?.on === true;
+    const p = f.prop;
+    // compare with where the last fade was heading (not `visible`, which lags behind a fade-out in progress)
+    if (!p || f.propOn === want) return;
+    f.propOn = want;
+    gsap.killTweensOf(p);
+    if (instant || this.h.profile().still) {
+      p.visible = want;
+      p.alpha = want ? 1 : 0;
+      return;
+    }
+    if (want) {
+      p.visible = true;
+      this.track(gsap.fromTo(p, { alpha: 0 }, { alpha: 1, duration: 0.3 }));
+    } else {
+      this.track(gsap.to(p, { alpha: 0, duration: 0.25, onComplete: () => void (p.visible = false) }));
+    }
+  }
+
   private remove(id: string): void {
     const f = this.all.get(id);
     if (!f) return;
-    gsap.killTweensOf([f.root, f.body, f.body.scale, f.sprite, f.flash]);
+    gsap.killTweensOf([f.root, f.body, f.body.scale, f.sprite, f.flash, ...(f.prop ? [f.prop] : [])]);
     f.root.destroy({ children: true });
     this.all.delete(id);
   }
@@ -359,6 +398,11 @@ export class Fighters {
       const w = Math.sin(t * 1.5 + f.phase);
       f.sprite.scale.y = (f.spec.height / f.spec.canvas.height) * (1 + 0.014 * w);
       f.aura.alpha = (f.spec.isHero ? 0.36 : 0.18) + 0.1 * Math.sin(t * 1.9 + f.phase);
+      if (f.prop?.visible && f.spec.prop) {
+        const k = f.spec.height / f.spec.canvas.height;
+        f.prop.y = (f.spec.prop.y - f.spec.canvas.height) * k + Math.sin(t * 1.8 + f.phase) * 7 * k;
+        f.prop.rotation = Math.sin(t * 1.1 + f.phase) * 0.05;
+      }
     }
   }
 
@@ -395,6 +439,7 @@ export class Fighters {
         f.sprite,
         f.flash,
         f.ring,
+        ...(f.prop ? [f.prop] : []),
       ]);
     this.all.clear();
   }

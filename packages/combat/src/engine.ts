@@ -71,7 +71,7 @@ interface Act {
   x: number;
   /** the charge of the rune being fired */
   charge: number;
-  /** a rune is firing: Resonance adds to its damage and Barrier */
+  /** a rune (totem) is firing: Resonance (Spirit) adds to its damage and Barrier */
   rune: boolean;
   /** this frame may ask the player to choose (only a card's own effects can) */
   pick: boolean;
@@ -1119,13 +1119,18 @@ function actEnemy(r: Run, u: Unit): void {
 
 // --- turns ------------------------------------------------------------------------------------------------------------
 
+/** The share of your Barrier that Fortified keeps each turn (75%; 50% if testing says it is too strong). */
+export const FORTIFIED_KEEP = 0.75;
+
 /** barrier falls away, Seared burns, then (for a hero side) mana refills and the hand is drawn */
 function startOfTurn(r: Run, side: Side): void {
   const sd = r.s.sides[side];
   for (const u of sd.units) {
-    if (u.barrier > 0 && stacks(u, 'fortified') === 0) {
-      u.barrier = 0;
-      r.ev.push({ type: 'barrierDrop', target: u.id });
+    if (u.barrier > 0) {
+      // Fortified keeps a share of your Barrier through the turn change; without it all of it falls away
+      const kept = stacks(u, 'fortified') > 0 ? Math.floor(u.barrier * FORTIFIED_KEEP) : 0;
+      u.barrier = kept;
+      r.ev.push({ type: 'barrierDrop', target: u.id, total: kept });
     }
   }
   for (const u of [...sd.units]) {

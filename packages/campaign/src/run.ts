@@ -491,6 +491,13 @@ export function choosePrelude(run: RunState, optionId: string): RunState {
   const option = offer.options.find((o) => o.id === optionId);
   need(option, 'That is not one of the options');
   const r = clone(run);
+  // a bargain that pays HP for a Legendary must be able to give one (the deck may already hold its limit)
+  for (const e of option.effects)
+    if (e.k === 'card' && e.rarity === 'legendary')
+      need(
+        cardOfRarity(clone(r.rng), r.character, r.deck, 'legendary'),
+        'Your deck already holds as many Legendary cards as it can',
+      );
   for (const e of option.effects) applyEffect(r, e);
   r.phase = 'map';
   r.context = null;

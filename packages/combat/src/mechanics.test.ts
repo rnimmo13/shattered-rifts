@@ -686,7 +686,7 @@ describe('runes', () => {
     expect(hp - foe(s).hp).toBe(18);
   });
 
-  it('Hollow runes charge each turn and evoke for their charge', () => {
+  it('Elder (hollow) totems charge each turn and evoke for their charge', () => {
     let s = start(['c-dark', 'evoke1']);
     s = play(s, 'h0').state;
     s = end(s).state;
@@ -700,7 +700,7 @@ describe('runes', () => {
     expect(hp - foe(after).hp).toBe(4);
   });
 
-  it('Resonance adds to rune damage, and to how fast Hollow charges', () => {
+  it('Resonance (Spirit) adds to rune damage, and to how fast Hollow charges', () => {
     let s = start(['resonate', 'c-spark', 'c-dark'], { mana: 5 });
     s = play(s, 'h0').state;
     s = play(s, 'h1').state;
@@ -1076,12 +1076,14 @@ describe('tier 3: statuses and tricks', () => {
     expect(s.sides.a.exhausted.map((x) => x.card)).toContain('defend');
   });
 
-  it('Fortified keeps your Barrier into the next turn', () => {
+  it('Fortified keeps 75% of your Barrier into the next turn (rounded down)', () => {
     let s = start(['give-fortified', 'defend']);
     s = play(s, 'h0').state;
     s = play(s, 'h1').state;
+    const before = hero(s).barrier;
+    expect(before).toBeGreaterThan(0);
     s = end(s).state;
-    expect(hero(s).barrier).toBeGreaterThan(0);
+    expect(hero(s).barrier).toBe(Math.floor(before * 0.75));
   });
 
   it('Holdfast keeps the whole hand for one turn per stack', () => {

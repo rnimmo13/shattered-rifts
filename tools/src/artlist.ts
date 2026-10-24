@@ -15,7 +15,7 @@ const REALM_STYLE: Record<string, string> = {
     'bioluminescent jungle ribcage, blood red and acid green, feral and hungry, bone and teeth',
   umbral: 'moonlit ballroom of shadows, violet and teal mist, masks and mirrors, quiet menace',
   starfall:
-    'a night sky of fallen stars, deep indigo and pale gold, scholars of constellations, silver circlets and astrolabes',
+    'a volcanic glass desert, black obsidian shards and ember-orange cracks, violet sheen, spellblades with glass-edged swords',
   gloomfen:
     'a drowned fen of green witch-light, bone and reeds, quiet wardens of the dead, pale mist over black water',
   midden:

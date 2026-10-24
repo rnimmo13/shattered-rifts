@@ -36,7 +36,7 @@ export type StatusId =
   | 'twinned' // your next attack card is played twice, per stack
   | 'mirrored' // your next skill card is played twice, per stack
   | 'unbound' // your skills cost 0 and are consumed when played
-  | 'fortified' // your Barrier does not fall away at the start of your turn
+  | 'fortified' // you keep 75% of your Barrier at the start of your turn instead of losing it all
   | 'holdfast' // your whole hand is held at the end of your turn, per stack (one turn each)
   | 'clutch'; // an innate trait's state: you deal this % more attack damage (set by the engine while you are hurt)
 export const STATUS_IDS: readonly StatusId[] = [
@@ -617,7 +617,7 @@ export type CombatEvent =
       kind: 'attack' | 'direct';
     }
   | { type: 'barrier'; target: UnitId; amount: number; total: number }
-  | { type: 'barrierDrop'; target: UnitId }
+  | { type: 'barrierDrop'; target: UnitId; /** Barrier left after the drop (Fortified keeps some) */ total?: number }
   | { type: 'heal'; target: UnitId; amount: number }
   | { type: 'status'; target: UnitId; status: StatusId; amount: number; total: number }
   | { type: 'summon'; side: Side; unit: UnitId; def: string; index: number }

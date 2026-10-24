@@ -55,12 +55,12 @@
   --accent: #9be86a;
 }
 .card--starfall {
-  --ink-a: #1a2060;
-  --ink-b: #070920;
-  --trim: #d9b45c;
-  --trim-hi: #fff0b0;
-  --trim-lo: #6a5420;
-  --accent: #ffe9a0;
+  --ink-a: #2e1238;
+  --ink-b: #0b0512;
+  --trim: #c0683a;
+  --trim-hi: #ffc890;
+  --trim-lo: #5c2a14;
+  --accent: #ff9a4a;
 }
 .card__stars {
   position: absolute;
@@ -71,18 +71,18 @@
   display: grid;
   place-items: center;
   border-radius: 50%;
-  background: radial-gradient(circle at 35% 28%, #fff6c8, #e0b24a 45%, #6a4a12 100%);
-  border: 5px solid #fff0b0;
+  background: radial-gradient(circle at 35% 28%, #ffd9a8, #ee7a2a 45%, #6a2a08 100%);
+  border: 5px solid #ffc890;
   box-shadow:
     0 0 0 3px rgb(0 0 0 / 0.55),
-    0 0 18px rgb(255 226 122 / 0.8);
+    0 0 18px rgb(255 140 60 / 0.8);
   z-index: 3;
 }
 .card__stars span {
   font-family: var(--font-numeric);
   font-size: 46px;
   line-height: 1;
-  color: #3a2706;
+  color: #2a0e02;
   text-shadow: 0 1px 0 rgb(255 255 255 / 0.5);
 }
 .card--neutral {
@@ -605,12 +605,12 @@
   --accent: #f08acb;
 }
 .card--hero-ilvane {
-  --ink-a: #0f3a7a;
-  --ink-b: #040c20;
-  --trim: #4aa8f0;
-  --trim-hi: #cfeaff;
-  --trim-lo: #1f5a9a;
-  --accent: #4fb8ff;
+  --ink-a: #3a2a14;
+  --ink-b: #100a04;
+  --trim: #b8884a;
+  --trim-hi: #ffe0a8;
+  --trim-lo: #5c3c18;
+  --accent: #7fd08a;
 }
 .card--hero-sehra {
   --ink-a: #6a3210;
@@ -621,12 +621,12 @@
   --accent: #ffb060;
 }
 .card--hero-astra {
-  --ink-a: #1a1f58;
-  --ink-b: #05061a;
-  --trim: #c4cce8;
+  --ink-a: #2e1238;
+  --ink-b: #0a0412;
+  --trim: #b6a4c8;
   --trim-hi: #ffffff;
-  --trim-lo: #5a6290;
-  --accent: #ffe9a0;
+  --trim-lo: #5e4a78;
+  --accent: #ff9a4a;
 }
 .card--hero-mire {
   --ink-a: #15401f;

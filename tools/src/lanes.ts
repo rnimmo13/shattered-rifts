@@ -50,9 +50,9 @@ const HEADS: Record<HeroId, [RegExp, number | null][]> = {
     [/basics/i, null],
   ],
   ilvane: [
-    [/spark/i, 0],
-    [/ward/i, 1],
-    [/hollow/i, 2],
+    [/hawk/i, 0],
+    [/bear/i, 1],
+    [/elder/i, 2],
     [/basics|glue/i, null],
   ],
   sehra: [
@@ -63,8 +63,8 @@ const HEADS: Record<HeroId, [RegExp, number | null][]> = {
   ],
   astra: [
     [/blade/i, 0],
-    [/stars/i, 1],
-    [/constellations/i, 2],
+    [/arcana/i, 1],
+    [/sigils/i, 2],
     [/basics/i, null],
   ],
   mire: [

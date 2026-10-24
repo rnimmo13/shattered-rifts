@@ -831,9 +831,9 @@
   --crest-glow: rgb(155 232 106 / 0.55);
 }
 .crest--starfall {
-  --crest-a: #ffe9a0;
-  --crest-b: #1a2166;
-  --crest-glow: rgb(255 233 160 / 0.6);
+  --crest-a: #ff9a4a;
+  --crest-b: #2e1238;
+  --crest-glow: rgb(255 140 60 / 0.6);
 }
 .crest--all {
   --crest-a: #ff4fd8;
@@ -1533,7 +1533,7 @@
   --rib: #6a3fa8;
 }
 .grim__ribbon--starfall {
-  --rib: #3f5fc0;
+  --rib: #b8502a;
 }
 .grim__ribbon--gloomfen {
   --rib: #3c8a5a;

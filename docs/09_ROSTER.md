@@ -21,14 +21,14 @@ deck takes one and a half of them. Our pools were ~16 cards and one lane each. T
 |---|---|---|
 | **Sleeve Knives** + discard payoffs | Quill | one or two 0-cost attacks, never the engine |
 | **Bleed** stacking (our poison): double, spread, cash out | Quill | a Bleed hit now and then (Neutral, enemies) |
-| **Runes** (channel / evoke / Resonance) | Ilvane | nothing |
+| **Totems** (was Runes: plant / awaken / Spirit) | Ilvane (id `ilvane`) | nothing |
 | **Stances** and Fervor | Sehra | nothing |
-| **Lumen** and the Starforged Blade (sharpen) | Astra | nothing |
+| **Arcana** (was Lumen) and the Obsidian Blade (sharpen) | Obsidia (id `astra`) | nothing |
 | **Drones** and Assemble | Rivet | |
 | **Pack** buffs | Kesh | |
 | **Thorns** and Barrier-scaling | Maren | Barrier is shared; Thorns is Maren's |
-| **Snares** (face-down, auto-springing) | Vesper gets the most (14, with payoffs for setting them) | **Shared toolkit** like Might or Consume: every deck has a trap or two in its own flavour (Maren 4, Rivet 2, Quill 2 incl. a Bleed needle, Kesh, Ilvane, Sehra, Astra 1 each) and Neutral has 2. Enforced by `cards.test.ts` |
-| **Foresee** | Vesper, Sehra, Astra | a Neutral common |
+| **Snares** (face-down, auto-springing) | Vesper gets the most (14, with payoffs for setting them) | **Shared toolkit** like Might or Consume: every deck has a trap or two in its own flavour (Maren 4, Rivet 2, Quill 2 incl. a Bleed needle, Kesh, Ilvane, Sehra, Obsidia 1 each) and Neutral has 2. Enforced by `cards.test.ts` |
+| **Foresee** | Vesper, Sehra, Obsidia | a Neutral common |
 | **Consume payoffs** | Kesh (Feast lane) | Neutral Consume-on-play is common |
 
 4. **Starters are lane-neutral.** The first rewards decide the build.
@@ -44,9 +44,9 @@ deck takes one and a half of them. Our pools were ~16 cards and one lane each. T
 | 3 | **Kesh the Unfed** | Wyldmaw | 76 | **Bloodrage:** Might and self-damage | **Pack:** buffed companions | **Feast:** Consume, Devour, lifesteal |
 | 4 | **Vesper Nightlace** | Umbral | 68 | **Snares:** many, varied triggers | **Exposed:** debuff burst, Faltering control | **Bluff:** Retain, Foresee, held Mana |
 | 5 | **Quill, the Knife-Dancer** | Umbral | 66 | **Sleeve Knives:** 0-cost, many hits | **Bleed:** stack, double, cash out | **Sleight:** discard / cycle payoffs |
-| 6 | **Ilvane, the Glyphwright** | Nexus-9 | 70 | **Spark:** damage runes | **Ward:** Barrier runes | **Hollow:** charging runes, Resonance |
+| 6 | **Ilvane** (id `ilvane`) | Nexus-9 | 70 | **Hawk:** damage totems | **Bear:** Barrier totems | **Elder:** charging totems, Spirit |
 | 7 | **Sehra, the Still Flame** | Aurelion | 72 | **Fury:** burst | **Serene:** Mana and cards | **Fervor:** Retain/Foresee to a payoff |
-| 8 | **Astra, the Starcaller** | Starfall | 80 | **Blade:** sharpen one weapon | **Lumen:** spend for finishers | **Constellations:** Auras that tick |
+| 8 | **Obsidia, the Glasswaste Spellblade** (id `astra`) | The Glasswaste (id `starfall`) | 80 | **Blade:** sharpen one weapon | **Arcana:** spend for finishers | **Sigils:** Auras that tick |
 | 9 | **Mire, the Gravewarden** | Gloomfen | 76 | **Doom:** stack, double, cash in | **Thralls:** the dead fight for you | **Ashes:** consumed cards fuel you |
 | 10 | **KP, the Homeless Drunk** | The Midden | 88 | **Gun:** sharpen the Old Twelve Gauge | **Shells:** buckshot and booby traps that hit every enemy | **Hangover:** the more it hurts the harder you hit: glass, Thorns, swigs, self-damage |
 
@@ -56,32 +56,32 @@ Mire was the stretch character and is now built (Doom is hers alone). Still open
 
 Sigils (a passive on turn 1, so each run has an identity). The original four use starting companions or their starter cards
 (Rivet starts with a Drone, Kesh with a Hound; Maren's and Vesper's Sigils from `03_CAMPAIGN.md` are not built yet). The new four have real Sigils: **Quill** *Sleeve Knives* (start each
-fight with a Sleeve Knife in hand); **Ilvane** *Primed* (start each fight with one Spark rune); **Sehra** *Centred* (start each fight in
-Serene); **Astra** *Starlit* (start each fight with 2 Lumen).
+fight with a Sleeve Knife in hand); **Ilvane** *Primed* (start each fight with one Hawk totem); **Sehra** *Centred* (start each fight in
+Serene); **Obsidia** *Kindled* (3 Arcana at turn start; starts with 3 Arcana and an Obsidian Blade).
 
-Role tags (what kind of fighter, shown on every character screen): Maren **Knight**, Rivet **Engineer**, Kesh **Hunter**, Vesper **Trapper**, Quill **Assassin**, Ilvane **Runecaster**, Sehra **Barbarian**, Astra **Spellblade**, Mire **Necromancer**. One word, unique per character (`Riftwalker.role`, tested).
+Role tags (what kind of fighter, shown on every character screen): Maren **Knight**, Rivet **Engineer**, Kesh **Hunter**, Vesper **Trapper**, Quill **Assassin**, Ilvane **Totemist**, Sehra **Barbarian**, Obsidia **Spellblade**, Mire **Necromancer**. One word, unique per character (`Riftwalker.role`, tested).
 
 ## 3. Engine pieces (all generic ops; never a card id in engine code)
 
 | Piece | What | Used by |
 |---|---|---|
-| **Choices** (`pending`, action `pick`) | An op can ask the player to choose cards (discard / exhaust N from hand, scry) and the rest of the card resumes after. | Quill, Vesper, Sehra, Astra, Kesh |
+| **Choices** (`pending`, action `pick`) | An op can ask the player to choose cards (discard / exhaust N from hand, scry) and the rest of the card resumes after. | Quill, Vesper, Sehra, Obsidia, Kesh |
 | `discard`, `exhaustCards`, `scry` ops; `onDiscard` / `onExhaust` on a card | Cycling and payoffs (Sly-style) | Quill, Kesh |
 | `scale` on any amount | "Deal 1 per Barrier / per card exhausted / per Bleed on the target ..." One field, a list of metrics | everyone |
 | `scaleStatus` op | Double Bleed, triple it, etc. | Quill |
 | `power` op | Register a trigger: turn start / turn end / on play / on exhaust / on discard | all Power cards |
-| **Runes**: `channel`, `evoke`, `runeSlots`; `RuneDef` in the DB | Passive at your turn end, evoke when pushed out or on demand | Ilvane |
+| **Totems** (runes in the engine): `channel`, `evoke`, `runeSlots`; `RuneDef` in the DB | Passive at your turn end, evoke when pushed out or on demand | Ilvane |
 | **Stances**: `stance` op; statuses `calm`, `wrath`, `radiant`; `mantra` | Exclusive statuses with enter/exit effects and damage multipliers | Sehra |
-| **Lumen** (`stars` op, `starCost` on a card) | Second resource that persists between turns | Astra |
-| `sharpen` op; per-card `bonus` | Grow every copy of a scaling card | Astra |
+| **Arcana** (`stars` op, `starCost` on a card) | Second resource that persists between turns | Obsidia |
+| `sharpen` op; per-card `bonus` | Grow every copy of a scaling card | Obsidia |
 | More Snare triggers: `foeDefends`, `foeTurn` | Vesper's lane needs variety | Vesper |
 
 ## 4. Build status (2026-10-23)
 
-- [x] Engine: choices, discard/exhaust/scry, scale, Powers as triggers, runes, stances, Lumen, sharpen, sacrifice, extra Snare triggers (DECISIONS #97)
+- [x] Engine: choices, discard/exhaust/scry, scale, Powers as triggers, runes, stances, Arcana, sharpen, sacrifice, extra Snare triggers (DECISIONS #97)
 - [x] Existing 4 reorganised into character pools and deepened to 3 lanes (34-38 cards each)
-- [x] Quill, Ilvane, Sehra, Astra: 34-39 cards each
-- [x] UI: pick modal, side panel (Lumen, runes, Powers), exact damage preview, character picker for 8 with lanes
+- [x] Quill, Ilvane, Sehra, Obsidia: 34-39 cards each
+- [x] UI: pick modal, side panel (Arcana, totems, Powers), exact damage preview, character picker for 8 with lanes
 - [x] First-pass sim; per-card scenario tests; generated `10_CARD_LIST.md`
 - [ ] Balance pass (waits for the content set to settle, DECISIONS #91)
 - [ ] Stretch characters: Cinder (Consume engine), Mire (Doom / undying minion)
@@ -94,7 +94,7 @@ Card and keyword names are original to Shattered Rifts. Mechanics are free to sh
 vocabulary and trade dress are not. When adding a card, give it a name nobody else's game uses, and check `10_CARD_LIST.md`.
 Player-facing words: Barrier, Exposed, Faltering, Might, Bleed, Thorns, Shielded, Snare, Aura (a card whose effect lasts the
 fight), Consume (the card leaves the fight), Hold (stays in hand), Fleeting, Foresee, Fury / Serene / Radiant (stances), Fervor
-(builds to Radiant), Lumen (the second resource), Sharpen (grow the Starforged Blade), Sleeve Knife (the 0-cost knife).
+(builds to Radiant), Arcana (the second resource), Sharpen (grow the Obsidian Blade), Sleeve Knife (the 0-cost knife).
 Internal ids in code (`exhaust`, `scry`, `forge`, `stars`, `wrath`, `calm`, `mantra`) are not renamed: only what the player reads.
 
 ## 6. Mechanic coverage (2026-10-23)
@@ -111,13 +111,13 @@ The goal: every card *mechanic* a Slay the Spire player expects exists, with our
 | Vigor, Flex | **Vigor**, temporary statuses (`temp`) | Kesh, Neutral (Heave) |
 | Exhaust / Ethereal / Retain / Innate | Consume / Fleeting / Hold / Opening hand | shared |
 | Sly (discard triggers) | `onDiscard` | Quill |
-| Scry | **Foresee**, and cards it discards are real discards (payoffs fire) | shared; payoffs: Marked Cards (Vesper), Reading the Signs (Sehra), Star Chart (Astra), Quill's discard cards |
+| Scry | **Foresee**, and cards it discards are real discards (payoffs fire) | shared; payoffs: Marked Cards (Vesper), Reading the Signs (Sehra), Spellbook (Obsidia), Quill's discard cards |
 | X-cost, Unplayable, 0-cost chains | `x`, `unplayable`, cost 0 | shared |
 | Draw / Mana now / Mana and cards next turn | draw, mana, **manaNext**, **drawNext** | shared |
 | Discovery / Madness / Armaments / Anger | **discover**, **cheapen**, **upgrade** (hand), **copySelf** | Neutral, Quill, Ilvane |
-| Orbs and Focus | Runes and Resonance | Ilvane |
+| Orbs and Focus | Totems and Spirit | Ilvane |
 | Stances, Mantra | Fury / Serene / Radiant, Fervor | Sehra |
-| Stars, Forge, the Sovereign Blade | Lumen, Sharpen, the Starforged Blade | Astra |
+| Stars, Forge, the Sovereign Blade | Arcana, Sharpen, the Obsidian Blade | Obsidia |
 | Osty, Doom, Souls | Bone Thrall (a companion), **Doom**, Gravesouls | Mire |
 | Minions, Sacrifice | allies, `sacrifice` | Rivet, Kesh, Mire |
 | Traps (ours) | Snares | Vesper masters them; everyone has a few |
@@ -128,4 +128,4 @@ pending kind). Say the word if you want them.
 
 ## Innate traits
 
-Every Riftwalker has one passive (`Riftwalker.trait`): Maren Oathkeeper (3 Barrier each turn), Rivet Tinkerer (heal 1 for you and your companions each turn), Kesh Pack Instinct (start with 1 Might for the pack), Vesper Ambusher (enemies start Exposed), Quill Weak Spot (a random enemy Exposed each turn), Ilvane Attuned (2 Resonance at the start), Sehra Inner Fire (2 Fervor at the start), Astra Starborn (1 Lumen each turn), Mire Grave Chill (enemies start with 2 Fate), KP Clutch Genes (+50% attack damage at or below half HP). Numbers are a first pass.
+Every Riftwalker has one passive (`Riftwalker.trait`): Maren Oathkeeper (3 Barrier each turn), Rivet Tinkerer (heal 1 for you and your companions each turn), Kesh Pack Instinct (start with 1 Might for the pack), Vesper Ambusher (enemies start Exposed), Quill Weak Spot (a random enemy Exposed each turn), Ilvane Spirit-touched (2 Spirit at the start), Sehra Inner Fire (2 Fervor at the start), Obsidia Kindled (3 Arcana each turn), Mire Grave Chill (enemies start with 2 Fate), KP Clutch Genes (+50% attack damage at or below half HP). Numbers are a first pass.

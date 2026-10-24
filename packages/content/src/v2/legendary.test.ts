@@ -72,7 +72,7 @@ describe('legendary effects', () => {
     expect(s.sides.b.units[0]!.hp).toBe(200 - 15);
   });
 
-  it('Birth of a Star gives Lumen, cards and Barrier', () => {
+  it("Volcano's Birth gives Arcana, cards and Barrier", () => {
     const s0 = createFight('astra').state;
     const s = play('astra', 'birth-of-a-star', (st) => {
       st.sides.a.stars = 0;
@@ -93,6 +93,21 @@ describe('legendary effects', () => {
         s.sides.a.discard.some((x) => x.card === c.id),
         `${c.id} is not discarded`,
       ).toBe(false);
+    }
+  });
+});
+
+describe('five Legendary cards per Riftwalker', () => {
+  it('every Riftwalker owns exactly five, and each is playable', () => {
+    for (const hero of Object.keys(RIFTWALKERS) as HeroId[]) {
+      const own = Object.values(db.cards).filter(
+        (c) => c.hero === hero && c.rarity === 'legendary' && !c.id.endsWith('+'),
+      );
+      expect(own.map((c) => c.id), `${hero} legendaries`).toHaveLength(5);
+      for (const c of own) {
+        if (c.kind === 'snare') continue; // a Snare is set, not played for an effect
+        play(hero, c.id);
+      }
     }
   });
 });

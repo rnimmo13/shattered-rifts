@@ -25,6 +25,11 @@ export function canAdd(deck: readonly string[], cardId: string): boolean {
   // a card that cannot be played is only worth having if discarding it pays (Reflex, Tactician)
   if (!c || (c.unplayable && !c.onDiscard)) return false;
   if (c.rarity === 'basic') return true;
+  // a deck holds only a couple of Legendary cards, so taking one is a choice (one that is full is never offered)
+  const legendsHeld = deck.filter(
+    (x) => rarityOf(stripRoll(x).replace(/\+$/, '')) === 'legendary',
+  ).length;
+  if (c.rarity === 'legendary' && legendsHeld >= V2_DECK_RULES.maxLegendary) return false;
   // a card and its "+" version share one limit; a legendary is one of a kind
   const base = (id: string): string => stripRoll(id).replace(/\+$/, '');
   const limit = c.rarity === 'legendary' || c.rarity === 'ancestral' ? 1 : V2_DECK_RULES.maxCopies;

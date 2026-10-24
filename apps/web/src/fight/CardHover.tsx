@@ -1,5 +1,6 @@
 // A big readable copy of whatever card the pointer is over (shop, rewards, deck screens).
 
+import { useLayoutEffect, useRef } from 'react';
 import { COMBAT_DB } from '@sr/content/v2';
 import type { CardDef } from '@sr/combat';
 import { FightCard } from './FightCard';
@@ -28,6 +29,16 @@ function beside(at: Anchor, width: number): React.CSSProperties {
 }
 
 export function CardHover(props: { def: CardDef | null; at?: Anchor | null; plus?: boolean }) {
+  const box = useRef<HTMLDivElement>(null);
+  // the preview's real height (card, keyword notes, "Upgraded" label) is only known once it is drawn, so slide it up
+  // until its bottom edge is on the screen
+  useLayoutEffect(() => {
+    const el = box.current;
+    if (!el || !props.at) return;
+    const r = el.getBoundingClientRect();
+    const over = r.bottom - (window.innerHeight - 8);
+    if (over > 0) el.style.top = `${Math.max(8, r.top - over)}px`;
+  });
   if (!props.def) return null;
   const showPlus = props.plus ?? !props.at;
   // on a narrow screen there is no room for the card and its upgrade side by side
@@ -39,6 +50,7 @@ export function CardHover(props: { def: CardDef | null; at?: Anchor | null; plus
   const keys = keywordsOf(props.def, (u) => COMBAT_DB.units[u]?.taunt === true);
   return (
     <div
+      ref={box}
       className="cardhover"
       aria-hidden
       style={props.at ? beside(props.at, wide ? PREVIEW_W * 2 + 13 : PREVIEW_W) : undefined}

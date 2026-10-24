@@ -155,26 +155,28 @@ function star(g: G, c: string, x: number, y: number, rOut: number, rIn: number, 
 function light(g: G): void {
   g.save();
   g.globalCompositeOperation = 'source-atop';
-  const gr = g.createLinearGradient(40, 40, W - 40, H);
+  const cw = g.canvas.width;
+  const ch = g.canvas.height;
+  const gr = g.createLinearGradient(cw * 0.1, ch * 0.07, cw * 0.9, ch);
   gr.addColorStop(0, 'rgba(255,255,255,0.2)');
   gr.addColorStop(0.45, 'rgba(255,255,255,0)');
   gr.addColorStop(1, 'rgba(0,0,0,0.34)');
   g.fillStyle = gr;
-  g.fillRect(0, 0, W, H);
+  g.fillRect(0, 0, cw, ch);
   g.restore();
 }
 /** a dark outline all the way round the painted figure, so every silhouette reads against any floor */
 function outline(c: HTMLCanvasElement, px = 3.5): void {
   const t = document.createElement('canvas');
-  t.width = W;
-  t.height = H;
+  t.width = c.width;
+  t.height = c.height;
   const tg = t.getContext('2d');
   const g = c.getContext('2d');
   if (!tg || !g) return;
   tg.drawImage(c, 0, 0);
   tg.globalCompositeOperation = 'source-in';
   tg.fillStyle = '#0a0716';
-  tg.fillRect(0, 0, W, H);
+  tg.fillRect(0, 0, c.width, c.height);
   g.save();
   g.globalCompositeOperation = 'destination-over';
   for (let i = 0; i < 16; i++) {
@@ -1186,176 +1188,262 @@ const quill: Painter = (g, fx) => {
   glowHex(fx, '#ff9aa8', 74, 90, 46, 0.3);
 };
 
-// ---- Ilvane: a robed runecaster with a ring of glowing glyphs ----
+// ---- Ilvane: a hulking stone golem, moss on his shoulders and glowing green rune-eyes, who plants carved totems and calls the spirits in them to do his bidding ----
 const ilvane: Painter = (g, fx) => {
-  // the ring of runes, behind the figure
-  fx.save();
-  fx.globalCompositeOperation = 'lighter';
-  fx.strokeStyle = 'rgba(79,184,255,0.8)';
-  fx.lineWidth = 5;
-  fx.beginPath();
-  fx.arc(CX, 352, 142, 0, Math.PI * 2);
-  fx.stroke();
-  fx.lineWidth = 2;
-  fx.beginPath();
-  fx.arc(CX, 352, 122, 0, Math.PI * 2);
-  fx.stroke();
-  for (let i = 0; i < 8; i++) {
-    const a = (i * Math.PI) / 4 + 0.2;
-    const x = CX + 132 * Math.cos(a);
-    const y = 352 + 132 * Math.sin(a);
-    fx.strokeStyle = 'rgba(180,230,255,0.95)';
-    fx.lineWidth = 4;
-    fx.lineCap = 'round';
-    fx.beginPath();
-    const s = 11;
-    if (i % 4 === 0) {
-      fx.moveTo(x, y - s);
-      fx.lineTo(x, y + s);
-      fx.moveTo(x - s * 0.7, y - s * 0.2);
-      fx.lineTo(x + s * 0.7, y - s * 0.2);
-    } else if (i % 4 === 1) {
-      fx.moveTo(x - s, y + s);
-      fx.lineTo(x, y - s);
-      fx.lineTo(x + s, y + s);
-      fx.closePath();
-    } else if (i % 4 === 2) {
-      fx.moveTo(x, y - s);
-      fx.lineTo(x + s, y);
-      fx.lineTo(x, y + s);
-      fx.lineTo(x - s, y);
-      fx.closePath();
-    } else {
-      fx.moveTo(x - s, y - s);
-      fx.lineTo(x + s, y + s);
-      fx.moveTo(x + s, y - s);
-      fx.lineTo(x - s, y + s);
-    }
-    fx.stroke();
-  }
-  fx.restore();
-  // robe: layered, with gold trim and a glowing sash
+  const STONE = '#8a8478';
+  const DARK = '#5a564c';
+  const MOSS = '#5f8f4a';
+  const GLOW = '#7fd08a';
+  // legs: two squat stone pillars on block feet
+  grect(g, DARK, 160, 420, 46, 100, 8);
+  grect(g, DARK, 216, 420, 46, 100, 8);
   gpoly(
     g,
-    '#1e3a6e',
+    '#6a665c',
     [
-      [170, 222],
-      [250, 222],
-      [308, FEET],
-      [112, FEET],
+      [140, FEET],
+      [150, FEET - 28],
+      [212, FEET - 28],
+      [216, FEET],
     ],
     1.3,
-    0.55,
+    0.65,
   );
   gpoly(
     g,
-    '#12254a',
+    '#6a665c',
     [
-      [192, 244],
-      [228, 244],
-      [254, FEET],
-      [166, FEET],
+      [206, FEET],
+      [210, FEET - 28],
+      [272, FEET - 28],
+      [282, FEET],
+    ],
+    1.3,
+    0.65,
+  );
+  line(g, '#3a362e', 3, [
+    [160, 470],
+    [206, 470],
+  ]);
+  line(g, '#3a362e', 3, [
+    [216, 470],
+    [262, 470],
+  ]);
+  // a loincloth of woven bark and two little hanging totems at the belt
+  gpoly(
+    g,
+    '#6a4a2a',
+    [
+      [166, 396],
+      [256, 396],
+      [248, 470],
+      [CX, 482],
+      [174, 470],
     ],
     1.2,
     0.6,
   );
-  line(g, '#e8c860', 4, [
-    [112, FEET - 6],
-    [308, FEET - 6],
-  ]);
-  line(g, '#e8c860', 3, [
-    [192, 250],
-    [166, FEET - 8],
-  ]);
-  line(g, '#e8c860', 3, [
-    [228, 250],
-    [254, FEET - 8],
-  ]);
+  for (const x of [186, 236]) {
+    grect(g, '#8a5a2a', x - 7, 408, 14, 40, 3);
+    line(g, '#3a2410', 2, [
+      [x - 6, 420],
+      [x + 6, 420],
+    ]);
+    line(g, '#3a2410', 2, [
+      [x - 6, 432],
+      [x + 6, 432],
+    ]);
+    glowHex(fx, GLOW, x, 428, 18, 0.35);
+  }
+  // torso: a wide chest of stacked slabs, narrowing to a thick waist
   gpoly(
     g,
-    '#2d5aa8',
+    STONE,
     [
-      [148, 214],
-      [272, 214],
-      [288, 276],
-      [132, 276],
-    ],
-    1.3,
-    0.7,
-  );
-  rect(g, '#4fb8ff', 176, 334, 68, 8, 3);
-  poly(g, '#e8c860', [
-    [CX - 6, 276],
-    [CX + 6, 276],
-    [CX + 12, 334],
-    [CX - 12, 334],
-  ]);
-  // sleeves with cuffs; one hand on the staff, one open
-  limb2(g, '#1e3a6e', 156, 252, 112, 336, 32);
-  limb2(g, '#1e3a6e', 264, 252, 330, 296, 30);
-  rect(g, '#e8c860', 96, 326, 34, 10, 4);
-  gell(g, '#e0cdb8', 110, 350, 15, 15);
-  gell(g, '#e0cdb8', 340, 290, 15, 15);
-  // staff with a crystal in a gold claw
-  limb(g, '#7a5a34', 342, 540, 342, 124, 10);
-  limb(g, '#a8844a', 341, 540, 341, 124, 5);
-  poly(g, '#e8c860', [
-    [326, 120],
-    [342, 144],
-    [358, 120],
-    [350, 98],
-    [334, 98],
-  ]);
-  gell(g, '#7fd0ff', 342, 92, 17, 22, 1.4, 0.8);
-  // hood, face, and a glowing glyph on the brow
-  gell(g, '#1e3a6e', CX, 158, 58, 64);
-  head(g, '#e0cdb8', CX, 186, 36, 42);
-  eyes(g, CX, 188, 12, '#4fb8ff', 4.5);
-  line(g, '#4a3a4a', 3, [
-    [188, 182],
-    [201, 183],
-  ]);
-  line(g, '#4a3a4a', 3, [
-    [232, 182],
-    [219, 183],
-  ]);
-  ell(g, '#c4707a', CX, 212, 8, 3.4);
-  gpoly(
-    g,
-    '#1e3a6e',
-    [
-      [156, 188],
-      [158, 132],
-      [CX, 84],
-      [264, 132],
-      [266, 188],
-      [250, 174],
-      [CX, 158],
-      [170, 174],
+      [112, 232],
+      [CX, 214],
+      [308, 232],
+      [286, 330],
+      [262, 400],
+      [158, 400],
+      [134, 330],
     ],
     1.35,
+    0.6,
+  );
+  for (const y of [268, 312, 352]) {
+    line(g, '#3a362e', 3, [
+      [124 + (y - 232) * 0.12, y],
+      [CX, y + 4],
+      [296 - (y - 232) * 0.12, y],
+    ]);
+  }
+  line(g, '#3a362e', 3, [
+    [CX, 224],
+    [CX, 396],
+  ]);
+  // glowing carved glyphs on the chest: three stacked marks, one per spirit
+  for (const [x, y] of [
+    [CX - 38, 262],
+    [CX + 38, 262],
+    [CX - 30, 304],
+    [CX + 30, 304],
+  ] as const) {
+    line(g, GLOW, 3, [
+      [x - 9, y - 9],
+      [x + 9, y - 9],
+      [x, y + 9],
+      [x - 9, y - 9],
+    ]);
+    glowHex(fx, GLOW, x, y, 22, 0.45);
+  }
+  ell(g, GLOW, CX, 290, 11, 14);
+  ell(g, '#d8ffd8', CX, 288, 5, 7);
+  glowHex(fx, GLOW, CX, 290, 60, 0.6);
+  // moss clinging to the shoulders and chest
+  for (const [x, y, rx, ry] of [
+    [140, 226, 34, 12],
+    [286, 228, 32, 11],
+    [168, 256, 20, 8],
+    [270, 330, 18, 9],
+    [150, 344, 16, 8],
+  ] as const)
+    gell(g, MOSS, x, y, rx, ry, 1.2, 0.7);
+  // shoulders: great boulders
+  gell(g, STONE, 118, 240, 46, 40, 1.35, 0.6);
+  gell(g, STONE, 302, 240, 46, 40, 1.35, 0.6);
+  line(g, '#3a362e', 3, [
+    [90, 230],
+    [118, 246],
+    [102, 270],
+  ]);
+  line(g, '#3a362e', 3, [
+    [330, 230],
+    [304, 250],
+    [322, 272],
+  ]);
+  // arms: thick stone limbs, the right fist wrapped round a planted totem pole, the left held open
+  limb2(g, STONE, 108, 262, 84, 380, 46);
+  gell(g, '#9a948a', 80, 400, 30, 28, 1.3, 0.65);
+  for (const dx of [-14, 0, 14]) line(g, '#3a362e', 2.5, [[80 + dx, 386], [80 + dx, 412]]);
+  limb2(g, STONE, 312, 262, 338, 346, 46);
+  gell(g, '#9a948a', 340, 366, 30, 28, 1.3, 0.65);
+  // the totem pole in his right hand: carved bands (hawk, bear, owl) topped with wings
+  grect(g, '#8a5a2a', 330, 64, 22, 348, 5);
+  grect(g, '#a8702e', 326, 150, 30, 70, 6);
+  grect(g, '#7a4a22', 326, 232, 30, 70, 6);
+  grect(g, '#a8702e', 326, 314, 30, 60, 6);
+  // hawk head and wings at the top
+  gpoly(
+    g,
+    '#a8702e',
+    [
+      [341, 40],
+      [354, 62],
+      [341, 78],
+      [328, 62],
+    ],
+    1.3,
     0.65,
   );
-  line(g, '#e8c860', 3, [
-    [170, 174],
-    [CX, 158],
-    [250, 174],
+  gpoly(
+    g,
+    '#8a5a2a',
+    [
+      [328, 70],
+      [296, 52],
+      [286, 90],
+      [326, 104],
+    ],
+    1.3,
+    0.65,
+  );
+  gpoly(
+    g,
+    '#8a5a2a',
+    [
+      [354, 70],
+      [388, 52],
+      [396, 90],
+      [356, 104],
+    ],
+    1.3,
+    0.65,
+  );
+  // faces on the pole: eyes and mouths that glow when the spirits are in
+  for (const y of [172, 254, 334]) {
+    ell(g, '#2a1808', 334, y, 4, 4.5);
+    ell(g, '#2a1808', 348, y, 4, 4.5);
+    line(g, '#2a1808', 3, [
+      [333, y + 20],
+      [349, y + 20],
+    ]);
+    glowHex(fx, GLOW, 334, y, 10, 0.8);
+    glowHex(fx, GLOW, 348, y, 10, 0.8);
+  }
+  glowHex(fx, GLOW, 341, 60, 24, 0.7);
+  // spirits drawn out of the totems: pale, half-seen shapes drifting round him
+  fx.save();
+  fx.globalCompositeOperation = 'lighter';
+  fx.fillStyle = 'rgba(127,208,138,0.35)';
+  fx.beginPath();
+  fx.moveTo(262, 64);
+  fx.lineTo(296, 36);
+  fx.lineTo(318, 56);
+  fx.lineTo(300, 70);
+  fx.lineTo(312, 92);
+  fx.lineTo(282, 84);
+  fx.closePath();
+  fx.fill();
+  fx.fillStyle = 'rgba(160,230,200,0.28)';
+  fx.beginPath();
+  fx.ellipse(388, 250, 22, 34, -0.2, 0, Math.PI * 2);
+  fx.fill();
+  fx.beginPath();
+  fx.arc(380, 214, 12, 0, Math.PI * 2);
+  fx.fill();
+  fx.fillStyle = 'rgba(190,255,210,0.5)';
+  fx.beginPath();
+  fx.arc(376, 212, 3, 0, Math.PI * 2);
+  fx.arc(386, 212, 3, 0, Math.PI * 2);
+  fx.fill();
+  fx.restore();
+  // head: a small, heavy block sunk between the shoulders, carved brow, glowing eye slits, a mossy crown
+  gpoly(
+    g,
+    STONE,
+    [
+      [174, 186],
+      [186, 140],
+      [236, 140],
+      [248, 186],
+      [238, 218],
+      [184, 218],
+    ],
+    1.4,
+    0.6,
+  );
+  poly(g, '#3a362e', [
+    [182, 164],
+    [240, 164],
+    [240, 174],
+    [182, 174],
   ]);
-  line(g, '#4fb8ff', 2.5, [
-    [CX, 132],
-    [CX, 150],
+  line(g, '#3a362e', 3, [
+    [196, 204],
+    [226, 204],
   ]);
-  line(g, '#4fb8ff', 2.5, [
-    [CX - 8, 140],
-    [CX + 8, 140],
+  line(g, '#3a362e', 2, [
+    [210, 176],
+    [210, 200],
   ]);
-  line(g, '#4fb8ff', 2.5, [
-    [CX - 6, 134],
-    [CX + 6, 134],
-  ]);
-  glowHex(fx, '#4fb8ff', 342, 92, 80, 0.8);
-  glowHex(fx, '#4fb8ff', CX, 140, 30, 0.5);
-  glowHex(fx, '#4fb8ff', CX, 352, 90, 0.18);
+  ell(g, GLOW, 198, 169, 9, 3.5);
+  ell(g, GLOW, 224, 169, 9, 3.5);
+  glowHex(fx, GLOW, 198, 169, 22, 0.9);
+  glowHex(fx, GLOW, 224, 169, 22, 0.9);
+  gell(g, MOSS, 204, 140, 30, 11, 1.2, 0.7);
+  gell(g, MOSS, 226, 148, 14, 7, 1.2, 0.7);
+  glowHex(fx, '#5a8a3a', CX, 420, 150, 0.1);
 };
 
 // ---- Ragnar: a barbarian, bare to the waist, braided beard, fists wrapped, in a roaring stance ----
@@ -1574,201 +1662,397 @@ const sehra: Painter = (g, fx) => {
   glowHex(fx, '#ffb060', CX, 290, 150, 0.22);
 };
 
-// ---- Astra: a female spellblade in a starry coat and a star-crowned blade ----
+// ---- Obsidia (id astra): a female obsidian spellblade, a villain in black glass with ember-lit cracks and a crown of shards. Her blade floats beside her only while she holds it (see obsidianBlade) ----
+const OBS_EMBER = '#ff8a3a';
+const OBS_HOT = '#ffc890';
 const astra: Painter = (g, fx) => {
-  // long silver hair behind her
+  // a torn cape of glass shards flaring out behind her
   gpoly(
     g,
-    '#c4d0f4',
+    '#1a1026',
     [
-      [164, 150],
-      [262, 150],
-      [290, 330],
-      [238, 380],
-      [180, 340],
-      [150, 280],
-    ],
-    1.35,
-    0.75,
-  );
-  // legs and boots
-  limb2(g, '#26306a', 194, 412, 186, FEET - 12, 30);
-  limb2(g, '#26306a', 232, 412, 240, FEET - 12, 30);
-  gpoly(
-    g,
-    '#14183a',
-    [
-      [154, FEET],
-      [160, FEET - 40],
-      [208, FEET - 40],
-      [214, FEET - 6],
-      [200, FEET],
-    ],
-    1.25,
-    0.7,
-  );
-  gpoly(
-    g,
-    '#14183a',
-    [
-      [220, FEET],
-      [226, FEET - 40],
-      [272, FEET - 40],
-      [282, FEET - 6],
-      [268, FEET],
-    ],
-    1.25,
-    0.7,
-  );
-  line(g, '#e8c860', 3, [
-    [162, FEET - 40],
-    [208, FEET - 40],
-  ]);
-  line(g, '#e8c860', 3, [
-    [226, FEET - 40],
-    [272, FEET - 40],
-  ]);
-  // coat: fitted bodice, nipped waist, flared tails
-  gpoly(
-    g,
-    '#3a4896',
-    [
-      [178, 236],
-      [246, 236],
-      [236, 344],
-      [190, 344],
-    ],
-    1.3,
-    0.65,
-  );
-  gpoly(
-    g,
-    '#3a4896',
-    [
-      [184, 340],
-      [242, 340],
-      [294, 462],
-      [128, 462],
+      [158, 206],
+      [262, 206],
+      [316, 318],
+      [350, 452],
+      [330, 500],
+      [306, 462],
+      [286, 524],
+      [254, 478],
+      [226, 536],
+      [196, 480],
+      [164, 526],
+      [140, 466],
+      [112, 506],
+      [96, 448],
+      [70, 462],
+      [104, 322],
     ],
     1.3,
     0.55,
   );
-  poly(g, '#1a2060', [
-    [198, 346],
-    [226, 346],
-    [240, 462],
-    [186, 462],
+  for (const pts of [
+    [
+      [210, 250],
+      [204, 330],
+      [214, 410],
+      [208, 500],
+    ],
+    [
+      [170, 270],
+      [150, 350],
+      [132, 440],
+    ],
+    [
+      [252, 270],
+      [274, 350],
+      [296, 440],
+    ],
+  ] as [number, number][][])
+    line(g, OBS_EMBER, 2.5, pts);
+  // legs: black greaves with a violet sheen, spiked sabatons
+  limb2(g, '#251838', 194, 418, 188, FEET - 14, 30);
+  limb2(g, '#251838', 232, 418, 240, FEET - 14, 30);
+  gpoly(
+    g,
+    '#150d22',
+    [
+      [150, FEET],
+      [164, FEET - 44],
+      [208, FEET - 42],
+      [214, FEET - 6],
+      [196, FEET],
+    ],
+    1.4,
+    0.65,
+  );
+  gpoly(
+    g,
+    '#150d22',
+    [
+      [218, FEET],
+      [226, FEET - 42],
+      [268, FEET - 44],
+      [292, FEET - 6],
+      [270, FEET],
+    ],
+    1.4,
+    0.65,
+  );
+  line(g, OBS_EMBER, 2.5, [
+    [166, FEET - 40],
+    [206, FEET - 38],
   ]);
-  line(g, '#e8c860', 4, [
-    [128, 462],
-    [294, 462],
+  line(g, OBS_EMBER, 2.5, [
+    [228, FEET - 38],
+    [266, FEET - 40],
   ]);
-  line(g, '#e8c860', 3, [
-    [CX, 246],
+  // tassets: hanging plates of black glass from the waist, each a sharp shard
+  const plates: [number, number, number][] = [
+    [150, 342, 458],
+    [172, 346, 482],
+    [194, 348, 500],
+    [CX, 350, 508],
+    [226, 348, 500],
+    [248, 346, 482],
+    [270, 342, 458],
+  ];
+  for (const [x, y0, y1] of plates)
+    gpoly(
+      g,
+      '#20142f',
+      [
+        [x - 17, y0],
+        [x + 17, y0],
+        [x + 5, y1 - 30],
+        [x, y1],
+        [x - 5, y1 - 30],
+      ],
+      1.45,
+      0.6,
+    );
+  // cuirass: nipped waist, a sharp collar, a glowing ember core
+  gpoly(
+    g,
+    '#2a1b3e',
+    [
+      [172, 232],
+      [250, 232],
+      [244, 292],
+      [236, 352],
+      [184, 352],
+      [176, 292],
+    ],
+    1.5,
+    0.6,
+  );
+  poly(g, '#150d22', [
+    [188, 236],
+    [CX, 262],
+    [232, 236],
+    [226, 300],
     [CX, 344],
+    [194, 300],
   ]);
-  grect(g, '#e8c860', 184, 332, 58, 10, 4);
-  gell(g, '#ffe9a0', CX, 337, 6, 6);
+  line(g, '#7a5ab0', 2, [
+    [178, 240],
+    [186, 300],
+    [190, 350],
+  ]);
+  line(g, OBS_EMBER, 2.5, [
+    [CX, 262],
+    [CX, 300],
+    [CX - 10, 332],
+  ]);
+  line(g, OBS_EMBER, 2, [
+    [CX, 300],
+    [CX + 14, 326],
+  ]);
+  ell(g, OBS_HOT, CX, 286, 9, 11);
+  ell(g, OBS_EMBER, CX, 286, 6, 8);
+  grect(g, '#150d22', 180, 342, 60, 12, 5);
+  // pauldrons: great spiked shards, the far one a little smaller
   gpoly(
     g,
-    '#e8c860',
+    '#2a1b3e',
     [
-      [168, 228],
-      [254, 228],
-      [246, 250],
-      [176, 250],
+      [166, 230],
+      [132, 214],
+      [136, 150],
+      [118, 112],
+      [158, 142],
+      [182, 190],
+      [196, 232],
     ],
-    1.25,
-    0.8,
+    1.5,
+    0.55,
   );
-  g.fillStyle = '#ffe9a0';
+  gpoly(
+    g,
+    '#2a1b3e',
+    [
+      [254, 230],
+      [292, 214],
+      [286, 160],
+      [304, 126],
+      [266, 150],
+      [244, 192],
+      [226, 232],
+    ],
+    1.5,
+    0.55,
+  );
+  line(g, OBS_EMBER, 2, [
+    [158, 226],
+    [140, 190],
+    [128, 134],
+  ]);
+  line(g, OBS_EMBER, 2, [
+    [262, 226],
+    [282, 190],
+    [296, 146],
+  ]);
+  // arms: the near hand lifted, palm open to hold the floating blade; the other at her side
+  limb2(g, '#251838', 176, 252, 132, 336, 22);
+  limb2(g, '#251838', 246, 252, 300, 214, 22);
+  gpoly(
+    g,
+    '#150d22',
+    [
+      [112, 330],
+      [150, 322],
+      [152, 352],
+      [118, 360],
+    ],
+    1.5,
+    0.7,
+  );
+  gpoly(
+    g,
+    '#150d22',
+    [
+      [290, 200],
+      [326, 198],
+      [328, 228],
+      [296, 232],
+    ],
+    1.5,
+    0.7,
+  );
+  gell(g, '#d8c8e0', 126, 366, 13, 14);
+  gell(g, '#d8c8e0', 326, 190, 13, 14);
   for (const [x, y] of [
-    [196, 300],
-    [238, 380],
-    [172, 410],
-    [252, 300],
-    [212, 430],
-    [268, 440],
-    [150, 440],
+    [118, 380],
+    [128, 384],
+    [138, 380],
   ] as const)
-    star(g, '#ffe9a0', x, y, 5, 2, 4);
-  // arms: sword arm up, other hand open with a spark
-  limb2(g, '#3a4896', 182, 254, 138, 332, 22);
-  limb2(g, '#3a4896', 244, 252, 306, 216, 22);
-  rect(g, '#e8c860', 120, 316, 30, 9, 4);
-  gell(g, '#ecd6c0', 130, 346, 14, 14);
-  gell(g, '#ecd6c0', 316, 206, 14, 14);
-  // blade topped with a star
+    poly(g, '#150d22', [
+      [x - 3, y - 6],
+      [x + 3, y - 6],
+      [x, y + 12],
+    ]);
+  // head: pale face, a sweep of black hair with a violet sheen, a crown of obsidian shards
+  head(g, '#e4d4e6', CX, 182, 33, 40);
   gpoly(
     g,
-    '#eaf2ff',
+    '#1c1128',
     [
-      [318, 214],
-      [330, 214],
-      [334, 70],
-      [324, 50],
-      [314, 70],
+      [166, 188],
+      [168, 128],
+      [CX, 102],
+      [254, 128],
+      [256, 188],
+      [250, 150],
+      [232, 134],
+      [CX - 4, 140],
+      [196, 142],
+      [182, 160],
     ],
-    1.2,
-    0.8,
+    1.6,
+    0.55,
   );
-  line(g, 'rgba(120,150,210,0.6)', 3, [
-    [324, 50],
-    [324, 208],
+  limb(g, '#241636', 174, 150, 154, 250, 16);
+  limb(g, '#241636', 246, 150, 270, 262, 16);
+  line(g, '#7a5ab0', 2, [
+    [186, 128],
+    [200, 118],
   ]);
-  grect(g, '#e8c860', 298, 208, 56, 10, 4);
-  star(g, '#ffe9a0', 324, 30, 21, 8.5);
-  // a few motes around the open hand
-  star(g, '#ffe9a0', 118, 318, 6, 2.5, 4);
-  star(g, '#ffe9a0', 150, 296, 5, 2, 4);
-  // head: soft face, lashes, lips, braids, a star circlet
-  head(g, '#f0dcc8', CX, 182, 35, 41);
-  gpoly(
-    g,
-    '#d9e2ff',
-    [
-      [168, 178],
-      [172, 130],
-      [CX, 108],
-      [252, 130],
-      [256, 178],
-      [246, 156],
-      [CX, 134],
-      [178, 156],
-    ],
-    1.3,
-    0.75,
-  );
-  limb(g, '#c4d0f4', 176, 160, 160, 232, 14);
-  limb(g, '#c4d0f4', 246, 160, 262, 238, 14);
-  eyes(g, CX, 186, 12, '#6a9aff', 4.5);
-  line(g, '#2a2650', 3, [
-    [190, 182],
-    [202, 184],
+  eyes(g, CX, 186, 12, OBS_EMBER, 4.5);
+  line(g, '#150d22', 3, [
+    [188, 176],
+    [204, 180],
   ]);
-  line(g, '#2a2650', 3, [
-    [230, 182],
-    [218, 184],
+  line(g, '#150d22', 3, [
+    [232, 176],
+    [216, 180],
   ]);
-  line(g, '#2a2650', 2, [
-    [188, 178],
-    [184, 174],
+  ell(g, '#5a2a6a', CX, 210, 8, 3.4);
+  for (const [x, h, w] of [
+    [CX, 62, 11],
+    [CX - 26, 82, 9],
+    [CX + 26, 82, 9],
+    [CX - 48, 104, 8],
+    [CX + 48, 104, 8],
+  ] as const)
+    gpoly(
+      g,
+      '#241636',
+      [
+        [x - w, 134],
+        [x - w * 0.3, h],
+        [x + w * 0.2, h - 6],
+        [x + w, 134],
+      ],
+      1.7,
+      0.6,
+    );
+  line(g, OBS_EMBER, 3, [
+    [CX - 56, 134],
+    [CX + 56, 134],
   ]);
-  line(g, '#2a2650', 2, [
-    [232, 178],
-    [236, 174],
-  ]);
-  ell(g, '#c4506a', CX, 210, 8, 3.6);
-  line(g, '#e8c860', 4, [
-    [176, 142],
-    [CX, 130],
-    [244, 142],
-  ]);
-  star(g, '#ffe9a0', CX, 124, 12, 5);
-  glowHex(fx, '#ffe9a0', 324, 34, 80, 0.75);
-  glowHex(fx, '#ffe9a0', CX, 124, 30, 0.5);
-  glowHex(fx, '#9ab4ff', 126, 330, 50, 0.3);
+  glowHex(fx, OBS_EMBER, CX, 286, 46, 0.55);
+  glowHex(fx, OBS_EMBER, CX - 12, 187, 14, 0.9);
+  glowHex(fx, OBS_EMBER, CX + 12, 187, 14, 0.9);
+  glowHex(fx, OBS_EMBER, 126, 340, 44, 0.35);
+  glowHex(fx, '#8a5ac0', CX, 420, 150, 0.1);
 };
+
+/** The Obsidian Blade: a greatsword of black glass that hovers beside Obsidia, drawn on its own so it can come and go. */
+export const BLADE_W = 120;
+export const BLADE_H = 400;
+function paintObsidianBlade(g: G, fx: G): void {
+  const cx = BLADE_W / 2;
+  // blade: a long faceted shard, a bright edge on the lit side
+  gpoly(
+    g,
+    '#241636',
+    [
+      [cx - 20, 250],
+      [cx - 14, 60],
+      [cx, 8],
+      [cx + 14, 60],
+      [cx + 20, 250],
+    ],
+    1.9,
+    0.5,
+  );
+  poly(g, '#150d22', [
+    [cx, 8],
+    [cx + 14, 60],
+    [cx + 20, 250],
+    [cx, 250],
+  ]);
+  line(g, '#9a7ad0', 2, [
+    [cx - 14, 66],
+    [cx - 17, 246],
+  ]);
+  line(g, OBS_EMBER, 2.5, [
+    [cx, 40],
+    [cx + 3, 120],
+    [cx - 3, 190],
+    [cx, 244],
+  ]);
+  // a jagged crossguard, a wrapped grip and a glass pommel
+  gpoly(
+    g,
+    '#2a1b3e',
+    [
+      [cx - 48, 262],
+      [cx - 20, 250],
+      [cx + 20, 250],
+      [cx + 48, 262],
+      [cx + 24, 276],
+      [cx - 24, 276],
+    ],
+    1.6,
+    0.6,
+  );
+  grect(g, '#150d22', cx - 7, 276, 14, 82, 5);
+  for (let y = 284; y < 352; y += 12)
+    line(g, '#6a4a9a', 2, [
+      [cx - 7, y],
+      [cx + 7, y + 6],
+    ]);
+  gpoly(
+    g,
+    '#2a1b3e',
+    [
+      [cx, 392],
+      [cx - 13, 372],
+      [cx, 354],
+      [cx + 13, 372],
+    ],
+    1.6,
+    0.6,
+  );
+  ell(g, OBS_EMBER, cx, 263, 6, 6);
+  glowHex(fx, OBS_EMBER, cx, 130, 90, 0.4);
+  glowHex(fx, OBS_EMBER, cx, 263, 30, 0.7);
+}
+
+const bladeCache: { c?: HTMLCanvasElement } = {};
+/** The floating blade as its own cut-out (BLADE_W x BLADE_H), point up. */
+export function obsidianBlade(): HTMLCanvasElement | undefined {
+  if (bladeCache.c) return bladeCache.c;
+  const c = document.createElement('canvas');
+  c.width = BLADE_W;
+  c.height = BLADE_H;
+  const fxc = document.createElement('canvas');
+  fxc.width = BLADE_W;
+  fxc.height = BLADE_H;
+  const g = c.getContext('2d');
+  const fx = fxc.getContext('2d');
+  if (!g || !fx) return undefined;
+  paintObsidianBlade(g, fx);
+  light(g);
+  outline(c);
+  g.save();
+  g.globalCompositeOperation = 'lighter';
+  g.drawImage(fxc, 0, 0);
+  g.restore();
+  bladeCache.c = c;
+  return c;
+}
 
 // ---- Dorian Blackthorn: a tall, gaunt necromancer in a drowned-green long coat, bone staff and a lantern ----
 const mire: Painter = (g, fx) => {
@@ -2116,6 +2400,13 @@ const PAINTERS: Record<string, { paint: Painter; shadow: number }> = {
 };
 
 const cache = new Map<string, HTMLCanvasElement>();
+
+/** A prop that floats beside a Riftwalker only while a condition holds (Obsidia's blade while she has it): its cut-out and where it hovers on the 420x560 figure. */
+export function heroProp(id: string): { canvas: HTMLCanvasElement; x: number; y: number } | undefined {
+  if (id !== 'astra') return undefined;
+  const canvas = obsidianBlade();
+  return canvas ? { canvas, x: 372, y: 250 } : undefined;
+}
 
 /** The hand-built figure for a Riftwalker, or undefined if it has none yet. */
 export function bespokeHero(id: string): HTMLCanvasElement | undefined {

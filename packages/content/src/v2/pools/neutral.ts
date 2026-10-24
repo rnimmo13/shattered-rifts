@@ -1,6 +1,6 @@
 // Neutral cards (every Riftwalker may be offered them), Warden signature cards and junk.
 // The shared toolkit lives here: a little draw, Scry, Exhaust, Barrier and an X-cost attack. The signature mechanics
-// (Shivs, Runes, Stances, Stars...) never appear in Neutral (docs/09_ROSTER.md §1).
+// (Shivs, Totems, Stances, Arcana...) never appear in Neutral (docs/09_ROSTER.md §1).
 
 import type { CardDef } from '@sr/combat';
 import {

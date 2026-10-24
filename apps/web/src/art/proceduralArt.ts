@@ -123,12 +123,12 @@ const PALETTE: Record<Realm, Palette> = {
     eye: '#8ff5e0',
   },
   starfall: {
-    sky: ['#060820', '#1a2166', '#ffd36a'],
-    glow: '#ffe9a0',
-    body: ['#e8ecff', '#4b57a8'],
-    dark: '#07091c',
-    rim: '#ffe9a0',
-    eye: '#fff3c0',
+    sky: ['#0a0510', '#2e1238', '#ff7a2a'],
+    glow: '#ff9a4a',
+    body: ['#4a3458', '#120a1c'],
+    dark: '#0a0510',
+    rim: '#ff9a4a',
+    eye: '#ffc890',
   },
   gloomfen: {
     sky: ['#07130d', '#1e3d2a', '#9be86a'],

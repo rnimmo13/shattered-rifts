@@ -138,10 +138,10 @@ describe('every card plays', () => {
 });
 
 describe('second resources have a way in and a way out from the first hand', () => {
-  it("Astra's opening hand can both make Lumen and spend it", () => {
+  it("Astra's opening hand can both make Arcana and spend it", () => {
     for (let i = 0; i < 20; i++) {
       const { state } = createCombat(db, {
-        seed: `lumen-${i}`,
+        seed: `arcana-${i}`,
         a: { hero: 'astra', deck: RIFTWALKERS.astra.starter },
         b: { enemies: ['squire'] },
       });

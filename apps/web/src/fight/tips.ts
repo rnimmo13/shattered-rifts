@@ -9,7 +9,7 @@ export interface Tip {
   text: string;
 }
 
-/** What the fight's deck can do, so a tip can show before the first rune or Lumen is on the board. */
+/** What the fight's deck can do, so a tip can show before the first totem or Arcana is on the board. */
 export interface TipContext {
   usesRunes: boolean;
   usesStars: boolean;
@@ -39,14 +39,14 @@ export const TIP_RULES: TipRule[] = [
   },
   {
     id: 'runes',
-    title: 'Runes',
-    text: 'Your runes sit in the curved column beside you. At the end of every turn each one fires a small effect. A new rune in a full row pushes the oldest out, and it fires its big effect. Cards that Release runes fire them early.',
+    title: 'Totems',
+    text: 'Your totems stand in the curved column beside you. At the end of every turn each one pulses a small effect. A new totem in a full row pushes the oldest out, and it bursts with its big effect. Cards that Awaken totems burst them early.',
     when: (v, c) => c.usesRunes || v.sides.a.runes.length > 0,
   },
   {
     id: 'lumen',
-    title: 'Lumen',
-    text: 'Lumen is a second resource, in the gold orb beside your Mana. Some cards gain it; cards with a gold orb on them spend it. It lasts the whole fight, so you can save it for a big finisher.',
+    title: 'Arcana',
+    text: 'Arcana is a second resource, in the orange orb beside your Mana. Some cards gain it; cards with an orange orb on them spend it. It lasts the whole fight, so you can save it for a big finisher.',
     when: (v, c) => c.usesStars || v.sides.a.stars > 0,
   },
   {

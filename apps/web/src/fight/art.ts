@@ -6,7 +6,7 @@ import type { Motif } from '../art/motifs';
 import { realCardArt, realFigure } from '../art/assets';
 import { HERO_EMBLEM } from '../art/emblems';
 import { LOOKS, applyLook } from '../art/unitLooks';
-import { bespokeHero } from '../art/heroFigures';
+import { bespokeHero, heroProp } from '../art/heroFigures';
 import {
   avatarCutout,
   cardArtUrl,
@@ -95,6 +95,9 @@ export function heroFigure(heroId: string): HTMLCanvasElement {
   return avatarCutout(kind, realm, `char:${heroId}`);
 }
 
+/** A floating prop for a Riftwalker (Obsidia's blade), shown only while the fight says so. */
+export { heroProp };
+
 const unitCache = new Map<string, HTMLCanvasElement>();
 
 export function unitFigure(defId: string): HTMLCanvasElement {
@@ -145,7 +148,7 @@ const EMBLEM_WORDS: [RegExp, string][] = [
   [/bottle|swig|flask|brawl|rotgut|courage|drunk|toast|round$/, 'bottle'],
   [/hammer|anvil|crush|smith|mallet|pound/, 'hammer'],
   [/knife|knives|dagger|sleeve|razor|stab|jab|sleight/, 'daggers'],
-  [/rune|glyph|sigil|hollow|resonan|ward-?stone|spark/, 'rune'],
+  [/rune|glyph|sigil|hollow|resonan|ward-?stone|spark|totem|hawk|bark|spirit/, 'rune'],
   [/star|lumen|nova|comet|meteor|constellation|astral|cosmos|sovereign/, 'star8'],
   [/crown|king|queen|throne|sovereign|regal/, 'crown'],
   [/doom|fate|grave|thrall|skull|toll|ash|soul|dead|requiem|reap|undead|colossus|bone/, 'skull'],

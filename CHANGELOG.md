@@ -5,6 +5,13 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **0.12.0:** Astra is Obsidia and Ilvane is a totem-calling golem (new names, models and card names); five Legendaries per Riftwalker with a limit of two per deck; Fortified keeps 75% of Barrier.
+- **Five Legendary cards per Riftwalker, but a deck holds only two at a time:** taking a Legendary now costs a slot, so it is a real choice. 30 new Legendaries, three for each Riftwalker.
+- **Fortified is weaker:** it keeps 75% of your Barrier each turn instead of all of it.
+- **New models:** Obsidia is a female obsidian villain whose Obsidian Blade floats beside her while she holds it; Ilvane is a stone golem who calls spirits through his totems.
+- **Fixed:** the card preview in the upgrade picker no longer runs off the bottom of the screen.
+- **Ilvane now calls spirits through totems:** runes are now totems (Hawk, Splinter, Bear, Elder, Owl), Release is Awaken, Resonance is Spirit, and every card has a new name. The cards still do the same things.
+- **Astra is now Obsidia, the Glasswaste Spellblade:** a volcanic-glass spellblade. Lumen is now Arcana (an orange orb), the Starforged Blade is the Obsidian Blade, Constellations are Sigils, the realm is The Glasswaste, and every card has a new name. The cards still do the same things.
 - **30 new events (50 in all):** a ferry, a bone collector, a locked reliquary, a pact with the Hollow, a wishing stone, a bell tower and more. Most are a choice between two deals (HP, shards, cards, potions, Boons, max HP), and an event never shows up if you could not afford its choices.
 - **Starting kits are now three fixed choices, one per lane:** your usual starter with two plain cards swapped for two uncommon cards that show off the lane (for example Maren: Bulwark, Thorns or Sanctified). Same cards every run.
 - **0.11.0:** The potion belt no longer overlaps the Lumen counter (it slides right of the orb for Lumen heroes).

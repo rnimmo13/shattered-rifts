@@ -1,6 +1,6 @@
-// What your Riftwalker has going beyond cards: the Lumen counter (beside Mana), the runes (a curved column beside the hero)
+// What your Riftwalker has going beyond cards: the Arcana counter (beside Mana), the totems (a curved column beside the hero)
 // and the Auras in play. Each part only shows once it matters to the deck, so a Riftwalker without runes never sees an
-// empty rune row.
+// empty totem row.
 
 import { emblemSvg } from '../art/emblems';
 import { MAX_SNARES, cardText, type CombatDb, type SideView } from '@sr/combat';
@@ -12,24 +12,24 @@ export function LumenCounter(props: { value: number }) {
   return (
     <div
       className="fight__lumen"
-      aria-label={`Lumen ${props.value}`}
+      aria-label={`Arcana ${props.value}`}
       {...tipAttrs(UI_TIPS.lumen(props.value))}
     >
-      <span aria-hidden>★</span>
+      <span aria-hidden>◆</span>
       <b>{props.value}</b>
-      <small>Lumen</small>
+      <small>Arcana</small>
     </div>
   );
 }
 
-/** The rune slots in a curved column beside the hero (towards the enemies), so they never sit on the buffs under the health bar: `x` is where the column bows out to, `cy` its vertical centre (host px). */
+/** The totem slots in a curved column beside the hero (towards the enemies), so they never sit on the buffs under the health bar: `x` is where the column bows out to, `cy` its vertical centre (host px). */
 export function RuneArc(props: { db: CombatDb; me: SideView; x: number; cy: number }) {
   const { db, me } = props;
   const n = Math.max(me.runeSlots, me.runes.length);
   if (n === 0) return null;
   const gap = 54;
   return (
-    <div className="runearc" aria-label="Runes">
+    <div className="runearc" aria-label="Totems">
       {Array.from({ length: n }, (_, i) => {
         const r = me.runes[i];
         const def = r ? db.runes?.[r.rune] : undefined;
@@ -45,7 +45,7 @@ export function RuneArc(props: { db: CombatDb; me: SideView; x: number; cy: numb
             className={`rune rune--${r.rune}`}
             style={style}
             {...tipAttrs({
-              kicker: 'Rune',
+              kicker: 'Totem',
               title: `${def?.name ?? r.rune}${r.charge ? ` (charge ${r.charge})` : ''}`,
               text: def?.text ?? '',
             })}

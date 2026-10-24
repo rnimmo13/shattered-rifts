@@ -214,6 +214,7 @@ const STATUS_NAME: Record<string, string> = {
   ritual: 'Cadence',
   vigor: 'Primed',
   seared: 'Bleed',
+  resonance: 'Spirit',
 };
 const sname = (s: string): string => STATUS_NAME[s] ?? cap(s);
 const plural = (word: string): string =>
@@ -230,7 +231,7 @@ const METRIC_WORDS: Record<Metric, { per: string; equal: string }> = {
   might: { per: 'Might', equal: 'Might' },
   thorns: { per: 'Thorns', equal: 'Thorns' },
   mantra: { per: 'Fervor', equal: 'Fervor' },
-  resonance: { per: 'Resonance', equal: 'Resonance' },
+  resonance: { per: 'Spirit', equal: 'Spirit' },
   doom: { per: 'Fate', equal: 'Fate' },
   calm: { per: 'Serene', equal: 'Serene' },
   wrath: { per: 'Fury', equal: 'Fury' },
@@ -245,8 +246,8 @@ const METRIC_WORDS: Record<Metric, { per: string; equal: string }> = {
   allies: { per: 'ally', equal: 'the number of your allies' },
   foes: { per: 'enemy', equal: 'the number of enemies' },
   snares: { per: 'Snare set', equal: 'the number of Snares you have set' },
-  stars: { per: 'Lumen', equal: 'your Lumen' },
-  runes: { per: 'rune', equal: 'the number of your runes' },
+  stars: { per: 'Arcana', equal: 'your Arcana' },
+  runes: { per: 'totem', equal: 'the number of your totems' },
   mana: { per: 'Mana left', equal: 'your Mana' },
   played: { per: 'card played this turn', equal: 'the cards played this turn' },
   attacksPlayed: { per: 'Attack played this turn', equal: 'the Attacks played this turn' },
@@ -399,8 +400,8 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
     case 'stars': {
       const a = amountText(Math.abs(o.amount), o.scale);
       const verb = o.amount < 0 ? 'Spend' : 'Gain';
-      if (a.equal) return `${verb} Lumen equal to ${a.num}.`;
-      return `${verb} ${a.num} Lumen.`;
+      if (a.equal) return `${verb} Arcana equal to ${a.num}.`;
+      return `${verb} ${a.num} Arcana.`;
     }
     case 'summon':
       return summonText(db, o.unit, 1, who);
@@ -437,7 +438,7 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
     case 'scry':
       return `Foresee ${o.amount}.`;
     case 'power': {
-      const TAGS: Record<string, string> = { knife: 'Sleeve Knife', blade: 'Starforged Blade' };
+      const TAGS: Record<string, string> = { knife: 'Sleeve Knife', blade: 'Obsidian Blade' };
       const KIND_WORD: Record<string, string> = { power: 'Aura' };
       const when =
         o.when === 'play'
@@ -451,18 +452,18 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
       const nm = db.runes?.[o.rune]?.name ?? o.rune;
       if (o.scale)
         return o.scale.by === 'x'
-          ? `Conjure ${nm} X times.`
-          : `Conjure ${nm} once per ${METRIC_WORDS[o.scale.by].per}.`;
-      return (o.times ?? 1) > 1 ? `Conjure ${nm} ${o.times} times.` : `Conjure ${nm}.`;
+          ? `Plant ${nm} X times.`
+          : `Plant ${nm} once per ${METRIC_WORDS[o.scale.by].per}.`;
+      return (o.times ?? 1) > 1 ? `Plant ${nm} ${o.times} times.` : `Plant ${nm}.`;
     }
     case 'evoke': {
       const n = o.count ?? 1;
       const t = o.times ?? 1;
       const xs = o.scale?.by === 'x' ? ' X times' : t > 1 ? ` ${t} times` : '';
-      return `Release your ${n === 1 ? 'first rune' : `first ${n} runes`}${xs}${o.keep ? ' (it stays)' : ''}.`;
+      return `Awaken your ${n === 1 ? 'first totem' : `first ${n} totems`}${xs}${o.keep ? ' (it stays)' : ''}.`;
     }
     case 'runeSlots':
-      return `${o.amount >= 0 ? 'Gain' : 'Lose'} ${Math.abs(o.amount)} rune slot${Math.abs(o.amount) === 1 ? '' : 's'}.`;
+      return `${o.amount >= 0 ? 'Gain' : 'Lose'} ${Math.abs(o.amount)} totem slot${Math.abs(o.amount) === 1 ? '' : 's'}.`;
     case 'stance':
       return o.stance === 'none' ? 'Leave your stance.' : `Enter ${sname(o.stance)}.`;
     case 'sacrifice':
@@ -543,7 +544,7 @@ export function cardText(db: CombatDb, c: CardDef): string {
     );
   }
   if (c.unplayable) parts.push('Unplayable.');
-  if (c.starCost) parts.push(`Costs ${c.starCost} Lumen.`);
+  if (c.starCost) parts.push(`Costs ${c.starCost} Arcana.`);
   if (c.xBonus) parts.push(`X is ${c.xBonus} higher.`);
   const who: Record<Sel, string> =
     c.target === 'ally' || c.target === 'friend' ? { ...WHO, target: ' to the ally' } : WHO;

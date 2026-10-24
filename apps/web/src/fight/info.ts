@@ -33,10 +33,10 @@ export const STATUS_INFO: Record<
   },
   shielded: { name: 'Shielded', glyph: '◈', tone: 'good', text: 'Ignores the next hit.' },
   resonance: {
-    name: 'Resonance',
+    name: 'Spirit',
     glyph: '❖',
     tone: 'good',
-    text: 'Your runes deal 1 more damage and give 1 more Barrier per stack, and Hollow runes charge faster.',
+    text: 'Your totems deal 1 more damage and give 1 more Barrier per stack, and Elder totems charge faster.',
   },
   calm: {
     name: 'Serene',
@@ -127,7 +127,7 @@ export const STATUS_INFO: Record<
     name: 'Fortified',
     glyph: '▦',
     tone: 'good',
-    text: 'Your Barrier does not fall away at the start of your turn.',
+    text: 'You keep 75% of your Barrier at the start of your turn instead of losing all of it.',
   },
   clutch: {
     name: 'Clutch Genes',
@@ -149,13 +149,13 @@ export const STATUS_INFO: Record<
   },
 };
 
-/** One glyph per rune, for the rune row. */
+/** One glyph per totem, for the totem row. */
 export const RUNE_GLYPH: Record<string, string> = {
-  spark: '⚡',
+  spark: '▲',
   splinter: '✦',
-  ward: '◈',
+  ward: '▣',
   hollow: '●',
-  prism: '◇',
+  prism: '◉',
 };
 
 export const INTENT_GLYPH: Record<IntentIcon, string> = {
@@ -202,20 +202,20 @@ export const KEYWORD_INFO: Record<string, { name: string; text: string }> = {
     text: 'Look at the top cards of your draw pile and discard any you do not want.',
   },
   rune: {
-    name: 'Rune',
-    text: 'Runes sit in a row (3 slots). Each fires a small effect at the end of your turn. A rune pushed out of a full row, or released by a card, fires its big effect and is gone.',
+    name: 'Totem',
+    text: 'Totems stand in a row (3 slots). Each pulses a small effect at the end of your turn. A totem pushed out of a full row, or awakened by a card, bursts with its big effect and is gone.',
   },
   stance: {
     name: 'Stance',
     text: 'You are in at most one stance. Entering a new one leaves the old one.',
   },
   stars: {
-    name: 'Lumen',
+    name: 'Arcana',
     text: 'A second resource. Cards gain it and spend it; it lasts the whole fight.',
   },
   forge: {
     name: 'Sharpen',
-    text: 'Every copy of the Starforged Blade permanently gains damage. If you have none, you get one.',
+    text: 'Every copy of the Obsidian Blade permanently gains damage. If you have none, you get one.',
   },
   'sleeve-knife': { name: 'Sleeve Knife', text: 'A 0-cost Attack that is consumed.' },
   'buckshot-shell': {
@@ -297,8 +297,8 @@ export const UI_TIPS = {
   }),
   lumen: (n: number): TipContent => ({
     kicker: 'Second resource',
-    title: `Lumen ${n}`,
-    text: 'Some cards gain Lumen. Cards with a gold orb under their Mana gem spend it. Unlike Mana it lasts the whole fight.',
+    title: `Arcana ${n}`,
+    text: 'Some cards gain Arcana. Cards with an orange orb under their Mana gem spend it. Unlike Mana it lasts the whole fight.',
   }),
   draw: {
     kicker: 'Pile',
@@ -323,13 +323,13 @@ export const UI_TIPS = {
   } as TipContent,
   endTurn: {
     title: 'End turn',
-    text: 'Your allies act, your runes fire, your hand is discarded, then the enemies take their turn.',
+    text: 'Your allies act, your totems pulse, your hand is discarded, then the enemies take their turn.',
     hint: 'Shortcut: E',
   } as TipContent,
   emptyRune: {
-    kicker: 'Rune slot',
+    kicker: 'Totem slot',
     title: 'Empty slot',
-    text: 'A rune you conjure goes here. A new rune in a full row pushes the oldest out and it fires its big effect.',
+    text: 'A totem you plant goes here. A new totem in a full row pushes the oldest out and it bursts with its big effect.',
   } as TipContent,
   snare: (name: string | null, rules?: string): TipContent => ({
     kicker: 'Snare',

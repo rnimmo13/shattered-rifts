@@ -172,7 +172,7 @@ export function reduceEvent(db: CombatDb, s: CombatState, e: CombatEvent): void 
     }
     case 'barrierDrop': {
       const u = unitOf(s, e.target);
-      if (u) u.barrier = 0;
+      if (u) u.barrier = e.total ?? 0;
       return;
     }
     case 'heal': {
@@ -238,7 +238,7 @@ export function startingDisplay(s: CombatState): CombatState {
     d.sides[side].draw = [...d.sides[side].draw, ...d.sides[side].hand];
     d.sides[side].hand = [];
     d.sides[side].mana = 0;
-    // the Sigil's stars, runes and the like replay as events too
+    // the Sigil's Arcana, totems and the like replay as events too
     d.sides[side].stars = 0;
     d.sides[side].runes = [];
     d.sides[side].powers = [];
