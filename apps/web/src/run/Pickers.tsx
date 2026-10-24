@@ -19,6 +19,7 @@ import { Grimoire } from '../fight/Grimoire';
 import { tally } from '../fight/grimoireData';
 import { BoonCard, BoonChip } from '../fight/BoonChip';
 import { PotionCard, PotionIcon } from '../fight/PotionChip';
+import { RarityGem } from '../ui/RarityGem';
 
 const defOf = (id: string): CardDef | undefined => COMBAT_DB.cards[id];
 
@@ -259,7 +260,7 @@ export function ShrineView(props: {
 function ShopRow(props: {
   icon: React.ReactNode;
   name: string;
-  kind: string;
+  kind: React.ReactNode;
   text: string;
   price: number | null;
   button: string;
@@ -397,7 +398,12 @@ export function MerchantView(props: {
                     tone={`potion--${def.rarity}`}
                     icon={<PotionIcon potion={def} size={36} />}
                     name={def.name}
-                    kind={`potion · ${def.rarity}`}
+                    kind={
+                      <>
+                        <RarityGem rarity={def.rarity} />
+                        potion · {def.rarity}
+                      </>
+                    }
                     text={def.text}
                     price={p.sold ? null : p.price}
                     button={
@@ -431,7 +437,12 @@ export function MerchantView(props: {
                     tone={`potion--${def.rarity}`}
                     icon={<PotionIcon potion={def} size={36} />}
                     name={def.name}
-                    kind={`potion · ${def.rarity}`}
+                    kind={
+                      <>
+                        <RarityGem rarity={def.rarity} />
+                        potion · {def.rarity}
+                      </>
+                    }
                     text={def.text}
                     price={null}
                     button={`Sell for ${potionSellPrice(id)}`}
@@ -451,7 +462,12 @@ export function MerchantView(props: {
                 tone={`boon--${boon.rarity}`}
                 icon={<BoonChip id={boon.id} size="large" />}
                 name={boon.name}
-                kind={`boon · ${boon.rarity}`}
+                kind={
+                  <>
+                    <RarityGem rarity={boon.rarity} />
+                    boon · {boon.rarity}
+                  </>
+                }
                 text={boon.text}
                 price={m.boon.sold ? null : m.boon.price}
                 button={m.boon.sold ? 'Sold' : shards < m.boon.price ? 'Too expensive' : 'Buy'}

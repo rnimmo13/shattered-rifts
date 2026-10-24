@@ -4,6 +4,7 @@
 import { COMBAT_DB } from '@sr/content/v2';
 import type { PotionDef } from '@sr/combat';
 import { tipAttrs } from '../ui/tip';
+import { RarityGem } from '../ui/RarityGem';
 import { liquidOf, potionTip } from './potionStyle';
 
 /** A little glass flask, drawn in SVG: cork, neck, round belly, and a liquid that fills most of it. */
@@ -133,7 +134,10 @@ export function PotionCard(props: { id: string; note?: string }) {
       </span>
       <div>
         <b>{p.name}</b>
-        <small>potion · {p.rarity}</small>
+        <small>
+          <RarityGem rarity={p.rarity} />
+          potion · {p.rarity}
+        </small>
         <p>{p.text}</p>
         {props.note && <em>{props.note}</em>}
       </div>

@@ -5,6 +5,7 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **A different place for every realm:** Aurelion fights are at a castle at sunset, Nexus-9 in a teal factory skyline, Wyldmaw in a pine forest, the Glasswaste against a glowing ember sky, Gloomfen in a swamp and the Midden in a back alley (Umbral Veil stays in the cave). Boons and potions show their rarity gem in rewards and shops.
 - **0.15.0:** Credits page, How to play in two columns.
 - **How to play** reads in two columns and every section is open: no more expanding Riftwalkers or totems one at a time.
 - **Credits page:** the title screen footer links to a Credits page thanking the artists behind the cave, rarity gems, card backs and effects.

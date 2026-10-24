@@ -14,6 +14,7 @@ import { floorTop, rows } from './layout';
 import { Fighters } from '../../fight/Fighters';
 import {
   caveColumns,
+  sceneWall,
   caveFloor,
   caveProps,
   caveWall,
@@ -183,9 +184,17 @@ export class BattlefieldScene {
 
     // --- backdrop ---
     // (the cave swaps the sky for a rock wall, the shards for nothing and the ruins for columns)
-    this.sky = new Sprite(art ? tex(caveWall(art)) : tex(skyTexture()));
+    const cave = art?.id === 'cave' ? art : null;
+    const look = art?.id === 'scene' ? art : null;
+    this.sky = new Sprite(
+      cave ? tex(caveWall(cave)) : look ? tex(sceneWall(look)) : tex(skyTexture()),
+    );
     this.shards = new Sprite(art ? Texture.EMPTY : tex(shardsTexture()));
-    this.ruins = art ? caveColumns(art, 360) : new Sprite(tex(ruinsTexture()));
+    this.ruins = cave
+      ? caveColumns(cave, 360)
+      : look
+        ? new Container()
+        : new Sprite(tex(ruinsTexture()));
     this.sky.x = -PAD_X;
     if (art) this.skyY = -PAD_Y;
     this.sky.y = this.skyY;
@@ -203,7 +212,8 @@ export class BattlefieldScene {
     const floor = new Sprite(tex(ft.floor));
     floor.position.set(ft.originX, ft.originY);
     floor.scale.set(ft.scale);
-    if (art) floor.texture = tex(caveFloor(art, ft.floor.width, ft.floor.height, 2));
+    if (cave) floor.texture = tex(caveFloor(cave, ft.floor.width, ft.floor.height, 2));
+    if (look) floor.tint = look.floorTint;
     this.world.addChild(floor);
 
     // a pool of violet light along the Rift line
@@ -226,7 +236,7 @@ export class BattlefieldScene {
     this.riftCrack.blendMode = 'add';
     this.world.addChild(this.branchCracks, this.riftCrack);
 
-    if (art) this.world.addChild(caveProps(art, this.glowTex));
+    if (cave) this.world.addChild(caveProps(cave, this.glowTex));
 
     // --- the combatants ---
     this.world.addChild(this.layers.units, this.layers.fx);

@@ -2,6 +2,7 @@
 
 import { COMBAT_DB } from '@sr/content/v2';
 import { tipAttrs } from '../ui/tip';
+import { RarityGem } from '../ui/RarityGem';
 import { glyphOf } from './boonGlyph';
 
 export function BoonChip(props: { id: string; size?: 'small' | 'large' }) {
@@ -34,7 +35,10 @@ export function BoonCard(props: { id: string; note?: string }) {
       <BoonChip id={props.id} size="large" />
       <div>
         <b>{b.name}</b>
-        <small>boon · {b.rarity}</small>
+        <small>
+          <RarityGem rarity={b.rarity} />
+          boon · {b.rarity}
+        </small>
         <p>{b.text}</p>
         {props.note && <em>{props.note}</em>}
       </div>

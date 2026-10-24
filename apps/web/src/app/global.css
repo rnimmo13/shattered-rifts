@@ -731,3 +731,11 @@ body:has(.learn) {
 .learn__realm {
   margin-bottom: 0.6rem;
 }
+
+/* the rarity gem as an inline badge (Boon and potion captions, shop rows) */
+.rgem {
+  height: 1.5em;
+  width: auto;
+  vertical-align: -0.4em;
+  margin-right: 0.25em;
+}
