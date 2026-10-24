@@ -13,6 +13,20 @@ import { preloadArt } from './art/assets';
 
 applyCssTokens();
 
+// A tab left open across a deploy asks for chunks that no longer exist ("Failed to fetch dynamically imported module").
+// Load the new version once instead of showing an error; a second failure within 30 s is shown as it is.
+window.addEventListener('vite:preloadError', (e) => {
+  try {
+    const last = Number(sessionStorage.getItem('sr-chunk-reload') ?? 0);
+    if (Date.now() - last < 30_000) return;
+    sessionStorage.setItem('sr-chunk-reload', String(Date.now()));
+    e.preventDefault();
+    window.location.reload();
+  } catch {
+    /* no storage (private mode): let the error show, its Reload button works */
+  }
+});
+
 const root = document.getElementById('root');
 if (!root) throw new Error('Missing #root element');
 

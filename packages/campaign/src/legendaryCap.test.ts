@@ -17,7 +17,8 @@ describe('the Legendary limit', () => {
       expect(canAdd(deck, legends[n] as string)).toBe(true);
       deck.push(legends[n] as string);
     }
-    for (const id of legends.slice(V2_DECK_RULES.maxLegendary)) expect(canAdd(deck, id)).toBe(false);
+    for (const id of legends.slice(V2_DECK_RULES.maxLegendary))
+      expect(canAdd(deck, id)).toBe(false);
     // ordinary cards are not affected
     expect(canAdd(deck, 'strike')).toBe(true);
   });

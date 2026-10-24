@@ -35,6 +35,9 @@ import { FightHand, type HandCard } from './FightHand';
 import { FightCard } from './FightCard';
 import { Grimoire } from './Grimoire';
 import { UnitPlates, type Placed } from './Plates';
+import { ErrorDetails } from '../ui/ErrorDetails';
+import { packLine } from './lineLayout';
+import { looksLikeNewVersion } from '../ui/errorReport';
 import { keywordsOf } from './info';
 import { BoonChip } from './BoonChip';
 import { CardTips } from './CardTips';
@@ -78,43 +81,65 @@ function fitHeight(canvas: HTMLCanvasElement, height: number, crowded: boolean):
 const MAX_FIGURE_W = 300;
 /** how far above the floor the top of a flyer's head may be (stage px) */
 const MAX_TOP = 640;
+/** where a side's line starts (nearest the middle) and the furthest it may reach, stage px */
+const FOE_NEAR = 1010;
+const FOE_FAR = 1850;
+const ALLY_NEAR = 910;
+const ALLY_FAR = 440;
 
 function specsFrom(db: CombatDb, s: CombatState): FighterSpec[] {
   const out: FighterSpec[] = [];
   for (const side of ['a', 'b'] as const) {
-    // the ground line and the row of flyers above it each count and space their own units
-    let slot = 0;
+    const units = s.sides[side].units;
+    const others = units.filter((x) => x.kind !== 'hero');
+    // every figure's real size first: each side is then laid out from those widths, so nothing overlaps
     let airSlot = 0;
-    const others = s.sides[side].units.filter((x) => x.kind !== 'hero');
-    const airCount = others.filter((x) => hoverOf(x.def) > 0).length;
-    for (const u of s.sides[side].units) {
+    const sized = units.map((u) => {
       const hero = u.kind === 'hero';
       const flies = !hero && hoverOf(u.def) > 0;
-      const crowd = flies ? airCount : others.length - airCount;
       const canvas = hero ? heroFigure(u.def) : unitFigure(u.def);
       const height = fitHeight(
         canvas,
-        unitHeight(db.units[u.def], u.kind) * (!hero && crowd > 5 ? 0.82 : 1),
-        !hero && crowd > 1,
+        unitHeight(db.units[u.def], u.kind),
+        !hero && others.length > 1,
       );
       // every other flyer rides higher, so a swarm stands in two layers instead of one tangle; a big one never rises so
       // far that its head (and the next move shown above it) leaves the screen
+      const tier = flies ? 1 + (airSlot++ % 2) : 0;
       const hover = flies
-        ? Math.min(hoverOf(u.def) + (airSlot % 2) * 75, Math.max(30, MAX_TOP - height))
+        ? Math.min(hoverOf(u.def) + (tier - 1) * 75, Math.max(30, MAX_TOP - height))
         : 0;
-      const prop = hero ? heroProp(u.def) : undefined;
-      // the floating blade shows while a card tagged 'blade' is in her hand
-      const holding = s.sides[side].hand.some((c) => db.cards[c.card]?.tags?.includes('blade'));
-      out.push({
-        id: u.id,
-        side,
-        isHero: hero,
-        slot: hero ? 0 : hover > 0 ? airSlot++ : slot++,
-        count: crowd,
+      const width = (canvas.width * height) / canvas.height;
+      return {
+        u,
+        hero,
         canvas,
         height,
-        ...(hover > 0 ? { hover } : {}),
-        attack: attackFor(u.def, hero),
+        hover,
+        tier,
+        fw: Math.max(width * 0.78, flies ? 140 : 170),
+      };
+    });
+    const line = sized.filter((e) => !e.hero);
+    const fit =
+      side === 'b' ? packLine(line, FOE_NEAR, FOE_FAR) : packLine(line, ALLY_NEAR, ALLY_FAR);
+    let n = 0;
+    for (const e of sized) {
+      const prop = e.hero ? heroProp(e.u.def) : undefined;
+      // the floating blade shows while a card tagged 'blade' is in her hand
+      const holding = s.sides[side].hand.some((c) => db.cards[c.card]?.tags?.includes('blade'));
+      const k = e.hero ? 1 : fit.scale;
+      out.push({
+        id: e.u.id,
+        side,
+        isHero: e.hero,
+        slot: e.hero ? 0 : n,
+        count: line.length,
+        ...(e.hero ? {} : { x: fit.xs[n++] as number }),
+        canvas: e.canvas,
+        height: e.height * k,
+        ...(e.hover > 0 ? { hover: e.hover * k } : {}),
+        attack: attackFor(e.u.def, e.hero),
         ...(prop ? { prop: { ...prop, on: holding } } : {}),
       });
     }
@@ -727,10 +752,21 @@ export function FightView(props: {
       {!ready && !error && <div className="loading">Opening the rift…</div>}
       {error && (
         <div className="loading loading--error">
-          The fight hit a problem: {error}
-          <button className="btn" onClick={props.onExit}>
-            <span>{props.exitLabel ?? 'Leave'}</span>
-          </button>
+          <span>The fight hit a problem.</span>
+          {looksLikeNewVersion(error) && (
+            <span className="errdetails__hint">
+              A new version was released while this page was open. Reloading the page gets it.
+            </span>
+          )}
+          <ErrorDetails message={error} />
+          <span className="modal__row">
+            <button className="btn btn--primary" onClick={() => window.location.reload()}>
+              <span>Reload the page</span>
+            </button>
+            <button className="btn" onClick={props.onExit}>
+              <span>{props.exitLabel ?? 'Leave'}</span>
+            </button>
+          </span>
         </div>
       )}
 

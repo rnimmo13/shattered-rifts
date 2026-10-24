@@ -1,6 +1,6 @@
 # Card art: Sylas
 
-94 cards in 11 sheets. Anchor: attach the Valeria image to every prompt.
+64 cards in 8 sheets. Anchor: attach the Valeria image to every prompt.
 
 ## Sheet `quill-01` (legendary first)
 
@@ -173,7 +173,7 @@ NEGATIVE: text, letters, numbers, captions, labels, UI, card frames, borders, wa
 ## Sheet `quill-08` (uncommon first)
 
 ```
-Create ONE ILLUSTRATION SHEET of 9 separate card-art pictures for a card-battler game (like Slay the Spire), 2400 x 1800, no text.
+Create ONE ILLUSTRATION SHEET of 1 separate card-art pictures for a card-battler game (like Slay the Spire), 2400 x 1800, no text.
 The attached image (Valeria) is the STYLE ANCHOR: match its cartoon game-art rendering exactly (bold clean dark outlines, flat saturated colours, simple cel shading, crisp polished shapes). Do NOT copy her character; paint scenes and objects. Backgrounds are softer and less contrasty than the main subject so the subject pops.
 
 LAYOUT (critical): a clean 3 x 3 grid of landscape 4:3 pictures (each about 760 x 570), separated by thin flat dark navy (#14181f) gutters, with NO frames, NO borders, NO captions, NO text, NO numbers. Every picture fills its own cell completely; nothing crosses a gutter. Each picture has ONE clear subject in the middle that reads at thumbnail size, a simple scene behind it, light from the upper left.
@@ -182,81 +182,6 @@ WORLD: Sylas, a flamboyant rogue throwing teal-glowing knives. A cutpurse with a
 
 THE PICTURES, in this exact order, left to right, top row first. Use the card name and its effect only to decide what to draw; never write the name:
 1. "Venom Fang" (attack): Deal 10 damage. Apply 5 Bleed. Show a dynamic strike caught mid-action.
-2. "Choking Haze" (skill): Apply 4 Bleed to ALL enemies. Apply 2 Faltering to ALL enemies. Show a defensive or tactical moment, calm and clear.
-3. "Cold Open" (attack): Deal 6 damage. Discard 1 card. Show a dynamic strike caught mid-action.
-4. "Cut Low" (attack): Deal 5 damage. Show a dynamic strike caught mid-action.
-5. "Dart Throw" (attack): Deal 9 damage. Draw 1 card. Discard 1 card. Show a dynamic strike caught mid-action.
-6. "Deadly Vial" (skill): Apply 5 Bleed. Show a defensive or tactical moment, calm and clear.
-7. "Ember Dose" (skill): Apply 5 Bleed. Show a defensive or tactical moment, calm and clear.
-8. "Hidden Blade" (skill): Gain 6 Barrier. Add a Sleeve Knife to your hand. Show a defensive or tactical moment, calm and clear.
-9. "Knife Fan" (attack): Deal 3 damage to ALL enemies. Add a Sleeve Knife to your hand. Show a dynamic strike caught mid-action.
-
-NEGATIVE: text, letters, numbers, captions, labels, UI, card frames, borders, watermark, logo, photorealism, gritty texture, nudity, characters facing away.
-```
-
-## Sheet `quill-09` (common first)
-
-```
-Create ONE ILLUSTRATION SHEET of 9 separate card-art pictures for a card-battler game (like Slay the Spire), 2400 x 1800, no text.
-The attached image (Valeria) is the STYLE ANCHOR: match its cartoon game-art rendering exactly (bold clean dark outlines, flat saturated colours, simple cel shading, crisp polished shapes). Do NOT copy her character; paint scenes and objects. Backgrounds are softer and less contrasty than the main subject so the subject pops.
-
-LAYOUT (critical): a clean 3 x 3 grid of landscape 4:3 pictures (each about 760 x 570), separated by thin flat dark navy (#14181f) gutters, with NO frames, NO borders, NO captions, NO text, NO numbers. Every picture fills its own cell completely; nothing crosses a gutter. Each picture has ONE clear subject in the middle that reads at thumbnail size, a simple scene behind it, light from the upper left.
-
-WORLD: Sylas, a flamboyant rogue throwing teal-glowing knives. A cutpurse with a sleeve full of blades. Starts every fight with a Sleeve Knife. Knives, Bleed and discard tricks. World: a moonlit ballroom of shadows: violet and teal mist, masks, mirrors, candelabras.
-
-THE PICTURES, in this exact order, left to right, top row first. Use the card name and its effect only to decide what to draw; never write the name:
-1. "Knife Volley" (attack): Deal 3 damage 3 times. Show a dynamic strike caught mid-action.
-2. "Needle Jab" (attack): Deal 4 damage. Apply 1 Bleed. Show a dynamic strike caught mid-action.
-3. "Palmed Knives" (skill): Add 3 Sleeve Knives to your hand. Show a defensive or tactical moment, calm and clear.
-4. "Poison Tip" (attack): Deal 6 damage. Apply 3 Bleed. Show a dynamic strike caught mid-action.
-5. "Poisoned Needle" (snare): When you or an ally is attacked: Deal 3 damage to the attacker. Apply 4 Bleed to the attacker. Show a hidden trap seen as it is being set, ominous.
-6. "Quick Draw" (skill): Gain 5 Barrier. Draw 2 cards. Show a defensive or tactical moment, calm and clear.
-7. "Quick Hands" (skill): Draw 1 card. Discard 1 card. Show a defensive or tactical moment, calm and clear.
-8. "Rising Tempo" (attack): Deal 2 (+1 per card played this turn) damage. Show a dynamic strike caught mid-action.
-9. "Roll Clear" (skill): Gain 5 Barrier. Draw 2 cards. Show a defensive or tactical moment, calm and clear.
-
-NEGATIVE: text, letters, numbers, captions, labels, UI, card frames, borders, watermark, logo, photorealism, gritty texture, nudity, characters facing away.
-```
-
-## Sheet `quill-10` (common first)
-
-```
-Create ONE ILLUSTRATION SHEET of 9 separate card-art pictures for a card-battler game (like Slay the Spire), 2400 x 1800, no text.
-The attached image (Valeria) is the STYLE ANCHOR: match its cartoon game-art rendering exactly (bold clean dark outlines, flat saturated colours, simple cel shading, crisp polished shapes). Do NOT copy her character; paint scenes and objects. Backgrounds are softer and less contrasty than the main subject so the subject pops.
-
-LAYOUT (critical): a clean 3 x 3 grid of landscape 4:3 pictures (each about 760 x 570), separated by thin flat dark navy (#14181f) gutters, with NO frames, NO borders, NO captions, NO text, NO numbers. Every picture fills its own cell completely; nothing crosses a gutter. Each picture has ONE clear subject in the middle that reads at thumbnail size, a simple scene behind it, light from the upper left.
-
-WORLD: Sylas, a flamboyant rogue throwing teal-glowing knives. A cutpurse with a sleeve full of blades. Starts every fight with a Sleeve Knife. Knives, Bleed and discard tricks. World: a moonlit ballroom of shadows: violet and teal mist, masks, mirrors, candelabras.
-
-THE PICTURES, in this exact order, left to right, top row first. Use the card name and its effect only to decide what to draw; never write the name:
-1. "Scatter Shot" (attack): Deal 3 damage to ALL enemies. Apply 2 Bleed to ALL enemies. Show a dynamic strike caught mid-action.
-2. "Scattered Vials" (skill): Apply 3 Bleed to a random enemy. Apply 3 Bleed to a random enemy. Apply 3 Bleed to a random enemy. Show a defensive or tactical moment, calm and clear.
-3. "Sleeve Flick" (skill): Add 2 Sleeve Knives to your hand. Consume. Show a defensive or tactical moment, calm and clear.
-4. "Sleeve Knife" (attack): Deal 4 damage. Consume. Show a dynamic strike caught mid-action.
-5. "Slow Poison" (skill): Apply 3 Bleed. Consume. Show a defensive or tactical moment, calm and clear.
-6. "Smoke and Slip" (skill): Gain 6 Barrier. Add a Sleeve Knife to your hand. Show a defensive or tactical moment, calm and clear.
-7. "Tangle Wire" (attack): Deal 8 damage. Apply 1 Faltering. Show a dynamic strike caught mid-action.
-8. "Tumble" (skill): Draw 3 cards. Discard 1 card. Show a defensive or tactical moment, calm and clear.
-9. "Whetstone Pass" (skill): Gain 2 Edge: your Sleeve Knives deal 2 more damage for the rest of the fight. Show a defensive or tactical moment, calm and clear.
-
-NEGATIVE: text, letters, numbers, captions, labels, UI, card frames, borders, watermark, logo, photorealism, gritty texture, nudity, characters facing away.
-```
-
-## Sheet `quill-11` (common first)
-
-```
-Create ONE ILLUSTRATION SHEET of 4 separate card-art pictures for a card-battler game (like Slay the Spire), 2400 x 1800, no text.
-The attached image (Valeria) is the STYLE ANCHOR: match its cartoon game-art rendering exactly (bold clean dark outlines, flat saturated colours, simple cel shading, crisp polished shapes). Do NOT copy her character; paint scenes and objects. Backgrounds are softer and less contrasty than the main subject so the subject pops.
-
-LAYOUT (critical): a clean 3 x 3 grid of landscape 4:3 pictures (each about 760 x 570), separated by thin flat dark navy (#14181f) gutters, with NO frames, NO borders, NO captions, NO text, NO numbers. Every picture fills its own cell completely; nothing crosses a gutter. Each picture has ONE clear subject in the middle that reads at thumbnail size, a simple scene behind it, light from the upper left.
-
-WORLD: Sylas, a flamboyant rogue throwing teal-glowing knives. A cutpurse with a sleeve full of blades. Starts every fight with a Sleeve Knife. Knives, Bleed and discard tricks. World: a moonlit ballroom of shadows: violet and teal mist, masks, mirrors, candelabras.
-
-THE PICTURES, in this exact order, left to right, top row first. Use the card name and its effect only to decide what to draw; never write the name:
-1. "Whirling Knives" (attack): Deal 4 damage 2 times to ALL enemies. Show a dynamic strike caught mid-action.
-2. "Withering Slash" (attack): Deal 6 damage. Apply 2 Bleed. Apply 1 Faltering. Show a dynamic strike caught mid-action.
-3. "Quick Jab" (attack): Deal 3 damage. Apply 1 Faltering. Show a dynamic strike caught mid-action.
-4. "Slip Away" (skill): Gain 7 Barrier. Discard 1 card. Show a defensive or tactical moment, calm and clear.
 
 NEGATIVE: text, letters, numbers, captions, labels, UI, card frames, borders, watermark, logo, photorealism, gritty texture, nudity, characters facing away.
 ```

@@ -61,8 +61,10 @@ export interface FighterSpec {
   isHero: boolean;
   /** 0 = nearest the centre (allies and enemies); ignored for heroes */
   slot: number;
-  /** how many non-hero units stand on this side (a big crowd stands closer together) */
+  /** how many non-hero units stand on this side */
   count: number;
+  /** where it stands (stage x), from the side's measured layout; without one the fixed slots (slotX) are used */
+  x?: number;
   canvas: HTMLCanvasElement;
   /** figure height in stage px */
   height: number;
@@ -182,12 +184,16 @@ export class Fighters {
     for (const f of [...this.all.values()])
       if (!keep.has(f.spec.id) && !f.dying) this.remove(f.spec.id);
     for (const spec of list) {
-      const x = slotX(spec.side, spec.slot, spec.isHero, spec.count, (spec.hover ?? 0) > 0);
+      const x =
+        spec.x ?? slotX(spec.side, spec.slot, spec.isHero, spec.count, (spec.hover ?? 0) > 0);
       const f = this.all.get(spec.id);
       if (!f) {
         this.add(spec, x, !opts.instant);
       } else if (!f.dying) {
+        const resized =
+          Math.abs(f.spec.height - spec.height) > 0.5 || (f.spec.hover ?? 0) !== (spec.hover ?? 0);
         f.spec = spec;
+        if (resized) this.resize(f);
         this.showProp(f, opts.instant === true);
         if (Math.abs(f.x - x) > 1) {
           f.x = x;
@@ -300,6 +306,25 @@ export class Fighters {
       this.track(gsap.fromTo(body, { y: -40 }, { y: 0, duration: 0.45, ease: ease.pop.gsap }));
       this.h.sound('summon');
     }
+  }
+
+  /** The side's line was measured again (a figure joined or left and the rest were shrunk or let grow): resize to match. */
+  private resize(f: Fighter): void {
+    const spec = f.spec;
+    const k = spec.height / spec.canvas.height;
+    const w = spec.canvas.width * k;
+    f.sprite.scale.set(k);
+    f.flash.scale.set(k);
+    f.shadow.scale.set((w * 1.15) / 128, (w * 1.15 * 0.24) / 128);
+    f.contact.scale.set((w * 0.8) / 128, (w * 0.8 * 0.2) / 128);
+    f.aura.scale.set((w * 1.1) / 128, (w * 1.1 * 0.34) / 128);
+    f.ring.scale.set((w * 1.3) / 128, (w * 1.3 * 0.4) / 128);
+    if (f.prop && spec.prop) {
+      f.prop.scale.set(k);
+      f.prop.position.x = (spec.prop.x - spec.canvas.width / 2) * k;
+    }
+    f.width = w;
+    f.air.y = -(spec.hover ?? 0);
   }
 
   /** Fade a floating prop in or out to match the spec (the blade comes only while she holds one). */

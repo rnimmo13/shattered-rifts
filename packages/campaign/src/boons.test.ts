@@ -156,7 +156,9 @@ describe('potions in a run', () => {
       expect(won.potions).toHaveLength(3);
     }
     const won = finishDuel(inFight(base, 'duel'), true, 40, ['stun-tonic', 'fire-flask']);
-    expect(won.potions.includes('stun-tonic')).toBe(false);
+    // (only what the run held, plus at most the one a won fight may drop)
+    expect(won.potions.filter((p) => !base.potions.includes(p)).length).toBeLessThanOrEqual(1);
+    expect(won.potions.filter((p) => p === 'stun-tonic').length).toBeLessThanOrEqual(1);
   });
 
   it('the merchant sells potions while there is room', () => {

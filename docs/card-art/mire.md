@@ -1,6 +1,6 @@
 # Card art: Dorian Blackthorn
 
-97 cards in 11 sheets. Anchor: attach the Valeria image to every prompt.
+61 cards in 7 sheets. Anchor: attach the Valeria image to every prompt.
 
 ## Sheet `mire-01` (legendary first)
 
@@ -149,7 +149,7 @@ NEGATIVE: text, letters, numbers, captions, labels, UI, card frames, borders, wa
 ## Sheet `mire-07` (uncommon first)
 
 ```
-Create ONE ILLUSTRATION SHEET of 9 separate card-art pictures for a card-battler game (like Slay the Spire), 2400 x 1800, no text.
+Create ONE ILLUSTRATION SHEET of 7 separate card-art pictures for a card-battler game (like Slay the Spire), 2400 x 1800, no text.
 The attached image (Valeria) is the STYLE ANCHOR: match its cartoon game-art rendering exactly (bold clean dark outlines, flat saturated colours, simple cel shading, crisp polished shapes). Do NOT copy her character; paint scenes and objects. Backgrounds are softer and less contrasty than the main subject so the subject pops.
 
 LAYOUT (critical): a clean 3 x 3 grid of landscape 4:3 pictures (each about 760 x 570), separated by thin flat dark navy (#14181f) gutters, with NO frames, NO borders, NO captions, NO text, NO numbers. Every picture fills its own cell completely; nothing crosses a gutter. Each picture has ONE clear subject in the middle that reads at thumbnail size, a simple scene behind it, light from the upper left.
@@ -164,102 +164,6 @@ THE PICTURES, in this exact order, left to right, top row first. Use the card na
 5. "Unquiet Rest" (power): At the start of your turn: Heal 3 to all friends. Show a grand symbolic still-life: one iconic object or pose that stands for the idea.
 6. "Veilpiercer" (attack): Deal 7 damage. Apply 2 Exposed. Curse the target with 2 Fate. Show a dynamic strike caught mid-action.
 7. "Wake the Ashes" (skill): Return 2 random Consumed cards to your hand. Consume. Show a defensive or tactical moment, calm and clear.
-8. "Bone Cairn" (skill): Consume 1 card. Gain 9 Barrier. Add a Gravesoul to your hand. Show a defensive or tactical moment, calm and clear.
-9. "Bone Chorus" (skill): Apply 2 Might to the ally. Heal 4 to the ally. Show a defensive or tactical moment, calm and clear.
-
-NEGATIVE: text, letters, numbers, captions, labels, UI, card frames, borders, watermark, logo, photorealism, gritty texture, nudity, characters facing away.
-```
-
-## Sheet `mire-08` (common first)
-
-```
-Create ONE ILLUSTRATION SHEET of 9 separate card-art pictures for a card-battler game (like Slay the Spire), 2400 x 1800, no text.
-The attached image (Valeria) is the STYLE ANCHOR: match its cartoon game-art rendering exactly (bold clean dark outlines, flat saturated colours, simple cel shading, crisp polished shapes). Do NOT copy her character; paint scenes and objects. Backgrounds are softer and less contrasty than the main subject so the subject pops.
-
-LAYOUT (critical): a clean 3 x 3 grid of landscape 4:3 pictures (each about 760 x 570), separated by thin flat dark navy (#14181f) gutters, with NO frames, NO borders, NO captions, NO text, NO numbers. Every picture fills its own cell completely; nothing crosses a gutter. Each picture has ONE clear subject in the middle that reads at thumbnail size, a simple scene behind it, light from the upper left.
-
-WORLD: Mire, a spectral green-eyed reaper with thralls. A warden of the drowned dead. Starts with a Bone Thrall. Curses enemies with Fate until the end comes for them. World: a drowned fen at night: pale green witch-light, bone, reeds, black water, mist.
-
-THE PICTURES, in this exact order, left to right, top row first. Use the card name and its effect only to decide what to draw; never write the name:
-1. "Bone Guard" (skill): Gain 9 Barrier to the ally. Gain 4 Barrier to your hero. Show a defensive or tactical moment, calm and clear.
-2. "Bone Pile" (skill): Curse the target with 4 Fate. Return a random Consumed card to your hand. Consume. Show a defensive or tactical moment, calm and clear.
-3. "Bone Shard" (attack): Deal 8 damage. Show a dynamic strike caught mid-action.
-4. "Bone Sift" (skill): Consume 1 card. Draw 2 cards. Show a defensive or tactical moment, calm and clear.
-5. "Burial Rites" (skill): Gain 8 Barrier. Show a defensive or tactical moment, calm and clear.
-6. "Burial Shroud" (skill): Consume 1 card. Gain 8 Barrier. Draw 1 card. Show a defensive or tactical moment, calm and clear.
-7. "Creeping Dread" (attack): Deal 3 damage to ALL enemies. Curse ALL enemies with 3 Fate. Show a dynamic strike caught mid-action.
-8. "Creeping End" (skill): Curse ALL enemies with 4 Fate. Show a defensive or tactical moment, calm and clear.
-9. "Crypt Recruit" (summon): Summon Bone Thrall (12 HP). At the end of your turn it will: Deal 4 damage. Gain 4 Barrier. Show the creature or machine arriving, shown whole.
-
-NEGATIVE: text, letters, numbers, captions, labels, UI, card frames, borders, watermark, logo, photorealism, gritty texture, nudity, characters facing away.
-```
-
-## Sheet `mire-09` (common first)
-
-```
-Create ONE ILLUSTRATION SHEET of 9 separate card-art pictures for a card-battler game (like Slay the Spire), 2400 x 1800, no text.
-The attached image (Valeria) is the STYLE ANCHOR: match its cartoon game-art rendering exactly (bold clean dark outlines, flat saturated colours, simple cel shading, crisp polished shapes). Do NOT copy her character; paint scenes and objects. Backgrounds are softer and less contrasty than the main subject so the subject pops.
-
-LAYOUT (critical): a clean 3 x 3 grid of landscape 4:3 pictures (each about 760 x 570), separated by thin flat dark navy (#14181f) gutters, with NO frames, NO borders, NO captions, NO text, NO numbers. Every picture fills its own cell completely; nothing crosses a gutter. Each picture has ONE clear subject in the middle that reads at thumbnail size, a simple scene behind it, light from the upper left.
-
-WORLD: Mire, a spectral green-eyed reaper with thralls. A warden of the drowned dead. Starts with a Bone Thrall. Curses enemies with Fate until the end comes for them. World: a drowned fen at night: pale green witch-light, bone, reeds, black water, mist.
-
-THE PICTURES, in this exact order, left to right, top row first. Use the card name and its effect only to decide what to draw; never write the name:
-1. "Dirge" (skill): Curse the target with 4 (+2 per enemy) Fate. Show a defensive or tactical moment, calm and clear.
-2. "Ember Grasp" (attack): Deal 3 (+1 per consumed card) damage. Show a dynamic strike caught mid-action.
-3. "Fatal Omen" (skill): Curse the target with 3 Fate. Apply 1 Exposed. Consume. Show a defensive or tactical moment, calm and clear.
-4. "Gather Souls" (skill): Add 2 Gravesouls to your hand. Show a defensive or tactical moment, calm and clear.
-5. "Ghost Light" (skill): Heal 3. Draw 1 card. Consume. Show a defensive or tactical moment, calm and clear.
-6. "Grave Whisper" (attack): Deal 5 damage. Curse the target with 5 Fate. Show a dynamic strike caught mid-action.
-7. "Gravesight" (skill): Foresee 2. Curse a random enemy with 3 Fate. Show a defensive or tactical moment, calm and clear.
-8. "Gravesoul" (skill): Draw 2 cards. Consume. Show a defensive or tactical moment, calm and clear.
-9. "Grim Mending" (skill): Heal 12 to the ally. Gain 6 Barrier to the ally. Show a defensive or tactical moment, calm and clear.
-
-NEGATIVE: text, letters, numbers, captions, labels, UI, card frames, borders, watermark, logo, photorealism, gritty texture, nudity, characters facing away.
-```
-
-## Sheet `mire-10` (common first)
-
-```
-Create ONE ILLUSTRATION SHEET of 9 separate card-art pictures for a card-battler game (like Slay the Spire), 2400 x 1800, no text.
-The attached image (Valeria) is the STYLE ANCHOR: match its cartoon game-art rendering exactly (bold clean dark outlines, flat saturated colours, simple cel shading, crisp polished shapes). Do NOT copy her character; paint scenes and objects. Backgrounds are softer and less contrasty than the main subject so the subject pops.
-
-LAYOUT (critical): a clean 3 x 3 grid of landscape 4:3 pictures (each about 760 x 570), separated by thin flat dark navy (#14181f) gutters, with NO frames, NO borders, NO captions, NO text, NO numbers. Every picture fills its own cell completely; nothing crosses a gutter. Each picture has ONE clear subject in the middle that reads at thumbnail size, a simple scene behind it, light from the upper left.
-
-WORLD: Mire, a spectral green-eyed reaper with thralls. A warden of the drowned dead. Starts with a Bone Thrall. Curses enemies with Fate until the end comes for them. World: a drowned fen at night: pale green witch-light, bone, reeds, black water, mist.
-
-THE PICTURES, in this exact order, left to right, top row first. Use the card name and its effect only to decide what to draw; never write the name:
-1. "Last Rites" (attack): Deal 8 damage. Curse the target with 10 Fate. Show a dynamic strike caught mid-action.
-2. "Mark of Ending" (skill): Curse the target with 4 Fate. Consume. Show a defensive or tactical moment, calm and clear.
-3. "Raise Thrall" (summon): Summon Bone Thrall (12 HP). At the end of your turn it will: Deal 4 damage. Show the creature or machine arriving, shown whole.
-4. "Rally the Dead" (skill): All your allies act now. Apply 1 Might to all friends until the end of your turn. Show a defensive or tactical moment, calm and clear.
-5. "Rattle the Bones" (attack): Deal 6 damage. Add a Gravesoul to your hand. Show a dynamic strike caught mid-action.
-6. "Sepulchral Gaze" (attack): Deal 6 damage to ALL enemies. Curse ALL enemies with 2 Fate. Show a dynamic strike caught mid-action.
-7. "Shared Marrow" (skill): Heal 4 to all friends. Gain 3 Barrier to all friends. Show a defensive or tactical moment, calm and clear.
-8. "Thrall's Cue" (skill): All your allies act now. Gain 4 Barrier. Show a defensive or tactical moment, calm and clear.
-9. "Tithe of Bone" (attack): Deal 4 (+4 per ally) damage. Show a dynamic strike caught mid-action.
-
-NEGATIVE: text, letters, numbers, captions, labels, UI, card frames, borders, watermark, logo, photorealism, gritty texture, nudity, characters facing away.
-```
-
-## Sheet `mire-11` (common first)
-
-```
-Create ONE ILLUSTRATION SHEET of 7 separate card-art pictures for a card-battler game (like Slay the Spire), 2400 x 1800, no text.
-The attached image (Valeria) is the STYLE ANCHOR: match its cartoon game-art rendering exactly (bold clean dark outlines, flat saturated colours, simple cel shading, crisp polished shapes). Do NOT copy her character; paint scenes and objects. Backgrounds are softer and less contrasty than the main subject so the subject pops.
-
-LAYOUT (critical): a clean 3 x 3 grid of landscape 4:3 pictures (each about 760 x 570), separated by thin flat dark navy (#14181f) gutters, with NO frames, NO borders, NO captions, NO text, NO numbers. Every picture fills its own cell completely; nothing crosses a gutter. Each picture has ONE clear subject in the middle that reads at thumbnail size, a simple scene behind it, light from the upper left.
-
-WORLD: Mire, a spectral green-eyed reaper with thralls. A warden of the drowned dead. Starts with a Bone Thrall. Curses enemies with Fate until the end comes for them. World: a drowned fen at night: pale green witch-light, bone, reeds, black water, mist.
-
-THE PICTURES, in this exact order, left to right, top row first. Use the card name and its effect only to decide what to draw; never write the name:
-1. "Tolling Bell" (attack): Deal 3 damage. Curse the target with 7 Fate. Show a dynamic strike caught mid-action.
-2. "Tomb Chill" (attack): Deal 4 damage. Curse the target with 3 Fate. Draw 1 card. Show a dynamic strike caught mid-action.
-3. "Tomb Feast" (attack): Deal 8 damage. Consume 1 card. Heal 4. Show a dynamic strike caught mid-action.
-4. "Unleash the Dead" (attack): Deal 4 (+3 per ally) damage. Show a dynamic strike caught mid-action.
-5. "Withering Word" (skill): Curse the target with 5 Fate. Apply 1 Faltering. Show a defensive or tactical moment, calm and clear.
-6. "Bone Ward" (skill): Gain 5 Barrier to all friends. Show a defensive or tactical moment, calm and clear.
-7. "Grave Touch" (attack): Deal 5 damage. Curse the target with 4 Fate. Show a dynamic strike caught mid-action.
 
 NEGATIVE: text, letters, numbers, captions, labels, UI, card frames, borders, watermark, logo, photorealism, gritty texture, nudity, characters facing away.
 ```

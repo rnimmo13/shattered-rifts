@@ -6,6 +6,7 @@ const hasCard = (id: unknown): boolean =>
   typeof id === 'string' &&
   (Object.hasOwn(COMBAT_DB.cards, id) || (rollOf(id) !== 0 && COMBAT_DB.cards[id] !== undefined));
 import type { MapNode, NodeKind, RunPhase, RunState } from './types';
+import { FINAL_STAGE } from './mapgen';
 
 export const RUN_SAVE_VERSION = 2;
 
@@ -38,7 +39,8 @@ const isStrArray = (x: unknown): x is string[] =>
   Array.isArray(x) && x.every((s) => typeof s === 'string');
 
 function validMap(map: unknown): map is RunState['map'] {
-  if (!isObj(map) || !isInt(map['stage'], 1, 5) || !isInt(map['floors'], 1, 20)) return false;
+  if (!isObj(map) || !isInt(map['stage'], 1, FINAL_STAGE) || !isInt(map['floors'], 1, 20))
+    return false;
   const nodes = map['nodes'];
   if (!Array.isArray(nodes) || nodes.length === 0 || nodes.length > 60) return false;
   const ids = new Set<string>();
@@ -203,7 +205,7 @@ export function parseRun(text: string): RunState | null {
   // saves from before card luck existed were all normal
   if (r.luck === undefined) r.luck = 'normal';
   if (r.luck !== 'normal' && r.luck !== 'lucky' && r.luck !== 'blessed') return null;
-  if (!isInt(r.tier, 1, 99) || !isInt(r.stage, 1, 5)) return null;
+  if (!isInt(r.tier, 1, 99) || !isInt(r.stage, 1, FINAL_STAGE)) return null;
   if (!isInt(r.maxResolve, 1, 9) || !isInt(r.resolve, 0, r.maxResolve)) return null;
   if (!isInt(r.shards, 0, 1_000_000)) return null;
   if (!Array.isArray(r.deck) || r.deck.some((id) => !hasCard(id))) return null;
@@ -216,7 +218,8 @@ export function parseRun(text: string): RunState | null {
   if (r.at !== null && (typeof r.at !== 'string' || !ids.has(r.at))) return null;
   if (!Array.isArray(r.rng) || r.rng.length !== 4 || r.rng.some((x) => typeof x !== 'number'))
     return null;
-  if (!isStrArray(r.stageRealms) || r.stageRealms.length !== 3) return null;
+  if (!isStrArray(r.stageRealms) || (r.stageRealms.length !== 3 && r.stageRealms.length !== 4))
+    return null;
   if (!isObj(r.stats)) return null;
   if (r.potions === undefined) r.potions = [];
   if (

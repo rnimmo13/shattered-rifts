@@ -22,7 +22,7 @@ const HEADS: Record<HeroId, [RegExp, number | null][]> = {
   maren: [
     [/bulwark/i, 0],
     [/thorns/i, 1],
-    [/sanctified/i, 2],
+    [/devotion/i, 2],
     [/basics|glue/i, null],
   ],
   rivet: [
@@ -38,7 +38,7 @@ const HEADS: Record<HeroId, [RegExp, number | null][]> = {
     [/basics/i, null],
   ],
   vesper: [
-    [/snares/i, 0],
+    [/snares|traps/i, 0],
     [/exposed/i, 1],
     [/bluff/i, 2],
     [/basics/i, null],

@@ -5,6 +5,12 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **0.22.0:** three-stage runs, no-overlap fighters, Devotion, copyable error screens, and the first batch of illustrated card art.
+- **Card art:** 99 illustrated cards (every Riftwalker's Legendary and best Rare cards, plus the Neutral Ancestral cards). Other cards keep their painted placeholders until their art arrives.
+- **Three stages, a bit longer:** a run is now three stages: two realms of seven floors and a Warden each, then the Rift, eight floors of the other two realms and Vorthax. (An older run saved past stage 3 can't be continued.)
+- **No overlapping fighters:** each side's line is measured and spaced from the real figure sizes, with fliers tucked above or beside the others; a crowded side shrinks a little rather than overlapping.
+- **Errors you can copy:** the error screens show the message in a box you can select, with a Copy button. A tab left open across an update now reloads itself once instead of showing \"Failed to fetch dynamically imported module\".
+- **Devotion:** Valeria's heal-and-Shielded lane is renamed from Sanctified to Devotion (the Sanctum event keeps its name).
 - **0.21.0:** grounded fighters and flyers, per-arena scenery, Traps, Attack and Defend, Sehra and Sylas, screen-fit fixes.
 - **Fits the screen:** cards in your hand are a little smaller, a tall or flying monster's next move always stays on screen, and flyers no longer rise out of view.
 - **Traps:** Snares are now called Traps everywhere you read them (card type, tips, shop and event text, card names).

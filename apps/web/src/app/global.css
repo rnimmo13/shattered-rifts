@@ -739,3 +739,34 @@ body:has(.learn) {
   vertical-align: -0.4em;
   margin-right: 0.25em;
 }
+
+/* an error's text can be selected and copied (and has a button for it) */
+.errdetails {
+  display: grid;
+  justify-items: center;
+  gap: 0.6rem;
+  max-width: min(46rem, 92vw);
+  margin: 0.8rem auto;
+}
+.errdetails__text {
+  margin: 0;
+  max-height: 14rem;
+  overflow: auto;
+  padding: 0.7rem 0.9rem;
+  width: 100%;
+  text-align: left;
+  white-space: pre-wrap;
+  word-break: break-word;
+  font: 0.95rem/1.35 ui-monospace, Consolas, monospace;
+  color: var(--c-ivory);
+  background: rgb(4 5 11 / 0.7);
+  border: 1px solid rgb(255 255 255 / 0.18);
+  border-radius: 8px;
+  user-select: text;
+  -webkit-user-select: text;
+  cursor: text;
+}
+.errdetails__hint {
+  color: var(--c-gold-pale);
+  max-width: 36rem;
+}

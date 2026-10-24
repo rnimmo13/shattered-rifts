@@ -45,7 +45,7 @@ export type RunPhase =
   | 'event'
   | 'prelude' // the choice at the start of a run or a stage
   | 'stageClear' // a stage was just cleared; the next stage begins when the player continues
-  | 'loopCleared' // all five stages done: Bank or Continue
+  | 'loopCleared' // all three stages done: Bank or Continue
   | 'collapsed' // Resolve reached 0: the run and its deck are lost
   | 'banked'; // the deck was banked for PvP
 
@@ -234,7 +234,7 @@ export interface RunState {
   boons: string[];
   /** Potions carried (up to MAX_POTIONS); a lost fight does not use them up */
   potions: string[];
-  /** The realm order for stages 1-3 (stage 4 is always Umbral Veil, stage 5 the Rift). */
+  /** The run's four realms, shuffled: stages 1 and 2 are the first two, the Rift (stage 3) draws on the last two. */
   stageRealms: StageRealm[];
   map: StageMap;
   /** Nodes cleared this stage. */

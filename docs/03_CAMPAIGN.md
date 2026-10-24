@@ -40,11 +40,10 @@ and a **Sigil**: a starting passive that gives every run an identity from turn 1
 
 ```
 Choose character ──► RUN at Rift Tier I (fresh 20-card starter, 2 Resolve on Normal: see DIFFICULTY)
-   Stage 1 ─ realm A  (first run: the character's own realm)
-   Stage 2 ─ realm B
-   Stage 3 ─ realm C      (A–C: Aurelion / Nexus-9 / Wyldmaw in seeded order)
-   Stage 4 ─ Umbral Veil  (always 4th: the trap realm is the final exam)
-   Stage 5 ─ Vorthax, Heart of the Rift
+   Stage 1 ─ realm A  (seven floors + that realm's Warden)
+   Stage 2 ─ realm B  (seven floors + that realm's Warden)
+   Stage 3 ─ the Rift  (eight floors of the two realms not yet visited, then Vorthax, Heart of the Rift)
+   (the four realms, Aurelion / Nexus-9 / Wyldmaw / Umbral Veil, are shuffled by the run seed)
 ──► LOOP CLEARED: choose
       BANK      → the deck goes to your Vault (5 slots) and the run ends. Eligible for PvP.
       CONTINUE  → Tier +1, +1 Resolve (max 3), keep deck & Boons, Stage 1 again (harder, better loot)
@@ -52,8 +51,10 @@ Choose character ──► RUN at Rift Tier I (fresh 20-card starter, 2 Resolve 
 ```
 
 ### 2.1 Stage map
-Each of Stages 1–4 is a short branching node map: **5 floors + the Warden**, 2–3 nodes per floor, paths that branch
-and merge, generated from the run seed. Stage 5 is a single floor (Shrine or Merchant, player's choice) and then Vorthax.
+A run is **three stages** (DECISIONS #160). Each is a branching node map generated from the run seed, with 2–4 nodes
+per floor and paths that branch and merge: **seven floors + the Warden** for Stages 1 and 2, **eight floors + Vorthax**
+for the Rift (Stage 3, whose fights come from the two realms the run has not visited). The floor before every Warden is a
+Shrine and, in the Rift, always a Merchant too.
 
 | Node | Icon | What happens | Placement rules |
 |---|---|---|---|
@@ -65,8 +66,8 @@ and merge, generated from the run seed. Stage 5 is a single floor (Shrine or Mer
 | **Anomaly** | ✷ | A duel under a random Rift rule, double rewards | Tier II+, ~5% |
 | **Warden** | 👑 | The realm boss | After floor 5 |
 
-**Pacing target:** ~2–3 duels + 2 non-combat nodes + Warden per stage, about 18–20 minutes. A full loop takes
-**60–90 minutes**. The run autosaves after every node, so a player can stop anywhere.
+**Pacing target:** about 4 duels + 3 non-combat nodes + Warden per stage, about 25 minutes. A full loop takes
+**75–90 minutes**. The run autosaves after every node, so a player can stop anywhere.
 
 ### 2.2 Resolve (run lives)
 Duels always start at full Essence. Run tension comes from **Resolve**:

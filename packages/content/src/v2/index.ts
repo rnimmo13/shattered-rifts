@@ -48,12 +48,12 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     lanes: [
       'Bulwark: hit with your Barrier',
       'Thorns: punish attackers',
-      'Sanctified: heal and Shielded',
+      'Devotion: heal and Shielded',
     ],
     howTo: [
       'Barrier soaks damage, but it falls away at the start of your next turn. Your Plating keeps some of it through the first turns.',
       'Thorns hurt whatever attacks you, so being hit can be part of the plan.',
-      'Pick a lane: hit with your Barrier (Bulwark), punish attackers (Thorns), or heal and stay Shielded (Sanctified).',
+      'Pick a lane: hit with your Barrier (Bulwark), punish attackers (Thorns), or heal and stay Shielded (Devotion).',
     ],
   },
   rivet: {

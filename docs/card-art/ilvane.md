@@ -1,6 +1,6 @@
 # Card art: Ilvane
 
-96 cards in 11 sheets. Anchor: attach the Valeria image to every prompt.
+66 cards in 8 sheets. Anchor: attach the Valeria image to every prompt.
 
 ## Sheet `ilvane-01` (legendary first)
 
@@ -173,7 +173,7 @@ NEGATIVE: text, letters, numbers, captions, labels, UI, card frames, borders, wa
 ## Sheet `ilvane-08` (uncommon first)
 
 ```
-Create ONE ILLUSTRATION SHEET of 9 separate card-art pictures for a card-battler game (like Slay the Spire), 2400 x 1800, no text.
+Create ONE ILLUSTRATION SHEET of 3 separate card-art pictures for a card-battler game (like Slay the Spire), 2400 x 1800, no text.
 The attached image (Valeria) is the STYLE ANCHOR: match its cartoon game-art rendering exactly (bold clean dark outlines, flat saturated colours, simple cel shading, crisp polished shapes). Do NOT copy her character; paint scenes and objects. Backgrounds are softer and less contrasty than the main subject so the subject pops.
 
 LAYOUT (critical): a clean 3 x 3 grid of landscape 4:3 pictures (each about 760 x 570), separated by thin flat dark navy (#14181f) gutters, with NO frames, NO borders, NO captions, NO text, NO numbers. Every picture fills its own cell completely; nothing crosses a gutter. Each picture has ONE clear subject in the middle that reads at thumbnail size, a simple scene behind it, light from the upper left.
@@ -184,81 +184,6 @@ THE PICTURES, in this exact order, left to right, top row first. Use the card na
 1. "Tune the Spirits" (power): Apply 1 Spirit. Show a grand symbolic still-life: one iconic object or pose that stands for the idea.
 2. "Void Dividend" (skill): Draw cards equal to the number of your totems. A random card in your hand costs 1 less this fight. Show a defensive or tactical moment, calm and clear.
 3. "Winter Focus" (skill): Plant Bear. Draw 1 card. Show a defensive or tactical moment, calm and clear.
-4. "Bark Shell" (skill): Gain 14 Barrier. Plant Bear. Show a defensive or tactical moment, calm and clear.
-5. "Bark Ward" (skill): Gain 7 Barrier. Plant Bear. Hold. Show a defensive or tactical moment, calm and clear.
-6. "Bear Strike" (attack): Deal 6 damage. Plant Bear. Show a dynamic strike caught mid-action.
-7. "Bleed the Void" (skill): Plant Elder. Lose 2 HP. Consume. Show a defensive or tactical moment, calm and clear.
-8. "Cold Snap" (skill): Plant Bear once per enemy. Consume. Show a defensive or tactical moment, calm and clear.
-9. "Echo of Totems" (skill): Gain 4 Barrier. Return a random card from your discard pile to your hand. Consume. Show a defensive or tactical moment, calm and clear.
-
-NEGATIVE: text, letters, numbers, captions, labels, UI, card frames, borders, watermark, logo, photorealism, gritty texture, nudity, characters facing away.
-```
-
-## Sheet `ilvane-09` (common first)
-
-```
-Create ONE ILLUSTRATION SHEET of 9 separate card-art pictures for a card-battler game (like Slay the Spire), 2400 x 1800, no text.
-The attached image (Valeria) is the STYLE ANCHOR: match its cartoon game-art rendering exactly (bold clean dark outlines, flat saturated colours, simple cel shading, crisp polished shapes). Do NOT copy her character; paint scenes and objects. Backgrounds are softer and less contrasty than the main subject so the subject pops.
-
-LAYOUT (critical): a clean 3 x 3 grid of landscape 4:3 pictures (each about 760 x 570), separated by thin flat dark navy (#14181f) gutters, with NO frames, NO borders, NO captions, NO text, NO numbers. Every picture fills its own cell completely; nothing crosses a gutter. Each picture has ONE clear subject in the middle that reads at thumbnail size, a simple scene behind it, light from the upper left.
-
-WORLD: Ilvane, a spirit shaman who calls glowing totems. A stone golem who plants carved totems and calls the spirits inside them to do his bidding. Starts every fight with three totems (Hawk, Bear and Splinter). Totems pulse every turn, then burst when awakened. World: a teal-and-orange foundry of machines: hazard stripes, steel, glowing cyan, sparks and steam.
-
-THE PICTURES, in this exact order, left to right, top row first. Use the card name and its effect only to decide what to draw; never write the name:
-1. "Elder Strike" (attack): Deal 7 damage. Plant Elder. Show a dynamic strike caught mid-action.
-2. "Feather Storm" (attack): Deal 4 damage to ALL enemies. Plant Hawk. Show a dynamic strike caught mid-action.
-3. "Forked Branch" (attack): Deal 8 damage to ALL enemies. Plant Hawk. Show a dynamic strike caught mid-action.
-4. "Frost Bloom" (attack): Deal 5 damage to ALL enemies. Apply 1 Faltering to ALL enemies. Plant Bear. Show a dynamic strike caught mid-action.
-5. "Frostbark" (skill): Gain 6 Barrier. Plant Bear 2 times. Show a defensive or tactical moment, calm and clear.
-6. "Hawk Flock" (skill): Plant Hawk 2 times. Show a defensive or tactical moment, calm and clear.
-7. "Hawk's Dive" (attack): Deal 7 damage. Plant Hawk. Show a dynamic strike caught mid-action.
-8. "Live Branch" (attack): Deal 3 damage. Plant Hawk. Consume. Show a dynamic strike caught mid-action.
-9. "Owl Glint" (skill): Plant Owl. Consume. Show a defensive or tactical moment, calm and clear.
-
-NEGATIVE: text, letters, numbers, captions, labels, UI, card frames, borders, watermark, logo, photorealism, gritty texture, nudity, characters facing away.
-```
-
-## Sheet `ilvane-10` (common first)
-
-```
-Create ONE ILLUSTRATION SHEET of 9 separate card-art pictures for a card-battler game (like Slay the Spire), 2400 x 1800, no text.
-The attached image (Valeria) is the STYLE ANCHOR: match its cartoon game-art rendering exactly (bold clean dark outlines, flat saturated colours, simple cel shading, crisp polished shapes). Do NOT copy her character; paint scenes and objects. Backgrounds are softer and less contrasty than the main subject so the subject pops.
-
-LAYOUT (critical): a clean 3 x 3 grid of landscape 4:3 pictures (each about 760 x 570), separated by thin flat dark navy (#14181f) gutters, with NO frames, NO borders, NO captions, NO text, NO numbers. Every picture fills its own cell completely; nothing crosses a gutter. Each picture has ONE clear subject in the middle that reads at thumbnail size, a simple scene behind it, light from the upper left.
-
-WORLD: Ilvane, a spirit shaman who calls glowing totems. A stone golem who plants carved totems and calls the spirits inside them to do his bidding. Starts every fight with three totems (Hawk, Bear and Splinter). Totems pulse every turn, then burst when awakened. World: a teal-and-orange foundry of machines: hazard stripes, steel, glowing cyan, sparks and steam.
-
-THE PICTURES, in this exact order, left to right, top row first. Use the card name and its effect only to decide what to draw; never write the name:
-1. "Plant Splinter" (skill): Plant Splinter. Show a defensive or tactical moment, calm and clear.
-2. "Rime Strike" (attack): Deal 5 damage. Gain 4 Barrier. Plant Bear. Show a dynamic strike caught mid-action.
-3. "Shadow Totem" (skill): Plant Elder. Show a defensive or tactical moment, calm and clear.
-4. "Silent Totem" (skill): Gain 5 Barrier. Plant Elder. If discarded: Plant Elder. Show a defensive or tactical moment, calm and clear.
-5. "Skim the Grain" (skill): Draw 3 cards. Show a defensive or tactical moment, calm and clear.
-6. "Sweeping Talons" (attack): Deal 6 damage to ALL enemies. Draw 1 card. Show a dynamic strike caught mid-action.
-7. "Talon Lance" (attack): Deal 12 damage. Plant Hawk. Show a dynamic strike caught mid-action.
-8. "Totem Barrage" (attack): Deal 4 damage for each totem. Show a dynamic strike caught mid-action.
-9. "Totem Burst" (skill): Awaken your first totem. Draw 1 card. Show a defensive or tactical moment, calm and clear.
-
-NEGATIVE: text, letters, numbers, captions, labels, UI, card frames, borders, watermark, logo, photorealism, gritty texture, nudity, characters facing away.
-```
-
-## Sheet `ilvane-11` (common first)
-
-```
-Create ONE ILLUSTRATION SHEET of 6 separate card-art pictures for a card-battler game (like Slay the Spire), 2400 x 1800, no text.
-The attached image (Valeria) is the STYLE ANCHOR: match its cartoon game-art rendering exactly (bold clean dark outlines, flat saturated colours, simple cel shading, crisp polished shapes). Do NOT copy her character; paint scenes and objects. Backgrounds are softer and less contrasty than the main subject so the subject pops.
-
-LAYOUT (critical): a clean 3 x 3 grid of landscape 4:3 pictures (each about 760 x 570), separated by thin flat dark navy (#14181f) gutters, with NO frames, NO borders, NO captions, NO text, NO numbers. Every picture fills its own cell completely; nothing crosses a gutter. Each picture has ONE clear subject in the middle that reads at thumbnail size, a simple scene behind it, light from the upper left.
-
-WORLD: Ilvane, a spirit shaman who calls glowing totems. A stone golem who plants carved totems and calls the spirits inside them to do his bidding. Starts every fight with three totems (Hawk, Bear and Splinter). Totems pulse every turn, then burst when awakened. World: a teal-and-orange foundry of machines: hazard stripes, steel, glowing cyan, sparks and steam.
-
-THE PICTURES, in this exact order, left to right, top row first. Use the card name and its effect only to decide what to draw; never write the name:
-1. "Totem Guard" (skill): Gain 5 Barrier. Plant Bear. Show a defensive or tactical moment, calm and clear.
-2. "Totem Recall" (skill): Gain 3 Barrier. Return a random skill card from your discard pile to your hand. Consume. Show a defensive or tactical moment, calm and clear.
-3. "Void Pulse" (skill): Plant Elder. Gain 4 Barrier. Show a defensive or tactical moment, calm and clear.
-4. "Wary Hawk" (skill): Gain 5 Barrier. Plant Hawk. Show a defensive or tactical moment, calm and clear.
-5. "Plant Hawk" (skill): Plant Hawk. Show a defensive or tactical moment, calm and clear.
-6. "Twin Awakening" (skill): Awaken your first totem 2 times. Show a defensive or tactical moment, calm and clear.
 
 NEGATIVE: text, letters, numbers, captions, labels, UI, card frames, borders, watermark, logo, photorealism, gritty texture, nudity, characters facing away.
 ```

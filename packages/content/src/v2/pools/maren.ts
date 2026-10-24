@@ -1,7 +1,7 @@
 // Ser Maren Ashcourt (Aurelion). No companions. Three lanes:
 //   Bulwark     - Barrier that scales, and hits for the Barrier you hold
 //   Thorns      - retaliation: Thorns, punishing Traps, payoffs for the Thorns you carry
-//   Sanctified  - healing, Shielded and Radiant Powers
+//   Devotion  - healing, Shielded and Radiant Powers
 // Glue cards (marked) serve two lanes. Numbers assume 3 Mana and a 5-card hand.
 
 import type { CardDef } from '@sr/combat';
@@ -143,7 +143,7 @@ export const MAREN: CardDef[] = [
     on('barrier', [status('thorns', 1)]),
   ]),
 
-  // --- Sanctified ---
+  // --- Devotion ---
   m('common', 'lightbearer', 'Lightbearer', 'skill', 1, 'none', [heal(4), barrier(5)]),
   m('common', 'prayer', 'Prayer', 'skill', 0, 'none', [heal(4), draw(1)], { exhaust: true }),
   m('uncommon', 'aegis-of-the-warden', 'Aegis of the Warden', 'skill', 2, 'none', [
@@ -179,7 +179,7 @@ export const MAREN: CardDef[] = [
     exhaust: true,
   }),
 
-  // (more Sanctified)
+  // (more Devotion)
   m('uncommon', 'heartening-hymn', 'Heartening Hymn', 'skill', 1, 'none', [
     heal(6, 'allFriends'),
     barrier(4, 'allFriends'),
@@ -218,11 +218,11 @@ export const MAREN: CardDef[] = [
     barrier(6),
     status('thorns', 1),
   ]), // Bulwark + Thorns
-  m('uncommon', 'radiant-bulwark', 'Radiant Bulwark', 'skill', 2, 'none', [barrier(12), heal(4)]), // Bulwark + Sanctified
+  m('uncommon', 'radiant-bulwark', 'Radiant Bulwark', 'skill', 2, 'none', [barrier(12), heal(4)]), // Bulwark + Devotion
   m('uncommon', 'vengeful-light', 'Vengeful Light', 'attack', 2, 'foe', [
     dmg(11),
     scaled(heal(0), per('thorns')),
-  ]), // Thorns + Sanctified
+  ]), // Thorns + Devotion
   m('uncommon', 'crusade', 'Crusade', 'attack', 2, 'foe', [dmg(7, 'target', 2), barrier(4)]),
   m('uncommon', 'sanctuary', 'Sanctuary', 'snare', 2, 'none', [PREVENT, barrier(8)], {
     trigger: { on: 'attacked' },
@@ -336,7 +336,7 @@ export const MAREN: CardDef[] = [
     { trigger: { on: 'foeTurn' } },
   ),
 
-  // --- Sanctified (more) ---
+  // --- Devotion (more) ---
   m('common', 'quick-orison', 'Quick Orison', 'skill', 0, 'none', [heal(3), draw(1)], {
     retain: true,
   }),

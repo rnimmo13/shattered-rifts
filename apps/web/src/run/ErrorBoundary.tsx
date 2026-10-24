@@ -1,12 +1,24 @@
-import { Component, type ReactNode } from 'react';
+import { Component, type ErrorInfo, type ReactNode } from 'react';
 import { clearDuelStarted, clearSavedRun } from './saves';
+import { ErrorDetails } from '../ui/ErrorDetails';
+import { looksLikeNewVersion } from '../ui/errorReport';
 
 /** If a screen of the run ever crashes, show a way out instead of a blank page. */
-export class RunErrorBoundary extends Component<{ children: ReactNode }, { failed: boolean }> {
-  override state = { failed: false };
+export class RunErrorBoundary extends Component<
+  { children: ReactNode },
+  { failed: boolean; message: string }
+> {
+  override state = { failed: false, message: '' };
 
-  static getDerivedStateFromError(): { failed: boolean } {
-    return { failed: true };
+  static getDerivedStateFromError(error: unknown): { failed: boolean; message: string } {
+    return {
+      failed: true,
+      message: error instanceof Error ? `${error.name}: ${error.message}` : String(error),
+    };
+  }
+
+  override componentDidCatch(error: unknown, info: ErrorInfo): void {
+    console.error('[run] screen crashed', error, info.componentStack);
   }
 
   override render(): ReactNode {
@@ -18,6 +30,12 @@ export class RunErrorBoundary extends Component<{ children: ReactNode }, { faile
           Something went wrong showing this screen. Your saved run is kept in this browser; if
           reloading does not help, clear it and start a new run.
         </p>
+        {looksLikeNewVersion(this.state.message) && (
+          <p className="errdetails__hint">
+            A new version was released while this page was open. Reloading the page gets it.
+          </p>
+        )}
+        <ErrorDetails message={this.state.message} />
         <div className="modal__row">
           <button
             className="btn"

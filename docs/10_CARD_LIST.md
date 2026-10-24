@@ -6,7 +6,7 @@
 
 A knight of the Gilded Order. No companions: Barrier, Thorns and punishing Traps.
 
-Lanes: Bulwark: hit with your Barrier / Thorns: punish attackers / Sanctified: heal and Shielded
+Lanes: Bulwark: hit with your Barrier / Thorns: punish attackers / Devotion: heal and Shielded
 
 Starter: Attack, Attack, Attack, Attack, Defend, Defend, Defend, Defend, Dawn Smite, Oathbound
 

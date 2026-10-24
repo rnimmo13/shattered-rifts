@@ -29,6 +29,7 @@ import {
   newRun,
   nextStage,
   parseRun,
+  FINAL_STAGE,
   realmOfStage,
   takeShrine,
   type Difficulty,
@@ -341,9 +342,9 @@ function Sanctum(props: {
       <header className="setup__head">
         <h1 className="setup__title">The Sanctum</h1>
         <p className="setup__lead">
-          Choose a Riftwalker and begin a run: five stages, each ending in a Warden. Win fights, add
-          cards to your deck, and survive: your HP carries from fight to fight. Lose a fight and you
-          lose Resolve; lose all of it and the run collapses.
+          Choose a Riftwalker and begin a run: three stages, each ending in a Warden. Win fights,
+          add cards to your deck, and survive: your HP carries from fight to fight. Lose a fight and
+          you lose Resolve; lose all of it and the run collapses.
         </p>
       </header>
       <CharacterPicker value={pick} onChange={setPick} />
@@ -418,7 +419,7 @@ function RunBar(props: {
       <div className="runbar__who">
         <b>{RIFTWALKERS[run.character].hero.name}</b>
         <span>
-          Tier {run.tier} · Stage {run.stage}/5
+          Tier {run.tier} · Stage {run.stage}/{FINAL_STAGE}
           {floorLabel(run) && ` · ${floorLabel(run)}`} · {REALM_LABEL[realmOfStage(run, run.stage)]}
         </span>
       </div>
@@ -570,7 +571,7 @@ function Body(props: {
         <section className="stage-panel" aria-label="Loop cleared">
           <h2 className="stage-panel__title">The Heart of the Rift is silent</h2>
           <p className="stage-panel__hint">
-            You cleared all five stages at Rift Tier {run.tier}. <b>Bank</b> this deck to keep it
+            You cleared all three stages at Rift Tier {run.tier}. <b>Bank</b> this deck to keep it
             safe for PvP, or <b>Continue</b> one Tier deeper: harder enemies and better rewards, and
             if Resolve runs out the deck is lost.
           </p>

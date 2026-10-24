@@ -39,7 +39,7 @@ deck takes one and a half of them. Our pools were ~16 cards and one lane each. T
 
 | # | Riftwalker | Realm | HP | Lane A | Lane B | Lane C |
 |---|---|---|---|---|---|---|
-| 1 | **Ser Maren Ashcourt** | Aurelion | 80 | **Bulwark:** Barrier scaling, hits for your Barrier | **Thorns:** retaliation, punishing attackers | **Sanctified:** heal, Shielded, Radiant powers |
+| 1 | **Ser Maren Ashcourt** | Aurelion | 80 | **Bulwark:** Barrier scaling, hits for your Barrier | **Thorns:** retaliation, punishing attackers | **Devotion:** heal, Shielded, Radiant powers |
 | 2 | **Rivet** | Nexus-9 | 72 | **Swarm:** many cheap Drones | **Assemble:** make allies act again, burst turns | **Core:** a few big constructs, Might, upgrades |
 | 3 | **Kesh the Unfed** | Wyldmaw | 76 | **Bloodrage:** Might and self-damage | **Pack:** buffed companions | **Feast:** Consume, Devour, lifesteal |
 | 4 | **Vesper Nightlace** | Umbral | 68 | **Traps:** many, varied triggers | **Exposed:** debuff burst, Faltering control | **Bluff:** Retain, Foresee, held Mana |

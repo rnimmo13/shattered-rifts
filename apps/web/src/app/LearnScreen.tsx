@@ -78,7 +78,7 @@ export function LearnScreen() {
           <h2>Start here</h2>
           <p>
             Shattered Rifts is a card-fighting game. You pick a Riftwalker, build a deck as you go,
-            and fight through five stages. Every fight is a short card battle, and your HP carries
+            and fight through three stages. Every fight is a short card battle, and your HP carries
             from one to the next.
           </p>
           <h3>One turn, step by step</h3>
@@ -116,8 +116,8 @@ export function LearnScreen() {
         <section>
           <h2>A run</h2>
           <p>
-            A run is five stages. Each stage is a map: pick a path from the bottom up, and the
-            Warden waits at the top.
+            A run is three stages, each a little longer than a short dungeon. Each stage is a map:
+            pick a path from the bottom up, and the Warden waits at the top.
           </p>
           <h3>Places on the map</h3>
           <dl>
@@ -149,7 +149,7 @@ export function LearnScreen() {
           </p>
           <h3>Rift Tiers</h3>
           <p>
-            Clear all five stages and you can <b>Bank</b> your deck to keep it for PvP, or{' '}
+            Clear all three stages and you can <b>Bank</b> your deck to keep it for PvP, or{' '}
             <b>Continue</b> to the next Rift Tier: you heal fully and keep your deck, but enemies
             have more HP and hit harder. The climb ends at Tier 20.
           </p>

@@ -1,4 +1,5 @@
-// Stage maps: 5 floors plus the Warden for stages 1-4, a single floor plus Vorthax for stage 5 (03_CAMPAIGN §2.1).
+// Stage maps: a run is three stages. Stages 1 and 2 are each one realm: seven floors and that realm's Warden. Stage 3 is the
+// Rift: eight floors drawing on the two realms the run has not visited, then Vorthax (03_CAMPAIGN §2.1).
 // Generated from the run seed, so a run always has the same maps.
 
 import { nextInt, type RngState } from '@sr/combat';
@@ -7,6 +8,12 @@ import type { MapNode, NodeKind, StageMap, StageRealm } from './types';
 
 /** The chance (percent) that a merchant on the map is a Rift-crossed stranger selling another Riftwalker's cards. */
 export const CROSSED_MERCHANT_CHANCE = 7.5;
+
+/** A run is this many stages; the last one ends with Vorthax. */
+export const FINAL_STAGE = 3;
+
+/** Floors before the Warden: the Rift (the last stage) is a little longer. */
+export const floorsOf = (stage: number): number => (stage >= FINAL_STAGE ? 8 : 7);
 
 /** at most this many Events in a row along any path */
 export const MAX_EVENTS_IN_A_ROW = 2;
@@ -35,15 +42,16 @@ function pick<T>(rng: RngState, list: readonly T[]): T {
   return list[nextInt(rng, list.length)] as T;
 }
 
-/** Kind of a node on floors 2-4 given what has already been placed this stage. */
+/** Kind of a node on the middle floors given what has already been placed this stage. */
 function rollKind(
   rng: RngState,
   floor: number,
   elitesPlaced: number,
   merchantsPlaced: number,
+  maxElites: number,
 ): NodeKind {
   const r = nextInt(rng, 100);
-  if (floor >= 3 && elitesPlaced < 2 && r < (elitesPlaced < 1 ? 22 : 12)) return 'elite';
+  if (floor >= 3 && elitesPlaced < maxElites && r < (elitesPlaced < 1 ? 22 : 12)) return 'elite';
   if (merchantsPlaced < 2 && r >= 22 && r < 33) return 'merchant';
   if (floor >= 3 && r >= 33 && r < 41) return 'shrine';
   if (r >= 41 && r < 65) return 'event';
@@ -57,31 +65,19 @@ function crossedFor(rng: RngState, character: string | undefined): string | unde
   return others.length ? pick(rng, others) : undefined;
 }
 
+/**
+ * `realm` is the stage's realm; `pool` is where its enemies come from (just that realm, except in the Rift, which draws on
+ * the two realms the run has not visited).
+ */
 export function generateStageMap(
   rng: RngState,
   stage: number,
   realm: StageRealm,
   character?: string,
+  pool: readonly StageRealm[] = stage >= FINAL_STAGE ? ['umbral', 'wyldmaw'] : [realm],
 ): StageMap {
-  if (stage === 5) {
-    // the final stage: Shrine or Merchant (the player's choice), then Vorthax
-    const boss = wardenFor('rift');
-    const nodes: MapNode[] = [
-      { id: 's5-f1-a', floor: 1, kind: 'shrine', next: ['s5-warden'] },
-      {
-        id: 's5-f1-b',
-        floor: 1,
-        kind: 'merchant',
-        next: ['s5-warden'],
-        ...((c) => (c ? { crossed: c } : {}))(crossedFor(rng, character)),
-      },
-      { id: 's5-warden', floor: 2, kind: 'warden', enemyId: boss.id, next: [] },
-    ];
-    return { stage, realm, floors: 2, nodes };
-  }
-
-  const regulars = enemiesOf(realm, 'regular');
-  const elites = enemiesOf(realm, 'elite');
+  const regulars = pool.flatMap((r) => enemiesOf(r, 'regular'));
+  const elites = pool.flatMap((r) => enemiesOf(r, 'elite'));
   const used = new Set<string>();
   const regular = (): string => {
     const fresh = regulars.filter((e) => !used.has(e.id));
@@ -90,7 +86,8 @@ export function generateStageMap(
     return e.id;
   };
 
-  const FLOORS = 5;
+  const FLOORS = floorsOf(stage);
+  const maxElites = FLOORS >= 7 ? 3 : 2;
   const byFloor: MapNode[][] = [];
   let elites_ = 0;
   let merchants = 0;
@@ -101,8 +98,11 @@ export function generateStageMap(
       const id = `s${stage}-f${floor}-${String.fromCharCode(97 + i)}`;
       let kind: NodeKind;
       if (floor === 1) kind = 'duel';
-      else if (floor === FLOORS) kind = i === 0 ? 'shrine' : merchants < 1 ? 'merchant' : 'shrine';
-      else kind = rollKind(rng, floor, elites_, merchants);
+      else if (floor === FLOORS)
+        kind = i === 0 ? 'shrine' : merchants < 1 || stage >= FINAL_STAGE ? 'merchant' : 'shrine';
+      else kind = rollKind(rng, floor, elites_, merchants, maxElites);
+      // (never two Elites side by side on one floor: they spread out over the stage)
+      if (kind === 'elite' && row.some((n) => n.kind === 'elite')) kind = 'duel';
       if (kind === 'elite') elites_++;
       if (kind === 'merchant') merchants++;
       const node: MapNode = { id, floor, kind, next: [] };
@@ -120,7 +120,7 @@ export function generateStageMap(
     id: `s${stage}-warden`,
     floor: FLOORS + 1,
     kind: 'warden',
-    enemyId: wardenFor(realm).id,
+    enemyId: wardenFor(stage >= FINAL_STAGE ? 'rift' : realm).id,
     next: [],
   };
 

@@ -1,6 +1,6 @@
 # Card art: Kesh the Unfed
 
-97 cards in 11 sheets. Anchor: attach the Valeria image to every prompt.
+66 cards in 8 sheets. Anchor: attach the Valeria image to every prompt.
 
 ## Sheet `kesh-01` (legendary first)
 
@@ -173,7 +173,7 @@ NEGATIVE: text, letters, numbers, captions, labels, UI, card frames, borders, wa
 ## Sheet `kesh-08` (uncommon first)
 
 ```
-Create ONE ILLUSTRATION SHEET of 9 separate card-art pictures for a card-battler game (like Slay the Spire), 2400 x 1800, no text.
+Create ONE ILLUSTRATION SHEET of 3 separate card-art pictures for a card-battler game (like Slay the Spire), 2400 x 1800, no text.
 The attached image (Valeria) is the STYLE ANCHOR: match its cartoon game-art rendering exactly (bold clean dark outlines, flat saturated colours, simple cel shading, crisp polished shapes). Do NOT copy her character; paint scenes and objects. Backgrounds are softer and less contrasty than the main subject so the subject pops.
 
 LAYOUT (critical): a clean 3 x 3 grid of landscape 4:3 pictures (each about 760 x 570), separated by thin flat dark navy (#14181f) gutters, with NO frames, NO borders, NO captions, NO text, NO numbers. Every picture fills its own cell completely; nothing crosses a gutter. Each picture has ONE clear subject in the middle that reads at thumbnail size, a simple scene behind it, light from the upper left.
@@ -184,82 +184,6 @@ THE PICTURES, in this exact order, left to right, top row first. Use the card na
 1. "Trail of Blood" (power): Whenever you summon an ally: Apply 1 Might to all friends. Show a grand symbolic still-life: one iconic object or pose that stands for the idea.
 2. "Whirling Maul" (attack): Deal 5 damage X times to ALL enemies. Show a dynamic strike caught mid-action.
 3. "Wounded Wrath" (power): Whenever you lose HP to your own cards: Deal 4 damage to a random enemy. Show a grand symbolic still-life: one iconic object or pose that stands for the idea.
-4. "Bared Teeth" (skill): Gain 3 (+3 per ally) Barrier. Show a defensive or tactical moment, calm and clear.
-5. "Blood Rush" (attack): Deal 4 damage. Lose 1 HP. Show a dynamic strike caught mid-action.
-6. "Bloodied Howl" (skill): Lose 2 HP. Apply 2 Exposed to ALL enemies. Show a defensive or tactical moment, calm and clear.
-7. "Bloodscent" (attack): Deal 5 damage. Apply 1 Might to all friends. Show a dynamic strike caught mid-action.
-8. "Bone Crack" (attack): Deal 7 damage. Apply 2 Exposed. Show a dynamic strike caught mid-action.
-9. "Bonepicker" (skill): Gain 3 Barrier. Consume. If consumed: Heal 2. Show a defensive or tactical moment, calm and clear.
-
-NEGATIVE: text, letters, numbers, captions, labels, UI, card frames, borders, watermark, logo, photorealism, gritty texture, nudity, characters facing away.
-```
-
-## Sheet `kesh-09` (common first)
-
-```
-Create ONE ILLUSTRATION SHEET of 9 separate card-art pictures for a card-battler game (like Slay the Spire), 2400 x 1800, no text.
-The attached image (Valeria) is the STYLE ANCHOR: match its cartoon game-art rendering exactly (bold clean dark outlines, flat saturated colours, simple cel shading, crisp polished shapes). Do NOT copy her character; paint scenes and objects. Backgrounds are softer and less contrasty than the main subject so the subject pops.
-
-LAYOUT (critical): a clean 3 x 3 grid of landscape 4:3 pictures (each about 760 x 570), separated by thin flat dark navy (#14181f) gutters, with NO frames, NO borders, NO captions, NO text, NO numbers. Every picture fills its own cell completely; nothing crosses a gutter. Each picture has ONE clear subject in the middle that reads at thumbnail size, a simple scene behind it, light from the upper left.
-
-WORLD: Kesh, a tribal huntress with bone weapons. A hunter with a Hound. Pays HP to buff the whole pack with Might. World: a primal jungle inside the ribcage of a giant beast: bone, crimson, moss green, bioluminescent mushrooms.
-
-THE PICTURES, in this exact order, left to right, top row first. Use the card name and its effect only to decide what to draw; never write the name:
-1. "Burn the Weak" (skill): Consume 1 card. Gain 8 Barrier. Show a defensive or tactical moment, calm and clear.
-2. "Call Gnashlings" (summon): Summon 2 Gnashlings (4 HP each). At the end of your turn each will: Deal 3 damage. Show the creature or machine arriving, shown whole.
-3. "Feral Instinct" (skill): Lose 2 HP. Draw 2 cards. Show a defensive or tactical moment, calm and clear.
-4. "Flesh Wound" (skill): Lose 2 HP. Gain 14 Barrier. Show a defensive or tactical moment, calm and clear.
-5. "Guard Dog" (skill): Summon Hound (10 HP). At the end of your turn it will: Deal 4 damage. Gain 5 Barrier. Show a defensive or tactical moment, calm and clear.
-6. "Heel" (summon): Summon Hound (10 HP). At the end of your turn it will: Deal 4 damage. Show the creature or machine arriving, shown whole.
-7. "Howl" (skill): All your allies act now. Show a defensive or tactical moment, calm and clear.
-8. "Lead the Charge" (attack): Deal 5 (+3 per ally) damage. Show a dynamic strike caught mid-action.
-9. "Maddened Lunge" (attack): Deal 5 (+1 per 4 missing HP) damage. Show a dynamic strike caught mid-action.
-
-NEGATIVE: text, letters, numbers, captions, labels, UI, card frames, borders, watermark, logo, photorealism, gritty texture, nudity, characters facing away.
-```
-
-## Sheet `kesh-10` (common first)
-
-```
-Create ONE ILLUSTRATION SHEET of 9 separate card-art pictures for a card-battler game (like Slay the Spire), 2400 x 1800, no text.
-The attached image (Valeria) is the STYLE ANCHOR: match its cartoon game-art rendering exactly (bold clean dark outlines, flat saturated colours, simple cel shading, crisp polished shapes). Do NOT copy her character; paint scenes and objects. Backgrounds are softer and less contrasty than the main subject so the subject pops.
-
-LAYOUT (critical): a clean 3 x 3 grid of landscape 4:3 pictures (each about 760 x 570), separated by thin flat dark navy (#14181f) gutters, with NO frames, NO borders, NO captions, NO text, NO numbers. Every picture fills its own cell completely; nothing crosses a gutter. Each picture has ONE clear subject in the middle that reads at thumbnail size, a simple scene behind it, light from the upper left.
-
-WORLD: Kesh, a tribal huntress with bone weapons. A hunter with a Hound. Pays HP to buff the whole pack with Might. World: a primal jungle inside the ribcage of a giant beast: bone, crimson, moss green, bioluminescent mushrooms.
-
-THE PICTURES, in this exact order, left to right, top row first. Use the card name and its effect only to decide what to draw; never write the name:
-1. "Marrow Suck" (attack): Deal 7 damage. Heal 2 (+1 per 2 consumed card). Show a dynamic strike caught mid-action.
-2. "Open a Vein" (skill): Lose 3 HP. Apply 1 Might. Draw 1 card. Consume. Show a defensive or tactical moment, calm and clear.
-3. "Pack Tactics" (skill): Apply 1 Might to all friends. Gain 4 Barrier to all friends. Show a defensive or tactical moment, calm and clear.
-4. "Pain Ward" (skill): Gain 5 Barrier. Gain Barrier equal to a quarter of your missing HP. Show a defensive or tactical moment, calm and clear.
-5. "Pound" (attack): Deal 9 damage. Draw 1 card. Show a dynamic strike caught mid-action.
-6. "Primal Feast" (skill): Heal 5 to all friends. Show a defensive or tactical moment, calm and clear.
-7. "Rend" (attack): Deal 11 damage. Lose 3 HP. Show a dynamic strike caught mid-action.
-8. "Ripping Claws" (attack): Deal 5 damage to ALL enemies. Lose 1 HP. Show a dynamic strike caught mid-action.
-9. "Scavenge" (attack): Deal 9 damage. Put a random card from your discard pile on top of your draw pile. Show a dynamic strike caught mid-action.
-
-NEGATIVE: text, letters, numbers, captions, labels, UI, card frames, borders, watermark, logo, photorealism, gritty texture, nudity, characters facing away.
-```
-
-## Sheet `kesh-11` (common first)
-
-```
-Create ONE ILLUSTRATION SHEET of 7 separate card-art pictures for a card-battler game (like Slay the Spire), 2400 x 1800, no text.
-The attached image (Valeria) is the STYLE ANCHOR: match its cartoon game-art rendering exactly (bold clean dark outlines, flat saturated colours, simple cel shading, crisp polished shapes). Do NOT copy her character; paint scenes and objects. Backgrounds are softer and less contrasty than the main subject so the subject pops.
-
-LAYOUT (critical): a clean 3 x 3 grid of landscape 4:3 pictures (each about 760 x 570), separated by thin flat dark navy (#14181f) gutters, with NO frames, NO borders, NO captions, NO text, NO numbers. Every picture fills its own cell completely; nothing crosses a gutter. Each picture has ONE clear subject in the middle that reads at thumbnail size, a simple scene behind it, light from the upper left.
-
-WORLD: Kesh, a tribal huntress with bone weapons. A hunter with a Hound. Pays HP to buff the whole pack with Might. World: a primal jungle inside the ribcage of a giant beast: bone, crimson, moss green, bioluminescent mushrooms.
-
-THE PICTURES, in this exact order, left to right, top row first. Use the card name and its effect only to decide what to draw; never write the name:
-1. "Sic 'Em" (skill): Apply 2 Might to the ally. Heal 4 to the ally. Show a defensive or tactical moment, calm and clear.
-2. "Thick Hide" (skill): Gain 5 Barrier to all friends. Show a defensive or tactical moment, calm and clear.
-3. "Throw Scraps" (skill): Consume 1 card. Gain 1 Mana. Show a defensive or tactical moment, calm and clear.
-4. "Twin Fang" (attack): Deal 5 damage 2 times. Show a dynamic strike caught mid-action.
-5. "Whet the Fangs" (skill): Apply 6 Primed. Show a defensive or tactical moment, calm and clear.
-6. "Blood Frenzy" (skill): Lose 3 HP. Apply 2 Might to all friends. Show a defensive or tactical moment, calm and clear.
-7. "Savage Bite" (attack): Deal 8 damage. Lose 2 HP. Show a dynamic strike caught mid-action.
 
 NEGATIVE: text, letters, numbers, captions, labels, UI, card frames, borders, watermark, logo, photorealism, gritty texture, nudity, characters facing away.
 ```

@@ -1,6 +1,6 @@
 # Card art: Obsidia
 
-95 cards in 11 sheets. Anchor: attach the Valeria image to every prompt.
+65 cards in 8 sheets. Anchor: attach the Valeria image to every prompt.
 
 ## Sheet `astra-01` (legendary first)
 
@@ -173,7 +173,7 @@ NEGATIVE: text, letters, numbers, captions, labels, UI, card frames, borders, wa
 ## Sheet `astra-08` (uncommon first)
 
 ```
-Create ONE ILLUSTRATION SHEET of 9 separate card-art pictures for a card-battler game (like Slay the Spire), 2400 x 1800, no text.
+Create ONE ILLUSTRATION SHEET of 2 separate card-art pictures for a card-battler game (like Slay the Spire), 2400 x 1800, no text.
 The attached image (Valeria) is the STYLE ANCHOR: match its cartoon game-art rendering exactly (bold clean dark outlines, flat saturated colours, simple cel shading, crisp polished shapes). Do NOT copy her character; paint scenes and objects. Backgrounds are softer and less contrasty than the main subject so the subject pops.
 
 LAYOUT (critical): a clean 3 x 3 grid of landscape 4:3 pictures (each about 760 x 570), separated by thin flat dark navy (#14181f) gutters, with NO frames, NO borders, NO captions, NO text, NO numbers. Every picture fills its own cell completely; nothing crosses a gutter. Each picture has ONE clear subject in the middle that reads at thumbnail size, a simple scene behind it, light from the upper left.
@@ -183,81 +183,6 @@ WORLD: Obsidia, a queen of black volcanic glass with floating shards. A spellbla
 THE PICTURES, in this exact order, left to right, top row first. Use the card name and its effect only to decide what to draw; never write the name:
 1. "Warm Anvil" (power): At the start of your turn: Sharpen 1 (Obsidian Blade gains 1 damage). Show a grand symbolic still-life: one iconic object or pose that stands for the idea.
 2. "Weave" (skill): Gain 1 Arcana. Sharpen 1 (Obsidian Blade gains 1 damage). Draw 1 card. Show a defensive or tactical moment, calm and clear.
-3. "Arcane Barrier" (skill): Costs 1 Arcana. Gain 16 Barrier. Show a defensive or tactical moment, calm and clear.
-4. "Arcane Pulse" (attack): Deal 6 damage 2 times to ALL enemies. Show a dynamic strike caught mid-action.
-5. "Ash Wind" (skill): Draw 2 cards. Gain 1 Arcana. Discard 1 card. Show a defensive or tactical moment, calm and clear.
-6. "Blacksteel" (attack): Deal 8 damage. Sharpen 1 (Obsidian Blade gains 1 damage). Show a dynamic strike caught mid-action.
-7. "Blade Ward" (skill): Gain 5 Barrier. Sharpen 1 (Obsidian Blade gains 1 damage). Show a defensive or tactical moment, calm and clear.
-8. "Crushing Slag" (attack): Deal 8 damage to ALL enemies. Apply 1 Faltering to ALL enemies. Show a dynamic strike caught mid-action.
-9. "Emberstrike" (attack): Deal 9 damage. Gain 1 Arcana. Show a dynamic strike caught mid-action.
-
-NEGATIVE: text, letters, numbers, captions, labels, UI, card frames, borders, watermark, logo, photorealism, gritty texture, nudity, characters facing away.
-```
-
-## Sheet `astra-09` (common first)
-
-```
-Create ONE ILLUSTRATION SHEET of 9 separate card-art pictures for a card-battler game (like Slay the Spire), 2400 x 1800, no text.
-The attached image (Valeria) is the STYLE ANCHOR: match its cartoon game-art rendering exactly (bold clean dark outlines, flat saturated colours, simple cel shading, crisp polished shapes). Do NOT copy her character; paint scenes and objects. Backgrounds are softer and less contrasty than the main subject so the subject pops.
-
-LAYOUT (critical): a clean 3 x 3 grid of landscape 4:3 pictures (each about 760 x 570), separated by thin flat dark navy (#14181f) gutters, with NO frames, NO borders, NO captions, NO text, NO numbers. Every picture fills its own cell completely; nothing crosses a gutter. Each picture has ONE clear subject in the middle that reads at thumbnail size, a simple scene behind it, light from the upper left.
-
-WORLD: Obsidia, a queen of black volcanic glass with floating shards. A spellblade of black glass and ember. Starts with 3 Arcana and an Obsidian Blade that every Sharpen improves for good. World: a volcanic glass desert: black obsidian, ember-orange cracks, violet sheen, floating arcana stars.
-
-THE PICTURES, in this exact order, left to right, top row first. Use the card name and its effect only to decide what to draw; never write the name:
-1. "Faint Ember" (skill): Gain 1 Arcana. Draw 1 card. Next turn, draw 1 extra card. Show a defensive or tactical moment, calm and clear.
-2. "Forged in Fury" (attack): Deal 7 damage. Sharpen 3 (Obsidian Blade gains 3 damage). Show a dynamic strike caught mid-action.
-3. "Glass Shield" (skill): Gain 6 Barrier. Gain 1 Arcana. Show a defensive or tactical moment, calm and clear.
-4. "Glint" (attack): Deal 7 damage. Foresee 2. Show a dynamic strike caught mid-action.
-5. "Grindstone" (skill): Sharpen 2 (Obsidian Blade gains 2 damage). Draw 1 card. Consume. Show a defensive or tactical moment, calm and clear.
-6. "Hone" (skill): Sharpen 4 (Obsidian Blade gains 4 damage). Show a defensive or tactical moment, calm and clear.
-7. "Honed Strike" (attack): Deal 6 damage. Sharpen 2 (Obsidian Blade gains 2 damage). Show a dynamic strike caught mid-action.
-8. "Humble" (skill): Apply 1 Faltering. Apply 1 Exposed. Consume. Show a defensive or tactical moment, calm and clear.
-9. "Ley Strike" (attack): Deal 4 (+1 per Arcana) damage. Show a dynamic strike caught mid-action.
-
-NEGATIVE: text, letters, numbers, captions, labels, UI, card frames, borders, watermark, logo, photorealism, gritty texture, nudity, characters facing away.
-```
-
-## Sheet `astra-10` (common first)
-
-```
-Create ONE ILLUSTRATION SHEET of 9 separate card-art pictures for a card-battler game (like Slay the Spire), 2400 x 1800, no text.
-The attached image (Valeria) is the STYLE ANCHOR: match its cartoon game-art rendering exactly (bold clean dark outlines, flat saturated colours, simple cel shading, crisp polished shapes). Do NOT copy her character; paint scenes and objects. Backgrounds are softer and less contrasty than the main subject so the subject pops.
-
-LAYOUT (critical): a clean 3 x 3 grid of landscape 4:3 pictures (each about 760 x 570), separated by thin flat dark navy (#14181f) gutters, with NO frames, NO borders, NO captions, NO text, NO numbers. Every picture fills its own cell completely; nothing crosses a gutter. Each picture has ONE clear subject in the middle that reads at thumbnail size, a simple scene behind it, light from the upper left.
-
-WORLD: Obsidia, a queen of black volcanic glass with floating shards. A spellblade of black glass and ember. Starts with 3 Arcana and an Obsidian Blade that every Sharpen improves for good. World: a volcanic glass desert: black obsidian, ember-orange cracks, violet sheen, floating arcana stars.
-
-THE PICTURES, in this exact order, left to right, top row first. Use the card name and its effect only to decide what to draw; never write the name:
-1. "Molten Might" (attack): Deal 6 damage 3 times. Show a dynamic strike caught mid-action.
-2. "Obsidian Blade" (attack): Deal 9 (+1 per point of sharpening) damage. Hold. Show a dynamic strike caught mid-action.
-3. "Pale Ward" (skill): Gain 5 Barrier. Foresee 2. Gain 1 Arcana. Show a defensive or tactical moment, calm and clear.
-4. "Quenching Strike" (attack): Deal 5 damage 2 times. Sharpen 2 (Obsidian Blade gains 2 damage). Show a dynamic strike caught mid-action.
-5. "Scrying Glass" (skill): Gain 1 Arcana. Draw 1 card. Consume. Show a defensive or tactical moment, calm and clear.
-6. "Searing Ray" (attack): Deal 9 damage. Show a dynamic strike caught mid-action.
-7. "Spellbolt" (attack): Costs 1 Arcana. Deal 20 damage. Show a dynamic strike caught mid-action.
-8. "Spoils" (skill): Sharpen 3 (Obsidian Blade gains 3 damage). Draw 2 cards. Show a defensive or tactical moment, calm and clear.
-9. "Temper Edge" (skill): Sharpen 5 (Obsidian Blade gains 5 damage). Next turn, gain 1 extra Mana. Show a defensive or tactical moment, calm and clear.
-
-NEGATIVE: text, letters, numbers, captions, labels, UI, card frames, borders, watermark, logo, photorealism, gritty texture, nudity, characters facing away.
-```
-
-## Sheet `astra-11` (common first)
-
-```
-Create ONE ILLUSTRATION SHEET of 5 separate card-art pictures for a card-battler game (like Slay the Spire), 2400 x 1800, no text.
-The attached image (Valeria) is the STYLE ANCHOR: match its cartoon game-art rendering exactly (bold clean dark outlines, flat saturated colours, simple cel shading, crisp polished shapes). Do NOT copy her character; paint scenes and objects. Backgrounds are softer and less contrasty than the main subject so the subject pops.
-
-LAYOUT (critical): a clean 3 x 3 grid of landscape 4:3 pictures (each about 760 x 570), separated by thin flat dark navy (#14181f) gutters, with NO frames, NO borders, NO captions, NO text, NO numbers. Every picture fills its own cell completely; nothing crosses a gutter. Each picture has ONE clear subject in the middle that reads at thumbnail size, a simple scene behind it, light from the upper left.
-
-WORLD: Obsidia, a queen of black volcanic glass with floating shards. A spellblade of black glass and ember. Starts with 3 Arcana and an Obsidian Blade that every Sharpen improves for good. World: a volcanic glass desert: black obsidian, ember-orange cracks, violet sheen, floating arcana stars.
-
-THE PICTURES, in this exact order, left to right, top row first. Use the card name and its effect only to decide what to draw; never write the name:
-1. "Whetstone" (skill): Sharpen 4 (Obsidian Blade gains 4 damage). Consume. Show a defensive or tactical moment, calm and clear.
-2. "Wishing Well" (skill): Gain 2 Arcana. Next turn, lose 1 Mana. Show a defensive or tactical moment, calm and clear.
-3. "Arcane Bolt" (attack): Costs 1 Arcana. Deal 16 damage. Opening hand. Show a dynamic strike caught mid-action.
-4. "Gather Arcana" (skill): Gain 3 Arcana. Opening hand. Show a defensive or tactical moment, calm and clear.
-5. "Glass Jab" (attack): Deal 7 damage. Gain 1 Arcana. Show a dynamic strike caught mid-action.
 
 NEGATIVE: text, letters, numbers, captions, labels, UI, card frames, borders, watermark, logo, photorealism, gritty texture, nudity, characters facing away.
 ```

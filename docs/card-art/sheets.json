@@ -76,29 +76,7 @@
    "rift-surge",
    "rift-whirl",
    "rift-windfall",
-   "wanderers-draught",
-   "alarm-bell",
-   "catch-breath",
-   "glimpse-ahead",
-   "haft-strike",
-   "heave"
-  ]
- },
- {
-  "name": "neutral-06",
-  "hero": "neutral",
-  "cols": 3,
-  "rows": 3,
-  "ids": [
-   "pitfall",
-   "needling-blow",
-   "reckless-swing",
-   "rift-bolt",
-   "shatter-strike",
-   "stagger",
-   "steady-guard",
-   "strike",
-   "defend"
+   "wanderers-draught"
   ]
  },
  {
@@ -226,59 +204,7 @@
   "cols": 3,
   "rows": 3,
   "ids": [
-   "ward-of-ages",
-   "barbed-guard",
-   "bell-toll",
-   "blessed-onslaught",
-   "brace-up",
-   "bulwark-blow",
-   "crushing-weight",
-   "dawnlance",
-   "gilded-bastion"
-  ]
- },
- {
-  "name": "maren-09",
-  "hero": "maren",
-  "cols": 3,
-  "rows": 3,
-  "ids": [
-   "gilded-blow",
-   "iron-tithe",
-   "iron-vigil",
-   "lacerate",
-   "lightbearer",
-   "prayer",
-   "quick-orison",
-   "reprisal",
-   "righteous-rebuke"
-  ]
- },
- {
-  "name": "maren-10",
-  "hero": "maren",
-  "cols": 3,
-  "rows": 3,
-  "ids": [
-   "shell-cracker",
-   "shield-bash",
-   "spiked-aegis",
-   "spiked-retort",
-   "stand-firm",
-   "sunlit-blow",
-   "thorn-lash",
-   "thornmail",
-   "zealous-charge"
-  ]
- },
- {
-  "name": "maren-11",
-  "hero": "maren",
-  "cols": 3,
-  "rows": 3,
-  "ids": [
-   "dawn-smite",
-   "oathbound"
+   "ward-of-ages"
   ]
  },
  {
@@ -395,71 +321,7 @@
    "swarm-protocol",
    "swarm-tactics",
    "synchronise",
-   "upgrade-chip",
-   "arc-welder",
-   "armor-piercer"
-  ]
- },
- {
-  "name": "rivet-08",
-  "hero": "rivet",
-  "cols": 3,
-  "rows": 3,
-  "ids": [
-   "breach-charge",
-   "build-enforcer",
-   "call-turret",
-   "countermeasure-grid",
-   "drone-barrage",
-   "field-engineer",
-   "formation-strike",
-   "hardened-chassis",
-   "ion-lance"
-  ]
- },
- {
-  "name": "rivet-09",
-  "hero": "rivet",
-  "cols": 3,
-  "rows": 3,
-  "ids": [
-   "jumpstart",
-   "nanoswarm",
-   "patch-job",
-   "ping",
-   "plating",
-   "rapid-prototype",
-   "recompile",
-   "reinforce",
-   "relay-strike"
-  ]
- },
- {
-  "name": "rivet-10",
-  "hero": "rivet",
-  "cols": 3,
-  "rows": 3,
-  "ids": [
-   "repair-bot",
-   "salvage-bot",
-   "scrap-rush",
-   "scrap-storm",
-   "scrap-volley",
-   "spare-parts",
-   "static-field",
-   "sync-pulse",
-   "tandem-strike"
-  ]
- },
- {
-  "name": "rivet-11",
-  "hero": "rivet",
-  "cols": 3,
-  "rows": 3,
-  "ids": [
-   "weld-armor",
-   "deploy-drone",
-   "overclock"
+   "upgrade-chip"
   ]
  },
  {
@@ -589,62 +451,7 @@
   "ids": [
    "trail-of-blood",
    "whirling-maul",
-   "wounded-wrath",
-   "bared-teeth",
-   "blood-rush",
-   "bloodied-howl",
-   "bloodscent",
-   "bone-crack",
-   "bonepicker"
-  ]
- },
- {
-  "name": "kesh-09",
-  "hero": "kesh",
-  "cols": 3,
-  "rows": 3,
-  "ids": [
-   "burn-the-weak",
-   "call-gnashlings",
-   "feral-instinct",
-   "flesh-wound",
-   "guard-dog",
-   "heel",
-   "howl",
-   "lead-the-charge",
-   "maddened-lunge"
-  ]
- },
- {
-  "name": "kesh-10",
-  "hero": "kesh",
-  "cols": 3,
-  "rows": 3,
-  "ids": [
-   "marrow-suck",
-   "open-a-vein",
-   "pack-tactics",
-   "pain-ward",
-   "pound",
-   "primal-feast",
-   "rend",
-   "ripping-claws",
-   "scavenge"
-  ]
- },
- {
-  "name": "kesh-11",
-  "hero": "kesh",
-  "cols": 3,
-  "rows": 3,
-  "ids": [
-   "sic-em",
-   "thick-hide",
-   "throw-scraps",
-   "twin-fang",
-   "whet-the-fangs",
-   "blood-frenzy",
-   "savage-bite"
+   "wounded-wrath"
   ]
  },
  {
@@ -773,65 +580,7 @@
   "rows": 3,
   "ids": [
    "trick-of-the-light",
-   "tripwire-garrote",
-   "ambush",
-   "bated-breath",
-   "break-the-guard",
-   "cage",
-   "cheap-shot",
-   "cold-read",
-   "cripple"
-  ]
- },
- {
-  "name": "vesper-09",
-  "hero": "vesper",
-  "cols": 3,
-  "rows": 3,
-  "ids": [
-   "dark-study",
-   "discarded-hand",
-   "exploit-weakness",
-   "false-floor",
-   "fang-pit",
-   "hamstring",
-   "hollow-snare",
-   "low-blow",
-   "mark-prey"
-  ]
- },
- {
-  "name": "vesper-10",
-  "hero": "vesper",
-  "cols": 3,
-  "rows": 3,
-  "ids": [
-   "patient-blade",
-   "pressure-point",
-   "quick-study",
-   "read-the-room",
-   "shadow-cloak",
-   "slit-and-run",
-   "stalk",
-   "step-aside",
-   "tear-the-veil"
-  ]
- },
- {
-  "name": "vesper-11",
-  "hero": "vesper",
-  "cols": 3,
-  "rows": 3,
-  "ids": [
-   "snare-kit",
-   "trapline-rider",
-   "trip-line",
-   "twin-fangs",
-   "unmask",
-   "veil-dance",
-   "whisper-net",
-   "set-the-web",
-   "veil-strike"
+   "tripwire-garrote"
   ]
  },
  {
@@ -959,61 +708,7 @@
   "cols": 3,
   "rows": 3,
   "ids": [
-   "venom-fang",
-   "choking-haze",
-   "cold-open",
-   "cut-low",
-   "dart-throw",
-   "deadly-vial",
-   "ember-dose",
-   "hidden-blade",
-   "knife-fan"
-  ]
- },
- {
-  "name": "quill-09",
-  "hero": "quill",
-  "cols": 3,
-  "rows": 3,
-  "ids": [
-   "knife-volley",
-   "needle-jab",
-   "palmed-knives",
-   "poison-tip",
-   "poisoned-needle",
-   "quick-draw",
-   "quick-hands",
-   "rising-tempo",
-   "roll-clear"
-  ]
- },
- {
-  "name": "quill-10",
-  "hero": "quill",
-  "cols": 3,
-  "rows": 3,
-  "ids": [
-   "scatter-shot",
-   "scattered-vials",
-   "sleeve-flick",
-   "sleeve-knife",
-   "slow-poison",
-   "smoke-and-slip",
-   "tangle-wire",
-   "tumble",
-   "whetstone-pass"
-  ]
- },
- {
-  "name": "quill-11",
-  "hero": "quill",
-  "cols": 3,
-  "rows": 3,
-  "ids": [
-   "whirling-knives",
-   "withering-slash",
-   "quick-jab",
-   "slip-away"
+   "venom-fang"
   ]
  },
  {
@@ -1143,61 +838,7 @@
   "ids": [
    "tune-the-lattice",
    "void-dividend",
-   "chilled-focus",
-   "ice-shell",
-   "crystal-ward",
-   "ward-strike",
-   "bleed-the-void",
-   "cold-snap",
-   "echo-of-glyphs"
-  ]
- },
- {
-  "name": "ilvane-09",
-  "hero": "ilvane",
-  "cols": 3,
-  "rows": 3,
-  "ids": [
-   "hollow-strike",
-   "arc-flash",
-   "forked-current",
-   "frost-nova",
-   "frostglass",
-   "spark-cluster",
-   "crackling-orb",
-   "live-wire",
-   "glimmer"
-  ]
- },
- {
-  "name": "ilvane-10",
-  "hero": "ilvane",
-  "cols": 3,
-  "rows": 3,
-  "ids": [
-   "splinter-cast",
-   "rime-strike",
-   "umbra-glyph",
-   "silent-glyph",
-   "skim-the-weave",
-   "sweeping-ray",
-   "spark-lance",
-   "rune-barrage",
-   "rune-burst"
-  ]
- },
- {
-  "name": "ilvane-11",
-  "hero": "ilvane",
-  "cols": 3,
-  "rows": 3,
-  "ids": [
-   "glyph-guard",
-   "rune-recall",
-   "void-pulse",
-   "static-guard",
-   "spark-cast",
-   "twin-evocation"
+   "chilled-focus"
   ]
  },
  {
@@ -1317,68 +958,6 @@
    "worship",
    "wrathful-guard",
    "wreath-of-flame"
-  ]
- },
- {
-  "name": "sehra-08",
-  "hero": "sehra",
-  "cols": 3,
-  "rows": 3,
-  "ids": [
-   "angry-palm",
-   "ashen-fist",
-   "bowing-low",
-   "candle-vigil",
-   "centre-yourself",
-   "chanted-blow",
-   "crushing-palm",
-   "devout-strike",
-   "ember-jab"
-  ]
- },
- {
-  "name": "sehra-09",
-  "hero": "sehra",
-  "cols": 3,
-  "rows": 3,
-  "ids": [
-   "empty-fist",
-   "empty-vessel",
-   "flurry-of-palms",
-   "inner-sight",
-   "open-palm",
-   "pray",
-   "prostrate",
-   "quick-palms",
-   "quiet-strike"
-  ]
- },
- {
-  "name": "sehra-10",
-  "hero": "sehra",
-  "cols": 3,
-  "rows": 3,
-  "ids": [
-   "red-mist",
-   "rending-hands",
-   "settled-palms",
-   "shield-of-faith",
-   "sunlit-blade",
-   "thread-cutter",
-   "unburdened-guard",
-   "vigilance",
-   "war-breath"
-  ]
- },
- {
-  "name": "sehra-11",
-  "hero": "sehra",
-  "cols": 3,
-  "rows": 3,
-  "ids": [
-   "whispered-vow",
-   "kindle-fury",
-   "still-guard"
   ]
  },
  {
@@ -1507,61 +1086,7 @@
   "rows": 3,
   "ids": [
    "warm-anvil",
-   "orbit",
-   "star-barrier",
-   "astral-pulse",
-   "stellar-wind",
-   "sunsteel",
-   "blade-ward",
-   "crushing-light",
-   "sunstrike"
-  ]
- },
- {
-  "name": "astra-09",
-  "hero": "astra",
-  "cols": 3,
-  "rows": 3,
-  "ids": [
-   "faint-glow",
-   "forged-in-fury",
-   "starshield",
-   "gleam",
-   "grindstone",
-   "hone",
-   "honed-strike",
-   "humble",
-   "lodestar-strike"
-  ]
- },
- {
-  "name": "astra-10",
-  "hero": "astra",
-  "cols": 3,
-  "rows": 3,
-  "ids": [
-   "heavenly-might",
-   "starforged-blade",
-   "pale-beacon",
-   "quenching-strike",
-   "stargaze",
-   "ray-of-light",
-   "skybolt",
-   "spoils",
-   "temper-edge"
-  ]
- },
- {
-  "name": "astra-11",
-  "hero": "astra",
-  "cols": 3,
-  "rows": 3,
-  "ids": [
-   "whetstone",
-   "wishing-star",
-   "lumen-bolt",
-   "gather-light",
-   "meteor-jab"
+   "orbit"
   ]
  },
  {
@@ -1678,75 +1203,7 @@
    "toll-in-advance",
    "unquiet-rest",
    "veilpiercer",
-   "wake-the-ashes",
-   "bone-cairn",
-   "bone-chorus"
-  ]
- },
- {
-  "name": "mire-08",
-  "hero": "mire",
-  "cols": 3,
-  "rows": 3,
-  "ids": [
-   "bone-guard",
-   "bone-pile",
-   "bone-shard",
-   "bone-sift",
-   "burial-rites",
-   "burial-shroud",
-   "creeping-dread",
-   "creeping-end",
-   "crypt-recruit"
-  ]
- },
- {
-  "name": "mire-09",
-  "hero": "mire",
-  "cols": 3,
-  "rows": 3,
-  "ids": [
-   "dirge",
-   "ember-grasp",
-   "fatal-omen",
-   "gather-souls",
-   "ghost-light",
-   "grave-whisper",
-   "gravesight",
-   "gravesoul",
-   "grim-mending"
-  ]
- },
- {
-  "name": "mire-10",
-  "hero": "mire",
-  "cols": 3,
-  "rows": 3,
-  "ids": [
-   "last-rites",
-   "mark-of-ending",
-   "raise-thrall",
-   "rally-the-dead",
-   "rattle-the-bones",
-   "sepulchral-gaze",
-   "shared-marrow",
-   "thralls-cue",
-   "tithe-of-bone"
-  ]
- },
- {
-  "name": "mire-11",
-  "hero": "mire",
-  "cols": 3,
-  "rows": 3,
-  "ids": [
-   "tolling-bell",
-   "tomb-chill",
-   "tomb-feast",
-   "unleash-the-dead",
-   "withering-word",
-   "bone-ward",
-   "grave-touch"
+   "wake-the-ashes"
   ]
  },
  {
@@ -1863,69 +1320,7 @@
    "stained-glass",
    "steady-hands",
    "tin-can-alley",
-   "trolley-barricade",
-   "aim",
-   "barrel-roll"
-  ]
- },
- {
-  "name": "kp-08",
-  "hero": "kp",
-  "cols": 3,
-  "rows": 3,
-  "ids": [
-   "birdshot",
-   "broken-bottle",
-   "buckshot-shell",
-   "chaser",
-   "drunken-swing",
-   "glass-trap",
-   "hair-of-the-dog",
-   "liquid-courage",
-   "load-shells"
-  ]
- },
- {
-  "name": "kp-09",
-  "hero": "kp",
-  "cols": 3,
-  "rows": 3,
-  "ids": [
-   "old-twelve-gauge",
-   "pane-in-the-face",
-   "pistol-whip",
-   "powder-load",
-   "rack-the-slide",
-   "rock-salt",
-   "shard-toss",
-   "sheet-of-glass",
-   "shell-casing"
-  ]
- },
- {
-  "name": "kp-10",
-  "hero": "kp",
-  "cols": 3,
-  "rows": 3,
-  "ids": [
-   "shell-pocket",
-   "shell-shock",
-   "slug-round",
-   "sob-story",
-   "splinters",
-   "swig",
-   "window-pane",
-   "bottle-tripwire",
-   "hammer-swing"
-  ]
- },
- {
-  "name": "kp-11",
-  "hero": "kp",
-  "cols": 3,
-  "rows": 3,
-  "ids": [
-   "pane-up"
+   "trolley-barricade"
   ]
  }
 ]

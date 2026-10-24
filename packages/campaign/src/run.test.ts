@@ -1,8 +1,9 @@
 import { describe, expect, it } from 'vitest';
 import { applyAction, chooseAction, createCombat, seedRng, heroOf } from '@sr/combat';
-import { COMBAT_DB, RIFTWALKERS, type HeroId } from '@sr/content/v2';
+import { COMBAT_DB, RIFTWALKERS, encounter, type HeroId } from '@sr/content/v2';
 import {
   DECK_RULES,
+  FINAL_STAGE,
   RunError,
   availableNodes,
   bank,
@@ -17,6 +18,7 @@ import {
   duelPlan,
   enterNode,
   finishDuel,
+  floorsOf,
   generateStageMap,
   leaveMerchant,
   newRun,
@@ -24,6 +26,7 @@ import {
   offerCards,
   parseRun,
   reachableNodes,
+  realmOfStage,
   serializeRun,
   takeShrine,
   upgradable,
@@ -91,15 +94,39 @@ describe('stage maps', () => {
     expect(map.nodes.find((n) => n.kind === 'warden')?.enemyId).toBe('kron');
   });
 
-  it('the last stage is a Shrine or a Merchant, then Vorthax', () => {
-    const map = generateStageMap(seedRng('x'), 5, 'rift');
+  it('a run is three stages: seven floors and a Warden, twice, then the Rift of eight floors and Vorthax', () => {
+    expect(FINAL_STAGE).toBe(3);
+    const first = generateStageMap(seedRng('x'), 1, 'nexus');
+    expect(first.floors).toBe(floorsOf(1) + 1);
+    expect(first.nodes.find((n) => n.kind === 'warden')?.enemyId).toBe('kron');
+    const map = generateStageMap(seedRng('x'), FINAL_STAGE, 'rift', undefined, [
+      'umbral',
+      'wyldmaw',
+    ]);
+    expect(map.floors).toBe(floorsOf(FINAL_STAGE) + 1);
+    // the floor before the Warden is a Shrine and a Merchant
     expect(
       map.nodes
-        .filter((n) => n.floor === 1)
+        .filter((n) => n.floor === floorsOf(FINAL_STAGE))
         .map((n) => n.kind)
         .sort(),
     ).toEqual(['merchant', 'shrine']);
     expect(map.nodes.find((n) => n.kind === 'warden')?.enemyId).toBe('vorthax');
+    // its fights come only from the two realms the run has not visited
+    const realms = new Set(
+      map.nodes
+        .filter((n) => n.kind === 'duel' || n.kind === 'elite')
+        .map((n) => encounter(n.enemyId as string).realm),
+    );
+    for (const r of realms) expect(['umbral', 'wyldmaw']).toContain(r);
+  });
+
+  it('every run visits four realms: two as stages, two in the Rift', () => {
+    const run = newRun('maren', 'realms');
+    expect(new Set(run.stageRealms).size).toBe(4);
+    expect(realmOfStage(run, 1)).toBe(run.stageRealms[0]);
+    expect(realmOfStage(run, 2)).toBe(run.stageRealms[1]);
+    expect(realmOfStage(run, 3)).toBe('rift');
   });
 
   it('is deterministic per seed', () => {
@@ -148,10 +175,10 @@ describe('the run', () => {
     expect(e.difficulty).toBe('easy');
     expect(e.resolve).toBe(5);
     expect(e.shards).toBe(100);
-    // stage 1 is eased further by the stage ramp (80% HP, 85% damage)
+    // stage 1 is eased further by the stage ramp (82% HP, 86% damage)
     expect(duelPlan(enterNode(e, availableNodes(e)[0]!.id))).toMatchObject({
-      hpPct: 68,
-      dmgPct: 68,
+      hpPct: 70,
+      dmgPct: 69,
     });
     expect(newRun('maren', 'hard', 'hard').resolve).toBe(1);
     expect(parseRun(JSON.stringify({ ...e, difficulty: undefined }))?.difficulty).toBe('easy');
@@ -413,7 +440,7 @@ describe('the other rooms and the rules around them', () => {
     const el = base.map.nodes.find((n) => n.kind === 'elite');
     if (!el) return; // this seed's stage 1 has no elite
     const run: RunState = { ...base, hp: 40, phase: 'duel', at: el.id, context: { nodeId: el.id } };
-    expect(finishDuel(run, true, 40).hp).toBe(40 + Math.ceil(76 * 0.1));
+    expect(finishDuel(run, true, 40).hp).toBe(40 + Math.ceil(base.maxHp * 0.1));
     expect(finishDuel(run, false).resolve).toBe(0);
   });
 

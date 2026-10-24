@@ -4,9 +4,9 @@
 // rewards with skip, shrines (rest, upgrade, remove), the merchant, a small event, the Warden's Gift, Resolve, Bank and
 // Continue. Boons come later.
 
-import { nextInt, seedRng, shuffle } from '@sr/combat';
+import { nextInt, seedRng, shuffle, type RngState } from '@sr/combat';
 import { COMBAT_DB, RIFTWALKERS, V2_DECK_RULES, encounter, type HeroId } from '@sr/content/v2';
-import { CROSSED_MERCHANT_CHANCE, generateStageMap, reachableNodes } from './mapgen';
+import { CROSSED_MERCHANT_CHANCE, FINAL_STAGE, generateStageMap, reachableNodes } from './mapgen';
 
 export { CROSSED_MERCHANT_CHANCE };
 import { makeKits } from './kits';
@@ -87,24 +87,35 @@ export const DIFFICULTY: Record<
 };
 /**
  * Enemies grow tougher as a run goes deeper (percent of the difficulty's HP and damage), so Stage 1 is a gentle opening and
- * the Rift at Stage 5 is the real test. The deck, HP and Boons you have gathered grow too.
+ * the Rift at the last stage is the real test. The deck, HP and Boons you have gathered grow too.
  */
 export const STAGE_SCALE: Record<number, { hp: number; dmg: number }> = {
-  1: { hp: 80, dmg: 85 },
-  2: { hp: 95, dmg: 95 },
-  3: { hp: 110, dmg: 105 },
-  4: { hp: 120, dmg: 115 },
-  5: { hp: 130, dmg: 125 },
+  1: { hp: 82, dmg: 86 },
+  2: { hp: 98, dmg: 98 },
+  3: { hp: 114, dmg: 110 },
 };
 const stageScale = (stage: number): { hp: number; dmg: number } =>
-  STAGE_SCALE[Math.max(1, Math.min(5, stage))] ?? { hp: 100, dmg: 100 };
+  STAGE_SCALE[Math.max(1, Math.min(FINAL_STAGE, stage))] ?? { hp: 100, dmg: 100 };
 
 /** Fraction of max HP a shrine rest heals. */
 export const REST_HEAL = 0.35;
 
+/** Stages 1 and 2 are the first two realms of the run; the last stage is the Rift. */
 export function realmOfStage(run: Pick<RunState, 'stageRealms'>, stage: number): StageRealm {
-  if (stage <= 3) return run.stageRealms[stage - 1] as StageRealm;
-  return stage === 4 ? 'umbral' : 'rift';
+  if (stage < FINAL_STAGE) return run.stageRealms[stage - 1] as StageRealm;
+  return 'rift';
+}
+
+/** Where a stage's enemies come from: its own realm, or in the Rift the realms not yet visited (an old save has one left). */
+function enemyRealms(run: Pick<RunState, 'stageRealms'>, stage: number): StageRealm[] {
+  if (stage < FINAL_STAGE) return [realmOfStage(run, stage)];
+  const rest = run.stageRealms.slice(FINAL_STAGE - 1);
+  return rest.length > 0 ? rest : ['umbral'];
+}
+
+/** The realms a run visits, in a shuffled order. */
+function shuffledRealms(rng: RngState): StageRealm[] {
+  return shuffle(rng, ['aurelion', 'nexus', 'wyldmaw', 'umbral'] as StageRealm[]);
 }
 
 export function newRun(
@@ -114,7 +125,7 @@ export function newRun(
   luck: Luck = 'normal',
 ): RunState {
   const rng = seedRng(`run:${seed}`);
-  const stageRealms = shuffle(rng, ['aurelion', 'nexus', 'wyldmaw'] as StageRealm[]);
+  const stageRealms = shuffledRealms(rng);
   const map = generateStageMap(rng, 1, stageRealms[0] as StageRealm, hero);
   const rw = RIFTWALKERS[hero]; // throws on an unknown hero
   need(rw, `Unknown Riftwalker ${hero}`);
@@ -376,7 +387,7 @@ export function finishDuel(
     if (b?.shardsPerFight) r.shards += b.shardsPerFight;
   }
   let boonGained: string | undefined;
-  if (node.kind === 'elite' || (node.kind === 'warden' && r.stage < 5)) {
+  if (node.kind === 'elite' || (node.kind === 'warden' && r.stage < FINAL_STAGE)) {
     const id = offerBoon(r.rng, r.boons, 'elite');
     if (id) {
       gainBoon(r, id);
@@ -389,7 +400,7 @@ export function finishDuel(
     // a Warden falls: you catch your breath
     heal(r, r.maxHp * 0.3);
     r.resolve = Math.min(r.maxResolve, r.resolve + 1);
-    if (r.stage === 5) {
+    if (r.stage >= FINAL_STAGE) {
       r.phase = 'loopCleared';
       return r;
     }
@@ -464,7 +475,13 @@ export function nextStage(run: RunState): RunState {
   need(run.phase === 'stageClear', 'The stage is not cleared yet');
   const r = clone(run);
   r.stage += 1;
-  r.map = generateStageMap(r.rng, r.stage, realmOfStage(r, r.stage), r.character);
+  r.map = generateStageMap(
+    r.rng,
+    r.stage,
+    realmOfStage(r, r.stage),
+    r.character,
+    enemyRealms(r, r.stage),
+  );
   r.cleared = [];
   r.at = null;
   openPrelude(r, 'stage');
@@ -766,7 +783,7 @@ export function continueLoop(run: RunState): RunState {
   // a loop cleared is a loop rested: back to full HP for the next one
   heal(r, r.maxHp);
   r.stage = 1;
-  r.stageRealms = shuffle(r.rng, ['aurelion', 'nexus', 'wyldmaw'] as StageRealm[]);
+  r.stageRealms = shuffledRealms(r.rng);
   r.map = generateStageMap(r.rng, 1, r.stageRealms[0] as StageRealm, r.character);
   r.cleared = [];
   r.at = null;

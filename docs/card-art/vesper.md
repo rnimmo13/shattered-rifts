@@ -1,6 +1,6 @@
 # Card art: Vesper Nightlace
 
-99 cards in 11 sheets. Anchor: attach the Valeria image to every prompt.
+65 cards in 8 sheets. Anchor: attach the Valeria image to every prompt.
 
 ## Sheet `vesper-01` (legendary first)
 
@@ -173,7 +173,7 @@ NEGATIVE: text, letters, numbers, captions, labels, UI, card frames, borders, wa
 ## Sheet `vesper-08` (uncommon first)
 
 ```
-Create ONE ILLUSTRATION SHEET of 9 separate card-art pictures for a card-battler game (like Slay the Spire), 2400 x 1800, no text.
+Create ONE ILLUSTRATION SHEET of 2 separate card-art pictures for a card-battler game (like Slay the Spire), 2400 x 1800, no text.
 The attached image (Valeria) is the STYLE ANCHOR: match its cartoon game-art rendering exactly (bold clean dark outlines, flat saturated colours, simple cel shading, crisp polished shapes). Do NOT copy her character; paint scenes and objects. Backgrounds are softer and less contrasty than the main subject so the subject pops.
 
 LAYOUT (critical): a clean 3 x 3 grid of landscape 4:3 pictures (each about 760 x 570), separated by thin flat dark navy (#14181f) gutters, with NO frames, NO borders, NO captions, NO text, NO numbers. Every picture fills its own cell completely; nothing crosses a gutter. Each picture has ONE clear subject in the middle that reads at thumbnail size, a simple scene behind it, light from the upper left.
@@ -183,85 +183,6 @@ WORLD: Vesper, a masked trapper with teal glow. A masked trapper. No companions:
 THE PICTURES, in this exact order, left to right, top row first. Use the card name and its effect only to decide what to draw; never write the name:
 1. "Trick of the Light" (skill): Foresee 2. Draw 1 card. If discarded: Gain 6 Barrier. Show a defensive or tactical moment, calm and clear.
 2. "Tripwire Garrote" (snare): When you or an ally is attacked: Deal 7 damage to the attacker. Apply 2 Exposed to the attacker. Show a hidden trap seen as it is being set, ominous.
-3. "Ambush" (attack): Deal 14 damage. Apply 1 Exposed. Show a dynamic strike caught mid-action.
-4. "Bated Breath" (skill): Gain 8 Barrier. Hold. Show a defensive or tactical moment, calm and clear.
-5. "Break the Guard" (skill): Apply 3 Brittle. Apply 1 Exposed. Show a defensive or tactical moment, calm and clear.
-6. "Cage" (snare): When an enemy gains Barrier: Deal 10 damage to the attacker. Apply 1 Faltering to the attacker. Show a hidden trap seen as it is being set, ominous.
-7. "Cheap Shot" (attack): Deal 8 damage. Apply 1 Faltering. Show a dynamic strike caught mid-action.
-8. "Cold Read" (skill): Foresee 4. Show a defensive or tactical moment, calm and clear.
-9. "Cripple" (skill): Apply 2 Faltering. Apply 2 Exposed. Gain 5 Barrier. Show a defensive or tactical moment, calm and clear.
-
-NEGATIVE: text, letters, numbers, captions, labels, UI, card frames, borders, watermark, logo, photorealism, gritty texture, nudity, characters facing away.
-```
-
-## Sheet `vesper-09` (common first)
-
-```
-Create ONE ILLUSTRATION SHEET of 9 separate card-art pictures for a card-battler game (like Slay the Spire), 2400 x 1800, no text.
-The attached image (Valeria) is the STYLE ANCHOR: match its cartoon game-art rendering exactly (bold clean dark outlines, flat saturated colours, simple cel shading, crisp polished shapes). Do NOT copy her character; paint scenes and objects. Backgrounds are softer and less contrasty than the main subject so the subject pops.
-
-LAYOUT (critical): a clean 3 x 3 grid of landscape 4:3 pictures (each about 760 x 570), separated by thin flat dark navy (#14181f) gutters, with NO frames, NO borders, NO captions, NO text, NO numbers. Every picture fills its own cell completely; nothing crosses a gutter. Each picture has ONE clear subject in the middle that reads at thumbnail size, a simple scene behind it, light from the upper left.
-
-WORLD: Vesper, a masked trapper with teal glow. A masked trapper. No companions: Traps, Exposed and patience. World: a moonlit ballroom of shadows: violet and teal mist, masks, mirrors, candelabras.
-
-THE PICTURES, in this exact order, left to right, top row first. Use the card name and its effect only to decide what to draw; never write the name:
-1. "Dark Study" (skill): Draw 2 cards. Show a defensive or tactical moment, calm and clear.
-2. "Discarded Hand" (skill): Discard 2 cards. Draw 2 cards. Show a defensive or tactical moment, calm and clear.
-3. "Exploit Weakness" (attack): Deal 5 (+3 per Exposed on the target) damage. Show a dynamic strike caught mid-action.
-4. "False Floor" (snare): When the enemy summons: Deal 12 damage to the attacker. Apply 2 Exposed to the attacker. Show a hidden trap seen as it is being set, ominous.
-5. "Fang Pit" (snare): When you lose 3+ HP at once: Deal 5 damage to ALL enemies. Apply 1 Exposed to ALL enemies. Show a hidden trap seen as it is being set, ominous.
-6. "Hamstring" (attack): Deal 6 damage. Apply 2 Exposed. Show a dynamic strike caught mid-action.
-7. "Hollow Trap" (snare): When you or an ally is attacked: Deal 8 damage to the attacker. Apply 1 Faltering to the attacker. Show a hidden trap seen as it is being set, ominous.
-8. "Low Blow" (attack): Deal 3 damage. Apply 1 Faltering. Show a dynamic strike caught mid-action.
-9. "Mark Prey" (skill): Apply 2 Exposed. Show a defensive or tactical moment, calm and clear.
-
-NEGATIVE: text, letters, numbers, captions, labels, UI, card frames, borders, watermark, logo, photorealism, gritty texture, nudity, characters facing away.
-```
-
-## Sheet `vesper-10` (common first)
-
-```
-Create ONE ILLUSTRATION SHEET of 9 separate card-art pictures for a card-battler game (like Slay the Spire), 2400 x 1800, no text.
-The attached image (Valeria) is the STYLE ANCHOR: match its cartoon game-art rendering exactly (bold clean dark outlines, flat saturated colours, simple cel shading, crisp polished shapes). Do NOT copy her character; paint scenes and objects. Backgrounds are softer and less contrasty than the main subject so the subject pops.
-
-LAYOUT (critical): a clean 3 x 3 grid of landscape 4:3 pictures (each about 760 x 570), separated by thin flat dark navy (#14181f) gutters, with NO frames, NO borders, NO captions, NO text, NO numbers. Every picture fills its own cell completely; nothing crosses a gutter. Each picture has ONE clear subject in the middle that reads at thumbnail size, a simple scene behind it, light from the upper left.
-
-WORLD: Vesper, a masked trapper with teal glow. A masked trapper. No companions: Traps, Exposed and patience. World: a moonlit ballroom of shadows: violet and teal mist, masks, mirrors, candelabras.
-
-THE PICTURES, in this exact order, left to right, top row first. Use the card name and its effect only to decide what to draw; never write the name:
-1. "Patient Blade" (attack): Deal 9 damage. Hold. Show a dynamic strike caught mid-action.
-2. "Pressure Point" (attack): Deal 4 (+2 per Exposed on the target) damage. Apply 1 Exposed. Show a dynamic strike caught mid-action.
-3. "Quick Study" (skill): Draw 1 card. Discard 1 card. Show a defensive or tactical moment, calm and clear.
-4. "Read the Room" (skill): Foresee 3. Draw 1 card. Gain 4 Barrier. Show a defensive or tactical moment, calm and clear.
-5. "Shadow Cloak" (skill): Gain 6 Barrier. Draw 1 card. Show a defensive or tactical moment, calm and clear.
-6. "Slit and Run" (attack): Deal 7 damage. Gain 4 Barrier. Apply 1 Exposed. Show a dynamic strike caught mid-action.
-7. "Stalk" (attack): Deal 15 damage. Next turn, draw 2 extra cards. Show a dynamic strike caught mid-action.
-8. "Step Aside" (skill): Gain 5 Barrier. Next turn, draw 1 extra card. Show a defensive or tactical moment, calm and clear.
-9. "Tear the Veil" (skill): Apply 1 Exposed to ALL enemies. Draw 1 card. Show a defensive or tactical moment, calm and clear.
-
-NEGATIVE: text, letters, numbers, captions, labels, UI, card frames, borders, watermark, logo, photorealism, gritty texture, nudity, characters facing away.
-```
-
-## Sheet `vesper-11` (common first)
-
-```
-Create ONE ILLUSTRATION SHEET of 9 separate card-art pictures for a card-battler game (like Slay the Spire), 2400 x 1800, no text.
-The attached image (Valeria) is the STYLE ANCHOR: match its cartoon game-art rendering exactly (bold clean dark outlines, flat saturated colours, simple cel shading, crisp polished shapes). Do NOT copy her character; paint scenes and objects. Backgrounds are softer and less contrasty than the main subject so the subject pops.
-
-LAYOUT (critical): a clean 3 x 3 grid of landscape 4:3 pictures (each about 760 x 570), separated by thin flat dark navy (#14181f) gutters, with NO frames, NO borders, NO captions, NO text, NO numbers. Every picture fills its own cell completely; nothing crosses a gutter. Each picture has ONE clear subject in the middle that reads at thumbnail size, a simple scene behind it, light from the upper left.
-
-WORLD: Vesper, a masked trapper with teal glow. A masked trapper. No companions: Traps, Exposed and patience. World: a moonlit ballroom of shadows: violet and teal mist, masks, mirrors, candelabras.
-
-THE PICTURES, in this exact order, left to right, top row first. Use the card name and its effect only to decide what to draw; never write the name:
-1. "Trap Kit" (skill): Add 2 Trip Lines to your hand. Consume. Show a defensive or tactical moment, calm and clear.
-2. "Trapline Rider" (attack): Deal 4 damage, 1 more time per Trap set. Show a dynamic strike caught mid-action.
-3. "Trip Line" (snare): When you or an ally is attacked: Deal 6 damage to the attacker. Show a hidden trap seen as it is being set, ominous.
-4. "Twin Fangs" (attack): Deal 4 damage 2 times. Apply 1 Exposed. Show a dynamic strike caught mid-action.
-5. "Unmask" (skill): Apply 2 Exposed to ALL enemies. Show a defensive or tactical moment, calm and clear.
-6. "Veil Dance" (skill): Apply 1 Faltering to ALL enemies. Gain 5 Barrier. Show a defensive or tactical moment, calm and clear.
-7. "Whisper Net" (snare): When the enemy summons: Deal 8 damage to the attacker. Apply 1 Stunned to the attacker. Show a hidden trap seen as it is being set, ominous.
-8. "Set the Web" (snare): When you or an ally is attacked: Deal 8 damage to the attacker. Apply 2 Exposed to the attacker. Show a hidden trap seen as it is being set, ominous.
-9. "Veil Strike" (attack): Deal 6 damage. Apply 1 Exposed. Show a dynamic strike caught mid-action.
 
 NEGATIVE: text, letters, numbers, captions, labels, UI, card frames, borders, watermark, logo, photorealism, gritty texture, nudity, characters facing away.
 ```
