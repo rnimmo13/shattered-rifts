@@ -15,6 +15,9 @@ export { decideOrder, seatsFor, type Arrival, type Order } from './order';
 export { Match, other, setupFor, type Accepted, type Outcome, type Refused } from './match';
 export {
   bankInto,
+  runOf,
+  oneEach,
+  RUN_PREFIX,
   cleanDeck,
   cleanVault,
   dropFrom,

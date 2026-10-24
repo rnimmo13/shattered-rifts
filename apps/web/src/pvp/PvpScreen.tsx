@@ -22,7 +22,7 @@ import { VaultCode, type Online } from './VaultCode';
 import { AccountBox } from './AccountBox';
 import { MID_RUN_SAVES } from '../run/deckSave';
 import { RarityTally } from './DeckReport';
-import { dateLabel, heroName, tierLabel } from './deckLayout';
+import { dateLabel, heroName, progressLabel } from './deckLayout';
 import './decks.css';
 import { syncVault, vaultKey, whoAmI, type Me } from './vaultSync';
 import './pvp.css';
@@ -218,7 +218,7 @@ export default function PvpScreen() {
             <HeroIcon hero={d.hero} size={36} />
             <span>
               <b>
-                {heroName(d.hero)} · {tierLabel(d)}
+                {heroName(d.hero)} · {progressLabel(d.tier, d.stage)}
               </b>
               <small>
                 {dateLabel(d.bankedAt)} · {d.deck.length} cards

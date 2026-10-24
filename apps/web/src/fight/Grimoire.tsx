@@ -4,6 +4,7 @@
 import { useMemo, useState } from 'react';
 import type { CardDef } from '@sr/combat';
 import { COMBAT_DB } from '@sr/content/v2';
+import { HeroIcon } from '../ui/HeroIcon';
 import { CardHover, type Anchor } from './CardHover';
 import { FightCard } from './FightCard';
 import { bookLayout, useWidth, type GrimoireCard } from './grimoireData';
@@ -23,8 +24,8 @@ export function Grimoire(props: {
   emptyText?: string;
 }) {
   const [rootRef, width] = useWidth();
-  const layout = bookLayout(width, props.cols, props.spread);
-  const { rows = 2 } = props;
+  const layout = bookLayout(width, props.cols, props.spread, true);
+  const rows = props.rows ?? layout.rows;
   const cardWidth = props.cardWidth ?? layout.cardWidth;
   const cols = props.cols ?? layout.cols;
   const spread = props.spread ?? layout.spread;
@@ -39,6 +40,7 @@ export function Grimoire(props: {
             upgraded: c.def.id.endsWith('+'),
           })),
         ),
+        'rarity',
       ),
     [props.cards],
   );
@@ -52,7 +54,7 @@ export function Grimoire(props: {
   const [hover, setHover] = useState<{ def: CardDef; at: Anchor } | null>(null);
 
   const shown = tab === 'all' ? entries : entries.filter((e) => tabOf(e.def) === tab);
-  const pages = useMemo(() => paginate(shown, cols * rows), [shown, cols, rows]);
+  const pages = useMemo(() => paginate(shown, cols * rows, true), [shown, cols, rows]);
   const spreads = Math.max(1, Math.ceil(pages.length / spread));
   const at = Math.min(leaf, spreads - 1);
   const visible = pages.slice(at * spread, at * spread + spread);
@@ -102,7 +104,14 @@ export function Grimoire(props: {
             {visible.map((p, i) => (
               <section key={i} className="grim__page">
                 <h4 className="grim__pagehead">
-                  {[p.heroes.join(' · '), p.lane].filter(Boolean).join(' · ') || 'Cards'}
+                  {p.heroIds.map((h) => (
+                    <HeroIcon key={h} hero={h} size={26} />
+                  ))}
+                  <span>
+                    {p.heroes.length !== 1 && p.heroes.length !== 2
+                      ? 'By rarity'
+                      : [p.heroes.join(' · '), p.lane].filter(Boolean).join(' · ') || 'Cards'}
+                  </span>
                 </h4>
                 <ul
                   className="grim__cards"

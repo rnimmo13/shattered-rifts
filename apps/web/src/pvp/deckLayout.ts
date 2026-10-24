@@ -72,10 +72,11 @@ export function progressLabel(tier: number, stage?: number): string {
 }
 
 /** "Rift Tier 2", or for a copy taken mid-run "Rift Tier 1, after stage 1" / "Rift Tier 2, at the start". */
-export function tierLabel(d: Pick<VaultDeck, 'id' | 'tier'>): string {
-  const stage = /:s(\d)$/.exec(d.id)?.[1];
-  if (stage === undefined) return `Rift Tier ${d.tier}`;
-  return stage === '0'
+export function tierLabel(d: Pick<VaultDeck, 'id' | 'tier'> & { stage?: number }): string {
+  // (decks saved by older builds carried the stage in their id)
+  const stage = d.stage ?? Number(/:s(\d)$/.exec(d.id)?.[1] ?? 3);
+  if (stage >= 3) return `Rift Tier ${d.tier}`;
+  return stage === 0
     ? `Rift Tier ${d.tier}, at the start`
     : `Rift Tier ${d.tier}, after stage ${stage}`;
 }

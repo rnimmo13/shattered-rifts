@@ -6,6 +6,7 @@ import {
   cleanVault,
   mergeVaults,
   normaliseCode,
+  runOf,
   VAULT_CODE_ALPHABET,
   VAULT_CODE_LENGTH,
   type VaultDeck,
@@ -163,7 +164,8 @@ export async function syncVault(code: Key, local: readonly VaultDeck[]): Promise
   let r = await remoteVault.list(code);
   if (!r.ok) return { ok: false, error: r.error, decks: [...local] };
   for (const d of local) {
-    if (r.decks.some((x) => x.id === d.id)) continue;
+    // already there, unless this is a newer save of the run than the server's
+    if (r.decks.some((x) => runOf(x.id) === runOf(d.id) && x.bankedAt >= d.bankedAt)) continue;
     const next = await remoteVault.bank(code, d);
     if (next.ok) r = next;
     else if (next.error === 'full') {
@@ -174,6 +176,8 @@ export async function syncVault(code: Key, local: readonly VaultDeck[]): Promise
   const server = r.decks;
   // everything fitted: the two lists are now one. Otherwise the server is full of other decks, so the browser's list stands
   // (nothing is lost on either side) and the caller is told it is not all online.
-  const complete = local.every((d) => server.some((x) => x.id === d.id));
+  const complete = local.every((d) =>
+    server.some((x) => runOf(x.id) === runOf(d.id) && x.bankedAt >= d.bankedAt),
+  );
   return { ok: true, complete, decks: complete ? mergeVaults(local, server) : [...local] };
 }

@@ -103,10 +103,13 @@ export class Vault extends DurableObject<Env> {
       const deck = cleanDeck(body['deck']);
       if (!deck) return json({ ok: false, error: 'bad-deck' }, 400);
       const replaceId = typeof body['replaceId'] === 'string' ? body['replaceId'] : undefined;
-      const result = bankInto(this.list(), deck, replaceId);
+      const before = this.list();
+      const result = bankInto(before, deck, replaceId);
       if (!result.ok) return json({ ok: false, error: 'full', decks: result.list }, 409);
       if (!result.already) {
-        if (replaceId !== undefined) this.remove(replaceId);
+        // whatever the new list no longer holds (the deck this one replaces, or a deck given up) goes
+        const keep = new Set(result.list.map((x) => x.id));
+        for (const old of before) if (!keep.has(old.id)) this.remove(old.id);
         this.put(deck);
       }
       return json({ ok: true, decks: this.list() });

@@ -8,7 +8,7 @@ import { CardHover, type Anchor } from '../fight/CardHover';
 import { FightCard } from '../fight/FightCard';
 import { BoonChip } from '../fight/BoonChip';
 import { HeroIcon } from '../ui/HeroIcon';
-import { dateLabel, heroName, rarityCounts, reportCards, tierLabel } from './deckLayout';
+import { dateLabel, heroName, progressLabel, rarityCounts, reportCards } from './deckLayout';
 import type { VaultDeck } from './vault';
 
 export const CARD_WIDTH = 112;
@@ -38,7 +38,8 @@ export function DeckReport(props: { deck: VaultDeck; onRemove?: () => void }) {
         <div className="deckrep__who">
           <b>{heroName(deck.hero)}</b>
           <span>
-            {tierLabel(deck)} · {dateLabel(deck.bankedAt)} · {deck.deck.length} cards
+            {progressLabel(deck.tier, deck.stage)} · {dateLabel(deck.bankedAt)} · {deck.deck.length}{' '}
+            cards
           </span>
         </div>
         <RarityTally deck={deck.deck} />

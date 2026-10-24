@@ -129,13 +129,28 @@ export function tabCards(cards: readonly CatalogCard[], tab: string): CatalogCar
   return sortCards(cards.filter((c) => tabOf(c.def) === tab));
 }
 
-/** Book order: character, then rarity (basic to legendary), cost, name. */
-export function sortCards(cards: readonly CatalogCard[]): CatalogCard[] {
+/**
+ * Book order: character, lane, then rarity (basic to legendary), cost, name. With `by: 'rarity'` the rarest come first across every
+ * character (then character, cost, name), so a page is a run of cards with no sections.
+ */
+export function sortCards(
+  cards: readonly CatalogCard[],
+  by: 'book' | 'rarity' = 'book',
+): CatalogCard[] {
   const heroOrder = Object.keys(RIFTWALKERS);
   const heroRank = (p: PoolKey): number => {
     const i = heroOrder.indexOf(p);
     return i >= 0 ? i : heroOrder.length + ['neutral', 'wardens', 'tokens', 'other'].indexOf(p);
   };
+  const rank = (c: CatalogCard): number => RARITY_RANK[c.def.rarity ?? 'common'] ?? 1;
+  if (by === 'rarity')
+    return [...cards].sort(
+      (a, b) =>
+        rank(b) - rank(a) ||
+        heroRank(a.pool) - heroRank(b.pool) ||
+        a.def.cost - b.def.cost ||
+        a.def.name.localeCompare(b.def.name),
+    );
   return [...cards].sort(
     (a, b) =>
       heroRank(a.pool) - heroRank(b.pool) ||
@@ -153,8 +168,20 @@ export function sortCards(cards: readonly CatalogCard[]): CatalogCard[] {
 export function paginate(
   cards: readonly CatalogCard[],
   perPage: number,
-): { cards: CatalogCard[]; heroes: string[]; lane?: string }[] {
-  const pages: { cards: CatalogCard[]; heroes: string[]; lane?: string }[] = [];
+  /** fill every page to the brim, whatever the character or lane (the heading then lists the characters on the page) */
+  packed = false,
+): { cards: CatalogCard[]; heroes: string[]; heroIds: string[]; lane?: string }[] {
+  const pages: { cards: CatalogCard[]; heroes: string[]; heroIds: string[]; lane?: string }[] = [];
+  if (packed) {
+    const names = RIFTWALKERS as Record<string, { hero: { name: string } }>;
+    for (let k = 0; k < cards.length; k += perPage) {
+      const slice = cards.slice(k, k + perPage);
+      const heroIds = [...new Set(slice.map((c) => c.pool))].filter((p) => Object.hasOwn(names, p));
+      const heroes = heroIds.map((p) => names[p]?.hero.name ?? p);
+      pages.push({ cards: slice, heroes, heroIds });
+    }
+    return pages;
+  }
   const keyOf = (c: CatalogCard): string => `${c.pool}|${laneOf(c.def.id) ?? ''}`;
   let i = 0;
   while (i < cards.length) {
@@ -171,6 +198,7 @@ export function paginate(
       pages.push({
         cards: slice,
         heroes: hero ? [hero] : [],
+        heroIds: hero ? [first.pool] : [],
         ...(hero && lane !== undefined ? { lane: laneName(first.pool as HeroId, lane) } : {}),
       });
     }

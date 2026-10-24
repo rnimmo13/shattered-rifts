@@ -13,6 +13,7 @@ import {
   deckFromStage,
   deckSnapshot,
   loadVault,
+  runOf,
   saveVault,
 } from '../pvp/vault';
 import { syncVault, vaultKey, whoAmI } from '../pvp/vaultSync';
@@ -47,15 +48,20 @@ export async function saveForArena(run: RunState): Promise<string> {
       : at === 'now'
         ? deckSnapshot(run, Date.now())
         : deckFromStage(run, Date.now(), at);
-  const r = bankInto(loadVault(), deck);
+  const before = loadVault();
+  // one run keeps one saved deck: saving again replaces the earlier save
+  const replaced = before.some((x) => runOf(x.id) === runOf(deck.id));
+  const r = bankInto(before, deck);
   if (!r.ok)
     return `Your Vault is full (${VAULT_SLOTS} decks). Remove one on the Saved decks page (from the home page) first, then save.`;
   saveVault(r.list);
   if (r.already) return 'This deck is already in your Vault.';
-  // the online copy follows; the deck is saved in this browser either way
+  // the online copy follows (the server replaces the run's earlier save too); the deck is saved in this browser either way
   await whoAmI();
   const online = await syncVault(vaultKey(), r.list);
-  return online.ok
-    ? 'Saved to your Vault. You can play it in the Arena, and your run carries on.'
-    : 'Saved in this browser. It will be saved online when you open the Arena.';
+  if (!online.ok || !online.complete)
+    return 'Saved in this browser. It will be saved online when you open the Arena.';
+  return replaced
+    ? 'Updated your saved deck for this run. Your run carries on.'
+    : 'Saved to your Vault. You can play it in the Arena, and your run carries on.';
 }

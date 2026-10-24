@@ -23,15 +23,41 @@ export type Banked =
   | { ok: true; list: VaultDeck[]; already: boolean }
   | { ok: false; reason: 'full'; list: VaultDeck[] };
 
-/** Put a deck in the Vault. A deck already there (same id) is left as it is; a full Vault says so unless `replaceId` names a deck to give up. */
+/**
+ * The run a deck came from. A deck's id is its run's seed; decks saved by older builds had the Rift Tier (and stage) added
+ * (`seed:t2`, `seed:t1:s1`), which are the same run.
+ */
+export const runOf = (id: string): string =>
+  id.startsWith(RUN_PREFIX) ? id : RUN_PREFIX + id.replace(/:t\d+(?::.*)?$/, '');
+
+/** New ids are this plus the run's seed, so a seed that happens to contain `:t5` is never mistaken for an older id's tier suffix. */
+export const RUN_PREFIX = 'r~';
+
+const sameDeck = (a: VaultDeck, b: VaultDeck): boolean =>
+  a.id === b.id &&
+  a.hero === b.hero &&
+  a.tier === b.tier &&
+  a.stage === b.stage &&
+  a.deck.length === b.deck.length &&
+  a.deck.every((c, i) => c === b.deck[i]) &&
+  a.boons.length === b.boons.length &&
+  a.boons.every((c, i) => c === b.boons[i]);
+
+/**
+ * Put a deck in the Vault. One run keeps one deck: saving the same run again replaces its earlier save (as it stood then) rather than
+ * adding a second one. The same deck again is left as it is; a full Vault says so unless `replaceId` names a deck to give up.
+ */
 export function bankInto(list: readonly VaultDeck[], d: VaultDeck, replaceId?: string): Banked {
-  if (list.some((x) => x.id === d.id)) return { ok: true, list: [...list], already: true };
-  if (replaceId !== undefined) {
-    const without = list.filter((x) => x.id !== replaceId);
-    if (without.length < VAULT_SLOTS) return { ok: true, list: [...without, d], already: false };
-  }
-  if (list.length >= VAULT_SLOTS) return { ok: false, reason: 'full', list: [...list] };
-  return { ok: true, list: [...list, d], already: false };
+  const earlier = list.filter((x) => runOf(x.id) === runOf(d.id));
+  const [only] = earlier;
+  if (earlier.length === 1 && only && sameDeck(only, d))
+    return { ok: true, list: [...list], already: true };
+  // an older copy of the run never replaces a newer one (a device that was offline, or an old tab)
+  if (earlier.some((x) => x.bankedAt > d.bankedAt))
+    return { ok: true, list: [...list], already: true };
+  const rest = list.filter((x) => runOf(x.id) !== runOf(d.id) && x.id !== replaceId);
+  if (rest.length >= VAULT_SLOTS) return { ok: false, reason: 'full', list: [...list] };
+  return { ok: true, list: [...rest, d], already: false };
 }
 
 export function dropFrom(list: readonly VaultDeck[], id: string): VaultDeck[] {
@@ -85,19 +111,37 @@ export function cleanVault(raw: unknown): VaultDeck[] {
   const out: VaultDeck[] = [];
   for (const x of raw as unknown[]) {
     const d = cleanDeck(x);
-    if (d && !out.some((y) => y.id === d.id)) out.push(d);
+    if (d) out.push(d);
   }
-  return out.slice(0, VAULT_SLOTS);
+  return oneEach(out).slice(0, VAULT_SLOTS);
 }
 
-/** Merge two lists of the same player's decks: `first` wins, then whatever `second` adds, up to the slots. */
+/** One deck per run: of several saves of the same run (older builds kept one per tier or stage) the newest stays, in the place of the first. */
+export function oneEach(list: readonly VaultDeck[]): VaultDeck[] {
+  const out: VaultDeck[] = [];
+  for (const d of list) {
+    const i = out.findIndex((x) => runOf(x.id) === runOf(d.id));
+    const at = out[i];
+    if (!at) out.push(d);
+    else if (d.bankedAt > at.bankedAt) out[i] = d;
+  }
+  return out;
+}
+
+/** Merge two lists of the same player's decks: `first` leads, then whatever `second` adds, up to the slots; of two saves of one run the newer wins. */
 export function mergeVaults(
   first: readonly VaultDeck[],
   second: readonly VaultDeck[],
 ): VaultDeck[] {
-  const out = [...first];
-  for (const d of second)
-    if (out.length < VAULT_SLOTS && !out.some((x) => x.id === d.id)) out.push(d);
+  const kept = oneEach(first);
+  const out = [...kept];
+  for (const d of oneEach(second)) {
+    const i = out.findIndex((x) => runOf(x.id) === runOf(d.id));
+    const at = out[i];
+    if (at) {
+      if (d.bankedAt > at.bankedAt) out[i] = d;
+    } else if (out.length < VAULT_SLOTS) out.push(d);
+  }
   return out;
 }
 

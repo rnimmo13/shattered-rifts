@@ -34,6 +34,9 @@ export function useWidth(): [(el: HTMLElement | null) => void, number] {
 const PAGE_PAD = 64; // a page's side padding plus the book's edge, px
 const FLIPS = 150; // the two page-turn buttons and the cover, px
 const GAP = 14.4;
+/** a browsing book aims for cards about this wide, and no narrower than the minimum (px) */
+const DENSE_CARD = 150;
+const DENSE_MIN = 120;
 
 /** The smallest a card is allowed to be before the book turns into a single big page (px). */
 const MIN_COMFY = 150;
@@ -47,23 +50,40 @@ export function bookLayout(
   width: number,
   fixedCols?: number,
   fixedSpread?: 1 | 2,
-): { spread: 1 | 2; cols: number; cardWidth: number } {
-  if (width <= 0) return { spread: 1, cols: fixedCols ?? 3, cardWidth: 150 };
-  const cols = fixedCols ?? (width < 560 ? 2 : 3);
-  // two rows of cards (1.4 x as tall as wide, plus the page header and the book's edges) must fit in the window
-  const byHeight = Math.floor((window.innerHeight - 380) / 2.9);
-  const fit = (spread: 1 | 2): { spread: 1 | 2; cols: number; cardWidth: number } => {
+  /** a browsing book (the Card library, a pile): as many smaller cards as fit, in as many columns and rows as the window allows */
+  dense = false,
+): { spread: 1 | 2; cols: number; cardWidth: number; rows: number } {
+  if (width <= 0) return { spread: 1, cols: fixedCols ?? 3, cardWidth: 150, rows: 2 };
+  const fit = (spread: 1 | 2): { spread: 1 | 2; cols: number; cardWidth: number; rows: number } => {
     const perPage = (width - FLIPS) / spread - PAGE_PAD;
+    if (dense) {
+      const cols =
+        fixedCols ?? Math.max(2, Math.min(6, Math.round((perPage + GAP) / (DENSE_CARD + GAP))));
+      let cardWidth = Math.max(
+        DENSE_MIN,
+        Math.min(240, Math.floor((perPage - (cols - 1) * GAP) / cols)),
+      );
+      // the book's room in the window: at least two rows must fit, and more rows are added while they do
+      const room = window.innerHeight - 330;
+      const rowH = (w: number): number => w * 1.4 + GAP;
+      while (cardWidth > DENSE_MIN && 2 * rowH(cardWidth) > room) cardWidth -= 4;
+      const rows = Math.max(2, Math.min(5, Math.floor(room / rowH(cardWidth))));
+      return { spread, cols, cardWidth, rows };
+    }
+    const cols = fixedCols ?? (width < 560 ? 2 : 3);
+    // two rows of cards (1.4 x as tall as wide, plus the page header and the book's edges) must fit in the window
+    const byHeight = Math.floor((window.innerHeight - 380) / 2.9);
     const byWidth = Math.floor((perPage - (cols - 1) * GAP) / cols);
     return {
       spread,
       cols,
       cardWidth: Math.max(110, Math.min(240, byWidth, Math.max(150, byHeight))),
+      rows: 2,
     };
   };
   if (fixedSpread) return fit(fixedSpread);
   const two = fit(2);
-  return width >= 1000 && two.cardWidth >= MIN_COMFY ? two : fit(1);
+  return width >= 1000 && two.cardWidth >= (dense ? DENSE_MIN + 10 : MIN_COMFY) ? two : fit(1);
 }
 
 export interface GrimoireCard {

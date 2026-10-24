@@ -5,6 +5,10 @@ import type { RunState } from '@sr/campaign';
 import {
   bankInto,
   cleanVault,
+  runOf,
+  mergeVaults,
+  oneEach,
+  RUN_PREFIX,
   dropFrom,
   safeId,
   VAULT_SLOTS,
@@ -14,7 +18,16 @@ import {
 } from '@sr/pvp';
 import { heroName, tierLabel } from './deckLayout';
 
-export { bankInto, dropFrom, VAULT_SLOTS, type Banked, type VaultDeck };
+export {
+  bankInto,
+  dropFrom,
+  mergeVaults,
+  oneEach,
+  runOf,
+  VAULT_SLOTS,
+  type Banked,
+  type VaultDeck,
+};
 const KEY = 'sr-vault-v1';
 
 /** The deck a banked run leaves in the Vault. */
@@ -24,7 +37,7 @@ export function deckFromRun(
 ): VaultDeck {
   return {
     // the id is also a key on the server, so keep to the characters it accepts (a typed seed can hold anything)
-    id: safeId(`${run.seed}:t${run.tier}`),
+    id: safeId(RUN_PREFIX + run.seed),
     hero: run.character,
     tier: run.tier,
     // (a cleared tier is all 3 stages; the mid-run copies below say where they were taken)
@@ -43,33 +56,21 @@ export function stagesCleared(run: Pick<RunState, 'phase' | 'stage'>): number {
   return Math.min(3, Math.max(0, n));
 }
 
-/** TEST BUILD ONLY: a copy of the deck taken after stage `after` (0 = the start of the tier; see run/deckSave.ts). It has its own id, so it never clashes with the Bank at the end. */
+/** TEST BUILD ONLY: a copy of the deck taken after stage `after` (0 = the start of the tier; see run/deckSave.ts). Like every save, it replaces the run's earlier one. */
 export function deckFromStage(
   run: Pick<RunState, 'seed' | 'tier' | 'character' | 'deck' | 'boons'>,
   now: number,
   after: number,
 ): VaultDeck {
-  return {
-    ...deckFromRun(run, now),
-    stage: after,
-    id: safeId(`${run.seed}:t${run.tier}:s${after}`),
-  };
+  return { ...deckFromRun(run, now), stage: after };
 }
 
-/** TEST BUILD ONLY: a copy of the deck as it is right now, at any point. The id follows the deck's contents, so saving the same deck twice is one entry. */
+/** TEST BUILD ONLY: a copy of the deck as it is right now, at any point. */
 export function deckSnapshot(
   run: Pick<RunState, 'seed' | 'tier' | 'phase' | 'stage' | 'character' | 'deck' | 'boons'>,
   now: number,
 ): VaultDeck {
-  let h = 5381;
-  for (const ch of `${run.deck.join(',')}|${run.boons.join(',')}`)
-    h = (h * 33 + ch.charCodeAt(0)) >>> 0;
-  const stage = stagesCleared(run);
-  return {
-    ...deckFromRun(run, now),
-    stage,
-    id: safeId(`${run.seed}:t${run.tier}:n${run.stage}:${h.toString(36)}`),
-  };
+  return { ...deckFromRun(run, now), stage: stagesCleared(run) };
 }
 
 /** What a PvP match is told about a deck. */

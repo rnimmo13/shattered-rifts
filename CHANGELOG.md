@@ -5,6 +5,9 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **One saved deck per run:** saving a run again replaces its earlier save instead of adding a second. Saved decks show Tier and Stage progress.
+- **Card library:** the book shows many more cards at once, in one run sorted by rarity (rarest first) with no lane sections; page headers show character icons, realm tabs stay on one row, and cards show their character icon again (bottom left).
+- **Saved decks page** is centred again.
 - **PvP match screen:** player names (with their campaign progress, like "Tier 1 · Stage 2/3") stand above both characters, the opponent's totems and Consumed count are visible, and your Traps no longer overlap your totems.
 - **Card art:** 139 more illustrated cards (batches 4 and 5, plus the first of batch 6), 535 in all.
 - **Test build: save a deck at any time.** The Save deck button now works in every part of a run, so the Arena and deck saving can be tried freely. This is temporary.

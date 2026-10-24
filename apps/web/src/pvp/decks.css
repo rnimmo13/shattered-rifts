@@ -1,4 +1,25 @@
 /* saved decks: the full report page and the short rows in the Arena */
+/* the page's own centring: the shared setup rules live in run.css, which this page does not load when opened directly */
+.decks {
+  justify-items: center;
+  text-align: center;
+}
+.decks > .setup__head,
+.decks > section {
+  width: 100%;
+  max-width: 78rem;
+}
+.decks .setup__head {
+  display: grid;
+  gap: 0.6rem;
+  justify-items: center;
+}
+.decks .setup__lead {
+  max-width: 46rem;
+}
+.decks .setup__back {
+  justify-self: start;
+}
 .decks__list {
   display: grid;
   gap: 1.2rem;

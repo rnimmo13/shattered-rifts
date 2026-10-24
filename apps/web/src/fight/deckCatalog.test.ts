@@ -10,6 +10,7 @@ import {
   paginate,
   poolOf,
   randomDeck,
+  sortCards,
   tabCards,
   tabOf,
 } from './deckCatalog';
@@ -75,7 +76,8 @@ describe('the practice deck builder', () => {
           state = applyAction(db, state, chooseAction(db, state)).state;
         fights++;
         // a defensive random deck can stall against a healing enemy for ever: that is a stalemate, not a hang
-        if (!state.winner) expect(state.turn, `${h} deck ${i} vs ${enc.id} stuck`).toBeGreaterThan(20);
+        if (!state.winner)
+          expect(state.turn, `${h} deck ${i} vs ${enc.id} stuck`).toBeGreaterThan(20);
       }
     }
     expect(fights).toBe(HEROES.length * 12);
@@ -112,6 +114,16 @@ describe('the grimoire', () => {
         last = k;
       }
     }
+  });
+
+  it('lists a whole book by rarity, rarest first, with every page full but the last', () => {
+    const sorted = sortCards(all, 'rarity');
+    const rank = ['basic', 'common', 'uncommon', 'rare', 'legendary', 'ancestral'];
+    const ranks = sorted.map((c) => rank.indexOf(c.def.rarity ?? 'common'));
+    for (let i = 1; i < ranks.length; i++) expect(ranks[i]).toBeLessThanOrEqual(ranks[i - 1] ?? 9);
+    const pages = paginate(sorted, 18, true);
+    expect(pages.slice(0, -1).every((p) => p.cards.length === 18)).toBe(true);
+    expect(pages.flatMap((p) => p.cards)).toHaveLength(all.length);
   });
 
   it('cuts pages and names their heroes', () => {
