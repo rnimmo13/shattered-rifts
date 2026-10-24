@@ -5,6 +5,7 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **0.17.0:** Valeria (the knight) with real art, trait balance (Plating, three-totem Ilvane, 1-Arcana Obsidia), The Hollow Crown.
 - **Valeria** (the knight, formerly Maren) has real art: a blonde paladin in blue and gold plate with a sunburst shield.
 - **The Glasswaste is now The Hollow Crown.**
 - **Maren is now Valeria**, a woman in dawn-gold plate with ash-pale hair. Her trait is 6 Barrier and a new Plating that keeps it through the first turns (instead of 2 Barrier every turn); Ilvane starts with three totems (Hawk, Bear, Splinter) instead of 2 Spirit; Obsidia gains 1 Arcana a turn instead of 3.
