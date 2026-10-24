@@ -5,6 +5,7 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **Cave stage:** fights in Umbral Veil and Gloomfen now take place in a hand-drawn cavern (rock walls, columns, glowing mushrooms, a cobbled cave floor) instead of the Rift arena.
 - **Sprite effects:** big hits (10+) on enemies burst in flames, big Barrier gains (12+) flash with frost, and summoned allies step out of an arcane portal. Rarity gems and card-back piles now use real art.
 - **0.13.0:** Balance pass for every Riftwalker, scene-based card art, rim-lit hero models.
 - **Balance pass for every Riftwalker:** Kesh, Scarlet, Ragnar and Dorian are stronger (more HP, better Feast, knife, Mantra and Fate cards), Ilvane and Vesper have less HP, and a few cards that were far ahead (Aegis Eternal, Radiance Eternal, Scrap Heap) are toned down. Eternal Rage and Final Round are better.

@@ -23,6 +23,7 @@ import {
 } from '@sr/combat';
 import { COMBAT_DB } from '@sr/content/v2';
 import { BattlefieldScene } from '../duel/scene/BattlefieldScene';
+import type { VenueId } from '../duel/scene/venue';
 import { loadEffectsMode, profileFor } from '../duel/effects';
 import { setBaseSpeed } from '../duel/scene/timescale';
 import { getSound, play, setSound } from '../audio/sfx';
@@ -102,6 +103,8 @@ export function FightView(props: {
   exitLabel?: string;
   /** extra controls beside the Leave button in the top bar (the campaign's View map) */
   topExtra?: React.ReactNode;
+  /** where the fight takes place (the Rift arena by default) */
+  venue?: VenueId;
 }) {
   const { db, setup } = props;
   const host = useRef<HTMLDivElement>(null);
@@ -411,7 +414,7 @@ export function FightView(props: {
     let created: BattlefieldScene | null = null;
     // real artwork (if any was supplied) is loaded before the first figure or card is drawn
     preloadArt()
-      .then(() => BattlefieldScene.create(el, profileFor(loadEffectsMode())))
+      .then(() => BattlefieldScene.create(el, profileFor(loadEffectsMode()), props.venue))
       .then((s) => {
         if (cancelled) {
           s.destroy();

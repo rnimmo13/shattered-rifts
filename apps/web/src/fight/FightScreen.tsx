@@ -15,6 +15,7 @@ import { countsOf, flatten } from './deckCatalog';
 import { getHero, rememberHero } from '../app/heroChoice';
 import { HeroIcon } from '../ui/HeroIcon';
 import { FightView } from './FightView';
+import { venueForRealm } from '../duel/scene/venue';
 import '../play/play.css';
 import '../duel/duel.css';
 
@@ -62,6 +63,7 @@ export default function FightScreen() {
         db={COMBAT_DB}
         setup={setup.cfg}
         title={setup.title}
+        venue={venueForRealm(encounter(enc).realm)}
         onExit={() => setSetup(null)}
         onDone={() => setSetup(null)}
       />

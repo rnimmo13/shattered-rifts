@@ -36,6 +36,7 @@ import {
   type RunState,
 } from '@sr/campaign';
 import { FightView } from '../fight/FightView';
+import { venueForRealm } from '../duel/scene/venue';
 import { BoonChip } from '../fight/BoonChip';
 import { getHero, rememberHero } from '../app/heroChoice';
 import { BoonToast } from './BoonToast';
@@ -235,6 +236,7 @@ export default function RunScreen() {
           )}
           <FightView
             key={plan.seed}
+            venue={venueForRealm(encounter(plan.encounterId).realm)}
             db={COMBAT_DB}
             setup={{
               seed: plan.seed,

@@ -13,6 +13,15 @@ import type { EffectsProfile } from '../effects';
 import { floorTop, rows } from './layout';
 import { Fighters } from '../../fight/Fighters';
 import {
+  caveColumns,
+  caveFloor,
+  caveProps,
+  caveWall,
+  loadVenueArt,
+  type VenueArt,
+  type VenueId,
+} from './venue';
+import {
   getBaseSpeed,
   hitStopFor,
   holdSlow,
@@ -23,6 +32,7 @@ import {
 import {
   FULL_W,
   PAD_X,
+  PAD_Y,
   floorTextures,
   fogTexture,
   glowTexture,
@@ -86,7 +96,7 @@ export class BattlefieldScene {
 
   private readonly sky!: Sprite;
   private readonly shards!: Sprite;
-  private readonly ruins!: Sprite;
+  private readonly ruins!: Container;
   private readonly fogFar!: TilingSprite;
   private readonly fogMid!: TilingSprite;
   private readonly fogNear!: TilingSprite;
@@ -97,6 +107,8 @@ export class BattlefieldScene {
   private readonly moteLayer = new Container();
   private readonly glowTex: Texture;
   private vignette!: Sprite;
+  /** where the backdrop's top edge sits (the cave wall starts above the stage) */
+  private skyY = 0;
 
   /** Child layers: the combatants stand in `units`, effects in `fx`. */
   readonly layers = {
@@ -133,7 +145,12 @@ export class BattlefieldScene {
     this.pointer.y = ((e.clientY - r.top) / Math.max(1, r.height)) * 2 - 1;
   };
 
-  static async create(host: HTMLElement, profile: EffectsProfile): Promise<BattlefieldScene> {
+  static async create(
+    host: HTMLElement,
+    profile: EffectsProfile,
+    venue: VenueId = 'rift',
+  ): Promise<BattlefieldScene> {
+    const art = await loadVenueArt(venue);
     const app = new Application();
     await app.init({
       background: hex(color.void),
@@ -143,10 +160,15 @@ export class BattlefieldScene {
       resolution: pickResolution(host.clientWidth, host.clientHeight, profile),
       powerPreference: 'high-performance',
     });
-    return new BattlefieldScene(app, host, profile);
+    return new BattlefieldScene(app, host, profile, art);
   }
 
-  private constructor(app: Application, host: HTMLElement, profile: EffectsProfile) {
+  private constructor(
+    app: Application,
+    host: HTMLElement,
+    profile: EffectsProfile,
+    art: VenueArt | null,
+  ) {
     this.app = app;
     this.host = host;
     this.profile = profile;
@@ -160,10 +182,13 @@ export class BattlefieldScene {
     this.glowTex = tex(glowTexture(128));
 
     // --- backdrop ---
-    this.sky = new Sprite(tex(skyTexture()));
-    this.shards = new Sprite(tex(shardsTexture()));
-    this.ruins = new Sprite(tex(ruinsTexture()));
+    // (the cave swaps the sky for a rock wall, the shards for nothing and the ruins for columns)
+    this.sky = new Sprite(art ? tex(caveWall(art)) : tex(skyTexture()));
+    this.shards = new Sprite(art ? Texture.EMPTY : tex(shardsTexture()));
+    this.ruins = art ? caveColumns(art, 360) : new Sprite(tex(ruinsTexture()));
     this.sky.x = -PAD_X;
+    if (art) this.skyY = -PAD_Y;
+    this.sky.y = this.skyY;
     this.shards.x = -PAD_X;
     this.ruins.x = -PAD_X;
     this.ruins.y = RUINS_Y;
@@ -178,6 +203,7 @@ export class BattlefieldScene {
     const floor = new Sprite(tex(ft.floor));
     floor.position.set(ft.originX, ft.originY);
     floor.scale.set(ft.scale);
+    if (art) floor.texture = tex(caveFloor(art, ft.floor.width, ft.floor.height, 2));
     this.world.addChild(floor);
 
     // a pool of violet light along the Rift line
@@ -199,6 +225,8 @@ export class BattlefieldScene {
     this.riftCrack.scale.set(ft.scale);
     this.riftCrack.blendMode = 'add';
     this.world.addChild(this.branchCracks, this.riftCrack);
+
+    if (art) this.world.addChild(caveProps(art, this.glowTex));
 
     // --- the combatants ---
     this.world.addChild(this.layers.units, this.layers.fx);
@@ -379,7 +407,7 @@ export class BattlefieldScene {
       this.parallax.y += (this.pointer.y - this.parallax.y) * Math.min(1, dt * 2.4);
       const px = this.parallax.x * p.parallax;
       const py = this.parallax.y * p.parallax;
-      this.sky.position.set(-PAD_X - px * 14, -py * 6);
+      this.sky.position.set(-PAD_X - px * 14, this.skyY - py * 6);
       this.ruins.position.set(-PAD_X - px * 30, RUINS_Y - py * 3);
     }
 
