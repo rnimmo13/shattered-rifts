@@ -7,7 +7,6 @@ import {
   entryFor,
   labelOf,
   parseVault,
-  starterDecks,
   VAULT_SLOTS,
   type VaultDeck,
 } from './vault';
@@ -52,10 +51,8 @@ describe('the Vault', () => {
     expect(e.deck).toEqual(RIFTWALKERS.maren.starter);
   });
 
-  it('offers every Riftwalker a starting deck to test with', () => {
-    const s = starterDecks();
-    expect(s).toHaveLength(Object.keys(RIFTWALKERS).length);
-    expect(labelOf(s[0] as VaultDeck)).toContain('starting deck');
+  it('names a deck by its Riftwalker and Rift Tier', () => {
+    expect(labelOf(deckFromRun(run('a', 3), 1))).toBe('Valeria: Rift Tier 3');
   });
 
   it('reads back what it saved, and drops anything that is no longer a legal deck', () => {

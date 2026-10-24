@@ -37,25 +37,12 @@ export function entryFor(d: VaultDeck, name: string): Entry {
   return { name, hero: d.hero, deck: [...d.deck], tier: d.tier };
 }
 
-/** Each Riftwalker's starting deck, always available so a match can be tested before anyone has cleared a run. */
-export function starterDecks(): VaultDeck[] {
-  return (Object.keys(RIFTWALKERS) as HeroId[]).map((h) => ({
-    id: `starter:${h}`,
-    hero: h,
-    tier: 1,
-    deck: [...RIFTWALKERS[h].starter],
-    bankedAt: 0,
-  }));
-}
-
-export const isStarter = (d: VaultDeck): boolean => d.id.startsWith('starter:');
-
 /** A readable name for a deck. */
 export function labelOf(d: VaultDeck): string {
   const name = Object.hasOwn(RIFTWALKERS, d.hero)
     ? RIFTWALKERS[d.hero as HeroId].hero.name
     : d.hero;
-  return isStarter(d) ? `${name}: starting deck` : `${name}: Rift Tier ${d.tier}`;
+  return `${name}: Rift Tier ${d.tier}`;
 }
 
 /** Parse what was saved; anything that is no longer a legal deck is dropped rather than trusted. */

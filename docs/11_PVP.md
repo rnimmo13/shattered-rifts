@@ -5,7 +5,7 @@ First playable version (friends test). Two players, each with a banked deck, pla
 
 ## What a player does
 
-1. Clear a run and choose **Bank**: the deck goes into the **Vault** (5 slots; a full Vault asks which deck to give up). The Vault is kept in this browser and also on the server under a **Vault code** (see below). Or skip the run: every Riftwalker's starting deck is always offered, so a match can be tried at once.
+1. Clear a run and choose **Bank**: the deck goes into the **Vault** (5 slots; a full Vault asks which deck to give up). The Vault is kept in this browser and also on the server under a **Vault code** (see below). The Arena only offers banked decks: with an empty Vault the screen says so and points to a New Run (decision #167). To try a match without a run, use the Practice screen or `pnpm pvpsmoke`.
 2. Title screen → **Arena** (`#/arena`, also `#/pvp`). Pick a name and a deck.
 3. **Find a match** (the queue), **Make a room for a friend** (shows a 5-letter code to send), or **Join a room** (type a code).
 4. **Who goes first?** Both players are asked: *I will go first* or *I will go second (+10 HP)*. Different answers: everyone gets what they asked for. The same answer (or no answer in 20 s): the server flips a coin, and both players watch it spin and land on the portrait and name of whoever goes first.

@@ -1,7 +1,7 @@
 // #/pvp: duel another player with a banked deck. Pick a deck from your Vault (or a Riftwalker's starting deck, so a match can
 // be tried before anyone has cleared a run), then find a match from the queue or play a friend with a room code.
 
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { checkEntry } from '@sr/pvp';
 import { COMBAT_DB } from '@sr/content/v2';
 import { FightView } from '../fight/FightView';
@@ -20,11 +20,9 @@ import {
   VAULT_SLOTS,
   dropFrom,
   entryFor,
-  isStarter,
   labelOf,
   loadVault,
   saveVault,
-  starterDecks,
   type VaultDeck,
 } from './vault';
 import { ChoosePanel, CoinFlip } from './PvpParts';
@@ -68,8 +66,8 @@ export default function PvpScreen() {
   const [known, setKnown] = useState(false);
   /** the player changed the Vault by hand, so a sync still on its way must not overwrite it */
   const touched = useRef(false);
-  const starters = useMemo(starterDecks, []);
-  const decks = useMemo(() => [...vault, ...starters], [vault, starters]);
+  // only banked decks can be taken into the Arena
+  const decks = vault;
   const [deckId, setDeckId] = useState<string>(() => decks[0]?.id ?? '');
   const [name, setNameState] = useState(() => getName() || 'Riftwalker');
   const [code, setCode] = useState('');
@@ -224,13 +222,10 @@ export default function PvpScreen() {
             <HeroIcon hero={d.hero} size={36} />
             <span>
               <b>{labelOf(d)}</b>
-              <small>
-                {d.deck.length} cards
-                {isStarter(d) ? ' · for trying it out' : ' · banked'}
-              </small>
+              <small>{d.deck.length} cards · banked</small>
             </span>
           </button>
-          {!isStarter(d) && !busy && (
+          {!busy && (
             <button
               type="button"
               className="btn btn--small btn--ghost"
@@ -240,7 +235,7 @@ export default function PvpScreen() {
                 saveVault(next);
                 touched.current = true;
                 void whoAmI().then(() => remoteVault.drop(vaultKey(), d.id));
-                if (deckId === d.id) setDeckId(next[0]?.id ?? starters[0]?.id ?? '');
+                if (deckId === d.id) setDeckId(next[0]?.id ?? '');
               }}
             >
               <span>Remove</span>
@@ -329,41 +324,70 @@ export default function PvpScreen() {
               aria-label="Your name"
             />
           </label>
-          <h2 className="pvp__h">Choose a deck</h2>
-          {deckList}
-          {problem && <p className="pvp__error">{problem}</p>}
-          <div className="pvp__actions">
-            <button
-              className="btn btn--primary"
-              disabled={!entry || problem !== null}
-              onClick={() => begin('queue')}
-            >
-              <span>Find a match</span>
-            </button>
-            <button
-              className="btn"
-              disabled={!entry || problem !== null}
-              onClick={() => begin('create')}
-            >
-              <span>Make a room for a friend</span>
-            </button>
-            <span className="pvp__join">
-              <input
-                value={code}
-                placeholder="ROOM CODE"
-                maxLength={12}
-                onChange={(e) => setCode(e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, ''))}
-                aria-label="Room code"
-              />
-              <button
-                className="btn"
-                disabled={!entry || problem !== null || code.trim().length < 4}
-                onClick={() => begin('join')}
-              >
-                <span>Join a room</span>
-              </button>
-            </span>
-          </div>
+          {decks.length === 0 ? (
+            <section className="pvp__status pvp__nodecks" aria-live="polite">
+              {online === 'checking' ? (
+                <h2>Looking for your saved decks…</h2>
+              ) : (
+                <>
+                  <h2>You need a saved deck to play in the Arena</h2>
+                  <p>
+                    The Arena is played with decks you have built in the campaign. Win a run, choose{' '}
+                    <b>Bank</b> at the end, and that deck is yours to bring here. You keep it
+                    whether you win or lose a match.
+                  </p>
+                  <p>
+                    Banked decks on another device?{' '}
+                    {me.available && !me.signedIn ? 'Sign in below' : 'Use your Vault code below'}{' '}
+                    to load them.
+                  </p>
+                  <a className="btn btn--primary" href="#/run">
+                    <span>Start a New Run</span>
+                  </a>
+                </>
+              )}
+            </section>
+          ) : (
+            <>
+              <h2 className="pvp__h">Choose a deck</h2>
+              {deckList}
+              {problem && <p className="pvp__error">{problem}</p>}
+              <div className="pvp__actions">
+                <button
+                  className="btn btn--primary"
+                  disabled={!entry || problem !== null}
+                  onClick={() => begin('queue')}
+                >
+                  <span>Find a match</span>
+                </button>
+                <button
+                  className="btn"
+                  disabled={!entry || problem !== null}
+                  onClick={() => begin('create')}
+                >
+                  <span>Make a room for a friend</span>
+                </button>
+                <span className="pvp__join">
+                  <input
+                    value={code}
+                    placeholder="ROOM CODE"
+                    maxLength={12}
+                    onChange={(e) =>
+                      setCode(e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, ''))
+                    }
+                    aria-label="Room code"
+                  />
+                  <button
+                    className="btn"
+                    disabled={!entry || problem !== null || code.trim().length < 4}
+                    onClick={() => begin('join')}
+                  >
+                    <span>Join a room</span>
+                  </button>
+                </span>
+              </div>
+            </>
+          )}
           <AccountBox
             me={me}
             onSignedOut={() => {
@@ -385,7 +409,7 @@ export default function PvpScreen() {
                 setVault(decks);
                 saveVault(decks);
                 setOnline(complete ? 'saved' : 'partial');
-                setDeckId(decks[0]?.id ?? starters[0]?.id ?? '');
+                setDeckId(decks[0]?.id ?? '');
               }}
             />
           )}
