@@ -3,6 +3,8 @@
 // effects layer for glows, drawn on the same 420x560 cut-out (feet on the bottom edge) the other figures use, so they drop
 // straight into the fight screen. Real art (art/manifest.json) still wins over these.
 
+import { realFigure } from './assets';
+
 type G = CanvasRenderingContext2D;
 const W = 420;
 const H = 560;
@@ -2535,7 +2537,8 @@ const cache = new Map<string, HTMLCanvasElement>();
 export function heroProp(
   id: string,
 ): { canvas: HTMLCanvasElement; x: number; y: number } | undefined {
-  if (id !== 'astra') return undefined;
+  // her real figure already holds the blade, so the floating copy is only for the painted stand-in
+  if (id !== 'astra' || realFigure('hero:astra')) return undefined;
   const canvas = obsidianBlade();
   return canvas ? { canvas, x: 372, y: 250 } : undefined;
 }

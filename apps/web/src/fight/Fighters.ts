@@ -7,6 +7,19 @@ import { gsap } from 'gsap';
 import { color, ease, hex } from '../design/tokens';
 import type { EffectsProfile } from '../duel/effects';
 import { loadSpriteFx, playSpriteFx, type FxName } from './spriteFx';
+import type { AttackSpec } from './attackStyles';
+import {
+  burst,
+  clawMarks,
+  orb,
+  puff,
+  ring,
+  slashArc,
+  streak,
+  thrownBlade,
+  type FxCtx,
+  type Pt,
+} from './attackFx';
 
 export type FighterSide = 'a' | 'b';
 
@@ -37,6 +50,8 @@ export interface FighterSpec {
   canvas: HTMLCanvasElement;
   /** figure height in stage px */
   height: number;
+  /** how its attacks look (a slash, a shot, a spell...): presentation only */
+  attack: AttackSpec;
   /** something that floats beside the figure while `on` (a blade in her hand): a cut-out and where it hovers, in figure pixels */
   prop?: { canvas: HTMLCanvasElement; x: number; y: number; on: boolean };
 }
@@ -66,6 +81,15 @@ export interface FighterHost {
   profile: () => EffectsProfile;
   sound: (name: string) => void;
 }
+
+/** Melee timings per style (before the 1.5x speed-up): the pull-back, the rush, the lean angle and a jump for heavy blows. */
+const MELEE = {
+  lunge: { back: 24, wind: 0.16, rush: 0.12, tilt: 0, lift: 0 },
+  slash: { back: 30, wind: 0.2, rush: 0.12, tilt: 0.3, lift: 0 },
+  stab: { back: 14, wind: 0.1, rush: 0.08, tilt: 0.06, lift: 0 },
+  claw: { back: 22, wind: 0.14, rush: 0.1, tilt: 0.14, lift: -8 },
+  smash: { back: 20, wind: 0.34, rush: 0.14, tilt: 0.24, lift: -46 },
+};
 
 export class Fighters {
   private readonly all = new Map<string, Fighter>();
@@ -252,14 +276,22 @@ export class Fighters {
   private remove(id: string): void {
     const f = this.all.get(id);
     if (!f) return;
-    gsap.killTweensOf([f.root, f.body, f.body.scale, f.sprite, f.flash, ...(f.prop ? [f.prop] : [])]);
+    gsap.killTweensOf([
+      f.root,
+      f.body,
+      f.body.position,
+      f.body.scale,
+      f.sprite,
+      f.flash,
+      ...(f.prop ? [f.prop] : []),
+    ]);
     f.root.destroy({ children: true });
     this.all.delete(id);
   }
 
   // --- animation -------------------------------------------------------------------------------------------
 
-  /** Lunge at a target (a figure, or a point in front of the attacker) and call `onHit` at contact. */
+  /** Attack the target in the figure's own style (a slash, a shot, a spell...) and call `onHit` at contact. */
   attack(id: string, targetId: string | null, onHit?: () => void): Promise<void> {
     const f = this.all.get(id);
     const t = targetId ? this.all.get(targetId) : undefined;
@@ -268,6 +300,30 @@ export class Fighters {
       return Promise.resolve();
     }
     const dir = f.spec.side === 'a' ? 1 : -1;
+    const kind = f.spec.attack.kind;
+    return kind === 'shoot' || kind === 'throw' || kind === 'cast'
+      ? this.rangedAttack(f, t, dir, onHit)
+      : this.meleeAttack(f, t, dir, onHit);
+  }
+
+  private fxCtx(): FxCtx {
+    return { parent: this.h.container, track: (a) => this.track(a) };
+  }
+
+  /** The middle of a figure's body, where effects land. */
+  private chest(f: Fighter, dx = 0): Pt {
+    return { x: f.root.x + dx, y: f.root.y - f.spec.height * 0.55 };
+  }
+
+  /** Rush at the target: the same beats for every melee style, with a different windup, pose and effect at contact. */
+  private meleeAttack(
+    f: Fighter,
+    t: Fighter | undefined,
+    dir: number,
+    onHit?: () => void,
+  ): Promise<void> {
+    const kind = f.spec.attack.kind;
+    const m = kind === 'slash' || kind === 'stab' || kind === 'claw' || kind === 'smash' ? MELEE[kind] : MELEE.lunge;
     const dx = t ? (t.root.x - f.root.x) * 0.78 : dir * 160;
     return new Promise((resolve) => {
       f.busy++;
@@ -283,12 +339,15 @@ export class Fighters {
       );
       tl.timeScale(1.5);
       this.h.sound('attackWindup');
-      tl.to(f.root, { x: f.x - dir * 24, duration: 0.16, ease: ease.out.gsap });
-      tl.to(f.body.scale, { x: 1.08, y: 0.9, duration: 0.16 }, '<');
-      tl.to(f.root, { x: f.x + dx, duration: 0.12, ease: ease.in.gsap });
-      tl.to(f.body.scale, { x: 0.92, y: 1.12, duration: 0.12 }, '<');
+      tl.to(f.root, { x: f.x - dir * m.back, duration: m.wind, ease: ease.out.gsap });
+      tl.to(f.body.scale, { x: 1.08, y: 0.9, duration: m.wind }, '<');
+      if (m.tilt) tl.to(f.body, { rotation: -dir * m.tilt, y: m.lift, duration: m.wind }, '<');
+      tl.to(f.root, { x: f.x + dx, duration: m.rush, ease: ease.in.gsap });
+      tl.to(f.body.scale, { x: 0.92, y: 1.12, duration: m.rush }, '<');
+      if (m.tilt) tl.to(f.body, { rotation: dir * m.tilt * 0.9, y: 0, duration: m.rush }, '<');
       tl.call(() => {
         this.h.sound('attackHit');
+        this.meleeFx(f, t, dir);
         onHit?.();
         resolve(); // the caller carries on at contact; the figure springs home on its own
       });
@@ -296,6 +355,99 @@ export class Fighters {
       tl.to({}, { duration: 0.05 });
       tl.to(f.root, { x: f.x, duration: 0.4, ease: ease.pop.gsap });
       tl.to(f.body.scale, { x: 1, y: 1, duration: 0.4, ease: ease.pop.gsap }, '<');
+      if (m.tilt) tl.to(f.body, { rotation: 0, y: 0, duration: 0.4, ease: ease.pop.gsap }, '<');
+    });
+  }
+
+  /** What appears on the target at the moment a melee blow lands. */
+  private meleeFx(f: Fighter, t: Fighter | undefined, dir: number): void {
+    const { kind, tint, hits = 1 } = f.spec.attack;
+    const c = this.fxCtx();
+    const at = t ? this.chest(t) : { x: f.root.x + dir * 70, y: f.root.y - f.spec.height * 0.55 };
+    const size = Math.max(70, Math.min(150, (t?.spec.height ?? 220) * 0.55));
+    switch (kind) {
+      case 'slash':
+        for (let i = 0; i < hits; i++)
+          slashArc(c, at, dir, tint, { tilt: i % 2 ? 0.55 : -0.55, size, delay: i * 0.09 });
+        burst(c, at, tint, 6, 40);
+        break;
+      case 'claw':
+        clawMarks(c, at, dir, tint);
+        burst(c, at, tint, 5, 34);
+        break;
+      case 'stab':
+        void streak(c, { x: at.x - dir * 120, y: at.y }, { x: at.x + dir * 20, y: at.y }, tint, 0.08, 5);
+        burst(c, at, tint, 6, 36);
+        break;
+      case 'smash':
+        ring(c, { x: t?.root.x ?? at.x, y: t?.root.y ?? f.root.y }, tint, 90, 26);
+        burst(c, at, tint, 9, 58);
+        break;
+      default:
+        break;
+    }
+  }
+
+  /** Shoot, throw or cast from where it stands: the figure keeps its place and the effect travels to the target. */
+  private rangedAttack(
+    f: Fighter,
+    t: Fighter | undefined,
+    dir: number,
+    onHit?: () => void,
+  ): Promise<void> {
+    const { kind, tint, hits = 1 } = f.spec.attack;
+    const from = this.chest(f, dir * f.width * 0.3);
+    const to = t ? this.chest(t) : { x: f.root.x + dir * 340, y: from.y };
+    const c = this.fxCtx();
+    const dist = Math.hypot(to.x - from.x, to.y - from.y);
+    return new Promise((resolve) => {
+      f.busy++;
+      const tl = this.track(gsap.timeline({ onComplete: () => void f.busy-- }));
+      tl.timeScale(1.5);
+      this.h.sound('attackWindup');
+      // the pose: a hold for a gun, a wind-up for a throw or a spell
+      if (kind === 'shoot') {
+        tl.to({}, { duration: 0.08 });
+      } else {
+        tl.to(f.body.scale, { x: 1.06, y: 0.94, duration: 0.14 });
+        tl.to(f.body, { rotation: -dir * 0.1, duration: 0.14 }, '<');
+        if (kind === 'cast') tl.call(() => puff(c, from, tint, 26, 0.2), [], '<');
+        if (kind === 'cast') tl.to({}, { duration: 0.12 });
+      }
+      tl.call(() => {
+        // the hit must always land (the fight waits on it), even if an effect fails to draw
+        const land = (): void => {
+          try {
+            this.h.sound('attackHit');
+            burst(c, to, tint, kind === 'shoot' ? 5 : 8, kind === 'shoot' ? 30 : 44);
+            if (kind === 'cast') ring(c, to, tint, 60, 60);
+          } finally {
+            onHit?.();
+            resolve();
+          }
+        };
+        try {
+          if (kind === 'shoot') {
+            puff(c, from, tint, 22, 0.12);
+            const runs: Promise<void>[] = [];
+            for (let i = 0; i < hits; i++) {
+              const off = (i - (hits - 1) / 2) * 15;
+              runs.push(streak(c, from, { x: to.x, y: to.y + off }, tint, Math.max(0.1, dist / 3800), 3));
+            }
+            void Promise.all(runs).then(land);
+          } else if (kind === 'throw') {
+            void thrownBlade(c, from, to, tint, Math.max(0.16, dist / 2400)).then(land);
+          } else {
+            void orb(c, from, to, tint, Math.max(0.2, dist / 1800)).then(land);
+          }
+        } catch {
+          land();
+        }
+      });
+      // a gun kicks back as it fires; a thrower or caster follows through
+      if (kind === 'shoot') tl.fromTo(f.body.position, { x: -dir * 16 }, { x: 0, duration: 0.25, ease: ease.out.gsap, immediateRender: false }, '<');
+      tl.to(f.body.scale, { x: 1, y: 1, duration: 0.2, ease: ease.pop.gsap }, '<');
+      tl.to(f.body, { rotation: 0, duration: 0.2, ease: ease.pop.gsap }, '<');
     });
   }
 

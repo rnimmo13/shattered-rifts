@@ -5,6 +5,9 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **Real hero art:** Rivet, Kesh, Vesper, Scarlet, Ilvane, Ragnar, Obsidia, Mire and KP now stand on the stage as illustrated figures (cut out by `tools/pack-heroes.ps1` from `assets-src/heroes`).
+- **0.18.0:** per-hero attack animations and real art for nine Riftwalkers.
+- **Attack animations:** every Riftwalker and most enemies attack in their own style (sword slashes, claw marks, stabs, heavy smashes, shotgun spreads, thrown knives, spell orbs). Cards and numbers are unchanged; Strike is still Strike.
 - **0.17.0:** Valeria (the knight) with real art, trait balance (Plating, three-totem Ilvane, 1-Arcana Obsidia), The Hollow Crown.
 - **Valeria** (the knight, formerly Maren) has real art: a blonde paladin in blue and gold plate with a sunburst shield.
 - **The Glasswaste is now The Hollow Crown.**

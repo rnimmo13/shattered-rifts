@@ -46,6 +46,7 @@ import { STATUS_INFO, UI_TIPS } from './info';
 import { loadSeen, loadTipsOn, nextTip, saveSeen, saveTipsOn } from './tips';
 import { AuraList, LumenCounter, RuneArc, SnareRow } from './SidePanel';
 import type { FighterSpec } from './Fighters';
+import { attackFor } from './attackStyles';
 import '../duel/duel.css';
 import '../play/play.css';
 import './fight.css';
@@ -87,6 +88,7 @@ function specsFrom(db: CombatDb, s: CombatState): FighterSpec[] {
         count: crowd,
         canvas: hero ? heroFigure(u.def) : unitFigure(u.def),
         height: unitHeight(db.units[u.def], u.kind) * (!hero && crowd > 5 ? 0.82 : 1),
+        attack: attackFor(u.def, hero),
         ...(prop ? { prop: { ...prop, on: holding } } : {}),
       });
     }
