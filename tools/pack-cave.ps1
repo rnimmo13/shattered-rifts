@@ -1,8 +1,9 @@
-# Cuts the CaveEnviro pack (assets-src, gitignored) into single sprites in apps/web/public/art/venues/cave.
+# Cuts the venue-cave pack (the CaveEnviro download) (assets-src, gitignored) into single sprites in apps/web/public/art/venues/cave.
 # Pack: "Hand Drawn" cave environment by wigglesmith79 (itch.io). Run: powershell -File tools/pack-cave.ps1
 Add-Type -AssemblyName System.Drawing
 $root = Split-Path $PSScriptRoot
-$src = Join-Path $root 'assets-src\CaveEnviro'
+$ErrorActionPreference = 'Stop'
+$src = Join-Path $root 'assets-src/venue-cave'
 $out = Join-Path $root 'apps\web\public\art\venues\cave'
 New-Item -ItemType Directory -Force $out | Out-Null
 Copy-Item (Join-Path $src '_infinant rock background.png') (Join-Path $out 'rock.png') -Force

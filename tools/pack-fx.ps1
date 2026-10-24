@@ -1,8 +1,9 @@
-# Packs the Magic-Pack effect strips (assets-src, gitignored) into small grid sheets + fx.json in apps/web/public/art/fx.
+# Packs the fx-magic-effects strips (assets-src, gitignored) into small grid sheets + fx.json in apps/web/public/art/fx.
 # Effects: Free Magic Effects by SovDigital (see CREDITS.md). Run: powershell -File tools/pack-fx.ps1
 Add-Type -AssemblyName System.Drawing
 $root = Split-Path $PSScriptRoot
-$src = Join-Path $root 'assets-src\Magic-Pack\effects'
+$ErrorActionPreference = 'Stop'
+$src = Join-Path $root 'assets-src/fx-magic-effects/effects'
 $out = Join-Path $root 'apps\web\public\art\fx'
 New-Item -ItemType Directory -Force $out | Out-Null
 $jobs = @(
