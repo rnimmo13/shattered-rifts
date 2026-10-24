@@ -10,6 +10,12 @@ interface Credit {
 /** Third-party art used in the game. Keep in step with CREDITS.md. */
 const CREDITS: Credit[] = [
   {
+    work: 'Monster illustrations (the Whisperer, Vorthax, Nyxara, Gorrmaw and other enemies)',
+    author: 'Tania Herrero',
+    url: 'https://tania-herrero.itch.io/',
+    note: 'Monstrous Menagerie #1, used under CC-BY 4.0 (cropped, resized and given a light rim).',
+  },
+  {
     work: 'Cave environment (stage backdrop, columns, mushrooms)',
     author: 'wigglesmith79',
     url: 'https://wigglesmith79.itch.io/hand-drawn',

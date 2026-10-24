@@ -1,0 +1,12 @@
+{
+    "figures":  {
+                    "unit:vorthax":  "figures/vorthax.png",
+                    "unit:gorrmaw":  "figures/gorrmaw.png",
+                    "unit:nyxara":  "figures/nyxara.png",
+                    "unit:whisperer":  "figures/whisperer.png",
+                    "unit:packmother-ruhn":  "figures/packmother-ruhn.png",
+                    "unit:feral-riftling":  "figures/feral-riftling.png",
+                    "unit:bloated-one":  "figures/bloated-one.png",
+                    "unit:choir-of-silence":  "figures/choir-of-silence.png"
+                }
+}
