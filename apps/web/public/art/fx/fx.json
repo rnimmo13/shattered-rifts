@@ -1,0 +1,46 @@
+{
+    "fire":  {
+                 "file":  "fire.png",
+                 "w":  243,
+                 "h":  272,
+                 "frames":  29,
+                 "cols":  6,
+                 "fps":  12,
+                 "px":  119.9,
+                 "py":  144.6,
+                 "hit":  16
+             },
+    "frost":  {
+                  "file":  "frost.png",
+                  "w":  239,
+                  "h":  203,
+                  "frames":  11,
+                  "cols":  6,
+                  "fps":  16,
+                  "px":  119.2,
+                  "py":  141.9,
+                  "hit":  -1
+              },
+    "portalOpen":  {
+                       "file":  "portalOpen.png",
+                       "w":  258,
+                       "h":  147,
+                       "frames":  8,
+                       "cols":  6,
+                       "fps":  12,
+                       "px":  128.8,
+                       "py":  73.6,
+                       "hit":  -1
+                   },
+    "portalClose":  {
+                        "file":  "portalClose.png",
+                        "w":  258,
+                        "h":  147,
+                        "frames":  8,
+                        "cols":  6,
+                        "fps":  12,
+                        "px":  128.8,
+                        "py":  73.6,
+                        "hit":  -1
+                    }
+}
