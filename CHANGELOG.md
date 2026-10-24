@@ -5,6 +5,7 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **Grimoire size:** the card book no longer flashes small when you pick a filter, and on medium-width windows it shows one big page instead of two cramped ones.
 - **0.22.0:** three-stage runs, no-overlap fighters, Devotion, copyable error screens, and the first batch of illustrated card art.
 - **Card art:** 99 illustrated cards (every Riftwalker's Legendary and best Rare cards, plus the Neutral Ancestral cards). Other cards keep their painted placeholders until their art arrives.
 - **Three stages, a bit longer:** a run is now three stages: two realms of seven floors and a Warden each, then the Rift, eight floors of the other two realms and Vorthax. (An older run saved past stage 3 can't be continued.)
