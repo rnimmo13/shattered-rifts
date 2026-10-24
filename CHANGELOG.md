@@ -5,6 +5,7 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **More card art:** 396 cards now have illustrated art (every Legendary, every Rare among the first batches, and many Uncommons). The rest keep their painted placeholders until their art arrives.
 - **Rivet's new look:** a rustier, gas-masked engineer with a bigger wrench (the drone is still drawn as his companion).
 - **Kesh's icon:** the hunter now wears a bold paw print (the thin bow was hard to read and she no longer carries one).
 - **Grimoire size:** the card book no longer flashes small when you pick a filter, and on medium-width windows it shows one big page instead of two cramped ones.

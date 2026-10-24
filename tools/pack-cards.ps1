@@ -1,6 +1,6 @@
 # Cuts AI card-art sheets (3 x 3 pictures on a dark navy background) into one picture per card.
 #   assets-src/cards/<sheet>.png     e.g. maren-01.png; which card is in which cell is in docs/card-art/sheets.json
-#   -> apps/web/public/art/cards/<cardId>.jpg (768 x 576) and the manifest (upgrades share their base card's art)
+#   -> apps/web/public/art/cards/<cardId>.jpg (640 x 480) and the manifest (upgrades share their base card's art)
 # The cells are found from the navy gutters between the pictures; if the gutters can not be found the sheet is cut into
 # equal cells with a small inset. Sheets that are not in assets-src/cards yet are skipped, and those cards keep their
 # painted placeholder. Run: powershell -File tools/pack-cards.ps1
@@ -83,12 +83,12 @@ foreach ($sh in $sheets) {
     $want = 4.0 / 3.0
     if ($sw / $sh2 -gt $want) { $nw = [int]($sh2 * $want); $sx += [int](($sw - $nw) / 2); $sw = $nw }
     else { $nh = [int]($sw / $want); $sy += [int](($sh2 - $nh) / 2); $sh2 = $nh }
-    $out = New-Object System.Drawing.Bitmap 768, 576
+    $out = New-Object System.Drawing.Bitmap 640, 480
     $g = [System.Drawing.Graphics]::FromImage($out)
     $g.InterpolationMode = 'HighQualityBicubic'; $g.PixelOffsetMode = 'HighQuality'
-    $g.DrawImage($img, (New-Object System.Drawing.Rectangle 0, 0, 768, 576), (New-Object System.Drawing.Rectangle $sx, $sy, $sw, $sh2), 'Pixel')
+    $g.DrawImage($img, (New-Object System.Drawing.Rectangle 0, 0, 640, 480), (New-Object System.Drawing.Rectangle $sx, $sy, $sw, $sh2), 'Pixel')
     $g.Dispose()
-    Save-Jpeg $out (Join-Path $outDir "$($sh.ids[$i]).jpg") 88
+    Save-Jpeg $out (Join-Path $outDir "$($sh.ids[$i]).jpg") 84
     $out.Dispose(); $done++
   }
   "$($sh.name): $($sh.ids.Count) cards ($mode)"
