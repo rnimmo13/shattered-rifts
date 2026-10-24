@@ -58,11 +58,11 @@ describe('legendary effects', () => {
     for (const u of s.sides.a.units) expect(u.statuses.might).toBeGreaterThanOrEqual(1);
   });
 
-  it('Dawn Incarnate deals twice your Barrier to everything', () => {
+  it('Dawn Incarnate raises 10 Barrier, then deals twice your Barrier to everything', () => {
     const s = play('maren', 'dawn-incarnate', (st) => {
       heroUnit(st).barrier = 10;
     });
-    for (const u of s.sides.b.units) expect(u.hp).toBe(200 - 20);
+    for (const u of s.sides.b.units) expect(u.hp).toBe(200 - 40);
   });
 
   it('Death Warrant takes three HP per Seared', () => {
@@ -103,7 +103,10 @@ describe('five Legendary cards per Riftwalker', () => {
       const own = Object.values(db.cards).filter(
         (c) => c.hero === hero && c.rarity === 'legendary' && !c.id.endsWith('+'),
       );
-      expect(own.map((c) => c.id), `${hero} legendaries`).toHaveLength(5);
+      expect(
+        own.map((c) => c.id),
+        `${hero} legendaries`,
+      ).toHaveLength(5);
       for (const c of own) {
         if (c.kind === 'snare') continue; // a Snare is set, not played for an effect
         play(hero, c.id);

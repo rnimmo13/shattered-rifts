@@ -77,7 +77,7 @@ export const MAREN: CardDef[] = [
   m('rare', 'immovable-oath', 'Immovable Oath', 'skill', 2, 'none', [barrier(30)], {
     exhaust: true,
   }),
-  m('rare', 'colossus-blow', 'Colossus Blow', 'attack', 3, 'foe', [
+  m('rare', 'colossus-blow', 'Colossus Blow', 'attack', 2, 'foe', [
     scaled(dmg(0), per('barrier', 1.5)),
   ]),
   m('rare', 'rampart-of-ages', 'Rampart of Ages', 'power', 2, 'none', [status('bracing', 2)]),
@@ -254,7 +254,7 @@ export const MAREN: CardDef[] = [
     'attack',
     3,
     'none',
-    [scaled(dmg(0, 'allFoes'), per('barrier', 2))],
+    [barrier(10), scaled(dmg(0, 'allFoes'), per('barrier', 2))],
     { exhaust: true },
   ),
   m('uncommon', 'steady-resolve', 'Steady Resolve', 'skill', 1, 'none', [barrier(5), manaNext(2)]),
@@ -291,7 +291,7 @@ export const MAREN: CardDef[] = [
     scaled(barrier(0), per('exhausted', 2)),
   ]),
   m('common', 'crushing-weight', 'Crushing Weight', 'attack', 2, 'foe', [
-    scaled(dmg(6), per('barrier', 0.5)),
+    scaled(dmg(9), per('barrier', 0.5)),
     status('exposed', 1, 'target'),
   ]),
   m('rare', 'endless-vigil', 'Endless Vigil', 'power', 2, 'none', [
@@ -364,7 +364,7 @@ export const MAREN: CardDef[] = [
     { exhaust: true },
   ),
   m('rare', 'radiance-eternal', 'Radiance Eternal', 'power', 3, 'none', [
-    on('turnStart', [heal(2)]),
+    on('turnStart', [heal(1)]),
     on('turnEnd', [status('shielded', 1)]),
   ]),
 ];

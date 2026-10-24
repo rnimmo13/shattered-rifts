@@ -137,7 +137,9 @@ export const ASTRA: CardDef[] = [
   ]),
 
   // --- Arcana ---
-  a('common', 'stargaze', 'Scrying Glass', 'skill', 0, 'none', [stars(1), draw(1)], { exhaust: true }),
+  a('common', 'stargaze', 'Scrying Glass', 'skill', 0, 'none', [stars(1), draw(1)], {
+    exhaust: true,
+  }),
   a('common', 'starshield', 'Glass Shield', 'skill', 1, 'none', [barrier(6), stars(1)]),
   a('common', 'ray-of-light', 'Searing Ray', 'attack', 1, 'foe', [dmg(9)]),
   a('common', 'gleam', 'Glint', 'attack', 1, 'foe', [dmg(7), scry(2)]),
@@ -184,7 +186,7 @@ export const ASTRA: CardDef[] = [
       starCost: 4,
     },
   ),
-  a('rare', 'dawn-of-stars', 'Wellspring', 'skill', 2, 'none', [stars(5), draw(2)], {
+  a('rare', 'dawn-of-stars', 'Wellspring', 'skill', 1, 'none', [stars(5), draw(2)], {
     exhaust: true,
   }),
 
@@ -245,7 +247,9 @@ export const ASTRA: CardDef[] = [
   a('uncommon', 'lyra', 'Sigil of Ward', 'power', 2, 'none', [
     on('turnEnd', [scaled(barrier(0), per('stars'))]),
   ]),
-  a('uncommon', 'draco', 'Sigil of Scorch', 'power', 2, 'none', [on('turnStart', [dmg(3, 'allFoes')])]),
+  a('uncommon', 'draco', 'Sigil of Scorch', 'power', 2, 'none', [
+    on('turnStart', [dmg(3, 'allFoes')]),
+  ]),
   a('uncommon', 'cygnus', 'Sigil of Glass', 'power', 1, 'none', [
     on('play', [barrier(2)], { filter: 'skill' }),
   ]),
@@ -264,14 +268,14 @@ export const ASTRA: CardDef[] = [
   ]),
   a('legendary', 'the-sovereigns-crown', 'The Obsidian Crown', 'power', 2, 'none', [
     forge('starforged-blade', 8),
-    on('turnStart', [forge('starforged-blade', 3), stars(1)]),
+    on('turnStart', [forge('starforged-blade', 3), stars(2)]),
   ]),
   a(
     'legendary',
     'birth-of-a-star',
     "Volcano's Birth",
     'skill',
-    3,
+    2,
     'none',
     [stars(8), draw(3), barrier(20)],
     { exhaust: true },
@@ -365,7 +369,9 @@ export const ASTRA: CardDef[] = [
     on('turnStart', [barrier(4), draw(1)]),
   ]),
   a('uncommon', 'polaris', 'Sigil of Ash', 'power', 1, 'none', [on('exhaust', [stars(1)])]),
-  a('uncommon', 'vega', 'Sigil of Ruin', 'power', 1, 'none', [on('discard', [dmg(4, 'randomFoe')])]),
+  a('uncommon', 'vega', 'Sigil of Ruin', 'power', 1, 'none', [
+    on('discard', [dmg(4, 'randomFoe')]),
+  ]),
   a('rare', 'andromeda', 'Sigil of the Storm', 'power', 2, 'none', [
     on('turnEnd', [scaled(dmg(0, 'allFoes'), per('stars', 0.5))]),
   ]),

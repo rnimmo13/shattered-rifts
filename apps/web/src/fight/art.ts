@@ -195,6 +195,9 @@ function emblemOf(c: CardDef, motif: Motif | undefined): string {
       // an attack is never pictured as a shield, whatever its name says
       return c.kind === 'attack' && (name === 'sunshield' || name === 'shield') ? 'sword' : name;
     }
+  // a "crystal" card (Mana, Arcana, Sharpen) belongs to whoever owns it: KP's are about his gun, Obsidia's about her glass
+  if (motif === 'crystal' && c.hero === 'kp') return 'shell';
+  if (motif === 'crystal' && c.hero === 'astra') return 'shard';
   return MOTIF_EMBLEM[motif ?? 'rune'];
 }
 
@@ -242,12 +245,55 @@ function motifOf(c: CardDef): Motif {
   return 'rune';
 }
 
+/** Each thing a card does, as a symbol, in the order the card does them (for the small second symbol on its art). */
+function effectEmblems(c: CardDef): string[] {
+  const out: string[] = [];
+  const ops = [...c.effects, ...c.effects.flatMap((o) => (o.op === 'power' ? o.ops : []))];
+  for (const o of ops) {
+    if (o.op === 'damage')
+      out.push((o.hits ?? 1) > 1 || o.scale?.into === 'hits' ? 'daggers' : 'sword');
+    else if (o.op === 'barrier') out.push('shield');
+    else if (o.op === 'draw' || o.op === 'scry' || o.op === 'discard') out.push('book');
+    else if (o.op === 'heal') out.push('heart');
+    else if (o.op === 'mana') out.push('bolt');
+    else if (o.op === 'summon' || o.op === 'revive') out.push('skull');
+    else if (o.op === 'channel' || o.op === 'evoke') out.push('rune');
+    else if (o.op === 'stars') out.push('star8');
+    // Sharpen: KP oils his shotgun, Obsidia hones her blade
+    else if (o.op === 'forge') out.push(c.hero === 'kp' ? 'shell' : 'sword');
+    else if (o.op === 'stance') out.push('fist');
+    else if (o.op === 'addCard')
+      out.push(
+        o.card === 'buckshot-shell' ? 'shell' : o.card === 'sleeve-knife' ? 'daggers' : 'book',
+      );
+    else if (o.op === 'status')
+      out.push(
+        o.status === 'might' || o.status === 'vigor'
+          ? 'fist'
+          : o.status === 'seared'
+            ? 'flame'
+            : o.status === 'doom'
+              ? 'hourglass'
+              : o.status === 'thorns'
+                ? 'thorn'
+                : o.status === 'shielded'
+                  ? 'sunshield'
+                  : ['exposed', 'faltering', 'stunned', 'brittle'].includes(o.status)
+                    ? 'eye'
+                    : 'moon',
+      );
+  }
+  return out;
+}
+
 /** The art window for a v2 card (a data URL), via the card-art painters. */
 export function cardArtV2(c: CardDef): string {
   const real = realCardArt(c.id);
   if (real) return real;
   const unit = c.effects.find((o) => o.op === 'summon');
   const summoned = unit && unit.op === 'summon' ? UNIT[base(unit.unit)]?.[0] : undefined;
+  const emblem = emblemOf(c, summoned ? undefined : motifOf(c));
+  const accent = summoned ? undefined : effectEmblems(c).find((e) => e !== emblem);
   const fake = {
     id: c.id.replace(/^(hi|lo)~/, '').replace(/\+$/, ''),
     name: c.name,
@@ -256,7 +302,9 @@ export function cardArtV2(c: CardDef): string {
     type: KIND_TYPE[c.kind],
     tribes: c.kind === 'summon' ? (REALM_TRIBES[c.realm ?? ''] ?? []) : [],
     ...(summoned ? { archetype: summoned } : { motif: motifOf(c) }),
-    emblem: emblemOf(c, summoned ? undefined : motifOf(c)),
+    emblem,
+    ...(accent ? { accent } : {}),
+    ...(c.hero ? { scene: c.hero } : {}),
     ...(c.hero && HERO_EMBLEM[c.hero] ? { seal: HERO_EMBLEM[c.hero] as string } : {}),
   } satisfies ArtCard;
   return cardArtUrl(fake);

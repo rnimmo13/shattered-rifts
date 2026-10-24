@@ -77,7 +77,10 @@ export const ILVANE: CardDef[] = [
 
   // --- Hawk ---
   i('common', 'crackling-orb', "Hawk's Dive", 'attack', 1, 'foe', [dmg(7), channel('spark')]),
-  i('common', 'arc-flash', 'Feather Storm', 'attack', 1, 'none', [dmg(4, 'allFoes'), channel('spark')]),
+  i('common', 'arc-flash', 'Feather Storm', 'attack', 1, 'none', [
+    dmg(4, 'allFoes'),
+    channel('spark'),
+  ]),
   i('common', 'spark-lance', 'Talon Lance', 'attack', 2, 'foe', [dmg(12), channel('spark')]),
   i('common', 'spark-cluster', 'Hawk Flock', 'skill', 2, 'none', [channel('spark', 2)]),
   i('common', 'static-guard', 'Wary Hawk', 'skill', 1, 'none', [barrier(5), channel('spark')]),
@@ -90,9 +93,7 @@ export const ILVANE: CardDef[] = [
   i('rare', 'glasswright', 'Woodcarver', 'power', 2, 'none', [
     on('turnStart', [channel('splinter')]),
   ]),
-  i('uncommon', 'glyph-lattice', 'Totem Row', 'skill', 1, 'none', [
-    { op: 'runeSlots', amount: 2 },
-  ]),
+  i('uncommon', 'glyph-lattice', 'Totem Row', 'skill', 1, 'none', [{ op: 'runeSlots', amount: 2 }]),
   i('uncommon', 'thundercall', 'Stormcall', 'power', 1, 'none', [
     on('play', [channel('spark')], { filter: 'power' }),
   ]),
@@ -134,7 +135,9 @@ export const ILVANE: CardDef[] = [
     dmg(7),
     scaled(draw(0), per('runes', 0.5)),
   ]),
-  i('rare', 'hyperbeam', 'Skyfall Talons', 'attack', 2, 'none', [dmg(24, 'allFoes')], { exhaust: true }),
+  i('rare', 'hyperbeam', 'Skyfall Talons', 'attack', 2, 'none', [dmg(24, 'allFoes')], {
+    exhaust: true,
+  }),
   i('rare', 'meteor-glyph', 'Meteor Totem', 'attack', 3, 'foe', [dmg(28), channel('prism', 2)]),
   i(
     'rare',
@@ -262,17 +265,14 @@ export const ILVANE: CardDef[] = [
   ]),
   i('rare', 'biased-weave', 'Biased Grain', 'power', 2, 'none', [
     status('resonance', 3),
-    on('turnStart', [lose(2)]),
+    on('turnStart', [lose(1)]),
   ]),
 
   // --- awaken glue ---
   i('common', 'rune-burst', 'Totem Burst', 'skill', 1, 'none', [evoke(), draw(1)]),
   i('common', 'glimmer', 'Owl Glint', 'skill', 1, 'none', [channel('prism')], { exhaust: true }),
   i('uncommon', 'prism-cut', 'Owl Cut', 'skill', 1, 'none', [channel('prism'), draw(1)]),
-  i('uncommon', 'harmonic-wave', 'Spirit Wave', 'attack', 2, 'none', [
-    dmg(8, 'allFoes'),
-    evoke(),
-  ]),
+  i('uncommon', 'harmonic-wave', 'Spirit Wave', 'attack', 2, 'none', [dmg(11, 'allFoes'), evoke()]),
   i(
     'uncommon',
     'many-voices',
@@ -341,10 +341,7 @@ export const ILVANE: CardDef[] = [
     dmg(6, 'target', 2),
     channel('spark'),
   ]),
-  i('rare', 'blazing-aperture', 'Blazing Eye', 'attack', 3, 'none', [
-    dmg(14, 'allFoes'),
-    evoke(3),
-  ]),
+  i('rare', 'blazing-aperture', 'Blazing Eye', 'attack', 3, 'none', [dmg(18, 'allFoes'), evoke(3)]),
   i(
     'uncommon',
     'static-snare',

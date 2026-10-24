@@ -37,9 +37,9 @@ const p = pool('kp', 'midden');
 
 export const LEGENDARIES: CardDef[] = [
   // --- Maren: Bulwark / Thorns / Sanctified ---
-  m('legendary', 'aegis-eternal', 'Aegis Eternal', 'power', 2, 'none', [
+  m('legendary', 'aegis-eternal', 'Aegis Eternal', 'power', 3, 'none', [
     status('fortified', 1),
-    on('turnEnd', [barrier(5)]),
+    on('turnEnd', [barrier(3)]),
   ]),
   m(
     'legendary',
@@ -126,9 +126,18 @@ export const LEGENDARIES: CardDef[] = [
   ),
 
   // --- Quill: Sleeve Knives / Bleed / Sleight ---
-  q('legendary', 'ten-thousand-cuts', 'Ten Thousand Cuts', 'attack', 2, 'foe', [dmg(3, 'target', 8)], {
-    tags: ['knife'],
-  }),
+  q(
+    'legendary',
+    'ten-thousand-cuts',
+    'Ten Thousand Cuts',
+    'attack',
+    2,
+    'foe',
+    [dmg(3, 'target', 8)],
+    {
+      tags: ['knife'],
+    },
+  ),
   q('legendary', 'crimson-ledger', 'Crimson Ledger', 'power', 2, 'none', [
     on('turnStart', [status('seared', 3, 'allFoes')]),
   ]),
@@ -169,9 +178,9 @@ export const LEGENDARIES: CardDef[] = [
   ),
 
   // --- Sehra: Fury / Serene / Fervor ---
-  s('legendary', 'eternal-rage', 'Eternal Rage', 'power', 3, 'none', [
+  s('legendary', 'eternal-rage', 'Eternal Rage', 'power', 2, 'none', [
     stance('wrath'),
-    on('turnStart', [status('vigor', 3)]),
+    on('turnStart', [status('vigor', 4), barrier(4)]),
   ]),
   s(
     'legendary',
@@ -230,9 +239,9 @@ export const LEGENDARIES: CardDef[] = [
     'final-round',
     'Final Round',
     'skill',
-    3,
+    2,
     'none',
-    [draw(3), addTo('buckshot-shell', 4), heal(8)],
+    [draw(3), addTo('buckshot-shell', 4), heal(12)],
     { exhaust: true },
   ),
   p(
@@ -250,4 +259,3 @@ export const LEGENDARIES: CardDef[] = [
     on('loseHp', [barrier(8), status('might', 1)]),
   ]),
 ];
-

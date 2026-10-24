@@ -5,6 +5,10 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **0.13.0:** Balance pass for every Riftwalker, scene-based card art, rim-lit hero models.
+- **Balance pass for every Riftwalker:** Kesh, Scarlet, Ragnar and Dorian are stronger (more HP, better Feast, knife, Mantra and Fate cards), Ilvane and Vesper have less HP, and a few cards that were far ahead (Aegis Eternal, Radiance Eternal, Scrap Heap) are toned down. Eternal Rage and Final Round are better.
+- **Card art:** every character's cards are set in their own place (castle walls, a factory, a pine forest, glass spires, a swamp, a back alley...), each card's symbol sits differently, a second symbol shows what else it does, and Rare and Legendary cards shine.
+- **Hero models:** every hero has a rim light in their own colour; Obsidia and Vesper have new faces and gloves.
 - **0.12.0:** Astra is Obsidia and Ilvane is a totem-calling golem (new names, models and card names); five Legendaries per Riftwalker with a limit of two per deck; Fortified keeps 75% of Barrier.
 - **Five Legendary cards per Riftwalker, but a deck holds only two at a time:** taking a Legendary now costs a slot, so it is a real choice. 30 new Legendaries, three for each Riftwalker.
 - **Fortified is weaker:** it keeps 75% of your Barrier each turn instead of all of it.

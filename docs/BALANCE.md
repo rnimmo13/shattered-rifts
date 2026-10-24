@@ -192,3 +192,27 @@ content change.
 - The Warden's Gift is now the hero's own rare cards (plus a 30/55/85% chance of an own legendary); Warden signature cards, Neutral rares and the ancestral card are gone from it, and it can be skipped. (`giftOffers`'s boss parameter is unused now and kept for callers.)
 - New crowd fights (Drone Swarm 6 Scrap Drones, Page Troop 6 Gilded Pages of 6 HP and 2 damage, Raptor Horde 4). The first version (five Squires, five Raptors) dropped Normal from 33% to 16%; Pages and four raptors bring it back. Current `pnpm runsim -- --n 40`: Easy 97-98%, Normal 28-33%, Hard 9-11%.
 - Eleven events (the bot only takes heal, upgrade or leave, so event value is not in these numbers).
+
+## Per-deck pass (2026-10-23, DECISIONS #146)
+
+`pnpm runsim -- --n 40 --difficulty normal` (whole runs; bot noise about ±8 points):
+
+| Hero | Before | After |
+|---|---|---|
+| Maren | 45% | 43% |
+| Rivet | 43% | 40% |
+| Kesh | 28% | 38% |
+| Vesper | 53% | 43% |
+| Scarlet (quill) | 33% | 45% |
+| Ilvane | 60% | 53% |
+| Ragnar (sehra) | 35% | 45% |
+| Obsidia (astra) | 43% | 48% |
+| KP | 45% | 57% (45-56% across runs at n=16-40) |
+| Dorian (mire) | 38% | 40% |
+| **Overall** | **42%** | **45%** |
+
+Cardscan (`--seeds 10`) before the pass: summons are the strongest cards for Rivet (Scrap Heap, Forge Titan, Field Engineer
++35 to +37) and Mire (Grave Colossus, Legion of Bone +30 to +38), because an attack never carries past a companion (see #146:
+a core-rule question for Robert). Aegis Eternal (+31) and Radiance Eternal (+34) led Maren; Eternal Rage (-7) and Final Round
+(-8) were the weakest new legendaries. Ilvane's cards barely move his score (baseline 78% HP left): his strength was HP and the
+free Hawk totem, so his HP came down and his weakest attacks went up.

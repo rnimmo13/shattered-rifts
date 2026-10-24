@@ -35,7 +35,7 @@ Starter: Slash, Slash, Slash, Slash, Guard, Guard, Guard, Guard, Dawn Smite, Oat
 | Spiked Aegis | 1 | skill | common | Gain 6 Barrier. Apply 1 Thorns. |
 | Shell Cracker | 1 | attack | common | Deal 4 damage. Apply 2 Brittle. |
 | Iron Tithe | 1 | skill | common | Gain 6 Barrier. Gain Barrier equal to 2 times the number of cards you have consumed. |
-| Crushing Weight | 2 | attack | common | Deal 6 (+1 per 2 Barrier) damage. Apply 1 Exposed. |
+| Crushing Weight | 2 | attack | common | Deal 9 (+1 per 2 Barrier) damage. Apply 1 Exposed. |
 | Spiked Retort | 1 | snare | common | When you or an ally is attacked: Deal 6 damage to the attacker. Apply 2 Thorns. |
 | Lacerate | 1 | attack | common | Deal 7 damage. Apply 1 Faltering. |
 | Quick Orison | 0 | skill | common | Heal 3. Draw 1 card. Hold. |
@@ -80,7 +80,7 @@ Starter: Slash, Slash, Slash, Slash, Guard, Guard, Guard, Guard, Dawn Smite, Oat
 | Citadel March | 2 | power | rare | At the end of your turn: Deal damage equal to a quarter of your Barrier to ALL enemies. |
 | Bastion Engine | 2 | power | rare | Whenever you gain Barrier: Deal 4 damage to a random enemy. |
 | Immovable Oath | 2 | skill | rare | Gain 30 Barrier. Consume. |
-| Colossus Blow | 3 | attack | rare | Deal damage equal to 1.5 times your Barrier. |
+| Colossus Blow | 2 | attack | rare | Deal damage equal to 1.5 times your Barrier. |
 | Rampart of Ages | 2 | power | rare | Apply 2 Bracing. |
 | Radiant Oath | 2 | power | rare | Apply 4 Thorns. |
 | Thornlord | 2 | power | rare | Whenever you play a Skill: Apply 1 Thorns. |
@@ -100,10 +100,10 @@ Starter: Slash, Slash, Slash, Slash, Guard, Guard, Guard, Guard, Dawn Smite, Oat
 | Endless Vigil | 2 | power | rare | At the end of your turn: Gain Barrier equal to 2 times the number of cards in your hand. |
 | Briar Bloom | 1 | skill | rare | Double the Thorns to yourself. Consume. |
 | Martyr's Grace | 1 | skill | rare | Lose 5 HP. Gain 15 Barrier. Apply 2 Shielded. Consume. |
-| Radiance Eternal | 3 | power | rare | At the start of your turn: Heal 2. At the end of your turn: Apply 1 Shielded. |
+| Radiance Eternal | 3 | power | rare | At the start of your turn: Heal 1. At the end of your turn: Apply 1 Shielded. |
 | The Last Oath | 3 | power | legendary | Apply 1 Fortified. Apply 3 Thorns. Apply 1 Bracing. |
-| Dawn Incarnate | 3 | attack | legendary | Deal damage equal to 2 times your Barrier to ALL enemies. Consume. |
-| Aegis Eternal | 2 | power | legendary | Apply 1 Fortified. At the end of your turn: Gain 5 Barrier. |
+| Dawn Incarnate | 3 | attack | legendary | Gain 10 Barrier. Deal damage equal to 2 times your Barrier to ALL enemies. Consume. |
+| Aegis Eternal | 3 | power | legendary | Apply 1 Fortified. At the end of your turn: Gain 3 Barrier. |
 | Bastion of Dawn | 3 | skill | legendary | Gain 30 Barrier. Apply 4 Thorns. Draw 2 cards. Consume. |
 | Crown of Thorns | 2 | power | legendary | Apply 2 Thorns. Whenever you gain Barrier: Deal 3 damage to a random enemy. |
 
@@ -142,7 +142,7 @@ Starter: Slash, Slash, Slash, Slash, Slash, Guard, Guard, Guard, Deploy Drone, O
 | Weld Armor | 1 | skill | common | Gain 10 Barrier to the ally. Heal 4 to the ally. |
 | Patch Job | 0 | skill | common | Heal 8 to the ally. Gain 3 Barrier to the ally. |
 | Hardened Chassis | 1 | skill | common | Gain 9 Barrier to the ally. Draw 1 card. |
-| Field Engineer | 1 | summon | common | Summon Repair Bot (6 HP). At the end of your turn it will: Heal 3 to your hero. Gain 5 Barrier. |
+| Field Engineer | 1 | summon | common | Summon Repair Bot (6 HP). At the end of your turn it will: Heal 3 to your hero. Gain 3 Barrier. |
 | Armor Piercer | 1 | attack | common | Deal 6 damage. Apply 1 Exposed. |
 | Recompile | 1 | skill | common | Heal 4 to all friends. |
 | Static Field | 1 | attack | common | Deal 3 damage to ALL enemies. Apply 1 Faltering to ALL enemies. |
@@ -154,7 +154,7 @@ Starter: Slash, Slash, Slash, Slash, Slash, Guard, Guard, Guard, Deploy Drone, O
 | Overcharge Blast | 2 | attack | uncommon | Deal 8 (+2 per ally) damage to ALL enemies. |
 | Assembly Line | 2 | power | uncommon | At the start of your turn: Summon Micro Drone (4 HP). At the end of your turn it will: Deal 3 damage. |
 | Parts Bin | 1 | skill | uncommon | Summon Micro Drone (4 HP). At the end of your turn it will: Deal 3 damage. Draw 1 card. |
-| Scrap Heap | 1 | skill | uncommon | Summon 2 Micro Drones (4 HP each). At the end of your turn each will: Deal 3 damage. |
+| Scrap Heap | 1 | skill | uncommon | Summon 2 Micro Drones (4 HP each). At the end of your turn each will: Deal 3 damage. Consume. |
 | Swarm Tactics | 1 | power | uncommon | Whenever you summon an ally: Deal 3 damage to a random enemy. |
 | Salvage Rights | 1 | power | uncommon | Whenever one of your allies dies: Draw 1 card. |
 | Detonate | 0 | skill | uncommon | Deal 10 damage to ALL enemies. Sacrifice the chosen ally. |
@@ -213,7 +213,7 @@ Starter: Slash, Slash, Slash, Slash, Slash, Guard, Guard, Guard, Deploy Drone, O
 | The Assembly Line | 3 | power | legendary | Whenever you summon an ally: Draw 1 card. Gain 3 Barrier. |
 | Master Schematic | 3 | power | legendary | Apply 2 Might to all friends. At the start of your turn: Apply 1 Might to all friends. |
 
-## Kesh the Unfed (wyldmaw, 80 HP)
+## Kesh the Unfed (wyldmaw, 88 HP)
 
 A hunter with a Hound. Pays HP to buff the whole pack with Might.
 
@@ -262,7 +262,7 @@ Starter: Slash, Slash, Slash, Slash, Slash, Guard, Guard, Guard, Savage Bite, Bl
 | Scar Tissue | 1 | power | uncommon | Whenever you lose HP to your own cards: Apply 1 Might. |
 | Whirling Maul | X | attack | uncommon | Deal 5 damage X times to ALL enemies. |
 | Reckless Blow | 1 | attack | uncommon | Lose 2 HP. Deal 15 damage. |
-| Frenzied Gulp | 0 | skill | uncommon | Draw 3 cards. Lose 2 HP. |
+| Frenzied Gulp | 0 | skill | uncommon | Draw 3 cards. Lose 1 HP. |
 | Hamstring Slam | 2 | attack | uncommon | Deal 13 damage. Apply 1 Faltering. Apply 1 Exposed. |
 | Savage Command | 2 | skill | uncommon | All your allies act now. Apply 1 Might to all friends. |
 | Pack Bond | 2 | power | uncommon | At the start of your turn: Gain 3 Barrier to all friends. |
@@ -272,7 +272,7 @@ Starter: Slash, Slash, Slash, Slash, Slash, Guard, Guard, Guard, Savage Bite, Bl
 | Crimson Pact | 1 | skill | uncommon | Lose 3 HP. Consume 1 card. Draw 2 cards. |
 | Gnaw | 1 | attack | uncommon | Deal 5 (+2 per consumed card) damage. |
 | Devour | 2 | attack | uncommon | Deal 14 damage. Heal 5. |
-| Devour Ally | 1 | skill | uncommon | Heal 8 to your hero. Apply 2 Might to your hero. Sacrifice the chosen ally. |
+| Devour Ally | 1 | skill | uncommon | Heal 12 to your hero. Apply 3 Might to your hero. Sacrifice the chosen ally. |
 | Fell the Prey | 2 | attack | uncommon | Deal 16 damage. Heal 6. Consume. |
 | Ravenous | 2 | power | uncommon | Whenever a card is consumed: Draw 1 card. |
 | Thick Skin | 1 | power | uncommon | Whenever a card is consumed: Gain 4 Barrier. |
@@ -282,7 +282,7 @@ Starter: Slash, Slash, Slash, Slash, Slash, Guard, Guard, Guard, Savage Bite, Bl
 | Rotten Meal | 1 | skill | uncommon | Gain 7 Barrier. Consume 1 random card. |
 | Blood Haze | 2 | attack | uncommon | Deal 6 (+2 per Might) damage to ALL enemies. Lose 2 HP. |
 | Tear Loose | 1 | attack | uncommon | Deal 7 damage. Lose 2 HP. Apply 4 Primed. |
-| Frothing Rage | 1 | skill | uncommon | Lose 3 HP. Apply 3 Might until the end of your turn. Draw 2 cards. |
+| Frothing Rage | 1 | skill | uncommon | Lose 2 HP. Apply 3 Might until the end of your turn. Draw 2 cards. |
 | Wounded Wrath | 1 | power | uncommon | Whenever you lose HP to your own cards: Deal 4 damage to a random enemy. |
 | Blood Bond | 1 | skill | uncommon | Lose 2 HP. Apply 2 Might to the ally. Gain 6 Barrier to the ally. |
 | Litter | 2 | skill | uncommon | Summon 3 Gnashlings (4 HP each). At the end of your turn each will: Deal 3 damage. |
@@ -323,7 +323,7 @@ Starter: Slash, Slash, Slash, Slash, Slash, Guard, Guard, Guard, Savage Bite, Bl
 | Bloodmoon Hunt | 3 | attack | legendary | Deal 20 damage to ALL enemies. Heal 15. Consume. |
 | The Pack Eternal | 3 | power | legendary | Whenever one of your allies dies: Summon Hound (10 HP). At the end of your turn it will: Deal 4 damage. Heal 6. |
 
-## Vesper Nightlace (umbral, 134 HP)
+## Vesper Nightlace (umbral, 124 HP)
 
 A masked trapper. No companions: Snares, Exposed and patience.
 
@@ -435,7 +435,7 @@ Starter: Slash, Slash, Slash, Guard, Guard, Guard, Guard, Veil Strike, Veil Stri
 | Final Bow | 2 | skill | legendary | Apply 3 Exposed to ALL enemies. Apply 2 Faltering to ALL enemies. Gain 15 Barrier. Consume. |
 | The Long Ambush | 3 | snare | legendary | At the start of the enemy turn: Deal 25 damage to ALL enemies. Apply 1 Stunned to ALL enemies. |
 
-## Scarlet (umbral, 78 HP)
+## Scarlet (umbral, 84 HP)
 
 A cutpurse with a sleeve full of blades. Starts every fight with a Sleeve Knife. Knives, Bleed and discard tricks.
 
@@ -500,7 +500,7 @@ Starter: Slash, Slash, Slash, Slash, Guard, Guard, Guard, Quick Jab, Quick Jab, 
 | Fold the Hand | 0 | skill | uncommon | Discard 3 cards. Gain 2 Mana. |
 | All In | 0 | skill | uncommon | Discard your hand. Draw cards equal to the cards discarded this turn. Consume. |
 | Hidden Palm | 1 | power | uncommon | Whenever you discard a card: Gain 2 Barrier. |
-| Flaying Spree | 2 | attack | uncommon | Deal 7 damage, 1 more time per card discarded this turn. |
+| Flaying Spree | 2 | attack | uncommon | Deal 8 damage, 1 more time per card discarded this turn. |
 | Knife in the Dark | 1 | snare | uncommon | When an enemy gains Barrier: Deal 5 damage to the attacker. Add 2 Sleeve Knives to your hand. |
 | Encore | 1 | skill | uncommon | Apply 1 Mirrored. |
 | Palmed Card | 0 | skill | uncommon | Add a random Attack card from your pool to your hand. Consume. |
@@ -515,7 +515,7 @@ Starter: Slash, Slash, Slash, Slash, Guard, Guard, Guard, Quick Jab, Quick Jab, 
 | Countless Nicks | 2 | power | rare | Whenever you play a card: Deal 1 damage to ALL enemies. |
 | Knife Cascade | 3 | power | rare | At the start of your turn: Add 3 Sleeve Knives to your hand. |
 | Assassin's Mark | 0 | attack | rare | Deal 10 damage. Apply 1 Exposed. Consume. Opening hand. |
-| Knife Storm | X | attack | rare | Deal 4 damage X times. |
+| Knife Storm | X | attack | rare | Deal 5 damage X times. |
 | Spent Blades Sing | 1 | power | rare | Whenever a card is consumed: Deal 3 damage to a random enemy. |
 | Plague Bloom | 2 | skill | rare | Triple the Bleed to ALL enemies. Consume. |
 | Nightfall | 2 | skill | rare | Apply 5 Bleed to ALL enemies. Apply 2 Exposed to ALL enemies. Consume. |
@@ -531,7 +531,7 @@ Starter: Slash, Slash, Slash, Slash, Guard, Guard, Guard, Quick Jab, Quick Jab, 
 | Nimble Fingers | 1 | skill | rare | Apply 1 Mirrored. |
 | Lingering Blur | 1 | power | rare | Whenever you play a card: Gain 1 Barrier. |
 | Adrenaline Rush | 0 | skill | rare | Gain 1 Mana. Draw 2 cards. Consume. |
-| Tricks of the Trade | 2 | power | rare | At the start of your turn: Draw 1 card. |
+| Tricks of the Trade | 1 | power | rare | At the start of your turn: Draw 1 card. |
 | Careful Plan | 1 | skill | rare | Draw 1 card. Apply 1 Holdfast. |
 | Cold Killing | 1 | attack | rare | Deal 1 (+1 per 4 card drawn this fight) damage. |
 | Coiled Strike | 3 | power | rare | Whenever you play a card: Deal 4 damage to a random enemy. |
@@ -551,7 +551,7 @@ Tokens (made by other cards):
 |---|---|---|---|---|
 | Sleeve Knife | 0 | attack | common | Deal 4 damage. Consume. |
 
-## Ilvane (nexus, 100 HP)
+## Ilvane (nexus, 84 HP)
 
 A stone golem who plants carved totems and calls the spirits inside them to do his bidding. Starts every fight with a Hawk totem. Totems pulse every turn, then burst when awakened.
 
@@ -612,7 +612,7 @@ Starter: Slash, Slash, Slash, Slash, Guard, Guard, Guard, Plant Hawk, Plant Hawk
 | Deep Charge | 1 | skill | uncommon | Plant Elder. Draw 1 card. |
 | Owl's Gaze | 0 | attack | uncommon | Deal 3 damage. Apply 1 Exposed. |
 | Owl Cut | 1 | skill | uncommon | Plant Owl. Draw 1 card. |
-| Spirit Wave | 2 | attack | uncommon | Deal 8 damage to ALL enemies. Awaken your first totem. |
+| Spirit Wave | 2 | attack | uncommon | Deal 11 damage to ALL enemies. Awaken your first totem. |
 | Many Voices | X | skill | uncommon | Awaken your first totem X times. |
 | Hidden Totem | 1 | snare | uncommon | When you or an ally is attacked: Deal 5 damage to the attacker. Plant Bear. |
 | Retune | 1 | skill | uncommon | Upgrade a random card in your hand for this fight. Consume. |
@@ -644,11 +644,11 @@ Starter: Slash, Slash, Slash, Slash, Guard, Guard, Guard, Plant Hawk, Plant Hawk
 | White Noise | 1 | skill | rare | Add a random Aura card from your pool to your hand (it costs 0 this fight). Consume. |
 | Carver's Engine | 3 | power | rare | At the start of your turn: Add a random card from your pool to your hand. |
 | Consuming Dark | 2 | power | rare | At the end of your turn: Plant Elder. |
-| Biased Grain | 2 | power | rare | Apply 3 Spirit. At the start of your turn: Lose 2 HP. |
+| Biased Grain | 2 | power | rare | Apply 3 Spirit. At the start of your turn: Lose 1 HP. |
 | Totem Engine | 2 | power | rare | At the start of your turn: Plant Hawk. |
 | Root Tap | 2 | skill | rare | Gain 1 maximum Mana for the rest of the fight (and 1 now). Gain 6 Barrier. Consume. |
 | Hawkstorm | 2 | power | rare | At the end of your turn: Deal damage equal to the number of your totems to ALL enemies. |
-| Blazing Eye | 3 | attack | rare | Deal 14 damage to ALL enemies. Awaken your first 3 totems. |
+| Blazing Eye | 3 | attack | rare | Deal 18 damage to ALL enemies. Awaken your first 3 totems. |
 | Totem Ring | 3 | skill | rare | Gain 8 Barrier. Plant Bear 3 times. |
 | Frozen Grove | 1 | power | rare | Whenever a card is consumed: Gain 4 Barrier. |
 | Echo Cascade | 2 | skill | rare | Awaken your first totem 3 times (it stays). Consume. |
@@ -660,7 +660,7 @@ Starter: Slash, Slash, Slash, Slash, Guard, Guard, Guard, Plant Hawk, Plant Hawk
 | Ancestral Fury | 3 | power | legendary | At the start of your turn: Awaken your first totem (it stays). |
 | The World Totem | 2 | skill | legendary | Apply 3 Spirit. Draw 2 cards. Gain 1 Mana. Consume. |
 
-## Ragnar (aurelion, 104 HP)
+## Ragnar (aurelion, 116 HP)
 
 A barbarian who fights in stances. Starts every fight Serene. Fury for burst, Serene for tempo, Fervor for Radiance.
 
@@ -688,11 +688,11 @@ Starter: Slash, Slash, Slash, Slash, Guard, Guard, Guard, Guard, Kindle Fury, St
 | Empty Vessel | 1 | skill | common | Gain 7 Barrier. Leave your stance. |
 | Empty Fist | 1 | attack | common | Deal 9 damage. Leave your stance. |
 | Whispered Vow | 1 | skill | common | Apply 3 Fervor. Foresee 2. |
-| Bowing Low | 0 | skill | common | Apply 2 Fervor. Gain 4 Barrier. |
+| Bowing Low | 0 | skill | common | Apply 2 Fervor. Gain 6 Barrier. |
 | Devout Strike | 1 | attack | common | Deal 7 damage. Apply 1 Fervor. |
 | Shield of Faith | 1 | skill | common | Gain 7 Barrier. Apply 1 Fervor. |
 | Sunlit Blade | 1 | attack | common | Deal 9 damage. Foresee 2. |
-| Prostrate | 0 | skill | common | Apply 2 Fervor. Gain 4 Barrier. |
+| Prostrate | 0 | skill | common | Apply 2 Fervor. Draw 1 card. |
 | Pray | 1 | skill | common | Apply 3 Fervor. Gain 3 Barrier. |
 | Ember Jab | 0 | attack | common | Deal 4 damage. Apply 1 Exposed. Consume. |
 | Rending Hands | 1 | attack | common | Deal 5 damage 2 times. Lose 2 HP. |
@@ -762,7 +762,7 @@ Starter: Slash, Slash, Slash, Slash, Guard, Guard, Guard, Guard, Kindle Fury, St
 | Unwavering | 2 | power | rare | Whenever you discard a card: Gain 4 Barrier. Apply 1 Fervor. Whenever a card is consumed: Gain 4 Barrier. Apply 1 Fervor. |
 | Perfect Balance | 2 | power | legendary | Whenever you enter a stance: Draw 1 card. Gain 5 Barrier. Apply 1 Fervor. |
 | Still Flame Ascendant | 3 | skill | legendary | Enter Radiant. Apply 4 Primed. Draw 2 cards. Consume. |
-| Eternal Rage | 3 | power | legendary | Enter Fury. At the start of your turn: Apply 3 Primed. |
+| Eternal Rage | 2 | power | legendary | Enter Fury. At the start of your turn: Apply 4 Primed. Gain 4 Barrier. |
 | Eye of the Storm | 2 | skill | legendary | Enter Serene. Gain 20 Barrier. Gain 2 Mana. Consume. |
 | Ascension | 1 | skill | legendary | Apply 5 Fervor. Draw 2 cards. Consume. |
 
@@ -850,7 +850,7 @@ Starter: Slash, Slash, Guard, Guard, Guard, Guard, Glass Jab, Gather Arcana, Arc
 | Armory of Glass | 2 | power | rare | Whenever a card is created: Apply 1 Might. |
 | Collapsing Vein | 2 | attack | rare | Deal 5 (+2 per card created this fight) damage. |
 | Cataclysm | 3+4◆ | attack | rare | Costs 4 Arcana. Deal 54 damage. Apply 2 Exposed. |
-| Wellspring | 2 | skill | rare | Gain 5 Arcana. Draw 2 cards. Consume. |
+| Wellspring | 1 | skill | rare | Gain 5 Arcana. Draw 2 cards. Consume. |
 | Glass Burst | 2 | attack | rare | Deal 13 damage. Apply 2 Faltering. Apply 2 Exposed. |
 | Killing Glass | 2+3◆ | attack | rare | Costs 3 Arcana. Deal 30 damage. |
 | Arcane Burst | 1 | skill | rare | Gain 6 Arcana. Consume. |
@@ -867,8 +867,8 @@ Starter: Slash, Slash, Guard, Guard, Guard, Guard, Glass Jab, Gather Arcana, Arc
 | Zenith | 1 | attack | rare | Deal damage equal to 3 times your Arcana. |
 | Sigil of the Storm | 2 | power | rare | At the end of your turn: Deal damage equal to half of your Arcana to ALL enemies. |
 | Sigil of the Pyre | 3 | power | rare | At the start of your turn: Gain 1 Mana. Sharpen 2 (Obsidian Blade gains 2 damage). |
-| The Obsidian Crown | 2 | power | legendary | Sharpen 8 (Obsidian Blade gains 8 damage). At the start of your turn: Sharpen 3 (Obsidian Blade gains 3 damage). Gain 1 Arcana. |
-| Volcano's Birth | 3 | skill | legendary | Gain 8 Arcana. Draw 3 cards. Gain 20 Barrier. Consume. |
+| The Obsidian Crown | 2 | power | legendary | Sharpen 8 (Obsidian Blade gains 8 damage). At the start of your turn: Sharpen 3 (Obsidian Blade gains 3 damage). Gain 2 Arcana. |
+| Volcano's Birth | 2 | skill | legendary | Gain 8 Arcana. Draw 3 cards. Gain 20 Barrier. Consume. |
 | Molten Heart | 2 | power | legendary | At the start of your turn: Gain 2 Arcana. Sharpen 2 (Obsidian Blade gains 2 damage). |
 | Shatterstorm | 3+5◆ | attack | legendary | Costs 5 Arcana. Deal 40 damage to ALL enemies. |
 | The Obsidian Throne | 3 | power | legendary | Whenever you play an Obsidian Blade: Gain 4 Barrier. At the end of your turn: Deal 6 damage to ALL enemies. |
@@ -924,7 +924,7 @@ Starter: Slash, Slash, Slash, Guard, Guard, Guard, Hammer Swing, Hammer Swing, P
 | Glazier | 1 | power | uncommon | Whenever you play a Skill: Gain 3 Barrier. |
 | Double Barrel | 2 | attack | uncommon | Deal 9 damage 2 times. |
 | Pump Action | 1 | skill | uncommon | Add 2 Buckshot Shells to your hand. Draw 1 card. |
-| Shotgun Wedding | 2 | attack | uncommon | Deal 6 damage 2 times to ALL enemies. |
+| Shotgun Wedding | 2 | attack | uncommon | Deal 7 damage 2 times to ALL enemies. |
 | Shell Game | 1 | power | uncommon | At the start of your turn: Add a Buckshot Shell to your hand. |
 | Barroom Brawl | 2 | attack | uncommon | Deal 10 damage to ALL enemies. Lose 2 HP. |
 | Dutch Courage | 1 | power | uncommon | At the start of your turn: Heal 2. Apply 1 Might until the end of your turn. |
@@ -932,7 +932,7 @@ Starter: Slash, Slash, Slash, Guard, Guard, Guard, Hammer Swing, Hammer Swing, P
 | Spare Change | 0 | skill | uncommon | Draw 1 card. Gain 1 Mana. Foresee 2. Consume. |
 | Glass Cover | 1 | skill | uncommon | Gain 7 Barrier. Sharpen 2 (Old Twelve Gauge gains 2 damage). |
 | Hair Trigger | 1 | power | uncommon | Whenever you play a shell: Sharpen 1 (Old Twelve Gauge gains 1 damage). |
-| Reload | 1 | skill | uncommon | Sharpen 2 (Old Twelve Gauge gains 2 damage). Draw 1 card. |
+| Reload | 1 | skill | uncommon | Sharpen 3 (Old Twelve Gauge gains 3 damage). Draw 1 card. |
 | Gunmetal Polish | 1 | skill | uncommon | Sharpen 3 (Old Twelve Gauge gains 3 damage). Gain 4 Barrier. |
 | Slugfest | 2 | attack | uncommon | Deal 5 damage 4 times. |
 | Magazine | 1 | skill | uncommon | Add 4 Buckshot Shells to your hand. Consume. |
@@ -975,7 +975,7 @@ Starter: Slash, Slash, Slash, Guard, Guard, Guard, Hammer Swing, Hammer Swing, P
 | Hot Brass | 1 | power | rare | Whenever a card is consumed: Gain 2 Barrier. Sharpen 1 (Old Twelve Gauge gains 1 damage). |
 | Spray and Pray | 2 | attack | rare | Deal 4 (+1 per 4 card created this fight) damage to ALL enemies. |
 | Mean Drunk | 2 | power | rare | Whenever you lose HP to your own cards: Apply 1 Might. |
-| Final Round | 3 | skill | legendary | Draw 3 cards. Add 4 Buckshot Shells to your hand. Heal 8. Consume. |
+| Final Round | 2 | skill | legendary | Draw 3 cards. Add 4 Buckshot Shells to your hand. Heal 12. Consume. |
 | The Twelve-Gauge Opera | 3 | attack | legendary | Deal 25 damage to ALL enemies. Lose 8 HP. Consume. |
 | Hitting Bottom | 2 | power | legendary | Apply 4 Thorns. Whenever you lose HP to your own cards: Gain 8 Barrier. Apply 1 Might. |
 | One More Round | 3 | power | legendary | At the start of your turn: Add 3 Buckshot Shells to your hand. Heal 3. |
@@ -988,7 +988,7 @@ Tokens (made by other cards):
 | Buckshot Shell | 0 | attack | common | Deal 4 damage to ALL enemies. Consume. |
 | Old Twelve Gauge | 1 | attack | common | Deal 5 (+1 per point of sharpening) damage to ALL enemies. Hold. |
 
-## Dorian Blackthorn (gloomfen, 86 HP)
+## Dorian Blackthorn (gloomfen, 92 HP)
 
 A warden of the drowned dead. Starts with a Bone Thrall. Curses enemies with Fate until the end comes for them.
 
@@ -1042,7 +1042,7 @@ Starter: Slash, Slash, Slash, Guard, Guard, Guard, Grave Touch, Grave Touch, Bon
 | Veilpiercer | 1 | attack | uncommon | Deal 7 damage. Apply 2 Exposed. Curse the target with 2 Fate. |
 | Grave Colossus | 2 | summon | uncommon | Summon Grave Colossus (22 HP). At the end of your turn it will: Deal 9 damage. |
 | Unquiet Rest | 2 | power | uncommon | At the start of your turn: Heal 3 to all friends. |
-| Fen Offering | 0 | skill | uncommon | Curse ALL enemies with 6 Fate. Gain 6 Barrier. Sacrifice the chosen ally. |
+| Fen Offering | 0 | skill | uncommon | Curse ALL enemies with 8 Fate. Gain 8 Barrier. Sacrifice the chosen ally. |
 | Bone Bulwark | 1 | skill | uncommon | Gain 10 Barrier to the ally. Apply 1 Might to the ally. |
 | Calcify | 1 | power | uncommon | At the end of your turn: Gain 3 Barrier to all friends. |
 | Legion of Bone | 2 | summon | uncommon | Summon 2 Bone Thralls (12 HP each). At the end of your turn each will: Deal 4 damage. |
@@ -1059,10 +1059,10 @@ Starter: Slash, Slash, Slash, Guard, Guard, Guard, Grave Touch, Grave Touch, Bon
 | Soul Tithe | 0 | skill | uncommon | Lose 4 HP. Gain 2 Mana. Consume. |
 | Grave Robbery | 1 | skill | uncommon | Return a random Consumed card to your hand. Gain 4 Barrier. Consume. |
 | Reanimate | 2 | skill | uncommon | Your most recently fallen ally returns with half its HP. Gain 5 Barrier. |
-| Reaping Scythe | 2 | attack | uncommon | Deal 5 (+1 per 2 Fate on each) damage to ALL enemies. |
+| Reaping Scythe | 2 | attack | uncommon | Deal 5 (+1 per Fate on each) damage to ALL enemies. |
 | Grim Tally | 1 | attack | uncommon | Deal 3 (+2 per card played this turn) damage. Curse the target with 3 Fate. |
 | Toll in Advance | 1 | skill | uncommon | Curse the target with 9 Fate. Lose 4 HP. |
-| Bone Rain | 1 | skill | uncommon | Deal 10 damage to ALL enemies. Curse ALL enemies with 3 Fate. Sacrifice the chosen ally. |
+| Bone Rain | 1 | skill | uncommon | Deal 13 damage to ALL enemies. Curse ALL enemies with 3 Fate. Sacrifice the chosen ally. |
 | Pallbearer | 1 | power | uncommon | Whenever you summon an ally: Deal 5 damage to a random enemy. |
 | Second Death | 2 | skill | uncommon | Your most recently fallen ally returns with half its HP. All your allies act now. |
 | Wake the Ashes | 1 | skill | uncommon | Return 2 random Consumed cards to your hand. Consume. |

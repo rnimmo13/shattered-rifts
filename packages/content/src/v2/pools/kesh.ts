@@ -89,7 +89,7 @@ export const KESH: CardDef[] = [
     { x: true },
   ),
   k('uncommon', 'reckless-blow', 'Reckless Blow', 'attack', 1, 'foe', [lose(2), dmg(15)]),
-  k('uncommon', 'frenzied-gulp', 'Frenzied Gulp', 'skill', 0, 'none', [draw(3), lose(2)]),
+  k('uncommon', 'frenzied-gulp', 'Frenzied Gulp', 'skill', 0, 'none', [draw(3), lose(1)]),
   k('uncommon', 'hamstring-slam', 'Hamstring Slam', 'attack', 2, 'foe', [
     dmg(13),
     status('faltering', 1, 'target'),
@@ -179,8 +179,8 @@ export const KESH: CardDef[] = [
   k('uncommon', 'gnaw', 'Gnaw', 'attack', 1, 'foe', [scaled(dmg(5), per('exhausted', 2))]),
   k('uncommon', 'devour', 'Devour', 'attack', 2, 'foe', [dmg(14), heal(5)]),
   k('uncommon', 'devour-ally', 'Devour Ally', 'skill', 1, 'ally', [
-    heal(8, 'hero'),
-    status('might', 2, 'hero'),
+    heal(12, 'hero'),
+    status('might', 3, 'hero'),
     sacrifice,
   ]),
   k('uncommon', 'fell-the-prey', 'Fell the Prey', 'attack', 2, 'foe', [dmg(16), heal(6)], {
@@ -267,7 +267,7 @@ export const KESH: CardDef[] = [
     status('vigor', 4),
   ]),
   k('uncommon', 'frothing-rage', 'Frothing Rage', 'skill', 1, 'none', [
-    lose(3),
+    lose(2),
     status('might', 3, 'self', true),
     draw(2),
   ]),

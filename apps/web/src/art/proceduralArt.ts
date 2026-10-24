@@ -24,11 +24,16 @@ export interface ArtCard {
   emblem?: string;
   /** the owning Riftwalker's emblem, stamped in the corner like a maker's mark */
   seal?: string;
+  /** whose place the card is set in (art/scenes.ts); without one, a plain horizon */
+  scene?: string;
+  /** a second, smaller symbol for the other thing the card does (a Barrier card that also draws shows a book) */
+  accent?: string;
 }
 type CardDef = ArtCard;
 import { color, rgba } from '../design/tokens';
 import { paintEmblem } from './emblems';
 import { paintMotif, type Motif } from './motifs';
+import { paintScene } from './scenes';
 import { rng } from '../duel/scene/noise';
 
 export type Archetype =
@@ -1041,6 +1046,79 @@ export interface CardArt {
   archetype: Archetype;
 }
 
+/** the charges a shield can carry (see the emblem painting in cardArt) */
+const DEVICES = [
+  'star8',
+  'sword',
+  'crown',
+  'thorn',
+  'moon',
+  'eye',
+  'heart',
+  'bolt',
+  'key',
+  'hammer',
+];
+
+/** light rays fanning out behind a Legendary card's symbol */
+function rays(g: Ctx['g'], x: number, y: number, len: number, col: string, r: () => number): void {
+  g.save();
+  g.globalCompositeOperation = 'lighter';
+  const n = 14;
+  const turn = r() * Math.PI;
+  for (let i = 0; i < n; i++) {
+    const a = turn + (i * Math.PI * 2) / n;
+    const w = 0.07 + r() * 0.05;
+    const gr = g.createRadialGradient(x, y, 0, x, y, len);
+    gr.addColorStop(0, rgba(col, 0.32));
+    gr.addColorStop(1, rgba(col, 0));
+    g.fillStyle = gr;
+    g.beginPath();
+    g.moveTo(x, y);
+    g.lineTo(x + Math.cos(a - w) * len, y + Math.sin(a - w) * len);
+    g.lineTo(x + Math.cos(a + w) * len, y + Math.sin(a + w) * len);
+    g.closePath();
+    g.fill();
+  }
+  g.restore();
+}
+
+/** a ring of glints round a Rare card's symbol */
+function sparkles(
+  g: Ctx['g'],
+  x: number,
+  y: number,
+  rad: number,
+  col: string,
+  r: () => number,
+): void {
+  g.save();
+  g.globalCompositeOperation = 'lighter';
+  for (let i = 0; i < 9; i++) {
+    const a = r() * Math.PI * 2;
+    const d = rad * (0.9 + r() * 0.5);
+    const sx = x + Math.cos(a) * d;
+    const sy = y + Math.sin(a) * d;
+    const k = 4 + r() * 7;
+    g.fillStyle = rgba(col, 0.8);
+    g.beginPath();
+    g.moveTo(sx, sy - k);
+    g.lineTo(sx + k * 0.25, sy);
+    g.lineTo(sx, sy + k);
+    g.lineTo(sx - k * 0.25, sy);
+    g.closePath();
+    g.fill();
+    g.beginPath();
+    g.moveTo(sx - k, sy);
+    g.lineTo(sx, sy + k * 0.25);
+    g.lineTo(sx + k, sy);
+    g.lineTo(sx, sy - k * 0.25);
+    g.closePath();
+    g.fill();
+  }
+  g.restore();
+}
+
 const cache = new Map<string, CardArt>();
 
 export function cardArt(def: CardDef): CardArt {
@@ -1084,15 +1162,17 @@ export function cardArt(def: CardDef): CardArt {
     g.fillRect(x - rad, y - rad, rad * 2, rad * 2);
   }
   g.globalCompositeOperation = 'source-over';
-  // distant jagged horizon
-  g.fillStyle = rgba(palette.dark, 0.7);
-  g.beginPath();
-  g.moveTo(0, WH * 0.78);
-  for (let x = 0; x <= WW; x += 32) g.lineTo(x, WH * (0.68 + r() * 0.12));
-  g.lineTo(WW, WH);
-  g.lineTo(0, WH);
-  g.closePath();
-  g.fill();
+  // the Riftwalker's own place behind the card, or a distant jagged horizon
+  if (!paintScene(g, WW, WH, def.scene, palette, r)) {
+    g.fillStyle = rgba(palette.dark, 0.7);
+    g.beginPath();
+    g.moveTo(0, WH * 0.78);
+    for (let x = 0; x <= WW; x += 32) g.lineTo(x, WH * (0.68 + r() * 0.12));
+    g.lineTo(WW, WH);
+    g.lineTo(0, WH);
+    g.closePath();
+    g.fill();
+  }
   // halo behind the subject
   g.globalCompositeOperation = 'lighter';
   const halo = g.createRadialGradient(WW / 2, WH * 0.5, 0, WW / 2, WH * 0.5, WH * 0.62);
@@ -1110,14 +1190,24 @@ export function cardArt(def: CardDef): CardArt {
     // ...and what the card is ABOUT is the one clear subject on top: a dark plate for contrast, then a dark outline and a
     // bright flat fill, so nothing blends into the colours behind it
     if (def.emblem) {
-      const size = WH * 0.7;
-      const ex = WW / 2;
-      const ey = WH * 0.53;
+      // the symbol sits a little off centre, tilted and sized by the card's seed, so cards with the same symbol still
+      // differ; a second symbol (what else the card does) sits small in the free side
+      const side = r() < 0.5 ? -1 : 1;
+      const size = WH * (0.62 + r() * 0.1);
+      const ex = WW / 2 + side * WW * (0.04 + r() * 0.06);
+      const ey = WH * (0.5 + r() * 0.06);
+      const tilt = (r() - 0.5) * 0.36;
+      if (def.rarity === 'legendary') rays(g, ex, ey, WH * 0.75, palette.glow, r);
+      else if (def.rarity === 'rare') sparkles(g, ex, ey, size * 0.6, palette.glow, r);
       const plate = g.createRadialGradient(ex, ey, size * 0.1, ex, ey, size * 0.66);
       plate.addColorStop(0, 'rgba(4,6,14,0.62)');
       plate.addColorStop(1, 'rgba(4,6,14,0)');
       g.fillStyle = plate;
       g.fillRect(0, 0, WW, WH);
+      g.save();
+      g.translate(ex, ey);
+      g.rotate(tilt);
+      g.translate(-ex, -ey);
       g.save();
       g.shadowColor = rgba(palette.glow, 0.7);
       g.shadowBlur = 26;
@@ -1129,6 +1219,32 @@ export function cardArt(def: CardDef): CardArt {
       g.globalAlpha = 0.18;
       paintEmblem(g, def.emblem, ex, ey, size * 0.9, '#000000');
       g.restore();
+      // a shield carries a heraldic device, picked by the seed, so plain Barrier cards are not all the same blank shield;
+      // a web holds what the Snare does when it springs (its second symbol) at its heart
+      const inWeb = def.emblem === 'web' && def.accent !== undefined;
+      if (def.emblem === 'shield') {
+        const device = DEVICES[Math.floor(r() * DEVICES.length)] as string;
+        paintEmblem(g, device, ex, ey - size * 0.02, size * 0.36, rgba(palette.dark, 0.75));
+      } else if (inWeb) {
+        g.fillStyle = 'rgba(6,8,18,0.92)';
+        g.beginPath();
+        g.arc(ex, ey, size * 0.2, 0, Math.PI * 2);
+        g.fill();
+        paintEmblem(g, def.accent as string, ex, ey, size * 0.28, rgba(palette.glow, 1));
+      }
+      g.restore();
+      if (def.accent && def.accent !== def.emblem && !inWeb) {
+        const ax = WW / 2 - side * WW * 0.3;
+        const ay = WH * (0.26 + r() * 0.1);
+        const as = WH * 0.24;
+        const ap = g.createRadialGradient(ax, ay, 0, ax, ay, as * 0.8);
+        ap.addColorStop(0, 'rgba(4,6,14,0.55)');
+        ap.addColorStop(1, 'rgba(4,6,14,0)');
+        g.fillStyle = ap;
+        g.fillRect(ax - as, ay - as, as * 2, as * 2);
+        paintEmblem(g, def.accent, ax, ay, as * 1.1, 'rgba(6,8,18,0.9)');
+        paintEmblem(g, def.accent, ax, ay, as, rgba(palette.glow, 0.95));
+      }
     }
   } else if (archetype === 'rift') {
     // a landscape with a tear: no single subject

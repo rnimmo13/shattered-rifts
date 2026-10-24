@@ -128,7 +128,7 @@ export const QUILL: CardDef[] = [
     'attack',
     0,
     'foe',
-    [scaled({ op: 'damage', amount: 4, hits: 0, to: 'target' }, per('x', 1, undefined, 'hits'))],
+    [scaled({ op: 'damage', amount: 5, hits: 0, to: 'target' }, per('x', 1, undefined, 'hits'))],
     { x: true },
   ),
   q('rare', 'spent-blades-sing', 'Spent Blades Sing', 'power', 1, 'none', [
@@ -301,7 +301,7 @@ export const QUILL: CardDef[] = [
   ),
   q('uncommon', 'hidden-palm', 'Hidden Palm', 'power', 1, 'none', [on('discard', [barrier(2)])]),
   q('uncommon', 'flaying-spree', 'Flaying Spree', 'attack', 2, 'foe', [
-    scaled({ op: 'damage', amount: 7, to: 'target' }, per('discarded', 1, undefined, 'hits')),
+    scaled({ op: 'damage', amount: 8, to: 'target' }, per('discarded', 1, undefined, 'hits')),
   ]),
   q('rare', 'lingering-step', 'Lingering Step', 'power', 1, 'none', [on('play', [barrier(1)])]),
   q(
@@ -377,7 +377,7 @@ export const QUILL: CardDef[] = [
   q('rare', 'adrenaline-rush', 'Adrenaline Rush', 'skill', 0, 'none', [mana(1), draw(2)], {
     exhaust: true,
   }),
-  q('rare', 'tricks-of-the-trade', 'Tricks of the Trade', 'power', 2, 'none', [
+  q('rare', 'tricks-of-the-trade', 'Tricks of the Trade', 'power', 1, 'none', [
     on('turnStart', [draw(1)]),
   ]),
   q('rare', 'careful-plan', 'Careful Plan', 'skill', 1, 'none', [draw(1), status('holdfast', 1)]),

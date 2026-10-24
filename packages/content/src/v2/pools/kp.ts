@@ -146,7 +146,7 @@ export const KP: CardDef[] = [
     addTo('buckshot-shell', 2),
     draw(1),
   ]),
-  p('uncommon', 'shotgun-wedding', 'Shotgun Wedding', 'attack', 2, 'none', [dmg(6, 'allFoes', 2)]),
+  p('uncommon', 'shotgun-wedding', 'Shotgun Wedding', 'attack', 2, 'none', [dmg(7, 'allFoes', 2)]),
   p('uncommon', 'shell-game', 'Shell Game', 'power', 1, 'none', [
     on('turnStart', [addTo('buckshot-shell')]),
   ]),
@@ -238,7 +238,7 @@ export const KP: CardDef[] = [
   p('uncommon', 'hair-trigger', 'Hair Trigger', 'power', 1, 'none', [
     on('play', [forge('old-twelve-gauge', 1)], { tag: 'shell' }),
   ]),
-  p('uncommon', 'reload', 'Reload', 'skill', 1, 'none', [forge('old-twelve-gauge', 2), draw(1)]),
+  p('uncommon', 'reload', 'Reload', 'skill', 1, 'none', [forge('old-twelve-gauge', 3), draw(1)]),
   p('rare', 'extended-mag', 'Extended Mag', 'power', 2, 'none', [
     on('turnStart', [forge('old-twelve-gauge', 2), addTo('buckshot-shell')]),
   ]),

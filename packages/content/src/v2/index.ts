@@ -86,7 +86,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     hero: {
       id: 'kesh',
       name: 'Kesh the Unfed',
-      maxHp: 80,
+      maxHp: 88,
       mana: 3,
       handSize: 5,
       startUnits: ['hound'],
@@ -108,7 +108,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
       text: 'Every enemy starts the fight Exposed for 3 turns, and you start with 6 Barrier.',
       fightStart: [status('exposed', 3, 'allFoes'), barrier(6)],
     },
-    hero: { id: 'vesper', name: 'Vesper Nightlace', maxHp: 134, mana: 3, handSize: 5 },
+    hero: { id: 'vesper', name: 'Vesper Nightlace', maxHp: 124, mana: 3, handSize: 5 },
     starter: [...rep('strike', 3), ...rep('defend', 4), ...rep('veil-strike', 2), 'set-the-web'],
     blurb: 'A masked trapper. No companions: Snares, Exposed and patience.',
     lanes: [
@@ -133,7 +133,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     hero: {
       id: 'quill',
       name: 'Scarlet',
-      maxHp: 78,
+      maxHp: 84,
       mana: 3,
       handSize: 5,
       sigil: [addTo('sleeve-knife')],
@@ -163,7 +163,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     hero: {
       id: 'ilvane',
       name: 'Ilvane',
-      maxHp: 100,
+      maxHp: 84,
       mana: 3,
       handSize: 5,
       sigil: [channel('spark')],
@@ -193,7 +193,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     hero: {
       id: 'sehra',
       name: 'Ragnar',
-      maxHp: 104,
+      maxHp: 116,
       mana: 3,
       handSize: 5,
       sigil: [stance('calm')],
@@ -234,11 +234,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     ],
     blurb:
       'A spellblade of black glass and ember. Starts with 3 Arcana and an Obsidian Blade that every Sharpen improves for good.',
-    lanes: [
-      'Blade: sharpen one weapon',
-      'Arcana: spend for finishers',
-      'Sigils: ticking Auras',
-    ],
+    lanes: ['Blade: sharpen one weapon', 'Arcana: spend for finishers', 'Sigils: ticking Auras'],
     howTo: [
       'Arcana is a second resource. Cards with an orange orb spend it; others gain it.',
       'You start with an Obsidian Blade. Every Sharpen card makes every copy hit harder for the whole fight.',
@@ -301,7 +297,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     hero: {
       id: 'mire',
       name: 'Dorian Blackthorn',
-      maxHp: 86,
+      maxHp: 92,
       mana: 3,
       handSize: 5,
       startUnits: ['bone-thrall'],

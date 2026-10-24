@@ -185,6 +185,36 @@ function outline(c: HTMLCanvasElement, px = 3.5): void {
   }
   g.restore();
 }
+/**
+ * a thin back light along the right-hand edge of the figure, in the hero's own colour, so the silhouette lifts off a dark
+ * stage the way a lit character model does (the key light is upper left, see light())
+ */
+function rimLight(c: HTMLCanvasElement, hex: string, px = 5): void {
+  const t = document.createElement('canvas');
+  t.width = c.width;
+  t.height = c.height;
+  const tg = t.getContext('2d');
+  const g = c.getContext('2d');
+  if (!tg || !g) return;
+  // the figure's shape, minus itself shifted left and down a little: what is left is the upper-right edge
+  tg.drawImage(c, 0, 0);
+  tg.globalCompositeOperation = 'destination-out';
+  tg.drawImage(c, -px, px * 0.6);
+  tg.globalCompositeOperation = 'source-in';
+  const n = parseInt(hex.slice(1), 16);
+  const rgb = `${(n >> 16) & 255},${(n >> 8) & 255},${n & 255}`;
+  // strongest at the shoulders, fading towards the feet
+  const gr = tg.createLinearGradient(0, 0, 0, c.height);
+  gr.addColorStop(0, `rgba(${rgb},0.85)`);
+  gr.addColorStop(0.6, `rgba(${rgb},0.5)`);
+  gr.addColorStop(1, `rgba(${rgb},0.1)`);
+  tg.fillStyle = gr;
+  tg.fillRect(0, 0, c.width, c.height);
+  g.save();
+  g.globalCompositeOperation = 'lighter';
+  g.drawImage(t, 0, 0);
+  g.restore();
+}
 function groundShadow(g: G, rx: number): void {
   g.save();
   g.globalCompositeOperation = 'destination-over';
@@ -907,11 +937,13 @@ const vesper: Painter = (g, fx) => {
     [236, 244],
     [184, 244],
   ]);
-  // arms with gloves
+  // arms in black leather gloves with violet cuffs
   limb2(g, '#251540', 170, 262, 132, 372, 24);
   limb2(g, '#251540', 252, 262, 300, 352, 24);
-  gell(g, '#d8c4ee', 128, 382, 15, 15);
-  gell(g, '#d8c4ee', 304, 360, 15, 15);
+  rect(g, '#b99aff', 118, 360, 22, 6, 2);
+  rect(g, '#b99aff', 293, 338, 22, 6, 2);
+  gell(g, '#1a1024', 128, 382, 14, 15, 1.8, 0.6);
+  gell(g, '#1a1024', 304, 360, 14, 15, 1.8, 0.6);
   // wire coil
   g.strokeStyle = '#cfd6dc';
   g.lineWidth = 4;
@@ -932,9 +964,37 @@ const vesper: Painter = (g, fx) => {
       [60 + i * 12, FEET - 40],
       [66 + i * 12, FEET - 14],
     ]);
-  // head: pale face, domino mask, red lips, long lashes
-  head(g, '#ead6cc', CX, 190, 38, 44);
-  ell(g, '#9a1e3a', CX, 216, 9, 4);
+  // head: pale face, domino mask, a sly red smirk, dark hair framing the face
+  head(g, '#e2ccc4', CX, 190, 36, 44);
+  line(g, '#9a1e3a', 4, [
+    [CX - 9, 216],
+    [CX + 2, 218],
+    [CX + 11, 212],
+  ]);
+  gpoly(
+    g,
+    '#1c0f33',
+    [
+      [172, 160],
+      [184, 156],
+      [180, 214],
+      [168, 236],
+    ],
+    1.5,
+    0.6,
+  );
+  gpoly(
+    g,
+    '#1c0f33',
+    [
+      [248, 160],
+      [236, 156],
+      [240, 214],
+      [252, 236],
+    ],
+    1.5,
+    0.6,
+  );
   poly(g, '#1c0f33', [
     [170, 178],
     [250, 178],
@@ -944,6 +1004,10 @@ const vesper: Painter = (g, fx) => {
   ]);
   ell(g, '#d8c4ee', 196, 190, 7, 5);
   ell(g, '#d8c4ee', 224, 190, 7, 5);
+  ell(g, '#5a2aa0', 197, 190, 3, 4);
+  ell(g, '#5a2aa0', 225, 190, 3, 4);
+  // the hat brim throws a shadow over her brow
+  ell(g, 'rgba(20,8,36,0.35)', CX, 160, 40, 10);
   // hat: wide brim, crown, band, a drooping feather
   gell(g, '#251540', CX, 144, 90, 18, 1.4, 0.6);
   gpoly(
@@ -1325,7 +1389,11 @@ const ilvane: Painter = (g, fx) => {
   // arms: thick stone limbs, the right fist wrapped round a planted totem pole, the left held open
   limb2(g, STONE, 108, 262, 84, 380, 46);
   gell(g, '#9a948a', 80, 400, 30, 28, 1.3, 0.65);
-  for (const dx of [-14, 0, 14]) line(g, '#3a362e', 2.5, [[80 + dx, 386], [80 + dx, 412]]);
+  for (const dx of [-14, 0, 14])
+    line(g, '#3a362e', 2.5, [
+      [80 + dx, 386],
+      [80 + dx, 412],
+    ]);
   limb2(g, STONE, 312, 262, 338, 346, 46);
   gell(g, '#9a948a', 340, 366, 30, 28, 1.3, 0.65);
   // the totem pole in his right hand: carved bands (hawk, bear, owl) topped with wings
@@ -1879,8 +1947,10 @@ const astra: Painter = (g, fx) => {
     1.5,
     0.7,
   );
-  gell(g, '#d8c8e0', 126, 366, 13, 14);
-  gell(g, '#d8c8e0', 326, 190, 13, 14);
+  // obsidian gauntlets, clawed, an ember glowing in the open palm
+  gell(g, '#2a1a3a', 126, 366, 13, 14, 1.7, 0.6);
+  gell(g, '#2a1a3a', 326, 190, 13, 14, 1.7, 0.6);
+  ell(g, OBS_EMBER, 326, 192, 5, 4);
   for (const [x, y] of [
     [118, 380],
     [128, 384],
@@ -1891,8 +1961,31 @@ const astra: Painter = (g, fx) => {
       [x + 3, y - 6],
       [x, y + 12],
     ]);
-  // head: pale face, a sweep of black hair with a violet sheen, a crown of obsidian shards
-  head(g, '#e4d4e6', CX, 182, 33, 40);
+  for (const [x, y] of [
+    [316, 176],
+    [326, 172],
+    [336, 176],
+  ] as const)
+    poly(g, '#150d22', [
+      [x - 3, y + 6],
+      [x + 3, y + 6],
+      [x, y - 10],
+    ]);
+  // head: an ashen face with hollow cheeks, a sweep of black hair with a violet sheen, a crown of obsidian shards
+  head(g, '#b8a4c0', CX, 182, 31, 40);
+  // hollow cheeks and a sharp jaw
+  poly(g, 'rgba(40,14,50,0.32)', [
+    [184, 192],
+    [194, 206],
+    [204, 218],
+    [190, 214],
+  ]);
+  poly(g, 'rgba(40,14,50,0.32)', [
+    [236, 192],
+    [226, 206],
+    [216, 218],
+    [230, 214],
+  ]);
   gpoly(
     g,
     '#1c1128',
@@ -1926,7 +2019,21 @@ const astra: Painter = (g, fx) => {
     [232, 176],
     [216, 180],
   ]);
-  ell(g, '#5a2a6a', CX, 210, 8, 3.4);
+  // dark lips, and an ember crack running from the brow down one cheek, as if the glass in her is breaking through
+  ell(g, '#3a1430', CX, 208, 8, 3.2);
+  line(g, '#1a0c18', 2.5, [
+    [228, 160],
+    [222, 174],
+    [230, 190],
+    [224, 206],
+  ]);
+  line(g, OBS_EMBER, 1.2, [
+    [228, 160],
+    [222, 174],
+    [230, 190],
+    [224, 206],
+  ]);
+  glowHex(fx, OBS_EMBER, 226, 184, 16, 0.4);
   for (const [x, h, w] of [
     [CX, 62, 11],
     [CX - 26, 82, 9],
@@ -1954,6 +2061,7 @@ const astra: Painter = (g, fx) => {
   glowHex(fx, OBS_EMBER, CX - 12, 187, 14, 0.9);
   glowHex(fx, OBS_EMBER, CX + 12, 187, 14, 0.9);
   glowHex(fx, OBS_EMBER, 126, 340, 44, 0.35);
+  glowHex(fx, OBS_EMBER, 326, 192, 30, 0.7);
   glowHex(fx, '#8a5ac0', CX, 420, 150, 0.1);
 };
 
@@ -2386,23 +2494,26 @@ const kp: Painter = (g, fx) => {
   glowHex(fx, '#ff9a3c', CX, 400, 120, 0.12);
 };
 
-const PAINTERS: Record<string, { paint: Painter; shadow: number }> = {
-  maren: { paint: maren, shadow: 130 },
-  rivet: { paint: rivet, shadow: 125 },
-  kesh: { paint: kesh, shadow: 125 },
-  vesper: { paint: vesper, shadow: 115 },
-  quill: { paint: quill, shadow: 125 },
-  ilvane: { paint: ilvane, shadow: 125 },
-  sehra: { paint: sehra, shadow: 140 },
-  astra: { paint: astra, shadow: 115 },
-  mire: { paint: mire, shadow: 125 },
-  kp: { paint: kp, shadow: 145 },
+/** each figure's painter, the width of its ground shadow and the colour of its rim light (the hero's own colour) */
+const PAINTERS: Record<string, { paint: Painter; shadow: number; rim: string }> = {
+  maren: { paint: maren, shadow: 130, rim: '#ffd27a' },
+  rivet: { paint: rivet, shadow: 125, rim: '#6ad8ff' },
+  kesh: { paint: kesh, shadow: 125, rim: '#c8e070' },
+  vesper: { paint: vesper, shadow: 115, rim: '#b48cff' },
+  quill: { paint: quill, shadow: 125, rim: '#ff5a5a' },
+  ilvane: { paint: ilvane, shadow: 125, rim: '#7fd08a' },
+  sehra: { paint: sehra, shadow: 140, rim: '#ff9a4a' },
+  astra: { paint: astra, shadow: 115, rim: '#ff8a3a' },
+  mire: { paint: mire, shadow: 125, rim: '#7affa8' },
+  kp: { paint: kp, shadow: 145, rim: '#ffb35a' },
 };
 
 const cache = new Map<string, HTMLCanvasElement>();
 
 /** A prop that floats beside a Riftwalker only while a condition holds (Obsidia's blade while she has it): its cut-out and where it hovers on the 420x560 figure. */
-export function heroProp(id: string): { canvas: HTMLCanvasElement; x: number; y: number } | undefined {
+export function heroProp(
+  id: string,
+): { canvas: HTMLCanvasElement; x: number; y: number } | undefined {
   if (id !== 'astra') return undefined;
   const canvas = obsidianBlade();
   return canvas ? { canvas, x: 372, y: 250 } : undefined;
@@ -2425,6 +2536,7 @@ export function bespokeHero(id: string): HTMLCanvasElement | undefined {
     if (!g || !fx) return undefined;
     entry.paint(g, fx);
     light(g);
+    rimLight(c, entry.rim);
     outline(c);
     groundShadow(g, entry.shadow);
     g.save();

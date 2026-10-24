@@ -163,8 +163,8 @@ export const MIRE: CardDef[] = [
     on('turnStart', [heal(3, 'allFriends')]),
   ]),
   g('uncommon', 'fen-offering', 'Fen Offering', 'skill', 0, 'ally', [
-    status('doom', 6, 'allFoes'),
-    barrier(6),
+    status('doom', 8, 'allFoes'),
+    barrier(8),
     sacrifice,
   ]),
   g(
@@ -368,7 +368,7 @@ export const MIRE: CardDef[] = [
     status('doom', 3, 'randomFoe'),
   ]),
   g('uncommon', 'reaping-scythe', 'Reaping Scythe', 'attack', 2, 'none', [
-    scaled(dmg(5, 'allFoes'), per('doom', 0.5, 'each')),
+    scaled(dmg(5, 'allFoes'), per('doom', 1, 'each')),
   ]),
   g('uncommon', 'grim-tally', 'Grim Tally', 'attack', 1, 'foe', [
     scaled(dmg(3), per('played', 2)),
@@ -409,7 +409,7 @@ export const MIRE: CardDef[] = [
     barrier(6, 'target'),
   ]),
   g('uncommon', 'bone-rain', 'Bone Rain', 'skill', 1, 'ally', [
-    dmg(10, 'allFoes'),
+    dmg(13, 'allFoes'),
     status('doom', 3, 'allFoes'),
     sacrifice,
   ]),

@@ -79,10 +79,16 @@ export const RIVET: CardDef[] = [
   r('common', 'scrap-storm', 'Scrap Storm', 'attack', 1, 'none', [
     scaled(dmg(2, 'allFoes'), per('allies', 1)),
   ]),
-  r('uncommon', 'scrap-heap', 'Scrap Heap', 'skill', 1, 'none', [
-    summon('micro-drone'),
-    summon('micro-drone'),
-  ]),
+  r(
+    'uncommon',
+    'scrap-heap',
+    'Scrap Heap',
+    'skill',
+    1,
+    'none',
+    [summon('micro-drone'), summon('micro-drone')],
+    { exhaust: true },
+  ),
   r('uncommon', 'swarm-tactics', 'Swarm Tactics', 'power', 1, 'none', [
     on('summon', [dmg(3, 'randomFoe')]),
   ]),
@@ -289,7 +295,7 @@ export const RIVET: CardDef[] = [
   ]),
   r('common', 'field-engineer', 'Field Engineer', 'summon', 1, 'none', [
     summon('repair-bot'),
-    barrier(5),
+    barrier(3),
   ]),
   r('common', 'armor-piercer', 'Armor Piercer', 'attack', 1, 'foe', [
     dmg(6),

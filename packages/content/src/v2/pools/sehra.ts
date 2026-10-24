@@ -134,7 +134,7 @@ export const SEHRA: CardDef[] = [
 
   // --- Mantra ---
   s('common', 'whispered-vow', 'Whispered Vow', 'skill', 1, 'none', [status('mantra', 3), scry(2)]),
-  s('common', 'bowing-low', 'Bowing Low', 'skill', 0, 'none', [status('mantra', 2), barrier(4)]),
+  s('common', 'bowing-low', 'Bowing Low', 'skill', 0, 'none', [status('mantra', 2), barrier(6)]),
   s('common', 'devout-strike', 'Devout Strike', 'attack', 1, 'foe', [dmg(7), status('mantra', 1)]),
   s('common', 'shield-of-faith', 'Shield of Faith', 'skill', 1, 'none', [
     barrier(7),
@@ -184,7 +184,7 @@ export const SEHRA: CardDef[] = [
   ),
   s('uncommon', 'deep-breath', 'Deep Breath', 'skill', 1, 'none', [manaNext(2), draw(1)]),
   // (more Fervor)
-  s('common', 'prostrate', 'Prostrate', 'skill', 0, 'none', [status('mantra', 2), barrier(4)]),
+  s('common', 'prostrate', 'Prostrate', 'skill', 0, 'none', [status('mantra', 2), draw(1)]),
   s('common', 'pray', 'Pray', 'skill', 1, 'none', [status('mantra', 3), barrier(3)]),
   s('uncommon', 'worship', 'Worship', 'skill', 2, 'none', [status('mantra', 5)]),
   s('uncommon', 'devotion', 'Devotion', 'power', 1, 'none', [
