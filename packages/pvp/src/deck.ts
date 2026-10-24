@@ -83,5 +83,17 @@ export function checkEntry(raw: unknown): Checked | Rejected {
   const tier = e['tier'];
   const t =
     typeof tier === 'number' && Number.isInteger(tier) ? Math.min(MAX_TIER, Math.max(1, tier)) : 1;
-  return { ok: true, entry: { name: cleanName(e['name']), hero, deck: cards, boons, tier: t } };
+  const st = e['stage'];
+  const stage = typeof st === 'number' && Number.isInteger(st) && st >= 0 && st <= 3 ? st : null;
+  return {
+    ok: true,
+    entry: {
+      name: cleanName(e['name']),
+      hero,
+      deck: cards,
+      boons,
+      tier: t,
+      ...(stage === null ? {} : { stage }),
+    },
+  };
 }

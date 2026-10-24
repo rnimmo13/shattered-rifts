@@ -54,6 +54,7 @@ import { AuraList, LumenCounter, RuneArc, SnareRow } from './SidePanel';
 import type { FighterSpec } from './Fighters';
 import { attackFor } from './attackStyles';
 import type { FeedItem, PvpLink } from '../pvp/link';
+import { progressLabel } from '../pvp/deckLayout';
 import '../duel/duel.css';
 import '../play/play.css';
 import './fight.css';
@@ -841,6 +842,8 @@ export function FightView(props: {
     }
   }
   const heroPlaced = placed.find((p) => p.unit.kind === 'hero' && p.unit.side === mySide) ?? null;
+  const foeSide: Side = mySide === 'a' ? 'b' : 'a';
+  const foePlaced = placed.find((p) => p.unit.kind === 'hero' && p.unit.side === foeSide) ?? null;
   const floatPos = (f: Float): { left: number; top: number } | null => {
     if (!sc) return null;
     const p = sc.stageToHost(f.x, f.y);
@@ -997,7 +1000,31 @@ export function FightView(props: {
             })}
           </div>
 
-          {pvp && <FoeBadge side={view.sides[mySide === 'a' ? 'b' : 'a']} name={foeName} />}
+          {pvp &&
+            ([mySide, foeSide] as const).map((s) => {
+              const at = s === mySide ? heroPlaced : foePlaced;
+              const p = pvp.progress[s];
+              return at ? (
+                <div
+                  key={s}
+                  className={`fight__who fight__who--${s === mySide ? 'me' : 'foe'}`}
+                  style={{ left: at.x, top: Math.max(4, at.y - at.h - 10) }}
+                >
+                  <b>{pvp.names[s]}</b>
+                  <small>{progressLabel(p.tier, p.stage)}</small>
+                </div>
+              ) : null;
+            })}
+          {pvp && <FoeBadge side={view.sides[foeSide]} name={foeName} />}
+          {pvp && foePlaced && view.sides[foeSide].runes.length > 0 && (
+            <RuneArc
+              db={db}
+              me={view.sides[foeSide]}
+              x={foePlaced.x - 185}
+              cy={foePlaced.y - 110}
+              mirror
+            />
+          )}
           {desync && (
             <div className="fight__desync" role="alert">
               <b>This match has gone out of step with the server.</b>
@@ -1179,6 +1206,8 @@ export function FightView(props: {
               me={me}
               cx={heroPlaced?.x ?? 140}
               top={Math.max(30, (heroPlaced?.y ?? 360) - 44)}
+              // the totem column stands at +185 (its right edge about +230): the Traps start beyond it
+              dx={showRunes ? 245 : 118}
               tip={(card) => snareTip(db, card)}
             />
           )}
@@ -1392,6 +1421,7 @@ function FoeBadge(props: { side: CombatView['sides']['a']; name: string }) {
       <span>Hand {side.handCount}</span>
       <span>Draw {side.drawCount}</span>
       <span>Discard {side.discardCount}</span>
+      <span>Consumed {side.exhaustedCount}</span>
       <span>Mana {side.mana}</span>
       {side.snares.length > 0 && <span>Traps {side.snares.length}</span>}
     </aside>

@@ -259,6 +259,7 @@ async function vault(): Promise<void> {
     id,
     hero: 'maren',
     tier: 1,
+    stage: 2,
     deck: [...RIFTWALKERS.maren.starter],
     boons: ['iron-sigil'],
     bankedAt: 1,
@@ -295,6 +296,10 @@ async function vault(): Promise<void> {
     JSON.stringify((kept.decks as { boons?: string[] }[] | undefined)?.[0]?.boons) ===
       JSON.stringify(['iron-sigil']),
     'Boons are kept with the deck',
+  );
+  need(
+    (kept.decks as { stage?: number }[] | undefined)?.[0]?.stage === 2,
+    'the stage is kept with the deck',
   );
   console.log('  save, list, replace, drop, refusals: as expected');
 }

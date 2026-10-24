@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { RIFTWALKERS } from '@sr/content/v2';
-import { dateLabel, rarityCounts, reportCards, tierLabel } from './deckLayout';
+import { dateLabel, progressLabel, rarityCounts, reportCards, tierLabel } from './deckLayout';
 
 describe('the deck report', () => {
   it('stacks repeats and puts the rarest cards first', () => {
@@ -22,6 +22,13 @@ describe('the deck report', () => {
   it('counts each rarity once, best first', () => {
     const counts = rarityCounts(RIFTWALKERS.maren.starter);
     expect(counts.reduce((n, c) => n + c.n, 0)).toBe(RIFTWALKERS.maren.starter.length);
+  });
+
+  it('says where a player is in the campaign', () => {
+    expect(progressLabel(1, 1)).toBe('Tier 1 · Stage 2/3');
+    expect(progressLabel(2, 0)).toBe('Tier 2 · Stage 1/3');
+    expect(progressLabel(3, 3)).toBe('Tier 3 · Cleared');
+    expect(progressLabel(2)).toBe('Tier 2');
   });
 
   it('dates and tiers read plainly', () => {

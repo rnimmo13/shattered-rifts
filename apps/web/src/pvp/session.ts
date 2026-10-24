@@ -5,6 +5,9 @@ import type { Action, CombatSetup, Side } from '@sr/combat';
 import { setupFor, type ClientMsg, type Entry, type ServerMsg } from '@sr/pvp';
 import { MoveFeed, type PvpLink } from './link';
 
+const progressOf = (e: Entry): { tier: number; stage?: number } =>
+  e.stage === undefined ? { tier: e.tier } : { tier: e.tier, stage: e.stage };
+
 export type Phase = 'idle' | 'queue' | 'waiting' | 'choose' | 'match' | 'error';
 
 /** The question "who goes first?" while it is open. */
@@ -23,6 +26,8 @@ export interface MatchInfo {
   names: Record<Side, string>;
   /** the Riftwalker each seat plays */
   heroes: Record<Side, string>;
+  /** where each player is in the campaign, as their deck was saved */
+  progress: Record<Side, { tier: number; stage?: number }>;
   setup: CombatSetup;
   /** how many moves arrived as history when this player (re)joined */
   replay: number;
@@ -329,6 +334,7 @@ export class PvpSession {
             seat: m.seat,
             names: { a: m.a.name, b: m.b.name },
             heroes: { a: m.a.hero, b: m.b.hero },
+            progress: { a: progressOf(m.a), b: progressOf(m.b) },
             setup: setupFor(m.seed, m.a, m.b),
             replay: m.replay,
             deadline: m.deadline,
@@ -372,6 +378,7 @@ export class PvpSession {
     return {
       seat: m.seat,
       names: m.names,
+      progress: m.progress,
       feed: m.feed,
       send: this.sendMove,
       replay: m.replay,

@@ -4,6 +4,7 @@ import {
   bankInto,
   deckFromRun,
   deckFromStage,
+  stagesCleared,
   dropFrom,
   entryFor,
   labelOf,
@@ -18,6 +19,25 @@ const run = (seed: string, tier = 1) => ({
   character: 'maren' as const,
   deck: [...RIFTWALKERS.maren.starter],
   boons: ['iron-will'],
+});
+
+describe('how far a run has got in its tier', () => {
+  const at = (phase: string, stage: number) => stagesCleared({ phase, stage } as never);
+  it('counts the stages already beaten', () => {
+    expect(at('prelude', 1)).toBe(0);
+    expect(at('map', 1)).toBe(0);
+    expect(at('map', 2)).toBe(1);
+    expect(at('stageClear', 1)).toBe(1);
+    expect(at('gift', 2)).toBe(2);
+    expect(at('prelude', 3)).toBe(2);
+    expect(at('loopCleared', 3)).toBe(3);
+  });
+
+  it('is recorded on the saved deck', () => {
+    expect(deckFromRun(run('a'), 1).stage).toBe(3);
+    expect(deckFromStage(run('a'), 1, 2).stage).toBe(2);
+    expect(entryFor(deckFromStage(run('a'), 1, 1), 'Rob').stage).toBe(1);
+  });
 });
 
 describe('the Vault', () => {

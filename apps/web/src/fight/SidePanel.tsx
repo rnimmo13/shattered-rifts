@@ -23,7 +23,14 @@ export function LumenCounter(props: { value: number }) {
 }
 
 /** The totem slots in a curved column beside the hero (towards the enemies), so they never sit on the buffs under the health bar: `x` is where the column bows out to, `cy` its vertical centre (host px). */
-export function RuneArc(props: { db: CombatDb; me: SideView; x: number; cy: number }) {
+export function RuneArc(props: {
+  db: CombatDb;
+  me: SideView;
+  x: number;
+  cy: number;
+  /** the opponent's column, bowing the other way (towards you) */
+  mirror?: boolean;
+}) {
   const { db, me } = props;
   const n = Math.max(me.runeSlots, me.runes.length);
   if (n === 0) return null;
@@ -35,9 +42,9 @@ export function RuneArc(props: { db: CombatDb; me: SideView; x: number; cy: numb
         const def = r ? db.runes?.[r.rune] : undefined;
         const t = n === 1 ? 0 : (i / (n - 1)) * 2 - 1; // -1 .. 1
         const style = {
-          left: props.x - (1 - (1 - t * t)) * 22,
+          left: props.x + (props.mirror ? 1 : -1) * t * t * 22,
           top: props.cy + (i - (n - 1) / 2) * gap,
-          transform: `translate(-50%, -50%) rotate(${t * 14}deg)`,
+          transform: `translate(-50%, -50%) rotate(${(props.mirror ? -1 : 1) * t * 14}deg)`,
         };
         return r ? (
           <span
@@ -116,14 +123,17 @@ export function SnareRow(props: {
   me: SideView;
   cx: number;
   top: number;
+  /** how far right of the hero the row starts (further when the totem column is in the way) */
+  dx?: number;
   tip: (card: string | null) => TipContent;
 }) {
   const { db, me } = props;
   if (me.snares.length === 0) return null;
   const gap = 66;
+  const x0 = props.cx + (props.dx ?? 118);
   return (
     <div className="snarerow" aria-label="Your Traps">
-      <span className="snarerow__label" style={{ left: props.cx + 118, top: props.top - 22 }}>
+      <span className="snarerow__label" style={{ left: x0, top: props.top - 22 }}>
         Traps {me.snares.length}/{MAX_SNARES}
       </span>
       {me.snares.map((s, i) => {
@@ -134,7 +144,7 @@ export function SnareRow(props: {
             key={s.id}
             className="snaretile"
             tabIndex={0}
-            style={{ left: props.cx + 118 + i * gap, top: props.top }}
+            style={{ left: x0 + i * gap, top: props.top }}
             {...tipAttrs(props.tip(s.card))}
           >
             <svg

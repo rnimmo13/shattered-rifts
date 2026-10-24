@@ -28,6 +28,17 @@ const entryOf = (hero: HeroId, name: string = hero, tier = 1): Entry => ({
 });
 
 describe('checkEntry', () => {
+  it('keeps a stage from 0 to 3 and drops anything else', () => {
+    for (const stage of [0, 2, 3]) {
+      const r = checkEntry({ ...entryOf('maren'), stage });
+      expect(r.ok && r.entry.stage).toBe(stage);
+    }
+    for (const stage of [-1, 4, 1.5, '2', null]) {
+      const r = checkEntry({ ...entryOf('maren'), stage });
+      expect(r.ok && 'stage' in r.entry).toBe(false);
+    }
+  });
+
   it('takes a real starter deck and cleans the name', () => {
     const r = checkEntry({ ...entryOf('maren'), name: '  <b>Rob</b>\u0007  ' });
     expect(r.ok).toBe(true);

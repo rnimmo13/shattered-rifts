@@ -10,6 +10,7 @@ interface Row extends Record<string, SqlStorageValue> {
   id: string;
   hero: string;
   tier: number;
+  stage: number | null;
   deck: string;
   boons: string;
   banked_at: number;
@@ -42,11 +43,16 @@ export class Vault extends DurableObject<Env> {
     const columns = ctx.storage.sql.exec<{ name: string }>('PRAGMA table_info(decks)').toArray();
     if (!columns.some((c) => c.name === 'boons'))
       ctx.storage.sql.exec(`ALTER TABLE decks ADD COLUMN boons TEXT NOT NULL DEFAULT '[]'`);
+    // ... and the stage the deck was saved at (empty for older decks)
+    if (!columns.some((c) => c.name === 'stage'))
+      ctx.storage.sql.exec('ALTER TABLE decks ADD COLUMN stage INTEGER');
   }
 
   private list(): VaultDeck[] {
     const rows = this.ctx.storage.sql
-      .exec<Row>('SELECT id, hero, tier, deck, boons, banked_at FROM decks ORDER BY banked_at, id')
+      .exec<Row>(
+        'SELECT id, hero, tier, stage, deck, boons, banked_at FROM decks ORDER BY banked_at, id',
+      )
       .toArray();
     // a row that cannot be read is left out rather than failing the whole Vault
     return rows.flatMap((r): VaultDeck[] => {
@@ -54,6 +60,7 @@ export class Vault extends DurableObject<Env> {
         id: r.id,
         hero: r.hero,
         tier: r.tier,
+        stage: r.stage ?? undefined,
         deck: parseJson(r.deck),
         boons: parseJson(r.boons),
         bankedAt: r.banked_at,
@@ -64,10 +71,11 @@ export class Vault extends DurableObject<Env> {
 
   private put(d: VaultDeck): void {
     this.ctx.storage.sql.exec(
-      'INSERT OR REPLACE INTO decks (id, hero, tier, deck, boons, banked_at) VALUES (?, ?, ?, ?, ?, ?)',
+      'INSERT OR REPLACE INTO decks (id, hero, tier, stage, deck, boons, banked_at) VALUES (?, ?, ?, ?, ?, ?, ?)',
       d.id,
       d.hero,
       d.tier,
+      d.stage ?? null,
       JSON.stringify(d.deck),
       JSON.stringify(d.boons),
       d.bankedAt,

@@ -9,6 +9,8 @@ export interface VaultDeck {
   id: string;
   hero: string;
   tier: number;
+  /** stages of the tier cleared when it was saved (0-3; 3 = the tier cleared); absent on older decks */
+  stage?: number;
   deck: string[];
   /** the Boons the run held when it was saved (shown with the deck; a match does not use them) */
   boons: string[];
@@ -58,12 +60,19 @@ export function cleanDeck(raw: unknown): VaultDeck | null {
   if (typeof o['id'] !== 'string' || o['id'] === '') return null;
   const id = safeId(o['id']);
   const at = o['bankedAt'];
-  const checked = checkEntry({ name: 'x', hero: o['hero'], deck: o['deck'], tier: o['tier'] });
+  const checked = checkEntry({
+    name: 'x',
+    hero: o['hero'],
+    deck: o['deck'],
+    tier: o['tier'],
+    stage: o['stage'],
+  });
   if (!checked.ok) return null;
   return {
     id,
     hero: checked.entry.hero,
     tier: checked.entry.tier,
+    ...(checked.entry.stage === undefined ? {} : { stage: checked.entry.stage }),
     deck: checked.entry.deck,
     boons: cleanBoons(o['boons']),
     bankedAt: typeof at === 'number' && Number.isFinite(at) ? at : 0,

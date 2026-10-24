@@ -5,6 +5,8 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **PvP match screen:** player names (with their campaign progress, like "Tier 1 · Stage 2/3") stand above both characters, the opponent's totems and Consumed count are visible, and your Traps no longer overlap your totems.
+- **Card art:** 139 more illustrated cards (batches 4 and 5, plus the first of batch 6), 535 in all.
 - **Test build: save a deck at any time.** The Save deck button now works in every part of a run, so the Arena and deck saving can be tried freely. This is temporary.
 - **Save a deck without ending the run, and park runs:** at the end of a Rift Tier you now choose Save this deck (a copy goes to your Vault, the run carries on), then Continue to the next tier or Leave it for now. The Save deck button in the run bar also works at the start of the next tier before its stage 1. Home takes you out of a run and leaves it parked: you can keep up to 3 unfinished runs and carry on any of them from the home page.
 - **Test build: Save deck works at more points.** It is now enabled just before a new stage begins: after stage 1 or after stage 2, and on a Rift Tier beyond the first just before its stage 1 begins. Never in the middle of a stage.

@@ -43,6 +43,8 @@ export interface PvpLink {
   /** the seat you sit in */
   seat: Side;
   names: Record<Side, string>;
+  /** where each player is in the campaign (their deck's Rift Tier and stages cleared) */
+  progress: Record<Side, { tier: number; stage?: number }>;
   feed: MoveFeed;
   /** ask the server to make this move (`seq` is the number you expect it to get); false if there is no connection right now */
   send: (seq: number, action: Action) => boolean;

@@ -24,6 +24,8 @@ export interface Entry {
   boons: string[];
   /** the Rift Tier the deck was banked at (the matchmaker pairs similar tiers first) */
   tier: number;
+  /** how many of the tier's 3 stages the deck had cleared when it was saved (3 = the whole tier); absent on older decks */
+  stage?: number;
 }
 
 export type ClientMsg =

@@ -27,10 +27,20 @@ export function deckFromRun(
     id: safeId(`${run.seed}:t${run.tier}`),
     hero: run.character,
     tier: run.tier,
+    // (a cleared tier is all 3 stages; the mid-run copies below say where they were taken)
+    stage: 3,
     deck: [...run.deck],
     boons: [...run.boons],
     bankedAt: now,
   };
+}
+
+/** How many of the tier's stages the run has cleared (3: the tier is cleared). */
+export function stagesCleared(run: Pick<RunState, 'phase' | 'stage'>): number {
+  if (run.phase === 'loopCleared') return 3;
+  // (the Warden's gift comes after the Warden has fallen, so that stage is already beaten)
+  const n = run.phase === 'stageClear' || run.phase === 'gift' ? run.stage : run.stage - 1;
+  return Math.min(3, Math.max(0, n));
 }
 
 /** TEST BUILD ONLY: a copy of the deck taken after stage `after` (0 = the start of the tier; see run/deckSave.ts). It has its own id, so it never clashes with the Bank at the end. */
@@ -39,22 +49,39 @@ export function deckFromStage(
   now: number,
   after: number,
 ): VaultDeck {
-  return { ...deckFromRun(run, now), id: safeId(`${run.seed}:t${run.tier}:s${after}`) };
+  return {
+    ...deckFromRun(run, now),
+    stage: after,
+    id: safeId(`${run.seed}:t${run.tier}:s${after}`),
+  };
 }
 
 /** TEST BUILD ONLY: a copy of the deck as it is right now, at any point. The id follows the deck's contents, so saving the same deck twice is one entry. */
 export function deckSnapshot(
-  run: Pick<RunState, 'seed' | 'tier' | 'stage' | 'character' | 'deck' | 'boons'>,
+  run: Pick<RunState, 'seed' | 'tier' | 'phase' | 'stage' | 'character' | 'deck' | 'boons'>,
   now: number,
 ): VaultDeck {
   let h = 5381;
-  for (const ch of `${run.deck.join(',')}|${run.boons.join(',')}`) h = (h * 33 + ch.charCodeAt(0)) >>> 0;
-  return { ...deckFromRun(run, now), id: safeId(`${run.seed}:t${run.tier}:n${run.stage}:${h.toString(36)}`) };
+  for (const ch of `${run.deck.join(',')}|${run.boons.join(',')}`)
+    h = (h * 33 + ch.charCodeAt(0)) >>> 0;
+  const stage = stagesCleared(run);
+  return {
+    ...deckFromRun(run, now),
+    stage,
+    id: safeId(`${run.seed}:t${run.tier}:n${run.stage}:${h.toString(36)}`),
+  };
 }
 
 /** What a PvP match is told about a deck. */
 export function entryFor(d: VaultDeck, name: string): Entry {
-  return { name, hero: d.hero, deck: [...d.deck], boons: [...d.boons], tier: d.tier };
+  return {
+    name,
+    hero: d.hero,
+    deck: [...d.deck],
+    boons: [...d.boons],
+    tier: d.tier,
+    ...(d.stage === undefined ? {} : { stage: d.stage }),
+  };
 }
 
 /** A readable name for a deck. */
