@@ -5,6 +5,7 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **Ghostwire** now is a one-eyed, tentacled horror (art by TheRealFusion, from the Jitsu-Koan collection).
 - **Mossy cave:** the cave and swamp stages have swaying hanging fronds and plants, and the Acid Spitter, Maw Spawn and Hooded Acolyte are now a green slime, an orange slime and a little wizard (art by Maaot).
 - **Real monster art:** eight enemies (Vorthax, Gorrmaw, Nyxara, the Whisperer, Packmother Ruhn, Feral Riftling, Bloated One and Choir of Silence) now use hand-inked illustrations by Tania Herrero.
 - **A different place for every realm:** Aurelion fights are at a castle at sunset, Nexus-9 in a teal factory skyline, Wyldmaw in a pine forest, the Glasswaste against a glowing ember sky, Gloomfen in a swamp and the Midden in a back alley (Umbral Veil stays in the cave). Boons and potions show their rarity gem in rewards and shops.

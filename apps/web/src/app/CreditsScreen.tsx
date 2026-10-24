@@ -10,6 +10,18 @@ interface Credit {
 /** Third-party art used in the game. Keep in step with CREDITS.md. */
 const CREDITS: Credit[] = [
   {
+    work: 'Ghostwire monster',
+    author: 'TheRealFusion',
+    url: 'https://jitsu-koan.itch.io/',
+    note: 'From the Jitsu-Koan monster collection (free to use and edit).',
+  },
+  {
+    work: 'Monster and character sprite collection',
+    author: 'Jitsu-Koan',
+    url: 'https://jitsu-koan.itch.io/',
+    note: 'RPG Fantasy Girls and the Waechter monsters.',
+  },
+  {
     work: 'Moss, hanging plants, slimes and the little wizard (cave and swamp stages, Spitter, Maw Spawn, Hooded Acolyte)',
     author: 'Maaot',
     url: 'https://maaot.itch.io/mossy-cavern',
