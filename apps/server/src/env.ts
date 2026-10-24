@@ -2,4 +2,5 @@
 export interface Env {
   MATCHMAKER: DurableObjectNamespace;
   MATCH: DurableObjectNamespace;
+  VAULT: DurableObjectNamespace;
 }

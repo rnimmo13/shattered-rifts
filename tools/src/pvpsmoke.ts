@@ -235,6 +235,62 @@ async function refusals(): Promise<void> {
   for (const b of [bad, p1, p2, p3]) b.ws.close();
 }
 
+/** The server-side Vault: save, list, refuse bad input, replace when full, drop. */
+async function vault(): Promise<void> {
+  console.log('vault:');
+  const http = BASE.replace(/^ws/, 'http');
+  const code = Array.from(
+    { length: 16 },
+    () => 'ABCDEFGHJKMNPQRSTVWXYZ23456789'[Math.floor(Math.random() * 30)],
+  ).join('');
+  const post = async (action: string, body: Record<string, unknown>) => {
+    const r = await fetch(`${http}/pvp/vault/${action}`, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ code, ...body }),
+    });
+    return {
+      status: r.status,
+      ...((await r.json()) as { ok: boolean; error?: string; decks?: { id: string }[] }),
+    };
+  };
+  const mk = (id: string) => ({
+    id,
+    hero: 'maren',
+    tier: 1,
+    deck: [...RIFTWALKERS.maren.starter],
+    bankedAt: 1,
+  });
+  const need = (c: boolean, what: string) => {
+    if (!c) throw new Error(`vault: ${what}`);
+  };
+  need((await post('list', {})).decks?.length === 0, 'a new Vault is empty');
+  for (let i = 0; i < 5; i++) need((await post('bank', { deck: mk(`d${i}`) })).ok, 'bank');
+  need((await post('bank', { deck: mk('d0') })).decks?.length === 5, 'banking twice keeps one');
+  const full = await post('bank', { deck: mk('d9') });
+  need(full.status === 409 && full.error === 'full', 'a full Vault refuses');
+  const swap = await post('bank', { deck: mk('d9'), replaceId: 'd0' });
+  need(
+    swap.ok &&
+      swap.decks?.some((d) => d.id === 'd9') === true &&
+      !swap.decks?.some((d) => d.id === 'd0'),
+    'replace',
+  );
+  need(
+    (await post('bank', { deck: { ...mk('bad'), deck: ['nope'] } })).status === 400,
+    'a bad deck is refused',
+  );
+  need((await post('drop', { id: 'd9' })).decks?.length === 4, 'drop');
+  const other = await fetch(`${http}/pvp/vault/list`, {
+    method: 'POST',
+    body: JSON.stringify({ code: 'short' }),
+  });
+  need(other.status === 400, 'a bad code is refused');
+  const get = await fetch(`${http}/pvp/vault/list`);
+  need(get.status === 404, 'only POST');
+  console.log('  save, list, replace, drop, refusals: as expected');
+}
+
 const health = await fetch(`${BASE.replace(/^ws/, 'http')}/pvp/health`);
 console.log('health:', await health.text());
 const tag = rnd();
@@ -242,5 +298,6 @@ await playRoom(`SMOKE${tag}`, 'friend code');
 await playQueue();
 await playRoom(`REJOIN${tag}`, 'friend code with a rejoin', true);
 await refusals();
+await vault();
 console.log('all good');
 process.exit(0);

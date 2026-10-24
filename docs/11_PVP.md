@@ -5,8 +5,7 @@ First playable version (friends test). Two players, each with a banked deck, pla
 
 ## What a player does
 
-1. Clear a run and choose **Bank**: the deck goes into the **Vault** (this browser, 5 slots; a full Vault asks which deck to
-   give up). Or skip the run: every Riftwalker's starting deck is always offered, so a match can be tried at once.
+1. Clear a run and choose **Bank**: the deck goes into the **Vault** (5 slots; a full Vault asks which deck to give up). The Vault is kept in this browser and also on the server under a **Vault code** (see below). Or skip the run: every Riftwalker's starting deck is always offered, so a match can be tried at once.
 2. Title screen → **Arena** (`#/arena`, also `#/pvp`). Pick a name and a deck.
 3. **Find a match** (the queue), **Make a room for a friend** (shows a 5-letter code to send), or **Join a room** (type a code).
 4. **Who goes first?** Both players are asked: *I will go first* or *I will go second (+10 HP)*. Different answers: everyone gets what they asked for. The same answer (or no answer in 20 s): the server flips a coin, and both players watch it spin and land on the portrait and name of whoever goes first.
@@ -43,7 +42,7 @@ browser (apps/web/src/pvp)  ──WebSocket──►  Cloudflare Worker (apps/se
 - **Hidden information is not hidden.** Each browser holds the whole match state, so a modified client could read the
   opponent's hand. The server still decides every move, so nobody can break the rules. Fix later: the room keeps the state and
   sends each player only their own view (`viewFor` / `eventsFor` already exist for it).
-- No accounts: the player id is random per tab and the Vault lives in the browser. No ratings, history or leaderboards.
+- No accounts: the player id is random per tab, and the **Vault code** is the only key to the saved decks (whoever has it can read and change that Vault). No ratings, history or leaderboards.
 - Boons, Potions and run HP do not come into PvP (a banked deck is cards only).
 
 ## Running it
@@ -57,10 +56,27 @@ pnpm pvpsmoke         # plays whole matches against the local server with two bo
 
 To try it alone: open `#/pvp` in two tabs (each tab is its own player), make a room in one, join its code in the other.
 
+## The Vault online
+
+Each browser makes a random **Vault code** (16 letters and digits, shown `XXXX-XXXX-XXXX-XXXX`) the first time it needs one and keeps it in
+localStorage (`sr-vault-code`). The Arena screen's **Vault code** box shows it, copies it, and loads another code, which replaces the
+browser's list with that Vault's decks so the same decks appear on another device.
+
+- The server keeps one **Vault** Durable Object per code (`apps/server/src/vault.ts`, a SQLite table of decks). The object is named by a
+  SHA-256 of the code, so the code is not stored. Routes: `POST /pvp/vault/list|bank|drop` with a JSON body `{code, ...}` (the code goes
+  in the body, never the URL).
+- The rules are the shared pure ones in `packages/pvp/src/vault.ts` (slots, banking, cleaning what arrives: every deck goes through
+  `checkEntry`). The server accepts only legal decks, at most 5, ids of letters, digits and `:.~-`.
+- The browser copy always works: when the server cannot be reached the Arena uses the local list and says so. On opening the Arena (and
+  after banking) the two are merged: what the server lacks goes up, what does not fit stays local (`vaultSync.ts`). A deck removed while
+  offline comes back at the next sync.
+- This is a Durable Object per Vault rather than the D1 database `shattered-rifts-db`: it needs no setup or migration by hand and
+  cannot break a deploy. Moving to D1 (to list or search decks across players) is possible later if accounts arrive.
+
 ## Putting it online (Cloudflare)
 
-`wrangler.jsonc` at the repo root declares the Worker (`apps/server/src/worker.ts`), the two Durable Object classes and
-their migration, and serves `apps/web/dist` as static assets, sending only `/pvp/*` to the Worker. The existing Cloudflare
+`wrangler.jsonc` at the repo root declares the Worker (`apps/server/src/worker.ts`), the three Durable Object classes (queue, match room, Vault) and
+their migrations, and serves `apps/web/dist` as static assets, sending only `/pvp/*` to the Worker. The existing Cloudflare
 Workers Build (build `pnpm install && pnpm --filter @sr/web build`, deploy `npx wrangler deploy`) therefore deploys the
 server with the site. Durable Objects with SQLite storage are available on the free plan.
 

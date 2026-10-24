@@ -5,6 +5,8 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **0.24.0:** Vault online.
+- **Vault online:** banked decks are now also saved on the server under a Vault code (shown in the Arena, with Copy), so your decks appear in the Arena on any device that has the code. The browser copy still works if the server can't be reached.
 - **0.23.1:** PvP is now called the Arena.
 - **0.23.0:** PvP (the Arena), the Vault for banked decks, no-overlap fighters, Devotion, copyable error screens and 396 illustrated cards.
 - **The Arena (PvP, first test version):** bank a deck at the end of a run, then take it into a match from the title screen: Find a match (queue), or make a room and send the code to a friend. Turns alternate, each has a 75-second clock. Before a match both players choose to go first or go second with 10 more HP; if they choose the same, a coin flip decides. Needs the PvP server (see docs/11_PVP.md).

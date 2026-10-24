@@ -28,6 +28,8 @@ import {
   type VaultDeck,
 } from './vault';
 import { ChoosePanel, CoinFlip } from './PvpParts';
+import { VaultCode, type Online } from './VaultCode';
+import { getVaultCode, remoteVault, syncVault, ensureVaultCode } from './vaultSync';
 import './pvp.css';
 
 const ARENAS: VenueId[] = [
@@ -59,6 +61,9 @@ const EMPTY: Snapshot = {
 
 export default function PvpScreen() {
   const [vault, setVault] = useState<VaultDeck[]>(loadVault);
+  const [online, setOnline] = useState<Online>('checking');
+  /** the player changed the Vault by hand, so a sync still on its way must not overwrite it */
+  const touched = useRef(false);
   const starters = useMemo(starterDecks, []);
   const decks = useMemo(() => [...vault, ...starters], [vault, starters]);
   const [deckId, setDeckId] = useState<string>(() => decks[0]?.id ?? '');
@@ -79,6 +84,24 @@ export default function PvpScreen() {
     const s = new PvpSession(serverBase(), playerId(), setSnap);
     session.current = s;
     s.joinRoom(saved.room, saved.entry);
+  }, []);
+
+  // the decks saved on the server and the ones in this browser are brought together
+  useEffect(() => {
+    let live = true;
+    const key = ensureVaultCode();
+    void syncVault(key, loadVault()).then((r) => {
+      // the answer is stale if the page was left, the code was changed, or a deck was removed while it was on its way
+      if (!live || getVaultCode() !== key || touched.current) return;
+      setOnline(r.ok ? (r.complete ? 'saved' : 'partial') : 'offline');
+      if (r.ok) {
+        setVault(r.decks);
+        saveVault(r.decks);
+      }
+    });
+    return () => {
+      live = false;
+    };
   }, []);
 
   // leaving the page ends whatever connection is open
@@ -201,6 +224,9 @@ export default function PvpScreen() {
                 const next = dropFrom(vault, d.id);
                 setVault(next);
                 saveVault(next);
+                touched.current = true;
+                const key = getVaultCode();
+                if (key) void remoteVault.drop(key, d.id);
                 if (deckId === d.id) setDeckId(next[0]?.id ?? starters[0]?.id ?? '');
               }}
             >
@@ -325,6 +351,17 @@ export default function PvpScreen() {
               </button>
             </span>
           </div>
+          <VaultCode
+            online={online}
+            local={vault}
+            onRestore={(decks, complete) => {
+              touched.current = true;
+              setVault(decks);
+              saveVault(decks);
+              setOnline(complete ? 'saved' : 'partial');
+              setDeckId(decks[0]?.id ?? starters[0]?.id ?? '');
+            }}
+          />
           <details className="pvp__server">
             <summary>Server</summary>
             <p>

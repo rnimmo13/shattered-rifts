@@ -13,7 +13,11 @@
     "bindings": [
       { "name": "MATCHMAKER", "class_name": "Matchmaker" },
       { "name": "MATCH", "class_name": "MatchRoom" },
+      { "name": "VAULT", "class_name": "Vault" },
     ],
   },
-  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["Matchmaker", "MatchRoom"] }],
+  "migrations": [
+    { "tag": "v1", "new_sqlite_classes": ["Matchmaker", "MatchRoom"] },
+    { "tag": "v2", "new_sqlite_classes": ["Vault"] },
+  ],
 }

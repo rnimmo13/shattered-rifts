@@ -1,7 +1,7 @@
 // What you see after banking a deck: it goes into the Vault (this browser's list of banked decks, the ones you can take into
 // a PvP match). A full Vault asks which deck to give up.
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import type { RunState } from '@sr/campaign';
 import {
   VAULT_SLOTS,
@@ -12,6 +12,7 @@ import {
   saveVault,
   type VaultDeck,
 } from '../pvp/vault';
+import { ensureVaultCode, getVaultCode, remoteVault, syncVault } from '../pvp/vaultSync';
 
 export function BankedPanel(props: { run: RunState; onExport: () => void; onLeave: () => void }) {
   const { run } = props;
@@ -26,12 +27,30 @@ export function BankedPanel(props: { run: RunState; onExport: () => void; onLeav
     return { list: current, saved: false };
   });
 
-  const replace = (id: string): void => {
+  const [online, setOnline] = useState<'saving' | 'saved' | 'partial' | 'offline'>('saving');
+  /** counts the times the Vault is changed by hand, so the server copy follows */
+  const [tick, setTick] = useState(0);
+
+  // a second copy goes to the server (the Vault code on the Arena screen is the key to it)
+  useEffect(() => {
+    let live = true;
+    void syncVault(ensureVaultCode(), state.list).then((r) => {
+      if (live) setOnline(r.ok ? (r.complete ? 'saved' : 'partial') : 'offline');
+    });
+    return () => {
+      live = false;
+    };
+  }, [state.list, tick]);
+
+  const replace = async (id: string): Promise<void> => {
     const r = bankInto(state.list, deckFromRun(run, at), id);
-    if (r.ok) {
-      saveVault(r.list);
-      setState({ list: r.list, saved: true });
-    }
+    if (!r.ok) return;
+    saveVault(r.list);
+    setState({ list: r.list, saved: true });
+    // the deck given up leaves the server copy too, or it would fill the slot there
+    const key = getVaultCode();
+    if (key) await remoteVault.drop(key, id);
+    setTick((t) => t + 1);
   };
 
   return (
@@ -40,7 +59,11 @@ export function BankedPanel(props: { run: RunState; onExport: () => void; onLeav
       {state.saved ? (
         <p className="stage-panel__hint">
           This {run.deck.length}-card deck is in your Vault ({state.list.length} of {VAULT_SLOTS}{' '}
-          slots used). Take it into a match from <b>Arena</b> on the title screen.
+          slots used). Take it into a match from <b>Arena</b> on the title screen.{' '}
+          {online === 'saved' && 'It is saved online too.'}
+          {online === 'partial' &&
+            'The online Vault is full of other decks, so it stays in this browser. Open Arena to manage them.'}
+          {online === 'offline' && 'It could not be saved online, so it stays in this browser.'}
         </p>
       ) : (
         <>
@@ -54,7 +77,7 @@ export function BankedPanel(props: { run: RunState; onExport: () => void; onLeav
                 <span>
                   {labelOf(d)} <small>({d.deck.length} cards)</small>
                 </span>
-                <button className="btn btn--small" onClick={() => replace(d.id)}>
+                <button className="btn btn--small" onClick={() => void replace(d.id)}>
                   <span>Replace this one</span>
                 </button>
               </li>
