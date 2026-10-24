@@ -24,6 +24,7 @@
     "balance": "pnpm --filter @sr/tools balance",
     "runsim": "pnpm --filter @sr/tools runsim",
     "cardscan": "pnpm --filter @sr/tools cardscan",
+    "traitscan": "pnpm --filter @sr/tools traitscan",
     "lanes": "pnpm --filter @sr/tools lanes"
   },
   "devDependencies": {
