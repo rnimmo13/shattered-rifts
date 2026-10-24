@@ -1,0 +1,18 @@
+{
+  "name": "@sr/pvp",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "PvP: the match rules, deck checks and matchmaking queue (pure). The Cloudflare server in apps/server and the web client both use it.",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json"
+  },
+  "dependencies": {
+    "@sr/campaign": "workspace:*",
+    "@sr/combat": "workspace:*",
+    "@sr/content": "workspace:*"
+  }
+}

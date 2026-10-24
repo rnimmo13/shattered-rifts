@@ -36,7 +36,7 @@ const purityRules = {
 };
 
 export default tseslint.config(
-  { ignores: ['**/dist/**', '**/coverage/**', '**/node_modules/**'] },
+  { ignores: ['**/dist/**', '**/coverage/**', '**/node_modules/**', '**/.wrangler/**'] },
   js.configs.recommended,
   ...tseslint.configs.recommendedTypeChecked,
   {
@@ -62,6 +62,7 @@ export default tseslint.config(
       'packages/content/src/**/*.ts',
       'packages/campaign/src/**/*.ts',
       'packages/combat/src/**/*.ts',
+      'packages/pvp/src/**/*.ts',
     ],
     ignores: ['**/*.test.ts'],
     rules: purityRules,

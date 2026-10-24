@@ -26,7 +26,9 @@
     "runsim": "pnpm --filter @sr/tools runsim",
     "cardscan": "pnpm --filter @sr/tools cardscan",
     "traitscan": "pnpm --filter @sr/tools traitscan",
-    "lanes": "pnpm --filter @sr/tools lanes"
+    "lanes": "pnpm --filter @sr/tools lanes",
+    "pvpsmoke": "pnpm --filter @sr/tools pvpsmoke",
+    "pvp:dev": "pnpm --filter @sr/server dev"
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",

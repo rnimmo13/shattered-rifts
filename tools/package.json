@@ -16,12 +16,14 @@
     "runsim": "tsx src/runsim.ts",
     "cardscan": "tsx src/cardscan.ts",
     "traitscan": "tsx src/traitscan.ts",
-    "lanes": "tsx src/lanes.ts"
+    "lanes": "tsx src/lanes.ts",
+    "pvpsmoke": "tsx src/pvpsmoke.ts"
   },
   "dependencies": {
     "@sr/campaign": "workspace:*",
     "@sr/combat": "workspace:*",
-    "@sr/content": "workspace:*"
+    "@sr/content": "workspace:*",
+    "@sr/pvp": "workspace:*"
   },
   "devDependencies": {
     "tsx": "4.23.15"

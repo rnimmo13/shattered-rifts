@@ -1,7 +1,19 @@
 {
-  // Cloudflare Workers Builds: serves the built web client as static assets.
+  // Cloudflare Workers Builds: serves the built web client as static assets, and runs the PvP server (apps/server) for /pvp/*.
   // Build command: pnpm install && pnpm --filter @sr/web build   Deploy command: npx wrangler deploy
   "name": "shattered-rifts",
+  "main": "apps/server/src/worker.ts",
   "compatibility_date": "2026-10-01",
-  "assets": { "directory": "apps/web/dist" },
+  "assets": {
+    "directory": "apps/web/dist",
+    // only the PvP routes reach the Worker; everything else is a static file
+    "run_worker_first": ["/pvp/*"],
+  },
+  "durable_objects": {
+    "bindings": [
+      { "name": "MATCHMAKER", "class_name": "Matchmaker" },
+      { "name": "MATCH", "class_name": "MatchRoom" },
+    ],
+  },
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["Matchmaker", "MatchRoom"] }],
 }

@@ -1,0 +1,20 @@
+{
+  "name": "@sr/server",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "The PvP server: a Cloudflare Worker with two Durable Objects (the matchmaking queue and a match room).",
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json",
+    "dev": "wrangler dev --config ../../wrangler.jsonc"
+  },
+  "dependencies": {
+    "@sr/combat": "workspace:*",
+    "@sr/content": "workspace:*",
+    "@sr/pvp": "workspace:*"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^5.20261023.1",
+    "wrangler": "^4.152.0"
+  }
+}

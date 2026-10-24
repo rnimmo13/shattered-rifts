@@ -19,3 +19,6 @@ keys/
 
 # purchased asset packs (license may forbid redistributing raw files)
 /assets-src/
+
+# Cloudflare local dev state
+.wrangler/
