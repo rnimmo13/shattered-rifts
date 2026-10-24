@@ -43,6 +43,7 @@ import { getHero, rememberHero } from '../app/heroChoice';
 import { BoonToast } from './BoonToast';
 import { PotionChip } from '../fight/PotionChip';
 import { BankedPanel } from './BankedPanel';
+import { MID_RUN_SAVES, MidRunSave } from './MidRunSave';
 import { CharacterPicker } from './CharacterPicker';
 import { MapLegend, MapView } from './MapView';
 import {
@@ -562,6 +563,7 @@ function Body(props: {
           <p className="stage-panel__hint">
             The Warden is beaten and the rift seals behind you. Onward to stage {run.stage + 1}.
           </p>
+          {MID_RUN_SAVES && <MidRunSave run={run} />}
           <button className="btn btn--primary" onClick={() => act((r) => nextStage(r))}>
             <span>Onward</span>
           </button>

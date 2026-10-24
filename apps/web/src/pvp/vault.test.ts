@@ -3,6 +3,7 @@ import { RIFTWALKERS } from '@sr/content/v2';
 import {
   bankInto,
   deckFromRun,
+  deckFromStage,
   dropFrom,
   entryFor,
   labelOf,
@@ -53,6 +54,16 @@ describe('the Vault', () => {
 
   it('names a deck by its Riftwalker and Rift Tier', () => {
     expect(labelOf(deckFromRun(run('a', 3), 1))).toBe('Valeria: Rift Tier 3');
+  });
+
+  it('a copy taken after a stage has its own id and says so', () => {
+    const r = { ...run('a', 2), stage: 1 };
+    const mid = deckFromStage(r, 1);
+    expect(mid.id).not.toBe(deckFromRun(r, 1).id);
+    expect(labelOf(mid)).toBe('Valeria: Rift Tier 2, after stage 1');
+    // both can sit in the Vault together
+    const both = bankInto(bankInto([], mid).list, deckFromRun(r, 1));
+    expect(both.list).toHaveLength(2);
   });
 
   it('reads back what it saved, and drops anything that is no longer a legal deck', () => {

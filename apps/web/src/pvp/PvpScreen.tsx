@@ -28,6 +28,7 @@ import {
 import { ChoosePanel, CoinFlip } from './PvpParts';
 import { VaultCode, type Online } from './VaultCode';
 import { AccountBox } from './AccountBox';
+import { MID_RUN_SAVES } from '../run/MidRunSave';
 import { remoteVault, syncVault, vaultKey, whoAmI, type Me } from './vaultSync';
 import './pvp.css';
 
@@ -335,6 +336,8 @@ export default function PvpScreen() {
                     The Arena is played with decks you have built in the campaign. Win a run, choose{' '}
                     <b>Bank</b> at the end, and that deck is yours to bring here. You keep it
                     whether you win or lose a match.
+                    {MID_RUN_SAVES &&
+                      ' In this test build you can also save a copy of your deck each time you clear a stage.'}
                   </p>
                   <p>
                     Banked decks on another device?{' '}

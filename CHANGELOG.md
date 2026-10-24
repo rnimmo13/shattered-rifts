@@ -5,6 +5,7 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **Test build: save a deck after each stage.** When a stage is cleared you can copy your deck into the Vault and carry on, so the Arena can be tried without finishing a whole run. The real game will only save decks when a Rift Tier is cleared.
 - **Arena needs a saved deck:** the Riftwalker starting decks are gone from the Arena. With no banked deck the screen explains how to get one (win a run and choose Bank) and links to a New Run.
 - **0.27.0:** the Arena needs a banked deck, and the home page sign-in is spaced properly.
 - **0.26.0:** a new home page (New Run, Arena, Practice, the Riftwalker on show) with sign-in.
