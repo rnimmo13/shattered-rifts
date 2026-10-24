@@ -1,0 +1,9 @@
+/* the sign-in box, used on the home page and in the Arena (so its own file: the Arena's CSS loads only with that screen) */
+.pvp__account {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem 1rem;
+  align-items: center;
+  justify-content: center;
+  color: var(--c-text-dim);
+}

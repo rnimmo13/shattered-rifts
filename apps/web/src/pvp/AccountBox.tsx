@@ -3,6 +3,7 @@
 
 import { useState } from 'react';
 import { signInUrl, signOut, type Me } from './vaultSync';
+import './accountBox.css';
 
 export function AccountBox(props: {
   me: Me;
