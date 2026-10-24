@@ -126,7 +126,7 @@ export class MatchRoom extends DurableObject<Env> {
     const a = d.entries.a;
     const b = d.entries.b;
     if (!d.started || !a || !b) return null;
-    return { type: 'start', seat, seed: d.seed, a, b, deadline: d.deadline, replay: d.log.length };
+    return { type: 'start', seat, seed: d.seed, a, b, deadline: d.deadline, replay: d.log.length, now: Date.now() };
   }
 
   private actionMessage(i: number, m: Accepted | null): ServerMsg {
@@ -139,6 +139,7 @@ export class MatchRoom extends DurableObject<Env> {
       action: e.action,
       hash: m?.hash ?? '',
       deadline: this.data.deadline,
+      now: Date.now(),
     };
   }
 
@@ -238,6 +239,7 @@ export class MatchRoom extends DurableObject<Env> {
         action: msg.action,
         hash: r.hash,
         deadline: r.deadline,
+        now: Date.now(),
       });
       if (r.outcome) await this.finish(r.outcome);
       else await this.save();
@@ -321,6 +323,7 @@ export class MatchRoom extends DurableObject<Env> {
           action: m.action,
           hash: m.hash,
           deadline: m.deadline,
+          now: Date.now(),
         });
       }
       d.deadline = match.deadline;

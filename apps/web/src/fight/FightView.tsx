@@ -9,6 +9,7 @@ import {
   clone,
   cardText,
   createCombat,
+  hashState,
   legalActions,
   viewFor,
   type Action,
@@ -18,7 +19,9 @@ import {
   type CombatSetup,
   type CombatState,
   type CombatView,
+  type HeroSetup,
   type Op,
+  type Side,
   type Winner,
 } from '@sr/combat';
 import { COMBAT_DB } from '@sr/content/v2';
@@ -50,6 +53,7 @@ import { loadSeen, loadTipsOn, nextTip, saveSeen, saveTipsOn } from './tips';
 import { AuraList, LumenCounter, RuneArc, SnareRow } from './SidePanel';
 import type { FighterSpec } from './Fighters';
 import { attackFor } from './attackStyles';
+import type { FeedItem, PvpLink } from '../pvp/link';
 import '../duel/duel.css';
 import '../play/play.css';
 import './fight.css';
@@ -87,9 +91,43 @@ const FOE_FAR = 1850;
 const ALLY_NEAR = 910;
 const ALLY_FAR = 440;
 
-function specsFrom(db: CombatDb, s: CombatState): FighterSpec[] {
+/** A mirrored copy of a figure, for the opponent on the right in PvP (the art is drawn facing right). */
+const mirrored = new WeakMap<HTMLCanvasElement, HTMLCanvasElement>();
+function mirror(c: HTMLCanvasElement): HTMLCanvasElement {
+  let m = mirrored.get(c);
+  if (!m) {
+    m = document.createElement('canvas');
+    m.width = c.width;
+    m.height = c.height;
+    const g = m.getContext('2d');
+    if (g) {
+      g.translate(c.width, 0);
+      g.scale(-1, 1);
+      g.drawImage(c, 0, 0);
+    }
+    mirrored.set(c, m);
+  }
+  return m;
+}
+
+/** In PvP the opponent's hero stands on the right, where yours stands on the left. */
+const FOE_HERO_X = 1690;
+const FOE_FAR_PVP = 1480;
+
+/** Which way a result reads from the point of view of the seat you sit in ('a' = you). */
+const shown = (w: Winner, me: Side): Winner => (w === 'draw' ? 'draw' : w === me ? 'a' : 'b');
+
+/**
+ * What stands where. `me` is the seat the player sits in: that side stands on the left (display side 'a'), the other on the
+ * right (display side 'b'). Only the display side reaches the stage; unit ids stay the engine's.
+ */
+function specsFrom(db: CombatDb, s: CombatState, me: Side = 'a'): FighterSpec[] {
   const out: FighterSpec[] = [];
+  const pvp = s.mode === 'pvp';
   for (const side of ['a', 'b'] as const) {
+    const ds: Side = side === me ? 'a' : 'b';
+    // the opponent (and their companions) stand on the right and face left
+    const flip = pvp && ds === 'b';
     const units = s.sides[side].units;
     const others = units.filter((x) => x.kind !== 'hero');
     // every figure's real size first: each side is then laid out from those widths, so nothing overlaps
@@ -97,7 +135,8 @@ function specsFrom(db: CombatDb, s: CombatState): FighterSpec[] {
     const sized = units.map((u) => {
       const hero = u.kind === 'hero';
       const flies = !hero && hoverOf(u.def) > 0;
-      const canvas = hero ? heroFigure(u.def) : unitFigure(u.def);
+      const raw = hero ? heroFigure(u.def) : unitFigure(u.def);
+      const canvas = flip && u.kind !== 'enemy' ? mirror(raw) : raw;
       const height = fitHeight(
         canvas,
         unitHeight(db.units[u.def], u.kind),
@@ -122,20 +161,22 @@ function specsFrom(db: CombatDb, s: CombatState): FighterSpec[] {
     });
     const line = sized.filter((e) => !e.hero);
     const fit =
-      side === 'b' ? packLine(line, FOE_NEAR, FOE_FAR) : packLine(line, ALLY_NEAR, ALLY_FAR);
+      ds === 'b'
+        ? packLine(line, FOE_NEAR, pvp ? FOE_FAR_PVP : FOE_FAR)
+        : packLine(line, ALLY_NEAR, ALLY_FAR);
     let n = 0;
     for (const e of sized) {
-      const prop = e.hero ? heroProp(e.u.def) : undefined;
+      const prop = e.hero && !flip ? heroProp(e.u.def) : undefined;
       // the floating blade shows while a card tagged 'blade' is in her hand
       const holding = s.sides[side].hand.some((c) => db.cards[c.card]?.tags?.includes('blade'));
       const k = e.hero ? 1 : fit.scale;
       out.push({
         id: e.u.id,
-        side,
+        side: ds,
         isHero: e.hero,
         slot: e.hero ? 0 : n,
         count: line.length,
-        ...(e.hero ? {} : { x: fit.xs[n++] as number }),
+        ...(e.hero ? (flip ? { x: FOE_HERO_X } : {}) : { x: fit.xs[n++] as number }),
         canvas: e.canvas,
         height: e.height * k,
         ...(e.hover > 0 ? { hover: e.hover * k } : {}),
@@ -158,8 +199,19 @@ export function FightView(props: {
   topExtra?: React.ReactNode;
   /** where the fight takes place (the Rift arena by default) */
   venue?: VenueId;
+  /** a PvP match: you sit in one seat, the opponent's moves arrive from the server */
+  pvp?: PvpLink;
 }) {
   const { db, setup } = props;
+  const pvp = props.pvp ?? null;
+  const mySide: Side = pvp?.seat ?? 'a';
+  const foeName = pvp?.names[mySide === 'a' ? 'b' : 'a'] ?? 'Enemy';
+  /** the deck and hero in your seat */
+  const mine = (mySide === 'a' ? setup.a : setup.b) as HeroSetup;
+  /** moves applied so far (PvP) and whether my last move is still with the server */
+  const seqRef = useRef(0);
+  const awaiting = useRef(false);
+  const [desync, setDesync] = useState(false);
   const host = useRef<HTMLDivElement>(null);
   const scene = useRef<BattlefieldScene | null>(null);
   const game = useRef<{ state: CombatState; display: CombatState } | null>(null);
@@ -211,7 +263,7 @@ export function FightView(props: {
     window.setTimeout(() => setFloats((f) => f.filter((x) => x.id !== id)), 1100);
   }, []);
 
-  const show = useCallback((s: CombatState) => setView(viewFor(db, s, 'a')), [db]);
+  const show = useCallback((s: CombatState) => setView(viewFor(db, s, mySide)), [db, mySide]);
 
   // --- replaying events ---------------------------------------------------------------------------
   const wait = useCallback((ms: number) => sleep(ms / speedRef.current), []);
@@ -222,13 +274,15 @@ export function FightView(props: {
       const sc = scene.current;
       if (!g || !sc) return;
       const d = g.display;
-      const heroId = d.sides.a.units.find((u) => u.kind === 'hero')?.id ?? '';
-      const respec = () => sc.fighters.sync(specsFrom(db, d));
+      const heroOf = (side: Side): string =>
+        d.sides[side].units.find((u) => u.kind === 'hero')?.id ?? '';
+      const heroId = heroOf(mySide);
+      const respec = () => sc.fighters.sync(specsFrom(db, d, mySide));
       switch (e.type) {
         case 'turnStart': {
           reduceEvent(db, d, e);
-          if (e.side === 'b') {
-            setBanner('Enemy turn');
+          if (e.side !== mySide) {
+            setBanner(pvp ? `${foeName}'s turn` : 'Enemy turn');
             await wait(650);
             setBanner(null);
           } else if (e.turn > 1) {
@@ -241,7 +295,7 @@ export function FightView(props: {
         }
         case 'draw':
           reduceEvent(db, d, e);
-          if (e.side === 'a') play('deal');
+          if (e.side === mySide) play('deal');
           await wait(70);
           return;
         case 'discard':
@@ -255,17 +309,21 @@ export function FightView(props: {
         case 'play': {
           reduceEvent(db, d, e);
           const def = db.cards[e.def];
-          if (e.side === 'a' && def) {
-            setFlourish(def);
-            window.setTimeout(
-              () => setFlourish((c) => (c === def ? null : c)),
-              650 / speedRef.current,
-            );
+          // (in PvE only your side plays cards; in PvP the opponent's cards show too, except a Trap they set)
+          if (def) {
+            const hero = heroOf(e.side);
+            if (e.side === mySide || def.kind !== 'snare') {
+              setFlourish(def);
+              window.setTimeout(
+                () => setFlourish((c) => (c === def ? null : c)),
+                650 / speedRef.current,
+              );
+            }
             if (def.kind === 'attack') {
-              if (e.target) await sc.fighters.attack(heroId, e.target);
-              else await sc.fighters.attack(heroId, null);
+              if (e.target) await sc.fighters.attack(hero, e.target);
+              else await sc.fighters.attack(hero, null);
             } else {
-              sc.fighters.act(heroId);
+              sc.fighters.act(hero);
               play(def.kind === 'snare' ? 'trapSet' : 'cast');
               await wait(160);
             }
@@ -383,8 +441,8 @@ export function FightView(props: {
           return;
         case 'gameOver':
           reduceEvent(db, d, e);
-          sc.fighters.finish(e.winner);
-          play(e.winner === 'a' ? 'win' : 'lose');
+          sc.fighters.finish(shown(e.winner, mySide));
+          play(e.winner === mySide ? 'win' : 'lose');
           await wait(700);
           return;
         default:
@@ -392,7 +450,7 @@ export function FightView(props: {
           return;
       }
     },
-    [db, float, wait],
+    [db, float, wait, mySide, pvp, foeName],
   );
 
   const runBatch = useCallback(
@@ -414,19 +472,20 @@ export function FightView(props: {
       // whatever happened, the screen ends exactly where the engine is
       try {
         g.display = clone(after);
-        sc.fighters.sync(specsFrom(db, g.display), { instant: true });
+        sc.fighters.sync(specsFrom(db, g.display, mySide), { instant: true });
         show(g.display);
         bump((n) => n + 1);
       } catch (err) {
         console.warn('[fight] resync failed', err);
       }
     },
-    [db, playEvent, show],
+    [db, playEvent, show, mySide],
   );
 
   const enqueue = useCallback(
-    (events: CombatEvent[], after: CombatState) => {
-      const enemyPhase = events.some((e) => e.type === 'turnStart' && e.side === 'b');
+    (events: CombatEvent[], after: CombatState, foeMove?: boolean) => {
+      // in PvE the whole enemy turn arrives in one batch; in PvP each of the opponent's moves is its own batch
+      const enemyPhase = foeMove ?? events.some((e) => e.type === 'turnStart' && e.side !== mySide);
       pending.current.all++;
       if (enemyPhase) {
         pending.current.enemy++;
@@ -442,20 +501,20 @@ export function FightView(props: {
         if (enemyPhase) pending.current.enemy--;
         if (pending.current.enemy === 0 && !cancelledRef.current) setLocked(false);
         if (after.winner && pending.current.all === 0 && !cancelledRef.current) {
-          const hero = after.sides.a.units.find((u) => u.kind === 'hero');
+          const hero = after.sides[mySide].units.find((u) => u.kind === 'hero');
           window.setTimeout(
             () =>
               setResult({
-                winner: after.winner as Winner,
+                winner: shown(after.winner as Winner, mySide),
                 hp: hero?.hp ?? 0,
-                potions: [...after.sides.a.potions],
+                potions: [...after.sides[mySide].potions],
               }),
             300,
           );
         }
       });
     },
-    [runBatch],
+    [runBatch, mySide],
   );
 
   // --- mount: build the scene and start the fight ---------------------------------------------------
@@ -483,10 +542,11 @@ export function FightView(props: {
         const start = createCombat(db, setup);
         game.current = { state: start.state, display: startingDisplay(start.state) };
         setLive(start.state);
-        s.fighters.sync(specsFrom(db, game.current.display), { instant: true });
+        s.fighters.sync(specsFrom(db, game.current.display, mySide), { instant: true });
         show(game.current.display);
         setReady(true);
-        enqueue(start.events, start.state);
+        // (a player coming back to a match in progress skips the opening: the moves so far are replayed silently)
+        if (!pvp || pvp.replay === 0) enqueue(start.events, start.state);
         // the opening: events replay the draw; then the player may act
         chain.current = chain.current.then(() => {
           if (!cancelledRef.current) setLocked(false);
@@ -517,49 +577,134 @@ export function FightView(props: {
     saveSpeed(speed);
   }, [speed]);
 
+  // PvP: the server can end a match the engine does not know is over (a resignation, a missed turn, a dropped player)
+  const pvpEnd = pvp?.end ?? null;
+  useEffect(() => {
+    if (!pvpEnd || result) return;
+    void chain.current.then(() => {
+      if (cancelledRef.current) return;
+      const hero = game.current?.state.sides[mySide].units.find((u) => u.kind === 'hero');
+      setResult(
+        (r) => r ?? { winner: shown(pvpEnd.winner, mySide), hp: hero?.hp ?? 0, potions: [] },
+      );
+    });
+  }, [pvpEnd, result, mySide]);
+
   // --- acting ---------------------------------------------------------------------------------------------
-  const act = useCallback(
-    (a: Action) => {
+  /** What I may do now: nothing while it is the other player's turn. */
+  const legalFor = useCallback(
+    (st: CombatState): Action[] => (st.active === mySide ? legalActions(db, st) : []),
+    [db, mySide],
+  );
+
+  /** Apply a move to the engine's state and (unless it is history being replayed) play its events. */
+  const applyMove = useCallback(
+    (a: Action, seat: Side, history: boolean): boolean => {
       const g = game.current;
-      if (!g || g.state.winner || cancelledRef.current) return;
-      if (pending.current.enemy > 0) return; // the enemy turn is still playing out
+      if (!g || g.state.winner || cancelledRef.current) return false;
       try {
         const r = applyAction(db, g.state, a);
         g.state = r.state;
         setLive(r.state);
         // the answer to a choice closes it on screen straight away (the display state lags the engine)
-        if (a.type === 'pick') {
+        if (a.type === 'pick' && seat === mySide) {
           g.display.pending = null;
           show(g.display);
         }
-        setLegal(legalActions(db, r.state));
+        setLegal(legalFor(r.state));
         setSelected(null);
         setAimPotion(null);
-        enqueue(r.events, r.state);
+        if (!history) enqueue(r.events, r.state, pvp ? seat !== mySide : undefined);
+        return true;
       } catch (err) {
         console.warn('[fight] illegal action', err);
-        play('refuse');
+        return false;
       }
     },
-    [db, enqueue, show],
+    [db, enqueue, show, legalFor, mySide, pvp],
   );
+
+  const act = useCallback(
+    (a: Action) => {
+      const g = game.current;
+      if (!g || g.state.winner || cancelledRef.current) return;
+      if (pending.current.enemy > 0) return; // the enemy turn is still playing out
+      if (pvp) {
+        // the server decides: send the move, and play it when it comes back (with the opponent's)
+        if (g.state.active !== mySide || awaiting.current) return;
+        awaiting.current = true;
+        pvp.send(seqRef.current + 1, a);
+        return;
+      }
+      if (!applyMove(a, mySide, false)) play('refuse');
+    },
+    [applyMove, mySide, pvp],
+  );
+
+  // PvP: every accepted move arrives here, mine included, in the server's order
+  const onFeed = useCallback(
+    (item: FeedItem) => {
+      if (item.kind === 'refused') {
+        awaiting.current = false;
+        play('refuse');
+        setBanner(item.message);
+        if (refuseTimer.current) window.clearTimeout(refuseTimer.current);
+        refuseTimer.current = window.setTimeout(() => setBanner(null), 1200);
+        return;
+      }
+      const m = item.move;
+      const g = game.current;
+      const sc = scene.current;
+      if (!g || !sc) return;
+      if (m.seq !== seqRef.current + 1) {
+        setDesync(true);
+        return;
+      }
+      seqRef.current = m.seq;
+      if (m.seat === mySide) awaiting.current = false;
+      if (!applyMove(m.action, m.seat, item.history)) {
+        setDesync(true);
+        return;
+      }
+      if (m.hash && hashState(g.state) !== m.hash) setDesync(true);
+      // the last of the history: put the screen where the engine is
+      if (item.history && pvp && m.seq === pvp.replay) {
+        g.display = clone(g.state);
+        sc.fighters.sync(specsFrom(db, g.display, mySide), { instant: true });
+        show(g.display);
+        setLocked(false);
+        bump((n) => n + 1);
+      }
+    },
+    [applyMove, db, mySide, pvp, show],
+  );
+
+  useEffect(() => {
+    if (!ready || !pvp) return;
+    return pvp.feed.attach(onFeed);
+  }, [ready, pvp, onFeed]);
 
   // keep the legal list fresh whenever the real state changes
   useEffect(() => {
-    if (game.current) setLegal(legalActions(db, game.current.state));
-  }, [db, ready]);
+    if (game.current) setLegal(legalFor(game.current.state));
+  }, [legalFor, ready]);
+
+  // nothing to do while animations play, or while it is the opponent's move
+  const myTurn = (live?.active ?? mySide) === mySide;
+  const waiting = locked || !myTurn;
 
   const endTurn = useCallback(() => {
-    if (locked || game.current?.state.pending) return;
+    if (waiting || game.current?.state.pending) return;
     act({ type: 'endTurn' });
-  }, [act, locked]);
+  }, [act, waiting]);
 
-  const me = view?.sides.a;
+  const me = view?.sides[mySide];
   const cw = handCardWidth(window.innerWidth);
 
   const handCards: HandCard[] = useMemo(() => {
-    if (!view?.sides.a.hand) return [];
-    return view.sides.a.hand.flatMap((inst) => {
+    const mineView = view?.sides[mySide];
+    if (!mineView?.hand) return [];
+    return mineView.hand.flatMap((inst) => {
       const def = db.cards[inst.card];
       if (!def) return [];
       const mine = legal.filter((a) => a.type === 'play' && a.card === inst.id);
@@ -571,11 +716,11 @@ export function FightView(props: {
           playable: mine.length > 0,
           targets,
           aim: def.target === 'ally' || def.target === 'friend',
-          cost: costOf(db, view.sides.a, inst),
+          cost: costOf(db, mineView, inst),
         },
       ];
     });
-  }, [view, legal, db]);
+  }, [view, legal, db, mySide]);
 
   const anyPlay = handCards.some((c) => c.playable);
 
@@ -630,7 +775,7 @@ export function FightView(props: {
           setAimPotion(null);
         }
       } else if (e.key === 'e' || e.key === 'E') endTurn();
-      else if (/^[1-9]$/.test(e.key) && !locked) {
+      else if (/^[1-9]$/.test(e.key) && !waiting) {
         const c = handCards[Number(e.key) - 1];
         if (!c) return;
         if (!c.playable) return void play('refuse');
@@ -641,7 +786,7 @@ export function FightView(props: {
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [act, endTurn, handCards, locked, pile]);
+  }, [act, endTurn, handCards, waiting, pile]);
 
   const onStagePointerDown = (e: React.PointerEvent) => {
     if (aimPotion !== null) {
@@ -686,7 +831,7 @@ export function FightView(props: {
       }
     }
   }
-  const heroPlaced = placed.find((p) => p.unit.kind === 'hero' && p.unit.side === 'a') ?? null;
+  const heroPlaced = placed.find((p) => p.unit.kind === 'hero' && p.unit.side === mySide) ?? null;
   const floatPos = (f: Float): { left: number; top: number } | null => {
     if (!sc) return null;
     const p = sc.stageToHost(f.x, f.y);
@@ -701,12 +846,12 @@ export function FightView(props: {
           : kind === 'discard'
             ? 'Discard pile'
             : 'Consumed',
-      cards: pileCards(game.current?.display ?? null, kind, db),
+      cards: pileCards(game.current?.display ?? null, kind, db, mySide),
     });
 
-  const heroUnit = view?.sides.a.units.find((u) => u.kind === 'hero');
-  const usesStars = useMemo(() => deckUsesStars(db, setup), [db, setup]);
-  const usesRunes = useMemo(() => deckUsesRunes(db, setup), [db, setup]);
+  const heroUnit = view?.sides[mySide].units.find((u) => u.kind === 'hero');
+  const usesStars = useMemo(() => deckUsesStars(db, mine), [db, mine]);
+  const usesRunes = useMemo(() => deckUsesRunes(db, mine), [db, mine]);
   const showStars = usesStars || (me?.stars ?? 0) > 0;
   const showRunes = usesRunes || (me?.runes.length ?? 0) > 0;
   const tip =
@@ -779,11 +924,12 @@ export function FightView(props: {
             {props.topExtra}
             <div className="fight__title">
               <b>{props.title}</b>
-              <span>Turn {Math.max(1, Math.ceil(view.turn / (view.mode === 'pve' ? 2 : 1)))}</span>
+              <span>Turn {Math.max(1, Math.ceil(view.turn / 2))}</span>
             </div>
-            {(setup.a.boons?.length ?? 0) > 0 && (
+            {pvp && <TurnClock link={pvp} mine={myTurn} foe={foeName} />}
+            {(mine.boons?.length ?? 0) > 0 && (
               <div className="fight__boons" aria-label="Boons">
-                {setup.a.boons?.map((id) => (
+                {mine.boons?.map((id) => (
                   <BoonChip key={id} id={id} />
                 ))}
               </div>
@@ -842,6 +988,13 @@ export function FightView(props: {
             })}
           </div>
 
+          {pvp && <FoeBadge side={view.sides[mySide === 'a' ? 'b' : 'a']} name={foeName} />}
+          {desync && (
+            <div className="fight__desync" role="alert">
+              <b>This match has gone out of step with the server.</b>
+              <span>Leave and rejoin with the same room code to catch up.</span>
+            </div>
+          )}
           {banner && (
             <div className="fight__banner" role="status">
               <span>{banner}</span>
@@ -857,7 +1010,7 @@ export function FightView(props: {
             db={db}
             cards={handCards}
             cardWidth={cw}
-            locked={locked || finished}
+            locked={waiting || finished}
             selectedId={selected}
             unitAt={unitAt}
             onPlay={(c, target) => {
@@ -875,7 +1028,7 @@ export function FightView(props: {
             onRefuse={(c) => {
               play('refuse');
               setBanner(
-                (c.cost ?? c.def.cost) > (game.current?.state.sides.a.mana ?? 0)
+                (c.cost ?? c.def.cost) > (game.current?.state.sides[mySide].mana ?? 0)
                   ? 'Not enough Mana'
                   : 'You cannot play that now',
               );
@@ -927,7 +1080,7 @@ export function FightView(props: {
                     <PotionButton
                       key={`${id}-${i}`}
                       id={id}
-                      disabled={locked || finished}
+                      disabled={waiting || finished}
                       active={aimPotion === id}
                       onUse={() => {
                         const needs = legal.some(
@@ -1021,11 +1174,11 @@ export function FightView(props: {
             />
           )}
           <button
-            className={`btn btn--primary fight__end${!anyPlay && !locked ? ' is-ready' : ''}`}
-            disabled={locked || finished || view.pending !== null}
+            className={`btn btn--primary fight__end${!anyPlay && !waiting ? ' is-ready' : ''}`}
+            disabled={waiting || finished || view.pending !== null}
             onClick={endTurn}
           >
-            <span>{locked ? 'Enemy turn…' : 'End turn'}</span>
+            <span>{waiting ? (pvp ? `${foeName}'s turn…` : 'Enemy turn…') : 'End turn'}</span>
             <kbd>E</kbd>
           </button>
 
@@ -1063,9 +1216,11 @@ export function FightView(props: {
                   {result.winner === 'a' ? 'Victory' : result.winner === 'draw' ? 'Draw' : 'Defeat'}
                 </h2>
                 <p>
-                  {result.winner === 'a'
-                    ? `${result.hp} HP remaining.`
-                    : 'The rift claims another.'}
+                  {pvp
+                    ? endLine(result.winner, pvp.end?.reason ?? null, foeName)
+                    : result.winner === 'a'
+                      ? `${result.hp} HP remaining.`
+                      : 'The rift claims another.'}
                 </p>
                 <button className="btn btn--primary" onClick={() => props.onDone(result)}>
                   <span>Continue</span>
@@ -1080,24 +1235,24 @@ export function FightView(props: {
 }
 
 /** Every op the deck (and its hero's Sigil) can run, Powers' triggers included. */
-function deckOps(db: CombatDb, setup: CombatSetup): Op[] {
+function deckOps(db: CombatDb, hero: HeroSetup): Op[] {
   const nested = (ops: readonly Op[]): Op[] =>
     ops.flatMap((o) => (o.op === 'power' ? [o, ...nested(o.ops)] : [o]));
   return [
-    ...nested(db.heroes[setup.a.hero]?.sigil ?? []),
-    ...setup.a.deck.flatMap((id) => nested(db.cards[id]?.effects ?? [])),
+    ...nested(db.heroes[hero.hero]?.sigil ?? []),
+    ...hero.deck.flatMap((id) => nested(db.cards[id]?.effects ?? [])),
   ];
 }
 
 /** Decides which parts of the side panel show: a Riftwalker without totems never sees an empty totem row. */
-function deckUsesStars(db: CombatDb, setup: CombatSetup): boolean {
+function deckUsesStars(db: CombatDb, hero: HeroSetup): boolean {
   return (
-    deckOps(db, setup).some((o) => o.op === 'stars') ||
-    setup.a.deck.some((id) => (db.cards[id]?.starCost ?? 0) > 0)
+    deckOps(db, hero).some((o) => o.op === 'stars') ||
+    hero.deck.some((id) => (db.cards[id]?.starCost ?? 0) > 0)
   );
 }
-function deckUsesRunes(db: CombatDb, setup: CombatSetup): boolean {
-  return deckOps(db, setup).some((o) => o.op === 'channel');
+function deckUsesRunes(db: CombatDb, hero: HeroSetup): boolean {
+  return deckOps(db, hero).some((o) => o.op === 'channel');
 }
 
 /** What a card would deal to one unit right now: play it on a copy of the real state. Exact, scaling and all. */
@@ -1129,10 +1284,11 @@ function pileCards(
   d: CombatState | null,
   pile: 'draw' | 'discard' | 'exhausted',
   db: CombatDb,
+  me: Side,
 ): CardDef[] {
   if (!d) return [];
-  const list =
-    pile === 'draw' ? d.sides.a.draw : pile === 'discard' ? d.sides.a.discard : d.sides.a.exhausted;
+  const sd = d.sides[me];
+  const list = pile === 'draw' ? sd.draw : pile === 'discard' ? sd.discard : sd.exhausted;
   const defs = list.flatMap((c) => (db.cards[c.card] ? [db.cards[c.card] as CardDef] : []));
   // the draw pile's order is hidden: show it sorted
   return pile === 'draw' ? [...defs].sort((a, b) => a.name.localeCompare(b.name)) : defs;
@@ -1179,4 +1335,56 @@ function tallyDefs(cards: readonly CardDef[]): { def: CardDef; n: number }[] {
 function snareTip(db: CombatDb, card: string | null): TipContent {
   const def = card ? db.cards[card] : undefined;
   return UI_TIPS.snare(def?.name ?? null, def ? cardText(db, def) : undefined);
+}
+
+/** What the result line says in a PvP match. */
+function endLine(winner: Winner, reason: string | null, foe: string): string {
+  const won = winner === 'a';
+  if (winner === 'draw') return 'Both players left. Nobody wins.';
+  switch (reason) {
+    case 'resign':
+      return won ? `${foe} gave up.` : 'You gave up.';
+    case 'timeout':
+      return won ? `${foe} ran out of time twice in a row.` : 'You ran out of time twice in a row.';
+    case 'disconnect':
+      return won ? `${foe} left the match.` : 'You left the match too long.';
+    default:
+      return won ? `You beat ${foe}.` : `${foe} wins this one.`;
+  }
+}
+
+/** How long the active player has left, counted down from the server's deadline. */
+function TurnClock(props: { link: PvpLink; mine: boolean; foe: string }) {
+  const { link, mine, foe } = props;
+  const [now, setNow] = useState(() => Date.now());
+  useEffect(() => {
+    const t = window.setInterval(() => setNow(Date.now()), 500);
+    return () => window.clearInterval(t);
+  }, []);
+  if (link.end || link.deadline === null) return null;
+  const left = Math.max(0, Math.ceil((link.deadline - (now + link.skew)) / 1000));
+  const low = left <= 10;
+  return (
+    <div className={`fight__clock${low ? ' is-low' : ''}${mine ? ' is-mine' : ''}`} role="timer">
+      <span>{mine ? 'Your move' : `${foe}'s move`}</span>
+      <b>
+        {Math.floor(left / 60)}:{String(left % 60).padStart(2, '0')}
+      </b>
+    </div>
+  );
+}
+
+/** What you can see of the opponent: their hand, piles and set Traps (never the cards themselves). */
+function FoeBadge(props: { side: CombatView['sides']['a']; name: string }) {
+  const { side, name } = props;
+  return (
+    <aside className="fight__foe" aria-label="Opponent">
+      <b>{name}</b>
+      <span>Hand {side.handCount}</span>
+      <span>Draw {side.drawCount}</span>
+      <span>Discard {side.discardCount}</span>
+      <span>Mana {side.mana}</span>
+      {side.snares.length > 0 && <span>Traps {side.snares.length}</span>}
+    </aside>
+  );
 }

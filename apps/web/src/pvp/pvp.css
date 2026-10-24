@@ -1,0 +1,145 @@
+/* the Duel screen (PvP lobby) */
+.pvp {
+  display: grid;
+  gap: 0.9rem;
+  align-content: start;
+  justify-items: center;
+  text-align: center;
+}
+.pvp__h {
+  margin: 0.4rem 0 0;
+  font-size: 1.2rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--c-gold-pale);
+}
+.pvp__field {
+  display: grid;
+  gap: 0.25rem;
+  font-size: 0.95rem;
+  color: var(--c-text-dim);
+  text-align: left;
+  width: min(24rem, 92vw);
+}
+.pvp input,
+.pvp__server input {
+  padding: 0.45rem 0.6rem;
+  border-radius: 6px;
+  border: 1px solid var(--c-gold-dark);
+  background: rgb(8 10 20 / 0.8);
+  color: var(--c-ivory);
+  font: inherit;
+}
+.pvp__decks {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.4rem;
+  width: min(34rem, 94vw);
+}
+.pvp__decks li {
+  display: flex;
+  gap: 0.5rem;
+  align-items: stretch;
+}
+.pvp__deck {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  text-align: left;
+  padding: 0.4rem 0.7rem;
+  border-radius: 10px;
+  border: 1px solid rgb(255 255 255 / 0.16);
+  background: rgb(8 10 20 / 0.6);
+  color: var(--c-ivory);
+  font: inherit;
+  cursor: pointer;
+}
+.pvp__deck span {
+  display: grid;
+}
+.pvp__deck small {
+  color: var(--c-text-dim);
+  font-size: 0.85rem;
+}
+.pvp__deck.is-picked {
+  border-color: var(--c-gold);
+  box-shadow: 0 0 14px rgb(246 220 148 / 0.3);
+}
+.pvp__deck:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+.pvp__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.7rem;
+  justify-content: center;
+  align-items: center;
+  margin-top: 0.4rem;
+}
+.pvp__join {
+  display: inline-flex;
+  gap: 0.4rem;
+}
+.pvp__join input {
+  width: 8.5rem;
+  text-align: center;
+  letter-spacing: 0.18em;
+}
+.pvp__status {
+  display: grid;
+  gap: 0.7rem;
+  justify-items: center;
+  padding: 1.2rem 1.6rem;
+  border-radius: 12px;
+  background: rgb(8 10 20 / 0.6);
+  border: 1px solid rgb(255 255 255 / 0.16);
+}
+.pvp__code {
+  display: flex;
+  gap: 0.8rem;
+  align-items: center;
+  font-size: 2.2rem;
+  letter-spacing: 0.3em;
+  color: var(--c-gold-pale);
+}
+.pvp__error {
+  color: #ff8fa1;
+  max-width: 34rem;
+}
+.pvp__server {
+  width: min(34rem, 94vw);
+  text-align: left;
+  color: var(--c-text-dim);
+}
+.pvp__server summary {
+  cursor: pointer;
+}
+.pvp__server input {
+  width: 100%;
+  margin-top: 0.4rem;
+}
+.pvp__roster {
+  color: var(--c-text-dim);
+  font-size: 0.9rem;
+}
+.pvp__confirm {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: grid;
+  place-items: center;
+  background: rgb(4 5 11 / 0.7);
+}
+.pvp__confirmBody {
+  display: grid;
+  gap: 0.6rem;
+  padding: 1.4rem 1.8rem;
+  border-radius: 12px;
+  background: var(--c-navy);
+  border: 1px solid var(--c-gold-dark);
+  text-align: center;
+}

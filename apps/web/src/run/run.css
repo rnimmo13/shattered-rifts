@@ -1372,3 +1372,23 @@
     animation: none;
   }
 }
+
+/* the Vault list (a full Vault asks which deck to give up) */
+.vaultlist {
+  list-style: none;
+  margin: 0.6rem auto;
+  padding: 0;
+  display: grid;
+  gap: 0.4rem;
+  max-width: 34rem;
+}
+.vaultlist li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.4rem 0.7rem;
+  border-radius: 8px;
+  background: rgb(8 10 20 / 0.55);
+  border: 1px solid rgb(255 255 255 / 0.14);
+}

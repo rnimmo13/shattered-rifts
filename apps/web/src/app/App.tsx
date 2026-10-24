@@ -10,6 +10,7 @@ import { TitleScreen } from './TitleScreen';
 // The duel screen pulls in the whole Pixi renderer, so it loads on demand.
 const RunScreen = lazy(() => import('../run/RunScreen'));
 const FightScreen = lazy(() => import('../fight/FightScreen'));
+const PvpScreen = lazy(() => import('../pvp/PvpScreen'));
 import { RunErrorBoundary } from '../run/ErrorBoundary';
 
 function useHash(): string {
@@ -47,6 +48,13 @@ function Screens({ hash }: { hash: string }) {
   if (hash === '#/credits') return <CreditsScreen />;
   if (hash === '#/cards') return <CardLibrary />;
   if (hash === '#/models') return <Bestiary />;
+  if (hash === '#/pvp') {
+    return (
+      <Suspense fallback={<div className="loading">Opening the rift…</div>}>
+        <PvpScreen />
+      </Suspense>
+    );
+  }
   if (hash === '#/fight') {
     return (
       <Suspense fallback={<div className="loading">Opening the rift…</div>}>

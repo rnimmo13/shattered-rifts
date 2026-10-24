@@ -124,6 +124,8 @@ packs; Umbral enemies set Traps of their own and debuff.
 
 ## 8. PvP
 
+> **Built (DECISIONS #161):** the first playable version is described in `11_PVP.md`. The bullets below are the design it follows; the turn clock is 75 s with two missed turns forfeiting, and the second player's head start is the engine's (+1 Mana, +1 card on their first turn).
+
 - Two heroes, each with their run deck and Sigil, each with up to 3 allies and 3 Traps. Turns **alternate**; your turn
   is the player turn in §3, and during it you pick targets on the other side (hero or ally; Taunt applies).
 - No intents (the opponent is a person); you see their board, their Traps as sealed sigils, and their hand size.

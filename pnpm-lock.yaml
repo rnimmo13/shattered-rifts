@@ -84,6 +84,9 @@ importers:
       '@sr/content':
         specifier: workspace:*
         version: link:../../packages/content
+      '@sr/pvp':
+        specifier: workspace:*
+        version: link:../../packages/pvp
       gsap:
         specifier: 3.15.0
         version: 3.15.0

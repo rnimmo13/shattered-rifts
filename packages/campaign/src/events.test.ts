@@ -46,7 +46,8 @@ describe('events', () => {
     expect(Math.max(...titles.values()) / N).toBeLessThan(0.3);
     expect(withCard / N).toBeLessThan(0.3);
     expect(withCard).toBeGreaterThan(0);
-  });
+    // (600 whole runs are built here; the longer maps made this slow enough to need room on a busy machine)
+  }, 30_000);
 
   it('every option of every event resolves, says what happened, and leaves a sane run', () => {
     for (const def of EVENTS) {

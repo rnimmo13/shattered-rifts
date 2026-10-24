@@ -11,6 +11,7 @@ Ko-fi-funded) → Steam full game ($7.99–$9.99) with PvP later. Owner: Robert.
 | `docs/02_CARDS.md` | LEGACY card list and DSL for the old engine; realms and flavour still apply. Real data: `packages/content/src/v2` |
 | `docs/03_CAMPAIGN.md` | Characters, run structure (3 stages), Resolve, Bank/Continue, Rift Tiers, Wardens, Boons, Vault & seasons |
 | `docs/09_ROSTER.md` | **The 8 Riftwalkers**: pool rules (3 lanes, shared toolkit, owned signatures), lanes per character, engine pieces. `10_CARD_LIST.md` is the generated card list (`pnpm cardlist`) |
+| `docs/11_PVP.md` | PvP: how a match works, the Cloudflare server (`apps/server`), running and deploying it |
 | `docs/DECISIONS.md` | Every design decision and rules clarification, with dates and reasons |
 | `docs/BALANCE.md` | Sim results (first-player advantage, starter matrix, tier model, enemy difficulty) and open balance questions |
 | `docs/04_VISUALS_AND_ANIMATION.md` | Card frame spec, tokens, board layout, **animation catalog** with timings |
@@ -56,6 +57,7 @@ pnpm fight        # CLI fight on the sample ruleset (--hero knight|tinker, --ene
 pnpm sim          # Combat v2 balance sim: starter decks (+ --draft N random reward cards) vs every encounter (see docs/BALANCE.md)
 pnpm deploy:web -- --repo OWNER/NAME   # build + publish the compiled site to GitHub Pages (see tools/src/deploy.ts)
 pnpm build
+pnpm pvp:dev      # the PvP server locally (wrangler dev, ws://127.0.0.1:8787); `pnpm pvpsmoke` plays bot matches against it
 ```
 Toolchain: Node 22, pnpm 11 (corepack), TypeScript 6.0 (see DECISIONS #39). Workspace packages export TS source.
 

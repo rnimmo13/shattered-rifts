@@ -50,6 +50,8 @@ export type ServerMsg =
       deadline: number;
       /** how many moves follow at once as history (a player coming back mid-match); 0 for a new match */
       replay: number;
+      /** the server's clock (epoch ms) when this was sent, so a browser can show a correct countdown */
+      now: number;
     }
   | {
       type: 'action';
@@ -60,6 +62,7 @@ export type ServerMsg =
       /** a fingerprint of the state after the action (hashState), to catch a desync */
       hash: string;
       deadline: number;
+      now: number;
     }
   | { type: 'end'; winner: Seat | 'draw'; reason: EndReason }
   | { type: 'error'; code: ErrorCode; message: string };

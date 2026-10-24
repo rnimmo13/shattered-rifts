@@ -16,6 +16,7 @@
     "@sr/campaign": "workspace:*",
     "@sr/combat": "workspace:*",
     "@sr/content": "workspace:*",
+    "@sr/pvp": "workspace:*",
     "gsap": "3.15.0",
     "pixi.js": "8.22.0",
     "react": "19.3.1",

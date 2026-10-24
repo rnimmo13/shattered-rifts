@@ -42,6 +42,7 @@ import { BoonChip } from '../fight/BoonChip';
 import { getHero, rememberHero } from '../app/heroChoice';
 import { BoonToast } from './BoonToast';
 import { PotionChip } from '../fight/PotionChip';
+import { BankedPanel } from './BankedPanel';
 import { CharacterPicker } from './CharacterPicker';
 import { MapLegend, MapView } from './MapView';
 import {
@@ -113,7 +114,7 @@ export default function RunScreen() {
   // autosave after every step; a finished run (collapsed or banked) is not kept as a save
   useEffect(() => {
     if (!run) return;
-    // a collapsed run is gone; a banked deck stays saved until the player leaves it (there is no Vault yet)
+    // a collapsed run is gone; a banked deck stays saved until the player leaves it (it is also copied into the Vault)
     if (run.phase === 'collapsed') clearSavedRun();
     else saveRun(run);
     if (run.phase === 'duel' && run.context) markDuelStarted(duelKey(run));
@@ -607,23 +608,7 @@ function Body(props: {
         </section>
       );
     case 'banked':
-      return (
-        <section className="stage-panel" aria-label="Deck banked">
-          <h2 className="stage-panel__title">Deck banked</h2>
-          <p className="stage-panel__hint">
-            This {run.deck.length}-card deck is safe. The Vault and PvP arrive in a later phase; for
-            now, use Export run to keep a copy.
-          </p>
-          <div className="choices-row">
-            <button className="btn" onClick={() => exportRun(run)}>
-              <span>Export run</span>
-            </button>
-            <button className="btn btn--primary" onClick={props.onLeave}>
-              <span>Back to the Sanctum</span>
-            </button>
-          </div>
-        </section>
-      );
+      return <BankedPanel run={run} onExport={() => exportRun(run)} onLeave={props.onLeave} />;
     case 'duel':
       return null;
   }
