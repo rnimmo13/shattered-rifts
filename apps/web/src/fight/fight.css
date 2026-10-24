@@ -1239,3 +1239,12 @@
   justify-items: end;
   text-align: right;
 }
+
+/* piles wear the card back (Mechanized Magic by Dumivid, CC0, see CREDITS.md) */
+.pile {
+  background:
+    linear-gradient(rgb(8 10 20 / 0.55), rgb(8 10 20 / 0.7)),
+    url(/art/ui/cardback.png) center / 100% 100% no-repeat;
+  border-color: transparent;
+  text-shadow: 0 1px 3px #000;
+}
