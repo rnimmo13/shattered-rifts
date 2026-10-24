@@ -8,6 +8,7 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 - **Saved decks page:** a new Saved decks page (from the home page and the Arena) shows each saved deck like a post-game report: its Riftwalker, tier and date, the Boons it was saved with, and its cards by rarity, best first, as small cards with counts. Hover a card for a big copy. Decks can be removed there (with a confirmation). The Arena lists the same decks in short, with a View full deck link. Saved decks now remember their Boons, and their Boons are in effect in Arena matches. The Vault now holds 10 decks (was 5).
 - **Test build: save a deck after stage 1.** The run bar's Save deck button (in place of Export run) copies your deck into the Vault, only on the Stage 1 cleared screen before stage 2 starts, so the Arena can be tried without finishing a whole run. The real game will only save decks when a Rift Tier is cleared.
 - **Arena needs a saved deck:** the Riftwalker starting decks are gone from the Arena. With no banked deck the screen explains how to get one (win a run and choose Bank) and links to a New Run.
+- **0.28.0:** a Saved decks page, Boons saved with decks and used in the Arena, and 10 deck slots.
 - **0.27.0:** the Arena needs a banked deck, and the home page sign-in is spaced properly.
 - **0.26.0:** a new home page (New Run, Arena, Practice, the Riftwalker on show) with sign-in.
 - **0.25.0:** Sign in with Google.
