@@ -5,6 +5,12 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **Twinned is now called Reverb** (your next Attack is played twice).
+- **Arena matches are best of three.** First to win two games. After a game, whoever lost it chooses who goes first in the next (second player still gets +30 HP); the score shows in the top bar and on each result. Resigning gives up one game, and leaving for over a minute forfeits the match.
+- **The campaign leaderboard lists every character you play,** not just your furthest run (a Barbarian at Tier 2 was hidden behind a stronger run).
+- **Usernames:** the campaign now asks for a username first, and no two players can share one. The Arena uses the same name, and you can change it on the leaderboard page. Runs only count on the campaign board under a username.
+- **Rift Tiers get harder faster:** each tier adds more enemy HP than the one before, Might keeps rising up to Tier IX, and Tier I enemies are a little tougher (8% more HP, 5% more damage).
+- **Event choices say everything they do:** a card reward now says where it comes from and that it joins your deck (e.g. the Rift Broker: "a random uncommon card from another Riftwalker joins your deck", "choose 1 of 3 rare cards from other Riftwalkers"), "of your class" is spelled out, the Sanctum says what sanctifying does, and "a Engineer's card" now reads "an Engineer's card".
 - **No Potion belt in the Arena:** Arena matches have no Potions, so the empty belt is gone from the screen (ghost Wardens in the campaign still show yours).
 - **The battle log's Cards panel is bigger and reads in order:** cards run left to right from the oldest to the newest (numbered), with a sideways scroll bar to look back through the history (up to 120 cards); it opens at the newest.
 - **Art for the six cards that had none** (Joker's Gambit, Ace Up the Sleeve, Loaded Die, Pilfered Time, Purging Light, Steady Nerves): every Uncommon and Rare card now has its own picture.

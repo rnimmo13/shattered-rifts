@@ -8,6 +8,7 @@ import { FightView } from '../fight/FightView';
 import type { VenueId } from '../duel/scene/venue';
 import { HeroIcon } from '../ui/HeroIcon';
 import {
+  getClaimed,
   getName,
   getServerSetting,
   playerId,
@@ -16,6 +17,7 @@ import {
   setServerSetting,
 } from './config';
 import { PvpSession, newRoomCode, savedRoom, type Snapshot } from './session';
+import { takeName } from './takeName';
 import { VAULT_SLOTS, entryFor, loadVault, saveVault, type VaultDeck } from './vault';
 import { ChoosePanel, CoinFlip, GhostOffer, WaitTimer } from './PvpParts';
 import { boardId } from './boardApi';
@@ -72,6 +74,8 @@ export default function PvpScreen() {
   const [snap, setSnap] = useState<Snapshot>(EMPTY);
   const [server, setServer] = useState(getServerSetting);
   const [confirmResign, setConfirmResign] = useState(false);
+  /** why the name was not accepted (taken, not allowed) */
+  const [nameProblem, setNameProblem] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
   /** the match whose coin has been shown (the match opens behind it, then stands ready) */
   const [tossShown, setTossShown] = useState<string | null>(null);
@@ -144,7 +148,17 @@ export default function PvpScreen() {
   const sent = useRef<typeof entry>(null);
   const begin = async (how: 'queue' | 'create' | 'join' | 'ghost'): Promise<void> => {
     if (!entry || !check?.ok) return;
-    saveName(entry.name);
+    // names are unique: the one on the entry must be this player's (a name the server has not confirmed is claimed now)
+    if (getClaimed() !== entry.name) {
+      const problem = await takeName(entry.name);
+      if (problem && !problem.unreachable) {
+        setNameProblem(problem.message);
+        return;
+      }
+    }
+    setNameProblem(null);
+    // (the name as the server wrote it, if it confirmed one)
+    if (getClaimed() === '') saveName(entry.name);
     // (the board id is normally here already; if it was slow, wait a moment for it rather than play an unrecorded match)
     const id =
       who ??
@@ -184,21 +198,26 @@ export default function PvpScreen() {
       return (
         <>
           <FightView
-            key={match.room}
+            key={`${match.room}:${match.setup.seed}`}
             db={COMBAT_DB}
             setup={match.setup}
-            title={`${match.names.a} vs ${match.names.b}`}
+            title={`${match.names.a} vs ${match.names.b}${match.series && !match.series.over ? ` · Game ${match.series.game} of 3 (${match.series.wins.a}–${match.series.wins.b})` : ''}`}
             venue={arenaFor(match.setup.seed)}
             pvp={link}
             exitLabel={over ? 'Leave' : 'Resign'}
             onExit={() => (over ? back() : setConfirmResign(true))}
-            onDone={() => back()}
+            // a game that is not the last: on to the next (the loser chooses who goes first); the last game ends the match
+            onDone={() => (match.series && !match.series.over ? session.current?.nextGame() : back())}
           />
           {confirmResign && (
             <div className="pvp__confirm" role="dialog" aria-label="Resign">
               <div className="pvp__confirmBody">
-                <h2>Resign this match?</h2>
-                <p>You lose, and {match.names[match.seat === 'a' ? 'b' : 'a']} wins.</p>
+                <h2>Resign this game?</h2>
+                <p>
+                  It counts as a loss for you and a win for{' '}
+                  {match.names[match.seat === 'a' ? 'b' : 'a']}. The match is the best of three, so it
+                  carries on unless this loss decides it.
+                </p>
                 <div className="modal__row">
                   <button className="btn" onClick={() => setConfirmResign(false)}>
                     <span>Keep playing</span>
@@ -352,14 +371,22 @@ export default function PvpScreen() {
       ) : (
         <>
           <label className="pvp__field">
-            Your name (shown to your opponent)
+            Your name (shown to your opponent; no one else can use it)
             <input
               value={name}
               maxLength={24}
-              onChange={(e) => setNameState(e.target.value)}
+              onChange={(e) => {
+                setNameState(e.target.value);
+                setNameProblem(null);
+              }}
               aria-label="Your name"
             />
           </label>
+          {nameProblem && (
+            <p className="nameclaim__error" role="alert">
+              {nameProblem}
+            </p>
+          )}
           {decks.length === 0 ? (
             <section className="pvp__status pvp__nodecks" aria-live="polite">
               {online === 'checking' ? (

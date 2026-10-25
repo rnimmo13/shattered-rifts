@@ -37,7 +37,7 @@ const name = (id: string): string => COMBAT_DB.cards[id]?.name ?? 'a card';
 const whose = (id: string): string => {
   const h = COMBAT_DB.cards[id]?.hero as HeroId | undefined;
   const w = h ? RIFTWALKERS[h] : undefined;
-  return w ? `a ${w.role}'s card` : 'a card from another world';
+  return w ? `${/^[AEIOU]/.test(w.role) ? 'an' : 'a'} ${w.role}'s card` : 'a card from another world';
 };
 
 /** Three Rift-crossed cards on the table, each an option that costs `cost` and may bring `extra` with it. */
@@ -47,7 +47,7 @@ const crossedTable =
     const cards = crossedOffers(r.rng, r.character, r.deck, rarities, 3);
     return {
       cards,
-      opts: cards.map((id) => [`Take ${name(id)} (${price}): ${whose(id)}`, [...cost, card(id)]]),
+      opts: cards.map((id) => [`Take ${name(id)} (${price}): ${whose(id)} joins your deck`, [...cost, card(id)]]),
     };
   };
 
@@ -79,11 +79,11 @@ export const MORE_EVENTS: EventDef[] = (
       text: 'A figure with a card in every pocket, none of them from here. "Give me yours. I will give you something nobody around here knows how to play."',
       opts: [
         [
-          'Trade one card (a random card leaves): a Rift-crossed uncommon',
+          'Trade one card (a random card leaves your deck): a random uncommon card from another Riftwalker joins your deck',
           [remove('any', 1), crossed('uncommon')],
         ],
         [
-          'Trade two cards (two random cards leave): your choice of three Rift-crossed rares',
+          'Trade two cards (two random cards leave your deck): choose 1 of 3 rare cards from other Riftwalkers to add',
           [remove('any', 2), crossedPick('rare')],
         ],
       ],
@@ -95,7 +95,7 @@ export const MORE_EVENTS: EventDef[] = (
       text: 'A woman sits cross-legged on a rug of playing cards, each from a different deck. "Not a gift. A swap. Same weight, different hands."',
       opts: [
         [
-          'Swap (a random non-basic card goes): a Rift-crossed card of the same rarity comes back',
+          'Swap (a random non-basic card leaves your deck): a card of the same rarity from another Riftwalker joins it',
           [exchange],
         ],
         ['Swap twice (lose 6 HP): two cards are traded the same way', [hurt(6), exchange, exchange]],
@@ -108,9 +108,9 @@ export const MORE_EVENTS: EventDef[] = (
       text: 'A flat black stone, worn into a bowl. Whatever is laid in it is gone by morning, and what comes back was never made for you.',
       needs: (r) => r.boons.length > 0,
       opts: [
-        ['Give your strength (lose 6 max HP): your choice of three Rift-crossed rares', [maxHp(-6), crossedPick('rare')]],
+        ['Give your strength (lose 6 max HP): choose 1 of 3 rare cards from other Riftwalkers to add to your deck', [maxHp(-6), crossedPick('rare')]],
         [
-          'Give a Boon (a random Boon is lost): your choice of three Rift-crossed rares, and 40 shards',
+          'Give a Boon (a random Boon is lost): choose 1 of 3 rare cards from other Riftwalkers to add to your deck, and +40 shards',
           [loseBoon, crossedPick('rare'), shards(50)],
         ],
       ],
@@ -122,10 +122,10 @@ export const MORE_EVENTS: EventDef[] = (
       text: 'Pages of a book from somewhere else, the writing running the wrong way. Some of it is a card waiting to be learned. Some of it is just noise.',
       opts: [
         [
-          'Read it through (45% your choice of three Rift-crossed rares, else lose 6 HP and take a Static card)',
+          'Read it through (45%: choose 1 of 3 rare cards from other Riftwalkers to add to your deck; otherwise lose 6 HP and a Static card joins your deck)',
           [chance(45, [crossedPick('rare')], [hurt(6), junk()])],
         ],
-        ['Copy out one page (pay 40 shards): a Rift-crossed common', [shards(-40), crossed('common')]],
+        ['Copy out one page (pay 40 shards): a random common card from another Riftwalker joins your deck', [shards(-40), crossed('common')]],
       ],
     },
     // ---- a story in two parts ----
@@ -153,7 +153,7 @@ export const MORE_EVENTS: EventDef[] = (
       noLeave: true,
       opts: [
         [
-          'Dig deep: your choice of three Rift-crossed rares, and 80 shards',
+          'Dig deep: choose 1 of 3 rare cards from other Riftwalkers to add to your deck, and +80 shards',
           [mark('map', true), crossedPick('rare'), shards(105)],
         ],
         [
@@ -200,7 +200,7 @@ export const MORE_EVENTS: EventDef[] = (
       text: 'The span is gone and the wind is up. You can jump the gap with your pack on your back, or lower yourself down on a rope that has seen better years.',
       opts: [
         [
-          'Jump (a random card slips out of your pack)',
+          'Jump (a random card leaves your deck): you cross safely',
           [remove('any', 1)],
           'You clear it. Something rattles loose behind you.',
         ],
@@ -252,11 +252,11 @@ export const MORE_EVENTS: EventDef[] = (
       text: 'A dealer in white gloves shuffles a deck with no backs. "Cut it. One card. If it is the right one, you will not forget it."',
       opts: [
         [
-          'Cut for the rare (pay 80 shards): 40% a rare of yours and 80 shards back, else a Static card',
+          'Cut for the rare (pay 80 shards): 40% a random rare card of your class joins your deck and you get 80 shards back; otherwise a Static card joins your deck',
           [shards(-80), chance(40, [gift('rare'), shards(80)], [junk()])],
         ],
         [
-          'Cut for a stranger (pay 30 shards): one chance in four of your choice of three Rift-crossed rares',
+          'Cut for a stranger (pay 30 shards): a one-in-four chance to choose 1 of 3 rare cards from other Riftwalkers to add to your deck',
           [shards(-30), chance(25, [crossedPick('rare')])],
         ],
       ],
@@ -307,7 +307,7 @@ export const MORE_EVENTS: EventDef[] = (
       text: 'A small, plain shrine to the way you fight, built by someone who walked it before you and did not walk it far. It is not sure you are worthy, and says so.',
       needs: (r) => r.stage >= 2,
       opts: [
-        ['Kneel (lose 20% of your HP): a rare card of your class', [hurtPct(20), gift('rare')]],
+        ['Kneel (lose 20% of your HP): a random rare card of your class joins your deck', [hurtPct(20), gift('rare')]],
         ['Listen (lose 8 HP): two random cards in your deck are upgraded', [hurt(8), upgrade(2)]],
         [
           'Offer a card (a random basic card leaves): heal 20% of your HP',

@@ -109,7 +109,7 @@ The goal: every card *mechanic* a Slay the Spire player expects exists, with our
 | Dexterity / Frail | **Bracing** / **Brittle** (Brittle also shrinks an enemy's Barrier moves) | Maren, Sehra / Maren, Vesper |
 | Intangible / Artifact / Plated Armor / Ritual | **Ghostly** / **Steadfast** / **Armored** / **Ritual** | Vesper / Vesper / Maren / Kesh |
 | Barricade / Corruption / Metallicize | **Fortified** / **Unbound** / end-of-turn Barrier Aura | Maren / Kesh / Maren |
-| Double Tap / Burst | **Twinned** / **Mirrored** | Neutral (Echoing Blow) / Quill (Encore) |
+| Double Tap / Burst | **Reverb** / **Mirrored** | Neutral (Echoing Blow) / Quill (Encore) |
 | Vigor, Flex | **Vigor**, temporary statuses (`temp`) | Kesh, Neutral (Heave) |
 | Exhaust / Ethereal / Retain / Innate | Consume / Fleeting / Hold / Opening hand | shared |
 | Sly (discard triggers) | `onDiscard` | Quill |

@@ -5,6 +5,7 @@ import { TooltipLayer } from '../ui/Tooltip';
 import { Bestiary } from '../fight/Bestiary';
 import { CardLibrary } from '../fight/CardLibrary';
 import { CreditsScreen } from './CreditsScreen';
+import { NameGate } from '../pvp/NameClaim';
 import { LearnScreen } from './LearnScreen';
 import { TitleScreen } from './TitleScreen';
 
@@ -54,7 +55,9 @@ function Screens({ hash }: { hash: string }) {
     return (
       <Suspense fallback={<div className="loading">Opening the rift…</div>}>
         <RunErrorBoundary>
-          <RunScreen />
+          <NameGate>
+            <RunScreen />
+          </NameGate>
         </RunErrorBoundary>
       </Suspense>
     );

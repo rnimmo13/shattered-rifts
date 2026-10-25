@@ -412,7 +412,7 @@ Starter: Attack, Attack, Attack, Defend, Defend, Defend, Defend, Veil Strike, Ve
 | The Long Game | 2 | power | rare | At the start of your turn: Draw 1 card. |
 | Gleeful Trapsmith | 1 | power | rare | Whenever you play a Snare: Deal 4 damage to ALL enemies. |
 | Between Worlds | 2 | skill | rare | Apply 2 Ghostly. Consume. |
-| Second Act | 1 | skill | rare | Apply 1 Twinned. |
+| Second Act | 1 | skill | rare | Apply 1 Reverb. |
 | Frozen Moment | 2 | skill | rare | Cards in your hand cost 9 less this fight. Consume. |
 | Fade Away | 1 | skill | rare | Apply 1 Ghostly. Consume. |
 | Misdirection | 1 | power | rare | Whenever you discard a card: Gain 4 Barrier. |
@@ -519,7 +519,7 @@ Starter: Attack, Attack, Attack, Attack, Defend, Defend, Defend, Quick Jab, Quic
 | Compounding Interest | 2 | power | rare | At the start of your turn: Multiply by 1.5 the Bleed to ALL enemies. |
 | Lingering Step | 1 | power | rare | Whenever you play a card: Gain 1 Barrier. |
 | Speed Reader | 1 | power | rare | Whenever you draw a card: Deal 2 damage to ALL enemies. |
-| Blur Step | 1 | skill | rare | Discard any number of cards. Apply 1 Twinned. |
+| Blur Step | 1 | skill | rare | Discard any number of cards. Apply 1 Reverb. |
 | Nimble Fingers | 1 | skill | rare | Apply 1 Mirrored. |
 | Lingering Blur | 1 | power | rare | Whenever you play a card: Gain 1 Barrier. |
 | Adrenaline Rush | 0 | skill | rare | Gain 1 Mana. Draw 2 cards. Consume. |
@@ -630,7 +630,7 @@ Starter: Attack, Attack, Attack, Attack, Defend, Defend, Defend, Plant Hawk, Pla
 | Chorus of Totems | 2 | power | rare | Apply 2 Spirit. Gain 1 totem slot. |
 | Abyssal Totem | 2 | skill | rare | Plant Elder 2 times. |
 | Reset the Weave | 0 | skill | rare | Discard any number of cards. Draw 4 cards. Consume. |
-| Echoing Form | 3 | power | rare | At the start of your turn: Apply 1 Twinned. |
+| Echoing Form | 3 | power | rare | At the start of your turn: Apply 1 Reverb. |
 | White Noise | 1 | skill | rare | Add a random Aura card from your pool to your hand (it costs 0 this fight). Consume. |
 | Carver's Engine | 3 | power | rare | At the start of your turn: Add a random card from your pool to your hand. |
 | Consuming Dark | 2 | power | rare | At the end of your turn: Plant Elder. |
@@ -831,7 +831,7 @@ Starter: Attack, Attack, Defend, Defend, Defend, Defend, Glass Jab, Gather Arcan
 | Ever-Sharpening | 2 | power | rare | At the start of your turn: Sharpen 2 (Obsidian Blade gains 2 damage). |
 | Volcanic Edge | 2 | attack | rare | Deal 12 damage. Sharpen 3 (Obsidian Blade gains 3 damage). |
 | Hammer and Anvil | 2 | attack | rare | Deal 6 damage 2 times. Sharpen 4 (Obsidian Blade gains 4 damage). |
-| Conqueror | 1 | skill | rare | Sharpen 4 (Obsidian Blade gains 4 damage). Apply 1 Twinned. |
+| Conqueror | 1 | skill | rare | Sharpen 4 (Obsidian Blade gains 4 damage). Apply 1 Reverb. |
 | Eruption | 2 | skill | rare | Draw 1 card. Gain 1 Mana. Gain 2 Arcana. Sharpen 4 (Obsidian Blade gains 4 damage). Consume. |
 | Armory of Glass | 2 | power | rare | Whenever a card is created: Apply 1 Might. |
 | Collapsing Vein | 2 | attack | rare | Deal 5 (+2 per card created this fight) damage. |
@@ -1115,7 +1115,7 @@ Tokens (made by other cards):
 | Borrowed Time | 0 | skill | uncommon | Gain 3 Mana. Next turn, lose 2 Mana. Consume. |
 | Purging Light | 2 | skill | rare | Dispel every debuff on you. Gain 8 Barrier. Consume. |
 | Rift Resonance | 2 | power | rare | Apply 2 Might. |
-| Echoing Blow | 1 | skill | rare | Apply 1 Twinned. |
+| Echoing Blow | 1 | skill | rare | Apply 1 Reverb. |
 | Rift Smithing | 2 | skill | rare | Upgrade every card in your hand for this fight. Consume. |
 | Attunement | 2 | skill | rare | Gain 1 maximum Mana for the rest of the fight (and 1 now). Consume. |
 | Heart of the Rift | 3 | power | legendary | At the start of your turn: Gain 1 Mana. Draw 1 card. |

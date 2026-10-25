@@ -72,6 +72,41 @@ export async function viewBoard(
   };
 }
 
+/** The answer to a request for a username. */
+export type ClaimResult =
+  | { ok: true; name: string }
+  | { ok: false; error: 'taken' | 'bad-name' | 'limited' | 'unreachable'; message: string };
+
+/** Ask the server for a username: it is yours if nobody else has it. (When the server cannot be reached, nothing is decided.) */
+export async function claimName(name: string): Promise<ClaimResult> {
+  const unreachable: ClaimResult = {
+    ok: false,
+    error: 'unreachable',
+    message: 'Could not reach the server to check the name. Try again in a moment.',
+  };
+  try {
+    await whoAmI();
+    const key = vaultKey();
+    const res = await fetch(`${httpBase()}/pvp/board/claim`, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify(key === null ? { name } : { code: key, name }),
+    });
+    const d = (await res.json()) as Record<string, unknown>;
+    if (d['ok'] === true && typeof d['name'] === 'string') return { ok: true, name: d['name'] };
+    const error = d['error'];
+    if (error === 'taken' || error === 'bad-name' || error === 'limited')
+      return {
+        ok: false,
+        error,
+        message: typeof d['message'] === 'string' ? d['message'] : 'That name cannot be used.',
+      };
+    return unreachable;
+  } catch {
+    return unreachable;
+  }
+}
+
 async function post(
   what: 'id' | 'run' | 'view' | 'ghostboss',
   extra: Record<string, unknown>,

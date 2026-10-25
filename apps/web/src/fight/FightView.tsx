@@ -60,6 +60,7 @@ import type { FighterSpec } from './Fighters';
 import { attackFor } from './attackStyles';
 import type { FeedItem, PvpLink } from '../pvp/link';
 import { progressLabel } from '../pvp/deckLayout';
+import { seriesLine } from '../pvp/seriesText';
 import '../duel/duel.css';
 import '../play/play.css';
 import './fight.css';
@@ -1523,6 +1524,9 @@ export function FightView(props: {
                 <h2>
                   {result.winner === 'a' ? 'Victory' : result.winner === 'draw' ? 'Draw' : 'Defeat'}
                 </h2>
+                {pvp?.series && (
+                  <p className="fight__resultSeries">{seriesLine(pvp.series, mySide, foeName)}</p>
+                )}
                 <p>
                   {pvp
                     ? endLine(result.winner, pvp.end?.reason ?? null, foeName)
@@ -1531,7 +1535,7 @@ export function FightView(props: {
                       : 'The rift claims another.'}
                 </p>
                 <button className="btn btn--primary" onClick={() => props.onDone(result)}>
-                  <span>Continue</span>
+                  <span>{pvp?.series && !pvp.series.over ? 'Next game' : 'Continue'}</span>
                 </button>
               </div>
             </div>

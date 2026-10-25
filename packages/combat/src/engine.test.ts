@@ -10,6 +10,8 @@ import {
   viewFor,
   eventsFor,
   cardText,
+  tierHp,
+  tierMight,
   clone,
   type Action,
   type CombatEvent,
@@ -764,6 +766,17 @@ describe('phases only move forward', () => {
 });
 
 describe('rift tiers', () => {
+  it('every tier is tougher than the last, and the step gets bigger', () => {
+    let prevStep = 0;
+    for (let t = 2; t <= 20; t++) {
+      const step = tierHp(t) - tierHp(t - 1);
+      expect(step).toBeGreaterThan(prevStep);
+      prevStep = step;
+    }
+    expect(tierHp(1)).toBe(1);
+    expect(tierMight(8)).toBeGreaterThan(tierMight(7));
+  });
+
   it('scale enemy HP and Might, including summoned enemies', () => {
     const { state } = createCombat(db, {
       seed: 'tier',
@@ -771,11 +784,11 @@ describe('rift tiers', () => {
       b: { enemies: ['summoner'], tier: 3 },
     });
     const boss = state.sides.b.units[0] as Unit;
-    expect(boss.maxHp).toBe(Math.round(30 * 1.24));
+    expect(boss.maxHp).toBe(Math.round(30 * tierHp(3)));
     expect(boss.statuses.might).toBe(2);
     const after = end(state).state; // the Rift Caller summons a slime
     const slime = after.sides.b.units.find((u) => u.def === 'slime') as Unit;
-    expect(slime.maxHp).toBe(Math.round(14 * 1.24));
+    expect(slime.maxHp).toBe(Math.round(14 * tierHp(3)));
     expect(slime.statuses.might).toBe(2);
   });
 });

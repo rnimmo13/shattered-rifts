@@ -6,10 +6,11 @@ First playable version (friends test). Two players, each with a banked deck, pla
 ## What a player does
 
 1. Clear a Rift Tier and choose **Save this deck** (or use the run bar's **Save deck** between Rift Tiers: on the cleared-tier screen, and at the start of the next tier before its stage 1). A copy of the deck goes into the **Vault** and the run carries on (decision #173) (10 slots; a full Vault asks which deck to give up). The Vault is kept in this browser and also on the server under a **Vault code** (see below). The Arena only offers banked decks: with an empty Vault the screen says so and points to a New Run (decision #167). **Test build only:** the run bar's **Save deck** button also works between stages: after stage 1 or 2 is cleared (`apps/web/src/run/deckSave.ts`, flag `MID_RUN_SAVES`, decisions #168 and #172), so the Arena can be tried without a full run. Remove that flag before release.
-2. Title screen → **Arena** (`#/arena`, also `#/pvp`). Pick a name and a deck.
+2. Title screen → **Arena** (`#/arena`, also `#/pvp`). Pick a name (unique: no two players share one; it is claimed on the server when a match is looked for) and a deck.
 3. **Find a match** (the queue), **Make a room for a friend** (shows a 5-letter code to send), or **Join a room** (type a code).
 4. **Who goes first?** Both players are asked: *I will go first* or *I will go second (+30 HP)*. Different answers: everyone gets what they asked for. The same answer (or no answer in 20 s): the server flips a coin, and both players watch it spin and land on the portrait and name of whoever goes first.
-5. Play. Turns alternate; each turn has **75 s**. Two missed turns in a row forfeit. **Resign** is in the top bar.
+5. **A match is the best of three games** (first to two wins). After a game the player who lost it chooses who goes first in the next (a coin decides if they do not answer in 30 s); a resignation or two missed turns end only that game, and leaving for over a minute forfeits the match. A match is recorded on the leaderboard once, when it is decided.
+6. Play. Turns alternate; each turn has **75 s**. Two missed turns in a row lose the game. **Resign** is in the top bar.
    Closing the tab is not a forfeit for 60 s: reload the page and join the same room to come back.
 
 ## How it is built

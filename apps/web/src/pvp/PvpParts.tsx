@@ -5,6 +5,7 @@ import { RIFTWALKERS, type HeroId } from '@sr/content/v2';
 import { SECOND_PLAYER_HP } from '@sr/pvp';
 import { heroFigure } from '../fight/art';
 import type { ChooseInfo } from './session';
+import { seriesLine } from './seriesText';
 
 /** How long the player has waited: counts up from the moment it appears (so it restarts with each new search). */
 export function WaitTimer(props: { label: string; widenAfterMs?: number }) {
@@ -90,7 +91,10 @@ export function ChoosePanel(props: {
   const left = Math.max(0, Math.ceil((info.deadline - (now + info.skew)) / 1000));
   return (
     <section className="pvp__status pvp__choose" aria-live="polite">
-      <h2>Who goes first?</h2>
+      <h2>{info.series ? `Game ${info.series.game}: who goes first?` : 'Who goes first?'}</h2>
+      {info.series && info.seat && (
+        <p className="pvp__series">{seriesLine(info.series, info.seat, info.foe.name)}</p>
+      )}
       <div className="pvp__versus">
         <figure>
           <Portrait hero={info.me.hero} size={110} />
@@ -109,10 +113,16 @@ export function ChoosePanel(props: {
         </figure>
       </div>
       <p>
-        Go second and you start with <b>{SECOND_PLAYER_HP} more HP</b>. If you both want the same, a
-        coin decides.
+        Go second and you start with <b>{SECOND_PLAYER_HP} more HP</b>.{' '}
+        {info.series
+          ? info.chooser ? 'You lost the last game, so the choice is yours. If you do not choose in time, a coin decides.' : ''
+          : 'If you both want the same, a coin decides.'}
       </p>
-      {info.chosen ? (
+      {!info.chooser && !info.chosen ? (
+        <p className="pvp__waiting">
+          {info.foe.name} lost the last game, so they choose who goes first… ({left}s)
+        </p>
+      ) : info.chosen ? (
         <p className="pvp__waiting">
           Choice made. Waiting for {info.foe.name}… ({left}s)
         </p>
@@ -126,7 +136,7 @@ export function ChoosePanel(props: {
           </button>
         </div>
       )}
-      {!info.chosen && <p className="pvp__count">{left}s to choose</p>}
+      {!info.chosen && info.chooser && <p className="pvp__count">{left}s to choose</p>}
       <button className="btn btn--ghost btn--small" onClick={props.onCancel}>
         <span>Leave</span>
       </button>

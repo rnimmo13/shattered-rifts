@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import {
+  checkUsername,
   cleanBoardName,
   periodEnd,
   believableStages,
@@ -101,6 +102,43 @@ describe('the campaign board', () => {
     ]);
     expect(board.map((s) => s.name)).toEqual(['b', 'a', 'c']);
     expect(board[0]).toMatchObject({ tier: 2, stage: 1, total: 4 });
+  });
+});
+
+describe('the campaign board with several characters', () => {
+  const run = (player: string, hero: string, tier: number, stage: number, at: number) => ({
+    player,
+    name: player,
+    hero,
+    tier,
+    stage,
+    at,
+  });
+  it('lists a player once for each Riftwalker, each at its furthest', () => {
+    const board = rankRuns([
+      run('a', 'knight', 3, 1, 10),
+      run('a', 'knight', 1, 2, 5), // an earlier, shorter knight run
+      run('a', 'barbarian', 2, 3, 20),
+      run('b', 'hunter', 1, 3, 15),
+    ]);
+    expect(board.map((s) => [s.name, s.hero])).toEqual([
+      ['a', 'knight'],
+      ['a', 'barbarian'],
+      ['b', 'hunter'],
+    ]);
+  });
+});
+
+describe('usernames', () => {
+  it('accept an ordinary name and give it a key that ignores how it is written', () => {
+    const a = checkUsername("  Rob   the Brave ");
+    expect(a).toMatchObject({ ok: true, name: 'Rob the Brave' });
+    const b = checkUsername('rob_the-brave');
+    expect(a.ok && b.ok && a.key === b.key).toBe(true);
+  });
+  it('refuse short, long, odd, reserved and blocked names', () => {
+    for (const bad of ['', 'ab', 'x'.repeat(21), 'no<tags>', 'Riftwalker', 'YOU', 'what the fuck', '___', 5, undefined])
+      expect(checkUsername(bad).ok).toBe(false);
   });
 });
 

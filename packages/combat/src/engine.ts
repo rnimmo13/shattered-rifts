@@ -1604,7 +1604,7 @@ function playCard(r: Run, action: Extract<Action, { type: 'play' }>): void {
     fireTriggers(r, sd, 'play', { card: cd, target: null });
     return;
   }
-  // Twinned attacks and Mirrored skills happen twice (the second time without asking for choices). Whether this card is
+  // Reverb attacks and Mirrored skills happen twice (the second time without asking for choices). Whether this card is
   // doubled is decided before it runs, so a card that gives the status does not spend it on itself.
   const again =
     (cd.kind === 'attack' && stacks(hero, 'twinned') > 0 && 'twinned') ||

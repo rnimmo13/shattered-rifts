@@ -18,7 +18,7 @@ THE PICTURES, in this exact order, left to right, top row first. Use the card na
 3. "Ten Thousand Cuts" (attack): Deal 3 damage 8 times. Show a dynamic strike caught mid-action. Make it epic: glowing, richer detail, a grander composition.
 4. "Adrenaline Rush" (skill): Gain 1 Mana. Draw 2 cards. Consume. Show a defensive or tactical moment, calm and clear. A little more dramatic and detailed.
 5. "Assassin's Mark" (attack): Deal 10 damage. Apply 1 Exposed. Consume. Opening hand. Show a dynamic strike caught mid-action. A little more dramatic and detailed.
-6. "Blur Step" (skill): Discard any number of cards. Apply 1 Twinned. Show a defensive or tactical moment, calm and clear. A little more dramatic and detailed.
+6. "Blur Step" (skill): Discard any number of cards. Apply 1 Reverb. Show a defensive or tactical moment, calm and clear. A little more dramatic and detailed.
 7. "Careful Plan" (skill): Draw 1 card. Apply 1 Holdfast. Show a defensive or tactical moment, calm and clear. A little more dramatic and detailed.
 8. "Coiled Strike" (power): Whenever you play a card: Deal 4 damage to a random enemy. Show a grand symbolic still-life: one iconic object or pose that stands for the idea. A little more dramatic and detailed.
 9. "Cold Killing" (attack): Deal 1 (+1 per 4 card drawn this fight) damage. Show a dynamic strike caught mid-action. A little more dramatic and detailed.

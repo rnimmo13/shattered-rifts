@@ -185,7 +185,7 @@ export const DEAL_EVENTS: EventDef[] = (
       opts: [
         ['Listen: +3 max HP', [maxHp(3)], 'The silence settles in your chest.'],
         [
-          'Join in (lose 10 HP): an uncommon card of yours',
+          'Join in (lose 10 HP): a random uncommon card of your class joins your deck',
           [hurt(10), gift('uncommon')],
           'You open your mouth, and something answers.',
         ],
@@ -204,15 +204,15 @@ export const DEAL_EVENTS: EventDef[] = (
       text: 'A beggar sits on a crate of broken glass, hand out. Their eyes are far too clever.',
       opts: [
         [
-          'Give a little (25 shards): a random common card is added to your deck',
+          'Give a little (25 shards): a random common card of your class is added to your deck',
           [shards(-25), gift('common')],
         ],
         [
-          'Give a lot (60 shards): a random uncommon card is added to your deck',
+          'Give a lot (60 shards): a random uncommon card of your class is added to your deck',
           [shards(-60), gift('uncommon')],
         ],
         [
-          'Give a card instead (a random basic card leaves): a random common card is added',
+          'Give a card instead (a random basic card leaves): a random common card of your class is added to your deck',
           [remove('basic'), gift('common')],
           'The beggar nods as if it were a fair trade.',
           'optional',
@@ -328,7 +328,7 @@ export const DEAL_EVENTS: EventDef[] = (
           [chance(50, [shards(115)], [hurtPct(15)])],
         ],
         ['Take the right road: heal 20% of your HP', [heal(20)]],
-        ['Follow the footprints: a random common card is added to your deck', [gift('common')]],
+        ['Follow the footprints: a random common card of your class is added to your deck', [gift('common')]],
         [
           'Leave a card at the crossroads (a random basic card leaves): +40 shards and heal 10%',
           [remove('basic'), shards(40), heal(10)],
@@ -344,7 +344,7 @@ export const DEAL_EVENTS: EventDef[] = (
       text: 'A round chamber where every sound comes back changed. In the middle, a stand holds one card, face down.',
       opts: [
         [
-          'Take it (an even chance): a rare card, or lose 20% of your HP and gain a Wound',
+          'Take it (an even chance): a random rare card of your class joins your deck, or lose 20% of your HP and a Wound joins your deck',
           [chance(50, [gift('rare')], [hurtPct(20), wound()])],
         ],
       ],
@@ -518,15 +518,15 @@ export const DEAL_EVENTS: EventDef[] = (
       text: 'A flat stone in a shallow dish of coins. A sign: "Wishes cost what they cost."',
       opts: [
         [
-          'Toss a coin (pay 10 shards): a one-in-three chance of an uncommon card',
+          'Toss a coin (pay 10 shards): a one-in-three chance that a random uncommon card of your class joins your deck',
           [shards(-10), chance(34, [gift('uncommon')])],
         ],
         [
-          'Toss a handful (pay 50 shards): an even chance of an uncommon card',
+          'Toss a handful (pay 50 shards): an even chance that a random uncommon card of your class joins your deck',
           [shards(-50), chance(50, [gift('uncommon')])],
         ],
         [
-          'Toss a card in the dish (a random basic card leaves): an even chance of an uncommon card',
+          'Toss a card in the dish (a random basic card leaves): an even chance that a random uncommon card of your class joins your deck',
           [remove('basic'), chance(50, [gift('uncommon')])],
           'The stone considers it.',
           'optional',
@@ -610,7 +610,7 @@ export const DEAL_EVENTS: EventDef[] = (
       text: 'Stalls of grey cloth in a drifting snow of ash. Every trader sells a single thing, and wants a single thing back.',
       opts: [
         [
-          'Trade a card: a random card leaves your deck, and a random uncommon card is added to it',
+          'Trade a card: a random card leaves your deck, and a random uncommon card of your class is added to it',
           [remove('any', 1), gift('uncommon')],
         ],
         [

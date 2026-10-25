@@ -21,6 +21,7 @@ import {
   WINS_PER_DAY,
   believableStages,
   checkEntry,
+  checkUsername,
   cleanBoardName,
   isHero,
   storedHero,
@@ -50,6 +51,9 @@ const DAY = 86_400_000;
 /** How often one player may ask for a ghost in an hour. */
 const GHOST_ASKS_PER_HOUR = 40;
 const HOUR = 3_600_000;
+/** Username claims (and changes) one player, or one address, may make in a day. */
+const NAME_CLAIMS_PER_DAY = 8;
+const IP_NAME_CLAIMS_PER_DAY = 40;
 const isId = (v: unknown): v is string => typeof v === 'string' && /^[0-9a-f]{64}$/.test(v);
 const isAddr = (v: unknown): v is string => typeof v === 'string' && v.length > 0 && v.length <= 80;
 
@@ -162,6 +166,12 @@ export class Leaderboard extends DurableObject<Env> {
       rename('ghost_games', 'human_hero');
       ctx.storage.kv.put('heroIdsRenamed', true);
     }
+    // usernames: one per player, and no two players share one (compared by `key`, which ignores case and punctuation)
+    ctx.storage.sql.exec(
+      `CREATE TABLE IF NOT EXISTS names (
+         player TEXT PRIMARY KEY, name TEXT NOT NULL, key TEXT NOT NULL UNIQUE, at INTEGER NOT NULL
+       )`,
+    );
     // how often a player or an address has done something in the current hour or day
     ctx.storage.sql.exec(
       `CREATE TABLE IF NOT EXISTS limits (
@@ -516,15 +526,64 @@ export class Leaderboard extends DurableObject<Env> {
       'INSERT INTO pvp (at, winner, winner_name, winner_hero, loser, loser_name, loser_hero) VALUES (?, ?, ?, ?, ?, ?, ?)',
       now,
       wid,
-      cleanBoardName(w['name']),
+      this.claimedName(wid) ?? cleanBoardName(w['name']),
       storedHero(w['hero']),
       lid,
-      cleanBoardName(l['name']),
+      this.claimedName(lid) ?? cleanBoardName(l['name']),
       storedHero(l['hero']),
     );
     await remember(true);
     this.prune(now);
     return json({ ok: true, counted: true });
+  }
+
+  /** The username this player has claimed, if any (it is what the boards show for them). */
+  private claimedName(player: string): string | null {
+    const row = this.ctx.storage.sql
+      .exec<{ name: string }>('SELECT name FROM names WHERE player = ?', player)
+      .toArray()[0];
+    return row?.name ?? null;
+  }
+
+  /** A player claims a username. It must be free (or already theirs); a player has one at a time, and changing it frees the old one. */
+  private claimName(b: Record<string, unknown>, now: number): Response {
+    const player = b['player'];
+    const ip = isAddr(b['ip']) ? b['ip'] : 'unknown';
+    if (!isId(player)) return json({ ok: false, error: 'bad-player' }, 400);
+    const checked = checkUsername(b['name']);
+    if (!checked.ok) return json({ ok: false, error: 'bad-name', message: checked.message }, 200);
+    const mine = this.ctx.storage.sql
+      .exec<{ name: string; key: string }>('SELECT name, key FROM names WHERE player = ?', player)
+      .toArray()[0];
+    // asking for the name you already have changes nothing
+    if (mine && mine.name === checked.name) return json({ ok: true, name: checked.name });
+    if (!mine || mine.key !== checked.key) {
+      if (
+        !this.within(`name:${player}`, DAY, NAME_CLAIMS_PER_DAY, now) ||
+        !this.within(`ip-name:${ip}`, DAY, IP_NAME_CLAIMS_PER_DAY, now)
+      )
+        return json({ ok: false, error: 'limited', message: 'Too many name changes today. Try again tomorrow.' });
+    }
+    const taken = this.ctx.storage.sql
+      .exec<{ player: string }>('SELECT player FROM names WHERE key = ?', checked.key)
+      .toArray()[0];
+    if (taken && taken.player !== player)
+      return json({ ok: false, error: 'taken', message: 'That name is taken. Choose another.' });
+    this.ctx.storage.sql.exec(
+      'INSERT OR REPLACE INTO names (player, name, key, at) VALUES (?, ?, ?, ?)',
+      player,
+      checked.name,
+      checked.key,
+      now,
+    );
+    // what this player has already done on the boards carries the name they hold now
+    const sql = this.ctx.storage.sql;
+    sql.exec('UPDATE runs SET name = ? WHERE player = ?', checked.name, player);
+    sql.exec('UPDATE pvp SET winner_name = ? WHERE winner = ?', checked.name, player);
+    sql.exec('UPDATE pvp SET loser_name = ? WHERE loser = ?', checked.name, player);
+    sql.exec('UPDATE ghosts SET owner_name = ? WHERE owner = ?', checked.name, player);
+    sql.exec('UPDATE ghost_games SET human_name = ? WHERE human = ?', checked.name, player);
+    return json({ ok: true, name: checked.name });
   }
 
   private recordRun(b: Record<string, unknown>, now: number): Response {
@@ -555,7 +614,9 @@ export class Leaderboard extends DurableObject<Env> {
     )
       return json({ ok: true, counted: false, limited: true });
     const total = stagesInAll(tier, stage);
-    const name = cleanBoardName(b['name']);
+    // a run counts under the player's username (one is needed to be on the campaign board)
+    const name = this.claimedName(b['player']);
+    if (!name) return json({ ok: true, counted: false, error: 'no-name' });
     const old = this.ctx.storage.sql
       .exec<{ total: number; first_at: number }>(
         'SELECT total, first_at FROM runs WHERE player = ? AND run = ?',
@@ -687,6 +748,7 @@ export class Leaderboard extends DurableObject<Env> {
     }
     if (url.pathname === '/pvp') return this.recordPvp(body, now);
     if (url.pathname === '/run') return this.recordRun(body, now);
+    if (url.pathname === '/name/claim') return this.claimName(body, now);
     if (url.pathname === '/ghost/pick') return this.pick(body, now);
     if (url.pathname === '/ghost/boss') return this.ghostBoss(body, now);
     if (url.pathname === '/ghost/register') return this.registerSaved(body, now);

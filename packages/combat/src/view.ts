@@ -215,6 +215,7 @@ const STATUS_NAME: Record<string, string> = {
   vigor: 'Primed',
   seared: 'Bleed',
   resonance: 'Spirit',
+  twinned: 'Reverb',
 };
 const sname = (s: string): string => STATUS_NAME[s] ?? cap(s);
 const plural = (word: string): string =>

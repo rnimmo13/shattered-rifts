@@ -1053,7 +1053,7 @@ describe('tier 3: statuses and tricks', () => {
     expect(s.winner).toBe('a');
   });
 
-  it('Twinned plays the next Attack twice; Mirrored plays the next Skill twice', () => {
+  it('Reverb plays the next Attack twice; Mirrored plays the next Skill twice', () => {
     let s = start(['give-twin1', 'strike', 'strike']);
     s = play(s, 'h0').state;
     let hp = foe(s).hp;

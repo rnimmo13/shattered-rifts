@@ -45,6 +45,10 @@ interface Bot {
   /** what this player answers when asked who goes first */
   wantsFirst: boolean;
   toss: { random: boolean } | null;
+  /** a game of the best of three is over and the next has not started */
+  between: boolean;
+  /** games finished so far in this match */
+  games: number;
 }
 
 function connect(path: string, name: string, id: string, wantsFirst = true): Promise<Bot> {
@@ -64,6 +68,8 @@ function connect(path: string, name: string, id: string, wantsFirst = true): Pro
       paused: false,
       wantsFirst,
       toss: null,
+      between: false,
+      games: 0,
     };
     ws.addEventListener('open', () => resolve(bot));
     ws.addEventListener('error', () => reject(new Error(`could not connect to ${BASE}${path}`)));
@@ -79,8 +85,10 @@ const send = (b: Bot, m: ClientMsg): void => b.ws.send(JSON.stringify(m));
 
 function handle(b: Bot, m: ServerMsg): void {
   if (m.type === 'choose') {
-    if (!m.chosen) send(b, { type: 'order', first: b.wantsFirst });
+    // (between games only the player who lost is asked; the other waits)
+    if (!m.chosen && m.chooser !== false && !b.paused) send(b, { type: 'order', first: b.wantsFirst });
   } else if (m.type === 'start') {
+    b.between = false;
     b.toss = m.toss;
     b.seat = m.seat;
     b.replay = m.replay;
@@ -91,14 +99,18 @@ function handle(b: Bot, m: ServerMsg): void {
     if (!r.ok) b.desync = `seq ${m.seq}: ${r.message}`;
     else if (m.hash && r.hash !== m.hash) b.desync = `seq ${m.seq}: hash ${r.hash} != ${m.hash}`;
     pump(b);
-  } else if (m.type === 'end') b.ended = m;
-  else if (m.type === 'error') console.log(`  [${b.name}] error: ${m.code} ${m.message}`);
+  } else if (m.type === 'end') {
+    // a game that is not the last of the best of three only ends the game
+    b.games++;
+    if (m.series && !m.series.over) b.between = true;
+    else b.ended = m;
+  } else if (m.type === 'error') console.log(`  [${b.name}] error: ${m.code} ${m.message}`);
 }
 
 /** If it is my turn, play one move with the bot. */
 function pump(b: Bot): void {
   const m = b.match;
-  if (!m || m.over || b.paused || b.seat !== m.active || m.log.length < b.replay) return;
+  if (!m || m.over || b.between || b.paused || b.seat !== m.active || m.log.length < b.replay) return;
   const action = chooseAction(COMBAT_DB, m.state);
   b.moves++;
   send(b, { type: 'action', seq: m.log.length + 1, action });
@@ -238,9 +250,12 @@ async function refusals(): Promise<void> {
   await until(() => wrongSeat.inbox.some((m) => m.type === 'error'), 'not your turn');
   console.log('  a move out of turn: refused as expected');
   send(p1, { type: 'resign' });
-  await until(() => p1.ended !== null && p2.ended !== null, 'the resignation');
-  console.log('  resign: ended');
-  // nothing is accepted after the end
+  await until(() => p1.between && p2.between, 'the resignation');
+  const afterOne = p2.inbox.filter((m) => m.type === 'end').pop();
+  if (afterOne?.type !== 'end' || afterOne.series?.over !== false || afterOne.series.wins.a + afterOne.series.wins.b !== 1)
+    throw new Error(`a resignation should end one game of three: ${JSON.stringify(afterOne)}`);
+  console.log('  resign: one game lost, the match goes on');
+  // nothing is accepted between games
   send(p2, { type: 'action', seq: p2.match!.log.length + 1, action: { type: 'endTurn' } });
   await until(
     () => p2.inbox.some((m) => m.type === 'error' && m.code === 'no-match'),
@@ -366,6 +381,14 @@ async function board(tag: string): Promise<void> {
   // an Arena match between them
   const who: [string, string] = [ids[0]?.['id'] as string, ids[1]?.['id'] as string];
   const names: [string, string] = [`Ann${tag}`, `Bob${tag}`];
+  // usernames: a run does not count without one, no two players share one, and a name must be an acceptable one
+  const early = await post('run', { code: codes[0], run: `early${tag}`, name: names[0], hero: 'knight', tier: 1, stage: 1 });
+  need(early['counted'] === false && early['error'] === 'no-name', 'a run without a username is not counted');
+  need((await post('claim', { code: codes[0], name: names[0] }))['ok'] === true, 'a free name is claimed');
+  need((await post('claim', { code: codes[1], name: names[0].toUpperCase() }))['error'] === 'taken', 'a name another player has is taken, however it is written');
+  need((await post('claim', { code: codes[1], name: 'ab' }))['error'] === 'bad-name', 'a name that is too short is refused');
+  need((await post('claim', { code: codes[1], name: names[1] }))['ok'] === true, 'the other player claims their own');
+  need((await post('claim', { code: codes[0], name: names[0] }))['ok'] === true, 'a player may claim the name they already have');
   await playRoom(`BOARD${tag}`, 'friend code (recorded)', false, who, names);
   await sleep(500);
   const pvp = (await (await fetch(`${http}/pvp/board/pvp?period=week`)).json()) as {
@@ -410,10 +433,16 @@ async function board(tag: string): Promise<void> {
   need((await run(2))['counted'] === false, 'the same progress twice is not');
   need((await run(1))['counted'] === false, 'going backwards is not');
   need((await run(2, { hero: 'nobody' })).status === 400, 'an unknown character is refused');
+  // a second character is its own place on the board
+  need((await run(1, { run: `second${tag}`, hero: 'barbarian' }))['counted'] === true, 'a second character counts');
   const runs = (await (await fetch(`${http}/pvp/board/runs?period=month`)).json()) as {
     board: { name: string; tier: number; stage: number; total: number }[];
   };
-  const mine = runs.board.find((s) => s.name === names[0]);
+  const mine = runs.board.find((s) => s.name === names[0] && (s as { hero?: string }).hero === 'knight');
+  need(
+    runs.board.filter((s) => s.name === names[0]).length === 2,
+    'one player is on the campaign board once for each character',
+  );
   need(
     mine?.tier === 1 && mine.stage === 2 && mine.total === 2,
     'the run board shows the furthest point',
@@ -451,7 +480,7 @@ async function ghost(tag: string): Promise<void> {
   if (foeEntry.who !== undefined) throw new Error('a ghost entry carries a leaderboard id');
   if (!/ghost$/.test(foeEntry.name))
     throw new Error(`the ghost is not named as one: ${foeEntry.name}`);
-  await until(() => a.ended !== null, 'the end of the match', 240_000);
+  await until(() => a.ended !== null, 'the end of the match', 600_000);
   if (a.desync) throw new Error(`desync: ${a.desync}`);
   console.log(
     `  ok: played ${a.match?.log.length} moves against ${foeEntry.name} (${foeEntry.hero}), ended ${JSON.stringify(a.ended && a.ended.type === 'end' ? [a.ended.winner, a.ended.reason] : null)}, hashes agreed`,

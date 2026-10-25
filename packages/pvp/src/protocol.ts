@@ -61,6 +61,11 @@ export type ServerMsg =
       now: number;
       /** true when you have already answered (you came back to the screen) */
       chosen: boolean;
+      /** the seat you hold (between games the seats swap with the order of play) */
+      seat?: Seat;
+      /** between games of a best of three: the score, and whether YOU choose (the player who lost the last game does; the other waits) */
+      series?: Series;
+      chooser?: boolean;
     }
   | {
       type: 'start';
@@ -78,6 +83,8 @@ export type ServerMsg =
       now: number;
       /** how the order was settled: `random` means both wanted the same and the coin chose (seat a is the winner) */
       toss: { random: boolean };
+      /** the score of the best of three, and which game this is */
+      series?: Series;
     }
   | {
       type: 'action';
@@ -90,7 +97,8 @@ export type ServerMsg =
       deadline: number;
       now: number;
     }
-  | { type: 'end'; winner: Seat | 'draw'; reason: EndReason }
+  /** a game is over (`series.over` says whether the whole match is) */
+  | { type: 'end'; winner: Seat | 'draw'; reason: EndReason; series?: Series }
   | { type: 'error'; code: ErrorCode; message: string };
 
 export type ErrorCode =
@@ -120,3 +128,20 @@ export const MAX_MISSED_TURNS = 2;
 export const QUEUE_WIDEN_MS = 20_000;
 /** Tiers further apart than this are not paired until the wait widens. */
 export const QUEUE_TIER_GAP = 1;
+
+/** A match is the best of three games: this many game wins take it. */
+export const SERIES_WINS = 2;
+/** The most games a match can last. */
+export const SERIES_MAX_GAMES = 3;
+/** Between games the player who lost chooses who goes first: they have this long (the result is on screen first), ms. */
+export const SERIES_CHOOSE_MS = CHOOSE_MS + 10_000;
+
+/** Where a best-of-three stands, as the seats sit in the game just played (or being played). */
+export interface Series {
+  /** the game now being played, 1 to 3 */
+  game: number;
+  /** each seat's game wins */
+  wins: Record<Seat, number>;
+  /** the match is decided: no further game follows */
+  over: boolean;
+}

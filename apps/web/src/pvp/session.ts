@@ -2,7 +2,7 @@
 // small snapshot for the screen, and feeds the accepted moves to the fight screen through a MoveFeed. No React in here.
 
 import type { Action, CombatSetup, Side } from '@sr/combat';
-import { setupFor, type ClientMsg, type Entry, type ServerMsg } from '@sr/pvp';
+import { setupFor, type ClientMsg, type Entry, type Series, type ServerMsg } from '@sr/pvp';
 import { MoveFeed, type PvpLink } from './link';
 
 const progressOf = (e: Entry): { tier: number; stage?: number } =>
@@ -18,6 +18,10 @@ export interface ChooseInfo {
   skew: number;
   /** you have answered and are waiting for the other player */
   chosen: boolean;
+  /** the seat you hold, and (between games of a best of three) the score; `chooser` is false when the other player is choosing */
+  seat: Side | null;
+  series: Series | null;
+  chooser: boolean;
 }
 
 export interface MatchInfo {
@@ -34,6 +38,12 @@ export interface MatchInfo {
   deadline: number | null;
   skew: number;
   end: { winner: Side | 'draw'; reason: string } | null;
+  /** the best of three: the game being played and the score */
+  series: Series | null;
+  /** the question for the next game, which has arrived while this game's result is on screen */
+  next: ChooseInfo | null;
+  /** the player has left the result screen for the next game: the question is shown as soon as it arrives */
+  proceed: boolean;
   /** how the order was settled, for a match that has just begun (null when you come back to one in progress) */
   toss: { random: boolean } | null;
   /** the seat the computer plays, when the opponent is a ghost */
@@ -200,9 +210,10 @@ export class PvpSession {
   private lost(): void {
     if (this.closing) return;
     const { phase, match } = this.snap;
-    if (phase === 'match' && match?.end) return;
+    // (a game that is over but not the match: the next game is still to come, so the connection is still needed)
+    if (phase === 'match' && match?.end && (!match.series || match.series.over)) return;
     if (
-      (phase === 'match' || phase === 'waiting') &&
+      (phase === 'match' || phase === 'waiting' || phase === 'choose') &&
       this.room &&
       this.entry &&
       this.retries < 20
@@ -284,6 +295,14 @@ export class PvpSession {
       this.set({ choose: { ...this.snap.choose, chosen: true } });
   }
 
+  /** The player has read the result of a game and the match goes on: show the question about the next one (now, or when it arrives). */
+  nextGame(): void {
+    const match = this.snap.match;
+    if (!match) return;
+    if (match.next) this.set({ phase: 'choose', choose: match.next });
+    else this.setMatch({ proceed: true });
+  }
+
   /** The move sender the fight screen uses. */
   sendMove = (seq: number, action: Action): boolean => this.send({ type: 'action', seq, action });
 
@@ -332,25 +351,36 @@ export class PvpSession {
         this.set({ phase: 'waiting', room: m.room, choose: null });
         return;
       case 'choose':
-        this.set({
-          phase: 'choose',
-          choose: {
-            me: m.me,
-            foe: m.foe,
-            deadline: m.deadline,
-            skew: m.now - Date.now(),
-            chosen: m.chosen,
-          },
-        });
+      {
+        const info: ChooseInfo = {
+          me: m.me,
+          foe: m.foe,
+          deadline: m.deadline,
+          skew: m.now - Date.now(),
+          chosen: m.chosen,
+          seat: m.seat ?? null,
+          series: m.series ?? null,
+          chooser: m.chooser ?? true,
+        };
+        const cur = this.snap.match;
+        // a game has just ended and its result is on screen: the question waits until the player moves on
+        if (this.snap.phase === 'match' && cur?.end && !cur.proceed) {
+          this.setMatch({ next: info });
+          return;
+        }
+        this.set({ phase: 'choose', choose: info });
         return;
+      }
       case 'start': {
         const skew = m.now - Date.now();
         window.clearTimeout(this.waitTimer);
-        if (this.snap.match) {
-          // a reconnection: the same match; moves already seen are skipped
-          this.setMatch({ deadline: m.deadline, skew });
+        if (this.snap.match && this.snap.match.setup.seed === m.seed) {
+          // a reconnection: the same game; moves already seen are skipped
+          this.setMatch({ deadline: m.deadline, skew, series: m.series ?? null });
           return;
         }
+        // a new game (the first, or the next of the best of three): moves are counted from 1 again
+        this.lastSeq = 0;
         const feed = new MoveFeed();
         this.set({
           phase: 'match',
@@ -366,6 +396,9 @@ export class PvpSession {
             deadline: m.deadline,
             skew,
             end: null,
+            series: m.series ?? null,
+            next: null,
+            proceed: false,
             toss: m.replay === 0 ? m.toss : null,
             ghost: m.ghost ?? null,
             feed,
@@ -387,7 +420,7 @@ export class PvpSession {
         return;
       }
       case 'end':
-        this.setMatch({ end: { winner: m.winner, reason: m.reason } });
+        this.setMatch({ end: { winner: m.winner, reason: m.reason }, series: m.series ?? this.snap.match?.series ?? null });
         return;
       case 'error':
         if (m.code === 'no-ghost') {
@@ -421,6 +454,7 @@ export class PvpSession {
       deadline: m.end ? null : m.deadline,
       skew: m.skew,
       end: m.end,
+      series: m.series,
     };
   }
 }

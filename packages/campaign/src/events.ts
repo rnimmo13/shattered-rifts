@@ -143,7 +143,7 @@ export const EVENTS: EventDef[] = [
         options: [
           {
             id: 'cross',
-            label: `Take ${COMBAT_DB.cards[card]?.name ?? 'it'} (a ${RIFTWALKERS[from].role}'s card)`,
+            label: `Take ${COMBAT_DB.cards[card]?.name ?? 'it'} (${/^[AEIOU]/.test(RIFTWALKERS[from].role) ? 'an' : 'a'} ${RIFTWALKERS[from].role}'s card, added to your deck)`,
           },
           leave,
         ],
@@ -163,7 +163,10 @@ export const EVENTS: EventDef[] = [
       title: 'The Sanctum of Change',
       text: 'A basin of white fire. Step in and your whole deck is sanctified: every card with numbers is re-rolled: some are left as they were, about half of the rest become 25% stronger and the others 25% weaker. Costs never change. It cannot be undone, and you do not choose which.',
       options: [
-        { id: 'sanctify', label: 'Sanctify the whole deck' },
+        {
+          id: 'sanctify',
+          label: 'Sanctify the whole deck: the numbers on every card are re-rolled, some 25% stronger and some 25% weaker (permanent; those cards can never be removed)',
+        },
         { id: 'leave', label: 'No: keep the deck as it is' },
       ],
       cardOffer: '',

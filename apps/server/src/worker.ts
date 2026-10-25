@@ -154,7 +154,8 @@ const CORS_POST = {
  * POST /pvp/board/ghostboss {code?}              a ghost deck to stand in for a campaign Warden (cards and Boons included)
  * GET  /pvp/board/ghostdecks                    the decks that can be met as ghosts (who, Riftwalker, how far; never the cards)
  * POST /pvp/board/id    {code?}                 this player's leaderboard id (so a match can carry it)
- * POST /pvp/board/run   {code?, run, name, hero, tier, stage}   a run has reached this far
+ * POST /pvp/board/run   {code?, run, name, hero, tier, stage}   a run has reached this far (counted under the player's claimed username)
+ * POST /pvp/board/claim {code?, name}            claim a username: 3 to 20 characters, and no two players share one
  */
 async function boardRoute(request: Request, env: Env, what: string, url: URL): Promise<Response> {
   if (request.method === 'OPTIONS') return new Response(null, { status: 204, headers: CORS_POST });
@@ -176,7 +177,10 @@ async function boardRoute(request: Request, env: Env, what: string, url: URL): P
         },
       });
     }
-    if (request.method !== 'POST' || (what !== 'id' && what !== 'run' && what !== 'view' && what !== 'ghostboss'))
+    if (
+      request.method !== 'POST' ||
+      (what !== 'id' && what !== 'run' && what !== 'claim' && what !== 'view' && what !== 'ghostboss')
+    )
       return json({ ok: false, error: 'not found' }, 404);
     const text = await request.text();
     if (text.length > 2_000) return json({ ok: false, error: 'too big' }, 413);
@@ -224,7 +228,7 @@ async function boardRoute(request: Request, env: Env, what: string, url: URL): P
       return json({ ok: false, error: body['code'] === undefined ? 'signin' : 'bad-code' }, 401);
     if (what === 'id') return json({ ok: true, id });
     const res = await stub.fetch(
-      new Request('https://board.invalid/run', {
+      new Request(what === 'claim' ? 'https://board.invalid/name/claim' : 'https://board.invalid/run', {
         method: 'POST',
         body: JSON.stringify({
           ...body,

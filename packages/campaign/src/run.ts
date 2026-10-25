@@ -113,6 +113,14 @@ export const STAGE_SCALE: Record<number, { hp: number; dmg: number }> = {
 const stageScale = (stage: number): { hp: number; dmg: number } =>
   STAGE_SCALE[Math.max(1, Math.min(FINAL_STAGE, stage))] ?? { hp: 100, dmg: 100 };
 
+/**
+ * Rift Tiers make enemies tougher on top of the engine's own tier scaling (more HP and Might each tier, and the HP step grows):
+ * a campaign fight at Tier I already has this much extra HP and damage (percent), and each tier after adds a little more damage.
+ */
+export const TIER_PRESSURE = { hp: 108, dmg: 105, dmgPerTier: 2 } as const;
+const tierDmgPct = (tier: number): number =>
+  TIER_PRESSURE.dmg + TIER_PRESSURE.dmgPerTier * Math.max(0, tier - 1);
+
 /** Shards a won fight pays, by the kind of fight. */
 export const FIGHT_SHARDS = { duel: 15, elite: 36, warden: 65 } as const;
 /** The chance (percent) that a won fight drops a potion (when the belt has room). */
@@ -414,8 +422,12 @@ export function duelPlan(run: RunState): FightPlan | null {
     tier: run.tier,
     boons: [...run.boons],
     potions: [...run.potions],
-    hpPct: Math.round((DIFFICULTY[run.difficulty].hpPct * stageScale(run.stage).hp) / 100),
-    dmgPct: Math.round((DIFFICULTY[run.difficulty].dmgPct * stageScale(run.stage).dmg) / 100),
+    hpPct: Math.round(
+      (DIFFICULTY[run.difficulty].hpPct * stageScale(run.stage).hp * TIER_PRESSURE.hp) / 10000,
+    ),
+    dmgPct: Math.round(
+      (DIFFICULTY[run.difficulty].dmgPct * stageScale(run.stage).dmg * tierDmgPct(run.tier)) / 10000,
+    ),
     kind: node.kind,
     seed: `${run.seed}:t${run.tier}:${node.id}:${run.stats.duelsLost}`,
   };

@@ -44,7 +44,7 @@ THE PICTURES, in this exact order, left to right, top row first. Use the card na
 5. "Wrath of Ages" (attack): Deal 40 damage. Apply 2 Exposed. Consume. Show a dynamic strike caught mid-action. Make it epic: glowing, richer detail, a grander composition.
 6. "Attunement" (skill): Gain 1 maximum Mana for the rest of the fight (and 1 now). Consume. Show a defensive or tactical moment, calm and clear. A little more dramatic and detailed.
 7. "Bell of Judgment" (snare): When you or an ally is attacked: Deal 20 damage to the attacker. Apply 2 Exposed to the attacker. Show a hidden trap seen as it is being set, ominous. A little more dramatic and detailed.
-8. "Echoing Blow" (skill): Apply 1 Twinned. Show a defensive or tactical moment, calm and clear. A little more dramatic and detailed.
+8. "Echoing Blow" (skill): Apply 1 Reverb. Show a defensive or tactical moment, calm and clear. A little more dramatic and detailed.
 9. "Faceless Courtier" (skill): Apply 2 Exposed to ALL enemies. Apply 1 Faltering to ALL enemies. Show a defensive or tactical moment, calm and clear. A little more dramatic and detailed.
 
 NEGATIVE: text, letters, numbers, captions, labels, UI, card frames, borders, watermark, logo, photorealism, gritty texture, nudity, characters facing away.

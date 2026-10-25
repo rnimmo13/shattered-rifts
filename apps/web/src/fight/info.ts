@@ -106,7 +106,7 @@ export const STATUS_INFO: Record<
     text: 'A curse. If its HP is at or below its Fate at the end of its turn, it dies.',
   },
   twinned: {
-    name: 'Twinned',
+    name: 'Reverb',
     glyph: '⧉',
     tone: 'good',
     text: 'Your next Attack card is played twice.',

@@ -5,6 +5,8 @@
 const PRODUCTION_SERVER = 'shatteredrifts.app';
 const SERVER_KEY = 'sr-pvp-server';
 const NAME_KEY = 'sr-pvp-name';
+/** The name the server confirmed as this player's own (no two players share one): the name is only trusted while it matches. */
+const CLAIMED_KEY = 'sr-pvp-name-claimed';
 const ID_KEY = 'sr-player-id';
 
 /** "host:port", a full ws(s):// or http(s):// address, or nothing, as typed by a player or set at build time. */
@@ -58,6 +60,28 @@ export function getName(): string {
   } catch {
     return '';
   }
+}
+
+export function getClaimed(): string {
+  try {
+    return localStorage.getItem(CLAIMED_KEY) ?? '';
+  } catch {
+    return '';
+  }
+}
+
+export function setClaimed(v: string): void {
+  try {
+    localStorage.setItem(CLAIMED_KEY, v);
+  } catch {
+    /* not saved */
+  }
+}
+
+/** The player has a username the server confirmed is theirs (the campaign and the Arena need one). */
+export function hasUsername(): boolean {
+  const n = getName();
+  return n !== '' && getClaimed() === n;
 }
 
 export function setName(v: string): void {

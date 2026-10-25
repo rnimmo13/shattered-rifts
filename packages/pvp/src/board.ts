@@ -95,6 +95,35 @@ export function cleanBoardName(raw: unknown): string {
   return name === '' ? 'Riftwalker' : name;
 }
 
+/** Names nobody may take: they are what a player with no name is shown as. */
+const RESERVED_NAMES = new Set(['riftwalker', 'you', 'enemy', 'opponent', 'player', 'guest', 'admin']);
+
+export type Username = { ok: true; name: string; key: string } | { ok: false; message: string };
+
+/**
+ * A username a player may claim: 3 to 20 letters, digits, spaces and _ - . ' with nothing blocked in it. `key` is what two names are
+ * compared by, so "Rob the Brave", "rob_the_brave" and "ROB THE BRAVE" are the same name (a name cannot be taken by changing how it is
+ * written).
+ */
+export function checkUsername(raw: unknown): Username {
+  if (typeof raw !== 'string') return { ok: false, message: 'Choose a name.' };
+  // (NFKC folds full-width and compatibility forms into ordinary letters)
+  const name = raw.normalize('NFKC').replace(/\s+/g, ' ').trim();
+  if (name.length < 3) return { ok: false, message: 'A name needs at least 3 characters.' };
+  if (name.length > 20) return { ok: false, message: 'A name can be at most 20 characters.' };
+  // Latin letters only: a lookalike from another alphabet could pass for someone else's name
+  if (!/^[\p{Script=Latin}\p{N} _.'-]+$/u.test(name))
+    return {
+      ok: false,
+      message: "Use the letters A to Z (accents are fine), digits, spaces and _ - . ' only.",
+    };
+  const key = name.toLowerCase().replace(/[^\p{L}\p{N}]/gu, '');
+  if (key.length < 3) return { ok: false, message: 'A name needs at least 3 letters or digits.' };
+  if (RESERVED_NAMES.has(key) || cleanName(name) !== name)
+    return { ok: false, message: 'That name cannot be used. Choose another.' };
+  return { ok: true, name, key };
+}
+
 // ---- the Arena board ----
 
 export interface PvpRow {
@@ -208,14 +237,16 @@ export interface RunStanding {
   total: number;
 }
 
-/** Each player's furthest run in the period, furthest first (a tie goes to whoever got there first). */
+/** Each player's furthest run with each Riftwalker in the period, furthest first (a tie goes to whoever got there first). */
 export function standingsRuns(rows: readonly RunRow[]): (RunStanding & { player: string })[] {
   const best = new Map<string, RunRow & { total: number }>();
   for (const r of rows) {
     const total = stagesInAll(r.tier, r.stage);
-    const cur = best.get(r.player);
+    // (a player may be on the board once for each Riftwalker they have taken furthest)
+    const k = `${r.player}|${r.hero}`;
+    const cur = best.get(k);
     if (!cur || total > cur.total || (total === cur.total && r.at < cur.at))
-      best.set(r.player, { ...r, total });
+      best.set(k, { ...r, total });
   }
   return [...best.values()]
     .sort((x, y) => y.total - x.total || x.at - y.at || x.name.localeCompare(y.name))

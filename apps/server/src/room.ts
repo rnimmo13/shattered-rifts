@@ -11,13 +11,19 @@ import {
   checkEntry,
   decideOrder,
   Match,
+  newSeries,
   other,
   RECONNECT_MS,
+  scoreGame,
   seatsFor,
+  SERIES_CHOOSE_MS,
+  seriesFor,
+  seriesWinner,
   type Accepted,
   type Entry,
   type Outcome,
   type Seat,
+  type SeriesState,
   type ServerMsg,
 } from '@sr/pvp';
 import type { Env } from './env';
@@ -33,6 +39,8 @@ const LINGER_MS = 5 * 60_000;
 /** A browser pings every 20 s; one silent for this long is treated as gone, and how often we look. */
 const QUIET_MS = 60_000;
 const HEARTBEAT_CHECK_MS = 30_000;
+/** When the computer is to choose the order between games, it waits this long (the result is on screen first), ms. */
+const GHOST_PAUSE_MS = 8_000;
 
 interface Saved {
   created: number;
@@ -60,6 +68,18 @@ interface Saved {
   chooseBy: number;
   /** how the order was settled */
   toss: { random: boolean };
+  /** a match is the best of three games: which game it is and each player's wins (by player id, because the seats swap) */
+  series: SeriesState;
+  /** the match is decided (a second game win, or a player left) */
+  decided: boolean;
+  /** a game is over and the match goes on: the players are waiting to choose the order of the next one */
+  between: boolean;
+  /** between games: the seat that chooses (whoever lost the last game); the other waits */
+  chooser?: Seat;
+  /** between games: how the game just played ended (a player who reconnects is told) */
+  lastEnd?: Outcome;
+  /** moves made in the games already finished (a match is recorded on the board by its total) */
+  moves: number;
 }
 
 interface Attach {
@@ -82,6 +102,10 @@ const fresh = (): Saved => ({
   choices: {},
   chooseBy: 0,
   toss: { random: false },
+  series: newSeries(),
+  decided: false,
+  between: false,
+  moves: 0,
 });
 
 export class MatchRoom extends DurableObject<Env> {
@@ -96,7 +120,9 @@ export class MatchRoom extends DurableObject<Env> {
     void ctx.blockConcurrencyWhile(async () => {
       const saved = await ctx.storage.get<Saved>('room');
       if (saved) {
-        this.data = saved;
+        // (a room saved before a field existed gets that field's starting value)
+        this.data = { ...fresh(), ...saved };
+        if (saved.moves === undefined) this.data.moves = saved.log.length;
         this.rebuild();
         // a room woken from sleep with the ghost to move (its move was due, or was never arranged) sets it going again
         if (saved.ghost && this.match && !saved.over && saved.ghostAt === undefined) {
@@ -208,7 +234,7 @@ export class MatchRoom extends DurableObject<Env> {
     const d = this.data;
     const a = d.entries.a;
     const b = d.entries.b;
-    if (!d.started || !a || !b) return;
+    if (!d.started || !a || !b || d.between) return;
     try {
       const m = new Match(d.seed, a, b, Date.now());
       for (const { seat, action } of d.log) {
@@ -275,8 +301,15 @@ export class MatchRoom extends DurableObject<Env> {
       replay: d.log.length,
       now: Date.now(),
       toss: d.toss,
+      series: this.seriesNow(),
       ...(d.ghost ? { ghost: d.ghost.seat } : {}),
     };
+  }
+
+  /** The score of the match as the seats sit now (`over`: the match is decided). */
+  private seriesNow(): ReturnType<typeof seriesFor> {
+    const d = this.data;
+    return seriesFor(d.series, d.ids, d.decided);
   }
 
   /** Ask one player whether they want to go first. */
@@ -292,6 +325,10 @@ export class MatchRoom extends DurableObject<Env> {
       deadline: d.chooseBy,
       now: Date.now(),
       chosen: d.choices[seat] !== undefined,
+      seat,
+      ...(d.between
+        ? { series: this.seriesNow(), chooser: d.chooser === seat && d.choices[seat] === undefined }
+        : {}),
     });
   }
 
@@ -304,6 +341,7 @@ export class MatchRoom extends DurableObject<Env> {
     const ids: Partial<Record<Seat, string>> = {};
     const entries: Partial<Record<Seat, Entry>> = {};
     const whos: Partial<Record<Seat, string>> = {};
+    const away: Partial<Record<Seat, number>> = {};
     if (d.ghost) d.ghost = { ...d.ghost, seat: seats[d.ghost.seat] };
     for (const arrival of ['a', 'b'] as const) {
       const id = d.ids[arrival];
@@ -313,13 +351,21 @@ export class MatchRoom extends DurableObject<Env> {
         entries[seats[arrival]] = entry;
         const w = d.who?.[arrival];
         if (w) whos[seats[arrival]] = w;
+        const gone = d.away[arrival];
+        if (gone !== undefined) away[seats[arrival]] = gone;
       }
     }
+    d.away = away;
     d.ids = ids;
     d.entries = entries;
     d.who = whos;
     d.choosing = false;
+    d.between = false;
+    delete d.chooser;
+    delete d.lastEnd;
     d.choices = {};
+    d.log = [];
+    d.over = null;
     d.started = true;
     d.toss = { random: order.random };
     d.seed = crypto.randomUUID();
@@ -333,7 +379,7 @@ export class MatchRoom extends DurableObject<Env> {
     // a seat nobody is connected to is away from the start
     for (const seatOf of ['a', 'b'] as const)
       if (this.sockets(seatOf).length === 0 && seatOf !== d.ghost?.seat)
-        d.away[seatOf] = Date.now();
+        d.away[seatOf] ??= Date.now();
     this.planGhost();
     await this.save();
     for (const s of this.sockets()) {
@@ -426,13 +472,21 @@ export class MatchRoom extends DurableObject<Env> {
         send(ws, { type: 'error', code: 'no-match', message: 'Nobody is choosing the order now.' });
         return;
       }
+      if (d.between) {
+        // between games only the player who lost chooses; what they ask for, the other gets the opposite of
+        if (seat !== d.chooser || d.choices[seat] !== undefined) return;
+        d.choices[seat] = msg.first;
+        d.choices[other(seat)] = !msg.first;
+        await this.begin();
+        return;
+      }
       d.choices[seat] = msg.first;
       await this.save();
       if (d.choices.a !== undefined && d.choices.b !== undefined) await this.begin();
       return;
     }
     const match = this.match;
-    if (!match || !d.started) {
+    if (!match || !d.started || d.between) {
       send(ws, { type: 'error', code: 'no-match', message: 'The match has not started.' });
       return;
     }
@@ -478,6 +532,8 @@ export class MatchRoom extends DurableObject<Env> {
   private welcome(ws: WebSocket, seat: Seat): void {
     const d = this.data;
     if (d.choosing) {
+      // (someone who was away when the game ended is told how it ended before they are asked about the next)
+      if (d.between && d.lastEnd) send(ws, this.endMessage(d.lastEnd));
       this.askOrder(ws, seat);
       return;
     }
@@ -488,22 +544,63 @@ export class MatchRoom extends DurableObject<Env> {
     const start = this.startMessage(seat);
     if (start) send(ws, start);
     for (let i = 0; i < d.log.length; i++) send(ws, this.actionMessage(i, null));
-    if (d.over) send(ws, { type: 'end', winner: d.over.winner, reason: d.over.reason });
+    if (d.over) send(ws, this.endMessage(d.over));
   }
 
+  private endMessage(o: Outcome): ServerMsg {
+    return { type: 'end', winner: o.winner, reason: o.reason, series: this.seriesNow() };
+  }
+
+  /**
+   * A game is over. A win, a resignation or two missed turns end only the game: the score is kept, and unless someone has won two
+   * games the players are asked (the loser first) who goes first in the next. A player leaving (or both) ends the whole match.
+   */
   private async finish(outcome: Outcome): Promise<void> {
-    this.data.over = outcome;
+    const d = this.data;
+    d.over = outcome;
+    d.moves += d.log.length;
+    const gameOnly = outcome.reason !== 'disconnect';
+    if (gameOnly) {
+      const winnerId = outcome.winner === 'draw' ? null : (d.ids[outcome.winner] ?? null);
+      d.series = scoreGame(d.series, winnerId);
+    }
+    d.decided = !gameOnly || seriesWinner(d.series) !== null;
+    const over = this.endMessage(outcome);
+    if (d.decided) {
+      await this.save();
+      this.broadcast(over);
+      await this.record(outcome);
+      return;
+    }
+    // the match goes on: the result is shown, then the loser of this game chooses who goes first in the next
+    const loser: Seat = outcome.winner === 'draw' ? 'a' : other(outcome.winner);
+    d.over = null;
+    d.between = true;
+    d.lastEnd = outcome;
+    d.chooser = loser;
+    d.choosing = true;
+    d.log = [];
+    this.match = null;
+    delete d.ghostAt;
+    if (d.ghost?.seat === loser) {
+      const wants = Math.random() < 0.5;
+      d.choices = { [loser]: wants, [other(loser)]: !wants };
+      d.chooseBy = Date.now() + GHOST_PAUSE_MS;
+    } else {
+      d.choices = {};
+      d.chooseBy = Date.now() + SERIES_CHOOSE_MS;
+    }
     await this.save();
-    this.broadcast({ type: 'end', winner: outcome.winner, reason: outcome.reason });
-    await this.record(outcome);
+    this.broadcast(over);
+    for (const sock of this.sockets()) this.askOrder(sock.ws, sock.at.seat as Seat);
   }
 
   /** A played match with a winner goes on the Arena leaderboard (a match that never got going, or a draw, does not). */
   private async record(outcome: Outcome): Promise<void> {
     const d = this.data;
     // a match that was barely played does not count, nor does a win by forfeit or a missed clock in the first few moves
-    if (outcome.winner === 'draw' || !d.started || d.log.length < MIN_RECORDED_MOVES) return;
-    if (outcome.reason !== 'win' && d.log.length < MIN_FORFEIT_MOVES) return;
+    if (outcome.winner === 'draw' || !d.started || d.moves < MIN_RECORDED_MOVES) return;
+    if (outcome.reason !== 'win' && d.moves < MIN_FORFEIT_MOVES) return;
     if (d.ghost) {
       await this.recordGhost(outcome.winner);
       return;
@@ -587,6 +684,24 @@ export class MatchRoom extends DurableObject<Env> {
     const d = this.data;
     const now = Date.now();
     if (d.choosing) {
+      if (d.between) {
+        // between games a player who has been gone too long forfeits the match (both gone: nobody wins)
+        const gone = (['a', 'b'] as const).filter((s) => {
+          const t = d.away[s];
+          return t !== undefined && now - t >= RECONNECT_MS;
+        });
+        if (gone.length > 0) {
+          d.choosing = false;
+          d.between = false;
+          delete d.chooser;
+          await this.finish(
+            gone.length === 2
+              ? { winner: 'draw', reason: 'disconnect' }
+              : { winner: other(gone[0] as Seat), reason: 'disconnect' },
+          );
+          return;
+        }
+      }
       // time to answer ran out: whoever did not answer leaves it to the coin
       if (now >= d.chooseBy) await this.begin();
       else await this.save();

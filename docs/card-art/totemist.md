@@ -40,7 +40,7 @@ THE PICTURES, in this exact order, left to right, top row first. Use the card na
 1. "Chorus of Totems" (power): Apply 2 Spirit. Gain 1 totem slot. Show a grand symbolic still-life: one iconic object or pose that stands for the idea. A little more dramatic and detailed.
 2. "Consuming Dark" (power): At the end of your turn: Plant Elder. Show a grand symbolic still-life: one iconic object or pose that stands for the idea. A little more dramatic and detailed.
 3. "Echo Cascade" (skill): Awaken your first totem 3 times (it stays). Consume. Show a defensive or tactical moment, calm and clear. A little more dramatic and detailed.
-4. "Echoing Form" (power): At the start of your turn: Apply 1 Twinned. Show a grand symbolic still-life: one iconic object or pose that stands for the idea. A little more dramatic and detailed.
+4. "Echoing Form" (power): At the start of your turn: Apply 1 Reverb. Show a grand symbolic still-life: one iconic object or pose that stands for the idea. A little more dramatic and detailed.
 5. "Echoing Loop" (power): At the end of your turn: Awaken your first totem (it stays). Show a grand symbolic still-life: one iconic object or pose that stands for the idea. A little more dramatic and detailed.
 6. "Fevered Communion" (power): Apply 4 Spirit. At the start of your turn: Remove 1 Spirit. Show a grand symbolic still-life: one iconic object or pose that stands for the idea. A little more dramatic and detailed.
 7. "Frozen Grove" (power): Whenever a card is consumed: Gain 4 Barrier. Show a grand symbolic still-life: one iconic object or pose that stands for the idea. A little more dramatic and detailed.

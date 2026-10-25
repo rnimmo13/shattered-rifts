@@ -12,7 +12,7 @@ import {
 import { HeroIcon } from '../ui/HeroIcon';
 import { heroName } from './deckLayout';
 import { viewBoard, type BoardKind, type BoardView, type GhostView } from './boardApi';
-import { getName, setName } from './config';
+import { NameClaim } from './NameClaim';
 import './board.css';
 
 /** "3 days left", "5 hours left": how long this period has to run. */
@@ -137,7 +137,6 @@ export function LeaderboardScreen() {
   );
   // asking again (the Retry button)
   const [tries, setTry] = useState(0);
-  const [name, setNameState] = useState(() => getName() || 'Riftwalker');
   // (read once: how long is left changes by the hour, and a page left open is not worth redrawing for it)
   const [now] = useState(() => Date.now());
 
@@ -312,21 +311,14 @@ export function LeaderboardScreen() {
       )}
 
       <section className="board__you">
-        <label>
-          <span>Your name on the boards</span>
-          <input
-            value={name}
-            maxLength={20}
-            onChange={(e) => {
-              setNameState(e.target.value);
-              setName(e.target.value.trim());
-            }}
-            aria-label="Your name on the boards"
-          />
-        </label>
+        <NameClaim
+          label="Your name on the boards"
+          button="Change name"
+          onDone={() => setTry((t) => t + 1)}
+        />
         <p className="board__note">
-          It is the same name you use in the Arena. Results already recorded keep the name they were
-          made under until your next match or run.
+          It is the same name you use in the Arena and the campaign, and no one else can have it.
+          Everything you have already done on the boards moves to the new name.
         </p>
       </section>
     </main>

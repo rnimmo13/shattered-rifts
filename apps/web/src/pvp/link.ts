@@ -2,6 +2,7 @@
 // moves the server accepted (the opponent's, and mine echoed back). The screen never talks to the network itself.
 
 import type { Action, Side } from '@sr/combat';
+import type { Series } from '@sr/pvp';
 
 /** A move the server accepted, in the server's order. */
 export interface Move {
@@ -54,6 +55,8 @@ export interface PvpLink {
   deadline: number | null;
   /** add this to the local clock to get the server's */
   skew: number;
-  /** set when the match is over */
+  /** set when the game is over */
   end: { winner: Side | 'draw'; reason: string } | null;
+  /** the best of three: which game this is and the score (by seat); null for the campaign's ghost fights */
+  series?: Series | null;
 }

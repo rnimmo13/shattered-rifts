@@ -63,7 +63,7 @@ WORLD: Vesper, a masked trapper with teal glow. A masked trapper. No companions:
 THE PICTURES, in this exact order, left to right, top row first. Use the card name and its effect only to decide what to draw; never write the name:
 1. "Perfect Alibi" (skill): Gain 20 Barrier. Discard 1 card. Show a defensive or tactical moment, calm and clear. A little more dramatic and detailed.
 2. "Pickpocket Master" (skill): Add 2 random cards from your pool to your hand (it costs 0 this fight). Consume. Show a defensive or tactical moment, calm and clear. A little more dramatic and detailed.
-3. "Second Act" (skill): Apply 1 Twinned. Show a defensive or tactical moment, calm and clear. A little more dramatic and detailed.
+3. "Second Act" (skill): Apply 1 Reverb. Show a defensive or tactical moment, calm and clear. A little more dramatic and detailed.
 4. "Shadow Pace" (power): At the start of your turn: Draw 1 card. Gain 4 Barrier. Show a grand symbolic still-life: one iconic object or pose that stands for the idea. A little more dramatic and detailed.
 5. "Silencing Trap" (snare): When you or an ally is attacked: Apply 1 Stunned to the attacker. Apply 1 Shielded. Show a hidden trap seen as it is being set, ominous. A little more dramatic and detailed.
 6. "Spring the Trap" (attack): Deal 6 (+8 per Trap set) damage. Show a dynamic strike caught mid-action. A little more dramatic and detailed.

@@ -478,7 +478,7 @@ export interface Pending {
   /** the card being played, put away when the choice (and everything after it) is done */
   finish: CardInst | null;
   x: number;
-  /** the card is played a second time when it finishes (a Twinned attack or Mirrored skill) */
+  /** the card is played a second time when it finishes (a Reverb attack or Mirrored skill) */
   again?: 'twinned' | 'mirrored' | null;
 }
 
@@ -557,12 +557,19 @@ export const MAX_HAND = 10;
 export const MAX_RUNES = 10;
 export const DEFAULT_RUNE_SLOTS = 3;
 
-/** HP multiplier and Might for enemies at a Rift Tier. */
-export const tierHp = (tier: number): number => 1 + 0.12 * Math.max(0, tier - 1);
+/**
+ * HP multiplier for enemies at a Rift Tier. Each tier adds more than the one before (the step grows by 0.012 each time), so the
+ * climb steepens as you go deeper. (Tier I itself is the designed enemy; the campaign makes it a little tougher: see TIER_PRESSURE.)
+ */
+export const tierHp = (tier: number): number => {
+  const t = Math.max(0, tier - 1);
+  return 1 + 0.12 * t + 0.006 * t * t;
+};
 /** Enemy HP after the Rift Tier and the difficulty setting. */
 export const scaledEnemyHp = (base: number, tier: number, hpPct: number): number =>
   Math.max(1, Math.round(base * tierHp(tier) * (hpPct / 100)));
-export const tierMight = (tier: number): number => Math.min(6, Math.max(0, tier - 1));
+/** Might for enemies at a Rift Tier: one more each tier, up to 8 (it stopped at 6 before, so the deep tiers stopped getting meaner). */
+export const tierMight = (tier: number): number => Math.min(8, Math.max(0, tier - 1));
 
 // --- setup -------------------------------------------------------------------------------------------------
 
