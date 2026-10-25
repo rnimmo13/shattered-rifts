@@ -204,10 +204,10 @@ describe('the run', () => {
     expect(e.difficulty).toBe('easy');
     expect(e.resolve).toBe(5);
     expect(e.shards).toBe(100);
-    // stage 1 is eased further by the stage ramp (82% HP, 86% damage), then Rift Tier I's pressure adds back 8% HP and 5% damage
+    // stage 1 is eased further by the stage ramp (92% HP, 95% damage), then Rift Tier I's pressure adds 8% HP and 5% damage
     expect(duelPlan(enterNode(e, availableNodes(e)[0]!.id))).toMatchObject({
-      hpPct: 75,
-      dmgPct: 72,
+      hpPct: 84,
+      dmgPct: 80,
     });
     expect(newRun('knight', 'hard', 'hard').resolve).toBe(1);
     expect(parseRun(JSON.stringify({ ...e, difficulty: undefined }))?.difficulty).toBe('easy');

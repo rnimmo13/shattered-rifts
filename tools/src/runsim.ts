@@ -157,7 +157,7 @@ function playRun(h: HeroId, d: Difficulty, i: number): Result {
             run = claimTrialPrize(run, `p${lane}`, t?.prizes[lane]?.choices ? 0 : undefined);
           }
         } else
-          run = chooseEvent(run, (want.find((w) => opts.includes(w as never)) ?? 'leave') as 'leave');
+          run = chooseEvent(run, (want.find((w) => opts.includes(w as never)) ?? opts[0] ?? 'leave') as 'leave');
         // an event that laid out three cards for a choice: the bot takes the first
         if (run.phase === 'event' && run.context?.event?.choose) run = pickEventCard(run, 0);
         break;

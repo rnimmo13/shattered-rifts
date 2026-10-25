@@ -106,9 +106,9 @@ export const DIFFICULTY: Record<
  * the Rift at the last stage is the real test. The deck, HP and Boons you have gathered grow too.
  */
 export const STAGE_SCALE: Record<number, { hp: number; dmg: number }> = {
-  1: { hp: 82, dmg: 86 },
-  2: { hp: 98, dmg: 98 },
-  3: { hp: 114, dmg: 110 },
+  1: { hp: 92, dmg: 95 },
+  2: { hp: 108, dmg: 108 },
+  3: { hp: 125, dmg: 122 },
 };
 const stageScale = (stage: number): { hp: number; dmg: number } =>
   STAGE_SCALE[Math.max(1, Math.min(FINAL_STAGE, stage))] ?? { hp: 100, dmg: 100 };

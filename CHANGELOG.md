@@ -5,6 +5,7 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **Tier I is tougher:** enemies in every stage have more HP and hit harder (stage 1 about 15% more HP, stage 3 about 10% more), so the starting deck can't carry you through the Wardens; you need the cards and Boons you pick up along the way.
 - **How to play has a Rift Tier table** (Tiers 1 to 20): enemy HP, Might and damage at every tier.
 - **The Difficulty, Card luck and Animation speed dropdowns are gone.** Every run is on Normal difficulty with normal card luck, and fights run at one steady speed.
 - **Rift Tiers get much harder, much faster:** enemy HP climbs from x1.21 at Tier II to x3.61 at Tier X, enemies gain +1 Might per tier up to Tier XIII, and their damage rises 5% per tier (it was 2%).
