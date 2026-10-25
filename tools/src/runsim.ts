@@ -13,6 +13,7 @@ import {
   availableNodes,
   chooseCard,
   chooseEvent,
+  pickEventCard,
   claimTrialPrize,
   finishTrial,
   startTrial,
@@ -153,6 +154,8 @@ function playRun(h: HeroId, d: Difficulty, i: number): Result {
           if (run.phase === 'event') run = claimTrialPrize(run, 'p3');
         } else
           run = chooseEvent(run, (want.find((w) => opts.includes(w as never)) ?? 'leave') as 'leave');
+        // an event that laid out three cards for a choice: the bot takes the first
+        if (run.phase === 'event' && run.context?.event?.choose) run = pickEventCard(run, 0);
         break;
       }
       case 'stageClear':

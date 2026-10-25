@@ -156,6 +156,15 @@ function step(r: RunState, s: DealStep, ev: EventCtx, h: DealHelpers, out: strin
       out.push(`${nameOf(id as string)} joins your deck: a card from another world.`);
       return;
     }
+    case 'crossedPick': {
+      const cards = crossedOffers(r.rng, r.character, r.deck, [s.rarity, s.rarity, s.rarity], 3).filter(
+        (id) => COMBAT_DB.cards[id]?.rarity === s.rarity,
+      );
+      if (cards.length < 3) fail('There are not enough cards to choose from');
+      ev.choose = { cards };
+      out.push('Three cards from other worlds are laid out: choose one.');
+      return;
+    }
     case 'card':
       if (!canAdd(r.deck, s.id)) fail('That card would break the deck rules');
       r.deck.push(s.id);

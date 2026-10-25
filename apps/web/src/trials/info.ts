@@ -9,9 +9,10 @@ export const TRIAL_INFO = {
     time: 'About a minute',
     rules: [
       'Each of the ten lanes at the bottom holds a prize. You can see all of them.',
-      'Aim anywhere on the board (mouse, finger, or hold the arrow keys) and let go. The ball bounces a lot, so no drop is a sure thing.',
+      'Slide along the top of the board (mouse, finger, or hold the arrow keys) and let go from wherever you like. The ball bounces a lot, so no drop is a sure thing.',
       'Lean on a ball with the arrow keys as it falls to turn it, but you only have a few nudges for all three balls.',
       'You drop three balls, and choose one prize from the lanes they landed in. The edges are hardest to reach and hold the best.',
+      'If two balls land in the same lane, that lane pays again with a second, different prize of the same kind, marked ×2.',
     ],
   },
 } as const;

@@ -72,7 +72,7 @@ function pick<T>(rng: RngState, list: readonly T[], n: number): T[] {
 type Maker = () => Omit<TrialPrize, 'id'>;
 
 /** The ten prizes of a layout for this run (each is checked to be takeable; one that is not becomes a purse of shards). */
-function prizesFor(layout: Layout, r: RunState): TrialPrize[] {
+function prizesFor(layout: Layout, r: RunState): { prizes: TrialPrize[]; seconds: TrialPrize[] } {
   const ev = { title: '', text: '', cardOffer: '', options: [] } as EventCtx;
   const slot = (
     icon: string,
@@ -90,30 +90,31 @@ function prizesFor(layout: Layout, r: RunState): TrialPrize[] {
   const legends = pick(
     r.rng,
     own.filter((id) => COMBAT_DB.cards[id]?.rarity === 'legendary'),
-    2,
+    4,
   );
   const rares = pick(
     r.rng,
     own.filter((id) => COMBAT_DB.cards[id]?.rarity === 'rare' && !legends.includes(id)),
-    2,
+    4,
   );
   const boons = pick(
     r.rng,
     BOONS.filter((b) => !r.boons.includes(b.id)),
-    2,
+    4,
   ).map((b) => b.id);
-  // each Rift-crossed lane is a choice of three different Rift-crossed rares (a layout has at most two such lanes)
+  // each Rift-crossed lane is a choice of three different Rift-crossed rares (a layout has at most two such lanes, and each
+  // has a second set of three for when two balls land in it)
   const crossed = crossedOffers(
     r.rng,
     r.character,
     r.deck,
-    ['rare', 'rare', 'rare', 'rare', 'rare', 'rare'],
-    6,
+    Array.from({ length: 12 }, () => 'rare'),
+    12,
   ).filter((id) => COMBAT_DB.cards[id]?.rarity === 'rare');
   const potions = pick(
     r.rng,
     POTIONS.filter((p) => p.rarity === 'rare'),
-    2,
+    4,
   );
 
   const cardSlot = (id: string | undefined, icon: string, again: number): Omit<TrialPrize, 'id'> =>
@@ -172,48 +173,51 @@ function prizesFor(layout: Layout, r: RunState): TrialPrize[] {
     slot('heal', 'Heal 40%', 'A rest: heal 40% of your HP', [{ k: 'heal', pct: 40 }]);
   const shards: Maker = () => purse(90);
 
-  const order: Record<Layout, Maker[]> = {
+  // k = 0 is the lane's prize; k = 2 is what a second ball in the same lane pays: the same kind of prize, a different one
+  const order = (k: number): Record<Layout, Maker[]> => ({
     treasury: [
-      legend(0),
-      boon(0),
-      cross(0),
+      legend(k),
+      boon(k),
+      cross(k),
       upgrade(3),
       shards,
       heal,
       vitality,
-      potion(0),
-      boon(1),
-      legend(1),
+      potion(k),
+      boon(1 + k),
+      legend(1 + k),
     ],
     armory: [
-      legend(0),
-      cross(0),
-      boon(0),
+      legend(k),
+      cross(k),
+      boon(k),
       thin,
       shards,
       upgrade(2),
       vitality,
-      boon(1),
-      cross(1),
-      legend(1),
+      boon(1 + k),
+      cross(1 + k),
+      legend(1 + k),
     ],
     apothecary: [
-      legend(0),
-      potion(0),
-      boon(0),
+      legend(k),
+      potion(k),
+      boon(k),
       vitality,
       heal,
       shards,
       upgrade(3),
-      boon(1),
-      cross(0),
-      legend(1),
+      boon(1 + k),
+      cross(k),
+      legend(1 + k),
     ],
-  };
-  return order[layout].map((make, i) => {
-    const p = make();
-    return { ...(dealFeasible(r, p.deal, ev) ? p : purse(100)), id: `p${i}` };
   });
+  const fill = (k: number, mark: string): TrialPrize[] =>
+    order(k)[layout].map((make, i) => {
+      const p = make();
+      return { ...(dealFeasible(r, p.deal, ev) ? p : purse(100)), id: `${mark}${i}` };
+    });
+  return { prizes: fill(0, 'p'), seconds: fill(2, 'q') };
 }
 
 /** Build an elite event for this run. */
@@ -225,7 +229,7 @@ export function buildElite(spec: EliteSpec, r: RunState): EventCtx {
     state: 'open',
     consolation: 25,
     theme: 'one of the lanes you land in',
-    prizes: prizesFor(spec.layout, r),
+    ...prizesFor(spec.layout, r),
   };
   return {
     title: spec.title,
@@ -269,9 +273,16 @@ export function endTrial(
 ): string | null {
   const t = ev.trial;
   if (!t || t.state !== 'playing') throw new Error('There is no trial being played');
-  const lanes = [
-    ...new Set(earned.filter((i) => Number.isInteger(i) && i >= 0 && i < t.prizes.length)),
-  ].sort((a, b) => a - b);
+  // one entry per ball that landed on the board; a lane pays at most twice (a third ball in it adds nothing)
+  const seen = new Map<number, number>();
+  const lanes = earned
+    .filter((i) => Number.isInteger(i) && i >= 0 && i < t.prizes.length)
+    .filter((i) => {
+      const n = (seen.get(i) ?? 0) + 1;
+      seen.set(i, n);
+      return n <= 2;
+    })
+    .sort((x, y) => x - y);
   if (!won || !lanes.length) {
     r.shards += t.consolation;
     return `Nothing landed. The place lets you go with ${t.consolation} shards for trying.`;
@@ -291,9 +302,13 @@ export function takePrize(
 ): string {
   const t = ev.trial;
   if (!t || t.state !== 'won') h.fail('There is no prize to take');
-  const p = t.prizes.find((x) => x.id === prize);
+  const second = t.seconds?.find((x) => x.id === prize);
+  const p = second ?? t.prizes.find((x) => x.id === prize);
   if (!p) return h.fail('That is not one of the prizes');
-  if (!t.earned?.includes(t.prizes.indexOf(p))) return h.fail('You did not earn that one');
+  // the lane's prize needs a ball in the lane; its second prize needs two
+  const lane = (second ? t.seconds : t.prizes)?.indexOf(p) ?? -1;
+  const balls = (t.earned ?? []).filter((x) => x === lane).length;
+  if (balls < (second ? 2 : 1)) return h.fail('You did not earn that one');
   // a prize that is a choice of cards: the one picked is the one taken
   if (p.choices) {
     const id = pick === undefined ? undefined : p.choices[pick];

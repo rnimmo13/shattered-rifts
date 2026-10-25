@@ -12,6 +12,7 @@ import {
   canAdd,
   chooseCard,
   chooseEvent,
+  pickEventCard,
   chooseKit,
   choosePrelude,
   continueLoop,
@@ -323,10 +324,10 @@ function botRun(hero: HeroId, seed: string): { run: RunState; fights: number } {
         run = leaveMerchant(run);
         break;
       case 'event':
-        run = chooseEvent(
-          run,
-          run.context!.event!.options.find((o) => o.id !== 'trial')!.id,
-        );
+        // (an event may be waiting for a card to be picked from three)
+        run = run.context!.event!.choose
+          ? pickEventCard(run, 0)
+          : chooseEvent(run, run.context!.event!.options.find((o) => o.id !== 'trial')!.id);
         break;
       case 'kit':
         run = chooseKit(run, run.context!.kits![0]!.id);

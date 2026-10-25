@@ -20,6 +20,7 @@ import {
   chooseCard,
   chooseEvent,
   claimTrialPrize,
+  pickEventCard,
   finishTrial,
   settleInterrupted,
   startTrial,
@@ -708,6 +709,7 @@ function Body(props: {
           onChoose={(id) => act((r) => chooseEvent(r, id))}
           onBegin={() => act((r) => startTrial(r))}
           onTrial={(won, earned) => act((r) => finishTrial(r, won, earned))}
+          onPickCard={(i) => act((r) => pickEventCard(r, i))}
           onPrize={(id, pick) => act((r) => claimTrialPrize(r, id, pick))}
         />
       );

@@ -40,6 +40,7 @@ export {
   buyRemoval,
   chooseCard,
   chooseEvent,
+  pickEventCard,
   startTrial,
   settleInterrupted,
   finishTrial,

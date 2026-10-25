@@ -1,7 +1,7 @@
 // Brass Cascade: aim and drop a ball on a board of pegs. It bounces down into one of ten lanes, each with a prize hung over
 // it. Three balls: every lane a ball lands in is a prize earned (the event then lets you choose one). You can lean on a ball
-// as it falls, a few times in all. Aim anywhere on the board with the mouse or finger (or hold the arrow keys: they slide
-// the aim smoothly); click, release or Space drops it from that spot; the arrows nudge it on the way down.
+// as it falls, a few times in all. A ball is only dropped from the top, but from anywhere along it: slide the aim with the mouse
+// or finger (or hold the arrow keys: they slide it smoothly); click, release or Space drops it; the arrows nudge it on the way down.
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { play } from '../audio/sfx';
@@ -29,7 +29,6 @@ import type { GameProps } from './TrialHost';
 /** how fast the arrow keys and buttons move the aim, in board units a second */
 const AIM_SPEED = 320;
 const AIM_MIN_Y = BALL_R + 4;
-const AIM_MAX_Y = BOARD_H - LANE_H - 30;
 
 export function Cascade({ prizes, onEnd }: GameProps) {
   const canvas = useRef<HTMLCanvasElement>(null);
@@ -179,7 +178,6 @@ export function Cascade({ prizes, onEnd }: GameProps) {
         // the keys and buttons slide the aim smoothly while held
         const h = held.current;
         aim.current.x = Math.max(BALL_R, Math.min(BOARD_W - BALL_R, aim.current.x + ((h.right ? 1 : 0) - (h.left ? 1 : 0)) * AIM_SPEED * dt));
-        aim.current.y = Math.max(AIM_MIN_Y, Math.min(AIM_MAX_Y, aim.current.y + ((h.down ? 1 : 0) - (h.up ? 1 : 0)) * AIM_SPEED * dt));
       }
       const b = ball.current;
       if (b && phaseRef.current === 'fall') {
@@ -194,18 +192,23 @@ export function Cascade({ prizes, onEnd }: GameProps) {
         if (b.landed) {
           phaseRef.current = 'between';
           const lane = b.slot ?? 0;
+          // one entry per ball: a lane that gets two pays twice
           const all = [...earnedRef.current, lane];
-          const uniq = [...new Set(all)];
-          earnedRef.current = uniq;
-          setEarned(uniq);
+          const again = earnedRef.current.includes(lane);
+          earnedRef.current = all;
+          setEarned(all);
           setPhase('between');
-          setNote(`Lane ${lane + 1}: ${prizes[lane]?.short ?? 'a prize'}!`);
+          setNote(
+            again
+              ? `Lane ${lane + 1} again! A second, different prize: ${prizes[lane]?.short ?? 'a prize'} ×2`
+              : `Lane ${lane + 1}: ${prizes[lane]?.short ?? 'a prize'}!`,
+          );
           play('buff');
           const done = ballNoRef.current + 1 >= BALLS;
           timers.current.push(
             window.setTimeout(
               () => {
-                if (done) onEndRef.current(true, uniq);
+                if (done) onEndRef.current(true, all);
                 else {
                   ballNoRef.current += 1;
                   setBallNo(ballNoRef.current);
@@ -229,16 +232,8 @@ export function Cascade({ prizes, onEnd }: GameProps) {
   }, [prizes]);
 
   useEffect(() => {
-    const side = (k: string): 'left' | 'right' | 'up' | 'down' | null =>
-      k === 'ArrowLeft' || k === 'a'
-        ? 'left'
-        : k === 'ArrowRight' || k === 'd'
-          ? 'right'
-          : k === 'ArrowUp' || k === 'w'
-            ? 'up'
-            : k === 'ArrowDown' || k === 's'
-              ? 'down'
-              : null;
+    const side = (k: string): 'left' | 'right' | null =>
+      k === 'ArrowLeft' || k === 'a' ? 'left' : k === 'ArrowRight' || k === 'd' ? 'right' : null;
     const down = (e: KeyboardEvent): void => {
       if (e.ctrlKey || e.metaKey || e.altKey) return;
       const s = side(e.key);
@@ -274,7 +269,7 @@ export function Cascade({ prizes, onEnd }: GameProps) {
     const r = e.currentTarget.getBoundingClientRect();
     aim.current = {
       x: Math.max(BALL_R, Math.min(BOARD_W - BALL_R, ((e.clientX - r.left) / r.width) * BOARD_W)),
-      y: Math.max(AIM_MIN_Y, Math.min(AIM_MAX_Y, ((e.clientY - r.top) / r.height) * BOARD_H)),
+      y: AIM_MIN_Y, // (always the top: a ball is only ever dropped from there)
     };
   };
 
@@ -285,7 +280,7 @@ export function Cascade({ prizes, onEnd }: GameProps) {
           Ball {Math.min(ballNo + 1, BALLS)} of {BALLS}
         </span>
         <span>
-          Lanes earned {earned.length}
+          Prizes earned {earned.length}
         </span>
         <span>Nudges {nudgesLeft}</span>
       </div>
@@ -315,6 +310,11 @@ export function Cascade({ prizes, onEnd }: GameProps) {
               >
                 <b>{mark.glyph}</b>
                 <span>{p?.short}</span>
+                {earned.filter((x) => x === i).length > 1 && (
+                  <i className="cascade__x2" title="Two balls landed here: a second, different prize">
+                    ×{earned.filter((x) => x === i).length}
+                  </i>
+                )}
               </li>
             );
           })}

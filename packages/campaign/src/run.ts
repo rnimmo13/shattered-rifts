@@ -830,6 +830,7 @@ export function chooseEvent(run: RunState, option: EventOption['id']): RunState 
   const ev = (r.context as NonNullable<RunState['context']>).event as NonNullable<
     NonNullable<RunState['context']>['event']
   >;
+  need(!ev.choose, 'Choose one of the cards first');
   need(
     ev.options.some((o) => o.id === option),
     'That is not an option',
@@ -841,7 +842,24 @@ export function chooseEvent(run: RunState, option: EventOption['id']): RunState 
       throw new RunError(msg);
     },
   });
+  // a choice of cards to make: the event waits for it (see pickEventCard)
+  if (ev.choose) return r;
   clearNode(r, (r.context as NonNullable<RunState['context']>).nodeId);
+  r.phase = 'map';
+  return r;
+}
+
+/** Take one of the cards an event laid out for a choice (three cards from other Riftwalkers), which ends the event. */
+export function pickEventCard(run: RunState, index: number): RunState {
+  need(run.phase === 'event' && run.context?.event?.choose, 'There is no choice to make here');
+  const r = clone(run);
+  const ctx = r.context as NonNullable<RunState['context']>;
+  const id = (ctx.event as NonNullable<typeof ctx.event>).choose?.cards[index];
+  need(id, 'That is not one of the cards');
+  need(canAdd(r.deck, id), 'That card would break the deck rules');
+  r.deck.push(id);
+  r.eventResult = `You take ${COMBAT_DB.cards[id]?.name ?? 'the card'}: not your class's card, but yours now.`;
+  clearNode(r, ctx.nodeId);
   r.phase = 'map';
   return r;
 }

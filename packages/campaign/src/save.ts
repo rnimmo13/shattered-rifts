@@ -145,6 +145,10 @@ function validContext(r: RunState): boolean {
             (o['deal'] === undefined || validDeal(o['deal'])),
         ) &&
         okOffer(e['cardOffer']) &&
+        (e['choose'] === undefined ||
+          (isObj(e['choose']) &&
+            Array.isArray(e['choose']['cards']) &&
+            (e['choose']['cards'] as unknown[]).every(hasCard))) &&
         (e['trial'] === undefined || validTrial(e['trial'])) &&
         (e['cardOffers'] === undefined ||
           (Array.isArray(e['cardOffers']) && (e['cardOffers'] as unknown[]).every(hasCard))) &&
@@ -168,6 +172,14 @@ function validTrial(t: unknown): boolean {
   const earned = t['earned'];
   if (t['state'] === 'won' && !(Array.isArray(earned) && earned.length > 0)) return false;
   if (earned !== undefined && !(Array.isArray(earned) && earned.length <= 10 && earned.every((x) => isInt(x, 0, 9))))
+    return false;
+  const prize = (p: unknown): boolean =>
+    isObj(p) &&
+    typeof p['id'] === 'string' &&
+    validDeal(p['deal']) &&
+    (p['choices'] === undefined ||
+      (Array.isArray(p['choices']) && p['choices'].length <= 3 && p['choices'].every(hasCard)));
+  if (t['seconds'] !== undefined && !(Array.isArray(t['seconds']) && t['seconds'].length <= 10 && t['seconds'].every(prize)))
     return false;
   return (
     Array.isArray(t['prizes']) &&
@@ -199,6 +211,7 @@ const DEAL_KINDS = new Set([
   'copy',
   'gift',
   'crossed',
+  'crossedPick',
   'card',
   'static',
   'loseBoon',

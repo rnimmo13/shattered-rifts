@@ -13,6 +13,8 @@ import {
   upgradable,
   type EventOption,
   type RunState,
+  type TrialOffer,
+  type TrialPrize,
 } from '@sr/campaign';
 import { FightCard } from '../fight/FightCard';
 import { CardHover } from '../fight/CardHover';
@@ -556,6 +558,20 @@ export function MerchantView(props: {
   );
 }
 
+/** The prizes a won trial offers: one for each lane a ball landed in, and a second, different one for a lane that two balls landed in. */
+function shownPrizes(t: TrialOffer): { p: TrialPrize; n: number; again: boolean }[] {
+  const earned = t.earned ?? [];
+  return [...new Set(earned)].flatMap((lane) => {
+    const n = earned.filter((x) => x === lane).length;
+    const out: { p: TrialPrize; n: number; again: boolean }[] = [];
+    const first = t.prizes[lane];
+    const second = t.seconds?.[lane];
+    if (first) out.push({ p: first, n, again: false });
+    if (n >= 2 && second) out.push({ p: second, n, again: true });
+    return out;
+  });
+}
+
 export function EventView(props: {
   run: RunState;
   onChoose: (id: EventOption['id']) => void;
@@ -565,6 +581,8 @@ export function EventView(props: {
   onBegin: () => void;
   /** the prize chosen after a won trial */
   onPrize: (id: string, pick?: number) => void;
+  /** one of the three cards an event laid out for a choice */
+  onPickCard: (index: number) => void;
 }) {
   const ev = props.run.context?.event;
   const [hover, setHover] = useState<CardDef | null>(null);
@@ -626,14 +644,34 @@ export function EventView(props: {
           })}
         </ol>
       )}
+      {ev.choose && (
+        <div className="prizes" aria-label="Choose a card">
+          <h3 className="prizes__title">Choose one of the three cards</h3>
+          <div className="prizes__row">
+            {ev.choose.cards.map((id, k) => (
+              <Pickable
+                key={id}
+                id={id}
+                width={230}
+                own={props.run.character}
+                onHover={setHover}
+                onClick={() => props.onPickCard(k)}
+              />
+            ))}
+          </div>
+        </div>
+      )}
       {trial && won && (
         <div className="prizes" aria-label="Choose your prize">
           <h3 className="prizes__title">Choose one of the prizes you earned</h3>
           <div className="prizes__row">
-            {trial.prizes
-              .filter((_, i) => !trial.earned || trial.earned.includes(i))
-              .map((p) => (
+            {shownPrizes(trial).map(({ p, n, again }) => (
               <div key={p.id} className={`prize${p.choices ? ' prize--choice' : ''}`}>
+                {n > 1 && (
+                  <span className="prize__x">
+                    {again ? '×2: a second, different prize' : '×2: two balls landed here'}
+                  </span>
+                )}
                 {p.choices && (
                   <>
                     <b className="eventopt__name">{p.label}</b>
@@ -673,7 +711,7 @@ export function EventView(props: {
         </div>
       )}
       <div className="eventopts">
-        {(won ? [] : ev.options).map((o) => {
+        {(won || ev.choose ? [] : ev.options).map((o) => {
           const { head, detail } = splitOption(o.label);
           return (
             <button

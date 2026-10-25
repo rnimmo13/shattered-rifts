@@ -76,12 +76,14 @@ export function TrialHost(props: {
               {earned.length === 1 ? 'You earned a prize' : `You earned ${earned.length} prizes`}
             </h3>
             <ul className="trial__earned">
-              {earned.map((i) => {
+              {earned.map((i, k) => {
                 const p = props.prizes[i];
+                const second = earned.indexOf(i) !== k;
                 const mark = PRIZE_MARK[p?.icon ?? ''] ?? PRIZE_MARK['shards']!;
                 return (
                   <li key={i} style={{ '--mark': mark.color } as React.CSSProperties}>
                     <b>{mark.glyph}</b> {p?.label}
+                    {second && <em> (×2: a second, different prize of this kind)</em>}
                   </li>
                 );
               })}

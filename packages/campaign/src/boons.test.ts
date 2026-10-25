@@ -6,6 +6,7 @@ import {
   buyPotion,
   sellPotion,
   chooseEvent,
+  pickEventCard,
   enterNode,
   finishDuel,
   newRun,
@@ -121,7 +122,9 @@ describe('events', () => {
       seen.add(e.title);
       for (const o of e.options) {
         if (o.id === 'trial') continue; // (a puzzle: see trials.test.ts)
-        const done = chooseEvent(entered, o.id);
+        let done = chooseEvent(entered, o.id);
+        // (an event may wait for one of three cards to be picked)
+        if (done.context?.event?.choose) done = pickEventCard(done, 0);
         expect(done.phase).toBe('map');
         if (o.id === 'bleed') expect(done.hp).toBe(entered.hp - 10);
         if (o.id === 'boon') expect(done.boons).toHaveLength(1);

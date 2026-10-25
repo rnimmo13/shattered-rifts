@@ -1426,6 +1426,14 @@
   justify-content: center;
   align-items: flex-start;
 }
+.prize__x {
+  padding: 0.15rem 0.6rem;
+  border-radius: 999px;
+  background: var(--c-gold-light);
+  color: var(--c-void);
+  font-weight: 700;
+  font-size: 0.8rem;
+}
 .prize--choice {
   width: auto;
   max-width: 100%;

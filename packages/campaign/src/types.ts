@@ -92,8 +92,10 @@ export interface TrialOffer {
   /** what the prizes are, in a few words ("Legendary cards") */
   theme: string;
   prizes: TrialPrize[];
-  /** the Brass Cascade: the slots the balls landed in; you choose one of those prizes */
+  /** the Brass Cascade: the lanes the balls landed in, one entry per ball (a lane twice is listed twice); you choose one prize */
   earned?: number[];
+  /** a lane that two balls landed in pays again with a different prize of the same kind: these are those, lane by lane (ids q0..q9) */
+  seconds?: TrialPrize[];
 }
 
 export interface EventOption {
@@ -160,6 +162,8 @@ export type DealStep =
   | { k: 'gift'; rarity: 'common' | 'uncommon' | 'rare' }
   /** a random card from another Riftwalker's pool (never Legendary) joins the deck */
   | { k: 'crossed'; rarity: 'common' | 'uncommon' | 'rare' }
+  /** three cards from other Riftwalkers' pools are laid out and the player chooses one (the event waits for the pick) */
+  | { k: 'crossedPick'; rarity: 'common' | 'uncommon' | 'rare' }
   /** this exact card joins the deck (the event named it when it was built) */
   | { k: 'card'; id: string }
   | { k: 'static'; n: number }
@@ -248,6 +252,8 @@ export interface NodeContext {
     cardOffer: string;
     /** an event that lays several cards on the table (you can read them before you choose) */
     cardOffers?: string[];
+    /** a choice waiting to be made: pick one of these cards to take (the event is not over until you do) */
+    choose?: { cards: string[] };
     /** an event that offers a Boon */
     boonOffer?: string;
     /** an elite event: an optional mini-game for a choice of better rewards (see trials.ts) */

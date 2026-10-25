@@ -23,6 +23,8 @@ import type { EventDef } from './events';
 import type { DealStep, RunState } from './types';
 
 const crossed = (rarity: 'common' | 'uncommon' | 'rare'): DealStep => ({ k: 'crossed', rarity });
+/** three Rift-crossed cards are laid out, and the player chooses one */
+const crossedPick = (rarity: 'common' | 'uncommon' | 'rare'): DealStep => ({ k: 'crossedPick', rarity });
 const card = (id: string): DealStep => ({ k: 'card', id });
 const junk = (n = 1): DealStep => ({ k: 'static', n });
 const loseBoon: DealStep = { k: 'loseBoon' };
@@ -81,8 +83,8 @@ export const MORE_EVENTS: EventDef[] = (
           [remove('any', 1), crossed('uncommon')],
         ],
         [
-          'Trade two cards (two random cards leave): a Rift-crossed rare',
-          [remove('any', 2), crossed('rare')],
+          'Trade two cards (two random cards leave): your choice of three Rift-crossed rares',
+          [remove('any', 2), crossedPick('rare')],
         ],
       ],
     },
@@ -106,10 +108,10 @@ export const MORE_EVENTS: EventDef[] = (
       text: 'A flat black stone, worn into a bowl. Whatever is laid in it is gone by morning, and what comes back was never made for you.',
       needs: (r) => r.boons.length > 0,
       opts: [
-        ['Give your strength (lose 6 max HP): a Rift-crossed rare', [maxHp(-6), crossed('rare')]],
+        ['Give your strength (lose 6 max HP): your choice of three Rift-crossed rares', [maxHp(-6), crossedPick('rare')]],
         [
-          'Give a Boon (a random Boon is lost): a Rift-crossed rare and 40 shards',
-          [loseBoon, crossed('rare'), shards(40)],
+          'Give a Boon (a random Boon is lost): your choice of three Rift-crossed rares, and 40 shards',
+          [loseBoon, crossedPick('rare'), shards(40)],
         ],
       ],
     },
@@ -120,8 +122,8 @@ export const MORE_EVENTS: EventDef[] = (
       text: 'Pages of a book from somewhere else, the writing running the wrong way. Some of it is a card waiting to be learned. Some of it is just noise.',
       opts: [
         [
-          'Read it through (45% a Rift-crossed rare, else lose 6 HP and take a Static card)',
-          [chance(45, [crossed('rare')], [hurt(6), junk()])],
+          'Read it through (45% your choice of three Rift-crossed rares, else lose 6 HP and take a Static card)',
+          [chance(45, [crossedPick('rare')], [hurt(6), junk()])],
         ],
         ['Copy out one page (pay 40 shards): a Rift-crossed common', [shards(-40), crossed('common')]],
       ],
@@ -151,8 +153,8 @@ export const MORE_EVENTS: EventDef[] = (
       noLeave: true,
       opts: [
         [
-          'Dig deep: a Rift-crossed rare and 80 shards',
-          [mark('map', true), crossed('rare'), shards(80)],
+          'Dig deep: your choice of three Rift-crossed rares, and 80 shards',
+          [mark('map', true), crossedPick('rare'), shards(80)],
         ],
         [
           'Dig carefully: +8 max HP and heal 25% of your HP',
@@ -254,8 +256,8 @@ export const MORE_EVENTS: EventDef[] = (
           [shards(-80), chance(40, [gift('rare'), shards(60)], [junk()])],
         ],
         [
-          'Cut for a stranger (pay 30 shards): one chance in four of a Rift-crossed rare',
-          [shards(-30), chance(25, [crossed('rare')])],
+          'Cut for a stranger (pay 30 shards): one chance in four of your choice of three Rift-crossed rares',
+          [shards(-30), chance(25, [crossedPick('rare')])],
         ],
       ],
     },
