@@ -5,6 +5,8 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **No Potion belt in the Arena:** Arena matches have no Potions, so the empty belt is gone from the screen (ghost Wardens in the campaign still show yours).
+- **The battle log's Cards panel is bigger and reads in order:** cards run left to right from the oldest to the newest (numbered), with a sideways scroll bar to look back through the history (up to 120 cards); it opens at the newest.
 - **Art for the six cards that had none** (Joker's Gambit, Ace Up the Sleeve, Loaded Die, Pilfered Time, Purging Light, Steady Nerves): every Uncommon and Rare card now has its own picture.
 - **How to play keeps its gradient all the way down:** the background was only as tall as the screen, so on long tabs it stopped part-way and the text sat on a flat colour. It now stays put behind the page as you scroll.
 - **Card art for every Uncommon, Rare and Legendary card:** 676 illustrated cards in all (141 new), from the last 21 sheets.

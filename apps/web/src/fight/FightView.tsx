@@ -865,6 +865,9 @@ export function FightView(props: {
   }, [act, waiting]);
 
   const me = view?.sides[mySide];
+  // (the Arena has no Potions: the belt is only drawn when this seat was given some, as in a campaign ghost fight)
+  const mySetup = mySide === 'a' ? setup.a : setup.b;
+  const showBelt = !pvp || ('potions' in mySetup && (mySetup.potions?.length ?? 0) > 0);
   const cw = handCardWidth(window.innerWidth, window.innerHeight);
 
   const handCards: HandCard[] = useMemo(() => {
@@ -1356,7 +1359,7 @@ export function FightView(props: {
               />
             </svg>
           )}
-          {me && (
+          {me && showBelt && (
             <div className="fight__potions" aria-label="Potion belt">
               <span className="fight__beltLabel">Potions</span>
               <div className="fight__belt">

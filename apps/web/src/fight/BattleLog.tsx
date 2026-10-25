@@ -8,7 +8,7 @@ import { FightCard } from './FightCard';
 import type { LogLine } from './logLines';
 
 /** How many of the latest cards the Cards panel keeps. */
-const CARD_LIMIT = 40;
+const CARD_LIMIT = 120;
 
 export function BattleLog(props: { lines: readonly LogLine[]; db: CombatDb }) {
   // (folded on a phone, where the screen is better spent on the board)
@@ -17,6 +17,7 @@ export function BattleLog(props: { lines: readonly LogLine[]; db: CombatDb }) {
   /** a card clicked in the panel, shown larger */
   const [zoom, setZoom] = useState<number | null>(null);
   const box = useRef<HTMLDivElement>(null);
+  const strip = useRef<HTMLOListElement>(null);
   /** the player is reading older lines: do not yank them to the bottom */
   const reading = useRef(false);
 
@@ -24,6 +25,15 @@ export function BattleLog(props: { lines: readonly LogLine[]; db: CombatDb }) {
     const el = box.current;
     if (el && open && !reading.current) el.scrollTop = el.scrollHeight;
   }, [props.lines, open]);
+
+  // the cards of the fight so far, in the order they were played (oldest first, newest at the right)
+  const cards = props.lines.filter((l) => l.card && props.db.cards[l.card]).slice(-CARD_LIMIT);
+  // the strip opens at the newest card (the right end) and follows new ones; scroll left to read back
+  const total = cards.length;
+  useEffect(() => {
+    const el = strip.current;
+    if (el && cardsOpen) el.scrollLeft = el.scrollWidth;
+  }, [cardsOpen, total]);
 
   useEffect(() => {
     if (!cardsOpen) return;
@@ -34,8 +44,6 @@ export function BattleLog(props: { lines: readonly LogLine[]; db: CombatDb }) {
     return () => window.removeEventListener('keydown', on);
   }, [cardsOpen]);
 
-  // the cards of the fight so far, newest first
-  const cards = props.lines.filter((l) => l.card && props.db.cards[l.card]).slice(-CARD_LIMIT).reverse();
   const shown = zoom !== null ? cards.find((l) => l.id === zoom) : undefined;
 
   return (
@@ -88,7 +96,7 @@ export function BattleLog(props: { lines: readonly LogLine[]; db: CombatDb }) {
       {cardsOpen && (
         <section className="fight__logCards" aria-label="Cards played this fight">
           <header>
-            <b>Cards played</b>
+            <b>Cards played, oldest to newest</b>
             <button type="button" aria-label="Close" onClick={() => setCardsOpen(false)}>
               ×
             </button>
@@ -96,12 +104,12 @@ export function BattleLog(props: { lines: readonly LogLine[]; db: CombatDb }) {
           {cards.length === 0 && <p className="fight__logEmpty">No cards yet.</p>}
           {shown?.card && props.db.cards[shown.card] && (
             <div className="fight__logZoom">
-              <FightCard db={props.db} def={props.db.cards[shown.card]!} width={250} />
+              <FightCard db={props.db} def={props.db.cards[shown.card]!} width={280} />
               <p className={`fight__logLine--${shown.tone}`}>{shown.text}</p>
             </div>
           )}
-          <ol className="fight__logCardList">
-            {cards.map((l) => (
+          <ol className="fight__logCardList" ref={strip}>
+            {cards.map((l, n) => (
               <li key={l.id}>
                 <button
                   type="button"
@@ -109,8 +117,10 @@ export function BattleLog(props: { lines: readonly LogLine[]; db: CombatDb }) {
                   title={l.text}
                   onClick={() => setZoom(zoom === l.id ? null : l.id)}
                 >
-                  <FightCard db={props.db} def={props.db.cards[l.card as string]!} width={118} />
-                  <small>{l.text}</small>
+                  <FightCard db={props.db} def={props.db.cards[l.card as string]!} width={150} />
+                  <small>
+                    <b>{n + 1}.</b> {l.text}
+                  </small>
                 </button>
               </li>
             ))}
