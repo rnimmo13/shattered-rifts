@@ -197,6 +197,7 @@ export function checkEntry(raw: unknown): Checked | Rejected {
   const st = e['stage'];
   const stage = typeof st === 'number' && Number.isInteger(st) && st >= 0 && st <= 3 ? st : null;
   const who = typeof e['who'] === 'string' && /^[0-9a-f]{64}$/.test(e['who']) ? e['who'] : null;
+  const run = typeof e['run'] === 'string' && /^[0-9a-f]{8,16}$/.test(e['run']) ? e['run'] : null;
   return {
     ok: true,
     entry: {
@@ -206,6 +207,7 @@ export function checkEntry(raw: unknown): Checked | Rejected {
       boons,
       tier: t,
       ...(stage === null ? {} : { stage }),
+      ...(run === null ? {} : { run }),
       ...(who === null ? {} : { who }),
     },
   };

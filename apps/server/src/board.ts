@@ -212,9 +212,11 @@ export class Leaderboard extends DurableObject<Env> {
 
   // ---- ghosts ----
 
-  /** A deck's id: the same player with the same deck is always the same ghost (a hash of whose it is and what is in it). */
+  /** A deck's id: one ghost per run (a hash of whose it is and which run), so saving the same run again replaces its ghost; a deck with no run (an older client) is told apart by what is in it. */
   private async deckId(owner: string, e: Entry): Promise<string> {
-    const text = `${owner}|${e.hero}|${[...e.deck].sort().join(',')}|${[...e.boons].sort().join(',')}`;
+    const text = e.run
+      ? `${owner}|run|${e.run}`
+      : `${owner}|${e.hero}|${[...e.deck].sort().join(',')}|${[...e.boons].sort().join(',')}`;
     const bytes = new TextEncoder().encode(`shattered-rifts-ghost:${text}`);
     const hash = new Uint8Array(await crypto.subtle.digest('SHA-256', bytes));
     return Array.from(hash, (x) => x.toString(16).padStart(2, '0')).join('');
@@ -236,8 +238,11 @@ export class Leaderboard extends DurableObject<Env> {
     const losses = result === 'loss' ? 1 : 0;
     if (this.count('SELECT COUNT(*) AS n FROM ghosts WHERE id = ?', id) > 0) {
       this.ctx.storage.sql.exec(
-        'UPDATE ghosts SET owner_name = ?, tier = ?, stage = ?, wins = wins + ?, losses = losses + ?, last_at = ? WHERE id = ?',
+        'UPDATE ghosts SET owner_name = ?, hero = ?, deck = ?, boons = ?, tier = ?, stage = ?, wins = wins + ?, losses = losses + ?, last_at = ? WHERE id = ?',
         name,
+        e.hero,
+        JSON.stringify(e.deck),
+        JSON.stringify(e.boons),
         e.tier,
         e.stage ?? null,
         wins,
@@ -607,12 +612,6 @@ export class Leaderboard extends DurableObject<Env> {
       stage > 3
     )
       return json({ ok: false, error: 'bad-run' }, 400);
-    // a flood from one player or one address is ignored
-    if (
-      !this.within(`run:${b['player']}`, HOUR, RUN_REPORTS_PER_HOUR, now) ||
-      !this.within(`ip-run:${ip}`, HOUR, IP_REPORTS_PER_HOUR, now)
-    )
-      return json({ ok: true, counted: false, limited: true });
     const total = stagesInAll(tier, stage);
     // a run counts under the player's username (one is needed to be on the campaign board)
     const name = this.claimedName(b['player']);
@@ -626,7 +625,15 @@ export class Leaderboard extends DurableObject<Env> {
       .toArray()[0];
     if (old) {
       // progress only moves forward, and only as fast as a real run could
+      // (a repeat of what the board already knows changes nothing, so it is not counted against the flood limits: the app repeats its
+      // reports on purpose, and counting them used up a player's hour and silently dropped the real ones that followed)
       if (total <= old.total) return json({ ok: true, counted: false });
+      // a flood from one player or one address is ignored
+      if (
+        !this.within(`run:${b['player']}`, HOUR, RUN_REPORTS_PER_HOUR, now) ||
+        !this.within(`ip-run:${ip}`, HOUR, IP_REPORTS_PER_HOUR, now)
+      )
+        return json({ ok: true, counted: false, limited: true });
       if (total > believableStages(now - old.first_at)) return json({ ok: true, counted: false });
       this.ctx.storage.sql.exec(
         'UPDATE runs SET name = ?, hero = ?, tier = ?, stage = ?, total = ?, at = ? WHERE player = ? AND run = ?',
@@ -644,6 +651,8 @@ export class Leaderboard extends DurableObject<Env> {
     // a run is first seen near its start (a report that never arrived is made up for within the grace)
     if (total > believableStages(0)) return json({ ok: true, counted: false });
     if (
+      !this.within(`run:${b['player']}`, HOUR, RUN_REPORTS_PER_HOUR, now) ||
+      !this.within(`ip-run:${ip}`, HOUR, IP_REPORTS_PER_HOUR, now) ||
       !this.within(`new-run:${b['player']}`, DAY, NEW_RUNS_PER_DAY, now) ||
       !this.within(`ip-new-run:${ip}`, DAY, IP_NEW_RUNS_PER_DAY, now)
     )

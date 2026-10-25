@@ -362,6 +362,10 @@
   height: 0;
   z-index: 20;
 }
+/* a card that is lifted (or being aimed) is always seen whole: the hand comes above Mana, End turn, the piles and the log while it is */
+.fhand.is-focused {
+  z-index: 55;
+}
 .fhand__slot {
   position: absolute;
   left: 0;

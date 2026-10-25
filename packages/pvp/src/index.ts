@@ -59,6 +59,7 @@ export { Match, other, setupFor, type Accepted, type Outcome, type Refused } fro
 export {
   bankInto,
   runOf,
+  runKey,
   oneEach,
   RUN_PREFIX,
   cleanDeck,

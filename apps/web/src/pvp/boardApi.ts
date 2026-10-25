@@ -204,18 +204,28 @@ export function boardId(): Promise<string | null> {
 }
 
 /** Tell the server how far a run has got (callers need not wait). `stage` is the stages cleared in this Rift Tier, 0 to 3. */
-export function reportRun(run: {
+export async function reportRun(run: {
   seed: string;
   hero: string;
   tier: number;
   stage: number;
   name: string;
 }): Promise<unknown> {
-  return post('run', {
+  const body = {
     run: run.seed.slice(0, 64),
     hero: run.hero,
     tier: run.tier,
     stage: run.stage,
     name: run.name,
-  });
+  };
+  // a report that did not get through (a dropped connection, a busy server) is tried again a few times: the server only moves a run
+  // forward, so a repeat is harmless, and a missed report would leave the board behind until the next time the app opens
+  const waits = [2_000, 10_000, 40_000];
+  for (let i = 0; ; i++) {
+    const answer = await post('run', body);
+    if (answer && answer['limited'] !== true) return answer;
+    const wait = waits[i];
+    if (wait === undefined) return answer;
+    await new Promise((r) => setTimeout(r, wait));
+  }
 }

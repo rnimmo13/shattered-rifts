@@ -30,6 +30,24 @@ export type Banked =
 export const runOf = (id: string): string =>
   id.startsWith(RUN_PREFIX) ? id : RUN_PREFIX + id.replace(/:t\d+(?::.*)?$/, '');
 
+/**
+ * A short fingerprint of a deck's run, safe to send to the server and to opponents (the seed itself is not): saves of the same run get the
+ * same key, so the server keeps one ghost deck per run instead of one per save. (cyrb53, 14 hex digits.)
+ */
+export function runKey(id: string): string {
+  const text = runOf(id);
+  let h1 = 0xdeadbeef;
+  let h2 = 0x41c6ce57;
+  for (let i = 0; i < text.length; i++) {
+    const c = text.charCodeAt(i);
+    h1 = Math.imul(h1 ^ c, 2654435761);
+    h2 = Math.imul(h2 ^ c, 1597334677);
+  }
+  h1 = Math.imul(h1 ^ (h1 >>> 16), 2246822507) ^ Math.imul(h2 ^ (h2 >>> 13), 3266489909);
+  h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507) ^ Math.imul(h1 ^ (h1 >>> 13), 3266489909);
+  return (4294967296 * (2097151 & h2) + (h1 >>> 0)).toString(16).padStart(14, '0');
+}
+
 /** New ids are this plus the run's seed, so a seed that happens to contain `:t5` is never mistaken for an older id's tier suffix. */
 export const RUN_PREFIX = 'r~';
 

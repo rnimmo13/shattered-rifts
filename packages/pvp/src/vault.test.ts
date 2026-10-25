@@ -6,6 +6,7 @@ import {
   cleanVault,
   mergeVaults,
   normaliseCode,
+  runKey,
   showCode,
   VAULT_SLOTS,
   type VaultDeck,
@@ -93,5 +94,16 @@ describe('Vault codes', () => {
 
   it('shows a code in groups of four', () => {
     expect(showCode('ABCDEFGHJKMNPQRS')).toBe('ABCD-EFGH-JKMN-PQRS');
+  });
+});
+
+describe('runKey', () => {
+  it('is the same for every save of a run, and for the older id forms of it', () => {
+    expect(runKey('r~abc')).toBe(runKey('r~abc'));
+    expect(runKey('abc:t2')).toBe(runKey('r~abc'));
+    expect(runKey('r~abc')).not.toBe(runKey('r~abd'));
+  });
+  it('is a short hex fingerprint that does not contain the seed', () => {
+    expect(runKey('r~my-secret-seed')).toMatch(/^[0-9a-f]{14}$/);
   });
 });

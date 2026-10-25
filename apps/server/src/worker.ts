@@ -9,7 +9,7 @@
 //   /auth/*                         sign in with Google (auth.ts)
 
 import type { Env } from './env';
-import { normaliseCode } from '@sr/pvp';
+import { normaliseCode, runKey } from '@sr/pvp';
 import { authRoute, sessionOf, sha256 } from './auth';
 import { ROOM_CODE } from './wire';
 
@@ -119,6 +119,7 @@ async function registerSavedGhost(
             boons: d['boons'],
             tier: d['tier'],
             stage: d['stage'],
+            run: typeof d['id'] === 'string' ? runKey(d['id']) : undefined,
           },
         }),
       }),

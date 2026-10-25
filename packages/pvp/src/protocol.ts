@@ -26,6 +26,8 @@ export interface Entry {
   tier: number;
   /** how many of the tier's 3 stages the deck had cleared when it was saved (3 = the whole tier); absent on older decks */
   stage?: number;
+  /** a fingerprint of the run the deck came from (see runKey): the Ghost decks list keeps one deck per run, so saving the same run again replaces its ghost */
+  run?: string;
   /** who the player is on the leaderboards: a hash derived from their Vault code or account (never shown, never the code itself) */
   who?: string;
 }

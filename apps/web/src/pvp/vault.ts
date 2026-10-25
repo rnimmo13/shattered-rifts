@@ -6,6 +6,7 @@ import {
   bankInto,
   cleanVault,
   runOf,
+  runKey,
   mergeVaults,
   oneEach,
   RUN_PREFIX,
@@ -81,6 +82,7 @@ export function entryFor(d: VaultDeck, name: string): Entry {
     deck: [...d.deck],
     boons: [...d.boons],
     tier: d.tier,
+    run: runKey(d.id),
     ...(d.stage === undefined ? {} : { stage: d.stage }),
   };
 }

@@ -78,8 +78,12 @@ export function UnitPlates({ items, targetable, hover, preview, heroId, sharp }:
         const slot = lane.get(u.id) ?? { width: Math.max(165, Math.min(215, w * 1.05)), dy: 0 };
         const width = slot.width;
         const style: CSSProperties = { left: x, top: y + 10 + slot.dy, width };
-        // (a tall figure never pushes its next move off the top of the screen)
-        const intentStyle: CSSProperties = { left: x, top: Math.max(y - h - 8, 64) };
+        // (a tall figure never pushes its next move off the screen: it stops below the title bar, over the figure's head if it must, and
+        // an enemy at the side of the screen keeps it, and its words, inside the edges)
+        const intentStyle: CSSProperties = {
+          left: `clamp(7.2rem, ${x}px, calc(100% - 7.2rem))`,
+          top: `max(${y - h - 8}px, 7.8rem)`,
+        };
         return (
           <div key={u.id}>
             {u.kind === 'enemy' && iv && (

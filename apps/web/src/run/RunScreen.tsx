@@ -54,6 +54,7 @@ import { canSaveForArena, loseSavedDecks, saveForArena } from './deckSave';
 import { stagesInAll } from '@sr/pvp';
 import { stagesCleared } from '../pvp/vault';
 import { reportRun } from '../pvp/boardApi';
+import { syncSavedRuns } from './syncRuns';
 import { getName } from '../pvp/config';
 import { CharacterPicker } from './CharacterPicker';
 import { MapLegend, MapView } from './MapView';
@@ -178,6 +179,20 @@ export default function RunScreen() {
         name: getName() || 'Riftwalker',
       });
   }, [resumedSeed]);
+
+  // the leaderboard is told again when the browser comes back (online, or the tab is looked at again), so a report that was missed
+  // while the connection was down is made up for without waiting for the app to be reopened
+  useEffect(() => {
+    const tell = (): void => {
+      if (document.visibilityState === 'visible') void syncSavedRuns();
+    };
+    window.addEventListener('online', tell);
+    document.addEventListener('visibilitychange', tell);
+    return () => {
+      window.removeEventListener('online', tell);
+      document.removeEventListener('visibilitychange', tell);
+    };
+  }, []);
 
   /** Apply a rule function, showing its message instead of crashing if the rules refuse. */
   const act = useCallback(

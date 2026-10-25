@@ -52,6 +52,22 @@ interface Drag {
   startY: number;
 }
 
+/**
+ * How far in from each side of the screen the corner widgets (Mana and the draw pile, End turn and the discard pile, the battle log) reach
+ * into the hand's band. The fan keeps inside this, so a full hand is not hidden under them.
+ */
+function cornerReserve(handHeight: number): number {
+  const mid = window.innerWidth / 2;
+  const top = window.innerHeight - handHeight;
+  let reserve = 0;
+  for (const el of document.querySelectorAll('.fight__mana, .fight__end, .pile, .fight__log')) {
+    const r = el.getBoundingClientRect();
+    if (r.width === 0 || r.bottom < top) continue; // (not drawn, or above the hand)
+    reserve = Math.max(reserve, r.left + r.width / 2 < mid ? r.right : window.innerWidth - r.left);
+  }
+  return reserve;
+}
+
 export function FightHand(p: FightHandProps) {
   const [hover, setHover] = useState<number | null>(null);
   const [drag, setDrag] = useState<Drag | null>(null);
@@ -87,9 +103,16 @@ export function FightHand(p: FightHandProps) {
     : p.selectedId
       ? p.cards.findIndex((c) => c.inst.id === p.selectedId)
       : hover;
+  // the widest the fan may spread: not past the corner widgets (but never so tight that the cards pile onto one another)
+  // (a side never gives up more than a quarter of the screen, and the fan is never squeezed below three card widths)
+  const reserve = Math.min(cornerReserve(p.cardWidth * 1.4 + 10), window.innerWidth * 0.25);
+  const clear = window.innerWidth - 2 * reserve - p.cardWidth;
   const layout = {
     cardWidth: p.cardWidth,
-    maxSpread: Math.min(window.innerWidth * 0.72, p.cardWidth * 0.8 * 9),
+    maxSpread: Math.max(
+      p.cardWidth * 3,
+      Math.min(window.innerWidth * 0.72, p.cardWidth * 0.8 * 9, clear),
+    ),
   };
   const slots = fanLayout(n, {
     ...layout,
@@ -165,7 +188,10 @@ export function FightHand(p: FightHandProps) {
 
   const w = p.cardWidth;
   return (
-    <div className="fhand" style={{ '--cw': `${w}px` } as CSSProperties}>
+    <div
+      className={`fhand${focusIdx !== null && focusIdx >= 0 ? ' is-focused' : ''}`}
+      style={{ '--cw': `${w}px` } as CSSProperties}
+    >
       {p.cards.map((c, i) => {
         const s = slots[i];
         const r0 = rest[i];
