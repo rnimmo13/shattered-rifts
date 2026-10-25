@@ -28,7 +28,7 @@ export { CROSSED_MERCHANT_CHANCE };
 import { enemyScale } from './tierTable';
 import { makeKits } from './kits';
 import { rollEvent, resolveEvent } from './events';
-import { beginTrial, endTrial, takePrize } from './trials';
+import { spinReel, takePrize } from './trials';
 import { makePrelude } from './preludes';
 import {
   BOON_PRICE,
@@ -360,9 +360,9 @@ export interface FightPlan {
   ghost?: GhostBoss & { hp: number };
 }
 
-/** How much HP a ghost Warden has: its Riftwalker's own, times this (a Warden is tougher than a player), more with each Rift Tier. */
-export const GHOST_BOSS_HP_BASE = 1.4;
-export const GHOST_BOSS_HP_PER_TIER = 0.06;
+/** How much HP a ghost Warden has: its Riftwalker's own, times this (a Warden is tougher than a player), more with each Rift Tier. (Raised from 1.4 / 0.06 when hero HP came down to Slay the Spire levels, DECISIONS #223, so ghosts keep about the HP they had.) */
+export const GHOST_BOSS_HP_BASE = 1.65;
+export const GHOST_BOSS_HP_PER_TIER = 0.07;
 export const ghostBossHp = (hero: string, tier: number): number =>
   Math.round(
     (RIFTWALKERS[hero as keyof typeof RIFTWALKERS]?.hero.maxHp ?? 80) *
@@ -983,18 +983,21 @@ export function pickEventCard(run: RunState, index: number): RunState {
   return r;
 }
 
-/** The player pressed Begin on an elite event's trial. From now on it is spent: it is saved as begun, and cannot be tried again. */
-export function startTrial(run: RunState): RunState {
+/**
+ * Pay for a spin of an elite event's reel (see spinReel in trials.ts). The prize it stops on is now on the table: take it with
+ * claimTrialPrize, or spin again.
+ */
+export function rollTrial(run: RunState): RunState {
   need(
-    run.phase === 'event' && run.context?.event?.trial?.state === 'open',
-    'There is no trial here',
+    run.phase === 'event' &&
+      (run.context?.event?.trial?.state === 'open' || run.context?.event?.trial?.state === 'won'),
+    'There is no reel here',
   );
   const r = clone(run);
-  beginTrial(
-    (r.context as NonNullable<RunState['context']>).event as NonNullable<
-      NonNullable<RunState['context']>['event']
-    >,
-  );
+  const ctx = r.context as NonNullable<RunState['context']>;
+  spinReel(r, ctx.event as NonNullable<typeof ctx.event>, (msg) => {
+    throw new RunError(msg);
+  });
   return r;
 }
 
@@ -1014,25 +1017,13 @@ export function settleInterrupted(run: RunState): { run: RunState; notice: strin
   return { run: r, notice: r.eventResult };
 }
 
-/** An elite event's trial has been played (the client plays the puzzle): a win opens the choice of prizes, a loss pays the consolation. */
-export function finishTrial(run: RunState, won: boolean): RunState {
-  need(
-    run.phase === 'event' && run.context?.event?.trial?.state === 'playing',
-    'There is no trial being played',
-  );
-  const r = clone(run);
-  const ctx = r.context as NonNullable<RunState['context']>;
-  const said = endTrial(r, ctx.event as NonNullable<typeof ctx.event>, won);
-  if (said !== null) {
-    r.eventResult = said;
-    clearNode(r, ctx.nodeId);
-    r.phase = 'map';
-  }
-  return r;
-}
-
 /** Take one of the prizes of a trial that was won. */
-export function claimTrialPrize(run: RunState, prize: string, pick?: number): RunState {
+export function claimTrialPrize(
+  run: RunState,
+  prize: string,
+  pick?: number,
+  cards?: readonly string[],
+): RunState {
   need(
     run.phase === 'event' && run.context?.event?.trial?.state === 'won',
     'There is no prize here',
@@ -1050,6 +1041,7 @@ export function claimTrialPrize(run: RunState, prize: string, pick?: number): Ru
       },
     },
     pick,
+    cards,
   );
   clearNode(r, ctx.nodeId);
   r.phase = 'map';

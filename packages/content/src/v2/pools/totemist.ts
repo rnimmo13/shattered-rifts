@@ -54,7 +54,7 @@ export const RUNES: RuneDef[] = [
   {
     id: 'hollow',
     name: 'Elder',
-    text: 'Charges by 2 at the end of each of your turns. Awaken: damage equal to its charge to the front enemy.',
+    text: 'Charges by 2 at the end of each of your turns. Awaken: damage equal to its charge to the front enemy (the charge is spent).',
     grow: 2,
     passive: [],
     evoke: [scaled(dmg(0, 'front'), per('charge'))],
@@ -62,9 +62,9 @@ export const RUNES: RuneDef[] = [
   {
     id: 'prism',
     name: 'Owl',
-    text: 'Passive: 1 Barrier at the end of your turn. Awaken: gain 1 Mana and draw a card.',
+    text: 'Passive: 1 Barrier at the end of your turn. Awaken: gain 1 Mana.',
     passive: [barrier(1)],
-    evoke: [mana(1), draw(1)],
+    evoke: [mana(1)],
   },
 ];
 
@@ -221,10 +221,10 @@ export const TOTEMIST: CardDef[] = [
     exhaust: true,
   }),
   i('uncommon', 'resonant-strike', 'Spirit Strike', 'attack', 1, 'foe', [
-    scaled(dmg(6), per('resonance', 3)),
+    scaled(dmg(6), per('resonance', 2)),
   ]),
   i('rare', 'fevered-attunement', 'Fevered Communion', 'power', 1, 'none', [
-    status('resonance', 4),
+    status('resonance', 3),
     on('turnStart', [status('resonance', -1)]),
   ]),
   i('rare', 'chorus-of-glyphs', 'Chorus of Totems', 'power', 2, 'none', [
@@ -400,7 +400,7 @@ export const TOTEMIST: CardDef[] = [
     },
   ),
   i('uncommon', 'hollow-tide', 'Elder Tide', 'attack', 2, 'foe', [
-    scaled(dmg(6), per('resonance', 4)),
+    scaled(dmg(6), per('resonance', 2)),
     channel('hollow'),
   ]),
   i('uncommon', 'tuning-fork', 'Spirit Drum', 'skill', 1, 'none', [

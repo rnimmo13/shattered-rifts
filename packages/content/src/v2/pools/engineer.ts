@@ -306,7 +306,7 @@ export const ENGINEER: CardDef[] = [
     barrier(4, 'target'),
   ]),
   r('uncommon', 'siege-protocol', 'Siege Protocol', 'attack', 2, 'foe', [
-    scaled(dmg(6), per('might', 3)),
+    scaled(dmg(6), per('might', 2)),
   ]),
   r(
     'rare',

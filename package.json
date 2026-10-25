@@ -24,6 +24,7 @@
     "cardlist": "pnpm --filter @sr/tools cardlist",
     "balance": "pnpm --filter @sr/tools balance",
     "runsim": "pnpm --filter @sr/tools runsim",
+    "audit:balance": "pnpm --filter @sr/tools audit:balance",
     "cardscan": "pnpm --filter @sr/tools cardscan",
     "traitscan": "pnpm --filter @sr/tools traitscan",
     "lanes": "pnpm --filter @sr/tools lanes",

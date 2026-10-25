@@ -107,6 +107,11 @@ const DB: CombatDb = {
       target: 'foe',
       effects: [{ op: 'scaleStatus', status: 'seared', mult: 2, to: 'target' }],
     }),
+    c('catalyst-capped', {
+      target: 'foe',
+      effects: [{ op: 'scaleStatus', status: 'seared', mult: 2, to: 'target', max: 5 }],
+    }),
+    c('reclaimer', { effects: [{ op: 'reclaim', amount: 1 }] }),
     c('cash-out', {
       target: 'foe',
       effects: [{ op: 'loseHp', amount: 0, to: 'target', scale: { by: 'seared', of: 'target' } }],
@@ -756,16 +761,34 @@ describe('stances', () => {
     expect(hero(s).statuses.wrath).toBeUndefined();
   });
 
+  it('leaving Calm pays its Mana once a turn, so stepping in and out cannot loop', () => {
+    let s = start(['calm', 'wrath', 'calm', 'wrath'], { mana: 6 });
+    s = play(s, 'h0').state; // Calm: 5
+    s = play(s, 'h1').state; // leave it: 5 - 1 + 2
+    expect(s.sides.a.mana).toBe(6);
+    s = play(s, 'h2').state; // Calm again: 5
+    s = play(s, 'h3').state; // and out again: nothing this time
+    expect(s.sides.a.mana).toBe(4);
+    expect(hero(s).statuses.wrath).toBe(1);
+    // the next turn it pays again
+    s = end(s).state;
+    expect(s.sides.a.calmPaid).toBe(false);
+  });
+
   it('Mantra builds to Radiant: triple damage, Mana on entry, gone at end of turn', () => {
-    let s = start(['chant', 'chant', 'strike'], { mana: 5 });
+    let s = start(['chant', 'chant', 'chant', 'chant', 'strike'], { mana: 6 });
     s = play(s, 'h0').state;
     expect(hero(s).statuses.mantra).toBe(3);
     s = play(s, 'h1').state;
+    s = play(s, 'h2').state;
+    expect(hero(s).statuses.mantra).toBe(9);
+    expect(hero(s).statuses.radiant).toBeUndefined();
+    s = play(s, 'h3').state;
     expect(hero(s).statuses.radiant).toBe(1);
-    expect(hero(s).statuses.mantra).toBe(1);
-    expect(s.sides.a.mana).toBe(5 - 2 + 2);
+    expect(hero(s).statuses.mantra).toBe(2);
+    expect(s.sides.a.mana).toBe(6 - 4 + 2);
     const hp = foe(s).hp;
-    s = play(s, 'h2', foe(s).id).state;
+    s = play(s, 'h4', foe(s).id).state;
     expect(hp - foe(s).hp).toBe(18);
     s = end(s).state;
     expect(hero(s).statuses.radiant).toBeUndefined();
@@ -1252,5 +1275,37 @@ describe('innate and invariants', () => {
         expect(hero(state)?.hp ?? 1).toBeGreaterThanOrEqual(0);
       }
     }
+  });
+});
+
+describe('balance audit rules (DECISIONS #223)', () => {
+  it('a discount is spent when the card is played: it costs full price the next time', () => {
+    let s = start(['cheap', 'strike']);
+    s = play(s, 'h0').state;
+    expect(s.sides.a.hand[0]?.costMod).toBe(-1);
+    s = play(s, 'h1', foe(s).id).state;
+    const played = s.sides.a.discard.find((x) => x.id === 'h1');
+    expect(played).toBeDefined();
+    expect(played?.costMod).toBeUndefined();
+  });
+
+  it('a capped doubler adds at most its cap', () => {
+    let s = start(['toxin', 'toxin', 'catalyst-capped'], { mana: 5 });
+    s = play(s, 'h0', foe(s).id).state;
+    s = play(s, 'h1', foe(s).id).state;
+    expect(foe(s).statuses.seared).toBe(8);
+    s = play(s, 'h2', foe(s).id).state;
+    expect(foe(s).statuses.seared).toBe(13); // doubling would be 16: the cap adds 5
+  });
+
+  it('reclaim never returns a card that reclaims', () => {
+    const s0 = start(['reclaimer']);
+    s0.sides.a.exhausted = [
+      { id: 'x1', card: 'reclaimer' },
+      { id: 'x2', card: 'strike' },
+    ];
+    const s = play(s0, 'h0').state;
+    expect(s.sides.a.hand.map((x) => x.id)).toEqual(['x2']);
+    expect(s.sides.a.exhausted.map((x) => x.id)).toEqual(['x1']);
   });
 });

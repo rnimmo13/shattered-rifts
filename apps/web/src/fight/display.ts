@@ -142,9 +142,13 @@ export function reduceEvent(db: CombatDb, s: CombatState, e: CombatEvent): void 
       sd.powers.push({ id: `shown${sd.powers.length}`, card: e.card, when: 'turnStart', ops: [] });
       return;
     }
-    case 'play':
+    case 'play': {
       moveCard(s, e.side, e.card, e.def, 'discard');
+      // the engine spends a discount on the play (as it does): a card that comes back costs full price
+      const played = s.sides[e.side].discard.find((c) => c.id === e.card);
+      if (played) delete played.costMod;
       return;
+    }
     case 'snareSet': {
       const sd = s.sides[e.side];
       const i = sd.discard.findIndex((c) => c.id === e.snare);

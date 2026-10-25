@@ -81,11 +81,11 @@ export const DEBUFFS: readonly StatusId[] = [
 ];
 export const STANCES = ['calm', 'wrath', 'radiant'] as const;
 export type Stance = (typeof STANCES)[number];
-/** Mantra needed to enter Radiant (the stack is spent). */
-export const MANTRA_GOAL = 5;
+/** Mantra needed to enter Radiant (the stack is spent). Slay the Spire's number: Radiant is a payoff you build to, not an opener. */
+export const MANTRA_GOAL = 10;
 /** Attacks from cards with this tag gain the Edge status's bonus damage. */
 export const EDGE_TAG = 'knife';
-/** Mana gained when leaving Calm, and on entering Radiant. */
+/** Mana gained when leaving Calm (the first time each turn: stepping in and out again pays nothing, so it cannot loop), and on entering Radiant. */
 export const CALM_EXIT_MANA = 2;
 export const RADIANT_ENTER_MANA = 2;
 
@@ -176,7 +176,8 @@ export type Op =
   /** `temp`: the stacks wear off again at the end of the acting side's turn (a Flex) */
   | { op: 'status'; status: StatusId; amount: number; to: Sel; scale?: Scale; temp?: boolean }
   /** multiply the stacks of a status already on the target (floor); 2 doubles it */
-  | { op: 'scaleStatus'; status: StatusId; mult: number; to: Sel }
+  /** multiply a status (Double the Seared...); `max` is the most stacks it adds, so a doubler played again and again cannot run away */
+  | { op: 'scaleStatus'; status: StatusId; mult: number; to: Sel; max?: number }
   | { op: 'draw'; amount: number; scale?: Scale }
   | { op: 'mana'; amount: number; scale?: Scale }
   | { op: 'stars'; amount: number; scale?: Scale }
@@ -520,6 +521,8 @@ export interface SideState {
   attacksPlayed: number;
   skillsPlayed: number;
   discarded: number;
+  /** leaving Calm has already paid its Mana this turn */
+  calmPaid?: boolean;
   /** counters for the whole fight */
   drawn: number;
   created: number;

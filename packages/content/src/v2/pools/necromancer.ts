@@ -64,7 +64,7 @@ export const NECROMANCER: CardDef[] = [
     'skill',
     1,
     'foe',
-    [doubleSt('doom', 'target')],
+    [doubleSt('doom', 'target', 2, 20)],
     {
       exhaust: true,
     },
@@ -73,7 +73,7 @@ export const NECROMANCER: CardDef[] = [
     on('turnStart', [status('doom', 3, 'allFoes')]),
   ]),
   g('uncommon', 'harvest', 'Harvest', 'attack', 1, 'foe', [
-    scaled(dmg(4), per('doom', 1, 'target')),
+    scaled(dmg(4), per('doom', 0.25, 'target')),
   ]),
   g('uncommon', 'deathknell', 'Deathknell', 'skill', 2, 'foe', [status('doom', 14, 'target')]),
   g(
@@ -141,7 +141,7 @@ export const NECROMANCER: CardDef[] = [
     'skill',
     2,
     'none',
-    [doubleSt('doom', 'allFoes', 1.5)],
+    [doubleSt('doom', 'allFoes', 1.5, 15)],
     { exhaust: true },
   ),
 
@@ -201,11 +201,18 @@ export const NECROMANCER: CardDef[] = [
     summon('bone-thrall'),
     summon('bone-thrall'),
   ]),
-  g('rare', 'blood-sacrifice', 'Blood Sacrifice', 'skill', 0, 'ally', [
-    mana(2),
-    draw(2),
-    sacrifice,
-  ]),
+  g(
+    'rare',
+    'blood-sacrifice',
+    'Blood Sacrifice',
+    'skill',
+    0,
+    'ally',
+    [mana(2), draw(2), sacrifice],
+    {
+      exhaust: true,
+    },
+  ),
   g('rare', 'phylactery', 'Phylactery', 'power', 3, 'none', [
     on('turnStart', [summon('bone-thrall')]),
   ]),
@@ -239,7 +246,7 @@ export const NECROMANCER: CardDef[] = [
     exhaustN(9, 'any'),
     scaled(status('doom', 0, 'allFoes'), per('exhausted')),
   ]),
-  g('rare', 'requiem', 'Requiem', 'attack', 2, 'foe', [scaled(dmg(0), per('exhausted', 3))]),
+  g('rare', 'requiem', 'Requiem', 'attack', 2, 'foe', [scaled(dmg(0), per('exhausted', 1))]),
 
   g('common', 'burial-shroud', 'Burial Shroud', 'skill', 1, 'none', [
     exhaustN(1),
@@ -269,7 +276,7 @@ export const NECROMANCER: CardDef[] = [
   ]),
   g('rare', 'pyre-of-the-dead', 'Pyre of the Dead', 'attack', 2, 'none', [
     exhaustN(9, 'any'),
-    scaled(dmg(0, 'allFoes'), per('exhausted', 3)),
+    scaled(dmg(0, 'allFoes'), per('exhausted', 1)),
   ]),
   g('rare', 'necrotic-return', 'Necrotic Return', 'skill', 1, 'none', [reclaim(3)], {
     exhaust: true,
@@ -370,7 +377,7 @@ export const NECROMANCER: CardDef[] = [
     status('doom', 3, 'randomFoe'),
   ]),
   g('uncommon', 'reaping-scythe', 'Reaping Scythe', 'attack', 2, 'none', [
-    scaled(dmg(5, 'allFoes'), per('doom', 1, 'each')),
+    scaled(dmg(5, 'allFoes'), per('doom', 0.25, 'each')),
   ]),
   g('uncommon', 'grim-tally', 'Grim Tally', 'attack', 1, 'foe', [
     scaled(dmg(3), per('played', 2)),
@@ -390,7 +397,7 @@ export const NECROMANCER: CardDef[] = [
     'attack',
     3,
     'foe',
-    [scaled(dmg(0), per('doom', 2, 'target'))],
+    [scaled(dmg(0), per('doom', 1, 'target'))],
     { exhaust: true },
   ),
 

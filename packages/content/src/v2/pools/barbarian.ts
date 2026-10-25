@@ -29,7 +29,7 @@ const s = pool('barbarian', 'aurelion');
 
 export const BARBARIAN: CardDef[] = [
   // --- basics ---
-  s('basic', 'kindle-fury', 'Kindle Fury', 'attack', 1, 'foe', [dmg(7), stance('wrath')]),
+  s('basic', 'kindle-fury', 'Kindle Fury', 'attack', 2, 'foe', [dmg(9), stance('wrath')]),
   s('basic', 'still-guard', 'Still Guard', 'skill', 1, 'none', [barrier(7), stance('calm')]),
 
   // --- Wrath ---
@@ -149,7 +149,7 @@ export const BARBARIAN: CardDef[] = [
   s('rare', 'daily-rite', 'Daily Rite', 'power', 1, 'none', [
     on('turnStart', [status('mantra', 2)]),
   ]),
-  s('rare', 'rise-radiant', 'Rise Radiant', 'skill', 2, 'none', [stance('radiant')], {
+  s('rare', 'rise-radiant', 'Rise Radiant', 'skill', 3, 'none', [stance('radiant')], {
     exhaust: true,
   }),
   s('uncommon', 'martyrs-vow', "Martyr's Vow", 'skill', 0, 'none', [lose(3), status('mantra', 3)]),
@@ -183,7 +183,9 @@ export const BARBARIAN: CardDef[] = [
   ),
   s('uncommon', 'deep-breath', 'Deep Breath', 'skill', 1, 'none', [manaNext(2), draw(1)]),
   // (more Fervor)
-  s('common', 'prostrate', 'Prostrate', 'skill', 0, 'none', [status('mantra', 2), draw(1)]),
+  s('common', 'prostrate', 'Prostrate', 'skill', 0, 'none', [status('mantra', 2), draw(1)], {
+    exhaust: true,
+  }),
   s('common', 'pray', 'Pray', 'skill', 1, 'none', [status('mantra', 3), barrier(3)]),
   s('uncommon', 'worship', 'Worship', 'skill', 2, 'none', [status('mantra', 5)]),
   s('uncommon', 'devotion', 'Devotion', 'power', 1, 'none', [
@@ -196,7 +198,7 @@ export const BARBARIAN: CardDef[] = [
     status('mantra', 5),
   ]),
   s('rare', 'radiant-heart', 'Radiant Heart', 'power', 2, 'none', [
-    on('stance', [draw(2), mana(1)], { stance: 'radiant' }),
+    on('stance', [draw(2)], { stance: 'radiant' }),
   ]),
 
   // --- Wrath (more) ---
@@ -248,7 +250,7 @@ export const BARBARIAN: CardDef[] = [
     on('stance', [lose(2), status('vigor', 2)], { stance: 'wrath' }),
   ]),
   s('rare', 'ashes-of-restraint', 'Ashes of Restraint', 'attack', 2, 'foe', [
-    scaled(dmg(6), per('exhausted', 3)),
+    scaled(dmg(6), per('exhausted', 2)),
     stance('wrath'),
   ]),
 

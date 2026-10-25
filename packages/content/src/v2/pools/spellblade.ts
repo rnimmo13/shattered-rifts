@@ -359,7 +359,9 @@ export const SPELLBLADE: CardDef[] = [
     [dmg(20), status('exposed', 2, 'target'), status('faltering', 2, 'target')],
     { starCost: 2 },
   ),
-  a('rare', 'zenith', 'Zenith', 'attack', 1, 'foe', [scaled(dmg(0), per('stars', 3))]),
+  a('rare', 'zenith', 'Zenith', 'attack', 1, 'foe', [scaled(dmg(0), per('stars', 2))], {
+    exhaust: true,
+  }),
 
   // --- more Sigils (batch 3) ---
   a('uncommon', 'perseus', 'Sigil of Spite', 'power', 2, 'none', [

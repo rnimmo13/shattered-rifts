@@ -15,6 +15,65 @@ pnpm test:property                                   10,000 random games with in
 flags: --ai heuristic|random  --personality …  --rules '{"secondPlayerExtraCards":1}'  --seed S  --workers N
 ```
 
+## Balance audit (2026-10-25, DECISIONS #223): read this first
+
+Robert: a Tier 2 Sehra dealt 450+ on turn 1 and the Warden never acted. Goal: Slay the Spire numbers, bosses that take 10+ turns,
+Tier I a challenge, V an accomplishment, X a big one, XX a godly build, without huge HP.
+
+**Tool:** `pnpm audit:balance -- <mode>` (tools/src/audit.ts, all cores, deterministic):
+- `burst`: the most damage a deck can deal in one round (a wide search over every order of plays), turn 1 and turn 3.
+- `optimize --level t2|t10|t20`: hill-climbs a deck (swap/add/remove any card of the character's pool, upgraded, deck rules kept)
+  towards the most damage over the opening rounds, then plays it against every Warden. This is what a combo-hunting player finds;
+  if one character's number is far above the rest, it has a broken combination.
+- `ladder`: drafted decks of each depth (t1s1 = first Warden, t1s3 = end of loop 1, t2, t5, t10, t20) against their own tier:
+  win %, turns, HP lost, best round as a share of enemy HP.
+- `matrix`: deck depth x Rift Tier, Warden + Vorthax win % at full HP.
+
+Decks are drafted like a person (tools/src/audit/decks.ts): one lane, the best card of it on offer, Strikes and Defends cut, upgrades
+and Boons by depth (a deck that has looped owns nearly all 12 Boons). The fight bot is the beam-search bot (`chooseSmartAction`).
+**Why the older sims misled:** random picks with no synergy and a one-ply bot that never sets a combo up, so engine characters looked
+weak and got more HP (Sehra 116, Vesper 124). Read bot win rates as a floor for engine characters; burst and the optimizer are the ceiling.
+
+**What the optimizer found (Tier II depth, damage in a round):** Sehra 1,433 on turn 1, Kesh 3,831, Sylas 4,214-6,127, Vesper 4,198,
+Dorian 2,189, Valeria 667. Each rested on a free card that replaces itself or makes Mana (Calm in and out for +2 Mana, Frenzied Gulp,
+Calculated Move, Blood Sacrifice, a permanent Cheapen), a doubler played again and again (Fatal Dose, Plague Bloom, Slip the Leash,
+Briar Bloom), or a payoff multiplying a number that only grows (Colossus Blow, Final Reckoning, Harvest, Zenith). What changed: DECISIONS #223.
+
+**After** (`burst`, turn 1, median / 90th percentile; the Warden HP at that depth's tier in brackets):
+
+| Depth (Warden HP) | t1s1 (317) | t1s3 (317) | t2 (387) | t5 (565) | t10 (785) | t20 (988) |
+|---|---|---|---|---|---|---|
+| Sehra, before | 33/63 | 43/84 | 50/123 | 100/161 | 56/134 | 62/149 |
+| Sehra, after | 23/54 | 41/95 | 60/99 | 38/142 | 45/125 | 55/102 |
+| all ten, after (range of medians) | 17-41 | 18-46 | 22-60 | 23-59 | 28-69 | 23-63 |
+
+**Optimizer ceilings after** (best deck, damage per round over rounds 1-3/4): Tier II 100-500 (was up to 6,127); against Tier XX Wardens
+(~988 HP) the optimized decks win 0-100% in 4-15 turns, most 50-100% in 5-10. Still the strongest: Kesh's Feast (Hunger Unbound + Second
+Helping) and Ilvane's Spirit stack; weakest: Obsidia, KP and Dorian at Tier XX. Re-run after every content change.
+
+**Fights (`ladder`, drafted decks at their own tier):** regular 3.5-6 turns, Elite 5-14, Warden 10-20, Vorthax 13-35; the best round is at
+most ~50% of a regular's HP and 13-27% of a boss's (before: Tier I regulars took 3-5 turns and optimized decks killed Wardens in 1-2).
+
+**Tier curve (`matrix`, Warden + Vorthax win % at full HP, rows = deck depth):**
+
+| Deck | T1 | T2 | T3 | T5 | T8 | T10 | T15 | T20 |
+|---|---|---|---|---|---|---|---|---|
+| end of loop 1 | **56%** | 35% | 23% | 11% | 5% | 4% | 3% | 2% |
+| Tier II | 92% | **75%** | 59% | 36% | 17% | 14% | 10% | 8% |
+| Tier V | 97% | 95% | 86% | **70%** | 51% | 40% | 30% | 26% |
+| Tier X | 99% | 98% | 93% | 79% | 64% | **49%** | 36% | 28% |
+| Tier XX (drafted) | 99% | 97% | 91% | 79% | 61% | 49% | 37% | **29%** |
+
+A run adds attrition (HP carries, 3 bosses and Elites per loop), so run clear rates sit well below these. Decks plateau after about Tier
+V (all Boons, everything upgraded), which is why the table climbs fast to Tier X and slowly after: Tier XX is beaten by an optimized deck,
+not by a merely deep one. Bot noise is about +/-15 points per hero cell (30 fights); the "All heroes" rows are about +/-5.
+
+**Known gaps:** Ilvane's and Valeria's bot fights run very long (they turtle behind Barrier); Vesper, Sehra and Obsidia are at the bottom
+for the bot, but their engines are the ones the bot pilots worst; ghost Wardens are scaled by hero HP, not by the tier table; potions,
+events, ancestral cards and Sanctified rolls are not in the audit decks.
+
+---
+
 *Measured 2026-10-22 on the M2 build, heuristic AI (balanced) unless noted.*
 
 ---
@@ -113,8 +172,8 @@ Wardens will be harder than their numbers here.
 
 ## Combat v2 (C2 first pass, 2026-10-23)
 `pnpm sim2 -- --n 30 --draft 10` plays each Riftwalker's starter deck plus 10 random reward cards with a greedy 1-ply bot
-(`@sr/combat` `chooseAction`) against every encounter. Tuning knobs: `ENEMY_SCALE` in `packages/content/src/v2/units.ts`
-(regular/elite damage and HP multipliers) and hand-tuned Warden numbers. First-pass results (average HP lost on a win):
+(`@sr/combat` `chooseAction`) against every encounter. Tuning knobs then: `ENEMY_SCALE` in `packages/content/src/v2/units.ts`
+(regular/elite damage and HP multipliers; gone since #223, units.ts now holds Tier I numbers) and hand-tuned Warden numbers. First-pass results (average HP lost on a win):
 regular fights 5-25 HP, Elites 15-45, Wardens 40-60 with Seraphine/Kron/Nyxara beatable (45-100%) and Gorrmaw hard for the
 two non-summon characters (40-60% after the C2 review fixes); Vorthax with a 10-card draft is ~10% (the finale expects a full-run deck).
 Known skew: summon/pack decks (Rivet, Kesh) beat Wardens more reliably than Maren/Vesper, whose damage is low per card.

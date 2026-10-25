@@ -62,65 +62,68 @@ function plusAlly(a: UnitDef): UnitDef {
 export const ALLIES: UnitDef[] = RAW_ALLIES.flatMap((a) => [a, plusAlly(a)]);
 
 // --- enemies ----------------------------------------------------------------------------------------------------------
+// Every number here is what the player meets at Rift Tier I, stage 1 (no hidden multiplier). Deeper stages and tiers scale HP
+// and attack damage by the tier table (packages/campaign/src/tierTable.ts). Slay the Spire is the yardstick: a regular hits for
+// 5-14, an Elite for 9-23, a Warden for 14-34, against heroes of 70-88 HP.
 
 const slash = (n: number) => move('slash', 'Slash', dmg(n));
 
-const RAW_ENEMY_UNITS: UnitDef[] = [
+export const ENEMY_UNITS: UnitDef[] = [
   // ---- Aurelion ----
   foe(
     'squire',
     'Gilded Squire',
-    24,
-    [slash(6), move('guard', 'Raise Shield', barrier(7))],
+    41,
+    [slash(9), move('guard', 'Raise Shield', barrier(7))],
     cycle('slash', 'guard', 'slash'),
   ),
   // a swarm unit: many of them at once (Page Troop), each weak
-  foe('gilded-page', 'Gilded Page', 6, [move('poke', 'Poke', dmg(2))], cycle('poke')),
+  foe('gilded-page', 'Gilded Page', 10, [move('poke', 'Poke', dmg(3))], cycle('poke')),
   foe(
     'squire-recruit',
     'Squire Recruit',
-    36,
-    [slash(7), move('guard', 'Raise Shield', barrier(8))],
+    62,
+    [slash(11), move('guard', 'Raise Shield', barrier(8))],
     cycle('slash', 'guard', 'slash'),
   ),
   foe(
     'bell-cleric',
     'Cleric of the Ninth Bell',
-    32,
-    [move('chime', 'Chime', dmg(6)), move('bless', 'Blessing', barrier(6, 'allFriends'), heal(4))],
+    55,
+    [move('chime', 'Chime', dmg(9)), move('bless', 'Blessing', barrier(6, 'allFriends'), heal(4))],
     cycle('chime', 'bless'),
   ),
   foe(
     'wandering-knight',
     'Wandering Knight',
-    44,
+    76,
     [
-      move('strike', 'Strike', dmg(9)),
+      move('strike', 'Strike', dmg(14)),
       move('guard', 'Guard', barrier(10)),
-      move('smite', 'Smite', dmg(6), status('faltering', 1, 'target')),
+      move('smite', 'Smite', dmg(9), status('faltering', 1, 'target')),
     ],
     weighted(['strike', 3], ['guard', 2], ['smite', 2]),
   ),
   foe(
     'templar-aldric',
     'Templar-Commander Aldric',
-    72,
+    124,
     [
       move('banner', 'Raise the Banner', status('might', 2), barrier(10)),
-      move('cleave', 'Cleave', dmg(12, 'allFoes')),
+      move('cleave', 'Cleave', dmg(18, 'allFoes')),
       move('wall', 'Shield Wall', barrier(14, 'allFriends')),
-      move('hammer', 'Hammer of Dawn', dmg(16)),
+      move('hammer', 'Hammer of Dawn', dmg(23)),
     ],
     cycle('banner', 'cleave', 'wall', 'hammer'),
   ),
   foe(
     'inquisitor-maelis',
     'High Inquisitor Maelis',
-    66,
+    114,
     [
-      move('censure', 'Censure', dmg(6), status('faltering', 2, 'target')),
-      move('denounce', 'Denounce', wound('foe'), dmg(5)),
-      move('smite', 'Smite', dmg(14)),
+      move('censure', 'Censure', dmg(9), status('faltering', 2, 'target')),
+      move('denounce', 'Denounce', wound('foe'), dmg(7)),
+      move('smite', 'Smite', dmg(20)),
       move('ward', 'Warding Prayer', status('shielded', 1), barrier(8)),
     ],
     cycle('censure', 'denounce', 'smite', 'ward'),
@@ -128,21 +131,21 @@ const RAW_ENEMY_UNITS: UnitDef[] = [
   foe(
     'gilded-halberdier',
     'Gilded Halberdier',
-    18,
-    [move('thrust', 'Thrust', dmg(7)), move('brace', 'Brace', barrier(6))],
+    27,
+    [move('thrust', 'Thrust', dmg(8)), move('brace', 'Brace', barrier(6))],
     cycle('thrust', 'brace'),
   ),
   foe(
     'seraphine',
     'Seraphine, the Gilded Warden',
-    150,
+    225,
     [
       move('chant', 'Choir of Dawn', barrier(10), status('shielded', 1)),
-      move('smite', 'Smite', dmg(12)),
-      move('bell', 'Judgment Bell', dmg(22)),
+      move('smite', 'Smite', dmg(14)),
+      move('bell', 'Judgment Bell', dmg(26)),
       move('ascend', 'Ascension', summon('gilded-halberdier'), heal(8), status('might', 1)),
-      move('radiance', 'Radiant Smite', dmg(15)),
-      move('bell2', 'Judgment Bell', dmg(28)),
+      move('radiance', 'Radiant Smite', dmg(18)),
+      move('bell2', 'Judgment Bell', dmg(34)),
     ],
     phases(
       [100, { kind: 'cycle', order: ['smite', 'chant', 'bell'] }],
@@ -151,20 +154,20 @@ const RAW_ENEMY_UNITS: UnitDef[] = [
   ),
 
   // ---- Nexus-9 ----
-  foe('scrap-drone', 'Scrap Drone', 6, [move('ping', 'Ping', dmg(3))], cycle('ping')),
+  foe('scrap-drone', 'Scrap Drone', 10, [move('ping', 'Ping', dmg(5))], cycle('ping')),
   foe(
     'line-technician',
     'Line Technician',
-    34,
-    [move('tune', 'Retool', barrier(6), summon('scrap-drone')), move('zap', 'Zap', dmg(7))],
+    59,
+    [move('tune', 'Retool', barrier(6), summon('scrap-drone')), move('zap', 'Zap', dmg(11))],
     cycle('tune', 'zap', 'zap'),
   ),
   foe(
     'patrol-unit',
     'Patrol Unit 44',
-    40,
+    69,
     [
-      move('burst', 'Burst Fire', dmg(3, 'target', 3)),
+      move('burst', 'Burst Fire', dmg(5, 'target', 3)),
       move('brace', 'Brace', barrier(8), status('might', 1)),
     ],
     cycle('burst', 'brace', 'burst'),
@@ -172,10 +175,10 @@ const RAW_ENEMY_UNITS: UnitDef[] = [
   foe(
     'scrap-collector',
     'Scrap Collector',
-    38,
+    66,
     [
-      move('grab', 'Grab', dmg(5), wound('foe')),
-      move('toss', 'Toss', dmg(8)),
+      move('grab', 'Grab', dmg(8), wound('foe')),
+      move('toss', 'Toss', dmg(12)),
       move('hoard', 'Hoard', barrier(7)),
     ],
     cycle('grab', 'toss', 'hoard'),
@@ -183,37 +186,37 @@ const RAW_ENEMY_UNITS: UnitDef[] = [
   foe(
     'hive-7',
     'Hive-7',
-    64,
+    110,
     [
       move('spawn', 'Spawn Drone', summon('scrap-drone'), barrier(5)),
-      move('swarm', 'Swarm', dmg(6, 'target', 2)),
-      move('lash', 'Lash', dmg(10)),
+      move('swarm', 'Swarm', dmg(9, 'target', 2)),
+      move('lash', 'Lash', dmg(15)),
     ],
     cycle('spawn', 'spawn', 'swarm', 'lash'),
   ),
   foe(
     'ghostwire',
     'Ghostwire',
-    58,
+    100,
     [
-      move('hack', 'Hack', status('exposed', 2, 'target'), dmg(5)),
+      move('hack', 'Hack', status('exposed', 2, 'target'), dmg(7)),
       move('signal', 'Ghost Signal', status('faltering', 2, 'target'), wound('foe', 'static')),
-      move('strike', 'Strike', dmg(11)),
+      move('strike', 'Strike', dmg(16)),
     ],
     cycle('signal', 'hack', 'strike'),
   ),
   foe(
     'kron',
     'KR-0N "Kron", Foundry Overseer',
-    180,
+    270,
     [
       move('line', 'Production Line', summon('scrap-drone'), barrier(6)),
-      move('slam', 'Press', dmg(12)),
+      move('slam', 'Press', dmg(14)),
       move('charge', 'Charging Orbital Strike', barrier(10)),
-      move('orbital', 'Orbital Strike', dmg(14, 'allFoes')),
+      move('orbital', 'Orbital Strike', dmg(17, 'allFoes')),
       move('assemble', 'Reassemble', summon('scrap-drone'), status('might', 2)),
-      move('laser', 'Laser Array', dmg(9, 'target', 2)),
-      move('orbital2', 'Orbital Strike', dmg(17, 'allFoes')),
+      move('laser', 'Laser Array', dmg(11, 'target', 2)),
+      move('orbital2', 'Orbital Strike', dmg(20, 'allFoes')),
     ],
     phases(
       [100, { kind: 'cycle', order: ['line', 'slam', 'charge', 'orbital'] }],
@@ -225,19 +228,19 @@ const RAW_ENEMY_UNITS: UnitDef[] = [
   foe(
     'raptor',
     'Rift Raptor',
-    11,
+    19,
     [
-      move('peck', 'Peck', dmg(5)),
-      move('screech', 'Screech', dmg(3), status('faltering', 1, 'target')),
+      move('peck', 'Peck', dmg(8)),
+      move('screech', 'Screech', dmg(5), status('faltering', 1, 'target')),
     ],
     cycle('peck', 'peck', 'screech'),
   ),
   foe(
     'acid-spitter',
     'Acid Spitter',
-    36,
+    62,
     [
-      move('spit', 'Spit', dmg(6), status('faltering', 1, 'target')),
+      move('spit', 'Spit', dmg(9), status('faltering', 1, 'target')),
       move('hide', 'Harden', barrier(8)),
     ],
     cycle('spit', 'spit', 'hide'),
@@ -245,11 +248,11 @@ const RAW_ENEMY_UNITS: UnitDef[] = [
   foe(
     'feral-riftling',
     'Feral Riftling',
-    46,
+    79,
     [
-      move('claw', 'Claw', dmg(8)),
+      move('claw', 'Claw', dmg(12)),
       move('rage', 'Rage', status('might', 2)),
-      move('pounce', 'Pounce', dmg(12)),
+      move('pounce', 'Pounce', dmg(19)),
     ],
     weighted(['claw', 3], ['rage', 1], ['pounce', 2]),
     { opening: 'rage' },
@@ -257,37 +260,37 @@ const RAW_ENEMY_UNITS: UnitDef[] = [
   foe(
     'packmother-ruhn',
     'Packmother Ruhn',
-    66,
+    114,
     [
       move('howl', 'Call the Pack', summon('raptor')),
-      move('maul', 'Maul', dmg(10)),
-      move('rend', 'Rend', dmg(6, 'target', 2)),
+      move('maul', 'Maul', dmg(15)),
+      move('rend', 'Rend', dmg(9, 'target', 2)),
     ],
     cycle('howl', 'maul', 'howl', 'rend'),
   ),
   foe(
     'bloated-one',
     'The Bloated One',
-    82,
+    141,
     [
-      move('devour', 'Devour', dmg(10), heal(8)),
+      move('devour', 'Devour', dmg(15), heal(8)),
       move('belch', 'Belch', wound('foe'), wound('foe'), barrier(6)),
-      move('slam', 'Slam', dmg(16)),
+      move('slam', 'Slam', dmg(23)),
     ],
     cycle('belch', 'devour', 'slam'),
   ),
-  foe('maw-spawn', 'Maw Spawn', 22, [move('bite', 'Bite', dmg(8))], cycle('bite')),
+  foe('maw-spawn', 'Maw Spawn', 33, [move('bite', 'Bite', dmg(10))], cycle('bite')),
   foe(
     'gorrmaw',
     'Gorrmaw, the Hunger Below',
-    160,
+    240,
     [
       move('gorge', 'Gorge', heal(8), status('might', 1)),
-      move('bite', 'Bite', dmg(12)),
+      move('bite', 'Bite', dmg(14)),
       move('spawn', 'Birth Maw Spawn', summon('maw-spawn')),
       move('frenzy', 'Feeding Frenzy', status('might', 3)),
-      move('bite2', 'Ravenous Bite', dmg(14)),
-      move('rend', 'Rend', dmg(6, 'target', 3)),
+      move('bite2', 'Ravenous Bite', dmg(17)),
+      move('rend', 'Rend', dmg(7, 'target', 3)),
     ],
     phases(
       [100, { kind: 'cycle', order: ['gorge', 'bite', 'spawn', 'bite'] }],
@@ -299,72 +302,72 @@ const RAW_ENEMY_UNITS: UnitDef[] = [
   foe(
     'hooded-acolyte',
     'Hooded Acolyte',
-    32,
+    55,
     [
-      move('curse', 'Curse', status('exposed', 2, 'target'), dmg(4)),
+      move('curse', 'Curse', status('exposed', 2, 'target'), dmg(6)),
       move('chant', 'Chant', barrier(7)),
-      move('stab', 'Stab', dmg(8)),
+      move('stab', 'Stab', dmg(12)),
     ],
     cycle('curse', 'stab', 'chant'),
   ),
   foe(
     'whisperer',
     'The Whisperer',
-    34,
+    59,
     [
-      move('whisper', 'Whisper', dmg(5), wound('foe')),
+      move('whisper', 'Whisper', dmg(8), wound('foe')),
       move('rot', 'Mindrot', status('seared', 3, 'target')),
-      move('stab', 'Shadowstab', dmg(9)),
+      move('stab', 'Shadowstab', dmg(14)),
     ],
     cycle('whisper', 'rot', 'stab'),
   ),
   foe(
     'lost-courtier',
     'Lost Courtier',
-    40,
+    69,
     [
-      move('waltz', 'Waltz', dmg(8)),
+      move('waltz', 'Waltz', dmg(12)),
       move('veil', 'Veil', barrier(10), status('faltering', 1, 'target')),
-      move('fan', 'Fan of Knives', dmg(4, 'target', 2)),
+      move('fan', 'Fan of Knives', dmg(6, 'target', 2)),
     ],
     weighted(['waltz', 3], ['veil', 2], ['fan', 2]),
   ),
   foe(
     'lamplighter',
     'The Lamplighter',
-    68,
+    117,
     [
       move('lantern', 'Lantern', status('seared', 4, 'target'), status('exposed', 2, 'target')),
-      move('ambush', 'Ambush', dmg(14)),
+      move('ambush', 'Ambush', dmg(20)),
       move('shroud', 'Shroud', barrier(10)),
-      move('flicker', 'Flicker', dmg(6, 'target', 2)),
+      move('flicker', 'Flicker', dmg(9, 'target', 2)),
     ],
     cycle('lantern', 'ambush', 'shroud', 'flicker'),
   ),
   foe(
     'choir-of-silence',
     'Choir of Silence',
-    62,
+    107,
     [
       move('hush', 'Hush', status('faltering', 2, 'target'), wound('foe')),
-      move('siphon', 'Siphon', dmg(8), heal(6)),
-      move('dirge', 'Dirge', dmg(7, 'allFoes')),
-      move('toll', 'Toll', dmg(12)),
+      move('siphon', 'Siphon', dmg(12), heal(6)),
+      move('dirge', 'Dirge', dmg(10, 'allFoes')),
+      move('toll', 'Toll', dmg(18)),
     ],
     cycle('hush', 'siphon', 'dirge', 'toll'),
   ),
   foe(
     'nyxara',
     'Nyxara, the Veiled Matriarch',
-    185,
+    278,
     [
       move('web', 'Weave the Web', barrier(8), status('shielded', 1)),
       move('whisper', 'She Whispers', status('exposed', 2, 'target'), wound('foe')),
-      move('strike', 'Strike from the Dark', dmg(17)),
+      move('strike', 'Strike from the Dark', dmg(20)),
       move('ensnare', 'Ensnare', status('faltering', 2, 'target'), status('seared', 3, 'target')),
       move('unmask', 'Unmasking', status('exposed', 2, 'target'), wound('foe')),
-      move('ambush', 'Ambush', dmg(18)),
-      move('lash', 'Shadow Lash', dmg(6, 'target', 3)),
+      move('ambush', 'Ambush', dmg(22)),
+      move('lash', 'Shadow Lash', dmg(7, 'target', 3)),
     ],
     phases(
       [100, { kind: 'cycle', order: ['web', 'whisper', 'strike', 'ensnare'] }],
@@ -373,21 +376,21 @@ const RAW_ENEMY_UNITS: UnitDef[] = [
   ),
 
   // ---- the finale ----
-  foe('rift-shard', 'Rift Shard', 14, [move('slice', 'Slice', dmg(6))], cycle('slice')),
+  foe('rift-shard', 'Rift Shard', 21, [move('slice', 'Slice', dmg(7))], cycle('slice')),
   foe(
     'vorthax',
     'Vorthax, Heart of the Rift',
-    230,
+    270,
     [
-      move('shards', 'Crystal Shards', dmg(5, 'target', 3)),
+      move('shards', 'Crystal Shards', dmg(6, 'target', 3)),
       move('refract', 'Refract', barrier(12), status('might', 1)),
       move('gather', 'Gathering Collapse', barrier(8)),
-      move('collapse', 'Collapse', dmg(24)),
-      move('shatter', 'The Shattering', dmg(10, 'allFoes'), summon('rift-shard')),
-      move('shardstorm', 'Shard Storm', dmg(4, 'target', 4)),
+      move('collapse', 'Collapse', dmg(26)),
+      move('shatter', 'The Shattering', dmg(12, 'allFoes'), summon('rift-shard')),
+      move('shardstorm', 'Shard Storm', dmg(5, 'target', 4)),
       move('core', 'Prismatic Core', status('shielded', 2), barrier(15)),
-      move('beam', 'Prismatic Beam', dmg(14, 'target', 2)),
-      move('rupture', 'Rupture', lose(6, 'target'), dmg(10)),
+      move('beam', 'Prismatic Beam', dmg(17, 'target', 2)),
+      move('rupture', 'Rupture', lose(6, 'target'), dmg(12)),
     ],
     phases(
       [100, { kind: 'cycle', order: ['shards', 'refract', 'gather', 'collapse'] }],
@@ -396,61 +399,3 @@ const RAW_ENEMY_UNITS: UnitDef[] = [
     ),
   ),
 ];
-
-/**
- * Two knobs for enemy strength. Regulars and Elites are scaled from the raw numbers above; Wardens and the finale are
- * hand-tuned (scale 1). Change a number, re-run `pnpm sim2`, and record it in docs/BALANCE.md.
- */
-export const ENEMY_SCALE = {
-  regular: { dmg: 1.6, hp: 1.15 },
-  elite: { dmg: 1.5, hp: 1.15 },
-  boss: { dmg: 1, hp: 1 },
-} as const;
-// bosses and the adds they summon are hand-tuned
-const BOSSES = new Set([
-  'seraphine',
-  'kron',
-  'gorrmaw',
-  'nyxara',
-  'vorthax',
-  'rift-shard',
-  'maw-spawn',
-  'gilded-halberdier',
-]);
-const ELITES = new Set([
-  'templar-aldric',
-  'inquisitor-maelis',
-  'hive-7',
-  'ghostwire',
-  'packmother-ruhn',
-  'bloated-one',
-  'lamplighter',
-  'choir-of-silence',
-]);
-
-function scaleUnit(u: UnitDef, k: { dmg: number; hp: number }): UnitDef {
-  if (u.brain.kind !== 'enemy' || (k.dmg === 1 && k.hp === 1)) return u;
-  const moves = Object.fromEntries(
-    Object.entries(u.brain.moves).map(([id, m]) => [
-      id,
-      {
-        ...m,
-        effects: m.effects.map((o) =>
-          o.op === 'damage' ? { ...o, amount: Math.round(o.amount * k.dmg) } : o,
-        ),
-      },
-    ]),
-  );
-  return { ...u, maxHp: Math.round(u.maxHp * k.hp), brain: { ...u.brain, moves } };
-}
-
-export const ENEMY_UNITS: UnitDef[] = RAW_ENEMY_UNITS.map((u) =>
-  scaleUnit(
-    u,
-    BOSSES.has(u.id)
-      ? ENEMY_SCALE.boss
-      : ELITES.has(u.id)
-        ? ENEMY_SCALE.elite
-        : ENEMY_SCALE.regular,
-  ),
-);

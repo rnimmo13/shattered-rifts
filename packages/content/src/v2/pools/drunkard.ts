@@ -151,7 +151,7 @@ export const DRUNKARD: CardDef[] = [
     on('turnStart', [addTo('buckshot-shell')]),
   ]),
   p('rare', 'boomstick', 'Boomstick', 'attack', 3, 'none', [
-    scaled(dmg(12, 'allFoes'), per('exhausted', 3)),
+    scaled(dmg(12, 'allFoes'), per('exhausted', 2)),
   ]),
   p(
     'rare',

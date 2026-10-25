@@ -120,11 +120,13 @@ export const loseHpScaled = (scale: Scale, to: Sel = 'target'): Op => ({
   to,
   scale,
 });
-export const doubleSt = (st: StatusId, to: Sel = 'target', mult = 2): Op => ({
+/** Multiply a status; `max` caps the stacks it adds (every doubler in the pools has one: see balance.test.ts). */
+export const doubleSt = (st: StatusId, to: Sel = 'target', mult = 2, max?: number): Op => ({
   op: 'scaleStatus',
   status: st,
   mult,
   to,
+  ...(max !== undefined ? { max } : {}),
 });
 export const addTo = (
   cardId: string,
@@ -209,8 +211,11 @@ export function pool(hero: string, realm: string) {
 
 /**
  * The "+" version of a card, derived by one rule so upgrades stay consistent: damage +3 (+1 per hit when it hits several
- * times), Barrier +3, Heal +3, statuses +1 (+2 from 5 stacks up), foresee +1 (+2 from 4 up), draw +1, and so on. A card that has
- * nothing to improve gets cheaper, or loses Exhaust.
+ * times), Barrier +3, Heal +3, statuses +1 (+2 from 5 stacks up), foresee +1 (+2 from 4 up), draw +1, and so on. "Damage equal to
+ * X" gains a flat +3 like any other damage (it used to get cheaper instead, which made 0-cost scaling cards). Mana never grows: a
+ * Mana card improves its other numbers. A card that has nothing to improve gets cheaper, or loses Exhaust; a card that makes
+ * resources (Mana, cards) or scales with something is never made free and never loses Exhaust (a free card that replaces itself
+ * would loop for ever): it Holds instead.
  */
 export function plus(c: CardDef): CardDef {
   // every X card upgrades the same way, as in Slay the Spire: X counts as one more
@@ -229,15 +234,12 @@ export function plus(c: CardDef): CardDef {
   const upOp = (o: Op): Op => {
     switch (o.op) {
       case 'damage':
-        // "damage equal to X" has no flat part to improve
-        if (o.amount === 0 && o.scale) return o;
         changed = true;
         return {
           ...o,
           amount: o.amount + ((o.hits && o.hits > 1) || o.scale?.into === 'hits' ? 1 : 3),
         };
       case 'barrier':
-        if (o.amount === 0 && o.scale) return o;
         changed = true;
         return { ...o, amount: o.amount + 3 };
       case 'scry':
@@ -279,7 +281,6 @@ export function plus(c: CardDef): CardDef {
         }
         return o;
       case 'heal':
-        if (o.amount === 0 && o.scale) return o;
         changed = true;
         return { ...o, amount: o.amount + 3 };
       case 'cleanse':
@@ -306,15 +307,28 @@ export function plus(c: CardDef): CardDef {
         changed = true;
         return { ...o, unit: `${o.unit}+` };
       case 'draw':
-        if (o.amount === 0 && o.scale) return o;
         changed = true;
         return { ...o, amount: o.amount + 1 };
       case 'mana':
-        if (o.amount === 0 && o.scale) return o;
+        // Mana is the one number an upgrade never raises (a free +1 Mana card upgraded into +2 is a different card)
+        return o;
+      case 'scaleStatus':
+        // a capped doubler can add half as much again
+        if (o.max === undefined) return o;
+        changed = true;
+        return { ...o, max: o.max + Math.ceil(o.max / 2) };
+      case 'fetch':
         changed = true;
         return { ...o, amount: o.amount + 1 };
       case 'loseHp':
-        return o.amount > 1 && o.to === 'self' ? { ...o, amount: o.amount - 1 } : o;
+        // paying less HP is the upgrade of a card that costs HP; HP taken from an enemy grows like damage
+        if (o.to === 'self') {
+          if (o.amount <= 1) return o;
+          changed = true;
+          return { ...o, amount: o.amount - 1 };
+        }
+        changed = true;
+        return { ...o, amount: o.amount + 3 };
       default:
         return o;
     }
@@ -330,8 +344,13 @@ export function plus(c: CardDef): CardDef {
   };
   delete up.upgrade;
   if (!changed) {
-    if (c.cost > 0) up.cost = c.cost - 1;
-    else if (c.exhaust) delete up.exhaust;
+    // cards that make resources, or scale with something, never become free: a free one could be played again and again
+    const RESOURCE: Op['op'][] = ['mana', 'draw', 'fetch', 'discover', 'addCard'];
+    const resource = c.effects.some((o) => RESOURCE.includes(o.op));
+    const scales = c.effects.some((o) => 'scale' in o && o.scale !== undefined);
+    if (c.cost > 1 || (c.cost === 1 && !resource && !scales)) up.cost = c.cost - 1;
+    else if (c.cost === 0 && c.exhaust && !resource) delete up.exhaust;
+    else up.retain = true;
   }
   return up;
 }

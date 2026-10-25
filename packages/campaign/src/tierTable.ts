@@ -1,44 +1,44 @@
 // The Rift Tier table: THE place to tune how hard each tier is. Edit the numbers; nothing else needs to change.
 //
-// Each row is one Rift Tier (row 1 = Tier I). `hp` and `dmg` are how many percent MORE than the enemy's base (designed) HP and
-// damage that tier starts at, so `hp: 27` means 127% of base HP. Stage 1 of a tier is exactly the row's value; stages 2 and 3
-// climb evenly toward the NEXT tier's row without reaching it (stage 2 is a third of the way, stage 3 two thirds), so Tier N
-// stage 3 is always a little easier than Tier N+1 stage 1. Tier 20 climbs by the same gap as 19 to 20.
-// There is no separate Might any more: the damage column carries all of it.
+// Each row is one Rift Tier (row 1 = Tier I) and gives enemy HP and attack damage for each of the run's three stages, as a percent
+// of the numbers written on the enemies (packages/content/src/v2/units.ts, which are Tier I stage 1). So `hp: [100, 125, 150]`
+// means stage 1 enemies have their written HP, stage 2 a quarter more and the Rift (stage 3) half as much again.
 //
-// The starting values were worked out from the old formulas (HP 1 + 0.2t + 0.01t^2, damage +5% a tier plus +1 Might a tier),
-// so stage 1 of each tier matches 0.51.0 until you change them. Within a tier the stages rise less steeply than before (Tier I stage 3 was 173% HP, now 145%).
-
-import { FINAL_STAGE } from './mapgen';
+// Why it looks like this (docs/BALANCE.md, "Balance audit" 2026-10-25): a deck keeps its cards, upgrades and Boons from tier to
+// tier, so it grows fast over the first few tiers and then levels off at the best deck it can be. The stages climb inside a tier
+// because the deck grows a lot inside one loop (about 18 picks); the tiers climb gently because the deck grows little after a few
+// loops, so the table rises quickly to Tier 10 (where a deck has about stopped growing) and slowly after it. Tier 20 asks for a
+// godly build: about three times the HP and twice the damage of Tier I, not thirty times.
+// Stage 1 of the next tier is a step down from stage 3 of this one, like the first act of a new Ascension after the last act.
 
 export interface TierRow {
-  /** percent more than base enemy HP at stage 1 of this tier */
-  hp: number;
-  /** percent more than base enemy damage at stage 1 of this tier */
-  dmg: number;
+  /** enemy HP at stages 1, 2 and 3, percent of the written numbers */
+  hp: readonly [number, number, number];
+  /** enemy attack damage at stages 1, 2 and 3, percent of the written numbers */
+  dmg: readonly [number, number, number];
 }
 
 export const TIER_TABLE: readonly TierRow[] = [
-  { hp: 50, dmg: 50 }, // Tier 1
-  { hp: 100, dmg: 100 }, // Tier 2
-  { hp: 200, dmg: 150 }, // Tier 3
-  { hp: 300, dmg: 200 }, // Tier 4
-  { hp: 450, dmg: 250 }, // Tier 5
-  { hp: 500, dmg: 300 }, // Tier 6
-  { hp: 650, dmg: 350 }, // Tier 7
-  { hp: 700, dmg: 400 }, // Tier 8
-  { hp: 850, dmg: 450 }, // Tier 9
-  { hp: 900, dmg: 500 }, // Tier 10
-  { hp: 1000, dmg: 550 }, // Tier 11
-  { hp: 1200, dmg: 600 }, // Tier 12
-  { hp: 1400, dmg: 650 }, // Tier 13
-  { hp: 1600, dmg: 700 }, // Tier 14
-  { hp: 1800, dmg: 750 }, // Tier 15
-  { hp: 2000, dmg: 800 }, // Tier 16
-  { hp: 2200, dmg: 850 }, // Tier 17
-  { hp: 2400, dmg: 900 }, // Tier 18
-  { hp: 2600, dmg: 950 }, // Tier 19
-  { hp: 3000, dmg: 1000 }, // Tier 20
+  { hp: [100, 125, 150], dmg: [100, 112, 125] }, // Tier 1
+  { hp: [122, 153, 183], dmg: [111, 124, 139] }, // Tier 2
+  { hp: [141, 176, 212], dmg: [120, 134, 150] }, // Tier 3
+  { hp: [159, 199, 239], dmg: [130, 146, 163] }, // Tier 4
+  { hp: [178, 223, 267], dmg: [139, 156, 174] }, // Tier 5
+  { hp: [192, 240, 288], dmg: [146, 164, 183] }, // Tier 6
+  { hp: [206, 258, 309], dmg: [153, 171, 191] }, // Tier 7
+  { hp: [220, 275, 330], dmg: [160, 179, 200] }, // Tier 8
+  { hp: [234, 293, 351], dmg: [167, 187, 209] }, // Tier 9
+  { hp: [248, 310, 372], dmg: [174, 195, 218] }, // Tier 10
+  { hp: [254, 318, 381], dmg: [177, 198, 221] }, // Tier 11
+  { hp: [261, 326, 392], dmg: [181, 203, 226] }, // Tier 12
+  { hp: [267, 334, 401], dmg: [184, 206, 230] }, // Tier 13
+  { hp: [274, 343, 411], dmg: [187, 209, 234] }, // Tier 14
+  { hp: [280, 350, 420], dmg: [191, 214, 239] }, // Tier 15
+  { hp: [286, 358, 429], dmg: [194, 217, 243] }, // Tier 16
+  { hp: [293, 366, 440], dmg: [197, 221, 246] }, // Tier 17
+  { hp: [299, 374, 449], dmg: [200, 224, 250] }, // Tier 18
+  { hp: [306, 383, 459], dmg: [204, 228, 255] }, // Tier 19
+  { hp: [312, 390, 468], dmg: [207, 232, 259] }, // Tier 20
 ];
 
 const rowOf = (tier: number): TierRow => {
@@ -46,18 +46,9 @@ const rowOf = (tier: number): TierRow => {
   return TIER_TABLE[i] as TierRow;
 };
 
-/** Where this stage of this tier sits: percent of base enemy HP and damage (100 = the designed enemy). */
+/** Where this stage of this tier sits: percent of the written enemy HP and damage (100 = Tier I stage 1). */
 export function enemyScale(tier: number, stage: number): { hp: number; dmg: number } {
-  const here = rowOf(tier);
-  const last = tier >= TIER_TABLE.length;
-  const next = last ? rowOf(tier) : rowOf(tier + 1);
-  const prev = rowOf(tier - 1);
-  // the top tier has no next row: it keeps climbing by the gap that led into it
-  const hpGap = last ? here.hp - prev.hp : next.hp - here.hp;
-  const dmgGap = last ? here.dmg - prev.dmg : next.dmg - here.dmg;
-  const through = (Math.max(1, Math.min(FINAL_STAGE, stage)) - 1) / FINAL_STAGE;
-  return {
-    hp: Math.round(100 + here.hp + hpGap * through),
-    dmg: Math.round(100 + here.dmg + dmgGap * through),
-  };
+  const row = rowOf(tier);
+  const s = Math.max(1, Math.min(3, Math.round(stage))) - 1;
+  return { hp: row.hp[s] as number, dmg: row.dmg[s] as number };
 }

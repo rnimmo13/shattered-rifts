@@ -58,18 +58,18 @@ describe('legendary effects', () => {
     for (const u of s.sides.a.units) expect(u.statuses.might).toBeGreaterThanOrEqual(1);
   });
 
-  it('Dawn Incarnate raises 10 Barrier, then deals twice your Barrier to everything', () => {
+  it('Dawn Incarnate raises 10 Barrier, then deals your Barrier to everything', () => {
     const s = play('knight', 'dawn-incarnate', (st) => {
       heroUnit(st).barrier = 10;
     });
-    for (const u of s.sides.b.units) expect(u.hp).toBe(200 - 40);
+    for (const u of s.sides.b.units) expect(u.hp).toBe(200 - 20);
   });
 
-  it('Death Warrant takes three HP per Seared', () => {
+  it('Death Warrant takes two HP per Seared', () => {
     const s = play('assassin', 'death-warrant', (st) => {
       st.sides.b.units[0]!.statuses.seared = 5;
     });
-    expect(s.sides.b.units[0]!.hp).toBe(200 - 15);
+    expect(s.sides.b.units[0]!.hp).toBe(200 - 10);
   });
 
   it("Volcano's Birth gives Arcana, cards and Barrier", () => {

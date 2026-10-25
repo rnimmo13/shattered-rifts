@@ -178,7 +178,7 @@ export const TRAPPER: CardDef[] = [
   v('common', 'mark-prey', 'Mark Prey', 'skill', 0, 'foe', [status('exposed', 2, 'target')]),
   v('common', 'unmask', 'Unmask', 'skill', 1, 'none', [status('exposed', 2, 'allFoes')]),
   v('common', 'exploit-weakness', 'Exploit Weakness', 'attack', 1, 'foe', [
-    scaled(dmg(5), per('exposed', 3, 'target')),
+    scaled(dmg(5), per('exposed', 2, 'target')),
   ]),
   v('common', 'tear-the-veil', 'Tear the Veil', 'skill', 1, 'none', [
     status('exposed', 1, 'allFoes'),
@@ -199,7 +199,7 @@ export const TRAPPER: CardDef[] = [
     status('faltering', 1, 'target'),
   ]),
   v('rare', 'coup-de-grace', 'Coup de Grace', 'attack', 3, 'foe', [
-    scaled(dmg(16), per('exposed', 6, 'target')),
+    scaled(dmg(16), per('exposed', 3, 'target')),
   ]),
 
   v('common', 'hamstring', 'Hamstring', 'attack', 1, 'foe', [
@@ -312,13 +312,16 @@ export const TRAPPER: CardDef[] = [
   }),
   // (more Bluff)
   v('common', 'step-aside', 'Step Aside', 'skill', 1, 'none', [barrier(5), drawNext(1)]),
-  v('common', 'quick-study', 'Quick Study', 'skill', 0, 'none', [draw(1), discard(1)]),
+  v('common', 'quick-study', 'Quick Study', 'skill', 0, 'none', [draw(1), discard(1)], {
+    up: { effects: [draw(2), discard(2)] },
+  }),
   v('uncommon', 'roll-with-it', 'Roll with It', 'skill', 1, 'none', [draw(3), discard(1)]),
   v('uncommon', 'sleight-of-hand', 'Sleight of Hand', 'skill', 1, 'none', [draw(2)], {
     onDiscard: [draw(2)],
   }),
   v('uncommon', 'calculated-move', 'Calculated Move', 'skill', 0, 'none', [mana(1)], {
-    onDiscard: [mana(2)],
+    exhaust: true,
+    onDiscard: [mana(1)],
   }),
   v(
     'uncommon',
@@ -427,7 +430,7 @@ export const TRAPPER: CardDef[] = [
   v('uncommon', 'dread-gaze', 'Dread Gaze', 'skill', 0, 'foe', [status('exposed', 4, 'target')], {
     exhaust: true,
   }),
-  v('uncommon', 'compound-fear', 'Compound Fear', 'skill', 1, 'foe', [doubleSt('exposed')], {
+  v('uncommon', 'compound-fear', 'Compound Fear', 'skill', 1, 'foe', [doubleSt('exposed', 'target', 2, 3)], {
     exhaust: true,
   }),
   v('uncommon', 'opportunist', 'Opportunist', 'power', 1, 'none', [
@@ -439,7 +442,7 @@ export const TRAPPER: CardDef[] = [
     status('exposed', 1, 'target'),
   ]),
   v('rare', 'culling', 'Culling', 'attack', 2, 'none', [
-    scaled(dmg(6, 'allFoes'), per('exposed', 3, 'each')),
+    scaled(dmg(6, 'allFoes'), per('exposed', 2, 'each')),
   ]),
   v('common', 'cripple', 'Cripple', 'skill', 1, 'foe', [
     status('faltering', 2, 'target'),
@@ -463,7 +466,9 @@ export const TRAPPER: CardDef[] = [
       retain: true,
     },
   ),
-  v('common', 'discarded-hand', 'Discarded Hand', 'skill', 0, 'none', [discard(2), draw(2)]),
+  v('common', 'discarded-hand', 'Discarded Hand', 'skill', 0, 'none', [discard(2), draw(2)], {
+    up: { effects: [discard(3), draw(3)] },
+  }),
   v('uncommon', 'sandbag', 'Sandbag', 'attack', 1, 'foe', [scaled(dmg(5), per('mana', 3))]),
   v(
     'rare',

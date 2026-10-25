@@ -42,7 +42,7 @@ export const STATUS_INFO: Record<
     name: 'Serene',
     glyph: '☾',
     tone: 'good',
-    text: 'A stance. Leaving it gives you 2 Mana.',
+    text: 'A stance. Leaving it gives you 2 Mana (once a turn).',
   },
   wrath: {
     name: 'Fury',
@@ -60,7 +60,7 @@ export const STATUS_INFO: Record<
     name: 'Fervor',
     glyph: '❂',
     tone: 'good',
-    text: 'At 5 you spend it to enter Radiant.',
+    text: 'At 10 you spend it to enter Radiant.',
   },
   bracing: {
     name: 'Bracing',

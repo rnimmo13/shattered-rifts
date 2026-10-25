@@ -387,12 +387,13 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
     }
     case 'scaleStatus': {
       const times = o.mult === 2 ? 'Double' : o.mult === 3 ? 'Triple' : `Multiply by ${o.mult}`;
+      const most = o.max !== undefined ? ` (at most +${o.max})` : '';
       if (o.status === 'doom') {
         const noun =
           o.to === 'target' ? 'the target' : who[o.to].replace(/^ to /, '') || 'the target';
-        return `${times} the Fate cursing ${noun}.`;
+        return `${times} the Fate cursing ${noun}${most}.`;
       }
-      return `${times} the ${sname(o.status)}${who[o.to] || ' on the target'}.`;
+      return `${times} the ${sname(o.status)}${who[o.to] || ' on the target'}${most}.`;
     }
     case 'draw': {
       const a = amountText(o.amount, o.scale);
@@ -476,7 +477,7 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
     case 'sacrifice':
       return 'Sacrifice the chosen ally.';
     case 'reclaim':
-      return `Return ${o.amount === 1 ? 'a random Consumed card' : `${o.amount} random Consumed cards`} to your hand.`;
+      return `Return ${o.amount === 1 ? 'a random Consumed card' : `${o.amount} random Consumed cards`} to your hand (never one that returns cards).`;
     case 'revive':
       return 'Your most recently fallen ally returns with half its HP.';
     case 'fetch': {
@@ -499,7 +500,7 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
     case 'discover': {
       const kind = o.kind ? `${KIND_PLURAL[o.kind]?.[0] ?? o.kind} ` : '';
       const what = (o.count ?? 1) > 1 ? `${o.count} random ${kind}cards` : `a random ${kind}card`;
-      return `Add ${what} from your pool to your hand${o.free ? ' (it costs 0 this fight)' : ''}.`;
+      return `Add ${what} from your pool to your hand${o.free ? ' (it costs 0 the next time you play it)' : ''}.`;
     }
     case 'upgrade':
       return o.scope === 'hand'
@@ -507,8 +508,8 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
         : 'Upgrade a random card in your hand for this fight.';
     case 'cheapen':
       return o.scope === 'hand'
-        ? `Cards in your hand cost ${o.amount} less this fight.`
-        : `A random card in your hand costs ${o.amount} less this fight.`;
+        ? `Cards in your hand cost ${o.amount} less the next time you play them.`
+        : `A random card in your hand costs ${o.amount} less the next time you play it.`;
     case 'copySelf':
       return `Add a copy of this card to your ${o.to === 'hand' ? 'hand' : o.to === 'draw' ? 'draw pile' : 'discard pile'}.`;
     case 'forge':

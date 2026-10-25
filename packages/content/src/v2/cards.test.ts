@@ -175,11 +175,11 @@ describe('real card data, end to end', () => {
     };
     s0.sides.b.units[0]!.hp = 99;
     s0.sides.b.units[0]!.maxHp = 99;
-    // Quill's Weak Spot trait may have Exposed the foe; this test is about Edge alone
+    // (a trait could have touched the foe at the start of the turn; this test is about Edge alone)
     delete s0.sides.b.units[0]!.statuses.exposed;
     const base = dealt(s0, 'N');
     const buffed = applyAction(db, s0, { type: 'play', card: 'K' }).state;
-    expect(dealt(buffed, 'N')).toBe(base + 3);
+    expect(dealt(buffed, 'N')).toBe(base + 2);
     expect(dealt(buffed, 'S')).toBe(dealt(s0, 'S'));
   });
 

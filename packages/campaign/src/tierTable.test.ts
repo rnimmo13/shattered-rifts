@@ -6,41 +6,48 @@ describe('the tier table', () => {
     expect(TIER_TABLE).toHaveLength(20);
   });
 
-  it('stage 1 of a tier is exactly the row, as a percent of base', () => {
-    for (let t = 1; t <= 20; t++) {
-      const row = TIER_TABLE[t - 1]!;
-      expect(enemyScale(t, 1)).toEqual({ hp: 100 + row.hp, dmg: 100 + row.dmg });
-    }
+  it('Tier I stage 1 is the enemies as written', () => {
+    expect(enemyScale(1, 1)).toEqual({ hp: 100, dmg: 100 });
   });
 
-  it('stages climb evenly toward the next tier without reaching it', () => {
-    for (let t = 1; t < 20; t++) {
-      const [s1, s2, s3] = [1, 2, 3].map((s) => enemyScale(t, s)) as [
+  it('reads each stage straight from the row', () => {
+    for (let t = 1; t <= 20; t++)
+      for (let st = 1; st <= 3; st++) {
+        const row = TIER_TABLE[t - 1]!;
+        expect(enemyScale(t, st)).toEqual({ hp: row.hp[st - 1], dmg: row.dmg[st - 1] });
+      }
+  });
+
+  it('climbs through the stages of a tier, and from tier to tier at every stage', () => {
+    for (let t = 1; t <= 20; t++) {
+      const [s1, s2, s3] = [1, 2, 3].map((st) => enemyScale(t, st)) as [
         { hp: number; dmg: number },
         { hp: number; dmg: number },
         { hp: number; dmg: number },
       ];
-      const next = enemyScale(t + 1, 1);
       expect(s2.hp).toBeGreaterThan(s1.hp);
       expect(s3.hp).toBeGreaterThan(s2.hp);
-      expect(s3.hp).toBeLessThan(next.hp);
-      expect(s3.dmg).toBeLessThan(next.dmg);
-      // a third of the gap, two thirds of the gap
-      expect(s2.hp).toBe(Math.round(s1.hp + (next.hp - s1.hp) / 3));
-      expect(s3.hp).toBe(Math.round(s1.hp + ((next.hp - s1.hp) * 2) / 3));
+      expect(s2.dmg).toBeGreaterThan(s1.dmg);
+      expect(s3.dmg).toBeGreaterThan(s2.dmg);
+      if (t < 20)
+        for (let st = 1; st <= 3; st++) {
+          expect(enemyScale(t + 1, st).hp).toBeGreaterThan(enemyScale(t, st).hp);
+          expect(enemyScale(t + 1, st).dmg).toBeGreaterThan(enemyScale(t, st).dmg);
+        }
     }
   });
 
-  it('the top tier keeps climbing by the gap that led into it', () => {
-    const gapHp = TIER_TABLE[19]!.hp - TIER_TABLE[18]!.hp;
-    const gapDmg = TIER_TABLE[19]!.dmg - TIER_TABLE[18]!.dmg;
-    expect(enemyScale(20, 3).hp).toBe(Math.round(100 + TIER_TABLE[19]!.hp + (gapHp * 2) / 3));
-    expect(enemyScale(20, 3).dmg).toBe(Math.round(100 + TIER_TABLE[19]!.dmg + (gapDmg * 2) / 3));
+  it('stays in the range a deck can grow into (no thirty-fold HP sponges)', () => {
+    for (const row of TIER_TABLE) {
+      for (const v of row.hp) expect(v).toBeLessThanOrEqual(500);
+      for (const v of row.dmg) expect(v).toBeLessThanOrEqual(300);
+    }
   });
 
   it('clamps tiers and stages that are out of range', () => {
     expect(enemyScale(0, 1)).toEqual(enemyScale(1, 1));
     expect(enemyScale(1, 9)).toEqual(enemyScale(1, 3));
     expect(enemyScale(1, 0)).toEqual(enemyScale(1, 1));
+    expect(enemyScale(25, 2)).toEqual(enemyScale(20, 2));
   });
 });

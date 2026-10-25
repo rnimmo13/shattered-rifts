@@ -49,7 +49,7 @@ export const KNIGHT: CardDef[] = [
     'skill',
     2,
     'none',
-    [scaled(barrier(0), per('barrier', 2))],
+    [scaled(barrier(0), per('barrier', 1))],
     {
       exhaust: true,
     },
@@ -78,7 +78,7 @@ export const KNIGHT: CardDef[] = [
     exhaust: true,
   }),
   m('rare', 'colossus-blow', 'Colossus Blow', 'attack', 2, 'foe', [
-    scaled(dmg(0), per('barrier', 1.5)),
+    scaled(dmg(6), per('barrier', 1)),
   ]),
   m('rare', 'rampart-of-ages', 'Rampart of Ages', 'power', 2, 'none', [status('bracing', 2)]),
 
@@ -91,7 +91,7 @@ export const KNIGHT: CardDef[] = [
     trigger: { on: 'hpLost', min: 4 },
   }),
   m('uncommon', 'retribution', 'Retribution', 'attack', 1, 'foe', [
-    scaled(dmg(0), per('thorns', 3)),
+    scaled(dmg(0), per('thorns', 2)),
   ]),
   m('uncommon', 'barbed-oath', 'Barbed Oath', 'power', 1, 'none', [
     on('turnStart', [status('thorns', 1)]),
@@ -259,7 +259,7 @@ export const KNIGHT: CardDef[] = [
     'attack',
     3,
     'none',
-    [barrier(10), scaled(dmg(0, 'allFoes'), per('barrier', 2))],
+    [barrier(10), scaled(dmg(0, 'allFoes'), per('barrier', 1))],
     { exhaust: true },
   ),
   m('uncommon', 'steady-resolve', 'Steady Resolve', 'skill', 1, 'none', [barrier(5), manaNext(2)]),
@@ -327,7 +327,7 @@ export const KNIGHT: CardDef[] = [
     dmg(7),
     status('faltering', 1, 'target'),
   ]),
-  m('rare', 'briar-bloom', 'Briar Bloom', 'skill', 1, 'none', [doubleSt('thorns', 'self')], {
+  m('rare', 'briar-bloom', 'Briar Bloom', 'skill', 1, 'none', [doubleSt('thorns', 'self', 2, 8)], {
     exhaust: true,
   }),
   m(
@@ -344,6 +344,7 @@ export const KNIGHT: CardDef[] = [
   // --- Devotion (more) ---
   m('common', 'quick-orison', 'Quick Orison', 'skill', 0, 'none', [heal(3), draw(1)], {
     retain: true,
+    exhaust: true,
   }),
   m('uncommon', 'sunforged-edge', 'Sunforged Edge', 'attack', 2, 'foe', [
     scaled(dmg(8), per('missingHp', 0.25)),

@@ -48,7 +48,7 @@ export const NEUTRAL: CardDef[] = [
   n('common', 'steady-guard', 'Steady Guard', 'skill', 1, 'none', [barrier(8)], { retain: true }),
   n('common', 'haft-strike', 'Haft Strike', 'attack', 1, 'foe', [dmg(8), draw(1)]),
   n('common', 'shatter-strike', 'Shatter Strike', 'attack', 2, 'foe', [dmg(14)]),
-  n('common', 'reckless-swing', 'Reckless Swing', 'attack', 0, 'foe', [dmg(9), lose(3)]),
+  n('common', 'reckless-swing', 'Reckless Swing', 'attack', 0, 'foe', [dmg(7), lose(3)]),
   n('common', 'stagger', 'Stagger', 'attack', 1, 'foe', [dmg(4), status('faltering', 2, 'target')]),
   n('common', 'glimpse-ahead', 'Glimpse Ahead', 'skill', 1, 'none', [scry(4)]),
   n('uncommon', 'rift-storm', 'Rift Storm', 'attack', 2, 'none', [dmg(7, 'allFoes')]),
@@ -78,8 +78,8 @@ export const NEUTRAL: CardDef[] = [
   n('common', 'shrug-it-off', 'Shrug It Off', 'skill', 1, 'none', [cleanse(1), barrier(4)]),
   n('uncommon', 'steady-nerves', 'Steady Nerves', 'skill', 1, 'none', [cleanse(2), barrier(6)]),
   n('rare', 'purging-light', 'Purging Light', 'skill', 2, 'none', [dispel(), barrier(8)], { exhaust: true }),
-  n('uncommon', 'rift-surge', 'Rift Surge', 'skill', 0, 'none', [mana(2)], { exhaust: true }),
-  n('uncommon', 'nerve-surge', 'Nerve Surge', 'skill', 0, 'none', [draw(2), mana(1)], {
+  n('uncommon', 'rift-surge', 'Rift Surge', 'skill', 1, 'none', [mana(2)], { exhaust: true }),
+  n('rare', 'nerve-surge', 'Nerve Surge', 'skill', 0, 'none', [draw(2), mana(1)], {
     exhaust: true,
   }),
   n('uncommon', 'cull-the-hand', 'Cull the Hand', 'skill', 1, 'none', [exhaustN(1), draw(2)]),
@@ -97,7 +97,7 @@ export const NEUTRAL: CardDef[] = [
     [dmg(6, 'attacker'), status('faltering', 2, 'attacker'), barrier(4)],
     { trigger: { on: 'foeSummons' } },
   ),
-  n('common', 'heave', 'Heave', 'skill', 0, 'none', [status('might', 3, 'self', true)]),
+  n('common', 'heave', 'Heave', 'skill', 0, 'none', [status('might', 2, 'self', true)]),
   n('common', 'needling-blow', 'Needling Blow', 'attack', 0, 'foe', [dmg(6), copySelf('discard')]),
   n(
     'uncommon',

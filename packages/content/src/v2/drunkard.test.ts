@@ -117,13 +117,13 @@ describe('innate traits', () => {
     for (const u of g.sides.b.units) expect(u.statuses.doom).toBe(4);
   });
 
-  it('Clutch Genes: KP deals 60% more attack damage at or below 60% HP, and not above', () => {
+  it('Clutch Genes: KP deals 50% more attack damage at or below half HP, and not above', () => {
     const hit = (hp: number): number => {
       const s = fight('drunkard', ['hammer-swing']);
       const hero = s.sides.a.units[s.sides.a.units.length - 1]!;
       hero.hp = hp;
       // the trait switches the status on at turn start and whenever HP changes; set it as the engine would
-      if (hp * 100 <= hero.maxHp * 60) hero.statuses.clutch = 60;
+      if (hp * 100 <= hero.maxHp * 50) hero.statuses.clutch = 50;
       const before = s.sides.b.units[0]!.hp;
       const after = playCard(s, 'T0');
       return before - after.sides.b.units[0]!.hp;
@@ -136,14 +136,14 @@ describe('innate traits', () => {
     const s = fight('drunkard', ['liquid-lunch']);
     const hero = s.sides.a.units[s.sides.a.units.length - 1]!;
     hero.hp = 30;
-    hero.statuses.clutch = 60;
+    hero.statuses.clutch = 50;
     s.sides.a.hand = [{ id: 'T0', card: 'last-call' }];
     const after = playCard(s, 'T0'); // heals 6: still under half
-    expect(after.sides.a.units[after.sides.a.units.length - 1]!.statuses.clutch).toBe(60);
+    expect(after.sides.a.units[after.sides.a.units.length - 1]!.statuses.clutch).toBe(50);
     const h2 = fight('drunkard', ['last-call']);
     const hero2 = h2.sides.a.units[h2.sides.a.units.length - 1]!;
-    hero2.hp = Math.floor(hero2.maxHp * 0.6) - 2; // 55: one heal of 6 crosses the line
-    hero2.statuses.clutch = 60;
+    hero2.hp = Math.floor(hero2.maxHp * 0.5) - 2; // 42: one heal of 6 crosses the line
+    hero2.statuses.clutch = 50;
     const healed = playCard(h2, 'T0');
     expect(healed.sides.a.units[healed.sides.a.units.length - 1]!.statuses.clutch ?? 0).toBe(0);
   });
@@ -159,8 +159,8 @@ describe('innate traits', () => {
     hero.hp = 30;
     const after = applyAction(db, s, { type: 'endTurn' }).state;
     const h = after.sides.a.units[after.sides.a.units.length - 1]!;
-    expect(h.hp).toBeLessThan(h.maxHp * 0.6);
-    expect(h.statuses.clutch).toBe(60);
+    expect(h.hp).toBeLessThan(h.maxHp * 0.5);
+    expect(h.statuses.clutch).toBe(50);
   });
 
   it('Clutch Genes switches on when damage drops KP under half, and off when healed', () => {
@@ -171,7 +171,7 @@ describe('innate traits', () => {
     hero.hp = 40;
     const after = applyAction(db, s, { type: 'endTurn' }).state;
     const h = after.sides.a.units[after.sides.a.units.length - 1]!;
-    expect(h.hp).toBeLessThan(h.maxHp * 0.6);
-    expect(h.statuses.clutch).toBe(60);
+    expect(h.hp).toBeLessThan(h.maxHp * 0.5);
+    expect(h.statuses.clutch).toBe(50);
   });
 });

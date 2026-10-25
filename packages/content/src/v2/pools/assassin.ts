@@ -55,9 +55,9 @@ export const ASSASSIN: CardDef[] = [
   q('uncommon', 'endless-edges', 'Endless Edges', 'power', 1, 'none', [
     on('turnStart', [addTo('sleeve-knife')]),
   ]),
-  q('uncommon', 'keen-edge', 'Keen Edge', 'power', 1, 'none', [status('edge', 3)]),
+  q('uncommon', 'keen-edge', 'Keen Edge', 'power', 1, 'none', [status('edge', 2)]),
   q('uncommon', 'razor-halo', 'Razor Halo', 'power', 2, 'none', [
-    on('play', [dmg(3, 'allFoes')], { tag: 'knife' }),
+    on('play', [dmg(2, 'allFoes')], { tag: 'knife' }),
   ]),
   q('uncommon', 'empty-the-sleeves', 'Empty the Sleeves', 'skill', 1, 'none', [
     discard(9),
@@ -65,7 +65,7 @@ export const ASSASSIN: CardDef[] = [
   ]),
   q('uncommon', 'killing-flourish', 'Killing Flourish', 'attack', 1, 'foe', [
     scaled(
-      { op: 'damage', amount: 6, hits: 0, to: 'target' },
+      { op: 'damage', amount: 4, hits: 0, to: 'target' },
       per('attacksPlayed', 1, undefined, 'hits'),
     ),
   ]),
@@ -132,7 +132,7 @@ export const ASSASSIN: CardDef[] = [
     { x: true },
   ),
   q('rare', 'spent-blades-sing', 'Spent Blades Sing', 'power', 1, 'none', [
-    on('exhaust', [dmg(3, 'randomFoe')]),
+    on('exhaust', [dmg(2, 'randomFoe')]),
   ]),
 
   // --- Seared ---
@@ -154,9 +154,18 @@ export const ASSASSIN: CardDef[] = [
     status('seared', 4, 'target'),
     status('exposed', 1, 'target'),
   ]),
-  q('uncommon', 'flashpoint', 'Flashpoint', 'skill', 1, 'foe', [doubleSt('seared', 'target')], {
-    exhaust: true,
-  }),
+  q(
+    'uncommon',
+    'flashpoint',
+    'Flashpoint',
+    'skill',
+    1,
+    'foe',
+    [doubleSt('seared', 'target', 2, 15)],
+    {
+      exhaust: true,
+    },
+  ),
   q('uncommon', 'smouldering-air', 'Smouldering Air', 'power', 1, 'none', [
     on('turnStart', [status('seared', 2, 'allFoes')]),
   ]),
@@ -189,7 +198,7 @@ export const ASSASSIN: CardDef[] = [
     'skill',
     2,
     'none',
-    [doubleSt('seared', 'allFoes', 3)],
+    [doubleSt('seared', 'allFoes', 2, 12)],
     {
       exhaust: true,
     },
@@ -238,7 +247,9 @@ export const ASSASSIN: CardDef[] = [
       exhaust: true,
     },
   ),
-  q('rare', 'fatal-dose', 'Fatal Dose', 'skill', 1, 'foe', [doubleSt('seared', 'target')]),
+  q('rare', 'fatal-dose', 'Fatal Dose', 'skill', 2, 'foe', [doubleSt('seared', 'target', 2, 15)], {
+    exhaust: true,
+  }),
 
   // (Bleed, round three)
   q('common', 'scatter-shot', 'Scatter Shot', 'attack', 1, 'none', [
@@ -254,7 +265,7 @@ export const ASSASSIN: CardDef[] = [
     exhaust: true,
   }),
   q('uncommon', 'open-veins', 'Open Veins', 'attack', 1, 'foe', [
-    scaled(dmg(2), per('seared', 1, 'target')),
+    scaled(dmg(2), per('seared', 0.5, 'target')),
   ]),
   q(
     'uncommon',
@@ -273,11 +284,13 @@ export const ASSASSIN: CardDef[] = [
     on('discard', [status('seared', 2, 'randomFoe')]),
   ]),
   q('rare', 'compounding-interest', 'Compounding Interest', 'power', 2, 'none', [
-    on('turnStart', [doubleSt('seared', 'allFoes', 1.5)]),
+    on('turnStart', [status('seared', 3, 'allFoes')]),
   ]),
 
   // --- Sleight ---
-  q('common', 'quick-hands', 'Quick Hands', 'skill', 0, 'none', [draw(1), discard(1)]),
+  q('common', 'quick-hands', 'Quick Hands', 'skill', 0, 'none', [draw(1), discard(1)], {
+    up: { effects: [draw(2), discard(2)] },
+  }),
   q('common', 'tumble', 'Tumble', 'skill', 1, 'none', [draw(3), discard(1)]),
   q('common', 'roll-clear', 'Roll Clear', 'skill', 1, 'none', [barrier(5), draw(2)]),
   q('uncommon', 'ace-up-the-sleeve', 'Ace Up the Sleeve', 'skill', 0, 'none', [], {
@@ -288,7 +301,9 @@ export const ASSASSIN: CardDef[] = [
     unplayable: true,
     onDiscard: [mana(1)],
   }),
-  q('uncommon', 'fold-the-hand', 'Fold the Hand', 'skill', 0, 'none', [discard(3), mana(2)]),
+  q('uncommon', 'fold-the-hand', 'Fold the Hand', 'skill', 0, 'none', [discard(3), mana(2)], {
+    exhaust: true,
+  }),
   q(
     'uncommon',
     'all-in',
@@ -358,10 +373,12 @@ export const ASSASSIN: CardDef[] = [
     'skill',
     1,
     'foe',
-    [loseHpScaled(per('seared', 3, 'target'))],
+    [loseHpScaled(per('seared', 2, 'target'))],
     { exhaust: true },
   ),
-  q('uncommon', 'light-fingers', 'Light Fingers', 'skill', 1, 'none', [mana(2), discard(1)]),
+  q('uncommon', 'light-fingers', 'Light Fingers', 'skill', 1, 'none', [mana(2), discard(1)], {
+    up: { effects: [mana(2), draw(1), discard(1)] },
+  }),
   // (more Sleight)
   q('rare', 'speed-reader', 'Speed Reader', 'power', 1, 'none', [on('draw', [dmg(2, 'allFoes')])]),
   q('uncommon', 'showmans-flourish', "Showman's Flourish", 'attack', 1, 'foe', [
@@ -391,7 +408,7 @@ export const ASSASSIN: CardDef[] = [
     scaled(dmg(1), per('drawn', 0.25)),
   ]),
   q('rare', 'coiled-strike', 'Coiled Strike', 'power', 3, 'none', [
-    on('play', [dmg(4, 'randomFoe')]),
+    on('play', [dmg(2, 'randomFoe')]),
   ]),
   q(
     'rare',

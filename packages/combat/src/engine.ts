@@ -165,7 +165,10 @@ function enterStance(r: Run, u: Unit, to: Stance | 'none'): void {
   if (cur) {
     delete u.statuses[cur];
     r.ev.push({ type: 'status', target: u.id, status: cur, amount: -1, total: 0 });
-    if (cur === 'calm') gainMana(r, sd, CALM_EXIT_MANA);
+    if (cur === 'calm' && !sd.calmPaid) {
+      sd.calmPaid = true;
+      gainMana(r, sd, CALM_EXIT_MANA);
+    }
   }
   if (to !== 'none') {
     u.statuses[to] = 1;
@@ -528,7 +531,8 @@ function execOp(r: Run, a: Act, op: Op): void {
     case 'scaleStatus':
       for (const t of resolve(r, a, op.to)) {
         const n = stacks(t, op.status);
-        const next = Math.floor(n * op.mult);
+        let next = Math.floor(n * op.mult);
+        if (op.max !== undefined) next = Math.min(next, n + op.max);
         if (n > 0 && next !== n) addStatus(r, t, op.status, next - n);
       }
       return;
@@ -745,7 +749,11 @@ function execOp(r: Run, a: Act, op: Op): void {
       if (a.card) addCardTo(r, side, a.card.id, op.to);
       return;
     case 'reclaim': {
-      const pool = side.exhausted.filter((c) => r.db.cards[c.card]?.kind !== 'power');
+      // never a Power, and never another card that reclaims (two of them would fetch each other back for ever)
+      const pool = side.exhausted.filter((c) => {
+        const d = r.db.cards[c.card];
+        return d?.kind !== 'power' && !d?.effects.some((x) => x.op === 'reclaim');
+      });
       for (let i = 0; i < op.amount && pool.length; i++) {
         const pick = pool.splice(nextInt(r.s.rng, pool.length), 1)[0] as CardInst;
         side.exhausted = side.exhausted.filter((c) => c.id !== pick.id);
@@ -849,6 +857,8 @@ function fireRune(r: Run, sd: SideState, rs: RuneState, how: 'passive' | 'evoke'
     how === 'passive' ? d.passive : d.evoke,
   );
   if (how === 'passive' && d.grow) rs.charge += d.grow + stacks(hero, 'resonance');
+  // a totem that charges spends its charge when it awakens, even one that stays (Echo Chamber): otherwise it hits ever harder for ever
+  if (how === 'evoke' && d.grow) rs.charge = 0;
 }
 
 // --- cards & piles -----------------------------------------------------------------------------------------------
@@ -1170,6 +1180,7 @@ function beginHeroTurn(r: Run, side: Side): void {
   sd.attacksPlayed = 0;
   sd.skillsPlayed = 0;
   sd.discarded = 0;
+  sd.calmPaid = false;
   // the second PvP player gets a small head start on their first turn
   const first = r.s.mode === 'pvp' && side === 'b' && r.s.turn === 2;
   // Mana owed from a borrowed turn comes off the top, but a turn never starts below 0
@@ -1587,6 +1598,8 @@ function playCard(r: Run, action: Extract<Action, { type: 'play' }>): void {
   }
   sd.hand.splice(i, 1);
   sd.mana -= costOf(r.db, sd, inst);
+  // a discount (Cheapen, a free Discover) is spent on the play: a card made free for good would loop for ever
+  delete inst.costMod;
   let x = 0;
   if (cd.x) {
     x = sd.mana + (cd.xBonus ?? 0);

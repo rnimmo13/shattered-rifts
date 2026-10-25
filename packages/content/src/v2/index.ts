@@ -42,7 +42,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
       text: 'Start every fight with 6 Barrier and 6 Plating: your Barrier survives each turn up to your Plating, which shrinks by 1 a turn.',
       fightStart: [barrier(6), status('plating', 6)],
     },
-    hero: { id: 'knight', name: 'Valeria', maxHp: 66, mana: 3, handSize: 5 },
+    hero: { id: 'knight', name: 'Valeria', maxHp: 80, mana: 3, handSize: 5 },
     starter: [...rep('strike', 4), ...rep('defend', 4), 'dawn-smite', 'oathbound'],
     blurb: 'A knight of the Gilded Order. No companions: Barrier, Thorns and punishing Traps.',
     lanes: [
@@ -64,7 +64,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
       text: 'At the start of your turn, you and your companions heal 1.',
       turnStart: [heal(1, 'allFriends')],
     },
-    hero: { id: 'engineer', name: 'Rivet', maxHp: 60, mana: 3, handSize: 5, startUnits: ['drone'] },
+    hero: { id: 'engineer', name: 'Rivet', maxHp: 70, mana: 3, handSize: 5, startUnits: ['drone'] },
     starter: [...rep('strike', 5), ...rep('defend', 3), 'deploy-drone', 'overclock'],
     blurb:
       'A tinkerer of machines. She starts every fight with a Drone and builds an army of them.',
@@ -86,7 +86,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     hero: {
       id: 'hunter',
       name: 'Kesh the Unfed',
-      maxHp: 88,
+      maxHp: 80,
       mana: 3,
       handSize: 5,
       startUnits: ['hound'],
@@ -108,7 +108,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
       text: 'Every enemy starts the fight Exposed for 3 turns, and you start with 6 Barrier.',
       fightStart: [status('exposed', 3, 'allFoes'), barrier(6)],
     },
-    hero: { id: 'trapper', name: 'Vesper Nightlace', maxHp: 124, mana: 3, handSize: 5 },
+    hero: { id: 'trapper', name: 'Vesper Nightlace', maxHp: 80, mana: 3, handSize: 5 },
     starter: [...rep('strike', 3), ...rep('defend', 4), ...rep('veil-strike', 2), 'set-the-web'],
     blurb: 'A masked trapper. No companions: Traps, Exposed and patience.',
     lanes: [
@@ -126,14 +126,14 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     realm: 'umbral',
     role: 'Assassin',
     trait: {
-      name: 'Weak Spot',
-      text: 'At the start of your turn, a random enemy becomes Exposed.',
-      turnStart: [status('exposed', 1, 'randomFoe')],
+      name: 'Envenomed',
+      text: 'At the start of your turn, a random enemy gets 2 Bleed.',
+      turnStart: [status('seared', 2, 'randomFoe')],
     },
     hero: {
       id: 'assassin',
       name: 'Sylas',
-      maxHp: 84,
+      maxHp: 72,
       mana: 3,
       handSize: 5,
       sigil: [addTo('sleeve-knife')],
@@ -163,7 +163,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     hero: {
       id: 'totemist',
       name: 'Ilvane',
-      maxHp: 84,
+      maxHp: 76,
       mana: 3,
       handSize: 5,
     },
@@ -192,7 +192,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     hero: {
       id: 'barbarian',
       name: 'Sehra',
-      maxHp: 116,
+      maxHp: 82,
       mana: 3,
       handSize: 5,
       sigil: [stance('calm')],
@@ -203,8 +203,8 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     lanes: ['Fury: burst', 'Serene: Mana and cards', 'Fervor: build to Radiant'],
     howTo: [
       'You start Serene. You are in at most one stance at a time.',
-      'Fury doubles the damage you deal, but you take 50% more. Leaving Serene gives you 2 Mana.',
-      'Fervor builds to 5, then you enter Radiant: triple damage until your turn ends.',
+      'Fury doubles the damage you deal, but you take 50% more. Leaving Serene gives you 2 Mana (once a turn).',
+      'Fervor builds to 10, then you enter Radiant: triple damage until your turn ends.',
     ],
   },
   spellblade: {
@@ -218,7 +218,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     hero: {
       id: 'spellblade',
       name: 'Obsidia',
-      maxHp: 112,
+      maxHp: 82,
       mana: 3,
       handSize: 5,
       sigil: [stars(3), addTo('starforged-blade')],
@@ -245,13 +245,13 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     role: 'Drunkard',
     trait: {
       name: 'Clutch Genes',
-      text: 'While at or below 60% HP, you deal 60% more attack damage.',
-      clutch: { below: 60, damagePct: 60 },
+      text: 'While at or below half HP, you deal 50% more attack damage.',
+      clutch: { below: 50, damagePct: 50 },
     },
     hero: {
       id: 'drunkard',
       name: 'KP, the Homeless Drunk',
-      maxHp: 106,
+      maxHp: 88,
       mana: 3,
       handSize: 5,
       sigil: [addTo('old-twelve-gauge')],
@@ -271,7 +271,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
       'Hangover: the more it hurts, the harder you hit',
     ],
     howTo: [
-      'Window panes and hammer blows get stronger the more HP you are missing, and Clutch Genes makes you hit even harder below half HP.',
+      'Window panes and hammer blows get stronger the more HP you are missing, and Clutch Genes makes you hit harder at half HP and below.',
       'You start every fight with the Old Twelve Gauge: it hits EVERY enemy, you keep it in hand, and every Sharpen card (Rack the Slide...) makes it hit harder for the whole fight.',
       'Shells are 0-cost attacks that hit every enemy and are consumed. Playing one can sharpen the gun (Hair Trigger).',
       'Swigs heal and hit harder for a turn. KP has a few Traps, but he is not the trapper Vesper is.',
@@ -296,7 +296,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     hero: {
       id: 'necromancer',
       name: 'Dorian Blackthorn',
-      maxHp: 92,
+      maxHp: 76,
       mana: 3,
       handSize: 5,
       startUnits: ['bone-thrall'],

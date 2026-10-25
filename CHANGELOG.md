@@ -5,8 +5,15 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **Big balance pass (Slay the Spire numbers):** fights last longer and no deck wins a boss fight on turn one any more. Every Riftwalker has 70-88 HP, and enemies hit for Slay the Spire's numbers. Rift Tiers climb gently instead of to thirty times the HP: Tier XX enemies have about three times Tier I's HP and twice its damage, and a stage within a tier is harder than the one before. Combos that could repeat for ever, or multiply without limit, are gone:
+  - Fervor now needs **10** to enter Radiant, and leaving Serene gives 2 Mana **once a turn**.
+  - A card made cheaper (Frozen Moment, Fever Dream, a free Discover) is cheaper **the next time you play it**, not for the whole fight.
+  - Every "double it" card is consumed and says how much it can add at most ("Double the Thorns, at most +8").
+  - Free cards that draw or give Mana are consumed when played.
+  - Sylas's trait is now **Envenomed** (a random enemy gets 2 Bleed each turn), and KP's Clutch Genes is +50% damage at half HP.
+  - Dozens of cards were retuned. See DECISIONS #223 for the full list.
+- **The Brass Cascade is now the Brass Reel:** a prize machine. All thirteen prizes (every elite event has the same ones) are on a reel that scrolls past a pointer and slows to a stop on one. Each spin costs 25 shards; take what it stops on, or pay again to let it go and spin for another (it never stops on the prize you hold). The prizes are in a different order every time. One prize, the lighter load, lets you remove up to two cards of your choice (or none).
 - **Your deck goes to the Arena by itself:** it is saved after every fight (and every shop, shrine and event), so there is no Save deck button. The run bar shows where your Arena deck stands, and you are told once what it means (other players may face it as a ghost; it is removed if the run collapses). If your saved decks are full you are reminded once per stage.
-- **The elite game is always called the Brass Cascade,** and the ball falls more naturally: no sudden drops, and it is no longer set down in its lane at the end.
 - **Events can be ambushes:** now and then an Event stop turns out to be a fight (10% a regular enemy, 5% an Elite from the third floor), like the ? rooms in Slay the Spire. It pays like any other fight of its kind.
 - **You are told which cards were upgraded,** whether it came from a Shrine, the merchant, an event or a prize ("Upgraded: Strike → Strike+").
 - **The merchant can upgrade a card for you.** It costs 60 shards, then 40 more each time you use it at that shop; the next shop starts at 60 again.
