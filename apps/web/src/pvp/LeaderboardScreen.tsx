@@ -13,9 +13,10 @@ import { HeroIcon } from '../ui/HeroIcon';
 import { heroName } from './deckLayout';
 import { viewBoard, type BoardKind, type BoardView, type GhostView } from './boardApi';
 import { NameClaim } from './NameClaim';
+import { syncSavedRuns } from '../run/syncRuns';
 import './board.css';
 
-/** "3 days left", "5 hours left": how long this period has to run. */
+/** "3 days left", "5 hours left": how long this period has to run (boards turn over at midnight Pacific time). */
 function timeLeft(now: number, period: Period): string {
   const ms = Math.max(0, periodEnd(now, period) - now);
   const hours = Math.floor(ms / 3_600_000);
@@ -142,7 +143,10 @@ export function LeaderboardScreen() {
 
   useEffect(() => {
     let live = true;
-    void viewBoard(kind, period).then((view) => live && setGot({ kind, period, view }));
+    // (the runs saved in this browser are announced first, so a run the board has missed shows up)
+    void (kind === 'runs' ? syncSavedRuns() : Promise.resolve())
+      .then(() => viewBoard(kind, period))
+      .then((view) => live && setGot({ kind, period, view }));
     return () => {
       live = false;
     };
@@ -182,7 +186,14 @@ export function LeaderboardScreen() {
         {toggle('This week', period === 'week', () => setPeriod('week'))}
         {toggle('This month', period === 'month', () => setPeriod('month'))}
       </div>
-      <p className="board__left">{timeLeft(now, period)}</p>
+      <p className="board__left">
+        {timeLeft(now, period)}
+        <small>
+          {period === 'week'
+            ? ' · the week turns over on Sunday night at midnight Pacific time'
+            : ' · the month turns over at midnight Pacific time on the 1st'}
+        </small>
+      </p>
 
       {loading && (
         <p className="board__note" role="status">

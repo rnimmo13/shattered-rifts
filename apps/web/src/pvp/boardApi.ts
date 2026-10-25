@@ -203,15 +203,15 @@ export function boardId(): Promise<string | null> {
   return myId;
 }
 
-/** Tell the server how far a run has got (fire and forget). `stage` is the stages cleared in this Rift Tier, 0 to 3. */
+/** Tell the server how far a run has got (callers need not wait). `stage` is the stages cleared in this Rift Tier, 0 to 3. */
 export function reportRun(run: {
   seed: string;
   hero: string;
   tier: number;
   stage: number;
   name: string;
-}): void {
-  void post('run', {
+}): Promise<unknown> {
+  return post('run', {
     run: run.seed.slice(0, 64),
     hero: run.hero,
     tier: run.tier,

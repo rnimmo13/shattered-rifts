@@ -25,10 +25,11 @@ export const SAME_FOE_PER_DAY = 3;
 /** One player's counted Arena wins in a day (so no amount of playing alts or friends tops the board on its own). */
 export const WINS_PER_DAY = 20;
 /**
- * A run cannot be further along than this many stages after it has been going this long: a couple of stages at once (a first report
- * that was missed is made up for), then one more for every minute. A real stage takes longer than a minute.
+ * A run cannot be further along than this many stages after it has been going this long: up to three Rift Tiers at once (so a run
+ * the board has not seen yet, or whose reports were missed, catches up when the browser tells it where the run is), then one more for
+ * every minute. A real stage takes longer than a minute.
  */
-export const RUN_START_GRACE = 2;
+export const RUN_START_GRACE = 9;
 export const RUN_MIN_STAGE_MS = 60_000;
 /** The furthest a run can be believed to be (the last Rift Tier). */
 export const RUN_MAX_TIER = MAX_TIER;
@@ -69,22 +70,49 @@ function firstOf(y: number, m: number): number {
   return era * 146_097 + doe - 719_468;
 }
 
-/** When the current week (Monday 00:00 UTC) or month (the 1st, 00:00 UTC) began. */
+const HOUR = 3_600_000;
+const weekdayOf = (days: number): number => (((days + 3) % 7) + 7) % 7; // Monday = 0 (1 January 1970 was a Thursday)
+
+/**
+ * US Pacific time's offset from UTC (ms) at a moment: -7 h while daylight saving runs (from 02:00 on the second Sunday of March to
+ * 02:00 on the first Sunday of November), -8 h otherwise.
+ */
+function pacificOffset(utc: number): number {
+  const { y } = civil(Math.floor(utc / DAY));
+  const sunday = (month: number, nth: number): number => {
+    const first = firstOf(y, month);
+    return first + ((6 - weekdayOf(first) + 7) % 7) + 7 * (nth - 1);
+  };
+  const start = sunday(3, 2) * DAY + 10 * HOUR; // 02:00 PST
+  const end = sunday(11, 1) * DAY + 9 * HOUR; // 02:00 PDT
+  return utc >= start && utc < end ? -7 * HOUR : -8 * HOUR;
+}
+
+/** The UTC moment of a Pacific wall-clock midnight (given as that date's day count). Midnight is never inside the clock change. */
+const pacificMidnight = (localDays: number): number => {
+  const guess = localDays * DAY + 8 * HOUR;
+  return localDays * DAY - pacificOffset(guess);
+};
+
+/**
+ * When the current week or month began: boards turn over at midnight Pacific time (a week starts at Sunday night's midnight, that is
+ * Monday 00:00 Pacific; a month on the 1st at 00:00 Pacific), whatever the viewer's own time zone.
+ */
 export function periodStart(now: number, period: Period): number {
-  const days = Math.floor(now / DAY);
+  const localDays = Math.floor((now + pacificOffset(now)) / DAY);
   if (period === 'month') {
-    const { y, m } = civil(days);
-    return firstOf(y, m) * DAY;
+    const { y, m } = civil(localDays);
+    return pacificMidnight(firstOf(y, m));
   }
-  const weekday = (((days + 3) % 7) + 7) % 7; // Monday = 0 (1 January 1970 was a Thursday)
-  return (days - weekday) * DAY;
+  return pacificMidnight(localDays - weekdayOf(localDays));
 }
 
 /** When the period ends (the start of the next one), so a board can say how long is left. */
 export function periodEnd(now: number, period: Period): number {
-  if (period === 'week') return periodStart(now, 'week') + 7 * DAY;
-  const { y, m } = civil(Math.floor(now / DAY));
-  return (m === 12 ? firstOf(y + 1, 1) : firstOf(y, m + 1)) * DAY;
+  const localDays = Math.floor((now + pacificOffset(now)) / DAY);
+  if (period === 'week') return pacificMidnight(localDays - weekdayOf(localDays) + 7);
+  const { y, m } = civil(localDays);
+  return pacificMidnight(m === 12 ? firstOf(y + 1, 1) : firstOf(y, m + 1));
 }
 
 // ---- names ----

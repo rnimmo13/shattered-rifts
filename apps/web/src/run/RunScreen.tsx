@@ -171,7 +171,7 @@ export default function RunScreen() {
     if (!r || r.seed !== resumedSeed) return;
     const done = stagesCleared(r);
     if (stagesInAll(r.tier, done) > 0)
-      reportRun({
+      void reportRun({
         seed: r.seed,
         hero: r.character,
         tier: r.tier,
@@ -192,7 +192,7 @@ export default function RunScreen() {
         const was = stagesInAll(cur.tier, stagesCleared(cur));
         const now = stagesInAll(next.tier, stagesCleared(next));
         if (now > was && next.seed === cur.seed)
-          reportRun({
+          void reportRun({
             seed: next.seed,
             hero: next.character,
             tier: next.tier,

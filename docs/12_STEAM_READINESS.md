@@ -51,8 +51,7 @@ Today a player is a **Vault code** (a guest) or a **Google sign-in**. Steam play
   The Steam ID becomes the player id behind saved decks and rankings (hashed, as board ids are now).
 - [?] **Linking:** can a Steam account be linked to an existing Vault code or Google account so a web player keeps their decks? Decide
   before launch; it is hard to add afterwards.
-- [ ] Player names: the typed Arena name stays (with the profanity filter, DECISIONS #186), or the Steam persona name is offered as a
-  default. Steam names are not filtered by us.
+- [x] **Player names (decided, Robert 2026-10-25; DECISIONS #212):** on Steam the player's Steam persona name is their username, with no prompt. For any other way of signing in (web, Google, Vault code) we ask for a username and never use the account's real name or email. Usernames are unique (`checkUsername`, the board's `names` table), so the Steam persona name must go through the same claim: if it is taken (or not allowed) the player is asked for a different one. Steam names are not filtered by us, so run them through the same name rules before showing them on a board.
 - [ ] Privacy: what is stored per player, and a way to delete it. Needed for the store page and for GDPR.
 
 ## 5. Monetisation and the web build

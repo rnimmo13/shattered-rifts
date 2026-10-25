@@ -48,6 +48,7 @@ export function NameClaim(props: {
             setValue(e.target.value);
             setError(null);
           }}
+          placeholder="Choose a name"
           aria-label="Username"
           aria-invalid={error !== null}
         />

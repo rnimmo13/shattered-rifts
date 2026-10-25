@@ -21,20 +21,33 @@ import {
 
 describe('the periods', () => {
   it('a week starts on Monday at midnight UTC', () => {
-    // Saturday 24 Oct 2026, 15:00 UTC
+    // Saturday 24 Oct 2026, 15:00 UTC (08:00 in Pacific daylight time)
     const sat = Date.UTC(2026, 9, 24, 15);
-    expect(periodStart(sat, 'week')).toBe(Date.UTC(2026, 9, 19));
-    expect(new Date(periodStart(sat, 'week')).getUTCDay()).toBe(1);
-    // Monday itself, at the first moment and the last
-    expect(periodStart(Date.UTC(2026, 9, 19), 'week')).toBe(Date.UTC(2026, 9, 19));
-    expect(periodStart(Date.UTC(2026, 9, 25, 23, 59), 'week')).toBe(Date.UTC(2026, 9, 19));
-    expect(periodEnd(sat, 'week')).toBe(Date.UTC(2026, 9, 26));
+    // the week began on Monday 19 Oct at 00:00 Pacific (07:00 UTC) and ends Monday 26 Oct at 00:00 Pacific
+    expect(periodStart(sat, 'week')).toBe(Date.UTC(2026, 9, 19, 7));
+    expect(periodEnd(sat, 'week')).toBe(Date.UTC(2026, 9, 26, 7));
+    // Sunday evening in Pacific time is still the old week, even though UTC is already on Monday
+    expect(periodStart(Date.UTC(2026, 9, 26, 6, 59), 'week')).toBe(Date.UTC(2026, 9, 19, 7));
+    // and the first second of Monday Pacific is the new one
+    expect(periodStart(Date.UTC(2026, 9, 26, 7), 'week')).toBe(Date.UTC(2026, 9, 26, 7));
   });
 
-  it('a month starts on the 1st, and the year turns over', () => {
-    const t = Date.UTC(2026, 11, 31, 23);
-    expect(periodStart(t, 'month')).toBe(Date.UTC(2026, 11, 1));
-    expect(periodEnd(t, 'month')).toBe(Date.UTC(2027, 0, 1));
+  it('a week turns over an hour later in UTC once the clocks go back (PST is UTC-8)', () => {
+    // Monday 9 Nov 2026 00:00 PST = 08:00 UTC; the week before it started Monday 2 Nov, the day after daylight saving ended
+    expect(periodStart(Date.UTC(2026, 10, 12, 12), 'week')).toBe(Date.UTC(2026, 10, 9, 8));
+    expect(periodStart(Date.UTC(2026, 10, 5, 12), 'week')).toBe(Date.UTC(2026, 10, 2, 8));
+    expect(periodEnd(Date.UTC(2026, 10, 5, 12), 'week')).toBe(Date.UTC(2026, 10, 9, 8));
+    // the week that holds the change is 7 days and an hour long
+    expect(periodEnd(Date.UTC(2026, 9, 28), 'week') - periodStart(Date.UTC(2026, 9, 28), 'week')).toBe(7 * 86_400_000 + 3_600_000);
+    expect(periodEnd(Date.UTC(2026, 10, 12), 'week') - periodStart(Date.UTC(2026, 10, 12), 'week')).toBe(7 * 86_400_000);
+  });
+
+  it('a month starts on the 1st at midnight Pacific, and the year turns over', () => {
+    const t = Date.UTC(2026, 11, 31, 23); // 15:00 on 31 Dec in Pacific
+    expect(periodStart(t, 'month')).toBe(Date.UTC(2026, 11, 1, 8));
+    expect(periodEnd(t, 'month')).toBe(Date.UTC(2027, 0, 1, 8));
+    // 1 Nov 2026 is the Sunday daylight saving ends: its midnight is still PDT
+    expect(periodStart(Date.UTC(2026, 10, 15), 'month')).toBe(Date.UTC(2026, 10, 1, 7));
   });
 });
 
@@ -155,12 +168,12 @@ describe('names', () => {
 });
 
 describe('how far a run can be believed to be', () => {
-  it('a couple of stages at the start, then one more for every minute', () => {
-    expect(believableStages(0)).toBe(2);
-    expect(believableStages(59_000)).toBe(2);
-    expect(believableStages(60_000)).toBe(3);
-    expect(believableStages(10 * 60_000)).toBe(12);
-    expect(believableStages(-5)).toBe(2);
+  it('three Rift Tiers at the start, then one more for every minute', () => {
+    expect(believableStages(0)).toBe(9);
+    expect(believableStages(59_000)).toBe(9);
+    expect(believableStages(60_000)).toBe(10);
+    expect(believableStages(10 * 60_000)).toBe(19);
+    expect(believableStages(-5)).toBe(9);
   });
 });
 

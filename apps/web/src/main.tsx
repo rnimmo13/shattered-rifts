@@ -7,6 +7,7 @@ import '@fontsource/source-sans-3/600.css';
 import '@fontsource/bebas-neue/400.css';
 import { applyCssTokens } from './design/tokens';
 import './app/global.css';
+import './ui/controls.css';
 import './duel/duel.css';
 import { App } from './app/App';
 import { preloadArt } from './art/assets';

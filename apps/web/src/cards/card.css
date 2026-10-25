@@ -55,12 +55,12 @@
   --accent: #9be86a;
 }
 .card--starfall {
-  --ink-a: #2e1238;
-  --ink-b: #0b0512;
-  --trim: #c0683a;
-  --trim-hi: #ffc890;
-  --trim-lo: #5c2a14;
-  --accent: #ff9a4a;
+  --ink-a: #1d202c;
+  --ink-b: #05060a;
+  --trim: #7d869c;
+  --trim-hi: #e3e9f7;
+  --trim-lo: #2a2e3e;
+  --accent: #b9c3d9;
 }
 .card__stars {
   position: absolute;
@@ -71,8 +71,8 @@
   display: grid;
   place-items: center;
   border-radius: 50%;
-  background: radial-gradient(circle at 35% 28%, #ffd9a8, #ee7a2a 45%, #6a2a08 100%);
-  border: 5px solid #ffc890;
+  background: radial-gradient(circle at 35% 28%, #eef2fb, #8a93ad 45%, #1b1e2a 100%);
+  border: 5px solid #c4ccdf;
   box-shadow:
     0 0 0 3px rgb(0 0 0 / 0.55),
     0 0 18px rgb(255 140 60 / 0.8);
@@ -621,12 +621,12 @@
   --accent: #ffb060;
 }
 .card--hero-spellblade {
-  --ink-a: #2e1238;
-  --ink-b: #0a0412;
-  --trim: #b6a4c8;
+  --ink-a: #1d202c;
+  --ink-b: #05060a;
+  --trim: #98a1b8;
   --trim-hi: #ffffff;
-  --trim-lo: #5e4a78;
-  --accent: #ff9a4a;
+  --trim-lo: #3a3f52;
+  --accent: #b9c3d9;
 }
 .card--hero-necromancer {
   --ink-a: #15401f;

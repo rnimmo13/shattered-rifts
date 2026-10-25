@@ -313,7 +313,7 @@ export const HERO_COLOR: Record<string, string> = {
   assassin: '#e0384f',
   totemist: '#7fd08a',
   barbarian: '#ffb060',
-  spellblade: '#ff9a4a',
+  spellblade: '#b9c3d9', // Obsidia: obsidian and steel, so no orange (that is KP's)
   necromancer: '#9be86a',
   drunkard: '#ff9a3c',
 };

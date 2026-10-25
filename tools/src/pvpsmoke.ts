@@ -428,10 +428,12 @@ async function board(tag: string): Promise<void> {
       ...extra,
     });
   need((await run(1))['counted'] === true, 'a first stage cleared is counted');
-  need((await run(3))['counted'] === false, 'a jump of two stages is not believed');
-  need((await run(2))['counted'] === true, 'the next stage is');
-  need((await run(2))['counted'] === false, 'the same progress twice is not');
-  need((await run(1))['counted'] === false, 'going backwards is not');
+  need((await run(3, { tier: 5 }))['counted'] === false, 'a jump to Tier V is not believed');
+  need((await run(3, { tier: 2 }))['counted'] === true, 'a run the board has fallen behind on catches up to Tier II');
+  need((await run(2, { tier: 1 }))['counted'] === false, 'going back is not believed');
+  need((await run(1, { tier: 3 }))['counted'] === true, 'and a stage further is believed after a catch-up');
+  need((await run(1, { tier: 3 }))['counted'] === false, 'the same progress twice is not');
+  need((await run(3, { tier: 2 }))['counted'] === false, 'going backwards is not');
   need((await run(2, { hero: 'nobody' })).status === 400, 'an unknown character is refused');
   // a second character is its own place on the board
   need((await run(1, { run: `second${tag}`, hero: 'barbarian' }))['counted'] === true, 'a second character counts');
@@ -444,7 +446,7 @@ async function board(tag: string): Promise<void> {
     'one player is on the campaign board once for each character',
   );
   need(
-    mine?.tier === 1 && mine.stage === 2 && mine.total === 2,
+    mine?.tier === 3 && mine.stage === 1 && mine.total === 7,
     'the run board shows the furthest point',
   );
   need((await fetch(`${http}/pvp/board/nope`)).status === 404, 'an unknown board is not found');

@@ -37,11 +37,11 @@ const SCENE_VENUES = {
   },
   glass: {
     scene: 'spellblade',
-    skyTop: '#12081f',
-    skyLow: '#c0503e',
-    dark: '#220d2c',
-    glow: '#ff9a4a',
-    floorTint: 0xe89878,
+    skyTop: '#07080d',
+    skyLow: '#59607a',
+    dark: '#0f111a',
+    glow: '#aab4cc',
+    floorTint: 0x9aa3ba,
   },
   swamp: {
     scene: 'necromancer',

@@ -69,7 +69,7 @@ export default function PvpScreen() {
   // only banked decks can be taken into the Arena
   const decks = vault;
   const [deckId, setDeckId] = useState<string>(() => decks[0]?.id ?? '');
-  const [name, setNameState] = useState(() => getName() || 'Riftwalker');
+  const [name, setNameState] = useState(() => getName());
   const [code, setCode] = useState('');
   const [snap, setSnap] = useState<Snapshot>(EMPTY);
   const [server, setServer] = useState(getServerSetting);
@@ -379,6 +379,7 @@ export default function PvpScreen() {
                 setNameState(e.target.value);
                 setNameProblem(null);
               }}
+              placeholder="Choose a name"
               aria-label="Your name"
             />
           </label>

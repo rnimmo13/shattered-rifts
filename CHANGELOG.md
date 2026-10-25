@@ -5,6 +5,10 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **Text fields and dropdowns are restyled** across the game (inset dark fields with a gold edge and glow on focus, a custom dropdown arrow), and the username screen is now a proper card.
+- **Obsidia has her own colours:** obsidian black and steel grey on the home screen glow, her icon, her card frames and the Hollow Crown arena (no more orange like KP).
+- **The leaderboard keeps up with your saved runs:** they are re-announced when the app opens and when you view the campaign board, so a run it missed shows up (up to Tier III at once, further as time passes).
+- **Leaderboards turn over at midnight Pacific time** (Sunday night for the week, the 1st for the month), and the page says so.
 - **Twinned is now called Reverb** (your next Attack is played twice).
 - **Arena matches are best of three.** First to win two games. After a game, whoever lost it chooses who goes first in the next (second player still gets +30 HP); the score shows in the top bar and on each result. Resigning gives up one game, and leaving for over a minute forfeits the match.
 - **The campaign leaderboard lists every character you play,** not just your furthest run (a Barbarian at Tier 2 was hidden behind a stronger run).

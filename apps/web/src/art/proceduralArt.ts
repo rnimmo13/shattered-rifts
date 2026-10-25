@@ -127,13 +127,14 @@ const PALETTE: Record<Realm, Palette> = {
     rim: '#8ff5e0',
     eye: '#8ff5e0',
   },
+  // the Hollow Crown is obsidian: black glass and steel grey with a cold sheen (orange belongs to the Midden)
   starfall: {
-    sky: ['#0a0510', '#2e1238', '#ff7a2a'],
-    glow: '#ff9a4a',
-    body: ['#4a3458', '#120a1c'],
-    dark: '#0a0510',
-    rim: '#ff9a4a',
-    eye: '#ffc890',
+    sky: ['#05060a', '#1b1e2a', '#8a93ad'],
+    glow: '#aab4cc',
+    body: ['#4a4f60', '#0c0d14'],
+    dark: '#05060a',
+    rim: '#c4ccdf',
+    eye: '#dfe6ff',
   },
   gloomfen: {
     sky: ['#07130d', '#1e3d2a', '#9be86a'],

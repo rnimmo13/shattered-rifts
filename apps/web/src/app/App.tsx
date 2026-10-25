@@ -6,6 +6,7 @@ import { Bestiary } from '../fight/Bestiary';
 import { CardLibrary } from '../fight/CardLibrary';
 import { CreditsScreen } from './CreditsScreen';
 import { NameGate } from '../pvp/NameClaim';
+import { syncSavedRuns } from '../run/syncRuns';
 import { LearnScreen } from './LearnScreen';
 import { TitleScreen } from './TitleScreen';
 
@@ -33,6 +34,10 @@ function useHash(): string {
 
 export function App() {
   const hash = useHash();
+  // the saved runs tell the leaderboard where they are once, when the app opens (a report that was missed is made up for)
+  useEffect(() => {
+    void syncSavedRuns();
+  }, []);
   // figures that arrive after the first screen (a slow first visit) redraw the home screen, which is safe to do (it holds no game)
   const [artVersion, setArtVersion] = useState(0);
   useEffect(() => {
