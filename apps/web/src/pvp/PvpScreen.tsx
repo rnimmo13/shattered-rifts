@@ -25,6 +25,7 @@ import { VaultCode, type Online } from './VaultCode';
 import { AccountBox } from './AccountBox';
 import { RarityTally } from './DeckReport';
 import { dateLabel, heroName, progressLabel } from './deckLayout';
+import '../play/play.css';
 import './decks.css';
 import { syncVault, vaultKey, whoAmI, type Me } from './vaultSync';
 import './pvp.css';
@@ -206,7 +207,9 @@ export default function PvpScreen() {
             exitLabel={over ? 'Leave' : 'Resign'}
             onExit={() => (over ? back() : setConfirmResign(true))}
             // a game that is not the last: on to the next (the loser chooses who goes first); the last game ends the match
-            onDone={() => (match.series && !match.series.over ? session.current?.nextGame() : back())}
+            onDone={() =>
+              match.series && !match.series.over ? session.current?.nextGame() : back()
+            }
           />
           {confirmResign && (
             <div className="pvp__confirm" role="dialog" aria-label="Resign">
@@ -214,8 +217,8 @@ export default function PvpScreen() {
                 <h2>Resign this game?</h2>
                 <p>
                   It counts as a loss for you and a win for{' '}
-                  {match.names[match.seat === 'a' ? 'b' : 'a']}. The match is the best of three, so it
-                  carries on unless this loss decides it.
+                  {match.names[match.seat === 'a' ? 'b' : 'a']}. The match is the best of three, so
+                  it carries on unless this loss decides it.
                 </p>
                 <div className="modal__row">
                   <button className="btn" onClick={() => setConfirmResign(false)}>
@@ -397,7 +400,8 @@ export default function PvpScreen() {
                   <p>
                     The Arena is played with decks you have built in the campaign. Your deck is
                     entered here automatically after every fight, so just play a run. You keep it
-                    whether you win or lose a match, but if the run collapses its deck is removed.
+                    whether you win or lose a match. If the run collapses you can no longer bring
+                    that deck to the Arena yourself, but it stays as a ghost other players may face.
                   </p>
                   <p>
                     Banked decks on another device?{' '}
@@ -464,8 +468,7 @@ export default function PvpScreen() {
               </div>
               <p className="pvp__hint">
                 A ghost is a deck another player has used in the Arena, played by the computer. It
-                is a fight for fun and for the Ghosts board: it does not count on the Arena
-                board.
+                is a fight for fun and for the Ghosts board: it does not count on the Arena board.
               </p>
             </>
           )}

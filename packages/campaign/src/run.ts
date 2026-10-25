@@ -21,6 +21,7 @@ import {
   CROSSED_MERCHANT_CHANCE,
   EVENT_FIGHT_ODDS,
   FINAL_STAGE,
+  GHOST_BOSS_MIN_TIER,
   GHOST_FROM_TIER,
   ambushEnemy,
   generateStageMap,
@@ -406,10 +407,14 @@ export function checkGhostBoss(raw: unknown): GhostBoss | null {
   const name = typeof g['name'] === 'string' ? g['name'].slice(0, 40) : 'A rival';
   const tier = typeof g['tier'] === 'number' && Number.isInteger(g['tier']) ? g['tier'] : 1;
   const stage = typeof g['stage'] === 'number' && Number.isInteger(g['stage']) ? g['stage'] : null;
+  // (a ghost boss is a deck that reached Tier GHOST_BOSS_MIN_TIER: an older server might send any)
+  if (tier < GHOST_BOSS_MIN_TIER) return null;
+  const id = typeof g['id'] === 'string' && g['id'].length <= 80 ? g['id'] : undefined;
   return {
+    ...(id ? { id } : {}),
     name,
     hero: hero as GhostBoss['hero'],
-    deck: [...(deck)],
+    deck: [...deck],
     boons: [...(boons as string[])],
     tier,
     stage,
@@ -423,7 +428,14 @@ export function attachGhost(run: RunState, ghost: unknown): RunState {
   const ctx = r.context as NonNullable<RunState['context']>;
   ctx.ghostAsked = true;
   const checked = checkGhostBoss(ghost);
-  if (checked) ctx.ghost = checked;
+  if (checked) {
+    ctx.ghost = checked;
+    // (the latest 25: what one request to the server carries)
+    if (checked.id) r.ghostsMet = [...(r.ghostsMet ?? []), checked.id].slice(-25);
+    // said plainly, so nobody takes it for the realm's usual Warden
+    const who = RIFTWALKERS[checked.hero]?.role ?? 'Riftwalker';
+    r.eventResult = `Ghost Warden! This Warden is ${checked.name}'s ${who} deck from the Arena (Tier ${checked.tier}), played by the computer.`;
+  }
   return r;
 }
 
@@ -486,6 +498,8 @@ export function finishDuel(
   );
   r.stats.duelsWon++;
   r.hp = hpLeft;
+  // (the "Ghost Warden!" notice belongs to that fight: it is not told again later)
+  if (r.eventResult?.startsWith('Ghost Warden!')) delete r.eventResult;
   // whatever you did not drink comes with you (never more than you started with)
   const left = [...run.potions];
   r.potions = [];

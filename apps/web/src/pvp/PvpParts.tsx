@@ -115,7 +115,9 @@ export function ChoosePanel(props: {
       <p>
         Go second and you start with <b>{SECOND_PLAYER_HP} more HP</b>.{' '}
         {info.series
-          ? info.chooser ? 'You lost the last game, so the choice is yours. If you do not choose in time, a coin decides.' : ''
+          ? info.chooser
+            ? 'You lost the last game, so the choice is yours. If you do not choose in time, a coin decides.'
+            : ''
           : 'If you both want the same, a coin decides.'}
       </p>
       {!info.chooser && !info.chosen ? (

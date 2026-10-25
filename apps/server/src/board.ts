@@ -2,8 +2,8 @@
 // ghosts. It never holds a name, email or code beyond the display name a player typed; a player is told apart by an id the server
 // derives (a hash), which is never sent out. The boards themselves are worked out by the pure rules in @sr/pvp (board.ts).
 //
-// The campaign board takes its progress from the browser, which cannot be checked, so it is guarded instead: a run can only be as far
-// along as the time it has been going allows, and reports are limited per player and per address.
+// The campaign board takes its progress from the browser, which cannot be checked, so it is guarded instead: a run can only move on as
+// fast as the time since its last report allows, and reports and new runs are limited per player and per address.
 //
 // A ghost is a deck that has been played in the Arena, kept so that someone with no opponent can face it with the computer at the
 // controls. Every counted Arena match adds to both decks' records; a match against a ghost adds to the ghost's own.
@@ -11,16 +11,19 @@
 import { DurableObject } from 'cloudflare:workers';
 import {
   BOARD_KEEP_DAYS,
+  GHOST_BOSS_EXCLUDE_MAX,
   GHOST_WINS_PER_DAY,
   IP_NEW_RUNS_PER_DAY,
   IP_REPORTS_PER_HOUR,
   NEW_RUNS_PER_DAY,
   RUN_MAX_TIER,
   RUN_REPORTS_PER_HOUR,
+  RUN_MIN_STAGE_MS,
+  RUN_STEP_ALLOWANCE,
   SAME_FOE_PER_DAY,
   WINS_PER_DAY,
-  believableStages,
   checkEntry,
+  pickGhostBoss,
   checkUsername,
   cleanBoardName,
   isHero,
@@ -166,7 +169,9 @@ export class Leaderboard extends DurableObject<Env> {
     const rename = (table: string, col: string): void => {
       const cases = legacy.map(([o, n]) => `WHEN '${o}' THEN '${n}'`).join(' ');
       const olds = legacy.map(([o]) => `'${o}'`).join(',');
-      ctx.storage.sql.exec(`UPDATE ${table} SET ${col} = CASE ${col} ${cases} ELSE ${col} END WHERE ${col} IN (${olds})`);
+      ctx.storage.sql.exec(
+        `UPDATE ${table} SET ${col} = CASE ${col} ${cases} ELSE ${col} END WHERE ${col} IN (${olds})`,
+      );
     };
     if (!done) {
       rename('pvp', 'winner_hero');
@@ -312,12 +317,19 @@ export class Leaderboard extends DurableObject<Env> {
         now - 31 * DAY,
       )
       .toArray();
-    const chosen = pickGhost(
-      rows.map(toDeck).filter((d) => d.owner !== requester),
-      null,
-      Math.random(),
+    const tier = typeof b['tier'] === 'number' && Number.isInteger(b['tier']) ? b['tier'] : 1;
+    const exclude = Array.isArray(b['exclude'])
+      ? (b['exclude'] as unknown[])
+          .filter((x): x is string => typeof x === 'string' && x.length <= 80)
+          .slice(0, GHOST_BOSS_EXCLUDE_MAX)
+      : [];
+    const chosen = pickGhostBoss(rows.map(toDeck), {
+      requester,
+      tier,
+      exclude,
+      roll: Math.random(),
       now,
-    );
+    });
     if (!chosen) return json({ ok: true, ghost: null });
     const row = this.ctx.storage.sql
       .exec<GhostSql>('SELECT * FROM ghosts WHERE id = ?', chosen.id)
@@ -326,6 +338,7 @@ export class Leaderboard extends DurableObject<Env> {
     return json({
       ok: true,
       ghost: {
+        id: row.id,
         name: row.owner_name,
         hero: row.hero,
         deck: parseList(row.deck),
@@ -453,7 +466,10 @@ export class Leaderboard extends DurableObject<Env> {
       humanHero: r.human_hero,
       at: r.at,
     }));
-    const decks = this.count('SELECT COUNT(*) AS n FROM current_ghosts WHERE last_at >= ?', now - 31 * DAY);
+    const decks = this.count(
+      'SELECT COUNT(*) AS n FROM current_ghosts WHERE last_at >= ?',
+      now - 31 * DAY,
+    );
     const all = standingsVsGhosts(games);
     return {
       ok: true,
@@ -579,7 +595,11 @@ export class Leaderboard extends DurableObject<Env> {
         !this.within(`name:${player}`, DAY, NAME_CLAIMS_PER_DAY, now) ||
         !this.within(`ip-name:${ip}`, DAY, IP_NAME_CLAIMS_PER_DAY, now)
       )
-        return json({ ok: false, error: 'limited', message: 'Too many name changes today. Try again tomorrow.' });
+        return json({
+          ok: false,
+          error: 'limited',
+          message: 'Too many name changes today. Try again tomorrow.',
+        });
     }
     const taken = this.ctx.storage.sql
       .exec<{ player: string }>('SELECT player FROM names WHERE key = ?', checked.key)
@@ -629,8 +649,8 @@ export class Leaderboard extends DurableObject<Env> {
     const name = this.claimedName(b['player']);
     if (!name) return json({ ok: true, counted: false, error: 'no-name' });
     const old = this.ctx.storage.sql
-      .exec<{ total: number; tier: number; first_at: number }>(
-        'SELECT total, tier, first_at FROM runs WHERE player = ? AND run = ?',
+      .exec<{ total: number; tier: number; first_at: number; at: number }>(
+        'SELECT total, tier, first_at, at FROM runs WHERE player = ? AND run = ?',
         b['player'],
         run,
       )
@@ -648,7 +668,10 @@ export class Leaderboard extends DurableObject<Env> {
         !this.within(`ip-run:${ip}`, HOUR, IP_REPORTS_PER_HOUR, now)
       )
         return json({ ok: true, counted: false, limited: true });
-      if (total > believableStages(now - old.first_at)) return json({ ok: true, counted: false });
+      // (judged on the progress since the last report, so a run the board first heard of far along climbs normally from there; a
+      // little allowance covers a tier change and a report or two that went missing)
+      if (total - old.total > RUN_STEP_ALLOWANCE + Math.floor((now - old.at) / RUN_MIN_STAGE_MS))
+        return json({ ok: true, counted: false });
       this.ctx.storage.sql.exec(
         'UPDATE runs SET name = ?, hero = ?, tier = ?, stage = ?, total = ?, at = ? WHERE player = ? AND run = ?',
         name,
@@ -662,8 +685,8 @@ export class Leaderboard extends DurableObject<Env> {
       );
       return json({ ok: true, counted: true });
     }
-    // a run is first seen near its start (a report that never arrived is made up for within the grace)
-    if (total > believableStages(0)) return json({ ok: true, counted: false });
+    // a run the board has not heard of is taken where it says it is (DECISIONS #232): runs played before the board, before a
+    // username or while offline used to be refused for good once they were past the first few stages; the limits below still apply
     if (
       !this.within(`run:${b['player']}`, HOUR, RUN_REPORTS_PER_HOUR, now) ||
       !this.within(`ip-run:${ip}`, HOUR, IP_REPORTS_PER_HOUR, now) ||

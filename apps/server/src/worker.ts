@@ -162,7 +162,10 @@ async function boardRoute(request: Request, env: Env, what: string, url: URL): P
   if (request.method === 'OPTIONS') return new Response(null, { status: 204, headers: CORS_POST });
   const stub = env.BOARD.get(env.BOARD.idFromName('main'));
   try {
-    if (request.method === 'GET' && (what === 'pvp' || what === 'runs' || what === 'ghosts' || what === 'ghostdecks')) {
+    if (
+      request.method === 'GET' &&
+      (what === 'pvp' || what === 'runs' || what === 'ghosts' || what === 'ghostdecks')
+    ) {
       const res = await stub.fetch(
         new Request(
           `https://board.invalid/${what}?period=${url.searchParams.get('period') === 'month' ? 'month' : 'week'}`,
@@ -180,11 +183,17 @@ async function boardRoute(request: Request, env: Env, what: string, url: URL): P
     }
     if (
       request.method !== 'POST' ||
-      (what !== 'id' && what !== 'run' && what !== 'claim' && what !== 'view' && what !== 'ghostboss')
+      (what !== 'id' &&
+        what !== 'run' &&
+        what !== 'claim' &&
+        what !== 'view' &&
+        what !== 'ghostboss')
     )
       return json({ ok: false, error: 'not found' }, 404);
     const text = await request.text();
-    if (text.length > 2_000) return json({ ok: false, error: 'too big' }, 413);
+    // (a ghost Warden request carries the ghosts a run has met: up to 25 ids of 64 characters)
+    if (text.length > (what === 'ghostboss' ? 4_000 : 2_000))
+      return json({ ok: false, error: 'too big' }, 413);
     let body: Record<string, unknown>;
     try {
       const parsed: unknown = JSON.parse(text);
@@ -216,6 +225,9 @@ async function boardRoute(request: Request, env: Env, what: string, url: URL): P
           method: 'POST',
           body: JSON.stringify({
             requester: id ?? undefined,
+            // the player's tier (a ghost near it is chosen) and the ghosts this run has met (never met twice)
+            tier: body['tier'],
+            exclude: body['exclude'],
             // where it came from (hashed), so one address cannot ask over and over to collect decks
             ip: await sha256(
               `shattered-rifts-board-ip:${request.headers.get('CF-Connecting-IP') ?? 'local'}`,
@@ -229,18 +241,21 @@ async function boardRoute(request: Request, env: Env, what: string, url: URL): P
       return json({ ok: false, error: body['code'] === undefined ? 'signin' : 'bad-code' }, 401);
     if (what === 'id') return json({ ok: true, id });
     const res = await stub.fetch(
-      new Request(what === 'claim' ? 'https://board.invalid/name/claim' : 'https://board.invalid/run', {
-        method: 'POST',
-        body: JSON.stringify({
-          ...body,
-          code: undefined,
-          player: id,
-          // where it came from (hashed), so one address cannot flood the board
-          ip: await sha256(
-            `shattered-rifts-board-ip:${request.headers.get('CF-Connecting-IP') ?? 'local'}`,
-          ),
-        }),
-      }),
+      new Request(
+        what === 'claim' ? 'https://board.invalid/name/claim' : 'https://board.invalid/run',
+        {
+          method: 'POST',
+          body: JSON.stringify({
+            ...body,
+            code: undefined,
+            player: id,
+            // where it came from (hashed), so one address cannot flood the board
+            ip: await sha256(
+              `shattered-rifts-board-ip:${request.headers.get('CF-Connecting-IP') ?? 'local'}`,
+            ),
+          }),
+        },
+      ),
     );
     return json(await res.json(), res.status);
   } catch {

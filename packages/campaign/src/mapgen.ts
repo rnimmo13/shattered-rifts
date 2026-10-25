@@ -104,6 +104,8 @@ function crossedFor(rng: RngState, character: string | undefined): string | unde
  */
 /** Warden ghosts: from the Rift Tier after this one, a Warden may be a ghost deck. */
 export const GHOST_FROM_TIER = 3;
+/** A ghost deck must have reached this Rift Tier to stand in for a Warden (an early deck makes a poor boss; DECISIONS #231). */
+export const GHOST_BOSS_MIN_TIER = 3;
 /** The chance (percent) that a Warden beyond that is a ghost, so players do not meet the same few Wardens over and over. */
 export const GHOST_WARDEN_CHANCE = 35;
 

@@ -14,9 +14,17 @@ export async function syncSavedRuns(): Promise<void> {
   try {
     const sent = listRuns().flatMap(({ run }) => {
       const done = stagesCleared(run);
-      return stagesInAll(run.tier, done) > 0
-        ? [reportRun({ seed: run.seed, hero: run.character, tier: run.tier, stage: done, name: getName() })]
-        : [];
+      // (every run from its first finished stop: one that has not cleared a stage yet is on the board too)
+      if (stagesInAll(run.tier, done) === 0 && run.stats.nodesCleared === 0) return [];
+      return [
+        reportRun({
+          seed: run.seed,
+          hero: run.character,
+          tier: run.tier,
+          stage: done,
+          name: getName(),
+        }),
+      ];
     });
     await Promise.race([Promise.all(sent), new Promise((r) => setTimeout(r, 4000))]);
   } catch {

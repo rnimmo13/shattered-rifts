@@ -6,6 +6,7 @@ import {
   believableStages,
   periodStart,
   pickGhost,
+  pickGhostBoss,
   rankGhosts,
   rankVsGhosts,
   rankPvp,
@@ -38,8 +39,12 @@ describe('the periods', () => {
     expect(periodStart(Date.UTC(2026, 10, 5, 12), 'week')).toBe(Date.UTC(2026, 10, 2, 8));
     expect(periodEnd(Date.UTC(2026, 10, 5, 12), 'week')).toBe(Date.UTC(2026, 10, 9, 8));
     // the week that holds the change is 7 days and an hour long
-    expect(periodEnd(Date.UTC(2026, 9, 28), 'week') - periodStart(Date.UTC(2026, 9, 28), 'week')).toBe(7 * 86_400_000 + 3_600_000);
-    expect(periodEnd(Date.UTC(2026, 10, 12), 'week') - periodStart(Date.UTC(2026, 10, 12), 'week')).toBe(7 * 86_400_000);
+    expect(
+      periodEnd(Date.UTC(2026, 9, 28), 'week') - periodStart(Date.UTC(2026, 9, 28), 'week'),
+    ).toBe(7 * 86_400_000 + 3_600_000);
+    expect(
+      periodEnd(Date.UTC(2026, 10, 12), 'week') - periodStart(Date.UTC(2026, 10, 12), 'week'),
+    ).toBe(7 * 86_400_000);
   });
 
   it('a month starts on the 1st at midnight Pacific, and the year turns over', () => {
@@ -144,13 +149,24 @@ describe('the campaign board with several characters', () => {
 
 describe('usernames', () => {
   it('accept an ordinary name and give it a key that ignores how it is written', () => {
-    const a = checkUsername("  Rob   the Brave ");
+    const a = checkUsername('  Rob   the Brave ');
     expect(a).toMatchObject({ ok: true, name: 'Rob the Brave' });
     const b = checkUsername('rob_the-brave');
     expect(a.ok && b.ok && a.key === b.key).toBe(true);
   });
   it('refuse short, long, odd, reserved and blocked names', () => {
-    for (const bad of ['', 'ab', 'x'.repeat(21), 'no<tags>', 'Riftwalker', 'YOU', 'what the fuck', '___', 5, undefined])
+    for (const bad of [
+      '',
+      'ab',
+      'x'.repeat(21),
+      'no<tags>',
+      'Riftwalker',
+      'YOU',
+      'what the fuck',
+      '___',
+      5,
+      undefined,
+    ])
       expect(checkUsername(bad).ok).toBe(false);
   });
 });
@@ -252,6 +268,55 @@ describe('ghosts', () => {
       ['p2', 0, 1],
       ['p3', 0, 1],
     ]);
+  });
+});
+
+describe('ghost Wardens (DECISIONS #231)', () => {
+  const NOW = Date.UTC(2026, 9, 24);
+  const g = (id: string, tier: number, wins = 1, owner = id): GhostDeck => ({
+    id,
+    owner,
+    ownerName: owner,
+    hero: 'knight',
+    tier,
+    stage: 1,
+    wins,
+    losses: 0,
+    ghostWins: 0,
+    ghostLosses: 0,
+    lastAt: NOW,
+  });
+  const pickAll = (
+    decks: GhostDeck[],
+    tier: number,
+    exclude: string[] = [],
+    requester: string | null = null,
+  ) => {
+    const seen = new Set<string>();
+    for (let roll = 0; roll < 1; roll += 0.02)
+      seen.add(pickGhostBoss(decks, { requester, tier, exclude, roll, now: NOW })?.id ?? '-');
+    return [...seen].sort();
+  };
+
+  it('only a deck that reached Tier 3 or further can be a Warden', () => {
+    expect(pickAll([g('t1', 1), g('t2', 2)], 5)).toEqual(['-']);
+    expect(pickAll([g('t2', 2), g('t3', 3)], 1)).toEqual(['t3']);
+  });
+
+  it("a deck near the player's tier is chosen over a far one", () => {
+    const decks = [g('t3', 3), g('t6', 6), g('t7', 7, 5), g('t8', 8, 9), g('t15', 15, 50)];
+    // a Tier 6 player: the candidates are within one tier of the nearest (Tier 6 and 7), the better half of them by wins
+    // (the Tier 7 deck has more); never the far, strong Tier 15 deck
+    expect(pickAll(decks, 6)).toEqual(['t7']);
+    // a Tier 7 player: Tiers 7 and 6 or 8 are near; the better half of the three
+    expect(pickAll(decks, 7)).toEqual(['t7', 't8']);
+    expect(pickAll(decks, 15)).toEqual(['t15']);
+  });
+
+  it('never the same ghost twice in a run, and never your own', () => {
+    const decks = [g('a', 4, 1, 'ann'), g('b', 4, 1, 'bob'), g('mine', 4, 9, 'me')];
+    expect(pickAll(decks, 4, ['a'], 'me')).toEqual(['b']);
+    expect(pickAll(decks, 4, ['a', 'b'], 'me')).toEqual(['-']);
   });
 });
 

@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import { DeckReport } from './DeckReport';
 import { VAULT_SLOTS, dropFrom, loadVault, saveVault, type VaultDeck } from './vault';
 import { remoteVault, syncVault, vaultKey, whoAmI } from './vaultSync';
+import '../play/play.css';
 import './decks.css';
 
 export default function SavedDecksScreen() {

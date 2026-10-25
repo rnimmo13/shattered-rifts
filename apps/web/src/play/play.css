@@ -24,6 +24,47 @@
 .setup__back {
   justify-self: start;
 }
+
+/* setup / sanctum (and every screen laid out like it): centred, with room for the character details. These live here, with .setup,
+   because every such screen loads this file; they were in run.css, which only loads once a run is opened, so before that a screen
+   fell back to a plain grid and its buttons stretched across the whole page. */
+.setup--wide {
+  justify-items: center;
+  text-align: center;
+}
+/* keep the background full width; only the content column is narrow */
+.setup--wide > .picker,
+.setup--wide > .setup__head,
+.setup--wide > .setup__select,
+.setup--wide > section {
+  width: 100%;
+  max-width: 78rem;
+}
+.setup--wide .setup__lead {
+  max-width: 46rem;
+}
+.setup--wide .setup__back,
+.setup--wide .setup__nav {
+  justify-self: start;
+}
+.setup--wide .setup__select {
+  justify-self: center;
+}
+.setup--wide > .setup__back {
+  width: auto;
+}
+.setup--wide .setup__go {
+  justify-self: center;
+}
+.setup--wide .setup__h {
+  text-align: center;
+}
+/* a few small links side by side at the top of a screen (Back, Elite Events) */
+.setup__nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
 .setup__title {
   margin: 0;
   font-family: var(--font-display);

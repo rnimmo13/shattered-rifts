@@ -81,7 +81,13 @@ export {
   buildElite,
 } from './trials';
 export { EVENT_TAG_LABEL, eventOffers, type EventTag } from './odds';
-export { NODE_ODDS, EVENT_FIGHT_ODDS, GHOST_FROM_TIER, GHOST_WARDEN_CHANCE } from './mapgen';
+export {
+  NODE_ODDS,
+  EVENT_FIGHT_ODDS,
+  GHOST_BOSS_MIN_TIER,
+  GHOST_FROM_TIER,
+  GHOST_WARDEN_CHANCE,
+} from './mapgen';
 export { TIER_TABLE, enemyScale } from './tierTable';
 export { upgradedCards } from './upgrades';
 export {

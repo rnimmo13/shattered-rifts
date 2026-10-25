@@ -1,23 +1,17 @@
 // A run's deck goes to the Arena by itself: it is copied into the Vault after every stop on the map that is finished (every fight once its
 // reward is taken, and every shop, shrine and event too, since those change the deck). The saved copy is a snapshot, replaced by the
-// next one (one run keeps one saved deck); the live run goes on. If the run collapses, its saved deck is removed with it.
+// next one (one run keeps one saved deck); the live run goes on. If the run collapses, its saved deck leaves the player's Vault (they
+// can no longer bring it to the Arena), but the ghost made from it stays on the server for others to face (DECISIONS #231).
 
 import type { RunState } from '@sr/campaign';
 import { RUN_PREFIX, safeId } from '@sr/pvp';
-import {
-  bankInto,
-  deckSnapshot,
-  loadVault,
-  progressLabelOf,
-  runOf,
-  saveVault,
-} from '../pvp/vault';
+import { bankInto, deckSnapshot, loadVault, progressLabelOf, runOf, saveVault } from '../pvp/vault';
 import { forgetRun, syncVault, vaultKey, whoAmI } from '../pvp/vaultSync';
 
 /**
- * A run that collapses takes the deck it saved for the Arena with it: every saved copy of that run's deck is removed, here and online.
- * (Saving a deck is a snapshot, but it is only safe while the run is alive: a run that ends in defeat loses it.) Returns how many saved
- * decks went.
+ * A run that collapses takes the deck it saved for the Arena out of the player's Vault: every saved copy of that run's deck is removed,
+ * here and online, so it can no longer be brought to the Arena. Its ghost is a separate record on the leaderboard server and stays:
+ * other players can still meet it (DECISIONS #231). Returns how many saved decks went.
  */
 export async function loseSavedDecks(run: Pick<RunState, 'seed'>): Promise<number> {
   const mine = runOf(safeId(RUN_PREFIX + run.seed));

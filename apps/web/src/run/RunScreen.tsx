@@ -57,7 +57,7 @@ import { stagesCleared } from '../pvp/vault';
 import { progressLabel } from '../pvp/deckLayout';
 import { reportRun } from '../pvp/boardApi';
 import { syncSavedRuns } from './syncRuns';
-import { getName } from '../pvp/config';
+import { getName, hasUsername } from '../pvp/config';
 import { CharacterPicker } from './CharacterPicker';
 import { MapLegend, MapView } from './MapView';
 import {
@@ -189,16 +189,17 @@ export default function RunScreen() {
   const resumedSeed = run?.seed;
   useEffect(() => {
     const r = runRef.current;
-    if (!r || r.seed !== resumedSeed) return;
+    if (!r || r.seed !== resumedSeed || !hasUsername()) return;
     const done = stagesCleared(r);
-    if (stagesInAll(r.tier, done) > 0)
-      void reportRun({
-        seed: r.seed,
-        hero: r.character,
-        tier: r.tier,
-        stage: done,
-        name: getName() || 'Riftwalker',
-      });
+    // (from its first finished stop: a run abandoned before its first fight does not use up a new-run slot on the server)
+    if (stagesInAll(r.tier, done) === 0 && r.stats.nodesCleared === 0) return;
+    void reportRun({
+      seed: r.seed,
+      hero: r.character,
+      tier: r.tier,
+      stage: done,
+      name: getName() || 'Riftwalker',
+    });
   }, [resumedSeed]);
 
   // the leaderboard is told again when the browser comes back (online, or the tab is looked at again), so a report that was missed
@@ -228,7 +229,12 @@ export default function RunScreen() {
         const was = stagesInAll(cur.tier, stagesCleared(cur));
         const now = stagesInAll(next.tier, stagesCleared(next));
         // (going on to the next Rift Tier is told too: Tier 1 stage 3 and Tier 2 stage 0 are the same count, but the board should say Tier 2)
-        if ((now > was || next.tier > cur.tier) && next.seed === cur.seed)
+        // (and after every finished stop, so a new run is on the board from its first fight; a repeat costs the server nothing)
+        if (
+          (now > was || next.tier > cur.tier || shouldAutoSave(cur, next)) &&
+          next.seed === cur.seed &&
+          hasUsername()
+        )
           void reportRun({
             seed: next.seed,
             hero: next.character,
@@ -329,7 +335,9 @@ export default function RunScreen() {
   useEffect(() => {
     if (!wanted) return;
     let live = true;
-    void fetchGhostBoss().then((g) => {
+    // (read from the ref: the ghost is asked for once per Warden, not again whenever the run changes)
+    const at = runRef.current;
+    void fetchGhostBoss(at?.tier ?? 1, at?.ghostsMet ?? []).then((g) => {
       if (live) act((r) => (ghostWanted(r) ? attachGhost(r, g) : r));
     });
     return () => {
@@ -389,7 +397,7 @@ export default function RunScreen() {
                 }
               : { enemies: plan.units, tier: plan.tier, hpPct: plan.hpPct, dmgPct: plan.dmgPct },
           }}
-          title={`${plan.ghost ? `${plan.ghost.name}'s ghost` : encounter(plan.encounterId).name} · Stage ${run.stage}${floorLabel(run) && ` · ${floorLabel(run)}`}`}
+          title={`${plan.ghost ? `Ghost Warden: ${plan.ghost.name}'s ${RIFTWALKERS[plan.ghost.hero]?.role ?? 'Riftwalker'} deck` : encounter(plan.encounterId).name} · Stage ${run.stage}${floorLabel(run) && ` · ${floorLabel(run)}`}`}
           exitLabel="Forfeit"
           topExtra={
             <>
@@ -495,7 +503,7 @@ export default function RunScreen() {
                   potions: [],
                 },
               }}
-              names={{ a: 'You', b: `${plan.ghost.name}'s ghost` }}
+              names={{ a: 'You', b: `${plan.ghost.name}'s ghost deck` }}
               progress={{
                 a: { tier: run.tier },
                 b: {
@@ -532,8 +540,8 @@ export default function RunScreen() {
         <p className="run__notice run__notice--good" role="status">
           <b>Your deck is now in the Arena.</b> It is saved by itself after every fight, so the
           Arena always has your latest deck, and other players may face it as a ghost (the computer
-          plays it). If this run collapses, the deck is removed. See it under{' '}
-          <a href="#/decks">Saved decks</a>.{' '}
+          plays it). If this run collapses you can no longer bring it to the Arena yourself, but it
+          stays as a ghost. See it under <a href="#/decks">Saved decks</a>.{' '}
           <button
             className="btn btn--small"
             onClick={() => {
@@ -715,7 +723,7 @@ function RunBar(props: {
         <a
           className="btn btn--small btn--ghost runbar__arena"
           href="#/decks"
-          title="Your deck is entered in the Arena by itself, and updated after every fight. Other players may face it as a ghost (the computer plays it). If this run collapses, the saved deck is removed. Click to see your saved decks."
+          title="Your deck is entered in the Arena by itself, and updated after every fight. Other players may face it as a ghost (the computer plays it). If this run collapses, you can no longer bring it to the Arena yourself, but it stays as a ghost. Click to see your saved decks."
         >
           <span>Arena deck: {props.arenaLabel ?? 'saved after your first fight'}</span>
         </a>
@@ -852,8 +860,8 @@ function Body(props: {
           <p className="stage-panel__hint">
             You cleared all three stages at Rift Tier {run.tier}. This deck is already in the Arena.
             <b> Continue</b> one Tier deeper for harder enemies and better rewards, but if Resolve
-            runs out the run collapses and its Arena deck is removed with it. Or leave the run
-            parked and come back to it later.
+            runs out the run collapses and you can no longer bring its deck to the Arena (it stays
+            as a ghost others may face). Or leave the run parked and come back to it later.
           </p>
           <div className="choices-row">
             {run.tier < MAX_TIER ? (
@@ -881,7 +889,11 @@ function Body(props: {
             Your Resolve is gone and the run falls apart. You won {run.stats.duelsWon} duels and
             cleared {run.stats.nodesCleared} nodes.
             {props.lostDecks !== null && props.lostDecks > 0 && (
-              <> The deck you saved for the Arena from this run is lost with it.</>
+              <>
+                {' '}
+                You can no longer bring this run's deck to the Arena, but it stays as a ghost that
+                other players may face.
+              </>
             )}
           </p>
           <button className="btn btn--primary" onClick={props.onLeave}>

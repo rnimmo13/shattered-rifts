@@ -145,7 +145,8 @@ export interface GhostDeckRow {
  * A ghost deck to stand in for a campaign Warden (null when there is none, or the server cannot be reached: the usual Warden is
  * fought). The campaign checks it before it believes it (checkGhostBoss).
  */
-export async function fetchGhostBoss(): Promise<unknown> {
+/** A ghost deck to stand in for a campaign Warden: one near `tier`, never one of `exclude` (the ghosts this run has met). */
+export async function fetchGhostBoss(tier: number, exclude: readonly string[]): Promise<unknown> {
   // (in a development build a ghost can be put in by hand, to try the fight without a server: localStorage 'sr.debug.ghostboss')
   if (import.meta.env.DEV) {
     try {
@@ -156,7 +157,7 @@ export async function fetchGhostBoss(): Promise<unknown> {
     }
   }
   const d = await Promise.race([
-    post('ghostboss', {}),
+    post('ghostboss', { tier, exclude: exclude.slice(-25) }),
     new Promise<null>((resolve) => window.setTimeout(() => resolve(null), 6000)),
   ]);
   return d?.['ghost'] ?? null;
@@ -169,7 +170,9 @@ export async function viewGhostDecks(): Promise<GhostDeckRow[] | null> {
     const d = (await res.json()) as { ok?: unknown; decks?: unknown };
     if (d.ok !== true || !Array.isArray(d.decks)) return null;
     return (d.decks as Record<string, unknown>[]).flatMap((r) =>
-      typeof r['name'] === 'string' && typeof r['hero'] === 'string' && typeof r['tier'] === 'number'
+      typeof r['name'] === 'string' &&
+      typeof r['hero'] === 'string' &&
+      typeof r['tier'] === 'number'
         ? [
             {
               name: r['name'],

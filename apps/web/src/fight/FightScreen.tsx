@@ -72,12 +72,14 @@ export default function FightScreen() {
 
   return (
     <main className="setup setup--wide">
-      <a className="btn btn--small setup__back" href="#/">
-        <span>Back</span>
-      </a>{' '}
-      <a className="btn btn--small" href="#/trials">
-        <span>Elite Events</span>
-      </a>
+      <nav className="setup__nav" aria-label="Sandbox">
+        <a className="btn btn--small" href="#/">
+          <span>Back</span>
+        </a>
+        <a className="btn btn--small" href="#/trials">
+          <span>Elite Events</span>
+        </a>
+      </nav>
       <h1 className="setup__title">Fight the rift</h1>
       <p className="setup__lead">
         The new combat: play cards with Mana, read what each enemy is about to do, and bring

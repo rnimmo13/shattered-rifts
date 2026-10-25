@@ -250,6 +250,8 @@ export interface PreludeOffer {
 /** What the current node is asking for. Only the field matching `phase` is meaningful. */
 /** A deck from the Arena that stands in for a Warden: someone's Riftwalker, cards and Boons, played by the computer. */
 export interface GhostBoss {
+  /** the ghost's id on the server (so a run never meets the same one twice); missing from an older server */
+  id?: string;
   /** whose deck it was (shown as "<name>'s ghost") */
   name: string;
   hero: HeroId;
@@ -318,6 +320,8 @@ export interface RunStats {
 
 export interface RunState {
   v: 2;
+  /** the ghost Wardens this run has met (their server ids), so it never meets one twice */
+  ghostsMet?: string[];
   seed: string;
   character: HeroId;
   /** The run's difficulty setting (see DIFFICULTY): Normal unless chosen otherwise (see DIFFICULTY). */

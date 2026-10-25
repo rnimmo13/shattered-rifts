@@ -6,6 +6,7 @@ import { RIFTWALKERS } from '@sr/content/v2';
 import { HeroIcon } from '../ui/HeroIcon';
 import { viewGhostDecks, type GhostDeckRow } from './boardApi';
 import { heroName, progressLabel } from './deckLayout';
+import '../play/play.css';
 import './board.css';
 
 type Sort = 'recent' | 'ghost' | 'tier';
@@ -65,8 +66,8 @@ export default function GhostDecksScreen() {
         <p className="setup__lead">
           A ghost is a deck that has been entered in the Arena, played by the computer so there is
           always someone to fight. Here is who they came from and how far they got. You cannot see
-          their cards or Boons: you find out by fighting one. Decks that have not played for a
-          month drop off.
+          their cards or Boons: you find out by fighting one. Decks that have not played for a month
+          drop off.
         </p>
       </header>
       <div className="board__tabs" role="group" aria-label="Sort">

@@ -88,11 +88,17 @@ describe('Wardens that are ghosts', () => {
     expect(plan.ghost?.name).toBe('Rob');
     expect(plan.ghost?.hp).toBe(ghostBossHp('trapper', 5));
     expect(plan.kind).toBe('warden');
-    // none came: the usual Warden, and it is not asked for again
+    // the player is told plainly that this Warden is a ghost deck, and whose
+    expect(withGhost.eventResult).toMatch(/^Ghost Warden! .*Rob's Trapper deck from the Arena/);
+    // none came: the usual Warden, and it is not asked for again (and nothing says ghost)
     const none = attachGhost(run, null);
     expect(ghostWanted(none)).toBe(false);
+    expect(none.eventResult ?? '').not.toMatch(/Ghost/);
     expect(duelPlan(none)!.ghost).toBeUndefined();
     expect(() => attachGhost(withGhost, entry)).toThrow();
+    // a ghost the server named is remembered, so the run never meets it again; one below Tier 3 is not a Warden at all
+    expect(attachGhost(run, { ...entry, id: 'ghost-1' }).ghostsMet).toEqual(['ghost-1']);
+    expect(duelPlan(attachGhost(run, { ...entry, tier: 2 }))!.ghost).toBeUndefined();
     // a Warden that is not a ghost never asks
     expect(ghostWanted(atWarden(5, false))).toBe(false);
   });

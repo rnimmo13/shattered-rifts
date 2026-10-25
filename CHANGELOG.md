@@ -5,6 +5,10 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **Every run is on the campaign leaderboard,** from its first fight, and so are runs played before you had a username (or while offline): open the game and they are announced.
+- **Ghost Wardens say so:** "Ghost Warden! This Warden is X's deck from the Arena", and the fight is titled the same. A ghost Warden is now a deck that reached Tier 3 or further, chosen near your own tier, and never the same one twice in a run.
+- **A deck from a run that collapses stays as a ghost** other players may face; you just can't take it into the Arena yourself any more.
+- **The Sandbox's buttons no longer stretch across the whole screen** (they did until a run had been opened).
 - **Harder from the start, and every Rift Tier a real step up:** Tier I enemies have 15% more HP and hit 12% harder, and it only ever goes up from there: every stage is harder than the last, a new tier always starts harder than the Rift of the one before, and each tier adds about 45% more enemy HP and 18% more damage up to Tier X (a gentler climb after). The How to play tier table shows the new numbers.
 - **Boons come slower, and the best are Legendary:** Wardens no longer drop a Boon (they give their Gift), so Boons come from Elites, the merchant, events and Threshold options. There are 18 Boons now (six new). The strongest (+1 Mana every turn, +1 card every turn, and two new ones) are **Legendary**: rare from Elites, never sold, and beating Vorthax sometimes leaves one.
 - **Events reworked:** most events that upgrade, remove, change or copy a card now let you **choose the card**, and their rewards are bigger. There are new events too: some **engrave a word on a card** for good (Hold, Opening hand, or Flare: costs 1 less but is consumed), some turn into **fights with spoils** if you win (bandits, a guarded hoard, a champion, a dead adventurer whose killer comes back), and some simply **go badly** (a rift storm, pickpockets, a cave-in, a cursed coin).

@@ -12,7 +12,7 @@ describe('when the deck is saved for the Arena by itself', () => {
     expect(shouldAutoSave(stepped(2, 'reward'), stepped(3))).toBe(true);
     expect(shouldAutoSave(stepped(0, 'shrine'), stepped(1))).toBe(true);
   });
-  it('when the Warden\'s Gift has been picked (the Warden itself was cleared before it)', () => {
+  it("when the Warden's Gift has been picked (the Warden itself was cleared before it)", () => {
     expect(shouldAutoSave(stepped(5, 'gift'), stepped(5, 'stageClear'))).toBe(true);
     expect(shouldAutoSave(stepped(5, 'gift'), stepped(5, 'gift'))).toBe(false);
   });
@@ -27,7 +27,7 @@ describe('when the deck is saved for the Arena by itself', () => {
   });
 });
 
-describe('a run that collapses takes its saved deck with it', () => {
+describe('a run that collapses takes its saved deck out of the Vault (its ghost stays)', () => {
   it('removes every saved copy of that run and nothing else', async () => {
     const store = new Map<string, string>();
     (globalThis as { localStorage?: unknown }).localStorage = {
@@ -50,5 +50,23 @@ describe('a run that collapses takes its saved deck with it', () => {
     // nothing saved: nothing lost
     expect(await loseSavedDecks({ seed: 'dead-run' })).toBe(0);
     expect(loadVault()).toHaveLength(1);
+  });
+
+  it('never touches the ghost made from it: other players can still face it (DECISIONS #231)', async () => {
+    const asked: string[] = [];
+    const real = globalThis.fetch;
+    globalThis.fetch = (url: string | URL | Request) => {
+      asked.push(String(url instanceof Request ? url.url : url));
+      return Promise.reject(new Error('offline'));
+    };
+    try {
+      await loseSavedDecks({ seed: 'another-dead-run' });
+    } finally {
+      globalThis.fetch = real;
+    }
+    // only the player's own Vault is asked to drop it; the leaderboard (where ghosts live) is never called
+    // (it did ask the server: the Vault, to drop the deck there too)
+    expect(asked.some((u) => u.includes('/pvp/vault/'))).toBe(true);
+    expect(asked.some((u) => u.includes('/pvp/board/'))).toBe(false);
   });
 });

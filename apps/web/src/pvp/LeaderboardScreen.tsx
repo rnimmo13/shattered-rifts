@@ -14,6 +14,7 @@ import { heroName, progressLabel } from './deckLayout';
 import { viewBoard, type BoardKind, type BoardView, type GhostView } from './boardApi';
 import { NameClaim } from './NameClaim';
 import { syncSavedRuns } from '../run/syncRuns';
+import '../play/play.css';
 import './board.css';
 
 /** "3 days left", "5 hours left": how long this period has to run (boards turn over at midnight Pacific time). */
@@ -271,7 +272,8 @@ export function LeaderboardScreen() {
             count on the Arena board.
           </p>
           <p>
-            <a href="#/ghosts">See every ghost deck</a> (whose it is, how far it got and how it has done).
+            <a href="#/ghosts">See every ghost deck</a> (whose it is, how far it got and how it has
+            done).
           </p>
           <h2 className="board__h">Ghosts</h2>
           <Table<GhostStanding>
@@ -321,14 +323,10 @@ export function LeaderboardScreen() {
       )}
 
       <section className="board__you">
-        <NameClaim
-          label="Username"
-          button="Change username"
-          onDone={() => setTry((t) => t + 1)}
-        />
+        <NameClaim label="Username" button="Change username" onDone={() => setTry((t) => t + 1)} />
         <p className="board__note">
-          It is the same username you use in the Arena and the campaign, and no one else can have it.
-          Everything you have already done on the boards moves to the new username.
+          It is the same username you use in the Arena and the campaign, and no one else can have
+          it. Everything you have already done on the boards moves to the new username.
         </p>
       </section>
     </main>

@@ -338,8 +338,10 @@ export function parseRun(text: string): RunState | null {
     if (!ev.options.length) ev.options = [{ id: 'leave' }];
   }
   // event flags and the last event's coin tosses: kept only when well-formed
-  const loose = r as { marks?: unknown; eventFlips?: unknown };
+  const loose = r as { marks?: unknown; eventFlips?: unknown; ghostsMet?: unknown };
   if (loose.marks !== undefined && !isStrArray(loose.marks)) delete loose.marks;
+  // (the ghost Wardens met: a list that only steers which ghost comes next, so a bad one is dropped, not the save)
+  if (loose.ghostsMet !== undefined && !isStrArray(loose.ghostsMet)) delete loose.ghostsMet;
   if (
     loose.eventFlips !== undefined &&
     !(

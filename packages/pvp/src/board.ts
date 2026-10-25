@@ -2,7 +2,7 @@
 // how far a run has got, and what a name on a board may be. Where the results are kept is not decided here (apps/server/src/board.ts).
 
 import { RIFTWALKERS, canonicalHero } from '@sr/content/v2';
-import { MAX_TIER } from '@sr/campaign';
+import { MAX_TIER, GHOST_BOSS_MIN_TIER } from '@sr/campaign';
 import { cleanName } from './deck';
 
 /** Whether this is the id of a Riftwalker in the game. */
@@ -31,6 +31,8 @@ export const WINS_PER_DAY = 20;
  */
 export const RUN_START_GRACE = 9;
 export const RUN_MIN_STAGE_MS = 60_000;
+/** Stages a run may move on in one report beyond what the time since the last one allows (a tier change, a missed report). */
+export const RUN_STEP_ALLOWANCE = 3;
 /** The furthest a run can be believed to be (the last Rift Tier). */
 export const RUN_MAX_TIER = MAX_TIER;
 /** Reports and new runs allowed per player and per address, so a script cannot flood the board. */
@@ -124,7 +126,15 @@ export function cleanBoardName(raw: unknown): string {
 }
 
 /** Names nobody may take: they are what a player with no name is shown as. */
-const RESERVED_NAMES = new Set(['riftwalker', 'you', 'enemy', 'opponent', 'player', 'guest', 'admin']);
+const RESERVED_NAMES = new Set([
+  'riftwalker',
+  'you',
+  'enemy',
+  'opponent',
+  'player',
+  'guest',
+  'admin',
+]);
 
 export type Username = { ok: true; name: string; key: string } | { ok: false; message: string };
 
@@ -346,6 +356,49 @@ export function pickGhost(
   if (fresh.length === 0) return null;
   const upper = fresh.slice(0, Math.ceil(fresh.length / 2));
   const i = Math.min(upper.length - 1, Math.max(0, Math.floor(roll * upper.length)));
+  return upper[i] ?? null;
+}
+
+/** The most ghosts a run can ask to be left out (the ones it has met already). */
+export const GHOST_BOSS_EXCLUDE_MAX = 25;
+
+/**
+ * The ghost to stand in for a campaign Warden (DECISIONS #231): a deck that reached Tier GHOST_BOSS_MIN_TIER or further, never the
+ * asker's own, never one this run has met already, and as close to the player's tier as there is. Among the closest (the decks
+ * within one tier of the nearest), one of the better half by wins.
+ */
+export function pickGhostBoss(
+  decks: readonly GhostDeck[],
+  opts: {
+    requester: string | null;
+    tier: number;
+    exclude: readonly string[];
+    roll: number;
+    now: number;
+  },
+): GhostDeck | null {
+  const skip = new Set(opts.exclude);
+  const fresh = decks.filter(
+    (d) =>
+      d.tier >= GHOST_BOSS_MIN_TIER &&
+      d.owner !== opts.requester &&
+      !skip.has(d.id) &&
+      d.lastAt >= opts.now - GHOST_FRESH_DAYS * 86_400_000,
+  );
+  if (fresh.length === 0) return null;
+  const dist = (d: GhostDeck): number => Math.abs(d.tier - opts.tier);
+  const nearest = Math.min(...fresh.map(dist));
+  const close = fresh
+    .filter((d) => dist(d) <= nearest + 1)
+    .sort(
+      (x, y) =>
+        totalWins(y) - totalWins(x) ||
+        rate(y) - rate(x) ||
+        y.lastAt - x.lastAt ||
+        x.id.localeCompare(y.id),
+    );
+  const upper = close.slice(0, Math.ceil(close.length / 2));
+  const i = Math.min(upper.length - 1, Math.max(0, Math.floor(opts.roll * upper.length)));
   return upper[i] ?? null;
 }
 
