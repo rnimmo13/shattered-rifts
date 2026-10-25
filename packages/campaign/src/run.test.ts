@@ -204,10 +204,10 @@ describe('the run', () => {
     expect(e.difficulty).toBe('easy');
     expect(e.resolve).toBe(5);
     expect(e.shards).toBe(100);
-    // Easy is Normal's Tier I stage 1 (127% HP, 118% damage in the tier table) times Easy's ratio to Normal (85/128, 80/118)
+    // Easy is Normal's Tier I stage 1 (130% HP, 125% damage in the tier table) times Easy's ratio to Normal (85/128, 80/118)
     expect(duelPlan(enterNode(e, availableNodes(e)[0]!.id))).toMatchObject({
-      hpPct: 84,
-      dmgPct: 80,
+      hpPct: 86,
+      dmgPct: 85,
     });
     expect(newRun('knight', 'hard', 'hard').resolve).toBe(1);
     expect(parseRun(JSON.stringify({ ...e, difficulty: undefined }))?.difficulty).toBe('easy');
