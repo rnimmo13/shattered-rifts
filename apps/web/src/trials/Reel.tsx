@@ -4,6 +4,9 @@
 import { useEffect, useLayoutEffect, useMemo, useRef } from 'react';
 import { play } from '../audio/sfx';
 import { PRIZE_MARK, type LanePrize } from './prizes';
+// the reel's own styles (and the prize list under it) come with it: they used to be loaded only by the lazy practice page, so in a
+// run the reel showed as a long line of unstyled text until that page had been opened once
+import './trials.css';
 
 const TILE_W = 132;
 const TILE_GAP = 8;
