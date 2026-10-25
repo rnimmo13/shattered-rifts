@@ -12,6 +12,9 @@ const RunScreen = lazy(() => import('../run/RunScreen'));
 const FightScreen = lazy(() => import('../fight/FightScreen'));
 const PvpScreen = lazy(() => import('../pvp/PvpScreen'));
 const SavedDecksScreen = lazy(() => import('../pvp/SavedDecksScreen'));
+const LeaderboardScreen = lazy(() =>
+  import('../pvp/LeaderboardScreen').then((m) => ({ default: m.LeaderboardScreen })),
+);
 import { RunErrorBoundary } from '../run/ErrorBoundary';
 
 function useHash(): string {
@@ -54,6 +57,13 @@ function Screens({ hash }: { hash: string }) {
     return (
       <Suspense fallback={<div className="loading">Opening the rift…</div>}>
         <PvpScreen />
+      </Suspense>
+    );
+  }
+  if (hash === '#/board') {
+    return (
+      <Suspense fallback={<div className="loading">Opening the rift…</div>}>
+        <LeaderboardScreen />
       </Suspense>
     );
   }

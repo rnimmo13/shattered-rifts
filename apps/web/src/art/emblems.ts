@@ -96,7 +96,14 @@ export const EMBLEMS: Record<string, Emblem> = {
   // Ilvane: a carved totem pole (three stacked bands and spread wings)
   totem: {
     f: ['M26 4H38V60H26Z'],
-    s: ['M26 20H38', 'M26 36H38', 'M26 52H38', 'M26 12L10 8V24L26 28', 'M38 12L54 8V24L38 28', 'M29 14H35'],
+    s: [
+      'M26 20H38',
+      'M26 36H38',
+      'M26 52H38',
+      'M26 12L10 8V24L26 28',
+      'M38 12L54 8V24L38 28',
+      'M29 14H35',
+    ],
   },
   // a rune ring around a glyph (kept for other uses)
   runering: {
@@ -105,6 +112,17 @@ export const EMBLEMS: Record<string, Emblem> = {
       'M30 14H34V50H30Z',
       'M18 22L34 34L30 38L14 26Z',
       'M46 22L50 26L34 38L30 34Z',
+    ],
+  },
+  // Sehra: two curved scimitars crossed (the Barbarian's icon)
+  scimitars: {
+    f: [
+      'M56 6C48 20 34 34 16 48L21 53C40 42 54 26 56 6Z',
+      'M11 46L25 59L22 62L8 49Z',
+      'M12 52L16 56L9 62L5 58Z',
+      'M8 6C16 20 30 34 48 48L43 53C24 42 10 26 8 6Z',
+      'M53 46L39 59L42 62L56 49Z',
+      'M52 52L48 56L55 62L59 58Z',
     ],
   },
   // Sehra: a closed fist, wrapped
@@ -281,7 +299,7 @@ export const HERO_EMBLEM: Record<string, string> = {
   vesper: 'mask',
   quill: 'daggers',
   ilvane: 'totem',
-  sehra: 'fist',
+  sehra: 'scimitars',
   astra: 'shard',
   mire: 'skull',
   kp: 'bottlepane',

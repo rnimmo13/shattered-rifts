@@ -1,0 +1,119 @@
+/* the leaderboards page: it sets its own centring, like the Saved decks page (the shared rules live in a stylesheet this page may not load) */
+.board {
+  justify-items: center;
+  text-align: center;
+}
+.board > .setup__head,
+.board > section {
+  width: 100%;
+  max-width: 54rem;
+}
+.board .setup__head {
+  display: grid;
+  gap: 0.6rem;
+  justify-items: center;
+}
+.board .setup__lead {
+  max-width: 40rem;
+}
+.board .setup__back {
+  justify-self: start;
+}
+.board__tabs {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+}
+.board__tabs .btn.is-open {
+  box-shadow: var(--glow-gold);
+  outline: 2px solid var(--c-gold-light);
+}
+.board__left,
+.board__note {
+  margin: 0;
+  color: var(--c-text-dim);
+  font-size: 0.95rem;
+}
+.board__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.4rem;
+  width: min(100%, 54rem);
+}
+.board__row {
+  display: grid;
+  grid-template-columns: 2.4rem minmax(0, 1.4fr) minmax(0, 1fr) minmax(0, 1.4fr);
+  align-items: center;
+  gap: 0.8rem;
+  padding: 0.5rem 0.9rem;
+  border-radius: 10px;
+  background: rgb(8 10 22 / 0.7);
+  border: 1px solid rgb(255 255 255 / 0.14);
+  text-align: left;
+}
+.board__row:nth-child(1) {
+  border-color: #ffd766;
+}
+.board__row:nth-child(2) {
+  border-color: #cfd6e4;
+}
+.board__row:nth-child(3) {
+  border-color: #cd8f5a;
+}
+.board__rank {
+  font-family: var(--font-numeric);
+  font-size: 1.4rem;
+  color: var(--c-gold-light);
+  text-align: center;
+}
+.board__name {
+  font-family: var(--font-display);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.board__record b {
+  font-size: 1.25rem;
+}
+.board__record small {
+  color: var(--c-text-dim);
+}
+.board__heroes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  justify-content: flex-end;
+}
+.board__hero {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+.board__hero small {
+  color: var(--c-text-dim);
+}
+.board__empty {
+  padding: 1rem;
+  color: var(--c-text-dim);
+}
+.board__you {
+  display: grid;
+  gap: 0.4rem;
+  justify-items: center;
+}
+.board__you label {
+  display: grid;
+  gap: 0.3rem;
+  justify-items: center;
+}
+@media (max-width: 40rem) {
+  .board__row {
+    grid-template-columns: 2rem minmax(0, 1fr) auto;
+  }
+  .board__heroes {
+    grid-column: 2 / -1;
+    justify-content: flex-start;
+  }
+}

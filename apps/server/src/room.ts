@@ -22,6 +22,10 @@ import {
 import type { Env } from './env';
 import { cleanAction, parse, send } from './wire';
 
+/** A match counts on the leaderboard only if at least this many moves were made (and, if it ended any way but a win, this many). */
+const MIN_RECORDED_MOVES = 6;
+const MIN_FORFEIT_MOVES = 14;
+
 /** A room nobody joins, or whose result nobody collects, is cleared after this long. */
 const IDLE_MS = 15 * 60_000;
 const LINGER_MS = 5 * 60_000;
@@ -34,6 +38,8 @@ interface Saved {
   /** who sits where, by their own random id (seats are only fixed when the second player joins) */
   ids: Partial<Record<Seat, string>>;
   entries: Partial<Record<Seat, Entry>>;
+  /** each seat's leaderboard id. Kept apart from the entries on purpose: entries are sent to both players, and this is never shown */
+  who?: Partial<Record<Seat, string>>;
   started: boolean;
   seed: string;
   log: { seat: Seat; action: Action }[];
@@ -199,16 +205,20 @@ export class MatchRoom extends DurableObject<Env> {
     const seats = seatsFor(order.first);
     const ids: Partial<Record<Seat, string>> = {};
     const entries: Partial<Record<Seat, Entry>> = {};
+    const whos: Partial<Record<Seat, string>> = {};
     for (const arrival of ['a', 'b'] as const) {
       const id = d.ids[arrival];
       const entry = d.entries[arrival];
       if (id && entry) {
         ids[seats[arrival]] = id;
         entries[seats[arrival]] = entry;
+        const w = d.who?.[arrival];
+        if (w) whos[seats[arrival]] = w;
       }
     }
     d.ids = ids;
     d.entries = entries;
+    d.who = whos;
     d.choosing = false;
     d.choices = {};
     d.started = true;
@@ -279,7 +289,12 @@ export class MatchRoom extends DurableObject<Env> {
         return;
       }
       d.ids[free] = msg.playerId;
-      d.entries[free] = checked.entry;
+      // the leaderboard id is taken out of the entry before it is kept (the entry goes to the opponent)
+      const { who, ...publicEntry } = checked.entry;
+      d.entries[free] = publicEntry;
+      d.who ??= {};
+      if (who) d.who[free] = who;
+      else delete d.who[free];
       ws.serializeAttachment({ playerId: msg.playerId, seat: free } satisfies Attach);
       if (!(d.ids.a && d.ids.b)) {
         await this.save();
@@ -371,6 +386,33 @@ export class MatchRoom extends DurableObject<Env> {
     this.data.over = outcome;
     await this.save();
     this.broadcast({ type: 'end', winner: outcome.winner, reason: outcome.reason });
+    await this.record(outcome);
+  }
+
+  /** A played match with a winner goes on the Arena leaderboard (a match that never got going, or a draw, does not). */
+  private async record(outcome: Outcome): Promise<void> {
+    const d = this.data;
+    // a match that was barely played does not count, nor does a win by forfeit or a missed clock in the first few moves
+    if (outcome.winner === 'draw' || !d.started || d.log.length < MIN_RECORDED_MOVES) return;
+    if (outcome.reason !== 'win' && d.log.length < MIN_FORFEIT_MOVES) return;
+    const w = d.entries[outcome.winner];
+    const l = d.entries[other(outcome.winner)];
+    const wid = d.who?.[outcome.winner];
+    const lid = d.who?.[other(outcome.winner)];
+    if (!w || !l || !wid || !lid) return;
+    try {
+      await this.env.BOARD.get(this.env.BOARD.idFromName('main')).fetch(
+        new Request('https://board.invalid/pvp', {
+          method: 'POST',
+          body: JSON.stringify({
+            winner: { id: wid, name: w.name, hero: w.hero },
+            loser: { id: lid, name: l.name, hero: l.hero },
+          }),
+        }),
+      );
+    } catch {
+      /* the board is a nicety: a match never fails because it could not be recorded */
+    }
   }
 
   override async webSocketClose(ws: WebSocket, _code = 1000): Promise<void> {

@@ -6,6 +6,27 @@ import { SECOND_PLAYER_HP } from '@sr/pvp';
 import { heroFigure } from '../fight/art';
 import type { ChooseInfo } from './session';
 
+/** How long the player has waited: counts up from the moment it appears (so it restarts with each new search). */
+export function WaitTimer(props: { label: string; widenAfterMs?: number }) {
+  const [since] = useState(() => Date.now());
+  const [now, setNow] = useState(since);
+  useEffect(() => {
+    const t = window.setInterval(() => setNow(Date.now()), 1000);
+    return () => window.clearInterval(t);
+  }, []);
+  const secs = Math.max(0, Math.floor((now - since) / 1000));
+  const widened = props.widenAfterMs !== undefined && now - since >= props.widenAfterMs;
+  return (
+    <p className="pvp__timer" role="timer" aria-label={`${props.label} ${secs} seconds`}>
+      {props.label}{' '}
+      <b>
+        {Math.floor(secs / 60)}:{String(secs % 60).padStart(2, '0')}
+      </b>
+      {widened && <small> · now matching any Rift Tier</small>}
+    </p>
+  );
+}
+
 /** A Riftwalker's face: the top of their figure, in a round frame. */
 export function Portrait(props: { hero: string; size?: number; className?: string }) {
   const { hero, size = 140 } = props;

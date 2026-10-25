@@ -5,6 +5,7 @@
 //   GET /pvp/queue  (WebSocket)  the matchmaking queue
 //   GET /pvp/room/CODE (WebSocket)  a match room (a friend code, or the room the queue picked)
 //   POST /pvp/vault/list|bank|drop  a player's saved decks: under the signed-in account, or else the Vault code in the JSON body {code, ...}
+//   /pvp/board/*                    the weekly and monthly leaderboards (board.ts)
 //   /auth/*                         sign in with Google (auth.ts)
 
 import type { Env } from './env';
@@ -15,6 +16,7 @@ import { ROOM_CODE } from './wire';
 export { Matchmaker } from './matchmaker';
 export { MatchRoom } from './room';
 export { Vault } from './vault';
+export { Leaderboard } from './board';
 
 /** Pages allowed to open a socket from a browser (the game is also served from GitHub Pages). */
 const ORIGINS = [
@@ -92,6 +94,89 @@ async function vault(request: Request, env: Env, action: string): Promise<Respon
   }
 }
 
+/** The id a player has on the leaderboards: a hash derived from their account or their Vault code, never the code itself. */
+async function boardId(
+  request: Request,
+  env: Env,
+  body: Record<string, unknown>,
+): Promise<string | null> {
+  if (body['code'] === undefined) {
+    const s = await sessionOf(request, env);
+    return s ? await sha256(`shattered-rifts-board-account:${s.account}`) : null;
+  }
+  const code = typeof body['code'] === 'string' ? normaliseCode(body['code']) : null;
+  return code ? await sha256(`shattered-rifts-board:${code}`) : null;
+}
+
+const CORS_POST = {
+  'access-control-allow-origin': '*',
+  'access-control-allow-methods': 'GET, POST',
+  'access-control-allow-headers': 'content-type',
+  'access-control-max-age': '86400',
+};
+
+/**
+ * GET  /pvp/board/pvp|runs?period=week|month   a leaderboard
+ * POST /pvp/board/id    {code?}                 this player's leaderboard id (so a match can carry it)
+ * POST /pvp/board/run   {code?, run, name, hero, tier, stage}   a run has reached this far
+ */
+async function boardRoute(request: Request, env: Env, what: string, url: URL): Promise<Response> {
+  if (request.method === 'OPTIONS') return new Response(null, { status: 204, headers: CORS_POST });
+  const stub = env.BOARD.get(env.BOARD.idFromName('main'));
+  try {
+    if (request.method === 'GET' && (what === 'pvp' || what === 'runs')) {
+      const res = await stub.fetch(
+        new Request(
+          `https://board.invalid/${what}?period=${url.searchParams.get('period') === 'month' ? 'month' : 'week'}`,
+        ),
+      );
+      // a board is worked out afresh at most twice a minute per edge, however often it is asked for
+      return new Response(JSON.stringify(await res.json()), {
+        status: res.status,
+        headers: {
+          'content-type': 'application/json',
+          'access-control-allow-origin': '*',
+          'cache-control': 'public, max-age=30',
+        },
+      });
+    }
+    if (request.method !== 'POST' || (what !== 'id' && what !== 'run'))
+      return json({ ok: false, error: 'not found' }, 404);
+    const text = await request.text();
+    if (text.length > 2_000) return json({ ok: false, error: 'too big' }, 413);
+    let body: Record<string, unknown>;
+    try {
+      const parsed: unknown = JSON.parse(text);
+      if (typeof parsed !== 'object' || parsed === null || Array.isArray(parsed))
+        throw new Error('shape');
+      body = parsed as Record<string, unknown>;
+    } catch {
+      return json({ ok: false, error: 'bad-body' }, 400);
+    }
+    const id = await boardId(request, env, body);
+    if (!id)
+      return json({ ok: false, error: body['code'] === undefined ? 'signin' : 'bad-code' }, 401);
+    if (what === 'id') return json({ ok: true, id });
+    const res = await stub.fetch(
+      new Request('https://board.invalid/run', {
+        method: 'POST',
+        body: JSON.stringify({
+          ...body,
+          code: undefined,
+          player: id,
+          // where it came from (hashed), so one address cannot flood the board
+          ip: await sha256(
+            `shattered-rifts-board-ip:${request.headers.get('CF-Connecting-IP') ?? 'local'}`,
+          ),
+        }),
+      }),
+    );
+    return json(await res.json(), res.status);
+  } catch {
+    return json({ ok: false, error: 'unavailable' }, 503);
+  }
+}
+
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
     const url = new URL(request.url);
@@ -118,6 +203,8 @@ export default {
         });
       return vault(request, env, vaultAction);
     }
+    const boardWhat = /^\/pvp\/board\/(\w+)$/.exec(url.pathname)?.[1];
+    if (boardWhat !== undefined) return boardRoute(request, env, boardWhat, url);
     if (url.pathname === '/pvp/queue') {
       const stub = env.MATCHMAKER.get(env.MATCHMAKER.idFromName('main'));
       return stub.fetch(request);

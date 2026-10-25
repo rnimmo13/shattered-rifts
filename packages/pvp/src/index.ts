@@ -12,6 +12,32 @@ export {
 } from './deck';
 export { enqueue, leave, pairUp, type Pairing, type Waiting } from './queue';
 export { decideOrder, seatsFor, type Arrival, type Order } from './order';
+export {
+  BOARD_KEEP_DAYS,
+  BOARD_SIZE,
+  IP_NEW_RUNS_PER_DAY,
+  IP_REPORTS_PER_HOUR,
+  NEW_RUNS_PER_DAY,
+  RUN_MAX_TIER,
+  RUN_MIN_STAGE_MS,
+  RUN_REPORTS_PER_HOUR,
+  RUN_START_GRACE,
+  SAME_FOE_PER_DAY,
+  WINS_PER_DAY,
+  believableStages,
+  cleanBoardName,
+  isHero,
+  periodEnd,
+  periodStart,
+  rankPvp,
+  rankRuns,
+  stagesInAll,
+  type Period,
+  type PvpRow,
+  type PvpStanding,
+  type RunRow,
+  type RunStanding,
+} from './board';
 export { Match, other, setupFor, type Accepted, type Outcome, type Refused } from './match';
 export {
   bankInto,

@@ -315,3 +315,18 @@
 .pvp__vaultcode .btn {
   user-select: none;
 }
+
+.pvp__timer {
+  margin: 0;
+  font-size: 1.15rem;
+  color: var(--c-gold-light);
+}
+.pvp__timer b {
+  font-family: var(--font-numeric);
+  font-size: 1.5rem;
+  letter-spacing: 0.04em;
+}
+.pvp__timer small {
+  font-size: 0.9rem;
+  color: var(--c-ivory);
+}

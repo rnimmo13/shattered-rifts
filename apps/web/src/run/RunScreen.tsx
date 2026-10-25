@@ -44,6 +44,10 @@ import { BoonToast } from './BoonToast';
 import { PotionChip } from '../fight/PotionChip';
 import { BankedPanel } from './BankedPanel';
 import { canSaveForArena, saveForArena } from './deckSave';
+import { stagesInAll } from '@sr/pvp';
+import { stagesCleared } from '../pvp/vault';
+import { reportRun } from '../pvp/boardApi';
+import { getName } from '../pvp/config';
 import { CharacterPicker } from './CharacterPicker';
 import { MapLegend, MapView } from './MapView';
 import {
@@ -149,6 +153,22 @@ export default function RunScreen() {
     }
   }, [run]);
 
+  // a run that is picked up again tells the leaderboards where it is (a report that was missed on the way is made up for)
+  const resumedSeed = run?.seed;
+  useEffect(() => {
+    const r = runRef.current;
+    if (!r || r.seed !== resumedSeed) return;
+    const done = stagesCleared(r);
+    if (stagesInAll(r.tier, done) > 0)
+      reportRun({
+        seed: r.seed,
+        hero: r.character,
+        tier: r.tier,
+        stage: done,
+        name: getName() || 'Riftwalker',
+      });
+  }, [resumedSeed]);
+
   /** Apply a rule function, showing its message instead of crashing if the rules refuse. */
   const act = useCallback(
     (fn: (r: RunState) => RunState) => {
@@ -157,6 +177,17 @@ export default function RunScreen() {
       try {
         const next = fn(cur);
         runRef.current = next; // so two quick clicks never both act on the old state
+        // a run that has got further is told to the leaderboards (best effort; never in the way)
+        const was = stagesInAll(cur.tier, stagesCleared(cur));
+        const now = stagesInAll(next.tier, stagesCleared(next));
+        if (now > was && next.seed === cur.seed)
+          reportRun({
+            seed: next.seed,
+            hero: next.character,
+            tier: next.tier,
+            stage: stagesCleared(next),
+            name: getName() || 'Riftwalker',
+          });
         // what an event just did is worth reading: show it once
         say(
           next.eventResult && next.eventResult !== cur.eventResult ? next.eventResult : null,

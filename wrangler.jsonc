@@ -14,10 +14,12 @@
       { "name": "MATCHMAKER", "class_name": "Matchmaker" },
       { "name": "MATCH", "class_name": "MatchRoom" },
       { "name": "VAULT", "class_name": "Vault" },
+      { "name": "BOARD", "class_name": "Leaderboard" },
     ],
   },
   "migrations": [
     { "tag": "v1", "new_sqlite_classes": ["Matchmaker", "MatchRoom"] },
     { "tag": "v2", "new_sqlite_classes": ["Vault"] },
+    { "tag": "v3", "new_sqlite_classes": ["Leaderboard"] },
   ],
 }

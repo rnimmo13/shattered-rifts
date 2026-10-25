@@ -2,7 +2,7 @@
 // be tried before anyone has cleared a run), then find a match from the queue or play a friend with a room code.
 
 import { useEffect, useRef, useState } from 'react';
-import { checkEntry } from '@sr/pvp';
+import { QUEUE_WIDEN_MS, checkEntry } from '@sr/pvp';
 import { COMBAT_DB } from '@sr/content/v2';
 import { FightView } from '../fight/FightView';
 import type { VenueId } from '../duel/scene/venue';
@@ -17,7 +17,8 @@ import {
 } from './config';
 import { PvpSession, newRoomCode, savedRoom, type Snapshot } from './session';
 import { VAULT_SLOTS, entryFor, loadVault, saveVault, type VaultDeck } from './vault';
-import { ChoosePanel, CoinFlip } from './PvpParts';
+import { ChoosePanel, CoinFlip, WaitTimer } from './PvpParts';
+import { boardId } from './boardApi';
 import { VaultCode, type Online } from './VaultCode';
 import { AccountBox } from './AccountBox';
 import { MID_RUN_SAVES } from '../run/deckSave';
@@ -122,22 +123,38 @@ export default function PvpScreen() {
   );
 
   const deck = decks.find((d) => d.id === deckId) ?? decks[0];
-  const entry = deck ? entryFor(deck, name.trim() || 'Riftwalker') : null;
+  // who this player is on the leaderboards (asked once; a match without it is simply not recorded)
+  const [who, setWho] = useState<string | null>(null);
+  useEffect(() => {
+    let live = true;
+    void boardId().then((id) => live && setWho(id));
+    return () => {
+      live = false;
+    };
+  }, []);
+  const entry = deck
+    ? { ...entryFor(deck, name.trim() || 'Riftwalker'), ...(who ? { who } : {}) }
+    : null;
   const check = entry ? checkEntry(entry) : null;
   const problem = check && !check.ok ? check.message : null;
   const busy = snap.phase !== 'idle' && snap.phase !== 'error';
 
-  const begin = (how: 'queue' | 'create' | 'join'): void => {
+  const begin = async (how: 'queue' | 'create' | 'join'): Promise<void> => {
     if (!entry || !check?.ok) return;
     saveName(entry.name);
+    // (the board id is normally here already; if it was slow, wait a moment for it rather than play an unrecorded match)
+    const id =
+      who ??
+      (await Promise.race([boardId(), new Promise<null>((r) => setTimeout(() => r(null), 1500))]));
+    const toSend = id ? { ...check.entry, who: id } : check.entry;
     // a new session (the server setting may have changed)
     session.current?.leave();
     const s = new PvpSession(serverBase(), playerId(), setSnap);
     session.current = s;
     setSnap(EMPTY);
-    if (how === 'queue') s.queue(check.entry);
-    else if (how === 'create') s.joinRoom(newRoomCode(), check.entry);
-    else s.joinRoom(code.trim().toUpperCase(), check.entry);
+    if (how === 'queue') s.queue(toSend);
+    else if (how === 'create') s.joinRoom(newRoomCode(), toSend);
+    else s.joinRoom(code.trim().toUpperCase(), toSend);
   };
 
   const match = snap.match;
@@ -274,6 +291,7 @@ export default function PvpScreen() {
           {snap.phase === 'queue' && (
             <>
               <h2>Looking for an opponent…</h2>
+              <WaitTimer label="In the queue" widenAfterMs={QUEUE_WIDEN_MS} />
               <p>
                 {snap.waiting > 1
                   ? `${snap.waiting} players are waiting.`
@@ -284,6 +302,7 @@ export default function PvpScreen() {
           {snap.phase === 'waiting' && (
             <>
               <h2>Waiting for a friend</h2>
+              <WaitTimer label="Waiting" />
               <p>
                 Send them this code and ask them to choose <b>Join a room</b>:
               </p>
@@ -351,7 +370,8 @@ export default function PvpScreen() {
             <>
               <h2 className="pvp__h">Choose a deck</h2>
               <p className="pvp__deckslot">
-                {decks.length} of {VAULT_SLOTS} saved decks · <a href="#/decks">Saved decks</a>
+                {decks.length} of {VAULT_SLOTS} saved decks · <a href="#/decks">Saved decks</a> ·{' '}
+                <a href="#/board">Leaderboards</a>
               </p>
               {deckList}
               {problem && <p className="pvp__error">{problem}</p>}
@@ -359,14 +379,14 @@ export default function PvpScreen() {
                 <button
                   className="btn btn--primary"
                   disabled={!entry || problem !== null}
-                  onClick={() => begin('queue')}
+                  onClick={() => void begin('queue')}
                 >
                   <span>Find a match</span>
                 </button>
                 <button
                   className="btn"
                   disabled={!entry || problem !== null}
-                  onClick={() => begin('create')}
+                  onClick={() => void begin('create')}
                 >
                   <span>Make a room for a friend</span>
                 </button>
@@ -383,7 +403,7 @@ export default function PvpScreen() {
                   <button
                     className="btn"
                     disabled={!entry || problem !== null || code.trim().length < 4}
-                    onClick={() => begin('join')}
+                    onClick={() => void begin('join')}
                   >
                     <span>Join a room</span>
                   </button>

@@ -104,14 +104,35 @@ async function until(cond: () => boolean, what: string, ms = 60_000): Promise<vo
   }
 }
 
-async function playRoom(code: string, label: string, rejoin = false): Promise<void> {
+async function playRoom(
+  code: string,
+  label: string,
+  rejoin = false,
+  who?: [string, string],
+  names: [string, string] = ['Ann', 'Bob'],
+): Promise<void> {
   console.log(`${label}: room ${code}`);
   const a = await connect(`/pvp/room/${code}`, 'Ann', 'player-ann');
-  send(a, { type: 'join', playerId: a.id, entry: entryOf('maren', 'Ann') });
+  send(a, {
+    type: 'join',
+    playerId: a.id,
+    entry: { ...entryOf('maren', names[0]), ...(who ? { who: who[0] } : {}) },
+  });
   await until(() => a.inbox.some((m) => m.type === 'waiting'), 'the waiting message');
   const b = await connect(`/pvp/room/${code}`, 'Bob', 'player-bob');
-  send(b, { type: 'join', playerId: b.id, entry: entryOf('kesh', 'Bob') });
+  send(b, {
+    type: 'join',
+    playerId: b.id,
+    entry: { ...entryOf('kesh', names[1]), ...(who ? { who: who[1] } : {}) },
+  });
   await until(() => a.match !== null && b.match !== null, 'both starts');
+  if (who) {
+    // a leaderboard id is a player's secret: it must never reach the other player
+    for (const bot of [a, b])
+      for (const m of bot.inbox)
+        if (who.some((w) => JSON.stringify(m).includes(w)))
+          throw new Error(`a leaderboard id was sent to a player in a ${m.type} message`);
+  }
   if (a.toss?.random !== true) throw new Error('both wanted first: the coin should have decided');
   console.log(`  both wanted to go first: the coin made Ann seat ${a.seat}, Bob seat ${b.seat}`);
   if (rejoin) {
@@ -304,6 +325,85 @@ async function vault(): Promise<void> {
   console.log('  save, list, replace, drop, refusals: as expected');
 }
 
+/** The leaderboards: a played match is recorded for both players, a run's progress only moves forward a stage at a time. */
+async function board(tag: string): Promise<void> {
+  console.log('leaderboards:');
+  const http = BASE.replace(/^ws/, 'http');
+  const need = (c: boolean, what: string): void => {
+    if (!c) throw new Error(`board: ${what}`);
+  };
+  const code = (): string =>
+    Array.from(
+      { length: 16 },
+      () => 'ABCDEFGHJKMNPQRSTVWXYZ23456789'[Math.floor(Math.random() * 30)],
+    ).join('');
+  const post = async (what: string, body: Record<string, unknown>) => {
+    const r = await fetch(`${http}/pvp/board/${what}`, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify(body),
+    });
+    return {
+      status: r.status,
+      ...((await r.json()) as Record<string, unknown>),
+    } as { status: number } & Record<string, unknown>;
+  };
+  const codes = [code(), code()] as const;
+  const ids = [await post('id', { code: codes[0] }), await post('id', { code: codes[1] })];
+  need(
+    typeof ids[0]?.['id'] === 'string' && /^[0-9a-f]{64}$/.test(ids[0]['id']),
+    'a board id is a hash',
+  );
+  need(ids[0]?.['id'] !== ids[1]?.['id'], 'two codes, two ids');
+  need((await post('id', { code: 'short' })).status === 401, 'a bad code is refused');
+  // an Arena match between them
+  const who: [string, string] = [ids[0]?.['id'] as string, ids[1]?.['id'] as string];
+  const names: [string, string] = [`Ann${tag}`, `Bob${tag}`];
+  await playRoom(`BOARD${tag}`, 'friend code (recorded)', false, who, names);
+  await sleep(500);
+  const pvp = (await (await fetch(`${http}/pvp/board/pvp?period=week`)).json()) as {
+    ok: boolean;
+    board: { name: string; wins: number; losses: number; heroes: { hero: string }[] }[];
+  };
+  const ann = pvp.board.find((s) => s.name === names[0]);
+  const bob = pvp.board.find((s) => s.name === names[1]);
+  need(!!ann && !!bob, 'both players are on the Arena board');
+  need((ann?.wins ?? 0) + (bob?.wins ?? 0) === 1, 'one win between them');
+  need(
+    ann?.heroes[0]?.hero === 'maren' && bob?.heroes[0]?.hero === 'kesh',
+    'the characters are listed',
+  );
+  // a run
+  const run = (stage: number, extra: Record<string, unknown> = {}) =>
+    post('run', {
+      code: codes[0],
+      run: `r${tag}`,
+      name: names[0],
+      hero: 'maren',
+      tier: 1,
+      stage,
+      ...extra,
+    });
+  need((await run(1))['counted'] === true, 'a first stage cleared is counted');
+  need((await run(3))['counted'] === false, 'a jump of two stages is not believed');
+  need((await run(2))['counted'] === true, 'the next stage is');
+  need((await run(2))['counted'] === false, 'the same progress twice is not');
+  need((await run(1))['counted'] === false, 'going backwards is not');
+  need((await run(2, { hero: 'nobody' })).status === 400, 'an unknown character is refused');
+  const runs = (await (await fetch(`${http}/pvp/board/runs?period=month`)).json()) as {
+    board: { name: string; tier: number; stage: number; total: number }[];
+  };
+  const mine = runs.board.find((s) => s.name === names[0]);
+  need(
+    mine?.tier === 1 && mine.stage === 2 && mine.total === 2,
+    'the run board shows the furthest point',
+  );
+  need((await fetch(`${http}/pvp/board/nope`)).status === 404, 'an unknown board is not found');
+  console.log(
+    '  match recorded for both, characters listed, run progress moves one stage at a time',
+  );
+}
+
 const health = await fetch(`${BASE.replace(/^ws/, 'http')}/pvp/health`);
 console.log('health:', await health.text());
 const tag = rnd();
@@ -312,5 +412,6 @@ await playQueue();
 await playRoom(`REJOIN${tag}`, 'friend code with a rejoin', true);
 await refusals();
 await vault();
+await board(tag);
 console.log('all good');
 process.exit(0);

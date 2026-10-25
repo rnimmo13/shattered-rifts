@@ -107,3 +107,12 @@ server with the site. Durable Objects with SQLite storage are available on the f
   `apps/web/src/pvp/config.ts` points every production build (including the GitHub Pages copy) there; a build can override it
   with `VITE_PVP_SERVER`, and a player can type another address into the **Server** box on the Arena screen (remembered).
 - The Worker only accepts browsers from the game's own addresses (`worker.ts`, `ORIGINS`); add a domain there if the game moves.
+
+## Leaderboards (weekly and monthly)
+
+`#/board` (`apps/web/src/pvp/LeaderboardScreen.tsx`) shows two boards for **this week** (Monday 00:00 UTC) or **this month** (the 1st):
+
+- **Arena:** ranked by wins (then fewer losses, then who got there first). Each row shows the win-loss record and the Riftwalkers the player used, with their own records. Decks are not shown.
+- **Campaign:** each player's furthest run, ranked by stages cleared in all (three to a Rift Tier; a tie goes to whoever got there first), with the character.
+
+How it works: one Durable Object (`Leaderboard`, `apps/server/src/board.ts`, named `main`, SQLite) holds the Arena results and run progress. The rules (periods, ranking, names) are pure in `packages/pvp/src/board.ts`. A match is recorded by the match room when it ends with a winner and at least two moves, for entries that carry a `who` (a hash the browser gets from `POST /pvp/board/id`, derived from the account or Vault code and never shown). A run reports its progress from the run screen when it clears a stage (`POST /pvp/board/run`, the id derived by the server from the session or Vault code). Names are the Arena name, cleaned and with a small block list; no email or other personal data is stored. Limits: a winner beats the same opponent at most 3 times a day on the board; run progress only moves forward one stage at a time and a run first seen beyond its first stage is not believed. Results older than 70 days are cleared. Campaign progress comes from the browser, so it can be faked (verifying runs on the server is a later step).

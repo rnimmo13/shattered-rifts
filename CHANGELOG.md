@@ -5,6 +5,7 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **Leaderboards:** weekly and monthly boards for the Arena (most wins, with your record and the characters you played) and the campaign (how far each run got), from a Leaderboards link on the home page and in the Arena. Also a timer while you wait in the Arena queue, and Sehra now has a crossed-scimitars icon.
 - **Bigger cards when choosing:** the remove-a-card and upgrade-a-card pages (and any other time you pick a card from your deck) show larger, readable cards again; browsing your deck still fits more on a page. Sharpening shows as a buff on your hero plate.
 - **Phones, battle log, clearer messages:** the game now plays on a phone held sideways (smaller hand, tap a card to read it, tap again to play; portrait asks you to turn the phone); a scrollable battle log sits above End turn; cards show when their cost is lowered (green) or raised (red); good messages are green and bad ones red everywhere; the Card library and run pages can no longer run off the screen.
 - **More playtest fixes:** hold up to 3 cards at a merchant; summon a companion with a full board by choosing which one leaves; targeting is more forgiving (a miss no longer cancels the card); the Obsidian Blade's sharpness is shown on a counter and on the cards; Grave Harvest hits harder (Doom 18) and its upgrade costs 1; the stop before every boss is always a Shrine.
