@@ -113,7 +113,7 @@ The goal: every card *mechanic* a Slay the Spire player expects exists, with our
 | Vigor, Flex | **Vigor**, temporary statuses (`temp`) | Kesh, Neutral (Heave) |
 | Exhaust / Ethereal / Retain / Innate | Consume / Fleeting / Hold / Opening hand | shared |
 | Sly (discard triggers) | `onDiscard` | Quill |
-| Scry | **Foresee**, and cards it discards are real discards (payoffs fire) | shared; payoffs: Marked Cards (Vesper), Reading the Signs (Sehra), Spellbook (Obsidia), Quill's discard cards |
+| Scry | **Foresee N**: look at the top N cards, draw one of them, discard the rest; the cards it discards are real discards (payoffs fire) | shared; payoffs: Marked Cards (Vesper), Reading the Signs (Sehra), Spellbook (Obsidia), Quill's discard cards |
 | X-cost, Unplayable, 0-cost chains | `x`, `unplayable`, cost 0 | shared |
 | Draw / Mana now / Mana and cards next turn | draw, mana, **manaNext**, **drawNext** | shared |
 | Discovery / Madness / Armaments / Anger | **discover**, **cheapen**, **upgrade** (hand), **copySelf** | Neutral, Quill, Ilvane |

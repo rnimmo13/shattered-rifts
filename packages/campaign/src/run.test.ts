@@ -9,6 +9,8 @@ import {
   bank,
   buyCard,
   buyRemoval,
+  buyUpgrade,
+  upgradePrice,
   canAdd,
   chooseCard,
   chooseEvent,
@@ -21,6 +23,9 @@ import {
   finishDuel,
   floorsOf,
   generateStageMap,
+  DIFFICULTY,
+  EVENT_FIGHT_ODDS,
+  enemyScale,
   leaveMerchant,
   newRun,
   nextStage,
@@ -204,10 +209,12 @@ describe('the run', () => {
     expect(e.difficulty).toBe('easy');
     expect(e.resolve).toBe(5);
     expect(e.shards).toBe(100);
-    // Easy is Normal's Tier I stage 1 (130% HP, 125% damage in the tier table) times Easy's ratio to Normal (85/128, 80/118)
+    // Easy is Normal's Tier I stage 1 (whatever the tier table says) times Easy's ratio to Normal
+    // (read from the table, so tuning the table never breaks this)
+    const t1 = enemyScale(1, 1);
     expect(duelPlan(enterNode(e, availableNodes(e)[0]!.id))).toMatchObject({
-      hpPct: 86,
-      dmgPct: 85,
+      hpPct: Math.round((DIFFICULTY.easy.hpPct / DIFFICULTY.normal.hpPct) * t1.hp),
+      dmgPct: Math.round((DIFFICULTY.easy.dmgPct / DIFFICULTY.normal.dmgPct) * t1.dmg),
     });
     expect(newRun('knight', 'hard', 'hard').resolve).toBe(1);
     expect(parseRun(JSON.stringify({ ...e, difficulty: undefined }))?.difficulty).toBe('easy');
@@ -413,6 +420,114 @@ describe('the other rooms and the rules around them', () => {
     expect(removed.shards).toBe(40);
     expect(() => buyRemoval(removed, 'strike')).toThrow(RunError); // one per visit
     expect(leaveMerchant(shop(0)).phase).toBe('map');
+  });
+
+  it('the merchant upgrades a card, each upgrade at that shop costs more, and the next shop starts over', () => {
+    const base = fresh('knight', 'shop-up');
+    const shop = (shards: number): RunState => ({
+      ...at(base, 'merchant', {
+        nodeId: nodeId(base),
+        merchant: { items: [], removePrice: 40, removed: false },
+      }),
+      shards,
+    });
+    const card = base.deck.find((id) => !!COMBAT_DB.cards[id]?.upgrade) as string;
+    const up = COMBAT_DB.cards[card]?.upgrade as string;
+    expect(upgradePrice(0)).toBeLessThan(upgradePrice(1));
+    expect(upgradePrice(1)).toBeLessThan(upgradePrice(2));
+    expect(() => buyUpgrade(shop(upgradePrice(0) - 1), card)).toThrow(RunError); // too poor
+    expect(() => buyUpgrade(shop(500), 'not-a-card')).toThrow(RunError);
+    expect(() => buyUpgrade(shop(500), up)).toThrow(RunError); // already upgraded
+    const first = buyUpgrade(shop(1000), card);
+    expect(first.shards).toBe(1000 - upgradePrice(0));
+    expect(first.deck).toContain(up);
+    expect(first.deck.filter((id) => id === card)).toHaveLength(
+      base.deck.filter((id) => id === card).length - 1,
+    );
+    expect(first.context?.merchant?.upgrades).toBe(1);
+    // the second one at this shop is dearer
+    const other = first.deck.find((id) => !!COMBAT_DB.cards[id]?.upgrade) as string;
+    const second = buyUpgrade(first, other);
+    expect(second.shards).toBe(first.shards - upgradePrice(1));
+    expect(second.context?.merchant?.upgrades).toBe(2);
+    // a fresh shop is back to the base price (and a shop saved by an older build counts none)
+    expect(buyUpgrade(shop(1000), card).shards).toBe(1000 - upgradePrice(0));
+    expect(() => buyUpgrade({ ...base, phase: 'map' }, card)).toThrow(RunError);
+  });
+
+  describe('an Event stop that is a fight instead', () => {
+    // a stop on the given floor turned into an Event (as if the earlier stops had been cleared), then entered
+    const enterEvent = (seed: string, floor: number): RunState => {
+      const run = fresh('knight', seed);
+      // walk down the first path to the floor before, and call everything above it cleared
+      let at = availableNodes(run)[0]!;
+      for (let f = 1; f < floor; f++) at = run.map.nodes.find((n) => n.id === at.next[0])!;
+      const node = run.map.nodes.find((n) => n.id === at.id)!;
+      const before = floor > 1 ? run.map.nodes.find((n) => n.next.includes(at.id))! : null;
+      run.cleared = run.map.nodes.filter((n) => n.floor < floor).map((n) => n.id);
+      run.at = before?.id ?? null;
+      node.kind = 'event';
+      delete node.enemyId;
+      return enterNode(run, node.id);
+    };
+
+    it('turns into a plain fight now and then, played and rewarded like any other', { timeout: 60000 }, () => {
+      // (nothing happens to an event stood on the first floor, which real maps never have)
+      for (let i = 0; i < 40; i++) expect(enterEvent(`first${i}`, 1).phase).toBe('event');
+      let ambushes = 0;
+      const N = 400;
+      for (let i = 0; i < N; i++) {
+        const r = enterEvent(`amb${i}`, 2);
+        if (r.phase === 'duel') {
+          ambushes++;
+          const node = r.map.nodes.find((n) => n.id === r.context?.nodeId)!;
+          expect(node.kind).toBe('duel'); // (an Elite waits for the third floor)
+          expect(node.enemyId).toBeTruthy();
+          expect(r.eventResult).toMatch(/^Ambush!/);
+          expect(duelPlan(r)?.encounterId).toBe(node.enemyId);
+        } else expect(r.phase).toBe('event');
+      }
+      const pct = (ambushes / N) * 100;
+      expect(pct).toBeGreaterThan(EVENT_FIGHT_ODDS.duel + EVENT_FIGHT_ODDS.elite - 8);
+      expect(pct).toBeLessThan(EVENT_FIGHT_ODDS.duel + EVENT_FIGHT_ODDS.elite + 8);
+    });
+
+    it('is sometimes an Elite from the third floor on, and winning it pays like an Elite', { timeout: 60000 }, () => {
+      let elite: RunState | null = null;
+      for (let i = 0; i < 1500 && !elite; i++) {
+        const r = enterEvent(`elite${i}`, 3);
+        if (r.phase === 'duel' && duelPlan(r)?.kind === 'elite') elite = r;
+      }
+      expect(elite).not.toBeNull();
+      expect(elite!.eventResult).toMatch(/Elite/);
+      const won = finishDuel(elite!, true, 10);
+      expect(won.phase).toBe('reward');
+      expect(won.context?.nodeId).toBe(elite!.context!.nodeId);
+    });
+
+    it('losing the ambush costs Resolve and retries the same fight', () => {
+      let fight: RunState | null = null;
+      for (let i = 0; i < 600 && !fight; i++) {
+        const r = enterEvent(`lose${i}`, 2);
+        if (r.phase === 'duel') fight = r;
+      }
+      expect(fight).not.toBeNull();
+      const lost = finishDuel(fight!, false);
+      expect(lost.resolve).toBe(fight!.resolve - 1);
+      expect(lost.phase).toBe('duel');
+      expect(duelPlan(lost)?.encounterId).toBe(duelPlan(fight!)?.encounterId);
+    });
+
+    it('survives being saved and loaded in the middle of the fight', () => {
+      let fight: RunState | null = null;
+      for (let i = 0; i < 600 && !fight; i++) {
+        const r = enterEvent(`save${i}`, 2);
+        if (r.phase === 'duel') fight = r;
+      }
+      const back = parseRun(serializeRun(fight!));
+      expect(back).not.toBeNull();
+      expect(duelPlan(back!)?.encounterId).toBe(duelPlan(fight!)?.encounterId);
+    });
   });
 
   it('events pay shards, heal, give the card, or do nothing', () => {

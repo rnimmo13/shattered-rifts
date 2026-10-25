@@ -260,6 +260,8 @@ export interface NodeContext {
     crossed?: string;
     removePrice: number;
     removed: boolean;
+    /** cards upgraded at this shop so far: each makes the next upgrade dearer (missing = none; the next shop starts again from none) */
+    upgrades?: number;
     boon?: { id: string; price: number; sold: boolean };
     potions?: { id: string; price: number; sold: boolean }[];
   };

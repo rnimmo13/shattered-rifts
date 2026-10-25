@@ -359,7 +359,7 @@ Starter: Attack, Attack, Attack, Defend, Defend, Defend, Defend, Veil Strike, Ve
 | Slit and Run | 1 | attack | common | Deal 7 damage. Gain 4 Barrier. Apply 1 Exposed. |
 | Cripple | 1 | skill | common | Apply 2 Faltering. Apply 2 Exposed. Gain 5 Barrier. |
 | Bated Breath | 1 | skill | common | Gain 8 Barrier. Hold. |
-| Read the Room | 1 | skill | common | Foresee 3. Draw 1 card. Gain 4 Barrier. |
+| Read the Room | 1 | skill | common | Foresee 3. Gain 4 Barrier. |
 | Discarded Hand | 0 | skill | common | Discard 2 cards. Draw 2 cards. |
 | Mirror Veil | 2 | snare | uncommon | When you or an ally is attacked: Cancel that attack. Apply 2 Faltering to the attacker. |
 | Pain Link | 0 | snare | uncommon | When you lose 5+ HP at once: Deal 6 damage to ALL enemies. |
@@ -377,7 +377,7 @@ Starter: Attack, Attack, Attack, Defend, Defend, Defend, Defend, Veil Strike, Ve
 | Smoke Bomb | 1 | skill | uncommon | Apply 1 Faltering to ALL enemies. Apply 1 Exposed to ALL enemies. Gain 4 Barrier. |
 | Pin Cushion | 1 | attack | uncommon | Deal 4 (+1 per card in hand) damage. |
 | Banked Breath | 1 | power | uncommon | At the end of your turn: Gain Barrier equal to 2 times your Mana. |
-| Stolen Moment | 0 | skill | uncommon | Gain 1 Mana. Draw 1 card. Foresee 2. Consume. |
+| Stolen Moment | 0 | skill | uncommon | Gain 1 Mana. Foresee 2. Consume. |
 | Shadow Step | 1 | skill | uncommon | Gain 7 Barrier. Hold. |
 | Cold Bargain | 0 | skill | uncommon | Lose 3 HP. Gain 1 Mana. Draw 1 card. Consume. |
 | Spare Traps | 0 | skill | uncommon | Add a Trip Line to your hand. Draw 1 card. Consume. |
@@ -397,7 +397,7 @@ Starter: Attack, Attack, Attack, Defend, Defend, Defend, Defend, Veil Strike, Ve
 | Opportunist | 1 | power | uncommon | Whenever a card is consumed: Deal 5 damage to a random enemy. Apply 1 Exposed to a random enemy. |
 | Long Con | 2 | attack | uncommon | Deal 14 damage. Apply 1 Exposed. Hold. |
 | Sandbag | 1 | attack | uncommon | Deal 5 (+3 per Mana left) damage. |
-| Trick of the Light | 0 | skill | uncommon | Foresee 2. Draw 1 card. If discarded: Gain 6 Barrier. |
+| Trick of the Light | 0 | skill | uncommon | Foresee 2. If discarded: Gain 6 Barrier. |
 | House Edge | 1 | power | uncommon | Whenever you draw a card: Gain 1 Barrier. |
 | Bait and Switch | 2 | snare | rare | When you or an ally is attacked: Cancel that attack. Deal 12 damage to the attacker. |
 | Silencing Trap | 2 | snare | rare | When you or an ally is attacked: Apply 1 Stunned to the attacker. Apply 1 Shielded. |
@@ -671,7 +671,7 @@ Starter: Attack, Attack, Attack, Attack, Defend, Defend, Defend, Defend, Kindle 
 | Unburdened Guard | 1 | skill | common | Gain 7 Barrier. Leave your stance. |
 | Open Palm | 1 | attack | common | Deal 9 damage. Leave your stance. |
 | Inner Sight | 1 | skill | common | Gain 7 Barrier. Foresee 3. |
-| Thread-Cutter | 1 | attack | common | Deal 7 damage. Foresee 2. Draw 1 card. |
+| Thread-Cutter | 1 | attack | common | Deal 7 damage. Foresee 2. |
 | Vigilance | 1 | skill | common | Gain 8 Barrier. Enter Serene. |
 | Empty Vessel | 1 | skill | common | Gain 7 Barrier. Leave your stance. |
 | Empty Fist | 1 | attack | common | Deal 9 damage. Leave your stance. |
@@ -694,7 +694,7 @@ Starter: Attack, Attack, Attack, Attack, Defend, Defend, Defend, Defend, Kindle 
 | Final Account | 2 | attack | uncommon | Deal 10 (+8 per Fury) damage. |
 | Surge of Ire | 1 | power | uncommon | Whenever you enter Fury: Draw 2 cards. |
 | Wheel Kick | 2 | attack | uncommon | Deal 15 damage. Draw 2 cards. |
-| Cut Through Fate | 1 | attack | uncommon | Deal 7 damage. Foresee 2. Draw 1 card. |
+| Cut Through Fate | 1 | attack | uncommon | Deal 7 damage. Foresee 2. |
 | Wrathful Guard | 1 | skill | uncommon | Gain 6 Barrier. Enter Fury. |
 | Settled Mind | 1 | skill | uncommon | Draw cards equal to 3 times your Serene. Enter Serene. |
 | Breathe | 1 | skill | uncommon | Enter Serene. Gain 5 Barrier. |
@@ -913,7 +913,7 @@ Starter: Attack, Attack, Attack, Defend, Defend, Defend, Hammer Swing, Hammer Sw
 | Barroom Brawl | 2 | attack | uncommon | Deal 10 damage to ALL enemies. Lose 2 HP. |
 | Dutch Courage | 1 | power | uncommon | At the start of your turn: Heal 2. Apply 1 Might until the end of your turn. |
 | Dumpster Dive | 1 | skill | uncommon | Draw 3 cards. Discard 1 card. |
-| Spare Change | 0 | skill | uncommon | Draw 1 card. Gain 1 Mana. Foresee 2. Consume. |
+| Spare Change | 0 | skill | uncommon | Gain 1 Mana. Foresee 2. Consume. |
 | Glass Cover | 1 | skill | uncommon | Gain 7 Barrier. Sharpen 2 (Old Twelve Gauge gains 2 damage). |
 | Hair Trigger | 1 | power | uncommon | Whenever you play a shell: Sharpen 1 (Old Twelve Gauge gains 1 damage). |
 | Reload | 1 | skill | uncommon | Sharpen 3 (Old Twelve Gauge gains 3 damage). Draw 1 card. |
@@ -1096,7 +1096,7 @@ Tokens (made by other cards):
 | Shatter Strike | 2 | attack | common | Deal 14 damage. |
 | Reckless Swing | 0 | attack | common | Deal 9 damage. Lose 3 HP. |
 | Stagger | 1 | attack | common | Deal 4 damage. Apply 2 Faltering. |
-| Glimpse Ahead | 1 | skill | common | Foresee 4. Draw 1 card. |
+| Glimpse Ahead | 1 | skill | common | Foresee 4. |
 | Shrug It Off | 1 | skill | common | Lessen every debuff on you by 1. Gain 4 Barrier. |
 | Hidden Pitfall | 1 | snare | common | When you or an ally is attacked: Deal 7 damage to the attacker. |
 | Alarm Bell | 1 | snare | common | When the enemy summons: Deal 6 damage to the attacker. Apply 2 Faltering to the attacker. Gain 4 Barrier. |

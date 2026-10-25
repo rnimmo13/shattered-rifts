@@ -17,7 +17,7 @@ import {
   type Entry,
   type VaultDeck,
 } from '@sr/pvp';
-import { heroName, tierLabel } from './deckLayout';
+import { heroName, progressLabel, tierLabel } from './deckLayout';
 
 export {
   bankInto,
@@ -57,7 +57,7 @@ export function stagesCleared(run: Pick<RunState, 'phase' | 'stage'>): number {
   return Math.min(3, Math.max(0, n));
 }
 
-/** TEST BUILD ONLY: a copy of the deck taken after stage `after` (0 = the start of the tier; see run/deckSave.ts). Like every save, it replaces the run's earlier one. */
+/** A copy of the deck as it stood after stage `after` (0 = the start of the tier). Like every save, it replaces the run's earlier one. */
 export function deckFromStage(
   run: Pick<RunState, 'seed' | 'tier' | 'character' | 'deck' | 'boons'>,
   now: number,
@@ -66,13 +66,17 @@ export function deckFromStage(
   return { ...deckFromRun(run, now), stage: after };
 }
 
-/** TEST BUILD ONLY: a copy of the deck as it is right now, at any point. */
+/** A copy of the deck as it is right now, wherever the run is: what the Arena deck is saved from after every stop. */
 export function deckSnapshot(
   run: Pick<RunState, 'seed' | 'tier' | 'phase' | 'stage' | 'character' | 'deck' | 'boons'>,
   now: number,
 ): VaultDeck {
   return { ...deckFromRun(run, now), stage: stagesCleared(run) };
 }
+
+/** Where a saved deck is in the campaign, as everywhere else: "Tier 2 · Stage 1/3". */
+export const progressLabelOf = (d: Pick<VaultDeck, 'tier' | 'stage'>): string =>
+  progressLabel(d.tier, d.stage);
 
 /** What a PvP match is told about a deck. */
 export function entryFor(d: VaultDeck, name: string): Entry {

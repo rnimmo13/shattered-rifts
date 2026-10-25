@@ -117,6 +117,7 @@ function validContext(r: RunState): boolean {
             isInt(it['price'], 0, 100000),
         ) &&
         isInt(m['removePrice'], 0, 100000) &&
+        (m['upgrades'] === undefined || isInt(m['upgrades'], 0, 1000)) &&
         (m['potions'] === undefined ||
           (Array.isArray(m['potions']) &&
             (m['potions'] as unknown[]).every(

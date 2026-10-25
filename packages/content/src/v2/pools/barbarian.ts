@@ -69,7 +69,6 @@ export const BARBARIAN: CardDef[] = [
   s('uncommon', 'cut-through-fate', 'Cut Through Fate', 'attack', 1, 'foe', [
     dmg(7),
     scry(2),
-    draw(1),
   ]),
   s('uncommon', 'wrathful-guard', 'Wrathful Guard', 'skill', 1, 'none', [
     barrier(6),
@@ -91,7 +90,7 @@ export const BARBARIAN: CardDef[] = [
   ]),
   s('common', 'open-palm', 'Open Palm', 'attack', 1, 'foe', [dmg(9), stance('none')]),
   s('common', 'inner-sight', 'Inner Sight', 'skill', 1, 'none', [barrier(7), scry(3)]),
-  s('common', 'thread-cutter', 'Thread-Cutter', 'attack', 1, 'foe', [dmg(7), scry(2), draw(1)]),
+  s('common', 'thread-cutter', 'Thread-Cutter', 'attack', 1, 'foe', [dmg(7), scry(2)]),
   s('uncommon', 'settled-mind', 'Settled Mind', 'skill', 1, 'none', [
     scaled(draw(0), per('calm', 3)),
     stance('calm'),

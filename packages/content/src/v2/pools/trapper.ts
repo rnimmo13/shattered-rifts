@@ -269,7 +269,7 @@ export const TRAPPER: CardDef[] = [
   v('uncommon', 'banked-breath', 'Banked Breath', 'power', 1, 'none', [
     on('turnEnd', [scaled(barrier(0), per('mana', 2))]),
   ]),
-  v('uncommon', 'stolen-moment', 'Stolen Moment', 'skill', 0, 'none', [mana(1), draw(1), scry(2)], {
+  v('uncommon', 'stolen-moment', 'Stolen Moment', 'skill', 0, 'none', [mana(1), scry(2)], {
     exhaust: true,
   }),
   v('uncommon', 'shadow-step', 'Shadow Step', 'skill', 1, 'none', [barrier(7)], { retain: true }),
@@ -450,7 +450,7 @@ export const TRAPPER: CardDef[] = [
   // --- Bluff (more patience) ---
   v('common', 'bated-breath', 'Bated Breath', 'skill', 1, 'none', [barrier(8)], { retain: true }),
   v('rare', 'deep-pockets', 'Deep Pockets', 'power', 3, 'none', [maxMana(1)]),
-  v('common', 'read-the-room', 'Read the Room', 'skill', 1, 'none', [scry(3), draw(1), barrier(4)]),
+  v('common', 'read-the-room', 'Read the Room', 'skill', 1, 'none', [scry(3), barrier(4)]),
   v(
     'uncommon',
     'long-con',
@@ -484,7 +484,7 @@ export const TRAPPER: CardDef[] = [
     'skill',
     0,
     'none',
-    [scry(2), draw(1)],
+    [scry(2)],
     {
       onDiscard: [barrier(6)],
     },

@@ -36,32 +36,32 @@ export interface EliteSpec {
 export const ELITE_EVENTS: EliteSpec[] = [
   {
     id: 'brass-cascade',
-    title: 'The brass cascade',
+    title: 'The Brass Cascade',
     text: 'A tall board of brass pegs leans against a ruined wall, a little brass ball in a tray, and ten lanes at the bottom, each with a prize hung over it. A hand-lettered sign: "Three balls. Whatever lanes they land in, you may choose one of. The edges are the hardest to reach, and hold the best."',
     layout: 'treasury',
   },
   {
     id: 'brass-pegboard',
-    title: 'The brass pegboard',
-    text: 'A pegboard older than the town around it, kept oiled by someone who is never there. Ten lanes, ten things behind glass, mostly cards. Drop a ball, nudge it, and see what lane the board thinks you deserve.',
+    title: 'The Brass Cascade',
+    text: 'A brass pegboard older than the town around it, kept oiled by someone who is never there. Ten lanes, ten things behind glass, mostly cards. Drop a ball, nudge it, and see what lane the board thinks you deserve.',
     layout: 'armory',
   },
   {
     id: 'copper-chute',
-    title: 'The copper chute',
-    text: 'A copper chute with ten bottles and trinkets lined up beneath it, and a tinker asleep on a stool. A note: "Mind the bounce. Take what you land on."',
+    title: 'The Brass Cascade',
+    text: 'A brass board with ten bottles and trinkets lined up beneath it, and a tinker asleep on a stool. A note: "Mind the bounce. Take what you land on."',
     layout: 'apothecary',
   },
   {
     id: 'silver-sluice',
-    title: 'The silver sluice',
-    text: 'A water-run board of silver pegs, and ten channels where the water pools. Something gleams in each. The water does not care what you want, but your hands might.',
+    title: 'The Brass Cascade',
+    text: 'A water-run board of brass pegs, and ten channels where the water pools. Something gleams in each. The water does not care what you want, but your hands might.',
     layout: 'treasury',
   },
   {
     id: 'gilded-drop',
-    title: 'The gilded drop',
-    text: 'A gilded board in a hall with no roof. Ten prizes on velvet at the foot of it, and three golden balls on a cushion. An attendant coughs politely: "Whenever you are ready."',
+    title: 'The Brass Cascade',
+    text: 'A brass board in a hall with no roof. Ten prizes on velvet at the foot of it, and three brass balls on a cushion. An attendant coughs politely: "Whenever you are ready."',
     layout: 'armory',
   },
 ];

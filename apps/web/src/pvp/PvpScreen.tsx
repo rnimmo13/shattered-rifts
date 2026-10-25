@@ -23,7 +23,6 @@ import { ChoosePanel, CoinFlip, GhostOffer, WaitTimer } from './PvpParts';
 import { boardId } from './boardApi';
 import { VaultCode, type Online } from './VaultCode';
 import { AccountBox } from './AccountBox';
-import { MID_RUN_SAVES } from '../run/deckSave';
 import { RarityTally } from './DeckReport';
 import { dateLabel, heroName, progressLabel } from './deckLayout';
 import './decks.css';
@@ -396,12 +395,9 @@ export default function PvpScreen() {
                 <>
                   <h2>You need a saved deck to play in the Arena</h2>
                   <p>
-                    The Arena is played with decks you have built in the campaign. Clear a Rift Tier
-                    and choose <b>Save this deck</b> (or use <b>Save deck</b> between Rift Tiers),
-                    and that deck is yours to bring here. You keep it whether you win or lose a
-                    match.
-                    {MID_RUN_SAVES &&
-                      ' In this test build you can also save a copy of your deck between stages.'}
+                    The Arena is played with decks you have built in the campaign. Your deck is
+                    entered here automatically after every fight, so just play a run. You keep it
+                    whether you win or lose a match, but if the run collapses its deck is removed.
                   </p>
                   <p>
                     Banked decks on another device?{' '}

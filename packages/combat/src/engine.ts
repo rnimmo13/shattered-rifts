@@ -604,8 +604,9 @@ function execOp(r: Run, a: Act, op: Op): void {
       r.s.pending = {
         kind: 'scry',
         pool: top.map((c) => c.id),
-        min: 0,
-        max: top.length,
+        // Foresee: choose one of them to draw (the rest are discarded)
+        min: 1,
+        max: 1,
         rest: [],
         actor: a.actor.id,
         target: a.target?.id ?? null,
@@ -1646,8 +1647,27 @@ function pickCards(r: Run, action: Extract<Action, { type: 'pick' }>): void {
     if (c) picked.push(c);
   }
   if (p.kind === 'scry') {
-    r.ev.push({ type: 'scry', side, cards: picked.map((c) => c.id) });
-    for (const c of picked) moveFromHand(r, sd, c, 'discard');
+    // Foresee: the chosen card is drawn, and the others that were looked at are discarded
+    const left: CardInst[] = [];
+    for (const id of p.pool) {
+      if (ids.includes(id)) continue;
+      const k = sd.draw.findIndex((c) => c.id === id);
+      const [c] = k >= 0 ? sd.draw.splice(k, 1) : [];
+      if (c) left.push(c);
+    }
+    r.ev.push({ type: 'scry', side, cards: left.map((c) => c.id) });
+    for (const c of left) moveFromHand(r, sd, c, 'discard');
+    for (const c of picked) {
+      if (sd.hand.length >= MAX_HAND) {
+        sd.discard.push(c);
+        r.ev.push({ type: 'burn', side, card: c.id, def: c.card });
+      } else {
+        sd.hand.push(c);
+        r.ev.push({ type: 'draw', side, card: c.id, def: c.card });
+        sd.drawn++;
+        fireTriggers(r, sd, 'draw');
+      }
+    }
   } else for (const c of picked) moveFromHand(r, sd, c, p.kind);
   const hero = findUnit(r.s, p.actor);
   const fin = p.finish;

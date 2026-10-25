@@ -526,14 +526,18 @@ describe('choices (discard, exhaust, scry)', () => {
     expect(before).toBe(4);
   });
 
-  it('scry puts chosen cards from the top of the draw pile into the discard pile', () => {
+  it('scry draws the chosen card from the top of the draw pile and discards the others', () => {
     let s = start(['peek'], { draw: ['strike', 'defend', 'filler', 'filler'] });
     s = play(s, 'h0').state;
     expect(s.pending?.kind).toBe('scry');
     expect(s.pending?.pool).toEqual(['d0', 'd1', 'd2']);
-    s = pick(s, 'd0', 'd1').state;
-    expect(s.sides.a.discard.map((x) => x.card).sort()).toEqual(['defend', 'peek', 'strike']);
-    expect(handIds(s)).toEqual(['filler']); // then drew the next card
+    expect(s.pending).toMatchObject({ min: 1, max: 1 });
+    expect(() => pick(s)).toThrow(); // one has to be chosen
+    expect(() => pick(s, 'd0', 'd1')).toThrow(); // and only one
+    s = pick(s, 'd1').state;
+    // Defend is drawn; Strike and a Filler are thrown away; then Peek's own draw takes the next card
+    expect(s.sides.a.discard.map((x) => x.card).sort()).toEqual(['filler', 'peek', 'strike']);
+    expect(handIds(s)).toEqual(['defend', 'filler']);
   });
 
   it('the bot resolves a choice instead of getting stuck', () => {
@@ -972,6 +976,14 @@ describe('review fixes', () => {
     expect(validateDb(bad).join()).toContain('cannot evoke or channel');
   });
 
+  it('scry with only one card to look at still lets it be drawn', () => {
+    let s = start(['peek'], { draw: ['strike'] });
+    s = play(s, 'h0').state;
+    expect(s.pending?.pool).toEqual(['d0']);
+    s = pick(s, 'd0').state;
+    expect(handIds(s)).toEqual(['strike']);
+  });
+
   it('scry looks into a reshuffled discard pile when the draw pile is short', () => {
     let s = start(['peek'], { draw: ['strike'] });
     s.sides.a.discard = [
@@ -1162,10 +1174,10 @@ describe('tier 3: statuses and tricks', () => {
       draw: ['reflex', 'filler', 'filler', 'filler', 'filler', 'filler', 'filler'],
     });
     s = play(s, 'h0').state;
-    s = pick(s, 'd0').state; // throw away Reflex: "if discarded, draw 2"
-    expect(s.sides.a.discarded).toBe(1);
-    // Reflex drew 2 when it was thrown away, and Peek's own draw added 1
-    expect(s.sides.a.hand).toHaveLength(3);
+    s = pick(s, 'd1').state; // keep a Filler, so Reflex is thrown away: "if discarded, draw 2"
+    expect(s.sides.a.discarded).toBe(2);
+    // the Filler that was kept, the 2 Reflex drew when it was thrown away, and Peek's own draw
+    expect(s.sides.a.hand).toHaveLength(4);
   });
 });
 

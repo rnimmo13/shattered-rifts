@@ -18,6 +18,8 @@ export const BALLS = 3;
 /** how hard a falling ball is pulled toward its lane (per second squared, at the bottom), and how much that is damped */
 const STEER = 55;
 const STEER_DAMP = 13;
+/** how fast (px per second) a ball that reached the slots off its lane is slid across to it */
+const SLIDE_IN = 1400;
 /** the fixed time step the board is advanced by */
 export const DT = 1 / 240;
 
@@ -106,11 +108,21 @@ export function step(b: Ball, r: () => number, pegs: readonly Peg[] = PEGS): voi
       const d2 = dx * dx + dy * dy;
       if (d2 >= reach * reach) continue;
       const d = Math.sqrt(d2) || 0.0001;
-      const nx = dx / d;
-      const ny = dy / d;
-      // out of the peg, then bounce off it (only if it is moving into it)
-      b.x = p.x + nx * reach;
-      b.y = p.y + ny * reach;
+      let nx = dx / d;
+      let ny = dy / d;
+      // a ball that is below the peg's middle (it was knocked up into it, or is sliding past) is pushed out sideways: shoving it out downward
+      // along the normal made it jump a few pixels in one step, which looked like it dropped faster for no reason
+      if (ny > 0.2) {
+        const side = nx === 0 ? (r() < 0.5 ? -1 : 1) : Math.sign(nx);
+        const h = Math.sqrt(Math.max(0, reach * reach - dy * dy)) || reach;
+        nx = side;
+        ny = 0;
+        b.x = p.x + side * Math.max(h, reach * 0.9);
+      } else {
+        // out of the peg, then bounce off it (only if it is moving into it)
+        b.x = p.x + nx * reach;
+        b.y = p.y + ny * reach;
+      }
       const vn = b.vx * nx + b.vy * ny;
       if (vn < 0) {
         b.vx -= (1 + BOUNCE) * vn * nx;
@@ -127,12 +139,13 @@ export function step(b: Ball, r: () => number, pegs: readonly Peg[] = PEGS): voi
     // between the dividers of its slot
     const lo = b.slot * SLOT_W + BALL_R;
     const hi = (b.slot + 1) * SLOT_W - BALL_R;
+    // (a ball that arrives off its lane is carried across by the slope of the dividers, quickly but not in one step)
     if (b.x < lo) {
-      b.x = lo;
-      b.vx = Math.abs(b.vx) * 0.5;
+      b.x = Math.min(lo, b.x + SLIDE_IN * DT);
+      b.vx = Math.max(b.vx, 0) * 0.5;
     } else if (b.x > hi) {
-      b.x = hi;
-      b.vx = -Math.abs(b.vx) * 0.5;
+      b.x = Math.max(hi, b.x - SLIDE_IN * DT);
+      b.vx = Math.min(b.vx, 0) * 0.5;
     }
     // the floor: a bounce or two, then it rests
     if (b.y >= BOARD_H - BALL_R) {

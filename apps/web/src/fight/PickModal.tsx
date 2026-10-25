@@ -13,7 +13,7 @@ const TITLE: Record<PendingView['kind'], string> = {
 
 function prompt(p: PendingView): string {
   const many = p.max > 1 ? `${p.max} cards` : 'a card';
-  if (p.kind === 'scry') return 'Choose any cards from the top of your draw pile to discard.';
+  if (p.kind === 'scry') return 'Choose a card to draw. The rest are discarded.';
   const verb = p.kind === 'discard' ? 'Discard' : 'Consume';
   if (p.min === 0) return `${verb} up to ${p.max} cards.`;
   return `${verb} ${many}.`;

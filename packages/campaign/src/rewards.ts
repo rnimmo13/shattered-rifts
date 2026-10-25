@@ -264,6 +264,13 @@ export const PRICE: Record<string, number> = {
 };
 export const priceOf = (id: string): number => PRICE[rarityOf(id)] ?? 60;
 export const REMOVE_PRICE = 40;
+/**
+ * What the merchant charges to upgrade a card: this much the first time at a shop, and each upgrade bought at that same shop makes the next
+ * one dearer by the step. The next merchant starts from the base again.
+ */
+export const UPGRADE_PRICE = 60;
+export const UPGRADE_STEP = 40;
+export const upgradePrice = (doneHere: number): number => UPGRADE_PRICE + UPGRADE_STEP * Math.max(0, doneHere);
 
 /** For the stage-clear screen and the map: the realm's display name. */
 export const REALM_LABEL: Record<StageRealm, string> = {

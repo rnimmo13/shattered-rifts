@@ -205,7 +205,7 @@ export const KEYWORD_INFO: Record<string, { name: string; text: string }> = {
   },
   scry: {
     name: 'Foresee',
-    text: 'Look at the top cards of your draw pile and discard any you do not want.',
+    text: 'Look at that many cards from the top of your draw pile. Choose one to draw and discard the rest.',
   },
   rune: {
     name: 'Totem',

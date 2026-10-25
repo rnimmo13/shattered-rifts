@@ -1,38 +1,29 @@
 import { describe, expect, it } from 'vitest';
 import type { RunState } from '@sr/campaign';
 import { RIFTWALKERS } from '@sr/content/v2';
-import { MID_RUN_SAVES, SAVE_ANYTIME, loseSavedDecks, savePoint } from './deckSave';
+import { loseSavedDecks, shouldAutoSave } from './deckSave';
 import { loadVault, saveVault } from '../pvp/vault';
 
-const at = (phase: string, stage: number, tier: number): RunState =>
-  ({ phase, stage, tier }) as unknown as RunState;
+const stepped = (nodes: number, phase = 'map', seed = 's'): RunState =>
+  ({ seed, phase, stats: { nodesCleared: nodes } }) as unknown as RunState;
 
-describe('where a deck can be saved', () => {
-  it('when a Rift Tier has just been cleared', () => {
-    expect(savePoint(at('loopCleared', 3, 1))).toBe('cleared');
-    expect(savePoint(at('loopCleared', 3, 4))).toBe('cleared');
+describe('when the deck is saved for the Arena by itself', () => {
+  it('after a stop on the map is finished (a fight and its reward, a shop, a shrine, an event)', () => {
+    expect(shouldAutoSave(stepped(2, 'reward'), stepped(3))).toBe(true);
+    expect(shouldAutoSave(stepped(0, 'shrine'), stepped(1))).toBe(true);
   });
-
-  it('on a Rift Tier beyond the first, just before its stage 1', () => {
-    expect(savePoint(at('prelude', 1, 2))).toBe(0);
-    expect(savePoint(at('prelude', 1, 5))).toBe(0);
+  it('when the Warden\'s Gift has been picked (the Warden itself was cleared before it)', () => {
+    expect(shouldAutoSave(stepped(5, 'gift'), stepped(5, 'stageClear'))).toBe(true);
+    expect(shouldAutoSave(stepped(5, 'gift'), stepped(5, 'gift'))).toBe(false);
   });
-
-  it('between stages only in a test build', () => {
-    const expected = MID_RUN_SAVES ? 1 : null;
-    expect(savePoint(at('stageClear', 1, 1))).toBe(expected);
-    expect(savePoint(at('stageClear', 2, 3))).toBe(MID_RUN_SAVES ? 2 : null);
+  it('not in the middle of a stop, for the same count, or for another run', () => {
+    expect(shouldAutoSave(stepped(2), stepped(2, 'duel'))).toBe(false);
+    expect(shouldAutoSave(stepped(2, 'duel'), stepped(2, 'reward'))).toBe(false);
+    expect(shouldAutoSave(stepped(2, 'map', 'a'), stepped(3, 'map', 'b'))).toBe(false);
   });
-
-  it('never at the start of the first tier, at the start of later stages, or in the middle of a stage (unless any time is allowed)', () => {
-    const expected = SAVE_ANYTIME ? 'now' : null;
-    expect(savePoint(at('prelude', 1, 1))).toBe(expected);
-    expect(savePoint(at('prelude', 2, 1))).toBe(expected);
-    expect(savePoint(at('prelude', 2, 3))).toBe(expected);
-    for (const phase of ['map', 'reward', 'duel', 'shrine', 'merchant', 'event', 'kit'])
-      expect(savePoint(at(phase, 1, 2)), phase).toBe(expected);
-    expect(savePoint(at('banked', 1, 2))).toBeNull();
-    expect(savePoint(at('collapsed', 1, 2))).toBeNull();
+  it('not for a run that has just collapsed or been banked', () => {
+    expect(shouldAutoSave(stepped(2), stepped(3, 'collapsed'))).toBe(false);
+    expect(shouldAutoSave(stepped(2), stepped(3, 'banked'))).toBe(false);
   });
 });
 

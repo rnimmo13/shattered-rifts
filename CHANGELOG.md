@@ -5,6 +5,12 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **Your deck goes to the Arena by itself:** it is saved after every fight (and every shop, shrine and event), so there is no Save deck button. The run bar shows where your Arena deck stands, and you are told once what it means (other players may face it as a ghost; it is removed if the run collapses). If your saved decks are full you are reminded once per stage.
+- **The elite game is always called the Brass Cascade,** and the ball falls more naturally: no sudden drops, and it is no longer set down in its lane at the end.
+- **Events can be ambushes:** now and then an Event stop turns out to be a fight (10% a regular enemy, 5% an Elite from the third floor), like the ? rooms in Slay the Spire. It pays like any other fight of its kind.
+- **You are told which cards were upgraded,** whether it came from a Shrine, the merchant, an event or a prize ("Upgraded: Strike → Strike+").
+- **The merchant can upgrade a card for you.** It costs 60 shards, then 40 more each time you use it at that shop; the next shop starts at 60 again.
+- **Foresee is simpler:** look at the top cards of your draw pile, choose one to draw, and the rest are discarded (before, you chose which to discard, or all of them). Seven cards that also drew a card no longer do, so they do not draw twice.
 - **Tier and stage read the same everywhere:** the Continue button, the run bar, the campaign leaderboard and saved decks all say where a deck is the way the Arena does ("Tier 2 · Stage 1/3", "Tier 1 · Cleared"). Moving on to the next Rift Tier now shows on the leaderboard straight away.
 - **"Username"** is now the name of the name field everywhere.
 - **Ghost decks list only the latest version of a deck;** older copies from earlier saves are hidden.

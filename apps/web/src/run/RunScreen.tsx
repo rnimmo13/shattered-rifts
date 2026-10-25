@@ -16,6 +16,8 @@ import {
   MAX_TIER,
   sellPotion,
   buyRemoval,
+  buyUpgrade,
+  upgradedCards,
   chooseCard,
   chooseEvent,
   claimTrialPrize,
@@ -49,7 +51,7 @@ import { BoonToast } from './BoonToast';
 import { ChanceCoin, type Flip } from './ChanceCoin';
 import { PotionChip } from '../fight/PotionChip';
 import { BankedPanel } from './BankedPanel';
-import { canSaveForArena, loseSavedDecks, saveForArena } from './deckSave';
+import { autoSaveForArena, loseSavedDecks, savedArenaLabel, shouldAutoSave } from './deckSave';
 import { stagesInAll } from '@sr/pvp';
 import { stagesCleared } from '../pvp/vault';
 import { progressLabel } from '../pvp/deckLayout';
@@ -139,9 +141,28 @@ export default function RunScreen() {
     setNotice(text);
     setNoticeGood(good);
   };
-  /** what the Save button answered (test build), shown only while the stage-cleared screen is up */
-  const [saveNote, setSaveNote] = useState<{ at: string; text: string; ok: boolean } | null>(null);
-  const [saving, setSaving] = useState(false);
+  /** where the run's deck stands in the Arena (it is saved by itself after every stop), and a note about it: the first-time explanation, or a full Vault */
+  const [arena, setArena] = useState<{ seed: string; label: string } | null>(null);
+  const [arenaNote, setArenaNote] = useState<'intro' | 'full' | null>(null);
+  /** the stages at which the player has been told the Vault is full (once per stage, then quiet) */
+  const fullTold = useRef(new Set<string>());
+  /** The run's deck goes to the Arena by itself after every finished stop; the player is told what that means the first time. */
+  const saveToArena = useCallback((r: RunState): void => {
+    void autoSaveForArena(r).then((a) => {
+      if (runRef.current?.seed !== r.seed) return; // (the run was left in the meantime)
+      if (a.kind === 'full') {
+        const at = `${r.seed}:${r.tier}:${r.stage}`;
+        if (fullTold.current.has(at)) return;
+        fullTold.current.add(at);
+        setArenaNote('full');
+        return;
+      }
+      setArena({ seed: r.seed, label: a.label });
+      // (a Vault that was full a moment ago has room now)
+      setArenaNote((n) => (n === 'full' ? null : n));
+      if (!arenaIntroSeen()) setArenaNote((n) => n ?? 'intro');
+    });
+  }, []);
   const [showDeck, setShowDeck] = useState(false);
   /** how many saved Arena decks the run took down with it when it collapsed (null: not known yet) */
   const [lostDecks, setLostDecks] = useState<number | null>(null);
@@ -202,6 +223,7 @@ export default function RunScreen() {
       try {
         const next = fn(cur);
         runRef.current = next; // so two quick clicks never both act on the old state
+        if (shouldAutoSave(cur, next)) saveToArena(next);
         // a run that has got further is told to the leaderboards (best effort; never in the way)
         const was = stagesInAll(cur.tier, stagesCleared(cur));
         const now = stagesInAll(next.tier, stagesCleared(next));
@@ -215,8 +237,25 @@ export default function RunScreen() {
             name: getName() || 'Riftwalker',
           });
         // what an event just did is worth reading: show it once
+        const eventTold =
+          next.eventResult &&
+          // (an ambush is told every time, even if the same words were left over from an earlier stop)
+          (next.eventResult !== cur.eventResult || (cur.phase === 'map' && next.phase === 'duel'))
+            ? next.eventResult
+            : null;
+        // and so is any card that was upgraded, wherever the upgrade came from (a Shrine, the merchant, an event, a prize)
+        const ups = upgradedCards(cur.deck, next.deck).map(
+          ([a, b]) => `${COMBAT_DB.cards[a]?.name ?? a} → ${COMBAT_DB.cards[b]?.name ?? b}`,
+        );
         const told =
-          next.eventResult && next.eventResult !== cur.eventResult ? next.eventResult : null;
+          [
+            eventTold,
+            ups.length && !(eventTold && /upgrade/i.test(eventTold))
+              ? `Upgraded: ${ups.join(', ')}.`
+              : null,
+          ]
+            .filter((x): x is string => x !== null)
+            .join(' ') || null;
         // a chance in the event is shown as a coin first, and the result waits for it
         if (cur.phase === 'event' && !cur.context?.event?.trial && next.eventFlips?.length) {
           setCoin({ flips: next.eventFlips, then: told });
@@ -227,7 +266,7 @@ export default function RunScreen() {
         say(e instanceof RunError ? e.message : 'Something went wrong with that choice.');
       }
     },
-    [setRun],
+    [setRun, saveToArena],
   );
 
   const reportResult = useCallback(
@@ -263,14 +302,6 @@ export default function RunScreen() {
   const goHome = () => {
     setActiveRun(null);
     window.location.hash = '#/';
-  };
-  const saveDeck = () => {
-    if (!run || saving) return;
-    const at = `${run.seed}:${run.phase}:${run.stage}:${run.tier}`;
-    setSaving(true);
-    void saveForArena(run)
-      .then((r) => setSaveNote({ at, ...r }))
-      .finally(() => setSaving(false));
   };
   const leaveRun = () => {
     if (runRef.current) {
@@ -365,10 +396,7 @@ export default function RunScreen() {
               <button className="btn btn--small btn--ghost" onClick={() => setShowMap(true)}>
                 <span>View map</span>
               </button>
-              <button
-                className="btn btn--small btn--ghost"
-                onClick={() => setConfirmAbandon(true)}
-              >
+              <button className="btn btn--small btn--ghost" onClick={() => setConfirmAbandon(true)}>
                 <span>Abandon run</span>
               </button>
             </>
@@ -451,13 +479,13 @@ export default function RunScreen() {
               setup={{
                 seed: plan.seed,
                 a: {
-                hero: run.character,
-                deck: plan.deck,
-                hp: plan.hp,
-                maxHp: plan.maxHp,
-                boons: plan.boons,
-                potions: plan.potions,
-              },
+                  hero: run.character,
+                  deck: plan.deck,
+                  hp: plan.hp,
+                  maxHp: plan.maxHp,
+                  boons: plan.boons,
+                  potions: plan.potions,
+                },
                 b: {
                   hero: plan.ghost.hero,
                   deck: plan.ghost.deck,
@@ -470,7 +498,10 @@ export default function RunScreen() {
               names={{ a: 'You', b: `${plan.ghost.name}'s ghost` }}
               progress={{
                 a: { tier: run.tier },
-                b: { tier: plan.ghost.tier, ...(plan.ghost.stage !== null ? { stage: plan.ghost.stage } : {}) },
+                b: {
+                  tier: plan.ghost.tier,
+                  ...(plan.ghost.stage !== null ? { stage: plan.ghost.stage } : {}),
+                },
               }}
             >
               {(link) => fightView(link)}
@@ -488,7 +519,7 @@ export default function RunScreen() {
       <RunBar
         run={run}
         onDeck={() => setShowDeck(true)}
-        onSave={saveDeck}
+        arenaLabel={arena?.seed === run.seed ? arena.label : savedArenaLabel(run)}
         onHome={goHome}
         onAbandon={() => setConfirmAbandon(true)}
       />
@@ -497,19 +528,33 @@ export default function RunScreen() {
           {notice}
         </p>
       )}
-      {saveNote && saveNote.at === `${run.seed}:${run.phase}:${run.stage}:${run.tier}` && (
-        <p className={`run__notice${saveNote.ok ? ' run__notice--good' : ''}`} role="status">
-          {saveNote.text}
+      {arenaNote === 'intro' && (
+        <p className="run__notice run__notice--good" role="status">
+          <b>Your deck is now in the Arena.</b> It is saved by itself after every fight, so the
+          Arena always has your latest deck, and other players may face it as a ghost (the computer
+          plays it). If this run collapses, the deck is removed. See it under{' '}
+          <a href="#/decks">Saved decks</a>.{' '}
+          <button
+            className="btn btn--small"
+            onClick={() => {
+              markArenaIntroSeen();
+              setArenaNote(null);
+            }}
+          >
+            <span>Got it</span>
+          </button>
         </p>
       )}
-      <Body
-        run={run}
-        act={act}
-        onLeave={leaveRun}
-        onSave={saveDeck}
-        onHome={goHome}
-        lostDecks={lostDecks}
-      />
+      {arenaNote === 'full' && (
+        <p className="run__notice" role="status">
+          Your saved decks are full, so this run's deck is not in the Arena yet. Free a slot on the{' '}
+          <a href="#/decks">Saved decks page</a> and it will be saved after your next fight.{' '}
+          <button className="btn btn--small btn--ghost" onClick={() => setArenaNote(null)}>
+            <span>Dismiss</span>
+          </button>
+        </p>
+      )}
+      <Body run={run} act={act} onLeave={leaveRun} onHome={goHome} lostDecks={lostDecks} />
       {coin && (
         <ChanceCoin
           flips={coin.flips}
@@ -617,7 +662,8 @@ function floorLabel(run: RunState): string {
 function RunBar(props: {
   run: RunState;
   onDeck: () => void;
-  onSave: () => void;
+  /** where the deck stands in the Arena (null: nothing saved yet) */
+  arenaLabel: string | null;
   onHome: () => void;
   onAbandon: () => void;
 }) {
@@ -666,18 +712,13 @@ function RunBar(props: {
         <button className="btn btn--small" onClick={props.onDeck}>
           <span>Deck ({run.deck.length})</span>
         </button>
-        <button
-          className="btn btn--small"
-          disabled={!canSaveForArena(run)}
-          title={
-            canSaveForArena(run)
-              ? 'Copy this deck into your Vault to play it in the Arena. Your run carries on.'
-              : 'You can save a deck between Rift Tiers: when one is cleared, or at the start of the next, before its first stage. Not in the middle of a stage.'
-          }
-          onClick={props.onSave}
+        <a
+          className="btn btn--small btn--ghost runbar__arena"
+          href="#/decks"
+          title="Your deck is entered in the Arena by itself, and updated after every fight. Other players may face it as a ghost (the computer plays it). If this run collapses, the saved deck is removed. Click to see your saved decks."
         >
-          <span>Save deck</span>
-        </button>
+          <span>Arena deck: {props.arenaLabel ?? 'saved after your first fight'}</span>
+        </a>
         <button
           className="btn btn--small btn--ghost"
           title="Leave for now. This run is kept, and you can carry on from the home page."
@@ -697,7 +738,6 @@ function Body(props: {
   run: RunState;
   act: (fn: (r: RunState) => RunState) => void;
   onLeave: () => void;
-  onSave: () => void;
   onHome: () => void;
   lostDecks: number | null;
 }) {
@@ -773,6 +813,7 @@ function Body(props: {
           onBuyPotion={(i) => act((r) => buyPotion(r, i))}
           onSellPotion={(i) => act((r) => sellPotion(r, i))}
           onRemove={(card) => act((r) => buyRemoval(r, card))}
+          onUpgrade={(card) => act((r) => buyUpgrade(r, card))}
           onLeave={() => act((r) => leaveMerchant(r))}
         />
       );
@@ -808,16 +849,12 @@ function Body(props: {
         <section className="stage-panel" aria-label="Loop cleared">
           <h2 className="stage-panel__title">The Heart of the Rift is silent</h2>
           <p className="stage-panel__hint">
-            You cleared all three stages at Rift Tier {run.tier}. <b>Save</b> this deck to your
-            Vault to play it in the Arena. Then <b>Continue</b> one Tier deeper for harder enemies
-            and better rewards, but if Resolve runs out the run collapses and the deck you saved
-            from it is lost too. Or leave the run parked and come back to it later.
+            You cleared all three stages at Rift Tier {run.tier}. This deck is already in the Arena.
+            <b> Continue</b> one Tier deeper for harder enemies and better rewards, but if Resolve
+            runs out the run collapses and its Arena deck is removed with it. Or leave the run
+            parked and come back to it later.
           </p>
           <div className="choices-row">
-            <button className="bigchoice" onClick={props.onSave}>
-              <b>Save this deck</b>
-              <span>Copy it into your Vault. The run carries on.</span>
-            </button>
             {run.tier < MAX_TIER ? (
               <button className="bigchoice" onClick={() => act((r) => continueLoop(r))}>
                 <b>Continue to Tier {run.tier + 1}</b>
@@ -857,3 +894,19 @@ function Body(props: {
       return null;
   }
 }
+
+const ARENA_INTRO_KEY = 'sr.arenaIntro';
+const arenaIntroSeen = (): boolean => {
+  try {
+    return localStorage.getItem(ARENA_INTRO_KEY) === '1';
+  } catch {
+    return false;
+  }
+};
+const markArenaIntroSeen = (): void => {
+  try {
+    localStorage.setItem(ARENA_INTRO_KEY, '1');
+  } catch {
+    /* it will be explained again next time */
+  }
+};

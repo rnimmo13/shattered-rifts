@@ -860,6 +860,34 @@ body:has(.learn) {
   font-weight: 400;
   font-size: 0.78rem;
 }
+/* the Rift Tier table stays whole in one column of the two-column Learn page, compact and easy to scan down */
+.learn__tierbox {
+  break-inside: avoid;
+  margin: 0.4rem 0 0.8rem;
+}
+.learn__table--tiers {
+  margin: 0;
+  font-size: 0.84rem;
+  font-variant-numeric: tabular-nums;
+}
+.learn__table--tiers th,
+.learn__table--tiers td {
+  padding: 0.18rem 0.3rem;
+}
+.learn__table--tiers tbody tr:nth-child(even) {
+  background: rgb(255 255 255 / 0.04);
+}
+.learn__table--tiers tbody th {
+  text-align: center;
+  color: var(--c-gold-pale);
+}
+.learn__table--tiers thead tr:first-child th:nth-child(n + 2) {
+  border-left: 2px solid rgb(255 255 255 / 0.22);
+}
+.learn__table--tiers tbody td:nth-child(2),
+.learn__table--tiers tbody td:nth-child(5) {
+  border-left: 2px solid rgb(255 255 255 / 0.22);
+}
 .learn__table--lanes td {
   padding: 0.3rem 0.1rem;
   font-size: 0.85rem;
@@ -868,4 +896,8 @@ body:has(.learn) {
   .learn__table {
     font-size: 0.8rem;
   }
+}
+.learn__table--tiers thead tr:nth-child(2) th:nth-child(1),
+.learn__table--tiers thead tr:nth-child(2) th:nth-child(4) {
+  border-left: 2px solid rgb(255 255 255 / 0.22);
 }

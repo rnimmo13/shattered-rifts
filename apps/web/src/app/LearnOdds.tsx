@@ -21,6 +21,7 @@ import {
   cascadeLanes,
   LUCK_WEIGHTS,
   NODE_ODDS,
+  EVENT_FIGHT_ODDS,
   POTION_DROP_CHANCE,
   POTION_PRICE,
   POTION_WEIGHTS,
@@ -152,7 +153,9 @@ export function LearnOdds() {
         third floor, and only two or three a stage), a Merchant {NODE_ODDS.merchant}% (two at
         most), a Shrine {NODE_ODDS.shrine}% (from the third floor; the stop before a Warden is
         always a Shrine), an Event {NODE_ODDS.event}% (never three in a row). Whatever is left is
-        a fight.
+        a fight. An Event stop is not always an event: {EVENT_FIGHT_ODDS.duel}% of the time it is an
+        ambush by a plain enemy and {EVENT_FIGHT_ODDS.elite}% an Elite (from the third floor), played
+        and rewarded like any other fight.
       </p>
 
       <p>

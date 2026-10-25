@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { MAX_TIER, TIER_TABLE, enemyScale } from '@sr/campaign';
+import { MAX_TIER, enemyScale } from '@sr/campaign';
 import { COMBAT_DB, RIFTWALKERS, heroesByRealm } from '@sr/content/v2';
 import { KEYWORD_INFO, STATUS_INFO } from '../fight/info';
 import { TIP_RULES } from '../fight/tips';
@@ -56,41 +56,38 @@ function Steps(props: { items: [string, string][] }) {
 function TierTable() {
   const tiers = Array.from({ length: MAX_TIER }, (_, i) => i + 1);
   return (
-    <table className="learn__table">
-      <thead>
-        <tr>
-          <th rowSpan={2}>Rift Tier</th>
-          <th colSpan={3}>Enemy HP (% of base)</th>
-          <th colSpan={3}>Enemy damage (% of base)</th>
-        </tr>
-        <tr>
-          {['Stage 1', 'Stage 2', 'Stage 3', 'Stage 1', 'Stage 2', 'Stage 3'].map((h, i) => (
-            <th key={i}>{h}</th>
-          ))}
-        </tr>
-      </thead>
-      <tbody>
-        {tiers.map((t) => {
-          const stages = [1, 2, 3].map((st) => enemyScale(t, st));
-          return (
-            <tr key={t}>
-              <th>
-                {t}
-                <small>
-                  +{TIER_TABLE[t - 1]?.hp}% HP, +{TIER_TABLE[t - 1]?.dmg}% dmg
-                </small>
-              </th>
-              {stages.map((x, i) => (
-                <td key={'h' + i}>{x.hp}%</td>
-              ))}
-              {stages.map((x, i) => (
-                <td key={'d' + i}>{x.dmg}%</td>
-              ))}
-            </tr>
-          );
-        })}
-      </tbody>
-    </table>
+    <>
+      <table className="learn__table learn__table--tiers">
+        <thead>
+          <tr>
+            <th rowSpan={2}>Rift Tier</th>
+            <th colSpan={3}>Enemy HP (% of base)</th>
+            <th colSpan={3}>Enemy damage (% of base)</th>
+          </tr>
+          <tr>
+            {['Stage 1', 'Stage 2', 'Stage 3', 'Stage 1', 'Stage 2', 'Stage 3'].map((h, i) => (
+              <th key={i}>{h}</th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {tiers.map((t) => {
+            const stages = [1, 2, 3].map((st) => enemyScale(t, st));
+            return (
+              <tr key={t}>
+                <th>{t}</th>
+                {stages.map((x, i) => (
+                  <td key={'h' + i}>{x.hp}%</td>
+                ))}
+                {stages.map((x, i) => (
+                  <td key={'d' + i}>{x.dmg}%</td>
+                ))}
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+    </>
   );
 }
 
@@ -201,12 +198,14 @@ export function LearnScreen() {
             <b>Continue</b> to the next Rift Tier: you heal fully and keep your deck, but enemies
             have more HP and hit harder. The climb ends at Tier 20.
           </p>
-          <p>
-            Here is how tough enemies are at every stage of every tier, as a percentage of their
-            normal HP and damage. Each stage is a little harder than the one before it, and stage 1
-            of the next tier is harder again.
-          </p>
-          <TierTable />
+          <div className="learn__tierbox">
+            <p>
+              Here is how tough enemies are at every stage of every tier, as a percentage of their
+              normal HP and damage. Each stage is a little harder than the one before it, and stage
+              1 of the next tier is harder again.
+            </p>
+            <TierTable />
+          </div>
           <h3>Your deck</h3>
           <ul>
             <li>You start with a small deck. Rewards, shops and events add cards.</li>
@@ -266,8 +265,8 @@ export function LearnScreen() {
           </dl>
           <h3>Bad for whoever has them</h3>
           <p className="learn__note">
-            Cards in the Neutral cleansing line (Shrug It Off, Steady Nerves) lessen every one of these
-            on you by a stack or two. Only the rarest, Purging Light, dispels them completely.
+            Cards in the Neutral cleansing line (Shrug It Off, Steady Nerves) lessen every one of
+            these on you by a stack or two. Only the rarest, Purging Light, dispels them completely.
           </p>
           <dl>
             {statuses

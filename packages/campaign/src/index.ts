@@ -10,6 +10,9 @@ export {
   PRICE,
   priceOf,
   REMOVE_PRICE,
+  UPGRADE_PRICE,
+  UPGRADE_STEP,
+  upgradePrice,
   REALM_LABEL,
   canAdd,
   giftOffers,
@@ -39,6 +42,7 @@ export {
   sellPotion,
   buyCard,
   buyRemoval,
+  buyUpgrade,
   chooseCard,
   chooseEvent,
   pickEventCard,
@@ -79,8 +83,9 @@ export {
   type Layout,
 } from './trials';
 export { EVENT_TAG_LABEL, eventOffers, type EventTag } from './odds';
-export { NODE_ODDS, GHOST_FROM_TIER, GHOST_WARDEN_CHANCE } from './mapgen';
+export { NODE_ODDS, EVENT_FIGHT_ODDS, GHOST_FROM_TIER, GHOST_WARDEN_CHANCE } from './mapgen';
 export { TIER_TABLE, enemyScale } from './tierTable';
+export { upgradedCards } from './upgrades';
 export {
   GHOST_BOSS_HP_BASE,
   GHOST_BOSS_HP_PER_TIER,

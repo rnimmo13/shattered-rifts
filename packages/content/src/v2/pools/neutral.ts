@@ -50,7 +50,7 @@ export const NEUTRAL: CardDef[] = [
   n('common', 'shatter-strike', 'Shatter Strike', 'attack', 2, 'foe', [dmg(14)]),
   n('common', 'reckless-swing', 'Reckless Swing', 'attack', 0, 'foe', [dmg(9), lose(3)]),
   n('common', 'stagger', 'Stagger', 'attack', 1, 'foe', [dmg(4), status('faltering', 2, 'target')]),
-  n('common', 'glimpse-ahead', 'Glimpse Ahead', 'skill', 1, 'none', [scry(4), draw(1)]),
+  n('common', 'glimpse-ahead', 'Glimpse Ahead', 'skill', 1, 'none', [scry(4)]),
   n('uncommon', 'rift-storm', 'Rift Storm', 'attack', 2, 'none', [dmg(7, 'allFoes')]),
   n(
     'uncommon',

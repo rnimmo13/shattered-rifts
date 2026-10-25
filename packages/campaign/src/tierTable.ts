@@ -19,26 +19,26 @@ export interface TierRow {
 }
 
 export const TIER_TABLE: readonly TierRow[] = [
-  { hp: 30, dmg: 25 }, // Tier 1
-  { hp: 60, dmg: 50 }, // Tier 2
-  { hp: 90, dmg: 75 }, // Tier 3
-  { hp: 120, dmg: 100 }, // Tier 4
-  { hp: 150, dmg: 150 }, // Tier 5
-  { hp: 200, dmg: 200 }, // Tier 6
-  { hp: 250, dmg: 250 }, // Tier 7
-  { hp: 300, dmg: 300 }, // Tier 8
-  { hp: 350, dmg: 350 }, // Tier 9
-  { hp: 400, dmg: 400 }, // Tier 10
-  { hp: 450, dmg: 450 }, // Tier 11
-  { hp: 500, dmg: 500 }, // Tier 12
-  { hp: 550, dmg: 550 }, // Tier 13
-  { hp: 600, dmg: 600 }, // Tier 14
-  { hp: 650, dmg: 650 }, // Tier 15
-  { hp: 700, dmg: 700 }, // Tier 16
-  { hp: 750, dmg: 750 }, // Tier 17
-  { hp: 800, dmg: 800 }, // Tier 18
-  { hp: 850, dmg: 850 }, // Tier 19
-  { hp: 900, dmg: 900 }, // Tier 20
+  { hp: 50, dmg: 50 }, // Tier 1
+  { hp: 100, dmg: 100 }, // Tier 2
+  { hp: 200, dmg: 150 }, // Tier 3
+  { hp: 300, dmg: 200 }, // Tier 4
+  { hp: 450, dmg: 250 }, // Tier 5
+  { hp: 500, dmg: 300 }, // Tier 6
+  { hp: 650, dmg: 350 }, // Tier 7
+  { hp: 700, dmg: 400 }, // Tier 8
+  { hp: 850, dmg: 450 }, // Tier 9
+  { hp: 900, dmg: 500 }, // Tier 10
+  { hp: 1000, dmg: 550 }, // Tier 11
+  { hp: 1200, dmg: 600 }, // Tier 12
+  { hp: 1400, dmg: 650 }, // Tier 13
+  { hp: 1600, dmg: 700 }, // Tier 14
+  { hp: 1800, dmg: 750 }, // Tier 15
+  { hp: 2000, dmg: 800 }, // Tier 16
+  { hp: 2200, dmg: 850 }, // Tier 17
+  { hp: 2400, dmg: 900 }, // Tier 18
+  { hp: 2600, dmg: 950 }, // Tier 19
+  { hp: 3000, dmg: 1000 }, // Tier 20
 ];
 
 const rowOf = (tier: number): TierRow => {

@@ -184,7 +184,7 @@ export const DRUNKARD: CardDef[] = [
     on('turnStart', [heal(2), status('might', 1, 'self', true)]),
   ]),
   p('uncommon', 'dumpster-dive', 'Dumpster Dive', 'skill', 1, 'none', [draw(3), discard(1)]),
-  p('uncommon', 'spare-change', 'Spare Change', 'skill', 0, 'none', [draw(1), mana(1), scry(2)], {
+  p('uncommon', 'spare-change', 'Spare Change', 'skill', 0, 'none', [mana(1), scry(2)], {
     exhaust: true,
   }),
   p('rare', 'hammer-time', 'Hammer Time', 'attack', 2, 'foe', [

@@ -16,8 +16,10 @@ import {
 } from '@sr/content/v2';
 import {
   CROSSED_MERCHANT_CHANCE,
+  EVENT_FIGHT_ODDS,
   FINAL_STAGE,
   GHOST_FROM_TIER,
+  ambushEnemy,
   generateStageMap,
   reachableNodes,
 } from './mapgen';
@@ -35,6 +37,7 @@ import {
   POTION_PRICE,
   PRICE,
   REMOVE_PRICE,
+  upgradePrice,
   ancestralPool,
   offerPotion,
   boonOfRarity,
@@ -303,6 +306,31 @@ export function enterNode(run: RunState, nodeId: string): RunState {
     case 'event': {
       delete r.eventResult; // (so the next event's result is shown even if its words are the same)
       delete r.eventFlips;
+      // now and then the stop is an ambush: a fight (an Elite from the third floor on) in place of the event. (Maps never put an event on
+      // the first floor, which is all fights, so an event stood on there by hand is left alone.)
+      const roll = node.floor >= 2 ? nextInt(r.rng, 100) : 100;
+      const ambush: 'duel' | 'elite' | null =
+        roll < EVENT_FIGHT_ODDS.elite && node.floor >= 3
+          ? 'elite'
+          : roll < EVENT_FIGHT_ODDS.elite + EVENT_FIGHT_ODDS.duel
+            ? 'duel'
+            : null;
+      const foe = ambush
+        ? ambushEnemy(
+            r.rng,
+            enemyRealms(r, r.stage),
+            ambush,
+            r.map.nodes.map((n) => n.enemyId),
+          )
+        : null;
+      if (ambush && foe) {
+        // the stop becomes that fight, and is played, rewarded and (if lost) retried like any other
+        node.kind = ambush;
+        node.enemyId = foe;
+        r.phase = 'duel';
+        r.eventResult = `Ambush! ${encounter(foe).name} was waiting${ambush === 'elite' ? ' (an Elite)' : ''}.`;
+        break;
+      }
       r.context.event = rollEvent(r);
       r.phase = 'event';
       break;
@@ -406,10 +434,12 @@ export function duelPlan(run: RunState): FightPlan | null {
     potions: [...run.potions],
     // the tier table sets how hard this stage of this tier is; the difficulty only matters for a run saved on Easy or Hard
     hpPct: Math.round(
-      (DIFFICULTY[run.difficulty].hpPct / DIFFICULTY.normal.hpPct) * enemyScale(run.tier, run.stage).hp,
+      (DIFFICULTY[run.difficulty].hpPct / DIFFICULTY.normal.hpPct) *
+        enemyScale(run.tier, run.stage).hp,
     ),
     dmgPct: Math.round(
-      (DIFFICULTY[run.difficulty].dmgPct / DIFFICULTY.normal.dmgPct) * enemyScale(run.tier, run.stage).dmg,
+      (DIFFICULTY[run.difficulty].dmgPct / DIFFICULTY.normal.dmgPct) *
+        enemyScale(run.tier, run.stage).dmg,
     ),
     kind: node.kind,
     seed: `${run.seed}:t${run.tier}:${node.id}:${run.stats.duelsLost}`,
@@ -459,7 +489,8 @@ export function finishDuel(
     potionGained = offerPotion(r.rng);
     r.potions.push(potionGained);
   }
-  const gain = FIGHT_SHARDS[node.kind === 'duel' ? 'duel' : node.kind === 'elite' ? 'elite' : 'warden'];
+  const gain =
+    FIGHT_SHARDS[node.kind === 'duel' ? 'duel' : node.kind === 'elite' ? 'elite' : 'warden'];
   r.shards += gain;
   for (const id of r.boons) {
     const b = COMBAT_DB.boons[id];
@@ -884,6 +915,25 @@ export function buyRemoval(run: RunState, card: string): RunState {
   return r;
 }
 
+/** Have the merchant upgrade a card in your deck. Each one bought at this shop makes the next cost more; the next shop starts over. */
+export function buyUpgrade(run: RunState, card: string): RunState {
+  need(run.phase === 'merchant' && run.context?.merchant, 'You are not at a merchant');
+  const r = clone(run);
+  const m = (r.context as NonNullable<RunState['context']>).merchant as NonNullable<
+    NonNullable<RunState['context']>['merchant']
+  >;
+  const i = r.deck.indexOf(card);
+  need(i >= 0, 'That card is not in your deck');
+  const up = COMBAT_DB.cards[card]?.upgrade;
+  need(up, 'That card cannot be upgraded');
+  const price = upgradePrice(m.upgrades ?? 0);
+  need(r.shards >= price, 'Not enough shards');
+  r.shards -= price;
+  r.deck[i] = up;
+  m.upgrades = (m.upgrades ?? 0) + 1;
+  return r;
+}
+
 export function leaveMerchant(run: RunState): RunState {
   need(run.phase === 'merchant' && run.context, 'You are not at a merchant');
   const r = clone(run);
@@ -935,9 +985,16 @@ export function pickEventCard(run: RunState, index: number): RunState {
 
 /** The player pressed Begin on an elite event's trial. From now on it is spent: it is saved as begun, and cannot be tried again. */
 export function startTrial(run: RunState): RunState {
-  need(run.phase === 'event' && run.context?.event?.trial?.state === 'open', 'There is no trial here');
+  need(
+    run.phase === 'event' && run.context?.event?.trial?.state === 'open',
+    'There is no trial here',
+  );
   const r = clone(run);
-  beginTrial((r.context as NonNullable<RunState['context']>).event as NonNullable<NonNullable<RunState['context']>['event']>);
+  beginTrial(
+    (r.context as NonNullable<RunState['context']>).event as NonNullable<
+      NonNullable<RunState['context']>['event']
+    >,
+  );
   return r;
 }
 
@@ -950,7 +1007,8 @@ export function settleInterrupted(run: RunState): { run: RunState; notice: strin
     return { run, notice: null };
   const r = clone(run);
   const ctx = r.context as NonNullable<RunState['context']>;
-  r.eventResult = 'You left the game unfinished, so it counts as failed. The way closes, and you move on.';
+  r.eventResult =
+    'You left the game unfinished, so it counts as failed. The way closes, and you move on.';
   clearNode(r, ctx.nodeId);
   r.phase = 'map';
   return { run: r, notice: r.eventResult };
@@ -958,7 +1016,10 @@ export function settleInterrupted(run: RunState): { run: RunState; notice: strin
 
 /** An elite event's trial has been played (the client plays the puzzle): a win opens the choice of prizes, a loss pays the consolation. */
 export function finishTrial(run: RunState, won: boolean): RunState {
-  need(run.phase === 'event' && run.context?.event?.trial?.state === 'playing', 'There is no trial being played');
+  need(
+    run.phase === 'event' && run.context?.event?.trial?.state === 'playing',
+    'There is no trial being played',
+  );
   const r = clone(run);
   const ctx = r.context as NonNullable<RunState['context']>;
   const said = endTrial(r, ctx.event as NonNullable<typeof ctx.event>, won);
@@ -972,7 +1033,10 @@ export function finishTrial(run: RunState, won: boolean): RunState {
 
 /** Take one of the prizes of a trial that was won. */
 export function claimTrialPrize(run: RunState, prize: string, pick?: number): RunState {
-  need(run.phase === 'event' && run.context?.event?.trial?.state === 'won', 'There is no prize here');
+  need(
+    run.phase === 'event' && run.context?.event?.trial?.state === 'won',
+    'There is no prize here',
+  );
   const r = clone(run);
   const ctx = r.context as NonNullable<RunState['context']>;
   r.eventResult = takePrize(

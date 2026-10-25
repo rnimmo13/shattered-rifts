@@ -66,6 +66,25 @@ function rollKind(
   return 'duel';
 }
 
+/**
+ * An Event stop is now and then not an event at all but a fight: this percent of the time it is an Elite (only from the third floor), this
+ * percent a plain fight. Decided when the stop is entered, so the map still shows an Event.
+ */
+export const EVENT_FIGHT_ODDS = { elite: 5, duel: 10 } as const;
+
+/** The enemy that ambushes the player at an Event stop (null if the realm has none of that kind). Avoids the stage's own fights when it can. */
+export function ambushEnemy(
+  rng: RngState,
+  pool: readonly StageRealm[],
+  kind: 'duel' | 'elite',
+  taken: readonly (string | undefined)[],
+): string | null {
+  const all = pool.flatMap((r) => enemiesOf(r, kind === 'elite' ? 'elite' : 'regular'));
+  const fresh = all.filter((e) => !taken.includes(e.id));
+  const from = fresh.length > 0 ? fresh : all;
+  return from.length > 0 ? pick(rng, from).id : null;
+}
+
 /** A merchant is now and then a stranger from another world; decided with the map so the map can say so. */
 function crossedFor(rng: RngState, character: string | undefined): string | undefined {
   if (nextInt(rng, 1000) >= CROSSED_MERCHANT_CHANCE * 10) return undefined;

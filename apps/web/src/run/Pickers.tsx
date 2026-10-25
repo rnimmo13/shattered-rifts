@@ -11,6 +11,7 @@ import {
   removableCards,
   REST_HEAL,
   upgradable,
+  upgradePrice,
   cascadeLanes,
   type EventOption,
   type RunState,
@@ -317,10 +318,11 @@ export function MerchantView(props: {
   onBuyPotion: (index: number) => void;
   onSellPotion: (index: number) => void;
   onRemove: (card: string) => void;
+  onUpgrade: (card: string) => void;
   onLeave: () => void;
 }) {
   const [hover, setHover] = useState<CardDef | null>(null);
-  const [picking, setPicking] = useState(false);
+  const [picking, setPicking] = useState<'remove' | 'upgrade' | null>(null);
   const m = props.run.context?.merchant;
   if (!m) return null;
   const shards = props.run.shards;
@@ -333,6 +335,10 @@ export function MerchantView(props: {
     shards >= m.removePrice &&
     props.run.deck.length > V2_DECK_RULES.minSize &&
     removable.size > 0;
+  // each upgrade bought at this shop makes the next one dearer; the next shop starts again from the base price
+  const upPrice = upgradePrice(m.upgrades ?? 0);
+  const upgradeable = new Set(upgradable(props.run.deck));
+  const canUpgrade = shards >= upPrice && upgradeable.size > 0;
   const boon = m.boon ? COMBAT_DB.boons[m.boon.id] : undefined;
   return (
     <section className="stage-panel shop" aria-label="Merchant">
@@ -530,7 +536,23 @@ export function MerchantView(props: {
                 m.removed ? 'Done' : shards < m.removePrice ? 'Too expensive' : 'Choose a card'
               }
               disabled={!canRemove}
-              onBuy={() => setPicking(true)}
+              onBuy={() => setPicking('remove')}
+            />
+            <ShopRow
+              icon={<span className="shoprow__glyph">✦</span>}
+              name="Upgrade a card"
+              kind="service"
+              text={`Make one card in your deck better (it gets a "+"). Each upgrade bought at this shop costs ${upgradePrice((m.upgrades ?? 0) + 1)} next time; a new shop starts over at ${upgradePrice(0)}.`}
+              price={upgradeable.size === 0 ? null : upPrice}
+              button={
+                upgradeable.size === 0
+                  ? 'Nothing to upgrade'
+                  : shards < upPrice
+                    ? 'Too expensive'
+                    : 'Choose a card'
+              }
+              disabled={!canUpgrade}
+              onBuy={() => setPicking('upgrade')}
             />
           </div>
         </div>
@@ -542,17 +564,30 @@ export function MerchantView(props: {
         </button>
       </div>
       <CardHover def={hover} />
-      {picking && (
+      {picking === 'remove' && (
         <DeckModal
           deck={props.run.deck}
           title="Remove a card"
           hint={`This costs ${m.removePrice} shards. Sanctified cards cannot be removed.`}
           pickable={removable}
           onPick={(id) => {
-            setPicking(false);
+            setPicking(null);
             props.onRemove(id);
           }}
-          onClose={() => setPicking(false)}
+          onClose={() => setPicking(null)}
+        />
+      )}
+      {picking === 'upgrade' && (
+        <DeckModal
+          deck={props.run.deck}
+          title="Upgrade a card"
+          hint={`This costs ${upPrice} shards.`}
+          pickable={upgradeable}
+          onPick={(id) => {
+            setPicking(null);
+            props.onUpgrade(id);
+          }}
+          onClose={() => setPicking(null)}
         />
       )}
     </section>
@@ -638,7 +673,11 @@ export function EventView(props: {
           {trial.prizes.map((p) => {
             const mark = PRIZE_MARK[p.icon ?? ''] ?? PRIZE_MARK['shards']!;
             return (
-              <li key={p.id} title={p.label} style={{ '--mark': mark.color } as React.CSSProperties}>
+              <li
+                key={p.id}
+                title={p.label}
+                style={{ '--mark': mark.color } as React.CSSProperties}
+              >
                 <b>{mark.glyph}</b>
                 <span>{p.short ?? p.label}</span>
               </li>
