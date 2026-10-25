@@ -38,6 +38,16 @@ describe('the tier table', () => {
     }
   });
 
+  it('is one rising ladder: every stage harder than the last, and stage 1 of a tier harder than stage 3 of the tier below', () => {
+    const steps = TIER_TABLE.flatMap((row) =>
+      [0, 1, 2].map((i) => ({ hp: row.hp[i]!, dmg: row.dmg[i]! })),
+    );
+    for (let i = 1; i < steps.length; i++) {
+      expect(steps[i]!.hp, `step ${i + 1}`).toBeGreaterThan(steps[i - 1]!.hp);
+      expect(steps[i]!.dmg, `step ${i + 1}`).toBeGreaterThan(steps[i - 1]!.dmg);
+    }
+  });
+
   it('stays in the range a deck can grow into (no thirty-fold HP sponges)', () => {
     for (const row of TIER_TABLE) {
       for (const v of row.hp) expect(v).toBeLessThanOrEqual(900);

@@ -5,11 +5,10 @@
 // enemies have their written HP, stage 2 a quarter more and the Rift (stage 3) half as much again. Tier I itself runs above the base
 // (players found the base too easy, DECISIONS #228): edit row 1 to move the whole game's starting difficulty.
 //
-// Why it looks like this (docs/BALANCE.md, "Balance audit" 2026-10-25): a deck keeps its cards, upgrades and Boons from tier to
-// tier, so it grows fast over the first few tiers and then levels off at the best deck it can be. The stages climb inside a tier
-// because the deck grows a lot inside one loop (about 18 picks). The tiers climb steeply, +30% HP and +14% damage a tier to Tier 10,
-// then half that to Tier 20 (Robert, DECISIONS #229: every tier should be a step up you can feel; players beat the bots easily). Tier 20 asks for a godly build: about four and a half times Tier I's HP and a little over twice its damage, not thirty times.
-// Stage 1 of the next tier is a step down from stage 3 of this one, like the first act of a new Ascension after the last act.
+// Why it looks like this (docs/BALANCE.md; DECISIONS #223, #228-#230): the whole table is one rising ladder. Tier 1 stage 1, 2 and 3,
+// then Tier 2 stage 1 and so on: every step is harder than the one before it, and stage 1 of a tier is always harder than stage 3 of
+// the tier below (Robert: it must never take a step back; the table test checks it). Each stage adds +15% HP and +6% damage to Tier
+// 10 (+45% / +18% a tier), then +7% / +3% to Tier 20, where a deck has long stopped growing. Edit by hand, but keep it rising.
 
 export interface TierRow {
   /** enemy HP at stages 1, 2 and 3, percent of the written numbers */
@@ -19,26 +18,26 @@ export interface TierRow {
 }
 
 export const TIER_TABLE: readonly TierRow[] = [
-  { hp: [115, 144, 173], dmg: [112, 125, 140] }, // Tier 1
-  { hp: [145, 181, 218], dmg: [126, 141, 158] }, // Tier 2
-  { hp: [175, 219, 263], dmg: [140, 157, 175] }, // Tier 3
-  { hp: [205, 256, 308], dmg: [154, 172, 193] }, // Tier 4
-  { hp: [235, 294, 353], dmg: [168, 188, 210] }, // Tier 5
-  { hp: [265, 331, 398], dmg: [182, 204, 228] }, // Tier 6
-  { hp: [295, 369, 443], dmg: [196, 220, 245] }, // Tier 7
-  { hp: [325, 406, 488], dmg: [210, 235, 263] }, // Tier 8
-  { hp: [355, 444, 533], dmg: [224, 251, 280] }, // Tier 9
-  { hp: [385, 481, 578], dmg: [238, 267, 298] }, // Tier 10
-  { hp: [400, 500, 600], dmg: [245, 274, 306] }, // Tier 11
-  { hp: [415, 519, 623], dmg: [252, 282, 315] }, // Tier 12
-  { hp: [430, 538, 645], dmg: [259, 290, 324] }, // Tier 13
-  { hp: [445, 556, 668], dmg: [266, 298, 333] }, // Tier 14
-  { hp: [460, 575, 690], dmg: [273, 306, 341] }, // Tier 15
-  { hp: [475, 594, 713], dmg: [280, 314, 350] }, // Tier 16
-  { hp: [490, 613, 735], dmg: [287, 321, 359] }, // Tier 17
-  { hp: [505, 631, 758], dmg: [294, 329, 368] }, // Tier 18
-  { hp: [520, 650, 780], dmg: [301, 337, 376] }, // Tier 19
-  { hp: [535, 669, 803], dmg: [308, 345, 385] }, // Tier 20
+  { hp: [115, 130, 145], dmg: [112, 118, 124] }, // Tier 1
+  { hp: [160, 175, 190], dmg: [130, 136, 142] }, // Tier 2
+  { hp: [205, 220, 235], dmg: [148, 154, 160] }, // Tier 3
+  { hp: [250, 265, 280], dmg: [166, 172, 178] }, // Tier 4
+  { hp: [295, 310, 325], dmg: [184, 190, 196] }, // Tier 5
+  { hp: [340, 355, 370], dmg: [202, 208, 214] }, // Tier 6
+  { hp: [385, 400, 415], dmg: [220, 226, 232] }, // Tier 7
+  { hp: [430, 445, 460], dmg: [238, 244, 250] }, // Tier 8
+  { hp: [475, 490, 505], dmg: [256, 262, 268] }, // Tier 9
+  { hp: [520, 535, 550], dmg: [274, 280, 286] }, // Tier 10
+  { hp: [557, 564, 571], dmg: [289, 292, 295] }, // Tier 11
+  { hp: [578, 585, 592], dmg: [298, 301, 304] }, // Tier 12
+  { hp: [599, 606, 613], dmg: [307, 310, 313] }, // Tier 13
+  { hp: [620, 627, 634], dmg: [316, 319, 322] }, // Tier 14
+  { hp: [641, 648, 655], dmg: [325, 328, 331] }, // Tier 15
+  { hp: [662, 669, 676], dmg: [334, 337, 340] }, // Tier 16
+  { hp: [683, 690, 697], dmg: [343, 346, 349] }, // Tier 17
+  { hp: [704, 711, 718], dmg: [352, 355, 358] }, // Tier 18
+  { hp: [725, 732, 739], dmg: [361, 364, 367] }, // Tier 19
+  { hp: [746, 753, 760], dmg: [370, 373, 376] }, // Tier 20
 ];
 
 const rowOf = (tier: number): TierRow => {
