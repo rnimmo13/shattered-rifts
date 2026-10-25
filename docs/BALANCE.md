@@ -74,6 +74,26 @@ events, ancestral cards and Sanctified rolls are not in the audit decks.
 
 ---
 
+## Threshold and Waymarks (2026-10-25, DECISIONS #224)
+
+Yardstick: 100 shards buys about one removal and a half, or one upgrade and a half (Merchant: remove 40, upgrade 60, a common Boon 70).
+A **blessing** is one solid thing (~100 shards' worth); a **bargain** should be worth roughly two blessings, paid mostly in HP that the
+next rest heals, so taking it is a real temptation and not a trap. Prices that stay for the whole run (and every tier after it: the
+deck carries on) are kept for the biggest rewards: max HP for a rare Boon or an upgraded rare of your choice, a Wound for a lot of
+shards or a rare Boon.
+
+| Reward | Worth (shards, roughly) |
+|---|---|
+| a card of your choice, common / uncommon / rare / Legendary | 50 / 90 / 160 / 260 (a random one: about half, it is usually off-lane) |
+| remove an Attack or Defend | 40-60 |
+| upgrade (your own card) | 60 |
+| common / uncommon / rare Boon | 70 / 120 / 200+ (a rare Boon is +1 Mana or +1 card every turn, for good) |
+| 10 max HP | 60-80 |
+| a Wound (dead card) | -40 (the removal it costs) |
+| 10 HP (healable) | -20 to -40 at the start of a run |
+
+---
+
 *Measured 2026-10-22 on the M2 build, heuristic AI (balanced) unless noted.*
 
 ---

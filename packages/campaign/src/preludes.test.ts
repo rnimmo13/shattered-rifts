@@ -5,6 +5,7 @@ import {
   RunError,
   chooseKit,
   choosePrelude,
+  chooseCard,
   continueLoop,
   makePrelude,
   newRun,
@@ -211,5 +212,62 @@ describe('the Threshold draws from a wide pool', () => {
     }
     expect(seen.size).toBeGreaterThanOrEqual(15);
     expect(risky.size).toBeGreaterThanOrEqual(14);
+  });
+});
+
+describe('Threshold choices are worth taking (DECISIONS #224)', () => {
+  it('a card is a choice of three from your own class, and taking or skipping it opens the map', () => {
+    for (const h of HEROES) {
+      const before = offering([{ k: 'pick', rarity: 'rare' }], h);
+      const at = take(before);
+      expect(at.phase).toBe('reward');
+      const offers = at.context?.offers ?? [];
+      expect(new Set(offers).size).toBe(3);
+      for (const id of offers) {
+        expect(COMBAT_DB.cards[id]?.rarity).toBe('rare');
+        expect(COMBAT_DB.cards[id]?.hero).toBe(h);
+      }
+      // a run standing at the choice is a valid save
+      expect(parseRun(serializeRun(at))?.phase).toBe('reward');
+      const took = chooseCard(at, offers[0] as string);
+      expect(took.phase).toBe('map');
+      expect(took.deck).toHaveLength(before.deck.length + 1);
+      expect(took.cleared).toEqual(before.cleared);
+      expect(chooseCard(at, null).deck).toHaveLength(before.deck.length);
+    }
+  });
+
+  it('an upgraded pick offers the "+" versions; ancestral picks come from the ancestral cards', () => {
+    const up = take(offering([{ k: 'pick', rarity: 'common', upgraded: true }]));
+    for (const id of up.context?.offers ?? []) expect(id.endsWith('+')).toBe(true);
+    const anc = take(offering([{ k: 'pick', rarity: 'ancestral' }]));
+    for (const id of anc.context?.offers ?? [])
+      expect(COMBAT_DB.cards[id]?.rarity).toBe('ancestral');
+  });
+
+  it('upgrades go to your own cards before Attacks and Defends', () => {
+    const after = take(offering([{ k: 'upgrade', n: 2 }]));
+    const upped = after.deck.filter((c) => c.endsWith('+'));
+    expect(upped).toHaveLength(2);
+    for (const c of upped) expect(['strike+', 'defend+']).not.toContain(c);
+  });
+
+  it('a better transform makes uncommon or rare cards', () => {
+    const t = take(offering([{ k: 'transform', n: 3, better: true }]));
+    const made = t.deck.filter((c) => !newRun('knight', 'prelude-test', 'normal').deck.includes(c));
+    expect(made.length).toBe(3);
+    for (const id of made) expect(['uncommon', 'rare']).toContain(COMBAT_DB.cards[id]?.rarity);
+  });
+
+  it('Resolve is never offered to a run that is not missing any', () => {
+    for (let i = 0; i < 200; i++) {
+      const full = makePrelude(seedRng(`r${i}`), 'threshold', 1, 'aurelion', false).options;
+      expect(full.some((o) => o.effects.some((e) => e.k === 'resolve'))).toBe(false);
+    }
+    const seen = new Set<string>();
+    for (let i = 0; i < 300; i++)
+      for (const o of makePrelude(seedRng(`h${i}`), 'stage', 2, 'nexus', true).options)
+        seen.add(o.id);
+    expect(seen.has('nerve')).toBe(true);
   });
 });

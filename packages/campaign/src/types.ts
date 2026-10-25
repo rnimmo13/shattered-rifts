@@ -210,7 +210,14 @@ export type PreludeEffect =
   | { k: 'potion' }
   | { k: 'resolve'; n: number }
   | { k: 'wound'; n: number }
-  | { k: 'transform'; n: number }; // Attack / Defend into random cards
+  /** Attack / Defend into random cards (`better`: uncommon or rare instead of common or uncommon) */
+  | { k: 'transform'; n: number; better?: boolean }
+  /** choose one of three cards of this rarity from your class's pool (`upgraded`: offered as their "+" versions) */
+  | {
+      k: 'pick';
+      rarity: 'common' | 'uncommon' | 'rare' | 'legendary' | 'ancestral';
+      upgraded?: boolean;
+    };
 
 export interface PreludeOption {
   id: string;

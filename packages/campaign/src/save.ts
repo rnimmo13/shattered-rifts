@@ -100,7 +100,10 @@ function validContext(r: RunState): boolean {
   const needsNode: RunPhase[] = ['duel', 'reward', 'gift', 'shrine', 'merchant', 'event'];
   if (!needsNode.includes(r.phase)) return true;
   const c = r.context;
-  if (!isObj(c) || typeof c['nodeId'] !== 'string' || !ids.has(c['nodeId'])) return false;
+  if (!isObj(c) || typeof c['nodeId'] !== 'string') return false;
+  // a card chosen at the Threshold or a Waymark has no node behind it (nodeId is empty), like the prelude itself
+  const fromPrelude = r.phase === 'reward' && c['nodeId'] === '';
+  if (!fromPrelude && !ids.has(c['nodeId'])) return false;
   const cards = (x: unknown): x is string[] => isStrArray(x) && x.every((id) => hasCard(id));
   switch (r.phase) {
     case 'duel': {

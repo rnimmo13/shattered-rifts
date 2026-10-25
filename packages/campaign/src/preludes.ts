@@ -46,7 +46,9 @@ export function describeEffect(e: PreludeEffect): string {
     case 'wound':
       return e.n === 1 ? 'Add a Wound to your deck' : `Add ${e.n} Wounds to your deck`;
     case 'transform':
-      return `Transform ${e.n} Attacks or Defends in your deck into random cards`;
+      return `Transform ${e.n} Attacks or Defends in your deck into random ${e.better ? 'uncommon or rare ' : ''}cards`;
+    case 'pick':
+      return `Choose one of three ${e.upgraded ? 'upgraded ' : ''}${rarityWord[e.rarity]} cards for your deck`;
   }
 }
 
@@ -58,47 +60,60 @@ const opt = (id: string, name: string, effects: PreludeEffect[], risky = false):
   ...(risky ? { risky } : {}),
 });
 
-/** Good things with no strings; the amounts grow a little with the stage. */
-function blessings(stage: number): PreludeOption[] {
+// What an option is worth (docs/BALANCE.md, "Threshold and Waymarks"): a blessing is one solid thing, about 100 shards' worth; a
+// bargain pays clearly more than any blessing, and its price is mostly HP you can heal, not something the deck carries for good.
+// Cards are always a choice of three from your own class (a random card is usually from a lane you are not playing).
+
+/** Good things with no strings; the amounts grow a little with the stage. `hurt`: Resolve is missing, so Resolve is worth offering. */
+function blessings(stage: number, hurt: boolean): PreludeOption[] {
   return [
-    opt('hardened', 'Rift-hardened', [{ k: 'maxHp', n: 8 }]),
-    opt('purse', 'A Full Purse', [{ k: 'shards', n: 80 + stage * 20 }]),
-    opt('open-hand', 'Open Hand', [{ k: 'card', rarity: 'uncommon' }]),
+    opt('hardened', 'Rift-hardened', [{ k: 'maxHp', n: 10 }]),
+    opt('purse', 'A Full Purse', [{ k: 'shards', n: 100 + stage * 20 }]),
+    opt('open-hand', 'Open Hand', [{ k: 'pick', rarity: 'uncommon' }]),
     opt('honed', 'Honed Edges', [{ k: 'upgrade', n: 2 }]),
     opt('lighter', 'Lighter Load', [{ k: 'remove', n: 2 }]),
-    opt('keepsake', "Traveller's Keepsake", [{ k: 'potion' }, { k: 'shards', n: 40 }]),
+    opt('keepsake', "Traveller's Keepsake", [
+      { k: 'potion' },
+      { k: 'potion' },
+      { k: 'shards', n: 40 },
+    ]),
     opt('trinket', 'A Trinket of the Road', [{ k: 'boon', rarity: 'common' }]),
-    opt('nerve', 'Steeled Nerves', [{ k: 'resolve', n: 1 }]),
     opt('whetstone', 'Whetstone and Oil', [
       { k: 'upgrade', n: 1 },
-      { k: 'shards', n: 50 },
+      { k: 'shards', n: 60 },
     ]),
     opt('frame', 'Sturdy Frame', [
-      { k: 'maxHp', n: 5 },
-      { k: 'shards', n: 40 },
+      { k: 'maxHp', n: 6 },
+      { k: 'shards', n: 50 },
     ]),
     opt('clear-out', 'A Clear-Out', [
       { k: 'remove', n: 1 },
-      { k: 'card', rarity: 'common' },
+      { k: 'pick', rarity: 'common' },
     ]),
-    opt('two-gifts', "Wayfinder's Gifts", [
-      { k: 'card', rarity: 'common' },
-      { k: 'card', rarity: 'common' },
+    opt('two-gifts', "Wayfinder's Gift", [
+      { k: 'pick', rarity: 'common', upgraded: true },
+      { k: 'shards', n: 40 },
     ]),
     opt('pilgrim', "Pilgrim's Blessing", [
-      { k: 'maxHp', n: 4 },
+      { k: 'maxHp', n: 6 },
       { k: 'upgrade', n: 1 },
     ]),
-    opt('cache', 'A Hidden Cache', [{ k: 'shards', n: 110 + stage * 15 }]),
+    opt('cache', 'A Hidden Cache', [{ k: 'shards', n: 120 + stage * 15 }]),
     opt('lucky-find', 'A Lucky Find', [
       { k: 'boon', rarity: 'common' },
-      { k: 'shards', n: 30 },
-    ]),
-    opt('calm-mind', 'A Calm Mind', [
-      { k: 'resolve', n: 1 },
-      { k: 'shards', n: 30 },
+      { k: 'shards', n: 40 },
     ]),
     opt('apothecary', "Apothecary's Satchel", [{ k: 'potion' }, { k: 'upgrade', n: 1 }]),
+    // Resolve only helps a run that has lost some (a fresh run is already full)
+    ...(hurt
+      ? [
+          opt('nerve', 'Steeled Nerves', [{ k: 'resolve', n: 1 }]),
+          opt('calm-mind', 'A Calm Mind', [
+            { k: 'resolve', n: 1 },
+            { k: 'shards', n: 40 },
+          ]),
+        ]
+      : []),
   ];
 }
 
@@ -110,7 +125,7 @@ function bargains(stage: number): PreludeOption[] {
       'Blood Price',
       [
         { k: 'hp', n: 12 },
-        { k: 'card', rarity: 'rare' },
+        { k: 'pick', rarity: 'rare' },
       ],
       true,
     ),
@@ -118,7 +133,7 @@ function bargains(stage: number): PreludeOption[] {
       'heavy-purse',
       'Heavy Purse',
       [
-        { k: 'shards', n: 200 + stage * 30 },
+        { k: 'shards', n: 260 + stage * 30 },
         { k: 'wound', n: 1 },
       ],
       true,
@@ -127,19 +142,17 @@ function bargains(stage: number): PreludeOption[] {
       'hungry-rift',
       'The Rift Is Hungry',
       [
-        { k: 'maxHp', n: -8 },
-        { k: 'boon', rarity: 'uncommon' },
+        { k: 'maxHp', n: -6 },
+        { k: 'boon', rarity: 'rare' },
       ],
       true,
     ),
-    opt('trade-up', 'Trade Up', [{ k: 'transform', n: 3 }], true),
     opt(
-      'double-or-nothing',
-      'Double or Nothing',
+      'trade-up',
+      'Trade Up',
       [
-        { k: 'hp', n: 15 },
-        { k: 'card', rarity: 'uncommon' },
-        { k: 'card', rarity: 'uncommon' },
+        { k: 'hp', n: 8 },
+        { k: 'transform', n: 3, better: true },
       ],
       true,
     ),
@@ -148,7 +161,7 @@ function bargains(stage: number): PreludeOption[] {
       "A Legend's Price",
       [
         { k: 'hp', n: 15 },
-        { k: 'card', rarity: 'legendary' },
+        { k: 'pick', rarity: 'legendary' },
       ],
       true,
     ),
@@ -157,7 +170,7 @@ function bargains(stage: number): PreludeOption[] {
       'Call on the Ancestors',
       [
         { k: 'hp', n: 12 },
-        { k: 'card', rarity: 'ancestral' },
+        { k: 'pick', rarity: 'ancestral' },
       ],
       true,
     ),
@@ -166,7 +179,7 @@ function bargains(stage: number): PreludeOption[] {
       'Sell the Silver',
       [
         { k: 'hp', n: 8 },
-        { k: 'shards', n: 150 + stage * 20 },
+        { k: 'shards', n: 200 + stage * 25 },
       ],
       true,
     ),
@@ -175,6 +188,7 @@ function bargains(stage: number): PreludeOption[] {
       'A Haunted Gift',
       [
         { k: 'boon', rarity: 'uncommon' },
+        { k: 'boon', rarity: 'common' },
         { k: 'wound', n: 1 },
       ],
       true,
@@ -184,7 +198,7 @@ function bargains(stage: number): PreludeOption[] {
       'Blood for Steel',
       [
         { k: 'hp', n: 10 },
-        { k: 'upgrade', n: 3 },
+        { k: 'upgrade', n: 4 },
       ],
       true,
     ),
@@ -192,8 +206,8 @@ function bargains(stage: number): PreludeOption[] {
       'hollow-bargain',
       'A Hollow Bargain',
       [
-        { k: 'maxHp', n: -10 },
-        { k: 'card', rarity: 'rare' },
+        { k: 'maxHp', n: -5 },
+        { k: 'pick', rarity: 'rare', upgraded: true },
       ],
       true,
     ),
@@ -201,7 +215,8 @@ function bargains(stage: number): PreludeOption[] {
       'cursed-crown',
       'The Cursed Crown',
       [
-        { k: 'wound', n: 2 },
+        { k: 'wound', n: 1 },
+        { k: 'hp', n: 10 },
         { k: 'boon', rarity: 'rare' },
       ],
       true,
@@ -218,24 +233,15 @@ function bargains(stage: number): PreludeOption[] {
     opt(
       'reckless-haste',
       'Reckless Haste',
-      [{ k: 'hp', n: 10 }, { k: 'potion' }, { k: 'potion' }],
-      true,
-    ),
-    opt(
-      'rift-tithe',
-      'The Rift-Tithe',
-      [
-        { k: 'maxHp', n: -6 },
-        { k: 'shards', n: 220 },
-      ],
+      [{ k: 'hp', n: 8 }, { k: 'potion' }, { k: 'potion' }, { k: 'shards', n: 100 }],
       true,
     ),
     opt(
       'heavy-heart',
       'Heavy Heart',
       [
-        { k: 'maxHp', n: 18 },
-        { k: 'wound', n: 2 },
+        { k: 'maxHp', n: 25 },
+        { k: 'wound', n: 1 },
       ],
       true,
     ),
@@ -267,6 +273,8 @@ export function makePrelude(
   kind: PreludeKind,
   stage: number,
   realm: StageRealm,
+  /** the run is missing some Resolve, so Resolve blessings can be offered */
+  hurt = false,
 ): PreludeOffer {
   if (kind === 'threshold') {
     return {
@@ -274,14 +282,14 @@ export function makePrelude(
       title: 'The Threshold',
       text: 'Before the first step into the Rift, something offers you a choice. Take one.',
       options: [
-        ...takeDistinct(rng, blessings(stage), 3),
+        ...takeDistinct(rng, blessings(stage, hurt), 3),
         ...takeDistinct(rng, bargains(stage), 1),
       ],
     };
   }
   const options: PreludeOption[] = [
     opt('rest', 'Rest by the Waymark', [{ k: 'heal', pct: 30 }]),
-    ...takeDistinct(rng, blessings(stage), 2),
+    ...takeDistinct(rng, blessings(stage, hurt), 2),
   ];
   if (nextInt(rng, 2) === 0) options.push(...takeDistinct(rng, bargains(stage), 1));
   return {

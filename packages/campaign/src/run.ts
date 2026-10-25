@@ -11,6 +11,7 @@ import {
   V2_DECK_RULES,
   encounter,
   isSanctified,
+  rewardPool,
   canonicalHero,
   type HeroId,
 } from '@sr/content/v2';
@@ -180,7 +181,13 @@ function openPrelude(run: RunState, kind: 'threshold' | 'stage'): void {
   run.phase = 'prelude';
   run.context = {
     nodeId: '',
-    prelude: makePrelude(run.rng, kind, run.stage, realmOfStage(run, run.stage)),
+    prelude: makePrelude(
+      run.rng,
+      kind,
+      run.stage,
+      realmOfStage(run, run.stage),
+      run.resolve < run.maxResolve,
+    ),
   };
 }
 
@@ -574,6 +581,10 @@ export function chooseCard(run: RunState, cardId: string | null): RunState {
   if (r.phase === 'gift') {
     r.phase = 'stageClear';
     r.context = null;
+  } else if (c.nodeId === '') {
+    // a card chosen at the Threshold or a Waymark: no node is behind it
+    r.context = null;
+    r.phase = 'map';
   } else {
     clearNode(r, c.nodeId);
     r.phase = 'map';
@@ -623,7 +634,7 @@ export function choosePrelude(run: RunState, optionId: string): RunState {
   delete r.eventResult; // (so the result is shown even when its words match an earlier one)
   // a bargain that pays HP for a Legendary must be able to give one (the deck may already hold its limit)
   for (const e of option.effects)
-    if (e.k === 'card' && e.rarity === 'legendary')
+    if ((e.k === 'card' || e.k === 'pick') && e.rarity === 'legendary')
       need(
         cardOfRarity(clone(r.rng), r.character, r.deck, 'legendary'),
         'Your deck already holds as many Legendary cards as it can',
@@ -638,8 +649,36 @@ export function choosePrelude(run: RunState, optionId: string): RunState {
   else delete r.eventResult;
   r.phase = 'map';
   r.context = null;
+  // a card to choose: three on the table, taken (or skipped) on the card reward screen before the map
+  const pick = option.effects.find((e) => e.k === 'pick');
+  if (pick?.k === 'pick') {
+    const offers = threeToChoose(r, pick.rarity, pick.upgraded === true);
+    if (offers.length) {
+      r.phase = 'reward';
+      r.context = { nodeId: '', offers };
+    }
+  }
   return r;
 }
+
+/**
+ * Three different cards of a rarity to choose from: the Riftwalker's own (a Neutral card only when the class runs short), the
+ * "+" versions if asked. Ancestral cards have no class.
+ */
+function threeToChoose(r: RunState, rarity: PickRarity, upgraded: boolean): string[] {
+  const fits = (id: string) => COMBAT_DB.cards[id]?.rarity === rarity && canAdd(r.deck, id);
+  const own = rarity === 'ancestral' ? ancestralPool(r.deck) : rewardPool(r.character).filter(fits);
+  const mine = own.filter(
+    (id) => rarity === 'ancestral' || COMBAT_DB.cards[id]?.hero === r.character,
+  );
+  const from = mine.length >= 3 ? mine : own;
+  const out: string[] = [];
+  const pool = [...from];
+  while (out.length < 3 && pool.length)
+    out.push(pool.splice(nextInt(r.rng, pool.length), 1)[0] as string);
+  return upgraded ? out.map((id) => COMBAT_DB.cards[id]?.upgrade ?? id) : out;
+}
+type PickRarity = Extract<PreludeEffect, { k: 'pick' }>['rarity'];
 
 const nameOfCard = (id: string): string => COMBAT_DB.cards[id]?.name ?? id;
 const listOf = (all: readonly string[]): string => {
@@ -683,7 +722,10 @@ function applyEffect(r: RunState, e: PreludeEffect): string | null {
     case 'upgrade': {
       const done: string[] = [];
       for (let i = 0; i < e.n; i++) {
-        const slots = r.deck.flatMap((id, at) => (COMBAT_DB.cards[id]?.upgrade ? [at] : []));
+        const all = r.deck.flatMap((id, at) => (COMBAT_DB.cards[id]?.upgrade ? [at] : []));
+        // (your own cards first: an upgraded Strike is the least of upgrades)
+        const real = all.filter((at) => !isPlainBasic(r.deck[at] as string));
+        const slots = real.length ? real : all;
         if (!slots.length) break;
         const at = slots[nextInt(r.rng, slots.length)] as number;
         const was = r.deck[at] as string;
@@ -729,7 +771,13 @@ function applyEffect(r: RunState, e: PreludeEffect): string | null {
         if (at < 0) break;
         const from = nameOfCard(r.deck[at] as string);
         r.deck.splice(at, 1);
-        const rarity = nextInt(r.rng, 3) === 0 ? 'uncommon' : 'common';
+        const rarity = e.better
+          ? nextInt(r.rng, 3) === 0
+            ? 'rare'
+            : 'uncommon'
+          : nextInt(r.rng, 3) === 0
+            ? 'uncommon'
+            : 'common';
         const id = cardOfRarity(r.rng, r.character, r.deck, rarity);
         if (id) {
           r.deck.push(id);
@@ -738,6 +786,9 @@ function applyEffect(r: RunState, e: PreludeEffect): string | null {
       }
       return made.length ? made.join(' ') : null;
     }
+    case 'pick':
+      // the choice itself comes after (see choosePrelude)
+      return null;
   }
 }
 

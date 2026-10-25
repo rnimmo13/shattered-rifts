@@ -5,6 +5,7 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **The Threshold and Waymarks are worth a look:** card rewards there let you **choose one of three cards of your class** (before, it was a random card, often from a lane you weren't playing), upgrades go to your own cards before Attacks and Defends, and Resolve is only offered when you are missing some. The options "at a price" pay much more now: choose a rare, a Legendary or an ancestral card for some HP, a rare Boon (+1 Mana or +1 card a turn) for a little max HP, and so on.
 - **Big balance pass (Slay the Spire numbers):** fights last longer and no deck wins a boss fight on turn one any more. Every Riftwalker has 70-88 HP, and enemies hit for Slay the Spire's numbers. Rift Tiers climb gently instead of to thirty times the HP: Tier XX enemies have about three times Tier I's HP and twice its damage, and a stage within a tier is harder than the one before. Combos that could repeat for ever, or multiply without limit, are gone:
   - Fervor now needs **10** to enter Radiant, and leaving Serene gives 2 Mana **once a turn**.
   - A card made cheaper (Frozen Moment, Fever Dream, a free Discover) is cheaper **the next time you play it**, not for the whole fight.
