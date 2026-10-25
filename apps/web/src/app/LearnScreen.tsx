@@ -242,7 +242,7 @@ export function LearnScreen() {
           <div className="learn__tierbox">
             <p>
               Here is how tough enemies are at every stage of every tier, as a percentage of their
-              Tier I HP and damage. Each stage is harder than the one before it; stage 1 of the next
+              base HP and damage (Tier I already starts above it). Each stage is harder than the one before it; stage 1 of the next
               tier is a step down from the Rift, but harder than stage 1 of the tier before.
             </p>
             <TierTable />

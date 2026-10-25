@@ -74,6 +74,20 @@ events, ancestral cards and Sanctified rolls are not in the audit decks.
 
 ---
 
+## Harder Tier I and a steeper climb (2026-10-25, DECISIONS #228)
+
+Players found 0.58 too easy. `matrix` (bot, Warden + Vorthax at full HP, each deck depth at its own tier):
+
+| Deck | T1 | T2 | T3 | T4 | T5 | T10 |
+|---|---|---|---|---|---|---|
+| end of loop 1 | **34%** | 24% | 16% | 9% | 5% | 2% |
+| Tier II | 64% | **50%** | 34% | 23% | 14% | 5% |
+| Tier V | 96% | 93% | 88% | 75% | **63%** | 28% |
+| Tier X | 99% | 95% | 90% | | 75% | **35%** |
+
+(was 56 / 75 / 70 / 49% on the diagonal). The diagonal rises from Tier I to V because a deck grows fastest over its first loops; from
+Tier V it falls again. People beat these numbers by a wide margin, so they are floors.
+
 ## Boon pacing (2026-10-25, DECISIONS #227)
 
 Before: a free Boon from every Elite **and** the first two Wardens of every loop, plus the merchant, events, prizes and preludes, out of

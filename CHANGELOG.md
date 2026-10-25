@@ -5,6 +5,7 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **Harder from the start, and every Rift Tier a real step up:** Tier I enemies have 15% more HP and hit 12% harder, and each tier after climbs more steeply to Tier X before levelling off toward Tier XX. The How to play tier table shows the new numbers.
 - **Boons come slower, and the best are Legendary:** Wardens no longer drop a Boon (they give their Gift), so Boons come from Elites, the merchant, events and Threshold options. There are 18 Boons now (six new). The strongest (+1 Mana every turn, +1 card every turn, and two new ones) are **Legendary**: rare from Elites, never sold, and beating Vorthax sometimes leaves one.
 - **Events reworked:** most events that upgrade, remove, change or copy a card now let you **choose the card**, and their rewards are bigger. There are new events too: some **engrave a word on a card** for good (Hold, Opening hand, or Flare: costs 1 less but is consumed), some turn into **fights with spoils** if you win (bandits, a guarded hoard, a champion, a dead adventurer whose killer comes back), and some simply **go badly** (a rift storm, pickpockets, a cave-in, a cursed coin).
 - **How to play lists every Threshold option and every Boon,** and the Rift Tier text is corrected. All-Seeing's text now reads "they cost 0" for its two cards.
