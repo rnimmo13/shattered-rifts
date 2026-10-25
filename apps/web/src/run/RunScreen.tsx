@@ -22,9 +22,8 @@ import {
   chooseEvent,
   claimTrialPrize,
   pickEventCard,
-  finishTrial,
   settleInterrupted,
-  startTrial,
+  rollTrial,
   chooseKit,
   choosePrelude,
   continueLoop,
@@ -820,12 +819,12 @@ function Body(props: {
     case 'event':
       return (
         <EventView
+          key={run.context?.nodeId}
           run={run}
           onChoose={(id) => act((r) => chooseEvent(r, id))}
-          onBegin={() => act((r) => startTrial(r))}
-          onTrial={(won) => act((r) => finishTrial(r, won))}
+          onRoll={() => act((r) => rollTrial(r))}
           onPickCard={(i) => act((r) => pickEventCard(r, i))}
-          onPrize={(id, pick) => act((r) => claimTrialPrize(r, id, pick))}
+          onPrize={(id, pick, cards) => act((r) => claimTrialPrize(r, id, pick, cards))}
         />
       );
     case 'kit':

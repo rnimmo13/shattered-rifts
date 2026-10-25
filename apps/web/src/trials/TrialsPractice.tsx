@@ -1,35 +1,28 @@
-// Practice for the elite-event game (the Brass Cascade) and the coin tossed for a chance, without needing a run. Nothing
-// here is kept.
+// Practice for the elite-event reel (the Brass Reel) and the coin tossed for a chance, without needing a run. Nothing here is kept
+// and nothing here costs anything.
 
 import { useState } from 'react';
-import { cascadeLanes } from '@sr/campaign';
 import { ChanceCoin } from '../run/ChanceCoin';
+import { Reel } from './Reel';
 import { SAMPLE_PRIZES, TRIAL_INFO } from './info';
-import { TrialHost } from './TrialHost';
 import './trials.css';
 
 export default function TrialsPractice() {
-  const [round, setRound] = useState<number | null>(null);
   const [coin, setCoin] = useState<{ pct: number; won: boolean } | null>(null);
-  const [last, setLast] = useState<string | null>(null);
+  const [spins, setSpins] = useState(0);
+  const [target, setTarget] = useState<number | null>(null);
+  const [from, setFrom] = useState<number | null>(null);
+  const [spinning, setSpinning] = useState(false);
 
-  if (round !== null)
-    return (
-      <TrialHost
-        key={round}
-        prizes={SAMPLE_PRIZES}
-        lanes={cascadeLanes(round * 7919 + 13)}
-        practice
-        onDone={(earned) => {
-          setLast(
-            `${TRIAL_INFO.cascade.name}: ${earned.length} lane${earned.length === 1 ? '' : 's'} earned`,
-          );
-          setRound(null);
-        }}
-        onAgain={() => setRound(round + 1)}
-        onCancel={() => setRound(null)}
-      />
-    );
+  const spin = (): void => {
+    if (spinning) return;
+    // (practice draws its own: a real spin is drawn by the rules)
+    const pool = SAMPLE_PRIZES.map((_, i) => i).filter((i) => i !== target);
+    setFrom(target);
+    setTarget(pool[Math.floor(Math.random() * pool.length)] ?? 0);
+    setSpins(spins + 1);
+    setSpinning(true);
+  };
 
   return (
     <main className="trials">
@@ -38,17 +31,29 @@ export default function TrialsPractice() {
       </a>
       <h1>Elite Events</h1>
       <p>
-        Elite events in a run (about 1 in 10) offer the Brass Cascade for a choice of better rewards.
-        Try it here on a sample board.
+        Elite events in a run (about 1 in 10) offer the {TRIAL_INFO.reel.name}:{' '}
+        {TRIAL_INFO.reel.blurb} Try it here for free, on a sample reel.
       </p>
-      {last && <p aria-live="polite">Last: {last}</p>}
+      <Reel
+        prizes={SAMPLE_PRIZES}
+        target={target}
+        from={from}
+        spinKey={spins}
+        spinning={spinning}
+        onSettled={() => setSpinning(false)}
+      />
+      <p aria-live="polite">
+        {target === null
+          ? 'Spin to try it.'
+          : spinning
+            ? 'Spinning…'
+            : `It stopped on: ${SAMPLE_PRIZES[target]?.short ?? 'a prize'}`}
+      </p>
       <ul className="trials__grid">
         <li>
-          <button type="button" onClick={() => setRound((n) => (n ?? 0) + 1)}>
-            <b>{TRIAL_INFO.cascade.name}</b>
-            <small>
-              {TRIAL_INFO.cascade.blurb} {TRIAL_INFO.cascade.time}.
-            </small>
+          <button type="button" disabled={spinning} onClick={spin}>
+            <b>Spin the reel</b>
+            <small>Free here. In a run a spin costs 25 shards.</small>
           </button>
         </li>
         <li>

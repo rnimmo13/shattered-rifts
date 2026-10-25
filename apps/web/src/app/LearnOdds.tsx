@@ -5,10 +5,8 @@ import { useMemo } from 'react';
 import {
   BOON_PRICE,
   BOON_WEIGHTS,
-  CASCADE_BALLS,
   CROSSED_MERCHANT_CHANCE,
   CROSSED_OFFER_CHANCE,
-  ELITE_EVENTS,
   ELITE_EVENT_CHANCE,
   ELITE_HEAL_PCT,
   EVENT_TAG_LABEL,
@@ -17,8 +15,9 @@ import {
   GHOST_FROM_TIER,
   GHOST_WARDEN_CHANCE,
   GIFT_LEGEND_CHANCE,
-  LAYOUT_PRIZES,
-  cascadeLanes,
+  REEL_KINDS,
+  REEL_PRIZES,
+  ROLL_COST,
   LUCK_WEIGHTS,
   NODE_ODDS,
   EVENT_FIGHT_ODDS,
@@ -28,11 +27,9 @@ import {
   PRICE,
   REMOVE_PRICE,
   eventOffers,
-  type Layout,
   type Luck,
 } from '@sr/campaign';
 import { PRIZE_MARK } from '../trials/prizes';
-import { SLOT_COUNT } from '../trials/physics';
 
 const pct = (w: number, total: number): string => `${Math.round((w / total) * 100)}%`;
 const total = (w: Record<string, number>): number => Object.values(w).reduce((a, b) => a + b, 0);
@@ -43,9 +40,9 @@ const LUCKS: { id: Luck; label: string }[] = [
   { id: 'blessed', label: 'Blessed' },
 ];
 
-/** what a lane of the Brass Cascade holds, by kind of prize */
+/** what a prize on the Brass Reel is, by kind */
 const LANE_LABEL: Record<string, string> = {
-  card: 'A Legendary card of yours (only one lane)',
+  card: 'A Legendary card of yours (only one prize)',
   rare: 'A rare card of yours',
   boon: 'A Boon',
   crossed: 'Pick 1 of 3 Rift-crossed rares',
@@ -54,30 +51,10 @@ const LANE_LABEL: Record<string, string> = {
   heal: 'Heal 40%',
   hp: '+10 max HP and heal',
   potion: 'A rare potion',
-  thin: 'Two cards leave your deck',
+  thin: 'Remove up to 2 cards of your choice',
 };
-const LAYOUT_NAME: Record<Layout, string> = {
-  treasury: 'Treasury',
-  armory: 'Armory',
-  apothecary: 'Apothecary',
-};
-
-/** how often a ball is drawn for each lane, over 20,000 trials of three balls (the real draw, so this shows it is even) */
-function laneOdds(): number[] {
-  const n = Array.from({ length: SLOT_COUNT }, () => 0);
-  const trials = 20000;
-  for (let seed = 0; seed < trials; seed++) for (const l of cascadeLanes(seed)) n[l]!++;
-  return n.map((c) => Math.round((c / (trials * CASCADE_BALLS)) * 1000) / 10);
-}
-
 export function LearnOdds() {
   const events = useMemo(() => eventOffers(), []);
-  const lanes = useMemo(() => laneOdds(), []);
-  const layoutsUsed = (l: Layout): string =>
-    ELITE_EVENTS.filter((e) => e.layout === l)
-      .map((e) => e.title.replace(/^The /, ''))
-      .join(', ');
-
   return (
     <section>
       <h2>Odds &amp; numbers</h2>
@@ -105,7 +82,10 @@ export function LearnOdds() {
           </tr>
           <tr>
             <th />
-            {LUCKS.flatMap((l) => [<th key={l.id + 'f'}>Fight</th>, <th key={l.id + 'e'}>Elite</th>])}
+            {LUCKS.flatMap((l) => [
+              <th key={l.id + 'f'}>Fight</th>,
+              <th key={l.id + 'e'}>Elite</th>,
+            ])}
           </tr>
         </thead>
         <tbody>
@@ -148,14 +128,14 @@ export function LearnOdds() {
 
       <h3>The map</h3>
       <p>
-        Each stop on a stage (after the first floor) is rolled: an Elite{' '}
-        {NODE_ODDS.eliteFirst}% (the first one on a stage, then {NODE_ODDS.eliteMore}%; from the
-        third floor, and only two or three a stage), a Merchant {NODE_ODDS.merchant}% (two at
-        most), a Shrine {NODE_ODDS.shrine}% (from the third floor; the stop before a Warden is
-        always a Shrine), an Event {NODE_ODDS.event}% (never three in a row). Whatever is left is
-        a fight. An Event stop is not always an event: {EVENT_FIGHT_ODDS.duel}% of the time it is an
-        ambush by a plain enemy and {EVENT_FIGHT_ODDS.elite}% an Elite (from the third floor), played
-        and rewarded like any other fight.
+        Each stop on a stage (after the first floor) is rolled: an Elite {NODE_ODDS.eliteFirst}%
+        (the first one on a stage, then {NODE_ODDS.eliteMore}%; from the third floor, and only two
+        or three a stage), a Merchant {NODE_ODDS.merchant}% (two at most), a Shrine{' '}
+        {NODE_ODDS.shrine}% (from the third floor; the stop before a Warden is always a Shrine), an
+        Event {NODE_ODDS.event}% (never three in a row). Whatever is left is a fight. An Event stop
+        is not always an event: {EVENT_FIGHT_ODDS.duel}% of the time it is an ambush by a plain
+        enemy and {EVENT_FIGHT_ODDS.elite}% an Elite (from the third floor), played and rewarded
+        like any other fight.
       </p>
 
       <p>
@@ -180,11 +160,12 @@ export function LearnOdds() {
           {pct(POTION_WEIGHTS.rare, total(POTION_WEIGHTS))} rare.
         </li>
         <li>
-          Every Elite, and every Warden but the last, gives a Boon: {pct(BOON_WEIGHTS.elite?.['common'] ?? 0, total(BOON_WEIGHTS.elite ?? {}))}{' '}
-          common, {pct(BOON_WEIGHTS.elite?.['uncommon'] ?? 0, total(BOON_WEIGHTS.elite ?? {}))}{' '}
-          uncommon, {pct(BOON_WEIGHTS.elite?.['rare'] ?? 0, total(BOON_WEIGHTS.elite ?? {}))} rare
-          (the merchant&apos;s Boon rolls the same way). An Elite also heals {ELITE_HEAL_PCT}% of
-          your HP.
+          Every Elite, and every Warden but the last, gives a Boon:{' '}
+          {pct(BOON_WEIGHTS.elite?.['common'] ?? 0, total(BOON_WEIGHTS.elite ?? {}))} common,{' '}
+          {pct(BOON_WEIGHTS.elite?.['uncommon'] ?? 0, total(BOON_WEIGHTS.elite ?? {}))} uncommon,{' '}
+          {pct(BOON_WEIGHTS.elite?.['rare'] ?? 0, total(BOON_WEIGHTS.elite ?? {}))} rare (the
+          merchant&apos;s Boon rolls the same way). An Elite also heals {ELITE_HEAL_PCT}% of your
+          HP.
         </li>
       </ul>
 
@@ -192,7 +173,7 @@ export function LearnOdds() {
       <p>
         There are {events.count} events. They are rolled by weight, and about every{' '}
         {Math.round(100 / ELITE_EVENT_CHANCE)}th event ({ELITE_EVENT_CHANCE}%) is an{' '}
-        <b>Elite Event</b> instead (see the Brass Cascade below). Of the ordinary events, the share
+        <b>Elite Event</b> instead (see the Brass Reel below). Of the ordinary events, the share
         that offer each kind of thing in at least one of their choices:
       </p>
       <dl>
@@ -208,58 +189,38 @@ export function LearnOdds() {
         shards, a Boon to give up), so the real share you meet can differ a little.
       </p>
 
-      <h3>Elite Event: the Brass Cascade</h3>
+      <h3>Elite Event: the Brass Reel</h3>
       <p>
-        You may drop {CASCADE_BALLS} balls onto a board of pegs. Each lands in one of {SLOT_COUNT}{' '}
-        lanes, and every lane a ball lands in is a prize you have earned; you choose one of them.
-        Two balls in the same lane pay that lane again with a second, <b>different</b> prize of the
-        same kind (marked ×2). You only get one try: once you press Begin, closing the page
-        counts as a failed trial.
+        A reel of {REEL_PRIZES} prizes, all in plain sight. A spin costs {ROLL_COST} shards: the
+        reel scrolls past a pointer and slows to a stop on one prize. You may take it, or pay{' '}
+        {ROLL_COST} more shards to let it go and spin again, or walk away (the shards you spent are
+        gone).
       </p>
       <p>
-        <b>Fair by design.</b> Where each ball lands is drawn fairly before it drops: every lane is
-        exactly as likely as any other, wherever you let go (the ball bounces about and is steered
-        to its lane). The prizes also stand in different lanes every time, and only one lane holds
-        a Legendary card. The share of balls drawn for each lane, over 20,000 trials:
+        <b>Fair by design.</b> What the reel stops on is drawn by the rules before the reel moves,
+        and every prize is equally likely: a first spin stops on each one{' '}
+        {Math.round(100 / REEL_PRIZES)}% of the time, and a spin after that never stops on the prize
+        you are holding (so each of the other {REEL_PRIZES - 1} is about{' '}
+        {Math.round(100 / (REEL_PRIZES - 1))}%). The prizes stand in different places on the reel
+        every time, and only one of them is a Legendary card. Getting one particular prize takes
+        about {REEL_PRIZES} spins ({REEL_PRIZES * ROLL_COST} shards) on average.
+      </p>
+      <p>
+        Every Elite Event has the same {REEL_PRIZES} prizes (where they stand on the reel is
+        shuffled each time):
       </p>
       <table className="learn__table learn__table--lanes">
         <tbody>
           <tr>
-            <th scope="row">Lane</th>
-            {lanes.map((_, i) => (
-              <td key={i}>{i + 1}</td>
-            ))}
+            {[...REEL_KINDS].map((k, i) => {
+              const mark = PRIZE_MARK[k] ?? PRIZE_MARK['shards']!;
+              return (
+                <td key={i} title={LANE_LABEL[k]} style={{ color: mark.color }}>
+                  {mark.glyph}
+                </td>
+              );
+            })}
           </tr>
-          <tr>
-            <th scope="row">Chance</th>
-            {lanes.map((n, i) => (
-              <td key={i}>{n}%</td>
-            ))}
-          </tr>
-        </tbody>
-      </table>
-      <p>
-        Every Elite Event has one of three sets of ten prizes (the lanes they stand in are shuffled
-        each time):
-      </p>
-      <table className="learn__table learn__table--lanes">
-        <tbody>
-          {(Object.keys(LAYOUT_PRIZES) as Layout[]).map((l) => (
-            <tr key={l}>
-              <th scope="row">
-                {LAYOUT_NAME[l]}
-                <small>{layoutsUsed(l)}</small>
-              </th>
-              {[...LAYOUT_PRIZES[l]].map((k, i) => {
-                const mark = PRIZE_MARK[k] ?? PRIZE_MARK['shards']!;
-                return (
-                  <td key={i} title={LANE_LABEL[k]} style={{ color: mark.color }}>
-                    {mark.glyph}
-                  </td>
-                );
-              })}
-            </tr>
-          ))}
         </tbody>
       </table>
       <p className="learn__note">

@@ -46,9 +46,8 @@ export {
   chooseCard,
   chooseEvent,
   pickEventCard,
-  startTrial,
+  rollTrial,
   settleInterrupted,
-  finishTrial,
   claimTrialPrize,
   chooseKit,
   choosePrelude,
@@ -75,12 +74,10 @@ export { RUN_SAVE_VERSION, parseRun, serializeRun } from './save';
 export {
   ELITE_EVENTS,
   ELITE_EVENT_CHANCE,
-  CASCADE_BALLS,
-  CASCADE_LANES,
-  LAYOUT_PRIZES,
-  cascadeLanes,
+  REEL_PRIZES,
+  ROLL_COST,
+  REEL_KINDS,
   buildElite,
-  type Layout,
 } from './trials';
 export { EVENT_TAG_LABEL, eventOffers, type EventTag } from './odds';
 export { NODE_ODDS, EVENT_FIGHT_ODDS, GHOST_FROM_TIER, GHOST_WARDEN_CHANCE } from './mapgen';

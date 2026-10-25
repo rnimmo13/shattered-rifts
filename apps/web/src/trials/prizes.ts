@@ -1,4 +1,4 @@
-// How a prize looks on the Brass Cascade: a glyph and a colour by kind, and what a lane shows.
+// How a prize looks on the Brass Reel: a glyph and a colour by kind, and what a tile of the reel shows.
 
 /** the mark of each kind of prize: a glyph and a colour */
 export const PRIZE_MARK: Record<string, { glyph: string; color: string }> = {

@@ -1444,3 +1444,11 @@
   justify-items: center;
   width: min(15rem, 92vw);
 }
+
+/* the Brass Reel's lighter load: choose up to two cards to let go */
+.lighterload {
+  display: grid;
+  gap: 0.5rem;
+  justify-items: center;
+  text-align: center;
+}

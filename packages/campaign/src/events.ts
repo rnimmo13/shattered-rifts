@@ -413,7 +413,7 @@ export function resolveEvent(
 ): string {
   const { fail } = helpers;
   const chosen = ev.options.find((o) => o.id === option);
-  if (option === 'trial') return fail('That is a puzzle: play it first');
+  if (option === 'trial') return fail('Spin the reel for that');
   if (chosen?.deal) return applyDeal(r, chosen, ev, helpers);
   switch (option) {
     case 'shards':

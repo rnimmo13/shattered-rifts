@@ -1,68 +1,72 @@
-// Elite events: now and then (ELITE_EVENT_CHANCE of the time an event comes up) a place offers the Brass Cascade, an optional
-// game for better rewards: ten lanes at the bottom of a board of pegs, each with a prize you can see. The player drops three
-// balls; every lane a ball lands in is a prize earned, and they choose one of those. The game itself is played by the client
-// (apps/web/src/trials); this file builds the offer (which prizes are in which lanes, all fixed when the event is rolled) and
-// carries out the result.
+// Elite events: now and then (ELITE_EVENT_CHANCE of the time an event comes up) a place offers the Brass Reel, an optional
+// prize machine: thirteen prizes sit on a reel, all of them in plain sight, and for ROLL_COST shards the reel spins and stops on one. You
+// may take that prize, or pay again for another spin and a chance at a different prize; or walk away. The spin is drawn by the rules
+// from the run's own seeded stream (saved with the run, so reloading does not give another try); the client only animates it
+// (apps/web/src/trials). This file builds the offer (which prizes are on the reel, all fixed when the event is rolled) and carries
+// out the spin and the taking of a prize.
 
 import { nextInt, type RngState } from '@sr/combat';
-import { BOONS, COMBAT_DB, POTIONS, rewardPool } from '@sr/content/v2';
+import { BOONS, COMBAT_DB, POTIONS, V2_DECK_RULES, rewardPool } from '@sr/content/v2';
 import { canAdd, crossedOffers } from './rewards';
-import { applyDeal, dealFeasible, type DealHelpers, type EventCtx } from './deals';
+import { applyDeal, dealFeasible, removableCards, type DealHelpers, type EventCtx } from './deals';
 import type { DealStep, RunState, TrialOffer, TrialPrize } from './types';
 
 /** The chance, in percent, that an event is an elite one (when one can be built). */
 export const ELITE_EVENT_CHANCE = 10;
-/** Lanes on the board, and balls dropped. */
-export const CASCADE_LANES = 10;
-export const CASCADE_BALLS = 3;
-
-/** How the ten lanes are filled: the same kinds of prize in a different order, so each place feels different. */
-export type Layout = 'treasury' | 'armory' | 'apothecary';
-
-/** The ten prizes of each layout, by kind (the marks on the board). Which lane each stands in is shuffled for every event. */
-export const LAYOUT_PRIZES: Record<Layout, string[]> = {
-  treasury: ['card', 'rare', 'boon', 'boon', 'crossed', 'upgrade', 'shards', 'heal', 'hp', 'potion'],
-  armory: ['card', 'rare', 'boon', 'boon', 'crossed', 'crossed', 'thin', 'shards', 'upgrade', 'hp'],
-  apothecary: ['card', 'rare', 'boon', 'boon', 'crossed', 'potion', 'upgrade', 'shards', 'heal', 'hp'],
-};
+/**
+ * Every prize on the reel, by kind (the marks on the reel). All elite events share this one pool and every reel shows all of it;
+ * where each prize stands on the reel is shuffled for every event.
+ */
+export const REEL_KINDS: string[] = [
+  'card',
+  'rare',
+  'boon',
+  'boon',
+  'crossed',
+  'crossed',
+  'potion',
+  'upgrade',
+  'upgrade',
+  'shards',
+  'heal',
+  'hp',
+  'thin',
+];
+/** Prizes on the reel, and what one spin costs (in shards). */
+export const REEL_PRIZES = REEL_KINDS.length;
+export const ROLL_COST = 25;
 
 export interface EliteSpec {
   id: string;
   title: string;
   text: string;
-  layout: Layout;
 }
 
 export const ELITE_EVENTS: EliteSpec[] = [
   {
     id: 'brass-cascade',
-    title: 'The Brass Cascade',
-    text: 'A tall board of brass pegs leans against a ruined wall, a little brass ball in a tray, and ten lanes at the bottom, each with a prize hung over it. A hand-lettered sign: "Three balls. Whatever lanes they land in, you may choose one of. The edges are the hardest to reach, and hold the best."',
-    layout: 'treasury',
+    title: 'The Brass Reel',
+    text: 'A brass machine with a window of spinning prizes stands against a ruined wall, a slot for coins beside it. A hand-lettered sign: "25 shards a spin. Take what it stops on, or pay to spin again. Everything on the reel is shown."',
   },
   {
     id: 'brass-pegboard',
-    title: 'The Brass Cascade',
-    text: 'A brass pegboard older than the town around it, kept oiled by someone who is never there. Ten lanes, ten things behind glass, mostly cards. Drop a ball, nudge it, and see what lane the board thinks you deserve.',
-    layout: 'armory',
+    title: 'The Brass Reel',
+    text: 'A brass reel machine older than the town around it, kept oiled by someone who is never there. Thirteen things behind glass, mostly cards, turning past a pointer. Pay, pull the lever, and see what the reel thinks you deserve.',
   },
   {
     id: 'copper-chute',
-    title: 'The Brass Cascade',
-    text: 'A brass board with ten bottles and trinkets lined up beneath it, and a tinker asleep on a stool. A note: "Mind the bounce. Take what you land on."',
-    layout: 'apothecary',
+    title: 'The Brass Reel',
+    text: 'A brass machine with bottles, cards and trinkets turning in its window, and a tinker asleep on a stool. A note: "Mind the lever. Take what it stops on."',
   },
   {
     id: 'silver-sluice',
-    title: 'The Brass Cascade',
-    text: 'A water-run board of brass pegs, and ten channels where the water pools. Something gleams in each. The water does not care what you want, but your hands might.',
-    layout: 'treasury',
+    title: 'The Brass Reel',
+    text: 'A water-run brass machine, its reel turned by a trickle of water, thirteen prizes riding it past a pointer. Something gleams on each. The water does not care what you want, but your hands might.',
   },
   {
     id: 'gilded-drop',
-    title: 'The Brass Cascade',
-    text: 'A brass board in a hall with no roof. Ten prizes on velvet at the foot of it, and three brass balls on a cushion. An attendant coughs politely: "Whenever you are ready."',
-    layout: 'armory',
+    title: 'The Brass Reel',
+    text: 'A brass machine in a hall with no roof. Thirteen prizes on velvet turn past a pointer, and a bowl of coins waits on a cushion. An attendant coughs politely: "Whenever you are ready."',
   },
 ];
 
@@ -78,15 +82,21 @@ function pick<T>(rng: RngState, list: readonly T[], n: number): T[] {
 
 type Maker = () => Omit<TrialPrize, 'id'>;
 
-/** The ten prizes of a layout for this run (each is checked to be takeable; one that is not becomes a purse of shards). */
-function prizesFor(layout: Layout, r: RunState): { prizes: TrialPrize[]; seconds: TrialPrize[] } {
+/** The prizes of the reel for this run (each is checked to be takeable; one that is not becomes a purse of shards). */
+function prizesFor(r: RunState): { prizes: TrialPrize[] } {
   const ev = { title: '', text: '', cardOffer: '', options: [] } as EventCtx;
   const slot = (
     icon: string,
     short: string,
     label: string,
     deal: DealStep[],
-    show: { card?: string; boon?: string; potion?: string; choices?: string[] } = {},
+    show: {
+      card?: string;
+      boon?: string;
+      potion?: string;
+      choices?: string[];
+      removeUpTo?: number;
+    } = {},
   ): Omit<TrialPrize, 'id'> => ({ icon, short, label, deal, ...show });
   const purse = (n: number): Omit<TrialPrize, 'id'> =>
     slot('shards', `+${n} shards`, `A purse: +${n} shards`, [{ k: 'shards', n }]);
@@ -109,8 +119,7 @@ function prizesFor(layout: Layout, r: RunState): { prizes: TrialPrize[]; seconds
     BOONS.filter((b) => !r.boons.includes(b.id)),
     4,
   ).map((b) => b.id);
-  // each Rift-crossed lane is a choice of three different Rift-crossed rares (a layout has at most two such lanes, and each
-  // has a second set of three for when two balls land in it)
+  // each Rift-crossed lane is a choice of three different Rift-crossed rares (the reel has two such prizes)
   const crossed = crossedOffers(
     r.rng,
     r.character,
@@ -126,7 +135,7 @@ function prizesFor(layout: Layout, r: RunState): { prizes: TrialPrize[]; seconds
 
   const cardSlot = (id: string | undefined, icon: string, again: number): Omit<TrialPrize, 'id'> =>
     id ? slot(icon, name(id), `Take ${name(id)}`, [{ k: 'card', id }], { card: id }) : purse(again);
-  // the one Legendary lane (a rare of yours if your class has none left); its second prize is another
+  // the one Legendary prize (a rare of yours if your class has none left)
   const legend =
     (k: number): Maker =>
     () =>
@@ -173,10 +182,17 @@ function prizesFor(layout: Layout, r: RunState): { prizes: TrialPrize[]; seconds
       slot('upgrade', `Upgrade ×${n}`, `Masterwork: ${n} random cards are upgraded`, [
         { k: 'upgrade', n },
       ]);
+  // (the cards are chosen when it is taken, and none is fine: see takePrize)
   const thin: Maker = () =>
-    slot('thin', 'Lose 2 cards', 'A lighter load: two random cards leave your deck', [
-      { k: 'remove', of: 'any', n: 2 },
-    ]);
+    r.deck.length <= V2_DECK_RULES.minSize || !removableCards(r.deck).length
+      ? purse(130)
+      : slot(
+          'thin',
+          'Remove up to 2 cards',
+          'A lighter load: remove up to two cards of your choice',
+          [],
+          { removeUpTo: 2 },
+        );
   const vitality: Maker = () =>
     slot('hp', '+10 HP, heal', 'Vitality: +10 max HP, and heal 30%', [
       { k: 'maxHp', n: 10 },
@@ -186,20 +202,26 @@ function prizesFor(layout: Layout, r: RunState): { prizes: TrialPrize[]; seconds
     slot('heal', 'Heal 40%', 'A rest: heal 40% of your HP', [{ k: 'heal', pct: 40 }]);
   const shards: Maker = () => purse(115);
 
-  // k = 0 is the lane's prize; k = 2 is what a second ball in the same lane pays: the same kind of prize, a different one
-  const order = (k: number): Record<Layout, Maker[]> => ({
-    treasury: [legend(k), rareCard(k), boon(k), boon(1 + k), cross(k), upgrade(3), shards, heal, vitality, potion(k)],
-    armory: [legend(k), rareCard(k), boon(k), boon(1 + k), cross(k), cross(1 + k), thin, shards, upgrade(2), vitality],
-    apothecary: [legend(k), rareCard(k), boon(k), boon(1 + k), cross(k), potion(k), upgrade(3), shards, heal, vitality],
+  const makers: Maker[] = [
+    legend(0),
+    rareCard(0),
+    boon(0),
+    boon(1),
+    cross(0),
+    cross(1),
+    potion(0),
+    upgrade(3),
+    upgrade(2),
+    shards,
+    heal,
+    vitality,
+    thin,
+  ];
+  const first: TrialPrize[] = makers.map((m, i) => {
+    const p = m();
+    return { ...(dealFeasible(r, p.deal, ev) ? p : purse(130)), id: String(i) };
   });
-  const make = (k: number): TrialPrize[] =>
-    order(k)[layout].map((m, i) => {
-      const p = m();
-      return { ...(dealFeasible(r, p.deal, ev) ? p : purse(130)), id: String(i) };
-    });
-  // where each prize stands is shuffled for every event: a lane's second prize stands with its first
-  const first = make(0);
-  const second = make(2);
+  // where each prize stands on the reel is shuffled for every event, so the same prize is not in the same place twice
   const lanes = first.map((_, i) => i);
   for (let i = lanes.length - 1; i > 0; i--) {
     const j = nextInt(r.rng, i + 1);
@@ -207,39 +229,19 @@ function prizesFor(layout: Layout, r: RunState): { prizes: TrialPrize[]; seconds
   }
   return {
     prizes: lanes.map((from, lane) => ({ ...(first[from] as TrialPrize), id: `p${lane}` })),
-    seconds: lanes.map((from, lane) => ({ ...(second[from] as TrialPrize), id: `q${lane}` })),
   };
-}
-
-/**
- * Where a trial's balls land: a fair draw from the trial's seed, the same one for everybody and every lane equally likely. The
- * game only animates the balls to these lanes, so it cannot be bent by where a ball is dropped (and a modified client cannot
- * claim better lanes: the rules work this out for themselves).
- */
-export function cascadeLanes(seed: number, balls: number = CASCADE_BALLS): number[] {
-  let a = (seed ^ 0x9e3779b9) >>> 0;
-  const next = (): number => {
-    a = (a + 0x6d2b79f5) >>> 0;
-    let t = a;
-    t = Math.imul(t ^ (t >>> 15), t | 1);
-    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
-    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-  };
-  // (the first draws of a small seed are warmed up and thrown away)
-  for (let i = 0; i < 4; i++) next();
-  return Array.from({ length: balls }, () => Math.floor(next() * CASCADE_LANES));
 }
 
 /** Build an elite event for this run. */
 export function buildElite(spec: EliteSpec, r: RunState): EventCtx {
   const trial: TrialOffer = {
-    game: 'cascade',
+    game: 'reel',
     tier: r.tier,
     seed: nextInt(r.rng, 1_000_000_000),
     state: 'open',
     consolation: 25,
-    theme: 'one of the lanes you land in',
-    ...prizesFor(spec.layout, r),
+    theme: 'whatever the reel stops on',
+    ...prizesFor(r),
   };
   return {
     title: spec.title,
@@ -247,8 +249,7 @@ export function buildElite(spec: EliteSpec, r: RunState): EventCtx {
     options: [
       {
         id: 'trial',
-        label:
-          'Drop three balls down the board: every lane a ball lands in is a prize you have earned, and you choose one of them',
+        label: `Spin the reel for ${ROLL_COST} shards: take what it stops on, or pay to spin again`,
       },
       { id: 'leave', label: 'Walk away' },
     ],
@@ -264,54 +265,61 @@ export function rollElite(r: RunState): EventCtx | null {
   return buildElite(spec, r);
 }
 
-/** The player has pressed Begin: from here the game is spent, whatever happens (it is saved this way). */
-export function beginTrial(ev: EventCtx): void {
-  const t = ev.trial;
-  if (!t || t.state !== 'open') throw new Error('There is no trial to begin');
-  t.state = 'playing';
-}
-
 /**
- * The balls have been dropped. What they earned is not the client's to say: it is the lanes of `cascadeLanes` for this trial's seed
- * (a lane pays at most twice). Returns what happened if nothing was earned, or null when there is a prize to pick.
+ * Pay for a spin: the reel stops on one of the prizes, drawn from the run's own stream (so a reload cannot spin again for free).
+ * Every prize is equally likely, except that it never stops on the prize already on the table (paying to spin and getting the same
+ * thing would be no spin at all). Returns the number of the prize it stopped on. The prize on the table is `earned`, and is taken
+ * with `takePrize`; spinning again lets it go.
  */
-export function endTrial(r: RunState, ev: EventCtx, won: boolean): string | null {
+export function spinReel(r: RunState, ev: EventCtx, fail: (msg: string) => never): number {
   const t = ev.trial;
-  if (!t || t.state !== 'playing') throw new Error('There is no trial being played');
-  const seen = new Map<number, number>();
-  const lanes = cascadeLanes(t.seed)
-    .filter((i) => {
-      const n = (seen.get(i) ?? 0) + 1;
-      seen.set(i, n);
-      return n <= 2;
-    })
-    .sort((x, y) => x - y);
-  if (!won || !lanes.length) {
-    r.shards += t.consolation;
-    return `Nothing landed. The place lets you go with ${t.consolation} shards for trying.`;
-  }
-  t.earned = lanes.slice(0, CASCADE_BALLS);
+  if (!t || (t.state !== 'open' && t.state !== 'won')) return fail('There is no reel to spin');
+  if (r.shards < ROLL_COST) return fail(`A spin costs ${ROLL_COST} shards`);
+  const here = t.earned?.[0];
+  const from = t.prizes.map((_, i) => i).filter((i) => i !== here);
+  const got = from[nextInt(r.rng, from.length)] as number;
+  r.shards -= ROLL_COST;
+  t.earned = [got];
   t.state = 'won';
-  return null;
+  t.rolls = (t.rolls ?? 0) + 1;
+  return got;
 }
 
-/** Take one of the prizes the balls earned. */
+/** Take the prize the reel stopped on. */
 export function takePrize(
   r: RunState,
   ev: EventCtx,
   prize: string,
   h: DealHelpers,
   pick?: number,
+  cards?: readonly string[],
 ): string {
   const t = ev.trial;
   if (!t || t.state !== 'won') h.fail('There is no prize to take');
-  const second = t.seconds?.find((x) => x.id === prize);
-  const p = second ?? t.prizes.find((x) => x.id === prize);
+  const p = t.prizes.find((x) => x.id === prize);
   if (!p) return h.fail('That is not one of the prizes');
-  // the lane's prize needs a ball in the lane; its second prize needs two
-  const lane = (second ? t.seconds : t.prizes)?.indexOf(p) ?? -1;
-  const balls = (t.earned ?? []).filter((x) => x === lane).length;
-  if (balls < (second ? 2 : 1)) return h.fail('You did not earn that one');
+  // only the prize the reel stopped on can be taken
+  if (!(t.earned ?? []).includes(t.prizes.indexOf(p)))
+    return h.fail('The reel did not stop on that one');
+  // a lighter load: the cards named (none, one or two) leave the deck
+  if (p.removeUpTo) {
+    const given: unknown = cards ?? [];
+    if (!Array.isArray(given)) return h.fail('Choose which cards to remove');
+    const gone = given as string[];
+    if (gone.length > p.removeUpTo) return h.fail(`You can remove up to ${p.removeUpTo} cards`);
+    const left = [...r.deck];
+    for (const id of gone) {
+      const at = left.indexOf(id);
+      if (at < 0 || !removableCards([id]).length) return h.fail('That card cannot be removed');
+      left.splice(at, 1);
+    }
+    if (left.length < V2_DECK_RULES.minSize)
+      return h.fail('Your deck is too small to part with that many cards');
+    r.deck = left;
+    return gone.length
+      ? `${gone.map(name).join(' and ')} leave${gone.length === 1 ? 's' : ''} your deck.`
+      : 'You keep your deck as it is.';
+  }
   // a prize that is a choice of cards: the one picked is the one taken
   if (p.choices) {
     const id = pick === undefined ? undefined : p.choices[pick];

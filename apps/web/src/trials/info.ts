@@ -1,22 +1,21 @@
-// What the Brass Cascade is called and how it is explained to the player, and a sample board for practice.
+// What the Brass Reel is called and how it is explained to the player, and a sample reel for practice.
 
 import type { LanePrize } from './prizes';
 
 export const TRIAL_INFO = {
-  cascade: {
-    name: 'Brass Cascade',
-    blurb: 'Drop three balls. Every lane they land in is a prize you earn.',
-    time: 'About a minute',
+  reel: {
+    name: 'Brass Reel',
+    blurb: 'Pay to spin a reel of prizes. Take what it stops on, or pay to spin again.',
     rules: [
-      'Each of the ten lanes at the bottom holds a prize. You can see all of them, and the prizes stand in different lanes every time.',
-      'Slide along the top of the board (mouse, finger, or hold the arrow keys) and let go. The ball bounces about, and where it lands is drawn fairly: every lane is exactly as likely as any other, wherever you drop it.',
-      'You drop three balls, and choose one prize from the lanes they landed in. Only one lane holds a Legendary card.',
-      'If two balls land in the same lane, that lane pays again with a second, different prize of the same kind, marked ×2.',
+      'Thirteen prizes are on the reel, and you can see all of them. They stand in a different order every time.',
+      'A spin costs 25 shards. The reel scrolls past the pointer and slows to a stop on one prize.',
+      'Take it, or pay another 25 shards to let it go and spin again. A new spin never stops on the prize you are holding, and every other prize is equally likely.',
+      'Walk away at any time: the shards you have spent are gone, and so is the prize you were holding. Only one prize on the reel is a Legendary card.',
     ],
   },
 } as const;
 
-/** A sample board, for the practice page. */
+/** A sample reel, for the practice page. */
 export const SAMPLE_PRIZES: LanePrize[] = [
   { icon: 'card', short: 'A Legendary card', label: 'Take a Legendary card' },
   { icon: 'rare', short: 'A rare card', label: 'Take a rare card of yours' },

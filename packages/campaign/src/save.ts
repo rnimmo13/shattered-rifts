@@ -1,7 +1,14 @@
 // Saving a run: plain JSON text, so it can go to localStorage and to an export file. Loading checks the whole shape
 // and the deck rules, so a hand-edited or damaged save is refused instead of crashing the game.
 
-import { COMBAT_DB, ENCOUNTERS, RIFTWALKERS, V2_DECK_RULES, canonicalHero, rollOf } from '@sr/content/v2';
+import {
+  COMBAT_DB,
+  ENCOUNTERS,
+  RIFTWALKERS,
+  V2_DECK_RULES,
+  canonicalHero,
+  rollOf,
+} from '@sr/content/v2';
 const hasCard = (id: unknown): boolean =>
   typeof id === 'string' &&
   (Object.hasOwn(COMBAT_DB.cards, id) || (rollOf(id) !== 0 && COMBAT_DB.cards[id] !== undefined));
@@ -164,38 +171,48 @@ function validContext(r: RunState): boolean {
   }
 }
 
-const GAMES = ['cascade'];
+const GAMES = ['reel', 'cascade'];
 /** Trial games that were taken out: a run saved in front of one finds the place empty (just a walk away). */
-const RETIRED_GAMES = ['echoes', 'pairs', 'runelock', 'cardquiz', 'whose', 'maze', 'rhythm', 'cipher'];
+const RETIRED_GAMES = [
+  'echoes',
+  'pairs',
+  'runelock',
+  'cardquiz',
+  'whose',
+  'maze',
+  'rhythm',
+  'cipher',
+];
 /** An elite event's trial: a known game, a state, and prizes that are deal steps like any option. */
 function validTrial(t: unknown): boolean {
   if (!isObj(t) || !GAMES.includes(t['game'] as string)) return false;
   if (t['state'] !== 'open' && t['state'] !== 'playing' && t['state'] !== 'won') return false;
   if (!isInt(t['seed'], 0, 4294967295) || !isInt(t['consolation'], 0, 10000)) return false;
+  if (t['rolls'] !== undefined && !isInt(t['rolls'], 0, 10000)) return false;
   const earned = t['earned'];
   if (t['state'] === 'won' && !(Array.isArray(earned) && earned.length > 0)) return false;
-  if (earned !== undefined && !(Array.isArray(earned) && earned.length <= 10 && earned.every((x) => isInt(x, 0, 9))))
+  if (
+    earned !== undefined &&
+    !(Array.isArray(earned) && earned.length <= 24 && earned.every((x) => isInt(x, 0, 23)))
+  )
     return false;
   const prize = (p: unknown): boolean =>
     isObj(p) &&
     typeof p['id'] === 'string' &&
     validDeal(p['deal']) &&
+    (p['removeUpTo'] === undefined || isInt(p['removeUpTo'], 1, 5)) &&
     (p['choices'] === undefined ||
       (Array.isArray(p['choices']) && p['choices'].length <= 3 && p['choices'].every(hasCard)));
-  if (t['seconds'] !== undefined && !(Array.isArray(t['seconds']) && t['seconds'].length <= 10 && t['seconds'].every(prize)))
+  if (
+    t['seconds'] !== undefined &&
+    !(Array.isArray(t['seconds']) && t['seconds'].length <= 10 && t['seconds'].every(prize))
+  )
     return false;
   return (
     Array.isArray(t['prizes']) &&
-    (t['prizes'] as unknown[]).length <= 10 &&
+    (t['prizes'] as unknown[]).length <= 24 &&
     (t['prizes'] as unknown[]).length > 0 &&
-    (t['prizes'] as unknown[]).every(
-      (p) =>
-        isObj(p) &&
-        typeof p['id'] === 'string' &&
-        validDeal(p['deal']) &&
-        (p['choices'] === undefined ||
-          (Array.isArray(p['choices']) && p['choices'].length <= 3 && p['choices'].every(hasCard))),
-    )
+    (t['prizes'] as unknown[]).every(prize)
   );
 }
 
@@ -233,9 +250,15 @@ function validDeal(steps: unknown, depth = 0): boolean {
     for (const f of ['n', 'pct'] as const)
       if (s[f] !== undefined && !isInt(s[f], -100000, 100000)) return false;
     if (s['k'] === 'card' && !hasCard(s['id'])) return false;
-    if (s['k'] === 'boonOf' && !(typeof s['id'] === 'string' && Object.hasOwn(COMBAT_DB.boons, s['id'])))
+    if (
+      s['k'] === 'boonOf' &&
+      !(typeof s['id'] === 'string' && Object.hasOwn(COMBAT_DB.boons, s['id']))
+    )
       return false;
-    if (s['k'] === 'potionOf' && !(typeof s['id'] === 'string' && Object.hasOwn(COMBAT_DB.potions, s['id'])))
+    if (
+      s['k'] === 'potionOf' &&
+      !(typeof s['id'] === 'string' && Object.hasOwn(COMBAT_DB.potions, s['id']))
+    )
       return false;
     if (s['k'] === 'mark' && typeof s['id'] !== 'string') return false;
     if (s['k'] === 'chance')
@@ -258,7 +281,8 @@ export function parseRun(text: string): RunState | null {
   const r = raw as Partial<RunState>;
   if (r.v !== RUN_SAVE_VERSION) return null;
   // a save from before the Riftwalkers were named for their class (maren -> knight): the character, and any visiting merchant
-  if (typeof r.character === 'string') r.character = canonicalHero(r.character) as RunState['character'];
+  if (typeof r.character === 'string')
+    r.character = canonicalHero(r.character) as RunState['character'];
   for (const n of (r.map?.nodes ?? []) as { crossed?: unknown }[])
     if (typeof n.crossed === 'string') n.crossed = canonicalHero(n.crossed);
   const shop = (r.context as { merchant?: { crossed?: unknown } } | null | undefined)?.merchant;
@@ -281,7 +305,8 @@ export function parseRun(text: string): RunState | null {
     if (clean.length) r.held = clean.slice(0, 3);
     else delete r.held;
   }
-  const oldTrial = (r.context as { event?: { trial?: { game?: unknown } } } | null | undefined)?.event?.trial;
+  const oldTrial = (r.context as { event?: { trial?: { game?: unknown } } } | null | undefined)
+    ?.event?.trial;
   if (oldTrial && RETIRED_GAMES.includes(oldTrial.game as string)) {
     const ev = (r.context as { event: { trial?: unknown; options: { id: string }[] } }).event;
     delete ev.trial;

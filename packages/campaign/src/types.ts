@@ -61,16 +61,16 @@ export interface MerchantItem {
   onHold?: boolean;
 }
 
-/** The mini-games an elite event can ask for (the client plays them: apps/web/src/trials). */
-export type TrialGame = 'cascade';
+/** The prize games an elite event can offer: the reel (the client animates it: apps/web/src/trials), and the retired pegboard of older saves. */
+export type TrialGame = 'reel' | 'cascade';
 
 /** One prize to choose from when a trial is won: what it does is a list of deal steps, and what to show of it. */
 export interface TrialPrize {
-  /** d1..d3, or p0..p9 for the ten slots of the Brass Cascade */
+  /** d1..d3, or p0.. for the prizes on the Brass Reel */
   id: string;
   label: string;
   deal: DealStep[];
-  /** a few words for the lane it is in (a card or Boon name, "Upgrade ×3") */
+  /** a few words for its tile on the reel (a card or Boon name, "Upgrade ×3") */
   short?: string;
   /** what kind of thing it is, for the little mark on its slot: card, boon, potion, crossed, hp, upgrade, shards, heal */
   icon?: string;
@@ -79,24 +79,28 @@ export interface TrialPrize {
   choices?: string[];
   boon?: string;
   potion?: string;
+  /** a prize that lets you remove up to this many cards of your choice (none is fine): the cards are named when you take it */
+  removeUpTo?: number;
 }
 
 export interface TrialOffer {
   game: TrialGame;
   /** the Rift Tier the run was on (a trial can get harder the deeper you go); missing in older saves = 1 */
   tier?: number;
-  /** the puzzle is made from this, so the same trial is the same puzzle after a reload */
+  /** (what the older pegboard game was made from; the reel draws from the run's own stream and does not use it) */
   seed: number;
-  /** open: not begun. playing: begun, and saved as begun, so it can never be tried twice. won: pick a prize. */
+  /** open: not spun yet. won: a prize is on the table (take it, or spin again). playing: only in older saves (a pegboard game that was begun). */
   state: 'open' | 'playing' | 'won';
-  /** the shards you get for trying when you lose */
+  /** (the shards an older pegboard game paid for trying) */
   consolation: number;
   /** what the prizes are, in a few words ("Legendary cards") */
   theme: string;
   prizes: TrialPrize[];
-  /** the Brass Cascade: the lanes the balls landed in, one entry per ball (a lane twice is listed twice); you choose one prize */
+  /** the prize the reel stopped on (the number of its place on the reel): the one on the table, which you take or spin away */
   earned?: number[];
-  /** a lane that two balls landed in pays again with a different prize of the same kind: these are those, lane by lane (ids q0..q9) */
+  /** how many times the reel has been spun here */
+  rolls?: number;
+  /** (second prizes of the older pegboard game; no longer used) */
   seconds?: TrialPrize[];
 }
 

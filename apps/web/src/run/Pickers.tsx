@@ -1,6 +1,6 @@
 // The non-map screens of a run: card rewards and the Warden's Gift, shrine, merchant, event, and the deck viewer.
 
-import { useMemo, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import type { CardDef } from '@sr/combat';
 import { COMBAT_DB, RIFTWALKERS, V2_DECK_RULES } from '@sr/content/v2';
 import {
@@ -12,7 +12,7 @@ import {
   REST_HEAL,
   upgradable,
   upgradePrice,
-  cascadeLanes,
+  ROLL_COST,
   type EventOption,
   type RunState,
   type TrialOffer,
@@ -26,7 +26,7 @@ import { tally } from '../fight/grimoireData';
 import { BoonCard, BoonChip } from '../fight/BoonChip';
 import { PotionCard, PotionIcon } from '../fight/PotionChip';
 import { RarityGem } from '../ui/RarityGem';
-import { TrialHost } from '../trials/TrialHost';
+import { Reel } from '../trials/Reel';
 import { PRIZE_MARK } from '../trials/prizes';
 
 const defOf = (id: string): CardDef | undefined => COMBAT_DB.cards[id];
@@ -594,55 +594,104 @@ export function MerchantView(props: {
   );
 }
 
-/** The prizes a won trial offers: one for each lane a ball landed in, and a second, different one for a lane that two balls landed in. */
-function shownPrizes(t: TrialOffer): { p: TrialPrize; n: number; again: boolean }[] {
-  const earned = t.earned ?? [];
-  return [...new Set(earned)].flatMap((lane) => {
-    const n = earned.filter((x) => x === lane).length;
-    const out: { p: TrialPrize; n: number; again: boolean }[] = [];
-    const first = t.prizes[lane];
-    const second = t.seconds?.[lane];
-    if (first) out.push({ p: first, n, again: false });
-    if (n >= 2 && second) out.push({ p: second, n, again: true });
-    return out;
-  });
+/** The prize on the table: the one the reel stopped on. */
+function shownPrizes(t: TrialOffer): { p: TrialPrize }[] {
+  const p = t.prizes[t.earned?.[0] ?? -1];
+  return p ? [{ p }] : [];
+}
+
+/** The Brass Reel's lighter load: pick up to `max` cards of your deck to let go (none is fine), then take it. */
+function LighterLoad(props: {
+  deck: readonly string[];
+  max: number;
+  label: string;
+  onTake: (cards: string[]) => void;
+}) {
+  const [chosen, setChosen] = useState<string[]>([]);
+  const [picking, setPicking] = useState(false);
+  // (the deck as it would be, so a card held twice can be chosen twice and no more)
+  const left = useMemo(() => {
+    const rest = [...props.deck];
+    for (const id of chosen) rest.splice(rest.indexOf(id), 1);
+    return rest;
+  }, [props.deck, chosen]);
+  const pickable = useMemo(() => new Set(removableCards(left)), [left]);
+  const canMore =
+    chosen.length < props.max && left.length > V2_DECK_RULES.minSize && pickable.size > 0;
+  return (
+    <div className="lighterload">
+      <b className="eventopt__name">{props.label}</b>
+      <p>
+        {chosen.length
+          ? `Letting go of: ${chosen.map((id) => COMBAT_DB.cards[id]?.name ?? 'a card').join(', ')}`
+          : 'No cards chosen yet. You may also take it and keep every card.'}
+      </p>
+      <div className="choices-row">
+        <button className="btn" disabled={!canMore} onClick={() => setPicking(true)}>
+          <span>{chosen.length ? 'Choose another card' : 'Choose a card to remove'}</span>
+        </button>
+        {chosen.length > 0 && (
+          <button className="btn btn--small" onClick={() => setChosen([])}>
+            <span>Start over</span>
+          </button>
+        )}
+        <button className="btn btn--primary" onClick={() => props.onTake(chosen)}>
+          <span>
+            {chosen.length
+              ? `Remove ${chosen.length} card${chosen.length === 1 ? '' : 's'}`
+              : 'Keep my deck as it is'}
+          </span>
+        </button>
+      </div>
+      {picking && (
+        <DeckModal
+          deck={left}
+          title="Remove a card"
+          hint={`Up to ${props.max} cards. Sanctified cards cannot be removed.`}
+          pickable={pickable}
+          onPick={(id) => {
+            setPicking(false);
+            setChosen([...chosen, id]);
+          }}
+          onClose={() => setPicking(false)}
+        />
+      )}
+    </div>
+  );
 }
 
 export function EventView(props: {
   run: RunState;
   onChoose: (id: EventOption['id']) => void;
-  /** an elite event's trial was played */
-  onTrial: (won: boolean) => void;
-  /** Begin was pressed on the trial: it is saved as begun, and can never be tried again */
-  onBegin: () => void;
-  /** the prize chosen after a won trial */
-  onPrize: (id: string, pick?: number) => void;
+  /** the reel was paid for and spun (an elite event) */
+  onRoll: () => void;
+  /** the prize on the table was taken */
+  onPrize: (id: string, pick?: number, cards?: string[]) => void;
   /** one of the three cards an event laid out for a choice */
   onPickCard: (index: number) => void;
 }) {
   const ev = props.run.context?.event;
   const [hover, setHover] = useState<CardDef | null>(null);
-  const [playing, setPlaying] = useState(false);
+  const trial = ev?.trial;
+  const rolls = trial?.rolls ?? 0;
+  /** how many spins the screen has finished showing: while it is behind, the reel is turning and the result is held back */
+  const [shown, setShown] = useState(rolls);
+  const [from, setFrom] = useState<number | null>(null);
+  const settledTarget = useRef<number | null>(trial?.earned?.[0] ?? null);
   if (!ev) return null;
-  const trial = ev.trial;
-  if (trial && (trial.state === 'playing' || (trial.state === 'open' && playing)))
-    return (
-      <TrialHost
-        lanes={cascadeLanes(trial.seed)}
-        prizes={trial.prizes.map((p) => ({
-          icon: p.icon ?? 'shards',
-          short: p.short ?? p.label,
-          label: p.label,
-        }))}
-        onDone={(earned) => {
-          setPlaying(false);
-          props.onTrial(earned.length > 0);
-        }}
-        onCancel={() => setPlaying(false)}
-        onBegin={props.onBegin}
-      />
-    );
-  const won = trial?.state === 'won';
+  const spinning = rolls > shown;
+  const won = trial?.state === 'won' && !spinning;
+  const roll = (): void => {
+    setFrom(settledTarget.current);
+    props.onRoll();
+  };
+  const canRoll = props.run.shards >= ROLL_COST;
+  const reelPrizes =
+    trial?.prizes.map((p) => ({
+      icon: p.icon ?? 'shards',
+      short: p.short ?? p.label,
+      label: p.label,
+    })) ?? [];
   const card = ev.cardOffer ? defOf(ev.cardOffer) : undefined;
   return (
     <section className="stage-panel" aria-label="Event">
@@ -668,8 +717,27 @@ export function EventView(props: {
           ))}
         </div>
       )}
-      {trial && trial.state === 'open' && (
-        <ol className="lanepreview" aria-label="What each lane pays">
+      {trial && (
+        <>
+          <Reel
+            prizes={reelPrizes}
+            target={trial.earned?.[0] ?? null}
+            from={from}
+            spinKey={rolls}
+            spinning={spinning}
+            onSettled={() => {
+              settledTarget.current = trial.earned?.[0] ?? null;
+              setShown(rolls);
+            }}
+          />
+          <p className="reel__purse">
+            Every prize on the reel is shown below. A spin costs {ROLL_COST} shards; you have{' '}
+            {props.run.shards}.
+          </p>
+        </>
+      )}
+      {trial && (
+        <ol className="lanepreview" aria-label="Every prize on the reel">
           {trial.prizes.map((p) => {
             const mark = PRIZE_MARK[p.icon ?? ''] ?? PRIZE_MARK['shards']!;
             return (
@@ -703,16 +771,14 @@ export function EventView(props: {
         </div>
       )}
       {trial && won && (
-        <div className="prizes" aria-label="Choose your prize">
-          <h3 className="prizes__title">Choose one of the prizes you earned</h3>
+        <div className="prizes" aria-label="The prize on the table">
+          <h3 className="prizes__title" role="status">
+            The reel stopped on this. Take it, or spin again. Walking away loses it, and the shards
+            you spent.
+          </h3>
           <div className="prizes__row">
-            {shownPrizes(trial).map(({ p, n, again }) => (
+            {shownPrizes(trial).map(({ p }) => (
               <div key={p.id} className={`prize${p.choices ? ' prize--choice' : ''}`}>
-                {n > 1 && (
-                  <span className="prize__x">
-                    {again ? '×2: a second, different prize' : '×2: two balls landed here'}
-                  </span>
-                )}
                 {p.choices && (
                   <>
                     <b className="eventopt__name">{p.label}</b>
@@ -730,6 +796,15 @@ export function EventView(props: {
                     </div>
                   </>
                 )}
+                {p.removeUpTo && (
+                  <LighterLoad
+                    key={p.id}
+                    deck={props.run.deck}
+                    max={p.removeUpTo}
+                    label={p.label}
+                    onTake={(cards) => props.onPrize(p.id, undefined, cards)}
+                  />
+                )}
                 {!p.choices && p.card && (
                   <Pickable
                     id={p.card}
@@ -741,7 +816,7 @@ export function EventView(props: {
                 )}
                 {p.boon && <BoonCard id={p.boon} />}
                 {p.potion && <PotionCard id={p.potion} />}
-                {!p.choices && (
+                {!p.choices && !p.removeUpTo && (
                   <button className="eventopt" onClick={() => props.onPrize(p.id)}>
                     <b className="eventopt__name">{p.label}</b>
                   </button>
@@ -752,13 +827,29 @@ export function EventView(props: {
         </div>
       )}
       <div className="eventopts">
-        {(won || ev.choose ? [] : ev.options).map((o) => {
+        {won && (
+          <button className="eventopt eventopt--trial" disabled={!canRoll} onClick={roll}>
+            <b className="eventopt__name">Spin again for {ROLL_COST} shards</b>
+            <span className="eventopt__text">
+              {canRoll
+                ? 'Let this prize go for another spin of the reel'
+                : `You need ${ROLL_COST} shards for another spin`}
+            </span>
+          </button>
+        )}
+        {(spinning || ev.choose
+          ? []
+          : won
+            ? ev.options.filter((o) => o.id !== 'trial')
+            : ev.options
+        ).map((o) => {
           const { head, detail } = splitOption(o.label);
           return (
             <button
               key={o.id}
               className={`eventopt${o.id === 'trial' ? ' eventopt--trial' : ''}`}
-              onClick={() => (o.id === 'trial' ? setPlaying(true) : props.onChoose(o.id))}
+              disabled={o.id === 'trial' && !canRoll}
+              onClick={() => (o.id === 'trial' ? roll() : props.onChoose(o.id))}
             >
               <b className="eventopt__name">{head}</b>
               {detail && <span className="eventopt__text">{detail}</span>}

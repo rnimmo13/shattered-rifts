@@ -2,7 +2,8 @@ import { describe, expect, it } from 'vitest';
 import {
   ELITE_EVENTS,
   EVENT_TAG_LABEL,
-  LAYOUT_PRIZES,
+  REEL_KINDS,
+  REEL_PRIZES,
   NODE_ODDS,
   buildElite,
   eventOffers,
@@ -22,14 +23,14 @@ describe('the odds the How to play page shows', () => {
     expect(o.share.shards).toBeGreaterThan(30);
   });
 
-  it('the prizes listed for each Brass Cascade layout are the prizes of the real boards (in any order)', () => {
+  it('the prizes listed for the Brass Reel are the prizes of every real reel (in any order)', () => {
     const base = newRun('knight', 'lanes');
     for (const spec of ELITE_EVENTS) {
       const ev = buildElite(spec, { ...base });
       const icons = ev.trial!.prizes.map((p) => p.icon!).sort();
-      expect(icons.length).toBe(10);
+      expect(icons.length).toBe(REEL_PRIZES);
       // (a prize the run cannot take comes as a purse of shards instead)
-      const want = [...LAYOUT_PRIZES[spec.layout]].sort();
+      const want = [...REEL_KINDS].sort();
       const missing = want.filter((k) => !icons.includes(k));
       for (const k of missing) expect(icons.includes('shards'), spec.id + ' ' + k).toBe(true);
       expect(icons.filter((i) => i === 'card').length).toBeLessThanOrEqual(1);

@@ -15,8 +15,8 @@ import {
   chooseEvent,
   pickEventCard,
   claimTrialPrize,
-  finishTrial,
-  startTrial,
+  ROLL_COST,
+  rollTrial,
   chooseKit,
   choosePrelude,
   duelPlan,
@@ -149,13 +149,13 @@ function playRun(h: HeroId, d: Difficulty, i: number): Result {
         const want =
           hpFrac < 0.6 ? ['heal', 'leave'] : ['upgrade', 'card', 'boon', 'shards', 'leave'];
         if (opts.includes('trial')) {
-          // an elite event: the bot plays the Brass Cascade (the lanes are a fair draw) and takes the first prize it earned
-          run = finishTrial(startTrial(run), true);
-          if (run.phase === 'event') {
+          // an elite event: the bot spins the Brass Reel once if it can pay for it, and takes what it stops on
+          if (run.shards >= ROLL_COST) {
+            run = rollTrial(run);
             const t = run.context?.event?.trial;
             const lane = t?.earned?.[0] ?? 0;
             run = claimTrialPrize(run, `p${lane}`, t?.prizes[lane]?.choices ? 0 : undefined);
-          }
+          } else run = chooseEvent(run, 'leave');
         } else
           run = chooseEvent(run, (want.find((w) => opts.includes(w as never)) ?? opts[0] ?? 'leave') as 'leave');
         // an event that laid out three cards for a choice: the bot takes the first

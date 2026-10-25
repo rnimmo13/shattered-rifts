@@ -1,167 +1,110 @@
-/* the Brass Cascade (elite events) and the practice page for it */
-.trial {
-  position: fixed;
-  inset: 0;
-  z-index: 250;
+/* the Brass Reel (elite events) and the practice page for it */
+.reel {
+  position: relative;
+  width: min(46rem, 100%);
+  height: 9.2rem;
+  margin: 0.4rem auto 0.8rem;
+  overflow: hidden;
+  border-radius: 12px;
+  border: 2px solid var(--c-gold-dark);
+  background: linear-gradient(180deg, rgb(26 34 80 / 0.9), rgb(8 10 28 / 0.95));
+  box-shadow: inset 0 0 28px rgb(0 0 0 / 0.7);
+}
+/* the edges fade into the dark, like a case window */
+.reel::before,
+.reel::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 18%;
+  z-index: 2;
+  pointer-events: none;
+}
+.reel::before {
+  left: 0;
+  background: linear-gradient(90deg, rgb(6 8 20 / 0.95), transparent);
+}
+.reel::after {
+  right: 0;
+  background: linear-gradient(270deg, rgb(6 8 20 / 0.95), transparent);
+}
+.reel__strip {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  will-change: transform;
+}
+.reel__tile {
+  flex: none;
   display: grid;
-  place-items: center;
-  padding: 1rem;
-  overflow-y: auto;
-  background: radial-gradient(ellipse at 50% 40%, var(--c-navy), var(--c-void) 75%);
+  justify-items: center;
+  align-content: center;
+  gap: 0.2rem;
+  height: 7.4rem;
+  padding: 0.4rem;
+  border-radius: 10px;
+  border: 1px solid color-mix(in srgb, var(--mark) 60%, transparent);
+  background: linear-gradient(180deg, color-mix(in srgb, var(--mark) 16%, rgb(8 10 20)), rgb(8 10 20 / 0.9));
+  text-align: center;
+  font-size: 0.85rem;
+  line-height: 1.2;
   color: var(--c-ivory);
 }
-.trial__box {
-  width: min(34rem, 94vw);
-  display: grid;
-  gap: 0.9rem;
-  justify-items: center;
-  text-align: center;
-}
-.trial__box--wide {
-  width: min(46rem, 96vw);
-}
-.trial__title {
-  margin: 0;
-  font-size: 1.6rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--c-gold-pale);
-}
-.trial__blurb {
-  margin: 0;
-  color: var(--c-text-dim);
-}
-.trial__blurb small {
-  display: block;
-  margin-top: 0.15rem;
-}
-.trial__rules {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  display: grid;
-  gap: 0.45rem;
-  text-align: left;
-  font-size: 0.98rem;
-}
-.trial__rules li {
-  padding: 0.5rem 0.8rem;
-  border-radius: 8px;
-  border: 1px solid rgb(255 255 255 / 0.12);
-  background: rgb(8 10 20 / 0.55);
-}
-.trial__buttons {
-  display: flex;
-  gap: 0.6rem;
-  flex-wrap: wrap;
-  justify-content: center;
-}
-.trial__result h3 {
-  margin: 0 0 0.5rem;
-  font-size: 1.5rem;
-  color: var(--c-gold-light);
-}
-.trial__earned {
-  list-style: none;
-  margin: 0 0 0.6rem;
-  padding: 0;
-  display: grid;
-  gap: 0.35rem;
-  text-align: left;
-}
-.trial__earned li {
-  padding: 0.4rem 0.7rem;
-  border-radius: 8px;
-  border: 1px solid var(--mark);
-  background: rgb(8 10 20 / 0.6);
-}
-.trial__earned b {
+.reel__tile b {
+  font-size: 2rem;
+  line-height: 1;
   color: var(--mark);
-  margin-right: 0.3rem;
+  text-shadow: 0 0 12px var(--mark);
 }
-.tg {
-  width: 100%;
-  display: grid;
-  gap: 0.8rem;
-  justify-items: center;
+.reel__tile.is-win {
+  border-color: var(--c-gold-light);
+  box-shadow: 0 0 22px color-mix(in srgb, var(--mark) 70%, transparent);
 }
-.tg__status {
-  display: flex;
-  justify-content: space-between;
-  width: 100%;
-  font-size: 0.95rem;
-  color: var(--c-text-dim);
-}
-.tg__note {
-  min-height: 1.4em;
-  margin: 0;
-  color: var(--c-text-dim);
-}
-
-/* the board: a canvas of pegs, and the ten lanes' prizes in a row exactly under it */
-.cascade__board {
-  width: min(40rem, 94vw, calc((100vh - 15rem) * 600 / 680));
-  min-width: 15rem;
-}
-.cascade__canvas {
-  display: block;
-  width: 100%;
-  aspect-ratio: 600 / 680;
-  border: 2px solid var(--c-gold-dark);
-  border-bottom: 0;
-  border-radius: 10px 10px 0 0;
-  cursor: crosshair;
-  touch-action: none;
-}
-.cascade__lanes {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: grid;
-  grid-template-columns: repeat(10, 1fr);
-  border: 2px solid var(--c-gold-dark);
-  border-top: 0;
-  border-radius: 0 0 10px 10px;
-  background: rgb(8 10 20 / 0.85);
-}
-.cascade__lane {
-  display: grid;
-  justify-items: center;
-  align-content: start;
-  gap: 0.15rem;
-  padding: 0.3rem 0.1rem 0.4rem;
-  border-left: 1px solid rgb(232 198 104 / 0.25);
-  font-size: clamp(0.5rem, 1.5vw, 0.72rem);
-  line-height: 1.15;
-  text-align: center;
-  overflow-wrap: anywhere;
-  color: var(--c-text-dim);
-}
-.cascade__lane:first-child {
-  border-left: 0;
-}
-.cascade__lane b {
-  font-size: 1.4em;
-  color: var(--mark);
-}
-.cascade__lane.is-earned {
-  background: rgb(232 198 104 / 0.22);
-  color: var(--c-ivory);
-  box-shadow: inset 0 -3px 0 var(--c-gold-light);
-}
-.cascade__x2 {
-  font-style: normal;
-  font-weight: 700;
-  color: var(--c-void);
+/* the pointer: a gold line down the middle with a mark at the top and bottom */
+.reel__pointer {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 3px;
+  margin-left: -1.5px;
+  z-index: 3;
   background: var(--c-gold-light);
-  border-radius: 999px;
-  padding: 0 0.4em;
-  font-size: 1.1em;
+  box-shadow: 0 0 10px var(--c-gold);
+  pointer-events: none;
 }
-.cascade__controls {
+.reel__pointer::before,
+.reel__pointer::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  margin-left: -8px;
+  border: 8px solid transparent;
+}
+.reel__pointer::before {
+  top: 0;
+  border-top-color: var(--c-gold-light);
+}
+.reel__pointer::after {
+  bottom: 0;
+  border-bottom-color: var(--c-gold-light);
+}
+.reel__bar {
   display: flex;
+  flex-wrap: wrap;
   gap: 0.6rem;
-  touch-action: manipulation;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.4rem;
+}
+.reel__purse {
+  color: var(--c-text-dim);
+  font-size: 0.95rem;
 }
 
 /* the prizes of an elite event, shown before the game is played */
