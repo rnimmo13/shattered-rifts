@@ -89,7 +89,7 @@ The attached image (Valeria) is the STYLE ANCHOR: match its cartoon game-art ren
 
 LAYOUT (critical): a clean 3 x 3 grid of landscape 4:3 pictures (each about 760 x 570), separated by thin flat dark navy (#14181f) gutters, with NO frames, NO borders, NO captions, NO text, NO numbers. Every picture fills its own cell completely; nothing crosses a gutter. Each picture has ONE clear subject in the middle that reads at thumbnail size, a simple scene behind it, light from the upper left.
 
-WORLD: Ilvane, a spirit shaman who calls glowing totems. A stone golem who plants carved totems and calls the spirits inside them to do his bidding. Starts every fight with three totems (Hawk, Bear and Splinter). Totems pulse every turn, then burst when awakened. World: a teal-and-orange foundry of machines: hazard stripes, steel, glowing cyan, sparks and steam.
+WORLD: Ilvane, a spirit shaman who calls glowing totems. An elder shaman who carves totems and calls the spirits inside them to do his bidding. Starts every fight with three totems (Hawk, Bear and Splinter). Totems pulse every turn, then burst when awakened. World: a teal-and-orange foundry of machines: hazard stripes, steel, glowing cyan, sparks and steam.
 
 THE PICTURES, in this exact order, left to right, top row first. Use the card name and its effect only to decide what to draw; never write the name:
 1. "Tune the Spirits" (power): Apply 1 Spirit. Show a grand symbolic still-life: one iconic object or pose that stands for the idea.

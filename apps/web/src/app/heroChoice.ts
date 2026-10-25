@@ -1,5 +1,5 @@
 // Which Riftwalker the player last picked, remembered between screens: choose on the title screen, then Begin Run or
-// Practice fight starts with that character (and the Sanctum and practice setup open on them).
+// Sandbox fight starts with that character (and the Sanctum and Sandbox setup open on them).
 
 import { RIFTWALKERS, canonicalHero, type HeroId } from '@sr/content/v2';
 

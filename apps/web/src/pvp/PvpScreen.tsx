@@ -440,7 +440,7 @@ export default function PvpScreen() {
               </div>
               <p className="pvp__hint">
                 A ghost is a deck another player has used in the Arena, played by the computer. It
-                is a fight for practice and for the Ghosts board: it does not count on the Arena
+                is a fight for fun and for the Ghosts board: it does not count on the Arena
                 board.
               </p>
             </>

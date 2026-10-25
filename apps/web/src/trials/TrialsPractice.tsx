@@ -34,7 +34,7 @@ export default function TrialsPractice() {
   return (
     <main className="trials">
       <a className="btn btn--small" href="#/fight">
-        <span>Back to Practice</span>
+        <span>Back to Sandbox</span>
       </a>
       <h1>Elite Events</h1>
       <p>

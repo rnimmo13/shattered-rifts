@@ -5,6 +5,9 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **Card art for every Uncommon, Rare and Legendary card:** 676 illustrated cards in all (141 new), from the last 21 sheets.
+- **Ilvane is described as the elder shaman he is** (his character screen no longer calls him a stone golem).
+- **Practice is now called Sandbox** (the home page button and the Elite Events page).
 - **Ghost Wardens:** from Rift Tier 4, a stage's Warden has a one-in-three chance of being a ghost instead: a deck another player entered in the Arena, played by the computer. You see its Riftwalker and who it came from, and if no ghost can be had you fight the usual Warden.
 - **Ghost decks page:** see every deck that can be met as a ghost: whose it is, which Riftwalker, how far it got and how it has done (never its cards or Boons). From the home page, the Arena and the Leaderboards.
 - **Brass Cascade is fair:** every lane is exactly as likely as any other, the prizes stand in different lanes every time, and only one lane holds a Legendary card.
@@ -18,7 +21,7 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 - **First visit shows the real character art:** the page now waits for the character figures (with an Opening the rift message) instead of drawing placeholders after two seconds, and redraws the home screen if they arrive late. Before, you had to refresh to see them.
 - **Two balls in one lane pay twice:** the lane offers a second, different prize of the same kind, with a ×2 mark on the board and on the prize screen. You still choose one prize.
 - **Rift-crossed rares are a choice of three:** every event that gives one (and the Brass Cascade lane) shows three rares from other classes and lets you pick.
-- **Elite events are all the Brass Cascade:** a board of pegs with ten lanes, each showing its prize. Drop three balls from anywhere along the top of the board, lean on them as they bounce down, and choose one prize from the lanes they landed in. Try it from Practice > Elite Events.
+- **Elite events are all the Brass Cascade:** a board of pegs with ten lanes, each showing its prize. Drop three balls from anywhere along the top of the board, lean on them as they bounce down, and choose one prize from the lanes they landed in. Try it from Sandbox > Elite Events.
 - **Event pass:** 70 events (20 new): pick a Rift-crossed card from three, trade a card, a Boon or max HP for one, gamble for one, and a buried map that pays off at a later event; and some bad ones (a hollow feast, the tax collector, a cursed forge). Every chance in an event is now a coin toss before you see the result.
 - **Elite events:** about 1 event in 10 offers the Brass Cascade for a choice of better prizes. You only get one try: once you press Begin, closing the page or losing your connection counts as failed and the run moves on.
 - **Names are filtered:** an abusive Arena or leaderboard name is shown as "Riftwalker" instead.

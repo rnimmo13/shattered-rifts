@@ -1275,7 +1275,7 @@ const assassin: Painter = (g, fx) => {
   glowHex(fx, '#ff9aa8', 74, 90, 46, 0.3);
 };
 
-// ---- Ilvane: a hulking stone golem, moss on his shoulders and glowing green rune-eyes, who plants carved totems and calls the spirits in them to do his bidding ----
+// ---- Ilvane: a bearded elder shaman in teal robes and feathers, a hawk-headed totem staff in hand, who plants carved totems and calls the spirits in them to do his bidding ----
 const totemist: Painter = (g, fx) => {
   const STONE = '#8a8478';
   const DARK = '#5a564c';

@@ -1,4 +1,4 @@
-// The home page: the Riftwalker you have picked on show, the three ways to play (New Run, Arena, Practice), and sign-in.
+// The home page: the Riftwalker you have picked on show, the three ways to play (New Run, Arena, Sandbox), and sign-in.
 
 import { useEffect, useMemo, useRef, useState, type CSSProperties } from 'react';
 import { REALMS, RIFTWALKERS, heroesByRealm, type HeroId } from '@sr/content/v2';
@@ -167,7 +167,7 @@ export function TitleScreen() {
             <small>Duel another player with a deck you banked.</small>
           </a>
           <a className="home__play" href="#/fight">
-            <b>Practice</b>
+            <b>Sandbox</b>
             <small>
               Try any fight as {hero.hero.name}, no run needed. Elite events too.
             </small>
