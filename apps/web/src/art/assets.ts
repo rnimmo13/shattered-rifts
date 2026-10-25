@@ -19,6 +19,7 @@ const figures = new Map<string, HTMLCanvasElement>();
 const cards = new Map<string, string>();
 const backdrops = new Map<string, string>();
 let loading: Promise<void> | null = null;
+let staged: Stages | null = null;
 
 function base(): string {
   return import.meta.env.BASE_URL;
@@ -33,18 +34,27 @@ function loadImage(url: string): Promise<HTMLImageElement | null> {
   });
 }
 
-async function load(): Promise<void> {
-  let m: Manifest;
-  try {
-    const res = await fetch(`${base()}art/manifest.json`, { cache: 'no-cache' });
-    if (!res.ok) return;
-    m = (await res.json()) as Manifest;
-  } catch {
-    return; // no manifest: all placeholders
-  }
-  const jobs: Promise<void>[] = [];
-  for (const [key, path] of Object.entries(m.figures ?? {})) {
-    jobs.push(
+/** The two stages of loading the art: the manifest and the hero figures (the first screens need them), then everything else. */
+interface Stages {
+  heroes: Promise<void>;
+  all: Promise<void>;
+}
+
+function load(): Stages {
+  const none = Promise.resolve();
+  const start = async (): Promise<Stages> => {
+    let m: Manifest;
+    try {
+      const res = await fetch(`${base()}art/manifest.json`, { cache: 'no-cache' });
+      if (!res.ok) return { heroes: none, all: none };
+      m = (await res.json()) as Manifest;
+    } catch {
+      return { heroes: none, all: none }; // no manifest: all placeholders
+    }
+    for (const [id, path] of Object.entries(m.cards ?? {})) cards.set(id, `${base()}art/${path}`);
+    for (const [id, path] of Object.entries(m.backdrops ?? {}))
+      backdrops.set(id, `${base()}art/${path}`);
+    const fetchFigure = (key: string, path: string): Promise<void> =>
       loadImage(`${base()}art/${path}`).then((img) => {
         if (!img) return;
         const c = document.createElement('canvas');
@@ -52,23 +62,44 @@ async function load(): Promise<void> {
         c.height = img.naturalHeight;
         c.getContext('2d')?.drawImage(img, 0, 0);
         figures.set(key, c);
-      }),
+      });
+    const entries = Object.entries(m.figures ?? {});
+    // the heroes come first: the home screen and every character screen show them
+    const heroes = Promise.all(entries.filter(([k]) => k.startsWith('hero:')).map(([k, p]) => fetchFigure(k, p))).then(
+      () => undefined,
     );
-  }
-  for (const [id, path] of Object.entries(m.cards ?? {})) cards.set(id, `${base()}art/${path}`);
-  for (const [id, path] of Object.entries(m.backdrops ?? {}))
-    backdrops.set(id, `${base()}art/${path}`);
-  await Promise.all(jobs);
+    const rest = Promise.all(entries.filter(([k]) => !k.startsWith('hero:')).map(([k, p]) => fetchFigure(k, p)));
+    return { heroes, all: Promise.all([heroes, rest]).then(() => undefined) };
+  };
+  const staged = start();
+  return { heroes: staged.then((x) => x.heroes), all: staged.then((x) => x.all) };
 }
 
-/** Load the artwork manifest once (safe to call from several places; resolves even when there is none). */
+/** How long a first screen waits for the hero figures on a slow connection (about 8 MB the first time, cached after). */
+const HEROES_WAIT_MS = 15000;
+/** How long a fight waits for the rest of the figures (enemies, companions). */
+const ALL_WAIT_MS = 10000;
+
+const wait = (ms: number): Promise<void> => new Promise<void>((resolve) => window.setTimeout(resolve, ms));
+
+/** Tell the screens that art which was not there in time is there now (a first visit on a slow connection). */
+export const ART_READY_EVENT = 'sr-art-ready';
+
+/** Load the artwork manifest and the hero figures once (safe to call from several places; resolves even when there is none). */
 export function preloadArt(): Promise<void> {
-  loading ??= Promise.race([
-    load().catch(() => undefined),
-    // never hold the first screen hostage to a slow connection: art that arrives later is used next time
-    new Promise<void>((resolve) => window.setTimeout(resolve, 2000)),
-  ]);
+  if (!staged) {
+    staged = load();
+    // if the wait ran out and the figures arrive later, say so: the screen on show redraws with the real art
+    void staged.heroes.then(() => window.dispatchEvent(new Event(ART_READY_EVENT)));
+  }
+  loading ??= Promise.race([staged.heroes.catch(() => undefined), wait(HEROES_WAIT_MS)]);
   return loading;
+}
+
+/** Load all the figures (heroes, enemies, companions): what a fight needs before it draws. */
+export function preloadAllArt(): Promise<void> {
+  void preloadArt();
+  return Promise.race([(staged as Stages).all.catch(() => undefined), wait(ALL_WAIT_MS)]);
 }
 
 /** A real figure for a hero ('hero:knight') or unit ('unit:slime'), if one was supplied. */

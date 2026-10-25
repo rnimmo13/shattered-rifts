@@ -45,7 +45,7 @@ import { keywordsOf } from './info';
 import { BoonChip } from './BoonChip';
 import { CardTips } from './CardTips';
 import { CardHover } from './CardHover';
-import { preloadArt } from '../art/assets';
+import { preloadAllArt } from '../art/assets';
 import { PotionButton } from './PotionChip';
 import { PickModal } from './PickModal';
 import { tipAttrs, type TipContent } from '../ui/tip';
@@ -582,7 +582,7 @@ export function FightView(props: {
     let cancelled = false; // this effect run only (StrictMode mounts, unmounts and mounts again)
     let created: BattlefieldScene | null = null;
     // real artwork (if any was supplied) is loaded before the first figure or card is drawn
-    preloadArt()
+    preloadAllArt()
       .then(() => BattlefieldScene.create(el, profileFor(loadEffectsMode()), props.venue))
       .then((s) => {
         if (cancelled) {

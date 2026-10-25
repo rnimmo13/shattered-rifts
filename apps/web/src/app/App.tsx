@@ -1,4 +1,5 @@
 import { Suspense, lazy, useEffect, useState } from 'react';
+import { ART_READY_EVENT } from '../art/assets';
 import { BuildBadge } from '../ui/BuildBadge';
 import { TooltipLayer } from '../ui/Tooltip';
 import { Bestiary } from '../fight/Bestiary';
@@ -30,9 +31,17 @@ function useHash(): string {
 
 export function App() {
   const hash = useHash();
+  // figures that arrive after the first screen (a slow first visit) redraw the home screen, which is safe to do (it holds no game)
+  const [artVersion, setArtVersion] = useState(0);
+  useEffect(() => {
+    const on = (): void => setArtVersion((v) => v + 1);
+    window.addEventListener(ART_READY_EVENT, on);
+    return () => window.removeEventListener(ART_READY_EVENT, on);
+  }, []);
+  const atHome = hash === '' || hash === '#' || hash === '#/';
   return (
     <>
-      <Screens hash={hash} />
+      <Screens key={atHome ? artVersion : 0} hash={hash} />
       <BuildBadge />
       <TooltipLayer />
     </>

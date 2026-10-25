@@ -5,6 +5,7 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **First visit shows the real character art:** the page now waits for the character figures (with an Opening the rift message) instead of drawing placeholders after two seconds, and redraws the home screen if they arrive late. Before, you had to refresh to see them.
 - **Two balls in one lane pay twice:** the lane offers a second, different prize of the same kind, with a ×2 mark on the board and on the prize screen. You still choose one prize.
 - **Rift-crossed rares are a choice of three:** every event that gives one (and the Brass Cascade lane) shows three rares from other classes and lets you pick.
 - **Elite events are all the Brass Cascade:** a board of pegs with ten lanes, each showing its prize. Drop three balls from anywhere along the top of the board, lean on them as they bounce down, and choose one prize from the lanes they landed in. Try it from Practice > Elite Events.
