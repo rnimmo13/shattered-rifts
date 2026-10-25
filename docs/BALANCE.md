@@ -164,7 +164,7 @@ and a full-run sim showed Normal was lopsided (Maren and Ilvane ~90-100% clears,
 | Normal | 117% / 111% | 2 | 31-33% overall, heroes 22-48% (was 115/110 with 3 Resolve: 50%) |
 | Hard | 128% / 120% | 1 | 17% (no retries: one lost fight ends the run) |
 
-On top of that, **enemies ramp by stage** (`STAGE_SCALE`): 80/85%, 95/95%, 110/105%, 120/115%, 130/125% of HP/damage for
+(Superseded by DECISIONS #215: strength is now set by the tier table in `packages/campaign/src/tierTable.ts`, which also carries the stage ramp.) Before that, **enemies ramped by stage** (`STAGE_SCALE`): 80/85%, 95/95%, 110/105%, 120/115%, 130/125% of HP/damage for
 stages 1-5, so the opening is gentle and the Rift is the real test (before, a stage-1 Warden was as hard as a stage-3 one and
 killed weak decks at the start of the run).
 

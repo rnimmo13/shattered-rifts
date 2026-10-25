@@ -559,7 +559,7 @@ export const DEFAULT_RUNE_SLOTS = 3;
 
 /**
  * HP multiplier for enemies at a Rift Tier. Each tier adds more than the one before (the step grows by 0.02 each time), so the
- * climb steepens as you go deeper. (Tier I itself is the designed enemy; the campaign makes it a little tougher: see TIER_PRESSURE.)
+ * climb steepens as you go deeper. (The campaign no longer uses this: it plays at engine Tier I and scales through its own table, packages/campaign/src/tierTable.ts.)
  */
 export const tierHp = (tier: number): number => {
   const t = Math.max(0, tier - 1);

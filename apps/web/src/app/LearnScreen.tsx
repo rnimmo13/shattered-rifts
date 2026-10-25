@@ -1,6 +1,5 @@
 import { useState } from 'react';
-import { MAX_TIER, tierDmgPct } from '@sr/campaign';
-import { tierHp, tierMight } from '@sr/combat';
+import { MAX_TIER, TIER_TABLE, enemyScale } from '@sr/campaign';
 import { COMBAT_DB, RIFTWALKERS, heroesByRealm } from '@sr/content/v2';
 import { KEYWORD_INFO, STATUS_INFO } from '../fight/info';
 import { TIP_RULES } from '../fight/tips';
@@ -53,28 +52,43 @@ function Steps(props: { items: [string, string][] }) {
   );
 }
 
-/** What each Rift Tier asks of you, read from the same formulas the fights use. */
+/** What each Rift Tier asks of you, read from the tier table the fights use (packages/campaign/src/tierTable.ts). */
 function TierTable() {
   const tiers = Array.from({ length: MAX_TIER }, (_, i) => i + 1);
   return (
     <table className="learn__table">
       <thead>
         <tr>
-          <th>Rift Tier</th>
-          <th>Enemy HP</th>
-          <th>Enemy Might</th>
-          <th>Enemy damage</th>
+          <th rowSpan={2}>Rift Tier</th>
+          <th colSpan={3}>Enemy HP (% of base)</th>
+          <th colSpan={3}>Enemy damage (% of base)</th>
+        </tr>
+        <tr>
+          {['Stage 1', 'Stage 2', 'Stage 3', 'Stage 1', 'Stage 2', 'Stage 3'].map((h, i) => (
+            <th key={i}>{h}</th>
+          ))}
         </tr>
       </thead>
       <tbody>
-        {tiers.map((t) => (
-          <tr key={t}>
-            <th>{t}</th>
-            <td>{Math.round(tierHp(t) * 100)}%</td>
-            <td>+{tierMight(t)}</td>
-            <td>{tierDmgPct(t)}%</td>
-          </tr>
-        ))}
+        {tiers.map((t) => {
+          const stages = [1, 2, 3].map((st) => enemyScale(t, st));
+          return (
+            <tr key={t}>
+              <th>
+                {t}
+                <small>
+                  +{TIER_TABLE[t - 1]?.hp}% HP, +{TIER_TABLE[t - 1]?.dmg}% dmg
+                </small>
+              </th>
+              {stages.map((x, i) => (
+                <td key={'h' + i}>{x.hp}%</td>
+              ))}
+              {stages.map((x, i) => (
+                <td key={'d' + i}>{x.dmg}%</td>
+              ))}
+            </tr>
+          );
+        })}
       </tbody>
     </table>
   );
@@ -188,10 +202,9 @@ export function LearnScreen() {
             have more HP and hit harder. The climb ends at Tier 20.
           </p>
           <p>
-            Here is what each tier adds to every enemy. HP is a percentage of Tier 1, Might is extra
-            damage on each of their attacks, and damage is a multiplier on everything they deal (100% is the number printed on the intent). The
-            stage you are on adds to these numbers too: enemies start gentler in stage 1 and are
-            toughest in stage 3.
+            Here is how tough enemies are at every stage of every tier, as a percentage of their
+            normal HP and damage. Each stage is a little harder than the one before it, and stage 1
+            of the next tier is harder again.
           </p>
           <TierTable />
           <h3>Your deck</h3>

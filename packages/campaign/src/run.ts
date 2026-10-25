@@ -23,6 +23,7 @@ import {
 } from './mapgen';
 
 export { CROSSED_MERCHANT_CHANCE };
+import { enemyScale } from './tierTable';
 import { makeKits } from './kits';
 import { rollEvent, resolveEvent } from './events';
 import { beginTrial, endTrial, takePrize } from './trials';
@@ -67,7 +68,7 @@ function need(cond: unknown, msg: string): asserts cond {
 export const MAX_RESOLVE = 2;
 
 /**
- * Difficulty settings (percent of the designed enemy HP and damage, on top of the per-stage ramp in STAGE_SCALE). Normal is
+ * Difficulty settings. Only their RATIO to Normal matters now: the tier table (tierTable.ts) sets how strong enemies are on Normal, and Easy/Hard scale that. Normal is
  * the intended game; Easy is relaxed (weaker enemies, more Resolve, a few shards to start); Hard is for people who have
  * beaten Normal (fewer Resolve). Re-measure with `pnpm runsim` after any change (docs/BALANCE.md).
  */
@@ -101,26 +102,6 @@ export const DIFFICULTY: Record<
     shards: 0,
   },
 };
-/**
- * Enemies grow tougher as a run goes deeper (percent of the difficulty's HP and damage), so Stage 1 is a gentle opening and
- * the Rift at the last stage is the real test. The deck, HP and Boons you have gathered grow too.
- */
-export const STAGE_SCALE: Record<number, { hp: number; dmg: number }> = {
-  1: { hp: 92, dmg: 95 },
-  2: { hp: 108, dmg: 108 },
-  3: { hp: 125, dmg: 122 },
-};
-const stageScale = (stage: number): { hp: number; dmg: number } =>
-  STAGE_SCALE[Math.max(1, Math.min(FINAL_STAGE, stage))] ?? { hp: 100, dmg: 100 };
-
-/**
- * Rift Tiers make enemies tougher on top of the engine's own tier scaling (more HP and Might each tier, and the HP step grows):
- * a campaign fight at Tier I already has this much extra HP and damage (percent), and each tier after adds a little more damage.
- */
-export const TIER_PRESSURE = { hp: 108, dmg: 105, dmgPerTier: 5 } as const;
-export const tierDmgPct = (tier: number): number =>
-  TIER_PRESSURE.dmg + TIER_PRESSURE.dmgPerTier * Math.max(0, tier - 1);
-
 /** Shards a won fight pays, by the kind of fight. */
 export const FIGHT_SHARDS = { duel: 15, elite: 36, warden: 65 } as const;
 /** The chance (percent) that a won fight drops a potion (when the belt has room). */
@@ -341,7 +322,7 @@ export interface FightPlan {
   tier: number;
   boons: string[];
   potions: string[];
-  /** percent of normal enemy HP and damage (the difficulty setting) */
+  /** percent of the designed enemy HP and damage: the tier table for this tier and stage (tierTable.ts), scaled by the difficulty's ratio to Normal */
   hpPct: number;
   dmgPct: number;
   kind: MapNode['kind'];
@@ -419,14 +400,16 @@ export function duelPlan(run: RunState): FightPlan | null {
     deck: [...run.deck],
     hp: run.hp,
     maxHp: run.maxHp,
-    tier: run.tier,
+    // the engine's own tier scaling stays off: tierTable.ts carries all of it, through hpPct and dmgPct below
+    tier: 1,
     boons: [...run.boons],
     potions: [...run.potions],
+    // the tier table sets how hard this stage of this tier is; the difficulty only matters for a run saved on Easy or Hard
     hpPct: Math.round(
-      (DIFFICULTY[run.difficulty].hpPct * stageScale(run.stage).hp * TIER_PRESSURE.hp) / 10000,
+      (DIFFICULTY[run.difficulty].hpPct / DIFFICULTY.normal.hpPct) * enemyScale(run.tier, run.stage).hp,
     ),
     dmgPct: Math.round(
-      (DIFFICULTY[run.difficulty].dmgPct * stageScale(run.stage).dmg * tierDmgPct(run.tier)) / 10000,
+      (DIFFICULTY[run.difficulty].dmgPct / DIFFICULTY.normal.dmgPct) * enemyScale(run.tier, run.stage).dmg,
     ),
     kind: node.kind,
     seed: `${run.seed}:t${run.tier}:${node.id}:${run.stats.duelsLost}`,

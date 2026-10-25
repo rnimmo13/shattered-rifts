@@ -204,7 +204,7 @@ describe('the run', () => {
     expect(e.difficulty).toBe('easy');
     expect(e.resolve).toBe(5);
     expect(e.shards).toBe(100);
-    // stage 1 is eased further by the stage ramp (92% HP, 95% damage), then Rift Tier I's pressure adds 8% HP and 5% damage
+    // Easy is Normal's Tier I stage 1 (127% HP, 118% damage in the tier table) times Easy's ratio to Normal (85/128, 80/118)
     expect(duelPlan(enterNode(e, availableNodes(e)[0]!.id))).toMatchObject({
       hpPct: 84,
       dmgPct: 80,
