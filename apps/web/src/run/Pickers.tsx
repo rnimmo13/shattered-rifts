@@ -185,6 +185,8 @@ export function DeckModal(props: {
         {props.hint && <p className="modal__hint">{props.hint}</p>}
         <Grimoire
           cards={tally(props.deck, COMBAT_DB)}
+          // choosing a card (to remove or upgrade) needs cards big enough to read; just looking can fit more on a page
+          readable={!!props.onPick}
           {...(props.onPick ? { onPick: props.onPick } : {})}
           {...(props.pickable ? { pickable: props.pickable } : {})}
         />
