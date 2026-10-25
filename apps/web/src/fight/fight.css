@@ -909,6 +909,23 @@
   gap: 0.2rem;
   max-width: 11rem;
 }
+/* more than five Auras: the list scrolls inside its own window instead of running over the Mana orb */
+.aux--scroll {
+  max-height: 9.4rem;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding-right: 0.25rem;
+  scrollbar-width: thin;
+  scrollbar-color: var(--c-gold-dark) transparent;
+}
+.aux__count {
+  pointer-events: none;
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--c-gold-dark);
+  text-align: right;
+}
 .aux__power {
   pointer-events: auto;
   cursor: help;

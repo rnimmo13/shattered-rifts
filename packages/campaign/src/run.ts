@@ -11,6 +11,7 @@ import {
   V2_DECK_RULES,
   encounter,
   isSanctified,
+  markOf,
   rewardPool,
   canonicalHero,
   type HeroId,
@@ -29,10 +30,12 @@ export { CROSSED_MERCHANT_CHANCE };
 import { enemyScale } from './tierTable';
 import { makeKits } from './kits';
 import { rollEvent, resolveEvent } from './events';
+import { applyChoice, applyDeal } from './deals';
 import { spinReel, takePrize } from './trials';
 import { makePrelude } from './preludes';
 import {
   BOON_PRICE,
+  LOOP_LEGEND_CHANCE,
   MAX_POTIONS,
   MAX_TIER,
   POTION_PRICE,
@@ -50,6 +53,7 @@ import {
   priceOf,
 } from './rewards';
 import type {
+  DealStep,
   Difficulty,
   GhostBoss,
   Luck,
@@ -290,7 +294,7 @@ export function enterNode(run: RunState, nodeId: string): RunState {
         price: POTION_PRICE[COMBAT_DB.potions[id]?.rarity ?? 'common'] ?? 40,
         sold: false,
       }));
-      const boon = offerBoon(r.rng, r.boons, 'elite');
+      const boon = offerBoon(r.rng, r.boons, 'elite', true);
       r.context.merchant = {
         items,
         ...(crossed ? { crossed } : {}),
@@ -505,7 +509,10 @@ export function finishDuel(
     if (b?.shardsPerFight) r.shards += b.shardsPerFight;
   }
   let boonGained: string | undefined;
-  if (node.kind === 'elite' || (node.kind === 'warden' && r.stage < FINAL_STAGE)) {
+  // Elites give Boons; Wardens give their Gift (they used to give a Boon as well, and decks owned every Boon within a few loops).
+  // A fight an event started pays the spoils it promised instead (node.bonus, set even when empty), so no second Boon.
+  const fromEvent = node.bonus !== undefined;
+  if (node.kind === 'elite' && !fromEvent) {
     const id = offerBoon(r.rng, r.boons, 'elite');
     if (id) {
       gainBoon(r, id);
@@ -519,6 +526,14 @@ export function finishDuel(
     heal(r, r.maxHp * 0.3);
     r.resolve = Math.min(r.maxResolve, r.resolve + 1);
     if (r.stage >= FINAL_STAGE) {
+      // the Heart of the Rift sometimes leaves something behind: a Legendary Boon you do not have yet
+      if (nextInt(r.rng, 100) < LOOP_LEGEND_CHANCE) {
+        const legend = boonOfRarity(r.rng, r.boons, 'legendary');
+        if (legend && COMBAT_DB.boons[legend]?.rarity === 'legendary') {
+          gainBoon(r, legend);
+          r.eventResult = `The Heart of the Rift leaves something behind: the Legendary Boon ${COMBAT_DB.boons[legend]?.name ?? legend}.`;
+        }
+      }
       r.phase = 'loopCleared';
       return r;
     }
@@ -544,6 +559,31 @@ export function finishDuel(
     };
     r.phase = 'gift';
     return r;
+  }
+  // an event that became a fight pays what it promised, on top of the usual reward
+  if (node.bonus) {
+    const said: string[] = [];
+    for (const step of node.bonus) {
+      try {
+        const line = applyDeal(
+          r,
+          { id: 'd1', label: '', deal: [step] },
+          { title: '', text: '', options: [], cardOffer: '' },
+          {
+            gainBoon,
+            fail: (msg) => {
+              throw new RunError(msg);
+            },
+          },
+        );
+        if (line) said.push(line);
+      } catch (e) {
+        // (a spoil that cannot be had now, say a full potion belt, is missed, and said so)
+        said.push(`(${e instanceof Error ? e.message : 'Something'}: that spoil is lost.)`);
+      }
+    }
+    delete node.bonus;
+    if (said.length) r.eventResult = `The spoils: ${said.join(' ')}`;
   }
   const count = r.tier >= 4 ? 4 : 3;
   r.context = {
@@ -634,7 +674,13 @@ export function choosePrelude(run: RunState, optionId: string): RunState {
   delete r.eventResult; // (so the result is shown even when its words match an earlier one)
   // a bargain that pays HP for a Legendary must be able to give one (the deck may already hold its limit)
   for (const e of option.effects)
-    if ((e.k === 'card' || e.k === 'pick') && e.rarity === 'legendary')
+    if (e.k === 'pick')
+      need(
+        threeToChoose(clone(r), e.rarity, false).length > 0,
+        'There is no card of that kind left for your deck',
+      );
+  for (const e of option.effects)
+    if (e.k === 'card' && e.rarity === 'legendary')
       need(
         cardOfRarity(clone(r.rng), r.character, r.deck, 'legendary'),
         'Your deck already holds as many Legendary cards as it can',
@@ -691,9 +737,10 @@ const listOf = (all: readonly string[]): string => {
     : `${names.slice(0, -1).join(', ')} and ${names.at(-1)}`;
 };
 
-/** The Attack and Defend cards a deck can still lose or change: Neutral basics. */
+/** The Strike and Defend cards a deck can still lose or change: Neutral basics. */
 const isPlainBasic = (id: string): boolean =>
   !isSanctified(id) &&
+  markOf(id) === null &&
   COMBAT_DB.cards[id]?.hero === 'neutral' &&
   COMBAT_DB.cards[id]?.rarity === 'basic';
 
@@ -1000,7 +1047,7 @@ export function chooseEvent(run: RunState, option: EventOption['id']): RunState 
   const ev = (r.context as NonNullable<RunState['context']>).event as NonNullable<
     NonNullable<RunState['context']>['event']
   >;
-  need(!ev.choose, 'Choose one of the cards first');
+  need(!ev.choose && !ev.chooseDeck, 'Choose one of the cards first');
   need(
     ev.options.some((o) => o.id === option),
     'That is not an option',
@@ -1012,9 +1059,57 @@ export function chooseEvent(run: RunState, option: EventOption['id']): RunState 
       throw new RunError(msg);
     },
   });
-  // a choice of cards to make: the event waits for it (see pickEventCard)
-  if (ev.choose) return r;
+  // a choice of cards to make: the event waits for it (see pickEventCard, pickDeckCard)
+  if (ev.choose || ev.chooseDeck) {
+    need(!ev.fight, 'An event option cannot both ask for a card and start a fight');
+    return r;
+  }
+  // the option starts a fight: the stop becomes that fight, played, rewarded and retried like any other (as an ambush is)
+  if (ev.fight) {
+    const ctx = r.context as NonNullable<RunState['context']>;
+    const node = nodeOf(r, ctx.nodeId);
+    const foe = ambushEnemy(
+      r.rng,
+      enemyRealms(r, r.stage),
+      ev.fight.kind,
+      r.map.nodes.map((n) => n.enemyId),
+    );
+    need(foe, 'There is nothing here to fight');
+    node.kind = ev.fight.kind;
+    node.enemyId = foe;
+    // (the event's own Boon, if the spoils include it, is named now: the event is gone by the time the fight is won)
+    node.bonus = pinBoon(ev.fight.bonus ?? [], ev.boonOffer);
+    r.context = { nodeId: ctx.nodeId };
+    r.phase = 'duel';
+    r.eventResult = `${r.eventResult ? `${r.eventResult} ` : ''}${encounter(foe).name} stands in your way${ev.fight.kind === 'elite' ? ' (an Elite)' : ''}.`;
+    return r;
+  }
   clearNode(r, (r.context as NonNullable<RunState['context']>).nodeId);
+  r.phase = 'map';
+  return r;
+}
+
+/** The steps with "the event's Boon" replaced by that exact Boon (inside chances too). */
+function pinBoon(steps: DealStep[], id: string | undefined): DealStep[] {
+  return steps.flatMap((st): DealStep[] => {
+    if (st.k === 'boon') return id ? [{ k: 'boonOf', id }] : [];
+    if (st.k === 'chance') return [{ ...st, win: pinBoon(st.win, id), lose: pinBoon(st.lose, id) }];
+    return [st];
+  });
+}
+
+/** Choose the card of your deck an event asked for (to upgrade, remove, transform or tag it), which ends the event. */
+export function pickDeckCard(run: RunState, cardId: string): RunState {
+  need(run.phase === 'event' && run.context?.event?.chooseDeck, 'There is no choice to make here');
+  const r = clone(run);
+  const ctx = r.context as NonNullable<RunState['context']>;
+  const ev = ctx.event as NonNullable<typeof ctx.event>;
+  const said = applyChoice(r, ev.chooseDeck as NonNullable<typeof ev.chooseDeck>, cardId, (msg) => {
+    throw new RunError(msg);
+  });
+  delete ev.chooseDeck;
+  r.eventResult = r.eventResult ? `${r.eventResult} ${said}` : said;
+  clearNode(r, ctx.nodeId);
   r.phase = 'map';
   return r;
 }

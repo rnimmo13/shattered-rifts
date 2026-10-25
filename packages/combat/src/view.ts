@@ -500,7 +500,9 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
     case 'discover': {
       const kind = o.kind ? `${KIND_PLURAL[o.kind]?.[0] ?? o.kind} ` : '';
       const what = (o.count ?? 1) > 1 ? `${o.count} random ${kind}cards` : `a random ${kind}card`;
-      return `Add ${what} from your pool to your hand${o.free ? ' (it costs 0 the next time you play it)' : ''}.`;
+      const many = (o.count ?? 1) > 1;
+      const free = many ? ' (they cost 0 the next time you play them)' : ' (it costs 0 the next time you play it)';
+      return `Add ${what} from your pool to your hand${o.free ? free : ''}.`;
     }
     case 'upgrade':
       return o.scope === 'hand'

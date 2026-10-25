@@ -35,6 +35,8 @@ describe('Riftwalker ids are named for their class', () => {
 
   it('a save of a character the game does not know is still refused', () => {
     const run = newRun('knight', 'legacy-unknown');
-    expect(parseRun(serializeRun(run).replace('"character":"knight"', '"character":"nobody"'))).toBeNull();
+    expect(
+      parseRun(serializeRun(run).replace('"character":"knight"', '"character":"nobody"')),
+    ).toBeNull();
   });
 });

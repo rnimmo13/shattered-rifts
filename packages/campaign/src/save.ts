@@ -7,11 +7,11 @@ import {
   RIFTWALKERS,
   V2_DECK_RULES,
   canonicalHero,
-  rollOf,
+  isVariant,
 } from '@sr/content/v2';
 const hasCard = (id: unknown): boolean =>
   typeof id === 'string' &&
-  (Object.hasOwn(COMBAT_DB.cards, id) || (rollOf(id) !== 0 && COMBAT_DB.cards[id] !== undefined));
+  (Object.hasOwn(COMBAT_DB.cards, id) || (isVariant(id) && COMBAT_DB.cards[id] !== undefined));
 import type { MapNode, NodeKind, RunPhase, RunState } from './types';
 import { FINAL_STAGE } from './mapgen';
 import { checkGhostBoss } from './run';
@@ -62,6 +62,7 @@ function validMap(map: unknown): map is RunState['map'] {
     if (!n.kind || !KINDS.includes(n.kind) || !isInt(n.floor, 1, 20)) return false;
     if (!isStrArray(n.next) || n.next.some((t) => !ids.has(t))) return false;
     if (n.crossed !== undefined && typeof n.crossed !== 'string') return false;
+    if (n.bonus !== undefined && !validDeal(n.bonus)) return false;
     const fights = n.kind === 'duel' || n.kind === 'elite' || n.kind === 'warden';
     if (fights && (typeof n.enemyId !== 'string' || !ENEMY_IDS.has(n.enemyId))) return false;
   }
@@ -162,6 +163,11 @@ function validContext(r: RunState): boolean {
           (isObj(e['choose']) &&
             Array.isArray(e['choose']['cards']) &&
             (e['choose']['cards'] as unknown[]).every(hasCard))) &&
+        (e['chooseDeck'] === undefined ||
+          (isObj(e['chooseDeck']) &&
+            validChoice(e['chooseDeck']) &&
+            Array.isArray(e['chooseDeck']['cards']) &&
+            (e['chooseDeck']['cards'] as unknown[]).every(hasCard))) &&
         (e['trial'] === undefined || validTrial(e['trial'])) &&
         (e['cardOffers'] === undefined ||
           (Array.isArray(e['cardOffers']) && (e['cardOffers'] as unknown[]).every(hasCard))) &&
@@ -244,7 +250,18 @@ const DEAL_KINDS = new Set([
   'potionOf',
   'mark',
   'chance',
+  'choose',
+  'fight',
 ]);
+const DECK_CHOICES = new Set(['upgrade', 'remove', 'transform', 'copy', 'mark']);
+const MARKS = new Set(['hold', 'opening', 'flare']);
+/** A deck choice names a known action, and a tag (only, and always, when it engraves one). */
+const validChoice = (c: Record<string, unknown>): boolean =>
+  typeof c['act'] === 'string' &&
+  DECK_CHOICES.has(c['act']) &&
+  (c['act'] === 'mark'
+    ? typeof c['mark'] === 'string' && MARKS.has(c['mark'])
+    : c['mark'] === undefined);
 /** An event option's effect steps (see deals.ts): known kinds, whole numbers, chance branches that are step lists too. */
 function validDeal(steps: unknown, depth = 0): boolean {
   if (!Array.isArray(steps) || depth > 3) return false;
@@ -264,6 +281,12 @@ function validDeal(steps: unknown, depth = 0): boolean {
     )
       return false;
     if (s['k'] === 'mark' && typeof s['id'] !== 'string') return false;
+    if (s['k'] === 'choose' && !validChoice(s)) return false;
+    if (s['k'] === 'fight')
+      return (
+        (s['kind'] === 'duel' || s['kind'] === 'elite') &&
+        (s['bonus'] === undefined || validDeal(s['bonus'], depth + 1))
+      );
     if (s['k'] === 'chance')
       return validDeal(s['win'], depth + 1) && validDeal(s['lose'], depth + 1);
     return true;

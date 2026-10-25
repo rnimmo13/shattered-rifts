@@ -3,7 +3,7 @@
 // choices made reproduce the same run.
 
 import type { RngState } from '@sr/combat';
-import type { HeroId } from '@sr/content/v2';
+import type { CardMark, HeroId } from '@sr/content/v2';
 
 export type Difficulty = 'easy' | 'normal' | 'hard';
 
@@ -25,6 +25,8 @@ export interface MapNode {
   crossed?: string;
   /** Ids of the nodes on the next floor this one connects to. */
   next: string[];
+  /** an event that became a fight: what winning it also pays (on top of the usual reward) */
+  bonus?: DealStep[];
 }
 
 export type StageRealm = 'aurelion' | 'nexus' | 'wyldmaw' | 'umbral' | 'rift';
@@ -183,7 +185,14 @@ export type DealStep =
   | { k: 'potionOf'; id: string }
   /** set (or, with off, clear) a flag on the run that a later event can ask for */
   | { k: 'mark'; id: string; off?: boolean }
-  | { k: 'chance'; pct: number; win: DealStep[]; lose: DealStep[] };
+  | { k: 'chance'; pct: number; win: DealStep[]; lose: DealStep[] }
+  /** the player chooses a card of their deck, and it is upgraded / removed / transformed / tagged (the event waits for the pick) */
+  | { k: 'choose'; act: DeckChoice; mark?: CardMark }
+  /** the stop becomes a fight (a regular one or an Elite); winning it also pays `bonus` */
+  | { k: 'fight'; kind: 'duel' | 'elite'; bonus?: DealStep[] };
+
+/** What an event does to a card you choose from your deck. */
+export type DeckChoice = 'upgrade' | 'remove' | 'transform' | 'copy' | 'mark';
 
 /** One of the three starting decks (one per lane) offered at the start of a run. */
 export interface KitOption {
@@ -285,6 +294,10 @@ export interface NodeContext {
     cardOffers?: string[];
     /** a choice waiting to be made: pick one of these cards to take (the event is not over until you do) */
     choose?: { cards: string[] };
+    /** a choice waiting to be made: pick a card of your deck (one of `cards`) to upgrade / remove / transform / tag */
+    chooseDeck?: { act: DeckChoice; mark?: CardMark; cards: string[] };
+    /** the option taken starts a fight here (the run turns the stop into it) */
+    fight?: { kind: 'duel' | 'elite'; bonus?: DealStep[] };
     /** an event that offers a Boon */
     boonOffer?: string;
     /** an elite event: an optional mini-game for a choice of better rewards (see trials.ts) */

@@ -2,7 +2,7 @@
 
 import { useMemo, useRef, useState } from 'react';
 import type { CardDef } from '@sr/combat';
-import { COMBAT_DB, RIFTWALKERS, V2_DECK_RULES } from '@sr/content/v2';
+import { COMBAT_DB, MARK_INFO, RIFTWALKERS, V2_DECK_RULES } from '@sr/content/v2';
 import {
   HOLD_DEPOSIT,
   HOLD_LATER,
@@ -669,6 +669,8 @@ export function EventView(props: {
   onPrize: (id: string, pick?: number, cards?: string[]) => void;
   /** one of the three cards an event laid out for a choice */
   onPickCard: (index: number) => void;
+  /** the card of your deck an event asked for (to upgrade, remove, transform, copy or engrave) */
+  onPickDeck: (cardId: string) => void;
 }) {
   const ev = props.run.context?.event;
   const [hover, setHover] = useState<CardDef | null>(null);
@@ -770,6 +772,19 @@ export function EventView(props: {
           </div>
         </div>
       )}
+      {ev.chooseDeck && (
+        <div className="prizes" aria-label="Choose a card of your deck">
+          <h3 className="prizes__title" role="status">
+            {deckChoiceTitle(ev.chooseDeck)}
+          </h3>
+          <Grimoire
+            cards={tally(props.run.deck, COMBAT_DB)}
+            readable
+            onPick={props.onPickDeck}
+            pickable={new Set(ev.chooseDeck.cards)}
+          />
+        </div>
+      )}
       {trial && won && (
         <div className="prizes" aria-label="The prize on the table">
           <h3 className="prizes__title" role="status">
@@ -837,7 +852,7 @@ export function EventView(props: {
             </span>
           </button>
         )}
-        {(spinning || ev.choose
+        {(spinning || ev.choose || ev.chooseDeck
           ? []
           : won
             ? ev.options.filter((o) => o.id !== 'trial')
@@ -860,6 +875,26 @@ export function EventView(props: {
       <CardHover def={hover} />
     </section>
   );
+}
+
+/** What the event is waiting for, when it asks for a card of your deck. */
+function deckChoiceTitle(
+  c: NonNullable<NonNullable<NonNullable<RunState['context']>['event']>['chooseDeck']>,
+): string {
+  switch (c.act) {
+    case 'upgrade':
+      return 'Choose a card to upgrade';
+    case 'remove':
+      return 'Choose a card to remove from your deck';
+    case 'transform':
+      return 'Choose a card to transform (it becomes a random card of your class of the same rarity)';
+    case 'copy':
+      return 'Choose a card to copy';
+    case 'mark': {
+      const m = c.mark ? MARK_INFO[c.mark] : undefined;
+      return m ? `Choose a card to gain ${m.name} (it ${m.text})` : 'Choose a card';
+    }
+  }
 }
 
 /** "Help them (lose 8 HP): they give you a potion" -> a short headline and the price/reward underneath. */

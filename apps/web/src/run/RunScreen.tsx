@@ -22,6 +22,7 @@ import {
   chooseEvent,
   claimTrialPrize,
   pickEventCard,
+  pickDeckCard,
   settleInterrupted,
   rollTrial,
   chooseKit,
@@ -824,6 +825,7 @@ function Body(props: {
           onChoose={(id) => act((r) => chooseEvent(r, id))}
           onRoll={() => act((r) => rollTrial(r))}
           onPickCard={(i) => act((r) => pickEventCard(r, i))}
+          onPickDeck={(id) => act((r) => pickDeckCard(r, id))}
           onPrize={(id, pick, cards) => act((r) => claimTrialPrize(r, id, pick, cards))}
         />
       );

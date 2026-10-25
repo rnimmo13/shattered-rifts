@@ -8,7 +8,7 @@ A knight of the Gilded Order. No companions: Barrier, Thorns and punishing Traps
 
 Lanes: Bulwark: hit with your Barrier / Thorns: punish attackers / Devotion: heal and Shielded
 
-Starter: Attack, Attack, Attack, Attack, Defend, Defend, Defend, Defend, Dawn Smite, Oathbound
+Starter: Strike, Strike, Strike, Strike, Defend, Defend, Defend, Defend, Dawn Smite, Oathbound
 
 | Card | Cost | Type | Rarity | Text |
 |---|---|---|---|---|
@@ -111,7 +111,7 @@ A tinkerer of machines. She starts every fight with a Drone and builds an army o
 
 Lanes: Swarm: many cheap bodies / Assemble: allies act again / Core: a few big constructs
 
-Starter: Attack, Attack, Attack, Attack, Attack, Defend, Defend, Defend, Deploy Drone, Overclock
+Starter: Strike, Strike, Strike, Strike, Strike, Defend, Defend, Defend, Deploy Drone, Overclock
 
 | Card | Cost | Type | Rarity | Text |
 |---|---|---|---|---|
@@ -215,7 +215,7 @@ A hunter with a Hound. Pays HP to buff the whole pack with Might.
 
 Lanes: Bloodrage: HP for Might / Pack: feed the companions / Feast: Exhaust and Devour
 
-Starter: Attack, Attack, Attack, Attack, Attack, Defend, Defend, Defend, Savage Bite, Blood Frenzy
+Starter: Strike, Strike, Strike, Strike, Strike, Defend, Defend, Defend, Savage Bite, Blood Frenzy
 
 | Card | Cost | Type | Rarity | Text |
 |---|---|---|---|---|
@@ -323,7 +323,7 @@ A masked trapper. No companions: Traps, Exposed and patience.
 
 Lanes: Traps: one for every trigger / Exposed: mark, then spend the mark / Bluff: Hold, Foresee, held Mana
 
-Starter: Attack, Attack, Attack, Defend, Defend, Defend, Defend, Veil Strike, Veil Strike, Set the Web
+Starter: Strike, Strike, Strike, Defend, Defend, Defend, Defend, Veil Strike, Veil Strike, Set the Web
 
 | Card | Cost | Type | Rarity | Text |
 |---|---|---|---|---|
@@ -416,7 +416,7 @@ Starter: Attack, Attack, Attack, Defend, Defend, Defend, Defend, Veil Strike, Ve
 | Frozen Moment | 2 | skill | rare | Cards in your hand cost 9 less the next time you play them. Consume. |
 | Fade Away | 1 | skill | rare | Apply 1 Ghostly. Consume. |
 | Misdirection | 1 | power | rare | Whenever you discard a card: Gain 4 Barrier. |
-| Pickpocket Master | 2 | skill | rare | Add 2 random cards from your pool to your hand (it costs 0 the next time you play it). Consume. |
+| Pickpocket Master | 2 | skill | rare | Add 2 random cards from your pool to your hand (they cost 0 the next time you play them). Consume. |
 | Shadow Pace | 2 | power | rare | At the start of your turn: Draw 1 card. Gain 4 Barrier. |
 | Perfect Alibi | 1 | skill | rare | Gain 20 Barrier. Discard 1 card. |
 | Trap Door | 1 | power | rare | At the start of your turn: Add a Trip Line to your hand. |
@@ -433,7 +433,7 @@ A cutpurse with a sleeve full of blades. Starts every fight with a Sleeve Knife.
 
 Lanes: Knives: 0-cost blades / Bleed: stack, double, cash out / Sleight: discard and cycle
 
-Starter: Attack, Attack, Attack, Attack, Defend, Defend, Defend, Quick Jab, Quick Jab, Slip Away
+Starter: Strike, Strike, Strike, Strike, Defend, Defend, Defend, Quick Jab, Quick Jab, Slip Away
 
 | Card | Cost | Type | Rarity | Text |
 |---|---|---|---|---|
@@ -547,7 +547,7 @@ An elder shaman who carves totems and calls the spirits inside them to do his bi
 
 Lanes: Hawk: damage totems (one enemy or all) / Bear: Barrier totems / Elder: charge and Spirit
 
-Starter: Attack, Attack, Attack, Attack, Defend, Defend, Defend, Plant Hawk, Plant Hawk, Twin Awakening
+Starter: Strike, Strike, Strike, Strike, Defend, Defend, Defend, Plant Hawk, Plant Hawk, Twin Awakening
 
 | Card | Cost | Type | Rarity | Text |
 |---|---|---|---|---|
@@ -654,7 +654,7 @@ A barbarian who fights in stances. Starts every fight Serene. Fury for burst, Se
 
 Lanes: Fury: burst / Serene: Mana and cards / Fervor: build to Radiant
 
-Starter: Attack, Attack, Attack, Attack, Defend, Defend, Defend, Defend, Kindle Fury, Still Guard
+Starter: Strike, Strike, Strike, Strike, Defend, Defend, Defend, Defend, Kindle Fury, Still Guard
 
 | Card | Cost | Type | Rarity | Text |
 |---|---|---|---|---|
@@ -735,7 +735,7 @@ Starter: Attack, Attack, Attack, Attack, Defend, Defend, Defend, Defend, Kindle 
 | Ascendant Form | 2 | power | rare | At the start of your turn: Gain 1 Mana. |
 | Perfect Calm | 2 | skill | rare | Gain 12 Barrier. Enter Serene. Draw 1 card. |
 | Spirit Shield | 2 | skill | rare | Gain Barrier equal to 3 times the number of cards in your hand. |
-| All-Seeing | 3 | skill | rare | Add 2 random cards from your pool to your hand (it costs 0 the next time you play it). Consume. |
+| All-Seeing | 3 | skill | rare | Add 2 random cards from your pool to your hand (they cost 0 the next time you play them). Consume. |
 | Serenity Incarnate | 3 | power | rare | At the end of your turn: Heal 3. Gain 6 Barrier. |
 | Daily Rite | 1 | power | rare | At the start of your turn: Apply 2 Fervor. |
 | Rise Radiant | 3 | skill | rare | Enter Radiant. Consume. |
@@ -758,7 +758,7 @@ A spellblade of black glass and ember. Starts with 3 Arcana and an Obsidian Blad
 
 Lanes: Blade: sharpen one weapon / Arcana: spend for finishers / Sigils: ticking Auras
 
-Starter: Attack, Attack, Defend, Defend, Defend, Defend, Glass Jab, Gather Arcana, Arcane Bolt, Arcane Bolt
+Starter: Strike, Strike, Defend, Defend, Defend, Defend, Glass Jab, Gather Arcana, Arcane Bolt, Arcane Bolt
 
 | Card | Cost | Type | Rarity | Text |
 |---|---|---|---|---|
@@ -869,7 +869,7 @@ A short, fat, bald dwarf with a hammer, an Old Twelve Gauge that hits every enem
 
 Lanes: Gun: sharpen the Old Twelve Gauge / Shells: buckshot that hits everyone / Hangover: the more it hurts, the harder you hit
 
-Starter: Attack, Attack, Attack, Defend, Defend, Defend, Hammer Swing, Hammer Swing, Pane Up, Bottle Tripwire
+Starter: Strike, Strike, Strike, Defend, Defend, Defend, Hammer Swing, Hammer Swing, Pane Up, Bottle Tripwire
 
 | Card | Cost | Type | Rarity | Text |
 |---|---|---|---|---|
@@ -976,7 +976,7 @@ A warden of the drowned dead. Starts with a Bone Thrall. Curses enemies with Fat
 
 Lanes: Fate: curse, double, cash in / Thralls: the dead fight for you / Ashes: consumed cards fuel you
 
-Starter: Attack, Attack, Attack, Defend, Defend, Defend, Grave Touch, Grave Touch, Bone Ward, Bone Ward
+Starter: Strike, Strike, Strike, Defend, Defend, Defend, Grave Touch, Grave Touch, Bone Ward, Bone Ward
 
 | Card | Cost | Type | Rarity | Text |
 |---|---|---|---|---|
@@ -1087,7 +1087,7 @@ Tokens (made by other cards):
 
 | Card | Cost | Type | Rarity | Text |
 |---|---|---|---|---|
-| Attack | 1 | attack | basic | Deal 6 damage. |
+| Strike | 1 | attack | basic | Deal 6 damage. |
 | Defend | 1 | skill | basic | Gain 5 Barrier. |
 | Rift Bolt | 0 | attack | common | Deal 5 damage. Consume. |
 | Catch Breath | 1 | skill | common | Draw 2 cards. |

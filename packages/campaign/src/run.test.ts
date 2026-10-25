@@ -15,6 +15,7 @@ import {
   chooseCard,
   chooseEvent,
   pickEventCard,
+  pickDeckCard,
   chooseKit,
   choosePrelude,
   continueLoop,
@@ -334,7 +335,9 @@ function botRun(hero: HeroId, seed: string): { run: RunState; fights: number } {
         // (an event may be waiting for a card to be picked from three)
         run = run.context!.event!.choose
           ? pickEventCard(run, 0)
-          : chooseEvent(run, run.context!.event!.options.find((o) => o.id !== 'trial')!.id);
+          : run.context!.event!.chooseDeck
+            ? pickDeckCard(run, run.context!.event!.chooseDeck.cards[0]!)
+            : chooseEvent(run, run.context!.event!.options.find((o) => o.id !== 'trial')!.id);
         break;
       case 'kit':
         run = chooseKit(run, run.context!.kits![0]!.id);
@@ -471,39 +474,47 @@ describe('the other rooms and the rules around them', () => {
       return enterNode(run, node.id);
     };
 
-    it('turns into a plain fight now and then, played and rewarded like any other', { timeout: 60000 }, () => {
-      // (nothing happens to an event stood on the first floor, which real maps never have)
-      for (let i = 0; i < 40; i++) expect(enterEvent(`first${i}`, 1).phase).toBe('event');
-      let ambushes = 0;
-      const N = 400;
-      for (let i = 0; i < N; i++) {
-        const r = enterEvent(`amb${i}`, 2);
-        if (r.phase === 'duel') {
-          ambushes++;
-          const node = r.map.nodes.find((n) => n.id === r.context?.nodeId)!;
-          expect(node.kind).toBe('duel'); // (an Elite waits for the third floor)
-          expect(node.enemyId).toBeTruthy();
-          expect(r.eventResult).toMatch(/^Ambush!/);
-          expect(duelPlan(r)?.encounterId).toBe(node.enemyId);
-        } else expect(r.phase).toBe('event');
-      }
-      const pct = (ambushes / N) * 100;
-      expect(pct).toBeGreaterThan(EVENT_FIGHT_ODDS.duel + EVENT_FIGHT_ODDS.elite - 8);
-      expect(pct).toBeLessThan(EVENT_FIGHT_ODDS.duel + EVENT_FIGHT_ODDS.elite + 8);
-    });
+    it(
+      'turns into a plain fight now and then, played and rewarded like any other',
+      { timeout: 60000 },
+      () => {
+        // (nothing happens to an event stood on the first floor, which real maps never have)
+        for (let i = 0; i < 40; i++) expect(enterEvent(`first${i}`, 1).phase).toBe('event');
+        let ambushes = 0;
+        const N = 400;
+        for (let i = 0; i < N; i++) {
+          const r = enterEvent(`amb${i}`, 2);
+          if (r.phase === 'duel') {
+            ambushes++;
+            const node = r.map.nodes.find((n) => n.id === r.context?.nodeId)!;
+            expect(node.kind).toBe('duel'); // (an Elite waits for the third floor)
+            expect(node.enemyId).toBeTruthy();
+            expect(r.eventResult).toMatch(/^Ambush!/);
+            expect(duelPlan(r)?.encounterId).toBe(node.enemyId);
+          } else expect(r.phase).toBe('event');
+        }
+        const pct = (ambushes / N) * 100;
+        expect(pct).toBeGreaterThan(EVENT_FIGHT_ODDS.duel + EVENT_FIGHT_ODDS.elite - 8);
+        expect(pct).toBeLessThan(EVENT_FIGHT_ODDS.duel + EVENT_FIGHT_ODDS.elite + 8);
+      },
+    );
 
-    it('is sometimes an Elite from the third floor on, and winning it pays like an Elite', { timeout: 60000 }, () => {
-      let elite: RunState | null = null;
-      for (let i = 0; i < 1500 && !elite; i++) {
-        const r = enterEvent(`elite${i}`, 3);
-        if (r.phase === 'duel' && duelPlan(r)?.kind === 'elite') elite = r;
-      }
-      expect(elite).not.toBeNull();
-      expect(elite!.eventResult).toMatch(/Elite/);
-      const won = finishDuel(elite!, true, 10);
-      expect(won.phase).toBe('reward');
-      expect(won.context?.nodeId).toBe(elite!.context!.nodeId);
-    });
+    it(
+      'is sometimes an Elite from the third floor on, and winning it pays like an Elite',
+      { timeout: 60000 },
+      () => {
+        let elite: RunState | null = null;
+        for (let i = 0; i < 1500 && !elite; i++) {
+          const r = enterEvent(`elite${i}`, 3);
+          if (r.phase === 'duel' && duelPlan(r)?.kind === 'elite') elite = r;
+        }
+        expect(elite).not.toBeNull();
+        expect(elite!.eventResult).toMatch(/Elite/);
+        const won = finishDuel(elite!, true, 10);
+        expect(won.phase).toBe('reward');
+        expect(won.context?.nodeId).toBe(elite!.context!.nodeId);
+      },
+    );
 
     it('losing the ambush costs Resolve and retries the same fight', () => {
       let fight: RunState | null = null;

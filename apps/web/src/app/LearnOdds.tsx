@@ -5,6 +5,7 @@ import { useMemo } from 'react';
 import {
   BOON_PRICE,
   BOON_WEIGHTS,
+  LOOP_LEGEND_CHANCE,
   CROSSED_MERCHANT_CHANCE,
   CROSSED_OFFER_CHANCE,
   ELITE_EVENT_CHANCE,
@@ -118,7 +119,7 @@ export function LearnOdds() {
         <li>
           Potions cost {POTION_PRICE['common']} / {POTION_PRICE['uncommon']} /{' '}
           {POTION_PRICE['rare']} shards, and Boons {BOON_PRICE['common']} / {BOON_PRICE['uncommon']}{' '}
-          / {BOON_PRICE['rare']} (common / uncommon / rare).
+          / {BOON_PRICE['rare']} (common / uncommon / rare; a Legendary Boon is never for sale).
         </li>
         <li>
           {CROSSED_MERCHANT_CHANCE}% of merchants are visitors from another world who sell only one
@@ -160,12 +161,14 @@ export function LearnOdds() {
           {pct(POTION_WEIGHTS.rare, total(POTION_WEIGHTS))} rare.
         </li>
         <li>
-          Every Elite, and every Warden but the last, gives a Boon:{' '}
+          Every Elite gives a Boon:{' '}
           {pct(BOON_WEIGHTS.elite?.['common'] ?? 0, total(BOON_WEIGHTS.elite ?? {}))} common,{' '}
           {pct(BOON_WEIGHTS.elite?.['uncommon'] ?? 0, total(BOON_WEIGHTS.elite ?? {}))} uncommon,{' '}
-          {pct(BOON_WEIGHTS.elite?.['rare'] ?? 0, total(BOON_WEIGHTS.elite ?? {}))} rare (the
-          merchant&apos;s Boon rolls the same way). An Elite also heals {ELITE_HEAL_PCT}% of your
-          HP.
+          {pct(BOON_WEIGHTS.elite?.['rare'] ?? 0, total(BOON_WEIGHTS.elite ?? {}))} rare,{' '}
+          {pct(BOON_WEIGHTS.elite?.['legendary'] ?? 0, total(BOON_WEIGHTS.elite ?? {}))} Legendary
+          (the merchant&apos;s Boon rolls the same way, but never Legendary). Wardens give their
+          Gift, not a Boon. Beating Vorthax leaves a Legendary Boon {LOOP_LEGEND_CHANCE}% of the
+          time. An Elite also heals {ELITE_HEAL_PCT}% of your HP.
         </li>
       </ul>
 

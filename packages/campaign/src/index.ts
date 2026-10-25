@@ -46,6 +46,7 @@ export {
   chooseCard,
   chooseEvent,
   pickEventCard,
+  pickDeckCard,
   rollTrial,
   settleInterrupted,
   claimTrialPrize,
@@ -68,7 +69,7 @@ export {
   takeShrine,
   type ShrineChoice,
 } from './run';
-export { makePrelude, describeEffect } from './preludes';
+export { makePrelude, describeEffect, preludeCatalogue } from './preludes';
 export { KIT_CARDS, makeKits } from './kits';
 export { RUN_SAVE_VERSION, parseRun, serializeRun } from './save';
 export {
@@ -94,6 +95,7 @@ export {
 export { FIGHT_SHARDS, POTION_DROP_CHANCE, ELITE_HEAL_PCT } from './run';
 export {
   BOON_WEIGHTS,
+  LOOP_LEGEND_CHANCE,
   CROSSED_OFFER_CHANCE,
   GIFT_LEGEND_CHANCE,
   POTION_WEIGHTS,

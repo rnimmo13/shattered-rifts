@@ -17,6 +17,7 @@ import { MAX_POTIONS, ancestralPool, canAdd, offerBoon, offerCards, offerPotion 
 import { applyDeal, basics, healBy, nonBasic, upgradable, type EventCtx } from './deals';
 import { DEAL_EVENTS } from './eventDeals';
 import { MORE_EVENTS } from './eventsMore';
+import { TUNED_EVENTS } from './eventsTuned';
 import { rollElite } from './trials';
 import type { EventOption, RunState } from './types';
 
@@ -61,20 +62,6 @@ export const EVENTS: EventDef[] = [
         cardOffer: card,
       };
     },
-  },
-  {
-    id: 'smith',
-    weight: 2,
-    when: (r) => upgradable(r.deck).length > 0,
-    build: () => ({
-      title: 'The wandering smith',
-      text: 'A smith has set up a forge in the ruins. "One piece of yours, upgraded free. I choose."',
-      options: [
-        { id: 'upgrade', label: 'Let the smith upgrade a random card in your deck' },
-        leave,
-      ],
-      cardOffer: '',
-    }),
   },
   {
     id: 'altar',
@@ -165,7 +152,8 @@ export const EVENTS: EventDef[] = [
       options: [
         {
           id: 'sanctify',
-          label: 'Sanctify the whole deck: the numbers on every card are re-rolled, some 25% stronger and some 25% weaker (permanent; those cards can never be removed)',
+          label:
+            'Sanctify the whole deck: the numbers on every card are re-rolled, some 25% stronger and some 25% weaker (permanent; those cards can never be removed)',
         },
         { id: 'leave', label: 'No: keep the deck as it is' },
       ],
@@ -225,35 +213,6 @@ export const EVENTS: EventDef[] = [
     }),
   },
   {
-    id: 'mirror',
-    weight: 1,
-    when: (r) => r.hp > 25 && nonBasic(r.deck).length > 0,
-    build: () => ({
-      title: 'The mirror pool',
-      text: 'Your reflection moves a moment late, and holds out its hand.',
-      options: [
-        { id: 'mirror', label: 'Reach in (lose 15 HP): a random card in your deck is copied' },
-        leave,
-      ],
-      cardOffer: '',
-    }),
-  },
-  {
-    id: 'scrapyard',
-    weight: 1.5,
-    when: (r) => basics(r.deck).length > 0 && r.deck.length > V2_DECK_RULES.minSize,
-    build: () => ({
-      title: 'The scrapyard',
-      text: 'Heaps of broken armour and rusted blades. Whatever you leave here, someone will pay for.',
-      options: [
-        { id: 'scrap', label: 'Leave a basic card behind (a random Attack or Defend goes)' },
-        { id: 'sell', label: 'Sell some scrap: +35 shards' },
-        leave,
-      ],
-      cardOffer: '',
-    }),
-  },
-  {
     id: 'shoal',
     weight: 1.5,
     when: () => true,
@@ -263,24 +222,6 @@ export const EVENTS: EventDef[] = [
       options: [
         { id: 'heal', label: 'Eat your fill (heal 20% of your HP)' },
         { id: 'maxhp', label: 'Keep a scale: +6 max HP, and a Wound joins your deck' },
-        leave,
-      ],
-      cardOffer: '',
-    }),
-  },
-  {
-    id: 'healer',
-    weight: 1.5,
-    when: (r) => r.shards >= 35,
-    build: () => ({
-      title: 'The rift healer',
-      text: 'A calm figure in grey, a bowl of salt and a price list nailed to a post.',
-      options: [
-        { id: 'tend', label: 'Be tended (35 shards): heal 30% of your HP' },
-        {
-          id: 'purge',
-          label: 'Be cleansed (50 shards): a Wound, else a basic card, is taken from your deck',
-        },
         leave,
       ],
       cardOffer: '',
@@ -365,27 +306,10 @@ export const EVENTS: EventDef[] = [
       cardOffer: '',
     }),
   },
-  {
-    id: 'shifter',
-    weight: 1,
-    when: (r) => basics(r.deck).some((id) => id !== 'wound'),
-    build: () => ({
-      title: 'The shifting wall',
-      text: 'A wall of grey stone ripples as you pass. Press a card against it and it comes back as something else.',
-      options: [
-        {
-          id: 'transform',
-          label:
-            'Press a basic card to it: a random Attack or Defend becomes a new card of your class',
-        },
-        leave,
-      ],
-      cardOffer: '',
-    }),
-  },
   // the data-driven ones (eventDeals.ts)
   ...DEAL_EVENTS,
   ...MORE_EVENTS,
+  ...TUNED_EVENTS,
 ];
 
 /** Pick a random event, weighted, from those that can happen to this run now. */

@@ -15,10 +15,12 @@ export type EventTag =
   | 'heal'
   | 'maxHp'
   | 'potion'
+  | 'tag'
+  | 'fight'
   | 'risk';
 
 export const EVENT_TAG_LABEL: Record<EventTag, string> = {
-  removal: 'Let a card go (a plain Attack or Defend, or a Wound)',
+  removal: 'Let a card go (a plain Strike or Defend, or a Wound)',
   crossed: 'A Rift-crossed card (from another Riftwalker)',
   upgrade: 'Upgrade a card',
   boon: 'A Boon',
@@ -27,6 +29,8 @@ export const EVENT_TAG_LABEL: Record<EventTag, string> = {
   heal: 'Healing',
   maxHp: 'More max HP',
   potion: 'A potion',
+  tag: 'Engrave a keyword on a card (Hold, Opening hand, Flare)',
+  fight: 'A fight, with spoils if you win',
   risk: 'Something can go wrong (HP loss, a Wound or Static card)',
 };
 
@@ -101,6 +105,21 @@ function tagsOf(steps: readonly DealStep[], out: Set<EventTag>): void {
       case 'chance':
         tagsOf(s.win, out);
         tagsOf(s.lose, out);
+        break;
+      case 'choose':
+        out.add(
+          s.act === 'upgrade'
+            ? 'upgrade'
+            : s.act === 'remove'
+              ? 'removal'
+              : s.act === 'mark'
+                ? 'tag'
+                : 'card',
+        );
+        break;
+      case 'fight':
+        out.add('fight');
+        if (s.bonus) tagsOf(s.bonus, out);
         break;
       default:
         break;

@@ -116,7 +116,8 @@ function prizesFor(r: RunState): { prizes: TrialPrize[] } {
   );
   const boons = pick(
     r.rng,
-    BOONS.filter((b) => !r.boons.includes(b.id)),
+    // (never a Legendary Boon: those come from Elites, rarely, and from clearing a loop)
+    BOONS.filter((b) => !r.boons.includes(b.id) && b.rarity !== 'legendary'),
     4,
   ).map((b) => b.id);
   // each Rift-crossed lane is a choice of three different Rift-crossed rares (the reel has two such prizes)

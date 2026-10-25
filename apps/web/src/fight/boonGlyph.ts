@@ -14,5 +14,8 @@ export function glyphOf(b: BoonDef): string {
   if (ops.some((o) => o.op === 'status' && o.status === 'thorns')) return '✱';
   if (ops.some((o) => o.op === 'status' && o.status === 'might')) return '⚔';
   if (ops.some((o) => o.op === 'draw')) return '▤';
+  if (ops.some((o) => o.op === 'status' && o.status === 'shielded')) return '◎';
+  if (ops.some((o) => o.op === 'status' && o.status === 'exposed')) return '◉';
+  if (ops.some((o) => o.op === 'status' && o.status === 'faltering')) return '⬇';
   return b.name.charAt(0);
 }

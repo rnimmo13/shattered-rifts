@@ -245,7 +245,7 @@ describe('Threshold choices are worth taking (DECISIONS #224)', () => {
       expect(COMBAT_DB.cards[id]?.rarity).toBe('ancestral');
   });
 
-  it('upgrades go to your own cards before Attacks and Defends', () => {
+  it('upgrades go to your own cards before Strikes and Defends', () => {
     const after = take(offering([{ k: 'upgrade', n: 2 }]));
     const upped = after.deck.filter((c) => c.endsWith('+'));
     expect(upped).toHaveLength(2);

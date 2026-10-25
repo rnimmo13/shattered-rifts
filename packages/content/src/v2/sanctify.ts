@@ -9,8 +9,52 @@ export type SanctifyDir = 1 | -1;
 
 const PREFIX = /^(hi|lo)~/;
 
-/** The id of a card without any sanctified roll on it ("hi~strike+" -> "strike+"). */
-export const stripRoll = (id: string): string => id.replace(PREFIX, '');
+// Card tags (DECISIONS #227): an event can engrave one keyword onto one card of your deck for good, written into its id the same
+// way as a sanctified roll: "hold^strike" is Strike with Hold, "hi~hold^strike+" a sanctified, upgraded, held Strike. One tag per card.
+export type CardMark = 'hold' | 'opening' | 'flare';
+const MARK = /^(hold|opening|flare)\^/;
+export const MARK_INFO: Record<CardMark, { name: string; text: string }> = {
+  hold: { name: 'Hold', text: 'stays in your hand at the end of the turn' },
+  opening: { name: 'Opening hand', text: 'is always in your opening hand' },
+  flare: { name: 'Flare', text: 'costs 1 less, but is consumed when played' },
+};
+
+/** The tag engraved on a card, if any ("hi~hold^strike" -> "hold"). */
+export const markOf = (id: string): CardMark | null => {
+  const m = MARK.exec(id.replace(PREFIX, ''));
+  return m ? (m[1] as CardMark) : null;
+};
+
+/** The id of a card without any sanctified roll or engraved tag on it ("hi~hold^strike+" -> "strike+"). */
+export const stripRoll = (id: string): string => id.replace(PREFIX, '').replace(MARK, '');
+
+/** The id of the card with a tag engraved (its roll, if any, kept in front): "strike+" + hold -> "hold^strike+". */
+export const markedId = (id: string, mark: CardMark): string => {
+  const roll = PREFIX.exec(id)?.[0] ?? '';
+  return `${roll}${mark}^${stripRoll(id)}`;
+};
+
+/** Can this card take this tag (and does it change anything)? Never a Power, a card that cannot be played, or a token. */
+export function canMark(c: CardDef, mark: CardMark): boolean {
+  if (c.kind === 'power' || c.unplayable || c.source === 'token' || c.rarity === 'ancestral')
+    return false;
+  if (mark === 'hold') return !c.retain;
+  if (mark === 'opening') return !c.innate;
+  return c.cost > 0 && !c.exhaust;
+}
+
+function markedVariant(base: CardDef, mark: CardMark): CardDef {
+  // (a ◆ on the name, so a tagged card is told apart from its plain copies at a glance)
+  const out: CardDef = { ...base, id: `${mark}^${base.id}`, name: `${base.name} ◆` };
+  if (mark === 'hold') out.retain = true;
+  else if (mark === 'opening') out.innate = true;
+  else {
+    out.exhaust = true;
+    out.cost = Math.max(0, base.cost - 1);
+  }
+  if (base.upgrade) out.upgrade = `${mark}^${base.upgrade}`;
+  return out;
+}
 
 /** +1 / -1 for a rolled card, 0 for an ordinary one. */
 export const rollOf = (id: string): SanctifyDir | 0 => {
@@ -22,7 +66,7 @@ export const rollOf = (id: string): SanctifyDir | 0 => {
 export const isSanctified = (id: string): boolean => rollOf(id) !== 0;
 
 export const rolledId = (id: string, dir: SanctifyDir): string =>
-  `${dir > 0 ? 'hi' : 'lo'}~${stripRoll(id)}`;
+  `${dir > 0 ? 'hi' : 'lo'}~${id.replace(PREFIX, '')}`;
 
 /** 25% up or down, rounded, and always at least one step when the number is big enough to feel it. */
 function scaleN(n: number, dir: SanctifyDir): number {
@@ -78,22 +122,34 @@ export function withRolls(cards: Record<string, CardDef>): Record<string, CardDe
     const hit = made.get(id);
     if (hit) return hit;
     const dir = rollOf(id);
-    const baseId = stripRoll(id);
+    const mark = markOf(id);
+    if (!dir && !mark) return undefined;
+    const realId = stripRoll(id);
     // (only real cards: an id like "hi~constructor" must not reach inherited object members)
-    const base = dir && Object.hasOwn(cards, baseId) ? cards[baseId] : undefined;
-    if (!dir || !base || !canRoll(base)) return undefined;
+    const real = Object.hasOwn(cards, realId) ? cards[realId] : undefined;
+    if (!real) return undefined;
+    // the tag first ("hold^strike"), then the roll on top of it
+    // a tag is only real where an event could have cut it: judged on the card before its upgrade (an upgrade may already hold)
+    const unupgraded = realId.endsWith('+') ? cards[realId.slice(0, -1)] : real;
+    if (mark && (!unupgraded || !canMark(unupgraded, mark))) return undefined;
+    const base = mark ? markedVariant(real, mark) : real;
+    if (!dir) {
+      made.set(id, base);
+      return base;
+    }
+    if (!canRoll(real)) return undefined;
     const v = rolledVariant(base, dir);
-    // if the upgrade has no number to roll, the rolled card upgrades into the plain upgrade
-    if (base.upgrade) {
-      const up = cards[base.upgrade];
-      if (!up || !canRoll(up)) v.upgrade = base.upgrade;
+    // if the upgrade has no number to roll, the rolled card upgrades into the plain upgrade (tagged like this one)
+    if (real.upgrade) {
+      const up = cards[real.upgrade];
+      if (!up || !canRoll(up)) v.upgrade = base.upgrade ?? real.upgrade;
     }
     made.set(id, v);
     return v;
   };
   return new Proxy(cards, {
     get(t, p, r) {
-      if (typeof p === 'string' && !Object.hasOwn(t, p) && rollOf(p) !== 0) return derive(p);
+      if (typeof p === 'string' && !Object.hasOwn(t, p) && isVariant(p)) return derive(p);
       return Reflect.get(t, p, r) as unknown;
     },
     has(t, p) {
@@ -101,3 +157,6 @@ export function withRolls(cards: Record<string, CardDef>): Record<string, CardDe
     },
   });
 }
+
+/** An id the card table answers for although it is not listed: a sanctified roll or an engraved tag. */
+export const isVariant = (id: string): boolean => rollOf(id) !== 0 || markOf(id) !== null;

@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { MAX_TIER, enemyScale } from '@sr/campaign';
-import { COMBAT_DB, RIFTWALKERS, heroesByRealm } from '@sr/content/v2';
+import { LOOP_LEGEND_CHANCE, MAX_TIER, enemyScale, preludeCatalogue } from '@sr/campaign';
+import { BOONS, COMBAT_DB, RIFTWALKERS, heroesByRealm } from '@sr/content/v2';
 import { KEYWORD_INFO, STATUS_INFO } from '../fight/info';
 import { TIP_RULES } from '../fight/tips';
 import { LearnOdds } from './LearnOdds';
@@ -91,6 +91,44 @@ function TierTable() {
   );
 }
 
+/** Every Threshold / Waymark option, read from the same data the game offers (packages/campaign/src/preludes.ts). */
+function PreludeList() {
+  const c = preludeCatalogue(1);
+  const row = (o: { id: string; name: string; text: string }) => (
+    <div key={o.id} className="learn__row">
+      <dt>{o.name}</dt>
+      <dd>{o.text}</dd>
+    </div>
+  );
+  return (
+    <>
+      <h4>Blessings</h4>
+      <dl>{[c.rest, ...c.blessings].map(row)}</dl>
+      <h4>At a price</h4>
+      <dl>{c.bargains.map(row)}</dl>
+    </>
+  );
+}
+
+/** Every Boon, rarest last. */
+function BoonList() {
+  const order = ['common', 'uncommon', 'rare', 'legendary'] as const;
+  return (
+    <dl>
+      {order.flatMap((rarity) =>
+        BOONS.filter((b) => b.rarity === rarity).map((b) => (
+          <div key={b.id} className="learn__row">
+            <dt>
+              {b.name} <i>({rarity === 'legendary' ? 'Legendary' : rarity})</i>
+            </dt>
+            <dd>{b.text}</dd>
+          </div>
+        )),
+      )}
+    </dl>
+  );
+}
+
 /** #/learn: every mechanic in plain words, one short tab at a time. */
 export function LearnScreen() {
   const [tab, setTab] = useState<Tab>('start');
@@ -169,7 +207,10 @@ export function LearnScreen() {
             {[
               ['Fight', 'A normal fight. Win it and pick a card for your deck.'],
               ['Elite', 'A tougher fight with a better reward, including a Boon.'],
-              ['Event', 'A short story with a choice. Some cost HP, some give a gift.'],
+              [
+                'Event',
+                'A short story with a choice. Some cost HP, some give a gift, some turn into a fight, and some simply go badly.',
+              ],
               ['Shrine', 'Rest to heal, upgrade a card, or remove one for good.'],
               ['Merchant', 'Spend shards on cards, potions and Boons. You can also sell potions.'],
               ['Warden', 'The stage boss. Beat it to heal a little and win back 1 Resolve.'],
@@ -201,8 +242,8 @@ export function LearnScreen() {
           <div className="learn__tierbox">
             <p>
               Here is how tough enemies are at every stage of every tier, as a percentage of their
-              normal HP and damage. Each stage is a little harder than the one before it, and stage
-              1 of the next tier is harder again.
+              Tier I HP and damage. Each stage is harder than the one before it; stage 1 of the next
+              tier is a step down from the Rift, but harder than stage 1 of the tier before.
             </p>
             <TierTable />
           </div>
@@ -211,7 +252,28 @@ export function LearnScreen() {
             <li>You start with a small deck. Rewards, shops and events add cards.</li>
             <li>A thin deck draws its best cards more often. Skipping a reward is fine.</li>
             <li>Upgrading a card at a Shrine gives it a "+" version that is better or cheaper.</li>
+            <li>
+              Some events engrave a word on a card for good: <b>Hold</b> (it stays in your hand),{' '}
+              <b>Opening hand</b> (it is always in your first hand) or <b>Flare</b> (it costs 1
+              less, but is consumed when played).
+            </li>
           </ul>
+          <h3>The Threshold and the Waymarks</h3>
+          <p>
+            Every run opens at <b>The Threshold</b>: three blessings and one option at a price.
+            Every stage opens at a <b>Waymark</b>: a rest, two blessings, and half the time an
+            option at a price. These are all of them (shard amounts grow a little with each stage;
+            Resolve is only offered when you are missing some).
+          </p>
+          <PreludeList />
+          <h3>Boons</h3>
+          <p>
+            Boons last for the whole run, and every tier after it. Elites give one; the merchant
+            sells one (never a Legendary); some events and Threshold options give one; and beating
+            Vorthax leaves a Legendary Boon {LOOP_LEGEND_CHANCE}% of the time. Wardens give their
+            Gift instead.
+          </p>
+          <BoonList />
         </section>
       )}
 

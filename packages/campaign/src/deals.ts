@@ -2,9 +2,26 @@
 // them in order and says what happened, dealFeasible checks an option can be taken right now. New events are data only.
 
 import { clone, nextInt } from '@sr/combat';
-import { COMBAT_DB, V2_DECK_RULES, isSanctified } from '@sr/content/v2';
-import { MAX_POTIONS, canAdd, cardOfRarity, crossedOffers, offerCards, offerPotion } from './rewards';
-import type { DealStep, EventOption, NodeContext, RunState } from './types';
+import {
+  COMBAT_DB,
+  MARK_INFO,
+  V2_DECK_RULES,
+  canMark,
+  isSanctified,
+  markOf,
+  markedId,
+  stripRoll,
+  type CardMark,
+} from '@sr/content/v2';
+import {
+  MAX_POTIONS,
+  canAdd,
+  cardOfRarity,
+  crossedOffers,
+  offerCards,
+  offerPotion,
+} from './rewards';
+import type { DealStep, DeckChoice, EventOption, NodeContext, RunState } from './types';
 
 export type EventCtx = NonNullable<NodeContext['event']>;
 
@@ -23,7 +40,9 @@ export const basics = (deck: readonly string[]): string[] =>
     (id) =>
       COMBAT_DB.cards[id]?.rarity === 'basic' &&
       COMBAT_DB.cards[id]?.hero === 'neutral' &&
-      !isSanctified(id),
+      !isSanctified(id) &&
+      // (a card you paid to have engraved is never taken as a plain basic)
+      markOf(id) === null,
   );
 export const nonBasic = (deck: readonly string[]): string[] =>
   deck.filter((id) => {
@@ -157,9 +176,13 @@ function step(r: RunState, s: DealStep, ev: EventCtx, h: DealHelpers, out: strin
       return;
     }
     case 'crossedPick': {
-      const cards = crossedOffers(r.rng, r.character, r.deck, [s.rarity, s.rarity, s.rarity], 3).filter(
-        (id) => COMBAT_DB.cards[id]?.rarity === s.rarity,
-      );
+      const cards = crossedOffers(
+        r.rng,
+        r.character,
+        r.deck,
+        [s.rarity, s.rarity, s.rarity],
+        3,
+      ).filter((id) => COMBAT_DB.cards[id]?.rarity === s.rarity);
       if (cards.length < 3) fail('There are not enough cards to choose from');
       ev.choose = { cards };
       out.push('Three cards from other worlds are laid out: choose one.');
@@ -225,6 +248,17 @@ function step(r: RunState, s: DealStep, ev: EventCtx, h: DealHelpers, out: strin
       } else if (at < 0) marks.push(s.id);
       return;
     }
+    case 'choose': {
+      const cards = chooseable(r.deck, s.act, s.mark);
+      if (!cards.length) fail(CHOICE_NONE[s.act]);
+      if (s.act === 'remove' && r.deck.length <= V2_DECK_RULES.minSize)
+        fail('Your deck is too small to part with a card');
+      ev.chooseDeck = { act: s.act, ...(s.mark ? { mark: s.mark } : {}), cards };
+      return;
+    }
+    case 'fight':
+      ev.fight = { kind: s.kind, ...(s.bonus ? { bonus: s.bonus } : {}) };
+      return;
     case 'chance': {
       const win = nextInt(r.rng, 100) < s.pct;
       (r.eventFlips ??= []).push({ pct: s.pct, won: win });
@@ -264,4 +298,81 @@ export function dealFeasible(r: RunState, steps: DealStep[], ev: EventCtx): bool
     return true;
   };
   return walk(clone(r), steps);
+}
+
+const CHOICE_NONE: Record<DeckChoice, string> = {
+  upgrade: 'You have nothing to upgrade',
+  remove: 'You have nothing to part with',
+  transform: 'You have nothing to change',
+  copy: 'You have nothing worth copying',
+  mark: 'None of your cards can take that',
+};
+
+/** The cards of a deck (each card once) a "choose a card" step may be used on. */
+export function chooseable(deck: readonly string[], act: DeckChoice, mark?: CardMark): string[] {
+  const all = [...new Set(deck)];
+  switch (act) {
+    case 'upgrade':
+      return all.filter((id) => !!COMBAT_DB.cards[id]?.upgrade);
+    case 'remove':
+      return [...new Set(removableCards(deck))];
+    case 'transform':
+      return [...new Set(removableCards(deck))].filter((id) => id !== 'wound' && id !== 'static');
+    case 'copy':
+      // (a copy obeys the deck rules: the copy limit and the Legendary limit)
+      return nonBasic(deck as string[]).filter(
+        (id, i, a) => a.indexOf(id) === i && canAdd(deck, id),
+      );
+    case 'mark':
+      return all.filter((id) => {
+        const c = COMBAT_DB.cards[id];
+        // one tag per card: a tagged card is not tagged again
+        return !!c && !!mark && markOf(id) === null && canMark(c, mark);
+      });
+  }
+}
+
+/** Do what a "choose a card" step promised to the card picked. Returns what happened, in a sentence. */
+export function applyChoice(
+  r: RunState,
+  choice: NonNullable<EventCtx['chooseDeck']>,
+  id: string,
+  fail: (msg: string) => never,
+): string {
+  if (!choice.cards.includes(id)) fail('That card cannot be chosen');
+  const at = r.deck.indexOf(id);
+  if (at < 0) fail('That card is not in your deck');
+  const name = nameOf(id);
+  switch (choice.act) {
+    case 'upgrade': {
+      const up = COMBAT_DB.cards[id]?.upgrade;
+      if (!up) fail('That card cannot be upgraded');
+      r.deck[at] = up;
+      return `${name} is upgraded.`;
+    }
+    case 'remove':
+      if (r.deck.length <= V2_DECK_RULES.minSize)
+        fail('Your deck is too small to part with a card');
+      r.deck.splice(at, 1);
+      return `${name} leaves your deck.`;
+    case 'transform': {
+      // a card of your class, of the same rarity (a basic card becomes a common one)
+      const was = COMBAT_DB.cards[stripRoll(id)]?.rarity ?? 'common';
+      const rarity = was === 'basic' ? 'common' : was === 'ancestral' ? 'rare' : was;
+      const without = r.deck.filter((_, i) => i !== at);
+      const made = cardOfRarity(r.rng, r.character, without, rarity);
+      if (!made) fail('Nothing comes of it');
+      r.deck[at] = made;
+      return `${name} becomes ${nameOf(made)}.`;
+    }
+    case 'copy':
+      if (!canAdd(r.deck, id)) fail('That card would break the deck rules');
+      r.deck.push(id);
+      return `${name} is copied.`;
+    case 'mark': {
+      const mark = choice.mark as CardMark;
+      r.deck[at] = markedId(id, mark);
+      return `${name} gains ${MARK_INFO[mark].name}: it ${MARK_INFO[mark].text}.`;
+    }
+  }
 }

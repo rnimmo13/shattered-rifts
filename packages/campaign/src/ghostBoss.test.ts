@@ -21,7 +21,14 @@ import {
 function atWarden(tier: number, ghost: boolean): RunState {
   const base = newRun('knight', 'ghost-boss');
   for (let i = 0; i < 4000; i++) {
-    const map = generateStageMap(seedRng(`gb-${tier}-${i}`), 1, 'aurelion', 'knight', undefined, tier);
+    const map = generateStageMap(
+      seedRng(`gb-${tier}-${i}`),
+      1,
+      'aurelion',
+      'knight',
+      undefined,
+      tier,
+    );
     const w = map.nodes.find((n) => n.kind === 'warden')!;
     if (!!w.ghost !== ghost) continue;
     return { ...base, tier, map, phase: 'duel', context: { nodeId: w.id } };
@@ -42,7 +49,14 @@ describe('Wardens that are ghosts', () => {
   it('never before Rift Tier 4, and about a third of the time after', () => {
     for (let tier = 1; tier <= GHOST_FROM_TIER; tier++)
       for (let i = 0; i < 150; i++) {
-        const map = generateStageMap(seedRng(`early-${tier}-${i}`), 1, 'aurelion', 'knight', undefined, tier);
+        const map = generateStageMap(
+          seedRng(`early-${tier}-${i}`),
+          1,
+          'aurelion',
+          'knight',
+          undefined,
+          tier,
+        );
         expect(map.nodes.some((n) => n.ghost)).toBe(false);
       }
     let ghosts = 0;

@@ -154,12 +154,14 @@ export function cardOfRarity(
 export function boonOfRarity(
   rng: RngState,
   owned: readonly string[],
-  rarity: 'common' | 'uncommon' | 'rare',
+  rarity: 'common' | 'uncommon' | 'rare' | 'legendary',
 ): string | null {
   const left = BOONS.filter((b) => !owned.includes(b.id));
   if (left.length === 0) return null;
   const same = left.filter((b) => b.rarity === rarity);
-  const from = same.length ? same : left;
+  // (a Legendary Boon is only ever given when one was asked for)
+  const from = same.length ? same : left.filter((b) => b.rarity !== 'legendary');
+  if (!from.length) return null;
   return (from[nextInt(rng, from.length)] as (typeof BOONS)[number]).id;
 }
 
@@ -194,19 +196,29 @@ export function giftOffers(
   return out;
 }
 
-/** The chance of each Boon rarity (by where the Boon comes from). */
+/**
+ * The chance of each Boon rarity (by where the Boon comes from). Legendary Boons are rare on purpose (DECISIONS #227): an Elite
+ * gives one 3% of the time, the merchant never sells one, and clearing a loop may leave one (LOOP_LEGEND_CHANCE).
+ */
 export const BOON_WEIGHTS: Record<OfferQuality, Record<string, number>> = {
-  duel: { common: 70, uncommon: 25, rare: 5 },
-  elite: { common: 45, uncommon: 40, rare: 15 },
+  duel: { common: 70, uncommon: 25, rare: 5, legendary: 0 },
+  elite: { common: 50, uncommon: 35, rare: 12, legendary: 3 },
 };
+
+/** The chance (percent) that clearing a loop (beating Vorthax) leaves a Legendary Boon you do not have yet. */
+export const LOOP_LEGEND_CHANCE = 40;
 
 /** A Boon the player does not own yet (falls down the rarity ladder when a rarity is used up), or null if they have them all. */
 export function offerBoon(
   rng: RngState,
   owned: readonly string[],
   quality: OfferQuality,
+  /** a shop never sells a Legendary Boon */
+  noLegend = false,
 ): string | null {
-  const left = BOONS.filter((b) => !owned.includes(b.id));
+  const left = BOONS.filter(
+    (b) => !owned.includes(b.id) && !(noLegend && b.rarity === 'legendary'),
+  );
   if (left.length === 0) return null;
   const w = BOON_WEIGHTS[quality];
   const total = Object.values(w).reduce((a, b) => a + b, 0);
@@ -219,12 +231,15 @@ export function offerBoon(
     }
     r -= weight;
   }
-  const order = ['rare', 'uncommon', 'common'];
+  if (noLegend && want === 'legendary') want = 'rare';
+  const order = ['legendary', 'rare', 'uncommon', 'common'];
   for (let i = order.indexOf(want); i < order.length; i++) {
     const pool = left.filter((b) => b.rarity === order[i]);
     if (pool.length > 0) return (pool[nextInt(rng, pool.length)] as (typeof BOONS)[number]).id;
   }
-  return (left[nextInt(rng, left.length)] as (typeof BOONS)[number]).id;
+  // (nothing left below what was asked for: never fall back up into a Legendary)
+  const rest = left.filter((b) => b.rarity !== 'legendary' || want === 'legendary');
+  return rest.length ? (rest[nextInt(rng, rest.length)] as (typeof BOONS)[number]).id : null;
 }
 
 /** The chance of each potion rarity. */
@@ -253,7 +268,12 @@ export const MAX_POTIONS = 3;
 /** The deepest Rift Tier for now: clearing this one ends the climb (Bank is the only choice left). */
 export const MAX_TIER = 20;
 
-export const BOON_PRICE: Record<string, number> = { common: 70, uncommon: 120, rare: 200 };
+export const BOON_PRICE: Record<string, number> = {
+  common: 70,
+  uncommon: 120,
+  rare: 200,
+  legendary: 400,
+};
 
 export const PRICE: Record<string, number> = {
   common: 30,
@@ -270,7 +290,8 @@ export const REMOVE_PRICE = 40;
  */
 export const UPGRADE_PRICE = 60;
 export const UPGRADE_STEP = 40;
-export const upgradePrice = (doneHere: number): number => UPGRADE_PRICE + UPGRADE_STEP * Math.max(0, doneHere);
+export const upgradePrice = (doneHere: number): number =>
+  UPGRADE_PRICE + UPGRADE_STEP * Math.max(0, doneHere);
 
 /** For the stage-clear screen and the map: the realm's display name. */
 export const REALM_LABEL: Record<StageRealm, string> = {

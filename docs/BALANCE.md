@@ -74,6 +74,14 @@ events, ancestral cards and Sanctified rolls are not in the audit decks.
 
 ---
 
+## Boon pacing (2026-10-25, DECISIONS #227)
+
+Before: a free Boon from every Elite **and** the first two Wardens of every loop, plus the merchant, events, prizes and preludes, out of
+only 12 Boons, kept across tiers: decks owned most of them within two or three loops. After: Elites only (about one a stage, plus
+ambush and event Elites), 18 Boons, and the four Legendary ones (the run-defining +1 Mana / +1 card a turn among them) at 3% from an
+Elite and 40% per loop cleared. Expect roughly 4-6 Boons per loop and every Boon only after many loops. Not measured by a bot yet:
+`pnpm runsim` reports Boons per run if it needs a closer look.
+
 ## Threshold and Waymarks (2026-10-25, DECISIONS #224)
 
 Yardstick: 100 shards buys about one removal and a half, or one upgrade and a half (Merchant: remove 40, upgrade 60, a common Boon 70).
@@ -85,7 +93,7 @@ shards or a rare Boon.
 | Reward | Worth (shards, roughly) |
 |---|---|
 | a card of your choice, common / uncommon / rare / Legendary | 50 / 90 / 160 / 260 (a random one: about half, it is usually off-lane) |
-| remove an Attack or Defend | 40-60 |
+| remove a Strike or Defend | 40-60 |
 | upgrade (your own card) | 60 |
 | common / uncommon / rare Boon | 70 / 120 / 200+ (a rare Boon is +1 Mana or +1 card every turn, for good) |
 | 10 max HP | 60-80 |

@@ -43,7 +43,13 @@ function pick<T>(rng: RngState, list: readonly T[]): T {
 }
 
 /** The chances (percent) for each middle-floor node: an Elite (the first of a stage, then later ones; from floor 3), a Merchant (at most 2), a Shrine (from floor 3), an Event; the rest are fights. */
-export const NODE_ODDS = { eliteFirst: 22, eliteMore: 12, merchant: 11, shrine: 8, event: 24 } as const;
+export const NODE_ODDS = {
+  eliteFirst: 22,
+  eliteMore: 12,
+  merchant: 11,
+  shrine: 8,
+  event: 24,
+} as const;
 
 /** Kind of a node on the middle floors given what has already been placed this stage. */
 function rollKind(

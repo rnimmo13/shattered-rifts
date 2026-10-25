@@ -54,7 +54,8 @@ export function make(spec: DealSpec, r: RunState): EventCtx {
   const probe = clone(r);
   const shown = built.opts.filter(
     ([, deal, , optional]) =>
-      optional !== 'optional' || dealFeasible(probe, deal, { title: '', text: '', cardOffer: '', options: [] }),
+      optional !== 'optional' ||
+      dealFeasible(probe, deal, { title: '', text: '', cardOffer: '', options: [] }),
   );
   const options: EventOption[] = shown.map(([label, deal, say], i) => ({
     id: (['d1', 'd2', 'd3', 'd4'] as const)[i] as EventOption['id'],
@@ -113,42 +114,6 @@ export const DEAL_EVENTS: EventDef[] = (
           'Pay with a card (a random basic card leaves): heal 25% and +25 shards',
           [remove('basic'), heal(25), shards(25)],
           'The ferryman weighs it in his palm and nods.',
-          'optional',
-        ],
-      ],
-    },
-    {
-      id: 'collector',
-      weight: 1,
-      title: 'The bone collector',
-      text: 'A stooped figure sorts cards into jars by the sound they make. "Spare some? I pay by the piece."',
-      opts: [
-        [
-          'Sell one card: a random card leaves your deck, and you gain 60 shards',
-          [remove('any', 1), shards(60)],
-        ],
-        [
-          'Sell two cards: two random cards leave your deck, and you gain 130 shards',
-          [remove('any', 2), shards(130)],
-        ],
-      ],
-    },
-    {
-      id: 'mending-tree',
-      weight: 1.2,
-      title: 'The mending tree',
-      text: 'A white tree grows from a crack in the floor, bearing fruit that glows faintly.',
-      opts: [
-        ['Rest in its shade: heal 25% of your HP', [heal(25)], 'The leaves hum.'],
-        [
-          'Climb for the fruit (lose 8% of your HP): +4 max HP',
-          [hurtPct(8), maxHp(4)],
-          'The fruit is bitter and warm.',
-        ],
-        [
-          'Plant a card at its roots (a random basic card leaves): +3 max HP',
-          [remove('basic'), maxHp(3)],
-          'The tree takes it, and something in you steadies.',
           'optional',
         ],
       ],
@@ -253,32 +218,12 @@ export const DEAL_EVENTS: EventDef[] = (
       text: 'A door with a mouth where the handle should be. It looks at your pockets and licks its lip.',
       opts: [
         [
-          'Feed it a basic card (a random Attack or Defend goes): +80 shards and heal 10%',
+          'Feed it a basic card (a random Strike or Defend goes): +80 shards and heal 10%',
           [remove('basic', 1), shards(80), heal(10)],
         ],
         [
           'Feed it your shards (50 shards): a random card in your deck is upgraded',
           [shards(-50), upgrade()],
-        ],
-      ],
-    },
-    {
-      id: 'twin-pools',
-      weight: 1,
-      title: 'The twin pools',
-      text: 'Two pools side by side, one red and one blue, perfectly still. A tin cup hangs between them.',
-      opts: [
-        ['Drink the red (lose 10 HP): +5 max HP', [hurt(10), maxHp(5)], 'It tastes of iron.'],
-        [
-          'Drink the blue (pay 20 shards): heal 30% of your HP',
-          [shards(-20), heal(30)],
-          'It tastes of nothing at all.',
-        ],
-        [
-          'Cast a card in (a random basic card leaves): +4 max HP',
-          [remove('basic'), maxHp(4)],
-          'Both pools ripple, and go still.',
-          'optional',
         ],
       ],
     },
@@ -299,25 +244,6 @@ export const DEAL_EVENTS: EventDef[] = (
       ],
     },
     {
-      id: 'moth-shrine',
-      weight: 1,
-      title: 'The moth shrine',
-      text: 'A tiny shrine alive with pale moths. They land on you, and wait.',
-      opts: [
-        ['Offer blood (lose 12 HP): a random card in your deck is upgraded', [hurt(12), upgrade()]],
-        [
-          'Offer shards (pay 50 shards): a random card in your deck is upgraded',
-          [shards(-50), upgrade()],
-        ],
-        [
-          'Burn a card for the moths (a random basic card leaves): a random card in your deck is upgraded',
-          [remove('basic'), upgrade()],
-          'The moths rise with the smoke.',
-          'optional',
-        ],
-      ],
-    },
-    {
       id: 'crossroads',
       weight: 1.2,
       title: 'The lamplit crossroads',
@@ -328,7 +254,10 @@ export const DEAL_EVENTS: EventDef[] = (
           [chance(50, [shards(115)], [hurtPct(15)])],
         ],
         ['Take the right road: heal 20% of your HP', [heal(20)]],
-        ['Follow the footprints: a random common card of your class is added to your deck', [gift('common')]],
+        [
+          'Follow the footprints: a random common card of your class is added to your deck',
+          [gift('common')],
+        ],
         [
           'Leave a card at the crossroads (a random basic card leaves): +40 shards and heal 10%',
           [remove('basic'), shards(40), heal(10)],
@@ -534,38 +463,6 @@ export const DEAL_EVENTS: EventDef[] = (
       ],
     },
     {
-      id: 'old-soldiers',
-      weight: 1.2,
-      title: "The old soldiers' camp",
-      text: 'Three veterans round a small fire, armour hung on a cart. They shift over to make room.',
-      opts: [
-        ['Share their fire: heal 25% of your HP', [heal(25)]],
-        [
-          'Swap kit (lose 4 HP): a random basic card becomes a card of your class',
-          [hurt(4), transform],
-        ],
-        [
-          'Leave some old kit behind (a random basic card leaves): +65 shards',
-          [remove('basic'), shards(65)],
-          'They pass the hat, and it comes back full.',
-          'optional',
-        ],
-      ],
-    },
-    {
-      id: 'frost-garden',
-      weight: 1,
-      title: 'The frost garden',
-      text: 'Flowers made of ice, each ringing faintly in the draught. They look like they would be sorry to be picked.',
-      opts: [
-        ['Pick a bloom (lose 5 HP): a random card in your deck is upgraded', [hurt(5), upgrade()]],
-        [
-          'Dig up a root (pay 20 shards): a Wound leaves your deck, or a basic card if you have none',
-          [shards(-20), remove('wound', 1)],
-        ],
-      ],
-    },
-    {
       id: 'bell-tower',
       weight: 1,
       title: 'The bell tower',
@@ -600,22 +497,6 @@ export const DEAL_EVENTS: EventDef[] = (
           [remove('basic'), heal(15), shards(25)],
           'You walk lighter.',
           'optional',
-        ],
-      ],
-    },
-    {
-      id: 'ash-market',
-      weight: 1,
-      title: 'The ash market',
-      text: 'Stalls of grey cloth in a drifting snow of ash. Every trader sells a single thing, and wants a single thing back.',
-      opts: [
-        [
-          'Trade a card: a random card leaves your deck, and a random uncommon card of your class is added to it',
-          [remove('any', 1), gift('uncommon')],
-        ],
-        [
-          'Trade a wound for coin (a Wound, else a basic card, goes): +45 shards',
-          [remove('wound', 1), shards(45)],
         ],
       ],
     },

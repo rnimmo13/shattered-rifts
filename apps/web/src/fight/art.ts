@@ -317,7 +317,10 @@ export function cardArtSpec(c: CardDef): ArtCard {
   const emblem = emblemOf(c, summoned ? undefined : motifOf(c));
   const accent = summoned ? undefined : effectEmblems(c).find((e) => e !== emblem);
   const fake: ArtCard = {
-    id: c.id.replace(/^(hi|lo)~/, '').replace(/\+$/, ''),
+    id: c.id
+      .replace(/^(hi|lo)~/, '')
+      .replace(/^[a-z]+\^/, '')
+      .replace(/\+$/, ''),
     name: c.name,
     realm: (c.realm === 'junk' ? 'neutral' : (c.realm ?? 'neutral')) as Realm,
     rarity: c.rarity === 'basic' || c.rarity === undefined ? 'common' : c.rarity,

@@ -84,7 +84,8 @@ export function AuraList(props: { db: CombatDb; me: SideView; x: number; top: nu
       style={{ left: props.x, top: props.top }}
       aria-label="Auras in play"
     >
-      <div className="aux aux--powers">
+      {me.powers.length > 5 && <div className="aux__count">Auras · {me.powers.length}</div>}
+      <div className={`aux aux--powers${me.powers.length > 5 ? ' aux--scroll' : ''}`}>
         {me.powers.map((p) => {
           const c = db.cards[p.card];
           return (

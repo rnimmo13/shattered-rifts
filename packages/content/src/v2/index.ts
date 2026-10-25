@@ -462,7 +462,19 @@ export function signatureCards(encounterId: string): string[] {
 }
 
 export { validateDb };
-export { canRoll, isSanctified, rolledId, rollOf, stripRoll } from './sanctify';
+export {
+  MARK_INFO,
+  canMark,
+  canRoll,
+  isSanctified,
+  isVariant,
+  markOf,
+  markedId,
+  rolledId,
+  rollOf,
+  stripRoll,
+  type CardMark,
+} from './sanctify';
 import { LANE_OF } from './lanes.generated';
 
 /** Which of its Riftwalker's three lanes (0, 1 or 2 in `Riftwalker.lanes`) a card belongs to, or undefined (basics, glue, legendaries). */

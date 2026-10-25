@@ -364,7 +364,8 @@ export interface HeroDef {
 export interface BoonDef {
   id: string;
   name: string;
-  rarity: 'common' | 'uncommon' | 'rare';
+  /** legendary: the rarest, for the Boons that change every turn (an extra Mana, an extra card) */
+  rarity: 'common' | 'uncommon' | 'rare' | 'legendary';
   /** shown to the player; written by hand because some boons mix engine and campaign effects */
   text: string;
   mana?: number;

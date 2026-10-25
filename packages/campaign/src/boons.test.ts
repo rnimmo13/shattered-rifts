@@ -1,12 +1,15 @@
 import { describe, expect, it } from 'vitest';
+import { seedRng } from '@sr/combat';
 import { BOONS, COMBAT_DB, RIFTWALKERS } from '@sr/content/v2';
 import {
   RunError,
   buyBoon,
   buyPotion,
   sellPotion,
+  chooseCard,
   chooseEvent,
   pickEventCard,
+  pickDeckCard,
   enterNode,
   finishDuel,
   newRun,
@@ -21,14 +24,29 @@ const fresh = (hero: 'knight' | 'hunter' | 'trapper', seed: string): RunState =>
 
 const inFight = (base: RunState, kind: 'elite' | 'warden' | 'duel'): RunState => {
   const n = base.map.nodes.find((x) => x.kind === kind);
-  if (!n) throw new Error(`no ${kind} node on this map`);
-  return { ...base, phase: 'duel', at: n.id, context: { nodeId: n.id } };
+  if (n) return { ...base, phase: 'duel', at: n.id, context: { nodeId: n.id } };
+  // (not every map has an Elite: make a fight node one)
+  const d = base.map.nodes.find((x) => x.kind === 'duel');
+  if (!d || kind !== 'elite') throw new Error(`no ${kind} node on this map`);
+  const map = {
+    ...base.map,
+    nodes: base.map.nodes.map((x) =>
+      x.id === d.id ? { ...x, kind: 'elite' as const, enemyId: 'aldric' } : x,
+    ),
+  };
+  return { ...base, map, phase: 'duel', at: d.id, context: { nodeId: d.id } };
 };
 
 describe('boons in a run', () => {
-  it('a Warden win drops a boon you did not own; max HP applies', () => {
+  it('an Elite win drops a boon you did not own (a Warden gives its Gift instead); max HP applies', () => {
+    const warden = finishDuel(
+      { ...inFight(fresh('knight', 'boon-w'), 'warden'), hp: 30 },
+      true,
+      30,
+    );
+    expect(warden.boons).toEqual([]);
     for (let i = 0; i < 20; i++) {
-      const run = { ...inFight(fresh('knight', `boon${i}`), 'warden'), hp: 30 };
+      const run = { ...inFight(fresh('knight', `boon${i}`), 'elite'), hp: 30 };
       const won = finishDuel(run, true, 30);
       const id = won.context?.boonGained as string;
       expect(won.boons).toEqual([id]);
@@ -38,12 +56,23 @@ describe('boons in a run', () => {
     }
   });
 
-  it('never drops a boon you already have', () => {
-    const owned = BOONS.slice(0, BOONS.length - 1).map((b) => b.id);
-    const run = { ...inFight(fresh('knight', 'owned'), 'warden'), boons: owned, hp: 30 };
+  it('never drops a boon you already have, and never falls back to a Legendary one', () => {
+    const plain = BOONS.filter((b) => b.rarity !== 'legendary');
+    const owned = plain.slice(0, plain.length - 1).map((b) => b.id);
+    const run = { ...inFight(fresh('knight', 'owned'), 'elite'), boons: owned, hp: 30 };
     const won = finishDuel(run, true, 30);
-    expect(won.boons).toHaveLength(BOONS.length);
-    expect(new Set(won.boons).size).toBe(BOONS.length);
+    // the one plain Boon left, or (3% of the time) a Legendary rolled on purpose
+    const got = won.boons.filter((b) => !owned.includes(b));
+    expect(got).toHaveLength(1);
+    expect(new Set(won.boons).size).toBe(won.boons.length);
+    // with every plain Boon owned, an Elite gives a Legendary only when it rolls one (never as a fallback)
+    const allPlain = { ...run, boons: plain.map((b) => b.id) };
+    let legends = 0;
+    for (let k = 0; k < 40; k++) {
+      const w = finishDuel({ ...allPlain, seed: `full-${k}`, rng: seedRng(`full-${k}`) }, true, 30);
+      legends += w.boons.length - plain.length;
+    }
+    expect(legends).toBeLessThan(10);
   });
 
   it('a Healing Vial heals after every fight and a Shard Purse pays extra', () => {
@@ -123,8 +152,12 @@ describe('events', () => {
       for (const o of e.options) {
         if (o.id === 'trial') continue; // (a puzzle: see trials.test.ts)
         let done = chooseEvent(entered, o.id);
-        // (an event may wait for one of three cards to be picked)
+        // (an event may wait for one of three cards to be picked, or for a card of your deck)
         if (done.context?.event?.choose) done = pickEventCard(done, 0);
+        const deckPick = done.context?.event?.chooseDeck;
+        if (deckPick) done = pickDeckCard(done, deckPick.cards[0]!);
+        // (or turn into a fight: won here, and its reward skipped)
+        if (done.phase === 'duel') done = chooseCard(finishDuel(done, true, done.hp), null);
         expect(done.phase).toBe('map');
         if (o.id === 'bleed') expect(done.hp).toBe(entered.hp - 10);
         if (o.id === 'boon') expect(done.boons).toHaveLength(1);

@@ -24,7 +24,7 @@ const story = (events: CombatEvent[], c: LogContext = ctx): string[] => {
 describe('the battle log', () => {
   it('tells who played what, and what it did', () => {
     expect(say({ type: 'play', side: 'a', card: 'c1', def: 'strike', target: 'sq' })).toBe(
-      'You play Attack on Gilded Squire',
+      'You play Strike on Gilded Squire',
     );
     expect(
       say({
@@ -102,8 +102,8 @@ describe('the battle log', () => {
     ).toEqual([
       'You set a Trap',
       'Gilded Squire uses Slash',
-      'Your Trap springs: Attack',
-      'Attack hits Gilded Squire: 8 damage',
+      'Your Trap springs: Strike',
+      'Strike hits Gilded Squire: 8 damage',
     ]);
     expect(story([hit('sq', 'hero', 'attack', 5), hit('hero', 'sq', 'direct', 3)])).toEqual([
       'Gilded Squire hits you: 5 damage',

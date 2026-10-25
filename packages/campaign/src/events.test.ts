@@ -8,6 +8,7 @@ import {
   enterNode,
   newRun,
   parseRun,
+  pickDeckCard,
   serializeRun,
   buyRemoval,
   removableCards,
@@ -45,9 +46,9 @@ const SETUP: Record<string, Partial<RunState>> = {
 };
 
 describe('events', () => {
-  it('there are seventy of them, each with its own id', () => {
-    expect(EVENTS.length).toBe(70);
-    expect(new Set(EVENTS.map((e) => e.id)).size).toBe(70);
+  it('there are eighty-two of them, each with its own id', () => {
+    expect(EVENTS.length).toBe(82);
+    expect(new Set(EVENTS.map((e) => e.id)).size).toBe(82);
   });
 
   it('are varied and random, and a card is on offer only now and then', () => {
@@ -98,9 +99,14 @@ describe('events', () => {
 
   it('and the result is shown through the run (eventResult)', () => {
     const e = eventRun('result-1');
-    const leave = chooseEvent(e, 'leave');
-    expect(leave.eventResult).toBeTruthy();
-    expect(leave.phase).toBe('map');
+    // (a bad-luck event has no walking away: take its first option)
+    const opt =
+      e.context!.event!.options.find((o) => o.id === 'leave') ?? e.context!.event!.options[0]!;
+    let left = chooseEvent(e, opt.id);
+    const deckPick = left.context?.event?.chooseDeck;
+    if (deckPick) left = pickDeckCard(left, deckPick.cards[0]!);
+    expect(left.eventResult).toBeTruthy();
+    expect(['map', 'duel']).toContain(left.phase);
   });
 });
 
@@ -441,6 +447,7 @@ describe('letting a card go', () => {
     steps.some(
       (s) =>
         (s.k === 'remove' && s.of !== 'any') ||
+        (s.k === 'choose' && s.act === 'remove') ||
         (s.k === 'chance' && (removes(s.win) || removes(s.lose))),
     );
 
@@ -451,16 +458,18 @@ describe('letting a card go', () => {
     for (const def of EVENTS) {
       const ev = def.build({ ...base, shards: 500, hp: 80 });
       total += def.weight;
-      // (the hand-written ones: the scrapyard, the healer's cleansing and the bonfire)
-      const handWritten = ['scrapyard', 'healer', 'bonfire'].includes(def.id);
-      if (handWritten || ev.options.some((o) => o.deal && removes(o.deal))) withRemoval += def.weight;
+      // (the hand-written one: the bonfire)
+      const handWritten = ['bonfire'].includes(def.id);
+      if (handWritten || ev.options.some((o) => o.deal && removes(o.deal)))
+        withRemoval += def.weight;
     }
-    expect(withRemoval / total).toBeGreaterThan(0.3);
+    // (25%: since #227 several of these let you choose the card, which thins a deck better than a random Strike or Defend)
+    expect(withRemoval / total).toBeGreaterThan(0.25);
   });
 
   it('an option that lets a card go is left off, not the whole event, when there is no basic card to give', () => {
     const base = eventRun('removal-none');
-    // a deck of nothing but the Riftwalker's own cards: no plain Attack or Defend left
+    // a deck of nothing but the Riftwalker's own cards: no plain Strike or Defend left
     const own = base.deck.filter((id) => COMBAT_DB.cards[id]?.hero !== 'neutral');
     const bare: RunState = {
       ...base,

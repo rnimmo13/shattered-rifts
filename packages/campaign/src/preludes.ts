@@ -35,8 +35,8 @@ export function describeEffect(e: PreludeEffect): string {
         : `Upgrade ${e.n} random cards in your deck`;
     case 'remove':
       return e.n === 1
-        ? 'Remove an Attack or Defend from your deck'
-        : `Remove ${e.n} Attacks or Defends from your deck`;
+        ? 'Remove a Strike or Defend from your deck'
+        : `Remove ${e.n} Strikes or Defends from your deck`;
     case 'boon':
       return `Gain a random ${rarityWord[e.rarity]} Boon`;
     case 'potion':
@@ -46,7 +46,7 @@ export function describeEffect(e: PreludeEffect): string {
     case 'wound':
       return e.n === 1 ? 'Add a Wound to your deck' : `Add ${e.n} Wounds to your deck`;
     case 'transform':
-      return `Transform ${e.n} Attacks or Defends in your deck into random ${e.better ? 'uncommon or rare ' : ''}cards`;
+      return `Transform ${e.n} Strikes or Defends in your deck into random ${e.better ? 'uncommon or rare ' : ''}cards`;
     case 'pick':
       return `Choose one of three ${e.upgraded ? 'upgraded ' : ''}${rarityWord[e.rarity]} cards for your deck`;
   }
@@ -248,6 +248,22 @@ function bargains(stage: number): PreludeOption[] {
   ];
 }
 
+/**
+ * Every option the Threshold and the Waymarks can offer, as they read at `stage` (for the How to play page). The Resolve blessings are
+ * included, though they only appear when a run is missing Resolve; a Waymark always offers its rest as well.
+ */
+export function preludeCatalogue(stage = 1): {
+  rest: PreludeOption;
+  blessings: PreludeOption[];
+  bargains: PreludeOption[];
+} {
+  return {
+    rest: opt('rest', 'Rest by the Waymark', [{ k: 'heal', pct: 30 }]),
+    blessings: blessings(stage, true),
+    bargains: bargains(stage),
+  };
+}
+
 const FLAVOUR: Record<StageRealm, string> = {
   aurelion: 'A cracked bell hangs from a gilded archway. Someone has left offerings beneath it.',
   nexus: 'A maintenance hatch stands open, a console blinking: SALVAGE AVAILABLE, TAKE ONE.',
@@ -288,7 +304,7 @@ export function makePrelude(
     };
   }
   const options: PreludeOption[] = [
-    opt('rest', 'Rest by the Waymark', [{ k: 'heal', pct: 30 }]),
+    preludeCatalogue(stage).rest,
     ...takeDistinct(rng, blessings(stage, hurt), 2),
   ];
   if (nextInt(rng, 2) === 0) options.push(...takeDistinct(rng, bargains(stage), 1));
