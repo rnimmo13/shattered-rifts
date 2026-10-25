@@ -371,7 +371,7 @@ export default function PvpScreen() {
       ) : (
         <>
           <label className="pvp__field">
-            Your name (shown to your opponent; no one else can use it)
+            Username
             <input
               value={name}
               maxLength={24}
@@ -380,7 +380,7 @@ export default function PvpScreen() {
                 setNameProblem(null);
               }}
               placeholder="Choose a name"
-              aria-label="Your name"
+              aria-label="Username"
             />
           </label>
           {nameProblem && (

@@ -43,6 +43,7 @@ import {
   type RunRow,
 } from '@sr/pvp';
 import type { Env } from './env';
+import { CURRENT_GHOSTS_VIEW } from './ghostSql';
 
 const json = (body: unknown, status = 200): Response =>
   new Response(JSON.stringify(body), { status, headers: { 'content-type': 'application/json' } });
@@ -149,6 +150,15 @@ export class Leaderboard extends DurableObject<Env> {
     ctx.storage.sql.exec('CREATE INDEX IF NOT EXISTS ghost_games_ghost ON ghost_games (ghost)');
     ctx.storage.sql.exec('CREATE INDEX IF NOT EXISTS ghost_games_human ON ghost_games (human, at)');
     ctx.storage.sql.exec('CREATE INDEX IF NOT EXISTS ghosts_last ON ghosts (last_at)');
+    // a ghost remembers which run it came from (a fingerprint; empty for decks saved before that), so saving a run again replaces it
+    const hasRun = ctx.storage.sql
+      .exec<{ name: string }>("SELECT name FROM pragma_table_info('ghosts')")
+      .toArray()
+      .some((c) => c.name === 'run');
+    if (!hasRun) ctx.storage.sql.exec('ALTER TABLE ghosts ADD COLUMN run TEXT');
+    // The ghosts that can be met and listed: only the latest version of a deck (see ghostSql.ts)
+    ctx.storage.sql.exec('DROP VIEW IF EXISTS current_ghosts');
+    ctx.storage.sql.exec(CURRENT_GHOSTS_VIEW);
     // rows written before the Riftwalkers were named for their class (maren -> knight) are brought up to date (it does nothing once they are)
     const legacy = Object.entries(LEGACY_HERO_IDS);
     // (once only: a flag is kept, so a wake-up does not read every row again)
@@ -238,11 +248,12 @@ export class Leaderboard extends DurableObject<Env> {
     const losses = result === 'loss' ? 1 : 0;
     if (this.count('SELECT COUNT(*) AS n FROM ghosts WHERE id = ?', id) > 0) {
       this.ctx.storage.sql.exec(
-        'UPDATE ghosts SET owner_name = ?, hero = ?, deck = ?, boons = ?, tier = ?, stage = ?, wins = wins + ?, losses = losses + ?, last_at = ? WHERE id = ?',
+        'UPDATE ghosts SET owner_name = ?, hero = ?, deck = ?, boons = ?, run = ?, tier = ?, stage = ?, wins = wins + ?, losses = losses + ?, last_at = ? WHERE id = ?',
         name,
         e.hero,
         JSON.stringify(e.deck),
         JSON.stringify(e.boons),
+        e.run ?? null,
         e.tier,
         e.stage ?? null,
         wins,
@@ -253,13 +264,14 @@ export class Leaderboard extends DurableObject<Env> {
       return;
     }
     this.ctx.storage.sql.exec(
-      'INSERT INTO ghosts (id, owner, owner_name, hero, deck, boons, tier, stage, wins, losses, first_at, last_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+      'INSERT INTO ghosts (id, owner, owner_name, hero, deck, boons, run, tier, stage, wins, losses, first_at, last_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
       id,
       owner,
       name,
       e.hero,
       JSON.stringify(e.deck),
       JSON.stringify(e.boons),
+      e.run ?? null,
       e.tier,
       e.stage ?? null,
       wins,
@@ -295,7 +307,7 @@ export class Leaderboard extends DurableObject<Env> {
     const rows = this.ctx.storage.sql
       .exec<GhostSql>(
         `SELECT id, owner, owner_name, hero, '' AS deck, '' AS boons, tier, stage, wins, losses, ghost_wins, ghost_losses, last_at
-           FROM ghosts WHERE last_at >= ?
+           FROM current_ghosts WHERE last_at >= ?
           ORDER BY (wins + ghost_wins) DESC, last_at DESC LIMIT 400`,
         now - 31 * DAY,
       )
@@ -334,7 +346,7 @@ export class Leaderboard extends DurableObject<Env> {
     const rows = this.ctx.storage.sql
       .exec<GhostSql>(
         `SELECT id, owner, owner_name, hero, '' AS deck, '' AS boons, tier, stage, wins, losses, ghost_wins, ghost_losses, last_at
-           FROM ghosts WHERE last_at >= ?
+           FROM current_ghosts WHERE last_at >= ?
           ORDER BY (wins + ghost_wins) DESC, last_at DESC LIMIT 400`,
         now - 31 * DAY,
       )
@@ -424,7 +436,7 @@ export class Leaderboard extends DurableObject<Env> {
       }>(
         `SELECT g.ghost, g.ghost_won, g.human, g.human_name, g.human_hero, g.at,
                 d.owner_name, d.hero, d.tier, d.stage
-           FROM ghost_games g JOIN ghosts d ON d.id = g.ghost
+           FROM ghost_games g JOIN current_ghosts d ON d.id = g.ghost
           WHERE g.at >= ? LIMIT 20000`,
         from,
       )
@@ -441,7 +453,7 @@ export class Leaderboard extends DurableObject<Env> {
       humanHero: r.human_hero,
       at: r.at,
     }));
-    const decks = this.count('SELECT COUNT(*) AS n FROM ghosts WHERE last_at >= ?', now - 31 * DAY);
+    const decks = this.count('SELECT COUNT(*) AS n FROM current_ghosts WHERE last_at >= ?', now - 31 * DAY);
     const all = standingsVsGhosts(games);
     return {
       ok: true,
@@ -462,7 +474,7 @@ export class Leaderboard extends DurableObject<Env> {
     const rows = this.ctx.storage.sql
       .exec<GhostSql>(
         `SELECT id, owner, owner_name, hero, '' AS deck, '' AS boons, tier, stage, wins, losses, ghost_wins, ghost_losses, last_at
-           FROM ghosts WHERE last_at >= ? ORDER BY last_at DESC LIMIT 200`,
+           FROM current_ghosts WHERE last_at >= ? ORDER BY last_at DESC LIMIT 200`,
         now - 31 * DAY,
       )
       .toArray();
@@ -617,8 +629,8 @@ export class Leaderboard extends DurableObject<Env> {
     const name = this.claimedName(b['player']);
     if (!name) return json({ ok: true, counted: false, error: 'no-name' });
     const old = this.ctx.storage.sql
-      .exec<{ total: number; first_at: number }>(
-        'SELECT total, first_at FROM runs WHERE player = ? AND run = ?',
+      .exec<{ total: number; tier: number; first_at: number }>(
+        'SELECT total, tier, first_at FROM runs WHERE player = ? AND run = ?',
         b['player'],
         run,
       )
@@ -627,7 +639,9 @@ export class Leaderboard extends DurableObject<Env> {
       // progress only moves forward, and only as fast as a real run could
       // (a repeat of what the board already knows changes nothing, so it is not counted against the flood limits: the app repeats its
       // reports on purpose, and counting them used up a player's hour and silently dropped the real ones that followed)
-      if (total <= old.total) return json({ ok: true, counted: false });
+      // (the same count in a later Rift Tier is progress too: the tier is shown, and Tier 1 stage 3 is the same count as Tier 2 stage 0)
+      if (total < old.total || (total === old.total && tier <= old.tier))
+        return json({ ok: true, counted: false });
       // a flood from one player or one address is ignored
       if (
         !this.within(`run:${b['player']}`, HOUR, RUN_REPORTS_PER_HOUR, now) ||

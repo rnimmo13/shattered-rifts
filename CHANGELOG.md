@@ -5,6 +5,9 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **Tier and stage read the same everywhere:** the Continue button, the run bar, the campaign leaderboard and saved decks all say where a deck is the way the Arena does ("Tier 2 · Stage 1/3", "Tier 1 · Cleared"). Moving on to the next Rift Tier now shows on the leaderboard straight away.
+- **"Username"** is now the name of the name field everywhere.
+- **Ghost decks list only the latest version of a deck;** older copies from earlier saves are hidden.
 - **Ghost decks no longer repeat:** saving the same run again replaces its ghost instead of adding another.
 - **The campaign leaderboard keeps up better:** progress reports are retried if they fail, sent again when you come back online, and no longer used up by repeats.
 - **Enemy moves stay on screen** above big enemies and near the edges, and **a full hand keeps clear of Mana, End turn, the piles and the log**; a card you point at always comes to the front.

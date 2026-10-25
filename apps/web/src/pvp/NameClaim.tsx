@@ -79,7 +79,7 @@ export function NameGate(props: { children: ReactNode }) {
       <a className="btn btn--small setup__back" href="#/">
         <span>Back</span>
       </a>
-      <h1 className="setup__h">Choose your name</h1>
+      <h1 className="setup__h">Choose a username</h1>
       <p className="setup__lead">
         Your runs go on the campaign leaderboard under this name, and it is the name your opponents
         see in the Arena. No two players can share one, so pick one that is yours.

@@ -35,7 +35,6 @@ import {
   newRun,
   nextStage,
   parseRun,
-  FINAL_STAGE,
   realmOfStage,
   takeShrine,
   type Difficulty,
@@ -53,6 +52,7 @@ import { BankedPanel } from './BankedPanel';
 import { canSaveForArena, loseSavedDecks, saveForArena } from './deckSave';
 import { stagesInAll } from '@sr/pvp';
 import { stagesCleared } from '../pvp/vault';
+import { progressLabel } from '../pvp/deckLayout';
 import { reportRun } from '../pvp/boardApi';
 import { syncSavedRuns } from './syncRuns';
 import { getName } from '../pvp/config';
@@ -205,7 +205,8 @@ export default function RunScreen() {
         // a run that has got further is told to the leaderboards (best effort; never in the way)
         const was = stagesInAll(cur.tier, stagesCleared(cur));
         const now = stagesInAll(next.tier, stagesCleared(next));
-        if (now > was && next.seed === cur.seed)
+        // (going on to the next Rift Tier is told too: Tier 1 stage 3 and Tier 2 stage 0 are the same count, but the board should say Tier 2)
+        if ((now > was || next.tier > cur.tier) && next.seed === cur.seed)
           void reportRun({
             seed: next.seed,
             hero: next.character,
@@ -626,7 +627,7 @@ function RunBar(props: {
       <div className="runbar__who">
         <b>{RIFTWALKERS[run.character].hero.name}</b>
         <span>
-          Tier {run.tier} · Stage {run.stage}/{FINAL_STAGE}
+          {progressLabel(run.tier, stagesCleared(run))}
           {floorLabel(run) && ` · ${floorLabel(run)}`} · {REALM_LABEL[realmOfStage(run, run.stage)]}
         </span>
       </div>

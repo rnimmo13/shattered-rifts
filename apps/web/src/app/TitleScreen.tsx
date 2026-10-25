@@ -7,6 +7,8 @@ import { heroFigure } from '../fight/art';
 import { RUN_SLOTS, clearSavedRun, listRuns, runCount, setActiveRun } from '../run/saves';
 import { AccountBox } from '../pvp/AccountBox';
 import { whoAmI, type Me } from '../pvp/vaultSync';
+import { progressLabel } from '../pvp/deckLayout';
+import { stagesCleared } from '../pvp/vault';
 import { HeroIcon } from '../ui/HeroIcon';
 import { HERO_COLOR } from '../art/emblems';
 import { tipAttrs } from '../ui/tip';
@@ -98,7 +100,7 @@ export function TitleScreen() {
               <button
                 type="button"
                 className="home__play home__play--continue"
-                aria-label={`Continue the ${RIFTWALKERS[r.run.character].hero.name} run, Rift Tier ${r.run.tier}`}
+                aria-label={`Continue the ${RIFTWALKERS[r.run.character].hero.name} run, ${progressLabel(r.run.tier, stagesCleared(r.run))}`}
                 onClick={() => {
                   setActiveRun(r.id);
                   window.location.hash = '#/run';
@@ -106,12 +108,9 @@ export function TitleScreen() {
               >
                 <b>Continue run</b>
                 <small>
-                  {RIFTWALKERS[r.run.character].hero.name} · Rift Tier {r.run.tier} ·{' '}
-                  {r.run.phase === 'loopCleared'
-                    ? 'Tier cleared'
-                    : r.run.phase === 'banked'
-                      ? 'Banked'
-                      : `Stage ${r.run.stage}`}
+                  {RIFTWALKERS[r.run.character].hero.name} · {r.run.phase === 'banked'
+                    ? `Tier ${r.run.tier} · Banked`
+                    : progressLabel(r.run.tier, stagesCleared(r.run))}
                 </small>
               </button>
               {dropping === r.id ? (

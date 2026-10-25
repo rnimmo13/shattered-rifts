@@ -10,7 +10,7 @@ import {
   type RunStanding,
 } from '@sr/pvp';
 import { HeroIcon } from '../ui/HeroIcon';
-import { heroName } from './deckLayout';
+import { heroName, progressLabel } from './deckLayout';
 import { viewBoard, type BoardKind, type BoardView, type GhostView } from './boardApi';
 import { NameClaim } from './NameClaim';
 import { syncSavedRuns } from '../run/syncRuns';
@@ -243,8 +243,8 @@ export function LeaderboardScreen() {
           />
           <Table<RunStanding>
             caption={`Furthest campaign runs this ${period}`}
-            head={['Player', 'Character', 'Rift Tier', 'Stages in the tier', 'Stages in all']}
-            numeric={[2, 3, 4]}
+            head={['Player', 'Character', 'Where they are', 'Stages cleared']}
+            numeric={[3]}
             rows={view.board as RunStanding[]}
             you={view.you as (RunStanding & { rank: number }) | null}
             empty={`No runs yet this ${period}. Be the first.`}
@@ -256,8 +256,7 @@ export function LeaderboardScreen() {
                 <HeroIcon hero={s.hero} size={24} />
                 <small>{heroName(s.hero)}</small>
               </span>,
-              <b key="t">{s.tier}</b>,
-              `${s.stage} of 3`,
+              <b key="t">{progressLabel(s.tier, s.stage)}</b>,
               s.total,
             ]}
           />
@@ -323,13 +322,13 @@ export function LeaderboardScreen() {
 
       <section className="board__you">
         <NameClaim
-          label="Your name on the boards"
-          button="Change name"
+          label="Username"
+          button="Change username"
           onDone={() => setTry((t) => t + 1)}
         />
         <p className="board__note">
-          It is the same name you use in the Arena and the campaign, and no one else can have it.
-          Everything you have already done on the boards moves to the new name.
+          It is the same username you use in the Arena and the campaign, and no one else can have it.
+          Everything you have already done on the boards moves to the new username.
         </p>
       </section>
     </main>
