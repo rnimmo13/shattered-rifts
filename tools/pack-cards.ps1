@@ -65,7 +65,10 @@ foreach ($sh in $sheets) {
   $path = Join-Path $srcDir "$($sh.name).png"
   if (-not (Test-Path $path)) { continue }
   $img = New-Object System.Drawing.Bitmap $path
-  $cells = [Panels]::Find($img, $sh.cols, $sh.rows)
+  # a sheet can name its picture rectangles itself ('cells': [[x0,y0,x1,y1],...]) when the gutters cannot be found and the pictures are not an even grid
+  $cells = $null
+  if ($sh.PSObject.Properties['cells']) { $cells = New-Object System.Collections.ArrayList; foreach ($c in $sh.cells) { [void]$cells.Add([int[]]$c) } }
+  else { $cells = [Panels]::Find($img, $sh.cols, $sh.rows) }
   $mode = 'gutters'
   if ($null -eq $cells) {
     $mode = 'equal cells'

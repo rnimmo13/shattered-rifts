@@ -1322,5 +1322,57 @@
    "tin-can-alley",
    "trolley-barricade"
   ]
+ },
+ {
+  "name": "extra-01",
+  "hero": "mixed",
+  "cols": 3,
+  "rows": 2,
+  "ids": [
+   "jokers-gambit",
+   "purging-light",
+   "ace-up-the-sleeve",
+   "loaded-die",
+   "pilfered-time",
+   "steady-nerves"
+  ],
+  "cells": [
+   [
+    0,
+    0,
+    475,
+    437
+   ],
+   [
+    487,
+    0,
+    962,
+    437
+   ],
+   [
+    974,
+    0,
+    1448,
+    437
+   ],
+   [
+    0,
+    450,
+    475,
+    824
+   ],
+   [
+    487,
+    450,
+    962,
+    824
+   ],
+   [
+    974,
+    450,
+    1448,
+    824
+   ]
+  ]
  }
 ]

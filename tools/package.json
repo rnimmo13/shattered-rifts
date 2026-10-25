@@ -20,7 +20,8 @@
     "lanes": "tsx src/lanes.ts",
     "pvpsmoke": "tsx src/pvpsmoke.ts",
     "pvpbalance": "tsx src/pvpbalance.ts",
-    "ghostsim": "tsx src/ghostsim.ts"
+    "ghostsim": "tsx src/ghostsim.ts",
+    "cardprompts:extra": "tsx src/cardprompts-extra.ts"
   },
   "dependencies": {
     "@sr/campaign": "workspace:*",

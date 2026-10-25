@@ -435,8 +435,9 @@ a {
   }
 }
 
+/* the gradient belongs to the window, not to the page: on the body it is only as tall as the screen, so a long page showed its edge (and the text below it sat on the plain fallback colour) */
 body:has(.learn) {
-  background: linear-gradient(180deg, var(--c-navy), var(--c-void) 80%);
+  background: linear-gradient(180deg, var(--c-navy), var(--c-void) 80%) fixed no-repeat var(--c-void);
 }
 
 /* ---- the tooltip layer ---- */
