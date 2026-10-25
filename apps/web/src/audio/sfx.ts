@@ -83,7 +83,14 @@ function ensure(): AudioContext | null {
   ctx = new Ctor();
   master = ctx.createGain();
   master.gain.value = settings.volume * 0.6;
-  master.connect(ctx.destination);
+  // a compressor before the speakers: a heavy low thump can be loud without clipping, and nothing jumps out
+  const comp = ctx.createDynamicsCompressor();
+  comp.threshold.value = -16;
+  comp.knee.value = 8;
+  comp.ratio.value = 6;
+  comp.attack.value = 0.002;
+  comp.release.value = 0.14;
+  master.connect(comp).connect(ctx.destination);
   const len = ctx.sampleRate;
   noiseBuf = ctx.createBuffer(1, len, ctx.sampleRate);
   const d = noiseBuf.getChannelData(0);
@@ -96,6 +103,8 @@ interface ToneOpts {
   vol?: number;
   to?: number;
   delay?: number;
+  /** seconds to reach full volume (default 12 ms at most; a punch wants about 2 ms) */
+  attack?: number;
 }
 
 function tone(c: AudioContext, freq: number, dur: number, o: ToneOpts = {}): void {
@@ -108,7 +117,7 @@ function tone(c: AudioContext, freq: number, dur: number, o: ToneOpts = {}): voi
   if (o.to) osc.frequency.exponentialRampToValueAtTime(Math.max(1, o.to), t0 + dur);
   const v = o.vol ?? 0.3;
   g.gain.setValueAtTime(0.0001, t0);
-  g.gain.exponentialRampToValueAtTime(v, t0 + Math.min(0.012, dur / 4));
+  g.gain.exponentialRampToValueAtTime(v, t0 + (o.attack ?? Math.min(0.012, dur / 4)));
   g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
   osc.connect(g).connect(master);
   osc.start(t0);
@@ -122,6 +131,7 @@ interface NoiseOpts {
   q?: number;
   type?: BiquadFilterType;
   delay?: number;
+  attack?: number;
 }
 
 function noise(c: AudioContext, dur: number, o: NoiseOpts = {}): void {
@@ -137,11 +147,51 @@ function noise(c: AudioContext, dur: number, o: NoiseOpts = {}): void {
   const g = c.createGain();
   const v = o.vol ?? 0.3;
   g.gain.setValueAtTime(0.0001, t0);
-  g.gain.exponentialRampToValueAtTime(v, t0 + Math.min(0.01, dur / 4));
+  g.gain.exponentialRampToValueAtTime(v, t0 + (o.attack ?? Math.min(0.01, dur / 4)));
   g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
   src.connect(f).connect(g).connect(master);
   src.start(t0);
   src.stop(t0 + dur + 0.02);
+}
+
+/** A soft-clipping curve: it rounds the peaks of a loud wave and adds the harmonics that make a low thump audible on small speakers. */
+function softClip(drive: number): Float32Array<ArrayBuffer> {
+  const n = 512;
+  const curve = new Float32Array(new ArrayBuffer(n * 4));
+  for (let i = 0; i < n; i++) {
+    const x = (i / (n - 1)) * 2 - 1;
+    curve[i] = Math.tanh(x * drive) / Math.tanh(drive);
+  }
+  return curve;
+}
+const clipCurves = new Map<number, Float32Array<ArrayBuffer>>();
+
+/** A heavy low hit: a sine that drops fast in pitch, with a near-instant attack and a short tail, driven through a soft clipper. */
+function thump(
+  c: AudioContext,
+  o: { from: number; to: number; dur: number; vol: number; drive?: number; delay?: number },
+): void {
+  if (!master) return;
+  const t0 = c.currentTime + (o.delay ?? 0);
+  const osc = c.createOscillator();
+  osc.type = 'sine';
+  osc.frequency.setValueAtTime(o.from, t0);
+  osc.frequency.exponentialRampToValueAtTime(Math.max(20, o.to), t0 + o.dur * 0.7);
+  const g = c.createGain();
+  g.gain.setValueAtTime(0.0001, t0);
+  g.gain.exponentialRampToValueAtTime(o.vol, t0 + 0.002);
+  g.gain.exponentialRampToValueAtTime(0.0001, t0 + o.dur);
+  const drive = o.drive ?? 2.5;
+  let curve = clipCurves.get(drive);
+  if (!curve) {
+    curve = softClip(drive);
+    clipCurves.set(drive, curve);
+  }
+  const shaper = c.createWaveShaper();
+  shaper.curve = curve;
+  osc.connect(g).connect(shaper).connect(master);
+  osc.start(t0);
+  osc.stop(t0 + o.dur + 0.02);
 }
 
 const arpeggio = (c: AudioContext, notes: number[], step: number, o: ToneOpts = {}) =>
@@ -167,13 +217,18 @@ const RECIPES: Record<Sfx, (c: AudioContext) => void> = {
     tone(c, 90, 0.18, { to: 50, type: 'sine', vol: 0.35, delay: 0.3 });
   },
   attackWindup: (c) => tone(c, 320, 0.16, { to: 190, type: 'sawtooth', vol: 0.08 }),
+  // a landed attack: a pounding low thump, a sharp crack on top of it, and a crunch of body between
   attackHit: (c) => {
-    noise(c, 0.12, { from: 2200, to: 400, vol: 0.34 });
-    tone(c, 130, 0.18, { to: 55, type: 'square', vol: 0.3 });
+    thump(c, { from: 175, to: 40, dur: 0.3, vol: 1, drive: 3.2 });
+    noise(c, 0.03, { type: 'highpass', from: 2600, vol: 0.55, attack: 0.001 });
+    noise(c, 0.16, { from: 1500, to: 140, vol: 0.5, attack: 0.002 });
+    tone(c, 96, 0.14, { to: 52, type: 'triangle', vol: 0.45, attack: 0.002 });
   },
+  // a smaller blow (the same shape, lighter)
   hit: (c) => {
-    noise(c, 0.09, { type: 'bandpass', from: 1700, q: 1.4, vol: 0.3 });
-    tone(c, 210, 0.1, { to: 90, type: 'triangle', vol: 0.28 });
+    thump(c, { from: 210, to: 52, dur: 0.2, vol: 0.75, drive: 2.6 });
+    noise(c, 0.02, { type: 'highpass', from: 2800, vol: 0.4, attack: 0.001 });
+    noise(c, 0.09, { type: 'bandpass', from: 1500, q: 1.2, vol: 0.34, attack: 0.002 });
   },
   death: (c) => {
     noise(c, 0.5, { from: 2600, to: 150, vol: 0.34 });

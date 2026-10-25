@@ -5,6 +5,7 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **Hits land harder:** attacks now hit with a deep thump and a sharp crack instead of a thin buzz. The stance banner no longer sits on top of the potions on a small screen.
 - **First visit shows the real character art:** the page now waits for the character figures (with an Opening the rift message) instead of drawing placeholders after two seconds, and redraws the home screen if they arrive late. Before, you had to refresh to see them.
 - **Two balls in one lane pay twice:** the lane offers a second, different prize of the same kind, with a ×2 mark on the board and on the prize screen. You still choose one prize.
 - **Rift-crossed rares are a choice of three:** every event that gives one (and the Brass Cascade lane) shows three rares from other classes and lets you pick.
