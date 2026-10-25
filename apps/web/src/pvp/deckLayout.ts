@@ -1,7 +1,7 @@
 // How a saved deck is laid out for reading, like a post-game report: its cards by rarity, best first, repeats stacked with a count.
 
 import type { CardDef } from '@sr/combat';
-import { COMBAT_DB, RIFTWALKERS, type HeroId } from '@sr/content/v2';
+import { COMBAT_DB, RIFTWALKERS, isDeckCard, type HeroId } from '@sr/content/v2';
 import type { VaultDeck } from './vault';
 
 /** Best first. */
@@ -31,7 +31,8 @@ export function reportCards(ids: readonly string[]): ReportCard[] {
   for (const id of ids) counts.set(id, (counts.get(id) ?? 0) + 1);
   const out: ReportCard[] = [];
   for (const [id, n] of counts) {
-    const def = Object.hasOwn(COMBAT_DB.cards, id) ? COMBAT_DB.cards[id] : undefined;
+    // (a sanctified or engraved card is a card of the deck like any other)
+    const def = isDeckCard(id) ? COMBAT_DB.cards[id] : undefined;
     if (def) out.push({ def, n });
   }
   return out.sort(
@@ -46,7 +47,7 @@ export function reportCards(ids: readonly string[]): ReportCard[] {
 export function rarityCounts(ids: readonly string[]): { rarity: string; n: number }[] {
   const n = new Map<string, number>();
   for (const id of ids) {
-    const r = Object.hasOwn(COMBAT_DB.cards, id) ? (COMBAT_DB.cards[id]?.rarity ?? 'common') : null;
+    const r = isDeckCard(id) ? (COMBAT_DB.cards[id]?.rarity ?? 'common') : null;
     if (r) n.set(r, (n.get(r) ?? 0) + 1);
   }
   return RARITY_ORDER.filter((r) => n.has(r)).map((r) => ({ rarity: r, n: n.get(r) ?? 0 }));

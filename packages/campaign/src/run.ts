@@ -10,6 +10,7 @@ import {
   RIFTWALKERS,
   V2_DECK_RULES,
   encounter,
+  isDeckCard,
   isSanctified,
   markOf,
   rewardPool,
@@ -398,7 +399,8 @@ export function checkGhostBoss(raw: unknown): GhostBoss | null {
   const deck = g['deck'];
   const boons = g['boons'];
   if (!Array.isArray(deck) || deck.length < V2_DECK_RULES.minSize || deck.length > 80) return null;
-  if (!deck.every((c) => typeof c === 'string' && Object.hasOwn(COMBAT_DB.cards, c))) return null;
+  // (sanctified and engraved cards are real cards of that deck: isDeckCard knows them)
+  if (!deck.every(isDeckCard)) return null;
   if (!Array.isArray(boons) || boons.length > 12) return null;
   if (!boons.every((b) => typeof b === 'string' && Object.hasOwn(COMBAT_DB.boons, b))) return null;
   const name = typeof g['name'] === 'string' ? g['name'].slice(0, 40) : 'A rival';
@@ -407,7 +409,7 @@ export function checkGhostBoss(raw: unknown): GhostBoss | null {
   return {
     name,
     hero: hero as GhostBoss['hero'],
-    deck: [...(deck as string[])],
+    deck: [...(deck)],
     boons: [...(boons as string[])],
     tier,
     stage,

@@ -6,13 +6,22 @@ import { BOONS } from './boons';
 import { V2_CARDS } from './cards';
 import { RUNES } from './pools/totemist';
 import { POTIONS } from './potions';
-import { stripRoll, withRolls } from './sanctify';
+import { isVariant, stripRoll, withRolls } from './sanctify';
 import { ALLIES, ENEMY_UNITS } from './units';
 
 export type RealmId =
   'aurelion' | 'nexus' | 'wyldmaw' | 'umbral' | 'starfall' | 'gloomfen' | 'midden';
 export type HeroId =
-  'knight' | 'engineer' | 'hunter' | 'trapper' | 'assassin' | 'totemist' | 'barbarian' | 'spellblade' | 'necromancer' | 'drunkard';
+  | 'knight'
+  | 'engineer'
+  | 'hunter'
+  | 'trapper'
+  | 'assassin'
+  | 'totemist'
+  | 'barbarian'
+  | 'spellblade'
+  | 'necromancer'
+  | 'drunkard';
 
 export interface Riftwalker {
   hero: HeroDef;
@@ -445,6 +454,14 @@ export function rewardPool(hero: HeroId): string[] {
       !c.source,
   ).map((c) => c.id);
 }
+
+/**
+ * Is this a card a deck may hold: a listed card, or one derived from one (a sanctified roll "hi~strike", an engraved tag "hold^strike").
+ * Every check of a deck that came from outside (a save, an Arena deck, a ghost) uses this, so those cards travel everywhere.
+ */
+export const isDeckCard = (id: unknown): id is string =>
+  typeof id === 'string' &&
+  (Object.hasOwn(COMBAT_DB.cards, id) || (isVariant(id) && COMBAT_DB.cards[id] !== undefined));
 
 /** The pool a card belongs to (a Riftwalker id, or 'neutral'). */
 export const poolOf = (cardId: string): string => COMBAT_DB.cards[cardId]?.hero ?? 'neutral';

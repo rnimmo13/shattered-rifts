@@ -2,7 +2,7 @@
 // that it is a legal deck of a real Riftwalker. That is enough for a friends test.)
 
 import { canAdd, MAX_TIER } from '@sr/campaign';
-import { COMBAT_DB, RIFTWALKERS, V2_DECK_RULES, isVariant, canonicalHero } from '@sr/content/v2';
+import { COMBAT_DB, RIFTWALKERS, V2_DECK_RULES, isDeckCard, canonicalHero } from '@sr/content/v2';
 import type { Entry } from './protocol';
 
 export const MAX_DECK = 80;
@@ -21,8 +21,7 @@ export interface Rejected {
   message: string;
 }
 
-const isCardId = (id: string): boolean =>
-  Object.hasOwn(COMBAT_DB.cards, id) || (isVariant(id) && COMBAT_DB.cards[id] !== undefined);
+const isCardId = (id: string): boolean => isDeckCard(id);
 
 // Names are shown to other players, so abusive ones are replaced. Letters are compared after folding look-alikes (f u c k, f*ck,
 // sh1t, Fuuuck) so the usual disguises do not work. Strong stems match anywhere in the name; short or ambiguous words only

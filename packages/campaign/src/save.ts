@@ -7,11 +7,9 @@ import {
   RIFTWALKERS,
   V2_DECK_RULES,
   canonicalHero,
-  isVariant,
+  isDeckCard,
 } from '@sr/content/v2';
-const hasCard = (id: unknown): boolean =>
-  typeof id === 'string' &&
-  (Object.hasOwn(COMBAT_DB.cards, id) || (isVariant(id) && COMBAT_DB.cards[id] !== undefined));
+const hasCard = (id: unknown): boolean => isDeckCard(id);
 import type { MapNode, NodeKind, RunPhase, RunState } from './types';
 import { FINAL_STAGE } from './mapgen';
 import { checkGhostBoss } from './run';
