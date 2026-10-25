@@ -19,6 +19,8 @@ export interface MapNode {
   kind: NodeKind;
   /** Duel, Elite and Warden nodes: the encounter that waits here (an id from the content's ENCOUNTERS). */
   enemyId?: string;
+  /** Warden nodes beyond Rift Tier 3: the Warden may be a ghost (a deck from the Arena) in place of the usual one, if the server can supply one; `enemyId` is the Warden to fight if not */
+  ghost?: boolean;
   /** Merchant nodes: the Riftwalker whose cards this visiting merchant sells (a Rift-crossed stranger), shown on the map. */
   crossed?: string;
   /** Ids of the nodes on the next floor this one connects to. */
@@ -226,8 +228,24 @@ export interface PreludeOffer {
 }
 
 /** What the current node is asking for. Only the field matching `phase` is meaningful. */
+/** A deck from the Arena that stands in for a Warden: someone's Riftwalker, cards and Boons, played by the computer. */
+export interface GhostBoss {
+  /** whose deck it was (shown as "<name>'s ghost") */
+  name: string;
+  hero: HeroId;
+  deck: string[];
+  boons: string[];
+  /** how far its owner had got when it was entered */
+  tier: number;
+  stage: number | null;
+}
+
 export interface NodeContext {
   nodeId: string;
+  /** a Warden that is a ghost: the deck that was fetched for it (kept, so a retry or a reload meets the same one) */
+  ghost?: GhostBoss;
+  /** the server has been asked for this Warden's ghost (whether or not one came): do not ask again */
+  ghostAsked?: boolean;
   /** reward / gift: the cards on offer */
   offers?: string[];
   /** reward: shards already granted for the win */

@@ -73,7 +73,7 @@ export async function viewBoard(
 }
 
 async function post(
-  what: 'id' | 'run' | 'view',
+  what: 'id' | 'run' | 'view' | 'ghostboss',
   extra: Record<string, unknown>,
 ): Promise<Record<string, unknown> | null> {
   try {
@@ -86,6 +86,70 @@ async function post(
     });
     const data = (await res.json()) as Record<string, unknown>;
     return data['ok'] === true ? data : null;
+  } catch {
+    return null;
+  }
+}
+
+/** One deck that can be met as a ghost, as the Ghost decks page shows it (never its cards or Boons). */
+export interface GhostDeckRow {
+  name: string;
+  hero: string;
+  tier: number;
+  stage: number | null;
+  /** when its owner played it */
+  wins: number;
+  losses: number;
+  /** when people fought it as a ghost */
+  ghostWins: number;
+  ghostLosses: number;
+  lastAt: number;
+}
+
+/**
+ * A ghost deck to stand in for a campaign Warden (null when there is none, or the server cannot be reached: the usual Warden is
+ * fought). The campaign checks it before it believes it (checkGhostBoss).
+ */
+export async function fetchGhostBoss(): Promise<unknown> {
+  // (in a development build a ghost can be put in by hand, to try the fight without a server: localStorage 'sr.debug.ghostboss')
+  if (import.meta.env.DEV) {
+    try {
+      const manual = localStorage.getItem('sr.debug.ghostboss');
+      if (manual) return JSON.parse(manual) as unknown;
+    } catch {
+      /* no manual ghost */
+    }
+  }
+  const d = await Promise.race([
+    post('ghostboss', {}),
+    new Promise<null>((resolve) => window.setTimeout(() => resolve(null), 6000)),
+  ]);
+  return d?.['ghost'] ?? null;
+}
+
+/** The decks that can be met as ghosts (null when the server cannot be reached). */
+export async function viewGhostDecks(): Promise<GhostDeckRow[] | null> {
+  try {
+    const res = await fetch(`${httpBase()}/pvp/board/ghostdecks`);
+    const d = (await res.json()) as { ok?: unknown; decks?: unknown };
+    if (d.ok !== true || !Array.isArray(d.decks)) return null;
+    return (d.decks as Record<string, unknown>[]).flatMap((r) =>
+      typeof r['name'] === 'string' && typeof r['hero'] === 'string' && typeof r['tier'] === 'number'
+        ? [
+            {
+              name: r['name'],
+              hero: r['hero'],
+              tier: r['tier'],
+              stage: typeof r['stage'] === 'number' ? r['stage'] : null,
+              wins: Number(r['wins']) || 0,
+              losses: Number(r['losses']) || 0,
+              ghostWins: Number(r['ghostWins']) || 0,
+              ghostLosses: Number(r['ghostLosses']) || 0,
+              lastAt: Number(r['lastAt']) || 0,
+            },
+          ]
+        : [],
+    );
   } catch {
     return null;
   }

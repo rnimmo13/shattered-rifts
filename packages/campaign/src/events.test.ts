@@ -434,3 +434,47 @@ describe('Rift-crossed and sacrifice events', () => {
     expect(after.marks).toEqual([]);
   });
 });
+
+describe('letting a card go', () => {
+  /** does this option take a card out of the deck on purpose (a removal the player chooses, not a loss)? */
+  const removes = (steps: DealStep[]): boolean =>
+    steps.some(
+      (s) =>
+        (s.k === 'remove' && s.of !== 'any') ||
+        (s.k === 'chance' && (removes(s.win) || removes(s.lose))),
+    );
+
+  it('a good share of the ordinary events offer to let a basic card (or a Wound) go', () => {
+    const base = eventRun('removal-share');
+    let withRemoval = 0;
+    let total = 0;
+    for (const def of EVENTS) {
+      const ev = def.build({ ...base, shards: 500, hp: 80 });
+      total += def.weight;
+      // (the hand-written ones: the scrapyard, the healer's cleansing and the bonfire)
+      const handWritten = ['scrapyard', 'healer', 'bonfire'].includes(def.id);
+      if (handWritten || ev.options.some((o) => o.deal && removes(o.deal))) withRemoval += def.weight;
+    }
+    expect(withRemoval / total).toBeGreaterThan(0.3);
+  });
+
+  it('an option that lets a card go is left off, not the whole event, when there is no basic card to give', () => {
+    const base = eventRun('removal-none');
+    // a deck of nothing but the Riftwalker's own cards: no plain Attack or Defend left
+    const own = base.deck.filter((id) => COMBAT_DB.cards[id]?.hero !== 'neutral');
+    const bare: RunState = {
+      ...base,
+      deck: Array.from({ length: 10 }, (_, i) => own[i % own.length] as string),
+      shards: 500,
+      hp: 80,
+    };
+    const ferry = EVENTS.find((e) => e.id === 'ferry')!;
+    expect(ferry.when(bare)).toBe(true);
+    const ev = ferry.build(bare);
+    expect(ev.options.filter((o) => o.deal && removes(o.deal))).toHaveLength(0);
+    expect(ev.options.length).toBeGreaterThanOrEqual(2);
+    // and with a basic card in the deck, it is there
+    const ok = ferry.build({ ...bare, deck: [...bare.deck, 'strike'] });
+    expect(ok.options.some((o) => o.deal && removes(o.deal))).toBe(true);
+  });
+});

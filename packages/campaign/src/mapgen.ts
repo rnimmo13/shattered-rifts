@@ -42,6 +42,9 @@ function pick<T>(rng: RngState, list: readonly T[]): T {
   return list[nextInt(rng, list.length)] as T;
 }
 
+/** The chances (percent) for each middle-floor node: an Elite (the first of a stage, then later ones; from floor 3), a Merchant (at most 2), a Shrine (from floor 3), an Event; the rest are fights. */
+export const NODE_ODDS = { eliteFirst: 22, eliteMore: 12, merchant: 11, shrine: 8, event: 24 } as const;
+
 /** Kind of a node on the middle floors given what has already been placed this stage. */
 function rollKind(
   rng: RngState,
@@ -51,10 +54,15 @@ function rollKind(
   maxElites: number,
 ): NodeKind {
   const r = nextInt(rng, 100);
-  if (floor >= 3 && elitesPlaced < maxElites && r < (elitesPlaced < 1 ? 22 : 12)) return 'elite';
-  if (merchantsPlaced < 2 && r >= 22 && r < 33) return 'merchant';
-  if (floor >= 3 && r >= 33 && r < 41) return 'shrine';
-  if (r >= 41 && r < 65) return 'event';
+  const o = NODE_ODDS;
+  const merchantAt = o.eliteFirst;
+  const shrineAt = merchantAt + o.merchant;
+  const eventAt = shrineAt + o.shrine;
+  if (floor >= 3 && elitesPlaced < maxElites && r < (elitesPlaced < 1 ? o.eliteFirst : o.eliteMore))
+    return 'elite';
+  if (merchantsPlaced < 2 && r >= merchantAt && r < shrineAt) return 'merchant';
+  if (floor >= 3 && r >= shrineAt && r < eventAt) return 'shrine';
+  if (r >= eventAt && r < eventAt + o.event) return 'event';
   return 'duel';
 }
 
@@ -69,12 +77,18 @@ function crossedFor(rng: RngState, character: string | undefined): string | unde
  * `realm` is the stage's realm; `pool` is where its enemies come from (just that realm, except in the Rift, which draws on
  * the two realms the run has not visited).
  */
+/** Warden ghosts: from the Rift Tier after this one, a Warden may be a ghost deck. */
+export const GHOST_FROM_TIER = 3;
+/** The chance (percent) that a Warden beyond that is a ghost, so players do not meet the same few Wardens over and over. */
+export const GHOST_WARDEN_CHANCE = 35;
+
 export function generateStageMap(
   rng: RngState,
   stage: number,
   realm: StageRealm,
   character?: string,
   pool: readonly StageRealm[] = stage >= FINAL_STAGE ? ['umbral', 'wyldmaw'] : [realm],
+  tier = 1,
 ): StageMap {
   const regulars = pool.flatMap((r) => enemiesOf(r, 'regular'));
   const elites = pool.flatMap((r) => enemiesOf(r, 'elite'));
@@ -134,6 +148,8 @@ export function generateStageMap(
     enemyId: wardenFor(stage >= FINAL_STAGE ? 'rift' : realm).id,
     next: [],
   };
+  // beyond the first few Rift Tiers, now and then the Warden is a ghost (decided with the map, so the map can say so)
+  if (tier > GHOST_FROM_TIER && nextInt(rng, 100) < GHOST_WARDEN_CHANCE) warden.ghost = true;
 
   // edges: every node leads forward to 1-2 nodes by position; every node on the next floor is reachable
   for (let f = 0; f < FLOORS; f++) {

@@ -7,6 +7,7 @@ const hasCard = (id: unknown): boolean =>
   (Object.hasOwn(COMBAT_DB.cards, id) || (rollOf(id) !== 0 && COMBAT_DB.cards[id] !== undefined));
 import type { MapNode, NodeKind, RunPhase, RunState } from './types';
 import { FINAL_STAGE } from './mapgen';
+import { checkGhostBoss } from './run';
 
 export const RUN_SAVE_VERSION = 2;
 
@@ -97,6 +98,7 @@ function validContext(r: RunState): boolean {
   switch (r.phase) {
     case 'duel': {
       const node = r.map.nodes.find((n) => n.id === c['nodeId']);
+      if (c['ghost'] !== undefined && checkGhostBoss(c['ghost']) === null) return false;
       return !!node?.enemyId;
     }
     case 'reward':

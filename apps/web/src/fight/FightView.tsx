@@ -35,7 +35,6 @@ import { handCardWidth, handReserve } from '../hand/fanLayout';
 import { reduceEvent, startingDisplay } from './display';
 import { heroFigure, heroProp, hoverOf, unitFigure, unitHeight } from './art';
 import { FightHand, type HandCard } from './FightHand';
-import { FightCard } from './FightCard';
 import { Grimoire } from './Grimoire';
 import { UnitPlates, type Placed } from './Plates';
 import { ErrorDetails } from '../ui/ErrorDetails';
@@ -55,6 +54,8 @@ import { AuraList, LumenCounter, RuneArc, SnareRow } from './SidePanel';
 import { StanceAura, StanceChip } from './StanceAura';
 import { BattleLog } from './BattleLog';
 import { LOG_LIMIT, Namer, createDescriber, type LogLine } from './logLines';
+import { FlourishCard, type Flourish } from './FlourishCard';
+import { useClearOfBelt } from './clearOfBelt';
 import type { FighterSpec } from './Fighters';
 import { attackFor } from './attackStyles';
 import type { FeedItem, PvpLink } from '../pvp/link';
@@ -193,6 +194,30 @@ function specsFrom(db: CombatDb, s: CombatState, me: Side = 'a'): FighterSpec[] 
   return out;
 }
 
+/** A player's name above their character in the Arena (with their progress and stance); it slides clear of the potion belt on a small screen. */
+function WhoTag(props: {
+  mine: boolean;
+  x: number;
+  y: number;
+  name: string;
+  progress: string;
+  unit: Parameters<typeof StanceChip>[0]['unit'];
+}) {
+  const ref = useRef<HTMLDivElement>(null);
+  useClearOfBelt(ref);
+  return (
+    <div
+      ref={ref}
+      className={`fight__who fight__who--${props.mine ? 'me' : 'foe'}`}
+      style={{ left: props.x, top: props.y }}
+    >
+      <b>{props.name}</b>
+      <small>{props.progress}</small>
+      <StanceChip unit={props.unit} />
+    </div>
+  );
+}
+
 export function FightView(props: {
   db: CombatDb;
   setup: CombatSetup;
@@ -206,9 +231,17 @@ export function FightView(props: {
   venue?: VenueId;
   /** a PvP match: you sit in one seat, the opponent's moves arrive from the server */
   pvp?: PvpLink;
+  /** a campaign fight picked up again: the moves already made, replayed silently before the player carries on */
+  resume?: Action[];
+  /** every move the player makes in a campaign fight (kept so a reload can resume it) */
+  onMove?: (a: Action) => void;
+  /** the moves to resume could not be replayed (the rules changed under them): the fight starts again from the top */
+  onResumeFailed?: () => void;
 }) {
-  const { db, setup } = props;
+  const { db, setup, onMove, onResumeFailed } = props;
   const pvp = props.pvp ?? null;
+  /** the moves of a fight being resumed (read once, when the fight is made) */
+  const [resumeMoves] = useState<Action[]>(() => props.resume ?? []);
   const mySide: Side = pvp?.seat ?? 'a';
   const foeName = pvp?.names[mySide === 'a' ? 'b' : 'a'] ?? 'Enemy';
   /** the deck and hero in your seat */
@@ -224,6 +257,8 @@ export function FightView(props: {
   const pending = useRef({ all: 0, enemy: 0 });
   const speedRef = useRef(loadSpeed());
   const cancelledRef = useRef(false);
+  /** the move that ended a fight being resumed: played normally, so the result appears */
+  const finishRef = useRef<Action | null>(null);
   const floatId = useRef(0);
   const refuseTimer = useRef<number | undefined>(undefined);
 
@@ -248,7 +283,9 @@ export function FightView(props: {
     setBannerTone(tone);
     setBannerText(text);
   }, []);
-  const [flourish, setFlourish] = useState<CardDef | null>(null);
+  /** the cards just played, on show in the middle of the board (each leaves on its own clock) */
+  const [flourishes, setFlourishes] = useState<Flourish[]>([]);
+  const flourishId = useRef(0);
   const [result, setResult] = useState<FightResult | null>(null);
   const [speed, setSpeed] = useState(loadSpeed);
   const [sound, setSoundOn] = useState(getSound().on);
@@ -326,11 +363,9 @@ export function FightView(props: {
           if (def) {
             const hero = heroOf(e.side);
             if (e.side === mySide || def.kind !== 'snare') {
-              setFlourish(def);
-              window.setTimeout(
-                () => setFlourish((c) => (c === def ? null : c)),
-                650 / speedRef.current,
-              );
+              // the card stays on show a good while (it flies to the discard pile when it leaves: see FlourishCard)
+              const id = flourishId.current++;
+              setFlourishes((list) => [...list.slice(-3), { id, def, mine: e.side === mySide }]);
             }
             if (def.kind === 'attack') {
               if (e.target) await sc.fighters.attack(hero, e.target);
@@ -597,6 +632,44 @@ export function FightView(props: {
         s.setBottomReserve(handReserve(handCardWidth(window.innerWidth, window.innerHeight)));
         setBaseSpeed(speedRef.current);
         const start = createCombat(db, setup);
+        // a fight picked up again (the page was reloaded): the moves made so far are replayed silently, from the same seed, so it is
+        // exactly where it was. A move that ended the fight is left to play out normally, so the result still appears.
+        let from = start.state;
+        let resumedAt = 0;
+        let finishing: Action | null = null;
+        if (!pvp && resumeMoves.length > 0) {
+          try {
+            let st = start.state;
+            for (let i = 0; i < resumeMoves.length; i++) {
+              const move = resumeMoves[i] as Action;
+              const next = applyAction(db, st, move).state;
+              if (next.winner) {
+                finishing = move;
+                break;
+              }
+              st = next;
+              resumedAt = i + 1;
+            }
+            from = st;
+          } catch (err) {
+            console.warn('[fight] the saved moves could not be replayed; starting again', err);
+            from = start.state;
+            resumedAt = 0;
+            finishing = null;
+            onResumeFailed?.();
+          }
+        }
+        if (resumedAt > 0 || finishing) {
+          game.current = { state: from, display: clone(from) };
+          setLive(from);
+          s.fighters.sync(specsFrom(db, game.current.display, mySide), { instant: true });
+          show(game.current.display);
+          setReady(true);
+          setLocked(false);
+          // (the move that ended it is played once the screen is ready: see below)
+          finishRef.current = finishing;
+          return;
+        }
         game.current = { state: start.state, display: startingDisplay(start.state) };
         setLive(start.state);
         s.fighters.sync(specsFrom(db, game.current.display, mySide), { instant: true });
@@ -675,13 +748,15 @@ export function FightView(props: {
         setAimPotion(null);
         setReleasing(null);
         if (!history) enqueue(r.events, r.state, pvp ? seat !== mySide : undefined);
+        // a campaign fight keeps every move, so a reload can resume it
+        if (!history && !pvp) onMove?.(a);
         return true;
       } catch (err) {
         console.warn('[fight] illegal action', err);
         return false;
       }
     },
-    [db, enqueue, show, legalFor, mySide, pvp],
+    [db, enqueue, show, legalFor, mySide, pvp, onMove],
   );
 
   const act = useCallback(
@@ -752,6 +827,14 @@ export function FightView(props: {
     if (!ready || !pvp) return;
     return pvp.feed.attach(onFeed);
   }, [ready, pvp, onFeed]);
+
+  // a resumed fight whose last move ended it: that move plays out now, so the win or loss shows as it did
+  useEffect(() => {
+    const a = finishRef.current;
+    if (!ready || !a) return;
+    finishRef.current = null;
+    applyMove(a, mySide, false);
+  }, [ready, applyMove, mySide]);
 
   // keep the legal list fresh whenever the real state changes
   useEffect(() => {
@@ -1128,15 +1211,15 @@ export function FightView(props: {
               const at = s === mySide ? heroPlaced : foePlaced;
               const p = pvp.progress[s];
               return at ? (
-                <div
+                <WhoTag
                   key={s}
-                  className={`fight__who fight__who--${s === mySide ? 'me' : 'foe'}`}
-                  style={{ left: at.x, top: Math.max(4, at.y - at.h - 10) }}
-                >
-                  <b>{pvp.names[s]}</b>
-                  <small>{progressLabel(p.tier, p.stage)}</small>
-                  <StanceChip unit={at.unit} />
-                </div>
+                  mine={s === mySide}
+                  x={at.x}
+                  y={Math.max(4, at.y - at.h - 10)}
+                  name={pvp.names[s]}
+                  progress={progressLabel(p.tier, p.stage)}
+                  unit={at.unit}
+                />
               ) : null;
             })}
           {([mySide, ...(pvp ? [foeSide] : [])] as const).map((s) => {
@@ -1169,7 +1252,7 @@ export function FightView(props: {
               <span>Reload this page: you are put straight back into the match.</span>
             </div>
           )}
-          <BattleLog lines={logLines} />
+          <BattleLog lines={logLines} db={db} />
           {releasing && (
             <div className="fight__banner fight__banner--info" role="status">
               <span>Your companions are full. Choose one to release.</span>
@@ -1183,11 +1266,17 @@ export function FightView(props: {
               <span>{banner}</span>
             </div>
           )}
-          {flourish && (
-            <div className="fight__flourish" aria-hidden>
-              <FightCard db={db} def={flourish} width={Math.round(cw * 1.5)} />
-            </div>
-          )}
+          {flourishes.map((f, i) => (
+            <FlourishCard
+              key={f.id}
+              db={db}
+              flourish={f}
+              width={Math.round(cw * 1.5)}
+              speed={speed}
+              offset={(i - (flourishes.length - 1) / 2) * 56}
+              onDone={(id) => setFlourishes((list) => list.filter((x) => x.id !== id))}
+            />
+          ))}
 
           <FightHand
             db={db}
@@ -1372,6 +1461,23 @@ export function FightView(props: {
               tip={(card) => snareTip(db, card)}
             />
           )}
+          {pvp && foePlaced && (
+            // the opponent's Traps: you can see that they are there (face down), never what they do
+            <SnareRow
+              db={db}
+              me={view.sides[foeSide]}
+              foe
+              cx={foePlaced.x}
+              top={Math.max(30, foePlaced.y - 44)}
+              dx={view.sides[foeSide].runes.length > 0 ? 245 : 118}
+              tip={() => ({
+                kicker: "Opponent's Trap",
+                title: "A face-down Trap",
+                text: "Your opponent set this face down. You will not know what it does until it springs.",
+                hint: "It springs on its own when its trigger happens.",
+              })}
+            />
+          )}
           <button
             className={`btn btn--primary fight__end${!anyPlay && !waiting ? ' is-ready' : ''}`}
             disabled={waiting || finished || view.pending !== null}
@@ -1381,7 +1487,7 @@ export function FightView(props: {
             <kbd>E</kbd>
           </button>
 
-          {tip && !flourish && (
+          {tip && flourishes.length === 0 && (
             <aside className="fight__tip" role="note" aria-live="polite">
               <b>{tip.title}</b>
               <p>{tip.text}</p>

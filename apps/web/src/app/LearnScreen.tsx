@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { COMBAT_DB, RIFTWALKERS, heroesByRealm } from '@sr/content/v2';
 import { KEYWORD_INFO, STATUS_INFO } from '../fight/info';
 import { TIP_RULES } from '../fight/tips';
+import { LearnOdds } from './LearnOdds';
+import { SHOW_ODDS } from './learnFlags';
 
 /** The keywords worth a place in the combat tab, in the order a new player meets them. */
 const CORE_KEYWORDS = ['mana', 'barrier', 'companion', 'taunt', 'snare', 'power'];
@@ -17,6 +19,7 @@ const TABS = [
   { id: 'cards', label: 'Card words' },
   { id: 'status', label: 'Statuses' },
   { id: 'heroes', label: 'Riftwalkers' },
+  { id: 'odds', label: 'Odds & numbers' },
 ] as const;
 type Tab = (typeof TABS)[number]['id'];
 
@@ -61,7 +64,7 @@ export function LearnScreen() {
       </a>
       <h1 className="learn__title">How to play</h1>
       <nav className="learn__tabs" aria-label="How to play">
-        {TABS.map((t) => (
+        {TABS.filter((t) => t.id !== 'odds' || SHOW_ODDS).map((t) => (
           <button
             key={t.id}
             aria-pressed={tab === t.id}
@@ -72,6 +75,8 @@ export function LearnScreen() {
           </button>
         ))}
       </nav>
+
+      {tab === 'odds' && SHOW_ODDS && <LearnOdds />}
 
       {tab === 'start' && (
         <section>
@@ -211,6 +216,10 @@ export function LearnScreen() {
               ))}
           </dl>
           <h3>Bad for whoever has them</h3>
+          <p className="learn__note">
+            Cards in the Neutral cleansing line (Shrug It Off, Steady Nerves) lessen every one of these
+            on you by a stack or two. Only the rarest, Purging Light, dispels them completely.
+          </p>
           <dl>
             {statuses
               .filter((s) => s.tone === 'bad')

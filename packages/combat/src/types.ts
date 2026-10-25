@@ -171,6 +171,8 @@ export type Op =
   | { op: 'loseHp'; amount: number; to: Sel; scale?: Scale } // unblockable, unmodified
   | { op: 'barrier'; amount: number; to: Sel; scale?: Scale }
   | { op: 'heal'; amount: number; to: Sel; scale?: Scale }
+  /** lessen every debuff (Exposed, Faltering, Seared, Stunned, Brittle, Doom) on the target by `amount` stacks; `all` dispels them completely */
+  | { op: 'cleanse'; amount: number; to: Sel; all?: boolean }
   /** `temp`: the stacks wear off again at the end of the acting side's turn (a Flex) */
   | { op: 'status'; status: StatusId; amount: number; to: Sel; scale?: Scale; temp?: boolean }
   /** multiply the stacks of a status already on the target (floor); 2 doubles it */

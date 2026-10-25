@@ -96,6 +96,9 @@ function rollRarity(rng: RngState, quality: OfferQuality, luck: Luck = 'normal')
   return 'common';
 }
 
+/** The chance (percent) that a card in an ordinary offer is a Rift-crossed card (another Riftwalker's). */
+export const CROSSED_OFFER_CHANCE = 3;
+
 const LADDER = ['legendary', 'rare', 'uncommon', 'common'];
 
 /** `count` distinct cards to choose from, falling down the rarity ladder when a rarity has nothing left. */
@@ -112,7 +115,7 @@ export function offerCards(
   const out: string[] = [];
   for (let guard = 0; out.length < count && guard < 200; guard++) {
     // a Rift-crossed card (another class's) is rare: about 3 in 100, so rewards are nearly always for your own deck
-    const fromCrossed = nextInt(rng, 100) < 3 && crossed.length > 0;
+    const fromCrossed = nextInt(rng, 100) < CROSSED_OFFER_CHANCE && crossed.length > 0;
     const pool = (fromCrossed ? crossed : own).filter((id) => !out.includes(id));
     if (pool.length === 0) continue;
     let from = LADDER.indexOf(rollRarity(rng, quality, luck));
@@ -160,6 +163,9 @@ export function boonOfRarity(
   return (from[nextInt(rng, from.length)] as (typeof BOONS)[number]).id;
 }
 
+/** The chance (percent) that the Warden's Gift includes one of your Legendary cards, by card luck. */
+export const GIFT_LEGEND_CHANCE: Record<Luck, number> = { normal: 30, lucky: 55, blessed: 85 };
+
 /**
  * The Warden's Gift: rare cards of YOUR class (never Neutral, Warden or other classes' cards), and sometimes one of your
  * legendaries as well (more often with better luck). It can be skipped like any card reward.
@@ -177,7 +183,7 @@ export function giftOffers(
   );
   const out: string[] = [];
   const legends = own.filter((id) => rarityOf(id) === 'legendary');
-  const chance = luck === 'blessed' ? 85 : luck === 'lucky' ? 55 : 30;
+  const chance = GIFT_LEGEND_CHANCE[luck];
   if (legends.length && nextInt(rng, 100) < chance)
     out.push(legends[nextInt(rng, legends.length)] as string);
   const rares = own.filter((id) => rarityOf(id) === 'rare' && !out.includes(id));
@@ -188,7 +194,8 @@ export function giftOffers(
   return out;
 }
 
-const BOON_WEIGHTS: Record<OfferQuality, Record<string, number>> = {
+/** The chance of each Boon rarity (by where the Boon comes from). */
+export const BOON_WEIGHTS: Record<OfferQuality, Record<string, number>> = {
   duel: { common: 70, uncommon: 25, rare: 5 },
   elite: { common: 45, uncommon: 40, rare: 15 },
 };
@@ -220,9 +227,12 @@ export function offerBoon(
   return (left[nextInt(rng, left.length)] as (typeof BOONS)[number]).id;
 }
 
+/** The chance of each potion rarity. */
+export const POTION_WEIGHTS = { common: 60, uncommon: 30, rare: 10 } as const;
+
 /** A random Potion, weighted toward common ones. */
 export function offerPotion(rng: RngState): string {
-  const weights = { common: 60, uncommon: 30, rare: 10 } as const;
+  const weights = POTION_WEIGHTS;
   const total = 100;
   let r = nextInt(rng, total);
   let want: keyof typeof weights = 'common';

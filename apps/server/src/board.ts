@@ -265,6 +265,50 @@ export class Leaderboard extends DurableObject<Env> {
     return json({ ok: true, registered: true });
   }
 
+  /**
+   * A ghost to stand in for a campaign Warden: one of the better decks (the upper half by wins), never the asker's own, whatever its
+   * Riftwalker. Its cards and Boons go to the player for that one fight (they are played against them), nothing about its owner but a name.
+   */
+  private ghostBoss(b: Record<string, unknown>, now: number): Response {
+    const requester = isId(b['requester']) ? b['requester'] : null;
+    if (requester && !this.within(`ghost-boss:${requester}`, HOUR, 30, now))
+      return json({ ok: true, ghost: null, limited: true });
+    // (and by address, so someone with no id cannot ask over and over to collect the decks)
+    const ip = typeof b['ip'] === 'string' ? b['ip'].slice(0, 64) : 'unknown';
+    if (!this.within(`ghost-boss-ip:${ip}`, HOUR, 40, now))
+      return json({ ok: true, ghost: null, limited: true });
+    const rows = this.ctx.storage.sql
+      .exec<GhostSql>(
+        `SELECT id, owner, owner_name, hero, '' AS deck, '' AS boons, tier, stage, wins, losses, ghost_wins, ghost_losses, last_at
+           FROM ghosts WHERE last_at >= ?
+          ORDER BY (wins + ghost_wins) DESC, last_at DESC LIMIT 400`,
+        now - 31 * DAY,
+      )
+      .toArray();
+    const chosen = pickGhost(
+      rows.map(toDeck).filter((d) => d.owner !== requester),
+      null,
+      Math.random(),
+      now,
+    );
+    if (!chosen) return json({ ok: true, ghost: null });
+    const row = this.ctx.storage.sql
+      .exec<GhostSql>('SELECT * FROM ghosts WHERE id = ?', chosen.id)
+      .toArray()[0];
+    if (!row) return json({ ok: true, ghost: null });
+    return json({
+      ok: true,
+      ghost: {
+        name: row.owner_name,
+        hero: row.hero,
+        deck: parseList(row.deck),
+        boons: parseList(row.boons),
+        tier: row.tier,
+        stage: row.stage,
+      },
+    });
+  }
+
   /** The ghost for someone to face: one of the better decks (the upper half by wins) that is not the deck they play. */
   private async pick(b: Record<string, unknown>, now: number): Promise<Response> {
     if (!isId(b['requester'])) return json({ ok: false, error: 'bad-request' }, 400);
@@ -392,6 +436,34 @@ export class Leaderboard extends DurableObject<Env> {
       ghosts: rankGhosts(games),
       players: all.slice(0, BOARD_SIZE).map(withoutPlayer),
       you: this.placeOf(all, player),
+    };
+  }
+
+  /**
+   * The decks that can be met as ghosts, for the Ghost decks page: whose, which Riftwalker, how far it got and how it has done. Never
+   * the cards, the Boons, the owner's id or the deck's id: only what a player may know before fighting it.
+   */
+  private ghostDecks(now: number): Record<string, unknown> {
+    const rows = this.ctx.storage.sql
+      .exec<GhostSql>(
+        `SELECT id, owner, owner_name, hero, '' AS deck, '' AS boons, tier, stage, wins, losses, ghost_wins, ghost_losses, last_at
+           FROM ghosts WHERE last_at >= ? ORDER BY last_at DESC LIMIT 200`,
+        now - 31 * DAY,
+      )
+      .toArray();
+    return {
+      ok: true,
+      decks: rows.map((r) => ({
+        name: r.owner_name,
+        hero: r.hero,
+        tier: r.tier,
+        stage: r.stage,
+        wins: r.wins,
+        losses: r.losses,
+        ghostWins: r.ghost_wins,
+        ghostLosses: r.ghost_losses,
+        lastAt: r.last_at,
+      })),
     };
   }
 
@@ -593,6 +665,7 @@ export class Leaderboard extends DurableObject<Env> {
       if (url.pathname === '/pvp') return json(this.pvpBoard(period, now));
       if (url.pathname === '/runs') return json(this.runBoard(period, now));
       if (url.pathname === '/ghosts') return json(this.ghostBoard(period, now));
+      if (url.pathname === '/ghostdecks') return json(this.ghostDecks(now));
       return json({ ok: false, error: 'not-found' }, 404);
     }
     let body: Record<string, unknown>;
@@ -615,6 +688,7 @@ export class Leaderboard extends DurableObject<Env> {
     if (url.pathname === '/pvp') return this.recordPvp(body, now);
     if (url.pathname === '/run') return this.recordRun(body, now);
     if (url.pathname === '/ghost/pick') return this.pick(body, now);
+    if (url.pathname === '/ghost/boss') return this.ghostBoss(body, now);
     if (url.pathname === '/ghost/register') return this.registerSaved(body, now);
     if (url.pathname === '/ghost/result') return this.ghostResult(body, now);
     return json({ ok: false, error: 'not-found' }, 404);

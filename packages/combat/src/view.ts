@@ -361,6 +361,12 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
       const a = amountText(o.amount, o.scale);
       return `Heal ${a.equal ? `HP equal to ${a.num}` : a.num}${o.to === 'self' ? '' : who[o.to]}.`;
     }
+    case 'cleanse': {
+      const noun = o.to === 'self' ? 'you' : o.to === 'target' ? 'the target' : who[o.to].replace(/^ to /, '') || 'the target';
+      return o.all
+        ? `Dispel every debuff on ${noun}.`
+        : `Lessen every debuff on ${noun} by ${o.amount}.`;
+    }
     case 'status': {
       // Fate is a curse: "Curse the target with 6 Fate"
       if (o.status === 'doom' && o.amount >= 0) {

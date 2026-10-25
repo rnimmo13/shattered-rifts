@@ -13,6 +13,7 @@ const RunScreen = lazy(() => import('../run/RunScreen'));
 const FightScreen = lazy(() => import('../fight/FightScreen'));
 const TrialsPractice = lazy(() => import('../trials/TrialsPractice'));
 const PvpScreen = lazy(() => import('../pvp/PvpScreen'));
+const GhostDecksScreen = lazy(() => import('../pvp/GhostDecksScreen'));
 const SavedDecksScreen = lazy(() => import('../pvp/SavedDecksScreen'));
 const LeaderboardScreen = lazy(() =>
   import('../pvp/LeaderboardScreen').then((m) => ({ default: m.LeaderboardScreen })),
@@ -67,6 +68,13 @@ function Screens({ hash }: { hash: string }) {
     return (
       <Suspense fallback={<div className="loading">Opening the rift…</div>}>
         <PvpScreen />
+      </Suspense>
+    );
+  }
+  if (hash === '#/ghosts') {
+    return (
+      <Suspense fallback={<div className="loading">Opening the rift…</div>}>
+        <GhostDecksScreen />
       </Suspense>
     );
   }

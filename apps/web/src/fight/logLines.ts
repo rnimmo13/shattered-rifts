@@ -12,6 +12,8 @@ export interface LogLine {
   id: number;
   text: string;
   tone: LogTone;
+  /** the card this line is about (one played, a Trap that sprang, an Aura started): the log can show it */
+  card?: CardId;
 }
 
 /** What the log needs to know to name things. */
@@ -114,6 +116,7 @@ export function createDescriber(c: LogContext): (e: CombatEvent) => Omit<LogLine
         return {
           text: `${c.who(e.side)} ${e.side === c.me ? 'play' : 'plays'} ${cardName(c.db, e.def)}${target}`,
           tone: tone(e.side),
+          card: e.def,
         };
       }
       case 'potion':
@@ -220,12 +223,14 @@ export function createDescriber(c: LogContext): (e: CombatEvent) => Omit<LogLine
         return {
           text: `${e.side === c.me ? 'Your' : `${c.who(e.side)}'s`} Trap springs: ${name}`,
           tone: tone(e.side),
+          card: e.card,
         };
       }
       case 'power':
         return {
           text: `${c.who(e.side)} ${e.side === c.me ? 'start' : 'starts'} ${cardName(c.db, e.card)}`,
           tone: tone(e.side),
+          card: e.card,
         };
       case 'forge':
         return { text: `Blade sharpened by ${e.amount}`, tone: tone(e.side) };

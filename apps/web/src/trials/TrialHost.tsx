@@ -12,12 +12,15 @@ import './trials.css';
 export interface GameProps {
   /** the ten lane prizes, in order */
   prizes: LanePrize[];
+  /** the lane each of the three balls lands in (drawn fairly from the trial's seed) */
+  lanes: number[];
   /** the balls have all been dropped: the lanes they landed in (each once) */
   onEnd: (won: boolean, earned: number[]) => void;
 }
 
 export function TrialHost(props: {
   prizes: LanePrize[];
+  lanes: number[];
   onDone: (earned: number[]) => void;
   /** a practice game can be played again, and what it earns is only shown, not kept */
   practice?: boolean;
@@ -69,7 +72,7 @@ export function TrialHost(props: {
             </div>
           </>
         )}
-        {stage === 'play' && <Cascade prizes={props.prizes} onEnd={end} />}
+        {stage === 'play' && <Cascade prizes={props.prizes} lanes={props.lanes} onEnd={end} />}
         {stage === 'result' && (
           <div className="trial__result">
             <h3 className="is-won">

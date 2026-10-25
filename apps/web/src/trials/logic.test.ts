@@ -5,12 +5,12 @@ import {
   BOARD_H,
   BOARD_W,
   DT,
+  LANE_H,
   PEGS,
   PEG_R,
   SLOT_COUNT,
   SLOT_W,
   newBall,
-  nudge,
   simulateDrop,
   step,
 } from './physics';
@@ -35,89 +35,45 @@ describe('the cascade board', () => {
     expect(SLOT_W * SLOT_COUNT).toBe(BOARD_W);
   });
 
-  it('every ball lands in a slot, stays on the board, and never goes wild, wherever it is dropped', () => {
+  it('every ball lands in the lane it was drawn for, from any drop point, on the board and in a sane time', () => {
     const r = rng(11);
-    for (let i = 0; i < 200; i++) {
-      const b = newBall(BALL_R + r() * (BOARD_W - 2 * BALL_R));
-      let steps = 0;
-      while (!b.landed && steps < 240 * 40) {
-        step(b, r);
-        steps++;
-        expect(Number.isFinite(b.x) && Number.isFinite(b.y)).toBe(true);
-        expect(b.x).toBeGreaterThanOrEqual(BALL_R - 0.001);
-        expect(b.x).toBeLessThanOrEqual(BOARD_W - BALL_R + 0.001);
-        expect(b.y).toBeLessThanOrEqual(BOARD_H);
-        expect(Math.abs(b.vx)).toBeLessThan(1200);
+    for (let target = 0; target < SLOT_COUNT; target++)
+      for (const x of [BALL_R, 120, 300, 480, BOARD_W - BALL_R, BALL_R + r() * (BOARD_W - 2 * BALL_R)]) {
+        const b = newBall(x, target);
+        let steps = 0;
+        let entryOff = -1;
+        while (!b.landed && steps < 240 * 40) {
+          step(b, r);
+          steps++;
+          expect(Number.isFinite(b.x) && Number.isFinite(b.y)).toBe(true);
+          expect(b.x).toBeGreaterThanOrEqual(BALL_R - 0.001);
+          expect(b.x).toBeLessThanOrEqual(BOARD_W - BALL_R + 0.001);
+          expect(b.y).toBeLessThanOrEqual(BOARD_H);
+          if (entryOff < 0 && b.slot !== null) entryOff = Math.abs(b.x - (target + 0.5) * SLOT_W);
+        }
+        expect(b.landed).toBe(true);
+        expect(b.slot).toBe(target);
+        // it arrives inside its lane, not snapped into it from the next one over
+        expect(entryOff).toBeLessThan(SLOT_W / 2);
+        // a ball takes a while to fall: not instant, not forever
+        expect(steps * DT).toBeGreaterThan(1.5);
+        expect(steps * DT).toBeLessThan(16);
+        expect(b.y).toBeGreaterThan(BOARD_H - LANE_H);
       }
-      expect(b.landed).toBe(true);
-      expect(b.slot).toBeGreaterThanOrEqual(0);
-      expect(b.slot).toBeLessThan(SLOT_COUNT);
-      // a ball takes a while to fall: not instant, not forever
-      expect(steps * DT).toBeGreaterThan(1.5);
-      expect(steps * DT).toBeLessThan(20);
-    }
-  }, 60_000);
+  }, 120_000);
 
-  it('is not predictable: the same drop does not always land in the same lane', () => {
-    const r = rng(3);
-    const lanes = new Set<number>();
-    for (let i = 0; i < 60; i++) lanes.add(simulateDrop(BOARD_W / 2, r));
-    expect(lanes.size).toBeGreaterThanOrEqual(4);
-  });
-
-  it('where you drop it matters, and every lane, the edges included, can come up', () => {
-    const r = rng(5);
-    const N = 400;
-    const counts = (x: number): number[] => {
-      const c = Array.from({ length: SLOT_COUNT }, () => 0);
-      for (let i = 0; i < N; i++) c[simulateDrop(x, r)]!++;
-      return c.map((n) => n / N);
+  it('bounces about: two balls dropped from the same place to the same lane do not take the same path', () => {
+    const path = (seed: number): string => {
+      const r = rng(seed);
+      const b = newBall(300, 4);
+      const xs: number[] = [];
+      for (let i = 0; i < 240 * 20 && !b.landed; i++) {
+        step(b, r);
+        if (i % 120 === 0) xs.push(Math.round(b.x));
+      }
+      return xs.join(',');
     };
-    const left = counts(14);
-    const mid = counts(BOARD_W / 2);
-    const right = counts(BOARD_W - 14);
-    const share = (c: number[], from: number, to: number): number =>
-      c.slice(from, to + 1).reduce((a, b) => a + b, 0);
-    // dropped at an edge, the ball tends to land on that side, dropped in the middle it tends to land in the middle
-    expect(share(left, 0, 4)).toBeGreaterThan(share(right, 0, 4) + 0.1);
-    expect(share(right, 5, 9)).toBeGreaterThan(share(left, 5, 9) + 0.1);
-    // (and a ball is bouncy enough that no drop is a sure thing: the middle lanes are the likeliest, not the only ones)
-    expect(share(mid, 4, 5)).toBeGreaterThan(share(mid, 0, 1));
-    // the edge lanes are reachable from the edge, but are not a given
-    expect(left[0]!).toBeGreaterThan(0.02);
-    expect(right[9]!).toBeGreaterThan(0.02);
-    expect(left[0]!).toBeLessThan(0.5);
-  });
-
-  it('a nudge pushes the ball sideways, and not once it has landed', () => {
-    const b = newBall(300);
-    nudge(b, 1);
-    expect(b.vx).toBeGreaterThan(100);
-    nudge(b, -1);
-    expect(Math.abs(b.vx)).toBeLessThan(1);
-    const r = rng(1);
-    while (!b.landed) step(b, r);
-    nudge(b, 1);
-    expect(b.vx).toBe(0);
-  });
-
-  it('nudges help: leaning toward an edge lands there more often', () => {
-    const r = rng(9);
-    const N = 200;
-    let plain = 0;
-    let leaned = 0;
-    for (let i = 0; i < N; i++) {
-      plain += simulateDrop(180, r) <= 2 ? 1 : 0;
-      const b = newBall(180);
-      let frame = 0;
-      while (!b.landed) {
-        // two nudges to the left early in the fall
-        if (frame === 90 || frame === 180) nudge(b, -1);
-        step(b, r);
-        frame++;
-      }
-      leaned += (b.slot as number) <= 2 ? 1 : 0;
-    }
-    expect(leaned).toBeGreaterThan(plain);
+    expect(path(1)).not.toBe(path(2));
+    expect(simulateDrop(300, 4, rng(9))).toBe(4);
   });
 });

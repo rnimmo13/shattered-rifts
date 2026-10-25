@@ -245,7 +245,7 @@ describe('the run', () => {
     r = finishDuel(lost, true, 51);
     expect(r.hp).toBe(51);
     expect(r.phase).toBe('reward');
-    expect(r.shards).toBe(12);
+    expect(r.shards).toBe(15);
   });
 
   it('collapses at 0 Resolve', () => {
@@ -431,7 +431,7 @@ describe('the other rooms and the rules around them', () => {
         ],
       },
     });
-    expect(chooseEvent(ev, 'shards').shards).toBe(30);
+    expect(chooseEvent(ev, 'shards').shards).toBe(40);
     expect(chooseEvent(ev, 'heal').hp).toBe(20 + Math.ceil(RIFTWALKERS.engineer.hero.maxHp * 0.2));
     expect(chooseEvent(ev, 'card').deck).toContain('rift-bolt');
     expect(chooseEvent(ev, 'leave').phase).toBe('map');

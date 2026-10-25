@@ -151,6 +151,8 @@ const CORS_POST = {
 
 /**
  * GET  /pvp/board/pvp|runs?period=week|month   a leaderboard
+ * POST /pvp/board/ghostboss {code?}              a ghost deck to stand in for a campaign Warden (cards and Boons included)
+ * GET  /pvp/board/ghostdecks                    the decks that can be met as ghosts (who, Riftwalker, how far; never the cards)
  * POST /pvp/board/id    {code?}                 this player's leaderboard id (so a match can carry it)
  * POST /pvp/board/run   {code?, run, name, hero, tier, stage}   a run has reached this far
  */
@@ -158,7 +160,7 @@ async function boardRoute(request: Request, env: Env, what: string, url: URL): P
   if (request.method === 'OPTIONS') return new Response(null, { status: 204, headers: CORS_POST });
   const stub = env.BOARD.get(env.BOARD.idFromName('main'));
   try {
-    if (request.method === 'GET' && (what === 'pvp' || what === 'runs' || what === 'ghosts')) {
+    if (request.method === 'GET' && (what === 'pvp' || what === 'runs' || what === 'ghosts' || what === 'ghostdecks')) {
       const res = await stub.fetch(
         new Request(
           `https://board.invalid/${what}?period=${url.searchParams.get('period') === 'month' ? 'month' : 'week'}`,
@@ -174,7 +176,7 @@ async function boardRoute(request: Request, env: Env, what: string, url: URL): P
         },
       });
     }
-    if (request.method !== 'POST' || (what !== 'id' && what !== 'run' && what !== 'view'))
+    if (request.method !== 'POST' || (what !== 'id' && what !== 'run' && what !== 'view' && what !== 'ghostboss'))
       return json({ ok: false, error: 'not found' }, 404);
     const text = await request.text();
     if (text.length > 2_000) return json({ ok: false, error: 'too big' }, 413);
@@ -197,6 +199,22 @@ async function boardRoute(request: Request, env: Env, what: string, url: URL): P
             kind: body['kind'],
             period: body['period'],
             player: id ?? undefined,
+          }),
+        }),
+      );
+      return json(await res.json(), res.status);
+    }
+    if (what === 'ghostboss') {
+      // a ghost to stand in for a campaign Warden: anyone may ask (someone who is known never meets their own deck)
+      const res = await stub.fetch(
+        new Request('https://board.invalid/ghost/boss', {
+          method: 'POST',
+          body: JSON.stringify({
+            requester: id ?? undefined,
+            // where it came from (hashed), so one address cannot ask over and over to collect decks
+            ip: await sha256(
+              `shattered-rifts-board-ip:${request.headers.get('CF-Connecting-IP') ?? 'local'}`,
+            ),
           }),
         }),
       );

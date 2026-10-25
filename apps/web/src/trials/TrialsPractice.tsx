@@ -2,6 +2,7 @@
 // here is kept.
 
 import { useState } from 'react';
+import { cascadeLanes } from '@sr/campaign';
 import { ChanceCoin } from '../run/ChanceCoin';
 import { SAMPLE_PRIZES, TRIAL_INFO } from './info';
 import { TrialHost } from './TrialHost';
@@ -17,6 +18,7 @@ export default function TrialsPractice() {
       <TrialHost
         key={round}
         prizes={SAMPLE_PRIZES}
+        lanes={cascadeLanes(round * 7919 + 13)}
         practice
         onDone={(earned) => {
           setLast(

@@ -111,7 +111,7 @@ export const MORE_EVENTS: EventDef[] = (
         ['Give your strength (lose 6 max HP): your choice of three Rift-crossed rares', [maxHp(-6), crossedPick('rare')]],
         [
           'Give a Boon (a random Boon is lost): your choice of three Rift-crossed rares, and 40 shards',
-          [loseBoon, crossedPick('rare'), shards(40)],
+          [loseBoon, crossedPick('rare'), shards(50)],
         ],
       ],
     },
@@ -141,7 +141,7 @@ export const MORE_EVENTS: EventDef[] = (
           [mark('map')],
           'You fold the map into your coat. It is a long way to the X.',
         ],
-        ['Sell it: +45 shards', [shards(45)]],
+        ['Sell it: +60 shards', [shards(60)]],
       ],
     },
     {
@@ -154,7 +154,7 @@ export const MORE_EVENTS: EventDef[] = (
       opts: [
         [
           'Dig deep: your choice of three Rift-crossed rares, and 80 shards',
-          [mark('map', true), crossedPick('rare'), shards(80)],
+          [mark('map', true), crossedPick('rare'), shards(105)],
         ],
         [
           'Dig carefully: +8 max HP and heal 25% of your HP',
@@ -205,8 +205,8 @@ export const MORE_EVENTS: EventDef[] = (
           'You clear it. Something rattles loose behind you.',
         ],
         [
-          'Climb down (55% +30 shards, else lose a card and 8 HP)',
-          [chance(55, [shards(30)], [remove('any', 1), hurt(8)])],
+          'Climb down (55% +40 shards, else lose a card and 8 HP)',
+          [chance(55, [shards(40)], [remove('any', 1), hurt(8)])],
         ],
       ],
     },
@@ -252,8 +252,8 @@ export const MORE_EVENTS: EventDef[] = (
       text: 'A dealer in white gloves shuffles a deck with no backs. "Cut it. One card. If it is the right one, you will not forget it."',
       opts: [
         [
-          'Cut for the rare (pay 80 shards): 40% a rare of yours and 60 shards back, else a Static card',
-          [shards(-80), chance(40, [gift('rare'), shards(60)], [junk()])],
+          'Cut for the rare (pay 80 shards): 40% a rare of yours and 80 shards back, else a Static card',
+          [shards(-80), chance(40, [gift('rare'), shards(80)], [junk()])],
         ],
         [
           'Cut for a stranger (pay 30 shards): one chance in four of your choice of three Rift-crossed rares',
@@ -309,6 +309,12 @@ export const MORE_EVENTS: EventDef[] = (
       opts: [
         ['Kneel (lose 20% of your HP): a rare card of your class', [hurtPct(20), gift('rare')]],
         ['Listen (lose 8 HP): two random cards in your deck are upgraded', [hurt(8), upgrade(2)]],
+        [
+          'Offer a card (a random basic card leaves): heal 20% of your HP',
+          [remove('basic'), heal(20)],
+          'The shrine accepts it without comment.',
+          'optional',
+        ],
       ],
     },
     {
@@ -320,7 +326,7 @@ export const MORE_EVENTS: EventDef[] = (
       needs: (r) => r.potions.length >= 2,
       opts: [
         ['Trade two potions: you gain the Boon', [losePotion(2), boon]],
-        ['Trade one potion: +40 shards', [losePotion(1), shards(40)]],
+        ['Trade one potion: +50 shards', [losePotion(1), shards(50)]],
       ],
     },
   ] satisfies DealSpec[]

@@ -22,6 +22,10 @@ export const dmg = (amount: number, to: Sel = 'target', hits?: number): Op =>
   hits && hits > 1 ? { op: 'damage', amount, hits, to } : { op: 'damage', amount, to };
 export const barrier = (amount: number, to: Sel = 'self'): Op => ({ op: 'barrier', amount, to });
 export const heal = (amount: number, to: Sel = 'self'): Op => ({ op: 'heal', amount, to });
+/** Lessen every debuff on the target by `amount` stacks (it never removes one outright: that is `dispel`). */
+export const cleanse = (amount: number, to: Sel = 'self'): Op => ({ op: 'cleanse', amount, to });
+/** Dispel every debuff on the target completely: for the highest rarity of a card only. */
+export const dispel = (to: Sel = 'self'): Op => ({ op: 'cleanse', amount: 0, to, all: true });
 export const status = (st: StatusId, amount: number, to: Sel = 'self', temp = false): Op => ({
   op: 'status',
   status: st,
@@ -278,6 +282,11 @@ export function plus(c: CardDef): CardDef {
         if (o.amount === 0 && o.scale) return o;
         changed = true;
         return { ...o, amount: o.amount + 3 };
+      case 'cleanse':
+        // a dispel is already everything; a cleanse lessens one more stack
+        if (o.all) return o;
+        changed = true;
+        return { ...o, amount: o.amount + 1 };
       case 'status':
         // on/off statuses have nothing to gain from more stacks: their upgrade is a cheaper card instead
         if (

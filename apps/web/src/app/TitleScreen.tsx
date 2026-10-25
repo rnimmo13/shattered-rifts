@@ -176,6 +176,7 @@ export function TitleScreen() {
           <nav className="home__links" aria-label="More">
             <a href="#/decks">Saved decks</a>
             <a href="#/board">Leaderboards</a>
+            <a href="#/ghosts">Ghost decks</a>
             <a href="#/cards">Card library</a>
             <a href="#/learn">How to play</a>
             <a href="#/credits">Credits</a>

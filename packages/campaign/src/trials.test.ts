@@ -5,6 +5,7 @@ import {
   ELITE_EVENTS,
   availableNodes,
   buildElite,
+  cascadeLanes,
   chooseEvent,
   claimTrialPrize,
   enterNode,
@@ -41,6 +42,19 @@ function eliteRun(i: number, over: Partial<RunState> = {}): RunState {
   return { ...entered, context: { ...entered.context!, event: ev } };
 }
 
+/** the same run with the trial's seed changed to one whose balls land the way the test needs (the lanes are a fair draw from the seed) */
+function withLanes(r: RunState, want: (lanes: number[]) => boolean): RunState {
+  for (let seed = 1; seed < 400000; seed++) {
+    if (!want(cascadeLanes(seed))) continue;
+    const trial = { ...r.context!.event!.trial!, seed };
+    return { ...r, context: { ...r.context!, event: { ...r.context!.event!, trial } } };
+  }
+  throw new Error('no seed lands like that');
+}
+const distinct = (l: number[]): boolean => new Set(l).size === 3;
+const pair = (l: number[]): boolean => new Set(l).size === 2;
+const triple = (l: number[]): boolean => new Set(l).size === 1;
+
 describe('elite events', () => {
   it('each offers the game or a walk away, with ten prizes already fixed, one for each lane', () => {
     for (let i = 0; i < ELITE_EVENTS.length; i++) {
@@ -68,33 +82,36 @@ describe('elite events', () => {
     expect(left.shards).toBe(r.shards);
   });
 
-  it('balls that land nowhere pay the consolation and end the event', () => {
+  it('a game that is not completed pays the consolation and ends the event', () => {
     const r = eliteRun(1);
-    const after = finishTrial(startTrial(r), true, []);
+    const after = finishTrial(startTrial(r), false);
     expect(after.phase).toBe('map');
     expect(after.shards).toBe(r.shards + r.context!.event!.trial!.consolation);
     expect(after.eventResult).toMatch(/shards/);
   });
 
-  it('the lanes the balls land in are earned, and you choose one of those, once', () => {
+  it('the lanes the balls land in are the fair draw of the seed, whatever the client says, and you choose one, once', () => {
     for (let i = 0; i < ELITE_EVENTS.length; i++) {
-      const r = eliteRun(i, { potions: [] });
+      const r = withLanes(eliteRun(i, { potions: [] }), distinct);
+      const lanes = cascadeLanes(r.context!.event!.trial!.seed);
       // the game has to be begun first, and is only played once
-      expect(() => finishTrial(r, true, [4])).toThrow();
-      const won = finishTrial(startTrial(r), true, [4, 4, 9]);
+      expect(() => finishTrial(r, true)).toThrow();
+      const won = finishTrial(startTrial(r), true);
       expect(won.phase).toBe('event');
       const t = won.context!.event!.trial!;
       expect(t.state).toBe('won');
-      // two balls in one lane is that lane twice
-      expect(t.earned).toEqual([4, 4, 9]);
+      expect(t.earned).toEqual([...lanes].sort((a, b) => a - b));
       // a prize cannot be taken before it is won, and the game cannot be played twice
-      expect(() => claimTrialPrize(r, 'p4')).toThrow();
-      expect(() => finishTrial(won, true, [1])).toThrow();
+      expect(() => claimTrialPrize(r, 'p' + lanes[0])).toThrow();
+      expect(() => finishTrial(won, true)).toThrow();
       // a lane no ball landed in was not earned, and nor was a prize that does not exist
-      expect(() => claimTrialPrize(won, 'p0')).toThrow(/not earn/);
+      const missed = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9].find((k) => !lanes.includes(k))!;
+      expect(() => claimTrialPrize(won, 'p' + missed)).toThrow(/not earn/);
       expect(() => claimTrialPrize(won, 'nope')).toThrow();
-      const prize = t.prizes[9]!;
-      const done = claimTrialPrize(won, 'p9');
+      const lane = lanes[0]!;
+      const prize = t.prizes[lane]!;
+      if (prize.choices) continue; // (a choice of cards: see below)
+      const done = claimTrialPrize(won, 'p' + lane);
       expect(done.phase).toBe('map');
       // an elite event never tosses the coin
       expect(done.eventFlips).toBeUndefined();
@@ -103,23 +120,20 @@ describe('elite events', () => {
       if (prize.card) expect(done.deck).toContain(prize.card);
       if (prize.boon) expect(done.boons).toContain(prize.boon);
       if (prize.potion) expect(done.potions).toContain(prize.potion);
-      expect(() => claimTrialPrize(done, 'p9')).toThrow();
+      expect(() => claimTrialPrize(done, 'p' + lane)).toThrow();
     }
   });
 
-  it('at most three lanes are earned, and lanes off the board are ignored', () => {
-    const r = startTrial(eliteRun(0));
-    const won = finishTrial(r, true, [7, 2, 5, 8, 99, -1]);
-    expect(won.context!.event!.trial!.earned).toEqual([2, 5, 7]);
-    // and a lane never pays more than twice
-    const r3 = startTrial(eliteRun(0));
-    expect(finishTrial(r3, true, [3, 3, 3]).context!.event!.trial!.earned).toEqual([3, 3]);
+  it('a lane never pays more than twice, so three balls in one lane earn it twice', () => {
+    const r = startTrial(withLanes(eliteRun(0), triple));
+    const lane = cascadeLanes(r.context!.event!.trial!.seed)[0];
+    expect(finishTrial(r, true).context!.event!.trial!.earned).toEqual([lane, lane]);
   });
 
   it('survives being saved mid-event, both before the trial and after it is won', () => {
     const r = eliteRun(2);
     expect(parseRun(serializeRun(r))?.context?.event?.trial?.state).toBe('open');
-    const won = finishTrial(startTrial(r), true, [3, 6]);
+    const won = finishTrial(startTrial(r), true);
     const back = parseRun(serializeRun(won));
     expect(back?.context?.event?.trial?.state).toBe('won');
     expect(back?.context?.event?.trial?.prizes).toEqual(won.context!.event!.trial!.prizes);
@@ -173,7 +187,7 @@ describe('one try only', () => {
   it('leaves every other run alone, including an event not yet begun and a prize not yet taken', () => {
     const r = eliteRun(0);
     expect(settleInterrupted(r).run).toBe(r);
-    const won = finishTrial(startTrial(r), true, [3]);
+    const won = finishTrial(startTrial(r), true);
     expect(settleInterrupted(won).run).toBe(won);
   });
 });
@@ -206,8 +220,8 @@ describe('chances are recorded for the coin', () => {
 describe('the Rift-crossed lane is a choice of three', () => {
   it('offers three different Rift-crossed rares, and takes the one you pick', () => {
     for (let i = 0; i < ELITE_EVENTS.length; i++) {
-      const r = eliteRun(i);
-      const lanes = r.context!.event!.trial!.prizes.flatMap((p, k) => (p.choices ? [[p, k] as const] : []));
+      const r0 = eliteRun(i);
+      const lanes = r0.context!.event!.trial!.prizes.flatMap((p, k) => (p.choices ? [[p, k] as const] : []));
       expect(lanes.length, ELITE_EVENTS[i]!.id).toBeGreaterThan(0);
       const taken = new Set<string>();
       for (const [p] of lanes) {
@@ -222,7 +236,8 @@ describe('the Rift-crossed lane is a choice of three', () => {
         }
       }
       const [p, k] = lanes[0]!;
-      const won = finishTrial(startTrial(r), true, [k]);
+      const r = withLanes(r0, (l) => l.includes(k));
+      const won = finishTrial(startTrial(r), true);
       // the card has to be picked, and it has to be one of the three
       expect(() => claimTrialPrize(won, p.id)).toThrow(/three/);
       expect(() => claimTrialPrize(won, p.id, 3)).toThrow(/three/);
@@ -284,24 +299,77 @@ describe('a lane that two balls land in pays again, with something different', (
   });
 
   it('is only claimable with two balls in the lane, and the first prize still with one', () => {
-    const r = eliteRun(0, { potions: [] });
-    const once = finishTrial(startTrial(r), true, [4, 9]);
-    expect(() => claimTrialPrize(once, 'q4')).toThrow(/not earn/);
-    const twice = finishTrial(startTrial(r), true, [4, 4, 9]);
-    const q = twice.context!.event!.trial!.seconds![4]!;
-    const done = claimTrialPrize(twice, 'q4');
-    expect(done.phase).toBe('map');
-    expect(done.eventResult?.length).toBeGreaterThan(5);
+    const base = eliteRun(0, { potions: [] });
+    const twiceRun = withLanes(base, pair);
+    const lanes = cascadeLanes(twiceRun.context!.event!.trial!.seed);
+    const doubled = lanes.find((l, i) => lanes.indexOf(l) !== i)!;
+    const single = lanes.find((l) => l !== doubled)!;
+    const twice = finishTrial(startTrial(twiceRun), true);
+    const q = twice.context!.event!.trial!.seconds![doubled]!;
     expect(q.deal.length).toBeGreaterThan(0);
-    // the first prize of that lane is still on offer too
-    expect(claimTrialPrize(twice, 'p4').phase).toBe('map');
-    expect(() => claimTrialPrize(twice, 'q9')).toThrow(/not earn/);
+    // the doubled lane's second prize is earned; the single lane's is not
+    expect(() => claimTrialPrize(twice, 'q' + single)).toThrow(/not earn/);
+    if (!q.choices) {
+      const done = claimTrialPrize(twice, 'q' + doubled);
+      expect(done.phase).toBe('map');
+      expect(done.eventResult?.length).toBeGreaterThan(5);
+    }
+    // the first prize of that lane is still on offer too (unless it is a choice of cards)
+    if (!twice.context!.event!.trial!.prizes[doubled]!.choices)
+      expect(claimTrialPrize(twice, 'p' + doubled).phase).toBe('map');
+    // with no pair, no second prize at all
+    const once = finishTrial(startTrial(withLanes(base, distinct)), true);
+    for (let k = 0; k < 10; k++) expect(() => claimTrialPrize(once, 'q' + k)).toThrow();
   });
 
   it('survives a save', () => {
-    const won = finishTrial(startTrial(eliteRun(1)), true, [2, 2, 6]);
+    const won = finishTrial(startTrial(withLanes(eliteRun(1), pair)), true);
     const back = parseRun(serializeRun(won))!;
-    expect(back.context!.event!.trial!.earned).toEqual([2, 2, 6]);
+    expect(back.context!.event!.trial!.earned).toEqual(won.context!.event!.trial!.earned);
     expect(back.context!.event!.trial!.seconds).toEqual(won.context!.event!.trial!.seconds);
+  });
+});
+
+describe('the Brass Cascade is fair', () => {
+  it('every lane is equally likely for every ball: a fair draw, with no lane favoured', () => {
+    const N = 40000;
+    const count = [0, 1, 2].map(() => Array.from({ length: 10 }, () => 0));
+    for (let seed = 0; seed < N; seed++) cascadeLanes(seed).forEach((l, b) => count[b]![l]!++);
+    for (const per of count)
+      for (const n of per) {
+        // (10% of 40000 is 4000, give or take 4 standard deviations: about 4%)
+        expect(n / N).toBeGreaterThan(0.092);
+        expect(n / N).toBeLessThan(0.108);
+      }
+  });
+
+  it('the three balls of one trial are drawn independently (a lane can come twice, about 1 time in 4 trials)', () => {
+    let withPair = 0;
+    const N = 20000;
+    for (let seed = 0; seed < N; seed++) if (new Set(cascadeLanes(seed)).size < 3) withPair++;
+    // (the chance that three draws of ten are not all different is 1 - 0.9 x 0.8 = 28%)
+    expect(withPair / N).toBeGreaterThan(0.25);
+    expect(withPair / N).toBeLessThan(0.31);
+  });
+
+  it('only one lane is a Legendary card, and where it stands is different from one event to the next', () => {
+    const where = new Set<number>();
+    for (let i = 0; i < 40; i++) {
+      const base = open(newRun('knight', `shuffle-${i}`));
+      const node = availableNodes(base)[0]!;
+      const run: RunState = {
+        ...base,
+        map: { ...base.map, nodes: base.map.nodes.map((n) => (n.id === node.id ? { ...n, kind: 'event' } : n)) },
+      };
+      const entered = enterNode(run, node.id);
+      const ev = buildElite(ELITE_EVENTS[i % ELITE_EVENTS.length]!, entered);
+      const legends = ev.trial!.prizes.flatMap((p, k) =>
+        p.card && COMBAT_DB.cards[p.card]?.rarity === 'legendary' ? [k] : [],
+      );
+      expect(legends.length).toBeLessThanOrEqual(1);
+      if (legends[0] !== undefined) where.add(legends[0]);
+    }
+    // (the Legendary can be in any of the lanes)
+    expect(where.size).toBeGreaterThanOrEqual(6);
   });
 });

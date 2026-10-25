@@ -1,7 +1,8 @@
-// Brass Cascade: aim and drop a ball on a board of pegs. It bounces down into one of ten lanes, each with a prize hung over
-// it. Three balls: every lane a ball lands in is a prize earned (the event then lets you choose one). You can lean on a ball
-// as it falls, a few times in all. A ball is only dropped from the top, but from anywhere along it: slide the aim with the mouse
-// or finger (or hold the arrow keys: they slide it smoothly); click, release or Space drops it; the arrows nudge it on the way down.
+// Brass Cascade: slide along the top and drop a ball on a board of pegs. It bounces down into one of ten lanes, each with a prize hung over
+// it. Three balls: every lane a ball lands in is a prize earned (the event then lets you choose one). Where each ball lands was
+// drawn fairly beforehand (every lane equally likely, the same for every player), so the drop is for the fun of it; the ball
+// bounces about and is steered to its lane. Slide the aim with the mouse or finger (or hold the arrow keys); click, release or
+// Space drops it.
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { play } from '../audio/sfx';
@@ -13,13 +14,11 @@ import {
   BOARD_W,
   DT,
   LANE_H,
-  NUDGES,
   PEGS,
   PEG_R,
   SLOT_COUNT,
   SLOT_W,
   newBall,
-  nudge,
   step,
   type Ball,
 } from './physics';
@@ -30,11 +29,10 @@ import type { GameProps } from './TrialHost';
 const AIM_SPEED = 320;
 const AIM_MIN_Y = BALL_R + 4;
 
-export function Cascade({ prizes, onEnd }: GameProps) {
+export function Cascade({ prizes, lanes, onEnd }: GameProps) {
   const canvas = useRef<HTMLCanvasElement>(null);
   const [ballNo, setBallNo] = useState(0);
   const [phase, setPhase] = useState<'aim' | 'fall' | 'between'>('aim');
-  const [nudgesLeft, setNudgesLeft] = useState(NUDGES);
   const [earned, setEarned] = useState<number[]>([]);
   const [note, setNote] = useState('Aim, then drop the ball.');
 
@@ -47,7 +45,6 @@ export function Cascade({ prizes, onEnd }: GameProps) {
   const held = useRef({ left: false, right: false, up: false, down: false });
   const phaseRef = useRef(phase);
   const earnedRef = useRef(earned);
-  const nudgesRef = useRef(nudgesLeft);
   const timers = useRef<number[]>([]);
   // (the loop below reads these without restarting)
   const ballNoRef = useRef(0);
@@ -56,7 +53,6 @@ export function Cascade({ prizes, onEnd }: GameProps) {
     onEndRef.current = onEnd;
     phaseRef.current = phase;
     earnedRef.current = earned;
-    nudgesRef.current = nudgesLeft;
   });
   useEffect(
     () => () => {
@@ -67,7 +63,8 @@ export function Cascade({ prizes, onEnd }: GameProps) {
 
   const drop = useCallback(() => {
     if (phaseRef.current !== 'aim') return;
-    const b = newBall(aim.current.x, aim.current.y);
+    // where the ball goes was decided fairly beforehand (every lane is equally likely): the drop is where it starts, and how it bounces
+    const b = newBall(aim.current.x, lanes[ballNoRef.current] ?? 0, aim.current.y);
     // a touch of sideways speed from the hand that let go of it: the same drop is never quite the same
     b.vx = (Math.random() - 0.5) * 40;
     ball.current = b;
@@ -76,22 +73,9 @@ export function Cascade({ prizes, onEnd }: GameProps) {
     held.current = { left: false, right: false, up: false, down: false };
     phaseRef.current = 'fall';
     setPhase('fall');
-    setNote('Lean on it with the arrows.');
+    setNote('Here it comes…');
     play('click');
-  }, []);
-
-  const lean = useCallback((d: -1 | 1) => {
-    const b = ball.current;
-    if (phaseRef.current !== 'fall' || !b || b.landed) return;
-    if (nudgesRef.current <= 0) {
-      setNote('No nudges left.');
-      return;
-    }
-    nudge(b, d);
-    nudgesRef.current -= 1;
-    setNudgesLeft(nudgesRef.current);
-    play('select');
-  }, []);
+  }, [lanes]);
 
   // the game loop: fixed physics steps, drawn at the screen's pace with the position blended between steps
   useEffect(() => {
@@ -240,7 +224,6 @@ export function Cascade({ prizes, onEnd }: GameProps) {
       if (s) {
         e.preventDefault();
         if (phaseRef.current === 'aim') held.current[s] = true;
-        else if (!e.repeat && (s === 'left' || s === 'right')) lean(s === 'left' ? -1 : 1);
       } else if ((e.key === ' ' || e.key === 'Enter') && !e.repeat) {
         e.preventDefault();
         drop();
@@ -262,7 +245,7 @@ export function Cascade({ prizes, onEnd }: GameProps) {
       window.removeEventListener('keyup', up);
       window.removeEventListener('blur', blur);
     };
-  }, [lean, drop]);
+  }, [drop]);
 
   const aimFrom = (e: React.PointerEvent<HTMLCanvasElement>): void => {
     if (phaseRef.current !== 'aim') return;
@@ -282,7 +265,6 @@ export function Cascade({ prizes, onEnd }: GameProps) {
         <span>
           Prizes earned {earned.length}
         </span>
-        <span>Nudges {nudgesLeft}</span>
       </div>
       <div className="cascade__board">
         <canvas
@@ -320,37 +302,31 @@ export function Cascade({ prizes, onEnd }: GameProps) {
           })}
         </ol>
       </div>
-      <div className="cascade__controls">
-        <button
-          type="button"
-          className="btn btn--small"
-          onPointerDown={() => {
-            if (phaseRef.current === 'aim') held.current.left = true;
-            else lean(-1);
-          }}
-          onPointerUp={() => (held.current.left = false)}
-          onPointerLeave={() => (held.current.left = false)}
-        >
-          <span>{phase === 'aim' ? '◀ Aim' : '◀ Nudge'}</span>
-        </button>
-        {phase === 'aim' && (
+      {phase === 'aim' && (
+        <div className="cascade__controls">
+          <button
+            type="button"
+            className="btn btn--small"
+            onPointerDown={() => (held.current.left = true)}
+            onPointerUp={() => (held.current.left = false)}
+            onPointerLeave={() => (held.current.left = false)}
+          >
+            <span>◀ Aim</span>
+          </button>
           <button type="button" className="btn btn--small" onClick={drop}>
             <span>Drop!</span>
           </button>
-        )}
-        <button
-          type="button"
-          className="btn btn--small"
-          onPointerDown={() => {
-            if (phaseRef.current === 'aim') held.current.right = true;
-            else lean(1);
-          }}
-          onPointerUp={() => (held.current.right = false)}
-          onPointerLeave={() => (held.current.right = false)}
-        >
-          <span>{phase === 'aim' ? 'Aim ▶' : 'Nudge ▶'}</span>
-        </button>
-      </div>
+          <button
+            type="button"
+            className="btn btn--small"
+            onPointerDown={() => (held.current.right = true)}
+            onPointerUp={() => (held.current.right = false)}
+            onPointerLeave={() => (held.current.right = false)}
+          >
+            <span>Aim ▶</span>
+          </button>
+        </div>
+      )}
       <p className="tg__note" aria-live="polite">
         {note}
       </p>

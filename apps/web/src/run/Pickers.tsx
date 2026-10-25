@@ -11,6 +11,7 @@ import {
   removableCards,
   REST_HEAL,
   upgradable,
+  cascadeLanes,
   type EventOption,
   type RunState,
   type TrialOffer,
@@ -576,7 +577,7 @@ export function EventView(props: {
   run: RunState;
   onChoose: (id: EventOption['id']) => void;
   /** an elite event's trial was played */
-  onTrial: (won: boolean, earned: number[]) => void;
+  onTrial: (won: boolean) => void;
   /** Begin was pressed on the trial: it is saved as begun, and can never be tried again */
   onBegin: () => void;
   /** the prize chosen after a won trial */
@@ -592,6 +593,7 @@ export function EventView(props: {
   if (trial && (trial.state === 'playing' || (trial.state === 'open' && playing)))
     return (
       <TrialHost
+        lanes={cascadeLanes(trial.seed)}
         prizes={trial.prizes.map((p) => ({
           icon: p.icon ?? 'shards',
           short: p.short ?? p.label,
@@ -599,7 +601,7 @@ export function EventView(props: {
         }))}
         onDone={(earned) => {
           setPlaying(false);
-          props.onTrial(earned.length > 0, earned);
+          props.onTrial(earned.length > 0);
         }}
         onCancel={() => setPlaying(false)}
         onBegin={props.onBegin}

@@ -119,6 +119,8 @@ How it works: one Durable Object (`Leaderboard`, `apps/server/src/board.ts`, nam
 
 ## Ghosts
 
+**Ghost decks page** (`#/ghosts`, `GET /pvp/board/ghostdecks`): every deck that can be met as a ghost, newest first: whose, Riftwalker, Rift Tier and stage, records. Never the cards or Boons.
+
 A **ghost** is a deck that has been played in the Arena, piloted by the computer, so a player with nobody to play still has a fight.
 
 - **Where decks come from:** every Arena match between two people registers both decks (owner, Riftwalker, cards, Boons, Rift Tier and stage) in the `ghosts` table of the Leaderboard Durable Object (`apps/server/src/board.ts`). A deck is the same ghost every time its owner plays the same cards. Only decks from the last 30 days are offered.

@@ -7,7 +7,8 @@ import { offerBoon } from './rewards';
 import type { EventDef } from './events';
 import type { DealStep, EventOption, RunState } from './types';
 
-export type OptSpec = [label: string, steps: DealStep[], say?: string];
+/** An option; the fourth part 'optional' means it is left off when it cannot be taken now (instead of the event not being offered). */
+export type OptSpec = [label: string, steps: DealStep[], say?: string, optional?: 'optional'];
 
 export interface DealSpec {
   id: string;
@@ -49,7 +50,13 @@ export const chance = (pct: number, win: DealStep[], lose: DealStep[] = []): Dea
 export function make(spec: DealSpec, r: RunState): EventCtx {
   const boonOffer = spec.boon ? (offerBoon(r.rng, r.boons, 'elite') ?? '') : '';
   const built = spec.dyn ? spec.dyn(r) : { opts: spec.opts, cards: undefined };
-  const options: EventOption[] = built.opts.map(([label, deal, say], i) => ({
+  // (an optional option that cannot be taken now is left off)
+  const probe = clone(r);
+  const shown = built.opts.filter(
+    ([, deal, , optional]) =>
+      optional !== 'optional' || dealFeasible(probe, deal, { title: '', text: '', cardOffer: '', options: [] }),
+  );
+  const options: EventOption[] = shown.map(([label, deal, say], i) => ({
     id: (['d1', 'd2', 'd3', 'd4'] as const)[i] as EventOption['id'],
     label,
     deal,
@@ -98,9 +105,15 @@ export const DEAL_EVENTS: EventDef[] = (
           'You ride in silence.',
         ],
         [
-          'Wade across (lose 8 HP): find 45 shards',
-          [hurt(8), shards(45)],
+          'Wade across (lose 8 HP): find 60 shards',
+          [hurt(8), shards(60)],
           'The current pulls, and the mud gives something up.',
+        ],
+        [
+          'Pay with a card (a random basic card leaves): heal 25% and +25 shards',
+          [remove('basic'), heal(25), shards(25)],
+          'The ferryman weighs it in his palm and nods.',
+          'optional',
         ],
       ],
     },
@@ -111,12 +124,12 @@ export const DEAL_EVENTS: EventDef[] = (
       text: 'A stooped figure sorts cards into jars by the sound they make. "Spare some? I pay by the piece."',
       opts: [
         [
-          'Sell one card: a random card leaves your deck, and you gain 45 shards',
-          [remove('any', 1), shards(45)],
+          'Sell one card: a random card leaves your deck, and you gain 60 shards',
+          [remove('any', 1), shards(60)],
         ],
         [
-          'Sell two cards: two random cards leave your deck, and you gain 100 shards',
-          [remove('any', 2), shards(100)],
+          'Sell two cards: two random cards leave your deck, and you gain 130 shards',
+          [remove('any', 2), shards(130)],
         ],
       ],
     },
@@ -131,6 +144,12 @@ export const DEAL_EVENTS: EventDef[] = (
           'Climb for the fruit (lose 8% of your HP): +4 max HP',
           [hurtPct(8), maxHp(4)],
           'The fruit is bitter and warm.',
+        ],
+        [
+          'Plant a card at its roots (a random basic card leaves): +3 max HP',
+          [remove('basic'), maxHp(3)],
+          'The tree takes it, and something in you steadies.',
+          'optional',
         ],
       ],
     },
@@ -150,6 +169,12 @@ export const DEAL_EVENTS: EventDef[] = (
           [chance(50, [upgrade(2)], [wound()])],
           'The glass goes everywhere.',
         ],
+        [
+          'Feed it a card (a random basic card leaves): you take a random potion',
+          [remove('basic'), potion()],
+          'The sand pours out in a bottle.',
+          'optional',
+        ],
       ],
     },
     {
@@ -163,6 +188,12 @@ export const DEAL_EVENTS: EventDef[] = (
           'Join in (lose 10 HP): an uncommon card of yours',
           [hurt(10), gift('uncommon')],
           'You open your mouth, and something answers.',
+        ],
+        [
+          'Sing a card away (a random basic card leaves): heal 15% of your HP',
+          [remove('basic'), heal(15)],
+          'It is gone, and nothing is lost.',
+          'optional',
         ],
       ],
     },
@@ -180,6 +211,12 @@ export const DEAL_EVENTS: EventDef[] = (
           'Give a lot (60 shards): a random uncommon card is added to your deck',
           [shards(-60), gift('uncommon')],
         ],
+        [
+          'Give a card instead (a random basic card leaves): a random common card is added',
+          [remove('basic'), gift('common')],
+          'The beggar nods as if it were a fair trade.',
+          'optional',
+        ],
       ],
     },
     {
@@ -188,7 +225,7 @@ export const DEAL_EVENTS: EventDef[] = (
       title: 'The weighing scales',
       text: 'Brass scales hang from a gibbet, one pan heavy with coin, the other empty. "Balance what you carry."',
       opts: [
-        ['Take the coin (a Wound joins your deck): +90 shards', [wound(), shards(90)]],
+        ['Take the coin (a Wound joins your deck): +115 shards', [wound(), shards(115)]],
         [
           'Lighten your load (pay 40 shards): a Wound leaves your deck, or a basic card if you have none',
           [shards(-40), remove('wound', 1)],
@@ -216,8 +253,8 @@ export const DEAL_EVENTS: EventDef[] = (
       text: 'A door with a mouth where the handle should be. It looks at your pockets and licks its lip.',
       opts: [
         [
-          'Feed it a basic card (a random Attack or Defend goes): +60 shards and heal 10%',
-          [remove('basic', 1), shards(60), heal(10)],
+          'Feed it a basic card (a random Attack or Defend goes): +80 shards and heal 10%',
+          [remove('basic', 1), shards(80), heal(10)],
         ],
         [
           'Feed it your shards (50 shards): a random card in your deck is upgraded',
@@ -237,6 +274,12 @@ export const DEAL_EVENTS: EventDef[] = (
           [shards(-20), heal(30)],
           'It tastes of nothing at all.',
         ],
+        [
+          'Cast a card in (a random basic card leaves): +4 max HP',
+          [remove('basic'), maxHp(4)],
+          'Both pools ripple, and go still.',
+          'optional',
+        ],
       ],
     },
     {
@@ -247,6 +290,12 @@ export const DEAL_EVENTS: EventDef[] = (
       opts: [
         ['Buy one potion (35 shards): you take a random potion', [shards(-35), potion(1)]],
         ['Buy two potions (60 shards): you take two random potions', [shards(-60), potion(2)]],
+        [
+          'Trade a card (a random basic card leaves): you take a random potion',
+          [remove('basic'), potion()],
+          'The tinker does not even look at it.',
+          'optional',
+        ],
       ],
     },
     {
@@ -260,6 +309,12 @@ export const DEAL_EVENTS: EventDef[] = (
           'Offer shards (pay 50 shards): a random card in your deck is upgraded',
           [shards(-50), upgrade()],
         ],
+        [
+          'Burn a card for the moths (a random basic card leaves): a random card in your deck is upgraded',
+          [remove('basic'), upgrade()],
+          'The moths rise with the smoke.',
+          'optional',
+        ],
       ],
     },
     {
@@ -269,11 +324,17 @@ export const DEAL_EVENTS: EventDef[] = (
       text: 'Three roads under three lamps. The left one is loud, the right one is quiet, and the middle one has footprints.',
       opts: [
         [
-          'Take the left road (an even chance): +90 shards, or lose 15% of your HP',
-          [chance(50, [shards(90)], [hurtPct(15)])],
+          'Take the left road (an even chance): +115 shards, or lose 15% of your HP',
+          [chance(50, [shards(115)], [hurtPct(15)])],
         ],
         ['Take the right road: heal 20% of your HP', [heal(20)]],
         ['Follow the footprints: a random common card is added to your deck', [gift('common')]],
+        [
+          'Leave a card at the crossroads (a random basic card leaves): +40 shards and heal 10%',
+          [remove('basic'), shards(40), heal(10)],
+          'Travellers have left things here for longer than anyone remembers.',
+          'optional',
+        ],
       ],
     },
     {
@@ -295,11 +356,17 @@ export const DEAL_EVENTS: EventDef[] = (
       text: 'A figure made of river-clay blocks the path, arms spread. It wants to wrestle, or to be paid.',
       opts: [
         [
-          'Wrestle it (lose 12 HP): +80 shards',
-          [hurt(12), shards(80)],
+          'Wrestle it (lose 12 HP): +105 shards',
+          [hurt(12), shards(105)],
           'It crumbles, and its pockets are full.',
         ],
         ['Bargain (pay 30 shards): you take a random potion', [shards(-30), potion()]],
+        [
+          'Bury a card in the clay (a random basic card leaves): +50 shards',
+          [remove('basic'), shards(50)],
+          'It sinks, and the clay hands back coin.',
+          'optional',
+        ],
       ],
     },
     {
@@ -308,8 +375,14 @@ export const DEAL_EVENTS: EventDef[] = (
       title: 'The shard geyser',
       text: 'Hot spray full of glittering shards leaps from a vent in the floor, every few breaths.',
       opts: [
-        ['Fill your pockets (lose 6 HP): +55 shards', [hurt(6), shards(55)]],
-        ['Stand in it (lose 20% of your HP): +130 shards', [hurtPct(20), shards(130)]],
+        ['Fill your pockets (lose 6 HP): +70 shards', [hurt(6), shards(70)]],
+        ['Stand in it (lose 20% of your HP): +170 shards', [hurtPct(20), shards(170)]],
+        [
+          'Seal a card in the vent (a random basic card leaves): +45 shards',
+          [remove('basic'), shards(45)],
+          'The vent coughs, and spits coin.',
+          'optional',
+        ],
       ],
     },
     {
@@ -319,10 +392,16 @@ export const DEAL_EVENTS: EventDef[] = (
       text: 'A man leans on a spade beside a half-dug hole. "Dig, if you like. They keep their own counsel."',
       opts: [
         [
-          'Dig (lose 8 HP): +80 shards, or a Wound in the bargain',
-          [hurt(8), chance(60, [shards(80)], [wound()])],
+          'Dig (lose 8 HP): +105 shards, or a Wound in the bargain',
+          [hurt(8), chance(60, [shards(105)], [wound()])],
         ],
         ['Pay your respects: heal 10% of your HP', [heal(10)]],
+        [
+          'Bury a card (a random basic card leaves): heal 10% and +40 shards',
+          [remove('basic'), heal(10), shards(40)],
+          'He tips his cap and fills the hole.',
+          'optional',
+        ],
       ],
     },
     {
@@ -332,8 +411,8 @@ export const DEAL_EVENTS: EventDef[] = (
       text: 'A beast the colour of old iron gnaws a broken gate. It looks up, hopeful.',
       opts: [
         [
-          'Feed it a Wound, or a basic card: it leaves your deck, and you gain 25 shards',
-          [remove('wound', 1), shards(25)],
+          'Feed it a Wound, or a basic card: it leaves your deck, and you gain 35 shards',
+          [remove('wound', 1), shards(35)],
         ],
         [
           'Feed it any card: it leaves your deck, and two random cards in your deck are upgraded',
@@ -349,6 +428,12 @@ export const DEAL_EVENTS: EventDef[] = (
       opts: [
         ['Brew of vigor (lose 4 HP): +3 max HP', [hurt(4), maxHp(3)]],
         ['Brew of calm (pay 25 shards): heal 25% of your HP', [shards(-25), heal(25)]],
+        [
+          'Stir a card into the pot (a random basic card leaves): +3 max HP',
+          [remove('basic'), maxHp(3)],
+          'It dissolves, and she hands you a cup.',
+          'optional',
+        ],
       ],
     },
     {
@@ -371,8 +456,8 @@ export const DEAL_EVENTS: EventDef[] = (
       title: 'The cursed purse',
       text: 'A fat purse lies in the road, a thin red thread tied round it. Everyone before you left it there.',
       opts: [
-        ['Pocket it (a Wound joins your deck): +100 shards', [wound(), shards(100)]],
-        ['Cut the thread first (lose 10 HP): +100 shards', [hurt(10), shards(100)]],
+        ['Pocket it (a Wound joins your deck): +130 shards', [wound(), shards(130)]],
+        ['Cut the thread first (lose 10 HP): +130 shards', [hurt(10), shards(130)]],
       ],
     },
     {
@@ -402,6 +487,12 @@ export const DEAL_EVENTS: EventDef[] = (
           'Throw a coin (pay 15 shards): it leaves its lantern for you, heal 15%',
           [shards(-15), heal(15)],
         ],
+        [
+          'Give it a card (a random basic card leaves): +40 shards',
+          [remove('basic'), shards(40)],
+          'It giggles, and drops a handful of coin.',
+          'optional',
+        ],
       ],
     },
     {
@@ -412,6 +503,12 @@ export const DEAL_EVENTS: EventDef[] = (
       opts: [
         ['Sweat it out (lose 10% of your HP): +4 max HP', [hurtPct(10), maxHp(4)]],
         ['Take a tonic (pay 35 shards): heal 20% of your HP', [shards(-35), heal(20)]],
+        [
+          'Burn out a bad memory (a random basic card leaves): heal 15% of your HP',
+          [remove('basic'), heal(15)],
+          'The fever breaks, and so does the habit.',
+          'optional',
+        ],
       ],
     },
     {
@@ -428,6 +525,12 @@ export const DEAL_EVENTS: EventDef[] = (
           'Toss a handful (pay 50 shards): an even chance of an uncommon card',
           [shards(-50), chance(50, [gift('uncommon')])],
         ],
+        [
+          'Toss a card in the dish (a random basic card leaves): an even chance of an uncommon card',
+          [remove('basic'), chance(50, [gift('uncommon')])],
+          'The stone considers it.',
+          'optional',
+        ],
       ],
     },
     {
@@ -440,6 +543,12 @@ export const DEAL_EVENTS: EventDef[] = (
         [
           'Swap kit (lose 4 HP): a random basic card becomes a card of your class',
           [hurt(4), transform],
+        ],
+        [
+          'Leave some old kit behind (a random basic card leaves): +65 shards',
+          [remove('basic'), shards(65)],
+          'They pass the hat, and it comes back full.',
+          'optional',
         ],
       ],
     },
@@ -463,10 +572,16 @@ export const DEAL_EVENTS: EventDef[] = (
       text: 'A crooked tower with a bell as wide as a door. A rope hangs down, frayed to a thread.',
       opts: [
         [
-          'Ring the bell (an even chance): +100 shards, or lose 12% of your HP',
-          [chance(50, [shards(100)], [hurtPct(12)])],
+          'Ring the bell (an even chance): +130 shards, or lose 12% of your HP',
+          [chance(50, [shards(130)], [hurtPct(12)])],
         ],
         ['Muffle the bell (pay 15 shards): heal 10% of your HP', [shards(-15), heal(10)]],
+        [
+          'Toll the bell with a card (a random basic card leaves): +50 shards',
+          [remove('basic'), shards(50)],
+          'The bell rings clean, and coin falls from the rafters.',
+          'optional',
+        ],
       ],
     },
     {
@@ -476,10 +591,16 @@ export const DEAL_EVENTS: EventDef[] = (
       text: 'A line of pilgrims carries a litter of glass bottles up the hill. One offers you a place in the line.',
       opts: [
         [
-          'Carry a bottle (lose 6 HP): take a potion and +20 shards',
-          [hurt(6), potion(), shards(20)],
+          'Carry a bottle (lose 6 HP): take a potion and +25 shards',
+          [hurt(6), potion(), shards(25)],
         ],
         ['Share your supplies (pay 30 shards): heal 30% of your HP', [shards(-30), heal(30)]],
+        [
+          'Leave a card at the shrine on the hill (a random basic card leaves): heal 15% and +25 shards',
+          [remove('basic'), heal(15), shards(25)],
+          'You walk lighter.',
+          'optional',
+        ],
       ],
     },
     {
@@ -493,8 +614,8 @@ export const DEAL_EVENTS: EventDef[] = (
           [remove('any', 1), gift('uncommon')],
         ],
         [
-          'Trade a wound for coin (a Wound, else a basic card, goes): +35 shards',
-          [remove('wound', 1), shards(35)],
+          'Trade a wound for coin (a Wound, else a basic card, goes): +45 shards',
+          [remove('wound', 1), shards(45)],
         ],
       ],
     },

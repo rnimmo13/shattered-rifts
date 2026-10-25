@@ -27,7 +27,9 @@ import {
   chooseKit,
   choosePrelude,
   continueLoop,
+  attachGhost,
   duelPlan,
+  ghostWanted,
   enterNode,
   finishDuel,
   leaveMerchant,
@@ -65,17 +67,20 @@ import {
   PreludeView,
   ShrineView,
 } from './Pickers';
+import { appendFightMove, clearFightLog, loadFightLog } from './fightLog';
+import { clearGhostLog } from './ghostDuel';
+import { GhostLink } from './GhostLink';
+import { fetchGhostBoss } from '../pvp/boardApi';
+import type { PvpLink } from '../pvp/link';
+import type { Action } from '@sr/combat';
 import {
-  clearDuelStarted,
   clearSavedRun,
-  duelWasStarted,
   exportRun,
   RUN_SLOTS,
   loadActiveRun,
   runCount,
   saveRunSlot,
   startRunSlot,
-  markDuelStarted,
   setActiveRun,
 } from './saves';
 import '../play/play.css';
@@ -88,20 +93,11 @@ const duelKey = (r: RunState): string =>
   `${r.seed}:${r.context?.nodeId ?? ''}:${r.stats.duelsWon}:${r.stats.duelsLost}`;
 
 export default function RunScreen() {
-  // Resuming into a duel that was already begun counts as a loss: closing the page is not a free retry.
+  // A fight that was in progress is picked up where it was (see fightLog.ts): reloading the page costs nothing.
   const [initial] = useState(() => {
     const found = loadActiveRun();
     const saved = found?.run ?? null;
     const slot = found?.id ?? null;
-    if (saved && saved.phase === 'duel' && saved.context && duelWasStarted(duelKey(saved))) {
-      clearDuelStarted(duelKey(saved));
-      return {
-        run: finishDuel(saved, false),
-        slot,
-        loaded: null as RunState | null,
-        notice: 'You left the last duel unfinished, so it counted as a loss.',
-      };
-    }
     // ... and so does a trial that was begun: it is spent, and the run moves on
     const settled = saved ? settleInterrupted(saved) : null;
     if (saved && settled?.notice)
@@ -154,7 +150,6 @@ export default function RunScreen() {
   // autosave after every step; a finished run (collapsed or banked) is not kept as a save
   useEffect(() => {
     if (!run) return;
-    if (run.phase === 'duel' && run.context) markDuelStarted(duelKey(run));
     const id = slotRef.current;
     if (!id || run === loadedRef.current) return;
     // a collapsed run is gone, and a banked one (an older save) is finished: neither is kept as a parked run
@@ -222,7 +217,10 @@ export default function RunScreen() {
 
   const reportResult = useCallback(
     (won: boolean, hp?: number, potions?: string[]) => {
-      if (runRef.current) clearDuelStarted(duelKey(runRef.current));
+      if (runRef.current) {
+        clearFightLog(duelKey(runRef.current));
+        clearGhostLog(duelKey(runRef.current));
+      }
       act((r) => finishDuel(r, won, hp, potions));
     },
     [act],
@@ -260,6 +258,10 @@ export default function RunScreen() {
       .finally(() => setSaving(false));
   };
   const leaveRun = () => {
+    if (runRef.current) {
+      clearFightLog(duelKey(runRef.current));
+      clearGhostLog(duelKey(runRef.current));
+    }
     if (slotRef.current) clearSavedRun(slotRef.current);
     slotRef.current = null;
     setRun(null);
@@ -276,13 +278,93 @@ export default function RunScreen() {
     begin(settleInterrupted(parsed).run);
   };
 
+  // a Warden that is a ghost: its deck is fetched once (if none can be had, the usual Warden is fought)
+  const wanted = run !== null && ghostWanted(run);
+  useEffect(() => {
+    if (!wanted) return;
+    let live = true;
+    void fetchGhostBoss().then((g) => {
+      if (live) act((r) => (ghostWanted(r) ? attachGhost(r, g) : r));
+    });
+    return () => {
+      live = false;
+    };
+  }, [wanted, act]);
+
   if (!run)
     return <Sanctum onStart={startRun} onImport={(f) => void onImport(f)} notice={notice} />;
 
   // ---- a duel replaces the whole screen ----
   if (run.phase === 'duel' && run.context) {
+    if (wanted)
+      return (
+        <main className="run">
+          <section className="stage-panel" aria-label="A rival rises">
+            <h2 className="stage-panel__title">A rival rises</h2>
+            <p className="stage-panel__hint">
+              The Warden here is a ghost: a deck that has fought in the Arena. Summoning it…
+            </p>
+          </section>
+        </main>
+      );
     const plan = duelPlan(run);
     if (plan) {
+      /** the fight screen (a ghost Warden is fought over the PvP link, with the computer in the other seat) */
+      const fightView = (link?: PvpLink) => (
+        <FightView
+          key={plan.seed}
+          {...(link
+            ? { pvp: link }
+            : {
+                resume: loadFightLog(duelKey(run), plan.seed),
+                onMove: (a: Action) => appendFightMove(duelKey(run), plan.seed, a),
+                onResumeFailed: () => clearFightLog(duelKey(run)),
+              })}
+          venue={venueForRealm(encounter(plan.encounterId).realm)}
+          db={COMBAT_DB}
+          setup={{
+            seed: plan.seed,
+            a: {
+              hero: run.character,
+              deck: plan.deck,
+              hp: plan.hp,
+              maxHp: plan.maxHp,
+              boons: plan.boons,
+              potions: plan.potions,
+            },
+            b: plan.ghost
+              ? {
+                  hero: plan.ghost.hero,
+                  deck: plan.ghost.deck,
+                  hp: plan.ghost.hp,
+                  maxHp: plan.ghost.hp,
+                  boons: plan.ghost.boons,
+                  potions: [],
+                }
+              : { enemies: plan.units, tier: plan.tier, hpPct: plan.hpPct, dmgPct: plan.dmgPct },
+          }}
+          title={`${plan.ghost ? `${plan.ghost.name}'s ghost` : encounter(plan.encounterId).name} · Stage ${run.stage}${floorLabel(run) && ` · ${floorLabel(run)}`}`}
+          exitLabel="Forfeit"
+          topExtra={
+            <>
+              <button className="btn btn--small btn--ghost" onClick={() => setShowMap(true)}>
+                <span>View map</span>
+              </button>
+              <button
+                className="btn btn--small btn--ghost"
+                onClick={() => setConfirmAbandon(true)}
+              >
+                <span>Abandon run</span>
+              </button>
+            </>
+          }
+          // there is no "leave" in a campaign fight: giving up counts as a loss
+          onExit={() => setConfirmForfeit(true)}
+          onDone={(r) =>
+            reportResult(r.winner === 'a', r.winner === 'a' ? r.hp : undefined, r.potions)
+          }
+        />
+      );
       return (
         <>
           {notice && (
@@ -346,13 +428,14 @@ export default function RunScreen() {
           {confirmAbandon && (
             <AbandonDialog onConfirm={leaveRun} onCancel={() => setConfirmAbandon(false)} />
           )}
-          <FightView
-            key={plan.seed}
-            venue={venueForRealm(encounter(plan.encounterId).realm)}
-            db={COMBAT_DB}
-            setup={{
-              seed: plan.seed,
-              a: {
+          {/* the fight: a ghost Warden is played over the PvP link, any other fight as before */}
+          {plan.ghost ? (
+            <GhostLink
+              key={plan.seed}
+              logKey={duelKey(run)}
+              setup={{
+                seed: plan.seed,
+                a: {
                 hero: run.character,
                 deck: plan.deck,
                 hp: plan.hp,
@@ -360,29 +443,26 @@ export default function RunScreen() {
                 boons: plan.boons,
                 potions: plan.potions,
               },
-              b: { enemies: plan.units, tier: plan.tier, hpPct: plan.hpPct, dmgPct: plan.dmgPct },
-            }}
-            title={`${encounter(plan.encounterId).name} · Stage ${run.stage}${floorLabel(run) && ` · ${floorLabel(run)}`}`}
-            exitLabel="Forfeit"
-            topExtra={
-              <>
-                <button className="btn btn--small btn--ghost" onClick={() => setShowMap(true)}>
-                  <span>View map</span>
-                </button>
-                <button
-                  className="btn btn--small btn--ghost"
-                  onClick={() => setConfirmAbandon(true)}
-                >
-                  <span>Abandon run</span>
-                </button>
-              </>
-            }
-            // there is no "leave" in a campaign fight: giving up counts as a loss
-            onExit={() => setConfirmForfeit(true)}
-            onDone={(r) =>
-              reportResult(r.winner === 'a', r.winner === 'a' ? r.hp : undefined, r.potions)
-            }
-          />
+                b: {
+                  hero: plan.ghost.hero,
+                  deck: plan.ghost.deck,
+                  hp: plan.ghost.hp,
+                  maxHp: plan.ghost.hp,
+                  boons: plan.ghost.boons,
+                  potions: [],
+                },
+              }}
+              names={{ a: 'You', b: `${plan.ghost.name}'s ghost` }}
+              progress={{
+                a: { tier: run.tier },
+                b: { tier: plan.ghost.tier, ...(plan.ghost.stage !== null ? { stage: plan.ghost.stage } : {}) },
+              }}
+            >
+              {(link) => fightView(link)}
+            </GhostLink>
+          ) : (
+            fightView()
+          )}
         </>
       );
     }
@@ -708,7 +788,7 @@ function Body(props: {
           run={run}
           onChoose={(id) => act((r) => chooseEvent(r, id))}
           onBegin={() => act((r) => startTrial(r))}
-          onTrial={(won, earned) => act((r) => finishTrial(r, won, earned))}
+          onTrial={(won) => act((r) => finishTrial(r, won))}
           onPickCard={(i) => act((r) => pickEventCard(r, i))}
           onPrize={(id, pick) => act((r) => claimTrialPrize(r, id, pick))}
         />

@@ -11,9 +11,16 @@ import {
   V2_DECK_RULES,
   encounter,
   isSanctified,
+  canonicalHero,
   type HeroId,
 } from '@sr/content/v2';
-import { CROSSED_MERCHANT_CHANCE, FINAL_STAGE, generateStageMap, reachableNodes } from './mapgen';
+import {
+  CROSSED_MERCHANT_CHANCE,
+  FINAL_STAGE,
+  GHOST_FROM_TIER,
+  generateStageMap,
+  reachableNodes,
+} from './mapgen';
 
 export { CROSSED_MERCHANT_CHANCE };
 import { makeKits } from './kits';
@@ -39,6 +46,7 @@ import {
 } from './rewards';
 import type {
   Difficulty,
+  GhostBoss,
   Luck,
   EventOption,
   MapNode,
@@ -104,6 +112,13 @@ export const STAGE_SCALE: Record<number, { hp: number; dmg: number }> = {
 };
 const stageScale = (stage: number): { hp: number; dmg: number } =>
   STAGE_SCALE[Math.max(1, Math.min(FINAL_STAGE, stage))] ?? { hp: 100, dmg: 100 };
+
+/** Shards a won fight pays, by the kind of fight. */
+export const FIGHT_SHARDS = { duel: 15, elite: 36, warden: 65 } as const;
+/** The chance (percent) that a won fight drops a potion (when the belt has room). */
+export const POTION_DROP_CHANCE = { duel: 40, elite: 75 } as const;
+/** Percent of max HP an Elite fight heals when it is won. */
+export const ELITE_HEAL_PCT = 10;
 
 /** Fraction of max HP a shrine rest heals. */
 export const REST_HEAL = 0.35;
@@ -324,6 +339,62 @@ export interface FightPlan {
   kind: MapNode['kind'];
   /** a seed that changes on each retry, so a lost fight is not replayed identically */
   seed: string;
+  /** this Warden is a ghost: the deck to fight (played by the computer), and its HP (the usual Warden below is not fought) */
+  ghost?: GhostBoss & { hp: number };
+}
+
+/** How much HP a ghost Warden has: its Riftwalker's own, times this (a Warden is tougher than a player), more with each Rift Tier. */
+export const GHOST_BOSS_HP_BASE = 1.4;
+export const GHOST_BOSS_HP_PER_TIER = 0.06;
+export const ghostBossHp = (hero: string, tier: number): number =>
+  Math.round(
+    (RIFTWALKERS[hero as keyof typeof RIFTWALKERS]?.hero.maxHp ?? 80) *
+      (GHOST_BOSS_HP_BASE + GHOST_BOSS_HP_PER_TIER * Math.max(0, tier - GHOST_FROM_TIER)),
+  );
+
+/** Is this a ghost Warden whose deck has not been fetched yet? (The screen asks the server for one, then calls `attachGhost`.) */
+export function ghostWanted(run: RunState): boolean {
+  if (run.phase !== 'duel' || !run.context) return false;
+  const node = nodeOf(run, run.context.nodeId);
+  return node.ghost === true && !run.context.ghost && !run.context.ghostAsked;
+}
+
+/** A ghost that arrives from the network is checked before it is believed: a real Riftwalker, real cards, a sane size. */
+export function checkGhostBoss(raw: unknown): GhostBoss | null {
+  if (typeof raw !== 'object' || raw === null) return null;
+  const g = raw as Record<string, unknown>;
+  const sent = g['hero'];
+  // (an id from before the Riftwalkers were named for their class is read as the class)
+  const hero = typeof sent === 'string' ? canonicalHero(sent) : sent;
+  if (typeof hero !== 'string' || !Object.hasOwn(RIFTWALKERS, hero)) return null;
+  const deck = g['deck'];
+  const boons = g['boons'];
+  if (!Array.isArray(deck) || deck.length < V2_DECK_RULES.minSize || deck.length > 80) return null;
+  if (!deck.every((c) => typeof c === 'string' && Object.hasOwn(COMBAT_DB.cards, c))) return null;
+  if (!Array.isArray(boons) || boons.length > 12) return null;
+  if (!boons.every((b) => typeof b === 'string' && Object.hasOwn(COMBAT_DB.boons, b))) return null;
+  const name = typeof g['name'] === 'string' ? g['name'].slice(0, 40) : 'A rival';
+  const tier = typeof g['tier'] === 'number' && Number.isInteger(g['tier']) ? g['tier'] : 1;
+  const stage = typeof g['stage'] === 'number' && Number.isInteger(g['stage']) ? g['stage'] : null;
+  return {
+    name,
+    hero: hero as GhostBoss['hero'],
+    deck: [...(deck as string[])],
+    boons: [...(boons as string[])],
+    tier,
+    stage,
+  };
+}
+
+/** The ghost for this Warden has arrived (or none could be had: null, and the usual Warden is fought). */
+export function attachGhost(run: RunState, ghost: unknown): RunState {
+  need(ghostWanted(run), 'This fight is not waiting for a ghost');
+  const r = clone(run);
+  const ctx = r.context as NonNullable<RunState['context']>;
+  ctx.ghostAsked = true;
+  const checked = checkGhostBoss(ghost);
+  if (checked) ctx.ghost = checked;
+  return r;
 }
 
 /** What the fight at the current node is. */
@@ -332,7 +403,9 @@ export function duelPlan(run: RunState): FightPlan | null {
   const node = nodeOf(run, run.context.nodeId);
   if (!node.enemyId) return null;
   const e = encounter(node.enemyId);
+  const ghost = node.ghost ? run.context.ghost : undefined;
   return {
+    ...(ghost ? { ghost: { ...ghost, hp: ghostBossHp(ghost.hero, run.tier) } } : {}),
     encounterId: e.id,
     units: [...e.units],
     deck: [...run.deck],
@@ -386,12 +459,12 @@ export function finishDuel(
     }
   }
   let potionGained: string | undefined;
-  const dropChance = node.kind === 'duel' ? 40 : 75;
+  const dropChance = POTION_DROP_CHANCE[node.kind === 'duel' ? 'duel' : 'elite'];
   if (r.potions.length < MAX_POTIONS && nextInt(r.rng, 100) < dropChance) {
     potionGained = offerPotion(r.rng);
     r.potions.push(potionGained);
   }
-  const gain = node.kind === 'duel' ? 12 : node.kind === 'elite' ? 28 : 50;
+  const gain = FIGHT_SHARDS[node.kind === 'duel' ? 'duel' : node.kind === 'elite' ? 'elite' : 'warden'];
   r.shards += gain;
   for (const id of r.boons) {
     const b = COMBAT_DB.boons[id];
@@ -406,7 +479,7 @@ export function finishDuel(
       boonGained = id;
     }
   }
-  if (node.kind === 'elite') heal(r, r.maxHp * 0.1); // an elite leaves you a little breathing room
+  if (node.kind === 'elite') heal(r, (r.maxHp * ELITE_HEAL_PCT) / 100); // an elite leaves you a little breathing room
   if (node.kind === 'warden') {
     clearNode(r, node.id);
     // a Warden falls: you catch your breath
@@ -493,6 +566,7 @@ export function nextStage(run: RunState): RunState {
     realmOfStage(r, r.stage),
     r.character,
     enemyRealms(r, r.stage),
+    r.tier,
   );
   r.cleared = [];
   r.at = null;
@@ -888,11 +962,11 @@ export function settleInterrupted(run: RunState): { run: RunState; notice: strin
 }
 
 /** An elite event's trial has been played (the client plays the puzzle): a win opens the choice of prizes, a loss pays the consolation. */
-export function finishTrial(run: RunState, won: boolean, earned?: readonly number[]): RunState {
+export function finishTrial(run: RunState, won: boolean): RunState {
   need(run.phase === 'event' && run.context?.event?.trial?.state === 'playing', 'There is no trial being played');
   const r = clone(run);
   const ctx = r.context as NonNullable<RunState['context']>;
-  const said = endTrial(r, ctx.event as NonNullable<typeof ctx.event>, won, earned);
+  const said = endTrial(r, ctx.event as NonNullable<typeof ctx.event>, won);
   if (said !== null) {
     r.eventResult = said;
     clearNode(r, ctx.nodeId);
@@ -943,7 +1017,14 @@ export function continueLoop(run: RunState): RunState {
   heal(r, r.maxHp);
   r.stage = 1;
   r.stageRealms = shuffledRealms(r.rng);
-  r.map = generateStageMap(r.rng, 1, r.stageRealms[0] as StageRealm, r.character);
+  r.map = generateStageMap(
+    r.rng,
+    1,
+    r.stageRealms[0] as StageRealm,
+    r.character,
+    undefined,
+    r.tier,
+  );
   r.cleared = [];
   r.at = null;
   openPrelude(r, 'stage');

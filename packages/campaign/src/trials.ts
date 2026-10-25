@@ -17,9 +17,16 @@ export const CASCADE_LANES = 10;
 export const CASCADE_BALLS = 3;
 
 /** How the ten lanes are filled: the same kinds of prize in a different order, so each place feels different. */
-type Layout = 'treasury' | 'armory' | 'apothecary';
+export type Layout = 'treasury' | 'armory' | 'apothecary';
 
-interface EliteSpec {
+/** The ten prizes of each layout, by kind (the marks on the board). Which lane each stands in is shuffled for every event. */
+export const LAYOUT_PRIZES: Record<Layout, string[]> = {
+  treasury: ['card', 'rare', 'boon', 'boon', 'crossed', 'upgrade', 'shards', 'heal', 'hp', 'potion'],
+  armory: ['card', 'rare', 'boon', 'boon', 'crossed', 'crossed', 'thin', 'shards', 'upgrade', 'hp'],
+  apothecary: ['card', 'rare', 'boon', 'boon', 'crossed', 'potion', 'upgrade', 'shards', 'heal', 'hp'],
+};
+
+export interface EliteSpec {
   id: string;
   title: string;
   text: string;
@@ -90,12 +97,12 @@ function prizesFor(layout: Layout, r: RunState): { prizes: TrialPrize[]; seconds
   const legends = pick(
     r.rng,
     own.filter((id) => COMBAT_DB.cards[id]?.rarity === 'legendary'),
-    4,
+    2,
   );
   const rares = pick(
     r.rng,
     own.filter((id) => COMBAT_DB.cards[id]?.rarity === 'rare' && !legends.includes(id)),
-    4,
+    6,
   );
   const boons = pick(
     r.rng,
@@ -119,10 +126,16 @@ function prizesFor(layout: Layout, r: RunState): { prizes: TrialPrize[]; seconds
 
   const cardSlot = (id: string | undefined, icon: string, again: number): Omit<TrialPrize, 'id'> =>
     id ? slot(icon, name(id), `Take ${name(id)}`, [{ k: 'card', id }], { card: id }) : purse(again);
+  // the one Legendary lane (a rare of yours if your class has none left); its second prize is another
   const legend =
-    (i: number): Maker =>
+    (k: number): Maker =>
     () =>
-      cardSlot(legends[i] ?? rares[i], 'card', 200);
+      cardSlot(legends[k / 2] ?? rares[4 + k / 2], 'card', 260);
+  // a rare card of your class (a lane of its own)
+  const rareCard =
+    (k: number): Maker =>
+    () =>
+      cardSlot(rares[k], 'rare', 195);
   const cross =
     (i: number): Maker =>
     () => {
@@ -135,7 +148,7 @@ function prizesFor(layout: Layout, r: RunState): { prizes: TrialPrize[]; seconds
             [{ k: 'card', id: three[0] as string }],
             { card: three[0] as string, choices: three },
           )
-        : purse(150);
+        : purse(195);
     };
   const boon =
     (i: number): Maker =>
@@ -152,7 +165,7 @@ function prizesFor(layout: Layout, r: RunState): { prizes: TrialPrize[]; seconds
       const p = potions[i];
       return p
         ? slot('potion', p.name, `Take ${p.name}`, [{ k: 'potionOf', id: p.id }], { potion: p.id })
-        : purse(120);
+        : purse(155);
     };
   const upgrade =
     (n: number): Maker =>
@@ -171,53 +184,50 @@ function prizesFor(layout: Layout, r: RunState): { prizes: TrialPrize[]; seconds
     ]);
   const heal: Maker = () =>
     slot('heal', 'Heal 40%', 'A rest: heal 40% of your HP', [{ k: 'heal', pct: 40 }]);
-  const shards: Maker = () => purse(90);
+  const shards: Maker = () => purse(115);
 
   // k = 0 is the lane's prize; k = 2 is what a second ball in the same lane pays: the same kind of prize, a different one
   const order = (k: number): Record<Layout, Maker[]> => ({
-    treasury: [
-      legend(k),
-      boon(k),
-      cross(k),
-      upgrade(3),
-      shards,
-      heal,
-      vitality,
-      potion(k),
-      boon(1 + k),
-      legend(1 + k),
-    ],
-    armory: [
-      legend(k),
-      cross(k),
-      boon(k),
-      thin,
-      shards,
-      upgrade(2),
-      vitality,
-      boon(1 + k),
-      cross(1 + k),
-      legend(1 + k),
-    ],
-    apothecary: [
-      legend(k),
-      potion(k),
-      boon(k),
-      vitality,
-      heal,
-      shards,
-      upgrade(3),
-      boon(1 + k),
-      cross(k),
-      legend(1 + k),
-    ],
+    treasury: [legend(k), rareCard(k), boon(k), boon(1 + k), cross(k), upgrade(3), shards, heal, vitality, potion(k)],
+    armory: [legend(k), rareCard(k), boon(k), boon(1 + k), cross(k), cross(1 + k), thin, shards, upgrade(2), vitality],
+    apothecary: [legend(k), rareCard(k), boon(k), boon(1 + k), cross(k), potion(k), upgrade(3), shards, heal, vitality],
   });
-  const fill = (k: number, mark: string): TrialPrize[] =>
-    order(k)[layout].map((make, i) => {
-      const p = make();
-      return { ...(dealFeasible(r, p.deal, ev) ? p : purse(100)), id: `${mark}${i}` };
+  const make = (k: number): TrialPrize[] =>
+    order(k)[layout].map((m, i) => {
+      const p = m();
+      return { ...(dealFeasible(r, p.deal, ev) ? p : purse(130)), id: String(i) };
     });
-  return { prizes: fill(0, 'p'), seconds: fill(2, 'q') };
+  // where each prize stands is shuffled for every event: a lane's second prize stands with its first
+  const first = make(0);
+  const second = make(2);
+  const lanes = first.map((_, i) => i);
+  for (let i = lanes.length - 1; i > 0; i--) {
+    const j = nextInt(r.rng, i + 1);
+    [lanes[i], lanes[j]] = [lanes[j] as number, lanes[i] as number];
+  }
+  return {
+    prizes: lanes.map((from, lane) => ({ ...(first[from] as TrialPrize), id: `p${lane}` })),
+    seconds: lanes.map((from, lane) => ({ ...(second[from] as TrialPrize), id: `q${lane}` })),
+  };
+}
+
+/**
+ * Where a trial's balls land: a fair draw from the trial's seed, the same one for everybody and every lane equally likely. The
+ * game only animates the balls to these lanes, so it cannot be bent by where a ball is dropped (and a modified client cannot
+ * claim better lanes: the rules work this out for themselves).
+ */
+export function cascadeLanes(seed: number, balls: number = CASCADE_BALLS): number[] {
+  let a = (seed ^ 0x9e3779b9) >>> 0;
+  const next = (): number => {
+    a = (a + 0x6d2b79f5) >>> 0;
+    let t = a;
+    t = Math.imul(t ^ (t >>> 15), t | 1);
+    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+  // (the first draws of a small seed are warmed up and thrown away)
+  for (let i = 0; i < 4; i++) next();
+  return Array.from({ length: balls }, () => Math.floor(next() * CASCADE_LANES));
 }
 
 /** Build an elite event for this run. */
@@ -262,21 +272,14 @@ export function beginTrial(ev: EventCtx): void {
 }
 
 /**
- * The balls have been dropped: `earned` are the lanes they landed in. Those prizes are the player's to choose from (up to
- * CASCADE_BALLS of them). Returns what happened if nothing was earned, or null when there is a prize to pick.
+ * The balls have been dropped. What they earned is not the client's to say: it is the lanes of `cascadeLanes` for this trial's seed
+ * (a lane pays at most twice). Returns what happened if nothing was earned, or null when there is a prize to pick.
  */
-export function endTrial(
-  r: RunState,
-  ev: EventCtx,
-  won: boolean,
-  earned: readonly number[] = [],
-): string | null {
+export function endTrial(r: RunState, ev: EventCtx, won: boolean): string | null {
   const t = ev.trial;
   if (!t || t.state !== 'playing') throw new Error('There is no trial being played');
-  // one entry per ball that landed on the board; a lane pays at most twice (a third ball in it adds nothing)
   const seen = new Map<number, number>();
-  const lanes = earned
-    .filter((i) => Number.isInteger(i) && i >= 0 && i < t.prizes.length)
+  const lanes = cascadeLanes(t.seed)
     .filter((i) => {
       const n = (seen.get(i) ?? 0) + 1;
       seen.set(i, n);

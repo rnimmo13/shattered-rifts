@@ -18,6 +18,7 @@ export {
   MAX_POTIONS,
   MAX_TIER,
   POTION_PRICE,
+  BOON_PRICE,
   offerCards,
   crossedPool,
   crossedOffers,
@@ -67,4 +68,30 @@ export {
 export { makePrelude, describeEffect } from './preludes';
 export { KIT_CARDS, makeKits } from './kits';
 export { RUN_SAVE_VERSION, parseRun, serializeRun } from './save';
-export { ELITE_EVENTS, ELITE_EVENT_CHANCE, buildElite } from './trials';
+export {
+  ELITE_EVENTS,
+  ELITE_EVENT_CHANCE,
+  CASCADE_BALLS,
+  CASCADE_LANES,
+  LAYOUT_PRIZES,
+  cascadeLanes,
+  buildElite,
+  type Layout,
+} from './trials';
+export { EVENT_TAG_LABEL, eventOffers, type EventTag } from './odds';
+export { NODE_ODDS, GHOST_FROM_TIER, GHOST_WARDEN_CHANCE } from './mapgen';
+export {
+  GHOST_BOSS_HP_BASE,
+  GHOST_BOSS_HP_PER_TIER,
+  attachGhost,
+  checkGhostBoss,
+  ghostBossHp,
+  ghostWanted,
+} from './run';
+export { FIGHT_SHARDS, POTION_DROP_CHANCE, ELITE_HEAL_PCT } from './run';
+export {
+  BOON_WEIGHTS,
+  CROSSED_OFFER_CHANCE,
+  GIFT_LEGEND_CHANCE,
+  POTION_WEIGHTS,
+} from './rewards';

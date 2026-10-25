@@ -261,6 +261,9 @@ export function LeaderboardScreen() {
             {view.decks === 1 ? 'deck is' : 'decks are'} out there to be met. Ghost matches do not
             count on the Arena board.
           </p>
+          <p>
+            <a href="#/ghosts">See every ghost deck</a> (whose it is, how far it got and how it has done).
+          </p>
           <h2 className="board__h">Ghosts</h2>
           <Table<GhostStanding>
             caption={`Ghost decks by wins this ${period}`}

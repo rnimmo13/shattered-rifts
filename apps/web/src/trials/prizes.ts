@@ -3,6 +3,7 @@
 /** the mark of each kind of prize: a glyph and a colour */
 export const PRIZE_MARK: Record<string, { glyph: string; color: string }> = {
   card: { glyph: '★', color: '#e8c668' },
+  rare: { glyph: '☆', color: '#8fb8ff' },
   crossed: { glyph: '◈', color: '#7fd4ff' },
   boon: { glyph: '✦', color: '#c9a0ff' },
   potion: { glyph: '●', color: '#6fe0b0' },

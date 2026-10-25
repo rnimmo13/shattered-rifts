@@ -46,7 +46,7 @@ export const EVENTS: EventDef[] = [
         title: 'A rift cache',
         text: 'A seam in the world has split open, and something glints inside. You can only carry one thing away.',
         options: [
-          { id: 'shards', label: 'Take the shards (+30)' },
+          { id: 'shards', label: 'Take the shards (+40)' },
           { id: 'heal', label: 'Drink from the spring (heal 20% of your HP)' },
           ...(card
             ? [
@@ -86,7 +86,7 @@ export const EVENTS: EventDef[] = [
         title: 'The blood altar',
         text: 'An altar drinks what you give it, and gives back. The rift rewards those who bleed for it.',
         options: [
-          { id: 'bleed', label: 'Give 10 HP: gain 60 shards' },
+          { id: 'bleed', label: 'Give 10 HP: gain 80 shards' },
           ...(boon ? [{ id: 'boon' as const, label: 'Give 15 HP: take the Boon' }] : []),
           leave,
         ],
@@ -192,7 +192,7 @@ export const EVENTS: EventDef[] = [
           id: 'help',
           label: 'Help them (lose 8 HP): they give you a potion, or shards if your belt is full',
         },
-        { id: 'rob', label: 'Take their goods: +70 shards and a Wound in your deck' },
+        { id: 'rob', label: 'Take their goods: +90 shards and a Wound in your deck' },
         leave,
       ],
       cardOffer: '',
@@ -244,7 +244,7 @@ export const EVENTS: EventDef[] = [
       text: 'Heaps of broken armour and rusted blades. Whatever you leave here, someone will pay for.',
       options: [
         { id: 'scrap', label: 'Leave a basic card behind (a random Attack or Defend goes)' },
-        { id: 'sell', label: 'Sell some scrap: +25 shards' },
+        { id: 'sell', label: 'Sell some scrap: +35 shards' },
         leave,
       ],
       cardOffer: '',
@@ -310,7 +310,7 @@ export const EVENTS: EventDef[] = [
       options: [
         {
           id: 'spin',
-          label: 'Spin it: win 80 shards, or heal 30%, or lose 12% HP and gain a Wound',
+          label: 'Spin it: win 105 shards, or heal 30%, or lose 12% HP and gain a Wound',
         },
         leave,
       ],
@@ -327,7 +327,7 @@ export const EVENTS: EventDef[] = [
       options: [
         {
           id: 'grab',
-          label: 'Grab it: +120 shards, and the roof comes down (lose 15% of your max HP)',
+          label: 'Grab it: +160 shards, and the roof comes down (lose 15% of your max HP)',
         },
         leave,
       ],
@@ -414,8 +414,8 @@ export function resolveEvent(
   if (chosen?.deal) return applyDeal(r, chosen, ev, helpers);
   switch (option) {
     case 'shards':
-      r.shards += 30;
-      return 'You pocket 30 shards.';
+      r.shards += 40;
+      return 'You pocket 40 shards.';
     case 'heal':
       healBy(r, r.maxHp * 0.2);
       return 'The water is cold and clean. You feel better.';
@@ -446,8 +446,8 @@ export function resolveEvent(
     case 'bleed':
       if (r.hp <= 10) fail('You are too hurt for that');
       r.hp -= 10;
-      r.shards += 60;
-      return 'The altar drinks, and pays: 60 shards.';
+      r.shards += 80;
+      return 'The altar drinks, and pays: 80 shards.';
     case 'boon':
       if (!ev.boonOffer) return fail('There is no boon here');
       if (r.hp <= 15) fail('You are too hurt for that');
@@ -495,13 +495,13 @@ export function resolveEvent(
         r.potions.push(p);
         return `They press ${COMBAT_DB.potions[p]?.name ?? 'a potion'} into your hand.`;
       }
-      r.shards += 50;
-      return 'Your belt is full, so they give you 50 shards instead.';
+      r.shards += 65;
+      return 'Your belt is full, so they give you 65 shards instead.';
     }
     case 'rob':
-      r.shards += 70;
+      r.shards += 90;
       r.deck.push('wound');
-      return 'You take 70 shards. Something about it stays with you: a Wound joins your deck.';
+      return 'You take 90 shards. Something about it stays with you: a Wound joins your deck.';
     case 'idol':
       if (!ev.boonOffer) return fail('The idol is silent');
       helpers.gainBoon(r, ev.boonOffer);
@@ -536,8 +536,8 @@ export function resolveEvent(
       return `You leave ${COMBAT_DB.cards[pick]?.name ?? 'a card'} on the heap.`;
     }
     case 'sell':
-      r.shards += 25;
-      return 'You sell some scrap for 25 shards.';
+      r.shards += 35;
+      return 'You sell some scrap for 35 shards.';
     case 'maxhp':
       r.maxHp += 6;
       r.hp += 6;
@@ -580,8 +580,8 @@ export function resolveEvent(
     case 'spin': {
       const roll = nextInt(r.rng, 3);
       if (roll === 0) {
-        r.shards += 80;
-        return 'The wheel stops on gold: +80 shards.';
+        r.shards += 105;
+        return 'The wheel stops on gold: +105 shards.';
       }
       if (roll === 1) {
         healBy(r, r.maxHp * 0.3);
@@ -593,9 +593,9 @@ export function resolveEvent(
     }
     case 'grab': {
       if (r.hp <= 20) fail('You are too hurt for that');
-      r.shards += 120;
+      r.shards += 160;
       r.hp = Math.max(1, r.hp - Math.ceil(r.maxHp * 0.15));
-      return 'You snatch the idol and run. The roof does not forgive: +120 shards, and you lose 15% of your max HP in bruises.';
+      return 'You snatch the idol and run. The roof does not forgive: +160 shards, and you lose 15% of your max HP in bruises.';
     }
     case 'burn': {
       const pool = nonBasic(r.deck);

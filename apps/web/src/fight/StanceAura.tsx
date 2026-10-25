@@ -2,7 +2,8 @@
 // Radiant (a triple-damage stance for the turn) also burns with golden rays and rising sparks. Pure presentation: it reads the hero's
 // statuses and draws; the rules live in the engine.
 
-import { useLayoutEffect, useRef, type CSSProperties } from 'react';
+import { useRef, type CSSProperties } from 'react';
+import { useClearOfBelt } from './clearOfBelt';
 import type { StatusId, UnitView } from '@sr/combat';
 import { STATUS_INFO } from './info';
 
@@ -46,24 +47,8 @@ export function StanceAura(props: {
 }) {
   const stance = stanceOf(props.unit);
   const banner = useRef<HTMLDivElement>(null);
-  // On a small screen the hero stands close to the potion belt, and the banner above their head would sit on top of it. After each
-  // draw the banner is measured against the belt: if they touch, it slides right, just far enough to clear it.
-  useLayoutEffect(() => {
-    const el = banner.current;
-    if (!el) return;
-    const belt = document.querySelector('.fight__potions');
-    const shifted = parseFloat(el.style.marginLeft) || 0;
-    if (!belt) {
-      if (shifted) el.style.marginLeft = '';
-      return;
-    }
-    const b = el.getBoundingClientRect();
-    const p = belt.getBoundingClientRect();
-    const touchesRow = b.top < p.bottom + 6 && b.bottom > p.top - 6;
-    const natural = b.left - shifted; // where it would stand with no shift
-    const need = touchesRow && natural < p.right + 8 ? p.right + 8 - natural : 0;
-    if (Math.abs(need - shifted) > 0.5) el.style.marginLeft = need ? `${need}px` : '';
-  });
+  // (on a small screen the banner above the head would sit on the potion belt: it slides clear of it)
+  useClearOfBelt(banner);
   if (!stance) return null;
   const info = STATUS_INFO[stance];
   const size = Math.max(props.w * 1.5, props.h * 0.9, 200);

@@ -503,6 +503,15 @@ function execOp(r: Run, a: Act, op: Op): void {
         if (t.kind === 'hero') syncClutch(r, r.s.sides[t.side]);
       }
       return;
+    case 'cleanse':
+      // every debuff on the target is lessened (a Doom that is lowered kills later, or not at all); `all` dispels them for good
+      for (const t of resolve(r, a, op.to))
+        for (const st of DEBUFFS) {
+          const have = stacks(t, st);
+          if (have <= 0) continue;
+          addStatus(r, t, st, -(op.all ? have : Math.min(have, op.amount)));
+        }
+      return;
     case 'status':
       for (const t of resolve(r, a, op.to)) {
         const n = amountOf(r, a, op.amount, op.scale, t);

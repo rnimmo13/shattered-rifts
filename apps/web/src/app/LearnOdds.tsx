@@ -1,0 +1,269 @@
+// How to play > Odds & numbers: the chances in the game, read straight from the tables the game itself uses (so this page can never
+// be out of date). For the testing phase: switch it off with SHOW_ODDS in learnFlags.ts.
+
+import { useMemo } from 'react';
+import {
+  BOON_PRICE,
+  BOON_WEIGHTS,
+  CASCADE_BALLS,
+  CROSSED_MERCHANT_CHANCE,
+  CROSSED_OFFER_CHANCE,
+  ELITE_EVENTS,
+  ELITE_EVENT_CHANCE,
+  ELITE_HEAL_PCT,
+  EVENT_TAG_LABEL,
+  FIGHT_SHARDS,
+  GHOST_BOSS_HP_BASE,
+  GHOST_FROM_TIER,
+  GHOST_WARDEN_CHANCE,
+  GIFT_LEGEND_CHANCE,
+  LAYOUT_PRIZES,
+  cascadeLanes,
+  LUCK_WEIGHTS,
+  NODE_ODDS,
+  POTION_DROP_CHANCE,
+  POTION_PRICE,
+  POTION_WEIGHTS,
+  PRICE,
+  REMOVE_PRICE,
+  eventOffers,
+  type Layout,
+  type Luck,
+} from '@sr/campaign';
+import { PRIZE_MARK } from '../trials/prizes';
+import { SLOT_COUNT } from '../trials/physics';
+
+const pct = (w: number, total: number): string => `${Math.round((w / total) * 100)}%`;
+const total = (w: Record<string, number>): number => Object.values(w).reduce((a, b) => a + b, 0);
+const RARITIES = ['common', 'uncommon', 'rare', 'legendary'] as const;
+const LUCKS: { id: Luck; label: string }[] = [
+  { id: 'normal', label: 'Normal luck' },
+  { id: 'lucky', label: 'Lucky' },
+  { id: 'blessed', label: 'Blessed' },
+];
+
+/** what a lane of the Brass Cascade holds, by kind of prize */
+const LANE_LABEL: Record<string, string> = {
+  card: 'A Legendary card of yours (only one lane)',
+  rare: 'A rare card of yours',
+  boon: 'A Boon',
+  crossed: 'Pick 1 of 3 Rift-crossed rares',
+  upgrade: 'Upgrade 2 or 3 cards',
+  shards: 'Shards',
+  heal: 'Heal 40%',
+  hp: '+10 max HP and heal',
+  potion: 'A rare potion',
+  thin: 'Two cards leave your deck',
+};
+const LAYOUT_NAME: Record<Layout, string> = {
+  treasury: 'Treasury',
+  armory: 'Armory',
+  apothecary: 'Apothecary',
+};
+
+/** how often a ball is drawn for each lane, over 20,000 trials of three balls (the real draw, so this shows it is even) */
+function laneOdds(): number[] {
+  const n = Array.from({ length: SLOT_COUNT }, () => 0);
+  const trials = 20000;
+  for (let seed = 0; seed < trials; seed++) for (const l of cascadeLanes(seed)) n[l]!++;
+  return n.map((c) => Math.round((c / (trials * CASCADE_BALLS)) * 1000) / 10);
+}
+
+export function LearnOdds() {
+  const events = useMemo(() => eventOffers(), []);
+  const lanes = useMemo(() => laneOdds(), []);
+  const layoutsUsed = (l: Layout): string =>
+    ELITE_EVENTS.filter((e) => e.layout === l)
+      .map((e) => e.title.replace(/^The /, ''))
+      .join(', ');
+
+  return (
+    <section>
+      <h2>Odds &amp; numbers</h2>
+      <p className="learn__note">
+        <b>Testing phase.</b> These are the real numbers, read straight from the game, so they are
+        always up to date. They may change as we balance, and this page will be hidden later.
+      </p>
+
+      <h3>Card rewards after a fight</h3>
+      <p>
+        Each card offered is rolled separately, from the Riftwalker&apos;s own cards. If a rarity
+        has nothing left to offer (you hold every copy), the roll falls to the next rarity down.
+        About {CROSSED_OFFER_CHANCE} cards in 100 come from another Riftwalker (a Rift-crossed
+        card). Luck is chosen when a run starts.
+      </p>
+      <table className="learn__table">
+        <thead>
+          <tr>
+            <th>Chance</th>
+            {LUCKS.map((l) => (
+              <th key={l.id} colSpan={2}>
+                {l.label}
+              </th>
+            ))}
+          </tr>
+          <tr>
+            <th />
+            {LUCKS.flatMap((l) => [<th key={l.id + 'f'}>Fight</th>, <th key={l.id + 'e'}>Elite</th>])}
+          </tr>
+        </thead>
+        <tbody>
+          {RARITIES.map((r) => (
+            <tr key={r}>
+              <th scope="row">{r[0]?.toUpperCase() + r.slice(1)}</th>
+              {LUCKS.flatMap((l) =>
+                (['duel', 'elite'] as const).map((q) => {
+                  const w = LUCK_WEIGHTS[l.id][q];
+                  return <td key={l.id + q}>{pct(w[r] ?? 0, total(w))}</td>;
+                }),
+              )}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+
+      <h3>Warden, merchants and prices</h3>
+      <ul>
+        <li>
+          A Warden&apos;s Gift offers rare cards of your class, and a Legendary of yours{' '}
+          {GIFT_LEGEND_CHANCE.normal}% of the time ({GIFT_LEGEND_CHANCE.lucky}% Lucky,{' '}
+          {GIFT_LEGEND_CHANCE.blessed}% Blessed).
+        </li>
+        <li>
+          Merchant cards cost {PRICE['common']} (common), {PRICE['uncommon']} (uncommon),{' '}
+          {PRICE['rare']} (rare) and {PRICE['legendary']} (Legendary) shards. Taking a card out of
+          your deck costs {REMOVE_PRICE}.
+        </li>
+        <li>
+          Potions cost {POTION_PRICE['common']} / {POTION_PRICE['uncommon']} /{' '}
+          {POTION_PRICE['rare']} shards, and Boons {BOON_PRICE['common']} / {BOON_PRICE['uncommon']}{' '}
+          / {BOON_PRICE['rare']} (common / uncommon / rare).
+        </li>
+        <li>
+          {CROSSED_MERCHANT_CHANCE}% of merchants are visitors from another world who sell only one
+          other Riftwalker&apos;s cards.
+        </li>
+      </ul>
+
+      <h3>The map</h3>
+      <p>
+        Each stop on a stage (after the first floor) is rolled: an Elite{' '}
+        {NODE_ODDS.eliteFirst}% (the first one on a stage, then {NODE_ODDS.eliteMore}%; from the
+        third floor, and only two or three a stage), a Merchant {NODE_ODDS.merchant}% (two at
+        most), a Shrine {NODE_ODDS.shrine}% (from the third floor; the stop before a Warden is
+        always a Shrine), an Event {NODE_ODDS.event}% (never three in a row). Whatever is left is
+        a fight.
+      </p>
+
+      <p>
+        From Rift Tier {GHOST_FROM_TIER + 1} on, each Warden has a {GHOST_WARDEN_CHANCE}% chance of
+        being a <b>ghost</b> instead: a deck from the Arena (one of the better ones, from any
+        Riftwalker), played by the computer, with about {GHOST_BOSS_HP_BASE}x its Riftwalker&apos;s
+        usual HP (and more each tier). If no ghost can be had, you fight the usual Warden. It pays
+        the same Gift and Boon.
+      </p>
+
+      <h3>What a fight pays</h3>
+      <ul>
+        <li>
+          Shards: {FIGHT_SHARDS.duel} for a fight, {FIGHT_SHARDS.elite} for an Elite,{' '}
+          {FIGHT_SHARDS.warden} for a Warden.
+        </li>
+        <li>
+          A potion drops {POTION_DROP_CHANCE.duel}% of the time after a fight and{' '}
+          {POTION_DROP_CHANCE.elite}% after an Elite (if your belt has room). Of potions:{' '}
+          {pct(POTION_WEIGHTS.common, total(POTION_WEIGHTS))} common,{' '}
+          {pct(POTION_WEIGHTS.uncommon, total(POTION_WEIGHTS))} uncommon,{' '}
+          {pct(POTION_WEIGHTS.rare, total(POTION_WEIGHTS))} rare.
+        </li>
+        <li>
+          Every Elite, and every Warden but the last, gives a Boon: {pct(BOON_WEIGHTS.elite?.['common'] ?? 0, total(BOON_WEIGHTS.elite ?? {}))}{' '}
+          common, {pct(BOON_WEIGHTS.elite?.['uncommon'] ?? 0, total(BOON_WEIGHTS.elite ?? {}))}{' '}
+          uncommon, {pct(BOON_WEIGHTS.elite?.['rare'] ?? 0, total(BOON_WEIGHTS.elite ?? {}))} rare
+          (the merchant&apos;s Boon rolls the same way). An Elite also heals {ELITE_HEAL_PCT}% of
+          your HP.
+        </li>
+      </ul>
+
+      <h3>Events</h3>
+      <p>
+        There are {events.count} events. They are rolled by weight, and about every{' '}
+        {Math.round(100 / ELITE_EVENT_CHANCE)}th event ({ELITE_EVENT_CHANCE}%) is an{' '}
+        <b>Elite Event</b> instead (see the Brass Cascade below). Of the ordinary events, the share
+        that offer each kind of thing in at least one of their choices:
+      </p>
+      <dl>
+        {(Object.keys(EVENT_TAG_LABEL) as (keyof typeof EVENT_TAG_LABEL)[]).map((t) => (
+          <div key={t} className="learn__row">
+            <dt>{events.share[t]}%</dt>
+            <dd>{EVENT_TAG_LABEL[t]}</dd>
+          </div>
+        ))}
+      </dl>
+      <p className="learn__note">
+        A few events only come up in the right state (a buried map you kept, low HP, a lot of
+        shards, a Boon to give up), so the real share you meet can differ a little.
+      </p>
+
+      <h3>Elite Event: the Brass Cascade</h3>
+      <p>
+        You may drop {CASCADE_BALLS} balls onto a board of pegs. Each lands in one of {SLOT_COUNT}{' '}
+        lanes, and every lane a ball lands in is a prize you have earned; you choose one of them.
+        Two balls in the same lane pay that lane again with a second, <b>different</b> prize of the
+        same kind (marked ×2). You only get one try: once you press Begin, closing the page
+        counts as a failed trial.
+      </p>
+      <p>
+        <b>Fair by design.</b> Where each ball lands is drawn fairly before it drops: every lane is
+        exactly as likely as any other, wherever you let go (the ball bounces about and is steered
+        to its lane). The prizes also stand in different lanes every time, and only one lane holds
+        a Legendary card. The share of balls drawn for each lane, over 20,000 trials:
+      </p>
+      <table className="learn__table learn__table--lanes">
+        <tbody>
+          <tr>
+            <th scope="row">Lane</th>
+            {lanes.map((_, i) => (
+              <td key={i}>{i + 1}</td>
+            ))}
+          </tr>
+          <tr>
+            <th scope="row">Chance</th>
+            {lanes.map((n, i) => (
+              <td key={i}>{n}%</td>
+            ))}
+          </tr>
+        </tbody>
+      </table>
+      <p>
+        Every Elite Event has one of three sets of ten prizes (the lanes they stand in are shuffled
+        each time):
+      </p>
+      <table className="learn__table learn__table--lanes">
+        <tbody>
+          {(Object.keys(LAYOUT_PRIZES) as Layout[]).map((l) => (
+            <tr key={l}>
+              <th scope="row">
+                {LAYOUT_NAME[l]}
+                <small>{layoutsUsed(l)}</small>
+              </th>
+              {[...LAYOUT_PRIZES[l]].map((k, i) => {
+                const mark = PRIZE_MARK[k] ?? PRIZE_MARK['shards']!;
+                return (
+                  <td key={i} title={LANE_LABEL[k]} style={{ color: mark.color }}>
+                    {mark.glyph}
+                  </td>
+                );
+              })}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      <p className="learn__note">
+        {Object.entries(LANE_LABEL)
+          .map(([k, label]) => `${PRIZE_MARK[k]?.glyph ?? ''} ${label}`)
+          .join(' · ')}
+      </p>
+    </section>
+  );
+}

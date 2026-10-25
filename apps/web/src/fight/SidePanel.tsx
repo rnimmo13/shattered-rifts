@@ -125,16 +125,23 @@ export function SnareRow(props: {
   top: number;
   /** how far right of the hero the row starts (further when the totem column is in the way) */
   dx?: number;
+  /** the opponent's Traps (Arena): face-down tiles, set out toward the middle of the board from their hero */
+  foe?: boolean;
   tip: (card: string | null) => TipContent;
 }) {
   const { db, me } = props;
   if (me.snares.length === 0) return null;
   const gap = 66;
-  const x0 = props.cx + (props.dx ?? 118);
+  // yours stand to the right of your hero, the opponent's to the left of theirs: both on the middle side
+  const x0 = props.foe ? props.cx - (props.dx ?? 118) : props.cx + (props.dx ?? 118);
+  const at = (i: number): number => (props.foe ? x0 - (i + 1) * gap : x0 + i * gap);
   return (
-    <div className="snarerow" aria-label="Your Traps">
-      <span className="snarerow__label" style={{ left: x0, top: props.top - 22 }}>
-        Traps {me.snares.length}/{MAX_SNARES}
+    <div className="snarerow" aria-label={props.foe ? "Your opponent's Traps (face down)" : 'Your Traps'}>
+      <span
+        className="snarerow__label"
+        style={{ left: props.foe ? x0 - me.snares.length * gap : x0, top: props.top - 22 }}
+      >
+        {props.foe ? "Opponent's Traps" : 'Traps'} {me.snares.length}/{MAX_SNARES}
       </span>
       {me.snares.map((s, i) => {
         const def = s.card ? db.cards[s.card] : undefined;
@@ -144,7 +151,7 @@ export function SnareRow(props: {
             key={s.id}
             className="snaretile"
             tabIndex={0}
-            style={{ left: x0 + i * gap, top: props.top }}
+            style={{ left: at(i), top: props.top }}
             {...tipAttrs(props.tip(s.card))}
           >
             <svg

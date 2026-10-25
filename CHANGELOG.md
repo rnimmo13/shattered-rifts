@@ -5,6 +5,15 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **Ghost Wardens:** from Rift Tier 4, a stage's Warden has a one-in-three chance of being a ghost instead: a deck another player entered in the Arena, played by the computer. You see its Riftwalker and who it came from, and if no ghost can be had you fight the usual Warden.
+- **Ghost decks page:** see every deck that can be met as a ghost: whose it is, which Riftwalker, how far it got and how it has done (never its cards or Boons). From the home page, the Arena and the Leaderboards.
+- **Brass Cascade is fair:** every lane is exactly as likely as any other, the prizes stand in different lanes every time, and only one lane holds a Legendary card.
+- **Cleansing cards:** Shrug It Off, Steady Nerves and Purging Light (Neutral) lessen the debuffs on you; only the rare one dispels them completely.
+- **Cards stay on screen longer and fly to the discard pile,** and the battle log has a Cards button to look back at the cards that were played.
+- **Arena:** you can see your opponent's Traps (face down) on the board, and your name tag no longer sits under the potions.
+- **Odds & numbers on How to play:** card rarity odds, prices, map odds, what fights and events offer, and the Brass Cascade lanes (and where balls tend to land), for the testing phase.
+- **More ways to let a card go and more shards:** sixteen more events let you give up a basic card for a small gift (about a third of events now offer some way to thin your deck), and shard rewards from fights and events are about 30% bigger.
+- **Reloading mid-fight no longer loses anything:** a campaign fight is saved move by move and picked up exactly where you were (same turn, hand, mana and enemies). Before, a reload counted as a loss and cost Resolve.
 - **Hits land harder:** attacks now hit with a deep thump and a sharp crack instead of a thin buzz. The stance banner no longer sits on top of the potions on a small screen.
 - **First visit shows the real character art:** the page now waits for the character figures (with an Opening the rift message) instead of drawing placeholders after two seconds, and redraws the home screen if they arrive late. Before, you had to refresh to see them.
 - **Two balls in one lane pay twice:** the lane offers a second, different prize of the same kind, with a ×2 mark on the board and on the prize screen. You still choose one prize.

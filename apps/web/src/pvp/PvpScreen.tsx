@@ -392,6 +392,7 @@ export default function PvpScreen() {
               <p className="pvp__deckslot">
                 {decks.length} of {VAULT_SLOTS} saved decks · <a href="#/decks">Saved decks</a> ·{' '}
                 <a href="#/board">Leaderboards</a>
+                <a href="#/ghosts">Ghost decks</a>
               </p>
               {deckList}
               {problem && <p className="pvp__error">{problem}</p>}
