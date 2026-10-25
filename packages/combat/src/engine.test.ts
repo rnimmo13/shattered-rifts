@@ -774,7 +774,7 @@ describe('rift tiers', () => {
       prevStep = step;
     }
     expect(tierHp(1)).toBe(1);
-    expect(tierMight(8)).toBeGreaterThan(tierMight(7));
+    expect(tierMight(12)).toBeGreaterThan(tierMight(11));
   });
 
   it('scale enemy HP and Might, including summoned enemies', () => {

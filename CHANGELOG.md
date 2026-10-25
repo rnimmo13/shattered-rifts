@@ -5,6 +5,9 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **How to play has a Rift Tier table** (Tiers 1 to 20): enemy HP, Might and damage at every tier.
+- **The Difficulty, Card luck and Animation speed dropdowns are gone.** Every run is on Normal difficulty with normal card luck, and fights run at one steady speed.
+- **Rift Tiers get much harder, much faster:** enemy HP climbs from x1.21 at Tier II to x3.61 at Tier X, enemies gain +1 Might per tier up to Tier XIII, and their damage rises 5% per tier (it was 2%).
 - **Text fields and dropdowns are restyled** across the game (inset dark fields with a gold edge and glow on focus, a custom dropdown arrow), and the username screen is now a proper card.
 - **Obsidia has her own colours:** obsidian black and steel grey on the home screen glow, her icon, her card frames and the Hollow Crown arena (no more orange like KP).
 - **The leaderboard keeps up with your saved runs:** they are re-announced when the app opens and when you view the campaign board, so a run it missed shows up (up to Tier III at once, further as time passes).

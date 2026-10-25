@@ -80,6 +80,7 @@ export {
 } from './trials';
 export { EVENT_TAG_LABEL, eventOffers, type EventTag } from './odds';
 export { NODE_ODDS, GHOST_FROM_TIER, GHOST_WARDEN_CHANCE } from './mapgen';
+export { tierDmgPct } from './run';
 export {
   GHOST_BOSS_HP_BASE,
   GHOST_BOSS_HP_PER_TIER,

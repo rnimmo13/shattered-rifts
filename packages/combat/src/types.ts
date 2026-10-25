@@ -531,7 +531,7 @@ export interface CombatState {
   seed: string;
   rng: RngState;
   mode: 'pve' | 'pvp';
-  /** Rift Tier of the enemies (1 = normal): each tier above 1 gives enemies +12% HP and +1 Might */
+  /** Rift Tier of the enemies (1 = normal): each tier above 1 gives enemies more HP (see tierHp) and +1 Might */
   tier: number;
   /** difficulty: percent of normal enemy HP and attack damage (100 = normal) */
   enemyHpPct: number;
@@ -558,18 +558,18 @@ export const MAX_RUNES = 10;
 export const DEFAULT_RUNE_SLOTS = 3;
 
 /**
- * HP multiplier for enemies at a Rift Tier. Each tier adds more than the one before (the step grows by 0.012 each time), so the
+ * HP multiplier for enemies at a Rift Tier. Each tier adds more than the one before (the step grows by 0.02 each time), so the
  * climb steepens as you go deeper. (Tier I itself is the designed enemy; the campaign makes it a little tougher: see TIER_PRESSURE.)
  */
 export const tierHp = (tier: number): number => {
   const t = Math.max(0, tier - 1);
-  return 1 + 0.12 * t + 0.006 * t * t;
+  return 1 + 0.2 * t + 0.01 * t * t;
 };
 /** Enemy HP after the Rift Tier and the difficulty setting. */
 export const scaledEnemyHp = (base: number, tier: number, hpPct: number): number =>
   Math.max(1, Math.round(base * tierHp(tier) * (hpPct / 100)));
-/** Might for enemies at a Rift Tier: one more each tier, up to 8 (it stopped at 6 before, so the deep tiers stopped getting meaner). */
-export const tierMight = (tier: number): number => Math.min(8, Math.max(0, tier - 1));
+/** Might for enemies at a Rift Tier: one more each tier, up to 12 (it stopped at 6 before, so the deep tiers stopped getting meaner). */
+export const tierMight = (tier: number): number => Math.min(12, Math.max(0, tier - 1));
 
 // --- setup -------------------------------------------------------------------------------------------------
 

@@ -117,8 +117,8 @@ const stageScale = (stage: number): { hp: number; dmg: number } =>
  * Rift Tiers make enemies tougher on top of the engine's own tier scaling (more HP and Might each tier, and the HP step grows):
  * a campaign fight at Tier I already has this much extra HP and damage (percent), and each tier after adds a little more damage.
  */
-export const TIER_PRESSURE = { hp: 108, dmg: 105, dmgPerTier: 2 } as const;
-const tierDmgPct = (tier: number): number =>
+export const TIER_PRESSURE = { hp: 108, dmg: 105, dmgPerTier: 5 } as const;
+export const tierDmgPct = (tier: number): number =>
   TIER_PRESSURE.dmg + TIER_PRESSURE.dmgPerTier * Math.max(0, tier - 1);
 
 /** Shards a won fight pays, by the kind of fight. */

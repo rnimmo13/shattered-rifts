@@ -5,7 +5,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { COMBAT_DB, RIFTWALKERS, encounter, type HeroId } from '@sr/content/v2';
 import {
-  DIFFICULTY,
   REALM_LABEL,
   RunError,
   availableNodes,
@@ -545,8 +544,8 @@ function Sanctum(props: {
     setPickState(h);
     rememberHero(h);
   };
-  const [difficulty, setDifficulty] = useState<Difficulty>('normal');
-  const [luck, setLuck] = useState<Luck>('normal');
+  const difficulty: Difficulty = 'normal';
+  const luck: Luck = 'normal';
   return (
     <main className="setup setup--wide">
       <a className="btn btn--small setup__back" href="#/">
@@ -567,27 +566,6 @@ function Sanctum(props: {
         </p>
       )}
       <div className="setup__actions">
-        <label className="setup__select">
-          <span className="sr-only">Difficulty</span>
-          <select value={difficulty} onChange={(e) => setDifficulty(e.target.value as Difficulty)}>
-            {(Object.keys(DIFFICULTY) as Difficulty[]).map((d) => (
-              <option key={d} value={d} title={DIFFICULTY[d].blurb}>
-                {DIFFICULTY[d].label}: {DIFFICULTY[d].blurb}
-              </option>
-            ))}
-          </select>
-        </label>
-        <label
-          className="setup__select"
-          title="Tilts card rewards and the merchant's stock towards better cards. Handy for testing strong decks."
-        >
-          <span className="sr-only">Card luck</span>
-          <select value={luck} onChange={(e) => setLuck(e.target.value as Luck)}>
-            <option value="normal">Card luck: normal</option>
-            <option value="lucky">Card luck: lucky (more rares)</option>
-            <option value="blessed">Card luck: blessed (mostly rares)</option>
-          </select>
-        </label>
         <button
           className="btn btn--primary setup__go"
           onClick={() => props.onStart(pick, difficulty, luck)}

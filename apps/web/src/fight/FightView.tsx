@@ -30,7 +30,7 @@ import type { VenueId } from '../duel/scene/venue';
 import { loadEffectsMode, profileFor } from '../duel/effects';
 import { setBaseSpeed } from '../duel/scene/timescale';
 import { getSound, play, setSound } from '../audio/sfx';
-import { SPEEDS, loadSpeed, saveSpeed } from '../play/prefs';
+import { DEFAULT_SPEED } from '../play/prefs';
 import { handCardWidth, handReserve } from '../hand/fanLayout';
 import { reduceEvent, startingDisplay } from './display';
 import { heroFigure, heroProp, hoverOf, unitFigure, unitHeight } from './art';
@@ -256,7 +256,7 @@ export function FightView(props: {
   const game = useRef<{ state: CombatState; display: CombatState } | null>(null);
   const chain = useRef<Promise<void>>(Promise.resolve());
   const pending = useRef({ all: 0, enemy: 0 });
-  const speedRef = useRef(loadSpeed());
+  const speedRef = useRef(DEFAULT_SPEED);
   const cancelledRef = useRef(false);
   /** the move that ended a fight being resumed: played normally, so the result appears */
   const finishRef = useRef<Action | null>(null);
@@ -288,7 +288,7 @@ export function FightView(props: {
   const [flourishes, setFlourishes] = useState<Flourish[]>([]);
   const flourishId = useRef(0);
   const [result, setResult] = useState<FightResult | null>(null);
-  const [speed, setSpeed] = useState(loadSpeed);
+  const speed = DEFAULT_SPEED;
   const [sound, setSoundOn] = useState(getSound().on);
   const [pile, setPile] = useState<{ title: string; cards: CardDef[] } | null>(null);
   const [sceneObj, setSceneObj] = useState<BattlefieldScene | null>(null);
@@ -707,7 +707,6 @@ export function FightView(props: {
   useEffect(() => {
     setBaseSpeed(speed);
     speedRef.current = speed;
-    saveSpeed(speed);
   }, [speed]);
 
   // PvP: the server can end a match the engine does not know is over (a resignation, a missed turn, a dropped player)
@@ -1156,17 +1155,6 @@ export function FightView(props: {
               </div>
             )}
             <div className="fight__opts">
-              <select
-                aria-label="Animation speed"
-                value={speed}
-                onChange={(e) => setSpeed(Number(e.target.value))}
-              >
-                {SPEEDS.map((s) => (
-                  <option key={s} value={s}>
-                    {s}×
-                  </option>
-                ))}
-              </select>
               <button
                 className="btn btn--small btn--ghost"
                 aria-pressed={tipsOn}
