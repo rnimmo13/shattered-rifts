@@ -14,6 +14,8 @@ export interface HandCard {
   playable: boolean;
   /** unit ids it may target (empty = it takes no target) */
   targets: string[];
+  /** companions that could be released to make room, when every companion slot is taken and the card summons one */
+  releases: string[];
   /** aim it by hand even when only one target is legal (a card that does something drastic to one of your allies) */
   aim?: boolean;
   /** what it costs now (a cost change or Unbound), when different from the printed one */
@@ -31,7 +33,7 @@ export interface FightHandProps {
   /** the card currently chosen for aiming, if any */
   selectedId: string | null;
   /** unit id under a client point, or null */
-  unitAt: (clientX: number, clientY: number) => string | null;
+  unitAt: (clientX: number, clientY: number, among?: ReadonlySet<string>) => string | null;
   onPlay: (card: HandCard, target: string | null) => void;
   onSelect: (card: HandCard | null) => void;
   /** highlight these units while a card is being dragged (null = none) */
@@ -54,10 +56,30 @@ export function FightHand(p: FightHandProps) {
   const [hover, setHover] = useState<number | null>(null);
   const [drag, setDrag] = useState<Drag | null>(null);
   const dragRef = useRef<Drag | null>(null);
+  /** on a touch screen a first tap only lifts a card to read it; the card previewed this way plays on the next tap */
+  const previewRef = useRef<string | null>(null);
   const propsRef = useRef(p);
   useEffect(() => {
     propsRef.current = p;
   });
+
+  // a previewed card is forgotten when the hand changes or can no longer be played
+  useEffect(() => {
+    previewRef.current = null;
+  }, [p.cards, p.locked]);
+
+  // tapping anywhere but the hand puts a previewed card back
+  useEffect(() => {
+    const away = (e: PointerEvent): void => {
+      if (previewRef.current === null) return;
+      if ((e.target as HTMLElement | null)?.closest('.fhand__hit')) return;
+      previewRef.current = null;
+      setHover(null);
+      propsRef.current.onHover(null);
+    };
+    window.addEventListener('pointerdown', away);
+    return () => window.removeEventListener('pointerdown', away);
+  }, []);
 
   const n = p.cards.length;
   const focusIdx = drag
@@ -107,6 +129,12 @@ export function FightHand(p: FightHandProps) {
       if (!c) return;
       if (!d.moved) {
         // a click
+        if (e.pointerType === 'touch' && previewRef.current !== c.inst.id) {
+          // (a finger hides what it touches: the first tap lifts the card and shows it, tapping it again plays it)
+          previewRef.current = c.inst.id;
+          return;
+        }
+        previewRef.current = null;
         if (!c.playable) return pr.onRefuse(c);
         if (!needsAim(c)) return pr.onPlay(c, c.targets[0] ?? null);
         return pr.onSelect(pr.selectedId === c.inst.id ? null : c);
@@ -114,7 +142,7 @@ export function FightHand(p: FightHandProps) {
       if (!aboveHand(e.clientY)) return; // dropped back on the hand: cancel
       if (!c.playable) return pr.onRefuse(c);
       if (!needsAim(c)) return pr.onPlay(c, c.targets[0] ?? null);
-      const over = pr.unitAt(e.clientX, e.clientY);
+      const over = pr.unitAt(e.clientX, e.clientY, new Set(c.targets));
       if (over && c.targets.includes(over)) return pr.onPlay(c, over);
       pr.onSelect(c); // dropped in the open with several targets: go on to aim it
     };
@@ -189,7 +217,9 @@ export function FightHand(p: FightHandProps) {
                 setHover(i);
                 p.onHover(c, e.currentTarget.getBoundingClientRect());
               }}
-              onPointerLeave={() => {
+              onPointerLeave={(e) => {
+                // a finger leaves the moment it lifts: the card it chose stays lifted until the player taps elsewhere
+                if (e.pointerType === 'touch' && previewRef.current === c.inst.id) return;
                 setHover((h) => (h === i ? null : h));
                 p.onHover(null);
               }}

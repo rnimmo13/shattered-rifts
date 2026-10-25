@@ -37,6 +37,8 @@ const GAP = 14.4;
 /** a browsing book aims for cards about this wide, and no narrower than the minimum (px) */
 const DENSE_CARD = 150;
 const DENSE_MIN = 120;
+/** what a page spends on its own head, folio and the book's edges, px */
+const BOOK_CHROME = 165;
 
 /** The smallest a card is allowed to be before the book turns into a single big page (px). */
 const MIN_COMFY = 150;
@@ -52,22 +54,27 @@ export function bookLayout(
   fixedSpread?: 1 | 2,
   /** a browsing book (the Card library, a pile): as many smaller cards as fit, in as many columns and rows as the window allows */
   dense = false,
+  /** the height (px) from the top of the book to the bottom of the window: the book never grows past it */
+  room?: number,
 ): { spread: 1 | 2; cols: number; cardWidth: number; rows: number } {
   if (width <= 0) return { spread: 1, cols: fixedCols ?? 3, cardWidth: 150, rows: 2 };
   const fit = (spread: 1 | 2): { spread: 1 | 2; cols: number; cardWidth: number; rows: number } => {
     const perPage = (width - FLIPS) / spread - PAGE_PAD;
     if (dense) {
-      const cols =
-        fixedCols ?? Math.max(2, Math.min(6, Math.round((perPage + GAP) / (DENSE_CARD + GAP))));
-      let cardWidth = Math.max(
-        DENSE_MIN,
-        Math.min(240, Math.floor((perPage - (cols - 1) * GAP) / cols)),
-      );
-      // the book's room in the window: at least two rows must fit, and more rows are added while they do
-      const room = window.innerHeight - 330;
+      let cols =
+        fixedCols ?? Math.max(1, Math.min(6, Math.round((perPage + GAP) / (DENSE_CARD + GAP))));
+      const across = (n: number): number => Math.floor((perPage - (n - 1) * GAP) / n);
+      // a narrow window gets fewer columns rather than a book wider than itself
+      while (!fixedCols && cols > 1 && across(cols) < DENSE_MIN) cols--;
+      let cardWidth = Math.max(60, Math.min(240, across(cols)));
+      // the book's room in the window (less the page head, the book's edges and the folio): two rows if they fit, one if not, and more
+      // rows are added while they do. The cards shrink before the book is allowed past the bottom of the window.
+      const space = (room ?? window.innerHeight - 330) - BOOK_CHROME;
       const rowH = (w: number): number => w * 1.4 + GAP;
-      while (cardWidth > DENSE_MIN && 2 * rowH(cardWidth) > room) cardWidth -= 4;
-      const rows = Math.max(2, Math.min(5, Math.floor(room / rowH(cardWidth))));
+      const fits = (w: number): number => Math.floor(space / rowH(w));
+      while (cardWidth > DENSE_MIN && fits(cardWidth) < 2) cardWidth -= 4;
+      while (cardWidth > 60 && fits(cardWidth) < 1) cardWidth -= 4;
+      const rows = Math.max(1, Math.min(5, fits(cardWidth)));
       return { spread, cols, cardWidth, rows };
     }
     const cols = fixedCols ?? (width < 560 ? 2 : 3);

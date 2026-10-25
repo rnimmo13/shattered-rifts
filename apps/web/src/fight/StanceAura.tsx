@@ -20,8 +20,22 @@ const LINE: Record<Stance, string> = {
   radiant: 'Deal triple damage this turn',
 };
 
+/** The stance as a small chip, for sitting inside another label (a player's name tag in PvP) instead of floating over it. */
+export function StanceChip(props: { unit: Pick<UnitView, 'statuses'> }) {
+  const stance = stanceOf(props.unit);
+  if (!stance) return null;
+  const info = STATUS_INFO[stance];
+  return (
+    <small className={`stance__chip stance__chip--${stance}`} aria-label={`${info.name} stance`}>
+      <span aria-hidden>{info.glyph}</span> {info.name}
+    </small>
+  );
+}
+
 export function StanceAura(props: {
   unit: UnitView;
+  /** draw the banner over the head (false in PvP, where the name tag carries a chip instead) */
+  banner?: boolean;
   /** the figure's feet in host px, and its height and width */
   x: number;
   y: number;
@@ -53,17 +67,19 @@ export function StanceAura(props: {
           </>
         )}
       </div>
-      <div
-        className={`stance__banner stance__banner--${stance}`}
-        style={{ left: props.x, top: Math.max(4, props.y - props.h - 12 - (props.lift ?? 0)) }}
-        role="status"
-        aria-label={`In the ${info.name} stance. ${LINE[stance]}.`}
-      >
-        <b>
-          <span aria-hidden>{info.glyph}</span> {info.name}
-        </b>
-        <small>{LINE[stance]}</small>
-      </div>
+      {props.banner !== false && (
+        <div
+          className={`stance__banner stance__banner--${stance}`}
+          style={{ left: props.x, top: Math.max(4, props.y - props.h - 12 - (props.lift ?? 0)) }}
+          role="status"
+          aria-label={`In the ${info.name} stance. ${LINE[stance]}.`}
+        >
+          <b>
+            <span aria-hidden>{info.glyph}</span> {info.name}
+          </b>
+          <small>{LINE[stance]}</small>
+        </div>
+      )}
     </>
   );
 }

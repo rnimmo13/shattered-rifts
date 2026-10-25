@@ -7,6 +7,9 @@ import {
   enterNode,
   holdCard,
   leaveMerchant,
+  parseRun,
+  serializeRun,
+  MAX_HELD,
   newRun,
   releaseHold,
   type RunState,
@@ -32,6 +35,20 @@ function atMerchant(seed: string, shards: number, prev?: RunState): RunState {
 }
 
 describe('letting a hold go', () => {
+  it('holds several cards at once, up to the limit', () => {
+    let m = atMerchant('hold-many', 5000);
+    const n = m.context!.merchant!.items.length;
+    expect(n).toBeGreaterThanOrEqual(MAX_HELD + 1);
+    for (let i = 0; i < MAX_HELD; i++) m = holdCard(m, i);
+    expect(m.held).toHaveLength(MAX_HELD);
+    expect(() => holdCard(m, MAX_HELD)).toThrow();
+    // all of them wait at the next merchant, and buying one leaves the others held
+    const next = atMerchant('hold-many-next', 5000, leaveMerchant(m));
+    expect(next.context!.merchant!.items.filter((i) => i.held)).toHaveLength(MAX_HELD);
+    const bought = buyCard(next, 0);
+    expect(bought.held).toHaveLength(MAX_HELD - 1);
+  });
+
   it('puts a card held at this visit back on sale, and keeps the deposit', () => {
     const m = atMerchant('hold-release-1', 500);
     const held = holdCard(m, 0);
@@ -59,6 +76,16 @@ describe('letting a hold go', () => {
   });
 });
 
+describe('saves from when only one card could be held', () => {
+  it('still load, with that card on hold', () => {
+    const r = newRun('maren', 'old-hold');
+    const old = serializeRun(r).replace(/^\{/, '{"held":{"cardId":"strike","price":40},');
+    expect(parseRun(old)?.held).toEqual([{ cardId: 'strike', price: 40 }]);
+    const junk = serializeRun(r).replace(/^\{/, '{"held":[{"cardId":"nope","price":1}],');
+    expect(parseRun(junk)?.held).toBeUndefined();
+  });
+});
+
 describe('holding a merchant card for later', () => {
   it('costs a deposit now and sells the card cheaper at the next merchant', () => {
     const m = atMerchant('hold-1', 500);
@@ -66,10 +93,10 @@ describe('holding a merchant card for later', () => {
     const held = holdCard(m, 0);
     const deposit = Math.ceil(item.price * HOLD_DEPOSIT);
     expect(held.shards).toBe(500 - deposit);
-    expect(held.held).toEqual({ cardId: item.cardId, price: Math.ceil(item.price * HOLD_LATER) });
+    expect(held.held).toEqual([{ cardId: item.cardId, price: Math.ceil(item.price * HOLD_LATER) }]);
     expect(held.context!.merchant!.items[0]!.onHold).toBe(true);
     expect(() => buyCard(held, 0)).toThrow(); // it is on hold, not for sale now
-    expect(() => holdCard(held, 1)).toThrow(); // one at a time
+    expect(() => holdCard(held, 0)).toThrow(); // already on hold
     // the next merchant has it waiting, at the promised price, first in the row
     const next = atMerchant('hold-1-next', 500, leaveMerchant(held));
     const again = next.context!.merchant!.items[0]!;

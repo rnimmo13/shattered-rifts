@@ -158,17 +158,25 @@ export class Fighters {
       : null;
   }
 
-  /** Which figure is under this stage point, if any (the nearest wins). */
-  hitTest(x: number, y: number): string | null {
+  /**
+   * Which figure is under this stage point, if any (the nearest wins). When aiming, `among` names the figures that can be chosen: only
+   * those are looked at, and with a roomier reach (a little beyond the figure on every side), so a click that is close still finds its
+   * target, and a figure that cannot be chosen never gets in the way of one that can.
+   */
+  hitTest(x: number, y: number, among?: ReadonlySet<string>): string | null {
     let best: string | null = null;
     let bestD = Infinity;
+    const roomy = among !== undefined && among.size > 0;
     for (const f of this.all.values()) {
       if (f.dying) continue;
+      if (roomy && !among.has(f.spec.id)) continue;
+      const reach = roomy ? f.width * 0.55 + 40 : f.width * 0.55;
+      const slack = roomy ? 40 : 0;
       const dx = Math.abs(x - f.root.x);
       if (
-        dx <= f.width * 0.55 &&
-        y <= f.root.y + 24 &&
-        y >= f.root.y - f.spec.height - (f.spec.hover ?? 0) - 10 &&
+        dx <= reach &&
+        y <= f.root.y + 24 + slack &&
+        y >= f.root.y - f.spec.height - (f.spec.hover ?? 0) - 10 - slack &&
         dx < bestD
       ) {
         best = f.spec.id;

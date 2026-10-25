@@ -61,7 +61,13 @@ export function cleanAction(a: Action): Action {
       return { type: 'endTurn' };
     case 'play': {
       const target = str(o['target']);
-      return { type: 'play', card: str(o['card']) ?? '', ...(target ? { target } : {}) };
+      const release = str(o['release']);
+      return {
+        type: 'play',
+        card: str(o['card']) ?? '',
+        ...(target ? { target } : {}),
+        ...(release ? { release } : {}),
+      };
     }
     case 'potion': {
       const target = str(o['target']);

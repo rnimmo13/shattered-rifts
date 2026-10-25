@@ -1450,13 +1450,6 @@ export function canPlay(r: { db: CombatDb; s: CombatState }, side: Side, c: Card
   if (r.s.pending) return false;
   if (cd.unplayable || costOf(r.db, sd, c) > sd.mana || (cd.starCost ?? 0) > sd.stars) return false;
   if (cd.kind === 'snare' && sd.snares.length >= MAX_SNARES) return false;
-  // no room for another companion: a card that summons one cannot be played
-  if (
-    cd.effects.some((o) => o.op === 'summon') &&
-    sd.hero !== null &&
-    sd.units.filter((u) => u.kind !== 'hero').length >= MAX_ALLIES
-  )
-    return false;
   if (cd.target === 'foe' && legalFoes({ ...r, ev: [], depth: 0 }, side, cd).length === 0)
     return false;
   if (cd.target === 'ally' && !sd.units.some((u) => u.kind === 'ally' && u.hp > 0)) return false;
@@ -1483,6 +1476,15 @@ function pickOptions(p: NonNullable<CombatState['pending']>): string[][] {
   return out;
 }
 
+/** A card that summons, played with every companion slot taken: one companion has to be released to make room. */
+function needsRelease(sd: SideState, cd: CardDef): boolean {
+  return (
+    sd.hero !== null &&
+    cd.effects.some((o) => o.op === 'summon') &&
+    sd.units.filter((u) => u.kind !== 'hero').length >= MAX_ALLIES
+  );
+}
+
 export function legalActions(db: CombatDb, s: CombatState): Action[] {
   if (s.winner) return [];
   if (s.pending) return pickOptions(s.pending).map((cards): Action => ({ type: 'pick', cards }));
@@ -1493,13 +1495,21 @@ export function legalActions(db: CombatDb, s: CombatState): Action[] {
   for (const c of sd.hand) {
     if (!canPlay(r, side, c)) continue;
     const cd = cardDef(db, c.card);
-    if (cd.target === 'none') out.push({ type: 'play', card: c.id });
+    const plays: Extract<Action, { type: 'play' }>[] = [];
+    if (cd.target === 'none') plays.push({ type: 'play', card: c.id });
     else if (cd.target === 'foe')
-      for (const t of legalFoes(r, side, cd)) out.push({ type: 'play', card: c.id, target: t.id });
+      for (const t of legalFoes(r, side, cd))
+        plays.push({ type: 'play', card: c.id, target: t.id });
     else
       for (const t of sd.units)
         if (t.hp > 0 && (cd.target === 'friend' || t.kind === 'ally'))
-          out.push({ type: 'play', card: c.id, target: t.id });
+          plays.push({ type: 'play', card: c.id, target: t.id });
+    if (!needsRelease(sd, cd)) out.push(...plays);
+    else
+      // every way to play it, once for each companion that could make room
+      for (const p of plays)
+        for (const u of sd.units)
+          if (u.kind === 'ally' && u.hp > 0) out.push({ ...p, release: u.id });
   }
   sd.potions.forEach((id, index) => {
     const p = db.potions[id];
@@ -1556,6 +1566,15 @@ function playCard(r: Run, action: Extract<Action, { type: 'play' }>): void {
   }
   const hero = heroOf(sd);
   if (!hero) throw new RulesError('No hero to play cards');
+  if (needsRelease(sd, cd)) {
+    const out = findUnit(r.s, action.release);
+    if (!out || out.side !== side || out.kind !== 'ally' || out.hp <= 0)
+      throw new RulesError('Choose a companion to release to make room');
+    // it simply leaves, before the card is paid for: a release is not a death, so nothing that waits for an ally to fall
+    // (Auras, Revive, Doom payoffs) fires, and it cannot be brought back by one
+    sd.units = sd.units.filter((u) => u.id !== out.id);
+    r.ev.push({ type: 'died', unit: out.id, released: true });
+  }
   sd.hand.splice(i, 1);
   sd.mana -= costOf(r.db, sd, inst);
   let x = 0;

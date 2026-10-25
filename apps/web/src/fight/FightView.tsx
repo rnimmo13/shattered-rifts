@@ -44,6 +44,7 @@ import { looksLikeNewVersion } from '../ui/errorReport';
 import { keywordsOf } from './info';
 import { BoonChip } from './BoonChip';
 import { CardTips } from './CardTips';
+import { CardHover } from './CardHover';
 import { preloadArt } from '../art/assets';
 import { PotionButton } from './PotionChip';
 import { PickModal } from './PickModal';
@@ -51,7 +52,9 @@ import { tipAttrs, type TipContent } from '../ui/tip';
 import { STATUS_INFO, UI_TIPS } from './info';
 import { loadSeen, loadTipsOn, nextTip, saveSeen, saveTipsOn } from './tips';
 import { AuraList, LumenCounter, RuneArc, SnareRow } from './SidePanel';
-import { StanceAura } from './StanceAura';
+import { StanceAura, StanceChip } from './StanceAura';
+import { BattleLog } from './BattleLog';
+import { LOG_LIMIT, Namer, createDescriber, type LogLine } from './logLines';
 import type { FighterSpec } from './Fighters';
 import { attackFor } from './attackStyles';
 import type { FeedItem, PvpLink } from '../pvp/link';
@@ -233,10 +236,18 @@ export function FightView(props: {
   const [hoverRect, setHoverRect] = useState<DOMRect | null>(null);
   const [hoverUnit, setHoverUnit] = useState<string | null>(null);
   const [dragTargets, setDragTargets] = useState<ReadonlySet<string> | null>(null);
+  /** a card that summons, played with every companion slot taken: now choosing which companion leaves */
+  const [releasing, setReleasing] = useState<{ card: string; target?: string } | null>(null);
   const [dragCard, setDragCard] = useState<HandCard | null>(null);
   const [aimPotion, setAimPotion] = useState<string | null>(null);
   const [floats, setFloats] = useState<Float[]>([]);
-  const [banner, setBanner] = useState<string | null>(null);
+  const [banner, setBannerText] = useState<string | null>(null);
+  /** a banner is good news (green), bad news (red) or just information */
+  const [bannerTone, setBannerTone] = useState<'good' | 'bad' | 'info'>('info');
+  const setBanner = useCallback((text: string | null, tone: 'good' | 'bad' | 'info' = 'info') => {
+    setBannerTone(tone);
+    setBannerText(text);
+  }, []);
   const [flourish, setFlourish] = useState<CardDef | null>(null);
   const [result, setResult] = useState<FightResult | null>(null);
   const [speed, setSpeed] = useState(loadSpeed);
@@ -284,11 +295,11 @@ export function FightView(props: {
         case 'turnStart': {
           reduceEvent(db, d, e);
           if (e.side !== mySide) {
-            setBanner(pvp ? `${foeName}'s turn` : 'Enemy turn');
+            setBanner(pvp ? `${foeName}'s turn` : 'Enemy turn', 'bad');
             await wait(650);
             setBanner(null);
           } else if (e.turn > 1) {
-            setBanner('Your turn');
+            setBanner('Your turn', 'good');
             play('turn');
             await wait(450);
             setBanner(null);
@@ -431,7 +442,7 @@ export function FightView(props: {
         case 'snareSprung': {
           reduceEvent(db, d, e);
           const name = db.cards[e.card]?.name ?? 'Trap';
-          setBanner(`Trap! ${name}`);
+          setBanner(`Trap! ${name}`, e.side === mySide ? 'good' : 'bad');
           play('trapReveal');
           await wait(800);
           setBanner(null);
@@ -452,7 +463,48 @@ export function FightView(props: {
           return;
       }
     },
-    [db, float, wait, mySide, pvp, foeName],
+    [db, float, wait, mySide, pvp, foeName, setBanner],
+  );
+
+  // the battle log: events become lines as they play, using the names of units seen so far (so fallen ones are still named)
+  const [logLines, setLogLines] = useState<LogLine[]>([]);
+  const namer = useRef(new Namer(mySide, pvp ? foeName : null));
+  const logId = useRef(0);
+  const logBuf = useRef<LogLine[]>([]);
+  const logTimer = useRef<number | null>(null);
+  useEffect(
+    () => () => {
+      if (logTimer.current !== null) window.clearTimeout(logTimer.current);
+    },
+    [],
+  );
+  const learnUnits = useCallback((st: CombatState) => namer.current.learn(st), []);
+  /** made on first use, so it is built outside rendering (it reads the namer, which is a ref) */
+  const describer = useRef<ReturnType<typeof createDescriber> | null>(null);
+  const logEvent = useCallback(
+    (e: CombatEvent) => {
+      // a unit that appears and falls within one batch is never in a state we see: name it from its event
+      if (e.type === 'summon')
+        namer.current.register(e.unit, db.units[e.def]?.name ?? e.def, e.side);
+      describer.current ??= createDescriber({
+        db,
+        me: mySide,
+        nameOf: (id) => namer.current.nameOf(id),
+        sideOf: (id) => namer.current.sideOf(id),
+        who: (side) => (side === mySide ? 'You' : foeName),
+      });
+      const line = describer.current(e);
+      if (!line) return;
+      // lines gather and reach the screen together, so a long enemy turn is one redraw and not one per event
+      logBuf.current.push({ id: logId.current++, ...line });
+      if (logTimer.current === null)
+        logTimer.current = window.setTimeout(() => {
+          logTimer.current = null;
+          const add = logBuf.current.splice(0);
+          setLogLines((prev) => [...prev, ...add].slice(-LOG_LIMIT));
+        }, 120);
+    },
+    [db, mySide, foeName],
   );
 
   const runBatch = useCallback(
@@ -460,14 +512,21 @@ export function FightView(props: {
       const g = game.current;
       const sc = scene.current;
       if (!g || !sc || cancelledRef.current) return;
+      learnUnits(g.display);
+      learnUnits(after);
+      let logged = 0;
       try {
         for (let i = 0; i < events.length; i++) {
           if (cancelledRef.current) return;
+          logEvent(events[i] as CombatEvent);
+          logged = i + 1;
           await playEvent(events[i] as CombatEvent, events, i);
           show(g.display);
         }
       } catch (err) {
         console.warn('[fight] replay failed; resyncing', err);
+        // the screen resyncs below, but the log keeps every line
+        for (let j = logged; j < events.length; j++) logEvent(events[j] as CombatEvent);
       }
       if (cancelledRef.current) return;
       setBanner(null);
@@ -481,7 +540,7 @@ export function FightView(props: {
         console.warn('[fight] resync failed', err);
       }
     },
-    [db, playEvent, show, mySide],
+    [db, playEvent, show, mySide, learnUnits, logEvent, setBanner],
   );
 
   const enqueue = useCallback(
@@ -539,7 +598,7 @@ export function FightView(props: {
         setSceneObj(s);
         s.onSound = play;
         s.onFit = () => bump((n) => n + 1);
-        s.setBottomReserve(handReserve(handCardWidth(window.innerWidth)));
+        s.setBottomReserve(handReserve(handCardWidth(window.innerWidth, window.innerHeight)));
         setBaseSpeed(speedRef.current);
         const start = createCombat(db, setup);
         game.current = { state: start.state, display: startingDisplay(start.state) };
@@ -559,7 +618,9 @@ export function FightView(props: {
       });
     const ro = new ResizeObserver(() => {
       // refitting the scene tells us (onFit) to place the plates again
-      scene.current?.setBottomReserve(handReserve(handCardWidth(window.innerWidth)));
+      scene.current?.setBottomReserve(
+        handReserve(handCardWidth(window.innerWidth, window.innerHeight)),
+      );
     });
     ro.observe(el);
     return () => {
@@ -616,6 +677,7 @@ export function FightView(props: {
         setLegal(legalFor(r.state));
         setSelected(null);
         setAimPotion(null);
+        setReleasing(null);
         if (!history) enqueue(r.events, r.state, pvp ? seat !== mySide : undefined);
         return true;
       } catch (err) {
@@ -637,7 +699,7 @@ export function FightView(props: {
         if (!pvp.send(seqRef.current + 1, a)) {
           // the connection is down: the move is not lost into the air, the player is told
           play('refuse');
-          setBanner('Reconnecting…');
+          setBanner('Reconnecting…', 'bad');
           if (refuseTimer.current) window.clearTimeout(refuseTimer.current);
           refuseTimer.current = window.setTimeout(() => setBanner(null), 1200);
           return;
@@ -649,7 +711,7 @@ export function FightView(props: {
       }
       if (!applyMove(a, mySide, false)) play('refuse');
     },
-    [applyMove, mySide, pvp],
+    [applyMove, mySide, pvp, setBanner],
   );
 
   // PvP: every accepted move arrives here, mine included, in the server's order
@@ -658,7 +720,7 @@ export function FightView(props: {
       if (item.kind === 'refused') {
         awaiting.current = false;
         play('refuse');
-        setBanner(item.message);
+        setBanner(item.message, 'bad');
         if (refuseTimer.current) window.clearTimeout(refuseTimer.current);
         refuseTimer.current = window.setTimeout(() => setBanner(null), 1200);
         return;
@@ -687,7 +749,7 @@ export function FightView(props: {
         bump((n) => n + 1);
       }
     },
-    [applyMove, db, mySide, pvp, show],
+    [applyMove, db, mySide, pvp, show, setBanner],
   );
 
   useEffect(() => {
@@ -704,13 +766,27 @@ export function FightView(props: {
   const myTurn = (live?.active ?? mySide) === mySide;
   const waiting = locked || !myTurn;
 
+  /** Play a card at `target`; if it summons with every companion slot taken, the player is asked which companion leaves first. */
+  const commit = useCallback(
+    (c: HandCard, target: string | null | undefined) => {
+      if (c.releases.length > 0) {
+        setSelected(null);
+        setReleasing({ card: c.inst.id, ...(target ? { target } : {}) });
+        return;
+      }
+      act({ type: 'play', card: c.inst.id, ...(target ? { target } : {}) });
+    },
+    [act],
+  );
+
   const endTurn = useCallback(() => {
     if (waiting || game.current?.state.pending) return;
+    setReleasing(null);
     act({ type: 'endTurn' });
   }, [act, waiting]);
 
   const me = view?.sides[mySide];
-  const cw = handCardWidth(window.innerWidth);
+  const cw = handCardWidth(window.innerWidth, window.innerHeight);
 
   const handCards: HandCard[] = useMemo(() => {
     const mineView = view?.sides[mySide];
@@ -719,13 +795,19 @@ export function FightView(props: {
       const def = db.cards[inst.card];
       if (!def) return [];
       const mine = legal.filter((a) => a.type === 'play' && a.card === inst.id);
-      const targets = mine.flatMap((a) => (a.type === 'play' && a.target ? [a.target] : []));
+      const targets = [
+        ...new Set(mine.flatMap((a) => (a.type === 'play' && a.target ? [a.target] : []))),
+      ];
+      const releases = [
+        ...new Set(mine.flatMap((a) => (a.type === 'play' && a.release ? [a.release] : []))),
+      ];
       return [
         {
           inst,
           def,
           playable: mine.length > 0,
           targets,
+          releases,
           aim: def.target === 'ally' || def.target === 'friend',
           cost: costOf(db, mineView, inst),
         },
@@ -736,42 +818,53 @@ export function FightView(props: {
   const anyPlay = handCards.some((c) => c.playable);
 
   const selectedCard = handCards.find((c) => c.inst.id === selected) ?? null;
+  const releaseCard = releasing
+    ? (handCards.find((c) => c.inst.id === releasing.card) ?? null)
+    : null;
   const aimSet = useMemo(
     () =>
-      aimPotion !== null
-        ? new Set(
-            legal.flatMap((a) =>
-              a.type === 'potion' && a.potion === aimPotion && a.target ? [a.target] : [],
-            ),
-          )
-        : (dragTargets ?? (selectedCard ? new Set(selectedCard.targets) : new Set<string>())),
-    [selectedCard, dragTargets, aimPotion, legal],
+      releaseCard
+        ? new Set(releaseCard.releases)
+        : aimPotion !== null
+          ? new Set(
+              legal.flatMap((a) =>
+                a.type === 'potion' && a.potion === aimPotion && a.target ? [a.target] : [],
+              ),
+            )
+          : (dragTargets ?? (selectedCard ? new Set(selectedCard.targets) : new Set<string>())),
+    [selectedCard, dragTargets, aimPotion, legal, releaseCard],
   );
 
   useEffect(() => {
     scene.current?.fighters.setTargetable(aimSet.size ? aimSet : null);
   }, [aimSet]);
 
-  const unitAt = useCallback((cx: number, cy: number): string | null => {
-    const sc = scene.current;
-    if (!sc) return null;
-    const p = sc.clientToStage(cx, cy);
-    return sc.fighters.hitTest(p.x, p.y);
-  }, []);
+  const unitAt = useCallback(
+    (cx: number, cy: number, among?: ReadonlySet<string>): string | null => {
+      const sc = scene.current;
+      if (!sc) return null;
+      const p = sc.clientToStage(cx, cy);
+      return sc.fighters.hitTest(p.x, p.y, among);
+    },
+    [],
+  );
 
   // aiming with a selected card: click a target, right-click or Esc cancels
   useEffect(() => {
     const onMove = (e: PointerEvent) => {
       if (selected) setPointer({ x: e.clientX, y: e.clientY });
-      const u = unitAt(e.clientX, e.clientY);
+      // while aiming, the nearest figure that can be chosen is the one pointed at
+      const aiming =
+        !!(selected || dragTargets || releasing || aimPotion !== null) && aimSet.size > 0;
+      const u = unitAt(e.clientX, e.clientY, aiming ? aimSet : undefined);
       setHoverUnit(u);
       scene.current?.fighters.setHover(
-        selected || dragTargets ? (u && aimSet.has(u) ? u : null) : null,
+        selected || dragTargets || releasing ? (u && aimSet.has(u) ? u : null) : null,
       );
     };
     window.addEventListener('pointermove', onMove);
     return () => window.removeEventListener('pointermove', onMove);
-  }, [unitAt, selected, dragTargets, aimSet]);
+  }, [unitAt, selected, dragTargets, releasing, aimPotion, aimSet]);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -784,25 +877,41 @@ export function FightView(props: {
         else {
           setSelected(null);
           setAimPotion(null);
+          setReleasing(null);
         }
       } else if (e.key === 'e' || e.key === 'E') endTurn();
       else if (/^[1-9]$/.test(e.key) && !waiting) {
         const c = handCards[Number(e.key) - 1];
         if (!c) return;
         if (!c.playable) return void play('refuse');
-        if (c.targets.length <= 1 && !c.aim)
-          act({ type: 'play', card: c.inst.id, ...(c.targets[0] ? { target: c.targets[0] } : {}) });
+        setReleasing(null);
+        if (c.targets.length <= 1 && !c.aim) commit(c, c.targets[0] ?? null);
         else setSelected(c.inst.id);
       }
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [act, endTurn, handCards, waiting, pile]);
+  }, [act, commit, endTurn, handCards, waiting, pile]);
 
   const onStagePointerDown = (e: React.PointerEvent) => {
+    if (releasing) {
+      if (e.button !== 0) return setReleasing(null);
+      const u = unitAt(e.clientX, e.clientY, aimSet);
+      if (u && aimSet.has(u)) {
+        act({
+          type: 'play',
+          card: releasing.card,
+          release: u,
+          ...(releasing.target ? { target: releasing.target } : {}),
+        });
+        setReleasing(null);
+        setHoverCard(null);
+      }
+      return; // a miss keeps aiming: right-click or Esc lets go
+    }
     if (aimPotion !== null) {
       if (e.button !== 0) return setAimPotion(null);
-      const u = unitAt(e.clientX, e.clientY);
+      const u = unitAt(e.clientX, e.clientY, aimSet);
       if (u && aimSet.has(u)) {
         act({
           type: 'potion',
@@ -811,15 +920,14 @@ export function FightView(props: {
           target: u,
         });
         setAimPotion(null);
-      } else setAimPotion(null);
-      return;
+      }
+      return; // (a click that misses keeps aiming: right-click or Esc lets go)
     }
     if (!selectedCard) return;
     if (e.button !== 0) return setSelected(null);
-    const u = unitAt(e.clientX, e.clientY);
-    if (u && selectedCard.targets.includes(u))
-      act({ type: 'play', card: selectedCard.inst.id, target: u });
-    else setSelected(null);
+    const u = unitAt(e.clientX, e.clientY, aimSet);
+    // a click that misses every target keeps the card chosen: right-click, Esc or the card again lets go
+    if (u && selectedCard.targets.includes(u)) commit(selectedCard, u);
   };
 
   // --- placing the DOM plates over the fighters ---------------------------------------------------------
@@ -866,6 +974,14 @@ export function FightView(props: {
   const usesStars = useMemo(() => deckUsesStars(db, mine), [db, mine]);
   const usesRunes = useMemo(() => deckUsesRunes(db, mine), [db, mine]);
   const showStars = usesStars || (me?.stars ?? 0) > 0;
+  // the Obsidian Blade's sharpness (null when this deck has no blade): every copy carries the same bonus
+  const ownSide = live?.sides[mySide];
+  const blades = ownSide
+    ? [...ownSide.hand, ...ownSide.draw, ...ownSide.discard, ...ownSide.exhausted].filter(
+        (c) => c.card === 'starforged-blade',
+      )
+    : [];
+  const blade = blades.length > 0 ? Math.max(...blades.map((c) => c.bonus ?? 0)) : null;
   const showRunes = usesRunes || (me?.runes.length ?? 0) > 0;
   const tip =
     view && tipsOn && !result && !view.pending
@@ -899,15 +1015,20 @@ export function FightView(props: {
 
   return (
     <div className="fight" style={{ '--cw': `${cw}px` } as React.CSSProperties}>
+      <div className="fight__rotate" role="alert">
+        <span aria-hidden>↻</span>
+        <p>Turn your phone sideways to fight.</p>
+      </div>
       <div
         className="fight__stage"
         ref={host}
         onPointerDown={onStagePointerDown}
         onContextMenu={(e) => {
-          if (selected || aimPotion !== null) {
+          if (selected || aimPotion !== null || releasing) {
             e.preventDefault();
             setSelected(null);
             setAimPotion(null);
+            setReleasing(null);
           }
         }}
       />
@@ -993,6 +1114,7 @@ export function FightView(props: {
             targetable={aimSet}
             hover={hoverUnit}
             names
+            sharp={blade}
           />
           <div className="floats" aria-hidden>
             {floats.map((f) => {
@@ -1017,6 +1139,7 @@ export function FightView(props: {
                 >
                   <b>{pvp.names[s]}</b>
                   <small>{progressLabel(p.tier, p.stage)}</small>
+                  <StanceChip unit={at.unit} />
                 </div>
               ) : null;
             })}
@@ -1030,7 +1153,7 @@ export function FightView(props: {
                 y={at.y}
                 h={at.h}
                 w={at.w}
-                lift={pvp ? 54 : 0}
+                banner={!pvp}
               />
             ) : null;
           })}
@@ -1050,8 +1173,17 @@ export function FightView(props: {
               <span>Reload this page: you are put straight back into the match.</span>
             </div>
           )}
-          {banner && (
-            <div className="fight__banner" role="status">
+          <BattleLog lines={logLines} />
+          {releasing && (
+            <div className="fight__banner fight__banner--info" role="status">
+              <span>Your companions are full. Choose one to release.</span>
+              <button className="btn btn--small" onClick={() => setReleasing(null)}>
+                <span>Cancel</span>
+              </button>
+            </div>
+          )}
+          {banner && !releasing && (
+            <div className={`fight__banner fight__banner--${bannerTone}`} role="status">
               <span>{banner}</span>
             </div>
           )}
@@ -1069,11 +1201,12 @@ export function FightView(props: {
             selectedId={selected}
             unitAt={unitAt}
             onPlay={(c, target) => {
-              act({ type: 'play', card: c.inst.id, ...(target ? { target } : {}) });
+              commit(c, target);
               setHoverCard(null);
             }}
             onSelect={(c) => {
               setAimPotion(null);
+              setReleasing(null);
               setSelected(c ? c.inst.id : null);
             }}
             onDragTargets={(ids, c) => {
@@ -1086,6 +1219,7 @@ export function FightView(props: {
                 (c.cost ?? c.def.cost) > (game.current?.state.sides[mySide].mana ?? 0)
                   ? 'Not enough Mana'
                   : 'You cannot play that now',
+                'bad',
               );
               if (refuseTimer.current) window.clearTimeout(refuseTimer.current);
               refuseTimer.current = window.setTimeout(() => setBanner(null), 700);
@@ -1095,9 +1229,21 @@ export function FightView(props: {
               setHoverRect(c && r ? r : null);
             }}
           />
-          {hoverCard && hoverRect && !selected && !dragCard && keywords.length > 0 && (
-            <CardTips items={keywords} rect={hoverRect} cardWidth={cw} />
+          {hoverCard && hoverRect && !selected && !dragCard && window.innerHeight < 600 && (
+            // a short screen (a phone on its side): the card is shown big, with its notes beside it, instead of notes alone
+            <CardHover
+              def={hoverCard.def}
+              at={hoverRect}
+              plus={false}
+              {...(hoverCard.cost !== undefined ? { cost: hoverCard.cost } : {})}
+            />
           )}
+          {hoverCard &&
+            hoverRect &&
+            !selected &&
+            !dragCard &&
+            window.innerHeight >= 600 &&
+            keywords.length > 0 && <CardTips items={keywords} rect={hoverRect} cardWidth={cw} />}
 
           {selectedCard && (
             <svg className="fight__arrow" width="100%" height="100%" aria-hidden>

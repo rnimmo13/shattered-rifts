@@ -14,7 +14,13 @@ export function VaultCode(props: {
   onRestore: (decks: VaultDeck[], complete: boolean) => void;
 }) {
   const [typed, setTyped] = useState('');
-  const [note, setNote] = useState<string | null>(null);
+  const [note, setNoteText] = useState<string | null>(null);
+  /** what the note says is good news (green), bad news (red) or just information */
+  const [noteTone, setNoteTone] = useState<'good' | 'bad' | 'info'>('info');
+  const setNote = (text: string, tone: 'good' | 'bad' | 'info' = 'bad'): void => {
+    setNoteText(text);
+    setNoteTone(tone);
+  };
   const [copied, setCopied] = useState(false);
   /** a code that holds no decks, waiting for a second click so a mistyped code can't replace the real one */
   const [empty, setEmpty] = useState<string | null>(null);
@@ -41,7 +47,7 @@ export function VaultCode(props: {
       setNote('That is not a Vault code. It has 16 letters and numbers.');
       return;
     }
-    setNote('Looking for that Vault…');
+    setNote('Looking for that Vault…', 'info');
     setEmpty(null);
     const r = await remoteVault.list(c);
     if (!r.ok) {
@@ -72,6 +78,7 @@ export function VaultCode(props: {
     props.onRestore(s.decks, s.complete);
     setNote(
       `Now using that Vault (${s.decks.length} deck${s.decks.length === 1 ? '' : 's'}). Your previous code was ${showCode(before)} if you want to go back.`,
+      'good',
     );
   };
 
@@ -116,7 +123,11 @@ export function VaultCode(props: {
           <span>Load</span>
         </button>
       </span>
-      {note && <p aria-live="polite">{note}</p>}
+      {note && (
+        <p className={`notice notice--${noteTone}`} aria-live="polite">
+          {note}
+        </p>
+      )}
       {empty && (
         <button type="button" className="btn btn--small" onClick={() => void restore(true)}>
           <span>Use it anyway</span>

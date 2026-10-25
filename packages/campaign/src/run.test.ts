@@ -119,13 +119,26 @@ describe('stage maps', () => {
                 'merchant',
               );
       }
-    // the floor before the Warden is a Shrine and a Merchant
-    expect(
-      map.nodes
-        .filter((n) => n.floor === floorsOf(FINAL_STAGE))
-        .map((n) => n.kind)
-        .sort(),
-    ).toEqual(['merchant', 'shrine']);
+    // the last stop before a Warden is always a Shrine, on every stage and every map
+    for (let s = 0; s < 150; s++)
+      for (const stage of [1, 2, FINAL_STAGE]) {
+        const m = generateStageMap(
+          seedRng(`last-${s}`),
+          stage,
+          stage >= FINAL_STAGE ? 'rift' : 'aurelion',
+        );
+        const last = m.nodes.filter((n) => n.floor === floorsOf(stage));
+        expect(last.length).toBeGreaterThan(0);
+        expect(
+          last.every((n) => n.kind === 'shrine'),
+          `seed ${s} stage ${stage}`,
+        ).toBe(true);
+        // ...and a Merchant is still to be found somewhere before it
+        expect(
+          m.nodes.some((n) => n.kind === 'merchant'),
+          `seed ${s} stage ${stage}`,
+        ).toBe(true);
+      }
     expect(map.nodes.find((n) => n.kind === 'warden')?.enemyId).toBe('vorthax');
     // its fights come only from the two realms the run has not visited
     const realms = new Set(

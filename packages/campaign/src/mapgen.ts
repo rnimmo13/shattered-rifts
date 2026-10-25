@@ -99,7 +99,7 @@ export function generateStageMap(
       let kind: NodeKind;
       if (floor === 1) kind = 'duel';
       else if (floor === FLOORS)
-        kind = i === 0 ? 'shrine' : merchants < 1 || stage >= FINAL_STAGE ? 'merchant' : 'shrine';
+        kind = 'shrine'; // the last stop before a Warden is always a Shrine
       else kind = rollKind(rng, floor, elites_, merchants, maxElites);
       // (never two Elites side by side on one floor: they spread out over the stage)
       if (kind === 'elite' && row.some((n) => n.kind === 'elite')) kind = 'duel';
@@ -116,6 +116,17 @@ export function generateStageMap(
     }
     byFloor.push(row);
   }
+  // every stage still has a Merchant somewhere: if chance placed none, one takes the place of a plain fight or event in the middle
+  if (!byFloor.some((row) => row.some((n) => n.kind === 'merchant')) && FLOORS >= 3) {
+    const middle = byFloor.slice(1, FLOORS - 1).flat();
+    const plain = middle.filter((n) => n.kind === 'duel' || n.kind === 'event');
+    const spot = pick(rng, plain.length > 0 ? plain : middle);
+    spot.kind = 'merchant';
+    delete spot.enemyId;
+    const crossed = crossedFor(rng, character);
+    if (crossed) spot.crossed = crossed;
+  }
+
   const warden: MapNode = {
     id: `s${stage}-warden`,
     floor: FLOORS + 1,

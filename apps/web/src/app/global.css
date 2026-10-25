@@ -757,7 +757,10 @@ body:has(.learn) {
   text-align: left;
   white-space: pre-wrap;
   word-break: break-word;
-  font: 0.95rem/1.35 ui-monospace, Consolas, monospace;
+  font:
+    0.95rem/1.35 ui-monospace,
+    Consolas,
+    monospace;
   color: var(--c-ivory);
   background: rgb(4 5 11 / 0.7);
   border: 1px solid rgb(255 255 255 / 0.18);
@@ -769,4 +772,33 @@ body:has(.learn) {
 .errdetails__hint {
   color: var(--c-gold-pale);
   max-width: 36rem;
+}
+
+/* ---- phones: everything sized in rem shrinks with the window, so a short landscape screen is not crowded out ---- */
+@media (max-height: 600px) and (pointer: coarse) {
+  html {
+    font-size: max(10px, 2.7vh);
+  }
+}
+@media (max-width: 600px) and (min-height: 601px) and (pointer: coarse) {
+  html {
+    font-size: max(12px, 3.4vw);
+  }
+}
+
+/* a message to the player: green when it is good news, red when it is bad, plain when it is only information */
+.notice {
+  margin: 0.4rem 0;
+  padding: 0.5rem 0.8rem;
+  border-radius: 10px;
+  border: 1px solid rgb(255 255 255 / 0.25);
+  background: rgb(255 255 255 / 0.06);
+}
+.notice--good {
+  background: rgb(46 160 90 / 0.22);
+  border-color: rgb(80 200 120 / 0.7);
+}
+.notice--bad {
+  background: rgb(209 47 72 / 0.18);
+  border-color: rgb(209 47 72 / 0.6);
 }

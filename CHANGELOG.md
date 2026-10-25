@@ -5,6 +5,8 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **Phones, battle log, clearer messages:** the game now plays on a phone held sideways (smaller hand, tap a card to read it, tap again to play; portrait asks you to turn the phone); a scrollable battle log sits above End turn; cards show when their cost is lowered (green) or raised (red); good messages are green and bad ones red everywhere; the Card library and run pages can no longer run off the screen.
+- **More playtest fixes:** hold up to 3 cards at a merchant; summon a companion with a full board by choosing which one leaves; targeting is more forgiving (a miss no longer cancels the card); the Obsidian Blade's sharpness is shown on a counter and on the cards; Grave Harvest hits harder (Doom 18) and its upgrade costs 1; the stop before every boss is always a Shrine.
 - **Playtest round:** card lanes are now called Builds; merchants let you cancel a hold; the map never puts two merchants in a row; the start-of-run choices tell you which card was upgraded or added; stances show on the character (Radiant glows); card hovers explain every keyword on the card; event options read as full sentences; the card owner icon is smaller and bottom right; save and result messages are green when they work.
 - **One saved deck per run:** saving a run again replaces its earlier save instead of adding a second. Saved decks show Tier and Stage progress.
 - **Card library:** the book shows many more cards at once, in one run sorted by rarity (rarest first) with no lane sections; page headers show character icons, realm tabs stay on one row, and cards show their character icon again (bottom left).

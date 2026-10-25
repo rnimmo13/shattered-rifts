@@ -59,7 +59,12 @@ export function loadSpriteFx(): Promise<void> {
         const whole = Texture.from(img);
         const frames: Texture[] = [];
         for (let i = 0; i < meta.frames; i++) {
-          const frame = new Rectangle((i % meta.cols) * meta.w, Math.floor(i / meta.cols) * meta.h, meta.w, meta.h);
+          const frame = new Rectangle(
+            (i % meta.cols) * meta.w,
+            Math.floor(i / meta.cols) * meta.h,
+            meta.w,
+            meta.h,
+          );
           frames.push(new Texture({ source: whole.source, frame }));
         }
         sheets.set(name as FxName, { meta, frames });

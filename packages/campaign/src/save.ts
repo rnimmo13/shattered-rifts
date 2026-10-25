@@ -202,6 +202,18 @@ export function parseRun(text: string): RunState | null {
   // saves from before the difficulty setting were all played on Easy
   if (r.difficulty === undefined) r.difficulty = 'easy';
   if (r.difficulty !== 'easy' && r.difficulty !== 'normal' && r.difficulty !== 'hard') return null;
+  // saves from before several cards could be held kept one card on hold
+  const held: unknown = (r as { held?: unknown }).held;
+  if (held !== undefined) {
+    const list = Array.isArray(held) ? (held as unknown[]) : [held];
+    const clean = list.flatMap((h) =>
+      isObj(h) && hasCard(h['cardId']) && isInt(h['price'], 0, 100_000)
+        ? [{ cardId: h['cardId'] as string, price: h['price'] }]
+        : [],
+    );
+    if (clean.length) r.held = clean.slice(0, 3);
+    else delete r.held;
+  }
   // saves from before card luck existed were all normal
   if (r.luck === undefined) r.luck = 'normal';
   if (r.luck !== 'normal' && r.luck !== 'lucky' && r.luck !== 'blessed') return null;

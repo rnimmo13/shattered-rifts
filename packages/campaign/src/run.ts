@@ -246,8 +246,11 @@ export function enterNode(run: RunState, nodeId: string): RunState {
       }));
       // a card you put on hold earlier is waiting for you, at the price you were promised
       if (r.held) {
-        if (canAdd(r.deck, r.held.cardId))
-          items.unshift({ cardId: r.held.cardId, price: r.held.price, sold: false, held: true });
+        const keep = r.held.filter((h) => canAdd(r.deck, h.cardId));
+        items.unshift(
+          ...keep.map((h) => ({ cardId: h.cardId, price: h.price, sold: false, held: true })),
+        );
+        if (keep.length) r.held = keep;
         else delete r.held;
       }
       // now and then an ancestral card is on the table, at a price
@@ -665,8 +668,18 @@ export function takeShrine(run: RunState, choice: ShrineChoice): RunState {
 export const HOLD_DEPOSIT = 0.2;
 /** ...and it waits at the next merchant for this share of its price (so holding it costs 90% in all). */
 export const HOLD_LATER = 0.7;
+/** How many cards can be on hold at once. */
+export const MAX_HELD = 3;
 
-/** Put a card the merchant is selling on hold: pay a deposit now, and buy it for less at your next merchant. One card at a time. */
+/** End one hold on `cardId` (the card was bought, or the hold let go). */
+function dropHold(r: RunState, cardId: string): void {
+  const at = r.held?.findIndex((h) => h.cardId === cardId) ?? -1;
+  if (!r.held || at < 0) return;
+  r.held.splice(at, 1);
+  if (!r.held.length) delete r.held;
+}
+
+/** Put a card the merchant is selling on hold: pay a deposit now, and buy it for less at your next merchant. Up to MAX_HELD cards at a time. */
 export function holdCard(run: RunState, index: number): RunState {
   need(run.phase === 'merchant' && run.context?.merchant, 'You are not at a merchant');
   const r = clone(run);
@@ -676,11 +689,11 @@ export function holdCard(run: RunState, index: number): RunState {
   const item = m.items[index];
   need(item && !item.sold && !item.onHold, 'That cannot be put on hold');
   need(!item.held, 'That card is already on hold for you');
-  need(!r.held, 'You already have a card on hold');
+  need((r.held?.length ?? 0) < MAX_HELD, `You can only hold ${MAX_HELD} cards at a time`);
   const deposit = Math.ceil(item.price * HOLD_DEPOSIT);
   need(r.shards >= deposit, 'Not enough shards for the deposit');
   r.shards -= deposit;
-  r.held = { cardId: item.cardId, price: Math.ceil(item.price * HOLD_LATER) };
+  (r.held ??= []).push({ cardId: item.cardId, price: Math.ceil(item.price * HOLD_LATER) });
   item.onHold = true;
   return r;
 }
@@ -697,7 +710,7 @@ export function releaseHold(run: RunState, index: number): RunState {
   >;
   const item = m.items[index];
   need(item && (item.onHold || item.held) && !item.sold, 'There is no hold on that card');
-  delete r.held;
+  dropHold(r, item.cardId);
   if (item.held) m.items.splice(index, 1);
   else delete item.onHold;
   return r;
@@ -718,7 +731,7 @@ export function buyCard(run: RunState, index: number): RunState {
   item.sold = true;
   r.deck.push(item.cardId);
   // buying the card you put on hold ends the hold
-  if (item.held) delete r.held;
+  if (item.held) dropHold(r, item.cardId);
   return r;
 }
 

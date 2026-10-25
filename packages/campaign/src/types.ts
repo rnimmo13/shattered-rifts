@@ -227,8 +227,8 @@ export interface RunState {
   resolve: number;
   maxResolve: number;
   deck: string[];
-  /** a merchant card put on hold (deposit paid): it is for sale again, cheaper, at the next merchant */
-  held?: { cardId: string; price: number };
+  /** merchant cards put on hold (deposit paid): each is for sale again, cheaper, at the next merchant */
+  held?: { cardId: string; price: number }[];
   shards: number;
   /** Run passives (Boons) are part of the design but not built yet. */
   boons: string[];

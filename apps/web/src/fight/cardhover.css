@@ -48,3 +48,14 @@
 .cardhover__keys b {
   color: var(--c-gold-light);
 }
+
+/* a phone on its side: the card with its keyword notes beside it */
+.cardhover--compact .cardhover__main {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+}
+.cardhover--compact .cardhover__keys {
+  width: 13.5rem;
+  font-size: 0.8rem;
+}

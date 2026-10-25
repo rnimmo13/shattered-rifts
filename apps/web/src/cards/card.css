@@ -797,3 +797,74 @@
 .card__owner svg {
   display: block;
 }
+
+/* a Sharpened card (the Obsidian Blade): a tag on the picture and a hot edge */
+.card__sharp {
+  position: absolute;
+  left: 50%;
+  top: 392px;
+  translate: -50% 0;
+  z-index: 4;
+  padding: 4px 22px 6px;
+  border-radius: 999px;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 34px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: #2a0e02;
+  background: linear-gradient(180deg, #fff1c4, #ffb23a 55%, #e0701a);
+  border: 3px solid #fff3d2;
+  box-shadow:
+    0 0 22px rgb(255 160 60 / 0.9),
+    0 3px 6px rgb(0 0 0 / 0.6);
+}
+.card--sharpened .card__face {
+  box-shadow:
+    inset 0 0 0 4px rgb(255 190 90 / 0.85),
+    0 0 36px rgb(255 150 50 / 0.7);
+}
+
+/* a cost that is not the printed one: green and falling when it is cheaper, red and rising when it is dearer */
+.card__cost.is-down {
+  background: radial-gradient(circle at 35% 28%, #e0ffe6, #3ddc6a 40%, #0b5a28 92%);
+  box-shadow:
+    0 0 0 4px rgb(0 0 0 / 0.6),
+    0 0 26px 6px rgb(80 255 130 / 0.85),
+    inset 0 -8px 16px rgb(0 0 0 / 0.25);
+}
+.card__cost.is-down span {
+  color: #02260e;
+}
+.card__cost.is-up {
+  background: radial-gradient(circle at 35% 28%, #ffe0e0, #ff5a5a 40%, #7a0f1a 92%);
+  box-shadow:
+    0 0 0 4px rgb(0 0 0 / 0.6),
+    0 0 26px 6px rgb(255 80 90 / 0.85),
+    inset 0 -8px 16px rgb(0 0 0 / 0.25);
+}
+.card__cost.is-up span {
+  color: #3a0509;
+}
+.card__costmod {
+  position: absolute;
+  right: -16px;
+  bottom: -12px;
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  font-style: normal;
+  font-size: 28px;
+  line-height: 1;
+  background: #0b0d18;
+  border: 4px solid currentColor;
+}
+.card__cost.is-down .card__costmod {
+  color: #55ff8a;
+}
+.card__cost.is-up .card__costmod {
+  color: #ff6a74;
+}

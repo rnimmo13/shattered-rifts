@@ -14,7 +14,10 @@ export interface Pt {
   y: number;
 }
 
-const lerp = (a: Pt, b: Pt, v: number): Pt => ({ x: a.x + (b.x - a.x) * v, y: a.y + (b.y - a.y) * v });
+const lerp = (a: Pt, b: Pt, v: number): Pt => ({
+  x: a.x + (b.x - a.x) * v,
+  y: a.y + (b.y - a.y) * v,
+});
 
 function spawn(c: FxCtx, x = 0, y = 0): Graphics {
   const g = new Graphics();
@@ -39,8 +42,18 @@ export function slashArc(
   const size = o.size ?? 120;
   const tilt = o.tilt ?? -0.55;
   const g = spawn(c, at.x, at.y);
-  g.arc(-size * 0.45, 0, size, -0.95, 0.95).stroke({ width: 18, color: hex(tint), alpha: 0.4, cap: 'round' });
-  g.arc(-size * 0.45, 0, size, -0.8, 0.8).stroke({ width: 5, color: 0xffffff, alpha: 0.95, cap: 'round' });
+  g.arc(-size * 0.45, 0, size, -0.95, 0.95).stroke({
+    width: 18,
+    color: hex(tint),
+    alpha: 0.4,
+    cap: 'round',
+  });
+  g.arc(-size * 0.45, 0, size, -0.8, 0.8).stroke({
+    width: 5,
+    color: 0xffffff,
+    alpha: 0.95,
+    cap: 'round',
+  });
   g.alpha = 0;
   g.scale.set(dir * 0.85, 0.85);
   g.rotation = dir * (tilt - 0.55);
@@ -68,8 +81,12 @@ export function clawMarks(c: FxCtx, at: Pt, dir: number, tint: string): void {
         const sy = -52 + Math.abs(i) * 6;
         const ex = sx + 44 * p.v;
         const ey = sy + 104 * p.v;
-        g.moveTo(sx, sy).lineTo(ex, ey).stroke({ width: 11, color: hex(tint), alpha: 0.45, cap: 'round' });
-        g.moveTo(sx, sy).lineTo(ex, ey).stroke({ width: 4, color: 0xffffff, alpha: 0.95, cap: 'round' });
+        g.moveTo(sx, sy)
+          .lineTo(ex, ey)
+          .stroke({ width: 11, color: hex(tint), alpha: 0.45, cap: 'round' });
+        g.moveTo(sx, sy)
+          .lineTo(ex, ey)
+          .stroke({ width: 4, color: 0xffffff, alpha: 0.95, cap: 'round' });
       }
     },
   });
@@ -82,7 +99,7 @@ export function burst(c: FxCtx, at: Pt, tint: string, n = 7, len = 46): void {
   for (let i = 0; i < n; i++) {
     const ang = (i / n) * Math.PI * 2 + (i % 2) * 0.3;
     const r0 = 8;
-    const r1 = len * (0.7 + 0.3 * ((i * 5) % 3) / 2);
+    const r1 = len * (0.7 + (0.3 * ((i * 5) % 3)) / 2);
     g.moveTo(Math.cos(ang) * r0, Math.sin(ang) * r0).lineTo(Math.cos(ang) * r1, Math.sin(ang) * r1);
   }
   g.stroke({ width: 4, color: hex(tint), alpha: 0.95, cap: 'round' });
@@ -115,7 +132,14 @@ export function puff(c: FxCtx, at: Pt, tint: string, r: number, dur = 0.16): voi
 }
 
 /** A bright streak that runs from `a` to `b`. Resolves on arrival. */
-export function streak(c: FxCtx, a: Pt, b: Pt, tint: string, dur: number, width = 4): Promise<void> {
+export function streak(
+  c: FxCtx,
+  a: Pt,
+  b: Pt,
+  tint: string,
+  dur: number,
+  width = 4,
+): Promise<void> {
   return new Promise((resolve) => {
     const g = spawn(c);
     const p = { v: 0 };
@@ -128,8 +152,12 @@ export function streak(c: FxCtx, a: Pt, b: Pt, tint: string, dur: number, width 
         const head = lerp(a, b, p.v);
         const tail = lerp(a, b, Math.max(0, p.v - 0.5));
         g.clear();
-        g.moveTo(tail.x, tail.y).lineTo(head.x, head.y).stroke({ width: width * 3, color: hex(tint), alpha: 0.4, cap: 'round' });
-        g.moveTo(tail.x, tail.y).lineTo(head.x, head.y).stroke({ width, color: 0xffffff, alpha: 0.95, cap: 'round' });
+        g.moveTo(tail.x, tail.y)
+          .lineTo(head.x, head.y)
+          .stroke({ width: width * 3, color: hex(tint), alpha: 0.4, cap: 'round' });
+        g.moveTo(tail.x, tail.y)
+          .lineTo(head.x, head.y)
+          .stroke({ width, color: 0xffffff, alpha: 0.95, cap: 'round' });
       },
     });
     tl.call(resolve);

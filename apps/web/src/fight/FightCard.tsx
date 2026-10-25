@@ -59,6 +59,8 @@ export const FightCard = memo(
     const runs = useMemo(() => parseRules(text), [text]);
     const n = text.replace(/\*\*/g, '').length;
     const size = n <= 55 ? 's' : n <= 110 ? 'm' : n <= 170 ? 'l' : 'xl';
+    // how far the cost now is from the printed one (a cost change from a card, a Boon or Unbound): shown on the gem itself
+    const costDelta = def.x || cost === undefined ? 0 : cost - def.cost;
     const rarity = def.rarity === 'basic' || !def.rarity ? 'common' : def.rarity;
     const rarityRaw = def.rarity ?? 'common';
     const upgraded = def.id.endsWith('+');
@@ -69,7 +71,7 @@ export const FightCard = memo(
     return (
       <div
         ref={ref}
-        className={`card card--${realm}${owner ? ` card--hero-${owner}` : ''} card--${rarity} card--rar-${rarityRaw}${upgraded ? ' card--upgraded' : ''}${playable ? ' is-playable' : ''}${dimmed ? ' is-dimmed' : ''}`}
+        className={`card card--${realm}${owner ? ` card--hero-${owner}` : ''} card--${rarity} card--rar-${rarityRaw}${upgraded ? ' card--upgraded' : ''}${bonus ? ' card--sharpened' : ''}${playable ? ' is-playable' : ''}${dimmed ? ' is-dimmed' : ''}`}
         style={style}
         data-card={def.id}
       >
@@ -81,8 +83,21 @@ export const FightCard = memo(
           <div className="card__banner">
             <span className="card__name">{def.name}</span>
           </div>
-          <div className="card__cost" aria-label={`Cost ${def.x ? 'X' : (cost ?? def.cost)}`}>
+          <div
+            className={`card__cost${costDelta < 0 ? ' is-down' : costDelta > 0 ? ' is-up' : ''}`}
+            aria-label={`Cost ${def.x ? 'X' : (cost ?? def.cost)}${costDelta < 0 ? `, ${-costDelta} less than printed` : costDelta > 0 ? `, ${costDelta} more than printed` : ''}`}
+            title={
+              costDelta === 0
+                ? undefined
+                : `Costs ${Math.abs(costDelta)} ${costDelta < 0 ? 'less' : 'more'} than printed (${def.cost})`
+            }
+          >
             <span>{def.x ? 'X' : (cost ?? def.cost)}</span>
+            {costDelta !== 0 && (
+              <i className="card__costmod" aria-hidden>
+                {costDelta < 0 ? '▼' : '▲'}
+              </i>
+            )}
           </div>
           {def.starCost ? (
             <div className="card__stars" aria-label={`Costs ${def.starCost} Arcana`}>
@@ -108,6 +123,11 @@ export const FightCard = memo(
               <HeroIcon hero={owner} size={92} tone="dark" />
             </div>
           )}
+          {bonus ? (
+            <div className="card__sharp" aria-label={`Sharpened by ${bonus}`}>
+              <span aria-hidden>{'\u25B2'}</span> Sharpened +{bonus}
+            </div>
+          ) : null}
           <div className="card__gem" title={rarity} />
           <div className="card__fx card__fx--shimmer" />
           <div className="card__fx card__fx--holo" />

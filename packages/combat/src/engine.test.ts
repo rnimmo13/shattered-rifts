@@ -308,8 +308,23 @@ describe('allies', () => {
     );
     for (let i = 0; i < 3; i++) s = play(s, `t${i}`).state;
     expect(s.sides.a.units.filter((u) => u.kind === 'ally')).toHaveLength(3);
-    // with the board full, a summon card cannot be played at all
-    expect(legalActions(db, s).some((a) => a.type === 'play' && a.card === 't3')).toBe(false);
+    // with the board full, a summon card can only be played by releasing one of the three
+    const fourth = legalActions(db, s).filter((a) => a.type === 'play' && a.card === 't3');
+    expect(fourth).toHaveLength(3);
+    expect(fourth.every((a) => a.type === 'play' && a.release !== undefined)).toBe(true);
+    expect(() => play(s, 't3')).toThrow();
+    const allies = s.sides.a.units.filter((u) => u.kind === 'ally');
+    const leaving = allies[1]?.id as string;
+    const after = applyAction(db, s, { type: 'play', card: 't3', release: leaving }).state;
+    const now = after.sides.a.units.filter((u) => u.kind === 'ally');
+    expect(now).toHaveLength(3);
+    expect(now.some((u) => u.id === leaving)).toBe(false);
+    // releasing is not dying: it is not remembered as fallen
+    expect(after.sides.a.fallen ?? []).toHaveLength(s.sides.a.fallen?.length ?? 0);
+    // it cannot be a foe, or someone who is not there
+    expect(() =>
+      applyAction(db, s, { type: 'play', card: 't3', release: s.sides.b.units[0]?.id as string }),
+    ).toThrow();
   });
 
   it('a hero can start with allies (Tinker begins with a Drone)', () => {

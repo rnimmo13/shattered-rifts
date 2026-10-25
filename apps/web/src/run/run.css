@@ -4,6 +4,8 @@
   min-height: 100vh;
   padding: 1rem clamp(0.8rem, 3vw, 2.5rem) 3rem;
   display: grid;
+  /* one track that can shrink, so a wide child scrolls or wraps instead of pushing the page wider than the screen */
+  grid-template-columns: minmax(0, 1fr);
   align-content: start;
   gap: 1rem;
   color: var(--c-ivory);
@@ -954,6 +956,8 @@
 }
 .kit__cards {
   display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
   gap: 0.6rem;
 }
 

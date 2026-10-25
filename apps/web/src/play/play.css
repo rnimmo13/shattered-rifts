@@ -1433,6 +1433,8 @@
 }
 .grim__main {
   display: grid;
+  /* (a single track that can shrink: otherwise the book's own width decides it, and it can outgrow the window) */
+  grid-template-columns: minmax(0, 1fr);
   gap: 0.6rem;
   min-width: 0;
 }
@@ -1803,6 +1805,10 @@
 /* a grimoire used to look at cards (deck, piles, starter) rather than to build a deck */
 .grim--view {
   display: block;
+  /* never wider than the room it sits in (its cards are sized from that width, so it must not be sized by them) */
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
 }
 .grim__slot--view {
   gap: 0;

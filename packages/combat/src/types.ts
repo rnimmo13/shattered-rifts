@@ -586,7 +586,8 @@ export interface CombatSetup {
 // --- actions & events ----------------------------------------------------------------------------------------
 
 export type Action =
-  | { type: 'play'; card: InstId; target?: UnitId }
+  /** `release` names the companion that leaves to make room, when a card that summons is played with every companion slot taken */
+  | { type: 'play'; card: InstId; target?: UnitId; release?: UnitId }
   /** `potion` names the potion meant, so a belt that has since shifted can never drink the wrong one */
   | { type: 'potion'; index: number; potion?: string; target?: UnitId }
   | { type: 'endTurn' }
@@ -619,11 +620,19 @@ export type CombatEvent =
       kind: 'attack' | 'direct';
     }
   | { type: 'barrier'; target: UnitId; amount: number; total: number }
-  | { type: 'barrierDrop'; target: UnitId; /** Barrier left after the drop (Fortified keeps some) */ total?: number }
+  | {
+      type: 'barrierDrop';
+      target: UnitId;
+      /** Barrier left after the drop (Fortified keeps some) */ total?: number;
+    }
   | { type: 'heal'; target: UnitId; amount: number }
   | { type: 'status'; target: UnitId; status: StatusId; amount: number; total: number }
   | { type: 'summon'; side: Side; unit: UnitId; def: string; index: number }
-  | { type: 'died'; unit: UnitId }
+  | {
+      type: 'died';
+      unit: UnitId;
+      /** it left to make room for another companion: not a death */ released?: boolean;
+    }
   | { type: 'intent'; unit: UnitId; move: string; target: UnitId | null }
   | { type: 'snareSet'; side: Side; snare: string }
   | { type: 'snareSprung'; side: Side; snare: string; card: CardId }

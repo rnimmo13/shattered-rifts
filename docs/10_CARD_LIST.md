@@ -1073,7 +1073,7 @@ Starter: Attack, Attack, Attack, Defend, Defend, Defend, Grave Touch, Grave Touc
 | Bonded Dead | 2 | power | rare | Whenever one of your allies dies: Curse ALL enemies with 4 Fate. |
 | Last Embers | 1 | skill | rare | Consume any number of cards. Gain Mana equal to half of the number of cards you have consumed. |
 | Soul Furnace | 2 | power | rare | At the start of your turn: Add a Gravesoul to your hand. |
-| Grave Harvest | 2 | skill | legendary | Curse ALL enemies with 12 Fate. Your most recently fallen ally returns with half its HP. Consume. |
+| Grave Harvest | 2 | skill | legendary | Curse ALL enemies with 18 Fate. Your most recently fallen ally returns with half its HP. Consume. |
 | The Last Toll | 3 | skill | legendary | Curse ALL enemies with 25 Fate. Consume. |
 | The Drowned King | 3 | summon | legendary | Summon The Drowned King (22 HP). At the end of your turn it will: Deal 10 damage. Gain 4 Barrier to your hero. Apply 1 Might to all friends. |
 

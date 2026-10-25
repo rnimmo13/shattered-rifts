@@ -6,6 +6,7 @@ import { COMBAT_DB, RIFTWALKERS, V2_DECK_RULES } from '@sr/content/v2';
 import {
   HOLD_DEPOSIT,
   HOLD_LATER,
+  MAX_HELD,
   potionSellPrice,
   REST_HEAL,
   upgradable,
@@ -305,6 +306,7 @@ export function MerchantView(props: {
   const m = props.run.context?.merchant;
   if (!m) return null;
   const shards = props.run.shards;
+  const heldCount = props.run.held?.length ?? 0;
   const beltFull = props.run.potions.length >= 3;
   const canRemove =
     !m.removed && shards >= m.removePrice && props.run.deck.length > V2_DECK_RULES.minSize;
@@ -383,13 +385,13 @@ export function MerchantView(props: {
               {!it.sold && !it.onHold && !it.held && (
                 <button
                   className="btn btn--small btn--ghost shop__hold"
-                  disabled={!!props.run.held || shards < Math.ceil(it.price * HOLD_DEPOSIT)}
+                  disabled={heldCount >= MAX_HELD || shards < Math.ceil(it.price * HOLD_DEPOSIT)}
                   onClick={() => props.onHold(i)}
-                  title={`Pay ${Math.ceil(it.price * HOLD_DEPOSIT)} shards now to keep this card for your next merchant at ${Math.ceil(it.price * HOLD_LATER)} shards. The deposit is not refunded. One card at a time.`}
+                  title={`Pay ${Math.ceil(it.price * HOLD_DEPOSIT)} shards now to keep this card for your next merchant at ${Math.ceil(it.price * HOLD_LATER)} shards. The deposit is not refunded. Up to ${MAX_HELD} cards at a time.`}
                 >
                   <span>
-                    {props.run.held
-                      ? 'A card is already on hold'
+                    {heldCount >= MAX_HELD
+                      ? `${MAX_HELD} cards already on hold`
                       : `Hold for later (${Math.ceil(it.price * HOLD_DEPOSIT)})`}
                   </span>
                 </button>

@@ -113,8 +113,8 @@ export const LEGENDARIES: CardDef[] = [
     'skill',
     2,
     'none',
-    [status('doom', 12, 'allFoes'), revive],
-    { exhaust: true },
+    [status('doom', 18, 'allFoes'), revive],
+    { exhaust: true, up: { cost: 1 } },
   ),
   p(
     'legendary',

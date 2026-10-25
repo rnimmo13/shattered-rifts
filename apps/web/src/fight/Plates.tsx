@@ -22,6 +22,8 @@ export interface PlatesProps {
   targetable: ReadonlySet<string>;
   hover: string | null;
   names: boolean;
+  /** how far the Obsidian Blade has been sharpened, shown as a buff on the hero (null: this deck has no blade) */
+  sharp?: number | null;
   /** the damage the card being aimed would do to this unit */
   preview?: { id: string; text: string } | null;
 }
@@ -45,7 +47,7 @@ function ThornIcon() {
   );
 }
 
-export function UnitPlates({ items, targetable, hover, preview, heroId }: PlatesProps) {
+export function UnitPlates({ items, targetable, hover, preview, heroId, sharp }: PlatesProps) {
   // plates that would run into their neighbours get narrower, and a crowd staggers up and down, so no two ever overlap
   const lane = new Map<string, { width: number; dy: number }>();
   for (const side of ['a', 'b'] as const) {
@@ -135,6 +137,21 @@ export function UnitPlates({ items, targetable, hover, preview, heroId }: Plates
                 )}
               </div>
               <div className="chips">
+                {u.kind === 'hero' && u.id === heroId && sharp !== undefined && sharp !== null && (
+                  <span
+                    className={`chip chip--good chip--sharp${sharp > 0 ? ' is-sharp' : ''}`}
+                    aria-label={`Blade sharpened by ${sharp}`}
+                    {...tipAttrs({
+                      kicker: 'Buff',
+                      title: `Sharpened +${sharp}`,
+                      tone: 'good',
+                      text: 'The Obsidian Blade has permanently gained this much damage this fight. Every Sharpen adds more.',
+                    })}
+                  >
+                    <span aria-hidden>{'▲'}</span>
+                    <b>{sharp}</b>
+                  </span>
+                )}
                 {(Object.entries(u.statuses) as [StatusId, number][]).map(([id, n]) => {
                   const info = STATUS_INFO[id];
                   return (

@@ -1,7 +1,7 @@
 // A set of cards shown as an open grimoire: parchment pages, realm ribbons (when the cards come from more than one realm), page
 // flips. Used wherever a player looks at a deck or a pile; the practice deck builder has its own, editable book (DeckBuilder.tsx).
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import type { CardDef } from '@sr/combat';
 import { COMBAT_DB } from '@sr/content/v2';
 import { HeroIcon } from '../ui/HeroIcon';
@@ -24,7 +24,21 @@ export function Grimoire(props: {
   emptyText?: string;
 }) {
   const [rootRef, width] = useWidth();
-  const layout = bookLayout(width, props.cols, props.spread, true);
+  // how much window is left below the top of the book: the book is sized to fit it (and again whenever the window changes)
+  const mainRef = useRef<HTMLDivElement>(null);
+  const [room, setRoom] = useState<number | undefined>(undefined);
+  useEffect(() => {
+    const measure = (): void => {
+      const el = mainRef.current;
+      if (!el) return;
+      const top = el.getBoundingClientRect().top + window.scrollY;
+      setRoom(Math.max(320, Math.floor(window.innerHeight - top - 16)));
+    };
+    measure();
+    window.addEventListener('resize', measure);
+    return () => window.removeEventListener('resize', measure);
+  }, [width]);
+  const layout = bookLayout(width, props.cols, props.spread, true, room);
   const rows = props.rows ?? layout.rows;
   const cardWidth = props.cardWidth ?? layout.cardWidth;
   const cols = props.cols ?? layout.cols;
@@ -66,7 +80,7 @@ export function Grimoire(props: {
   const tabCount = (id: string): number => entries.filter((e) => tabOf(e.def) === id).length;
   return (
     <div className="grim grim--view" ref={rootRef}>
-      <div className="grim__main">
+      <div className="grim__main" ref={mainRef}>
         {tabs.length > 1 && (
           <div className="grim__tabs" role="tablist" aria-label="Realms">
             {[{ id: 'all', name: 'Everything' }, ...tabs].map((t) => (
@@ -102,7 +116,11 @@ export function Grimoire(props: {
               </section>
             )}
             {visible.map((p, i) => (
-              <section key={i} className="grim__page">
+              <section
+                key={i}
+                className="grim__page"
+                style={{ minHeight: rows * (cardWidth * 1.4 + 14.4) + 96 }}
+              >
                 <h4 className="grim__pagehead">
                   {p.heroIds.map((h) => (
                     <HeroIcon key={h} hero={h} size={26} />

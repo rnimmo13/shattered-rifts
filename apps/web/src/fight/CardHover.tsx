@@ -14,8 +14,13 @@ export interface Anchor {
   top: number;
 }
 
-const PREVIEW_W = 330;
-const PREVIEW_H = 480;
+const PREVIEW_W_FULL = 330;
+/** a short window (a phone on its side) gets a smaller preview, with the keyword notes beside the card, not under it */
+const isCompact = (): boolean => window.innerHeight < 600;
+const previewW = (): number =>
+  isCompact()
+    ? Math.min(PREVIEW_W_FULL, Math.floor((window.innerHeight - 24) / 1.45))
+    : PREVIEW_W_FULL;
 
 /** The preview is one card wide, or two (the card and its upgrade side by side) when choosing a card to upgrade. */
 function beside(at: Anchor, width: number): React.CSSProperties {
@@ -24,11 +29,17 @@ function beside(at: Anchor, width: number): React.CSSProperties {
   // to the right of the card when there is room, otherwise to its left; never off the screen
   const raw = vw - at.right >= width + 24 ? at.right + 12 : at.left - width - 12;
   const left = Math.max(8, Math.min(raw, vw - width - 8));
-  const top = Math.max(8, Math.min(at.top - 30, vh - PREVIEW_H - 8));
+  const top = Math.max(8, Math.min(at.top - 30, vh - previewW() * 1.45 - 8));
   return { left, top, right: 'auto', bottom: 'auto' };
 }
 
-export function CardHover(props: { def: CardDef | null; at?: Anchor | null; plus?: boolean }) {
+export function CardHover(props: {
+  def: CardDef | null;
+  at?: Anchor | null;
+  plus?: boolean;
+  /** what the card costs now, when that is not the printed cost */
+  cost?: number;
+}) {
   const box = useRef<HTMLDivElement>(null);
   // the preview's real height (card, keyword notes, "Upgraded" label) is only known once it is drawn, so slide it up
   // until its bottom edge is on the screen
@@ -46,7 +57,9 @@ export function CardHover(props: { def: CardDef | null; at?: Anchor | null; plus
     showPlus &&
     !!props.def.upgrade &&
     !!COMBAT_DB.cards[props.def.upgrade] &&
-    window.innerWidth >= PREVIEW_W * 2 + 40;
+    window.innerWidth >= PREVIEW_W_FULL * 2 + 40;
+  const PREVIEW_W = previewW();
+  const compact = isCompact();
   const keys = keywordsOf(
     props.def,
     (u) => COMBAT_DB.units[u]?.taunt === true,
@@ -55,12 +68,23 @@ export function CardHover(props: { def: CardDef | null; at?: Anchor | null; plus
   return (
     <div
       ref={box}
-      className="cardhover"
+      className={`cardhover${compact ? ' cardhover--compact' : ''}`}
       aria-hidden
-      style={props.at ? beside(props.at, wide ? PREVIEW_W * 2 + 13 : PREVIEW_W) : undefined}
+      style={
+        props.at
+          ? beside(props.at, wide ? PREVIEW_W * 2 + 13 : PREVIEW_W + (compact ? 220 : 0))
+          : undefined
+      }
     >
       <div className="cardhover__main">
-        <FightCard db={COMBAT_DB} def={props.def} width={330} />
+        <FightCard
+          db={COMBAT_DB}
+          def={props.def}
+          width={PREVIEW_W}
+          {...(props.cost !== undefined && props.cost !== props.def.cost
+            ? { cost: props.cost }
+            : {})}
+        />
         {keys.length > 0 && (
           <ul className="cardhover__keys">
             {keys.map((k) => (
@@ -77,7 +101,7 @@ export function CardHover(props: { def: CardDef | null; at?: Anchor | null; plus
           <FightCard
             db={COMBAT_DB}
             def={COMBAT_DB.cards[props.def.upgrade] as CardDef}
-            width={330}
+            width={PREVIEW_W}
           />
         </div>
       )}

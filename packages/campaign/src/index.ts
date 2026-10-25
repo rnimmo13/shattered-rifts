@@ -43,6 +43,7 @@ export {
   CROSSED_MERCHANT_CHANCE,
   HOLD_DEPOSIT,
   HOLD_LATER,
+  MAX_HELD,
   holdCard,
   releaseHold,
   continueLoop,

@@ -55,8 +55,8 @@ Choose character ──► RUN at Rift Tier I (fresh 20-card starter, 2 Resolve 
 ### 2.1 Stage map
 A run is **three stages** (DECISIONS #160). Each is a branching node map generated from the run seed, with 2–4 nodes
 per floor and paths that branch and merge: **seven floors + the Warden** for Stages 1 and 2, **eight floors + Vorthax**
-for the Rift (Stage 3, whose fights come from the two realms the run has not visited). The floor before every Warden is a
-Shrine and, in the Rift, always a Merchant too.
+for the Rift (Stage 3, whose fights come from the two realms the run has not visited). The last stop before every Warden is a
+Shrine (every node on that floor); each stage still has a Merchant somewhere before it (DECISIONS #175).
 
 | Node | Icon | What happens | Placement rules |
 |---|---|---|---|

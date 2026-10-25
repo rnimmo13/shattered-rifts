@@ -50,8 +50,12 @@ export function fanLayout(n: number, o: FanOptions): FanSlot[] {
 }
 
 /** Card width for the hand at the current window size (px). */
-export function handCardWidth(viewportWidth: number): number {
-  return Math.round(Math.max(168, Math.min(238, viewportWidth * 0.122)));
+export function handCardWidth(viewportWidth: number, viewportHeight = Infinity): number {
+  const wide = Math.round(Math.max(168, Math.min(238, viewportWidth * 0.122)));
+  // a phone (a short or a narrow window): the cards shrink so the hand takes about a quarter of the screen, never more
+  if (viewportHeight < 600 || viewportWidth < 700)
+    return Math.round(Math.max(72, Math.min(wide, viewportHeight * 0.27, viewportWidth * 0.2)));
+  return wide;
 }
 
 /** How far the resting hand reaches up from the bottom of the screen: the board is fitted above this. */
