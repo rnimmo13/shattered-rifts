@@ -4,6 +4,7 @@
 export { V2_DECK_RULES as DECK_RULES } from '@sr/content/v2';
 
 export type * from './types';
+export { removableCards } from './deals';
 export { FINAL_STAGE, floorsOf, generateStageMap, reachableNodes, wardenFor } from './mapgen';
 export {
   PRICE,

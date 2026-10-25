@@ -15,6 +15,7 @@ import {
 import { COMBAT_DB } from '@sr/content/v2';
 import {
   MAX_MISSED_TURNS,
+  ARENA_HP_MULT,
   SECOND_PLAYER_HP,
   TURN_MS,
   type EndReason,
@@ -47,17 +48,27 @@ export type Refused = {
 
 export const other = (s: Seat): Seat => (s === 'a' ? 'b' : 'a');
 
+/** A hero's HP in the Arena: ARENA_HP_MULT times its usual (nothing for a hero the game does not know). */
+const arenaHp = (hero: string): { hp: number; maxHp: number } | Record<string, never> => {
+  const base = COMBAT_DB.heroes[hero]?.maxHp ?? 0;
+  return base > 0 ? { hp: base * ARENA_HP_MULT, maxHp: base * ARENA_HP_MULT } : {};
+};
+
 /**
  * The engine's setup for two entries: seat a is side a (moves first), seat b is side b (moves second, and starts with
- * SECOND_PLAYER_HP more HP and max HP).
+ * SECOND_PLAYER_HP more HP and max HP). Both heroes have ARENA_HP_MULT times their usual HP.
  */
 export function setupFor(seed: string, a: Entry, b: Entry): CombatSetup {
-  const base = COMBAT_DB.heroes[b.hero]?.maxHp ?? 0;
-  const second = base > 0 ? { hp: base + SECOND_PLAYER_HP, maxHp: base + SECOND_PLAYER_HP } : {};
+  const first = arenaHp(a.hero);
+  const base = arenaHp(b.hero);
+  const second =
+    base.maxHp !== undefined
+      ? { hp: base.maxHp + SECOND_PLAYER_HP, maxHp: base.maxHp + SECOND_PLAYER_HP }
+      : {};
   return {
     seed,
     // (an entry kept from before Boons came to PvP has none)
-    a: { hero: a.hero, deck: [...a.deck], boons: [...(a.boons ?? [])] },
+    a: { hero: a.hero, deck: [...a.deck], boons: [...(a.boons ?? [])], ...first },
     b: { hero: b.hero, deck: [...b.deck], boons: [...(b.boons ?? [])], ...second },
   };
 }

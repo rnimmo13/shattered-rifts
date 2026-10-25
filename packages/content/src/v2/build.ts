@@ -205,7 +205,7 @@ export function pool(hero: string, realm: string) {
 
 /**
  * The "+" version of a card, derived by one rule so upgrades stay consistent: damage +3 (+1 per hit when it hits several
- * times), Barrier +3, Heal +3, statuses +1 (not Seared on single targets of 1), draw +1, and so on. A card that has
+ * times), Barrier +3, Heal +3, statuses +1 (+2 from 5 stacks up), foresee +1 (+2 from 4 up), draw +1, and so on. A card that has
  * nothing to improve gets cheaper, or loses Exhaust.
  */
 export function plus(c: CardDef): CardDef {
@@ -238,7 +238,8 @@ export function plus(c: CardDef): CardDef {
         return { ...o, amount: o.amount + 3 };
       case 'scry':
         changed = true;
-        return { ...o, amount: o.amount + 1 };
+        // a long look gains two: one more card on top of 4 is a small step
+        return { ...o, amount: o.amount + (o.amount >= 4 ? 2 : 1) };
       case 'stars':
         if (o.amount > 0) {
           changed = true;
@@ -288,7 +289,8 @@ export function plus(c: CardDef): CardDef {
           o.status !== 'plating'
         ) {
           changed = true;
-          return { ...o, amount: o.amount + 1 };
+          // a big stack (Bleed 5, Primed 6, a plague of 9) gains two: +1 on 5 is barely felt
+          return { ...o, amount: o.amount + (o.amount >= 5 ? 2 : 1) };
         }
         return o;
       case 'summon':

@@ -227,6 +227,8 @@ export interface RunState {
   resolve: number;
   maxResolve: number;
   deck: string[];
+  /** the deck has been through the Sanctum of Change: it never happens twice in a run */
+  sanctified?: boolean;
   /** merchant cards put on hold (deposit paid): each is for sale again, cheaper, at the next merchant */
   held?: { cardId: string; price: number }[];
   shards: number;

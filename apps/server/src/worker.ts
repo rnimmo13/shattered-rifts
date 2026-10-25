@@ -124,7 +124,7 @@ async function boardRoute(request: Request, env: Env, what: string, url: URL): P
   if (request.method === 'OPTIONS') return new Response(null, { status: 204, headers: CORS_POST });
   const stub = env.BOARD.get(env.BOARD.idFromName('main'));
   try {
-    if (request.method === 'GET' && (what === 'pvp' || what === 'runs')) {
+    if (request.method === 'GET' && (what === 'pvp' || what === 'runs' || what === 'ghosts')) {
       const res = await stub.fetch(
         new Request(
           `https://board.invalid/${what}?period=${url.searchParams.get('period') === 'month' ? 'month' : 'week'}`,
@@ -140,7 +140,7 @@ async function boardRoute(request: Request, env: Env, what: string, url: URL): P
         },
       });
     }
-    if (request.method !== 'POST' || (what !== 'id' && what !== 'run'))
+    if (request.method !== 'POST' || (what !== 'id' && what !== 'run' && what !== 'view'))
       return json({ ok: false, error: 'not found' }, 404);
     const text = await request.text();
     if (text.length > 2_000) return json({ ok: false, error: 'too big' }, 413);
@@ -154,6 +154,20 @@ async function boardRoute(request: Request, env: Env, what: string, url: URL): P
       return json({ ok: false, error: 'bad-body' }, 400);
     }
     const id = await boardId(request, env, body);
+    if (what === 'view') {
+      // anyone may look at a board; someone who is known also sees where they stand (a visitor with no id just sees the board)
+      const res = await stub.fetch(
+        new Request('https://board.invalid/view', {
+          method: 'POST',
+          body: JSON.stringify({
+            kind: body['kind'],
+            period: body['period'],
+            player: id ?? undefined,
+          }),
+        }),
+      );
+      return json(await res.json(), res.status);
+    }
     if (!id)
       return json({ ok: false, error: body['code'] === undefined ? 'signin' : 'bad-code' }, 401);
     if (what === 'id') return json({ ok: true, id });

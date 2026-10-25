@@ -4,9 +4,16 @@ import {
   periodEnd,
   believableStages,
   periodStart,
+  pickGhost,
+  rankGhosts,
+  rankVsGhosts,
   rankPvp,
   rankRuns,
+  standingsPvp,
   stagesInAll,
+  withoutPlayer,
+  type GhostDeck,
+  type GhostGame,
   type PvpRow,
   type RunRow,
 } from './board';
@@ -62,8 +69,8 @@ describe('the Arena board', () => {
   it('shows a player under their newest name, and cuts the board to its size', () => {
     const rows = [row('a', 'maren', true, 1, 'Old'), row('a', 'maren', true, 9, 'New')];
     expect(rankPvp(rows)[0]?.name).toBe('New');
-    const many = Array.from({ length: 40 }, (_, i) => row(`p${i}`, 'maren', true, i));
-    expect(rankPvp(many)).toHaveLength(25);
+    const many = Array.from({ length: 140 }, (_, i) => row(`p${i}`, 'maren', true, i));
+    expect(rankPvp(many)).toHaveLength(100);
     expect(rankPvp(many, 3)).toHaveLength(3);
   });
 });
@@ -123,5 +130,93 @@ describe('names that are not abuse', () => {
   it('are left alone', () => {
     expect(cleanBoardName('Dickens')).toBe('Dickens');
     expect(cleanBoardName('Rapeseed Rob')).toBe('Rapeseed Rob');
+  });
+});
+
+describe('ghosts', () => {
+  const NOW = Date.UTC(2026, 9, 24);
+  const deck = (id: string, owner: string, wins: number, losses = 0, lastAt = NOW): GhostDeck => ({
+    id,
+    owner,
+    ownerName: owner,
+    hero: 'maren',
+    tier: 1,
+    stage: 3,
+    wins,
+    losses,
+    ghostWins: 0,
+    ghostLosses: 0,
+    lastAt,
+  });
+
+  it('are picked from the upper half by wins, never your own, never a stale one', () => {
+    const decks = [
+      deck('a', 'ann', 9),
+      deck('b', 'bob', 7),
+      deck('c', 'cy', 4),
+      deck('d', 'di', 1),
+      deck('me', 'me', 20),
+    ];
+    // five decks, one is mine: four to choose from, the upper half is the best two
+    const seen = new Set<string>();
+    for (let r = 0; r < 1; r += 0.05) seen.add(pickGhost(decks, 'me', r, NOW)?.id ?? '-');
+    expect([...seen].sort()).toEqual(['a', 'b']);
+    // a deck that has not played for over a month is not offered
+    const old = [deck('x', 'xan', 50, 0, NOW - 31 * 86_400_000), deck('y', 'yo', 1)];
+    expect(pickGhost(old, 'me', 0.9, NOW)?.id).toBe('y');
+    expect(pickGhost([], 'me', 0.5, NOW)).toBeNull();
+    expect(pickGhost([deck('m', 'me', 3)], 'me', 0.5, NOW)).toBeNull();
+    // a single deck is its own upper half
+    expect(pickGhost([deck('only', 'ann', 0)], 'me', 0.99, NOW)?.id).toBe('only');
+  });
+
+  it('are ranked by their wins, and so are the people who play them', () => {
+    const g = (ghost: string, won: boolean, human: string, at: number): GhostGame => ({
+      ghost,
+      ownerName: ghost,
+      hero: 'maren',
+      tier: 1,
+      stage: null,
+      ghostWon: won,
+      human,
+      humanName: human,
+      humanHero: 'kesh',
+      at,
+    });
+    const games = [
+      g('G1', true, 'p1', 1),
+      g('G1', true, 'p2', 2),
+      g('G2', false, 'p1', 3),
+      g('G2', true, 'p3', 4),
+    ];
+    expect(rankGhosts(games).map((s) => [s.name, s.wins, s.losses])).toEqual([
+      ['G1', 2, 0],
+      ['G2', 1, 1],
+    ]);
+    const people = rankVsGhosts(games);
+    expect(people.map((s) => [s.name, s.wins, s.losses])).toEqual([
+      ['p1', 1, 1],
+      ['p2', 0, 1],
+      ['p3', 0, 1],
+    ]);
+  });
+});
+
+describe('where a player stands', () => {
+  it('is found anywhere in the full ranking, and the id never goes out with a place', () => {
+    const rows: PvpRow[] = Array.from({ length: 130 }, (_, i) => ({
+      player: `p${i}`,
+      name: `P${i}`,
+      hero: 'maren',
+      won: i < 129, // everyone wins once but the last
+      at: i,
+    }));
+    const all = standingsPvp(rows);
+    // (everyone has one win but p129, who has none: last place, below the 100 that are shown)
+    expect(all).toHaveLength(130);
+    expect(all.findIndex((s) => s.player === 'p129')).toBe(129);
+    expect(rankPvp(rows)).toHaveLength(100);
+    expect(rankPvp(rows).every((s) => !('player' in s))).toBe(true);
+    expect('player' in withoutPlayer(all[0]!)).toBe(false);
   });
 });

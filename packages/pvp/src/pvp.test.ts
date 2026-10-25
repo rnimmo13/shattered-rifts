@@ -11,6 +11,7 @@ import {
   MAX_MISSED_TURNS,
   pairUp,
   QUEUE_WIDEN_MS,
+  ARENA_HP_MULT,
   SECOND_PLAYER_HP,
   seatsFor,
   setupFor,
@@ -276,8 +277,11 @@ describe('who goes first', () => {
     const setup = setupFor('hp', a, b);
     const m = new Match('hp', a, b, 0);
     const hero = (side: 'a' | 'b') => m.state.sides[side].units.find((u) => u.kind === 'hero');
-    expect(hero('a')?.maxHp).toBe(COMBAT_DB.heroes.maren?.maxHp);
-    expect(hero('b')?.maxHp).toBe((COMBAT_DB.heroes.kesh?.maxHp ?? 0) + SECOND_PLAYER_HP);
+    // everyone has three times their usual HP in the Arena, and the second seat a little more
+    expect(hero('a')?.maxHp).toBe((COMBAT_DB.heroes.maren?.maxHp ?? 0) * ARENA_HP_MULT);
+    expect(hero('b')?.maxHp).toBe(
+      (COMBAT_DB.heroes.kesh?.maxHp ?? 0) * ARENA_HP_MULT + SECOND_PLAYER_HP,
+    );
     expect(hero('b')?.hp).toBe(hero('b')?.maxHp);
     expect(setup.b).toMatchObject({ hero: 'kesh' });
   });

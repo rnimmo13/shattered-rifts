@@ -8,50 +8,7 @@ interface Credit {
 }
 
 /** Third-party art used in the game. Keep in step with CREDITS.md. */
-const CREDITS: Credit[] = [
-  {
-    work: 'Ghostwire monster',
-    author: 'TheRealFusion',
-    url: 'https://jitsu-koan.itch.io/',
-    note: 'From the Jitsu-Koan monster collection (free to use and edit).',
-  },
-  {
-    work: 'Monster and character sprite collection',
-    author: 'Jitsu-Koan',
-    url: 'https://jitsu-koan.itch.io/',
-    note: 'RPG Fantasy Girls and the Waechter monsters.',
-  },
-  {
-    work: 'Moss, hanging plants, slimes and the little wizard (cave and swamp stages, Spitter, Maw Spawn, Hooded Acolyte)',
-    author: 'Maaot',
-    url: 'https://maaot.itch.io/mossy-cavern',
-    note: 'Mossy Cavern.',
-  },
-  {
-    work: 'Monster illustrations (the Whisperer, Vorthax, Nyxara, Gorrmaw and other enemies)',
-    author: 'Tania Herrero',
-    url: 'https://tania-herrero.itch.io/',
-    note: 'Monstrous Menagerie #1, used under CC-BY 4.0 (cropped, resized and given a light rim).',
-  },
-  {
-    work: 'Cave environment (stage backdrop, columns, mushrooms)',
-    author: 'wigglesmith79',
-    url: 'https://wigglesmith79.itch.io/hand-drawn',
-    note: 'Hand Drawn cave pack.',
-  },
-  {
-    work: 'Rarity gems and card backs',
-    author: 'Dumivid',
-    url: 'https://dumivid.itch.io/',
-    note: 'Mechanized Magic, released under CC0.',
-  },
-  {
-    work: 'Fire, frost and portal effects',
-    author: 'SovDigital',
-    url: 'https://sovdigital.itch.io/',
-    note: 'Free Magic Effects.',
-  },
-];
+const CREDITS: Credit[] = [];
 
 /** #/credits: who made the art we did not make ourselves. */
 export function CreditsScreen() {
@@ -62,7 +19,10 @@ export function CreditsScreen() {
       </a>
       <h1 className="learn__title">Credits</h1>
       <p className="learn__note">
-        Shattered Rifts is made by Robert. Thank you to the artists whose work is in the game:
+        Shattered Rifts is made by Robert.{' '}
+        {CREDITS.length > 0
+          ? 'Thank you to the artists whose work is in the game:'
+          : 'No third-party art is used in the game.'}
       </p>
       <dl>
         {CREDITS.map((c) => (

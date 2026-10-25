@@ -8,6 +8,7 @@ import {
   HOLD_LATER,
   MAX_HELD,
   potionSellPrice,
+  removableCards,
   REST_HEAL,
   upgradable,
   type EventOption,
@@ -207,7 +208,9 @@ export function ShrineView(props: {
   const [picking, setPicking] = useState<'upgrade' | 'remove' | null>(null);
   const canRest = props.run.hp < props.run.maxHp;
   const ups = useMemo(() => new Set(upgradable(props.run.deck)), [props.run.deck]);
-  const canRemove = props.run.deck.length > V2_DECK_RULES.minSize;
+  // a sanctified card is part of the deck for good: it is never offered to be let go
+  const removable = useMemo(() => new Set(removableCards(props.run.deck)), [props.run.deck]);
+  const canRemove = props.run.deck.length > V2_DECK_RULES.minSize && removable.size > 0;
   const heal = Math.min(props.run.maxHp - props.run.hp, Math.ceil(props.run.maxHp * REST_HEAL));
   return (
     <section className="stage-panel" aria-label="Shrine">
@@ -233,7 +236,13 @@ export function ShrineView(props: {
         <button className="bigchoice" disabled={!canRemove} onClick={() => setPicking('remove')}>
           <b>Let one go</b>
           <span>Remove a card from your deck</span>
-          {!canRemove && <i>A deck cannot go below {V2_DECK_RULES.minSize} cards</i>}
+          {!canRemove && (
+            <i>
+              {props.run.deck.length > V2_DECK_RULES.minSize
+                ? 'Sanctified cards cannot be removed'
+                : `A deck cannot go below ${V2_DECK_RULES.minSize} cards`}
+            </i>
+          )}
         </button>
       </div>
       {!canRest && ups.size === 0 && !canRemove && (
@@ -248,9 +257,9 @@ export function ShrineView(props: {
           hint={
             picking === 'upgrade'
               ? 'Choose a card to make stronger.'
-              : 'Choose a card to leave behind.'
+              : 'Choose a card to leave behind. Sanctified cards cannot be removed.'
           }
-          {...(picking === 'upgrade' ? { pickable: ups } : {})}
+          pickable={picking === 'upgrade' ? ups : removable}
           onPick={(id) => (picking === 'upgrade' ? props.onUpgrade(id) : props.onRemove(id))}
           onClose={() => setPicking(null)}
         />
@@ -310,8 +319,13 @@ export function MerchantView(props: {
   const shards = props.run.shards;
   const heldCount = props.run.held?.length ?? 0;
   const beltFull = props.run.potions.length >= 3;
+  // (a sanctified card is never offered: it can never be removed)
+  const removable = new Set(removableCards(props.run.deck));
   const canRemove =
-    !m.removed && shards >= m.removePrice && props.run.deck.length > V2_DECK_RULES.minSize;
+    !m.removed &&
+    shards >= m.removePrice &&
+    props.run.deck.length > V2_DECK_RULES.minSize &&
+    removable.size > 0;
   const boon = m.boon ? COMBAT_DB.boons[m.boon.id] : undefined;
   return (
     <section className="stage-panel shop" aria-label="Merchant">
@@ -525,7 +539,8 @@ export function MerchantView(props: {
         <DeckModal
           deck={props.run.deck}
           title="Remove a card"
-          hint={`This costs ${m.removePrice} shards.`}
+          hint={`This costs ${m.removePrice} shards. Sanctified cards cannot be removed.`}
+          pickable={removable}
           onPick={(id) => {
             setPicking(false);
             props.onRemove(id);

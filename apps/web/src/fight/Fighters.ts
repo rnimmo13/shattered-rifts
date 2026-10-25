@@ -6,7 +6,6 @@ import { Container, Sprite, Texture } from 'pixi.js';
 import { gsap } from 'gsap';
 import { color, ease, hex } from '../design/tokens';
 import type { EffectsProfile } from '../duel/effects';
-import { loadSpriteFx, playSpriteFx, type FxName } from './spriteFx';
 import type { AttackSpec } from './attackStyles';
 import {
   burst,
@@ -122,9 +121,7 @@ export class Fighters {
   private readonly live = new Set<gsap.core.Animation>();
   private destroyed = false;
 
-  constructor(private readonly h: FighterHost) {
-    void loadSpriteFx();
-  }
+  constructor(private readonly h: FighterHost) {}
 
   private track<T extends gsap.core.Animation>(a: T): T {
     if (this.live.size > 120)
@@ -570,29 +567,6 @@ export class Fighters {
       ),
     );
     this.pulse(id, tintColor);
-  }
-
-  /** A sprite-sheet effect at a figure's feet (ground effects sit in front, others behind). Resolves when it ends. */
-  vfx(
-    id: string,
-    name: FxName,
-    o: { scale?: number; from?: number; rate?: number; behind?: boolean } = {},
-  ): Promise<void> {
-    const f = this.all.get(id);
-    if (!f || this.destroyed || this.h.profile().still) return Promise.resolve();
-    return playSpriteFx(
-      this.h.container,
-      name,
-      {
-        x: f.root.x,
-        y: f.root.y - (f.spec.hover ?? 0),
-        scale: o.scale,
-        from: o.from,
-        rate: o.rate,
-        zIndex: f.root.y + (o.behind ? -1 : 2),
-      },
-      (a) => this.track(a),
-    );
   }
 
   /** A soft coloured flash over a figure: buffs, heals, debuffs. */

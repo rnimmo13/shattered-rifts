@@ -341,10 +341,16 @@ export const QUILL: CardDef[] = [
       exhaust: true,
     },
   ),
-  q('legendary', 'deck-of-a-thousand-knives', 'Deck of a Thousand Knives', 'power', 2, 'none', [
-    on('turnStart', [addTo('sleeve-knife', 3)]),
-    status('edge', 2),
-  ]),
+  q(
+    'legendary',
+    'deck-of-a-thousand-knives',
+    'Deck of a Thousand Knives',
+    'power',
+    2,
+    'none',
+    [on('turnStart', [addTo('sleeve-knife', 3)]), status('edge', 2)],
+    { up: { cost: 1, effects: [on('turnStart', [addTo('sleeve-knife', 3)]), status('edge', 3)] } },
+  ),
   q(
     'legendary',
     'death-warrant',

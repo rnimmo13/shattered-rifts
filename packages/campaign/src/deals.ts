@@ -2,7 +2,7 @@
 // them in order and says what happened, dealFeasible checks an option can be taken right now. New events are data only.
 
 import { clone, nextInt } from '@sr/combat';
-import { COMBAT_DB, V2_DECK_RULES } from '@sr/content/v2';
+import { COMBAT_DB, V2_DECK_RULES, isSanctified } from '@sr/content/v2';
 import { MAX_POTIONS, canAdd, cardOfRarity, offerCards, offerPotion } from './rewards';
 import type { DealStep, EventOption, NodeContext, RunState } from './types';
 
@@ -13,10 +13,17 @@ export interface DealHelpers {
   fail: (msg: string) => never;
 }
 
+/** The cards of a deck that anything may take out: a sanctified card never leaves a deck. */
+export const removableCards = (deck: readonly string[]): string[] =>
+  deck.filter((id) => !isSanctified(id));
+
 /** The plain Attack / Defend cards (Neutral basics): never a Riftwalker's own starter card, never a Wound. */
 export const basics = (deck: readonly string[]): string[] =>
   deck.filter(
-    (id) => COMBAT_DB.cards[id]?.rarity === 'basic' && COMBAT_DB.cards[id]?.hero === 'neutral',
+    (id) =>
+      COMBAT_DB.cards[id]?.rarity === 'basic' &&
+      COMBAT_DB.cards[id]?.hero === 'neutral' &&
+      !isSanctified(id),
   );
 export const nonBasic = (deck: readonly string[]): string[] =>
   deck.filter((id) => {
@@ -104,7 +111,7 @@ function step(r: RunState, s: DealStep, ev: EventCtx, h: DealHelpers, out: strin
           const w = r.deck.indexOf('wound');
           pool = w >= 0 ? ['wound'] : basics(r.deck);
         } else if (s.of === 'basic') pool = basics(r.deck);
-        else pool = r.deck.filter((id) => id !== 'wound');
+        else pool = removableCards(r.deck).filter((id) => id !== 'wound');
         if (!pool.length) fail('There is nothing to take');
         const pick = pool[nextInt(r.rng, pool.length)] as string;
         r.deck.splice(r.deck.indexOf(pick), 1);

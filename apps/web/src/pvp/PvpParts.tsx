@@ -27,6 +27,24 @@ export function WaitTimer(props: { label: string; widenAfterMs?: number }) {
   );
 }
 
+/** After a while in the queue with nobody to play, a ghost is offered: a deck another player has used, with the computer at the controls. */
+export function GhostOffer(props: { afterMs: number; onGhost: () => void }) {
+  const [late, setLate] = useState(false);
+  useEffect(() => {
+    const t = window.setTimeout(() => setLate(true), props.afterMs);
+    return () => window.clearTimeout(t);
+  }, [props.afterMs]);
+  if (!late) return null;
+  return (
+    <div className="pvp__ghostoffer" role="status">
+      <p>Nobody else is around right now. Would you like to fight a ghost?</p>
+      <button className="btn btn--primary" onClick={props.onGhost}>
+        <span>Fight a ghost</span>
+      </button>
+    </div>
+  );
+}
+
 /** A Riftwalker's face: the top of their figure, in a round frame. */
 export function Portrait(props: { hero: string; size?: number; className?: string }) {
   const { hero, size = 140 } = props;

@@ -5,6 +5,13 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **Upgrades:** stacked statuses (Bleed, Primed, Fate and the like) and long Foresees now gain two when upgraded, and five Legendaries got hand-made upgrades (The Last Oath, The Last Toll, Deck of a Thousand Knives, Overclocked Legion, The Spirit Council).
+- **Arena fights have three times the HP** for you and for ghosts, so matches have room to play out.
+- **Sanctified cards stay:** they can no longer be removed, the Sanctum only happens once per run, and a sanctified card keeps its new picture.
+- **A run that collapses loses the deck you saved from it** for the Arena.
+- **Leaderboards are tables** of the top 100, and show where you stand.
+- **Credits:** the game no longer uses third-party art; gems, card backs and effects are drawn in-game.
+- **Ghost battles:** with nobody to play in the Arena, fight a ghost: a deck another player has used, played by the computer. Ask for one from the lobby (Fight a ghost), or you are offered one after 20 seconds in the queue. Ghosts come from the better half of decks by wins. A new Ghosts tab on the Leaderboards shows how each ghost is doing and who has beaten them. Ghost matches do not count on the Arena board.
 - **Leaderboards:** weekly and monthly boards for the Arena (most wins, with your record and the characters you played) and the campaign (how far each run got), from a Leaderboards link on the home page and in the Arena. Also a timer while you wait in the Arena queue, and Sehra now has a crossed-scimitars icon.
 - **Bigger cards when choosing:** the remove-a-card and upgrade-a-card pages (and any other time you pick a card from your deck) show larger, readable cards again; browsing your deck still fits more on a page. Sharpening shows as a buff on your hero plate.
 - **Phones, battle log, clearer messages:** the game now plays on a phone held sideways (smaller hand, tap a card to read it, tap again to play; portrait asks you to turn the phone); a scrollable battle log sits above End turn; cards show when their cost is lowered (green) or raised (red); good messages are green and bad ones red everywhere; the Card library and run pages can no longer run off the screen.
@@ -284,3 +291,5 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 - The campaign is now a Slay-the-Spire-style run: pick a character, grow your deck over five stages, then
   **Bank** it for PvP or **Continue** one Rift Tier deeper and risk it. Decks are seasonal (weekly); characters,
   unlocks and cosmetics are permanent.
+
+

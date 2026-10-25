@@ -1,14 +1,19 @@
-// The leaderboards (#/board): the Arena (most wins) and the campaign (furthest run), for this week or this month.
+// The leaderboards (#/board): the Arena (most wins), the campaign (furthest run) and the ghosts, for this week or this month. Each is a
+// table of up to 100 places, and a player who is known also sees where they stand, even when that is below the last place shown.
 
-import { useEffect, useState } from 'react';
-import { periodEnd, type Period, type PvpStanding, type RunStanding } from '@sr/pvp';
+import { useEffect, useState, type ReactNode } from 'react';
+import {
+  periodEnd,
+  type GhostStanding,
+  type Period,
+  type PvpStanding,
+  type RunStanding,
+} from '@sr/pvp';
 import { HeroIcon } from '../ui/HeroIcon';
 import { heroName } from './deckLayout';
-import { pvpBoard, runBoard, type Board } from './boardApi';
+import { viewBoard, type BoardKind, type BoardView, type GhostView } from './boardApi';
 import { getName, setName } from './config';
 import './board.css';
-
-type Kind = 'pvp' | 'runs';
 
 /** "3 days left", "5 hours left": how long this period has to run. */
 function timeLeft(now: number, period: Period): string {
@@ -19,14 +24,115 @@ function timeLeft(now: number, period: Period): string {
   return 'under an hour left';
 }
 
-export function LeaderboardScreen() {
-  const [kind, setKind] = useState<Kind>('pvp');
-  const [period, setPeriod] = useState<Period>('week');
-  // what came back, with the period it was asked for (an answer for the other period counts as still loading)
-  const [pvpGot, setPvp] = useState<{ period: Period; board: Board<PvpStanding> | null } | null>(
-    null,
+const percent = (wins: number, losses: number): string =>
+  wins + losses === 0 ? '' : `${Math.round((100 * wins) / (wins + losses))}%`;
+
+/** The characters a player used, each with its own record. */
+function Characters(props: { heroes: { hero: string; wins: number; losses: number }[] }) {
+  return (
+    <span className="board__heroes">
+      {props.heroes.map((h) => (
+        <span
+          key={h.hero}
+          className="board__hero"
+          title={`${heroName(h.hero)}: ${h.wins} won, ${h.losses} lost`}
+        >
+          <HeroIcon hero={h.hero} size={24} />
+          <small>
+            {h.wins}–{h.losses}
+          </small>
+        </span>
+      ))}
+    </span>
   );
-  const [runsGot, setRuns] = useState<{ period: Period; board: Board<RunStanding> | null } | null>(
+}
+
+/** A board as a table: the places shown, and (when the player is known and below them) their own place after a gap. */
+function Table<T>(props: {
+  caption: string;
+  head: string[];
+  rows: T[];
+  you: (T & { rank: number }) | null;
+  cells: (row: T) => ReactNode[];
+  empty: string;
+  /** which columns are numbers (right-aligned) */
+  numeric?: number[];
+}) {
+  const { rows, you } = props;
+  const outside = you !== null && you.rank > rows.length;
+  const line = (row: T, rank: number, mine: boolean, key: string) => (
+    <tr key={key} className={mine ? 'is-you' : undefined} aria-current={mine ? 'true' : undefined}>
+      <th scope="row" className="board__rank">
+        {rank}
+      </th>
+      {props.cells(row).map((c, i) => (
+        <td key={i} className={props.numeric?.includes(i) ? 'is-num' : undefined}>
+          {c}
+        </td>
+      ))}
+    </tr>
+  );
+  return (
+    <div className="board__wrap">
+      <table className="board__table">
+        <caption className="sr-only">{props.caption}</caption>
+        <thead>
+          <tr>
+            <th scope="col" className="board__rank">
+              #
+            </th>
+            {props.head.map((h, i) => (
+              <th key={h} scope="col" className={props.numeric?.includes(i) ? 'is-num' : undefined}>
+                {h}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {rows.length === 0 && (
+            <tr>
+              <td colSpan={props.head.length + 1} className="board__empty">
+                {props.empty}
+              </td>
+            </tr>
+          )}
+          {rows.map((r, i) => line(r, i + 1, you !== null && you.rank === i + 1, `r${i}`))}
+          {outside && you && (
+            <>
+              <tr className="board__gap" aria-hidden>
+                <td colSpan={props.head.length + 1}>…</td>
+              </tr>
+              {line(you, you.rank, true, 'you')}
+            </>
+          )}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+/** One line saying where the player stands (or that they have not played yet). */
+function YourPlace(props: { rank: number | null; played: string }) {
+  return (
+    <p className="board__yourplace" role="status">
+      {props.rank === null ? (
+        props.played
+      ) : (
+        <>
+          You are number <b>{props.rank}</b>.
+        </>
+      )}
+    </p>
+  );
+}
+
+type Seen = BoardView<PvpStanding> | BoardView<RunStanding> | GhostView;
+
+export function LeaderboardScreen() {
+  const [kind, setKind] = useState<BoardKind>('pvp');
+  const [period, setPeriod] = useState<Period>('week');
+  // what came back, with what it was asked for (an answer for another board counts as still loading)
+  const [got, setGot] = useState<{ kind: BoardKind; period: Period; view: Seen | null } | null>(
     null,
   );
   // asking again (the Retry button)
@@ -37,17 +143,22 @@ export function LeaderboardScreen() {
 
   useEffect(() => {
     let live = true;
-    void pvpBoard(period).then((board) => live && setPvp({ period, board }));
-    void runBoard(period).then((board) => live && setRuns({ period, board }));
+    void viewBoard(kind, period).then((view) => live && setGot({ kind, period, view }));
     return () => {
       live = false;
     };
-  }, [period, tries]);
+  }, [kind, period, tries]);
 
-  const pvp = pvpGot?.period === period ? pvpGot.board : undefined;
-  const runs = runsGot?.period === period ? runsGot.board : undefined;
-  const loading = kind === 'pvp' ? pvp === undefined : runs === undefined;
-  const failed = kind === 'pvp' ? pvp === null : runs === null;
+  const here = got?.kind === kind && got.period === period ? got : null;
+  const loading = here === null;
+  const failed = here !== null && here.view === null;
+  const view = here?.view ?? null;
+
+  const toggle = (label: string, on: boolean, set: () => void) => (
+    <button aria-pressed={on} className={`btn btn--small${on ? ' is-open' : ''}`} onClick={set}>
+      <span>{label}</span>
+    </button>
+  );
 
   return (
     <main className="setup setup--wide board">
@@ -57,42 +168,20 @@ export function LeaderboardScreen() {
       <header className="setup__head">
         <h1 className="setup__title">Leaderboards</h1>
         <p className="setup__lead">
-          Arena boards rank wins; campaign boards rank how far a run got. A week runs Monday to
-          Monday and a month from the 1st, both on UTC time.
+          Arena boards rank wins; campaign boards rank how far a run got; ghost boards show how the
+          computer-played decks are doing. The best 100 are shown. A week runs Monday to Monday and
+          a month from the 1st, both on UTC time.
         </p>
       </header>
 
       <div className="board__tabs" role="group" aria-label="Which board">
-        <button
-          aria-pressed={kind === 'pvp'}
-          className={`btn btn--small${kind === 'pvp' ? ' is-open' : ''}`}
-          onClick={() => setKind('pvp')}
-        >
-          <span>Arena</span>
-        </button>
-        <button
-          aria-pressed={kind === 'runs'}
-          className={`btn btn--small${kind === 'runs' ? ' is-open' : ''}`}
-          onClick={() => setKind('runs')}
-        >
-          <span>Campaign</span>
-        </button>
+        {toggle('Arena', kind === 'pvp', () => setKind('pvp'))}
+        {toggle('Campaign', kind === 'runs', () => setKind('runs'))}
+        {toggle('Ghosts', kind === 'ghosts', () => setKind('ghosts'))}
       </div>
       <div className="board__tabs" role="group" aria-label="Which period">
-        <button
-          aria-pressed={period === 'week'}
-          className={`btn btn--small${period === 'week' ? ' is-open' : ''}`}
-          onClick={() => setPeriod('week')}
-        >
-          <span>This week</span>
-        </button>
-        <button
-          aria-pressed={period === 'month'}
-          className={`btn btn--small${period === 'month' ? ' is-open' : ''}`}
-          onClick={() => setPeriod('month')}
-        >
-          <span>This month</span>
-        </button>
+        {toggle('This week', period === 'week', () => setPeriod('week'))}
+        {toggle('This month', period === 'month', () => setPeriod('month'))}
       </div>
       <p className="board__left">{timeLeft(now, period)}</p>
 
@@ -110,67 +199,113 @@ export function LeaderboardScreen() {
         </div>
       )}
 
-      {kind === 'pvp' && pvp && (
-        <ol className="board__list" aria-label="Arena wins this period">
-          {pvp.board.length === 0 && (
-            <li className="board__empty">No matches yet this {period}. Be the first.</li>
-          )}
-          {pvp.board.map((s, i) => (
-            <li key={`${s.name}-${i}`} className="board__row">
-              <span className="board__rank">{i + 1}</span>
-              <span className="board__name">{s.name}</span>
-              <span className="board__record">
-                <b>{s.wins}</b> – {s.losses}
-                <small>
-                  {s.wins + s.losses === 0
-                    ? ''
-                    : ` ${Math.round((100 * s.wins) / (s.wins + s.losses))}%`}
-                </small>
-              </span>
-              <span className="board__heroes">
-                {s.heroes.map((h) => (
-                  <span
-                    key={h.hero}
-                    className="board__hero"
-                    title={`${heroName(h.hero)}: ${h.wins} won, ${h.losses} lost`}
-                  >
-                    <HeroIcon hero={h.hero} size={26} />
-                    <small>
-                      {h.wins}–{h.losses}
-                    </small>
-                  </span>
-                ))}
-              </span>
-            </li>
-          ))}
-        </ol>
+      {kind === 'pvp' && view && 'board' in view && (
+        <>
+          <YourPlace
+            rank={view.you?.rank ?? null}
+            played={`You have not played a counted Arena match this ${period}.`}
+          />
+          <Table<PvpStanding>
+            caption={`Arena wins this ${period}`}
+            head={['Player', 'Wins', 'Losses', 'Win %', 'Characters']}
+            numeric={[1, 2, 3]}
+            rows={view.board as PvpStanding[]}
+            you={view.you as (PvpStanding & { rank: number }) | null}
+            empty={`No matches yet this ${period}. Be the first.`}
+            cells={(s) => [
+              <span key="n" className="board__name">
+                {s.name}
+              </span>,
+              <b key="w">{s.wins}</b>,
+              s.losses,
+              percent(s.wins, s.losses),
+              <Characters key="c" heroes={s.heroes} />,
+            ]}
+          />
+        </>
       )}
 
-      {kind === 'runs' && runs && (
-        <ol className="board__list" aria-label="Furthest campaign runs this period">
-          {runs.board.length === 0 && (
-            <li className="board__empty">No runs yet this {period}. Be the first.</li>
-          )}
-          {runs.board.map((s, i) => (
-            <li key={`${s.name}-${i}`} className="board__row">
-              <span className="board__rank">{i + 1}</span>
-              <span className="board__name">{s.name}</span>
-              <span className="board__record">
-                Rift Tier <b>{s.tier}</b>
-                <small>
-                  {' '}
-                  · {s.stage} of 3 stages · {s.total} in all
-                </small>
-              </span>
-              <span className="board__heroes">
-                <span className="board__hero" title={heroName(s.hero)}>
-                  <HeroIcon hero={s.hero} size={26} />
-                  <small>{heroName(s.hero)}</small>
-                </span>
-              </span>
-            </li>
-          ))}
-        </ol>
+      {kind === 'runs' && view && 'board' in view && (
+        <>
+          <YourPlace
+            rank={view.you?.rank ?? null}
+            played={`You have not made progress on a run begun this ${period}.`}
+          />
+          <Table<RunStanding>
+            caption={`Furthest campaign runs this ${period}`}
+            head={['Player', 'Character', 'Rift Tier', 'Stages in the tier', 'Stages in all']}
+            numeric={[2, 3, 4]}
+            rows={view.board as RunStanding[]}
+            you={view.you as (RunStanding & { rank: number }) | null}
+            empty={`No runs yet this ${period}. Be the first.`}
+            cells={(s) => [
+              <span key="n" className="board__name">
+                {s.name}
+              </span>,
+              <span key="h" className="board__hero">
+                <HeroIcon hero={s.hero} size={24} />
+                <small>{heroName(s.hero)}</small>
+              </span>,
+              <b key="t">{s.tier}</b>,
+              `${s.stage} of 3`,
+              s.total,
+            ]}
+          />
+        </>
+      )}
+
+      {kind === 'ghosts' && view && 'ghosts' in view && (
+        <>
+          <p className="board__note">
+            A ghost is a deck that has played in the Arena, piloted by the computer. {view.decks}{' '}
+            {view.decks === 1 ? 'deck is' : 'decks are'} out there to be met. Ghost matches do not
+            count on the Arena board.
+          </p>
+          <h2 className="board__h">Ghosts</h2>
+          <Table<GhostStanding>
+            caption={`Ghost decks by wins this ${period}`}
+            head={['Deck of', 'Character', 'Rift Tier', 'Wins', 'Losses', 'Win %']}
+            numeric={[2, 3, 4, 5]}
+            rows={view.ghosts}
+            you={null}
+            empty={`No ghost has been fought yet this ${period}.`}
+            cells={(g) => [
+              <span key="n" className="board__name">
+                {g.name}&rsquo;s ghost
+              </span>,
+              <span key="h" className="board__hero">
+                <HeroIcon hero={g.hero} size={24} />
+                <small>{heroName(g.hero)}</small>
+              </span>,
+              g.tier,
+              <b key="w">{g.wins}</b>,
+              g.losses,
+              percent(g.wins, g.losses),
+            ]}
+          />
+          <h2 className="board__h">People against ghosts</h2>
+          <YourPlace
+            rank={view.you?.rank ?? null}
+            played={`You have not fought a ghost this ${period}.`}
+          />
+          <Table<PvpStanding>
+            caption={`Wins against ghosts this ${period}`}
+            head={['Player', 'Wins', 'Losses', 'Win %', 'Characters']}
+            numeric={[1, 2, 3]}
+            rows={view.players}
+            you={view.you}
+            empty={`Nobody has fought a ghost yet this ${period}.`}
+            cells={(s) => [
+              <span key="n" className="board__name">
+                {s.name}
+              </span>,
+              <b key="w">{s.wins}</b>,
+              s.losses,
+              percent(s.wins, s.losses),
+              <Characters key="c" heroes={s.heroes} />,
+            ]}
+          />
+        </>
       )}
 
       <section className="board__you">

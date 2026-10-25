@@ -156,11 +156,55 @@ export type Synced =
   | { ok: true; decks: VaultDeck[]; complete: boolean }
   | { ok: false; error: 'offline' | 'bad-code' | 'full' | 'bad-deck'; decks: VaultDeck[] };
 
+const PENDING_KEY = 'sr.pendingDrops';
+
+function pendingRuns(): string[] {
+  try {
+    const v: unknown = JSON.parse(localStorage.getItem(PENDING_KEY) ?? '[]');
+    return Array.isArray(v) ? v.filter((x): x is string => typeof x === 'string') : [];
+  } catch {
+    return [];
+  }
+}
+
+function setPendingRuns(runs: string[]): void {
+  try {
+    localStorage.setItem(PENDING_KEY, JSON.stringify(runs.slice(-50)));
+  } catch {
+    /* storage unavailable: the drop is simply not remembered */
+  }
+}
+
+/**
+ * Remove every online deck saved from a run (a run that collapsed). Returns how many went, or null if the server could not be
+ * reached or refused: then the run is remembered and the drop is retried at the next sync, which also keeps the deck out of the
+ * browser's list until then.
+ */
+export async function forgetRun(code: Key, run: string): Promise<number | null> {
+  const r = await remoteVault.list(code);
+  let ok = r.ok;
+  let n = 0;
+  if (r.ok) {
+    for (const d of r.decks.filter((x) => runOf(x.id) === run)) {
+      const g = await remoteVault.drop(code, d.id);
+      if (g.ok) n++;
+      else ok = false;
+    }
+  }
+  const rest = pendingRuns().filter((x) => x !== run);
+  setPendingRuns(ok ? rest : [...rest, run]);
+  return ok ? n : null;
+}
+
 /**
  * Bring the browser's decks and the server's together: whatever the browser has that the server lacks goes up (as far as the
  * slots allow), and the result is what the server now holds. If the server can't be reached the browser's list stands.
  */
-export async function syncVault(code: Key, local: readonly VaultDeck[]): Promise<Synced> {
+export async function syncVault(code: Key, localAll: readonly VaultDeck[]): Promise<Synced> {
+  // runs that collapsed while the server could not be reached: finish dropping their decks before anything is merged back
+  for (const run of pendingRuns()) await forgetRun(code, run);
+  const gone = new Set(pendingRuns());
+  const local = localAll.filter((d) => !gone.has(runOf(d.id)));
   let r = await remoteVault.list(code);
   if (!r.ok) return { ok: false, error: r.error, decks: [...local] };
   for (const d of local) {

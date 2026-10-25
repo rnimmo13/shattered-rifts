@@ -36,6 +36,8 @@ export interface MatchInfo {
   end: { winner: Side | 'draw'; reason: string } | null;
   /** how the order was settled, for a match that has just begun (null when you come back to one in progress) */
   toss: { random: boolean } | null;
+  /** the seat the computer plays, when the opponent is a ghost */
+  ghost: Side | null;
   feed: MoveFeed;
 }
 
@@ -45,6 +47,8 @@ export interface Snapshot {
   room: string | null;
   /** players waiting in the queue, including you */
   waiting: number;
+  /** a ghost has been asked for (the queue is not being waited in for a person) */
+  ghosting: boolean;
   message: string | null;
   choose: ChooseInfo | null;
   match: MatchInfo | null;
@@ -54,6 +58,7 @@ const IDLE: Snapshot = {
   phase: 'idle',
   room: null,
   waiting: 0,
+  ghosting: false,
   message: null,
   choose: null,
   match: null,
@@ -101,6 +106,8 @@ export class PvpSession {
   private snap: Snapshot = IDLE;
   private ws: WebSocket | null = null;
   private entry: Entry | null = null;
+  /** this session has put the player in the queue for a person (as opposed to asking only for a ghost) */
+  private queuedForPerson = false;
   private room: string | null = null;
   /** the highest move number given to the screen (a rejoin replays from 1; those already seen are skipped) */
   private lastSeq = 0;
@@ -229,8 +236,26 @@ export class PvpSession {
   queue(entry: Entry): void {
     this.reset();
     this.entry = entry;
-    this.set({ phase: 'queue', message: null, waiting: 1 });
+    this.queuedForPerson = true;
+    this.set({ phase: 'queue', ghosting: false, message: null, waiting: 1 });
     this.open('/pvp/queue', () => this.send({ type: 'queue', playerId: this.playerId, entry }));
+  }
+
+  /**
+   * Face a ghost: a deck another player has used in the Arena, with the computer at the controls. If this player is waiting in the
+   * queue the request goes on that same connection (and they leave the queue); otherwise a connection is made just for it.
+   */
+  ghost(entry: Entry): void {
+    this.entry = entry;
+    if (this.snap.phase === 'queue' && this.ws?.readyState === WebSocket.OPEN) {
+      this.set({ ghosting: true, message: null });
+      this.send({ type: 'ghost', playerId: this.playerId, entry });
+      return;
+    }
+    this.reset();
+    this.entry = entry;
+    this.set({ phase: 'queue', ghosting: true, message: null, waiting: 1 });
+    this.open('/pvp/queue', () => this.send({ type: 'ghost', playerId: this.playerId, entry }));
   }
 
   /** Take a seat in a room (a code from a friend, or one you just made). */
@@ -284,6 +309,7 @@ export class PvpSession {
     window.clearTimeout(this.waitTimer);
     forget();
     this.entry = null;
+    this.queuedForPerson = false;
     this.closeSocket();
     this.lastSeq = 0;
     this.retries = 0;
@@ -299,8 +325,8 @@ export class PvpSession {
         this.set({ waiting: m.waiting });
         return;
       case 'matched':
-        // the queue found someone: leave it and take a seat in the room it opened
-        if (this.entry) this.joinRoom(m.room, this.entry, true);
+        // the queue found someone (or a ghost): leave it and take a seat in the room it opened
+        if (this.entry) this.joinRoom(m.room, this.entry, m.ghost !== true);
         return;
       case 'waiting':
         this.set({ phase: 'waiting', room: m.room, choose: null });
@@ -341,6 +367,7 @@ export class PvpSession {
             skew,
             end: null,
             toss: m.replay === 0 ? m.toss : null,
+            ghost: m.ghost ?? null,
             feed,
           },
           choose: null,
@@ -363,6 +390,15 @@ export class PvpSession {
         this.setMatch({ end: { winner: m.winner, reason: m.reason } });
         return;
       case 'error':
+        if (m.code === 'no-ghost') {
+          // still in the queue if they were waiting for a person; if they asked only for a ghost there is nothing to wait for
+          if (this.queuedForPerson) this.set({ ghosting: false, message: m.message });
+          else {
+            this.reset();
+            this.set({ ...IDLE, phase: 'error', message: m.message });
+          }
+          return;
+        }
         if (m.code === 'bad-deck' || m.code === 'room-full' || m.code === 'bad-message') {
           this.reset();
           this.set({ ...IDLE, phase: 'error', message: m.message });

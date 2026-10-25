@@ -1,6 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import type { RunState } from '@sr/campaign';
-import { MID_RUN_SAVES, SAVE_ANYTIME, savePoint } from './deckSave';
+import { RIFTWALKERS } from '@sr/content/v2';
+import { MID_RUN_SAVES, SAVE_ANYTIME, loseSavedDecks, savePoint } from './deckSave';
+import { loadVault, saveVault } from '../pvp/vault';
 
 const at = (phase: string, stage: number, tier: number): RunState =>
   ({ phase, stage, tier }) as unknown as RunState;
@@ -31,5 +33,31 @@ describe('where a deck can be saved', () => {
       expect(savePoint(at(phase, 1, 2)), phase).toBe(expected);
     expect(savePoint(at('banked', 1, 2))).toBeNull();
     expect(savePoint(at('collapsed', 1, 2))).toBeNull();
+  });
+});
+
+describe('a run that collapses takes its saved deck with it', () => {
+  it('removes every saved copy of that run and nothing else', async () => {
+    const store = new Map<string, string>();
+    (globalThis as { localStorage?: unknown }).localStorage = {
+      getItem: (k: string) => store.get(k) ?? null,
+      setItem: (k: string, v: string) => void store.set(k, v),
+      removeItem: (k: string) => void store.delete(k),
+    };
+    const deck = (id: string, tier: number) => ({
+      id,
+      hero: 'maren',
+      tier,
+      deck: [...RIFTWALKERS.maren.starter],
+      boons: [],
+      bankedAt: 1,
+    });
+    // the run's save (its id is the seed), an older build's per-tier save of the same run, and another run's deck
+    saveVault([deck('r~dead-run', 2), deck('dead-run:t1', 1), deck('r~other-run', 1)]);
+    expect(await loseSavedDecks({ seed: 'dead-run' })).toBe(1); // (an older build's copy of the same run is already merged into it when the Vault is read)
+    expect(loadVault().map((d) => d.id)).toEqual(['r~other-run']);
+    // nothing saved: nothing lost
+    expect(await loseSavedDecks({ seed: 'dead-run' })).toBe(0);
+    expect(loadVault()).toHaveLength(1);
   });
 });

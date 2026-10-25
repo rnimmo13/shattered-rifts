@@ -13,18 +13,7 @@ import type { EffectsProfile } from '../effects';
 import { floorTop, rows } from './layout';
 import { Fighters } from '../../fight/Fighters';
 import { ARENA_LOOK, ArenaProps, loadArena, tiledFloor, type ArenaPack } from './arena';
-import {
-  caveColumns,
-  foliageFor,
-  type Foliage,
-  sceneWall,
-  caveFloor,
-  caveProps,
-  caveWall,
-  loadVenueArt,
-  type VenueArt,
-  type VenueId,
-} from './venue';
+import { sceneWall, loadVenueArt, type VenueArt, type VenueId } from './venue';
 import {
   getBaseSpeed,
   hitStopFor,
@@ -112,7 +101,6 @@ export class BattlefieldScene {
   private readonly moteLayer = new Container();
   private readonly glowTex: Texture;
   private vignette!: Sprite;
-  private foliage: Foliage | null = null;
   private arenaProps: ArenaProps | null = null;
   /** where the backdrop's top edge sits (the cave wall starts above the stage) */
   private skyY = 0;
@@ -195,26 +183,21 @@ export class BattlefieldScene {
     // (a painted arena backdrop replaces all of that, and brings its own scenery)
     const painted = arena?.backdrop ? arena : null;
     const arenaLook = ARENA_LOOK[venue];
-    const cave = !painted && art?.id === 'cave' ? art : null;
     const look = art?.id === 'scene' ? art : null;
     this.sky = new Sprite(
       painted?.backdrop
         ? Texture.from(painted.backdrop)
-        : cave
-          ? tex(caveWall(cave))
-          : look
-            ? tex(sceneWall(look))
-            : tex(skyTexture()),
+        : look
+          ? tex(sceneWall(look))
+          : tex(skyTexture()),
     );
     this.shards = new Sprite(art || painted ? Texture.EMPTY : tex(shardsTexture()));
     if (painted) this.arenaProps = new ArenaProps(painted, arenaLook, this.glowTex, venue);
     this.ruins = this.arenaProps
       ? this.arenaProps.far
-      : cave
-        ? caveColumns(cave, 360)
-        : look
-          ? new Container()
-          : new Sprite(tex(ruinsTexture()));
+      : look
+        ? new Container()
+        : new Sprite(tex(ruinsTexture()));
     this.sky.x = -PAD_X;
     if (art || painted) this.skyY = -PAD_Y;
     this.sky.y = this.skyY;
@@ -234,7 +217,6 @@ export class BattlefieldScene {
     floor.scale.set(ft.scale);
     if (arena?.floor)
       floor.texture = tex(tiledFloor(arena.floor, ft.floor.width, ft.floor.height, 2, arenaLook));
-    else if (cave) floor.texture = tex(caveFloor(cave, ft.floor.width, ft.floor.height, 2));
     else if (look) floor.tint = look.floorTint;
     this.world.addChild(floor);
 
@@ -259,9 +241,6 @@ export class BattlefieldScene {
     this.world.addChild(this.branchCracks, this.riftCrack);
 
     if (this.arenaProps) this.world.addChild(this.arenaProps.ground, this.arenaProps.hang);
-    else if (cave) this.world.addChild(caveProps(cave, this.glowTex));
-    this.foliage = art && !painted ? foliageFor(art) : null;
-    if (this.foliage) this.world.addChild(this.foliage.container);
 
     // --- the combatants ---
     this.world.addChild(this.layers.units, this.layers.fx);
@@ -436,7 +415,6 @@ export class BattlefieldScene {
     }
 
     this.fighters.tick(t, p.still);
-    this.foliage?.update(t, p.still);
     this.arenaProps?.update(t, p.still);
 
     // pointer parallax: the far layers shift a little more than the near ones

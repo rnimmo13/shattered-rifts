@@ -74,8 +74,14 @@ export function preloadArt(): Promise<void> {
 /** A real figure for a hero ('hero:maren') or unit ('unit:slime'), if one was supplied. */
 export const realFigure = (key: string): HTMLCanvasElement | undefined => figures.get(key);
 
-/** A real card-art URL for a card id (upgrades share their base card's art), if one was supplied. */
-export const realCardArt = (id: string): string | undefined => cards.get(id.replace(/\+$/, ''));
+/**
+ * The id a card's picture is filed under: an upgrade ("strike+") and a sanctified card ("hi~strike", "lo~strike+") share the art of
+ * the card they come from.
+ */
+export const artKey = (id: string): string => id.replace(/^(hi|lo)~/, '').replace(/\+$/, '');
+
+/** A real card-art URL for a card id (upgrades and sanctified cards share their base card's art), if one was supplied. */
+export const realCardArt = (id: string): string | undefined => cards.get(artKey(id));
 
 /** A real backdrop URL for a realm, if one was supplied. */
 export const realBackdrop = (realm: string): string | undefined => backdrops.get(realm);

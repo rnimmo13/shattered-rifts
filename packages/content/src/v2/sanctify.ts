@@ -18,6 +18,9 @@ export const rollOf = (id: string): SanctifyDir | 0 => {
   return m ? (m[1] === 'hi' ? 1 : -1) : 0;
 };
 
+/** Whether a card has been sanctified. A sanctified card is part of the deck for good: nothing in a run removes it. */
+export const isSanctified = (id: string): boolean => rollOf(id) !== 0;
+
 export const rolledId = (id: string, dir: SanctifyDir): string =>
   `${dir > 0 ? 'hi' : 'lo'}~${stripRoll(id)}`;
 

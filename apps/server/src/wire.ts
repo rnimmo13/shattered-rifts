@@ -27,6 +27,7 @@ export function parse(message: string | ArrayBuffer): ClientMsg | null {
   const m = v as Record<string, unknown>;
   switch (m['type']) {
     case 'queue':
+    case 'ghost':
     case 'join':
       return typeof m['playerId'] === 'string' &&
         m['playerId'].length > 0 &&

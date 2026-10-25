@@ -33,6 +33,8 @@ export interface Entry {
 export type ClientMsg =
   /** to the queue: wait for an opponent */
   | { type: 'queue'; playerId: string; entry: Entry }
+  /** to the queue (or instead of waiting in it): face a ghost, a deck that has played in the Arena, with the computer at the controls */
+  | { type: 'ghost'; playerId: string; entry: Entry }
   /** to a room: take a seat (a code from a friend, or the room the queue made) */
   | { type: 'join'; playerId: string; entry: Entry }
   | { type: 'action'; seq: number; action: Action }
@@ -45,7 +47,7 @@ export type EndReason = 'win' | 'resign' | 'timeout' | 'disconnect';
 export type ServerMsg =
   | { type: 'queued'; waiting: number }
   /** the queue found an opponent: open this room and join it */
-  | { type: 'matched'; room: string }
+  | { type: 'matched'; room: string; /** the opponent is a ghost */ ghost?: boolean }
   /** in a room, waiting for the second player (a friend code is this room's name) */
   | { type: 'waiting'; room: string }
   /** both players are in: each is asked who should go first (see order.ts) */
@@ -66,6 +68,8 @@ export type ServerMsg =
       seed: string;
       a: Entry;
       b: Entry;
+      /** the seat the computer plays, when this is a match against a ghost */
+      ghost?: Seat;
       /** epoch ms by which the active player must act */
       deadline: number;
       /** how many moves follow at once as history (a player coming back mid-match); 0 for a new match */
@@ -96,10 +100,14 @@ export type ErrorCode =
   | 'not-your-turn'
   | 'illegal'
   | 'out-of-order'
-  | 'no-match';
+  | 'no-match'
+  /** there is no ghost to face yet (no deck has played in the Arena) */
+  | 'no-ghost';
 
-/** The player who goes second starts with this much more HP (and max HP). */
-export const SECOND_PLAYER_HP = 10;
+/** Every Arena hero (a player's, or a ghost's) has this many times its usual HP, so a match lasts long enough to play. */
+export const ARENA_HP_MULT = 3;
+/** The player who goes second starts with this much more HP (and max HP): the old 10, tripled with everyone else's. */
+export const SECOND_PLAYER_HP = 10 * ARENA_HP_MULT;
 /** How long each player has to say whether they want to go first, ms. */
 export const CHOOSE_MS = 20_000;
 /** How long the active player has for a turn, ms. */

@@ -330,3 +330,23 @@
   font-size: 0.9rem;
   color: var(--c-ivory);
 }
+
+.pvp__ghostoffer {
+  display: grid;
+  gap: 0.5rem;
+  justify-items: center;
+  padding: 0.7rem 1rem;
+  border-radius: 12px;
+  border: 1px solid rgb(143 91 255 / 0.6);
+  background: rgb(143 91 255 / 0.14);
+}
+.pvp__ghostoffer p {
+  margin: 0;
+}
+
+.pvp__hint {
+  margin: 0.3rem 0 0;
+  max-width: 40rem;
+  font-size: 0.92rem;
+  color: var(--c-text-dim);
+}

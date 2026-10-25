@@ -313,6 +313,8 @@ export const MIRE: CardDef[] = [
     [status('doom', 25, 'allFoes')],
     {
       exhaust: true,
+      // a toll that rings sooner and louder
+      up: { cost: 2, effects: [status('doom', 30, 'allFoes')] },
     },
   ),
   g('legendary', 'the-drowned-king', 'The Drowned King', 'summon', 3, 'none', [

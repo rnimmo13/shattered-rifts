@@ -37,8 +37,12 @@ export class Matchmaker extends DurableObject<Env> {
 
   override async webSocketMessage(ws: WebSocket, message: string | ArrayBuffer): Promise<void> {
     const msg = parse(message);
-    if (!msg || msg.type !== 'queue') {
+    if (!msg || (msg.type !== 'queue' && msg.type !== 'ghost')) {
       send(ws, { type: 'error', code: 'bad-message', message: 'Send {type:"queue"} first.' });
+      return;
+    }
+    if (msg.type === 'ghost') {
+      await this.faceGhost(ws, msg.entry);
       return;
     }
     const checked = checkEntry(msg.entry);
@@ -57,6 +61,60 @@ export class Matchmaker extends DurableObject<Env> {
     ws.serializeAttachment(place);
     send(ws, { type: 'queued', waiting: this.waiting().length });
     await this.pairAll();
+  }
+
+  /** Set up a match against a ghost and tell the player which room to join. They leave the queue if they were in it. */
+  private async faceGhost(ws: WebSocket, entry: unknown): Promise<void> {
+    const checked = checkEntry(entry);
+    if (!checked.ok) {
+      send(ws, { type: 'error', code: 'bad-deck', message: checked.message });
+      ws.close(1008, 'bad deck');
+      return;
+    }
+    try {
+      // (someone whose id is not known still gets a ghost, only possibly one of their own decks)
+      const requester = checked.entry.who ?? '0'.repeat(64);
+      const res = await this.env.BOARD.get(this.env.BOARD.idFromName('main')).fetch(
+        new Request('https://board.invalid/ghost/pick', {
+          method: 'POST',
+          body: JSON.stringify({ requester }),
+        }),
+      );
+      const picked = await res.json<{
+        ghost?: { id: string; owner: string; entry: unknown } | null;
+        limited?: boolean;
+      }>();
+      if (!picked.ghost) {
+        send(ws, {
+          type: 'error',
+          code: 'no-ghost',
+          message: picked.limited
+            ? 'That is a lot of ghost requests. Try again in a little while.'
+            : 'There are no ghosts yet. A deck becomes a ghost once it has played a match in the Arena.',
+        });
+        return;
+      }
+      const room = makeCode();
+      const stub = this.env.MATCH.get(this.env.MATCH.idFromName(room));
+      const set = await stub.fetch(
+        new Request(`https://room.invalid/ghost/${room}`, {
+          method: 'POST',
+          body: JSON.stringify({ ghost: picked.ghost }),
+        }),
+      );
+      if (!set.ok) throw new Error('the room refused the ghost');
+      // this player is no longer waiting for someone else
+      for (const w of this.waiting()) if (w.ws === ws) ws.serializeAttachment(null);
+      send(ws, { type: 'matched', room, ghost: true });
+      ws.close(1000, 'matched');
+    } catch (err) {
+      console.error('[matchmaker] could not set up a ghost', err);
+      send(ws, {
+        type: 'error',
+        code: 'no-ghost',
+        message: 'A ghost could not be found just now. Try again in a moment.',
+      });
+    }
   }
 
   override webSocketClose(ws: WebSocket): void {

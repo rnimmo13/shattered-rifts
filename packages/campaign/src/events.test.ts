@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { applyAction, createCombat, legalActions, clone, cardText } from '@sr/combat';
-import { COMBAT_DB, RIFTWALKERS, rollOf, stripRoll } from '@sr/content/v2';
+import { COMBAT_DB, RIFTWALKERS, canRoll, rolledId, rollOf, stripRoll } from '@sr/content/v2';
 import {
   availableNodes,
   canAdd,
@@ -9,6 +9,8 @@ import {
   newRun,
   parseRun,
   serializeRun,
+  buyRemoval,
+  removableCards,
   takeShrine,
   type RunState,
 } from './index';
@@ -79,6 +81,93 @@ describe('events', () => {
     const leave = chooseEvent(e, 'leave');
     expect(leave.eventResult).toBeTruthy();
     expect(leave.phase).toBe('map');
+  });
+});
+
+describe('a sanctified card stays', () => {
+  /** a run holding one sanctified card, standing at a Shrine */
+  const withOne = (): RunState => {
+    const base = open(newRun('maren', 'sanct-stays'));
+    const deck = [...base.deck];
+    const at = deck.findIndex((id) => canRoll(COMBAT_DB.cards[id]!));
+    deck[at] = rolledId(deck[at]!, 1);
+    return { ...base, deck, shards: 500 };
+  };
+  const atShrine = (r: RunState): RunState => ({
+    ...r,
+    phase: 'shrine',
+    context: { nodeId: r.map.nodes[0]!.id },
+  });
+
+  it('is never offered to be removed, and a Shrine or a merchant refuses it if asked', () => {
+    const r = withOne();
+    const rolled = r.deck.find((id) => rollOf(id) !== 0)!;
+    expect(removableCards(r.deck)).not.toContain(rolled);
+    expect(removableCards(r.deck)).toHaveLength(r.deck.length - 1);
+    expect(() => takeShrine(atShrine(r), { kind: 'remove', card: rolled })).toThrow(/sanctified/);
+    const shop: RunState = {
+      ...r,
+      phase: 'merchant',
+      context: {
+        nodeId: r.map.nodes[0]!.id,
+        merchant: { items: [], removed: false, removePrice: 50 },
+      },
+    };
+    expect(() => buyRemoval(shop, rolled)).toThrow(/sanctified/);
+    // an ordinary card can still go
+    const plain = r.deck.find((id) => rollOf(id) === 0)!;
+    expect(takeShrine(atShrine(r), { kind: 'remove', card: plain }).deck).toHaveLength(
+      r.deck.length - 1,
+    );
+  });
+
+  it('is never picked by an event that takes a card at random', () => {
+    // a deck of nothing but sanctified basics has nothing for an event to take
+    const base = open(newRun('maren', 'sanct-events'));
+    const deck = base.deck.map((id) => (canRoll(COMBAT_DB.cards[id]!) ? rolledId(id, 1) : id));
+    for (let i = 0; i < 40; i++) {
+      const r = eventRun(`stays-${i}`, { deck });
+      for (const o of r.context!.event!.options) {
+        let after: RunState | null = null;
+        try {
+          after = chooseEvent(r, o.id);
+        } catch {
+          /* refused: fine */
+        }
+        // (an upgrade changes a card's id but it stays sanctified; what must not happen is one going missing)
+        if (after)
+          expect(after.deck.filter((x) => rollOf(x) !== 0).length).toBeGreaterThanOrEqual(
+            deck.filter((x) => rollOf(x) !== 0).length,
+          );
+      }
+    }
+  });
+});
+
+describe('the Sanctum happens once', () => {
+  it('is not offered again to a deck that has been sanctified, and refuses if forced', () => {
+    for (let i = 0; i < 300; i++) {
+      const e = eventRun(`once-${i}`);
+      if (!e.context!.event!.options.some((o) => o.id === 'sanctify')) continue;
+      const done = chooseEvent(e, 'sanctify');
+      expect(done.sanctified).toBe(true);
+      // the same deck met in another event never gets the offer
+      for (let j = 0; j < 150; j++)
+        expect(
+          eventRun(`again-${i}-${j}`, {
+            deck: done.deck,
+            sanctified: true,
+          }).context!.event!.options.some((o) => o.id === 'sanctify'),
+        ).toBe(false);
+      // and even a run that kept no rolled card (all untouched) is not offered it twice
+      expect(
+        eventRun(`flag-${i}`, { sanctified: true }).context!.event!.options.some(
+          (o) => o.id === 'sanctify',
+        ),
+      ).toBe(false);
+      return;
+    }
+    throw new Error('no Sanctum event in 300 seeds');
   });
 });
 

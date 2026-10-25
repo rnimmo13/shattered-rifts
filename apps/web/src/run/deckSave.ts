@@ -6,6 +6,7 @@
 // before release.
 
 import type { RunState } from '@sr/campaign';
+import { RUN_PREFIX, safeId } from '@sr/pvp';
 import {
   VAULT_SLOTS,
   bankInto,
@@ -16,7 +17,7 @@ import {
   runOf,
   saveVault,
 } from '../pvp/vault';
-import { syncVault, vaultKey, whoAmI } from '../pvp/vaultSync';
+import { forgetRun, syncVault, vaultKey, whoAmI } from '../pvp/vaultSync';
 
 export const MID_RUN_SAVES = true;
 /** TEST BUILD ONLY: a deck can be saved at any moment of a run, so the Arena and saving can be tried freely. Set to false before release. */
@@ -37,6 +38,23 @@ export function savePoint(run: RunState): SavePoint {
 }
 
 export const canSaveForArena = (run: RunState): boolean => savePoint(run) !== null;
+
+/**
+ * A run that collapses takes the deck it saved for the Arena with it: every saved copy of that run's deck is removed, here and online.
+ * (Saving a deck is a snapshot, but it is only safe while the run is alive: a run that ends in defeat loses it.) Returns how many saved
+ * decks went.
+ */
+export async function loseSavedDecks(run: Pick<RunState, 'seed'>): Promise<number> {
+  const mine = runOf(safeId(RUN_PREFIX + run.seed));
+  const here = loadVault();
+  const gone = here.filter((d) => runOf(d.id) === mine);
+  if (gone.length > 0) saveVault(here.filter((d) => runOf(d.id) !== mine));
+  // the online copy goes too, including anything the server holds that this browser does not (if the server cannot be reached,
+  // forgetRun remembers the run and the next sync finishes the job)
+  await whoAmI();
+  const online = (await forgetRun(vaultKey(), mine)) ?? 0;
+  return Math.max(gone.length, online);
+}
 
 /** Copy the deck into the Vault (and the online copy); the answer is a line to show the player. */
 export async function saveForArena(run: RunState): Promise<{ ok: boolean; text: string }> {
@@ -74,7 +92,7 @@ export async function saveForArena(run: RunState): Promise<{ ok: boolean; text: 
   return {
     ok: true,
     text: replaced
-      ? 'Updated your saved deck for this run. Your run carries on.'
-      : 'Saved to your Vault. You can play it in the Arena, and your run carries on.',
+      ? 'Updated your saved deck for this run. Your run carries on. If the run collapses, it is lost with it.'
+      : 'Saved to your Vault. You can play it in the Arena, and your run carries on. If the run collapses, this saved deck is lost with it.',
   };
 }

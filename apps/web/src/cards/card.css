@@ -745,45 +745,6 @@
     0 0 32px color-mix(in srgb, var(--rar) 75%, transparent);
 }
 
-/* rarity gems: Mechanized Magic by Dumivid (CC0), see CREDITS.md */
-.card .card__gem {
-  width: 60px;
-  height: 60px;
-  rotate: 0deg;
-  border-radius: 0;
-  background: center / contain no-repeat;
-  box-shadow: none;
-  animation: none;
-}
-.card.card--common .card__gem {
-  background: url(/art/ui/gem-common.png) center / contain no-repeat;
-  box-shadow: none;
-}
-.card.card--uncommon .card__gem {
-  background: url(/art/ui/gem-uncommon.png) center / contain no-repeat;
-  box-shadow: none;
-}
-.card.card--rare .card__gem {
-  background: url(/art/ui/gem-rare.png) center / contain no-repeat;
-  box-shadow: none;
-  filter: drop-shadow(0 0 8px #4fd8ff);
-}
-.card.card--epic .card__gem {
-  background: url(/art/ui/gem-epic.png) center / contain no-repeat;
-  box-shadow: none;
-  filter: drop-shadow(0 0 8px #b07aff);
-}
-.card.card--legendary .card__gem {
-  background: url(/art/ui/gem-legendary.png) center / contain no-repeat;
-  box-shadow: none;
-  filter: drop-shadow(0 0 8px #ffb23a);
-}
-.card.card--mythic .card__gem {
-  background: url(/art/ui/gem-mythic.png) center / contain no-repeat;
-  box-shadow: none;
-  filter: drop-shadow(0 0 8px #ff4fd8);
-}
-
 /* whose card it is: the Riftwalker's icon, lower left */
 .card__owner {
   position: absolute;

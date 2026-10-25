@@ -376,8 +376,7 @@ export function FightView(props: {
             play('buff');
           } else if (e.lost > 0) {
             sc.fighters.hit(e.target, e.lost);
-            if (e.lost >= 10 && e.target !== heroId)
-              void sc.fighters.vfx(e.target, 'fire', { scale: 0.9, from: 14, rate: 2 });
+            if (e.lost >= 10 && e.target !== heroId) sc.fighters.pulse(e.target, '#ff8a3a');
             float(e.target, `-${e.lost}`, 'dmg');
             play('hit');
             if (e.target === heroId) sc.impact(e.lost * 1.4);
@@ -392,7 +391,6 @@ export function FightView(props: {
         case 'barrier':
           reduceEvent(db, d, e);
           sc.fighters.pulse(e.target, '#36e0ff');
-          if (e.amount >= 12) void sc.fighters.vfx(e.target, 'frost', { scale: 1.1 });
           float(e.target, `+${e.amount} ⛨`, 'block');
           play('buff');
           await wait(110);
@@ -424,9 +422,7 @@ export function FightView(props: {
         case 'summon':
           reduceEvent(db, d, e);
           respec();
-          void sc.fighters
-            .vfx(e.unit, 'portalOpen', { behind: true })
-            .then(() => sc.fighters.vfx(e.unit, 'portalClose', { behind: true }));
+          sc.fighters.pulse(e.unit, '#b07aff');
           await wait(400);
           return;
         case 'died':

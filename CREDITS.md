@@ -1,8 +1,9 @@
 # Credits
 
-- **Rarity gems and card back** (`apps/web/public/art/ui/`): *Mechanized Magic* by Dumivid, CC0 1.0 (public domain). https://dumivid.itch.io/
-- **Sprite effects** (`apps/web/public/art/fx/`, packed by `tools/pack-fx.ps1`): *Free Magic Effects* by SovDigital, https://sovdigital.itch.io. Shipped in the game only; the license forbids redistributing the raw graphics as stand-alone assets or using them for ML datasets.
-- **Cave venue** (`apps/web/public/art/venues/cave/`, cut by `tools/pack-cave.ps1`): "Hand Drawn" cave environment by wigglesmith79, https://wigglesmith79.itch.io/hand-drawn. The page states no license beyond "Download, unzip and use assets!": confirm commercial use with the author before a Steam release.
-- **Enemy figures** (`apps/web/public/art/figures/`, cut by `tools/pack-monsters.ps1`): *Monstrous Menagerie #1* by Tania Herrero, https://tania-herrero.itch.io/, licensed CC-BY 4.0 (https://creativecommons.org/licenses/by/4.0/). Changes: cropped, mirrored where needed, resized and given a light outline. Used for Vorthax, Gorrmaw, Nyxara, the Whisperer, Packmother Ruhn, Feral Riftling, Bloated One and Choir of Silence. The license forbids redistributing the raw images and bars AI-generated content in the work it is combined into.
-- **Moss props and three enemy figures** (`apps/web/public/art/venues/moss/`, `figures/acid-spitter|maw-spawn|hooded-acolyte`, cut by `tools/pack-mossy.ps1`): *Mossy Cavern* by Maaot, https://maaot.itch.io/mossy-cavern. License v0.1: free and commercial use, modification allowed, no repackaging or redistribution of the assets; credit appreciated.
-- **Ghostwire figure** (`apps/web/public/art/figures/ghostwire.png`, cut by `tools/pack-jitsu.ps1`): *waechter-20* monster by TheRealFusion, from the Jitsu-Koan collection (https://jitsu-koan.itch.io/). Terms in the pack: free to use, free to edit, commercial use allowed, credit TheRealFusion. The rest of the Jitsu-Koan collection (RPG Fantasy Girls etc.) is not used and has no stated license.
+No third-party art ships in the game any more. Keep in step with `apps/web/src/app/CreditsScreen.tsx`.
+
+Heroes, enemies, arenas, card art, rarity gems and card backs are original to the game or generated for it. Some of it is AI-generated: Steam asks for an AI disclosure on shipped content, so declare that before the Steam release (see DECISIONS #150).
+
+Removed (no longer used, assets and cutting scripts deleted): the Jitsu-Koan collection and TheRealFusion's Ghostwire, Tania Herrero's *Monstrous Menagerie #1*, Maaot's *Mossy Cavern*, wigglesmith79's cave pack, Dumivid's *Mechanized Magic* (gems and card back are drawn in CSS now) and SovDigital's *Free Magic Effects* (the fire, frost and portal sprites became coloured pulses).
+
+If a third-party asset is added again, list it here and in `CreditsScreen.tsx`.

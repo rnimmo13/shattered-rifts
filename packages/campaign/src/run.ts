@@ -5,7 +5,14 @@
 // Continue. Boons come later.
 
 import { nextInt, seedRng, shuffle, type RngState } from '@sr/combat';
-import { COMBAT_DB, RIFTWALKERS, V2_DECK_RULES, encounter, type HeroId } from '@sr/content/v2';
+import {
+  COMBAT_DB,
+  RIFTWALKERS,
+  V2_DECK_RULES,
+  encounter,
+  isSanctified,
+  type HeroId,
+} from '@sr/content/v2';
 import { CROSSED_MERCHANT_CHANCE, FINAL_STAGE, generateStageMap, reachableNodes } from './mapgen';
 
 export { CROSSED_MERCHANT_CHANCE };
@@ -545,7 +552,9 @@ const listOf = (all: readonly string[]): string => {
 
 /** The Attack and Defend cards a deck can still lose or change: Neutral basics. */
 const isPlainBasic = (id: string): boolean =>
-  COMBAT_DB.cards[id]?.hero === 'neutral' && COMBAT_DB.cards[id]?.rarity === 'basic';
+  !isSanctified(id) &&
+  COMBAT_DB.cards[id]?.hero === 'neutral' &&
+  COMBAT_DB.cards[id]?.rarity === 'basic';
 
 /** Apply one effect; the answer says what chance decided (null when the option's own text already says it all). */
 function applyEffect(r: RunState, e: PreludeEffect): string | null {
@@ -655,6 +664,7 @@ export function takeShrine(run: RunState, choice: ShrineChoice): RunState {
       r.deck.length > V2_DECK_RULES.minSize,
       `A deck cannot go below ${V2_DECK_RULES.minSize} cards`,
     );
+    need(!isSanctified(choice.card), 'A sanctified card can never be removed');
     const i = r.deck.indexOf(choice.card);
     need(i >= 0, 'That card is not in your deck');
     r.deck.splice(i, 1);
@@ -794,6 +804,7 @@ export function buyRemoval(run: RunState, card: string): RunState {
     r.deck.length > V2_DECK_RULES.minSize,
     `A deck cannot go below ${V2_DECK_RULES.minSize} cards`,
   );
+  need(!isSanctified(card), 'A sanctified card can never be removed');
   const i = r.deck.indexOf(card);
   need(i >= 0, 'That card is not in your deck');
   r.shards -= m.removePrice;

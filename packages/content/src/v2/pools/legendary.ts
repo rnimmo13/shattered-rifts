@@ -91,7 +91,13 @@ export const LEGENDARIES: CardDef[] = [
     3,
     'none',
     [channel('spark'), channel('ward'), channel('hollow'), status('resonance', 2)],
-    { exhaust: true },
+    {
+      exhaust: true,
+      up: {
+        cost: 2,
+        effects: [channel('spark'), channel('ward'), channel('hollow'), status('resonance', 3)],
+      },
+    },
   ),
   s(
     'legendary',

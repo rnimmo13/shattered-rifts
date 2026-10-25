@@ -4,7 +4,8 @@
 // brought up to date by replaying the moves.
 
 import { DurableObject } from 'cloudflare:workers';
-import type { Action } from '@sr/combat';
+import { chooseSmartAction, type Action } from '@sr/combat';
+import { COMBAT_DB } from '@sr/content/v2';
 import {
   CHOOSE_MS,
   checkEntry,
@@ -38,6 +39,10 @@ interface Saved {
   /** who sits where, by their own random id (seats are only fixed when the second player joins) */
   ids: Partial<Record<Seat, string>>;
   entries: Partial<Record<Seat, Entry>>;
+  /** a ghost sits in this room: a deck from a past match, played by the computer (never sent to a player) */
+  ghost?: { seat: Seat; id: string };
+  /** when the ghost's next move is due (ms), if it is the ghost's turn */
+  ghostAt?: number;
   /** each seat's leaderboard id. Kept apart from the entries on purpose: entries are sent to both players, and this is never shown */
   who?: Partial<Record<Seat, string>>;
   started: boolean;
@@ -93,11 +98,19 @@ export class MatchRoom extends DurableObject<Env> {
       if (saved) {
         this.data = saved;
         this.rebuild();
+        // a room woken from sleep with the ghost to move (its move was due, or was never arranged) sets it going again
+        if (saved.ghost && this.match && !saved.over && saved.ghostAt === undefined) {
+          this.planGhost();
+          if (this.data.ghostAt !== undefined) await this.save();
+        }
       }
     });
   }
 
-  override fetch(request: Request): Response {
+  override async fetch(request: Request): Promise<Response> {
+    // the matchmaker sets a room up with a ghost in it before the player is told to join
+    if (request.method === 'POST' && new URL(request.url).pathname.startsWith('/ghost/'))
+      return this.setupGhost(request);
     if (request.headers.get('Upgrade') !== 'websocket')
       return new Response('Expected a WebSocket.', { status: 426 });
     this.code = new URL(request.url).pathname.split('/').pop() ?? '';
@@ -105,6 +118,89 @@ export class MatchRoom extends DurableObject<Env> {
     const [client, server] = [pair[0], pair[1]];
     this.ctx.acceptWebSocket(server);
     return new Response(null, { status: 101, webSocket: client });
+  }
+
+  /** Put a ghost in the second place of an empty room (only the matchmaker, inside the Worker, ever asks for this). */
+  private async setupGhost(request: Request): Promise<Response> {
+    const d = this.data;
+    if (d.ids.a || d.ids.b || d.started || d.ghost)
+      return new Response('room in use', { status: 409 });
+    let body: { ghost?: { id?: unknown; entry?: unknown } };
+    try {
+      body = await request.json<typeof body>();
+    } catch {
+      return new Response('bad body', { status: 400 });
+    }
+    const checked = checkEntry(body.ghost?.entry);
+    const id = body.ghost?.id;
+    if (!checked.ok || typeof id !== 'string') return new Response('bad ghost', { status: 400 });
+    const { who: _who, ...entry } = checked.entry;
+    void _who;
+    d.ghost = { seat: 'b', id };
+    d.ids.b = `ghost:${crypto.randomUUID()}`;
+    d.entries.b = entry;
+    await this.save();
+    return new Response('ok');
+  }
+
+  /** Whether it is the ghost's turn: if so, its next move comes up after a short pause (so it plays like someone thinking). */
+  private planGhost(): void {
+    const d = this.data;
+    const m = this.match;
+    if (d.ghost && m && !d.over && m.active === d.ghost.seat) {
+      // (it pauses between moves like someone thinking, but a turn of many cards still fits well inside the turn clock)
+      const played = m.state.sides[d.ghost.seat].played;
+      d.ghostAt = Date.now() + (played > 12 ? 250 : 800 + Math.floor(Math.random() * 700));
+    } else delete d.ghostAt;
+  }
+
+  /** The ghost makes its next move (the smart bot chooses it from the position, looking only at its own side's choices). */
+  private async ghostMove(): Promise<void> {
+    const d = this.data;
+    const m = this.match;
+    if (!m || !d.ghost || d.over) return;
+    const seat = d.ghost.seat;
+    if (m.active !== seat) {
+      delete d.ghostAt;
+      await this.save();
+      return;
+    }
+    let action: Action;
+    try {
+      action = chooseSmartAction(COMBAT_DB, m.state);
+    } catch (err) {
+      console.error('[room] the ghost could not choose', err);
+      action = { type: 'endTurn' };
+    }
+    let r = m.submit(seat, m.log.length + 1, action, Date.now());
+    if (!r.ok) {
+      // (a move the engine refuses must not stall the match: the ghost ends its turn instead)
+      action = { type: 'endTurn' };
+      r = m.submit(seat, m.log.length + 1, action, Date.now());
+      if (!r.ok) {
+        delete d.ghostAt;
+        await this.save();
+        return;
+      }
+    }
+    d.log.push({ seat, action });
+    d.deadline = r.deadline;
+    d.missed = { ...m.missed };
+    this.broadcast({
+      type: 'action',
+      seq: r.seq,
+      seat,
+      action,
+      hash: r.hash,
+      deadline: r.deadline,
+      now: Date.now(),
+    });
+    if (r.outcome) {
+      await this.finish(r.outcome);
+      return;
+    }
+    this.planGhost();
+    await this.save();
   }
 
   /** Replay the saved moves to get the match back. */
@@ -156,6 +252,7 @@ export class MatchRoom extends DurableObject<Env> {
     else if (!d.started) at = d.created + IDLE_MS;
     else {
       at = d.deadline;
+      if (d.ghostAt !== undefined) at = Math.min(at, d.ghostAt);
       for (const t of Object.values(d.away)) at = Math.min(at, t + RECONNECT_MS);
       // look for players who have gone quiet (a closed laptop sends no goodbye) at least this often
       at = Math.min(at, Date.now() + HEARTBEAT_CHECK_MS);
@@ -178,6 +275,7 @@ export class MatchRoom extends DurableObject<Env> {
       replay: d.log.length,
       now: Date.now(),
       toss: d.toss,
+      ...(d.ghost ? { ghost: d.ghost.seat } : {}),
     };
   }
 
@@ -206,6 +304,7 @@ export class MatchRoom extends DurableObject<Env> {
     const ids: Partial<Record<Seat, string>> = {};
     const entries: Partial<Record<Seat, Entry>> = {};
     const whos: Partial<Record<Seat, string>> = {};
+    if (d.ghost) d.ghost = { ...d.ghost, seat: seats[d.ghost.seat] };
     for (const arrival of ['a', 'b'] as const) {
       const id = d.ids[arrival];
       const entry = d.entries[arrival];
@@ -233,7 +332,9 @@ export class MatchRoom extends DurableObject<Env> {
     }
     // a seat nobody is connected to is away from the start
     for (const seatOf of ['a', 'b'] as const)
-      if (this.sockets(seatOf).length === 0) d.away[seatOf] = Date.now();
+      if (this.sockets(seatOf).length === 0 && seatOf !== d.ghost?.seat)
+        d.away[seatOf] = Date.now();
+    this.planGhost();
     await this.save();
     for (const s of this.sockets()) {
       const m = this.startMessage(s.at.seat as Seat);
@@ -266,6 +367,11 @@ export class MatchRoom extends DurableObject<Env> {
 
     if (msg.type === 'join') {
       if (at) return; // already seated on this socket
+      if (msg.playerId.startsWith('ghost:')) {
+        send(ws, { type: 'error', code: 'bad-message', message: 'That is not a player id.' });
+        ws.close(1008, 'bad id');
+        return;
+      }
       const checked = checkEntry(msg.entry);
       if (!checked.ok) {
         send(ws, { type: 'error', code: 'bad-deck', message: checked.message });
@@ -303,7 +409,7 @@ export class MatchRoom extends DurableObject<Env> {
       }
       // both are here: each is asked whether to go first
       d.choosing = true;
-      d.choices = {};
+      d.choices = d.ghost ? { [d.ghost.seat]: Math.random() < 0.5 } : {};
       d.chooseBy = Date.now() + CHOOSE_MS;
       await this.save();
       for (const s of this.sockets()) this.askOrder(s.ws, s.at.seat as Seat);
@@ -361,7 +467,10 @@ export class MatchRoom extends DurableObject<Env> {
         now: Date.now(),
       });
       if (r.outcome) await this.finish(r.outcome);
-      else await this.save();
+      else {
+        this.planGhost();
+        await this.save();
+      }
     }
   }
 
@@ -395,6 +504,10 @@ export class MatchRoom extends DurableObject<Env> {
     // a match that was barely played does not count, nor does a win by forfeit or a missed clock in the first few moves
     if (outcome.winner === 'draw' || !d.started || d.log.length < MIN_RECORDED_MOVES) return;
     if (outcome.reason !== 'win' && d.log.length < MIN_FORFEIT_MOVES) return;
+    if (d.ghost) {
+      await this.recordGhost(outcome.winner);
+      return;
+    }
     const w = d.entries[outcome.winner];
     const l = d.entries[other(outcome.winner)];
     const wid = d.who?.[outcome.winner];
@@ -405,13 +518,38 @@ export class MatchRoom extends DurableObject<Env> {
         new Request('https://board.invalid/pvp', {
           method: 'POST',
           body: JSON.stringify({
-            winner: { id: wid, name: w.name, hero: w.hero },
-            loser: { id: lid, name: l.name, hero: l.hero },
+            winner: { id: wid, name: w.name, hero: w.hero, entry: w },
+            loser: { id: lid, name: l.name, hero: l.hero, entry: l },
           }),
         }),
       );
     } catch {
       /* the board is a nicety: a match never fails because it could not be recorded */
+    }
+  }
+
+  /** A match against a ghost has ended: tell the board whether the person or the ghost won. */
+  private async recordGhost(winner: Seat): Promise<void> {
+    const d = this.data;
+    const ghost = d.ghost;
+    if (!ghost) return;
+    const humanSeat = other(ghost.seat);
+    const human = d.entries[humanSeat];
+    const hid = d.who?.[humanSeat];
+    if (!human || !hid) return;
+    try {
+      await this.env.BOARD.get(this.env.BOARD.idFromName('main')).fetch(
+        new Request('https://board.invalid/ghost/result', {
+          method: 'POST',
+          body: JSON.stringify({
+            ghost: ghost.id,
+            human: { id: hid, name: human.name, hero: human.hero },
+            ghostWon: winner === ghost.seat,
+          }),
+        }),
+      );
+    } catch {
+      /* never in the way of a match */
     }
   }
 
@@ -483,6 +621,11 @@ export class MatchRoom extends DurableObject<Env> {
       await this.finish(outcome);
       return;
     }
+    // the ghost's move is due
+    if (d.ghost && d.ghostAt !== undefined && now >= d.ghostAt) {
+      await this.ghostMove();
+      return;
+    }
     if (now >= d.deadline) {
       const t = match.timeout(now);
       for (const m of t.moves) {
@@ -505,6 +648,8 @@ export class MatchRoom extends DurableObject<Env> {
         return;
       }
     }
+    // (the clock may just have passed the turn to the ghost)
+    this.planGhost();
     await this.save();
   }
 }

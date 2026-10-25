@@ -5,7 +5,15 @@
 
 import { chooseAction } from '@sr/combat';
 import { COMBAT_DB, RIFTWALKERS, type HeroId } from '@sr/content/v2';
-import { Match, type ClientMsg, type Entry, type Seat, type ServerMsg } from '@sr/pvp';
+import {
+  ARENA_HP_MULT,
+  Match,
+  SECOND_PLAYER_HP,
+  type ClientMsg,
+  type Entry,
+  type Seat,
+  type ServerMsg,
+} from '@sr/pvp';
 
 const BASE = (process.argv[2] ?? 'ws://127.0.0.1:8787').replace(/\/$/, '');
 const entryOf = (hero: HeroId, name: string, tier = 1): Entry => ({
@@ -187,14 +195,13 @@ async function playQueue(): Promise<void> {
   const cb = await connect(`/pvp/room/${room}`, 'Dan', b.id, false);
   send(cb, { type: 'join', playerId: cb.id, entry: entryOf('rivet', 'Dan', 2) });
   await until(() => ca.match !== null && cb.match !== null, 'both starts');
-  // they asked for different things, so they get them: no coin, Cat first, Dan second with 10 more HP
+  // they asked for different things, so they get them: no coin, Cat first, Dan second with more HP
   if (ca.seat !== 'a' || cb.seat !== 'b' || ca.toss?.random !== false)
     throw new Error(`wrong order: Cat ${ca.seat}, Dan ${cb.seat}, coin ${JSON.stringify(ca.toss)}`);
   const hp = (bot: Bot): number =>
     (bot.match!.state.sides.b.units.find((u) => u.kind === 'hero') as { maxHp: number }).maxHp;
-  const base = RIFTWALKERS.rivet.hero.maxHp;
-  if (hp(cb) !== base + 10)
-    throw new Error(`the second player has ${hp(cb)} HP, expected ${base + 10}`);
+  const base = RIFTWALKERS.rivet.hero.maxHp * ARENA_HP_MULT + SECOND_PLAYER_HP;
+  if (hp(cb) !== base) throw new Error(`the second player has ${hp(cb)} HP, expected ${base}`);
   console.log(`  order: Cat first, Dan second with ${hp(cb)} HP (no coin)`);
   await until(() => ca.ended !== null && cb.ended !== null, 'the end');
   if (ca.desync || cb.desync) throw new Error(`desync: ${ca.desync ?? cb.desync}`);
@@ -373,6 +380,19 @@ async function board(tag: string): Promise<void> {
     ann?.heroes[0]?.hero === 'maren' && bob?.heroes[0]?.hero === 'kesh',
     'the characters are listed',
   );
+  // a player who is known is told where they stand; one who is not just sees the board
+  const seen = await post('view', { code: codes[0], kind: 'pvp', period: 'week' });
+  const you = seen['you'] as { rank: number; name: string; wins: number } | null;
+  need(!!you && you.name === names[0] && you.rank >= 1, 'a known player sees their own place');
+  need(
+    ((seen['board'] as { name: string }[] | undefined) ?? []).length <= 100,
+    'a board shows at most 100 places',
+  );
+  const stranger = await post('view', { kind: 'pvp', period: 'week' });
+  need(
+    stranger.status === 200 && stranger['you'] === null,
+    'a visitor with no id sees the board only',
+  );
   // a run
   const run = (stage: number, extra: Record<string, unknown> = {}) =>
     post('run', {
@@ -404,6 +424,62 @@ async function board(tag: string): Promise<void> {
   );
 }
 
+/** A ghost: a deck that has played in the Arena, with the computer at the controls. Needs the board test to have run first. */
+async function ghost(tag: string): Promise<void> {
+  console.log('ghosts:');
+  const http = BASE.replace(/^ws/, 'http');
+  const hex = (): string =>
+    Array.from({ length: 64 }, () => '0123456789abcdef'[Math.floor(Math.random() * 16)]).join('');
+  const me = hex();
+  const name = `Gus${tag}`;
+  const entry = { ...entryOf('astra', name), who: me };
+  // a queue socket asks for a ghost, and is sent to a room
+  const q = await connect('/pvp/queue', name, `player-${name}`);
+  send(q, { type: 'ghost', playerId: q.id, entry });
+  await until(() => q.inbox.some((m) => m.type === 'matched' || m.type === 'error'), 'a ghost');
+  const found = q.inbox.find((m) => m.type === 'matched' || m.type === 'error') as ServerMsg;
+  if (found.type !== 'matched' || found.ghost !== true)
+    throw new Error(`no ghost was offered: ${JSON.stringify(found)}`);
+  console.log(`  a ghost was found: room ${found.room}`);
+  const a = await connect(`/pvp/room/${found.room}`, name, q.id, true);
+  send(a, { type: 'join', playerId: a.id, entry });
+  await until(() => a.match !== null, 'the match to start', 30_000);
+  const start = a.inbox.find((m) => m.type === 'start') as Extract<ServerMsg, { type: 'start' }>;
+  if (start.ghost === undefined || start.ghost === a.seat)
+    throw new Error('the match does not say which seat the ghost has');
+  const foeEntry = a.seat === 'a' ? start.b : start.a;
+  if (foeEntry.who !== undefined) throw new Error('a ghost entry carries a leaderboard id');
+  if (!/ghost$/.test(foeEntry.name))
+    throw new Error(`the ghost is not named as one: ${foeEntry.name}`);
+  await until(() => a.ended !== null, 'the end of the match', 240_000);
+  if (a.desync) throw new Error(`desync: ${a.desync}`);
+  console.log(
+    `  ok: played ${a.match?.log.length} moves against ${foeEntry.name} (${foeEntry.hero}), ended ${JSON.stringify(a.ended && a.ended.type === 'end' ? [a.ended.winner, a.ended.reason] : null)}, hashes agreed`,
+  );
+  a.ws.close();
+  await sleep(600);
+  const board = (await (await fetch(`${http}/pvp/board/ghosts?period=week`)).json()) as {
+    ok: boolean;
+    ghosts: { name: string; wins: number; losses: number }[];
+    players: { name: string; wins: number; losses: number }[];
+  };
+  const you = board.players.find((x) => x.name === name);
+  if (!you || you.wins + you.losses !== 1)
+    throw new Error('the match is not on the players-against-ghosts board');
+  const ghostName = foeEntry.name.replace(/'s ghost$/, '');
+  const row = board.ghosts.find((g) => g.name === ghostName);
+  if (!row || row.wins + row.losses < 1) throw new Error('the ghost has no record');
+  // the Arena board does not count it
+  const arena = (await (await fetch(`${http}/pvp/board/pvp?period=week`)).json()) as {
+    board: { name: string }[];
+  };
+  if (arena.board.some((x) => x.name === name))
+    throw new Error('a ghost match counted as an Arena match');
+  console.log(
+    `  recorded: ${name} is ${you.wins}-${you.losses} against ghosts; ${ghostName}'s ghost is ${row.wins}-${row.losses}`,
+  );
+}
+
 const health = await fetch(`${BASE.replace(/^ws/, 'http')}/pvp/health`);
 console.log('health:', await health.text());
 const tag = rnd();
@@ -413,5 +489,6 @@ await playRoom(`REJOIN${tag}`, 'friend code with a rejoin', true);
 await refusals();
 await vault();
 await board(tag);
+await ghost(tag);
 console.log('all good');
 process.exit(0);

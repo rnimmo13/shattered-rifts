@@ -242,11 +242,16 @@ export const MAREN: CardDef[] = [
   m('uncommon', 'plated-resolve', 'Plated Resolve', 'skill', 1, 'none', [status('armored', 2)]),
   m('uncommon', 'sure-footing', 'Sure Footing', 'power', 1, 'none', [status('bracing', 1)]),
   m('rare', 'unbroken-wall', 'Unbroken Wall', 'power', 2, 'none', [status('fortified', 1)]),
-  m('legendary', 'the-last-oath', 'The Last Oath', 'power', 3, 'none', [
-    status('fortified', 1),
-    status('thorns', 3),
-    status('bracing', 1),
-  ]),
+  m(
+    'legendary',
+    'the-last-oath',
+    'The Last Oath',
+    'power',
+    3,
+    'none',
+    [status('fortified', 1), status('thorns', 3), status('bracing', 1)],
+    { up: { effects: [status('fortified', 1), status('thorns', 5), status('bracing', 2)] } },
+  ),
   m(
     'legendary',
     'dawn-incarnate',

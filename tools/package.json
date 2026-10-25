@@ -12,13 +12,15 @@
     "artlist": "tsx src/artlist.ts",
     "cardprompts": "tsx src/cardprompts.ts",
     "cardlist": "tsx src/cardlist.ts",
+    "upaudit": "tsx src/upaudit.ts",
     "balance": "tsx src/balance.ts",
     "runsim": "tsx src/runsim.ts",
     "cardscan": "tsx src/cardscan.ts",
     "traitscan": "tsx src/traitscan.ts",
     "lanes": "tsx src/lanes.ts",
     "pvpsmoke": "tsx src/pvpsmoke.ts",
-    "pvpbalance": "tsx src/pvpbalance.ts"
+    "pvpbalance": "tsx src/pvpbalance.ts",
+    "ghostsim": "tsx src/ghostsim.ts"
   },
   "dependencies": {
     "@sr/campaign": "workspace:*",

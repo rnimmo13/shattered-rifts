@@ -17,7 +17,7 @@ import {
 } from './config';
 import { PvpSession, newRoomCode, savedRoom, type Snapshot } from './session';
 import { VAULT_SLOTS, entryFor, loadVault, saveVault, type VaultDeck } from './vault';
-import { ChoosePanel, CoinFlip, WaitTimer } from './PvpParts';
+import { ChoosePanel, CoinFlip, GhostOffer, WaitTimer } from './PvpParts';
 import { boardId } from './boardApi';
 import { VaultCode, type Online } from './VaultCode';
 import { AccountBox } from './AccountBox';
@@ -50,6 +50,7 @@ const EMPTY: Snapshot = {
   phase: 'idle',
   room: null,
   waiting: 0,
+  ghosting: false,
   message: null,
   choose: null,
   match: null,
@@ -139,7 +140,9 @@ export default function PvpScreen() {
   const problem = check && !check.ok ? check.message : null;
   const busy = snap.phase !== 'idle' && snap.phase !== 'error';
 
-  const begin = async (how: 'queue' | 'create' | 'join'): Promise<void> => {
+  /** the entry that went to the server (with the board id), so a ghost can be asked for later from the queue */
+  const sent = useRef<typeof entry>(null);
+  const begin = async (how: 'queue' | 'create' | 'join' | 'ghost'): Promise<void> => {
     if (!entry || !check?.ok) return;
     saveName(entry.name);
     // (the board id is normally here already; if it was slow, wait a moment for it rather than play an unrecorded match)
@@ -147,12 +150,14 @@ export default function PvpScreen() {
       who ??
       (await Promise.race([boardId(), new Promise<null>((r) => setTimeout(() => r(null), 1500))]));
     const toSend = id ? { ...check.entry, who: id } : check.entry;
+    sent.current = toSend;
     // a new session (the server setting may have changed)
     session.current?.leave();
     const s = new PvpSession(serverBase(), playerId(), setSnap);
     session.current = s;
     setSnap(EMPTY);
     if (how === 'queue') s.queue(toSend);
+    else if (how === 'ghost') s.ghost(toSend);
     else if (how === 'create') s.joinRoom(newRoomCode(), toSend);
     else s.joinRoom(code.trim().toUpperCase(), toSend);
   };
@@ -290,13 +295,28 @@ export default function PvpScreen() {
         <section className="pvp__status" aria-live="polite">
           {snap.phase === 'queue' && (
             <>
-              <h2>Looking for an opponent…</h2>
-              <WaitTimer label="In the queue" widenAfterMs={QUEUE_WIDEN_MS} />
+              <h2>{snap.ghosting ? 'Finding a ghost…' : 'Looking for an opponent…'}</h2>
+              {!snap.ghosting && <WaitTimer label="In the queue" widenAfterMs={QUEUE_WIDEN_MS} />}
               <p>
-                {snap.waiting > 1
-                  ? `${snap.waiting} players are waiting.`
-                  : 'You are in the queue. Players with a similar Rift Tier are matched first.'}
+                {snap.ghosting
+                  ? 'A ghost is a deck another player has used in the Arena, played by the computer.'
+                  : snap.waiting > 1
+                    ? `${snap.waiting} players are waiting.`
+                    : 'You are in the queue. Players with a similar Rift Tier are matched first.'}
               </p>
+              {snap.message && (
+                <p className="notice notice--bad" role="alert">
+                  {snap.message}
+                </p>
+              )}
+              {!snap.ghosting && (
+                <GhostOffer
+                  afterMs={QUEUE_WIDEN_MS}
+                  onGhost={() => {
+                    if (sent.current) session.current?.ghost(sent.current);
+                  }}
+                />
+              )}
             </>
           )}
           {snap.phase === 'waiting' && (
@@ -386,6 +406,14 @@ export default function PvpScreen() {
                 <button
                   className="btn"
                   disabled={!entry || problem !== null}
+                  onClick={() => void begin('ghost')}
+                  title="Face a deck another player has used in the Arena, played by the computer. It does not count on the Arena board."
+                >
+                  <span>Fight a ghost</span>
+                </button>
+                <button
+                  className="btn"
+                  disabled={!entry || problem !== null}
                   onClick={() => void begin('create')}
                 >
                   <span>Make a room for a friend</span>
@@ -409,6 +437,11 @@ export default function PvpScreen() {
                   </button>
                 </span>
               </div>
+              <p className="pvp__hint">
+                A ghost is a deck another player has used in the Arena, played by the computer. It
+                is a fight for practice and for the Ghosts board: it does not count on the Arena
+                board.
+              </p>
             </>
           )}
           <AccountBox

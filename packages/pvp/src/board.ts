@@ -14,7 +14,7 @@ export type Period = 'week' | 'month';
 /** Results older than this are never shown (a month is the longest board) and are cleared from the server. */
 export const BOARD_KEEP_DAYS = 70;
 /** How many places a board shows. */
-export const BOARD_SIZE = 25;
+export const BOARD_SIZE = 100;
 /** The same winner beating the same opponent counts at most this many times in a day, so two friends cannot farm wins. */
 export const SAME_FOE_PER_DAY = 3;
 /** One player's counted Arena wins in a day (so no amount of playing alts or friends tops the board on its own). */
@@ -113,7 +113,7 @@ export interface PvpStanding {
 }
 
 /** Add up each player's results and rank them: most wins first, then fewest losses, then the earliest to get there. */
-export function rankPvp(rows: readonly PvpRow[], limit = BOARD_SIZE): PvpStanding[] {
+export function standingsPvp(rows: readonly PvpRow[]): (PvpStanding & { player: string })[] {
   interface Acc {
     name: string;
     wins: number;
@@ -145,16 +145,16 @@ export function rankPvp(rows: readonly PvpRow[], limit = BOARD_SIZE): PvpStandin
     }
     a.heroes.set(r.hero, h);
   }
-  return [...by.values()]
+  return [...by.entries()]
     .sort(
-      (x, y) =>
+      ([, x], [, y]) =>
         y.wins - x.wins ||
         x.losses - y.losses ||
         x.lastWin - y.lastWin ||
         x.name.localeCompare(y.name),
     )
-    .slice(0, limit)
-    .map((a) => ({
+    .map(([player, a]) => ({
+      player,
       name: a.name,
       wins: a.wins,
       losses: a.losses,
@@ -162,6 +162,18 @@ export function rankPvp(rows: readonly PvpRow[], limit = BOARD_SIZE): PvpStandin
         .sort((p, q) => q[1].n - p[1].n)
         .map(([hero, h]) => ({ hero, wins: h.wins, losses: h.losses })),
     }));
+}
+
+/** A place on a board without the id of whoever holds it (that never leaves the server). */
+export const withoutPlayer = <T extends { player: string }>(s: T): Omit<T, 'player'> => {
+  const { player: _player, ...rest } = s;
+  void _player;
+  return rest;
+};
+
+/** The top of the Arena board: most wins first, then fewest losses, then the earliest to get there. */
+export function rankPvp(rows: readonly PvpRow[], limit = BOARD_SIZE): PvpStanding[] {
+  return standingsPvp(rows).slice(0, limit).map(withoutPlayer);
 }
 
 // ---- the campaign board ----
@@ -195,7 +207,7 @@ export interface RunStanding {
 }
 
 /** Each player's furthest run in the period, furthest first (a tie goes to whoever got there first). */
-export function rankRuns(rows: readonly RunRow[], limit = BOARD_SIZE): RunStanding[] {
+export function standingsRuns(rows: readonly RunRow[]): (RunStanding & { player: string })[] {
   const best = new Map<string, RunRow & { total: number }>();
   for (const r of rows) {
     const total = stagesInAll(r.tier, r.stage);
@@ -204,7 +216,156 @@ export function rankRuns(rows: readonly RunRow[], limit = BOARD_SIZE): RunStandi
       best.set(r.player, { ...r, total });
   }
   return [...best.values()]
-    .sort((x, y) => y.total - x.total || x.at - y.at)
+    .sort((x, y) => y.total - x.total || x.at - y.at || x.name.localeCompare(y.name))
+    .map((r) => ({
+      player: r.player,
+      name: r.name,
+      hero: r.hero,
+      tier: r.tier,
+      stage: r.stage,
+      total: r.total,
+    }));
+}
+
+/** The top of the campaign board: each player's furthest run, furthest first. */
+export function rankRuns(rows: readonly RunRow[], limit = BOARD_SIZE): RunStanding[] {
+  return standingsRuns(rows).slice(0, limit).map(withoutPlayer);
+}
+
+// ---- ghosts: a player's deck, played by the computer ----
+
+/** A ghost is only picked from decks that have played in the last this many days. */
+export const GHOST_FRESH_DAYS = 30;
+/** One player's counted wins against ghosts in a day. */
+export const GHOST_WINS_PER_DAY = 15;
+
+/** A deck that has been entered into the Arena, and how it has done. */
+export interface GhostDeck {
+  id: string;
+  /** whose deck it was (never shown) */
+  owner: string;
+  ownerName: string;
+  hero: string;
+  tier: number;
+  stage: number | null;
+  /** its record when people played it, and when the computer did */
+  wins: number;
+  losses: number;
+  ghostWins: number;
+  ghostLosses: number;
+  lastAt: number;
+}
+
+const totalWins = (d: GhostDeck): number => d.wins + d.ghostWins;
+const rate = (d: GhostDeck): number => {
+  const n = d.wins + d.losses + d.ghostWins + d.ghostLosses;
+  return n === 0 ? 0 : totalWins(d) / n;
+};
+
+/**
+ * The ghost to face: one of the decks in the upper half by wins (people's wins and its own as a ghost, then win rate), never the
+ * asker's own and never one that has not played lately. `roll` is a number from 0 up to (not including) 1, chosen by the caller.
+ * Null when there is no deck to face.
+ */
+export function pickGhost(
+  decks: readonly GhostDeck[],
+  requester: string,
+  roll: number,
+  now: number,
+): GhostDeck | null {
+  const fresh = decks
+    .filter((d) => d.owner !== requester && d.lastAt >= now - GHOST_FRESH_DAYS * 86_400_000)
+    .sort(
+      (x, y) =>
+        totalWins(y) - totalWins(x) ||
+        rate(y) - rate(x) ||
+        y.lastAt - x.lastAt ||
+        x.id.localeCompare(y.id),
+    );
+  if (fresh.length === 0) return null;
+  const upper = fresh.slice(0, Math.ceil(fresh.length / 2));
+  const i = Math.min(upper.length - 1, Math.max(0, Math.floor(roll * upper.length)));
+  return upper[i] ?? null;
+}
+
+/** One finished match between a person and a ghost. */
+export interface GhostGame {
+  ghost: string;
+  ownerName: string;
+  hero: string;
+  tier: number;
+  stage: number | null;
+  ghostWon: boolean;
+  human: string;
+  humanName: string;
+  humanHero: string;
+  at: number;
+}
+
+export interface GhostStanding {
+  /** the name of whoever's deck it was */
+  name: string;
+  hero: string;
+  tier: number;
+  stage: number | null;
+  /** how it did as a ghost in the period */
+  wins: number;
+  losses: number;
+}
+
+/** The ghosts ranked by their wins in the period (then fewer losses). */
+export function rankGhosts(games: readonly GhostGame[], limit = BOARD_SIZE): GhostStanding[] {
+  const by = new Map<string, GhostStanding & { latest: number }>();
+  for (const g of games) {
+    let s = by.get(g.ghost);
+    if (!s) {
+      s = {
+        name: g.ownerName,
+        hero: g.hero,
+        tier: g.tier,
+        stage: g.stage,
+        wins: 0,
+        losses: 0,
+        latest: 0,
+      };
+      by.set(g.ghost, s);
+    }
+    if (g.at >= s.latest) {
+      s.latest = g.at;
+      s.name = g.ownerName;
+    }
+    if (g.ghostWon) s.wins++;
+    else s.losses++;
+  }
+  return [...by.values()]
+    .sort((x, y) => y.wins - x.wins || x.losses - y.losses || x.name.localeCompare(y.name))
     .slice(0, limit)
-    .map((r) => ({ name: r.name, hero: r.hero, tier: r.tier, stage: r.stage, total: r.total }));
+    .map(({ name, hero, tier, stage, wins, losses }) => ({
+      name,
+      hero,
+      tier,
+      stage,
+      wins,
+      losses,
+    }));
+}
+
+/** Every person's place by wins against ghosts in the period (the same shape as the Arena board). */
+export function standingsVsGhosts(
+  games: readonly GhostGame[],
+): (PvpStanding & { player: string })[] {
+  return standingsPvp(
+    games.map((g) => ({
+      player: g.human,
+      name: g.humanName,
+      hero: g.humanHero,
+      won: !g.ghostWon,
+      at: g.at,
+    })),
+  );
+}
+
+/** The top of the people-against-ghosts board. */
+export function rankVsGhosts(games: readonly GhostGame[], limit = BOARD_SIZE): PvpStanding[] {
+  return standingsVsGhosts(games).slice(0, limit).map(withoutPlayer);
 }

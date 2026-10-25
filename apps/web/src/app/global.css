@@ -734,10 +734,34 @@ body:has(.learn) {
 
 /* the rarity gem as an inline badge (Boon and potion captions, shop rows) */
 .rgem {
-  height: 1.5em;
-  width: auto;
-  vertical-align: -0.4em;
-  margin-right: 0.25em;
+  display: inline-block;
+  width: 0.8em;
+  height: 0.8em;
+  rotate: 45deg;
+  border-radius: 2px;
+  vertical-align: -0.05em;
+  margin: 0 0.45em 0 0.2em;
+  background: linear-gradient(135deg, #d8d8e0, #8a8a98 60%, #44444e);
+  box-shadow: 0 0 0 1px rgb(0 0 0 / 0.55);
+}
+.rgem--uncommon {
+  background: linear-gradient(135deg, #d6ffd0, #4fcf6a 55%, #1a6a30);
+}
+.rgem--rare {
+  background: linear-gradient(135deg, #d9f6ff, #4fd8ff 50%, #0b5a80);
+  box-shadow: 0 0 0 1px rgb(0 0 0 / 0.55), 0 0 6px #4fd8ff;
+}
+.rgem--epic {
+  background: linear-gradient(135deg, #e3d4ff, #b07aff 50%, #3a1a7a);
+  box-shadow: 0 0 0 1px rgb(0 0 0 / 0.55), 0 0 6px #b07aff;
+}
+.rgem--legendary,
+.rgem--mythic {
+  background: linear-gradient(135deg, #fff1c4, #ffb23a 50%, #a05a00);
+  box-shadow: 0 0 0 1px rgb(0 0 0 / 0.55), 0 0 7px #ffb23a;
+}
+.rgem--mythic {
+  box-shadow: 0 0 0 1px rgb(0 0 0 / 0.55), 0 0 8px #ff4fd8;
 }
 
 /* an error's text can be selected and copied (and has a button for it) */

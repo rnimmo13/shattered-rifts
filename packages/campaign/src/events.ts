@@ -7,6 +7,7 @@ import {
   COMBAT_DB,
   RIFTWALKERS,
   canRoll,
+  isSanctified,
   rolledId,
   stripRoll,
   V2_DECK_RULES,
@@ -151,7 +152,11 @@ export const EVENTS: EventDef[] = [
   {
     id: 'sanctify',
     weight: 2,
-    when: (r) => r.deck.some((id) => canRoll(COMBAT_DB.cards[stripRoll(id)]!)),
+    // once a deck has been through the fire it does not go again (it cannot be undone, and it cannot be done twice)
+    when: (r) =>
+      !r.sanctified &&
+      !r.deck.some(isSanctified) &&
+      r.deck.some((id) => canRoll(COMBAT_DB.cards[stripRoll(id)]!)),
     build: () => ({
       title: 'The Sanctum of Change',
       text: 'A basin of white fire. Step in and your whole deck is sanctified: every card with numbers is re-rolled: some are left as they were, about half of the rest become 25% stronger and the others 25% weaker. Costs never change. It cannot be undone, and you do not choose which.',
@@ -443,6 +448,8 @@ export function resolveEvent(
       helpers.gainBoon(r, ev.boonOffer);
       return `The altar gives up ${COMBAT_DB.boons[ev.boonOffer]?.name ?? 'a Boon'}.`;
     case 'sanctify': {
+      if (r.sanctified) fail('The fire has already taken this deck');
+      r.sanctified = true;
       let up = 0;
       let down = 0;
       let same = 0;

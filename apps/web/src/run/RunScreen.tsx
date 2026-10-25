@@ -43,7 +43,7 @@ import { getHero, rememberHero } from '../app/heroChoice';
 import { BoonToast } from './BoonToast';
 import { PotionChip } from '../fight/PotionChip';
 import { BankedPanel } from './BankedPanel';
-import { canSaveForArena, saveForArena } from './deckSave';
+import { canSaveForArena, loseSavedDecks, saveForArena } from './deckSave';
 import { stagesInAll } from '@sr/pvp';
 import { stagesCleared } from '../pvp/vault';
 import { reportRun } from '../pvp/boardApi';
@@ -135,6 +135,8 @@ export default function RunScreen() {
   const [saveNote, setSaveNote] = useState<{ at: string; text: string; ok: boolean } | null>(null);
   const [saving, setSaving] = useState(false);
   const [showDeck, setShowDeck] = useState(false);
+  /** how many saved Arena decks the run took down with it when it collapsed (null: not known yet) */
+  const [lostDecks, setLostDecks] = useState<number | null>(null);
   const [confirmAbandon, setConfirmAbandon] = useState(false);
 
   // autosave after every step; a finished run (collapsed or banked) is not kept as a save
@@ -147,6 +149,8 @@ export default function RunScreen() {
     if (run.phase === 'collapsed' || run.phase === 'banked') {
       clearSavedRun(id);
       slotRef.current = null;
+      // a run that falls takes its saved Arena deck with it
+      if (run.phase === 'collapsed') void loseSavedDecks(run).then(setLostDecks);
     } else if (!saveRunSlot(id, run)) {
       // the slot is gone (the run was abandoned in another window): do not bring it back
       slotRef.current = null;
@@ -388,7 +392,14 @@ export default function RunScreen() {
           {saveNote.text}
         </p>
       )}
-      <Body run={run} act={act} onLeave={leaveRun} onSave={saveDeck} onHome={goHome} />
+      <Body
+        run={run}
+        act={act}
+        onLeave={leaveRun}
+        onSave={saveDeck}
+        onHome={goHome}
+        lostDecks={lostDecks}
+      />
       {gained[0] && <BoonToast id={gained[0]} more={gained.length - 1} onDone={nextGained} />}
       {showDeck && (
         <DeckModal deck={run.deck} title="Your deck" onClose={() => setShowDeck(false)} />
@@ -590,6 +601,7 @@ function Body(props: {
   onLeave: () => void;
   onSave: () => void;
   onHome: () => void;
+  lostDecks: number | null;
 }) {
   const { run, act } = props;
   const available = useMemo(() => new Set(availableNodes(run).map((n) => n.id)), [run]);
@@ -690,9 +702,9 @@ function Body(props: {
           <h2 className="stage-panel__title">The Heart of the Rift is silent</h2>
           <p className="stage-panel__hint">
             You cleared all three stages at Rift Tier {run.tier}. <b>Save</b> this deck to your
-            Vault to keep it for the Arena: that copy is yours for good. Then <b>Continue</b> one
-            Tier deeper for harder enemies and better rewards, but the deck in this run can be lost
-            if Resolve runs out. Or leave the run parked and come back to it later.
+            Vault to play it in the Arena. Then <b>Continue</b> one Tier deeper for harder enemies
+            and better rewards, but if Resolve runs out the run collapses and the deck you saved
+            from it is lost too. Or leave the run parked and come back to it later.
           </p>
           <div className="choices-row">
             <button className="bigchoice" onClick={props.onSave}>
@@ -723,6 +735,9 @@ function Body(props: {
           <p className="stage-panel__hint">
             Your Resolve is gone and the run falls apart. You won {run.stats.duelsWon} duels and
             cleared {run.stats.nodesCleared} nodes.
+            {props.lostDecks !== null && props.lostDecks > 0 && (
+              <> The deck you saved for the Arena from this run is lost with it.</>
+            )}
           </p>
           <button className="btn btn--primary" onClick={props.onLeave}>
             <span>Back to the Sanctum</span>

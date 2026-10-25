@@ -344,7 +344,7 @@ export const RIVET: CardDef[] = [
     2,
     'none',
     [status('might', 3, 'allFriends'), ACT, ACT],
-    { exhaust: true },
+    { exhaust: true, up: { cost: 1, effects: [status('might', 4, 'allFriends'), ACT, ACT] } },
   ),
   r('uncommon', 'overcharge', 'Overcharge', 'skill', 0, 'none', [mana(2), manaNext(-1)], {
     exhaust: true,
