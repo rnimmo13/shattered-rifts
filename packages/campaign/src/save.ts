@@ -268,6 +268,13 @@ function validDeal(steps: unknown, depth = 0): boolean {
     for (const f of ['n', 'pct'] as const)
       if (s[f] !== undefined && !isInt(s[f], -100000, 100000)) return false;
     if (s['k'] === 'card' && !hasCard(s['id'])) return false;
+    // (a removal that named its cards: real cards, as many as it takes)
+    if (
+      s['k'] === 'remove' &&
+      s['ids'] !== undefined &&
+      !(isStrArray(s['ids']) && s['ids'].every(hasCard) && s['ids'].length === s['n'])
+    )
+      return false;
     if (
       s['k'] === 'boonOf' &&
       !(typeof s['id'] === 'string' && Object.hasOwn(COMBAT_DB.boons, s['id']))

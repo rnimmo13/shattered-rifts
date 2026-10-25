@@ -1,7 +1,7 @@
 import { forwardRef, memo, useMemo, type CSSProperties } from 'react';
 import { cardText, type CardDef, type CombatDb } from '@sr/combat';
 import { CARD_H, CARD_W } from '../cards/size';
-import { parseRules } from '../cards/cardText';
+import { markRollDiff, parseRules } from '../cards/cardText';
 import { RIFTWALKERS } from '@sr/content/v2';
 import { HeroIcon } from '../ui/HeroIcon';
 import { cardArtV2 } from './art';
@@ -27,9 +27,16 @@ const RARITY_LABEL: Record<string, string> = {
 const KEYWORDS =
   /\b(Barrier|Exposed|Faltering|Might|Bleed|Stunned|Thorns|Shielded|Exhaust|Retain|Mana|Spirit|Edge|Fervor|Serene|Fury|Radiant|Arcana|Foresee|Sharpen|Sharpened|Consume|Hold|Fleeting|Unplayable)\b/g;
 
-/** Rules text with the keywords marked **bold** for the card renderer. */
+/**
+ * Rules text with the keywords marked **bold** for the card renderer. A sanctified card ("hi~strike") also marks each number its roll
+ * changed against the plain card, so the difference shows on the card itself.
+ */
 function rulesFor(db: CombatDb, c: CardDef): string {
-  return cardText(db, c).replace(KEYWORDS, '**$1**');
+  let text = cardText(db, c);
+  const plainId = c.id.replace(/^(hi|lo)~/, '');
+  const plain = plainId !== c.id ? db.cards[plainId] : undefined;
+  if (plain) text = markRollDiff(text, cardText(db, plain));
+  return text.replace(KEYWORDS, '**$1**');
 }
 
 export interface FightCardProps {
@@ -57,7 +64,7 @@ export const FightCard = memo(
       [db, def, bonus],
     );
     const runs = useMemo(() => parseRules(text), [text]);
-    const n = text.replace(/\*\*/g, '').length;
+    const n = text.replace(/\*\*/g, '').replace(/\[\[(?:up|down):(\d+):\d+\]\]/g, '$1').length;
     const size = n <= 55 ? 's' : n <= 110 ? 'm' : n <= 170 ? 'l' : 'xl';
     // how far the cost now is from the printed one (a cost change from a card, a Boon or Unbound): shown on the gem itself
     const costDelta = def.x || cost === undefined ? 0 : cost - def.cost;
@@ -110,9 +117,23 @@ export const FightCard = memo(
           </div>
           <div className={`card__rules card__rules--${size}`}>
             <p>
-              {runs.map((r, i) =>
-                r.bold ? <strong key={i}>{r.text}</strong> : <span key={i}>{r.text}</span>,
-              )}
+              {runs.map((r, i) => {
+                if (r.roll) {
+                  // a number the Sanctum changed: the new value in colour, how far it moved beside it
+                  const diff = Number(r.text) - Number(r.roll.was);
+                  return (
+                    <span
+                      key={i}
+                      className={`card__roll card__roll--${r.roll.dir}`}
+                      title={`Sanctified: ${r.roll.was} → ${r.text}`}
+                    >
+                      {r.text}
+                      <sup>{diff > 0 ? `+${diff}` : `−${-diff}`}</sup>
+                    </span>
+                  );
+                }
+                return r.bold ? <strong key={i}>{r.text}</strong> : <span key={i}>{r.text}</span>;
+              })}
             </p>
           </div>
           {owner && Object.hasOwn(RIFTWALKERS, owner) && (

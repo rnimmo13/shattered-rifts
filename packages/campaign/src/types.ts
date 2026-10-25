@@ -161,7 +161,8 @@ export type DealStep =
   | { k: 'boon' }
   | { k: 'upgrade'; n: number }
   /** 'wound': a Wound, else a basic card; 'basic': a basic card; 'any': any card */
-  | { k: 'remove'; of: 'wound' | 'basic' | 'any'; n: number }
+  /** `ids`: the exact cards it takes, picked when the event was built so the option can name them (DECISIONS #233) */
+  | { k: 'remove'; of: 'wound' | 'basic' | 'any'; n: number; ids?: string[] }
   /** a random basic card becomes a random card of your class */
   | { k: 'transform' }
   /** a random non-basic card is copied */

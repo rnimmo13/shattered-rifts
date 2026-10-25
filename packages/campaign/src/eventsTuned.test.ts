@@ -116,3 +116,60 @@ describe('bad luck', () => {
     expect(storm.hp).toBeLessThan(60);
   });
 });
+
+describe('a random removal names its card (DECISIONS #233)', () => {
+  it('every option that takes a card at random says which, and takes exactly that one', async () => {
+    const { EVENTS } = await import('./events');
+    const { COMBAT_DB: db } = await import('@sr/content/v2');
+    const base: RunState = {
+      ...newRun('knight', 'named-removal'),
+      phase: 'map',
+      context: null,
+      shards: 400,
+      hp: 60,
+      potions: ['fire-flask'],
+      boons: ['iron-sigil'],
+    };
+    const run: RunState = { ...base, deck: [...base.deck, 'wound', 'gilded-blow', 'iron-vigil+'] };
+    let seen = 0;
+    for (const def of EVENTS) {
+      const ev = def.build(JSON.parse(JSON.stringify(run)) as RunState);
+      for (const o of ev.options) {
+        const removals = (o.deal ?? []).flatMap((s) =>
+          s.k === 'remove'
+            ? [s]
+            : s.k === 'chance'
+              ? [...s.win, ...s.lose].filter((x) => x.k === 'remove')
+              : [],
+        );
+        if (!removals.length) continue;
+        seen++;
+        expect(o.label, `${def.id}/${o.id}`).not.toMatch(
+          // (the removal itself is named: "random" may still describe something else, like upgrades)
+          /random (basic )?cards? leaves?\b|random (Strike|Attack) or Defend goes|lose a card\b/i,
+        );
+        for (const s of removals) {
+          if (s.k !== 'remove') continue;
+          expect(s.ids?.length, `${def.id}/${o.id} pinned`).toBe(s.n);
+          for (const id of s.ids ?? []) expect(o.label).toContain(db.cards[id]!.name);
+        }
+      }
+      if (def.id === 'bonfire') {
+        const name = db.cards[ev.cardOffer]!.name;
+        expect(ev.options[0]!.label).toContain(name);
+      }
+    }
+    expect(seen).toBeGreaterThan(20);
+  });
+
+  it('the card named is the card that goes', () => {
+    const r0 = at('cave-in');
+    const o = r0.context!.event!.options.find((x) => x.id === 'd2')!;
+    const step = o.deal!.find((s) => s.k === 'remove')!;
+    const named = step.k === 'remove' ? step.ids![0]! : '';
+    const after = chooseEvent(r0, 'd2');
+    expect(after.deck.filter((c) => c === named).length).toBe(
+      r0.deck.filter((c) => c === named).length - 1,
+    );
+  });
+});

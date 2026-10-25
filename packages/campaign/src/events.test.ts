@@ -110,27 +110,22 @@ describe('events', () => {
   });
 });
 
-describe('a sanctified card stays', () => {
+describe('a sanctified card can be removed (DECISIONS #233)', () => {
   /** a run holding one sanctified card, standing at a Shrine */
   const withOne = (): RunState => {
-    const base = open(newRun('knight', 'sanct-stays'));
+    const base = open(newRun('knight', 'sanct-goes'));
     const deck = [...base.deck];
     const at = deck.findIndex((id) => canRoll(COMBAT_DB.cards[id]!));
     deck[at] = rolledId(deck[at]!, 1);
     return { ...base, deck, shards: 500 };
   };
-  const atShrine = (r: RunState): RunState => ({
-    ...r,
-    phase: 'shrine',
-    context: { nodeId: r.map.nodes[0]!.id },
-  });
 
-  it('is never offered to be removed, and a Shrine or a merchant refuses it if asked', () => {
+  it('at a Shrine, at the merchant, and by any event that lets a card go', () => {
     const r = withOne();
     const rolled = r.deck.find((id) => rollOf(id) !== 0)!;
-    expect(removableCards(r.deck)).not.toContain(rolled);
-    expect(removableCards(r.deck)).toHaveLength(r.deck.length - 1);
-    expect(() => takeShrine(atShrine(r), { kind: 'remove', card: rolled })).toThrow(/sanctified/);
+    expect(removableCards(r.deck)).toContain(rolled);
+    const shrine: RunState = { ...r, phase: 'shrine', context: { nodeId: r.map.nodes[0]!.id } };
+    expect(takeShrine(shrine, { kind: 'remove', card: rolled }).deck).not.toContain(rolled);
     const shop: RunState = {
       ...r,
       phase: 'merchant',
@@ -139,34 +134,7 @@ describe('a sanctified card stays', () => {
         merchant: { items: [], removed: false, removePrice: 50 },
       },
     };
-    expect(() => buyRemoval(shop, rolled)).toThrow(/sanctified/);
-    // an ordinary card can still go
-    const plain = r.deck.find((id) => rollOf(id) === 0)!;
-    expect(takeShrine(atShrine(r), { kind: 'remove', card: plain }).deck).toHaveLength(
-      r.deck.length - 1,
-    );
-  });
-
-  it('is never picked by an event that takes a card at random', () => {
-    // a deck of nothing but sanctified basics has nothing for an event to take
-    const base = open(newRun('knight', 'sanct-events'));
-    const deck = base.deck.map((id) => (canRoll(COMBAT_DB.cards[id]!) ? rolledId(id, 1) : id));
-    for (let i = 0; i < 40; i++) {
-      const r = eventRun(`stays-${i}`, { deck });
-      for (const o of r.context!.event!.options) {
-        let after: RunState | null = null;
-        try {
-          after = chooseEvent(r, o.id);
-        } catch {
-          /* refused: fine */
-        }
-        // (an upgrade changes a card's id but it stays sanctified; what must not happen is one going missing)
-        if (after)
-          expect(after.deck.filter((x) => rollOf(x) !== 0).length).toBeGreaterThanOrEqual(
-            deck.filter((x) => rollOf(x) !== 0).length,
-          );
-      }
-    }
+    expect(buyRemoval(shop, rolled).deck).not.toContain(rolled);
   });
 });
 

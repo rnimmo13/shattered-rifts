@@ -7,7 +7,6 @@ import {
   MARK_INFO,
   V2_DECK_RULES,
   canMark,
-  isSanctified,
   markOf,
   markedId,
   stripRoll,
@@ -30,9 +29,8 @@ export interface DealHelpers {
   fail: (msg: string) => never;
 }
 
-/** The cards of a deck that anything may take out: a sanctified card never leaves a deck. */
-export const removableCards = (deck: readonly string[]): string[] =>
-  deck.filter((id) => !isSanctified(id));
+/** The cards of a deck that anything may take out: every card (a sanctified card can be removed too, since DECISIONS #233). */
+export const removableCards = (deck: readonly string[]): string[] => [...deck];
 
 /** The plain Attack / Defend cards (Neutral basics): never a Riftwalker's own starter card, never a Wound. */
 export const basics = (deck: readonly string[]): string[] =>
@@ -40,7 +38,6 @@ export const basics = (deck: readonly string[]): string[] =>
     (id) =>
       COMBAT_DB.cards[id]?.rarity === 'basic' &&
       COMBAT_DB.cards[id]?.hero === 'neutral' &&
-      !isSanctified(id) &&
       // (a card you paid to have engraved is never taken as a plain basic)
       markOf(id) === null,
   );
@@ -125,14 +122,14 @@ function step(r: RunState, s: DealStep, ev: EventCtx, h: DealHelpers, out: strin
       for (let i = 0; i < s.n; i++) {
         if (r.deck.length <= V2_DECK_RULES.minSize)
           fail('Your deck is too small to part with a card');
-        let pool: string[];
-        if (s.of === 'wound') {
-          const w = r.deck.indexOf('wound');
-          pool = w >= 0 ? ['wound'] : basics(r.deck);
-        } else if (s.of === 'basic') pool = basics(r.deck);
-        else pool = removableCards(r.deck).filter((id) => id !== 'wound');
-        if (!pool.length) fail('There is nothing to take');
-        const pick = pool[nextInt(r.rng, pool.length)] as string;
+        // (the card the option named, if it was picked when the event was built; else one picked now)
+        const named = s.ids?.[i];
+        if (named !== undefined && !r.deck.includes(named))
+          fail('That card is no longer in your deck');
+        const pool = removalPool(r.deck, s.of);
+        if (named === undefined && !pool.length) fail('There is nothing to take');
+        const pick = named ?? pool[nextInt(r.rng, pool.length)];
+        if (pick === undefined) return fail('There is nothing to take');
         r.deck.splice(r.deck.indexOf(pick), 1);
         gone.push(nameOf(pick));
       }
@@ -375,4 +372,62 @@ export function applyChoice(
       return `${name} gains ${MARK_INFO[mark].name}: it ${MARK_INFO[mark].text}.`;
     }
   }
+}
+
+/** The cards a random removal of this kind could take from the deck now. */
+function removalPool(deck: readonly string[], of: 'wound' | 'basic' | 'any'): string[] {
+  if (of === 'wound') return deck.includes('wound') ? ['wound'] : basics(deck);
+  if (of === 'basic') return basics(deck);
+  return removableCards(deck).filter((id) => id !== 'wound');
+}
+
+/**
+ * Pick now the cards an option's random removals will take, so it can say which (DECISIONS #233): every `remove` step, in chance
+ * branches too, gets its `ids`. Returns the steps and the names of the cards, in order (a chance's branches each from the same deck).
+ */
+export function pinRemovals(
+  r: RunState,
+  steps: readonly DealStep[],
+): { steps: DealStep[]; names: string[] } {
+  const names: string[] = [];
+  const walk = (list: readonly DealStep[], deck: string[]): DealStep[] =>
+    list.map((st): DealStep => {
+      if (st.k === 'chance')
+        return { ...st, win: walk(st.win, [...deck]), lose: walk(st.lose, [...deck]) };
+      if (st.k !== 'remove' || st.ids) return st;
+      const ids: string[] = [];
+      for (let i = 0; i < st.n && deck.length > V2_DECK_RULES.minSize; i++) {
+        const pool = removalPool(deck, st.of);
+        if (!pool.length) break;
+        const pick = pool[nextInt(r.rng, pool.length)] as string;
+        deck.splice(deck.indexOf(pick), 1);
+        ids.push(pick);
+        names.push(nameOf(pick));
+      }
+      // (not enough to take: left unpinned, and the option is refused as before)
+      return ids.length === st.n ? { ...st, ids } : st;
+    });
+  return { steps: walk(steps, [...r.deck]), names };
+}
+
+/** "a random card leaves your deck" with the cards named ("Strike leaves your deck"). */
+export function nameRemovals(label: string, names: readonly string[]): string {
+  if (!names.length) return label;
+  const one = names[0] as string;
+  const both =
+    names.length > 1 ? `${names.slice(0, -1).join(', ')} and ${names[names.length - 1]}` : one;
+  const swaps: [RegExp, string][] = [
+    [/two random cards leave your deck/i, `${both} leave your deck`],
+    [/a random card leaves your deck/i, `${one} leaves your deck`],
+    [/a random basic card leaves/i, `${one} leaves`],
+    [/a random (?:Strike|Attack) or Defend goes/i, `${one} goes`],
+    [/a Wound leaves your deck, or a basic card if you have none/i, `${one} leaves your deck`],
+    [/a Wound, else a basic card, goes/i, `${one} goes`],
+    [/a Wound, or a basic card: it leaves your deck/i, `${one}: it leaves your deck`],
+    [/any card: it leaves your deck/i, `${one}: it leaves your deck`],
+    [/lose a card and/i, `lose ${one} and`],
+  ];
+  for (const [re, to] of swaps) if (re.test(label)) return label.replace(re, to);
+  // (a wording not foreseen: the card is still named)
+  return `${label} (${both} would go)`;
 }

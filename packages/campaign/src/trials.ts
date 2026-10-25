@@ -311,7 +311,7 @@ export function takePrize(
     const left = [...r.deck];
     for (const id of gone) {
       const at = left.indexOf(id);
-      if (at < 0 || !removableCards([id]).length) return h.fail('That card cannot be removed');
+      if (at < 0) return h.fail('That card is not in your deck');
       left.splice(at, 1);
     }
     if (left.length < V2_DECK_RULES.minSize)

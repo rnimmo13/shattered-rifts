@@ -267,7 +267,7 @@ describe('the lighter load removes up to two cards you choose', () => {
     );
     expect(() => claimTrialPrize(won, 'p' + k, undefined, [id, id, id])).toThrow(/up to/);
     expect(() => claimTrialPrize(won, 'p' + k, undefined, ['no-such-card'])).toThrow(
-      /cannot be removed/,
+      /not in your deck/,
     );
     const small: RunState = { ...won, deck: won.deck.slice(0, V2_DECK_RULES.minSize) };
     expect(() => claimTrialPrize(small, 'p' + k, undefined, [small.deck[0]!])).toThrow(/too small/);

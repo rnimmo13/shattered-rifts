@@ -829,3 +829,24 @@
 .card__cost.is-up .card__costmod {
   color: #ff6a74;
 }
+
+/* a number the Sanctum changed (DECISIONS #233): green up, red down, with how far it moved */
+.card__roll {
+  font-weight: 800;
+  white-space: nowrap;
+  /* a thin dark edge so the colour reads on a light or a dark card */
+  text-shadow:
+    0 0 2px rgb(0 0 0 / 0.85),
+    0 0 1px rgb(0 0 0 / 0.85);
+}
+.card__roll sup {
+  font-size: 0.62em;
+  margin-left: 0.08em;
+  font-weight: 700;
+}
+.card__roll--up {
+  color: #4ee08a;
+}
+.card__roll--down {
+  color: #ff6b81;
+}

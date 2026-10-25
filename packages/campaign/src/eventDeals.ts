@@ -2,7 +2,7 @@
 // An event is only offered when every option can be taken right now, so none can be unplayable. Labels read "Headline (price): reward".
 
 import { clone } from '@sr/combat';
-import { dealFeasible, type EventCtx } from './deals';
+import { dealFeasible, nameRemovals, pinRemovals, type EventCtx } from './deals';
 import { offerBoon } from './rewards';
 import type { EventDef } from './events';
 import type { DealStep, EventOption, RunState } from './types';
@@ -57,12 +57,16 @@ export function make(spec: DealSpec, r: RunState): EventCtx {
       optional !== 'optional' ||
       dealFeasible(probe, deal, { title: '', text: '', cardOffer: '', options: [] }),
   );
-  const options: EventOption[] = shown.map(([label, deal, say], i) => ({
-    id: (['d1', 'd2', 'd3', 'd4'] as const)[i] as EventOption['id'],
-    label,
-    deal,
-    ...(say ? { say } : {}),
-  }));
+  // a random removal picks its card now, and the option says which (DECISIONS #233)
+  const options: EventOption[] = shown.map(([label, deal, say], i) => {
+    const pinned = pinRemovals(r, deal);
+    return {
+      id: (['d1', 'd2', 'd3', 'd4'] as const)[i] as EventOption['id'],
+      label: nameRemovals(label, pinned.names),
+      deal: pinned.steps,
+      ...(say ? { say } : {}),
+    };
+  });
   if (!spec.noLeave) options.push({ id: 'leave', label: 'Walk away' });
   return {
     title: spec.title,

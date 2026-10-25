@@ -32,6 +32,12 @@ export interface EventDef {
   build: (r: RunState) => EventCtx;
 }
 
+/** What the bonfire spirits give for a card: more for a rarer one. */
+const bonfireHeal = (id: string): number => {
+  const rarity = COMBAT_DB.cards[id]?.rarity;
+  return rarity === 'rare' || rarity === 'legendary' ? 20 : rarity === 'uncommon' ? 12 : 6;
+};
+
 export const EVENTS: EventDef[] = [
   {
     id: 'cache',
@@ -153,7 +159,7 @@ export const EVENTS: EventDef[] = [
         {
           id: 'sanctify',
           label:
-            'Sanctify the whole deck: the numbers on every card are re-rolled, some 25% stronger and some 25% weaker (permanent; those cards can never be removed)',
+            'Sanctify the whole deck: the numbers on every card are re-rolled, some 25% stronger and some 25% weaker (permanent: a deck is sanctified only once)',
         },
         { id: 'leave', label: 'No: keep the deck as it is' },
       ],
@@ -282,18 +288,24 @@ export const EVENTS: EventDef[] = [
     id: 'bonfire',
     weight: 1,
     when: (r) => nonBasic(r.deck).length > 0 && r.deck.length > V2_DECK_RULES.minSize,
-    build: () => ({
-      title: 'The bonfire spirits',
-      text: 'Small lights circle a fire that does not need fuel. They will take a card from you and be grateful, in proportion.',
-      options: [
-        {
-          id: 'burn',
-          label: 'Feed the fire a random card (not a basic): common heals 6, uncommon 12, rare 20',
-        },
-        leave,
-      ],
-      cardOffer: '',
-    }),
+    // (the card the spirits will take is picked now, shown, and named: DECISIONS #233)
+    build: (r) => {
+      const pool = nonBasic(r.deck);
+      // (offered only when there is one; a build without it names none)
+      const pick = pool.length ? (pool[nextInt(r.rng, pool.length)] as string) : '';
+      return {
+        title: 'The bonfire spirits',
+        text: 'Small lights circle a fire that does not need fuel. They will take a card from you and be grateful, in proportion.',
+        options: [
+          {
+            id: 'burn',
+            label: `Feed the fire ${COMBAT_DB.cards[pick]?.name ?? 'a card'}: heal ${bonfireHeal(pick)}`,
+          },
+          leave,
+        ],
+        cardOffer: pick,
+      };
+    },
   },
   {
     id: 'alchemist',
@@ -527,10 +539,12 @@ export function resolveEvent(
     case 'burn': {
       const pool = nonBasic(r.deck);
       if (!pool.length || r.deck.length <= V2_DECK_RULES.minSize) fail('There is nothing to burn');
-      const pick = pool[nextInt(r.rng, pool.length)] as string;
-      const rarity = COMBAT_DB.cards[pick]?.rarity;
-      const heal =
-        rarity === 'rare' || rarity === 'legendary' ? 20 : rarity === 'uncommon' ? 12 : 6;
+      // (the card the option named; an event saved by an older build picks one now)
+      const pick =
+        ev.cardOffer && r.deck.includes(ev.cardOffer)
+          ? ev.cardOffer
+          : (pool[nextInt(r.rng, pool.length)] as string);
+      const heal = bonfireHeal(pick);
       r.deck.splice(r.deck.indexOf(pick), 1);
       healBy(r, heal);
       return `The spirits take ${COMBAT_DB.cards[pick]?.name ?? 'a card'} and warm you: heal ${heal}.`;

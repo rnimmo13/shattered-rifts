@@ -5,6 +5,8 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **Events say which card they take:** an option that removes a card at random now names it ("Defend leaves", "Defend and Shield Charge leave your deck"), and that is the card that goes. The bonfire shows the card it will burn.
+- **Sanctified cards can be removed** like any other card, and a sanctified card shows what changed: every number its roll moved is green (up) or red (down), with how far ("8 +2"; hover for "6 → 8").
 - **Every run is on the campaign leaderboard,** from its first fight, and so are runs played before you had a username (or while offline): open the game and they are announced.
 - **Ghost Wardens say so:** "Ghost Warden! This Warden is X's deck from the Arena", and the fight is titled the same. A ghost Warden is now a deck that reached Tier 3 or further, chosen near your own tier, and never the same one twice in a run.
 - **A deck from a run that collapses stays as a ghost** other players may face; you just can't take it into the Arena yourself any more.
