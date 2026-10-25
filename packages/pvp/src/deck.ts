@@ -24,7 +24,115 @@ export interface Rejected {
 const isCardId = (id: string): boolean =>
   Object.hasOwn(COMBAT_DB.cards, id) || (rollOf(id) !== 0 && COMBAT_DB.cards[id] !== undefined);
 
-/** Strip anything odd out of a display name. */
+// Names are shown to other players, so abusive ones are replaced. Letters are compared after folding look-alikes (f u c k, f*ck,
+// sh1t, Fuuuck) so the usual disguises do not work. Strong stems match anywhere in the name; short or ambiguous words only
+// match as a whole word, so ordinary names (Cassidy, Dickens, Peacock, Scunthorpe, Torpedo, Spice) are left alone.
+const STEMS = [
+  'fuck',
+  'shit',
+  'cunt',
+  'nigg',
+  'fagg',
+  'whore',
+  'slut',
+  'bitch',
+  'bastard',
+  'twat',
+  'retard',
+  'dildo',
+  'penis',
+  'vagina',
+  'pussy',
+  'blowjob',
+  'handjob',
+  'rapist',
+  'paedo',
+  'nazi',
+  'tranny',
+  'cocksuck',
+  'motherf',
+  'asshole',
+  'dickhead',
+  'jackoff',
+  'jerkoff',
+  'cumshot',
+];
+const WORDS = new Set([
+  'ass',
+  'arse',
+  'dick',
+  'cock',
+  'cum',
+  'piss',
+  'fag',
+  'rape',
+  'tits',
+  'boobs',
+  'anal',
+  'sex',
+  'nig',
+  'coon',
+  'gook',
+  'dyke',
+  'prick',
+  'fk',
+  'fck',
+  'wtf',
+  'stfu',
+  'kys',
+  'milf',
+  'wank',
+  'spic',
+  'kike',
+  'chink',
+  'pedo',
+  'porn',
+  'hitler',
+  'molest',
+]);
+const LOOKALIKE: Record<string, string> = {
+  '0': 'o',
+  '1': 'i',
+  '!': 'i',
+  '|': 'i',
+  '3': 'e',
+  '4': 'a',
+  '@': 'a',
+  '5': 's',
+  $: 's',
+  '7': 't',
+  '+': 't',
+  '8': 'b',
+  '9': 'g',
+};
+
+/** real words and places that contain a blocked stem */
+const INNOCENT = /scunthorpe|cunningham/g;
+
+const REPEATS = /(.)\1+/g;
+/** three or more of the same letter in a row (asssss) read as two */
+const LONG_RUNS = /(.)\1{2,}/g;
+
+/** Fold a name for comparison: no accents, look-alike symbols as letters, lower case. */
+const fold = (name: string): string =>
+  Array.from(name.normalize('NFKD').replace(/[̀-ͯ]/g, '').toLowerCase())
+    .map((ch) => LOOKALIKE[ch] ?? ch)
+    .join('');
+
+/** Is this name abusive (so it is shown as "Riftwalker" instead)? */
+export function isProfane(name: string): boolean {
+  const folded = fold(name);
+  // separated by symbols or spaces (f u c k, f.u.c.k) and stretched (fuuuck): squash to letters only, and collapse repeats
+  const squashed = folded
+    .replace(INNOCENT, '')
+    .replace(/[^a-z]/g, '')
+    .replace(REPEATS, '$1');
+  if (STEMS.some((s) => squashed.includes(s.replace(REPEATS, '$1')))) return true;
+  const words = folded.split(/[^a-z]+/).filter((w) => w !== '');
+  return words.some((w) => WORDS.has(w) || WORDS.has(w.replace(LONG_RUNS, '$1$1')));
+}
+
+/** Strip anything odd out of a display name (and replace an abusive one). */
 export function cleanName(raw: unknown): string {
   const s = typeof raw === 'string' ? raw : '';
   // keep printable characters only (no control characters, no angle brackets)
@@ -34,7 +142,8 @@ export function cleanName(raw: unknown): string {
       return c >= 0x20 && c !== 0x7f && ch !== '<' && ch !== '>';
     })
     .join('');
-  return kept.replace(/\s+/g, ' ').trim().slice(0, MAX_NAME) || 'Riftwalker';
+  const name = kept.replace(/\s+/g, ' ').trim().slice(0, MAX_NAME);
+  return name === '' || isProfane(name) ? 'Riftwalker' : name;
 }
 
 /** Check an entry that arrived over the wire (it can be anything) and return a clean copy, or why it is refused. */

@@ -20,6 +20,7 @@ export {
   POTION_PRICE,
   offerCards,
   crossedPool,
+  crossedOffers,
   LUCK_WEIGHTS,
 } from './rewards';
 export {
@@ -39,6 +40,10 @@ export {
   buyRemoval,
   chooseCard,
   chooseEvent,
+  startTrial,
+  settleInterrupted,
+  finishTrial,
+  claimTrialPrize,
   chooseKit,
   choosePrelude,
   CROSSED_MERCHANT_CHANCE,
@@ -61,3 +66,4 @@ export {
 export { makePrelude, describeEffect } from './preludes';
 export { KIT_CARDS, makeKits } from './kits';
 export { RUN_SAVE_VERSION, parseRun, serializeRun } from './save';
+export { ELITE_EVENTS, ELITE_EVENT_CHANCE, buildElite } from './trials';

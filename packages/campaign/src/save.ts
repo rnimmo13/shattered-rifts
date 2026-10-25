@@ -145,6 +145,9 @@ function validContext(r: RunState): boolean {
             (o['deal'] === undefined || validDeal(o['deal'])),
         ) &&
         okOffer(e['cardOffer']) &&
+        (e['trial'] === undefined || validTrial(e['trial'])) &&
+        (e['cardOffers'] === undefined ||
+          (Array.isArray(e['cardOffers']) && (e['cardOffers'] as unknown[]).every(hasCard))) &&
         (e['boonOffer'] === undefined ||
           (typeof e['boonOffer'] === 'string' && Object.hasOwn(COMBAT_DB.boons, e['boonOffer'])))
       );
@@ -152,6 +155,21 @@ function validContext(r: RunState): boolean {
     default:
       return true;
   }
+}
+
+const GAMES = ['echoes', 'pairs', 'runelock', 'rhythm', 'cipher'];
+/** An elite event's trial: a known game, a state, and prizes that are deal steps like any option. */
+function validTrial(t: unknown): boolean {
+  if (!isObj(t) || !GAMES.includes(t['game'] as string)) return false;
+  if (t['state'] !== 'open' && t['state'] !== 'playing' && t['state'] !== 'won') return false;
+  if (!isInt(t['seed'], 0, 4294967295) || !isInt(t['consolation'], 0, 10000)) return false;
+  return (
+    Array.isArray(t['prizes']) &&
+    (t['prizes'] as unknown[]).length > 0 &&
+    (t['prizes'] as unknown[]).every(
+      (p) => isObj(p) && typeof p['id'] === 'string' && validDeal(p['deal']),
+    )
+  );
 }
 
 const DEAL_KINDS = new Set([
@@ -168,6 +186,15 @@ const DEAL_KINDS = new Set([
   'transform',
   'copy',
   'gift',
+  'crossed',
+  'card',
+  'static',
+  'loseBoon',
+  'losePotion',
+  'exchange',
+  'boonOf',
+  'potionOf',
+  'mark',
   'chance',
 ]);
 /** An event option's effect steps (see deals.ts): known kinds, whole numbers, chance branches that are step lists too. */
@@ -177,6 +204,12 @@ function validDeal(steps: unknown, depth = 0): boolean {
     if (!isObj(s) || typeof s['k'] !== 'string' || !DEAL_KINDS.has(s['k'])) return false;
     for (const f of ['n', 'pct'] as const)
       if (s[f] !== undefined && !isInt(s[f], -100000, 100000)) return false;
+    if (s['k'] === 'card' && !hasCard(s['id'])) return false;
+    if (s['k'] === 'boonOf' && !(typeof s['id'] === 'string' && Object.hasOwn(COMBAT_DB.boons, s['id'])))
+      return false;
+    if (s['k'] === 'potionOf' && !(typeof s['id'] === 'string' && Object.hasOwn(COMBAT_DB.potions, s['id'])))
+      return false;
+    if (s['k'] === 'mark' && typeof s['id'] !== 'string') return false;
     if (s['k'] === 'chance')
       return validDeal(s['win'], depth + 1) && validDeal(s['lose'], depth + 1);
     return true;
@@ -214,6 +247,19 @@ export function parseRun(text: string): RunState | null {
     if (clean.length) r.held = clean.slice(0, 3);
     else delete r.held;
   }
+  // event flags and the last event's coin tosses: kept only when well-formed
+  const loose = r as { marks?: unknown; eventFlips?: unknown };
+  if (loose.marks !== undefined && !isStrArray(loose.marks)) delete loose.marks;
+  if (
+    loose.eventFlips !== undefined &&
+    !(
+      Array.isArray(loose.eventFlips) &&
+      (loose.eventFlips as unknown[]).every(
+        (f) => isObj(f) && isInt(f['pct'], 0, 100) && typeof f['won'] === 'boolean',
+      )
+    )
+  )
+    delete loose.eventFlips;
   // saves from before card luck existed were all normal
   if (r.luck === undefined) r.luck = 'normal';
   if (r.luck !== 'normal' && r.luck !== 'lucky' && r.luck !== 'blessed') return null;

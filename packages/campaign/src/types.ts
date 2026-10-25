@@ -59,6 +59,32 @@ export interface MerchantItem {
   onHold?: boolean;
 }
 
+/** The mini-games an elite event can ask for (the client plays them: apps/web/src/trials). */
+export type TrialGame = 'echoes' | 'pairs' | 'runelock' | 'rhythm' | 'cipher';
+
+/** One prize to choose from when a trial is won: what it does is a list of deal steps, and what to show of it. */
+export interface TrialPrize {
+  id: 'd1' | 'd2' | 'd3';
+  label: string;
+  deal: DealStep[];
+  card?: string;
+  boon?: string;
+  potion?: string;
+}
+
+export interface TrialOffer {
+  game: TrialGame;
+  /** the puzzle is made from this, so the same trial is the same puzzle after a reload */
+  seed: number;
+  /** open: not begun. playing: begun, and saved as begun, so it can never be tried twice. won: pick a prize. */
+  state: 'open' | 'playing' | 'won';
+  /** the shards you get for trying when you lose */
+  consolation: number;
+  /** what the prizes are, in a few words ("Legendary cards") */
+  theme: string;
+  prizes: TrialPrize[];
+}
+
 export interface EventOption {
   id:
     | 'shards'
@@ -87,6 +113,7 @@ export interface EventOption {
     | 'burn'
     | 'lab'
     | 'transform'
+    | 'trial'
     | 'd1'
     | 'd2'
     | 'd3'
@@ -120,6 +147,21 @@ export type DealStep =
   | { k: 'copy' }
   /** a random card of your class and that rarity joins the deck */
   | { k: 'gift'; rarity: 'common' | 'uncommon' | 'rare' }
+  /** a random card from another Riftwalker's pool (never Legendary) joins the deck */
+  | { k: 'crossed'; rarity: 'common' | 'uncommon' | 'rare' }
+  /** this exact card joins the deck (the event named it when it was built) */
+  | { k: 'card'; id: string }
+  | { k: 'static'; n: number }
+  /** a random Boon is given up */
+  | { k: 'loseBoon' }
+  | { k: 'losePotion'; n: number }
+  /** a random card (not basic) leaves the deck and a Rift-crossed card of the same rarity takes its place */
+  | { k: 'exchange' }
+  /** this exact Boon / potion (named when the event was built) */
+  | { k: 'boonOf'; id: string }
+  | { k: 'potionOf'; id: string }
+  /** set (or, with off, clear) a flag on the run that a later event can ask for */
+  | { k: 'mark'; id: string; off?: boolean }
   | { k: 'chance'; pct: number; win: DealStep[]; lose: DealStep[] };
 
 /** One of the three starting decks (one per lane) offered at the start of a run. */
@@ -193,8 +235,12 @@ export interface NodeContext {
     text: string;
     options: EventOption[];
     cardOffer: string;
+    /** an event that lays several cards on the table (you can read them before you choose) */
+    cardOffers?: string[];
     /** an event that offers a Boon */
     boonOffer?: string;
+    /** an elite event: an optional mini-game for a choice of better rewards (see trials.ts) */
+    trial?: TrialOffer;
   };
   shrineUsed?: boolean;
   /** prelude: the choice on offer (nodeId is empty) */
@@ -247,6 +293,10 @@ export interface RunState {
   context: NodeContext | null;
   rng: RngState;
   stats: RunStats;
+  /** the coin tosses the last event made, in order (the screen plays them before it says what happened) */
+  eventFlips?: { pct: number; won: boolean }[];
+  /** flags set by events for a later event to find (a buried map...) */
+  marks?: string[];
   /** what the last event did, in a sentence (shown once it is over) */
   eventResult?: string;
 }

@@ -88,9 +88,43 @@ async function vault(request: Request, env: Env, action: string): Promise<Respon
         body: JSON.stringify({ ...body, code: undefined }),
       }),
     );
-    return json(await res.json(), res.status);
+    const data = await res.json<{ ok?: boolean }>();
+    // a deck that was just saved can be met as a ghost (the player's Arena name comes with it)
+    if (action === 'bank' && res.ok && data.ok) await registerSavedGhost(request, env, body);
+    return json(data, res.status);
   } catch {
     return json({ ok: false, error: 'unavailable' }, 503);
+  }
+}
+
+/** Tell the leaderboard about a deck that was saved, so it can be a ghost. Never fails the save. */
+async function registerSavedGhost(
+  request: Request,
+  env: Env,
+  body: Record<string, unknown>,
+): Promise<void> {
+  try {
+    const owner = await boardId(request, env, body);
+    const d = body['deck'] as Record<string, unknown> | undefined;
+    if (!owner || !d) return;
+    await env.BOARD.get(env.BOARD.idFromName('main')).fetch(
+      new Request('https://board.invalid/ghost/register', {
+        method: 'POST',
+        body: JSON.stringify({
+          owner,
+          entry: {
+            name: body['name'],
+            hero: d['hero'],
+            deck: d['deck'],
+            boons: d['boons'],
+            tier: d['tier'],
+            stage: d['stage'],
+          },
+        }),
+      }),
+    );
+  } catch {
+    /* the deck is saved either way */
   }
 }
 

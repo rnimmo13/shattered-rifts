@@ -3,7 +3,7 @@
 
 import { clone, nextInt } from '@sr/combat';
 import { COMBAT_DB, V2_DECK_RULES, isSanctified } from '@sr/content/v2';
-import { MAX_POTIONS, canAdd, cardOfRarity, offerCards, offerPotion } from './rewards';
+import { MAX_POTIONS, canAdd, cardOfRarity, crossedOffers, offerCards, offerPotion } from './rewards';
 import type { DealStep, EventOption, NodeContext, RunState } from './types';
 
 export type EventCtx = NonNullable<NodeContext['event']>;
@@ -149,8 +149,76 @@ function step(r: RunState, s: DealStep, ev: EventCtx, h: DealHelpers, out: strin
       out.push(`${nameOf(id as string)} joins your deck.`);
       return;
     }
+    case 'crossed': {
+      const id = crossedOffers(r.rng, r.character, r.deck, [s.rarity], 1)[0];
+      if (!id) fail('There is no card to give');
+      r.deck.push(id as string);
+      out.push(`${nameOf(id as string)} joins your deck: a card from another world.`);
+      return;
+    }
+    case 'card':
+      if (!canAdd(r.deck, s.id)) fail('That card would break the deck rules');
+      r.deck.push(s.id);
+      out.push(`${nameOf(s.id)} joins your deck.`);
+      return;
+    case 'static':
+      for (let i = 0; i < s.n; i++) r.deck.push('static');
+      out.push(`${plural(s.n, 'Static card')} join${s.n === 1 ? 's' : ''} your deck.`);
+      return;
+    case 'loseBoon': {
+      if (!r.boons.length) fail('You have no Boon to give');
+      const id = r.boons.splice(nextInt(r.rng, r.boons.length), 1)[0] as string;
+      const b = COMBAT_DB.boons[id];
+      if (b?.maxHp) {
+        r.maxHp = Math.max(1, r.maxHp - b.maxHp);
+        r.hp = Math.min(r.hp, r.maxHp);
+      }
+      out.push(`${b?.name ?? 'A Boon'} is gone.`);
+      return;
+    }
+    case 'losePotion': {
+      if (r.potions.length < s.n) fail(`You need ${plural(s.n, 'potion')}`);
+      r.potions.splice(0, s.n);
+      out.push(`You give up ${plural(s.n, 'potion')}.`);
+      return;
+    }
+    case 'exchange': {
+      const pool = removableCards(r.deck).filter((id) => {
+        const c = COMBAT_DB.cards[id];
+        return !!c && c.rarity !== 'basic' && !id.includes('~');
+      });
+      if (!pool.length) fail('You have nothing to trade');
+      const from = pool[nextInt(r.rng, pool.length)] as string;
+      const rarity = COMBAT_DB.cards[from]?.rarity;
+      const want = rarity === 'common' || rarity === 'uncommon' ? rarity : 'rare';
+      const without = r.deck.filter((_, i) => i !== r.deck.indexOf(from));
+      const to = crossedOffers(r.rng, r.character, without, [want], 1)[0];
+      if (!to) fail('Nobody has anything to trade');
+      r.deck.splice(r.deck.indexOf(from), 1, to as string);
+      out.push(`${nameOf(from)} is traded for ${nameOf(to as string)}, a card from another world.`);
+      return;
+    }
+    case 'boonOf':
+      if (r.boons.includes(s.id)) fail('You already have that Boon');
+      h.gainBoon(r, s.id);
+      out.push(`You gain ${COMBAT_DB.boons[s.id]?.name ?? 'a Boon'}.`);
+      return;
+    case 'potionOf':
+      if (r.potions.length >= MAX_POTIONS) fail('Your belt is full');
+      r.potions.push(s.id);
+      out.push(`You take ${COMBAT_DB.potions[s.id]?.name ?? 'a potion'}.`);
+      return;
+    case 'mark': {
+      const marks = (r.marks ??= []);
+      const at = marks.indexOf(s.id);
+      if (s.off) {
+        if (at >= 0) marks.splice(at, 1);
+      } else if (at < 0) marks.push(s.id);
+      return;
+    }
     case 'chance': {
       const win = nextInt(r.rng, 100) < s.pct;
+      (r.eventFlips ??= []).push({ pct: s.pct, won: win });
       for (const sub of win ? s.win : s.lose) step(r, sub, ev, h, out);
       return;
     }

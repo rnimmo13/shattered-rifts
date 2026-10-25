@@ -4,6 +4,7 @@ export * from './protocol';
 export {
   checkEntry,
   cleanName,
+  isProfane,
   MAX_BOONS,
   MAX_DECK,
   MAX_NAME,

@@ -7,9 +7,9 @@ import { offerBoon } from './rewards';
 import type { EventDef } from './events';
 import type { DealStep, EventOption, RunState } from './types';
 
-type OptSpec = [label: string, steps: DealStep[], say?: string];
+export type OptSpec = [label: string, steps: DealStep[], say?: string];
 
-interface DealSpec {
+export interface DealSpec {
   id: string;
   weight: number;
   title: string;
@@ -19,22 +19,26 @@ interface DealSpec {
   /** no "walk away" option: every choice is a real one */
   noLeave?: boolean;
   opts: OptSpec[];
+  /** only when this is true of the run (a stage, a class, a flag, a state of health) */
+  needs?: (r: RunState) => boolean;
+  /** options that depend on the run (cards named when the event is built); they replace opts and may lay cards on the table */
+  dyn?: (r: RunState) => { opts: OptSpec[]; cards?: string[] };
 }
 
-const hurt = (n: number): DealStep => ({ k: 'hurt', n });
-const hurtPct = (n: number): DealStep => ({ k: 'hurtPct', n });
-const heal = (pct: number): DealStep => ({ k: 'heal', pct });
-const maxHp = (n: number): DealStep => ({ k: 'maxHp', n });
-const shards = (n: number): DealStep => ({ k: 'shards', n });
-const wound = (n = 1): DealStep => ({ k: 'wound', n });
-const potion = (n = 1): DealStep => ({ k: 'potion', n });
-const boon: DealStep = { k: 'boon' };
-const upgrade = (n = 1): DealStep => ({ k: 'upgrade', n });
-const remove = (of: 'wound' | 'basic' | 'any', n = 1): DealStep => ({ k: 'remove', of, n });
-const transform: DealStep = { k: 'transform' };
-const copy: DealStep = { k: 'copy' };
-const gift = (rarity: 'common' | 'uncommon' | 'rare'): DealStep => ({ k: 'gift', rarity });
-const chance = (pct: number, win: DealStep[], lose: DealStep[] = []): DealStep => ({
+export const hurt = (n: number): DealStep => ({ k: 'hurt', n });
+export const hurtPct = (n: number): DealStep => ({ k: 'hurtPct', n });
+export const heal = (pct: number): DealStep => ({ k: 'heal', pct });
+export const maxHp = (n: number): DealStep => ({ k: 'maxHp', n });
+export const shards = (n: number): DealStep => ({ k: 'shards', n });
+export const wound = (n = 1): DealStep => ({ k: 'wound', n });
+export const potion = (n = 1): DealStep => ({ k: 'potion', n });
+export const boon: DealStep = { k: 'boon' };
+export const upgrade = (n = 1): DealStep => ({ k: 'upgrade', n });
+export const remove = (of: 'wound' | 'basic' | 'any', n = 1): DealStep => ({ k: 'remove', of, n });
+export const transform: DealStep = { k: 'transform' };
+export const copy: DealStep = { k: 'copy' };
+export const gift = (rarity: 'common' | 'uncommon' | 'rare'): DealStep => ({ k: 'gift', rarity });
+export const chance = (pct: number, win: DealStep[], lose: DealStep[] = []): DealStep => ({
   k: 'chance',
   pct,
   win,
@@ -42,9 +46,10 @@ const chance = (pct: number, win: DealStep[], lose: DealStep[] = []): DealStep =
 });
 
 /** Build the event for this run (the Boon, if any, is picked here) and its options. */
-function make(spec: DealSpec, r: RunState): EventCtx {
+export function make(spec: DealSpec, r: RunState): EventCtx {
   const boonOffer = spec.boon ? (offerBoon(r.rng, r.boons, 'elite') ?? '') : '';
-  const options: EventOption[] = spec.opts.map(([label, deal, say], i) => ({
+  const built = spec.dyn ? spec.dyn(r) : { opts: spec.opts, cards: undefined };
+  const options: EventOption[] = built.opts.map(([label, deal, say], i) => ({
     id: (['d1', 'd2', 'd3', 'd4'] as const)[i] as EventOption['id'],
     label,
     deal,
@@ -56,19 +61,23 @@ function make(spec: DealSpec, r: RunState): EventCtx {
     text: spec.text,
     options,
     cardOffer: '',
+    ...(built.cards?.length ? { cardOffers: built.cards } : {}),
     ...(boonOffer ? { boonOffer } : {}),
   };
 }
 
-function def(spec: DealSpec): EventDef {
+export function def(spec: DealSpec): EventDef {
   return {
     id: spec.id,
     weight: spec.weight,
     // offered only when every option works (on a copy, so the real run's dice are untouched)
     when: (r) => {
+      if (spec.needs && !spec.needs(r)) return false;
       const probe = clone(r);
       const ev = make(spec, probe);
       if (spec.boon && !ev.boonOffer) return false;
+      // a table of cards that came up empty is not an event
+      if (spec.dyn && !ev.options.some((o) => o.deal)) return false;
       return ev.options.every((o) => !o.deal || dealFeasible(probe, o.deal, ev));
     },
     build: (r) => make(spec, r),

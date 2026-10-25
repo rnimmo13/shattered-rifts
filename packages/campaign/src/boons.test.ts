@@ -120,6 +120,7 @@ describe('events', () => {
       if (!e) continue;
       seen.add(e.title);
       for (const o of e.options) {
+        if (o.id === 'trial') continue; // (a puzzle: see trials.test.ts)
         const done = chooseEvent(entered, o.id);
         expect(done.phase).toBe('map');
         if (o.id === 'bleed') expect(done.hp).toBe(entered.hp - 10);

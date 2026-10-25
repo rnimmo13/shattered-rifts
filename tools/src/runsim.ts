@@ -13,6 +13,9 @@ import {
   availableNodes,
   chooseCard,
   chooseEvent,
+  claimTrialPrize,
+  finishTrial,
+  startTrial,
   chooseKit,
   choosePrelude,
   duelPlan,
@@ -144,7 +147,13 @@ function playRun(h: HeroId, d: Difficulty, i: number): Result {
         const opts = run.context?.event?.options.map((o) => o.id) ?? [];
         const want =
           hpFrac < 0.6 ? ['heal', 'leave'] : ['upgrade', 'card', 'boon', 'shards', 'leave'];
-        run = chooseEvent(run, (want.find((w) => opts.includes(w as never)) ?? 'leave') as 'leave');
+        if (opts.includes('trial')) {
+          // an elite event: the bot plays the trial and wins about two times in three, then takes the first prize
+          const won = (i * 7 + run.stats.nodesCleared * 3) % 3 !== 0;
+          run = finishTrial(startTrial(run), won);
+          if (run.phase === 'event') run = claimTrialPrize(run, 'd1');
+        } else
+          run = chooseEvent(run, (want.find((w) => opts.includes(w as never)) ?? 'leave') as 'leave');
         break;
       }
       case 'stageClear':

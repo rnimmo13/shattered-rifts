@@ -1,0 +1,340 @@
+/* the trial mini-games (elite events) and the practice page for them */
+.trial {
+  position: fixed;
+  inset: 0;
+  z-index: 250;
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  overflow-y: auto;
+  background: radial-gradient(ellipse at 50% 40%, var(--c-navy), var(--c-void) 75%);
+  color: var(--c-ivory);
+}
+.trial__box {
+  width: min(34rem, 94vw);
+  display: grid;
+  gap: 0.9rem;
+  justify-items: center;
+  text-align: center;
+}
+.trial__title {
+  margin: 0;
+  font-size: 1.6rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--c-gold-pale);
+}
+.trial__blurb {
+  margin: 0;
+  color: var(--c-text-dim);
+}
+.trial__blurb small {
+  display: block;
+  margin-top: 0.15rem;
+}
+.trial__rules {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 0.45rem;
+  text-align: left;
+  font-size: 0.98rem;
+}
+.trial__rules li {
+  padding: 0.5rem 0.8rem;
+  border-radius: 8px;
+  border: 1px solid rgb(255 255 255 / 0.12);
+  background: rgb(8 10 20 / 0.55);
+}
+.trial__buttons {
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.trial__result h3 {
+  margin: 0 0 0.3rem;
+  font-size: 1.5rem;
+}
+.trial__result h3.is-won {
+  color: var(--c-gold-light);
+}
+.trial__result h3.is-lost {
+  color: var(--c-text-dim);
+}
+.tg {
+  width: 100%;
+  display: grid;
+  gap: 0.8rem;
+  justify-items: center;
+}
+.tg__status {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  font-size: 0.95rem;
+  color: var(--c-text-dim);
+}
+.tg__note {
+  min-height: 1.4em;
+  margin: 0;
+  color: var(--c-text-dim);
+}
+
+/* echoes */
+.echoes {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.8rem;
+  width: min(20rem, 80vw);
+}
+.echoes__pad {
+  aspect-ratio: 1;
+  border-radius: 18px;
+  font-size: 2.6rem;
+  color: var(--rune);
+  border: 2px solid color-mix(in srgb, var(--rune) 55%, transparent);
+  background: color-mix(in srgb, var(--rune) 10%, var(--c-void));
+  cursor: pointer;
+  transition:
+    transform 0.08s,
+    box-shadow 0.12s,
+    background 0.12s;
+}
+.echoes__pad:disabled {
+  cursor: default;
+}
+.echoes__pad.is-lit {
+  transform: scale(1.05);
+  background: color-mix(in srgb, var(--rune) 55%, var(--c-void));
+  box-shadow: 0 0 34px var(--rune);
+  color: #fff;
+}
+
+/* pairs */
+.pairs {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.6rem;
+  width: min(23rem, 90vw);
+}
+.pairs__tile {
+  aspect-ratio: 1;
+  border-radius: 12px;
+  border: 2px solid var(--c-gold-dark);
+  background: linear-gradient(160deg, var(--c-violet-deep), var(--c-navy));
+  cursor: pointer;
+  font-size: 2rem;
+  color: var(--rune);
+  transition:
+    transform 0.15s,
+    background 0.15s;
+}
+.pairs__tile.is-up {
+  background: color-mix(in srgb, var(--rune) 14%, var(--c-void));
+  border-color: var(--rune);
+}
+.pairs__tile.is-matched {
+  opacity: 0.55;
+  cursor: default;
+}
+.pairs__face {
+  display: block;
+}
+
+/* rune lock */
+.lock {
+  display: grid;
+  grid-template-columns: repeat(var(--n), 1fr);
+  gap: 0.5rem;
+  width: min(21rem, 88vw);
+}
+.lock__rune {
+  aspect-ratio: 1;
+  border-radius: 12px;
+  font-size: 1.9rem;
+  cursor: pointer;
+  color: transparent;
+  border: 2px solid rgb(255 255 255 / 0.14);
+  background: rgb(8 10 20 / 0.8);
+  transition:
+    background 0.15s,
+    box-shadow 0.15s,
+    color 0.15s;
+}
+.lock__rune.is-on {
+  color: var(--c-gold-pale);
+  border-color: var(--c-gold);
+  background: radial-gradient(circle at 50% 40%, rgb(232 198 104 / 0.45), rgb(40 30 10 / 0.8));
+  box-shadow: 0 0 18px rgb(232 198 104 / 0.55);
+}
+
+/* rhythm */
+.rhythm {
+  position: relative;
+  width: min(30rem, 92vw);
+  height: 5.5rem;
+  border-radius: 12px;
+  border: 2px solid var(--c-gold-dark);
+  background: rgb(8 10 20 / 0.85);
+  cursor: pointer;
+  touch-action: manipulation;
+  overflow: hidden;
+}
+.rhythm.is-hit {
+  box-shadow: 0 0 28px rgb(155 224 138 / 0.7);
+}
+.rhythm.is-miss {
+  box-shadow: 0 0 28px rgb(255 100 90 / 0.6);
+}
+.rhythm__gold {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  background: linear-gradient(180deg, rgb(232 198 104 / 0.65), rgb(232 198 104 / 0.3));
+  border-left: 2px solid var(--c-gold-light);
+  border-right: 2px solid var(--c-gold-light);
+}
+.rhythm__needle {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 4px;
+  margin-left: -2px;
+  background: var(--c-ivory);
+  box-shadow: 0 0 12px var(--c-ivory);
+}
+.rhythm__lamps {
+  display: inline-flex;
+  gap: 0.35rem;
+  align-items: center;
+}
+.rhythm__lamps i {
+  width: 0.8rem;
+  height: 0.8rem;
+  border-radius: 50%;
+  border: 1px solid var(--c-gold-dark);
+  background: transparent;
+}
+.rhythm__lamps i.is-hit {
+  background: #9be08a;
+  border-color: #9be08a;
+}
+.rhythm__lamps i.is-miss {
+  background: #ff8a7a;
+  border-color: #ff8a7a;
+}
+
+/* cipher */
+.cipher__rows {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.3rem;
+  width: min(20rem, 90vw);
+  max-height: 14rem;
+  overflow-y: auto;
+}
+.cipher__rows li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.25rem 0.6rem;
+  border-radius: 8px;
+  background: rgb(8 10 20 / 0.55);
+}
+.cipher__slots {
+  display: inline-flex;
+  gap: 0.6rem;
+  font-size: 1.5rem;
+}
+.cipher__pips {
+  display: inline-flex;
+  gap: 0.3rem;
+}
+.cipher__pips i {
+  width: 0.7rem;
+  height: 0.7rem;
+  border-radius: 50%;
+  border: 1px solid rgb(255 255 255 / 0.2);
+}
+.cipher__pips i.is-exact {
+  background: var(--c-gold-light);
+  border-color: var(--c-gold-light);
+}
+.cipher__pips i.is-near {
+  border: 2px solid var(--c-gold-light);
+}
+.cipher__reveal {
+  color: var(--c-text-dim);
+}
+.cipher__draft {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+.cipher__slot,
+.cipher__rune {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 10px;
+  font-size: 1.6rem;
+  border: 2px solid rgb(255 255 255 / 0.2);
+  background: rgb(8 10 20 / 0.8);
+  cursor: pointer;
+}
+.cipher__rune:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+.cipher__palette {
+  display: flex;
+  gap: 0.5rem;
+}
+
+/* the practice page */
+.trials {
+  min-height: 100vh;
+  padding: 1.2rem 1rem 2rem;
+  display: grid;
+  gap: 1rem;
+  align-content: start;
+  justify-items: center;
+  background: radial-gradient(ellipse at 50% 20%, var(--c-navy), var(--c-void) 75%);
+  color: var(--c-ivory);
+}
+.trials h1 {
+  margin: 0;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--c-gold-pale);
+}
+.trials__grid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.6rem;
+  width: min(34rem, 94vw);
+}
+.trials__grid button,
+.trials__grid a {
+  width: 100%;
+  display: grid;
+  gap: 0.15rem;
+  text-align: left;
+  padding: 0.7rem 0.9rem;
+  border-radius: 10px;
+  border: 1px solid rgb(255 255 255 / 0.16);
+  background: rgb(8 10 20 / 0.6);
+  color: var(--c-ivory);
+  font: inherit;
+  cursor: pointer;
+  text-decoration: none;
+}
+.trials__grid small {
+  color: var(--c-text-dim);
+}

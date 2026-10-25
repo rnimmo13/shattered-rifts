@@ -1400,3 +1400,35 @@
   background: rgb(8 10 20 / 0.55);
   border: 1px solid rgb(255 255 255 / 0.14);
 }
+
+/* ---- elite events: the trial option and the choice of prizes ---- */
+.eventopt--trial {
+  background:
+    linear-gradient(160deg, rgb(60 40 100 / 0.92), rgb(8 10 20 / 0.96)) padding-box,
+    linear-gradient(160deg, var(--c-gold-pale), var(--c-gold)) border-box;
+  box-shadow: 0 0 18px rgb(201 160 255 / 0.35);
+}
+.prizes {
+  display: grid;
+  gap: 0.8rem;
+  justify-items: center;
+}
+.prizes__title {
+  margin: 0;
+  color: var(--c-gold-pale);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.prizes__row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: center;
+  align-items: flex-start;
+}
+.prize {
+  display: grid;
+  gap: 0.6rem;
+  justify-items: center;
+  width: min(15rem, 92vw);
+}

@@ -47,6 +47,26 @@ export function crossedPool(hero: HeroId): string[] {
     );
 }
 
+/** Up to `count` different Rift-crossed cards the deck can take, one rarity each (cycling through `rarities`); fewer if the pool runs dry. */
+export function crossedOffers(
+  rng: RngState,
+  hero: HeroId,
+  deck: readonly string[],
+  rarities: readonly string[],
+  count: number,
+): string[] {
+  const pool = crossedPool(hero).filter((id) => canAdd(deck, id));
+  const out: string[] = [];
+  for (let i = 0; i < count; i++) {
+    const want = rarities[i % rarities.length];
+    const from = pool.filter((id) => rarityOf(id) === want && !out.includes(id));
+    const any = from.length ? from : pool.filter((id) => !out.includes(id));
+    if (!any.length) break;
+    out.push(any[nextInt(rng, any.length)] as string);
+  }
+  return out;
+}
+
 const WEIGHTS: Record<OfferQuality, Record<string, number>> = {
   duel: { common: 65, uncommon: 28, rare: 7, legendary: 0 },
   elite: { common: 30, uncommon: 50, rare: 19, legendary: 1 },

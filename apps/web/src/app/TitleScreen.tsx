@@ -168,7 +168,9 @@ export function TitleScreen() {
           </a>
           <a className="home__play" href="#/fight">
             <b>Practice</b>
-            <small>Try any fight as {hero.hero.name}, no run needed.</small>
+            <small>
+              Try any fight as {hero.hero.name}, no run needed. Mini-game trials too.
+            </small>
           </a>
 
           <nav className="home__links" aria-label="More">

@@ -18,6 +18,7 @@ import { CROSSED_MERCHANT_CHANCE, FINAL_STAGE, generateStageMap, reachableNodes 
 export { CROSSED_MERCHANT_CHANCE };
 import { makeKits } from './kits';
 import { rollEvent, resolveEvent } from './events';
+import { beginTrial, endTrial, takePrize } from './trials';
 import { makePrelude } from './preludes';
 import {
   BOON_PRICE,
@@ -297,6 +298,7 @@ export function enterNode(run: RunState, nodeId: string): RunState {
     }
     case 'event': {
       delete r.eventResult; // (so the next event's result is shown even if its words are the same)
+      delete r.eventFlips;
       r.context.event = rollEvent(r);
       r.phase = 'event';
       break;
@@ -832,6 +834,7 @@ export function chooseEvent(run: RunState, option: EventOption['id']): RunState 
     ev.options.some((o) => o.id === option),
     'That is not an option',
   );
+  delete r.eventFlips;
   r.eventResult = resolveEvent(r, option, ev, {
     gainBoon,
     fail: (msg) => {
@@ -839,6 +842,59 @@ export function chooseEvent(run: RunState, option: EventOption['id']): RunState 
     },
   });
   clearNode(r, (r.context as NonNullable<RunState['context']>).nodeId);
+  r.phase = 'map';
+  return r;
+}
+
+/** The player pressed Begin on an elite event's trial. From now on it is spent: it is saved as begun, and cannot be tried again. */
+export function startTrial(run: RunState): RunState {
+  need(run.phase === 'event' && run.context?.event?.trial?.state === 'open', 'There is no trial here');
+  const r = clone(run);
+  beginTrial((r.context as NonNullable<RunState['context']>).event as NonNullable<NonNullable<RunState['context']>['event']>);
+  return r;
+}
+
+/**
+ * A run that is loaded while a trial was being played (the page was closed, the connection dropped, the run was reopened):
+ * the trial counts as failed, with nothing for trying, and the run moves on. Any other run comes back unchanged.
+ */
+export function settleInterrupted(run: RunState): { run: RunState; notice: string | null } {
+  if (run.phase !== 'event' || run.context?.event?.trial?.state !== 'playing')
+    return { run, notice: null };
+  const r = clone(run);
+  const ctx = r.context as NonNullable<RunState['context']>;
+  r.eventResult = 'You left the trial unfinished, so it counts as failed. The way closes, and you move on.';
+  clearNode(r, ctx.nodeId);
+  r.phase = 'map';
+  return { run: r, notice: r.eventResult };
+}
+
+/** An elite event's trial has been played (the client plays the puzzle): a win opens the choice of prizes, a loss pays the consolation. */
+export function finishTrial(run: RunState, won: boolean): RunState {
+  need(run.phase === 'event' && run.context?.event?.trial?.state === 'playing', 'There is no trial being played');
+  const r = clone(run);
+  const ctx = r.context as NonNullable<RunState['context']>;
+  const said = endTrial(r, ctx.event as NonNullable<typeof ctx.event>, won);
+  if (said !== null) {
+    r.eventResult = said;
+    clearNode(r, ctx.nodeId);
+    r.phase = 'map';
+  }
+  return r;
+}
+
+/** Take one of the prizes of a trial that was won. */
+export function claimTrialPrize(run: RunState, prize: string): RunState {
+  need(run.phase === 'event' && run.context?.event?.trial?.state === 'won', 'There is no prize here');
+  const r = clone(run);
+  const ctx = r.context as NonNullable<RunState['context']>;
+  r.eventResult = takePrize(r, ctx.event as NonNullable<typeof ctx.event>, prize, {
+    gainBoon,
+    fail: (msg) => {
+      throw new RunError(msg);
+    },
+  });
+  clearNode(r, ctx.nodeId);
   r.phase = 'map';
   return r;
 }

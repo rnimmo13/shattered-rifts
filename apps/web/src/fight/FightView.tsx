@@ -1513,7 +1513,7 @@ function PileModal(props: { db: CombatDb; title: string; cards: CardDef[]; onClo
             <span>Close</span>
           </button>
         </header>
-        <Grimoire cards={tallyDefs(props.cards)} emptyText="Empty." />
+        <Grimoire cards={tallyDefs(props.cards)} emptyText="Empty." reading />
       </div>
     </div>
   );

@@ -149,7 +149,7 @@ describe('ghosts', () => {
     lastAt,
   });
 
-  it('are picked from the upper half by wins, never your own, never a stale one', () => {
+  it('are picked from the upper half by wins, never the deck you are playing, never a stale one', () => {
     const decks = [
       deck('a', 'ann', 9),
       deck('b', 'bob', 7),
@@ -165,7 +165,9 @@ describe('ghosts', () => {
     const old = [deck('x', 'xan', 50, 0, NOW - 31 * 86_400_000), deck('y', 'yo', 1)];
     expect(pickGhost(old, 'me', 0.9, NOW)?.id).toBe('y');
     expect(pickGhost([], 'me', 0.5, NOW)).toBeNull();
-    expect(pickGhost([deck('m', 'me', 3)], 'me', 0.5, NOW)).toBeNull();
+    expect(pickGhost([deck('m', 'me', 3)], 'm', 0.5, NOW)).toBeNull();
+    // another deck of yours may come up: only the exact deck you are playing is skipped
+    expect(pickGhost([deck('m2', 'me', 3)], 'm1', 0.5, NOW)?.id).toBe('m2');
     // a single deck is its own upper half
     expect(pickGhost([deck('only', 'ann', 0)], 'me', 0.99, NOW)?.id).toBe('only');
   });
@@ -218,5 +220,43 @@ describe('where a player stands', () => {
     expect(rankPvp(rows)).toHaveLength(100);
     expect(rankPvp(rows).every((s) => !('player' in s))).toBe(true);
     expect('player' in withoutPlayer(all[0]!)).toBe(false);
+  });
+});
+
+describe('names', () => {
+  it('replaces abusive names, including the usual disguises', () => {
+    for (const bad of [
+      'fuck',
+      'F U C K',
+      'f.u.c.k',
+      'fuuuck',
+      'sh1t',
+      'Sh!tlord',
+      'b1tch',
+      'xX_cunt_Xx',
+      'asssss',
+      'D1ck',
+      'what the fuck',
+      'nigga',
+    ])
+      expect(cleanBoardName(bad), bad).toBe('Riftwalker');
+  });
+  it('leaves ordinary names alone', () => {
+    for (const ok of [
+      'Scunthorpe',
+      'Dickens',
+      'Peacock',
+      'Cassidy',
+      'Torpedo',
+      'Spice',
+      'Swank',
+      'Classic',
+      'Assad',
+      'Rob the Brave',
+      'Analise',
+      'Essex',
+      'Hancock',
+    ])
+      expect(cleanBoardName(ok), ok).toBe(ok);
   });
 });

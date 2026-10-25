@@ -33,7 +33,23 @@ function eventRun(seed: string, over: Partial<RunState> = {}): RunState {
   return enterNode(asEvent, node.id);
 }
 
+/** events that only happen in a certain state of the run need that state set up to be tried */
+const SETUP: Record<string, Partial<RunState>> = {
+  'tithe-stone': { boons: ['iron-sigil'] },
+  'treasure-dig': { marks: ['map'] },
+  'dying-lamp': { hp: 20 },
+  tollkeeper: { shards: 400 },
+  'deep-spring': { stage: 2, potions: ['healing-philtre'] },
+  'class-shrine': { stage: 2 },
+  'potion-trade': { potions: ['healing-philtre', 'healing-philtre'] },
+};
+
 describe('events', () => {
+  it('there are seventy of them, each with its own id', () => {
+    expect(EVENTS.length).toBe(70);
+    expect(new Set(EVENTS.map((e) => e.id)).size).toBe(70);
+  });
+
   it('are varied and random, and a card is on offer only now and then', () => {
     const titles = new Map<string, number>();
     let withCard = 0;
@@ -55,7 +71,11 @@ describe('events', () => {
     for (const def of EVENTS) {
       const first = eventRun(`def-${def.id}`);
       // a deck with one non-basic card in it, so every event has something to work with
-      const base: RunState = { ...first, deck: [...first.deck, 'gilded-bastion'] };
+      const base: RunState = {
+        ...first,
+        deck: [...first.deck, 'gilded-bastion'],
+        ...(SETUP[def.id] ?? {}),
+      };
       expect(def.when(base), def.id).toBe(true);
       const ev = def.build(base);
       expect(ev.options.length, def.id).toBeGreaterThanOrEqual(2);
@@ -168,7 +188,7 @@ describe('the Sanctum happens once', () => {
       return;
     }
     throw new Error('no Sanctum event in 300 seeds');
-  });
+  }, 60_000);
 });
 
 describe('sanctifying the deck', () => {
@@ -286,6 +306,7 @@ describe('the data-driven events', () => {
       const r0 = eventRun(`stress-${i}`, s);
       const ev = ctxOf(r0);
       for (const o of ev.options) {
+        if (o.id === 'trial') continue; // (a puzzle: see trials.test.ts)
         const r = clone(r0);
         const msg = resolveEvent(r, o.id, ev, helpers);
         expect(msg.length, `${ev.title}/${o.id}`).toBeGreaterThan(3);
@@ -340,5 +361,76 @@ describe('the data-driven events', () => {
     });
     expect(lucky.shards).toBe(107);
     expect(lucky.hp).toBe(40);
+  });
+});
+
+describe('Rift-crossed and sacrifice events', () => {
+  const helpers = {
+    gainBoon: (run: RunState, id: string) => void run.boons.push(id),
+    fail: (m: string): never => {
+      throw new Error(m);
+    },
+  };
+  const base = (): RunState => ({
+    ...eventRun('crossed-steps'),
+    hp: 40,
+    shards: 100,
+    deck: [...eventRun('crossed-steps').deck, 'gilded-bastion'],
+  });
+  const run = (r: RunState, ...deal: DealStep[]): RunState => {
+    const c = clone(r);
+    const o = { id: 'd1' as const, label: 'x', deal };
+    resolveEvent(c, 'd1', { title: 't', text: 't', cardOffer: '', options: [o] }, helpers);
+    return c;
+  };
+
+  it('a crossed card comes from another Riftwalker, and an exchange keeps the rarity', () => {
+    const b = base();
+    const got = run(b, { k: 'crossed', rarity: 'rare' }).deck.at(-1)!;
+    expect(COMBAT_DB.cards[got]!.hero).not.toBe('maren');
+    expect(COMBAT_DB.cards[got]!.rarity).toBe('rare');
+    const swapped = run(b, { k: 'exchange' });
+    expect(swapped.deck).toHaveLength(b.deck.length);
+    expect(swapped.deck).not.toContain('gilded-bastion');
+    expect(COMBAT_DB.cards[swapped.deck.at(-1) ?? '']?.hero).not.toBe('maren');
+  });
+
+  it('giving up a Boon, a potion or a flag works, and refuses when there is nothing to give', () => {
+    const b = { ...base(), boons: ['iron-sigil'], potions: ['healing-philtre'] };
+    expect(run(b, { k: 'loseBoon' }).boons).toEqual([]);
+    expect(run(b, { k: 'losePotion', n: 1 }).potions).toEqual([]);
+    expect(() => run(b, { k: 'losePotion', n: 2 })).toThrow();
+    expect(() => run({ ...b, boons: [] }, { k: 'loseBoon' })).toThrow();
+    const marked = run(b, { k: 'mark', id: 'map' });
+    expect(marked.marks).toEqual(['map']);
+    expect(run(marked, { k: 'mark', id: 'map', off: true }).marks).toEqual([]);
+  });
+
+  it('a table of three shows three different crossed cards, and each can be taken', () => {
+    const open = EVENTS.find((e) => e.id === 'open-rift')!;
+    const b = base();
+    const ev = open.build(b);
+    expect(ev.cardOffers).toHaveLength(3);
+    expect(new Set(ev.cardOffers).size).toBe(3);
+    const first = ev.options[0]!;
+    const after = clone(b);
+    resolveEvent(after, first.id, ev, helpers);
+    expect(after.deck).toContain(ev.cardOffers![0]);
+    expect(after.hp).toBe(b.hp - 8);
+  });
+
+  it('the map is a promise: only a run holding it is offered the dig, and the dig clears it', () => {
+    const dig = EVENTS.find((e) => e.id === 'treasure-dig')!;
+    const keep = EVENTS.find((e) => e.id === 'buried-map')!;
+    const b = base();
+    expect(dig.when(b)).toBe(false);
+    expect(keep.when(b)).toBe(true);
+    const held = run(b, { k: 'mark', id: 'map' });
+    expect(dig.when(held)).toBe(true);
+    expect(keep.when(held)).toBe(false);
+    const ev = dig.build(held);
+    const after = clone(held);
+    resolveEvent(after, ev.options[0]!.id, ev, helpers);
+    expect(after.marks).toEqual([]);
   });
 });

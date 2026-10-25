@@ -257,7 +257,7 @@ export default function PvpScreen() {
           </button>
           {!busy && (
             <a className="pvp__viewdeck" href="#/decks">
-              <span>View full deck</span>
+              <span>View</span>
             </a>
           )}
         </li>

@@ -235,8 +235,19 @@ export class Leaderboard extends DurableObject<Env> {
     );
   }
 
-  /** The ghost for someone to face: one of the better decks (the upper half by wins) that is not theirs. */
-  private pick(b: Record<string, unknown>, now: number): Response {
+  /** A deck a player saved becomes a ghost others can meet, even before it has played a match. */
+  private async registerSaved(b: Record<string, unknown>, now: number): Promise<Response> {
+    if (!isId(b['owner'])) return json({ ok: false, error: 'bad-request' }, 400);
+    if (!this.within(`ghost-save:${b['owner']}`, HOUR, 30, now))
+      return json({ ok: true, registered: false });
+    const checked = checkEntry(b['entry']);
+    if (!checked.ok) return json({ ok: true, registered: false });
+    await this.registerDeck(b['owner'], checked.entry, now, null);
+    return json({ ok: true, registered: true });
+  }
+
+  /** The ghost for someone to face: one of the better decks (the upper half by wins) that is not the deck they play. */
+  private async pick(b: Record<string, unknown>, now: number): Promise<Response> {
     if (!isId(b['requester'])) return json({ ok: false, error: 'bad-request' }, 400);
     // asking for ghosts over and over is limited (a ghost match is a match, not something to be refreshed)
     if (!this.within(`ghost-ask:${b['requester']}`, HOUR, GHOST_ASKS_PER_HOUR, now))
@@ -250,7 +261,10 @@ export class Leaderboard extends DurableObject<Env> {
         now - 31 * DAY,
       )
       .toArray();
-    const chosen = pickGhost(rows.map(toDeck), b['requester'], Math.random(), now);
+    // the asker's exact deck is never met as a ghost; their other decks may be
+    const checked = checkEntry(b['entry']);
+    const own = checked.ok ? await this.deckId(b['requester'], checked.entry) : null;
+    const chosen = pickGhost(rows.map(toDeck), own, Math.random(), now);
     if (!chosen) return json({ ok: true, ghost: null });
     const row = this.ctx.storage.sql
       .exec<GhostSql>('SELECT * FROM ghosts WHERE id = ?', chosen.id)
@@ -582,6 +596,7 @@ export class Leaderboard extends DurableObject<Env> {
     if (url.pathname === '/pvp') return this.recordPvp(body, now);
     if (url.pathname === '/run') return this.recordRun(body, now);
     if (url.pathname === '/ghost/pick') return this.pick(body, now);
+    if (url.pathname === '/ghost/register') return this.registerSaved(body, now);
     if (url.pathname === '/ghost/result') return this.ghostResult(body, now);
     return json({ ok: false, error: 'not-found' }, 404);
   }

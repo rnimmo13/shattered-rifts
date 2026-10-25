@@ -77,7 +77,7 @@ export class Matchmaker extends DurableObject<Env> {
       const res = await this.env.BOARD.get(this.env.BOARD.idFromName('main')).fetch(
         new Request('https://board.invalid/ghost/pick', {
           method: 'POST',
-          body: JSON.stringify({ requester }),
+          body: JSON.stringify({ requester, entry: checked.entry }),
         }),
       );
       const picked = await res.json<{
@@ -90,7 +90,7 @@ export class Matchmaker extends DurableObject<Env> {
           code: 'no-ghost',
           message: picked.limited
             ? 'That is a lot of ghost requests. Try again in a little while.'
-            : 'There are no ghosts yet. A deck becomes a ghost once it has played a match in the Arena.',
+            : 'There are no ghosts yet. A deck becomes a ghost once it is saved or has played a match in the Arena.',
         });
         return;
       }

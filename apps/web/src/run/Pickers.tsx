@@ -22,6 +22,7 @@ import { tally } from '../fight/grimoireData';
 import { BoonCard, BoonChip } from '../fight/BoonChip';
 import { PotionCard, PotionIcon } from '../fight/PotionChip';
 import { RarityGem } from '../ui/RarityGem';
+import { TrialHost } from '../trials/TrialHost';
 
 const defOf = (id: string): CardDef | undefined => COMBAT_DB.cards[id];
 
@@ -188,6 +189,8 @@ export function DeckModal(props: {
           cards={tally(props.deck, COMBAT_DB)}
           // choosing a card (to remove or upgrade) needs cards big enough to read; just looking can fit more on a page
           readable={!!props.onPick}
+          // just looking at your deck: many cards on a page, but big enough to read
+          reading={!props.onPick}
           {...(props.onPick ? { onPick: props.onPick } : {})}
           {...(props.pickable ? { pickable: props.pickable } : {})}
         />
@@ -552,10 +555,35 @@ export function MerchantView(props: {
   );
 }
 
-export function EventView(props: { run: RunState; onChoose: (id: EventOption['id']) => void }) {
+export function EventView(props: {
+  run: RunState;
+  onChoose: (id: EventOption['id']) => void;
+  /** an elite event's trial was played */
+  onTrial: (won: boolean) => void;
+  /** Begin was pressed on the trial: it is saved as begun, and can never be tried again */
+  onBegin: () => void;
+  /** the prize chosen after a won trial */
+  onPrize: (id: string) => void;
+}) {
   const ev = props.run.context?.event;
   const [hover, setHover] = useState<CardDef | null>(null);
+  const [playing, setPlaying] = useState(false);
   if (!ev) return null;
+  const trial = ev.trial;
+  if (trial && (trial.state === 'playing' || (trial.state === 'open' && playing)))
+    return (
+      <TrialHost
+        game={trial.game}
+        seed={trial.seed}
+        onDone={(won) => {
+          setPlaying(false);
+          props.onTrial(won);
+        }}
+        onCancel={() => setPlaying(false)}
+        onBegin={props.onBegin}
+      />
+    );
+  const won = trial?.state === 'won';
   const card = ev.cardOffer ? defOf(ev.cardOffer) : undefined;
   return (
     <section className="stage-panel" aria-label="Event">
@@ -567,11 +595,54 @@ export function EventView(props: { run: RunState; onChoose: (id: EventOption['id
           <Pickable id={card.id} width={270} own={props.run.character} onHover={setHover} />
         </div>
       )}
+      {ev.cardOffers && (
+        <div className="offers">
+          {ev.cardOffers.map((id) => (
+            <Pickable
+              key={id}
+              id={id}
+              width={210}
+              own={props.run.character}
+              onHover={setHover}
+              preview
+            />
+          ))}
+        </div>
+      )}
+      {trial && won && (
+        <div className="prizes" aria-label="Choose your prize">
+          <h3 className="prizes__title">The way is open. Choose one.</h3>
+          <div className="prizes__row">
+            {trial.prizes.map((p) => (
+              <div key={p.id} className="prize">
+                {p.card && (
+                  <Pickable
+                    id={p.card}
+                    width={210}
+                    own={props.run.character}
+                    onHover={setHover}
+                    preview
+                  />
+                )}
+                {p.boon && <BoonCard id={p.boon} />}
+                {p.potion && <PotionCard id={p.potion} />}
+                <button className="eventopt" onClick={() => props.onPrize(p.id)}>
+                  <b className="eventopt__name">{p.label}</b>
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
       <div className="eventopts">
-        {ev.options.map((o) => {
+        {(won ? [] : ev.options).map((o) => {
           const { head, detail } = splitOption(o.label);
           return (
-            <button key={o.id} className="eventopt" onClick={() => props.onChoose(o.id)}>
+            <button
+              key={o.id}
+              className={`eventopt${o.id === 'trial' ? ' eventopt--trial' : ''}`}
+              onClick={() => (o.id === 'trial' ? setPlaying(true) : props.onChoose(o.id))}
+            >
               <b className="eventopt__name">{head}</b>
               {detail && <span className="eventopt__text">{detail}</span>}
             </button>

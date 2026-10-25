@@ -24,6 +24,8 @@ export function Grimoire(props: {
   emptyText?: string;
   /** big, easy-to-read cards (fewer to a page) instead of as many as fit: for choosing a card to remove or upgrade */
   readable?: boolean;
+  /** a deck to read in a run: still many cards to a page, but never small (the card text stays legible) */
+  reading?: boolean;
 }) {
   const [rootRef, width] = useWidth();
   // how much window is left below the top of the book: the book is sized to fit it (and again whenever the window changes)
@@ -40,7 +42,14 @@ export function Grimoire(props: {
     window.addEventListener('resize', measure);
     return () => window.removeEventListener('resize', measure);
   }, [width]);
-  const layout = bookLayout(width, props.cols, props.spread, !props.readable, room);
+  const layout = bookLayout(
+    width,
+    props.cols,
+    props.spread,
+    !props.readable,
+    room,
+    !!props.reading,
+  );
   const rows = props.rows ?? layout.rows;
   const cardWidth = props.cardWidth ?? layout.cardWidth;
   const cols = props.cols ?? layout.cols;

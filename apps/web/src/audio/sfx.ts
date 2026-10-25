@@ -210,6 +210,22 @@ const RECIPES: Record<Sfx, (c: AudioContext) => void> = {
   lose: (c) => arpeggio(c, [392, 330, 262, 196], 0.18, { type: 'sine', vol: 0.22 }),
 };
 
+/** A single pitched note (the trial games use these): `step` 0.. picks a note of a pentatonic scale. */
+export function playNote(step: number, dur = 0.32): void {
+  if (!settings.on || settings.volume <= 0) return;
+  try {
+    const c = ensure();
+    if (!c) return;
+    const scale = [262, 294, 330, 392, 440, 523, 587, 659];
+    tone(c, scale[Math.max(0, Math.min(scale.length - 1, step))] as number, dur, {
+      type: 'triangle',
+      vol: 0.24,
+    });
+  } catch {
+    /* sound must never break the game */
+  }
+}
+
 /** Play a sound. Safe to call at any time (it does nothing when muted or if audio is unavailable). */
 export function play(name: Sfx): void {
   if (!settings.on || settings.volume <= 0) return;

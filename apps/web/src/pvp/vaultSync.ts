@@ -11,7 +11,7 @@ import {
   VAULT_CODE_LENGTH,
   type VaultDeck,
 } from '@sr/pvp';
-import { serverBase } from './config';
+import { serverBase, getName } from './config';
 
 const CODE_KEY = 'sr-vault-code';
 /** the code in use, kept here too so it is the same code everywhere even when storage is blocked */
@@ -100,7 +100,15 @@ const withKey = (key: Key, rest: Record<string, unknown>): Record<string, unknow
 export const remoteVault = {
   list: (key: Key): Promise<Remote> => call('list', withKey(key, {})),
   bank: (key: Key, deck: VaultDeck, replaceId?: string): Promise<Remote> =>
-    call('bank', withKey(key, replaceId === undefined ? { deck } : { deck, replaceId })),
+    call(
+      'bank',
+      withKey(key, {
+        deck,
+        // (the name the deck will have as a ghost)
+        name: getName(),
+        ...(replaceId === undefined ? {} : { replaceId }),
+      }),
+    ),
   drop: (key: Key, id: string): Promise<Remote> => call('drop', withKey(key, { id })),
 };
 

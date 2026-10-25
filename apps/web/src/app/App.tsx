@@ -10,6 +10,7 @@ import { TitleScreen } from './TitleScreen';
 // The duel screen pulls in the whole Pixi renderer, so it loads on demand.
 const RunScreen = lazy(() => import('../run/RunScreen'));
 const FightScreen = lazy(() => import('../fight/FightScreen'));
+const TrialsPractice = lazy(() => import('../trials/TrialsPractice'));
 const PvpScreen = lazy(() => import('../pvp/PvpScreen'));
 const SavedDecksScreen = lazy(() => import('../pvp/SavedDecksScreen'));
 const LeaderboardScreen = lazy(() =>
@@ -71,6 +72,13 @@ function Screens({ hash }: { hash: string }) {
     return (
       <Suspense fallback={<div className="loading">Opening the rift…</div>}>
         <SavedDecksScreen />
+      </Suspense>
+    );
+  }
+  if (hash === '#/trials') {
+    return (
+      <Suspense fallback={<div className="loading">Opening the rift…</div>}>
+        <TrialsPractice />
       </Suspense>
     );
   }

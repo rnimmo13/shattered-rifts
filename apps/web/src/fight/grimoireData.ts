@@ -37,6 +37,9 @@ const GAP = 14.4;
 /** a browsing book aims for cards about this wide, and no narrower than the minimum (px) */
 const DENSE_CARD = 150;
 const DENSE_MIN = 120;
+/** a book to read (a deck viewed in a run) aims for bigger cards, and keeps them at least this wide so the text stays legible */
+const READ_CARD = 190;
+const READ_MIN = 170;
 /** what a page spends on its own head, folio and the book's edges, px */
 const BOOK_CHROME = 165;
 
@@ -56,23 +59,27 @@ export function bookLayout(
   dense = false,
   /** the height (px) from the top of the book to the bottom of the window: the book never grows past it */
   room?: number,
+  /** a dense book meant for reading (not just browsing): bigger cards, with a higher floor */
+  reading = false,
 ): { spread: 1 | 2; cols: number; cardWidth: number; rows: number } {
   if (width <= 0) return { spread: 1, cols: fixedCols ?? 3, cardWidth: 150, rows: 2 };
   const fit = (spread: 1 | 2): { spread: 1 | 2; cols: number; cardWidth: number; rows: number } => {
     const perPage = (width - FLIPS) / spread - PAGE_PAD;
+    const target = reading ? READ_CARD : DENSE_CARD;
+    const floor = reading ? READ_MIN : DENSE_MIN;
     if (dense) {
       let cols =
-        fixedCols ?? Math.max(1, Math.min(6, Math.round((perPage + GAP) / (DENSE_CARD + GAP))));
+        fixedCols ?? Math.max(1, Math.min(6, Math.round((perPage + GAP) / (target + GAP))));
       const across = (n: number): number => Math.floor((perPage - (n - 1) * GAP) / n);
       // a narrow window gets fewer columns rather than a book wider than itself
-      while (!fixedCols && cols > 1 && across(cols) < DENSE_MIN) cols--;
+      while (!fixedCols && cols > 1 && across(cols) < floor) cols--;
       let cardWidth = Math.max(60, Math.min(240, across(cols)));
       // the book's room in the window (less the page head, the book's edges and the folio): two rows if they fit, one if not, and more
       // rows are added while they do. The cards shrink before the book is allowed past the bottom of the window.
       const space = (room ?? window.innerHeight - 330) - BOOK_CHROME;
       const rowH = (w: number): number => w * 1.4 + GAP;
       const fits = (w: number): number => Math.floor(space / rowH(w));
-      while (cardWidth > DENSE_MIN && fits(cardWidth) < 2) cardWidth -= 4;
+      while (cardWidth > floor && fits(cardWidth) < 2) cardWidth -= 4;
       while (cardWidth > 60 && fits(cardWidth) < 1) cardWidth -= 4;
       const rows = Math.max(1, Math.min(5, fits(cardWidth)));
       return { spread, cols, cardWidth, rows };
@@ -90,7 +97,10 @@ export function bookLayout(
   };
   if (fixedSpread) return fit(fixedSpread);
   const two = fit(2);
-  return width >= 1000 && two.cardWidth >= (dense ? DENSE_MIN + 10 : MIN_COMFY) ? two : fit(1);
+  return width >= 1000 &&
+    two.cardWidth >= (dense ? (reading ? READ_MIN : DENSE_MIN) + 10 : MIN_COMFY)
+    ? two
+    : fit(1);
 }
 
 export interface GrimoireCard {

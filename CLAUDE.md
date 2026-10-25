@@ -12,6 +12,7 @@ Ko-fi-funded) → Steam full game ($7.99–$9.99) with PvP later. Owner: Robert.
 | `docs/03_CAMPAIGN.md` | Characters, run structure (3 stages), Resolve, Bank/Continue, Rift Tiers, Wardens, Boons, Vault & seasons |
 | `docs/09_ROSTER.md` | **The 8 Riftwalkers**: pool rules (3 lanes, shared toolkit, owned signatures), lanes per character, engine pieces. `10_CARD_LIST.md` is the generated card list (`pnpm cardlist`) |
 | `docs/11_PVP.md` | PvP: how a match works, the Cloudflare server (`apps/server`), running and deploying it |
+| `docs/12_STEAM_READINESS.md` | Steam checklist: shell, accounts, verified runs, achievements, disclosures, store page (plan only, nothing built) |
 | `docs/DECISIONS.md` | Every design decision and rules clarification, with dates and reasons |
 | `docs/BALANCE.md` | Sim results (first-player advantage, starter matrix, tier model, enemy difficulty) and open balance questions |
 | `docs/04_VISUALS_AND_ANIMATION.md` | Card frame spec, tokens, board layout, **animation catalog** with timings |

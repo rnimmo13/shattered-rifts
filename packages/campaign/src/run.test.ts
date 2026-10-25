@@ -323,7 +323,10 @@ function botRun(hero: HeroId, seed: string): { run: RunState; fights: number } {
         run = leaveMerchant(run);
         break;
       case 'event':
-        run = chooseEvent(run, run.context!.event!.options[0]!.id);
+        run = chooseEvent(
+          run,
+          run.context!.event!.options.find((o) => o.id !== 'trial')!.id,
+        );
         break;
       case 'kit':
         run = chooseKit(run, run.context!.kits![0]!.id);

@@ -84,13 +84,10 @@ export function periodEnd(now: number, period: Period): number {
 
 // ---- names ----
 
-const BLOCKED = /\b(fuck\w*|shit\w*|cunt\w*|bitch\w*|nigg\w*|slut\w*|whore\w*)\b/i;
-
-/** A name as it may appear on a board: the usual cleaning, one line, short, and not plainly abusive (that becomes "Riftwalker"). */
+/** A name as it may appear on a board: the usual cleaning (which also replaces abusive names), one line, short. */
 export function cleanBoardName(raw: unknown): string {
   const name = cleanName(raw).replace(/\s+/g, ' ').trim().slice(0, 20);
-  if (name === '' || BLOCKED.test(name)) return 'Riftwalker';
-  return name;
+  return name === '' ? 'Riftwalker' : name;
 }
 
 // ---- the Arena board ----
@@ -264,17 +261,17 @@ const rate = (d: GhostDeck): number => {
 
 /**
  * The ghost to face: one of the decks in the upper half by wins (people's wins and its own as a ghost, then win rate), never the
- * asker's own and never one that has not played lately. `roll` is a number from 0 up to (not including) 1, chosen by the caller.
+ * exact deck the asker is playing with (`own`; their other decks may come up) and never one that has not played lately. `roll` is a number from 0 up to (not including) 1, chosen by the caller.
  * Null when there is no deck to face.
  */
 export function pickGhost(
   decks: readonly GhostDeck[],
-  requester: string,
+  own: string | null,
   roll: number,
   now: number,
 ): GhostDeck | null {
   const fresh = decks
-    .filter((d) => d.owner !== requester && d.lastAt >= now - GHOST_FRESH_DAYS * 86_400_000)
+    .filter((d) => d.id !== own && d.lastAt >= now - GHOST_FRESH_DAYS * 86_400_000)
     .sort(
       (x, y) =>
         totalWins(y) - totalWins(x) ||

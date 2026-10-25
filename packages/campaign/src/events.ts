@@ -16,6 +16,8 @@ import {
 import { MAX_POTIONS, ancestralPool, canAdd, offerBoon, offerCards, offerPotion } from './rewards';
 import { applyDeal, basics, healBy, nonBasic, upgradable, type EventCtx } from './deals';
 import { DEAL_EVENTS } from './eventDeals';
+import { MORE_EVENTS } from './eventsMore';
+import { rollElite } from './trials';
 import type { EventOption, RunState } from './types';
 
 const leave: EventOption = { id: 'leave', label: 'Walk away' };
@@ -380,10 +382,14 @@ export const EVENTS: EventDef[] = [
   },
   // the data-driven ones (eventDeals.ts)
   ...DEAL_EVENTS,
+  ...MORE_EVENTS,
 ];
 
 /** Pick a random event, weighted, from those that can happen to this run now. */
 export function rollEvent(r: RunState): EventCtx {
+  // now and then the place is an elite one: an optional trial for a choice of better rewards
+  const elite = rollElite(r);
+  if (elite) return elite;
   const live = EVENTS.filter((e) => e.when(r));
   const pool = live.length ? live : [EVENTS[0] as EventDef];
   const total = pool.reduce((n, e) => n + e.weight, 0);
@@ -404,6 +410,7 @@ export function resolveEvent(
 ): string {
   const { fail } = helpers;
   const chosen = ev.options.find((o) => o.id === option);
+  if (option === 'trial') return fail('That is a puzzle: play it first');
   if (chosen?.deal) return applyDeal(r, chosen, ev, helpers);
   switch (option) {
     case 'shards':
@@ -469,14 +476,17 @@ export function resolveEvent(
       });
       return `The fire takes your deck: ${up} cards rise 25%, ${down} fall 25%, ${same} are left as they were.`;
     }
-    case 'bet':
+    case 'bet': {
       if (r.shards < 30) fail('You need 30 shards to bet');
-      if (nextInt(r.rng, 2) === 0) {
+      const win = nextInt(r.rng, 2) === 0;
+      r.eventFlips = [{ pct: 50, won: win }];
+      if (win) {
         r.shards += 30;
         return 'You call it right. The gambler pays 60 shards (you net 30).';
       }
       r.shards -= 30;
       return 'Wrong call. The gambler keeps your 30 shards.';
+    }
     case 'help': {
       if (r.hp <= 8) fail('You are too hurt for that');
       r.hp -= 8;
@@ -497,13 +507,16 @@ export function resolveEvent(
       helpers.gainBoon(r, ev.boonOffer);
       r.deck.push('wound', 'wound');
       return `You carry the idol. It gives you ${COMBAT_DB.boons[ev.boonOffer]?.name ?? 'a Boon'}, and two Wounds.`;
-    case 'drink':
-      if (nextInt(r.rng, 100) < 60) {
+    case 'drink': {
+      const win = nextInt(r.rng, 100) < 60;
+      r.eventFlips = [{ pct: 60, won: win }];
+      if (win) {
         healBy(r, r.maxHp * 0.3);
         return 'The water is sweet. You heal 30% of your HP.';
       }
       r.hp = Math.max(1, r.hp - Math.ceil(r.maxHp * 0.1));
       return 'The water burns going down. You lose 10% of your HP.';
+    }
     case 'mirror': {
       if (r.hp <= 15) fail('You are too hurt for that');
       // a copy still obeys the deck rules (the copy limit, and the Legendary limit)

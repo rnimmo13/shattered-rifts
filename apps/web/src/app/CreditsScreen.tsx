@@ -24,6 +24,11 @@ export function CreditsScreen() {
           ? 'Thank you to the artists whose work is in the game:'
           : 'No third-party art is used in the game.'}
       </p>
+      <p className="learn__note">
+        <b>AI-generated art.</b> The character and enemy models, the card art and the battle arenas
+        were created largely with AI image tools, then cut out, arranged and edited by hand. The
+        interface, icons, effects and animation are drawn in the game itself.
+      </p>
       <dl>
         {CREDITS.map((c) => (
           <div key={c.author} className="learn__row">

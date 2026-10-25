@@ -19,6 +19,10 @@ import {
   buyRemoval,
   chooseCard,
   chooseEvent,
+  claimTrialPrize,
+  finishTrial,
+  settleInterrupted,
+  startTrial,
   chooseKit,
   choosePrelude,
   continueLoop,
@@ -41,6 +45,7 @@ import { venueForRealm } from '../duel/scene/venue';
 import { BoonChip } from '../fight/BoonChip';
 import { getHero, rememberHero } from '../app/heroChoice';
 import { BoonToast } from './BoonToast';
+import { ChanceCoin, type Flip } from './ChanceCoin';
 import { PotionChip } from '../fight/PotionChip';
 import { BankedPanel } from './BankedPanel';
 import { canSaveForArena, loseSavedDecks, saveForArena } from './deckSave';
@@ -96,6 +101,10 @@ export default function RunScreen() {
         notice: 'You left the last duel unfinished, so it counted as a loss.',
       };
     }
+    // ... and so does a trial that was begun: it is spent, and the run moves on
+    const settled = saved ? settleInterrupted(saved) : null;
+    if (saved && settled?.notice)
+      return { run: settled.run, slot, loaded: null as RunState | null, notice: settled.notice };
     return { run: saved, slot, loaded: saved, notice: null as string | null };
   });
   /** the saved slot this run is kept in (null: not kept, as when storage is blocked); it only ever writes to this one */
@@ -123,6 +132,8 @@ export default function RunScreen() {
     runRef.current = r;
     setRunState(r);
   }, []);
+  /** coins tossed by an event's chances, played before the result is shown (the result waits in `then`) */
+  const [coin, setCoin] = useState<{ flips: Flip[]; then: string | null } | null>(null);
   const nextGained = useCallback(() => setGained((g) => g.slice(1)), []);
   const [notice, setNotice] = useState<string | null>(initial.notice);
   /** a result worth reading (what an event or a choice did) is shown green; a refusal or an error stays red */
@@ -193,10 +204,13 @@ export default function RunScreen() {
             name: getName() || 'Riftwalker',
           });
         // what an event just did is worth reading: show it once
-        say(
-          next.eventResult && next.eventResult !== cur.eventResult ? next.eventResult : null,
-          true,
-        );
+        const told =
+          next.eventResult && next.eventResult !== cur.eventResult ? next.eventResult : null;
+        // a chance in the event is shown as a coin first, and the result waits for it
+        if (cur.phase === 'event' && next.eventFlips?.length) {
+          setCoin({ flips: next.eventFlips, then: told });
+          say(null);
+        } else say(told, true);
         setRun(next);
       } catch (e) {
         say(e instanceof RunError ? e.message : 'Something went wrong with that choice.');
@@ -258,7 +272,7 @@ export default function RunScreen() {
       say('That file is not a valid run save.');
       return;
     }
-    begin(parsed);
+    begin(settleInterrupted(parsed).run);
   };
 
   if (!run)
@@ -400,6 +414,15 @@ export default function RunScreen() {
         onHome={goHome}
         lostDecks={lostDecks}
       />
+      {coin && (
+        <ChanceCoin
+          flips={coin.flips}
+          onDone={() => {
+            say(coin.then, true);
+            setCoin(null);
+          }}
+        />
+      )}
       {gained[0] && <BoonToast id={gained[0]} more={gained.length - 1} onDone={nextGained} />}
       {showDeck && (
         <DeckModal deck={run.deck} title="Your deck" onClose={() => setShowDeck(false)} />
@@ -679,7 +702,15 @@ function Body(props: {
         />
       );
     case 'event':
-      return <EventView run={run} onChoose={(id) => act((r) => chooseEvent(r, id))} />;
+      return (
+        <EventView
+          run={run}
+          onChoose={(id) => act((r) => chooseEvent(r, id))}
+          onBegin={() => act((r) => startTrial(r))}
+          onTrial={(won) => act((r) => finishTrial(r, won))}
+          onPrize={(id) => act((r) => claimTrialPrize(r, id))}
+        />
+      );
     case 'kit':
       return <KitView run={run} onChoose={(id) => act((r) => chooseKit(r, id))} />;
     case 'prelude':
