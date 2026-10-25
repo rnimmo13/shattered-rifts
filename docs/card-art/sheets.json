@@ -80,8 +80,8 @@
   ]
  },
  {
-  "name": "maren-01",
-  "hero": "maren",
+  "name": "knight-01",
+  "hero": "knight",
   "cols": 3,
   "rows": 3,
   "ids": [
@@ -97,8 +97,8 @@
   ]
  },
  {
-  "name": "maren-02",
-  "hero": "maren",
+  "name": "knight-02",
+  "hero": "knight",
   "cols": 3,
   "rows": 3,
   "ids": [
@@ -114,8 +114,8 @@
   ]
  },
  {
-  "name": "maren-03",
-  "hero": "maren",
+  "name": "knight-03",
+  "hero": "knight",
   "cols": 3,
   "rows": 3,
   "ids": [
@@ -131,8 +131,8 @@
   ]
  },
  {
-  "name": "maren-04",
-  "hero": "maren",
+  "name": "knight-04",
+  "hero": "knight",
   "cols": 3,
   "rows": 3,
   "ids": [
@@ -148,8 +148,8 @@
   ]
  },
  {
-  "name": "maren-05",
-  "hero": "maren",
+  "name": "knight-05",
+  "hero": "knight",
   "cols": 3,
   "rows": 3,
   "ids": [
@@ -165,8 +165,8 @@
   ]
  },
  {
-  "name": "maren-06",
-  "hero": "maren",
+  "name": "knight-06",
+  "hero": "knight",
   "cols": 3,
   "rows": 3,
   "ids": [
@@ -182,8 +182,8 @@
   ]
  },
  {
-  "name": "maren-07",
-  "hero": "maren",
+  "name": "knight-07",
+  "hero": "knight",
   "cols": 3,
   "rows": 3,
   "ids": [
@@ -199,8 +199,8 @@
   ]
  },
  {
-  "name": "maren-08",
-  "hero": "maren",
+  "name": "knight-08",
+  "hero": "knight",
   "cols": 3,
   "rows": 3,
   "ids": [
@@ -208,8 +208,8 @@
   ]
  },
  {
-  "name": "rivet-01",
-  "hero": "rivet",
+  "name": "engineer-01",
+  "hero": "engineer",
   "cols": 3,
   "rows": 3,
   "ids": [
@@ -225,8 +225,8 @@
   ]
  },
  {
-  "name": "rivet-02",
-  "hero": "rivet",
+  "name": "engineer-02",
+  "hero": "engineer",
   "cols": 3,
   "rows": 3,
   "ids": [
@@ -242,8 +242,8 @@
   ]
  },
  {
-  "name": "rivet-03",
-  "hero": "rivet",
+  "name": "engineer-03",
+  "hero": "engineer",
   "cols": 3,
   "rows": 3,
   "ids": [
@@ -259,8 +259,8 @@
   ]
  },
  {
-  "name": "rivet-04",
-  "hero": "rivet",
+  "name": "engineer-04",
+  "hero": "engineer",
   "cols": 3,
   "rows": 3,
   "ids": [
@@ -276,8 +276,8 @@
   ]
  },
  {
-  "name": "rivet-05",
-  "hero": "rivet",
+  "name": "engineer-05",
+  "hero": "engineer",
   "cols": 3,
   "rows": 3,
   "ids": [
@@ -293,8 +293,8 @@
   ]
  },
  {
-  "name": "rivet-06",
-  "hero": "rivet",
+  "name": "engineer-06",
+  "hero": "engineer",
   "cols": 3,
   "rows": 3,
   "ids": [
@@ -310,8 +310,8 @@
   ]
  },
  {
-  "name": "rivet-07",
-  "hero": "rivet",
+  "name": "engineer-07",
+  "hero": "engineer",
   "cols": 3,
   "rows": 3,
   "ids": [
@@ -325,8 +325,8 @@
   ]
  },
  {
-  "name": "kesh-01",
-  "hero": "kesh",
+  "name": "hunter-01",
+  "hero": "hunter",
   "cols": 3,
   "rows": 3,
   "ids": [
@@ -342,8 +342,8 @@
   ]
  },
  {
-  "name": "kesh-02",
-  "hero": "kesh",
+  "name": "hunter-02",
+  "hero": "hunter",
   "cols": 3,
   "rows": 3,
   "ids": [
@@ -359,8 +359,8 @@
   ]
  },
  {
-  "name": "kesh-03",
-  "hero": "kesh",
+  "name": "hunter-03",
+  "hero": "hunter",
   "cols": 3,
   "rows": 3,
   "ids": [
@@ -376,8 +376,8 @@
   ]
  },
  {
-  "name": "kesh-04",
-  "hero": "kesh",
+  "name": "hunter-04",
+  "hero": "hunter",
   "cols": 3,
   "rows": 3,
   "ids": [
@@ -393,8 +393,8 @@
   ]
  },
  {
-  "name": "kesh-05",
-  "hero": "kesh",
+  "name": "hunter-05",
+  "hero": "hunter",
   "cols": 3,
   "rows": 3,
   "ids": [
@@ -410,8 +410,8 @@
   ]
  },
  {
-  "name": "kesh-06",
-  "hero": "kesh",
+  "name": "hunter-06",
+  "hero": "hunter",
   "cols": 3,
   "rows": 3,
   "ids": [
@@ -427,8 +427,8 @@
   ]
  },
  {
-  "name": "kesh-07",
-  "hero": "kesh",
+  "name": "hunter-07",
+  "hero": "hunter",
   "cols": 3,
   "rows": 3,
   "ids": [
@@ -444,8 +444,8 @@
   ]
  },
  {
-  "name": "kesh-08",
-  "hero": "kesh",
+  "name": "hunter-08",
+  "hero": "hunter",
   "cols": 3,
   "rows": 3,
   "ids": [
@@ -455,8 +455,8 @@
   ]
  },
  {
-  "name": "vesper-01",
-  "hero": "vesper",
+  "name": "trapper-01",
+  "hero": "trapper",
   "cols": 3,
   "rows": 3,
   "ids": [
@@ -472,8 +472,8 @@
   ]
  },
  {
-  "name": "vesper-02",
-  "hero": "vesper",
+  "name": "trapper-02",
+  "hero": "trapper",
   "cols": 3,
   "rows": 3,
   "ids": [
@@ -489,8 +489,8 @@
   ]
  },
  {
-  "name": "vesper-03",
-  "hero": "vesper",
+  "name": "trapper-03",
+  "hero": "trapper",
   "cols": 3,
   "rows": 3,
   "ids": [
@@ -506,8 +506,8 @@
   ]
  },
  {
-  "name": "vesper-04",
-  "hero": "vesper",
+  "name": "trapper-04",
+  "hero": "trapper",
   "cols": 3,
   "rows": 3,
   "ids": [
@@ -523,8 +523,8 @@
   ]
  },
  {
-  "name": "vesper-05",
-  "hero": "vesper",
+  "name": "trapper-05",
+  "hero": "trapper",
   "cols": 3,
   "rows": 3,
   "ids": [
@@ -540,8 +540,8 @@
   ]
  },
  {
-  "name": "vesper-06",
-  "hero": "vesper",
+  "name": "trapper-06",
+  "hero": "trapper",
   "cols": 3,
   "rows": 3,
   "ids": [
@@ -557,8 +557,8 @@
   ]
  },
  {
-  "name": "vesper-07",
-  "hero": "vesper",
+  "name": "trapper-07",
+  "hero": "trapper",
   "cols": 3,
   "rows": 3,
   "ids": [
@@ -574,8 +574,8 @@
   ]
  },
  {
-  "name": "vesper-08",
-  "hero": "vesper",
+  "name": "trapper-08",
+  "hero": "trapper",
   "cols": 3,
   "rows": 3,
   "ids": [
@@ -584,8 +584,8 @@
   ]
  },
  {
-  "name": "quill-01",
-  "hero": "quill",
+  "name": "assassin-01",
+  "hero": "assassin",
   "cols": 3,
   "rows": 3,
   "ids": [
@@ -601,8 +601,8 @@
   ]
  },
  {
-  "name": "quill-02",
-  "hero": "quill",
+  "name": "assassin-02",
+  "hero": "assassin",
   "cols": 3,
   "rows": 3,
   "ids": [
@@ -618,8 +618,8 @@
   ]
  },
  {
-  "name": "quill-03",
-  "hero": "quill",
+  "name": "assassin-03",
+  "hero": "assassin",
   "cols": 3,
   "rows": 3,
   "ids": [
@@ -635,8 +635,8 @@
   ]
  },
  {
-  "name": "quill-04",
-  "hero": "quill",
+  "name": "assassin-04",
+  "hero": "assassin",
   "cols": 3,
   "rows": 3,
   "ids": [
@@ -652,8 +652,8 @@
   ]
  },
  {
-  "name": "quill-05",
-  "hero": "quill",
+  "name": "assassin-05",
+  "hero": "assassin",
   "cols": 3,
   "rows": 3,
   "ids": [
@@ -669,8 +669,8 @@
   ]
  },
  {
-  "name": "quill-06",
-  "hero": "quill",
+  "name": "assassin-06",
+  "hero": "assassin",
   "cols": 3,
   "rows": 3,
   "ids": [
@@ -686,8 +686,8 @@
   ]
  },
  {
-  "name": "quill-07",
-  "hero": "quill",
+  "name": "assassin-07",
+  "hero": "assassin",
   "cols": 3,
   "rows": 3,
   "ids": [
@@ -703,8 +703,8 @@
   ]
  },
  {
-  "name": "quill-08",
-  "hero": "quill",
+  "name": "assassin-08",
+  "hero": "assassin",
   "cols": 3,
   "rows": 3,
   "ids": [
@@ -712,8 +712,8 @@
   ]
  },
  {
-  "name": "ilvane-01",
-  "hero": "ilvane",
+  "name": "totemist-01",
+  "hero": "totemist",
   "cols": 3,
   "rows": 3,
   "ids": [
@@ -729,8 +729,8 @@
   ]
  },
  {
-  "name": "ilvane-02",
-  "hero": "ilvane",
+  "name": "totemist-02",
+  "hero": "totemist",
   "cols": 3,
   "rows": 3,
   "ids": [
@@ -746,8 +746,8 @@
   ]
  },
  {
-  "name": "ilvane-03",
-  "hero": "ilvane",
+  "name": "totemist-03",
+  "hero": "totemist",
   "cols": 3,
   "rows": 3,
   "ids": [
@@ -763,8 +763,8 @@
   ]
  },
  {
-  "name": "ilvane-04",
-  "hero": "ilvane",
+  "name": "totemist-04",
+  "hero": "totemist",
   "cols": 3,
   "rows": 3,
   "ids": [
@@ -780,8 +780,8 @@
   ]
  },
  {
-  "name": "ilvane-05",
-  "hero": "ilvane",
+  "name": "totemist-05",
+  "hero": "totemist",
   "cols": 3,
   "rows": 3,
   "ids": [
@@ -797,8 +797,8 @@
   ]
  },
  {
-  "name": "ilvane-06",
-  "hero": "ilvane",
+  "name": "totemist-06",
+  "hero": "totemist",
   "cols": 3,
   "rows": 3,
   "ids": [
@@ -814,8 +814,8 @@
   ]
  },
  {
-  "name": "ilvane-07",
-  "hero": "ilvane",
+  "name": "totemist-07",
+  "hero": "totemist",
   "cols": 3,
   "rows": 3,
   "ids": [
@@ -831,8 +831,8 @@
   ]
  },
  {
-  "name": "ilvane-08",
-  "hero": "ilvane",
+  "name": "totemist-08",
+  "hero": "totemist",
   "cols": 3,
   "rows": 3,
   "ids": [
@@ -842,8 +842,8 @@
   ]
  },
  {
-  "name": "sehra-01",
-  "hero": "sehra",
+  "name": "barbarian-01",
+  "hero": "barbarian",
   "cols": 3,
   "rows": 3,
   "ids": [
@@ -859,8 +859,8 @@
   ]
  },
  {
-  "name": "sehra-02",
-  "hero": "sehra",
+  "name": "barbarian-02",
+  "hero": "barbarian",
   "cols": 3,
   "rows": 3,
   "ids": [
@@ -876,8 +876,8 @@
   ]
  },
  {
-  "name": "sehra-03",
-  "hero": "sehra",
+  "name": "barbarian-03",
+  "hero": "barbarian",
   "cols": 3,
   "rows": 3,
   "ids": [
@@ -893,8 +893,8 @@
   ]
  },
  {
-  "name": "sehra-04",
-  "hero": "sehra",
+  "name": "barbarian-04",
+  "hero": "barbarian",
   "cols": 3,
   "rows": 3,
   "ids": [
@@ -910,8 +910,8 @@
   ]
  },
  {
-  "name": "sehra-05",
-  "hero": "sehra",
+  "name": "barbarian-05",
+  "hero": "barbarian",
   "cols": 3,
   "rows": 3,
   "ids": [
@@ -927,8 +927,8 @@
   ]
  },
  {
-  "name": "sehra-06",
-  "hero": "sehra",
+  "name": "barbarian-06",
+  "hero": "barbarian",
   "cols": 3,
   "rows": 3,
   "ids": [
@@ -944,8 +944,8 @@
   ]
  },
  {
-  "name": "sehra-07",
-  "hero": "sehra",
+  "name": "barbarian-07",
+  "hero": "barbarian",
   "cols": 3,
   "rows": 3,
   "ids": [
@@ -961,8 +961,8 @@
   ]
  },
  {
-  "name": "astra-01",
-  "hero": "astra",
+  "name": "spellblade-01",
+  "hero": "spellblade",
   "cols": 3,
   "rows": 3,
   "ids": [
@@ -978,8 +978,8 @@
   ]
  },
  {
-  "name": "astra-02",
-  "hero": "astra",
+  "name": "spellblade-02",
+  "hero": "spellblade",
   "cols": 3,
   "rows": 3,
   "ids": [
@@ -995,8 +995,8 @@
   ]
  },
  {
-  "name": "astra-03",
-  "hero": "astra",
+  "name": "spellblade-03",
+  "hero": "spellblade",
   "cols": 3,
   "rows": 3,
   "ids": [
@@ -1012,8 +1012,8 @@
   ]
  },
  {
-  "name": "astra-04",
-  "hero": "astra",
+  "name": "spellblade-04",
+  "hero": "spellblade",
   "cols": 3,
   "rows": 3,
   "ids": [
@@ -1029,8 +1029,8 @@
   ]
  },
  {
-  "name": "astra-05",
-  "hero": "astra",
+  "name": "spellblade-05",
+  "hero": "spellblade",
   "cols": 3,
   "rows": 3,
   "ids": [
@@ -1046,8 +1046,8 @@
   ]
  },
  {
-  "name": "astra-06",
-  "hero": "astra",
+  "name": "spellblade-06",
+  "hero": "spellblade",
   "cols": 3,
   "rows": 3,
   "ids": [
@@ -1063,8 +1063,8 @@
   ]
  },
  {
-  "name": "astra-07",
-  "hero": "astra",
+  "name": "spellblade-07",
+  "hero": "spellblade",
   "cols": 3,
   "rows": 3,
   "ids": [
@@ -1080,8 +1080,8 @@
   ]
  },
  {
-  "name": "astra-08",
-  "hero": "astra",
+  "name": "spellblade-08",
+  "hero": "spellblade",
   "cols": 3,
   "rows": 3,
   "ids": [
@@ -1090,8 +1090,8 @@
   ]
  },
  {
-  "name": "mire-01",
-  "hero": "mire",
+  "name": "necromancer-01",
+  "hero": "necromancer",
   "cols": 3,
   "rows": 3,
   "ids": [
@@ -1107,8 +1107,8 @@
   ]
  },
  {
-  "name": "mire-02",
-  "hero": "mire",
+  "name": "necromancer-02",
+  "hero": "necromancer",
   "cols": 3,
   "rows": 3,
   "ids": [
@@ -1124,8 +1124,8 @@
   ]
  },
  {
-  "name": "mire-03",
-  "hero": "mire",
+  "name": "necromancer-03",
+  "hero": "necromancer",
   "cols": 3,
   "rows": 3,
   "ids": [
@@ -1141,8 +1141,8 @@
   ]
  },
  {
-  "name": "mire-04",
-  "hero": "mire",
+  "name": "necromancer-04",
+  "hero": "necromancer",
   "cols": 3,
   "rows": 3,
   "ids": [
@@ -1158,8 +1158,8 @@
   ]
  },
  {
-  "name": "mire-05",
-  "hero": "mire",
+  "name": "necromancer-05",
+  "hero": "necromancer",
   "cols": 3,
   "rows": 3,
   "ids": [
@@ -1175,8 +1175,8 @@
   ]
  },
  {
-  "name": "mire-06",
-  "hero": "mire",
+  "name": "necromancer-06",
+  "hero": "necromancer",
   "cols": 3,
   "rows": 3,
   "ids": [
@@ -1192,8 +1192,8 @@
   ]
  },
  {
-  "name": "mire-07",
-  "hero": "mire",
+  "name": "necromancer-07",
+  "hero": "necromancer",
   "cols": 3,
   "rows": 3,
   "ids": [
@@ -1207,8 +1207,8 @@
   ]
  },
  {
-  "name": "kp-01",
-  "hero": "kp",
+  "name": "drunkard-01",
+  "hero": "drunkard",
   "cols": 3,
   "rows": 3,
   "ids": [
@@ -1224,8 +1224,8 @@
   ]
  },
  {
-  "name": "kp-02",
-  "hero": "kp",
+  "name": "drunkard-02",
+  "hero": "drunkard",
   "cols": 3,
   "rows": 3,
   "ids": [
@@ -1241,8 +1241,8 @@
   ]
  },
  {
-  "name": "kp-03",
-  "hero": "kp",
+  "name": "drunkard-03",
+  "hero": "drunkard",
   "cols": 3,
   "rows": 3,
   "ids": [
@@ -1258,8 +1258,8 @@
   ]
  },
  {
-  "name": "kp-04",
-  "hero": "kp",
+  "name": "drunkard-04",
+  "hero": "drunkard",
   "cols": 3,
   "rows": 3,
   "ids": [
@@ -1275,8 +1275,8 @@
   ]
  },
  {
-  "name": "kp-05",
-  "hero": "kp",
+  "name": "drunkard-05",
+  "hero": "drunkard",
   "cols": 3,
   "rows": 3,
   "ids": [
@@ -1292,8 +1292,8 @@
   ]
  },
  {
-  "name": "kp-06",
-  "hero": "kp",
+  "name": "drunkard-06",
+  "hero": "drunkard",
   "cols": 3,
   "rows": 3,
   "ids": [
@@ -1309,8 +1309,8 @@
   ]
  },
  {
-  "name": "kp-07",
-  "hero": "kp",
+  "name": "drunkard-07",
+  "hero": "drunkard",
   "cols": 3,
   "rows": 3,
   "ids": [

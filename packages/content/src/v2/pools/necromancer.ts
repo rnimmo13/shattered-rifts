@@ -29,9 +29,9 @@ import {
   summon,
 } from '../build';
 
-const g = pool('mire', 'gloomfen');
+const g = pool('necromancer', 'gloomfen');
 
-export const MIRE: CardDef[] = [
+export const NECROMANCER: CardDef[] = [
   // --- basics and the token ---
   g('basic', 'grave-touch', 'Grave Touch', 'attack', 1, 'foe', [
     dmg(5),

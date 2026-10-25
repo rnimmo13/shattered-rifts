@@ -6,74 +6,74 @@ import { readFileSync, writeFileSync } from 'node:fs';
 import { COMBAT_DB, RIFTWALKERS, type HeroId } from '@sr/content/v2';
 
 const POOLS: Record<HeroId, string> = {
-  maren: 'maren',
-  rivet: 'rivet',
-  kesh: 'kesh',
-  vesper: 'vesper',
-  quill: 'quill',
-  ilvane: 'ilvane',
-  sehra: 'sehra',
-  astra: 'astra',
-  mire: 'mire',
-  kp: 'kp',
+  knight: 'knight',
+  engineer: 'engineer',
+  hunter: 'hunter',
+  trapper: 'trapper',
+  assassin: 'assassin',
+  totemist: 'totemist',
+  barbarian: 'barbarian',
+  spellblade: 'spellblade',
+  necromancer: 'necromancer',
+  drunkard: 'drunkard',
 };
 /** which pool heading is which lane (a heading that matches nothing here carries on with the lane before it; null = no lane) */
 const HEADS: Record<HeroId, [RegExp, number | null][]> = {
-  maren: [
+  knight: [
     [/bulwark/i, 0],
     [/thorns/i, 1],
     [/devotion/i, 2],
     [/basics|glue/i, null],
   ],
-  rivet: [
+  engineer: [
     [/swarm/i, 0],
     [/assemble/i, 1],
     [/core/i, 2],
     [/basics|shared/i, null],
   ],
-  kesh: [
+  hunter: [
     [/bloodrage/i, 0],
     [/pack/i, 1],
     [/feast/i, 2],
     [/basics/i, null],
   ],
-  vesper: [
+  trapper: [
     [/snares|traps/i, 0],
     [/exposed/i, 1],
     [/bluff/i, 2],
     [/basics/i, null],
   ],
-  quill: [
+  assassin: [
     [/shivs/i, 0],
     [/seared/i, 1],
     [/sleight/i, 2],
     [/basics/i, null],
   ],
-  ilvane: [
+  totemist: [
     [/hawk/i, 0],
     [/bear/i, 1],
     [/elder/i, 2],
     [/basics|glue/i, null],
   ],
-  sehra: [
+  barbarian: [
     [/wrath/i, 0],
     [/calm/i, 1],
     [/mantra/i, 2],
     [/basics/i, null],
   ],
-  astra: [
+  spellblade: [
     [/blade/i, 0],
     [/arcana/i, 1],
     [/sigils/i, 2],
     [/basics/i, null],
   ],
-  mire: [
+  necromancer: [
     [/doom/i, 0],
     [/thralls/i, 1],
     [/ashes/i, 2],
     [/basics|shared|dead come back/i, null],
   ],
-  kp: [
+  drunkard: [
     [/junk traps/i, 0],
     [/hangover|glass/i, 1],
     [/shells|liquid courage|old twelve gauge/i, 2],
@@ -170,7 +170,7 @@ const KP_SHELLS = [
   'rolling-thunder',
 ];
 const kpFile = readFileSync(
-  new URL('../../packages/content/src/v2/pools/kp.ts', import.meta.url),
+  new URL('../../packages/content/src/v2/pools/drunkard.ts', import.meta.url),
   'utf8',
 );
 for (const m of kpFile.matchAll(

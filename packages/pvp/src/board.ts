@@ -1,13 +1,18 @@
 // The weekly and monthly leaderboards: the pure rules. How the periods are cut, how a player's results are added up and ranked,
 // how far a run has got, and what a name on a board may be. Where the results are kept is not decided here (apps/server/src/board.ts).
 
-import { RIFTWALKERS } from '@sr/content/v2';
+import { RIFTWALKERS, canonicalHero } from '@sr/content/v2';
 import { MAX_TIER } from '@sr/campaign';
 import { cleanName } from './deck';
 
 /** Whether this is the id of a Riftwalker in the game. */
 export const isHero = (h: unknown): h is string =>
-  typeof h === 'string' && Object.hasOwn(RIFTWALKERS, h);
+  typeof h === 'string' && Object.hasOwn(RIFTWALKERS, canonicalHero(h));
+
+export { LEGACY_HERO_IDS } from '@sr/content/v2';
+
+/** The id a board stores for a Riftwalker: the current one (an old id from before the class names is converted). */
+export const storedHero = (h: string): string => canonicalHero(h);
 
 export type Period = 'week' | 'month';
 

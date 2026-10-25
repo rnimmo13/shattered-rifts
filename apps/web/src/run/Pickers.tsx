@@ -23,6 +23,7 @@ import { BoonCard, BoonChip } from '../fight/BoonChip';
 import { PotionCard, PotionIcon } from '../fight/PotionChip';
 import { RarityGem } from '../ui/RarityGem';
 import { TrialHost } from '../trials/TrialHost';
+import { PRIZE_MARK } from '../trials/prizes';
 
 const defOf = (id: string): CardDef | undefined => COMBAT_DB.cards[id];
 
@@ -559,11 +560,11 @@ export function EventView(props: {
   run: RunState;
   onChoose: (id: EventOption['id']) => void;
   /** an elite event's trial was played */
-  onTrial: (won: boolean) => void;
+  onTrial: (won: boolean, earned: number[]) => void;
   /** Begin was pressed on the trial: it is saved as begun, and can never be tried again */
   onBegin: () => void;
   /** the prize chosen after a won trial */
-  onPrize: (id: string) => void;
+  onPrize: (id: string, pick?: number) => void;
 }) {
   const ev = props.run.context?.event;
   const [hover, setHover] = useState<CardDef | null>(null);
@@ -573,11 +574,14 @@ export function EventView(props: {
   if (trial && (trial.state === 'playing' || (trial.state === 'open' && playing)))
     return (
       <TrialHost
-        game={trial.game}
-        seed={trial.seed}
-        onDone={(won) => {
+        prizes={trial.prizes.map((p) => ({
+          icon: p.icon ?? 'shards',
+          short: p.short ?? p.label,
+          label: p.label,
+        }))}
+        onDone={(earned) => {
           setPlaying(false);
-          props.onTrial(won);
+          props.onTrial(earned.length > 0, earned);
         }}
         onCancel={() => setPlaying(false)}
         onBegin={props.onBegin}
@@ -609,13 +613,45 @@ export function EventView(props: {
           ))}
         </div>
       )}
+      {trial && trial.state === 'open' && (
+        <ol className="lanepreview" aria-label="What each lane pays">
+          {trial.prizes.map((p) => {
+            const mark = PRIZE_MARK[p.icon ?? ''] ?? PRIZE_MARK['shards']!;
+            return (
+              <li key={p.id} title={p.label} style={{ '--mark': mark.color } as React.CSSProperties}>
+                <b>{mark.glyph}</b>
+                <span>{p.short ?? p.label}</span>
+              </li>
+            );
+          })}
+        </ol>
+      )}
       {trial && won && (
         <div className="prizes" aria-label="Choose your prize">
-          <h3 className="prizes__title">The way is open. Choose one.</h3>
+          <h3 className="prizes__title">Choose one of the prizes you earned</h3>
           <div className="prizes__row">
-            {trial.prizes.map((p) => (
-              <div key={p.id} className="prize">
-                {p.card && (
+            {trial.prizes
+              .filter((_, i) => !trial.earned || trial.earned.includes(i))
+              .map((p) => (
+              <div key={p.id} className={`prize${p.choices ? ' prize--choice' : ''}`}>
+                {p.choices && (
+                  <>
+                    <b className="eventopt__name">{p.label}</b>
+                    <div className="prizes__row">
+                      {p.choices.map((id, k) => (
+                        <Pickable
+                          key={id}
+                          id={id}
+                          width={210}
+                          own={props.run.character}
+                          onHover={setHover}
+                          onClick={() => props.onPrize(p.id, k)}
+                        />
+                      ))}
+                    </div>
+                  </>
+                )}
+                {!p.choices && p.card && (
                   <Pickable
                     id={p.card}
                     width={210}
@@ -626,9 +662,11 @@ export function EventView(props: {
                 )}
                 {p.boon && <BoonCard id={p.boon} />}
                 {p.potion && <PotionCard id={p.potion} />}
-                <button className="eventopt" onClick={() => props.onPrize(p.id)}>
-                  <b className="eventopt__name">{p.label}</b>
-                </button>
+                {!p.choices && (
+                  <button className="eventopt" onClick={() => props.onPrize(p.id)}>
+                    <b className="eventopt__name">{p.label}</b>
+                  </button>
+                )}
               </div>
             ))}
           </div>

@@ -18,7 +18,7 @@ import {
 const HEROES = Object.keys(RIFTWALKERS) as HeroId[];
 
 /** A run standing at a prelude whose only option is `effects`. */
-function offering(effects: PreludeEffect[], hero: HeroId = 'maren'): RunState {
+function offering(effects: PreludeEffect[], hero: HeroId = 'knight'): RunState {
   const r = newRun(hero, 'prelude-test', 'normal');
   return {
     ...r,
@@ -71,7 +71,7 @@ describe('the choice at the start of a run', () => {
 
   it('is the same offer for the same seed, and varies between seeds', () => {
     const ids = (s: string) =>
-      chooseKit(newRun('maren', s, 'normal'), 'a')
+      chooseKit(newRun('knight', s, 'normal'), 'a')
         .context?.prelude?.options.map((o) => o.id)
         .join();
     expect(ids('same')).toBe(ids('same'));
@@ -79,7 +79,7 @@ describe('the choice at the start of a run', () => {
   });
 
   it('taking an option applies it and opens the map', () => {
-    const r = chooseKit(newRun('maren', 'take', 'normal'), 'a');
+    const r = chooseKit(newRun('knight', 'take', 'normal'), 'a');
     const pick = r.context?.prelude?.options[0]?.id as string;
     const after = choosePrelude(r, pick);
     expect(after.phase).toBe('map');
@@ -88,14 +88,14 @@ describe('the choice at the start of a run', () => {
   });
 
   it('refuses anything that is not on offer', () => {
-    const r = chooseKit(newRun('maren', 'bad', 'normal'), 'a');
+    const r = chooseKit(newRun('knight', 'bad', 'normal'), 'a');
     expect(() => choosePrelude(r, 'nope')).toThrow(RunError);
     expect(() => choosePrelude({ ...r, phase: 'map', context: null }, 'x')).toThrow(RunError);
   });
 
   it('a new stage and a new loop open a Waymark with a rest, blessings, and sometimes a bargain', () => {
     const base = {
-      ...newRun('maren', 'waymark', 'normal'),
+      ...newRun('knight', 'waymark', 'normal'),
       phase: 'stageClear' as const,
       context: null,
     };
@@ -188,7 +188,7 @@ describe('what each effect does', () => {
   it('a Wound-bearing deck is still a valid save, and so is a run standing at a prelude', () => {
     const r = take(offering([{ k: 'wound', n: 1 }]));
     expect(parseRun(serializeRun(r))).not.toBeNull();
-    const standing = chooseKit(newRun('quill', 'save-me', 'normal'), 'a');
+    const standing = chooseKit(newRun('assassin', 'save-me', 'normal'), 'a');
     expect(parseRun(serializeRun(standing))?.phase).toBe('prelude');
     const broken = JSON.parse(serializeRun(standing)) as RunState;
     broken.context = {

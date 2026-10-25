@@ -40,6 +40,8 @@ export {
   believableStages,
   cleanBoardName,
   isHero,
+  storedHero,
+  LEGACY_HERO_IDS,
   periodEnd,
   periodStart,
   rankPvp,

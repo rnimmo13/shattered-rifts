@@ -99,19 +99,19 @@ describe('Riftwalker identities (docs/08 §5)', () => {
     Object.values(db.cards).filter(
       (c) => c.realm === realm && c.kind === 'summon' && !c.id.endsWith('+'),
     );
-  it('Maren and Vesper have no companions at all', () => {
-    for (const h of ['maren', 'vesper'] as const) {
+  it('The knight and the trapper have no companions at all', () => {
+    for (const h of ['knight', 'trapper'] as const) {
       expect(RIFTWALKERS[h].hero.startUnits ?? []).toEqual([]);
     }
     expect(summonCards('aurelion')).toHaveLength(0);
     expect(summonCards('umbral')).toHaveLength(0);
   });
   it('Rivet starts with a Drone and has many summon cards', () => {
-    expect(RIFTWALKERS.rivet.hero.startUnits).toEqual(['drone']);
+    expect(RIFTWALKERS.engineer.hero.startUnits).toEqual(['drone']);
     expect(summonCards('nexus').length).toBeGreaterThanOrEqual(6);
   });
   it('Kesh starts with a Hound and mostly buffs it instead of summoning more', () => {
-    expect(RIFTWALKERS.kesh.hero.startUnits).toEqual(['hound']);
+    expect(RIFTWALKERS.hunter.hero.startUnits).toEqual(['hound']);
     expect(summonCards('wyldmaw').length).toBeLessThanOrEqual(4);
     const buffs = Object.values(db.cards).filter(
       (c) => c.realm === 'wyldmaw' && c.effects.some((o) => 'to' in o && o.to === 'allFriends'),
@@ -127,9 +127,9 @@ describe('Riftwalker identities (docs/08 §5)', () => {
 describe('enemy debuffs land before they are needed', () => {
   it('Ghostwire, Lamplighter and Nyxara amplify an attack they set up', () => {
     for (const [id, hero] of [
-      ['ghostwire', 'maren'],
-      ['lamplighter', 'maren'],
-      ['nyxara', 'maren'],
+      ['ghostwire', 'knight'],
+      ['lamplighter', 'knight'],
+      ['nyxara', 'knight'],
     ] as const) {
       let { state } = createCombat(db, {
         seed: id,
@@ -201,7 +201,7 @@ describe('potions', () => {
     for (const p of POTIONS) {
       const { state } = createCombat(db, {
         seed: `potion-${p.id}`,
-        a: { hero: 'maren', deck: RIFTWALKERS.maren.starter, potions: [p.id], hp: 40 },
+        a: { hero: 'knight', deck: RIFTWALKERS.knight.starter, potions: [p.id], hp: 40 },
         b: {
           enemies: ['squire-pair', 'drone-nest']
             .flatMap((e) => ENCOUNTERS.find((x) => x.id === e)?.units ?? [])

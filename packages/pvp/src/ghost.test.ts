@@ -14,9 +14,9 @@ const entry = (h: HeroId) => ({
 describe('the smart bot that pilots a ghost', () => {
   it('always makes a legal move, the same one from the same position, and finishes matches', () => {
     for (const [x, y] of [
-      ['maren', 'kesh'],
-      ['rivet', 'vesper'],
-      ['astra', 'mire'],
+      ['knight', 'hunter'],
+      ['engineer', 'trapper'],
+      ['spellblade', 'necromancer'],
     ] as const) {
       const m = new Match(`ghost-test-${x}-${y}`, entry(x), entry(y), 0);
       let guard = 0;
@@ -37,10 +37,10 @@ describe('the smart bot that pilots a ghost', () => {
     let smart = 0;
     let n = 0;
     for (const [x, y] of [
-      ['vesper', 'maren'],
-      ['quill', 'rivet'],
-      ['astra', 'kesh'],
-      ['sehra', 'mire'],
+      ['trapper', 'knight'],
+      ['assassin', 'engineer'],
+      ['spellblade', 'hunter'],
+      ['barbarian', 'necromancer'],
     ] as const)
       for (const seat of ['a', 'b'] as const) {
         const m = new Match(`ghost-vs-${x}-${y}-${seat}`, entry(x), entry(y), 0);

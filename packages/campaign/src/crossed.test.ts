@@ -11,16 +11,16 @@ describe('the visiting merchant', () => {
     let crossed = 0;
     let merchants = 0;
     for (let i = 0; i < 600; i++) {
-      const map = generateStageMap(seedRng(`cm-${i}`), 2, 'nexus', 'maren');
+      const map = generateStageMap(seedRng(`cm-${i}`), 2, 'nexus', 'knight');
       for (const n of map.nodes) {
         if (n.kind !== 'merchant') continue;
         merchants++;
         if (!n.crossed) continue;
         crossed++;
-        expect(n.crossed).not.toBe('maren');
+        expect(n.crossed).not.toBe('knight');
         expect(Object.keys(RIFTWALKERS)).toContain(n.crossed as HeroId);
         // walking in gives that stranger's table: all of that Riftwalker's own cards
-        const base = open(newRun('maren', `cross-${i}`));
+        const base = open(newRun('knight', `cross-${i}`));
         const first = availableNodes(base)[0]!;
         const m = enterNode(
           {
@@ -51,10 +51,10 @@ describe('Rift-crossed cards are the exception', () => {
     let crossed = 0;
     let total = 0;
     for (let i = 0; i < 1500; i++)
-      for (const id of offerCards(seedRng(`x${i}`), 'maren', [], 'duel', 3)) {
+      for (const id of offerCards(seedRng(`x${i}`), 'knight', [], 'duel', 3)) {
         total++;
         const h = COMBAT_DB.cards[id]?.hero;
-        if (h && h !== 'maren' && h !== 'neutral') crossed++;
+        if (h && h !== 'knight' && h !== 'neutral') crossed++;
       }
     expect(crossed / total).toBeLessThan(0.06);
     expect(crossed).toBeGreaterThan(0);

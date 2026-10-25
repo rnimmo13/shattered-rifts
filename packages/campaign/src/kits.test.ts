@@ -65,24 +65,24 @@ describe('starting kits', () => {
   });
 
   it('choosing a kit sets the deck and opens The Threshold; the input is not changed', () => {
-    const r = newRun('rivet', 'choose', 'normal');
+    const r = newRun('engineer', 'choose', 'normal');
     const kit = r.context?.kits?.[1];
     const after = chooseKit(r, 'b');
     expect(after.deck).toEqual(kit?.deck);
     expect(after.phase).toBe('prelude');
     expect(after.context?.prelude?.kind).toBe('threshold');
     expect(r.phase).toBe('kit');
-    expect(r.deck).toEqual(RIFTWALKERS.rivet.starter);
+    expect(r.deck).toEqual(RIFTWALKERS.engineer.starter);
   });
 
   it('refuses a kit that is not on offer, or a choice at the wrong time', () => {
-    const r = newRun('maren', 'bad', 'normal');
+    const r = newRun('knight', 'bad', 'normal');
     expect(() => chooseKit(r, 'z')).toThrow(RunError);
     expect(() => chooseKit({ ...r, phase: 'map', context: null }, 'a')).toThrow(RunError);
   });
 
   it('a run standing at the kit choice saves and loads; a broken one does not', () => {
-    const r = newRun('quill', 'save-kit', 'normal');
+    const r = newRun('assassin', 'save-kit', 'normal');
     expect(parseRun(serializeRun(r))?.phase).toBe('kit');
     const broken = JSON.parse(serializeRun(r)) as typeof r;
     broken.context = {

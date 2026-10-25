@@ -2,7 +2,7 @@
 
 66 cards in 8 sheets. Anchor: attach the Valeria image to every prompt.
 
-## Sheet `kesh-01` (legendary first)
+## Sheet `hunter-01` (legendary first)
 
 ```
 Create ONE ILLUSTRATION SHEET of 9 separate card-art pictures for a card-battler game (like Slay the Spire), 2400 x 1800, no text.
@@ -26,7 +26,7 @@ THE PICTURES, in this exact order, left to right, top row first. Use the card na
 NEGATIVE: text, letters, numbers, captions, labels, UI, card frames, borders, watermark, logo, photorealism, gritty texture, nudity, characters facing away.
 ```
 
-## Sheet `kesh-02` (rare first)
+## Sheet `hunter-02` (rare first)
 
 ```
 Create ONE ILLUSTRATION SHEET of 9 separate card-art pictures for a card-battler game (like Slay the Spire), 2400 x 1800, no text.
@@ -50,7 +50,7 @@ THE PICTURES, in this exact order, left to right, top row first. Use the card na
 NEGATIVE: text, letters, numbers, captions, labels, UI, card frames, borders, watermark, logo, photorealism, gritty texture, nudity, characters facing away.
 ```
 
-## Sheet `kesh-03` (rare first)
+## Sheet `hunter-03` (rare first)
 
 ```
 Create ONE ILLUSTRATION SHEET of 9 separate card-art pictures for a card-battler game (like Slay the Spire), 2400 x 1800, no text.
@@ -74,7 +74,7 @@ THE PICTURES, in this exact order, left to right, top row first. Use the card na
 NEGATIVE: text, letters, numbers, captions, labels, UI, card frames, borders, watermark, logo, photorealism, gritty texture, nudity, characters facing away.
 ```
 
-## Sheet `kesh-04` (rare first)
+## Sheet `hunter-04` (rare first)
 
 ```
 Create ONE ILLUSTRATION SHEET of 9 separate card-art pictures for a card-battler game (like Slay the Spire), 2400 x 1800, no text.
@@ -98,7 +98,7 @@ THE PICTURES, in this exact order, left to right, top row first. Use the card na
 NEGATIVE: text, letters, numbers, captions, labels, UI, card frames, borders, watermark, logo, photorealism, gritty texture, nudity, characters facing away.
 ```
 
-## Sheet `kesh-05` (uncommon first)
+## Sheet `hunter-05` (uncommon first)
 
 ```
 Create ONE ILLUSTRATION SHEET of 9 separate card-art pictures for a card-battler game (like Slay the Spire), 2400 x 1800, no text.
@@ -122,7 +122,7 @@ THE PICTURES, in this exact order, left to right, top row first. Use the card na
 NEGATIVE: text, letters, numbers, captions, labels, UI, card frames, borders, watermark, logo, photorealism, gritty texture, nudity, characters facing away.
 ```
 
-## Sheet `kesh-06` (uncommon first)
+## Sheet `hunter-06` (uncommon first)
 
 ```
 Create ONE ILLUSTRATION SHEET of 9 separate card-art pictures for a card-battler game (like Slay the Spire), 2400 x 1800, no text.
@@ -146,7 +146,7 @@ THE PICTURES, in this exact order, left to right, top row first. Use the card na
 NEGATIVE: text, letters, numbers, captions, labels, UI, card frames, borders, watermark, logo, photorealism, gritty texture, nudity, characters facing away.
 ```
 
-## Sheet `kesh-07` (uncommon first)
+## Sheet `hunter-07` (uncommon first)
 
 ```
 Create ONE ILLUSTRATION SHEET of 9 separate card-art pictures for a card-battler game (like Slay the Spire), 2400 x 1800, no text.
@@ -170,7 +170,7 @@ THE PICTURES, in this exact order, left to right, top row first. Use the card na
 NEGATIVE: text, letters, numbers, captions, labels, UI, card frames, borders, watermark, logo, photorealism, gritty texture, nudity, characters facing away.
 ```
 
-## Sheet `kesh-08` (uncommon first)
+## Sheet `hunter-08` (uncommon first)
 
 ```
 Create ONE ILLUSTRATION SHEET of 3 separate card-art pictures for a card-battler game (like Slay the Spire), 2400 x 1800, no text.

@@ -21,7 +21,7 @@ const open = (r: RunState): RunState => ({ ...r, phase: 'map', context: null });
 function atMerchant(seed: string, shards: number, prev?: RunState): RunState {
   const base = prev
     ? { ...prev, phase: 'map' as const, context: null }
-    : open(newRun('maren', seed));
+    : open(newRun('knight', seed));
   const node = availableNodes(base)[0]!;
   const asMerchant: RunState = {
     ...base,
@@ -78,7 +78,7 @@ describe('letting a hold go', () => {
 
 describe('saves from when only one card could be held', () => {
   it('still load, with that card on hold', () => {
-    const r = newRun('maren', 'old-hold');
+    const r = newRun('knight', 'old-hold');
     const old = serializeRun(r).replace(/^\{/, '{"held":{"cardId":"strike","price":40},');
     expect(parseRun(old)?.held).toEqual([{ cardId: 'strike', price: 40 }]);
     const junk = serializeRun(r).replace(/^\{/, '{"held":[{"cardId":"nope","price":1}],');

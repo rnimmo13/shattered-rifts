@@ -564,7 +564,7 @@
 }
 
 /* class colours: a Riftwalker's cards wear their own colours whatever realm they come from */
-.card--hero-maren {
+.card--hero-knight {
   --ink-a: #1d2f78;
   --ink-b: #08102e;
   --trim: #e8c14a;
@@ -572,7 +572,7 @@
   --trim-lo: #7a5a14;
   --accent: #ffe08a;
 }
-.card--hero-rivet {
+.card--hero-engineer {
   --ink-a: #0b4a5c;
   --ink-b: #041218;
   --trim: #6fb8d0;
@@ -580,7 +580,7 @@
   --trim-lo: #2c5a6a;
   --accent: #6fe6ff;
 }
-.card--hero-kesh {
+.card--hero-hunter {
   --ink-a: #5a1a1a;
   --ink-b: #1a0606;
   --trim: #d8603a;
@@ -588,7 +588,7 @@
   --trim-lo: #7a2a14;
   --accent: #ff8a6a;
 }
-.card--hero-vesper {
+.card--hero-trapper {
   --ink-a: #2e1a66;
   --ink-b: #0a0618;
   --trim: #9a7ee0;
@@ -596,7 +596,7 @@
   --trim-lo: #43308a;
   --accent: #b99aff;
 }
-.card--hero-quill {
+.card--hero-assassin {
   --ink-a: #5a1648;
   --ink-b: #17051a;
   --trim: #e0609e;
@@ -604,7 +604,7 @@
   --trim-lo: #7a2a5e;
   --accent: #f08acb;
 }
-.card--hero-ilvane {
+.card--hero-totemist {
   --ink-a: #3a2a14;
   --ink-b: #100a04;
   --trim: #b8884a;
@@ -612,7 +612,7 @@
   --trim-lo: #5c3c18;
   --accent: #7fd08a;
 }
-.card--hero-sehra {
+.card--hero-barbarian {
   --ink-a: #6a3210;
   --ink-b: #1c0e04;
   --trim: #e89a3a;
@@ -620,7 +620,7 @@
   --trim-lo: #8a4a14;
   --accent: #ffb060;
 }
-.card--hero-astra {
+.card--hero-spellblade {
   --ink-a: #2e1238;
   --ink-b: #0a0412;
   --trim: #b6a4c8;
@@ -628,7 +628,7 @@
   --trim-lo: #5e4a78;
   --accent: #ff9a4a;
 }
-.card--hero-mire {
+.card--hero-necromancer {
   --ink-a: #15401f;
   --ink-b: #04100a;
   --trim: #7ad04a;
@@ -636,7 +636,7 @@
   --trim-lo: #2f6a22;
   --accent: #9be86a;
 }
-.card--hero-kp {
+.card--hero-drunkard {
   --ink-a: #4a3010;
   --ink-b: #140c04;
   --trim: #c88a3a;

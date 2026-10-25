@@ -40,13 +40,13 @@ describe('ancestral cards', () => {
     for (const luck of ['normal', 'lucky', 'blessed'] as const)
       for (let i = 0; i < 150; i++)
         for (const q of ['duel', 'elite'] as const)
-          for (const id of offerCards(seedRng(`a${luck}${q}${i}`), 'maren', [], q, 4, luck))
+          for (const id of offerCards(seedRng(`a${luck}${q}${i}`), 'knight', [], q, 4, luck))
             expect(rarityOf(id), id).not.toBe('ancestral');
   });
 
   it("the Warden's Gift never holds one (it is your class's cards only)", () => {
     for (let i = 0; i < 200; i++)
-      for (const id of giftOffers(seedRng(`g${i}`), 'kesh', [], 3, 'kron', 'blessed'))
+      for (const id of giftOffers(seedRng(`g${i}`), 'hunter', [], 3, 'kron', 'blessed'))
         expect(rarityOf(id), id).not.toBe('ancestral');
   });
 
@@ -54,7 +54,7 @@ describe('ancestral cards', () => {
     let sold = 0;
     let event: RunState | null = null;
     for (let i = 0; i < 400 && (!sold || !event); i++) {
-      const base = open(newRun('quill', `anc-${i}`));
+      const base = open(newRun('assassin', `anc-${i}`));
       const node = availableNodes(base)[0]!;
       const asMerchant: RunState = {
         ...base,

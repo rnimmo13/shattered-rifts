@@ -1,60 +1,45 @@
-// The frame every trial is played in: the rules and a Begin button, the game, then the result. The game reports win or
-// lose through onEnd; the host shows it and hands the answer back through onDone (the run decides what it means).
+// The frame the Brass Cascade is played in: the rules and a Begin button, the game, then what the balls earned. The game
+// reports the lanes its balls landed in through onEnd; the host shows them and hands them back through onDone (the run decides
+// what they mean: you choose one of the prizes they earned).
 
 import { useCallback, useState } from 'react';
-import type { TrialGame } from '@sr/campaign';
 import { play } from '../audio/sfx';
-import { Cipher } from './Cipher';
-import { Echoes } from './Echoes';
-import { Pairs } from './Pairs';
+import { Cascade } from './Cascade';
+import { PRIZE_MARK, type LanePrize } from './prizes';
 import { TRIAL_INFO } from './info';
-import { RuneLock } from './RuneLock';
-import { Rhythm } from './Rhythm';
 import './trials.css';
 
 export interface GameProps {
-  seed: number;
-  onEnd: (won: boolean) => void;
-}
-
-function Game(props: { game: TrialGame; seed: number; onEnd: (won: boolean) => void }) {
-  switch (props.game) {
-    case 'echoes':
-      return <Echoes seed={props.seed} onEnd={props.onEnd} />;
-    case 'pairs':
-      return <Pairs seed={props.seed} onEnd={props.onEnd} />;
-    case 'runelock':
-      return <RuneLock seed={props.seed} onEnd={props.onEnd} />;
-    case 'rhythm':
-      return <Rhythm seed={props.seed} onEnd={props.onEnd} />;
-    case 'cipher':
-      return <Cipher seed={props.seed} onEnd={props.onEnd} />;
-  }
+  /** the ten lane prizes, in order */
+  prizes: LanePrize[];
+  /** the balls have all been dropped: the lanes they landed in (each once) */
+  onEnd: (won: boolean, earned: number[]) => void;
 }
 
 export function TrialHost(props: {
-  game: TrialGame;
-  seed: number;
-  onDone: (won: boolean) => void;
-  /** a practice game can be played again, and the answer is only shown, not kept */
+  prizes: LanePrize[];
+  onDone: (earned: number[]) => void;
+  /** a practice game can be played again, and what it earns is only shown, not kept */
   practice?: boolean;
   onAgain?: () => void;
   onCancel?: () => void;
-  /** Begin was pressed: from here the trial is spent (a run saves it as begun) */
+  /** Begin was pressed: from here the game is spent (a run saves it as begun) */
   onBegin?: () => void;
 }) {
-  const info = TRIAL_INFO[props.game];
+  const info = TRIAL_INFO.cascade;
   const [stage, setStage] = useState<'intro' | 'play' | 'result'>('intro');
-  const [won, setWon] = useState(false);
-  const end = useCallback((w: boolean) => {
-    setWon(w);
-    setStage('result');
-    play(w ? 'win' : 'lose');
-  }, []);
+  const [earned, setEarned] = useState<number[]>([]);
+  const end = useCallback((_won: boolean, lanes: number[]) => {
+    setEarned(lanes);
+    play(lanes.length ? 'win' : 'lose');
+    // in a run, what the balls earned is kept at once (and the prizes shown to choose from); practice shows a result page
+    if (props.practice) setStage('result');
+    else props.onDone(lanes);
+  }, [props]);
 
   return (
     <div className="trial" role="dialog" aria-label={info.name}>
-      <div className="trial__box">
+      <div className={`trial__box${stage === 'play' ? ' trial__box--wide' : ''}`}>
         <h2 className="trial__title">{info.name}</h2>
         {stage === 'intro' && (
           <>
@@ -84,26 +69,35 @@ export function TrialHost(props: {
             </div>
           </>
         )}
-        {stage === 'play' && <Game game={props.game} seed={props.seed} onEnd={end} />}
+        {stage === 'play' && <Cascade prizes={props.prizes} onEnd={end} />}
         {stage === 'result' && (
           <div className="trial__result">
-            <h3 className={won ? 'is-won' : 'is-lost'}>{won ? 'Trial passed' : 'Trial failed'}</h3>
+            <h3 className="is-won">
+              {earned.length === 1 ? 'You earned a prize' : `You earned ${earned.length} prizes`}
+            </h3>
+            <ul className="trial__earned">
+              {earned.map((i) => {
+                const p = props.prizes[i];
+                const mark = PRIZE_MARK[p?.icon ?? ''] ?? PRIZE_MARK['shards']!;
+                return (
+                  <li key={i} style={{ '--mark': mark.color } as React.CSSProperties}>
+                    <b>{mark.glyph}</b> {p?.label}
+                  </li>
+                );
+              })}
+            </ul>
             <p>
-              {won
-                ? props.practice
-                  ? 'In a run, this opens a choice of prizes.'
-                  : 'The way opens. Choose your prize.'
-                : props.practice
-                  ? 'In a run, you would leave with a few shards for trying.'
-                  : 'It is not to be. You leave with a few shards for trying.'}
+              {props.practice
+                ? 'In a run, you would now choose one of these.'
+                : 'Now choose one of them.'}
             </p>
             <div className="trial__buttons">
-              <button className="btn" onClick={() => props.onDone(won)}>
-                <span>{props.practice ? 'Done' : 'Continue'}</span>
+              <button className="btn" onClick={() => props.onDone(earned)}>
+                <span>{props.practice ? 'Done' : 'Choose'}</span>
               </button>
               {props.practice && props.onAgain && (
                 <button className="btn btn--ghost" onClick={props.onAgain}>
-                  <span>Play another</span>
+                  <span>Play again</span>
                 </button>
               )}
             </div>

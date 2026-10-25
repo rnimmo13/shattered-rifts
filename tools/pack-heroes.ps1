@@ -2,7 +2,7 @@
 # <heroId>.png) into transparent figures at apps/web/public/art/figures/hero-<heroId>.png, then rebuilds the manifest.
 # The background is removed by flood-filling from the edges (colour sampled from the corner), so dark clothing inside the
 # figure is kept. Rivet's drone is a companion in the game already, so that corner is wiped first.
-# (Valeria's old gritty sheet had its own script, tools/pack-valeria.ps1; her new art goes through this one as maren.png.)
+# (Valeria's old gritty sheet had its own script, tools/pack-knight.ps1; her new art goes through this one as knight.png.)
 # Run: powershell -File tools/pack-heroes.ps1
 Add-Type -AssemblyName System.Drawing
 $ErrorActionPreference = 'Stop'
@@ -73,7 +73,7 @@ public static class HeroKey {
 
 # hero id -> regions of the sheet to wipe to background first (x, y, w, h)
 $wipe = @{
-  rivet = @(, @(0, 0, 345, 300))   # the hovering drone, top left (a companion in the game already)
+  engineer = @(, @(0, 0, 345, 300))   # the hovering drone, top left (a companion in the game already)
 }
 
 foreach ($f in Get-ChildItem $srcDir -Filter *.png | Sort-Object Name) {

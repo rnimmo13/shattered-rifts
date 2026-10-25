@@ -34,17 +34,17 @@ describe('the practice deck builder', () => {
   it('filters by pool, rarity, text and upgrade', () => {
     const all = catalog(db);
     const base = { pool: 'all', rarity: 'all', text: '', upgraded: false } as const;
-    const mire = filterCatalog(all, { ...base, pool: 'mire' }, describe_);
-    expect(mire.length).toBeGreaterThan(25);
-    expect(mire.every((c) => c.pool === 'mire' && !c.upgraded)).toBe(true);
-    const plus = filterCatalog(all, { ...base, pool: 'mire', upgraded: true }, describe_);
+    const necro = filterCatalog(all, { ...base, pool: 'necromancer' }, describe_);
+    expect(necro.length).toBeGreaterThan(25);
+    expect(necro.every((c) => c.pool === 'necromancer' && !c.upgraded)).toBe(true);
+    const plus = filterCatalog(all, { ...base, pool: 'necromancer', upgraded: true }, describe_);
     expect(plus.every((c) => c.def.id.endsWith('+'))).toBe(true);
-    const rares = filterCatalog(all, { ...base, pool: 'astra', rarity: 'rare' }, describe_);
+    const rares = filterCatalog(all, { ...base, pool: 'spellblade', rarity: 'rare' }, describe_);
     expect(rares.length).toBeGreaterThan(2);
     expect(rares.every((c) => c.def.rarity === 'rare')).toBe(true);
     const fate = filterCatalog(all, { ...base, text: 'fate' }, describe_);
     expect(fate.some((c) => c.def.id === 'tolling-bell')).toBe(true);
-    expect(fate.every((c) => c.pool === 'mire' || c.pool === 'all' || true)).toBe(true);
+    expect(fate.every((c) => c.pool === 'necromancer' || c.pool === 'all' || true)).toBe(true);
   });
 
   it('turns counts into a deck and back', () => {

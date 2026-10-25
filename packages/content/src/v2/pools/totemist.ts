@@ -1,4 +1,4 @@
-// Ilvane (display name; the id stays 'ilvane', DECISIONS #141). Carves totems and plants them in a row. Three lanes:
+// Ilvane (display name; the id stays 'totemist', DECISIONS #141). Carves totems and plants them in a row. Three lanes:
 //   Hawk    - damage totems: chip every turn, burst when they topple (Hawk hits one enemy, Splinter hits every enemy)
 //   Bear    - Barrier totems: defence that accumulates
 //   Elder   - ancestral totems that build for a huge awakening, and Spirit (the `resonance` status) to make every totem stronger
@@ -68,9 +68,9 @@ export const RUNES: RuneDef[] = [
   },
 ];
 
-const i = pool('ilvane', 'nexus');
+const i = pool('totemist', 'nexus');
 
-export const ILVANE: CardDef[] = [
+export const TOTEMIST: CardDef[] = [
   // --- basics ---
   i('basic', 'spark-cast', 'Plant Hawk', 'skill', 1, 'none', [channel('spark')]),
   i('basic', 'twin-evocation', 'Twin Awakening', 'skill', 1, 'none', [evoke(1, 2)]),

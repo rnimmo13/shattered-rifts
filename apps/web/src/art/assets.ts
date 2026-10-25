@@ -2,7 +2,7 @@
 // public/art/manifest.json (see docs/09_ART_BRIEF_V2.md); anything not listed keeps its generated placeholder.
 //
 //   {
-//     "figures": { "hero:maren": "figures/maren.png", "unit:slime": "figures/slime.png" },
+//     "figures": { "hero:knight": "figures/knight.png", "unit:slime": "figures/slime.png" },
 //     "cards":   { "strike": "cards/strike.webp" },
 //     "backdrops": { "aurelion": "backdrops/aurelion.webp" }
 //   }
@@ -71,7 +71,7 @@ export function preloadArt(): Promise<void> {
   return loading;
 }
 
-/** A real figure for a hero ('hero:maren') or unit ('unit:slime'), if one was supplied. */
+/** A real figure for a hero ('hero:knight') or unit ('unit:slime'), if one was supplied. */
 export const realFigure = (key: string): HTMLCanvasElement | undefined => figures.get(key);
 
 /**

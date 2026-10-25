@@ -4,10 +4,10 @@ import { dateLabel, progressLabel, rarityCounts, reportCards, tierLabel } from '
 
 describe('the deck report', () => {
   it('stacks repeats and puts the rarest cards first', () => {
-    const ids = [...RIFTWALKERS.maren.starter, 'strike'];
+    const ids = [...RIFTWALKERS.knight.starter, 'strike'];
     const cards = reportCards(ids);
     const strike = cards.find((c) => c.def.id === 'strike');
-    expect(strike?.n).toBe(RIFTWALKERS.maren.starter.filter((i) => i === 'strike').length + 1);
+    expect(strike?.n).toBe(RIFTWALKERS.knight.starter.filter((i) => i === 'strike').length + 1);
     expect(cards.reduce((n, c) => n + c.n, 0)).toBe(ids.length);
     const rank = ['ancestral', 'legendary', 'rare', 'uncommon', 'common', 'basic'];
     const seen = cards.map((c) => rank.indexOf(c.def.rarity ?? 'common'));
@@ -20,8 +20,8 @@ describe('the deck report', () => {
   });
 
   it('counts each rarity once, best first', () => {
-    const counts = rarityCounts(RIFTWALKERS.maren.starter);
-    expect(counts.reduce((n, c) => n + c.n, 0)).toBe(RIFTWALKERS.maren.starter.length);
+    const counts = rarityCounts(RIFTWALKERS.knight.starter);
+    expect(counts.reduce((n, c) => n + c.n, 0)).toBe(RIFTWALKERS.knight.starter.length);
   });
 
   it('says where a player is in the campaign', () => {

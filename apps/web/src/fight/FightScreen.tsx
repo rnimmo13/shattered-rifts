@@ -76,7 +76,7 @@ export default function FightScreen() {
         <span>Back</span>
       </a>{' '}
       <a className="btn btn--small" href="#/trials">
-        <span>Try the trials (mini-games)</span>
+        <span>Elite Events</span>
       </a>
       <h1 className="setup__title">Fight the rift</h1>
       <p className="setup__lead">

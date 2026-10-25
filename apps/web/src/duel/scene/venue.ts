@@ -12,7 +12,7 @@ export type VenueId =
 /** Painted-skyline venues: each reuses a Riftwalker's card-art scene (art/scenes.ts) as a far backdrop. */
 const SCENE_VENUES = {
   castle: {
-    scene: 'maren',
+    scene: 'knight',
     skyTop: '#141c3c',
     skyLow: '#c9906a',
     dark: '#241f33',
@@ -20,7 +20,7 @@ const SCENE_VENUES = {
     floorTint: 0xe0b878,
   },
   factory: {
-    scene: 'rivet',
+    scene: 'engineer',
     skyTop: '#0a1626',
     skyLow: '#4f9ab8',
     dark: '#16222e',
@@ -28,7 +28,7 @@ const SCENE_VENUES = {
     floorTint: 0x8cc8e0,
   },
   forest: {
-    scene: 'kesh',
+    scene: 'hunter',
     skyTop: '#07161a',
     skyLow: '#4f9a78',
     dark: '#0d1f18',
@@ -36,7 +36,7 @@ const SCENE_VENUES = {
     floorTint: 0x98d09a,
   },
   glass: {
-    scene: 'astra',
+    scene: 'spellblade',
     skyTop: '#12081f',
     skyLow: '#c0503e',
     dark: '#220d2c',
@@ -44,7 +44,7 @@ const SCENE_VENUES = {
     floorTint: 0xe89878,
   },
   swamp: {
-    scene: 'mire',
+    scene: 'necromancer',
     skyTop: '#0a1612',
     skyLow: '#7fa05a',
     dark: '#101a15',
@@ -52,7 +52,7 @@ const SCENE_VENUES = {
     floorTint: 0x98c878,
   },
   alley: {
-    scene: 'kp',
+    scene: 'drunkard',
     skyTop: '#0d0d16',
     skyLow: '#8a6a5a',
     dark: '#16161e',

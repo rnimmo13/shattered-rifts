@@ -8,52 +8,52 @@ import type { KitOption } from './types';
 
 /** For each Riftwalker, the two cards of the kit for lane 0, lane 1 and lane 2 (the order of `Riftwalker.lanes`). */
 export const KIT_CARDS: Record<HeroId, [[string, string], [string, string], [string, string]]> = {
-  maren: [
+  knight: [
     ['shield-charge', 'oath-of-iron'],
     ['mirrored-aegis', 'caltrops'],
     ['ward-of-ages', 'heartening-hymn'],
   ],
-  rivet: [
+  engineer: [
     ['scrap-heap', 'overcharge-blast'],
     ['link-up', 'arc-relay'],
     ['upgrade-chip', 'bulwark-frame'],
   ],
-  kesh: [
+  hunter: [
     ['run-wild', 'crushing-blow'],
     ['rally-the-pack', 'feeding-time'],
     ['devour', 'bone-offering'],
   ],
-  vesper: [
+  trapper: [
     ['tripwire-garrote', 'snare-net'],
     ['death-mark', 'smoke-bomb'],
     ['shadow-step', 'long-con'],
   ],
-  quill: [
+  assassin: [
     ['ambush-cut', 'spent-steel'],
     ['mindrot', 'venom-fang'],
     ['fortunes-edge', 'magicians-exit'],
   ],
-  ilvane: [
+  totemist: [
     ['prismatic-burst', 'driver-of-runes'],
     ['chilled-focus', 'rune-shield'],
     ['deep-charge', 'resonant-strike'],
   ],
-  sehra: [
+  barbarian: [
     ['temper-flare', 'wrathful-guard'],
     ['breathe', 'fearless'],
     ['foretold-flame', 'the-offering'],
   ],
-  astra: [
+  spellblade: [
     ['crown-strike', 'edgewise'],
     ['cosmic-lance', 'gravity-well'],
     ['ursa', 'draco'],
   ],
-  mire: [
+  necromancer: [
     ['omen', 'veilpiercer'],
     ['bone-bulwark', 'legion-of-bone'],
     ['cremation', 'funeral-pyre'],
   ],
-  kp: [
+  drunkard: [
     ['reload', 'glass-cover'],
     ['pump-action', 'shotgun-wedding'],
     ['shatter', 'liquid-dinner'],

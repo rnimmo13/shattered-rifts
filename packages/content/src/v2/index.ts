@@ -4,7 +4,7 @@ import { validateDb, type CombatDb, type HeroDef, type HeroTrait } from '@sr/com
 import { addTo, barrier, channel, heal, stance, stars, status } from './build';
 import { BOONS } from './boons';
 import { V2_CARDS } from './cards';
-import { RUNES } from './pools/ilvane';
+import { RUNES } from './pools/totemist';
 import { POTIONS } from './potions';
 import { stripRoll, withRolls } from './sanctify';
 import { ALLIES, ENEMY_UNITS } from './units';
@@ -12,7 +12,7 @@ import { ALLIES, ENEMY_UNITS } from './units';
 export type RealmId =
   'aurelion' | 'nexus' | 'wyldmaw' | 'umbral' | 'starfall' | 'gloomfen' | 'midden';
 export type HeroId =
-  'maren' | 'rivet' | 'kesh' | 'vesper' | 'quill' | 'ilvane' | 'sehra' | 'astra' | 'mire' | 'kp';
+  'knight' | 'engineer' | 'hunter' | 'trapper' | 'assassin' | 'totemist' | 'barbarian' | 'spellblade' | 'necromancer' | 'drunkard';
 
 export interface Riftwalker {
   hero: HeroDef;
@@ -34,7 +34,7 @@ export interface Riftwalker {
 const rep = (id: string, n: number): string[] => Array<string>(n).fill(id);
 
 export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
-  maren: {
+  knight: {
     realm: 'aurelion',
     role: 'Knight',
     trait: {
@@ -42,7 +42,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
       text: 'Start every fight with 6 Barrier and 6 Plating: your Barrier survives each turn up to your Plating, which shrinks by 1 a turn.',
       fightStart: [barrier(6), status('plating', 6)],
     },
-    hero: { id: 'maren', name: 'Valeria', maxHp: 66, mana: 3, handSize: 5 },
+    hero: { id: 'knight', name: 'Valeria', maxHp: 66, mana: 3, handSize: 5 },
     starter: [...rep('strike', 4), ...rep('defend', 4), 'dawn-smite', 'oathbound'],
     blurb: 'A knight of the Gilded Order. No companions: Barrier, Thorns and punishing Traps.',
     lanes: [
@@ -56,7 +56,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
       'Pick a build: hit with your Barrier (Bulwark), punish attackers (Thorns), or heal and stay Shielded (Devotion).',
     ],
   },
-  rivet: {
+  engineer: {
     realm: 'nexus',
     role: 'Engineer',
     trait: {
@@ -64,7 +64,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
       text: 'At the start of your turn, you and your companions heal 1.',
       turnStart: [heal(1, 'allFriends')],
     },
-    hero: { id: 'rivet', name: 'Rivet', maxHp: 60, mana: 3, handSize: 5, startUnits: ['drone'] },
+    hero: { id: 'engineer', name: 'Rivet', maxHp: 60, mana: 3, handSize: 5, startUnits: ['drone'] },
     starter: [...rep('strike', 5), ...rep('defend', 3), 'deploy-drone', 'overclock'],
     blurb:
       'A tinkerer of machines. She starts every fight with a Drone and builds an army of them.',
@@ -75,7 +75,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
       'Enemies can hit your allies too; an ally with Taunt has to be attacked first.',
     ],
   },
-  kesh: {
+  hunter: {
     realm: 'wyldmaw',
     role: 'Hunter',
     trait: {
@@ -84,7 +84,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
       fightStart: [status('might', 1, 'allFriends')],
     },
     hero: {
-      id: 'kesh',
+      id: 'hunter',
       name: 'Kesh the Unfed',
       maxHp: 88,
       mana: 3,
@@ -100,7 +100,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
       'Consume cards (they leave the fight) to power the Feast build.',
     ],
   },
-  vesper: {
+  trapper: {
     realm: 'umbral',
     role: 'Trapper',
     trait: {
@@ -108,7 +108,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
       text: 'Every enemy starts the fight Exposed for 3 turns, and you start with 6 Barrier.',
       fightStart: [status('exposed', 3, 'allFoes'), barrier(6)],
     },
-    hero: { id: 'vesper', name: 'Vesper Nightlace', maxHp: 124, mana: 3, handSize: 5 },
+    hero: { id: 'trapper', name: 'Vesper Nightlace', maxHp: 124, mana: 3, handSize: 5 },
     starter: [...rep('strike', 3), ...rep('defend', 4), ...rep('veil-strike', 2), 'set-the-web'],
     blurb: 'A masked trapper. No companions: Traps, Exposed and patience.',
     lanes: [
@@ -122,7 +122,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
       'Exposed enemies take 50% more damage: mark them, then spend the mark.',
     ],
   },
-  quill: {
+  assassin: {
     realm: 'umbral',
     role: 'Assassin',
     trait: {
@@ -131,7 +131,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
       turnStart: [status('exposed', 1, 'randomFoe')],
     },
     hero: {
-      id: 'quill',
+      id: 'assassin',
       name: 'Sylas',
       maxHp: 84,
       mana: 3,
@@ -152,7 +152,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
       'Discarding is a resource: Foresee and Discard cards trigger payoffs.',
     ],
   },
-  ilvane: {
+  totemist: {
     realm: 'nexus',
     role: 'Totemist',
     trait: {
@@ -161,7 +161,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
       fightStart: [channel('spark'), channel('ward'), channel('splinter')],
     },
     hero: {
-      id: 'ilvane',
+      id: 'totemist',
       name: 'Ilvane',
       maxHp: 84,
       mana: 3,
@@ -181,7 +181,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
       'Awaken cards burst totems early. Spirit makes every totem stronger.',
     ],
   },
-  sehra: {
+  barbarian: {
     realm: 'aurelion',
     role: 'Barbarian',
     trait: {
@@ -190,7 +190,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
       fightStart: [status('mantra', 2)],
     },
     hero: {
-      id: 'sehra',
+      id: 'barbarian',
       name: 'Sehra',
       maxHp: 116,
       mana: 3,
@@ -207,7 +207,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
       'Fervor builds to 5, then you enter Radiant: triple damage until your turn ends.',
     ],
   },
-  astra: {
+  spellblade: {
     realm: 'starfall',
     role: 'Spellblade',
     trait: {
@@ -216,7 +216,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
       turnStart: [stars(1)],
     },
     hero: {
-      id: 'astra',
+      id: 'spellblade',
       name: 'Obsidia',
       maxHp: 112,
       mana: 3,
@@ -240,7 +240,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
       'Auras (your sigils) keep working until the fight ends.',
     ],
   },
-  kp: {
+  drunkard: {
     realm: 'midden',
     role: 'Drunkard',
     trait: {
@@ -249,7 +249,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
       clutch: { below: 60, damagePct: 60 },
     },
     hero: {
-      id: 'kp',
+      id: 'drunkard',
       name: 'KP, the Homeless Drunk',
       maxHp: 106,
       mana: 3,
@@ -285,7 +285,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
       '"Everybody\'s got a trolley full of problems. Mine\'s got wheels."',
     ],
   },
-  mire: {
+  necromancer: {
     realm: 'gloomfen',
     role: 'Necromancer',
     trait: {
@@ -294,7 +294,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
       fightStart: [status('doom', 4, 'allFoes')],
     },
     hero: {
-      id: 'mire',
+      id: 'necromancer',
       name: 'Dorian Blackthorn',
       maxHp: 92,
       mana: 3,
@@ -487,6 +487,28 @@ export function laneSizes(hero: HeroId): [number, number, number] {
 export const V2_DECK_RULES = { minSize: 8, maxCopies: 4, vaultSlots: 10, maxLegendary: 2 } as const;
 
 export { BOONS, POTIONS };
+
+/**
+ * The Riftwalker ids before they were named for their class (DECISIONS #190, 2026-10-25). A run save, a Vault deck, a remembered
+ * choice or a server row made before then still says the old id: everything that reads one passes it through canonicalHero.
+ */
+export const LEGACY_HERO_IDS: Readonly<Record<string, HeroId>> = {
+  maren: 'knight',
+  rivet: 'engineer',
+  kesh: 'hunter',
+  vesper: 'trapper',
+  quill: 'assassin',
+  ilvane: 'totemist',
+  sehra: 'barbarian',
+  astra: 'spellblade',
+  mire: 'necromancer',
+  kp: 'drunkard',
+};
+
+/** A Riftwalker id as it is now: an old id becomes its class id, and anything else comes back as it was. */
+export function canonicalHero(id: string): string {
+  return Object.hasOwn(LEGACY_HERO_IDS, id) ? (LEGACY_HERO_IDS[id] as string) : id;
+}
 
 /** The playable realms in the order every screen lists them, with the name players read. */
 export const REALMS: { id: RealmId; name: string }[] = [

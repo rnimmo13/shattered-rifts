@@ -236,8 +236,8 @@ function groundShadow(g: G, rx: number): void {
 /** `g` is the body (shaded and outlined); `fx` is an additive layer drawn over it for glows */
 type Painter = (g: G, fx: G) => void;
 
-// ---- Valeria (id maren): a female knight in dawn-gold plate, a blue cape, a sunburst shield and a longsword ----
-const maren: Painter = (g, fx) => {
+// ---- Valeria (id knight): a female knight in dawn-gold plate, a blue cape, a sunburst shield and a longsword ----
+const knight: Painter = (g, fx) => {
   // cape
   gpoly(
     g,
@@ -483,7 +483,7 @@ const maren: Painter = (g, fx) => {
 };
 
 // ---- Rivet: a female engineer in grease-stained overalls and a leather apron, goggles, a wrench and a little drone ----
-const rivet: Painter = (g, fx) => {
+const engineer: Painter = (g, fx) => {
   // backpack with pipes and a tank
   grect(g, '#5a4636', 92, 228, 74, 150, 16);
   grect(g, '#8aa0b0', 96, 198, 26, 70, 11);
@@ -702,7 +702,7 @@ const rivet: Painter = (g, fx) => {
 };
 
 // ---- Kesh: a hunter in a hooded fur cloak, bow drawn ----
-const kesh: Painter = (g, fx) => {
+const hunter: Painter = (g, fx) => {
   // quiver with fletched arrows
   grect(g, '#7a3a22', 96, 222, 38, 156, 10);
   for (let i = 0; i < 4; i++) {
@@ -879,7 +879,7 @@ const kesh: Painter = (g, fx) => {
 };
 
 // ---- Vesper: a slim trapper in a long cloak, a wide hat and a domino mask, a snare at her feet ----
-const vesper: Painter = (g, fx) => {
+const trapper: Painter = (g, fx) => {
   // long hair behind the cloak
   gpoly(
     g,
@@ -1057,7 +1057,7 @@ const vesper: Painter = (g, fx) => {
 };
 
 // ---- Sylas: a female assassin in a crimson hood and veil, a dagger in each hand, mid-lunge ----
-const quill: Painter = (g, fx) => {
+const assassin: Painter = (g, fx) => {
   // cloak tails and a whipping ponytail behind her
   gpoly(
     g,
@@ -1276,7 +1276,7 @@ const quill: Painter = (g, fx) => {
 };
 
 // ---- Ilvane: a hulking stone golem, moss on his shoulders and glowing green rune-eyes, who plants carved totems and calls the spirits in them to do his bidding ----
-const ilvane: Painter = (g, fx) => {
+const totemist: Painter = (g, fx) => {
   const STONE = '#8a8478';
   const DARK = '#5a564c';
   const MOSS = '#5f8f4a';
@@ -1538,7 +1538,7 @@ const ilvane: Painter = (g, fx) => {
 };
 
 // ---- Sehra: a barbarian, bare to the waist, braided beard, fists wrapped, in a roaring stance ----
-const sehra: Painter = (g, fx) => {
+const barbarian: Painter = (g, fx) => {
   // fur cloak behind
   gpoly(
     g,
@@ -1753,10 +1753,10 @@ const sehra: Painter = (g, fx) => {
   glowHex(fx, '#ffb060', CX, 290, 150, 0.22);
 };
 
-// ---- Obsidia (id astra): a female obsidian spellblade, a villain in black glass with ember-lit cracks and a crown of shards. Her blade floats beside her only while she holds it (see obsidianBlade) ----
+// ---- Obsidia (id spellblade): a female obsidian spellblade, a villain in black glass with ember-lit cracks and a crown of shards. Her blade floats beside her only while she holds it (see obsidianBlade) ----
 const OBS_EMBER = '#ff8a3a';
 const OBS_HOT = '#ffc890';
-const astra: Painter = (g, fx) => {
+const spellblade: Painter = (g, fx) => {
   // a torn cape of glass shards flaring out behind her
   gpoly(
     g,
@@ -2186,7 +2186,7 @@ export function obsidianBlade(): HTMLCanvasElement | undefined {
 }
 
 // ---- Dorian Blackthorn: a tall, gaunt necromancer in a drowned-green long coat, bone staff and a lantern ----
-const mire: Painter = (g, fx) => {
+const necromancer: Painter = (g, fx) => {
   // mist at the feet
   fx.save();
   for (let i = 0; i < 5; i++) glowHex(fx, '#6aa87a', 120 + i * 45, FEET - 10, 60, 0.16);
@@ -2370,7 +2370,7 @@ const mire: Painter = (g, fx) => {
 };
 
 // ---- KP: short, fat and bald, with a hammer, a shotgun on his back and a window pane under his arm ----
-const kp: Painter = (g, fx) => {
+const drunkard: Painter = (g, fx) => {
   // shotgun slung across the back, barrels over the left shoulder
   limb(g, '#14141a', 290, 448, 142, 112, 13);
   limb(g, '#3a3a44', 288, 446, 140, 110, 7);
@@ -2519,16 +2519,16 @@ const kp: Painter = (g, fx) => {
 
 /** each figure's painter, the width of its ground shadow and the colour of its rim light (the hero's own colour) */
 const PAINTERS: Record<string, { paint: Painter; shadow: number; rim: string }> = {
-  maren: { paint: maren, shadow: 130, rim: '#ffd27a' },
-  rivet: { paint: rivet, shadow: 125, rim: '#6ad8ff' },
-  kesh: { paint: kesh, shadow: 125, rim: '#c8e070' },
-  vesper: { paint: vesper, shadow: 115, rim: '#b48cff' },
-  quill: { paint: quill, shadow: 125, rim: '#ff5a5a' },
-  ilvane: { paint: ilvane, shadow: 125, rim: '#7fd08a' },
-  sehra: { paint: sehra, shadow: 140, rim: '#ff9a4a' },
-  astra: { paint: astra, shadow: 115, rim: '#ff8a3a' },
-  mire: { paint: mire, shadow: 125, rim: '#7affa8' },
-  kp: { paint: kp, shadow: 145, rim: '#ffb35a' },
+  knight: { paint: knight, shadow: 130, rim: '#ffd27a' },
+  engineer: { paint: engineer, shadow: 125, rim: '#6ad8ff' },
+  hunter: { paint: hunter, shadow: 125, rim: '#c8e070' },
+  trapper: { paint: trapper, shadow: 115, rim: '#b48cff' },
+  assassin: { paint: assassin, shadow: 125, rim: '#ff5a5a' },
+  totemist: { paint: totemist, shadow: 125, rim: '#7fd08a' },
+  barbarian: { paint: barbarian, shadow: 140, rim: '#ff9a4a' },
+  spellblade: { paint: spellblade, shadow: 115, rim: '#ff8a3a' },
+  necromancer: { paint: necromancer, shadow: 125, rim: '#7affa8' },
+  drunkard: { paint: drunkard, shadow: 145, rim: '#ffb35a' },
 };
 
 const cache = new Map<string, HTMLCanvasElement>();
@@ -2538,7 +2538,7 @@ export function heroProp(
   id: string,
 ): { canvas: HTMLCanvasElement; x: number; y: number } | undefined {
   // her real figure already holds the blade, so the floating copy is only for the painted stand-in
-  if (id !== 'astra' || realFigure('hero:astra')) return undefined;
+  if (id !== 'spellblade' || realFigure('hero:spellblade')) return undefined;
   const canvas = obsidianBlade();
   return canvas ? { canvas, x: 372, y: 250 } : undefined;
 }

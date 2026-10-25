@@ -5,22 +5,22 @@
 ## How to use
 1. Open a character's file, paste a sheet prompt into the image AI, and attach the Valeria image (`Sunlit Paladin with Shield and Sword.png`) as the style anchor.
 2. Check that the nine pictures are separate, in a clean 3 x 3 grid, with no text. If a picture is wrong, regenerate the whole sheet (the order matters, I cut by position).
-3. Save the result as `assets-src/cards/<sheet name>.png` (the name is in each sheet's heading, for example `maren-01`).
+3. Save the result as `assets-src/cards/<sheet name>.png` (the name is in each sheet's heading, for example `knight-01`).
 4. Tell me which sheets are in, and I cut them into card art and wire them in (cards with no art keep their painted placeholder).
 
 | File | Cards | Sheets |
 |---|---|---|
 | [neutral.md](neutral.md) | 40 | 5 |
-| [maren.md](maren.md) | 64 | 8 |
-| [rivet.md](rivet.md) | 61 | 7 |
-| [kesh.md](kesh.md) | 66 | 8 |
-| [vesper.md](vesper.md) | 65 | 8 |
-| [quill.md](quill.md) | 64 | 8 |
-| [ilvane.md](ilvane.md) | 66 | 8 |
-| [sehra.md](sehra.md) | 63 | 7 |
-| [astra.md](astra.md) | 65 | 8 |
-| [mire.md](mire.md) | 61 | 7 |
-| [kp.md](kp.md) | 61 | 7 |
+| [knight.md](knight.md) | 64 | 8 |
+| [engineer.md](engineer.md) | 61 | 7 |
+| [hunter.md](hunter.md) | 66 | 8 |
+| [trapper.md](trapper.md) | 65 | 8 |
+| [assassin.md](assassin.md) | 64 | 8 |
+| [totemist.md](totemist.md) | 66 | 8 |
+| [barbarian.md](barbarian.md) | 63 | 7 |
+| [spellblade.md](spellblade.md) | 65 | 8 |
+| [necromancer.md](necromancer.md) | 61 | 7 |
+| [drunkard.md](drunkard.md) | 61 | 7 |
 
 ## Batches (start here)
 

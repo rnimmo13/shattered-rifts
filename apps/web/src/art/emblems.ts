@@ -50,7 +50,7 @@ const gear = (cx: number, cy: number, r: number, teeth: number, hole: number): s
 
 export const EMBLEMS: Record<string, Emblem> = {
   // ---- the ten Riftwalkers ----
-  // Maren: a shield with a dawn on it
+  // Valeria (knight): a shield with a dawn on it
   sunshield: {
     f: [
       'M32 4L56 12V32C56 46 46 57 32 61C18 57 8 46 8 32V12Z',
@@ -132,7 +132,7 @@ export const EMBLEMS: Record<string, Emblem> = {
     ],
     s: ['M20 40H46', 'M20 46H46', 'M24 30V36', 'M32 28V36', 'M40 28V36'],
   },
-  // Obsidia (Astra): a faceted obsidian shard
+  // Obsidia (spellblade): a faceted obsidian shard
   shard: {
     f: ['M32 4L54 26L32 60L10 26Z'],
     s: ['M10 26H54', 'M32 4L24 26L32 60', 'M32 4L40 26L32 60'],
@@ -293,27 +293,27 @@ export function paintEmblem(
 
 /** Which emblem each Riftwalker wears. */
 export const HERO_EMBLEM: Record<string, string> = {
-  maren: 'sunshield',
-  rivet: 'cog',
-  kesh: 'paw',
-  vesper: 'mask',
-  quill: 'daggers',
-  ilvane: 'totem',
-  sehra: 'scimitars',
-  astra: 'shard',
-  mire: 'skull',
-  kp: 'bottlepane',
+  knight: 'sunshield',
+  engineer: 'cog',
+  hunter: 'paw',
+  trapper: 'mask',
+  assassin: 'daggers',
+  totemist: 'totem',
+  barbarian: 'scimitars',
+  spellblade: 'shard',
+  necromancer: 'skull',
+  drunkard: 'bottlepane',
 };
 
 export const HERO_COLOR: Record<string, string> = {
-  maren: '#f3d58a',
-  rivet: '#6fe6ff',
-  kesh: '#ff8a6a',
-  vesper: '#b99aff',
-  quill: '#e0384f',
-  ilvane: '#7fd08a',
-  sehra: '#ffb060',
-  astra: '#ff9a4a',
-  mire: '#9be86a',
-  kp: '#ff9a3c',
+  knight: '#f3d58a',
+  engineer: '#6fe6ff',
+  hunter: '#ff8a6a',
+  trapper: '#b99aff',
+  assassin: '#e0384f',
+  totemist: '#7fd08a',
+  barbarian: '#ffb060',
+  spellblade: '#ff9a4a',
+  necromancer: '#9be86a',
+  drunkard: '#ff9a3c',
 };

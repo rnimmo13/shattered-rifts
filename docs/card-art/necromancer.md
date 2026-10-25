@@ -2,7 +2,7 @@
 
 61 cards in 7 sheets. Anchor: attach the Valeria image to every prompt.
 
-## Sheet `mire-01` (legendary first)
+## Sheet `necromancer-01` (legendary first)
 
 ```
 Create ONE ILLUSTRATION SHEET of 9 separate card-art pictures for a card-battler game (like Slay the Spire), 2400 x 1800, no text.
@@ -26,7 +26,7 @@ THE PICTURES, in this exact order, left to right, top row first. Use the card na
 NEGATIVE: text, letters, numbers, captions, labels, UI, card frames, borders, watermark, logo, photorealism, gritty texture, nudity, characters facing away.
 ```
 
-## Sheet `mire-02` (rare first)
+## Sheet `necromancer-02` (rare first)
 
 ```
 Create ONE ILLUSTRATION SHEET of 9 separate card-art pictures for a card-battler game (like Slay the Spire), 2400 x 1800, no text.
@@ -50,7 +50,7 @@ THE PICTURES, in this exact order, left to right, top row first. Use the card na
 NEGATIVE: text, letters, numbers, captions, labels, UI, card frames, borders, watermark, logo, photorealism, gritty texture, nudity, characters facing away.
 ```
 
-## Sheet `mire-03` (rare first)
+## Sheet `necromancer-03` (rare first)
 
 ```
 Create ONE ILLUSTRATION SHEET of 9 separate card-art pictures for a card-battler game (like Slay the Spire), 2400 x 1800, no text.
@@ -74,7 +74,7 @@ THE PICTURES, in this exact order, left to right, top row first. Use the card na
 NEGATIVE: text, letters, numbers, captions, labels, UI, card frames, borders, watermark, logo, photorealism, gritty texture, nudity, characters facing away.
 ```
 
-## Sheet `mire-04` (uncommon first)
+## Sheet `necromancer-04` (uncommon first)
 
 ```
 Create ONE ILLUSTRATION SHEET of 9 separate card-art pictures for a card-battler game (like Slay the Spire), 2400 x 1800, no text.
@@ -98,7 +98,7 @@ THE PICTURES, in this exact order, left to right, top row first. Use the card na
 NEGATIVE: text, letters, numbers, captions, labels, UI, card frames, borders, watermark, logo, photorealism, gritty texture, nudity, characters facing away.
 ```
 
-## Sheet `mire-05` (uncommon first)
+## Sheet `necromancer-05` (uncommon first)
 
 ```
 Create ONE ILLUSTRATION SHEET of 9 separate card-art pictures for a card-battler game (like Slay the Spire), 2400 x 1800, no text.
@@ -122,7 +122,7 @@ THE PICTURES, in this exact order, left to right, top row first. Use the card na
 NEGATIVE: text, letters, numbers, captions, labels, UI, card frames, borders, watermark, logo, photorealism, gritty texture, nudity, characters facing away.
 ```
 
-## Sheet `mire-06` (uncommon first)
+## Sheet `necromancer-06` (uncommon first)
 
 ```
 Create ONE ILLUSTRATION SHEET of 9 separate card-art pictures for a card-battler game (like Slay the Spire), 2400 x 1800, no text.
@@ -146,7 +146,7 @@ THE PICTURES, in this exact order, left to right, top row first. Use the card na
 NEGATIVE: text, letters, numbers, captions, labels, UI, card frames, borders, watermark, logo, photorealism, gritty texture, nudity, characters facing away.
 ```
 
-## Sheet `mire-07` (uncommon first)
+## Sheet `necromancer-07` (uncommon first)
 
 ```
 Create ONE ILLUSTRATION SHEET of 7 separate card-art pictures for a card-battler game (like Slay the Spire), 2400 x 1800, no text.

@@ -60,20 +60,29 @@ export interface MerchantItem {
 }
 
 /** The mini-games an elite event can ask for (the client plays them: apps/web/src/trials). */
-export type TrialGame = 'echoes' | 'pairs' | 'runelock' | 'rhythm' | 'cipher';
+export type TrialGame = 'cascade';
 
 /** One prize to choose from when a trial is won: what it does is a list of deal steps, and what to show of it. */
 export interface TrialPrize {
-  id: 'd1' | 'd2' | 'd3';
+  /** d1..d3, or p0..p9 for the ten slots of the Brass Cascade */
+  id: string;
   label: string;
   deal: DealStep[];
+  /** a few words for the lane it is in (a card or Boon name, "Upgrade ×3") */
+  short?: string;
+  /** what kind of thing it is, for the little mark on its slot: card, boon, potion, crossed, hp, upgrade, shards, heal */
+  icon?: string;
   card?: string;
+  /** a prize that is a choice of cards (the Rift-crossed lane: three rares): you pick one when you take it */
+  choices?: string[];
   boon?: string;
   potion?: string;
 }
 
 export interface TrialOffer {
   game: TrialGame;
+  /** the Rift Tier the run was on (a trial can get harder the deeper you go); missing in older saves = 1 */
+  tier?: number;
   /** the puzzle is made from this, so the same trial is the same puzzle after a reload */
   seed: number;
   /** open: not begun. playing: begun, and saved as begun, so it can never be tried twice. won: pick a prize. */
@@ -83,6 +92,8 @@ export interface TrialOffer {
   /** what the prizes are, in a few words ("Legendary cards") */
   theme: string;
   prizes: TrialPrize[];
+  /** the Brass Cascade: the slots the balls landed in; you choose one of those prizes */
+  earned?: number[];
 }
 
 export interface EventOption {

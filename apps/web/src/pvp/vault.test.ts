@@ -19,8 +19,8 @@ import {
 const run = (seed: string, tier = 1) => ({
   seed,
   tier,
-  character: 'maren' as const,
-  deck: [...RIFTWALKERS.maren.starter],
+  character: 'knight' as const,
+  deck: [...RIFTWALKERS.knight.starter],
   boons: ['iron-will'],
 });
 
@@ -97,8 +97,8 @@ describe('the Vault', () => {
 
   it('turns a deck into what a match is told', () => {
     const e = entryFor(deckFromRun(run('a', 3), 1), 'Rob');
-    expect(e).toMatchObject({ name: 'Rob', hero: 'maren', tier: 3 });
-    expect(e.deck).toEqual(RIFTWALKERS.maren.starter);
+    expect(e).toMatchObject({ name: 'Rob', hero: 'knight', tier: 3 });
+    expect(e.deck).toEqual(RIFTWALKERS.knight.starter);
   });
 
   it('names a deck by its Riftwalker and Rift Tier', () => {

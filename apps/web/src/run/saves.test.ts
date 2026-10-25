@@ -31,14 +31,14 @@ beforeEach(() => {
   };
 });
 
-const run = (seed: string, hero: 'maren' | 'kesh' = 'maren') => newRun(hero, seed, 'normal');
+const run = (seed: string, hero: 'knight' | 'hunter' = 'knight') => newRun(hero, seed, 'normal');
 const idOf = (seed: string): string | null =>
   listRuns().find((r) => r.run.seed === seed)?.id ?? null;
 
 describe('saved runs', () => {
   it('keeps several runs, each in its own slot, and opens the active one', () => {
     const a = startRunSlot(run('one'));
-    const b = startRunSlot(run('two', 'kesh'));
+    const b = startRunSlot(run('two', 'hunter'));
     expect(listRuns()).toHaveLength(2);
     expect(activeRunId()).toBe(b);
     expect(loadActiveRun()?.run.seed).toBe('two');

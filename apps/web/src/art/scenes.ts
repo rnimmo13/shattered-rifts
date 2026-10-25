@@ -1,4 +1,4 @@
-// Backdrops for card art: each Riftwalker's cards are set in their own place (Maren's castle walls, Rivet's factory, Kesh's
+// Backdrops for card art: each Riftwalker's cards are set in their own place (the knight's castle walls, the engineer's factory, the hunter's
 // pine forest...), painted as two layers of silhouettes, a far one faded into the sky and a near one dark, with a few lit
 // details (windows, lanterns, lava). Everything is placed by the card's own seeded random numbers, so no two cards share
 // a skyline. Cards without a scene keep the plain jagged horizon (proceduralArt.ts).
@@ -92,7 +92,7 @@ function layers(c: SceneColors, paint: (col: string, near: boolean) => void): vo
 
 const SCENES: Record<string, (g: G, W: number, H: number, c: SceneColors, r: R) => void> = {
   // castle walls and towers with banners
-  maren(g, W, H, c, r) {
+  knight(g, W, H, c, r) {
     layers(c, (col, near) => {
       const base = H * (near ? 0.8 : 0.7);
       const pts: [number, number][] = [[0, H]];
@@ -128,7 +128,7 @@ const SCENES: Record<string, (g: G, W: number, H: number, c: SceneColors, r: R) 
     });
   },
   // temple pillars on a mountainside, the sun behind a peak
-  sehra(g, W, H, c, r) {
+  barbarian(g, W, H, c, r) {
     lamp(g, c.glow, W * (0.3 + r() * 0.4), H * 0.42, 120, 0.35);
     fillPath(g, hexA(c.dark, 0.4), [
       [0, H * 0.75],
@@ -152,7 +152,7 @@ const SCENES: Record<string, (g: G, W: number, H: number, c: SceneColors, r: R) 
     g.fillRect(x0 - 10, base - 172, n * 52 + 8, 16);
   },
   // a factory skyline: chimneys, tanks, smoke and lit windows
-  rivet(g, W, H, c, r) {
+  engineer(g, W, H, c, r) {
     layers(c, (col, near) => {
       const base = H * (near ? 0.82 : 0.72);
       for (let x = -10; x < W;) {
@@ -177,7 +177,7 @@ const SCENES: Record<string, (g: G, W: number, H: number, c: SceneColors, r: R) 
     });
   },
   // a forest of pines and carved totem poles, spirit-lights drifting
-  ilvane(g, W, H, c, r) {
+  totemist(g, W, H, c, r) {
     layers(c, (col, near) => {
       const base = H * (near ? 0.86 : 0.74);
       for (let x = r() * 30; x < W; x += 34 + r() * 40)
@@ -201,7 +201,7 @@ const SCENES: Record<string, (g: G, W: number, H: number, c: SceneColors, r: R) 
     for (let i = 0; i < 5; i++) lamp(g, c.glow, r() * W, H * (0.3 + r() * 0.4), 10 + r() * 10, 0.5);
   },
   // deep pine forest under a big moon
-  kesh(g, W, H, c, r) {
+  hunter(g, W, H, c, r) {
     lamp(g, '#fff0d0', W * (0.15 + r() * 0.7), H * 0.25, 60, 0.35);
     layers(c, (col, near) => {
       const base = H * (near ? 0.9 : 0.76);
@@ -211,7 +211,7 @@ const SCENES: Record<string, (g: G, W: number, H: number, c: SceneColors, r: R) 
     });
   },
   // moonlit rooftops, with web lines strung between the chimneys
-  vesper(g, W, H, c, r) {
+  trapper(g, W, H, c, r) {
     lamp(g, '#e8e0ff', W * (0.2 + r() * 0.6), H * 0.22, 50, 0.4);
     const tops: [number, number][] = [];
     const windows: [number, number][] = [];
@@ -241,7 +241,7 @@ const SCENES: Record<string, (g: G, W: number, H: number, c: SceneColors, r: R) 
     }
   },
   // a narrow alley: walls left and right, hanging lanterns, washing lines
-  quill(g, W, H, c, r) {
+  assassin(g, W, H, c, r) {
     layers(c, (col, near) => {
       if (!near) {
         ground(g, col, W, H, H * 0.7, r, 30);
@@ -275,7 +275,7 @@ const SCENES: Record<string, (g: G, W: number, H: number, c: SceneColors, r: R) 
     });
   },
   // obsidian spires and shards with lava in the cracks
-  astra(g, W, H, c, r) {
+  spellblade(g, W, H, c, r) {
     // a lava glow along the horizon, behind everything
     const hz = g.createLinearGradient(0, H * 0.5, 0, H * 0.8);
     hz.addColorStop(0, hexA(c.glow, 0));
@@ -318,7 +318,7 @@ const SCENES: Record<string, (g: G, W: number, H: number, c: SceneColors, r: R) 
     });
   },
   // a swamp: dead trees, low mist, still water
-  mire(g, W, H, c, r) {
+  necromancer(g, W, H, c, r) {
     layers(c, (col, near) => {
       const base = H * (near ? 0.86 : 0.74);
       for (let i = 0; i < (near ? 3 : 5); i++)
@@ -338,7 +338,7 @@ const SCENES: Record<string, (g: G, W: number, H: number, c: SceneColors, r: R) 
     for (let i = 0; i < 3; i++) lamp(g, c.glow, r() * W, H * (0.5 + r() * 0.25), 8, 0.7);
   },
   // a back alley: a brick wall, a street lamp, bins and bottles
-  kp(g, W, H, c, r) {
+  drunkard(g, W, H, c, r) {
     const wall = H * (0.42 + r() * 0.1);
     g.fillStyle = hexA(c.dark, 0.5);
     g.fillRect(0, wall, W, H);

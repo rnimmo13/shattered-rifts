@@ -5,8 +5,9 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **Elite events are all the Brass Cascade:** a board of pegs with ten lanes, each showing its prize. Drop three balls from anywhere on the board, lean on them as they bounce down, and choose one prize from the lanes they landed in. Try it from Practice > Elite Events.
 - **Event pass:** 70 events (20 new): pick a Rift-crossed card from three, trade a card, a Boon or max HP for one, gamble for one, and a buried map that pays off at a later event; and some bad ones (a hollow feast, the tax collector, a cursed forge). Every chance in an event is now a coin toss before you see the result.
-- **Elite events and trials:** about 1 event in 10 is an elite one with an optional mini-game (Echoes, Mirror Shards, Rune Lock, Heartbeat Gate, Cipher Door), about a minute each. Win and you choose one of three prizes: a Legendary card, a Rift-crossed rare, a Boon, an elite potion, or a bounty. Lose and you get 25 shards. You only get one try: once you press Begin, closing the page or losing your connection counts as a failed trial and the run moves on. Try them from Practice > Try the trials.
+- **Elite events:** about 1 event in 10 offers the Brass Cascade for a choice of better prizes. You only get one try: once you press Begin, closing the page or losing your connection counts as failed and the run moves on.
 - **Names are filtered:** an abusive Arena or leaderboard name is shown as "Riftwalker" instead.
 - **Upgrades:** stacked statuses (Bleed, Primed, Fate and the like) and long Foresees now gain two when upgraded, and five Legendaries got hand-made upgrades (The Last Oath, The Last Toll, Deck of a Thousand Knives, Overclocked Legion, The Spirit Council).
 - **Arena fights have three times the HP** for you and for ghosts, so matches have room to play out.

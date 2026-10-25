@@ -6,7 +6,7 @@ One prompt at a time: copy the text in ONE box, paste it, attach the Valeria ima
 
 ### Valeria
 
-## Sheet `maren-08` (uncommon first)
+## Sheet `knight-08` (uncommon first)
 
 ```
 Create ONE ILLUSTRATION SHEET of 1 separate card-art pictures for a card-battler game (like Slay the Spire), 2400 x 1800, no text.
@@ -24,7 +24,7 @@ NEGATIVE: text, letters, numbers, captions, labels, UI, card frames, borders, wa
 
 ### Kesh the Unfed
 
-## Sheet `kesh-08` (uncommon first)
+## Sheet `hunter-08` (uncommon first)
 
 ```
 Create ONE ILLUSTRATION SHEET of 3 separate card-art pictures for a card-battler game (like Slay the Spire), 2400 x 1800, no text.
@@ -44,7 +44,7 @@ NEGATIVE: text, letters, numbers, captions, labels, UI, card frames, borders, wa
 
 ### Vesper Nightlace
 
-## Sheet `vesper-08` (uncommon first)
+## Sheet `trapper-08` (uncommon first)
 
 ```
 Create ONE ILLUSTRATION SHEET of 2 separate card-art pictures for a card-battler game (like Slay the Spire), 2400 x 1800, no text.
@@ -63,7 +63,7 @@ NEGATIVE: text, letters, numbers, captions, labels, UI, card frames, borders, wa
 
 ### Sylas
 
-## Sheet `quill-08` (uncommon first)
+## Sheet `assassin-08` (uncommon first)
 
 ```
 Create ONE ILLUSTRATION SHEET of 1 separate card-art pictures for a card-battler game (like Slay the Spire), 2400 x 1800, no text.
@@ -81,7 +81,7 @@ NEGATIVE: text, letters, numbers, captions, labels, UI, card frames, borders, wa
 
 ### Ilvane
 
-## Sheet `ilvane-08` (uncommon first)
+## Sheet `totemist-08` (uncommon first)
 
 ```
 Create ONE ILLUSTRATION SHEET of 3 separate card-art pictures for a card-battler game (like Slay the Spire), 2400 x 1800, no text.
@@ -101,7 +101,7 @@ NEGATIVE: text, letters, numbers, captions, labels, UI, card frames, borders, wa
 
 ### Obsidia
 
-## Sheet `astra-08` (uncommon first)
+## Sheet `spellblade-08` (uncommon first)
 
 ```
 Create ONE ILLUSTRATION SHEET of 2 separate card-art pictures for a card-battler game (like Slay the Spire), 2400 x 1800, no text.

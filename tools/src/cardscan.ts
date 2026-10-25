@@ -3,7 +3,7 @@
 // left (0 for a loss), compared with the same decks without the card. Noise is large (one card among ~26), so only read the
 // extremes. See docs/BALANCE.md.
 //
-//   pnpm cardscan -- --heroes vesper,kp --seeds 14 --hp 115 --dmg 110 --top 10
+//   pnpm cardscan -- --heroes trapper,drunkard --seeds 14 --hp 115 --dmg 110 --top 10
 
 import { applyAction, chooseAction, createCombat, heroOf } from '@sr/combat';
 import { COMBAT_DB as db, ENCOUNTERS, RIFTWALKERS, rewardPool, type HeroId } from '@sr/content/v2';

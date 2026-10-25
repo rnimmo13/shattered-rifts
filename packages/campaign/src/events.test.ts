@@ -21,7 +21,7 @@ const open = (r: RunState): RunState => ({ ...r, phase: 'map', context: null });
 
 function eventRun(seed: string, over: Partial<RunState> = {}): RunState {
   const kind = 'event';
-  const base = open(newRun('maren', seed));
+  const base = open(newRun('knight', seed));
   const node = availableNodes(base)[0]!;
   const asEvent: RunState = {
     ...base,
@@ -107,7 +107,7 @@ describe('events', () => {
 describe('a sanctified card stays', () => {
   /** a run holding one sanctified card, standing at a Shrine */
   const withOne = (): RunState => {
-    const base = open(newRun('maren', 'sanct-stays'));
+    const base = open(newRun('knight', 'sanct-stays'));
     const deck = [...base.deck];
     const at = deck.findIndex((id) => canRoll(COMBAT_DB.cards[id]!));
     deck[at] = rolledId(deck[at]!, 1);
@@ -143,7 +143,7 @@ describe('a sanctified card stays', () => {
 
   it('is never picked by an event that takes a card at random', () => {
     // a deck of nothing but sanctified basics has nothing for an event to take
-    const base = open(newRun('maren', 'sanct-events'));
+    const base = open(newRun('knight', 'sanct-events'));
     const deck = base.deck.map((id) => (canRoll(COMBAT_DB.cards[id]!) ? rolledId(id, 1) : id));
     for (let i = 0; i < 40; i++) {
       const r = eventRun(`stays-${i}`, { deck });
@@ -202,7 +202,7 @@ describe('sanctifying the deck', () => {
   };
 
   it('rolls every card that has numbers 25% up or down, about half each, and keeps the rest', () => {
-    const before = open(newRun('maren', 'sanct-base')).deck.length;
+    const before = open(newRun('knight', 'sanct-base')).deck.length;
     const r = sanctified();
     expect(r.deck).toHaveLength(before);
     const up = r.deck.filter((id) => rollOf(id) === 1).length;
@@ -232,7 +232,7 @@ describe('sanctifying the deck', () => {
   it('plays for real, saves and loads, shares one copy limit with its plain card, and upgrades as itself', () => {
     const { state } = createCombat(COMBAT_DB, {
       seed: 's',
-      a: { hero: 'maren', deck: ['hi~strike', 'lo~strike', ...RIFTWALKERS.maren.starter] },
+      a: { hero: 'knight', deck: ['hi~strike', 'lo~strike', ...RIFTWALKERS.knight.starter] },
       b: { enemies: ['squire'] },
     });
     const s = clone(state);
@@ -260,16 +260,16 @@ describe('sanctifying the deck', () => {
     expect(back?.deck).toEqual(run.deck);
     // one copy limit is shared with the plain card and the upgraded one
     const rare = Object.values(COMBAT_DB.cards).find(
-      (c) => c.rarity === 'legendary' && c.hero === 'maren',
+      (c) => c.rarity === 'legendary' && c.hero === 'knight',
     )!;
     expect(canAdd([`hi~${rare.id}`], rare.id)).toBe(false);
     expect(stripRoll(`lo~${rare.id}+`)).toBe(`${rare.id}+`);
     // the shrine upgrades a rolled card into the rolled upgrade
     const shrine: RunState = {
-      ...open(newRun('maren', 'shr')),
+      ...open(newRun('knight', 'shr')),
       phase: 'shrine',
       context: { nodeId: 'x' },
-      deck: [...RIFTWALKERS.maren.starter, 'hi~strike'],
+      deck: [...RIFTWALKERS.knight.starter, 'hi~strike'],
     };
     const up = takeShrine(
       { ...shrine, map: { ...shrine.map } },
@@ -387,12 +387,12 @@ describe('Rift-crossed and sacrifice events', () => {
   it('a crossed card comes from another Riftwalker, and an exchange keeps the rarity', () => {
     const b = base();
     const got = run(b, { k: 'crossed', rarity: 'rare' }).deck.at(-1)!;
-    expect(COMBAT_DB.cards[got]!.hero).not.toBe('maren');
+    expect(COMBAT_DB.cards[got]!.hero).not.toBe('knight');
     expect(COMBAT_DB.cards[got]!.rarity).toBe('rare');
     const swapped = run(b, { k: 'exchange' });
     expect(swapped.deck).toHaveLength(b.deck.length);
     expect(swapped.deck).not.toContain('gilded-bastion');
-    expect(COMBAT_DB.cards[swapped.deck.at(-1) ?? '']?.hero).not.toBe('maren');
+    expect(COMBAT_DB.cards[swapped.deck.at(-1) ?? '']?.hero).not.toBe('knight');
   });
 
   it('giving up a Boon, a potion or a flag works, and refuses when there is nothing to give', () => {

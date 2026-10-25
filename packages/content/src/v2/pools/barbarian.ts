@@ -25,9 +25,9 @@ import {
   heal,
 } from '../build';
 
-const s = pool('sehra', 'aurelion');
+const s = pool('barbarian', 'aurelion');
 
-export const SEHRA: CardDef[] = [
+export const BARBARIAN: CardDef[] = [
   // --- basics ---
   s('basic', 'kindle-fury', 'Kindle Fury', 'attack', 1, 'foe', [dmg(7), stance('wrath')]),
   s('basic', 'still-guard', 'Still Guard', 'skill', 1, 'none', [barrier(7), stance('calm')]),

@@ -7,7 +7,7 @@ const raresIn = (luck: 'normal' | 'lucky' | 'blessed', quality: 'duel' | 'elite'
   let rare = 0;
   let total = 0;
   for (let i = 0; i < 400; i++) {
-    for (const id of offerCards(seedRng(`luck${luck}${i}`), 'maren', [], quality, 3, luck)) {
+    for (const id of offerCards(seedRng(`luck${luck}${i}`), 'knight', [], quality, 3, luck)) {
       total++;
       if (COMBAT_DB.cards[id]?.rarity === 'rare') rare++;
     }
@@ -35,13 +35,13 @@ describe('card luck', () => {
   });
 
   it('a run remembers its luck, saves it, and old saves without it are normal', () => {
-    const r = newRun('quill', 'luck', 'normal', 'blessed');
+    const r = newRun('assassin', 'luck', 'normal', 'blessed');
     expect(r.luck).toBe('blessed');
     expect(parseRun(serializeRun(r))?.luck).toBe('blessed');
     const old = JSON.parse(serializeRun(r)) as Record<string, unknown>;
     delete old['luck'];
     expect(parseRun(JSON.stringify(old))?.luck).toBe('normal');
     expect(parseRun(JSON.stringify({ ...old, luck: 'cheating' }))).toBeNull();
-    expect(newRun('quill', 'luck2').luck).toBe('normal');
+    expect(newRun('assassin', 'luck2').luck).toBe('normal');
   });
 });

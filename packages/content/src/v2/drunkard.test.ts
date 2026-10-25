@@ -26,7 +26,7 @@ describe('KP and the Old Twelve Gauge', () => {
   it('starts every fight with the gun in hand', () => {
     const { state } = createCombat(db, {
       seed: 'g',
-      a: { hero: 'kp', deck: RIFTWALKERS.kp.starter },
+      a: { hero: 'drunkard', deck: RIFTWALKERS.drunkard.starter },
       b: { enemies: ['squire'] },
     });
     const cards = [...state.sides.a.hand, ...state.sides.a.draw].map((c) => c.card);
@@ -34,7 +34,7 @@ describe('KP and the Old Twelve Gauge', () => {
   });
 
   it('cleaves: it hits every enemy, and Sharpen makes it hit harder for the fight', () => {
-    let s = fight('kp', ['old-twelve-gauge', 'rack-the-slide']);
+    let s = fight('drunkard', ['old-twelve-gauge', 'rack-the-slide']);
     s = playCard(s, 'T0');
     for (const u of s.sides.b.units) expect(u.hp).toBe(95);
     s = playCard(s, 'T1'); // forge +3
@@ -50,7 +50,7 @@ describe('KP and the Old Twelve Gauge', () => {
   });
 
   it('playing a shell sharpens the gun with Hair Trigger', () => {
-    let s = fight('kp', ['hair-trigger', 'buckshot-shell', 'old-twelve-gauge']);
+    let s = fight('drunkard', ['hair-trigger', 'buckshot-shell', 'old-twelve-gauge']);
     s = playCard(s, 'T0');
     s = playCard(s, 'T1');
     const gun = [...s.sides.a.hand, ...s.sides.a.discard].find(
@@ -62,7 +62,7 @@ describe('KP and the Old Twelve Gauge', () => {
 
 describe('Mana tools', () => {
   it('Attunement raises maximum Mana for the rest of the fight', () => {
-    let s = fight('maren', ['attunement']);
+    let s = fight('knight', ['attunement']);
     const before = s.sides.a.maxMana;
     s = playCard(s, 'T0');
     expect(s.sides.a.maxMana).toBe(before + 1);
@@ -71,7 +71,7 @@ describe('Mana tools', () => {
   });
 
   it('Borrowed Time gives Mana now and takes it back next turn (never below 0)', () => {
-    let s = fight('maren', ['borrowed-time']);
+    let s = fight('knight', ['borrowed-time']);
     s.sides.a.mana = 0;
     s = playCard(s, 'T0');
     expect(s.sides.a.mana).toBe(3);
@@ -109,17 +109,17 @@ describe('innate traits', () => {
   });
 
   it("Valeria's Oathkeeper gives 6 Barrier and 6 Plating, Mire's Grave Chill curses every enemy", () => {
-    const m = fight('maren', []);
+    const m = fight('knight', []);
     const hero = m.sides.a.units[m.sides.a.units.length - 1]!;
     expect(hero.barrier).toBeGreaterThanOrEqual(6);
     expect(hero.statuses.plating).toBe(6);
-    const g = fight('mire', []);
+    const g = fight('necromancer', []);
     for (const u of g.sides.b.units) expect(u.statuses.doom).toBe(4);
   });
 
   it('Clutch Genes: KP deals 60% more attack damage at or below 60% HP, and not above', () => {
     const hit = (hp: number): number => {
-      const s = fight('kp', ['hammer-swing']);
+      const s = fight('drunkard', ['hammer-swing']);
       const hero = s.sides.a.units[s.sides.a.units.length - 1]!;
       hero.hp = hp;
       // the trait switches the status on at turn start and whenever HP changes; set it as the engine would
@@ -133,14 +133,14 @@ describe('innate traits', () => {
   });
 
   it('Clutch Genes clears when KP is healed back above half', () => {
-    const s = fight('kp', ['liquid-lunch']);
+    const s = fight('drunkard', ['liquid-lunch']);
     const hero = s.sides.a.units[s.sides.a.units.length - 1]!;
     hero.hp = 30;
     hero.statuses.clutch = 60;
     s.sides.a.hand = [{ id: 'T0', card: 'last-call' }];
     const after = playCard(s, 'T0'); // heals 6: still under half
     expect(after.sides.a.units[after.sides.a.units.length - 1]!.statuses.clutch).toBe(60);
-    const h2 = fight('kp', ['last-call']);
+    const h2 = fight('drunkard', ['last-call']);
     const hero2 = h2.sides.a.units[h2.sides.a.units.length - 1]!;
     hero2.hp = Math.floor(hero2.maxHp * 0.6) - 2; // 55: one heal of 6 crosses the line
     hero2.statuses.clutch = 60;
@@ -151,7 +151,7 @@ describe('innate traits', () => {
   it('a fight that begins hurt starts with Clutch Genes already on', () => {
     const { state } = createCombat(db, {
       seed: 'c',
-      a: { hero: 'kp', deck: RIFTWALKERS.kp.starter },
+      a: { hero: 'drunkard', deck: RIFTWALKERS.drunkard.starter },
       b: { enemies: ['squire'] },
     });
     const s = clone(state);
@@ -164,7 +164,7 @@ describe('innate traits', () => {
   });
 
   it('Clutch Genes switches on when damage drops KP under half, and off when healed', () => {
-    const s = fight('kp', []);
+    const s = fight('drunkard', []);
     const hero = s.sides.a.units[s.sides.a.units.length - 1]!;
     expect(hero.statuses.clutch ?? 0).toBe(0);
     // take a big hit from a Trap-free direct source: use the enemy turn via a fabricated heavy hit

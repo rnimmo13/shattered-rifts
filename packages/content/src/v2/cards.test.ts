@@ -88,7 +88,7 @@ function playOut(s0: CombatState, cardId: string): { s: CombatState; events: Com
 
 describe('every card plays', () => {
   const heroOf = (c: CardDef): HeroId =>
-    (HEROES.includes(c.hero as HeroId) ? c.hero : 'rivet') as HeroId;
+    (HEROES.includes(c.hero as HeroId) ? c.hero : 'engineer') as HeroId;
 
   for (const c of cards) {
     if (c.unplayable) continue;
@@ -130,7 +130,7 @@ describe('every card plays', () => {
 
   it('unplayable cards pay off when discarded', () => {
     for (const c of cards.filter((x) => x.unplayable && x.onDiscard)) {
-      const s = setup(c, 'quill');
+      const s = setup(c, 'assassin');
       const acts = legalActions(db, s).filter((a) => a.type === 'play' && a.card === 'T0');
       expect(acts, `${c.id} should not be playable`).toHaveLength(0);
     }
@@ -138,11 +138,11 @@ describe('every card plays', () => {
 });
 
 describe('second resources have a way in and a way out from the first hand', () => {
-  it("Astra's opening hand can both make Arcana and spend it", () => {
+  it("The spellblade's opening hand can both make Arcana and spend it", () => {
     for (let i = 0; i < 20; i++) {
       const { state } = createCombat(db, {
         seed: `arcana-${i}`,
-        a: { hero: 'astra', deck: RIFTWALKERS.astra.starter },
+        a: { hero: 'spellblade', deck: RIFTWALKERS.spellblade.starter },
         b: { enemies: ['squire'] },
       });
       const hand = state.sides.a.hand.map((c) => db.cards[c.card]!);
@@ -160,7 +160,7 @@ describe('second resources have a way in and a way out from the first hand', () 
 
 describe('real card data, end to end', () => {
   it('Keen Edge makes Sleeve Knives hit harder (and only knives)', () => {
-    const s0 = setup(db.cards['keen-edge']!, 'quill');
+    const s0 = setup(db.cards['keen-edge']!, 'assassin');
     s0.sides.a.hand = [
       { id: 'K', card: 'keen-edge' },
       { id: 'N', card: 'sleeve-knife' },
@@ -186,7 +186,7 @@ describe('real card data, end to end', () => {
   it('Mire starts with a Bone Thrall and Doom kills at the end of an enemy turn', () => {
     const { state } = createCombat(db, {
       seed: 'doom-real',
-      a: { hero: 'mire', deck: RIFTWALKERS.mire.starter },
+      a: { hero: 'necromancer', deck: RIFTWALKERS.necromancer.starter },
       b: { enemies: ['squire'] },
     });
     expect(state.sides.a.units.some((u) => u.kind === 'ally')).toBe(true);
@@ -222,13 +222,13 @@ describe('pool shape (docs/09_ROSTER.md §1)', () => {
       [...c.effects, ...(c.onDiscard ?? []), ...(c.onExhaust ?? [])].some(
         (o) => o.op === op || (o.op === 'power' && o.ops.some((x) => x.op === op)),
       );
-    owns((c) => uses(c, 'channel') || uses(c, 'evoke') || uses(c, 'runeSlots'), 'ilvane');
-    owns((c) => uses(c, 'stance'), 'sehra');
-    owns((c) => c.starCost !== undefined, 'astra');
-    owns((c) => uses(c, 'forge'), ['astra', 'kp']);
-    owns((c) => c.tags?.includes('gun') === true, 'kp');
-    owns((c) => c.tags?.includes('knife') === true, 'quill');
-    owns((c) => c.tags?.includes('shell') === true, 'kp');
+    owns((c) => uses(c, 'channel') || uses(c, 'evoke') || uses(c, 'runeSlots'), 'totemist');
+    owns((c) => uses(c, 'stance'), 'barbarian');
+    owns((c) => c.starCost !== undefined, 'spellblade');
+    owns((c) => uses(c, 'forge'), ['spellblade', 'drunkard']);
+    owns((c) => c.tags?.includes('gun') === true, 'drunkard');
+    owns((c) => c.tags?.includes('knife') === true, 'assassin');
+    owns((c) => c.tags?.includes('shell') === true, 'drunkard');
     owns(
       (c) =>
         c.effects.some((o) => o.op === 'status' && o.status === 'doom') ||
@@ -236,7 +236,7 @@ describe('pool shape (docs/09_ROSTER.md §1)', () => {
           (o) => o.op === 'power' && o.ops.some((x) => x.op === 'status' && x.status === 'doom'),
         ) ||
         (c.kind === 'snare' && c.effects.some((o) => o.op === 'status' && o.status === 'doom')),
-      'mire',
+      'necromancer',
     );
     owns(
       (c) =>
@@ -245,7 +245,7 @@ describe('pool shape (docs/09_ROSTER.md §1)', () => {
             (o.op === 'scaleStatus' && o.status === 'seared') ||
             (o.op === 'status' && o.status === 'seared' && o.to !== 'target'),
         ),
-      ['quill'],
+      ['assassin'],
     );
   });
 
@@ -263,9 +263,9 @@ describe('pool shape (docs/09_ROSTER.md §1)', () => {
       cards.filter((c) => c.hero === h && c.kind === 'snare' && !c.id.endsWith('+')).length;
     const counts = HEROES.map((h) => [h, own(h)] as const);
     for (const [h, n] of counts)
-      expect(n, `${h} snares`).toBeGreaterThanOrEqual(h === 'vesper' ? 10 : 1);
-    const others = Math.max(...counts.filter(([h]) => h !== 'vesper').map(([, n]) => n));
-    expect(own('vesper')).toBeGreaterThanOrEqual(others * 2);
+      expect(n, `${h} snares`).toBeGreaterThanOrEqual(h === 'trapper' ? 10 : 1);
+    const others = Math.max(...counts.filter(([h]) => h !== 'trapper').map(([, n]) => n));
+    expect(own('trapper')).toBeGreaterThanOrEqual(others * 2);
     expect(own('neutral')).toBeGreaterThanOrEqual(2);
   });
 

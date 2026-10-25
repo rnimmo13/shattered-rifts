@@ -13,9 +13,9 @@ import {
 
 const deck = (id: string): VaultDeck => ({
   id,
-  hero: 'maren',
+  hero: 'knight',
   tier: 1,
-  deck: [...RIFTWALKERS.maren.starter],
+  deck: [...RIFTWALKERS.knight.starter],
   boons: [],
   bankedAt: 5,
 });

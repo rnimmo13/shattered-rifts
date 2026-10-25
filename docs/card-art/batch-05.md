@@ -27,7 +27,7 @@ NEGATIVE: text, letters, numbers, captions, labels, UI, card frames, borders, wa
 
 ### Valeria
 
-## Sheet `maren-05` (uncommon first)
+## Sheet `knight-05` (uncommon first)
 
 ```
 Create ONE ILLUSTRATION SHEET of 9 separate card-art pictures for a card-battler game (like Slay the Spire), 2400 x 1800, no text.
@@ -53,7 +53,7 @@ NEGATIVE: text, letters, numbers, captions, labels, UI, card frames, borders, wa
 
 ### Rivet
 
-## Sheet `rivet-05` (uncommon first)
+## Sheet `engineer-05` (uncommon first)
 
 ```
 Create ONE ILLUSTRATION SHEET of 9 separate card-art pictures for a card-battler game (like Slay the Spire), 2400 x 1800, no text.
@@ -79,7 +79,7 @@ NEGATIVE: text, letters, numbers, captions, labels, UI, card frames, borders, wa
 
 ### Kesh the Unfed
 
-## Sheet `kesh-05` (uncommon first)
+## Sheet `hunter-05` (uncommon first)
 
 ```
 Create ONE ILLUSTRATION SHEET of 9 separate card-art pictures for a card-battler game (like Slay the Spire), 2400 x 1800, no text.
@@ -105,7 +105,7 @@ NEGATIVE: text, letters, numbers, captions, labels, UI, card frames, borders, wa
 
 ### Vesper Nightlace
 
-## Sheet `vesper-05` (uncommon first)
+## Sheet `trapper-05` (uncommon first)
 
 ```
 Create ONE ILLUSTRATION SHEET of 9 separate card-art pictures for a card-battler game (like Slay the Spire), 2400 x 1800, no text.
@@ -131,7 +131,7 @@ NEGATIVE: text, letters, numbers, captions, labels, UI, card frames, borders, wa
 
 ### Sylas
 
-## Sheet `quill-05` (uncommon first)
+## Sheet `assassin-05` (uncommon first)
 
 ```
 Create ONE ILLUSTRATION SHEET of 9 separate card-art pictures for a card-battler game (like Slay the Spire), 2400 x 1800, no text.
@@ -157,7 +157,7 @@ NEGATIVE: text, letters, numbers, captions, labels, UI, card frames, borders, wa
 
 ### Ilvane
 
-## Sheet `ilvane-05` (uncommon first)
+## Sheet `totemist-05` (uncommon first)
 
 ```
 Create ONE ILLUSTRATION SHEET of 9 separate card-art pictures for a card-battler game (like Slay the Spire), 2400 x 1800, no text.
@@ -183,7 +183,7 @@ NEGATIVE: text, letters, numbers, captions, labels, UI, card frames, borders, wa
 
 ### Sehra
 
-## Sheet `sehra-05` (uncommon first)
+## Sheet `barbarian-05` (uncommon first)
 
 ```
 Create ONE ILLUSTRATION SHEET of 9 separate card-art pictures for a card-battler game (like Slay the Spire), 2400 x 1800, no text.
@@ -209,7 +209,7 @@ NEGATIVE: text, letters, numbers, captions, labels, UI, card frames, borders, wa
 
 ### Obsidia
 
-## Sheet `astra-05` (uncommon first)
+## Sheet `spellblade-05` (uncommon first)
 
 ```
 Create ONE ILLUSTRATION SHEET of 9 separate card-art pictures for a card-battler game (like Slay the Spire), 2400 x 1800, no text.
@@ -235,7 +235,7 @@ NEGATIVE: text, letters, numbers, captions, labels, UI, card frames, borders, wa
 
 ### Dorian Blackthorn
 
-## Sheet `mire-05` (uncommon first)
+## Sheet `necromancer-05` (uncommon first)
 
 ```
 Create ONE ILLUSTRATION SHEET of 9 separate card-art pictures for a card-battler game (like Slay the Spire), 2400 x 1800, no text.
@@ -261,7 +261,7 @@ NEGATIVE: text, letters, numbers, captions, labels, UI, card frames, borders, wa
 
 ### KP, the Homeless Drunk
 
-## Sheet `kp-05` (uncommon first)
+## Sheet `drunkard-05` (uncommon first)
 
 ```
 Create ONE ILLUSTRATION SHEET of 9 separate card-art pictures for a card-battler game (like Slay the Spire), 2400 x 1800, no text.

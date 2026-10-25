@@ -1,4 +1,4 @@
-// KP, the Homeless Drunk (the Midden, the rift's rubbish heap). A short, fat, bald dwarf with a hammer, a sawed-off 12 gauge and a shopping trolley of
+// DRUNKARD, the Homeless Drunk (the Midden, the rift's rubbish heap). A short, fat, bald dwarf with a hammer, a sawed-off 12 gauge and a shopping trolley of
 // window panes. No companions. Three lanes:
 //   Junk Traps - a few booby traps built from bottles and glass (Traps are a shared tool; Vesper still owns the most)
 //   Glass      - hang panes of glass: Barrier and Thorns, then break them over someone's head
@@ -28,9 +28,9 @@ import {
   status,
 } from '../build';
 
-const p = pool('kp', 'midden');
+const p = pool('drunkard', 'midden');
 
-export const KP: CardDef[] = [
+export const DRUNKARD: CardDef[] = [
   // --- basics ---
   p('basic', 'hammer-swing', 'Hammer Swing', 'attack', 1, 'foe', [
     dmg(6),

@@ -21,7 +21,7 @@ describe('legendary cards', () => {
   });
 
   it('a legendary is one of a kind: a deck can hold only one copy', () => {
-    const id = rewardPool('maren').find((x) => rarityOf(x) === 'legendary') as string;
+    const id = rewardPool('knight').find((x) => rarityOf(x) === 'legendary') as string;
     expect(canAdd([], id)).toBe(true);
     expect(canAdd([id], id)).toBe(false);
     expect(canAdd([`${id}+`], id)).toBe(false);
@@ -34,7 +34,7 @@ describe('legendary cards', () => {
     let seen = 0;
     let total = 0;
     for (let i = 0; i < 600; i++)
-      for (const id of offerCards(seedRng(`l${i}`), 'quill', [], 'duel', 3)) {
+      for (const id of offerCards(seedRng(`l${i}`), 'assassin', [], 'duel', 3)) {
         total++;
         if (rarityOf(id) === 'legendary') seen++;
       }
@@ -42,7 +42,7 @@ describe('legendary cards', () => {
     seen = 0;
     total = 0;
     for (let i = 0; i < 600; i++)
-      for (const id of offerCards(seedRng(`e${i}`), 'quill', [], 'elite', 3)) {
+      for (const id of offerCards(seedRng(`e${i}`), 'assassin', [], 'elite', 3)) {
         total++;
         if (rarityOf(id) === 'legendary') seen++;
       }
@@ -55,7 +55,7 @@ describe('legendary cards', () => {
       let withLegend = 0;
       for (let i = 0; i < 300; i++)
         if (
-          giftOffers(seedRng(`g${luck}${i}`), 'mire', [], 3, 'seraphine', luck).some(
+          giftOffers(seedRng(`g${luck}${i}`), 'necromancer', [], 3, 'seraphine', luck).some(
             (id) => rarityOf(id) === 'legendary',
           )
         )
@@ -69,9 +69,9 @@ describe('legendary cards', () => {
     expect(l).toBeGreaterThan(n);
     expect(b).toBeGreaterThan(l);
     // and the gift never offers a legendary the deck already holds
-    const held = rewardPool('mire').filter((id) => rarityOf(id) === 'legendary');
+    const held = rewardPool('necromancer').filter((id) => rarityOf(id) === 'legendary');
     for (let i = 0; i < 100; i++)
-      for (const id of giftOffers(seedRng(`h${i}`), 'mire', held, 3, 'nyxara', 'blessed'))
+      for (const id of giftOffers(seedRng(`h${i}`), 'necromancer', held, 3, 'nyxara', 'blessed'))
         expect(held.includes(id)).toBe(false);
   });
 });

@@ -4,34 +4,34 @@
 
 import type { CardDef } from '@sr/combat';
 import { withUpgrades } from './build';
-import { ASTRA } from './pools/astra';
+import { SPELLBLADE } from './pools/spellblade';
 import { LEGENDARIES } from './pools/legendary';
-import { ILVANE } from './pools/ilvane';
-import { KESH } from './pools/kesh';
-import { KP } from './pools/kp';
+import { TOTEMIST } from './pools/totemist';
+import { HUNTER } from './pools/hunter';
+import { DRUNKARD } from './pools/drunkard';
 import { ANCESTRAL, JUNK, NEUTRAL, SIGNATURES } from './pools/neutral';
-import { MAREN } from './pools/maren';
-import { MIRE } from './pools/mire';
-import { QUILL } from './pools/quill';
-import { RIVET } from './pools/rivet';
-import { SEHRA } from './pools/sehra';
-import { VESPER } from './pools/vesper';
+import { KNIGHT } from './pools/knight';
+import { NECROMANCER } from './pools/necromancer';
+import { ASSASSIN } from './pools/assassin';
+import { ENGINEER } from './pools/engineer';
+import { BARBARIAN } from './pools/barbarian';
+import { TRAPPER } from './pools/trapper';
 
 /** Every playable card with its "+" version, plus junk. */
 export const V2_CARDS: CardDef[] = [
   ...withUpgrades([
     ...NEUTRAL,
-    ...MAREN,
-    ...RIVET,
-    ...KESH,
-    ...VESPER,
-    ...QUILL,
-    ...ILVANE,
-    ...SEHRA,
-    ...ASTRA,
+    ...KNIGHT,
+    ...ENGINEER,
+    ...HUNTER,
+    ...TRAPPER,
+    ...ASSASSIN,
+    ...TOTEMIST,
+    ...BARBARIAN,
+    ...SPELLBLADE,
     ...LEGENDARIES,
-    ...MIRE,
-    ...KP,
+    ...NECROMANCER,
+    ...DRUNKARD,
     ...SIGNATURES,
     ...ANCESTRAL,
   ]),

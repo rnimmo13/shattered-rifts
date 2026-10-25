@@ -44,16 +44,16 @@ const RANK: Record<string, number> = {
 const ART_RARITIES = new Set(Object.keys(RANK));
 
 const OWN_LOOK: Record<string, string> = {
-  maren: 'Valeria, a blonde knight in blue-and-gold plate',
-  rivet: 'Rivet, an engineer with a hovering drone',
-  kesh: 'Kesh, a tribal huntress with bone weapons',
-  vesper: 'Vesper, a masked trapper with teal glow',
-  quill: 'Sylas, a flamboyant rogue throwing teal-glowing knives',
-  ilvane: 'Ilvane, a spirit shaman who calls glowing totems',
-  sehra: 'Sehra, a flame-bound warrior with twin scimitars',
-  astra: 'Obsidia, a queen of black volcanic glass with floating shards',
-  mire: 'Mire, a spectral green-eyed reaper with thralls',
-  kp: 'KP, a boisterous drunk dwarf with a shotgun and bottles',
+  knight: 'Valeria, a blonde knight in blue-and-gold plate',
+  engineer: 'Rivet, an engineer with a hovering drone',
+  hunter: 'Kesh, a tribal huntress with bone weapons',
+  trapper: 'Vesper, a masked trapper with teal glow',
+  assassin: 'Sylas, a flamboyant rogue throwing teal-glowing knives',
+  totemist: 'Ilvane, a spirit shaman who calls glowing totems',
+  barbarian: 'Sehra, a flame-bound warrior with twin scimitars',
+  spellblade: 'Obsidia, a queen of black volcanic glass with floating shards',
+  necromancer: 'Mire, a spectral green-eyed reaper with thralls',
+  drunkard: 'KP, a boisterous drunk dwarf with a shotgun and bottles',
 };
 
 const SIZE = 9;
@@ -94,7 +94,7 @@ const index: string[] = [
   '## How to use',
   "1. Open a character's file, paste a sheet prompt into the image AI, and attach the Valeria image (`Sunlit Paladin with Shield and Sword.png`) as the style anchor.",
   '2. Check that the nine pictures are separate, in a clean 3 x 3 grid, with no text. If a picture is wrong, regenerate the whole sheet (the order matters, I cut by position).',
-  "3. Save the result as `assets-src/cards/<sheet name>.png` (the name is in each sheet's heading, for example `maren-01`).",
+  "3. Save the result as `assets-src/cards/<sheet name>.png` (the name is in each sheet's heading, for example `knight-01`).",
   '4. Tell me which sheets are in, and I cut them into card art and wire them in (cards with no art keep their painted placeholder).',
   '',
   '| File | Cards | Sheets |',

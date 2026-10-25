@@ -124,14 +124,14 @@ async function playRoom(
   send(a, {
     type: 'join',
     playerId: a.id,
-    entry: { ...entryOf('maren', names[0]), ...(who ? { who: who[0] } : {}) },
+    entry: { ...entryOf('knight', names[0]), ...(who ? { who: who[0] } : {}) },
   });
   await until(() => a.inbox.some((m) => m.type === 'waiting'), 'the waiting message');
   const b = await connect(`/pvp/room/${code}`, 'Bob', 'player-bob');
   send(b, {
     type: 'join',
     playerId: b.id,
-    entry: { ...entryOf('kesh', names[1]), ...(who ? { who: who[1] } : {}) },
+    entry: { ...entryOf('hunter', names[1]), ...(who ? { who: who[1] } : {}) },
   });
   await until(() => a.match !== null && b.match !== null, 'both starts');
   if (who) {
@@ -149,7 +149,7 @@ async function playRoom(
     a.ws.close();
     await sleep(300);
     const again = await connect(`/pvp/room/${code}`, 'Ann', a.id);
-    send(again, { type: 'join', playerId: again.id, entry: entryOf('maren', 'Ann') });
+    send(again, { type: 'join', playerId: again.id, entry: entryOf('knight', 'Ann') });
     await until(() => again.match !== null, 'the rejoin');
     // the rejoined player replays every move so far, then plays on
     await until(() => again.ended !== null || b.ended !== null, 'the end after a rejoin');
@@ -175,9 +175,9 @@ async function playRoom(
 async function playQueue(): Promise<void> {
   console.log('queue:');
   const a = await connect('/pvp/queue', 'Cat', 'player-cat');
-  send(a, { type: 'queue', playerId: a.id, entry: entryOf('vesper', 'Cat', 1) });
+  send(a, { type: 'queue', playerId: a.id, entry: entryOf('trapper', 'Cat', 1) });
   const b = await connect('/pvp/queue', 'Dan', 'player-dan');
-  send(b, { type: 'queue', playerId: b.id, entry: entryOf('rivet', 'Dan', 2) });
+  send(b, { type: 'queue', playerId: b.id, entry: entryOf('engineer', 'Dan', 2) });
   await until(
     () => a.inbox.some((m) => m.type === 'matched') && b.inbox.some((m) => m.type === 'matched'),
     'a match',
@@ -191,16 +191,16 @@ async function playQueue(): Promise<void> {
   if (room !== other) throw new Error('the two players were sent to different rooms');
   console.log(`  matched into ${room}`);
   const ca = await connect(`/pvp/room/${room}`, 'Cat', a.id, true);
-  send(ca, { type: 'join', playerId: ca.id, entry: entryOf('vesper', 'Cat', 1) });
+  send(ca, { type: 'join', playerId: ca.id, entry: entryOf('trapper', 'Cat', 1) });
   const cb = await connect(`/pvp/room/${room}`, 'Dan', b.id, false);
-  send(cb, { type: 'join', playerId: cb.id, entry: entryOf('rivet', 'Dan', 2) });
+  send(cb, { type: 'join', playerId: cb.id, entry: entryOf('engineer', 'Dan', 2) });
   await until(() => ca.match !== null && cb.match !== null, 'both starts');
   // they asked for different things, so they get them: no coin, Cat first, Dan second with more HP
   if (ca.seat !== 'a' || cb.seat !== 'b' || ca.toss?.random !== false)
     throw new Error(`wrong order: Cat ${ca.seat}, Dan ${cb.seat}, coin ${JSON.stringify(ca.toss)}`);
   const hp = (bot: Bot): number =>
     (bot.match!.state.sides.b.units.find((u) => u.kind === 'hero') as { maxHp: number }).maxHp;
-  const base = RIFTWALKERS.rivet.hero.maxHp * ARENA_HP_MULT + SECOND_PLAYER_HP;
+  const base = RIFTWALKERS.engineer.hero.maxHp * ARENA_HP_MULT + SECOND_PLAYER_HP;
   if (hp(cb) !== base) throw new Error(`the second player has ${hp(cb)} HP, expected ${base}`);
   console.log(`  order: Cat first, Dan second with ${hp(cb)} HP (no coin)`);
   await until(() => ca.ended !== null && cb.ended !== null, 'the end');
@@ -216,20 +216,20 @@ async function refusals(): Promise<void> {
   send(bad, {
     type: 'join',
     playerId: bad.id,
-    entry: { name: 'Eve', hero: 'maren', deck: ['strike'], boons: [], tier: 1 },
+    entry: { name: 'Eve', hero: 'knight', deck: ['strike'], boons: [], tier: 1 },
   });
   await until(() => bad.inbox.some((m) => m.type === 'error'), 'a deck error');
   console.log(`  a one-card deck: ${(bad.inbox[0] as { message: string }).message}`);
   const full = `FULL${rnd()}`;
   const p1 = await connect(`/pvp/room/${full}`, 'p1', 'p1');
-  send(p1, { type: 'join', playerId: 'p1', entry: entryOf('maren', 'p1') });
+  send(p1, { type: 'join', playerId: 'p1', entry: entryOf('knight', 'p1') });
   const p2 = await connect(`/pvp/room/${full}`, 'p2', 'p2');
-  send(p2, { type: 'join', playerId: 'p2', entry: entryOf('kesh', 'p2') });
+  send(p2, { type: 'join', playerId: 'p2', entry: entryOf('hunter', 'p2') });
   await until(() => p1.match !== null && p2.match !== null, 'a start');
   p1.paused = true;
   p2.paused = true;
   const p3 = await connect(`/pvp/room/${full}`, 'p3', 'p3');
-  send(p3, { type: 'join', playerId: 'p3', entry: entryOf('rivet', 'p3') });
+  send(p3, { type: 'join', playerId: 'p3', entry: entryOf('engineer', 'p3') });
   await until(() => p3.inbox.some((m) => m.type === 'error'), 'room full');
   console.log('  a third player: refused as expected');
   // a move out of turn is refused and changes nothing
@@ -250,12 +250,12 @@ async function refusals(): Promise<void> {
   // a player who leaves before the match starts does not leave a ghost in the seat
   const ghostRoom = `GHOST${rnd()}`;
   const g1 = await connect(`/pvp/room/${ghostRoom}`, 'g1', 'g1');
-  send(g1, { type: 'join', playerId: 'g1', entry: entryOf('maren', 'g1') });
+  send(g1, { type: 'join', playerId: 'g1', entry: entryOf('knight', 'g1') });
   await until(() => g1.inbox.some((m) => m.type === 'waiting'), 'g1 waiting');
   g1.ws.close();
   await sleep(300);
   const g2 = await connect(`/pvp/room/${ghostRoom}`, 'g2', 'g2');
-  send(g2, { type: 'join', playerId: 'g2', entry: entryOf('kesh', 'g2') });
+  send(g2, { type: 'join', playerId: 'g2', entry: entryOf('hunter', 'g2') });
   await until(() => g2.inbox.length > 0, 'a reply for g2');
   if (g2.inbox.some((m) => m.type === 'start'))
     throw new Error('a match started against a player who had left');
@@ -285,10 +285,10 @@ async function vault(): Promise<void> {
   };
   const mk = (id: string) => ({
     id,
-    hero: 'maren',
+    hero: 'knight',
     tier: 1,
     stage: 2,
-    deck: [...RIFTWALKERS.maren.starter],
+    deck: [...RIFTWALKERS.knight.starter],
     boons: ['iron-sigil'],
     bankedAt: 1,
   });
@@ -377,7 +377,7 @@ async function board(tag: string): Promise<void> {
   need(!!ann && !!bob, 'both players are on the Arena board');
   need((ann?.wins ?? 0) + (bob?.wins ?? 0) === 1, 'one win between them');
   need(
-    ann?.heroes[0]?.hero === 'maren' && bob?.heroes[0]?.hero === 'kesh',
+    ann?.heroes[0]?.hero === 'knight' && bob?.heroes[0]?.hero === 'hunter',
     'the characters are listed',
   );
   // a player who is known is told where they stand; one who is not just sees the board
@@ -399,7 +399,7 @@ async function board(tag: string): Promise<void> {
       code: codes[0],
       run: `r${tag}`,
       name: names[0],
-      hero: 'maren',
+      hero: 'knight',
       tier: 1,
       stage,
       ...extra,
@@ -432,7 +432,7 @@ async function ghost(tag: string): Promise<void> {
     Array.from({ length: 64 }, () => '0123456789abcdef'[Math.floor(Math.random() * 16)]).join('');
   const me = hex();
   const name = `Gus${tag}`;
-  const entry = { ...entryOf('astra', name), who: me };
+  const entry = { ...entryOf('spellblade', name), who: me };
   // a queue socket asks for a ghost, and is sent to a room
   const q = await connect('/pvp/queue', name, `player-${name}`);
   send(q, { type: 'ghost', playerId: q.id, entry });

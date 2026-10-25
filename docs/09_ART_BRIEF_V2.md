@@ -22,7 +22,7 @@ light, no text, no border; each realm has its own palette (see the file).
 2. List them in `apps/web/public/art/manifest.json`:
    ```json
    {
-     "figures": { "hero:maren": "figures/maren.png", "unit:squire": "figures/squire.png" },
+     "figures": { "hero:knight": "figures/knight.png", "unit:squire": "figures/squire.png" },
      "cards": { "strike": "cards/strike.webp" },
      "backdrops": { "aurelion": "backdrops/aurelion.webp" }
    }

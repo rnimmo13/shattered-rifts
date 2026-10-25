@@ -207,7 +207,7 @@ export default function RunScreen() {
         const told =
           next.eventResult && next.eventResult !== cur.eventResult ? next.eventResult : null;
         // a chance in the event is shown as a coin first, and the result waits for it
-        if (cur.phase === 'event' && next.eventFlips?.length) {
+        if (cur.phase === 'event' && !cur.context?.event?.trial && next.eventFlips?.length) {
           setCoin({ flips: next.eventFlips, then: told });
           say(null);
         } else say(told, true);
@@ -707,8 +707,8 @@ function Body(props: {
           run={run}
           onChoose={(id) => act((r) => chooseEvent(r, id))}
           onBegin={() => act((r) => startTrial(r))}
-          onTrial={(won) => act((r) => finishTrial(r, won))}
-          onPrize={(id) => act((r) => claimTrialPrize(r, id))}
+          onTrial={(won, earned) => act((r) => finishTrial(r, won, earned))}
+          onPrize={(id, pick) => act((r) => claimTrialPrize(r, id, pick))}
         />
       );
     case 'kit':

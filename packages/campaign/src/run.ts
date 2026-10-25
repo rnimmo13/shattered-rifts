@@ -863,18 +863,18 @@ export function settleInterrupted(run: RunState): { run: RunState; notice: strin
     return { run, notice: null };
   const r = clone(run);
   const ctx = r.context as NonNullable<RunState['context']>;
-  r.eventResult = 'You left the trial unfinished, so it counts as failed. The way closes, and you move on.';
+  r.eventResult = 'You left the game unfinished, so it counts as failed. The way closes, and you move on.';
   clearNode(r, ctx.nodeId);
   r.phase = 'map';
   return { run: r, notice: r.eventResult };
 }
 
 /** An elite event's trial has been played (the client plays the puzzle): a win opens the choice of prizes, a loss pays the consolation. */
-export function finishTrial(run: RunState, won: boolean): RunState {
+export function finishTrial(run: RunState, won: boolean, earned?: readonly number[]): RunState {
   need(run.phase === 'event' && run.context?.event?.trial?.state === 'playing', 'There is no trial being played');
   const r = clone(run);
   const ctx = r.context as NonNullable<RunState['context']>;
-  const said = endTrial(r, ctx.event as NonNullable<typeof ctx.event>, won);
+  const said = endTrial(r, ctx.event as NonNullable<typeof ctx.event>, won, earned);
   if (said !== null) {
     r.eventResult = said;
     clearNode(r, ctx.nodeId);
@@ -884,16 +884,22 @@ export function finishTrial(run: RunState, won: boolean): RunState {
 }
 
 /** Take one of the prizes of a trial that was won. */
-export function claimTrialPrize(run: RunState, prize: string): RunState {
+export function claimTrialPrize(run: RunState, prize: string, pick?: number): RunState {
   need(run.phase === 'event' && run.context?.event?.trial?.state === 'won', 'There is no prize here');
   const r = clone(run);
   const ctx = r.context as NonNullable<RunState['context']>;
-  r.eventResult = takePrize(r, ctx.event as NonNullable<typeof ctx.event>, prize, {
-    gainBoon,
-    fail: (msg) => {
-      throw new RunError(msg);
+  r.eventResult = takePrize(
+    r,
+    ctx.event as NonNullable<typeof ctx.event>,
+    prize,
+    {
+      gainBoon,
+      fail: (msg) => {
+        throw new RunError(msg);
+      },
     },
-  });
+    pick,
+  );
   clearNode(r, ctx.nodeId);
   r.phase = 'map';
   return r;

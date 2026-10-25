@@ -1,5 +1,5 @@
 # Cuts AI card-art sheets (3 x 3 pictures on a dark navy background) into one picture per card.
-#   assets-src/cards/<sheet>.png     e.g. maren-01.png; which card is in which cell is in docs/card-art/sheets.json
+#   assets-src/cards/<sheet>.png     e.g. knight-01.png; which card is in which cell is in docs/card-art/sheets.json
 #   -> apps/web/public/art/cards/<cardId>.jpg (640 x 480) and the manifest (upgrades share their base card's art)
 # The cells are found from the navy gutters between the pictures; if the gutters can not be found the sheet is cut into
 # equal cells with a small inset. Sheets that are not in assets-src/cards yet are skipped, and those cards keep their

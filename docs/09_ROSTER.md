@@ -1,6 +1,8 @@
 # Shattered Rifts: The Roster (9 Riftwalkers)
 
-> Decision log: `DECISIONS.md` #95-#97. Status of the build is at the bottom.
+> Decision log: `DECISIONS.md` #95-#97 (ids: #190). Status of the build is at the bottom.
+
+**Internal ids are the class** (DECISIONS #190), so a name or a gender can change without touching code: knight (Valeria), engineer (Rivet), hunter (Kesh), trapper (Vesper), assassin (Sylas), totemist (Ilvane), barbarian (Sehra), spellblade (Obsidia), necromancer (Mire), drunkard (KP). Players only ever see the names in brackets. Older ids (maren, rivet, kesh, vesper, quill, ilvane, sehra, astra, mire, kp) are still read from saves, Vault decks and server rows through `canonicalHero` (`@sr/content/v2`).
 
 The goal (Robert, 2026-10-23): reach 8-10 characters, each with **real choices at the reward screen**, covering the same
 mechanics Slay the Spire's classes do. Silent works because her pool has three lanes (poison, shivs, discard) and a good
@@ -21,9 +23,9 @@ deck takes one and a half of them. Our pools were ~16 cards and one lane each. T
 |---|---|---|
 | **Sleeve Knives** + discard payoffs | Quill | one or two 0-cost attacks, never the engine |
 | **Bleed** stacking (our poison): double, spread, cash out | Quill | a Bleed hit now and then (Neutral, enemies) |
-| **Totems** (was Runes: plant / awaken / Spirit) | Ilvane (id `ilvane`) | nothing |
+| **Totems** (was Runes: plant / awaken / Spirit) | Ilvane (id `totemist`) | nothing |
 | **Stances** and Fervor | Sehra | nothing |
-| **Arcana** (was Lumen) and the Obsidian Blade (sharpen) | Obsidia (id `astra`) | nothing |
+| **Arcana** (was Lumen) and the Obsidian Blade (sharpen) | Obsidia (id `spellblade`) | nothing |
 | **Drones** and Assemble | Rivet | |
 | **Pack** buffs | Kesh | |
 | **Thorns** and Barrier-scaling | Maren | Barrier is shared; Thorns is Maren's |
@@ -44,9 +46,9 @@ deck takes one and a half of them. Our pools were ~16 cards and one lane each. T
 | 3 | **Kesh the Unfed** | Wyldmaw | 76 | **Bloodrage:** Might and self-damage | **Pack:** buffed companions | **Feast:** Consume, Devour, lifesteal |
 | 4 | **Vesper Nightlace** | Umbral | 68 | **Traps:** many, varied triggers | **Exposed:** debuff burst, Faltering control | **Bluff:** Retain, Foresee, held Mana |
 | 5 | **Quill, the Knife-Dancer** | Umbral | 66 | **Sleeve Knives:** 0-cost, many hits | **Bleed:** stack, double, cash out | **Sleight:** discard / cycle payoffs |
-| 6 | **Ilvane** (id `ilvane`) | Nexus-9 | 70 | **Hawk:** damage totems | **Bear:** Barrier totems | **Elder:** charging totems, Spirit |
+| 6 | **Ilvane** (id `totemist`) | Nexus-9 | 70 | **Hawk:** damage totems | **Bear:** Barrier totems | **Elder:** charging totems, Spirit |
 | 7 | **Sehra, the Still Flame** | Aurelion | 72 | **Fury:** burst | **Serene:** Mana and cards | **Fervor:** Retain/Foresee to a payoff |
-| 8 | **Obsidia, Spellblade of the Hollow Crown** (id `astra`) | The Hollow Crown (id `starfall`) | 80 | **Blade:** sharpen one weapon | **Arcana:** spend for finishers | **Sigils:** Auras that tick |
+| 8 | **Obsidia, Spellblade of the Hollow Crown** (id `spellblade`) | The Hollow Crown (id `starfall`) | 80 | **Blade:** sharpen one weapon | **Arcana:** spend for finishers | **Sigils:** Auras that tick |
 | 9 | **Mire, the Gravewarden** | Gloomfen | 76 | **Doom:** stack, double, cash in | **Thralls:** the dead fight for you | **Ashes:** consumed cards fuel you |
 | 10 | **KP, the Homeless Drunk** | The Midden | 88 | **Gun:** sharpen the Old Twelve Gauge | **Shells:** buckshot and booby traps that hit every enemy | **Hangover:** the more it hurts the harder you hit: glass, Thorns, swigs, self-damage |
 
@@ -128,4 +130,4 @@ pending kind). Say the word if you want them.
 
 ## Innate traits
 
-Every Riftwalker has one passive (`Riftwalker.trait`): Valeria (id maren) Oathkeeper (6 Barrier and 6 Plating at the start), Rivet Tinkerer (heal 1 for you and your companions each turn), Kesh Pack Instinct (start with 1 Might for the pack), Vesper Ambusher (enemies start Exposed), Quill Weak Spot (a random enemy Exposed each turn), Ilvane Totem-bound (starts with a Hawk, a Bear and a Splinter totem), Sehra Inner Fire (2 Fervor at the start), Obsidia Kindled (3 Arcana each turn), Mire Grave Chill (enemies start with 2 Fate), KP Clutch Genes (+50% attack damage at or below half HP). Numbers are a first pass.
+Every Riftwalker has one passive (`Riftwalker.trait`): Valeria (id knight) Oathkeeper (6 Barrier and 6 Plating at the start), Rivet Tinkerer (heal 1 for you and your companions each turn), Kesh Pack Instinct (start with 1 Might for the pack), Vesper Ambusher (enemies start Exposed), Quill Weak Spot (a random enemy Exposed each turn), Ilvane Totem-bound (starts with a Hawk, a Bear and a Splinter totem), Sehra Inner Fire (2 Fervor at the start), Obsidia Kindled (3 Arcana each turn), Mire Grave Chill (enemies start with 2 Fate), KP Clutch Genes (+50% attack damage at or below half HP). Numbers are a first pass.

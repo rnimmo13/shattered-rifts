@@ -48,28 +48,28 @@ describe('the Arena board', () => {
 
   it('ranks by wins, then fewer losses, then who got there first, and lists the characters played', () => {
     const rows = [
-      row('a', 'maren', true, 1),
-      row('a', 'maren', true, 2),
-      row('a', 'kesh', false, 3),
-      row('b', 'rivet', true, 4),
-      row('b', 'rivet', true, 5),
-      row('c', 'vesper', true, 6),
-      row('c', 'vesper', true, 7),
-      row('c', 'vesper', true, 8),
+      row('a', 'knight', true, 1),
+      row('a', 'knight', true, 2),
+      row('a', 'hunter', false, 3),
+      row('b', 'engineer', true, 4),
+      row('b', 'engineer', true, 5),
+      row('c', 'trapper', true, 6),
+      row('c', 'trapper', true, 7),
+      row('c', 'trapper', true, 8),
     ];
     const board = rankPvp(rows);
     expect(board.map((s) => s.name)).toEqual(['c', 'b', 'a']);
     expect(board[2]).toMatchObject({ wins: 2, losses: 1 });
     expect(board[2]?.heroes).toEqual([
-      { hero: 'maren', wins: 2, losses: 0 },
-      { hero: 'kesh', wins: 0, losses: 1 },
+      { hero: 'knight', wins: 2, losses: 0 },
+      { hero: 'hunter', wins: 0, losses: 1 },
     ]);
   });
 
   it('shows a player under their newest name, and cuts the board to its size', () => {
-    const rows = [row('a', 'maren', true, 1, 'Old'), row('a', 'maren', true, 9, 'New')];
+    const rows = [row('a', 'knight', true, 1, 'Old'), row('a', 'knight', true, 9, 'New')];
     expect(rankPvp(rows)[0]?.name).toBe('New');
-    const many = Array.from({ length: 140 }, (_, i) => row(`p${i}`, 'maren', true, i));
+    const many = Array.from({ length: 140 }, (_, i) => row(`p${i}`, 'knight', true, i));
     expect(rankPvp(many)).toHaveLength(100);
     expect(rankPvp(many, 3)).toHaveLength(3);
   });
@@ -88,7 +88,7 @@ describe('the campaign board', () => {
     const run = (player: string, tier: number, stage: number, at: number): RunRow => ({
       player,
       name: player,
-      hero: 'maren',
+      hero: 'knight',
       tier,
       stage,
       at,
@@ -139,7 +139,7 @@ describe('ghosts', () => {
     id,
     owner,
     ownerName: owner,
-    hero: 'maren',
+    hero: 'knight',
     tier: 1,
     stage: 3,
     wins,
@@ -176,13 +176,13 @@ describe('ghosts', () => {
     const g = (ghost: string, won: boolean, human: string, at: number): GhostGame => ({
       ghost,
       ownerName: ghost,
-      hero: 'maren',
+      hero: 'knight',
       tier: 1,
       stage: null,
       ghostWon: won,
       human,
       humanName: human,
-      humanHero: 'kesh',
+      humanHero: 'hunter',
       at,
     });
     const games = [
@@ -209,7 +209,7 @@ describe('where a player stands', () => {
     const rows: PvpRow[] = Array.from({ length: 130 }, (_, i) => ({
       player: `p${i}`,
       name: `P${i}`,
-      hero: 'maren',
+      hero: 'knight',
       won: i < 129, // everyone wins once but the last
       at: i,
     }));

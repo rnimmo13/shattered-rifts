@@ -1,4 +1,4 @@
-// Ser Maren Ashcourt (Aurelion). No companions. Three lanes:
+// Valeria, the knight (Aurelion). No companions. Three lanes:
 //   Bulwark     - Barrier that scales, and hits for the Barrier you hold
 //   Thorns      - retaliation: Thorns, punishing Traps, payoffs for the Thorns you carry
 //   Devotion  - healing, Shielded and Radiant Powers
@@ -21,9 +21,9 @@ import {
   status,
 } from '../build';
 
-const m = pool('maren', 'aurelion');
+const m = pool('knight', 'aurelion');
 
-export const MAREN: CardDef[] = [
+export const KNIGHT: CardDef[] = [
   // --- basics ---
   m('basic', 'dawn-smite', 'Dawn Smite', 'attack', 1, 'foe', [dmg(6), barrier(3)]),
   m('basic', 'oathbound', 'Oathbound', 'skill', 1, 'none', [barrier(7), status('thorns', 1)]),

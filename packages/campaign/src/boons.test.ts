@@ -15,7 +15,7 @@ import {
 
 /** Most tests are about the map and what is on it: step past the opening choice without taking anything from it. */
 const open = (r: RunState): RunState => ({ ...r, phase: 'map', context: null });
-const fresh = (hero: 'maren' | 'kesh' | 'vesper', seed: string): RunState =>
+const fresh = (hero: 'knight' | 'hunter' | 'trapper', seed: string): RunState =>
   open(newRun(hero, seed, 'normal'));
 
 const inFight = (base: RunState, kind: 'elite' | 'warden' | 'duel'): RunState => {
@@ -27,33 +27,33 @@ const inFight = (base: RunState, kind: 'elite' | 'warden' | 'duel'): RunState =>
 describe('boons in a run', () => {
   it('a Warden win drops a boon you did not own; max HP applies', () => {
     for (let i = 0; i < 20; i++) {
-      const run = { ...inFight(fresh('maren', `boon${i}`), 'warden'), hp: 30 };
+      const run = { ...inFight(fresh('knight', `boon${i}`), 'warden'), hp: 30 };
       const won = finishDuel(run, true, 30);
       const id = won.context?.boonGained as string;
       expect(won.boons).toEqual([id]);
       const b = BOONS.find((x) => x.id === id);
       expect(b).toBeDefined();
-      expect(won.maxHp).toBe(RIFTWALKERS.maren.hero.maxHp + (b?.maxHp ?? 0));
+      expect(won.maxHp).toBe(RIFTWALKERS.knight.hero.maxHp + (b?.maxHp ?? 0));
     }
   });
 
   it('never drops a boon you already have', () => {
     const owned = BOONS.slice(0, BOONS.length - 1).map((b) => b.id);
-    const run = { ...inFight(fresh('maren', 'owned'), 'warden'), boons: owned, hp: 30 };
+    const run = { ...inFight(fresh('knight', 'owned'), 'warden'), boons: owned, hp: 30 };
     const won = finishDuel(run, true, 30);
     expect(won.boons).toHaveLength(BOONS.length);
     expect(new Set(won.boons).size).toBe(BOONS.length);
   });
 
   it('a Healing Vial heals after every fight and a Shard Purse pays extra', () => {
-    const base = { ...fresh('maren', 'vial'), boons: ['healing-vial', 'coin-purse'] };
+    const base = { ...fresh('knight', 'vial'), boons: ['healing-vial', 'coin-purse'] };
     const won = finishDuel({ ...inFight(base, 'duel'), hp: 30 }, true, 30);
     expect(won.hp).toBe(36);
     expect(won.shards).toBe(12 + 10);
   });
 
   it('the merchant sells one boon, once', () => {
-    const base = { ...fresh('kesh', 'mb'), shards: 500 };
+    const base = { ...fresh('hunter', 'mb'), shards: 500 };
     const first = base.map.nodes[0] as RunState['map']['nodes'][number];
     const shop: RunState = {
       ...base,
@@ -71,14 +71,14 @@ describe('boons in a run', () => {
     };
     const bought = buyBoon(shop);
     expect(bought.boons).toEqual(['crystal-heart']);
-    expect(bought.maxHp).toBe(RIFTWALKERS.kesh.hero.maxHp + 12);
+    expect(bought.maxHp).toBe(RIFTWALKERS.hunter.hero.maxHp + 12);
     expect(bought.shards).toBe(380);
     expect(() => buyBoon(bought)).toThrow(RunError);
     expect(() => buyBoon({ ...shop, shards: 10 })).toThrow(RunError);
   });
 
   it('saves refuse unknown or repeated boons', () => {
-    const r = fresh('vesper', 'sv');
+    const r = fresh('trapper', 'sv');
     expect(parseRun(JSON.stringify({ ...r, boons: ['nope'] }))).toBeNull();
     expect(parseRun(JSON.stringify({ ...r, boons: ['iron-sigil', 'iron-sigil'] }))).toBeNull();
     expect(parseRun(JSON.stringify({ ...r, boons: ['iron-sigil'] }))).not.toBeNull();
@@ -88,13 +88,13 @@ describe('boons in a run', () => {
 describe("the Warden's Gift", () => {
   it('offers only rare (or legendary) cards of your own class, whichever Warden fell', () => {
     for (const boss of ['seraphine', 'kron', 'gorrmaw', 'nyxara']) {
-      const base = fresh('maren', `gift-${boss}`);
+      const base = fresh('knight', `gift-${boss}`);
       const nodes = base.map.nodes.map((n) => (n.kind === 'warden' ? { ...n, enemyId: boss } : n));
       const run = { ...inFight({ ...base, map: { ...base.map, nodes } }, 'warden'), hp: 30 };
       const offers = finishDuel(run, true, 30).context?.offers ?? [];
       expect(offers.length).toBeGreaterThanOrEqual(3);
       for (const id of offers) {
-        expect(COMBAT_DB.cards[id]?.hero, id).toBe('maren');
+        expect(COMBAT_DB.cards[id]?.hero, id).toBe('knight');
         expect(['rare', 'legendary']).toContain(COMBAT_DB.cards[id]?.rarity);
       }
     }
@@ -105,7 +105,7 @@ describe('events', () => {
   it('a seed variety of events all resolve, and the altar and smith do what they say', () => {
     const seen = new Set<string>();
     for (let i = 0; i < 60; i++) {
-      let r = open(newRun('maren', `event-${i}`, 'normal'));
+      let r = open(newRun('knight', `event-${i}`, 'normal'));
       // walk to the first event node by forcing one
       const ev = r.map.nodes.find((n) => n.kind === 'event');
       if (!ev) continue;
@@ -135,7 +135,7 @@ describe('events', () => {
 describe('potions in a run', () => {
   it('unused potions come with you, used ones are gone, and a lost fight keeps them all', () => {
     const base = {
-      ...fresh('maren', 'pots'),
+      ...fresh('knight', 'pots'),
       potions: ['fire-flask', 'guard-draught', 'mana-vial'],
     };
     const fight = inFight(base, 'duel');
@@ -149,7 +149,7 @@ describe('potions in a run', () => {
 
   it('never carries more than three, and cannot invent potions', () => {
     const base = {
-      ...fresh('maren', 'full'),
+      ...fresh('knight', 'full'),
       potions: ['fire-flask', 'guard-draught', 'mana-vial'],
     };
     for (let i = 0; i < 10; i++) {
@@ -163,7 +163,7 @@ describe('potions in a run', () => {
   });
 
   it('the merchant sells potions while there is room', () => {
-    const base = { ...fresh('kesh', 'shop'), shards: 200 };
+    const base = { ...fresh('hunter', 'shop'), shards: 200 };
     const first = base.map.nodes[0] as RunState['map']['nodes'][number];
     const shop: RunState = {
       ...base,
@@ -194,7 +194,7 @@ describe('potions in a run', () => {
   });
 
   it('saves refuse unknown potions or more than three', () => {
-    const r = fresh('vesper', 'sp');
+    const r = fresh('trapper', 'sp');
     expect(parseRun(JSON.stringify({ ...r, potions: ['nope'] }))).toBeNull();
     expect(parseRun(JSON.stringify({ ...r, potions: Array(4).fill('fire-flask') }))).toBeNull();
     expect(parseRun(JSON.stringify({ ...r, potions: ['fire-flask'] }))).not.toBeNull();

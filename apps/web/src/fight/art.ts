@@ -16,16 +16,16 @@ import {
 } from '../art/proceduralArt';
 
 const HERO: Record<string, [Archetype, Realm]> = {
-  maren: ['knight', 'aurelion'],
-  rivet: ['drone', 'nexus'],
-  kesh: ['beast', 'wyldmaw'],
-  vesper: ['cultist', 'umbral'],
-  quill: ['wanderer', 'umbral'],
-  ilvane: ['mage', 'nexus'],
-  sehra: ['cleric', 'aurelion'],
-  astra: ['mage', 'starfall'],
-  mire: ['shade', 'gloomfen'],
-  kp: ['engineer', 'midden'],
+  knight: ['knight', 'aurelion'],
+  engineer: ['drone', 'nexus'],
+  hunter: ['beast', 'wyldmaw'],
+  trapper: ['cultist', 'umbral'],
+  assassin: ['wanderer', 'umbral'],
+  totemist: ['mage', 'nexus'],
+  barbarian: ['cleric', 'aurelion'],
+  spellblade: ['mage', 'starfall'],
+  necromancer: ['shade', 'gloomfen'],
+  drunkard: ['engineer', 'midden'],
 };
 
 const UNIT: Record<string, [Archetype, Realm]> = {
@@ -220,8 +220,8 @@ function emblemOf(c: CardDef, motif: Motif | undefined): string {
       return c.kind === 'attack' && (name === 'sunshield' || name === 'shield') ? 'sword' : name;
     }
   // a "crystal" card (Mana, Arcana, Sharpen) belongs to whoever owns it: KP's are about his gun, Obsidia's about her glass
-  if (motif === 'crystal' && c.hero === 'kp') return 'shell';
-  if (motif === 'crystal' && c.hero === 'astra') return 'shard';
+  if (motif === 'crystal' && c.hero === 'drunkard') return 'shell';
+  if (motif === 'crystal' && c.hero === 'spellblade') return 'shard';
   return MOTIF_EMBLEM[motif ?? 'rune'];
 }
 
@@ -284,7 +284,7 @@ function effectEmblems(c: CardDef): string[] {
     else if (o.op === 'channel' || o.op === 'evoke') out.push('rune');
     else if (o.op === 'stars') out.push('star8');
     // Sharpen: KP oils his shotgun, Obsidia hones her blade
-    else if (o.op === 'forge') out.push(c.hero === 'kp' ? 'shell' : 'sword');
+    else if (o.op === 'forge') out.push(c.hero === 'drunkard' ? 'shell' : 'sword');
     else if (o.op === 'stance') out.push('fist');
     else if (o.op === 'addCard')
       out.push(

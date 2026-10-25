@@ -24,9 +24,9 @@ import {
   revive,
 } from '../build';
 
-const r = pool('rivet', 'nexus');
+const r = pool('engineer', 'nexus');
 
-export const RIVET: CardDef[] = [
+export const ENGINEER: CardDef[] = [
   // --- basics ---
   r('basic', 'deploy-drone', 'Deploy Drone', 'summon', 1, 'none', [summon('patrol-drone')]),
   r('basic', 'overclock', 'Overclock', 'skill', 1, 'none', [status('might', 1, 'allFriends')]),

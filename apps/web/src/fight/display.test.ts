@@ -70,8 +70,8 @@ describe('display reducer: potions', () => {
     const start = createCombat(db, {
       seed: 'pot',
       a: {
-        hero: 'maren',
-        deck: RIFTWALKERS.maren.starter,
+        hero: 'knight',
+        deck: RIFTWALKERS.knight.starter,
         potions: ['fire-flask', 'guard-draught'],
       },
       b: {

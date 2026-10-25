@@ -46,9 +46,9 @@ describe('a run that collapses takes its saved deck with it', () => {
     };
     const deck = (id: string, tier: number) => ({
       id,
-      hero: 'maren',
+      hero: 'knight',
       tier,
-      deck: [...RIFTWALKERS.maren.starter],
+      deck: [...RIFTWALKERS.knight.starter],
       boons: [],
       bankedAt: 1,
     });

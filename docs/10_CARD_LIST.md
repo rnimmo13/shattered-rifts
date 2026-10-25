@@ -1137,13 +1137,13 @@ Tokens (made by other cards):
 
 ## Pool sizes
 
-- maren: 92
-- rivet: 93
-- kesh: 97
-- vesper: 99
-- quill: 97
-- ilvane: 96
-- sehra: 93
-- astra: 94
-- kp: 89
-- mire: 96
+- knight: 92
+- engineer: 93
+- hunter: 97
+- trapper: 99
+- assassin: 97
+- totemist: 96
+- barbarian: 93
+- spellblade: 94
+- drunkard: 89
+- necromancer: 96

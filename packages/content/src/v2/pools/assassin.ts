@@ -26,9 +26,9 @@ import {
   loseHpScaled,
 } from '../build';
 
-const q = pool('quill', 'umbral');
+const q = pool('assassin', 'umbral');
 
-export const QUILL: CardDef[] = [
+export const ASSASSIN: CardDef[] = [
   // --- basics and the token ---
   q('basic', 'quick-jab', 'Quick Jab', 'attack', 0, 'foe', [
     dmg(3),

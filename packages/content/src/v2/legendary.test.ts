@@ -39,42 +39,42 @@ const heroUnit = (s: CombatState): Unit => s.sides.a.units[s.sides.a.units.lengt
 
 describe('legendary effects', () => {
   it('Rift Collapse hits every enemy for 40 and costs 15 HP', () => {
-    const s0 = createFight('maren').state;
+    const s0 = createFight('knight').state;
     const hp0 = heroUnit(s0).hp;
-    const s = play('maren', 'rift-collapse');
+    const s = play('knight', 'rift-collapse');
     for (const u of s.sides.b.units) expect(u.hp).toBe(160);
     expect(heroUnit(s).hp).toBe(hp0 - 15);
   });
 
   it('The Last Toll puts 25 Fate on every enemy', () => {
-    const s = play('mire', 'the-last-toll');
+    const s = play('necromancer', 'the-last-toll');
     // 25 from the card, plus Mire's Grave Chill trait (4)
     for (const u of s.sides.b.units) expect(u.statuses.doom).toBe(29);
   });
 
   it('The Drowned King summons the king and gives every friend Might', () => {
-    const s = play('mire', 'the-drowned-king');
+    const s = play('necromancer', 'the-drowned-king');
     expect(s.sides.a.units.some((u) => u.def === 'drowned-king')).toBe(true);
     for (const u of s.sides.a.units) expect(u.statuses.might).toBeGreaterThanOrEqual(1);
   });
 
   it('Dawn Incarnate raises 10 Barrier, then deals twice your Barrier to everything', () => {
-    const s = play('maren', 'dawn-incarnate', (st) => {
+    const s = play('knight', 'dawn-incarnate', (st) => {
       heroUnit(st).barrier = 10;
     });
     for (const u of s.sides.b.units) expect(u.hp).toBe(200 - 40);
   });
 
   it('Death Warrant takes three HP per Seared', () => {
-    const s = play('quill', 'death-warrant', (st) => {
+    const s = play('assassin', 'death-warrant', (st) => {
       st.sides.b.units[0]!.statuses.seared = 5;
     });
     expect(s.sides.b.units[0]!.hp).toBe(200 - 15);
   });
 
   it("Volcano's Birth gives Arcana, cards and Barrier", () => {
-    const s0 = createFight('astra').state;
-    const s = play('astra', 'birth-of-a-star', (st) => {
+    const s0 = createFight('spellblade').state;
+    const s = play('spellblade', 'birth-of-a-star', (st) => {
       st.sides.a.stars = 0;
     });
     expect(s.sides.a.stars).toBeGreaterThanOrEqual(8);
@@ -87,7 +87,7 @@ describe('legendary effects', () => {
     for (const c of Object.values(db.cards).filter(
       (x) => x.rarity === 'legendary' && x.kind === 'power',
     )) {
-      const hero = (RIFTWALKERS[c.hero as HeroId] ? c.hero : 'maren') as HeroId;
+      const hero = (RIFTWALKERS[c.hero as HeroId] ? c.hero : 'knight') as HeroId;
       const s = play(hero, c.id);
       expect(
         s.sides.a.discard.some((x) => x.card === c.id),

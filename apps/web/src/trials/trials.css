@@ -1,4 +1,4 @@
-/* the trial mini-games (elite events) and the practice page for them */
+/* the Brass Cascade (elite events) and the practice page for it */
 .trial {
   position: fixed;
   inset: 0;
@@ -16,6 +16,9 @@
   gap: 0.9rem;
   justify-items: center;
   text-align: center;
+}
+.trial__box--wide {
+  width: min(46rem, 96vw);
 }
 .trial__title {
   margin: 0;
@@ -54,14 +57,27 @@
   justify-content: center;
 }
 .trial__result h3 {
-  margin: 0 0 0.3rem;
+  margin: 0 0 0.5rem;
   font-size: 1.5rem;
-}
-.trial__result h3.is-won {
   color: var(--c-gold-light);
 }
-.trial__result h3.is-lost {
-  color: var(--c-text-dim);
+.trial__earned {
+  list-style: none;
+  margin: 0 0 0.6rem;
+  padding: 0;
+  display: grid;
+  gap: 0.35rem;
+  text-align: left;
+}
+.trial__earned li {
+  padding: 0.4rem 0.7rem;
+  border-radius: 8px;
+  border: 1px solid var(--mark);
+  background: rgb(8 10 20 / 0.6);
+}
+.trial__earned b {
+  color: var(--mark);
+  margin-right: 0.3rem;
 }
 .tg {
   width: 100%;
@@ -82,217 +98,89 @@
   color: var(--c-text-dim);
 }
 
-/* echoes */
-.echoes {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0.8rem;
-  width: min(20rem, 80vw);
+/* the board: a canvas of pegs, and the ten lanes' prizes in a row exactly under it */
+.cascade__board {
+  width: min(40rem, 94vw, calc((100vh - 15rem) * 600 / 680));
+  min-width: 15rem;
 }
-.echoes__pad {
-  aspect-ratio: 1;
-  border-radius: 18px;
-  font-size: 2.6rem;
-  color: var(--rune);
-  border: 2px solid color-mix(in srgb, var(--rune) 55%, transparent);
-  background: color-mix(in srgb, var(--rune) 10%, var(--c-void));
-  cursor: pointer;
-  transition:
-    transform 0.08s,
-    box-shadow 0.12s,
-    background 0.12s;
-}
-.echoes__pad:disabled {
-  cursor: default;
-}
-.echoes__pad.is-lit {
-  transform: scale(1.05);
-  background: color-mix(in srgb, var(--rune) 55%, var(--c-void));
-  box-shadow: 0 0 34px var(--rune);
-  color: #fff;
-}
-
-/* pairs */
-.pairs {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 0.6rem;
-  width: min(23rem, 90vw);
-}
-.pairs__tile {
-  aspect-ratio: 1;
-  border-radius: 12px;
-  border: 2px solid var(--c-gold-dark);
-  background: linear-gradient(160deg, var(--c-violet-deep), var(--c-navy));
-  cursor: pointer;
-  font-size: 2rem;
-  color: var(--rune);
-  transition:
-    transform 0.15s,
-    background 0.15s;
-}
-.pairs__tile.is-up {
-  background: color-mix(in srgb, var(--rune) 14%, var(--c-void));
-  border-color: var(--rune);
-}
-.pairs__tile.is-matched {
-  opacity: 0.55;
-  cursor: default;
-}
-.pairs__face {
+.cascade__canvas {
   display: block;
-}
-
-/* rune lock */
-.lock {
-  display: grid;
-  grid-template-columns: repeat(var(--n), 1fr);
-  gap: 0.5rem;
-  width: min(21rem, 88vw);
-}
-.lock__rune {
-  aspect-ratio: 1;
-  border-radius: 12px;
-  font-size: 1.9rem;
-  cursor: pointer;
-  color: transparent;
-  border: 2px solid rgb(255 255 255 / 0.14);
-  background: rgb(8 10 20 / 0.8);
-  transition:
-    background 0.15s,
-    box-shadow 0.15s,
-    color 0.15s;
-}
-.lock__rune.is-on {
-  color: var(--c-gold-pale);
-  border-color: var(--c-gold);
-  background: radial-gradient(circle at 50% 40%, rgb(232 198 104 / 0.45), rgb(40 30 10 / 0.8));
-  box-shadow: 0 0 18px rgb(232 198 104 / 0.55);
-}
-
-/* rhythm */
-.rhythm {
-  position: relative;
-  width: min(30rem, 92vw);
-  height: 5.5rem;
-  border-radius: 12px;
+  width: 100%;
+  aspect-ratio: 600 / 680;
   border: 2px solid var(--c-gold-dark);
-  background: rgb(8 10 20 / 0.85);
-  cursor: pointer;
-  touch-action: manipulation;
-  overflow: hidden;
+  border-bottom: 0;
+  border-radius: 10px 10px 0 0;
+  cursor: crosshair;
+  touch-action: none;
 }
-.rhythm.is-hit {
-  box-shadow: 0 0 28px rgb(155 224 138 / 0.7);
-}
-.rhythm.is-miss {
-  box-shadow: 0 0 28px rgb(255 100 90 / 0.6);
-}
-.rhythm__gold {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  background: linear-gradient(180deg, rgb(232 198 104 / 0.65), rgb(232 198 104 / 0.3));
-  border-left: 2px solid var(--c-gold-light);
-  border-right: 2px solid var(--c-gold-light);
-}
-.rhythm__needle {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  width: 4px;
-  margin-left: -2px;
-  background: var(--c-ivory);
-  box-shadow: 0 0 12px var(--c-ivory);
-}
-.rhythm__lamps {
-  display: inline-flex;
-  gap: 0.35rem;
-  align-items: center;
-}
-.rhythm__lamps i {
-  width: 0.8rem;
-  height: 0.8rem;
-  border-radius: 50%;
-  border: 1px solid var(--c-gold-dark);
-  background: transparent;
-}
-.rhythm__lamps i.is-hit {
-  background: #9be08a;
-  border-color: #9be08a;
-}
-.rhythm__lamps i.is-miss {
-  background: #ff8a7a;
-  border-color: #ff8a7a;
-}
-
-/* cipher */
-.cipher__rows {
+.cascade__lanes {
   list-style: none;
   margin: 0;
   padding: 0;
   display: grid;
-  gap: 0.3rem;
-  width: min(20rem, 90vw);
-  max-height: 14rem;
-  overflow-y: auto;
+  grid-template-columns: repeat(10, 1fr);
+  border: 2px solid var(--c-gold-dark);
+  border-top: 0;
+  border-radius: 0 0 10px 10px;
+  background: rgb(8 10 20 / 0.85);
 }
-.cipher__rows li {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0.25rem 0.6rem;
-  border-radius: 8px;
-  background: rgb(8 10 20 / 0.55);
-}
-.cipher__slots {
-  display: inline-flex;
-  gap: 0.6rem;
-  font-size: 1.5rem;
-}
-.cipher__pips {
-  display: inline-flex;
-  gap: 0.3rem;
-}
-.cipher__pips i {
-  width: 0.7rem;
-  height: 0.7rem;
-  border-radius: 50%;
-  border: 1px solid rgb(255 255 255 / 0.2);
-}
-.cipher__pips i.is-exact {
-  background: var(--c-gold-light);
-  border-color: var(--c-gold-light);
-}
-.cipher__pips i.is-near {
-  border: 2px solid var(--c-gold-light);
-}
-.cipher__reveal {
+.cascade__lane {
+  display: grid;
+  justify-items: center;
+  align-content: start;
+  gap: 0.15rem;
+  padding: 0.3rem 0.1rem 0.4rem;
+  border-left: 1px solid rgb(232 198 104 / 0.25);
+  font-size: clamp(0.5rem, 1.5vw, 0.72rem);
+  line-height: 1.15;
+  text-align: center;
+  overflow-wrap: anywhere;
   color: var(--c-text-dim);
 }
-.cipher__draft {
+.cascade__lane:first-child {
+  border-left: 0;
+}
+.cascade__lane b {
+  font-size: 1.4em;
+  color: var(--mark);
+}
+.cascade__lane.is-earned {
+  background: rgb(232 198 104 / 0.22);
+  color: var(--c-ivory);
+  box-shadow: inset 0 -3px 0 var(--c-gold-light);
+}
+.cascade__controls {
   display: flex;
-  gap: 0.5rem;
-  align-items: center;
+  gap: 0.6rem;
+  touch-action: manipulation;
 }
-.cipher__slot,
-.cipher__rune {
-  width: 3rem;
-  height: 3rem;
-  border-radius: 10px;
-  font-size: 1.6rem;
-  border: 2px solid rgb(255 255 255 / 0.2);
-  background: rgb(8 10 20 / 0.8);
-  cursor: pointer;
+
+/* the prizes of an elite event, shown before the game is played */
+.lanepreview {
+  list-style: none;
+  margin: 0 0 0.6rem;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 0.35rem;
+  width: min(36rem, 100%);
 }
-.cipher__rune:disabled {
-  opacity: 0.3;
-  cursor: default;
+.lanepreview li {
+  display: grid;
+  justify-items: center;
+  gap: 0.1rem;
+  padding: 0.35rem 0.25rem;
+  border-radius: 8px;
+  border: 1px solid color-mix(in srgb, var(--mark) 55%, transparent);
+  background: rgb(8 10 20 / 0.6);
+  font-size: 0.78rem;
+  line-height: 1.2;
+  text-align: center;
+  color: var(--c-text-dim);
 }
-.cipher__palette {
-  display: flex;
-  gap: 0.5rem;
+.lanepreview b {
+  font-size: 1.2rem;
+  color: var(--mark);
 }
 
 /* the practice page */

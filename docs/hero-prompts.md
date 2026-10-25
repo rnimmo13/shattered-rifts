@@ -2,7 +2,7 @@
 
 The style anchor for every hero is the Valeria image (`Sunlit Paladin with Shield and Sword.png`): attach it to each prompt. Hero art goes in `assets-src/heroes/<heroId>.png` and `tools/pack-heroes.ps1` cuts it into the game. Heroes face **right**, one full-body figure on a flat dark background.
 
-## Rivet (`rivet`, the engineer with the drone)
+## Rivet (`engineer`, the engineer with the drone)
 
 The prompt used for the current art was not saved, so this one is rebuilt from the picture ("Teal Tech Hero and Orbital Drone"): a young engineer with curly dark hair and goggles on his forehead, a teal jacket over a white shirt, a belt of wrenches and glowing cyan vials, big orange-and-grey boots, a giant orange wrench over the shoulder, and a round white hovering drone with one cyan eye beside him. (The docs call Rivet "she"; the current art reads as a young man, so swap the wording if your friend wants her as a woman.)
 
@@ -29,4 +29,4 @@ Paste the prompt above and add one of these lines at the end of the CHARACTER pa
 - **Different drone:** "A small six-legged spider drone / a floating toolbox drone / two tiny drones."
 - **Different outfit:** "A long leather work apron over a teal vest, rolled sleeves, a mechanical arm."
 
-Keep the layout, background and "facing right" lines unchanged: the cutter needs the flat dark background and a figure that does not touch the edge. Save the result as `assets-src/heroes/rivet.png` (keep the old one aside) and run `powershell -File tools/pack-heroes.ps1`; the cutter wipes the drone out of the corner of the picture (Rivet's drone is a companion that the game draws separately), so keep it in about the same place, beside the right shoulder, or tell me and I will move the wipe area.
+Keep the layout, background and "facing right" lines unchanged: the cutter needs the flat dark background and a figure that does not touch the edge. Save the result as `assets-src/heroes/engineer.png` (keep the old one aside) and run `powershell -File tools/pack-heroes.ps1`; the cutter wipes the drone out of the corner of the picture (Rivet's drone is a companion that the game draws separately), so keep it in about the same place, beside the right shoulder, or tell me and I will move the wipe area.

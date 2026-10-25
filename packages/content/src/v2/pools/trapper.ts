@@ -28,9 +28,9 @@ import {
   maxMana,
 } from '../build';
 
-const v = pool('vesper', 'umbral');
+const v = pool('trapper', 'umbral');
 
-export const VESPER: CardDef[] = [
+export const TRAPPER: CardDef[] = [
   // --- basics ---
   v('basic', 'veil-strike', 'Veil Strike', 'attack', 1, 'foe', [
     dmg(6),

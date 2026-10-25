@@ -2,7 +2,7 @@
 // that it is a legal deck of a real Riftwalker. That is enough for a friends test.)
 
 import { canAdd, MAX_TIER } from '@sr/campaign';
-import { COMBAT_DB, RIFTWALKERS, V2_DECK_RULES, rollOf } from '@sr/content/v2';
+import { COMBAT_DB, RIFTWALKERS, V2_DECK_RULES, rollOf, canonicalHero } from '@sr/content/v2';
 import type { Entry } from './protocol';
 
 export const MAX_DECK = 80;
@@ -150,7 +150,9 @@ export function cleanName(raw: unknown): string {
 export function checkEntry(raw: unknown): Checked | Rejected {
   if (typeof raw !== 'object' || raw === null) return { ok: false, message: 'No deck was sent.' };
   const e = raw as Record<string, unknown>;
-  const hero = e['hero'];
+  const sent = e['hero'];
+  // (an old id from before the Riftwalkers were named for their class is read as the class)
+  const hero = typeof sent === 'string' ? canonicalHero(sent) : sent;
   if (typeof hero !== 'string' || !Object.hasOwn(RIFTWALKERS, hero))
     return { ok: false, message: 'Unknown Riftwalker.' };
   const deck = e['deck'];

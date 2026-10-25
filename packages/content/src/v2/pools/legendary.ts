@@ -19,16 +19,16 @@ import {
   summon,
 } from '../build';
 
-const m = pool('maren', 'aurelion');
-const r = pool('rivet', 'nexus');
-const k = pool('kesh', 'wyldmaw');
-const v = pool('vesper', 'umbral');
-const q = pool('quill', 'umbral');
-const i = pool('ilvane', 'nexus');
-const s = pool('sehra', 'aurelion');
-const a = pool('astra', 'starfall');
-const g = pool('mire', 'gloomfen');
-const p = pool('kp', 'midden');
+const m = pool('knight', 'aurelion');
+const r = pool('engineer', 'nexus');
+const k = pool('hunter', 'wyldmaw');
+const v = pool('trapper', 'umbral');
+const q = pool('assassin', 'umbral');
+const i = pool('totemist', 'nexus');
+const s = pool('barbarian', 'aurelion');
+const a = pool('spellblade', 'starfall');
+const g = pool('necromancer', 'gloomfen');
+const p = pool('drunkard', 'midden');
 
 export const LEGENDARIES: CardDef[] = [
   m(

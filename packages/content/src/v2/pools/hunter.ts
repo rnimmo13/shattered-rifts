@@ -26,9 +26,9 @@ import {
   summon,
 } from '../build';
 
-const k = pool('kesh', 'wyldmaw');
+const k = pool('hunter', 'wyldmaw');
 
-export const KESH: CardDef[] = [
+export const HUNTER: CardDef[] = [
   // --- basics ---
   k('basic', 'savage-bite', 'Savage Bite', 'attack', 1, 'foe', [dmg(8), lose(2)]),
   k('basic', 'blood-frenzy', 'Blood Frenzy', 'skill', 1, 'none', [

@@ -26,7 +26,7 @@ const foe = (s: CombatState) => s.sides.b.units[0]!;
 
 describe('Powers that react to your own effects', () => {
   it('"Whenever you lose HP to your own cards" (Scar Tissue) pays Might, but not for enemy hits', () => {
-    let s = fight('kesh', ['scar-tissue', 'reckless-blow']);
+    let s = fight('hunter', ['scar-tissue', 'reckless-blow']);
     s = play(s, 'T0');
     const might = hero(s).statuses.might ?? 0;
     const hp = hero(s).hp;
@@ -36,7 +36,7 @@ describe('Powers that react to your own effects', () => {
   });
 
   it('"Whenever you gain Barrier" (Bastion Engine) hits an enemy, and Briar Heart grows Thorns', () => {
-    let s = fight('maren', ['bastion-engine', 'briar-heart', 'stand-firm']);
+    let s = fight('knight', ['bastion-engine', 'briar-heart', 'stand-firm']);
     s = play(s, 'T0');
     s = play(s, 'T1');
     const hp = foe(s).hp;
@@ -49,7 +49,7 @@ describe('Powers that react to your own effects', () => {
 
 describe('fetching cards back from the discard pile', () => {
   it('Scavenge puts a random discarded card on top of the draw pile', () => {
-    const s = fight('kesh', ['scavenge']);
+    const s = fight('hunter', ['scavenge']);
     s.sides.a.discard = [{ id: 'D1', card: 'rend' }];
     const after = play(s, 'T0');
     expect(after.sides.a.draw[0]?.card).toBe('rend');
@@ -59,7 +59,7 @@ describe('fetching cards back from the discard pile', () => {
 
 describe('draw, created and Skills-played hooks', () => {
   it('"Whenever you draw a card" (Speed Reader) hits every enemy for each card drawn', () => {
-    let s = fight('quill', ['speed-reader', 'quick-draw']);
+    let s = fight('assassin', ['speed-reader', 'quick-draw']);
     s = play(s, 'T0');
     const hp = foe(s).hp;
     s = play(s, 'T1'); // Quick Draw: draw 2, so two hits of at least 2
@@ -67,7 +67,7 @@ describe('draw, created and Skills-played hooks', () => {
   });
 
   it('"Whenever a card is created" (Armory of Light) pays Might for each card Sword Rain makes', () => {
-    let s = fight('astra', ['armory-of-light', 'sword-rain']);
+    let s = fight('spellblade', ['armory-of-light', 'sword-rain']);
     s = play(s, 'T0');
     const might = hero(s).statuses.might ?? 0;
     const created = s.sides.a.created;
@@ -77,7 +77,7 @@ describe('draw, created and Skills-played hooks', () => {
   });
 
   it("Showman's Flourish counts the Skills played this turn", () => {
-    let s = fight('quill', ['quick-draw', 'quick-draw', 'showmans-flourish']);
+    let s = fight('assassin', ['quick-draw', 'quick-draw', 'showmans-flourish']);
     s = play(s, 'T0');
     s = play(s, 'T1');
     const hp = foe(s).hp;
@@ -86,7 +86,7 @@ describe('draw, created and Skills-played hooks', () => {
   });
 
   it('a fetch with a full hand sends the card back to the discard pile', () => {
-    const s = fight('kesh', ['scavenge']);
+    const s = fight('hunter', ['scavenge']);
     s.sides.a.hand.push(...Array.from({ length: 10 }, (_, i) => ({ id: `F${i}`, card: 'strike' })));
     s.sides.a.discard = [{ id: 'D1', card: 'rend' }];
     const after = play(s, 'T0');
@@ -97,7 +97,7 @@ describe('draw, created and Skills-played hooks', () => {
 
 describe('counters', () => {
   it('count cards drawn and created over the fight', () => {
-    let s = fight('maren', ['prayer']);
+    let s = fight('knight', ['prayer']);
     const drawn = s.sides.a.drawn;
     s = play(s, 'T0'); // Prayer: heal 4, draw 1
     expect(s.sides.a.drawn).toBe(drawn + 1);

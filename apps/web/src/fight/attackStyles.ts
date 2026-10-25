@@ -27,16 +27,16 @@ export const PLAIN_ATTACK: AttackSpec = a('lunge', '#ffffff');
 
 /** by hero id (`HeroDef.id`) */
 const HERO_ATTACK: Record<string, AttackSpec> = {
-  maren: a('slash', '#ffe9a8'), // Valeria: sword
-  rivet: a('smash', '#ff9d3c'), // the big wrench
-  kesh: a('claw', '#ff4a4a'), // feral cleaver
-  vesper: a('stab', '#7ff0e0'), // stiletto
-  quill: a('throw', '#b79bff'), // thrown knives
-  ilvane: a('cast', '#6ee8ff'), // totem magic
-  sehra: a('slash', '#ff7a3a', 2), // flame blades: a flurry
-  astra: a('slash', '#c9a8ff'), // Obsidia: the obsidian blade
-  mire: a('cast', '#8dff9a'), // lantern fire
-  kp: a('shoot', '#ffd27a', 5), // the sawed-off: buckshot
+  knight: a('slash', '#ffe9a8'), // Valeria: sword
+  engineer: a('smash', '#ff9d3c'), // the big wrench
+  hunter: a('claw', '#ff4a4a'), // feral cleaver
+  trapper: a('stab', '#7ff0e0'), // stiletto
+  assassin: a('throw', '#b79bff'), // thrown knives
+  totemist: a('cast', '#6ee8ff'), // totem magic
+  barbarian: a('slash', '#ff7a3a', 2), // flame blades: a flurry
+  spellblade: a('slash', '#c9a8ff'), // Obsidia: the obsidian blade
+  necromancer: a('cast', '#8dff9a'), // lantern fire
+  drunkard: a('shoot', '#ffd27a', 5), // the sawed-off: buckshot
 };
 
 /** by enemy / companion unit id; anything missing gets the plain lunge */

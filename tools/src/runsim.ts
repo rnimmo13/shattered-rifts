@@ -2,7 +2,7 @@
 // stages, how far it gets when it fails, how many fights are lost and how hurt the hero is walking into each kind of fight.
 // Single fights (pnpm balance) hide HP attrition and Resolve; this does not.
 //
-//   pnpm runsim -- --n 20 --difficulty easy,normal --heroes maren,kp --luck normal
+//   pnpm runsim -- --n 20 --difficulty easy,normal --heroes knight,drunkard --luck normal
 //
 // The bot is a decent, not great, player: it drafts the best-rarity card on offer (skipping weak ones in a fat deck), rests when
 // hurt, takes elites when healthy, never uses potions, and the fight bot is the greedy 1-ply one in @sr/combat.
@@ -148,10 +148,9 @@ function playRun(h: HeroId, d: Difficulty, i: number): Result {
         const want =
           hpFrac < 0.6 ? ['heal', 'leave'] : ['upgrade', 'card', 'boon', 'shards', 'leave'];
         if (opts.includes('trial')) {
-          // an elite event: the bot plays the trial and wins about two times in three, then takes the first prize
-          const won = (i * 7 + run.stats.nodesCleared * 3) % 3 !== 0;
-          run = finishTrial(startTrial(run), won);
-          if (run.phase === 'event') run = claimTrialPrize(run, 'd1');
+          // an elite event: the bot drops its balls into the middle lanes and takes the first prize it earned
+          run = finishTrial(startTrial(run), true, [4, 5, 3]);
+          if (run.phase === 'event') run = claimTrialPrize(run, 'p3');
         } else
           run = chooseEvent(run, (want.find((w) => opts.includes(w as never)) ?? 'leave') as 'leave');
         break;

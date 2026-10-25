@@ -1,11 +1,11 @@
-# Cuts Valeria's standing pose from the concept sheet in assets-src/valeria into the real hero figure (art key hero:maren,
-# the hero id stays "maren"). The sheet has a flat dark background: it is removed by flood-filling from the edges, so dark
-# armour inside the figure is kept. Run: powershell -File tools/pack-valeria.ps1
+# Cuts Valeria's standing pose from the concept sheet in assets-src/valeria into the real hero figure (art key hero:knight,
+# the hero id stays "knight"). The sheet has a flat dark background: it is removed by flood-filling from the edges, so dark
+# armour inside the figure is kept. Run: powershell -File tools/pack-knight.ps1
 Add-Type -AssemblyName System.Drawing
 $ErrorActionPreference = 'Stop'
 $root = Split-Path $PSScriptRoot
 $sheet = Join-Path $root 'assets-src/valeria/Paladin Attack Animation Concept Sheet.png'
-$out = Join-Path $root 'apps/web/public/art/figures/hero-maren.png'
+$out = Join-Path $root 'apps/web/public/art/figures/hero-knight.png'
 New-Item -ItemType Directory -Force (Split-Path $out) | Out-Null
 
 Add-Type -TypeDefinition @"

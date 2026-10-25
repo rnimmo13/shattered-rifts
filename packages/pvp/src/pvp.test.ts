@@ -31,51 +31,51 @@ const entryOf = (hero: HeroId, name: string = hero, tier = 1): Entry => ({
 describe('checkEntry', () => {
   it('keeps a stage from 0 to 3 and drops anything else', () => {
     for (const stage of [0, 2, 3]) {
-      const r = checkEntry({ ...entryOf('maren'), stage });
+      const r = checkEntry({ ...entryOf('knight'), stage });
       expect(r.ok && r.entry.stage).toBe(stage);
     }
     for (const stage of [-1, 4, 1.5, '2', null]) {
-      const r = checkEntry({ ...entryOf('maren'), stage });
+      const r = checkEntry({ ...entryOf('knight'), stage });
       expect(r.ok && 'stage' in r.entry).toBe(false);
     }
   });
 
   it('takes a real starter deck and cleans the name', () => {
-    const r = checkEntry({ ...entryOf('maren'), name: '  <b>Rob</b>\u0007  ' });
+    const r = checkEntry({ ...entryOf('knight'), name: '  <b>Rob</b>\u0007  ' });
     expect(r.ok).toBe(true);
     if (r.ok) expect(r.entry.name).toBe('bRob/b');
   });
 
   it('refuses things that are not a deck', () => {
     expect(checkEntry(null).ok).toBe(false);
-    expect(checkEntry({ ...entryOf('maren'), hero: 'constructor' }).ok).toBe(false);
-    expect(checkEntry({ ...entryOf('maren'), deck: 'strike' }).ok).toBe(false);
-    expect(checkEntry({ ...entryOf('maren'), deck: ['strike', 5] }).ok).toBe(false);
-    expect(checkEntry({ ...entryOf('maren'), deck: ['strike'] }).ok).toBe(false); // too small
+    expect(checkEntry({ ...entryOf('knight'), hero: 'constructor' }).ok).toBe(false);
+    expect(checkEntry({ ...entryOf('knight'), deck: 'strike' }).ok).toBe(false);
+    expect(checkEntry({ ...entryOf('knight'), deck: ['strike', 5] }).ok).toBe(false);
+    expect(checkEntry({ ...entryOf('knight'), deck: ['strike'] }).ok).toBe(false); // too small
     expect(
-      checkEntry({ ...entryOf('maren'), deck: [...Array<string>(20).fill('strike'), 'toString'] })
+      checkEntry({ ...entryOf('knight'), deck: [...Array<string>(20).fill('strike'), 'toString'] })
         .ok,
     ).toBe(false);
-    expect(checkEntry({ ...entryOf('maren'), deck: Array(200).fill('strike') }).ok).toBe(false);
+    expect(checkEntry({ ...entryOf('knight'), deck: Array(200).fill('strike') }).ok).toBe(false);
   });
 
   it('refuses a deck that breaks the copy rules', () => {
-    const deck = [...entryOf('maren').deck, ...Array<string>(5).fill('rift-bolt')];
-    expect(checkEntry({ ...entryOf('maren'), deck }).ok).toBe(false);
+    const deck = [...entryOf('knight').deck, ...Array<string>(5).fill('rift-bolt')];
+    expect(checkEntry({ ...entryOf('knight'), deck }).ok).toBe(false);
   });
 
   it('does not allow a pile of one basic card', () => {
     const many = Array<string>(11).fill('strike');
-    expect(checkEntry({ ...entryOf('maren'), deck: many }).ok).toBe(false);
-    expect(checkEntry({ ...entryOf('maren'), deck: Array<string>(10).fill('strike') }).ok).toBe(
+    expect(checkEntry({ ...entryOf('knight'), deck: many }).ok).toBe(false);
+    expect(checkEntry({ ...entryOf('knight'), deck: Array<string>(10).fill('strike') }).ok).toBe(
       true,
     );
   });
 
   it('clamps the tier', () => {
-    const r = checkEntry({ ...entryOf('maren'), tier: 999 });
+    const r = checkEntry({ ...entryOf('knight'), tier: 999 });
     expect(r.ok && r.entry.tier).toBeLessThanOrEqual(20);
-    const s = checkEntry({ ...entryOf('maren'), tier: 'high' });
+    const s = checkEntry({ ...entryOf('knight'), tier: 'high' });
     expect(s.ok && s.entry.tier).toBe(1);
   });
 });
@@ -121,8 +121,8 @@ function playOut(m: Match, now = 0): void {
 
 describe('a match', () => {
   it('plays to a finish, and the same seed and moves rebuild the same match', () => {
-    const a = entryOf('maren', 'A');
-    const b = entryOf('kesh', 'B');
+    const a = entryOf('knight', 'A');
+    const b = entryOf('hunter', 'B');
     const m = new Match('seed-1', a, b, 0);
     playOut(m);
     expect(m.over).not.toBeNull();
@@ -136,7 +136,7 @@ describe('a match', () => {
   });
 
   it('refuses a move out of turn, out of order, or illegal', () => {
-    const m = new Match('seed-2', entryOf('maren'), entryOf('kesh'), 0);
+    const m = new Match('seed-2', entryOf('knight'), entryOf('hunter'), 0);
     const notMe = m.active === 'a' ? 'b' : 'a';
     const first = chooseAction(COMBAT_DB, m.state);
     expect(m.submit(notMe, 1, first, 0)).toMatchObject({ ok: false, code: 'not-your-turn' });
@@ -153,7 +153,7 @@ describe('a match', () => {
   });
 
   it('gives the turn to the other seat after endTurn and restarts the clock', () => {
-    const m = new Match('seed-3', entryOf('maren'), entryOf('kesh'), 1000);
+    const m = new Match('seed-3', entryOf('knight'), entryOf('hunter'), 1000);
     expect(m.active).toBe('a');
     expect(m.deadline).toBe(1000 + TURN_MS);
     expect(m.submit('a', 1, { type: 'endTurn' }, 5000)).toMatchObject({ ok: true });
@@ -162,7 +162,7 @@ describe('a match', () => {
   });
 
   it('ends the turn of a player who runs out of time, and forfeits after too many', () => {
-    const m = new Match('seed-4', entryOf('maren'), entryOf('kesh'), 0);
+    const m = new Match('seed-4', entryOf('knight'), entryOf('hunter'), 0);
     const t1 = m.timeout(TURN_MS);
     expect(t1.moves.length).toBeGreaterThan(0);
     expect(m.active).toBe('b');
@@ -176,15 +176,15 @@ describe('a match', () => {
   });
 
   it('a resignation ends it and nothing more is accepted', () => {
-    const m = new Match('seed-5', entryOf('maren'), entryOf('kesh'), 0);
+    const m = new Match('seed-5', entryOf('knight'), entryOf('hunter'), 0);
     m.end('b', 'resign');
     expect(m.submit('a', 1, { type: 'endTurn' }, 0)).toMatchObject({ ok: false, code: 'no-match' });
     expect(m.over).toMatchObject({ winner: 'b', reason: 'resign' });
   });
 
   it('a rebuilt match keeps its ending and its missed turns', () => {
-    const a = entryOf('maren');
-    const b = entryOf('kesh');
+    const a = entryOf('knight');
+    const b = entryOf('hunter');
     const m = new Match('seed-6', a, b, 0);
     m.timeout(TURN_MS); // a misses one turn
     const outcome = m.end('b', 'resign');
@@ -218,25 +218,25 @@ describe('Boons in a match', () => {
 
   it('are checked: unknown, repeated and prototype ids are left out, and there is a cap', () => {
     const r = checkEntry({
-      ...entryOf('maren'),
+      ...entryOf('knight'),
       boons: [ids[0], ids[0], 'nope', '__proto__', 'constructor', 7, ...ids],
     });
     expect(r.ok && r.entry.boons.every((b) => ids.includes(b))).toBe(true);
     expect(r.ok && new Set(r.entry.boons).size === r.entry.boons.length).toBe(true);
     expect(r.ok && r.entry.boons.length).toBe(MAX_BOONS);
-    expect(checkEntry({ ...entryOf('maren'), boons: 'x' })).toMatchObject({
+    expect(checkEntry({ ...entryOf('knight'), boons: 'x' })).toMatchObject({
       ok: true,
       entry: { boons: [] },
     });
-    expect(checkEntry({ ...entryOf('maren'), boons: undefined })).toMatchObject({
+    expect(checkEntry({ ...entryOf('knight'), boons: undefined })).toMatchObject({
       ok: true,
       entry: { boons: [] },
     });
   });
 
   it('are in effect: the setup carries them for both players', () => {
-    const a = { ...entryOf('maren'), boons: [ids[0] as string] };
-    const b = { ...entryOf('kesh'), boons: [ids[1] as string, ids[2] as string] };
+    const a = { ...entryOf('knight'), boons: [ids[0] as string] };
+    const b = { ...entryOf('hunter'), boons: [ids[1] as string, ids[2] as string] };
     const s = setupFor('s', a, b);
     expect(s.a.boons).toEqual(a.boons);
     expect((s.b as { boons?: string[] }).boons).toEqual(b.boons);
@@ -244,8 +244,8 @@ describe('Boons in a match', () => {
 
   it('every Boon can be carried through a whole match without a refusal or a crash', () => {
     for (const [i, id] of ids.entries()) {
-      const a = { ...entryOf('maren', 'A'), boons: [id] };
-      const b = { ...entryOf('kesh', 'B'), boons: [ids[(i + 1) % ids.length] as string] };
+      const a = { ...entryOf('knight', 'A'), boons: [id] };
+      const b = { ...entryOf('hunter', 'B'), boons: [ids[(i + 1) % ids.length] as string] };
       const m = new Match(`boon-${id}`, a, b, 0);
       playOut(m);
       expect(m.over, id).not.toBeNull();
@@ -272,17 +272,17 @@ describe('who goes first', () => {
   });
 
   it('gives the second seat more HP, and only the second seat', () => {
-    const a = entryOf('maren');
-    const b = entryOf('kesh');
+    const a = entryOf('knight');
+    const b = entryOf('hunter');
     const setup = setupFor('hp', a, b);
     const m = new Match('hp', a, b, 0);
     const hero = (side: 'a' | 'b') => m.state.sides[side].units.find((u) => u.kind === 'hero');
     // everyone has three times their usual HP in the Arena, and the second seat a little more
-    expect(hero('a')?.maxHp).toBe((COMBAT_DB.heroes.maren?.maxHp ?? 0) * ARENA_HP_MULT);
+    expect(hero('a')?.maxHp).toBe((COMBAT_DB.heroes.knight?.maxHp ?? 0) * ARENA_HP_MULT);
     expect(hero('b')?.maxHp).toBe(
-      (COMBAT_DB.heroes.kesh?.maxHp ?? 0) * ARENA_HP_MULT + SECOND_PLAYER_HP,
+      (COMBAT_DB.heroes.hunter?.maxHp ?? 0) * ARENA_HP_MULT + SECOND_PLAYER_HP,
     );
     expect(hero('b')?.hp).toBe(hero('b')?.maxHp);
-    expect(setup.b).toMatchObject({ hero: 'kesh' });
+    expect(setup.b).toMatchObject({ hero: 'hunter' });
   });
 });

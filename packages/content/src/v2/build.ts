@@ -188,7 +188,7 @@ export function card(
 
 /**
  * A constructor for one Riftwalker's pool: every card it makes belongs to `hero` (its reward pool) and comes from `realm`
- * (flavour). Usage: `const m = pool('maren', 'aurelion'); m('common', 'strike', 'Strike', 'attack', 1, 'foe', [dmg(6)])`.
+ * (flavour). Usage: `const m = pool('knight', 'aurelion'); m('common', 'strike', 'Strike', 'attack', 1, 'foe', [dmg(6)])`.
  */
 export function pool(hero: string, realm: string) {
   return (

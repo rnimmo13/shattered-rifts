@@ -23,6 +23,8 @@ import {
   checkEntry,
   cleanBoardName,
   isHero,
+  storedHero,
+  LEGACY_HERO_IDS,
   periodStart,
   BOARD_SIZE,
   pickGhost,
@@ -143,6 +145,23 @@ export class Leaderboard extends DurableObject<Env> {
     ctx.storage.sql.exec('CREATE INDEX IF NOT EXISTS ghost_games_ghost ON ghost_games (ghost)');
     ctx.storage.sql.exec('CREATE INDEX IF NOT EXISTS ghost_games_human ON ghost_games (human, at)');
     ctx.storage.sql.exec('CREATE INDEX IF NOT EXISTS ghosts_last ON ghosts (last_at)');
+    // rows written before the Riftwalkers were named for their class (maren -> knight) are brought up to date (it does nothing once they are)
+    const legacy = Object.entries(LEGACY_HERO_IDS);
+    // (once only: a flag is kept, so a wake-up does not read every row again)
+    const done = ctx.storage.kv.get('heroIdsRenamed') === true;
+    const rename = (table: string, col: string): void => {
+      const cases = legacy.map(([o, n]) => `WHEN '${o}' THEN '${n}'`).join(' ');
+      const olds = legacy.map(([o]) => `'${o}'`).join(',');
+      ctx.storage.sql.exec(`UPDATE ${table} SET ${col} = CASE ${col} ${cases} ELSE ${col} END WHERE ${col} IN (${olds})`);
+    };
+    if (!done) {
+      rename('pvp', 'winner_hero');
+      rename('pvp', 'loser_hero');
+      rename('runs', 'hero');
+      rename('ghosts', 'hero');
+      rename('ghost_games', 'human_hero');
+      ctx.storage.kv.put('heroIdsRenamed', true);
+    }
     // how often a player or an address has done something in the current hour or day
     ctx.storage.sql.exec(
       `CREATE TABLE IF NOT EXISTS limits (
@@ -317,7 +336,7 @@ export class Leaderboard extends DurableObject<Env> {
       b['ghostWon'] ? 1 : 0,
       h['id'],
       cleanBoardName(h['name']),
-      h['hero'],
+      storedHero(h['hero']),
     );
     this.ctx.storage.sql.exec(
       b['ghostWon']
@@ -426,10 +445,10 @@ export class Leaderboard extends DurableObject<Env> {
       now,
       wid,
       cleanBoardName(w['name']),
-      w['hero'],
+      storedHero(w['hero']),
       lid,
       cleanBoardName(l['name']),
-      l['hero'],
+      storedHero(l['hero']),
     );
     await remember(true);
     this.prune(now);
@@ -479,7 +498,7 @@ export class Leaderboard extends DurableObject<Env> {
       this.ctx.storage.sql.exec(
         'UPDATE runs SET name = ?, hero = ?, tier = ?, stage = ?, total = ?, at = ? WHERE player = ? AND run = ?',
         name,
-        b['hero'],
+        storedHero(b['hero']),
         tier,
         stage,
         total,
@@ -501,7 +520,7 @@ export class Leaderboard extends DurableObject<Env> {
       b['player'],
       run,
       name,
-      b['hero'],
+      storedHero(b['hero']),
       tier,
       stage,
       total,
