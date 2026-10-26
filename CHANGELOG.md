@@ -5,6 +5,7 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **Hit numbers you can read:** damage (red), healing (green) and Barrier (blue) pop up on whoever takes them, bigger, and hold still while they fade instead of flying off; a hit that Barrier partly soaks shows both numbers.
 - **Cards show what they will really deal:** a damage number on a card in your hand counts your Might, stance, Faltering, Sharpen and Edge, green when higher than printed and red when lower; aim it at an enemy and its Exposed counts too; a card that could hit several enemies shows the range. A sharpened weapon shows its sharpened damage right on the card.
 - **Bigger status numbers** on the buffs and debuffs under each fighter, and the map legend is just the names.
 - **Cheaper upgrades for the big cards:** The Twelve-Gauge Opera+, Rift Collapse+, Bloodmoon Hunt+, The Great Pole+ and The Perfect Trap+ cost 2 Mana; Shatterstorm+, Cataclysm+ and Killing Glass+ need one less Arcana; Cataclysm Totem+ awakens your totems 3 times.

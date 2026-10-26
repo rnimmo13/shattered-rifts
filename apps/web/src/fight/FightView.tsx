@@ -322,6 +322,7 @@ export function FightView(props: {
   /** the move that ended a fight being resumed: played normally, so the result appears */
   const finishRef = useRef<Action | null>(null);
   const floatId = useRef(0);
+  const floatStack = useRef(new Map<string, { n: number; at: number }>());
   const refuseTimer = useRef<number | undefined>(undefined);
 
   const [ready, setReady] = useState(false);
@@ -368,11 +369,16 @@ export function FightView(props: {
     if (!sc || !home) return;
     const id = ++floatId.current;
     const jitter = (Math.random() - 0.5) * 30;
+    // (numbers do not travel, so hits that land close together on one unit stack a line apart instead of on top of each other)
+    const now = performance.now();
+    const last = floatStack.current.get(unitId);
+    const n = last && now - last.at < 600 ? (last.n + 1) % 4 : 0;
+    floatStack.current.set(unitId, { n, at: now });
     setFloats((f) => [
       ...f.slice(-14),
-      { id, x: home.x + jitter, y: home.y - home.h * 0.65, text, tone },
+      { id, x: home.x + jitter, y: home.y - home.h * 0.65 - n * 34, text, tone },
     ]);
-    window.setTimeout(() => setFloats((f) => f.filter((x) => x.id !== id)), 1100);
+    window.setTimeout(() => setFloats((f) => f.filter((x) => x.id !== id)), 1450);
   }, []);
 
   const show = useCallback((s: CombatState) => setView(viewFor(db, s, mySide)), [db, mySide]);
@@ -490,6 +496,8 @@ export function FightView(props: {
           } else if (e.lost > 0) {
             sc.fighters.hit(e.target, e.lost);
             if (e.lost >= 10 && e.target !== heroId) sc.fighters.pulse(e.target, '#ff8a3a');
+            // (what Barrier soaked up shows in blue beside what got through in red)
+            if (e.blocked > 0) float(e.target, `⛨ ${e.blocked}`, 'block');
             float(e.target, `-${e.lost}`, 'dmg');
             play('hit');
             if (e.target === heroId) sc.impact(e.lost * 1.4);

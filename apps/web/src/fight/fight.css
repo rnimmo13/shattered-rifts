@@ -274,22 +274,25 @@
   transform: translate(-50%, -50%);
   font-family: var(--font-display);
   font-weight: 900;
-  font-size: 1.9rem;
+  font-size: 2.3rem;
   text-shadow:
     0 2px 0 #000,
     0 0 12px rgb(0 0 0 / 0.8);
-  animation: float-up 1.05s var(--ease-out) forwards;
+  /* (it appears, holds and fades where it is: a number that travels is hard to read) */
+  animation: float-up 1.4s var(--ease-out) forwards;
   white-space: nowrap;
 }
+/* damage red, healing green, Barrier blue */
 .float--dmg {
-  color: #ff5a6e;
+  color: #ff4d62;
+  font-size: 2.6rem;
 }
 .float--block {
-  color: var(--c-cyan-glow);
-  font-size: 1.4rem;
+  color: #5fb4ff;
+  font-size: 1.9rem;
 }
 .float--heal {
-  color: var(--c-heal);
+  color: #4ee08a;
 }
 .float--good {
   color: var(--c-gold-light);
@@ -302,17 +305,22 @@
 @keyframes float-up {
   0% {
     opacity: 0;
-    margin-top: 10px;
-    scale: 0.6;
+    scale: 0.85;
   }
-  15% {
+  10% {
     opacity: 1;
-    scale: 1.15;
+    scale: 1.08;
+  }
+  20% {
+    scale: 1;
+  }
+  70% {
+    opacity: 1;
+    margin-top: 0;
   }
   100% {
     opacity: 0;
-    margin-top: -70px;
-    scale: 1;
+    margin-top: -8px;
   }
 }
 
