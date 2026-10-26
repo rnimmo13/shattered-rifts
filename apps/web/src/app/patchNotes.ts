@@ -29,6 +29,18 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.80.0',
+    date: '2026-10-26',
+    title: 'Tidier corners',
+    summary: 'Card-shaped piles, and the potions, Mana and draw pile lined up.',
+    notes: [
+      {
+        kind: 'changed',
+        text: 'The Draw, Discard and Consumed piles have the shape of a real card, so they read as stacks of card backs, and the potions, Mana and the Draw pile sit on one line.',
+      },
+    ],
+  },
+  {
     version: '0.79.0',
     date: '2026-10-26',
     title: 'Gentler Wardens',
