@@ -340,11 +340,12 @@
     transform: scaleX(0.7);
   }
 }
+/* a card being played shows in the right-hand column, over the battle log and just above End turn and the discard pile it then
+   drops into: never over the arena */
 .fight__flourish {
   position: absolute;
-  left: 50%;
-  top: 36%;
-  transform: translate(-50%, -50%);
+  right: 1.4rem;
+  bottom: 11rem;
   z-index: 35;
   pointer-events: none;
 }
@@ -649,6 +650,7 @@
   font-size: 1.6rem;
   color: var(--c-gold-light);
 }
+
 .pile--draw {
   left: 1.4rem;
 }
@@ -1261,14 +1263,40 @@
   text-align: right;
 }
 
-/* piles wear a card back: a violet rift pattern drawn in CSS */
+/* every pile is a stack of cards seen from the back: a gold frame, a lattice and a rift glow, with the name and count on a plate */
 .pile {
+  overflow: hidden;
   background:
-    linear-gradient(rgb(8 10 20 / 0.55), rgb(8 10 20 / 0.7)),
-    repeating-linear-gradient(45deg, rgb(140 100 255 / 0.18) 0 2px, transparent 2px 10px),
-    radial-gradient(circle at 50% 40%, #3a2470, #140c2c 75%);
-  border-color: transparent;
-  text-shadow: 0 1px 3px #000;
+    radial-gradient(circle at 50% 46%, rgb(143 91 255 / 0.45), transparent 42%),
+    repeating-linear-gradient(45deg, rgb(212 168 75 / 0.16) 0 1.5px, transparent 1.5px 9px),
+    repeating-linear-gradient(-45deg, rgb(212 168 75 / 0.16) 0 1.5px, transparent 1.5px 9px),
+    linear-gradient(160deg, #23367a, #0b0f24);
+  border: 2px solid var(--c-gold-dark);
+  outline: 1px solid rgb(212 168 75 / 0.35);
+  outline-offset: -6px;
+}
+.pile > * {
+  position: relative;
+}
+.pile b,
+.pile {
+  text-shadow: 0 1px 3px rgb(0 0 0 / 0.95);
+}
+/* the label and the count on a dark plate, so they read over the pattern */
+.pile b {
+  min-width: 2.2rem;
+  padding: 0 0.3rem;
+  border-radius: 6px;
+  background: rgb(8 10 20 / 0.72);
+}
+/* the Consumed pile: the same back, burnt to ash */
+.pile--exhaust {
+  background:
+    radial-gradient(circle at 50% 46%, rgb(255 120 60 / 0.35), transparent 42%),
+    repeating-linear-gradient(45deg, rgb(160 150 140 / 0.14) 0 1.5px, transparent 1.5px 9px),
+    repeating-linear-gradient(-45deg, rgb(160 150 140 / 0.14) 0 1.5px, transparent 1.5px 9px),
+    linear-gradient(160deg, #3a3036, #120e10);
+  border-color: #6d5a52;
 }
 
 /* ---- PvP: the turn clock, what you can see of the opponent, and a desync warning ---- */

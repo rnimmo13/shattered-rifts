@@ -6,7 +6,18 @@ import { Container, Sprite, Texture } from 'pixi.js';
 import { gsap } from 'gsap';
 import { color, ease, hex } from '../design/tokens';
 import type { EffectsProfile } from '../duel/effects';
+import type { CardDef } from '@sr/combat';
 import type { AttackSpec } from './attackStyles';
+import {
+  MOTION_KIND,
+  WEAPON_LOOK,
+  fxFrames,
+  weaponFor,
+  weaponTexture,
+  type FxId,
+  type WeaponId,
+  type WeaponLook,
+} from './weaponArt';
 import {
   burst,
   clawMarks,
@@ -73,6 +84,8 @@ export interface FighterSpec {
   hover?: number;
   /** how its attacks look (a slash, a shot, a spell...): presentation only */
   attack: AttackSpec;
+  /** a Riftwalker's id (`HeroDef.id`), so it can swing its own weapon (weaponArt.ts) */
+  hero?: string;
   /** something that floats beside the figure while `on` (a blade in her hand): a cut-out and where it hovers, in figure pixels */
   prop?: { canvas: HTMLCanvasElement; x: number; y: number; on: boolean };
 }
@@ -120,6 +133,35 @@ const MELEE = {
   stab: { back: 8, step: 30, wind: 0.1, rush: 0.07, tilt: 0.06, lift: 0 },
   claw: { back: 12, step: 24, wind: 0.13, rush: 0.09, tilt: 0.16, lift: -6 },
   smash: { back: 12, step: 14, wind: 0.3, rush: 0.12, tilt: 0.28, lift: -22 },
+};
+
+/** A weapon picture ready to swing. */
+interface Wielded {
+  id: WeaponId;
+  tex: Texture;
+  look: WeaponLook;
+}
+
+/** How a weapon is held through a melee blow (radians, 0 = pointing at the target; negative = raised): start, wind-up, blow. */
+const MELEE_POSE: Partial<
+  Record<
+    WeaponLook['motion'],
+    { from: number; raise: number; to: number; fromX: number; toX: number }
+  >
+> & {
+  swing: { from: number; raise: number; to: number; fromX: number; toX: number };
+} = {
+  swing: { from: -0.9, raise: -2.1, to: 0.7, fromX: 0, toX: 10 },
+  slam: { from: -0.8, raise: -2.4, to: 0.45, fromX: 0, toX: 6 },
+  thrust: { from: 0.15, raise: 0.05, to: 0, fromX: -10, toX: 46 },
+};
+/** How a weapon is held for a shot, a throw or a spell: its start and where it points when it goes off. */
+const RANGED_POSE: Partial<Record<WeaponLook['motion'], { from: number; aim: number }>> & {
+  fire: { from: number; aim: number };
+} = {
+  fire: { from: 0.5, aim: 0 },
+  throw: { from: -1.4, aim: -0.3 },
+  raise: { from: 0.2, aim: -0.9 },
 };
 
 export class Fighters {
@@ -381,7 +423,13 @@ export class Fighters {
   // --- animation -------------------------------------------------------------------------------------------
 
   /** Attack the target in the figure's own style (a slash, a shot, a spell...) and call `onHit` at contact. */
-  attack(id: string, targetId: string | null, onHit?: () => void): Promise<void> {
+  /** `card`: the card that made the attack, when a hero played one (it picks the weapon: KP's hammer or his shotgun...) */
+  attack(
+    id: string,
+    targetId: string | null,
+    onHit?: () => void,
+    card?: CardDef | null,
+  ): Promise<void> {
     const f = this.all.get(id);
     const t = targetId ? this.all.get(targetId) : undefined;
     if (!f || f.dying || this.h.profile().still) {
@@ -389,10 +437,76 @@ export class Fighters {
       return Promise.resolve();
     }
     const dir = f.spec.side === 'a' ? 1 : -1;
-    const kind = f.spec.attack.kind;
+    // a hero with a weapon picture swings it, and the weapon decides the style (a hammer slams, a shotgun fires)
+    const wid = f.spec.hero ? weaponFor(f.spec.hero, card) : null;
+    const tex = wid ? weaponTexture(wid) : undefined;
+    const weapon = wid && tex ? { id: wid, tex, look: WEAPON_LOOK[wid] } : null;
+    const spec: AttackSpec = weapon
+      ? { ...f.spec.attack, kind: MOTION_KIND[weapon.look.motion] }
+      : f.spec.attack;
+    const kind = spec.kind;
     return kind === 'shoot' || kind === 'throw' || kind === 'cast'
-      ? this.rangedAttack(f, t, dir, onHit)
-      : this.meleeAttack(f, t, dir, onHit);
+      ? this.rangedAttack(f, t, dir, spec, weapon, onHit)
+      : this.meleeAttack(f, t, dir, spec, weapon, onHit);
+  }
+
+  /**
+   * The weapon for one attack, turning about its grip and mirrored for a hero facing left: in the hero's hand (a gun, a throw, a
+   * staff), or `at` a point on the stage (a melee blow lands on its target, as the drawn effects always did).
+   */
+  private wield(
+    f: Fighter,
+    w: Wielded,
+    dir: number,
+    at?: Pt,
+  ): { holder: Container; sprite: Sprite } {
+    const holder = new Container();
+    if (at) holder.position.set(at.x, at.y);
+    else holder.position.set(dir * f.width * 0.26, -f.spec.height * 0.5);
+    holder.scale.x = dir;
+    holder.alpha = 0;
+    const sprite = new Sprite(w.tex);
+    sprite.anchor.set(w.look.grip[0], w.look.grip[1]);
+    sprite.scale.set((f.spec.height * w.look.size) / Math.max(1, w.tex.width));
+    holder.addChild(sprite);
+    if (at) {
+      holder.zIndex = 6050;
+      this.h.container.addChild(holder);
+    } else f.air.addChild(holder);
+    return { holder, sprite };
+  }
+
+  /** A painted effect played frame by frame at a point (`flip`: drawn facing left), then gone. */
+  private frames(
+    id: FxId,
+    at: Pt,
+    size: number,
+    flip = false,
+    anchor: [number, number] = [0.5, 0.5],
+  ): void {
+    const tex = fxFrames(id);
+    if (!tex?.length) return;
+    const s = new Sprite(tex[0]);
+    s.anchor.set(anchor[0], anchor[1]);
+    s.position.set(at.x, at.y);
+    s.scale.set(
+      (flip ? -1 : 1) * (size / Math.max(1, tex[0]?.width ?? 1)),
+      size / Math.max(1, tex[0]?.height ?? 1),
+    );
+    s.zIndex = 6100;
+    this.h.container.addChild(s);
+    const step = 0.05;
+    const tl = this.track(gsap.timeline({ onComplete: () => void (s.destroyed || s.destroy()) }));
+    tex.forEach((t, i) => {
+      tl.call(
+        () => {
+          if (!s.destroyed) s.texture = t;
+        },
+        [],
+        i * step,
+      );
+    });
+    tl.to({}, { duration: step });
   }
 
   private fxCtx(): FxCtx {
@@ -409,9 +523,11 @@ export class Fighters {
     f: Fighter,
     t: Fighter | undefined,
     dir: number,
+    spec: AttackSpec,
+    weapon: Wielded | null,
     onHit?: () => void,
   ): Promise<void> {
-    const kind = f.spec.attack.kind;
+    const kind = spec.kind;
     const m =
       kind === 'slash' || kind === 'stab' || kind === 'claw' || kind === 'smash'
         ? MELEE[kind]
@@ -431,6 +547,33 @@ export class Fighters {
       );
       tl.timeScale(1.5);
       this.h.sound('attackWindup');
+      // the weapon: raised during the wind-up, brought down (or driven forward) in the rush, gone after the blow
+      // (on the target: the grip just short of it, so the blow comes down across it)
+      const strike = t
+        ? { x: t.root.x - dir * t.width * 0.45, y: this.chest(t).y - t.spec.height * 0.12 }
+        : { x: f.root.x + dir * 120, y: this.chest(f).y };
+      const held = weapon ? this.wield(f, weapon, dir, strike) : null;
+      if (held && weapon) {
+        // (its own timeline at the same pace, so the blow's beats on the main one are not moved)
+        const pose = MELEE_POSE[weapon.look.motion] ?? MELEE_POSE.swing;
+        held.sprite.rotation = pose.from;
+        held.sprite.x = pose.fromX;
+        const wt = this.track(
+          gsap.timeline({
+            onComplete: () =>
+              void (held.holder.destroyed || held.holder.destroy({ children: true })),
+          }),
+        );
+        wt.timeScale(1.5);
+        wt.to(held.holder, { alpha: 1, duration: m.wind * 0.5 }, 0);
+        wt.to(held.sprite, { rotation: pose.raise, duration: m.wind, ease: ease.out.gsap }, 0);
+        wt.to(
+          held.sprite,
+          { rotation: pose.to, x: pose.toX, duration: m.rush, ease: ease.in.gsap },
+          m.wind,
+        );
+        wt.to(held.holder, { alpha: 0, duration: 0.2 }, m.wind + m.rush + 0.12);
+      }
       tl.to(f.root, { x: f.x - dir * m.back, duration: m.wind, ease: ease.out.gsap });
       tl.to(f.body.scale, { x: 1.08, y: 0.9, duration: m.wind }, '<');
       if (m.tilt) tl.to(f.body, { rotation: -dir * m.tilt, y: m.lift, duration: m.wind }, '<');
@@ -439,7 +582,9 @@ export class Fighters {
       if (m.tilt) tl.to(f.body, { rotation: dir * m.tilt * 0.9, y: 0, duration: m.rush }, '<');
       tl.call(() => {
         this.h.sound('attackHit');
-        this.meleeFx(f, t, dir);
+        // the weapon picture replaces the drawn blow; the painted dust or sparks land with it
+        if (weapon) this.meleeFrames(f, t, dir, spec);
+        else this.meleeFx(f, t, dir, spec);
         onHit?.();
         resolve(); // the caller carries on at contact; the figure springs home on its own
       });
@@ -451,9 +596,21 @@ export class Fighters {
     });
   }
 
+  /** The painted effect where a weapon blow lands: a burst of dust at the feet for a slam, sparks at the chest for a blade. */
+  private meleeFrames(f: Fighter, t: Fighter | undefined, dir: number, spec: AttackSpec): void {
+    const size = Math.max(120, Math.min(240, (t?.spec.height ?? 220) * 0.8));
+    if (spec.kind === 'smash') {
+      const feet = t ? { x: t.root.x, y: t.root.y } : { x: f.root.x + dir * 90, y: f.root.y };
+      this.frames('impact', feet, size * 1.2, false, [0.5, 0.82]);
+    } else {
+      const at = t ? this.chest(t) : { x: f.root.x + dir * 80, y: this.chest(f).y };
+      this.frames('spark', at, size);
+    }
+  }
+
   /** What appears on the target at the moment a melee blow lands. */
-  private meleeFx(f: Fighter, t: Fighter | undefined, dir: number): void {
-    const { kind, tint, hits = 1 } = f.spec.attack;
+  private meleeFx(f: Fighter, t: Fighter | undefined, dir: number, spec: AttackSpec): void {
+    const { kind, tint, hits = 1 } = spec;
     const c = this.fxCtx();
     const at = t
       ? this.chest(t)
@@ -501,9 +658,23 @@ export class Fighters {
     f: Fighter,
     t: Fighter | undefined,
     dir: number,
+    spec: AttackSpec,
+    weapon: Wielded | null,
     onHit?: () => void,
   ): Promise<void> {
-    const { kind, tint, hits = 1 } = f.spec.attack;
+    const { kind, tint, hits = 1 } = spec;
+    const held = weapon ? this.wield(f, weapon, dir) : null;
+    // with a weapon in hand, the shot leaves from its far end (the muzzle, the knife, the staff's head)
+    const tip = (): Pt | null => {
+      if (!held || held.holder.destroyed || !weapon) return null;
+      const s = held.sprite;
+      const reach = s.width * (1 - weapon.look.grip[0]);
+      const g = held.holder.toGlobal({
+        x: s.x + Math.cos(s.rotation) * reach,
+        y: s.y + Math.sin(s.rotation) * reach,
+      });
+      return this.h.container.toLocal(g);
+    };
     const from = this.chest(f, dir * f.width * 0.3);
     const to = t ? this.chest(t) : { x: f.root.x + dir * 340, y: from.y };
     const c = this.fxCtx();
@@ -513,6 +684,21 @@ export class Fighters {
       const tl = this.track(gsap.timeline({ onComplete: () => void f.busy-- }));
       tl.timeScale(1.5);
       this.h.sound('attackWindup');
+      if (held && weapon) {
+        // (its own timeline at the same pace, so the shot's beats on the main one are not moved)
+        const pose = RANGED_POSE[weapon.look.motion] ?? RANGED_POSE.fire;
+        held.sprite.rotation = pose.from;
+        const wt = this.track(
+          gsap.timeline({
+            onComplete: () =>
+              void (held.holder.destroyed || held.holder.destroy({ children: true })),
+          }),
+        );
+        wt.timeScale(1.5);
+        wt.to(held.holder, { alpha: 1, duration: 0.08 }, 0);
+        wt.to(held.sprite, { rotation: pose.aim, duration: 0.14, ease: ease.out.gsap }, 0);
+        wt.to(held.holder, { alpha: 0, duration: 0.22 }, 0.55);
+      }
       // the pose: a hold for a gun, a wind-up for a throw or a spell
       if (kind === 'shoot') {
         tl.to({}, { duration: 0.08 });
@@ -535,20 +721,70 @@ export class Fighters {
           }
         };
         try {
+          const muzzle = tip();
+          if (held && weapon?.look.motion === 'fire') {
+            // the kick of the gun, and the painted flash and smoke at its muzzle
+            this.track(
+              gsap.fromTo(
+                held.sprite,
+                { x: -18, rotation: -0.22 },
+                { x: 0, rotation: 0, duration: 0.3, ease: ease.out.gsap },
+              ),
+            );
+            if (muzzle) this.frames('muzzle', muzzle, 150, dir < 0, [0.12, 0.5]);
+          }
+          if (held && weapon?.look.motion === 'raise' && muzzle) this.frames('cast', muzzle, 130);
           if (kind === 'shoot') {
-            puff(c, from, tint, 22, 0.12);
+            puff(c, muzzle ?? from, tint, 22, 0.12);
             const runs: Promise<void>[] = [];
             for (let i = 0; i < hits; i++) {
               const off = (i - (hits - 1) / 2) * 15;
               runs.push(
-                streak(c, from, { x: to.x, y: to.y + off }, tint, Math.max(0.1, dist / 3800), 3),
+                streak(
+                  c,
+                  muzzle ?? from,
+                  { x: to.x, y: to.y + off },
+                  tint,
+                  Math.max(0.1, dist / 3800),
+                  3,
+                ),
               );
             }
             void Promise.all(runs).then(land);
+          } else if (kind === 'throw' && held && weapon) {
+            // the knife itself leaves the hand and spins to the target
+            const start = muzzle ?? from;
+            held.holder.alpha = 0;
+            const k = new Sprite(weapon.tex);
+            k.anchor.set(0.5);
+            k.scale.set(held.sprite.scale.x * dir, held.sprite.scale.y);
+            k.position.set(start.x, start.y);
+            k.zIndex = 6000;
+            this.h.container.addChild(k);
+            const time = Math.max(0.16, dist / 2400);
+            this.track(
+              gsap.to(k, {
+                x: to.x,
+                y: to.y,
+                rotation: dir * Math.PI * 4,
+                duration: time,
+                ease: 'none',
+              }),
+            );
+            this.track(
+              gsap.delayedCall(time, () => {
+                if (!k.destroyed) k.destroy();
+                this.frames('spark', to, 140);
+                land();
+              }),
+            );
           } else if (kind === 'throw') {
             void thrownBlade(c, from, to, tint, Math.max(0.16, dist / 2400)).then(land);
           } else {
-            void orb(c, from, to, tint, Math.max(0.2, dist / 1800)).then(land);
+            void orb(c, muzzle ?? from, to, tint, Math.max(0.2, dist / 1800)).then(() => {
+              if (held) this.frames('cast', to, 170);
+              land();
+            });
           }
         } catch {
           land();

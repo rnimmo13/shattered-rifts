@@ -59,6 +59,7 @@ import { FlourishCard, type Flourish } from './FlourishCard';
 import { useClearOfBelt } from './clearOfBelt';
 import type { FighterSpec } from './Fighters';
 import { attackFor } from './attackStyles';
+import { loadWeaponArt } from './weaponArt';
 import type { FeedItem, MoveFeed, PvpLink } from '../pvp/link';
 import { replayFight, type FightMove, type FightReplay } from './recap';
 import { FightRecap } from './FightRecap';
@@ -214,6 +215,7 @@ function specsFrom(db: CombatDb, s: CombatState, me: Side = 'a'): FighterSpec[] 
         height: e.height * k,
         ...(e.hover > 0 ? { hover: e.hover * k } : {}),
         attack: attackFor(e.u.def, e.hero),
+        ...(e.hero ? { hero: e.u.def } : {}),
         ...(prop ? { prop: { ...prop, on: holding } } : {}),
       });
     }
@@ -443,8 +445,7 @@ export function FightView(props: {
               setFlourishes((list) => [...list.slice(-3), { id, def, mine: e.side === mySide }]);
             }
             if (def.kind === 'attack') {
-              if (e.target) await sc.fighters.attack(hero, e.target);
-              else await sc.fighters.attack(hero, null);
+              await sc.fighters.attack(hero, e.target ?? null, undefined, def);
             } else {
               sc.fighters.act(hero);
               play(def.kind === 'snare' ? 'trapSet' : 'cast');
@@ -708,7 +709,9 @@ export function FightView(props: {
     cancelledRef.current = false;
     let cancelled = false; // this effect run only (StrictMode mounts, unmounts and mounts again)
     let created: BattlefieldScene | null = null;
-    // real artwork (if any was supplied) is loaded before the first figure or card is drawn
+    // real artwork (if any was supplied) is loaded before the first figure or card is drawn; the weapons load alongside and are
+    // used once they are in (an attack before then keeps its drawn effects)
+    void loadWeaponArt();
     preloadAllArt()
       .then(() => BattlefieldScene.create(el, profileFor(loadEffectsMode()), props.venue))
       .then((s) => {
@@ -1449,10 +1452,11 @@ export function FightView(props: {
               key={f.id}
               db={db}
               flourish={f}
-              // (a played card shows over the board: smaller still when watching, where the board is the point)
-              width={Math.round(cw * (watch ? 0.85 : 1.15))}
+              // (a played card shows in the right-hand column by the discard pile, a little smaller when watching)
+              width={Math.round(Math.min(cw * (watch ? 0.9 : 1.05), 260))}
               speed={speed}
-              offset={(i - (flourishes.length - 1) / 2) * (watch ? 34 : 44)}
+              // (it sits at the right edge of the screen: older cards fan out to the left of the newest)
+              offset={(i - (flourishes.length - 1)) * (watch ? 30 : 40)}
               onDone={(id) => setFlourishes((list) => list.filter((x) => x.id !== id))}
             />
           ))}

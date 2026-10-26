@@ -5,6 +5,8 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **Weapons:** heroes now strike with their own weapons. KP swings his hammer or fires the Old Twelve Gauge (with a muzzle flash), Valeria cuts with her sword or bashes with her shield, Sylas throws his knife, and everyone else has theirs, with painted dust, sparks and spirit swirls where the blow lands.
+- **The card you play** shows beside the discard pile instead of over the arena, and the Draw, Discard and Consumed piles wear card backs.
 - **Arena games always end:** from Turn 51 both heroes lose more HP every turn (10, then 20, 30...), straight through Barrier and Shielded, and each game is called at 20 minutes for whoever has the larger share of their HP left. A game clock shows under the turn clock.
 - **No more blank cards:** a card picture that fails to load falls back to its painted art, and a painting that comes out empty (a browser short of memory) is painted again instead of staying blank.
 - **Thorns only answer attacks:** your Traps, Auras, totems and potions no longer hurt you when they hit an enemy with Thorns. A companion that attacks one still takes the Thorns itself.

@@ -1,4 +1,4 @@
-// A card that has just been played, shown big in the middle of the board so both players can read it: it appears, stays for a good
+// A card that has just been played, shown in the right-hand column by the discard pile so both players can read it: it appears, stays for a good
 // while, then flies to the discard pile (your cards) or off toward the opponent's side (theirs). Several can be on show at once,
 // each on its own clock. Pure presentation: the fight never waits for it.
 
