@@ -398,6 +398,8 @@ function metricValue(r: Run, a: Act, m: Metric, of: Scale['of'], t: Unit | null)
       return u?.hp ?? 0;
     case 'missingHp':
       return u ? u.maxHp - u.hp : 0;
+    case 'missingPct':
+      return u ? Math.floor(((u.maxHp - u.hp) * 100) / Math.max(1, u.maxHp)) : 0;
     case 'seared':
     case 'exposed':
     case 'might':
@@ -456,7 +458,8 @@ function metricValue(r: Run, a: Act, m: Metric, of: Scale['of'], t: Unit | null)
 /** `amount` plus whatever its scale adds (never below 0 for amounts that cannot be negative). */
 function amountOf(r: Run, a: Act, base: number, sc: Scale | undefined, t: Unit | null): number {
   if (!sc || sc.into === 'hits') return base;
-  return base + Math.floor((sc.mult ?? 1) * metricValue(r, a, sc.by, sc.of, t));
+  // (a tiny allowance, so a factor like 1/11 times 55 is 5 and not 4.999...)
+  return base + Math.floor((sc.mult ?? 1) * metricValue(r, a, sc.by, sc.of, t) + 1e-9);
 }
 
 /** Rune effects get +1 damage / Barrier per Resonance. */

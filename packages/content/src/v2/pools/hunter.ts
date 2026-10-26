@@ -43,8 +43,7 @@ export const HUNTER: CardDef[] = [
     exhaust: true,
   }),
   k('common', 'pain-ward', 'Pain Ward', 'skill', 1, 'none', [
-    barrier(5),
-    scaled(barrier(0), per('missingHp', 0.25)),
+    scaled(barrier(5), per('missingPct', 1 / 5)),
   ]),
   // (upgraded it loses less HP but draws the same 2: four copies drawing 4 each emptied the deck on the first turn; DECISIONS #237)
   k(
@@ -286,7 +285,7 @@ export const HUNTER: CardDef[] = [
 
   // --- Bloodrage (batch 3) ---
   k('common', 'maddened-lunge', 'Maddened Lunge', 'attack', 1, 'foe', [
-    scaled(dmg(5), per('missingHp', 0.25)),
+    scaled(dmg(5), per('missingPct', 1 / 5)),
   ]),
   k(
     'common',
@@ -326,7 +325,7 @@ export const HUNTER: CardDef[] = [
     'attack',
     2,
     'foe',
-    [scaled(dmg(10), per('missingHp', 0.5))],
+    [scaled(dmg(10), per('missingPct', 0.4))],
     { exhaust: true },
   ),
 

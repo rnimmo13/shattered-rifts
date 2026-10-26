@@ -112,6 +112,9 @@ export type Metric =
   | 'barrier'
   | 'hp'
   | 'missingHp'
+  /** the share of the unit's max HP it is missing, 0-100 (a card that grows as you get hurt reads this, so it is the same in the
+   * campaign and in the Arena, where heroes have several times the HP) */
+  | 'missingPct'
   | 'seared'
   | 'exposed'
   | 'might'

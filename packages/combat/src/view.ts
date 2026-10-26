@@ -266,6 +266,7 @@ const METRIC_WORDS: Record<Metric, { per: string; equal: string }> = {
   barrier: { per: 'Barrier', equal: 'Barrier' },
   hp: { per: 'HP', equal: 'HP' },
   missingHp: { per: 'missing HP', equal: 'missing HP' },
+  missingPct: { per: '% HP missing', equal: 'share of HP missing' },
   seared: { per: 'Bleed', equal: 'Bleed' },
   exposed: { per: 'Exposed', equal: 'Exposed' },
   might: { per: 'Might', equal: 'Might' },
@@ -304,6 +305,7 @@ const UNIT_METRICS: readonly Metric[] = [
   'barrier',
   'hp',
   'missingHp',
+  'missingPct',
   'seared',
   'exposed',
   'might',
@@ -347,7 +349,14 @@ function amountText(n: number, sc: Scale | undefined): { num: string; equal: boo
   }
   const on =
     unit && sc.of === 'target' ? ' on the target' : unit && sc.of === 'each' ? ' on each' : '';
-  const per = m >= 1 ? `+${m} per ${w.per}` : `+1 per ${Math.round(1 / m)} ${w.per}`;
+  // (a share of HP reads "+1 per 6% HP missing", and a step that is not whole keeps its half: "per 2.5%")
+  const step = Math.round(10 / m) / 10;
+  const per =
+    m >= 1
+      ? `+${m} per ${w.per}`
+      : sc.by === 'missingPct'
+        ? `+1 per ${step}${w.per}`
+        : `+1 per ${Math.round(1 / m)} ${w.per}`;
   return { num: `${n} (${per}${on})`, equal: false };
 }
 

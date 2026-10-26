@@ -73,7 +73,7 @@ Starter: Strike, Strike, Strike, Strike, Defend, Defend, Defend, Defend, Dawn Sm
 | Thorn Covenant | 1 | power | uncommon | Whenever one of your Traps springs: Apply 2 Thorns. |
 | Barbed Bastion | 2 | skill | uncommon | Gain 6 (+2 per Thorns) Barrier. |
 | Punishing Gale | 2 | snare | uncommon | At the start of the enemy turn: Deal 8 damage to ALL enemies. Deal damage equal to your Thorns to ALL enemies. |
-| Sunforged Edge | 2 | attack | uncommon | Deal 8 (+1 per 4 missing HP) damage. |
+| Sunforged Edge | 2 | attack | uncommon | Deal 8 (+1 per 5% HP missing) damage. |
 | Vigil of Dawn | 1 | power | uncommon | Whenever a card is consumed: Heal 2. |
 | Sanctified Ground | 2 | skill | uncommon | Heal 5 to all friends. Gain 5 Barrier to all friends. Draw 1 card. |
 | Impregnable | 2 | skill | rare | Gain Barrier equal to your Barrier. Consume. |
@@ -93,7 +93,7 @@ Starter: Strike, Strike, Strike, Strike, Defend, Defend, Defend, Defend, Dawn Sm
 | Crown of Light | 2 | power | rare | At the start of your turn: Heal 2. Gain 4 Barrier. |
 | Dawn Chorus | 2 | skill | rare | Heal 10 to all friends. Apply 1 Shielded. Consume. |
 | Holy Reckoning | 2 | attack | rare | Deal 8 damage to ALL enemies. Heal 6. |
-| Last Stand | 1 | skill | rare | Gain 8 Barrier. Gain Barrier equal to half of your missing HP. Consume. |
+| Last Stand | 1 | skill | rare | Gain 8 (+1 per 2.5% HP missing) Barrier. Consume. |
 | Dawn's Verdict | 3 | attack | rare | Deal 28 damage. Apply 2 Exposed. |
 | Unbroken Wall | 2 | power | rare | Apply 1 Fortified. |
 | Forged in Iron | X | skill | rare | Gain Barrier equal to 6 times the Mana spent. |
@@ -224,7 +224,7 @@ Starter: Strike, Strike, Strike, Strike, Strike, Defend, Defend, Defend, Savage 
 | Rend | 1 | attack | common | Deal 11 damage. Lose 3 HP. |
 | Twin Fang | 1 | attack | common | Deal 6 damage 2 times. Lose 2 HP. |
 | Feral Instinct | 0 | skill | common | Lose 2 HP. Draw 2 cards. Consume. |
-| Pain Ward | 1 | skill | common | Gain 5 Barrier. Gain Barrier equal to a quarter of your missing HP. |
+| Pain Ward | 1 | skill | common | Gain 5 (+1 per 5% HP missing) Barrier. |
 | Blood Rush | 0 | attack | common | Deal 4 damage. Lose 1 HP. |
 | Ripping Claws | 1 | attack | common | Deal 5 damage to ALL enemies. Lose 1 HP. |
 | Rummage | 1 | attack | common | Deal 8 damage. Put a random Attack card from your discard pile on top of your draw pile. |
@@ -242,7 +242,7 @@ Starter: Strike, Strike, Strike, Strike, Strike, Defend, Defend, Defend, Savage 
 | Bonepicker | 0 | skill | common | Gain 3 Barrier. Consume. If consumed: Heal 2. |
 | Bloodscent | 1 | attack | common | Deal 5 damage. Apply 1 Might to all friends. |
 | Whet the Fangs | 0 | skill | common | Apply 6 Primed. |
-| Maddened Lunge | 1 | attack | common | Deal 5 (+1 per 4 missing HP) damage. |
+| Maddened Lunge | 1 | attack | common | Deal 5 (+1 per 5% HP missing) damage. |
 | Open a Vein | 0 | skill | common | Lose 3 HP. Apply 1 Might. Draw 1 card. Consume. |
 | Bloodied Howl | 1 | skill | common | Lose 2 HP. Apply 2 Exposed to ALL enemies. |
 | Guard Dog | 1 | skill | common | Summon Hound (10 HP). At the end of your turn it will: Deal 4 damage. Gain 5 Barrier. |
@@ -308,7 +308,7 @@ Starter: Strike, Strike, Strike, Strike, Strike, Defend, Defend, Defend, Savage 
 | Carrion Engine | 2 | power | rare | Whenever a card is consumed: Deal 2 damage to ALL enemies. |
 | Last Gasp | 2 | attack | rare | Deal damage equal to the number of cards you have consumed to ALL enemies. |
 | Wolfhide | 2 | skill | rare | Gain 18 Barrier. Gain 9 Barrier to all friends. Consume. |
-| Death or Glory | 2 | attack | rare | Deal 10 (+1 per 2 missing HP) damage. Consume. |
+| Death or Glory | 2 | attack | rare | Deal 10 (+1 per 2.5% HP missing) damage. Consume. |
 | Hunter's Call | 2 | power | rare | At the start of your turn: Apply 1 Might to all friends. |
 | Pack Leader | 2 | power | rare | Whenever you play an Attack: Gain 2 Barrier to all friends. |
 | Second Helping | 1 | skill | rare | Lose 2 HP. Return a random Consumed card to your hand (never one that returns cards). Consume. |
@@ -696,7 +696,7 @@ Starter: Strike, Strike, Strike, Strike, Defend, Defend, Defend, Defend, Kindle 
 | Spinning Heel | 2 | attack | uncommon | Deal 12 damage. Apply 2 Exposed. Draw 1 card. |
 | Read the Opening | 1 | attack | uncommon | Deal 7 damage. Foresee 2. |
 | Wrathful Guard | 1 | skill | uncommon | Gain 8 Barrier. Enter Fury. |
-| Hot-Blooded | 1 | attack | uncommon | Deal 8 (+1 per 5 missing HP) damage. Enter Fury. |
+| Hot-Blooded | 1 | attack | uncommon | Deal 8 (+1 per 6% HP missing) damage. Enter Fury. |
 | Berserk Tide | X | attack | uncommon | Deal 4 damage X times. Enter Fury. |
 | Unleashed Roar | 1 | skill | uncommon | Apply 1 Exposed to ALL enemies. Enter Fury. |
 | Cornered Beast | 1 | snare | uncommon | When you lose 5+ HP at once: Deal 12 damage to the attacker. Apply 4 Primed. Enter Fury. |
@@ -874,11 +874,11 @@ Starter: Strike, Strike, Strike, Defend, Defend, Defend, Hammer Swing, Hammer Sw
 | Card | Cost | Type | Rarity | Text |
 |---|---|---|---|---|
 | Hammer Swing | 1 | attack | basic | Deal 6 damage. Apply 1 Brittle. |
-| Pane Up | 1 | skill | basic | Gain 6 Barrier. Gain Barrier equal to 10% of your missing HP. |
+| Pane Up | 1 | skill | basic | Gain 6 (+1 per 11% HP missing) Barrier. |
 | Bottle Tripwire | 1 | snare | basic | When you or an ally is attacked: Deal 7 damage to the attacker. Apply 1 Faltering to the attacker. |
 | Glass Trap | 1 | snare | common | When you or an ally is attacked: Deal 8 damage to the attacker. Apply 2 Brittle to the attacker. |
-| Window Pane | 1 | skill | common | Gain 7 Barrier. Gain Barrier equal to 15% of your missing HP. |
-| Pane in the Face | 1 | attack | common | Deal 5 (+1 per 5 missing HP) damage. |
+| Window Pane | 1 | skill | common | Gain 7 (+1 per 8% HP missing) Barrier. |
+| Pane in the Face | 1 | attack | common | Deal 5 (+1 per 6% HP missing) damage. |
 | Shard Toss | 1 | attack | common | Deal 4 damage to ALL enemies. Apply 1 Brittle to ALL enemies. |
 | Broken Bottle | 1 | attack | common | Deal 7 damage. Apply 1 Exposed. |
 | Sob Story | 1 | skill | common | Gain 4 Barrier. Draw 2 cards. |
@@ -902,9 +902,9 @@ Starter: Strike, Strike, Strike, Defend, Defend, Defend, Hammer Swing, Hammer Sw
 | Splinters | 1 | attack | common | Deal 3 (+2 per Thorns) damage. |
 | Chaser | 0 | skill | common | Lose 2 HP. Gain 1 Mana. Draw 1 card. Consume. |
 | Pit of Bottles | 1 | snare | uncommon | At the start of the enemy turn: Deal 6 damage to ALL enemies. Apply 1 Brittle to ALL enemies. |
-| Double Glazing | 2 | skill | uncommon | Gain 12 Barrier. Gain Barrier equal to 20% of your missing HP. |
-| Smash the Pane | 2 | attack | uncommon | Deal 8 (+1 per 3 missing HP) damage. |
-| Stained Glass | 1 | power | uncommon | At the start of your turn: Gain 3 Barrier. Gain Barrier equal to 10% of your missing HP. |
+| Double Glazing | 2 | skill | uncommon | Gain 12 (+1 per 6% HP missing) Barrier. |
+| Smash the Pane | 2 | attack | uncommon | Deal 8 (+1 per 4% HP missing) damage. |
+| Stained Glass | 1 | power | uncommon | At the start of your turn: Gain 3 (+1 per 11% HP missing) Barrier. |
 | Glazier | 1 | power | uncommon | Whenever you play a Skill: Gain 3 Barrier. |
 | Double Barrel | 2 | attack | uncommon | Deal 9 damage 2 times. |
 | Pump Action | 1 | skill | uncommon | Add 2 Buckshot Shells to your hand. Draw 1 card. |
@@ -924,7 +924,7 @@ Starter: Strike, Strike, Strike, Defend, Defend, Defend, Hammer Swing, Hammer Sw
 | Scope | 1 | power | uncommon | At the start of your turn: Sharpen 1 (Old Twelve Gauge gains 1 damage). |
 | Steady Hands | 1 | skill | uncommon | Sharpen 3 (Old Twelve Gauge gains 3 damage). Draw 1 card. |
 | Black Out | 1 | skill | uncommon | Gain 14 Barrier. Lose 3 HP. |
-| Bar Stool | 1 | attack | uncommon | Deal 10 (+1 per 5 missing HP) damage. |
+| Bar Stool | 1 | attack | uncommon | Deal 10 (+1 per 6% HP missing) damage. |
 | Liquid Dinner | 1 | skill | uncommon | Heal 8. Draw 1 card. |
 | Liquid Lunch | 0 | skill | uncommon | Gain 2 Mana. Next turn, lose 1 Mana. Consume. |
 | Rusty Nail Board | 1 | snare | uncommon | At the start of the enemy turn: Deal 5 damage to ALL enemies. Apply 1 Faltering to ALL enemies. |
@@ -935,8 +935,8 @@ Starter: Strike, Strike, Strike, Defend, Defend, Defend, Hammer Swing, Hammer Sw
 | Pick Up the Brass | 1 | skill | uncommon | Return 2 random Consumed cards to your hand (never one that returns cards). Consume. |
 | Bar Tab | 0 | skill | uncommon | Draw 2 cards. Next turn, lose 1 Mana. Consume. |
 | Booby-Trapped Window | 2 | snare | rare | When you or an ally is attacked: Cancel that attack. Deal 10 damage to the attacker. |
-| Panorama Window | 2 | skill | rare | Gain 14 Barrier. Gain Barrier equal to 30% of your missing HP. Consume. |
-| Broken Window Theory | 2 | power | rare | At the end of your turn: Deal damage equal to 20% of your missing HP to ALL enemies. |
+| Panorama Window | 2 | skill | rare | Gain 14 (+1 per 4% HP missing) Barrier. Consume. |
+| Broken Window Theory | 2 | power | rare | At the end of your turn: Deal 1 (+1 per 6% HP missing) damage to ALL enemies. |
 | Boomstick | 3 | attack | rare | Deal 12 (+2 per consumed card) damage to ALL enemies. |
 | The Last Shell | 2 | attack | rare | Deal 24 damage. Apply 1 Exposed. Consume. Hold. |
 | Haymaker | 2 | attack | rare | Deal 22 damage. Apply 2 Brittle. |
@@ -950,7 +950,7 @@ Starter: Strike, Strike, Strike, Defend, Defend, Defend, Hammer Swing, Hammer Sw
 | Rolling Thunder | 2 | power | rare | At the start of your turn: Add 2 Buckshot Shells to your hand. |
 | Ironsights | 1 | skill | rare | Sharpen 5 (Old Twelve Gauge gains 5 damage). Add 2 Buckshot Shells to your hand. Consume. |
 | Gunmetal Soul | 2 | power | rare | At the end of your turn: Sharpen 1 (Old Twelve Gauge gains 1 damage). Gain 3 Barrier. |
-| Last Orders | 2 | attack | rare | Deal 8 (+1 per 3 missing HP) damage to ALL enemies. |
+| Last Orders | 2 | attack | rare | Deal 8 (+1 per 4% HP missing) damage to ALL enemies. |
 | Rock Bottom | 2 | power | rare | Apply 2 Might. At the start of your turn: Lose 1 HP. |
 | Whiskey Miracle | 1 | skill | rare | Heal 15. Consume. |
 | Last Call | 2 | skill | rare | Gain 1 maximum Mana for the rest of the fight (and 1 now). Heal 6. Consume. |
@@ -961,7 +961,7 @@ Starter: Strike, Strike, Strike, Defend, Defend, Defend, Hammer Swing, Hammer Sw
 | Mean Drunk | 2 | power | rare | Whenever you lose HP to your own cards: Apply 1 Might until the end of your turn. Gain 2 Barrier. |
 | The Twelve-Gauge Opera | 3 | attack | legendary | Deal 25 damage to ALL enemies. Lose 8 HP. Consume. |
 | One More Round | 3 | power | legendary | At the start of your turn: Add 3 Buckshot Shells to your hand. Heal 3. |
-| The Glass Palace | 3 | power | legendary | At the start of your turn: Gain 6 Barrier. Gain Barrier equal to 20% of your missing HP. |
+| The Glass Palace | 3 | power | legendary | At the start of your turn: Gain 6 (+1 per 6% HP missing) Barrier. |
 
 Tokens (made by other cards):
 

@@ -98,7 +98,7 @@ export const BARBARIAN: CardDef[] = [
   ),
   s('common', 'rending-hands', 'Rending Hands', 'attack', 1, 'foe', [dmg(5, 'target', 2), lose(2)]),
   s('uncommon', 'hot-blooded', 'Hot-Blooded', 'attack', 1, 'foe', [
-    scaled(dmg(8), per('missingHp', 0.2)),
+    scaled(dmg(8), per('missingPct', 1 / 6)),
     stance('wrath'),
   ]),
   s(

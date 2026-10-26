@@ -37,8 +37,7 @@ export const DRUNKARD: CardDef[] = [
     status('brittle', 1, 'target'),
   ]),
   p('basic', 'pane-up', 'Pane Up', 'skill', 1, 'none', [
-    barrier(6),
-    scaled(barrier(0), per('missingHp', 0.1)),
+    scaled(barrier(6), per('missingPct', 1 / 11)),
   ]),
   p(
     'basic',
@@ -91,11 +90,10 @@ export const DRUNKARD: CardDef[] = [
 
   // --- Glass: Barrier and Thorns ---
   p('common', 'window-pane', 'Window Pane', 'skill', 1, 'none', [
-    barrier(7),
-    scaled(barrier(0), per('missingHp', 0.15)),
+    scaled(barrier(7), per('missingPct', 1 / 8)),
   ]),
   p('common', 'pane-in-the-face', 'Pane in the Face', 'attack', 1, 'foe', [
-    scaled(dmg(5), per('missingHp', 0.2)),
+    scaled(dmg(5), per('missingPct', 1 / 6)),
   ]),
   p('common', 'shard-toss', 'Shard Toss', 'attack', 1, 'none', [
     dmg(4, 'allFoes'),
@@ -107,14 +105,13 @@ export const DRUNKARD: CardDef[] = [
   ]),
   p('common', 'sob-story', 'Sob Story', 'skill', 1, 'none', [barrier(4), draw(2)]),
   p('uncommon', 'double-glazing', 'Double Glazing', 'skill', 2, 'none', [
-    barrier(12),
-    scaled(barrier(0), per('missingHp', 0.2)),
+    scaled(barrier(12), per('missingPct', 1 / 6)),
   ]),
   p('uncommon', 'shatter', 'Smash the Pane', 'attack', 2, 'foe', [
-    scaled(dmg(8), per('missingHp', 0.3)),
+    scaled(dmg(8), per('missingPct', 1 / 4)),
   ]),
   p('uncommon', 'stained-glass', 'Stained Glass', 'power', 1, 'none', [
-    on('turnStart', [barrier(3), scaled(barrier(0), per('missingHp', 0.1))]),
+    on('turnStart', [scaled(barrier(3), per('missingPct', 1 / 11))]),
   ]),
   p('uncommon', 'glazier', 'Glazier', 'power', 1, 'none', [
     on('play', [barrier(3)], { filter: 'skill' }),
@@ -126,11 +123,11 @@ export const DRUNKARD: CardDef[] = [
     'skill',
     2,
     'none',
-    [barrier(14), scaled(barrier(0), per('missingHp', 0.3))],
+    [scaled(barrier(14), per('missingPct', 1 / 4))],
     { exhaust: true },
   ),
   p('rare', 'broken-window-theory', 'Broken Window Theory', 'power', 2, 'none', [
-    on('turnEnd', [scaled(dmg(0, 'allFoes'), per('missingHp', 0.2))]),
+    on('turnEnd', [scaled(dmg(1, 'allFoes'), per('missingPct', 1 / 6))]),
   ]),
 
   // --- Shells: the 12 gauge ---
@@ -209,7 +206,7 @@ export const DRUNKARD: CardDef[] = [
     on('turnStart', [addTo('buckshot-shell', 3), heal(3)]),
   ]),
   p('legendary', 'the-glass-palace', 'The Glass Palace', 'power', 3, 'none', [
-    on('turnStart', [barrier(6), scaled(barrier(0), per('missingHp', 0.2))]),
+    on('turnStart', [scaled(barrier(6), per('missingPct', 1 / 6))]),
   ]),
 
   // --- the Old Twelve Gauge: a weapon that hits every enemy and gets sharper (Sharpen), with its own interactions ---
@@ -326,11 +323,11 @@ export const DRUNKARD: CardDef[] = [
   ]),
   p('uncommon', 'black-out', 'Black Out', 'skill', 1, 'none', [barrier(14), lose(3)]),
   p('uncommon', 'bar-stool', 'Bar Stool', 'attack', 1, 'foe', [
-    scaled(dmg(10), per('missingHp', 0.2)),
+    scaled(dmg(10), per('missingPct', 1 / 6)),
   ]),
   p('uncommon', 'liquid-dinner', 'Liquid Dinner', 'skill', 1, 'none', [heal(8), draw(1)]),
   p('rare', 'last-orders', 'Last Orders', 'attack', 2, 'none', [
-    scaled(dmg(8, 'allFoes'), per('missingHp', 0.3)),
+    scaled(dmg(8, 'allFoes'), per('missingPct', 1 / 4)),
   ]),
   p('rare', 'rock-bottom', 'Rock Bottom', 'power', 2, 'none', [
     status('might', 2),

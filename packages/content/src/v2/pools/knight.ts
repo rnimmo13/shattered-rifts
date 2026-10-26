@@ -214,7 +214,7 @@ export const KNIGHT: CardDef[] = [
     'skill',
     1,
     'none',
-    [barrier(8), scaled(barrier(0), per('missingHp', 0.5))],
+    [scaled(barrier(8), per('missingPct', 0.4))],
     { exhaust: true },
   ),
 
@@ -356,7 +356,7 @@ export const KNIGHT: CardDef[] = [
     exhaust: true,
   }),
   m('uncommon', 'sunforged-edge', 'Sunforged Edge', 'attack', 2, 'foe', [
-    scaled(dmg(8), per('missingHp', 0.25)),
+    scaled(dmg(8), per('missingPct', 1 / 5)),
   ]),
   m('uncommon', 'vigil-of-dawn', 'Vigil of Dawn', 'power', 1, 'none', [on('exhaust', [heal(2)])]),
   m('uncommon', 'consecrate', 'Sanctified Ground', 'skill', 2, 'none', [
