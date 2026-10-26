@@ -29,11 +29,11 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
-    version: '0.68.0',
+    version: '0.69.0',
     date: '2026-10-26',
     title: 'Three build paths for everyone',
     summary:
-      'Every Riftwalker has three clear ways to build, a trait that helps all of them, and cards of our own. Ghost Wardens are fairer.',
+      'Every Riftwalker has three clear ways to build, a trait that helps all of them, and cards of our own.',
     heads:
       'Many cards changed what they do, so a replay of a fight from an older version may not play back the same way.',
     notes: [
@@ -65,6 +65,14 @@ export const PATCH_NOTES: PatchNote[] = [
         kind: 'fixed',
         text: 'On phones the username panel fits the screen, and no page scrolls sideways.',
       },
+    ],
+  },
+  {
+    version: '0.68.0',
+    date: '2026-10-26',
+    title: 'Fairer ghost Wardens',
+    summary: 'Ghost Wardens come from your own tier or just below, and only when there is one.',
+    notes: [
       {
         kind: 'balance',
         text: 'A ghost Warden is never from a higher Rift Tier than yours, and never more than three tiers below it.',
