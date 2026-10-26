@@ -346,7 +346,7 @@ export const KNIGHT: CardDef[] = [
     'snare',
     2,
     'none',
-    [dmg(8, 'allFoes'), scaled(dmg(0, 'allFoes'), per('thorns', 1))],
+    [scaled(dmg(8, 'allFoes'), per('thorns'))],
     { trigger: { on: 'foeTurn' } },
   ),
 

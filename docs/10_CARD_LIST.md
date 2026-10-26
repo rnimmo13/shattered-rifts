@@ -72,7 +72,7 @@ Starter: Strike, Strike, Strike, Strike, Defend, Defend, Defend, Defend, Dawn Sm
 | Thorn Volley | 1 | attack | uncommon | Deal 2 (+1 per Thorns) damage to ALL enemies. |
 | Thorn Covenant | 1 | power | uncommon | Whenever one of your Traps springs: Apply 2 Thorns. |
 | Barbed Bastion | 2 | skill | uncommon | Gain 6 (+2 per Thorns) Barrier. |
-| Punishing Gale | 2 | snare | uncommon | At the start of the enemy turn: Deal 8 damage to ALL enemies. Deal damage equal to your Thorns to ALL enemies. |
+| Punishing Gale | 2 | snare | uncommon | At the start of the enemy turn: Deal 8 (+1 per Thorns) damage to ALL enemies. |
 | Sunforged Edge | 2 | attack | uncommon | Deal 8 (+1 per 5% HP missing) damage. |
 | Vigil of Dawn | 1 | power | uncommon | Whenever a card is consumed: Heal 2. |
 | Sanctified Ground | 2 | skill | uncommon | Heal 5 to all friends. Gain 5 Barrier to all friends. Draw 1 card. |
