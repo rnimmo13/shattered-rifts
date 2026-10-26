@@ -1453,7 +1453,10 @@ export function FightView(props: {
               db={db}
               flourish={f}
               // (a played card shows in the right-hand column by the discard pile, a little smaller when watching)
-              width={Math.round(Math.min(cw * (watch ? 0.9 : 1.05), 260))}
+              // (and short enough to stay in its column on a short screen: about 40% of the height)
+              width={Math.round(
+                Math.min(cw * (watch ? 0.9 : 1.05), 260, (window.innerHeight * 0.4) / 1.4),
+              )}
               speed={speed}
               // (it sits at the right edge of the screen: older cards fan out to the left of the newest)
               offset={(i - (flourishes.length - 1)) * (watch ? 30 : 40)}

@@ -85,7 +85,9 @@ export function weaponFor(hero: string, card?: CardDef | null): WeaponId | null 
     return tags.includes('gun') || tags.includes('shell') || spray ? 'shotgun' : 'hammer';
   }
   if (hero === 'knight')
-    return card.effects.some((o) => 'scale' in o && o.scale?.by === 'barrier') ? 'shield' : 'sword';
+    return card.effects.some((o) => o.op === 'damage' && o.scale?.by === 'barrier')
+      ? 'shield'
+      : 'sword';
   return def;
 }
 
@@ -109,11 +111,16 @@ export function loadWeaponArt(): Promise<void> {
   loading ??= (async () => {
     const base = import.meta.env.BASE_URL;
     let index: { weapons?: Record<string, string>; fx?: Record<string, string[]> };
+    // (a list that does not come lets the next fight try again)
     try {
       const res = await fetch(`${base}art/weapons/index.json`, { cache: 'no-cache' });
-      if (!res.ok) return;
+      if (!res.ok) {
+        loading = null;
+        return;
+      }
       index = (await res.json()) as typeof index;
     } catch {
+      loading = null;
       return;
     }
     const out: Loaded = { weapons: new Map(), fx: new Map() };
@@ -137,5 +144,27 @@ export function loadWeaponArt(): Promise<void> {
   return loading;
 }
 
-export const weaponTexture = (id: WeaponId): Texture | undefined => loaded?.weapons.get(id);
-export const fxFrames = (id: FxId): Texture[] | undefined => loaded?.fx.get(id);
+/**
+ * A texture shared by every fight can be destroyed with a stage torn down while a weapon was still on it (leaving a fight mid-swing):
+ * hand out a fresh one over the same image then, and keep it.
+ */
+const alive = (t: Texture): Texture => (t.destroyed ? new Texture({ source: t.source }) : t);
+
+export function weaponTexture(id: WeaponId): Texture | undefined {
+  const t = loaded?.weapons.get(id);
+  if (!t) return undefined;
+  const fresh = alive(t);
+  if (fresh !== t) loaded?.weapons.set(id, fresh);
+  return fresh;
+}
+
+export function fxFrames(id: FxId): Texture[] | undefined {
+  const ts = loaded?.fx.get(id);
+  if (!ts) return undefined;
+  if (ts.some((t) => t.destroyed)) {
+    const fresh = ts.map(alive);
+    loaded?.fx.set(id, fresh);
+    return fresh;
+  }
+  return ts;
+}

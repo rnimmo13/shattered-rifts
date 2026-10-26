@@ -1275,12 +1275,14 @@
   outline: 1px solid rgb(212 168 75 / 0.35);
   outline-offset: -6px;
 }
-.pile > * {
-  position: relative;
-}
 .pile b,
 .pile {
   text-shadow: 0 1px 3px rgb(0 0 0 / 0.95);
+}
+/* (the inner gold line is an outline: keyboard focus gets its own, brighter one) */
+.pile:focus-visible {
+  outline: 2px solid var(--c-gold-light);
+  outline-offset: 2px;
 }
 /* the label and the count on a dark plate, so they read over the pattern */
 .pile b {

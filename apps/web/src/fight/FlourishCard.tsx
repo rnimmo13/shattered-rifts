@@ -52,13 +52,14 @@ export function FlourishCard(props: {
       dy = p.top + p.height / 2 - (here.top + here.height / 2);
       end = 0.18;
     }
-    const rest = `translate(${offset}px, 0) scale(1)`;
+    // (the sideways fan is on the wrapper, so it can move while the card is on show: see the return)
+    const rest = 'translate(0px, 0) scale(1)';
     const anim = el.animate(
       [
-        { opacity: 0, transform: `translate(${offset}px, 120px) scale(0.7)`, easing: 'ease-out' },
+        { opacity: 0, transform: 'translate(0px, 120px) scale(0.7)', easing: 'ease-out' },
         { opacity: 1, transform: rest, offset: tIn / total },
         { opacity: 1, transform: rest, offset: (tIn + tHold) / total, easing: 'ease-in' },
-        { opacity: 0.2, transform: `translate(${offset + dx}px, ${dy}px) scale(${end})` },
+        { opacity: 0.2, transform: `translate(${dx}px, ${dy}px) scale(${end})` },
       ],
       { duration: total, fill: 'forwards' },
     );
@@ -69,7 +70,12 @@ export function FlourishCard(props: {
   }, []);
 
   return (
-    <div className="fight__flourish" aria-hidden>
+    // older cards slide aside as newer ones arrive (the wrapper's translate follows the offset; the card's own animation is a transform)
+    <div
+      className="fight__flourish"
+      aria-hidden
+      style={{ translate: `${offset}px 0`, transition: 'translate 200ms ease-out' }}
+    >
       <div ref={inner} className="fight__flourishCard" style={{ opacity: 0 }}>
         <FightCard db={props.db} def={flourish.def} width={props.width} />
       </div>

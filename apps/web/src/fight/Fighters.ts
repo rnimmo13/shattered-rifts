@@ -483,16 +483,14 @@ export class Fighters {
     size: number,
     flip = false,
     anchor: [number, number] = [0.5, 0.5],
-  ): void {
+  ): boolean {
     const tex = fxFrames(id);
-    if (!tex?.length) return;
+    if (!tex?.length) return false;
     const s = new Sprite(tex[0]);
     s.anchor.set(anchor[0], anchor[1]);
     s.position.set(at.x, at.y);
-    s.scale.set(
-      (flip ? -1 : 1) * (size / Math.max(1, tex[0]?.width ?? 1)),
-      size / Math.max(1, tex[0]?.height ?? 1),
-    );
+    const k = size / Math.max(1, tex[0]?.width ?? 1, tex[0]?.height ?? 1);
+    s.scale.set((flip ? -1 : 1) * k, k);
     s.zIndex = 6100;
     this.h.container.addChild(s);
     const step = 0.05;
@@ -507,6 +505,7 @@ export class Fighters {
       );
     });
     tl.to({}, { duration: step });
+    return true;
   }
 
   private fxCtx(): FxCtx {
@@ -583,8 +582,8 @@ export class Fighters {
       tl.call(() => {
         this.h.sound('attackHit');
         // the weapon picture replaces the drawn blow; the painted dust or sparks land with it
-        if (weapon) this.meleeFrames(f, t, dir, spec);
-        else this.meleeFx(f, t, dir, spec);
+        // (no painted frames, say one of them failed to load: the drawn blow instead, so a hit never looks like nothing)
+        if (!weapon || !this.meleeFrames(f, t, dir, spec)) this.meleeFx(f, t, dir, spec);
         onHit?.();
         resolve(); // the caller carries on at contact; the figure springs home on its own
       });
@@ -597,15 +596,14 @@ export class Fighters {
   }
 
   /** The painted effect where a weapon blow lands: a burst of dust at the feet for a slam, sparks at the chest for a blade. */
-  private meleeFrames(f: Fighter, t: Fighter | undefined, dir: number, spec: AttackSpec): void {
+  private meleeFrames(f: Fighter, t: Fighter | undefined, dir: number, spec: AttackSpec): boolean {
     const size = Math.max(120, Math.min(240, (t?.spec.height ?? 220) * 0.8));
     if (spec.kind === 'smash') {
       const feet = t ? { x: t.root.x, y: t.root.y } : { x: f.root.x + dir * 90, y: f.root.y };
-      this.frames('impact', feet, size * 1.2, false, [0.5, 0.82]);
-    } else {
-      const at = t ? this.chest(t) : { x: f.root.x + dir * 80, y: this.chest(f).y };
-      this.frames('spark', at, size);
+      return this.frames('impact', feet, size * 1.2, false, [0.5, 0.82]);
     }
+    const at = t ? this.chest(t) : { x: f.root.x + dir * 80, y: this.chest(f).y };
+    return this.frames('spark', at, size);
   }
 
   /** What appears on the target at the moment a melee blow lands. */
@@ -696,7 +694,8 @@ export class Fighters {
         );
         wt.timeScale(1.5);
         wt.to(held.holder, { alpha: 1, duration: 0.08 }, 0);
-        wt.to(held.sprite, { rotation: pose.aim, duration: 0.14, ease: ease.out.gsap }, 0);
+        // (on aim before it goes off: a shot leaves at about 0.08 into the beat)
+        wt.to(held.sprite, { rotation: pose.aim, duration: 0.07, ease: ease.out.gsap }, 0);
         wt.to(held.holder, { alpha: 0, duration: 0.22 }, 0.55);
       }
       // the pose: a hold for a gun, a wind-up for a throw or a spell
@@ -773,17 +772,24 @@ export class Fighters {
             );
             this.track(
               gsap.delayedCall(time, () => {
-                if (!k.destroyed) k.destroy();
-                this.frames('spark', to, 140);
-                land();
+                // (the hit lands whatever happens to the picture)
+                try {
+                  if (!k.destroyed) k.destroy();
+                  this.frames('spark', to, 140);
+                } finally {
+                  land();
+                }
               }),
             );
           } else if (kind === 'throw') {
             void thrownBlade(c, from, to, tint, Math.max(0.16, dist / 2400)).then(land);
           } else {
             void orb(c, muzzle ?? from, to, tint, Math.max(0.2, dist / 1800)).then(() => {
-              if (held) this.frames('cast', to, 170);
-              land();
+              try {
+                if (held) this.frames('cast', to, 170);
+              } finally {
+                land();
+              }
             });
           }
         } catch {
