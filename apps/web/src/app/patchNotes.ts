@@ -29,6 +29,18 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.84.0',
+    date: '2026-10-26',
+    title: 'Tidier runs list',
+    summary: 'Each run in progress is one box, with Abandon inside it.',
+    notes: [
+      {
+        kind: 'changed',
+        text: 'On the home page each run in progress is one box: Continue fills it, and Abandon (and the question that follows) sits inside it.',
+      },
+    ],
+  },
+  {
     version: '0.83.0',
     date: '2026-10-26',
     title: 'Ten runs at once',
