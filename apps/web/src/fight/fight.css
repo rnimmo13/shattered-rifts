@@ -2108,3 +2108,23 @@
 .fight__lumen {
   bottom: calc(8.7rem + 0.6rem);
 }
+
+/* the title sits in the middle of the screen, not in the middle of whatever space the buttons around it leave (DECISIONS #276);
+   what came after it keeps to the right, and a long title stops short of the buttons */
+.fight__title {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  translate: -50% -50%;
+  flex: none;
+  max-width: min(60vw, calc(100% - 30rem));
+  white-space: nowrap;
+}
+.fight__title b {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+.fight__title + * {
+  margin-left: auto;
+}
