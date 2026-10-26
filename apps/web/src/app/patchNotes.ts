@@ -29,6 +29,18 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.82.0',
+    date: '2026-10-26',
+    title: 'No hidden run slots',
+    summary: 'A saved run that cannot be loaded is shown on the home page instead of quietly taking a slot.',
+    notes: [
+      {
+        kind: 'fixed',
+        text: 'A saved run the game cannot load used to take one of your three run slots without being listed, so New Run said you were full. It now shows on the home page: copy it to send with a bug report, or remove it to free the slot.',
+      },
+    ],
+  },
+  {
     version: '0.81.0',
     date: '2026-10-26',
     title: 'Clearer choices',
