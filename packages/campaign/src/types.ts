@@ -223,7 +223,8 @@ export type PreludeEffect =
   | { k: 'shards'; n: number }
   | { k: 'card'; rarity: 'common' | 'uncommon' | 'rare' | 'legendary' | 'ancestral' }
   | { k: 'upgrade'; n: number }
-  | { k: 'remove'; n: number } // Attack / Defend only
+  /** Attack / Defend only; `only`: just Strikes, or just Defends */
+  | { k: 'remove'; n: number; only?: 'strike' | 'defend' }
   | { k: 'boon'; rarity: 'common' | 'uncommon' | 'rare' }
   | { k: 'potion' }
   | { k: 'resolve'; n: number }
@@ -235,6 +236,8 @@ export type PreludeEffect =
       k: 'pick';
       rarity: 'common' | 'uncommon' | 'rare' | 'legendary' | 'ancestral';
       upgraded?: boolean;
+      /** only Attacks, or only Skills */
+      kind?: 'attack' | 'skill';
     };
 
 export interface PreludeOption {

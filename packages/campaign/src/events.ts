@@ -20,6 +20,7 @@ import { DEAL_EVENTS } from './eventDeals';
 import { MORE_EVENTS } from './eventsMore';
 import { TUNED_EVENTS } from './eventsTuned';
 import { LEGEND_EVENTS } from './eventsLegend';
+import { TRADE_EVENTS } from './eventsTrades';
 import { rollElite } from './trials';
 import type { EventOption, RunState } from './types';
 
@@ -325,6 +326,7 @@ export const EVENTS: EventDef[] = [
   ...MORE_EVENTS,
   ...TUNED_EVENTS,
   ...LEGEND_EVENTS,
+  ...TRADE_EVENTS,
 ];
 
 /** Pick a random event, weighted, from those that can happen to this run now. */

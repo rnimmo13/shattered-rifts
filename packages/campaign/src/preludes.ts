@@ -33,10 +33,13 @@ export function describeEffect(e: PreludeEffect): string {
       return e.n === 1
         ? 'Upgrade a random card in your deck'
         : `Upgrade ${e.n} random cards in your deck`;
-    case 'remove':
-      return e.n === 1
-        ? 'Remove a Strike or Defend from your deck'
-        : `Remove ${e.n} Strikes or Defends from your deck`;
+    case 'remove': {
+      const one =
+        e.only === 'strike' ? 'Strike' : e.only === 'defend' ? 'Defend' : 'Strike or Defend';
+      const many =
+        e.only === 'strike' ? 'Strikes' : e.only === 'defend' ? 'Defends' : 'Strikes or Defends';
+      return e.n === 1 ? `Remove a ${one} from your deck` : `Remove ${e.n} ${many} from your deck`;
+    }
     case 'boon':
       return `Gain a random ${rarityWord[e.rarity]} Boon`;
     case 'potion':
@@ -48,7 +51,7 @@ export function describeEffect(e: PreludeEffect): string {
     case 'transform':
       return `Transform ${e.n} Strikes or Defends in your deck into random ${e.better ? 'uncommon or rare ' : ''}cards`;
     case 'pick':
-      return `Choose one of three ${e.upgraded ? 'upgraded ' : ''}${rarityWord[e.rarity]} cards for your deck`;
+      return `Choose one of three ${e.upgraded ? 'upgraded ' : ''}${rarityWord[e.rarity]} ${e.kind === 'attack' ? 'Attacks' : e.kind === 'skill' ? 'Skills' : 'cards'} for your deck`;
   }
 }
 
@@ -93,6 +96,23 @@ function blessings(stage: number, hurt: boolean): PreludeOption[] {
     opt('two-gifts', "Wayfinder's Gift", [
       { k: 'pick', rarity: 'common', upgraded: true },
       { k: 'shards', n: 40 },
+    ]),
+    // trades (DECISIONS #256): plain cards given up for a choice of a better card of one kind
+    opt('trade-steel', 'Trade Steel', [
+      { k: 'remove', n: 2, only: 'strike' },
+      { k: 'pick', rarity: 'uncommon', kind: 'attack' },
+    ]),
+    opt('trade-guard', 'Trade Guard', [
+      { k: 'remove', n: 2, only: 'defend' },
+      { k: 'pick', rarity: 'uncommon', kind: 'skill' },
+    ]),
+    opt('fresh-steel', 'Fresh Steel', [
+      { k: 'remove', n: 1, only: 'strike' },
+      { k: 'pick', rarity: 'common', kind: 'attack', upgraded: true },
+    ]),
+    opt('quiet-study', 'Quiet Study', [
+      { k: 'remove', n: 1, only: 'defend' },
+      { k: 'pick', rarity: 'common', kind: 'skill', upgraded: true },
     ]),
     opt('pilgrim', "Pilgrim's Blessing", [
       { k: 'maxHp', n: 6 },

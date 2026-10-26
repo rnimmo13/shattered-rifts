@@ -866,7 +866,7 @@ export function choosePrelude(run: RunState, optionId: string): RunState {
   for (const e of option.effects)
     if (e.k === 'pick')
       need(
-        threeToChoose(clone(r), e.rarity, false).length > 0,
+        threeToChoose(clone(r), e.rarity, false, e.kind).length > 0,
         'There is no card of that kind left for your deck',
       );
   for (const e of option.effects)
@@ -888,7 +888,7 @@ export function choosePrelude(run: RunState, optionId: string): RunState {
   // a card to choose: three on the table, taken (or skipped) on the card reward screen before the map
   const pick = option.effects.find((e) => e.k === 'pick');
   if (pick?.k === 'pick') {
-    const offers = threeToChoose(r, pick.rarity, pick.upgraded === true);
+    const offers = threeToChoose(r, pick.rarity, pick.upgraded === true, pick.kind);
     if (offers.length) {
       r.phase = 'reward';
       r.context = { nodeId: '', offers };
@@ -901,8 +901,16 @@ export function choosePrelude(run: RunState, optionId: string): RunState {
  * Three different cards of a rarity to choose from: the Riftwalker's own (a Neutral card only when the class runs short), the
  * "+" versions if asked. Ancestral cards have no class.
  */
-function threeToChoose(r: RunState, rarity: PickRarity, upgraded: boolean): string[] {
-  const fits = (id: string) => COMBAT_DB.cards[id]?.rarity === rarity && canAdd(r.deck, id);
+function threeToChoose(
+  r: RunState,
+  rarity: PickRarity,
+  upgraded: boolean,
+  kind?: 'attack' | 'skill',
+): string[] {
+  const fits = (id: string) =>
+    COMBAT_DB.cards[id]?.rarity === rarity &&
+    (!kind || COMBAT_DB.cards[id]?.kind === kind) &&
+    canAdd(r.deck, id);
   const own = rarity === 'ancestral' ? ancestralPool(r.deck) : rewardPool(r.character).filter(fits);
   const mine = own.filter(
     (id) => rarity === 'ancestral' || COMBAT_DB.cards[id]?.hero === r.character,
@@ -974,7 +982,7 @@ function applyEffect(r: RunState, e: PreludeEffect): string | null {
     case 'remove': {
       const gone: string[] = [];
       for (let i = 0; i < e.n && r.deck.length > V2_DECK_RULES.minSize; i++) {
-        const at = r.deck.findIndex(isPlainBasic);
+        const at = r.deck.findIndex((id) => isPlainBasic(id) && (!e.only || id === e.only));
         if (at < 0) break;
         gone.push(nameOfCard(r.deck[at] as string));
         r.deck.splice(at, 1);

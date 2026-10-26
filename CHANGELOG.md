@@ -5,6 +5,9 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **Trades:** new events trade particular cards of your deck: melt two common Attacks (or bind two common Skills) into an uncommon of your choice, trade a rare for another, retrain a card that does not fit your build path, or step an uncommon up to a rare. The Threshold can trade Strikes or Defends for your pick of Attacks or Skills.
+- **Sanctified cards** show their changed numbers in green or red, and hovering one says what the roll changed.
+- **Fight screen:** played cards are smaller (smaller still in replays), potions sit in a column above Mana with Arcana beside it, notices no longer cover the run bar, and Back to the result stays put when you hover it.
 - **Build paths:** every Riftwalker's three ways to build a deck are now called build paths, and they are the tags on the character picker. **Ilvane** builds through Totems, Whittling (small free Carvings that keep coming back) or Rites (Auras that pay whenever you play another Aura). **Sehra** through Fury, Flow (every stance change pays) or Radiant. **Vesper**'s third build path is Patience: hold your cards, keep your Mana, strike later.
 - **Traits that fit every build:** Sylas gets a Sleeve Knife every turn (Hidden Blades), Vesper starts with Barrier and two extra cards and gains Barrier every turn (Lying in Wait), Sehra gains Fervor and Barrier whenever she enters a stance (Inner Fire), Dorian's Grave Chill also curses whenever an ally dies or a card is consumed, and Obsidia's Kindled sharpens her blade each turn.
 - **Reworked cards:** dozens of cards across the roster have new names and new effects so every card is our own. Your decks keep the same cards and art.

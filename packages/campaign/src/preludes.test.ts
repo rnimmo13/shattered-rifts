@@ -15,6 +15,7 @@ import {
   type PreludeEffect,
   type RunState,
 } from './index';
+import { describeEffect } from './preludes';
 
 const HEROES = Object.keys(RIFTWALKERS) as HeroId[];
 
@@ -269,5 +270,43 @@ describe('Threshold choices are worth taking (DECISIONS #224)', () => {
       for (const o of makePrelude(seedRng(`h${i}`), 'stage', 2, 'nexus', true).options)
         seen.add(o.id);
     expect(seen.has('nerve')).toBe(true);
+  });
+});
+
+describe('trades at the Threshold (DECISIONS #256)', () => {
+  it('Trade Steel gives up two Strikes (and only Strikes) for a choice of three uncommon Attacks', () => {
+    const base = offering([
+      { k: 'remove', n: 2, only: 'strike' },
+      { k: 'pick', rarity: 'uncommon', kind: 'attack' },
+    ]);
+    const count = (r: RunState, id: string) => r.deck.filter((x) => x === id).length;
+    const after = take(base);
+    expect(count(after, 'strike')).toBe(count(base, 'strike') - 2);
+    expect(count(after, 'defend')).toBe(count(base, 'defend'));
+    expect(after.phase).toBe('reward');
+    const offers = after.context?.offers ?? [];
+    expect(offers).toHaveLength(3);
+    for (const id of offers) {
+      expect(COMBAT_DB.cards[id]?.kind).toBe('attack');
+      expect(COMBAT_DB.cards[id]?.rarity).toBe('uncommon');
+    }
+  });
+
+  it('Quiet Study gives up a Defend for a choice of three upgraded common Skills', () => {
+    const base = offering([
+      { k: 'remove', n: 1, only: 'defend' },
+      { k: 'pick', rarity: 'common', kind: 'skill', upgraded: true },
+    ]);
+    const after = take(base);
+    expect(after.deck.filter((x) => x === 'defend').length).toBe(
+      base.deck.filter((x) => x === 'defend').length - 1,
+    );
+    for (const id of after.context?.offers ?? []) {
+      expect(id.endsWith('+')).toBe(true);
+      expect(COMBAT_DB.cards[id]?.kind).toBe('skill');
+    }
+    expect(describeEffect({ k: 'pick', rarity: 'common', kind: 'skill', upgraded: true })).toBe(
+      'Choose one of three upgraded common Skills for your deck',
+    );
   });
 });

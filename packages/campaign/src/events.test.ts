@@ -44,12 +44,21 @@ const SETUP: Record<string, Partial<RunState>> = {
   'class-shrine': { stage: 2 },
   'potion-trade': { potions: ['healing-philtre', 'healing-philtre'] },
   'legend-reliquary': { deck: [...RIFTWALKERS.knight.starter, 'gilded-bastion', 'the-last-oath+'] },
+  // the trades (DECISIONS #256) name cards of your own class: two common Attacks, two common Skills, a rare, a card off the build
+  // path the deck follows, an uncommon and the shards to step it up
+  smelter: { deck: [...RIFTWALKERS.knight.starter, 'bulwark-blow', 'shield-bash'] },
+  'binders-table': { deck: [...RIFTWALKERS.knight.starter, 'stand-firm', 'iron-vigil'] },
+  'the-fence': { deck: [...RIFTWALKERS.knight.starter, 'colossus-blow'] },
+  'the-specialist': {
+    deck: [...RIFTWALKERS.knight.starter, 'stand-firm', 'gilded-bastion', 'brace-up', 'thornmail'],
+  },
+  'step-up': { deck: [...RIFTWALKERS.knight.starter, 'anvil-strike'], shards: 100 },
 };
 
 describe('events', () => {
-  it('there are eighty-two of them, each with its own id', () => {
-    expect(EVENTS.length).toBe(89);
-    expect(new Set(EVENTS.map((e) => e.id)).size).toBe(89);
+  it('there are ninety-four of them, each with its own id', () => {
+    expect(EVENTS.length).toBe(94);
+    expect(new Set(EVENTS.map((e) => e.id)).size).toBe(94);
   });
 
   it('are varied and random, and a card is on offer only now and then', () => {
