@@ -268,11 +268,7 @@ export default function PvpScreen() {
               </small>
               <span className="pvp__deckmeta">
                 <RarityTally deck={d.deck} />
-                {d.boons.length > 0 && (
-                  <span className="pvp__deckboons">
-                    {d.boons.length} {d.boons.length === 1 ? 'Boon' : 'Boons'}
-                  </span>
-                )}
+                {/* (no Boon count: an Arena match leaves Boons out, DECISIONS #236) */}
               </span>
             </span>
           </button>

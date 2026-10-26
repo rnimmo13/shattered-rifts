@@ -77,7 +77,9 @@ export function DeckReport(props: { deck: VaultDeck; onRemove?: () => void }) {
       </header>
       {deck.boons.length > 0 && (
         <p className="deckrep__boons">
-          <span>Boons</span>
+          <span title="Boons are part of the run: an Arena match is cards only">
+            Boons (not used in the Arena)
+          </span>
           {deck.boons.map((id) => (
             <BoonChip key={id} id={id} />
           ))}

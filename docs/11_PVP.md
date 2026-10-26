@@ -60,7 +60,7 @@ To try it alone: open `#/pvp` in two tabs (each tab is its own player), make a r
 
 ## Saved decks page
 
-`#/decks` (`apps/web/src/pvp/SavedDecksScreen.tsx`, `DeckReport.tsx`): each saved deck as a report. Decks have no names: they are told apart by Riftwalker, Rift Tier and the date saved. Cards are sorted by rarity, best first, then dearer first, with repeats stacked (`deckLayout.ts`, tested). The Boons the run held are saved with the deck (`VaultDeck.boons`, kept by the server too) and shown on the report; **they are in effect in a match** (decision #171: `Entry.boons`, checked in `checkEntry`, passed to both seats by `setupFor`). The Arena lists the decks in short (tier, date, card count, rarity tally, Boons) with a link here; removing a deck is only done on this page, behind a confirmation. The Vault holds 10 decks (`V2_DECK_RULES.vaultSlots`, decision #171), and both screens say how many are used.
+`#/decks` (`apps/web/src/pvp/SavedDecksScreen.tsx`, `DeckReport.tsx`): each saved deck as a report. Decks have no names: they are told apart by Riftwalker, Rift Tier and the date saved. Cards are sorted by rarity, best first, then dearer first, with repeats stacked (`deckLayout.ts`, tested). The Boons the run held are saved with the deck (`VaultDeck.boons`, kept by the server too) and shown on the report; **they are not used in a match** (decision #236, reversing #171: `Entry.boons` is still checked by `checkEntry`, but `setupFor` gives both seats none). The Arena lists the decks in short (tier, date, card count, rarity tally, Boons) with a link here; removing a deck is only done on this page, behind a confirmation. The Vault holds 10 decks (`V2_DECK_RULES.vaultSlots`, decision #171), and both screens say how many are used.
 
 ## The Vault online
 

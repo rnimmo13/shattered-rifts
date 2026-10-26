@@ -5,6 +5,7 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **No Boons in the Arena:** a match between decks is cards only. Your deck still shows the Boons its run had.
 - **The Gambler's Shrine (Tier VI and up):** take two different blessings from seven: Rest, Upgrade, Let one go, and four wagers: **Sacrifice** a card for one of three Rift-crossed cards on the altar (three rares from Tier X), **Loaded Dice** (sanctify a card you choose: 60% it rises, better odds the deeper you go), **the Chisel** (engrave Hold, Opening hand or Flare on a card) and **the Ledger** (+4 Max HP, 2 more every time you sign it in a run). The **Brass Reel** stands beside them for anyone with shards to spend.
 - **You can walk away from any Shrine** at any time.
 - **Enemies a little tougher everywhere:** +15% HP and +8% damage on every stage of every Rift Tier (Tier I is now 130% HP / 120% damage).

@@ -67,9 +67,10 @@ export function setupFor(seed: string, a: Entry, b: Entry): CombatSetup {
       : {};
   return {
     seed,
-    // (an entry kept from before Boons came to PvP has none)
-    a: { hero: a.hero, deck: [...a.deck], boons: [...(a.boons ?? [])], ...first },
-    b: { hero: b.hero, deck: [...b.deck], boons: [...(b.boons ?? [])], ...second },
+    // Boons are left out of the Arena (DECISIONS #236): a deck carries its run's Boons (shown, and used by a ghost Warden in the
+    // campaign), but a match between decks is cards only
+    a: { hero: a.hero, deck: [...a.deck], boons: [], ...first },
+    b: { hero: b.hero, deck: [...b.deck], boons: [], ...second },
   };
 }
 

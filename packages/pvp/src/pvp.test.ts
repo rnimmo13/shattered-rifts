@@ -234,12 +234,12 @@ describe('Boons in a match', () => {
     });
   });
 
-  it('are in effect: the setup carries them for both players', () => {
+  it('are left out of a match (DECISIONS #236): neither player has them', () => {
     const a = { ...entryOf('knight'), boons: [ids[0] as string] };
     const b = { ...entryOf('hunter'), boons: [ids[1] as string, ids[2] as string] };
     const s = setupFor('s', a, b);
-    expect(s.a.boons).toEqual(a.boons);
-    expect((s.b as { boons?: string[] }).boons).toEqual(b.boons);
+    expect(s.a.boons).toEqual([]);
+    expect((s.b as { boons?: string[] }).boons).toEqual([]);
   });
 
   it('every Boon can be carried through a whole match without a refusal or a crash', () => {
