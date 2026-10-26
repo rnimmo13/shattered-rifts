@@ -5,7 +5,7 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
-- **Rift Tiers climb evenly:** Tier I enemies start at 150% HP, and every Tier up adds the same +50% HP and +20% damage all the way to Tier XX (How to play shows the table and the steps).
+- **Rift Tiers climb evenly:** Tier I enemies start at 175% HP and 120% damage, and every Tier up adds the same +50% HP and +15% damage all the way to Tier XX (How to play shows the table and the steps).
 - **Legendary Boons** glow crimson instead of gold, so they never look like a common one.
 - **Smarter ghosts:** a ghost deck now thinks through the end of its turn (its allies, Traps and end-of-turn effects) before it picks a line.
 - **Much tougher enemies:** every enemy has 50% more HP at every Rift Tier.

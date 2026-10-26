@@ -29,6 +29,27 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.73.0',
+    date: '2026-10-26',
+    title: 'Even tiers, smarter ghosts',
+    summary:
+      'Rift Tiers climb by the same step every time, ghost decks think through their turn, and legendary Boons stand out.',
+    notes: [
+      {
+        kind: 'balance',
+        text: 'Rift Tiers climb evenly: Tier I enemies start at 175% HP and 120% damage, and every Tier up adds the same +50% HP and +15% damage, all the way to Tier XX. How to play shows the table.',
+      },
+      {
+        kind: 'changed',
+        text: 'Ghost decks (Arena ghosts and ghost Wardens) play smarter: they think through the end of their turn, their allies, Traps and end-of-turn effects, before picking their cards.',
+      },
+      {
+        kind: 'changed',
+        text: 'Legendary Boons glow crimson instead of gold, so they never look like a common one.',
+      },
+    ],
+  },
+  {
     version: '0.72.0',
     date: '2026-10-26',
     title: 'Weapons and tougher foes',
