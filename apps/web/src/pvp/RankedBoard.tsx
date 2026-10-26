@@ -8,16 +8,8 @@ import { heroName } from './deckLayout';
 import { viewRanks, type RankedView } from './boardApi';
 import { RankBadge, RankGem } from './RankBadge';
 import { Notice } from '../ui/Toast';
+import { seasonLeft } from './seasonText';
 import './ranks.css';
-
-/** How long until the season turns over ("12 days left"). */
-export function seasonLeft(now: number): string {
-  const ms = Math.max(0, seasonAt(now).ends - now);
-  const days = Math.floor(ms / 86_400_000);
-  if (days >= 1) return `${days} ${days === 1 ? 'day' : 'days'} left`;
-  const hours = Math.max(1, Math.floor(ms / 3_600_000));
-  return `${hours} ${hours === 1 ? 'hour' : 'hours'} left`;
-}
 
 /** Your rank, the meter to the next division, and what the season is. */
 export function RankPanel(props: {
