@@ -72,7 +72,7 @@ function Pickable(props: {
   onHover: (def: CardDef | null) => void;
   onClick?: () => void;
   disabled?: boolean;
-  badge?: string;
+  badge?: string | undefined;
   /** just show the card (hover to read it): no button */
   preview?: boolean;
   /** the deck it would join: a hint says whether it fits (DECISIONS #243) */
@@ -1080,7 +1080,7 @@ export function EventView(props: {
             : ev.options
         ).map((o) => {
           const { head, detail } = splitOption(o.label);
-          return (
+          const button = (
             <button
               key={o.id}
               className={`eventopt${o.id === 'trial' ? ' eventopt--trial' : ''}`}
@@ -1090,6 +1090,42 @@ export function EventView(props: {
               <b className="eventopt__name">{head}</b>
               {detail && <span className="eventopt__text">{detail}</span>}
             </button>
+          );
+          if (!o.shows) return button;
+          // the random cards it is talking about, picked already: what leaves your deck, and what you get (DECISIONS #273)
+          return (
+            <div key={o.id} className="eventopt__with">
+              {button}
+              <div className="eventopt__cards" aria-label="The cards this option means">
+                {o.shows.lose.map((id, k) => (
+                  <Pickable
+                    key={`l${k}`}
+                    id={id}
+                    width={120}
+                    own={props.run.character}
+                    onHover={setHover}
+                    preview
+                    badge={o.shows?.gain.length ? undefined : 'Leaves'}
+                  />
+                ))}
+                {o.shows.lose.length > 0 && o.shows.gain.length > 0 && (
+                  <span className="eventopt__arrow" aria-label="becomes">
+                    →
+                  </span>
+                )}
+                {o.shows.gain.map((id, k) => (
+                  <Pickable
+                    key={`g${k}`}
+                    id={id}
+                    width={120}
+                    own={props.run.character}
+                    onHover={setHover}
+                    preview
+                    badge={o.shows?.lose.length ? undefined : 'You get'}
+                  />
+                ))}
+              </div>
+            </div>
           );
         })}
       </div>

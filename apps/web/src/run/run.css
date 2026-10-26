@@ -1482,3 +1482,23 @@
   justify-items: center;
   max-width: 24rem;
 }
+
+/* an event option that names random cards: the cards themselves under it (what leaves, an arrow, what you get) */
+.eventopt__with {
+  display: grid;
+  gap: 0.5rem;
+}
+.eventopt__cards {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+}
+.eventopt__cards .pick {
+  margin: 0;
+}
+.eventopt__arrow {
+  font-size: 2rem;
+  color: var(--c-gold-light);
+}

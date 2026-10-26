@@ -147,6 +147,8 @@ export interface EventOption {
   deal?: DealStep[];
   /** a line of story shown before what happened, for a data-driven option */
   say?: string;
+  /** the cards this option would take from the deck and give it, picked when the event was built, shown beside it (DECISIONS #273) */
+  shows?: { lose: string[]; gain: string[] };
 }
 
 /** One effect of a data-driven event option. They run in order; if one cannot happen the option is not allowed. */

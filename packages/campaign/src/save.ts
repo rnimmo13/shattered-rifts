@@ -184,7 +184,13 @@ function validContext(r: RunState): boolean {
           (o) =>
             isObj(o) &&
             typeof o['id'] === 'string' &&
-            (o['deal'] === undefined || validDeal(o['deal'])),
+            (o['deal'] === undefined || validDeal(o['deal'])) &&
+            (o['shows'] === undefined ||
+              (isObj(o['shows']) &&
+                Array.isArray(o['shows']['lose']) &&
+                Array.isArray(o['shows']['gain']) &&
+                (o['shows']['lose'] as unknown[]).every(hasCard) &&
+                (o['shows']['gain'] as unknown[]).every(hasCard))),
         ) &&
         okOffer(e['cardOffer']) &&
         (e['choose'] === undefined ||

@@ -339,10 +339,80 @@ export function rollEvent(r: RunState): EventCtx {
   const total = pool.reduce((n, e) => n + e.weight, 0);
   let x = nextInt(r.rng, Math.round(total * 100)) / 100;
   for (const e of pool) {
-    if (x < e.weight) return e.build(r);
+    if (x < e.weight) return pinOptions(r, e.build(r));
     x -= e.weight;
   }
-  return (pool[pool.length - 1] as EventDef).build(r);
+  return pinOptions(r, (pool[pool.length - 1] as EventDef).build(r));
+}
+
+/**
+ * The hand-written options that touch a random card (an upgrade, a copy, a card thrown away, a transform) pick it now, when the event
+ * is laid out, so the player sees which card before choosing (DECISIONS #273). resolveEvent then uses exactly those cards.
+ */
+function pinOptions(r: RunState, ev: EventCtx): EventCtx {
+  const pickOf = (xs: readonly string[]): string | undefined =>
+    xs.length ? xs[nextInt(r.rng, xs.length)] : undefined;
+  const upOf = (id: string): string => COMBAT_DB.cards[id]?.upgrade ?? id;
+  for (const o of ev.options) {
+    if (o.deal) continue;
+    let shows: EventOption['shows'] | undefined;
+    if (o.id === 'upgrade') {
+      const pick = pickOf(upgradable(r.deck));
+      if (pick) shows = { lose: [pick], gain: [upOf(pick)] };
+    } else if (o.id === 'temper') {
+      const deck = [...r.deck];
+      const lose: string[] = [];
+      for (let i = 0; i < 2; i++) {
+        const pick = pickOf(upgradable(deck));
+        if (!pick) break;
+        deck[deck.indexOf(pick)] = upOf(pick);
+        lose.push(pick);
+      }
+      if (lose.length) shows = { lose, gain: lose.map(upOf) };
+    } else if (o.id === 'mirror') {
+      const pick = pickOf(nonBasic(r.deck).filter((id) => canAdd(r.deck, id)));
+      if (pick) shows = { lose: [], gain: [pick] };
+    } else if (o.id === 'scrap') {
+      const pick = pickOf(basics(r.deck));
+      if (pick) shows = { lose: [pick], gain: [] };
+    } else if (o.id === 'purge') {
+      const pick = r.deck.includes('wound') ? 'wound' : pickOf(basics(r.deck));
+      if (pick) shows = { lose: [pick], gain: [] };
+    } else if (o.id === 'transform') {
+      const from = pickOf(basics(r.deck).filter((id) => id !== 'wound'));
+      let made = '';
+      for (let g = 0; g < 20 && from && !made; g++)
+        for (const id of offerCards(r.rng, r.character, r.deck, 'duel', 3))
+          if (!made && COMBAT_DB.cards[id]?.hero === r.character && canAdd(r.deck, id)) made = id;
+      if (from && made) shows = { lose: [from], gain: [made] };
+    }
+    if (shows) o.shows = shows;
+  }
+  return ev;
+}
+
+/** The card an option picked when the event was laid out if it is still in `pool`, else one from `pool` now (an older save). */
+function pinnedOr(
+  r: RunState,
+  o: EventOption | undefined,
+  side: 'lose' | 'gain',
+  i: number,
+  pool: readonly string[],
+): string {
+  return (
+    pinned(o, side, i, (id) => pool.includes(id)) ?? (pool[nextInt(r.rng, pool.length)] as string)
+  );
+}
+
+/** The card an option picked when the event was laid out, if it is still where it was (an older save picks one now). */
+function pinned(
+  o: EventOption | undefined,
+  side: 'lose' | 'gain',
+  i: number,
+  ok: (id: string) => boolean,
+): string | undefined {
+  const id = o?.shows?.[side][i];
+  return id !== undefined && ok(id) ? id : undefined;
 }
 
 /** Carry out one option; returns what happened, in a sentence. Throws (via `fail`) when the option is not allowed right now. */
@@ -371,7 +441,7 @@ export function resolveEvent(
     case 'upgrade': {
       const ups = upgradable(r.deck);
       if (!ups.length) fail('Nothing to upgrade');
-      const pick = ups[nextInt(r.rng, ups.length)] as string;
+      const pick = pinnedOr(r, chosen, 'lose', 0, ups);
       r.deck[r.deck.indexOf(pick)] = COMBAT_DB.cards[pick]?.upgrade ?? pick;
       return `The smith upgrades ${COMBAT_DB.cards[pick]?.name ?? 'a card'}.`;
     }
@@ -466,7 +536,7 @@ export function resolveEvent(
       // a copy still obeys the deck rules (the copy limit, and the Legendary limit)
       const pool = nonBasic(r.deck).filter((id) => canAdd(r.deck, id));
       if (!pool.length) fail('There is nothing to copy');
-      const pick = pool[nextInt(r.rng, pool.length)] as string;
+      const pick = pinnedOr(r, chosen, 'gain', 0, pool);
       r.hp -= 15;
       r.deck.push(pick);
       return `Your reflection hands you a copy of ${COMBAT_DB.cards[pick]?.name ?? 'a card'}.`;
@@ -475,7 +545,7 @@ export function resolveEvent(
       const pool = basics(r.deck);
       if (!pool.length || r.deck.length <= V2_DECK_RULES.minSize)
         fail('Your deck is too small to part with a card');
-      const pick = pool[nextInt(r.rng, pool.length)] as string;
+      const pick = pinnedOr(r, chosen, 'lose', 0, pool);
       r.deck.splice(r.deck.indexOf(pick), 1);
       return `You leave ${COMBAT_DB.cards[pick]?.name ?? 'a card'} on the heap.`;
     }
@@ -503,7 +573,7 @@ export function resolveEvent(
         r.deck.splice(wound, 1);
         return 'The healer draws out a Wound. It leaves your deck.';
       }
-      const pick = pool[nextInt(r.rng, pool.length)] as string;
+      const pick = pinnedOr(r, chosen, 'lose', 0, pool);
       r.deck.splice(r.deck.indexOf(pick), 1);
       return `The healer lifts ${COMBAT_DB.cards[pick]?.name ?? 'a card'} out of your deck.`;
     }
@@ -513,7 +583,7 @@ export function resolveEvent(
       for (let i = 0; i < 2; i++) {
         const ups = upgradable(r.deck);
         if (!ups.length) break;
-        const pick = ups[nextInt(r.rng, ups.length)] as string;
+        const pick = pinnedOr(r, chosen, 'lose', i, ups);
         r.deck[r.deck.indexOf(pick)] = COMBAT_DB.cards[pick]?.upgrade ?? pick;
         done.push(COMBAT_DB.cards[pick]?.name ?? 'a card');
       }
@@ -566,8 +636,8 @@ export function resolveEvent(
     case 'transform': {
       const pool = basics(r.deck).filter((id) => id !== 'wound');
       if (!pool.length) fail('You have no basic card to press');
-      const out = pool[nextInt(r.rng, pool.length)] as string;
-      let made = '';
+      const out = pinnedOr(r, chosen, 'lose', 0, pool);
+      let made = pinned(chosen, 'gain', 0, (id) => canAdd(r.deck, id)) ?? '';
       for (let g = 0; g < 20 && !made; g++)
         for (const id of offerCards(r.rng, r.character, r.deck, 'duel', 3))
           if (!made && COMBAT_DB.cards[id]?.hero === r.character && canAdd(r.deck, id)) made = id;

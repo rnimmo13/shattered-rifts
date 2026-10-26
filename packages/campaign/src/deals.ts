@@ -408,12 +408,30 @@ function removalPool(deck: readonly string[], of: 'wound' | 'basic' | 'any'): st
 export function pinRemovals(
   r: RunState,
   steps: readonly DealStep[],
-): { steps: DealStep[]; names: string[] } {
+): { steps: DealStep[]; names: string[]; shows: { lose: string[]; gain: string[] } } {
   const names: string[] = [];
-  const walk = (list: readonly DealStep[], deck: string[]): DealStep[] =>
+  // the cards the option would take and give, for the player to see before choosing (the sure ones: not those behind a chance)
+  const shows = { lose: [] as string[], gain: [] as string[] };
+  const walk = (list: readonly DealStep[], deck: string[], sure: boolean): DealStep[] =>
     list.map((st): DealStep => {
       if (st.k === 'chance')
-        return { ...st, win: walk(st.win, [...deck]), lose: walk(st.lose, [...deck]) };
+        return {
+          ...st,
+          win: walk(st.win, [...deck], false),
+          lose: walk(st.lose, [...deck], false),
+        };
+      // every other random card is picked now too, so the option can show it (DECISIONS #273); a step with nothing to pick is
+      // left as it was, and refused as before
+      const pinned = pinCard(r, st, deck);
+      if (pinned) {
+        if (sure) {
+          shows.lose.push(...pinned.lose);
+          shows.gain.push(...pinned.gain);
+        }
+        for (const id of pinned.lose) deck.splice(deck.indexOf(id), 1);
+        deck.push(...pinned.gain);
+        return pinned.step;
+      }
       if (st.k !== 'remove' || st.ids) return st;
       const ids: string[] = [];
       for (let i = 0; i < st.n && deck.length > V2_DECK_RULES.minSize; i++) {
@@ -425,9 +443,70 @@ export function pinRemovals(
         names.push(nameOf(pick));
       }
       // (not enough to take: left unpinned, and the option is refused as before)
-      return ids.length === st.n ? { ...st, ids } : st;
+      if (ids.length !== st.n) return st;
+      if (sure) shows.lose.push(...ids);
+      return { ...st, ids };
     });
-  return { steps: walk(steps, [...r.deck]), names };
+  return { steps: walk(steps, [...r.deck], true), names, shows };
+}
+
+/**
+ * A random card step, its card picked now from the deck as it will stand then (`deck`): a trade or a transform becomes a `swap`, a
+ * gift, a Rift-crossed card or a copy becomes a `card`. The same rules as when the step was rolled on the spot. Null for any other
+ * step, or when there is nothing to pick.
+ */
+function pinCard(
+  r: RunState,
+  st: DealStep,
+  deck: readonly string[],
+): { step: DealStep; lose: string[]; gain: string[] } | null {
+  switch (st.k) {
+    case 'exchange': {
+      const pool = removableCards(deck).filter((id) => {
+        const c = COMBAT_DB.cards[id];
+        return (
+          !!c &&
+          c.rarity !== 'basic' &&
+          c.rarity !== 'legendary' &&
+          c.rarity !== 'ancestral' &&
+          !id.includes('~')
+        );
+      });
+      if (!pool.length) return null;
+      const from = pool[nextInt(r.rng, pool.length)] as string;
+      const rarity = COMBAT_DB.cards[from]?.rarity;
+      const want = rarity === 'common' || rarity === 'uncommon' ? rarity : 'rare';
+      const without = deck.filter((_, i) => i !== deck.indexOf(from));
+      const to = crossedOffers(r.rng, r.character, without, [want], 1)[0];
+      return to ? { step: { k: 'swap', from, to }, lose: [from], gain: [to] } : null;
+    }
+    case 'transform': {
+      const pool = basics(deck).filter((id) => id !== 'wound');
+      if (!pool.length) return null;
+      const from = pool[nextInt(r.rng, pool.length)] as string;
+      let made = '';
+      for (let g = 0; g < 20 && !made; g++)
+        for (const id of offerCards(r.rng, r.character, deck, 'duel', 3))
+          if (!made && COMBAT_DB.cards[id]?.hero === r.character && canAdd(deck, id)) made = id;
+      return made ? { step: { k: 'swap', from, to: made }, lose: [from], gain: [made] } : null;
+    }
+    case 'copy': {
+      const pool = nonBasic(deck).filter((id) => canAdd(deck, id));
+      if (!pool.length) return null;
+      const pick = pool[nextInt(r.rng, pool.length)] as string;
+      return { step: { k: 'card', id: pick }, lose: [], gain: [pick] };
+    }
+    case 'gift': {
+      const id = cardOfRarity(r.rng, r.character, deck, st.rarity);
+      return id ? { step: { k: 'card', id }, lose: [], gain: [id] } : null;
+    }
+    case 'crossed': {
+      const id = crossedOffers(r.rng, r.character, deck, [st.rarity], 1)[0];
+      return id ? { step: { k: 'card', id }, lose: [], gain: [id] } : null;
+    }
+    default:
+      return null;
+  }
 }
 
 /** "a random card leaves your deck" with the cards named ("Strike leaves your deck"). */

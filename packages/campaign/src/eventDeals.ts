@@ -64,6 +64,7 @@ export function make(spec: DealSpec, r: RunState): EventCtx {
       id: (['d1', 'd2', 'd3', 'd4'] as const)[i] as EventOption['id'],
       label: nameRemovals(label, pinned.names),
       deal: pinned.steps,
+      ...(pinned.shows.lose.length || pinned.shows.gain.length ? { shows: pinned.shows } : {}),
       ...(say ? { say } : {}),
     };
   });

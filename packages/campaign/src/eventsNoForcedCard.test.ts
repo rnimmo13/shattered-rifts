@@ -101,3 +101,25 @@ describe('no event forces a card on you', () => {
     throw new Error('no event laid out a choice of cards in 400 runs');
   });
 });
+
+describe('an event shows the random cards it means', () => {
+  it('the Rift-crossed pilgrim shows which card of yours goes and which card comes, and the trade is exactly that', () => {
+    const pilgrim = EVENTS.find((e) => e.id === 'rift-pilgrim')!;
+    for (let i = 0; i < 20; i++) {
+      const r0 = standing(`pilgrim-${i}`);
+      const ev = pilgrim.build(clone(r0));
+      const trade = ev.options[0]!;
+      expect(trade.shows?.lose.length, 'one card goes').toBe(1);
+      expect(trade.shows?.gain.length, 'one card comes').toBe(1);
+      const [from] = trade.shows!.lose;
+      const [to] = trade.shows!.gain;
+      expect(r0.deck).toContain(from);
+      const r = clone(r0);
+      resolveEvent(r, trade.id, ev, helpers);
+      const before = r0.deck.filter((id) => id === from).length;
+      expect(r.deck.filter((id) => id === from).length).toBe(before - 1);
+      expect(r.deck).toContain(to);
+      expect(r.deck.length).toBe(r0.deck.length);
+    }
+  });
+});
