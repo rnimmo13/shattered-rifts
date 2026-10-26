@@ -14,6 +14,8 @@ import {
   MAX_START_ENEMIES,
   MAX_HAND,
   MAX_RUNES,
+  SUDDEN_DEATH_AFTER,
+  SUDDEN_DEATH_STEP,
   TRAIT_POWER,
   MAX_SNARES,
   RADIANT_ENTER_MANA,
@@ -1216,11 +1218,35 @@ function startOfTurn(r: Run, side: Side): void {
   reap(r);
 }
 
+/** PvP only: past SUDDEN_DEATH_AFTER, the hero whose turn begins loses more HP every turn, past anything that would stop it. */
+function suddenDeath(r: Run, side: Side): void {
+  if (r.s.mode !== 'pvp') return;
+  const past = Math.ceil(r.s.turn / 2) - SUDDEN_DEATH_AFTER;
+  const hero = heroOf(r.s.sides[side]);
+  if (past <= 0 || !hero) return;
+  const amount = past * SUDDEN_DEATH_STEP;
+  const lost = Math.min(hero.hp, amount);
+  hero.hp -= lost;
+  r.ev.push({
+    type: 'damage',
+    source: null,
+    target: hero.id,
+    amount,
+    blocked: 0,
+    lost,
+    shielded: false,
+    kind: 'direct',
+  });
+  reap(r);
+}
+
 function beginHeroTurn(r: Run, side: Side): void {
   const sd = r.s.sides[side];
   r.s.active = side;
   r.s.turn++;
   r.ev.push({ type: 'turnStart', side, turn: r.s.turn });
+  suddenDeath(r, side);
+  if (r.s.winner) return;
   startOfTurn(r, side);
   if (r.s.winner) return;
   // the opposing Traps that wait for your turn to begin

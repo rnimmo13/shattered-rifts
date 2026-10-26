@@ -15,6 +15,7 @@ import {
   newSeries,
   other,
   RECONNECT_MS,
+  GAME_MS,
   RULES_VERSION,
   scoreGame,
   seatsFor,
@@ -68,6 +69,8 @@ interface Saved {
   rules?: number;
   log: { seat: Seat; action: Action }[];
   deadline: number;
+  /** when the game in progress began (epoch ms): it is called GAME_MS later (DECISIONS #259) */
+  gameStart?: number;
   over: Outcome | null;
   /** when each seat's last connection dropped (ms), if it is away */
   away: Partial<Record<Seat, number>>;
@@ -263,6 +266,9 @@ export class MatchRoom extends DurableObject<Env> {
         if (!r.ok) throw new Error(`replay refused move ${m.log.length + 1}: ${r.message}`);
       }
       m.deadline = d.deadline;
+      // (a game saved before there was a game clock starts its 20 minutes now)
+      m.startedAt = d.gameStart ?? Date.now();
+      d.gameStart = m.startedAt;
       // what the moves alone cannot tell: whether it was already over, and how many turns each seat has missed
       m.restore(d.over, d.missed);
       this.match = m;
@@ -330,6 +336,7 @@ export class MatchRoom extends DurableObject<Env> {
     else if (!d.started) at = d.created + IDLE_MS;
     else {
       at = d.deadline;
+      if (d.gameStart !== undefined) at = Math.min(at, d.gameStart + GAME_MS);
       if (d.ghostAt !== undefined) at = Math.min(at, d.ghostAt);
       for (const t of Object.values(d.away)) at = Math.min(at, t + RECONNECT_MS);
       // look for players who have gone quiet (a closed laptop sends no goodbye) at least this often
@@ -350,6 +357,7 @@ export class MatchRoom extends DurableObject<Env> {
       a,
       b,
       deadline: d.deadline,
+      ...(d.gameStart !== undefined ? { gameEnds: d.gameStart + GAME_MS } : {}),
       replay: d.log.length,
       now: Date.now(),
       toss: d.toss,
@@ -424,6 +432,7 @@ export class MatchRoom extends DurableObject<Env> {
     d.seed = crypto.randomUUID();
     this.match = new Match(d.seed, entries.a as Entry, entries.b as Entry, Date.now());
     d.deadline = this.match.deadline;
+    d.gameStart = this.match.startedAt;
     d.missed = { a: 0, b: 0 };
     for (const s of this.sockets()) {
       const seatOf: Seat = d.ids.a === s.at.playerId ? 'a' : 'b';
@@ -923,6 +932,12 @@ export class MatchRoom extends DurableObject<Env> {
           ? match.end('draw', 'disconnect')
           : match.end(other(gone[0] as Seat), 'disconnect');
       await this.finish(outcome);
+      return;
+    }
+    // the game's 20 minutes are up: it is called for the larger share of HP left
+    const called = match.callTime(now);
+    if (called) {
+      await this.finish(called);
       return;
     }
     // the ghost's move is due

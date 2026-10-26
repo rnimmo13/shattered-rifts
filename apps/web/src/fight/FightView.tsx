@@ -1933,7 +1933,10 @@ function watchLine(
   names: Record<Side, string>,
   me: Side,
 ): string {
-  if (winner === 'draw') return 'Nobody won this one.';
+  if (winner === 'draw')
+    return reason === 'time'
+      ? 'Time was called with both even: nobody won this one.'
+      : 'Nobody won this one.';
   // (results are shown from the seat watched from: 'a' is that seat)
   const seat: Side = winner === 'a' ? me : me === 'a' ? 'b' : 'a';
   const loser = names[seat === 'a' ? 'b' : 'a'];
@@ -1942,6 +1945,8 @@ function watchLine(
       return `${loser} gave up: ${names[seat]} wins.`;
     case 'timeout':
       return `${loser} ran out of time: ${names[seat]} wins.`;
+    case 'time':
+      return `Time was called: ${names[seat]} had more HP left and wins.`;
     case 'disconnect':
       return `${loser} left: ${names[seat]} wins.`;
     default:
@@ -1952,12 +1957,19 @@ function watchLine(
 /** What the result line says in a PvP match. */
 function endLine(winner: Winner, reason: string | null, foe: string): string {
   const won = winner === 'a';
-  if (winner === 'draw') return 'Both players left. Nobody wins.';
+  if (winner === 'draw')
+    return reason === 'time'
+      ? 'Time was called with you both even. Nobody wins.'
+      : 'Both players left. Nobody wins.';
   switch (reason) {
     case 'resign':
       return won ? `${foe} gave up.` : 'You gave up.';
     case 'timeout':
       return won ? `${foe} ran out of time twice in a row.` : 'You ran out of time twice in a row.';
+    case 'time':
+      return won
+        ? `Time was called, and you had more of your HP left than ${foe}.`
+        : `Time was called, and ${foe} had more of their HP left.`;
     case 'disconnect':
       return won ? `${foe} left the match.` : 'You left the match too long.';
     default:
@@ -1976,12 +1988,24 @@ function TurnClock(props: { link: PvpLink; mine: boolean; foe: string }) {
   if (link.end || link.deadline === null) return null;
   const left = Math.max(0, Math.ceil((link.deadline - (now + link.skew)) / 1000));
   const low = left <= 10;
+  const clock = (s: number): string => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
+  // the game's own clock: at 0 it is called for the larger share of HP left (DECISIONS #259)
+  const game =
+    link.gameEnds !== undefined && link.gameEnds !== null
+      ? Math.max(0, Math.ceil((link.gameEnds - (now + link.skew)) / 1000))
+      : null;
   return (
     <div className={`fight__clock${low ? ' is-low' : ''}${mine ? ' is-mine' : ''}`} role="timer">
       <span>{mine ? 'Your move' : `${foe}'s move`}</span>
-      <b>
-        {Math.floor(left / 60)}:{String(left % 60).padStart(2, '0')}
-      </b>
+      <b>{clock(left)}</b>
+      {game !== null && (
+        <small
+          className={`fight__gameclock${game <= 120 ? ' is-low' : ''}`}
+          title="When this runs out the game is called: whoever has the larger share of their HP left wins. From Turn 51 both heroes lose more HP every turn."
+        >
+          Game {clock(game)}
+        </small>
+      )}
     </div>
   );
 }

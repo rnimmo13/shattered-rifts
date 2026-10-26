@@ -52,6 +52,8 @@ export interface MatchInfo {
   /** how many moves arrived as history when this player (re)joined */
   replay: number;
   deadline: number | null;
+  /** epoch ms (server clock) when the game is called if nobody has won (DECISIONS #259) */
+  gameEnds: number | null;
   skew: number;
   end: { winner: Side | 'draw'; reason: string } | null;
   /** the id the game that just ended can be watched again by (null until it ends, or if it was not kept) */
@@ -398,7 +400,12 @@ export class PvpSession {
         window.clearTimeout(this.waitTimer);
         if (this.snap.match && this.snap.match.setup.seed === m.seed) {
           // a reconnection: the same game; moves already seen are skipped
-          this.setMatch({ deadline: m.deadline, skew, series: m.series ?? null });
+          this.setMatch({
+            deadline: m.deadline,
+            gameEnds: m.gameEnds ?? null,
+            skew,
+            series: m.series ?? null,
+          });
           return;
         }
         // a new game (the first, or the next of the best of three): moves are counted from 1 again
@@ -418,6 +425,7 @@ export class PvpSession {
             setup: setupFor(m.seed, m.a, m.b),
             replay: m.replay,
             deadline: m.deadline,
+            gameEnds: m.gameEnds ?? null,
             skew,
             end: null,
             replayId: null,
@@ -506,6 +514,7 @@ export class PvpSession {
       send: this.sendMove,
       replay: m.replay,
       deadline: m.end ? null : m.deadline,
+      gameEnds: m.end ? null : m.gameEnds,
       skew: m.skew,
       end: m.end,
       series: m.series,

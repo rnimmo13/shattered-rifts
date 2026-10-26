@@ -1980,3 +1980,13 @@
   border-color: #ff6b81;
   outline: none;
 }
+
+/* the game's own clock under the turn clock (PvP): at 0:00 the game is called for the larger share of HP left */
+.fight__gameclock {
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  color: var(--c-text-dim);
+}
+.fight__gameclock.is-low {
+  color: #ff8a9a;
+}

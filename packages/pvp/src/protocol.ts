@@ -43,7 +43,7 @@ export interface Entry {
  * browser still on the old version is told to reload instead of playing a different game from the server's, and a match saved under
  * the old rules is ended rather than replayed under the new ones (DECISIONS #237).
  */
-export const RULES_VERSION = 3;
+export const RULES_VERSION = 4;
 
 export type ClientMsg =
   /** to the queue: wait for an opponent */
@@ -59,7 +59,8 @@ export type ClientMsg =
   /** to a room: watch the match in it (no seat; the moves arrive as they are made) */
   | { type: 'watch'; rules?: number };
 
-export type EndReason = 'win' | 'resign' | 'timeout' | 'disconnect';
+/** 'time': the game's GAME_MS ran out and it was called for the larger share of HP left (DECISIONS #259) */
+export type EndReason = 'win' | 'resign' | 'timeout' | 'disconnect' | 'time';
 
 export type ServerMsg =
   | { type: 'queued'; waiting: number }
@@ -94,6 +95,8 @@ export type ServerMsg =
       ghost?: Seat;
       /** epoch ms by which the active player must act */
       deadline: number;
+      /** epoch ms when the game is called (GAME_MS after it began) */
+      gameEnds?: number;
       /** how many moves follow at once as history (a player coming back mid-match); 0 for a new match */
       replay: number;
       /** the server's clock (epoch ms) when this was sent, so a browser can show a correct countdown */
@@ -146,6 +149,12 @@ export const SECOND_PLAYER_HP = 10 * ARENA_HP_MULT;
 export const CHOOSE_MS = 20_000;
 /** How long the active player has for a turn, ms. */
 export const TURN_MS = 75_000;
+/**
+ * How long one game of a match may last, ms (DECISIONS #259): then it is called for whoever has the larger share of their HP
+ * left (equal: a draw). A match is the best of three, so each game has its own 20 minutes. Sudden death (the engine's
+ * SUDDEN_DEATH_AFTER) ends most stalls long before this.
+ */
+export const GAME_MS = 20 * 60_000;
 /** How long a disconnected player has to come back before forfeiting, ms. */
 export const RECONNECT_MS = 60_000;
 /** Turns missed in a row (timed out) that forfeit the match. */

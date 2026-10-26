@@ -593,6 +593,13 @@ export const MAX_START_ENEMIES = 7;
 export const MAX_SNARES = 3;
 export const MAX_HAND = 10;
 export const MAX_RUNES = 10;
+/**
+ * PvP sudden death (DECISIONS #259): from the turn after this one (the "Turn N" players see: both seats' turns together), each
+ * hero loses SUDDEN_DEATH_STEP HP more at the start of every one of their turns (10, then 20, 30...), straight through Barrier,
+ * Shielded and Ghostly, so no match can stall for ever.
+ */
+export const SUDDEN_DEATH_AFTER = 50;
+export const SUDDEN_DEATH_STEP = 10;
 export const DEFAULT_RUNE_SLOTS = 3;
 
 /**

@@ -5,6 +5,7 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **Arena games always end:** from Turn 51 both heroes lose more HP every turn (10, then 20, 30...), straight through Barrier and Shielded, and each game is called at 20 minutes for whoever has the larger share of their HP left. A game clock shows under the turn clock.
 - **No more blank cards:** a card picture that fails to load falls back to its painted art, and a painting that comes out empty (a browser short of memory) is painted again instead of staying blank.
 - **Thorns only answer attacks:** your Traps, Auras, totems and potions no longer hurt you when they hit an enemy with Thorns. A companion that attacks one still takes the Thorns itself.
 - **How to play lists every Omen and Warden's Heart:** what each Omen does when it arrives and by Tier XX, and what each Heart gives and costs. The Tier XII Omen is now called Blood Rites.

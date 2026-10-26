@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { chooseAction, hashState } from '@sr/combat';
 import { COMBAT_DB, RIFTWALKERS, type HeroId } from '@sr/content/v2';
 import {
+  GAME_MS,
   checkEntry,
   decideOrder,
   enqueue,
@@ -208,11 +209,8 @@ describe('a match', () => {
       const o = heroes[(i + 3) % heroes.length] as HeroId;
       const m = new Match(`pairs-${h}`, entryOf(h), entryOf(o), 0);
       playOut(m);
-      // Two bots can stall: Valeria's Thorns climb past what the trapper bot dares hit, and the knight bot will not attack into a
-      // Trap. A person attacks; PvP has no rule to end a deadlock yet (DECISIONS #258). So a fight still turning over at the step
-      // cap passes, as in the random-deck stress test (DECISIONS #130); any other pairing must end.
-      const stalled = m.over === null && m.state.turn > 1000;
-      expect(m.over !== null || (stalled && h === 'knight' && o === 'trapper'), `${h} v ${o}`).toBe(true);
+      // (two bots that would stall forever are ended by sudden death from Turn 51: DECISIONS #259)
+      expect(m.over, `${h} v ${o}`).not.toBeNull();
     }
   });
 });
@@ -288,5 +286,25 @@ describe('who goes first', () => {
     );
     expect(hero('b')?.hp).toBe(hero('b')?.maxHp);
     expect(setup.b).toMatchObject({ hero: 'hunter' });
+  });
+});
+
+describe('the game clock (DECISIONS #259)', () => {
+  it('a game is called after GAME_MS for the larger share of HP left, never before', () => {
+    const m = new Match('clock-1', entryOf('knight', 'A'), entryOf('hunter', 'B'), 0);
+    expect(m.callTime(GAME_MS - 1)).toBeNull();
+    const b = m.state.sides.b.units.find((u) => u.kind === 'hero')!;
+    b.hp = Math.floor(b.maxHp / 2); // b is down to half; a is untouched
+    expect(m.callTime(GAME_MS)).toEqual({ winner: 'a', reason: 'time' });
+    expect(m.over).toEqual({ winner: 'a', reason: 'time' });
+  });
+
+  it('equal shares of HP are a draw (a share, so the second player’s extra HP does not count)', () => {
+    const m = new Match('clock-2', entryOf('knight', 'A'), entryOf('hunter', 'B'), 1000);
+    for (const s of ['a', 'b'] as const) {
+      const h = m.state.sides[s].units.find((u) => u.kind === 'hero')!;
+      h.hp = h.maxHp / 2;
+    }
+    expect(m.callTime(1000 + GAME_MS)).toEqual({ winner: 'draw', reason: 'time' });
   });
 });

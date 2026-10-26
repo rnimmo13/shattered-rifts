@@ -7,6 +7,7 @@ import {
   chooseAction,
   createCombat,
   hashState,
+  heroOf,
   type Action,
   type CombatEvent,
   type CombatSetup,
@@ -16,6 +17,7 @@ import { COMBAT_DB } from '@sr/content/v2';
 import {
   MAX_MISSED_TURNS,
   ARENA_HP_MULT,
+  GAME_MS,
   SECOND_PLAYER_HP,
   TURN_MS,
   type EndReason,
@@ -82,6 +84,8 @@ export class Match {
   private outcome: Outcome | null = null;
   /** turns each seat has let run out in a row (kept by the room, so it survives a sleep) */
   missed: Record<Seat, number> = { a: 0, b: 0 };
+  /** when the game began (epoch ms): it is called GAME_MS later */
+  startedAt: number;
 
   constructor(
     readonly seed: string,
@@ -91,7 +95,29 @@ export class Match {
   ) {
     this.state = createCombat(COMBAT_DB, setupFor(seed, a, b)).state;
     this.deadline = now + TURN_MS;
+    this.startedAt = now;
     this.finishIfOver();
+  }
+
+  /** When the game is called if nobody has won by then. */
+  get endsAt(): number {
+    return this.startedAt + GAME_MS;
+  }
+
+  /**
+   * The game's time is up (GAME_MS): it is called for whoever has the larger share of their HP left (a share, not HP: the second
+   * player starts with more). Equal shares: a draw. Nothing happens before the time.
+   */
+  callTime(now: number): Outcome | null {
+    if (this.outcome || now < this.endsAt) return this.outcome;
+    const share = (s: Seat): number => {
+      const h = heroOf(this.state.sides[s]);
+      return h ? h.hp / Math.max(1, h.maxHp) : 0;
+    };
+    const a = share('a');
+    const b = share('b');
+    this.outcome = { winner: a > b ? 'a' : b > a ? 'b' : 'draw', reason: 'time' };
+    return this.outcome;
   }
 
   /** Whose move it is. */

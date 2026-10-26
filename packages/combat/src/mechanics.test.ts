@@ -1431,3 +1431,58 @@ describe('Thorns answer attacks only', () => {
     expect(hero(s).hp).toBe(hp0);
   });
 });
+
+describe('PvP sudden death (DECISIONS #259)', () => {
+  const pvp = (): CombatState =>
+    clone(
+      createCombat(DB, {
+        seed: 'sd',
+        a: { hero: 'tester', deck: Array<string>(12).fill('filler') },
+        b: { hero: 'tester', deck: Array<string>(12).fill('filler') },
+      }).state,
+    );
+
+  it('nothing happens up to Turn 50', () => {
+    let s = pvp();
+    expect(s.mode).toBe('pvp');
+    s.turn = 98; // the next turn is the 99th: Turn 50 as players count it
+    const b = heroOf(s.sides.b)!;
+    const hp = b.hp;
+    s = end(s).state;
+    expect(heroOf(s.sides.b)!.hp).toBe(hp);
+  });
+
+  it('from Turn 51 the hero whose turn begins loses 10 HP more each Turn, through Barrier and Shielded', () => {
+    let s = pvp();
+    s.turn = 100; // the next turn is the 101st: Turn 51
+    const b = heroOf(s.sides.b)!;
+    b.barrier = 500;
+    b.statuses.shielded = 3;
+    const hp = b.hp;
+    s = end(s).state;
+    expect(heroOf(s.sides.b)!.hp).toBe(hp - 10);
+    // a's half of Turn 51: 10 too; then b again in Turn 52: 20
+    const a = heroOf(s.sides.a)!.hp;
+    s = end(s).state;
+    expect(heroOf(s.sides.a)!.hp).toBe(a - 10);
+    const b2 = heroOf(s.sides.b)!.hp;
+    s = end(s).state;
+    expect(heroOf(s.sides.b)!.hp).toBe(b2 - 20);
+  });
+
+  it('ends a stalled match: a hero it takes to 0 loses', () => {
+    let s = pvp();
+    s.turn = 120;
+    heroOf(s.sides.b)!.hp = 50;
+    s = end(s).state;
+    expect(s.winner).toBe('a');
+  });
+
+  it('never touches a fight against enemies', () => {
+    let s = start([], {});
+    s.turn = 200;
+    const hp = hero(s).hp;
+    s = end(s).state;
+    expect(hero(s).hp).toBeGreaterThan(hp - 10);
+  });
+});

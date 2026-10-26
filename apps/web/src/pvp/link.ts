@@ -59,6 +59,8 @@ export interface PvpLink {
   replay: number;
   /** epoch ms (server clock) by which whoever is to move must move; null before it is known */
   deadline: number | null;
+  /** epoch ms (server clock) when the game is called for the larger share of HP left (null: not known, or no game clock) */
+  gameEnds?: number | null;
   /** add this to the local clock to get the server's */
   skew: number;
   /** set when the game is over */
