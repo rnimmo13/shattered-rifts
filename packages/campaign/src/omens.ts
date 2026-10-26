@@ -146,7 +146,7 @@ export const OMENS: Omen[] = [
   {
     tier: 12,
     id: 'rites',
-    name: 'Rites',
+    name: 'Blood Rites',
     text: () =>
       'Elites and Wardens start with 1 Ritual: they gain 1 Might at the end of each of their turns.',
     apply: (e) => add(e.bossStatuses, 'ritual', 1),

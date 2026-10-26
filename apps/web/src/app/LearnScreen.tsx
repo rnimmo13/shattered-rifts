@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { LOOP_LEGEND_CHANCE, MAX_TIER, enemyScale, preludeCatalogue } from '@sr/campaign';
-import { BOONS, COMBAT_DB, RIFTWALKERS, heroesByRealm } from '@sr/content/v2';
+import { LOOP_LEGEND_CHANCE, MAX_TIER, OMENS, enemyScale, preludeCatalogue } from '@sr/campaign';
+import { BOONS, COMBAT_DB, HEARTS, RIFTWALKERS, heroesByRealm } from '@sr/content/v2';
 import { KEYWORD_INFO, STATUS_INFO } from '../fight/info';
 import { TIP_RULES } from '../fight/tips';
 import { LearnOdds } from './LearnOdds';
@@ -107,6 +107,73 @@ function PreludeList() {
       <h4>At a price</h4>
       <dl>{c.bargains.map(row)}</dl>
     </>
+  );
+}
+
+const ROMAN = [
+  '',
+  'I',
+  'II',
+  'III',
+  'IV',
+  'V',
+  'VI',
+  'VII',
+  'VIII',
+  'IX',
+  'X',
+  'XI',
+  'XII',
+  'XIII',
+  'XIV',
+  'XV',
+  'XVI',
+  'XVII',
+  'XVIII',
+  'XIX',
+  'XX',
+];
+const roman = (n: number): string => ROMAN[n] ?? String(n);
+
+/** Every Omen, in the order they arrive: what it does when it comes, and what it has grown to by the last tier. */
+function OmenList() {
+  return (
+    <dl>
+      {OMENS.map((o) => {
+        const first = o.text(o.tier);
+        const last = o.text(MAX_TIER);
+        return (
+          <div key={o.id} className="learn__row">
+            <dt>
+              {o.name} <i>(from Tier {roman(o.tier)})</i>
+            </dt>
+            <dd>
+              {first}
+              {last !== first && (
+                <>
+                  {' '}
+                  By Tier {roman(MAX_TIER)}: {last}
+                </>
+              )}
+            </dd>
+          </div>
+        );
+      })}
+    </dl>
+  );
+}
+
+/** Every Warden's Heart. */
+function HeartList() {
+  return (
+    <dl>
+      {HEARTS.map((h) => (
+        <div key={h.id} className="learn__row">
+          <dt>{h.name}</dt>
+          <dd>{h.text}</dd>
+        </div>
+      ))}
+    </dl>
   );
 }
 
@@ -252,6 +319,13 @@ export function LearnScreen() {
             </p>
             <TierTable />
           </div>
+          <h3>Omens</h3>
+          <p>
+            From Tier II every Rift Tier brings an Omen, and they stack: at Tier V you face the
+            Omens of Tiers II to V together. Each grows a little with every tier after it. In a
+            fight they sit at the top right, and the run bar lists the ones in play.
+          </p>
+          <OmenList />
           <h3>Your deck</h3>
           <ul>
             <li>You start with a small deck. Rewards, shops and events add cards.</li>
@@ -279,6 +353,13 @@ export function LearnScreen() {
             Gift instead.
           </p>
           <BoonList />
+          <h3>Warden&rsquo;s Hearts</h3>
+          <p>
+            After a Warden you may take a rare card, one of two Hearts, or nothing. A Heart changes
+            every fight for the rest of the run, always at a price, and you hold one at a time: a
+            new Heart replaces the old one.
+          </p>
+          <HeartList />
         </section>
       )}
 

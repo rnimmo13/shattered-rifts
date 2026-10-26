@@ -5,6 +5,7 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **How to play lists every Omen and Warden's Heart:** what each Omen does when it arrives and by Tier XX, and what each Heart gives and costs. The Tier XII Omen is now called Blood Rites.
 - **Harder from the start:** Tier I enemies have about 15% more HP and hit a little harder, and every Rift Tier after it climbs faster.
 - **The fight title says the Rift Tier** as well as the stage and floor.
 - **See what you are up against:** in a campaign fight the Rift Tier's Omens sit at the top right with what each does on hover, and in the Arena (and against a ghost Warden) your opponent's Auras and Boons show there too.
