@@ -29,6 +29,35 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.76.0',
+    date: '2026-10-26',
+    title: 'Your deck at stake',
+    summary:
+      'Giving up mid-fight costs your Arena deck, no event forces a card on you, retuned card rewards, and shorter Arena games.',
+    notes: [
+      {
+        kind: 'changed',
+        text: 'A run saves its deck for the Arena as you go. Fall, or give up in the middle of a fight, and that deck leaves the Arena; give up anywhere else and it stays. Push deeper for a stronger deck, or stop and keep it.',
+      },
+      {
+        kind: 'changed',
+        text: 'When an event lays out three cards (the smuggler’s crate, cards from other worlds) you can take none of them.',
+      },
+      {
+        kind: 'balance',
+        text: 'Card rewards: each card after a fight is 55% common, 35% uncommon, 9% rare and 1% Legendary; after an Elite 35 / 42 / 20 / 3. Card luck is gone: everyone has the same odds.',
+      },
+      {
+        kind: 'balance',
+        text: 'Each Arena game is called at 15 minutes (was 20).',
+      },
+      {
+        kind: 'changed',
+        text: 'Decks are "saved" for the Arena (no more "banked"). Event options have bigger text. The Sandbox picks a Riftwalker like the home page does, and its card book fills the window.',
+      },
+    ],
+  },
+  {
     version: '0.75.0',
     date: '2026-10-26',
     title: 'Gentler start',
