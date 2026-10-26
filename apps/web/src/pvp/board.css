@@ -173,3 +173,119 @@
   clip: rect(0 0 0 0);
   white-space: nowrap;
 }
+
+/* ---- the board picker (DECISIONS #252): three cards, then one bar with the board's views and how long it has to run ---- */
+.board__boards {
+  width: 100%;
+  max-width: 54rem;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.6rem;
+}
+.board__pick {
+  display: grid;
+  gap: 0.2rem;
+  justify-items: center;
+  padding: 0.75rem 0.8rem;
+  border-radius: 12px;
+  border: 1px solid rgb(212 168 75 / 0.3);
+  background: linear-gradient(180deg, rgb(20 32 74 / 0.6), rgb(8 10 20 / 0.8));
+  color: var(--c-text-dim);
+  font: inherit;
+  cursor: pointer;
+  transition:
+    border-color 0.15s,
+    box-shadow 0.15s,
+    transform 0.15s;
+}
+.board__pick b {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  letter-spacing: 0.08em;
+  color: var(--c-gold-light);
+}
+.board__pick small {
+  font-size: 0.85rem;
+}
+.board__pick:hover,
+.board__pick:focus-visible {
+  border-color: var(--c-gold-light);
+  transform: translateY(-2px);
+  outline: none;
+}
+.board__pick.is-on {
+  border-color: var(--c-gold-light);
+  background: linear-gradient(160deg, rgb(31 48 104 / 0.95), rgb(8 10 20 / 0.95));
+  box-shadow: var(--glow-gold);
+  color: var(--c-ivory);
+}
+.board__bar {
+  width: 100%;
+  max-width: 54rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+}
+.board__seg {
+  display: inline-flex;
+  padding: 0.2rem;
+  border-radius: 999px;
+  background: rgb(0 0 0 / 0.35);
+  border: 1px solid rgb(255 255 255 / 0.12);
+}
+.board__segBtn {
+  padding: 0.35rem 0.9rem;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--c-text-dim);
+  font: inherit;
+  font-size: 0.92rem;
+  cursor: pointer;
+}
+.board__segBtn:hover {
+  color: var(--c-ivory);
+}
+.board__segBtn.is-on {
+  background: linear-gradient(180deg, var(--c-gold-light), var(--c-gold));
+  color: #1a1206;
+  font-weight: 700;
+}
+.board__clock {
+  font-size: 0.88rem;
+  color: var(--c-text-dim);
+}
+.board__how {
+  width: 100%;
+  max-width: 54rem;
+  text-align: left;
+  border-radius: 10px;
+  border: 1px solid rgb(255 255 255 / 0.1);
+  background: rgb(255 255 255 / 0.03);
+}
+.board__how summary {
+  padding: 0.45rem 0.8rem;
+  cursor: pointer;
+  color: var(--c-gold-pale);
+  font-size: 0.92rem;
+}
+.board__how p {
+  margin: 0;
+  padding: 0 0.9rem 0.7rem;
+  color: var(--c-text-dim);
+  line-height: 1.5;
+}
+
+/* the tables are as wide as the picker above them */
+.board .board__wrap {
+  width: 100%;
+  max-width: 54rem;
+}
+
+.board .board__yourplace {
+  width: 100%;
+  max-width: 54rem;
+  box-sizing: border-box;
+}

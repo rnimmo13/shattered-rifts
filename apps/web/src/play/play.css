@@ -75,7 +75,8 @@
   text-shadow: 0 0 24px rgb(143 91 255 / 0.6);
 }
 .setup__lead {
-  margin: 0;
+  /* (centred under a centred title: a narrower block sits in the middle, not at the left) */
+  margin: 0 auto;
   max-width: 44rem;
   color: var(--c-text-dim);
 }

@@ -4,6 +4,7 @@
 import { useEffect, useState, type ReactNode } from 'react';
 import {
   periodEnd,
+  seasonAt,
   type GhostStanding,
   type Period,
   type PvpStanding,
@@ -13,7 +14,7 @@ import { HeroIcon } from '../ui/HeroIcon';
 import { TrophyBadges } from './Trophies';
 import { heroName, progressLabel } from './deckLayout';
 import { viewBoard, type BoardKind, type BoardView, type GhostView } from './boardApi';
-import { RankedBoard } from './RankedBoard';
+import { RankedBoard, seasonLeft } from './RankedBoard';
 import { NameClaim } from './NameClaim';
 import { syncSavedRuns } from '../run/syncRuns';
 import '../play/play.css';
@@ -28,6 +29,22 @@ function timeLeft(now: number, period: Period): string {
   if (hours >= 1) return `${hours} hour${hours === 1 ? '' : 's'} left`;
   return 'under an hour left';
 }
+
+const BOARDS: { id: BoardKind; name: string; blurb: string }[] = [
+  { id: 'pvp', name: 'Arena', blurb: 'Ranks and wins against other players' },
+  { id: 'runs', name: 'Campaign', blurb: 'How far runs have got' },
+  { id: 'ghosts', name: 'Ghosts', blurb: 'The computer-played decks' },
+];
+
+/** What each board counts, for the "How this board works" fold. */
+const HOW: Record<BoardKind | 'ranks', string> = {
+  ranks:
+    'Every Arena match against another player moves your rating: up for a win, down for a loss, further when the other player is rated higher. Bronze, Silver, Gold and Platinum have three divisions each; Diamond is the top. A season is a month, and a new season pulls every rating halfway back to the start. Matches against ghosts never count. The board lists players with at least 3 Arena matches this season.',
+  pvp: 'Arena wins against other players this week or this month. When a week or month closes, its top 100 each win a trophy: silver for a week, gold for a month (see your Trophy case). Weeks start on Monday and months on the 1st, at midnight Pacific time.',
+  runs: 'The furthest any run begun this week or month has got, one place per player and Riftwalker. A run counts from its first fight; you need a username to be on it.',
+  ghosts:
+    'Ghosts are decks that have played in the Arena, piloted by the computer. The first table ranks the ghosts by their wins, the second the people who beat them. Ghost matches never count toward Arena ranks or the Arena board.',
+};
 
 const percent = (wins: number, losses: number): string =>
   wins + losses === 0 ? '' : `${Math.round((100 * wins) / (wins + losses))}%`;
@@ -164,9 +181,15 @@ export function LeaderboardScreen() {
   const failed = here !== null && here.view === null;
   const view = here?.view ?? null;
 
-  const toggle = (label: string, on: boolean, set: () => void) => (
-    <button aria-pressed={on} className={`btn btn--small${on ? ' is-open' : ''}`} onClick={set}>
-      <span>{label}</span>
+  const seg = (label: string, on: boolean, set: () => void) => (
+    <button
+      key={label}
+      type="button"
+      aria-pressed={on}
+      className={`board__segBtn${on ? ' is-on' : ''}`}
+      onClick={set}
+    >
+      {label}
     </button>
   );
 
@@ -177,52 +200,64 @@ export function LeaderboardScreen() {
       </a>
       <header className="setup__head">
         <h1 className="setup__title">Leaderboards</h1>
-        <p className="setup__lead">
-          The Arena ranks players this season by their rating, and also counts wins by the week and
-          the month: when a week or month closes, its top 100 each win a trophy (silver for a week,
-          gold for a month; see your <a href="#/trophies">Trophy case</a>). Campaign boards rank how
-          far a run got; ghost boards show how the computer-played decks are doing. Weeks and months
-          turn over at midnight Pacific time.
-        </p>
+        <p className="setup__lead">The best 100 on each board. Your own place is highlighted.</p>
       </header>
 
-      <div className="board__tabs" role="group" aria-label="Which board">
-        {toggle('Arena', tab === 'pvp' || tab === 'ranks', () => setKind('ranks'))}
-        {toggle('Campaign', tab === 'runs', () => setKind('runs'))}
-        {toggle('Ghosts', tab === 'ghosts', () => setKind('ghosts'))}
-      </div>
-      {(tab === 'pvp' || tab === 'ranks') && (
-        <div className="board__tabs" role="group" aria-label="Which Arena board">
-          {toggle('Ranks this season', tab === 'ranks', () => setKind('ranks'))}
-          {toggle('Wins this week', tab === 'pvp' && period === 'week', () => {
-            setKind('pvp');
-            setPeriod('week');
-          })}
-          {toggle('Wins this month', tab === 'pvp' && period === 'month', () => {
-            setKind('pvp');
-            setPeriod('month');
-          })}
+      <nav className="board__boards" aria-label="Which board">
+        {BOARDS.map((b) => {
+          const on = b.id === 'pvp' ? tab === 'pvp' || tab === 'ranks' : tab === b.id;
+          return (
+            <button
+              key={b.id}
+              type="button"
+              className={`board__pick${on ? ' is-on' : ''}`}
+              aria-pressed={on}
+              onClick={() => setKind(b.id === 'pvp' ? 'ranks' : b.id)}
+            >
+              <b>{b.name}</b>
+              <small>{b.blurb}</small>
+            </button>
+          );
+        })}
+      </nav>
+
+      <div className="board__bar">
+        <div className="board__seg" role="group" aria-label="Which board">
+          {(tab === 'pvp' || tab === 'ranks') &&
+            seg('Season ranks', tab === 'ranks', () => setKind('ranks'))}
+          {seg(
+            tab === 'pvp' || tab === 'ranks' ? 'Wins this week' : 'This week',
+            tab !== 'ranks' && period === 'week',
+            () => {
+              if (tab === 'ranks') setKind('pvp');
+              setPeriod('week');
+            },
+          )}
+          {seg(
+            tab === 'pvp' || tab === 'ranks' ? 'Wins this month' : 'This month',
+            tab !== 'ranks' && period === 'month',
+            () => {
+              if (tab === 'ranks') setKind('pvp');
+              setPeriod('month');
+            },
+          )}
         </div>
-      )}
+        <span className="board__clock" title="Boards turn over at midnight Pacific time">
+          {tab === 'ranks'
+            ? `${seasonAt(now).name} season · ${seasonLeft(now)}`
+            : `${timeLeft(now, period)} this ${period}`}
+        </span>
+      </div>
+
+      <details className="board__how">
+        <summary>How this board works</summary>
+        <p>{HOW[tab]}</p>
+      </details>
+
       {tab === 'ranks' ? (
         <RankedBoard />
       ) : (
         <>
-          {tab !== 'pvp' && (
-            <div className="board__tabs" role="group" aria-label="Which period">
-              {toggle('This week', period === 'week', () => setPeriod('week'))}
-              {toggle('This month', period === 'month', () => setPeriod('month'))}
-            </div>
-          )}
-          <p className="board__left">
-            {timeLeft(now, period)}
-            <small>
-              {period === 'week'
-                ? ' · the week turns over on Sunday night at midnight Pacific time'
-                : ' · the month turns over at midnight Pacific time on the 1st'}
-            </small>
-          </p>
-
           {loading && (
             <p className="board__note" role="status">
               Loading the board…
@@ -294,13 +329,8 @@ export function LeaderboardScreen() {
           {kind === 'ghosts' && view && 'ghosts' in view && (
             <>
               <p className="board__note">
-                A ghost is a deck that has played in the Arena, piloted by the computer.{' '}
-                {view.decks} {view.decks === 1 ? 'deck is' : 'decks are'} out there to be met. Ghost
-                matches do not count on the Arena board.
-              </p>
-              <p>
-                <a href="#/ghosts">See every ghost deck</a> (whose it is, how far it got and how it
-                has done).
+                {view.decks} {view.decks === 1 ? 'deck is' : 'decks are'} out there to be met.{' '}
+                <a href="#/ghosts">See every ghost deck</a>.
               </p>
               <h2 className="board__h">Ghosts</h2>
               <Table<GhostStanding>

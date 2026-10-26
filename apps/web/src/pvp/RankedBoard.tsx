@@ -2,15 +2,7 @@
 // how far it is to the next one.
 
 import { useEffect, useState } from 'react';
-import {
-  RANKS,
-  RANK_FLOORS,
-  RANKED_MIN_GAMES,
-  RATING_START,
-  rankOf,
-  seasonAt,
-  type RankBadge as Badge,
-} from '@sr/pvp';
+import { RANKED_MIN_GAMES, RATING_START, rankOf, seasonAt, type RankBadge as Badge } from '@sr/pvp';
 import { HeroIcon } from '../ui/HeroIcon';
 import { heroName } from './deckLayout';
 import { viewRanks, type RankedView } from './boardApi';
@@ -19,7 +11,7 @@ import { Notice } from '../ui/Toast';
 import './ranks.css';
 
 /** How long until the season turns over ("12 days left"). */
-function seasonLeft(now: number): string {
+export function seasonLeft(now: number): string {
   const ms = Math.max(0, seasonAt(now).ends - now);
   const days = Math.floor(ms / 86_400_000);
   if (days >= 1) return `${days} ${days === 1 ? 'day' : 'days'} left`;
@@ -28,7 +20,12 @@ function seasonLeft(now: number): string {
 }
 
 /** Your rank, the meter to the next division, and what the season is. */
-export function RankPanel(props: { rank: Badge | null; place?: number | null }) {
+export function RankPanel(props: {
+  rank: Badge | null;
+  place?: number | null;
+  /** say which season and how long it has to run (the leaderboard says so already, above it) */
+  showSeason?: boolean;
+}) {
   const [now] = useState(() => Date.now());
   const season = seasonAt(now);
   const rating = props.rank?.rating ?? RATING_START;
@@ -40,8 +37,11 @@ export function RankPanel(props: { rank: Badge | null; place?: number | null }) 
         <RankBadge rank={props.rank ?? { rating, games: 0 }} showRating />
         <br />
         <small>
-          {season.name} season · {seasonLeft(now)}
-          {props.place ? ` · number ${props.place}` : ''}
+          {props.showSeason === false
+            ? props.place
+              ? `Number ${props.place} this season`
+              : 'Your rank this season'
+            : `${season.name} season · ${seasonLeft(now)}${props.place ? ` · number ${props.place}` : ''}`}
         </small>
       </div>
       {r.next !== null && (
@@ -76,18 +76,6 @@ export function RankedBoard() {
   const view = got === 'loading' ? null : got;
   return (
     <>
-      <p className="board__note">
-        Every Arena match against another player counts toward your rank: a win moves your rating up
-        and a loss moves it down, further when the other player is rated higher than you. Matches
-        against ghosts are practice and never count. Ranks:{' '}
-        {RANKS.map((name, i) =>
-          `${name} ${RANK_FLOORS[i] ? `from ${RANK_FLOORS[i]}` : ''}`.trim(),
-        ).join(', ')}
-        . Each rank below Diamond has three divisions (III, II, I). Everyone starts at{' '}
-        {RATING_START}. When a season (a month) ends, every rating is pulled halfway back to{' '}
-        {RATING_START}. The board lists players with at least {RANKED_MIN_GAMES} Arena matches this
-        season.
-      </p>
       {got === 'loading' && (
         <p className="board__note" role="status">
           Loading the board…
@@ -103,7 +91,7 @@ export function RankedBoard() {
       )}
       {view && (
         <>
-          {view.you && <RankPanel rank={view.you} place={view.you.place} />}
+          {view.you && <RankPanel rank={view.you} place={view.you.place} showSeason={false} />}
           <div className="board__wrap">
             <table className="board__table">
               <caption className="sr-only">Arena ranks this season</caption>

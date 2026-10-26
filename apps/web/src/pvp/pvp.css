@@ -369,3 +369,13 @@
   max-width: 30rem;
   line-height: 1.5;
 }
+
+/* the Arena's introduction sits in the middle, under the title (it is narrower than the header) */
+.pvp .setup__lead {
+  margin-inline: auto;
+}
+
+/* a status panel's sentences sit in its middle (they are narrower than the panel) */
+.pvp__status p {
+  margin-inline: auto;
+}

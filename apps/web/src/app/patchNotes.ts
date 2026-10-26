@@ -42,7 +42,14 @@ export const PATCH_NOTES: PatchNote[] = [
         kind: 'changed',
         text: 'The Arena page always shows your rank and the season, and the Leaderboards’ Arena tab opens on the season’s ranks, with the weekly and monthly win boards (the trophy races) beside them.',
       },
-      { kind: 'fixed', text: 'Long lines of text no longer stretch across wide screens.' },
+      {
+        kind: 'changed',
+        text: 'Leaderboards redesigned: pick Arena, Campaign or Ghosts, then the view (season ranks, this week, this month), with how long it has left beside it. What each board counts is folded away under “How this board works”.',
+      },
+      {
+        kind: 'fixed',
+        text: 'Long lines of text no longer stretch across wide screens, and introductions sit centred under their titles.',
+      },
     ],
   },
   {

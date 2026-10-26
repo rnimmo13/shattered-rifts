@@ -5,6 +5,7 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **Leaderboards redesigned:** pick a board, then its view, with the time left beside it and the rules folded away. The Arena page's introduction and rank card sit centred.
 - **One Arena, with ranks:** every match against another player counts toward your Arena rank; ghost matches never do. The Leaderboards' Arena tab opens on the season's ranks. Long text no longer runs across wide screens.
 - **Home page:** the smaller links are a grid of icon tiles.
 - **Patch notes:** a page (linked from the home screen) showing what changed in each patch, one patch at a time.

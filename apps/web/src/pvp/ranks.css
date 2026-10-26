@@ -64,19 +64,25 @@
   color: var(--c-text-dim);
 }
 
-/* the Arena's ranked panel */
+/* your rank: a compact card, centred, with the meter to the next division under the rank */
 .rankpanel {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: center;
-  gap: 0.6rem 1rem;
-  padding: 0.7rem 0.9rem;
+  gap: 0.35rem 0.8rem;
+  width: min(30rem, 100%);
+  margin: 0.4rem auto 0;
+  padding: 0.65rem 0.9rem;
   border-radius: 12px;
   background: rgb(255 255 255 / 0.05);
   border: 1px solid rgb(255 255 255 / 0.12);
+  text-align: left;
+}
+.rankpanel > svg {
+  grid-row: span 2;
 }
 .rankpanel__meter {
-  flex: 1 1 10rem;
+  grid-column: 2;
   height: 0.45rem;
   border-radius: 99px;
   background: rgb(255 255 255 / 0.12);
@@ -118,4 +124,7 @@
 .matchlist__lost {
   color: #ffb1a6;
   font-weight: 700;
+}
+.rankpanel > div {
+  grid-column: 2 / span 2;
 }

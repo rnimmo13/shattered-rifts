@@ -169,3 +169,8 @@
   flex-wrap: wrap;
   margin: 0;
 }
+
+/* the empty-Vault panel's sentence sits in its middle */
+.pvp__status p {
+  margin-inline: auto;
+}
