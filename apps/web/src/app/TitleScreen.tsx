@@ -189,8 +189,8 @@ export function TitleScreen() {
             <p className="home__role">
               {hero.role} · {realm}
             </p>
-            <p className="home__lanes">
-              {hero.lanes.map((l) => (
+            <p className="home__paths">
+              {hero.buildPaths.map((l) => (
                 <span key={l}>{l.split(':')[0]}</span>
               ))}
             </p>

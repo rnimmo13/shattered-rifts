@@ -170,8 +170,8 @@ function playRun(h: HeroId, d: Difficulty, i: number): Result {
           if (run.shards >= ROLL_COST) {
             run = rollTrial(run);
             const t = run.context?.event?.trial;
-            const lane = t?.earned?.[0] ?? 0;
-            run = claimTrialPrize(run, `p${lane}`, t?.prizes[lane]?.choices ? 0 : undefined);
+            const path = t?.earned?.[0] ?? 0;
+            run = claimTrialPrize(run, `p${path}`, t?.prizes[path]?.choices ? 0 : undefined);
           } else run = chooseEvent(run, 'leave');
         } else
           run = chooseEvent(

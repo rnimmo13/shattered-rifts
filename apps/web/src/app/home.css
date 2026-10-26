@@ -270,14 +270,14 @@
   text-transform: uppercase;
   font-size: 0.95rem;
 }
-.home__lanes {
+.home__paths {
   display: flex;
   flex-wrap: wrap;
   gap: 0.4rem;
   justify-content: center;
   margin: 0.2rem 0;
 }
-.home__lanes span {
+.home__paths span {
   padding: 0.1rem 0.7rem;
   border-radius: 999px;
   font-size: 0.9rem;

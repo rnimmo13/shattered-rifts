@@ -62,7 +62,7 @@ const opt = (id: string, name: string, effects: PreludeEffect[], risky = false):
 
 // What an option is worth (docs/BALANCE.md, "Threshold and Waymarks"): a blessing is one solid thing, about 100 shards' worth; a
 // bargain pays clearly more than any blessing, and its price is mostly HP you can heal, not something the deck carries for good.
-// Cards are always a choice of three from your own class (a random card is usually from a lane you are not playing).
+// Cards are always a choice of three from your own class (a random card is usually from a build path you are not playing).
 
 /** Good things with no strings; the amounts grow a little with the stage. `hurt`: Resolve is missing, so Resolve is worth offering. */
 function blessings(stage: number, hurt: boolean): PreludeOption[] {

@@ -221,6 +221,12 @@ const sname = (s: string): string => STATUS_NAME[s] ?? cap(s);
 const plural = (word: string): string =>
   /fe$/.test(word) ? word.replace(/fe$/, 'ves') : `${word}s`;
 const article = (word: string): string => (/^[aeiou]/i.test(word) ? 'an' : 'a');
+/** What players call the cards with a tag ("Whenever you play a Carving"). */
+const TAG_NAMES: Record<string, string> = {
+  knife: 'Sleeve Knife',
+  blade: 'Obsidian Blade',
+  carving: 'Carving',
+};
 
 /** How a metric reads in a card: `per` ("+2 per Barrier") and `equal` ("equal to your Barrier"). */
 const METRIC_WORDS: Record<Metric, { per: string; equal: string }> = {
@@ -249,6 +255,7 @@ const METRIC_WORDS: Record<Metric, { per: string; equal: string }> = {
   snares: { per: 'Trap set', equal: 'the number of Traps you have set' },
   stars: { per: 'Arcana', equal: 'your Arcana' },
   runes: { per: 'totem', equal: 'the number of your totems' },
+  powers: { per: 'Aura you have', equal: 'the number of your Auras' },
   mana: { per: 'Mana left', equal: 'your Mana' },
   played: { per: 'card played this turn', equal: 'the cards played this turn' },
   attacksPlayed: { per: 'Attack played this turn', equal: 'the Attacks played this turn' },
@@ -455,11 +462,10 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
     case 'scry':
       return `Foresee ${o.amount}.`;
     case 'power': {
-      const TAGS: Record<string, string> = { knife: 'Sleeve Knife', blade: 'Obsidian Blade' };
       const KIND_WORD: Record<string, string> = { power: 'Aura' };
       const when =
         o.when === 'play'
-          ? `Whenever you play ${o.tag ? `${article(TAGS[o.tag] ?? o.tag)} ${TAGS[o.tag] ?? o.tag}` : o.filter ? `${article(KIND_WORD[o.filter] ?? o.filter)} ${KIND_WORD[o.filter] ?? cap(o.filter)}` : 'a card'}`
+          ? `Whenever you play ${o.tag ? `${article(TAG_NAMES[o.tag] ?? o.tag)} ${TAG_NAMES[o.tag] ?? o.tag}` : o.filter ? `${article(KIND_WORD[o.filter] ?? o.filter)} ${KIND_WORD[o.filter] ?? cap(o.filter)}` : 'a card'}`
           : o.when === 'stance'
             ? `Whenever you enter ${o.stance ? sname(o.stance) : 'a stance'}`
             : (WHEN_TEXT[o.when] ?? o.when);
@@ -490,7 +496,7 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
     case 'revive':
       return 'Your most recently fallen ally returns with half its HP.';
     case 'fetch': {
-      const what = o.kind ? `${o.kind} card` : 'card';
+      const what = o.tag ? (TAG_NAMES[o.tag] ?? o.tag) : o.kind ? `${o.kind} card` : 'card';
       const n = o.amount === 1 ? `a random ${what}` : `${o.amount} random ${what}s`;
       return o.to === 'draw'
         ? `Put ${n} from your discard pile on top of your draw pile.`

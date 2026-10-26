@@ -178,11 +178,11 @@ export const PATCH_NOTES: PatchNote[] = [
       },
       {
         kind: 'changed',
-        text: 'The merchant: one card on every table is on sale, a card for the lane your deck builds is always there, and card removal costs a little more each time.',
+        text: 'The merchant: one card on every table is on sale, a card for the build path your deck follows is always there, and card removal costs a little more each time.',
       },
       {
         kind: 'new',
-        text: 'Offered cards say when they fit a lane your deck is building.',
+        text: 'Offered cards say when they fit a build path your deck is following.',
       },
     ],
   },

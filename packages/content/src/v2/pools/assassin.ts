@@ -1,4 +1,4 @@
-// Quill, the Knife-Dancer (Umbral). No companions. The Silent of the roster: three lanes that mix.
+// Quill, the Knife-Dancer (Umbral). No companions. The Silent of the roster: three build paths that mix.
 //   Shivs   - 0-cost Shiv attacks, many hits, payoffs per card played
 //   Seared  - stack our poison, double it, cash it out
 //   Sleight - discard and cycle for value

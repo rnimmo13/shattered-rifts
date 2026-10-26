@@ -707,7 +707,7 @@
   }
 }
 
-.picker__lanes {
+.picker__paths {
   margin: 0.4rem 0 0;
   padding: 0;
   list-style: none;
@@ -715,7 +715,7 @@
   flex-wrap: wrap;
   gap: 0.4rem;
 }
-.picker__lanes li {
+.picker__paths li {
   padding: 0.15rem 0.6rem;
   border-radius: 999px;
   font-size: 0.94rem;
@@ -1421,7 +1421,7 @@
   box-shadow: none;
 }
 
-/* synergy hints (DECISIONS #243): whether an offered card fits the deck's lanes */
+/* synergy hints (DECISIONS #243): whether an offered card fits the deck's build paths */
 .pick__fit {
   display: inline-block;
   margin-top: 0.35rem;

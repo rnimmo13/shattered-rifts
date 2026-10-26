@@ -1,11 +1,11 @@
-// Decks for the balance audit, built the way a person drafts: commit to one of the character's three lanes and take the best card of
-// that lane on offer (higher rarity first), fall back to a good Neutral card now and then, skip the rest. Deeper levels have seen more
+// Decks for the balance audit, built the way a person drafts: commit to one of the character's three build paths and take the best card of
+// that build path on offer (higher rarity first), fall back to a good Neutral card now and then, skip the rest. Deeper levels have seen more
 // offers (more loops), keep only the best of them, have cut more Strikes and Defends, upgraded more cards and own more Boons.
 // Deterministic for a seed.
 
 import {
   COMBAT_DB as db,
-  laneOf,
+  pathOf,
   rewardPool,
   RIFTWALKERS,
   V2_DECK_RULES,
@@ -168,7 +168,7 @@ const LEGEND_BOONS = ['rift-core', 'scholars-tome', 'aegis-of-ages', 'gilded-cro
 /** how many Legendary Boons a deck of each depth has found by then */
 const LEGENDS: Record<Level, number> = { t1s1: 0, t1s3: 0, t2: 0, t5: 1, t10: 2, t20: 4 };
 
-export function buildDeck(hero: HeroId, lane: number, level: Level, seed: number): AuditDeck {
+export function buildDeck(hero: HeroId, path: number, level: Level, seed: number): AuditDeck {
   const spec = LEVEL_SPEC[level];
   const r = rng(seed);
   const pool = rewardPool(hero);
@@ -177,18 +177,18 @@ export function buildDeck(hero: HeroId, lane: number, level: Level, seed: number
     const k = db.cards[id]?.rarity ?? 'common';
     byRarity.set(k, [...(byRarity.get(k) ?? []), id]);
   }
-  // what the player would want from an offer: their lane first, then rarity; a Neutral card is a fallback
+  // what the player would want from an offer: their build path first, then rarity; a Neutral card is a fallback
   const score = (id: string): number => {
     const c = db.cards[id];
     if (!c) return -1;
     const own = c.hero === hero;
-    const l = laneOf(id);
-    const inLane = own && l === lane;
-    const glue = own && l === undefined; // legendaries and glue cards serve every lane
+    const l = pathOf(id);
+    const onPath = own && l === path;
+    const glue = own && l === undefined; // legendaries and glue cards serve every build path
     const rank = RANK[c.rarity ?? 'common'] ?? 1;
-    if (inLane) return 10 + rank * 2;
+    if (onPath) return 10 + rank * 2;
     if (glue) return 8 + rank * 2;
-    if (own) return 2 + rank; // another lane: only if nothing better
+    if (own) return 2 + rank; // another build path: only if nothing better
     return 1 + rank; // neutral
   };
   const seen: string[] = [];

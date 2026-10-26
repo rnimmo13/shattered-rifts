@@ -129,7 +129,7 @@ export {
   type GamblerShrine,
   type ShrineKind,
 } from './gambler';
-export { FIT_AT, fitLabel, fitOf, laneCounts, mainLane, type Fit } from './synergy';
+export { FIT_AT, fitLabel, fitOf, pathCounts, mainPath, type Fit } from './synergy';
 export {
   OMENS,
   omenEffects,

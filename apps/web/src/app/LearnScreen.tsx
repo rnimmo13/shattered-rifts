@@ -373,7 +373,7 @@ export function LearnScreen() {
                   </ul>
                   <h5>Card builds</h5>
                   <ul>
-                    {RIFTWALKERS[h].lanes.map((l) => (
+                    {RIFTWALKERS[h].buildPaths.map((l) => (
                       <li key={l}>{l}</li>
                     ))}
                   </ul>

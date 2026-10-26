@@ -48,7 +48,7 @@ export const wound = (side: 'self' | 'foe' = 'foe', card = 'wound'): Op => ({
 export const ACT: Op = { op: 'actAllies' };
 export const PREVENT: Op = { op: 'prevent' };
 
-// --- ops for the lanes (docs/09_ROSTER.md) --------------------------------------------------------------------------
+// --- ops for the build paths (docs/09_ROSTER.md) --------------------------------------------------------------------------
 /** A scale: "+mult per metric". `of`: self (default) / the card's target / each unit hit. */
 export const per = (by: Metric, mult = 1, of?: Scale['of'], into?: Scale['into']): Scale => ({
   by,
@@ -95,6 +95,8 @@ export const fetchCards = (amount: number, to: 'hand' | 'draw' = 'hand', kind?: 
   to,
   ...(kind ? { kind } : {}),
 });
+/** return random cards with a tag (Carvings...) from your discard pile to your hand */
+export const fetchTag = (amount: number, tag: string): Op => ({ op: 'fetch', amount, to: 'hand', tag });
 export const revive: Op = { op: 'revive' };
 export const manaNext = (amount: number): Op => ({ op: 'manaNext', amount });
 export const maxMana = (amount: number): Op => ({ op: 'maxMana', amount });

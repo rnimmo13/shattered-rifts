@@ -1,8 +1,8 @@
-// The smarter merchant (DECISIONS #243): removals grow dearer over a run, one card is on sale, and a deck that leans on a lane finds
+// The smarter merchant (DECISIONS #243): removals grow dearer over a run, one card is on sale, and a deck that leans on a build path finds
 // a card of it on the table. And the synergy hints that say which offered cards fit the deck.
 
 import { describe, expect, it } from 'vitest';
-import { COMBAT_DB, RIFTWALKERS, laneOf, rewardPool } from '@sr/content/v2';
+import { COMBAT_DB, RIFTWALKERS, pathOf, rewardPool } from '@sr/content/v2';
 import {
   REMOVE_MAX,
   REMOVE_PRICE,
@@ -14,7 +14,7 @@ import {
   holdCard,
   fitOf,
   leaveMerchant,
-  mainLane,
+  mainPath,
   newRun,
   parseRun,
   priceOf,
@@ -42,10 +42,10 @@ function atMerchant(seed: string, prev?: RunState, deck?: string[]): RunState {
   );
 }
 
-/** Cards of one of the knight's lanes. */
-const laneCards = (lane: number): string[] =>
+/** Cards of one of the knight's build paths. */
+const pathCards = (path: number): string[] =>
   rewardPool('knight').filter(
-    (id) => laneOf(id) === lane && COMBAT_DB.cards[id]?.hero === 'knight',
+    (id) => pathOf(id) === path && COMBAT_DB.cards[id]?.hero === 'knight',
   );
 
 describe('card removal at the merchant', () => {
@@ -86,32 +86,32 @@ describe('the sale', () => {
 });
 
 describe('a merchant who knows your deck', () => {
-  it('has a card of the lane your deck leans on most', () => {
-    const lane = 0;
-    const deck = [...RIFTWALKERS.knight.starter, ...laneCards(lane).slice(0, 4)];
-    expect(mainLane('knight', deck)).toBe(lane);
+  it('has a card of the path your deck leans on most', () => {
+    const path = 0;
+    const deck = [...RIFTWALKERS.knight.starter, ...pathCards(path).slice(0, 4)];
+    expect(mainPath('knight', deck)).toBe(path);
     for (const seed of ['l1', 'l2', 'l3', 'l4', 'l5']) {
       const items = atMerchant(seed, undefined, deck).context!.merchant!.items;
-      expect(items.some((i) => laneOf(i.cardId) === lane)).toBe(true);
+      expect(items.some((i) => pathOf(i.cardId) === path)).toBe(true);
     }
   });
 });
 
 describe('synergy hints', () => {
-  it('say a card fits a lane the deck already builds', () => {
-    const cards = laneCards(1);
+  it('say a card fits a path the deck already builds', () => {
+    const cards = pathCards(1);
     const deck = [...RIFTWALKERS.knight.starter, cards[0]!, cards[1]!];
     expect(fitOf(deck, cards[2]!)).toMatchObject({ kind: 'fits', n: 2 });
   });
 
-  it('say nothing for a card with no lane, or for a starting deck', () => {
+  it('say nothing for a card with no path, or for a starting deck', () => {
     const starter = [...RIFTWALKERS.knight.starter];
     expect(fitOf(starter, starter[0]!)).toBeNull();
-    expect(fitOf(starter, laneCards(2)[0]!)).toBeNull();
+    expect(fitOf(starter, pathCards(2)[0]!)).toBeNull();
   });
 
-  it('call a card a new lane only once the deck builds another', () => {
-    const deck = [...RIFTWALKERS.knight.starter, ...laneCards(0).slice(0, 3)];
-    expect(fitOf(deck, laneCards(2)[0]!)?.kind).toBe('new');
+  it('call a card a new path only once the deck builds another', () => {
+    const deck = [...RIFTWALKERS.knight.starter, ...pathCards(0).slice(0, 3)];
+    expect(fitOf(deck, pathCards(2)[0]!)?.kind).toBe('new');
   });
 });

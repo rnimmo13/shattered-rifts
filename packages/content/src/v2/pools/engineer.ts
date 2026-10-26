@@ -1,4 +1,4 @@
-// Rivet (Nexus-9). Builds an army of machines (max 3 allies). Three lanes:
+// Rivet (Nexus-9). Builds an army of machines (max 3 allies). Three build paths:
 //   Swarm     - cheap bodies, recycling them, and payoffs for how many allies you have
 //   Assemble  - make allies act again: burst turns
 //   Core      - a few big constructs, Might and repairs on them

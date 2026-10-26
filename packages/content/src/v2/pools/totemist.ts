@@ -1,4 +1,4 @@
-// Ilvane (display name; the id stays 'totemist', DECISIONS #141). Carves totems and plants them in a row. Three lanes:
+// Ilvane (display name; the id stays 'totemist', DECISIONS #141). Carves totems and plants them in a row. Three build paths:
 //   Hawk    - damage totems: chip every turn, burst when they topple (Hawk hits one enemy, Splinter hits every enemy)
 //   Bear    - Barrier totems: defence that accumulates
 //   Elder   - ancestral totems that build for a huge awakening, and Spirit (the `resonance` status) to make every totem stronger

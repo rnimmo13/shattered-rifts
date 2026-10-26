@@ -1,5 +1,5 @@
 // Mire, the Gravewarden (Gloomfen). Starts with a Bone Thrall. Doom is Mire's alone: it kills anything at or below its Doom at
-// the end of its turn. Three lanes:
+// the end of its turn. Three build paths:
 //   Doom     - stack Doom on enemies, double it, and cash it in
 //   Thralls  - the Bone Thrall and its kin: buff them, heal them, spend them
 //   Ashes    - consumed cards fuel Mire: Souls, Consume payoffs, and a heavy finisher
@@ -332,7 +332,7 @@ export const NECROMANCER: CardDef[] = [
     exhaust: true,
   }),
 
-  // --- the dead come back: the pieces the lanes were missing ---
+  // --- the dead come back: the pieces the build paths were missing ---
   g('uncommon', 'grave-robbery', 'Grave Robbery', 'skill', 1, 'none', [reclaim(1), barrier(4)], {
     exhaust: true,
   }),

@@ -1,4 +1,4 @@
-// Vesper Nightlace (Umbral). No companions. Three lanes:
+// Vesper Nightlace (Umbral). No companions. Three build paths:
 //   Traps  - set traps with different triggers; payoffs for having them out
 //   Exposed - mark the enemy, then spend the mark
 //   Bluff   - hold Mana and cards back: Retain, Scry, patience

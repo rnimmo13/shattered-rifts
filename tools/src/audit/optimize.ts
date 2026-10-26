@@ -9,7 +9,7 @@ import { buildDeck, hashSeed, rng, type Level } from './decks';
 
 export interface OptimizeSpec {
   hero: HeroId;
-  lane: number;
+  path: number;
   level: Level;
   /** rounds of damage that count */
   rounds: number;
@@ -84,8 +84,8 @@ export interface OptimizeResult {
 }
 
 export function optimize(o: OptimizeSpec): OptimizeResult {
-  const r = rng(hashSeed(`opt/${o.hero}/${o.lane}/${o.level}`));
-  const start = buildDeck(o.hero, o.lane, o.level, hashSeed(`${o.hero}/${o.lane}/${o.level}/0`));
+  const r = rng(hashSeed(`opt/${o.hero}/${o.path}/${o.level}`));
+  const start = buildDeck(o.hero, o.path, o.level, hashSeed(`${o.hero}/${o.path}/${o.level}/0`));
   const boons = o.noBoons ? [] : start.boons;
   const pool = rewardPool(o.hero).map((id) => db.cards[id]?.upgrade ?? id);
   const seeds = Array.from({ length: o.seeds }, (_, i) => `opt-${i}`);

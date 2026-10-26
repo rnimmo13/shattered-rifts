@@ -128,7 +128,7 @@ function Pickable(props: {
   );
 }
 
-/** Whether an offered card fits the deck it would join: "Fits your Bulwark (4)", or "New lane: Swarm". */
+/** Whether an offered card fits the deck it would join: "Fits your Bulwark (4)", or "New build path: Swarm". */
 function FitTag(props: { id: string; deck: readonly string[] }) {
   const f = useMemo(() => fitOf(props.deck, props.id), [props.deck, props.id]);
   if (!f) return null;
@@ -137,8 +137,8 @@ function FitTag(props: { id: string; deck: readonly string[] }) {
       className={`pick__fit pick__fit--${f.kind}`}
       title={
         f.kind === 'fits'
-          ? `Your deck has ${f.n} cards of the ${f.lane} lane: this one builds on them.`
-          : `Your deck has no ${f.lane} cards yet: this one starts something new.`
+          ? `Your deck has ${f.n} cards of the ${f.path} build path: this one builds on them.`
+          : `Your deck has no ${f.path} cards yet: this one starts something new.`
       }
     >
       {fitLabel(f)}

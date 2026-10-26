@@ -189,7 +189,7 @@ export function DeckBuilder(props: {
                 <h4 className="grim__pagehead">
                   {searching
                     ? 'Search results'
-                    : [p.heroes.join(' · '), p.lane].filter(Boolean).join(' · ') || tabName}
+                    : [p.heroes.join(' · '), p.path].filter(Boolean).join(' · ') || tabName}
                 </h4>
                 <ul
                   className="grim__cards"

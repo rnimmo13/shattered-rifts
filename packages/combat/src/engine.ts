@@ -422,6 +422,8 @@ function metricValue(r: Run, a: Act, m: Metric, of: Scale['of'], t: Unit | null)
       return sd.stars;
     case 'runes':
       return sd.runes.length;
+    case 'powers':
+      return sd.powers.length;
     case 'mana':
       return sd.mana;
     case 'played':
@@ -807,7 +809,11 @@ function execOp(r: Run, a: Act, op: Op): void {
     }
     case 'fetch': {
       for (let i = 0; i < op.amount; i++) {
-        const pool = side.discard.filter((c) => !op.kind || r.db.cards[c.card]?.kind === op.kind);
+        const pool = side.discard.filter(
+          (c) =>
+            (!op.kind || r.db.cards[c.card]?.kind === op.kind) &&
+            (!op.tag || r.db.cards[c.card]?.tags?.includes(op.tag) === true),
+        );
         if (!pool.length) break;
         const pick = pool[nextInt(r.s.rng, pool.length)] as CardInst;
         side.discard = side.discard.filter((c) => c.id !== pick.id);

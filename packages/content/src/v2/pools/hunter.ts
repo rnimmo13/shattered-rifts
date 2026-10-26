@@ -1,4 +1,4 @@
-// Kesh the Unfed (Wyldmaw). Starts with a Hound. Three lanes:
+// Kesh the Unfed (Wyldmaw). Starts with a Hound. Three build paths:
 //   Bloodrage  - pay HP for Might and tempo, then hit with it
 //   Pack       - buff and feed the companions
 //   Feast      - Exhaust engine: eat your own cards, heal, hit for what you have consumed (and devour allies)

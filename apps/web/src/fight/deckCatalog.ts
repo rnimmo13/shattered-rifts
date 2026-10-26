@@ -2,7 +2,7 @@
 // turning counts into a deck, and a random deck for quick experiments.
 
 import { nextInt, seedRng, type CardDef, type CombatDb } from '@sr/combat';
-import { REALMS, RIFTWALKERS, laneName, laneOf, type HeroId } from '@sr/content/v2';
+import { REALMS, RIFTWALKERS, pathName, pathOf, type HeroId } from '@sr/content/v2';
 
 export type PoolKey = 'all' | 'neutral' | 'wardens' | 'tokens' | 'other' | string; // or a Riftwalker id
 
@@ -130,7 +130,7 @@ export function tabCards(cards: readonly CatalogCard[], tab: string): CatalogCar
 }
 
 /**
- * Book order: character, lane, then rarity (basic to legendary), cost, name. With `by: 'rarity'` the rarest come first across every
+ * Book order: character, build path, then rarity (basic to legendary), cost, name. With `by: 'rarity'` the rarest come first across every
  * character (then character, cost, name), so a page is a run of cards with no sections.
  */
 export function sortCards(
@@ -154,7 +154,7 @@ export function sortCards(
   return [...cards].sort(
     (a, b) =>
       heroRank(a.pool) - heroRank(b.pool) ||
-      (laneOf(a.def.id) ?? 9) - (laneOf(b.def.id) ?? 9) ||
+      (pathOf(a.def.id) ?? 9) - (pathOf(b.def.id) ?? 9) ||
       (RARITY_RANK[a.def.rarity ?? 'common'] ?? 1) - (RARITY_RANK[b.def.rarity ?? 'common'] ?? 1) ||
       a.def.cost - b.def.cost ||
       a.def.name.localeCompare(b.def.name),
@@ -162,16 +162,16 @@ export function sortCards(
 }
 
 /**
- * Cut a run of cards into book pages of `perPage`. A page never mixes characters or lanes, and its heading names them
- * ("Ser Maren Ashcourt · Bulwark"), so the book shows each character's lanes as sections.
+ * Cut a run of cards into book pages of `perPage`. A page never mixes characters or build paths, and its heading names them
+ * ("Ser Maren Ashcourt · Bulwark"), so the book shows each character's build paths as sections.
  */
 export function paginate(
   cards: readonly CatalogCard[],
   perPage: number,
-  /** fill every page to the brim, whatever the character or lane (the heading then lists the characters on the page) */
+  /** fill every page to the brim, whatever the character or build path (the heading then lists the characters on the page) */
   packed = false,
-): { cards: CatalogCard[]; heroes: string[]; heroIds: string[]; lane?: string }[] {
-  const pages: { cards: CatalogCard[]; heroes: string[]; heroIds: string[]; lane?: string }[] = [];
+): { cards: CatalogCard[]; heroes: string[]; heroIds: string[]; path?: string }[] {
+  const pages: { cards: CatalogCard[]; heroes: string[]; heroIds: string[]; path?: string }[] = [];
   if (packed) {
     const names = RIFTWALKERS as Record<string, { hero: { name: string } }>;
     for (let k = 0; k < cards.length; k += perPage) {
@@ -182,10 +182,10 @@ export function paginate(
     }
     return pages;
   }
-  const keyOf = (c: CatalogCard): string => `${c.pool}|${laneOf(c.def.id) ?? ''}`;
+  const keyOf = (c: CatalogCard): string => `${c.pool}|${pathOf(c.def.id) ?? ''}`;
   let i = 0;
   while (i < cards.length) {
-    // the run of cards sharing a character and lane
+    // the run of cards sharing a character and build path
     let j = i + 1;
     while (j < cards.length && keyOf(cards[j] as CatalogCard) === keyOf(cards[i] as CatalogCard))
       j++;
@@ -194,12 +194,12 @@ export function paginate(
       const first = slice[0] as CatalogCard;
       const hero = (RIFTWALKERS as Record<string, { hero: { name: string } }>)[first.pool]?.hero
         .name;
-      const lane = laneOf(first.def.id);
+      const path = pathOf(first.def.id);
       pages.push({
         cards: slice,
         heroes: hero ? [hero] : [],
         heroIds: hero ? [first.pool] : [],
-        ...(hero && lane !== undefined ? { lane: laneName(first.pool as HeroId, lane) } : {}),
+        ...(hero && path !== undefined ? { path: pathName(first.pool as HeroId, path) } : {}),
       });
     }
     i = j;

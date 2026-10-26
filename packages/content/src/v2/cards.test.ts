@@ -200,11 +200,11 @@ describe('real card data, end to end', () => {
 });
 
 describe('pool shape (docs/09_ROSTER.md §1)', () => {
-  const lanes = (h: HeroId) => rewardPool(h).map((id) => db.cards[id]!);
+  const buildPaths = (h: HeroId) => rewardPool(h).map((id) => db.cards[id]!);
 
   it('every Riftwalker has a deep pool with all rarities, mostly of their own', () => {
     for (const h of HEROES) {
-      const own = lanes(h).filter((c) => c.hero === h);
+      const own = buildPaths(h).filter((c) => c.hero === h);
       expect(own.length, `${h} own cards`).toBeGreaterThanOrEqual(30);
       for (const r of ['common', 'uncommon', 'rare'])
         expect(own.filter((c) => c.rarity === r).length, `${h} ${r}`).toBeGreaterThanOrEqual(3);
@@ -279,23 +279,23 @@ describe('pool shape (docs/09_ROSTER.md §1)', () => {
   });
 });
 
-describe('lanes (each character has three, each with room to build a deck)', async () => {
-  const { laneOf, laneSizes } = await import('./index');
-  it('every Riftwalker has three lanes of at least 12 cards each, and most of their cards belong to one', () => {
+describe('buildPaths (each character has three, each with room to build a deck)', async () => {
+  const { pathOf, pathSizes } = await import('./index');
+  it('every Riftwalker has three buildPaths of at least 12 cards each, and most of their cards belong to one', () => {
     for (const h of HEROES) {
-      const sizes = laneSizes(h);
-      for (const n of sizes) expect(n, `${h} lanes ${sizes.join('/')}`).toBeGreaterThanOrEqual(12);
+      const sizes = pathSizes(h);
+      for (const n of sizes) expect(n, `${h} buildPaths ${sizes.join('/')}`).toBeGreaterThanOrEqual(12);
       const own = rewardPool(h).filter(
         (id) => db.cards[id]?.hero === h && db.cards[id]?.rarity !== 'legendary',
       );
-      const laned = own.filter((id) => laneOf(id) !== undefined).length;
-      expect(laned / own.length, h).toBeGreaterThan(0.55); // the rest is shared glue
+      const onPath = own.filter((id) => pathOf(id) !== undefined).length;
+      expect(onPath / own.length, h).toBeGreaterThan(0.55); // the rest is shared glue
     }
   });
 
-  it('a lane belongs to its own character: no lane name is shared by two characters', () => {
+  it('a path belongs to its own character: no path name is shared by two characters', () => {
     const names = HEROES.flatMap((h) =>
-      RIFTWALKERS[h].lanes.map((l) => l.split(':')[0]!.toLowerCase()),
+      RIFTWALKERS[h].buildPaths.map((l) => l.split(':')[0]!.toLowerCase()),
     );
     expect(new Set(names).size).toBe(names.length);
   });

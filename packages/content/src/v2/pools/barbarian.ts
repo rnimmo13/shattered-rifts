@@ -1,6 +1,6 @@
 // Sehra, the Still Flame (Aurelion). A barbarian of the Gilded Order's silent branch. No companions. Starts the fight in Calm.
 // Stances: Calm (leaving it gives 2 Mana), Wrath (deal double, take 50% more), Radiant (deal triple, ends with your turn).
-// Three lanes:
+// Three build paths:
 //   Wrath   - burst: enter Wrath, hit hard, get out
 //   Calm    - economy: Mana, cards and Barrier from stepping in and out of stillness
 //   Mantra  - build Mantra (with Scry and Retain) towards Radiant

@@ -136,6 +136,11 @@ const DB: CombatDb = {
       kind: 'power',
       effects: [{ op: 'status', status: 'edge', amount: 3, to: 'self' }],
     }),
+    // tag fetch and the Auras metric
+    c('gather-knives', { effects: [{ op: 'fetch', amount: 5, to: 'hand', tag: 'knife' }] }),
+    c('rite-ward', {
+      effects: [{ op: 'barrier', amount: 2, to: 'self', scale: { by: 'powers', mult: 3 } }],
+    }),
     // runes
     c('c-spark', { effects: [{ op: 'channel', rune: 'spark' }] }),
     c('c-dark', { effects: [{ op: 'channel', rune: 'dark' }] }),
@@ -1308,5 +1313,30 @@ describe('balance audit rules (DECISIONS #223)', () => {
     const s = play(s0, 'h0').state;
     expect(s.sides.a.hand.map((x) => x.id)).toEqual(['x2']);
     expect(s.sides.a.exhausted.map((x) => x.id)).toEqual(['x1']);
+  });
+});
+
+describe('fetch by tag and the Auras metric', () => {
+  it('fetch with a tag returns only cards that carry it', () => {
+    const s0 = start(['gather-knives']);
+    s0.sides.a.discard = [
+      { id: 'x1', card: 'shiv' },
+      { id: 'x2', card: 'strike' },
+      { id: 'x3', card: 'shiv' },
+    ];
+    const s = play(s0, 'h0').state;
+    expect(s.sides.a.hand.map((x) => x.id).sort()).toEqual(['x1', 'x3']);
+    expect(s.sides.a.discard.map((x) => x.id)).toContain('x2');
+    expect(cardText(DB, DB.cards['gather-knives']!)).toContain('Sleeve Knife');
+  });
+
+  it('a card can scale with the number of Auras you have', () => {
+    let s = start(['metal', 'tools', 'rite-ward'], { mana: 5 });
+    s = play(s, 'h0').state;
+    s = play(s, 'h1').state;
+    const before = hero(s).barrier;
+    s = play(s, 'h2').state;
+    expect(hero(s).barrier - before).toBe(2 + 3 * 2);
+    expect(cardText(DB, DB.cards['rite-ward']!)).toContain('Aura you have');
   });
 });

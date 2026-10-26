@@ -28,12 +28,12 @@ export interface Riftwalker {
   realm: RealmId;
   starter: string[];
   blurb: string;
-  /** the three lanes of its card pool, shown on the character screen (docs/09_ROSTER.md) */
+  /** the three build paths of its card pool, shown on the character screen (docs/09_ROSTER.md) */
   /** what kind of fighter this is, in one word players know ("Knight", "Assassin"...) */
   role: string;
   /** the innate trait every one of this character's fights starts with (shown on the character screens) */
   trait: HeroTrait;
-  lanes: [string, string, string];
+  buildPaths: [string, string, string];
   /** a few plain sentences on how this character plays (shown on the character screen and the Learn page) */
   howTo: string[];
   /** things the character says (shown on the character screen, one at random) */
@@ -54,7 +54,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     hero: { id: 'knight', name: 'Valeria', maxHp: 80, mana: 3, handSize: 5 },
     starter: [...rep('strike', 4), ...rep('defend', 4), 'dawn-smite', 'oathbound'],
     blurb: 'A knight of the Gilded Order. No companions: Barrier, Thorns and punishing Traps.',
-    lanes: [
+    buildPaths: [
       'Bulwark: hit with your Barrier',
       'Thorns: punish attackers',
       'Devotion: heal and Shielded',
@@ -77,7 +77,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     starter: [...rep('strike', 5), ...rep('defend', 3), 'deploy-drone', 'overclock'],
     blurb:
       'A tinkerer of machines. She starts every fight with a Drone and builds an army of them.',
-    lanes: ['Swarm: many cheap bodies', 'Assemble: allies act again', 'Core: a few big constructs'],
+    buildPaths: ['Swarm: many cheap bodies', 'Assemble: allies act again', 'Core: a few big constructs'],
     howTo: [
       'You start with a Drone. Allies attack for you when you end your turn.',
       'You can have 3 allies. Buff them with Might, or make them act again (Assemble).',
@@ -102,7 +102,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     },
     starter: [...rep('strike', 5), ...rep('defend', 3), 'savage-bite', 'blood-frenzy'],
     blurb: 'A hunter with a Hound. Pays HP to buff the whole pack with Might.',
-    lanes: ['Bloodrage: HP for Might', 'Pack: feed the companions', 'Feast: Exhaust and Devour'],
+    buildPaths: ['Bloodrage: HP for Might', 'Pack: feed the companions', 'Feast: Exhaust and Devour'],
     howTo: [
       'You start with a Hound. Might makes every attack hit harder, permanently.',
       'Many of your cards cost HP. Spend it to buff the pack, then heal with Devour and Feast cards.',
@@ -120,7 +120,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     hero: { id: 'trapper', name: 'Vesper Nightlace', maxHp: 80, mana: 3, handSize: 5 },
     starter: [...rep('strike', 3), ...rep('defend', 4), ...rep('veil-strike', 2), 'set-the-web'],
     blurb: 'A masked trapper. No companions: Traps, Exposed and patience.',
-    lanes: [
+    buildPaths: [
       'Traps: one for every trigger',
       'Exposed: mark, then spend the mark',
       'Bluff: Hold, Foresee, held Mana',
@@ -150,7 +150,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     starter: [...rep('strike', 4), ...rep('defend', 3), ...rep('quick-jab', 2), 'slip-away'],
     blurb:
       'A cutpurse with a sleeve full of blades. Starts every fight with a Sleeve Knife. Knives, Bleed and discard tricks.',
-    lanes: [
+    buildPaths: [
       'Knives: 0-cost blades',
       'Bleed: stack, double, cash out',
       'Sleight: discard and cycle',
@@ -179,7 +179,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     starter: [...rep('strike', 4), ...rep('defend', 3), ...rep('spark-cast', 2), 'twin-evocation'],
     blurb:
       'An elder shaman who carves totems and calls the spirits inside them to do his bidding. Starts every fight with three totems (Hawk, Bear and Splinter). Totems pulse every turn, then burst when awakened.',
-    lanes: [
+    buildPaths: [
       'Hawk: damage totems (one enemy or all)',
       'Bear: Barrier totems',
       'Elder: charge and Spirit',
@@ -209,7 +209,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     starter: [...rep('strike', 4), ...rep('defend', 4), 'kindle-fury', 'still-guard'],
     blurb:
       'A barbarian who fights in stances. Starts every fight Serene. Fury for burst, Serene for tempo, Fervor for Radiance.',
-    lanes: ['Fury: burst', 'Serene: Mana and cards', 'Fervor: build to Radiant'],
+    buildPaths: ['Fury: burst', 'Serene: Mana and cards', 'Fervor: build to Radiant'],
     howTo: [
       'You start Serene. You are in at most one stance at a time.',
       'Fury doubles the damage you deal, but you take 50% more. Leaving Serene gives you 2 Mana (once a turn).',
@@ -242,7 +242,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     ],
     blurb:
       'A spellblade of black glass and ember. Starts with 3 Arcana and an Obsidian Blade that every Sharpen improves for good.',
-    lanes: ['Blade: sharpen one weapon', 'Arcana: spend for finishers', 'Sigils: ticking Auras'],
+    buildPaths: ['Blade: sharpen one weapon', 'Arcana: spend for finishers', 'Sigils: ticking Auras'],
     howTo: [
       'Arcana is a second resource. Cards with an orange orb spend it; others gain it.',
       'You start with an Obsidian Blade. Every Sharpen card makes every copy hit harder for the whole fight.',
@@ -274,7 +274,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     ],
     blurb:
       'A short, fat, bald dwarf with a hammer, an Old Twelve Gauge that hits every enemy and gets sharper, and a trolley of window panes. Booby traps, glass and buckshot.',
-    lanes: [
+    buildPaths: [
       'Gun: sharpen the Old Twelve Gauge',
       'Shells: buckshot that hits everyone',
       'Hangover: the more it hurts, the harder you hit',
@@ -318,7 +318,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     ],
     blurb:
       'A warden of the drowned dead. Starts with a Bone Thrall. Curses enemies with Fate until the end comes for them.',
-    lanes: [
+    buildPaths: [
       'Fate: curse, double, cash in',
       'Thralls: the dead fight for you',
       'Ashes: consumed cards fuel you',
@@ -492,23 +492,23 @@ export {
   stripRoll,
   type CardMark,
 } from './sanctify';
-import { LANE_OF } from './lanes.generated';
+import { PATH_OF } from './paths.generated';
 
-/** Which of its Riftwalker's three lanes (0, 1 or 2 in `Riftwalker.lanes`) a card belongs to, or undefined (basics, glue, legendaries). */
-export function laneOf(cardId: string): number | undefined {
-  return LANE_OF[stripRoll(cardId).replace(/\+$/, '')];
+/** Which of its Riftwalker's three build paths (0, 1 or 2 in `Riftwalker.build paths`) a card belongs to, or undefined (basics, glue, legendaries). */
+export function pathOf(cardId: string): number | undefined {
+  return PATH_OF[stripRoll(cardId).replace(/\+$/, '')];
 }
 
-/** The short name of a lane ("Bulwark"), and the whole line ("Bulwark: hit with your Barrier"). */
-export function laneName(hero: HeroId, lane: number): string {
-  return (RIFTWALKERS[hero].lanes[lane] ?? '').split(':')[0] ?? '';
+/** The short name of a build path ("Bulwark"), and the whole line ("Bulwark: hit with your Barrier"). */
+export function pathName(hero: HeroId, path: number): string {
+  return (RIFTWALKERS[hero].buildPaths[path] ?? '').split(':')[0] ?? '';
 }
 
-/** How many cards (base versions) a Riftwalker has in each of its lanes. */
-export function laneSizes(hero: HeroId): [number, number, number] {
+/** How many cards (base versions) a Riftwalker has in each of its build paths. */
+export function pathSizes(hero: HeroId): [number, number, number] {
   const n: [number, number, number] = [0, 0, 0];
-  for (const [id, lane] of Object.entries(LANE_OF))
-    if (COMBAT_DB.cards[id]?.hero === hero && lane >= 0 && lane <= 2) n[lane as 0 | 1 | 2]++;
+  for (const [id, path] of Object.entries(PATH_OF))
+    if (COMBAT_DB.cards[id]?.hero === hero && path >= 0 && path <= 2) n[path as 0 | 1 | 2]++;
   return n;
 }
 

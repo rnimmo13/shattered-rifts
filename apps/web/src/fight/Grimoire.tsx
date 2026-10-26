@@ -139,7 +139,7 @@ export function Grimoire(props: {
                   <span>
                     {p.heroes.length !== 1 && p.heroes.length !== 2
                       ? 'By rarity'
-                      : [p.heroes.join(' · '), p.lane].filter(Boolean).join(' · ') || 'Cards'}
+                      : [p.heroes.join(' · '), p.path].filter(Boolean).join(' · ') || 'Cards'}
                   </span>
                 </h4>
                 <ul

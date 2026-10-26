@@ -27,7 +27,7 @@
     "audit:balance": "pnpm --filter @sr/tools audit:balance",
     "cardscan": "pnpm --filter @sr/tools cardscan",
     "traitscan": "pnpm --filter @sr/tools traitscan",
-    "lanes": "pnpm --filter @sr/tools lanes",
+    "paths": "pnpm --filter @sr/tools paths",
     "pvpsmoke": "pnpm --filter @sr/tools pvpsmoke",
     "pvpbalance": "pnpm --filter @sr/tools pvpbalance",
     "ghostsim": "pnpm --filter @sr/tools ghostsim",

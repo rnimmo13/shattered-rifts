@@ -10,7 +10,7 @@ export interface Job {
   id: number;
   kind: 'fight' | 'burst' | 'optimize';
   hero: HeroId;
-  lane: number;
+  path: number;
   level: Level;
   deckSeed: number;
   enemies: string[];
@@ -37,7 +37,7 @@ parentPort?.on('message', (jobs: Job[]) => {
         id: j.id,
         optimize: optimize({
           hero: j.hero,
-          lane: j.lane,
+          path: j.path,
           level: j.level,
           rounds: o.rounds,
           seeds: o.seeds,
@@ -52,9 +52,9 @@ parentPort?.on('message', (jobs: Job[]) => {
       ? { deck: j.deck, boons: j.boons ?? [] }
       : buildDeck(
           j.hero,
-          j.lane,
+          j.path,
           j.level,
-          hashSeed(`${j.hero}/${j.lane}/${j.level}/${j.deckSeed}`),
+          hashSeed(`${j.hero}/${j.path}/${j.level}/${j.deckSeed}`),
         );
     const spec = {
       hero: j.hero,

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { COMBAT_DB, RIFTWALKERS, V2_DECK_RULES, laneOf, type HeroId } from '@sr/content/v2';
+import { COMBAT_DB, RIFTWALKERS, V2_DECK_RULES, pathOf, type HeroId } from '@sr/content/v2';
 import {
   KIT_CARDS,
   RunError,
@@ -14,7 +14,7 @@ import {
 const HEROES = Object.keys(RIFTWALKERS) as HeroId[];
 
 describe('starting kits', () => {
-  it('every run opens by offering three starting decks, one per lane', () => {
+  it('every run opens by offering three starting decks, one per path', () => {
     for (const h of HEROES) {
       const r = newRun(h, `kit-${h}`, 'normal');
       expect(r.phase).toBe('kit');
@@ -22,21 +22,21 @@ describe('starting kits', () => {
     }
   });
 
-  it('each kit is two uncommon cards of its lane swapped in for two plain cards, all legal', () => {
+  it('each kit is two uncommon cards of its path swapped in for two plain cards, all legal', () => {
     for (const h of HEROES) {
       const kits = makeKits(h);
       expect(kits).toHaveLength(3);
-      kits.forEach((k, lane) => {
-        expect(k.added, `${h} lane ${lane}`).toHaveLength(2);
+      kits.forEach((k, path) => {
+        expect(k.added, `${h} path ${path}`).toHaveLength(2);
         expect(k.removed).toHaveLength(2);
-        expect(k.leans).toBe(RIFTWALKERS[h].lanes[lane]?.split(':')[0]);
+        expect(k.leans).toBe(RIFTWALKERS[h].buildPaths[path]?.split(':')[0]);
         expect(k.deck.length).toBe(RIFTWALKERS[h].starter.length);
         expect(k.deck.length).toBeGreaterThanOrEqual(V2_DECK_RULES.minSize);
         for (const id of k.added) {
           const c = COMBAT_DB.cards[id];
           expect(c?.hero, `${h} ${id}`).toBe(h);
           expect(c?.rarity, `${h} ${id}`).toBe('uncommon');
-          expect(laneOf(id), `${h} ${id}`).toBe(lane);
+          expect(pathOf(id), `${h} ${id}`).toBe(path);
           expect(c?.unplayable).toBeFalsy();
         }
         for (const id of k.removed) {

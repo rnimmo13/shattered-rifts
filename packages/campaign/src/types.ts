@@ -82,7 +82,7 @@ export interface TrialPrize {
   /** what kind of thing it is, for the little mark on its slot: card, boon, potion, crossed, hp, upgrade, shards, heal */
   icon?: string;
   card?: string;
-  /** a prize that is a choice of cards (the Rift-crossed lane: three rares): you pick one when you take it */
+  /** a prize that is a choice of cards (the Rift-crossed build path: three rares): you pick one when you take it */
   choices?: string[];
   boon?: string;
   potion?: string;
@@ -203,7 +203,7 @@ export type DealStep =
 /** What an event does to a card you choose from your deck. */
 export type DeckChoice = 'upgrade' | 'remove' | 'transform' | 'copy' | 'mark';
 
-/** One of the three starting decks (one per lane) offered at the start of a run. */
+/** One of the three starting decks (one per build path) offered at the start of a run. */
 export interface KitOption {
   id: 'a' | 'b' | 'c';
   /** what it leans toward, in the player's words ("Traps", "Fate"...) */

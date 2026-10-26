@@ -1,8 +1,8 @@
-// Valeria, the knight (Aurelion). No companions. Three lanes:
+// Valeria, the knight (Aurelion). No companions. Three build paths:
 //   Bulwark     - Barrier that scales, and hits for the Barrier you hold
 //   Thorns      - retaliation: Thorns, punishing Traps, payoffs for the Thorns you carry
 //   Devotion  - healing, Shielded and Radiant Powers
-// Glue cards (marked) serve two lanes. Numbers assume 3 Mana and a 5-card hand.
+// Glue cards (marked) serve two build paths. Numbers assume 3 Mana and a 5-card hand.
 
 import type { CardDef } from '@sr/combat';
 import {

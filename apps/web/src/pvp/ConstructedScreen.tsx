@@ -112,7 +112,7 @@ export default function ConstructedScreen() {
                     {RIFTWALKERS[h].hero.name}{' '}
                     <small className="setup__charRole">{RIFTWALKERS[h].role}</small>
                   </span>
-                  <span>{RIFTWALKERS[h].lanes.map((l) => l.split(':')[0]).join(' · ')}</span>
+                  <span>{RIFTWALKERS[h].buildPaths.map((l) => l.split(':')[0]).join(' · ')}</span>
                 </button>
               ))}
             </div>

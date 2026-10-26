@@ -1,5 +1,5 @@
 // DRUNKARD, the Homeless Drunk (the Midden, the rift's rubbish heap). A short, fat, bald dwarf with a hammer, a sawed-off 12 gauge and a shopping trolley of
-// window panes. No companions. Three lanes:
+// window panes. No companions. Three build paths:
 //   Junk Traps - a few booby traps built from bottles and glass (Traps are a shared tool; Vesper still owns the most)
 //   Glass      - hang panes of glass: Barrier and Thorns, then break them over someone's head
 //   Shells     - Buckshot Shells (0-cost, hit EVERY enemy, consumed) and liquid courage to keep swinging

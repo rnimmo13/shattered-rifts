@@ -132,6 +132,7 @@ export type Metric =
   | 'snares'
   | 'stars'
   | 'runes'
+  | 'powers' // Auras (Powers) you have in play
   | 'mana'
   | 'played' // cards played this turn (before this one)
   | 'attacksPlayed'
@@ -233,8 +234,8 @@ export type Op =
   | { op: 'upgrade'; scope: 'hand' | 'random' }
   /** cards in your hand cost less for the rest of the fight (one random card, or all of them) */
   | { op: 'cheapen'; amount: number; scope: 'hand' | 'random' }
-  /** move random cards from your discard pile to your hand (or the top of your draw pile); `kind` narrows which */
-  | { op: 'fetch'; amount: number; to: 'hand' | 'draw'; kind?: CardKind }
+  /** move random cards from your discard pile to your hand (or the top of your draw pile); `kind` and `tag` narrow which */
+  | { op: 'fetch'; amount: number; to: 'hand' | 'draw'; kind?: CardKind; tag?: string }
   /** add a copy of the card being played */
   | { op: 'copySelf'; to: 'hand' | 'discard' | 'draw' };
 
