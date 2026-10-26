@@ -29,6 +29,35 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.77.0',
+    date: '2026-10-26',
+    title: 'Numbers you can read',
+    summary:
+      'Cards show the damage they will really deal, hit numbers hold still, cheaper upgrades for the big cards, and missing-HP cards behave in the Arena.',
+    notes: [
+      {
+        kind: 'new',
+        text: 'A damage number on a card in your hand shows what it will really deal: your Might, stance, Faltering, Sharpen and Edge counted, green when higher than printed and red when lower. Aim it at an enemy and their Exposed counts too; a card that could hit several enemies shows the range. A sharpened weapon shows its sharpened damage right on the card.',
+      },
+      {
+        kind: 'changed',
+        text: 'Damage (red), healing (green) and Barrier (blue) numbers are bigger and hold still while they fade; a hit that Barrier partly soaks shows both.',
+      },
+      {
+        kind: 'balance',
+        text: 'Cards that grow as you get hurt (Bar Stool, the window panes, Last Stand, Death or Glory and more) count the share of your HP missing, so they hit about the same in the campaign and no longer run away in the Arena.',
+      },
+      {
+        kind: 'balance',
+        text: 'Some upgrades make a big card cheaper instead of a little bigger: The Twelve-Gauge Opera+, Rift Collapse+, Bloodmoon Hunt+, The Great Pole+ and The Perfect Trap+ cost 2; Shatterstorm+, Cataclysm+ and Killing Glass+ need one less Arcana; Cataclysm Totem+ awakens your totems 3 times.',
+      },
+      {
+        kind: 'changed',
+        text: 'Bigger status numbers on the fighters, and a plain map legend.',
+      },
+    ],
+  },
+  {
     version: '0.76.0',
     date: '2026-10-26',
     title: 'Your deck at stake',
