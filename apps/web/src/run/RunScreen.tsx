@@ -408,6 +408,7 @@ export default function RunScreen() {
       const fightView = (link?: PvpLink) => (
         <FightView
           key={plan.seed}
+          omens={omensAt(run.tier).map((o) => ({ name: o.name, text: o.text(run.tier) }))}
           {...(link
             ? { pvp: link }
             : {

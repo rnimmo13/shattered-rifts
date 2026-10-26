@@ -1943,3 +1943,40 @@
   line-height: 1.05rem;
   text-align: center;
 }
+
+/* the other side's column, top right (mirrors .fight__side): the Rift Tier's Omens, then an opponent's Boons and Auras */
+.fight__side--foe {
+  left: auto;
+  right: 1.2rem;
+  justify-items: end;
+}
+.fight__side--foe .fight__aux--auras,
+.fight__side--foe .fight__aux--auras .aux--powers {
+  justify-items: end;
+  text-align: right;
+}
+.fight__omens {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.35rem;
+  max-width: 18rem;
+}
+.omenchip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  border: 1px solid rgb(209 47 72 / 0.6);
+  background: rgb(40 8 20 / 0.82);
+  color: #ffb3c0;
+  font-size: 0.8rem;
+  letter-spacing: 0.03em;
+  cursor: help;
+}
+.omenchip:hover,
+.omenchip:focus-visible {
+  border-color: #ff6b81;
+  outline: none;
+}

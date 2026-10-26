@@ -5,6 +5,7 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **See what you are up against:** in a campaign fight the Rift Tier's Omens sit at the top right with what each does on hover, and in the Arena (and against a ghost Warden) your opponent's Auras and Boons show there too.
 - **Trades:** new events trade particular cards of your deck: melt two common Attacks (or bind two common Skills) into an uncommon of your choice, trade a rare for another, retrain a card that does not fit your build path, or step an uncommon up to a rare. The Threshold can trade Strikes or Defends for your pick of Attacks or Skills.
 - **Sanctified cards** show their changed numbers in green or red, and hovering one says what the roll changed.
 - **Fight screen:** played cards are smaller (smaller still in replays), potions sit in a column above Mana with Arcana beside it, notices no longer cover the run bar, and Back to the result stays put when you hover it.

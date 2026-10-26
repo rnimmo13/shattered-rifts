@@ -278,6 +278,8 @@ export function FightView(props: {
   doneLabel?: string;
   /** more buttons on the result (the Arena's Share replay) */
   resultExtra?: (r: FightResult) => React.ReactNode;
+  /** the Rift Tier's Omens (the campaign): shown on the enemies' side, like Auras, so their effects are always in view */
+  omens?: { name: string; text: string }[];
 }) {
   const { db, setup, onMove, onResumeFailed } = props;
   const pvp = props.pvp ?? null;
@@ -1170,6 +1172,11 @@ export function FightView(props: {
   const heroPlaced = placed.find((p) => p.unit.kind === 'hero' && p.unit.side === mySide) ?? null;
   const foeSide: Side = mySide === 'a' ? 'b' : 'a';
   const foePlaced = placed.find((p) => p.unit.kind === 'hero' && p.unit.side === foeSide) ?? null;
+  const them = view?.sides[foeSide];
+  const theirSetup = foeSide === 'a' ? setup.a : setup.b;
+  const foeBoons: readonly string[] =
+    'boons' in theirSetup && Array.isArray(theirSetup.boons) ? theirSetup.boons : [];
+  const omens = props.omens ?? [];
   const floatPos = (f: Float): { left: number; top: number } | null => {
     if (!sc) return null;
     const p = sc.stageToHost(f.x, f.y);
@@ -1621,6 +1628,39 @@ export function FightView(props: {
                 </div>
               )}
               {me && <AuraList db={db} me={me} />}
+            </div>
+          )}
+          {/* the other side, top right: the Omens of this Rift Tier, then an opponent's Boons and Auras (the Arena, a ghost Warden) */}
+          {(omens.length > 0 || foeBoons.length > 0 || (them?.powers.length ?? 0) > 0) && (
+            <div className="fight__side fight__side--foe">
+              {omens.length > 0 && (
+                <div className="fight__omens" aria-label="Omens">
+                  {omens.map((o) => (
+                    <span
+                      key={o.name}
+                      className="omenchip"
+                      tabIndex={0}
+                      {...tipAttrs({
+                        kicker: 'Omen',
+                        title: o.name,
+                        tone: 'bad',
+                        text: o.text,
+                        hint: 'An Omen of this Rift Tier: it lasts the whole run at this tier.',
+                      })}
+                    >
+                      <span aria-hidden>☾</span> {o.name}
+                    </span>
+                  ))}
+                </div>
+              )}
+              {foeBoons.length > 0 && (
+                <div className="fight__boons" aria-label="Their Boons">
+                  {foeBoons.map((id) => (
+                    <BoonChip key={id} id={id} />
+                  ))}
+                </div>
+              )}
+              {them && <AuraList db={db} me={them} />}
             </div>
           )}
           {me && showStars && <LumenCounter value={me.stars} />}
