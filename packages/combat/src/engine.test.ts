@@ -1076,7 +1076,67 @@ describe('live damage in card text', () => {
       'Deal [[live:down:6]] damage.',
     );
     expect(cardText(db, weapon, new Map([[0, { lo: 9, hi: 13, printed: 9, calc: false }]]))).toBe(
-      'Deal [[live:calc:9-13]] damage.',
+      'Deal [[live:up:9-13]] damage.',
     );
+  });
+});
+
+describe('the damage preview, as the card will see it', () => {
+  it('a card that counts your hand does not count itself, and one that counts Mana counts it after paying', () => {
+    const base = {
+      kind: 'attack',
+      cost: 1,
+      target: 'foe',
+    } as const;
+    const tdb: CombatDb = {
+      ...db,
+      cards: {
+        ...db.cards,
+        handy: {
+          ...base,
+          id: 'handy',
+          name: 'Handy',
+          effects: [{ op: 'damage', amount: 0, to: 'target', scale: { by: 'hand' } }],
+        } as unknown as CardDef,
+        manaish: {
+          ...base,
+          id: 'manaish',
+          name: 'Manaish',
+          effects: [{ op: 'damage', amount: 0, to: 'target', scale: { by: 'mana' } }],
+        } as unknown as CardDef,
+      },
+    };
+    const c = clone(start(['cultist'], ['handy', 'manaish', 'strike', 'strike'], {}, 't'));
+    c.sides.a.mana = 3;
+    // the hand holds 4: the other 3 count
+    expect(previewCardDamage(tdb, c, 't0').get(0)?.lo).toBe(3);
+    // 3 Mana, 1 paid: 2
+    expect(previewCardDamage(tdb, c, 't1').get(0)?.lo).toBe(2);
+    // and they agree with playing it
+    const hp = foe(c).hp;
+    const after = applyAction(tdb, c, { type: 'play', card: 't0', target: foe(c).id }).state;
+    expect(hp - after.sides.b.units[0]!.hp).toBe(3);
+  });
+
+  it('shows nothing it cannot know: a damage effect after another effect keeps the printed number', () => {
+    const tdb: CombatDb = {
+      ...db,
+      cards: {
+        ...db.cards,
+        braced: {
+          id: 'braced',
+          name: 'Braced',
+          kind: 'attack',
+          cost: 1,
+          target: 'foe',
+          effects: [
+            { op: 'barrier', amount: 10, to: 'self' },
+            { op: 'damage', amount: 0, to: 'target', scale: { by: 'barrier' } },
+          ],
+        } as unknown as CardDef,
+      },
+    };
+    const c = clone(start(['cultist'], ['braced']));
+    expect(previewCardDamage(tdb, c, 't0').size).toBe(0);
   });
 });

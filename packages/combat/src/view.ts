@@ -609,7 +609,15 @@ function liveDamageText(text: string, o: Extract<Op, { op: 'damage' }>, l: LiveD
     const mark = `[[live:calc:${num}]]`;
     return dot < 0 ? `${text} (${mark})` : `${text.slice(0, dot)} (${mark})${text.slice(dot)}`;
   }
-  const dir = l.lo > l.printed ? 'up' : l.hi < l.printed ? 'down' : l.lo === l.hi ? 'same' : 'calc';
+  // (green when it can only be more than printed, red when only less, gold for a range that goes both ways)
+  const dir =
+    l.lo === l.hi && l.lo === l.printed
+      ? 'same'
+      : l.lo >= l.printed
+        ? 'up'
+        : l.hi <= l.printed
+          ? 'down'
+          : 'calc';
   // (a sharpened weapon's "+1 per point of sharpening" is already in the live number, so it goes)
   const printed = new RegExp(`^Deal ${o.amount}( \\([^)]*\\))? damage`);
   return printed.test(text) ? text.replace(printed, `Deal [[live:${dir}:${num}]] damage`) : text;

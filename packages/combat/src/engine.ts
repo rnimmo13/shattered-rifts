@@ -1888,7 +1888,16 @@ export function previewCardDamage(
   const def = inst ? db.cards[inst.card] : undefined;
   const hero = heroOf(sd);
   if (!inst || !def || !hero) return out;
-  const r: Run = { db, s, ev: [], depth: 0 };
+  // as the effects will see it: the card has left the hand and its cost is paid (a card that counts your hand or your Mana)
+  const paid = def.x ? sd.mana : Math.min(sd.mana, costOf(db, sd, inst));
+  const after: CombatState = {
+    ...s,
+    sides: {
+      ...s.sides,
+      [sd.id]: { ...sd, hand: sd.hand.filter((c) => c.id !== instId), mana: sd.mana - paid },
+    },
+  };
+  const r: Run = { db, s: after, ev: [], depth: 0 };
   const foes = s.sides[other(sd.id)].units.filter((u) => u.hp > 0);
   const taunters = foes.filter((u) => u.taunt);
   const chosen = targetId ? (foes.find((u) => u.id === targetId) ?? null) : null;
@@ -1899,9 +1908,16 @@ export function previewCardDamage(
     x: def.x ? sd.mana + (def.xBonus ?? 0) : 0,
   });
   const edge = def.tags?.includes(EDGE_TAG) ? stacks(hero, 'edge') : 0;
-  const vigor = def.kind === 'attack' ? stacks(hero, 'vigor') : 0;
+  // (Vigor goes into the first damage effect only, as the engine spends it)
+  let vigor = def.kind === 'attack' ? stacks(hero, 'vigor') : 0;
+  let earlier = false;
   def.effects.forEach((op, i) => {
-    if (op.op !== 'damage') return;
+    if (op.op !== 'damage') {
+      // an effect before the damage (Barrier gained, cards consumed, Exposed applied...) can change it: no guess, the printed text
+      earlier = true;
+      return;
+    }
+    if (earlier) return;
     const pool =
       op.to === 'target'
         ? chosen
@@ -1917,12 +1933,20 @@ export function previewCardDamage(
     if (!pool) return;
     const hitsAll = op.to === 'allFoes';
     const lone = op.lonePct && (hitsAll ? foes.length === 1 : true) ? 1 + op.lonePct / 100 : 1;
-    const one = (t: Unit | null): number =>
-      modifiedDamage(
-        Math.round((amountOf(r, a, op.amount, op.scale, t) + edge + vigor) * lone),
+    const v = vigor;
+    vigor = 0;
+    const one = (t: Unit | null): number => {
+      // (with no target chosen yet, a card that reads "the target's Bleed" reads each enemy's in turn)
+      const at = op.to === 'target' && !chosen ? { ...a, target: t } : a;
+      const n = modifiedDamage(
+        Math.round((amountOf(r, at, op.amount, op.scale, t) + edge + v) * lone),
         hero,
         t,
       );
+      // Ghostly lets 1 through, Shielded none
+      if (t && stacks(t, 'shielded') > 0) return 0;
+      return t && stacks(t, 'ghostly') > 0 && n > 1 ? 1 : n;
+    };
     const vals = pool.length ? pool.map(one) : [one(null)];
     out.set(i, {
       lo: Math.min(...vals),
