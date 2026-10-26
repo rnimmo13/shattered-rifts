@@ -823,7 +823,7 @@
 }
 .eventopts {
   display: grid;
-  gap: 0.7rem;
+  gap: 1rem;
   width: min(38rem, 100%);
 }
 .eventopt {
@@ -1483,22 +1483,74 @@
   max-width: 24rem;
 }
 
-/* an event option that names random cards: the cards themselves under it (what leaves, an arrow, what you get) */
-.eventopt__with {
-  display: grid;
-  gap: 0.5rem;
-}
-.eventopt__cards {
+/* an event option that names random cards: the cards inside its box, each marked with what happens to it (DECISIONS #273) */
+.optcards {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  justify-content: center;
-  gap: 0.6rem;
+  gap: 0.6rem 0.9rem;
+  margin-top: 0.45rem;
 }
-.eventopt__cards .pick {
-  margin: 0;
+.optcards__pair {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
 }
-.eventopt__arrow {
-  font-size: 2rem;
+.optcards__arrow {
+  display: grid;
+  justify-items: center;
+  font-size: 1.6rem;
+  line-height: 1;
   color: var(--c-gold-light);
+}
+.optcards__arrow small {
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--c-text-dim);
+}
+.optcard {
+  position: relative;
+  display: inline-block;
+  line-height: 0;
+  border-radius: 8px;
+}
+.optcard__mark {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-style: normal;
+  font-family: var(--font-display);
+  font-weight: 900;
+  line-height: 1;
+  pointer-events: none;
+}
+/* leaving your deck: dimmed and crossed out in red */
+.optcard--lose .card,
+.optcard--from .card {
+  filter: saturate(0.55) brightness(0.7);
+}
+.optcard--lose .optcard__mark {
+  font-size: 4.2rem;
+  color: #ff4d62;
+  text-shadow: 0 2px 6px #000;
+}
+/* joining your deck: a green plus in the corner, and a green edge */
+.optcard--gain,
+.optcard--to {
+  box-shadow:
+    0 0 0 2px #4ee08a,
+    0 0 14px rgb(78 224 138 / 0.45);
+}
+.optcard--gain .optcard__mark {
+  inset: auto -0.45rem auto auto;
+  top: -0.45rem;
+  width: 1.7rem;
+  height: 1.7rem;
+  border-radius: 50%;
+  font-size: 1.4rem;
+  color: #04301d;
+  background: #4ee08a;
+  box-shadow: 0 2px 6px rgb(0 0 0 / 0.6);
 }

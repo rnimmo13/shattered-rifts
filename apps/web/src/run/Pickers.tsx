@@ -1080,57 +1080,82 @@ export function EventView(props: {
             : ev.options
         ).map((o) => {
           const { head, detail } = splitOption(o.label);
-          const button = (
+          return (
             <button
               key={o.id}
-              className={`eventopt${o.id === 'trial' ? ' eventopt--trial' : ''}`}
+              className={`eventopt${o.id === 'trial' ? ' eventopt--trial' : ''}${o.shows ? ' eventopt--cards' : ''}`}
               disabled={o.id === 'trial' && !canRoll}
               onClick={() => (o.id === 'trial' ? roll() : props.onChoose(o.id))}
             >
               <b className="eventopt__name">{head}</b>
               {detail && <span className="eventopt__text">{detail}</span>}
+              {/* the random cards it means, picked already (DECISIONS #273), marked with what happens to them */}
+              {o.shows && <OptionCards shows={o.shows} onHover={setHover} />}
             </button>
-          );
-          if (!o.shows) return button;
-          // the random cards it is talking about, picked already: what leaves your deck, and what you get (DECISIONS #273)
-          return (
-            <div key={o.id} className="eventopt__with">
-              {button}
-              <div className="eventopt__cards" aria-label="The cards this option means">
-                {o.shows.lose.map((id, k) => (
-                  <Pickable
-                    key={`l${k}`}
-                    id={id}
-                    width={120}
-                    own={props.run.character}
-                    onHover={setHover}
-                    preview
-                    badge={o.shows?.gain.length ? undefined : 'Leaves'}
-                  />
-                ))}
-                {o.shows.lose.length > 0 && o.shows.gain.length > 0 && (
-                  <span className="eventopt__arrow" aria-label="becomes">
-                    →
-                  </span>
-                )}
-                {o.shows.gain.map((id, k) => (
-                  <Pickable
-                    key={`g${k}`}
-                    id={id}
-                    width={120}
-                    own={props.run.character}
-                    onHover={setHover}
-                    preview
-                    badge={o.shows?.lose.length ? undefined : 'You get'}
-                  />
-                ))}
-              </div>
-            </div>
           );
         })}
       </div>
       <CardHover def={hover} />
     </section>
+  );
+}
+
+/**
+ * The cards an event option means, inside its box, each marked with what happens to it: crossed out when it leaves your deck, an
+ * arrow to what it becomes (a swap, a transform, an upgrade), a plus on a card you get. Hover one to read it.
+ */
+function OptionCards(props: {
+  shows: { lose: string[]; gain: string[] };
+  onHover: (def: CardDef | null) => void;
+}) {
+  const { lose, gain } = props.shows;
+  const card = (id: string, mark: 'lose' | 'gain' | 'from' | 'to', key: string) => {
+    const def = defOf(id);
+    if (!def) return null;
+    return (
+      <span
+        key={key}
+        className={`optcard optcard--${mark}`}
+        onPointerEnter={() => props.onHover(def)}
+        onPointerLeave={() => props.onHover(null)}
+      >
+        <FightCard db={COMBAT_DB} def={def} width={92} />
+        {mark === 'lose' && (
+          <i className="optcard__mark" aria-label="leaves your deck">
+            ✕
+          </i>
+        )}
+        {mark === 'gain' && (
+          <i className="optcard__mark" aria-label="joins your deck">
+            +
+          </i>
+        )}
+      </span>
+    );
+  };
+  // a card that becomes another (the same number on each side): shown as pairs, old → new
+  if (lose.length > 0 && lose.length === gain.length) {
+    const upgrade = lose.every((id, i) => defOf(id)?.upgrade === gain[i]);
+    return (
+      <span className="optcards" aria-label="The cards this option means">
+        {lose.map((id, i) => (
+          <span key={i} className="optcards__pair">
+            {card(id, 'from', `f${i}`)}
+            <span className="optcards__arrow" aria-label={upgrade ? 'is upgraded to' : 'becomes'}>
+              {upgrade ? '⬆' : '⇄'}
+              <small>{upgrade ? 'Upgrade' : 'Swap'}</small>
+            </span>
+            {card(gain[i] as string, 'to', `t${i}`)}
+          </span>
+        ))}
+      </span>
+    );
+  }
+  return (
+    <span className="optcards" aria-label="The cards this option means">
+      {lose.map((id, i) => card(id, 'lose', `l${i}`))}
+      {gain.map((id, i) => card(id, 'gain', `g${i}`))}
+    </span>
   );
 }
 
