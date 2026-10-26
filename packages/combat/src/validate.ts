@@ -191,8 +191,10 @@ export function validateDb(db: CombatDb): string[] {
     if (h.trait?.turnStart)
       checkOps(`hero ${id} trait`, h.trait.turnStart, { aimed: false, snare: false });
     if (h.trait?.triggers)
-      for (const t of h.trait.triggers)
-        checkOps(`hero ${id} trait`, t.ops, { aimed: false, snare: false });
+      for (const t of h.trait.triggers) {
+        if (t.op !== 'power') errs.push(`hero ${id}: a trait trigger must be a power op`);
+        else checkOps(`hero ${id} trait`, t.ops, { aimed: false, snare: false });
+      }
     for (const s of h.startUnits ?? []) {
       const u = db.units[s];
       if (!u) errs.push(`hero ${id}: unknown start unit "${s}"`);

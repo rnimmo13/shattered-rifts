@@ -4,7 +4,7 @@
 import { applyAction, legalActions } from './engine';
 import { describeIntent } from './view';
 import type { Action, CombatDb, CombatState, Side } from './types';
-import { other } from './types';
+import { other, TRAIT_POWER } from './types';
 
 function incoming(db: CombatDb, s: CombatState, me: Side): number {
   let total = 0;
@@ -76,7 +76,7 @@ export function evaluate(db: CombatDb, s: CombatState, me: Side): number {
   v += mine.snares.length * 7;
   v += mine.nextMana * 3 + mine.nextDraw * 2.5;
   for (const c of [...mine.hand, ...mine.draw, ...mine.discard]) v += (c.bonus ?? 0) * 1.6;
-  v += mine.stars * 1.5 + mine.powers.length * 4;
+  v += mine.stars * 1.5 + mine.powers.filter((p) => p.card !== TRAIT_POWER).length * 4;
   for (const rs of mine.runes) v += 3 + rs.charge * 0.5;
   return v;
 }

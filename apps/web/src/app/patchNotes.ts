@@ -59,7 +59,7 @@ export const PATCH_NOTES: PatchNote[] = [
       },
       {
         kind: 'balance',
-        text: 'Ilvane, Sehra and Vesper are stronger, especially later in a run. Rivet’s Overdrive and Perpetual Motion cost 1 less; Vesper’s basic Traps hit harder.',
+        text: 'Ilvane, Sehra and Vesper are stronger, especially later in a run. Rivet’s Overdrive and Perpetual Motion cost 1 less; several of Vesper’s Traps hit harder.',
       },
       {
         kind: 'fixed',

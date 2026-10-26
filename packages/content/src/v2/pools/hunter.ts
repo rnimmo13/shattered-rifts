@@ -46,7 +46,7 @@ export const HUNTER: CardDef[] = [
     barrier(5),
     scaled(barrier(0), per('missingHp', 0.25)),
   ]),
-  // (upgraded it loses less HP but still draws 3: four copies drawing 4 each emptied the deck on the first turn; DECISIONS #237)
+  // (upgraded it loses less HP but draws the same 2: four copies drawing 4 each emptied the deck on the first turn; DECISIONS #237)
   k(
     'rare',
     'blood-tithe',

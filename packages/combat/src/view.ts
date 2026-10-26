@@ -364,7 +364,9 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
     case 'loseHp': {
       const a = amountText(o.amount, o.scale);
       if (a.equal) return `${o.to === 'self' ? 'Lose' : 'The target loses'} HP equal to ${a.num}.`;
-      return `${o.to === 'self' ? 'Lose' : 'Take'} ${a.num} HP${o.to === 'self' ? '' : who[o.to]}.`;
+      if (o.to === 'self') return `Lose ${a.num} HP.`;
+      if (o.to === 'target') return `The target loses ${a.num} HP.`;
+      return `Take ${a.num} HP${who[o.to]}.`;
     }
     case 'barrier':
       return amountText(o.amount, o.scale).equal
@@ -401,7 +403,7 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
       }
       // Edge is what makes Sleeve Knives hit harder: say so on the card instead of leaving it to a tooltip
       if (o.status === 'edge' && o.to === 'self' && !o.scale && o.amount > 0)
-        return `Gain ${o.amount} Edge: your Sleeve Knives deal ${o.amount} more damage for the rest of the fight.`;
+        return `Gain ${o.amount} Edge: your Sleeve Knives deal ${o.amount} more damage ${o.temp ? 'this turn' : 'for the rest of the fight'}.`;
       return `${o.amount < 0 ? 'Remove' : 'Apply'} ${at(Math.abs(o.amount), o.scale)} ${sname(o.status)}${o.to === 'self' ? '' : who[o.to]}${o.temp ? ' until the end of your turn' : ''}.`;
     }
     case 'scaleStatus': {
@@ -499,7 +501,7 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
     case 'revive':
       return 'Your most recently fallen ally returns with half its HP.';
     case 'fetch': {
-      const what = o.tag ? (TAG_NAMES[o.tag] ?? o.tag) : o.kind ? `${o.kind} card` : 'card';
+      const what = o.tag ? (TAG_NAMES[o.tag] ?? o.tag) : o.kind ? `${cap(o.kind)} card` : 'card';
       const n = o.amount === 1 ? `a random ${what}` : `${o.amount} random ${what}s`;
       return o.to === 'draw'
         ? `Put ${n} from your discard pile on top of your draw pile.`

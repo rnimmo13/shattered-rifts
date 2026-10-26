@@ -156,7 +156,6 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
       maxHp: 72,
       mana: 3,
       handSize: 5,
-      sigil: [addTo('sleeve-knife')],
     },
     starter: [...rep('strike', 4), ...rep('defend', 3), ...rep('quick-jab', 2), 'slip-away'],
     blurb:
@@ -520,7 +519,7 @@ export {
 } from './sanctify';
 import { PATH_OF } from './paths.generated';
 
-/** Which of its Riftwalker's three build paths (0, 1 or 2 in `Riftwalker.build paths`) a card belongs to, or undefined (basics, glue, legendaries). */
+/** Which of its Riftwalker's three build paths (0, 1 or 2 in `Riftwalker.buildPaths`) a card belongs to, or undefined (basics, glue, legendaries). */
 export function pathOf(cardId: string): number | undefined {
   return PATH_OF[stripRoll(cardId).replace(/\+$/, '')];
 }

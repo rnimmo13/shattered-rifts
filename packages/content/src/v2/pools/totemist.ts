@@ -96,9 +96,6 @@ export const TOTEMIST: CardDef[] = [
     channel('splinter'),
   ]),
   i('uncommon', 'shard-chorus', 'Splinter Grove', 'skill', 2, 'none', [channel('splinter', 2)]),
-  i('rare', 'glasswright', 'Woodcarver', 'power', 2, 'none', [
-    on('turnStart', [channel('splinter')]),
-  ]),
   i('uncommon', 'glyph-lattice', 'Totem Row', 'skill', 1, 'none', [{ op: 'runeSlots', amount: 2 }]),
   i('uncommon', 'charged-blow', 'Awakened Blow', 'attack', 1, 'foe', [
     scaled(dmg(4), per('runes', 2)),
@@ -145,10 +142,6 @@ export const TOTEMIST: CardDef[] = [
     dmg(8, 'allFoes'),
     channel('spark'),
   ]),
-  i('uncommon', 'spent-coil', 'Spent Husk', 'skill', 1, 'none', [evoke(), channel('spark')]),
-  i('rare', 'sparkstorm', 'Hawkstorm', 'power', 2, 'none', [
-    on('turnEnd', [scaled(dmg(0, 'allFoes'), per('runes'))]),
-  ]),
   i('uncommon', 'arc-reactor', 'Heartwood', 'attack', 2, 'foe', [
     dmg(6, 'target', 2),
     channel('spark'),
@@ -181,9 +174,6 @@ export const TOTEMIST: CardDef[] = [
     { exhaust: true },
   ),
   i('uncommon', 'chilled-focus', "Bear's Patience", 'skill', 1, 'none', [channel('ward'), scry(3)]),
-  i('uncommon', 'rune-carapace', 'Bark Carapace', 'power', 1, 'none', [
-    on('turnEnd', [scaled(barrier(0), per('runes'))]),
-  ]),
   i('uncommon', 'rune-shield', 'Totem Shield', 'skill', 1, 'none', [
     scaled(barrier(0), per('runes', 3)),
   ]),
@@ -195,12 +185,6 @@ export const TOTEMIST: CardDef[] = [
     dmg(5),
     barrier(4),
     channel('ward'),
-  ]),
-  i('uncommon', 'permafrost', 'Den of Bears', 'power', 2, 'none', [
-    on('turnStart', [channel('ward')]),
-  ]),
-  i('rare', 'echoing-loop', 'Unending Call', 'power', 2, 'none', [
-    on('turnEnd', [evoke(1, 1, true)]),
   ]),
   i('common', 'crystal-ward', 'Bark Ward', 'skill', 1, 'none', [barrier(7), channel('ward')], {
     retain: true,
@@ -242,9 +226,6 @@ export const TOTEMIST: CardDef[] = [
   i('common', 'void-pulse', "Elder's Shelter", 'skill', 1, 'none', [channel('hollow'), barrier(4)]),
   i('uncommon', 'deep-charge', 'Deep Roots', 'skill', 1, 'none', [channel('hollow'), draw(1)]),
   i('rare', 'abyssal-glyph', 'Ancient Elder', 'skill', 2, 'none', [channel('hollow', 2)]),
-  i('rare', 'consuming-dark', 'Elder Vigil', 'power', 2, 'none', [
-    on('turnEnd', [channel('hollow')]),
-  ]),
   i('rare', 'biased-weave', 'Sap Offering', 'power', 2, 'none', [
     status('resonance', 3),
     on('turnStart', [lose(1)]),
@@ -266,20 +247,9 @@ export const TOTEMIST: CardDef[] = [
     [scaled(dmg(8, 'allFoes'), per('runes', 4)), evoke(3)],
     { exhaust: true },
   ),
-  i('rare', 'gathering-dark', 'Gathering Elders', 'power', 2, 'none', [
-    on('play', [channel('hollow')], { filter: 'skill' }),
-  ]),
   i('common', 'silent-glyph', 'Silent Totem', 'skill', 1, 'none', [barrier(5), channel('hollow')], {
     onDiscard: [channel('hollow')],
   }),
-  i('common', 'rune-burst', 'Totem Burst', 'skill', 1, 'none', [evoke(), draw(1)]),
-  i('common', 'glimmer', 'Owl Glint', 'skill', 1, 'none', [channel('prism')], { exhaust: true }),
-  i('uncommon', 'prism-cut', 'Owl Cut', 'skill', 1, 'none', [channel('prism'), draw(1)]),
-  i('uncommon', 'prism-beam', "Owl's Gaze", 'attack', 0, 'foe', [
-    dmg(3),
-    status('exposed', 1, 'target'),
-  ]),
-  i('uncommon', 'harmonic-wave', 'Spirit Wave', 'attack', 2, 'none', [dmg(11, 'allFoes'), evoke()]),
   // (the awakened totem stays: one totem answers again and again, but the card is spent)
   i(
     'uncommon',
@@ -291,31 +261,18 @@ export const TOTEMIST: CardDef[] = [
     [{ op: 'evoke', times: 0, keep: true, scale: per('x') }],
     { x: true, exhaust: true },
   ),
-  i('rare', 'glyph-engine', 'Totem Engine', 'power', 2, 'none', [
-    on('turnStart', [channel('spark')]),
-  ]),
-  i(
-    'uncommon',
-    'glyph-trap',
-    'Hidden Totem',
-    'snare',
-    1,
-    'none',
-    [dmg(5, 'attacker'), channel('ward')],
-    {
-      trigger: { on: 'attacked' },
-    },
-  ),
-  i('uncommon', 'stored-charge', 'Stored Charge', 'skill', 1, 'none', [
-    manaNext(1),
-    channel('ward'),
-  ]),
 
   // --- Whittling ---
   // Carvings: 0-cost, small, and they come back (Gather the Shavings, Fresh Shavings, Clear the Bench)
-  i('common', 'live-wire', 'Hawk Carving', 'attack', 0, 'foe', [dmg(5)], CARVING),
+  i('common', 'live-wire', 'Hawk Carving', 'attack', 0, 'foe', [dmg(4)], {
+    ...CARVING,
+    up: { effects: [dmg(6)] },
+  }),
   i('common', 'sweeping-ray', 'Talon Carving', 'attack', 0, 'none', [dmg(3, 'allFoes')], CARVING),
-  i('common', 'echo-of-glyphs', 'Bear Carving', 'skill', 0, 'none', [barrier(5)], CARVING),
+  i('common', 'echo-of-glyphs', 'Bear Carving', 'skill', 0, 'none', [barrier(4)], {
+    ...CARVING,
+    up: { effects: [barrier(6)] },
+  }),
   i('common', 'skim-the-weave', 'Owl Carving', 'skill', 0, 'none', [scry(3)], CARVING),
   i(
     'uncommon',
@@ -330,6 +287,7 @@ export const TOTEMIST: CardDef[] = [
   i('common', 'bleed-the-void', 'Splinter Carving', 'skill', 0, 'none', [channel('splinter')], {
     ...CARVING,
     exhaust: true,
+    up: { effects: [channel('splinter', 2)] },
   }),
   i('common', 'rune-recall', 'Gather the Shavings', 'skill', 1, 'none', [
     barrier(3),
@@ -349,7 +307,7 @@ export const TOTEMIST: CardDef[] = [
     on('play', [barrier(3)], { tag: 'carving' }),
   ]),
   i('rare', 'creative-engine', "Carver's Bench", 'power', 2, 'none', [
-    on('turnStart', [addTo('live-wire'), addTo('echo-of-glyphs')]),
+    on('turnStart', [addTo('live-wire')]),
   ]),
   i('rare', 'rainbow-glyph', 'Living Wood', 'power', 3, 'none', [
     on('play', [channel('splinter')], { tag: 'carving' }),
@@ -364,6 +322,16 @@ export const TOTEMIST: CardDef[] = [
     [discard(9, 'any'), fetchTag(10, 'carving'), draw(1)],
     { exhaust: true },
   ),
+  i(
+    'uncommon',
+    'prism-beam',
+    'Eye Carving',
+    'attack',
+    0,
+    'foe',
+    [dmg(3), status('exposed', 1, 'target')],
+    CARVING,
+  ),
 
   // --- Rites ---
   // Auras that pay off when another Aura is played, and cards that count your Auras
@@ -373,10 +341,19 @@ export const TOTEMIST: CardDef[] = [
   i('common', 'glyph-guard', 'Rite of Warding', 'skill', 1, 'none', [
     scaled(barrier(5), per('powers', 2)),
   ]),
-  i('common', 'spark-cluster', 'Kindled Rite', 'power', 0, 'none', [on('turnEnd', [barrier(3)])]),
-  i('common', 'ice-shell', 'Rite of Thorns', 'power', 0, 'none', [
-    on('turnStart', [dmg(3, 'randomFoe')]),
-  ]),
+  i('common', 'spark-cluster', 'Ember Rite', 'power', 0, 'none', [on('turnEnd', [barrier(3)])], {
+    up: { effects: [on('turnEnd', [barrier(5)])] },
+  }),
+  i(
+    'common',
+    'ice-shell',
+    'Rite of Thorns',
+    'power',
+    0,
+    'none',
+    [on('turnStart', [dmg(3, 'randomFoe')])],
+    { up: { effects: [on('turnStart', [dmg(5, 'randomFoe')])] } },
+  ),
   i('uncommon', 'glacial-memory', 'Drum Circle', 'skill', 1, 'none', [
     draw(1),
     scaled(draw(0), per('powers', 0.5)),
@@ -425,6 +402,30 @@ export const TOTEMIST: CardDef[] = [
   i('rare', 'echoing-form', 'Echoing Chant', 'power', 3, 'none', [
     on('turnStart', [scaled(dmg(0, 'allFoes'), per('powers', 2))]),
   ]),
+  i('rare', 'glasswright', 'Woodcarver', 'power', 2, 'none', [
+    on('turnStart', [channel('splinter')]),
+  ]),
+  i('rare', 'sparkstorm', 'Hawkstorm', 'power', 2, 'none', [
+    on('turnEnd', [scaled(dmg(0, 'allFoes'), per('runes'))]),
+  ]),
+  i('uncommon', 'rune-carapace', 'Bark Carapace', 'power', 1, 'none', [
+    on('turnEnd', [scaled(barrier(0), per('runes'))]),
+  ]),
+  i('uncommon', 'permafrost', 'Den of Bears', 'power', 2, 'none', [
+    on('turnStart', [channel('ward')]),
+  ]),
+  i('rare', 'echoing-loop', 'Unending Call', 'power', 2, 'none', [
+    on('turnEnd', [evoke(1, 1, true)]),
+  ]),
+  i('rare', 'consuming-dark', 'Elder Vigil', 'power', 2, 'none', [
+    on('turnEnd', [channel('hollow')]),
+  ]),
+  i('rare', 'gathering-dark', 'Gathering Elders', 'power', 2, 'none', [
+    on('play', [channel('hollow')], { filter: 'skill' }),
+  ]),
+  i('rare', 'glyph-engine', 'Totem Engine', 'power', 2, 'none', [
+    on('turnStart', [channel('spark')]),
+  ]),
 
   // --- glue ---
   i('uncommon', 'retune', 'Retune', 'skill', 1, 'none', [upgradeOp('random')], { exhaust: true }),
@@ -445,5 +446,26 @@ export const TOTEMIST: CardDef[] = [
     'none',
     [dmg(10, 'allFoes'), evoke(10, 2)],
     { exhaust: true },
+  ),
+  i('common', 'rune-burst', 'Totem Burst', 'skill', 1, 'none', [evoke(), draw(1)]),
+  i('common', 'glimmer', 'Owl Glint', 'skill', 1, 'none', [channel('prism')], { exhaust: true }),
+  i('uncommon', 'prism-cut', 'Owl Cut', 'skill', 1, 'none', [channel('prism'), draw(1)]),
+  i('uncommon', 'harmonic-wave', 'Spirit Wave', 'attack', 2, 'none', [dmg(11, 'allFoes'), evoke()]),
+  i('uncommon', 'spent-coil', 'Spent Husk', 'skill', 1, 'none', [evoke(), channel('spark')]),
+  i('uncommon', 'stored-charge', 'Stored Charge', 'skill', 1, 'none', [
+    manaNext(1),
+    channel('ward'),
+  ]),
+  i(
+    'uncommon',
+    'glyph-trap',
+    'Hidden Totem',
+    'snare',
+    1,
+    'none',
+    [dmg(5, 'attacker'), channel('ward')],
+    {
+      trigger: { on: 'attacked' },
+    },
   ),
 ];
