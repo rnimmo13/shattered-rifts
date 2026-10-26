@@ -1308,7 +1308,9 @@ export function cardArtUrl(def: CardDef): string {
   if (!u) {
     u = cardArt(def).window.toDataURL('image/webp', 0.88);
     cache.get(def.id)?.window.getContext('2d')?.clearRect(0, 0, 1, 1);
-    urlCache.set(def.id, u);
+    // a browser short of memory hands back an empty image ('data:,'): never keep that, so the card is painted again next time
+    if (u.length > 64) urlCache.set(def.id, u);
+    else cache.delete(def.id);
   }
   return u;
 }

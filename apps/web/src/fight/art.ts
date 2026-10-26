@@ -335,9 +335,10 @@ export function cardArtSpec(c: CardDef): ArtCard {
   return fake;
 }
 
-/** The art window for a v2 card (a data URL), via the card-art painters. */
+/** The painted art window for a v2 card (a data URL): the placeholder, and what shows if a real picture fails to load. */
+export const paintedCardArt = (c: CardDef): string => cardArtUrl(cardArtSpec(c));
+
+/** The art window for a v2 card: its real picture if there is one, else the painted one. */
 export function cardArtV2(c: CardDef): string {
-  const real = realCardArt(c.id);
-  if (real) return real;
-  return cardArtUrl(cardArtSpec(c));
+  return realCardArt(c.id) ?? paintedCardArt(c);
 }

@@ -5,6 +5,7 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **No more blank cards:** a card picture that fails to load falls back to its painted art, and a painting that comes out empty (a browser short of memory) is painted again instead of staying blank.
 - **Thorns only answer attacks:** your Traps, Auras, totems and potions no longer hurt you when they hit an enemy with Thorns. A companion that attacks one still takes the Thorns itself.
 - **How to play lists every Omen and Warden's Heart:** what each Omen does when it arrives and by Tier XX, and what each Heart gives and costs. The Tier XII Omen is now called Blood Rites.
 - **Harder from the start:** Tier I enemies have about 15% more HP and hit a little harder, and every Rift Tier after it climbs faster.

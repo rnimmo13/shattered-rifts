@@ -1,10 +1,10 @@
-import { forwardRef, memo, useMemo, type CSSProperties } from 'react';
+import { forwardRef, memo, useMemo, useState, type CSSProperties } from 'react';
 import { cardText, type CardDef, type CombatDb } from '@sr/combat';
 import { CARD_H, CARD_W } from '../cards/size';
 import { markRollDiff, parseRules } from '../cards/cardText';
 import { RIFTWALKERS } from '@sr/content/v2';
 import { HeroIcon } from '../ui/HeroIcon';
-import { cardArtV2 } from './art';
+import { cardArtV2, paintedCardArt } from './art';
 import '../cards/card.css';
 
 const KIND_LABEL: Record<CardDef['kind'], string> = {
@@ -59,6 +59,9 @@ export const FightCard = memo(
   ) {
     const k = width / CARD_W;
     const art = useMemo(() => cardArtV2(def), [def]);
+    // a picture that does not arrive (a dropped request, files swapped by a deploy) falls back to the painted one, never a blank
+    const [artFailed, setArtFailed] = useState<string | null>(null);
+    const shown = artFailed === def.id ? paintedCardArt(def) : art;
     const text = useMemo(
       () => rulesFor(db, def) + (bonus ? ` Sharpened: +${bonus}.` : ''),
       [db, def, bonus],
@@ -84,7 +87,13 @@ export const FightCard = memo(
       >
         <div className="card__face">
           <div className="card__art">
-            <img src={art} alt="" draggable={false} decoding="async" />
+            <img
+              src={shown}
+              alt=""
+              draggable={false}
+              decoding="async"
+              onError={() => setArtFailed(def.id)}
+            />
             <div className="card__artShade" />
           </div>
           <div className="card__banner">
