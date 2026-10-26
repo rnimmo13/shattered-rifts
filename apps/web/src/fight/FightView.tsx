@@ -2,7 +2,8 @@
 // bottom, Mana, piles and End turn. It never decides a rule: it shows the engine's state, offers only legalActions(),
 // and replays the engine's events one by one (display.ts) so numbers change exactly when the animation lands.
 
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import {
   applyAction,
   costOf,
@@ -28,7 +29,7 @@ import { COMBAT_DB } from '@sr/content/v2';
 import { BattlefieldScene } from '../duel/scene/BattlefieldScene';
 import type { VenueId } from '../duel/scene/venue';
 import { loadEffectsMode, profileFor } from '../duel/effects';
-import { setBaseSpeed } from '../duel/scene/timescale';
+import { getBaseSpeed, setBaseSpeed } from '../duel/scene/timescale';
 import { getSound, play, setSound } from '../audio/sfx';
 import { DEFAULT_SPEED } from '../play/prefs';
 import { handCardWidth, handReserve } from '../hand/fanLayout';
@@ -58,11 +59,14 @@ import { FlourishCard, type Flourish } from './FlourishCard';
 import { useClearOfBelt } from './clearOfBelt';
 import type { FighterSpec } from './Fighters';
 import { attackFor } from './attackStyles';
-import type { FeedItem, PvpLink } from '../pvp/link';
+import type { FeedItem, MoveFeed, PvpLink } from '../pvp/link';
+import { replayFight, type FightMove, type FightReplay } from './recap';
+import { FightRecap } from './FightRecap';
 import { progressLabel } from '../pvp/deckLayout';
 import { seriesLine } from '../pvp/seriesText';
 import { TrophyBadges } from '../pvp/Trophies';
-import type { TrophyCount } from '@sr/pvp';
+import type { RankBadge as RankBadgeData, TrophyCount } from '@sr/pvp';
+import { RankBadge } from '../pvp/RankBadge';
 import '../duel/duel.css';
 import '../play/play.css';
 import './fight.css';
@@ -73,7 +77,27 @@ export interface FightResult {
   hp: number;
   /** the potions you did not use */
   potions: string[];
+  /** the fight as it was played (its setup and every move), to watch again or keep */
+  replay?: FightReplay;
 }
+
+/** Watching a fight, not playing it: a replay, or someone else's match. Nobody here may act. */
+export interface WatchMode {
+  /** the moves, numbered from 1, as they are to be played (all at once for a replay, as they happen for a live match) */
+  feed: MoveFeed;
+  /** how many moves there are in all (a replay), so how it ended can be shown after the last; null for a live match */
+  total: number | null;
+  /** how a replay ended, when the engine alone cannot tell (a resignation, a missed clock) */
+  end?: { winner: Side | 'draw'; reason: string } | null;
+  /** someone else's live match: the hand of the seat watched from is not shown (no help can be passed to the other player) */
+  hideHand?: boolean;
+}
+
+/** The replay screen, loaded only when a replay is watched. */
+const ReplayPlayer = lazy(() => import('./ReplayPlayer'));
+/** The pause between moves while watching (ms at normal speed), so each one can be followed. */
+const WATCH_GAP = 450;
+const WATCH_RATES = [1, 2, 4] as const;
 
 interface Float {
   id: number;
@@ -206,6 +230,7 @@ function WhoTag(props: {
   progress: string;
   unit: Parameters<typeof StanceChip>[0]['unit'];
   trophies?: TrophyCount | undefined;
+  rank?: RankBadgeData | undefined;
 }) {
   const ref = useRef<HTMLDivElement>(null);
   useClearOfBelt(ref);
@@ -218,7 +243,9 @@ function WhoTag(props: {
       <b>
         {props.name} <TrophyBadges trophies={props.trophies} />
       </b>
-      <small>{props.progress}</small>
+      <small>
+        {props.progress} <RankBadge rank={props.rank} />
+      </small>
       <StanceChip unit={props.unit} />
     </div>
   );
@@ -243,9 +270,30 @@ export function FightView(props: {
   onMove?: (a: Action) => void;
   /** the moves to resume could not be replayed (the rules changed under them): the fight starts again from the top */
   onResumeFailed?: () => void;
+  /** watching (a replay or a live match) instead of playing */
+  watch?: WatchMode;
+  /** what the result's main button says (Continue, Next game, or when watching, the exit's label) */
+  doneLabel?: string;
+  /** more buttons on the result (the Arena's Share replay) */
+  resultExtra?: (r: FightResult) => React.ReactNode;
 }) {
   const { db, setup, onMove, onResumeFailed } = props;
   const pvp = props.pvp ?? null;
+  const watch = props.watch ?? null;
+  const hideHand = watch?.hideHand === true;
+  /** every move of the fight so far, both seats', in order (the recap and the replay are made from it) */
+  const movesRef = useRef<FightMove[]>([]);
+  /** watching: paused, and how fast */
+  const pausedRef = useRef(false);
+  const [paused, setPaused] = useState(false);
+  const [rate, setRate] = useState<(typeof WATCH_RATES)[number]>(1);
+  /** the animation speed before this replay changed it (given back when it closes) */
+  const [speedBefore] = useState(getBaseSpeed);
+  /** the recap open over the result (the fight as it stood when it was opened) */
+  const [recapFor, setRecapFor] = useState<FightReplay | null>(null);
+  /** the result is set aside for a look at the board as the fight ended (the battle log is on it) */
+  const [peek, setPeek] = useState(false);
+  const [replaying, setReplaying] = useState<FightReplay | null>(null);
   /** the moves of a fight being resumed (read once, when the fight is made) */
   const [resumeMoves] = useState<Action[]>(() => props.resume ?? []);
   const mySide: Side = pvp?.seat ?? 'a';
@@ -321,8 +369,25 @@ export function FightView(props: {
 
   const show = useCallback((s: CombatState) => setView(viewFor(db, s, mySide)), [db, mySide]);
 
+  /** The fight as played so far: enough to watch it again or add it up. */
+  const replayOf = useCallback(
+    (): FightReplay => ({
+      setup,
+      moves: [...movesRef.current],
+      title: props.title,
+      me: mySide,
+      ...(pvp ? { names: pvp.names, progress: pvp.progress } : {}),
+      ...(props.venue ? { venue: props.venue } : {}),
+    }),
+    [setup, props.title, mySide, pvp, props.venue],
+  );
+
   // --- replaying events ---------------------------------------------------------------------------
-  const wait = useCallback((ms: number) => sleep(ms / speedRef.current), []);
+  const wait = useCallback(async (ms: number) => {
+    await sleep(ms / speedRef.current);
+    // (a paused replay holds here, between two beats of the animation)
+    while (pausedRef.current && !cancelledRef.current) await sleep(120);
+  }, []);
 
   const playEvent = useCallback(
     async (e: CombatEvent, all: CombatEvent[], i: number): Promise<void> => {
@@ -591,6 +656,8 @@ export function FightView(props: {
       }
       chain.current = chain.current.then(async () => {
         try {
+          // (watching, each move gets a moment to itself, so the eye can follow)
+          if (watch && !cancelledRef.current) await wait(WATCH_GAP);
           await runBatch(events, after);
         } catch (err) {
           console.warn('[fight] batch failed', err);
@@ -606,13 +673,14 @@ export function FightView(props: {
                 winner: shown(after.winner as Winner, mySide),
                 hp: hero?.hp ?? 0,
                 potions: [...after.sides[mySide].potions],
+                replay: replayOf(),
               }),
             300,
           );
         }
       });
     },
-    [runBatch, mySide],
+    [runBatch, mySide, watch, wait, replayOf],
   );
 
   // --- mount: build the scene and start the fight ---------------------------------------------------
@@ -655,6 +723,7 @@ export function FightView(props: {
               }
               st = next;
               resumedAt = i + 1;
+              movesRef.current.push({ seat: mySide, action: move });
             }
             from = st;
           } catch (err) {
@@ -662,6 +731,7 @@ export function FightView(props: {
             from = start.state;
             resumedAt = 0;
             finishing = null;
+            movesRef.current = [];
             onResumeFailed?.();
           }
         }
@@ -710,9 +780,10 @@ export function FightView(props: {
   }, []);
 
   useEffect(() => {
+    if (watch) return; // (a replay keeps its own speed: see below)
     setBaseSpeed(speed);
     speedRef.current = speed;
-  }, [speed]);
+  }, [speed, watch]);
 
   // PvP: the server can end a match the engine does not know is over (a resignation, a missed turn, a dropped player)
   const pvpEnd = pvp?.end ?? null;
@@ -722,10 +793,36 @@ export function FightView(props: {
       if (cancelledRef.current) return;
       const hero = game.current?.state.sides[mySide].units.find((u) => u.kind === 'hero');
       setResult(
-        (r) => r ?? { winner: shown(pvpEnd.winner, mySide), hp: hero?.hp ?? 0, potions: [] },
+        (r) =>
+          r ?? {
+            winner: shown(pvpEnd.winner, mySide),
+            hp: hero?.hp ?? 0,
+            potions: [],
+            replay: replayOf(),
+          },
       );
     });
-  }, [pvpEnd, result, mySide]);
+  }, [pvpEnd, result, mySide, replayOf]);
+
+  // watching a replay that ended some other way than a win (a resignation, a missed clock): once its last move has played, say so
+  const watchEnd = watch?.end ?? null;
+  const watchTotal = watch?.total ?? null;
+  const [watchedAll, setWatchedAll] = useState(false);
+  useEffect(() => {
+    if (!watchedAll || !watchEnd || result) return;
+    void chain.current.then(() => {
+      if (cancelledRef.current || game.current?.state.winner) return;
+      const hero = game.current?.state.sides[mySide].units.find((u) => u.kind === 'hero');
+      setResult(
+        (r) =>
+          r ?? {
+            winner: shown(watchEnd.winner, mySide),
+            hp: hero?.hp ?? 0,
+            potions: [],
+          },
+      );
+    });
+  }, [watchedAll, watchEnd, result, mySide]);
 
   // --- acting ---------------------------------------------------------------------------------------------
   /** What I may do now: nothing while it is the other player's turn. */
@@ -742,6 +839,7 @@ export function FightView(props: {
       try {
         const r = applyAction(db, g.state, a);
         g.state = r.state;
+        movesRef.current.push({ seat, action: a });
         setLive(r.state);
         // the answer to a choice closes it on screen straight away (the display state lags the engine)
         if (a.type === 'pick' && seat === mySide) {
@@ -768,6 +866,7 @@ export function FightView(props: {
     (a: Action) => {
       const g = game.current;
       if (!g || g.state.winner || cancelledRef.current) return;
+      if (watch) return; // (watching: nobody here moves)
       if (pending.current.enemy > 0) return; // the enemy turn is still playing out
       if (pvp) {
         // the server decides: send the move, and play it when it comes back (with the opponent's)
@@ -787,7 +886,7 @@ export function FightView(props: {
       }
       if (!applyMove(a, mySide, false)) play('refuse');
     },
-    [applyMove, mySide, pvp, setBanner],
+    [applyMove, mySide, pvp, setBanner, watch],
   );
 
   // PvP: every accepted move arrives here, mine included, in the server's order
@@ -816,6 +915,7 @@ export function FightView(props: {
         return;
       }
       if (m.hash && hashState(g.state) !== m.hash) setDesync(true);
+      if (watchTotal !== null && m.seq >= watchTotal) setWatchedAll(true);
       // the last of the history: put the screen where the engine is
       if (item.history && pvp && m.seq === pvp.replay) {
         g.display = clone(g.state);
@@ -825,13 +925,27 @@ export function FightView(props: {
         bump((n) => n + 1);
       }
     },
-    [applyMove, db, mySide, pvp, show, setBanner],
+    [applyMove, db, mySide, pvp, show, setBanner, watchTotal],
   );
 
+  // (a match is fed by the server; a replay or a watched match by its own feed)
+  const feedFrom = pvp?.feed ?? watch?.feed ?? null;
   useEffect(() => {
-    if (!ready || !pvp) return;
-    return pvp.feed.attach(onFeed);
-  }, [ready, pvp, onFeed]);
+    if (!ready || !feedFrom) return;
+    return feedFrom.attach(onFeed);
+  }, [ready, feedFrom, onFeed]);
+
+  // watching: pause, and how fast
+  useEffect(() => {
+    pausedRef.current = paused;
+  }, [paused]);
+  useEffect(() => {
+    if (!watch) return;
+    speedRef.current = DEFAULT_SPEED * rate;
+    setBaseSpeed(speedRef.current);
+    // (the animation speed is shared: a replay closed over a fight gives it back its own)
+    return () => setBaseSpeed(speedBefore);
+  }, [rate, watch, speedBefore]);
 
   // a resumed fight whose last move ended it: that move plays out now, so the win or loss shows as it did
   useEffect(() => {
@@ -877,7 +991,7 @@ export function FightView(props: {
 
   const handCards: HandCard[] = useMemo(() => {
     const mineView = view?.sides[mySide];
-    if (!mineView?.hand) return [];
+    if (!mineView?.hand || hideHand) return [];
     return mineView.hand.flatMap((inst) => {
       const def = db.cards[inst.card];
       if (!def) return [];
@@ -900,7 +1014,7 @@ export function FightView(props: {
         },
       ];
     });
-  }, [view, legal, db, mySide]);
+  }, [view, legal, db, mySide, hideHand]);
 
   const anyPlay = handCards.some((c) => c.playable);
 
@@ -967,7 +1081,7 @@ export function FightView(props: {
           setReleasing(null);
         }
       } else if (e.key === 'e' || e.key === 'E') endTurn();
-      else if (/^[1-9]$/.test(e.key) && !waiting) {
+      else if (/^[1-9]$/.test(e.key) && !waiting && !watch) {
         const c = handCards[Number(e.key) - 1];
         if (!c) return;
         if (!c.playable) return void play('refuse');
@@ -978,7 +1092,7 @@ export function FightView(props: {
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [act, commit, endTurn, handCards, waiting, pile]);
+  }, [act, commit, endTurn, handCards, waiting, pile, watch]);
 
   const onStagePointerDown = (e: React.PointerEvent) => {
     if (releasing) {
@@ -1047,6 +1161,8 @@ export function FightView(props: {
   };
 
   const openPile = (kind: 'draw' | 'discard' | 'exhausted') =>
+    // (watching someone's live match, their piles stay theirs)
+    !hideHand &&
     setPile({
       title:
         kind === 'draw'
@@ -1099,6 +1215,25 @@ export function FightView(props: {
       )
     : [];
   const finished = result !== null;
+  // a lost fight says, in a line, what ended it (the whole recap is a button away)
+  const deathLine = useMemo(() => {
+    if (!result || result.winner !== 'b' || !result.replay || watch) return null;
+    const { recap } = replayFight(
+      db,
+      result.replay.setup,
+      result.replay.moves,
+      mySide,
+      pvp ? foeName : null,
+    );
+    const k = recap.killer;
+    if (!k) return null;
+    const top = recap.takenFrom[0];
+    const most =
+      top && top.name !== k.name
+        ? ` Most of the harm came from ${top.name} (${top.amount} in all).`
+        : '';
+    return `The blow that ended it: ${k.name}, ${k.amount} damage on turn ${k.round} (${k.lastRound} lost that turn).${most}`;
+  }, [result, watch, db, mySide, pvp, foeName]);
 
   return (
     <div className="fight" style={{ '--cw': `${cw}px` } as React.CSSProperties}>
@@ -1151,7 +1286,31 @@ export function FightView(props: {
               <b>{props.title}</b>
               <span>Turn {Math.max(1, Math.ceil(view.turn / 2))}</span>
             </div>
-            {pvp && <TurnClock link={pvp} mine={myTurn} foe={foeName} />}
+            {pvp && !watch && <TurnClock link={pvp} mine={myTurn} foe={foeName} />}
+            {watch && (
+              <div className="fight__watch" role="group" aria-label="Replay controls">
+                <span className="fight__watchTag">
+                  {watch.total === null ? 'Watching' : 'Replay'}
+                </span>
+                <button
+                  className="btn btn--small"
+                  aria-pressed={paused}
+                  onClick={() => setPaused(!paused)}
+                >
+                  <span>{paused ? 'Play' : 'Pause'}</span>
+                </button>
+                {WATCH_RATES.map((x) => (
+                  <button
+                    key={x}
+                    className={`btn btn--small btn--ghost${rate === x ? ' is-on' : ''}`}
+                    aria-pressed={rate === x}
+                    onClick={() => setRate(x)}
+                  >
+                    <span>{x}×</span>
+                  </button>
+                ))}
+              </div>
+            )}
             {(mine.boons?.length ?? 0) > 0 && (
               <div className="fight__boons" aria-label="Boons">
                 {mine.boons?.map((id) => (
@@ -1217,6 +1376,7 @@ export function FightView(props: {
                   progress={progressLabel(p.tier, p.stage)}
                   unit={at.unit}
                   trophies={pvp.trophies?.[s]}
+                  rank={pvp.ranks?.[s]}
                 />
               ) : null;
             })}
@@ -1364,7 +1524,7 @@ export function FightView(props: {
                     <PotionButton
                       key={`${id}-${i}`}
                       id={id}
-                      disabled={waiting || finished}
+                      disabled={waiting || finished || watch !== null}
                       active={aimPotion === id}
                       onUse={() => {
                         const needs = legal.some(
@@ -1451,7 +1611,8 @@ export function FightView(props: {
           {me && (
             <SnareRow
               db={db}
-              me={me}
+              // (watching someone's live match: their Traps are face down to you, as to their opponent)
+              me={hideHand ? { ...me, snares: me.snares.map((x) => ({ ...x, card: null })) } : me}
               cx={heroPlaced?.x ?? 140}
               top={Math.max(30, (heroPlaced?.y ?? 360) - 44)}
               // the totem column stands at +185 (its right edge about +230): the Traps start beyond it
@@ -1476,14 +1637,16 @@ export function FightView(props: {
               })}
             />
           )}
-          <button
-            className={`btn btn--primary fight__end${!anyPlay && !waiting ? ' is-ready' : ''}`}
-            disabled={waiting || finished || view.pending !== null}
-            onClick={endTurn}
-          >
-            <span>{waiting ? (pvp ? `${foeName}'s turn…` : 'Enemy turn…') : 'End turn'}</span>
-            <kbd>E</kbd>
-          </button>
+          {!watch && (
+            <button
+              className={`btn btn--primary fight__end${!anyPlay && !waiting ? ' is-ready' : ''}`}
+              disabled={waiting || finished || view.pending !== null}
+              onClick={endTurn}
+            >
+              <span>{waiting ? (pvp ? `${foeName}'s turn…` : 'Enemy turn…') : 'End turn'}</span>
+              <kbd>E</kbd>
+            </button>
+          )}
 
           {tip && flourishes.length === 0 && (
             <aside className="fight__tip" role="note" aria-live="polite">
@@ -1494,7 +1657,7 @@ export function FightView(props: {
               </button>
             </aside>
           )}
-          {view.pending && !finished && (
+          {view.pending && !finished && !watch && (
             <PickModal
               key={view.pending.pool.map((c) => c.id).join()}
               db={db}
@@ -1512,28 +1675,89 @@ export function FightView(props: {
             />
           )}
 
-          {result && (
+          {result && peek && (
+            <button className="btn btn--primary fight__peekBack" onClick={() => setPeek(false)}>
+              <span>Back to the result</span>
+            </button>
+          )}
+          {result && !peek && (
             <div className="fight__result" role="dialog" aria-label="Fight over">
               <div className="fight__resultCard">
                 <h2>
-                  {result.winner === 'a' ? 'Victory' : result.winner === 'draw' ? 'Draw' : 'Defeat'}
+                  {watch && pvp
+                    ? 'Match over'
+                    : result.winner === 'a'
+                      ? 'Victory'
+                      : result.winner === 'draw'
+                        ? 'Draw'
+                        : 'Defeat'}
                 </h2>
-                {pvp?.series && (
+                {pvp?.series && !watch && (
                   <p className="fight__resultSeries">{seriesLine(pvp.series, mySide, foeName)}</p>
                 )}
                 <p>
-                  {pvp
-                    ? endLine(result.winner, pvp.end?.reason ?? null, foeName)
-                    : result.winner === 'a'
-                      ? `${result.hp} HP remaining.`
-                      : 'The rift claims another.'}
+                  {watch && pvp
+                    ? watchLine(result.winner, watch.end?.reason ?? null, pvp.names, mySide)
+                    : pvp
+                      ? endLine(result.winner, pvp.end?.reason ?? null, foeName)
+                      : result.winner === 'a'
+                        ? `${result.hp} HP remaining.`
+                        : 'The rift claims another.'}
                 </p>
+                {deathLine && <p className="fight__resultRecap">{deathLine}</p>}
+                <div className="fight__resultActions">
+                  <button
+                    className="btn btn--small"
+                    onClick={() => setRecapFor(result.replay ?? replayOf())}
+                  >
+                    <span>Recap and battle log</span>
+                  </button>
+                  <button className="btn btn--small btn--ghost" onClick={() => setPeek(true)}>
+                    <span>Look at the board</span>
+                  </button>
+                  {!watch && result.replay && !(pvp?.series && !pvp.series.over) && (
+                    <button
+                      className="btn btn--small"
+                      onClick={() => setReplaying(result.replay ?? null)}
+                    >
+                      <span>Watch the replay</span>
+                    </button>
+                  )}
+                  {props.resultExtra?.(result)}
+                </div>
                 <button className="btn btn--primary" onClick={() => props.onDone(result)}>
-                  <span>{pvp?.series && !pvp.series.over ? 'Next game' : 'Continue'}</span>
+                  <span>
+                    {props.doneLabel
+                      ? props.doneLabel
+                      : watch
+                        ? (props.exitLabel ?? 'Close')
+                        : pvp?.series && !pvp.series.over
+                          ? 'Next game'
+                          : 'Continue'}
+                  </span>
                 </button>
               </div>
             </div>
           )}
+          {recapFor && <FightRecap db={db} replay={recapFor} onClose={() => setRecapFor(null)} />}
+          {replaying &&
+            createPortal(
+              <div className="fight__replayLayer">
+                <Suspense fallback={<div className="loading">Opening the replay…</div>}>
+                  <ReplayPlayer
+                    replay={replaying}
+                    // (an Arena game that ended by a resignation or a clock says so at the end, seen from this seat)
+                    end={
+                      pvp?.end && pvp.end.reason !== 'win'
+                        ? { winner: pvp.end.winner, reason: pvp.end.reason }
+                        : null
+                    }
+                    onClose={() => setReplaying(null)}
+                  />
+                </Suspense>
+              </div>,
+              document.body,
+            )}
         </>
       )}
     </div>
@@ -1641,6 +1865,29 @@ function tallyDefs(cards: readonly CardDef[]): { def: CardDef; n: number }[] {
 function snareTip(db: CombatDb, card: string | null): TipContent {
   const def = card ? db.cards[card] : undefined;
   return UI_TIPS.snare(def?.name ?? null, def ? cardText(db, def) : undefined);
+}
+
+/** What the result line says when watching someone's match. */
+function watchLine(
+  winner: Winner,
+  reason: string | null,
+  names: Record<Side, string>,
+  me: Side,
+): string {
+  if (winner === 'draw') return 'Nobody won this one.';
+  // (results are shown from the seat watched from: 'a' is that seat)
+  const seat: Side = winner === 'a' ? me : me === 'a' ? 'b' : 'a';
+  const loser = names[seat === 'a' ? 'b' : 'a'];
+  switch (reason) {
+    case 'resign':
+      return `${loser} gave up: ${names[seat]} wins.`;
+    case 'timeout':
+      return `${loser} ran out of time: ${names[seat]} wins.`;
+    case 'disconnect':
+      return `${loser} left: ${names[seat]} wins.`;
+    default:
+      return `${names[seat]} wins.`;
+  }
 }
 
 /** What the result line says in a PvP match. */

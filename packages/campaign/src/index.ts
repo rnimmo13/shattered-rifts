@@ -10,6 +10,10 @@ export {
   PRICE,
   priceOf,
   REMOVE_PRICE,
+  REMOVE_STEP,
+  REMOVE_MAX,
+  removePrice,
+  SALE_OFF,
   UPGRADE_PRICE,
   UPGRADE_STEP,
   upgradePrice,
@@ -120,3 +124,4 @@ export {
   type GamblerShrine,
   type ShrineKind,
 } from './gambler';
+export { FIT_AT, fitLabel, fitOf, laneCounts, mainLane, type Fit } from './synergy';

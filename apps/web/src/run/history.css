@@ -1,0 +1,118 @@
+/* #/history: runs that have ended on this device, and Arena matches */
+.history {
+  box-sizing: border-box;
+  width: min(60rem, 100%);
+  margin: 0 auto;
+  padding: 1.5rem 1rem 3rem;
+  color: var(--c-ivory);
+  display: grid;
+  gap: 0.9rem;
+  align-content: start;
+}
+.history > .btn {
+  justify-self: start;
+}
+.history__title {
+  margin: 0.4rem 0 0;
+  font-family: var(--font-display);
+  font-size: 2rem;
+  color: var(--c-gold-light);
+}
+.history__tabs {
+  display: flex;
+  gap: 0.5rem;
+}
+.history__tabs .is-on {
+  outline: 1px solid var(--c-gold);
+}
+.history__lead,
+.history__empty,
+.history__clear {
+  margin: 0;
+  color: var(--c-text-dim);
+}
+.history__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.5rem;
+}
+.history__run {
+  border-radius: 12px;
+  background: rgb(255 255 255 / 0.05);
+  border: 1px solid rgb(255 255 255 / 0.1);
+}
+.history__run--collapsed {
+  border-color: rgb(255 120 110 / 0.35);
+}
+.history__run--banked {
+  border-color: rgb(240 200 100 / 0.4);
+}
+.history__runHead {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 1rem;
+  padding: 0.6rem 0.8rem;
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.history__runName,
+.history__runWhere {
+  display: grid;
+}
+.history__runName {
+  flex: 1 1 12rem;
+}
+.history__runName small,
+.history__runWhere small,
+.history__runStats {
+  color: var(--c-text-dim);
+  font-size: 0.88rem;
+}
+.history__end--collapsed {
+  color: #ffb1a6;
+}
+.history__end--banked {
+  color: #ffe08a;
+}
+.history__end--abandoned {
+  color: var(--c-text-dim);
+}
+.history__runBody {
+  display: grid;
+  gap: 0.6rem;
+  padding: 0 0.8rem 0.8rem;
+}
+.history__runBody > .btn {
+  justify-self: start;
+}
+.history__fight {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+.history__meta {
+  margin: 0;
+  color: var(--c-text-dim);
+  font-size: 0.9rem;
+}
+.history__deck {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr));
+  gap: 0.2rem 1rem;
+  font-size: 0.9rem;
+}
+.history__deck small {
+  color: var(--c-text-dim);
+}

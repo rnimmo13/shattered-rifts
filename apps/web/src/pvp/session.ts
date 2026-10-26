@@ -5,7 +5,9 @@ import type { Action, CombatSetup, Side } from '@sr/combat';
 import {
   RULES_VERSION,
   cleanTrophies,
+  cleanRank,
   setupFor,
+  type RankBadge,
   type TrophyCount,
   type ClientMsg,
   type Entry,
@@ -13,6 +15,7 @@ import {
   type ServerMsg,
 } from '@sr/pvp';
 import { MoveFeed, type PvpLink } from './link';
+import { recordMatch } from './matchHistory';
 
 const progressOf = (e: Entry): { tier: number; stage?: number } =>
   e.stage === undefined ? { tier: e.tier } : { tier: e.tier, stage: e.stage };
@@ -43,12 +46,16 @@ export interface MatchInfo {
   progress: Record<Side, { tier: number; stage?: number }>;
   /** the Arena trophies each player holds (from the server) */
   trophies: Record<Side, TrophyCount | undefined>;
+  /** each player's Arena rank this season (from the server) */
+  ranks: Record<Side, RankBadge | undefined>;
   setup: CombatSetup;
   /** how many moves arrived as history when this player (re)joined */
   replay: number;
   deadline: number | null;
   skew: number;
   end: { winner: Side | 'draw'; reason: string } | null;
+  /** the id the game that just ended can be watched again by (null until it ends, or if it was not kept) */
+  replayId: string | null;
   /** the best of three: the game being played and the score */
   series: Series | null;
   /** the question for the next game, which has arrived while this game's result is on screen */
@@ -407,11 +414,13 @@ export class PvpSession {
             heroes: { a: m.a.hero, b: m.b.hero },
             progress: { a: progressOf(m.a), b: progressOf(m.b) },
             trophies: { a: cleanTrophies(m.a.trophies), b: cleanTrophies(m.b.trophies) },
+            ranks: { a: cleanRank(m.a.rank), b: cleanRank(m.b.rank) },
             setup: setupFor(m.seed, m.a, m.b),
             replay: m.replay,
             deadline: m.deadline,
             skew,
             end: null,
+            replayId: null,
             series: m.series ?? null,
             next: null,
             proceed: false,
@@ -441,6 +450,24 @@ export class PvpSession {
           series: m.series ?? this.snap.match?.series ?? null,
         });
         return;
+      case 'replay': {
+        const match = this.snap.match;
+        if (!match?.end) return;
+        // the game just ended was kept: it goes into this device's match history (once: a rejoin hears it again)
+        recordMatch({
+          id: m.id,
+          at: Date.now(),
+          names: match.names,
+          heroes: match.heroes,
+          seat: match.seat,
+          winner: match.end.winner,
+          reason: match.end.reason,
+          ghost: match.ghost !== null,
+          ...(match.series ? { game: match.series.game } : {}),
+        });
+        this.setMatch({ replayId: m.id });
+        return;
+      }
       case 'error':
         if (m.code === 'no-ghost') {
           // still in the queue if they were waiting for a person; if they asked only for a ghost there is nothing to wait for
@@ -473,6 +500,8 @@ export class PvpSession {
       names: m.names,
       progress: m.progress,
       trophies: m.trophies,
+      ranks: m.ranks,
+      replayId: m.replayId,
       feed: m.feed,
       send: this.sendMove,
       replay: m.replay,

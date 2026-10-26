@@ -10,6 +10,7 @@ import {
   Match,
   SECOND_PLAYER_HP,
   RULES_VERSION,
+  cleanReplay,
   type ClientMsg,
   type Entry,
   type Seat,
@@ -459,6 +460,13 @@ async function board(tag: string): Promise<void> {
     'the run board shows the furthest point',
   );
   need((await fetch(`${http}/pvp/board/nope`)).status === 404, 'an unknown board is not found');
+  // the counted match moved both ratings (DECISIONS #240)
+  const r0 = (await post('view', { code: codes[0], kind: 'ranks' }))['you'] as { rating: number; games: number } | null;
+  const r1 = (await post('view', { code: codes[1], kind: 'ranks' }))['you'] as { rating: number; games: number } | null;
+  need(r0?.games === 1 && r1?.games === 1, 'both players have one ranked game');
+  need((r0?.rating ?? 0) + (r1?.rating ?? 0) === 2000 && r0?.rating !== 1000, 'one rating rose and the other fell by as much');
+  const ranked = (await (await fetch(`${http}/pvp/board/ranks`)).json()) as { ok: boolean; board: unknown[] };
+  need(ranked.ok && Array.isArray(ranked.board), 'the ranked board is there');
   console.log(
     '  match recorded for both, characters listed, run progress moves one stage at a time',
   );
@@ -520,6 +528,52 @@ async function ghost(tag: string): Promise<void> {
   );
 }
 
+/** Someone watches a match as it is played, and each game can be watched again from its replay (DECISIONS #239). */
+async function watchAndReplay(tag: string): Promise<void> {
+  console.log('watching and replays:');
+  const http = BASE.replace(/^ws/, 'http');
+  const code = `WATCH${tag}`;
+  const hex = (): string =>
+    Array.from({ length: 64 }, () => '0123456789abcdef'[Math.floor(Math.random() * 16)]).join('');
+  const a = await connect(`/pvp/room/${code}`, 'Ann', 'player-ann-w');
+  send(a, { type: 'join', playerId: a.id, entry: { ...entryOf('knight', 'Ann'), who: hex() } });
+  await until(() => a.inbox.some((m) => m.type === 'waiting'), 'the waiting message');
+  // a watcher before the match: told it has not begun, then shown it (it never plays: paused)
+  const w = await connect(`/pvp/room/${code}`, 'Watcher', 'watcher');
+  w.paused = true;
+  w.ws.send(JSON.stringify({ type: 'watch', rules: RULES_VERSION }));
+  await until(() => w.inbox.some((m) => m.type === 'waiting'), 'the watcher to be told to wait');
+  const b = await connect(`/pvp/room/${code}`, 'Bob', 'player-bob-w');
+  send(b, { type: 'join', playerId: b.id, entry: { ...entryOf('hunter', 'Bob'), who: hex() } });
+  await until(() => w.match !== null, 'the watcher to see the start');
+  const start = w.inbox.find((m) => m.type === 'start') as Extract<ServerMsg, { type: 'start' }>;
+  if (start.watching !== true || start.seat !== 'a') throw new Error('the watcher was not told it is watching');
+  if (w.inbox.some((m) => m.type === 'choose')) throw new Error('the watcher was asked who goes first');
+  await until(() => a.ended !== null && b.ended !== null && w.ended !== null, 'the end, for all three');
+  if (a.desync || b.desync || w.desync) throw new Error(`desync: ${a.desync ?? b.desync ?? w.desync}`);
+  // a watcher who arrives late gets the game so far
+  const ends = w.inbox.filter((m) => m.type === 'end');
+  // (each game's replay id follows its end)
+  await until(() => w.inbox.filter((m) => m.type === 'replay').length >= ends.length, 'the replay ids', 10_000);
+  const ids = w.inbox.flatMap((m) => (m.type === 'replay' ? [m.id] : []));
+  if (ids.length < 2 || ids.some((id) => typeof id !== 'string')) throw new Error(`every game should have a replay: ${JSON.stringify(ids)}`);
+  // the last game's replay plays out as the game did
+  const res = await fetch(`${http}/pvp/replay/${ids[ids.length - 1]}`);
+  const body = (await res.json()) as { ok: boolean; replay: unknown };
+  const replay = cleanReplay(body.replay);
+  if (!body.ok || !replay) throw new Error('the replay could not be read back');
+  if (replay.rules !== RULES_VERSION) throw new Error('the replay has the wrong rules version');
+  const m = new Match(replay.seed, replay.a, replay.b, Date.now());
+  for (const mv of replay.log) {
+    const r = m.submit(mv.seat, m.log.length + 1, mv.action, Date.now());
+    if (!r.ok) throw new Error(`the replay does not play: ${r.message}`);
+  }
+  if (replay.reason === 'win' && m.over?.winner !== replay.winner) throw new Error('the replay ends with another winner');
+  if ((await fetch(`${http}/pvp/replay/NOPENOPE00`)).status !== 404) throw new Error('an unknown replay should be not found');
+  console.log(`  ok: watched ${ends.length} games live (hashes agreed); replay ${ids[ids.length - 1]} plays back ${replay.log.length} moves to the same end`);
+  for (const x of [a, b, w]) x.ws.close();
+}
+
 const health = await fetch(`${BASE.replace(/^ws/, 'http')}/pvp/health`);
 console.log('health:', await health.text());
 const tag = rnd();
@@ -530,5 +584,6 @@ await refusals();
 await vault();
 await board(tag);
 await ghost(tag);
+await watchAndReplay(tag);
 console.log('all good');
 process.exit(0);

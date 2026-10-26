@@ -2,6 +2,10 @@
 
 export * from './protocol';
 export * from './trophies';
+export * from './ranks';
+export * from './seasons';
+export * from './replays';
+export * from './constructed';
 export {
   checkEntry,
   checkArenaEntry,
@@ -46,6 +50,7 @@ export {
   WINS_PER_DAY,
   believableStages,
   checkUsername,
+  civilMonth,
   cleanBoardName,
   isHero,
   storedHero,

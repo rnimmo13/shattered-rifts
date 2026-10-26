@@ -27,12 +27,28 @@ export function DeckBuilder(props: {
   onChange: (next: Counts) => void;
   onReset: () => void;
   heroName: string;
+  /** only these cards are in the book (a Constructed deck's pool); every card when missing */
+  allow?: (def: CardDef) => boolean;
+  /** whether one more copy of a card may go in (a Constructed deck's limits); always when missing */
+  canAdd?: (counts: Counts, id: string) => boolean;
+  /** no "+" versions to choose from */
+  noUpgrades?: boolean;
+  /** no Random 20 button */
+  noRandom?: boolean;
+  /** shown at the top of the deck column (whether the deck is legal, say) */
+  deckNote?: React.ReactNode;
 }) {
-  const { db, counts } = props;
+  const { db, counts, allow, canAdd } = props;
   const [mainRef, mainWidth] = useWidth();
   const { spread, cols, cardWidth } = bookLayout(mainWidth);
-  const all = useMemo(() => catalog(db), [db]);
-  const [tab, setTab] = useState<string>(TABS[0]?.id ?? 'aurelion');
+  const all = useMemo(() => catalog(db).filter((c) => !allow || allow(c.def)), [db, allow]);
+  // (a book narrowed to a pool shows only the bookmarks that hold some of it)
+  const tabs = useMemo(
+    () => (allow ? TABS.filter((t) => tabCards(all, t.id).length > 0) : TABS),
+    [all, allow],
+  );
+  const [tabWanted, setTab] = useState<string>(TABS[0]?.id ?? 'aurelion');
+  const tab = tabs.some((t) => t.id === tabWanted) ? tabWanted : (tabs[0]?.id ?? tabWanted);
   const [leaf, setLeaf] = useState(0); // which spread is open
   const [dir, setDir] = useState<'next' | 'prev'>('next');
   const [hover, setHover] = useState<{ def: CardDef; at?: Anchor } | null>(null);
@@ -53,13 +69,15 @@ export function DeckBuilder(props: {
   const visible = pages.slice(at * spread, at * spread + spread);
   const tabTotals = useMemo(() => {
     const out: Record<string, number> = {};
-    for (const t of TABS)
+    for (const t of tabs)
       out[t.id] = tabCards(all, t.id).reduce((n, c) => n + (counts[c.def.id] ?? 0), 0);
     return out;
-  }, [all, counts]);
+  }, [all, counts, tabs]);
 
   const total = Object.values(counts).reduce((n, x) => n + x, 0);
+  const room = (id: string): boolean => !canAdd || canAdd(counts, id);
   const add = (id: string, by: number): void => {
+    if (by > 0 && !room(id)) return;
     const n = Math.max(0, (counts[id] ?? 0) + by);
     const next = { ...counts };
     if (n === 0) delete next[id];
@@ -73,7 +91,7 @@ export function DeckBuilder(props: {
   };
   const open = (id: string): void => {
     setDir(
-      TABS.findIndex((t) => t.id === id) >= TABS.findIndex((t) => t.id === tab) ? 'next' : 'prev',
+      tabs.findIndex((t) => t.id === id) >= tabs.findIndex((t) => t.id === tab) ? 'next' : 'prev',
     );
     setTab(id);
     setHover(null);
@@ -88,7 +106,7 @@ export function DeckBuilder(props: {
     .map((id) => db.cards[id])
     .filter((c): c is NonNullable<typeof c> => !!c)
     .sort((a, b) => a.cost - b.cost || a.name.localeCompare(b.name));
-  const tabName = TABS.find((t) => t.id === tab)?.name ?? '';
+  const tabName = tabs.find((t) => t.id === tab)?.name ?? '';
 
   return (
     <div className="grim">
@@ -118,18 +136,20 @@ export function DeckBuilder(props: {
               ))}
             </select>
           </label>
-          <label className="grim__check">
-            <input
-              type="checkbox"
-              checked={filter.upgraded}
-              onChange={(e) => refilter({ ...filter, upgraded: e.target.checked })}
-            />
-            <span>Upgraded (+)</span>
-          </label>
+          {!props.noUpgrades && (
+            <label className="grim__check">
+              <input
+                type="checkbox"
+                checked={filter.upgraded}
+                onChange={(e) => refilter({ ...filter, upgraded: e.target.checked })}
+              />
+              <span>Upgraded (+)</span>
+            </label>
+          )}
         </div>
 
         <div className="grim__tabs" role="tablist" aria-label="Realms">
-          {TABS.map((t) => {
+          {tabs.map((t) => {
             const on = !searching && t.id === tab;
             return (
               <button
@@ -204,7 +224,11 @@ export function DeckBuilder(props: {
                             −
                           </button>
                           <b>{n}</b>
-                          <button aria-label={`Add one ${def.name}`} onClick={() => add(def.id, 1)}>
+                          <button
+                            aria-label={`Add one ${def.name}`}
+                            disabled={!room(def.id)}
+                            onClick={() => add(def.id, 1)}
+                          >
                             +
                           </button>
                         </span>
@@ -238,18 +262,21 @@ export function DeckBuilder(props: {
           <button className="btn btn--small" onClick={() => props.onChange({})}>
             <span>Clear</span>
           </button>
-          <button
-            className="btn btn--small"
-            onClick={() => {
-              const next: Counts = {};
-              for (const id of randomDeck(db, 20, `${Date.now()}-${Math.random()}`))
-                next[id] = (next[id] ?? 0) + 1;
-              props.onChange(next);
-            }}
-          >
-            <span>Random 20</span>
-          </button>
+          {!props.noRandom && (
+            <button
+              className="btn btn--small"
+              onClick={() => {
+                const next: Counts = {};
+                for (const id of randomDeck(db, 20, `${Date.now()}-${Math.random()}`))
+                  next[id] = (next[id] ?? 0) + 1;
+                props.onChange(next);
+              }}
+            >
+              <span>Random 20</span>
+            </button>
+          )}
         </div>
+        {props.deckNote}
         {total === 0 && (
           <p className="db__empty">
             Click cards in the book to add them. A deck needs at least one.
@@ -270,7 +297,11 @@ export function DeckBuilder(props: {
                   −
                 </button>
                 <b>{counts[def.id]}</b>
-                <button aria-label={`Add one ${def.name}`} onClick={() => add(def.id, 1)}>
+                <button
+                  aria-label={`Add one ${def.name}`}
+                  disabled={!room(def.id)}
+                  onClick={() => add(def.id, 1)}
+                >
                   +
                 </button>
               </span>

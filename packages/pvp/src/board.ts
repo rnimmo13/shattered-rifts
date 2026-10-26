@@ -65,6 +65,9 @@ function civil(days: number): { y: number; m: number } {
   return { y, m };
 }
 
+/** The year and month (1 to 12) of a moment, in UTC. */
+export const civilMonth = (ms: number): { y: number; m: number } => civil(Math.floor(ms / DAY));
+
 /** The day count since 1970-01-01 of the first of a month (UTC). */
 function firstOf(y: number, m: number): number {
   const yy = m <= 2 ? y - 1 : y;

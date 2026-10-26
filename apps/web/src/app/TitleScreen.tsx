@@ -181,6 +181,7 @@ export function TitleScreen() {
             <a href="#/decks">Saved decks</a>
             <a href="#/board">Leaderboards</a>
             <a href="#/trophies">Trophy case</a>
+            <a href="#/history">Run history</a>
             <a href="#/ghosts">Ghost decks</a>
             <a href="#/cards">Card library</a>
             <a href="#/learn">How to play</a>

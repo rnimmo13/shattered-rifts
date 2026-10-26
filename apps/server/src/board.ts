@@ -49,6 +49,16 @@ import {
   type Period,
   type PvpRow,
   type RunRow,
+  RANKED_MIN_GAMES,
+  RATING_START,
+  REPLAY_ID,
+  REPLAY_KEEP_DAYS,
+  REPLAY_MAX,
+  carryOver,
+  rateMatch,
+  seasonOf,
+  type RankBadge,
+  type RankedStanding,
 } from '@sr/pvp';
 import type { Env } from './env';
 import { CURRENT_GHOSTS_VIEW, UNCLEARED_GHOSTS } from './ghostSql';
@@ -63,6 +73,8 @@ const HOUR = 3_600_000;
 /** Username claims (and changes) one player, or one address, may make in a day. */
 const NAME_CLAIMS_PER_DAY = 8;
 const IP_NAME_CLAIMS_PER_DAY = 40;
+/** Arena games one player may have kept as replays in a day. */
+const REPLAYS_PER_DAY = 120;
 const isId = (v: unknown): v is string => typeof v === 'string' && /^[0-9a-f]{64}$/.test(v);
 const isAddr = (v: unknown): v is string => typeof v === 'string' && v.length > 0 && v.length <= 80;
 
@@ -205,6 +217,23 @@ export class Leaderboard extends DurableObject<Env> {
          PRIMARY KEY (player, kind, period)
        )`,
     );
+    // Arena ranks (DECISIONS #240): each player's rating in each season (a month); a season with no row yet starts from the last one's
+    ctx.storage.sql.exec(
+      `CREATE TABLE IF NOT EXISTS ratings (
+         player TEXT NOT NULL, season INTEGER NOT NULL,
+         rating INTEGER NOT NULL, games INTEGER NOT NULL, wins INTEGER NOT NULL, peak INTEGER NOT NULL,
+         name TEXT NOT NULL, hero TEXT NOT NULL, at INTEGER NOT NULL,
+         PRIMARY KEY (player, season)
+       )`,
+    );
+    ctx.storage.sql.exec('CREATE INDEX IF NOT EXISTS ratings_board ON ratings (season, rating)');
+    // Arena replays (DECISIONS #239): each finished game, kept a while so it can be watched again from a link
+    ctx.storage.sql.exec(
+      `CREATE TABLE IF NOT EXISTS replays (
+         id TEXT PRIMARY KEY, at INTEGER NOT NULL, data TEXT NOT NULL
+       )`,
+    );
+    ctx.storage.sql.exec('CREATE INDEX IF NOT EXISTS replays_at ON replays (at)');
     // how often a player or an address has done something in the current hour or day
     ctx.storage.sql.exec(
       `CREATE TABLE IF NOT EXISTS limits (
@@ -333,6 +362,162 @@ export class Leaderboard extends DurableObject<Env> {
     this.ctx.storage.sql.exec('DELETE FROM ghost_games WHERE at < ?', before);
     this.ctx.storage.sql.exec('DELETE FROM ghosts WHERE last_at < ?', before);
     this.ctx.storage.sql.exec('DELETE FROM limits WHERE window < ?', Math.floor(before / DAY));
+    // (ratings: a season is only ever carried over from the one before, so older ones can go)
+    this.ctx.storage.sql.exec('DELETE FROM ratings WHERE season < ?', before);
+  }
+
+  // ---- Arena ranks ----
+
+  /** A player's rating in a season: their row, or (none yet) carried over from their latest earlier season, or the start. */
+  private ratingOf(player: string, season: number): RankBadge & { wins: number; peak: number } {
+    const row = this.ctx.storage.sql
+      .exec<{ rating: number; games: number; wins: number; peak: number }>(
+        'SELECT rating, games, wins, peak FROM ratings WHERE player = ? AND season = ?',
+        player,
+        season,
+      )
+      .toArray()[0];
+    if (row) return row;
+    const before = this.ctx.storage.sql
+      .exec<{ rating: number }>(
+        'SELECT rating FROM ratings WHERE player = ? AND season < ? ORDER BY season DESC LIMIT 1',
+        player,
+        season,
+      )
+      .toArray()[0];
+    const rating = before ? carryOver(before.rating) : RATING_START;
+    return { rating, games: 0, wins: 0, peak: rating };
+  }
+
+  /** A counted Arena match moves both players' ratings for the season it was played in. */
+  private rate(
+    w: { id: string; name: string; hero: string },
+    l: { id: string; name: string; hero: string },
+    now: number,
+  ): void {
+    const season = seasonOf(now);
+    const a = this.ratingOf(w.id, season);
+    const b = this.ratingOf(l.id, season);
+    const moved = rateMatch(a, b);
+    const put = (
+      p: { id: string; name: string; hero: string },
+      was: { games: number; wins: number; peak: number },
+      rating: number,
+      won: boolean,
+    ): void => {
+      this.ctx.storage.sql.exec(
+        'INSERT OR REPLACE INTO ratings (player, season, rating, games, wins, peak, name, hero, at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
+        p.id,
+        season,
+        rating,
+        was.games + 1,
+        was.wins + (won ? 1 : 0),
+        Math.max(was.peak, rating),
+        p.name,
+        p.hero,
+        now,
+      );
+    };
+    put(w, a, moved.winner, true);
+    put(l, b, moved.loser, false);
+  }
+
+  /** The rank badges of the players asked about, this season (for their cards in a match). */
+  private rankBadges(players: readonly string[], now: number): Map<string, RankBadge> {
+    const season = seasonOf(now);
+    const out = new Map<string, RankBadge>();
+    for (const p of new Set(players)) {
+      const r = this.ratingOf(p, season);
+      out.set(p, { rating: r.rating, games: r.games });
+    }
+    return out;
+  }
+
+  /** The season's ranked board: the highest ratings among players with a few ranked games, and where the asker stands. */
+  private rankBoard(now: number, player?: string): unknown {
+    const season = seasonOf(now);
+    const rows = this.ctx.storage.sql
+      .exec<{
+        player: string;
+        name: string;
+        hero: string;
+        rating: number;
+        games: number;
+        wins: number;
+        peak: number;
+      }>(
+        'SELECT player, name, hero, rating, games, wins, peak FROM ratings WHERE season = ? AND games >= ? ORDER BY rating DESC, peak DESC, at ASC LIMIT ?',
+        season,
+        RANKED_MIN_GAMES,
+        BOARD_SIZE,
+      )
+      .toArray();
+    const board: RankedStanding[] = rows.map((r) => ({
+      name: this.claimedName(r.player) ?? r.name,
+      hero: r.hero,
+      rating: r.rating,
+      games: r.games,
+      wins: r.wins,
+      peak: r.peak,
+    }));
+    let you: unknown = null;
+    if (player) {
+      const r = this.ratingOf(player, season);
+      const above = this.count(
+        'SELECT COUNT(*) AS n FROM ratings WHERE season = ? AND games >= ? AND rating > ?',
+        season,
+        RANKED_MIN_GAMES,
+        r.rating,
+      );
+      you = {
+        rating: r.rating,
+        games: r.games,
+        wins: r.wins,
+        peak: r.peak,
+        place: r.games >= RANKED_MIN_GAMES ? above + 1 : null,
+      };
+    }
+    return { ok: true, season, board, you };
+  }
+
+  // ---- Arena replays ----
+
+  /** Keep a finished game (only a room sends one): it gets an id a link can carry. */
+  private saveReplay(body: Record<string, unknown>, now: number): Response {
+    // (each player in it may have so many games kept a day: a script playing itself cannot push everyone's replays out)
+    const owners = Array.isArray(body['owners']) ? body['owners'].filter(isId) : [];
+    const b = body['replay'];
+    if (owners.length === 0 || typeof b !== 'object' || b === null)
+      return json({ ok: false, error: 'bad-replay' }, 400);
+    if (!owners.every((o) => this.within(`replay:${o}`, DAY, REPLAYS_PER_DAY, now)))
+      return json({ ok: false, error: 'limited' });
+    const bytes = crypto.getRandomValues(new Uint8Array(10));
+    const abc = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789';
+    const id = Array.from(bytes, (x) => abc[x % abc.length]).join('');
+    const data = JSON.stringify({ ...(b as Record<string, unknown>), id, at: now });
+    // (a game is a few kilobytes; one that is not is not kept)
+    if (data.length > 120_000) return json({ ok: false, error: 'too-big' }, 413);
+    this.ctx.storage.sql.exec('INSERT INTO replays (id, at, data) VALUES (?, ?, ?)', id, now, data);
+    // the oldest go: past their time, or past the most kept
+    this.ctx.storage.sql.exec('DELETE FROM replays WHERE at < ?', now - REPLAY_KEEP_DAYS * DAY);
+    const n = this.count('SELECT COUNT(*) AS n FROM replays');
+    if (n > REPLAY_MAX)
+      this.ctx.storage.sql.exec(
+        'DELETE FROM replays WHERE id IN (SELECT id FROM replays ORDER BY at ASC LIMIT ?)',
+        n - REPLAY_MAX,
+      );
+    return json({ ok: true, id });
+  }
+
+  private replay(id: string | null): Response {
+    if (!id || !REPLAY_ID.test(id)) return json({ ok: false, error: 'not-found' }, 404);
+    const row = this.ctx.storage.sql
+      .exec<{ data: string }>('SELECT data FROM replays WHERE id = ?', id)
+      .toArray()[0];
+    if (!row) return json({ ok: false, error: 'not-found' }, 404);
+    return new Response(`{"ok":true,"replay":${row.data}}`, {
+      headers: { 'content-type': 'application/json' },
+    });
   }
 
   private count(sql: string, ...args: SqlStorageValue[]): number {
@@ -683,6 +868,20 @@ export class Leaderboard extends DurableObject<Env> {
       storedHero(l['hero']),
     );
     await remember(true);
+    // (a counted match is a ranked one: both ratings move)
+    this.rate(
+      {
+        id: wid,
+        name: this.claimedName(wid) ?? cleanBoardName(w['name']),
+        hero: storedHero(w['hero']),
+      },
+      {
+        id: lid,
+        name: this.claimedName(lid) ?? cleanBoardName(l['name']),
+        hero: storedHero(l['hero']),
+      },
+      now,
+    );
     this.prune(now);
     return json({ ok: true, counted: true });
   }
@@ -885,6 +1084,8 @@ export class Leaderboard extends DurableObject<Env> {
       if (url.pathname === '/runs') return json(this.runBoard(period, now));
       if (url.pathname === '/ghosts') return json(this.ghostBoard(period, now));
       if (url.pathname === '/ghostdecks') return json(this.ghostDecks(now));
+      if (url.pathname === '/ranks') return json(this.rankBoard(now));
+      if (url.pathname === '/replay') return this.replay(url.searchParams.get('id'));
       return json({ ok: false, error: 'not-found' }, 404);
     }
     let body: Record<string, unknown>;
@@ -902,6 +1103,7 @@ export class Leaderboard extends DurableObject<Env> {
       if (body['kind'] === 'pvp') return json(this.pvpBoard(period, now, player));
       if (body['kind'] === 'runs') return json(this.runBoard(period, now, player));
       if (body['kind'] === 'ghosts') return json(this.ghostBoard(period, now, player));
+      if (body['kind'] === 'ranks') return json(this.rankBoard(now, player));
       return json({ ok: false, error: 'not-found' }, 404);
     }
     if (url.pathname === '/pvp') return this.recordPvp(body, now);
@@ -917,10 +1119,15 @@ export class Leaderboard extends DurableObject<Env> {
       return json({ ok: true, trophies: this.trophiesOf(body['player']) });
     }
     if (url.pathname === '/trophies/count') {
-      // a room asking how many trophies its players hold, to show on their cards
-      const ids = Array.isArray(body['players']) ? body['players'].filter(isId) : [];
-      return json({ ok: true, counts: Object.fromEntries(this.trophyCounts(ids)) });
+      // a room asking how many trophies its players hold, and their ranks, to show on their cards
+      const ids = Array.isArray(body['players']) ? body['players'].filter(isId).slice(0, 10) : [];
+      return json({
+        ok: true,
+        counts: Object.fromEntries(this.trophyCounts(ids)),
+        ranks: Object.fromEntries(this.rankBadges(ids, now)),
+      });
     }
+    if (url.pathname === '/replay/save') return this.saveReplay(body, now);
     return json({ ok: false, error: 'not-found' }, 404);
   }
 }

@@ -1,7 +1,18 @@
 // The browser's side of the leaderboards: fetch a board, ask for this player's board id (so an Arena match can carry it), and report how
 // far a campaign run has got. All of it is best-effort: a board that cannot be reached never gets in the way of playing.
 
-import type { GhostStanding, Period, PvpStanding, RunStanding, Trophy } from '@sr/pvp';
+import {
+  cleanRank,
+  cleanReplay,
+  type GhostStanding,
+  type Period,
+  type PvpStanding,
+  type RankBadge,
+  type RankedStanding,
+  type RunStanding,
+  type StoredReplay,
+  type Trophy,
+} from '@sr/pvp';
 import { serverBase } from './config';
 import { vaultKey, whoAmI } from './vaultSync';
 
@@ -249,5 +260,60 @@ export async function reportRun(run: {
     const wait = waits[i];
     if (wait === undefined) return answer;
     await new Promise((r) => setTimeout(r, wait));
+  }
+}
+
+/** This season's ranked board, and where the person looking stands (DECISIONS #240). */
+export interface RankedView {
+  season: number;
+  board: RankedStanding[];
+  you: (RankBadge & { wins: number; peak: number; place: number | null }) | null;
+}
+
+export async function viewRanks(): Promise<RankedView | null> {
+  const d = await post('view', { kind: 'ranks' });
+  if (!d || typeof d['season'] !== 'number' || !Array.isArray(d['board'])) return null;
+  const you = d['you'] as Record<string, unknown> | null | undefined;
+  const badge = cleanRank(you);
+  return {
+    season: d['season'],
+    board: (d['board'] as Record<string, unknown>[]).flatMap((r): RankedStanding[] =>
+      typeof r['name'] === 'string' &&
+      typeof r['rating'] === 'number' &&
+      typeof r['games'] === 'number'
+        ? [
+            {
+              name: r['name'],
+              hero: typeof r['hero'] === 'string' ? r['hero'] : '',
+              rating: r['rating'],
+              games: r['games'],
+              wins: typeof r['wins'] === 'number' ? r['wins'] : 0,
+              peak: typeof r['peak'] === 'number' ? r['peak'] : r['rating'],
+            },
+          ]
+        : [],
+    ),
+    you:
+      you && badge
+        ? {
+            ...badge,
+            wins: typeof you['wins'] === 'number' ? you['wins'] : 0,
+            peak: typeof you['peak'] === 'number' ? you['peak'] : badge.rating,
+            place: typeof you['place'] === 'number' ? you['place'] : null,
+          }
+        : null,
+  };
+}
+
+/** A finished Arena game, to watch again: the replay, 'gone' when the server has none by that id, or null when it cannot be reached. */
+export async function fetchReplay(id: string): Promise<StoredReplay | 'gone' | null> {
+  try {
+    const res = await fetch(`${httpBase()}/pvp/replay/${encodeURIComponent(id)}`);
+    if (res.status === 404) return 'gone';
+    const d = (await res.json()) as { ok?: unknown; replay?: unknown };
+    if (d.ok !== true) return null;
+    return cleanReplay(d.replay) ?? 'gone';
+  } catch {
+    return null;
   }
 }

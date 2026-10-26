@@ -13,6 +13,7 @@ import { HeroIcon } from '../ui/HeroIcon';
 import { TrophyBadges } from './Trophies';
 import { heroName, progressLabel } from './deckLayout';
 import { viewBoard, type BoardKind, type BoardView, type GhostView } from './boardApi';
+import { RankedBoard } from './RankedBoard';
 import { NameClaim } from './NameClaim';
 import { syncSavedRuns } from '../run/syncRuns';
 import '../play/play.css';
@@ -132,7 +133,9 @@ function YourPlace(props: { rank: number | null; played: string }) {
 type Seen = BoardView<PvpStanding> | BoardView<RunStanding> | GhostView;
 
 export function LeaderboardScreen() {
-  const [kind, setKind] = useState<BoardKind>('pvp');
+  const [tab, setKind] = useState<BoardKind | 'ranks'>('pvp');
+  // (the ranked board fetches itself: the others share the week/month machinery below)
+  const kind: BoardKind = tab === 'ranks' ? 'pvp' : tab;
   const [period, setPeriod] = useState<Period>('week');
   // what came back, with what it was asked for (an answer for another board counts as still loading)
   const [got, setGot] = useState<{ kind: BoardKind; period: Period; view: Seen | null } | null>(
@@ -182,146 +185,153 @@ export function LeaderboardScreen() {
       </header>
 
       <div className="board__tabs" role="group" aria-label="Which board">
-        {toggle('Arena', kind === 'pvp', () => setKind('pvp'))}
-        {toggle('Campaign', kind === 'runs', () => setKind('runs'))}
-        {toggle('Ghosts', kind === 'ghosts', () => setKind('ghosts'))}
+        {toggle('Arena', tab === 'pvp', () => setKind('pvp'))}
+        {toggle('Ranked', tab === 'ranks', () => setKind('ranks'))}
+        {toggle('Campaign', tab === 'runs', () => setKind('runs'))}
+        {toggle('Ghosts', tab === 'ghosts', () => setKind('ghosts'))}
       </div>
-      <div className="board__tabs" role="group" aria-label="Which period">
-        {toggle('This week', period === 'week', () => setPeriod('week'))}
-        {toggle('This month', period === 'month', () => setPeriod('month'))}
-      </div>
-      <p className="board__left">
-        {timeLeft(now, period)}
-        <small>
-          {period === 'week'
-            ? ' · the week turns over on Sunday night at midnight Pacific time'
-            : ' · the month turns over at midnight Pacific time on the 1st'}
-        </small>
-      </p>
-
-      {loading && (
-        <p className="board__note" role="status">
-          Loading the board…
-        </p>
-      )}
-      {failed && (
-        <div className="notice notice--bad" role="alert">
-          The boards could not be reached. Check your connection and try again.{' '}
-          <button className="btn btn--small" onClick={() => setTry((n) => n + 1)}>
-            <span>Retry</span>
-          </button>
-        </div>
-      )}
-
-      {kind === 'pvp' && view && 'board' in view && (
+      {tab === 'ranks' ? (
+        <RankedBoard />
+      ) : (
         <>
-          <YourPlace
-            rank={view.you?.rank ?? null}
-            played={`You have not played a counted Arena match this ${period}.`}
-          />
-          <Table<PvpStanding>
-            caption={`Arena wins this ${period}`}
-            head={['Player', 'Wins', 'Losses', 'Win %', 'Characters']}
-            numeric={[1, 2, 3]}
-            rows={view.board as PvpStanding[]}
-            you={view.you as (PvpStanding & { rank: number }) | null}
-            empty={`No matches yet this ${period}. Be the first.`}
-            cells={(s) => [
-              <span key="n" className="board__name">
-                {s.name} <TrophyBadges trophies={s.trophies} />
-              </span>,
-              <b key="w">{s.wins}</b>,
-              s.losses,
-              percent(s.wins, s.losses),
-              <Characters key="c" heroes={s.heroes} />,
-            ]}
-          />
-        </>
-      )}
-
-      {kind === 'runs' && view && 'board' in view && (
-        <>
-          <YourPlace
-            rank={view.you?.rank ?? null}
-            played={`You have not made progress on a run begun this ${period}.`}
-          />
-          <Table<RunStanding>
-            caption={`Furthest campaign runs this ${period}`}
-            head={['Player', 'Character', 'Where they are', 'Stages cleared']}
-            numeric={[3]}
-            rows={view.board as RunStanding[]}
-            you={view.you as (RunStanding & { rank: number }) | null}
-            empty={`No runs yet this ${period}. Be the first.`}
-            cells={(s) => [
-              <span key="n" className="board__name">
-                {s.name}
-              </span>,
-              <span key="h" className="board__hero">
-                <HeroIcon hero={s.hero} size={24} />
-                <small>{heroName(s.hero)}</small>
-              </span>,
-              <b key="t">{progressLabel(s.tier, s.stage)}</b>,
-              s.total,
-            ]}
-          />
-        </>
-      )}
-
-      {kind === 'ghosts' && view && 'ghosts' in view && (
-        <>
-          <p className="board__note">
-            A ghost is a deck that has played in the Arena, piloted by the computer. {view.decks}{' '}
-            {view.decks === 1 ? 'deck is' : 'decks are'} out there to be met. Ghost matches do not
-            count on the Arena board.
+          <div className="board__tabs" role="group" aria-label="Which period">
+            {toggle('This week', period === 'week', () => setPeriod('week'))}
+            {toggle('This month', period === 'month', () => setPeriod('month'))}
+          </div>
+          <p className="board__left">
+            {timeLeft(now, period)}
+            <small>
+              {period === 'week'
+                ? ' · the week turns over on Sunday night at midnight Pacific time'
+                : ' · the month turns over at midnight Pacific time on the 1st'}
+            </small>
           </p>
-          <p>
-            <a href="#/ghosts">See every ghost deck</a> (whose it is, how far it got and how it has
-            done).
-          </p>
-          <h2 className="board__h">Ghosts</h2>
-          <Table<GhostStanding>
-            caption={`Ghost decks by wins this ${period}`}
-            head={['Deck of', 'Character', 'Rift Tier', 'Wins', 'Losses', 'Win %']}
-            numeric={[2, 3, 4, 5]}
-            rows={view.ghosts}
-            you={null}
-            empty={`No ghost has been fought yet this ${period}.`}
-            cells={(g) => [
-              <span key="n" className="board__name">
-                {g.name}&rsquo;s ghost
-              </span>,
-              <span key="h" className="board__hero">
-                <HeroIcon hero={g.hero} size={24} />
-                <small>{heroName(g.hero)}</small>
-              </span>,
-              g.tier,
-              <b key="w">{g.wins}</b>,
-              g.losses,
-              percent(g.wins, g.losses),
-            ]}
-          />
-          <h2 className="board__h">People against ghosts</h2>
-          <YourPlace
-            rank={view.you?.rank ?? null}
-            played={`You have not fought a ghost this ${period}.`}
-          />
-          <Table<PvpStanding>
-            caption={`Wins against ghosts this ${period}`}
-            head={['Player', 'Wins', 'Losses', 'Win %', 'Characters']}
-            numeric={[1, 2, 3]}
-            rows={view.players}
-            you={view.you}
-            empty={`Nobody has fought a ghost yet this ${period}.`}
-            cells={(s) => [
-              <span key="n" className="board__name">
-                {s.name} <TrophyBadges trophies={s.trophies} />
-              </span>,
-              <b key="w">{s.wins}</b>,
-              s.losses,
-              percent(s.wins, s.losses),
-              <Characters key="c" heroes={s.heroes} />,
-            ]}
-          />
+
+          {loading && (
+            <p className="board__note" role="status">
+              Loading the board…
+            </p>
+          )}
+          {failed && (
+            <div className="notice notice--bad" role="alert">
+              The boards could not be reached. Check your connection and try again.{' '}
+              <button className="btn btn--small" onClick={() => setTry((n) => n + 1)}>
+                <span>Retry</span>
+              </button>
+            </div>
+          )}
+
+          {kind === 'pvp' && view && 'board' in view && (
+            <>
+              <YourPlace
+                rank={view.you?.rank ?? null}
+                played={`You have not played a counted Arena match this ${period}.`}
+              />
+              <Table<PvpStanding>
+                caption={`Arena wins this ${period}`}
+                head={['Player', 'Wins', 'Losses', 'Win %', 'Characters']}
+                numeric={[1, 2, 3]}
+                rows={view.board as PvpStanding[]}
+                you={view.you as (PvpStanding & { rank: number }) | null}
+                empty={`No matches yet this ${period}. Be the first.`}
+                cells={(s) => [
+                  <span key="n" className="board__name">
+                    {s.name} <TrophyBadges trophies={s.trophies} />
+                  </span>,
+                  <b key="w">{s.wins}</b>,
+                  s.losses,
+                  percent(s.wins, s.losses),
+                  <Characters key="c" heroes={s.heroes} />,
+                ]}
+              />
+            </>
+          )}
+
+          {kind === 'runs' && view && 'board' in view && (
+            <>
+              <YourPlace
+                rank={view.you?.rank ?? null}
+                played={`You have not made progress on a run begun this ${period}.`}
+              />
+              <Table<RunStanding>
+                caption={`Furthest campaign runs this ${period}`}
+                head={['Player', 'Character', 'Where they are', 'Stages cleared']}
+                numeric={[3]}
+                rows={view.board as RunStanding[]}
+                you={view.you as (RunStanding & { rank: number }) | null}
+                empty={`No runs yet this ${period}. Be the first.`}
+                cells={(s) => [
+                  <span key="n" className="board__name">
+                    {s.name}
+                  </span>,
+                  <span key="h" className="board__hero">
+                    <HeroIcon hero={s.hero} size={24} />
+                    <small>{heroName(s.hero)}</small>
+                  </span>,
+                  <b key="t">{progressLabel(s.tier, s.stage)}</b>,
+                  s.total,
+                ]}
+              />
+            </>
+          )}
+
+          {kind === 'ghosts' && view && 'ghosts' in view && (
+            <>
+              <p className="board__note">
+                A ghost is a deck that has played in the Arena, piloted by the computer.{' '}
+                {view.decks} {view.decks === 1 ? 'deck is' : 'decks are'} out there to be met. Ghost
+                matches do not count on the Arena board.
+              </p>
+              <p>
+                <a href="#/ghosts">See every ghost deck</a> (whose it is, how far it got and how it
+                has done).
+              </p>
+              <h2 className="board__h">Ghosts</h2>
+              <Table<GhostStanding>
+                caption={`Ghost decks by wins this ${period}`}
+                head={['Deck of', 'Character', 'Rift Tier', 'Wins', 'Losses', 'Win %']}
+                numeric={[2, 3, 4, 5]}
+                rows={view.ghosts}
+                you={null}
+                empty={`No ghost has been fought yet this ${period}.`}
+                cells={(g) => [
+                  <span key="n" className="board__name">
+                    {g.name}&rsquo;s ghost
+                  </span>,
+                  <span key="h" className="board__hero">
+                    <HeroIcon hero={g.hero} size={24} />
+                    <small>{heroName(g.hero)}</small>
+                  </span>,
+                  g.tier,
+                  <b key="w">{g.wins}</b>,
+                  g.losses,
+                  percent(g.wins, g.losses),
+                ]}
+              />
+              <h2 className="board__h">People against ghosts</h2>
+              <YourPlace
+                rank={view.you?.rank ?? null}
+                played={`You have not fought a ghost this ${period}.`}
+              />
+              <Table<PvpStanding>
+                caption={`Wins against ghosts this ${period}`}
+                head={['Player', 'Wins', 'Losses', 'Win %', 'Characters']}
+                numeric={[1, 2, 3]}
+                rows={view.players}
+                you={view.you}
+                empty={`Nobody has fought a ghost yet this ${period}.`}
+                cells={(s) => [
+                  <span key="n" className="board__name">
+                    {s.name} <TrophyBadges trophies={s.trophies} />
+                  </span>,
+                  <b key="w">{s.wins}</b>,
+                  s.losses,
+                  percent(s.wins, s.losses),
+                  <Characters key="c" heroes={s.heroes} />,
+                ]}
+              />
+            </>
+          )}
         </>
       )}
 

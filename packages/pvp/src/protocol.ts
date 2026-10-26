@@ -10,6 +10,7 @@
 // (the server sends each player only their own view) is a later step.
 
 import type { TrophyCount } from './trophies';
+import type { RankBadge } from './ranks';
 import type { Action } from '@sr/combat';
 
 export type Seat = 'a' | 'b';
@@ -33,6 +34,8 @@ export interface Entry {
   who?: string;
   /** the Arena trophies the player holds (set by the server when they join a room; whatever a browser sends is dropped) */
   trophies?: TrophyCount;
+  /** the player's Arena rank this season (set by the server, like trophies) */
+  rank?: RankBadge;
 }
 
 /**
@@ -52,7 +55,9 @@ export type ClientMsg =
   | { type: 'action'; seq: number; action: Action }
   /** your answer to "who goes first?": true = I will go first, false = I will go second (and have more HP) */
   | { type: 'order'; first: boolean }
-  | { type: 'resign' };
+  | { type: 'resign' }
+  /** to a room: watch the match in it (no seat; the moves arrive as they are made) */
+  | { type: 'watch'; rules?: number };
 
 export type EndReason = 'win' | 'resign' | 'timeout' | 'disconnect';
 
@@ -97,6 +102,8 @@ export type ServerMsg =
       toss: { random: boolean };
       /** the score of the best of three, and which game this is */
       series?: Series;
+      /** you are watching, not playing (the seat is the one the match is seen from) */
+      watching?: boolean;
     }
   | {
       type: 'action';
@@ -111,6 +118,8 @@ export type ServerMsg =
     }
   /** a game is over (`series.over` says whether the whole match is) */
   | { type: 'end'; winner: Seat | 'draw'; reason: EndReason; series?: Series }
+  /** the game that just ended was kept: it can be watched again by this id (sent a moment after its end) */
+  | { type: 'replay'; id: string }
   | { type: 'error'; code: ErrorCode; message: string };
 
 export type ErrorCode =

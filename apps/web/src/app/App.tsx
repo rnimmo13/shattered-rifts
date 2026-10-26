@@ -19,6 +19,10 @@ const PvpScreen = lazy(() => import('../pvp/PvpScreen'));
 const GhostDecksScreen = lazy(() => import('../pvp/GhostDecksScreen'));
 const TrophyCaseScreen = lazy(() => import('../pvp/TrophyCaseScreen'));
 const SavedDecksScreen = lazy(() => import('../pvp/SavedDecksScreen'));
+const HistoryScreen = lazy(() => import('../run/HistoryScreen'));
+const ReplayScreen = lazy(() => import('../pvp/ReplayScreen'));
+const WatchScreen = lazy(() => import('../pvp/WatchScreen'));
+const ConstructedScreen = lazy(() => import('../pvp/ConstructedScreen'));
 const LeaderboardScreen = lazy(() =>
   import('../pvp/LeaderboardScreen').then((m) => ({ default: m.LeaderboardScreen })),
 );
@@ -114,6 +118,37 @@ function Screens({ hash }: { hash: string }) {
     return (
       <Suspense fallback={<div className="loading">Opening the rift…</div>}>
         <TrialsPractice />
+      </Suspense>
+    );
+  }
+  if (hash === '#/history') {
+    return (
+      <Suspense fallback={<div className="loading">Opening the rift…</div>}>
+        <HistoryScreen />
+      </Suspense>
+    );
+  }
+  if (hash === '#/constructed') {
+    return (
+      <Suspense fallback={<div className="loading">Opening the rift…</div>}>
+        <ConstructedScreen />
+      </Suspense>
+    );
+  }
+  // a shared Arena replay, or a match to watch as it is played
+  const replay = /^#\/replay\/([A-Za-z0-9]{10})$/.exec(hash)?.[1];
+  if (replay) {
+    return (
+      <Suspense fallback={<div className="loading">Opening the replay…</div>}>
+        <ReplayScreen key={replay} id={replay} />
+      </Suspense>
+    );
+  }
+  const watching = /^#\/watch\/([A-Za-z0-9]{4,12})$/.exec(hash)?.[1];
+  if (watching) {
+    return (
+      <Suspense fallback={<div className="loading">Opening the rift…</div>}>
+        <WatchScreen key={watching} room={watching} />
       </Suspense>
     );
   }

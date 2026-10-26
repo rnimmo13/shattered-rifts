@@ -5,7 +5,9 @@ import { useEffect, useRef, useState } from 'react';
 import { QUEUE_WIDEN_MS, checkArenaEntry } from '@sr/pvp';
 import { COMBAT_DB } from '@sr/content/v2';
 import { FightView } from '../fight/FightView';
-import type { VenueId } from '../duel/scene/venue';
+import { arenaFor } from './arenaVenue';
+import { ShareLink } from './ShareLink';
+import { replayLink, watchLink } from './matchHistory';
 import { HeroIcon } from '../ui/HeroIcon';
 import {
   getClaimed,
@@ -20,7 +22,9 @@ import { PvpSession, newRoomCode, savedRoom, type Snapshot } from './session';
 import { takeName } from './takeName';
 import { VAULT_SLOTS, entryFor, loadVault, saveVault, type VaultDeck } from './vault';
 import { ChoosePanel, CoinFlip, GhostOffer, WaitTimer } from './PvpParts';
-import { boardId } from './boardApi';
+import { boardId, viewRanks, type RankedView } from './boardApi';
+import { RankPanel } from './RankedBoard';
+import { ARENA_MODES } from '@sr/pvp';
 import { VaultCode, type Online } from './VaultCode';
 import { AccountBox } from './AccountBox';
 import { RarityTally } from './DeckReport';
@@ -29,24 +33,6 @@ import '../play/play.css';
 import './decks.css';
 import { syncVault, vaultKey, whoAmI, type Me } from './vaultSync';
 import './pvp.css';
-
-const ARENAS: VenueId[] = [
-  'castle',
-  'factory',
-  'forest',
-  'cave',
-  'glass',
-  'swamp',
-  'alley',
-  'rift',
-];
-
-/** Both players see the same arena: it is picked from the match's seed. */
-function arenaFor(seed: string): VenueId {
-  let h = 0;
-  for (let i = 0; i < seed.length; i++) h = (Math.imul(h, 31) + seed.charCodeAt(i)) >>> 0;
-  return ARENAS[h % ARENAS.length] as VenueId;
-}
 
 const EMPTY: Snapshot = {
   phase: 'idle',
@@ -74,6 +60,15 @@ export default function PvpScreen() {
   const [snap, setSnap] = useState<Snapshot>(EMPTY);
   const [server, setServer] = useState(getServerSetting);
   const [confirmResign, setConfirmResign] = useState(false);
+  /** your rank this season (once the board has said; nothing when it cannot be reached) */
+  const [ranked, setRanked] = useState<RankedView['you']>(null);
+  useEffect(() => {
+    let live = true;
+    void viewRanks().then((v) => live && setRanked(v?.you ?? null));
+    return () => {
+      live = false;
+    };
+  }, []);
   /** why the name was not accepted (taken, not allowed) */
   const [nameProblem, setNameProblem] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
@@ -204,6 +199,17 @@ export default function PvpScreen() {
             title={`${match.names.a} vs ${match.names.b}${match.series && !match.series.over ? ` · Game ${match.series.game} of 3 (${match.series.wins.a}–${match.series.wins.b})` : ''}`}
             venue={arenaFor(match.setup.seed)}
             pvp={link}
+            topExtra={
+              // (a friend can watch the match as it is played: the hand stays hidden from them)
+              !over && match.room ? (
+                <ShareLink link={watchLink(match.room)} label="Invite to watch" />
+              ) : undefined
+            }
+            resultExtra={() =>
+              match.replayId ? (
+                <ShareLink link={replayLink(match.replayId)} label="Share the replay" />
+              ) : null
+            }
             exitLabel={over ? 'Leave' : 'Resign'}
             onExit={() => (over ? back() : setConfirmResign(true))}
             // a game that is not the last: on to the next (the loser chooses who goes first); the last game ends the match
@@ -293,6 +299,7 @@ export default function PvpScreen() {
           enemy intents, and each turn has a time limit. Clear a run and choose <b>Bank</b> to add
           decks to your Vault ({vault.length} of {VAULT_SLOTS} used).
         </p>
+        {ranked && <RankPanel rank={ranked} place={ranked.place} />}
       </header>
 
       {snap.phase === 'error' && snap.message && (
@@ -465,6 +472,13 @@ export default function PvpScreen() {
               <p className="pvp__hint">
                 A ghost is a deck another player has used in the Arena, played by the computer. It
                 is a fight for fun and for the Ghosts board: it does not count on the Arena board.
+              </p>
+              <p className="pvp__hint">
+                <a href="#/constructed">Constructed decks</a>:{' '}
+                {ARENA_MODES.constructed
+                  ? 'build a deck card by card from your Riftwalker’s whole pool.'
+                  : 'build a deck card by card from your Riftwalker’s whole pool, ready for the Constructed Arena when it opens.'}{' '}
+                <a href="#/history">Match history and replays</a>
               </p>
             </>
           )}

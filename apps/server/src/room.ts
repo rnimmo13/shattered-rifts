@@ -28,7 +28,10 @@ import {
   type SeriesState,
   type ServerMsg,
   type TrophyCount,
+  type RankBadge,
   cleanTrophies,
+  cleanRank,
+  REPLAY_MIN_MOVES,
 } from '@sr/pvp';
 import type { Env } from './env';
 import { cleanAction, parse, send } from './wire';
@@ -45,6 +48,8 @@ const QUIET_MS = 60_000;
 const HEARTBEAT_CHECK_MS = 30_000;
 /** When the computer is to choose the order between games, it waits this long (the result is on screen first), ms. */
 const GHOST_PAUSE_MS = 8_000;
+/** The most people watching one match at once. */
+const MAX_WATCHERS = 50;
 
 interface Saved {
   created: number;
@@ -86,11 +91,15 @@ interface Saved {
   lastEnd?: Outcome;
   /** moves made in the games already finished (a match is recorded on the board by its total) */
   moves: number;
+  /** the replay id of the game that ended last (told to a player who comes back to the result) */
+  lastReplay?: string;
 }
 
 interface Attach {
   playerId: string;
   seat: Seat | null;
+  /** someone watching the match, not playing in it */
+  watch?: true;
 }
 
 const fresh = (): Saved => ({
@@ -270,15 +279,46 @@ export class MatchRoom extends DurableObject<Env> {
     await this.reschedule();
   }
 
+  /** The players' connections (someone watching is not one of them). */
   private sockets(seat?: Seat): { ws: WebSocket; at: Attach }[] {
     return this.ctx.getWebSockets().flatMap((ws) => {
       const at = ws.deserializeAttachment() as Attach | null;
-      return at && (seat === undefined || at.seat === seat) ? [{ ws, at }] : [];
+      return at && !at.watch && (seat === undefined || at.seat === seat) ? [{ ws, at }] : [];
     });
   }
 
+  /** The connections of people watching. */
+  private watchers(): WebSocket[] {
+    return this.ctx.getWebSockets().filter((ws) => {
+      const at = ws.deserializeAttachment() as Attach | null;
+      return at?.watch === true;
+    });
+  }
+
+  /** Tell everyone in the room, players and watchers. */
   private broadcast(msg: ServerMsg): void {
     for (const { ws } of this.sockets()) send(ws, msg);
+    for (const ws of this.watchers()) send(ws, msg);
+  }
+
+  /** Bring someone watching up to date: the game so far (seen from the first seat), or that it has not begun. */
+  private welcomeWatcher(ws: WebSocket): void {
+    const d = this.data;
+    if (!d.started || d.choosing) {
+      send(ws, { type: 'waiting', room: this.code });
+      // (between games: how the last one ended)
+      if (d.between && d.lastEnd) {
+        send(ws, this.endMessage(d.lastEnd));
+        if (d.lastReplay) send(ws, { type: 'replay', id: d.lastReplay });
+      }
+      return;
+    }
+    const start = this.startMessage('a');
+    if (!start || start.type !== 'start') return;
+    send(ws, { ...start, watching: true });
+    for (let i = 0; i < d.log.length; i++) send(ws, this.actionMessage(i, null));
+    if (d.over) send(ws, this.endMessage(d.over));
+    if (d.over && d.lastReplay) send(ws, { type: 'replay', id: d.lastReplay });
   }
 
   /** The next moment something must happen (a turn running out, a player's time to come back, an idle room). */
@@ -399,6 +439,10 @@ export class MatchRoom extends DurableObject<Env> {
       const m = this.startMessage(s.at.seat as Seat);
       if (m) send(s.ws, m);
     }
+    // (people watching see each game from the first seat)
+    const seen = this.startMessage('a');
+    if (seen?.type === 'start')
+      for (const ws of this.watchers()) send(ws, { ...seen, watching: true });
   }
 
   private actionMessage(i: number, m: Accepted | null): ServerMsg {
@@ -424,6 +468,31 @@ export class MatchRoom extends DurableObject<Env> {
     const at = ws.deserializeAttachment() as Attach | null;
     const d = this.data;
 
+    if (msg.type === 'watch') {
+      if (at) return; // (already in the room on this socket)
+      if (msg.rules !== RULES_VERSION) {
+        send(ws, {
+          type: 'error',
+          code: 'outdated',
+          message: 'The game has been updated. Reload the page to watch.',
+        });
+        ws.close(1008, 'outdated');
+        return;
+      }
+      if (this.watchers().length >= MAX_WATCHERS) {
+        send(ws, { type: 'error', code: 'room-full', message: 'Too many people are watching.' });
+        ws.close(1008, 'full');
+        return;
+      }
+      ws.serializeAttachment({
+        playerId: `watch:${crypto.randomUUID()}`,
+        seat: null,
+        watch: true,
+      } satisfies Attach);
+      this.welcomeWatcher(ws);
+      return;
+    }
+
     if (msg.type === 'join') {
       if (at) return; // already seated on this socket
       if (msg.rules !== RULES_VERSION) {
@@ -448,7 +517,7 @@ export class MatchRoom extends DurableObject<Env> {
       }
       // the trophies they hold go on their card for the opponent to see (the board is asked, briefly, before a seat is taken, so
       // nothing about the room changes while waiting for it; a browser cannot claim any)
-      const trophies = checked.entry.who ? await this.trophyCount(checked.entry.who) : undefined;
+      const badge = checked.entry.who ? await this.badgeOf(checked.entry.who) : {};
       // (this socket may have been seated by a second join sent while the board was asked)
       if (ws.deserializeAttachment()) return;
       // a player already in the room is coming back
@@ -470,7 +539,11 @@ export class MatchRoom extends DurableObject<Env> {
       d.ids[free] = msg.playerId;
       // the leaderboard id is taken out of the entry before it is kept (the entry goes to the opponent)
       const { who, ...publicEntry } = checked.entry;
-      d.entries[free] = trophies ? { ...publicEntry, trophies } : publicEntry;
+      d.entries[free] = {
+        ...publicEntry,
+        ...(badge.trophies ? { trophies: badge.trophies } : {}),
+        ...(badge.rank ? { rank: badge.rank } : {}),
+      };
       d.who ??= {};
       if (who) d.who[free] = who;
       else delete d.who[free];
@@ -572,10 +645,70 @@ export class MatchRoom extends DurableObject<Env> {
     if (start) send(ws, start);
     for (let i = 0; i < d.log.length; i++) send(ws, this.actionMessage(i, null));
     if (d.over) send(ws, this.endMessage(d.over));
+    if (d.over && d.lastReplay) send(ws, { type: 'replay', id: d.lastReplay });
   }
 
   private endMessage(o: Outcome): ServerMsg {
     return { type: 'end', winner: o.winner, reason: o.reason, series: this.seriesNow() };
+  }
+
+  /** Keep the game that has just ended, so it can be watched again (its id, or nothing if the board could not take it). */
+  /** What a replay of the game just ended holds (taken before the room moves on), or null when it is not kept. */
+  private replayOf(outcome: Outcome): Record<string, unknown> | null {
+    const d = this.data;
+    const a = d.entries.a;
+    const b = d.entries.b;
+    if (!a || !b || d.log.length < REPLAY_MIN_MOVES || d.rules !== RULES_VERSION) return null;
+    // (only a game with a known player in it is kept, and the board limits how many each keeps: see saveReplay)
+    const owners = Object.values(d.who ?? {}).filter((w): w is string => typeof w === 'string');
+    if (owners.length === 0) return null;
+    // (the trophies and rank on a card are of the moment: a replay keeps the decks and names only)
+    const plain = (e: Entry): Entry => {
+      const { trophies: _t, rank: _r, ...rest } = e;
+      void _t;
+      void _r;
+      return rest;
+    };
+    return {
+      owners,
+      replay: {
+        rules: d.rules,
+        seed: d.seed,
+        a: plain(a),
+        b: plain(b),
+        log: [...d.log],
+        winner: outcome.winner,
+        reason: outcome.reason,
+        game: d.series.game,
+        ...(d.ghost ? { ghost: d.ghost.seat } : {}),
+      },
+    };
+  }
+
+  /**
+   * Keep a game that has ended, after its result is out (never in its way): once the board gives it an id, everyone in the room is
+   * told. The room may have moved on, or been cleared, while the board was asked: then nothing more is done.
+   */
+  private async keepReplay(body: Record<string, unknown> | null, seed: string): Promise<void> {
+    if (!body) return;
+    let id: string | undefined;
+    try {
+      const res = await this.env.BOARD.get(this.env.BOARD.idFromName('main')).fetch(
+        new Request('https://board.invalid/replay/save', {
+          method: 'POST',
+          body: JSON.stringify(body),
+          signal: AbortSignal.timeout(3000),
+        }),
+      );
+      const data = await res.json<{ id?: unknown }>();
+      if (typeof data.id === 'string') id = data.id;
+    } catch {
+      return;
+    }
+    if (!id || this.data.seed !== seed || !this.data.started) return;
+    this.data.lastReplay = id;
+    await this.save();
+    this.broadcast({ type: 'replay', id });
   }
 
   /**
@@ -586,6 +719,10 @@ export class MatchRoom extends DurableObject<Env> {
     const d = this.data;
     d.over = outcome;
     d.moves += d.log.length;
+    // (what its replay holds is taken now; it is kept once the result is out)
+    const replay = this.replayOf(outcome);
+    const seed = d.seed;
+    delete d.lastReplay;
     const gameOnly = outcome.reason !== 'disconnect';
     if (gameOnly) {
       const winnerId = outcome.winner === 'draw' ? null : (d.ids[outcome.winner] ?? null);
@@ -597,6 +734,7 @@ export class MatchRoom extends DurableObject<Env> {
       await this.save();
       this.broadcast(over);
       await this.record(outcome);
+      await this.keepReplay(replay, seed);
       return;
     }
     // the match goes on: the result is shown, then the loser of this game chooses who goes first in the next
@@ -620,10 +758,11 @@ export class MatchRoom extends DurableObject<Env> {
     await this.save();
     this.broadcast(over);
     for (const sock of this.sockets()) this.askOrder(sock.ws, sock.at.seat as Seat);
+    await this.keepReplay(replay, seed);
   }
 
-  /** How many Arena trophies a player holds (none if the board cannot be reached: a card without trophies is no loss). */
-  private async trophyCount(who: string): Promise<TrophyCount | undefined> {
+  /** The Arena trophies a player holds and their rank (neither if the board cannot be reached: a card without them is no loss). */
+  private async badgeOf(who: string): Promise<{ trophies?: TrophyCount; rank?: RankBadge }> {
     try {
       // (a second at most: a slow board never holds up a match)
       const res = await this.env.BOARD.get(this.env.BOARD.idFromName('main')).fetch(
@@ -633,10 +772,15 @@ export class MatchRoom extends DurableObject<Env> {
           signal: AbortSignal.timeout(1000),
         }),
       );
-      const data = await res.json<{ counts?: Record<string, unknown> }>();
-      return cleanTrophies(data.counts?.[who]);
+      const data = await res.json<{
+        counts?: Record<string, unknown>;
+        ranks?: Record<string, unknown>;
+      }>();
+      const trophies = cleanTrophies(data.counts?.[who]);
+      const rank = cleanRank(data.ranks?.[who]);
+      return { ...(trophies ? { trophies } : {}), ...(rank ? { rank } : {}) };
     } catch {
-      return undefined;
+      return {};
     }
   }
 
@@ -753,8 +897,8 @@ export class MatchRoom extends DurableObject<Env> {
       return;
     }
     if (d.over || !d.started) {
-      // nothing more will happen here: clear the room
-      for (const { ws } of this.sockets()) ws.close(1000, 'room closed');
+      // nothing more will happen here: clear the room (and send away anyone still watching)
+      for (const ws of this.ctx.getWebSockets()) ws.close(1000, 'room closed');
       await this.ctx.storage.deleteAll();
       this.data = fresh();
       this.match = null;

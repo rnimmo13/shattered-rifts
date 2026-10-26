@@ -31,7 +31,10 @@ function atMerchant(seed: string, shards: number, prev?: RunState): RunState {
       nodes: base.map.nodes.map((n) => (n.id === node.id ? { ...n, kind: 'merchant' } : n)),
     },
   };
-  return enterNode(asMerchant, node.id);
+  const at = enterNode(asMerchant, node.id);
+  // (these tests are about holds: the table's sale card, which cannot be held, is made an ordinary one; merchant.test.ts covers it)
+  for (const it of at.context?.merchant?.items ?? []) delete it.sale;
+  return at;
 }
 
 describe('letting a hold go', () => {

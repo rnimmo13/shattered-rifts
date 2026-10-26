@@ -1,0 +1,160 @@
+/* The fight recap (FightRecap.tsx): a panel over whatever is behind it (a fight's result, a replay, the run history). */
+
+.recap {
+  position: fixed;
+  inset: 0;
+  z-index: 120;
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  background: rgb(4 5 11 / 0.72);
+  pointer-events: auto;
+  user-select: text;
+}
+.recap__panel {
+  width: min(56rem, 100%);
+  max-height: calc(100vh - 2rem);
+  overflow: auto;
+  display: grid;
+  gap: 1rem;
+  padding: 1.2rem 1.4rem 1.4rem;
+  border-radius: 16px;
+  border: 1px solid var(--c-gold);
+  background: linear-gradient(160deg, rgb(31 48 104 / 0.97), rgb(8 10 20 / 0.98));
+  color: var(--c-ivory);
+  box-shadow: var(--glow-gold);
+}
+.recap__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.recap__head h2 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  color: var(--c-gold-light);
+}
+.recap__head p {
+  margin: 0.2rem 0 0;
+  color: var(--c-text-dim);
+}
+.recap h3 {
+  margin: 0 0 0.45rem;
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  letter-spacing: 0.06em;
+  color: var(--c-gold-pale);
+}
+.recap__note {
+  margin: 0;
+  padding: 0.5rem 0.7rem;
+  border-radius: 8px;
+  background: rgb(255 200 80 / 0.12);
+  border: 1px solid rgb(255 200 80 / 0.4);
+}
+.recap__stats {
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(7.5rem, 1fr));
+  gap: 0.5rem;
+}
+.recap__stats div {
+  padding: 0.5rem 0.7rem;
+  border-radius: 10px;
+  background: rgb(255 255 255 / 0.06);
+}
+.recap__stats dt {
+  font-size: 0.8rem;
+  color: var(--c-text-dim);
+}
+.recap__stats dd {
+  margin: 0;
+  font-family: var(--font-numeric);
+  font-size: 1.7rem;
+  color: var(--c-gold-light);
+}
+.recap__killer {
+  padding: 0.6rem 0.8rem;
+  border-radius: 10px;
+  border: 1px solid rgb(255 110 110 / 0.5);
+  background: rgb(120 20 30 / 0.28);
+}
+.recap__killer p {
+  margin: 0;
+}
+.recap__cols {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+  gap: 1rem;
+}
+.recap__bars,
+.recap__turns {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 0.45rem;
+}
+.recap__barName small {
+  color: var(--c-text-dim);
+}
+.recap__bar {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.recap__bar i {
+  display: block;
+  height: 0.55rem;
+  border-radius: 99px;
+  background: linear-gradient(90deg, #ff8a7a, #c83c4a);
+}
+.recap__bar b {
+  font-variant-numeric: tabular-nums;
+}
+.recap__turns li {
+  display: grid;
+  gap: 0.1rem;
+}
+.recap__turns span {
+  font-size: 0.88rem;
+  color: var(--c-text-dim);
+}
+.recap__aside,
+.recap__empty {
+  margin: 0.5rem 0 0;
+  font-size: 0.88rem;
+  color: var(--c-text-dim);
+}
+.recap__logBody {
+  max-height: 16rem;
+  overflow: auto;
+  padding: 0.5rem 0.7rem;
+  border-radius: 10px;
+  background: rgb(0 0 0 / 0.3);
+}
+.recap__line {
+  margin: 0.1rem 0;
+  font-size: 0.88rem;
+}
+.recap__line--mine {
+  color: #bfe6ff;
+}
+.recap__line--foe {
+  color: #ffc2b8;
+}
+.recap__line--turn {
+  margin-top: 0.5rem;
+  font-weight: 700;
+  color: var(--c-gold-light);
+}
+@media (max-width: 600px) {
+  .recap {
+    padding: 0.5rem;
+  }
+  .recap__panel {
+    padding: 1rem;
+  }
+}

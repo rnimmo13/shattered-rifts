@@ -16,6 +16,7 @@ import {
   MARK_INFO,
   rolledId,
   rewardPool,
+  laneOf,
   canonicalHero,
   type HeroId,
 } from '@sr/content/v2';
@@ -47,6 +48,7 @@ import {
   type ShrineKind,
 } from './gambler';
 import { makePrelude } from './preludes';
+import { mainLane } from './synergy';
 import {
   BOON_PRICE,
   LOOP_LEGEND_CHANCE,
@@ -54,7 +56,8 @@ import {
   MAX_TIER,
   POTION_PRICE,
   PRICE,
-  REMOVE_PRICE,
+  SALE_OFF,
+  removePrice,
   upgradePrice,
   ancestralPool,
   offerPotion,
@@ -286,12 +289,32 @@ export function enterNode(run: RunState, nodeId: string): RunState {
           for (const id of offerCards(r.rng, crossed, r.deck, 'elite', 4, r.luck))
             if (COMBAT_DB.cards[id]?.hero === crossed && !stock.includes(id) && stock.length < 4)
               stock.push(id);
-      } else stock = offerCards(r.rng, r.character, r.deck, 'elite', 4, r.luck);
+      } else {
+        stock = offerCards(r.rng, r.character, r.deck, 'elite', 4, r.luck);
+        // a merchant who knows your deck keeps one card of the lane it leans on most (DECISIONS #243)
+        const lane = mainLane(r.character, r.deck);
+        if (lane !== null && stock.length > 0 && !stock.some((id) => laneOf(id) === lane)) {
+          const fits = rewardPool(r.character).filter(
+            (id) =>
+              laneOf(id) === lane &&
+              !stock.includes(id) &&
+              canAdd(r.deck, id) &&
+              ['common', 'uncommon', 'rare'].includes(COMBAT_DB.cards[id]?.rarity ?? ''),
+          );
+          if (fits.length) stock[stock.length - 1] = fits[nextInt(r.rng, fits.length)] as string;
+        }
+      }
       const items: MerchantItem[] = stock.map((cardId) => ({
         cardId,
         price: priceOf(cardId),
         sold: false,
       }));
+      // one card on the table is on sale
+      if (items.length > 0) {
+        const it = items[nextInt(r.rng, items.length)] as MerchantItem;
+        it.price = Math.round(it.price * (1 - SALE_OFF));
+        it.sale = true;
+      }
       // a card you put on hold earlier is waiting for you, at the price you were promised
       if (r.held) {
         const keep = r.held.filter((h) => canAdd(r.deck, h.cardId));
@@ -320,7 +343,7 @@ export function enterNode(run: RunState, nodeId: string): RunState {
       r.context.merchant = {
         items,
         ...(crossed ? { crossed } : {}),
-        removePrice: REMOVE_PRICE,
+        removePrice: removePrice(r.removals ?? 0),
         removed: false,
         potions,
         ...(boon
@@ -1033,6 +1056,8 @@ export function holdCard(run: RunState, index: number): RunState {
   const item = m.items[index];
   need(item && !item.sold && !item.onHold, 'That cannot be put on hold');
   need(!item.held, 'That card is already on hold for you');
+  // (a sale price is for this visit only: it does not stack with a hold's)
+  need(!item.sale, 'A card on sale cannot be put on hold');
   need((r.held?.length ?? 0) < MAX_HELD, `You can only hold ${MAX_HELD} cards at a time`);
   const deposit = Math.ceil(item.price * HOLD_DEPOSIT);
   need(r.shards >= deposit, 'Not enough shards for the deposit');
@@ -1143,6 +1168,7 @@ export function buyRemoval(run: RunState, card: string): RunState {
   r.shards -= m.removePrice;
   r.deck.splice(i, 1);
   m.removed = true;
+  r.removals = (r.removals ?? 0) + 1;
   return r;
 }
 

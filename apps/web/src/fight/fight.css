@@ -1774,3 +1774,51 @@
     width: min(30rem, 94vw);
   }
 }
+
+/* ---- after the fight: recap, a look at the board, the replay (DECISIONS #239) ---- */
+.fight__resultRecap {
+  max-width: 30rem;
+  margin: 0;
+  text-align: center;
+  color: #ffc2b8;
+}
+.fight__resultActions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem;
+}
+.fight__peekBack {
+  position: absolute;
+  left: 50%;
+  bottom: 1.2rem;
+  transform: translateX(-50%);
+  z-index: 72;
+}
+.fight__replayLayer {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+}
+.fight__watch {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+.fight__watch .is-on {
+  outline: 1px solid var(--c-gold);
+}
+.fight__watchTag {
+  padding: 0.15rem 0.55rem;
+  border-radius: 99px;
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  background: rgb(200 60 74 / 0.85);
+  color: #fff;
+}
+@media (max-width: 600px) {
+  .fight__resultCard {
+    padding: 1.2rem 1.2rem;
+  }
+}

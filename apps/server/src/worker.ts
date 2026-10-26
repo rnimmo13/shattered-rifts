@@ -6,6 +6,7 @@
 //   GET /pvp/room/CODE (WebSocket)  a match room (a friend code, or the room the queue picked)
 //   POST /pvp/vault/list|bank|drop  a player's saved decks: under the signed-in account, or else the Vault code in the JSON body {code, ...}
 //   /pvp/board/*                    the weekly and monthly leaderboards (board.ts)
+//   GET /pvp/replay/ID               a finished Arena game, to watch again
 //   /auth/*                         sign in with Google (auth.ts)
 
 import type { Env } from './env';
@@ -158,6 +159,7 @@ const CORS_POST = {
  * POST /pvp/board/run   {code?, run, name, hero, tier, stage}   a run has reached this far (counted under the player's claimed username)
  * POST /pvp/board/claim {code?, name}            claim a username: 3 to 20 characters, and no two players share one
  * POST /pvp/board/trophies {code?}              this player's Arena trophies (DECISIONS #238)
+ * GET  /pvp/board/ranks                         this season's ranked board (DECISIONS #240); POST /pvp/board/view {kind: 'ranks'} adds yours
  */
 async function boardRoute(request: Request, env: Env, what: string, url: URL): Promise<Response> {
   if (request.method === 'OPTIONS') return new Response(null, { status: 204, headers: CORS_POST });
@@ -165,7 +167,11 @@ async function boardRoute(request: Request, env: Env, what: string, url: URL): P
   try {
     if (
       request.method === 'GET' &&
-      (what === 'pvp' || what === 'runs' || what === 'ghosts' || what === 'ghostdecks')
+      (what === 'pvp' ||
+        what === 'runs' ||
+        what === 'ghosts' ||
+        what === 'ghostdecks' ||
+        what === 'ranks')
     ) {
       const res = await stub.fetch(
         new Request(
@@ -306,6 +312,25 @@ export default {
     if (url.pathname === '/pvp/queue') {
       const stub = env.MATCHMAKER.get(env.MATCHMAKER.idFromName('main'));
       return stub.fetch(request);
+    }
+    // GET /pvp/replay/ID: a finished Arena game, to watch again (DECISIONS #239)
+    const replayId = /^\/pvp\/replay\/([A-Za-z0-9]{10})$/.exec(url.pathname)?.[1];
+    if (replayId && request.method === 'GET') {
+      try {
+        const stub = env.BOARD.get(env.BOARD.idFromName('main'));
+        const res = await stub.fetch(new Request(`https://board.invalid/replay?id=${replayId}`));
+        // (a replay never changes: it can be kept a long while once fetched)
+        return new Response(await res.text(), {
+          status: res.status,
+          headers: {
+            'content-type': 'application/json',
+            'access-control-allow-origin': '*',
+            'cache-control': res.ok ? 'public, max-age=86400' : 'no-store',
+          },
+        });
+      } catch {
+        return json({ ok: false, error: 'unavailable' }, 503);
+      }
     }
     const room = /^\/pvp\/room\/([A-Za-z0-9]+)$/.exec(url.pathname)?.[1]?.toUpperCase();
     if (room && ROOM_CODE.test(room)) {

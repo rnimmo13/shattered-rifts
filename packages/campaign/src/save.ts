@@ -371,6 +371,9 @@ export function parseRun(text: string): RunState | null {
   // (the Gambler's Ledger's signatures: a count, or nothing)
   const signed = (r as { ledger?: unknown }).ledger;
   if (signed !== undefined && !isInt(signed, 0, 1000)) return null;
+  // (merchant removals bought: a count, or nothing)
+  const removals = (r as { removals?: unknown }).removals;
+  if (removals !== undefined && !isInt(removals, 0, 10000)) return null;
   if (
     loose.eventFlips !== undefined &&
     !(

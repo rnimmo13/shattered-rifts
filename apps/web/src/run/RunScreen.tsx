@@ -71,6 +71,8 @@ import {
   ShrineView,
 } from './Pickers';
 import { appendFightMove, clearFightLog, loadFightLog } from './fightLog';
+import { addToHistory, recordOf } from './history';
+import type { FightReplay } from '../fight/recap';
 import { clearGhostLog } from './ghostDuel';
 import { GhostLink } from './GhostLink';
 import { fetchGhostBoss } from '../pvp/boardApi';
@@ -168,6 +170,8 @@ export default function RunScreen() {
   /** how many saved Arena decks the run took down with it when it collapsed (null: not known yet) */
   const [lostDecks, setLostDecks] = useState<number | null>(null);
   const [confirmAbandon, setConfirmAbandon] = useState(false);
+  /** the last fight played in this run (the run history keeps it: the fight that ended a fallen run) */
+  const lastFightRef = useRef<(FightReplay & { won: boolean }) | null>(null);
 
   // autosave after every step; a finished run (collapsed or banked) is not kept as a save
   useEffect(() => {
@@ -178,6 +182,8 @@ export default function RunScreen() {
     if (run.phase === 'collapsed' || run.phase === 'banked') {
       clearSavedRun(id);
       slotRef.current = null;
+      // (an ended run goes into the run history, with the fight that ended it)
+      addToHistory(recordOf(run, run.phase, Date.now(), lastFightRef.current ?? undefined));
       // a run that falls takes its saved Arena deck with it
       if (run.phase === 'collapsed') void loseSavedDecks(run).then(setLostDecks);
     } else if (!saveRunSlot(id, run)) {
@@ -311,6 +317,11 @@ export default function RunScreen() {
     window.location.hash = '#/';
   };
   const leaveRun = () => {
+    // a run given up after it got going is history too
+    // (a fallen or banked run was already recorded as such: leaving it afterwards is not abandoning it)
+    const cur = runRef.current;
+    if (cur && cur.stats.nodesCleared > 0 && cur.phase !== 'collapsed' && cur.phase !== 'banked')
+      addToHistory(recordOf(cur, 'abandoned', Date.now(), lastFightRef.current ?? undefined));
     if (runRef.current) {
       clearFightLog(duelKey(runRef.current));
       clearGhostLog(duelKey(runRef.current));
@@ -413,9 +424,10 @@ export default function RunScreen() {
           }
           // there is no "leave" in a campaign fight: giving up counts as a loss
           onExit={() => setConfirmForfeit(true)}
-          onDone={(r) =>
-            reportResult(r.winner === 'a', r.winner === 'a' ? r.hp : undefined, r.potions)
-          }
+          onDone={(r) => {
+            if (r.replay) lastFightRef.current = { ...r.replay, won: r.winner === 'a' };
+            reportResult(r.winner === 'a', r.winner === 'a' ? r.hp : undefined, r.potions);
+          }}
         />
       );
       return (
@@ -783,6 +795,7 @@ function Body(props: {
           title="Choose a card"
           hint="Add one to your deck, or skip: a thin deck draws its best cards more often."
           offers={run.context?.offers ?? []}
+          deck={run.deck}
           character={run.character}
           shards={run.context?.shardsGained}
           boon={run.context?.boonGained}
@@ -797,6 +810,7 @@ function Body(props: {
           title="The Warden's Gift"
           hint="The Warden falls. Take one of your class's rare cards, or skip it."
           offers={run.context?.offers ?? []}
+          deck={run.deck}
           character={run.character}
           shards={run.context?.shardsGained}
           boon={run.context?.boonGained}
@@ -901,9 +915,14 @@ function Body(props: {
               </>
             )}
           </p>
-          <button className="btn btn--primary" onClick={props.onLeave}>
-            <span>Back to the Sanctum</span>
-          </button>
+          <div className="choices-row">
+            <button className="btn btn--primary" onClick={props.onLeave}>
+              <span>Back to the Sanctum</span>
+            </button>
+            <a className="btn" href="#/history">
+              <span>Run history (watch the last fight)</span>
+            </a>
+          </div>
         </section>
       );
     case 'banked':

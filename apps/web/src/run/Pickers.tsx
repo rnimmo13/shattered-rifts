@@ -19,6 +19,10 @@ import {
   type TrialPrize,
   diceOdds,
   diceable,
+  fitLabel,
+  fitOf,
+  removePrice,
+  SALE_OFF,
   engravable,
   ledgerGain,
   type ShrineChoice,
@@ -70,6 +74,8 @@ function Pickable(props: {
   badge?: string;
   /** just show the card (hover to read it): no button */
   preview?: boolean;
+  /** the deck it would join: a hint says whether it fits (DECISIONS #243) */
+  deck?: readonly string[] | undefined;
   children?: React.ReactNode;
 }) {
   const def = defOf(props.id);
@@ -90,6 +96,7 @@ function Pickable(props: {
           {props.badge && <span className="pick__badge">{props.badge}</span>}
         </div>
         <CrossTag def={def} own={props.own} />
+        {props.deck && <FitTag id={props.id} deck={props.deck} />}
         {props.children}
       </div>
     );
@@ -114,8 +121,27 @@ function Pickable(props: {
         {props.badge && <span className="pick__badge">{props.badge}</span>}
       </button>
       <CrossTag def={def} own={props.own} />
+      {props.deck && <FitTag id={props.id} deck={props.deck} />}
       {props.children}
     </div>
+  );
+}
+
+/** Whether an offered card fits the deck it would join: "Fits your Bulwark (4)", or "New lane: Swarm". */
+function FitTag(props: { id: string; deck: readonly string[] }) {
+  const f = useMemo(() => fitOf(props.deck, props.id), [props.deck, props.id]);
+  if (!f) return null;
+  return (
+    <span
+      className={`pick__fit pick__fit--${f.kind}`}
+      title={
+        f.kind === 'fits'
+          ? `Your deck has ${f.n} cards of the ${f.lane} lane: this one builds on them.`
+          : `Your deck has no ${f.lane} cards yet: this one starts something new.`
+      }
+    >
+      {fitLabel(f)}
+    </span>
   );
 }
 
@@ -146,6 +172,8 @@ export function CardOffer(props: {
   onSkip?: (() => void) | undefined;
   /** the player's Riftwalker, to tag cards from another one */
   character?: string | undefined;
+  /** the deck the card joins, for the fit hints */
+  deck?: readonly string[] | undefined;
 }) {
   const [hover, setHover] = useState<CardDef | null>(null);
   return (
@@ -164,6 +192,7 @@ export function CardOffer(props: {
             id={id}
             width={290}
             own={props.character}
+            deck={props.deck}
             onHover={setHover}
             onClick={() => props.onPick(id)}
           />
@@ -406,6 +435,7 @@ export function ShrineView(props: {
                   id={id}
                   width={250}
                   own={run.character}
+                  deck={run.deck}
                   onHover={setHover}
                   onClick={() => {
                     setAltarOpen(false);
@@ -546,9 +576,20 @@ export function MerchantView(props: {
                 width={270}
                 onHover={setHover}
                 preview
-                badge={it.sold ? 'SOLD' : it.onHold ? 'ON HOLD' : it.held ? 'HELD FOR YOU' : ''}
+                deck={it.sold ? undefined : props.run.deck}
+                badge={
+                  it.sold
+                    ? 'SOLD'
+                    : it.onHold
+                      ? 'ON HOLD'
+                      : it.held
+                        ? 'HELD FOR YOU'
+                        : it.sale
+                          ? `SALE: ${Math.round(SALE_OFF * 100)}% OFF`
+                          : ''
+                }
               />
-              <div className="shop__price">
+              <div className={`shop__price${it.sale ? ' is-sale' : ''}`}>
                 <span aria-hidden>◈</span> {it.price}
               </div>
               <button
@@ -579,7 +620,7 @@ export function MerchantView(props: {
                   <span>{it.held ? 'Turn it down' : 'Cancel hold'}</span>
                 </button>
               )}
-              {!it.sold && !it.onHold && !it.held && (
+              {!it.sold && !it.onHold && !it.held && !it.sale && (
                 <button
                   className="btn btn--small btn--ghost shop__hold"
                   disabled={heldCount >= MAX_HELD || shards < Math.ceil(it.price * HOLD_DEPOSIT)}
@@ -698,7 +739,7 @@ export function MerchantView(props: {
               icon={<span className="shoprow__glyph">✂</span>}
               name="Remove a card"
               kind="service"
-              text="Cut one card from your deck for good. A thinner deck draws its best cards more often."
+              text={`Cut one card from your deck for good. A thinner deck draws its best cards more often. Each removal bought this run makes the next dearer (${removePrice((props.run.removals ?? 0) + 1)} after this one).`}
               price={m.removed ? null : m.removePrice}
               button={
                 m.removed ? 'Done' : shards < m.removePrice ? 'Too expensive' : 'Choose a card'
@@ -870,7 +911,13 @@ export function EventView(props: {
       {ev.boonOffer && <BoonCard id={ev.boonOffer} />}
       {card && (
         <div className="offers">
-          <Pickable id={card.id} width={270} own={props.run.character} onHover={setHover} />
+          <Pickable
+            id={card.id}
+            width={270}
+            own={props.run.character}
+            deck={props.run.deck}
+            onHover={setHover}
+          />
         </div>
       )}
       {ev.cardOffers && (
@@ -881,6 +928,7 @@ export function EventView(props: {
               id={id}
               width={210}
               own={props.run.character}
+              deck={props.run.deck}
               onHover={setHover}
               preview
             />

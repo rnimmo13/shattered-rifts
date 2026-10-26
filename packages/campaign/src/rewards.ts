@@ -291,6 +291,16 @@ export const PRICE: Record<string, number> = {
 export const priceOf = (id: string): number => PRICE[rarityOf(id)] ?? 60;
 export const REMOVE_PRICE = 40;
 /**
+ * Each card removal bought from a merchant in a run makes the next one dearer by this much, up to REMOVE_MAX (DECISIONS #243): the
+ * first few are as cheap as ever, and thinning a deck right down costs more the further it goes.
+ */
+export const REMOVE_STEP = 15;
+export const REMOVE_MAX = 100;
+export const removePrice = (bought: number): number =>
+  Math.min(REMOVE_MAX, REMOVE_PRICE + REMOVE_STEP * Math.max(0, bought));
+/** One card on each merchant's table is on sale: this share off its price. */
+export const SALE_OFF = 0.3;
+/**
  * What the merchant charges to upgrade a card: this much the first time at a shop, and each upgrade bought at that same shop makes the next
  * one dearer by the step. The next merchant starts from the base again.
  */

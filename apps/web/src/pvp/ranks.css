@@ -1,0 +1,121 @@
+/* Arena ranks (RankBadge.tsx), the share buttons, the watch and replay pages, and the match history */
+.rankbadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  vertical-align: middle;
+  font-size: 0.8rem;
+}
+.rankbadge b {
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+.rankbadge small {
+  opacity: 0.75;
+  font-variant-numeric: tabular-nums;
+}
+.rankbadge--bronze b {
+  color: #f3c79a;
+}
+.rankbadge--silver b {
+  color: #e7edf6;
+}
+.rankbadge--gold b {
+  color: #ffe08a;
+}
+.rankbadge--platinum b {
+  color: #b9f5ea;
+}
+.rankbadge--diamond b {
+  color: #cfe0ff;
+}
+.rankbadge--diamond svg {
+  filter: drop-shadow(0 0 4px rgb(156 194 255 / 0.7));
+}
+
+.sharelink {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+}
+.sharelink input {
+  width: min(22rem, 70vw);
+  font-size: 0.8rem;
+}
+
+/* #/watch and #/replay when there is nothing to show yet */
+.watchpage {
+  box-sizing: border-box;
+  width: min(40rem, 100%);
+  margin: 0 auto;
+  padding: 2rem 1rem;
+  color: var(--c-ivory);
+  display: grid;
+  gap: 0.8rem;
+}
+.watchpage h1 {
+  margin: 0;
+  font-family: var(--font-display);
+  color: var(--c-gold-light);
+}
+.watchpage p {
+  margin: 0;
+  color: var(--c-text-dim);
+}
+
+/* the Arena's ranked panel */
+.rankpanel {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem 1rem;
+  padding: 0.7rem 0.9rem;
+  border-radius: 12px;
+  background: rgb(255 255 255 / 0.05);
+  border: 1px solid rgb(255 255 255 / 0.12);
+}
+.rankpanel__meter {
+  flex: 1 1 10rem;
+  height: 0.45rem;
+  border-radius: 99px;
+  background: rgb(255 255 255 / 0.12);
+  overflow: hidden;
+}
+.rankpanel__meter i {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, var(--c-gold-dark), var(--c-gold-light));
+}
+.rankpanel small {
+  color: var(--c-text-dim);
+}
+
+/* the match history (History page, Arena tab) */
+.matchlist {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.5rem;
+}
+.matchlist li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 1rem;
+  padding: 0.6rem 0.8rem;
+  border-radius: 10px;
+  background: rgb(255 255 255 / 0.05);
+}
+.matchlist__who {
+  flex: 1 1 14rem;
+}
+.matchlist__won {
+  color: #9fe6a0;
+  font-weight: 700;
+}
+.matchlist__lost {
+  color: #ffb1a6;
+  font-weight: 700;
+}

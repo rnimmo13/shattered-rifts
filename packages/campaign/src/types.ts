@@ -60,6 +60,8 @@ export interface MerchantItem {
   sold: boolean;
   /** a card you put on hold at an earlier visit, back for the reduced price you were promised */
   held?: boolean;
+  /** this visit's sale: the price is already SALE_OFF less */
+  sale?: boolean;
   /** you put this card on hold at this visit: it will be waiting at the next merchant */
   onHold?: boolean;
 }
@@ -334,6 +336,8 @@ export interface RunState {
   ghostsMet?: string[];
   /** how many times the Gambler's Ledger has been signed this run (each signature gives more Max HP) */
   ledger?: number;
+  /** card removals bought from merchants this run (each makes the next dearer); missing = none */
+  removals?: number;
   seed: string;
   character: HeroId;
   /** The run's difficulty setting (see DIFFICULTY): Normal unless chosen otherwise (see DIFFICULTY). */

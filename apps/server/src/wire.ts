@@ -45,6 +45,8 @@ export function parse(message: string | ArrayBuffer): ClientMsg | null {
       return typeof m['first'] === 'boolean' ? { type: 'order', first: m['first'] } : null;
     case 'resign':
       return { type: 'resign' };
+    case 'watch':
+      return typeof m['rules'] === 'number' ? { type: 'watch', rules: m['rules'] } : { type: 'watch' };
     default:
       return null;
   }
