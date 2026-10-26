@@ -288,6 +288,24 @@ describe('allies', () => {
     expect(e.state.sides.b.units.find((u) => u.def === 'summoner')?.hp).toBe(30 - 3);
   });
 
+  it('an ally shows what it will do at the end of the turn, with the damage as it will land on the front enemy', () => {
+    const s1 = play(start(['summoner'], ['call-drone']), 't0').state;
+    const iv = () => viewFor(db, c, 'a').sides.a.units.find((u) => u.kind === 'ally')?.intentView;
+    const c = clone(s1);
+    expect(iv()).toMatchObject({ damage: 3, icons: ['attack'], target: foe(c).id });
+    // Might on the ally and Exposed on the enemy both count, as they will when it acts
+    const ally = c.sides.a.units.find((u) => u.kind === 'ally')!;
+    ally.statuses.might = 2;
+    expect(iv()?.damage).toBe(5);
+    foe(c).statuses.exposed = 1;
+    const before = foe(c).hp + foe(c).barrier;
+    const after = end(c).state.sides.b.units.find((u) => u.id === foe(c).id)!;
+    expect(iv()?.damage).toBe(before - after.hp - after.barrier);
+    // a stunned ally says so instead
+    ally.statuses.stunned = 1;
+    expect(iv()).toMatchObject({ name: 'Stunned', damage: null });
+  });
+
   it('enemies hit your minions before they hit you, even one summoned after the intent was chosen', () => {
     const s1 = play(start(['slime'], ['call-drone']), 't0').state;
     const c = clone(s1);

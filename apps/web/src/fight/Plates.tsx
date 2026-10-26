@@ -86,9 +86,10 @@ export function UnitPlates({ items, targetable, hover, preview, heroId, sharp }:
         };
         return (
           <div key={u.id}>
-            {u.kind === 'enemy' && iv && (
+            {/* (an ally shows what it does at the end of its side's turn the same way, smaller) */}
+            {u.kind !== 'hero' && iv && (
               <div
-                className={`intent intent--${iv.icons[0] ?? 'special'}`}
+                className={`intent intent--${iv.icons[0] ?? 'special'}${u.kind === 'ally' ? ' intent--ally' : ''}`}
                 style={intentStyle}
                 aria-label={`${iv.name}: ${iv.text}`}
                 tabIndex={0}

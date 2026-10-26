@@ -242,6 +242,21 @@
 .intent--summon .intent__icons {
   color: var(--c-heal);
 }
+/* an ally's end-of-turn action: the same badge, a size down and calmer, so the enemies' intents stay the loudest */
+.intent--ally {
+  padding: 0.18rem 0.55rem 0.22rem;
+  animation: none;
+  border-style: dashed;
+}
+.intent--ally .intent__icons {
+  font-size: 1.15rem;
+}
+.intent--ally .intent__num {
+  font-size: 1.15rem;
+}
+.intent--ally .intent__name {
+  font-size: 0.75rem;
+}
 @keyframes intent-bob {
   50% {
     margin-top: -5px;

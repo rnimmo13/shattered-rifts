@@ -102,9 +102,39 @@ function opIcons(ops: readonly Op[]): IntentIcon[] {
   return [...out];
 }
 
+/**
+ * What an ally will do at the end of its owner's turn, shown like an enemy's intent: its attacks land on the first living unit of the
+ * other side (as the engine has it, actAlly), so the damage is worked out against that unit with every modifier.
+ */
+function describeAllyAct(db: CombatDb, s: CombatState, u: Unit, act: Op[]): IntentView {
+  const front = s.sides[other(u.side)].units.find((x) => x.hp > 0) ?? null;
+  if ((u.statuses.stunned ?? 0) > 0)
+    return {
+      move: 'stunned',
+      name: 'Stunned',
+      text: 'Stunned: it skips its next action.',
+      icons: ['special'],
+      damage: null,
+      hits: 0,
+      target: null,
+    };
+  const dmg = act.filter((o): o is Extract<Op, { op: 'damage' }> => o.op === 'damage');
+  const first = dmg[0];
+  return {
+    move: 'act',
+    name: 'End of turn',
+    text: `At the end of its side's turn: ${act.map((o) => opText(db, o, WHO)).join(' ')}`,
+    icons: opIcons(act),
+    damage: first ? modifiedDamage(first.amount, u, first.to === 'target' ? front : null) : null,
+    hits: first ? dmg.reduce((n, o) => n + (o.hits ?? 1), 0) : 0,
+    target: first?.to === 'target' ? (front?.id ?? null) : null,
+  };
+}
+
 export function describeIntent(db: CombatDb, s: CombatState, u: Unit): IntentView | null {
-  if (!u.intent) return null;
   const d = db.units[u.def];
+  if (d?.brain.kind === 'ally' && u.hp > 0) return describeAllyAct(db, s, u, d.brain.act);
+  if (!u.intent) return null;
   if (!d || d.brain.kind !== 'enemy') return null;
   const mv = d.brain.moves[u.intent.move];
   if (!mv) return null;
