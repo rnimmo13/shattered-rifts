@@ -1387,11 +1387,21 @@ export function pickDeckCard(run: RunState, cardId: string): RunState {
   return r;
 }
 
-/** Take one of the cards an event laid out for a choice (three cards from other Riftwalkers), which ends the event. */
-export function pickEventCard(run: RunState, index: number): RunState {
+/**
+ * Take one of the cards an event laid out for a choice (three cards from other Riftwalkers), or none of them (null): no event ever
+ * forces a card into your deck. Either way the event ends; what the option cost has been paid.
+ */
+export function pickEventCard(run: RunState, index: number | null): RunState {
   need(run.phase === 'event' && run.context?.event?.choose, 'There is no choice to make here');
   const r = clone(run);
   const ctx = r.context as NonNullable<RunState['context']>;
+  if (index === null) {
+    const said = 'You leave the cards where they lie.';
+    r.eventResult = r.eventResult ? `${r.eventResult} ${said}` : said;
+    clearNode(r, ctx.nodeId);
+    r.phase = 'map';
+    return r;
+  }
   const id = (ctx.event as NonNullable<typeof ctx.event>).choose?.cards[index];
   need(id, 'That is not one of the cards');
   need(canAdd(r.deck, id), 'That card would break the deck rules');

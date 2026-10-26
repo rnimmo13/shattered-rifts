@@ -878,7 +878,8 @@ export function EventView(props: {
   /** the prize on the table was taken */
   onPrize: (id: string, pick?: number, cards?: string[]) => void;
   /** one of the three cards an event laid out for a choice */
-  onPickCard: (index: number) => void;
+  /** a card of the three, or null to take none of them */
+  onPickCard: (index: number | null) => void;
   /** the card of your deck an event asked for (to upgrade, remove, transform, copy or engrave) */
   onPickDeck: (cardId: string) => void;
 }) {
@@ -987,6 +988,9 @@ export function EventView(props: {
               />
             ))}
           </div>
+          <button className="btn" onClick={() => props.onPickCard(null)}>
+            <span>Take none (keep your deck as it is)</span>
+          </button>
         </div>
       )}
       {ev.chooseDeck && (
