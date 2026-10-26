@@ -148,7 +148,7 @@ export function TitleScreen() {
                 </div>
               ))}
               {runs.map((r) => (
-                <div key={r.id} className="home__runrow">
+                <div key={r.id} className="home__runrow home__runrow--run">
                   <button
                     type="button"
                     className="home__play home__play--continue"

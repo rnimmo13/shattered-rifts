@@ -608,3 +608,36 @@
 .home__runs--many .home__play:focus-visible {
   transform: none;
 }
+
+/* a run in progress is one box: Continue fills it, Abandon sits inside on the right, and the "for good?" question opens inside it */
+.home__runrow--run {
+  border-radius: 12px;
+  border: 1.5px solid var(--c-gold-light);
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--c-gold) 38%, rgb(20 32 74)),
+    rgb(14 20 46 / 0.95)
+  );
+  box-shadow: var(--shadow-soft);
+  gap: 0;
+  transition: border-color var(--t-base) var(--ease-out);
+}
+.home__runrow--run:hover,
+.home__runrow--run:focus-within {
+  border-color: var(--c-gold-pale);
+}
+.home__runrow--run > .home__play {
+  border: none;
+  background: transparent;
+  box-shadow: none;
+}
+.home__runrow--run > .home__play:hover,
+.home__runrow--run > .home__play:focus-visible {
+  transform: none;
+}
+.home__runrow--run > .btn {
+  margin-right: 0.8rem;
+}
+.home__runrow--run .home__confirm {
+  margin: 0 0.6rem 0.6rem;
+}
