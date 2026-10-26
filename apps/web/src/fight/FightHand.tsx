@@ -60,12 +60,15 @@ function cornerReserve(handHeight: number): number {
   const mid = window.innerWidth / 2;
   const top = window.innerHeight - handHeight;
   let reserve = 0;
-  for (const el of document.querySelectorAll('.fight__mana, .fight__end, .pile, .fight__log')) {
+  for (const el of document.querySelectorAll(
+    '.fight__mana, .fight__potions, .fight__end, .pile, .fight__log',
+  )) {
     const r = el.getBoundingClientRect();
     if (r.width === 0 || r.bottom < top) continue; // (not drawn, or above the hand)
     reserve = Math.max(reserve, r.left + r.width / 2 < mid ? r.right : window.innerWidth - r.left);
   }
-  return reserve;
+  // (a little room beyond the widget: the end cards of the fan lean outwards)
+  return reserve > 0 ? reserve + handHeight * 0.18 : 0;
 }
 
 export function FightHand(p: FightHandProps) {

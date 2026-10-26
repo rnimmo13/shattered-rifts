@@ -4,6 +4,7 @@ import { COMBAT_DB } from '@sr/content/v2';
 import { tipAttrs } from '../ui/tip';
 import { RarityGem } from '../ui/RarityGem';
 import { glyphOf } from './boonGlyph';
+import './boon.css';
 
 export function BoonChip(props: { id: string; size?: 'small' | 'large' }) {
   const b = Object.hasOwn(COMBAT_DB.boons, props.id) ? COMBAT_DB.boons[props.id] : undefined;

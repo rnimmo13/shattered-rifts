@@ -1845,3 +1845,87 @@
   pointer-events: none;
   filter: drop-shadow(0 0 6px rgb(246 220 148 / 0.8));
 }
+
+/* ---- layout pass (DECISIONS #249): your side column, potions by the Mana, statuses like Boons ---- */
+/* your side of the screen, top left under the top bar: Boons, then Auras, clear of your HP bar and name */
+.fight__side {
+  position: absolute;
+  left: 1.2rem;
+  top: 4.4rem;
+  z-index: 30;
+  display: grid;
+  gap: 0.5rem;
+  justify-items: start;
+  pointer-events: none;
+}
+.fight__side > * {
+  pointer-events: auto;
+}
+.fight__side .fight__boons {
+  max-width: 14rem;
+}
+.fight__side .fight__aux {
+  position: static;
+  width: auto;
+}
+.fight__side .fight__aux--auras,
+.fight__side .fight__aux--auras .aux--powers {
+  justify-items: start;
+  text-align: left;
+}
+.fight__side .aux--scroll {
+  max-height: 7.5rem;
+}
+/* the potion belt sits beside the Mana orb, bottom left (the hand's fan keeps clear of it) */
+.fight__potions {
+  left: calc(1.2rem + 5.2rem + 0.7rem);
+  top: auto;
+  bottom: 7.2rem;
+  padding: 0.25rem 0.4rem 0.35rem;
+  z-index: 23;
+}
+.fight__potions .potionbtn,
+.fight__potions .potionslot {
+  width: 3.1rem;
+  height: 3.1rem;
+}
+.fight__potions .potionbtn small {
+  display: none;
+}
+.fight__beltLabel {
+  font-size: 0.7rem;
+}
+/* statuses: small round icons like the Boons, the stacks in a badge at the corner */
+.plate .chips {
+  gap: 0.45rem;
+  min-height: 2.2rem;
+}
+.plate .chip {
+  position: relative;
+  justify-content: center;
+  width: 2.1rem;
+  height: 2.1rem;
+  min-height: 0;
+  padding: 0;
+  border-radius: 50%;
+  font-size: 1.1rem;
+  border-width: 1px;
+}
+.plate .chip svg {
+  width: 1.1rem;
+  height: 1.1rem;
+}
+.plate .chip b {
+  position: absolute;
+  right: -0.4rem;
+  bottom: -0.35rem;
+  min-width: 1.1rem;
+  height: 1.1rem;
+  padding: 0 0.22rem;
+  border-radius: 999px;
+  background: #0b0e1a;
+  border: 1px solid currentColor;
+  font-size: 0.72rem;
+  line-height: 1.05rem;
+  text-align: center;
+}

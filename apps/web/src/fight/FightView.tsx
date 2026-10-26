@@ -258,8 +258,10 @@ export function FightView(props: {
   onDone: (r: FightResult) => void;
   onExit: () => void;
   exitLabel?: string;
-  /** extra controls beside the Leave button in the top bar (the campaign's View map) */
+  /** extra controls after the Leave button in the top bar (the campaign's Abandon run) */
   topExtra?: React.ReactNode;
+  /** controls before the Leave button (the campaign's View map) */
+  topFirst?: React.ReactNode;
   /** where the fight takes place (the Rift arena by default) */
   venue?: VenueId;
   /** a PvP match: you sit in one seat, the opponent's moves arrive from the server */
@@ -1292,6 +1294,7 @@ export function FightView(props: {
       {view && ready && (
         <>
           <header className="fight__top">
+            {props.topFirst}
             <button className="btn btn--small btn--ghost" onClick={props.onExit}>
               <span>{props.exitLabel ?? 'Leave'}</span>
             </button>
@@ -1322,13 +1325,6 @@ export function FightView(props: {
                   >
                     <span>{x}×</span>
                   </button>
-                ))}
-              </div>
-            )}
-            {(mine.boons?.length ?? 0) > 0 && (
-              <div className="fight__boons" aria-label="Boons">
-                {mine.boons?.map((id) => (
-                  <BoonChip key={id} id={id} />
                 ))}
               </div>
             )}
@@ -1610,13 +1606,18 @@ export function FightView(props: {
               </button>
             )}
           </div>
-          {me && (
-            <AuraList
-              db={db}
-              me={me}
-              x={(heroPlaced?.x ?? 262) - 250}
-              top={(heroPlaced?.y ?? 480) + 6}
-            />
+          {/* your side of the screen, top left under the top bar: your Boons, then your Auras (clear of your HP and name) */}
+          {((mine.boons?.length ?? 0) > 0 || (me?.powers.length ?? 0) > 0) && (
+            <div className="fight__side">
+              {(mine.boons?.length ?? 0) > 0 && (
+                <div className="fight__boons" aria-label="Boons">
+                  {mine.boons?.map((id) => (
+                    <BoonChip key={id} id={id} />
+                  ))}
+                </div>
+              )}
+              {me && <AuraList db={db} me={me} />}
+            </div>
           )}
           {me && showStars && <LumenCounter value={me.stars} />}
           {me && showRunes && heroPlaced && (

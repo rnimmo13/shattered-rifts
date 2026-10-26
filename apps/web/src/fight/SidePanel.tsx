@@ -75,15 +75,12 @@ export function RuneArc(props: {
 
 /** Auras (Powers) in play, as a small list at the top left. */
 /** Auras sit under the hero's plate (`x`, `top` in host px). */
-export function AuraList(props: { db: CombatDb; me: SideView; x: number; top: number }) {
+/** Your Auras in play, as a list in your side column (FightView's .fight__side). */
+export function AuraList(props: { db: CombatDb; me: SideView }) {
   const { db, me } = props;
   if (me.powers.length === 0) return null;
   return (
-    <div
-      className="fight__aux fight__aux--auras"
-      style={{ left: props.x, top: props.top }}
-      aria-label="Auras in play"
-    >
+    <div className="fight__aux fight__aux--auras" aria-label="Auras in play">
       {me.powers.length > 5 && <div className="aux__count">Auras · {me.powers.length}</div>}
       <div className={`aux aux--powers${me.powers.length > 5 ? ' aux--scroll' : ''}`}>
         {me.powers.map((p) => {
@@ -137,7 +134,10 @@ export function SnareRow(props: {
   const x0 = props.foe ? props.cx - (props.dx ?? 118) : props.cx + (props.dx ?? 118);
   const at = (i: number): number => (props.foe ? x0 - (i + 1) * gap : x0 + i * gap);
   return (
-    <div className="snarerow" aria-label={props.foe ? "Your opponent's Traps (face down)" : 'Your Traps'}>
+    <div
+      className="snarerow"
+      aria-label={props.foe ? "Your opponent's Traps (face down)" : 'Your Traps'}
+    >
       <span
         className="snarerow__label"
         style={{ left: props.foe ? x0 - me.snares.length * gap : x0, top: props.top - 22 }}

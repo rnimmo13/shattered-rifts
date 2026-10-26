@@ -431,15 +431,15 @@ export default function RunScreen() {
           }}
           title={`${plan.ghost ? `Ghost Warden: ${plan.ghost.name}'s ${RIFTWALKERS[plan.ghost.hero]?.role ?? 'Riftwalker'} deck` : encounter(plan.encounterId).name} · Stage ${run.stage}${floorLabel(run) && ` · ${floorLabel(run)}`}`}
           exitLabel="Forfeit"
+          topFirst={
+            <button className="btn btn--small btn--ghost" onClick={() => setShowMap(true)}>
+              <span>View map</span>
+            </button>
+          }
           topExtra={
-            <>
-              <button className="btn btn--small btn--ghost" onClick={() => setShowMap(true)}>
-                <span>View map</span>
-              </button>
-              <button className="btn btn--small btn--ghost" onClick={() => setConfirmAbandon(true)}>
-                <span>Abandon run</span>
-              </button>
-            </>
+            <button className="btn btn--small btn--ghost" onClick={() => setConfirmAbandon(true)}>
+              <span>Abandon run</span>
+            </button>
           }
           // there is no "leave" in a campaign fight: giving up counts as a loss
           onExit={() => setConfirmForfeit(true)}

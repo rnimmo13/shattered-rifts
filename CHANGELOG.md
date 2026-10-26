@@ -5,6 +5,8 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **Clearer fight screen:** your Boons and Auras sit on your side at the top left, potions sit beside your Mana, and buffs and debuffs are small round icons with their stacks in a badge. In the campaign the top bar reads View map, Forfeit, Abandon run.
+- **A 25% chance looks like 25%:** event chances that are not even spin a wheel with the right share of gold; only an even chance is a coin toss.
 - **Rift Omens:** every Rift Tier from II brings an Omen, they stack, and each grows the deeper you go. From Tier II, **elites and Wardens have a second phase**: at half HP they stop and rise with Barrier and Might (a notch on their HP bar shows where). Later Omens make merchants dearer, rests thinner, foes guarded, and you start some fights shaken. Hover the Omens tag on the run bar to read them all.
 - **Warden's Hearts:** after a Warden, take a rare card, one of two Hearts, or nothing. A Heart changes every fight for the rest of the run, at a price (+1 Mana but one card fewer, say). You hold one at a time.
 - **Dispels by a share:** Shrug It Off lessens every debuff by 1 or 25% (whichever is more), Steady Nerves by 2 or 50%; Purging Light still clears them all. A big pile of Fate is no longer shrugged off one stack at a time.
