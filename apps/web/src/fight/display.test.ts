@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { applyAction, chooseAction, createCombat, type CombatState } from '@sr/combat';
+import { applyAction, chooseAction, createCombat, TRAIT_POWER, type CombatState } from '@sr/combat';
 import { COMBAT_DB as db, ENCOUNTERS, RIFTWALKERS, type HeroId } from '@sr/content/v2';
 import { reduceEvent, startingDisplay } from './display';
 
@@ -33,10 +33,11 @@ function compare(shown: CombatState, real: CombatState, where: string): void {
       a.runes.map((r) => r.rune),
       `${where} runes ${side}`,
     ).toEqual(b.runes.map((r) => r.rune));
+    // (a trait's triggers live with the Auras in the engine, but are never shown as one)
     expect(
       a.powers.map((p) => p.card),
       `${where} powers ${side}`,
-    ).toEqual(b.powers.map((p) => p.card));
+    ).toEqual(b.powers.filter((p) => p.card !== TRAIT_POWER).map((p) => p.card));
   }
   expect(shown.winner).toEqual(real.winner);
 }
