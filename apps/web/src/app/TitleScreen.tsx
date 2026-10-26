@@ -10,6 +10,7 @@ import { whoAmI, type Me } from '../pvp/vaultSync';
 import { progressLabel } from '../pvp/deckLayout';
 import { stagesCleared } from '../pvp/vault';
 import { HeroIcon } from '../ui/HeroIcon';
+import { StoreIcon } from './StoreIcon';
 import { HERO_COLOR } from '../art/emblems';
 import { tipAttrs } from '../ui/tip';
 import { getHero, rememberHero } from './heroChoice';
@@ -108,7 +109,8 @@ export function TitleScreen() {
               >
                 <b>Continue run</b>
                 <small>
-                  {RIFTWALKERS[r.run.character].hero.name} · {r.run.phase === 'banked'
+                  {RIFTWALKERS[r.run.character].hero.name} ·{' '}
+                  {r.run.phase === 'banked'
                     ? `Tier ${r.run.tier} · Banked`
                     : progressLabel(r.run.tier, stagesCleared(r.run))}
                 </small>
@@ -167,14 +169,18 @@ export function TitleScreen() {
           </a>
           <a className="home__play" href="#/fight">
             <b>Sandbox</b>
-            <small>
-              Try any fight as {hero.hero.name}, no run needed. Elite events too.
-            </small>
+            <small>Try any fight as {hero.hero.name}, no run needed. Elite events too.</small>
+          </a>
+          <a className="home__play home__play--store" href="#/store">
+            <StoreIcon size={36} />
+            <b>Store</b>
+            <small>Cosmetics for your Riftwalkers and cards. Coming soon.</small>
           </a>
 
           <nav className="home__links" aria-label="More">
             <a href="#/decks">Saved decks</a>
             <a href="#/board">Leaderboards</a>
+            <a href="#/trophies">Trophy case</a>
             <a href="#/ghosts">Ghost decks</a>
             <a href="#/cards">Card library</a>
             <a href="#/learn">How to play</a>

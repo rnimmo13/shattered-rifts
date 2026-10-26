@@ -18,6 +18,7 @@ import { applyDeal, basics, healBy, nonBasic, upgradable, type EventCtx } from '
 import { DEAL_EVENTS } from './eventDeals';
 import { MORE_EVENTS } from './eventsMore';
 import { TUNED_EVENTS } from './eventsTuned';
+import { LEGEND_EVENTS } from './eventsLegend';
 import { rollElite } from './trials';
 import type { EventOption, RunState } from './types';
 
@@ -322,6 +323,7 @@ export const EVENTS: EventDef[] = [
   ...DEAL_EVENTS,
   ...MORE_EVENTS,
   ...TUNED_EVENTS,
+  ...LEGEND_EVENTS,
 ];
 
 /** Pick a random event, weighted, from those that can happen to this run now. */

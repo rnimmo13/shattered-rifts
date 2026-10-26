@@ -176,6 +176,9 @@ export type DealStep =
   | { k: 'crossedPick'; rarity: 'common' | 'uncommon' | 'rare' }
   /** this exact card joins the deck (the event named it when it was built) */
   | { k: 'card'; id: string }
+  /** `from` (a card of the deck) is given up and `to` takes its place: the deck rules are checked without `from`, so a deck at its
+   *  Legendary limit can trade its Legendary for another (DECISIONS #238) */
+  | { k: 'swap'; from: string; to: string }
   | { k: 'static'; n: number }
   /** a random Boon is given up */
   | { k: 'loseBoon' }

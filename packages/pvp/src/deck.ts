@@ -2,7 +2,14 @@
 // that it is a legal deck of a real Riftwalker. That is enough for a friends test.)
 
 import { canAdd, MAX_TIER } from '@sr/campaign';
-import { COMBAT_DB, RIFTWALKERS, V2_DECK_RULES, isDeckCard, canonicalHero } from '@sr/content/v2';
+import {
+  COMBAT_DB,
+  RIFTWALKERS,
+  V2_DECK_RULES,
+  isDeckCard,
+  canonicalHero,
+  stripRoll,
+} from '@sr/content/v2';
 import type { Entry } from './protocol';
 
 export const MAX_DECK = 80;
@@ -168,7 +175,8 @@ export function checkEntry(raw: unknown): Checked | Rejected {
   for (const id of cards) {
     // (a Sanctum-rolled copy like "hi~strike" is derived on demand; nothing else off the table is a card)
     if (!isCardId(id)) return { ok: false, message: `Unknown card "${id.slice(0, 40)}".` };
-    if (!canAdd(held, id))
+    // (copies only: the Legendary and Ancestral limits are the Arena's, checkArenaEntry)
+    if (!canAdd(held, id, false))
       return {
         ok: false,
         message: `The deck breaks the deck rules at "${COMBAT_DB.cards[id]?.name ?? id}".`,
@@ -210,4 +218,30 @@ export function checkEntry(raw: unknown): Checked | Rejected {
       ...(who === null ? {} : { who }),
     },
   };
+}
+
+/**
+ * A deck as it may enter an Arena match: a valid deck (checkEntry) within today's limits of one Legendary and two Ancestral cards
+ * (DECISIONS #238). Only the Arena's doors use this: a Vault keeps a deck built before the limits, and a ghost plays as it was saved.
+ */
+export function checkArenaEntry(raw: unknown): Checked | Rejected {
+  const checked = checkEntry(raw);
+  if (!checked.ok) return checked;
+  const count = (r: string): number =>
+    checked.entry.deck.filter(
+      (id) => COMBAT_DB.cards[stripRoll(id).replace(/\+$/, '')]?.rarity === r,
+    ).length;
+  const legends = count('legendary');
+  const ancestral = count('ancestral');
+  if (legends > V2_DECK_RULES.maxLegendary)
+    return {
+      ok: false,
+      message: `The Arena takes decks with ${V2_DECK_RULES.maxLegendary} Legendary card; this one holds ${legends}.`,
+    };
+  if (ancestral > V2_DECK_RULES.maxAncestral)
+    return {
+      ok: false,
+      message: `The Arena takes decks with at most ${V2_DECK_RULES.maxAncestral} Ancestral cards; this one holds ${ancestral}.`,
+    };
+  return checked;
 }

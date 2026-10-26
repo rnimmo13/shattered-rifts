@@ -78,8 +78,25 @@ function NodeIcon({ kind }: { kind: NodeKind }) {
   }
 }
 
+/** The badge on a Warden that is a ghost: a small ghost, so it is told apart from the realm's own Warden at a glance. */
+function GhostGlyph() {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden>
+      <path
+        d="M12 2.5c-4.4 0-7.5 3.3-7.5 7.8V21l2.5-1.8L9.5 21 12 19.2 14.5 21l2.5-1.8L19.5 21V10.3c0-4.5-3.1-7.8-7.5-7.8Z"
+        fill="#e9f4ff"
+        stroke="#7fd3ff"
+        strokeWidth="1.2"
+      />
+      <circle cx="9.3" cy="10.5" r="1.5" fill="#0c1430" />
+      <circle cx="14.7" cy="10.5" r="1.5" fill="#0c1430" />
+    </svg>
+  );
+}
+
 function labelOf(n: MapNode): string {
   if (n.kind === 'merchant' && n.crossed) return 'Stranger';
+  if (n.kind === 'warden' && n.ghost) return 'Ghost Warden';
   if (n.enemyId) {
     try {
       return encounter(n.enemyId).name;
@@ -152,7 +169,7 @@ export function MapView(props: {
             style={{ left: p.x, top: p.y }}
             disabled={!open}
             onClick={() => props.onEnter(n.id)}
-            aria-label={`${KIND_LABEL[n.kind]}: ${labelOf(n)}${n.crossed ? ` (Rift-crossed: sells ${RIFTWALKERS[n.crossed as keyof typeof RIFTWALKERS]?.hero.name ?? 'another'}'s cards)` : ''}${done ? ' (cleared)' : ''}`}
+            aria-label={`${KIND_LABEL[n.kind]}: ${labelOf(n)}${n.crossed ? ` (Rift-crossed: sells ${RIFTWALKERS[n.crossed as keyof typeof RIFTWALKERS]?.hero.name ?? 'another'}'s cards)` : ''}${n.ghost ? " (a ghost: another player's deck from the Arena, played by the computer)" : ''}${done ? ' (cleared)' : ''}`}
           >
             <NodeIcon kind={n.kind} />
             {n.crossed && (
@@ -161,6 +178,14 @@ export function MapView(props: {
                 title="Rift-crossed merchant: sells another Riftwalker's cards"
               >
                 <HeroIcon hero={n.crossed} size={26} />
+              </span>
+            )}
+            {n.kind === 'warden' && n.ghost && (
+              <span
+                className="mapnode__ghost"
+                title="Ghost Warden: another player's deck from the Arena, played by the computer (if none can be found, the usual Warden stands here)"
+              >
+                <GhostGlyph />
               </span>
             )}
             <span className="mapnode__label">{labelOf(n)}</span>
@@ -179,7 +204,7 @@ export function MapLegend() {
     ['event', 'Event'],
     ['shrine', 'Shrine (rest or trim)'],
     ['merchant', 'Merchant (a badge means a Rift-crossed stranger: other classes’ cards)'],
-    ['warden', 'Warden (stage boss)'],
+    ['warden', 'Warden (stage boss; a ghost badge means another player’s deck from the Arena)'],
   ];
   return (
     <ul className="maplegend" aria-label="Map legend">

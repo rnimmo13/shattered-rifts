@@ -3,7 +3,7 @@
 // the code of a fresh room and their queue sockets close; they then join the room as if a friend had sent them the code.
 
 import { DurableObject } from 'cloudflare:workers';
-import { RULES_VERSION, checkEntry, pairUp, type Waiting } from '@sr/pvp';
+import { RULES_VERSION, checkArenaEntry, pairUp, type Waiting } from '@sr/pvp';
 import type { Env } from './env';
 import { parse, roomCode as makeCode, send } from './wire';
 
@@ -54,7 +54,7 @@ export class Matchmaker extends DurableObject<Env> {
       await this.faceGhost(ws, msg.entry);
       return;
     }
-    const checked = checkEntry(msg.entry);
+    const checked = checkArenaEntry(msg.entry);
     if (!checked.ok) {
       send(ws, { type: 'error', code: 'bad-deck', message: checked.message });
       ws.close(1008, 'bad deck');
@@ -74,7 +74,7 @@ export class Matchmaker extends DurableObject<Env> {
 
   /** Set up a match against a ghost and tell the player which room to join. They leave the queue if they were in it. */
   private async faceGhost(ws: WebSocket, entry: unknown): Promise<void> {
-    const checked = checkEntry(entry);
+    const checked = checkArenaEntry(entry);
     if (!checked.ok) {
       send(ws, { type: 'error', code: 'bad-deck', message: checked.message });
       ws.close(1008, 'bad deck');

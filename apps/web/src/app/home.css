@@ -331,3 +331,13 @@
   opacity: 0.55;
   cursor: not-allowed;
 }
+
+/* the home button's mark */
+.home__play--store {
+  grid-template-columns: auto 1fr;
+  column-gap: 0.8rem;
+  align-items: center;
+}
+.home__play--store svg {
+  grid-row: span 2;
+}

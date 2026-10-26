@@ -190,6 +190,20 @@ function step(r: RunState, s: DealStep, ev: EventCtx, h: DealHelpers, out: strin
       r.deck.push(s.id);
       out.push(`${nameOf(s.id)} joins your deck.`);
       return;
+    case 'swap': {
+      const at = r.deck.indexOf(s.from);
+      if (at < 0) fail('That card is not in your deck');
+      const rest = r.deck.filter((_, i) => i !== at);
+      // a swap never raises the count of a rarity: a Legendary for a Legendary only needs the copy limit (so a deck from before
+      // the one-Legendary limit can still trade one of its two)
+      const rarity = (id: string): string | undefined =>
+        COMBAT_DB.cards[stripRoll(id).replace(/\+$/, '')]?.rarity;
+      const like = rarity(s.from) === rarity(s.to);
+      if (!canAdd(rest, s.to, !like)) fail('That card would break the deck rules');
+      r.deck[at] = s.to;
+      out.push(`${nameOf(s.from)} is given up for ${nameOf(s.to)}.`);
+      return;
+    }
     case 'static':
       for (let i = 0; i < s.n; i++) r.deck.push('static');
       out.push(`${plural(s.n, 'Static card')} join${s.n === 1 ? 's' : ''} your deck.`);
@@ -214,7 +228,13 @@ function step(r: RunState, s: DealStep, ev: EventCtx, h: DealHelpers, out: strin
     case 'exchange': {
       const pool = removableCards(r.deck).filter((id) => {
         const c = COMBAT_DB.cards[id];
-        return !!c && c.rarity !== 'basic' && !id.includes('~');
+        return (
+          !!c &&
+          c.rarity !== 'basic' &&
+          c.rarity !== 'legendary' &&
+          c.rarity !== 'ancestral' &&
+          !id.includes('~')
+        );
       });
       if (!pool.length) fail('You have nothing to trade');
       const from = pool[nextInt(r.rng, pool.length)] as string;

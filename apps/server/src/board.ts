@@ -32,6 +32,10 @@ import {
   periodStart,
   BOARD_SIZE,
   pickGhost,
+  lastFinished,
+  trophyWinners,
+  type Trophy,
+  type TrophyCount,
   ghostCleared,
   rankGhosts,
   standingsPvp,
@@ -193,6 +197,14 @@ export class Leaderboard extends DurableObject<Env> {
          player TEXT PRIMARY KEY, name TEXT NOT NULL, key TEXT NOT NULL UNIQUE, at INTEGER NOT NULL
        )`,
     );
+    // Arena trophies (DECISIONS #238): one row per trophy, given for good when a week or month of the Arena board ends
+    ctx.storage.sql.exec(
+      `CREATE TABLE IF NOT EXISTS trophies (
+         player TEXT NOT NULL, kind TEXT NOT NULL, period INTEGER NOT NULL,
+         place INTEGER NOT NULL, name TEXT NOT NULL, at INTEGER NOT NULL,
+         PRIMARY KEY (player, kind, period)
+       )`,
+    );
     // how often a player or an address has done something in the current hour or day
     ctx.storage.sql.exec(
       `CREATE TABLE IF NOT EXISTS limits (
@@ -215,6 +227,102 @@ export class Leaderboard extends DurableObject<Env> {
       n,
     );
     return n <= max;
+  }
+
+  /**
+   * Give out the trophies of any week or month that has ended since the last time (each period once: a flag keeps the last one
+   * settled). The results of a finished period are still kept (BOARD_KEEP_DAYS is longer than a month), so a period settled late
+   * comes out the same.
+   */
+  private settleTrophies(now: number): void {
+    for (const kind of ['week', 'month'] as const) {
+      const flag = `trophiesSettled:${kind}`;
+      const done = this.ctx.storage.kv.get<number>(flag);
+      const last = lastFinished(now, kind);
+      if (done === last.from) continue;
+      // every period that has ended since the last one settled, oldest first (a quiet week with no visitor after it ends is not
+      // skipped); the first time, only the one just gone. Never further back than the results are kept.
+      const due: { from: number; to: number }[] = [];
+      const oldest = now - BOARD_KEEP_DAYS * DAY;
+      for (
+        let p = last;
+        p.from > (done ?? last.from - 1) && p.from >= oldest;
+        p = lastFinished(p.from, kind)
+      ) {
+        due.unshift(p);
+        if (done === undefined) break;
+      }
+      for (const p of due)
+        for (const w of trophyWinners(this.pvpRows(p.from, p.to)))
+          this.ctx.storage.sql.exec(
+            'INSERT OR IGNORE INTO trophies (player, kind, period, place, name, at) VALUES (?, ?, ?, ?, ?, ?)',
+            w.player,
+            kind,
+            p.from,
+            w.place,
+            w.name,
+            now,
+          );
+      this.ctx.storage.kv.put(flag, last.from);
+    }
+  }
+
+  /** Each player's trophy counts, for the players asked about (a player with none is left out). */
+  private trophyCounts(players: readonly string[]): Map<string, TrophyCount> {
+    const out = new Map<string, TrophyCount>();
+    const ids = [...new Set(players)];
+    // (in groups: SQLite here takes at most 100 bound values in one statement)
+    for (let i = 0; i < ids.length; i += 50) {
+      const group = ids.slice(i, i + 50);
+      const rows = this.ctx.storage.sql
+        .exec<{ player: string; kind: string; n: number }>(
+          `SELECT player, kind, COUNT(*) AS n FROM trophies WHERE player IN (${group.map(() => '?').join(',')}) GROUP BY player, kind`,
+          ...group,
+        )
+        .toArray();
+      for (const r of rows) {
+        const c = out.get(r.player) ?? { week: 0, month: 0 };
+        if (r.kind === 'week') c.week = r.n;
+        else if (r.kind === 'month') c.month = r.n;
+        out.set(r.player, c);
+      }
+    }
+    return out;
+  }
+
+  /** A player's trophies, newest first (for the Trophy case). */
+  private trophiesOf(player: string): Trophy[] {
+    return this.ctx.storage.sql
+      .exec<{ kind: string; period: number; place: number; name: string }>(
+        'SELECT kind, period, place, name FROM trophies WHERE player = ? ORDER BY period DESC, kind DESC LIMIT 500',
+        player,
+      )
+      .toArray()
+      .map((t) => ({
+        kind: t.kind === 'month' ? 'month' : 'week',
+        period: t.period,
+        place: t.place,
+        name: t.name,
+      }));
+  }
+
+  /** The Arena results in [from, to), one row per player per match. */
+  private pvpRows(from: number, to = Number.MAX_SAFE_INTEGER): PvpRow[] {
+    const rows = this.ctx.storage.sql
+      .exec<{
+        winner: string;
+        winner_name: string;
+        winner_hero: string;
+        loser: string;
+        loser_name: string;
+        loser_hero: string;
+        at: number;
+      }>('SELECT * FROM pvp WHERE at >= ? AND at < ? ORDER BY at LIMIT 20000', from, to)
+      .toArray();
+    return rows.flatMap((r): PvpRow[] => [
+      { player: r.winner, name: r.winner_name, hero: r.winner_hero, won: true, at: r.at },
+      { player: r.loser, name: r.loser_name, hero: r.loser_hero, won: false, at: r.at },
+    ]);
   }
 
   /** Throw out what no board can show any more. */
@@ -721,28 +829,21 @@ export class Leaderboard extends DurableObject<Env> {
 
   private pvpBoard(period: Period, now: number, player?: string): unknown {
     const from = periodStart(now, period);
-    const rows = this.ctx.storage.sql
-      .exec<{
-        winner: string;
-        winner_name: string;
-        winner_hero: string;
-        loser: string;
-        loser_name: string;
-        loser_hero: string;
-        at: number;
-      }>('SELECT * FROM pvp WHERE at >= ? LIMIT 20000', from)
-      .toArray();
-    const flat: PvpRow[] = rows.flatMap((r): PvpRow[] => [
-      { player: r.winner, name: r.winner_name, hero: r.winner_hero, won: true, at: r.at },
-      { player: r.loser, name: r.loser_name, hero: r.loser_hero, won: false, at: r.at },
-    ]);
-    const all = standingsPvp(flat);
+    const all = standingsPvp(this.pvpRows(from));
+    // each place shows the trophies its player holds
+    const top = all.slice(0, BOARD_SIZE);
+    const held = this.trophyCounts([...top.map((s) => s.player), ...(player ? [player] : [])]);
+    const withTrophies = <T extends object>(s: T, id: string): T & { trophies?: TrophyCount } => {
+      const t = held.get(id);
+      return t ? { ...s, trophies: t } : s;
+    };
+    const you = this.placeOf(all, player);
     return {
       ok: true,
       period,
       from,
-      board: all.slice(0, BOARD_SIZE).map(withoutPlayer),
-      you: this.placeOf(all, player),
+      board: top.map((s) => withTrophies(s, s.player)).map(withoutPlayer),
+      you: you && player ? withTrophies(you, player) : you,
     };
   }
 
@@ -776,6 +877,8 @@ export class Leaderboard extends DurableObject<Env> {
   override async fetch(request: Request): Promise<Response> {
     const url = new URL(request.url);
     const now = Date.now();
+    // (a week or month that has ended is settled before anything is shown or recorded)
+    this.settleTrophies(now);
     if (request.method === 'GET') {
       const period: Period = url.searchParams.get('period') === 'month' ? 'month' : 'week';
       if (url.pathname === '/pvp') return json(this.pvpBoard(period, now));
@@ -808,6 +911,16 @@ export class Leaderboard extends DurableObject<Env> {
     if (url.pathname === '/ghost/boss') return this.ghostBoss(body, now);
     if (url.pathname === '/ghost/register') return this.registerSaved(body, now);
     if (url.pathname === '/ghost/result') return this.ghostResult(body, now);
+    if (url.pathname === '/trophies') {
+      // the Trophy case: one player's trophies (the worker has worked out who they are)
+      if (!isId(body['player'])) return json({ ok: true, trophies: [] });
+      return json({ ok: true, trophies: this.trophiesOf(body['player']) });
+    }
+    if (url.pathname === '/trophies/count') {
+      // a room asking how many trophies its players hold, to show on their cards
+      const ids = Array.isArray(body['players']) ? body['players'].filter(isId) : [];
+      return json({ ok: true, counts: Object.fromEntries(this.trophyCounts(ids)) });
+    }
     return json({ ok: false, error: 'not-found' }, 404);
   }
 }

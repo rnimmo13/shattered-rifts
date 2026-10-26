@@ -9,6 +9,7 @@ import { COMBAT_DB } from '@sr/content/v2';
 import {
   CHOOSE_MS,
   checkEntry,
+  checkArenaEntry,
   decideOrder,
   Match,
   newSeries,
@@ -26,6 +27,8 @@ import {
   type Seat,
   type SeriesState,
   type ServerMsg,
+  type TrophyCount,
+  cleanTrophies,
 } from '@sr/pvp';
 import type { Env } from './env';
 import { cleanAction, parse, send } from './wire';
@@ -437,12 +440,17 @@ export class MatchRoom extends DurableObject<Env> {
         ws.close(1008, 'bad id');
         return;
       }
-      const checked = checkEntry(msg.entry);
+      const checked = checkArenaEntry(msg.entry);
       if (!checked.ok) {
         send(ws, { type: 'error', code: 'bad-deck', message: checked.message });
         ws.close(1008, 'bad deck');
         return;
       }
+      // the trophies they hold go on their card for the opponent to see (the board is asked, briefly, before a seat is taken, so
+      // nothing about the room changes while waiting for it; a browser cannot claim any)
+      const trophies = checked.entry.who ? await this.trophyCount(checked.entry.who) : undefined;
+      // (this socket may have been seated by a second join sent while the board was asked)
+      if (ws.deserializeAttachment()) return;
       // a player already in the room is coming back
       const seat = (['a', 'b'] as const).find((s) => d.ids[s] === msg.playerId) ?? null;
       if (seat) {
@@ -462,7 +470,7 @@ export class MatchRoom extends DurableObject<Env> {
       d.ids[free] = msg.playerId;
       // the leaderboard id is taken out of the entry before it is kept (the entry goes to the opponent)
       const { who, ...publicEntry } = checked.entry;
-      d.entries[free] = publicEntry;
+      d.entries[free] = trophies ? { ...publicEntry, trophies } : publicEntry;
       d.who ??= {};
       if (who) d.who[free] = who;
       else delete d.who[free];
@@ -612,6 +620,24 @@ export class MatchRoom extends DurableObject<Env> {
     await this.save();
     this.broadcast(over);
     for (const sock of this.sockets()) this.askOrder(sock.ws, sock.at.seat as Seat);
+  }
+
+  /** How many Arena trophies a player holds (none if the board cannot be reached: a card without trophies is no loss). */
+  private async trophyCount(who: string): Promise<TrophyCount | undefined> {
+    try {
+      // (a second at most: a slow board never holds up a match)
+      const res = await this.env.BOARD.get(this.env.BOARD.idFromName('main')).fetch(
+        new Request('https://board.invalid/trophies/count', {
+          method: 'POST',
+          body: JSON.stringify({ players: [who] }),
+          signal: AbortSignal.timeout(1000),
+        }),
+      );
+      const data = await res.json<{ counts?: Record<string, unknown> }>();
+      return cleanTrophies(data.counts?.[who]);
+    } catch {
+      return undefined;
+    }
   }
 
   /** A played match with a winner goes on the Arena leaderboard (a match that never got going, or a draw, does not). */

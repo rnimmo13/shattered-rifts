@@ -1,0 +1,72 @@
+/* #/store: a header with the Store's mark, and a grid of shelves (each a kind of cosmetic, not for sale yet) */
+.store {
+  box-sizing: border-box;
+  width: min(64rem, 100%);
+  margin: 0 auto;
+  padding: 1.5rem 1rem 3rem;
+  color: var(--c-ivory);
+}
+.store__back {
+  margin-bottom: 1rem;
+}
+.store__head {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.6rem;
+}
+.store__mark {
+  flex: none;
+  filter: drop-shadow(0 0 10px rgb(95 200 255 / 0.45));
+}
+.store__title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 2.2rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--c-gold-light);
+}
+.store__lead {
+  margin: 0.3rem 0 0;
+  max-width: 40rem;
+  color: var(--c-text-dim);
+}
+.store__shelves {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(14rem, 1fr));
+  gap: 1rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.store__shelf {
+  position: relative;
+  display: grid;
+  gap: 0.35rem;
+  padding: 1.1rem 1.1rem 2.6rem;
+  border-radius: 14px;
+  border: 1px solid rgb(212 168 75 / 0.35);
+  background:
+    radial-gradient(120% 80% at 100% 0%, rgb(95 200 255 / 0.1), transparent 60%),
+    linear-gradient(170deg, rgb(24 34 78 / 0.9), rgb(8 10 20 / 0.95));
+}
+.store__shelf b {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  color: var(--c-gold-light);
+}
+.store__shelf span {
+  color: var(--c-text-dim);
+  font-size: 0.95rem;
+}
+.store__soon {
+  position: absolute;
+  left: 1.1rem;
+  bottom: 0.9rem;
+  font-style: normal;
+  font-size: 0.8rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #7fd3ff;
+}

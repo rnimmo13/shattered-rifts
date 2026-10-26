@@ -2,7 +2,7 @@
 // be tried before anyone has cleared a run), then find a match from the queue or play a friend with a room code.
 
 import { useEffect, useRef, useState } from 'react';
-import { QUEUE_WIDEN_MS, checkEntry } from '@sr/pvp';
+import { QUEUE_WIDEN_MS, checkArenaEntry } from '@sr/pvp';
 import { COMBAT_DB } from '@sr/content/v2';
 import { FightView } from '../fight/FightView';
 import type { VenueId } from '../duel/scene/venue';
@@ -140,7 +140,7 @@ export default function PvpScreen() {
   const entry = deck
     ? { ...entryFor(deck, name.trim() || 'Riftwalker'), ...(who ? { who } : {}) }
     : null;
-  const check = entry ? checkEntry(entry) : null;
+  const check = entry ? checkArenaEntry(entry) : null;
   const problem = check && !check.ok ? check.message : null;
   const busy = snap.phase !== 'idle' && snap.phase !== 'error';
 

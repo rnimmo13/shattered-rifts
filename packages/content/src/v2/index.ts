@@ -512,8 +512,18 @@ export function laneSizes(hero: HeroId): [number, number, number] {
   return n;
 }
 
-/** Deck rules for Combat v2 runs: a deck never drops below minSize cards, and no non-basic card has more than maxCopies copies, and at most maxLegendary Legendary cards fit in the deck at once. */
-export const V2_DECK_RULES = { minSize: 8, maxCopies: 4, vaultSlots: 10, maxLegendary: 2 } as const;
+/**
+ * Deck rules for Combat v2 runs: a deck never drops below minSize cards, no non-basic card has more than maxCopies copies, and at most
+ * maxLegendary Legendary and maxAncestral Ancestral cards fit in the deck at once (one Legendary and two Ancestral since DECISIONS
+ * #238; a deck that already held more keeps them, but takes no more).
+ */
+export const V2_DECK_RULES = {
+  minSize: 8,
+  maxCopies: 4,
+  vaultSlots: 10,
+  maxLegendary: 1,
+  maxAncestral: 2,
+} as const;
 
 export { BOONS, POTIONS };
 

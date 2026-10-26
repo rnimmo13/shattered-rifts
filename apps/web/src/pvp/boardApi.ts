@@ -1,7 +1,7 @@
 // The browser's side of the leaderboards: fetch a board, ask for this player's board id (so an Arena match can carry it), and report how
 // far a campaign run has got. All of it is best-effort: a board that cannot be reached never gets in the way of playing.
 
-import type { GhostStanding, Period, PvpStanding, RunStanding } from '@sr/pvp';
+import type { GhostStanding, Period, PvpStanding, RunStanding, Trophy } from '@sr/pvp';
 import { serverBase } from './config';
 import { vaultKey, whoAmI } from './vaultSync';
 
@@ -108,7 +108,7 @@ export async function claimName(name: string): Promise<ClaimResult> {
 }
 
 async function post(
-  what: 'id' | 'run' | 'view' | 'ghostboss',
+  what: 'id' | 'run' | 'view' | 'ghostboss' | 'trophies',
   extra: Record<string, unknown>,
 ): Promise<Record<string, unknown> | null> {
   try {
@@ -124,6 +124,25 @@ async function post(
   } catch {
     return null;
   }
+}
+
+/** This player's Arena trophies, newest first (null when they are not known to the server, or it cannot be reached). */
+export async function fetchTrophies(): Promise<Trophy[] | null> {
+  const d = await post('trophies', {});
+  if (!d || !Array.isArray(d['trophies'])) return null;
+  return (d['trophies'] as unknown[]).flatMap((t): Trophy[] => {
+    if (typeof t !== 'object' || t === null) return [];
+    const r = t as Record<string, unknown>;
+    if (typeof r['period'] !== 'number' || typeof r['place'] !== 'number') return [];
+    return [
+      {
+        kind: r['kind'] === 'month' ? 'month' : 'week',
+        period: r['period'],
+        place: r['place'],
+        name: typeof r['name'] === 'string' ? r['name'] : '',
+      },
+    ];
+  });
 }
 
 /** One deck that can be met as a ghost, as the Ghost decks page shows it (never its cards or Boons). */

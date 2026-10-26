@@ -4,7 +4,9 @@
 import type { Action, CombatSetup, Side } from '@sr/combat';
 import {
   RULES_VERSION,
+  cleanTrophies,
   setupFor,
+  type TrophyCount,
   type ClientMsg,
   type Entry,
   type Series,
@@ -39,6 +41,8 @@ export interface MatchInfo {
   heroes: Record<Side, string>;
   /** where each player is in the campaign, as their deck was saved */
   progress: Record<Side, { tier: number; stage?: number }>;
+  /** the Arena trophies each player holds (from the server) */
+  trophies: Record<Side, TrophyCount | undefined>;
   setup: CombatSetup;
   /** how many moves arrived as history when this player (re)joined */
   replay: number;
@@ -402,6 +406,7 @@ export class PvpSession {
             names: { a: m.a.name, b: m.b.name },
             heroes: { a: m.a.hero, b: m.b.hero },
             progress: { a: progressOf(m.a), b: progressOf(m.b) },
+            trophies: { a: cleanTrophies(m.a.trophies), b: cleanTrophies(m.b.trophies) },
             setup: setupFor(m.seed, m.a, m.b),
             replay: m.replay,
             deadline: m.deadline,
@@ -467,6 +472,7 @@ export class PvpSession {
       seat: m.seat,
       names: m.names,
       progress: m.progress,
+      trophies: m.trophies,
       feed: m.feed,
       send: this.sendMove,
       replay: m.replay,

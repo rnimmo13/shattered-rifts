@@ -2,7 +2,8 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { RIFTWALKERS, type HeroId } from '@sr/content/v2';
-import { SECOND_PLAYER_HP } from '@sr/pvp';
+import { SECOND_PLAYER_HP, cleanTrophies } from '@sr/pvp';
+import { TrophyBadges } from './Trophies';
 import { heroFigure } from '../fight/art';
 import type { ChooseInfo } from './session';
 import { seriesLine } from './seriesText';
@@ -99,7 +100,9 @@ export function ChoosePanel(props: {
         <figure>
           <Portrait hero={info.me.hero} size={110} />
           <figcaption>
-            <b>{info.me.name}</b>
+            <b>
+              {info.me.name} <TrophyBadges trophies={cleanTrophies(info.me.trophies)} />
+            </b>
             <small>{heroName(info.me.hero)}</small>
           </figcaption>
         </figure>
@@ -107,7 +110,9 @@ export function ChoosePanel(props: {
         <figure>
           <Portrait hero={info.foe.hero} size={110} />
           <figcaption>
-            <b>{info.foe.name}</b>
+            <b>
+              {info.foe.name} <TrophyBadges trophies={cleanTrophies(info.foe.trophies)} />
+            </b>
             <small>{heroName(info.foe.hero)}</small>
           </figcaption>
         </figure>

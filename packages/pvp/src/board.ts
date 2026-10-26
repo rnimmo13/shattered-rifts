@@ -3,6 +3,7 @@
 
 import { RIFTWALKERS, canonicalHero } from '@sr/content/v2';
 import { MAX_TIER, ghostCleared } from '@sr/campaign';
+import type { TrophyCount } from './trophies';
 
 export { ghostCleared };
 import { cleanName } from './deck';
@@ -179,6 +180,8 @@ export interface PvpStanding {
   name: string;
   wins: number;
   losses: number;
+  /** the Arena trophies they hold (the server adds them to a board it shows) */
+  trophies?: TrophyCount;
   /** the Riftwalkers they played, most played first, each with its own record */
   heroes: { hero: string; wins: number; losses: number }[];
 }

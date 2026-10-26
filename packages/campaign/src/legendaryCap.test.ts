@@ -1,4 +1,5 @@
-// A deck holds at most V2_DECK_RULES.maxLegendary Legendary cards: once it is full no more are offered or taken.
+// A deck holds at most V2_DECK_RULES.maxLegendary Legendary cards (one, DECISIONS #238) and maxAncestral Ancestral ones: once
+// it is full no more are offered or taken.
 
 import { describe, expect, it } from 'vitest';
 import { COMBAT_DB, RIFTWALKERS, V2_DECK_RULES } from '@sr/content/v2';
@@ -27,5 +28,22 @@ describe('the Legendary limit', () => {
     const deck = [...RIFTWALKERS.knight.starter, legends[0] as string, legends[1] as string];
     const rng = seedRng('cap');
     for (let i = 0; i < 30; i++) expect(cardOfRarity(rng, 'knight', deck, 'legendary')).toBeNull();
+  });
+});
+
+describe('the Ancestral limit (DECISIONS #238)', () => {
+  it('a deck takes two different Ancestral cards, then no more', () => {
+    const anc = Object.values(COMBAT_DB.cards)
+      .filter((c) => c.rarity === 'ancestral' && !c.id.endsWith('+'))
+      .map((c) => c.id);
+    expect(V2_DECK_RULES.maxAncestral).toBe(2);
+    const deck = [...RIFTWALKERS.knight.starter];
+    for (const id of anc.slice(0, V2_DECK_RULES.maxAncestral)) {
+      expect(canAdd(deck, id)).toBe(true);
+      deck.push(id);
+    }
+    for (const id of anc.slice(V2_DECK_RULES.maxAncestral)) expect(canAdd(deck, id)).toBe(false);
+    // and a deck holds one Legendary
+    expect(V2_DECK_RULES.maxLegendary).toBe(1);
   });
 });

@@ -10,6 +10,7 @@ import {
   type RunStanding,
 } from '@sr/pvp';
 import { HeroIcon } from '../ui/HeroIcon';
+import { TrophyBadges } from './Trophies';
 import { heroName, progressLabel } from './deckLayout';
 import { viewBoard, type BoardKind, type BoardView, type GhostView } from './boardApi';
 import { NameClaim } from './NameClaim';
@@ -174,7 +175,9 @@ export function LeaderboardScreen() {
         <p className="setup__lead">
           Arena boards rank wins; campaign boards rank how far a run got; ghost boards show how the
           computer-played decks are doing. The best 100 are shown. A week runs Monday to Monday and
-          a month from the 1st, both on UTC time.
+          a month from the 1st, both from midnight Pacific time. When an Arena board closes, its top
+          100 each win a trophy (silver for a week, gold for a month): see your{' '}
+          <a href="#/trophies">Trophy case</a>.
         </p>
       </header>
 
@@ -225,7 +228,7 @@ export function LeaderboardScreen() {
             empty={`No matches yet this ${period}. Be the first.`}
             cells={(s) => [
               <span key="n" className="board__name">
-                {s.name}
+                {s.name} <TrophyBadges trophies={s.trophies} />
               </span>,
               <b key="w">{s.wins}</b>,
               s.losses,
@@ -311,7 +314,7 @@ export function LeaderboardScreen() {
             empty={`Nobody has fought a ghost yet this ${period}.`}
             cells={(s) => [
               <span key="n" className="board__name">
-                {s.name}
+                {s.name} <TrophyBadges trophies={s.trophies} />
               </span>,
               <b key="w">{s.wins}</b>,
               s.losses,

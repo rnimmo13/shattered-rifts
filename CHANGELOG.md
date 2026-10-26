@@ -5,7 +5,11 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
-- **Arena matches last longer, and no deck wins on its first turn:** every Riftwalker has 6x their HP in the Arena (was 3x); damage is unchanged. Going second gives +60 HP. **No Boons in the Arena:** a match between decks is cards only, and Arena decks no longer show them.
+- **Store:** a Store page (home screen button) for cosmetics. Nothing on sale yet: coming soon, and it will only ever be cosmetic.
+- **Arena trophies:** finish a week or a month in the top 100 of the Arena board and win its trophy for good: a silver cup for a week, a gold one for a month. They show beside your name in Arena matches and on the boards, and the new **Trophy case** lists them all.
+- **One Legendary per deck,** and two Ancestral cards. Runs and saved decks that already hold more keep them, but the Arena accepts only decks within the limits.
+- **Seven new events,** among them the reliquary of legends: trade your Legendary for another, perhaps one from another Riftwalker, or keep it.
+- **Ghost Wardens are marked on the map** with a ghost badge.- **Arena matches last longer, and no deck wins on its first turn:** every Riftwalker has 6x their HP in the Arena (was 3x); damage is unchanged. Going second gives +60 HP. **No Boons in the Arena:** a match between decks is cards only, and Arena decks no longer show them.
 - **Three turn-one combos trimmed:** Fevered Communion gives 2 Spirit (3 upgraded), Blood Tithe+ draws 3 cards (it loses 4 HP now), and entering Radiant gives 1 Mana (was 2; it still triples your damage).
 - **Ghost Wardens grow with the Rift Tier** like every other Warden, in HP and in damage: deep in the Rift they no longer go down easily.
 - **Every Warden you beat gives you Max HP for good:** +3, more deeper in (+5 from Tier X, +7 at Tier XX).

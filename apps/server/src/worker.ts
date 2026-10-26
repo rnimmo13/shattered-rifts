@@ -157,6 +157,7 @@ const CORS_POST = {
  * POST /pvp/board/id    {code?}                 this player's leaderboard id (so a match can carry it)
  * POST /pvp/board/run   {code?, run, name, hero, tier, stage}   a run has reached this far (counted under the player's claimed username)
  * POST /pvp/board/claim {code?, name}            claim a username: 3 to 20 characters, and no two players share one
+ * POST /pvp/board/trophies {code?}              this player's Arena trophies (DECISIONS #238)
  */
 async function boardRoute(request: Request, env: Env, what: string, url: URL): Promise<Response> {
   if (request.method === 'OPTIONS') return new Response(null, { status: 204, headers: CORS_POST });
@@ -187,6 +188,7 @@ async function boardRoute(request: Request, env: Env, what: string, url: URL): P
         what !== 'run' &&
         what !== 'claim' &&
         what !== 'view' &&
+        what !== 'trophies' &&
         what !== 'ghostboss')
     )
       return json({ ok: false, error: 'not found' }, 404);
@@ -240,6 +242,16 @@ async function boardRoute(request: Request, env: Env, what: string, url: URL): P
     if (!id)
       return json({ ok: false, error: body['code'] === undefined ? 'signin' : 'bad-code' }, 401);
     if (what === 'id') return json({ ok: true, id });
+    if (what === 'trophies') {
+      // the Trophy case: this player's Arena trophies
+      const res = await stub.fetch(
+        new Request('https://board.invalid/trophies', {
+          method: 'POST',
+          body: JSON.stringify({ player: id }),
+        }),
+      );
+      return json(await res.json(), res.status);
+    }
     const res = await stub.fetch(
       new Request(
         what === 'claim' ? 'https://board.invalid/name/claim' : 'https://board.invalid/run',

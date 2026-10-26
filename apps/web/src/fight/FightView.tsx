@@ -61,6 +61,8 @@ import { attackFor } from './attackStyles';
 import type { FeedItem, PvpLink } from '../pvp/link';
 import { progressLabel } from '../pvp/deckLayout';
 import { seriesLine } from '../pvp/seriesText';
+import { TrophyBadges } from '../pvp/Trophies';
+import type { TrophyCount } from '@sr/pvp';
 import '../duel/duel.css';
 import '../play/play.css';
 import './fight.css';
@@ -203,6 +205,7 @@ function WhoTag(props: {
   name: string;
   progress: string;
   unit: Parameters<typeof StanceChip>[0]['unit'];
+  trophies?: TrophyCount | undefined;
 }) {
   const ref = useRef<HTMLDivElement>(null);
   useClearOfBelt(ref);
@@ -212,7 +215,9 @@ function WhoTag(props: {
       className={`fight__who fight__who--${props.mine ? 'me' : 'foe'}`}
       style={{ left: props.x, top: props.y }}
     >
-      <b>{props.name}</b>
+      <b>
+        {props.name} <TrophyBadges trophies={props.trophies} />
+      </b>
       <small>{props.progress}</small>
       <StanceChip unit={props.unit} />
     </div>
@@ -1211,6 +1216,7 @@ export function FightView(props: {
                   name={pvp.names[s]}
                   progress={progressLabel(p.tier, p.stage)}
                   unit={at.unit}
+                  trophies={pvp.trophies?.[s]}
                 />
               ) : null;
             })}
@@ -1464,9 +1470,9 @@ export function FightView(props: {
               dx={view.sides[foeSide].runes.length > 0 ? 245 : 118}
               tip={() => ({
                 kicker: "Opponent's Trap",
-                title: "A face-down Trap",
-                text: "Your opponent set this face down. You will not know what it does until it springs.",
-                hint: "It springs on its own when its trigger happens.",
+                title: 'A face-down Trap',
+                text: 'Your opponent set this face down. You will not know what it does until it springs.',
+                hint: 'It springs on its own when its trigger happens.',
               })}
             />
           )}

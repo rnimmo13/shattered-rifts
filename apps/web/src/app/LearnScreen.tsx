@@ -226,9 +226,10 @@ export function LearnScreen() {
           </dl>
           <h3>Legendary cards</h3>
           <p>
-            Every Riftwalker has three Legendary cards, but a deck can hold only two at a time. Once
-            you have two, no more are offered, so taking one is a real choice: it uses a slot a
-            better fit might have taken.
+            Every Riftwalker has three Legendary cards, but a deck can hold only one, and two
+            Ancestral cards. Once your deck has its Legendary, no more are offered, so taking one is
+            a real choice. Some events let you trade yours for another, even one from another
+            Riftwalker.
           </p>
           <h3>Resolve</h3>
           <p>

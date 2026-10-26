@@ -13,7 +13,7 @@ import {
 describe('the odds the How to play page shows', () => {
   it('say what the events really offer: eighty-two events, and a fair share that let a card go', () => {
     const o = eventOffers();
-    expect(o.count).toBe(82);
+    expect(o.count).toBe(89);
     for (const tag of Object.keys(EVENT_TAG_LABEL) as (keyof typeof o.share)[]) {
       expect(o.share[tag]).toBeGreaterThanOrEqual(0);
       expect(o.share[tag]).toBeLessThanOrEqual(100);

@@ -9,6 +9,7 @@
 // opponent's hand. The server still decides every move, so nobody can cheat the rules, only peek. Hiding information
 // (the server sends each player only their own view) is a later step.
 
+import type { TrophyCount } from './trophies';
 import type { Action } from '@sr/combat';
 
 export type Seat = 'a' | 'b';
@@ -30,6 +31,8 @@ export interface Entry {
   run?: string;
   /** who the player is on the leaderboards: a hash derived from their Vault code or account (never shown, never the code itself) */
   who?: string;
+  /** the Arena trophies the player holds (set by the server when they join a room; whatever a browser sends is dropped) */
+  trophies?: TrophyCount;
 }
 
 /**

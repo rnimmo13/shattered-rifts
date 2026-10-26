@@ -19,17 +19,23 @@ export type OfferQuality = 'duel' | 'elite';
 
 const rarityOf = (id: string): string => COMBAT_DB.cards[id]?.rarity ?? 'common';
 
-/** A card can be added unless the deck already holds the copy limit of it (basic cards are exempt). */
-export function canAdd(deck: readonly string[], cardId: string): boolean {
+/**
+ * A card can be added unless the deck already holds the copy limit of it (basic cards are exempt), or (with `rarityLimits`, the
+ * default) the deck already holds its Legendary or its two Ancestral cards. Checking a deck that already exists (a Vault deck, a
+ * ghost) passes false: one built before the limits came down (DECISIONS #238) is still a deck, only not one for the Arena.
+ */
+export function canAdd(deck: readonly string[], cardId: string, rarityLimits = true): boolean {
   const c = COMBAT_DB.cards[cardId];
   // a card that cannot be played is only worth having if discarding it pays (Reflex, Tactician)
   if (!c || (c.unplayable && !c.onDiscard)) return false;
   if (c.rarity === 'basic') return true;
-  // a deck holds only a couple of Legendary cards, so taking one is a choice (one that is full is never offered)
-  const legendsHeld = deck.filter(
-    (x) => rarityOf(stripRoll(x).replace(/\+$/, '')) === 'legendary',
-  ).length;
-  if (c.rarity === 'legendary' && legendsHeld >= V2_DECK_RULES.maxLegendary) return false;
+  // a deck holds one Legendary and two Ancestral cards, so taking one is a choice (a deck that is full is never offered more)
+  const held = (rarity: string): number =>
+    deck.filter((x) => rarityOf(stripRoll(x).replace(/\+$/, '')) === rarity).length;
+  if (rarityLimits && c.rarity === 'legendary' && held('legendary') >= V2_DECK_RULES.maxLegendary)
+    return false;
+  if (rarityLimits && c.rarity === 'ancestral' && held('ancestral') >= V2_DECK_RULES.maxAncestral)
+    return false;
   // a card and its "+" version share one limit; a legendary is one of a kind
   const base = (id: string): string => stripRoll(id).replace(/\+$/, '');
   const limit = c.rarity === 'legendary' || c.rarity === 'ancestral' ? 1 : V2_DECK_RULES.maxCopies;

@@ -310,6 +310,29 @@
   width: 1.7rem;
   height: 1.7rem;
 }
+/* a ghost Warden: a glowing ghost floats on the node's corner */
+.mapnode__ghost {
+  position: absolute;
+  right: -0.6rem;
+  top: -0.6rem;
+  line-height: 0;
+  filter: drop-shadow(0 0 6px rgb(127 211 255 / 0.9));
+  animation: mapghost 2.4s ease-in-out infinite;
+}
+.mapnode__ghost svg {
+  width: 1.8rem;
+  height: 1.8rem;
+}
+@keyframes mapghost {
+  50% {
+    transform: translateY(-3px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .mapnode__ghost {
+    animation: none;
+  }
+}
 .mapmodal {
   position: fixed;
   inset: 0;

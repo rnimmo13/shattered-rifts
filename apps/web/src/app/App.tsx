@@ -5,6 +5,7 @@ import { TooltipLayer } from '../ui/Tooltip';
 import { Bestiary } from '../fight/Bestiary';
 import { CardLibrary } from '../fight/CardLibrary';
 import { CreditsScreen } from './CreditsScreen';
+import { StoreScreen } from './StoreScreen';
 import { NameGate } from '../pvp/NameClaim';
 import { syncSavedRuns } from '../run/syncRuns';
 import { LearnScreen } from './LearnScreen';
@@ -16,6 +17,7 @@ const FightScreen = lazy(() => import('../fight/FightScreen'));
 const TrialsPractice = lazy(() => import('../trials/TrialsPractice'));
 const PvpScreen = lazy(() => import('../pvp/PvpScreen'));
 const GhostDecksScreen = lazy(() => import('../pvp/GhostDecksScreen'));
+const TrophyCaseScreen = lazy(() => import('../pvp/TrophyCaseScreen'));
 const SavedDecksScreen = lazy(() => import('../pvp/SavedDecksScreen'));
 const LeaderboardScreen = lazy(() =>
   import('../pvp/LeaderboardScreen').then((m) => ({ default: m.LeaderboardScreen })),
@@ -69,6 +71,7 @@ function Screens({ hash }: { hash: string }) {
   }
   if (hash === '#/learn') return <LearnScreen />;
   if (hash === '#/credits') return <CreditsScreen />;
+  if (hash === '#/store') return <StoreScreen />;
   if (hash === '#/cards') return <CardLibrary />;
   if (hash === '#/models') return <Bestiary />;
   // the PvP mode is called the Arena (#/pvp keeps working for links already shared)
@@ -83,6 +86,13 @@ function Screens({ hash }: { hash: string }) {
     return (
       <Suspense fallback={<div className="loading">Opening the rift…</div>}>
         <GhostDecksScreen />
+      </Suspense>
+    );
+  }
+  if (hash === '#/trophies') {
+    return (
+      <Suspense fallback={<div className="loading">Opening the rift…</div>}>
+        <TrophyCaseScreen />
       </Suspense>
     );
   }

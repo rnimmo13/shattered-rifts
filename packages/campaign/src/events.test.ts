@@ -43,12 +43,13 @@ const SETUP: Record<string, Partial<RunState>> = {
   'deep-spring': { stage: 2, potions: ['healing-philtre'] },
   'class-shrine': { stage: 2 },
   'potion-trade': { potions: ['healing-philtre', 'healing-philtre'] },
+  'legend-reliquary': { deck: [...RIFTWALKERS.knight.starter, 'gilded-bastion', 'the-last-oath+'] },
 };
 
 describe('events', () => {
   it('there are eighty-two of them, each with its own id', () => {
-    expect(EVENTS.length).toBe(82);
-    expect(new Set(EVENTS.map((e) => e.id)).size).toBe(82);
+    expect(EVENTS.length).toBe(89);
+    expect(new Set(EVENTS.map((e) => e.id)).size).toBe(89);
   });
 
   it('are varied and random, and a card is on offer only now and then', () => {

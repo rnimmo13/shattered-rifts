@@ -2,7 +2,7 @@
 // moves the server accepted (the opponent's, and mine echoed back). The screen never talks to the network itself.
 
 import type { Action, Side } from '@sr/combat';
-import type { Series } from '@sr/pvp';
+import type { Series, TrophyCount } from '@sr/pvp';
 
 /** A move the server accepted, in the server's order. */
 export interface Move {
@@ -46,6 +46,8 @@ export interface PvpLink {
   names: Record<Side, string>;
   /** where each player is in the campaign (their deck's Rift Tier and stages cleared) */
   progress: Record<Side, { tier: number; stage?: number }>;
+  /** the Arena trophies each player holds, for their name tags (none for a ghost, or the campaign's ghost fights) */
+  trophies?: Record<Side, TrophyCount | undefined>;
   feed: MoveFeed;
   /** ask the server to make this move (`seq` is the number you expect it to get); false if there is no connection right now */
   send: (seq: number, action: Action) => boolean;

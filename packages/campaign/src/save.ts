@@ -241,6 +241,7 @@ function validTrial(t: unknown): boolean {
 }
 
 const DEAL_KINDS = new Set([
+  'swap',
   'hurt',
   'hurtPct',
   'heal',
@@ -285,6 +286,7 @@ function validDeal(steps: unknown, depth = 0): boolean {
     for (const f of ['n', 'pct'] as const)
       if (s[f] !== undefined && !isInt(s[f], -100000, 100000)) return false;
     if (s['k'] === 'card' && !hasCard(s['id'])) return false;
+    if (s['k'] === 'swap' && !(hasCard(s['from']) && hasCard(s['to']))) return false;
     // (a removal that named its cards: real cards, as many as it takes)
     if (
       s['k'] === 'remove' &&
