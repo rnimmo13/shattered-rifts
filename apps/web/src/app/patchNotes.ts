@@ -29,6 +29,28 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.71.0',
+    date: '2026-10-26',
+    title: 'Every Arena game ends',
+    summary:
+      'Sudden death from Turn 51 and a 20-minute clock for each Arena game. No more blank cards.',
+    heads: 'An Arena game in progress when this version arrived was ended as a draw.',
+    notes: [
+      {
+        kind: 'new',
+        text: 'Sudden death in the Arena: from Turn 51 both heroes lose more HP every turn (10, then 20, 30...), straight through Barrier and Shielded.',
+      },
+      {
+        kind: 'new',
+        text: 'Each Arena game has 20 minutes, shown under the turn clock. When it runs out the game goes to whoever has the larger share of their HP left.',
+      },
+      {
+        kind: 'fixed',
+        text: 'A card picture that fails to load shows the card’s painted art instead of a blank.',
+      },
+    ],
+  },
+  {
     version: '0.70.0',
     date: '2026-10-26',
     title: 'A harder Rift',
