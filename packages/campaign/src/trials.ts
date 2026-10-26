@@ -70,6 +70,13 @@ export const ELITE_EVENTS: EliteSpec[] = [
   },
 ];
 
+/** The Brass Reel that stands in a Gambler's Shrine (DECISIONS #234): the same reel as an elite event's, spun beside the blessings. */
+export const GAMBLER_REEL: EliteSpec = {
+  id: 'gambler-shrine',
+  title: 'The Brass Reel',
+  text: 'In an alcove of the shrine a brass reel turns slowly, its prizes catching the candlelight. 25 shards a spin; take what it stops on, or pay to spin again. One prize to a visit.',
+};
+
 const name = (id: string): string => COMBAT_DB.cards[id]?.name ?? 'a card';
 
 /** `n` different picks from a list (fewer if it is short). */

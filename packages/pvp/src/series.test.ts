@@ -32,9 +32,17 @@ describe('a best of three', () => {
   it('shows the score by seat, with the game capped at 3', () => {
     const s = scoreGame(scoreGame(newSeries(), 'p1'), 'p2');
     // the seats swapped between games: p1 now sits in b
-    expect(seriesFor(s, { a: 'p2', b: 'p1' }, false)).toEqual({ game: 3, wins: { a: 1, b: 1 }, over: false });
+    expect(seriesFor(s, { a: 'p2', b: 'p1' }, false)).toEqual({
+      game: 3,
+      wins: { a: 1, b: 1 },
+      over: false,
+    });
     const done = scoreGame(s, 'p1');
-    expect(seriesFor(done, { a: 'p1', b: 'p2' }, true)).toEqual({ game: 3, wins: { a: 2, b: 1 }, over: true });
+    expect(seriesFor(done, { a: 'p1', b: 'p2' }, true)).toEqual({
+      game: 3,
+      wins: { a: 2, b: 1 },
+      over: true,
+    });
   });
 
   it('does not mutate the state it is given', () => {

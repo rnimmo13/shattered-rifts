@@ -12,6 +12,9 @@ import {
   encounter,
   isDeckCard,
   markOf,
+  markedId,
+  MARK_INFO,
+  rolledId,
   rewardPool,
   canonicalHero,
   type HeroId,
@@ -20,7 +23,7 @@ import {
   CROSSED_MERCHANT_CHANCE,
   EVENT_FIGHT_ODDS,
   FINAL_STAGE,
-  GHOST_BOSS_MIN_TIER,
+  ghostCleared,
   GHOST_FROM_TIER,
   ambushEnemy,
   generateStageMap,
@@ -32,7 +35,17 @@ import { enemyScale } from './tierTable';
 import { makeKits } from './kits';
 import { rollEvent, resolveEvent } from './events';
 import { applyChoice, applyDeal } from './deals';
-import { spinReel, takePrize } from './trials';
+import { GAMBLER_REEL, buildElite, spinReel, takePrize } from './trials';
+import {
+  GAMBLER_BLESSINGS,
+  GAMBLER_TIER,
+  diceOdds,
+  diceable,
+  engravable,
+  ledgerGain,
+  makeGambler,
+  type ShrineKind,
+} from './gambler';
 import { makePrelude } from './preludes';
 import {
   BOON_PRICE,
@@ -250,6 +263,12 @@ export function enterNode(run: RunState, nodeId: string): RunState {
       break;
     case 'shrine':
       r.phase = 'shrine';
+      // deep in the Rift a Shrine is a Gambler's Shrine: two blessings of seven, and the Brass Reel beside them (DECISIONS #234)
+      if (r.tier >= GAMBLER_TIER) {
+        r.context.gambler = makeGambler(r);
+        const reel = buildElite(GAMBLER_REEL, r);
+        r.context.event = { ...reel, options: reel.options.filter((o) => o.id === 'trial') };
+      }
       break;
     case 'merchant': {
       // the map already said whether this merchant is a stranger from another Riftwalker's world
@@ -406,8 +425,8 @@ export function checkGhostBoss(raw: unknown): GhostBoss | null {
   const name = typeof g['name'] === 'string' ? g['name'].slice(0, 40) : 'A rival';
   const tier = typeof g['tier'] === 'number' && Number.isInteger(g['tier']) ? g['tier'] : 1;
   const stage = typeof g['stage'] === 'number' && Number.isInteger(g['stage']) ? g['stage'] : null;
-  // (a ghost boss is a deck that reached Tier GHOST_BOSS_MIN_TIER: an older server might send any)
-  if (tier < GHOST_BOSS_MIN_TIER) return null;
+  // (a ghost is a deck that cleared Tier GHOST_BOSS_MIN_TIER: an older server might send any)
+  if (!ghostCleared(tier, stage)) return null;
   const id = typeof g['id'] === 'string' && g['id'].length <= 80 ? g['id'] : undefined;
   return {
     ...(id ? { id } : {}),
@@ -855,7 +874,14 @@ function applyEffect(r: RunState, e: PreludeEffect): string | null {
 
 // ---- shrine -------------------------------------------------------------------------------------------
 export type ShrineChoice =
-  { kind: 'rest' } | { kind: 'upgrade'; card: string } | { kind: 'remove'; card: string };
+  | { kind: 'rest' }
+  | { kind: 'upgrade'; card: string }
+  | { kind: 'remove'; card: string }
+  // the Gambler's Shrine's wagers (Tier GAMBLER_TIER and up)
+  | { kind: 'sacrifice'; card: string; take: string }
+  | { kind: 'dice'; card: string }
+  | { kind: 'engrave'; card: string }
+  | { kind: 'ledger' };
 
 /** Which cards in a deck can be upgraded at a shrine. */
 export function upgradable(deck: readonly string[]): string[] {
@@ -864,7 +890,18 @@ export function upgradable(deck: readonly string[]): string[] {
 
 export function takeShrine(run: RunState, choice: ShrineChoice): RunState {
   need(run.phase === 'shrine' && run.context, 'You are not at a shrine');
+  const g = run.context.gambler;
+  need(!g || !g.taken.includes(choice.kind), 'You have taken that blessing here already');
+  const wager: ShrineKind[] = ['sacrifice', 'dice', 'engrave', 'ledger'];
+  need(!!g || !wager.includes(choice.kind), "Only a Gambler's Shrine takes wagers");
+  // (the last blessing closes the shrine: a prize the reel stopped on is taken or spun away first, never lost by it)
+  need(
+    !g || g.taken.length < GAMBLER_BLESSINGS - 1 || run.context.event?.trial?.state !== 'won',
+    'Take the prize on the Brass Reel first (or walk away from it)',
+  );
   const r = clone(run);
+  const gs = (r.context as NonNullable<RunState['context']>).gambler;
+  if (gs) delete gs.note;
   if (choice.kind === 'rest') {
     heal(r, r.maxHp * REST_HEAL);
   } else if (choice.kind === 'upgrade') {
@@ -873,7 +910,7 @@ export function takeShrine(run: RunState, choice: ShrineChoice): RunState {
     const up = COMBAT_DB.cards[choice.card]?.upgrade;
     need(up, 'That card cannot be upgraded');
     r.deck[i] = up;
-  } else {
+  } else if (choice.kind === 'remove') {
     need(
       r.deck.length > V2_DECK_RULES.minSize,
       `A deck cannot go below ${V2_DECK_RULES.minSize} cards`,
@@ -881,10 +918,66 @@ export function takeShrine(run: RunState, choice: ShrineChoice): RunState {
     const i = r.deck.indexOf(choice.card);
     need(i >= 0, 'That card is not in your deck');
     r.deck.splice(i, 1);
+  } else if (gs) {
+    wagerAt(r, gs, choice);
   }
+  const ctx = r.context as NonNullable<RunState['context']>;
+  // a Gambler's Shrine gives a second, different blessing before it is done
+  if (gs) {
+    gs.taken.push(choice.kind);
+    if (gs.taken.length < GAMBLER_BLESSINGS) return r;
+    // (the shrine closes: what the last wager did is told as the stop's news)
+    if (gs.note) r.eventResult = gs.note;
+  }
+  clearNode(r, ctx.nodeId);
+  r.phase = 'map';
+  return r;
+}
+
+/** A Shrine (a Gambler's Shrine too) can be walked away from at any time, with (the rest of) its blessings left untaken. */
+export function leaveShrine(run: RunState): RunState {
+  need(run.phase === 'shrine' && run.context, 'You are not at a shrine');
+  const r = clone(run);
   clearNode(r, (r.context as NonNullable<RunState['context']>).nodeId);
   r.phase = 'map';
   return r;
+}
+
+/** One of the Gambler's Shrine's wagers, done to the run (`r` is already a copy). */
+function wagerAt(
+  r: RunState,
+  g: NonNullable<NonNullable<RunState['context']>['gambler']>,
+  choice: Exclude<ShrineChoice, { kind: 'rest' | 'upgrade' | 'remove' }>,
+): void {
+  const name = (id: string): string => COMBAT_DB.cards[id]?.name ?? id;
+  if (choice.kind === 'ledger') {
+    const gain = ledgerGain(r);
+    r.ledger = (r.ledger ?? 0) + 1;
+    r.maxHp += gain;
+    r.hp += gain;
+    g.note = `You sign the Ledger (${r.ledger} ${r.ledger === 1 ? 'time' : 'times'} now): +${gain} Max HP. The next signature gives ${ledgerGain(r)}.`;
+    return;
+  }
+  const i = r.deck.indexOf(choice.card);
+  need(i >= 0, 'That card is not in your deck');
+  if (choice.kind === 'sacrifice') {
+    need(g.altar.includes(choice.take), 'That card is not on the altar');
+    const rest = r.deck.filter((_, j) => j !== i);
+    need(canAdd(rest, choice.take), 'Your deck cannot take another copy of that card');
+    r.deck[i] = choice.take;
+    g.note = `${name(choice.card)} burns on the altar, and ${name(choice.take)} is yours.`;
+  } else if (choice.kind === 'dice') {
+    need(diceable(r.deck).includes(choice.card), 'The dice cannot change that card');
+    const up = nextInt(r.rng, 100) < diceOdds(r.tier);
+    r.deck[i] = rolledId(choice.card, up ? 1 : -1);
+    g.note = up
+      ? `The dice come up high: ${name(choice.card)} is sanctified, its numbers 25% stronger.`
+      : `The dice come up low: ${name(choice.card)} is sanctified, its numbers 25% weaker.`;
+  } else {
+    need(engravable(r.deck, g.chisel).includes(choice.card), 'The chisel cannot cut that card');
+    r.deck[i] = markedId(choice.card, g.chisel);
+    g.note = `${MARK_INFO[g.chisel].name} is cut into ${name(choice.card)}: it ${MARK_INFO[g.chisel].text}.`;
+  }
 }
 
 /** Putting a merchant's card on hold: pay this share of its price now... */
@@ -1147,7 +1240,7 @@ export function pickEventCard(run: RunState, index: number): RunState {
  */
 export function rollTrial(run: RunState): RunState {
   need(
-    run.phase === 'event' &&
+    (run.phase === 'event' || run.phase === 'shrine') &&
       (run.context?.event?.trial?.state === 'open' || run.context?.event?.trial?.state === 'won'),
     'There is no reel here',
   );
@@ -1183,7 +1276,7 @@ export function claimTrialPrize(
   cards?: readonly string[],
 ): RunState {
   need(
-    run.phase === 'event' && run.context?.event?.trial?.state === 'won',
+    (run.phase === 'event' || run.phase === 'shrine') && run.context?.event?.trial?.state === 'won',
     'There is no prize here',
   );
   const r = clone(run);
@@ -1201,6 +1294,11 @@ export function claimTrialPrize(
     pick,
     cards,
   );
+  // a Gambler's Shrine's reel gives one prize a visit; the shrine itself stays open for its blessings
+  if (r.phase === 'shrine') {
+    delete ctx.event;
+    return r;
+  }
   clearNode(r, ctx.nodeId);
   r.phase = 'map';
   return r;

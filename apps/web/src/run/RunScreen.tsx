@@ -39,6 +39,7 @@ import {
   parseRun,
   realmOfStage,
   takeShrine,
+  leaveShrine,
   type Difficulty,
   type Luck,
   type RunState,
@@ -539,9 +540,9 @@ export default function RunScreen() {
       {arenaNote === 'intro' && (
         <p className="run__notice run__notice--good" role="status">
           <b>Your deck is now in the Arena.</b> It is saved by itself after every fight, so the
-          Arena always has your latest deck, and other players may face it as a ghost (the computer
-          plays it). If this run collapses you can no longer bring it to the Arena yourself, but it
-          stays as a ghost. See it under <a href="#/decks">Saved decks</a>.{' '}
+          Arena always has your latest deck, and once it has cleared Tier 3 other players may face
+          it as a ghost (the computer plays it). If this run collapses you can no longer bring it to
+          the Arena yourself, but a ghost stays. See it under <a href="#/decks">Saved decks</a>.{' '}
           <button
             className="btn btn--small"
             onClick={() => {
@@ -723,7 +724,7 @@ function RunBar(props: {
         <a
           className="btn btn--small btn--ghost runbar__arena"
           href="#/decks"
-          title="Your deck is entered in the Arena by itself, and updated after every fight. Other players may face it as a ghost (the computer plays it). If this run collapses, you can no longer bring it to the Arena yourself, but it stays as a ghost. Click to see your saved decks."
+          title="Your deck is entered in the Arena by itself, and updated after every fight. Once it has cleared Tier 3, other players may face it as a ghost (the computer plays it). If this run collapses, you can no longer bring it to the Arena yourself, but a ghost stays. Click to see your saved decks."
         >
           <span>Arena deck: {props.arenaLabel ?? 'saved after your first fight'}</span>
         </a>
@@ -805,9 +806,10 @@ function Body(props: {
       return (
         <ShrineView
           run={run}
-          onRest={() => act((r) => takeShrine(r, { kind: 'rest' }))}
-          onUpgrade={(card) => act((r) => takeShrine(r, { kind: 'upgrade', card }))}
-          onRemove={(card) => act((r) => takeShrine(r, { kind: 'remove', card }))}
+          onTake={(choice) => act((r) => takeShrine(r, choice))}
+          onLeave={() => act((r) => leaveShrine(r))}
+          onRoll={() => act((r) => rollTrial(r))}
+          onPrize={(id, pick, cards) => act((r) => claimTrialPrize(r, id, pick, cards))}
         />
       );
     case 'merchant':
@@ -860,8 +862,9 @@ function Body(props: {
           <p className="stage-panel__hint">
             You cleared all three stages at Rift Tier {run.tier}. This deck is already in the Arena.
             <b> Continue</b> one Tier deeper for harder enemies and better rewards, but if Resolve
-            runs out the run collapses and you can no longer bring its deck to the Arena (it stays
-            as a ghost others may face). Or leave the run parked and come back to it later.
+            runs out the run collapses and you can no longer bring its deck to the Arena (past Tier
+            3 it stays as a ghost others may face). Or leave the run parked and come back to it
+            later.
           </p>
           <div className="choices-row">
             {run.tier < MAX_TIER ? (
@@ -891,8 +894,8 @@ function Body(props: {
             {props.lostDecks !== null && props.lostDecks > 0 && (
               <>
                 {' '}
-                You can no longer bring this run's deck to the Arena, but it stays as a ghost that
-                other players may face.
+                You can no longer bring this run's deck to the Arena. If it had cleared Tier 3, it
+                stays as a ghost that other players may face.
               </>
             )}
           </p>

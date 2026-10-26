@@ -39,7 +39,9 @@ export function ChanceCoin(props: { flips: Flip[]; onDone: () => void }) {
   const odds = flip.pct === 50 ? 'An even chance' : `A ${flip.pct}% chance`;
   return (
     <div className="coinscreen chancecoin" role="dialog" aria-label="A chance">
-      <h2>{landed ? (flip.won ? 'It goes your way' : 'Not this time') : 'The coin is in the air…'}</h2>
+      <h2>
+        {landed ? (flip.won ? 'It goes your way' : 'Not this time') : 'The coin is in the air…'}
+      </h2>
       <div className="coinstage">
         <div
           key={i}

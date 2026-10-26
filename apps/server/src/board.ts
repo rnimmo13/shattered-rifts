@@ -32,6 +32,7 @@ import {
   periodStart,
   BOARD_SIZE,
   pickGhost,
+  ghostCleared,
   rankGhosts,
   standingsPvp,
   standingsRuns,
@@ -46,7 +47,7 @@ import {
   type RunRow,
 } from '@sr/pvp';
 import type { Env } from './env';
-import { CURRENT_GHOSTS_VIEW } from './ghostSql';
+import { CURRENT_GHOSTS_VIEW, UNCLEARED_GHOSTS } from './ghostSql';
 
 const json = (body: unknown, status = 200): Response =>
   new Response(JSON.stringify(body), { status, headers: { 'content-type': 'application/json' } });
@@ -162,6 +163,11 @@ export class Leaderboard extends DurableObject<Env> {
     // The ghosts that can be met and listed: only the latest version of a deck (see ghostSql.ts)
     ctx.storage.sql.exec('DROP VIEW IF EXISTS current_ghosts');
     ctx.storage.sql.exec(CURRENT_GHOSTS_VIEW);
+    // a ghost must have cleared Tier 3 (DECISIONS #235): decks saved before that rule are let go (their match history stays)
+    if (ctx.storage.kv.get('unclearedGhostsGone') !== true) {
+      ctx.storage.sql.exec(`DELETE FROM ghosts WHERE ${UNCLEARED_GHOSTS}`);
+      ctx.storage.kv.put('unclearedGhostsGone', true);
+    }
     // rows written before the Riftwalkers were named for their class (maren -> knight) are brought up to date (it does nothing once they are)
     const legacy = Object.entries(LEGACY_HERO_IDS);
     // (once only: a flag is kept, so a wake-up does not read every row again)
@@ -243,10 +249,12 @@ export class Leaderboard extends DurableObject<Env> {
     entry: unknown,
     now: number,
     result: 'win' | 'loss' | null,
-  ): Promise<void> {
+  ): Promise<boolean> {
     const checked = checkEntry(entry);
-    if (!checked.ok) return;
+    if (!checked.ok) return false;
     const e = checked.entry;
+    // (a deck that has not cleared Tier 3 plays in the Arena, but is not kept as a ghost: DECISIONS #235)
+    if (!ghostCleared(e.tier, e.stage ?? null)) return false;
     const id = await this.deckId(owner, e);
     const name = cleanBoardName(e.name);
     const wins = result === 'win' ? 1 : 0;
@@ -266,7 +274,7 @@ export class Leaderboard extends DurableObject<Env> {
         now,
         id,
       );
-      return;
+      return true;
     }
     this.ctx.storage.sql.exec(
       'INSERT INTO ghosts (id, owner, owner_name, hero, deck, boons, run, tier, stage, wins, losses, first_at, last_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
@@ -284,6 +292,7 @@ export class Leaderboard extends DurableObject<Env> {
       now,
       now,
     );
+    return true;
   }
 
   /** A deck a player saved becomes a ghost others can meet, even before it has played a match. */
@@ -293,8 +302,8 @@ export class Leaderboard extends DurableObject<Env> {
       return json({ ok: true, registered: false });
     const checked = checkEntry(b['entry']);
     if (!checked.ok) return json({ ok: true, registered: false });
-    await this.registerDeck(b['owner'], checked.entry, now, null);
-    return json({ ok: true, registered: true });
+    const kept = await this.registerDeck(b['owner'], checked.entry, now, null);
+    return json({ ok: true, registered: kept });
   }
 
   /**

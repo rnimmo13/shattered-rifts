@@ -14,7 +14,7 @@ const deck = [
   'flare^defend',
   'hi~hold^strike+',
 ];
-const entry: Entry = { name: 'Tagger', hero: 'knight', deck, boons: [], tier: 3 };
+const entry: Entry = { name: 'Tagger', hero: 'knight', deck, boons: [], tier: 3, stage: 3 };
 
 describe('tagged and sanctified cards in the Arena', () => {
   it('an Arena entry keeps them, exactly as banked', () => {
@@ -31,7 +31,7 @@ describe('tagged and sanctified cards in the Arena', () => {
 
   it('a ghost Warden made from such a deck is believed (it used to be refused)', () => {
     expect(
-      checkGhostBoss({ hero: 'knight', deck, boons: [], name: 'Tagger', tier: 3 })?.deck,
+      checkGhostBoss({ hero: 'knight', deck, boons: [], name: 'Tagger', tier: 3, stage: 3 })?.deck,
     ).toEqual(deck);
   });
 

@@ -325,3 +325,7 @@ free Hawk totem, so his HP came down and his weakest attacks went up.
 - **Moving first wins 57%, moving second 43%**, even though the second player already gets +1 Mana and +1 card on their first turn. A person plays differently from this bot, so read it as a hint: going first looks worth more than the head start pays for.
 - **With the +10 HP for the second player (DECISIONS #162):** moving first 48.3%, moving second 51.7% (same bots, 540 matches). Close to an even trade; people will tell us which side they prefer.
 - **Starting decks are far apart in PvP:** winning share across all pairings (moving first / second): Vesper 96% / 93%, Obsidia 85% / 83%, KP 87% / 81%, Kesh 69% / 43%, Quill 65% / 48%, Sehra 61% / 48%, Mire 35% / 11%, Ilvane 31% / 7%, Rivet 28% / 13%, Valeria 13% / 2%. The starting decks were tuned against enemies (runs), not against each other, and a PvP deck is a banked deck, so this is not the real picture yet; it says where to look when PvP balance starts.
+
+## Baseline raised again, Gambler's Shrine (2026-10-25, DECISIONS #234)
+
+Every Tier table row +15 HP / +8 damage points (Tier I 130% / 120%, Tier X 535-565% / 282-294%, Tier XX 761-775% / 378-384%); steps unchanged, the ladder still rises. To make up for the deeper tiers, from Tier VI a Shrine is the Gambler's Shrine (two different blessings of seven plus the Brass Reel). The Ledger's Max HP is the one open number to watch: 4 + 2 per signature means a run that signs at every Gambler's Shrine (5 or so a run) gains about 40 Max HP, at the cost of one blessing each visit.

@@ -20,6 +20,7 @@ export {
   GHOST_FRESH_DAYS,
   GHOST_WINS_PER_DAY,
   pickGhost,
+  ghostCleared,
   pickGhostBoss,
   GHOST_BOSS_EXCLUDE_MAX,
   rankGhosts,

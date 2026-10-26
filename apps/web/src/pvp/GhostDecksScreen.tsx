@@ -65,9 +65,9 @@ export default function GhostDecksScreen() {
         <h1 className="setup__title">Ghost decks</h1>
         <p className="setup__lead">
           A ghost is a deck that has been entered in the Arena, played by the computer so there is
-          always someone to fight. Here is who they came from and how far they got. You cannot see
-          their cards or Boons: you find out by fighting one. Decks that have not played for a month
-          drop off.
+          always someone to fight. Only a deck that has cleared Tier 3 becomes a ghost. Here is who
+          they came from and how far they got. You cannot see their cards or Boons: you find out by
+          fighting one. Decks that have not played for a month drop off.
         </p>
       </header>
       <div className="board__tabs" role="group" aria-label="Sort">
@@ -130,7 +130,7 @@ export default function GhostDecksScreen() {
                 <tr>
                   <td colSpan={6} className="board__empty">
                     {rows.length === 0
-                      ? 'No ghost decks yet. Play a match in the Arena, or save a deck, and yours becomes one.'
+                      ? 'No ghost decks yet. Clear Tier 3, then play a match in the Arena or save the deck, and yours becomes one.'
                       : 'No ghost deck matches that.'}
                   </td>
                 </tr>

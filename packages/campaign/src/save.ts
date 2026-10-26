@@ -8,6 +8,7 @@ import {
   V2_DECK_RULES,
   canonicalHero,
   isDeckCard,
+  MARK_INFO,
 } from '@sr/content/v2';
 const hasCard = (id: unknown): boolean => isDeckCard(id);
 import type { MapNode, NodeKind, RunPhase, RunState } from './types';
@@ -143,7 +144,23 @@ function validContext(r: RunState): boolean {
             isInt(m['boon']['price'], 0, 100000)))
       );
     }
+    case 'shrine':
     case 'event': {
+      // a Gambler's Shrine: its blessings taken, altar cards and chisel; its Brass Reel is checked like an event's
+      const g = c['gambler'];
+      if (r.phase === 'shrine' && g !== undefined) {
+        const kinds = ['rest', 'upgrade', 'remove', 'sacrifice', 'dice', 'engrave', 'ledger'];
+        const ok =
+          isObj(g) &&
+          isStrArray(g['taken']) &&
+          g['taken'].every((k) => kinds.includes(k)) &&
+          cards(g['altar']) &&
+          typeof g['chisel'] === 'string' &&
+          Object.hasOwn(MARK_INFO, g['chisel']) &&
+          (g['note'] === undefined || typeof g['note'] === 'string');
+        if (!ok) return false;
+      }
+      if (r.phase === 'shrine' && c['event'] === undefined) return true;
       const e = c['event'];
       const okOffer = (x: unknown): boolean => x === undefined || x === '' || hasCard(x);
       return (
@@ -349,6 +366,9 @@ export function parseRun(text: string): RunState | null {
   if (loose.marks !== undefined && !isStrArray(loose.marks)) delete loose.marks;
   // (the ghost Wardens met: a list that only steers which ghost comes next, so a bad one is dropped, not the save)
   if (loose.ghostsMet !== undefined && !isStrArray(loose.ghostsMet)) delete loose.ghostsMet;
+  // (the Gambler's Ledger's signatures: a count, or nothing)
+  const signed = (r as { ledger?: unknown }).ledger;
+  if (signed !== undefined && !isInt(signed, 0, 1000)) return null;
   if (
     loose.eventFlips !== undefined &&
     !(

@@ -1,12 +1,12 @@
 // Runs the server's "current ghosts" SQL (apps/server/src/ghostSql.ts) against a plain SQLite database. It lives here because only the tools have Node types.
 import { DatabaseSync } from 'node:sqlite';
 import { describe, expect, it } from 'vitest';
-import { CURRENT_GHOSTS_VIEW } from '../../apps/server/src/ghostSql';
+import { CURRENT_GHOSTS_VIEW, UNCLEARED_GHOSTS } from '../../apps/server/src/ghostSql';
 
 const open = (): DatabaseSync => {
   const db = new DatabaseSync(':memory:');
   db.exec(
-    `CREATE TABLE ghosts (id TEXT PRIMARY KEY, owner TEXT NOT NULL, hero TEXT NOT NULL, run TEXT, last_at INTEGER NOT NULL)`,
+    `CREATE TABLE ghosts (id TEXT PRIMARY KEY, owner TEXT NOT NULL, hero TEXT NOT NULL, run TEXT, last_at INTEGER NOT NULL, tier INTEGER NOT NULL DEFAULT 4, stage INTEGER)`,
   );
   db.exec(CURRENT_GHOSTS_VIEW);
   return db;
@@ -19,12 +19,45 @@ const add = (
   run: string | null,
   at: number,
 ): void => {
-  db.prepare('INSERT INTO ghosts VALUES (?, ?, ?, ?, ?)').run(id, owner, hero, run, at);
+  db.prepare('INSERT INTO ghosts (id, owner, hero, run, last_at) VALUES (?, ?, ?, ?, ?)').run(
+    id,
+    owner,
+    hero,
+    run,
+    at,
+  );
 };
 const shown = (db: DatabaseSync): string[] =>
-  (db.prepare('SELECT id FROM current_ghosts ORDER BY id').all() as { id: string }[]).map((r) => r.id);
+  (db.prepare('SELECT id FROM current_ghosts ORDER BY id').all() as { id: string }[]).map(
+    (r) => r.id,
+  );
 
 describe('which ghosts are current', () => {
+  it('shows only decks that cleared Tier 3, and the clean-up removes the rest (DECISIONS #235)', () => {
+    const db = open();
+    const put = (id: string, tier: number, stage: number | null): void => {
+      db.prepare('INSERT INTO ghosts VALUES (?, ?, ?, ?, ?, ?, ?)').run(
+        id,
+        id,
+        'knight',
+        id,
+        1,
+        tier,
+        stage,
+      );
+    };
+    put('t2', 2, 3);
+    put('t3s2', 3, 2);
+    put('t3null', 3, null);
+    put('t3s3', 3, 3);
+    put('t4s0', 4, 0);
+    expect(shown(db)).toEqual(['t3s3', 't4s0']);
+    db.exec(`DELETE FROM ghosts WHERE ${UNCLEARED_GHOSTS}`);
+    expect(
+      (db.prepare('SELECT id FROM ghosts ORDER BY id').all() as { id: string }[]).map((r) => r.id),
+    ).toEqual(['t3s3', 't4s0']);
+  });
+
   it('shows only the latest of the copies an older save left behind', () => {
     const db = open();
     add(db, 'a', 'p1', 'knight', null, 100);

@@ -5,6 +5,10 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **The Gambler's Shrine (Tier VI and up):** take two different blessings from seven: Rest, Upgrade, Let one go, and four wagers: **Sacrifice** a card for one of three Rift-crossed cards on the altar (three rares from Tier X), **Loaded Dice** (sanctify a card you choose: 60% it rises, better odds the deeper you go), **the Chisel** (engrave Hold, Opening hand or Flare on a card) and **the Ledger** (+4 Max HP, 2 more every time you sign it in a run). The **Brass Reel** stands beside them for anyone with shards to spend.
+- **You can walk away from any Shrine** at any time.
+- **Enemies a little tougher everywhere:** +15% HP and +8% damage on every stage of every Rift Tier (Tier I is now 130% HP / 120% damage).
+- **Ghost decks have cleared Tier 3:** only a deck that has cleared Tier 3 becomes a ghost, in the Arena or as a ghost Warden; earlier ghosts were removed.
 - **Events say which card they take:** an option that removes a card at random now names it ("Defend leaves", "Defend and Shield Charge leave your deck"), and that is the card that goes. The bonfire shows the card it will burn.
 - **Sanctified cards can be removed** like any other card, and a sanctified card shows what changed: every number its roll moved is green (up) or red (down), with how far ("8 +2"; hover for "6 → 8").
 - **Every run is on the campaign leaderboard,** from its first fight, and so are runs played before you had a username (or while offline): open the game and they are announced.

@@ -4,6 +4,7 @@
 
 import type { RngState } from '@sr/combat';
 import type { CardMark, HeroId } from '@sr/content/v2';
+import type { GamblerShrine } from './gambler';
 
 export type Difficulty = 'easy' | 'normal' | 'hard';
 
@@ -307,6 +308,11 @@ export interface NodeContext {
     trial?: TrialOffer;
   };
   shrineUsed?: boolean;
+  /**
+   * a Gambler's Shrine (Tier GAMBLER_TIER and up, DECISIONS #234): its altar, chisel and the blessings taken here (two different
+   * ones may be taken), with the Brass Reel beside it in `event` (until its prize is taken)
+   */
+  gambler?: GamblerShrine;
   /** prelude: the choice on offer (nodeId is empty) */
   prelude?: PreludeOffer;
   /** kit: the two starting decks on offer (nodeId is empty) */
@@ -323,6 +329,8 @@ export interface RunState {
   v: 2;
   /** the ghost Wardens this run has met (their server ids), so it never meets one twice */
   ghostsMet?: string[];
+  /** how many times the Gambler's Ledger has been signed this run (each signature gives more Max HP) */
+  ledger?: number;
   seed: string;
   character: HeroId;
   /** The run's difficulty setting (see DIFFICULTY): Normal unless chosen otherwise (see DIFFICULTY). */

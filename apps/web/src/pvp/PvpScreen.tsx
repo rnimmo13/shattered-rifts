@@ -401,7 +401,8 @@ export default function PvpScreen() {
                     The Arena is played with decks you have built in the campaign. Your deck is
                     entered here automatically after every fight, so just play a run. You keep it
                     whether you win or lose a match. If the run collapses you can no longer bring
-                    that deck to the Arena yourself, but it stays as a ghost other players may face.
+                    that deck to the Arena yourself, but once it has cleared Tier 3 it stays as a
+                    ghost other players may face.
                   </p>
                   <p>
                     Banked decks on another device?{' '}

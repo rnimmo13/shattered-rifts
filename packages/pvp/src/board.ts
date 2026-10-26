@@ -2,7 +2,9 @@
 // how far a run has got, and what a name on a board may be. Where the results are kept is not decided here (apps/server/src/board.ts).
 
 import { RIFTWALKERS, canonicalHero } from '@sr/content/v2';
-import { MAX_TIER, GHOST_BOSS_MIN_TIER } from '@sr/campaign';
+import { MAX_TIER, ghostCleared } from '@sr/campaign';
+
+export { ghostCleared };
 import { cleanName } from './deck';
 
 /** Whether this is the id of a Riftwalker in the game. */
@@ -345,7 +347,12 @@ export function pickGhost(
   now: number,
 ): GhostDeck | null {
   const fresh = decks
-    .filter((d) => d.id !== own && d.lastAt >= now - GHOST_FRESH_DAYS * 86_400_000)
+    .filter(
+      (d) =>
+        d.id !== own &&
+        ghostCleared(d.tier, d.stage) &&
+        d.lastAt >= now - GHOST_FRESH_DAYS * 86_400_000,
+    )
     .sort(
       (x, y) =>
         totalWins(y) - totalWins(x) ||
@@ -363,7 +370,7 @@ export function pickGhost(
 export const GHOST_BOSS_EXCLUDE_MAX = 25;
 
 /**
- * The ghost to stand in for a campaign Warden (DECISIONS #231): a deck that reached Tier GHOST_BOSS_MIN_TIER or further, never the
+ * The ghost to stand in for a campaign Warden (DECISIONS #231): a deck that cleared Tier GHOST_BOSS_MIN_TIER or further, never the
  * asker's own, never one this run has met already, and as close to the player's tier as there is. Among the closest (the decks
  * within one tier of the nearest), one of the better half by wins.
  */
@@ -380,7 +387,7 @@ export function pickGhostBoss(
   const skip = new Set(opts.exclude);
   const fresh = decks.filter(
     (d) =>
-      d.tier >= GHOST_BOSS_MIN_TIER &&
+      ghostCleared(d.tier, d.stage) &&
       d.owner !== opts.requester &&
       !skip.has(d.id) &&
       d.lastAt >= opts.now - GHOST_FRESH_DAYS * 86_400_000,

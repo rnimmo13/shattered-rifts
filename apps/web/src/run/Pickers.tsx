@@ -17,6 +17,12 @@ import {
   type RunState,
   type TrialOffer,
   type TrialPrize,
+  diceOdds,
+  diceable,
+  engravable,
+  ledgerGain,
+  type ShrineChoice,
+  type ShrineKind,
 } from '@sr/campaign';
 import { FightCard } from '../fight/FightCard';
 import { CardHover } from '../fight/CardHover';
@@ -209,60 +215,228 @@ export function DeckModal(props: {
 
 export function ShrineView(props: {
   run: RunState;
-  onRest: () => void;
-  onUpgrade: (card: string) => void;
-  onRemove: (card: string) => void;
+  onTake: (choice: ShrineChoice) => void;
+  /** walk away (any time), leaving (the rest of) the blessings */
+  onLeave: () => void;
+  /** a Gambler's Shrine's Brass Reel: spin, and take the prize it stopped on */
+  onRoll: () => void;
+  onPrize: (id: string, pick?: number, cards?: string[]) => void;
 }) {
-  const [picking, setPicking] = useState<'upgrade' | 'remove' | null>(null);
-  const canRest = props.run.hp < props.run.maxHp;
-  const ups = useMemo(() => new Set(upgradable(props.run.deck)), [props.run.deck]);
+  const run = props.run;
+  // what a deck picker is open for (a sacrifice remembers the altar card it is for)
+  const [picking, setPicking] = useState<
+    'upgrade' | 'remove' | 'dice' | 'engrave' | { take: string } | null
+  >(null);
+  const [altarOpen, setAltarOpen] = useState(false);
+  const [hover, setHover] = useState<CardDef | null>(null);
+  // a Gambler's Shrine (Tier VI and up): two different blessings of seven, and the Brass Reel beside them
+  const g = run.context?.gambler;
+  const taken = new Set<ShrineKind>(g?.taken ?? []);
+  const canRest = run.hp < run.maxHp;
+  const ups = useMemo(() => new Set(upgradable(run.deck)), [run.deck]);
   // (every card can be let go, a sanctified one too)
-  const removable = useMemo(() => new Set(removableCards(props.run.deck)), [props.run.deck]);
-  const canRemove = props.run.deck.length > V2_DECK_RULES.minSize && removable.size > 0;
-  const heal = Math.min(props.run.maxHp - props.run.hp, Math.ceil(props.run.maxHp * REST_HEAL));
+  const removable = useMemo(() => new Set(removableCards(run.deck)), [run.deck]);
+  const canRemove = run.deck.length > V2_DECK_RULES.minSize && removable.size > 0;
+  const dice = useMemo(() => new Set(diceable(run.deck)), [run.deck]);
+  const chisel = g?.chisel;
+  const cuts = useMemo(
+    () => new Set(chisel ? engravable(run.deck, chisel) : []),
+    [run.deck, chisel],
+  );
+  const heal = Math.min(run.maxHp - run.hp, Math.ceil(run.maxHp * REST_HEAL));
+  // the last blessing closes the shrine, so it waits while a prize is on the reel
+  const prizeWaiting = !!g && taken.size > 0 && run.context?.event?.trial?.state === 'won';
+  const tag = (k: ShrineKind, why: string | false) =>
+    taken.has(k) ? (
+      <i>Taken</i>
+    ) : prizeWaiting ? (
+      <i>Take the reel's prize first</i>
+    ) : why ? (
+      <i>{why}</i>
+    ) : null;
+  const pickerTitle =
+    picking === 'upgrade'
+      ? 'Upgrade a card'
+      : picking === 'remove'
+        ? 'Remove a card'
+        : picking === 'dice'
+          ? 'Roll the dice on a card'
+          : picking === 'engrave'
+            ? `Engrave ${chisel ? MARK_INFO[chisel].name : ''} into a card`
+            : picking
+              ? `Give up a card for ${COMBAT_DB.cards[picking.take]?.name ?? 'the altar card'}`
+              : '';
+  const pickerHint =
+    picking === 'upgrade'
+      ? 'Choose a card to make stronger.'
+      : picking === 'remove'
+        ? 'Choose a card to leave behind.'
+        : picking === 'dice'
+          ? `${diceOdds(run.tier)}% it rises 25%, otherwise it falls 25%. Only a card with numbers to roll, and no roll yet.`
+          : picking === 'engrave'
+            ? `The card ${chisel ? MARK_INFO[chisel].text : ''}. One keyword to a card.`
+            : 'The card you choose burns on the altar, and the altar card takes its place.';
+  const pickable =
+    picking === 'upgrade'
+      ? ups
+      : picking === 'remove'
+        ? removable
+        : picking === 'dice'
+          ? dice
+          : picking === 'engrave'
+            ? cuts
+            : undefined;
   return (
-    <section className="stage-panel" aria-label="Shrine">
-      <h2 className="stage-panel__title">A quiet shrine</h2>
-      <p className="stage-panel__hint">The rift is thin here. Take one blessing.</p>
+    <section className="stage-panel" aria-label={g ? "Gambler's Shrine" : 'Shrine'}>
+      <h2 className="stage-panel__title">{g ? "The Gambler's Shrine" : 'A quiet shrine'}</h2>
+      <p className="stage-panel__hint">
+        {g
+          ? `Deep in the Rift the shrines deal in wagers. Take ${taken.size === 0 ? 'two different blessings' : 'one more blessing'}, try the Brass Reel if you have shards to spend, or walk away.`
+          : 'The rift is thin here. Take one blessing, or walk away.'}
+      </p>
+      {g?.note && <p className="gshrine__note">{g.note}</p>}
+      {g && <h3 className="gshrine__head">Blessings</h3>}
       <div className="choices-row">
-        <button className="bigchoice" disabled={!canRest} onClick={props.onRest}>
+        <button
+          className="bigchoice"
+          disabled={prizeWaiting || !canRest || taken.has('rest')}
+          onClick={() => props.onTake({ kind: 'rest' })}
+        >
           <b>Rest</b>
           <span>
-            Heal {heal} HP ({props.run.hp}/{props.run.maxHp})
+            Heal {heal} HP ({run.hp}/{run.maxHp})
           </span>
-          {!canRest && <i>You are at full health</i>}
+          {tag('rest', !canRest && 'You are at full health')}
         </button>
         <button
           className="bigchoice"
-          disabled={ups.size === 0}
+          disabled={prizeWaiting || ups.size === 0 || taken.has('upgrade')}
           onClick={() => setPicking('upgrade')}
         >
           <b>Upgrade</b>
           <span>Upgrade a card in your deck</span>
-          {ups.size === 0 && <i>Nothing left to upgrade</i>}
+          {tag('upgrade', ups.size === 0 && 'Nothing left to upgrade')}
         </button>
-        <button className="bigchoice" disabled={!canRemove} onClick={() => setPicking('remove')}>
+        <button
+          className="bigchoice"
+          disabled={prizeWaiting || !canRemove || taken.has('remove')}
+          onClick={() => setPicking('remove')}
+        >
           <b>Let one go</b>
           <span>Remove a card from your deck</span>
-          {!canRemove && <i>{`A deck cannot go below ${V2_DECK_RULES.minSize} cards`}</i>}
+          {tag('remove', !canRemove && `A deck cannot go below ${V2_DECK_RULES.minSize} cards`)}
         </button>
       </div>
-      {!canRest && ups.size === 0 && !canRemove && (
-        <button className="btn" onClick={props.onRest}>
-          <span>Move on</span>
-        </button>
+      {g && (
+        <>
+          <h3 className="gshrine__head">Wagers</h3>
+          <div className="choices-row">
+            <button
+              className="bigchoice"
+              disabled={prizeWaiting || !g.altar.length || taken.has('sacrifice')}
+              onClick={() => setAltarOpen(true)}
+            >
+              <b>Sacrifice</b>
+              <span>
+                Give up a card of yours for one of {g.altar.length} Rift-crossed cards on the altar
+              </span>
+              {tag('sacrifice', !g.altar.length && 'The altar is bare')}
+            </button>
+            <button
+              className="bigchoice"
+              disabled={prizeWaiting || dice.size === 0 || taken.has('dice')}
+              onClick={() => setPicking('dice')}
+            >
+              <b>Loaded Dice</b>
+              <span>
+                Sanctify a card: {diceOdds(run.tier)}% it rises 25%, otherwise it falls 25%
+              </span>
+              {tag('dice', dice.size === 0 && 'No card left to roll')}
+            </button>
+            <button
+              className="bigchoice"
+              disabled={prizeWaiting || cuts.size === 0 || taken.has('engrave')}
+              onClick={() => setPicking('engrave')}
+            >
+              <b>The Chisel: {MARK_INFO[g.chisel].name}</b>
+              <span>Engrave a card: it {MARK_INFO[g.chisel].text}</span>
+              {tag('engrave', cuts.size === 0 && 'No card can take it')}
+            </button>
+            <button
+              className="bigchoice"
+              disabled={prizeWaiting || taken.has('ledger')}
+              onClick={() => props.onTake({ kind: 'ledger' })}
+            >
+              <b>The Ledger</b>
+              <span>
+                Sign for +{ledgerGain(run)} Max HP. Each signature this run gives 2 more than the
+                last{run.ledger ? ` (signed ${run.ledger}×)` : ''}
+              </span>
+              {tag('ledger', false)}
+            </button>
+          </div>
+        </>
+      )}
+      <button className="btn" onClick={props.onLeave}>
+        <span>{taken.size > 0 ? 'Leave the shrine' : 'Walk away'}</span>
+      </button>
+      {g && run.context?.event?.trial && (
+        <div className="gshrine__reel" role="group" aria-label="The Brass Reel">
+          <EventView
+            run={run}
+            onChoose={() => undefined}
+            onRoll={props.onRoll}
+            onPrize={props.onPrize}
+            onPickCard={() => undefined}
+            onPickDeck={() => undefined}
+          />
+        </div>
+      )}
+      {altarOpen && g && (
+        <div className="modal" role="dialog" aria-modal="true" aria-label="The altar">
+          <div className="modal__panel">
+            <h2 className="modal__title">The altar</h2>
+            <p className="modal__hint">
+              Choose the card you want. Then choose the card of yours that burns for it.
+            </p>
+            <div className="offers">
+              {g.altar.map((id) => (
+                <Pickable
+                  key={id}
+                  id={id}
+                  width={250}
+                  own={run.character}
+                  onHover={setHover}
+                  onClick={() => {
+                    setAltarOpen(false);
+                    setHover(null);
+                    setPicking({ take: id });
+                  }}
+                />
+              ))}
+            </div>
+            <button className="btn" onClick={() => setAltarOpen(false)}>
+              <span>Cancel</span>
+            </button>
+          </div>
+          <CardHover def={hover} />
+        </div>
       )}
       {picking && (
         <DeckModal
-          deck={props.run.deck}
-          title={picking === 'upgrade' ? 'Upgrade a card' : 'Remove a card'}
-          hint={
-            picking === 'upgrade'
-              ? 'Choose a card to make stronger.'
-              : 'Choose a card to leave behind.'
-          }
-          pickable={picking === 'upgrade' ? ups : removable}
-          onPick={(id) => (picking === 'upgrade' ? props.onUpgrade(id) : props.onRemove(id))}
+          deck={run.deck}
+          title={pickerTitle}
+          hint={pickerHint}
+          {...(pickable ? { pickable } : {})}
+          onPick={(id) => {
+            // (a Gambler's Shrine stays open for its second blessing: the picker closes either way)
+            setPicking(null);
+            if (picking === 'upgrade' || picking === 'remove')
+              props.onTake({ kind: picking, card: id });
+            else if (picking === 'dice' || picking === 'engrave')
+              props.onTake({ kind: picking, card: id });
+            else props.onTake({ kind: 'sacrifice', card: id, take: picking.take });
+          }}
           onClose={() => setPicking(null)}
         />
       )}

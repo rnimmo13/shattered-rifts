@@ -27,6 +27,7 @@ import {
   newRun,
   nextStage,
   takeShrine,
+  leaveShrine,
   upgradable,
   type Difficulty,
   type Luck,
@@ -140,6 +141,8 @@ function playRun(h: HeroId, d: Difficulty, i: number): Result {
           hpFrac < 0.75 || ups.length === 0
             ? takeShrine(run, { kind: 'rest' })
             : takeShrine(run, { kind: 'upgrade', card: ups[i % ups.length] as string });
+        // (a Gambler's Shrine stays open for a second blessing: the sim takes one and walks on)
+        if (run.phase === 'shrine') run = leaveShrine(run);
         break;
       }
       case 'merchant':

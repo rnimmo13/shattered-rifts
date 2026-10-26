@@ -6,6 +6,7 @@ import {
   believableStages,
   periodStart,
   pickGhost,
+  ghostCleared,
   pickGhostBoss,
   rankGhosts,
   rankVsGhosts,
@@ -207,7 +208,7 @@ describe('ghosts', () => {
     owner,
     ownerName: owner,
     hero: 'knight',
-    tier: 1,
+    tier: 4,
     stage: 3,
     wins,
     losses,
@@ -273,13 +274,13 @@ describe('ghosts', () => {
 
 describe('ghost Wardens (DECISIONS #231)', () => {
   const NOW = Date.UTC(2026, 9, 24);
-  const g = (id: string, tier: number, wins = 1, owner = id): GhostDeck => ({
+  const g = (id: string, tier: number, wins = 1, owner = id, stage = 3): GhostDeck => ({
     id,
     owner,
     ownerName: owner,
     hero: 'knight',
     tier,
-    stage: 1,
+    stage,
     wins,
     losses: 0,
     ghostWins: 0,
@@ -298,9 +299,22 @@ describe('ghost Wardens (DECISIONS #231)', () => {
     return [...seen].sort();
   };
 
-  it('only a deck that reached Tier 3 or further can be a Warden', () => {
+  it('only a deck that cleared Tier 3 can be a Warden (DECISIONS #235)', () => {
     expect(pickAll([g('t1', 1), g('t2', 2)], 5)).toEqual(['-']);
     expect(pickAll([g('t2', 2), g('t3', 3)], 1)).toEqual(['t3']);
+    // Tier 3 reached but not cleared is not enough
+    expect(pickAll([g('t3s2', 3, 1, 't3s2', 2)], 3)).toEqual(['-']);
+    expect(pickAll([g('t4s0', 4, 1, 't4s0', 0)], 3)).toEqual(['t4s0']);
+  });
+
+  it('an ordinary ghost must have cleared Tier 3 too', () => {
+    const seen = new Set<string>();
+    for (let roll = 0; roll < 1; roll += 0.05)
+      seen.add(pickGhost([g('low', 3, 9, 'low', 2), g('ok', 3, 1)], 'me', roll, NOW)?.id ?? '-');
+    expect([...seen]).toEqual(['ok']);
+    expect(ghostCleared(3, null)).toBe(false);
+    expect(ghostCleared(3, 3)).toBe(true);
+    expect(ghostCleared(4, 0)).toBe(true);
   });
 
   it("a deck near the player's tier is chosen over a far one", () => {

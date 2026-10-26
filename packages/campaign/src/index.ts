@@ -67,6 +67,7 @@ export {
   nextStage,
   realmOfStage,
   takeShrine,
+  leaveShrine,
   type ShrineChoice,
 } from './run';
 export { makePrelude, describeEffect, preludeCatalogue } from './preludes';
@@ -85,6 +86,7 @@ export {
   NODE_ODDS,
   EVENT_FIGHT_ODDS,
   GHOST_BOSS_MIN_TIER,
+  ghostCleared,
   GHOST_FROM_TIER,
   GHOST_WARDEN_CHANCE,
 } from './mapgen';
@@ -106,3 +108,14 @@ export {
   GIFT_LEGEND_CHANCE,
   POTION_WEIGHTS,
 } from './rewards';
+export {
+  GAMBLER_TIER,
+  GAMBLER_BLESSINGS,
+  diceOdds,
+  diceable,
+  engravable,
+  ledgerGain,
+  altarRarities,
+  type GamblerShrine,
+  type ShrineKind,
+} from './gambler';
