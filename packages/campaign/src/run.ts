@@ -627,6 +627,14 @@ export function duelPlan(run: RunState): FightPlan | null {
 }
 
 /** Report the result of the fight at the current node. `hpLeft` is your hero's HP at the end of a win. */
+/**
+ * The Resolve a lost fight costs: 1 for a plain fight or a Warden, 2 for an Elite (Robert, 2026-10-26: a Warden costs 1 "for now";
+ * DECISIONS #274). The run collapses when Resolve reaches 0.
+ */
+export function resolveCost(kind: MapNode['kind']): number {
+  return kind === 'elite' ? 2 : 1;
+}
+
 export function finishDuel(
   run: RunState,
   won: boolean,
@@ -639,7 +647,7 @@ export function finishDuel(
   const node = nodeOf(r, ctx.nodeId);
   if (!won) {
     r.stats.duelsLost++;
-    r.resolve = Math.max(0, r.resolve - (node.kind === 'duel' ? 1 : 2));
+    r.resolve = Math.max(0, r.resolve - resolveCost(node.kind));
     if (r.resolve === 0) {
       r.phase = 'collapsed';
       r.context = null;

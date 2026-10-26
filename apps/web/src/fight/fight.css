@@ -2043,3 +2043,28 @@
 .fight__gameclock.is-low {
   color: #ff8a9a;
 }
+
+/* what a fight puts at stake (a Warden: the Resolve a loss would cost), a line under the title for the whole fight */
+.fight__title {
+  position: relative;
+}
+.fight__stakes {
+  position: absolute;
+  top: calc(100% + 0.35rem);
+  left: 50%;
+  translate: -50% 0;
+  padding: 0.25rem 0.9rem;
+  border-radius: 999px;
+  font-family: var(--font-body, inherit);
+  font-size: 0.95rem;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  color: var(--c-ivory);
+  background: rgb(8 10 20 / 0.82);
+  border: 1px solid var(--c-gold-dark);
+}
+.fight__stakes--bad {
+  color: #ffd0d6;
+  border-color: #ff6b81;
+  box-shadow: 0 0 12px rgb(255 80 100 / 0.35);
+}

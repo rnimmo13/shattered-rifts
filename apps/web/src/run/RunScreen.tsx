@@ -19,6 +19,7 @@ import {
   buyUpgrade,
   upgradedCards,
   chooseCard,
+  resolveCost,
   chooseHeart,
   ghostToSettle,
   settleGhost,
@@ -405,11 +406,26 @@ export default function RunScreen() {
         </main>
       );
     const plan = duelPlan(run);
+    // a Warden fight always says what is at stake: the Resolve left, and what losing it would leave (DECISIONS #274)
+    const atNode = run.map.nodes.find((n) => n.id === run.context?.nodeId);
+    const stakes =
+      atNode?.kind === 'warden'
+        ? run.resolve - resolveCost('warden') <= 0
+          ? {
+              text: `Resolve ${run.resolve}: lose this Warden fight and the run collapses`,
+              tone: 'bad' as const,
+            }
+          : {
+              text: `Resolve ${run.resolve}: losing this Warden fight costs ${resolveCost('warden')}, leaving ${run.resolve - resolveCost('warden')}`,
+              tone: 'info' as const,
+            }
+        : undefined;
     if (plan) {
       /** the fight screen (a ghost Warden is fought over the PvP link, with the computer in the other seat) */
       const fightView = (link?: PvpLink) => (
         <FightView
           key={plan.seed}
+          {...(stakes ? { stakes } : {})}
           omens={omensAt(run.tier).map((o) => ({ name: o.name, text: o.text(run.tier) }))}
           {...(link
             ? { pvp: link }

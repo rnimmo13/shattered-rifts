@@ -266,6 +266,15 @@ const TAG_NAMES: Record<string, string> = {
   carving: 'Carving',
 };
 
+/** A scale under 1 as a small fraction: 0.5 is 1 per 2, 2/3 is 2 per 3 (the smallest whole numbers that give it). */
+function frac(m: number): { a: number; b: number } {
+  for (let b = 2; b <= 12; b++) {
+    const a = Math.round(m * b);
+    if (a >= 1 && Math.abs(m * b - a) < 0.01) return { a, b };
+  }
+  return { a: 1, b: Math.round(1 / m) };
+}
+
 /** A metric counted several at a time ("+1 per 2 consumed cards"), where the plural differs. */
 const PLURAL: Partial<Record<Metric, string>> = {
   hand: 'cards in hand',
@@ -382,7 +391,7 @@ function amountText(n: number, sc: Scale | undefined): { num: string; equal: boo
       ? `+${m} per ${w.per}`
       : sc.by === 'missingPct'
         ? `+1 per ${step}${w.per}`
-        : `+1 per ${Math.round(1 / m)} ${PLURAL[sc.by] ?? w.per}`;
+        : `+${frac(m).a} per ${frac(m).b} ${PLURAL[sc.by] ?? w.per}`;
   return { num: `${n} (${per}${on})`, equal: false };
 }
 

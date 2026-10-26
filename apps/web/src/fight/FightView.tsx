@@ -266,6 +266,8 @@ export function FightView(props: {
   topExtra?: React.ReactNode;
   /** controls before the Leave button (the campaign's View map) */
   topFirst?: React.ReactNode;
+  /** what is at stake, shown under the title for the whole fight (a Warden: the Resolve a loss would cost) */
+  stakes?: { text: string; tone: 'info' | 'bad' };
   /** where the fight takes place (the Rift arena by default) */
   venue?: VenueId;
   /** a PvP match: you sit in one seat, the opponent's moves arrive from the server */
@@ -1340,6 +1342,11 @@ export function FightView(props: {
             <div className="fight__title">
               <b>{props.title}</b>
               <span>Turn {Math.max(1, Math.ceil(view.turn / 2))}</span>
+              {props.stakes && (
+                <span className={`fight__stakes fight__stakes--${props.stakes.tone}`} role="note">
+                  {props.stakes.text}
+                </span>
+              )}
             </div>
             {pvp && !watch && <TurnClock link={pvp} mine={myTurn} foe={foeName} />}
             {watch && (

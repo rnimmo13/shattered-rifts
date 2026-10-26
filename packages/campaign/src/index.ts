@@ -69,6 +69,7 @@ export {
   duelPlan,
   enterNode,
   finishDuel,
+  resolveCost,
   leaveMerchant,
   newRun,
   nextStage,

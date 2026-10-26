@@ -12,6 +12,7 @@ import {
   pickDeckCard,
   enterNode,
   finishDuel,
+  resolveCost,
   newRun,
   parseRun,
   type RunState,
@@ -234,5 +235,24 @@ describe('potions in a run', () => {
     expect(parseRun(JSON.stringify({ ...r, potions: ['nope'] }))).toBeNull();
     expect(parseRun(JSON.stringify({ ...r, potions: Array(4).fill('fire-flask') }))).toBeNull();
     expect(parseRun(JSON.stringify({ ...r, potions: ['fire-flask'] }))).not.toBeNull();
+  });
+});
+
+describe('what a lost fight costs in Resolve', () => {
+  it('a Warden costs 1 (a run on 2 Resolve survives it), an Elite 2', () => {
+    expect(resolveCost('duel')).toBe(1);
+    expect(resolveCost('warden')).toBe(1);
+    expect(resolveCost('elite')).toBe(2);
+    const lost = finishDuel(
+      { ...inFight(fresh('knight', 'resolve-w'), 'warden'), resolve: 2 },
+      false,
+    );
+    expect(lost.resolve).toBe(1);
+    expect(lost.phase).toBe('duel');
+    const last = finishDuel(
+      { ...inFight(fresh('knight', 'resolve-w1'), 'warden'), resolve: 1 },
+      false,
+    );
+    expect(last.phase).toBe('collapsed');
   });
 });

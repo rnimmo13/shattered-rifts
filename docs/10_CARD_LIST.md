@@ -946,7 +946,7 @@ Starter: Strike, Strike, Strike, Defend, Defend, Defend, Hammer Swing, Hammer Sw
 | Rack and Ruin | 2 | attack | rare | Deal 10 damage to ALL enemies. Sharpen 4 (Old Twelve Gauge gains 4 damage). |
 | Trigger Discipline | 2 | power | rare | Whenever you play an Attack: Sharpen 1 (Old Twelve Gauge gains 1 damage). |
 | Fire in the Hole | 2 | attack | rare | Deal 6 (+1 per 2 consumed cards) damage to ALL enemies. |
-| Ammo Dump | 2 | skill | rare | Add 8 Buckshot Shells to your hand. Consume. |
+| Ammo Dump | 2 | skill | rare | Add 6 Buckshot Shells to your hand. Consume. |
 | Rolling Thunder | 2 | power | rare | At the start of your turn: Add 2 Buckshot Shells to your hand. |
 | Ironsights | 1 | skill | rare | Sharpen 5 (Old Twelve Gauge gains 5 damage). Add 2 Buckshot Shells to your hand. Consume. |
 | Gunmetal Soul | 2 | power | rare | At the end of your turn: Sharpen 1 (Old Twelve Gauge gains 1 damage). Gain 3 Barrier. |

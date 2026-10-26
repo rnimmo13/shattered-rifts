@@ -5,6 +5,8 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **Wardens are gentler on Resolve:** losing to a Warden costs 1 Resolve (an Elite still costs 2), and every Warden fight shows how much Resolve you have and what a loss would leave.
+- **Ammo Dump** adds 6 Buckshot Shells (was 8); upgraded, 6 upgraded shells. **Fire in the Hole+** scales faster (+2 per 3 consumed cards) instead of gaining flat damage.
 - **See the random cards before you choose:** an event option that trades, transforms, copies, gives, removes or upgrades a random card now shows the exact cards: what leaves your deck, and what you get.
 - **Hit numbers you can read:** damage (red), healing (green) and Barrier (blue) pop up on whoever takes them, bigger, and hold still while they fade instead of flying off; a hit that Barrier partly soaks shows both numbers.
 - **Cards show what they will really deal:** a damage number on a card in your hand counts your Might, stance, Faltering, Sharpen and Edge, green when higher than printed and red when lower; aim it at an enemy and its Exposed counts too; a card that could hit several enemies shows the range. A sharpened weapon shows its sharpened damage right on the card.
