@@ -54,6 +54,8 @@ export const DRUNKARD: CardDef[] = [
     exhaust: true,
     tags: ['shell'],
     source: 'token',
+    // (+2, not the usual +3: eight of them from an Ammo Dump+ would otherwise be 56 to every enemy for 2 Mana)
+    up: { effects: [dmg(6, 'allFoes')] },
   }),
 
   // --- Junk Traps (a few Traps; Vesper has the real arsenal) ---
@@ -281,11 +283,21 @@ export const DRUNKARD: CardDef[] = [
   p('uncommon', 'shellshocked', 'Shellshocked', 'power', 1, 'none', [
     on('exhaust', [dmg(2, 'allFoes')]),
   ]),
-  p('rare', 'fire-in-the-hole', 'Fire in the Hole', 'attack', 2, 'none', [
-    scaled(dmg(6, 'allFoes'), per('exhausted', 0.5)),
-  ]),
+  // (upgraded, it scales twice as fast: the scaling is the card, a flat +3 was not)
+  p(
+    'rare',
+    'fire-in-the-hole',
+    'Fire in the Hole',
+    'attack',
+    2,
+    'none',
+    [scaled(dmg(6, 'allFoes'), per('exhausted', 0.5))],
+    { up: { effects: [scaled(dmg(6, 'allFoes'), per('exhausted'))] } },
+  ),
+  // (upgraded, the same eight shells, each one upgraded: not a ninth)
   p('rare', 'ammo-dump', 'Ammo Dump', 'skill', 2, 'none', [addTo('buckshot-shell', 8)], {
     exhaust: true,
+    up: { effects: [addTo('buckshot-shell+', 8)] },
   }),
   p('rare', 'rolling-thunder', 'Rolling Thunder', 'power', 2, 'none', [
     on('turnStart', [addTo('buckshot-shell', 2)]),

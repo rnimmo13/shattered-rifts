@@ -248,7 +248,7 @@ Starter: Strike, Strike, Strike, Strike, Strike, Defend, Defend, Defend, Savage 
 | Guard Dog | 1 | skill | common | Summon Hound (10 HP). At the end of your turn it will: Deal 4 damage. Gain 5 Barrier. |
 | Bared Teeth | 1 | skill | common | Gain 3 (+3 per ally) Barrier. |
 | Lead the Charge | 1 | attack | common | Deal 5 (+3 per ally) damage. |
-| Marrow Suck | 1 | attack | common | Deal 7 damage. Heal 2 (+1 per 2 consumed card). |
+| Marrow Suck | 1 | attack | common | Deal 7 damage. Heal 2 (+1 per 2 consumed cards). |
 | Throw Scraps | 0 | skill | common | Consume 1 card. Gain 1 Mana. |
 | Crushing Blow | 2 | attack | uncommon | Deal 8 (+2 per Might) damage. |
 | Run Wild | 2 | attack | uncommon | Deal 6 damage 2 times. Apply 1 Might. |
@@ -472,7 +472,7 @@ Starter: Strike, Strike, Strike, Strike, Defend, Defend, Defend, Quick Jab, Quic
 | Empty the Sleeves | 1 | skill | uncommon | Discard your hand. Add Sleeve Knives to your hand equal to the cards discarded this turn. Gain 1 Edge: your Sleeve Knives deal 1 more damage this turn. |
 | Killing Flourish | 1 | attack | uncommon | Deal 4 damage for each Attack played this turn. |
 | Ambush Cut | 0 | attack | uncommon | Deal 11 damage. Consume. Opening hand. |
-| Spent Steel | 1 | attack | uncommon | Deal 5 (+1 per 5 card created this fight) damage. |
+| Spent Steel | 1 | attack | uncommon | Deal 5 (+1 per 5 cards created this fight) damage. |
 | Gather the Blades | 1 | skill | uncommon | Return 3 random Consumed cards to your hand (never one that returns cards). Consume. |
 | Juggler's Poise | 1 | power | uncommon | Whenever you play a Sleeve Knife: Gain 2 Barrier. |
 | Mindrot | 1 | skill | uncommon | Apply 4 Bleed. Apply 1 Exposed. |
@@ -525,7 +525,7 @@ Starter: Strike, Strike, Strike, Strike, Defend, Defend, Defend, Quick Jab, Quic
 | Cold Sweat | 0 | skill | rare | Gain 1 Mana. Draw 1 card. Add a Sleeve Knife to your hand. Consume. |
 | Tradecraft | 1 | power | rare | At the start of your turn: Draw 1 card. |
 | Careful Plan | 1 | skill | rare | Draw 1 card. Apply 1 Holdfast. |
-| Cold Killing | 1 | attack | rare | Deal 1 (+1 per 4 card drawn this fight) damage. |
+| Cold Killing | 1 | attack | rare | Deal 1 (+1 per 4 cards drawn this fight) damage. |
 | Coiled Strike | 3 | power | rare | Whenever you play a card: Deal 2 damage to a random enemy. |
 | Veil of Dust | 1 | skill | rare | Gain Barrier equal to your Barrier. Consume. |
 | Joker's Gambit | 0 | skill | rare | Unplayable. If discarded: Add 3 Sleeve Knives to your hand. |
@@ -945,7 +945,7 @@ Starter: Strike, Strike, Strike, Defend, Defend, Defend, Hammer Swing, Hammer Sw
 | Extended Mag | 2 | power | rare | At the start of your turn: Sharpen 2 (Old Twelve Gauge gains 2 damage). Add a Buckshot Shell to your hand. |
 | Rack and Ruin | 2 | attack | rare | Deal 10 damage to ALL enemies. Sharpen 4 (Old Twelve Gauge gains 4 damage). |
 | Trigger Discipline | 2 | power | rare | Whenever you play an Attack: Sharpen 1 (Old Twelve Gauge gains 1 damage). |
-| Fire in the Hole | 2 | attack | rare | Deal 6 (+1 per 2 consumed card) damage to ALL enemies. |
+| Fire in the Hole | 2 | attack | rare | Deal 6 (+1 per 2 consumed cards) damage to ALL enemies. |
 | Ammo Dump | 2 | skill | rare | Add 8 Buckshot Shells to your hand. Consume. |
 | Rolling Thunder | 2 | power | rare | At the start of your turn: Add 2 Buckshot Shells to your hand. |
 | Ironsights | 1 | skill | rare | Sharpen 5 (Old Twelve Gauge gains 5 damage). Add 2 Buckshot Shells to your hand. Consume. |
@@ -957,7 +957,7 @@ Starter: Strike, Strike, Strike, Defend, Defend, Defend, Hammer Swing, Hammer Sw
 | Molotov Cocktail | 1 | snare | rare | When the enemy summons: Deal 12 damage to ALL enemies. Apply 1 Brittle to ALL enemies. |
 | Glass Jaw | 1 | power | rare | Whenever you lose HP to your own cards: Deal 4 damage to ALL enemies. Gain 3 Barrier. |
 | Hot Brass | 1 | power | rare | Whenever a card is consumed: Gain 2 Barrier. Sharpen 1 (Old Twelve Gauge gains 1 damage). |
-| Spray and Pray | 2 | attack | rare | Deal 4 (+1 per 4 card created this fight) damage to ALL enemies. |
+| Spray and Pray | 2 | attack | rare | Deal 4 (+1 per 4 cards created this fight) damage to ALL enemies. |
 | Mean Drunk | 2 | power | rare | Whenever you lose HP to your own cards: Apply 1 Might until the end of your turn. Gain 2 Barrier. |
 | The Twelve-Gauge Opera | 3 | attack | legendary | Deal 25 damage to ALL enemies. Lose 8 HP. Consume. |
 | One More Round | 3 | power | legendary | At the start of your turn: Add 3 Buckshot Shells to your hand. Heal 3. |

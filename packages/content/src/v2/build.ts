@@ -367,9 +367,10 @@ export function plus(c: CardDef): CardDef {
 /** Cards plus their "+" versions, with the upgrade link filled in. */
 export function withUpgrades(cards: CardDef[]): CardDef[] {
   return cards.flatMap((c) => {
-    // basics upgrade too (Strike+ / Defend+); junk and tokens (made mid-fight by other cards) do not
+    // basics upgrade too (Strike+ / Defend+); junk and tokens (made mid-fight by other cards) do not, unless a token is given a
+    // hand-written upgrade (Buckshot Shell+, which an upgraded Ammo Dump hands out)
     if (c.unplayable && !c.onDiscard) return [c];
-    if (c.source === 'token') return [c];
+    if (c.source === 'token' && !CUSTOM_UP.has(c.id)) return [c];
     const up = plus(c);
     return [{ ...c, upgrade: up.id }, up];
   });

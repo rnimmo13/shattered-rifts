@@ -252,13 +252,39 @@ const STATUS_NAME: Record<string, string> = {
 };
 const sname = (s: string): string => STATUS_NAME[s] ?? cap(s);
 const plural = (word: string): string =>
-  /fe$/.test(word) ? word.replace(/fe$/, 'ves') : `${word}s`;
+  // ("Buckshot Shell+" several times over reads "upgraded Buckshot Shells")
+  word.endsWith('+')
+    ? `upgraded ${plural(word.slice(0, -1))}`
+    : /fe$/.test(word)
+      ? word.replace(/fe$/, 'ves')
+      : `${word}s`;
 const article = (word: string): string => (/^[aeiou]/i.test(word) ? 'an' : 'a');
 /** What players call the cards with a tag ("Whenever you play a Carving"). */
 const TAG_NAMES: Record<string, string> = {
   knife: 'Sleeve Knife',
   blade: 'Obsidian Blade',
   carving: 'Carving',
+};
+
+/** A metric counted several at a time ("+1 per 2 consumed cards"), where the plural differs. */
+const PLURAL: Partial<Record<Metric, string>> = {
+  hand: 'cards in hand',
+  drawPile: 'cards in your draw pile',
+  discardPile: 'cards in your discard pile',
+  exhausted: 'consumed cards',
+  allies: 'allies',
+  foes: 'enemies',
+  snares: 'Traps set',
+  runes: 'totems',
+  powers: 'Auras you have',
+  played: 'cards played this turn',
+  attacksPlayed: 'Attacks played this turn',
+  skillsPlayed: 'Skills played this turn',
+  drawn: 'cards drawn this fight',
+  created: 'cards created this fight',
+  discarded: 'cards discarded this turn',
+  charge: 'charges',
+  bonus: 'points of sharpening',
 };
 
 /** How a metric reads in a card: `per` ("+2 per Barrier") and `equal` ("equal to your Barrier"). */
@@ -356,7 +382,7 @@ function amountText(n: number, sc: Scale | undefined): { num: string; equal: boo
       ? `+${m} per ${w.per}`
       : sc.by === 'missingPct'
         ? `+1 per ${step}${w.per}`
-        : `+1 per ${Math.round(1 / m)} ${w.per}`;
+        : `+1 per ${Math.round(1 / m)} ${PLURAL[sc.by] ?? w.per}`;
   return { num: `${n} (${per}${on})`, equal: false };
 }
 
