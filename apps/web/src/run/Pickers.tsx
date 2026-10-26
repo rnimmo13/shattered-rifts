@@ -14,6 +14,7 @@ import {
   upgradable,
   upgradePrice,
   ROLL_COST,
+  spinCost,
   type EventOption,
   type RunState,
   type TrialOffer,
@@ -322,7 +323,7 @@ export function ShrineView(props: {
       <h2 className="stage-panel__title">{g ? "The Gambler's Shrine" : 'A quiet shrine'}</h2>
       <p className="stage-panel__hint">
         {g
-          ? `Deep in the Rift the shrines deal in wagers. Take ${taken.size === 0 ? 'two different blessings' : 'one more blessing'}, try the Brass Reel if you have shards to spend, or walk away.`
+          ? `Deep in the Rift the shrines deal in wagers. Take ${taken.size === 0 ? 'two different blessings' : 'one more blessing'}, take a free spin of the reel, or walk away.`
           : 'The rift is thin here. Take one blessing, or walk away.'}
       </p>
       {g?.note && <p className="gshrine__note">{g.note}</p>}
@@ -412,7 +413,7 @@ export function ShrineView(props: {
         <span>{taken.size > 0 ? 'Leave the shrine' : 'Walk away'}</span>
       </button>
       {g && run.context?.event?.trial && (
-        <div className="gshrine__reel" role="group" aria-label="The Brass Reel">
+        <div className="gshrine__reel" role="group" aria-label="Spin To Win">
           <EventView
             run={run}
             onChoose={() => undefined}
@@ -910,7 +911,8 @@ export function EventView(props: {
     setFrom(settledTarget.current);
     props.onRoll();
   };
-  const canRoll = props.run.shards >= ROLL_COST;
+  // (the first spin at a reel is free)
+  const canRoll = props.run.shards >= spinCost(trial);
   const reelPrizes =
     trial?.prizes.map((p) => ({
       icon: p.icon ?? 'shards',
@@ -963,8 +965,10 @@ export function EventView(props: {
             }}
           />
           <p className="reel__purse">
-            Every prize on the reel is shown below. A spin costs {ROLL_COST} shards; you have{' '}
-            {props.run.shards}.
+            Every prize on the reel is shown below.{' '}
+            {rolls === 0
+              ? `The first spin is free; after that a spin costs ${ROLL_COST} shards.`
+              : `A spin costs ${ROLL_COST} shards; you have ${props.run.shards}.`}
           </p>
         </>
       )}

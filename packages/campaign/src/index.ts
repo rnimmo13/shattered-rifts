@@ -86,6 +86,7 @@ export {
   ELITE_EVENT_CHANCE,
   REEL_PRIZES,
   ROLL_COST,
+  spinCost,
   REEL_KINDS,
   buildElite,
 } from './trials';

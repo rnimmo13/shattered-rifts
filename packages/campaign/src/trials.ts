@@ -36,6 +36,11 @@ export const REEL_KINDS: string[] = [
 export const REEL_PRIZES = REEL_KINDS.length;
 export const ROLL_COST = 25;
 
+/** What the next spin costs: the first spin at a reel is free (Robert, 2026-10-26; DECISIONS #283), every one after it ROLL_COST. */
+export function spinCost(trial: { rolls?: number } | undefined): number {
+  return (trial?.rolls ?? 0) === 0 ? 0 : ROLL_COST;
+}
+
 export interface EliteSpec {
   id: string;
   title: string;
@@ -45,27 +50,27 @@ export interface EliteSpec {
 export const ELITE_EVENTS: EliteSpec[] = [
   {
     id: 'brass-cascade',
-    title: 'The Brass Reel',
-    text: 'A brass machine with a window of spinning prizes stands against a ruined wall, a slot for coins beside it. A hand-lettered sign: "25 shards a spin. Take what it stops on, or pay to spin again. Everything on the reel is shown."',
+    title: 'Spin To Win',
+    text: 'A brass machine with a window of spinning prizes stands against a ruined wall, a slot for coins beside it. A hand-lettered sign: "First spin free, then 25 shards a spin. Take what it stops on, or pay to spin again. Everything on the reel is shown."',
   },
   {
     id: 'brass-pegboard',
-    title: 'The Brass Reel',
-    text: 'A brass reel machine older than the town around it, kept oiled by someone who is never there. Thirteen things behind glass, mostly cards, turning past a pointer. Pay, pull the lever, and see what the reel thinks you deserve.',
+    title: 'Spin To Win',
+    text: 'A brass reel machine older than the town around it, kept oiled by someone who is never there. Thirteen things behind glass, mostly cards, turning past a pointer. The first pull is free; pull the lever and see what the reel thinks you deserve.',
   },
   {
     id: 'copper-chute',
-    title: 'The Brass Reel',
+    title: 'Spin To Win',
     text: 'A brass machine with bottles, cards and trinkets turning in its window, and a tinker asleep on a stool. A note: "Mind the lever. Take what it stops on."',
   },
   {
     id: 'silver-sluice',
-    title: 'The Brass Reel',
+    title: 'Spin To Win',
     text: 'A water-run brass machine, its reel turned by a trickle of water, thirteen prizes riding it past a pointer. Something gleams on each. The water does not care what you want, but your hands might.',
   },
   {
     id: 'gilded-drop',
-    title: 'The Brass Reel',
+    title: 'Spin To Win',
     text: 'A brass machine in a hall with no roof. Thirteen prizes on velvet turn past a pointer, and a bowl of coins waits on a cushion. An attendant coughs politely: "Whenever you are ready."',
   },
 ];
@@ -73,8 +78,8 @@ export const ELITE_EVENTS: EliteSpec[] = [
 /** The Brass Reel that stands in a Gambler's Shrine (DECISIONS #234): the same reel as an elite event's, spun beside the blessings. */
 export const GAMBLER_REEL: EliteSpec = {
   id: 'gambler-shrine',
-  title: 'The Brass Reel',
-  text: 'In an alcove of the shrine a brass reel turns slowly, its prizes catching the candlelight. 25 shards a spin; take what it stops on, or pay to spin again. One prize to a visit.',
+  title: 'Spin To Win',
+  text: 'In an alcove of the shrine a brass reel turns slowly, its prizes catching the candlelight. The first spin is free, then 25 shards a spin; take what it stops on, or pay to spin again. One prize to a visit.',
 };
 
 const name = (id: string): string => COMBAT_DB.cards[id]?.name ?? 'a card';
@@ -257,7 +262,7 @@ export function buildElite(spec: EliteSpec, r: RunState): EventCtx {
     options: [
       {
         id: 'trial',
-        label: `Spin the reel for ${ROLL_COST} shards: take what it stops on, or pay to spin again`,
+        label: `Spin the reel, the first spin free: take what it stops on, or pay ${ROLL_COST} shards to spin again`,
       },
       { id: 'leave', label: 'Walk away' },
     ],
@@ -282,11 +287,12 @@ export function rollElite(r: RunState): EventCtx | null {
 export function spinReel(r: RunState, ev: EventCtx, fail: (msg: string) => never): number {
   const t = ev.trial;
   if (!t || (t.state !== 'open' && t.state !== 'won')) return fail('There is no reel to spin');
-  if (r.shards < ROLL_COST) return fail(`A spin costs ${ROLL_COST} shards`);
+  const cost = spinCost(t);
+  if (r.shards < cost) return fail(`A spin costs ${cost} shards`);
   const here = t.earned?.[0];
   const from = t.prizes.map((_, i) => i).filter((i) => i !== here);
   const got = from[nextInt(r.rng, from.length)] as number;
-  r.shards -= ROLL_COST;
+  r.shards -= cost;
   t.earned = [got];
   t.state = 'won';
   t.rolls = (t.rolls ?? 0) + 1;

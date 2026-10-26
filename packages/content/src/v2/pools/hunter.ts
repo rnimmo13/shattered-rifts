@@ -254,7 +254,9 @@ export const HUNTER: CardDef[] = [
     3,
     'foe',
     [scaled(dmg(10), per('might', 3)), heal(10)],
-    { exhaust: true },
+    // (upgraded, it costs 2: a big one-off card gains little from +3 damage, and +4 per Might is past the guard rail for a card that
+    // is consumed; DECISIONS #282)
+    { exhaust: true, up: { cost: 2 } },
   ),
   k('rare', 'blood-pact', 'Blood Pact', 'skill', 1, 'none', [lose(6), maxMana(1)], {
     exhaust: true,

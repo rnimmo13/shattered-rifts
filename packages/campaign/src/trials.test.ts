@@ -82,14 +82,14 @@ describe('elite events', () => {
     expect(left.shards).toBe(r.shards);
   });
 
-  it('a spin costs shards, and the reel stops on one prize, which can be taken once', () => {
+  it('the first spin is free, and the reel stops on one prize, which can be taken once', () => {
     for (let i = 0; i < ELITE_EVENTS.length; i++) {
       const r = eliteRun(i, { potions: [], shards: 200 });
       const t0 = r.context!.event!.trial!;
       expect(t0.state).toBe('open');
       expect(() => claimTrialPrize(r, 'p0')).toThrow(); // nothing has been spun
       const spun = rollTrial(r);
-      expect(spun.shards).toBe(200 - ROLL_COST);
+      expect(spun.shards).toBe(200); // (the first spin is free: DECISIONS #283)
       const t = spun.context!.event!.trial!;
       expect(t.state).toBe('won');
       expect(t.rolls).toBe(1);
@@ -104,7 +104,7 @@ describe('elite events', () => {
       const done = claimTrialPrize(spun, 'p' + lane);
       expect(done.phase).toBe('map');
       // the spin was paid for and the prize costs nothing more; an elite event never tosses the coin
-      expect(done.shards).toBeGreaterThanOrEqual(200 - ROLL_COST);
+      expect(done.shards).toBeGreaterThanOrEqual(200);
       expect(done.eventFlips).toBeUndefined();
       expect(done.eventResult?.length).toBeGreaterThan(5);
       if (prize.card) expect(done.deck).toContain(prize.card);
@@ -123,15 +123,16 @@ describe('elite events', () => {
       const now = run.context!.event!.trial!.earned![0]!;
       expect(now).not.toBe(last);
       last = now;
-      expect(run.shards).toBe(1000 - ROLL_COST * k);
+      expect(run.shards).toBe(1000 - ROLL_COST * (k - 1));
       expect(run.context!.event!.trial!.rolls).toBe(k);
     }
   });
 
   it('cannot spin without the shards, and a prize that was spun away cannot be taken', () => {
-    const poor = eliteRun(0, { shards: ROLL_COST - 1 });
-    expect(() => rollTrial(poor)).toThrow(/costs/);
+    // the first spin is free, so even an empty purse gets one; the second needs the shards
+    const poor = rollTrial(eliteRun(0, { shards: ROLL_COST - 1 }));
     expect(poor.shards).toBe(ROLL_COST - 1);
+    expect(() => rollTrial(poor)).toThrow(/costs/);
     const spun = rollTrial(eliteRun(0, { shards: 500, potions: [] }));
     const first = spun.context!.event!.trial!.earned![0]!;
     const again = rollTrial(spun);
@@ -140,7 +141,7 @@ describe('elite events', () => {
     // walking away with a prize on the table forfeits it (the shards are spent)
     const left = chooseEvent(again, 'leave');
     expect(left.phase).toBe('map');
-    expect(left.shards).toBe(500 - ROLL_COST * 2);
+    expect(left.shards).toBe(500 - ROLL_COST); // (two spins, the first free)
   });
 
   it('survives being saved mid-event: and a reload does not give a different spin', () => {

@@ -1045,7 +1045,7 @@ export function takeShrine(run: RunState, choice: ShrineChoice): RunState {
   // (the last blessing closes the shrine: a prize the reel stopped on is taken or spun away first, never lost by it)
   need(
     !g || g.taken.length < GAMBLER_BLESSINGS - 1 || run.context.event?.trial?.state !== 'won',
-    'Take the prize on the Brass Reel first (or walk away from it)',
+    'Take the prize on the reel first (or walk away from it)',
   );
   const r = clone(run);
   const gs = (r.context as NonNullable<RunState['context']>).gambler;

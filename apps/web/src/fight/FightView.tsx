@@ -27,7 +27,7 @@ import {
   type Side,
   type Winner,
 } from '@sr/combat';
-import { COMBAT_DB } from '@sr/content/v2';
+import { COMBAT_DB, RIFTWALKERS, type HeroId } from '@sr/content/v2';
 import { BattlefieldScene } from '../duel/scene/BattlefieldScene';
 import type { VenueId } from '../duel/scene/venue';
 import { loadEffectsMode, profileFor } from '../duel/effects';
@@ -1481,7 +1481,6 @@ export function FightView(props: {
               />
             ) : null;
           })}
-          {pvp && <FoeBadge side={view.sides[foeSide]} name={foeName} />}
           {pvp && foePlaced && view.sides[foeSide].runes.length > 0 && (
             <RuneArc
               db={db}
@@ -1700,8 +1699,12 @@ export function FightView(props: {
             )}
           </div>
           {/* your side of the screen, top left under the top bar: your Boons, then your Auras (clear of your HP and name) */}
-          {((mine.boons?.length ?? 0) > 0 || (me?.powers.length ?? 0) > 0) && (
+          {/* (your Riftwalker's innate trait is always shown first, so it can be read in the fight) */}
+          {(traitOf(setup[mySide]) ||
+            (mine.boons?.length ?? 0) > 0 ||
+            (me?.powers.length ?? 0) > 0) && (
             <div className="fight__side">
+              <TraitChip setup={setup[mySide]} />
               {(mine.boons?.length ?? 0) > 0 && (
                 <div className="fight__boons" aria-label="Boons">
                   {mine.boons?.map((id) => (
@@ -1713,8 +1716,12 @@ export function FightView(props: {
             </div>
           )}
           {/* the other side, top right: the Omens of this Rift Tier, then an opponent's Boons and Auras (the Arena, a ghost Warden) */}
-          {(omens.length > 0 || foeBoons.length > 0 || (them?.powers.length ?? 0) > 0) && (
+          {/* the other side, top right, stacked so nothing covers anything: an opponent's piles and trait first (the Arena, a ghost
+              Warden), then the Rift Tier's Omens, their Boons and their Auras (a long list of Auras scrolls) */}
+          {(pvp || omens.length > 0 || foeBoons.length > 0 || (them?.powers.length ?? 0) > 0) && (
             <div className="fight__side fight__side--foe">
+              {pvp && <FoeBadge side={view.sides[foeSide]} name={foeName} />}
+              {pvp && <TraitChip setup={setup[foeSide]} />}
               {omens.length > 0 && (
                 <div className="fight__omens" aria-label="Omens">
                   {omens.map((o) => (
@@ -2089,6 +2096,27 @@ function TurnClock(props: { link: PvpLink; mine: boolean; foe: string }) {
         </small>
       )}
     </div>
+  );
+}
+
+/** A side's Riftwalker trait (none for a side of enemies). */
+function traitOf(s: CombatSetup['a'] | CombatSetup['b']): { name: string; text: string } | null {
+  const hero = (s as { hero?: string }).hero;
+  return hero && Object.hasOwn(RIFTWALKERS, hero) ? RIFTWALKERS[hero as HeroId].trait : null;
+}
+
+/** A Riftwalker's innate trait as a chip in the side column: its name, and what it does on hover. */
+function TraitChip(props: { setup: CombatSetup['a'] | CombatSetup['b'] }) {
+  const trait = traitOf(props.setup);
+  if (!trait) return null;
+  return (
+    <span
+      className="traitchip"
+      tabIndex={0}
+      {...tipAttrs({ kicker: 'Innate', title: trait.name, tone: 'good', text: trait.text })}
+    >
+      <span aria-hidden>✧</span> {trait.name}
+    </span>
   );
 }
 

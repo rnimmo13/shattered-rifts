@@ -294,7 +294,7 @@ export function LearnScreen() {
               ],
               [
                 'Shrine',
-                "Rest to heal, upgrade a card, or remove one for good (or walk away). From Tier VI it is a Gambler's Shrine: take two different blessings from seven, including wagers like a Sacrifice for a Rift-crossed card, Loaded Dice, the Chisel and the Ledger, with the Brass Reel beside them.",
+                "Rest to heal, upgrade a card, or remove one for good (or walk away). From Tier VI it is a Gambler's Shrine: take two different blessings from seven, including wagers like a Sacrifice for a Rift-crossed card, Loaded Dice, the Chisel and the Ledger, with a free spin of the Spin To Win reel beside them.",
               ],
               ['Merchant', 'Spend shards on cards, potions and Boons. You can also sell potions.'],
               ['Warden', 'The stage boss. Beat it to heal a little and win back 1 Resolve.'],

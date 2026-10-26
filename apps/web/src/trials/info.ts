@@ -4,7 +4,7 @@ import type { LanePrize } from './prizes';
 
 export const TRIAL_INFO = {
   reel: {
-    name: 'Brass Reel',
+    name: 'Spin To Win',
     blurb: 'Pay to spin a reel of prizes. Take what it stops on, or pay to spin again.',
     rules: [
       'Thirteen prizes are on the reel, and you can see all of them. They stand in a different order every time.',

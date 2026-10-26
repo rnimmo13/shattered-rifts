@@ -164,8 +164,8 @@ export function LearnOdds() {
       <p>
         There are {events.count} events. They are rolled by weight, and about every{' '}
         {Math.round(100 / ELITE_EVENT_CHANCE)}th event ({ELITE_EVENT_CHANCE}%) is an{' '}
-        <b>Elite Event</b> instead (see the Brass Reel below). Of the ordinary events, the share
-        that offer each kind of thing in at least one of their choices:
+        <b>Elite Event</b> instead (see Spin To Win below). Of the ordinary events, the share that
+        offer each kind of thing in at least one of their choices:
       </p>
       <dl>
         {(Object.keys(EVENT_TAG_LABEL) as (keyof typeof EVENT_TAG_LABEL)[]).map((t) => (
@@ -180,12 +180,12 @@ export function LearnOdds() {
         shards, a Boon to give up), so the real share you meet can differ a little.
       </p>
 
-      <h3>Elite Event: the Brass Reel</h3>
+      <h3>Elite Event: Spin To Win</h3>
       <p>
-        A reel of {REEL_PRIZES} prizes, all in plain sight. A spin costs {ROLL_COST} shards: the
-        reel scrolls past a pointer and slows to a stop on one prize. You may take it, or pay{' '}
-        {ROLL_COST} more shards to let it go and spin again, or walk away (the shards you spent are
-        gone).
+        A reel of {REEL_PRIZES} prizes, all in plain sight. The first spin is free, and each spin
+        after it costs {ROLL_COST} shards: the reel scrolls past a pointer and slows to a stop on
+        one prize. You may take it, or pay {ROLL_COST} more shards to let it go and spin again, or
+        walk away (the shards you spent are gone).
       </p>
       <p>
         <b>Fair by design.</b> What the reel stops on is drawn by the rules before the reel moves,
