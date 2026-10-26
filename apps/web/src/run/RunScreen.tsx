@@ -328,6 +328,9 @@ export default function RunScreen() {
     const cur = runRef.current;
     if (cur && cur.stats.nodesCleared > 0 && cur.phase !== 'collapsed' && cur.phase !== 'banked')
       addToHistory(recordOf(cur, 'abandoned', Date.now(), lastFightRef.current ?? undefined));
+    // (giving up in the middle of a fight counts as falling: the run's deck leaves the Arena. Given up anywhere else, the deck as
+    // last saved stays: going deeper risks it, stopping keeps it. DECISIONS #270)
+    if (cur?.phase === 'duel') void loseSavedDecks(cur);
     if (runRef.current) {
       clearFightLog(duelKey(runRef.current));
       clearGhostLog(duelKey(runRef.current));
@@ -527,7 +530,11 @@ export default function RunScreen() {
             </div>
           )}
           {confirmAbandon && (
-            <AbandonDialog onConfirm={leaveRun} onCancel={() => setConfirmAbandon(false)} />
+            <AbandonDialog
+              midFight={run.phase === 'duel'}
+              onConfirm={leaveRun}
+              onCancel={() => setConfirmAbandon(false)}
+            />
           )}
           {/* the fight: a ghost Warden is played over the PvP link, any other fight as before */}
           {plan.ghost ? (
@@ -632,19 +639,27 @@ export default function RunScreen() {
         <DeckModal deck={run.deck} title="Your deck" onClose={() => setShowDeck(false)} />
       )}
       {confirmAbandon && (
-        <AbandonDialog onConfirm={leaveRun} onCancel={() => setConfirmAbandon(false)} />
+        <AbandonDialog
+          midFight={run.phase === 'duel'}
+          onConfirm={leaveRun}
+          onCancel={() => setConfirmAbandon(false)}
+        />
       )}
     </main>
   );
 }
 
 /** "Abandon this run?": the whole run is thrown away, so it asks first. */
-function AbandonDialog(props: { onConfirm: () => void; onCancel: () => void }) {
+function AbandonDialog(props: { onConfirm: () => void; onCancel: () => void; midFight: boolean }) {
   return (
     <div className="modal" role="alertdialog" aria-label="Abandon this run?">
       <div className="modal__panel">
         <h2 className="modal__title">Abandon this run?</h2>
-        <p className="modal__hint">Your deck and progress in this run will be lost.</p>
+        <p className="modal__hint">
+          {props.midFight
+            ? 'You are in the middle of a fight: giving up now counts as falling, so this run’s deck leaves the Arena too.'
+            : 'The run ends here. Its deck, as last saved, stays in the Arena.'}
+        </p>
         <div className="modal__row">
           <button className="btn" onClick={props.onConfirm}>
             <span>Abandon</span>

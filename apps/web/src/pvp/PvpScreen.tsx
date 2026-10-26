@@ -285,11 +285,10 @@ export default function PvpScreen() {
       <header className="setup__head">
         <h1 className="setup__title">Arena</h1>
         <p className="setup__lead">
-          Take a banked deck into a match against another player. Turns alternate, there are no
-          enemy intents, and each turn has a time limit. Every match against another player counts
-          toward your <b>Arena rank</b>, from Bronze to Diamond, for the month&apos;s season. Clear
-          a run and choose <b>Bank</b> to add decks to your Vault ({vault.length} of {VAULT_SLOTS}{' '}
-          used).
+          Take a saved deck into a match against another player. Turns alternate, there are no enemy
+          intents, and each turn has a time limit. Every match against another player counts toward
+          your <b>Arena rank</b>, from Bronze to Diamond, for the month&apos;s season. A run saves
+          its deck to your Vault as you play ({vault.length} of {VAULT_SLOTS} used).
         </p>
         {/* (someone the board does not know yet starts where everyone starts) */}
         <RankPanel rank={ranked} place={ranked?.place ?? null} />

@@ -18,7 +18,7 @@ support funds the full game on Steam.
 ## 🔵 Phase 2: The Full Run & PvP Beta
 - All five stages, including the Umbral Veil (the trap realm), and the final boss **Vorthax**
 - Unlock a fourth character: **Vesper Nightlace**
-- **Bank or Continue:** keep your deck for PvP, or risk it one Rift Tier deeper
+- **Stop or Continue:** your deck is saved for PvP as you go; push one Rift Tier deeper and a fall takes it out of the Arena
 - **Rift Tiers I–X**, Boons, events, Tempering, foil and alternate-art drops
 - **PvP:** casual matches, ghost duels against other players' decks, the **Weekend Rift Tournament** and a
   weekly leaderboard

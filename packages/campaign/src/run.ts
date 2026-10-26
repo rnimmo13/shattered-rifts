@@ -1460,7 +1460,7 @@ export function claimTrialPrize(
 // ---- end of a loop --------------------------------------------------------------------------------------
 /** Keep the deck for PvP. (The Vault itself lives with the player's profile, not the run.) */
 export function bank(run: RunState): RunState {
-  need(run.phase === 'loopCleared', 'You can only bank a cleared loop');
+  need(run.phase === 'loopCleared', 'You can only save the deck of a cleared loop');
   const r = clone(run);
   r.phase = 'banked';
   return r;

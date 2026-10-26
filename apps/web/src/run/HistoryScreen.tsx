@@ -16,7 +16,7 @@ const ReplayPlayer = lazy(() => import('../fight/ReplayPlayer'));
 
 const END_LABEL: Record<RunRecord['end'], string> = {
   collapsed: 'Fell',
-  banked: 'Banked',
+  banked: 'Saved',
   abandoned: 'Abandoned',
 };
 

@@ -320,9 +320,11 @@ export function LearnScreen() {
           </p>
           <h3>Rift Tiers</h3>
           <p>
-            Clear all three stages and you can <b>Bank</b> your deck to keep it for PvP, or{' '}
-            <b>Continue</b> to the next Rift Tier: you heal fully and keep your deck, but enemies
-            have more HP and hit harder. The climb ends at Tier 20.
+            Your deck is saved for the Arena as you go (after every stop you finish). Clear all
+            three stages and you can stop there, or <b>Continue</b> to the next Rift Tier: you heal
+            fully and keep your deck, but enemies have more HP and hit harder. Fall (or give up in
+            the middle of a fight) and the run&apos;s deck leaves the Arena; give up anywhere else
+            and it stays. The climb ends at Tier 20.
           </p>
           <div className="learn__tierbox">
             <p>

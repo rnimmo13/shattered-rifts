@@ -1,19 +1,12 @@
 // #/fight: pick a Riftwalker and an encounter, then fight it on the new Combat v2 stage.
 
 import { useState } from 'react';
-import {
-  COMBAT_DB,
-  ENCOUNTERS,
-  RIFTWALKERS,
-  encounter,
-  heroesByRealm,
-  type HeroId,
-} from '@sr/content/v2';
+import { HeroShowcase } from '../app/HeroShowcase';
+import { COMBAT_DB, ENCOUNTERS, RIFTWALKERS, encounter, type HeroId } from '@sr/content/v2';
 import type { CombatSetup } from '@sr/combat';
 import { DeckBuilder } from './DeckBuilder';
 import { countsOf, flatten } from './deckCatalog';
 import { getHero, rememberHero } from '../app/heroChoice';
-import { HeroIcon } from '../ui/HeroIcon';
 import { FightView } from './FightView';
 import { venueForRealm } from '../duel/scene/venue';
 import '../play/play.css';
@@ -87,35 +80,16 @@ export default function FightScreen() {
       </p>
       <section>
         <h2 className="setup__h">Riftwalker</h2>
-        {heroesByRealm().map((g) => (
-          <div key={g.realm} className="setup__realm">
-            <h3 className="setup__realmName">{g.name}</h3>
-            <div className="setup__chars">
-              {g.heroes.map((h) => (
-                <button
-                  key={h}
-                  className={`setup__char${hero === h ? ' is-on' : ''}`}
-                  onClick={() => {
-                    setHero(h);
-                    setCounts(countsOf(RIFTWALKERS[h].starter));
-                  }}
-                >
-                  <HeroIcon hero={h} size={40} />
-                  <span className="setup__charName">
-                    {RIFTWALKERS[h].hero.name}{' '}
-                    <small className="setup__charRole">{RIFTWALKERS[h].role}</small>
-                  </span>
-                  <span>
-                    {RIFTWALKERS[h].hero.maxHp} HP · {REALM_NAME[RIFTWALKERS[h].realm]}
-                  </span>
-                  <span>{RIFTWALKERS[h].blurb}</span>
-                </button>
-              ))}
-            </div>
-          </div>
-        ))}
+        <HeroShowcase
+          compact
+          picked={hero}
+          onPick={(h) => {
+            setHero(h);
+            setCounts(countsOf(RIFTWALKERS[h].starter));
+          }}
+        />
       </section>
-      <section>
+      <section className="setup__full">
         <h2 className="setup__h">Deck</h2>
         <p className="setup__lead">
           Build any deck from every card in the game: another Riftwalker’s cards, Neutral, Warden

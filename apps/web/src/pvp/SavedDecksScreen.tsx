@@ -61,8 +61,8 @@ export default function SavedDecksScreen() {
           {!checking && (
             <>
               <p>
-                Clear a Rift Tier and save your deck to keep it here. Banked decks are what you play
-                with in the Arena.
+                Play a run and its deck is saved here as you go. Saved decks are what you play with
+                in the Arena.
               </p>
               <a className="btn btn--primary" href="#/run">
                 <span>Start a New Run</span>

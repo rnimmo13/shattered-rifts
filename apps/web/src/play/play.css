@@ -1935,3 +1935,7 @@
 .grim__book {
   overflow: hidden;
 }
+/* a section holding a book of cards (the Sandbox deck): as wide as the window allows, so the book can show more cards a page */
+.setup--wide > section.setup__full {
+  max-width: 120rem;
+}

@@ -534,3 +534,8 @@
   box-sizing: border-box;
   font-size: 1.05rem;
 }
+
+/* the same showcase on a page with more below it (the Sandbox): a smaller figure */
+.home__stage--compact .home__show {
+  height: min(36vh, 22rem);
+}

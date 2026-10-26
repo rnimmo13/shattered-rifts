@@ -1,43 +1,23 @@
 // The home page: the Riftwalker you have picked on show, the three ways to play (New Run, Arena, Sandbox), and sign-in.
 
-import { useEffect, useMemo, useRef, useState, type CSSProperties } from 'react';
-import { REALMS, RIFTWALKERS, heroesByRealm, type HeroId } from '@sr/content/v2';
+import { useEffect, useState, type CSSProperties } from 'react';
+import { RIFTWALKERS, type HeroId } from '@sr/content/v2';
 import { BUILD } from '../build';
-import { heroFigure } from '../fight/art';
 import { RUN_SLOTS, clearSavedRun, listRuns, runCount, setActiveRun } from '../run/saves';
+import { loseSavedDecks } from '../run/deckSave';
 import { whoAmI, type Me } from '../pvp/vaultSync';
 import { progressLabel } from '../pvp/deckLayout';
 import { stagesCleared } from '../pvp/vault';
-import { HeroIcon } from '../ui/HeroIcon';
 import { StoreIcon } from './StoreIcon';
 import { HomeLinks } from './HomeLinks';
 import { PlayerChip } from './PlayerChip';
 import { HERO_COLOR } from '../art/emblems';
-import { tipAttrs } from '../ui/tip';
+import { HeroShowcase } from './HeroShowcase';
 import { getHero, rememberHero } from './heroChoice';
 import { hasUnread } from './patchNotes';
 import './home.css';
 
-/** A Riftwalker standing on show, drawn from their full-length figure. */
-function HeroStage(props: { hero: HeroId }) {
-  const ref = useRef<HTMLCanvasElement>(null);
-  useEffect(() => {
-    const c = ref.current;
-    const g = c?.getContext('2d');
-    if (!c || !g) return;
-    const src = heroFigure(props.hero);
-    const h = 560;
-    const w = Math.max(1, Math.round((src.width / src.height) * h));
-    c.width = w;
-    c.height = h;
-    g.clearRect(0, 0, w, h);
-    g.drawImage(src, 0, 0, w, h);
-  }, [props.hero]);
-  return <canvas ref={ref} className="home__figure" aria-hidden />;
-}
-
 export function TitleScreen() {
-  const groups = heroesByRealm();
   const [picked, setPicked] = useState(getHero);
   // (patch notes the player has not opened yet: the link says so)
   const [unread] = useState(hasUnread);
@@ -48,7 +28,6 @@ export function TitleScreen() {
   const full = runs.length >= RUN_SLOTS || runCount() >= RUN_SLOTS;
   const hero = RIFTWALKERS[picked];
   const color = HERO_COLOR[picked] ?? '#d4a84b';
-  const realm = useMemo(() => REALMS.find((r) => r.id === hero.realm)?.name ?? '', [hero.realm]);
 
   // another window may have started, finished or abandoned a run
   useEffect(() => {
@@ -110,17 +89,21 @@ export function TitleScreen() {
                 <small>
                   {RIFTWALKERS[r.run.character].hero.name} ·{' '}
                   {r.run.phase === 'banked'
-                    ? `Tier ${r.run.tier} · Banked`
+                    ? `Tier ${r.run.tier} · Saved`
                     : progressLabel(r.run.tier, stagesCleared(r.run))}
                 </small>
               </button>
               {dropping === r.id ? (
                 <span className="home__confirm" role="alertdialog" aria-label="Abandon this run?">
-                  Abandon it for good?
+                  {r.run.phase === 'duel'
+                    ? 'Abandon it mid-fight? That counts as falling: its deck leaves the Arena.'
+                    : 'Abandon it for good? Its deck stays in the Arena.'}
                   <button
                     type="button"
                     className="btn btn--small"
                     onClick={() => {
+                      // (given up in the middle of a fight it counts as falling, DECISIONS #270)
+                      if (r.run.phase === 'duel') void loseSavedDecks(r.run);
                       clearSavedRun(r.id);
                       setRuns(listRuns());
                       setDropping(null);
@@ -164,7 +147,7 @@ export function TitleScreen() {
           </button>
           <a className="home__play" href="#/arena">
             <b>Arena</b>
-            <small>Duel another player with a deck you banked.</small>
+            <small>Duel another player with a deck you saved.</small>
           </a>
           <a className="home__play" href="#/fight">
             <b>Sandbox</b>
@@ -179,48 +162,7 @@ export function TitleScreen() {
           <HomeLinks unreadNotes={unread} />
         </section>
 
-        <section className="home__stage" aria-label="Riftwalkers">
-          <div className="home__show">
-            <HeroStage hero={picked} />
-            <div className="home__floor" aria-hidden />
-          </div>
-          <div className="home__info">
-            <h2 className="home__hero">{hero.hero.name}</h2>
-            <p className="home__role">
-              {hero.role} · {realm}
-            </p>
-            <p className="home__paths">
-              {hero.buildPaths.map((l) => (
-                <span key={l}>{l.split(':')[0]}</span>
-              ))}
-            </p>
-            <p className="home__trait">
-              <b>{hero.trait.name}.</b> {hero.trait.text}
-            </p>
-          </div>
-          <ul className="home__roster" aria-label="Choose a Riftwalker">
-            {groups
-              .flatMap((g) => g.heroes)
-              .map((h) => (
-                <li key={h}>
-                  <button
-                    type="button"
-                    className={`home__pick${picked === h ? ' is-picked' : ''}`}
-                    aria-pressed={picked === h}
-                    aria-label={RIFTWALKERS[h].hero.name}
-                    {...tipAttrs({
-                      kicker: `Innate · ${RIFTWALKERS[h].role}`,
-                      title: RIFTWALKERS[h].hero.name,
-                      text: RIFTWALKERS[h].trait.text,
-                    })}
-                    onClick={() => pick(h)}
-                  >
-                    <HeroIcon hero={h} size={52} />
-                  </button>
-                </li>
-              ))}
-          </ul>
-        </section>
+        <HeroShowcase picked={picked} onPick={pick} />
       </div>
 
       <p className="home__footer">

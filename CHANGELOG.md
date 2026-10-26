@@ -5,6 +5,10 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **Card rewards retuned:** each card after a fight is 55% common, 35% uncommon, 9% rare and 1% Legendary; after an Elite 35 / 42 / 20 / 3. How to play shows the one table (card luck is gone).
+- **Your Arena deck is at stake:** a run saves its deck for the Arena as you go. Fall, or give up in the middle of a fight, and that deck leaves the Arena; give up anywhere else and it stays. Push deeper for a stronger deck, or stop and keep it.
+- **"Save", not "bank":** decks are saved for the Arena, everywhere it is mentioned.
+- **Sandbox:** the Riftwalker picker is the same one as on the home page (figure, build paths, trait and the row of icons), and the Grimoire uses the width of the window, so it shows a full two-page spread.
 - **Shorter Arena games:** each game of a match is called at 15 minutes (was 20) for whoever has the larger share of their HP left.
 - **Never forced to take a card:** when an event lays out three cards (the smuggler's crate, the cards from other worlds), you can take none of them and keep your deck as it is. Event options are also easier to read (bigger text).
 - **Allies show their next move:** every ally and minion wears a small badge with what it does at the end of its side's turn and how much damage it will deal to the front enemy (Might, Weak and Exposed counted), or "Stunned" when it will skip.

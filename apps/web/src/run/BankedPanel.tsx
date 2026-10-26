@@ -56,8 +56,8 @@ export function BankedPanel(props: { run: RunState; onExport: () => void; onLeav
   };
 
   return (
-    <section className="stage-panel" aria-label="Deck banked">
-      <h2 className="stage-panel__title">{state.saved ? 'Deck banked' : 'Your Vault is full'}</h2>
+    <section className="stage-panel" aria-label="Deck saved">
+      <h2 className="stage-panel__title">{state.saved ? 'Deck saved' : 'Your Vault is full'}</h2>
       {state.saved ? (
         <p className="stage-panel__hint">
           This {run.deck.length}-card deck is in your Vault ({state.list.length} of {VAULT_SLOTS}{' '}
@@ -71,7 +71,7 @@ export function BankedPanel(props: { run: RunState; onExport: () => void; onLeav
         <>
           <p className="stage-panel__hint">
             The Vault holds {VAULT_SLOTS} decks. Give one up to keep this {run.deck.length}-card
-            deck, or leave without banking it.
+            deck, or leave without saving it.
           </p>
           <ul className="vaultlist">
             {state.list.map((d) => (
