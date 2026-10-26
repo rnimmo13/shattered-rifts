@@ -14,6 +14,7 @@ import {
   tierMight,
   clone,
   type Action,
+  type CombatDb,
   type CombatEvent,
   type CombatSetup,
   type CombatState,
@@ -390,6 +391,51 @@ describe('allies', () => {
     expect(types(e.events)).toContain('died');
     expect(e.state.sides.a.units.some((u) => u.id === 'ally1')).toBe(false);
     expect(hero(e.state).hp).toBeLessThan(60); // the second stab found a new target: the hero
+  });
+
+  it('an 8x3 attack that kills a minion in two hits spends the third on the hero, for its full damage', () => {
+    // (the sample cultist, given an 8x3 move for this test)
+    const cultist = db.units.cultist!;
+    if (cultist.brain.kind !== 'enemy') throw new Error('cultist is an enemy');
+    const tdb: CombatDb = {
+      ...db,
+      units: {
+        ...db.units,
+        cultist: {
+          ...cultist,
+          brain: {
+            ...cultist.brain,
+            moves: {
+              ...cultist.brain.moves,
+              flurry: {
+                id: 'flurry',
+                name: 'Flurry',
+                effects: [{ op: 'damage', amount: 8, hits: 3, to: 'target' }],
+              },
+            },
+          },
+        },
+      },
+    };
+    const c = clone(start(['cultist']));
+    c.sides.a.units.unshift({
+      ...clone(hero(c)),
+      id: 'ally1',
+      def: 'drone',
+      name: 'Drone',
+      kind: 'ally' as const,
+      hp: 12,
+      maxHp: 12,
+      barrier: 0,
+      statuses: {},
+    });
+    hero(c).barrier = 0;
+    const before = hero(c).hp;
+    foe(c).intent = { move: 'flurry', target: 'ally1' };
+    const after = applyAction(tdb, c, { type: 'endTurn' }).state;
+    // two hits (8 + 8) kill the 12 HP drone; the third finds the hero and lands in full
+    expect(after.sides.a.units.some((u) => u.id === 'ally1')).toBe(false);
+    expect(hero(after).hp).toBe(before - 8);
   });
 });
 

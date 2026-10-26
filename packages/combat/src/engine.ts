@@ -492,9 +492,12 @@ function execOp(r: Run, a: Act, op: Op): void {
         : 0;
       for (let i = 0; i < hits; i++) {
         if (r.s.winner) return;
-        // a target that died mid-attack: the remaining hits find a new one
-        if (op.to === 'target' && (!a.target || a.target.hp <= 0))
-          a.target = pickFoe(r, a.actor, 'hero');
+        // a target that died mid-attack: the remaining hits find a new one (an enemy by its own rule for choosing, so a
+        // random-picking foe picks again; anyone else the usual way: a minion still standing, then the hero)
+        if (op.to === 'target' && (!a.target || a.target.hp <= 0)) {
+          const b = r.db.units[a.actor.def]?.brain;
+          a.target = pickFoe(r, a.actor, b?.kind === 'enemy' ? (b.foe ?? 'hero') : 'hero');
+        }
         const ts = resolve(r, a, op.to);
         // Point Blank: a shot that finds only one enemy hits it harder
         const lone = op.lonePct && ts.length === 1 ? 1 + op.lonePct / 100 : 1;
