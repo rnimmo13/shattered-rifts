@@ -6,8 +6,8 @@
 
 import { parseRun, serializeRun, type RunState } from '@sr/campaign';
 
-/** How many unfinished runs a player can keep. */
-export const RUN_SLOTS = 3;
+/** How many unfinished runs a player can keep (Robert, 2026-10-26: 10 "for now"; was 3). */
+export const RUN_SLOTS = 10;
 
 /** The single save the game kept before runs could be parked; moved into a slot on first use. */
 const LEGACY_KEY = 'sr.run.v2';

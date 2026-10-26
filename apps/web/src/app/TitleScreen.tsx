@@ -91,110 +91,126 @@ export function TitleScreen() {
             Walk the broken worlds. Build a deck. Read the rift. Spring the trap.
           </p>
 
-          {broken.map((b) => (
-            <div key={b.id} className="home__runrow home__runrow--broken">
-              <span className="home__broken">
-                <b>A saved run could not be loaded</b>
-                <small>
-                  It still takes one of your {RUN_SLOTS} run slots. Copy it to send with a bug
-                  report, or remove it to free the slot.
-                </small>
-              </span>
-              <span className="home__brokenActions">
-                <button
-                  type="button"
-                  className="btn btn--small btn--ghost"
-                  onClick={() => {
-                    void navigator.clipboard
-                      ?.writeText(b.text)
-                      .then(() => setCopied(b.id))
-                      .catch(() => setCopied(null));
-                  }}
-                >
-                  <span>{copied === b.id ? 'Copied' : 'Copy save'}</span>
-                </button>
-                {dropping === b.id ? (
-                  <button
-                    type="button"
-                    className="btn btn--small"
-                    onClick={() => {
-                      clearSavedRun(b.id);
-                      refreshRuns();
-                      setDropping(null);
-                    }}
-                  >
-                    <span>Remove for good</span>
-                  </button>
-                ) : (
-                  <button
-                    type="button"
-                    className="btn btn--small btn--ghost"
-                    onClick={() => setDropping(b.id)}
-                  >
-                    <span>Remove</span>
-                  </button>
-                )}
-              </span>
-            </div>
-          ))}
-          {runs.map((r) => (
-            <div key={r.id} className="home__runrow">
-              <button
-                type="button"
-                className="home__play home__play--continue"
-                aria-label={`Continue the ${RIFTWALKERS[r.run.character].hero.name} run, ${progressLabel(r.run.tier, stagesCleared(r.run))}`}
-                onClick={() => {
-                  setActiveRun(r.id);
-                  window.location.hash = '#/run';
-                }}
-              >
-                <b>Continue run</b>
-                <small>
-                  {RIFTWALKERS[r.run.character].hero.name} ·{' '}
-                  {r.run.phase === 'banked'
-                    ? `Tier ${r.run.tier} · Saved`
-                    : progressLabel(r.run.tier, stagesCleared(r.run))}
-                </small>
-              </button>
-              {dropping === r.id ? (
-                <span className="home__confirm" role="alertdialog" aria-label="Abandon this run?">
-                  {r.run.phase === 'duel'
-                    ? 'Abandon it mid-fight? That counts as falling: its deck leaves the Arena.'
-                    : 'Abandon it for good? Its saved deck stays in the Arena.'}
-                  <button
-                    type="button"
-                    className="btn btn--small"
-                    onClick={() => {
-                      // (given up in the middle of a fight it counts as falling, DECISIONS #270)
-                      if (r.run.phase === 'duel') void loseSavedDecks(r.run);
-                      clearSavedRun(r.id);
-                      refreshRuns();
-                      setDropping(null);
-                    }}
-                  >
-                    <span>Abandon</span>
-                  </button>
-                  <button
-                    type="button"
-                    className="btn btn--small"
-                    autoFocus
-                    onClick={() => setDropping(null)}
-                  >
-                    <span>Keep</span>
-                  </button>
+          {/* (a few runs are big buttons; more than two become a compact list that scrolls, with how many of the slots are used) */}
+          {runs.length + broken.length > 0 && (
+            <div
+              className={`home__runs${runs.length + broken.length > 2 ? ' home__runs--many' : ''}`}
+            >
+              {runs.length + broken.length > 2 && (
+                <span className="home__runsHead">
+                  Runs in progress · {runs.length + broken.length} of {RUN_SLOTS}
                 </span>
-              ) : (
-                <button
-                  type="button"
-                  className="btn btn--small btn--ghost"
-                  aria-label={`Abandon the ${RIFTWALKERS[r.run.character].hero.name} run at Rift Tier ${r.run.tier}`}
-                  onClick={() => setDropping(r.id)}
-                >
-                  <span>Abandon</span>
-                </button>
               )}
+              {broken.map((b) => (
+                <div key={b.id} className="home__runrow home__runrow--broken">
+                  <span className="home__broken">
+                    <b>A saved run could not be loaded</b>
+                    <small>
+                      It still takes one of your {RUN_SLOTS} run slots. Copy it to send with a bug
+                      report, or remove it to free the slot.
+                    </small>
+                  </span>
+                  <span className="home__brokenActions">
+                    <button
+                      type="button"
+                      className="btn btn--small btn--ghost"
+                      onClick={() => {
+                        void navigator.clipboard
+                          ?.writeText(b.text)
+                          .then(() => setCopied(b.id))
+                          .catch(() => setCopied(null));
+                      }}
+                    >
+                      <span>{copied === b.id ? 'Copied' : 'Copy save'}</span>
+                    </button>
+                    {dropping === b.id ? (
+                      <button
+                        type="button"
+                        className="btn btn--small"
+                        onClick={() => {
+                          clearSavedRun(b.id);
+                          refreshRuns();
+                          setDropping(null);
+                        }}
+                      >
+                        <span>Remove for good</span>
+                      </button>
+                    ) : (
+                      <button
+                        type="button"
+                        className="btn btn--small btn--ghost"
+                        onClick={() => setDropping(b.id)}
+                      >
+                        <span>Remove</span>
+                      </button>
+                    )}
+                  </span>
+                </div>
+              ))}
+              {runs.map((r) => (
+                <div key={r.id} className="home__runrow">
+                  <button
+                    type="button"
+                    className="home__play home__play--continue"
+                    aria-label={`Continue the ${RIFTWALKERS[r.run.character].hero.name} run, ${progressLabel(r.run.tier, stagesCleared(r.run))}`}
+                    onClick={() => {
+                      setActiveRun(r.id);
+                      window.location.hash = '#/run';
+                    }}
+                  >
+                    <b>Continue run</b>
+                    <small>
+                      {RIFTWALKERS[r.run.character].hero.name} ·{' '}
+                      {r.run.phase === 'banked'
+                        ? `Tier ${r.run.tier} · Saved`
+                        : progressLabel(r.run.tier, stagesCleared(r.run))}
+                    </small>
+                  </button>
+                  {dropping === r.id ? (
+                    <span
+                      className="home__confirm"
+                      role="alertdialog"
+                      aria-label="Abandon this run?"
+                    >
+                      {r.run.phase === 'duel'
+                        ? 'Abandon it mid-fight? That counts as falling: its deck leaves the Arena.'
+                        : 'Abandon it for good? Its saved deck stays in the Arena.'}
+                      <button
+                        type="button"
+                        className="btn btn--small"
+                        onClick={() => {
+                          // (given up in the middle of a fight it counts as falling, DECISIONS #270)
+                          if (r.run.phase === 'duel') void loseSavedDecks(r.run);
+                          clearSavedRun(r.id);
+                          refreshRuns();
+                          setDropping(null);
+                        }}
+                      >
+                        <span>Abandon</span>
+                      </button>
+                      <button
+                        type="button"
+                        className="btn btn--small"
+                        autoFocus
+                        onClick={() => setDropping(null)}
+                      >
+                        <span>Keep</span>
+                      </button>
+                    </span>
+                  ) : (
+                    <button
+                      type="button"
+                      className="btn btn--small btn--ghost"
+                      aria-label={`Abandon the ${RIFTWALKERS[r.run.character].hero.name} run at Rift Tier ${r.run.tier}`}
+                      onClick={() => setDropping(r.id)}
+                    >
+                      <span>Abandon</span>
+                    </button>
+                  )}
+                </div>
+              ))}
             </div>
-          ))}
+          )}
           <button
             type="button"
             className={`home__play${runs.length > 0 ? ' home__play--quiet' : ' home__play--primary'}`}
