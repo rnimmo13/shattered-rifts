@@ -824,7 +824,7 @@
 .eventopts {
   display: grid;
   gap: 0.7rem;
-  width: min(34rem, 100%);
+  width: min(38rem, 100%);
 }
 .eventopt {
   display: grid;
@@ -849,11 +849,11 @@
 }
 .eventopt__name {
   font-family: var(--font-display);
-  font-size: 1.05rem;
+  font-size: 1.22rem;
   color: var(--c-gold-light);
 }
 .eventopt__text {
-  font-size: 0.9rem;
+  font-size: 1.05rem;
   line-height: 1.4;
   color: var(--c-text-dim);
 }
