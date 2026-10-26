@@ -18,6 +18,8 @@ const START = 4;
 const STOP = 52;
 /** how long the spin takes (ms) */
 const SPIN_MS = 5200;
+/** the spin with Reduce motion on: short and gentle, but still a spin */
+const REDUCED_SPIN_MS = 1400;
 
 /** a small seeded generator for the look of a strip (nothing here decides a prize) */
 function mulberry(seed: number): () => number {
@@ -114,19 +116,28 @@ export function Reel(props: {
     const jitter = (mulberry(spinKey * 31 + 5)() - 0.5) * TILE_W * 0.6;
     void s.offsetWidth; // let the start position take before the move
     play('click');
-    if (reduced) {
-      s.style.transform = `translateX(${restAt(STOP, jitter)}px)`;
-      const t = window.setTimeout(finish, 350);
-      return () => window.clearTimeout(t);
-    }
-    s.style.transition = `transform ${SPIN_MS}ms cubic-bezier(0.08, 0.72, 0.12, 1)`;
-    s.style.transform = `translateX(${restAt(STOP, jitter)}px)`;
+    // (with Reduce motion on, as it often is on a Mac, the reel still turns, briefly and gently, instead of jumping straight to the
+    // prize: the spin is the whole point of it. DECISIONS #284)
+    const ms = reduced ? REDUCED_SPIN_MS : SPIN_MS;
+    const ease = reduced ? 'cubic-bezier(0.25, 0.6, 0.3, 1)' : 'cubic-bezier(0.08, 0.72, 0.12, 1)';
+    // (the move starts on the next frames, not in the same breath as the jump to the start: Safari can drop a transition started
+    // straight after a style change in the same frame)
+    let raf2 = 0;
+    const raf1 = window.requestAnimationFrame(() => {
+      raf2 = window.requestAnimationFrame(() => {
+        s.style.transition = `transform ${ms}ms ${ease}`;
+        s.style.transform = `translateX(${restAt(STOP, jitter)}px)`;
+      });
+    });
     const onEnd = (e: TransitionEvent): void => {
       if (e.target === s && e.propertyName === 'transform') settle = window.setTimeout(finish, 500);
     };
     s.addEventListener('transitionend', onEnd);
-    const fallback = window.setTimeout(finish, SPIN_MS + 1500);
+    // (if the browser never says the move ended, the prize is shown anyway)
+    const fallback = window.setTimeout(finish, ms + 1500);
     return () => {
+      window.cancelAnimationFrame(raf1);
+      window.cancelAnimationFrame(raf2);
       s.removeEventListener('transitionend', onEnd);
       window.clearTimeout(fallback);
       window.clearTimeout(settle);
