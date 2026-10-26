@@ -93,8 +93,10 @@ describe('Wardens that are ghosts', () => {
     expect(plan.ghost?.hp).toBe(ghostBossHp('trapper', 5, run.stage));
     expect(plan.ghost?.dmgPct).toBe(ghostBossDmg(5, run.stage));
     expect(plan.kind).toBe('warden');
-    // the player is told plainly that this Warden is a ghost deck, and whose
-    expect(withGhost.eventResult).toMatch(/^Ghost Warden! .*Rob's Trapper deck from the Arena/);
+    // the player is told plainly that this Warden is a ghost deck, but never whose
+    expect(withGhost.eventResult).toMatch(/^Ghost Warden! .*a Trapper deck from the Arena/);
+    // (whose deck it is is never said in the campaign)
+    expect(withGhost.eventResult).not.toMatch(/Rob/);
     // none came: the usual Warden, and it is not asked for again (and nothing says ghost)
     const none = attachGhost(run, null);
     expect(ghostWanted(none)).toBe(false);

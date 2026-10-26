@@ -97,7 +97,9 @@ function GhostGlyph() {
 function labelOf(n: MapNode): string {
   if (n.kind === 'merchant' && n.crossed) return 'Stranger';
   if (n.kind === 'warden' && n.ghost && n.ghostDeck) return 'Ghost Warden';
-  if (n.enemyId) {
+  // (a fight or an Elite only says what kind of fight it is: who is waiting is found out on arrival. A Warden is named, as the
+  // realm's boss is known in advance)
+  if (n.kind === 'warden' && n.enemyId) {
     try {
       return encounter(n.enemyId).name;
     } catch {

@@ -447,7 +447,7 @@ export default function RunScreen() {
                   mods: plan.mods,
                 },
           }}
-          title={`${plan.ghost ? `Ghost Warden: ${plan.ghost.name}'s ${RIFTWALKERS[plan.ghost.hero]?.role ?? 'Riftwalker'} deck` : encounter(plan.encounterId).name} · Tier ${run.tier} · Stage ${run.stage}${floorLabel(run) && ` · ${floorLabel(run)}`}`}
+          title={`${plan.ghost ? `Ghost Warden: a ${RIFTWALKERS[plan.ghost.hero]?.role ?? 'Riftwalker'} deck` : encounter(plan.encounterId).name} · Tier ${run.tier} · Stage ${run.stage}${floorLabel(run) && ` · ${floorLabel(run)}`}`}
           exitLabel="Forfeit"
           topFirst={
             <button className="btn btn--small btn--ghost" onClick={() => setShowMap(true)}>
@@ -556,7 +556,7 @@ export default function RunScreen() {
                   potions: [],
                 },
               }}
-              names={{ a: 'You', b: `${plan.ghost.name}'s ghost deck` }}
+              names={{ a: 'You', b: 'Ghost deck' }}
               progress={{
                 a: { tier: run.tier },
                 b: {
