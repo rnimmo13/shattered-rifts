@@ -29,6 +29,22 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.75.0',
+    date: '2026-10-26',
+    title: 'Gentler start',
+    summary: 'Tier I enemies have less HP, and multi-hit attacks behave when their target falls.',
+    notes: [
+      {
+        kind: 'balance',
+        text: 'Tier I enemies start at 125% HP (was 150%); every Tier up still adds +50%.',
+      },
+      {
+        kind: 'fixed',
+        text: 'An enemy whose multi-hit attack kills its target spends the hits it has left on a new one by its usual way of choosing, so an 8x3 that fells your minion in two hits still lands its third on you.',
+      },
+    ],
+  },
+  {
     version: '0.74.0',
     date: '2026-10-26',
     title: 'Readable allies, quieter map',

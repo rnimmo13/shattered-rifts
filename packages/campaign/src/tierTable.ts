@@ -21,7 +21,7 @@ export interface TierRow {
 }
 
 /** enemy HP at Tier I stage 1, percent of the written numbers */
-export const HP_START = 150;
+export const HP_START = 125;
 /** added to enemy HP for every Rift Tier up (percentage points) */
 export const HP_PER_TIER = 50;
 /** added to enemy HP for each stage inside a tier (percentage points) */
