@@ -544,3 +544,25 @@
     height: min(28vh, 14rem);
   }
 }
+
+/* a saved run this build cannot read: it still takes a slot, so it is shown, with a way to copy it or free the slot */
+.home__runrow--broken {
+  padding: 0.6rem 0.8rem;
+  border-radius: 10px;
+  border: 1px dashed #ff6b81;
+  background: rgb(60 10 20 / 0.45);
+}
+.home__broken {
+  display: grid;
+  gap: 0.15rem;
+}
+.home__broken b {
+  color: #ffb0bd;
+}
+.home__broken small {
+  color: var(--c-text-dim);
+}
+.home__brokenActions {
+  display: flex;
+  gap: 0.4rem;
+}

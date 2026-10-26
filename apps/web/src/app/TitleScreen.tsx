@@ -3,7 +3,14 @@
 import { useEffect, useState, type CSSProperties } from 'react';
 import { RIFTWALKERS, type HeroId } from '@sr/content/v2';
 import { BUILD } from '../build';
-import { RUN_SLOTS, clearSavedRun, listRuns, runCount, setActiveRun } from '../run/saves';
+import {
+  RUN_SLOTS,
+  clearSavedRun,
+  listRuns,
+  runCount,
+  setActiveRun,
+  unreadableRuns,
+} from '../run/saves';
 import { loseSavedDecks } from '../run/deckSave';
 import { whoAmI, type Me } from '../pvp/vaultSync';
 import { progressLabel } from '../pvp/deckLayout';
@@ -23,6 +30,13 @@ export function TitleScreen() {
   const [unread] = useState(hasUnread);
   const [me, setMe] = useState<Me>({ signedIn: false, available: false });
   const [runs, setRuns] = useState(listRuns);
+  // saves this build cannot read: they still take a slot, so they are shown (to copy for a bug report, or remove)
+  const [broken, setBroken] = useState(unreadableRuns);
+  const [copied, setCopied] = useState<string | null>(null);
+  const refreshRuns = (): void => {
+    setRuns(listRuns());
+    setBroken(unreadableRuns());
+  };
   const [dropping, setDropping] = useState<string | null>(null);
   // a run that cannot be read still takes a slot, so it counts toward the limit
   const full = runs.length >= RUN_SLOTS || runCount() >= RUN_SLOTS;
@@ -31,7 +45,10 @@ export function TitleScreen() {
 
   // another window may have started, finished or abandoned a run
   useEffect(() => {
-    const refresh = (): void => setRuns(listRuns());
+    const refresh = (): void => {
+      setRuns(listRuns());
+      setBroken(unreadableRuns());
+    };
     window.addEventListener('focus', refresh);
     window.addEventListener('storage', refresh);
     return () => {
@@ -74,6 +91,52 @@ export function TitleScreen() {
             Walk the broken worlds. Build a deck. Read the rift. Spring the trap.
           </p>
 
+          {broken.map((b) => (
+            <div key={b.id} className="home__runrow home__runrow--broken">
+              <span className="home__broken">
+                <b>A saved run could not be loaded</b>
+                <small>
+                  It still takes one of your {RUN_SLOTS} run slots. Copy it to send with a bug
+                  report, or remove it to free the slot.
+                </small>
+              </span>
+              <span className="home__brokenActions">
+                <button
+                  type="button"
+                  className="btn btn--small btn--ghost"
+                  onClick={() => {
+                    void navigator.clipboard
+                      ?.writeText(b.text)
+                      .then(() => setCopied(b.id))
+                      .catch(() => setCopied(null));
+                  }}
+                >
+                  <span>{copied === b.id ? 'Copied' : 'Copy save'}</span>
+                </button>
+                {dropping === b.id ? (
+                  <button
+                    type="button"
+                    className="btn btn--small"
+                    onClick={() => {
+                      clearSavedRun(b.id);
+                      refreshRuns();
+                      setDropping(null);
+                    }}
+                  >
+                    <span>Remove for good</span>
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    className="btn btn--small btn--ghost"
+                    onClick={() => setDropping(b.id)}
+                  >
+                    <span>Remove</span>
+                  </button>
+                )}
+              </span>
+            </div>
+          ))}
           {runs.map((r) => (
             <div key={r.id} className="home__runrow">
               <button
@@ -105,7 +168,7 @@ export function TitleScreen() {
                       // (given up in the middle of a fight it counts as falling, DECISIONS #270)
                       if (r.run.phase === 'duel') void loseSavedDecks(r.run);
                       clearSavedRun(r.id);
-                      setRuns(listRuns());
+                      refreshRuns();
                       setDropping(null);
                     }}
                   >

@@ -119,6 +119,16 @@ export function listRuns(): SavedRun[] {
   return out.sort((a, b) => b.updated - a.updated);
 }
 
+/**
+ * The saved runs this build cannot read (a save from a build with other rules, or one that was damaged). They still take a slot, so
+ * the home page lists them, to copy for a bug report or to remove (DECISIONS #277); they are never thrown away on their own.
+ */
+export function unreadableRuns(): { id: string; text: string; updated: number }[] {
+  return readSlots()
+    .filter((s) => parseRun(s.text) === null)
+    .map((s) => ({ id: s.id, text: s.text, updated: s.updated }));
+}
+
 /** The run the active key points at, with the id of its slot (null when there is none or it cannot be read). */
 export function loadActiveRun(): { id: string; run: RunState } | null {
   const id = activeRunId();

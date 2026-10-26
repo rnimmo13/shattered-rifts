@@ -1,7 +1,15 @@
 import { describe, expect, it } from 'vitest';
 import { clone } from '@sr/combat';
 import { COMBAT_DB, RIFTWALKERS } from '@sr/content/v2';
-import { availableNodes, enterNode, newRun, pickEventCard, type RunState } from './index';
+import {
+  availableNodes,
+  enterNode,
+  newRun,
+  parseRun,
+  pickEventCard,
+  serializeRun,
+  type RunState,
+} from './index';
 import { EVENTS, resolveEvent } from './events';
 
 // Robert, 2026-10-26: no event may force a card into the deck, least of all a card from another Riftwalker (DECISIONS #267).
@@ -120,6 +128,19 @@ describe('an event shows the random cards it means', () => {
       expect(r.deck.filter((id) => id === from).length).toBe(before - 1);
       expect(r.deck).toContain(to);
       expect(r.deck.length).toBe(r0.deck.length);
+    }
+  });
+});
+
+describe('a run standing in any event can be saved and loaded again', () => {
+  it('every event, as it is laid out (named cards and all), survives a save', () => {
+    for (let i = 0; i < 3; i++) {
+      const r0 = standing(`save-ev-${i}`);
+      for (const e of EVENTS) {
+        const ev = e.build(clone(r0));
+        const r: RunState = { ...r0, phase: 'event', context: { ...r0.context!, event: ev } };
+        expect(parseRun(serializeRun(r)), `${e.id} does not load back`).not.toBeNull();
+      }
     }
   });
 });
