@@ -29,6 +29,22 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.78.0',
+    date: '2026-10-26',
+    title: 'No more mystery cards',
+    summary: 'Events show the exact random cards they mean before you choose.',
+    notes: [
+      {
+        kind: 'changed',
+        text: 'An event option that trades, transforms, copies, gives, removes or upgrades a random card now shows the exact cards: what leaves your deck, and what you get. The Rift-crossed pilgrim shows your card and the one you would trade it for.',
+      },
+      {
+        kind: 'changed',
+        text: 'Links to the game now say what it is: a free roguelike deckbuilder card game in your browser.',
+      },
+    ],
+  },
+  {
     version: '0.77.0',
     date: '2026-10-26',
     title: 'Numbers you can read',
