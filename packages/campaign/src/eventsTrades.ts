@@ -4,7 +4,7 @@
 // every card that comes is named when the event is built, so the player sees exactly what the trade is. Same shape as eventsTuned.ts.
 
 import { nextInt } from '@sr/combat';
-import { COMBAT_DB, pathName, pathOf, rewardPool, type HeroId } from '@sr/content/v2';
+import { COMBAT_DB, pathName, pathOf, rewardPool } from '@sr/content/v2';
 import { canAdd } from './rewards';
 import { mainPath } from './synergy';
 import { def, shards, type DealSpec, type OptSpec } from './eventDeals';
@@ -72,8 +72,8 @@ function offers(
 /** "for your Rites build path", when the card is on the path the deck follows */
 const forPath = (r: RunState, id: string): string => {
   const p = pathOf(id);
-  const main = mainPath(r.character as HeroId, r.deck);
-  return p !== undefined && p === main ? ` (${pathName(r.character as HeroId, p)})` : '';
+  const main = mainPath(r.character, r.deck);
+  return p !== undefined && p === main ? ` (${pathName(r.character, p)})` : '';
 };
 
 /** Two common cards of a kind melt into your choice of two uncommon ones of that kind. */
@@ -84,7 +84,7 @@ const meltTwo =
     const a = pool.splice(nextInt(r.rng, Math.max(1, pool.length)), 1)[0];
     const b = pool.splice(nextInt(r.rng, Math.max(1, pool.length)), 1)[0];
     if (!a || !b) return { opts: [], cards: [] };
-    const into = offers(r, 2, 'uncommon', kind, mainPath(r.character as HeroId, r.deck));
+    const into = offers(r, 2, 'uncommon', kind, mainPath(r.character, r.deck));
     return {
       cards: into,
       opts: into.map((id): OptSpec => [
@@ -100,7 +100,7 @@ function fence(r: RunState): { opts: OptSpec[]; cards: string[] } {
   const from = pick(r, mine(r, 'rare'));
   if (!from) return { opts: [], cards: [] };
   const up = from.endsWith('+');
-  const to = offers(r, 2, 'rare', undefined, mainPath(r.character as HeroId, r.deck)).map(
+  const to = offers(r, 2, 'rare', undefined, mainPath(r.character, r.deck)).map(
     (id) => (up && COMBAT_DB.cards[id]?.upgrade) || id,
   );
   return {
@@ -115,7 +115,7 @@ function fence(r: RunState): { opts: OptSpec[]; cards: string[] } {
 
 /** A card from a build path the deck is not following becomes one of the same rarity for the path it is. */
 function specialist(r: RunState): { opts: OptSpec[]; cards: string[] } {
-  const hero = r.character as HeroId;
+  const hero = r.character;
   const main = mainPath(hero, r.deck);
   if (main === null) return { opts: [], cards: [] };
   const stray = pick(
@@ -145,7 +145,7 @@ function stepUp(r: RunState): { opts: OptSpec[]; cards: string[] } {
   const from = pick(r, [...mine(r, 'uncommon', 'attack'), ...mine(r, 'uncommon', 'skill')]);
   if (!from) return { opts: [], cards: [] };
   const kind = COMBAT_DB.cards[base(from)]?.kind as Kind;
-  const to = offers(r, 2, 'rare', kind, mainPath(r.character as HeroId, r.deck));
+  const to = offers(r, 2, 'rare', kind, mainPath(r.character, r.deck));
   return {
     cards: to,
     opts: to.map((id): OptSpec => [
@@ -195,7 +195,7 @@ const SPECS: DealSpec[] = [
     title: 'The specialist',
     text: 'A veteran watches you train and frowns at one move in particular. "That one does not belong in your style. Let me show you something that does."',
     opts: [],
-    needs: (r) => mainPath(r.character as HeroId, r.deck) !== null,
+    needs: (r) => mainPath(r.character, r.deck) !== null,
     dyn: specialist,
   },
   {
