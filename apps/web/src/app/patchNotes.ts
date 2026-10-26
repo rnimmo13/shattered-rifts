@@ -29,6 +29,26 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.79.0',
+    date: '2026-10-26',
+    title: 'Gentler Wardens',
+    summary: 'A lost Warden costs 1 Resolve, every boss fight shows what is at stake, and KP’s shells are retuned.',
+    notes: [
+      {
+        kind: 'balance',
+        text: 'Losing to a Warden costs 1 Resolve (an Elite still costs 2), so a Normal run survives one lost boss fight.',
+      },
+      {
+        kind: 'new',
+        text: 'Every Warden fight shows your Resolve and what a loss would leave, in red when a loss would end the run.',
+      },
+      {
+        kind: 'balance',
+        text: 'Ammo Dump adds 6 Buckshot Shells (was 8); upgraded, it adds 6 upgraded shells that deal 6 to every enemy. Fire in the Hole+ grows faster with your consumed cards (+2 per 3) instead of gaining flat damage.',
+      },
+    ],
+  },
+  {
     version: '0.78.0',
     date: '2026-10-26',
     title: 'No more mystery cards',
