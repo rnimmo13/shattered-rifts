@@ -985,8 +985,9 @@
 /* ---- Arcana sits beside Mana ---- */
 .fight__lumen {
   position: absolute;
-  left: 7.4rem;
-  bottom: 7rem;
+  left: calc(1.4rem + 5.2rem + 0.7rem);
+  /* beside the Mana orb (7rem up, 5.2rem tall), centred on it */
+  bottom: 7.6rem;
   width: 4rem;
   height: 4rem;
   border-radius: 50%;
@@ -1879,13 +1880,22 @@
 .fight__side .aux--scroll {
   max-height: 7.5rem;
 }
-/* the potion belt sits beside the Mana orb, bottom left (the hand's fan keeps clear of it) */
+/* the potion belt sits right above the Mana orb in the bottom-left corner, clear of the hand; the Arcana orb has the place beside
+   Mana (the two used to share it) */
 .fight__potions {
-  left: calc(1.2rem + 5.2rem + 0.7rem);
+  left: 1.2rem;
   top: auto;
-  bottom: 7.2rem;
+  /* the orb: 7rem up, 5.2rem tall (the corner rule after the first .fight__mana) */
+  bottom: calc(7rem + 5.2rem + 0.6rem);
+  /* a narrow column, as wide as the orb: a row reached into the hero's health bar on a laptop screen */
+  justify-items: center;
+  width: 5.2rem;
+  box-sizing: border-box;
   padding: 0.25rem 0.4rem 0.35rem;
   z-index: 23;
+}
+.fight__potions .fight__belt {
+  flex-direction: column;
 }
 .fight__potions .potionbtn,
 .fight__potions .potionslot {
@@ -1896,7 +1906,8 @@
   display: none;
 }
 .fight__beltLabel {
-  font-size: 0.7rem;
+  font-size: 0.62rem;
+  letter-spacing: 0.12em;
 }
 /* statuses: small round icons like the Boons, the stacks in a badge at the corner */
 .plate .chips {

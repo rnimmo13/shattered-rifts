@@ -1442,9 +1442,10 @@ export function FightView(props: {
               key={f.id}
               db={db}
               flourish={f}
-              width={Math.round(cw * 1.5)}
+              // (a played card shows over the board: smaller still when watching, where the board is the point)
+              width={Math.round(cw * (watch ? 0.85 : 1.15))}
               speed={speed}
-              offset={(i - (flourishes.length - 1) / 2) * 56}
+              offset={(i - (flourishes.length - 1) / 2) * (watch ? 34 : 44)}
               onDone={(id) => setFlourishes((list) => list.filter((x) => x.id !== id))}
             />
           ))}

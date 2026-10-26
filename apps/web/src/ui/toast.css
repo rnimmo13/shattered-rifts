@@ -1,7 +1,8 @@
 /* Toasts (Toast.tsx): one stack at the top of the page, above everything, each with a dismiss button */
 .toasts {
   position: fixed;
-  top: 0.8rem;
+  /* below the bars along the top of the run and fight screens (the run bar ends about 5rem down), not over them */
+  top: 5.8rem;
   left: 50%;
   transform: translateX(-50%);
   z-index: 10000;
@@ -9,6 +10,13 @@
   display: grid;
   gap: 0.5rem;
   pointer-events: none;
+}
+/* on a phone those bars wrap and grow taller: the stack sits at the bottom of the screen there */
+@media (max-width: 52rem) {
+  .toasts {
+    top: auto;
+    bottom: 1rem;
+  }
 }
 .toast {
   pointer-events: auto;
