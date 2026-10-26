@@ -130,6 +130,6 @@ export const LEGENDARIES: CardDef[] = [
     3,
     'none',
     [dmg(25, 'allFoes'), lose(8)],
-    { exhaust: true },
+    { exhaust: true, up: { cost: 2 } },
   ),
 ];
