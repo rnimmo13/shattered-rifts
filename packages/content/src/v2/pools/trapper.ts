@@ -312,7 +312,7 @@ export const TRAPPER: CardDef[] = [
     3,
     'none',
     [PREVENT, dmg(22, 'attacker'), status('stunned', 1, 'attacker'), status('shielded', 2)],
-    { trigger: { on: 'attacked' } },
+    { trigger: { on: 'attacked' }, up: { cost: 2 } },
   ),
   v('legendary', 'masquerade', 'Masquerade', 'power', 2, 'none', [
     on('snare', [draw(2), mana(1), dmg(4, 'allFoes')]),

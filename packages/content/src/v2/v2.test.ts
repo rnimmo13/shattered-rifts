@@ -39,6 +39,7 @@ describe('Combat v2 content', () => {
         JSON.stringify({
           e: c.effects,
           cost: c.cost,
+          stars: c.starCost,
           x: c.exhaust,
           r: c.retain,
           b: c.xBonus,
@@ -48,6 +49,7 @@ describe('Combat v2 content', () => {
         JSON.stringify({
           e: u.effects,
           cost: u.cost,
+          stars: u.starCost,
           x: u.exhaust,
           r: u.retain,
           b: u.xBonus,

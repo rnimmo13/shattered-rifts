@@ -432,11 +432,16 @@ export const TOTEMIST: CardDef[] = [
   i('rare', 'leyline-tap', 'Root Tap', 'skill', 2, 'none', [maxMana(1), barrier(6)], {
     exhaust: true,
   }),
-  i('legendary', 'the-grand-design', 'The Great Pole', 'power', 3, 'none', [
-    { op: 'runeSlots', amount: 3 },
-    status('resonance', 3),
-    on('turnStart', [channel('hollow')]),
-  ]),
+  i(
+    'legendary',
+    'the-grand-design',
+    'The Great Pole',
+    'power',
+    3,
+    'none',
+    [{ op: 'runeSlots', amount: 3 }, status('resonance', 3), on('turnStart', [channel('hollow')])],
+    { up: { cost: 2 } },
+  ),
   i(
     'legendary',
     'cataclysm-glyph',
@@ -445,7 +450,7 @@ export const TOTEMIST: CardDef[] = [
     2,
     'none',
     [dmg(10, 'allFoes'), evoke(10, 2)],
-    { exhaust: true },
+    { exhaust: true, up: { effects: [dmg(10, 'allFoes'), evoke(10, 3)] } },
   ),
   i('common', 'rune-burst', 'Totem Burst', 'skill', 1, 'none', [evoke(), draw(1)]),
   i('common', 'glimmer', 'Owl Glint', 'skill', 1, 'none', [channel('prism')], { exhaust: true }),

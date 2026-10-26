@@ -59,7 +59,7 @@ export const LEGENDARIES: CardDef[] = [
     3,
     'none',
     [dmg(20, 'allFoes'), heal(15)],
-    { exhaust: true },
+    { exhaust: true, up: { cost: 2 } },
   ),
   v(
     'legendary',
@@ -111,6 +111,7 @@ export const LEGENDARIES: CardDef[] = [
   ),
   a('legendary', 'shatterstorm', 'Shatterstorm', 'attack', 3, 'none', [dmg(40, 'allFoes')], {
     starCost: 5,
+    up: { starCost: 4 },
   }),
   g(
     'legendary',

@@ -139,9 +139,8 @@ export const NEUTRAL: CardDef[] = [
     3,
     'none',
     [dmg(40, 'allFoes'), lose(15)],
-    {
-      exhaust: true,
-    },
+    // (the upgrade makes it cheaper, not bigger: DECISIONS #271)
+    { exhaust: true, up: { cost: 2 } },
   ),
   n('uncommon', 'borrowed-time', 'Stolen Time', 'skill', 0, 'none', [mana(3), manaNext(-2)], {
     exhaust: true,

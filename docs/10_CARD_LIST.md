@@ -227,7 +227,7 @@ Starter: Strike, Strike, Strike, Strike, Strike, Defend, Defend, Defend, Savage 
 | Pain Ward | 1 | skill | common | Gain 5 Barrier. Gain Barrier equal to a quarter of your missing HP. |
 | Blood Rush | 0 | attack | common | Deal 4 damage. Lose 1 HP. |
 | Ripping Claws | 1 | attack | common | Deal 5 damage to ALL enemies. Lose 1 HP. |
-| Rummage | 1 | attack | common | Deal 8 damage. Put a random attack card from your discard pile on top of your draw pile. |
+| Rummage | 1 | attack | common | Deal 8 damage. Put a random Attack card from your discard pile on top of your draw pile. |
 | Pound | 1 | attack | common | Deal 8 damage. Draw 1 card. Lose 1 HP. |
 | Bone Crack | 1 | attack | common | Deal 7 damage. Apply 2 Exposed. |
 | Flesh Wound | 1 | skill | common | Lose 2 HP. Gain 14 Barrier. |
@@ -422,7 +422,7 @@ Starter: Strike, Strike, Strike, Defend, Defend, Defend, Defend, Veil Strike, Ve
 | Trap Door | 1 | power | rare | At the start of your turn: Add a Trip Line to your hand. |
 | Culling | 2 | attack | rare | Deal 6 (+2 per Exposed on each) damage to ALL enemies. |
 | Deep Pockets | 3 | power | rare | Gain 1 maximum Mana for the rest of the fight (and 1 now). |
-| Curtain Call | 1 | skill | rare | Draw 1 card. Return 2 random snare cards from your discard pile to your hand. Consume. |
+| Curtain Call | 1 | skill | rare | Draw 1 card. Return 2 random Snare cards from your discard pile to your hand. Consume. |
 | The Perfect Trap | 3 | snare | legendary | When you or an ally is attacked: Cancel that attack. Deal 22 damage to the attacker. Apply 1 Stunned to the attacker. Apply 2 Shielded. |
 | Masquerade | 2 | power | legendary | Whenever one of your Traps springs: Draw 2 cards. Gain 1 Mana. Deal 4 damage to ALL enemies. |
 | The Long Ambush | 3 | snare | legendary | At the start of the enemy turn: Deal 25 damage to ALL enemies. Apply 1 Stunned to ALL enemies. |
@@ -440,7 +440,7 @@ Starter: Strike, Strike, Strike, Strike, Defend, Defend, Defend, Quick Jab, Quic
 | Quick Jab | 0 | attack | basic | Deal 3 damage. Apply 1 Faltering. |
 | Slip Away | 1 | skill | basic | Gain 7 Barrier. Discard 1 card. |
 | Palmed Knives | 1 | skill | common | Add 2 Sleeve Knives to your hand. Draw 1 card. |
-| Hidden Blade | 1 | skill | common | Gain 4 Barrier. Add a Sleeve Knife to your hand. Gain 1 Edge: your Sleeve Knives deal 1 more damage for the rest of the fight. |
+| Hidden Blade | 1 | skill | common | Gain 4 Barrier. Add a Sleeve Knife to your hand. Gain 1 Edge: your Sleeve Knives deal 1 more damage this turn. |
 | Sleeve Flick | 0 | skill | common | Add 2 Sleeve Knives to your hand. Consume. |
 | Whirling Knives | 1 | attack | common | Deal 4 damage 2 times to ALL enemies. |
 | Knife Volley | 1 | attack | common | Deal 3 damage 3 times. |
@@ -448,7 +448,7 @@ Starter: Strike, Strike, Strike, Strike, Defend, Defend, Defend, Quick Jab, Quic
 | Cut Low | 0 | attack | common | Deal 5 damage. |
 | Smoke and Slip | 1 | skill | common | Gain 6 Barrier. Discard 1 card. Add a Sleeve Knife to your hand. |
 | Rising Tempo | 0 | attack | common | Deal 2 (+1 per card played this turn) damage. |
-| Whetstone Pass | 0 | skill | common | Gain 2 Edge: your Sleeve Knives deal 2 more damage for the rest of the fight. |
+| Whetstone Pass | 0 | skill | common | Gain 2 Edge: your Sleeve Knives deal 2 more damage this turn. |
 | Needle Jab | 0 | attack | common | Deal 4 damage. Apply 1 Bleed. |
 | Ember Dose | 1 | skill | common | Apply 5 Bleed. Gain 3 Barrier. |
 | Choking Haze | 2 | skill | common | Apply 3 Bleed to ALL enemies. Apply 2 Faltering to ALL enemies. Gain 4 Barrier. |
@@ -469,7 +469,7 @@ Starter: Strike, Strike, Strike, Strike, Defend, Defend, Defend, Quick Jab, Quic
 | Endless Edges | 2 | power | uncommon | At the start of your turn: Add 2 Sleeve Knives to your hand. |
 | Keen Edge | 1 | power | uncommon | Gain 2 Edge: your Sleeve Knives deal 2 more damage for the rest of the fight. |
 | Razor Halo | 2 | power | uncommon | Whenever you play a Sleeve Knife: Deal 2 damage to ALL enemies. |
-| Empty the Sleeves | 1 | skill | uncommon | Discard your hand. Add Sleeve Knives to your hand equal to the cards discarded this turn. Gain 1 Edge: your Sleeve Knives deal 1 more damage for the rest of the fight. |
+| Empty the Sleeves | 1 | skill | uncommon | Discard your hand. Add Sleeve Knives to your hand equal to the cards discarded this turn. Gain 1 Edge: your Sleeve Knives deal 1 more damage this turn. |
 | Killing Flourish | 1 | attack | uncommon | Deal 4 damage for each Attack played this turn. |
 | Ambush Cut | 0 | attack | uncommon | Deal 11 damage. Consume. Opening hand. |
 | Spent Steel | 1 | attack | uncommon | Deal 5 (+1 per 5 card created this fight) damage. |
@@ -568,31 +568,28 @@ Starter: Strike, Strike, Strike, Strike, Defend, Defend, Defend, Plant Hawk, Pla
 | Elder Strike | 1 | attack | common | Deal 7 damage. Plant Elder. |
 | Elder's Shelter | 1 | skill | common | Plant Elder. Gain 4 Barrier. |
 | Silent Totem | 1 | skill | common | Gain 5 Barrier. Plant Elder. If discarded: Plant Elder. |
-| Totem Burst | 1 | skill | common | Awaken your first totem. Draw 1 card. |
-| Owl Glint | 1 | skill | common | Plant Owl. Consume. |
-| Hawk Carving | 0 | attack | common | Deal 5 damage. |
+| Hawk Carving | 0 | attack | common | Deal 4 damage. |
 | Talon Carving | 0 | attack | common | Deal 3 damage to ALL enemies. |
-| Bear Carving | 0 | skill | common | Gain 5 Barrier. |
+| Bear Carving | 0 | skill | common | Gain 4 Barrier. |
 | Owl Carving | 0 | skill | common | Foresee 3. |
 | Splinter Carving | 0 | skill | common | Plant Splinter. Consume. |
 | Gather the Shavings | 1 | skill | common | Gain 3 Barrier. Return 2 random Carvings from your discard pile to your hand. |
 | Rite Strike | 1 | attack | common | Deal 5 (+2 per Aura you have) damage. |
 | Rite of Warding | 1 | skill | common | Gain 5 (+2 per Aura you have) Barrier. |
-| Kindled Rite | 0 | power | common | At the end of your turn: Gain 3 Barrier. |
+| Ember Rite | 0 | power | common | At the end of your turn: Gain 3 Barrier. |
 | Rite of Thorns | 0 | power | common | At the start of your turn: Deal 3 damage to a random enemy. |
+| Totem Burst | 1 | skill | common | Awaken your first totem. Draw 1 card. |
+| Owl Glint | 1 | skill | common | Plant Owl. Consume. |
 | Splintering Burst | 2 | attack | uncommon | Deal 6 damage to ALL enemies. Plant Splinter. |
 | Splinter Grove | 2 | skill | uncommon | Plant Splinter 2 times. |
 | Totem Row | 1 | skill | uncommon | Gain 2 totem slots. |
 | Awakened Blow | 1 | attack | uncommon | Deal 4 (+2 per totem) damage. |
 | Shatter the Row | 0 | skill | uncommon | Gain Mana equal to half of the number of your totems. Draw cards equal to the number of your totems. Awaken your first 10 totems. Consume. |
 | Totem Driver | 1 | attack | uncommon | Deal 7 damage. Draw cards equal to half of the number of your totems. |
-| Spent Husk | 1 | skill | uncommon | Awaken your first totem. Plant Hawk. |
 | Heartwood | 2 | attack | uncommon | Deal 6 damage 2 times. Plant Hawk. |
 | Static Trap | 1 | snare | uncommon | At the start of the enemy turn: Deal 6 damage to ALL enemies. Plant Splinter. |
 | Bear's Patience | 1 | skill | uncommon | Plant Bear. Foresee 3. |
-| Bark Carapace | 1 | power | uncommon | At the end of your turn: Gain Barrier equal to the number of your totems. |
 | Totem Shield | 1 | skill | uncommon | Gain Barrier equal to 3 times the number of your totems. |
-| Den of Bears | 2 | power | uncommon | At the start of your turn: Plant Bear. |
 | Bulwark Totem | 2 | skill | uncommon | Gain 4 (+3 per totem) Barrier. Apply 1 Bracing. |
 | Totem Trap | 2 | snare | uncommon | When you or an ally is attacked: Cancel that attack. Plant Bear. |
 | Elder's Roar | 2 | attack | uncommon | Deal 10 damage to ALL enemies. Plant Elder. |
@@ -602,40 +599,37 @@ Starter: Strike, Strike, Strike, Strike, Defend, Defend, Defend, Plant Hawk, Pla
 | Spirit Strike | 1 | attack | uncommon | Deal 6 (+2 per Spirit) damage. |
 | Deep Roots | 1 | skill | uncommon | Plant Elder. Draw 1 card. |
 | Elder Tide | 2 | attack | uncommon | Deal 6 (+2 per Spirit) damage. Plant Elder. |
-| Owl Cut | 1 | skill | uncommon | Plant Owl. Draw 1 card. |
-| Owl's Gaze | 0 | attack | uncommon | Deal 3 damage. Apply 1 Exposed. |
-| Spirit Wave | 2 | attack | uncommon | Deal 11 damage to ALL enemies. Awaken your first totem. |
 | Many Voices | X | skill | uncommon | Awaken your first totem X times (it stays). Consume. |
-| Hidden Totem | 1 | snare | uncommon | When you or an ally is attacked: Deal 5 damage to the attacker. Plant Bear. |
-| Stored Charge | 1 | skill | uncommon | Next turn, gain 1 extra Mana. Plant Bear. |
 | Elder Carving | 0 | attack | uncommon | Deal 2 (+1 per card played this turn) damage. |
 | Fresh Shavings | 1 | skill | uncommon | Draw 2 cards. Return a random Carving from your discard pile to your hand. |
 | Whittle Down | 1 | attack | uncommon | Deal 4 (+2 per card played this turn) damage. |
 | Whittler's Knife | 1 | power | uncommon | Whenever you play a Carving: Deal 3 damage to a random enemy. |
+| Eye Carving | 0 | attack | uncommon | Deal 3 damage. Apply 1 Exposed. |
 | Drum Circle | 1 | skill | uncommon | Draw 1 card. Draw cards equal to half of the number of your Auras. |
 | Thunder Rite | 1 | power | uncommon | Whenever you play an Aura: Plant Splinter. Gain 2 Barrier. |
 | Sentinel Totem | 2 | power | uncommon | Apply 1 Shielded. At the start of your turn: Gain 3 Barrier. |
 | Spirit Drum | 2 | power | uncommon | Whenever you play an Aura: Gain 4 Barrier. |
+| Bark Carapace | 1 | power | uncommon | At the end of your turn: Gain Barrier equal to the number of your totems. |
+| Den of Bears | 2 | power | uncommon | At the start of your turn: Plant Bear. |
 | Retune | 1 | skill | uncommon | Upgrade a random card in your hand for this fight. Consume. |
-| Woodcarver | 2 | power | rare | At the start of your turn: Plant Splinter. |
+| Owl Cut | 1 | skill | uncommon | Plant Owl. Draw 1 card. |
+| Spirit Wave | 2 | attack | uncommon | Deal 11 damage to ALL enemies. Awaken your first totem. |
+| Spent Husk | 1 | skill | uncommon | Awaken your first totem. Plant Hawk. |
+| Stored Charge | 1 | skill | uncommon | Next turn, gain 1 extra Mana. Plant Bear. |
+| Hidden Totem | 1 | snare | uncommon | When you or an ally is attacked: Deal 5 damage to the attacker. Plant Bear. |
 | Totem Storm | X | skill | rare | Plant Splinter X times. Draw 1 card. |
 | Grand Totem | 3 | skill | rare | Plant Hawk. Plant Bear. Plant Elder. |
 | Meteor Totem | 3 | attack | rare | Deal 22 damage. Plant Owl. Plant Bear. |
-| Hawkstorm | 2 | power | rare | At the end of your turn: Deal damage equal to the number of your totems to ALL enemies. |
 | Blazing Eye | 3 | attack | rare | Deal 18 damage to ALL enemies. Awaken your first 3 totems. |
 | Ancient Bastion | 2 | skill | rare | Gain 10 Barrier. Plant Bear 2 times. |
-| Unending Call | 2 | power | rare | At the end of your turn: Awaken your first totem (it stays). |
 | Totem Ring | 3 | skill | rare | Gain 8 Barrier. Plant Bear 3 times. |
 | Chorus of Totems | 2 | power | rare | Apply 2 Spirit. Gain 1 totem slot. |
 | Ancient Elder | 2 | skill | rare | Plant Elder 2 times. |
-| Elder Vigil | 2 | power | rare | At the end of your turn: Plant Elder. |
 | Sap Offering | 2 | power | rare | Apply 3 Spirit. At the start of your turn: Lose 1 HP. |
 | Echo Cascade | 2 | skill | rare | Awaken your first totem 3 times (it stays). Consume. |
 | Toppling Row | 2 | attack | rare | Deal 8 (+4 per totem) damage to ALL enemies. Awaken your first 3 totems. Consume. |
-| Gathering Elders | 2 | power | rare | Whenever you play a Skill: Plant Elder. |
-| Totem Engine | 2 | power | rare | At the start of your turn: Plant Hawk. |
 | Shavings Underfoot | 1 | power | rare | Whenever you play a Carving: Gain 3 Barrier. |
-| Carver's Bench | 2 | power | rare | At the start of your turn: Add a Hawk Carving to your hand. Add a Bear Carving to your hand. |
+| Carver's Bench | 2 | power | rare | At the start of your turn: Add a Hawk Carving to your hand. |
 | Living Wood | 3 | power | rare | Whenever you play a Carving: Plant Splinter. |
 | Clear the Bench | 1 | skill | rare | Discard any number of cards. Return 10 random Carvings from your discard pile to your hand. Draw 1 card. Consume. |
 | Ancestral Learning | 1 | power | rare | Whenever you play an Aura: Draw 1 card. |
@@ -643,6 +637,12 @@ Starter: Strike, Strike, Strike, Strike, Defend, Defend, Defend, Plant Hawk, Pla
 | Spirit Whisper | 1 | skill | rare | Add a random Aura card from your pool to your hand (it costs 0 the next time you play it). Draw 1 card. Consume. |
 | Skyfall Rite | 2 | attack | rare | Deal 8 (+2 per Aura you have) damage to ALL enemies. Consume. |
 | Echoing Chant | 3 | power | rare | At the start of your turn: Deal damage equal to 2 times the number of your Auras to ALL enemies. |
+| Woodcarver | 2 | power | rare | At the start of your turn: Plant Splinter. |
+| Hawkstorm | 2 | power | rare | At the end of your turn: Deal damage equal to the number of your totems to ALL enemies. |
+| Unending Call | 2 | power | rare | At the end of your turn: Awaken your first totem (it stays). |
+| Elder Vigil | 2 | power | rare | At the end of your turn: Plant Elder. |
+| Gathering Elders | 2 | power | rare | Whenever you play a Skill: Plant Elder. |
+| Totem Engine | 2 | power | rare | At the start of your turn: Plant Hawk. |
 | Root Tap | 2 | skill | rare | Gain 1 maximum Mana for the rest of the fight (and 1 now). Gain 6 Barrier. Consume. |
 | The Great Pole | 3 | power | legendary | Gain 3 totem slots. Apply 3 Spirit. At the start of your turn: Plant Elder. |
 | Cataclysm Totem | 2 | attack | legendary | Deal 10 damage to ALL enemies. Awaken your first 10 totems 2 times. Consume. |

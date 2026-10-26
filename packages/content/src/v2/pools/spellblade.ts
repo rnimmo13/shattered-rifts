@@ -184,9 +184,7 @@ export const SPELLBLADE: CardDef[] = [
     3,
     'foe',
     [dmg(54), status('exposed', 2, 'target')],
-    {
-      starCost: 4,
-    },
+    { starCost: 4, up: { starCost: 3 } },
   ),
   a('rare', 'dawn-of-stars', 'Wellspring', 'skill', 1, 'none', [stars(5), draw(2)], {
     exhaust: true,
@@ -232,7 +230,10 @@ export const SPELLBLADE: CardDef[] = [
     status('faltering', 2, 'target'),
     status('exposed', 2, 'target'),
   ]),
-  a('rare', 'killing-light', 'Killing Glass', 'attack', 2, 'foe', [dmg(30)], { starCost: 3 }),
+  a('rare', 'killing-light', 'Killing Glass', 'attack', 2, 'foe', [dmg(30)], {
+    starCost: 3,
+    up: { starCost: 2 },
+  }),
   a('rare', 'starburst', 'Arcane Burst', 'skill', 1, 'none', [stars(6)], { exhaust: true }),
   a(
     'rare',
