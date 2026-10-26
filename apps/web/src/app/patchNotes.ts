@@ -29,6 +29,27 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.72.0',
+    date: '2026-10-26',
+    title: 'Weapons and tougher foes',
+    summary:
+      'Heroes strike with their own weapons, the card you play sits by the discard pile, and every enemy has more HP.',
+    notes: [
+      {
+        kind: 'new',
+        text: 'Heroes strike with their own weapons: KP swings his hammer or fires the Old Twelve Gauge with a muzzle flash, Valeria cuts with her sword or bashes with her shield, Sylas throws his knife, and everyone else has theirs, with dust, sparks and spirit swirls where the blow lands.',
+      },
+      {
+        kind: 'changed',
+        text: 'The card you play shows beside the discard pile instead of over the arena, and the Draw, Discard and Consumed piles wear card backs.',
+      },
+      {
+        kind: 'balance',
+        text: 'Every enemy has 50% more HP at every Rift Tier.',
+      },
+    ],
+  },
+  {
     version: '0.71.0',
     date: '2026-10-26',
     title: 'Every Arena game ends',
