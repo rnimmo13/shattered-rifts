@@ -1554,3 +1554,15 @@
   background: #4ee08a;
   box-shadow: 0 2px 6px rgb(0 0 0 / 0.6);
 }
+
+/* a card on hold: what it will cost at the next merchant; a card held for you: its old price crossed out beside the new one */
+.shop__later {
+  font-size: 0.85rem;
+  color: #4ee08a;
+  text-align: center;
+}
+.shop__was {
+  margin-left: 0.4rem;
+  font-size: 0.85em;
+  color: var(--c-text-dim);
+}

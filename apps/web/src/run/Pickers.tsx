@@ -591,9 +591,20 @@ export function MerchantView(props: {
                           : ''
                 }
               />
-              <div className={`shop__price${it.sale ? ' is-sale' : ''}`}>
+              <div className={`shop__price${it.sale || it.held ? ' is-sale' : ''}`}>
                 <span aria-hidden>◈</span> {it.price}
+                {/* a card held for you: the price it would have been, crossed out, beside what you pay now */}
+                {it.held && (
+                  <s className="shop__was" aria-label={`was ${Math.round(it.price / HOLD_LATER)}`}>
+                    {Math.round(it.price / HOLD_LATER)}
+                  </s>
+                )}
               </div>
+              {it.onHold && !it.sold && (
+                <div className="shop__later">
+                  Yours at your next merchant for {Math.ceil(it.price * HOLD_LATER)}
+                </div>
+              )}
               <button
                 className="btn btn--small shop__buy"
                 disabled={it.sold || it.onHold || shards < it.price}
@@ -632,7 +643,7 @@ export function MerchantView(props: {
                   <span>
                     {heldCount >= MAX_HELD
                       ? `${MAX_HELD} cards already on hold`
-                      : `Hold for later (${Math.ceil(it.price * HOLD_DEPOSIT)})`}
+                      : `Hold: ${Math.ceil(it.price * HOLD_DEPOSIT)} now, ${Math.ceil(it.price * HOLD_LATER)} next time`}
                   </span>
                 </button>
               )}
