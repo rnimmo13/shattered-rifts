@@ -314,7 +314,7 @@ Starter: Strike, Strike, Strike, Strike, Strike, Defend, Defend, Defend, Savage 
 | Second Helping | 1 | skill | rare | Lose 2 HP. Return a random Consumed card to your hand (never one that returns cards). Consume. |
 | Grave Hunger | 2 | power | rare | Whenever a card is consumed: Heal 2. |
 | The Hunger Unleashed | 2 | power | legendary | Lose 6 HP. Apply 4 Might to all friends. Apply 2 Cadence. |
-| Apex Maw | 3 | attack | legendary | Deal 10 (+3 per Might) damage. Heal 10. Consume. |
+| Apex Maw | 3 | attack | legendary | Deal 10 (+3 per Might) damage. Heal 10 (+2 per Might). Consume. |
 | Bloodmoon Hunt | 3 | attack | legendary | Deal 20 damage to ALL enemies. Heal 15. Consume. |
 
 ## Vesper Nightlace (umbral, 80 HP)

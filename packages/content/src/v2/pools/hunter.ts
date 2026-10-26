@@ -253,7 +253,7 @@ export const HUNTER: CardDef[] = [
     'attack',
     3,
     'foe',
-    [scaled(dmg(10), per('might', 3)), heal(10)],
+    [scaled(dmg(10), per('might', 3)), scaled(heal(10), per('might', 2))],
     // (upgraded, it costs 2: a big one-off card gains little from +3 damage, and +4 per Might is past the guard rail for a card that
     // is consumed; DECISIONS #282)
     { exhaust: true, up: { cost: 2 } },
