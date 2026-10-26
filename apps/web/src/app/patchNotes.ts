@@ -29,6 +29,51 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.70.0',
+    date: '2026-10-26',
+    title: 'A harder Rift',
+    summary:
+      'Tier I is tougher and every tier climbs faster. New events trade your cards, Omens are in view, and Thorns are fairer.',
+    notes: [
+      {
+        kind: 'balance',
+        text: 'Tier I enemies have about 15% more HP and hit a little harder, and every Rift Tier after it climbs faster.',
+      },
+      {
+        kind: 'new',
+        text: 'Trades: new events melt two common Attacks (or bind two common Skills) into an uncommon of your choice, trade a rare for another, retrain a card that does not fit your build path, or step an uncommon up to a rare.',
+      },
+      {
+        kind: 'new',
+        text: 'The Threshold can trade Strikes or Defends for your pick of uncommon Attacks or Skills, or upgraded commons.',
+      },
+      {
+        kind: 'new',
+        text: 'In a campaign fight the Rift Tier’s Omens sit at the top right; in the Arena your opponent’s Auras and Boons show there.',
+      },
+      {
+        kind: 'new',
+        text: 'How to play lists every Omen and every Warden’s Heart. A fight’s title says its Rift Tier.',
+      },
+      {
+        kind: 'changed',
+        text: 'Sanctified cards show their changed numbers in green or red, and hovering one says what the roll changed.',
+      },
+      {
+        kind: 'changed',
+        text: 'Played cards are smaller (smaller still in replays). Potions stand above Mana with Arcana beside it. Notices no longer cover the run bar.',
+      },
+      {
+        kind: 'fixed',
+        text: 'Thorns only answer attacks: your Traps, Auras, totems and potions no longer hurt you when they hit an enemy with Thorns.',
+      },
+      {
+        kind: 'fixed',
+        text: 'Back to the result no longer jumps away when you point at it.',
+      },
+    ],
+  },
+  {
     version: '0.69.0',
     date: '2026-10-26',
     title: 'Three build paths for everyone',
