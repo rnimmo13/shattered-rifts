@@ -13,6 +13,8 @@ export {
   costOf,
   heroOf,
   modifiedDamage,
+  previewCardDamage,
+  type LiveDamage,
   activePattern,
   type StepResult,
 } from './engine';

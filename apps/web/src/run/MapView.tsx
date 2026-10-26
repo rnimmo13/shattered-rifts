@@ -202,11 +202,11 @@ export function MapView(props: {
 export function MapLegend() {
   const items: [NodeKind, string][] = [
     ['duel', 'Duel'],
-    ['elite', 'Elite (harder, better reward)'],
+    ['elite', 'Elite'],
     ['event', 'Event'],
-    ['shrine', 'Shrine (rest or trim)'],
-    ['merchant', 'Merchant (a badge means a Rift-crossed stranger: other classes’ cards)'],
-    ['warden', 'Warden (stage boss; a ghost badge means another player’s deck from the Arena)'],
+    ['shrine', 'Shrine'],
+    ['merchant', 'Merchant'],
+    ['warden', 'Warden'],
   ];
   return (
     <ul className="maplegend" aria-label="Map legend">

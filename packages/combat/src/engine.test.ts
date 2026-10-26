@@ -13,7 +13,9 @@ import {
   tierHp,
   tierMight,
   clone,
+  previewCardDamage,
   type Action,
+  type CardDef,
   type CombatDb,
   type CombatEvent,
   type CombatSetup,
@@ -1022,5 +1024,59 @@ describe('potions', () => {
     expect(r.state.sides.a.potions).toEqual(['fire-flask']);
     expect(hero(r.state).barrier).toBe(12);
     expect(() => applyAction(db, s, { type: 'potion', index: 0, potion: 'mana-vial' })).toThrow();
+  });
+});
+
+describe('the damage a card in hand shows (previewCardDamage)', () => {
+  it('counts Might, a target’s Exposed, and gives a range over enemies for a card that hits them all', () => {
+    const c = clone(start(['slime', 'cultist'], ['strike', 'cleave']));
+    const strikeAt = (t: string | null) => previewCardDamage(db, c, 't0', t).get(0);
+    expect(strikeAt(null)).toMatchObject({ lo: 6, hi: 6, printed: 6 });
+    hero(c).statuses.might = 2;
+    expect(strikeAt(null)).toMatchObject({ lo: 8, hi: 8 });
+    // aimed at an Exposed enemy: half again
+    foe(c, 1).statuses.exposed = 1;
+    expect(strikeAt(foe(c, 1).id)).toMatchObject({ lo: 12, hi: 12 });
+    // not yet aimed: from the plain enemy to the Exposed one
+    expect(strikeAt(null)).toMatchObject({ lo: 8, hi: 12 });
+    expect(previewCardDamage(db, c, 't1').get(0)).toMatchObject({ lo: 6, hi: 9, printed: 4 });
+    // it only reads the state
+    const before = hashState(c);
+    previewCardDamage(db, c, 't0', foe(c, 1).id);
+    expect(hashState(c)).toBe(before);
+  });
+
+  it('shows the number the card would really deal: the preview matches playing it', () => {
+    const c = clone(start(['cultist'], ['strike']));
+    hero(c).statuses.might = 3;
+    foe(c).statuses.exposed = 1;
+    const shown = previewCardDamage(db, c, 't0', foe(c).id).get(0)!;
+    const hp = foe(c).hp + foe(c).barrier;
+    const after = play(c, 't0', foe(c).id).state;
+    const f = after.sides.b.units[0]!;
+    expect(shown.lo).toBe(hp - f.hp - f.barrier);
+  });
+});
+
+describe('live damage in card text', () => {
+  it('a sharpened weapon shows its sharpened total in place of the printed number and the formula', () => {
+    const weapon = {
+      id: 'w',
+      name: 'W',
+      kind: 'attack',
+      cost: 1,
+      target: 'foe',
+      effects: [{ op: 'damage', amount: 9, to: 'target', scale: { by: 'bonus' } }],
+    } as unknown as CardDef;
+    const live = new Map([[0, { lo: 14, hi: 14, printed: 9, calc: false }]]);
+    expect(cardText(db, weapon)).toBe('Deal 9 (+1 per point of sharpening) damage.');
+    expect(cardText(db, weapon, live)).toBe('Deal [[live:up:14]] damage.');
+    // lower than printed (Faltering), and a range over several enemies
+    expect(cardText(db, weapon, new Map([[0, { lo: 6, hi: 6, printed: 9, calc: false }]]))).toBe(
+      'Deal [[live:down:6]] damage.',
+    );
+    expect(cardText(db, weapon, new Map([[0, { lo: 9, hi: 13, printed: 9, calc: false }]]))).toBe(
+      'Deal [[live:calc:9-13]] damage.',
+    );
   });
 });

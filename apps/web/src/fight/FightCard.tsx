@@ -1,5 +1,5 @@
 import { forwardRef, memo, useMemo, useState, type CSSProperties } from 'react';
-import { cardText, type CardDef, type CombatDb } from '@sr/combat';
+import { cardText, type CardDef, type CombatDb, type LiveDamage } from '@sr/combat';
 import { CARD_H, CARD_W } from '../cards/size';
 import { markRollDiff, parseRules } from '../cards/cardText';
 import { RIFTWALKERS } from '@sr/content/v2';
@@ -31,11 +31,19 @@ const KEYWORDS =
  * Rules text with the keywords marked **bold** for the card renderer. A sanctified card ("hi~strike") also marks each number its roll
  * changed against the plain card, so the difference shows on the card itself.
  */
-function rulesFor(db: CombatDb, c: CardDef): string {
-  let text = cardText(db, c);
+function rulesFor(db: CombatDb, c: CardDef, live?: ReadonlyMap<number, LiveDamage>): string {
+  let text = cardText(db, c, live);
   const plainId = c.id.replace(/^(hi|lo)~/, '');
   const plain = plainId !== c.id ? db.cards[plainId] : undefined;
-  if (plain) text = markRollDiff(text, cardText(db, plain));
+  if (plain) {
+    // (the live numbers stand aside while the roll is compared, both texts losing the same ones, and come back after)
+    const LIVE = /\[\[live:[^\]]+\]\]/g;
+    const held = text.match(LIVE) ?? [];
+    const HOLD = '\u0001';
+    const base = cardText(db, plain, live).replace(LIVE, HOLD);
+    const parts = markRollDiff(text.replace(LIVE, HOLD), base).split(HOLD);
+    text = parts.map((p, k) => p + (k < parts.length - 1 ? (held[k] ?? '') : '')).join('');
+  }
   return text.replace(KEYWORDS, '**$1**');
 }
 
@@ -49,12 +57,14 @@ export interface FightCardProps {
   bonus?: number;
   /** what it costs right now, when that differs from the printed cost */
   cost?: number;
+  /** what its damage would really be right now (a card in your hand), by effect index: shown in place of the printed numbers */
+  live?: ReadonlyMap<number, LiveDamage>;
 }
 
 /** A Combat v2 card, drawn with the shared card frame (same canonical size and scaling as every other card). */
 export const FightCard = memo(
   forwardRef<HTMLDivElement, FightCardProps>(function FightCard(
-    { db, def, width, playable, dimmed, bonus, cost },
+    { db, def, width, playable, dimmed, bonus, cost, live },
     ref,
   ) {
     const k = width / CARD_W;
@@ -63,11 +73,15 @@ export const FightCard = memo(
     const [artFailed, setArtFailed] = useState<string | null>(null);
     const shown = artFailed === def.id ? paintedCardArt(def) : art;
     const text = useMemo(
-      () => rulesFor(db, def) + (bonus ? ` Sharpened: +${bonus}.` : ''),
-      [db, def, bonus],
+      // (a sharpened card in your hand shows the sharpened damage itself; anywhere else the text says how much was added)
+      () => rulesFor(db, def, live) + (bonus && !live?.size ? ` Sharpened: +${bonus}.` : ''),
+      [db, def, bonus, live],
     );
     const runs = useMemo(() => parseRules(text), [text]);
-    const n = text.replace(/\*\*/g, '').replace(/\[\[(?:up|down):(\d+):\d+\]\]/g, '$1').length;
+    const n = text
+      .replace(/\*\*/g, '')
+      .replace(/\[\[(?:up|down):(\d+):\d+\]\]/g, '$1')
+      .replace(/\[\[live:\w+:([\d-]+)\]\]/g, '$1').length;
     const size = n <= 55 ? 's' : n <= 110 ? 'm' : n <= 170 ? 'l' : 'xl';
     // how far the cost now is from the printed one (a cost change from a card, a Boon or Unbound): shown on the gem itself
     const costDelta = def.x || cost === undefined ? 0 : cost - def.cost;
@@ -127,6 +141,14 @@ export const FightCard = memo(
           <div className={`card__rules card__rules--${size}`}>
             <p>
               {runs.map((r, i) => {
+                if (r.live) {
+                  // what it would really deal now: green above the printed number, red below, a range when it depends on the enemy
+                  return (
+                    <span key={i} className={`card__live card__live--${r.live}`}>
+                      {r.text}
+                    </span>
+                  );
+                }
                 if (r.roll) {
                   // a number the Sanctum changed: the new value in colour (green up, red down); the hover notes say what it was
                   return (

@@ -5,6 +5,8 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **Cards show what they will really deal:** a damage number on a card in your hand counts your Might, stance, Faltering, Sharpen and Edge, green when higher than printed and red when lower; aim it at an enemy and its Exposed counts too; a card that could hit several enemies shows the range. A sharpened weapon shows its sharpened damage right on the card.
+- **Bigger status numbers** on the buffs and debuffs under each fighter, and the map legend is just the names.
 - **Cheaper upgrades for the big cards:** The Twelve-Gauge Opera+, Rift Collapse+, Bloodmoon Hunt+, The Great Pole+ and The Perfect Trap+ cost 2 Mana; Shatterstorm+, Cataclysm+ and Killing Glass+ need one less Arcana; Cataclysm Totem+ awakens your totems 3 times.
 - **Card rewards retuned:** each card after a fight is 55% common, 35% uncommon, 9% rare and 1% Legendary; after an Elite 35 / 42 / 20 / 3. How to play shows the one table (card luck is gone).
 - **Your Arena deck is at stake:** a run saves its deck for the Arena as you go. Fall, or give up in the middle of a fight, and that deck leaves the Arena; give up anywhere else and it stays. Push deeper for a stronger deck, or stop and keep it.

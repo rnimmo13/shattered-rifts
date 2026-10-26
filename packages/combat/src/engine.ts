@@ -1856,3 +1856,78 @@ export function applyAction(db: CombatDb, state: CombatState, action: Action): S
   else throw new RulesError('Unknown action');
   return { state: s, events: r.ev };
 }
+
+/** What one damage effect of a card would deal right now: the lowest and highest over the units it could hit, and its printed amount. */
+export interface LiveDamage {
+  lo: number;
+  hi: number;
+  /** the number printed on the card for this effect */
+  printed: number;
+  /** the printed amount is a formula (per Barrier, per card...): the live number is shown beside it rather than in its place */
+  calc: boolean;
+}
+
+/**
+ * The damage a card in the active side's hand would deal right now, for showing on the card (as Slay the Spire does): Might, stances,
+ * Faltering, Sharpen, Edge and Vigor counted, and the target's Exposed and Wrath too when a target is given. With no target, a card
+ * that picks one, or one that hits every enemy, gives the range over the enemies it could hit. Keyed by the effect's index in the
+ * card's effects (top-level damage effects that hit enemies only). Reads the state and never changes it.
+ */
+export function previewCardDamage(
+  db: CombatDb,
+  s: CombatState,
+  instId: string,
+  targetId: string | null = null,
+): Map<number, LiveDamage> {
+  const out = new Map<number, LiveDamage>();
+  const sd = s.sides[s.active];
+  const inst = sd.hand.find((c) => c.id === instId);
+  const def = inst ? db.cards[inst.card] : undefined;
+  const hero = heroOf(sd);
+  if (!inst || !def || !hero) return out;
+  const r: Run = { db, s, ev: [], depth: 0 };
+  const foes = s.sides[other(sd.id)].units.filter((u) => u.hp > 0);
+  const taunters = foes.filter((u) => u.taunt);
+  const chosen = targetId ? (foes.find((u) => u.id === targetId) ?? null) : null;
+  const a = mkAct(hero, {
+    card: def,
+    inst,
+    target: chosen,
+    x: def.x ? sd.mana + (def.xBonus ?? 0) : 0,
+  });
+  const edge = def.tags?.includes(EDGE_TAG) ? stacks(hero, 'edge') : 0;
+  const vigor = def.kind === 'attack' ? stacks(hero, 'vigor') : 0;
+  def.effects.forEach((op, i) => {
+    if (op.op !== 'damage') return;
+    const pool =
+      op.to === 'target'
+        ? chosen
+          ? [chosen]
+          : taunters.length
+            ? taunters
+            : foes
+        : op.to === 'front'
+          ? foes.slice(0, 1)
+          : op.to === 'allFoes' || op.to === 'randomFoe'
+            ? foes
+            : null;
+    if (!pool) return;
+    const hitsAll = op.to === 'allFoes';
+    const lone = op.lonePct && (hitsAll ? foes.length === 1 : true) ? 1 + op.lonePct / 100 : 1;
+    const one = (t: Unit | null): number =>
+      modifiedDamage(
+        Math.round((amountOf(r, a, op.amount, op.scale, t) + edge + vigor) * lone),
+        hero,
+        t,
+      );
+    const vals = pool.length ? pool.map(one) : [one(null)];
+    out.set(i, {
+      lo: Math.min(...vals),
+      hi: Math.max(...vals),
+      printed: op.amount,
+      // (Sharpen is not a formula to the player: the sharpened total simply replaces the printed number)
+      calc: !!op.scale && op.scale.into !== 'hits' && op.scale.by !== 'bonus',
+    });
+  });
+  return out;
+}

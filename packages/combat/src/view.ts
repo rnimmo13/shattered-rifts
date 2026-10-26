@@ -1,6 +1,6 @@
 // What a client may see (hidden information removed) plus generated card / intent text. Presentation helpers only.
 
-import { modifiedDamage, activePattern } from './engine';
+import { modifiedDamage, activePattern, type LiveDamage } from './engine';
 import {
   other,
   clone,
@@ -589,7 +589,28 @@ function summonText(db: CombatDb, unit: string, n: number, who: Record<Sel, stri
   return `${head}${acts ? ` At the end of your turn ${n > 1 ? 'each' : 'it'} will: ${acts}` : ''}`;
 }
 
-export function cardText(db: CombatDb, c: CardDef): string {
+/**
+ * The text of one damage effect with what it would deal right now marked in it ([[live:up:9]], [[live:down:3-5]]...): the printed number
+ * is replaced, or, when the printed amount is a formula (per Barrier...), the live number follows the sentence in brackets.
+ */
+function liveDamageText(text: string, o: Extract<Op, { op: 'damage' }>, l: LiveDamage): string {
+  const num = l.lo === l.hi ? String(l.lo) : `${l.lo}-${l.hi}`;
+  if (l.calc) {
+    const dot = text.indexOf('.');
+    const mark = `[[live:calc:${num}]]`;
+    return dot < 0 ? `${text} (${mark})` : `${text.slice(0, dot)} (${mark})${text.slice(dot)}`;
+  }
+  const dir = l.lo > l.printed ? 'up' : l.hi < l.printed ? 'down' : l.lo === l.hi ? 'same' : 'calc';
+  // (a sharpened weapon's "+1 per point of sharpening" is already in the live number, so it goes)
+  const printed = new RegExp(`^Deal ${o.amount}( \\([^)]*\\))? damage`);
+  return printed.test(text) ? text.replace(printed, `Deal [[live:${dir}:${num}]] damage`) : text;
+}
+
+/**
+ * A card's rules text. With `live` (what previewCardDamage says it would deal now, by effect index), each damage number is marked
+ * with what it would really deal, for the card in your hand.
+ */
+export function cardText(db: CombatDb, c: CardDef, live?: ReadonlyMap<number, LiveDamage>): string {
   if (c.text) return c.text;
   const parts: string[] = [];
   if (c.kind === 'snare' && c.trigger) {
@@ -622,7 +643,12 @@ export function cardText(db: CombatDb, c: CardDef): string {
         n++;
       parts.push(summonText(db, o.unit, n, who));
       i += n - 1;
-    } else parts.push(opText(db, o, who));
+    } else {
+      const l = o.op === 'damage' ? live?.get(i) : undefined;
+      parts.push(
+        l && o.op === 'damage' ? liveDamageText(opText(db, o, who), o, l) : opText(db, o, who),
+      );
+    }
   }
   if (c.exhaust) parts.push('Consume.');
   if (c.retain) parts.push('Hold.');

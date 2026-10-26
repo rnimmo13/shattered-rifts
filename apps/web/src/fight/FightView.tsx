@@ -13,6 +13,8 @@ import {
   hashState,
   legalActions,
   viewFor,
+  previewCardDamage,
+  type LiveDamage,
   type Action,
   type CardDef,
   type CombatDb,
@@ -1056,6 +1058,21 @@ export function FightView(props: {
           : (dragTargets ?? (selectedCard ? new Set(selectedCard.targets) : new Set<string>())),
     [selectedCard, dragTargets, aimPotion, legal, releaseCard],
   );
+  // what each card in hand would really deal right now (Might, Sharpen, Faltering...), and the card being aimed at the unit under
+  // the pointer (its Exposed too); a card that could hit several enemies shows the range
+  const aiming = dragCard ?? selectedCard;
+  const liveCard = aiming && hoverUnit && aimSet.has(hoverUnit) ? aiming.inst.id : null;
+  const liveUnit = liveCard ? hoverUnit : null;
+  const liveDamage = useMemo(() => {
+    const out = new Map<string, ReadonlyMap<number, LiveDamage>>();
+    if (!live || watch) return out;
+    const st = live.active === mySide ? live : { ...live, active: mySide };
+    for (const c of handCards) {
+      const m = previewCardDamage(db, st, c.inst.id, liveCard === c.inst.id ? liveUnit : null);
+      if (m.size) out.set(c.inst.id, m);
+    }
+    return out;
+  }, [live, watch, mySide, handCards, db, liveCard, liveUnit]);
 
   useEffect(() => {
     scene.current?.fighters.setTargetable(aimSet.size ? aimSet : null);
@@ -1467,6 +1484,7 @@ export function FightView(props: {
           <FightHand
             db={db}
             cards={handCards}
+            live={liveDamage}
             cardWidth={cw}
             locked={waiting || finished}
             selectedId={selected}

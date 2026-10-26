@@ -1,4 +1,5 @@
-// Rules text uses **bold** for keywords, and [[up:8:6]] / [[down:4:6]] for a number a sanctified roll changed (now 8, was 6).
+// Rules text uses **bold** for keywords, [[up:8:6]] / [[down:4:6]] for a number a sanctified roll changed (now 8, was 6), and
+// [[live:up:14]] (or down, same, calc; a range is "3-9") for what a card in your hand would really deal right now.
 // Split it into runs so React can render it without innerHTML.
 
 export interface TextRun {
@@ -6,9 +7,11 @@ export interface TextRun {
   bold: boolean;
   /** a number a sanctified roll changed: which way, and what it was */
   roll?: { dir: 'up' | 'down'; was: string };
+  /** a damage number worked out for right now: higher or lower than printed, the same, or a formula's result */
+  live?: 'up' | 'down' | 'same' | 'calc';
 }
 
-const MARK = /(\*\*|\[\[(?:up|down):\d+:\d+\]\])/;
+const MARK = /(\*\*|\[\[(?:up|down):\d+:\d+\]\]|\[\[live:(?:up|down|same|calc):\d+(?:-\d+)?\]\])/;
 
 export function parseRules(text: string): TextRun[] {
   const runs: TextRun[] = [];
@@ -17,6 +20,15 @@ export function parseRules(text: string): TextRun[] {
     if (!p) continue;
     if (p === '**') {
       bold = !bold;
+      continue;
+    }
+    const lv = /^\[\[live:(up|down|same|calc):(\d+(?:-\d+)?)\]\]$/.exec(p);
+    if (lv) {
+      runs.push({
+        text: (lv[2] as string).replace('-', '–'),
+        bold,
+        live: lv[1] as NonNullable<TextRun['live']>,
+      });
       continue;
     }
     const m = /^\[\[(up|down):(\d+):(\d+)\]\]$/.exec(p);

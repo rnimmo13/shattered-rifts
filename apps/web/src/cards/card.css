@@ -847,3 +847,25 @@
 .card__roll--down {
   color: #ff6b81;
 }
+
+/* a damage number worked out for right now (a card in your hand, Slay the Spire style): green when Might, Sharpen, a stance or the
+   target's Exposed lift it above the printed number, red when Faltering lowers it, plain when unchanged, gold for a formula's result
+   or a range that depends on which enemy it hits */
+.card__live {
+  font-weight: 800;
+  white-space: nowrap;
+  text-shadow:
+    0 0 2px rgb(0 0 0 / 0.85),
+    0 0 1px rgb(0 0 0 / 0.85);
+}
+.card__live--up {
+  color: #4ee08a;
+  font-size: 1.12em;
+}
+.card__live--down {
+  color: #ff6b81;
+  font-size: 1.12em;
+}
+.card__live--calc {
+  color: #ffd36a;
+}

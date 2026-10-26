@@ -3,7 +3,7 @@
 // targets is dropped on one, or clicked and then aimed with the pointer.
 
 import { useEffect, useRef, useState, type CSSProperties } from 'react';
-import type { CardDef, CardInst, CombatDb } from '@sr/combat';
+import type { CardDef, CardInst, CombatDb, LiveDamage } from '@sr/combat';
 import { fanLayout, HAND_SINK } from '../hand/fanLayout';
 import { FightCard } from './FightCard';
 
@@ -27,6 +27,8 @@ const needsAim = (c: HandCard): boolean => c.aim === true || c.targets.length > 
 export interface FightHandProps {
   db: CombatDb;
   cards: HandCard[];
+  /** what each card would really deal right now, by card instance (see previewCardDamage) */
+  live?: ReadonlyMap<string, ReadonlyMap<number, LiveDamage>>;
   cardWidth: number;
   /** nothing can be played (enemy turn, animations that must finish, game over) */
   locked: boolean;
@@ -256,6 +258,7 @@ export function FightHand(p: FightHandProps) {
                 dimmed={!c.playable}
                 {...(c.inst.bonus ? { bonus: c.inst.bonus } : {})}
                 {...(c.cost !== undefined && c.cost !== c.def.cost ? { cost: c.cost } : {})}
+                {...(p.live?.has(c.inst.id) ? { live: p.live.get(c.inst.id)! } : {})}
               />
             </div>
             <div
