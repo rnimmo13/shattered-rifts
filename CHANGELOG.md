@@ -5,6 +5,7 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **Harder from the start:** Tier I enemies have about 15% more HP and hit a little harder, and every Rift Tier after it climbs faster.
 - **The fight title says the Rift Tier** as well as the stage and floor.
 - **See what you are up against:** in a campaign fight the Rift Tier's Omens sit at the top right with what each does on hover, and in the Arena (and against a ghost Warden) your opponent's Auras and Boons show there too.
 - **Trades:** new events trade particular cards of your deck: melt two common Attacks (or bind two common Skills) into an uncommon of your choice, trade a rare for another, retrain a card that does not fit your build path, or step an uncommon up to a rare. The Threshold can trade Strikes or Defends for your pick of Attacks or Skills.

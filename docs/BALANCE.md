@@ -74,6 +74,17 @@ events, ancestral cards and Sanctified rolls are not in the audit decks.
 
 ---
 
+## Harder Tier I and a steeper climb, again (2026-10-26, DECISIONS #257)
+
+Tier I enemies 150% HP / 124% damage at stage 1 (was 130 / 120), +55% HP and +20% damage a tier to Tier X (was +45 / +18). Bot ladder, all
+ten Riftwalkers, each deck at its own tier, before -> after:
+
+| Deck | Elite win % | Warden win % | Vorthax win % | HP lost in a regular fight |
+|---|---|---|---|---|
+| first Warden (t1s1) | 70 -> 46 | 10 -> 6 | - | 25% -> 33% |
+| end of loop 1 (t1s3) | 86 -> 70 | 35 -> 24 | 11 -> 11 | 14% -> 20% |
+| Tier V (t5) | 87 -> 70 | 54 -> 39 | 38 -> 29 | 8% -> 13% |
+
 ## Build paths and traits (2026-10-26, DECISIONS #255)
 
 New tools: `pnpm audit:balance -- ladder --bypath` adds a row per build path (hero/0, hero/1, hero/2, in the order of
