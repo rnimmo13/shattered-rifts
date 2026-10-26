@@ -46,6 +46,10 @@ export const PATCH_NOTES: PatchNote[] = [
         kind: 'changed',
         text: 'The Arena page no longer shows the Vault code box or the server setting. To bring your saved decks to another device, sign in.',
       },
+      {
+        kind: 'changed',
+        text: 'Your username now sits at the top right of the home page. No username yet? Choose one right there. Open it to change your name or sign in.',
+      },
     ],
   },
   {

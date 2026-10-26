@@ -5,6 +5,7 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **Your name on the home page:** the top right shows your username (or a prompt to choose one), with name changes and sign-in inside it.
 - **Fairer ghost Wardens:** never from a higher tier than yours, never more than three below, and the map only shows a Ghost Warden when there is one. The Arena page drops the Vault code box and server setting (sign in to move decks between devices).
 - **Leaderboards redesigned:** pick a board, then its view, with the time left beside it and the rules folded away. The Arena page's introduction and rank card sit centred.
 - **One Arena, with ranks:** every match against another player counts toward your Arena rank; ghost matches never do. The Leaderboards' Arena tab opens on the season's ranks. Long text no longer runs across wide screens.

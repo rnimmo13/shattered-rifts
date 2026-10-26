@@ -5,13 +5,13 @@ import { REALMS, RIFTWALKERS, heroesByRealm, type HeroId } from '@sr/content/v2'
 import { BUILD } from '../build';
 import { heroFigure } from '../fight/art';
 import { RUN_SLOTS, clearSavedRun, listRuns, runCount, setActiveRun } from '../run/saves';
-import { AccountBox } from '../pvp/AccountBox';
 import { whoAmI, type Me } from '../pvp/vaultSync';
 import { progressLabel } from '../pvp/deckLayout';
 import { stagesCleared } from '../pvp/vault';
 import { HeroIcon } from '../ui/HeroIcon';
 import { StoreIcon } from './StoreIcon';
 import { HomeLinks } from './HomeLinks';
+import { PlayerChip } from './PlayerChip';
 import { HERO_COLOR } from '../art/emblems';
 import { tipAttrs } from '../ui/tip';
 import { getHero, rememberHero } from './heroChoice';
@@ -85,12 +85,7 @@ export function TitleScreen() {
     <main className="home" style={{ '--accent': color } as CSSProperties}>
       <div className="home__bar">
         <span className="home__eyebrow">Friends alpha · working title</span>
-        <AccountBox
-          me={me}
-          to="home"
-          compact
-          onSignedOut={() => setMe({ signedIn: false, available: true })}
-        />
+        <PlayerChip me={me} onSignedOut={() => setMe({ signedIn: false, available: true })} />
       </div>
 
       <div className="home__body">

@@ -421,3 +421,103 @@
     padding: 0.35rem 0.3rem;
   }
 }
+
+/* who you are, top right (PlayerChip.tsx): your username, or a nudge to choose one; it opens a small panel */
+.playerchip {
+  position: relative;
+}
+.playerchip__me,
+.playerchip__ask {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.3rem 0.8rem 0.3rem 0.35rem;
+  border-radius: 999px;
+  border: 1px solid rgb(212 168 75 / 0.45);
+  background: rgb(8 10 20 / 0.6);
+  color: var(--c-ivory);
+  font: inherit;
+  cursor: pointer;
+}
+.playerchip__ask {
+  padding: 0.35rem 0.9rem;
+  border-style: dashed;
+  color: var(--c-gold-light);
+  font-size: 0.92rem;
+}
+.playerchip__me:hover,
+.playerchip__ask:hover,
+.playerchip__me:focus-visible,
+.playerchip__ask:focus-visible {
+  border-color: var(--c-gold-light);
+  outline: none;
+}
+.playerchip__initial {
+  display: grid;
+  place-items: center;
+  width: 1.7rem;
+  height: 1.7rem;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 35% 30%,
+    var(--c-gold-pale),
+    var(--c-gold) 60%,
+    var(--c-gold-dark)
+  );
+  color: #1a1206;
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 0.9rem;
+}
+.playerchip__me b {
+  font-family: var(--font-display);
+  letter-spacing: 0.05em;
+}
+.playerchip__caret {
+  font-size: 0.75rem;
+  color: var(--c-text-dim);
+}
+.playerchip__panel {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 0.5rem);
+  z-index: 50;
+  width: min(22rem, 90vw);
+  display: grid;
+  gap: 0.8rem;
+  padding: 1rem;
+  border-radius: 14px;
+  border: 1px solid var(--c-gold-dark);
+  background: linear-gradient(160deg, rgb(24 34 74 / 0.98), rgb(8 10 20 / 0.98));
+  box-shadow: 0 16px 40px rgb(0 0 0 / 0.6);
+}
+.playerchip__lead {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--c-text-dim);
+}
+.playerchip__account {
+  padding-top: 0.6rem;
+  border-top: 1px solid rgb(255 255 255 / 0.1);
+}
+.playerchip__account .pvp__account {
+  justify-content: flex-start;
+  font-size: 0.88rem;
+}
+/* the username form sits plainly inside the panel (it is a card of its own elsewhere) */
+.playerchip__panel .nameclaim {
+  width: 100%;
+  max-width: none;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  box-shadow: none;
+  box-sizing: border-box;
+}
+.playerchip__panel .nameclaim input {
+  width: 100%;
+  box-sizing: border-box;
+  font-size: 1.05rem;
+}
