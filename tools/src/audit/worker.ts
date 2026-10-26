@@ -23,6 +23,8 @@ export interface Job {
   /** a deck to play as it is (instead of drafting one), with its Boons */
   deck?: string[];
   boons?: string[];
+  /** play the drafted deck without its Boons (the Arena, DECISIONS #236) */
+  noBoons?: boolean;
   /** optimize: rounds counted, seeds, iterations, moves per iteration */
   opt?: { rounds: number; seeds: number; iterations: number; moves: number };
 }
@@ -42,6 +44,7 @@ parentPort?.on('message', (jobs: Job[]) => {
           iterations: o.iterations,
           movesPerIteration: o.moves,
           dmgPct: j.dmgPct,
+          ...(j.noBoons ? { noBoons: true } : {}),
         }),
       };
     }
@@ -56,7 +59,7 @@ parentPort?.on('message', (jobs: Job[]) => {
     const spec = {
       hero: j.hero,
       deck: d.deck,
-      boons: d.boons,
+      boons: j.noBoons ? [] : d.boons,
       enemies: j.enemies,
       hpPct: j.hpPct,
       dmgPct: j.dmgPct,

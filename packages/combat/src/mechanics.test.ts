@@ -11,6 +11,7 @@ import {
   heroOf,
   legalActions,
   validateDb,
+  RADIANT_ENTER_MANA,
   viewFor,
   type Action,
   type CardDef,
@@ -786,7 +787,7 @@ describe('stances', () => {
     s = play(s, 'h3').state;
     expect(hero(s).statuses.radiant).toBe(1);
     expect(hero(s).statuses.mantra).toBe(2);
-    expect(s.sides.a.mana).toBe(6 - 4 + 2);
+    expect(s.sides.a.mana).toBe(6 - 4 + RADIANT_ENTER_MANA);
     const hp = foe(s).hp;
     s = play(s, 'h4', foe(s).id).state;
     expect(hp - foe(s).hp).toBe(18);

@@ -32,13 +32,20 @@ export interface Entry {
   who?: string;
 }
 
+/**
+ * The version of the rules a match is played by: raise it whenever a change alters how a match plays out (cards, HP, the engine), so a
+ * browser still on the old version is told to reload instead of playing a different game from the server's, and a match saved under
+ * the old rules is ended rather than replayed under the new ones (DECISIONS #237).
+ */
+export const RULES_VERSION = 2;
+
 export type ClientMsg =
   /** to the queue: wait for an opponent */
-  | { type: 'queue'; playerId: string; entry: Entry }
+  | { type: 'queue'; playerId: string; entry: Entry; rules?: number }
   /** to the queue (or instead of waiting in it): face a ghost, a deck that has played in the Arena, with the computer at the controls */
-  | { type: 'ghost'; playerId: string; entry: Entry }
+  | { type: 'ghost'; playerId: string; entry: Entry; rules?: number }
   /** to a room: take a seat (a code from a friend, or the room the queue made) */
-  | { type: 'join'; playerId: string; entry: Entry }
+  | { type: 'join'; playerId: string; entry: Entry; rules?: number }
   | { type: 'action'; seq: number; action: Action }
   /** your answer to "who goes first?": true = I will go first, false = I will go second (and have more HP) */
   | { type: 'order'; first: boolean }
@@ -112,11 +119,16 @@ export type ErrorCode =
   | 'out-of-order'
   | 'no-match'
   /** there is no ghost to face yet (no deck has played in the Arena) */
-  | 'no-ghost';
+  | 'no-ghost'
+  /** this browser plays by older rules than the server (RULES_VERSION): reload the page */
+  | 'outdated';
 
-/** Every Arena hero (a player's, or a ghost's) has this many times its usual HP, so a match lasts long enough to play. */
-export const ARENA_HP_MULT = 3;
-/** The player who goes second starts with this much more HP (and max HP): the old 10, tripled with everyone else's. */
+/**
+ * Every Arena hero (a player's, or a ghost's) has this many times its usual HP, so a match lasts long enough to play and no deck
+ * wins on its first turn (DECISIONS #237: the strongest first turn found is about 60% of the lowest Arena HP; `pnpm arenasim`).
+ */
+export const ARENA_HP_MULT = 6;
+/** The player who goes second starts with this much more HP (and max HP): the old 10, scaled with everyone else's. */
 export const SECOND_PLAYER_HP = 10 * ARENA_HP_MULT;
 /** How long each player has to say whether they want to go first, ms. */
 export const CHOOSE_MS = 20_000;

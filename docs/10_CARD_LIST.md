@@ -626,7 +626,7 @@ Starter: Strike, Strike, Strike, Strike, Defend, Defend, Defend, Plant Hawk, Pla
 | Ancient Bastion | 2 | skill | rare | Gain 10 Barrier. Plant Bear 2 times. |
 | Ancestral Learning | 2 | power | rare | At the start of your turn: Draw 1 card. |
 | Echoing Loop | 2 | power | rare | At the end of your turn: Awaken your first totem (it stays). |
-| Fevered Communion | 1 | power | rare | Apply 3 Spirit. At the start of your turn: Remove 1 Spirit. |
+| Fevered Communion | 1 | power | rare | Apply 2 Spirit. At the start of your turn: Remove 1 Spirit. |
 | Chorus of Totems | 2 | power | rare | Apply 2 Spirit. Gain 1 totem slot. |
 | Abyssal Totem | 2 | skill | rare | Plant Elder 2 times. |
 | Reset the Weave | 0 | skill | rare | Discard any number of cards. Draw 4 cards. Consume. |

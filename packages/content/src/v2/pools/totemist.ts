@@ -223,8 +223,9 @@ export const TOTEMIST: CardDef[] = [
   i('uncommon', 'resonant-strike', 'Spirit Strike', 'attack', 1, 'foe', [
     scaled(dmg(6), per('resonance', 2)),
   ]),
+  // (Spirit 2, 3 upgraded: three copies made +12 Spirit on the first turn, the Arena's biggest one-shot; DECISIONS #237)
   i('rare', 'fevered-attunement', 'Fevered Communion', 'power', 1, 'none', [
-    status('resonance', 3),
+    status('resonance', 2),
     on('turnStart', [status('resonance', -1)]),
   ]),
   i('rare', 'chorus-of-glyphs', 'Chorus of Totems', 'power', 2, 'none', [

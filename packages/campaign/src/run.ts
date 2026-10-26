@@ -260,6 +260,8 @@ export function enterNode(run: RunState, nodeId: string): RunState {
     case 'elite':
     case 'warden':
       r.phase = 'duel';
+      // (news from an earlier stop, "The Warden falls", say, is not told again as this fight starts)
+      delete r.eventResult;
       break;
     case 'shrine':
       r.phase = 'shrine';
@@ -388,17 +390,31 @@ export interface FightPlan {
   /** a seed that changes on each retry, so a lost fight is not replayed identically */
   seed: string;
   /** this Warden is a ghost: the deck to fight (played by the computer), and its HP (the usual Warden below is not fought) */
-  ghost?: GhostBoss & { hp: number };
+  ghost?: GhostBoss & { hp: number; dmgPct: number };
 }
 
-/** How much HP a ghost Warden has: its Riftwalker's own, times this (a Warden is tougher than a player), more with each Rift Tier. (Raised from 1.4 / 0.06 when hero HP came down to Slay the Spire levels, DECISIONS #223, so ghosts keep about the HP they had.) */
-export const GHOST_BOSS_HP_BASE = 1.65;
-export const GHOST_BOSS_HP_PER_TIER = 0.07;
-export const ghostBossHp = (hero: string, tier: number): number =>
+/**
+ * A ghost Warden grows with the Rift Tier the way every Warden does (DECISIONS #237): its HP is its Riftwalker's own times
+ * GHOST_BOSS_HP_BASE at the first tier ghosts come (stage 1), and its HP and damage then rise as the tier table does from there.
+ * (Not the table's whole percent: a ghost is a full Riftwalker's deck, which already hits like a player, and a deck from deeper in the
+ * Rift is already a stronger deck. Measured with `pnpm arenasim --ghost`: about as often won as the usual Warden at Tiers V, X, XX.)
+ */
+export const GHOST_BOSS_HP_BASE = 1.3;
+/** The Max HP a Warden leaves you: 3 to Tier IV, one more every five tiers (4 from Tier V, 5 from Tier X, 7 at Tier XX). */
+export const wardenMaxHp = (tier: number): number => 3 + Math.floor(Math.max(1, tier) / 5);
+
+/** Where a ghost starts: the tier table at the first tier ghosts come, stage 1. */
+const ghostFrom = (): { hp: number; dmg: number } => enemyScale(GHOST_FROM_TIER + 1, 1);
+export const ghostBossHp = (hero: string, tier: number, stage = 1): number =>
   Math.round(
-    (RIFTWALKERS[hero as keyof typeof RIFTWALKERS]?.hero.maxHp ?? 80) *
-      (GHOST_BOSS_HP_BASE + GHOST_BOSS_HP_PER_TIER * Math.max(0, tier - GHOST_FROM_TIER)),
+    ((RIFTWALKERS[hero as keyof typeof RIFTWALKERS]?.hero.maxHp ?? 80) *
+      GHOST_BOSS_HP_BASE *
+      Math.max(ghostFrom().hp, enemyScale(tier, stage).hp)) /
+      ghostFrom().hp,
   );
+/** A ghost Warden's damage, percent of its cards' numbers: 100 where ghosts start, rising as the tier table's damage does. */
+export const ghostBossDmg = (tier: number, stage = 1): number =>
+  Math.max(100, Math.round((100 * enemyScale(tier, stage).dmg) / ghostFrom().dmg));
 
 /** Is this a ghost Warden whose deck has not been fetched yet? (The screen asks the server for one, then calls `attachGhost`.) */
 export function ghostWanted(run: RunState): boolean {
@@ -465,7 +481,15 @@ export function duelPlan(run: RunState): FightPlan | null {
   const e = encounter(node.enemyId);
   const ghost = node.ghost ? run.context.ghost : undefined;
   return {
-    ...(ghost ? { ghost: { ...ghost, hp: ghostBossHp(ghost.hero, run.tier) } } : {}),
+    ...(ghost
+      ? {
+          ghost: {
+            ...ghost,
+            hp: ghostBossHp(ghost.hero, run.tier, run.stage),
+            dmgPct: ghostBossDmg(run.tier, run.stage),
+          },
+        }
+      : {}),
     encounterId: e.id,
     units: [...e.units],
     deck: [...run.deck],
@@ -556,7 +580,11 @@ export function finishDuel(
   if (node.kind === 'elite') heal(r, (r.maxHp * ELITE_HEAL_PCT) / 100); // an elite leaves you a little breathing room
   if (node.kind === 'warden') {
     clearNode(r, node.id);
-    // a Warden falls: you catch your breath
+    // a Warden falls: you grow a little sturdier for good (more deeper in, where enemies hit harder; DECISIONS #237), and catch your breath
+    const sturdier = wardenMaxHp(r.tier);
+    r.maxHp += sturdier;
+    r.hp += sturdier;
+    r.eventResult = `The Warden falls: +${sturdier} Max HP.`;
     heal(r, r.maxHp * 0.3);
     r.resolve = Math.min(r.maxResolve, r.resolve + 1);
     if (r.stage >= FINAL_STAGE) {
@@ -565,7 +593,7 @@ export function finishDuel(
         const legend = boonOfRarity(r.rng, r.boons, 'legendary');
         if (legend && COMBAT_DB.boons[legend]?.rarity === 'legendary') {
           gainBoon(r, legend);
-          r.eventResult = `The Heart of the Rift leaves something behind: the Legendary Boon ${COMBAT_DB.boons[legend]?.name ?? legend}.`;
+          r.eventResult = `${r.eventResult} The Heart of the Rift leaves something behind: the Legendary Boon ${COMBAT_DB.boons[legend]?.name ?? legend}.`;
         }
       }
       r.phase = 'loopCleared';

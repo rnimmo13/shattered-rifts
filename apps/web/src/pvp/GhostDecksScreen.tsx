@@ -66,8 +66,8 @@ export default function GhostDecksScreen() {
         <p className="setup__lead">
           A ghost is a deck that has been entered in the Arena, played by the computer so there is
           always someone to fight. Only a deck that has cleared Tier 3 becomes a ghost. Here is who
-          they came from and how far they got. You cannot see their cards or Boons: you find out by
-          fighting one. Decks that have not played for a month drop off.
+          they came from and how far they got. You cannot see their cards: you find out by fighting
+          one. Decks that have not played for a month drop off.
         </p>
       </header>
       <div className="board__tabs" role="group" aria-label="Sort">

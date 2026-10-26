@@ -22,6 +22,7 @@
     "pvpsmoke": "tsx src/pvpsmoke.ts",
     "pvpbalance": "tsx src/pvpbalance.ts",
     "ghostsim": "tsx src/ghostsim.ts",
+    "arenasim": "tsx src/arenasim.ts",
     "cardprompts:extra": "tsx src/cardprompts-extra.ts"
   },
   "dependencies": {

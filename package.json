@@ -31,6 +31,7 @@
     "pvpsmoke": "pnpm --filter @sr/tools pvpsmoke",
     "pvpbalance": "pnpm --filter @sr/tools pvpbalance",
     "ghostsim": "pnpm --filter @sr/tools ghostsim",
+    "arenasim": "pnpm --filter @sr/tools arenasim",
     "pvp:dev": "pnpm --filter @sr/server dev",
     "cardprompts:extra": "pnpm --filter @sr/tools cardprompts:extra"
   },

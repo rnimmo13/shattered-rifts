@@ -329,3 +329,11 @@ free Hawk totem, so his HP came down and his weakest attacks went up.
 ## Baseline raised again, Gambler's Shrine (2026-10-25, DECISIONS #234)
 
 Every Tier table row +15 HP / +8 damage points (Tier I 130% / 120%, Tier X 535-565% / 282-294%, Tier XX 761-775% / 378-384%); steps unchanged, the ladder still rises. To make up for the deeper tiers, from Tier VI a Shrine is the Gambler's Shrine (two different blessings of seven plus the Brass Reel). The Ledger's Max HP is the one open number to watch: 4 + 2 per signature means a run that signs at every Gambler's Shrine (5 or so a run) gains about 40 Max HP, at the cost of one blessing each visit.
+
+## Arena: one-shots and match length, ghost Wardens (2026-10-25, DECISIONS #237)
+
+No Boons (DECISIONS #236). Turn-one ceilings (deck optimizer, `pnpm audit:balance -- optimize --level t10 --rounds 1 --noboons`) before -> after the trims: Totemist 333 -> 263, Hunter 296 -> 188; Sehra 183, Trapper 150, Barbarian lane 0 146, the rest 50-135. At Tier XX (`--level t20`): Sehra lane 2 355 -> about 326 with Radiant giving 1 Mana on entry (was 2), Barbarian lane 0 208, Assassin 155, the rest under 140. Arena HP 6x base (420-528).
+
+Bot-drafted Arena matches (`tools/src/arenasim.ts`, the ghost pilot on both seats, no Boons): HP x3 / x5 / x6 / x8 -> median rounds 8 / 10 / 12 / 13-15; nobody died having had only one or two turns at any multiplier; seat a wins 40-51%. Biggest single turn (p90): 44% / 36% / 35% / 28% of max HP at Tier X.
+
+Ghost Wardens (`arenasim --ghost`): player deck and Boons of a level against another Riftwalker's deck of the same level. Bot win %: the old formula (1.65 + 0.07/tier, no damage) 46 / 31 / 40 at Tiers V / X / XX; the full tier table on a ghost 1-8%; the chosen growth (1.3x base at Tier IV, then the table's rise since Tier IV stage 1, HP and damage) about 45 / 13 / 14; the usual Warden 44 / 15 / 14.

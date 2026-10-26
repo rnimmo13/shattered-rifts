@@ -17,6 +17,8 @@ export interface OptimizeSpec {
   iterations: number;
   movesPerIteration: number;
   dmgPct: number;
+  /** search without the drafted deck's Boons (the Arena) */
+  noBoons?: boolean;
 }
 
 function dealt(events: readonly CombatEvent[], foes: Set<string>): number {
@@ -84,7 +86,7 @@ export interface OptimizeResult {
 export function optimize(o: OptimizeSpec): OptimizeResult {
   const r = rng(hashSeed(`opt/${o.hero}/${o.lane}/${o.level}`));
   const start = buildDeck(o.hero, o.lane, o.level, hashSeed(`${o.hero}/${o.lane}/${o.level}/0`));
-  const boons = start.boons;
+  const boons = o.noBoons ? [] : start.boons;
   const pool = rewardPool(o.hero).map((id) => db.cards[id]?.upgrade ?? id);
   const seeds = Array.from({ length: o.seeds }, (_, i) => `opt-${i}`);
   const evaluate = (deck: string[]): { score: number; perRound: number[] } => {

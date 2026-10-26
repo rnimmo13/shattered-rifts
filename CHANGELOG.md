@@ -5,7 +5,10 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
-- **No Boons in the Arena:** a match between decks is cards only. Your deck still shows the Boons its run had.
+- **Arena matches last longer, and no deck wins on its first turn:** every Riftwalker has 6x their HP in the Arena (was 3x); damage is unchanged. Going second gives +60 HP. **No Boons in the Arena:** a match between decks is cards only, and Arena decks no longer show them.
+- **Three turn-one combos trimmed:** Fevered Communion gives 2 Spirit (3 upgraded), Blood Tithe+ draws 3 cards (it loses 4 HP now), and entering Radiant gives 1 Mana (was 2; it still triples your damage).
+- **Ghost Wardens grow with the Rift Tier** like every other Warden, in HP and in damage: deep in the Rift they no longer go down easily.
+- **Every Warden you beat gives you Max HP for good:** +3, more deeper in (+5 from Tier X, +7 at Tier XX).
 - **The Gambler's Shrine (Tier VI and up):** take two different blessings from seven: Rest, Upgrade, Let one go, and four wagers: **Sacrifice** a card for one of three Rift-crossed cards on the altar (three rares from Tier X), **Loaded Dice** (sanctify a card you choose: 60% it rises, better odds the deeper you go), **the Chisel** (engrave Hold, Opening hand or Flare on a card) and **the Ledger** (+4 Max HP, 2 more every time you sign it in a run). The **Brass Reel** stands beside them for anyone with shards to spend.
 - **You can walk away from any Shrine** at any time.
 - **Enemies a little tougher everywhere:** +15% HP and +8% damage on every stage of every Rift Tier (Tier I is now 130% HP / 120% damage).

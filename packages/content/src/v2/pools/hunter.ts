@@ -46,8 +46,10 @@ export const HUNTER: CardDef[] = [
     barrier(5),
     scaled(barrier(0), per('missingHp', 0.25)),
   ]),
+  // (upgraded it loses less HP but still draws 3: four copies drawing 4 each emptied the deck on the first turn; DECISIONS #237)
   k('rare', 'blood-tithe', 'Blood Tithe', 'skill', 0, 'none', [lose(6), mana(2), draw(3)], {
     exhaust: true,
+    up: { effects: [lose(4), mana(2), draw(3)] },
   }),
   k('uncommon', 'crushing-blow', 'Crushing Blow', 'attack', 2, 'foe', [
     scaled(dmg(8), per('might', 2)),

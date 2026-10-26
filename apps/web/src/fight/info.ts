@@ -54,7 +54,7 @@ export const STATUS_INFO: Record<
     name: 'Radiant',
     glyph: '☀',
     tone: 'good',
-    text: 'A stance. You deal triple attack damage. It ends when your turn ends.',
+    text: 'A stance. You deal triple attack damage. Entering it gives 1 Mana. It ends when your turn ends.',
   },
   mantra: {
     name: 'Fervor',

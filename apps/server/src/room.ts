@@ -14,6 +14,7 @@ import {
   newSeries,
   other,
   RECONNECT_MS,
+  RULES_VERSION,
   scoreGame,
   seatsFor,
   SERIES_CHOOSE_MS,
@@ -55,6 +56,8 @@ interface Saved {
   who?: Partial<Record<Seat, string>>;
   started: boolean;
   seed: string;
+  /** the RULES_VERSION the game in progress was started under (missing: before there was one) */
+  rules?: number;
   log: { seat: Seat; action: Action }[];
   deadline: number;
   over: Outcome | null;
@@ -235,6 +238,12 @@ export class MatchRoom extends DurableObject<Env> {
     const a = d.entries.a;
     const b = d.entries.b;
     if (!d.started || !a || !b || d.between) return;
+    // a game started under other rules (a new version came out mid-match) would replay as a different game: it is ended instead
+    if (d.rules !== RULES_VERSION) {
+      d.over ??= { winner: 'draw', reason: 'disconnect' };
+      this.match = null;
+      return;
+    }
     try {
       const m = new Match(d.seed, a, b, Date.now());
       for (const { seat, action } of d.log) {
@@ -367,6 +376,7 @@ export class MatchRoom extends DurableObject<Env> {
     d.log = [];
     d.over = null;
     d.started = true;
+    d.rules = RULES_VERSION;
     d.toss = { random: order.random };
     d.seed = crypto.randomUUID();
     this.match = new Match(d.seed, entries.a as Entry, entries.b as Entry, Date.now());
@@ -413,6 +423,15 @@ export class MatchRoom extends DurableObject<Env> {
 
     if (msg.type === 'join') {
       if (at) return; // already seated on this socket
+      if (msg.rules !== RULES_VERSION) {
+        send(ws, {
+          type: 'error',
+          code: 'outdated',
+          message: 'The game has been updated. Reload the page to play.',
+        });
+        ws.close(1008, 'outdated');
+        return;
+      }
       if (msg.playerId.startsWith('ghost:')) {
         send(ws, { type: 'error', code: 'bad-message', message: 'That is not a player id.' });
         ws.close(1008, 'bad id');

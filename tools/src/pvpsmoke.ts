@@ -9,6 +9,7 @@ import {
   ARENA_HP_MULT,
   Match,
   SECOND_PLAYER_HP,
+  RULES_VERSION,
   type ClientMsg,
   type Entry,
   type Seat,
@@ -16,7 +17,8 @@ import {
 } from '@sr/pvp';
 
 const BASE = (process.argv[2] ?? 'ws://127.0.0.1:8787').replace(/\/$/, '');
-const entryOf = (hero: HeroId, name: string, tier = 1): Entry => ({
+// (Tier IV by default: only a deck that has cleared Tier 3 is kept as a ghost, DECISIONS #235)
+const entryOf = (hero: HeroId, name: string, tier = 4): Entry => ({
   name,
   hero,
   deck: [...RIFTWALKERS[hero].starter],
@@ -81,7 +83,13 @@ function connect(path: string, name: string, id: string, wantsFirst = true): Pro
   });
 }
 
-const send = (b: Bot, m: ClientMsg): void => b.ws.send(JSON.stringify(m));
+// (entering a match says which rules this client plays by, as the browser does)
+const send = (b: Bot, m: ClientMsg): void =>
+  b.ws.send(
+    JSON.stringify(
+      m.type === 'join' || m.type === 'queue' || m.type === 'ghost' ? { ...m, rules: RULES_VERSION } : m,
+    ),
+  );
 
 function handle(b: Bot, m: ServerMsg): void {
   if (m.type === 'choose') {
@@ -429,7 +437,8 @@ async function board(tag: string): Promise<void> {
     });
   need((await run(1))['counted'] === true, 'a first stage cleared is counted');
   need((await run(3, { tier: 5 }))['counted'] === false, 'a jump to Tier V is not believed');
-  need((await run(3, { tier: 2 }))['counted'] === true, 'a run the board has fallen behind on catches up to Tier II');
+  // (three stages on: as far as one report may move a run without the time it would take, RUN_STEP_ALLOWANCE)
+  need((await run(1, { tier: 2 }))['counted'] === true, 'a run the board has fallen behind on catches up to Tier II');
   need((await run(2, { tier: 1 }))['counted'] === false, 'going back is not believed');
   need((await run(1, { tier: 3 }))['counted'] === true, 'and a stage further is believed after a catch-up');
   need((await run(1, { tier: 3 }))['counted'] === false, 'the same progress twice is not');

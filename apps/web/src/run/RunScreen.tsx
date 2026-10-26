@@ -393,6 +393,7 @@ export default function RunScreen() {
                   deck: plan.ghost.deck,
                   hp: plan.ghost.hp,
                   maxHp: plan.ghost.hp,
+                  dmgPct: plan.ghost.dmgPct,
                   boons: plan.ghost.boons,
                   potions: [],
                 }
@@ -500,6 +501,7 @@ export default function RunScreen() {
                   deck: plan.ghost.deck,
                   hp: plan.ghost.hp,
                   maxHp: plan.ghost.hp,
+                  dmgPct: plan.ghost.dmgPct,
                   boons: plan.ghost.boons,
                   potions: [],
                 },

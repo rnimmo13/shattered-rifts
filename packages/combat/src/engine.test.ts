@@ -611,6 +611,24 @@ describe('pvp mode', () => {
     const r = applyAction(db, s, { type: 'play', card: 'z', target: target.id });
     expect(heroOf(r.state.sides.a)?.hp).toBe(54);
   });
+
+  it("a hero's damage percent scales what it deals (a ghost Warden), and only its own", () => {
+    let s = createCombat(db, {
+      seed: 'p',
+      a: { hero: 'knight', deck: SAMPLE_DECK },
+      b: { hero: 'tinker', deck: SAMPLE_DECK, dmgPct: 150 },
+    }).state;
+    expect(heroOf(s.sides.a)?.dmgPct).toBe(100);
+    s = end(s).state; // now b's turn
+    s = {
+      ...s,
+      sides: { ...s.sides, b: { ...s.sides.b, hand: [{ id: 'z', card: 'strike' }], mana: 3 } },
+    };
+    const target = heroOf(s.sides.a) as Unit;
+    const r = applyAction(db, s, { type: 'play', card: 'z', target: target.id });
+    // Strike deals 6; at 150% it deals 9
+    expect(heroOf(r.state.sides.a)?.hp).toBe(target.hp - 9);
+  });
 });
 
 // --- text ----------------------------------------------------------------------------------------------------------

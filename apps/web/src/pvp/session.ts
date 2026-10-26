@@ -2,7 +2,14 @@
 // small snapshot for the screen, and feeds the accepted moves to the fight screen through a MoveFeed. No React in here.
 
 import type { Action, CombatSetup, Side } from '@sr/combat';
-import { setupFor, type ClientMsg, type Entry, type Series, type ServerMsg } from '@sr/pvp';
+import {
+  RULES_VERSION,
+  setupFor,
+  type ClientMsg,
+  type Entry,
+  type Series,
+  type ServerMsg,
+} from '@sr/pvp';
 import { MoveFeed, type PvpLink } from './link';
 
 const progressOf = (e: Entry): { tier: number; stage?: number } =>
@@ -237,7 +244,12 @@ export class PvpSession {
   /** False when there is no open connection (nothing was sent). */
   private send(m: ClientMsg): boolean {
     if (this.ws?.readyState !== WebSocket.OPEN) return false;
-    this.ws.send(JSON.stringify(m));
+    // (entering a match says which rules this browser plays by: the server refuses an outdated one)
+    const out =
+      m.type === 'join' || m.type === 'queue' || m.type === 'ghost'
+        ? { ...m, rules: RULES_VERSION }
+        : m;
+    this.ws.send(JSON.stringify(out));
     return true;
   }
 
@@ -350,8 +362,7 @@ export class PvpSession {
       case 'waiting':
         this.set({ phase: 'waiting', room: m.room, choose: null });
         return;
-      case 'choose':
-      {
+      case 'choose': {
         const info: ChooseInfo = {
           me: m.me,
           foe: m.foe,
@@ -420,7 +431,10 @@ export class PvpSession {
         return;
       }
       case 'end':
-        this.setMatch({ end: { winner: m.winner, reason: m.reason }, series: m.series ?? this.snap.match?.series ?? null });
+        this.setMatch({
+          end: { winner: m.winner, reason: m.reason },
+          series: m.series ?? this.snap.match?.series ?? null,
+        });
         return;
       case 'error':
         if (m.code === 'no-ghost') {
@@ -432,7 +446,12 @@ export class PvpSession {
           }
           return;
         }
-        if (m.code === 'bad-deck' || m.code === 'room-full' || m.code === 'bad-message') {
+        if (
+          m.code === 'bad-deck' ||
+          m.code === 'room-full' ||
+          m.code === 'bad-message' ||
+          m.code === 'outdated'
+        ) {
           this.reset();
           this.set({ ...IDLE, phase: 'error', message: m.message });
         } else this.snap.match?.feed.push({ kind: 'refused', message: m.message });

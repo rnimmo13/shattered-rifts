@@ -94,10 +94,11 @@ export { TIER_TABLE, enemyScale } from './tierTable';
 export { upgradedCards } from './upgrades';
 export {
   GHOST_BOSS_HP_BASE,
-  GHOST_BOSS_HP_PER_TIER,
   attachGhost,
   checkGhostBoss,
   ghostBossHp,
+  ghostBossDmg,
+  wardenMaxHp,
   ghostWanted,
 } from './run';
 export { FIGHT_SHARDS, POTION_DROP_CHANCE, ELITE_HEAL_PCT } from './run';

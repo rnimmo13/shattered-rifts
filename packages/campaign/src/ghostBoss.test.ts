@@ -10,7 +10,9 @@ import {
   finishDuel,
   generateStageMap,
   ghostBossHp,
+  ghostBossDmg,
   ghostWanted,
+  wardenMaxHp,
   newRun,
   parseRun,
   serializeRun,
@@ -86,7 +88,8 @@ describe('Wardens that are ghosts', () => {
     const plan = duelPlan(withGhost)!;
     expect(plan.ghost?.hero).toBe('trapper');
     expect(plan.ghost?.name).toBe('Rob');
-    expect(plan.ghost?.hp).toBe(ghostBossHp('trapper', 5));
+    expect(plan.ghost?.hp).toBe(ghostBossHp('trapper', 5, run.stage));
+    expect(plan.ghost?.dmgPct).toBe(ghostBossDmg(5, run.stage));
     expect(plan.kind).toBe('warden');
     // the player is told plainly that this Warden is a ghost deck, and whose
     expect(withGhost.eventResult).toMatch(/^Ghost Warden! .*Rob's Trapper deck from the Arena/);
@@ -132,5 +135,34 @@ describe('Wardens that are ghosts', () => {
     const base = RIFTWALKERS.trapper.hero.maxHp;
     expect(ghostBossHp('trapper', 4)).toBeGreaterThan(base);
     expect(ghostBossHp('trapper', 12)).toBeGreaterThan(ghostBossHp('trapper', 4));
+  });
+
+  it('grows with the tier table like every Warden: HP and damage, stage by stage (DECISIONS #237)', () => {
+    expect(ghostBossDmg(4, 1)).toBe(100);
+    let last = { hp: 0, dmg: 0 };
+    for (let t = 4; t <= 20; t++)
+      for (let s = 1; s <= 3; s++) {
+        const now = { hp: ghostBossHp('trapper', t, s), dmg: ghostBossDmg(t, s) };
+        expect(now.hp).toBeGreaterThan(last.hp);
+        expect(now.dmg).toBeGreaterThanOrEqual(last.dmg);
+        last = now;
+      }
+    expect(ghostBossDmg(20, 3)).toBeGreaterThan(180);
+  });
+});
+
+describe('a Warden leaves you sturdier (DECISIONS #237)', () => {
+  it('gives Max HP for good, more deeper in the Rift', () => {
+    expect(wardenMaxHp(1)).toBe(3);
+    expect(wardenMaxHp(4)).toBe(3);
+    expect(wardenMaxHp(5)).toBe(4);
+    expect(wardenMaxHp(10)).toBe(5);
+    expect(wardenMaxHp(20)).toBe(7);
+    for (const tier of [1, 6, 12]) {
+      const run = atWarden(tier, false);
+      const won = finishDuel(run, true, run.hp);
+      expect(won.maxHp).toBe(run.maxHp + wardenMaxHp(tier));
+      expect(won.eventResult).toMatch(/Max HP/);
+    }
   });
 });

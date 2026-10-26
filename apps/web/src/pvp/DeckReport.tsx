@@ -1,4 +1,4 @@
-// One saved deck laid out like a post-game report: who it is for, when it was saved, its Boons, and its cards by rarity, best
+// One saved deck laid out like a post-game report: who it is for, when it was saved, and its cards by rarity, best
 // first, as small cards (repeats stacked with a count). Hover a card for a large copy.
 
 import { useState } from 'react';
@@ -6,7 +6,6 @@ import { COMBAT_DB } from '@sr/content/v2';
 import type { CardDef } from '@sr/combat';
 import { CardHover, type Anchor } from '../fight/CardHover';
 import { FightCard } from '../fight/FightCard';
-import { BoonChip } from '../fight/BoonChip';
 import { HeroIcon } from '../ui/HeroIcon';
 import { dateLabel, heroName, progressLabel, rarityCounts, reportCards } from './deckLayout';
 import type { VaultDeck } from './vault';
@@ -75,16 +74,7 @@ export function DeckReport(props: { deck: VaultDeck; onRemove?: () => void }) {
             </button>
           ))}
       </header>
-      {deck.boons.length > 0 && (
-        <p className="deckrep__boons">
-          <span title="Boons are part of the run: an Arena match is cards only">
-            Boons (not used in the Arena)
-          </span>
-          {deck.boons.map((id) => (
-            <BoonChip key={id} id={id} />
-          ))}
-        </p>
-      )}
+      {/* (no Boons: an Arena match is cards only, DECISIONS #236) */}
       <ul className="deckrep__cards">
         {cards.map(({ def, n }) => (
           <li key={def.id} className="deckrep__card">

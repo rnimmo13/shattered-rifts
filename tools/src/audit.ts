@@ -28,6 +28,8 @@ const DECKS = Number(arg('decks', MODE === 'matrix' ? '3' : '4'));
 const SEEDS = Number(arg('seeds', '12'));
 const WORKERS = Number(arg('workers', String(Math.max(1, availableParallelism() - 2))));
 const OUT = arg('out', '');
+/** --noboons: the decks play without their Boons (what the Arena does) */
+const NO_BOONS = process.argv.includes('--noboons');
 
 type Kind = 'regular' | 'elite' | 'warden' | 'finale';
 const byKind = (k: Kind) => ENCOUNTERS.filter((e) => e.kind === k);
@@ -66,7 +68,8 @@ async function runAll<T>(jobs: Job[], chunk = 4): Promise<Map<number, T>> {
         w.on('error', reject);
         // a worker that dies without an error would leave the run waiting for ever
         w.on('exit', (code) => {
-          if (code !== 0 && next <= chunks.length) reject(new Error(`audit worker exited with code ${code}`));
+          if (code !== 0 && next <= chunks.length)
+            reject(new Error(`audit worker exited with code ${code}`));
         });
         feed();
       });
@@ -104,6 +107,7 @@ async function burstMode(): Promise<void> {
               dmgPct: scale(LEVEL_SPEC[level].tier, LEVEL_SPEC[level].stage).dmg,
               seed: `burst-${s}`,
               turn,
+              ...(NO_BOONS ? { noBoons: true } : {}),
             });
           }
   const res = await runAll<number>(jobs);
@@ -327,6 +331,7 @@ async function optimizeMode(): Promise<void> {
         dmgPct,
         seed: '',
         opt,
+        ...(NO_BOONS ? { noBoons: true } : {}),
       });
   const res = await runAll<{ deck: string[]; boons: string[]; score: number; perRound: number[] }>(
     jobs,

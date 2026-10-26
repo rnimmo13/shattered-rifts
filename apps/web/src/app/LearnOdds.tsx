@@ -13,6 +13,7 @@ import {
   EVENT_TAG_LABEL,
   FIGHT_SHARDS,
   GHOST_BOSS_HP_BASE,
+  wardenMaxHp,
   GHOST_FROM_TIER,
   GHOST_WARDEN_CHANCE,
   GIFT_LEGEND_CHANCE,
@@ -143,8 +144,8 @@ export function LearnOdds() {
         From Rift Tier {GHOST_FROM_TIER + 1} on, each Warden has a {GHOST_WARDEN_CHANCE}% chance of
         being a <b>ghost</b> instead: a deck from the Arena (one of the better ones, from any
         Riftwalker), played by the computer, with about {GHOST_BOSS_HP_BASE}x its Riftwalker&apos;s
-        usual HP (and more each tier). If no ghost can be had, you fight the usual Warden. It pays
-        the same Gift and Boon.
+        usual HP at first; its HP and damage then grow with the tier and stage like every
+        Warden&apos;s. If no ghost can be had, you fight the usual Warden. It pays the same Gift.
       </p>
 
       <h3>What a fight pays</h3>
@@ -152,6 +153,10 @@ export function LearnOdds() {
         <li>
           Shards: {FIGHT_SHARDS.duel} for a fight, {FIGHT_SHARDS.elite} for an Elite,{' '}
           {FIGHT_SHARDS.warden} for a Warden.
+        </li>
+        <li>
+          A Warden also leaves you Max HP for good: +{wardenMaxHp(1)} to Tier IV, +{wardenMaxHp(5)}{' '}
+          from Tier V, +{wardenMaxHp(10)} from Tier X, +{wardenMaxHp(20)} at Tier XX.
         </li>
         <li>
           A potion drops {POTION_DROP_CHANCE.duel}% of the time after a fight and{' '}

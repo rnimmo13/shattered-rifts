@@ -3,7 +3,7 @@
 // the code of a fresh room and their queue sockets close; they then join the room as if a friend had sent them the code.
 
 import { DurableObject } from 'cloudflare:workers';
-import { checkEntry, pairUp, type Waiting } from '@sr/pvp';
+import { RULES_VERSION, checkEntry, pairUp, type Waiting } from '@sr/pvp';
 import type { Env } from './env';
 import { parse, roomCode as makeCode, send } from './wire';
 
@@ -39,6 +39,15 @@ export class Matchmaker extends DurableObject<Env> {
     const msg = parse(message);
     if (!msg || (msg.type !== 'queue' && msg.type !== 'ghost')) {
       send(ws, { type: 'error', code: 'bad-message', message: 'Send {type:"queue"} first.' });
+      return;
+    }
+    if (msg.rules !== RULES_VERSION) {
+      send(ws, {
+        type: 'error',
+        code: 'outdated',
+        message: 'The game has been updated. Reload the page to play.',
+      });
+      ws.close(1008, 'outdated');
       return;
     }
     if (msg.type === 'ghost') {

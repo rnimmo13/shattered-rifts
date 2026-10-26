@@ -87,7 +87,7 @@ export const MANTRA_GOAL = 10;
 export const EDGE_TAG = 'knife';
 /** Mana gained when leaving Calm (the first time each turn: stepping in and out again pays nothing, so it cannot loop), and on entering Radiant. */
 export const CALM_EXIT_MANA = 2;
-export const RADIANT_ENTER_MANA = 2;
+export const RADIANT_ENTER_MANA = 1;
 
 // --- effects (the op DSL) -------------------------------------------------------------------------------
 
@@ -587,6 +587,11 @@ export interface HeroSetup {
   /** the Boons the hero carries */
   boons?: string[];
   potions?: string[];
+  /**
+   * the damage this hero (and its allies) deals, percent of the written numbers (default 100): a ghost Warden is a hero deck that
+   * grows with the Rift Tier like any Warden
+   */
+  dmgPct?: number;
 }
 
 export interface CombatSetup {

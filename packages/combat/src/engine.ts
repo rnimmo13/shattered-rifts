@@ -993,6 +993,9 @@ function spawn(r: Run, sd: SideState, defId: string, quiet = false, summoner?: U
     u.dmgPct = r.s.enemyDmgPct;
     if (d.brain.kind === 'enemy' && tierMight(r.s.tier) > 0)
       u.statuses.might = (u.statuses.might ?? 0) + tierMight(r.s.tier);
+  } else {
+    // a hero's allies hit as hard as it does (a ghost Warden's, scaled with the tier; 100 for anyone else)
+    u.dmgPct = heroOf(sd)?.dmgPct ?? 100;
   }
   if (!quiet) r.ev.push({ type: 'summon', side: sd.id, unit: u.id, def: d.id, index });
   if (d.brain.kind === 'enemy') chooseIntent(r, u);
@@ -1405,7 +1408,7 @@ function buildHeroSide(r: Run, id: Side, h: HeroSetup): SideState {
     pat: '',
     patCount: 0,
     lowPct: 100,
-    dmgPct: 100,
+    dmgPct: Math.max(10, h.dmgPct ?? 100),
     lastMoves: [],
   });
   r.s.sides[id] = sd;
