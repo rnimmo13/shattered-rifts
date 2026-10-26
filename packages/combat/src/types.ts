@@ -167,12 +167,16 @@ export type TriggerWhen =
   | 'created'; // a card was created in one of your piles
 
 export type Op =
-  | { op: 'damage'; amount: number; hits?: number; to: Sel; scale?: Scale }
+  /** `lonePct`: Point Blank, this much more damage (percent) when it hits only one enemy */
+  | { op: 'damage'; amount: number; hits?: number; to: Sel; scale?: Scale; lonePct?: number }
   | { op: 'loseHp'; amount: number; to: Sel; scale?: Scale } // unblockable, unmodified
   | { op: 'barrier'; amount: number; to: Sel; scale?: Scale }
   | { op: 'heal'; amount: number; to: Sel; scale?: Scale }
-  /** lessen every debuff (Exposed, Faltering, Seared, Stunned, Brittle, Doom) on the target by `amount` stacks; `all` dispels them completely */
-  | { op: 'cleanse'; amount: number; to: Sel; all?: boolean }
+  /**
+   * lessen every debuff (Exposed, Faltering, Seared, Stunned, Brittle, Doom) on the target by `amount` stacks, or by `pct`% of its
+   * stacks (rounded up) when that is more, so it still bites on a big pile of Doom; `all` dispels them completely
+   */
+  | { op: 'cleanse'; amount: number; to: Sel; all?: boolean; pct?: number }
   /** `temp`: the stacks wear off again at the end of the acting side's turn (a Flex) */
   | { op: 'status'; status: StatusId; amount: number; to: Sel; scale?: Scale; temp?: boolean }
   /** multiply the stacks of a status already on the target (floor); 2 doubles it */
@@ -375,6 +379,8 @@ export interface BoonDef {
   maxHp?: number;
   healAfterFight?: number;
   shardsPerFight?: number;
+  /** a Warden's Heart (DECISIONS #246): a run holds at most one, and it is never offered or sold as a Boon */
+  heart?: boolean;
 }
 
 /** A Potion: a one-use item carried between fights. Using one is free and takes no Mana. */
@@ -439,6 +445,28 @@ export interface Unit {
   /** percent of normal attack damage this unit deals (enemies are scaled by the difficulty setting) */
   dmgPct: number;
   lastMoves: string[];
+  /**
+   * its phases still to come (highest first): the first time its HP would fall below `atPct`% of its max, it stops there and rises
+   * into the next phase (Barrier, Might). Set by a setup's enemy mods (the campaign's Omens), never by a card.
+   */
+  rise?: Rise[];
+}
+
+/** A phase an enemy rises into when its HP first reaches `atPct`% of its max: it gains this much Barrier (% of max HP) and Might. */
+export interface Rise {
+  atPct: number;
+  barrierPct: number;
+  might: number;
+}
+
+/**
+ * Something a PvE setup changes about its enemies (the campaign's Omens): the units it applies to (indices into `enemies`; every
+ * enemy when missing) start with these statuses, and rise into these phases.
+ */
+export interface EnemyMod {
+  units?: number[];
+  statuses?: Partial<Record<StatusId, number>>;
+  rise?: Rise[];
 }
 
 export interface CardInst {
@@ -592,13 +620,17 @@ export interface HeroSetup {
    * grows with the Rift Tier like any Warden
    */
   dmgPct?: number;
+  /** statuses the hero starts the fight with (an Omen's Dread, say) */
+  statuses?: Partial<Record<StatusId, number>>;
 }
 
 export interface CombatSetup {
   seed: string;
   a: HeroSetup;
-  /** PvE: a list of unit def ids. PvP: the second hero. */
-  b: { enemies: string[]; tier?: number; hpPct?: number; dmgPct?: number } | HeroSetup;
+  /** PvE: a list of unit def ids (and what Omens change about them). PvP: the second hero. */
+  b:
+    | { enemies: string[]; tier?: number; hpPct?: number; dmgPct?: number; mods?: EnemyMod[] }
+    | HeroSetup;
 }
 
 // --- actions & events ----------------------------------------------------------------------------------------
@@ -665,6 +697,8 @@ export type CombatEvent =
   | { type: 'forge'; side: Side; card: CardId; amount: number }
   | { type: 'scry'; side: Side; cards: InstId[] }
   | { type: 'pending'; side: Side; kind: Pending['kind'] }
+  /** an enemy reached a phase threshold and rose into its next phase (`left`: phases still to come) */
+  | { type: 'phase'; unit: UnitId; left: number }
   | { type: 'gameOver'; winner: Winner };
 
 export class RulesError extends Error {}

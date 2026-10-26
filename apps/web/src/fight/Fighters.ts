@@ -10,6 +10,8 @@ import type { AttackSpec } from './attackStyles';
 import {
   burst,
   clawMarks,
+  hammerPound,
+  impact,
   orb,
   puff,
   ring,
@@ -107,13 +109,17 @@ export interface FighterHost {
   sound: (name: string) => void;
 }
 
-/** Melee timings per style (before the 1.5x speed-up): the pull-back, the rush, the lean angle and a jump for heavy blows. */
+/**
+ * Melee timings per style (before the 1.5x speed-up). A melee attacker stays at its place (DECISIONS #248): it winds up (a lean
+ * back of `back` px, tilted, lifted for a heavy blow), strikes (a short step of `step` px towards the target), and the blow itself
+ * appears on the target: a slash, claw marks, a thrust, a hammer brought down.
+ */
 const MELEE = {
-  lunge: { back: 24, wind: 0.16, rush: 0.12, tilt: 0, lift: 0 },
-  slash: { back: 30, wind: 0.2, rush: 0.12, tilt: 0.3, lift: 0 },
-  stab: { back: 14, wind: 0.1, rush: 0.08, tilt: 0.06, lift: 0 },
-  claw: { back: 22, wind: 0.14, rush: 0.1, tilt: 0.14, lift: -8 },
-  smash: { back: 20, wind: 0.34, rush: 0.14, tilt: 0.24, lift: -46 },
+  lunge: { back: 10, step: 22, wind: 0.14, rush: 0.1, tilt: 0.08, lift: 0 },
+  slash: { back: 14, step: 26, wind: 0.18, rush: 0.1, tilt: 0.3, lift: 0 },
+  stab: { back: 8, step: 30, wind: 0.1, rush: 0.07, tilt: 0.06, lift: 0 },
+  claw: { back: 12, step: 24, wind: 0.13, rush: 0.09, tilt: 0.16, lift: -6 },
+  smash: { back: 12, step: 14, wind: 0.3, rush: 0.12, tilt: 0.28, lift: -22 },
 };
 
 export class Fighters {
@@ -398,7 +404,7 @@ export class Fighters {
     return { x: f.root.x + dx, y: f.root.y - (f.spec.hover ?? 0) - f.spec.height * 0.55 };
   }
 
-  /** Rush at the target: the same beats for every melee style, with a different windup, pose and effect at contact. */
+  /** Strike from where it stands: the same beats for every melee style, with a different windup, pose and effect on the target. */
   private meleeAttack(
     f: Fighter,
     t: Fighter | undefined,
@@ -410,7 +416,7 @@ export class Fighters {
       kind === 'slash' || kind === 'stab' || kind === 'claw' || kind === 'smash'
         ? MELEE[kind]
         : MELEE.lunge;
-    const dx = t ? (t.root.x - f.root.x) * 0.78 : dir * 160;
+    const dx = dir * m.step;
     return new Promise((resolve) => {
       f.busy++;
       f.root.zIndex = 5000;
@@ -455,8 +461,14 @@ export class Fighters {
     const size = Math.max(70, Math.min(150, (t?.spec.height ?? 220) * 0.55));
     switch (kind) {
       case 'slash':
-        for (let i = 0; i < hits; i++)
-          slashArc(c, at, dir, tint, { tilt: i % 2 ? 0.55 : -0.55, size, delay: i * 0.09 });
+        // (a cut across the target, and for a single blow a second, fainter one crossing it)
+        for (let i = 0; i < Math.max(hits, 1); i++)
+          slashArc(c, at, dir, tint, {
+            tilt: i % 2 ? 0.55 : -0.55,
+            size: size * 1.15,
+            delay: i * 0.09,
+          });
+        if (hits <= 1) slashArc(c, at, -dir, tint, { tilt: 0.4, size: size * 0.8, delay: 0.06 });
         burst(c, at, tint, 6, 40);
         break;
       case 'claw':
@@ -475,10 +487,11 @@ export class Fighters {
         burst(c, at, tint, 6, 36);
         break;
       case 'smash':
-        ring(c, { x: t?.root.x ?? at.x, y: t?.root.y ?? f.root.y }, tint, 90, 26);
-        burst(c, at, tint, 9, 58);
+        // a hammer (or wrench, or maul) comes down on the target
+        hammerPound(c, at, { x: t?.root.x ?? at.x, y: t?.root.y ?? f.root.y }, dir, tint, size);
         break;
       default:
+        impact(c, at, tint, size);
         break;
     }
   }

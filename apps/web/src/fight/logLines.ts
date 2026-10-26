@@ -234,6 +234,11 @@ export function createDescriber(c: LogContext): (e: CombatEvent) => Omit<LogLine
         };
       case 'forge':
         return { text: `Blade sharpened by ${e.amount}`, tone: tone(e.side) };
+      case 'phase':
+        return {
+          text: `${verb(c.nameOf(e.unit), 'rise', 'rises')} into ${e.left > 0 ? 'a new' : 'its last'} phase`,
+          tone: tone(c.sideOf(e.unit)),
+        };
       case 'gameOver':
         return {
           text:

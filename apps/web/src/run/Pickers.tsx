@@ -9,7 +9,8 @@ import {
   MAX_HELD,
   potionSellPrice,
   removableCards,
-  REST_HEAL,
+  restHeal,
+  shopPrice,
   upgradable,
   upgradePrice,
   ROLL_COST,
@@ -272,7 +273,7 @@ export function ShrineView(props: {
     () => new Set(chisel ? engravable(run.deck, chisel) : []),
     [run.deck, chisel],
   );
-  const heal = Math.min(run.maxHp - run.hp, Math.ceil(run.maxHp * REST_HEAL));
+  const heal = Math.min(run.maxHp - run.hp, restHeal(run));
   // the last blessing closes the shrine, so it waits while a prize is on the reel
   const prizeWaiting = !!g && taken.size > 0 && run.context?.event?.trial?.state === 'won';
   const tag = (k: ShrineKind, why: string | false) =>
@@ -534,7 +535,7 @@ export function MerchantView(props: {
     props.run.deck.length > V2_DECK_RULES.minSize &&
     removable.size > 0;
   // each upgrade bought at this shop makes the next one dearer; the next shop starts again from the base price
-  const upPrice = upgradePrice(m.upgrades ?? 0);
+  const upPrice = shopPrice(props.run, upgradePrice(m.upgrades ?? 0));
   const upgradeable = new Set(upgradable(props.run.deck));
   const canUpgrade = shards >= upPrice && upgradeable.size > 0;
   const boon = m.boon ? COMBAT_DB.boons[m.boon.id] : undefined;
@@ -739,7 +740,7 @@ export function MerchantView(props: {
               icon={<span className="shoprow__glyph">✂</span>}
               name="Remove a card"
               kind="service"
-              text={`Cut one card from your deck for good. A thinner deck draws its best cards more often. Each removal bought this run makes the next dearer (${removePrice((props.run.removals ?? 0) + 1)} after this one).`}
+              text={`Cut one card from your deck for good. A thinner deck draws its best cards more often. Each removal bought this run makes the next dearer (${shopPrice(props.run, removePrice((props.run.removals ?? 0) + 1))} after this one).`}
               price={m.removed ? null : m.removePrice}
               button={
                 m.removed ? 'Done' : shards < m.removePrice ? 'Too expensive' : 'Choose a card'
@@ -751,7 +752,7 @@ export function MerchantView(props: {
               icon={<span className="shoprow__glyph">✦</span>}
               name="Upgrade a card"
               kind="service"
-              text={`Make one card in your deck better (it gets a "+"). Each upgrade bought at this shop costs ${upgradePrice((m.upgrades ?? 0) + 1)} next time; a new shop starts over at ${upgradePrice(0)}.`}
+              text={`Make one card in your deck better (it gets a "+"). Each upgrade bought at this shop costs ${shopPrice(props.run, upgradePrice((m.upgrades ?? 0) + 1))} next time; a new shop starts over at ${shopPrice(props.run, upgradePrice(0))}.`}
               price={upgradeable.size === 0 ? null : upPrice}
               button={
                 upgradeable.size === 0

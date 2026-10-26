@@ -6,7 +6,7 @@
 // fight (an extra Mana, an extra card): they are the rarest, never sold, and mostly come from clearing a loop (DECISIONS #227).
 
 import type { BoonDef } from '@sr/combat';
-import { barrier, draw, heal, status } from './build';
+import { barrier, draw, heal, lose, status } from './build';
 
 export const BOONS: BoonDef[] = [
   // common
@@ -144,3 +144,54 @@ export const BOONS: BoonDef[] = [
 
 /** The Legendary Boons: the rarest, never sold (rewards.ts). */
 export const LEGENDARY_BOONS = BOONS.filter((b) => b.rarity === 'legendary').map((b) => b.id);
+
+/**
+ * Warden's Hearts (DECISIONS #246): offered instead of the Warden's Gift card (take a rare card, a Heart, or nothing). Each one changes
+ * how every fight plays, and each one costs something real. A run holds one at a time: taking another gives the first back.
+ */
+export const HEARTS: BoonDef[] = [
+  {
+    id: 'ember-heart',
+    name: 'Ember Heart',
+    rarity: 'legendary',
+    heart: true,
+    text: '+1 Mana every turn. Draw one card fewer every turn.',
+    mana: 1,
+    handSize: -1,
+  },
+  {
+    id: 'gluttons-heart',
+    name: "Glutton's Heart",
+    rarity: 'legendary',
+    heart: true,
+    text: 'Draw one card more every turn. 15 less Max HP.',
+    handSize: 1,
+    maxHp: -15,
+  },
+  {
+    id: 'blood-heart',
+    name: 'Blood Heart',
+    rarity: 'legendary',
+    heart: true,
+    text: '+1 Mana every turn. Lose 3 HP at the start of each of your turns.',
+    mana: 1,
+    turnStart: [lose(3)],
+  },
+  {
+    id: 'thorned-heart',
+    name: 'Thorned Heart',
+    rarity: 'legendary',
+    heart: true,
+    text: 'Start each fight with 6 Thorns and 2 Might, and Exposed for 2 turns.',
+    fightStart: [status('thorns', 6), status('might', 2), status('exposed', 2)],
+  },
+  {
+    id: 'warded-heart',
+    name: 'Warded Heart',
+    rarity: 'legendary',
+    heart: true,
+    text: 'Start each fight with 16 Barrier and Shielded. At the start of each of your turns, become Brittle (the Barrier you gain is 25% smaller).',
+    fightStart: [barrier(16), status('shielded', 1)],
+    turnStart: [status('brittle', 1)],
+  },
+];

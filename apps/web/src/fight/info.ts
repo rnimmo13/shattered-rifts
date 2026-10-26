@@ -184,6 +184,10 @@ export const KEYWORD_INFO: Record<string, { name: string; text: string }> = {
     text: 'After you play it, it is removed from the rest of this fight.',
   },
   retain: { name: 'Hold', text: 'It stays in your hand when you end your turn.' },
+  pointBlank: {
+    name: 'Point Blank',
+    text: 'It hits harder when there is only one enemy to hit: the whole spread lands on it.',
+  },
   mana: { name: 'Mana', text: 'What you spend to play cards. It refills every turn.' },
   snare: {
     name: 'Trap',
@@ -261,6 +265,7 @@ export function keywordsOf(
       unit?: string;
       card?: string;
       stance?: string;
+      lonePct?: number;
     }[];
   },
   taunting: (unit: string) => boolean,
@@ -275,6 +280,7 @@ export function keywordsOf(
   if (c.kind === 'summon') add(KEYWORD_INFO['companion']);
   for (const o of c.effects) {
     if (o.op === 'barrier') add(KEYWORD_INFO['barrier']);
+    if (o.lonePct) add(KEYWORD_INFO['pointBlank']);
     if (o.op === 'mana') add(KEYWORD_INFO['mana']);
     if (o.op === 'discard') add(KEYWORD_INFO['discard']);
     if (o.op === 'scry') add(KEYWORD_INFO['scry']);

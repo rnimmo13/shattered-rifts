@@ -42,6 +42,7 @@ import {
   type SideState,
   type SimplePattern,
   type Stance,
+  type Rise,
   type StatusId,
   type TriggerWhen,
   type Unit,
@@ -246,7 +247,18 @@ function applyDamage(
   }
   const blocked = kind === 'attack' ? Math.min(t.barrier, amount) : 0;
   t.barrier -= blocked;
-  const lost = Math.min(t.hp, amount - blocked);
+  let lost = Math.min(t.hp, amount - blocked);
+  // a unit with a phase to come stops at its threshold (the blow that crosses it goes no further) and rises
+  const rise = t.rise?.[0];
+  let rises = false;
+  if (rise && lost > 0) {
+    const floor = Math.max(1, Math.ceil((t.maxHp * rise.atPct) / 100));
+    if (t.hp - lost <= floor) {
+      rises = true;
+      // (one already at or below it, say after a blow that landed exactly on it, rises without losing more)
+      lost = Math.max(0, t.hp - floor);
+    }
+  }
   t.hp -= lost;
   r.ev.push({
     type: 'damage',
@@ -262,7 +274,21 @@ function applyDamage(
     syncClutch(r, r.s.sides[t.side]);
     fireSnare(r, t.side, { on: 'hpLost', lost, attacker: source, hit: null });
   }
+  if (rises && rise) riseUp(r, t, rise);
   return lost;
+}
+
+/** A unit rises into its next phase: Barrier and Might, and the phase is used up. */
+function riseUp(r: Run, t: Unit, rise: Rise): void {
+  t.rise = (t.rise ?? []).slice(1);
+  if (t.rise.length === 0) delete t.rise;
+  r.ev.push({ type: 'phase', unit: t.id, left: t.rise?.length ?? 0 });
+  const b = Math.ceil((t.maxHp * rise.barrierPct) / 100);
+  if (b > 0) {
+    t.barrier += b;
+    r.ev.push({ type: 'barrier', target: t.id, amount: b, total: t.barrier });
+  }
+  if (rise.might > 0) addStatus(r, t, 'might', rise.might);
 }
 
 /** One attack hit from `a.actor` on `t`: Traps may spring first and may cancel it. */
@@ -452,18 +478,26 @@ function execOp(r: Run, a: Act, op: Op): void {
           (op.scale.mult ?? 1) * metricValue(r, a, op.scale.by, op.scale.of, a.target),
         );
       const edge = a.card?.tags?.includes(EDGE_TAG) ? stacks(a.actor, 'edge') : 0;
-      const vigor = a.card?.kind === 'attack' ? stacks(a.actor, 'vigor') : 0;
+      // (a hero's Vigor goes into its next attack card; an enemy's into its next attacking move)
+      const vigor = (a.card ? a.card.kind === 'attack' : a.actor.kind === 'enemy')
+        ? stacks(a.actor, 'vigor')
+        : 0;
       for (let i = 0; i < hits; i++) {
         if (r.s.winner) return;
         // a target that died mid-attack: the remaining hits find a new one
         if (op.to === 'target' && (!a.target || a.target.hp <= 0))
           a.target = pickFoe(r, a.actor, 'hero');
-        for (const t of resolve(r, a, op.to))
+        const ts = resolve(r, a, op.to);
+        // Point Blank: a shot that finds only one enemy hits it harder
+        const lone = op.lonePct && ts.length === 1 ? 1 + op.lonePct / 100 : 1;
+        for (const t of ts)
           attackHit(
             r,
             a,
             t,
-            amountOf(r, a, op.amount, op.scale, t) + edge + vigor + resonanceOf(a),
+            Math.round(
+              (amountOf(r, a, op.amount, op.scale, t) + edge + vigor + resonanceOf(a)) * lone,
+            ),
           );
         reap(r);
       }
@@ -512,7 +546,10 @@ function execOp(r: Run, a: Act, op: Op): void {
         for (const st of DEBUFFS) {
           const have = stacks(t, st);
           if (have <= 0) continue;
-          addStatus(r, t, st, -(op.all ? have : Math.min(have, op.amount)));
+          const off = op.all
+            ? have
+            : Math.min(have, Math.max(op.amount, Math.ceil((have * (op.pct ?? 0)) / 100)));
+          addStatus(r, t, st, -off);
         }
       return;
     case 'status':
@@ -1411,6 +1448,10 @@ function buildHeroSide(r: Run, id: Side, h: HeroSetup): SideState {
     dmgPct: Math.max(10, h.dmgPct ?? 100),
     lastMoves: [],
   });
+  // statuses the setup starts the hero with (an Omen's Dread)
+  const hero = sd.units[sd.units.length - 1] as Unit;
+  for (const [st, n] of Object.entries(h.statuses ?? {}) as [StatusId, number][])
+    if (n > 0) hero.statuses[st] = (hero.statuses[st] ?? 0) + n;
   r.s.sides[id] = sd;
   for (const u of hd.startUnits ?? []) spawn(r, sd, u, true);
   return sd;
@@ -1434,11 +1475,24 @@ export function createCombat(db: CombatDb, setup: CombatSetup): StepResult {
   const r: Run = { db, s, ev: [], depth: 0 };
   buildHeroSide(r, 'a', setup.a);
   if ('enemies' in setup.b) {
+    const made: Unit[] = [];
     for (const e of setup.b.enemies) {
       const d = def(r, e);
       if (d.brain.kind !== 'enemy') throw new RulesError(`"${e}" cannot fight as an enemy`);
-      if (!spawn(r, s.sides.b, e, true)) throw new RulesError('Too many enemies');
+      const u = spawn(r, s.sides.b, e, true);
+      if (!u) throw new RulesError('Too many enemies');
+      made.push(u);
     }
+    // what the setup changes about them (the campaign's Omens): starting statuses, phases to rise into
+    for (const m of setup.b.mods ?? [])
+      for (const u of m.units ? m.units.flatMap((i) => (made[i] ? [made[i]] : [])) : made) {
+        for (const [st, n] of Object.entries(m.statuses ?? {}) as [StatusId, number][])
+          if (n > 0) u.statuses[st] = (u.statuses[st] ?? 0) + n;
+        if (m.rise?.length)
+          u.rise = [...(u.rise ?? []), ...m.rise.filter((x) => x.atPct > 0 && x.atPct < 100)].sort(
+            (x, y) => y.atPct - x.atPct,
+          );
+      }
   } else {
     buildHeroSide(r, 'b', setup.b);
   }

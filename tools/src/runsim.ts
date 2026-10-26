@@ -69,8 +69,21 @@ function fight(run: RunState): { won: boolean; hp: number } {
   if (!plan) throw new Error('no plan');
   let { state } = createCombat(db, {
     seed: plan.seed,
-    a: { hero: run.character, deck: plan.deck, hp: plan.hp, maxHp: plan.maxHp, boons: plan.boons },
-    b: { enemies: plan.units, tier: plan.tier, hpPct: plan.hpPct, dmgPct: plan.dmgPct },
+    a: {
+      hero: run.character,
+      deck: plan.deck,
+      hp: plan.hp,
+      maxHp: plan.maxHp,
+      boons: plan.boons,
+      statuses: plan.heroStatuses,
+    },
+    b: {
+      enemies: plan.units,
+      tier: plan.tier,
+      hpPct: plan.hpPct,
+      dmgPct: plan.dmgPct,
+      mods: plan.mods,
+    },
   });
   for (let t = 0; t < 900 && !state.winner; t++)
     state = applyAction(db, state, chooseAction(db, state)).state;
@@ -161,7 +174,10 @@ function playRun(h: HeroId, d: Difficulty, i: number): Result {
             run = claimTrialPrize(run, `p${lane}`, t?.prizes[lane]?.choices ? 0 : undefined);
           } else run = chooseEvent(run, 'leave');
         } else
-          run = chooseEvent(run, (want.find((w) => opts.includes(w as never)) ?? opts[0] ?? 'leave') as 'leave');
+          run = chooseEvent(
+            run,
+            (want.find((w) => opts.includes(w as never)) ?? opts[0] ?? 'leave') as 'leave',
+          );
         // an event that laid out three cards for a choice: the bot takes the first
         if (run.phase === 'event' && run.context?.event?.choose) run = pickEventCard(run, 0);
         // (or for a card of the deck: the bot takes the first it may)

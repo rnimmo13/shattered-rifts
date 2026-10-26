@@ -17,6 +17,7 @@ import { RankedBoard } from './RankedBoard';
 import { NameClaim } from './NameClaim';
 import { syncSavedRuns } from '../run/syncRuns';
 import '../play/play.css';
+import { Notice } from '../ui/Toast';
 import './board.css';
 
 /** "3 days left", "5 hours left": how long this period has to run (boards turn over at midnight Pacific time). */
@@ -213,12 +214,12 @@ export function LeaderboardScreen() {
             </p>
           )}
           {failed && (
-            <div className="notice notice--bad" role="alert">
+            <Notice tone="bad" showAgain={tries}>
               The boards could not be reached. Check your connection and try again.{' '}
               <button className="btn btn--small" onClick={() => setTry((n) => n + 1)}>
                 <span>Retry</span>
               </button>
-            </div>
+            </Notice>
           )}
 
           {kind === 'pvp' && view && 'board' in view && (

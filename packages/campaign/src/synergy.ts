@@ -35,7 +35,11 @@ export type Fit =
   | { kind: 'new'; lane: string };
 
 /** Whether a card on offer fits the deck (null for a card with no lane, or a lane the deck has only one card of). */
-export function fitOf(deck: readonly string[], cardId: string, counts = laneCounts(deck)): Fit | null {
+export function fitOf(
+  deck: readonly string[],
+  cardId: string,
+  counts = laneCounts(deck),
+): Fit | null {
   const k = laneKey(cardId);
   if (!k) return null;
   const lane = laneName(k.hero, k.lane);

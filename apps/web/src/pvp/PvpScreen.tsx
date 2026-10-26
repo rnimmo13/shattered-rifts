@@ -32,6 +32,7 @@ import { dateLabel, heroName, progressLabel } from './deckLayout';
 import '../play/play.css';
 import './decks.css';
 import { syncVault, vaultKey, whoAmI, type Me } from './vaultSync';
+import { Notice } from '../ui/Toast';
 import './pvp.css';
 
 const EMPTY: Snapshot = {
@@ -328,9 +329,9 @@ export default function PvpScreen() {
                     : 'You are in the queue. Players with a similar Rift Tier are matched first.'}
               </p>
               {snap.message && (
-                <p className="notice notice--bad" role="alert">
+                <Notice tone="bad" showAgain={snap.message}>
                   {snap.message}
-                </p>
+                </Notice>
               )}
               {!snap.ghosting && (
                 <GhostOffer

@@ -2,7 +2,7 @@
 
 import { validateDb, type CombatDb, type HeroDef, type HeroTrait } from '@sr/combat';
 import { addTo, barrier, channel, heal, stance, stars, status } from './build';
-import { BOONS } from './boons';
+import { BOONS, HEARTS } from './boons';
 import { V2_CARDS } from './cards';
 import { RUNES } from './pools/totemist';
 import { POTIONS } from './potions';
@@ -434,7 +434,7 @@ export const COMBAT_DB: CombatDb = {
   runes: Object.fromEntries(RUNES.map((r) => [r.id, r])),
   // (also answers for sanctified ids like "hi~strike": derived on demand, never listed)
   cards: withRolls(Object.fromEntries(V2_CARDS.map((c) => [c.id, c]))),
-  boons: Object.fromEntries(BOONS.map((b) => [b.id, b])),
+  boons: Object.fromEntries([...BOONS, ...HEARTS].map((b) => [b.id, b])),
   potions: Object.fromEntries(POTIONS.map((p) => [p.id, p])),
   units: Object.fromEntries([...ALLIES, ...ENEMY_UNITS].map((u) => [u.id, u])),
   heroes: Object.fromEntries(
@@ -525,7 +525,7 @@ export const V2_DECK_RULES = {
   maxAncestral: 2,
 } as const;
 
-export { BOONS, POTIONS };
+export { BOONS, HEARTS, POTIONS };
 
 /**
  * The Riftwalker ids before they were named for their class (DECISIONS #190, 2026-10-25). A run save, a Vault deck, a remembered

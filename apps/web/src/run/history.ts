@@ -77,7 +77,7 @@ export function recordOf(
     stage: run.stage,
     end,
     deck: [...run.deck],
-    boons: [...run.boons],
+    boons: [...run.boons, ...(run.heart ? [run.heart] : [])],
     maxHp: run.maxHp,
     duelsWon: run.stats.duelsWon,
     duelsLost: run.stats.duelsLost,

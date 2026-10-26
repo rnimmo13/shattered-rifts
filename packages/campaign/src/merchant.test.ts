@@ -44,7 +44,9 @@ function atMerchant(seed: string, prev?: RunState, deck?: string[]): RunState {
 
 /** Cards of one of the knight's lanes. */
 const laneCards = (lane: number): string[] =>
-  rewardPool('knight').filter((id) => laneOf(id) === lane && COMBAT_DB.cards[id]?.hero === 'knight');
+  rewardPool('knight').filter(
+    (id) => laneOf(id) === lane && COMBAT_DB.cards[id]?.hero === 'knight',
+  );
 
 describe('card removal at the merchant', () => {
   it('costs more for each removal already bought this run, up to a cap', () => {

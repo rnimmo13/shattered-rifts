@@ -112,8 +112,16 @@ function validContext(r: RunState): boolean {
       return !!node?.enemyId;
     }
     case 'reward':
-    case 'gift':
       return cards(c['offers']);
+    case 'gift':
+      return (
+        cards(c['offers']) &&
+        (c['hearts'] === undefined ||
+          (Array.isArray(c['hearts']) &&
+            (c['hearts'] as unknown[]).every(
+              (h) => typeof h === 'string' && COMBAT_DB.boons[h]?.heart === true,
+            )))
+      );
     case 'merchant': {
       const m = c['merchant'];
       return (
@@ -371,6 +379,10 @@ export function parseRun(text: string): RunState | null {
   // (the Gambler's Ledger's signatures: a count, or nothing)
   const signed = (r as { ledger?: unknown }).ledger;
   if (signed !== undefined && !isInt(signed, 0, 1000)) return null;
+  // (a Warden's Heart: one that is in the game, or none)
+  const heart = (r as { heart?: unknown }).heart;
+  if (heart !== undefined && !(typeof heart === 'string' && COMBAT_DB.boons[heart]?.heart === true))
+    delete (r as { heart?: unknown }).heart;
   // (merchant removals bought: a count, or nothing)
   const removals = (r as { removals?: unknown }).removals;
   if (removals !== undefined && !isInt(removals, 0, 10000)) return null;

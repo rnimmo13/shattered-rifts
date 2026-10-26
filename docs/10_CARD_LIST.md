@@ -968,7 +968,7 @@ Tokens (made by other cards):
 | Card | Cost | Type | Rarity | Text |
 |---|---|---|---|---|
 | Buckshot Shell | 0 | attack | common | Deal 4 damage to ALL enemies. Consume. |
-| Old Twelve Gauge | 1 | attack | common | Deal 5 (+1 per point of sharpening) damage to ALL enemies. Hold. |
+| Old Twelve Gauge | 1 | attack | common | Deal 5 (+1 per point of sharpening) damage to ALL enemies. Point Blank: 25% more when only one enemy is left. Hold. |
 
 ## Dorian Blackthorn (gloomfen, 76 HP)
 
@@ -1097,7 +1097,7 @@ Tokens (made by other cards):
 | Reckless Swing | 0 | attack | common | Deal 7 damage. Lose 3 HP. |
 | Stagger | 1 | attack | common | Deal 4 damage. Apply 2 Faltering. |
 | Glimpse Ahead | 1 | skill | common | Foresee 4. |
-| Shrug It Off | 1 | skill | common | Lessen every debuff on you by 1. Gain 4 Barrier. |
+| Shrug It Off | 1 | skill | common | Lessen every debuff on you by 25% (at least 1). Gain 4 Barrier. |
 | Hidden Pitfall | 1 | snare | common | When you or an ally is attacked: Deal 7 damage to the attacker. |
 | Alarm Bell | 1 | snare | common | When the enemy summons: Deal 6 damage to the attacker. Apply 2 Faltering to the attacker. Gain 4 Barrier. |
 | Heave | 0 | skill | common | Apply 2 Might until the end of your turn. |
@@ -1105,7 +1105,7 @@ Tokens (made by other cards):
 | Rift Storm | 2 | attack | uncommon | Deal 7 damage to ALL enemies. |
 | Rift Whirl | X | attack | uncommon | Deal 4 damage X times to ALL enemies. |
 | Wanderer's Draught | 1 | skill | uncommon | Heal 6. Consume. |
-| Steady Nerves | 1 | skill | uncommon | Lessen every debuff on you by 2. Gain 6 Barrier. |
+| Steady Nerves | 1 | skill | uncommon | Lessen every debuff on you by 50% (at least 2). Gain 6 Barrier. |
 | Rift Surge | 1 | skill | uncommon | Gain 2 Mana. Consume. |
 | Cull the Hand | 1 | skill | uncommon | Consume 1 card. Draw 2 cards. |
 | Rift Windfall | 1 | skill | uncommon | Add a random card from your pool to your hand (it costs 0 the next time you play it). Consume. |

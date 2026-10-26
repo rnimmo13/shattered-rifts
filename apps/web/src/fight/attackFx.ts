@@ -223,3 +223,46 @@ export function orb(c: FxCtx, a: Pt, b: Pt, tint: string, dur: number, r = 16): 
     tl.call(resolve);
   });
 }
+
+/**
+ * A hammer brought down on the target from above: the head swings down onto it, then the ground shakes (a ring at its feet).
+ * `at` is where it lands (the target's chest), `feet` the ground under it.
+ */
+export function hammerPound(
+  c: FxCtx,
+  at: Pt,
+  feet: Pt,
+  dir: number,
+  tint: string,
+  size = 110,
+): void {
+  const g = spawn(c, at.x - dir * size * 0.15, at.y - size * 0.95);
+  g.blendMode = 'normal';
+  const L = size * 0.9;
+  // the haft, then the head at its end (drawn pointing down from the pivot)
+  g.roundRect(-5, 0, 10, L, 4).fill({ color: 0x6b4a2b }).stroke({ width: 2, color: 0x2a1a0c });
+  g.roundRect(-size * 0.32, L - size * 0.1, size * 0.64, size * 0.34, 6)
+    .fill({ color: 0x9aa3ad })
+    .stroke({ width: 3, color: 0x2c3138 });
+  g.roundRect(-size * 0.32, L - size * 0.1, size * 0.64, size * 0.08, 3).fill({
+    color: hex(tint),
+    alpha: 0.85,
+  });
+  g.alpha = 0;
+  g.rotation = -dir * 1.9;
+  const tl = c.track(gsap.timeline({ onComplete: () => kill(g) }));
+  tl.to(g, { alpha: 1, duration: 0.05 }, 0);
+  tl.to(g, { rotation: dir * 0.05, duration: 0.16, ease: 'power3.in' }, 0);
+  tl.call(() => {
+    ring(c, feet, tint, size * 0.85, size * 0.24);
+    burst(c, { x: at.x, y: at.y + size * 0.15 }, tint, 10, size * 0.55);
+  });
+  tl.to(g, { rotation: -dir * 0.12, duration: 0.08, ease: 'power1.out' });
+  tl.to(g, { alpha: 0, duration: 0.18 }, '>-0.02');
+}
+
+/** A plain blow: a white flash and sparks where it lands (any melee attack with no style of its own). */
+export function impact(c: FxCtx, at: Pt, tint: string, size = 90): void {
+  puff(c, at, tint, size * 0.32, 0.14);
+  burst(c, at, tint, 8, size * 0.5);
+}

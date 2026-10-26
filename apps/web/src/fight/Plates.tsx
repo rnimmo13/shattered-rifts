@@ -131,6 +131,20 @@ export function UnitPlates({ items, targetable, hover, preview, heroId, sharp }:
                 {...tipAttrs(UI_TIPS.hp(u.hp, u.maxHp))}
               >
                 <div className="bar__fill" style={{ width: `${pct}%` }} />
+                {/* a phase still to come (an Omen): a notch where it rises */}
+                {u.rise?.map((x, i) => (
+                  <i
+                    key={i}
+                    className="bar__phase"
+                    style={{ left: `${x.atPct}%` }}
+                    {...tipAttrs({
+                      kicker: 'Omen',
+                      title: i === 0 ? 'Next phase' : 'A later phase',
+                      tone: 'bad',
+                      text: `At ${x.atPct}% HP it stops (the blow that gets it there goes no further) and rises with ${x.barrierPct}% of its HP as Barrier${x.might ? ` and ${x.might} Might` : ''}.`,
+                    })}
+                  />
+                ))}
                 <div className="bar__text">
                   {u.hp}/{u.maxHp}
                 </div>

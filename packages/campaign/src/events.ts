@@ -4,6 +4,7 @@
 
 import { nextInt } from '@sr/combat';
 import {
+  BOONS,
   COMBAT_DB,
   RIFTWALKERS,
   canRoll,
@@ -199,7 +200,7 @@ export const EVENTS: EventDef[] = [
   {
     id: 'idol',
     weight: 1.5,
-    when: (r) => Object.keys(COMBAT_DB.boons).some((id) => !r.boons.includes(id)),
+    when: (r) => BOONS.some((b) => !r.boons.includes(b.id)),
     build: (r) => ({
       title: 'The whispering idol',
       text: 'A small idol of black glass. It wants to be carried. It will pay for it, and so will you.',

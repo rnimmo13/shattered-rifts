@@ -7,6 +7,7 @@ import { HeroIcon } from '../ui/HeroIcon';
 import { viewGhostDecks, type GhostDeckRow } from './boardApi';
 import { heroName, progressLabel } from './deckLayout';
 import '../play/play.css';
+import { Notice } from '../ui/Toast';
 import './board.css';
 
 type Sort = 'recent' | 'ghost' | 'tier';
@@ -103,9 +104,9 @@ export default function GhostDecksScreen() {
         </p>
       )}
       {rows === null && (
-        <div className="notice notice--bad" role="alert">
+        <Notice tone="bad">
           The ghost list could not be reached. Check your connection and try again.
-        </div>
+        </Notice>
       )}
       {rows && (
         <div className="board__wrap">

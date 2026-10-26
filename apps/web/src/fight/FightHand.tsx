@@ -123,6 +123,16 @@ export function FightHand(p: FightHandProps) {
   const rest = fanLayout(n, { ...layout, focus: null });
 
   const aboveHand = (y: number): boolean => y < window.innerHeight - p.cardWidth * 1.5;
+  /**
+   * A card that is aimed (several targets), dragged up out of the hand towards the enemies, turns into the targeting arrow: the
+   * card waits, lifted, above its place, and an arrow runs from it to the pointer, so the figure under the pointer is plain to see.
+   */
+  const aimLine = window.innerHeight - p.cardWidth * 1.4 * 1.9;
+  const aimingCard = (() => {
+    if (!drag?.moved || drag.y >= aimLine) return null;
+    const c = p.cards.find((x) => x.inst.id === drag.id);
+    return c && c.playable && needsAim(c) ? c : null;
+  })();
 
   useEffect(() => {
     if (!drag) return;
@@ -204,7 +214,16 @@ export function FightHand(p: FightHandProps) {
           zIndex: dragging ? 500 : s.z,
           transform: `translate(calc(-50% + ${s.x}px), ${s.y + w * HAND_SINK}px) rotate(${s.rot}deg) scale(${s.scale})`,
         };
-        if (dragging && drag) {
+        if (dragging && drag && aimingCard?.inst.id === c.inst.id) {
+          // aiming: the card waits above where it was picked up, and the arrow does the pointing
+          style.position = 'fixed';
+          style.left = drag.startX;
+          style.top = window.innerHeight - w * 1.4 * 0.95;
+          style.bottom = 'auto';
+          style.transform = 'translate(-50%, -50%) scale(1.12) rotate(0deg)';
+          style.transition = 'left 0.12s, top 0.12s';
+          style.pointerEvents = 'none';
+        } else if (dragging && drag) {
           style.position = 'fixed';
           style.left = drag.x;
           style.top = drag.y;
@@ -269,6 +288,32 @@ export function FightHand(p: FightHandProps) {
           </div>
         );
       })}
+      {aimingCard && drag && (
+        <svg className="fhand__arrow" width="100%" height="100%" aria-hidden>
+          <defs>
+            <marker
+              id="fhand-ah"
+              viewBox="0 0 10 10"
+              refX="6"
+              refY="5"
+              markerWidth="5"
+              markerHeight="5"
+              orient="auto"
+            >
+              <path d="M0 0 L10 5 L0 10 z" fill="#f6dc94" />
+            </marker>
+          </defs>
+          <path
+            d={`M ${drag.startX} ${window.innerHeight - w * 1.4 * 1.5} Q ${(drag.startX + drag.x) / 2} ${Math.min(drag.y, window.innerHeight - w * 1.4 * 1.5) - 140} ${drag.x} ${drag.y}`}
+            fill="none"
+            stroke="#f6dc94"
+            strokeWidth="5"
+            strokeDasharray="2 10"
+            strokeLinecap="round"
+            markerEnd="url(#fhand-ah)"
+          />
+        </svg>
+      )}
     </div>
   );
 }

@@ -9,6 +9,7 @@ import {
   COMBAT_DB,
   RIFTWALKERS,
   V2_DECK_RULES,
+  HEARTS,
   encounter,
   isDeckCard,
   markOf,
@@ -49,6 +50,8 @@ import {
 } from './gambler';
 import { makePrelude } from './preludes';
 import { mainLane } from './synergy';
+import { omenEffects, omenMods } from './omens';
+import type { EnemyMod, StatusId } from '@sr/combat';
 import {
   BOON_PRICE,
   LOOP_LEGEND_CHANCE,
@@ -136,6 +139,12 @@ export const ELITE_HEAL_PCT = 10;
 
 /** Fraction of max HP a shrine rest heals. */
 export const REST_HEAL = 0.35;
+/** What a rest heals in this run (the Omen of Thin Rest takes some away), in HP. */
+export const restHeal = (run: RunState): number =>
+  Math.ceil(run.maxHp * REST_HEAL * (1 - omenEffects(run.tier).restPct / 100));
+/** A merchant's price in this run (the Omen of Dearer Roads adds to it). */
+export const shopPrice = (run: RunState, n: number): number =>
+  Math.round((n * (100 + omenEffects(run.tier).pricePct)) / 100);
 
 /** Stages 1 and 2 are the first two realms of the run; the last stage is the Rift. */
 export function realmOfStage(run: Pick<RunState, 'stageRealms'>, stage: number): StageRealm {
@@ -222,6 +231,38 @@ function gainBoon(r: RunState, id: string): void {
     r.maxHp += b.maxHp;
     r.hp += b.maxHp;
   }
+}
+
+/** Two Warden's Hearts to offer (never the one the run holds). */
+function heartOffers(r: RunState): string[] {
+  const pool = HEARTS.map((h) => h.id).filter((id) => id !== r.heart);
+  const out: string[] = [];
+  while (out.length < 2 && pool.length)
+    out.push(pool.splice(nextInt(r.rng, pool.length), 1)[0] as string);
+  return out;
+}
+
+/** Take a Warden's Heart instead of the Gift's card: it replaces the one held before (whose Max HP change is undone). */
+export function chooseHeart(run: RunState, id: string): RunState {
+  need(run.phase === 'gift' && run.context?.hearts?.includes(id), 'That Heart is not on offer');
+  const r = clone(run);
+  const old = r.heart ? COMBAT_DB.boons[r.heart] : undefined;
+  if (old?.maxHp) {
+    // (the Max HP it changed comes back; HP does not, so a Heart cannot be swapped in and out for health)
+    r.maxHp = Math.max(1, r.maxHp - old.maxHp);
+    r.hp = Math.max(1, Math.min(r.maxHp, r.hp));
+  }
+  const h = COMBAT_DB.boons[id];
+  need(h?.heart, 'That is not a Heart');
+  r.heart = id;
+  if (h.maxHp) {
+    r.maxHp = Math.max(1, r.maxHp + h.maxHp);
+    r.hp = Math.max(1, Math.min(r.maxHp, r.hp + h.maxHp));
+  }
+  r.eventResult = `You take the ${h.name}.${old ? ` The ${old.name} is given back.` : ''}`;
+  r.phase = 'stageClear';
+  r.context = null;
+  return r;
 }
 
 const heal = (r: RunState, n: number): void => {
@@ -356,6 +397,16 @@ export function enterNode(run: RunState, nodeId: string): RunState {
             }
           : {}),
       };
+      // the Omen of Dearer Roads: everything costs more (a card held for you keeps the price you were promised)
+      const up = omenEffects(r.tier).pricePct;
+      if (up > 0) {
+        const m = r.context.merchant;
+        const dear = (n: number): number => shopPrice(r, n);
+        for (const it of m.items) if (!it.held) it.price = dear(it.price);
+        for (const pt of m.potions ?? []) pt.price = dear(pt.price);
+        if (m.boon) m.boon.price = dear(m.boon.price);
+        m.removePrice = dear(m.removePrice);
+      }
       r.phase = 'merchant';
       break;
     }
@@ -414,6 +465,10 @@ export interface FightPlan {
   seed: string;
   /** this Warden is a ghost: the deck to fight (played by the computer), and its HP (the usual Warden below is not fought) */
   ghost?: GhostBoss & { hp: number; dmgPct: number };
+  /** what the tier's Omens change about the enemies (DECISIONS #245) */
+  mods: EnemyMod[];
+  /** what the Omens start you with */
+  heroStatuses: Partial<Record<StatusId, number>>;
 }
 
 /**
@@ -503,24 +558,38 @@ export function duelPlan(run: RunState): FightPlan | null {
   if (!node.enemyId) return null;
   const e = encounter(node.enemyId);
   const ghost = node.ghost ? run.context.ghost : undefined;
+  // the tier's Omens: phases and guards for the enemies, a shaken start for you, Static in your draw pile
+  const omen = omenEffects(run.tier);
+  const boss = node.kind === 'elite' || node.kind === 'warden';
+  const hpOf = (id: string): number => COMBAT_DB.units[id]?.maxHp ?? 0;
+  const units = [...e.units];
+  if (omen.swarm && node.kind === 'elite' && units.length > 0 && units.length < 4) {
+    const weakest = units.reduce((m, id) => (hpOf(id) < hpOf(m) ? id : m));
+    units.push(weakest);
+  }
+  const wardenUp = node.kind === 'warden' ? 1 + omen.wardenDmgPct / 100 : 1;
   return {
     ...(ghost
       ? {
           ghost: {
             ...ghost,
             hp: ghostBossHp(ghost.hero, run.tier, run.stage),
-            dmgPct: ghostBossDmg(run.tier, run.stage),
+            // (Warden's Fury reaches a ghost Warden too; phases and guards are for enemy units, not a hero deck)
+            dmgPct: Math.round(ghostBossDmg(run.tier, run.stage) * wardenUp),
           },
         }
       : {}),
     encounterId: e.id,
-    units: [...e.units],
-    deck: [...run.deck],
+    units,
+    mods: omenMods(omen, units, boss, hpOf),
+    heroStatuses: { ...omen.heroStatuses },
+    deck: [...run.deck, ...omen.fightCards],
     hp: run.hp,
     maxHp: run.maxHp,
     // the engine's own tier scaling stays off: tierTable.ts carries all of it, through hpPct and dmgPct below
     tier: 1,
-    boons: [...run.boons],
+    // (a Warden's Heart works in every fight like a Boon)
+    boons: [...run.boons, ...(run.heart ? [run.heart] : [])],
     potions: [...run.potions],
     // the tier table sets how hard this stage of this tier is; the difficulty only matters for a run saved on Easy or Hard
     hpPct: Math.round(
@@ -529,7 +598,8 @@ export function duelPlan(run: RunState): FightPlan | null {
     ),
     dmgPct: Math.round(
       (DIFFICULTY[run.difficulty].dmgPct / DIFFICULTY.normal.dmgPct) *
-        enemyScale(run.tier, run.stage).dmg,
+        enemyScale(run.tier, run.stage).dmg *
+        wardenUp,
     ),
     kind: node.kind,
     seed: `${run.seed}:t${run.tier}:${node.id}:${run.stats.duelsLost}`,
@@ -581,8 +651,10 @@ export function finishDuel(
     potionGained = offerPotion(r.rng);
     r.potions.push(potionGained);
   }
-  const gain =
-    FIGHT_SHARDS[node.kind === 'duel' ? 'duel' : node.kind === 'elite' ? 'elite' : 'warden'];
+  const gain = Math.round(
+    FIGHT_SHARDS[node.kind === 'duel' ? 'duel' : node.kind === 'elite' ? 'elite' : 'warden'] *
+      (1 - omenEffects(r.tier).shardsPct / 100),
+  );
   r.shards += gain;
   for (const id of r.boons) {
     const b = COMBAT_DB.boons[id];
@@ -622,6 +694,8 @@ export function finishDuel(
       r.phase = 'loopCleared';
       return r;
     }
+    // two Warden's Hearts wait beside the Gift: take a card, a Heart, or nothing (DECISIONS #246)
+    const hearts = heartOffers(r);
     const offers = giftOffers(
       r.rng,
       r.character,
@@ -638,6 +712,7 @@ export function finishDuel(
     r.context = {
       nodeId: node.id,
       offers,
+      ...(hearts.length ? { hearts } : {}),
       shardsGained: gain,
       ...(boonGained ? { boonGained } : {}),
       ...(potionGained ? { potionGained } : {}),
@@ -670,7 +745,7 @@ export function finishDuel(
     delete node.bonus;
     if (said.length) r.eventResult = `The spoils: ${said.join(' ')}`;
   }
-  const count = r.tier >= 4 ? 4 : 3;
+  const count = Math.max(2, (r.tier >= 4 ? 4 : 3) - omenEffects(r.tier).fewerChoices);
   r.context = {
     nodeId: node.id,
     offers: offerCards(
@@ -954,7 +1029,7 @@ export function takeShrine(run: RunState, choice: ShrineChoice): RunState {
   const gs = (r.context as NonNullable<RunState['context']>).gambler;
   if (gs) delete gs.note;
   if (choice.kind === 'rest') {
-    heal(r, r.maxHp * REST_HEAL);
+    heal(r, restHeal(r));
   } else if (choice.kind === 'upgrade') {
     const i = r.deck.indexOf(choice.card);
     need(i >= 0, 'That card is not in your deck');
@@ -1183,7 +1258,7 @@ export function buyUpgrade(run: RunState, card: string): RunState {
   need(i >= 0, 'That card is not in your deck');
   const up = COMBAT_DB.cards[card]?.upgrade;
   need(up, 'That card cannot be upgraded');
-  const price = upgradePrice(m.upgrades ?? 0);
+  const price = shopPrice(r, upgradePrice(m.upgrades ?? 0));
   need(r.shards >= price, 'Not enough shards');
   r.shards -= price;
   r.deck[i] = up;

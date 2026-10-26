@@ -277,6 +277,8 @@ export interface NodeContext {
   ghostAsked?: boolean;
   /** reward / gift: the cards on offer */
   offers?: string[];
+  /** gift: the Warden's Hearts on offer instead of a card */
+  hearts?: string[];
   /** reward: shards already granted for the win */
   shardsGained?: number;
   /** reward: a Boon the fight dropped (already added to the run) */
@@ -338,6 +340,8 @@ export interface RunState {
   ledger?: number;
   /** card removals bought from merchants this run (each makes the next dearer); missing = none */
   removals?: number;
+  /** the Warden's Heart this run holds, if any (DECISIONS #246) */
+  heart?: string;
   seed: string;
   character: HeroId;
   /** The run's difficulty setting (see DIFFICULTY): Normal unless chosen otherwise (see DIFFICULTY). */

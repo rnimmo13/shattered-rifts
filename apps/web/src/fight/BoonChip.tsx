@@ -14,11 +14,13 @@ export function BoonChip(props: { id: string; size?: 'small' | 'large' }) {
       aria-label={`${b.name}: ${b.text}`}
       tabIndex={0}
       {...tipAttrs({
-        kicker: `Boon (${b.rarity})`,
+        kicker: b.heart ? 'Warden’s Heart' : `Boon (${b.rarity})`,
         title: b.name,
         tone: 'boon',
         text: b.text,
-        hint: 'A passive that lasts the whole run.',
+        hint: b.heart
+          ? 'It lasts the whole run. You hold one Heart at a time.'
+          : 'A passive that lasts the whole run.',
       })}
     >
       {glyphOf(b)}
@@ -37,7 +39,7 @@ export function BoonCard(props: { id: string; note?: string }) {
         <b>{b.name}</b>
         <small>
           <RarityGem rarity={b.rarity} />
-          boon · {b.rarity}
+          {b.heart ? 'Warden’s Heart' : `boon · ${b.rarity}`}
         </small>
         <p>{b.text}</p>
         {props.note && <em>{props.note}</em>}

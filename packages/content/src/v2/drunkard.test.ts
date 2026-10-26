@@ -49,6 +49,14 @@ describe('KP and the Old Twelve Gauge', () => {
     for (const u of s.sides.b.units) expect(u.hp).toBe(95 - 8);
   });
 
+  it('Point Blank: against a lone enemy it deals 25% more (DECISIONS #247)', () => {
+    let s = fight('drunkard', ['old-twelve-gauge']);
+    s.sides.b.units = s.sides.b.units.slice(0, 1);
+    s = playCard(s, 'T0');
+    // 5 damage, 25% more, rounded: 6
+    expect(s.sides.b.units[0]!.hp).toBe(94);
+  });
+
   it('playing a shell sharpens the gun with Hair Trigger', () => {
     let s = fight('drunkard', ['hair-trigger', 'buckshot-shell', 'old-twelve-gauge']);
     s = playCard(s, 'T0');

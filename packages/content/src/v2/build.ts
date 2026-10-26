@@ -23,7 +23,9 @@ export const dmg = (amount: number, to: Sel = 'target', hits?: number): Op =>
 export const barrier = (amount: number, to: Sel = 'self'): Op => ({ op: 'barrier', amount, to });
 export const heal = (amount: number, to: Sel = 'self'): Op => ({ op: 'heal', amount, to });
 /** Lessen every debuff on the target by `amount` stacks (it never removes one outright: that is `dispel`). */
-export const cleanse = (amount: number, to: Sel = 'self'): Op => ({ op: 'cleanse', amount, to });
+/** Lessen every debuff by `amount` stacks, or by `pct`% of them when that is more (DECISIONS #244). */
+export const cleanse = (amount: number, to: Sel = 'self', pct?: number): Op =>
+  pct ? { op: 'cleanse', amount, to, pct } : { op: 'cleanse', amount, to };
 /** Dispel every debuff on the target completely: for the highest rarity of a card only. */
 export const dispel = (to: Sel = 'self'): Op => ({ op: 'cleanse', amount: 0, to, all: true });
 export const status = (st: StatusId, amount: number, to: Sel = 'self', temp = false): Op => ({

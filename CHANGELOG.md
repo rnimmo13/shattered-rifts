@@ -5,6 +5,15 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **Rift Omens:** every Rift Tier from II brings an Omen, they stack, and each grows the deeper you go. From Tier II, **elites and Wardens have a second phase**: at half HP they stop and rise with Barrier and Might (a notch on their HP bar shows where). Later Omens make merchants dearer, rests thinner, foes guarded, and you start some fights shaken. Hover the Omens tag on the run bar to read them all.
+- **Warden's Hearts:** after a Warden, take a rare card, one of two Hearts, or nothing. A Heart changes every fight for the rest of the run, at a price (+1 Mana but one card fewer, say). You hold one at a time.
+- **Dispels by a share:** Shrug It Off lessens every debuff by 1 or 25% (whichever is more), Steady Nerves by 2 or 50%; Purging Light still clears them all. A big pile of Fate is no longer shrugged off one stack at a time.
+- **Point Blank:** KP's Old Twelve Gauge deals 25% more when only one enemy is left.
+- **Attacks land on the target:** fighters no longer run across the board; a sword cuts across the target, a hammer comes down on it.
+- **Drag a card up to aim:** a card with several targets turns into the targeting arrow as you drag it towards the enemies.
+- **Messages can be dismissed** and are never hidden behind other panels. Card costs use a clearer font (0 and 1 no longer look alike).
+
+### Added (0.63.0)
 - **Recap and replay after every fight:** what hurt you most, the blow that ended it, your best turns and the whole battle log. You can watch the fight again at up to 4× speed, or set the result aside to look at the board.
 - **Run history:** every run that has ended, with its deck and the last fight it played, to watch again.
 - **Arena ranks:** Bronze, Silver, Gold, Platinum and Diamond, the first four in three divisions, moved by every counted win and loss against a person. Ratings are pulled halfway back at the start of each monthly season. Ranks show on name tags and on a new Ranked leaderboard.

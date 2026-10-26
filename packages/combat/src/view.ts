@@ -345,9 +345,11 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
               ? ` for each ${w.per}`
               : `, 1 more time per ${w.per}`;
       }
+      // Point Blank: more against a lone enemy
+      const lone = o.lonePct ? ` Point Blank: ${o.lonePct}% more when only one enemy is left.` : '';
       return a.equal
-        ? `Deal damage equal to ${a.num}${times}${who[o.to]}.`
-        : `Deal ${a.num} damage${times}${who[o.to]}.`;
+        ? `Deal damage equal to ${a.num}${times}${who[o.to]}.${lone}`
+        : `Deal ${a.num} damage${times}${who[o.to]}.${lone}`;
     }
     case 'loseHp': {
       const a = amountText(o.amount, o.scale);
@@ -363,10 +365,17 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
       return `Heal ${a.equal ? `HP equal to ${a.num}` : a.num}${o.to === 'self' ? '' : who[o.to]}.`;
     }
     case 'cleanse': {
-      const noun = o.to === 'self' ? 'you' : o.to === 'target' ? 'the target' : who[o.to].replace(/^ to /, '') || 'the target';
+      const noun =
+        o.to === 'self'
+          ? 'you'
+          : o.to === 'target'
+            ? 'the target'
+            : who[o.to].replace(/^ to /, '') || 'the target';
       return o.all
         ? `Dispel every debuff on ${noun}.`
-        : `Lessen every debuff on ${noun} by ${o.amount}.`;
+        : o.pct
+          ? `Lessen every debuff on ${noun} by ${o.pct}% (at least ${o.amount}).`
+          : `Lessen every debuff on ${noun} by ${o.amount}.`;
     }
     case 'status': {
       // Fate is a curse: "Curse the target with 6 Fate"
@@ -501,7 +510,9 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
       const kind = o.kind ? `${KIND_PLURAL[o.kind]?.[0] ?? o.kind} ` : '';
       const what = (o.count ?? 1) > 1 ? `${o.count} random ${kind}cards` : `a random ${kind}card`;
       const many = (o.count ?? 1) > 1;
-      const free = many ? ' (they cost 0 the next time you play them)' : ' (it costs 0 the next time you play it)';
+      const free = many
+        ? ' (they cost 0 the next time you play them)'
+        : ' (it costs 0 the next time you play it)';
       return `Add ${what} from your pool to your hand${o.free ? free : ''}.`;
     }
     case 'upgrade':

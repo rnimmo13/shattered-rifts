@@ -554,6 +554,20 @@ export function FightView(props: {
           float(e.unit, 'Prevented!', 'good');
           await wait(220);
           return;
+        case 'phase': {
+          // an enemy reached its threshold and rises (an Omen's Second Wind): a beat to see it
+          reduceEvent(db, d, e);
+          const name = d.sides.a.units.concat(d.sides.b.units).find((u) => u.id === e.unit)?.name;
+          float(e.unit, e.left > 0 ? 'It rises!' : 'Final phase!', 'bad');
+          setBanner(
+            `${name ?? 'The enemy'} rises: ${e.left > 0 ? 'its next phase' : 'its last phase'}!`,
+            'bad',
+          );
+          play('trapReveal');
+          await wait(900);
+          setBanner(null);
+          return;
+        }
         case 'gameOver':
           reduceEvent(db, d, e);
           sc.fighters.finish(shown(e.winner, mySide));

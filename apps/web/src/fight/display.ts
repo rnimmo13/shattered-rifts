@@ -221,6 +221,15 @@ export function reduceEvent(db: CombatDb, s: CombatState, e: CombatEvent): void 
         if (i >= 0) belt.splice(i, 1);
       }
       return;
+    case 'phase': {
+      // a phase is used up (its Barrier and Might follow as their own events)
+      const u = unitOf(s, e.unit);
+      if (u?.rise) {
+        u.rise = u.rise.slice(1);
+        if (!u.rise.length) delete u.rise;
+      }
+      return;
+    }
     case 'gameOver':
       s.winner = e.winner;
       return;

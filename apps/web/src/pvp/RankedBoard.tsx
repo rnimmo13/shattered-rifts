@@ -15,6 +15,7 @@ import { HeroIcon } from '../ui/HeroIcon';
 import { heroName } from './deckLayout';
 import { viewRanks, type RankedView } from './boardApi';
 import { RankBadge, RankGem } from './RankBadge';
+import { Notice } from '../ui/Toast';
 import './ranks.css';
 
 /** How long until the season turns over ("12 days left"). */
@@ -92,12 +93,12 @@ export function RankedBoard() {
         </p>
       )}
       {got === null && (
-        <div className="notice notice--bad" role="alert">
+        <Notice tone="bad" showAgain={tries}>
           The ranked board could not be reached.{' '}
           <button className="btn btn--small" onClick={() => setTries((n) => n + 1)}>
             <span>Retry</span>
           </button>
-        </div>
+        </Notice>
       )}
       {view && (
         <>

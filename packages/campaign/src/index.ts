@@ -35,6 +35,8 @@ export {
   MAX_RESOLVE,
   DIFFICULTY,
   REST_HEAL,
+  restHeal,
+  shopPrice,
   RunError,
   upgradable,
   type FightPlan,
@@ -48,6 +50,7 @@ export {
   buyRemoval,
   buyUpgrade,
   chooseCard,
+  chooseHeart,
   chooseEvent,
   pickEventCard,
   pickDeckCard,
@@ -125,3 +128,12 @@ export {
   type ShrineKind,
 } from './gambler';
 export { FIT_AT, fitLabel, fitOf, laneCounts, mainLane, type Fit } from './synergy';
+export {
+  OMENS,
+  omenEffects,
+  omenMods,
+  omenOf,
+  omensAt,
+  type Omen,
+  type OmenEffects,
+} from './omens';

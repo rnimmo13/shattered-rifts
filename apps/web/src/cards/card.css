@@ -206,8 +206,10 @@
   filter: drop-shadow(0 3px 6px rgb(0 0 0 / 0.6));
 }
 .card__cost span {
-  font-family: var(--font-numeric);
-  font-size: 64px;
+  /* (Cinzel, not the tall numeric face: its 0 is round and its 1 has serifs, so the two never look alike) */
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 58px;
   line-height: 1;
   color: #04202e;
   text-shadow: 0 1px 0 rgb(255 255 255 / 0.55);
@@ -541,7 +543,7 @@
   z-index: 3;
 }
 .card__cost span {
-  font-size: 70px;
+  font-size: 62px;
 }
 .card__banner {
   left: 100px;

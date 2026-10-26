@@ -5,7 +5,7 @@
 //   Shells     - Buckshot Shells (0-cost, hit EVERY enemy, consumed) and liquid courage to keep swinging
 // Shells are KP's alone, the way Sleeve Knives are Quill's: a shell hits the whole room for a little, a knife one enemy.
 
-import type { CardDef } from '@sr/combat';
+import type { CardDef, Op } from '@sr/combat';
 import {
   addTo,
   barrier,
@@ -214,7 +214,8 @@ export const DRUNKARD: CardDef[] = [
     'attack',
     1,
     'none',
-    [scaled(dmg(5, 'allFoes'), per('bonus'))],
+    // Point Blank (DECISIONS #247): against a single enemy the spread all lands, 25% more
+    [{ ...scaled(dmg(5, 'allFoes'), per('bonus')), lonePct: 25 } as Op],
     {
       retain: true,
       tags: ['gun'],

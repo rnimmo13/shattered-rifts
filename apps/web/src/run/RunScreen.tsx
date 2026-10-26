@@ -19,6 +19,9 @@ import {
   buyUpgrade,
   upgradedCards,
   chooseCard,
+  chooseHeart,
+  omenOf,
+  omensAt,
   chooseEvent,
   claimTrialPrize,
   pickEventCard,
@@ -46,7 +49,9 @@ import {
 } from '@sr/campaign';
 import { FightView } from '../fight/FightView';
 import { venueForRealm } from '../duel/scene/venue';
-import { BoonChip } from '../fight/BoonChip';
+import { BoonCard, BoonChip } from '../fight/BoonChip';
+import { tipAttrs } from '../ui/tip';
+import { Toast } from '../ui/Toast';
 import { getHero, rememberHero } from '../app/heroChoice';
 import { BoonToast } from './BoonToast';
 import { ChanceCoin, type Flip } from './ChanceCoin';
@@ -358,7 +363,14 @@ export default function RunScreen() {
   }, [wanted, act]);
 
   if (!run)
-    return <Sanctum onStart={startRun} onImport={(f) => void onImport(f)} notice={notice} />;
+    return (
+      <Sanctum
+        onStart={startRun}
+        onImport={(f) => void onImport(f)}
+        notice={notice}
+        onDismiss={() => say(null)}
+      />
+    );
 
   // ---- a duel replaces the whole screen ----
   if (run.phase === 'duel' && run.context) {
@@ -397,6 +409,7 @@ export default function RunScreen() {
               maxHp: plan.maxHp,
               boons: plan.boons,
               potions: plan.potions,
+              statuses: plan.heroStatuses,
             },
             b: plan.ghost
               ? {
@@ -408,7 +421,13 @@ export default function RunScreen() {
                   boons: plan.ghost.boons,
                   potions: [],
                 }
-              : { enemies: plan.units, tier: plan.tier, hpPct: plan.hpPct, dmgPct: plan.dmgPct },
+              : {
+                  enemies: plan.units,
+                  tier: plan.tier,
+                  hpPct: plan.hpPct,
+                  dmgPct: plan.dmgPct,
+                  mods: plan.mods,
+                },
           }}
           title={`${plan.ghost ? `Ghost Warden: ${plan.ghost.name}'s ${RIFTWALKERS[plan.ghost.hero]?.role ?? 'Riftwalker'} deck` : encounter(plan.encounterId).name} · Stage ${run.stage}${floorLabel(run) && ` · ${floorLabel(run)}`}`}
           exitLabel="Forfeit"
@@ -433,9 +452,9 @@ export default function RunScreen() {
       return (
         <>
           {notice && (
-            <p className="run__notice run__notice--fight" role="alert">
+            <Toast tone={noticeGood ? 'good' : 'bad'} onDismiss={() => say(null)}>
               {notice}
-            </p>
+            </Toast>
           )}
           {showMap && (
             <div
@@ -507,6 +526,7 @@ export default function RunScreen() {
                   maxHp: plan.maxHp,
                   boons: plan.boons,
                   potions: plan.potions,
+                  statuses: plan.heroStatuses,
                 },
                 b: {
                   hero: plan.ghost.hero,
@@ -547,12 +567,18 @@ export default function RunScreen() {
         onAbandon={() => setConfirmAbandon(true)}
       />
       {notice && (
-        <p className={`run__notice${noticeGood ? ' run__notice--good' : ''}`} role="alert">
+        <Toast tone={noticeGood ? 'good' : 'bad'} onDismiss={() => say(null)}>
           {notice}
-        </p>
+        </Toast>
       )}
       {arenaNote === 'intro' && (
-        <p className="run__notice run__notice--good" role="status">
+        <Toast
+          tone="good"
+          onDismiss={() => {
+            markArenaIntroSeen();
+            setArenaNote(null);
+          }}
+        >
           <b>Your deck is now in the Arena.</b> It is saved by itself after every fight, so the
           Arena always has your latest deck, and once it has cleared Tier 3 other players may face
           it as a ghost (the computer plays it). If this run collapses you can no longer bring it to
@@ -566,16 +592,13 @@ export default function RunScreen() {
           >
             <span>Got it</span>
           </button>
-        </p>
+        </Toast>
       )}
       {arenaNote === 'full' && (
-        <p className="run__notice" role="status">
+        <Toast tone="bad" role="status" onDismiss={() => setArenaNote(null)}>
           Your saved decks are full, so this run's deck is not in the Arena yet. Free a slot on the{' '}
           <a href="#/decks">Saved decks page</a> and it will be saved after your next fight.{' '}
-          <button className="btn btn--small btn--ghost" onClick={() => setArenaNote(null)}>
-            <span>Dismiss</span>
-          </button>
-        </p>
+        </Toast>
       )}
       <Body run={run} act={act} onLeave={leaveRun} onHome={goHome} lostDecks={lostDecks} />
       {coin && (
@@ -622,6 +645,7 @@ function Sanctum(props: {
   onStart: (c: HeroId, d: Difficulty, l: Luck) => void;
   onImport: (f: File | undefined) => void;
   notice: string | null;
+  onDismiss: () => void;
 }) {
   const [pick, setPickState] = useState<HeroId>(getHero);
   const setPick = (h: HeroId): void => {
@@ -644,11 +668,7 @@ function Sanctum(props: {
         </p>
       </header>
       <CharacterPicker value={pick} onChange={setPick} />
-      {props.notice && (
-        <p className="run__notice" role="alert">
-          {props.notice}
-        </p>
-      )}
+      {props.notice && <Toast onDismiss={props.onDismiss}>{props.notice}</Toast>}
       <div className="setup__actions">
         <button
           className="btn btn--primary setup__go"
@@ -713,6 +733,26 @@ function RunBar(props: {
             {run.boons.map((id) => (
               <BoonChip key={id} id={id} />
             ))}
+          </span>
+        )}
+        {run.heart && (
+          <span className="boons" aria-label="Warden's Heart">
+            <BoonChip id={run.heart} />
+          </span>
+        )}
+        {omensAt(run.tier).length > 0 && (
+          <span
+            className="runbar__omens"
+            tabIndex={0}
+            {...tipAttrs({
+              kicker: 'Rift Omens',
+              title: `${omensAt(run.tier).length} ${omensAt(run.tier).length === 1 ? 'Omen' : 'Omens'} at Tier ${run.tier}`,
+              tone: 'bad',
+              text: 'Every Rift Tier from II brings an Omen, and they stack. Each grows the deeper you go.',
+              lines: omensAt(run.tier).map((o) => ({ title: o.name, text: o.text(run.tier) })),
+            })}
+          >
+            <span aria-hidden>☾</span> {omensAt(run.tier).length} Omens
           </span>
         )}
         <span className="resolve" aria-label={`Resolve ${run.resolve} of ${run.maxResolve}`}>
@@ -806,17 +846,46 @@ function Body(props: {
       );
     case 'gift':
       return (
-        <CardOffer
-          title="The Warden's Gift"
-          hint="The Warden falls. Take one of your class's rare cards, or skip it."
-          offers={run.context?.offers ?? []}
-          deck={run.deck}
-          character={run.character}
-          shards={run.context?.shardsGained}
-          boon={run.context?.boonGained}
-          onPick={(id) => act((r) => chooseCard(r, id))}
-          onSkip={() => act((r) => chooseCard(r, null))}
-        />
+        <>
+          <CardOffer
+            title="The Warden's Gift"
+            hint={
+              run.context?.hearts?.length
+                ? "The Warden falls. Take one of your class's rare cards, or one of the Warden's Hearts below, or neither."
+                : "The Warden falls. Take one of your class's rare cards, or skip it."
+            }
+            offers={run.context?.offers ?? []}
+            deck={run.deck}
+            character={run.character}
+            shards={run.context?.shardsGained}
+            boon={run.context?.boonGained}
+            onPick={(id) => act((r) => chooseCard(r, id))}
+            onSkip={() => act((r) => chooseCard(r, null))}
+          />
+          {run.context?.hearts && run.context.hearts.length > 0 && (
+            <section className="stage-panel hearts" aria-label="Warden's Hearts">
+              <h2 className="stage-panel__title">Or a Warden's Heart</h2>
+              <p className="stage-panel__hint">
+                A Heart changes every fight for the rest of the run, for a price. You hold one at a
+                time
+                {run.heart
+                  ? `: taking one gives back your ${COMBAT_DB.boons[run.heart]?.name ?? 'Heart'}`
+                  : ''}
+                . It takes the place of the card.
+              </p>
+              <div className="hearts__row">
+                {run.context.hearts.map((id) => (
+                  <div key={id} className="hearts__one">
+                    <BoonCard id={id} />
+                    <button className="btn" onClick={() => act((r) => chooseHeart(r, id))}>
+                      <span>Take the {COMBAT_DB.boons[id]?.name ?? 'Heart'}</span>
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
+        </>
       );
     case 'shrine':
       return (
@@ -887,6 +956,12 @@ function Body(props: {
               <button className="bigchoice" onClick={() => act((r) => continueLoop(r))}>
                 <b>Continue to Tier {run.tier + 1}</b>
                 <span>Keep your deck, heal fully, go back to stage 1, one deeper.</span>
+                {omenOf(run.tier + 1) && (
+                  <span className="bigchoice__omen">
+                    A new Omen: <b>{omenOf(run.tier + 1)?.name}</b>.{' '}
+                    {omenOf(run.tier + 1)?.text(run.tier + 1)} The Omens you have grow too.
+                  </span>
+                )}
               </button>
             ) : (
               <p className="stage-panel__hint">
