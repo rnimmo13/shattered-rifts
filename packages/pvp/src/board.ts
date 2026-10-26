@@ -388,6 +388,10 @@ export function pickGhostBoss(
   decks: readonly GhostDeck[],
   opts: {
     requester: string | null;
+    /** every id the player is known by (their account's and their Vault code's): none of their decks is a ghost for them */
+    requesters?: readonly string[];
+    /** their username (no two players share one): a deck saved under it is theirs too */
+    name?: string;
     tier: number;
     exclude: readonly string[];
     roll: number;
@@ -395,10 +399,14 @@ export function pickGhostBoss(
   },
 ): GhostDeck | null {
   const skip = new Set(opts.exclude);
+  const mine = new Set([...(opts.requesters ?? []), ...(opts.requester ? [opts.requester] : [])]);
+  const myName = opts.name?.trim().toLowerCase() || null;
   const fresh = decks.filter(
     (d) =>
       ghostCleared(d.tier, d.stage) &&
-      d.owner !== opts.requester &&
+      // never one of the player's own decks, whichever way they were known when it was saved (DECISIONS #280)
+      !mine.has(d.owner) &&
+      !(myName !== null && d.ownerName.trim().toLowerCase() === myName) &&
       !skip.has(d.id) &&
       d.lastAt >= opts.now - GHOST_FRESH_DAYS * 86_400_000 &&
       // never stronger than the player's tier, and not so far below that it is no fight

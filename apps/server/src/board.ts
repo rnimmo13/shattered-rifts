@@ -625,8 +625,14 @@ export class Leaderboard extends DurableObject<Env> {
           .filter((x): x is string => typeof x === 'string' && x.length <= 80)
           .slice(0, GHOST_BOSS_EXCLUDE_MAX)
       : [];
+    const requesters = Array.isArray(b['requesters'])
+      ? (b['requesters'] as unknown[]).filter(isId).slice(0, 4)
+      : [];
+    const name = typeof b['name'] === 'string' ? b['name'].slice(0, 40) : undefined;
     const chosen = pickGhostBoss(rows.map(toDeck), {
       requester,
+      requesters,
+      ...(name ? { name } : {}),
       tier,
       exclude,
       roll: Math.random(),

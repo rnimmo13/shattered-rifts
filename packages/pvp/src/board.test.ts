@@ -393,3 +393,37 @@ describe('names', () => {
       expect(cleanBoardName(ok), ok).toBe(ok);
   });
 });
+
+describe('a ghost Warden is never your own deck', () => {
+  const NOW = Date.UTC(2026, 9, 24);
+  const deck = (id: string, owner: string, ownerName: string): GhostDeck => ({
+    id,
+    owner,
+    ownerName,
+    hero: 'knight',
+    tier: 3,
+    stage: 3,
+    wins: 5,
+    losses: 0,
+    ghostWins: 0,
+    ghostLosses: 0,
+    lastAt: NOW,
+  });
+  const pick = (opts: { requester?: string | null; requesters?: string[]; name?: string }) =>
+    pickGhostBoss([deck('mine-old', 'code-id', 'Sacagaweeda')], {
+      requester: opts.requester ?? null,
+      ...(opts.requesters ? { requesters: opts.requesters } : {}),
+      ...(opts.name ? { name: opts.name } : {}),
+      tier: 3,
+      exclude: [],
+      roll: 0.5,
+      now: NOW,
+    });
+
+  it('saved under the Vault code, asked for while signed in: known by the code id or by the username', () => {
+    // (asked for under the account id only, the old deck looked like someone else's)
+    expect(pick({ requester: 'account-id' })?.id).toBe('mine-old');
+    expect(pick({ requester: 'account-id', requesters: ['account-id', 'code-id'] })).toBeNull();
+    expect(pick({ requester: 'account-id', name: 'sacagaweeda' })).toBeNull();
+  });
+});

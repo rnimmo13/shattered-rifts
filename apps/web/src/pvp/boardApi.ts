@@ -13,7 +13,7 @@ import {
   type StoredReplay,
   type Trophy,
 } from '@sr/pvp';
-import { serverBase } from './config';
+import { getName, serverBase } from './config';
 import { vaultKey, whoAmI } from './vaultSync';
 
 const httpBase = (): string => serverBase().replace(/^ws/i, 'http');
@@ -187,7 +187,8 @@ export async function fetchGhostBoss(tier: number, exclude: readonly string[]): 
     }
   }
   const d = await Promise.race([
-    post('ghostboss', { tier, exclude: exclude.slice(-25) }),
+    // (the username too: a deck saved under it is the player's own, and never their Warden)
+    post('ghostboss', { tier, exclude: exclude.slice(-25), name: getName() }),
     new Promise<null>((resolve) => window.setTimeout(() => resolve(null), 6000)),
   ]);
   return d?.['ghost'] ?? null;

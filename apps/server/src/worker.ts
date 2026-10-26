@@ -144,6 +144,20 @@ async function boardId(
   return code ? await sha256(`shattered-rifts-board:${code}`) : null;
 }
 
+/** Every leaderboard id this request can speak for: the signed-in account's, and the Vault code's if one is sent. */
+async function allBoardIds(
+  request: Request,
+  env: Env,
+  body: Record<string, unknown>,
+): Promise<string[]> {
+  const out: string[] = [];
+  const s = await sessionOf(request, env);
+  if (s) out.push(await sha256(`shattered-rifts-board-account:${s.account}`));
+  const code = typeof body['code'] === 'string' ? normaliseCode(body['code']) : null;
+  if (code) out.push(await sha256(`shattered-rifts-board:${code}`));
+  return out;
+}
+
 const CORS_POST = {
   'access-control-allow-origin': '*',
   'access-control-allow-methods': 'GET, POST',
@@ -233,6 +247,10 @@ async function boardRoute(request: Request, env: Env, what: string, url: URL): P
           method: 'POST',
           body: JSON.stringify({
             requester: id ?? undefined,
+            // every id the player may have saved decks under (their account's and their Vault code's), and their username: they
+            // never meet their own deck (DECISIONS #280)
+            requesters: await allBoardIds(request, env, body),
+            name: typeof body['name'] === 'string' ? body['name'] : undefined,
             // the player's tier (a ghost near it is chosen) and the ghosts this run has met (never met twice)
             tier: body['tier'],
             exclude: body['exclude'],
