@@ -221,7 +221,7 @@ export function createDescriber(c: LogContext): (e: CombatEvent) => Omit<LogLine
         const name = cardName(c.db, e.card);
         trap = { name };
         return {
-          text: `${e.side === c.me ? 'Your' : `${c.who(e.side)}'s`} Trap springs: ${name}`,
+          text: `${e.side === c.me ? 'Your' : `${c.who(e.side)}'s`} Trap triggered: ${name}`,
           tone: tone(e.side),
           card: e.card,
         };

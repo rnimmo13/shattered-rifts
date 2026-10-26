@@ -169,8 +169,8 @@ export const RUNE_GLYPH: Record<string, string> = {
 export const INTENT_GLYPH: Record<IntentIcon, string> = {
   attack: '⚔',
   defend: '⛨',
-  buff: '▲',
-  debuff: '▼',
+  buff: '↑',
+  debuff: '↓',
   summon: '✚',
   special: '?',
 };
@@ -193,7 +193,7 @@ export const KEYWORD_INFO: Record<string, { name: string; text: string }> = {
   mana: { name: 'Mana', text: 'What you spend to play cards. It refills every turn.' },
   snare: {
     name: 'Trap',
-    text: 'Played face down. It springs on its own when its trigger happens, then returns to your discard pile.',
+    text: 'Played face down. It triggers on its own when its trigger happens, then returns to your discard pile.',
   },
   companion: {
     name: 'Companion',
@@ -384,8 +384,8 @@ export const UI_TIPS = {
     title: name ?? 'A face-down Trap',
     text:
       rules ??
-      'Set face down. It springs on its own when its trigger happens, then returns to your discard pile.',
-    hint: 'Springs on its own, then goes to your discard pile.',
+      'Set face down. It triggers on its own when its trigger happens, then returns to your discard pile.',
+    hint: 'Triggers on its own, then goes to your discard pile.',
   }),
   potionSlot: {
     kicker: 'Potion belt',

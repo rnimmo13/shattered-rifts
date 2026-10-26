@@ -7,6 +7,7 @@ import { PRIZE_MARK, type LanePrize } from './prizes';
 // the reel's own styles (and the prize list under it) come with it: they used to be loaded only by the lazy practice page, so in a
 // run the reel showed as a long line of unstyled text until that page had been opened once
 import './trials.css';
+import { WithArrows } from '../ui/Arrow';
 
 const TILE_W = 132;
 const TILE_GAP = 8;
@@ -158,7 +159,9 @@ export function Reel(props: {
               className={`reel__tile${!spinning && target !== null && i === STOP ? ' is-win' : ''}`}
               style={{ '--mark': mark.color, width: TILE_W } as React.CSSProperties}
             >
-              <b>{mark.glyph}</b>
+              <b>
+                <WithArrows text={mark.glyph} />
+              </b>
               <span>{p?.short ?? ''}</span>
             </div>
           );

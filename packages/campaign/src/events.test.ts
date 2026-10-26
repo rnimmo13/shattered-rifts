@@ -205,8 +205,8 @@ describe('sanctifying the deck', () => {
     const dmg = (c: typeof base): number => (c.effects[0] as { amount: number }).amount;
     expect(dmg(hi)).toBeGreaterThan(dmg(base));
     expect(dmg(lo)).toBeLessThan(dmg(base));
-    expect(hi.name).toContain('▲');
-    expect(lo.name).toContain('▼');
+    expect(hi.name).toContain('↑');
+    expect(lo.name).toContain('↓');
     expect(cardText(COMBAT_DB, hi)).not.toBe(cardText(COMBAT_DB, base));
     expect(Object.keys(COMBAT_DB.cards).some((k) => k.includes('~'))).toBe(false);
     expect(COMBAT_DB.cards['hi~no-such-card']).toBeUndefined();

@@ -403,7 +403,7 @@ const WHEN_TEXT: Record<string, string> = {
   discard: 'Whenever you discard a card',
   summon: 'Whenever you summon an ally',
   allyDies: 'Whenever one of your allies dies',
-  snare: 'Whenever one of your Traps springs',
+  snare: 'Whenever one of your Traps is triggered',
   stance: 'Whenever you enter a stance',
   barrier: 'Whenever you gain Barrier',
   loseHp: 'Whenever you lose HP to your own cards',

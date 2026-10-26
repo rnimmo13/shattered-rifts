@@ -1,0 +1,16 @@
+/* the up / down arrow (Arrow.tsx): green up, red down, with a thin dark edge so it reads on light or dark */
+.arrow {
+  display: inline-block;
+  vertical-align: -0.08em;
+  flex: none;
+  filter: drop-shadow(0 0 1px rgb(0 0 0 / 0.9));
+}
+.arrow--up {
+  fill: #4ee08a;
+}
+.arrow--down {
+  fill: #ff6b81;
+}
+.arrow--plain {
+  fill: currentColor;
+}

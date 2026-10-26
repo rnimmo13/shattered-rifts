@@ -6,6 +6,7 @@ import { RIFTWALKERS } from '@sr/content/v2';
 import { HeroIcon } from '../ui/HeroIcon';
 import { cardArtV2, paintedCardArt } from './art';
 import '../cards/card.css';
+import { Arrow, WithArrows } from '../ui/Arrow';
 
 const KIND_LABEL: Record<CardDef['kind'], string> = {
   attack: 'Attack',
@@ -111,7 +112,9 @@ export const FightCard = memo(
             <div className="card__artShade" />
           </div>
           <div className="card__banner">
-            <span className="card__name">{def.name}</span>
+            <span className="card__name">
+              <WithArrows text={def.name} />
+            </span>
           </div>
           <div
             className={`card__cost${costDelta < 0 ? ' is-down' : costDelta > 0 ? ' is-up' : ''}`}
@@ -125,7 +128,7 @@ export const FightCard = memo(
             <span>{def.x ? 'X' : (cost ?? def.cost)}</span>
             {costDelta !== 0 && (
               <i className="card__costmod" aria-hidden>
-                {costDelta < 0 ? '▼' : '▲'}
+                <Arrow dir={costDelta < 0 ? 'down' : 'up'} plain />
               </i>
             )}
           </div>
@@ -171,7 +174,7 @@ export const FightCard = memo(
           )}
           {bonus ? (
             <div className="card__sharp" aria-label={`Sharpened by ${bonus}`}>
-              <span aria-hidden>{'\u25B2'}</span> Sharpened +{bonus}
+              <Arrow dir="up" plain /> Sharpened +{bonus}
             </div>
           ) : null}
           <div className="card__gem" title={rarity} />

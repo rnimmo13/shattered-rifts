@@ -7,7 +7,7 @@ export const PRIZE_MARK: Record<string, { glyph: string; color: string }> = {
   crossed: { glyph: '◈', color: '#7fd4ff' },
   boon: { glyph: '✦', color: '#c9a0ff' },
   potion: { glyph: '●', color: '#6fe0b0' },
-  upgrade: { glyph: '▲', color: '#ffb36b' },
+  upgrade: { glyph: '↑', color: '#ffb36b' },
   shards: { glyph: '¤', color: '#f2e08a' },
   heal: { glyph: '+', color: '#9be08a' },
   hp: { glyph: '♥', color: '#ff8a7a' },

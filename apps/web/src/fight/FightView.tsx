@@ -1731,8 +1731,8 @@ export function FightView(props: {
               tip={() => ({
                 kicker: "Opponent's Trap",
                 title: 'A face-down Trap',
-                text: 'Your opponent set this face down. You will not know what it does until it springs.',
-                hint: 'It springs on its own when its trigger happens.',
+                text: 'Your opponent set this face down. You will not know what it does until it is triggered.',
+                hint: 'It triggers on its own when its trigger happens.',
               })}
             />
           )}

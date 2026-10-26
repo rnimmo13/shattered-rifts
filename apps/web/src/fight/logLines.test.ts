@@ -102,7 +102,7 @@ describe('the battle log', () => {
     ).toEqual([
       'You set a Trap',
       'Gilded Squire uses Slash',
-      'Your Trap springs: Strike',
+      'Your Trap triggered: Strike',
       'Strike hits Gilded Squire: 8 damage',
     ]);
     expect(story([hit('sq', 'hero', 'attack', 5), hit('hero', 'sq', 'direct', 3)])).toEqual([

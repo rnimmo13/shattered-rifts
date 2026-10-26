@@ -6,6 +6,7 @@ import { RIFTWALKERS, type HeroId } from '@sr/content/v2';
 import { HeroIcon } from '../ui/HeroIcon';
 import { tipAttrs } from '../ui/tip';
 import { INTENT_GLYPH, STATUS_INFO, UI_TIPS, statusTip } from './info';
+import { Arrow } from '../ui/Arrow';
 
 export interface Placed {
   unit: UnitView;
@@ -95,7 +96,15 @@ export function UnitPlates({ items, targetable, hover, preview, heroId, sharp }:
                 tabIndex={0}
               >
                 <span className="intent__icons">
-                  {iv.icons.map((i) => INTENT_GLYPH[i]).join('')}
+                  {iv.icons.map((i) =>
+                    i === 'buff' ? (
+                      <Arrow key={i} dir="up" />
+                    ) : i === 'debuff' ? (
+                      <Arrow key={i} dir="down" />
+                    ) : (
+                      <span key={i}>{INTENT_GLYPH[i]}</span>
+                    ),
+                  )}
                 </span>
                 {iv.damage !== null && (
                   <b className="intent__num">
@@ -167,7 +176,7 @@ export function UnitPlates({ items, targetable, hover, preview, heroId, sharp }:
                       text: 'The Obsidian Blade has permanently gained this much damage this fight. Every Sharpen adds more.',
                     })}
                   >
-                    <span aria-hidden>{'▲'}</span>
+                    <Arrow dir="up" plain />
                     <b>{sharp}</b>
                   </span>
                 )}

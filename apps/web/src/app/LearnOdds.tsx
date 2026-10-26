@@ -31,6 +31,7 @@ import {
   eventOffers,
 } from '@sr/campaign';
 import { PRIZE_MARK } from '../trials/prizes';
+import { WithArrows } from '../ui/Arrow';
 
 const pct = (w: number, total: number): string => `${Math.round((w / total) * 100)}%`;
 const total = (w: Record<string, number>): number => Object.values(w).reduce((a, b) => a + b, 0);
@@ -206,7 +207,7 @@ export function LearnOdds() {
               const mark = PRIZE_MARK[k] ?? PRIZE_MARK['shards']!;
               return (
                 <td key={i} title={LANE_LABEL[k]} style={{ color: mark.color }}>
-                  {mark.glyph}
+                  <WithArrows text={mark.glyph} />
                 </td>
               );
             })}

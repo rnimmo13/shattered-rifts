@@ -98,7 +98,7 @@ export function rolledVariant(base: CardDef, dir: SanctifyDir): CardDef {
   const out: CardDef = {
     ...base,
     id: rolledId(base.id, dir),
-    name: `${base.name} ${dir > 0 ? '▲' : '▼'}`,
+    name: `${base.name} ${dir > 0 ? '↑' : '↓'}`,
     effects: base.effects.map((o) => scaleOp(o, dir)),
   };
   if (base.onDiscard) out.onDiscard = base.onDiscard.map((o) => scaleOp(o, dir));

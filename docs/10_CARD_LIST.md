@@ -70,7 +70,7 @@ Starter: Strike, Strike, Strike, Strike, Defend, Defend, Defend, Defend, Dawn Sm
 | Hold the Line | 1 | skill | uncommon | Gain 4 (+3 per Skill played this turn) Barrier. Hold. |
 | Tower Shield | 1 | power | uncommon | Whenever you play a Skill: Gain 3 Barrier. |
 | Thorn Volley | 1 | attack | uncommon | Deal 2 (+1 per Thorns) damage to ALL enemies. |
-| Thorn Covenant | 1 | power | uncommon | Whenever one of your Traps springs: Apply 2 Thorns. |
+| Thorn Covenant | 1 | power | uncommon | Whenever one of your Traps is triggered: Apply 2 Thorns. |
 | Barbed Bastion | 2 | skill | uncommon | Gain 6 (+2 per Thorns) Barrier. |
 | Punishing Gale | 2 | snare | uncommon | At the start of the enemy turn: Deal 8 (+1 per Thorns) damage to ALL enemies. |
 | Sunforged Edge | 2 | attack | uncommon | Deal 8 (+1 per 5% HP missing) damage. |
@@ -193,7 +193,7 @@ Starter: Strike, Strike, Strike, Strike, Strike, Defend, Defend, Defend, Deploy 
 | Overload | 2 | skill | rare | All your allies act now. All your allies act now. All your allies act now. Consume. |
 | Chain Reaction | 2 | skill | rare | All your allies act now. All your allies act now. Draw 1 card. |
 | Command Chip | 3 | power | rare | Whenever you play a Summon: All your allies act now. |
-| Relay Network | 2 | power | rare | Whenever one of your Traps springs: All your allies act now. |
+| Relay Network | 2 | power | rare | Whenever one of your Traps is triggered: All your allies act now. |
 | Echo Command | 1 | skill | rare | All your allies act now. All your allies act now. Next turn, lose 1 Mana. Consume. Hold. |
 | War Engine | 3 | summon | rare | Summon War Engine (22 HP). At the end of your turn it will: Deal 9 damage. |
 | Reactor | 2 | power | rare | Apply 3 Might to all friends. |
@@ -401,9 +401,9 @@ Starter: Strike, Strike, Strike, Defend, Defend, Defend, Defend, Veil Strike, Ve
 | House Edge | 1 | power | uncommon | Whenever you draw a card: Gain 1 Barrier. |
 | Bait and Switch | 2 | snare | rare | When you or an ally is attacked: Cancel that attack. Deal 12 damage to the attacker. |
 | Silencing Trap | 2 | snare | rare | When you or an ally is attacked: Apply 1 Stunned to the attacker. Apply 1 Shielded. |
-| Echo Trap | 2 | power | rare | Whenever one of your Traps springs: Gain 5 Barrier. Draw 1 card. |
+| Echo Trap | 2 | power | rare | Whenever one of your Traps is triggered: Gain 5 Barrier. Draw 1 card. |
 | Death Trap | 2 | snare | rare | When you or an ally is attacked: Cancel that attack. Deal 18 damage to the attacker. Apply 2 Exposed to the attacker. |
-| Trapper's Dividend | 2 | power | rare | Whenever one of your Traps springs: Draw 1 card. Gain 5 Barrier. |
+| Trapper's Dividend | 2 | power | rare | Whenever one of your Traps is triggered: Draw 1 card. Gain 5 Barrier. |
 | Spring the Trap | 1 | attack | rare | Deal 6 (+8 per Trap set) damage. |
 | Coup de Grace | 3 | attack | rare | Deal 16 (+3 per Exposed on the target) damage. |
 | Opening Strike | 0 | attack | rare | Deal 12 damage. Apply 2 Exposed. Consume. Opening hand. |
@@ -424,7 +424,7 @@ Starter: Strike, Strike, Strike, Defend, Defend, Defend, Defend, Veil Strike, Ve
 | Deep Pockets | 3 | power | rare | Gain 1 maximum Mana for the rest of the fight (and 1 now). |
 | Curtain Call | 1 | skill | rare | Draw 1 card. Return 2 random Snare cards from your discard pile to your hand. Consume. |
 | The Perfect Trap | 3 | snare | legendary | When you or an ally is attacked: Cancel that attack. Deal 22 damage to the attacker. Apply 1 Stunned to the attacker. Apply 2 Shielded. |
-| Masquerade | 2 | power | legendary | Whenever one of your Traps springs: Draw 2 cards. Gain 1 Mana. Deal 4 damage to ALL enemies. |
+| Masquerade | 2 | power | legendary | Whenever one of your Traps is triggered: Draw 2 cards. Gain 1 Mana. Deal 4 damage to ALL enemies. |
 | The Long Ambush | 3 | snare | legendary | At the start of the enemy turn: Deal 25 damage to ALL enemies. Apply 1 Stunned to ALL enemies. |
 
 ## Sylas (umbral, 72 HP)

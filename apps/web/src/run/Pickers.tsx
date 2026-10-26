@@ -39,6 +39,7 @@ import { PotionCard, PotionIcon } from '../fight/PotionChip';
 import { RarityGem } from '../ui/RarityGem';
 import { Reel } from '../trials/Reel';
 import { PRIZE_MARK } from '../trials/prizes';
+import { WithArrows } from '../ui/Arrow';
 
 const defOf = (id: string): CardDef | undefined => COMBAT_DB.cards[id];
 
@@ -966,7 +967,9 @@ export function EventView(props: {
                 title={p.label}
                 style={{ '--mark': mark.color } as React.CSSProperties}
               >
-                <b>{mark.glyph}</b>
+                <b>
+                  <WithArrows text={mark.glyph} />
+                </b>
                 <span>{p.short ?? p.label}</span>
               </li>
             );
