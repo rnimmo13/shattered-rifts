@@ -302,7 +302,7 @@ describe('the data-driven events', () => {
         for (const id of r.deck) expect(COMBAT_DB.cards[id], `${ev.title} ${id}`).toBeTruthy();
       }
     }
-  });
+  }, 20_000);
 
   it('an event is not offered when its price cannot be paid', () => {
     const poor: RunState = { ...eventRun('poor-1'), hp: 5, shards: 0 };

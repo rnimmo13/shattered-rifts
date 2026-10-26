@@ -29,6 +29,27 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.74.0',
+    date: '2026-10-26',
+    title: 'Readable allies, quieter map',
+    summary:
+      'Allies show what they will do, the map keeps who you will fight a secret, and the Rift Tiers are retuned.',
+    notes: [
+      {
+        kind: 'new',
+        text: 'Every ally and minion wears a small badge with what it does at the end of its side’s turn and how much damage it will deal to the front enemy (Might, Weak and Exposed counted), or "Stunned" when it will skip.',
+      },
+      {
+        kind: 'changed',
+        text: 'The map only says Duel or Elite until you arrive, and a ghost Warden in the campaign never says whose deck it is.',
+      },
+      {
+        kind: 'balance',
+        text: 'Rift Tiers retuned: Tier I enemies start at 150% HP and 100% damage, and every Tier up adds +50% HP and +20% damage (+12% HP and +5% damage each stage).',
+      },
+    ],
+  },
+  {
     version: '0.73.0',
     date: '2026-10-26',
     title: 'Even tiers, smarter ghosts',
