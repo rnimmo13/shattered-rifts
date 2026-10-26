@@ -29,6 +29,18 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.66.0',
+    date: '2026-10-26',
+    title: 'A tidier home page',
+    summary: 'The home page’s smaller links are now a grid of tiles.',
+    notes: [
+      {
+        kind: 'changed',
+        text: 'Saved decks, Run history, Trophy case, Leaderboards, Ghost decks, Card library, How to play and Patch notes are tiles with icons under the main menu. A green dot on Patch notes means there is something new to read.',
+      },
+    ],
+  },
+  {
     version: '0.65.0',
     date: '2026-10-26',
     title: 'Patch notes',
