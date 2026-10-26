@@ -29,6 +29,26 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.81.0',
+    date: '2026-10-26',
+    title: 'Clearer choices',
+    summary: 'Event cards sit in their option, marked with what happens to them; a centred fight title.',
+    notes: [
+      {
+        kind: 'changed',
+        text: 'The cards an event option means sit inside its box: crossed out when they leave your deck, a Swap or Upgrade arrow to what they become, and a plus on a card you get. Options have a little more room between them.',
+      },
+      {
+        kind: 'changed',
+        text: 'The fight title sits in the middle of the screen.',
+      },
+      {
+        kind: 'balance',
+        text: 'Punishing Gale is one hit: deal 8 (+1 per Thorns) damage to ALL enemies.',
+      },
+    ],
+  },
+  {
     version: '0.80.0',
     date: '2026-10-26',
     title: 'Tidier corners',
