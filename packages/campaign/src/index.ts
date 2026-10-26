@@ -97,7 +97,16 @@ export {
   GHOST_FROM_TIER,
   GHOST_WARDEN_CHANCE,
 } from './mapgen';
-export { TIER_TABLE, enemyScale } from './tierTable';
+export {
+  TIER_TABLE,
+  enemyScale,
+  HP_START,
+  HP_PER_TIER,
+  HP_PER_STAGE,
+  DMG_START,
+  DMG_PER_TIER,
+  DMG_PER_STAGE,
+} from './tierTable';
 export { upgradedCards } from './upgrades';
 export {
   GHOST_BOSS_HP_BASE,

@@ -49,11 +49,12 @@
   cursor: help;
   pointer-events: auto;
 }
-.boon--uncommon {
+/* (scoped to the chip: the written-out BoonCard carries the same rarity class) */
+.boon.boon--uncommon {
   background: radial-gradient(circle at 35% 30%, var(--c-cyan-glow), var(--c-cyan) 60%, #0a5a78);
   border-color: var(--c-cyan-glow);
 }
-.boon--rare {
+.boon.boon--rare {
   background: radial-gradient(
     circle at 35% 30%,
     #e7d6ff,
@@ -63,12 +64,22 @@
   border-color: var(--c-violet-glow);
   color: #fff;
 }
-/* Legendary: molten gold, the rarest */
-.boon--legendary {
-  background: radial-gradient(circle at 35% 30%, #fff3c4, #f0b43c 55%, #8a5a12);
-  border-color: #ffd977;
-  color: #2a1a00;
-  box-shadow: 0 0 10px rgba(255, 200, 90, 0.55);
+/* Legendary: rift ember, crimson with a molten core, so it never reads as a common gold one */
+.boon.boon--legendary {
+  background: radial-gradient(circle at 35% 30%, #ffe2c4, #ff5a3c 50%, #7a0f24);
+  border-color: #ffb08a;
+  color: #fff;
+  text-shadow: 0 1px 2px rgb(60 0 10 / 0.8);
+  box-shadow: 0 0 12px rgb(255 80 60 / 0.6);
+}
+/* and the written-out card of a legendary Boon (rewards) glows the same way (the shop row: run.css) */
+.booncard.boon--legendary {
+  background: linear-gradient(135deg, rgb(70 8 22 / 0.85), rgb(8 10 20 / 0.8) 70%);
+  border-color: #ff7a5a;
+  box-shadow: 0 0 18px rgb(255 80 60 / 0.3);
+}
+.booncard.boon--legendary b {
+  color: #ffc2a8;
 }
 .boon--large {
   width: 3rem;

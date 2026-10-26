@@ -1,5 +1,15 @@
 import { useState } from 'react';
-import { LOOP_LEGEND_CHANCE, MAX_TIER, OMENS, enemyScale, preludeCatalogue } from '@sr/campaign';
+import {
+  DMG_PER_STAGE,
+  DMG_PER_TIER,
+  HP_PER_STAGE,
+  HP_PER_TIER,
+  LOOP_LEGEND_CHANCE,
+  MAX_TIER,
+  OMENS,
+  enemyScale,
+  preludeCatalogue,
+} from '@sr/campaign';
 import { BOONS, COMBAT_DB, HEARTS, RIFTWALKERS, heroesByRealm } from '@sr/content/v2';
 import { KEYWORD_INFO, STATUS_INFO } from '../fight/info';
 import { TIP_RULES } from '../fight/tips';
@@ -57,6 +67,10 @@ function TierTable() {
   const tiers = Array.from({ length: MAX_TIER }, (_, i) => i + 1);
   return (
     <>
+      <p className="learn__note">
+        Every Rift Tier up adds {HP_PER_TIER}% enemy HP and {DMG_PER_TIER}% enemy damage; each stage
+        of a run adds {HP_PER_STAGE}% HP and {DMG_PER_STAGE}% damage.
+      </p>
       <table className="learn__table learn__table--tiers">
         <thead>
           <tr>

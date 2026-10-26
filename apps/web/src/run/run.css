@@ -1043,6 +1043,11 @@
   background: rgb(14 20 46 / 0.7);
   border: 1px solid transparent;
 }
+/* a legendary Boon on the shelf glows like its reward card */
+.shoprow.boon--legendary {
+  background: linear-gradient(135deg, rgb(70 8 22 / 0.85), rgb(14 20 46 / 0.7) 70%);
+  border-color: #ff7a5a;
+}
 .shoprow__icon {
   grid-area: icon;
   display: grid;

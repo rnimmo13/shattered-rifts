@@ -64,7 +64,8 @@ describe('a ghost Warden played over the PvP link', () => {
         setTimeout(() => play(item.move.seq), 0);
     });
     setTimeout(() => play(0), 0);
-    for (let i = 0; i < 400 && !duel.state().winner; i++) await wait(10);
+    // (a fight between two careful decks can run into sudden death: up to 25s of a slow machine)
+    for (let i = 0; i < 2500 && !duel.state().winner; i++) await wait(10);
     await wait(30);
     duel.dispose();
     expect(duel.state().winner).toBeTruthy();
@@ -78,9 +79,17 @@ describe('a ghost Warden played over the PvP link', () => {
     });
     expect(moves.some((m) => m.kind === 'move' && m.move.seat === 'b')).toBe(true);
     const at = seen.findIndex((s) => s.kind === 'refused');
-    expect(at, 'refused at ' + at + ' of ' + seen.length + ' last=' + JSON.stringify(seen.slice(Math.max(0, at - 2), at + 1))).toBe(-1);
+    expect(
+      at,
+      'refused at ' +
+        at +
+        ' of ' +
+        seen.length +
+        ' last=' +
+        JSON.stringify(seen.slice(Math.max(0, at - 2), at + 1)),
+    ).toBe(-1);
     expect(hashState(duel.state()).length).toBeGreaterThan(5);
-  }, 30_000);
+  }, 60_000);
 
   it('refuses a move out of turn or out of order, without breaking the fight', async () => {
     const duel = createGhostDuel(COMBAT_DB, setup('ghost-refuse'), {
@@ -107,7 +116,8 @@ describe('a ghost Warden played over the PvP link', () => {
     });
     let seq = 0;
     const act = (n: number): void => {
-      if (first.state().winner || first.state().active !== 'a' || n >= 8 || n !== first.count()) return;
+      if (first.state().winner || first.state().active !== 'a' || n >= 8 || n !== first.count())
+        return;
       first.link.send(n + 1, chooseSmartAction(COMBAT_DB, first.state()));
     };
     first.link.feed.attach((item) => {
@@ -147,7 +157,9 @@ describe('a ghost Warden played over the PvP link', () => {
     expect(other.link.replay).toBe(0);
     other.dispose();
     clearGhostLog('k3');
-    expect(createGhostDuel(COMBAT_DB, setup('ghost-resume'), { names, progress, key: 'k3' }).link.replay).toBe(0);
+    expect(
+      createGhostDuel(COMBAT_DB, setup('ghost-resume'), { names, progress, key: 'k3' }).link.replay,
+    ).toBe(0);
   }, 30_000);
 });
 
@@ -164,7 +176,8 @@ describe('a ghost fight that was over when the page was reloaded', () => {
       first.link.send(n + 1, chooseSmartAction(COMBAT_DB, first.state()));
     };
     first.link.feed.attach((item) => {
-      if (item.kind === 'move' && item.move.seq === first.count()) setTimeout(() => act(item.move.seq), 0);
+      if (item.kind === 'move' && item.move.seq === first.count())
+        setTimeout(() => act(item.move.seq), 0);
     });
     setTimeout(() => act(0), 0);
     for (let i = 0; i < 400 && !first.state().winner; i++) await wait(10);
