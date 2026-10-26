@@ -29,7 +29,7 @@ export {
   offerCards,
   crossedPool,
   crossedOffers,
-  LUCK_WEIGHTS,
+  CARD_ODDS,
 } from './rewards';
 export {
   MAX_RESOLVE,

@@ -46,7 +46,6 @@ import {
   takeShrine,
   leaveShrine,
   type Difficulty,
-  type Luck,
   type RunState,
 } from '@sr/campaign';
 import { FightView } from '../fight/FightView';
@@ -315,8 +314,8 @@ export default function RunScreen() {
     setRun(r);
     return true;
   };
-  const startRun = (c: HeroId, d: Difficulty, l: Luck) => {
-    begin(newRun(c, newSeed(), d, l));
+  const startRun = (c: HeroId, d: Difficulty) => {
+    begin(newRun(c, newSeed(), d));
   };
   /** Back to the home page with the run parked: it is already saved, and can be carried on from there. */
   const goHome = () => {
@@ -660,7 +659,7 @@ function AbandonDialog(props: { onConfirm: () => void; onCancel: () => void }) {
 }
 
 function Sanctum(props: {
-  onStart: (c: HeroId, d: Difficulty, l: Luck) => void;
+  onStart: (c: HeroId, d: Difficulty) => void;
   onImport: (f: File | undefined) => void;
   notice: string | null;
   onDismiss: () => void;
@@ -671,7 +670,6 @@ function Sanctum(props: {
     rememberHero(h);
   };
   const difficulty: Difficulty = 'normal';
-  const luck: Luck = 'normal';
   return (
     <main className="setup setup--wide">
       <a className="btn btn--small setup__back" href="#/">
@@ -690,7 +688,7 @@ function Sanctum(props: {
       <div className="setup__actions">
         <button
           className="btn btn--primary setup__go"
-          onClick={() => props.onStart(pick, difficulty, luck)}
+          onClick={() => props.onStart(pick, difficulty)}
         >
           <span>Begin the run</span>
         </button>

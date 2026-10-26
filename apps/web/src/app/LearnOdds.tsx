@@ -20,7 +20,7 @@ import {
   REEL_KINDS,
   REEL_PRIZES,
   ROLL_COST,
-  LUCK_WEIGHTS,
+  CARD_ODDS,
   NODE_ODDS,
   EVENT_FIGHT_ODDS,
   POTION_DROP_CHANCE,
@@ -29,18 +29,13 @@ import {
   PRICE,
   REMOVE_PRICE,
   eventOffers,
-  type Luck,
 } from '@sr/campaign';
 import { PRIZE_MARK } from '../trials/prizes';
 
 const pct = (w: number, total: number): string => `${Math.round((w / total) * 100)}%`;
 const total = (w: Record<string, number>): number => Object.values(w).reduce((a, b) => a + b, 0);
 const RARITIES = ['common', 'uncommon', 'rare', 'legendary'] as const;
-const LUCKS: { id: Luck; label: string }[] = [
-  { id: 'normal', label: 'Normal luck' },
-  { id: 'lucky', label: 'Lucky' },
-  { id: 'blessed', label: 'Blessed' },
-];
+const ODDS = CARD_ODDS;
 
 /** what a prize on the Brass Reel is, by kind */
 const LANE_LABEL: Record<string, string> = {
@@ -70,36 +65,25 @@ export function LearnOdds() {
         Each card offered is rolled separately, from the Riftwalker&apos;s own cards. If a rarity
         has nothing left to offer (you hold every copy), the roll falls to the next rarity down.
         About {CROSSED_OFFER_CHANCE} cards in 100 come from another Riftwalker (a Rift-crossed
-        card). Luck is chosen when a run starts.
+        card). A reward offers three cards (four from Tier IV; an Omen can take one away), each
+        rolled like this.
       </p>
       <table className="learn__table">
         <thead>
           <tr>
-            <th>Chance</th>
-            {LUCKS.map((l) => (
-              <th key={l.id} colSpan={2}>
-                {l.label}
-              </th>
-            ))}
-          </tr>
-          <tr>
-            <th />
-            {LUCKS.flatMap((l) => [
-              <th key={l.id + 'f'}>Fight</th>,
-              <th key={l.id + 'e'}>Elite</th>,
-            ])}
+            <th>Chance per card</th>
+            <th>Fight</th>
+            <th>Elite</th>
           </tr>
         </thead>
         <tbody>
           {RARITIES.map((r) => (
             <tr key={r}>
               <th scope="row">{r[0]?.toUpperCase() + r.slice(1)}</th>
-              {LUCKS.flatMap((l) =>
-                (['duel', 'elite'] as const).map((q) => {
-                  const w = LUCK_WEIGHTS[l.id][q];
-                  return <td key={l.id + q}>{pct(w[r] ?? 0, total(w))}</td>;
-                }),
-              )}
+              {(['duel', 'elite'] as const).map((q) => {
+                const w = ODDS[q];
+                return <td key={q}>{pct(w[r] ?? 0, total(w))}</td>;
+              })}
             </tr>
           ))}
         </tbody>
@@ -109,8 +93,7 @@ export function LearnOdds() {
       <ul>
         <li>
           A Warden&apos;s Gift offers rare cards of your class, and a Legendary of yours{' '}
-          {GIFT_LEGEND_CHANCE.normal}% of the time ({GIFT_LEGEND_CHANCE.lucky}% Lucky,{' '}
-          {GIFT_LEGEND_CHANCE.blessed}% Blessed).
+          {GIFT_LEGEND_CHANCE}% of the time.
         </li>
         <li>
           Merchant cards cost {PRICE['common']} (common), {PRICE['uncommon']} (uncommon),{' '}

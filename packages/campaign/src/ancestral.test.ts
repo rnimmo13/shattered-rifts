@@ -36,17 +36,16 @@ describe('ancestral cards', () => {
     expect(canAdd([`${id}+`], id)).toBe(false);
   });
 
-  it('never turn up in ordinary card rewards, even with the best luck', () => {
-    for (const luck of ['normal', 'lucky', 'blessed'] as const)
-      for (let i = 0; i < 150; i++)
-        for (const q of ['duel', 'elite'] as const)
-          for (const id of offerCards(seedRng(`a${luck}${q}${i}`), 'knight', [], q, 4, luck))
-            expect(rarityOf(id), id).not.toBe('ancestral');
+  it('never turn up in ordinary card rewards', () => {
+    for (let i = 0; i < 450; i++)
+      for (const q of ['duel', 'elite'] as const)
+        for (const id of offerCards(seedRng(`a${q}${i}`), 'knight', [], q, 4))
+          expect(rarityOf(id), id).not.toBe('ancestral');
   });
 
   it("the Warden's Gift never holds one (it is your class's cards only)", () => {
     for (let i = 0; i < 200; i++)
-      for (const id of giftOffers(seedRng(`g${i}`), 'hunter', [], 3, 'kron', 'blessed'))
+      for (const id of giftOffers(seedRng(`g${i}`), 'hunter', [], 3, 'kron'))
         expect(rarityOf(id), id).not.toBe('ancestral');
   });
 

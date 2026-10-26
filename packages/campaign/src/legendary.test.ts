@@ -28,7 +28,7 @@ describe('legendary cards', () => {
     expect(canAdd(['strike', 'strike', 'strike', 'strike', 'rift-bolt'], 'rift-bolt')).toBe(true);
   });
 
-  it('they are never a starter card, never a basic reward, and are rare in ordinary offers', () => {
+  it('they are never a starter card, and are rare in ordinary offers (about 1 card in 100 after a fight, 3 after an Elite)', () => {
     for (const h of HEROES)
       for (const id of RIFTWALKERS[h].starter) expect(rarityOf(id)).not.toBe('legendary');
     let seen = 0;
@@ -38,7 +38,9 @@ describe('legendary cards', () => {
         total++;
         if (rarityOf(id) === 'legendary') seen++;
       }
-    expect(seen).toBe(0); // a normal-difficulty duel never offers one
+    // (DECISIONS #269: a fight offers one 1% of the time per card)
+    expect(seen / total).toBeGreaterThan(0.002);
+    expect(seen / total).toBeLessThan(0.025);
     seen = 0;
     total = 0;
     for (let i = 0; i < 600; i++)
@@ -50,28 +52,21 @@ describe('legendary cards', () => {
     expect(seen / total).toBeLessThan(0.05);
   });
 
-  it('better luck finds them more often, and a Warden sometimes leaves one in the Gift', () => {
-    const gifts = (luck: 'normal' | 'lucky' | 'blessed') => {
-      let withLegend = 0;
-      for (let i = 0; i < 300; i++)
-        if (
-          giftOffers(seedRng(`g${luck}${i}`), 'necromancer', [], 3, 'seraphine', luck).some(
-            (id) => rarityOf(id) === 'legendary',
-          )
+  it('a Warden sometimes leaves one in the Gift (about GIFT_LEGEND_CHANCE of the time)', () => {
+    let withLegend = 0;
+    for (let i = 0; i < 300; i++)
+      if (
+        giftOffers(seedRng(`g${i}`), 'necromancer', [], 3, 'seraphine').some(
+          (id) => rarityOf(id) === 'legendary',
         )
-          withLegend++;
-      return withLegend / 300;
-    };
-    const n = gifts('normal');
-    const l = gifts('lucky');
-    const b = gifts('blessed');
-    expect(n).toBeGreaterThan(0.1);
-    expect(l).toBeGreaterThan(n);
-    expect(b).toBeGreaterThan(l);
+      )
+        withLegend++;
+    expect(withLegend / 300).toBeGreaterThan(0.2);
+    expect(withLegend / 300).toBeLessThan(0.4);
     // and the gift never offers a legendary the deck already holds
     const held = rewardPool('necromancer').filter((id) => rarityOf(id) === 'legendary');
     for (let i = 0; i < 100; i++)
-      for (const id of giftOffers(seedRng(`h${i}`), 'necromancer', held, 3, 'nyxara', 'blessed'))
+      for (const id of giftOffers(seedRng(`h${i}`), 'necromancer', held, 3, 'nyxara'))
         expect(held.includes(id)).toBe(false);
   });
 });

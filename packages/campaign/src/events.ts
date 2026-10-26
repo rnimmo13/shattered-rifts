@@ -50,7 +50,7 @@ export const EVENTS: EventDef[] = [
       // a card is on the table only now and then
       const card =
         nextInt(r.rng, 100) < 35
-          ? (offerCards(r.rng, r.character, r.deck, 'duel', 1, r.luck)[0] ?? '')
+          ? (offerCards(r.rng, r.character, r.deck, 'duel', 1)[0] ?? '')
           : '';
       return {
         title: 'A rift cache',
@@ -119,7 +119,7 @@ export const EVENTS: EventDef[] = [
       const from = others[nextInt(r.rng, others.length)] as HeroId;
       let card = '';
       for (let g = 0; g < 30 && !card; g++)
-        for (const id of offerCards(r.rng, from, r.deck, 'elite', 3, r.luck))
+        for (const id of offerCards(r.rng, from, r.deck, 'elite', 3))
           if (
             !card &&
             COMBAT_DB.cards[id]?.hero === from &&
@@ -569,7 +569,7 @@ export function resolveEvent(
       const out = pool[nextInt(r.rng, pool.length)] as string;
       let made = '';
       for (let g = 0; g < 20 && !made; g++)
-        for (const id of offerCards(r.rng, r.character, r.deck, 'duel', 3, r.luck))
+        for (const id of offerCards(r.rng, r.character, r.deck, 'duel', 3))
           if (!made && COMBAT_DB.cards[id]?.hero === r.character && canAdd(r.deck, id)) made = id;
       if (!made) fail('The wall stays grey');
       r.deck[r.deck.indexOf(out)] = made;

@@ -13,7 +13,7 @@ import {
   rewardPool,
   type HeroId,
 } from '@sr/content/v2';
-import type { Luck, StageRealm } from './types';
+import type { StageRealm } from './types';
 
 export type OfferQuality = 'duel' | 'elite';
 
@@ -73,26 +73,16 @@ export function crossedOffers(
   return out;
 }
 
-const WEIGHTS: Record<OfferQuality, Record<string, number>> = {
-  duel: { common: 65, uncommon: 28, rare: 7, legendary: 0 },
-  elite: { common: 30, uncommon: 50, rare: 19, legendary: 1 },
+// Per card offered (DECISIONS #269). Slay the Spire is the yardstick, but it has three rarities to our four, so Legendary takes the
+// top 1% of a fight and rare sits at about Slay the Spire's elite rate; an Elite is a step up from both. (The merchant's stock is
+// rolled at the Elite odds too.)
+export const CARD_ODDS: Record<OfferQuality, Record<string, number>> = {
+  duel: { common: 55, uncommon: 35, rare: 9, legendary: 1 },
+  elite: { common: 35, uncommon: 42, rare: 20, legendary: 3 },
 };
 
-/** Card luck: the same offers, tilted towards better cards (a setting; Normal is the designed game). */
-export const LUCK_WEIGHTS: Record<Luck, Record<OfferQuality, Record<string, number>>> = {
-  normal: WEIGHTS,
-  lucky: {
-    duel: { common: 45, uncommon: 38, rare: 16, legendary: 1 },
-    elite: { common: 15, uncommon: 48, rare: 33, legendary: 4 },
-  },
-  blessed: {
-    duel: { common: 20, uncommon: 45, rare: 31, legendary: 4 },
-    elite: { common: 5, uncommon: 38, rare: 50, legendary: 7 },
-  },
-};
-
-function rollRarity(rng: RngState, quality: OfferQuality, luck: Luck = 'normal'): string {
-  const w = LUCK_WEIGHTS[luck][quality];
+function rollRarity(rng: RngState, quality: OfferQuality): string {
+  const w = CARD_ODDS[quality];
   const total = Object.values(w).reduce((a, b) => a + b, 0);
   let r = nextInt(rng, total);
   for (const [rarity, weight] of Object.entries(w)) {
@@ -114,7 +104,6 @@ export function offerCards(
   deck: readonly string[],
   quality: OfferQuality,
   count: number,
-  luck: Luck = 'normal',
 ): string[] {
   const own = rewardPool(hero).filter((id) => canAdd(deck, id));
   const crossed = crossedPool(hero).filter((id) => canAdd(deck, id));
@@ -124,7 +113,7 @@ export function offerCards(
     const fromCrossed = nextInt(rng, 100) < CROSSED_OFFER_CHANCE && crossed.length > 0;
     const pool = (fromCrossed ? crossed : own).filter((id) => !out.includes(id));
     if (pool.length === 0) continue;
-    let from = LADDER.indexOf(rollRarity(rng, quality, luck));
+    let from = LADDER.indexOf(rollRarity(rng, quality));
     let candidates: string[] = [];
     while (from < LADDER.length && candidates.length === 0) {
       candidates = pool.filter((id) => rarityOf(id) === LADDER[from]);
@@ -171,12 +160,12 @@ export function boonOfRarity(
   return (from[nextInt(rng, from.length)] as (typeof BOONS)[number]).id;
 }
 
-/** The chance (percent) that the Warden's Gift includes one of your Legendary cards, by card luck. */
-export const GIFT_LEGEND_CHANCE: Record<Luck, number> = { normal: 30, lucky: 55, blessed: 85 };
+/** The chance (percent) that the Warden's Gift includes one of your Legendary cards. */
+export const GIFT_LEGEND_CHANCE = 30;
 
 /**
  * The Warden's Gift: rare cards of YOUR class (never Neutral, Warden or other classes' cards), and sometimes one of your
- * legendaries as well (more often with better luck). It can be skipped like any card reward.
+ * legendaries as well. It can be skipped like any card reward.
  */
 export function giftOffers(
   rng: RngState,
@@ -184,14 +173,13 @@ export function giftOffers(
   deck: readonly string[],
   count: number,
   _bossId = '',
-  luck: Luck = 'normal',
 ): string[] {
   const own = rewardPool(hero).filter(
     (id) => COMBAT_DB.cards[id]?.hero === hero && canAdd(deck, id),
   );
   const out: string[] = [];
   const legends = own.filter((id) => rarityOf(id) === 'legendary');
-  const chance = GIFT_LEGEND_CHANCE[luck];
+  const chance = GIFT_LEGEND_CHANCE;
   if (legends.length && nextInt(rng, 100) < chance)
     out.push(legends[nextInt(rng, legends.length)] as string);
   const rares = own.filter((id) => rarityOf(id) === 'rare' && !out.includes(id));

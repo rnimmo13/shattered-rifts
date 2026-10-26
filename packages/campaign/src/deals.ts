@@ -142,7 +142,7 @@ function step(r: RunState, s: DealStep, ev: EventCtx, h: DealHelpers, out: strin
       const from = pool[nextInt(r.rng, pool.length)] as string;
       let made = '';
       for (let g = 0; g < 20 && !made; g++)
-        for (const id of offerCards(r.rng, r.character, r.deck, 'duel', 3, r.luck))
+        for (const id of offerCards(r.rng, r.character, r.deck, 'duel', 3))
           if (!made && COMBAT_DB.cards[id]?.hero === r.character && canAdd(r.deck, id)) made = id;
       if (!made) fail('Nothing comes of it');
       r.deck[r.deck.indexOf(from)] = made;

@@ -9,7 +9,6 @@ import type { GamblerShrine } from './gambler';
 export type Difficulty = 'easy' | 'normal' | 'hard';
 
 /** How kind card rewards are: a setting for testing and for players who want a stronger deck sooner. */
-export type Luck = 'normal' | 'lucky' | 'blessed';
 
 export type NodeKind = 'duel' | 'elite' | 'event' | 'shrine' | 'merchant' | 'warden';
 
@@ -351,8 +350,6 @@ export interface RunState {
   character: HeroId;
   /** The run's difficulty setting (see DIFFICULTY): Normal unless chosen otherwise (see DIFFICULTY). */
   difficulty: Difficulty;
-  /** Card luck: shifts card offers (and the merchant's stock) towards uncommon and rare cards. Missing in old saves = normal. */
-  luck?: Luck;
   /** Rift Tier: loops cleared + 1. */
   tier: number;
   /** 1..5 */

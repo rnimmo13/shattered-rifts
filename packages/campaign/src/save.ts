@@ -401,9 +401,8 @@ export function parseRun(text: string): RunState | null {
     )
   )
     delete loose.eventFlips;
-  // saves from before card luck existed were all normal
-  if (r.luck === undefined) r.luck = 'normal';
-  if (r.luck !== 'normal' && r.luck !== 'lucky' && r.luck !== 'blessed') return null;
+  // card luck is gone (every run has the same odds): a save that still carries it just drops it
+  delete (r as { luck?: unknown }).luck;
   if (!isInt(r.tier, 1, 99) || !isInt(r.stage, 1, FINAL_STAGE)) return null;
   if (!isInt(r.maxResolve, 1, 9) || !isInt(r.resolve, 0, r.maxResolve)) return null;
   if (!isInt(r.shards, 0, 1_000_000)) return null;

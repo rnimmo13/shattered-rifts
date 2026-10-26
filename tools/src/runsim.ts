@@ -2,7 +2,7 @@
 // stages, how far it gets when it fails, how many fights are lost and how hurt the hero is walking into each kind of fight.
 // Single fights (pnpm balance) hide HP attrition and Resolve; this does not.
 //
-//   pnpm runsim -- --n 20 --difficulty easy,normal --heroes knight,drunkard --luck normal
+//   pnpm runsim -- --n 20 --difficulty easy,normal --heroes knight,drunkard
 //
 // The bot is a decent, not great, player: it drafts the best-rarity card on offer (skipping weak ones in a fat deck), rests when
 // hurt, takes elites when healthy, never uses potions, and the fight bot is the greedy 1-ply one in @sr/combat.
@@ -30,7 +30,6 @@ import {
   leaveShrine,
   upgradable,
   type Difficulty,
-  type Luck,
   type RunState,
 } from '@sr/campaign';
 import { COMBAT_DB as db, RIFTWALKERS, type HeroId } from '@sr/content/v2';
@@ -44,7 +43,6 @@ const DIFFS = arg('difficulty', 'easy,normal').split(',') as Difficulty[];
 const HEROES = (arg('heroes', Object.keys(RIFTWALKERS).join(',')).split(',') as HeroId[]).filter(
   (h) => RIFTWALKERS[h],
 );
-const LUCK = arg('luck', 'normal') as Luck;
 // --hp / --dmg / --resolve try a difficulty setting without editing the table
 for (const d of DIFFS) {
   const o: Record<string, number> = {};
@@ -92,7 +90,7 @@ function fight(run: RunState): { won: boolean; hp: number } {
 }
 
 function playRun(h: HeroId, d: Difficulty, i: number): Result {
-  let run = newRun(h, `runsim-${h}-${d}-${i}`, d, LUCK);
+  let run = newRun(h, `runsim-${h}-${d}-${i}`, d);
   const res: Result = { cleared: false, stage: 1, lost: 0, fights: [], stalled: true };
   for (let step = 0; step < 4000; step++) {
     const hpFrac = run.hp / run.maxHp;
@@ -202,7 +200,7 @@ function playRun(h: HeroId, d: Difficulty, i: number): Result {
   return res;
 }
 
-console.log(`runsim: ${N} runs per hero, luck ${LUCK}\n`);
+console.log(`runsim: ${N} runs per hero\n`);
 for (const d of DIFFS) {
   const cfg = DIFFICULTY[d];
   console.log(

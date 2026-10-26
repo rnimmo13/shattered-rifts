@@ -76,7 +76,6 @@ import type {
   DealStep,
   Difficulty,
   GhostBoss,
-  Luck,
   EventOption,
   MapNode,
   MerchantItem,
@@ -164,12 +163,7 @@ function shuffledRealms(rng: RngState): StageRealm[] {
   return shuffle(rng, ['aurelion', 'nexus', 'wyldmaw', 'umbral'] as StageRealm[]);
 }
 
-export function newRun(
-  hero: HeroId,
-  seed: string,
-  difficulty: Difficulty = 'normal',
-  luck: Luck = 'normal',
-): RunState {
+export function newRun(hero: HeroId, seed: string, difficulty: Difficulty = 'normal'): RunState {
   const rng = seedRng(`run:${seed}`);
   const stageRealms = shuffledRealms(rng);
   const map = generateStageMap(rng, 1, stageRealms[0] as StageRealm, hero);
@@ -180,7 +174,6 @@ export function newRun(
     seed,
     character: hero,
     difficulty,
-    luck,
     tier: 1,
     stage: 1,
     hp: rw.hero.maxHp,
@@ -329,11 +322,11 @@ export function enterNode(run: RunState, nodeId: string): RunState {
       if (crossed) {
         stock = [];
         for (let g = 0; g < 40 && stock.length < 4; g++)
-          for (const id of offerCards(r.rng, crossed, r.deck, 'elite', 4, r.luck))
+          for (const id of offerCards(r.rng, crossed, r.deck, 'elite', 4))
             if (COMBAT_DB.cards[id]?.hero === crossed && !stock.includes(id) && stock.length < 4)
               stock.push(id);
       } else {
-        stock = offerCards(r.rng, r.character, r.deck, 'elite', 4, r.luck);
+        stock = offerCards(r.rng, r.character, r.deck, 'elite', 4);
         // a merchant who knows your deck keeps one card of the build path it leans on most (DECISIONS #243)
         const path = mainPath(r.character, r.deck);
         if (path !== null && stock.length > 0 && !stock.some((id) => pathOf(id) === path)) {
@@ -369,11 +362,7 @@ export function enterNode(run: RunState, nodeId: string): RunState {
       }
       // now and then an ancestral card is on the table, at a price
       const ancestors = ancestralPool(r.deck);
-      if (
-        !crossed &&
-        ancestors.length &&
-        nextInt(r.rng, 100) < (r.luck === 'blessed' ? 55 : r.luck === 'lucky' ? 40 : 28)
-      ) {
+      if (!crossed && ancestors.length && nextInt(r.rng, 100) < 28) {
         const id = ancestors[nextInt(r.rng, ancestors.length)] as string;
         items.push({ cardId: id, price: PRICE['ancestral'] ?? 240, sold: false });
       }
@@ -727,14 +716,7 @@ export function finishDuel(
     }
     // two Warden's Hearts wait beside the Gift: take a card, a Heart, or nothing (DECISIONS #246)
     const hearts = heartOffers(r);
-    const offers = giftOffers(
-      r.rng,
-      r.character,
-      r.deck,
-      r.tier >= 5 ? 4 : 3,
-      node.enemyId,
-      r.luck,
-    );
+    const offers = giftOffers(r.rng, r.character, r.deck, r.tier >= 5 ? 4 : 3, node.enemyId);
     if (offers.length === 0) {
       r.phase = 'stageClear';
       r.context = null;
@@ -779,14 +761,7 @@ export function finishDuel(
   const count = Math.max(2, (r.tier >= 4 ? 4 : 3) - omenEffects(r.tier).fewerChoices);
   r.context = {
     nodeId: node.id,
-    offers: offerCards(
-      r.rng,
-      r.character,
-      r.deck,
-      node.kind === 'elite' ? 'elite' : 'duel',
-      count,
-      r.luck,
-    ),
+    offers: offerCards(r.rng, r.character, r.deck, node.kind === 'elite' ? 'elite' : 'duel', count),
     shardsGained: gain,
     ...(boonGained ? { boonGained } : {}),
     ...(potionGained ? { potionGained } : {}),
