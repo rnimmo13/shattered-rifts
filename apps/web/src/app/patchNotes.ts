@@ -29,6 +29,18 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.83.0',
+    date: '2026-10-26',
+    title: 'Ten runs at once',
+    summary: 'Keep up to 10 runs going at the same time.',
+    notes: [
+      {
+        kind: 'changed',
+        text: 'You can have up to 10 runs in progress (was 3). With more than two, the home page lists them in a compact panel that scrolls, with how many slots you are using.',
+      },
+    ],
+  },
+  {
     version: '0.82.0',
     date: '2026-10-26',
     title: 'No hidden run slots',
