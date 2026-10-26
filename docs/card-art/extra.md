@@ -22,3 +22,28 @@ THE PICTURES, in this exact order, left to right, top row first. Use the card na
 
 NEGATIVE: text, letters, numbers, captions, labels, UI, card frames, borders, watermark, logo, photorealism, gritty texture, nudity, characters facing away.
 ```
+
+## Sheet `extra-02` (8 pictures: the token cards, the two junk cards, and Hawk Carving)
+
+These cards are made during a fight (a Sleeve Knife, a Buckshot Shell, a Gravesoul...) or dealt out by enemies and Omens (Wound, Static), so they were never on a sheet. Same steps as above: save it as `assets-src/cards/extra-02.png`.
+
+```
+Create ONE ILLUSTRATION SHEET of 8 separate card-art pictures for a card-battler game (like Slay the Spire), 2400 x 1200, no text.
+The attached image (Valeria) is the STYLE ANCHOR: match its cartoon game-art rendering exactly (bold clean dark outlines, flat saturated colours, simple cel shading, crisp polished shapes). Do NOT copy her character; paint scenes and objects. Backgrounds are softer and less contrasty than the main subject so the subject pops.
+
+LAYOUT (critical): a clean 4 x 2 grid of landscape 4:3 pictures (4 across, 2 down, each about 580 x 435), separated by thin flat dark navy (#14181f) gutters, with NO frames, NO borders, NO captions, NO text, NO numbers. Every picture fills its own cell completely; nothing crosses a gutter. Each picture has ONE clear subject in the middle that reads at thumbnail size, a simple scene behind it, light from the upper left.
+
+WORLD: each picture has its own world, given in [brackets] after it; paint that picture in that world. Do not write the brackets.
+
+THE PICTURES, in this exact order, left to right, top row first. Use the card name and its effect only to decide what to draw; never write the name:
+1. "Sleeve Knife" (attack): Deal 4 damage. Consumed when played. Show one slim throwing knife flicked out of a sleeve, spinning through the air with a thin teal glow trailing behind it. [World: Sylas, a flamboyant rogue throwing teal-glowing knives; a moonlit ballroom of shadows: violet and teal mist, masks, mirrors, candelabras.]
+2. "Obsidian Blade" (attack): Deal 9 damage; every Sharpen makes it hit harder for the rest of the fight. Show a long sword of black volcanic glass, ember-orange cracks glowing along the blade, floating point-down with a few glass shards orbiting it. A little more dramatic and detailed. [World: Obsidia, a queen of black volcanic glass with floating shards; a volcanic glass desert: black obsidian, ember-orange cracks, violet sheen, floating arcana stars.]
+3. "Gravesoul" (skill): Draw a card. Curse a random enemy with Fate. Consumed. Show a small pale-green soul wisp rising out of a cracked grave candle, a faint skull shape in its glow. [World: Mire, a spectral green-eyed reaper with thralls; a drowned fen at night: pale green witch-light, bone, reeds, black water, mist.]
+4. "Buckshot Shell" (attack): Deal 4 damage to ALL enemies. Consumed. Show one fat red shotgun shell with a dented brass base, tumbling through the air with a puff of smoke and a spray of pellets bursting from its end. [World: KP, a boisterous drunk dwarf with a shotgun and bottles; the rift's rubbish dump: rusty junk, green bottle glass, amber oil-drum firelight, a deep blue-black sky.]
+5. "Old Twelve Gauge" (attack): Hits ALL enemies; every Sharpen makes it hit harder for the rest of the fight. Show a battered sawed-off double-barrel shotgun, taped grip and scratched barrels, lying across a rusty oil drum, a thin curl of smoke from one barrel. A little more dramatic and detailed. [World: KP, a boisterous drunk dwarf with a shotgun and bottles; the rift's rubbish dump: rusty junk, green bottle glass, amber oil-drum firelight, a deep blue-black sky.]
+6. "Hawk Carving" (attack): Deal 4 damage. Show a small hand-whittled wooden hawk figurine with spread wings, wood shavings curling around it on a workbench, a faint teal spirit glow in its carved eyes. [World: Ilvane, a spirit shaman who calls glowing totems; a teal-and-orange foundry of machines: hazard stripes, steel, glowing cyan, sparks and steam.]
+7. "Wound" (unplayable): it clogs your hand and does nothing. Show a torn, blood-stained bandage tangled on the ground, a crack of dull red light seeping out from under it. [World: the shattered rift between worlds: violet and cyan energy, floating broken stone.]
+8. "Static" (unplayable): it clogs your hand and does nothing. Show a fizzing ball of grey-violet static, jagged little lightning lines and scratchy noise crackling around a dead, cracked crystal. [World: the shattered rift between worlds: violet and cyan energy, floating broken stone.]
+
+NEGATIVE: text, letters, numbers, captions, labels, UI, card frames, borders, watermark, logo, photorealism, gritty texture, nudity, characters facing away.
+```

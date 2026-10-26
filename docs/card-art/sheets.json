@@ -1374,5 +1374,21 @@
     824
    ]
   ]
+ },
+ {
+  "name": "extra-02",
+  "hero": "mixed",
+  "cols": 4,
+  "rows": 2,
+  "ids": [
+   "sleeve-knife",
+   "starforged-blade",
+   "gravesoul",
+   "buckshot-shell",
+   "old-twelve-gauge",
+   "live-wire",
+   "wound",
+   "static"
+  ]
  }
 ]
