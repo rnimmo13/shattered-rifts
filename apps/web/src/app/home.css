@@ -491,6 +491,19 @@
   background: linear-gradient(160deg, rgb(24 34 74 / 0.98), rgb(8 10 20 / 0.98));
   box-shadow: 0 16px 40px rgb(0 0 0 / 0.6);
 }
+/* on a phone the chip can wrap to the left of the bar: the panel spans the screen under it instead of hanging off an edge */
+@media (max-width: 52rem) {
+  .playerchip__panel {
+    position: fixed;
+    left: 1rem;
+    right: 1rem;
+    top: 5.5rem;
+    width: auto;
+    max-height: calc(100dvh - 6.5rem);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+}
 .playerchip__lead {
   margin: 0;
   font-size: 0.9rem;

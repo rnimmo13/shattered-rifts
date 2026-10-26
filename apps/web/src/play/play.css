@@ -14,6 +14,8 @@
   min-height: 100vh;
   padding: 2.5rem clamp(1rem, 6vw, 5rem) 4rem;
   display: grid;
+  /* one column that never grows past the screen: a wide child (a row of buttons, a long menu) wraps instead of pushing the page sideways */
+  grid-template-columns: minmax(0, 1fr);
   align-content: start;
   gap: 1.5rem;
   background:
