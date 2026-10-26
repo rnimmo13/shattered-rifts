@@ -29,6 +29,39 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.85.0',
+    date: '2026-10-26',
+    title: 'Spin To Win',
+    summary:
+      'A free first spin, replays you can trust, a tidier Arena, traits on show, and coloured arrows.',
+    notes: [
+      {
+        kind: 'new',
+        text: 'The Brass Reel is now Spin To Win, and the first spin at a reel is free. With Reduce motion on, the reel still spins (briefly) instead of jumping to the prize.',
+      },
+      {
+        kind: 'new',
+        text: 'Replays: a move counter and a Step button while paused, and a replay says from which move it no longer matches the real game (when the cards have changed since). A game the clock called can be watched again.',
+      },
+      {
+        kind: 'changed',
+        text: 'In the Arena the opponent’s piles, trait, Boons and Auras stack on their side without covering each other, and both Riftwalkers’ traits are shown during a fight.',
+      },
+      {
+        kind: 'changed',
+        text: 'Coloured arrows instead of triangles (sanctified cards, changed costs, Sharpen, buff and debuff intents). Traps are “triggered”. A held merchant card shows what it will cost next time.',
+      },
+      {
+        kind: 'changed',
+        text: 'The campaign board shows every run that made progress this week (or month). A ghost Warden is never your own deck.',
+      },
+      {
+        kind: 'balance',
+        text: 'Apex Maw heals 10 (+2 per Might); upgraded, it costs 2.',
+      },
+    ],
+  },
+  {
     version: '0.84.0',
     date: '2026-10-26',
     title: 'Tidier runs list',
