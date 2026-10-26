@@ -134,8 +134,9 @@ function YourPlace(props: { rank: number | null; played: string }) {
 type Seen = BoardView<PvpStanding> | BoardView<RunStanding> | GhostView;
 
 export function LeaderboardScreen() {
-  const [tab, setKind] = useState<BoardKind | 'ranks'>('pvp');
-  // (the ranked board fetches itself: the others share the week/month machinery below)
+  // (the Arena opens on its ranks; its week and month boards, which give the trophies, are a click away)
+  const [tab, setKind] = useState<BoardKind | 'ranks'>('ranks');
+  // (the ranks board fetches itself: the others share the week/month machinery below)
   const kind: BoardKind = tab === 'ranks' ? 'pvp' : tab;
   const [period, setPeriod] = useState<Period>('week');
   // what came back, with what it was asked for (an answer for another board counts as still loading)
@@ -177,28 +178,42 @@ export function LeaderboardScreen() {
       <header className="setup__head">
         <h1 className="setup__title">Leaderboards</h1>
         <p className="setup__lead">
-          Arena boards rank wins; campaign boards rank how far a run got; ghost boards show how the
-          computer-played decks are doing. The best 100 are shown. A week runs Monday to Monday and
-          a month from the 1st, both from midnight Pacific time. When an Arena board closes, its top
-          100 each win a trophy (silver for a week, gold for a month): see your{' '}
-          <a href="#/trophies">Trophy case</a>.
+          The Arena ranks players this season by their rating, and also counts wins by the week and
+          the month: when a week or month closes, its top 100 each win a trophy (silver for a week,
+          gold for a month; see your <a href="#/trophies">Trophy case</a>). Campaign boards rank how
+          far a run got; ghost boards show how the computer-played decks are doing. Weeks and months
+          turn over at midnight Pacific time.
         </p>
       </header>
 
       <div className="board__tabs" role="group" aria-label="Which board">
-        {toggle('Arena', tab === 'pvp', () => setKind('pvp'))}
-        {toggle('Ranked', tab === 'ranks', () => setKind('ranks'))}
+        {toggle('Arena', tab === 'pvp' || tab === 'ranks', () => setKind('ranks'))}
         {toggle('Campaign', tab === 'runs', () => setKind('runs'))}
         {toggle('Ghosts', tab === 'ghosts', () => setKind('ghosts'))}
       </div>
+      {(tab === 'pvp' || tab === 'ranks') && (
+        <div className="board__tabs" role="group" aria-label="Which Arena board">
+          {toggle('Ranks this season', tab === 'ranks', () => setKind('ranks'))}
+          {toggle('Wins this week', tab === 'pvp' && period === 'week', () => {
+            setKind('pvp');
+            setPeriod('week');
+          })}
+          {toggle('Wins this month', tab === 'pvp' && period === 'month', () => {
+            setKind('pvp');
+            setPeriod('month');
+          })}
+        </div>
+      )}
       {tab === 'ranks' ? (
         <RankedBoard />
       ) : (
         <>
-          <div className="board__tabs" role="group" aria-label="Which period">
-            {toggle('This week', period === 'week', () => setPeriod('week'))}
-            {toggle('This month', period === 'month', () => setPeriod('month'))}
-          </div>
+          {tab !== 'pvp' && (
+            <div className="board__tabs" role="group" aria-label="Which period">
+              {toggle('This week', period === 'week', () => setPeriod('week'))}
+              {toggle('This month', period === 'month', () => setPeriod('month'))}
+            </div>
+          )}
           <p className="board__left">
             {timeLeft(now, period)}
             <small>

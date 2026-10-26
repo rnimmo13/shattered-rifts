@@ -901,3 +901,12 @@ body:has(.learn) {
 .learn__table--tiers thead tr:nth-child(2) th:nth-child(4) {
   border-left: 2px solid rgb(255 255 255 / 0.22);
 }
+
+/*
+ * Reading width: a line of prose never runs the width of a wide screen. Every paragraph on a page is held to about
+ * 75 characters unless a component sets its own width. (Zero specificity: any component rule wins. The fight screen is not a
+ * <main>, so its plates and banners are untouched.)
+ */
+:where(main) :where(p, dd) {
+  max-width: 75ch;
+}

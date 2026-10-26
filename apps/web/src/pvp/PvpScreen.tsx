@@ -297,10 +297,13 @@ export default function PvpScreen() {
         <h1 className="setup__title">Arena</h1>
         <p className="setup__lead">
           Take a banked deck into a match against another player. Turns alternate, there are no
-          enemy intents, and each turn has a time limit. Clear a run and choose <b>Bank</b> to add
-          decks to your Vault ({vault.length} of {VAULT_SLOTS} used).
+          enemy intents, and each turn has a time limit. Every match against another player counts
+          toward your <b>Arena rank</b>, from Bronze to Diamond, for the month&apos;s season. Clear
+          a run and choose <b>Bank</b> to add decks to your Vault ({vault.length} of {VAULT_SLOTS}{' '}
+          used).
         </p>
-        {ranked && <RankPanel rank={ranked} place={ranked.place} />}
+        {/* (someone the board does not know yet starts where everyone starts) */}
+        <RankPanel rank={ranked} place={ranked?.place ?? null} />
       </header>
 
       {snap.phase === 'error' && snap.message && (
@@ -472,7 +475,8 @@ export default function PvpScreen() {
               </div>
               <p className="pvp__hint">
                 A ghost is a deck another player has used in the Arena, played by the computer. It
-                is a fight for fun and for the Ghosts board: it does not count on the Arena board.
+                is practice and counts only on the Ghosts board: never toward your Arena rank or the
+                Arena board.
               </p>
               <p className="pvp__hint">
                 <a href="#/constructed">Constructed decks</a>:{' '}

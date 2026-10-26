@@ -5,6 +5,7 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **One Arena, with ranks:** every match against another player counts toward your Arena rank; ghost matches never do. The Leaderboards' Arena tab opens on the season's ranks. Long text no longer runs across wide screens.
 - **Home page:** the smaller links are a grid of icon tiles.
 - **Patch notes:** a page (linked from the home screen) showing what changed in each patch, one patch at a time.
 - **Clearer fight screen:** your Boons and Auras sit on your side at the top left, potions sit beside your Mana, and buffs and debuffs are small round icons with their stacks in a badge. In the campaign the top bar reads View map, Forfeit, Abandon run.

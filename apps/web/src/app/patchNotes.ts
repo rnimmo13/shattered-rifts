@@ -29,6 +29,23 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.67.0',
+    date: '2026-10-26',
+    title: 'One Arena, with ranks',
+    summary: 'Ranks are simply part of the Arena.',
+    notes: [
+      {
+        kind: 'changed',
+        text: 'There is one Arena: every match against another player counts toward your Arena rank (Bronze to Diamond). Matches against ghosts are practice and never count.',
+      },
+      {
+        kind: 'changed',
+        text: 'The Arena page always shows your rank and the season, and the Leaderboards’ Arena tab opens on the season’s ranks, with the weekly and monthly win boards (the trophy races) beside them.',
+      },
+      { kind: 'fixed', text: 'Long lines of text no longer stretch across wide screens.' },
+    ],
+  },
+  {
     version: '0.66.0',
     date: '2026-10-26',
     title: 'A tidier home page',

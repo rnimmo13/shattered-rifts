@@ -194,6 +194,7 @@
   box-shadow: 0 0 8px var(--k);
 }
 .patch__group ul {
+  max-width: 75ch;
   margin: 0;
   padding: 0 0 0 1.15rem;
   display: grid;

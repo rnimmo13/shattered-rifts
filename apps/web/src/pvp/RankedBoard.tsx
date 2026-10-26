@@ -77,15 +77,16 @@ export function RankedBoard() {
   return (
     <>
       <p className="board__note">
-        Every counted Arena win against a person moves your rating up and every loss moves it down,
-        further when the other player is rated higher than you. Ranks:{' '}
+        Every Arena match against another player counts toward your rank: a win moves your rating up
+        and a loss moves it down, further when the other player is rated higher than you. Matches
+        against ghosts are practice and never count. Ranks:{' '}
         {RANKS.map((name, i) =>
           `${name} ${RANK_FLOORS[i] ? `from ${RANK_FLOORS[i]}` : ''}`.trim(),
         ).join(', ')}
         . Each rank below Diamond has three divisions (III, II, I). Everyone starts at{' '}
         {RATING_START}. When a season (a month) ends, every rating is pulled halfway back to{' '}
-        {RATING_START}. Games against ghosts are not ranked. The board lists players with at least{' '}
-        {RANKED_MIN_GAMES} ranked games.
+        {RATING_START}. The board lists players with at least {RANKED_MIN_GAMES} Arena matches this
+        season.
       </p>
       {got === 'loading' && (
         <p className="board__note" role="status">
@@ -105,7 +106,7 @@ export function RankedBoard() {
           {view.you && <RankPanel rank={view.you} place={view.you.place} />}
           <div className="board__wrap">
             <table className="board__table">
-              <caption className="sr-only">Ranked board this season</caption>
+              <caption className="sr-only">Arena ranks this season</caption>
               <thead>
                 <tr>
                   <th scope="col" className="board__rank">
@@ -126,7 +127,7 @@ export function RankedBoard() {
                 {view.board.length === 0 && (
                   <tr>
                     <td colSpan={6} className="board__empty">
-                      Nobody has played {RANKED_MIN_GAMES} ranked games yet this season.
+                      Nobody has played {RANKED_MIN_GAMES} Arena matches yet this season.
                     </td>
                   </tr>
                 )}

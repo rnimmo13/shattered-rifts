@@ -49,7 +49,7 @@ export function RankBadge(props: { rank: Badge | undefined; showRating?: boolean
       {...tipAttrs({
         kicker: 'Arena rank',
         title: r.label,
-        text: `Rating ${props.rank.rating}. ${props.rank.games ? `${props.rank.games} ranked ${props.rank.games === 1 ? 'game' : 'games'} this season.` : 'No ranked games yet this season.'}`,
+        text: `Rating ${props.rank.rating}. ${props.rank.games ? `${props.rank.games} Arena ${props.rank.games === 1 ? 'match' : 'matches'} this season.` : 'No Arena matches yet this season.'}`,
       })}
     >
       <RankGem tier={r.tier} />
