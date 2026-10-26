@@ -5,6 +5,8 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **Allies show their next move:** every ally and minion wears a small badge with what it does at the end of its side's turn and how much damage it will deal to the front enemy (Might, Weak and Exposed counted), or "Stunned" when it will skip.
+- **The map keeps its secrets:** a fight or an Elite only says Duel or Elite until you arrive, and a ghost Warden in the campaign never says whose deck it is.
 - **Rift Tiers climb evenly:** Tier I enemies start at 175% HP and 120% damage, and every Tier up adds the same +50% HP and +15% damage all the way to Tier XX (How to play shows the table and the steps).
 - **Legendary Boons** glow crimson instead of gold, so they never look like a common one.
 - **Smarter ghosts:** a ghost deck now thinks through the end of its turn (its allies, Traps and end-of-turn effects) before it picks a line.
