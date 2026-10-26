@@ -11,6 +11,7 @@ import { progressLabel } from '../pvp/deckLayout';
 import { stagesCleared } from '../pvp/vault';
 import { HeroIcon } from '../ui/HeroIcon';
 import { StoreIcon } from './StoreIcon';
+import { HomeLinks } from './HomeLinks';
 import { HERO_COLOR } from '../art/emblems';
 import { tipAttrs } from '../ui/tip';
 import { getHero, rememberHero } from './heroChoice';
@@ -180,19 +181,7 @@ export function TitleScreen() {
             <small>Cosmetics for your Riftwalkers and cards. Coming soon.</small>
           </a>
 
-          <nav className="home__links" aria-label="More">
-            <a href="#/decks">Saved decks</a>
-            <a href="#/board">Leaderboards</a>
-            <a href="#/trophies">Trophy case</a>
-            <a href="#/history">Run history</a>
-            <a href="#/patch-notes">
-              Patch notes{unread && <span className="home__new">New</span>}
-            </a>
-            <a href="#/ghosts">Ghost decks</a>
-            <a href="#/cards">Card library</a>
-            <a href="#/learn">How to play</a>
-            <a href="#/credits">Credits</a>
-          </nav>
+          <HomeLinks unreadNotes={unread} />
         </section>
 
         <section className="home__stage" aria-label="Riftwalkers">

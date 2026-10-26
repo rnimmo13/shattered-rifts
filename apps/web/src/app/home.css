@@ -146,21 +146,61 @@
   background: rgb(40 8 16 / 0.7);
   color: var(--c-ivory);
 }
+/* the smaller destinations: a grid of icon tiles, quieter than the big buttons above but of the same make */
 .home__links {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.4rem 1.4rem;
-  margin-top: 0.4rem;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.4rem;
+  margin-top: 0.3rem;
 }
-.home__links a {
+.home__link {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  gap: 0.25rem;
+  min-height: 3.6rem;
+  padding: 0.45rem 0.3rem;
+  border-radius: 10px;
+  border: 1px solid rgb(212 168 75 / 0.28);
+  background: linear-gradient(180deg, rgb(20 32 74 / 0.55), rgb(8 10 20 / 0.75));
   color: var(--c-text-dim);
   text-decoration: none;
-  letter-spacing: 0.06em;
+  text-align: center;
+  font-size: 0.8rem;
+  letter-spacing: 0.04em;
+  line-height: 1.15;
+  transition:
+    color var(--t-base) var(--ease-out),
+    border-color var(--t-base) var(--ease-out),
+    transform var(--t-base) var(--ease-pop),
+    box-shadow var(--t-base) var(--ease-out);
 }
-.home__links a:hover,
-.home__links a:focus-visible {
+.home__link svg {
+  color: var(--c-gold);
+}
+.home__link:hover,
+.home__link:focus-visible {
+  color: var(--c-ivory);
+  border-color: var(--c-gold-light);
+  transform: translateY(-2px);
+  box-shadow: 0 0 16px color-mix(in srgb, var(--accent) 40%, transparent);
+  outline: none;
+}
+.home__link:hover svg,
+.home__link:focus-visible svg {
   color: var(--c-gold-light);
-  text-decoration: underline;
+}
+/* new patch notes: a small glowing dot in the tile's corner */
+.home__dot {
+  position: absolute;
+  top: 0.35rem;
+  right: 0.4rem;
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: 50%;
+  background: #7ee0a0;
+  box-shadow: 0 0 8px #7ee0a0;
 }
 
 /* ---- the Riftwalker on show ---- */
@@ -342,20 +382,6 @@
   grid-row: span 2;
 }
 
-/* "New" beside the Patch notes link until the newest notes are read */
-.home__new {
-  margin-left: 0.35rem;
-  padding: 0.02rem 0.4rem;
-  border-radius: 999px;
-  font-size: 0.68rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  vertical-align: 0.1em;
-  background: rgb(80 200 120 / 0.25);
-  border: 1px solid rgb(80 200 120 / 0.7);
-  color: #b9f5cc;
-}
-
 /* laptop screens (about 768px tall): the whole menu, links included, fits without scrolling */
 @media (max-height: 880px) and (min-width: 52.01rem) {
   .home {
@@ -390,9 +416,8 @@
   .home__play--quiet {
     padding: 0.4rem 1.1rem;
   }
-  .home__links {
-    gap: 0.25rem 1rem;
-    margin-top: 0.2rem;
-    font-size: 0.92rem;
+  .home__link {
+    min-height: 3.2rem;
+    padding: 0.35rem 0.3rem;
   }
 }
