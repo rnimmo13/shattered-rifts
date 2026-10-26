@@ -283,6 +283,12 @@ const DB: CombatDb = {
     }),
     // allies and the later hooks
     c('deploy', { effects: [{ op: 'summon', unit: 'bot' }] }),
+    c('zap', { target: 'foe', effects: [{ op: 'damage', amount: 4, to: 'target' }] }),
+    c('spike-trap', {
+      kind: 'snare',
+      trigger: { on: 'foeTurn' },
+      effects: [{ op: 'damage', amount: 4, to: 'allFoes' }],
+    }),
     c('recycle', {
       cost: 0,
       target: 'ally',
@@ -379,6 +385,23 @@ const DB: CombatDb = {
           },
         },
         pattern: { kind: 'cycle', order: ['smash'] },
+      },
+    },
+    spiky: {
+      id: 'spiky',
+      name: 'Spiky',
+      maxHp: 300,
+      statuses: { thorns: 5 },
+      brain: {
+        kind: 'enemy',
+        moves: {
+          guard: {
+            id: 'guard',
+            name: 'Guard',
+            effects: [{ op: 'barrier', amount: 0, to: 'self' }],
+          },
+        },
+        pattern: { kind: 'cycle', order: ['guard'] },
       },
     },
     guarder: {
@@ -1380,5 +1403,31 @@ describe('trait triggers', () => {
     s = play(s, 'h2').state;
     expect(hero(s).barrier - before).toBe(2); // no Auras: the trait is not one
     expect(viewFor(DB, s, 'a').sides.a.powers).toEqual([]);
+  });
+});
+
+describe('Thorns answer attacks only', () => {
+  it('an Attack card is hurt back; a Skill or a Trap that deals damage is not', () => {
+    let s = start(['strike', 'zap', 'spike-trap'], { enemies: ['spiky'], mana: 5 });
+    const hp0 = hero(s).hp;
+    s = play(s, 'h0', foe(s).id).state;
+    expect(hero(s).hp).toBe(hp0 - 5);
+    s = play(s, 'h1', foe(s).id).state; // the Skill
+    expect(hero(s).hp).toBe(hp0 - 5);
+    s = play(s, 'h2').state; // the Trap
+    const foeHp = foe(s).hp;
+    s = end(s).state; // the Trap springs on the enemy turn
+    expect(foe(s).hp).toBeLessThan(foeHp);
+    expect(hero(s).hp).toBe(hp0 - 5);
+  });
+
+  it('a companion that attacks takes the Thorns itself, not its hero', () => {
+    let s = start(['deploy'], { enemies: ['spiky'] });
+    const hp0 = hero(s).hp;
+    s = play(s, 'h0').state;
+    s = end(s).state; // the companion acts at the end of the turn
+    const bot = s.sides.a.units.find((u) => u.def === 'bot');
+    expect(bot === undefined || bot.hp < 7).toBe(true);
+    expect(hero(s).hp).toBe(hp0);
   });
 });

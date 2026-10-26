@@ -132,6 +132,7 @@ export {
 export { FIT_AT, fitLabel, fitOf, pathCounts, mainPath, type Fit } from './synergy';
 export {
   OMENS,
+  OMEN_TUNING,
   omenEffects,
   omenMods,
   omenOf,

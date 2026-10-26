@@ -308,8 +308,11 @@ function attackHit(r: Run, a: Act, t: Unit, base: number): void {
   const lost = applyDamage(r, a.actor, t, amount, 'attack');
   // Armored wears thin each time an attack gets through
   if (lost > 0 && stacks(t, 'armored') > 0) addStatus(r, t, 'armored', -1);
+  // Thorns answer an attack: an Attack card, or a unit's own move (an enemy's, a companion's, which takes the Thorns itself). A Trap,
+  // an Aura, a totem, a potion or a Skill that deals damage is no attack, so its owner is never hurt by them.
+  const attacked = a.card ? a.card.kind === 'attack' : a.actor.kind !== 'hero';
   const thorns = stacks(t, 'thorns');
-  if (thorns > 0 && a.actor.hp > 0 && t.side !== a.actor.side)
+  if (attacked && thorns > 0 && a.actor.hp > 0 && t.side !== a.actor.side)
     applyDamage(r, t, a.actor, thorns, 'direct');
 }
 
