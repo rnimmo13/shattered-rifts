@@ -74,6 +74,16 @@ events, ancestral cards and Sanctified rolls are not in the audit decks.
 
 ---
 
+## Enemy HP x1.5 (2026-10-26, DECISIONS #261)
+
+Every HP number of the tier table x1.5 (Tier I 225% at stage 1). Bot ladder, all ten Riftwalkers, before (#257) -> after:
+
+| Deck | Regular: won, HP lost | Elite win % | Warden win % | Vorthax win % |
+|---|---|---|---|---|
+| first Warden (t1s1) | 98% 33% -> 91% 50% | 46 -> 12 | 6 -> 4 | - |
+| end of loop 1 (t1s3) | 100% 20% -> 96% 32% | 70 -> 36 | 24 -> 12 | 11 -> 1 |
+| Tier V (t5) | 99% 13% -> 94% 21% | 70 -> 46 | 39 -> 26 | 29 -> 20 |
+
 ## Harder Tier I and a steeper climb, again (2026-10-26, DECISIONS #257)
 
 Tier I enemies 150% HP / 124% damage at stage 1 (was 130 / 120), +55% HP and +20% damage a tier to Tier X (was +45 / +18). Bot ladder, all

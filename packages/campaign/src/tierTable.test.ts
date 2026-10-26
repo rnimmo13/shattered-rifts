@@ -50,7 +50,7 @@ describe('the tier table', () => {
 
   it('stays in the range a deck can grow into (no thirty-fold HP sponges)', () => {
     for (const row of TIER_TABLE) {
-      for (const v of row.hp) expect(v).toBeLessThanOrEqual(900);
+      for (const v of row.hp) expect(v).toBeLessThanOrEqual(1350);
       for (const v of row.dmg) expect(v).toBeLessThanOrEqual(400);
     }
   });
