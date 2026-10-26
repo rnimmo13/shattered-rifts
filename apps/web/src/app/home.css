@@ -341,3 +341,58 @@
 .home__play--store svg {
   grid-row: span 2;
 }
+
+/* "New" beside the Patch notes link until the newest notes are read */
+.home__new {
+  margin-left: 0.35rem;
+  padding: 0.02rem 0.4rem;
+  border-radius: 999px;
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  vertical-align: 0.1em;
+  background: rgb(80 200 120 / 0.25);
+  border: 1px solid rgb(80 200 120 / 0.7);
+  color: #b9f5cc;
+}
+
+/* laptop screens (about 768px tall): the whole menu, links included, fits without scrolling */
+@media (max-height: 880px) and (min-width: 52.01rem) {
+  .home {
+    padding: 0.5rem 1.2rem 0.6rem;
+  }
+  .home__body {
+    padding: 0.2rem 0;
+  }
+  .home__menu {
+    gap: 0.5rem;
+  }
+  .home__name {
+    font-size: clamp(2.2rem, 5vw, 3.4rem);
+  }
+  .home__tagline {
+    margin: 0 0 0.3rem;
+    font-size: 1rem;
+  }
+  .home__play {
+    padding: 0.55rem 1.1rem;
+  }
+  .home__play b {
+    font-size: 1.15rem;
+  }
+  .home__play--primary b,
+  .home__play--continue b {
+    font-size: 1.4rem;
+  }
+  .home__play small {
+    font-size: 0.9rem;
+  }
+  .home__play--quiet {
+    padding: 0.4rem 1.1rem;
+  }
+  .home__links {
+    gap: 0.25rem 1rem;
+    margin-top: 0.2rem;
+    font-size: 0.92rem;
+  }
+}

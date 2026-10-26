@@ -14,6 +14,7 @@ import { StoreIcon } from './StoreIcon';
 import { HERO_COLOR } from '../art/emblems';
 import { tipAttrs } from '../ui/tip';
 import { getHero, rememberHero } from './heroChoice';
+import { hasUnread } from './patchNotes';
 import './home.css';
 
 /** A Riftwalker standing on show, drawn from their full-length figure. */
@@ -37,6 +38,8 @@ function HeroStage(props: { hero: HeroId }) {
 export function TitleScreen() {
   const groups = heroesByRealm();
   const [picked, setPicked] = useState(getHero);
+  // (patch notes the player has not opened yet: the link says so)
+  const [unread] = useState(hasUnread);
   const [me, setMe] = useState<Me>({ signedIn: false, available: false });
   const [runs, setRuns] = useState(listRuns);
   const [dropping, setDropping] = useState<string | null>(null);
@@ -182,6 +185,9 @@ export function TitleScreen() {
             <a href="#/board">Leaderboards</a>
             <a href="#/trophies">Trophy case</a>
             <a href="#/history">Run history</a>
+            <a href="#/patch-notes">
+              Patch notes{unread && <span className="home__new">New</span>}
+            </a>
             <a href="#/ghosts">Ghost decks</a>
             <a href="#/cards">Card library</a>
             <a href="#/learn">How to play</a>

@@ -20,6 +20,7 @@ const GhostDecksScreen = lazy(() => import('../pvp/GhostDecksScreen'));
 const TrophyCaseScreen = lazy(() => import('../pvp/TrophyCaseScreen'));
 const SavedDecksScreen = lazy(() => import('../pvp/SavedDecksScreen'));
 const HistoryScreen = lazy(() => import('../run/HistoryScreen'));
+const PatchNotesScreen = lazy(() => import('./PatchNotesScreen'));
 const ReplayScreen = lazy(() => import('../pvp/ReplayScreen'));
 const WatchScreen = lazy(() => import('../pvp/WatchScreen'));
 const ConstructedScreen = lazy(() => import('../pvp/ConstructedScreen'));
@@ -118,6 +119,13 @@ function Screens({ hash }: { hash: string }) {
     return (
       <Suspense fallback={<div className="loading">Opening the rift…</div>}>
         <TrialsPractice />
+      </Suspense>
+    );
+  }
+  if (hash === '#/patch-notes') {
+    return (
+      <Suspense fallback={<div className="loading">Opening the rift…</div>}>
+        <PatchNotesScreen />
       </Suspense>
     );
   }
