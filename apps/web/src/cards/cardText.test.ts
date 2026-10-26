@@ -1,5 +1,7 @@
 import { describe, expect, it } from 'vitest';
-import { markRollDiff, parseRules } from './cardText';
+import { markRollDiff, parseRules, rollNote } from './cardText';
+import { COMBAT_DB } from '@sr/content/v2';
+import { sanctifiedNote } from '../fight/info';
 
 describe('sanctified numbers on a card', () => {
   it('marks each number the roll changed, up or down, with what it was', () => {
@@ -19,5 +21,22 @@ describe('sanctified numbers on a card', () => {
       { text: 'Barrier', bold: true },
       { text: '.', bold: false },
     ]);
+  });
+});
+
+describe('the Sanctified note beside a hovered card', () => {
+  it('names each number the roll changed, the way it went, and nothing for a plain card', () => {
+    expect(rollNote('Deal 8 damage. Gain 6 Barrier.', 'Deal 6 damage. Gain 5 Barrier.', 1)).toEqual(
+      {
+        name: 'Sanctified',
+        text: 'Rolled 25% stronger at the Sanctum: damage 6 → 8, Barrier 5 → 6.',
+      },
+    );
+    expect(rollNote('Deal 6 damage.', 'Deal 6 damage.', -1)).toBeNull();
+    const up = COMBAT_DB.cards['hi~strike'];
+    const down = COMBAT_DB.cards['lo~strike'];
+    expect(up && sanctifiedNote(COMBAT_DB, up)?.text).toMatch(/stronger.*damage 6 → [78]/);
+    expect(down && sanctifiedNote(COMBAT_DB, down)?.text).toMatch(/weaker.*damage 6 → [45]/);
+    expect(sanctifiedNote(COMBAT_DB, COMBAT_DB.cards['strike']!)).toBeNull();
   });
 });

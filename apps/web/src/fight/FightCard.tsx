@@ -119,16 +119,10 @@ export const FightCard = memo(
             <p>
               {runs.map((r, i) => {
                 if (r.roll) {
-                  // a number the Sanctum changed: the new value in colour, how far it moved beside it
-                  const diff = Number(r.text) - Number(r.roll.was);
+                  // a number the Sanctum changed: the new value in colour (green up, red down); the hover notes say what it was
                   return (
-                    <span
-                      key={i}
-                      className={`card__roll card__roll--${r.roll.dir}`}
-                      title={`Sanctified: ${r.roll.was} → ${r.text}`}
-                    >
+                    <span key={i} className={`card__roll card__roll--${r.roll.dir}`}>
                       {r.text}
-                      <sup>{diff > 0 ? `+${diff}` : `−${-diff}`}</sup>
                     </span>
                   );
                 }

@@ -841,11 +841,6 @@
     0 0 2px rgb(0 0 0 / 0.85),
     0 0 1px rgb(0 0 0 / 0.85);
 }
-.card__roll sup {
-  font-size: 0.62em;
-  margin-left: 0.08em;
-  font-weight: 700;
-}
 .card__roll--up {
   color: #4ee08a;
 }

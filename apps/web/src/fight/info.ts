@@ -1,5 +1,7 @@
-import type { IntentIcon, StatusId } from '@sr/combat';
+import { cardText, type CardDef, type CombatDb, type IntentIcon, type StatusId } from '@sr/combat';
+import { rollOf } from '@sr/content/v2';
 import type { TipContent } from '../ui/tip';
+import { rollNote } from '../cards/cardText';
 
 export const STATUS_INFO: Record<
   StatusId,
@@ -313,6 +315,14 @@ export function keywordsOf(
   for (const k of [...out])
     for (const s of Object.values(STATUS_INFO)) if (names(k.text, s.name)) add(s);
   return out;
+}
+
+/** The note beside a hovered sanctified card: what its roll did to each of its numbers (null for an ordinary card). */
+export function sanctifiedNote(db: CombatDb, def: CardDef): { name: string; text: string } | null {
+  const dir = rollOf(def.id);
+  if (!dir) return null;
+  const plain = db.cards[def.id.replace(/^(hi|lo)~/, '')];
+  return plain ? rollNote(cardText(db, def), cardText(db, plain), dir) : null;
 }
 
 /** Tooltips for the parts of the screen that are not cards or statuses. */

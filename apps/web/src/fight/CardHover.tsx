@@ -4,7 +4,7 @@ import { useLayoutEffect, useRef } from 'react';
 import { COMBAT_DB } from '@sr/content/v2';
 import { cardText, type CardDef } from '@sr/combat';
 import { FightCard } from './FightCard';
-import { keywordsOf } from './info';
+import { keywordsOf, sanctifiedNote } from './info';
 import './cardhover.css';
 
 /** Where the pointer is: the rectangle of the card being hovered, so the preview can sit beside it instead of over everything. */
@@ -60,11 +60,15 @@ export function CardHover(props: {
     window.innerWidth >= PREVIEW_W_FULL * 2 + 40;
   const PREVIEW_W = previewW();
   const compact = isCompact();
-  const keys = keywordsOf(
-    props.def,
-    (u) => COMBAT_DB.units[u]?.taunt === true,
-    cardText(COMBAT_DB, props.def),
-  );
+  const roll = sanctifiedNote(COMBAT_DB, props.def);
+  const keys = [
+    ...(roll ? [roll] : []),
+    ...keywordsOf(
+      props.def,
+      (u) => COMBAT_DB.units[u]?.taunt === true,
+      cardText(COMBAT_DB, props.def),
+    ),
+  ];
   return (
     <div
       ref={box}

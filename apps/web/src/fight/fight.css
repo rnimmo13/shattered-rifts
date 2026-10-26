@@ -1788,11 +1788,14 @@
   justify-content: center;
   gap: 0.5rem;
 }
+/* centred without a transform: a button lifts on hover with its own transform, which would undo translateX and make it jump */
 .fight__peekBack {
   position: absolute;
-  left: 50%;
+  left: 0;
+  right: 0;
+  margin-inline: auto;
+  width: fit-content;
   bottom: 1.2rem;
-  transform: translateX(-50%);
   z-index: 72;
 }
 .fight__replayLayer {

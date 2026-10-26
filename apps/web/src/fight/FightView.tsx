@@ -41,7 +41,7 @@ import { UnitPlates, type Placed } from './Plates';
 import { ErrorDetails } from '../ui/ErrorDetails';
 import { packLine } from './lineLayout';
 import { looksLikeNewVersion } from '../ui/errorReport';
-import { keywordsOf } from './info';
+import { keywordsOf, sanctifiedNote } from './info';
 import { BoonChip } from './BoonChip';
 import { CardTips } from './CardTips';
 import { CardHover } from './CardHover';
@@ -1224,11 +1224,14 @@ export function FightView(props: {
       };
   }
   const keywords = hoverCard
-    ? keywordsOf(
-        hoverCard.def,
-        (unit) => db.units[unit]?.taunt === true,
-        cardText(db, hoverCard.def),
-      )
+    ? [
+        ...[sanctifiedNote(db, hoverCard.def)].filter((x) => x !== null),
+        ...keywordsOf(
+          hoverCard.def,
+          (unit) => db.units[unit]?.taunt === true,
+          cardText(db, hoverCard.def),
+        ),
+      ]
     : [];
   const finished = result !== null;
   // a lost fight says, in a line, what ended it (the whole recap is a button away)

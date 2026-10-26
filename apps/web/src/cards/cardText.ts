@@ -48,3 +48,33 @@ export function markRollDiff(rolled: string, base: string): string {
     return `[[${Number(n) > Number(was) ? 'up' : 'down'}:${n}:${was}]]`;
   });
 }
+
+/**
+ * What a sanctified roll did to a card's numbers, for the notes beside a hovered card: "Rolled 25% stronger: damage 6 → 8,
+ * Barrier 5 → 6." Each changed number is named by the word after it on the plain card. Null for a card without a roll, or when the
+ * two texts cannot be lined up number for number.
+ */
+export function rollNote(
+  rolled: string,
+  base: string,
+  dir: 1 | -1,
+): { name: string; text: string } | null {
+  const clean = (s: string): string => s.replace(/\*\*/g, '');
+  const find = (s: string): { n: string; word: string }[] =>
+    [...clean(s).matchAll(/(\d+)(?:%)?\s*([A-Za-z]+)?/g)].map((m) => ({
+      n: m[1] as string,
+      word: m[2] ?? '',
+    }));
+  const a = find(rolled);
+  const b = find(base);
+  if (a.length !== b.length) return null;
+  const changes = a
+    .map((x, i) => ({ now: x.n, was: (b[i] as { n: string; word: string }).n, word: x.word }))
+    .filter((x) => x.now !== x.was)
+    .map((x) => `${x.word ? `${x.word} ` : ''}${x.was} → ${x.now}`);
+  if (changes.length === 0) return null;
+  return {
+    name: 'Sanctified',
+    text: `Rolled 25% ${dir > 0 ? 'stronger' : 'weaker'} at the Sanctum: ${changes.join(', ')}.`,
+  };
+}
