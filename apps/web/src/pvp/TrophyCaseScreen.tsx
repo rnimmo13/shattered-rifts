@@ -46,8 +46,8 @@ export default function TrophyCaseScreen() {
         <p className="trophycase__empty">Opening the case…</p>
       ) : trophies === null ? (
         <p className="trophycase__empty">
-          Your trophies could not be loaded. Trophies are kept with your Vault code or account: play
-          an Arena match, or <a href="#/decks">save a deck</a>, to have one.
+          Your trophies could not be loaded. They are kept with your saved decks (or your account,
+          if you sign in): play an Arena match or <a href="#/decks">save a deck</a> first.
         </p>
       ) : (
         <>

@@ -31,7 +31,7 @@ export function BankedPanel(props: { run: RunState; onExport: () => void; onLeav
   /** counts the times the Vault is changed by hand, so the server copy follows */
   const [tick, setTick] = useState(0);
 
-  // a second copy goes to the server (the Vault code on the Arena screen is the key to it)
+  // a second copy goes to the server (kept under this browser's own key, or the account when signed in)
   useEffect(() => {
     let live = true;
     void whoAmI()

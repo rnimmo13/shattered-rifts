@@ -23,35 +23,20 @@ function normalise(raw: string): string {
 
 /** The server a browser should connect to (see README of the PvP setup in docs/DECISIONS.md #161). */
 export function serverBase(): string {
-  try {
-    const saved = localStorage.getItem(SERVER_KEY);
-    if (saved) return normalise(saved);
-  } catch {
-    /* storage unavailable */
-  }
+  // (an address saved in this browser is for development only: players always use the game's own server)
+  if (import.meta.env.DEV)
+    try {
+      const saved = localStorage.getItem(SERVER_KEY);
+      if (saved) return normalise(saved);
+    } catch {
+      /* storage unavailable */
+    }
   const built = import.meta.env.VITE_PVP_SERVER as string | undefined;
   if (built) return normalise(built);
   // `pnpm pvp:dev` runs the server here
   if (import.meta.env.DEV) return 'ws://127.0.0.1:8787';
   // the game's own address: the Cloudflare Worker that serves the game also runs the server (docs/11_PVP.md)
   return normalise(PRODUCTION_SERVER);
-}
-
-export function getServerSetting(): string {
-  try {
-    return localStorage.getItem(SERVER_KEY) ?? '';
-  } catch {
-    return '';
-  }
-}
-
-export function setServerSetting(v: string): void {
-  try {
-    if (v.trim()) localStorage.setItem(SERVER_KEY, v.trim());
-    else localStorage.removeItem(SERVER_KEY);
-  } catch {
-    /* not saved */
-  }
 }
 
 export function getName(): string {

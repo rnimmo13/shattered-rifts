@@ -29,6 +29,7 @@ export {
   ghostCleared,
   pickGhostBoss,
   GHOST_BOSS_EXCLUDE_MAX,
+  GHOST_BOSS_TIERS_BELOW,
   rankGhosts,
   rankVsGhosts,
   standingsPvp,

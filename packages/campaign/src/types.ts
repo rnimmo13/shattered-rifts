@@ -22,6 +22,8 @@ export interface MapNode {
   enemyId?: string;
   /** Warden nodes beyond Rift Tier 3: the Warden may be a ghost (a deck from the Arena) in place of the usual one, if the server can supply one; `enemyId` is the Warden to fight if not */
   ghost?: boolean;
+  /** the ghost deck this Warden will be, settled when the stage begins (a stage with no valid ghost loses its `ghost` mark instead) */
+  ghostDeck?: GhostBoss;
   /** Merchant nodes: the Riftwalker whose cards this visiting merchant sells (a Rift-crossed stranger), shown on the map. */
   crossed?: string;
   /** Ids of the nodes on the next floor this one connects to. */

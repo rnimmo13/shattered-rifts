@@ -20,6 +20,8 @@ import {
   upgradedCards,
   chooseCard,
   chooseHeart,
+  ghostToSettle,
+  settleGhost,
   omenOf,
   omensAt,
   chooseEvent,
@@ -347,7 +349,22 @@ export default function RunScreen() {
     begin(settleInterrupted(parsed).run);
   };
 
-  // a Warden that is a ghost: its deck is fetched once (if none can be had, the usual Warden is fought)
+  // a stage whose Warden may be a ghost: as the stage begins, the server is asked for one from your tier or up to three below it.
+  // None (or no connection): the map shows the usual Warden, and that is the fight (DECISIONS #253)
+  const settling = run !== null ? (ghostToSettle(run)?.id ?? null) : null;
+  useEffect(() => {
+    if (!settling) return;
+    let live = true;
+    const at = runRef.current;
+    void fetchGhostBoss(at?.tier ?? 1, at?.ghostsMet ?? []).then((g) => {
+      if (live) act((r) => (ghostToSettle(r)?.id === settling ? settleGhost(r, g) : r));
+    });
+    return () => {
+      live = false;
+    };
+  }, [settling, act]);
+
+  // (a save from before that: its ghost Warden is asked for as the fight begins, as it was)
   const wanted = run !== null && ghostWanted(run);
   useEffect(() => {
     if (!wanted) return;

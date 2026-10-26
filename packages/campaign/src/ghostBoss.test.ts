@@ -12,6 +12,8 @@ import {
   ghostBossHp,
   ghostBossDmg,
   ghostWanted,
+  ghostToSettle,
+  settleGhost,
   wardenMaxHp,
   newRun,
   parseRun,
@@ -163,6 +165,51 @@ describe('a Warden leaves you sturdier (DECISIONS #237)', () => {
       const won = finishDuel(run, true, run.hp);
       expect(won.maxHp).toBe(run.maxHp + wardenMaxHp(tier));
       expect(won.eventResult).toMatch(/Max HP/);
+    }
+  });
+});
+
+describe('a ghost Warden is settled as the stage begins (DECISIONS #253)', () => {
+  const ghost = (tier: number) => ({
+    id: `g${tier}`,
+    name: 'Ann',
+    hero: 'knight',
+    deck: [...RIFTWALKERS.knight.starter],
+    boons: [],
+    tier,
+    stage: 3,
+  });
+  /** a run at a tier whose stage map has a ghost Warden */
+  const ghostly = (tier: number): RunState => {
+    const r: RunState = {
+      ...newRun('knight', `settle-${tier}`),
+      phase: 'map',
+      context: null,
+      tier,
+    };
+    return {
+      ...r,
+      map: {
+        ...r.map,
+        nodes: r.map.nodes.map((n) => (n.kind === 'warden' ? { ...n, ghost: true } : n)),
+      },
+    };
+  };
+
+  it("keeps a ghost from the player's tier or up to three below", () => {
+    const r = settleGhost(ghostly(6), ghost(4));
+    const w = r.map.nodes.find((n) => n.kind === 'warden')!;
+    expect(w.ghost).toBe(true);
+    expect(w.ghostDeck?.tier).toBe(4);
+    expect(ghostToSettle(r)).toBeNull();
+  });
+
+  it('turns it back into the usual Warden when there is none, or only one from out of range', () => {
+    for (const g of [null, ghost(7), ghost(2)]) {
+      const r = settleGhost(ghostly(6), g);
+      const w = r.map.nodes.find((n) => n.kind === 'warden')!;
+      expect(w.ghost).toBeUndefined();
+      expect(ghostToSettle(r)).toBeNull();
     }
   });
 });

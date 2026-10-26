@@ -61,6 +61,11 @@ function validMap(map: unknown): map is RunState['map'] {
     if (!n.kind || !KINDS.includes(n.kind) || !isInt(n.floor, 1, 20)) return false;
     if (!isStrArray(n.next) || n.next.some((t) => !ids.has(t))) return false;
     if (n.crossed !== undefined && typeof n.crossed !== 'string') return false;
+    // (a settled ghost that no longer checks out is dropped, and the usual Warden is fought)
+    if (n.ghostDeck !== undefined && checkGhostBoss(n.ghostDeck) === null) {
+      delete n.ghostDeck;
+      delete n.ghost;
+    }
     if (n.bonus !== undefined && !validDeal(n.bonus)) return false;
     const fights = n.kind === 'duel' || n.kind === 'elite' || n.kind === 'warden';
     if (fights && (typeof n.enemyId !== 'string' || !ENEMY_IDS.has(n.enemyId))) return false;

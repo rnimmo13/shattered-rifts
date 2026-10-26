@@ -306,6 +306,8 @@ export function enterNode(run: RunState, nodeId: string): RunState {
       r.phase = 'duel';
       // (news from an earlier stop, "The Warden falls", say, is not told again as this fight starts)
       delete r.eventResult;
+      // a ghost Warden settled when the stage began is that ghost
+      if (node.ghost && node.ghostDeck) meetGhost(r, node.ghostDeck);
       break;
     case 'shrine':
       r.phase = 'shrine';
@@ -533,6 +535,28 @@ export function checkGhostBoss(raw: unknown): GhostBoss | null {
   };
 }
 
+/**
+ * The ghost Warden of this stage that is not settled yet (DECISIONS #253): the screen asks the server for a ghost as the stage begins,
+ * so the map only says "Ghost Warden" when there is one to fight.
+ */
+export function ghostToSettle(run: RunState): MapNode | null {
+  if (run.phase === 'duel' || run.phase === 'collapsed' || run.phase === 'banked') return null;
+  return run.map.nodes.find((n) => n.ghost === true && !n.ghostDeck) ?? null;
+}
+
+/** The server's answer for this stage's ghost Warden: a valid ghost is kept for the fight; none (or nothing usable), and it is the usual Warden. */
+export function settleGhost(run: RunState, ghost: unknown): RunState {
+  const at = ghostToSettle(run);
+  need(at, 'No ghost Warden is waiting to be settled');
+  const r = clone(run);
+  const node = r.map.nodes.find((n) => n.id === at.id) as MapNode;
+  const checked = checkGhostBoss(ghost);
+  // (a ghost from above the player's tier, or too far below, is not one: an older server might send it)
+  if (checked && checked.tier <= r.tier && checked.tier >= r.tier - 3) node.ghostDeck = checked;
+  else delete node.ghost;
+  return r;
+}
+
 /** The ghost for this Warden has arrived (or none could be had: null, and the usual Warden is fought). */
 export function attachGhost(run: RunState, ghost: unknown): RunState {
   need(ghostWanted(run), 'This fight is not waiting for a ghost');
@@ -540,15 +564,21 @@ export function attachGhost(run: RunState, ghost: unknown): RunState {
   const ctx = r.context as NonNullable<RunState['context']>;
   ctx.ghostAsked = true;
   const checked = checkGhostBoss(ghost);
-  if (checked) {
-    ctx.ghost = checked;
-    // (the latest 25: what one request to the server carries)
-    if (checked.id) r.ghostsMet = [...(r.ghostsMet ?? []), checked.id].slice(-25);
-    // said plainly, so nobody takes it for the realm's usual Warden
-    const who = RIFTWALKERS[checked.hero]?.role ?? 'Riftwalker';
-    r.eventResult = `Ghost Warden! This Warden is ${checked.name}'s ${who} deck from the Arena (Tier ${checked.tier}), played by the computer.`;
-  }
+  // (never from above your tier, nor more than three below it)
+  if (checked && checked.tier <= r.tier && checked.tier >= r.tier - 3) meetGhost(r, checked);
   return r;
+}
+
+/** The fight at the current node is this ghost: it is remembered (never met twice in a run) and said plainly. */
+function meetGhost(r: RunState, g: GhostBoss): void {
+  const ctx = r.context as NonNullable<RunState['context']>;
+  ctx.ghost = g;
+  ctx.ghostAsked = true;
+  // (the latest 25: what one request to the server carries)
+  if (g.id) r.ghostsMet = [...(r.ghostsMet ?? []), g.id].slice(-25);
+  // said plainly, so nobody takes it for the realm's usual Warden
+  const who = RIFTWALKERS[g.hero]?.role ?? 'Riftwalker';
+  r.eventResult = `Ghost Warden! This Warden is ${g.name}'s ${who} deck from the Arena (Tier ${g.tier}), played by the computer.`;
 }
 
 /** What the fight at the current node is. */

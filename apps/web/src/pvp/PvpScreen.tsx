@@ -9,15 +9,7 @@ import { arenaFor } from './arenaVenue';
 import { ShareLink } from './ShareLink';
 import { replayLink, watchLink } from './matchHistory';
 import { HeroIcon } from '../ui/HeroIcon';
-import {
-  getClaimed,
-  getName,
-  getServerSetting,
-  playerId,
-  serverBase,
-  setName as saveName,
-  setServerSetting,
-} from './config';
+import { getClaimed, getName, playerId, serverBase, setName as saveName } from './config';
 import { PvpSession, newRoomCode, savedRoom, type Snapshot } from './session';
 import { takeName } from './takeName';
 import { VAULT_SLOTS, entryFor, loadVault, saveVault, type VaultDeck } from './vault';
@@ -25,7 +17,8 @@ import { ChoosePanel, CoinFlip, GhostOffer, WaitTimer } from './PvpParts';
 import { boardId, viewRanks, type RankedView } from './boardApi';
 import { RankPanel } from './RankedBoard';
 import { ARENA_MODES } from '@sr/pvp';
-import { VaultCode, type Online } from './VaultCode';
+/** where the saved decks stand online (still being checked, saved, partly saved, or not reachable) */
+type Online = 'checking' | 'saved' | 'partial' | 'offline';
 import { AccountBox } from './AccountBox';
 import { RarityTally } from './DeckReport';
 import { dateLabel, heroName, progressLabel } from './deckLayout';
@@ -49,8 +42,6 @@ export default function PvpScreen() {
   const [vault, setVault] = useState<VaultDeck[]>(loadVault);
   const [online, setOnline] = useState<Online>('checking');
   const [me, setMe] = useState<Me>({ signedIn: false, available: false });
-  /** who is signed in has been found out (until then no Vault code is shown or made) */
-  const [known, setKnown] = useState(false);
   /** the player changed the Vault by hand, so a sync still on its way must not overwrite it */
   const touched = useRef(false);
   // only banked decks can be taken into the Arena
@@ -59,7 +50,6 @@ export default function PvpScreen() {
   const [name, setNameState] = useState(() => getName());
   const [code, setCode] = useState('');
   const [snap, setSnap] = useState<Snapshot>(EMPTY);
-  const [server, setServer] = useState(getServerSetting);
   const [confirmResign, setConfirmResign] = useState(false);
   /** your rank this season (once the board has said; nothing when it cannot be reached) */
   const [ranked, setRanked] = useState<RankedView['you']>(null);
@@ -96,7 +86,6 @@ export default function PvpScreen() {
         const who = await whoAmI();
         if (!alive.current) return;
         setMe(who);
-        setKnown(true);
         const key = vaultKey();
         const r = await syncVault(key, local);
         // the answer is stale if the page was left, the Vault was changed, or a deck was removed while it was on its way
@@ -410,11 +399,9 @@ export default function PvpScreen() {
                     that deck to the Arena yourself, but once it has cleared Tier 3 it stays as a
                     ghost other players may face.
                   </p>
-                  <p>
-                    Banked decks on another device?{' '}
-                    {me.available && !me.signedIn ? 'Sign in below' : 'Use your Vault code below'}{' '}
-                    to load them.
-                  </p>
+                  {me.available && !me.signedIn && (
+                    <p>Saved decks on another device? Sign in below to bring them here.</p>
+                  )}
                   <a className="btn btn--primary" href="#/run">
                     <span>Start a New Run</span>
                   </a>
@@ -499,35 +486,6 @@ export default function PvpScreen() {
               runSync.current([]);
             }}
           />
-          {known && !me.signedIn && (
-            <VaultCode
-              online={online}
-              local={vault}
-              onRestore={(decks, complete) => {
-                touched.current = true;
-                setVault(decks);
-                saveVault(decks);
-                setOnline(complete ? 'saved' : 'partial');
-                setDeckId(decks[0]?.id ?? '');
-              }}
-            />
-          )}
-          <details className="pvp__server">
-            <summary>Server</summary>
-            <p>
-              Matches run on the PvP server. This build connects to <code>{serverBase()}</code>.
-              Change it only if you were given another address.
-            </p>
-            <input
-              value={server}
-              placeholder={serverBase()}
-              onChange={(e) => {
-                setServer(e.target.value);
-                setServerSetting(e.target.value);
-              }}
-              aria-label="Server address"
-            />
-          </details>
         </>
       )}
     </main>

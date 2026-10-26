@@ -301,10 +301,10 @@ describe('ghost Wardens (DECISIONS #231)', () => {
 
   it('only a deck that cleared Tier 3 can be a Warden (DECISIONS #235)', () => {
     expect(pickAll([g('t1', 1), g('t2', 2)], 5)).toEqual(['-']);
-    expect(pickAll([g('t2', 2), g('t3', 3)], 1)).toEqual(['t3']);
+    expect(pickAll([g('t2', 2), g('t3', 3)], 3)).toEqual(['t3']);
     // Tier 3 reached but not cleared is not enough
     expect(pickAll([g('t3s2', 3, 1, 't3s2', 2)], 3)).toEqual(['-']);
-    expect(pickAll([g('t4s0', 4, 1, 't4s0', 0)], 3)).toEqual(['t4s0']);
+    expect(pickAll([g('t4s0', 4, 1, 't4s0', 0)], 4)).toEqual(['t4s0']);
   });
 
   it('an ordinary ghost must have cleared Tier 3 too', () => {
@@ -317,14 +317,17 @@ describe('ghost Wardens (DECISIONS #231)', () => {
     expect(ghostCleared(4, 0)).toBe(true);
   });
 
-  it("a deck near the player's tier is chosen over a far one", () => {
+  it("a deck from the player's tier or up to three below is chosen, never one above (DECISIONS #253)", () => {
     const decks = [g('t3', 3), g('t6', 6), g('t7', 7, 5), g('t8', 8, 9), g('t15', 15, 50)];
-    // a Tier 6 player: the candidates are within one tier of the nearest (Tier 6 and 7), the better half of them by wins
-    // (the Tier 7 deck has more); never the far, strong Tier 15 deck
-    expect(pickAll(decks, 6)).toEqual(['t7']);
-    // a Tier 7 player: Tiers 7 and 6 or 8 are near; the better half of the three
-    expect(pickAll(decks, 7)).toEqual(['t7', 't8']);
+    // a Tier 6 player: never the Tier 7, 8 or 15 decks above; the nearest is their own tier
+    expect(pickAll(decks, 6)).toEqual(['t6']);
+    // a Tier 7 player: Tiers 6 and 7 are near, the better half by wins (the Tier 7 deck has more)
+    expect(pickAll(decks, 7)).toEqual(['t7']);
+    // a Tier 5 player: only Tier 3 is in range (Tier 6 is above)
+    expect(pickAll(decks, 5)).toEqual(['t3']);
     expect(pickAll(decks, 15)).toEqual(['t15']);
+    // a Tier 12 player: nothing between Tier 9 and Tier 12, so no ghost (the usual Warden)
+    expect(pickAll(decks, 12)).toEqual(['-']);
   });
 
   it('never the same ghost twice in a run, and never your own', () => {

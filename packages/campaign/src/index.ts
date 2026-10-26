@@ -102,6 +102,8 @@ export { upgradedCards } from './upgrades';
 export {
   GHOST_BOSS_HP_BASE,
   attachGhost,
+  ghostToSettle,
+  settleGhost,
   checkGhostBoss,
   ghostBossHp,
   ghostBossDmg,

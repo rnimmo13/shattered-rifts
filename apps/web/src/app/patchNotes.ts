@@ -29,6 +29,26 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.68.0',
+    date: '2026-10-26',
+    title: 'Fairer ghost Wardens',
+    summary: 'Ghost Wardens come from your own tier or just below, and only when there is one.',
+    notes: [
+      {
+        kind: 'balance',
+        text: 'A ghost Warden is never from a higher Rift Tier than yours, and never more than three tiers below it.',
+      },
+      {
+        kind: 'changed',
+        text: 'Whether a stage’s Warden is a ghost is settled as the stage begins: the map only says Ghost Warden when there is one to fight, and otherwise it is the usual Warden.',
+      },
+      {
+        kind: 'changed',
+        text: 'The Arena page no longer shows the Vault code box or the server setting. To bring your saved decks to another device, sign in.',
+      },
+    ],
+  },
+  {
     version: '0.67.0',
     date: '2026-10-26',
     title: 'One Arena, with ranks',

@@ -377,9 +377,13 @@ export const GHOST_BOSS_EXCLUDE_MAX = 25;
 
 /**
  * The ghost to stand in for a campaign Warden (DECISIONS #231): a deck that cleared Tier GHOST_BOSS_MIN_TIER or further, never the
- * asker's own, never one this run has met already, and as close to the player's tier as there is. Among the closest (the decks
- * within one tier of the nearest), one of the better half by wins.
+ * asker's own, never one this run has met already, from the player's tier or up to GHOST_BOSS_TIERS_BELOW below it (never above),
+ * and as close to the player's tier as there is. Among the closest (the decks within one tier of the nearest), one of the better
+ * half by wins. None in that range: null, and the usual Warden is fought.
  */
+/** A ghost Warden is a deck from the player's own Rift Tier or up to this many below it, never above (DECISIONS #253). */
+export const GHOST_BOSS_TIERS_BELOW = 3;
+
 export function pickGhostBoss(
   decks: readonly GhostDeck[],
   opts: {
@@ -396,7 +400,10 @@ export function pickGhostBoss(
       ghostCleared(d.tier, d.stage) &&
       d.owner !== opts.requester &&
       !skip.has(d.id) &&
-      d.lastAt >= opts.now - GHOST_FRESH_DAYS * 86_400_000,
+      d.lastAt >= opts.now - GHOST_FRESH_DAYS * 86_400_000 &&
+      // never stronger than the player's tier, and not so far below that it is no fight
+      d.tier <= opts.tier &&
+      d.tier >= opts.tier - GHOST_BOSS_TIERS_BELOW,
   );
   if (fresh.length === 0) return null;
   const dist = (d: GhostDeck): number => Math.abs(d.tier - opts.tier);

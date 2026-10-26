@@ -96,7 +96,7 @@ function GhostGlyph() {
 
 function labelOf(n: MapNode): string {
   if (n.kind === 'merchant' && n.crossed) return 'Stranger';
-  if (n.kind === 'warden' && n.ghost) return 'Ghost Warden';
+  if (n.kind === 'warden' && n.ghost && n.ghostDeck) return 'Ghost Warden';
   if (n.enemyId) {
     try {
       return encounter(n.enemyId).name;
@@ -169,7 +169,7 @@ export function MapView(props: {
             style={{ left: p.x, top: p.y }}
             disabled={!open}
             onClick={() => props.onEnter(n.id)}
-            aria-label={`${KIND_LABEL[n.kind]}: ${labelOf(n)}${n.crossed ? ` (Rift-crossed: sells ${RIFTWALKERS[n.crossed as keyof typeof RIFTWALKERS]?.hero.name ?? 'another'}'s cards)` : ''}${n.ghost ? " (a ghost: another player's deck from the Arena, played by the computer)" : ''}${done ? ' (cleared)' : ''}`}
+            aria-label={`${KIND_LABEL[n.kind]}: ${labelOf(n)}${n.crossed ? ` (Rift-crossed: sells ${RIFTWALKERS[n.crossed as keyof typeof RIFTWALKERS]?.hero.name ?? 'another'}'s cards)` : ''}${n.ghost && n.ghostDeck ? " (a ghost: another player's deck from the Arena, played by the computer)" : ''}${done ? ' (cleared)' : ''}`}
           >
             <NodeIcon kind={n.kind} />
             {n.crossed && (
@@ -180,7 +180,7 @@ export function MapView(props: {
                 <HeroIcon hero={n.crossed} size={26} />
               </span>
             )}
-            {n.kind === 'warden' && n.ghost && (
+            {n.kind === 'warden' && n.ghost && n.ghostDeck && (
               <span
                 className="mapnode__ghost"
                 title="Ghost Warden: another player's deck from the Arena, played by the computer (if none can be found, the usual Warden stands here)"
