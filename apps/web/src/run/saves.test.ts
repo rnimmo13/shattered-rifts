@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { newRun } from '@sr/campaign';
 import {
   RUN_SLOTS,
+  unreadableRuns,
   activeRunId,
   clearAllRuns,
   clearDuelStarted,
@@ -72,22 +73,27 @@ describe('saved runs', () => {
       listRuns()
         .map((r) => r.run.seed)
         .sort(),
-    ).toEqual(['r0', 'r1', 'r2']);
+    ).toEqual(Array.from({ length: RUN_SLOTS }, (_, i) => `r${i}`).sort());
   });
 
   it('counts a slot that cannot be read toward the limit and keeps it', () => {
     store.set(
       'sr.runs.v3',
-      JSON.stringify([
-        { id: 'bad', text: 'nope', updated: 1 },
-        { id: 'bad2', text: 'nope', updated: 2 },
-      ]),
+      // every slot but one taken by saves that cannot be read
+      JSON.stringify(
+        Array.from({ length: RUN_SLOTS - 1 }, (_, i) => ({
+          id: `bad${i}`,
+          text: 'nope',
+          updated: i,
+        })),
+      ),
     );
     expect(listRuns()).toEqual([]);
-    expect(runCount()).toBe(2);
+    expect(runCount()).toBe(RUN_SLOTS - 1);
+    expect(unreadableRuns()).toHaveLength(RUN_SLOTS - 1);
     expect(startRunSlot(run('fits'))).not.toBeNull();
     expect(startRunSlot(run('full'))).toBeNull();
-    expect(JSON.parse(store.get('sr.runs.v3') ?? '[]')).toHaveLength(3);
+    expect(JSON.parse(store.get('sr.runs.v3') ?? '[]')).toHaveLength(RUN_SLOTS);
   });
 
   it('abandoning one leaves the others, and clears the active key if it was that one', () => {
