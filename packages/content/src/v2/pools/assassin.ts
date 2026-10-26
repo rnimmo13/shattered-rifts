@@ -1,4 +1,4 @@
-// Sylas (id assassin, Umbral). No companions. Three build paths that mix (DECISIONS #256); his trait (a Sleeve Knife every turn)
+// Sylas (id assassin, Umbral). No companions. Three build paths that mix (DECISIONS #255); his trait (a Sleeve Knife every turn)
 // feeds all three.
 //   Shivs   - 0-cost Shiv attacks, many hits, payoffs per card played
 //   Seared  - stack our poison, double it, cash it out

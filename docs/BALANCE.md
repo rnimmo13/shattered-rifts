@@ -74,6 +74,30 @@ events, ancestral cards and Sanctified rolls are not in the audit decks.
 
 ---
 
+## Build paths and traits (2026-10-26, DECISIONS #255)
+
+New tools: `pnpm audit:balance -- ladder --bypath` adds a row per build path (hero/0, hero/1, hero/2, in the order of
+`Riftwalker.buildPaths`); `pnpm traitscan` gives each trait's value (HP left with it minus without it, paired fights).
+
+**Boss win % (`ladder --bypath --decks 3`, Warden / Vorthax), before and after the rework.** Each cell is 12 fights per build path,
+so read only gaps of 25 points or more.
+
+| | Tier I, end of loop 1 | Tier V |
+|---|---|---|
+| All ten, before | 30 / 8 | 44 / 33 |
+| All ten, after (about: the last run re-ran eight of them) | 33 / 7 | 54 / 38 |
+| Ilvane (Totems, Whittling, Rites) | 22/22 → 11/22 | 19/22 → 67/33 |
+| Sehra (Fury, Flow, Radiant) | 3/0 → 31/11 | 11/0 → 39/22 |
+| Vesper (Traps, Exposed, Patience) | 3/0 → 3/0 | 14/0 → 28/0 |
+| Sylas | 53/22 → 50/56 | 58/56 → 56/44 |
+
+**Trait value** (`traitscan --seeds 80`, percentage points of HP, noise about ±4): Vesper 3.5 → 12.5, Sylas 14.7 → 9.5, Obsidia
+5.4 → 8.0, Sehra 0.4 → 9.4, Dorian 1.5 → about 2 (raised to 3 Fate after the scan); the unchanged ones 3-7.
+
+**Still weak for the bot:** Vesper in every build path (the bot sets few Traps and holds nothing back; she was the weakest before
+too), Sehra's Fury at Tier V (0% Wardens: it dies to the damage Fury lets in), Sylas's Sleight at Tier V, Kesh's Feast. Ilvane's
+Rites swings the most: weak at Tier I (few Auras yet), strong at Tier V. Watch these in play tests before changing more.
+
 ## Harder Tier I and a steeper climb (2026-10-25, DECISIONS #228)
 
 Players found 0.58 too easy. `matrix` (bot, Warden + Vorthax at full HP, each deck depth at its own tier):

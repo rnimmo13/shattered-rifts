@@ -110,7 +110,9 @@ export const DRUNKARD: CardDef[] = [
     barrier(12),
     scaled(barrier(0), per('missingHp', 0.2)),
   ]),
-  p('uncommon', 'shatter', 'Shatter', 'attack', 2, 'foe', [scaled(dmg(8), per('missingHp', 0.3))]),
+  p('uncommon', 'shatter', 'Smash the Pane', 'attack', 2, 'foe', [
+    scaled(dmg(8), per('missingHp', 0.3)),
+  ]),
   p('uncommon', 'stained-glass', 'Stained Glass', 'power', 1, 'none', [
     on('turnStart', [barrier(3), scaled(barrier(0), per('missingHp', 0.1))]),
   ]),
@@ -183,11 +185,15 @@ export const DRUNKARD: CardDef[] = [
   p('uncommon', 'dutch-courage', 'Dutch Courage', 'power', 1, 'none', [
     on('turnStart', [heal(2), status('might', 1, 'self', true)]),
   ]),
-  p('uncommon', 'dumpster-dive', 'Dumpster Dive', 'skill', 1, 'none', [draw(3), discard(1)]),
+  p('uncommon', 'dumpster-dive', 'Dumpster Dive', 'skill', 1, 'none', [
+    draw(2),
+    discard(1),
+    heal(2),
+  ]),
   p('uncommon', 'spare-change', 'Spare Change', 'skill', 0, 'none', [mana(1), scry(2)], {
     exhaust: true,
   }),
-  p('rare', 'hammer-time', 'Hammer Time', 'attack', 2, 'foe', [
+  p('rare', 'hammer-time', 'Haymaker', 'attack', 2, 'foe', [
     dmg(22),
     status('brittle', 2, 'target'),
   ]),
@@ -403,5 +409,7 @@ export const DRUNKARD: CardDef[] = [
   p('uncommon', 'bar-tab', 'Bar Tab', 'skill', 0, 'none', [draw(2), manaNext(-1)], {
     exhaust: true,
   }),
-  p('rare', 'mean-drunk', 'Mean Drunk', 'power', 2, 'none', [on('loseHp', [status('might', 1)])]),
+  p('rare', 'mean-drunk', 'Mean Drunk', 'power', 2, 'none', [
+    on('loseHp', [status('might', 1, 'self', true), barrier(2)]),
+  ]),
 ];

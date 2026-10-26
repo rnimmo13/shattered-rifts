@@ -107,26 +107,28 @@ export const SPELLBLADE: CardDef[] = [
     forge('starforged-blade', 3),
   ]),
   a('uncommon', 'warm-anvil', 'Warm Anvil', 'power', 1, 'none', [
-    on('turnStart', [forge('starforged-blade', 1)]),
+    on('turnStart', [forge('starforged-blade', 1), barrier(3)]),
   ]),
-  a('uncommon', 'parry', 'Parry', 'power', 1, 'none', [on('play', [barrier(6)], { tag: 'blade' })]),
+  a('uncommon', 'parry', 'Glass Guard', 'power', 1, 'none', [
+    on('play', [barrier(6)], { tag: 'blade' }),
+  ]),
   a('uncommon', 'sword-rain', 'Sword Rain', 'skill', 1, 'none', [addTo('starforged-blade', 2)]),
   a('rare', 'hammer-and-anvil', 'Hammer and Anvil', 'attack', 2, 'foe', [
     dmg(6, 'target', 2),
     forge('starforged-blade', 4),
   ]),
-  a('rare', 'conqueror', 'Conqueror', 'skill', 1, 'none', [
+  a('rare', 'conqueror', 'Crowned Edge', 'skill', 1, 'none', [
     forge('starforged-blade', 4),
     status('twinned', 1),
   ]),
   a(
     'rare',
     'big-bang',
-    'Eruption',
+    'Magma Surge',
     'skill',
-    2,
+    1,
     'none',
-    [draw(1), mana(1), stars(2), forge('starforged-blade', 4)],
+    [stars(3), forge('starforged-blade', 3), barrier(5)],
     { exhaust: true },
   ),
   a('rare', 'armory-of-light', 'Armory of Glass', 'power', 2, 'none', [
@@ -159,7 +161,7 @@ export const SPELLBLADE: CardDef[] = [
     [dmg(14, 'allFoes'), status('exposed', 1, 'allFoes')],
     { starCost: 2 },
   ),
-  a('uncommon', 'orbit', 'Weave', 'skill', 1, 'none', [
+  a('uncommon', 'orbit', 'Ember Weft', 'skill', 1, 'none', [
     stars(1),
     forge('starforged-blade', 1),
     draw(1),
@@ -213,7 +215,18 @@ export const SPELLBLADE: CardDef[] = [
     scaled(dmg(3, 'allFoes'), per('stars', 1)),
   ]),
   a('uncommon', 'sovereign-strike', 'Tyrant Strike', 'attack', 2, 'foe', [dmg(15), manaNext(2)]),
-  a('uncommon', 'devastate', 'Devastate', 'attack', 2, 'foe', [dmg(34)], { starCost: 2 }),
+  a(
+    'uncommon',
+    'devastate',
+    'Molten Ruin',
+    'attack',
+    2,
+    'foe',
+    [dmg(20), forge('starforged-blade', 4)],
+    {
+      starCost: 2,
+    },
+  ),
   a('rare', 'gamma-burst', 'Glass Burst', 'attack', 2, 'foe', [
     dmg(13),
     status('faltering', 2, 'target'),

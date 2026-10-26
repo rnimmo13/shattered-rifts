@@ -1,4 +1,4 @@
-// Vesper Nightlace (Umbral). No companions. Three build paths (DECISIONS #256):
+// Vesper Nightlace (Umbral). No companions. Three build paths (DECISIONS #255):
 //   Traps    - set traps with different triggers; payoffs for having them out
 //   Exposed  - mark the enemy, then spend the mark
 //   Patience - Hold cards and leave Mana unspent: payoffs for a full hand and for the Mana you kept
@@ -49,7 +49,7 @@ export const TRAPPER: CardDef[] = [
   ),
 
   // --- Traps ---
-  v('common', 'trip-line', 'Trip Line', 'snare', 0, 'none', [dmg(6, 'attacker')], {
+  v('common', 'trip-line', 'Trip Line', 'snare', 0, 'none', [dmg(8, 'attacker')], {
     trigger: { on: 'attacked' },
   }),
   v(
@@ -59,7 +59,7 @@ export const TRAPPER: CardDef[] = [
     'snare',
     1,
     'none',
-    [dmg(8, 'attacker'), status('faltering', 1, 'attacker')],
+    [dmg(10, 'attacker'), status('faltering', 1, 'attacker')],
     { trigger: { on: 'attacked' } },
   ),
   v(
@@ -98,7 +98,7 @@ export const TRAPPER: CardDef[] = [
   v('uncommon', 'pain-link', 'Pain Link', 'snare', 0, 'none', [dmg(6, 'allFoes')], {
     trigger: { on: 'hpLost', min: 5 },
   }),
-  v('uncommon', 'time-bomb', 'Time Bomb', 'snare', 1, 'none', [dmg(9, 'allFoes')], {
+  v('uncommon', 'time-bomb', 'Time Bomb', 'snare', 1, 'none', [dmg(12, 'allFoes')], {
     trigger: { on: 'foeTurn' },
   }),
   v('uncommon', 'spring-loaded', 'Spring-Loaded', 'skill', 1, 'none', [
@@ -151,7 +151,7 @@ export const TRAPPER: CardDef[] = [
     'snare',
     2,
     'none',
-    [dmg(4, 'allFoes'), status('faltering', 1, 'allFoes')],
+    [dmg(6, 'allFoes'), status('faltering', 1, 'allFoes')],
     {
       trigger: { on: 'foeTurn' },
     },

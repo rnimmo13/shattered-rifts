@@ -1,4 +1,4 @@
-// Ilvane (display name; the id stays 'totemist', DECISIONS #141). An elder shaman who carves. Three build paths (DECISIONS #256):
+// Ilvane (display name; the id stays 'totemist', DECISIONS #141). An elder shaman who carves. Three build paths (DECISIONS #255):
 //   Totems    - plant totems (Hawk hits one enemy, Splinter every enemy, Bear guards, Elder charges, Owl gives Mana), make them
 //               stronger with Spirit (the `resonance` status) and more slots, and awaken them for their big effect
 //   Whittling - Carvings (tag "carving"): small 0-cost cards that keep coming back from the discard pile, and payoffs for playing them

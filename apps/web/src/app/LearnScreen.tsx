@@ -332,7 +332,7 @@ export function LearnScreen() {
           </dl>
           <h3>Bad for whoever has them</h3>
           <p className="learn__note">
-            Cards in the Neutral cleansing line (Shrug It Off, Steady Nerves) lessen every one of
+            Cards in the Neutral cleansing line (Shake It Off, Steady Nerves) lessen every one of
             these on you by a stack or two. Only the rarest, Purging Light, dispels them completely.
           </p>
           <dl>

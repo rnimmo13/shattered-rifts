@@ -5,16 +5,16 @@
 **Internal ids are the class** (DECISIONS #190), so a name or a gender can change without touching code: knight (Valeria), engineer (Rivet), hunter (Kesh), trapper (Vesper), assassin (Sylas), totemist (Ilvane), barbarian (Sehra), spellblade (Obsidia), necromancer (Mire), drunkard (KP). Players only ever see the names in brackets. Older ids (maren, rivet, kesh, vesper, quill, ilvane, sehra, astra, mire, kp) are still read from saves, Vault decks and server rows through `canonicalHero` (`@sr/content/v2`).
 
 The goal (Robert, 2026-10-23): reach 8-10 characters, each with **real choices at the reward screen**, covering the same
-mechanics Slay the Spire's classes do. Silent works because her pool has three lanes (poison, shivs, discard) and a good
-deck takes one and a half of them. Our pools were ~16 cards and one lane each. That is the main thing this document fixes.
+mechanics Slay the Spire's classes do. Silent works because her pool has three build paths (poison, shivs, discard) and a good
+deck takes one and a half of them. Our pools were ~16 cards and one build path each. That is the main thing this document fixes.
 
 ## 1. Rules for every pool
 
 1. **A pool belongs to a character**, not a realm (`CardDef.hero`). A realm is flavour and enemy stage; two characters can
    share one (Maren and Sehra are both Aurelion). Reward offers come from *your* pool + Neutral (+ the 1-in-10 Rift-crossed
    card from another character's pool).
-2. **About 40 cards per character:** 3 lanes of ~8-10 cards each, ~6 **glue** cards that help two lanes, and a few
-   build-around rares. Each lane works alone; two lanes can combine; all three at once is a bad deck.
+2. **About 40 cards per character:** 3 build paths of ~8-10 cards each, ~6 **glue** cards that help two build paths, and a few
+   build-around rares. Each build path works alone; two build paths can combine; all three at once is a bad deck.
 3. **Shared toolkit, owned signatures.** Everyone has some of the common StS tools in their own flavour: draw, Barrier,
    Heal, Consume, Retain, Might, 0-cost cards, AoE, Mana gain, Exposed/Faltering, self-damage. A mechanic with its own
    *rules* belongs to exactly one character:
@@ -31,23 +31,33 @@ deck takes one and a half of them. Our pools were ~16 cards and one lane each. T
 | **Thorns** and Barrier-scaling | Maren | Barrier is shared; Thorns is Maren's |
 | **Traps** (face-down, auto-springing) | Vesper gets the most (14, with payoffs for setting them) | **Shared toolkit** like Might or Consume: every deck has a trap or two in its own flavour (Maren 4, Rivet 2, Quill 2 incl. a Bleed needle, Kesh, Ilvane, Sehra, Obsidia 1 each) and Neutral has 2. Enforced by `cards.test.ts` |
 | **Foresee** | Vesper, Sehra, Obsidia | a Neutral common |
-| **Consume payoffs** | Kesh (Feast lane) | Neutral Consume-on-play is common |
+| **Consume payoffs** | Kesh (Feast build path) | Neutral Consume-on-play is common |
 
-4. **Starters are lane-neutral.** The first rewards decide the build.
+4. **Starters belong to no build path.** The first rewards decide the build.
 5. **Powers are triggers.** A Power card registers a trigger (`power` op: when X happens, run these ops). No bespoke
    status per Power; new Powers are data.
 
+### What makes a build path (DECISIONS #255)
+
+A build path passes when it has **its own verb** (something you do on your turn that the other two don't), **its own payoff
+cards**, and **a name that says how you play**, not what you collect. Three flavours of one resource (Ilvane's old Hawk, Bear and
+Elder totems) are one build path, not three. The build paths are the tags players see on the character picker.
+
+**A trait helps all three build paths** (Sylas's used to be Bleed, which only his Bleed build path cared about). **No card copies
+another game:** no Slay the Spire 1 or 2 card name, and no card that is a famous card's effect with its numbers. The ids of the
+reworked cards stayed the same, so their art and every saved deck still work.
+
 ## 2. The roster
 
-| # | Riftwalker | Realm | HP | Lane A | Lane B | Lane C |
+| # | Riftwalker | Realm | HP | Build path 1 | Build path 2 | Build path 3 |
 |---|---|---|---|---|---|---|
 | 1 | **Ser Maren Ashcourt** | Aurelion | 80 | **Bulwark:** Barrier scaling, hits for your Barrier | **Thorns:** retaliation, punishing attackers | **Devotion:** heal, Shielded, Radiant powers |
 | 2 | **Rivet** | Nexus-9 | 72 | **Swarm:** many cheap Drones | **Assemble:** make allies act again, burst turns | **Core:** a few big constructs, Might, upgrades |
 | 3 | **Kesh the Unfed** | Wyldmaw | 76 | **Bloodrage:** Might and self-damage | **Pack:** buffed companions | **Feast:** Consume, Devour, lifesteal |
-| 4 | **Vesper Nightlace** | Umbral | 68 | **Traps:** many, varied triggers | **Exposed:** debuff burst, Faltering control | **Bluff:** Retain, Foresee, held Mana |
-| 5 | **Quill, the Knife-Dancer** | Umbral | 66 | **Sleeve Knives:** 0-cost, many hits | **Bleed:** stack, double, cash out | **Sleight:** discard / cycle payoffs |
-| 6 | **Ilvane** (id `totemist`) | Nexus-9 | 70 | **Hawk:** damage totems | **Bear:** Barrier totems | **Elder:** charging totems, Spirit |
-| 7 | **Sehra, the Still Flame** | Aurelion | 72 | **Fury:** burst | **Serene:** Mana and cards | **Fervor:** Retain/Foresee to a payoff |
+| 4 | **Vesper Nightlace** | Umbral | 80 | **Traps:** many, varied triggers | **Exposed:** debuff burst, Faltering control | **Patience:** Hold cards, keep Mana; payoffs for a full hand and the Mana you kept |
+| 5 | **Sylas** (id `assassin`) | Umbral | 72 | **Knives:** 0-cost, many hits | **Bleed:** stack, double, cash out | **Sleight:** discard / cycle payoffs |
+| 6 | **Ilvane** (id `totemist`) | Nexus-9 | 76 | **Totems:** plant, Spirit and slots, awaken | **Whittling:** 0-cost Carvings that keep coming back | **Rites:** Auras that pay when another Aura is played |
+| 7 | **Sehra, the Still Flame** | Aurelion | 82 | **Fury:** get in, hit hard, live through it | **Flow:** change stance again and again; every change pays | **Radiant:** build Fervor to 10 for a triple-damage turn |
 | 8 | **Obsidia, Spellblade of the Hollow Crown** (id `spellblade`) | The Hollow Crown (id `starfall`) | 80 | **Blade:** sharpen one weapon | **Arcana:** spend for finishers | **Sigils:** Auras that tick |
 | 9 | **Mire, the Gravewarden** | Gloomfen | 76 | **Doom:** stack, double, cash in | **Thralls:** the dead fight for you | **Ashes:** consumed cards fuel you |
 | 10 | **KP, the Homeless Drunk** | The Midden | 88 | **Gun:** sharpen the Old Twelve Gauge | **Shells:** buckshot and booby traps that hit every enemy | **Hangover:** the more it hurts the harder you hit: glass, Thorns, swigs, self-damage |
@@ -76,14 +86,14 @@ Role tags (what kind of fighter, shown on every character screen): Maren **Knigh
 | **Stances**: `stance` op; statuses `calm`, `wrath`, `radiant`; `mantra` | Exclusive statuses with enter/exit effects and damage multipliers | Sehra |
 | **Arcana** (`stars` op, `starCost` on a card) | Second resource that persists between turns | Obsidia |
 | `sharpen` op; per-card `bonus` | Grow every copy of a scaling card | Obsidia |
-| More Trap triggers: `foeDefends`, `foeTurn` | Vesper's lane needs variety | Vesper |
+| More Trap triggers: `foeDefends`, `foeTurn` | Vesper's build path needs variety | Vesper |
 
 ## 4. Build status (2026-10-23)
 
 - [x] Engine: choices, discard/exhaust/scry, scale, Powers as triggers, runes, stances, Arcana, sharpen, sacrifice, extra Trap triggers (DECISIONS #97)
-- [x] Existing 4 reorganised into character pools and deepened to 3 lanes (34-38 cards each)
+- [x] Existing 4 reorganised into character pools and deepened to 3 build paths (34-38 cards each)
 - [x] Quill, Ilvane, Sehra, Obsidia: 34-39 cards each
-- [x] UI: pick modal, side panel (Arcana, totems, Powers), exact damage preview, character picker for 8 with lanes
+- [x] UI: pick modal, side panel (Arcana, totems, Powers), exact damage preview, character picker for 8 with build paths
 - [x] First-pass sim; per-card scenario tests; generated `10_CARD_LIST.md`
 - [ ] Balance pass (waits for the content set to settle, DECISIONS #91)
 - [ ] Stretch characters: Cinder (Consume engine), Mire (Doom / undying minion)
@@ -130,4 +140,4 @@ pending kind). Say the word if you want them.
 
 ## Innate traits
 
-Every Riftwalker has one passive (`Riftwalker.trait`): Valeria (id knight) Oathkeeper (6 Barrier and 6 Plating at the start), Rivet Tinkerer (heal 1 for you and your companions each turn), Kesh Pack Instinct (start with 1 Might for the pack), Vesper Ambusher (enemies start Exposed for 3 turns), Sylas (id assassin) Envenomed (a random enemy gets 2 Bleed each turn; was Weak Spot, a permanent Exposed, until the 2026-10-25 audit), Ilvane Totem-bound (starts with a Hawk, a Bear and a Splinter totem), Sehra Inner Fire (2 Fervor at the start), Obsidia Kindled (1 Arcana each turn; she starts with 3), Dorian (id necromancer) Grave Chill (enemies start with 4 Fate), KP Clutch Genes (+50% attack damage at or below half HP). Numbers as of the 2026-10-25 balance audit (DECISIONS #223); hero HP is 70-88, Slay the Spire's range.
+Every Riftwalker has one passive (`Riftwalker.trait`), and it helps all three of their build paths (DECISIONS #255): Valeria (id knight) Oathkeeper (6 Barrier and 6 Plating at the start), Rivet Tinkerer (heal 1 for you and your companions each turn), Kesh Pack Instinct (start with 1 Might for the pack), Vesper Lying in Wait (6 Barrier and 2 extra cards at the start, 4 Barrier each turn; was Ambusher, Exposed for 3 turns), Sylas (id assassin) Hidden Blades (a Sleeve Knife every turn; was Envenomed, 2 Bleed a turn), Ilvane Totem-bound (starts with a Hawk, a Bear and a Splinter totem), Sehra Inner Fire (1 Fervor and 2 Barrier whenever she enters a stance; was 2 Fervor at the start), Obsidia Kindled (1 Arcana and Sharpen 1 each turn; she starts with 3 Arcana), Dorian (id necromancer) Grave Chill (3 Fate on every enemy at the start, and 3 on a random enemy whenever an ally dies or a card is consumed; was 4 Fate at the start), KP Clutch Genes (+50% attack damage at or below half HP). A trait can have triggers (`HeroTrait.triggers`) that fire like an Aura's but never count or show as one. Hero HP is 70-88, Slay the Spire's range.

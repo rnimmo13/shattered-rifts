@@ -36,8 +36,8 @@ export const KNIGHT: CardDef[] = [
   m('uncommon', 'anvil-strike', 'Anvil Strike', 'attack', 2, 'foe', [
     scaled(dmg(11), per('barrier', 1)),
   ]),
-  m('uncommon', 'gilded-wall', 'Gilded Wall', 'skill', 2, 'none', [
-    scaled(barrier(0), per('barrier')),
+  m('uncommon', 'gilded-wall', 'Gilded Wall', 'skill', 1, 'none', [
+    scaled(barrier(5), per('barrier', 0.5)),
   ]),
   m('uncommon', 'plate-discipline', 'Plate Discipline', 'power', 1, 'none', [
     on('turnEnd', [barrier(4)]),
@@ -72,11 +72,20 @@ export const KNIGHT: CardDef[] = [
   }),
   m('uncommon', 'shield-charge', 'Shield Charge', 'attack', 2, 'foe', [dmg(12), barrier(8)]),
   m('rare', 'bastion-engine', 'Bastion Engine', 'power', 2, 'none', [
-    on('barrier', [dmg(4, 'randomFoe')]),
+    on('barrier', [dmg(2, 'allFoes')]),
   ]),
-  m('rare', 'immovable-oath', 'Immovable Oath', 'skill', 2, 'none', [barrier(30)], {
-    exhaust: true,
-  }),
+  m(
+    'rare',
+    'immovable-oath',
+    'Immovable Oath',
+    'skill',
+    2,
+    'none',
+    [barrier(20), status('plating', 6)],
+    {
+      exhaust: true,
+    },
+  ),
   m('rare', 'colossus-blow', 'Colossus Blow', 'attack', 2, 'foe', [
     scaled(dmg(6), per('barrier', 1)),
   ]),
@@ -119,7 +128,7 @@ export const KNIGHT: CardDef[] = [
   m(
     'uncommon',
     'caltrops',
-    'Caltrops',
+    'Iron Spikes',
     'snare',
     1,
     'none',
@@ -350,7 +359,7 @@ export const KNIGHT: CardDef[] = [
     scaled(dmg(8), per('missingHp', 0.25)),
   ]),
   m('uncommon', 'vigil-of-dawn', 'Vigil of Dawn', 'power', 1, 'none', [on('exhaust', [heal(2)])]),
-  m('uncommon', 'consecrate', 'Consecrate', 'skill', 2, 'none', [
+  m('uncommon', 'consecrate', 'Sanctified Ground', 'skill', 2, 'none', [
     heal(5, 'allFriends'),
     barrier(5, 'allFriends'),
     draw(1),

@@ -75,7 +75,7 @@ export const NEUTRAL: CardDef[] = [
   }),
   // The cleansing line: lessen every debuff on you (Exposed, Faltering, Seared, Stunned, Brittle, Doom). Only the highest rarity of
   // the line dispels them completely; the rest only soften them.
-  n('common', 'shrug-it-off', 'Shrug It Off', 'skill', 1, 'none', [
+  n('common', 'shrug-it-off', 'Shake It Off', 'skill', 1, 'none', [
     cleanse(1, 'self', 25),
     barrier(4),
   ]),
@@ -143,7 +143,7 @@ export const NEUTRAL: CardDef[] = [
       exhaust: true,
     },
   ),
-  n('uncommon', 'borrowed-time', 'Borrowed Time', 'skill', 0, 'none', [mana(3), manaNext(-2)], {
+  n('uncommon', 'borrowed-time', 'Stolen Time', 'skill', 0, 'none', [mana(3), manaNext(-2)], {
     exhaust: true,
   }),
   n('rare', 'attunement', 'Attunement', 'skill', 2, 'none', [maxMana(1)], { exhaust: true }),

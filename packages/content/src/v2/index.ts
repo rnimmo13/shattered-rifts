@@ -1,7 +1,7 @@
 // Combat v2 content: heroes, starter decks, cards, companions and encounters (docs/08_COMBAT_V2.md).
 
 import { validateDb, type CombatDb, type HeroDef, type HeroTrait } from '@sr/combat';
-import { addTo, barrier, channel, draw, heal, on, stance, stars, status } from './build';
+import { addTo, barrier, channel, draw, forge, heal, on, stance, stars, status } from './build';
 import { BOONS, HEARTS } from './boons';
 import { V2_CARDS } from './cards';
 import { RUNES } from './pools/totemist';
@@ -207,8 +207,8 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     role: 'Barbarian',
     trait: {
       name: 'Inner Fire',
-      text: 'Whenever you enter a stance, gain 1 Fervor.',
-      triggers: [on('stance', [status('mantra', 1)])],
+      text: 'Whenever you enter a stance, gain 1 Fervor and 2 Barrier.',
+      triggers: [on('stance', [status('mantra', 1), barrier(2)])],
     },
     hero: {
       id: 'barbarian',
@@ -227,7 +227,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
       'Radiant: build Fervor to 10 for a triple-damage turn',
     ],
     howTo: [
-      'You start Serene. You are in at most one stance at a time, and every stance you enter gives 1 Fervor (Inner Fire).',
+      'You start Serene. You are in at most one stance at a time, and every stance you enter gives 1 Fervor and 2 Barrier (Inner Fire).',
       'Fury doubles the damage you deal, but you take 50% more. Leaving Serene gives you 2 Mana (once a turn).',
       'Fervor builds to 10, then you enter Radiant: triple damage until your turn ends.',
       'Pick a build: burst in Fury, dance between stances (Flow), or build to Radiant.',
@@ -238,8 +238,8 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     role: 'Spellblade',
     trait: {
       name: 'Kindled',
-      text: 'Gain 1 Arcana at the start of your turn.',
-      turnStart: [stars(1)],
+      text: 'At the start of your turn, gain 1 Arcana and Sharpen your Obsidian Blade by 1.',
+      turnStart: [stars(1), forge('starforged-blade', 1)],
     },
     hero: {
       id: 'spellblade',
@@ -320,10 +320,11 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     role: 'Necromancer',
     trait: {
       name: 'Grave Chill',
-      text: 'Whenever one of your allies dies or a card is consumed, curse a random enemy with 2 Fate.',
+      text: 'Every enemy starts the fight with 3 Fate. Whenever one of your allies dies or a card is consumed, curse a random enemy with 3 Fate.',
+      fightStart: [status('doom', 3, 'allFoes')],
       triggers: [
-        on('allyDies', [status('doom', 2, 'randomFoe')]),
-        on('exhaust', [status('doom', 2, 'randomFoe')]),
+        on('allyDies', [status('doom', 3, 'randomFoe')]),
+        on('exhaust', [status('doom', 3, 'randomFoe')]),
       ],
     },
     hero: {
@@ -351,7 +352,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
       'You start with a Bone Thrall, which attacks when you end your turn.',
       'Cursed with Fate, an enemy dies at the end of its turn if its HP is at or below its Fate. Curse it, double it, finish it.',
       'Cards you consume fuel your Ashes build: Gravesouls, Requiem and more.',
-      'Grave Chill: whenever an ally of yours dies or a card is consumed, a random enemy is cursed with 2 Fate, whichever build you follow.',
+      'Grave Chill: every enemy starts with 3 Fate, and whenever an ally of yours dies or a card is consumed a random enemy is cursed with 3 more, whichever build you follow.',
     ],
   },
 };

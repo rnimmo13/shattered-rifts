@@ -10,7 +10,7 @@ Ko-fi-funded) → Steam full game ($7.99–$9.99) with PvP later. Owner: Robert.
 | `docs/01_GAME_DESIGN.md` | LEGACY (old duel rules: Essence, slots, the Chain). Pillars in §2 still apply; the rules do not |
 | `docs/02_CARDS.md` | LEGACY card list and DSL for the old engine; realms and flavour still apply. Real data: `packages/content/src/v2` |
 | `docs/03_CAMPAIGN.md` | Characters, run structure (3 stages), Resolve, Bank/Continue, Rift Tiers, Wardens, Boons, Vault & seasons |
-| `docs/09_ROSTER.md` | **The 8 Riftwalkers**: pool rules (3 lanes, shared toolkit, owned signatures), lanes per character, engine pieces. `10_CARD_LIST.md` is the generated card list (`pnpm cardlist`) |
+| `docs/09_ROSTER.md` | **The Riftwalkers**: pool rules (3 build paths, shared toolkit, owned signatures), build paths per character, traits, engine pieces. `10_CARD_LIST.md` is the generated card list (`pnpm cardlist`) |
 | `docs/11_PVP.md` | PvP: how a match works, the Cloudflare server (`apps/server`), running and deploying it |
 | `docs/12_STEAM_READINESS.md` | Steam checklist: shell, accounts, verified runs, achievements, disclosures, store page (plan only, nothing built) |
 | `docs/DECISIONS.md` | Every design decision and rules clarification, with dates and reasons |

@@ -35,20 +35,20 @@ describe('Powers that react to your own effects', () => {
     expect(hero(s).statuses.might).toBe(might + 1);
   });
 
-  it('"Whenever you gain Barrier" (Bastion Engine) hits an enemy, and Briar Heart grows Thorns', () => {
+  it('"Whenever you gain Barrier" (Bastion Engine) hits every enemy, and Briar Heart grows Thorns', () => {
     let s = fight('knight', ['bastion-engine', 'briar-heart', 'stand-firm']);
     s = play(s, 'T0');
     s = play(s, 'T1');
     const hp = foe(s).hp;
     s = play(s, 'T2');
     expect(hero(s).barrier).toBeGreaterThanOrEqual(10);
-    expect(foe(s).hp).toBe(hp - 4);
+    expect(foe(s).hp).toBe(hp - 2);
     expect(hero(s).statuses.thorns).toBe(1);
   });
 });
 
 describe('fetching cards back from the discard pile', () => {
-  it('Scavenge puts a random discarded card on top of the draw pile', () => {
+  it('Rummage puts a random discarded Attack on top of the draw pile', () => {
     const s = fight('hunter', ['scavenge']);
     s.sides.a.discard = [{ id: 'D1', card: 'rend' }];
     const after = play(s, 'T0');

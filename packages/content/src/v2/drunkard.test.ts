@@ -78,7 +78,7 @@ describe('Mana tools', () => {
     expect(s.sides.a.mana).toBeGreaterThanOrEqual(before + 1);
   });
 
-  it('Borrowed Time gives Mana now and takes it back next turn (never below 0)', () => {
+  it('Stolen Time gives Mana now and takes it back next turn (never below 0)', () => {
     let s = fight('knight', ['borrowed-time']);
     s.sides.a.mana = 0;
     s = playCard(s, 'T0');
@@ -119,7 +119,7 @@ describe('innate traits', () => {
     );
   });
 
-  it("Valeria's Oathkeeper gives 6 Barrier and 6 Plating, Dorian's Grave Chill curses when a card is consumed", () => {
+  it("Valeria's Oathkeeper gives 6 Barrier and 6 Plating, Dorian's Grave Chill curses every enemy and again when a card is consumed", () => {
     const m = fight('knight', []);
     const hero = m.sides.a.units[m.sides.a.units.length - 1]!;
     expect(hero.barrier).toBeGreaterThanOrEqual(6);
@@ -127,9 +127,10 @@ describe('innate traits', () => {
     let g = fight('necromancer', ['mark-of-ending']);
     const fate = (s: CombatState) =>
       s.sides.b.units.reduce((n, u) => n + (u.statuses.doom ?? 0), 0);
-    expect(fate(g)).toBe(0);
-    g = playCard(g, 'T0'); // 4 Fate on the target, and the card is consumed: 2 more on a random enemy
-    expect(fate(g)).toBe(6);
+    for (const u of g.sides.b.units) expect(u.statuses.doom).toBe(3); // every enemy starts with 3
+    const before = fate(g);
+    g = playCard(g, 'T0'); // 4 Fate on the target, and the card is consumed: 3 more on a random enemy
+    expect(fate(g)).toBe(before + 7);
   });
 
   it('Clutch Genes: KP deals 50% more attack damage at or below half HP, and not above', () => {

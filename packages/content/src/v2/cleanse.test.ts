@@ -1,4 +1,4 @@
-// The cleansing line (Neutral): Shrug It Off and Steady Nerves lessen every debuff on you; only Purging Light, the highest rarity of
+// The cleansing line (Neutral): Shake It Off and Steady Nerves lessen every debuff on you; only Purging Light, the highest rarity of
 // the line, dispels them completely.
 
 import { describe, expect, it } from 'vitest';
@@ -41,7 +41,7 @@ const play = (s: CombatState, id: string): CombatState => {
 const hero = (s: CombatState) => s.sides.a.units.find((u) => u.kind === 'hero')!;
 
 describe('lessening debuffs', () => {
-  it('Shrug It Off takes one stack, or a quarter of a deep one, off every debuff, and only debuffs', () => {
+  it('Shake It Off takes one stack, or a quarter of a deep one, off every debuff, and only debuffs', () => {
     const s = play(fight(['shrug-it-off']), 'T0');
     // (Doom 10: a quarter is 3, more than one)
     expect(hero(s).statuses).toMatchObject({

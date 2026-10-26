@@ -29,7 +29,7 @@ const r = pool('engineer', 'nexus');
 export const ENGINEER: CardDef[] = [
   // --- basics ---
   r('basic', 'deploy-drone', 'Deploy Drone', 'summon', 1, 'none', [summon('patrol-drone')]),
-  r('basic', 'overclock', 'Overclock', 'skill', 1, 'none', [status('might', 1, 'allFriends')]),
+  r('basic', 'overclock', 'Tune-Up', 'skill', 1, 'none', [status('might', 1, 'allFriends')]),
 
   // --- Swarm ---
   r('common', 'spare-parts', 'Spare Parts', 'summon', 0, 'none', [summon('micro-drone')], {
@@ -45,7 +45,7 @@ export const ENGINEER: CardDef[] = [
     summon('patrol-drone'),
     summon('patrol-drone'),
   ]),
-  r('uncommon', 'recycle', 'Recycle', 'skill', 0, 'ally', [
+  r('uncommon', 'recycle', 'Strip for Parts', 'skill', 0, 'ally', [
     scaled(barrier(0), per('hp', 1, 'target')),
     draw(1),
     sacrifice,
@@ -168,14 +168,14 @@ export const ENGINEER: CardDef[] = [
   ),
   r('uncommon', 'assemble', 'Assemble', 'skill', 1, 'none', [ACT, draw(1)]),
   r('uncommon', 'double-time', 'Double Time', 'skill', 2, 'none', [ACT, ACT]),
-  r('uncommon', 'overdrive', 'Overdrive', 'skill', 2, 'none', [
+  r('uncommon', 'overdrive', 'Overdrive', 'skill', 1, 'none', [
     status('might', 1, 'allFriends'),
     ACT,
   ]),
   r('uncommon', 'emp', 'EMP', 'snare', 1, 'none', [status('stunned', 1, 'attacker')], {
     trigger: { on: 'attacked' },
   }),
-  r('rare', 'perpetual-motion', 'Perpetual Motion', 'power', 3, 'none', [on('turnStart', [ACT])]),
+  r('rare', 'perpetual-motion', 'Perpetual Motion', 'power', 2, 'none', [on('turnStart', [ACT])]),
 
   r('common', 'sync-pulse', 'Sync Pulse', 'skill', 1, 'none', [ACT, heal(3, 'allFriends')]),
   r('common', 'relay-strike', 'Relay Strike', 'attack', 1, 'foe', [dmg(6), ACT]),
@@ -270,7 +270,7 @@ export const ENGINEER: CardDef[] = [
     barrier(3, 'target'),
   ]),
   r('uncommon', 'bulwark-frame', 'Bulwark Frame', 'skill', 1, 'ally', [barrier(14, 'target')]),
-  r('uncommon', 'self-repair', 'Self-Repair', 'power', 1, 'none', [
+  r('uncommon', 'self-repair', 'Self-Mending', 'power', 1, 'none', [
     on('turnStart', [heal(2, 'allFriends')]),
   ]),
   r(

@@ -31,9 +31,40 @@ export const PATCH_NOTES: PatchNote[] = [
   {
     version: '0.68.0',
     date: '2026-10-26',
-    title: 'Fairer ghost Wardens',
-    summary: 'Ghost Wardens come from your own tier or just below, and only when there is one.',
+    title: 'Three build paths for everyone',
+    summary:
+      'Every Riftwalker has three clear ways to build, a trait that helps all of them, and cards of our own. Ghost Wardens are fairer.',
+    heads:
+      'Many cards changed what they do, so a replay of a fight from an older version may not play back the same way.',
     notes: [
+      {
+        kind: 'new',
+        text: 'Build paths: the three ways each Riftwalker builds a deck are shown on the character picker.',
+      },
+      {
+        kind: 'new',
+        text: 'Ilvane builds through Totems, Whittling (small free Carvings that keep coming back) or Rites (Auras that pay whenever you play another Aura).',
+      },
+      {
+        kind: 'changed',
+        text: 'Sehra builds through Fury, Flow (every stance change pays) or Radiant. Vesper’s third build path is now Patience: hold your cards, keep your Mana, strike later.',
+      },
+      {
+        kind: 'changed',
+        text: 'New traits: Sylas gets a Sleeve Knife every turn, Vesper starts with Barrier and two extra cards and gains Barrier every turn, Sehra gains Fervor and Barrier whenever she enters a stance, Dorian curses an enemy whenever an ally dies or a card is consumed, and Obsidia sharpens her blade each turn.',
+      },
+      {
+        kind: 'changed',
+        text: 'Dozens of cards have new names and new effects. Your decks keep the same cards and art.',
+      },
+      {
+        kind: 'balance',
+        text: 'Ilvane, Sehra and Vesper are stronger, especially later in a run. Rivet’s Overdrive and Perpetual Motion cost 1 less; Vesper’s basic Traps hit harder.',
+      },
+      {
+        kind: 'fixed',
+        text: 'On phones the username panel fits the screen, and no page scrolls sideways.',
+      },
       {
         kind: 'balance',
         text: 'A ghost Warden is never from a higher Rift Tier than yours, and never more than three tiers below it.',

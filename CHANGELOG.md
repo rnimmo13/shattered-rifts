@@ -5,6 +5,10 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **Build paths:** every Riftwalker's three ways to build a deck are now called build paths, and they are the tags on the character picker. **Ilvane** builds through Totems, Whittling (small free Carvings that keep coming back) or Rites (Auras that pay whenever you play another Aura). **Sehra** through Fury, Flow (every stance change pays) or Radiant. **Vesper**'s third build path is Patience: hold your cards, keep your Mana, strike later.
+- **Traits that fit every build:** Sylas gets a Sleeve Knife every turn (Hidden Blades), Vesper starts with Barrier and two extra cards and gains Barrier every turn (Lying in Wait), Sehra gains Fervor and Barrier whenever she enters a stance (Inner Fire), Dorian's Grave Chill also curses whenever an ally dies or a card is consumed, and Obsidia's Kindled sharpens her blade each turn.
+- **Reworked cards:** dozens of cards across the roster have new names and new effects so every card is our own. Your decks keep the same cards and art.
+- **Phones:** the username and sign-in panel fits the screen, and no page scrolls sideways.
 - **Your name on the home page:** the top right shows your username (or a prompt to choose one), with name changes and sign-in inside it.
 - **Fairer ghost Wardens:** never from a higher tier than yours, never more than three below, and the map only shows a Ghost Warden when there is one. The Arena page drops the Vault code box and server setting (sign in to move decks between devices).
 - **Leaderboards redesigned:** pick a board, then its view, with the time left beside it and the rules folded away. The Arena page's introduction and rank card sit centred.

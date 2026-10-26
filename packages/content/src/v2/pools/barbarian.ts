@@ -1,7 +1,7 @@
 // Sehra, the Still Flame (Aurelion). A barbarian of the Gilded Order's silent branch. No companions. Starts the fight Serene.
 // Stances (ids calm/wrath/radiant): Serene (leaving it gives 2 Mana, once a turn), Fury (deal double, take 50% more), Radiant (deal
 // triple, ends with your turn). Fervor (id mantra) builds to 10, then you enter Radiant.
-// Three build paths (DECISIONS #256):
+// Three build paths (DECISIONS #255):
 //   Fury     - burst: enter Fury, hit as hard as you can, and live through the damage it lets in
 //   Flow     - stance dancing: change stance again and again; every change pays (Barrier, damage, cards, the Mana of leaving Serene)
 //   Radiant  - build Fervor to 10 and cash it in on a Radiant turn
@@ -55,7 +55,7 @@ export const BARBARIAN: CardDef[] = [
   ]),
   // (Fury lets damage in: entering it is when to put a guard up)
   s('uncommon', 'surge-of-ire', 'Surge of Ire', 'power', 1, 'none', [
-    on('stance', [barrier(4), draw(1)], { stance: 'wrath' }),
+    on('stance', [barrier(6), draw(1)], { stance: 'wrath' }),
   ]),
   s('rare', 'rage-of-ages', 'Rage of Ages', 'attack', 3, 'none', [dmg(5, 'allFoes', 3)]),
   s('rare', 'wrath-incarnate', 'Wrath Incarnate', 'power', 2, 'none', [
@@ -74,7 +74,7 @@ export const BARBARIAN: CardDef[] = [
   ]),
   s('uncommon', 'cut-through-fate', 'Read the Opening', 'attack', 1, 'foe', [dmg(7), scry(2)]),
   s('uncommon', 'wrathful-guard', 'Wrathful Guard', 'skill', 1, 'none', [
-    barrier(6),
+    barrier(8),
     stance('wrath'),
   ]),
   s('rare', 'brilliance', 'Kindled Palm', 'attack', 1, 'foe', [scaled(dmg(12), per('mantra', 1))]),
@@ -266,7 +266,7 @@ export const BARBARIAN: CardDef[] = [
   s('rare', 'daily-rite', 'Daily Rite', 'power', 1, 'none', [
     on('turnStart', [status('mantra', 2)]),
   ]),
-  s('rare', 'rise-radiant', 'Rise Radiant', 'skill', 3, 'none', [stance('radiant')], {
+  s('rare', 'rise-radiant', 'Rise Radiant', 'skill', 2, 'none', [stance('radiant')], {
     exhaust: true,
   }),
   s('uncommon', 'martyrs-vow', "Martyr's Vow", 'skill', 0, 'none', [lose(3), status('mantra', 3)]),
