@@ -5,6 +5,7 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **Shorter Arena games:** each game of a match is called at 15 minutes (was 20) for whoever has the larger share of their HP left.
 - **Never forced to take a card:** when an event lays out three cards (the smuggler's crate, the cards from other worlds), you can take none of them and keep your deck as it is. Event options are also easier to read (bigger text).
 - **Allies show their next move:** every ally and minion wears a small badge with what it does at the end of its side's turn and how much damage it will deal to the front enemy (Might, Weak and Exposed counted), or "Stunned" when it will skip.
 - **The map keeps its secrets:** a fight or an Elite only says Duel or Elite until you arrive, and a ghost Warden in the campaign never says whose deck it is.

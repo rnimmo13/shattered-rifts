@@ -266,7 +266,7 @@ export class MatchRoom extends DurableObject<Env> {
         if (!r.ok) throw new Error(`replay refused move ${m.log.length + 1}: ${r.message}`);
       }
       m.deadline = d.deadline;
-      // (a game saved before there was a game clock starts its 20 minutes now)
+      // (a game saved before there was a game clock starts its full time now)
       m.startedAt = d.gameStart ?? Date.now();
       d.gameStart = m.startedAt;
       // what the moves alone cannot tell: whether it was already over, and how many turns each seat has missed
@@ -934,7 +934,7 @@ export class MatchRoom extends DurableObject<Env> {
       await this.finish(outcome);
       return;
     }
-    // the game's 20 minutes are up: it is called for the larger share of HP left
+    // the game's time (GAME_MS) is up: it is called for the larger share of HP left
     const called = match.callTime(now);
     if (called) {
       await this.finish(called);

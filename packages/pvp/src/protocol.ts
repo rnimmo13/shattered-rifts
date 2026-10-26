@@ -151,10 +151,10 @@ export const CHOOSE_MS = 20_000;
 export const TURN_MS = 75_000;
 /**
  * How long one game of a match may last, ms (DECISIONS #259): then it is called for whoever has the larger share of their HP
- * left (equal: a draw). A match is the best of three, so each game has its own 20 minutes. Sudden death (the engine's
+ * left (equal: a draw). A match is the best of three, so each game has its own 15 minutes. Sudden death (the engine's
  * SUDDEN_DEATH_AFTER) ends most stalls long before this.
  */
-export const GAME_MS = 20 * 60_000;
+export const GAME_MS = 15 * 60_000;
 /** How long a disconnected player has to come back before forfeiting, ms. */
 export const RECONNECT_MS = 60_000;
 /** Turns missed in a row (timed out) that forfeit the match. */
