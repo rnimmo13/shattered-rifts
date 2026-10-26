@@ -178,12 +178,21 @@ export function validateDb(db: CombatDb): string[] {
       if (!(c.below > 0 && c.below <= 100) || !(c.damagePct > 0))
         errs.push(`hero ${id}: clutch needs below in 1-100 and damagePct above 0`);
     }
-    if (h.trait && !h.trait.fightStart?.length && !h.trait.turnStart?.length && !h.trait.clutch)
+    if (
+      h.trait &&
+      !h.trait.fightStart?.length &&
+      !h.trait.turnStart?.length &&
+      !h.trait.triggers?.length &&
+      !h.trait.clutch
+    )
       errs.push(`hero ${id}: trait "${h.trait.name}" does nothing`);
     if (h.trait?.fightStart)
       checkOps(`hero ${id} trait`, h.trait.fightStart, { aimed: false, snare: false });
     if (h.trait?.turnStart)
       checkOps(`hero ${id} trait`, h.trait.turnStart, { aimed: false, snare: false });
+    if (h.trait?.triggers)
+      for (const t of h.trait.triggers)
+        checkOps(`hero ${id} trait`, t.ops, { aimed: false, snare: false });
     for (const s of h.startUnits ?? []) {
       const u = db.units[s];
       if (!u) errs.push(`hero ${id}: unknown start unit "${s}"`);

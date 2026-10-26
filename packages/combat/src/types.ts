@@ -335,7 +335,8 @@ export interface UnitDef {
 
 /**
  * An innate trait: a passive every Riftwalker has. `fightStart` ops run once as the fight begins, `turnStart` ops every one
- * of their turns, and `clutch` makes them deal `damagePct`% more attack damage while at or below `below`% of their HP.
+ * of their turns, `triggers` work like an Aura's for the whole fight (but are not an Aura: they are never counted or listed as
+ * one), and `clutch` makes them deal `damagePct`% more attack damage while at or below `below`% of their HP.
  */
 export interface HeroTrait {
   name: string;
@@ -343,6 +344,7 @@ export interface HeroTrait {
   text: string;
   fightStart?: Op[];
   turnStart?: Op[];
+  triggers?: Extract<Op, { op: 'power' }>[];
   clutch?: { below: number; damagePct: number };
 }
 
@@ -484,6 +486,9 @@ export interface RuneState {
   rune: string;
   charge: number;
 }
+
+/** The `card` of a PowerState that comes from a trait, not from an Aura card. */
+export const TRAIT_POWER = '@trait';
 
 export interface PowerState {
   id: string;

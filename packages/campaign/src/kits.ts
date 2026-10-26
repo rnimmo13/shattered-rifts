@@ -6,7 +6,7 @@
 import { COMBAT_DB, RIFTWALKERS, type HeroId } from '@sr/content/v2';
 import type { KitOption } from './types';
 
-/** For each Riftwalker, the two cards of the kit for build path 0, build path 1 and build path 2 (the order of `Riftwalker.build paths`). */
+/** For each Riftwalker, the two cards of the kit for build path 0, build path 1 and build path 2 (the order of `Riftwalker.buildPaths`). */
 export const KIT_CARDS: Record<HeroId, [[string, string], [string, string], [string, string]]> = {
   knight: [
     ['shield-charge', 'oath-of-iron'],
@@ -35,12 +35,12 @@ export const KIT_CARDS: Record<HeroId, [[string, string], [string, string], [str
   ],
   totemist: [
     ['prismatic-burst', 'driver-of-runes'],
-    ['chilled-focus', 'rune-shield'],
-    ['deep-charge', 'resonant-strike'],
+    ['umbra-glyph', 'streamlined-strike'],
+    ['thundercall', 'sentinel-sigil'],
   ],
   barbarian: [
     ['temper-flare', 'wrathful-guard'],
-    ['breathe', 'fearless'],
+    ['inner-calm', 'fearless'],
     ['foretold-flame', 'the-offering'],
   ],
   spellblade: [

@@ -75,9 +75,17 @@ export const NEUTRAL: CardDef[] = [
   }),
   // The cleansing line: lessen every debuff on you (Exposed, Faltering, Seared, Stunned, Brittle, Doom). Only the highest rarity of
   // the line dispels them completely; the rest only soften them.
-  n('common', 'shrug-it-off', 'Shrug It Off', 'skill', 1, 'none', [cleanse(1, 'self', 25), barrier(4)]),
-  n('uncommon', 'steady-nerves', 'Steady Nerves', 'skill', 1, 'none', [cleanse(2, 'self', 50), barrier(6)]),
-  n('rare', 'purging-light', 'Purging Light', 'skill', 2, 'none', [dispel(), barrier(8)], { exhaust: true }),
+  n('common', 'shrug-it-off', 'Shrug It Off', 'skill', 1, 'none', [
+    cleanse(1, 'self', 25),
+    barrier(4),
+  ]),
+  n('uncommon', 'steady-nerves', 'Steady Nerves', 'skill', 1, 'none', [
+    cleanse(2, 'self', 50),
+    barrier(6),
+  ]),
+  n('rare', 'purging-light', 'Purging Light', 'skill', 2, 'none', [dispel(), barrier(8)], {
+    exhaust: true,
+  }),
   n('uncommon', 'rift-surge', 'Rift Surge', 'skill', 1, 'none', [mana(2)], { exhaust: true }),
   n('rare', 'nerve-surge', 'Nerve Surge', 'skill', 0, 'none', [draw(2), mana(1)], {
     exhaust: true,

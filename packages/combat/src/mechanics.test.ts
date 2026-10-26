@@ -400,6 +400,24 @@ const DB: CombatDb = {
   },
   heroes: {
     tester: { id: 'tester', name: 'Tester', maxHp: 100, mana: 3, handSize: 5 },
+    triggered: {
+      id: 'triggered',
+      name: 'Triggered',
+      maxHp: 100,
+      mana: 3,
+      handSize: 5,
+      trait: {
+        name: 'Inner Fire',
+        text: 'Whenever you enter a stance, gain 1 Mantra.',
+        triggers: [
+          {
+            op: 'power',
+            when: 'stance',
+            ops: [{ op: 'status', status: 'mantra', amount: 1, to: 'self' }],
+          },
+        ],
+      },
+    },
     sigiled: {
       id: 'sigiled',
       name: 'Sigiled',
@@ -1338,5 +1356,29 @@ describe('fetch by tag and the Auras metric', () => {
     s = play(s, 'h2').state;
     expect(hero(s).barrier - before).toBe(2 + 3 * 2);
     expect(cardText(DB, DB.cards['rite-ward']!)).toContain('Aura you have');
+  });
+});
+
+describe('trait triggers', () => {
+  it('work like an Aura all fight, but are never counted or listed as one', () => {
+    const { state } = createCombat(DB, {
+      seed: 't',
+      a: { hero: 'triggered', deck: Array<string>(12).fill('filler') },
+      b: { enemies: ['dummy'] },
+    });
+    let s = clone(state);
+    s.sides.a.hand = [
+      { id: 'h0', card: 'wrath' },
+      { id: 'h1', card: 'calm' },
+      { id: 'h2', card: 'rite-ward' },
+    ];
+    s.sides.a.mana = 3;
+    s = play(s, 'h0').state;
+    s = play(s, 'h1').state;
+    expect(hero(s).statuses.mantra).toBe(2);
+    const before = hero(s).barrier;
+    s = play(s, 'h2').state;
+    expect(hero(s).barrier - before).toBe(2); // no Auras: the trait is not one
+    expect(viewFor(DB, s, 'a').sides.a.powers).toEqual([]);
   });
 });

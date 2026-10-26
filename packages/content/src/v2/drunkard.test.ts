@@ -109,20 +109,27 @@ describe('innate traits', () => {
       const t = r.trait;
       expect(t.name.length, h).toBeGreaterThan(2);
       expect(t.text.length, h).toBeGreaterThan(10);
-      expect(!!(t.fightStart?.length || t.turnStart?.length || t.clutch), h).toBe(true);
+      expect(
+        !!(t.fightStart?.length || t.turnStart?.length || t.triggers?.length || t.clutch),
+        h,
+      ).toBe(true);
     }
     expect(new Set(Object.values(RIFTWALKERS).map((r) => r.trait.name)).size).toBe(
       Object.keys(RIFTWALKERS).length,
     );
   });
 
-  it("Valeria's Oathkeeper gives 6 Barrier and 6 Plating, Mire's Grave Chill curses every enemy", () => {
+  it("Valeria's Oathkeeper gives 6 Barrier and 6 Plating, Dorian's Grave Chill curses when a card is consumed", () => {
     const m = fight('knight', []);
     const hero = m.sides.a.units[m.sides.a.units.length - 1]!;
     expect(hero.barrier).toBeGreaterThanOrEqual(6);
     expect(hero.statuses.plating).toBe(6);
-    const g = fight('necromancer', []);
-    for (const u of g.sides.b.units) expect(u.statuses.doom).toBe(4);
+    let g = fight('necromancer', ['mark-of-ending']);
+    const fate = (s: CombatState) =>
+      s.sides.b.units.reduce((n, u) => n + (u.statuses.doom ?? 0), 0);
+    expect(fate(g)).toBe(0);
+    g = playCard(g, 'T0'); // 4 Fate on the target, and the card is consumed: 2 more on a random enemy
+    expect(fate(g)).toBe(6);
   });
 
   it('Clutch Genes: KP deals 50% more attack damage at or below half HP, and not above', () => {

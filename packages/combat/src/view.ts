@@ -4,6 +4,7 @@ import { modifiedDamage, activePattern } from './engine';
 import {
   other,
   clone,
+  TRAIT_POWER,
   type CardDef,
   type CardId,
   type CardInst,
@@ -158,7 +159,9 @@ export function viewFor(db: CombatDb, s: CombatState, me: Side): CombatView {
       stars: sd.stars,
       runes: clone(sd.runes),
       runeSlots: sd.runeSlots,
-      powers: sd.powers.map((p) => ({ id: p.id, card: p.card, when: p.when })),
+      powers: sd.powers
+        .filter((p) => p.card !== TRAIT_POWER)
+        .map((p) => ({ id: p.id, card: p.card, when: p.when })),
     };
   };
   return {

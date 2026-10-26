@@ -14,6 +14,7 @@ import {
   MAX_START_ENEMIES,
   MAX_HAND,
   MAX_RUNES,
+  TRAIT_POWER,
   MAX_SNARES,
   RADIANT_ENTER_MANA,
   RulesError,
@@ -423,7 +424,7 @@ function metricValue(r: Run, a: Act, m: Metric, of: Scale['of'], t: Unit | null)
     case 'runes':
       return sd.runes.length;
     case 'powers':
-      return sd.powers.length;
+      return sd.powers.filter((p) => p.card !== TRAIT_POWER).length;
     case 'mana':
       return sd.mana;
     case 'played':
@@ -1247,6 +1248,16 @@ function beginHeroTurn(r: Run, side: Side): void {
     if (sigil) runOps(r, mkAct(hero), sigil);
     const trait = sd.hero ? r.db.heroes[sd.hero]?.trait : undefined;
     if (trait?.fightStart) runOps(r, mkAct(hero), trait.fightStart);
+    for (const t of trait?.triggers ?? [])
+      sd.powers.push({
+        id: newId(r.s, 'p'),
+        card: TRAIT_POWER,
+        when: t.when,
+        ops: t.ops,
+        ...(t.filter ? { filter: t.filter } : {}),
+        ...(t.tag ? { tag: t.tag } : {}),
+        ...(t.stance ? { stance: t.stance } : {}),
+      });
   }
   {
     const trait = sd.hero ? r.db.heroes[sd.hero]?.trait : undefined;

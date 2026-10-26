@@ -1,4 +1,5 @@
-// Quill, the Knife-Dancer (Umbral). No companions. The Silent of the roster: three build paths that mix.
+// Sylas (id assassin, Umbral). No companions. Three build paths that mix (DECISIONS #256); his trait (a Sleeve Knife every turn)
+// feeds all three.
 //   Shivs   - 0-cost Shiv attacks, many hits, payoffs per card played
 //   Seared  - stack our poison, double it, cash it out
 //   Sleight - discard and cycle for value
@@ -42,18 +43,22 @@ export const ASSASSIN: CardDef[] = [
   }),
 
   // --- Shivs ---
-  q('common', 'palmed-knives', 'Palmed Knives', 'skill', 1, 'none', [addTo('sleeve-knife', 3)]),
+  q('common', 'palmed-knives', 'Palmed Knives', 'skill', 1, 'none', [
+    addTo('sleeve-knife', 2),
+    draw(1),
+  ]),
   q('common', 'hidden-blade', 'Hidden Blade', 'skill', 1, 'none', [
-    barrier(6),
+    barrier(4),
     addTo('sleeve-knife'),
+    status('edge', 1, 'self', true),
   ]),
   q('common', 'sleeve-flick', 'Sleeve Flick', 'skill', 0, 'none', [addTo('sleeve-knife', 2)], {
     exhaust: true,
   }),
   q('common', 'whirling-knives', 'Whirling Knives', 'attack', 1, 'none', [dmg(4, 'allFoes', 2)]),
   q('common', 'knife-volley', 'Knife Volley', 'attack', 1, 'foe', [dmg(3, 'target', 3)]),
-  q('uncommon', 'endless-edges', 'Endless Edges', 'power', 1, 'none', [
-    on('turnStart', [addTo('sleeve-knife')]),
+  q('uncommon', 'endless-edges', 'Endless Edges', 'power', 2, 'none', [
+    on('turnStart', [addTo('sleeve-knife', 2)]),
   ]),
   q('uncommon', 'keen-edge', 'Keen Edge', 'power', 1, 'none', [status('edge', 2)]),
   q('uncommon', 'razor-halo', 'Razor Halo', 'power', 2, 'none', [
@@ -62,6 +67,7 @@ export const ASSASSIN: CardDef[] = [
   q('uncommon', 'empty-the-sleeves', 'Empty the Sleeves', 'skill', 1, 'none', [
     discard(9),
     addTo('sleeve-knife', 0, 'hand', per('discarded')),
+    status('edge', 1, 'self', true),
   ]),
   q('uncommon', 'killing-flourish', 'Killing Flourish', 'attack', 1, 'foe', [
     scaled(
@@ -70,7 +76,7 @@ export const ASSASSIN: CardDef[] = [
     ),
   ]),
   q('rare', 'countless-nicks', 'Countless Nicks', 'power', 2, 'none', [
-    on('play', [dmg(1, 'allFoes')]),
+    on('play', [status('seared', 1, 'randomFoe')]),
   ]),
 
   q('common', 'knife-fan', 'Knife Fan', 'attack', 1, 'none', [
@@ -82,6 +88,7 @@ export const ASSASSIN: CardDef[] = [
   q('common', 'cut-low', 'Cut Low', 'attack', 0, 'foe', [dmg(5)]),
   q('common', 'smoke-and-slip', 'Smoke and Slip', 'skill', 1, 'none', [
     barrier(6),
+    discard(1),
     addTo('sleeve-knife'),
   ]),
   q('uncommon', 'ambush-cut', 'Ambush Cut', 'attack', 0, 'foe', [dmg(11)], {
@@ -140,15 +147,21 @@ export const ASSASSIN: CardDef[] = [
     dmg(4),
     status('seared', 1, 'target'),
   ]),
-  q('common', 'ember-dose', 'Ember Dose', 'skill', 1, 'foe', [status('seared', 5, 'target')]),
+  q('common', 'ember-dose', 'Ember Dose', 'skill', 1, 'foe', [
+    status('seared', 5, 'target'),
+    barrier(3),
+  ]),
   q('common', 'choking-haze', 'Choking Haze', 'skill', 2, 'none', [
-    status('seared', 4, 'allFoes'),
+    status('seared', 3, 'allFoes'),
     status('faltering', 2, 'allFoes'),
+    barrier(4),
   ]),
   q('common', 'scattered-vials', 'Scattered Vials', 'skill', 2, 'none', [
-    status('seared', 3, 'randomFoe'),
-    status('seared', 3, 'randomFoe'),
-    status('seared', 3, 'randomFoe'),
+    status('seared', 2, 'randomFoe'),
+    status('seared', 2, 'randomFoe'),
+    status('seared', 2, 'randomFoe'),
+    status('seared', 2, 'randomFoe'),
+    status('seared', 2, 'randomFoe'),
   ]),
   q('uncommon', 'mindrot', 'Mindrot', 'skill', 1, 'foe', [
     status('seared', 4, 'target'),
@@ -167,7 +180,7 @@ export const ASSASSIN: CardDef[] = [
     },
   ),
   q('uncommon', 'smouldering-air', 'Smouldering Air', 'power', 1, 'none', [
-    on('turnStart', [status('seared', 2, 'allFoes')]),
+    on('turnStart', [status('seared', 1, 'allFoes'), barrier(2)]),
   ]),
   q('uncommon', 'tainted-edges', 'Tainted Edges', 'power', 1, 'none', [
     on('play', [status('seared', 1, 'target')], { tag: 'knife' }),
@@ -216,15 +229,18 @@ export const ASSASSIN: CardDef[] = [
 
   // (more Bleed)
   q('common', 'poison-tip', 'Poison Tip', 'attack', 1, 'foe', [
-    dmg(6),
-    status('seared', 3, 'target'),
+    dmg(4),
+    status('seared', 4, 'target'),
   ]),
-  q('common', 'deadly-vial', 'Deadly Vial', 'skill', 1, 'foe', [status('seared', 5, 'target')]),
+  q('common', 'deadly-vial', 'Deadly Vial', 'skill', 1, 'foe', [
+    status('seared', 4, 'target'),
+    draw(1),
+  ]),
   q('uncommon', 'caustic-vial', 'Caustic Vial', 'skill', 2, 'none', [
     status('seared', 4, 'allFoes'),
   ]),
   q('uncommon', 'noxious-haze', 'Noxious Haze', 'power', 1, 'none', [
-    on('turnStart', [status('seared', 2, 'allFoes')]),
+    on('turnStart', [status('seared', 3, 'randomFoe')]),
   ]),
   q('rare', 'tainted-edge', 'Tainted Edge', 'power', 2, 'none', [
     on('play', [status('seared', 1, 'allFoes')], { filter: 'attack' }),
@@ -238,7 +254,7 @@ export const ASSASSIN: CardDef[] = [
   q(
     'rare',
     'mirage',
-    'Mirage',
+    'Shimmer',
     'skill',
     1,
     'foe',
@@ -247,9 +263,18 @@ export const ASSASSIN: CardDef[] = [
       exhaust: true,
     },
   ),
-  q('rare', 'fatal-dose', 'Fatal Dose', 'skill', 2, 'foe', [doubleSt('seared', 'target', 2, 15)], {
-    exhaust: true,
-  }),
+  q(
+    'rare',
+    'fatal-dose',
+    'Fatal Dose',
+    'skill',
+    2,
+    'foe',
+    [status('seared', 4, 'target'), doubleSt('seared', 'target', 2, 15)],
+    {
+      exhaust: true,
+    },
+  ),
 
   // (Bleed, round three)
   q('common', 'scatter-shot', 'Scatter Shot', 'attack', 1, 'none', [
@@ -288,18 +313,18 @@ export const ASSASSIN: CardDef[] = [
   ]),
 
   // --- Sleight ---
-  q('common', 'quick-hands', 'Quick Hands', 'skill', 0, 'none', [draw(1), discard(1)], {
-    up: { effects: [draw(2), discard(2)] },
+  q('common', 'quick-hands', 'Quick Hands', 'skill', 0, 'none', [draw(2), discard(2)], {
+    up: { effects: [draw(2), discard(2), barrier(3)] },
   }),
-  q('common', 'tumble', 'Tumble', 'skill', 1, 'none', [draw(3), discard(1)]),
-  q('common', 'roll-clear', 'Roll Clear', 'skill', 1, 'none', [barrier(5), draw(2)]),
+  q('common', 'tumble', 'Tumble', 'skill', 1, 'none', [draw(4), discard(2)]),
+  q('common', 'roll-clear', 'Roll Clear', 'skill', 1, 'none', [barrier(4), draw(2), discard(1)]),
   q('uncommon', 'ace-up-the-sleeve', 'Ace Up the Sleeve', 'skill', 0, 'none', [], {
     unplayable: true,
-    onDiscard: [draw(2)],
+    onDiscard: [draw(2), addTo('sleeve-knife')],
   }),
   q('uncommon', 'pilfered-time', 'Pilfered Time', 'skill', 0, 'none', [], {
     unplayable: true,
-    onDiscard: [mana(1)],
+    onDiscard: [mana(1), barrier(3)],
   }),
   q('uncommon', 'fold-the-hand', 'Fold the Hand', 'skill', 0, 'none', [discard(3), mana(2)], {
     exhaust: true,
@@ -311,14 +336,16 @@ export const ASSASSIN: CardDef[] = [
     'skill',
     0,
     'none',
-    [discard(9), scaled(draw(0), per('discarded'))],
+    [discard(9), scaled(draw(0), per('discarded')), addTo('sleeve-knife')],
     { exhaust: true },
   ),
-  q('uncommon', 'hidden-palm', 'Hidden Palm', 'power', 1, 'none', [on('discard', [barrier(2)])]),
+  q('uncommon', 'hidden-palm', 'Hidden Palm', 'power', 1, 'none', [on('discard', [barrier(3)])]),
   q('uncommon', 'flaying-spree', 'Flaying Spree', 'attack', 2, 'foe', [
     scaled({ op: 'damage', amount: 8, to: 'target' }, per('discarded', 1, undefined, 'hits')),
   ]),
-  q('rare', 'lingering-step', 'Lingering Step', 'power', 1, 'none', [on('play', [barrier(1)])]),
+  q('rare', 'lingering-step', 'Dancing Step', 'power', 1, 'none', [
+    on('play', [barrier(2)], { filter: 'attack' }),
+  ]),
   q(
     'common',
     'poisoned-needle',
@@ -339,7 +366,7 @@ export const ASSASSIN: CardDef[] = [
     [dmg(5, 'attacker'), addTo('sleeve-knife', 2)],
     { trigger: { on: 'foeDefends' } },
   ),
-  q('uncommon', 'encore', 'Encore', 'skill', 1, 'none', [status('mirrored', 1)]),
+  q('uncommon', 'encore', 'Encore', 'skill', 1, 'none', [status('mirrored', 1), draw(1)]),
   q('uncommon', 'palmed-card', 'Palmed Card', 'skill', 0, 'none', [discoverOp('attack')], {
     exhaust: true,
     up: { effects: [discoverOp('attack', 1, true)] },
@@ -384,25 +411,40 @@ export const ASSASSIN: CardDef[] = [
   q('uncommon', 'showmans-flourish', "Showman's Flourish", 'attack', 1, 'foe', [
     scaled(dmg(4), per('skillsPlayed', 4)),
   ]),
-  q('common', 'dart-throw', 'Dart Throw', 'attack', 1, 'foe', [dmg(9), draw(1), discard(1)]),
+  q('common', 'dart-throw', 'Dart Throw', 'attack', 1, 'foe', [dmg(7), discard(1), draw(2)]),
   q('common', 'tangle-wire', 'Tangle Wire', 'attack', 1, 'foe', [
     dmg(8),
     status('faltering', 1, 'target'),
   ]),
-  q('common', 'quick-draw', 'Quick Draw', 'skill', 1, 'none', [barrier(5), draw(2)]),
+  q('common', 'quick-draw', 'Quick Draw', 'skill', 1, 'none', [
+    barrier(3),
+    draw(1),
+    addTo('sleeve-knife'),
+  ]),
   q('uncommon', 'light-feet', 'Light Feet', 'power', 1, 'none', [status('bracing', 2)]),
   q('rare', 'blur-step', 'Blur Step', 'skill', 1, 'none', [
     discard(9, 'any'),
     status('twinned', 1),
   ]),
-  q('rare', 'nimble-fingers', 'Nimble Fingers', 'skill', 1, 'none', [status('mirrored', 1)]),
-  q('rare', 'lingering-blur', 'Lingering Blur', 'power', 1, 'none', [on('play', [barrier(1)])]),
-  q('rare', 'adrenaline-rush', 'Adrenaline Rush', 'skill', 0, 'none', [mana(1), draw(2)], {
+  q('rare', 'nimble-fingers', 'Nimble Fingers', 'skill', 1, 'none', [status('mirrored', 2)], {
     exhaust: true,
   }),
-  q('rare', 'tricks-of-the-trade', 'Tricks of the Trade', 'power', 1, 'none', [
-    on('turnStart', [draw(1)]),
+  q('rare', 'lingering-blur', 'Blurred Guard', 'power', 1, 'none', [
+    on('play', [barrier(2)], { filter: 'skill' }),
   ]),
+  q(
+    'rare',
+    'adrenaline-rush',
+    'Cold Sweat',
+    'skill',
+    0,
+    'none',
+    [mana(1), draw(1), addTo('sleeve-knife')],
+    {
+      exhaust: true,
+    },
+  ),
+  q('rare', 'tricks-of-the-trade', 'Tradecraft', 'power', 1, 'none', [on('turnStart', [draw(1)])]),
   q('rare', 'careful-plan', 'Careful Plan', 'skill', 1, 'none', [draw(1), status('holdfast', 1)]),
   q('rare', 'cold-killing', 'Cold Killing', 'attack', 1, 'foe', [
     scaled(dmg(1), per('drawn', 0.25)),
@@ -427,7 +469,7 @@ export const ASSASSIN: CardDef[] = [
   q('common', 'cold-open', 'Cold Open', 'attack', 0, 'foe', [dmg(6), discard(1)]),
   q('uncommon', 'magicians-exit', "Magician's Exit", 'skill', 1, 'none', [
     discard(9, 'any'),
-    scaled(barrier(0), per('discarded', 3)),
+    scaled(barrier(0), per('discarded', 4)),
   ]),
   q('uncommon', 'loaded-die', 'Loaded Die', 'skill', 0, 'none', [], {
     unplayable: true,
@@ -438,7 +480,7 @@ export const ASSASSIN: CardDef[] = [
     discard(1),
   ]),
   q('uncommon', 'fortunes-edge', "Fortune's Edge", 'attack', 1, 'foe', [
-    scaled(dmg(6), per('discarded', 2)),
+    scaled(dmg(6), per('discarded', 3)),
   ]),
   q('rare', 'jokers-gambit', "Joker's Gambit", 'skill', 0, 'none', [], {
     unplayable: true,

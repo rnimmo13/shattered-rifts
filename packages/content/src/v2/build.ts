@@ -96,7 +96,12 @@ export const fetchCards = (amount: number, to: 'hand' | 'draw' = 'hand', kind?: 
   ...(kind ? { kind } : {}),
 });
 /** return random cards with a tag (Carvings...) from your discard pile to your hand */
-export const fetchTag = (amount: number, tag: string): Op => ({ op: 'fetch', amount, to: 'hand', tag });
+export const fetchTag = (amount: number, tag: string): Op => ({
+  op: 'fetch',
+  amount,
+  to: 'hand',
+  tag,
+});
 export const revive: Op = { op: 'revive' };
 export const manaNext = (amount: number): Op => ({ op: 'manaNext', amount });
 export const maxMana = (amount: number): Op => ({ op: 'maxMana', amount });
@@ -150,7 +155,7 @@ export const on = (
   when: TriggerWhen,
   ops: Op[],
   narrow: { filter?: CardKind; tag?: string; stance?: Stance } = {},
-): Op => ({ op: 'power', when, ops, ...narrow });
+): Extract<Op, { op: 'power' }> => ({ op: 'power', when, ops, ...narrow });
 
 // --- cards ---------------------------------------------------------------------------------------------------------
 

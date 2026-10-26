@@ -1,7 +1,7 @@
 // Combat v2 content: heroes, starter decks, cards, companions and encounters (docs/08_COMBAT_V2.md).
 
 import { validateDb, type CombatDb, type HeroDef, type HeroTrait } from '@sr/combat';
-import { addTo, barrier, channel, heal, stance, stars, status } from './build';
+import { addTo, barrier, channel, draw, heal, on, stance, stars, status } from './build';
 import { BOONS, HEARTS } from './boons';
 import { V2_CARDS } from './cards';
 import { RUNES } from './pools/totemist';
@@ -77,7 +77,11 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     starter: [...rep('strike', 5), ...rep('defend', 3), 'deploy-drone', 'overclock'],
     blurb:
       'A tinkerer of machines. She starts every fight with a Drone and builds an army of them.',
-    buildPaths: ['Swarm: many cheap bodies', 'Assemble: allies act again', 'Core: a few big constructs'],
+    buildPaths: [
+      'Swarm: many cheap bodies',
+      'Assemble: allies act again',
+      'Core: a few big constructs',
+    ],
     howTo: [
       'You start with a Drone. Allies attack for you when you end your turn.',
       'You can have 3 allies. Buff them with Might, or make them act again (Assemble).',
@@ -102,7 +106,11 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     },
     starter: [...rep('strike', 5), ...rep('defend', 3), 'savage-bite', 'blood-frenzy'],
     blurb: 'A hunter with a Hound. Pays HP to buff the whole pack with Might.',
-    buildPaths: ['Bloodrage: HP for Might', 'Pack: feed the companions', 'Feast: Exhaust and Devour'],
+    buildPaths: [
+      'Bloodrage: HP for Might',
+      'Pack: feed the companions',
+      'Feast: Exhaust and Devour',
+    ],
     howTo: [
       'You start with a Hound. Might makes every attack hit harder, permanently.',
       'Many of your cards cost HP. Spend it to buff the pack, then heal with Devour and Feast cards.',
@@ -113,31 +121,34 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     realm: 'umbral',
     role: 'Trapper',
     trait: {
-      name: 'Ambusher',
-      text: 'Every enemy starts the fight Exposed for 3 turns, and you start with 6 Barrier.',
-      fightStart: [status('exposed', 3, 'allFoes'), barrier(6)],
+      name: 'Lying in Wait',
+      text: 'Start every fight with 6 Barrier and 2 extra cards in hand. At the start of your turn, gain 4 Barrier.',
+      fightStart: [barrier(6), draw(2)],
+      turnStart: [barrier(4)],
     },
     hero: { id: 'trapper', name: 'Vesper Nightlace', maxHp: 80, mana: 3, handSize: 5 },
     starter: [...rep('strike', 3), ...rep('defend', 4), ...rep('veil-strike', 2), 'set-the-web'],
-    blurb: 'A masked trapper. No companions: Traps, Exposed and patience.',
+    blurb:
+      'A masked trapper who always sees the next move coming. No companions: Traps, Exposed and patience.',
     buildPaths: [
       'Traps: one for every trigger',
       'Exposed: mark, then spend the mark',
-      'Bluff: Hold, Foresee, held Mana',
+      'Patience: Hold your cards, keep your Mana, strike later',
     ],
     howTo: [
       'A Trap is played face down and springs on its own when its trigger happens.',
       'Read the icon above each enemy and set the Trap that answers what it is about to do.',
       'Exposed enemies take 50% more damage: mark them, then spend the mark.',
+      'Patience: Hold cards for later and leave Mana unspent; those cards pay for a full hand and for the Mana you kept.',
     ],
   },
   assassin: {
     realm: 'umbral',
     role: 'Assassin',
     trait: {
-      name: 'Envenomed',
-      text: 'At the start of your turn, a random enemy gets 2 Bleed.',
-      turnStart: [status('seared', 2, 'randomFoe')],
+      name: 'Hidden Blades',
+      text: 'At the start of your turn, add a Sleeve Knife to your hand.',
+      turnStart: [addTo('sleeve-knife')],
     },
     hero: {
       id: 'assassin',
@@ -149,14 +160,14 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     },
     starter: [...rep('strike', 4), ...rep('defend', 3), ...rep('quick-jab', 2), 'slip-away'],
     blurb:
-      'A cutpurse with a sleeve full of blades. Starts every fight with a Sleeve Knife. Knives, Bleed and discard tricks.',
+      'A cutpurse with a sleeve full of blades: a Sleeve Knife finds its way into his hand every turn. Knives, Bleed and discard tricks.',
     buildPaths: [
       'Knives: 0-cost blades',
       'Bleed: stack, double, cash out',
       'Sleight: discard and cycle',
     ],
     howTo: [
-      'You start with a Sleeve Knife: a 0-cost Attack that is consumed when played.',
+      'Every turn a Sleeve Knife comes to your hand (Hidden Blades): a 0-cost Attack that is consumed when played. Knife payoffs, Bleed on knives (Tainted Edges) and discard payoffs all use it.',
       'Bleed hurts for its stacks every turn and then shrinks. Double it, then cash it out.',
       'Discarding is a resource: Foresee and Discard cards trigger payoffs.',
     ],
@@ -178,16 +189,17 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     },
     starter: [...rep('strike', 4), ...rep('defend', 3), ...rep('spark-cast', 2), 'twin-evocation'],
     blurb:
-      'An elder shaman who carves totems and calls the spirits inside them to do his bidding. Starts every fight with three totems (Hawk, Bear and Splinter). Totems pulse every turn, then burst when awakened.',
+      'An elder shaman who carves: totems that hold spirits, small Carvings by the handful, and the rites that wake them. Starts every fight with three totems (Hawk, Bear and Splinter).',
     buildPaths: [
-      'Hawk: damage totems (one enemy or all)',
-      'Bear: Barrier totems',
-      'Elder: charge and Spirit',
+      'Totems: plant, empower with Spirit, awaken',
+      'Whittling: small free Carvings that keep coming back',
+      'Rites: every Aura makes the next one pay',
     ],
     howTo: [
-      'You start with a Hawk, a Bear and a Splinter totem. Totems stand in a column of 3 slots beside you.',
-      'At the end of your turn every totem pulses a small effect. A 4th totem pushes the oldest out and it bursts with its big effect.',
-      'Awaken cards burst totems early. Spirit makes every totem stronger.',
+      'You start with a Hawk, a Bear and a Splinter totem. Totems stand in a column of 3 slots beside you, pulse a small effect at the end of your turn, and a 4th pushes the oldest out, awakening it for its big effect.',
+      'Totems: plant many, make them stronger with Spirit and more slots, and awaken them on purpose.',
+      'Whittling: Carvings cost nothing; play a handful a turn, then gather them back from your discard pile.',
+      'Rites: an Aura stays all fight. Rite cards pay off for every Aura you already have.',
     ],
   },
   barbarian: {
@@ -195,8 +207,8 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     role: 'Barbarian',
     trait: {
       name: 'Inner Fire',
-      text: 'Start every fight with 2 Fervor.',
-      fightStart: [status('mantra', 2)],
+      text: 'Whenever you enter a stance, gain 1 Fervor.',
+      triggers: [on('stance', [status('mantra', 1)])],
     },
     hero: {
       id: 'barbarian',
@@ -208,12 +220,17 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     },
     starter: [...rep('strike', 4), ...rep('defend', 4), 'kindle-fury', 'still-guard'],
     blurb:
-      'A barbarian who fights in stances. Starts every fight Serene. Fury for burst, Serene for tempo, Fervor for Radiance.',
-    buildPaths: ['Fury: burst', 'Serene: Mana and cards', 'Fervor: build to Radiant'],
+      'A barbarian who fights in stances. Starts every fight Serene, and every stance she enters stokes her Fervor towards Radiance.',
+    buildPaths: [
+      'Fury: get in, hit hard, live through it',
+      'Flow: change stance again and again; every change pays',
+      'Radiant: build Fervor to 10 for a triple-damage turn',
+    ],
     howTo: [
-      'You start Serene. You are in at most one stance at a time.',
+      'You start Serene. You are in at most one stance at a time, and every stance you enter gives 1 Fervor (Inner Fire).',
       'Fury doubles the damage you deal, but you take 50% more. Leaving Serene gives you 2 Mana (once a turn).',
       'Fervor builds to 10, then you enter Radiant: triple damage until your turn ends.',
+      'Pick a build: burst in Fury, dance between stances (Flow), or build to Radiant.',
     ],
   },
   spellblade: {
@@ -242,7 +259,11 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     ],
     blurb:
       'A spellblade of black glass and ember. Starts with 3 Arcana and an Obsidian Blade that every Sharpen improves for good.',
-    buildPaths: ['Blade: sharpen one weapon', 'Arcana: spend for finishers', 'Sigils: ticking Auras'],
+    buildPaths: [
+      'Blade: sharpen one weapon',
+      'Arcana: spend for finishers',
+      'Sigils: ticking Auras',
+    ],
     howTo: [
       'Arcana is a second resource. Cards with an orange orb spend it; others gain it.',
       'You start with an Obsidian Blade. Every Sharpen card makes every copy hit harder for the whole fight.',
@@ -299,8 +320,11 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     role: 'Necromancer',
     trait: {
       name: 'Grave Chill',
-      text: 'Every enemy starts the fight with 4 Fate.',
-      fightStart: [status('doom', 4, 'allFoes')],
+      text: 'Whenever one of your allies dies or a card is consumed, curse a random enemy with 2 Fate.',
+      triggers: [
+        on('allyDies', [status('doom', 2, 'randomFoe')]),
+        on('exhaust', [status('doom', 2, 'randomFoe')]),
+      ],
     },
     hero: {
       id: 'necromancer',
@@ -317,7 +341,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
       ...rep('bone-ward', 2),
     ],
     blurb:
-      'A warden of the drowned dead. Starts with a Bone Thrall. Curses enemies with Fate until the end comes for them.',
+      'A warden of the drowned dead. Starts with a Bone Thrall. Every death and every spent card brings the end closer for his enemies.',
     buildPaths: [
       'Fate: curse, double, cash in',
       'Thralls: the dead fight for you',
@@ -327,6 +351,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
       'You start with a Bone Thrall, which attacks when you end your turn.',
       'Cursed with Fate, an enemy dies at the end of its turn if its HP is at or below its Fate. Curse it, double it, finish it.',
       'Cards you consume fuel your Ashes build: Gravesouls, Requiem and more.',
+      'Grave Chill: whenever an ally of yours dies or a card is consumed, a random enemy is cursed with 2 Fate, whichever build you follow.',
     ],
   },
 };

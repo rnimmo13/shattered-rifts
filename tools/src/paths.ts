@@ -40,7 +40,7 @@ const HEADS: Record<HeroId, [RegExp, number | null][]> = {
   trapper: [
     [/snares|traps/i, 0],
     [/exposed/i, 1],
-    [/bluff/i, 2],
+    [/patience/i, 2],
     [/basics/i, null],
   ],
   assassin: [
@@ -50,15 +50,15 @@ const HEADS: Record<HeroId, [RegExp, number | null][]> = {
     [/basics/i, null],
   ],
   totemist: [
-    [/hawk/i, 0],
-    [/bear/i, 1],
-    [/elder/i, 2],
+    [/totems/i, 0],
+    [/whittling/i, 1],
+    [/rites/i, 2],
     [/basics|glue/i, null],
   ],
   barbarian: [
-    [/wrath/i, 0],
-    [/calm/i, 1],
-    [/mantra/i, 2],
+    [/fury/i, 0],
+    [/flow/i, 1],
+    [/radiant/i, 2],
     [/basics/i, null],
   ],
   spellblade: [

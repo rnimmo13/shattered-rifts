@@ -1,4 +1,4 @@
-// Mire, the Gravewarden (Gloomfen). Starts with a Bone Thrall. Doom is Mire's alone: it kills anything at or below its Doom at
+// Dorian (id necromancer, Gloomfen). Starts with a Bone Thrall. Fate (id doom) is his alone: it kills anything at or below its Fate at
 // the end of its turn. Three build paths:
 //   Doom     - stack Doom on enemies, double it, and cash it in
 //   Thralls  - the Bone Thrall and its kin: buff them, heal them, spend them
@@ -16,6 +16,7 @@ import {
   fetchCards,
   heal,
   lose,
+  loseHpScaled,
   mana,
   on,
   per,
@@ -38,10 +39,19 @@ export const NECROMANCER: CardDef[] = [
     status('doom', 4, 'target'),
   ]),
   g('basic', 'bone-ward', 'Bone Ward', 'skill', 1, 'none', [barrier(5, 'allFriends')]),
-  g('common', 'gravesoul', 'Gravesoul', 'skill', 0, 'none', [draw(2)], {
-    exhaust: true,
-    source: 'token',
-  }),
+  g(
+    'common',
+    'gravesoul',
+    'Gravesoul',
+    'skill',
+    0,
+    'none',
+    [draw(1), status('doom', 2, 'randomFoe')],
+    {
+      exhaust: true,
+      source: 'token',
+    },
+  ),
 
   // --- Doom ---
   g('common', 'tolling-bell', 'Tolling Bell', 'attack', 1, 'foe', [
@@ -113,15 +123,15 @@ export const NECROMANCER: CardDef[] = [
     dmg(3, 'allFoes'),
     status('doom', 3, 'allFoes'),
   ]),
-  g('uncommon', 'countdown', 'Countdown', 'power', 1, 'none', [
-    on('turnStart', [status('doom', 2, 'randomFoe')]),
+  g('uncommon', 'countdown', 'Death Knocks', 'power', 1, 'none', [
+    on('turnStart', [status('doom', 3, 'randomFoe')]),
   ]),
-  g('uncommon', 'veilpiercer', 'Veilpiercer', 'attack', 1, 'foe', [
+  g('uncommon', 'veilpiercer', 'Soul Lance', 'attack', 1, 'foe', [
     dmg(7),
     status('exposed', 2, 'target'),
     status('doom', 2, 'target'),
   ]),
-  g('rare', 'oblivion', 'Oblivion', 'skill', 2, 'foe', [status('doom', 25, 'target')], {
+  g('rare', 'oblivion', 'Unmaking', 'skill', 2, 'foe', [status('doom', 25, 'target')], {
     exhaust: true,
   }),
   g(
@@ -194,10 +204,10 @@ export const NECROMANCER: CardDef[] = [
   g('common', 'unleash-the-dead', 'Unleash the Dead', 'attack', 1, 'foe', [
     scaled(dmg(4), per('allies', 3)),
   ]),
-  g('uncommon', 'calcify', 'Calcify', 'power', 1, 'none', [
+  g('uncommon', 'calcify', 'Ossify', 'power', 1, 'none', [
     on('turnEnd', [barrier(3, 'allFriends')]),
   ]),
-  g('uncommon', 'legion-of-bone', 'Legion of Bone', 'summon', 2, 'none', [
+  g('uncommon', 'legion-of-bone', 'Twin Thralls', 'summon', 2, 'none', [
     summon('bone-thrall'),
     summon('bone-thrall'),
   ]),
@@ -241,7 +251,9 @@ export const NECROMANCER: CardDef[] = [
   g('uncommon', 'spectral-ledger', 'Spectral Ledger', 'skill', 1, 'none', [
     scaled(draw(0), per('exhausted', 0.5)),
   ]),
-  g('uncommon', 'soulbind', 'Soulbind', 'power', 1, 'none', [on('exhaust', [barrier(3)])]),
+  g('uncommon', 'soulbind', 'Soulbind', 'power', 1, 'none', [
+    on('exhaust', [barrier(2), status('doom', 1, 'randomFoe')]),
+  ]),
   g('uncommon', 'ashen-bargain', 'Ashen Bargain', 'skill', 1, 'none', [
     exhaustN(9, 'any'),
     scaled(status('doom', 0, 'allFoes'), per('exhausted')),
@@ -284,18 +296,18 @@ export const NECROMANCER: CardDef[] = [
   g('rare', 'soul-harvest', 'Soul Harvest', 'power', 2, 'none', [
     on('exhaust', [heal(2), status('doom', 1, 'allFoes')]),
   ]),
-  g('rare', 'ghostform', 'Ghostform', 'skill', 1, 'none', [status('ghostly', 1)], {
+  g('rare', 'ghostform', 'Spirit Walk', 'skill', 1, 'none', [status('ghostly', 1), draw(1)], {
     exhaust: true,
   }),
 
   // --- shared tools and glue ---
-  g('common', 'bone-shard', 'Bone Shard', 'attack', 1, 'foe', [dmg(8)]),
+  g('common', 'bone-shard', 'Splintered Bone', 'attack', 1, 'foe', [dmg(8)]),
   g('common', 'burial-rites', 'Burial Rites', 'skill', 1, 'none', [barrier(8)]),
   g('common', 'sepulchral-gaze', 'Sepulchral Gaze', 'attack', 2, 'none', [
     dmg(6, 'allFoes'),
     status('doom', 2, 'allFoes'),
   ]),
-  g('uncommon', 'dredge', 'Dredge', 'skill', 1, 'none', [draw(2), barrier(3)]),
+  g('uncommon', 'dredge', 'Grave Digging', 'skill', 1, 'none', [draw(2), barrier(3)]),
   g('uncommon', 'rattling-charge', 'Rattling Charge', 'attack', 2, 'foe', [
     dmg(7, 'target', 2),
     status('doom', 3, 'target'),
@@ -336,7 +348,7 @@ export const NECROMANCER: CardDef[] = [
   g('uncommon', 'grave-robbery', 'Grave Robbery', 'skill', 1, 'none', [reclaim(1), barrier(4)], {
     exhaust: true,
   }),
-  g('uncommon', 'reanimate', 'Reanimate', 'skill', 2, 'none', [revive, barrier(5)]),
+  g('uncommon', 'reanimate', 'Rise Again', 'skill', 2, 'none', [revive, barrier(5)]),
   g('rare', 'death-feeds', 'Death Feeds', 'power', 1, 'none', [
     on('allyDies', [barrier(8), draw(1)]),
   ]),
@@ -359,7 +371,7 @@ export const NECROMANCER: CardDef[] = [
     status('doom', 3, 'target'),
     draw(1),
   ]),
-  g('common', 'dirge', 'Dirge', 'skill', 1, 'foe', [
+  g('common', 'dirge', 'Lament', 'skill', 1, 'foe', [
     scaled(status('doom', 4, 'target'), per('foes', 2)),
   ]),
   g(
@@ -394,10 +406,10 @@ export const NECROMANCER: CardDef[] = [
     'rare',
     'final-reckoning',
     'Final Reckoning',
-    'attack',
-    3,
+    'skill',
+    2,
     'foe',
-    [scaled(dmg(0), per('doom', 1, 'target'))],
+    [loseHpScaled(per('doom', 0.5, 'target'))],
     { exhaust: true },
   ),
 
@@ -439,7 +451,7 @@ export const NECROMANCER: CardDef[] = [
   g('uncommon', 'wake-the-ashes', 'Wake the Ashes', 'skill', 1, 'none', [reclaim(2)], {
     exhaust: true,
   }),
-  g('uncommon', 'exhume', 'Exhume', 'skill', 2, 'none', [fetchCards(2), addTo('gravesoul')]),
+  g('uncommon', 'exhume', 'Disinter', 'skill', 2, 'none', [fetchCards(2), addTo('gravesoul')]),
   g('uncommon', 'ashfall', 'Ashfall', 'power', 1, 'none', [on('exhaust', [dmg(3, 'randomFoe')])]),
   g('rare', 'last-embers', 'Last Embers', 'skill', 1, 'none', [
     exhaustN(9, 'any'),

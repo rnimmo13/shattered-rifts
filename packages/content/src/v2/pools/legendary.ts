@@ -44,7 +44,7 @@ export const LEGENDARIES: CardDef[] = [
   r(
     'legendary',
     'drone-apotheosis',
-    'Drone Apotheosis',
+    'Drone Uprising',
     'skill',
     2,
     'none',
@@ -74,7 +74,7 @@ export const LEGENDARIES: CardDef[] = [
   q(
     'legendary',
     'ten-thousand-cuts',
-    'Ten Thousand Cuts',
+    'Death by Inches',
     'attack',
     2,
     'foe',

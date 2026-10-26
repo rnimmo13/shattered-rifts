@@ -284,7 +284,8 @@ describe('buildPaths (each character has three, each with room to build a deck)'
   it('every Riftwalker has three buildPaths of at least 12 cards each, and most of their cards belong to one', () => {
     for (const h of HEROES) {
       const sizes = pathSizes(h);
-      for (const n of sizes) expect(n, `${h} buildPaths ${sizes.join('/')}`).toBeGreaterThanOrEqual(12);
+      for (const n of sizes)
+        expect(n, `${h} buildPaths ${sizes.join('/')}`).toBeGreaterThanOrEqual(12);
       const own = rewardPool(h).filter(
         (id) => db.cards[id]?.hero === h && db.cards[id]?.rarity !== 'legendary',
       );

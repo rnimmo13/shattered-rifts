@@ -62,8 +62,8 @@ describe('draw, created and Skills-played hooks', () => {
     let s = fight('assassin', ['speed-reader', 'quick-draw']);
     s = play(s, 'T0');
     const hp = foe(s).hp;
-    s = play(s, 'T1'); // Quick Draw: draw 2, so two hits of at least 2
-    expect(foe(s).hp).toBeLessThanOrEqual(hp - 4);
+    s = play(s, 'T1'); // Quick Draw: draw 1, so a hit of at least 2
+    expect(foe(s).hp).toBeLessThanOrEqual(hp - 2);
   });
 
   it('"Whenever a card is created" (Armory of Light) pays Might for each card Sword Rain makes', () => {

@@ -60,6 +60,7 @@ describe('balance guard rails', () => {
       'created',
       'resonance',
       'mantra',
+      'powers',
     ];
     const bad: string[] = [];
     for (const c of playable)
