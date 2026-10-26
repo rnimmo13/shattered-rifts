@@ -67,7 +67,7 @@ interface Saved {
   seed: string;
   /** the RULES_VERSION the game in progress was started under (missing: before there was one) */
   rules?: number;
-  log: { seat: Seat; action: Action }[];
+  log: { seat: Seat; action: Action; hash?: string }[];
   deadline: number;
   /** when the game in progress began (epoch ms): it is called GAME_MS later (DECISIONS #259) */
   gameStart?: number;
@@ -227,7 +227,7 @@ export class MatchRoom extends DurableObject<Env> {
         return;
       }
     }
-    d.log.push({ seat, action });
+    d.log.push({ seat, action, hash: r.hash });
     d.deadline = r.deadline;
     d.missed = { ...m.missed };
     this.broadcast({
@@ -617,7 +617,7 @@ export class MatchRoom extends DurableObject<Env> {
         send(ws, { type: 'error', code: r.code, message: r.message });
         return;
       }
-      d.log.push({ seat, action });
+      d.log.push({ seat, action, hash: r.hash });
       d.deadline = r.deadline;
       d.missed = { ...match.missed };
       this.broadcast({
@@ -948,7 +948,7 @@ export class MatchRoom extends DurableObject<Env> {
     if (now >= d.deadline) {
       const t = match.timeout(now);
       for (const m of t.moves) {
-        d.log.push({ seat: m.seat, action: m.action });
+        d.log.push({ seat: m.seat, action: m.action, hash: m.hash });
         d.deadline = m.deadline;
         this.broadcast({
           type: 'action',

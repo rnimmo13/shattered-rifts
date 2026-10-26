@@ -296,6 +296,10 @@ export function FightView(props: {
   /** watching: paused, and how fast */
   const pausedRef = useRef(false);
   const [paused, setPaused] = useState(false);
+  /** watching, paused: let the moves up to this one play, then hold again (the Step button) */
+  const stepTo = useRef<number | null>(null);
+  /** watching: the move on screen, for the move counter */
+  const [shownMove, setShownMove] = useState(0);
   const [rate, setRate] = useState<(typeof WATCH_RATES)[number]>(1);
   /** the animation speed before this replay changed it (given back when it closes) */
   const [speedBefore] = useState(getBaseSpeed);
@@ -314,6 +318,8 @@ export function FightView(props: {
   const seqRef = useRef(0);
   const awaiting = useRef(false);
   const [desync, setDesync] = useState(false);
+  /** the move at which a replay stopped playing out as the match did (its fingerprint did not match) */
+  const [strayAt, setStrayAt] = useState<number | null>(null);
   const host = useRef<HTMLDivElement>(null);
   const scene = useRef<BattlefieldScene | null>(null);
   const game = useRef<{ state: CombatState; display: CombatState } | null>(null);
@@ -402,7 +408,7 @@ export function FightView(props: {
   const wait = useCallback(async (ms: number) => {
     await sleep(ms / speedRef.current);
     // (a paused replay holds here, between two beats of the animation)
-    while (pausedRef.current && !cancelledRef.current) await sleep(120);
+    while (pausedRef.current && stepTo.current === null && !cancelledRef.current) await sleep(120);
   }, []);
 
   const playEvent = useCallback(
@@ -685,10 +691,17 @@ export function FightView(props: {
         pending.current.enemy++;
         setLocked(true);
       }
+      // (watching: which move this batch shows; the moves all arrive at once, the screen plays them one after another)
+      const moveNo = watch ? seqRef.current : 0;
       chain.current = chain.current.then(async () => {
         try {
+          if (watch) {
+            // a Step lets one move play: the one after it holds again
+            if (stepTo.current !== null && moveNo > stepTo.current) stepTo.current = null;
+          }
           // (watching, each move gets a moment to itself, so the eye can follow)
           if (watch && !cancelledRef.current) await wait(WATCH_GAP);
+          if (watch) setShownMove(moveNo);
           await runBatch(events, after);
         } catch (err) {
           console.warn('[fight] batch failed', err);
@@ -945,9 +958,13 @@ export function FightView(props: {
       if (m.seat === mySide) awaiting.current = false;
       if (!applyMove(m.action, m.seat, item.history)) {
         setDesync(true);
+        setStrayAt((s) => s ?? m.seq);
         return;
       }
-      if (m.hash && hashState(g.state) !== m.hash) setDesync(true);
+      if (m.hash && hashState(g.state) !== m.hash) {
+        setDesync(true);
+        setStrayAt((s) => s ?? m.seq);
+      }
       if (watchTotal !== null && m.seq >= watchTotal) setWatchedAll(true);
       // the last of the history: put the screen where the engine is
       if (item.history && pvp && m.seq === pvp.replay) {
@@ -1361,6 +1378,21 @@ export function FightView(props: {
                 >
                   <span>{paused ? 'Play' : 'Pause'}</span>
                 </button>
+                {/* for checking a game move by move: one move on, then hold again */}
+                {paused && (watch.total === null || shownMove < watch.total) && (
+                  <button
+                    className="btn btn--small"
+                    onClick={() => {
+                      stepTo.current = shownMove + 1;
+                    }}
+                  >
+                    <span>Step</span>
+                  </button>
+                )}
+                <span className="fight__watchMove">
+                  Move {shownMove}
+                  {watch.total !== null ? ` / ${watch.total}` : ''}
+                </span>
                 {WATCH_RATES.map((x) => (
                   <button
                     key={x}
@@ -1459,12 +1491,22 @@ export function FightView(props: {
               mirror
             />
           )}
-          {desync && (
-            <div className="fight__desync" role="alert">
-              <b>This match has gone out of step with the server.</b>
-              <span>Reload this page: you are put straight back into the match.</span>
-            </div>
-          )}
+          {desync &&
+            (watch ? (
+              // a replay that no longer plays out as the match did: say from which move, so a bug hunt does not chase what never happened
+              <div className="fight__desync" role="alert">
+                <b>From move {strayAt ?? '?'} this replay no longer matches the real game.</b>
+                <span>
+                  The cards have changed since it was played, or something went wrong: what you see
+                  from here on is not what happened.
+                </span>
+              </div>
+            ) : (
+              <div className="fight__desync" role="alert">
+                <b>This match has gone out of step with the server.</b>
+                <span>Reload this page: you are put straight back into the match.</span>
+              </div>
+            ))}
           <BattleLog lines={logLines} db={db} />
           {releasing && (
             <div className="fight__banner fight__banner--info" role="status">

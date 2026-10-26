@@ -39,7 +39,7 @@ function Replay(props: {
     replay.moves.forEach((m, i) =>
       feed.push({
         kind: 'move',
-        move: { seq: i + 1, seat: m.seat, action: m.action, hash: '', deadline: 0 },
+        move: { seq: i + 1, seat: m.seat, action: m.action, hash: m.hash ?? '', deadline: 0 },
         history: false,
       }),
     );

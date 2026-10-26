@@ -20,7 +20,9 @@ export interface StoredReplay {
   seed: string;
   a: Entry;
   b: Entry;
-  log: { seat: Seat; action: Action }[];
+  /** each move, and (from 2026-10-26) the fingerprint of the game after it, so a replay can tell the move where it no longer plays
+   *  out as it did (the cards changed since, or a bug) */
+  log: { seat: Seat; action: Action; hash?: string }[];
   winner: Seat | 'draw';
   reason: EndReason;
   /** the seat a ghost played, if one did */
@@ -32,7 +34,8 @@ export interface StoredReplay {
 /** A replay id: 10 letters and digits. */
 export const REPLAY_ID = /^[A-Za-z0-9]{10}$/;
 
-const REASONS: readonly EndReason[] = ['win', 'resign', 'timeout', 'disconnect'];
+// (every way a game ends: a game the clock called could not be watched again while 'time' was missing here)
+const REASONS: readonly EndReason[] = ['win', 'resign', 'timeout', 'disconnect', 'time'];
 const ACTIONS = new Set(['play', 'potion', 'endTurn', 'pick']);
 
 /** A replay as a browser receives it, checked (null if anything in it is not what a replay holds). */
@@ -62,7 +65,12 @@ export function cleanReplay(raw: unknown): StoredReplay | null {
     if (seat !== 'a' && seat !== 'b') return null;
     if (typeof action !== 'object' || action === null) return null;
     if (!ACTIONS.has(String((action as Record<string, unknown>)['type']))) return null;
-    moves.push({ seat, action: action as Action });
+    const hash = (m as Record<string, unknown>)['hash'];
+    moves.push({
+      seat,
+      action: action as Action,
+      ...(typeof hash === 'string' && hash.length <= 64 ? { hash } : {}),
+    });
   }
   const ghost = r['ghost'];
   const game = r['game'];

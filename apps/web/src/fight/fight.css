@@ -2128,3 +2128,10 @@
 .fight__title + * {
   margin-left: auto;
 }
+
+/* watching: which move is on screen ("Move 12 / 87") */
+.fight__watchMove {
+  font-size: 0.9rem;
+  color: var(--c-text-dim);
+  white-space: nowrap;
+}

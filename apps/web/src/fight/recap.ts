@@ -19,6 +19,8 @@ import type { VenueId } from '../duel/scene/venue';
 export interface FightMove {
   seat: Side;
   action: Action;
+  /** the game's fingerprint after this move, as it was played (an Arena replay): a replay checks it plays out the same */
+  hash?: string;
 }
 
 /** A fight that can be watched again: what it was set up with, and every move made in it. */
@@ -204,7 +206,9 @@ export function replayFight(
             (src === heroId
               ? `${cause?.side === me ? cause.label : 'Your own cards'} (your own)`
               : src
-                ? cause && (cause.unit === src || (cause.side !== undefined && cause.side === namer.sideOf(src)))
+                ? cause &&
+                  (cause.unit === src ||
+                    (cause.side !== undefined && cause.side === namer.sideOf(src)))
                   ? cause.label
                   : namer.nameOf(src)
                 : (cause?.label ?? 'Statuses and other effects'));
@@ -253,6 +257,7 @@ export function replayFight(
     .slice(0, 3)
     .map((t) => ({ ...t, cards: tally(t.cards) }));
   const blow = lastBlow as { name: string; amount: number; round: number } | null;
-  if (heroDied && blow) recap.killer = { ...blow, lastRound: lostIn.get(blow.round) ?? blow.amount };
+  if (heroDied && blow)
+    recap.killer = { ...blow, lastRound: lostIn.get(blow.round) ?? blow.amount };
   return { recap, lines, broken };
 }

@@ -104,6 +104,16 @@ describe('replays', () => {
     expect(r?.log).toHaveLength(1);
     expect(r?.game).toBe(2);
   });
+  it('a game the clock called can be watched again, and each move keeps its fingerprint', () => {
+    expect(cleanReplay({ ...good, reason: 'time' })?.reason).toBe('time');
+    const hashed = cleanReplay({
+      ...good,
+      log: [{ seat: 'a', action: { type: 'endTurn' }, hash: 'abc123' }],
+    });
+    expect(hashed?.log[0]?.hash).toBe('abc123');
+    // (older replays without fingerprints still load)
+    expect(cleanReplay(good)?.log[0]?.hash).toBeUndefined();
+  });
   it('are refused when anything in them is off', () => {
     expect(cleanReplay({ ...good, id: 'short' })).toBeNull();
     expect(cleanReplay({ ...good, winner: 'c' })).toBeNull();
