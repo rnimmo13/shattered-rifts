@@ -658,7 +658,7 @@ function AbandonDialog(props: { onConfirm: () => void; onCancel: () => void; mid
         <p className="modal__hint">
           {props.midFight
             ? 'You are in the middle of a fight: giving up now counts as falling, so this run’s deck leaves the Arena too.'
-            : 'The run ends here. Its deck, as last saved, stays in the Arena.'}
+            : 'The run ends here. If its deck was saved for the Arena, it stays there as last saved.'}
         </p>
         <div className="modal__row">
           <button className="btn" onClick={props.onConfirm}>

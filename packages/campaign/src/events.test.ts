@@ -240,6 +240,10 @@ describe('sanctifying the deck', () => {
         (COMBAT_DB.cards['lo~strike']!.effects[0] as { amount: number }).amount,
     );
     const run = sanctified();
+    // (card luck is gone, DECISIONS #269: a save that still carries it loads, and drops it)
+    const lucky = parseRun(JSON.stringify({ ...JSON.parse(serializeRun(run)), luck: 'blessed' }));
+    expect(lucky).not.toBeNull();
+    expect(lucky && 'luck' in lucky).toBe(false);
     const back = parseRun(serializeRun(run));
     expect(back?.deck).toEqual(run.deck);
     // one copy limit is shared with the plain card and the upgraded one

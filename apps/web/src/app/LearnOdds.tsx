@@ -35,7 +35,6 @@ import { PRIZE_MARK } from '../trials/prizes';
 const pct = (w: number, total: number): string => `${Math.round((w / total) * 100)}%`;
 const total = (w: Record<string, number>): number => Object.values(w).reduce((a, b) => a + b, 0);
 const RARITIES = ['common', 'uncommon', 'rare', 'legendary'] as const;
-const ODDS = CARD_ODDS;
 
 /** what a prize on the Brass Reel is, by kind */
 const LANE_LABEL: Record<string, string> = {
@@ -81,7 +80,7 @@ export function LearnOdds() {
             <tr key={r}>
               <th scope="row">{r[0]?.toUpperCase() + r.slice(1)}</th>
               {(['duel', 'elite'] as const).map((q) => {
-                const w = ODDS[q];
+                const w = CARD_ODDS[q];
                 return <td key={q}>{pct(w[r] ?? 0, total(w))}</td>;
               })}
             </tr>

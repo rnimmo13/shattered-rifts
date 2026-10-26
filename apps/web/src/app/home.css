@@ -535,7 +535,12 @@
   font-size: 1.05rem;
 }
 
-/* the same showcase on a page with more below it (the Sandbox): a smaller figure */
+/* the same showcase on a page with more below it (the Sandbox): a smaller figure (and on a phone, smaller still) */
 .home__stage--compact .home__show {
   height: min(36vh, 22rem);
+}
+@media (max-width: 52rem) {
+  .home__stage--compact .home__show {
+    height: min(28vh, 14rem);
+  }
 }

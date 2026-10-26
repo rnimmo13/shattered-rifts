@@ -8,8 +8,6 @@ import type { GamblerShrine } from './gambler';
 
 export type Difficulty = 'easy' | 'normal' | 'hard';
 
-/** How kind card rewards are: a setting for testing and for players who want a stronger deck sooner. */
-
 export type NodeKind = 'duel' | 'elite' | 'event' | 'shrine' | 'merchant' | 'warden';
 
 export interface MapNode {

@@ -12,6 +12,7 @@ import {
   BOONS,
   type HeroId,
 } from '@sr/content/v2';
+import { CARD_ODDS } from '@sr/campaign';
 
 export type Level = 't1s1' | 't1s3' | 't2' | 't5' | 't10' | 't20';
 export const LEVELS: Level[] = ['t1s1', 't1s3', 't2', 't5', 't10', 't20'];
@@ -126,11 +127,8 @@ export function hashSeed(s: string): number {
 }
 
 const RANK: Record<string, number> = { common: 1, uncommon: 2, rare: 3, legendary: 4 };
-// the campaign's normal-luck offer odds (packages/campaign/src/rewards.ts WEIGHTS)
-const ODDS = {
-  duel: { common: 65, uncommon: 28, rare: 7, legendary: 0 },
-  elite: { common: 30, uncommon: 50, rare: 19, legendary: 1 },
-} as const;
+// the campaign's card offer odds (packages/campaign/src/rewards.ts)
+const ODDS = CARD_ODDS;
 
 function rollRarity(r: () => number, elite: boolean): string {
   const w = elite ? ODDS.elite : ODDS.duel;

@@ -97,7 +97,7 @@ export function TitleScreen() {
                 <span className="home__confirm" role="alertdialog" aria-label="Abandon this run?">
                   {r.run.phase === 'duel'
                     ? 'Abandon it mid-fight? That counts as falling: its deck leaves the Arena.'
-                    : 'Abandon it for good? Its deck stays in the Arena.'}
+                    : 'Abandon it for good? Its saved deck stays in the Arena.'}
                   <button
                     type="button"
                     className="btn btn--small"
