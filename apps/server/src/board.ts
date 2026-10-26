@@ -1054,10 +1054,11 @@ export class Leaderboard extends DurableObject<Env> {
 
   private runBoard(period: Period, now: number, player?: string): unknown {
     const from = periodStart(now, period);
-    // a run counts on the board for the period it was begun in (so one that carries on across a Monday is not credited twice)
+    // a run is on the board for every period it made progress in, at how far it has gone in all (Robert, 2026-10-26: "show anyone
+    // who made progress this week"; DECISIONS #281)
     const rows = this.ctx.storage.sql
       .exec<RunSql>(
-        'SELECT player, name, hero, tier, stage, at FROM runs WHERE first_at >= ? LIMIT 20000',
+        'SELECT player, name, hero, tier, stage, at FROM runs WHERE at >= ? LIMIT 20000',
         from,
       )
       .toArray();
