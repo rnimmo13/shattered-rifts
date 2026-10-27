@@ -764,7 +764,7 @@ Starter: Strike, Strike, Defend, Defend, Defend, Defend, Glass Jab, Gather Arcan
 |---|---|---|---|---|
 | Glass Jab | 1 | attack | basic | Deal 7 damage. Gain 1 Arcana. |
 | Gather Arcana | 1 | skill | basic | Gain 3 Arcana. Opening hand. |
-| Arcane Bolt | 1+1◆ | attack | basic | Costs 1 Arcana. Deal 16 damage. Opening hand. |
+| Arcane Bolt | 1+1◆ | attack | basic | Costs 1 Arcana. Deal 12 damage. Opening hand. |
 | Hone | 1 | skill | common | Sharpen 4 (Obsidian Blade gains 4 damage). |
 | Honed Strike | 1 | attack | common | Deal 6 damage. Sharpen 2 (Obsidian Blade gains 2 damage). |
 | Blade Ward | 1 | skill | common | Gain 5 Barrier. Sharpen 1 (Obsidian Blade gains 1 damage). |

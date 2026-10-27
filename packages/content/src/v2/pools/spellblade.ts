@@ -32,7 +32,7 @@ export const SPELLBLADE: CardDef[] = [
   // --- basics and the token ---
   a('basic', 'meteor-jab', 'Glass Jab', 'attack', 1, 'foe', [dmg(7), stars(1)]),
   a('basic', 'gather-light', 'Gather Arcana', 'skill', 1, 'none', [stars(3)], { innate: true }),
-  a('basic', 'lumen-bolt', 'Arcane Bolt', 'attack', 1, 'foe', [dmg(16)], {
+  a('basic', 'lumen-bolt', 'Arcane Bolt', 'attack', 1, 'foe', [dmg(12)], {
     starCost: 1,
     innate: true,
   }),
