@@ -21,10 +21,10 @@ export type OfferQuality = 'duel' | 'elite';
 const rarityOf = (id: string): string => COMBAT_DB.cards[id]?.rarity ?? 'common';
 
 /**
- * A card can be added unless the deck already holds the copy limit of it (basic cards are exempt), or (with `rarityLimits`, the
- * default) the deck already holds its Legendary or its two Ancestral cards. Checking a deck that already exists (a Vault deck, a
- * ghost) passes false: one built before the limits came down (DECISIONS #238) is still a deck, only not one for the Arena; it also
- * keeps the old flat 4 copies of a card instead of the limit by rarity (DECISIONS #330).
+ * A card can be added any number of times, unless it is a Legendary or Ancestral card the deck already holds (DECISIONS #336), or
+ * (with `rarityLimits`, the default) the deck already holds its Legendary or its two Ancestral cards. Checking a deck that already
+ * exists (a Vault deck, a ghost) passes false: one built before the limits came down (DECISIONS #238) is still a deck, only not one
+ * for the Arena.
  */
 export function canAdd(deck: readonly string[], cardId: string, rarityLimits = true): boolean {
   const c = COMBAT_DB.cards[cardId];
@@ -38,15 +38,9 @@ export function canAdd(deck: readonly string[], cardId: string, rarityLimits = t
     return false;
   if (rarityLimits && c.rarity === 'ancestral' && held('ancestral') >= V2_DECK_RULES.maxAncestral)
     return false;
-  // a card and its "+" version share one limit, by rarity: 4 of a common, 3 of an uncommon, 2 of a rare, 1 of a Legendary
+  // any number of copies, but a Legendary or Ancestral card is one of a kind (a card and its "+" count as one; DECISIONS #336)
   const base = (id: string): string => stripRoll(id).replace(/\+$/, '');
-  // (a deck checked without the rarity limits, one built before they came down, keeps the old flat 4: DECISIONS #330)
-  const limit = rarityLimits
-    ? maxCopiesOf(c.rarity)
-    : c.rarity === 'legendary' || c.rarity === 'ancestral'
-      ? 1
-      : V2_DECK_RULES.maxCopies;
-  return deck.filter((x) => base(x) === base(cardId)).length < limit;
+  return deck.filter((x) => base(x) === base(cardId)).length < maxCopiesOf(c.rarity);
 }
 
 /** Statuses only one Riftwalker builds (through their trait): cards that spend or count them never cross over. */

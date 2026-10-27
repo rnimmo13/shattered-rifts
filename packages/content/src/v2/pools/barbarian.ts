@@ -12,7 +12,6 @@ import {
   barrier,
   dmg,
   draw,
-  lose,
   mana,
   manaNext,
   on,
@@ -35,18 +34,16 @@ export const BARBARIAN: CardDef[] = [
   s('basic', 'still-guard', 'Still Guard', 'skill', 1, 'none', [barrier(7), stance('calm')]),
 
   // --- Fury ---
-  s('common', 'quick-palms', 'Quick Palms', 'attack', 0, 'foe', [dmg(3)]),
   s('common', 'angry-palm', 'Angry Palm', 'attack', 1, 'foe', [scaled(dmg(7), per('wrath', 6))]),
-  s('common', 'war-breath', 'War Breath', 'skill', 1, 'none', [stance('wrath'), draw(1)]),
   s('common', 'ashen-fist', 'Ashen Fist', 'attack', 2, 'foe', [dmg(14), stance('wrath')]),
   s('uncommon', 'temper-flare', 'Temper Flare', 'attack', 1, 'foe', [
     dmg(3, 'target', 3),
     stance('wrath'),
   ]),
-  s('uncommon', 'rising-ire', 'Rising Ire', 'skill', 0, 'none', [stance('wrath'), draw(1)], {
+  s('common', 'rising-ire', 'Rising Ire', 'skill', 0, 'none', [stance('wrath'), draw(1)], {
     exhaust: true,
   }),
-  s('uncommon', 'swift-step', 'Swift Step', 'skill', 1, 'none', [
+  s('common', 'swift-step', 'Swift Step', 'skill', 1, 'none', [
     stance('wrath'),
     status('vigor', 4),
   ]),
@@ -63,46 +60,27 @@ export const BARBARIAN: CardDef[] = [
   ]),
   s('common', 'red-mist', 'Red Mist', 'attack', 1, 'none', [dmg(5, 'allFoes'), stance('wrath')]),
   s('common', 'flurry-of-palms', 'Flurry of Palms', 'attack', 0, 'foe', [dmg(3, 'target', 2)]),
-  s('common', 'crushing-palm', 'Crushing Palm', 'attack', 1, 'foe', [
-    dmg(8),
-    status('exposed', 1, 'target'),
-  ]),
   s('uncommon', 'wheel-kick', 'Spinning Heel', 'attack', 2, 'foe', [
     dmg(12),
     status('exposed', 2, 'target'),
     draw(1),
   ]),
-  s('uncommon', 'cut-through-fate', 'Read the Opening', 'attack', 1, 'foe', [dmg(7), scry(2)]),
   s('uncommon', 'wrathful-guard', 'Wrathful Guard', 'skill', 1, 'none', [
     barrier(8),
     stance('wrath'),
   ]),
-  s('rare', 'brilliance', 'Kindled Palm', 'attack', 1, 'foe', [scaled(dmg(12), per('mantra', 1))]),
   s('rare', 'rampage-of-ire', 'Rampage of Ire', 'power', 2, 'none', [
     on('stance', [dmg(6, 'allFoes')], { stance: 'wrath' }),
   ]),
   s('rare', 'rage-unbound', 'Rage Unbound', 'skill', 0, 'none', [stance('wrath'), mana(1)], {
     exhaust: true,
   }),
-  s(
-    'common',
-    'ember-jab',
-    'Ember Jab',
-    'attack',
-    0,
-    'foe',
-    [dmg(4), status('exposed', 1, 'target')],
-    {
-      exhaust: true,
-    },
-  ),
-  s('common', 'rending-hands', 'Rending Hands', 'attack', 1, 'foe', [dmg(5, 'target', 2), lose(2)]),
   s('uncommon', 'hot-blooded', 'Hot-Blooded', 'attack', 1, 'foe', [
     scaled(dmg(8), per('missingPct', 1 / 6)),
     stance('wrath'),
   ]),
   s(
-    'uncommon',
+    'common',
     'berserk-tide',
     'Berserk Tide',
     'attack',
@@ -114,7 +92,7 @@ export const BARBARIAN: CardDef[] = [
     ],
     { x: true },
   ),
-  s('uncommon', 'unleashed-roar', 'Unleashed Roar', 'skill', 1, 'none', [
+  s('common', 'unleashed-roar', 'Unleashed Roar', 'skill', 1, 'none', [
     status('exposed', 1, 'allFoes'),
     stance('wrath'),
   ]),
@@ -128,9 +106,6 @@ export const BARBARIAN: CardDef[] = [
     [dmg(12, 'attacker'), status('vigor', 4), stance('wrath')],
     { trigger: { on: 'hpLost', min: 5 } },
   ),
-  s('rare', 'blood-on-the-sand', 'Blood on the Sand', 'power', 1, 'none', [
-    on('stance', [lose(2), status('vigor', 2)], { stance: 'wrath' }),
-  ]),
   s('rare', 'ashes-of-restraint', 'Ashes of Restraint', 'attack', 2, 'foe', [
     scaled(dmg(6), per('exhausted', 2)),
     stance('wrath'),
@@ -144,20 +119,17 @@ export const BARBARIAN: CardDef[] = [
     stance('wrath'),
     stance('calm'),
   ]),
-  s('common', 'open-palm', 'Open Palm', 'attack', 1, 'foe', [dmg(5, 'target', 2), stance('none')]),
-  s('common', 'inner-sight', 'Inner Sight', 'skill', 1, 'none', [barrier(5), scry(4)]),
   s('common', 'thread-cutter', 'Thread-Cutter', 'attack', 1, 'foe', [
     dmg(5),
     stance('wrath'),
     stance('calm'),
   ]),
-  s('uncommon', 'settled-mind', 'Settled Mind', 'skill', 1, 'none', [
+  s('common', 'settled-mind', 'Settled Mind', 'skill', 1, 'none', [
     scaled(draw(0), per('calm', 3)),
     stance('calm'),
   ]),
-  s('uncommon', 'breathe', 'Breathe', 'skill', 1, 'none', [stance('calm'), barrier(5)]),
   s(
-    'uncommon',
+    'common',
     'hushed-stillness',
     'Hushed Stillness',
     'skill',
@@ -168,9 +140,6 @@ export const BARBARIAN: CardDef[] = [
       exhaust: true,
     },
   ),
-  s('uncommon', 'still-pool', 'Still Pool', 'power', 1, 'none', [
-    on('turnEnd', [scaled(barrier(3), per('calm', 4))]),
-  ]),
   s('uncommon', 'unmoved-mind', 'Unmoved Mind', 'power', 1, 'none', [
     on('stance', [barrier(3), dmg(2, 'randomFoe')]),
   ]),
@@ -185,7 +154,6 @@ export const BARBARIAN: CardDef[] = [
     stance('calm'),
     scry(2),
   ]),
-  s('common', 'empty-vessel', 'Release', 'skill', 1, 'none', [stance('none'), barrier(5), draw(1)]),
   s('common', 'empty-fist', 'Settling Fist', 'attack', 1, 'foe', [
     dmg(8),
     barrier(3),
@@ -199,26 +167,17 @@ export const BARBARIAN: CardDef[] = [
     retain: true,
   }),
   s('uncommon', 'sanctity', 'Let Go', 'skill', 1, 'none', [draw(2), stance('none')]),
-  s('rare', 'spirit-shield', "Mountain's Stillness", 'skill', 2, 'none', [
-    scaled(barrier(4), per('hand', 2)),
-  ]),
   s('rare', 'all-seeing', 'All-Seeing', 'skill', 3, 'none', [discoverOp(undefined, 2, true)], {
     exhaust: true,
   }),
   s('rare', 'serenity-incarnate', 'Serenity Incarnate', 'power', 3, 'none', [
     on('turnEnd', [heal(3), barrier(6)]),
   ]),
-  s('common', 'settled-palms', 'Settled Palms', 'skill', 0, 'none', [barrier(3), scry(2)]),
-  s('common', 'quiet-strike', 'Quiet Strike', 'attack', 1, 'foe', [
-    dmg(7),
-    barrier(3),
-    stance('calm'),
-  ]),
-  s('uncommon', 'still-water', 'Still Water', 'skill', 1, 'none', [
+  s('common', 'still-water', 'Still Water', 'skill', 1, 'none', [
     scaled(barrier(4), per('calm', 6)),
     draw(1),
   ]),
-  s('uncommon', 'exhale', 'Exhale', 'skill', 0, 'none', [stance('none'), mana(1), draw(1)], {
+  s('common', 'exhale', 'Exhale', 'skill', 0, 'none', [stance('none'), mana(1), draw(1)], {
     exhaust: true,
   }),
   s(
@@ -244,18 +203,10 @@ export const BARBARIAN: CardDef[] = [
     [scaled(barrier(0), per('x', 5)), scaled(draw(0), per('x', 1)), stance('calm')],
     { x: true },
   ),
-  s('rare', 'breath-between-blows', 'Breath Between Blows', 'power', 1, 'none', [
-    on('play', [barrier(2)], { filter: 'skill' }),
-  ]),
 
   // --- Radiant ---
   s('common', 'whispered-vow', 'Whispered Vow', 'skill', 1, 'none', [status('mantra', 3), scry(2)]),
   s('common', 'bowing-low', 'Bowing Low', 'skill', 0, 'none', [status('mantra', 2), barrier(6)]),
-  s('common', 'devout-strike', 'Devout Strike', 'attack', 1, 'foe', [dmg(7), status('mantra', 1)]),
-  s('common', 'shield-of-faith', 'Shield of Faith', 'skill', 1, 'none', [
-    barrier(7),
-    status('mantra', 1),
-  ]),
   s('common', 'sunlit-blade', 'Sunlit Blade', 'attack', 1, 'foe', [dmg(9), status('mantra', 1)]),
   s('uncommon', 'the-offering', 'The Offering', 'skill', 2, 'none', [status('mantra', 5)], {
     retain: true,
@@ -263,26 +214,13 @@ export const BARBARIAN: CardDef[] = [
   s('uncommon', 'litany', 'Litany', 'power', 2, 'none', [
     on('play', [status('mantra', 1)], { filter: 'skill' }),
   ]),
-  s('rare', 'daily-rite', 'Daily Rite', 'power', 1, 'none', [
+  s('uncommon', 'daily-rite', 'Daily Rite', 'power', 1, 'none', [
     on('turnStart', [status('mantra', 2)]),
   ]),
   s('rare', 'rise-radiant', 'Rise Radiant', 'skill', 2, 'none', [stance('radiant')], {
     exhaust: true,
   }),
-  s('uncommon', 'martyrs-vow', "Martyr's Vow", 'skill', 0, 'none', [lose(3), status('mantra', 3)]),
-  s(
-    'uncommon',
-    'poised-riposte',
-    'Poised Riposte',
-    'snare',
-    1,
-    'none',
-    [dmg(9, 'attacker'), stance('wrath')],
-    { trigger: { on: 'attacked' } },
-  ),
-  s('uncommon', 'held-breath', 'Held Breath', 'skill', 1, 'none', [status('holdfast', 1)]),
-  s('uncommon', 'poise', 'Poise', 'power', 1, 'none', [status('bracing', 2)]),
-  s('uncommon', 'reading-the-signs', 'Reading the Signs', 'power', 1, 'none', [
+  s('common', 'reading-the-signs', 'Reading the Signs', 'power', 1, 'none', [
     on('discard', [status('mantra', 1)]),
   ]),
   s('legendary', 'perfect-balance', 'Perfect Balance', 'power', 2, 'none', [
@@ -302,16 +240,11 @@ export const BARBARIAN: CardDef[] = [
   s('common', 'prostrate', 'Kneel', 'skill', 0, 'none', [status('mantra', 2), draw(1)], {
     exhaust: true,
   }),
-  s('common', 'pray', 'Ember Prayer', 'skill', 1, 'none', [status('mantra', 3), barrier(3)]),
   s('uncommon', 'worship', 'Hymn of Embers', 'skill', 2, 'none', [status('mantra', 4), barrier(6)]),
-  s('uncommon', 'devotion', 'Morning Prayer', 'power', 1, 'none', [
+  s('common', 'devotion', 'Morning Prayer', 'power', 1, 'none', [
     on('turnStart', [status('mantra', 1), barrier(3)]),
   ]),
-  s('uncommon', 'wreath-of-flame', 'Crown of Embers', 'skill', 1, 'none', [
-    status('vigor', 5),
-    status('mantra', 1),
-  ]),
-  s('rare', 'scrawl', 'Flood of Visions', 'skill', 1, 'none', [draw(5), status('mantra', 2)], {
+  s('uncommon', 'scrawl', 'Flood of Visions', 'skill', 1, 'none', [draw(5), status('mantra', 2)], {
     exhaust: true,
   }),
   s('rare', 'last-rites-of-flame', 'Last Rites of the Flame', 'attack', 3, 'none', [
@@ -321,17 +254,15 @@ export const BARBARIAN: CardDef[] = [
   s('rare', 'radiant-heart', 'Radiant Heart', 'power', 2, 'none', [
     on('stance', [draw(2)], { stance: 'radiant' }),
   ]),
-  s('common', 'candle-vigil', 'Candle Vigil', 'skill', 1, 'none', [status('mantra', 2), draw(1)]),
-  s('common', 'chanted-blow', 'Chanted Blow', 'attack', 1, 'foe', [dmg(6), status('mantra', 2)]),
   s('uncommon', 'foretold-flame', 'Foretold Flame', 'attack', 1, 'foe', [
     scaled(dmg(5), per('mantra', 1)),
     scry(2),
   ]),
-  s('uncommon', 'faith-kept', 'Faith Kept', 'skill', 1, 'none', [status('mantra', 2)], {
+  s('common', 'faith-kept', 'Faith Kept', 'skill', 1, 'none', [status('mantra', 2)], {
     retain: true,
     onExhaust: [status('mantra', 3)],
   }),
-  s('uncommon', 'mantra-engine', 'Mantra Engine', 'power', 1, 'none', [
+  s('common', 'mantra-engine', 'Mantra Engine', 'power', 1, 'none', [
     on('turnEnd', [scaled(barrier(0), per('mantra', 1))]),
   ]),
   s(

@@ -5,8 +5,11 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **Card pools trimmed:** every Riftwalker's cards now sit in a build path, 8 commons, 7 uncommons, 5 rares and a Legendary each, with near-duplicates removed (about 66 cards each, down from about 90). A removed card in an old run or deck becomes a similar card of the same build path.
+- **Starting kits:** each kit is now two uncommons and a common of its build path.
+- **No copy limit:** a deck can hold any number of copies of a card (a Legendary is still one of a kind).
+- **Kesh:** no longer heals after a won fight.
 - **Valeria:** her Devotion shows beside her Mana. Her Devotion starting deck now has Hymn of Reckoning (6 Devotion: 10 to every enemy) instead of Ward of Ages. New Devotion attacks: Hand of Justice (4 Devotion: deal 10, Exposed), Consecrated Blade (8 Devotion: deal 9 twice, 6 Barrier) and Hand of God (15 Devotion: deal 36).
-- **Copy limits by rarity:** a deck takes at most 4 of a common, 3 of an uncommon and 2 of a rare.
 - **Fight result:** Continue sits on top, the replay options under it.
 - **Card library:** filter a Riftwalker's cards by build path.
 - **Kesh rebalanced:** Pack Instinct heals 2 after a won fight (was 6) and she no longer starts each fight with 1 Might. Her Pack starting deck has Savage Command instead of Rally the Pack, and her Feast starting deck Gnaw instead of Devour (both can still be found as rewards).

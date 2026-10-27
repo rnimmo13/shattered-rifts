@@ -39,10 +39,10 @@ function standing(seed: string): RunState {
     deck: [
       ...RIFTWALKERS.knight.starter,
       'bulwark-blow',
-      'shield-bash',
+      'thorn-lash',
       'stand-firm',
-      'iron-vigil',
-      'colossus-blow',
+      'barbed-guard',
+      'citadel-march',
       'gilded-bastion',
       'anvil-strike',
     ],

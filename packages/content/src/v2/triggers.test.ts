@@ -66,14 +66,14 @@ describe('draw, created and Skills-played hooks', () => {
     expect(foe(s).hp).toBeLessThanOrEqual(hp - 2);
   });
 
-  it('"Whenever a card is created" (Armory of Light) pays Might for each card Sword Rain makes', () => {
-    let s = fight('spellblade', ['armory-of-light', 'sword-rain']);
+  it('"Whenever a card is created" (Pillar of Light) gives Barrier for each card Sword Rain makes', () => {
+    let s = fight('spellblade', ['pillar-of-light', 'sword-rain']);
     s = play(s, 'T0');
-    const might = hero(s).statuses.might ?? 0;
+    const barrier = hero(s).barrier;
     const created = s.sides.a.created;
     s = play(s, 'T1');
     expect(s.sides.a.created).toBe(created + 2);
-    expect(hero(s).statuses.might).toBe(might + 2);
+    expect(hero(s).barrier).toBe(barrier + 8);
   });
 
   it("Showman's Flourish counts the Skills played this turn", () => {

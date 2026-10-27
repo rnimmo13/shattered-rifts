@@ -10,7 +10,6 @@ import {
   barrier,
   dmg,
   draw,
-  lose,
   mana,
   manaNext,
   on,
@@ -21,11 +20,8 @@ import {
   scry,
   status,
   drawNext,
-  discard,
   cheapen,
   discoverOp,
-  doubleSt,
-  fetchCards,
   maxMana,
 } from '../build';
 
@@ -62,26 +58,6 @@ export const TRAPPER: CardDef[] = [
     [dmg(10, 'attacker'), status('faltering', 1, 'attacker')],
     { trigger: { on: 'attacked' } },
   ),
-  v(
-    'common',
-    'whisper-net',
-    'Whisper Net',
-    'snare',
-    1,
-    'none',
-    [dmg(8, 'attacker'), status('stunned', 1, 'attacker')],
-    { trigger: { on: 'foeSummons' } },
-  ),
-  v(
-    'common',
-    'cage',
-    'Cage',
-    'snare',
-    1,
-    'none',
-    [dmg(10, 'attacker'), status('faltering', 1, 'attacker')],
-    { trigger: { on: 'foeDefends' } },
-  ),
   v('common', 'snare-kit', 'Trap Kit', 'skill', 1, 'none', [addTo('trip-line', 2)], {
     exhaust: true,
   }),
@@ -95,13 +71,10 @@ export const TRAPPER: CardDef[] = [
     [PREVENT, status('faltering', 2, 'attacker')],
     { trigger: { on: 'attacked' } },
   ),
-  v('uncommon', 'pain-link', 'Pain Link', 'snare', 0, 'none', [dmg(6, 'allFoes')], {
-    trigger: { on: 'hpLost', min: 5 },
-  }),
   v('uncommon', 'time-bomb', 'Time Bomb', 'snare', 1, 'none', [dmg(12, 'allFoes')], {
     trigger: { on: 'foeTurn' },
   }),
-  v('uncommon', 'spring-loaded', 'Spring-Loaded', 'skill', 1, 'none', [
+  v('common', 'spring-loaded', 'Spring-Loaded', 'skill', 1, 'none', [
     scaled(barrier(0), per('snares', 5)),
   ]),
   v('uncommon', 'master-trapper', 'Master Trapper', 'power', 1, 'none', [
@@ -129,7 +102,6 @@ export const TRAPPER: CardDef[] = [
     [status('stunned', 2, 'attacker'), status('shielded', 1)],
     { trigger: { on: 'attacked' } },
   ),
-  v('rare', 'echo-trap', 'Echo Trap', 'power', 2, 'none', [on('snare', [barrier(5), draw(1)])]),
 
   // (more Traps)
   v(
@@ -181,11 +153,6 @@ export const TRAPPER: CardDef[] = [
   v('common', 'exploit-weakness', 'Exploit Weakness', 'attack', 1, 'foe', [
     scaled(dmg(5), per('exposed', 2, 'target')),
   ]),
-  v('common', 'tear-the-veil', 'Tear the Veil', 'skill', 1, 'none', [
-    status('exposed', 1, 'allFoes'),
-    draw(1),
-  ]),
-  v('common', 'ambush', 'Ambush', 'attack', 2, 'foe', [dmg(14), status('exposed', 1, 'target')]),
   v('common', 'veil-dance', 'Veil Dance', 'skill', 1, 'none', [
     status('faltering', 1, 'allFoes'),
     barrier(5),
@@ -195,36 +162,20 @@ export const TRAPPER: CardDef[] = [
     status('exposed', 3, 'target'),
   ]),
   v('uncommon', 'shadow-volley', 'Shadow Volley', 'attack', 1, 'none', [dmg(4, 'randomFoe', 3)]),
-  v('uncommon', 'spotlight', 'Spotlight', 'skill', 1, 'foe', [
-    status('exposed', 3, 'target'),
-    status('faltering', 1, 'target'),
-  ]),
   v('rare', 'coup-de-grace', 'Coup de Grace', 'attack', 3, 'foe', [
     scaled(dmg(16), per('exposed', 3, 'target')),
   ]),
 
-  v('common', 'hamstring', 'Hamstring', 'attack', 1, 'foe', [
-    dmg(6),
-    status('exposed', 2, 'target'),
-  ]),
   v('uncommon', 'patient-hunter', 'Patient Hunter', 'power', 1, 'none', [
     on('turnStart', [status('exposed', 1, 'allFoes')]),
   ]),
 
   // (more Exposed)
-  v('common', 'low-blow', 'Low Blow', 'attack', 0, 'foe', [
-    dmg(3),
-    status('faltering', 1, 'target'),
-  ]),
   v('common', 'cheap-shot', 'Cheap Shot', 'attack', 1, 'foe', [
     dmg(8),
     status('faltering', 1, 'target'),
   ]),
   v('common', 'stalk', 'Stalk', 'attack', 2, 'foe', [dmg(15), drawNext(2)]),
-  v('uncommon', 'sweep-the-legs', 'Sweep the Legs', 'skill', 2, 'foe', [
-    status('faltering', 2, 'target'),
-    barrier(12),
-  ]),
   v('uncommon', 'strip-the-guard', 'Strip the Guard', 'skill', 1, 'foe', [
     status('exposed', 3, 'target'),
     status('brittle', 2, 'target'),
@@ -234,7 +185,6 @@ export const TRAPPER: CardDef[] = [
     status('exposed', 1, 'allFoes'),
     barrier(4),
   ]),
-  v('uncommon', 'pin-cushion', 'Pin Cushion', 'attack', 1, 'foe', [scaled(dmg(4), per('hand', 1))]),
   v(
     'rare',
     'opening-strike',
@@ -266,44 +216,17 @@ export const TRAPPER: CardDef[] = [
   v('common', 'cold-read', 'Cold Read', 'skill', 0, 'none', [scry(4)]),
   v('common', 'patient-blade', 'Patient Blade', 'attack', 1, 'foe', [dmg(9)], { retain: true }),
   v('common', 'shadow-cloak', 'Shadow Cloak', 'skill', 1, 'none', [barrier(6), draw(1)]),
-  v('common', 'dark-study', 'Dark Study', 'skill', 1, 'none', [draw(2)]),
   v('uncommon', 'banked-breath', 'Banked Breath', 'power', 1, 'none', [
     on('turnEnd', [scaled(barrier(0), per('mana', 2))]),
   ]),
-  v('uncommon', 'stolen-moment', 'Stolen Moment', 'skill', 0, 'none', [mana(1), scry(2)], {
-    exhaust: true,
-  }),
   v('uncommon', 'shadow-step', 'Fade Back', 'skill', 1, 'none', [barrier(7)], { retain: true }),
-  v('uncommon', 'cold-bargain', 'Cold Bargain', 'skill', 0, 'none', [lose(3), mana(1), draw(1)], {
-    exhaust: true,
-  }),
   v('rare', 'long-game', 'The Long Game', 'power', 2, 'none', [on('turnStart', [draw(1)])]),
-  v('uncommon', 'spare-traps', 'Spare Traps', 'skill', 0, 'none', [addTo('trip-line'), draw(1)], {
-    exhaust: true,
-  }),
-  v('rare', 'gleeful-trapsmith', 'Gleeful Trapsmith', 'power', 1, 'none', [
+  v('uncommon', 'gleeful-trapsmith', 'Gleeful Trapsmith', 'power', 1, 'none', [
     on('play', [dmg(4, 'allFoes')], { filter: 'snare' }),
   ]),
-  v('common', 'break-the-guard', 'Break the Guard', 'skill', 1, 'foe', [
-    status('brittle', 3, 'target'),
-    status('exposed', 1, 'target'),
-  ]),
-  v('uncommon', 'mask-of-faces', 'Mask of Faces', 'skill', 1, 'none', [status('steadfast', 2)]),
-  v('uncommon', 'marked-cards', 'Coiled Patience', 'power', 1, 'none', [
+  v('common', 'marked-cards', 'Coiled Patience', 'power', 1, 'none', [
     on('turnEnd', [scaled(dmg(0, 'randomFoe'), per('mana', 2))]),
   ]),
-  v(
-    'rare',
-    'between-worlds',
-    'Between Worlds',
-    'skill',
-    2,
-    'none',
-    [status('ghostly', 2), manaNext(-1)],
-    {
-      exhaust: true,
-    },
-  ),
   v(
     'legendary',
     'the-perfect-trap',
@@ -317,22 +240,19 @@ export const TRAPPER: CardDef[] = [
   v('legendary', 'masquerade', 'Masquerade', 'power', 2, 'none', [
     on('snare', [draw(2), mana(1), dmg(4, 'allFoes')]),
   ]),
-  v('uncommon', 'saved-breath', 'Saved Breath', 'skill', 0, 'none', [manaNext(2), scry(2)], {
+  v('common', 'saved-breath', 'Saved Breath', 'skill', 0, 'none', [manaNext(2), scry(2)], {
     exhaust: true,
   }),
   // (more Patience)
-  v('common', 'step-aside', 'Step Aside', 'skill', 1, 'none', [barrier(5), drawNext(1)]),
-  v('common', 'quick-study', 'Bide', 'skill', 0, 'none', [barrier(3)], { retain: true }),
-  v('uncommon', 'roll-with-it', 'Weigh the Odds', 'skill', 1, 'none', [scry(3), draw(1)], {
+  v('common', 'roll-with-it', 'Weigh the Odds', 'skill', 1, 'none', [scry(3), draw(1)], {
     retain: true,
   }),
-  v('uncommon', 'sleight-of-hand', 'Sleight of Hand', 'skill', 1, 'none', [draw(2), manaNext(1)]),
   v('uncommon', 'calculated-move', 'Measured Breath', 'skill', 1, 'none', [
     manaNext(2),
     barrier(3),
   ]),
-  v('uncommon', 'gambit', 'Waiting Game', 'attack', 1, 'foe', [scaled(dmg(4), per('hand', 2))]),
-  v('rare', 'second-act', 'Second Act', 'skill', 1, 'none', [status('twinned', 1)], {
+  v('common', 'gambit', 'Waiting Game', 'attack', 1, 'foe', [scaled(dmg(4), per('hand', 2))]),
+  v('uncommon', 'second-act', 'Second Act', 'skill', 1, 'none', [status('twinned', 1)], {
     retain: true,
   }),
   v('rare', 'frozen-moment', 'Frozen Moment', 'skill', 1, 'none', [cheapen(1, 'hand')], {
@@ -342,9 +262,6 @@ export const TRAPPER: CardDef[] = [
     exhaust: true,
     retain: true,
   }),
-  v('rare', 'misdirection', 'Patient Guard', 'power', 1, 'none', [
-    on('turnEnd', [scaled(barrier(4), per('hand', 1))]),
-  ]),
   v(
     'rare',
     'pickpocket-master',
@@ -355,10 +272,6 @@ export const TRAPPER: CardDef[] = [
     [discoverOp(undefined, 2, true)],
     { exhaust: true },
   ),
-  v('rare', 'shadow-pace', 'Shadow Pace', 'power', 2, 'none', [
-    on('turnStart', [draw(1), barrier(4)]),
-  ]),
-  v('rare', 'perfect-alibi', 'Perfect Alibi', 'skill', 1, 'none', [barrier(20), discard(1)]),
 
   // --- Traps (more traps) ---
   v(
@@ -382,17 +295,7 @@ export const TRAPPER: CardDef[] = [
     { trigger: { on: 'foeSummons' } },
   ),
   v(
-    'uncommon',
-    'poison-pantry',
-    'Poison Pantry',
-    'snare',
-    1,
-    'none',
-    [dmg(8, 'attacker'), status('brittle', 2, 'attacker')],
-    { trigger: { on: 'foeDefends' } },
-  ),
-  v(
-    'uncommon',
+    'common',
     'metronome-trap',
     'Metronome Trap',
     'snare',
@@ -406,49 +309,18 @@ export const TRAPPER: CardDef[] = [
   v('common', 'trapline-rider', 'Trapline Rider', 'attack', 1, 'foe', [
     scaled(dmg(4), per('snares', 1, 'self', 'hits')),
   ]),
-  v(
-    'uncommon',
-    'patchwork-traps',
-    'Patchwork Traps',
-    'skill',
-    1,
-    'none',
-    [addTo('hollow-snare'), barrier(5)],
-    { exhaust: true },
-  ),
   v('uncommon', 'grim-collection', 'Grim Collection', 'attack', 2, 'foe', [
     dmg(10),
     scaled(barrier(0), per('snares', 4)),
   ]),
-  v('rare', 'trap-door', 'Trap Door', 'power', 1, 'none', [on('turnStart', [addTo('trip-line')])]),
+  v('uncommon', 'trap-door', 'Trap Door', 'power', 1, 'none', [
+    on('turnStart', [addTo('trip-line')]),
+  ]),
 
   // --- Exposed (more marks) ---
-  v('common', 'pressure-point', 'Nerve Strike', 'attack', 1, 'foe', [
-    scaled(dmg(4), per('exposed', 2, 'target')),
-    status('exposed', 1, 'target'),
-  ]),
-  v('common', 'twin-fangs', 'Twin Fangs', 'attack', 1, 'foe', [
-    dmg(4, 'target', 2),
-    status('exposed', 1, 'target'),
-  ]),
   v('uncommon', 'dread-gaze', 'Dread Gaze', 'skill', 0, 'foe', [status('exposed', 4, 'target')], {
     exhaust: true,
   }),
-  v(
-    'uncommon',
-    'compound-fear',
-    'Compound Fear',
-    'skill',
-    1,
-    'foe',
-    [status('exposed', 1, 'target'), doubleSt('exposed', 'target', 2, 3)],
-    {
-      exhaust: true,
-    },
-  ),
-  v('uncommon', 'opportunist', 'Opportunist', 'power', 1, 'none', [
-    on('exhaust', [dmg(5, 'randomFoe'), status('exposed', 1, 'randomFoe')]),
-  ]),
   v('common', 'slit-and-run', 'Slit and Run', 'attack', 1, 'foe', [
     dmg(7),
     barrier(4),
@@ -464,12 +336,10 @@ export const TRAPPER: CardDef[] = [
   ]),
 
   // --- Patience (more) ---
-  v('common', 'bated-breath', 'Bated Breath', 'skill', 1, 'none', [barrier(8)], { retain: true }),
   // (one more Mana every turn is huge: it starts next turn, and the upgrade only makes it easier to find; DECISIONS #302)
   v('rare', 'deep-pockets', 'Deep Pockets', 'power', 3, 'none', [maxMana(1)], {
     up: { retain: true, innate: true },
   }),
-  v('common', 'read-the-room', 'Read the Room', 'skill', 1, 'none', [scry(3), barrier(4)]),
   v(
     'uncommon',
     'long-con',
@@ -484,21 +354,4 @@ export const TRAPPER: CardDef[] = [
   ),
   v('common', 'discarded-hand', 'Hidden Hand', 'skill', 1, 'none', [draw(2)], { retain: true }),
   v('uncommon', 'sandbag', 'Sandbag', 'attack', 1, 'foe', [scaled(dmg(5), per('mana', 3))]),
-  v(
-    'rare',
-    'curtain-call',
-    'Curtain Call',
-    'skill',
-    1,
-    'none',
-    [draw(1), fetchCards(2, 'hand', 'snare')],
-    {
-      exhaust: true,
-    },
-  ),
-  v('uncommon', 'trick-of-the-light', 'Trick of the Light', 'skill', 0, 'none', [
-    scry(2),
-    barrier(3),
-  ]),
-  v('uncommon', 'house-edge', 'House Edge', 'power', 1, 'none', [on('draw', [barrier(1)])]),
 ];

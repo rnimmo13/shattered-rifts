@@ -130,7 +130,7 @@ describe('a random removal names its card (DECISIONS #233)', () => {
       potions: ['fire-flask'],
       boons: ['iron-sigil'],
     };
-    const run: RunState = { ...base, deck: [...base.deck, 'wound', 'gilded-blow', 'iron-vigil+'] };
+    const run: RunState = { ...base, deck: [...base.deck, 'wound', 'gilded-blow', 'barbed-guard+'] };
     let seen = 0;
     for (const def of EVENTS) {
       const ev = def.build(JSON.parse(JSON.stringify(run)) as RunState);

@@ -107,10 +107,9 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     role: 'Hunter',
     trait: {
       name: 'Pack Instinct',
-      // (DECISIONS #285: her Might is the pack's, and she recovers between fights from what her own cards cost her)
-      text: 'Your companions share half your Might (rounded down), and a new companion arrives with it. Heal 2 after every fight you win.',
+      // (DECISIONS #285: her Might is the pack's; the heal after a won fight is gone, DECISIONS #333)
+      text: 'Your companions share half your Might (rounded down), and a new companion arrives with it.',
       shareMight: 0.5,
-      healAfterFight: 2,
     },
     hero: {
       id: 'hunter',
@@ -534,6 +533,7 @@ export {
   type CardMark,
 } from './sanctify';
 import { PATH_OF } from './paths.generated';
+import { TRIMMED_CARDS } from './retired';
 
 /** Which of its Riftwalker's three build paths (0, 1 or 2 in `Riftwalker.buildPaths`) a card belongs to, or undefined (basics, glue, legendaries). */
 export function pathOf(cardId: string): number | undefined {
@@ -554,31 +554,28 @@ export function pathSizes(hero: HeroId): [number, number, number] {
 }
 
 /**
- * Deck rules for Combat v2 runs: a deck never drops below minSize cards, no non-basic card has more than maxCopies copies, and at most
+ * Deck rules for Combat v2 runs: a deck never drops below minSize cards, holds any number of copies of a card (DECISIONS #336), and at most
  * maxLegendary Legendary and maxAncestral Ancestral cards fit in the deck at once (one Legendary and two Ancestral since DECISIONS
  * #238; a deck that already held more keeps them, but takes no more).
  */
 export const V2_DECK_RULES = {
   minSize: 8,
-  maxCopies: 4,
   vaultSlots: 10,
   maxLegendary: 1,
   maxAncestral: 2,
 } as const;
 
 /**
- * The most copies of one card (and its "+" version) a deck may take, by rarity (Robert, 2026-10-27; DECISIONS #330): the rarer the
- * card, the fewer. Basic cards have no limit.
+ * The most copies of one card (and its "+" version) a deck may take: no limit (Robert, 2026-10-27: "remove the limit on the number of
+ * duplicate cards a deck can have"; DECISIONS #336, replacing the limits by rarity of #330), except a Legendary or Ancestral card, which
+ * is one of a kind.
  */
 export const COPIES_BY_RARITY: Readonly<Record<string, number>> = {
-  common: 4,
-  uncommon: 3,
-  rare: 2,
   legendary: 1,
   ancestral: 1,
 };
 export const maxCopiesOf = (rarity: string | undefined): number =>
-  COPIES_BY_RARITY[rarity ?? 'common'] ?? V2_DECK_RULES.maxCopies;
+  COPIES_BY_RARITY[rarity ?? 'common'] ?? Number.POSITIVE_INFINITY;
 
 export { BOONS, HEARTS, POTIONS };
 
@@ -608,6 +605,7 @@ export const RETIRED_CARDS: Readonly<Record<string, string>> = {
   heel: 'thick-hide',
   'call-gnashlings': 'thick-hide',
   howl: 'pack-tactics',
+  ...TRIMMED_CARDS,
 };
 
 /** A card id as it is now: a retired card becomes its replacement, keeping its roll, engraving and upgrade; anything else is unchanged. */

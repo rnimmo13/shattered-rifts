@@ -12,26 +12,27 @@ describe('Devotion cards stay with Valeria', () => {
   });
 });
 
-describe('copies a deck may take, by rarity (DECISIONS #330)', () => {
+describe('copies a deck may take (DECISIONS #336)', () => {
   const pick = (rarity: string): string =>
     Object.values(COMBAT_DB.cards).find(
       (c) => c.rarity === rarity && c.hero === 'knight' && !c.id.endsWith('+') && !c.unplayable,
     )!.id;
-  it('4 of a common, 3 of an uncommon, 2 of a rare; a card and its "+" share the limit', () => {
-    for (const [rarity, max] of [
-      ['common', 4],
-      ['uncommon', 3],
-      ['rare', 2],
-    ] as const) {
+  it('any number of a common, uncommon or rare card', () => {
+    for (const rarity of ['common', 'uncommon', 'rare']) {
       const id = pick(rarity);
-      const deck = Array.from({ length: max - 1 }, () => id);
-      expect(canAdd(deck, id), `${rarity} at ${max - 1}`).toBe(true);
-      expect(canAdd([...deck, `${id}+`], id), `${rarity} at ${max}`).toBe(false);
+      expect(
+        canAdd(
+          Array.from({ length: 9 }, () => id),
+          id,
+        ),
+        rarity,
+      ).toBe(true);
     }
   });
-  it('a deck checked without the rarity limits (an older Arena deck) keeps the flat 4', () => {
-    const id = pick('rare');
-    expect(canAdd([id, id, id], id, false)).toBe(true);
+  it('a Legendary is one of a kind (its "+" counts as the same card)', () => {
+    const id = pick('legendary');
+    expect(canAdd([], id)).toBe(true);
+    expect(canAdd([`${id}+`], id)).toBe(false);
   });
 });
 

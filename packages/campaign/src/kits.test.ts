@@ -22,20 +22,20 @@ describe('starting kits', () => {
     }
   });
 
-  it('each kit is two uncommon cards of its path swapped in for two plain cards, all legal', () => {
+  it('each kit is two uncommons and a common of its path swapped in for three plain cards, all legal (DECISIONS #333, #335)', () => {
     for (const h of HEROES) {
       const kits = makeKits(h);
       expect(kits).toHaveLength(3);
       kits.forEach((k, path) => {
-        expect(k.added, `${h} path ${path}`).toHaveLength(2);
-        expect(k.removed).toHaveLength(2);
+        expect(k.added, `${h} path ${path}`).toHaveLength(3);
+        expect(k.removed).toHaveLength(3);
         expect(k.leans).toBe(RIFTWALKERS[h].buildPaths[path]?.split(':')[0]);
         expect(k.deck.length).toBe(RIFTWALKERS[h].starter.length);
         expect(k.deck.length).toBeGreaterThanOrEqual(V2_DECK_RULES.minSize);
         for (const id of k.added) {
           const c = COMBAT_DB.cards[id];
           expect(c?.hero, `${h} ${id}`).toBe(h);
-          expect(c?.rarity, `${h} ${id}`).toBe('uncommon');
+          expect(c?.rarity, `${h} ${id}`).toBe(k.added.indexOf(id) < 2 ? 'uncommon' : 'common');
           expect(pathOf(id), `${h} ${id}`).toBe(path);
           expect(c?.unplayable).toBeFalsy();
         }
@@ -56,7 +56,7 @@ describe('starting kits', () => {
   it('the three kits of a Riftwalker share no added card', () => {
     for (const h of HEROES) {
       const all = KIT_CARDS[h].flat();
-      expect(new Set(all).size).toBe(6);
+      expect(new Set(all).size).toBe(9);
     }
   });
 

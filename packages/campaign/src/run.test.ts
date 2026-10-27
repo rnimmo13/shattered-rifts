@@ -186,8 +186,8 @@ describe('rewards', () => {
       }
     }
   });
-  it('respects the copy limit', () => {
-    expect(canAdd(['rift-bolt', 'rift-bolt', 'rift-bolt', 'rift-bolt'], 'rift-bolt')).toBe(false);
+  it('has no copy limit (DECISIONS #336)', () => {
+    expect(canAdd(['rift-bolt', 'rift-bolt', 'rift-bolt', 'rift-bolt'], 'rift-bolt')).toBe(true);
     expect(canAdd(['strike', 'strike', 'strike', 'strike', 'strike'], 'strike')).toBe(true); // basics are exempt
   });
 });
@@ -602,9 +602,8 @@ describe('the other rooms and the rules around them', () => {
     expect(finishDuel(run, false).resolve).toBe(0);
   });
 
-  it('the copy limit counts a card and its upgrade together', () => {
-    expect(canAdd(['rift-bolt', 'rift-bolt+', 'rift-bolt+', 'rift-bolt'], 'rift-bolt')).toBe(false);
-    expect(canAdd(['rift-bolt', 'rift-bolt+', 'rift-bolt+'], 'rift-bolt')).toBe(true);
+  it('any number of a card and its upgrade together (DECISIONS #336)', () => {
+    expect(canAdd(['rift-bolt', 'rift-bolt+', 'rift-bolt+', 'rift-bolt'], 'rift-bolt')).toBe(true);
   });
 
   it('a save cannot smuggle in prototype keys', () => {
@@ -621,8 +620,8 @@ describe('the other rooms and the rules around them', () => {
   });
 });
 
-describe("Kesh's trait heals after a won fight (DECISIONS #285)", () => {
-  it('a won fight heals Kesh 2; another Riftwalker nothing', () => {
+describe('the heal after a won fight (DECISIONS #285, removed from Kesh in #333)', () => {
+  it('no Riftwalker heals after a won fight any more (DECISIONS #333)', () => {
     const won = (hero: HeroId): number => {
       const base = fresh(hero, 'trait-heal');
       const node = base.map.nodes.find((n) => n.kind === 'duel')!;
@@ -635,7 +634,7 @@ describe("Kesh's trait heals after a won fight (DECISIONS #285)", () => {
       };
       return finishDuel(run, true, 40).hp;
     };
-    expect(won('hunter')).toBe(42);
+    expect(won('hunter')).toBe(40);
     expect(won('knight')).toBe(40);
   });
 });

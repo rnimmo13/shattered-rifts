@@ -46,11 +46,11 @@ const SETUP: Record<string, Partial<RunState>> = {
   'legend-reliquary': { deck: [...RIFTWALKERS.knight.starter, 'gilded-bastion', 'the-last-oath+'] },
   // the trades (DECISIONS #256) name cards of your own class: two common Attacks, two common Skills, a rare, a card off the build
   // path the deck follows, an uncommon and the shards to step it up
-  smelter: { deck: [...RIFTWALKERS.knight.starter, 'bulwark-blow', 'shield-bash'] },
-  'binders-table': { deck: [...RIFTWALKERS.knight.starter, 'stand-firm', 'iron-vigil'] },
-  'the-fence': { deck: [...RIFTWALKERS.knight.starter, 'colossus-blow'] },
+  smelter: { deck: [...RIFTWALKERS.knight.starter, 'bulwark-blow', 'thorn-lash'] },
+  'binders-table': { deck: [...RIFTWALKERS.knight.starter, 'stand-firm', 'barbed-guard'] },
+  'the-fence': { deck: [...RIFTWALKERS.knight.starter, 'citadel-march'] },
   'the-specialist': {
-    deck: [...RIFTWALKERS.knight.starter, 'stand-firm', 'gilded-bastion', 'brace-up', 'thornmail'],
+    deck: [...RIFTWALKERS.knight.starter, 'stand-firm', 'gilded-bastion', 'bulwark-blow', 'thornmail'],
   },
   'step-up': { deck: [...RIFTWALKERS.knight.starter, 'anvil-strike'], shards: 100 },
 };

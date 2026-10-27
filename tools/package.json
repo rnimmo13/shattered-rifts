@@ -16,6 +16,8 @@
     "balance": "tsx src/balance.ts",
     "runsim": "tsx src/runsim.ts",
     "stage1sim": "tsx src/stage1sim.ts",
+    "kitsearch": "tsx src/kitsearch.ts",
+    "poolaudit": "tsx src/poolaudit.ts",
     "audit:balance": "tsx src/audit.ts",
     "cardscan": "tsx src/cardscan.ts",
     "traitscan": "tsx src/traitscan.ts",

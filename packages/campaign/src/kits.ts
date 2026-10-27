@@ -1,62 +1,63 @@
 // Starting kits: at the very start of a run the player chooses one of three preset versions of their Riftwalker's starter
-// deck, one per build path. A kit swaps two plain Strike/Defend cards for two fixed uncommon cards from that build path, picked to be solid
+// deck, one per build path. A kit swaps three plain Strike/Defend cards for two fixed uncommon cards and one common card from that build path (DECISIONS #333, #335), picked to be solid
 // and simple (nothing that scales out of control or needs setup) while still showing what the build path is about. The same
-// two cards every run: no randomness.
+// three cards every run: no randomness. The common is a simple card that shows what the build path does.
 
 import { COMBAT_DB, RIFTWALKERS, type HeroId } from '@sr/content/v2';
 import type { KitOption } from './types';
 
-/** For each Riftwalker, the two cards of the kit for build path 0, build path 1 and build path 2 (the order of `Riftwalker.buildPaths`). */
-export const KIT_CARDS: Record<HeroId, [[string, string], [string, string], [string, string]]> = {
+/** For each Riftwalker, the three cards of the kit (two uncommons, then a common) for build path 0, build path 1 and build path 2 (the order of `Riftwalker.buildPaths`). */
+type Kit = [string, string, string];
+export const KIT_CARDS: Record<HeroId, [Kit, Kit, Kit]> = {
   knight: [
-    ['shield-charge', 'oath-of-iron'],
-    ['mirrored-aegis', 'caltrops'],
-    ['heartening-hymn', 'hymn-of-reckoning'],
+    ['shield-charge', 'oath-of-iron', 'bulwark-blow'],
+    ['mirrored-aegis', 'caltrops', 'thornmail'],
+    ['heartening-hymn', 'hymn-of-reckoning', 'lightbearer'],
   ],
   engineer: [
-    ['scrap-heap', 'overcharge-blast'],
-    ['link-up', 'arc-relay'],
-    ['upgrade-chip', 'bulwark-frame'],
+    ['scrap-heap', 'overcharge-blast', 'breach-charge'],
+    ['link-up', 'arc-relay', 'relay-strike'],
+    ['upgrade-chip', 'bulwark-frame', 'build-enforcer'],
   ],
   hunter: [
-    ['run-wild', 'crushing-blow'],
-    ['savage-command', 'feeding-time'],
-    ['gnaw', 'bone-offering'],
+    ['run-wild', 'crushing-blow', 'open-a-vein'],
+    ['savage-command', 'feeding-time', 'summon-pup'],
+    ['gnaw', 'bone-offering', 'burn-the-weak'],
   ],
   trapper: [
-    ['tripwire-garrote', 'snare-net'],
-    ['death-mark', 'smoke-bomb'],
-    ['shadow-step', 'long-con'],
+    ['tripwire-garrote', 'snare-net', 'trip-line'],
+    ['death-mark', 'smoke-bomb', 'exploit-weakness'],
+    ['shadow-step', 'long-con', 'patient-blade'],
   ],
   assassin: [
-    ['ambush-cut', 'spent-steel'],
-    ['mindrot', 'venom-fang'],
-    ['fortunes-edge', 'magicians-exit'],
+    ['ambush-cut', 'spent-steel', 'palmed-knives'],
+    ['mindrot', 'venom-fang', 'poison-tip'],
+    ['fortunes-edge', 'magicians-exit', 'dart-throw'],
   ],
   totemist: [
-    ['prismatic-burst', 'driver-of-runes'],
-    ['umbra-glyph', 'streamlined-strike'],
-    ['thundercall', 'sentinel-sigil'],
+    ['prismatic-burst', 'driver-of-runes', 'rime-strike'],
+    ['umbra-glyph', 'streamlined-strike', 'live-wire'],
+    ['thundercall', 'sentinel-sigil', 'spark-cluster'],
   ],
   barbarian: [
-    ['temper-flare', 'wrathful-guard'],
-    ['inner-calm', 'fearless'],
-    ['foretold-flame', 'the-offering'],
+    ['temper-flare', 'wrathful-guard', 'angry-palm'],
+    ['inner-calm', 'fearless', 'centre-yourself'],
+    ['foretold-flame', 'the-offering', 'whispered-vow'],
   ],
   spellblade: [
-    ['crown-strike', 'edgewise'],
-    ['cosmic-lance', 'gravity-well'],
-    ['ursa', 'draco'],
+    ['crown-strike', 'edgewise', 'forged-in-fury'],
+    ['cosmic-lance', 'gravity-well', 'sunstrike'],
+    ['ursa', 'draco', 'lumen-trap'],
   ],
   necromancer: [
-    ['omen', 'veilpiercer'],
-    ['bone-bulwark', 'legion-of-bone'],
-    ['cremation', 'funeral-pyre'],
+    ['omen', 'veilpiercer', 'tolling-bell'],
+    ['bone-bulwark', 'legion-of-bone', 'raise-thrall'],
+    ['cremation', 'funeral-pyre', 'burial-shroud'],
   ],
   drunkard: [
-    ['reload', 'glass-cover'],
-    ['pump-action', 'shotgun-wedding'],
-    ['shatter', 'liquid-dinner'],
+    ['reload', 'glass-cover', 'pistol-whip'],
+    ['pump-action', 'shotgun-wedding', 'load-shells'],
+    ['shatter', 'liquid-dinner', 'drunken-swing'],
   ],
 };
 

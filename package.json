@@ -25,6 +25,8 @@
     "balance": "pnpm --filter @sr/tools balance",
     "runsim": "pnpm --filter @sr/tools runsim",
     "stage1sim": "pnpm --filter @sr/tools stage1sim",
+    "kitsearch": "pnpm --filter @sr/tools kitsearch",
+    "poolaudit": "pnpm --filter @sr/tools poolaudit",
     "audit:balance": "pnpm --filter @sr/tools audit:balance",
     "cardscan": "pnpm --filter @sr/tools cardscan",
     "traitscan": "pnpm --filter @sr/tools traitscan",

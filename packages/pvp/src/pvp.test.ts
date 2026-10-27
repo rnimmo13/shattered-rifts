@@ -64,8 +64,8 @@ describe('checkEntry', () => {
     expect(checkEntry({ ...entryOf('knight'), deck: Array(200).fill('strike') }).ok).toBe(false);
   });
 
-  it('refuses a deck that breaks the copy rules', () => {
-    const deck = [...entryOf('knight').deck, ...Array<string>(5).fill('rift-bolt')];
+  it('refuses a deck with more than 10 of one card (the Arena sanity cap; runs have no copy limit, DECISIONS #336)', () => {
+    const deck = [...entryOf('knight').deck, ...Array<string>(11).fill('rift-bolt')];
     expect(checkEntry({ ...entryOf('knight'), deck }).ok).toBe(false);
   });
 
