@@ -517,7 +517,7 @@ Starter: Strike, Strike, Strike, Strike, Defend, Defend, Defend, Plant Hawk, Pla
 | Many Voices | X | skill | uncommon | Awaken your first totem X times (it stays). Consume. |
 | Kindled Rite | 1 | aura | uncommon | At the end of your turn: Deal damage equal to the number of your Auras to ALL enemies. |
 | Smoke Offering | 1 | aura | uncommon | At the start of your turn: Gain Barrier equal to 2 times the number of your Auras. |
-| Storm Call | 2 | attack | uncommon | Deal 6 (+2 per Spirit) damage to ALL enemies. |
+| Storm Call | 2 | attack | uncommon | Deal 5 (+2 per Spirit) damage to ALL enemies. Apply 1 Exposed to ALL enemies. |
 | Gathering Storm | 1 | attack | uncommon | Deal 4 damage, plus all it has grown. Every copy of this card gains 2 damage for the rest of the fight. |
 | Glacial Ward | 1 | skill | uncommon | Gain 8 (+2 per Spirit) Barrier. Apply 1 Faltering to ALL enemies. |
 | Tidecaller | 0 | skill | uncommon | Gain 1 Mana. Draw 1 card. Consume. |
@@ -544,7 +544,7 @@ Starter: Strike, Strike, Strike, Strike, Defend, Defend, Defend, Plant Hawk, Pla
 | Spirit Wave | 2 | attack | rare | Deal 11 damage to ALL enemies. Awaken your first totem. |
 | Toppling Row | 2 | attack | rare | Deal 8 (+4 per totem) damage to ALL enemies. Awaken your first 3 totems. Consume. |
 | Sap Offering | 2 | aura | rare | Gain 3 Spirit. At the start of your turn: Lose 1 HP. |
-| Firestorm | 2 | attack | rare | Deal 10 (+2 per Spirit) damage to ALL enemies. |
+| Firestorm | 2 | attack | rare | Deal 8 (+2 per Spirit) damage to ALL enemies. Gain 1 Spirit. |
 | Skybreaker | 2 | attack | rare | Deal 24 (+3 per Spirit) damage. Consume. |
 | Deep Freeze | 2 | attack | rare | Deal 12 (+2 per Spirit) damage. Stun the target for 1 turn. |
 | Stormcrown | 2 | aura | rare | At the end of your turn: Deal damage equal to 2 times your Spirit to ALL enemies. |

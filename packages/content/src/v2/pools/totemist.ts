@@ -340,8 +340,10 @@ export const TOTEMIST: CardDef[] = [
   i('common', 'elemental-focus', 'Elemental Focus', 'skill', 0, 'none', [status('resonance', 1)], {
     exhaust: true,
   }),
+  // lightning leaves them shocked (Exposed)
   i('uncommon', 'storm-call', 'Storm Call', 'attack', 2, 'none', [
-    scaled(dmg(6, 'allFoes'), per('resonance', 2)),
+    scaled(dmg(5, 'allFoes'), per('resonance', 2)),
+    status('exposed', 1, 'allFoes'),
   ]),
   // every copy grows each time one is cast (DECISIONS #353)
   i(
@@ -375,8 +377,10 @@ export const TOTEMIST: CardDef[] = [
     exhaust: true,
   }),
   i('uncommon', 'quench', 'Quench', 'skill', 1, 'none', [barrier(6), draw(1)]),
+  // the fire feeds your spells (Spirit)
   i('rare', 'firestorm', 'Firestorm', 'attack', 2, 'none', [
-    scaled(dmg(10, 'allFoes'), per('resonance', 2)),
+    scaled(dmg(8, 'allFoes'), per('resonance', 2)),
+    status('resonance', 1),
   ]),
   i(
     'rare',

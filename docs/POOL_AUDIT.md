@@ -526,7 +526,6 @@ cost and effects whose numbers differ by about a third or less. "Shared" cards b
 **Near-duplicates:**
 
 - **Splintering Burst** and **Forked Branch**: Deal 6 damage to ALL enemies. Plant Splinter. / Deal 8 damage to ALL enemies. Plant Hawk.
-- **Storm Call** and **Prismatic Cascade**: Deal 6 (+2 per Spirit) damage to ALL enemies. / Deal 4 (+1 per Spirit) damage 3 times to ALL enemies.
 
 ### Totems
 
@@ -573,10 +572,10 @@ cost and effects whose numbers differ by about a third or less. "Shared" cards b
 | Glacial Ward | uncommon | skill | 1 | Gain 8 (+2 per Spirit) Barrier. Apply 1 Faltering to ALL enemies. |
 | Inner Flame | uncommon | skill | 1 | Gain 2 Spirit. Consume. |
 | Quench | uncommon | skill | 1 | Gain 6 Barrier. Draw 1 card. |
-| Storm Call | uncommon | attack | 2 | Deal 6 (+2 per Spirit) damage to ALL enemies. |
+| Storm Call | uncommon | attack | 2 | Deal 5 (+2 per Spirit) damage to ALL enemies. Apply 1 Exposed to ALL enemies. |
 | Tidecaller | uncommon | skill | 0 | Gain 1 Mana. Draw 1 card. Consume. |
 | Deep Freeze | rare | attack | 2 | Deal 12 (+2 per Spirit) damage. Stun the target for 1 turn. |
-| Firestorm | rare | attack | 2 | Deal 10 (+2 per Spirit) damage to ALL enemies. |
+| Firestorm | rare | attack | 2 | Deal 8 (+2 per Spirit) damage to ALL enemies. Gain 1 Spirit. |
 | Mountain's Heart | rare | skill | 2 | Gain 15 (+3 per Spirit) Barrier. Consume. |
 | Prismatic Cascade | rare | attack | 2 | Deal 4 (+1 per Spirit) damage 3 times to ALL enemies. |
 | Skybreaker | rare | attack | 2 | Deal 24 (+3 per Spirit) damage. Consume. |
