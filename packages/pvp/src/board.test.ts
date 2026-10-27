@@ -427,3 +427,22 @@ describe('a ghost Warden is never your own deck', () => {
     expect(pick({ requester: 'account-id', name: 'sacagaweeda' })).toBeNull();
   });
 });
+
+describe('the campaign board: one entry per player and Riftwalker (DECISIONS #291)', () => {
+  it('runs under two ids of one username, and an old Riftwalker id, are one entry at the furthest', () => {
+    const rows = [
+      { player: 'acct', name: 'Sacagaweeda', hero: 'necromancer', tier: 3, stage: 1, at: 1 },
+      { player: 'code', name: 'Sacagaweeda', hero: 'necromancer', tier: 8, stage: 3, at: 2 },
+      { player: 'code', name: 'sacagaweeda', hero: 'mire', tier: 2, stage: 0, at: 3 },
+      { player: 'acct', name: 'Sacagaweeda', hero: 'engineer', tier: 7, stage: 2, at: 4 },
+      { player: 'other', name: 'Latte', hero: 'necromancer', tier: 1, stage: 0, at: 5 },
+    ];
+    const board = rankRuns(rows);
+    expect(board.filter((r) => r.name.toLowerCase() === 'sacagaweeda')).toHaveLength(2);
+    const necro = board.find(
+      (r) => r.name.toLowerCase() === 'sacagaweeda' && r.hero === 'necromancer',
+    )!;
+    expect(necro.tier).toBe(8);
+    expect(board).toHaveLength(3);
+  });
+});

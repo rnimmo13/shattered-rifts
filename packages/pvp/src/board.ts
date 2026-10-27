@@ -288,11 +288,13 @@ export function standingsRuns(rows: readonly RunRow[]): (RunStanding & { player:
   const best = new Map<string, RunRow & { total: number }>();
   for (const r of rows) {
     const total = stagesInAll(r.tier, r.stage);
-    // (a player may be on the board once for each Riftwalker they have taken furthest)
-    const k = `${r.player}|${r.hero}`;
+    // (a player is on the board once for each Riftwalker, at the furthest they have taken it: grouped by their username, which no
+    // two players share, so runs reported under their account and under their Vault code are one entry; DECISIONS #291)
+    const hero = canonicalHero(r.hero);
+    const k = `${r.name.trim().toLowerCase()}|${hero}`;
     const cur = best.get(k);
     if (!cur || total > cur.total || (total === cur.total && r.at < cur.at))
-      best.set(k, { ...r, total });
+      best.set(k, { ...r, hero, total });
   }
   return [...best.values()]
     .sort((x, y) => y.total - x.total || x.at - y.at || x.name.localeCompare(y.name))
