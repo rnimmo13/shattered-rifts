@@ -29,6 +29,18 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.89.0',
+    date: '2026-10-26',
+    title: 'Board status',
+    summary: 'The campaign board shows each player once per Riftwalker, and whether the run is still going.',
+    notes: [
+      {
+        kind: 'changed',
+        text: 'The campaign board lists each player once per Riftwalker, at their furthest run, and says whether that run is Live, Fell or was Abandoned.',
+      },
+    ],
+  },
+  {
     version: '0.88.0',
     date: '2026-10-26',
     title: 'Back on your feet',
