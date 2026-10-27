@@ -5,6 +5,7 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **Ilvane:** the Bear totem gives 2 Barrier at the end of your turn (was 1).
 - **Leaderboard:** a campaign run could be left off the board after a busy day of play (refused reports used up the daily limits); now only recorded runs count against them.
 - **Devotion** costs show a ⚜ (it used a cross that read like a plus: "✚ 4" looked like "+4").
 - **Valeria:** Unbroken Wall costs 3 (2 upgraded). Retribution costs 2 (1 upgraded).

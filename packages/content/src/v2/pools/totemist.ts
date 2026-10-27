@@ -49,8 +49,9 @@ export const RUNES: RuneDef[] = [
   {
     id: 'ward',
     name: 'Bear',
-    text: 'Passive: 1 Barrier at the end of your turn. Awaken: 6 Barrier.',
-    passive: [barrier(1)],
+    // (2 Barrier a turn, was 1: DECISIONS #351)
+    text: 'Passive: 2 Barrier at the end of your turn. Awaken: 6 Barrier.',
+    passive: [barrier(2)],
     evoke: [barrier(6)],
   },
   {
