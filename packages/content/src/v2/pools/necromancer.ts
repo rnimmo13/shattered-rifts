@@ -63,7 +63,7 @@ export const NECROMANCER: CardDef[] = [
     status('doom', 10, 'target'),
   ]),
   g(
-    'common',
+    'uncommon',
     'hasten-the-end',
     'Hasten the End',
     'skill',
@@ -355,4 +355,14 @@ export const NECROMANCER: CardDef[] = [
   g('rare', 'soul-furnace', 'Soul Furnace', 'power', 2, 'none', [
     on('turnStart', [addTo('gravesoul')]),
   ]),
+
+  // --- brought back (DECISIONS #337) ---
+  g('common', 'creeping-dread', 'Creeping Dread', 'attack', 1, 'none', [
+    dmg(3, 'allFoes'),
+    status('doom', 3, 'allFoes'),
+  ]),
+  g('common', 'thralls-cue', "Thrall's Cue", 'skill', 1, 'none', [ACT, barrier(4)]),
+  g('uncommon', 'ghostform', 'Spirit Walk', 'skill', 1, 'none', [status('ghostly', 1), draw(1)], {
+    exhaust: true,
+  }),
 ];

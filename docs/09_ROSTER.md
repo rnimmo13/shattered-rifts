@@ -13,8 +13,9 @@ deck takes one and a half of them. Our pools were ~16 cards and one build path e
 1. **A pool belongs to a character**, not a realm (`CardDef.hero`). A realm is flavour and enemy stage; two characters can
    share one (Maren and Sehra are both Aurelion). Reward offers come from *your* pool + Neutral (+ the 1-in-10 Rift-crossed
    card from another character's pool).
-2. **Every card has a build path, and every build path holds 8 commons, 7 uncommons, 5 rares and 1 Legendary** (21 cards; about
-   66 per character with the basics; DECISIONS #334). There are no glue cards. Each build path works alone; two build paths can
+2. **Every build path holds at least 8 commons, 7 uncommons, 5 rares and 1 Legendary** (at least 63 cards in paths), plus a few
+   **glue** cards with no build path, about 70 cards in all (DECISIONS #334, #337). Every Legendary belongs to a build path and is a
+   build-around for it (#338). Each build path works alone; two build paths can
    combine; all three at once is a bad deck. `pnpm poolaudit` (docs/POOL_AUDIT.md) lists each pool by build path and flags near-duplicates.
 3. **Shared toolkit, owned signatures.** Everyone has some of the common StS tools in their own flavour: draw, Barrier,
    Heal, Consume, Retain, Might, 0-cost cards, AoE, Mana gain, Exposed/Faltering, self-damage. A mechanic with its own

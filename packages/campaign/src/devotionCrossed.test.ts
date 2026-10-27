@@ -12,17 +12,17 @@ describe('Devotion cards stay with Valeria', () => {
   });
 });
 
-describe('copies a deck may take (DECISIONS #336)', () => {
+describe('copies a deck may take (DECISIONS #337)', () => {
   const pick = (rarity: string): string =>
     Object.values(COMBAT_DB.cards).find(
       (c) => c.rarity === rarity && c.hero === 'knight' && !c.id.endsWith('+') && !c.unplayable,
     )!.id;
-  it('any number of a common, uncommon or rare card', () => {
+  it('up to 5 of a common, uncommon or rare card', () => {
     for (const rarity of ['common', 'uncommon', 'rare']) {
       const id = pick(rarity);
       expect(
         canAdd(
-          Array.from({ length: 9 }, () => id),
+          Array.from({ length: 4 }, () => id),
           id,
         ),
         rarity,

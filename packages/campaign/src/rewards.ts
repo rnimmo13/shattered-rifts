@@ -1,5 +1,5 @@
 // Card rewards (03_CAMPAIGN §2.3, §2.4) for Combat v2. Offers come from the Riftwalker's own pool plus Neutral; about 1 in 10
-// is "Rift-crossed" (another Riftwalker's pool). A Legendary or Ancestral card the deck already holds is never offered (there is no other copy limit, DECISIONS #336).
+// is "Rift-crossed" (another Riftwalker's pool). A card the deck already holds 5 of (or a Legendary or Ancestral one it holds) is never offered (DECISIONS #337).
 
 import { nextInt, type CardDef, type RngState } from '@sr/combat';
 import {
@@ -21,7 +21,7 @@ export type OfferQuality = 'duel' | 'elite';
 const rarityOf = (id: string): string => COMBAT_DB.cards[id]?.rarity ?? 'common';
 
 /**
- * A card can be added any number of times, unless it is a Legendary or Ancestral card the deck already holds (DECISIONS #336), or
+ * A card can be added unless the deck holds 5 of it already, or it is a Legendary or Ancestral card the deck already holds (#337), or
  * (with `rarityLimits`, the default) the deck already holds its Legendary or its two Ancestral cards. Checking a deck that already
  * exists (a Vault deck, a ghost) passes false: one built before the limits came down (DECISIONS #238) is still a deck, only not one
  * for the Arena.
@@ -30,7 +30,6 @@ export function canAdd(deck: readonly string[], cardId: string, rarityLimits = t
   const c = COMBAT_DB.cards[cardId];
   // a card that cannot be played is only worth having if discarding it pays (Reflex, Tactician)
   if (!c || (c.unplayable && !c.onDiscard)) return false;
-  if (c.rarity === 'basic') return true;
   // a deck holds one Legendary and two Ancestral cards, so taking one is a choice (a deck that is full is never offered more)
   const held = (rarity: string): number =>
     deck.filter((x) => rarityOf(stripRoll(x).replace(/\+$/, '')) === rarity).length;
@@ -38,7 +37,7 @@ export function canAdd(deck: readonly string[], cardId: string, rarityLimits = t
     return false;
   if (rarityLimits && c.rarity === 'ancestral' && held('ancestral') >= V2_DECK_RULES.maxAncestral)
     return false;
-  // any number of copies, but a Legendary or Ancestral card is one of a kind (a card and its "+" count as one; DECISIONS #336)
+  // at most 5 copies of any card, basics too, and a Legendary or Ancestral card is one of a kind (a card and its "+" count as one; #337)
   const base = (id: string): string => stripRoll(id).replace(/\+$/, '');
   return deck.filter((x) => base(x) === base(cardId)).length < maxCopiesOf(c.rarity);
 }

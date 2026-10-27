@@ -9,6 +9,7 @@ import type { CardDef, Op } from '@sr/combat';
 import {
   addTo,
   barrier,
+  discard,
   dmg,
   draw,
   forge,
@@ -139,8 +140,10 @@ export const DRUNKARD: CardDef[] = [
   p('legendary', 'one-more-round', 'One More Round', 'power', 3, 'none', [
     on('turnStart', [addTo('buckshot-shell', 3), heal(3)]),
   ]),
+  // Hangover: Barrier that grows as you hurt, and every wound you deal yourself cuts every enemy (DECISIONS #338)
   p('legendary', 'the-glass-palace', 'The Glass Palace', 'power', 3, 'none', [
     on('turnStart', [scaled(barrier(6), per('missingPct', 1 / 6))]),
+    on('loseHp', [dmg(5, 'allFoes')]),
   ]),
 
   // --- the Old Twelve Gauge: a weapon that hits every enemy and gets sharper (Sharpen), with its own interactions ---
@@ -300,4 +303,33 @@ export const DRUNKARD: CardDef[] = [
   p('uncommon', 'spray-and-pray', 'Spray and Pray', 'attack', 2, 'none', [
     scaled(dmg(4, 'allFoes'), per('created', 0.25)),
   ]),
+
+  // --- brought back (DECISIONS #337) ---
+  p('common', 'birdshot', 'Birdshot', 'attack', 0, 'none', [dmg(3, 'allFoes')], { exhaust: true }),
+
+  // --- Gun, filled to its minimum (DECISIONS #337) ---
+  p('common', 'buttstroke', 'Buttstroke', 'attack', 1, 'foe', [
+    dmg(5),
+    status('faltering', 1, 'target'),
+    forge('old-twelve-gauge', 1),
+  ]),
+  p('common', 'spare-barrel', 'Spare Barrel', 'skill', 1, 'none', [
+    forge('old-twelve-gauge', 2),
+    addTo('buckshot-shell'),
+  ]),
+  p('common', 'gun-oil', 'Gun Oil', 'power', 1, 'none', [on('play', [barrier(4)], { tag: 'gun' })]),
+  p('common', 'dead-eye', 'Dead Eye', 'skill', 1, 'none', [
+    forge('old-twelve-gauge', 2),
+    status('exposed', 1, 'allFoes'),
+  ]),
+
+  // --- glue: cards for any build path (DECISIONS #337) ---
+  p('common', 'broken-bottle', 'Broken Bottle', 'attack', 1, 'foe', [
+    dmg(7),
+    status('exposed', 1, 'target'),
+  ]),
+  p('common', 'chaser', 'Chaser', 'skill', 0, 'none', [lose(2), mana(1), draw(1)], {
+    exhaust: true,
+  }),
+  p('common', 'dumpster-dive', 'Dumpster Dive', 'skill', 1, 'none', [draw(2), discard(1), heal(2)]),
 ];

@@ -1,20 +1,22 @@
 // The third Legendary of every Riftwalker (the first two live in each pool file). A deck holds at most
 // V2_DECK_RULES.maxLegendary of them at a time (rewards.ts, canAdd), so being offered one is a real choice: it takes
-// a Legendary slot another one could have had. Each is a payoff skill or attack, so a character's three are not all Powers.
+// a Legendary slot another one could have had. Each belongs to one build path and is a build-around for it, never a one-off pile of
+// Barrier (Robert, 2026-10-27; DECISIONS #338).
 
 import type { CardDef } from '@sr/combat';
 import {
   ACT,
+  addTo,
   barrier,
-  channel,
   dmg,
-  draw,
+  forge,
   heal,
-  lose,
-  mana,
+  on,
+  per,
   pool,
-  revive,
+  scaled,
   stance,
+  stars,
   status,
   summon,
 } from '../build';
@@ -31,15 +33,16 @@ const g = pool('necromancer', 'gloomfen');
 const p = pool('drunkard', 'midden');
 
 export const LEGENDARIES: CardDef[] = [
+  // Devotion: every heal also strikes (the whole heal, past full HP too), and she heals every turn
   m(
     'legendary',
     'bastion-of-dawn',
-    'Bastion of Dawn',
-    'skill',
+    "Dawn's Mercy",
+    'power',
     3,
     'none',
-    [barrier(30), status('thorns', 4), draw(2)],
-    { exhaust: true },
+    [on('heal', [scaled(dmg(0, 'randomFoe'), per('healed'))]), on('turnStart', [heal(3)])],
+    { up: { cost: 2 } },
   ),
   r(
     'legendary',
@@ -51,16 +54,18 @@ export const LEGENDARIES: CardDef[] = [
     [summon('drone'), summon('drone'), summon('drone'), ACT],
     { exhaust: true },
   ),
+  // Pack: two more Hounds, and the whole pack strikes at once
   k(
     'legendary',
     'bloodmoon-hunt',
     'Bloodmoon Hunt',
-    'attack',
-    3,
+    'skill',
+    2,
     'none',
-    [dmg(20, 'allFoes'), heal(15)],
-    { exhaust: true, up: { cost: 2 } },
+    [summon('hound'), summon('hound'), status('might', 3, 'allAllies'), ACT],
+    { exhaust: true, up: { cost: 1 } },
   ),
+  // Exposed: it marks every enemy as it springs
   v(
     'legendary',
     'the-long-ambush',
@@ -68,69 +73,69 @@ export const LEGENDARIES: CardDef[] = [
     'snare',
     3,
     'none',
-    [dmg(25, 'allFoes'), status('stunned', 2, 'allFoes')],
+    [dmg(25, 'allFoes'), status('stunned', 2, 'allFoes'), status('exposed', 3, 'allFoes')],
     { trigger: { on: 'foeTurn' } },
   ),
-  q(
-    'legendary',
-    'ten-thousand-cuts',
-    'Death by Inches',
-    'attack',
-    2,
-    'foe',
-    [dmg(3, 'target', 8)],
-    {
-      tags: ['knife'],
-    },
-  ),
+  // Sleight: the more you discarded this turn, the more it hits
+  q('legendary', 'ten-thousand-cuts', 'Death by Inches', 'attack', 1, 'foe', [
+    scaled(dmg(5, 'target', 2), per('discarded', 2, undefined, 'hits')),
+  ]),
+  // Whittling: three Carvings in your hand every turn
   i(
     'legendary',
     'the-spirit-council',
     'The Spirit Council',
-    'skill',
-    3,
+    'power',
+    2,
     'none',
-    [channel('spark'), channel('ward'), channel('hollow'), status('resonance', 2)],
-    {
-      exhaust: true,
-      up: {
-        cost: 2,
-        effects: [channel('spark'), channel('ward'), channel('hollow'), status('resonance', 3)],
-      },
-    },
+    [on('turnStart', [addTo('live-wire'), addTo('sweeping-ray'), addTo('echo-of-glyphs')])],
+    { up: { cost: 1 } },
   ),
+  // Fury: in Fury every turn, and every turn it lashes out
   s(
     'legendary',
     'eye-of-the-storm',
     'Eye of the Storm',
-    'skill',
+    'power',
     2,
     'none',
-    [stance('calm'), barrier(20), mana(2)],
-    { exhaust: true },
+    [on('turnStart', [stance('wrath'), dmg(6, 'allFoes'), barrier(6)])],
+    { up: { cost: 1 } },
   ),
-  a('legendary', 'shatterstorm', 'Shatterstorm', 'attack', 3, 'none', [dmg(40, 'allFoes')], {
-    starCost: 5,
-    up: { starCost: 4 },
-  }),
+  // Sigils: Arcana every turn, and a strike on every enemy for each Aura you have
+  a(
+    'legendary',
+    'shatterstorm',
+    'Shatterstorm',
+    'power',
+    3,
+    'none',
+    [on('turnStart', [stars(2), scaled(dmg(0, 'allFoes'), per('powers', 3))])],
+    { up: { cost: 2 } },
+  ),
+  // Ashes: every card consumed strikes and curses every enemy
   g(
     'legendary',
     'grave-harvest',
     'Grave Harvest',
-    'skill',
+    'power',
     2,
     'none',
-    [status('doom', 18, 'allFoes'), revive],
-    { exhaust: true, up: { cost: 1 } },
+    [on('exhaust', [dmg(4, 'allFoes'), status('doom', 2, 'allFoes')])],
+    { up: { cost: 1 } },
   ),
+  // Gun: a sharper gun at once, and every shot sharpens it again and covers you
   p(
     'legendary',
     'the-twelve-gauge-opera',
     'The Twelve-Gauge Opera',
-    'attack',
-    3,
+    'power',
+    2,
     'none',
-    [dmg(25, 'allFoes'), lose(8)],
-    { exhaust: true, up: { cost: 2 } },
+    [
+      forge('old-twelve-gauge', 6),
+      on('play', [forge('old-twelve-gauge', 2), barrier(4)], { tag: 'gun' }),
+    ],
+    { up: { cost: 1 } },
   ),
 ];

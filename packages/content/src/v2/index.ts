@@ -554,7 +554,7 @@ export function pathSizes(hero: HeroId): [number, number, number] {
 }
 
 /**
- * Deck rules for Combat v2 runs: a deck never drops below minSize cards, holds any number of copies of a card (DECISIONS #336), and at most
+ * Deck rules for Combat v2 runs: a deck never drops below minSize cards, holds at most MAX_COPIES of a card (DECISIONS #337), and at most
  * maxLegendary Legendary and maxAncestral Ancestral cards fit in the deck at once (one Legendary and two Ancestral since DECISIONS
  * #238; a deck that already held more keeps them, but takes no more).
  */
@@ -565,17 +565,18 @@ export const V2_DECK_RULES = {
   maxAncestral: 2,
 } as const;
 
+/** The most copies of one card (and its "+" version) a deck may hold, in a run and in the Arena alike, basics too (DECISIONS #337). */
+export const MAX_COPIES = 5;
 /**
- * The most copies of one card (and its "+" version) a deck may take: no limit (Robert, 2026-10-27: "remove the limit on the number of
- * duplicate cards a deck can have"; DECISIONS #336, replacing the limits by rarity of #330), except a Legendary or Ancestral card, which
- * is one of a kind.
+ * The most copies of one card a deck may take, by rarity: MAX_COPIES of any card (Robert, 2026-10-27: "no more than 5 copies of a card
+ * in a deck"; DECISIONS #337), but a Legendary or Ancestral card is one of a kind.
  */
 export const COPIES_BY_RARITY: Readonly<Record<string, number>> = {
   legendary: 1,
   ancestral: 1,
 };
 export const maxCopiesOf = (rarity: string | undefined): number =>
-  COPIES_BY_RARITY[rarity ?? 'common'] ?? Number.POSITIVE_INFINITY;
+  COPIES_BY_RARITY[rarity ?? 'common'] ?? MAX_COPIES;
 
 export { BOONS, HEARTS, POTIONS };
 

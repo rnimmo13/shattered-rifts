@@ -50,7 +50,13 @@ const SETUP: Record<string, Partial<RunState>> = {
   'binders-table': { deck: [...RIFTWALKERS.knight.starter, 'stand-firm', 'barbed-guard'] },
   'the-fence': { deck: [...RIFTWALKERS.knight.starter, 'citadel-march'] },
   'the-specialist': {
-    deck: [...RIFTWALKERS.knight.starter, 'stand-firm', 'gilded-bastion', 'bulwark-blow', 'thornmail'],
+    deck: [
+      ...RIFTWALKERS.knight.starter,
+      'stand-firm',
+      'gilded-bastion',
+      'bulwark-blow',
+      'thornmail',
+    ],
   },
   'step-up': { deck: [...RIFTWALKERS.knight.starter, 'anvil-strike'], shards: 100 },
 };

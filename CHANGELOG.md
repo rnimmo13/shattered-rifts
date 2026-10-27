@@ -5,9 +5,11 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
-- **Card pools trimmed:** every Riftwalker's cards now sit in a build path, 8 commons, 7 uncommons, 5 rares and a Legendary each, with near-duplicates removed (about 66 cards each, down from about 90). A removed card in an old run or deck becomes a similar card of the same build path.
+- **Card pools trimmed:** every build path has at least 8 commons, 7 uncommons, 5 rares and a Legendary, plus a few cards for any build, near-duplicates removed (63-71 cards each, down from about 90). A removed card in an old run or deck becomes a similar card of the same build path.
 - **Starting kits:** each kit is now two uncommons and a common of its build path.
-- **No copy limit:** a deck can hold any number of copies of a card (a Legendary is still one of a kind).
+- **5 copies at most:** a deck holds at most 5 copies of a card, in a run and in the Arena (a Legendary is still one of a kind).
+- **Legendaries reworked:** every Legendary belongs to a build path and builds around it. Dawn's Mercy (was Bastion of Dawn), Eye of the Storm, Shatterstorm, Grave Harvest, The Spirit Council, Bloodmoon Hunt, Masquerade, The Twelve-Gauge Opera, Death by Inches and others now do much more than a one-off burst.
+- **New cards:** KP's Gun (Buttstroke, Spare Barrel, Gun Oil, Dead Eye) and Ilvane's Whittling (Antler, Serpent and Moth Carvings, Whittler's Kit, Endless Whittling).
 - **Kesh:** no longer heals after a won fight.
 - **Valeria:** her Devotion shows beside her Mana. Her Devotion starting deck now has Hymn of Reckoning (6 Devotion: 10 to every enemy) instead of Ward of Ages. New Devotion attacks: Hand of Justice (4 Devotion: deal 10, Exposed), Consecrated Blade (8 Devotion: deal 9 twice, 6 Barrier) and Hand of God (15 Devotion: deal 36).
 - **Fight result:** Continue sits on top, the replay options under it.

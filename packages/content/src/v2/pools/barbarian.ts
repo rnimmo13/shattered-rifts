@@ -279,4 +279,12 @@ export const BARBARIAN: CardDef[] = [
     on('discard', [barrier(4), status('mantra', 1)]),
     on('exhaust', [barrier(4), status('mantra', 1)]),
   ]),
+
+  // --- glue: cards for any build path (DECISIONS #337) ---
+  s('common', 'crushing-palm', 'Crushing Palm', 'attack', 1, 'foe', [
+    dmg(8),
+    status('exposed', 1, 'target'),
+  ]),
+  s('common', 'inner-sight', 'Inner Sight', 'skill', 1, 'none', [barrier(5), scry(4)]),
+  s('common', 'quick-palms', 'Quick Palms', 'attack', 0, 'foe', [dmg(3)]),
 ];

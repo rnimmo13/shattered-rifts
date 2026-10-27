@@ -74,13 +74,13 @@ describe('legendary effects', () => {
     expect(s.sides.b.units[0]!.hp).toBe(200 - 10);
   });
 
-  it("Volcano's Birth gives Arcana, cards and Barrier", () => {
+  it("Volcano's Birth gives Arcana, cards and a Mana more every turn (DECISIONS #338)", () => {
     const s0 = createFight('spellblade').state;
     const s = play('spellblade', 'birth-of-a-star', (st) => {
       st.sides.a.stars = 0;
     });
     expect(s.sides.a.stars).toBeGreaterThanOrEqual(8);
-    expect(heroUnit(s).barrier).toBeGreaterThanOrEqual(20);
+    expect(s.sides.a.maxMana).toBe(s0.sides.a.maxMana + 1);
     expect(s.sides.a.hand.length).toBeGreaterThanOrEqual(3);
     expect(s0.sides.a.hand.length).toBeGreaterThan(0);
   });

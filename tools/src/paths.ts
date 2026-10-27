@@ -84,31 +84,49 @@ const HEADS: Record<HeroId, [RegExp, number | null][]> = {
 const out: Record<string, number> = {};
 /** cards under a heading that is not a build path but that belong to one */
 const BY_ID: Record<string, number> = {
+  // new cards that fill a build path to its minimum (DECISIONS #337)
+  'antler-carving': 1,
+  'serpent-carving': 1,
+  'moth-carving': 1,
+  'whittlers-kit': 1,
+  'endless-whittling': 1,
+  buttstroke: 0,
+  'spare-barrel': 0,
+  'gun-oil': 0,
+  'dead-eye': 0,
+  // brought back to fill a build path to its minimum (DECISIONS #337)
+  'shield-bash': 0,
+  'iron-tithe': 0,
+  'gilded-wall': 0,
+  'endless-vigil': 0,
+  'ember-ward': 1,
+  'mirror-shield': 1,
+  'radiant-oath': 1,
+  'scrap-volley': 0,
+  'sync-pulse': 1,
+  overload: 1,
+  'hardened-chassis': 2,
+  spotlight: 1,
+  'arc-flash': 0,
+  'lattice-collapse': 0,
+  'tuning-fork': 2,
+  'rune-carapace': 2,
+  birdshot: 1,
+  'creeping-dread': 0,
+  'thralls-cue': 1,
+  ghostform: 2,
   'grave-robbery': 2,
   reanimate: 1,
   'death-feeds': 1,
-  // every card has a build path, Legendaries and the old glue cards too (DECISIONS #334): 8 common, 7 uncommon, 5 rare and 1 Legendary each
+  // every Legendary has a build path, one per path (DECISIONS #334, #337); glue cards have none
   // knight
   'dawn-incarnate': 0,
   'the-last-oath': 1,
   'bastion-of-dawn': 2,
-  'bell-toll': 0,
-  'gilded-blow': 0,
-  'unbroken-wall': 0,
-  'steady-resolve': 0,
-  'zealous-charge': 1,
-  'dawns-verdict': 1,
-  'vengeful-light': 1,
-  sanctuary: 1,
   // engineer
   'drone-apotheosis': 0,
   'overclocked-legion': 1,
   'foundry-awakens': 2,
-  'static-field': 0,
-  overcharge: 1,
-  railgun: 1,
-  plating: 2,
-  'ion-lance': 2,
   // hunter
   'hunger-unleashed': 0,
   'bloodmoon-hunt': 1,
@@ -125,11 +143,6 @@ const BY_ID: Record<string, number> = {
   'cataclysm-glyph': 0,
   'the-spirit-council': 1,
   'the-grand-design': 2,
-  'rune-burst': 0,
-  'harmonic-wave': 0,
-  retune: 1,
-  'prism-cut': 1,
-  'leyline-tap': 2,
   'chorus-of-glyphs': 2,
   'tune-the-lattice': 2,
   // barbarian
@@ -150,10 +163,6 @@ const BY_ID: Record<string, number> = {
   'the-last-toll': 0,
   'the-drowned-king': 1,
   'grave-harvest': 2,
-  'sepulchral-gaze': 0,
-  'rattling-charge': 0,
-  'grave-trap': 1,
-  dredge: 2,
 };
 const report: string[] = [];
 for (const h of Object.keys(POOLS) as HeroId[]) {
@@ -236,6 +245,28 @@ for (const m of kpFile.matchAll(
   out[id] = KP_GUN.includes(id) ? 0 : KP_SHELLS.includes(id) ? 1 : 2;
 }
 Object.assign(out, BY_ID);
+// glue cards: any build path can use them, so they belong to none (DECISIONS #337)
+const NO_PATH = [
+  'bone-crack',
+  'whet-the-fangs',
+  'primal-feast',
+  'low-blow',
+  'tear-the-veil',
+  'step-aside',
+  'tangle-wire',
+  'quick-hands',
+  'cold-open',
+  'crushing-palm',
+  'inner-sight',
+  'quick-palms',
+  'ray-of-light',
+  'gleam',
+  'star-barrier',
+  'broken-bottle',
+  'chaser',
+  'dumpster-dive',
+];
+for (const id of NO_PATH) delete out[id];
 const body = Object.entries(out)
   .sort(([a], [b]) => a.localeCompare(b))
   .map(([id, l]) => `  '${id}': ${l},`)

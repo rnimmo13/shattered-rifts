@@ -8,7 +8,7 @@ import { checkEntry, setupFor, type Entry } from './index';
 
 // a knight deck with a Hold Strike, an Opening-hand Dawn Smite, a Flare Defend, and a sanctified, engraved, upgraded Strike
 const deck = [
-  ...RIFTWALKERS.knight.starter.filter((c) => c !== 'dawn-smite').slice(0, 6),
+  ...RIFTWALKERS.knight.starter.filter((c) => c !== 'dawn-smite').slice(1, 7),
   'hold^strike',
   'opening^dawn-smite',
   'flare^defend',

@@ -64,16 +64,19 @@ describe('checkEntry', () => {
     expect(checkEntry({ ...entryOf('knight'), deck: Array(200).fill('strike') }).ok).toBe(false);
   });
 
-  it('takes any number of one non-basic card (runs have no copy limit; only basics are capped at 10, DECISIONS #336)', () => {
-    const deck = [...entryOf('knight').deck, ...Array<string>(11).fill('rift-bolt')];
-    expect(checkEntry({ ...entryOf('knight'), deck }).ok).toBe(true);
+  it('takes 5 of one card and refuses 6, as a run does (DECISIONS #337)', () => {
+    const five = [...entryOf('knight').deck, ...Array<string>(5).fill('rift-bolt')];
+    expect(checkEntry({ ...entryOf('knight'), deck: five }).ok).toBe(true);
+    const six = [...entryOf('knight').deck, ...Array<string>(6).fill('rift-bolt')];
+    expect(checkEntry({ ...entryOf('knight'), deck: six }).ok).toBe(false);
   });
 
   it('does not allow a pile of one basic card', () => {
-    const many = Array<string>(11).fill('strike');
-    expect(checkEntry({ ...entryOf('knight'), deck: many }).ok).toBe(false);
-    expect(checkEntry({ ...entryOf('knight'), deck: Array<string>(10).fill('strike') }).ok).toBe(
-      true,
+    // (the knight starts with 4 Strikes: one more is the cap, two more is too many)
+    const base = entryOf('knight').deck;
+    expect(checkEntry({ ...entryOf('knight'), deck: [...base, 'strike'] }).ok).toBe(true);
+    expect(checkEntry({ ...entryOf('knight'), deck: [...base, 'strike', 'strike'] }).ok).toBe(
+      false,
     );
   });
 

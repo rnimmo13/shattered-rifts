@@ -351,4 +351,14 @@ export const ASSASSIN: CardDef[] = [
   q('rare', 'showy-reflex', 'Showy Reflex', 'power', 1, 'none', [
     on('discard', [dmg(4, 'randomFoe')]),
   ]),
+
+  // --- glue: cards for any build path (DECISIONS #337) ---
+  q('common', 'tangle-wire', 'Tangle Wire', 'attack', 1, 'foe', [
+    dmg(8),
+    status('faltering', 1, 'target'),
+  ]),
+  q('common', 'quick-hands', 'Quick Hands', 'skill', 0, 'none', [draw(2), discard(2)], {
+    up: { effects: [draw(2), discard(2), barrier(3)] },
+  }),
+  q('common', 'cold-open', 'Cold Open', 'attack', 0, 'foe', [dmg(6), discard(1)]),
 ];

@@ -186,9 +186,10 @@ describe('rewards', () => {
       }
     }
   });
-  it('has no copy limit (DECISIONS #336)', () => {
+  it('takes at most 5 copies of a card, basics too (DECISIONS #337)', () => {
     expect(canAdd(['rift-bolt', 'rift-bolt', 'rift-bolt', 'rift-bolt'], 'rift-bolt')).toBe(true);
-    expect(canAdd(['strike', 'strike', 'strike', 'strike', 'strike'], 'strike')).toBe(true); // basics are exempt
+    expect(canAdd(['strike', 'strike', 'strike', 'strike'], 'strike')).toBe(true);
+    expect(canAdd(['strike', 'strike', 'strike', 'strike', 'strike'], 'strike')).toBe(false);
   });
 });
 
@@ -602,8 +603,11 @@ describe('the other rooms and the rules around them', () => {
     expect(finishDuel(run, false).resolve).toBe(0);
   });
 
-  it('any number of a card and its upgrade together (DECISIONS #336)', () => {
+  it('the 5-copy cap counts a card and its upgrade together (DECISIONS #337)', () => {
     expect(canAdd(['rift-bolt', 'rift-bolt+', 'rift-bolt+', 'rift-bolt'], 'rift-bolt')).toBe(true);
+    expect(
+      canAdd(['rift-bolt', 'rift-bolt+', 'rift-bolt+', 'rift-bolt', 'rift-bolt+'], 'rift-bolt'),
+    ).toBe(false);
   });
 
   it('a save cannot smuggle in prototype keys', () => {

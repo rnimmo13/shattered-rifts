@@ -219,7 +219,8 @@ export const HUNTER: CardDef[] = [
     'attack',
     3,
     'foe',
-    [lifesteal(scaled(dmg(10), per('might', 3)), 75)],
+    // Feast: it grows with every card you have consumed (DECISIONS #338)
+    [lifesteal(scaled(dmg(10), per('exhausted', 3)), 75)],
     // (upgraded, it costs 2: a big one-off card gains little from +3 damage, and +4 per Might is past the guard rail for a card that
     // is consumed; DECISIONS #282)
     { exhaust: true, up: { cost: 2 } },
@@ -306,4 +307,12 @@ export const HUNTER: CardDef[] = [
     trigger: { on: 'hpLost', min: 5 },
   }),
   k('rare', 'grave-hunger', 'Grave Hunger', 'power', 2, 'none', [on('exhaust', [heal(2)])]),
+
+  // --- glue: cards for any build path (DECISIONS #337) ---
+  k('common', 'bone-crack', 'Bone Crack', 'attack', 1, 'foe', [
+    dmg(7),
+    status('exposed', 2, 'target'),
+  ]),
+  k('common', 'whet-the-fangs', 'Whet the Fangs', 'skill', 0, 'none', [status('vigor', 6)]),
+  k('common', 'primal-feast', 'Primal Feast', 'skill', 1, 'none', [heal(7, 'allFriends')]),
 ];

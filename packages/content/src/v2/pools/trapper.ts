@@ -10,7 +10,6 @@ import {
   barrier,
   dmg,
   draw,
-  mana,
   manaNext,
   on,
   per,
@@ -237,8 +236,9 @@ export const TRAPPER: CardDef[] = [
     [PREVENT, dmg(22, 'attacker'), status('stunned', 2, 'attacker'), status('shielded', 2)],
     { trigger: { on: 'attacked' }, up: { cost: 2 } },
   ),
+  // Patience: the Mana you keep strikes every enemy, and your whole hand is held (DECISIONS #338)
   v('legendary', 'masquerade', 'Masquerade', 'power', 2, 'none', [
-    on('snare', [draw(2), mana(1), dmg(4, 'allFoes')]),
+    on('turnEnd', [scaled(dmg(0, 'allFoes'), per('mana', 3)), status('holdfast', 1)]),
   ]),
   v('common', 'saved-breath', 'Saved Breath', 'skill', 0, 'none', [manaNext(2), scry(2)], {
     exhaust: true,
@@ -354,4 +354,21 @@ export const TRAPPER: CardDef[] = [
   ),
   v('common', 'discarded-hand', 'Hidden Hand', 'skill', 1, 'none', [draw(2)], { retain: true }),
   v('uncommon', 'sandbag', 'Sandbag', 'attack', 1, 'foe', [scaled(dmg(5), per('mana', 3))]),
+
+  // --- brought back (DECISIONS #337) ---
+  v('uncommon', 'spotlight', 'Spotlight', 'skill', 1, 'foe', [
+    status('exposed', 3, 'target'),
+    status('faltering', 1, 'target'),
+  ]),
+
+  // --- glue: cards for any build path (DECISIONS #337) ---
+  v('common', 'low-blow', 'Low Blow', 'attack', 0, 'foe', [
+    dmg(3),
+    status('faltering', 1, 'target'),
+  ]),
+  v('common', 'tear-the-veil', 'Tear the Veil', 'skill', 1, 'none', [
+    status('exposed', 1, 'allFoes'),
+    draw(1),
+  ]),
+  v('common', 'step-aside', 'Step Aside', 'skill', 1, 'none', [barrier(5), drawNext(1)]),
 ];

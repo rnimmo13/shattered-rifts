@@ -14,6 +14,7 @@ import {
   forge,
   mana,
   manaNext,
+  maxMana,
   on,
   per,
   pool,
@@ -227,7 +228,8 @@ export const SPELLBLADE: CardDef[] = [
     'skill',
     2,
     'none',
-    [stars(8), draw(3), barrier(20)],
+    // Arcana: a hoard of Arcana now, and a Mana more every turn for the fight (DECISIONS #338)
+    [stars(8), draw(3), maxMana(1)],
     { exhaust: true },
   ),
   a(
@@ -302,4 +304,20 @@ export const SPELLBLADE: CardDef[] = [
   a('rare', 'sirius', 'Sigil of the Pyre', 'power', 3, 'none', [
     on('turnStart', [mana(1), forge('starforged-blade', 2)]),
   ]),
+
+  // --- glue: cards for any build path (DECISIONS #337) ---
+  a(
+    'common',
+    'ray-of-light',
+    'Searing Ray',
+    'attack',
+    0,
+    'foe',
+    [dmg(6), status('exposed', 1, 'target')],
+    {
+      starCost: 1,
+    },
+  ),
+  a('common', 'gleam', 'Glint', 'attack', 1, 'foe', [dmg(7), scry(2)]),
+  a('common', 'star-barrier', 'Arcane Barrier', 'skill', 0, 'none', [barrier(10)], { starCost: 2 }),
 ];

@@ -179,8 +179,17 @@ export const KNIGHT: CardDef[] = [
     'power',
     3,
     'none',
-    [status('fortified', 1), status('thorns', 3), status('bracing', 1)],
-    { up: { effects: [status('fortified', 1), status('thorns', 5), status('bracing', 2)] } },
+    // Thorns: keep most of your Barrier, and your Thorns grow every turn (DECISIONS #338)
+    [status('fortified', 1), status('thorns', 3), on('turnStart', [status('thorns', 2)])],
+    {
+      up: {
+        effects: [
+          status('fortified', 1),
+          status('thorns', 5),
+          on('turnStart', [status('thorns', 2)]),
+        ],
+      },
+    },
   ),
   m(
     'legendary',
@@ -325,4 +334,34 @@ export const KNIGHT: CardDef[] = [
     [scaled(dmg(20), per('devotion', 2)), doubleSt('devotion', 'self', 0)],
     { statusCost: { status: 'devotion', amount: 10 } },
   ),
+
+  // --- brought back (DECISIONS #337) ---
+  m('common', 'shield-bash', 'Shield Bash', 'attack', 1, 'foe', [
+    scaled(dmg(3), per('barrier', 0.5)),
+  ]),
+  m('common', 'iron-tithe', 'Iron Tithe', 'skill', 1, 'none', [
+    barrier(6),
+    scaled(barrier(0), per('exhausted', 2)),
+  ]),
+  m('common', 'gilded-wall', 'Gilded Wall', 'skill', 1, 'none', [
+    scaled(barrier(5), per('barrier', 0.5)),
+  ]),
+  m('rare', 'endless-vigil', 'Endless Vigil', 'power', 2, 'none', [
+    on('turnEnd', [scaled(barrier(0), per('hand', 2))]),
+  ]),
+  m('uncommon', 'ember-ward', 'Ember Ward', 'skill', 1, 'none', [
+    barrier(10),
+    status('thorns', 4, 'self', true),
+  ]),
+  m(
+    'uncommon',
+    'mirror-shield',
+    'Mirror Shield',
+    'snare',
+    1,
+    'none',
+    [dmg(4, 'attacker'), scaled(dmg(0, 'attacker'), per('thorns', 2))],
+    { trigger: { on: 'attacked' } },
+  ),
+  m('rare', 'radiant-oath', 'Radiant Oath', 'power', 2, 'none', [status('thorns', 4)]),
 ];

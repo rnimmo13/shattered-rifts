@@ -17,8 +17,8 @@ export const MAX_DECK = 80;
 export const MAX_NAME = 24;
 /** A run holds at most five Boons; a little headroom for the ones a later build may allow. */
 export const MAX_BOONS = 8;
-/** Basic cards have no copy limit in a run, but 80 of the best one is not a deck. */
-export const MAX_BASIC_COPIES = 10;
+/** The most copies of one card an Arena deck holds: the same 5 as a run (DECISIONS #337). */
+export const MAX_COPIES = 5;
 
 export interface Checked {
   ok: true;
@@ -172,8 +172,7 @@ export function checkEntry(raw: unknown): Checked | Rejected {
     const seen = new Map<string, number>();
     for (const sent of sentDeck) {
       const id = canonicalCard(sent);
-      if (id !== sent && (!canAdd(deck, id, false) || (seen.get(id) ?? 0) >= MAX_BASIC_COPIES))
-        continue;
+      if (id !== sent && (!canAdd(deck, id, false) || (seen.get(id) ?? 0) >= MAX_COPIES)) continue;
       seen.set(id, (seen.get(id) ?? 0) + 1);
       deck.push(id);
     }
@@ -197,8 +196,7 @@ export function checkEntry(raw: unknown): Checked | Rejected {
       };
     const n = (copies.get(id) ?? 0) + 1;
     copies.set(id, n);
-    // (only a basic card is capped: any other card may be held any number of times, DECISIONS #336)
-    if (COMBAT_DB.cards[id]?.rarity === 'basic' && n > MAX_BASIC_COPIES)
+    if (n > MAX_COPIES)
       return { ok: false, message: `Too many copies of "${COMBAT_DB.cards[id]?.name ?? id}".` };
     held.push(id);
   }

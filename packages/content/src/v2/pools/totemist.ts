@@ -327,4 +327,66 @@ export const TOTEMIST: CardDef[] = [
   i('common', 'rune-burst', 'Totem Burst', 'skill', 1, 'none', [evoke(), draw(1)]),
   i('rare', 'prism-cut', 'Owl Cut', 'skill', 1, 'none', [channel('prism'), draw(1)]),
   i('rare', 'harmonic-wave', 'Spirit Wave', 'attack', 2, 'none', [dmg(11, 'allFoes'), evoke()]),
+
+  // --- brought back (DECISIONS #337) ---
+  i('common', 'arc-flash', 'Feather Storm', 'attack', 1, 'none', [
+    dmg(4, 'allFoes'),
+    channel('spark'),
+  ]),
+  i(
+    'rare',
+    'lattice-collapse',
+    'Toppling Row',
+    'attack',
+    2,
+    'none',
+    [scaled(dmg(8, 'allFoes'), per('runes', 4)), evoke(3)],
+    { exhaust: true },
+  ),
+  i('uncommon', 'tuning-fork', 'Spirit Drum', 'power', 2, 'none', [
+    on('play', [barrier(4)], { filter: 'power' }),
+  ]),
+  i('uncommon', 'rune-carapace', 'Bark Carapace', 'power', 1, 'none', [
+    on('turnEnd', [scaled(barrier(0), per('runes'))]),
+  ]),
+
+  // --- Whittling, filled to its minimum (DECISIONS #337) ---
+  i(
+    'common',
+    'antler-carving',
+    'Antler Carving',
+    'attack',
+    0,
+    'none',
+    [dmg(2, 'randomFoe', 2)],
+    CARVING,
+  ),
+  i(
+    'common',
+    'serpent-carving',
+    'Serpent Carving',
+    'attack',
+    0,
+    'foe',
+    [dmg(2), status('faltering', 1, 'target')],
+    CARVING,
+  ),
+  i(
+    'common',
+    'moth-carving',
+    'Moth Carving',
+    'skill',
+    0,
+    'none',
+    [barrier(2), status('exposed', 1, 'randomFoe')],
+    CARVING,
+  ),
+  i('uncommon', 'whittlers-kit', "Whittler's Kit", 'skill', 1, 'none', [
+    addTo('live-wire'),
+    addTo('echo-of-glyphs'),
+    draw(1),
+  ]),
+  i('rare', 'endless-whittling', 'Endless Whittling', 'power', 1, 'none', [
+    on('turnStart', [fetchTag(1, 'carving')]),
+  ]),
 ];

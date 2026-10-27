@@ -272,4 +272,13 @@ export const ENGINEER: CardDef[] = [
   r('common', 'overcharge', 'Overcharge', 'skill', 0, 'none', [mana(2), manaNext(-1)], {
     exhaust: true,
   }),
+
+  // --- brought back (DECISIONS #337) ---
+  r('common', 'scrap-volley', 'Scrap Volley', 'attack', 1, 'none', [dmg(4, 'randomFoe', 2)]),
+  r('common', 'sync-pulse', 'Sync Pulse', 'skill', 1, 'none', [ACT, heal(3, 'allFriends')]),
+  r('rare', 'overload', 'Overload', 'skill', 2, 'none', [ACT, ACT, ACT], { exhaust: true }),
+  r('common', 'hardened-chassis', 'Hardened Chassis', 'skill', 1, 'ally', [
+    barrier(9, 'target'),
+    draw(1),
+  ]),
 ];
