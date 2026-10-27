@@ -29,6 +29,27 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.99.0',
+    date: '2026-10-27',
+    title: 'Tidier screens',
+    summary:
+      'The campaign header fits smaller screens, the Brass Reel shows its card choices side by side, and the build path moves to the bottom of the card.',
+    notes: [
+      {
+        kind: 'fixed',
+        text: 'Spin to win: the three Rift-crossed cards on offer are laid out side by side instead of stacked.',
+      },
+      {
+        kind: 'changed',
+        text: 'The campaign header fits smaller screens: two lines on a laptop, three on a phone. Your Arena deck is now a small ⚔ badge beside Deck (hover it for the details).',
+      },
+      {
+        kind: 'changed',
+        text: 'The build path label sits at the bottom left of a card, and more cards have their own art again.',
+      },
+    ],
+  },
+  {
     version: '0.98.0',
     date: '2026-10-27',
     title: 'Rarer, deeper card pools',
