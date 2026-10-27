@@ -19,6 +19,7 @@ import {
   type Scale,
   type Sel,
   type Side,
+  type StatusId,
   type Unit,
   type UnitId,
 } from './types';
@@ -208,6 +209,17 @@ export function viewFor(db: CombatDb, s: CombatState, me: Side): CombatView {
 export { other, activePattern };
 
 // --- generated rules text -----------------------------------------------------------------------------------------
+
+/** Statuses that stay for the rest of the fight once gained (no turns to count down, nothing that uses them up). */
+// (Edge says so in its own line, and maximum Mana in its own)
+const LASTING: readonly StatusId[] = ['might', 'thorns', 'bracing', 'fortified', 'ritual', 'resonance'];
+
+const isLasting = (o: Op): boolean =>
+  o.op === 'status' &&
+  (o.to === 'self' || o.to === 'allFriends') &&
+  o.amount > 0 &&
+  !o.temp &&
+  LASTING.includes(o.status);
 
 const WHO: Record<Sel, string> = {
   target: '',
@@ -486,7 +498,10 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
       // Edge is what makes Sleeve Knives hit harder: say so on the card instead of leaving it to a tooltip
       if (o.status === 'edge' && o.to === 'self' && !o.scale && o.amount > 0)
         return `Gain ${o.amount} Edge: your Sleeve Knives deal ${o.amount} more damage ${o.temp ? 'this turn' : 'for the rest of the fight'}.`;
-      return `${o.amount < 0 ? 'Remove' : 'Apply'} ${at(Math.abs(o.amount), o.scale)} ${sname(o.status)}${o.to === 'self' ? '' : who[o.to]}${o.temp ? ' until the end of your turn' : ''}.`;
+      // (on your own cards a status you put on yourself is gained or lost, not "applied")
+      const mine = o.to === 'self' && who.self === WHO.self;
+      const verb = o.amount < 0 ? (mine ? 'Lose' : 'Remove') : mine ? 'Gain' : 'Apply';
+      return `${verb} ${at(Math.abs(o.amount), o.scale)} ${sname(o.status)}${o.to === 'self' ? '' : who[o.to]}${o.temp ? ' until the end of your turn' : ''}.`;
     }
     case 'scaleStatus': {
       const times = o.mult === 2 ? 'Double' : o.mult === 3 ? 'Triple' : `Multiply by ${o.mult}`;
@@ -691,6 +706,11 @@ export function cardText(db: CombatDb, c: CardDef, live?: ReadonlyMap<number, Li
   if (c.xBonus) parts.push(`X is ${c.xBonus} higher.`);
   const who: Record<Sel, string> =
     c.target === 'ally' || c.target === 'friend' ? { ...WHO, target: ' to the ally' } : WHO;
+  // an Aura with nothing ongoing, giving one lasting status: that line says it lasts (DECISIONS #300)
+  const oneShotAura =
+    c.kind === 'power' &&
+    !c.effects.some((o) => o.op === 'power' || o.op === 'channel' || o.op === 'runeSlots') &&
+    c.effects.filter((o) => isLasting(o)).length === 1;
   // several of the same summon in a row read as one line ("Summon 3 Bone Thralls...")
   for (let i = 0; i < c.effects.length; i++) {
     const o = c.effects[i] as Op;
@@ -705,11 +725,15 @@ export function cardText(db: CombatDb, c: CardDef, live?: ReadonlyMap<number, Li
       i += n - 1;
     } else {
       const l = o.op === 'damage' ? live?.get(i) : undefined;
-      parts.push(
-        l && o.op === 'damage' ? liveDamageText(opText(db, o, who), o, l) : opText(db, o, who),
-      );
+      const line =
+        l && o.op === 'damage' ? liveDamageText(opText(db, o, who), o, l) : opText(db, o, who);
+      parts.push(oneShotAura && isLasting(o) ? line.replace(/.$/, ' for the rest of the fight.') : line);
     }
   }
+  // an Aura that does its work once, when played, says how long what it gives lasts (DECISIONS #300)
+  const ongoing = c.effects.some((o) => o.op === 'power' || o.op === 'channel' || o.op === 'runeSlots');
+  const lasting = c.effects.filter((o) => isLasting(o)).length;
+  if (c.kind === 'power' && !ongoing && lasting > 1) parts.push('These last the rest of the fight.');
   if (c.exhaust) parts.push('Consume.');
   if (c.retain) parts.push('Hold.');
   if (c.innate) parts.push('Opening hand.');

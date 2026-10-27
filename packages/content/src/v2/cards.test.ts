@@ -301,3 +301,16 @@ describe('buildPaths (each character has three, each with room to build a deck)'
     expect(new Set(names).size).toBe(names.length);
   });
 });
+
+describe('Aura wording (DECISIONS #299, #300)', () => {
+  const text = (id: string): string => cardText(db, db.cards[id]!);
+  it('an Aura that gives a lasting status once says it lasts the rest of the fight', () => {
+    expect(text('unchained')).toBe('Gain 3 Might for the rest of the fight.');
+    expect(text('the-last-oath')).toMatch(/These last the rest of the fight\.$/);
+  });
+  it('an Aura with an ongoing trigger does not, and Rift Resonance answers a reshuffle', () => {
+    expect(text('rift-resonance')).toBe(
+      'Gain 1 Might. Whenever your deck is reshuffled: Gain 1 Might.',
+    );
+  });
+});

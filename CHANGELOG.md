@@ -5,6 +5,7 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **Clearer Auras:** an Aura that gives you a status once now says it lasts the rest of the fight (Unchained: "Gain 3 Might for the rest of the fight"), and cards that give you a status say "Gain", not "Apply".
 - **Kesh toned down:** cards that call her pack now bring a companion by their rarity: a Pup (6 HP) from Guard Dog and Heel, a Hound (10 HP) from Rally the Pack, a Pack Alpha (14 HP) from Alpha Call. Her companions share half her Might (rounded down) instead of all of it.
 - **Rift Resonance** gives 1 Might, and 1 more every time your deck is reshuffled (it gave 2 Might once). Auras can now answer a reshuffle.
 - **Arena:** see how many players are looking for a match before you queue. Making or joining a friend's room has its own panel, and the room code box shows its hint in full.
