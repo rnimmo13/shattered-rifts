@@ -17,7 +17,7 @@ import { LearnOdds } from './LearnOdds';
 import { SHOW_ODDS } from './learnFlags';
 
 /** The keywords worth a place in the combat tab, in the order a new player meets them. */
-const CORE_KEYWORDS = ['mana', 'barrier', 'companion', 'taunt', 'snare', 'power'];
+const CORE_KEYWORDS = ['mana', 'barrier', 'companion', 'overflow', 'taunt', 'snare', 'power'];
 /** Card words (what a card's text says it does) */
 const CARD_WORDS = ['exhaust', 'retain', 'ethereal', 'innate', 'discard', 'scry'];
 /** Mechanics that belong to one Riftwalker's way of playing */
@@ -365,8 +365,8 @@ export function LearnScreen() {
           <p>
             Boons last for the whole run, and every tier after it. Elites give one; the merchant
             sells one (never a Legendary); some events and Threshold options give one; and beating
-            Vorthax leaves a Legendary Boon {LOOP_LEGEND_CHANCE}% of the time. A run holds one Legendary Boon at most. Wardens give their
-            Gift instead.
+            Vorthax leaves a Legendary Boon {LOOP_LEGEND_CHANCE}% of the time. A run holds one
+            Legendary Boon at most. Wardens give their Gift instead.
           </p>
           <BoonList />
           <h3>Warden&rsquo;s Hearts</h3>

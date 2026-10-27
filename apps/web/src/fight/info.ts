@@ -1,4 +1,12 @@
-import { cardText, type CardDef, type CombatDb, type IntentIcon, type StatusId } from '@sr/combat';
+import {
+  OVERFLOW_NAME,
+  OVERFLOW_PCT,
+  cardText,
+  type CardDef,
+  type CombatDb,
+  type IntentIcon,
+  type StatusId,
+} from '@sr/combat';
 import { rollOf } from '@sr/content/v2';
 import type { TipContent } from '../ui/tip';
 import { rollNote } from '../cards/cardText';
@@ -210,7 +218,11 @@ export const KEYWORD_INFO: Record<string, { name: string; text: string }> = {
   },
   companion: {
     name: 'Companion',
-    text: 'An ally that stands beside you and acts automatically when you end your turn.',
+    text: 'An ally that stands beside you and acts automatically when you end your turn. Single attacks aimed at your side hit your companions before they reach you.',
+  },
+  overflow: {
+    name: OVERFLOW_NAME,
+    text: `When a single attack kills a companion, ${OVERFLOW_PCT}% of the damage left over (after its Barrier and HP) carries through to its hero.`,
   },
   taunt: { name: 'Taunt', text: 'Enemies must attack this unit before anything else.' },
   innate: { name: 'Opening hand', text: 'It starts in your opening hand.' },

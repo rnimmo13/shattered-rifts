@@ -9,6 +9,7 @@ import {
   DEFAULT_RUNE_SLOTS,
   MANTRA_GOAL,
   MAX_ALLIES,
+  OVERFLOW_PCT,
   MAX_MAX_MANA,
   MAX_ENEMIES,
   MAX_START_ENEMIES,
@@ -257,6 +258,7 @@ function applyDamage(
   t: Unit,
   amount: number,
   kind: 'attack' | 'direct',
+  overflow = false,
 ): number {
   if (t.hp <= 0) return 0;
   if (kind === 'attack' && stacks(t, 'ghostly') > 0 && amount > 1) amount = 1;
@@ -272,6 +274,7 @@ function applyDamage(
       shielded: true,
       kind,
       hp: t.hp,
+      ...(overflow ? { overflow: true as const } : {}),
     });
     return 0;
   }
@@ -300,6 +303,7 @@ function applyDamage(
     shielded: false,
     kind,
     hp: t.hp,
+    ...(overflow ? { overflow: true as const } : {}),
   });
   if (lost > 0 && t.kind === 'hero') {
     syncClutch(r, r.s.sides[t.side]);
@@ -324,7 +328,7 @@ function riseUp(r: Run, t: Unit, rise: Rise): void {
 
 /** One attack hit from `a.actor` on `t`: Traps may spring first and may cancel it. */
 /** One hit of an attack. Returns the HP it took off (for Lifesteal). */
-function attackHit(r: Run, a: Act, t: Unit, base: number): number {
+function attackHit(r: Run, a: Act, t: Unit, base: number, single = false): number {
   if (t.hp <= 0) return 0;
   if (t.side !== a.actor.side) {
     const hit = { prevented: false };
@@ -336,7 +340,17 @@ function attackHit(r: Run, a: Act, t: Unit, base: number): number {
     }
   }
   const amount = modifiedDamage(base, a.actor, t);
-  const lost = applyDamage(r, a.actor, t, amount, 'attack');
+  const room = t.hp + t.barrier;
+  const capped = stacks(t, 'ghostly') > 0 || stacks(t, 'shielded') > 0;
+  const lostHere = applyDamage(r, a.actor, t, amount, 'attack');
+  let lost = lostHere;
+  // Overflow: a single-target attack that kills a companion carries part of what is left through to its hero (DECISIONS #321)
+  if (single && t.kind === 'ally' && t.hp <= 0 && !capped && amount > room) {
+    const hero = heroOf(r.s.sides[t.side]);
+    const carried = Math.floor(((amount - room) * OVERFLOW_PCT) / 100);
+    if (hero && hero.hp > 0 && carried > 0)
+      lost += applyDamage(r, a.actor, hero, carried, 'attack', true);
+  }
   // Armored wears thin each time an attack gets through
   if (lost > 0 && stacks(t, 'armored') > 0) addStatus(r, t, 'armored', -1);
   // Thorns answer an attack: an Attack card, or a unit's own move (an enemy's, a companion's, which takes the Thorns itself). A Trap,
@@ -555,6 +569,7 @@ function execOp(r: Run, a: Act, op: Op): void {
             Math.round(
               (amountOf(r, a, op.amount, op.scale, t) + edge + vigor + resonanceOf(a)) * lone,
             ),
+            op.to === 'target' || op.to === 'front',
           );
         reap(r);
       }

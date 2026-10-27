@@ -7,6 +7,7 @@ import {
   validateDb,
   heroOf,
   legalActions,
+  OVERFLOW_PCT,
   viewFor,
   eventsFor,
   cardText,
@@ -466,7 +467,7 @@ describe('allies', () => {
     expect(hero(e.state).hp).toBeLessThan(60); // the second stab found a new target: the hero
   });
 
-  it('an 8x3 attack that kills a minion in two hits spends the third on the hero, for its full damage', () => {
+  it('an 8x3 attack that kills a minion in two hits spends the third on the hero, for its full damage (plus the overflow of the second)', () => {
     // (the sample cultist, given an 8x3 move for this test)
     const cultist = db.units.cultist!;
     if (cultist.brain.kind !== 'enemy') throw new Error('cultist is an enemy');
@@ -506,9 +507,9 @@ describe('allies', () => {
     const before = hero(c).hp;
     foe(c).intent = { move: 'flurry', target: 'ally1' };
     const after = applyAction(tdb, c, { type: 'endTurn' }).state;
-    // two hits (8 + 8) kill the 12 HP drone; the third finds the hero and lands in full
+    // two hits (8 + 8) kill the 12 HP drone, 4 left over, half of it (2) carrying through; the third finds the hero and lands in full
     expect(after.sides.a.units.some((u) => u.id === 'ally1')).toBe(false);
-    expect(hero(after).hp).toBe(before - 8);
+    expect(hero(after).hp).toBe(before - 8 - Math.floor((4 * OVERFLOW_PCT) / 100));
   });
 });
 
@@ -1356,6 +1357,47 @@ describe('Lifesteal, companions that grow, and Might shared with the pack (DECIS
     c = applyAction(half, c, { type: 'play', card: 't2' }).state;
     expect(hero(c).statuses.might).toBe(2);
     expect(pet()).toBe(2);
+  });
+});
+
+describe('Overflow: what is left of a hit that kills a companion carries through (DECISIONS #321)', () => {
+  /** an enemy's one attack, with a companion of the given HP and Barrier standing in front: the HP the hero loses */
+  const heroLoss = (
+    hp: number,
+    barrier: number,
+  ): { loss: number; plain: number; companionDead: boolean } => {
+    const plainRun = start(['slime'], ['call-drone']);
+    const plain = 60 - hero(end(clone(plainRun)).state).hp;
+    let s = clone(start(['slime'], ['call-drone']));
+    s = applyAction(db, s, {
+      type: 'play',
+      card: s.sides.a.hand.find((c) => c.card === 'call-drone')!.id,
+    }).state;
+    const drone = s.sides.a.units.find((u) => u.kind === 'ally')!;
+    drone.hp = hp;
+    drone.maxHp = Math.max(drone.maxHp, hp);
+    drone.barrier = barrier;
+    s.sides.a.units.find((u) => u.kind === 'hero')!.barrier = 0;
+    const after = end(s).state;
+    return {
+      loss: 60 - hero(after).hp,
+      plain,
+      companionDead: !after.sides.a.units.some((u) => u.kind === 'ally' && u.hp > 0),
+    };
+  };
+
+  it('a frail companion lets half of the rest of the hit through; a sturdy one lets none', () => {
+    const { plain } = heroLoss(1000, 0);
+    expect(plain).toBeGreaterThan(3);
+    const frail = heroLoss(1, 0);
+    expect(frail.companionDead).toBe(true);
+    expect(frail.loss).toBe(Math.floor(((plain - 1) * OVERFLOW_PCT) / 100));
+    // its Barrier soaks first
+    const shielded = heroLoss(1, 2);
+    expect(shielded.loss).toBe(Math.floor(((plain - 3) * OVERFLOW_PCT) / 100));
+    // a companion that survives, or dies with nothing left over, lets nothing through
+    expect(heroLoss(1000, 0).loss).toBe(0);
+    expect(heroLoss(plain, 0).loss).toBe(0);
   });
 });
 

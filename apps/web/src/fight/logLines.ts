@@ -3,7 +3,15 @@
 // whom for how much, and what changed (statuses, Barrier, deaths, stances, Traps). Units are named with a number when there is more
 // than one of a kind ("Gilded Squire 2"), and damage that is not an attack (a Trap, Thorns) says what caused it.
 
-import type { CardId, CombatDb, CombatEvent, CombatState, Side, StatusId } from '@sr/combat';
+import {
+  OVERFLOW_NAME,
+  type CardId,
+  type CombatDb,
+  type CombatEvent,
+  type CombatState,
+  type Side,
+  type StatusId,
+} from '@sr/combat';
 import { STATUS_INFO } from './info';
 
 export type LogTone = 'mine' | 'foe' | 'turn' | 'plain';
@@ -176,7 +184,10 @@ export function createDescriber(c: LogContext): (e: CombatEvent) => Omit<LogLine
           e.target === lastHit.source;
         let text: string;
         let side: Side | null;
-        if (trap) {
+        if (e.overflow) {
+          text = `${OVERFLOW_NAME} carries through to ${to}: ${result}`;
+          side = e.source ? c.sideOf(e.source) : null;
+        } else if (trap) {
           text = `${trap.name} hits ${to}: ${result}`;
           side = e.source ? c.sideOf(e.source) : c.sideOf(e.target);
         } else if (thorns) {
