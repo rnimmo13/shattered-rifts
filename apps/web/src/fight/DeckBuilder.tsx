@@ -61,8 +61,13 @@ export function DeckBuilder(props: {
   const searching = filter.text.trim() !== '';
   const pages = useMemo(() => {
     const shown = filterCatalog(all, { ...filter, pool: 'all' }, (c) => cardText(db, c));
-    // a search reads through the whole book; otherwise only the open bookmark
-    return paginate(searching ? sortCards(shown) : tabCards(shown, tab), cols * 2);
+    // a search reads through the whole book; otherwise only the open bookmark. Pages run by character, not by build path.
+    return paginate(
+      searching ? sortCards(shown, 'character') : tabCards(shown, tab, 'character'),
+      cols * 2,
+      false,
+      false,
+    );
   }, [all, filter, db, tab, searching, cols]);
   const spreads = Math.max(1, Math.ceil(pages.length / spread));
   const at = Math.min(leaf, spreads - 1);
@@ -141,7 +146,8 @@ export function DeckBuilder(props: {
               <input
                 type="checkbox"
                 checked={filter.upgraded}
-                onChange={(e) => refilter({ ...filter, upgraded: e.target.checked })}
+                // (the "+" cards sit where their plain ones do: the book stays on the same pages, with no page turn)
+                onChange={(e) => setFilter({ ...filter, upgraded: e.target.checked })}
               />
               <span>Upgraded (+)</span>
             </label>
@@ -176,7 +182,7 @@ export function DeckBuilder(props: {
             ‹
           </button>
           <div
-            key={`${tab}-${at}-${searching}-${filter.rarity}-${filter.upgraded}`}
+            key={`${tab}-${at}-${searching}-${filter.rarity}`}
             className={`grim__spread grim__spread--${dir}`}
           >
             {visible.length === 0 && (

@@ -792,8 +792,7 @@ function execOp(r: Run, a: Act, op: Op): void {
             ? Math.max(before, Math.min(MAX_MAX_MANA, before + op.amount))
             : Math.max(0, before + op.amount);
         r.ev.push({ type: 'maxMana', side: side.id, max: side.maxMana });
-        // only the part that really raised the maximum is paid out now
-        gainMana(r, side, Math.max(0, side.maxMana - before));
+        // (the extra Mana starts with your next turn: nothing is paid out now; DECISIONS #302)
       }
       return;
     case 'drawNext':

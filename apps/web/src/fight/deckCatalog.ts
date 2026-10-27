@@ -125,17 +125,25 @@ const RARITY_RANK: Record<string, number> = {
 };
 
 /** The cards on one bookmark: grouped by character, then rarity (basic to legendary), cost, name. */
-export function tabCards(cards: readonly CatalogCard[], tab: string): CatalogCard[] {
-  return sortCards(cards.filter((c) => tabOf(c.def) === tab));
+export function tabCards(
+  cards: readonly CatalogCard[],
+  tab: string,
+  by: 'book' | 'character' = 'book',
+): CatalogCard[] {
+  return sortCards(
+    cards.filter((c) => tabOf(c.def) === tab),
+    by,
+  );
 }
 
 /**
- * Book order: character, build path, then rarity (basic to legendary), cost, name. With `by: 'rarity'` the rarest come first across every
- * character (then character, cost, name), so a page is a run of cards with no sections.
+ * Book order: character, build path, then rarity (basic to legendary), cost, name. With `by: 'character'` the build paths are not
+ * kept apart (character, rarity, cost, name). With `by: 'rarity'` the rarest come first across every character (then character,
+ * cost, name), so a page is a run of cards with no sections.
  */
 export function sortCards(
   cards: readonly CatalogCard[],
-  by: 'book' | 'rarity' = 'book',
+  by: 'book' | 'character' | 'rarity' = 'book',
 ): CatalogCard[] {
   const heroOrder = Object.keys(RIFTWALKERS);
   const heroRank = (p: PoolKey): number => {
@@ -154,7 +162,7 @@ export function sortCards(
   return [...cards].sort(
     (a, b) =>
       heroRank(a.pool) - heroRank(b.pool) ||
-      (pathOf(a.def.id) ?? 9) - (pathOf(b.def.id) ?? 9) ||
+      (by === 'book' ? (pathOf(a.def.id) ?? 9) - (pathOf(b.def.id) ?? 9) : 0) ||
       (RARITY_RANK[a.def.rarity ?? 'common'] ?? 1) - (RARITY_RANK[b.def.rarity ?? 'common'] ?? 1) ||
       a.def.cost - b.def.cost ||
       a.def.name.localeCompare(b.def.name),
@@ -170,6 +178,8 @@ export function paginate(
   perPage: number,
   /** fill every page to the brim, whatever the character or build path (the heading then lists the characters on the page) */
   packed = false,
+  /** start a new page for each build path (false: only for each character) */
+  byPath = true,
 ): { cards: CatalogCard[]; heroes: string[]; heroIds: string[]; path?: string }[] {
   const pages: { cards: CatalogCard[]; heroes: string[]; heroIds: string[]; path?: string }[] = [];
   if (packed) {
@@ -182,7 +192,7 @@ export function paginate(
     }
     return pages;
   }
-  const keyOf = (c: CatalogCard): string => `${c.pool}|${pathOf(c.def.id) ?? ''}`;
+  const keyOf = (c: CatalogCard): string => (byPath ? `${c.pool}|${pathOf(c.def.id) ?? ''}` : c.pool);
   let i = 0;
   while (i < cards.length) {
     // the run of cards sharing a character and build path
@@ -199,7 +209,7 @@ export function paginate(
         cards: slice,
         heroes: hero ? [hero] : [],
         heroIds: hero ? [first.pool] : [],
-        ...(hero && path !== undefined ? { path: pathName(first.pool as HeroId, path) } : {}),
+        ...(byPath && hero && path !== undefined ? { path: pathName(first.pool as HeroId, path) } : {}),
       });
     }
     i = j;

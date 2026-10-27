@@ -610,7 +610,7 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
         : `Next turn, gain ${o.amount} extra Mana.`;
     case 'maxMana':
       return o.amount >= 0
-        ? `Gain ${o.amount} maximum Mana for the rest of the fight (and ${o.amount} now).`
+        ? `From your next turn, gain ${o.amount} more Mana every turn for the rest of the fight.`
         : `Lose ${-o.amount} maximum Mana for the rest of the fight.`;
     case 'drawNext':
       return `Next turn, draw ${o.amount} extra card${o.amount === 1 ? '' : 's'}.`;

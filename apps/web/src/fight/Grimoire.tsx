@@ -187,7 +187,7 @@ export function Grimoire(props: {
           </button>
         </div>
       </div>
-      <CardHover def={hover?.def ?? null} at={hover?.at ?? null} plus={!!props.onPick} />
+      <CardHover def={hover?.def ?? null} at={hover?.at ?? null} />
     </div>
   );
 }

@@ -51,7 +51,8 @@ export function CardHover(props: {
     if (over > 0) el.style.top = `${Math.max(8, r.top - over)}px`;
   });
   if (!props.def) return null;
-  const showPlus = props.plus ?? !props.at;
+  // the upgrade sits beside the card wherever a card is looked at (the hand in a fight turns it off)
+  const showPlus = props.plus ?? true;
   // on a narrow screen there is no room for the card and its upgrade side by side
   const wide =
     showPlus &&

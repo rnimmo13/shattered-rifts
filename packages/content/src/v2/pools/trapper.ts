@@ -465,7 +465,10 @@ export const TRAPPER: CardDef[] = [
 
   // --- Patience (more) ---
   v('common', 'bated-breath', 'Bated Breath', 'skill', 1, 'none', [barrier(8)], { retain: true }),
-  v('rare', 'deep-pockets', 'Deep Pockets', 'power', 3, 'none', [maxMana(1)]),
+  // (one more Mana every turn is huge: it starts next turn, and the upgrade only makes it easier to find; DECISIONS #302)
+  v('rare', 'deep-pockets', 'Deep Pockets', 'power', 3, 'none', [maxMana(1)], {
+    up: { retain: true, innate: true },
+  }),
   v('common', 'read-the-room', 'Read the Room', 'skill', 1, 'none', [scry(3), barrier(4)]),
   v(
     'uncommon',

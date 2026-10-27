@@ -1378,3 +1378,32 @@ describe('events carry what the battle log needs', () => {
     expect(seen).toBe(true);
   });
 });
+
+describe('more maximum Mana starts next turn (DECISIONS #302)', () => {
+  it('pays nothing on the turn it is played, then one more every turn', () => {
+    const tdb: CombatDb = {
+      ...db,
+      cards: {
+        ...db.cards,
+        pockets: {
+          id: 'pockets',
+          name: 'Pockets',
+          kind: 'power',
+          cost: 0,
+          target: 'none',
+          effects: [{ op: 'maxMana', amount: 1 }],
+        } as unknown as CardDef,
+      },
+    };
+    let c = clone(start(['cultist'], ['pockets', 'strike', 'strike', 'strike', 'strike']));
+    const pockets = c.sides.a.hand.find((x) => x.card === 'pockets')!;
+    const mana = c.sides.a.mana;
+    const max = c.sides.a.maxMana;
+    c = applyAction(tdb, c, { type: 'play', card: pockets.id }).state;
+    expect(c.sides.a.mana).toBe(mana);
+    expect(c.sides.a.maxMana).toBe(max + 1);
+    c = applyAction(tdb, c, { type: 'endTurn' }).state;
+    while (!c.winner && c.active !== 'a') c = applyAction(tdb, c, { type: 'endTurn' }).state;
+    expect(c.sides.a.mana).toBe(max + 1);
+  });
+});

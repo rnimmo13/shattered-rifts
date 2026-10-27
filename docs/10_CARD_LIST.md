@@ -304,7 +304,7 @@ Starter: Strike, Strike, Strike, Strike, Defend, Defend, Defend, Savage Bite, Bl
 | The Maw Opens | 2 | attack | rare | Consume your hand. Deal damage equal to 2 times the number of cards you have consumed. |
 | Bloodsong | 1 | power | rare | Lose 2 HP. Gain 1 Cadence for the rest of the fight. |
 | Hunger Unbound | 2 | power | rare | Gain 1 Unbound. At the start of your turn: Lose 2 HP. |
-| Blood Pact | 1 | skill | rare | Lose 6 HP. Gain 1 maximum Mana for the rest of the fight (and 1 now). Consume. |
+| Blood Pact | 1 | skill | rare | Lose 6 HP. From your next turn, gain 1 more Mana every turn for the rest of the fight. Consume. |
 | Carrion Engine | 2 | power | rare | Whenever a card is consumed: Deal 2 damage to ALL enemies. |
 | Last Gasp | 2 | attack | rare | Deal damage equal to the number of cards you have consumed to ALL enemies. |
 | Wolfhide | 2 | skill | rare | Gain 18 Barrier. Gain 9 Barrier to all friends. Consume. |
@@ -421,7 +421,7 @@ Starter: Strike, Strike, Strike, Defend, Defend, Defend, Defend, Veil Strike, Ve
 | Perfect Alibi | 1 | skill | rare | Gain 20 Barrier. Discard 1 card. |
 | Trap Door | 1 | power | rare | At the start of your turn: Add a Trip Line to your hand. |
 | Culling | 2 | attack | rare | Deal 6 (+2 per Exposed on each) damage to ALL enemies. |
-| Deep Pockets | 3 | power | rare | Gain 1 maximum Mana for the rest of the fight (and 1 now). |
+| Deep Pockets | 3 | power | rare | From your next turn, gain 1 more Mana every turn for the rest of the fight. |
 | Curtain Call | 1 | skill | rare | Draw 1 card. Return 2 random Snare cards from your discard pile to your hand. Consume. |
 | The Perfect Trap | 3 | snare | legendary | When you or an ally is attacked: Cancel that attack. Deal 22 damage to the attacker. Apply 1 Stunned to the attacker. Gain 2 Shielded. |
 | Masquerade | 2 | power | legendary | Whenever one of your Traps is triggered: Draw 2 cards. Gain 1 Mana. Deal 4 damage to ALL enemies. |
@@ -643,7 +643,7 @@ Starter: Strike, Strike, Strike, Strike, Defend, Defend, Defend, Plant Hawk, Pla
 | Elder Vigil | 2 | power | rare | At the end of your turn: Plant Elder. |
 | Gathering Elders | 2 | power | rare | Whenever you play a Skill: Plant Elder. |
 | Totem Engine | 2 | power | rare | At the start of your turn: Plant Hawk. |
-| Root Tap | 2 | skill | rare | Gain 1 maximum Mana for the rest of the fight (and 1 now). Gain 6 Barrier. Consume. |
+| Root Tap | 2 | skill | rare | From your next turn, gain 1 more Mana every turn for the rest of the fight. Gain 6 Barrier. Consume. |
 | The Great Pole | 3 | power | legendary | Gain 3 totem slots. Gain 3 Spirit. At the start of your turn: Plant Elder. |
 | Cataclysm Totem | 2 | attack | legendary | Deal 10 damage to ALL enemies. Awaken your first 10 totems 2 times. Consume. |
 | The Spirit Council | 3 | skill | legendary | Plant Hawk. Plant Bear. Plant Elder. Gain 2 Spirit. Consume. |
@@ -953,7 +953,7 @@ Starter: Strike, Strike, Strike, Defend, Defend, Defend, Hammer Swing, Hammer Sw
 | Last Orders | 2 | attack | rare | Deal 8 (+1 per 4% HP missing) damage to ALL enemies. |
 | Rock Bottom | 2 | power | rare | Gain 2 Might. At the start of your turn: Lose 1 HP. |
 | Whiskey Miracle | 1 | skill | rare | Heal 15. Consume. |
-| Last Call | 2 | skill | rare | Gain 1 maximum Mana for the rest of the fight (and 1 now). Heal 6. Consume. |
+| Last Call | 2 | skill | rare | From your next turn, gain 1 more Mana every turn for the rest of the fight. Heal 6. Consume. |
 | Molotov Cocktail | 1 | snare | rare | When the enemy summons: Deal 12 damage to ALL enemies. Apply 1 Brittle to ALL enemies. |
 | Glass Jaw | 1 | power | rare | Whenever you lose HP to your own cards: Deal 4 damage to ALL enemies. Gain 3 Barrier. |
 | Hot Brass | 1 | power | rare | Whenever a card is consumed: Gain 2 Barrier. Sharpen 1 (Old Twelve Gauge gains 1 damage). |
@@ -1117,7 +1117,7 @@ Tokens (made by other cards):
 | Rift Resonance | 2 | power | rare | Gain 1 Might. Whenever your deck is reshuffled: Gain 1 Might. |
 | Echoing Blow | 1 | skill | rare | Gain 1 Reverb. |
 | Rift Smithing | 2 | skill | rare | Upgrade every card in your hand for this fight. Consume. |
-| Attunement | 2 | skill | rare | Gain 1 maximum Mana for the rest of the fight (and 1 now). Consume. |
+| Attunement | 2 | skill | rare | From your next turn, gain 1 more Mana every turn for the rest of the fight. Consume. |
 | Heart of the Rift | 3 | power | legendary | At the start of your turn: Gain 1 Mana. Draw 1 card. |
 | Rift Collapse | 3 | attack | legendary | Deal 40 damage to ALL enemies. Lose 15 HP. Consume. |
 

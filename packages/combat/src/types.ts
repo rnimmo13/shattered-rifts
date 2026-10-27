@@ -242,7 +242,7 @@ export type Op =
   | { op: 'revive' } // your most recently fallen ally returns at half its HP
   // --- tempo and tricks
   | { op: 'manaNext'; amount: number } // extra Mana at the start of your next turn (negative: Mana you owe)
-  | { op: 'maxMana'; amount: number } // more (or less) Mana every turn for the rest of the fight; gain it now too
+  | { op: 'maxMana'; amount: number } // more (or less) Mana every turn for the rest of the fight, from the next turn on
   | { op: 'drawNext'; amount: number } // extra cards at the start of your next turn
   /** add random cards from your own pool (and Neutral) to your hand; `free`: they cost 0 for the rest of the fight */
   | { op: 'discover'; kind?: CardKind; count?: number; free?: boolean }

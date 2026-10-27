@@ -5,6 +5,9 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **Deep Pockets** and every card that raises your maximum Mana: the extra Mana starts on your next turn. Deep Pockets+ costs 3 (not 2) and has Hold and Opening hand.
+- **See upgrades on hover:** the card library, your Grimoire and every deck view show the upgraded card beside the one you hover.
+- **Sandbox:** the book is no longer split by build path, and ticking Upgraded (+) keeps you on the same page.
 - **Battle log:** an enemy move shows its damage ("Gilded Squire uses Slash (9)"), and every hit or heal shows the HP before and after ("(HP 40 → 34)").
 - **Clearer Auras:** an Aura that gives you a status once now says it lasts the rest of the fight (Unchained: "Gain 3 Might for the rest of the fight"), and cards that give you a status say "Gain", not "Apply".
 - **Kesh toned down:** cards that call her pack now bring a companion by their rarity: a Pup (6 HP) from Guard Dog and Heel, a Hound (10 HP) from Rally the Pack, a Pack Alpha (14 HP) from Alpha Call. Her companions share half her Might (rounded down) instead of all of it.
