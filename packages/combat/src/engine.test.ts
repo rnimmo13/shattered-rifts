@@ -1401,6 +1401,37 @@ describe('Overflow: what is left of a hit that kills a companion carries through
   });
 });
 
+describe('Overflow in the Arena works both ways (DECISIONS #321)', () => {
+  it('an attack that kills a companion of the other player carries through to that hero', () => {
+    const { state } = createCombat(db, {
+      seed: 'arena-overflow',
+      a: { hero: 'knight', deck: SAMPLE_DECK },
+      b: { hero: 'knight', deck: SAMPLE_DECK },
+    });
+    expect(state.mode).toBe('pvp');
+    const c = withHand(state, ['strike']);
+    const theirHero = heroOf(c.sides.b) as Unit;
+    theirHero.barrier = 0;
+    c.sides.b.units.unshift({
+      ...clone(theirHero),
+      id: 'their-ally',
+      def: 'drone',
+      name: 'Drone',
+      kind: 'ally' as const,
+      hp: 1,
+      maxHp: 1,
+      barrier: 0,
+      statuses: {},
+    });
+    const before = theirHero.hp;
+    const plainDamage = 6;
+    const after = play(c, 't0', 'their-ally').state;
+    const hero2 = heroOf(after.sides.b) as Unit;
+    expect(after.sides.b.units.some((u) => u.id === 'their-ally')).toBe(false);
+    expect(before - hero2.hp).toBe(plainDamage - 1);
+  });
+});
+
 describe('a Riftwalker with a smaller pack (DECISIONS #315)', () => {
   it('can have only maxAllies companions; a summon past it asks for one to be released', () => {
     const tdb: CombatDb = {
