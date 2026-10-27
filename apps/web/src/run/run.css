@@ -1566,3 +1566,51 @@
   font-size: 0.85em;
   color: var(--c-text-dim);
 }
+
+/* ---- the merchant, one shape every visit (DECISIONS #286) ---- */
+/* Leave the shop in the header's corner, beside the purse */
+.shop__head .shop__leave {
+  margin-left: auto;
+}
+.shop__head .shop__purse {
+  margin-left: auto;
+}
+.shop__head .shop__purse + .shop__leave {
+  margin-left: 0;
+}
+/* the cards a little smaller, so a full table fits one row */
+.shop__item {
+  width: 210px;
+}
+.shop__cards {
+  gap: 1rem;
+}
+/* three columns in a fixed order (Potions, Boon, Services), each there even when it has nothing to sell */
+.shop__cols--fixed {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+@media (max-width: 60rem) {
+  .shop__cols--fixed {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+.shop__cols--fixed .shoprow__text {
+  font-size: 0.92rem;
+  line-height: 1.35;
+}
+/* your own potions to sell: one short line each */
+.shop__sell {
+  display: grid;
+  gap: 0.35rem;
+  margin: 0.2rem 0 0;
+  padding: 0.5rem 0 0;
+  list-style: none;
+  border-top: 1px solid rgb(212 168 75 / 0.2);
+}
+.shop__sell li {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 0.5rem;
+  align-items: center;
+  font-size: 0.92rem;
+}

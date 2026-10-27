@@ -552,6 +552,10 @@ export function MerchantView(props: {
         <div className="shop__purse" aria-label={`${shards} shards`}>
           <span aria-hidden>◈</span> <b>{shards}</b> shards
         </div>
+        {/* (Leave sits in the same corner every visit, never at the bottom of a long page) */}
+        <button className="btn btn--primary shop__leave" onClick={props.onLeave}>
+          <span>Leave the shop</span>
+        </button>
       </header>
 
       {m.crossed && (
@@ -576,7 +580,7 @@ export function MerchantView(props: {
               <Pickable
                 id={it.cardId}
                 own={props.run.character}
-                width={270}
+                width={210}
                 onHover={setHover}
                 preview
                 deck={it.sold ? undefined : props.run.deck}
@@ -653,80 +657,68 @@ export function MerchantView(props: {
         </div>
       </div>
 
-      <div className="shop__cols">
-        {m.potions && m.potions.length > 0 && (
-          <div className="shop__block">
-            <h3 className="shop__h">Potions</h3>
-            <div className="shop__rows">
-              {m.potions.map((p, i) => {
-                const def = COMBAT_DB.potions[p.id];
-                if (!def) return null;
-                return (
-                  <ShopRow
-                    key={i}
-                    tone={`potion--${def.rarity}`}
-                    icon={<PotionIcon potion={def} size={36} />}
-                    name={def.name}
-                    kind={
-                      <>
-                        <RarityGem rarity={def.rarity} />
-                        potion · {def.rarity}
-                      </>
-                    }
-                    text={def.text}
-                    price={p.sold ? null : p.price}
-                    button={
-                      p.sold
-                        ? 'Sold'
-                        : beltFull
-                          ? 'Belt full'
-                          : shards < p.price
-                            ? 'Too expensive'
-                            : 'Buy'
-                    }
-                    disabled={p.sold || shards < p.price || beltFull}
-                    onBuy={() => props.onBuyPotion(i)}
-                  />
-                );
-              })}
-            </div>
-            <p className="shop__note">Your belt holds {props.run.potions.length} of 3 potions.</p>
+      {/* (always the same three columns in the same order, whatever is for sale: Potions, Boon, Services; DECISIONS #286) */}
+      <div className="shop__cols shop__cols--fixed">
+        <div className="shop__block">
+          <h3 className="shop__h">Potions</h3>
+          <div className="shop__rows">
+            {(m.potions ?? []).map((p, i) => {
+              const def = COMBAT_DB.potions[p.id];
+              if (!def) return null;
+              return (
+                <ShopRow
+                  key={i}
+                  tone={`potion--${def.rarity}`}
+                  icon={<PotionIcon potion={def} size={36} />}
+                  name={def.name}
+                  kind={
+                    <>
+                      <RarityGem rarity={def.rarity} />
+                      potion · {def.rarity}
+                    </>
+                  }
+                  text={def.text}
+                  price={p.sold ? null : p.price}
+                  button={
+                    p.sold
+                      ? 'Sold'
+                      : beltFull
+                        ? 'Belt full'
+                        : shards < p.price
+                          ? 'Too expensive'
+                          : 'Buy'
+                  }
+                  disabled={p.sold || shards < p.price || beltFull}
+                  onBuy={() => props.onBuyPotion(i)}
+                />
+              );
+            })}
+            {(m.potions ?? []).length === 0 && <p className="shop__note">No potions today.</p>}
           </div>
-        )}
-        {props.run.potions.length > 0 && (
-          <div className="shop__block">
-            <h3 className="shop__h">Sell your potions</h3>
-            <div className="shop__rows">
+          {/* your own potions, to sell: a short line each */}
+          {props.run.potions.length > 0 && (
+            <ul className="shop__sell" aria-label="Sell your potions">
               {props.run.potions.map((id, i) => {
                 const def = COMBAT_DB.potions[id];
                 if (!def) return null;
                 return (
-                  <ShopRow
-                    key={`${id}-${i}`}
-                    tone={`potion--${def.rarity}`}
-                    icon={<PotionIcon potion={def} size={36} />}
-                    name={def.name}
-                    kind={
-                      <>
-                        <RarityGem rarity={def.rarity} />
-                        potion · {def.rarity}
-                      </>
-                    }
-                    text={def.text}
-                    price={null}
-                    button={`Sell for ${potionSellPrice(id)}`}
-                    disabled={false}
-                    onBuy={() => props.onSellPotion(i)}
-                  />
+                  <li key={`${id}-${i}`}>
+                    <PotionIcon potion={def} size={24} />
+                    <span>{def.name}</span>
+                    <button className="btn btn--small" onClick={() => props.onSellPotion(i)}>
+                      <span>Sell {potionSellPrice(id)}</span>
+                    </button>
+                  </li>
                 );
               })}
-            </div>
-          </div>
-        )}
-        {m.boon && boon && (
-          <div className="shop__block">
-            <h3 className="shop__h">Boon</h3>
-            <div className="shop__rows">
+            </ul>
+          )}
+          <p className="shop__note">Your belt holds {props.run.potions.length} of 3 potions.</p>
+        </div>
+        <div className="shop__block">
+          <h3 className="shop__h">Boon</h3>
+          <div className="shop__rows">
+            {m.boon && boon ? (
               <ShopRow
                 tone={`boon--${boon.rarity}`}
                 icon={<BoonChip id={boon.id} size="large" />}
@@ -743,9 +735,11 @@ export function MerchantView(props: {
                 disabled={m.boon.sold || shards < m.boon.price}
                 onBuy={props.onBuyBoon}
               />
-            </div>
+            ) : (
+              <p className="shop__note">No Boon today.</p>
+            )}
           </div>
-        )}
+        </div>
         <div className="shop__block">
           <h3 className="shop__h">Services</h3>
           <div className="shop__rows">
@@ -781,11 +775,6 @@ export function MerchantView(props: {
         </div>
       </div>
 
-      <div className="choices-row">
-        <button className="btn btn--primary" onClick={props.onLeave}>
-          <span>Leave the shop</span>
-        </button>
-      </div>
       <CardHover def={hover} />
       {picking === 'remove' && (
         <DeckModal
