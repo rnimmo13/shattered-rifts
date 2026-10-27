@@ -256,7 +256,7 @@ export const ENGINEER: CardDef[] = [
   r('uncommon', 'ion-lance', 'Ion Lance', 'attack', 2, 'foe', [dmg(16)]),
   r('rare', 'railgun', 'Railgun', 'attack', 3, 'foe', [dmg(30)]),
   r('legendary', 'foundry-awakens', 'The Foundry Awakens', 'power', 3, 'none', [
-    on('turnStart', [summon('siege-engine'), prime(3)]),
+    on('turnStart', [prime(3), summon('siege-engine')]),
   ]),
   r(
     'legendary',

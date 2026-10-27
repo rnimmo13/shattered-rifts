@@ -180,7 +180,7 @@ Starter: Strike, Strike, Strike, Strike, Strike, Defend, Defend, Defend, Deploy 
 | Swarm Surge | 2 | skill | rare | Summon Patrol Drone (5 HP). At the end of your turn it will: Deal 4 damage. Draw cards equal to the number of your allies. Consume. |
 | Relay Network | 2 | aura | rare | Whenever one of your Traps is triggered: Each of your companions gains 3 Primed. |
 | Heavy Hitter | 2 | attack | rare | Deal damage equal to your biggest companion's max HP. |
-| The Foundry Awakens | 3 | aura | legendary | At the start of your turn: Summon Siege Engine (16 HP). At the end of your turn it will: Deal 13 damage. Each of your companions gains 3 Primed. |
+| The Foundry Awakens | 3 | aura | legendary | At the start of your turn: Each of your companions gains 3 Primed. Summon Siege Engine (16 HP). At the end of your turn it will: Deal 13 damage. |
 | Overclocked Legion | 2 | aura | legendary | Apply 2 Might to all friends. At the start of your turn: Each of your companions gains 3 Primed. |
 | Drone Uprising | 2 | skill | legendary | Summon 3 Drones (8 HP each). At the end of your turn each will: Deal 3 damage. Each of your companions gains 3 Primed. Consume. |
 
