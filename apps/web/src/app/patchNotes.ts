@@ -29,6 +29,27 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.86.0',
+    date: '2026-10-26',
+    title: 'Kesh unleashed',
+    summary: 'Kesh reworked, Lifesteal, companions that grow, and a tidier merchant.',
+    heads: 'Arena games and replays from earlier versions can no longer be played or watched: the rules have changed.',
+    notes: [
+      {
+        kind: 'balance',
+        text: 'Kesh: her companions share her Might, she heals 6 after every fight she wins, and her starting deck has Savage Bite (Lifesteal), Blood Frenzy (hits every enemy) and Guard Dog (a Hound and Barrier). Her self-damage cards pay off properly, and look-alike cards were pulled apart.',
+      },
+      {
+        kind: 'new',
+        text: 'Lifesteal: some attacks heal you a share of the HP they take off. Some of Kesh’s, Rivet’s and Dorian’s cards now raise a companion’s max HP instead of only shielding it.',
+      },
+      {
+        kind: 'changed',
+        text: 'The merchant has the same layout every visit: Leave the shop at the top, the cards in one row, and Potions, Boon and Services in three columns.',
+      },
+    ],
+  },
+  {
     version: '0.85.0',
     date: '2026-10-26',
     title: 'Spin To Win',
