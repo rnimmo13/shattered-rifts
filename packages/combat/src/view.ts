@@ -109,16 +109,6 @@ function opIcons(ops: readonly Op[]): IntentIcon[] {
  */
 function describeAllyAct(db: CombatDb, s: CombatState, u: Unit, act: Op[]): IntentView {
   const front = s.sides[other(u.side)].units.find((x) => x.hp > 0) ?? null;
-  if ((u.statuses.stunned ?? 0) > 0)
-    return {
-      move: 'stunned',
-      name: 'Stunned',
-      text: 'Stunned: it skips its next action.',
-      icons: ['special'],
-      damage: null,
-      hits: 0,
-      target: null,
-    };
   const dmg = act.filter((o): o is Extract<Op, { op: 'damage' }> => o.op === 'damage');
   const first = dmg[0];
   return {
@@ -219,7 +209,14 @@ export { other, activePattern };
 
 /** Statuses that stay for the rest of the fight once gained (no turns to count down, nothing that uses them up). */
 // (Edge says so in its own line, and maximum Mana in its own)
-const LASTING: readonly StatusId[] = ['might', 'thorns', 'bracing', 'fortified', 'ritual', 'resonance'];
+const LASTING: readonly StatusId[] = [
+  'might',
+  'thorns',
+  'bracing',
+  'fortified',
+  'ritual',
+  'resonance',
+];
 
 const isLasting = (o: Op): boolean =>
   o.op === 'status' &&
@@ -471,7 +468,9 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
         : `Gain ${at(o.amount, o.scale)} Barrier${o.to === 'self' ? '' : who[o.to]}.`;
     case 'growHp': {
       const n = at(o.amount, o.scale);
-      return o.to === 'target' ? `The ally gains ${n} max HP.` : `Your companions gain ${n} max HP.`;
+      return o.to === 'target'
+        ? `The ally gains ${n} max HP.`
+        : `Your companions gain ${n} max HP.`;
     }
     case 'heal': {
       const a = amountText(o.amount, o.scale);
@@ -739,13 +738,18 @@ export function cardText(db: CombatDb, c: CardDef, live?: ReadonlyMap<number, Li
       const l = o.op === 'damage' ? live?.get(i) : undefined;
       const line =
         l && o.op === 'damage' ? liveDamageText(opText(db, o, who), o, l) : opText(db, o, who);
-      parts.push(oneShotAura && isLasting(o) ? line.replace(/.$/, ' for the rest of the fight.') : line);
+      parts.push(
+        oneShotAura && isLasting(o) ? line.replace(/.$/, ' for the rest of the fight.') : line,
+      );
     }
   }
   // an Aura that does its work once, when played, says how long what it gives lasts (DECISIONS #300)
-  const ongoing = c.effects.some((o) => o.op === 'power' || o.op === 'channel' || o.op === 'runeSlots');
+  const ongoing = c.effects.some(
+    (o) => o.op === 'power' || o.op === 'channel' || o.op === 'runeSlots',
+  );
   const lasting = c.effects.filter((o) => isLasting(o)).length;
-  if (c.kind === 'power' && !ongoing && lasting > 1) parts.push('These last the rest of the fight.');
+  if (c.kind === 'power' && !ongoing && lasting > 1)
+    parts.push('These last the rest of the fight.');
   if (c.exhaust) parts.push('Consume.');
   if (c.retain) parts.push('Hold.');
   if (c.innate) parts.push('Opening hand.');

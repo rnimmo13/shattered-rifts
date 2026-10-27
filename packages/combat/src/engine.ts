@@ -147,7 +147,12 @@ function addStatus(r: Run, u: Unit, st: StatusId, amount: number): boolean {
   }
   const was = stacks(u, st);
   let total = was + amount;
-  if (st === 'stunned') total = Math.min(1, total);
+  // a new Stun keeps whichever countdown is longer, so Stuns never pile up into a lock (DECISIONS #310); one that lands during the
+  // unit's own turn does not wear off at the end of it, so it still covers the unit's next turn
+  if (st === 'stunned' && amount > 0) {
+    total = Math.max(was, amount);
+    if (r.s.active === u.side) u.stunFresh = true;
+  }
   if (total <= 0) delete u.statuses[st];
   else u.statuses[st] = total;
   r.ev.push({ type: 'status', target: u.id, status: st, amount, total: Math.max(0, total) });
@@ -214,11 +219,14 @@ export function modifiedDamage(base: number, attacker: Unit | null, target: Unit
   let n = base + (attacker ? stacks(attacker, 'might') : 0);
   if (attacker && stacks(attacker, 'clutch') > 0)
     n = Math.floor((n * (100 + stacks(attacker, 'clutch'))) / 100);
-  if (attacker && stacks(attacker, 'faltering') > 0) n = Math.floor(n * 0.75);
+  // (Stunned counts as Faltering, Exposed and Brittle at once, never on top of them: DECISIONS #310)
+  if (attacker && (stacks(attacker, 'faltering') > 0 || stacks(attacker, 'stunned') > 0))
+    n = Math.floor(n * 0.75);
   if (attacker && stacks(attacker, 'radiant') > 0) n *= 3;
   else if (attacker && stacks(attacker, 'wrath') > 0) n *= 2;
   if (target && stacks(target, 'wrath') > 0) n = Math.floor(n * 1.5);
-  if (target && stacks(target, 'exposed') > 0) n = Math.floor(n * 1.5);
+  if (target && (stacks(target, 'exposed') > 0 || stacks(target, 'stunned') > 0))
+    n = Math.floor(n * 1.5);
   if (attacker && attacker.dmgPct !== 100 && n > 0)
     n = Math.max(1, Math.floor((n * attacker.dmgPct) / 100));
   return Math.max(0, n);
@@ -570,7 +578,8 @@ function execOp(r: Run, a: Act, op: Op): void {
       for (const t of resolve(r, a, op.to)) {
         let n = amountOf(r, a, op.amount, op.scale, t) + resonanceOf(a);
         if (n > 0) n += stacks(a.actor, 'bracing');
-        if (n > 0 && stacks(t, 'brittle') > 0) n = Math.floor(n * 0.75);
+        if (n > 0 && (stacks(t, 'brittle') > 0 || stacks(t, 'stunned') > 0))
+          n = Math.floor(n * 0.75);
         // a Trap that punishes defending springs first, so the Barrier cannot soak what it deals
         if (n > 0) fireSnare(r, other(t.side), { on: 'foeDefends', unit: t });
         if (t.hp <= 0 || r.s.winner) continue;
@@ -615,10 +624,13 @@ function execOp(r: Run, a: Act, op: Op): void {
       // (Might for all friends on a side whose hero shares it: the hero takes it first and passes on their share, and each
       // companion gets only the rest, so everyone ends up with exactly the amount the card says; DECISIONS #298)
       const share =
-        op.status === 'might' && op.to === 'allFriends' ? (traitOf(r, side.id)?.shareMight ?? 0) : 0;
+        op.status === 'might' && op.to === 'allFriends'
+          ? (traitOf(r, side.id)?.shareMight ?? 0)
+          : 0;
       let passed = 0;
       const targets = [...resolve(r, a, op.to)];
-      if (share > 0) targets.sort((x, y) => (x.kind === 'hero' ? 0 : 1) - (y.kind === 'hero' ? 0 : 1));
+      if (share > 0)
+        targets.sort((x, y) => (x.kind === 'hero' ? 0 : 1) - (y.kind === 'hero' ? 0 : 1));
       for (const t of targets) {
         let n = amountOf(r, a, op.amount, op.scale, t);
         if (share > 0 && t.kind === 'hero') {
@@ -1229,11 +1241,6 @@ function chooseIntent(r: Run, u: Unit): void {
 function actAlly(r: Run, u: Unit): void {
   const d = def(r, u.def);
   if (d.brain.kind !== 'ally' || u.hp <= 0) return;
-  if (stacks(u, 'stunned') > 0) {
-    addStatus(r, u, 'stunned', -1);
-    r.ev.push({ type: 'skip', unit: u.id, reason: 'stunned' });
-    return;
-  }
   const front = r.s.sides[other(u.side)].units.find((x) => x.hp > 0) ?? null;
   r.ev.push({ type: 'act', unit: u.id, move: null });
   runOps(r, mkAct(u, { target: front }), d.brain.act);
@@ -1242,12 +1249,6 @@ function actAlly(r: Run, u: Unit): void {
 function actEnemy(r: Run, u: Unit): void {
   const d = def(r, u.def);
   if (d.brain.kind !== 'enemy' || u.hp <= 0) return;
-  if (stacks(u, 'stunned') > 0) {
-    addStatus(r, u, 'stunned', -1);
-    r.ev.push({ type: 'skip', unit: u.id, reason: 'stunned' });
-    u.intent = null;
-    return;
-  }
   const it = u.intent;
   if (!it) return;
   const mv = d.brain.moves[it.move];
@@ -1362,11 +1363,7 @@ function beginHeroTurn(r: Run, side: Side): void {
   sd.nextMana = Math.min(0, rawMana);
   sd.nextDraw = 0;
   r.ev.push({ type: 'mana', side, mana: sd.mana });
-  // a Stunned hero is not made to skip a turn: they draw one card fewer, and the Stun is spent (DECISIONS #306)
-  const stunned = heroOf(sd);
-  const dazed = stunned && stacks(stunned, 'stunned') > 0 ? 1 : 0;
-  if (stunned && dazed) addStatus(r, stunned, 'stunned', -1);
-  drawCards(r, sd, Math.max(0, sd.handSize + (first ? 1 : 0) + extraDraw - dazed));
+  drawCards(r, sd, sd.handSize + (first ? 1 : 0) + extraDraw);
   const hero = heroOf(sd);
   if (!hero) return;
   const opening = r.s.turn === (side === 'a' ? 1 : 2);
@@ -1424,6 +1421,9 @@ function decay(r: Run, side: Side): void {
     if (ritual > 0) addStatus(r, u, 'might', ritual);
     if (stacks(u, 'ghostly') > 0) addStatus(r, u, 'ghostly', -1);
     if (stacks(u, 'brittle') > 0) addStatus(r, u, 'brittle', -1);
+    // (a Stun that landed during this turn waits for the next: DECISIONS #310)
+    if (u.stunFresh) delete u.stunFresh;
+    else if (stacks(u, 'stunned') > 0) addStatus(r, u, 'stunned', -1);
   }
   // Flex-style statuses wear off
   for (const t of sd.temps.splice(0)) {

@@ -1487,7 +1487,7 @@ describe('PvP sudden death (DECISIONS #259)', () => {
   });
 });
 
-describe('a Stunned hero draws one card fewer (DECISIONS #306)', () => {
+describe('a Stunned hero loses no turn and no cards (DECISIONS #310)', () => {
   const pvp = (): CombatState =>
     clone(
       createCombat(DB, {
@@ -1497,15 +1497,16 @@ describe('a Stunned hero draws one card fewer (DECISIONS #306)', () => {
       }).state,
     );
 
-  it('loses no turn: draws one fewer, and the Stun is spent', () => {
+  it('draws a full hand, and the Stun wears off at the end of their turn', () => {
     let s = pvp();
     s.turn = 10;
-    const plain = end(clone(s)).state;
-    const full = plain.sides.b.hand.length;
+    const full = end(clone(s)).state.sides.b.hand.length;
     heroOf(s.sides.b)!.statuses.stunned = 1;
     s = end(s).state;
     expect(s.active).toBe('b');
-    expect(s.sides.b.hand.length).toBe(full - 1);
+    expect(s.sides.b.hand.length).toBe(full);
+    // (it wears off at the end of b's turn)
+    s = end(s).state;
     expect(heroOf(s.sides.b)!.statuses.stunned ?? 0).toBe(0);
   });
 });

@@ -16,7 +16,7 @@ export type StatusId =
   | 'faltering' // deals 25% less attack damage (turns)
   | 'might' // +1 attack damage per stack (permanent)
   | 'seared' // takes stacks damage at the start of its turn, then loses 1
-  | 'stunned' // skips its next action
+  | 'stunned' // counts as Exposed, Faltering and Brittle (never on top of them) for its own count of turns (DECISIONS #310)
   | 'thorns' // reflects stacks damage to attackers (permanent)
   | 'shielded' // ignores the next instance of damage per stack
   | 'resonance' // runes: +1 to the damage/Barrier of every rune effect per stack (permanent)
@@ -467,6 +467,8 @@ export interface Unit {
   lowPct: number;
   /** percent of normal attack damage this unit deals (enemies are scaled by the difficulty setting) */
   dmgPct: number;
+  /** a Stun landed during this unit's own turn: it does not count down at that turn's end */
+  stunFresh?: boolean;
   lastMoves: string[];
   /**
    * its phases still to come (highest first): the first time its HP would fall below `atPct`% of its max, it stops there and rises

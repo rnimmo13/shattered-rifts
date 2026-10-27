@@ -240,13 +240,81 @@ describe('damage, barrier and statuses', () => {
     expect(summoner.statuses.seared).toBe(2);
   });
 
-  it('Stunned makes an enemy skip its action', () => {
+  it('a Stunned enemy still acts, but as if Faltering, and its Stun wears off at the end of its turn (DECISIONS #310)', () => {
+    const plain = end(start(['slime'])).state;
+    const full = 60 - hero(plain).hp;
+    expect(full).toBeGreaterThan(0);
     const s0 = start(['slime']);
     foe(s0).statuses.stunned = 1;
     const r = end(s0);
-    expect(types(r.events)).toContain('skip');
-    expect(hero(r.state).hp).toBe(60);
+    expect(types(r.events)).not.toContain('skip');
+    expect(60 - hero(r.state).hp).toBe(Math.floor(full * 0.75));
     expect(foe(r.state).statuses.stunned).toBeUndefined();
+  });
+
+  it('Stunned counts as Exposed, Faltering and Brittle once, never on top of them, and keeps the longer countdown', () => {
+    const tdb: CombatDb = {
+      ...db,
+      cards: {
+        ...db.cards,
+        jab: {
+          id: 'jab',
+          name: 'Jab',
+          kind: 'attack',
+          cost: 0,
+          target: 'foe',
+          effects: [{ op: 'damage', amount: 10, to: 'target' }],
+        } as unknown as CardDef,
+        daze: {
+          id: 'daze',
+          name: 'Daze',
+          kind: 'skill',
+          cost: 0,
+          target: 'foe',
+          effects: [{ op: 'status', status: 'stunned', amount: 2, to: 'target' }],
+        } as unknown as CardDef,
+      },
+    };
+    const hit = (stunned: number, exposed: number): number => {
+      const s = clone(start(['slime'], ['jab']));
+      foe(s).statuses.stunned = stunned;
+      foe(s).statuses.exposed = exposed;
+      foe(s).hp = 999;
+      foe(s).maxHp = 999;
+      const after = applyAction(tdb, s, { type: 'play', card: 't0', target: foe(s).id }).state;
+      return 999 - foe(after).hp;
+    };
+    expect(hit(0, 0)).toBe(10);
+    expect(hit(1, 0)).toBe(15);
+    expect(hit(1, 1)).toBe(15);
+    // a second Stun keeps the longer countdown instead of adding to it
+    let s = clone(start(['slime'], ['daze', 'daze']));
+    foe(s).statuses.stunned = 3;
+    s = applyAction(tdb, s, { type: 'play', card: s.sides.a.hand[0]!.id, target: foe(s).id }).state;
+    expect(foe(s).statuses.stunned).toBe(3);
+  });
+
+  it("a Stun that lands during the unit's own turn still covers its next turn", () => {
+    const tdb: CombatDb = {
+      ...db,
+      cards: {
+        ...db.cards,
+        reel: {
+          id: 'reel',
+          name: 'Reel',
+          kind: 'skill',
+          cost: 0,
+          target: 'none',
+          effects: [{ op: 'status', status: 'stunned', amount: 1, to: 'self' }],
+        } as unknown as CardDef,
+      },
+    };
+    let s = clone(start(['slime'], ['reel']));
+    s = applyAction(tdb, s, { type: 'play', card: s.sides.a.hand[0]!.id }).state;
+    s = applyAction(tdb, s, { type: 'endTurn' }).state;
+    expect(hero(s).statuses.stunned).toBe(1);
+    s = applyAction(tdb, s, { type: 'endTurn' }).state;
+    expect(hero(s).statuses.stunned ?? 0).toBe(0);
   });
 
   it('Shielded ignores one attack and pops', () => {
@@ -304,9 +372,12 @@ describe('allies', () => {
     const before = foe(c).hp + foe(c).barrier;
     const after = end(c).state.sides.b.units.find((u) => u.id === foe(c).id)!;
     expect(iv()?.damage).toBe(before - after.hp - after.barrier);
-    // a stunned ally says so instead
+    // a stunned ally still acts, Faltering (it never stacks with real Faltering)
+    delete foe(c).statuses.exposed;
     ally.statuses.stunned = 1;
-    expect(iv()).toMatchObject({ name: 'Stunned', damage: null });
+    expect(iv()?.damage).toBe(Math.floor(5 * 0.75));
+    ally.statuses.faltering = 2;
+    expect(iv()?.damage).toBe(Math.floor(5 * 0.75));
   });
 
   it('enemies hit your minions before they hit you, even one summoned after the intent was chosen', () => {
@@ -1301,13 +1372,21 @@ describe('an Aura that answers the deck being reshuffled (DECISIONS #299)', () =
           cost: 0,
           target: 'none',
           effects: [
-            { op: 'power', when: 'shuffle', ops: [{ op: 'status', status: 'might', amount: 1, to: 'self' }] },
+            {
+              op: 'power',
+              when: 'shuffle',
+              ops: [{ op: 'status', status: 'might', amount: 1, to: 'self' }],
+            },
           ],
         } as unknown as CardDef,
       },
     };
-    let c = clone(start(['cultist'], ['echo', 'strike', 'strike', 'strike', 'strike', 'strike', 'strike']));
-    const echo = c.sides.a.hand.find((x) => x.card === 'echo') ?? c.sides.a.draw.find((x) => x.card === 'echo');
+    let c = clone(
+      start(['cultist'], ['echo', 'strike', 'strike', 'strike', 'strike', 'strike', 'strike']),
+    );
+    const echo =
+      c.sides.a.hand.find((x) => x.card === 'echo') ??
+      c.sides.a.draw.find((x) => x.card === 'echo');
     // put the Aura in hand and play it, then empty the draw pile into the discard and draw once
     c.sides.a.hand = [echo!, ...c.sides.a.hand.filter((x) => x !== echo)];
     c.sides.a.draw = c.sides.a.draw.filter((x) => x !== echo);

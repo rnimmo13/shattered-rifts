@@ -26,7 +26,12 @@ export const STATUS_INFO: Record<
     tone: 'bad',
     text: 'Bleeding: takes damage equal to its stacks at the start of its turn, then loses 1 stack.',
   },
-  stunned: { name: 'Stunned', glyph: '✖', tone: 'bad', text: 'A companion or enemy skips its next action. A hero draws one card fewer at the start of their next turn.' },
+  stunned: {
+    name: 'Stunned',
+    glyph: '✖',
+    tone: 'bad',
+    text: 'Counts as Exposed, Faltering and Brittle at once (it never adds to them) until it wears off: takes 50% more attack damage, deals 25% less, and gains 25% less Barrier. It wears off at the end of its own turns, one each.',
+  },
   thorns: {
     name: 'Thorns',
     glyph: '✱',

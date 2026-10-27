@@ -5,6 +5,7 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **Stun reworked:** a Stunned unit no longer skips its turn. It counts as Exposed, Faltering and Brittle at once (they never stack with the real ones) for 1 turn, or as many as the card says.
 - **Arena: choose your deck after you are matched.** Every saved deck comes to the match, and before each game you pick one, of any Riftwalker, without seeing your opponent's (they cannot see yours either). One deck is enough. Players are matched by Arena rank.
 - **Kesh:** her Hound has 8 HP. Her starting deck has Rend (Deal 9, lose 2 HP, gain 1 Might) instead of Guard Dog, and Savage Bite deals 8 (10 upgraded).
 - **Stunned heroes:** in the Arena and against a ghost Warden, a Stunned hero draws one card fewer at the start of their next turn (before, it did nothing to a hero). Companions and enemies still skip their next action.

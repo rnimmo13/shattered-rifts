@@ -58,6 +58,8 @@ export function evaluate(db: CombatDb, s: CombatState, me: Side): number {
       (u.statuses.faltering ?? 0) * 2 +
       (u.statuses.seared ?? 0) * 1.5 +
       (u.statuses.brittle ?? 0) * 1 +
+      // (Stunned is Exposed, Faltering and Brittle at once: DECISIONS #310)
+      (u.statuses.stunned ?? 0) * 5 +
       (u.statuses.doom ?? 0) * 0.5;
   }
   for (const u of theirs.units) {
@@ -67,7 +69,7 @@ export function evaluate(db: CombatDb, s: CombatState, me: Side): number {
       (u.statuses.exposed ?? 0) * 2.5 +
       (u.statuses.faltering ?? 0) * 2 +
       (u.statuses.seared ?? 0) * 3;
-    v += (u.statuses.stunned ?? 0) * 6;
+    v += (u.statuses.stunned ?? 0) * 6; // (Exposed, Faltering and Brittle at once: DECISIONS #310)
     v += (u.statuses.brittle ?? 0) * 1.5;
     if (!doomed) v += Math.min(u.statuses.doom ?? 0, u.hp) * 0.9;
     v -=
