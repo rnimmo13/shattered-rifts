@@ -38,4 +38,3 @@ export const OWN_LOOK: Record<string, string> = {
 };
 
 export const strip = (t: string): string => t.replace(/\*\*/g, '').replace(/\s+/g, ' ').trim();
-

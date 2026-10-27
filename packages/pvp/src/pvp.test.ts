@@ -64,9 +64,9 @@ describe('checkEntry', () => {
     expect(checkEntry({ ...entryOf('knight'), deck: Array(200).fill('strike') }).ok).toBe(false);
   });
 
-  it('refuses a deck with more than 10 of one card (the Arena sanity cap; runs have no copy limit, DECISIONS #336)', () => {
+  it('takes any number of one non-basic card (runs have no copy limit; only basics are capped at 10, DECISIONS #336)', () => {
     const deck = [...entryOf('knight').deck, ...Array<string>(11).fill('rift-bolt')];
-    expect(checkEntry({ ...entryOf('knight'), deck }).ok).toBe(false);
+    expect(checkEntry({ ...entryOf('knight'), deck }).ok).toBe(true);
   });
 
   it('does not allow a pile of one basic card', () => {

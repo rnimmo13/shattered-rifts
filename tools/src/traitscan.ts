@@ -32,7 +32,13 @@ function rnd(seed: number): () => number {
 }
 
 type Db = typeof db;
-function score(d: Db, h: HeroId, deck: string[], seedKey: string, foe: (typeof FOES)[number]): number {
+function score(
+  d: Db,
+  h: HeroId,
+  deck: string[],
+  seedKey: string,
+  foe: (typeof FOES)[number],
+): number {
   let { state } = createCombat(d, {
     seed: seedKey,
     a: { hero: h, deck },
@@ -50,7 +56,10 @@ for (const h of HEROES) {
   const own = rewardPool(h).filter((id) => db.cards[id]?.hero === h);
   const hero = db.heroes[h];
   if (!hero) continue;
-  const bare: Db = { ...db, heroes: { ...db.heroes, [h]: { ...hero, trait: { name: '', text: '' } } } };
+  const bare: Db = {
+    ...db,
+    heroes: { ...db.heroes, [h]: { ...hero, trait: { name: '', text: '' } } },
+  };
   let on = 0;
   let off = 0;
   for (let i = 0; i < SEEDS; i++) {

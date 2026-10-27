@@ -77,10 +77,7 @@ export function rankOf(rating: number): Rank {
 export const expected = (a: number, b: number): number => 1 / (1 + 10 ** ((b - a) / 400));
 
 /** How a counted match moves both ratings. The winner always gains at least 1, and the loser always loses at least 1. */
-export function rateMatch(
-  winner: RankBadge,
-  loser: RankBadge,
-): { winner: number; loser: number } {
+export function rateMatch(winner: RankBadge, loser: RankBadge): { winner: number; loser: number } {
   const k = (p: RankBadge): number => (p.games < PLACEMENT_GAMES ? K_PLACEMENT : K_SETTLED);
   const e = expected(winner.rating, loser.rating);
   const gain = Math.max(1, Math.round(k(winner) * (1 - e)));

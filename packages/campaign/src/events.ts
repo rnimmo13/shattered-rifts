@@ -533,7 +533,7 @@ export function resolveEvent(
     }
     case 'mirror': {
       if (r.hp <= 15) fail('You are too hurt for that');
-      // a copy still obeys the deck rules (the copy limit, and the Legendary limit)
+      // a copy still obeys the deck rules (a Legendary is one of a kind, and the Legendary limit)
       const pool = nonBasic(r.deck).filter((id) => canAdd(r.deck, id));
       if (!pool.length) fail('There is nothing to copy');
       const pick = pinnedOr(r, chosen, 'gain', 0, pool);

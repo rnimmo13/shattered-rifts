@@ -197,7 +197,8 @@ export function checkEntry(raw: unknown): Checked | Rejected {
       };
     const n = (copies.get(id) ?? 0) + 1;
     copies.set(id, n);
-    if (n > MAX_BASIC_COPIES)
+    // (only a basic card is capped: any other card may be held any number of times, DECISIONS #336)
+    if (COMBAT_DB.cards[id]?.rarity === 'basic' && n > MAX_BASIC_COPIES)
       return { ok: false, message: `Too many copies of "${COMBAT_DB.cards[id]?.name ?? id}".` };
     held.push(id);
   }

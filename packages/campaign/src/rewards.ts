@@ -1,5 +1,5 @@
 // Card rewards (03_CAMPAIGN §2.3, §2.4) for Combat v2. Offers come from the Riftwalker's own pool plus Neutral; about 1 in 10
-// is "Rift-crossed" (another Riftwalker's pool). A card that would exceed the copy limit is never offered.
+// is "Rift-crossed" (another Riftwalker's pool). A Legendary or Ancestral card the deck already holds is never offered (there is no other copy limit, DECISIONS #336).
 
 import { nextInt, type CardDef, type RngState } from '@sr/combat';
 import {

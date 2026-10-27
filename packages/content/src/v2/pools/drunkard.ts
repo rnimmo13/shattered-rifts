@@ -300,6 +300,4 @@ export const DRUNKARD: CardDef[] = [
   p('uncommon', 'spray-and-pray', 'Spray and Pray', 'attack', 2, 'none', [
     scaled(dmg(4, 'allFoes'), per('created', 0.25)),
   ]),
-
-  // --- liquid courage (more) ---
 ];

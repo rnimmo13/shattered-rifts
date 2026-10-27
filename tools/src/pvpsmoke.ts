@@ -93,14 +93,22 @@ function connect(path: string, name: string, id: string, wantsFirst = true): Pro
 const send = (b: Bot, m: ClientMsg): void =>
   b.ws.send(
     JSON.stringify(
-      m.type === 'join' || m.type === 'queue' || m.type === 'ghost' ? { ...m, rules: RULES_VERSION } : m,
+      m.type === 'join' || m.type === 'queue' || m.type === 'ghost'
+        ? { ...m, rules: RULES_VERSION }
+        : m,
     ),
   );
 
 function handle(b: Bot, m: ServerMsg): void {
   if (m.type === 'choose') {
     // a deck first (with several), then the order (between games only the player who lost is asked; the other waits)
-    if (m.pick === null && m.decks.length > 1 && b.pickDeck !== undefined && !b.paused && !b.picked) {
+    if (
+      m.pick === null &&
+      m.decks.length > 1 &&
+      b.pickDeck !== undefined &&
+      !b.paused &&
+      !b.picked
+    ) {
       b.picked = true;
       send(b, { type: 'pick', deck: b.pickDeck });
     }
@@ -133,7 +141,8 @@ function handle(b: Bot, m: ServerMsg): void {
 /** If it is my turn, play one move with the bot. */
 function pump(b: Bot): void {
   const m = b.match;
-  if (!m || m.over || b.between || b.paused || b.seat !== m.active || m.log.length < b.replay) return;
+  if (!m || m.over || b.between || b.paused || b.seat !== m.active || m.log.length < b.replay)
+    return;
   const action = chooseAction(COMBAT_DB, m.state);
   b.moves++;
   send(b, { type: 'action', seq: m.log.length + 1, action });
@@ -234,7 +243,8 @@ async function deckPicks(tag: string): Promise<void> {
   ] as const)
     for (const m of bot.inbox)
       if (m.type === 'choose') {
-        if ('hero' in m.foe || 'deck' in m.foe) throw new Error('a choose message showed the foe deck');
+        if ('hero' in m.foe || 'deck' in m.foe)
+          throw new Error('a choose message showed the foe deck');
         if (foeHeroes.some((h) => JSON.stringify(m).includes(`"${h}"`)))
           throw new Error(`${bot.name} was told the other's Riftwalkers before the game`);
       }
@@ -318,7 +328,11 @@ async function refusals(): Promise<void> {
   send(p1, { type: 'resign' });
   await until(() => p1.between && p2.between, 'the resignation');
   const afterOne = p2.inbox.filter((m) => m.type === 'end').pop();
-  if (afterOne?.type !== 'end' || afterOne.series?.over !== false || afterOne.series.wins.a + afterOne.series.wins.b !== 1)
+  if (
+    afterOne?.type !== 'end' ||
+    afterOne.series?.over !== false ||
+    afterOne.series.wins.a + afterOne.series.wins.b !== 1
+  )
     throw new Error(`a resignation should end one game of three: ${JSON.stringify(afterOne)}`);
   console.log('  resign: one game lost, the match goes on');
   // nothing is accepted between games
@@ -448,13 +462,38 @@ async function board(tag: string): Promise<void> {
   const who: [string, string] = [ids[0]?.['id'] as string, ids[1]?.['id'] as string];
   const names: [string, string] = [`Ann${tag}`, `Bob${tag}`];
   // usernames: a run does not count without one, no two players share one, and a name must be an acceptable one
-  const early = await post('run', { code: codes[0], run: `early${tag}`, name: names[0], hero: 'knight', tier: 1, stage: 1 });
-  need(early['counted'] === false && early['error'] === 'no-name', 'a run without a username is not counted');
-  need((await post('claim', { code: codes[0], name: names[0] }))['ok'] === true, 'a free name is claimed');
-  need((await post('claim', { code: codes[1], name: names[0].toUpperCase() }))['error'] === 'taken', 'a name another player has is taken, however it is written');
-  need((await post('claim', { code: codes[1], name: 'ab' }))['error'] === 'bad-name', 'a name that is too short is refused');
-  need((await post('claim', { code: codes[1], name: names[1] }))['ok'] === true, 'the other player claims their own');
-  need((await post('claim', { code: codes[0], name: names[0] }))['ok'] === true, 'a player may claim the name they already have');
+  const early = await post('run', {
+    code: codes[0],
+    run: `early${tag}`,
+    name: names[0],
+    hero: 'knight',
+    tier: 1,
+    stage: 1,
+  });
+  need(
+    early['counted'] === false && early['error'] === 'no-name',
+    'a run without a username is not counted',
+  );
+  need(
+    (await post('claim', { code: codes[0], name: names[0] }))['ok'] === true,
+    'a free name is claimed',
+  );
+  need(
+    (await post('claim', { code: codes[1], name: names[0].toUpperCase() }))['error'] === 'taken',
+    'a name another player has is taken, however it is written',
+  );
+  need(
+    (await post('claim', { code: codes[1], name: 'ab' }))['error'] === 'bad-name',
+    'a name that is too short is refused',
+  );
+  need(
+    (await post('claim', { code: codes[1], name: names[1] }))['ok'] === true,
+    'the other player claims their own',
+  );
+  need(
+    (await post('claim', { code: codes[0], name: names[0] }))['ok'] === true,
+    'a player may claim the name they already have',
+  );
   await playRoom(`BOARD${tag}`, 'friend code (recorded)', false, who, names);
   await sleep(500);
   const pvp = (await (await fetch(`${http}/pvp/board/pvp?period=week`)).json()) as {
@@ -496,18 +535,29 @@ async function board(tag: string): Promise<void> {
   need((await run(1))['counted'] === true, 'a first stage cleared is counted');
   need((await run(3, { tier: 5 }))['counted'] === false, 'a jump to Tier V is not believed');
   // (three stages on: as far as one report may move a run without the time it would take, RUN_STEP_ALLOWANCE)
-  need((await run(1, { tier: 2 }))['counted'] === true, 'a run the board has fallen behind on catches up to Tier II');
+  need(
+    (await run(1, { tier: 2 }))['counted'] === true,
+    'a run the board has fallen behind on catches up to Tier II',
+  );
   need((await run(2, { tier: 1 }))['counted'] === false, 'going back is not believed');
-  need((await run(1, { tier: 3 }))['counted'] === true, 'and a stage further is believed after a catch-up');
+  need(
+    (await run(1, { tier: 3 }))['counted'] === true,
+    'and a stage further is believed after a catch-up',
+  );
   need((await run(1, { tier: 3 }))['counted'] === false, 'the same progress twice is not');
   need((await run(3, { tier: 2 }))['counted'] === false, 'going backwards is not');
   need((await run(2, { hero: 'nobody' })).status === 400, 'an unknown character is refused');
   // a second character is its own place on the board
-  need((await run(1, { run: `second${tag}`, hero: 'barbarian' }))['counted'] === true, 'a second character counts');
+  need(
+    (await run(1, { run: `second${tag}`, hero: 'barbarian' }))['counted'] === true,
+    'a second character counts',
+  );
   const runs = (await (await fetch(`${http}/pvp/board/runs?period=month`)).json()) as {
     board: { name: string; tier: number; stage: number; total: number }[];
   };
-  const mine = runs.board.find((s) => s.name === names[0] && (s as { hero?: string }).hero === 'knight');
+  const mine = runs.board.find(
+    (s) => s.name === names[0] && (s as { hero?: string }).hero === 'knight',
+  );
   need(
     runs.board.filter((s) => s.name === names[0]).length === 2,
     'one player is on the campaign board once for each character',
@@ -518,11 +568,23 @@ async function board(tag: string): Promise<void> {
   );
   need((await fetch(`${http}/pvp/board/nope`)).status === 404, 'an unknown board is not found');
   // the counted match moved both ratings (DECISIONS #240)
-  const r0 = (await post('view', { code: codes[0], kind: 'ranks' }))['you'] as { rating: number; games: number } | null;
-  const r1 = (await post('view', { code: codes[1], kind: 'ranks' }))['you'] as { rating: number; games: number } | null;
+  const r0 = (await post('view', { code: codes[0], kind: 'ranks' }))['you'] as {
+    rating: number;
+    games: number;
+  } | null;
+  const r1 = (await post('view', { code: codes[1], kind: 'ranks' }))['you'] as {
+    rating: number;
+    games: number;
+  } | null;
   need(r0?.games === 1 && r1?.games === 1, 'both players have one ranked game');
-  need((r0?.rating ?? 0) + (r1?.rating ?? 0) === 2000 && r0?.rating !== 1000, 'one rating rose and the other fell by as much');
-  const ranked = (await (await fetch(`${http}/pvp/board/ranks`)).json()) as { ok: boolean; board: unknown[] };
+  need(
+    (r0?.rating ?? 0) + (r1?.rating ?? 0) === 2000 && r0?.rating !== 1000,
+    'one rating rose and the other fell by as much',
+  );
+  const ranked = (await (await fetch(`${http}/pvp/board/ranks`)).json()) as {
+    ok: boolean;
+    board: unknown[];
+  };
   need(ranked.ok && Array.isArray(ranked.board), 'the ranked board is there');
   console.log(
     '  match recorded for both, characters listed, run progress moves one stage at a time',
@@ -604,16 +666,27 @@ async function watchAndReplay(tag: string): Promise<void> {
   send(b, { type: 'join', playerId: b.id, decks: [{ ...entryOf('hunter', 'Bob'), who: hex() }] });
   await until(() => w.match !== null, 'the watcher to see the start');
   const start = w.inbox.find((m) => m.type === 'start') as Extract<ServerMsg, { type: 'start' }>;
-  if (start.watching !== true || start.seat !== 'a') throw new Error('the watcher was not told it is watching');
-  if (w.inbox.some((m) => m.type === 'choose')) throw new Error('the watcher was asked who goes first');
-  await until(() => a.ended !== null && b.ended !== null && w.ended !== null, 'the end, for all three');
-  if (a.desync || b.desync || w.desync) throw new Error(`desync: ${a.desync ?? b.desync ?? w.desync}`);
+  if (start.watching !== true || start.seat !== 'a')
+    throw new Error('the watcher was not told it is watching');
+  if (w.inbox.some((m) => m.type === 'choose'))
+    throw new Error('the watcher was asked who goes first');
+  await until(
+    () => a.ended !== null && b.ended !== null && w.ended !== null,
+    'the end, for all three',
+  );
+  if (a.desync || b.desync || w.desync)
+    throw new Error(`desync: ${a.desync ?? b.desync ?? w.desync}`);
   // a watcher who arrives late gets the game so far
   const ends = w.inbox.filter((m) => m.type === 'end');
   // (each game's replay id follows its end)
-  await until(() => w.inbox.filter((m) => m.type === 'replay').length >= ends.length, 'the replay ids', 10_000);
+  await until(
+    () => w.inbox.filter((m) => m.type === 'replay').length >= ends.length,
+    'the replay ids',
+    10_000,
+  );
   const ids = w.inbox.flatMap((m) => (m.type === 'replay' ? [m.id] : []));
-  if (ids.length < 2 || ids.some((id) => typeof id !== 'string')) throw new Error(`every game should have a replay: ${JSON.stringify(ids)}`);
+  if (ids.length < 2 || ids.some((id) => typeof id !== 'string'))
+    throw new Error(`every game should have a replay: ${JSON.stringify(ids)}`);
   // the last game's replay plays out as the game did
   const res = await fetch(`${http}/pvp/replay/${ids[ids.length - 1]}`);
   const body = (await res.json()) as { ok: boolean; replay: unknown };
@@ -625,9 +698,13 @@ async function watchAndReplay(tag: string): Promise<void> {
     const r = m.submit(mv.seat, m.log.length + 1, mv.action, Date.now());
     if (!r.ok) throw new Error(`the replay does not play: ${r.message}`);
   }
-  if (replay.reason === 'win' && m.over?.winner !== replay.winner) throw new Error('the replay ends with another winner');
-  if ((await fetch(`${http}/pvp/replay/NOPENOPE00`)).status !== 404) throw new Error('an unknown replay should be not found');
-  console.log(`  ok: watched ${ends.length} games live (hashes agreed); replay ${ids[ids.length - 1]} plays back ${replay.log.length} moves to the same end`);
+  if (replay.reason === 'win' && m.over?.winner !== replay.winner)
+    throw new Error('the replay ends with another winner');
+  if ((await fetch(`${http}/pvp/replay/NOPENOPE00`)).status !== 404)
+    throw new Error('an unknown replay should be not found');
+  console.log(
+    `  ok: watched ${ends.length} games live (hashes agreed); replay ${ids[ids.length - 1]} plays back ${replay.log.length} moves to the same end`,
+  );
   for (const x of [a, b, w]) x.ws.close();
 }
 

@@ -1,4 +1,4 @@
-// `pnpm kitsearch`: for each starting kit, try every uncommon of its build path as the kit's third card and play stage 1 with the
+// `pnpm kitsearch`: for each starting kit, try every common of its build path as the kit's third card (a kit is two uncommons and a common, #335) and play stage 1 with the
 // starter-only bot, to find the third card that puts the kit closest to the target: about 1 run in 4 reaches the stage 1 Warden
 // and a little fewer beat it (DECISIONS #333). Prints the best few per kit; the chosen cards go into KIT_CARDS by hand.
 //
@@ -51,7 +51,7 @@ for (const h of HEROES) {
       .filter(
         (c) =>
           c.hero === h &&
-          c.rarity === 'uncommon' &&
+          c.rarity === 'common' &&
           !c.id.endsWith('+') &&
           !c.unplayable &&
           pathOf(c.id) === path &&

@@ -85,7 +85,6 @@ const out: Record<string, number> = {};
 /** cards under a heading that is not a build path but that belong to one */
 const BY_ID: Record<string, number> = {
   'grave-robbery': 2,
-  'bone-pile': 2,
   reanimate: 1,
   'death-feeds': 1,
   // every card has a build path, Legendaries and the old glue cards too (DECISIONS #334): 8 common, 7 uncommon, 5 rare and 1 Legendary each
@@ -96,14 +95,11 @@ const BY_ID: Record<string, number> = {
   'bell-toll': 0,
   'gilded-blow': 0,
   'unbroken-wall': 0,
-  sunburst: 0,
-  'sure-footing': 0,
   'steady-resolve': 0,
   'zealous-charge': 1,
   'dawns-verdict': 1,
   'vengeful-light': 1,
   sanctuary: 1,
-  'radiant-bulwark': 2,
   // engineer
   'drone-apotheosis': 0,
   'overclocked-legion': 1,
@@ -198,7 +194,6 @@ const KP_GUN = [
   'rack-and-ruin',
   'one-more-round',
   'trigger-discipline',
-  'barrel-roll',
   'aim',
   'scope',
   'ironsights',

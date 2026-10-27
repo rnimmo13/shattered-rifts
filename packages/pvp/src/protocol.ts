@@ -51,7 +51,8 @@ export interface Entry {
 // (12: Overflow, #321-322)
 // (13: Kesh's pack and basics, Den Mother, Summon Pup, Dire Wolf, #323-326)
 // (14: Valeria's Devotion, a heal trigger and Devotion costs, #328)
-export const RULES_VERSION = 14;
+// (15: pools trimmed to 8/7/5/1 and 298 cards retired, rarities re-tiered, kits, no copy limit, Kesh's heal gone, #333-336)
+export const RULES_VERSION = 15;
 
 /** Who you are playing, before a game starts: their name and badges, not their deck or Riftwalker. */
 export type FoeCard = Pick<Entry, 'name' | 'trophies' | 'rank'>;

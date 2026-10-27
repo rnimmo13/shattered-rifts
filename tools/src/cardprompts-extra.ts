@@ -31,9 +31,8 @@ const SCENE: Record<string, string> = {
     'a calm steady hand held out, a deep breath, dark jittery mist fading from it into clear air',
   'ace-up-the-sleeve':
     'a playing card flicked out of a sleeve with a flourish, caught mid-flip, a sly grin in the shadows',
-  'loaded-die': 'a heavy weighted die tumbling across a table and bursting into a ring of teal sparks',
-  'pilfered-time':
-    'a stolen pocket watch dangling from nimble fingers, its hands blurred, sand of time spilling',
+  'loaded-die':
+    'a heavy weighted die tumbling across a table and bursting into a ring of teal sparks',
   'jokers-gambit':
     'a grinning joker card thrown to the floor and blossoming into three glowing teal knives',
 };

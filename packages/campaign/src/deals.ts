@@ -152,7 +152,7 @@ function step(r: RunState, s: DealStep, ev: EventCtx, h: DealHelpers, out: strin
       return;
     }
     case 'copy': {
-      // a copy still obeys the deck rules (the copy limit, and the Legendary limit)
+      // a copy still obeys the deck rules (a Legendary is one of a kind, and the Legendary limit)
       const pool = nonBasic(r.deck).filter((id) => canAdd(r.deck, id));
       if (!pool.length) fail('There is nothing to copy');
       const pick = pool[nextInt(r.rng, pool.length)] as string;
@@ -201,7 +201,7 @@ function step(r: RunState, s: DealStep, ev: EventCtx, h: DealHelpers, out: strin
       const rarity = (id: string): string | undefined =>
         COMBAT_DB.cards[stripRoll(id).replace(/\+$/, '')]?.rarity;
       const like = rarity(s.from) === rarity(s.to);
-      // (the copy limit by rarity holds either way, DECISIONS #330)
+      // (a Legendary or Ancestral card is one of a kind either way, DECISIONS #336)
       const base = (id: string): string => stripRoll(id).replace(/[+]$/, '');
       const copies = rest.filter((x) => base(x) === base(s.to)).length;
       if (
@@ -345,7 +345,7 @@ export function chooseable(deck: readonly string[], act: DeckChoice, mark?: Card
     case 'transform':
       return [...new Set(removableCards(deck))].filter((id) => id !== 'wound' && id !== 'static');
     case 'copy':
-      // (a copy obeys the deck rules: the copy limit and the Legendary limit)
+      // (a copy obeys the deck rules: a Legendary is one of a kind, and the Legendary limit)
       return nonBasic(deck as string[]).filter(
         (id, i, a) => a.indexOf(id) === i && canAdd(deck, id),
       );

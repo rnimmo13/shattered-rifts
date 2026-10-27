@@ -31,7 +31,10 @@ export function pairUp(queue: readonly Waiting[], now: number): Pairing {
     let bestGap = Infinity;
     left.forEach((o, i) => {
       const gap = Math.abs(o.rating - first.rating);
-      if ((gap <= QUEUE_RATING_GAP || widened || now - o.since >= QUEUE_WIDEN_MS) && gap < bestGap) {
+      if (
+        (gap <= QUEUE_RATING_GAP || widened || now - o.since >= QUEUE_WIDEN_MS) &&
+        gap < bestGap
+      ) {
         best = i;
         bestGap = gap;
       }

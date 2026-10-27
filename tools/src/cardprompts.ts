@@ -30,7 +30,6 @@ interface Sheet {
   ids: string[];
 }
 
-
 const cards = Object.values(db.cards).filter(
   (c) =>
     !c.id.endsWith('+') &&
@@ -49,8 +48,13 @@ const sheets: Sheet[] = [];
 /** sheet number (1, 2, 3...) -> that sheet of every character, as markdown blocks */
 const batches = new Map<number, string[]>();
 // Once pictures exist, regrouping would move cards between sheets and shift every cut: new cards go on extra sheets instead.
-if (existsSync(new URL('../../assets-src/cards/', import.meta.url)) && !process.argv.includes('--force')) {
-  console.error('assets-src/cards already has art: cardprompts would regroup the sheets and shift every cut.\nUse `pnpm cardprompts:extra` for new cards (or pass --force to regroup everything).');
+if (
+  existsSync(new URL('../../assets-src/cards/', import.meta.url)) &&
+  !process.argv.includes('--force')
+) {
+  console.error(
+    'assets-src/cards already has art: cardprompts would regroup the sheets and shift every cut.\nUse `pnpm cardprompts:extra` for new cards (or pass --force to regroup everything).',
+  );
   process.exit(1);
 }
 mkdirSync(new URL('../../docs/card-art/', import.meta.url), { recursive: true });
