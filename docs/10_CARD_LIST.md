@@ -764,7 +764,7 @@ Starter: Strike, Strike, Defend, Defend, Defend, Defend, Glass Jab, Gather Arcan
 |---|---|---|---|---|
 | Glass Jab | 1 | attack | basic | Deal 7 damage. Gain 1 Arcana. |
 | Gather Arcana | 1 | skill | basic | Gain 3 Arcana. Opening hand. |
-| Arcane Bolt | 1+1◆ | attack | basic | Costs 1 Arcana. Deal 12 damage. Opening hand. |
+| Arcane Bolt | 1+1◆ | attack | basic | Deal 12 damage. Opening hand. |
 | Hone | 1 | skill | common | Sharpen 4 (Obsidian Blade gains 4 damage). |
 | Honed Strike | 1 | attack | common | Deal 5 damage. Gain 2 Arcana. |
 | Blade Ward | 1 | skill | common | Gain 5 Barrier. Sharpen 1 (Obsidian Blade gains 1 damage). |
@@ -775,10 +775,10 @@ Starter: Strike, Strike, Defend, Defend, Defend, Defend, Glass Jab, Gather Arcan
 | Forged in Fury | 1 | attack | common | Deal 7 damage. Sharpen 3 (Obsidian Blade gains 3 damage). |
 | Scrying Glass | 0 | skill | common | Gain 1 Arcana. Draw 1 card. Consume. |
 | Glass Shield | 1 | skill | common | Gain 6 Barrier. Gain 1 Arcana. |
-| Searing Ray | 0+1◆ | attack | common | Costs 1 Arcana. Deal 6 damage. Apply 1 Exposed. |
+| Searing Ray | 0+1◆ | attack | common | Deal 6 damage. Apply 1 Exposed. |
 | Glint | 1 | attack | common | Deal 7 damage. Foresee 2. |
-| Spellbolt | 0+2◆ | attack | common | Costs 2 Arcana. Deal 12 damage. |
-| Arcane Barrier | 0+2◆ | skill | common | Costs 2 Arcana. Gain 10 Barrier. |
+| Spellbolt | 0+2◆ | attack | common | Deal 12 damage. |
+| Arcane Barrier | 0+2◆ | skill | common | Gain 10 Barrier. |
 | Faint Ember | 1 | skill | common | Gain 1 Arcana. Draw 1 card. Next turn, draw 1 extra card. |
 | Arcane Pulse | 1 | attack | common | Deal 6 damage 2 times to ALL enemies. |
 | Molten Might | 2 | attack | common | Deal 6 damage 3 times. |
@@ -791,7 +791,7 @@ Starter: Strike, Strike, Defend, Defend, Defend, Defend, Glass Jab, Gather Arcan
 | Ley Strike | 1 | attack | common | Deal 4 (+1 per Arcana) damage. |
 | Wishing Well | 0 | skill | common | Gain 2 Arcana. Next turn, lose 1 Mana. |
 | Ash Wind | 1 | skill | common | Draw 2 cards. Gain 1 Arcana. Discard 1 card. |
-| Crown Strike | 0+3◆ | attack | uncommon | Costs 3 Arcana. Deal 18 damage. |
+| Crown Strike | 0+3◆ | attack | uncommon | Deal 18 damage. |
 | Edgewise | 1 | skill | uncommon | Gain 7 Barrier. Sharpen 2 (Obsidian Blade gains 2 damage). |
 | Royal Decree | 2 | skill | uncommon | Sharpen 6 (Obsidian Blade gains 6 damage). Draw 1 card. |
 | Knight's Oath | 1 | power | uncommon | Whenever you play an Obsidian Blade: Gain 1 Arcana. |
@@ -801,9 +801,9 @@ Starter: Strike, Strike, Defend, Defend, Defend, Defend, Glass Jab, Gather Arcan
 | Warm Anvil | 1 | power | uncommon | At the start of your turn: Sharpen 1 (Obsidian Blade gains 1 damage). Gain 3 Barrier. |
 | Glass Guard | 1 | power | uncommon | Whenever you play an Obsidian Blade: Gain 6 Barrier. |
 | Sword Rain | 1 | skill | uncommon | Add 2 Obsidian Blades to your hand. |
-| Shatterburst | 2+2◆ | attack | uncommon | Costs 2 Arcana. Deal 34 damage. |
-| Falling Shards | 0+4◆ | attack | uncommon | Costs 4 Arcana. Deal 8 damage 3 times to ALL enemies. |
-| Magma Flare | 1+2◆ | attack | uncommon | Costs 2 Arcana. Deal 14 damage to ALL enemies. Apply 1 Exposed to ALL enemies. |
+| Shatterburst | 2+2◆ | attack | uncommon | Deal 34 damage. |
+| Falling Shards | 0+4◆ | attack | uncommon | Deal 8 damage 3 times to ALL enemies. |
+| Magma Flare | 1+2◆ | attack | uncommon | Deal 14 damage to ALL enemies. Apply 1 Exposed to ALL enemies. |
 | Ember Weft | 1 | skill | uncommon | Gain 1 Arcana. Sharpen 1 (Obsidian Blade gains 1 damage). Draw 1 card. |
 | Obsidian Lance | 2 | attack | uncommon | Deal 14 damage. Gain 1 Arcana. |
 | Binding Hex | 1 | skill | uncommon | Apply 2 Exposed. Gain 1 Arcana. |
@@ -811,7 +811,7 @@ Starter: Strike, Strike, Defend, Defend, Defend, Defend, Glass Jab, Gather Arcan
 | Arcane Surge | 1 | skill | uncommon | Gain 3 Arcana. Consume. |
 | Overflow | 1 | attack | uncommon | Deal 3 (+1 per Arcana) damage to ALL enemies. |
 | Tyrant Strike | 2 | attack | uncommon | Deal 15 damage. Next turn, gain 2 extra Mana. |
-| Molten Ruin | 2+2◆ | attack | uncommon | Costs 2 Arcana. Deal 20 damage. Sharpen 4 (Obsidian Blade gains 4 damage). |
+| Molten Ruin | 2+2◆ | attack | uncommon | Deal 20 damage. Sharpen 4 (Obsidian Blade gains 4 damage). |
 | Sigil of Kindling | 2 | power | uncommon | At the start of your turn: Gain 1 Arcana. |
 | Sigil of Ward | 2 | power | uncommon | At the end of your turn: Gain Barrier equal to your Arcana. |
 | Sigil of Scorch | 1 | power | uncommon | Whenever you spend Arcana: Deal 3 damage to ALL enemies. |
@@ -835,12 +835,12 @@ Starter: Strike, Strike, Defend, Defend, Defend, Defend, Glass Jab, Gather Arcan
 | Magma Surge | 1 | skill | rare | Gain 3 Arcana. Sharpen 3 (Obsidian Blade gains 3 damage). Gain 5 Barrier. Consume. |
 | Armory of Glass | 2 | power | rare | Whenever a card is created: Apply 1 Might. |
 | Collapsing Vein | 2 | attack | rare | Deal 5 (+2 per card created this fight) damage. |
-| Cataclysm | 3+4◆ | attack | rare | Costs 4 Arcana. Deal 54 damage. Apply 2 Exposed. |
+| Cataclysm | 3+4◆ | attack | rare | Deal 54 damage. Apply 2 Exposed. |
 | Wellspring | 1 | skill | rare | Gain 5 Arcana. Draw 2 cards. Consume. |
 | Glass Burst | 2 | attack | rare | Deal 13 damage. Apply 2 Faltering. Apply 2 Exposed. |
-| Killing Glass | 2+3◆ | attack | rare | Costs 3 Arcana. Deal 30 damage. |
+| Killing Glass | 2+3◆ | attack | rare | Deal 30 damage. |
 | Arcane Burst | 1 | skill | rare | Gain 6 Arcana. Consume. |
-| Lava Bomb | 3+3◆ | attack | rare | Costs 3 Arcana. Deal 33 damage. Apply 3 Faltering. Apply 3 Exposed. |
+| Lava Bomb | 3+3◆ | attack | rare | Deal 33 damage. Apply 3 Faltering. Apply 3 Exposed. |
 | Dying Ember | 1 | attack | rare | Deal 10 damage to ALL enemies. Apply 2 Faltering to ALL enemies. Fleeting. |
 | Sigil of Conduit | 2 | power | rare | Whenever you play an Attack: Gain 1 Arcana. |
 | Sigil of Twins | 3 | power | rare | At the start of your turn: Draw 1 card. Gain 1 Arcana. |
@@ -849,13 +849,13 @@ Starter: Strike, Strike, Defend, Defend, Defend, Defend, Glass Jab, Gather Arcan
 | Sigil of Echoes | 3 | power | rare | Whenever you play a card: Gain 1 Arcana. |
 | Kingsbane | 3 | attack | rare | Deal 8 damage 3 times. Sharpen 4 (Obsidian Blade gains 4 damage). |
 | Obsidian Legion | 2 | skill | rare | Add 3 Obsidian Blades to your hand. Consume. |
-| Fault Line | 2+2◆ | attack | rare | Costs 2 Arcana. Deal 20 damage. Apply 2 Exposed. Apply 2 Faltering. |
+| Fault Line | 2+2◆ | attack | rare | Deal 20 damage. Apply 2 Exposed. Apply 2 Faltering. |
 | Zenith | 1 | attack | rare | Deal damage equal to 2 times your Arcana. Consume. |
 | Sigil of the Storm | 2 | power | rare | At the end of your turn: Deal damage equal to half of your Arcana to ALL enemies. |
 | Sigil of the Pyre | 3 | power | rare | At the start of your turn: Gain 1 Mana. Sharpen 2 (Obsidian Blade gains 2 damage). |
 | The Obsidian Crown | 2 | power | legendary | Sharpen 8 (Obsidian Blade gains 8 damage). At the start of your turn: Sharpen 3 (Obsidian Blade gains 3 damage). Gain 2 Arcana. |
 | Volcano's Birth | 2 | skill | legendary | Gain 8 Arcana. Draw 3 cards. Gain 20 Barrier. Consume. |
-| Shatterstorm | 3+5◆ | attack | legendary | Costs 5 Arcana. Deal 40 damage to ALL enemies. |
+| Shatterstorm | 3+5◆ | attack | legendary | Deal 40 damage to ALL enemies. |
 
 Tokens (made by other cards):
 

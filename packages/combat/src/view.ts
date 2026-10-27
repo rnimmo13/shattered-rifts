@@ -686,7 +686,7 @@ export function cardText(db: CombatDb, c: CardDef, live?: ReadonlyMap<number, Li
     );
   }
   if (c.unplayable) parts.push('Unplayable.');
-  if (c.starCost) parts.push(`Costs ${c.starCost} Arcana.`);
+  // (an Arcana cost is shown on the card itself, under the Mana cost: it is not said again in the text)
   if (c.xBonus) parts.push(`X is ${c.xBonus} higher.`);
   const who: Record<Sel, string> =
     c.target === 'ally' || c.target === 'friend' ? { ...WHO, target: ' to the ally' } : WHO;
