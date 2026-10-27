@@ -27,6 +27,8 @@ export interface LogContext {
   sideOf: (unit: string) => Side | null;
   /** a player's name for a side ("You", or the opponent's name) */
   who: (side: Side) => string;
+  /** which unit definition a unit is (to name an enemy's move); absent: moves are named from their id */
+  defOf?: (unit: string) => string | null;
 }
 
 /**
@@ -34,7 +36,7 @@ export interface LogContext {
  * "Gilded Squire 2") in the order they appeared.
  */
 export class Namer {
-  private units = new Map<string, { base: string; side: Side; n: number }>();
+  private units = new Map<string, { base: string; side: Side; n: number; def: string | null }>();
   private counts = new Map<string, number>();
 
   constructor(
@@ -43,12 +45,12 @@ export class Namer {
     private readonly foeHero: string | null,
   ) {}
 
-  register(id: string, base: string, side: Side): void {
+  register(id: string, base: string, side: Side, def: string | null = null): void {
     if (this.units.has(id)) return;
     const key = `${side}|${base}`;
     const n = (this.counts.get(key) ?? 0) + 1;
     this.counts.set(key, n);
-    this.units.set(id, { base, side, n });
+    this.units.set(id, { base, side, n, def });
   }
 
   /** Learn every unit in a state (heroes are named for who plays them). */
@@ -57,7 +59,7 @@ export class Namer {
       for (const u of s.sides[side].units) {
         const hero = u.kind === 'hero';
         const base = hero ? (side === this.me ? 'You' : (this.foeHero ?? u.name)) : u.name;
-        this.register(u.id, base, side);
+        this.register(u.id, base, side, u.def);
       }
   }
 
@@ -70,6 +72,10 @@ export class Namer {
 
   sideOf(id: string): Side | null {
     return this.units.get(id)?.side ?? null;
+  }
+
+  defOf(id: string): string | null {
+    return this.units.get(id)?.def ?? null;
   }
 }
 
@@ -85,6 +91,14 @@ const cardName = (db: CombatDb, id: CardId): string => db.cards[id]?.name ?? pre
 const verb = (name: string, plain: string, third: string): string =>
   `${name} ${name === 'You' ? plain : third}`;
 
+/** How a hit or a heal moved the target's HP: " (HP 40 → 31)", or nothing when it did not move or is not known. */
+const hpChange = (hp: number | undefined, change: number): string =>
+  hp === undefined || change === 0 ? '' : ` (HP ${hp - change} → ${hp})`;
+
+/** "Slash (9)", or "Flurry (4×3)" for a move that hits several times. */
+const withDamage = (name: string, damage: number | undefined, hits: number | undefined): string =>
+  damage === undefined ? name : `${name} (${(hits ?? 1) > 1 ? `${damage}×${hits}` : damage})`;
+
 /** Named as the one something happens to: "hits you", not "hits You". */
 const obj = (name: string): string => (name === 'You' ? 'you' : name);
 
@@ -99,6 +113,13 @@ export function createDescriber(c: LogContext): (e: CombatEvent) => Omit<LogLine
   let trap: { name: string } | null = null;
   /** the last attack that landed: Thorns answer it at once */
   let lastHit: { source: string | null; target: string } | null = null;
+
+  /** an enemy's move by its own name ("Slash"), or from its id when the unit's definition is not known */
+  const moveName = (unit: string, move: string): string => {
+    const d = c.defOf?.(unit);
+    const b = d ? c.db.units[d]?.brain : undefined;
+    return (b?.kind === 'enemy' ? b.moves[move]?.name : undefined) ?? pretty(move);
+  };
 
   return (e) => {
     switch (e.type) {
@@ -129,7 +150,7 @@ export function createDescriber(c: LogContext): (e: CombatEvent) => Omit<LogLine
         lastHit = null;
         return e.move
           ? {
-              text: `${verb(c.nameOf(e.unit), 'use', 'uses')} ${pretty(e.move)}`,
+              text: `${verb(c.nameOf(e.unit), 'use', 'uses')} ${withDamage(moveName(e.unit, e.move), e.damage, e.hits)}`,
               tone: tone(c.sideOf(e.unit)),
             }
           : null;
@@ -169,7 +190,7 @@ export function createDescriber(c: LogContext): (e: CombatEvent) => Omit<LogLine
           side = c.sideOf(e.target);
         }
         if (e.kind === 'attack') lastHit = { source: e.source, target: e.target };
-        return { text, tone: tone(side) };
+        return { text: `${text}${hpChange(e.hp, -e.lost)}`, tone: tone(side) };
       }
       case 'barrier':
         return {
@@ -178,7 +199,7 @@ export function createDescriber(c: LogContext): (e: CombatEvent) => Omit<LogLine
         };
       case 'heal':
         return {
-          text: `${verb(c.nameOf(e.target), 'heal', 'heals')} ${e.amount}`,
+          text: `${verb(c.nameOf(e.target), 'heal', 'heals')} ${e.amount}${hpChange(e.hp, e.amount)}`,
           tone: tone(c.sideOf(e.target)),
         };
       case 'status': {

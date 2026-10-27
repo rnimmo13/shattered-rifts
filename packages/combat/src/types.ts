@@ -690,7 +690,8 @@ export type CombatEvent =
   | { type: 'maxMana'; side: Side; max: number }
   | { type: 'play'; side: Side; card: InstId; def: CardId; target: UnitId | null }
   | { type: 'potion'; side: Side; index: number; potion: string; target: UnitId | null }
-  | { type: 'act'; unit: UnitId; move: string | null } // a unit begins its action (lunge animation)
+  /** a unit begins its action (lunge animation); `damage`/`hits`: what its move's first attack deals per hit, Might and the like counted */
+  | { type: 'act'; unit: UnitId; move: string | null; damage?: number; hits?: number }
   | { type: 'skip'; unit: UnitId; reason: 'stunned' }
   | {
       type: 'damage';
@@ -701,6 +702,8 @@ export type CombatEvent =
       lost: number; // HP lost
       shielded: boolean;
       kind: 'attack' | 'direct';
+      /** the target's HP after the hit (for the battle log) */
+      hp?: number;
     }
   | { type: 'barrier'; target: UnitId; amount: number; total: number }
   | {
@@ -708,7 +711,8 @@ export type CombatEvent =
       target: UnitId;
       /** Barrier left after the drop (Fortified keeps some) */ total?: number;
     }
-  | { type: 'heal'; target: UnitId; amount: number }
+  /** `hp`: the target's HP after the heal (for the battle log) */
+  | { type: 'heal'; target: UnitId; amount: number; hp?: number }
   | { type: 'status'; target: UnitId; status: StatusId; amount: number; total: number }
   | { type: 'summon'; side: Side; unit: UnitId; def: string; index: number }
   | {

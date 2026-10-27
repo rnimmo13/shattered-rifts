@@ -261,6 +261,7 @@ function applyDamage(
       lost: 0,
       shielded: true,
       kind,
+      hp: t.hp,
     });
     return 0;
   }
@@ -288,6 +289,7 @@ function applyDamage(
     lost,
     shielded: false,
     kind,
+    hp: t.hp,
   });
   if (lost > 0 && t.kind === 'hero') {
     syncClutch(r, r.s.sides[t.side]);
@@ -341,7 +343,7 @@ function healUnit(r: Run, t: Unit, n: number): void {
   const k = Math.min(n, t.maxHp - t.hp);
   if (k <= 0 || t.hp <= 0) return;
   t.hp += k;
-  r.ev.push({ type: 'heal', target: t.id, amount: k });
+  r.ev.push({ type: 'heal', target: t.id, amount: k, hp: t.hp });
   if (t.kind === 'hero') syncClutch(r, r.s.sides[t.side]);
 }
 
@@ -585,7 +587,7 @@ function execOp(r: Run, a: Act, op: Op): void {
         if (n <= 0) continue;
         t.maxHp += n;
         t.hp += n;
-        r.ev.push({ type: 'heal', target: t.id, amount: n });
+        r.ev.push({ type: 'heal', target: t.id, amount: n, hp: t.hp });
       }
       return;
     case 'heal':
@@ -593,7 +595,7 @@ function execOp(r: Run, a: Act, op: Op): void {
         const n = Math.min(amountOf(r, a, op.amount, op.scale, t), t.maxHp - t.hp);
         if (n <= 0) continue;
         t.hp += n;
-        r.ev.push({ type: 'heal', target: t.id, amount: n });
+        r.ev.push({ type: 'heal', target: t.id, amount: n, hp: t.hp });
         if (t.kind === 'hero') syncClutch(r, r.s.sides[t.side]);
       }
       return;
@@ -1260,7 +1262,19 @@ function actEnemy(r: Run, u: Unit): void {
     r.s.sides[other(u.side)].units.some((x) => x.kind === 'ally' && x.hp > 0);
   if (!target || target.hp <= 0 || target.side === u.side || taunted || bypassed)
     target = pickFoe(r, u, d.brain.foe ?? 'hero') ?? undefined;
-  r.ev.push({ type: 'act', unit: u.id, move: it.move });
+  // (what the move's first attack deals per hit, as its intent showed it: the battle log names it "Slash (9)")
+  const hit = mv.effects.find((o) => o.op === 'damage');
+  r.ev.push({
+    type: 'act',
+    unit: u.id,
+    move: it.move,
+    ...(hit?.op === 'damage' && !hit.scale
+      ? {
+          damage: modifiedDamage(hit.amount, u, hit.to === 'target' ? (target ?? null) : null),
+          hits: hit.hits ?? 1,
+        }
+      : {}),
+  });
   u.intent = null;
   runOps(r, mkAct(u, { target: target ?? null }), mv.effects);
 }
@@ -1312,6 +1326,7 @@ function suddenDeath(r: Run, side: Side): void {
     lost,
     shielded: false,
     kind: 'direct',
+    hp: hero.hp,
   });
   reap(r);
 }

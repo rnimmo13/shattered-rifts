@@ -624,12 +624,13 @@ export function FightView(props: {
     (e: CombatEvent) => {
       // a unit that appears and falls within one batch is never in a state we see: name it from its event
       if (e.type === 'summon')
-        namer.current.register(e.unit, db.units[e.def]?.name ?? e.def, e.side);
+        namer.current.register(e.unit, db.units[e.def]?.name ?? e.def, e.side, e.def);
       describer.current ??= createDescriber({
         db,
         me: mySide,
         nameOf: (id) => namer.current.nameOf(id),
         sideOf: (id) => namer.current.sideOf(id),
+        defOf: (id) => namer.current.defOf(id),
         who: (side) => (side === mySide ? 'You' : foeName),
       });
       const line = describer.current(e);

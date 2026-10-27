@@ -110,6 +110,7 @@ export function replayFight(
     me,
     nameOf: (id) => namer.nameOf(id),
     sideOf: (id) => namer.sideOf(id),
+    defOf: (id) => namer.defOf(id),
     who: (side) => (side === me ? 'You' : (foeHero ?? 'Enemy')),
   });
   const lines: LogLine[] = [];
@@ -144,7 +145,7 @@ export function replayFight(
   const feed = (events: readonly CombatEvent[], after: CombatState): void => {
     namer.learn(after);
     for (const e of events) {
-      if (e.type === 'summon') namer.register(e.unit, db.units[e.def]?.name ?? e.def, e.side);
+      if (e.type === 'summon') namer.register(e.unit, db.units[e.def]?.name ?? e.def, e.side, e.def);
       const line = describe(e);
       if (line) lines.push({ id: lines.length, ...line });
       switch (e.type) {

@@ -1359,3 +1359,22 @@ describe('an Aura that answers Arcana being spent (DECISIONS #288)', () => {
     expect(hero(c).barrier).toBe(4);
   });
 });
+
+describe('events carry what the battle log needs', () => {
+  it('an enemy attack says its damage per hit, and every hit and heal says the HP after', () => {
+    let c = clone(start(['cultist'], ['strike', 'strike', 'strike', 'strike', 'strike']));
+    let seen = false;
+    for (let turn = 0; turn < 4 && !seen && !c.winner; turn++) {
+      const out = applyAction(db, c, { type: 'endTurn' });
+      c = out.state;
+      for (const e of out.events)
+        if (e.type === 'damage' || e.type === 'heal') expect(typeof e.hp).toBe('number');
+      const attack = out.events.find((e) => e.type === 'act' && e.damage !== undefined);
+      if (attack?.type !== 'act') continue;
+      const hit = out.events.find((e) => e.type === 'damage' && e.source === attack.unit);
+      expect(hit?.type === 'damage' ? hit.amount : null).toBe(attack.damage);
+      seen = true;
+    }
+    expect(seen).toBe(true);
+  });
+});

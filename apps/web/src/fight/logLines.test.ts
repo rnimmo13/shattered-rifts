@@ -126,3 +126,52 @@ describe('the battle log', () => {
     expect(namer.nameOf('nobody')).toBe('Someone');
   });
 });
+
+describe('the battle log shows how hard a move hits and how HP moved', () => {
+  const withDefs: LogContext = { ...ctx, defOf: (id) => (id === 'sq' ? 'squire' : null) };
+  it('names an enemy move by its name with its damage: "Slash (9)", "(4×3)" for several hits', () => {
+    const d = createDescriber(withDefs);
+    expect(d({ type: 'act', unit: 'sq', move: 'slash', damage: 9, hits: 1 })?.text).toBe(
+      'Gilded Squire uses Slash (9)',
+    );
+    expect(d({ type: 'act', unit: 'sq', move: 'slash', damage: 4, hits: 3 })?.text).toBe(
+      'Gilded Squire uses Slash (4×3)',
+    );
+    // a move with no attack says only its name
+    expect(d({ type: 'act', unit: 'sq', move: 'guard' })?.text).toBe(
+      'Gilded Squire uses Raise Shield',
+    );
+  });
+  it('a hit and a heal say the HP before and after', () => {
+    expect(
+      say({
+        type: 'damage',
+        source: 'sq',
+        target: 'hero',
+        amount: 9,
+        blocked: 3,
+        lost: 6,
+        shielded: false,
+        kind: 'attack',
+        hp: 34,
+      }),
+    ).toBe('Gilded Squire hits you: 6 damage (3 blocked) (HP 40 → 34)');
+    expect(say({ type: 'heal', target: 'hero', amount: 5, hp: 39 })).toBe(
+      'You heal 5 (HP 34 → 39)',
+    );
+    // nothing lost: no HP note
+    expect(
+      say({
+        type: 'damage',
+        source: 'sq',
+        target: 'hero',
+        amount: 4,
+        blocked: 4,
+        lost: 0,
+        shielded: false,
+        kind: 'attack',
+        hp: 34,
+      }),
+    ).toBe('Gilded Squire hits you: no damage (4 blocked)');
+  });
+});
