@@ -21,6 +21,8 @@ import {
   scaled,
   status,
   loseHpScaled,
+  drawNext,
+  cheapen,
 } from '../build';
 
 const q = pool('assassin', 'umbral');
@@ -361,4 +363,40 @@ export const ASSASSIN: CardDef[] = [
     up: { effects: [draw(2), discard(2), barrier(3)] },
   }),
   q('common', 'cold-open', 'Cold Open', 'attack', 0, 'foe', [dmg(6), discard(1)]),
+
+  // --- more glue: uncommons and rares for any build path (DECISIONS #339) ---
+  q(
+    'rare',
+    'veil-of-dust',
+    'Veil of Dust',
+    'skill',
+    1,
+    'none',
+    [scaled(barrier(0), per('barrier', 1))],
+    {
+      exhaust: true,
+    },
+  ),
+  q(
+    'rare',
+    'tricksters-vanish',
+    "Trickster's Vanish",
+    'skill',
+    1,
+    'none',
+    [barrier(12), drawNext(2)],
+    { exhaust: true },
+  ),
+  q(
+    'uncommon',
+    'nimble-hands',
+    'Nimble Hands',
+    'skill',
+    0,
+    'none',
+    [cheapen(1, 'random'), draw(1)],
+    {
+      exhaust: true,
+    },
+  ),
 ];

@@ -24,6 +24,7 @@ import {
   scaled,
   status,
   summon,
+  doubleSt,
 } from '../build';
 
 const k = pool('hunter', 'wyldmaw');
@@ -315,4 +316,19 @@ export const HUNTER: CardDef[] = [
   ]),
   k('common', 'whet-the-fangs', 'Whet the Fangs', 'skill', 0, 'none', [status('vigor', 6)]),
   k('common', 'primal-feast', 'Primal Feast', 'skill', 1, 'none', [heal(7, 'allFriends')]),
+
+  // --- more glue: uncommons and rares for any build path (DECISIONS #339) ---
+  k('rare', 'bloodsong', 'Bloodsong', 'power', 1, 'none', [lose(3), status('ritual', 1)]),
+  k(
+    'rare',
+    'slip-the-leash',
+    'Slip the Leash',
+    'skill',
+    1,
+    'none',
+    [doubleSt('might', 'self', 2, 6)],
+    {
+      exhaust: true,
+    },
+  ),
 ];

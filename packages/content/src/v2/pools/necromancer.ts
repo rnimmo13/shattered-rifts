@@ -365,4 +365,12 @@ export const NECROMANCER: CardDef[] = [
   g('uncommon', 'ghostform', 'Spirit Walk', 'skill', 1, 'none', [status('ghostly', 1), draw(1)], {
     exhaust: true,
   }),
+
+  // --- more glue: uncommons and rares for any build path (DECISIONS #339) ---
+  g('rare', 'ominous-chimes', 'Ominous Chimes', 'power', 2, 'none', [
+    on('draw', [status('doom', 1, 'randomFoe')]),
+  ]),
+  g('rare', 'deathless', 'Deathless', 'power', 2, 'none', [
+    on('summon', [barrier(6, 'allFriends')]),
+  ]),
 ];

@@ -389,4 +389,10 @@ export const TOTEMIST: CardDef[] = [
   i('rare', 'endless-whittling', 'Endless Whittling', 'power', 1, 'none', [
     on('turnStart', [fetchTag(1, 'carving')]),
   ]),
+
+  // --- more glue: uncommons and rares for any build path (DECISIONS #339) ---
+  i('uncommon', 'overtune', 'Spirit Surge', 'skill', 1, 'none', [status('resonance', 1), draw(1)], {
+    exhaust: true,
+  }),
+  i('uncommon', 'glyph-lattice', 'Totem Row', 'skill', 1, 'none', [{ op: 'runeSlots', amount: 2 }]),
 ];

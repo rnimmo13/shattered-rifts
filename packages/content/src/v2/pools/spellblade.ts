@@ -24,6 +24,7 @@ import {
   status,
   addTo,
   discard,
+  drawNext,
 } from '../build';
 
 const a = pool('spellblade', 'starfall');
@@ -320,4 +321,23 @@ export const SPELLBLADE: CardDef[] = [
   ),
   a('common', 'gleam', 'Glint', 'attack', 1, 'foe', [dmg(7), scry(2)]),
   a('common', 'star-barrier', 'Arcane Barrier', 'skill', 0, 'none', [barrier(10)], { starCost: 2 }),
+
+  // --- more glue: uncommons and rares for any build path (DECISIONS #339) ---
+  a('rare', 'gamma-burst', 'Glass Burst', 'attack', 2, 'foe', [
+    dmg(13),
+    status('faltering', 2, 'target'),
+    status('exposed', 2, 'target'),
+  ]),
+  a('rare', 'starburst', 'Arcane Burst', 'skill', 1, 'none', [stars(6)], { exhaust: true }),
+  a('uncommon', 'faint-glow', 'Faint Ember', 'skill', 1, 'none', [stars(1), draw(1), drawNext(1)]),
+  a(
+    'uncommon',
+    'humble',
+    'Humble',
+    'skill',
+    1,
+    'foe',
+    [status('faltering', 1, 'target'), status('exposed', 1, 'target')],
+    { exhaust: true },
+  ),
 ];

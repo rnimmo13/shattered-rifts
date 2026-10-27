@@ -287,4 +287,13 @@ export const BARBARIAN: CardDef[] = [
   ]),
   s('common', 'inner-sight', 'Inner Sight', 'skill', 1, 'none', [barrier(5), scry(4)]),
   s('common', 'quick-palms', 'Quick Palms', 'attack', 0, 'foe', [dmg(3)]),
+
+  // --- more glue: uncommons and rares for any build path (DECISIONS #339) ---
+  s('rare', 'spirit-shield', "Mountain's Stillness", 'skill', 2, 'none', [
+    scaled(barrier(4), per('hand', 2)),
+  ]),
+  s('rare', 'breath-between-blows', 'Breath Between Blows', 'power', 1, 'none', [
+    on('play', [barrier(2)], { filter: 'skill' }),
+  ]),
+  s('uncommon', 'held-breath', 'Held Breath', 'skill', 1, 'none', [status('holdfast', 1)]),
 ];

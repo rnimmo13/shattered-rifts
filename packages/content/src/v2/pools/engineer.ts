@@ -21,6 +21,7 @@ import {
   status,
   summon,
   revive,
+  discoverOp,
 } from '../build';
 
 const r = pool('engineer', 'nexus');
@@ -281,4 +282,8 @@ export const ENGINEER: CardDef[] = [
     barrier(9, 'target'),
     draw(1),
   ]),
+
+  // --- more glue: uncommons and rares for any build path (DECISIONS #339) ---
+  r('rare', 'factory-floor', 'Factory Floor', 'power', 2, 'none', [on('summon', [draw(1)])]),
+  r('uncommon', 'blueprint', 'Blueprint', 'skill', 1, 'none', [discoverOp('summon', 1, false)]),
 ];

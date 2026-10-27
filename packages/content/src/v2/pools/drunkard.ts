@@ -332,4 +332,20 @@ export const DRUNKARD: CardDef[] = [
     exhaust: true,
   }),
   p('common', 'dumpster-dive', 'Dumpster Dive', 'skill', 1, 'none', [draw(2), discard(1), heal(2)]),
+
+  // --- more glue: uncommons and rares for any build path (DECISIONS #339) ---
+  p('rare', 'whiskey-miracle', 'Whiskey Miracle', 'skill', 1, 'none', [heal(15)], {
+    exhaust: true,
+  }),
+  p('rare', 'rock-bottom', 'Rock Bottom', 'power', 2, 'none', [
+    status('might', 2),
+    on('turnStart', [lose(1)]),
+  ]),
+  p('uncommon', 'liquid-courage', 'Liquid Courage', 'skill', 1, 'none', [
+    barrier(5),
+    status('vigor', 6),
+  ]),
+  p('uncommon', 'window-pane', 'Window Pane', 'skill', 1, 'none', [
+    scaled(barrier(7), per('missingPct', 1 / 8)),
+  ]),
 ];

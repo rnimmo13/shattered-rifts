@@ -22,6 +22,7 @@ import {
   cheapen,
   discoverOp,
   maxMana,
+  discard,
 } from '../build';
 
 const v = pool('trapper', 'umbral');
@@ -371,4 +372,21 @@ export const TRAPPER: CardDef[] = [
     draw(1),
   ]),
   v('common', 'step-aside', 'Step Aside', 'skill', 1, 'none', [barrier(5), drawNext(1)]),
+
+  // --- more glue: uncommons and rares for any build path (DECISIONS #339) ---
+  v(
+    'rare',
+    'between-worlds',
+    'Between Worlds',
+    'skill',
+    2,
+    'none',
+    [status('ghostly', 2), manaNext(-1)],
+    {
+      exhaust: true,
+    },
+  ),
+  v('rare', 'perfect-alibi', 'Perfect Alibi', 'skill', 1, 'none', [barrier(20), discard(1)]),
+  v('uncommon', 'sleight-of-hand', 'Sleight of Hand', 'skill', 1, 'none', [draw(2), manaNext(1)]),
+  v('uncommon', 'mask-of-faces', 'Mask of Faces', 'skill', 1, 'none', [status('steadfast', 2)]),
 ];
