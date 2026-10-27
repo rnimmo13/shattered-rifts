@@ -477,31 +477,31 @@ Starter: Strike, Strike, Strike, Strike, Defend, Defend, Defend, Plant Hawk, Pla
 | Plant Hawk | 1 | skill | basic | Plant Hawk. Gain 3 Barrier. |
 | Twin Awakening | 1 | skill | basic | Awaken your first 2 totems. |
 | Frostbark | 2 | skill | common | Gain 4 Barrier. Plant Bear. Plant Elder. |
-| Barkskin Strike | 1 | attack | common | Deal 5 damage. Gain 4 Barrier. Plant Bear. |
+| Barkskin Strike | 1 | attack | common | Deal 6 damage. Gain 4 Barrier. Plant Bear. |
 | Echo Chamber | 1 | skill | common | Awaken your first totem (it stays). |
 | Tune the Spirits | 1 | aura | common | Gain 1 Spirit. Gain 1 totem slot. |
-| Spirit Strike | 1 | attack | common | Deal 6 (+2 per Spirit) damage. |
+| Spirit Strike | 1 | attack | common | Deal 7 (+2 per Spirit) damage. |
 | Elder's Shelter | 1 | skill | common | Plant Elder. Gain 4 Barrier. |
-| Rite Strike | 1 | attack | common | Deal 5 (+2 per Aura you have) damage. |
+| Rite Strike | 1 | attack | common | Deal 6 (+2 per Aura you have) damage. |
 | Rite of Warding | 1 | skill | common | Gain 5 (+2 per Aura you have) Barrier. |
 | Ember Rite | 0 | aura | common | At the end of your turn: Gain 3 Barrier. |
-| Rite of Thorns | 0 | aura | common | At the start of your turn: Deal 3 damage to a random enemy. |
+| Rite of Thorns | 0 | aura | common | At the start of your turn: Deal 4 damage to a random enemy. |
 | Drum Circle | 1 | skill | common | Draw 1 card. Draw cards equal to half of the number of your Auras. |
 | Totem Burst | 1 | skill | common | Awaken your first totem. Draw 1 card. |
-| Feather Storm | 1 | attack | common | Deal 4 damage to ALL enemies. Plant Hawk. |
+| Feather Storm | 1 | attack | common | Deal 5 damage to ALL enemies. Plant Hawk. |
 | Totem Row | 1 | skill | common | Gain 2 totem slots. |
-| Spark Lash | 1 | attack | common | Deal 5 (+1 per Spirit) damage. |
-| Frost Needle | 1 | attack | common | Deal 4 (+1 per Spirit) damage. Apply 1 Faltering. |
-| Ember Toss | 1 | attack | common | Deal 3 (+1 per Spirit) damage to ALL enemies. |
+| Spark Lash | 1 | attack | common | Deal 6 (+1 per Spirit) damage. |
+| Frost Needle | 1 | attack | common | Deal 5 (+1 per Spirit) damage. Apply 1 Faltering. |
+| Ember Toss | 1 | attack | common | Deal 4 (+1 per Spirit) damage to ALL enemies. |
 | Stone Skin | 1 | skill | common | Gain 6 (+2 per Spirit) Barrier. |
 | Clear Spring | 1 | skill | common | Draw 2 cards. |
 | Elemental Focus | 0 | skill | common | Gain 1 Spirit. Consume. |
-| Splintering Burst | 2 | attack | uncommon | Deal 6 damage to ALL enemies. Plant Splinter. |
+| Splintering Burst | 2 | attack | uncommon | Deal 7 damage to ALL enemies. Plant Splinter. |
 | Splinter Grove | 2 | skill | uncommon | Plant Splinter 2 times. |
 | Shatter the Row | 0 | skill | uncommon | Gain Mana equal to half of the number of your totems. Draw cards equal to the number of your totems. Awaken your first 10 totems. Consume. |
-| Totem Driver | 1 | attack | uncommon | Deal 7 damage. Draw cards equal to half of the number of your totems. |
-| Forked Branch | 2 | attack | uncommon | Deal 8 damage to ALL enemies. Plant Hawk. |
-| Heartwood | 2 | attack | uncommon | Deal 6 damage 2 times. Plant Hawk. |
+| Totem Driver | 1 | attack | uncommon | Deal 8 damage. Draw cards equal to half of the number of your totems. |
+| Forked Branch | 2 | attack | uncommon | Deal 9 damage to ALL enemies. Plant Hawk. |
+| Heartwood | 2 | attack | uncommon | Deal 7 damage 2 times. Plant Hawk. |
 | Bear's Patience | 1 | skill | uncommon | Plant Bear. Foresee 3. |
 | Thunder Rite | 1 | aura | uncommon | Whenever you play an Aura: Plant Splinter. Gain 2 Barrier. |
 | Sentinel Totem | 2 | aura | uncommon | Gain 1 Shielded. At the start of your turn: Gain 3 Barrier. |
@@ -517,42 +517,42 @@ Starter: Strike, Strike, Strike, Strike, Defend, Defend, Defend, Plant Hawk, Pla
 | Many Voices | X | skill | uncommon | Awaken your first totem X times (it stays). Consume. |
 | Kindled Rite | 1 | aura | uncommon | At the end of your turn: Deal damage equal to the number of your Auras to ALL enemies. |
 | Smoke Offering | 1 | aura | uncommon | At the start of your turn: Gain Barrier equal to 2 times the number of your Auras. |
-| Storm Call | 2 | attack | uncommon | Deal 5 (+2 per Spirit) damage to ALL enemies. Apply 1 Exposed to ALL enemies. |
-| Gathering Storm | 1 | attack | uncommon | Deal 4 damage, plus all it has grown. Every copy of this card gains 2 damage for the rest of the fight. |
+| Storm Call | 2 | attack | uncommon | Deal 6 (+2 per Spirit) damage to ALL enemies. Apply 1 Exposed to ALL enemies. |
+| Gathering Storm | 1 | attack | uncommon | Deal 5 damage, plus all it has grown. Every copy of this card gains 2 damage for the rest of the fight. |
 | Glacial Ward | 1 | skill | uncommon | Gain 8 (+2 per Spirit) Barrier. Apply 1 Faltering to ALL enemies. |
 | Tidecaller | 0 | skill | uncommon | Gain 1 Mana. Draw 1 card. Consume. |
-| Fire Bloom | 2 | attack | uncommon | Deal 10 (+2 per Spirit) damage. |
-| Arc Lightning | 1 | attack | uncommon | Deal 3 (+1 per Spirit) damage 3 times to a random enemy. |
+| Fire Bloom | 2 | attack | uncommon | Deal 11 (+2 per Spirit) damage. |
+| Arc Lightning | 1 | attack | uncommon | Deal 4 (+1 per Spirit) damage 3 times to a random enemy. |
 | Earthen Rampart | 1 | aura | uncommon | At the start of your turn: Gain 2 (+1 per Spirit) Barrier. |
 | Inner Flame | 1 | skill | uncommon | Gain 2 Spirit. Consume. |
 | Quench | 1 | skill | uncommon | Gain 6 Barrier. Draw 1 card. |
-| Awakened Blow | 1 | attack | rare | Deal 4 (+2 per totem) damage. |
-| Blazing Eye | 3 | attack | rare | Deal 18 damage to ALL enemies. Awaken your first 3 totems. |
+| Awakened Blow | 1 | attack | rare | Deal 5 (+2 per totem) damage. |
+| Blazing Eye | 3 | attack | rare | Deal 19 damage to ALL enemies. Awaken your first 3 totems. |
 | Bulwark Totem | 2 | skill | rare | Gain 4 (+3 per totem) Barrier. Gain 1 Bracing. |
 | Totem Ring | 3 | skill | rare | Gain 8 Barrier. Plant Bear 3 times. |
 | Totem Trap | 2 | trap | rare | When you or an ally is attacked: Cancel that attack. Plant Bear. |
 | Chorus of Totems | 2 | aura | rare | Gain 2 Spirit. Gain 1 totem slot. |
 | Echo Cascade | 2 | skill | rare | Awaken your first totem 3 times (it stays). Consume. |
 | Fevered Communion | 2 | aura | rare | Gain 1 Spirit. Whenever you play an Aura: Gain 1 Spirit. |
-| Skyfall Rite | 2 | attack | rare | Deal 8 (+2 per Aura you have) damage to ALL enemies. Consume. |
+| Skyfall Rite | 2 | attack | rare | Deal 9 (+2 per Aura you have) damage to ALL enemies. Consume. |
 | Echoing Chant | 3 | aura | rare | At the start of your turn: Deal damage equal to 2 times the number of your Auras to ALL enemies. |
 | Hawkstorm | 2 | aura | rare | At the end of your turn: Deal damage equal to the number of your totems to ALL enemies. |
 | Unending Call | 2 | aura | rare | At the end of your turn: Awaken your first totem (it stays). |
 | Gathering Elders | 2 | aura | rare | Whenever you play a Skill: Plant Elder. |
 | Root Tap | 2 | skill | rare | From your next turn, gain 1 more Mana every turn for the rest of the fight. Gain 6 Barrier. Consume. |
 | Owl Cut | 1 | skill | rare | Plant Owl. Draw 1 card. |
-| Spirit Wave | 2 | attack | rare | Deal 11 damage to ALL enemies. Awaken your first totem. |
-| Toppling Row | 2 | attack | rare | Deal 8 (+4 per totem) damage to ALL enemies. Awaken your first 3 totems. Consume. |
+| Spirit Wave | 2 | attack | rare | Deal 12 damage to ALL enemies. Awaken your first totem. |
+| Toppling Row | 2 | attack | rare | Deal 9 (+4 per totem) damage to ALL enemies. Awaken your first 3 totems. Consume. |
 | Sap Offering | 2 | aura | rare | Gain 3 Spirit. At the start of your turn: Lose 1 HP. |
-| Firestorm | 2 | attack | rare | Deal 8 (+2 per Spirit) damage to ALL enemies. Gain 1 Spirit. |
-| Skybreaker | 2 | attack | rare | Deal 24 (+3 per Spirit) damage. Consume. |
-| Deep Freeze | 2 | attack | rare | Deal 12 (+2 per Spirit) damage. Stun the target for 1 turn. |
+| Firestorm | 2 | attack | rare | Deal 9 (+2 per Spirit) damage to ALL enemies. Gain 1 Spirit. |
+| Skybreaker | 2 | attack | rare | Deal 25 (+3 per Spirit) damage. Consume. |
+| Deep Freeze | 2 | attack | rare | Deal 13 (+2 per Spirit) damage. Stun the target for 1 turn. |
 | Stormcrown | 2 | aura | rare | At the end of your turn: Deal damage equal to 2 times your Spirit to ALL enemies. |
 | Mountain's Heart | 2 | skill | rare | Gain 15 (+3 per Spirit) Barrier. Consume. |
 | Spiritfont | 2 | aura | rare | At the start of your turn: Gain 1 Spirit. |
-| Prismatic Cascade | 2 | attack | rare | Deal 4 (+1 per Spirit) damage 3 times to ALL enemies. |
+| Prismatic Cascade | 2 | attack | rare | Deal 5 (+1 per Spirit) damage 3 times to ALL enemies. |
 | The Great Pole | 3 | aura | legendary | Gain 3 totem slots. Gain 3 Spirit. At the start of your turn: Plant Elder. |
-| Cataclysm Totem | 2 | attack | legendary | Deal 10 damage to ALL enemies. Awaken your first 10 totems 2 times. Consume. |
+| Cataclysm Totem | 2 | attack | legendary | Deal 11 damage to ALL enemies. Awaken your first 10 totems 2 times. Consume. |
 | Avatar of the Elements | 3 | aura | legendary | At the start of your turn: Gain 1 Spirit. Deal damage equal to your Spirit to ALL enemies. |
 
 ## Sehra (aurelion, 82 HP)

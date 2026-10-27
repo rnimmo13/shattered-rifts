@@ -29,20 +29,21 @@ import {
   forge,
 } from '../build';
 
+// (every damage number of Ilvane's +1, Splinter's passive kept at 2: DECISIONS #360)
 export const RUNES: RuneDef[] = [
   {
     id: 'spark',
     name: 'Hawk',
-    text: 'Passive: 3 damage to a random enemy at the end of your turn. Awaken: 9 damage to the front enemy.',
-    passive: [dmg(3, 'randomFoe')],
-    evoke: [dmg(9, 'front')],
+    text: 'Passive: 4 damage to a random enemy at the end of your turn. Awaken: 10 damage to the front enemy.',
+    passive: [dmg(4, 'randomFoe')],
+    evoke: [dmg(10, 'front')],
   },
   {
     id: 'splinter',
     name: 'Splinter',
-    text: 'Passive: 2 damage to every enemy at the end of your turn. Awaken: 6 damage to every enemy.',
+    text: 'Passive: 2 damage to every enemy at the end of your turn. Awaken: 7 damage to every enemy.',
     passive: [dmg(2, 'allFoes')],
-    evoke: [dmg(6, 'allFoes')],
+    evoke: [dmg(7, 'allFoes')],
   },
   {
     id: 'ward',
@@ -78,11 +79,11 @@ export const TOTEMIST: CardDef[] = [
 
   // --- Totems ---
   i('uncommon', 'prismatic-burst', 'Splintering Burst', 'attack', 2, 'none', [
-    dmg(6, 'allFoes'),
+    dmg(7, 'allFoes'),
     channel('splinter'),
   ]),
   i('uncommon', 'shard-chorus', 'Splinter Grove', 'skill', 2, 'none', [channel('splinter', 2)]),
-  i('rare', 'charged-blow', 'Awakened Blow', 'attack', 1, 'foe', [scaled(dmg(4), per('runes', 2))]),
+  i('rare', 'charged-blow', 'Awakened Blow', 'attack', 1, 'foe', [scaled(dmg(5), per('runes', 2))]),
   // (awakens the whole row; half a Mana for each totem, so it is never a free Mana engine)
   i(
     'uncommon',
@@ -95,18 +96,18 @@ export const TOTEMIST: CardDef[] = [
     { exhaust: true },
   ),
   i('uncommon', 'driver-of-runes', 'Totem Driver', 'attack', 1, 'foe', [
-    dmg(7),
+    dmg(8),
     scaled(draw(0), per('runes', 0.5)),
   ]),
   i('uncommon', 'forked-current', 'Forked Branch', 'attack', 2, 'none', [
-    dmg(8, 'allFoes'),
+    dmg(9, 'allFoes'),
     channel('spark'),
   ]),
   i('uncommon', 'arc-reactor', 'Heartwood', 'attack', 2, 'foe', [
-    dmg(6, 'target', 2),
+    dmg(7, 'target', 2),
     channel('spark'),
   ]),
-  i('rare', 'blazing-aperture', 'Blazing Eye', 'attack', 3, 'none', [dmg(18, 'allFoes'), evoke(3)]),
+  i('rare', 'blazing-aperture', 'Blazing Eye', 'attack', 3, 'none', [dmg(19, 'allFoes'), evoke(3)]),
   i('common', 'frostglass', 'Frostbark', 'skill', 2, 'none', [
     barrier(4),
     channel('ward'),
@@ -114,7 +115,7 @@ export const TOTEMIST: CardDef[] = [
   ]),
   i('uncommon', 'chilled-focus', "Bear's Patience", 'skill', 1, 'none', [channel('ward'), scry(3)]),
   i('common', 'rime-strike', 'Barkskin Strike', 'attack', 1, 'foe', [
-    dmg(5),
+    dmg(6),
     barrier(4),
     channel('ward'),
   ]),
@@ -133,7 +134,7 @@ export const TOTEMIST: CardDef[] = [
     { op: 'runeSlots', amount: 1 },
   ]),
   i('common', 'resonant-strike', 'Spirit Strike', 'attack', 1, 'foe', [
-    scaled(dmg(6), per('resonance', 2)),
+    scaled(dmg(7), per('resonance', 2)),
   ]),
   i('rare', 'chorus-of-glyphs', 'Chorus of Totems', 'power', 2, 'none', [
     status('resonance', 2),
@@ -149,7 +150,7 @@ export const TOTEMIST: CardDef[] = [
   // --- Rites ---
   // Auras that pay off when another Aura is played, and cards that count your Auras
   i('common', 'static-guard', 'Rite Strike', 'attack', 1, 'foe', [
-    scaled(dmg(5), per('powers', 2)),
+    scaled(dmg(6), per('powers', 2)),
   ]),
   i('common', 'glyph-guard', 'Rite of Warding', 'skill', 1, 'none', [
     scaled(barrier(5), per('powers', 2)),
@@ -164,8 +165,8 @@ export const TOTEMIST: CardDef[] = [
     'power',
     0,
     'none',
-    [on('turnStart', [dmg(3, 'randomFoe')])],
-    { up: { effects: [on('turnStart', [dmg(5, 'randomFoe')])] } },
+    [on('turnStart', [dmg(4, 'randomFoe')])],
+    { up: { effects: [on('turnStart', [dmg(6, 'randomFoe')])] } },
   ),
   i('common', 'glacial-memory', 'Drum Circle', 'skill', 1, 'none', [
     draw(1),
@@ -204,7 +205,7 @@ export const TOTEMIST: CardDef[] = [
     'attack',
     2,
     'none',
-    [scaled(dmg(8, 'allFoes'), per('powers', 2))],
+    [scaled(dmg(9, 'allFoes'), per('powers', 2))],
     {
       exhaust: true,
     },
@@ -247,16 +248,16 @@ export const TOTEMIST: CardDef[] = [
     'attack',
     2,
     'none',
-    [dmg(10, 'allFoes'), evoke(10, 2)],
-    { exhaust: true, up: { effects: [dmg(10, 'allFoes'), evoke(10, 3)] } },
+    [dmg(11, 'allFoes'), evoke(10, 2)],
+    { exhaust: true, up: { effects: [dmg(11, 'allFoes'), evoke(10, 3)] } },
   ),
   i('common', 'rune-burst', 'Totem Burst', 'skill', 1, 'none', [evoke(), draw(1)]),
   i('rare', 'prism-cut', 'Owl Cut', 'skill', 1, 'none', [channel('prism'), draw(1)]),
-  i('rare', 'harmonic-wave', 'Spirit Wave', 'attack', 2, 'none', [dmg(11, 'allFoes'), evoke()]),
+  i('rare', 'harmonic-wave', 'Spirit Wave', 'attack', 2, 'none', [dmg(12, 'allFoes'), evoke()]),
 
   // --- brought back (DECISIONS #337) ---
   i('common', 'arc-flash', 'Feather Storm', 'attack', 1, 'none', [
-    dmg(4, 'allFoes'),
+    dmg(5, 'allFoes'),
     channel('spark'),
   ]),
   i(
@@ -266,7 +267,7 @@ export const TOTEMIST: CardDef[] = [
     'attack',
     2,
     'none',
-    [scaled(dmg(8, 'allFoes'), per('runes', 4)), evoke(3)],
+    [scaled(dmg(9, 'allFoes'), per('runes', 4)), evoke(3)],
     { exhaust: true },
   ),
   i('uncommon', 'tuning-fork', 'Spirit Drum', 'power', 2, 'none', [
@@ -321,13 +322,13 @@ export const TOTEMIST: CardDef[] = [
   ]),
 
   // --- Elements: lightning, ice, fire, water and earth spells that grow with Spirit (replaces Whittling; DECISIONS #353) ---
-  i('common', 'spark-lash', 'Spark Lash', 'attack', 1, 'foe', [scaled(dmg(5), per('resonance'))]),
+  i('common', 'spark-lash', 'Spark Lash', 'attack', 1, 'foe', [scaled(dmg(6), per('resonance'))]),
   i('common', 'frost-needle', 'Frost Needle', 'attack', 1, 'foe', [
-    scaled(dmg(4), per('resonance')),
+    scaled(dmg(5), per('resonance')),
     status('faltering', 1, 'target'),
   ]),
   i('common', 'ember-toss', 'Ember Toss', 'attack', 1, 'none', [
-    scaled(dmg(3, 'allFoes'), per('resonance')),
+    scaled(dmg(4, 'allFoes'), per('resonance')),
   ]),
   i('common', 'stone-skin', 'Stone Skin', 'skill', 1, 'none', [
     scaled(barrier(6), per('resonance', 2)),
@@ -338,7 +339,7 @@ export const TOTEMIST: CardDef[] = [
   }),
   // lightning leaves them shocked (Exposed)
   i('uncommon', 'storm-call', 'Storm Call', 'attack', 2, 'none', [
-    scaled(dmg(5, 'allFoes'), per('resonance', 2)),
+    scaled(dmg(6, 'allFoes'), per('resonance', 2)),
     status('exposed', 1, 'allFoes'),
   ]),
   // every copy grows each time one is cast (DECISIONS #353)
@@ -349,9 +350,9 @@ export const TOTEMIST: CardDef[] = [
     'attack',
     1,
     'foe',
-    [scaled(dmg(4), per('bonus')), forge('gathering-storm', 2)],
+    [scaled(dmg(5), per('bonus')), forge('gathering-storm', 2)],
     // (upgraded it hits harder from the start; it grows by the same 2)
-    { up: { effects: [scaled(dmg(7), per('bonus')), forge('gathering-storm', 2)] } },
+    { up: { effects: [scaled(dmg(8), per('bonus')), forge('gathering-storm', 2)] } },
   ),
   i('uncommon', 'glacial-ward', 'Glacial Ward', 'skill', 1, 'none', [
     scaled(barrier(8), per('resonance', 2)),
@@ -361,10 +362,10 @@ export const TOTEMIST: CardDef[] = [
     exhaust: true,
   }),
   i('uncommon', 'fire-bloom', 'Fire Bloom', 'attack', 2, 'foe', [
-    scaled(dmg(10), per('resonance', 2)),
+    scaled(dmg(11), per('resonance', 2)),
   ]),
   i('uncommon', 'arc-lightning', 'Arc Lightning', 'attack', 1, 'none', [
-    scaled(dmg(3, 'randomFoe', 3), per('resonance')),
+    scaled(dmg(4, 'randomFoe', 3), per('resonance')),
   ]),
   i('uncommon', 'earthen-rampart', 'Earthen Rampart', 'power', 1, 'none', [
     on('turnStart', [scaled(barrier(2), per('resonance'))]),
@@ -375,7 +376,7 @@ export const TOTEMIST: CardDef[] = [
   i('uncommon', 'quench', 'Quench', 'skill', 1, 'none', [barrier(6), draw(1)]),
   // the fire feeds your spells (Spirit)
   i('rare', 'firestorm', 'Firestorm', 'attack', 2, 'none', [
-    scaled(dmg(8, 'allFoes'), per('resonance', 2)),
+    scaled(dmg(9, 'allFoes'), per('resonance', 2)),
     status('resonance', 1),
   ]),
   i(
@@ -385,13 +386,13 @@ export const TOTEMIST: CardDef[] = [
     'attack',
     2,
     'foe',
-    [scaled(dmg(24), per('resonance', 3))],
+    [scaled(dmg(25), per('resonance', 3))],
     {
       exhaust: true,
     },
   ),
   i('rare', 'deep-freeze', 'Deep Freeze', 'attack', 2, 'foe', [
-    scaled(dmg(12), per('resonance', 2)),
+    scaled(dmg(13), per('resonance', 2)),
     status('stunned', 1, 'target'),
   ]),
   i('rare', 'stormcrown', 'Stormcrown', 'power', 2, 'none', [
@@ -413,6 +414,6 @@ export const TOTEMIST: CardDef[] = [
     on('turnStart', [status('resonance', 1)]),
   ]),
   i('rare', 'prismatic-cascade', 'Prismatic Cascade', 'attack', 2, 'none', [
-    scaled(dmg(4, 'allFoes', 3), per('resonance')),
+    scaled(dmg(5, 'allFoes', 3), per('resonance')),
   ]),
 ];
