@@ -68,7 +68,7 @@ export const LEGENDARIES: CardDef[] = [
     'snare',
     3,
     'none',
-    [dmg(25, 'allFoes'), status('stunned', 1, 'allFoes')],
+    [dmg(25, 'allFoes'), status('stunned', 2, 'allFoes')],
     { trigger: { on: 'foeTurn' } },
   ),
   q(

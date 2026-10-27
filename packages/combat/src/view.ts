@@ -506,6 +506,18 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
         const a = amountText(o.amount, o.scale);
         return `Curse ${noun} with ${a.equal ? `Fate equal to ${a.num}` : `${a.num} Fate`}.`;
       }
+      // a Stun is counted in turns (DECISIONS #310): "Stun the attacker for 2 turns."
+      if (o.status === 'stunned' && o.amount > 0 && !o.scale) {
+        const whom =
+          o.to === 'target'
+            ? ' the target'
+            : o.to === 'self'
+              ? who.self === WHO.self
+                ? ' yourself'
+                : ' itself'
+              : who[o.to].replace(/^ to /, ' ');
+        return `Stun${whom} for ${o.amount} turn${o.amount === 1 ? '' : 's'}.`;
+      }
       // Edge is what makes Sleeve Knives hit harder: say so on the card instead of leaving it to a tooltip
       if (o.status === 'edge' && o.to === 'self' && !o.scale && o.amount > 0)
         return `Gain ${o.amount} Edge: your Sleeve Knives deal ${o.amount} more damage ${o.temp ? 'this turn' : 'for the rest of the fight'}.`;

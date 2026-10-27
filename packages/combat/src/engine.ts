@@ -60,6 +60,8 @@ interface Run {
   ev: CombatEvent[];
   /** how deep triggers are nested (a guard against a Power that feeds itself) */
   depth: number;
+  /** a side's turn is just beginning (its opponent's turn-start Traps are springing): a Stun put on now is not fresh */
+  opening?: boolean;
 }
 
 /** Who is acting and what they are acting on. */
@@ -151,7 +153,7 @@ function addStatus(r: Run, u: Unit, st: StatusId, amount: number): boolean {
   // unit's own turn does not wear off at the end of it, so it still covers the unit's next turn
   if (st === 'stunned' && amount > 0) {
     total = Math.max(was, amount);
-    if (r.s.active === u.side && amount > was) u.stunFresh = true;
+    if (r.s.active === u.side && amount > was && !r.opening) u.stunFresh = true;
   }
   if (total <= 0) delete u.statuses[st];
   else u.statuses[st] = total;
@@ -1348,7 +1350,9 @@ function beginHeroTurn(r: Run, side: Side): void {
   startOfTurn(r, side);
   if (r.s.winner) return;
   // the opposing Traps that wait for your turn to begin
+  r.opening = true;
   fireSnare(r, other(side), { on: 'foeTurn' });
+  r.opening = false;
   if (r.s.winner) return;
   sd.played = 0;
   sd.attacksPlayed = 0;
@@ -1447,7 +1451,9 @@ function enemyPhase(r: Run): void {
   r.ev.push({ type: 'turnStart', side: 'b', turn: r.s.turn });
   startOfTurn(r, 'b');
   if (r.s.winner) return;
+  r.opening = true;
   fireSnare(r, 'a', { on: 'foeTurn' });
+  r.opening = false;
   reap(r);
   const order = sd.units.map((u) => u.id);
   for (const id of order) {

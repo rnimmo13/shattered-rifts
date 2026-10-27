@@ -163,7 +163,7 @@ Starter: Strike, Strike, Strike, Strike, Strike, Defend, Defend, Defend, Deploy 
 | Assemble | 1 | skill | uncommon | All your allies act now. Draw 1 card. |
 | Double Time | 2 | skill | uncommon | All your allies act now. All your allies act now. |
 | Overdrive | 1 | skill | uncommon | Apply 1 Might to all friends. All your allies act now. |
-| EMP | 1 | trap | uncommon | When you or an ally is attacked: Apply 1 Stunned to the attacker. |
+| EMP | 1 | trap | uncommon | When you or an ally is attacked: Stun the attacker for 1 turn. |
 | Overwatch | 1 | trap | uncommon | When you or an ally is attacked: All your allies act now. Deal 6 damage to the attacker. |
 | Link Up | 1 | skill | uncommon | All your allies act now. Gain 4 Barrier to all friends. |
 | Synchronise | 1 | skill | uncommon | All your allies act now. Apply 1 Might to all friends. |
@@ -219,7 +219,7 @@ Starter: Strike, Strike, Strike, Strike, Defend, Defend, Defend, Savage Bite, Bl
 
 | Card | Cost | Type | Rarity | Text |
 |---|---|---|---|---|
-| Savage Bite | 1 | attack | basic | Deal 8 damage. Lifesteal 50%. |
+| Savage Bite | 1 | attack | basic | Deal 6 damage. Lifesteal 50%. |
 | Blood Frenzy | 1 | attack | basic | Deal 4 damage to ALL enemies. Lose 2 HP. Gain 1 Might. |
 | Rend | 1 | attack | basic | Deal 9 damage. Lose 3 HP. Gain 1 Might. |
 | Twin Fang | 1 | attack | common | Deal 5 damage 2 times. Lose 2 HP. |
@@ -258,8 +258,8 @@ Starter: Strike, Strike, Strike, Strike, Defend, Defend, Defend, Savage Bite, Bl
 | Hamstring Slam | 2 | attack | uncommon | Deal 11 damage. Apply 2 Faltering. Each of your allies gains 3 Barrier. |
 | Savage Command | 2 | skill | uncommon | All your allies act now. Gain 1 Might. |
 | Pack Bond | 2 | aura | uncommon | At the start of your turn: Gain 3 Barrier to all friends. |
-| Feeding Time | 1 | skill | uncommon | Your companions gain 5 max HP. Gain 1 Might. |
-| Rally the Pack | 2 | skill | uncommon | Summon Hound (8 HP). At the end of your turn it will: Deal 4 damage. Each of your allies gains 3 Barrier. |
+| Feeding Time | 1 | skill | uncommon | Your companions gain 3 max HP. Gain 1 Might. |
+| Rally the Pack | 2 | skill | uncommon | Summon Hound (5 HP). At the end of your turn it will: Deal 3 damage. Each of your allies gains 3 Barrier. |
 | Trail of Blood | 1 | aura | uncommon | Whenever you summon an ally: Gain 1 Might. |
 | Crimson Pact | 1 | skill | uncommon | Lose 4 HP. Consume 1 card. Draw 2 cards. |
 | Gnaw | 1 | attack | uncommon | Deal 5 (+1 per consumed card) damage. |
@@ -328,7 +328,7 @@ Starter: Strike, Strike, Strike, Defend, Defend, Defend, Defend, Veil Strike, Ve
 | Set the Web | 1 | trap | basic | When you or an ally is attacked: Deal 8 damage to the attacker. Apply 2 Exposed to the attacker. |
 | Trip Line | 0 | trap | common | When you or an ally is attacked: Deal 8 damage to the attacker. |
 | Hollow Trap | 1 | trap | common | When you or an ally is attacked: Deal 10 damage to the attacker. Apply 1 Faltering to the attacker. |
-| Whisper Net | 1 | trap | common | When the enemy summons: Deal 8 damage to the attacker. Apply 1 Stunned to the attacker. |
+| Whisper Net | 1 | trap | common | When the enemy summons: Deal 8 damage to the attacker. Stun the attacker for 1 turn. |
 | Cage | 1 | trap | common | When an enemy gains Barrier: Deal 10 damage to the attacker. Apply 1 Faltering to the attacker. |
 | Trap Kit | 1 | skill | common | Add 2 Trip Lines to your hand. Consume. |
 | Mark Prey | 0 | skill | common | Apply 2 Exposed. |
@@ -397,7 +397,7 @@ Starter: Strike, Strike, Strike, Defend, Defend, Defend, Defend, Veil Strike, Ve
 | Trick of the Light | 0 | skill | uncommon | Foresee 2. Gain 3 Barrier. |
 | House Edge | 1 | aura | uncommon | Whenever you draw a card: Gain 1 Barrier. |
 | Bait and Switch | 2 | trap | rare | When you or an ally is attacked: Cancel that attack. Deal 12 damage to the attacker. |
-| Silencing Trap | 2 | trap | rare | When you or an ally is attacked: Apply 1 Stunned to the attacker. Gain 1 Shielded. |
+| Silencing Trap | 2 | trap | rare | When you or an ally is attacked: Stun the attacker for 2 turns. Gain 1 Shielded. |
 | Echo Trap | 2 | aura | rare | Whenever one of your Traps is triggered: Gain 5 Barrier. Draw 1 card. |
 | Death Trap | 2 | trap | rare | When you or an ally is attacked: Cancel that attack. Deal 18 damage to the attacker. Apply 2 Exposed to the attacker. |
 | Trapper's Dividend | 2 | aura | rare | Whenever one of your Traps is triggered: Draw 1 card. Gain 5 Barrier. |
@@ -420,9 +420,9 @@ Starter: Strike, Strike, Strike, Defend, Defend, Defend, Defend, Veil Strike, Ve
 | Culling | 2 | attack | rare | Deal 6 (+2 per Exposed on each) damage to ALL enemies. |
 | Deep Pockets | 3 | aura | rare | From your next turn, gain 1 more Mana every turn for the rest of the fight. |
 | Curtain Call | 1 | skill | rare | Draw 1 card. Return 2 random Trap cards from your discard pile to your hand. Consume. |
-| The Perfect Trap | 3 | trap | legendary | When you or an ally is attacked: Cancel that attack. Deal 22 damage to the attacker. Apply 1 Stunned to the attacker. Gain 2 Shielded. |
+| The Perfect Trap | 3 | trap | legendary | When you or an ally is attacked: Cancel that attack. Deal 22 damage to the attacker. Stun the attacker for 2 turns. Gain 2 Shielded. |
 | Masquerade | 2 | aura | legendary | Whenever one of your Traps is triggered: Draw 2 cards. Gain 1 Mana. Deal 4 damage to ALL enemies. |
-| The Long Ambush | 3 | trap | legendary | At the start of the enemy turn: Deal 25 damage to ALL enemies. Apply 1 Stunned to ALL enemies. |
+| The Long Ambush | 3 | trap | legendary | At the start of the enemy turn: Deal 25 damage to ALL enemies. Stun ALL enemies for 2 turns. |
 
 ## Sylas (umbral, 72 HP)
 
@@ -1126,7 +1126,7 @@ Tokens (made by other cards):
 | Gilded Guard | 2 | summon | rare | Summon Gilded Guard (16 HP, Taunt). At the end of your turn it will: Deal 4 damage. Gain 4 Barrier to your hero. |
 | Seraphine's Oath | 2 | aura | rare | Gain 3 Thorns for the rest of the fight. Gain 1 Shielded. |
 | Orbital Uplink | 1 | trap | rare | When the enemy summons: Deal 14 damage to the attacker. |
-| Override Virus | 2 | skill | rare | Apply 1 Stunned. Apply 2 Exposed. |
+| Override Virus | 2 | skill | rare | Stun the target for 2 turns. |
 | Kron's Assembly Arm | 1 | aura | rare | Apply 1 Might to all friends for the rest of the fight. Draw 1 card. |
 | The Hunger Below | 3 | attack | rare | Deal 22 damage. Heal 8. |
 | Maw Spawn Egg | 2 | summon | rare | Summon Maw Hatchling (12 HP). At the end of your turn it will: Deal 7 damage. |

@@ -34,8 +34,8 @@ export const HUNTER: CardDef[] = [
   // --- basics ---
   // (DECISIONS #285: her basics no longer only cost HP. Savage Bite heals off what it bites; Blood Frenzy is her early area attack)
   // (a basic: 8, and its upgrade only +2; DECISIONS #308)
-  k('basic', 'savage-bite', 'Savage Bite', 'attack', 1, 'foe', [lifesteal(dmg(8), 50)], {
-    up: { effects: [lifesteal(dmg(10), 50)] },
+  k('basic', 'savage-bite', 'Savage Bite', 'attack', 1, 'foe', [lifesteal(dmg(6), 50)], {
+    up: { effects: [lifesteal(dmg(8), 50)] },
   }),
   k('basic', 'blood-frenzy', 'Blood Frenzy', 'attack', 1, 'none', [
     dmg(4, 'allFoes'),
@@ -180,7 +180,7 @@ export const HUNTER: CardDef[] = [
   k('rare', 'den-mother', 'Den Mother', 'summon', 3, 'none', [summon('dire-wolf')]),
 
   k('uncommon', 'feeding-time', 'Feeding Time', 'skill', 1, 'none', [
-    growHp(5, 'allFriends'),
+    growHp(3, 'allFriends'),
     status('might', 1),
   ]),
 

@@ -126,7 +126,7 @@ export const TRAPPER: CardDef[] = [
     'snare',
     2,
     'none',
-    [status('stunned', 1, 'attacker'), status('shielded', 1)],
+    [status('stunned', 2, 'attacker'), status('shielded', 1)],
     { trigger: { on: 'attacked' } },
   ),
   v('rare', 'echo-trap', 'Echo Trap', 'power', 2, 'none', [on('snare', [barrier(5), draw(1)])]),
@@ -311,7 +311,7 @@ export const TRAPPER: CardDef[] = [
     'snare',
     3,
     'none',
-    [PREVENT, dmg(22, 'attacker'), status('stunned', 1, 'attacker'), status('shielded', 2)],
+    [PREVENT, dmg(22, 'attacker'), status('stunned', 2, 'attacker'), status('shielded', 2)],
     { trigger: { on: 'attacked' }, up: { cost: 2 } },
   ),
   v('legendary', 'masquerade', 'Masquerade', 'power', 2, 'none', [

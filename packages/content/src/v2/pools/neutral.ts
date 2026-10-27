@@ -200,7 +200,7 @@ export const SIGNATURES: CardDef[] = [
     'skill',
     2,
     'foe',
-    [status('stunned', 1, 'target'), status('exposed', 2, 'target')],
+    [status('stunned', 2, 'target')],
     sig('kron'),
   ),
   card(

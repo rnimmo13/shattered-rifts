@@ -1359,6 +1359,35 @@ describe('Lifesteal, companions that grow, and Might shared with the pack (DECIS
   });
 });
 
+describe('a Stun from a Trap that springs as the enemy turn begins (DECISIONS #314)', () => {
+  it('lasts exactly as many enemy turns as it says', () => {
+    const tdb: CombatDb = {
+      ...db,
+      cards: {
+        ...db.cards,
+        ambush: {
+          id: 'ambush',
+          name: 'Ambush',
+          kind: 'snare',
+          cost: 0,
+          target: 'none',
+          trigger: { on: 'foeTurn' },
+          effects: [{ op: 'status', status: 'stunned', amount: 2, to: 'allFoes' }],
+        } as unknown as CardDef,
+      },
+    };
+    let s = clone(start(['slime'], ['ambush', 'strike', 'strike', 'strike', 'strike']));
+    s = applyAction(tdb, s, {
+      type: 'play',
+      card: s.sides.a.hand.find((c) => c.card === 'ambush')!.id,
+    }).state;
+    s = applyAction(tdb, s, { type: 'endTurn' }).state;
+    expect(foe(s).statuses.stunned).toBe(1);
+    s = applyAction(tdb, s, { type: 'endTurn' }).state;
+    expect(foe(s).statuses.stunned ?? 0).toBe(0);
+  });
+});
+
 describe('an Aura that answers the deck being reshuffled (DECISIONS #299)', () => {
   it('fires each time the discard pile becomes the draw pile, and not before', () => {
     const tdb: CombatDb = {
