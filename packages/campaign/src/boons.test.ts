@@ -260,19 +260,16 @@ describe('what a lost fight costs in Resolve', () => {
   });
 });
 
-describe('a lost fight is retried with at least half your HP (DECISIONS #289)', () => {
-  it('low HP is raised to half; more than half stays as it was', () => {
-    const low = finishDuel(
-      { ...inFight(fresh('knight', 'retry-low'), 'warden'), resolve: 2, hp: 10 },
-      false,
-    );
-    expect(low.phase).toBe('duel');
-    expect(low.hp).toBe(Math.ceil(low.maxHp / 2));
-    const high = finishDuel(
-      { ...inFight(fresh('knight', 'retry-high'), 'warden'), resolve: 2, hp: 70 },
-      false,
-    );
-    expect(high.hp).toBe(70);
+describe('a lost fight is retried at full HP (DECISIONS #289, #355)', () => {
+  it('spending Resolve heals you completely, however hurt you came in', () => {
+    for (const hp of [10, 70]) {
+      const r = finishDuel(
+        { ...inFight(fresh('knight', `retry-${hp}`), 'warden'), resolve: 2, hp },
+        false,
+      );
+      expect(r.phase).toBe('duel');
+      expect(r.hp).toBe(r.maxHp);
+    }
   });
 });
 

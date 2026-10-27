@@ -641,8 +641,8 @@ export function duelPlan(run: RunState): FightPlan | null {
  * The Resolve a lost fight costs: 1 for a plain fight or a Warden, 2 for an Elite (Robert, 2026-10-26: a Warden costs 1 "for now";
  * DECISIONS #274). The run collapses when Resolve reaches 0.
  */
-/** A fight lost with Resolve left is tried again with at least this share of max HP (percent). */
-export const RETRY_HP_PCT = 50;
+/** A fight lost with Resolve left is tried again with at least this share of max HP (percent): all of it (DECISIONS #355). */
+export const RETRY_HP_PCT = 100;
 
 export function resolveCost(kind: MapNode['kind']): number {
   return kind === 'elite' ? 2 : 1;
@@ -665,8 +665,8 @@ export function finishDuel(
       r.phase = 'collapsed';
       r.context = null;
     }
-    // otherwise the same fight is retried (the phase stays 'duel'), at the HP you entered with, but never below half your max HP
-    // (Robert, 2026-10-26; DECISIONS #289)
+    // otherwise the same fight is retried (the phase stays 'duel') at full HP: spending Resolve heals you completely
+    // (Robert, 2026-10-27; DECISIONS #289, #355)
     else r.hp = Math.max(r.hp, Math.ceil((r.maxHp * RETRY_HP_PCT) / 100));
     return r;
   }
