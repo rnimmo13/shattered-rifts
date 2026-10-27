@@ -103,19 +103,19 @@ Starter: Strike, Strike, Strike, Strike, Strike, Defend, Defend, Defend, Deploy 
 
 | Card | Cost | Type | Rarity | Text |
 |---|---|---|---|---|
-| Deploy Drone | 1 | summon | basic | Summon Patrol Drone (7 HP). At the end of your turn it will: Deal 4 damage. |
+| Deploy Drone | 1 | summon | basic | Summon Patrol Drone (5 HP). At the end of your turn it will: Deal 4 damage. |
 | Tune-Up | 1 | skill | basic | Apply 1 Might to all friends. |
-| Spare Parts | 0 | summon | common | Summon Micro Drone (4 HP). At the end of your turn it will: Deal 3 damage. Consume. |
+| Spare Parts | 0 | summon | common | Summon Micro Drone (3 HP). At the end of your turn it will: Deal 3 damage. Consume. |
 | Formation Strike | 1 | attack | common | Deal 2 (+4 per ally) damage. |
 | Strip for Parts | 0 | skill | common | Gain Barrier equal to the target's HP. Draw 1 card. Sacrifice the chosen ally. |
-| Breach Charge | 1 | attack | common | Deal 5 damage. Summon Micro Drone (4 HP). At the end of your turn it will: Deal 3 damage. |
+| Breach Charge | 1 | attack | common | Deal 5 damage. Summon Micro Drone (3 HP). At the end of your turn it will: Deal 3 damage. |
 | Ping | 0 | skill | common | All your allies act now. Consume. |
 | Jumpstart | 1 | skill | common | All your allies act now. Gain 4 Barrier. |
 | Countermeasure Grid | 1 | trap | common | When you or an ally is attacked: Deal 5 damage to the attacker. Gain 5 Barrier. |
 | Relay Strike | 1 | attack | common | Deal 6 damage. All your allies act now. |
 | Tandem Strike | 1 | attack | common | Deal 3 (+2 per card played this turn) damage. |
-| Repair Bot | 1 | summon | common | Summon Repair Bot (6 HP). At the end of your turn it will: Heal 3 to your hero. |
-| Build Enforcer | 2 | summon | common | Summon Enforcer Mk.II (14 HP). At the end of your turn it will: Deal 6 damage. |
+| Repair Bot | 1 | summon | common | Summon Repair Bot (4 HP). At the end of your turn it will: Heal 3 to your hero. |
+| Build Enforcer | 2 | summon | common | Summon Enforcer Mk.II (12 HP). At the end of your turn it will: Deal 6 damage. |
 | Heavy Plating | 1 | aura | common | Whenever you summon an ally: Gain 5 Barrier to all friends. |
 | Retrofit | 1 | skill | common | Apply 3 Might to the ally. |
 | Armor Piercer | 1 | attack | common | Deal 6 damage. Apply 1 Exposed. |
@@ -125,13 +125,13 @@ Starter: Strike, Strike, Strike, Strike, Strike, Defend, Defend, Defend, Deploy 
 | Hardened Chassis | 1 | skill | common | Gain 9 Barrier to the ally. Draw 1 card. |
 | Crankshaft | 1 | attack | common | Deal 4 (+1 per 4 max HP of your biggest companion) damage. |
 | Reinforced Frame | 1 | skill | common | The ally gains 5 max HP. Draw 1 card. |
-| Call Turret | 1 | summon | uncommon | Summon Sentry Turret (10 HP, Taunt). At the end of your turn it will: Deal 3 damage. Gain 2 Barrier to your hero. |
+| Call Turret | 1 | summon | uncommon | Summon Sentry Turret (7 HP, Taunt). At the end of your turn it will: Deal 3 damage. Gain 2 Barrier to your hero. |
 | Overcharge Blast | 2 | attack | uncommon | Deal 8 (+2 per ally) damage to ALL enemies. |
-| Parts Bin | 1 | skill | uncommon | Summon Micro Drone (4 HP). At the end of your turn it will: Deal 3 damage. Draw 1 card. |
-| Nanoswarm | 1 | skill | uncommon | Summon 3 Micro Drones (4 HP each). At the end of your turn each will: Deal 3 damage. Consume. |
-| Scrap Heap | 1 | skill | uncommon | Summon 2 Micro Drones (4 HP each). At the end of your turn each will: Deal 3 damage. Consume. |
+| Parts Bin | 1 | skill | uncommon | Summon Micro Drone (3 HP). At the end of your turn it will: Deal 3 damage. Draw 1 card. |
+| Nanoswarm | 1 | skill | uncommon | Summon 3 Micro Drones (3 HP each). At the end of your turn each will: Deal 3 damage. Consume. |
+| Scrap Heap | 1 | skill | uncommon | Summon 2 Micro Drones (3 HP each). At the end of your turn each will: Deal 3 damage. Consume. |
 | Detonate | 0 | skill | uncommon | Deal 10 damage to ALL enemies. Sacrifice the chosen ally. |
-| Drone Ambush | 1 | trap | uncommon | At the start of the enemy turn: Deal 4 damage to ALL enemies. Summon Micro Drone (4 HP). At the end of your turn it will: Deal 3 damage. |
+| Drone Ambush | 1 | trap | uncommon | At the start of the enemy turn: Deal 4 damage to ALL enemies. Summon Micro Drone (3 HP). At the end of your turn it will: Deal 3 damage. |
 | Assemble | 1 | skill | uncommon | All your allies act now. Draw 1 card. |
 | Overdrive | 1 | skill | uncommon | Apply 1 Might to all friends. All your allies act now. |
 | Overwatch | 1 | trap | uncommon | When you or an ally is attacked: All your allies act now. Deal 6 damage to the attacker. |
@@ -145,7 +145,7 @@ Starter: Strike, Strike, Strike, Strike, Strike, Defend, Defend, Defend, Deploy 
 | Bulwark Frame | 1 | skill | uncommon | Gain 14 Barrier to the ally. |
 | Rebuild | 1 | skill | uncommon | Your most recently fallen ally returns with half its HP. Gain 6 Barrier. Consume. |
 | Siege Protocol | 2 | attack | uncommon | Deal 6 (+2 per Might) damage. |
-| Titan Forge | 2 | summon | uncommon | Summon Enforcer Mk.II (14 HP). At the end of your turn it will: Deal 6 damage. Apply 2 Might to all friends. Consume. |
+| Titan Forge | 2 | summon | uncommon | Summon Enforcer Mk.II (12 HP). At the end of your turn it will: Deal 6 damage. Apply 2 Might to all friends. Consume. |
 | Ion Lance | 2 | attack | uncommon | Deal 16 damage. |
 | Overcharge | 0 | skill | uncommon | Gain 2 Mana. Next turn, lose 1 Mana. Consume. |
 | Blueprint | 1 | skill | uncommon | Add a random Summon card from your pool to your hand. |
@@ -157,9 +157,9 @@ Starter: Strike, Strike, Strike, Strike, Strike, Defend, Defend, Defend, Deploy 
 | Patch Job | 0 | skill | uncommon | The ally gains 8 max HP. Gain 3 Barrier to the ally. |
 | Legion | 2 | aura | rare | Whenever you summon an ally: Apply 1 Might to all friends. |
 | Swarm Tactics | 1 | aura | rare | Whenever you summon an ally: Deal 3 damage to a random enemy. |
-| Hive Mind | 2 | aura | rare | Whenever one of your allies dies: Draw 1 card. Summon Micro Drone (4 HP). At the end of your turn it will: Deal 3 damage. |
-| Mass Production | 3 | aura | rare | At the start of your turn: Summon Patrol Drone (7 HP). At the end of your turn it will: Deal 4 damage. |
-| Drone Carrier | 3 | summon | rare | Summon 3 Patrol Drones (7 HP each). At the end of your turn each will: Deal 4 damage. Consume. |
+| Hive Mind | 2 | aura | rare | Whenever one of your allies dies: Draw 1 card. Summon Micro Drone (3 HP). At the end of your turn it will: Deal 3 damage. |
+| Mass Production | 3 | aura | rare | At the start of your turn: Summon Patrol Drone (5 HP). At the end of your turn it will: Deal 4 damage. |
+| Drone Carrier | 3 | summon | rare | Summon 3 Patrol Drones (5 HP each). At the end of your turn each will: Deal 4 damage. Consume. |
 | Mob Rule | 2 | attack | rare | Deal 5 (+3 per ally) damage to ALL enemies. |
 | Double Time | 2 | skill | rare | All your allies act now. All your allies act now. |
 | EMP | 1 | trap | rare | When you or an ally is attacked: Stun the attacker for 1 turn. |
@@ -177,7 +177,7 @@ Starter: Strike, Strike, Strike, Strike, Strike, Defend, Defend, Defend, Deploy 
 | Railgun | 3 | attack | rare | Deal 30 damage. |
 | Overload | 2 | skill | rare | All your allies act now. All your allies act now. All your allies act now. Consume. |
 | Factory Floor | 2 | aura | rare | Whenever you summon an ally: Draw 1 card. |
-| Swarm Surge | 2 | skill | rare | Summon Patrol Drone (7 HP). At the end of your turn it will: Deal 4 damage. Draw cards equal to the number of your allies. Consume. |
+| Swarm Surge | 2 | skill | rare | Summon Patrol Drone (5 HP). At the end of your turn it will: Deal 4 damage. Draw cards equal to the number of your allies. Consume. |
 | Relay Network | 2 | aura | rare | Whenever one of your Traps is triggered: All your allies act now. |
 | Heavy Hitter | 2 | attack | rare | Deal damage equal to your biggest companion's max HP. |
 | The Foundry Awakens | 3 | aura | legendary | At the start of your turn: Summon Siege Engine (16 HP). At the end of your turn it will: Deal 13 damage. All your allies act now. |

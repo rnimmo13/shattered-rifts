@@ -124,7 +124,7 @@ describe('Riftwalker identities (docs/08 §5)', () => {
   });
   it('"+" summon cards summon the "+" companion', () => {
     expect(db.cards['deploy-drone+']?.effects).toEqual([{ op: 'summon', unit: 'patrol-drone+' }]);
-    expect(db.units['patrol-drone+']?.maxHp).toBe(11);
+    expect(db.units['patrol-drone+']?.maxHp).toBe(9);
   });
 });
 

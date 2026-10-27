@@ -23,13 +23,13 @@ import {
 const RAW_ALLIES: UnitDef[] = [
   // Nexus: machines
   ally('drone', 'Drone', 8, [dmg(3)]),
-  ally('patrol-drone', 'Patrol Drone', 7, [dmg(4)]),
-  ally('sentry-turret', 'Sentry Turret', 10, [dmg(3), barrier(2, 'hero')], { taunt: true }),
-  ally('salvage-bot', 'Salvage Bot', 6, [barrier(4, 'hero')]),
-  ally('repair-bot', 'Repair Bot', 6, [heal(3, 'hero')]),
-  ally('enforcer', 'Enforcer Mk.II', 14, [dmg(6)]),
+  ally('patrol-drone', 'Patrol Drone', 5, [dmg(4)]),
+  ally('sentry-turret', 'Sentry Turret', 7, [dmg(3), barrier(2, 'hero')], { taunt: true }),
+  ally('salvage-bot', 'Salvage Bot', 4, [barrier(4, 'hero')]),
+  ally('repair-bot', 'Repair Bot', 4, [heal(3, 'hero')]),
+  ally('enforcer', 'Enforcer Mk.II', 12, [dmg(6)]),
   ally('war-engine', 'War Engine', 22, [dmg(9)]),
-  ally('micro-drone', 'Micro Drone', 4, [dmg(3)]),
+  ally('micro-drone', 'Micro Drone', 3, [dmg(3)]),
   ally('siege-engine', 'Siege Engine', 16, [dmg(13)]),
   // Wyldmaw: the pack
   // Warden signature companions
