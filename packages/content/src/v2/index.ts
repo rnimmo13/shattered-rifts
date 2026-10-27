@@ -124,12 +124,12 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     buildPaths: [
       'Bloodrage: HP for Might',
       'Pack: feed the companions',
-      'Feast: Exhaust and Devour',
+      'Berserker: Mana and draw for burst turns',
     ],
     howTo: [
       'You start with a Hound. Might makes every attack hit harder, permanently.',
       'Many of your cards cost HP. Spend it to buff the pack, then heal with Devour and Feast cards.',
-      'Consume cards (they leave the fight) to power the Feast build.',
+      'Berserker: gain Mana, draw hard and play many cards in one turn; its attacks grow with every card played that turn.',
     ],
   },
   trapper: {

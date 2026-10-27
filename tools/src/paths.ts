@@ -34,7 +34,7 @@ const HEADS: Record<HeroId, [RegExp, number | null][]> = {
   hunter: [
     [/bloodrage/i, 0],
     [/pack/i, 1],
-    [/feast/i, 2],
+    [/feast|berserker/i, 2],
     [/basics/i, null],
   ],
   trapper: [
@@ -84,6 +84,11 @@ const HEADS: Record<HeroId, [RegExp, number | null][]> = {
 const out: Record<string, number> = {};
 /** cards under a heading that is not a build path but that belong to one */
 const BY_ID: Record<string, number> = {
+  // Kesh's Feast became Berserker (DECISIONS #340): Feral Instinct is Berserker now, the rest that stayed found the build path they fit
+  'feral-instinct': 2,
+  'devour-ally': 1,
+  'gnarltooth-trap': 0,
+  'gut-trap': 0,
   // new cards that fill a build path to its minimum (DECISIONS #337)
   'antler-carving': 1,
   'serpent-carving': 1,
@@ -265,6 +270,7 @@ const NO_PATH = [
   'broken-bottle',
   'chaser',
   'dumpster-dive',
+  'devour',
   // uncommon and rare glue that takes every pool to 70 (DECISIONS #339)
   'factory-floor',
   'blueprint',

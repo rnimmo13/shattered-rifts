@@ -25,6 +25,9 @@ import {
   status,
   summon,
   doubleSt,
+  discard,
+  manaNext,
+  drawNext,
 } from '../build';
 
 const k = pool('hunter', 'wyldmaw');
@@ -166,18 +169,11 @@ export const HUNTER: CardDef[] = [
   k('rare', 'wild-hunt', 'Wild Hunt', 'power', 3, 'none', [on('turnStart', [ACT])]),
 
   // --- Feast ---
-  k('common', 'burn-the-weak', 'Burn the Weak', 'skill', 1, 'none', [exhaustN(1), barrier(8)]),
-  k('common', 'bonepicker', 'Bonepicker', 'skill', 0, 'none', [barrier(3)], {
-    exhaust: true,
-    onExhaust: [heal(2)],
-  }),
-  k('common', 'bloodscent', 'Bloodscent', 'attack', 1, 'foe', [dmg(5), status('might', 1)]),
   k('uncommon', 'crimson-pact', 'Crimson Pact', 'skill', 1, 'none', [
     lose(4),
     exhaustN(1),
     draw(2),
   ]),
-  k('uncommon', 'gnaw', 'Gnaw', 'attack', 1, 'foe', [scaled(dmg(5), per('exhausted', 1))]),
   // (16 now, and Fell the Prey, its twin, is switched off: DECISIONS #319)
   k('uncommon', 'devour', 'Devour', 'attack', 2, 'foe', [lifesteal(dmg(16), 50)]),
   k('uncommon', 'devour-ally', 'Devour Ally', 'skill', 1, 'ally', [
@@ -190,14 +186,6 @@ export const HUNTER: CardDef[] = [
     exhaust: true,
     source: 'disabled',
   }),
-  k('common', 'ravenous', 'Ravenous', 'power', 1, 'none', [on('exhaust', [draw(1), lose(2)])]),
-  k('common', 'thick-skin', 'Thick Skin', 'power', 1, 'none', [
-    on('exhaust', [barrier(2, 'allFriends')]),
-  ]),
-  k('rare', 'maw-opens', 'The Maw Opens', 'attack', 2, 'foe', [
-    exhaustN(9),
-    scaled(dmg(0), per('exhausted', 2)),
-  ]),
   k(
     'uncommon',
     'gnarltooth-trap',
@@ -216,15 +204,14 @@ export const HUNTER: CardDef[] = [
   k(
     'legendary',
     'apex-maw',
-    'Apex Maw',
+    'Apex Frenzy',
     'attack',
-    3,
+    2,
     'foe',
-    // Feast: it grows with every card you have consumed (DECISIONS #338)
-    [lifesteal(scaled(dmg(10), per('exhausted', 3)), 75)],
-    // (upgraded, it costs 2: a big one-off card gains little from +3 damage, and +4 per consumed card is past the guard rail for a
-    // card that is consumed; DECISIONS #282)
-    { exhaust: true, up: { cost: 2 } },
+    // Berserker: the more cards played this turn, the more it hits (DECISIONS #340)
+    [lifesteal(scaled(dmg(6, 'target', 2), per('played', 2, undefined, 'hits')), 50)],
+    // (upgraded, it costs 1: more damage per hit gains a burst card little)
+    { exhaust: true, up: { cost: 1 } },
   ),
   k('rare', 'blood-pact', 'Blood Pact', 'skill', 1, 'none', [lose(7), maxMana(1)], {
     exhaust: true,
@@ -235,16 +222,6 @@ export const HUNTER: CardDef[] = [
     draw(2),
     heal(2),
   ]),
-  k('common', 'gorge', 'Gorge', 'skill', 1, 'none', [
-    barrier(8),
-    scaled(barrier(0), per('exhausted', 0.5)),
-  ]),
-  k('rare', 'carrion-engine', 'Carrion Engine', 'power', 2, 'none', [
-    on('exhaust', [dmg(2, 'allFoes')]),
-  ]),
-  k('rare', 'wolfhide', 'Wolfhide', 'skill', 2, 'none', [barrier(18), barrier(9, 'allFriends')], {
-    exhaust: true,
-  }),
 
   // --- Bloodrage (batch 3) ---
   k('common', 'open-a-vein', 'Open a Vein', 'skill', 0, 'none', [lose(3), status('might', 2)], {
@@ -297,17 +274,9 @@ export const HUNTER: CardDef[] = [
 
   // --- Feast (batch 3) ---
   k('common', 'throw-scraps', 'Throw Scraps', 'skill', 0, 'none', [exhaustN(1), mana(1)]),
-  k('uncommon', 'feast-on-fear', 'Feast on Fear', 'attack', 2, 'foe', [
-    dmg(12),
-    scaled(heal(3), per('exposed', 2, 'target')),
-  ]),
-  k('common', 'gore-and-gulp', 'Gore and Gulp', 'attack', 1, 'foe', [lifesteal(dmg(10), 50)], {
-    exhaust: true,
-  }),
   k('common', 'gut-trap', 'Gut Trap', 'snare', 1, 'none', [dmg(8, 'allFoes'), heal(4)], {
     trigger: { on: 'hpLost', min: 5 },
   }),
-  k('rare', 'grave-hunger', 'Grave Hunger', 'power', 2, 'none', [on('exhaust', [heal(2)])]),
 
   // --- glue: cards for any build path (DECISIONS #337) ---
   k('common', 'bone-crack', 'Bone Crack', 'attack', 1, 'foe', [
@@ -331,4 +300,55 @@ export const HUNTER: CardDef[] = [
       exhaust: true,
     },
   ),
+
+  // --- Berserker: Mana and draw to burn through the deck, then a burst turn (replaces Feast; DECISIONS #340) ---
+  k('common', 'rush-in', 'Rush In', 'attack', 1, 'foe', [dmg(6), draw(1)]),
+  k('common', 'heart-pound', 'Pounding Heart', 'skill', 0, 'none', [mana(1), lose(2)], {
+    exhaust: true,
+  }),
+  k('common', 'wild-swings', 'Wild Swings', 'attack', 1, 'foe', [
+    scaled(dmg(3), per('played', 1, undefined, 'hits')),
+  ]),
+  k('common', 'shake-loose', 'Shake Loose', 'skill', 1, 'none', [draw(2), barrier(3)]),
+  k('uncommon', 'frenzied-gulp', 'Frenzied Gulp', 'skill', 0, 'none', [draw(3), lose(4)], {
+    exhaust: true,
+  }),
+  k('uncommon', 'adrenal-surge', 'Adrenal Surge', 'skill', 0, 'none', [mana(2), draw(1), lose(3)], {
+    exhaust: true,
+  }),
+  k('uncommon', 'blur-of-claws', 'Blur of Claws', 'attack', 1, 'foe', [
+    scaled(dmg(4), per('played', 2)),
+  ]),
+  k('uncommon', 'battle-rhythm', 'Battle Rhythm', 'power', 1, 'none', [
+    on('turnStart', [draw(1), lose(1)]),
+  ]),
+  k('uncommon', 'reckless-abandon', 'Reckless Abandon', 'skill', 1, 'none', [draw(3), discard(1)]),
+  k('uncommon', 'burst-of-speed', 'Burst of Speed', 'skill', 1, 'none', [manaNext(2), drawNext(2)]),
+  k('uncommon', 'rip-and-tear', 'Rip and Tear', 'attack', 2, 'foe', [dmg(5, 'target', 3), draw(1)]),
+  k('rare', 'berserk-tempo', 'Berserk Tempo', 'power', 2, 'none', [
+    on('turnStart', [mana(1), draw(1), lose(2)]),
+  ]),
+  k('rare', 'red-frenzy', 'Red Frenzy', 'power', 2, 'none', [
+    on('draw', [status('might', 1, 'self', true)]),
+  ]),
+  k(
+    'rare',
+    'bloodstorm',
+    'Bloodstorm',
+    'attack',
+    0,
+    'foe',
+    [
+      scaled({ op: 'damage', amount: 7, hits: 0, to: 'target' }, per('x', 1, undefined, 'hits')),
+      scaled(draw(0), per('x')),
+    ],
+    { x: true },
+  ),
+  k('rare', 'unbridled', 'Unbridled', 'skill', 0, 'none', [mana(3), draw(3), lose(6)], {
+    exhaust: true,
+  }),
+  k('rare', 'rising-howl', 'Rising Howl', 'attack', 2, 'foe', [scaled(dmg(8), per('played', 4))]),
+  k('rare', 'killing-spree', 'Killing Spree', 'power', 3, 'none', [
+    on('play', [draw(1)], { filter: 'attack' }),
+  ]),
 ];

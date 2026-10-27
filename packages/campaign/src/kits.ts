@@ -22,7 +22,7 @@ export const KIT_CARDS: Record<HeroId, [Kit, Kit, Kit]> = {
   hunter: [
     ['run-wild', 'crushing-blow', 'open-a-vein'],
     ['savage-command', 'feeding-time', 'summon-pup'],
-    ['gnaw', 'bone-offering', 'burn-the-weak'],
+    ['blur-of-claws', 'reckless-abandon', 'rush-in'],
   ],
   trapper: [
     ['tripwire-garrote', 'snare-net', 'trip-line'],
