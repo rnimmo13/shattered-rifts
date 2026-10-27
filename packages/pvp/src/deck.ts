@@ -188,18 +188,22 @@ export function checkEntry(raw: unknown): Checked | Rejected {
   for (const id of cards) {
     // (a Sanctum-rolled copy like "hi~strike" is derived on demand; nothing else off the table is a card)
     if (!isCardId(id)) return { ok: false, message: `Unknown card "${id.slice(0, 40)}".` };
-    // (copies only: the Legendary and Ancestral limits are the Arena's, checkArenaEntry)
+    // a copy past the 5-copy cap is left out, not the whole deck refused: a deck banked before the cap (DECISIONS #337) keeps working
+    const base = stripRoll(id).replace(/[+]$/, '');
+    const n = (copies.get(base) ?? 0) + 1;
+    if (n > MAX_COPIES && COMBAT_DB.cards[base]?.rarity !== 'legendary') continue;
+    copies.set(base, n);
+    // (the Legendary and Ancestral limits are the Arena's, checkArenaEntry)
     if (!canAdd(held, id, false))
       return {
         ok: false,
         message: `The deck breaks the deck rules at "${COMBAT_DB.cards[id]?.name ?? id}".`,
       };
-    const n = (copies.get(id) ?? 0) + 1;
-    copies.set(id, n);
-    if (n > MAX_COPIES)
-      return { ok: false, message: `Too many copies of "${COMBAT_DB.cards[id]?.name ?? id}".` };
     held.push(id);
   }
+  // (with its extra copies left out, a deck must still be big enough)
+  if (held.length < V2_DECK_RULES.minSize)
+    return { ok: false, message: `A deck holds at least ${V2_DECK_RULES.minSize} cards.` };
   // Boons that are not in the game (a retired one, a made-up id) are left out rather than refusing the deck
   const boons: string[] = [];
   if (Array.isArray(e['boons']))
@@ -223,7 +227,7 @@ export function checkEntry(raw: unknown): Checked | Rejected {
     entry: {
       name: cleanName(e['name']),
       hero,
-      deck: cards,
+      deck: held,
       boons,
       tier: t,
       ...(stage === null ? {} : { stage }),

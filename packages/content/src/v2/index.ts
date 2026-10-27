@@ -535,7 +535,7 @@ export {
 import { PATH_OF } from './paths.generated';
 import { TRIMMED_CARDS } from './retired';
 
-/** Which of its Riftwalker's three build paths (0, 1 or 2 in `Riftwalker.buildPaths`) a card belongs to, or undefined (basics, glue, legendaries). */
+/** Which of its Riftwalker's three build paths (0, 1 or 2 in `Riftwalker.buildPaths`) a card belongs to, or undefined (basics and glue cards; every Legendary has one, DECISIONS #338). */
 export function pathOf(cardId: string): number | undefined {
   return PATH_OF[stripRoll(cardId).replace(/\+$/, '')];
 }

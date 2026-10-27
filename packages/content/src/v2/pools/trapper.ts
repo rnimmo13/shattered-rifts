@@ -236,9 +236,9 @@ export const TRAPPER: CardDef[] = [
     [PREVENT, dmg(22, 'attacker'), status('stunned', 2, 'attacker'), status('shielded', 2)],
     { trigger: { on: 'attacked' }, up: { cost: 2 } },
   ),
-  // Patience: the Mana you keep strikes every enemy, and your whole hand is held (DECISIONS #338)
+  // Patience: the Mana you keep strikes every enemy and comes back as more Mana next turn (DECISIONS #338)
   v('legendary', 'masquerade', 'Masquerade', 'power', 2, 'none', [
-    on('turnEnd', [scaled(dmg(0, 'allFoes'), per('mana', 3)), status('holdfast', 1)]),
+    on('turnEnd', [scaled(dmg(0, 'allFoes'), per('mana', 3)), manaNext(1)]),
   ]),
   v('common', 'saved-breath', 'Saved Breath', 'skill', 0, 'none', [manaNext(2), scry(2)], {
     exhaust: true,

@@ -495,7 +495,8 @@ function metricValue(r: Run, a: Act, m: Metric, of: Scale['of'], t: Unit | null)
     case 'runes':
       return sd.runes.length;
     case 'powers':
-      return sd.powers.filter((p) => p.card !== TRAIT_POWER).length;
+      // (Aura cards, not their triggers: an Aura with two triggers is one Aura; DECISIONS #338)
+      return new Set(sd.powers.filter((p) => p.card !== TRAIT_POWER).map((p) => p.card)).size;
     case 'mana':
       return sd.mana;
     case 'played':

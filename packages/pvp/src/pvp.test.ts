@@ -64,18 +64,21 @@ describe('checkEntry', () => {
     expect(checkEntry({ ...entryOf('knight'), deck: Array(200).fill('strike') }).ok).toBe(false);
   });
 
-  it('takes 5 of one card and refuses 6, as a run does (DECISIONS #337)', () => {
-    const five = [...entryOf('knight').deck, ...Array<string>(5).fill('rift-bolt')];
-    expect(checkEntry({ ...entryOf('knight'), deck: five }).ok).toBe(true);
+  it('keeps 5 of one card and leaves out a 6th, so an older deck still enters (DECISIONS #337)', () => {
     const six = [...entryOf('knight').deck, ...Array<string>(6).fill('rift-bolt')];
-    expect(checkEntry({ ...entryOf('knight'), deck: six }).ok).toBe(false);
+    const r = checkEntry({ ...entryOf('knight'), deck: six });
+    expect(r.ok).toBe(true);
+    if (r.ok) expect(r.entry.deck.filter((c) => c === 'rift-bolt')).toHaveLength(5);
   });
 
-  it('does not allow a pile of one basic card', () => {
-    // (the knight starts with 4 Strikes: one more is the cap, two more is too many)
-    const base = entryOf('knight').deck;
-    expect(checkEntry({ ...entryOf('knight'), deck: [...base, 'strike'] }).ok).toBe(true);
-    expect(checkEntry({ ...entryOf('knight'), deck: [...base, 'strike', 'strike'] }).ok).toBe(
+  it('does not allow a pile of one basic card: past 5 they are left out, and what is left must still be a deck', () => {
+    const r = checkEntry({
+      ...entryOf('knight'),
+      deck: [...entryOf('knight').deck, 'strike', 'strike'],
+    });
+    expect(r.ok).toBe(true);
+    if (r.ok) expect(r.entry.deck.filter((c) => c === 'strike')).toHaveLength(5);
+    expect(checkEntry({ ...entryOf('knight'), deck: Array<string>(12).fill('strike') }).ok).toBe(
       false,
     );
   });

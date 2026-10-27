@@ -446,12 +446,16 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
       let times = o.hits && o.hits > 1 ? ` ${o.hits} times` : '';
       if (o.scale?.into === 'hits') {
         const w = METRIC_WORDS[o.scale.by];
+        // (the base hits and the hits added per point both show: "2 times, 2 more times per card discarded this turn")
+        const hits = o.hits ?? 1;
+        const m = o.scale.mult ?? 1;
+        const more = m === 1 ? '1 more time' : `${m} more times`;
         times =
           o.scale.by === 'x'
             ? ' X times'
-            : (o.hits ?? 1) === 0
-              ? ` for each ${w.per}`
-              : `, 1 more time per ${w.per}`;
+            : hits === 0
+              ? `${m === 1 ? '' : ` ${m} times`} for each ${w.per}`
+              : `${hits > 1 ? ` ${hits} times` : ''}, ${more} per ${w.per}`;
       }
       // Point Blank: more against a lone enemy
       const lone = o.lonePct ? ` Point Blank: ${o.lonePct}% more when only one enemy is left.` : '';
