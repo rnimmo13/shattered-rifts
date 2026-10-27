@@ -385,6 +385,8 @@ export interface HeroDef {
   handSize: number;
   /** allies it starts every fight with */
   startUnits?: string[];
+  /** how many companions it can have at once (MAX_ALLIES when missing) */
+  maxAllies?: number;
   /** the Sigil: ops run when the fight begins (after the first draw) */
   sigil?: Op[];
   /** the innate trait: something this character always has (see HeroTrait) */

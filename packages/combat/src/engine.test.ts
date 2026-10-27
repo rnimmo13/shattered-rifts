@@ -1359,6 +1359,24 @@ describe('Lifesteal, companions that grow, and Might shared with the pack (DECIS
   });
 });
 
+describe('a Riftwalker with a smaller pack (DECISIONS #315)', () => {
+  it('can have only maxAllies companions; a summon past it asks for one to be released', () => {
+    const tdb: CombatDb = {
+      ...db,
+      heroes: { ...db.heroes, knight: { ...db.heroes.knight!, maxAllies: 2 } },
+    };
+    let s = clone(start(['slime'], ['call-drone', 'call-drone', 'call-drone', 'strike', 'strike']));
+    const calls = s.sides.a.hand.filter((c) => c.card === 'call-drone');
+    s.sides.a.mana = 10;
+    s = applyAction(tdb, s, { type: 'play', card: calls[0]!.id }).state;
+    s = applyAction(tdb, s, { type: 'play', card: calls[1]!.id }).state;
+    expect(s.sides.a.units.filter((u) => u.kind === 'ally')).toHaveLength(2);
+    const plays = legalActions(tdb, s).filter((x) => x.type === 'play' && x.card === calls[2]!.id);
+    expect(plays.length).toBeGreaterThan(0);
+    expect(plays.every((x) => x.type === 'play' && x.release !== undefined)).toBe(true);
+  });
+});
+
 describe('a Stun from a Trap that springs as the enemy turn begins (DECISIONS #314)', () => {
   it('lasts exactly as many enemy turns as it says', () => {
     const tdb: CombatDb = {

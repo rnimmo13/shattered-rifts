@@ -1123,7 +1123,7 @@ function makeUnit(r: Run, side: Side, d: UnitDef): Unit {
 function spawn(r: Run, sd: SideState, defId: string, quiet = false, summoner?: Unit): Unit | null {
   const d = def(r, defId);
   const count = sd.units.filter((u) => u.kind !== 'hero').length;
-  if (count >= (sd.hero !== null ? MAX_ALLIES : quiet ? MAX_START_ENEMIES : MAX_ENEMIES))
+  if (count >= (sd.hero !== null ? allyCap(r.db, sd) : quiet ? MAX_START_ENEMIES : MAX_ENEMIES))
     return null;
   const u = makeUnit(r, sd.id, d);
   // an enemy's summons stand in front of the summoner (nearer the centre), never behind it
@@ -1707,12 +1707,17 @@ function pickOptions(p: NonNullable<CombatState['pending']>): string[][] {
   return out;
 }
 
+/** How many companions a hero's side can have at once: the Riftwalker's own limit, or MAX_ALLIES (DECISIONS #315). */
+export function allyCap(db: CombatDb, sd: SideState): number {
+  return (sd.hero ? db.heroes[sd.hero]?.maxAllies : undefined) ?? MAX_ALLIES;
+}
+
 /** A card that summons, played with every companion slot taken: one companion has to be released to make room. */
-function needsRelease(sd: SideState, cd: CardDef): boolean {
+function needsRelease(db: CombatDb, sd: SideState, cd: CardDef): boolean {
   return (
     sd.hero !== null &&
     cd.effects.some((o) => o.op === 'summon') &&
-    sd.units.filter((u) => u.kind !== 'hero').length >= MAX_ALLIES
+    sd.units.filter((u) => u.kind !== 'hero').length >= allyCap(db, sd)
   );
 }
 
@@ -1735,7 +1740,7 @@ export function legalActions(db: CombatDb, s: CombatState): Action[] {
       for (const t of sd.units)
         if (t.hp > 0 && (cd.target === 'friend' || t.kind === 'ally'))
           plays.push({ type: 'play', card: c.id, target: t.id });
-    if (!needsRelease(sd, cd)) out.push(...plays);
+    if (!needsRelease(db, sd, cd)) out.push(...plays);
     else
       // every way to play it, once for each companion that could make room
       for (const p of plays)
@@ -1797,7 +1802,7 @@ function playCard(r: Run, action: Extract<Action, { type: 'play' }>): void {
   }
   const hero = heroOf(sd);
   if (!hero) throw new RulesError('No hero to play cards');
-  if (needsRelease(sd, cd)) {
+  if (needsRelease(r.db, sd, cd)) {
     const out = findUnit(r.s, action.release);
     if (!out || out.side !== side || out.kind !== 'ally' || out.hp <= 0)
       throw new RulesError('Choose a companion to release to make room');

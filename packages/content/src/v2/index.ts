@@ -106,6 +106,8 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
       mana: 3,
       handSize: 5,
       startUnits: ['hound'],
+      // (her pack is small: DECISIONS #315)
+      maxAllies: 2,
     },
     starter: [...rep('strike', 4), ...rep('defend', 3), 'savage-bite', 'blood-frenzy', 'rend'],
     blurb: 'A hunter with a Hound. Pays HP to buff the whole pack with Might.',

@@ -5,6 +5,7 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **Kesh** can have 2 companions at once (was 3).
 - **Kesh:** the Hound has 5 HP and hits for 3, Savage Bite deals 6 (8 upgraded), Feeding Time gives 3 max HP.
 - **Stun cards** apply only Stun (no extra Exposed); rare and Legendary ones Stun for 2 turns. Card text says how many turns.
 - **Kesh:** every card of hers that costs HP costs 1 more (she has Lifesteal now). Heel, Howl and Guard Dog are gone: a saved run or deck that holds one gets Call Gnashlings, Pack Tactics or Rend in its place.
