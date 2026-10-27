@@ -29,10 +29,34 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.97.0',
+    date: '2026-10-27',
+    title: 'Valeria’s Devotion',
+    summary:
+      'Valeria’s healing build now pays off: every heal builds Devotion, and new cards cash it in for big hits.',
+    notes: [
+      {
+        kind: 'new',
+        text: 'Valeria: whenever she heals she gains that much Devotion, even at full HP, so no heal is wasted. Cards with a gold cost spend it: Lightbrand (5 Devotion: deal 14), Hymn of Reckoning (8 Devotion: 12 to every enemy) and Sunfall (10 Devotion: 2 damage for every Devotion you had, then it is all spent).',
+      },
+      {
+        kind: 'changed',
+        text: 'Sunforged Edge now grows with your Devotion (8, +1 per 2 Devotion). Last Stand counts as a Bulwark card.',
+      },
+      {
+        kind: 'changed',
+        text: 'Sanctified cards are final: the shrine’s chisel and the engraver no longer put a tag on a sanctified card.',
+      },
+    ],
+    heads:
+      'The rules changed: reload if the game asks you to. Arena games and replays from before this version can no longer be watched.',
+  },
+  {
     version: '0.96.0',
     date: '2026-10-27',
     title: 'Kesh’s pack, rebuilt for Overflow',
-    summary: 'Kesh’s summons are told apart, and her Hound is sturdy again now that minions can be overrun.',
+    summary:
+      'Kesh’s summons are told apart, and her Hound is sturdy again now that minions can be overrun.',
     notes: [
       {
         kind: 'balance',
@@ -95,7 +119,8 @@ export const PATCH_NOTES: PatchNote[] = [
     version: '0.93.0',
     date: '2026-10-27',
     title: 'A smaller pack, Stun cards tidied',
-    summary: 'Kesh runs a smaller, frailer pack, and Stun cards apply only Stun, longer on rare ones.',
+    summary:
+      'Kesh runs a smaller, frailer pack, and Stun cards apply only Stun, longer on rare ones.',
     notes: [
       {
         kind: 'balance',
@@ -222,7 +247,8 @@ export const PATCH_NOTES: PatchNote[] = [
     version: '0.89.0',
     date: '2026-10-26',
     title: 'Board status',
-    summary: 'The campaign board shows each player once per Riftwalker, and whether the run is still going.',
+    summary:
+      'The campaign board shows each player once per Riftwalker, and whether the run is still going.',
     notes: [
       {
         kind: 'changed',
@@ -234,7 +260,8 @@ export const PATCH_NOTES: PatchNote[] = [
     version: '0.88.0',
     date: '2026-10-26',
     title: 'Back on your feet',
-    summary: 'A retried fight starts with at least half your HP, and a clearer end-of-fight screen.',
+    summary:
+      'A retried fight starts with at least half your HP, and a clearer end-of-fight screen.',
     notes: [
       {
         kind: 'balance',
@@ -255,7 +282,8 @@ export const PATCH_NOTES: PatchNote[] = [
     date: '2026-10-26',
     title: 'Arcana unbound',
     summary: 'Obsidia gets cards paid in Arcana alone, and payoffs for spending it.',
-    heads: 'Arena games and replays from earlier versions can no longer be played or watched: the rules have changed.',
+    heads:
+      'Arena games and replays from earlier versions can no longer be played or watched: the rules have changed.',
     notes: [
       {
         kind: 'balance',
@@ -276,7 +304,8 @@ export const PATCH_NOTES: PatchNote[] = [
     date: '2026-10-26',
     title: 'Kesh unleashed',
     summary: 'Kesh reworked, Lifesteal, companions that grow, and a tidier merchant.',
-    heads: 'Arena games and replays from earlier versions can no longer be played or watched: the rules have changed.',
+    heads:
+      'Arena games and replays from earlier versions can no longer be played or watched: the rules have changed.',
     notes: [
       {
         kind: 'balance',
@@ -353,7 +382,8 @@ export const PATCH_NOTES: PatchNote[] = [
     version: '0.82.0',
     date: '2026-10-26',
     title: 'No hidden run slots',
-    summary: 'A saved run that cannot be loaded is shown on the home page instead of quietly taking a slot.',
+    summary:
+      'A saved run that cannot be loaded is shown on the home page instead of quietly taking a slot.',
     notes: [
       {
         kind: 'fixed',
@@ -365,7 +395,8 @@ export const PATCH_NOTES: PatchNote[] = [
     version: '0.81.0',
     date: '2026-10-26',
     title: 'Clearer choices',
-    summary: 'Event cards sit in their option, marked with what happens to them; a centred fight title.',
+    summary:
+      'Event cards sit in their option, marked with what happens to them; a centred fight title.',
     notes: [
       {
         kind: 'changed',
@@ -397,7 +428,8 @@ export const PATCH_NOTES: PatchNote[] = [
     version: '0.79.0',
     date: '2026-10-26',
     title: 'Gentler Wardens',
-    summary: 'A lost Warden costs 1 Resolve, every boss fight shows what is at stake, and KP’s shells are retuned.',
+    summary:
+      'A lost Warden costs 1 Resolve, every boss fight shows what is at stake, and KP’s shells are retuned.',
     notes: [
       {
         kind: 'balance',
