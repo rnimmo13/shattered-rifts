@@ -29,6 +29,26 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.88.0',
+    date: '2026-10-26',
+    title: 'Back on your feet',
+    summary: 'A retried fight starts with at least half your HP, and a clearer end-of-fight screen.',
+    notes: [
+      {
+        kind: 'balance',
+        text: 'Lose a fight with Resolve left and you retry it with at least half your max HP (or more, if you came in with more).',
+      },
+      {
+        kind: 'changed',
+        text: 'After a fight, Continue comes first and stands on its own; the recap, the board and the replay sit beside it.',
+      },
+      {
+        kind: 'fixed',
+        text: 'The Sharpen number on the hero can be read when the blade is sharpened.',
+      },
+    ],
+  },
+  {
     version: '0.87.0',
     date: '2026-10-26',
     title: 'Arcana unbound',
