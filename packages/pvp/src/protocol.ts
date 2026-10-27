@@ -48,7 +48,8 @@ export interface Entry {
 // (9: Stun as Exposed + Faltering + Brittle, uncommons that shield allies, Kesh's HP costs and retired cards, #310-312)
 // (10: Kesh's 2-companion limit, Hound, Savage Bite, Feeding Time, Stun cards, retired Call Gnashlings, #314-317)
 // (11: Devour 16, Fell the Prey switched off, #319)
-export const RULES_VERSION = 11;
+// (12: Overflow, #321-322)
+export const RULES_VERSION = 12;
 
 /** Who you are playing, before a game starts: their name and badges, not their deck or Riftwalker. */
 export type FoeCard = Pick<Entry, 'name' | 'trophies' | 'rank'>;

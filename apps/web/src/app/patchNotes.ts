@@ -29,6 +29,20 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.95.0',
+    date: '2026-10-27',
+    title: 'Overflow',
+    summary: 'Cheap minions no longer block a whole big hit.',
+    notes: [
+      {
+        kind: 'balance',
+        text: 'Overflow: when a single attack kills one of your companions, all of the damage left over (after its Barrier and HP) carries through to you. A 14-damage hit on a 4 HP drone now sends 10 through. It works the same for your enemies’ companions in the Arena. Area attacks, Traps and Thorns are unchanged.',
+      },
+    ],
+    heads:
+      'The rules changed: reload if the game asks you to. Arena games and replays from before this version can no longer be watched.',
+  },
+  {
     version: '0.94.0',
     date: '2026-10-27',
     title: 'Everything on every device',
