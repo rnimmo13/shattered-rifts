@@ -67,19 +67,19 @@ describe("Valeria's Devotion", () => {
     for (const u of s.sides.b.units) expect(u.hp).toBe(90);
   });
 
-  it('Sunfall needs 10 Devotion and spends it all: 2 damage per Devotion you had', () => {
-    expect(playable(fight('knight', ['sunfall'], 9), 'T0')).toBe(false);
+  it('Sunfall spends X Devotion, all you have: 10 damage +2 per Devotion (DECISIONS #348)', () => {
+    expect(playable(fight('knight', ['sunfall'], 0), 'T0')).toBe(true);
     let s = fight('knight', ['sunfall'], 25);
-    s = playCard(s, 'T0'); // 10 paid, then 20 + 2 x 15 = 50
-    expect(s.sides.b.units[0]!.hp).toBe(50);
+    s = playCard(s, 'T0'); // 10 + 2 x 25 = 60
+    expect(s.sides.b.units[0]!.hp).toBe(40);
     expect(heroOf(s).statuses.devotion ?? 0).toBe(0);
   });
 
-  it('Sunforged Edge grows with Devotion and keeps it', () => {
+  it('Sunforged Edge spends X Devotion, all you have: 6 damage +1 per Devotion (DECISIONS #348)', () => {
     let s = fight('knight', ['sunforged-edge'], 10);
-    s = playCard(s, 'T0'); // 8 + 10 / 2
-    expect(s.sides.b.units[0]!.hp).toBe(87);
-    expect(heroOf(s).statuses.devotion).toBe(10);
+    s = playCard(s, 'T0'); // 6 + 10
+    expect(s.sides.b.units[0]!.hp).toBe(84);
+    expect(heroOf(s).statuses.devotion ?? 0).toBe(0);
   });
 });
 

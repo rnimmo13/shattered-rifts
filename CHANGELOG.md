@@ -5,6 +5,9 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **Shielded** units glow inside a yellow bubble until the shield is spent.
+- **Fortified** no longer stacks; cards say "Gain Fortified".
+- **Valeria:** Sunfall (10 +2 per Devotion) and Sunforged Edge (6 +1 per Devotion) spend all your Devotion. The Devotion orb's label fits.
 - **Spin to win:** the three Rift-crossed cards are laid out side by side.
 - **Campaign header:** fits smaller screens (two lines on a laptop, three on a phone); the Arena deck is a small ⚔ badge beside Deck.
 - **Cards:** the build path label sits at the bottom left.

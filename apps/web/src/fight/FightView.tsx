@@ -55,6 +55,7 @@ import { STATUS_INFO, UI_TIPS } from './info';
 import { loadSeen, loadTipsOn, nextTip, saveSeen, saveTipsOn } from './tips';
 import { AuraList, DevotionCounter, LumenCounter, RuneArc, SnareRow } from './SidePanel';
 import { StanceAura, StanceChip } from './StanceAura';
+import { ShieldBubble } from './ShieldBubble';
 import { BattleLog } from './BattleLog';
 import { LOG_LIMIT, Namer, createDescriber, type LogLine } from './logLines';
 import { FlourishCard, type Flourish } from './FlourishCard';
@@ -1475,6 +1476,17 @@ export function FightView(props: {
                 />
               ) : null;
             })}
+          {/* a yellow bubble around every Shielded unit, gone with its last stack (DECISIONS #346) */}
+          {placed.map((p) => (
+            <ShieldBubble
+              key={`shield-${p.unit.id}`}
+              unit={p.unit}
+              x={p.x}
+              y={p.y}
+              h={p.h}
+              w={p.w}
+            />
+          ))}
           {([mySide, ...(pvp ? [foeSide] : [])] as const).map((s) => {
             const at = s === mySide ? heroPlaced : foePlaced;
             return at ? (

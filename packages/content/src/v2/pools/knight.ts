@@ -265,8 +265,10 @@ export const KNIGHT: CardDef[] = [
   ),
 
   // --- Devotion (more) ---
+  // spends X Devotion, all you have (DECISIONS #348)
   m('common', 'sunforged-edge', 'Sunforged Edge', 'attack', 2, 'foe', [
-    scaled(dmg(8), per('devotion', 0.5)),
+    scaled(dmg(6), per('devotion', 1)),
+    doubleSt('devotion', 'self', 0),
   ]),
   m(
     'rare',
@@ -329,8 +331,8 @@ export const KNIGHT: CardDef[] = [
     'attack',
     2,
     'foe',
-    [scaled(dmg(20), per('devotion', 2)), doubleSt('devotion', 'self', 0)],
-    { statusCost: { status: 'devotion', amount: 10 } },
+    // spends X Devotion, all you have (DECISIONS #348)
+    [scaled(dmg(10), per('devotion', 2)), doubleSt('devotion', 'self', 0)],
   ),
 
   // --- brought back (DECISIONS #337) ---

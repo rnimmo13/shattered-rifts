@@ -159,6 +159,8 @@ function addStatus(r: Run, u: Unit, st: StatusId, amount: number): boolean {
     total = Math.max(was, amount);
     if (r.s.active === u.side && amount > was && !r.opening) u.stunFresh = true;
   }
+  // Fortified is on or off: a second source adds nothing (DECISIONS #347)
+  if (st === 'fortified') total = Math.min(total, 1);
   if (total <= 0) delete u.statuses[st];
   else u.statuses[st] = total;
   r.ev.push({ type: 'status', target: u.id, status: st, amount, total: Math.max(0, total) });

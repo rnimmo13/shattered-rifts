@@ -28,7 +28,7 @@ Starter: Strike, Strike, Strike, Strike, Defend, Defend, Defend, Defend, Dawn Sm
 | Bell Toll | 1 | attack | common | Deal 5 damage to ALL enemies. Gain 3 Barrier. |
 | Gilded Blow | 1 | attack | common | Deal 8 damage. Gain 2 Barrier. |
 | Tower Shield | 1 | aura | common | Whenever you play a Skill: Gain 3 Barrier. |
-| Sunforged Edge | 2 | attack | common | Deal 8 (+1 per 2 Devotion) damage. |
+| Sunforged Edge | 2 | attack | common | Deal 6 (+1 per Devotion) damage. Spend all your Devotion. |
 | Hand of Justice | 1 +4 devotion | attack | common | Deal 10 damage. Apply 1 Exposed. |
 | Lightbrand | 1 +5 devotion | attack | common | Deal 14 damage. |
 | Shield Bash | 1 | attack | common | Deal 3 (+1 per 2 Barrier) damage. |
@@ -79,17 +79,17 @@ Starter: Strike, Strike, Strike, Strike, Defend, Defend, Defend, Defend, Dawn Sm
 | Holy Reckoning | 2 | attack | rare | Deal 8 damage to ALL enemies. Heal 6. |
 | Sanctuary | 2 | trap | rare | When you or an ally is attacked: Cancel that attack. Gain 8 Barrier. |
 | Dawn's Verdict | 3 | attack | rare | Deal 28 damage. Apply 2 Exposed. |
-| Unbroken Wall | 2 | aura | rare | Gain 1 Fortified for the rest of the fight. |
+| Unbroken Wall | 2 | aura | rare | Gain Fortified for the rest of the fight. |
 | Briar Bloom | 1 | skill | rare | Double the Thorns to yourself (at most +8). Consume. |
 | Punishing Gale | 2 | trap | rare | At the start of the enemy turn: Deal 8 (+1 per Thorns) damage to ALL enemies. |
 | Martyr's Grace | 1 | skill | rare | Lose 5 HP. Gain 15 Barrier. Gain 2 Shielded. Consume. |
 | Hand of God | 2 +15 devotion | attack | rare | Deal 36 damage. |
-| Sunfall | 2 +10 devotion | attack | rare | Deal 20 (+2 per Devotion) damage. Lose all your Devotion. |
+| Sunfall | 2 | attack | rare | Deal 10 (+2 per Devotion) damage. Spend all your Devotion. |
 | Endless Vigil | 2 | aura | rare | At the end of your turn: Gain Barrier equal to 2 times the number of cards in your hand. |
 | Radiant Oath | 2 | aura | rare | Gain 4 Thorns for the rest of the fight. |
 | Impregnable | 2 | skill | rare | Gain Barrier equal to your Barrier. Consume. |
 | Radiance Eternal | 3 | aura | rare | At the start of your turn: Heal 1. At the end of your turn: Gain 1 Shielded. |
-| The Last Oath | 3 | aura | legendary | Gain 1 Fortified. Gain 3 Thorns. At the start of your turn: Gain 2 Thorns. |
+| The Last Oath | 3 | aura | legendary | Gain Fortified. Gain 3 Thorns. At the start of your turn: Gain 2 Thorns. |
 | Dawn Incarnate | 3 | attack | legendary | Gain 10 Barrier. Deal damage equal to your Barrier to ALL enemies. Consume. |
 | Dawn's Mercy | 3 | aura | legendary | Whenever you heal (even at full HP): Deal damage equal to the HP healed to a random enemy. At the start of your turn: Heal 3. |
 

@@ -529,6 +529,11 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
       // Edge is what makes Sleeve Knives hit harder: say so on the card instead of leaving it to a tooltip
       if (o.status === 'edge' && o.to === 'self' && !o.scale && o.amount > 0)
         return `Gain ${o.amount} Edge: your Sleeve Knives deal ${o.amount} more damage ${o.temp ? 'this turn' : 'for the rest of the fight'}.`;
+      // Fortified is on or off, so it has no number: "Gain Fortified" (DECISIONS #347)
+      if (o.status === 'fortified' && o.amount > 0 && !o.scale) {
+        const mine = o.to === 'self' && who.self === WHO.self;
+        return `${mine ? 'Gain' : 'Apply'} Fortified${o.to === 'self' ? '' : who[o.to]}${o.temp ? ' until the end of your turn' : ''}.`;
+      }
       // (on your own cards a status you put on yourself is gained or lost, not "applied")
       const mine = o.to === 'self' && who.self === WHO.self;
       const verb = o.amount < 0 ? (mine ? 'Lose' : 'Remove') : mine ? 'Gain' : 'Apply';
@@ -540,7 +545,7 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
       // multiplying by 0 spends it all
       if (o.mult === 0)
         return o.to === 'self'
-          ? `Lose all your ${sname(o.status)}.`
+          ? `${o.status === 'devotion' ? 'Spend' : 'Lose'} all your ${sname(o.status)}.`
           : `Remove all ${sname(o.status)}${who[o.to] || ' from the target'}.`;
       if (o.status === 'doom') {
         const noun =
