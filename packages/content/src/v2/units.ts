@@ -39,8 +39,8 @@ const RAW_ALLIES: UnitDef[] = [
   // Dire Wolf; DECISIONS #298)
   ally('pup', 'Pup', 6, [dmg(3)]),
   ally('hound', 'Hound', 8, [dmg(4)]),
-  ally('pack-alpha', 'Pack Alpha', 14, [dmg(5)]),
-  ally('dire-wolf', 'Dire Wolf', 18, [dmg(9)]),
+  ally('pack-alpha', 'Pack Alpha', 16, [dmg(10)]),
+  ally('dire-wolf', 'Dire Wolf', 24, [dmg(14)]),
   // Gloomfen: Mire's dead
   ally('bone-thrall', 'Bone Thrall', 12, [dmg(4)]),
   ally('grave-colossus', 'Grave Colossus', 22, [dmg(9)]),

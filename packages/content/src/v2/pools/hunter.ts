@@ -173,7 +173,23 @@ export const HUNTER: CardDef[] = [
     status('might', 1),
   ]),
   k('rare', 'unchained', 'Unchained', 'power', 2, 'none', [status('might', 3)]),
-  k('rare', 'den-mother', 'Den Mother', 'summon', 3, 'none', [summon('dire-wolf')]),
+  // (an Aura now: when a companion of hers falls, she strikes back; its upgrade hits harder. DECISIONS #325)
+  k(
+    'rare',
+    'den-mother',
+    'Den Mother',
+    'power',
+    3,
+    'none',
+    [on('allyDies', [dmg(15, 'randomFoe')])],
+    {
+      up: { effects: [on('allyDies', [dmg(20, 'randomFoe')])] },
+    },
+  ),
+  // (the big summon: a Dire Wolf for 3, where Alpha Call brings the Alpha for 2)
+  k('rare', 'dire-wolf', 'Dire Wolf', 'summon', 3, 'none', [summon('dire-wolf')]),
+  // (a cheap pup: DECISIONS #325)
+  k('common', 'whelp', 'Whelp', 'summon', 1, 'none', [summon('pup')]),
 
   k('uncommon', 'feeding-time', 'Feeding Time', 'skill', 1, 'none', [
     growHp(3, 'allFriends'),

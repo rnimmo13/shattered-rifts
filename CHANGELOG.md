@@ -5,6 +5,7 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **Kesh:** Alpha Call brings a 16 HP / 10 damage Alpha. Den Mother is now an Aura that deals 15 damage to a random enemy whenever one of your allies dies (20 upgraded). New: Whelp (1 Mana, a Pup) and Dire Wolf (3 Mana, a 24 HP / 14 damage Dire Wolf).
 - **Kesh:** Rend loses 2 HP, Blood Frenzy loses 1 HP, and Savage Bite deals 8 (10 upgraded).
 - **Kesh:** the Hound has 8 HP and hits for 4 again, she can have 3 companions again, Litter is back (two Hounds), and Rally the Pack gives each of your allies 4 Barrier.
 - **Overflow:** when an attack kills one of your companions, all of the damage left over carries through to you, so cheap minions no longer block a whole big hit.
