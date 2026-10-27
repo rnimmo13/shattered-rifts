@@ -1,9 +1,9 @@
 // Rivet (Nexus-9). Builds an army of machines (max 3 allies). Three build paths:
 //   Swarm     - go wide: cheap bodies, payoffs per ally, per summon and per death, sacrifice, Might for everyone (DECISIONS #358)
-//   Assemble  - make allies act again: burst turns
+//   Assemble  - charge companions up with Primed; only 3 cards make them act now (DECISIONS #361)
 //   Core      - go tall: one big construct you grow, protect and cash in (Repair Bot, Reactor, Heavy Plating are Swarm's, by tools/src/paths.ts)
 
-import type { CardDef } from '@sr/combat';
+import type { CardDef, Op } from '@sr/combat';
 import {
   growHp,
   ACT,
@@ -24,6 +24,8 @@ import {
   discoverOp,
 } from '../build';
 
+/** every companion's next strike hits harder: Primed (`vigor`) for each of them (DECISIONS #361) */
+const prime = (n: number): Op => status('vigor', n, 'allAllies');
 const r = pool('engineer', 'nexus');
 
 export const ENGINEER: CardDef[] = [
@@ -115,8 +117,8 @@ export const ENGINEER: CardDef[] = [
   ),
 
   // --- Assemble ---
-  r('common', 'ping', 'Ping', 'skill', 0, 'none', [ACT], { exhaust: true }),
-  r('common', 'jumpstart', 'Jumpstart', 'skill', 1, 'none', [ACT, barrier(4)]),
+  r('common', 'ping', 'Ping', 'skill', 0, 'none', [prime(2)], { exhaust: true }),
+  r('common', 'jumpstart', 'Jumpstart', 'skill', 1, 'none', [prime(3), barrier(4)]),
   r(
     'common',
     'countermeasure-grid',
@@ -128,18 +130,18 @@ export const ENGINEER: CardDef[] = [
     { trigger: { on: 'attacked' } },
   ),
   r('uncommon', 'assemble', 'Assemble', 'skill', 1, 'none', [ACT, draw(1)]),
-  r('rare', 'double-time', 'Double Time', 'skill', 2, 'none', [ACT, ACT]),
+  r('rare', 'double-time', 'Double Time', 'skill', 2, 'none', [prime(6)]),
   r('uncommon', 'overdrive', 'Overdrive', 'skill', 1, 'none', [
     status('might', 1, 'allFriends'),
-    ACT,
+    prime(2),
   ]),
   r('rare', 'emp', 'EMP', 'snare', 1, 'none', [status('stunned', 1, 'attacker')], {
     trigger: { on: 'attacked' },
   }),
-  r('rare', 'perpetual-motion', 'Perpetual Motion', 'power', 2, 'none', [on('turnStart', [ACT])]),
+  r('rare', 'perpetual-motion', 'Perpetual Motion', 'power', 2, 'none', [on('turnStart', [prime(2)])]),
 
   r('common', 'relay-strike', 'Relay Strike', 'attack', 1, 'foe', [dmg(6), ACT]),
-  r('uncommon', 'overwatch', 'Overwatch', 'snare', 1, 'none', [ACT, dmg(6, 'attacker')], {
+  r('uncommon', 'overwatch', 'Overwatch', 'snare', 1, 'none', [prime(3), dmg(6, 'attacker')], {
     trigger: { on: 'attacked' },
   }),
   r(
@@ -149,13 +151,13 @@ export const ENGINEER: CardDef[] = [
     'skill',
     2,
     'none',
-    [ACT, ACT, status('might', 1, 'allFriends')],
+    [status('might', 2, 'allFriends')],
     { exhaust: true },
   ),
 
   // (more Assemble)
-  r('uncommon', 'link-up', 'Link Up', 'skill', 1, 'none', [ACT, barrier(4, 'allFriends')]),
-  r('rare', 'chain-reaction', 'Chain Reaction', 'skill', 2, 'none', [ACT, ACT, draw(1)]),
+  r('uncommon', 'link-up', 'Link Up', 'skill', 1, 'none', [barrier(4, 'allFriends'), draw(1)]),
+  r('rare', 'chain-reaction', 'Chain Reaction', 'skill', 2, 'none', [draw(2), prime(4)]),
   r('rare', 'command-chip', 'Command Chip', 'power', 3, 'none', [
     on('play', [ACT], { filter: 'summon' }),
   ]),
@@ -164,8 +166,8 @@ export const ENGINEER: CardDef[] = [
   r('common', 'tandem-strike', 'Tandem Strike', 'attack', 1, 'foe', [
     scaled(dmg(3), per('played', 2)),
   ]),
-  r('uncommon', 'arc-relay', 'Arc Relay', 'attack', 2, 'none', [dmg(5, 'allFoes'), ACT]),
-  r('uncommon', 'clockwork-snare', 'Clockwork Trap', 'snare', 1, 'none', [ACT, barrier(8)], {
+  r('uncommon', 'arc-relay', 'Arc Relay', 'attack', 2, 'none', [dmg(6, 'allFoes'), prime(3)]),
+  r('uncommon', 'clockwork-snare', 'Clockwork Trap', 'snare', 1, 'none', [prime(3), barrier(8)], {
     trigger: { on: 'hpLost', min: 5 },
   }),
   r(
@@ -175,7 +177,7 @@ export const ENGINEER: CardDef[] = [
     'skill',
     0,
     'none',
-    [scaled(status('might', 0, 'allFriends'), per('x')), ACT],
+    [scaled(status('might', 0, 'allFriends'), per('x'))],
     { x: true },
   ),
 
@@ -254,25 +256,25 @@ export const ENGINEER: CardDef[] = [
   r('uncommon', 'ion-lance', 'Ion Lance', 'attack', 2, 'foe', [dmg(16)]),
   r('rare', 'railgun', 'Railgun', 'attack', 3, 'foe', [dmg(30)]),
   r('legendary', 'foundry-awakens', 'The Foundry Awakens', 'power', 3, 'none', [
-    on('turnStart', [summon('siege-engine'), ACT]),
+    on('turnStart', [summon('siege-engine'), prime(3)]),
   ]),
   r(
     'legendary',
     'overclocked-legion',
     'Overclocked Legion',
-    'skill',
+    'power',
     2,
     'none',
-    [status('might', 3, 'allFriends'), ACT, ACT],
-    { exhaust: true, up: { cost: 1, effects: [status('might', 4, 'allFriends'), ACT, ACT] } },
+    // 2 Might for every friend now, and every turn the companions charge up (DECISIONS #361)
+    [status('might', 2, 'allFriends'), on('turnStart', [prime(3)])],
   ),
   r('uncommon', 'overcharge', 'Overcharge', 'skill', 0, 'none', [mana(2), manaNext(-1)], {
     exhaust: true,
   }),
 
   // --- brought back (DECISIONS #337) ---
-  r('common', 'sync-pulse', 'Sync Pulse', 'skill', 1, 'none', [ACT, heal(3, 'allFriends')]),
-  r('rare', 'overload', 'Overload', 'skill', 2, 'none', [ACT, ACT, ACT], { exhaust: true }),
+  r('common', 'sync-pulse', 'Sync Pulse', 'skill', 1, 'none', [heal(3, 'allFriends'), draw(1)]),
+  r('rare', 'overload', 'Overload', 'skill', 2, 'none', [prime(10)], { exhaust: true }),
   r('common', 'hardened-chassis', 'Hardened Chassis', 'skill', 1, 'ally', [
     barrier(9, 'target'),
     draw(1),
@@ -289,9 +291,8 @@ export const ENGINEER: CardDef[] = [
   r('uncommon', 'scrapyard-king', 'Scrapyard King', 'power', 2, 'none', [
     on('allyDies', [status('might', 1, 'allFriends')]),
   ]),
-  r('uncommon', 'echo-command', 'Echo Command', 'skill', 1, 'none', [ACT, ACT, manaNext(-1)], {
+  r('uncommon', 'echo-command', 'Echo Command', 'skill', 1, 'none', [prime(5)], {
     exhaust: true,
-    retain: true,
   }),
   r('uncommon', 'resonant-pulse', 'Resonant Pulse', 'power', 1, 'none', [
     on('play', [heal(1, 'allFriends')], { filter: 'skill' }),
@@ -315,7 +316,7 @@ export const ENGINEER: CardDef[] = [
     growHp(8, 'target'),
     barrier(3, 'target'),
   ]),
-  r('rare', 'relay-network', 'Relay Network', 'power', 2, 'none', [on('snare', [ACT])]),
+  r('rare', 'relay-network', 'Relay Network', 'power', 2, 'none', [on('snare', [prime(3)])]),
 
   // --- Core: one big construct, built up and cashed in (DECISIONS #358) ---
   r('common', 'crankshaft', 'Crankshaft', 'attack', 1, 'foe', [scaled(dmg(4), per('biggestAlly', 1 / 4))]),

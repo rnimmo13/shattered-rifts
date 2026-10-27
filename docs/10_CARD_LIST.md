@@ -97,7 +97,7 @@ Starter: Strike, Strike, Strike, Strike, Defend, Defend, Defend, Defend, Dawn Sm
 
 A tinkerer of machines. She starts every fight with a Drone and builds an army of them.
 
-Paths: Swarm: many cheap drones, spent freely / Assemble: allies act again / Core: one big construct, built up
+Paths: Swarm: many cheap drones, spent freely / Assemble: charge your companions up / Core: one big construct, built up
 
 Starter: Strike, Strike, Strike, Strike, Strike, Defend, Defend, Defend, Deploy Drone, Tune-Up
 
@@ -109,8 +109,8 @@ Starter: Strike, Strike, Strike, Strike, Strike, Defend, Defend, Defend, Deploy 
 | Formation Strike | 1 | attack | common | Deal 2 (+4 per ally) damage. |
 | Strip for Parts | 0 | skill | common | Gain Barrier equal to the target's HP. Draw 1 card. Sacrifice the chosen ally. |
 | Breach Charge | 1 | attack | common | Deal 5 damage. Summon Micro Drone (3 HP). At the end of your turn it will: Deal 3 damage. |
-| Ping | 0 | skill | common | All your allies act now. Consume. |
-| Jumpstart | 1 | skill | common | All your allies act now. Gain 4 Barrier. |
+| Ping | 0 | skill | common | Each of your companions gains 2 Primed. Consume. |
+| Jumpstart | 1 | skill | common | Each of your companions gains 3 Primed. Gain 4 Barrier. |
 | Countermeasure Grid | 1 | trap | common | When you or an ally is attacked: Deal 5 damage to the attacker. Gain 5 Barrier. |
 | Relay Strike | 1 | attack | common | Deal 6 damage. All your allies act now. |
 | Tandem Strike | 1 | attack | common | Deal 3 (+2 per card played this turn) damage. |
@@ -121,7 +121,7 @@ Starter: Strike, Strike, Strike, Strike, Strike, Defend, Defend, Defend, Deploy 
 | Armor Piercer | 1 | attack | common | Deal 6 damage. Apply 1 Exposed. |
 | Static Field | 1 | attack | common | Deal 3 damage to ALL enemies. Apply 1 Faltering to ALL enemies. |
 | Plating | 1 | skill | common | Gain 6 Barrier to all friends. |
-| Sync Pulse | 1 | skill | common | All your allies act now. Heal 3. Your companions gain 3 max HP. |
+| Sync Pulse | 1 | skill | common | Heal 3. Your companions gain 3 max HP. Draw 1 card. |
 | Hardened Chassis | 1 | skill | common | Gain 9 Barrier to the ally. Draw 1 card. |
 | Crankshaft | 1 | attack | common | Deal 4 (+1 per 4 max HP of your biggest companion) damage. |
 | Reinforced Frame | 1 | skill | common | The ally gains 5 max HP. Draw 1 card. |
@@ -133,12 +133,12 @@ Starter: Strike, Strike, Strike, Strike, Strike, Defend, Defend, Defend, Deploy 
 | Detonate | 0 | skill | uncommon | Deal 10 damage to ALL enemies. Sacrifice the chosen ally. |
 | Drone Ambush | 1 | trap | uncommon | At the start of the enemy turn: Deal 4 damage to ALL enemies. Summon Micro Drone (3 HP). At the end of your turn it will: Deal 3 damage. |
 | Assemble | 1 | skill | uncommon | All your allies act now. Draw 1 card. |
-| Overdrive | 1 | skill | uncommon | Apply 1 Might to all friends. All your allies act now. |
-| Overwatch | 1 | trap | uncommon | When you or an ally is attacked: All your allies act now. Deal 6 damage to the attacker. |
-| Link Up | 1 | skill | uncommon | All your allies act now. Gain 4 Barrier to all friends. |
-| Arc Relay | 2 | attack | uncommon | Deal 5 damage to ALL enemies. All your allies act now. |
-| Clockwork Trap | 1 | trap | uncommon | When you lose 5+ HP at once: All your allies act now. Gain 8 Barrier. |
-| Surge Protocol | X | skill | uncommon | Apply equal to the Mana spent Might to all friends. All your allies act now. |
+| Overdrive | 1 | skill | uncommon | Apply 1 Might to all friends. Each of your companions gains 2 Primed. |
+| Overwatch | 1 | trap | uncommon | When you or an ally is attacked: Each of your companions gains 3 Primed. Deal 6 damage to the attacker. |
+| Link Up | 1 | skill | uncommon | Gain 4 Barrier to all friends. Draw 1 card. |
+| Arc Relay | 2 | attack | uncommon | Deal 6 damage to ALL enemies. Each of your companions gains 3 Primed. |
+| Clockwork Trap | 1 | trap | uncommon | When you lose 5+ HP at once: Each of your companions gains 3 Primed. Gain 8 Barrier. |
+| Surge Protocol | X | skill | uncommon | Apply Might equal to the Mana spent to all friends. |
 | Reinforce | 1 | skill | uncommon | Gain 8 Barrier to the ally. Apply 2 Might to the ally. |
 | Upgrade Chip | 1 | skill | uncommon | Apply 2 Might to the ally. The ally gains 6 max HP. |
 | Weld Armor | 1 | skill | uncommon | The ally gains 6 max HP. Gain 6 Barrier to the ally. |
@@ -151,7 +151,7 @@ Starter: Strike, Strike, Strike, Strike, Strike, Defend, Defend, Defend, Deploy 
 | Blueprint | 1 | skill | uncommon | Add a random Summon card from your pool to your hand. |
 | Salvage Rights | 1 | aura | uncommon | Whenever one of your allies dies: Draw 1 card. |
 | Scrapyard King | 2 | aura | uncommon | Whenever one of your allies dies: Apply 1 Might to all friends. |
-| Echo Command | 1 | skill | uncommon | All your allies act now. All your allies act now. Next turn, lose 1 Mana. Consume. Hold. |
+| Echo Command | 1 | skill | uncommon | Each of your companions gains 5 Primed. Consume. |
 | Resonant Pulse | 1 | aura | uncommon | Whenever you play a Skill: Heal 1. Your companions gain 1 max HP. |
 | Self-Mending | 1 | aura | uncommon | At the start of your turn: Heal 2. Your companions gain 2 max HP. |
 | Patch Job | 0 | skill | uncommon | The ally gains 8 max HP. Gain 3 Barrier to the ally. |
@@ -161,11 +161,11 @@ Starter: Strike, Strike, Strike, Strike, Strike, Defend, Defend, Defend, Deploy 
 | Mass Production | 3 | aura | rare | At the start of your turn: Summon Patrol Drone (5 HP). At the end of your turn it will: Deal 4 damage. |
 | Drone Carrier | 3 | summon | rare | Summon 3 Patrol Drones (5 HP each). At the end of your turn each will: Deal 4 damage. Consume. |
 | Mob Rule | 2 | attack | rare | Deal 5 (+3 per ally) damage to ALL enemies. |
-| Double Time | 2 | skill | rare | All your allies act now. All your allies act now. |
+| Double Time | 2 | skill | rare | Each of your companions gains 6 Primed. |
 | EMP | 1 | trap | rare | When you or an ally is attacked: Stun the attacker for 1 turn. |
-| Perpetual Motion | 2 | aura | rare | At the start of your turn: All your allies act now. |
-| Grand Assembly | 2 | skill | rare | All your allies act now. All your allies act now. Apply 1 Might to all friends. Consume. |
-| Chain Reaction | 2 | skill | rare | All your allies act now. All your allies act now. Draw 1 card. |
+| Perpetual Motion | 2 | aura | rare | At the start of your turn: Each of your companions gains 2 Primed. |
+| Grand Assembly | 2 | skill | rare | Apply 2 Might to all friends. Consume. |
+| Chain Reaction | 2 | skill | rare | Draw 2 cards. Each of your companions gains 4 Primed. |
 | Command Chip | 3 | aura | rare | Whenever you play a Summon: All your allies act now. |
 | Siege Engine | 2 | summon | rare | Summon Siege Engine (16 HP). At the end of your turn it will: Deal 13 damage. |
 | War Engine | 3 | summon | rare | Summon War Engine (22 HP). At the end of your turn it will: Deal 9 damage. |
@@ -175,14 +175,14 @@ Starter: Strike, Strike, Strike, Strike, Strike, Defend, Defend, Defend, Deploy 
 | Heavy Industry | 2 | aura | rare | At the start of your turn: Gain 4 Barrier to all friends. |
 | Backup Core | 2 | aura | rare | Whenever one of your allies dies: Your most recently fallen ally returns with half its HP. |
 | Railgun | 3 | attack | rare | Deal 30 damage. |
-| Overload | 2 | skill | rare | All your allies act now. All your allies act now. All your allies act now. Consume. |
+| Overload | 2 | skill | rare | Each of your companions gains 10 Primed. Consume. |
 | Factory Floor | 2 | aura | rare | Whenever you summon an ally: Draw 1 card. |
 | Swarm Surge | 2 | skill | rare | Summon Patrol Drone (5 HP). At the end of your turn it will: Deal 4 damage. Draw cards equal to the number of your allies. Consume. |
-| Relay Network | 2 | aura | rare | Whenever one of your Traps is triggered: All your allies act now. |
+| Relay Network | 2 | aura | rare | Whenever one of your Traps is triggered: Each of your companions gains 3 Primed. |
 | Heavy Hitter | 2 | attack | rare | Deal damage equal to your biggest companion's max HP. |
-| The Foundry Awakens | 3 | aura | legendary | At the start of your turn: Summon Siege Engine (16 HP). At the end of your turn it will: Deal 13 damage. All your allies act now. |
-| Overclocked Legion | 2 | skill | legendary | Apply 3 Might to all friends. All your allies act now. All your allies act now. Consume. |
-| Drone Uprising | 2 | skill | legendary | Summon 3 Drones (8 HP each). At the end of your turn each will: Deal 3 damage. All your allies act now. Consume. |
+| The Foundry Awakens | 3 | aura | legendary | At the start of your turn: Summon Siege Engine (16 HP). At the end of your turn it will: Deal 13 damage. Each of your companions gains 3 Primed. |
+| Overclocked Legion | 2 | aura | legendary | Apply 2 Might to all friends. At the start of your turn: Each of your companions gains 3 Primed. |
+| Drone Uprising | 2 | skill | legendary | Summon 3 Drones (8 HP each). At the end of your turn each will: Deal 3 damage. Each of your companions gains 3 Primed. Consume. |
 
 ## Kesh the Unfed (wyldmaw, 80 HP)
 
@@ -274,7 +274,7 @@ Starter: Strike, Strike, Strike, Strike, Defend, Defend, Defend, Savage Bite, Bl
 | Hunger Unbound | 2 | aura | rare | Gain 1 Unbound. At the start of your turn: Lose 3 HP. |
 | The Hunger Unleashed | 2 | aura | legendary | Lose 7 HP. Gain 4 Might. Gain 2 Cadence. These last the rest of the fight. |
 | Apex Frenzy | 2 | attack | legendary | Deal 6 damage 2 times, 1 more time per card played this turn. Lifesteal 50%. Consume. |
-| Bloodmoon Hunt | 2 | skill | legendary | Summon 2 Hounds (8 HP each). At the end of your turn each will: Deal 4 damage. Apply 3 Might to each of your allies. All your allies act now. Consume. |
+| Bloodmoon Hunt | 2 | skill | legendary | Summon 2 Hounds (8 HP each). At the end of your turn each will: Deal 4 damage. Each of your companions gains 3 Might. All your allies act now. Consume. |
 
 ## Vesper Nightlace (umbral, 80 HP)
 
@@ -441,7 +441,7 @@ Starter: Strike, Strike, Strike, Strike, Defend, Defend, Defend, Quick Jab, Quic
 | Nightfall | 2 | skill | rare | Apply 5 Bleed to ALL enemies. Apply 2 Exposed to ALL enemies. Consume. |
 | Tainted Edge | 2 | aura | rare | Whenever you play an Attack: Apply 1 Bleed to ALL enemies. |
 | Festering Wound | 2 | attack | rare | Deal 8 (+1 per Bleed on the target) damage. |
-| Contagion | 2 | skill | rare | Apply 2 Bleed. Apply equal to the target's Bleed Bleed to ALL enemies. Consume. |
+| Contagion | 2 | skill | rare | Apply 2 Bleed. Apply Bleed equal to the target's Bleed to ALL enemies. Consume. |
 | Compounding Interest | 2 | aura | rare | At the start of your turn: Apply 3 Bleed to ALL enemies. |
 | Flaying Spree | 2 | attack | rare | Deal 8 damage, 1 more time per card discarded this turn. |
 | Encore | 1 | skill | rare | Gain 1 Mirrored. Draw 1 card. |

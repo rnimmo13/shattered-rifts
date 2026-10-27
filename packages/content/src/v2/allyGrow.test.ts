@@ -76,6 +76,30 @@ describe('healing a companion grows it', () => {
     expect(previewCardDamage(db, s, 'T1').get(0)).toBeUndefined();
   });
 
+  it("a companion's strike spends its Primed (DECISIONS #361)", () => {
+    let s = play(fight(['jumpstart']), 'T0'); // 3 Primed on the Drone Rivet starts with
+    const drone = allies(s)[0]!;
+    expect(drone.statuses.vigor).toBe(3);
+    const foe = s.sides.b.units[0]!;
+    foe.hp = foe.maxHp = 200;
+    foe.barrier = 0;
+    s = applyAction(db, s, { type: 'endTurn' }).state;
+    expect(s.sides.b.units[0]!.hp).toBe(200 - 3 - 3); // its 3, and the 3 Primed
+    expect(s.sides.a.units.find((u) => u.id === drone.id)?.statuses.vigor ?? 0).toBe(0);
+  });
+
+  it('Rivet keeps only three "act now" cards, each acting once (DECISIONS #361)', () => {
+    const acts = (ops: readonly { op: string; ops?: unknown }[]): number =>
+      ops.reduce(
+        (n, o) => n + (o.op === 'actAllies' ? 1 : 0) + (Array.isArray(o.ops) ? acts(o.ops) : 0),
+        0,
+      );
+    const rivet = Object.values(db.cards).filter((c) => c.hero === 'engineer' && !c.id.endsWith('+'));
+    const withAct = rivet.filter((c) => acts(c.effects) > 0);
+    expect(withAct.map((c) => c.id).sort()).toEqual(['assemble', 'command-chip', 'relay-strike']);
+    for (const c of withAct) expect(acts(c.effects)).toBe(1);
+  });
+
   it('says so on the card', () => {
     expect(cardText(db, db.cards['sync-pulse']!)).toContain('Your companions gain 3 max HP');
   });

@@ -5,6 +5,7 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **Rivet:** only Assemble, Relay Strike and Command Chip still make companions act now (once each); the rest of Assemble charges them up with Primed, so their next strike hits harder. Companions now spend Primed.
 - **Ilvane:** every damage number on his cards is 1 higher; the Hawk totem deals 4 a turn (was 3) and Awakens for 10 (9), Splinter Awakens for 7 (6).
 - **Rivet:** cheaper companions have less HP: Patrol Drone 5 (was 7), Micro Drone 3 (4), Sentry Turret 7 (10), Repair Bot 4 (6), Enforcer Mk.II 12 (14).
 - **Rivet:** Swarm and Core pulled apart. Swarm goes wide (Heavy Plating, Repair Bot and Reactor join it); Core goes tall: new Crankshaft, Reinforced Frame and Heavy Hitter grow with your biggest companion, and Reactor Meltdown deals the HP of the ally it blows up. Salvage Bot, Swarm Protocol and Scrap Volley are retired.

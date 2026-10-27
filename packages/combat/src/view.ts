@@ -551,6 +551,16 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
       // (on your own cards a status you put on yourself is gained or lost, not "applied")
       const mine = o.to === 'self' && who.self === WHO.self;
       const verb = o.amount < 0 ? (mine ? 'Lose' : 'Remove') : mine ? 'Gain' : 'Apply';
+      // (on your own card, a status for every companion: "Each of your companions gains 3 Primed.")
+      if (o.to === 'allAllies' && who.self === WHO.self && o.amount > 0 && !o.temp) {
+        const a = amountText(o.amount, o.scale);
+        return a.equal
+          ? `Each of your companions gains ${sname(o.status)} equal to ${a.num}.`
+          : `Each of your companions gains ${a.num} ${sname(o.status)}.`;
+      }
+      // (a number that depends on something reads "Apply Might equal to the Mana spent", not "Apply equal to ... Might")
+      if (amountText(Math.abs(o.amount), o.scale).equal)
+        return `${verb} ${sname(o.status)} equal to ${amountText(Math.abs(o.amount), o.scale).num}${o.to === 'self' ? '' : who[o.to]}${o.temp ? ' until the end of your turn' : ''}.`;
       return `${verb} ${at(Math.abs(o.amount), o.scale)} ${sname(o.status)}${o.to === 'self' ? '' : who[o.to]}${o.temp ? ' until the end of your turn' : ''}.`;
     }
     case 'scaleStatus': {

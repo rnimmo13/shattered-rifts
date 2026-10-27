@@ -93,12 +93,12 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
       'A tinkerer of machines. She starts every fight with a Drone and builds an army of them.',
     buildPaths: [
       'Swarm: many cheap drones, spent freely',
-      'Assemble: allies act again',
+      'Assemble: charge your companions up',
       'Core: one big construct, built up',
     ],
     howTo: [
       'You start with a Drone. Allies attack for you when you end your turn.',
-      'You can have 3 allies. Swarm fills the row with small drones and spends them; Core builds one big machine up (heals and upgrades give it max HP) and cashes it in; Assemble makes them act again.',
+      'You can have 3 allies. Swarm fills the row with small drones and spends them; Core builds one big machine up (heals and upgrades give it max HP) and cashes it in; Assemble charges them up (Primed: their next strike hits harder).',
       'Enemies can hit your allies too; an ally with Taunt has to be attacked first.',
     ],
   },

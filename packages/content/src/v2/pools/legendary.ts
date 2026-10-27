@@ -50,7 +50,8 @@ export const LEGENDARIES: CardDef[] = [
     'skill',
     2,
     'none',
-    [summon('drone'), summon('drone'), summon('drone'), ACT],
+    // (they arrive charged up: Rivet keeps only 3 "act now" cards, DECISIONS #361)
+    [summon('drone'), summon('drone'), summon('drone'), status('vigor', 3, 'allAllies')],
     { exhaust: true },
   ),
   // Pack: two more Hounds, and the whole pack strikes at once

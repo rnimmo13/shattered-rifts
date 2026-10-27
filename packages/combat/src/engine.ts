@@ -570,8 +570,8 @@ function execOp(r: Run, a: Act, op: Op): void {
           (op.scale.mult ?? 1) * metricValue(r, a, op.scale.by, op.scale.of, a.target),
         );
       const edge = a.card?.tags?.includes(EDGE_TAG) ? stacks(a.actor, 'edge') : 0;
-      // (a hero's Vigor goes into its next attack card; an enemy's into its next attacking move)
-      const vigor = (a.card ? a.card.kind === 'attack' : a.actor.kind === 'enemy')
+      // (a hero's Vigor goes into its next attack card; an enemy's or a companion's into its next attacking move, DECISIONS #361)
+      const vigor = (a.card ? a.card.kind === 'attack' : a.actor.kind !== 'hero')
         ? stacks(a.actor, 'vigor')
         : 0;
       let took = 0;
