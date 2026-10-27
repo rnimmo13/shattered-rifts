@@ -184,7 +184,7 @@ export const HUNTER: CardDef[] = [
   // (an uncommon makes allies act only when that is what it is for; here they are shielded instead: DECISIONS #311)
   k('uncommon', 'rally-the-pack', 'Rally the Pack', 'skill', 2, 'none', [
     summon('hound'),
-    barrier(3, 'allAllies'),
+    barrier(4, 'allAllies'),
   ]),
   k('uncommon', 'trail-of-blood', 'Trail of Blood', 'power', 1, 'none', [
     on('summon', [status('might', 1)]),
@@ -340,19 +340,8 @@ export const HUNTER: CardDef[] = [
     status('might', 2),
     barrier(6, 'allFriends'),
   ]),
-  // (two Gnashlings, the frailer pups: DECISIONS #316; switched off for now, #317: never offered, but a deck that holds it still plays it)
-  k(
-    'uncommon',
-    'litter',
-    'Litter',
-    'skill',
-    2,
-    'none',
-    [summon('gnashling'), summon('gnashling')],
-    {
-      source: 'disabled',
-    },
-  ),
+  // (two Hounds and nothing else: DECISIONS #323)
+  k('uncommon', 'litter', 'Litter', 'skill', 2, 'none', [summon('hound'), summon('hound')]),
   k('uncommon', 'bone-collar', 'Bone Collar', 'power', 1, 'none', [
     on('allyDies', [status('might', 2), heal(4)]),
   ]),

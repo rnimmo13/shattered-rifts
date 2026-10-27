@@ -258,7 +258,7 @@ Starter: Strike, Strike, Strike, Strike, Defend, Defend, Defend, Savage Bite, Bl
 | Savage Command | 2 | skill | uncommon | All your allies act now. Gain 1 Might. |
 | Pack Bond | 2 | aura | uncommon | At the start of your turn: Gain 3 Barrier to all friends. |
 | Feeding Time | 1 | skill | uncommon | Your companions gain 3 max HP. Gain 1 Might. |
-| Rally the Pack | 2 | skill | uncommon | Summon Hound (5 HP). At the end of your turn it will: Deal 3 damage. Each of your allies gains 3 Barrier. |
+| Rally the Pack | 2 | skill | uncommon | Summon Hound (8 HP). At the end of your turn it will: Deal 4 damage. Each of your allies gains 4 Barrier. |
 | Trail of Blood | 1 | aura | uncommon | Whenever you summon an ally: Gain 1 Might. |
 | Crimson Pact | 1 | skill | uncommon | Lose 4 HP. Consume 1 card. Draw 2 cards. |
 | Gnaw | 1 | attack | uncommon | Deal 5 (+1 per consumed card) damage. |
@@ -275,6 +275,7 @@ Starter: Strike, Strike, Strike, Strike, Defend, Defend, Defend, Savage Bite, Bl
 | Frothing Rage | 1 | skill | uncommon | Lose 3 HP. Gain 3 Might until the end of your turn. Draw 2 cards. |
 | Wounded Wrath | 1 | aura | uncommon | Whenever you lose HP to your own cards: Deal 4 damage to a random enemy. |
 | Blood Bond | 1 | skill | uncommon | Lose 3 HP. Gain 2 Might. Gain 6 Barrier to all friends. |
+| Litter | 2 | skill | uncommon | Summon 2 Hounds (8 HP each). At the end of your turn each will: Deal 4 damage. |
 | Bone Collar | 1 | aura | uncommon | Whenever one of your allies dies: Gain 2 Might. Heal 4. |
 | Feast on Fear | 2 | attack | uncommon | Deal 12 damage. Heal 3 (+2 per Exposed on the target). |
 | Gore and Gulp | 1 | attack | uncommon | Deal 10 damage. Lifesteal 50%. Consume. |
@@ -1136,7 +1137,7 @@ Tokens (made by other cards):
 
 - knight: 92
 - engineer: 93
-- hunter: 91
+- hunter: 92
 - trapper: 99
 - assassin: 97
 - totemist: 96

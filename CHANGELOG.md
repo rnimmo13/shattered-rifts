@@ -5,6 +5,7 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **Kesh:** the Hound has 8 HP and hits for 4 again, she can have 3 companions again, Litter is back (two Hounds), and Rally the Pack gives each of your allies 4 Barrier.
 - **Overflow:** when an attack kills one of your companions, all of the damage left over carries through to you, so cheap minions no longer block a whole big hit.
 - **Kesh:** Devour deals 16 (was 14); Fell the Prey, its near twin, is switched off for now.
 - **Your history follows you:** signed in, your run history, your Arena match history and your username appear on every device, as your runs already do.
