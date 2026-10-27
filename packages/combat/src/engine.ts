@@ -151,7 +151,7 @@ function addStatus(r: Run, u: Unit, st: StatusId, amount: number): boolean {
   // unit's own turn does not wear off at the end of it, so it still covers the unit's next turn
   if (st === 'stunned' && amount > 0) {
     total = Math.max(was, amount);
-    if (r.s.active === u.side) u.stunFresh = true;
+    if (r.s.active === u.side && amount > was) u.stunFresh = true;
   }
   if (total <= 0) delete u.statuses[st];
   else u.statuses[st] = total;

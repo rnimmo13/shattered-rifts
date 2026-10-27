@@ -18,6 +18,7 @@ import {
   rolledId,
   rewardPool,
   pathOf,
+  canonicalCard,
   canonicalHero,
   type HeroId,
 } from '@sr/content/v2';
@@ -500,7 +501,11 @@ export function checkGhostBoss(raw: unknown): GhostBoss | null {
   // (an id from before the Riftwalkers were named for their class is read as the class)
   const hero = typeof sent === 'string' ? canonicalHero(sent) : sent;
   if (typeof hero !== 'string' || !Object.hasOwn(RIFTWALKERS, hero)) return null;
-  const deck = g['deck'];
+  const rawDeck = g['deck'];
+  // (a ghost saved before a card was taken out of the game plays its replacement: DECISIONS #312)
+  const deck = Array.isArray(rawDeck)
+    ? rawDeck.map((c: unknown) => (typeof c === 'string' ? canonicalCard(c) : c))
+    : rawDeck;
   const boons = g['boons'];
   if (!Array.isArray(deck) || deck.length < V2_DECK_RULES.minSize || deck.length > 80) return null;
   // (sanctified and engraved cards are real cards of that deck: isDeckCard knows them)

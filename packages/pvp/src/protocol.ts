@@ -45,7 +45,8 @@ export interface Entry {
  */
 // (5: the 0.71-0.85 card changes, Lifesteal, growing companions and Kesh's shared Might, DECISIONS #287; 6: Obsidia's Arcana, #288)
 // (7: 0.90 cards, Stunned heroes; 8: Kesh's basics and Hound, and decks chosen before each game, DECISIONS #307-308)
-export const RULES_VERSION = 8;
+// (9: Stun as Exposed + Faltering + Brittle, uncommons that shield allies, Kesh's HP costs and retired cards, #310-312)
+export const RULES_VERSION = 9;
 
 /** Who you are playing, before a game starts: their name and badges, not their deck or Riftwalker. */
 export type FoeCard = Pick<Entry, 'name' | 'trophies' | 'rank'>;

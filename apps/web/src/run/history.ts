@@ -5,6 +5,7 @@
 import type { RunState } from '@sr/campaign';
 import type { FightReplay } from '../fight/recap';
 import { BUILD } from '../build';
+import { canonicalCard } from '@sr/content/v2';
 
 const KEY = 'sr.runHistory';
 /** How many runs are kept, and how many of the newest keep their last fight (a fight's moves are a few kilobytes). */
@@ -39,7 +40,10 @@ function read(): RunRecord[] {
   try {
     const raw = localStorage.getItem(KEY);
     if (!raw) return [];
-    const v: unknown = JSON.parse(raw);
+    // (a card taken out of the game becomes its replacement, so an old run can still be watched: DECISIONS #312)
+    const v: unknown = JSON.parse(raw, (_k, val: unknown) =>
+      typeof val === 'string' && val.length <= 40 ? canonicalCard(val) : val,
+    );
     return Array.isArray(v)
       ? v.filter(
           (r): r is RunRecord =>

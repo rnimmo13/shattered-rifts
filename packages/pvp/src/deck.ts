@@ -166,7 +166,18 @@ export function checkEntry(raw: unknown): Checked | Rejected {
   if (!Array.isArray(sentDeck) || !sentDeck.every((c) => typeof c === 'string'))
     return { ok: false, message: 'The deck is not a list of cards.' };
   // (a card taken out of the game becomes its replacement, so a deck saved before still plays: DECISIONS #312)
-  const deck = sentDeck.map(canonicalCard);
+  // (a replacement that would break a copy limit is left out rather than the whole deck refused)
+  const deck: string[] = [];
+  {
+    const seen = new Map<string, number>();
+    for (const sent of sentDeck) {
+      const id = canonicalCard(sent);
+      if (id !== sent && (!canAdd(deck, id, false) || (seen.get(id) ?? 0) >= MAX_BASIC_COPIES))
+        continue;
+      seen.set(id, (seen.get(id) ?? 0) + 1);
+      deck.push(id);
+    }
+  }
   if (deck.length < V2_DECK_RULES.minSize || deck.length > MAX_DECK)
     return {
       ok: false,

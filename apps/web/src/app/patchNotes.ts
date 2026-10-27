@@ -29,6 +29,29 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.92.0',
+    date: '2026-10-27',
+    title: 'Stun reworked, Kesh retuned',
+    summary:
+      'Stun no longer skips a turn, three uncommons shield your allies instead of making them act, and Kesh pays more HP with fewer free cards.',
+    notes: [
+      {
+        kind: 'balance',
+        text: 'Stun: nobody skips a turn any more. A Stunned unit counts as Exposed, Faltering and Brittle at once (takes 50% more attack damage, deals 25% less, gains 25% less Barrier) for 1 turn, or as many as the card says. It never adds to real Exposed, Faltering or Brittle, and a new Stun keeps the longer countdown.',
+      },
+      {
+        kind: 'balance',
+        text: 'Rally the Pack, Hamstring Slam and Second Death no longer make your allies act: each of your allies gains 3 Barrier instead.',
+      },
+      {
+        kind: 'balance',
+        text: 'Kesh: every card of hers that costs HP costs 1 more (she has Lifesteal now). Heel, Howl and Guard Dog are gone; a saved run or deck that holds one gets Call Gnashlings, Pack Tactics or Rend in its place.',
+      },
+    ],
+    heads:
+      'The rules changed: reload if the game asks you to. Arena games and replays from before this version can no longer be watched.',
+  },
+  {
     version: '0.91.0',
     date: '2026-10-27',
     title: 'Pick your deck, runs on every device',
