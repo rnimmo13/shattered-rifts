@@ -91,7 +91,7 @@ for (const h of Object.keys(RIFTWALKERS) as HeroId[]) {
         a.name.localeCompare(b.name),
     ))
       lines.push(
-        `| ${c.name} | ${c.rarity} | ${c.kind === 'snare' ? 'trap' : c.kind === 'power' ? 'aura' : c.kind} | ${c.cost}${c.statusCost ? ` +${c.statusCost.amount} ${c.statusCost.status}` : ''}${c.starCost ? ` +${c.starCost} Arcana` : ''} | ${cardText(db, c).replace(/\|/g, '/')} |`,
+        `| ${c.name} | ${c.rarity} | ${c.kind === 'snare' ? 'trap' : c.kind === 'power' ? 'aura' : c.kind} | ${c.cost}${c.statusCost ? ` +${c.statusCost.x ? 'X' : c.statusCost.amount} ${c.statusCost.status}` : ''}${c.starCost ? ` +${c.starCost} Arcana` : ''} | ${cardText(db, c).replace(/\|/g, '/')} |`,
       );
     lines.push('');
   }

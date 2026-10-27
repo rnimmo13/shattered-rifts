@@ -1,7 +1,7 @@
 // Rivet (Nexus-9). Builds an army of machines (max 3 allies). Three build paths:
-//   Swarm     - cheap bodies, recycling them, and payoffs for how many allies you have
+//   Swarm     - go wide: cheap bodies, payoffs per ally, per summon and per death, sacrifice, Might for everyone (DECISIONS #358)
 //   Assemble  - make allies act again: burst turns
-//   Core      - a few big constructs, Might and repairs on them
+//   Core      - go tall: one big construct you grow, protect and cash in (Repair Bot, Reactor, Heavy Plating are Swarm's, by tools/src/paths.ts)
 
 import type { CardDef } from '@sr/combat';
 import {

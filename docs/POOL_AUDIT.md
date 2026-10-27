@@ -71,7 +71,7 @@ cost and effects whose numbers differ by about a third or less. "Shared" cards b
 | Lightbearer | common | skill | 1 | Heal 4. Gain 5 Barrier. |
 | Lightbrand | common | attack | 1 +5 devotion | Deal 14 damage. |
 | Prayer | common | skill | 0 | Heal 4. Draw 1 card. Consume. |
-| Sunforged Edge | common | attack | 2 +0 devotion | Deal 6 (+1 per Devotion) damage. |
+| Sunforged Edge | common | attack | 2 +X devotion | Deal 6 (+1 per Devotion) damage. |
 | Sunlit Blow | common | attack | 1 | Deal 6 damage. Heal 2. |
 | Aegis of the Warden | uncommon | skill | 2 | Gain 6 Barrier. Gain 1 Shielded. |
 | Benediction | uncommon | skill | 2 | Heal 10. Gain 6 Barrier. Consume. |
@@ -88,7 +88,7 @@ cost and effects whose numbers differ by about a third or less. "Shared" cards b
 | Hand of God | rare | attack | 2 +15 devotion | Deal 36 damage. |
 | Holy Reckoning | rare | attack | 2 | Deal 8 damage to ALL enemies. Heal 6. |
 | Martyr's Grace | rare | skill | 1 | Lose 5 HP. Gain 15 Barrier. Gain 2 Shielded. Consume. |
-| Sunfall | rare | attack | 2 +0 devotion | Deal 10 (+2 per Devotion) damage to 2 different random enemies. |
+| Sunfall | rare | attack | 2 +X devotion | Deal 10 (+2 per Devotion) damage to 2 different random enemies. |
 | Dawn's Mercy | legendary | aura | 3 | Whenever you heal (even at full HP): Deal damage equal to the HP healed to a random enemy. At the start of your turn: Heal 3. |
 
 ### Shared
@@ -113,25 +113,25 @@ cost and effects whose numbers differ by about a third or less. "Shared" cards b
 
 | Card | Rarity | Type | Cost | Text |
 |---|---|---|---|---|
-| Breach Charge | common | attack | 1 | Deal 5 damage. Summon Micro Drone (4 HP). At the end of your turn it will: Deal 3 damage. |
+| Breach Charge | common | attack | 1 | Deal 5 damage. Summon Micro Drone (3 HP). At the end of your turn it will: Deal 3 damage. |
 | Formation Strike | common | attack | 1 | Deal 2 (+4 per ally) damage. |
 | Heavy Plating | common | aura | 1 | Whenever you summon an ally: Gain 5 Barrier to all friends. |
-| Repair Bot | common | summon | 1 | Summon Repair Bot (6 HP). At the end of your turn it will: Heal 3 to your hero. |
-| Spare Parts | common | summon | 0 | Summon Micro Drone (4 HP). At the end of your turn it will: Deal 3 damage. Consume. |
+| Repair Bot | common | summon | 1 | Summon Repair Bot (4 HP). At the end of your turn it will: Heal 3 to your hero. |
+| Spare Parts | common | summon | 0 | Summon Micro Drone (3 HP). At the end of your turn it will: Deal 3 damage. Consume. |
 | Strip for Parts | common | skill | 0 | Gain Barrier equal to the target's HP. Draw 1 card. Sacrifice the chosen ally. |
-| Call Turret | uncommon | summon | 1 | Summon Sentry Turret (10 HP, Taunt). At the end of your turn it will: Deal 3 damage. Gain 2 Barrier to your hero. |
+| Call Turret | uncommon | summon | 1 | Summon Sentry Turret (7 HP, Taunt). At the end of your turn it will: Deal 3 damage. Gain 2 Barrier to your hero. |
 | Detonate | uncommon | skill | 0 | Deal 10 damage to ALL enemies. Sacrifice the chosen ally. |
-| Drone Ambush | uncommon | trap | 1 | At the start of the enemy turn: Deal 4 damage to ALL enemies. Summon Micro Drone (4 HP). At the end of your turn it will: Deal 3 damage. |
-| Nanoswarm | uncommon | skill | 1 | Summon 3 Micro Drones (4 HP each). At the end of your turn each will: Deal 3 damage. Consume. |
+| Drone Ambush | uncommon | trap | 1 | At the start of the enemy turn: Deal 4 damage to ALL enemies. Summon Micro Drone (3 HP). At the end of your turn it will: Deal 3 damage. |
+| Nanoswarm | uncommon | skill | 1 | Summon 3 Micro Drones (3 HP each). At the end of your turn each will: Deal 3 damage. Consume. |
 | Overcharge Blast | uncommon | attack | 2 | Deal 8 (+2 per ally) damage to ALL enemies. |
-| Parts Bin | uncommon | skill | 1 | Summon Micro Drone (4 HP). At the end of your turn it will: Deal 3 damage. Draw 1 card. |
+| Parts Bin | uncommon | skill | 1 | Summon Micro Drone (3 HP). At the end of your turn it will: Deal 3 damage. Draw 1 card. |
 | Salvage Rights | uncommon | aura | 1 | Whenever one of your allies dies: Draw 1 card. |
-| Scrap Heap | uncommon | skill | 1 | Summon 2 Micro Drones (4 HP each). At the end of your turn each will: Deal 3 damage. Consume. |
+| Scrap Heap | uncommon | skill | 1 | Summon 2 Micro Drones (3 HP each). At the end of your turn each will: Deal 3 damage. Consume. |
 | Scrapyard King | uncommon | aura | 2 | Whenever one of your allies dies: Apply 1 Might to all friends. |
-| Drone Carrier | rare | summon | 3 | Summon 3 Patrol Drones (7 HP each). At the end of your turn each will: Deal 4 damage. Consume. |
-| Hive Mind | rare | aura | 2 | Whenever one of your allies dies: Draw 1 card. Summon Micro Drone (4 HP). At the end of your turn it will: Deal 3 damage. |
+| Drone Carrier | rare | summon | 3 | Summon 3 Patrol Drones (5 HP each). At the end of your turn each will: Deal 4 damage. Consume. |
+| Hive Mind | rare | aura | 2 | Whenever one of your allies dies: Draw 1 card. Summon Micro Drone (3 HP). At the end of your turn it will: Deal 3 damage. |
 | Legion | rare | aura | 2 | Whenever you summon an ally: Apply 1 Might to all friends. |
-| Mass Production | rare | aura | 3 | At the start of your turn: Summon Patrol Drone (7 HP). At the end of your turn it will: Deal 4 damage. |
+| Mass Production | rare | aura | 3 | At the start of your turn: Summon Patrol Drone (5 HP). At the end of your turn it will: Deal 4 damage. |
 | Mob Rule | rare | attack | 2 | Deal 5 (+3 per ally) damage to ALL enemies. |
 | Reactor | rare | aura | 2 | Apply 3 Might to all friends for the rest of the fight. |
 | Swarm Tactics | rare | aura | 1 | Whenever you summon an ally: Deal 3 damage to a random enemy. |
@@ -170,7 +170,7 @@ cost and effects whose numbers differ by about a third or less. "Shared" cards b
 | Card | Rarity | Type | Cost | Text |
 |---|---|---|---|---|
 | Armor Piercer | common | attack | 1 | Deal 6 damage. Apply 1 Exposed. |
-| Build Enforcer | common | summon | 2 | Summon Enforcer Mk.II (14 HP). At the end of your turn it will: Deal 6 damage. |
+| Build Enforcer | common | summon | 2 | Summon Enforcer Mk.II (12 HP). At the end of your turn it will: Deal 6 damage. |
 | Crankshaft | common | attack | 1 | Deal 4 (+1 per 4 max HP of your biggest companion) damage. |
 | Hardened Chassis | common | skill | 1 | Gain 9 Barrier to the ally. Draw 1 card. |
 | Reinforced Frame | common | skill | 1 | The ally gains 5 max HP. Draw 1 card. |
@@ -181,7 +181,7 @@ cost and effects whose numbers differ by about a third or less. "Shared" cards b
 | Reinforce | uncommon | skill | 1 | Gain 8 Barrier to the ally. Apply 2 Might to the ally. |
 | Self-Mending | uncommon | aura | 1 | At the start of your turn: Heal 2. Your companions gain 2 max HP. |
 | Siege Protocol | uncommon | attack | 2 | Deal 6 (+2 per Might) damage. |
-| Titan Forge | uncommon | summon | 2 | Summon Enforcer Mk.II (14 HP). At the end of your turn it will: Deal 6 damage. Apply 2 Might to all friends. Consume. |
+| Titan Forge | uncommon | summon | 2 | Summon Enforcer Mk.II (12 HP). At the end of your turn it will: Deal 6 damage. Apply 2 Might to all friends. Consume. |
 | Upgrade Chip | uncommon | skill | 1 | Apply 2 Might to the ally. The ally gains 6 max HP. |
 | Weld Armor | uncommon | skill | 1 | The ally gains 6 max HP. Gain 6 Barrier to the ally. |
 | Backup Core | rare | aura | 2 | Whenever one of your allies dies: Your most recently fallen ally returns with half its HP. |
@@ -205,7 +205,7 @@ cost and effects whose numbers differ by about a third or less. "Shared" cards b
 | Factory Floor | rare | aura | 2 | Whenever you summon an ally: Draw 1 card. |
 | Railgun | rare | attack | 3 | Deal 30 damage. |
 | Relay Network | rare | aura | 2 | Whenever one of your Traps is triggered: All your allies act now. |
-| Swarm Surge | rare | skill | 2 | Summon Patrol Drone (7 HP). At the end of your turn it will: Deal 4 damage. Draw cards equal to the number of your allies. Consume. |
+| Swarm Surge | rare | skill | 2 | Summon Patrol Drone (5 HP). At the end of your turn it will: Deal 4 damage. Draw cards equal to the number of your allies. Consume. |
 
 ## Kesh the Unfed (hunter)
 

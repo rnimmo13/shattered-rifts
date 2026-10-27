@@ -2097,10 +2097,13 @@ export function previewCardDamage(
   const foes = s.sides[other(sd.id)].units.filter((u) => u.hp > 0);
   const taunters = foes.filter((u) => u.taunt);
   const chosen = targetId ? (foes.find((u) => u.id === targetId) ?? null) : null;
+  // a card aimed at your own unit (Reactor Meltdown reads the ally's HP) previews with that unit as its target
+  const friendly = def.target === 'ally' || def.target === 'friend';
+  const mine = friendly && targetId ? (sd.units.find((u) => u.id === targetId && u.hp > 0) ?? null) : null;
   const a = mkAct(hero, {
     card: def,
     inst,
-    target: chosen,
+    target: friendly ? mine : chosen,
     x: def.x ? sd.mana + (def.xBonus ?? 0) : 0,
   });
   const edge = def.tags?.includes(EDGE_TAG) ? stacks(hero, 'edge') : 0;
@@ -2114,6 +2117,8 @@ export function previewCardDamage(
       return;
     }
     if (earlier) return;
+    // (no ally picked yet: a number that reads it is not known, so the printed text stays)
+    if (friendly && !mine && op.scale?.of === 'target') return;
     const pool =
       op.to === 'target'
         ? chosen

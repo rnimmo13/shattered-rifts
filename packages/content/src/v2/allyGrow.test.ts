@@ -1,7 +1,15 @@
 // A heal never mends a companion: it grows it, as much max HP and HP (DECISIONS #356).
 
 import { describe, expect, it } from 'vitest';
-import { applyAction, cardText, clone, createCombat, legalActions, type CombatState } from '@sr/combat';
+import {
+  applyAction,
+  cardText,
+  clone,
+  createCombat,
+  legalActions,
+  previewCardDamage,
+  type CombatState,
+} from '@sr/combat';
 import { COMBAT_DB as db, RIFTWALKERS } from './index';
 
 function fight(hand: string[]): CombatState {
@@ -58,6 +66,14 @@ describe('healing a companion grows it', () => {
     s = play(s, 'T2', enforcer.id);
     expect(foe().hp).toBe(188 - 12); // its HP, and it is gone
     expect(allies(s).some((u) => u.id === enforcer.id && u.hp > 0)).toBe(false);
+  });
+
+  it("Reactor Meltdown's number in hand reads the ally it is aimed at", () => {
+    const s = play(fight(['build-enforcer', 'reactor-meltdown']), 'T0');
+    const enforcer = allies(s).find((u) => u.maxHp === 12)!;
+    const aimed = previewCardDamage(db, s, 'T1', enforcer.id).get(0);
+    expect(aimed?.lo).toBe(12);
+    expect(previewCardDamage(db, s, 'T1').get(0)).toBeUndefined();
   });
 
   it('says so on the card', () => {
