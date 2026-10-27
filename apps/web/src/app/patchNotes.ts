@@ -29,6 +29,37 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.100.0',
+    date: '2026-10-27',
+    title: 'Shields you can see',
+    summary:
+      'Shielded units glow inside a yellow bubble, Fortified no longer stacks, and Valeria’s Sunfall and Sunforged Edge spend all her Devotion.',
+    notes: [
+      {
+        kind: 'new',
+        text: 'A Shielded unit (yours or an enemy) glows inside a yellow bubble until the shield is spent.',
+      },
+      {
+        kind: 'changed',
+        text: 'Fortified is on or off: a second source adds nothing, and cards say "Gain Fortified".',
+      },
+      {
+        kind: 'balance',
+        text: 'Valeria: Sunfall deals 10 (+2 per Devotion) and Sunforged Edge 6 (+1 per Devotion); both spend all your Devotion, with no minimum.',
+      },
+      {
+        kind: 'balance',
+        text: 'Valeria: Unbroken Wall (Fortified for the fight) costs 3, 2 upgraded. Retribution costs 2, 1 upgraded (its upgrade used to deal 3 more).',
+      },
+      {
+        kind: 'fixed',
+        text: 'The Devotion counter beside your Mana reads its whole name.',
+      },
+    ],
+    heads:
+      'The rules changed: reload if the game asks you to. Arena games and replays from before this version can no longer be watched.',
+  },
+  {
     version: '0.99.0',
     date: '2026-10-27',
     title: 'Tidier screens',

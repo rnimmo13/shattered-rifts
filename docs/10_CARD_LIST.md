@@ -69,7 +69,7 @@ Starter: Strike, Strike, Strike, Strike, Defend, Defend, Defend, Defend, Dawn Sm
 | Bastion Engine | 2 | aura | rare | Whenever you gain Barrier: Deal 2 damage to ALL enemies. |
 | Immovable Oath | 2 | skill | rare | Gain 20 Barrier. Gain 6 Plating. Consume. |
 | Rampart of Ages | 2 | aura | rare | Gain 2 Bracing for the rest of the fight. |
-| Retribution | 1 | attack | rare | Deal damage equal to 2 times your Thorns. |
+| Retribution | 2 | attack | rare | Deal damage equal to 2 times your Thorns. |
 | Thornlord | 2 | aura | rare | Whenever you play a Skill: Gain 1 Thorns. |
 | Bramble Storm | 2 | aura | rare | At the end of your turn: Deal damage equal to half of your Thorns to ALL enemies. |
 | Briar Heart | 3 | aura | rare | Whenever you gain Barrier: Gain 1 Thorns. |
@@ -79,7 +79,7 @@ Starter: Strike, Strike, Strike, Strike, Defend, Defend, Defend, Defend, Dawn Sm
 | Holy Reckoning | 2 | attack | rare | Deal 8 damage to ALL enemies. Heal 6. |
 | Sanctuary | 2 | trap | rare | When you or an ally is attacked: Cancel that attack. Gain 8 Barrier. |
 | Dawn's Verdict | 3 | attack | rare | Deal 28 damage. Apply 2 Exposed. |
-| Unbroken Wall | 2 | aura | rare | Gain Fortified for the rest of the fight. |
+| Unbroken Wall | 3 | aura | rare | Gain Fortified for the rest of the fight. |
 | Briar Bloom | 1 | skill | rare | Double the Thorns to yourself (at most +8). Consume. |
 | Punishing Gale | 2 | trap | rare | At the start of the enemy turn: Deal 8 (+1 per Thorns) damage to ALL enemies. |
 | Martyr's Grace | 1 | skill | rare | Lose 5 HP. Gain 15 Barrier. Gain 2 Shielded. Consume. |

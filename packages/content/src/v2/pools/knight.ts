@@ -73,7 +73,10 @@ export const KNIGHT: CardDef[] = [
   m('common', 'reprisal', 'Reprisal', 'snare', 1, 'none', [dmg(9, 'allFoes')], {
     trigger: { on: 'hpLost', min: 4 },
   }),
-  m('rare', 'retribution', 'Retribution', 'attack', 1, 'foe', [scaled(dmg(0), per('thorns', 2))]),
+  // 2 Mana, 1 upgraded: both versions read the same (DECISIONS #349)
+  m('rare', 'retribution', 'Retribution', 'attack', 2, 'foe', [scaled(dmg(0), per('thorns', 2))], {
+    up: { cost: 1 },
+  }),
   m('common', 'barbed-oath', 'Barbed Oath', 'power', 1, 'none', [
     on('turnStart', [status('thorns', 1)]),
   ]),
@@ -169,7 +172,10 @@ export const KNIGHT: CardDef[] = [
     dmg(28),
     status('exposed', 2, 'target'),
   ]),
-  m('rare', 'unbroken-wall', 'Unbroken Wall', 'power', 2, 'none', [status('fortified', 1)]),
+  // Fortified is huge: 3 Mana, 2 upgraded (DECISIONS #349)
+  m('rare', 'unbroken-wall', 'Unbroken Wall', 'power', 3, 'none', [status('fortified', 1)], {
+    up: { cost: 2 },
+  }),
   m(
     'legendary',
     'the-last-oath',

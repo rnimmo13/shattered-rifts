@@ -5,6 +5,7 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **Valeria:** Unbroken Wall costs 3 (2 upgraded). Retribution costs 2 (1 upgraded).
 - **Shielded** units glow inside a yellow bubble until the shield is spent.
 - **Fortified** no longer stacks; cards say "Gain Fortified".
 - **Valeria:** Sunfall (10 +2 per Devotion) and Sunforged Edge (6 +1 per Devotion) spend all your Devotion. The Devotion orb's label fits.
