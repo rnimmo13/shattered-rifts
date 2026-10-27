@@ -49,7 +49,8 @@ export interface Entry {
 // (10: Kesh's 2-companion limit, Hound, Savage Bite, Feeding Time, Stun cards, retired Call Gnashlings, #314-317)
 // (11: Devour 16, Fell the Prey switched off, #319)
 // (12: Overflow, #321-322)
-export const RULES_VERSION = 12;
+// (13: Kesh's pack and basics, Den Mother, Summon Pup, Dire Wolf, #323-326)
+export const RULES_VERSION = 13;
 
 /** Who you are playing, before a game starts: their name and badges, not their deck or Riftwalker. */
 export type FoeCard = Pick<Entry, 'name' | 'trophies' | 'rank'>;

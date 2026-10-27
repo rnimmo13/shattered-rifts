@@ -29,6 +29,32 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.96.0',
+    date: '2026-10-27',
+    title: 'Kesh’s pack, rebuilt for Overflow',
+    summary: 'Kesh’s summons are told apart, and her Hound is sturdy again now that minions can be overrun.',
+    notes: [
+      {
+        kind: 'balance',
+        text: 'Kesh: her Hound has 8 HP and hits for 4, and she can have 3 companions at once again. Litter is back: two Hounds for 2 Mana. Rally the Pack gives each of your allies 4 Barrier.',
+      },
+      {
+        kind: 'balance',
+        text: 'Kesh’s basics: Rend loses 2 HP, Blood Frenzy loses 1 HP, and Savage Bite deals 8 (10 upgraded).',
+      },
+      {
+        kind: 'new',
+        text: 'Kesh: Summon Pup (1 Mana, a Pup), Alpha Call now brings a 16 HP, 10 damage Alpha, and a new Dire Wolf card (3 Mana, 24 HP, 14 damage).',
+      },
+      {
+        kind: 'changed',
+        text: 'Den Mother is now an Aura: whenever an enemy kills one of your allies, it takes 15 damage (20 upgraded).',
+      },
+    ],
+    heads:
+      'The rules changed: reload if the game asks you to. Arena games and replays from before this version can no longer be watched.',
+  },
+  {
     version: '0.95.0',
     date: '2026-10-27',
     title: 'Overflow',
