@@ -83,6 +83,16 @@ describe("Valeria's Devotion", () => {
   });
 });
 
+describe("Ilvane's Gathering Storm (DECISIONS #353)", () => {
+  it('every copy grows by 2 each time one is cast', () => {
+    let s = fight('totemist', ['gathering-storm', 'gathering-storm']);
+    s = playCard(s, 'T0'); // 4
+    expect(s.sides.b.units[0]!.hp).toBe(96);
+    s = playCard(s, 'T1'); // 4 + 2
+    expect(s.sides.b.units[0]!.hp).toBe(90);
+  });
+});
+
 describe("the paladin's judgments", () => {
   it('Hand of Justice: 4 Devotion, deal 10 and Expose', () => {
     let s = fight('knight', ['hand-of-justice'], 4);

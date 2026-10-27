@@ -1622,26 +1622,57 @@
   "cols": 3,
   "rows": 3,
   "ids": [
-   "endless-whittling",
-   "antler-carving",
-   "crystal-ward",
-   "cold-snap",
-   "carvers-rhythm",
-   "kindled-rite",
-   "moth-carving",
-   "whittle-down",
-   "smoke-offering"
+   "deep-freeze",
+   "firestorm",
+   "mountains-heart",
+   "prismatic-cascade",
+   "skybreaker",
+   "spiritfont",
+   "stormcrown",
+   "arc-lightning",
+   "crystal-ward"
   ]
  },
  {
   "name": "totemist-m02",
   "hero": "totemist",
   "cols": 3,
-  "rows": 2,
+  "rows": 3,
   "ids": [
-   "whittlers-kit",
+   "cold-snap",
+   "earthen-rampart",
+   "fire-bloom",
+   "gathering-storm",
+   "glacial-ward",
+   "inner-flame",
+   "kindled-rite",
+   "quench",
+   "smoke-offering"
+  ]
+ },
+ {
+  "name": "totemist-m03",
+  "hero": "totemist",
+  "cols": 3,
+  "rows": 3,
+  "ids": [
+   "storm-call",
+   "tidecaller",
+   "clear-spring",
+   "elemental-focus",
+   "ember-toss",
    "arc-flash",
-   "serpent-carving",
+   "frost-needle",
+   "spark-lash",
+   "stone-skin"
+  ]
+ },
+ {
+  "name": "totemist-m04",
+  "hero": "totemist",
+  "cols": 3,
+  "rows": 1,
+  "ids": [
    "rune-burst"
   ]
  },

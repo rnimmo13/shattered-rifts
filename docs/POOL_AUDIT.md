@@ -59,9 +59,9 @@ cost and effects whose numbers differ by about a third or less. "Shared" cards b
 | Briar Heart | rare | aura | 3 | Whenever you gain Barrier: Gain 1 Thorns. |
 | Punishing Gale | rare | trap | 2 | At the start of the enemy turn: Deal 8 (+1 per Thorns) damage to ALL enemies. |
 | Radiant Oath | rare | aura | 2 | Gain 4 Thorns for the rest of the fight. |
-| Retribution | rare | attack | 1 | Deal damage equal to 2 times your Thorns. |
+| Retribution | rare | attack | 2 | Deal damage equal to 2 times your Thorns. |
 | Thornlord | rare | aura | 2 | Whenever you play a Skill: Gain 1 Thorns. |
-| The Last Oath | legendary | aura | 3 | Gain 1 Fortified. Gain 3 Thorns. At the start of your turn: Gain 2 Thorns. |
+| The Last Oath | legendary | aura | 3 | Gain Fortified. Gain 3 Thorns. At the start of your turn: Gain 2 Thorns. |
 
 ### Devotion
 
@@ -71,7 +71,7 @@ cost and effects whose numbers differ by about a third or less. "Shared" cards b
 | Lightbearer | common | skill | 1 | Heal 4. Gain 5 Barrier. |
 | Lightbrand | common | attack | 1 +5 devotion | Deal 14 damage. |
 | Prayer | common | skill | 0 | Heal 4. Draw 1 card. Consume. |
-| Sunforged Edge | common | attack | 2 | Deal 8 (+1 per 2 Devotion) damage. |
+| Sunforged Edge | common | attack | 2 | Deal 6 (+1 per Devotion) damage. Spend all your Devotion. |
 | Sunlit Blow | common | attack | 1 | Deal 6 damage. Heal 2. |
 | Aegis of the Warden | uncommon | skill | 2 | Gain 6 Barrier. Gain 1 Shielded. |
 | Benediction | uncommon | skill | 2 | Heal 10. Gain 6 Barrier. Consume. |
@@ -88,7 +88,7 @@ cost and effects whose numbers differ by about a third or less. "Shared" cards b
 | Hand of God | rare | attack | 2 +15 devotion | Deal 36 damage. |
 | Holy Reckoning | rare | attack | 2 | Deal 8 damage to ALL enemies. Heal 6. |
 | Martyr's Grace | rare | skill | 1 | Lose 5 HP. Gain 15 Barrier. Gain 2 Shielded. Consume. |
-| Sunfall | rare | attack | 2 +10 devotion | Deal 20 (+2 per Devotion) damage. Lose all your Devotion. |
+| Sunfall | rare | attack | 2 | Deal 10 (+2 per Devotion) damage. Spend all your Devotion. |
 | Dawn's Mercy | legendary | aura | 3 | Whenever you heal (even at full HP): Deal damage equal to the HP healed to a random enemy. At the start of your turn: Heal 3. |
 
 ### Shared
@@ -103,7 +103,7 @@ cost and effects whose numbers differ by about a third or less. "Shared" cards b
 | Dawn's Verdict | rare | attack | 3 | Deal 28 damage. Apply 2 Exposed. |
 | Radiance Eternal | rare | aura | 3 | At the start of your turn: Heal 1. At the end of your turn: Gain 1 Shielded. |
 | Sanctuary | rare | trap | 2 | When you or an ally is attacked: Cancel that attack. Gain 8 Barrier. |
-| Unbroken Wall | rare | aura | 2 | Gain 1 Fortified for the rest of the fight. |
+| Unbroken Wall | rare | aura | 3 | Gain Fortified for the rest of the fight. |
 
 ## Rivet (engineer)
 
@@ -521,11 +521,12 @@ cost and effects whose numbers differ by about a third or less. "Shared" cards b
 
 ## Ilvane (totemist)
 
-78 cards: Totems 23, Whittling 23, Rites 23, shared 9.
+78 cards: Totems 23, Elements 23, Rites 23, shared 9.
 
 **Near-duplicates:**
 
 - **Splintering Burst** and **Forked Branch**: Deal 6 damage to ALL enemies. Plant Splinter. / Deal 8 damage to ALL enemies. Plant Hawk.
+- **Storm Call** and **Prismatic Cascade**: Deal 6 (+2 per Spirit) damage to ALL enemies. / Deal 4 (+1 per Spirit) damage 3 times to ALL enemies.
 
 ### Totems
 
@@ -555,33 +556,33 @@ cost and effects whose numbers differ by about a third or less. "Shared" cards b
 | Totem Trap | rare | trap | 2 | When you or an ally is attacked: Cancel that attack. Plant Bear. |
 | Cataclysm Totem | legendary | attack | 2 | Deal 10 damage to ALL enemies. Awaken your first 10 totems 2 times. Consume. |
 
-### Whittling
+### Elements
 
 | Card | Rarity | Type | Cost | Text |
 |---|---|---|---|---|
-| Bear Carving | common | skill | 0 | Gain 4 Barrier. |
-| Hawk Carving | common | attack | 0 | Deal 4 damage. |
-| Owl Carving | common | skill | 0 | Foresee 3. |
-| Serpent Carving | common | attack | 0 | Deal 2 damage. Apply 1 Faltering. |
-| Splinter Carving | common | skill | 0 | Plant Splinter. Consume. |
-| Talon Carving | common | attack | 0 | Deal 3 damage to ALL enemies. |
-| Antler Carving | uncommon | attack | 0 | Deal 2 damage 2 times to a random enemy. |
-| Carver's Rhythm | uncommon | skill | 0 | Draw 2 cards. Consume. |
-| Elder Carving | uncommon | attack | 0 | Deal 2 (+1 per card played this turn) damage. |
-| Eye Carving | uncommon | attack | 0 | Deal 3 damage. Apply 1 Exposed. |
-| Gather the Shavings | uncommon | skill | 1 | Gain 3 Barrier. Return 2 random Carvings from your discard pile to your hand. |
-| Moth Carving | uncommon | skill | 0 | Gain 2 Barrier. Apply 1 Exposed to a random enemy. |
-| Notch and Cut | uncommon | attack | 1 | Deal 3 damage 2 times. Add a Hawk Carving to your hand. |
-| Whittle Down | uncommon | attack | 1 | Deal 4 (+2 per card played this turn) damage. |
-| Whittler's Kit | uncommon | skill | 1 | Add a Hawk Carving to your hand. Add a Bear Carving to your hand. Draw 1 card. |
-| Carver's Bench | rare | aura | 2 | At the start of your turn: Add a Hawk Carving to your hand. |
-| Clear the Bench | rare | skill | 1 | Discard any number of cards. Return 10 random Carvings from your discard pile to your hand. Draw 1 card. Consume. |
-| Endless Whittling | rare | aura | 1 | At the start of your turn: Return a random Carving from your discard pile to your hand. |
-| Fresh Shavings | rare | skill | 1 | Draw 2 cards. Return a random Carving from your discard pile to your hand. |
-| Living Wood | rare | aura | 3 | Whenever you play a Carving: Plant Splinter. |
-| Shavings Underfoot | rare | aura | 1 | Whenever you play a Carving: Gain 3 Barrier. |
-| Whittler's Knife | rare | aura | 1 | Whenever you play a Carving: Deal 3 damage to a random enemy. |
-| The Spirit Council | legendary | aura | 2 | At the start of your turn: Add a Hawk Carving to your hand. Add a Talon Carving to your hand. Add a Bear Carving to your hand. |
+| Clear Spring | common | skill | 1 | Draw 2 cards. |
+| Elemental Focus | common | skill | 0 | Gain 1 Spirit. Consume. |
+| Ember Toss | common | attack | 1 | Deal 3 (+1 per Spirit) damage to ALL enemies. |
+| Frost Needle | common | attack | 1 | Deal 4 (+1 per Spirit) damage. Apply 1 Faltering. |
+| Spark Lash | common | attack | 1 | Deal 5 (+1 per Spirit) damage. |
+| Stone Skin | common | skill | 1 | Gain 6 (+2 per Spirit) Barrier. |
+| Arc Lightning | uncommon | attack | 1 | Deal 3 (+1 per Spirit) damage 3 times to a random enemy. |
+| Earthen Rampart | uncommon | aura | 1 | At the start of your turn: Gain 2 (+1 per Spirit) Barrier. |
+| Fire Bloom | uncommon | attack | 2 | Deal 10 (+2 per Spirit) damage. |
+| Gathering Storm | uncommon | attack | 1 | Deal 4 damage, plus all it has grown. Every copy of this card gains 2 damage for the rest of the fight. |
+| Glacial Ward | uncommon | skill | 1 | Gain 8 (+2 per Spirit) Barrier. Apply 1 Faltering to ALL enemies. |
+| Inner Flame | uncommon | skill | 1 | Gain 2 Spirit. Consume. |
+| Quench | uncommon | skill | 1 | Gain 6 Barrier. Draw 1 card. |
+| Storm Call | uncommon | attack | 2 | Deal 6 (+2 per Spirit) damage to ALL enemies. |
+| Tidecaller | uncommon | skill | 0 | Gain 1 Mana. Draw 1 card. Consume. |
+| Deep Freeze | rare | attack | 2 | Deal 12 (+2 per Spirit) damage. Stun the target for 1 turn. |
+| Firestorm | rare | attack | 2 | Deal 10 (+2 per Spirit) damage to ALL enemies. |
+| Mountain's Heart | rare | skill | 2 | Gain 15 (+3 per Spirit) Barrier. Consume. |
+| Prismatic Cascade | rare | attack | 2 | Deal 4 (+1 per Spirit) damage 3 times to ALL enemies. |
+| Skybreaker | rare | attack | 2 | Deal 24 (+3 per Spirit) damage. Consume. |
+| Spiritfont | rare | aura | 2 | At the start of your turn: Gain 1 Spirit. |
+| Stormcrown | rare | aura | 2 | At the end of your turn: Deal damage equal to 2 times your Spirit to ALL enemies. |
+| Avatar of the Elements | legendary | aura | 3 | At the start of your turn: Gain 1 Spirit. Deal damage equal to your Spirit to ALL enemies. |
 
 ### Rites
 

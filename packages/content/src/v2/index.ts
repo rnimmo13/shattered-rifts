@@ -203,16 +203,16 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     },
     starter: [...rep('strike', 4), ...rep('defend', 3), ...rep('spark-cast', 2), 'twin-evocation'],
     blurb:
-      'An elder shaman who carves: totems that hold spirits, small Carvings by the handful, and the rites that wake them. Starts every fight with three totems (Hawk, Bear and Splinter).',
+      'An elder shaman of the old spirits: totems that hold them, elemental spells that grow with Spirit, and the rites that wake them. Starts every fight with three totems (Hawk, Bear and Splinter).',
     buildPaths: [
       'Totems: plant, empower with Spirit, awaken',
-      'Whittling: small free Carvings that keep coming back',
+      'Elements: spells of storm, ice, fire and earth that grow with Spirit',
       'Rites: every Aura makes the next one pay',
     ],
     howTo: [
       'You start with a Hawk, a Bear and a Splinter totem. Totems stand in a column of 3 slots beside you, pulse a small effect at the end of your turn, and a 4th pushes the oldest out, awakening it for its big effect.',
       'Totems: plant many, make them stronger with Spirit and more slots, and awaken them on purpose.',
-      'Whittling: Carvings cost nothing; play a handful a turn, then gather them back from your discard pile.',
+      'Elements: lightning, ice, fire, water and earth spells. Every Spirit you have makes them hit harder or guard more; Gathering Storm grows each time you cast it.',
       'Rites: an Aura stays all fight. Rite cards pay off for every Aura you already have.',
     ],
   },

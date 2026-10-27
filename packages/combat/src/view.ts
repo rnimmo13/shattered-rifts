@@ -770,6 +770,21 @@ export function cardText(db: CombatDb, c: CardDef, live?: ReadonlyMap<number, Li
       parts.push(summonText(db, o.unit, n, who));
       i += n - 1;
     } else {
+      // a card that grows every copy of itself (Gathering Storm) says so, instead of naming a weapon to Sharpen (DECISIONS #353)
+      const growsItself = c.effects.some(
+        (x) => x.op === 'forge' && x.card === c.id.replace(/\+$/, ''),
+      );
+      if (o.op === 'forge' && growsItself) {
+        parts.push(`Every copy of this card gains ${o.amount} damage for the rest of the fight.`);
+        continue;
+      }
+      // (its damage reads "plus all it has grown", not "per point of sharpening")
+      if (growsItself && o.op === 'damage' && o.scale?.by === 'bonus' && !live?.get(i)) {
+        const plain = { ...o };
+        delete plain.scale;
+        parts.push(opText(db, plain, who).replace(/ damage\.$/, ' damage, plus all it has grown.'));
+        continue;
+      }
       const l = o.op === 'damage' ? live?.get(i) : undefined;
       const line =
         l && o.op === 'damage' ? liveDamageText(opText(db, o, who), o, l) : opText(db, o, who);

@@ -148,21 +148,26 @@ NEGATIVE: text, letters, numbers, captions, labels, UI, card frames, borders, wa
 
 ## Ilvane
 
-### Sheet `totemist-m02` (4 pictures, uncommon first)
+### Sheet `totemist-m02` (9 pictures, uncommon first)
 
 ```
-Create ONE ILLUSTRATION SHEET of 4 separate card-art pictures for a card-battler game (like Slay the Spire), 2400 x 1800, no text.
+Create ONE ILLUSTRATION SHEET of 9 separate card-art pictures for a card-battler game (like Slay the Spire), 2400 x 1800, no text.
 The attached image (Valeria) is the STYLE ANCHOR: match its cartoon game-art rendering exactly (bold clean dark outlines, flat saturated colours, simple cel shading, crisp polished shapes). Do NOT copy her character; paint scenes and objects. Backgrounds are softer and less contrasty than the main subject so the subject pops.
 
-LAYOUT (critical): a clean 3 x 2 grid of landscape 4:3 pictures (each about 760 x 570), separated by thin flat dark navy (#14181f) gutters, with NO frames, NO borders, NO captions, NO text, NO numbers. Every picture fills its own cell completely; nothing crosses a gutter. Each picture has ONE clear subject in the middle that reads at thumbnail size, a simple scene behind it, light from the upper left. Leave any unused cells plain dark navy.
+LAYOUT (critical): a clean 3 x 3 grid of landscape 4:3 pictures (each about 760 x 570), separated by thin flat dark navy (#14181f) gutters, with NO frames, NO borders, NO captions, NO text, NO numbers. Every picture fills its own cell completely; nothing crosses a gutter. Each picture has ONE clear subject in the middle that reads at thumbnail size, a simple scene behind it, light from the upper left.
 
-WORLD: Ilvane, a spirit shaman who calls glowing totems. An elder shaman who carves: totems that hold spirits, small Carvings by the handful, and the rites that wake them. Starts every fight with three totems (Hawk, Bear and Splinter). World: a teal-and-orange foundry of machines: hazard stripes, steel, glowing cyan, sparks and steam.
+WORLD: Ilvane, a spirit shaman who calls glowing totems. An elder shaman of the old spirits: totems that hold them, elemental spells that grow with Spirit, and the rites that wake them. Starts every fight with three totems (Hawk, Bear and Splinter). World: a teal-and-orange foundry of machines: hazard stripes, steel, glowing cyan, sparks and steam.
 
 THE PICTURES, in this exact order, left to right, top row first. Use the card name and its effect only to decide what to draw; never write the name:
-1. "Whittler's Kit" (skill): Add a Hawk Carving to your hand. Add a Bear Carving to your hand. Draw 1 card. Show a defensive or tactical moment, calm and clear.
-2. "Feather Storm" (attack): Deal 4 damage to ALL enemies. Plant Hawk. Show a dynamic strike caught mid-action.
-3. "Serpent Carving" (attack): Deal 2 damage. Apply 1 Faltering. Show a dynamic strike caught mid-action.
-4. "Totem Burst" (skill): Awaken your first totem. Draw 1 card. Show a defensive or tactical moment, calm and clear.
+1. "Bear Pack" (skill): Plant Bear once per enemy. Consume. Show a defensive or tactical moment, calm and clear.
+2. "Earthen Rampart" (aura): At the start of your turn: Gain 2 (+1 per Spirit) Barrier. Show a grand symbolic still-life: one iconic object or pose that stands for the idea.
+3. "Fire Bloom" (attack): Deal 10 (+2 per Spirit) damage. Show a dynamic strike caught mid-action.
+4. "Gathering Storm" (attack): Deal 4 damage, plus all it has grown. Every copy of this card gains 2 damage for the rest of the fight. Show a dynamic strike caught mid-action.
+5. "Glacial Ward" (skill): Gain 8 (+2 per Spirit) Barrier. Apply 1 Faltering to ALL enemies. Show a defensive or tactical moment, calm and clear.
+6. "Inner Flame" (skill): Gain 2 Spirit. Consume. Show a defensive or tactical moment, calm and clear.
+7. "Kindled Rite" (aura): At the end of your turn: Deal damage equal to the number of your Auras to ALL enemies. Show a grand symbolic still-life: one iconic object or pose that stands for the idea.
+8. "Quench" (skill): Gain 6 Barrier. Draw 1 card. Show a defensive or tactical moment, calm and clear.
+9. "Smoke Offering" (aura): At the start of your turn: Gain Barrier equal to 2 times the number of your Auras. Show a grand symbolic still-life: one iconic object or pose that stands for the idea.
 
 NEGATIVE: text, letters, numbers, captions, labels, UI, card frames, borders, watermark, logo, photorealism, gritty texture, nudity, characters facing away.
 ```

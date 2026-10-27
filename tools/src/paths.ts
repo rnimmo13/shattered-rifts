@@ -51,7 +51,7 @@ const HEADS: Record<HeroId, [RegExp, number | null][]> = {
   ],
   totemist: [
     [/totems/i, 0],
-    [/whittling/i, 1],
+    [/whittling|elements/i, 1],
     [/rites/i, 2],
     [/basics|glue/i, null],
   ],

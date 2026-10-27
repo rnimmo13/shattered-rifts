@@ -225,7 +225,14 @@ describe('pool shape (docs/09_ROSTER.md §1)', () => {
     owns((c) => uses(c, 'channel') || uses(c, 'evoke') || uses(c, 'runeSlots'), 'totemist');
     owns((c) => uses(c, 'stance'), 'barbarian');
     owns((c) => c.starCost !== undefined, 'spellblade');
-    owns((c) => uses(c, 'forge'), ['spellblade', 'drunkard']);
+    // (sharpening a weapon is theirs; a card that grows only itself, like Gathering Storm, is not: DECISIONS #353)
+    const sharpensAnother = (c: CardDef) =>
+      [...c.effects, ...(c.onDiscard ?? []), ...(c.onExhaust ?? [])].some(
+        (o) =>
+          (o.op === 'forge' && o.card !== c.id.replace(/[+]$/, '')) ||
+          (o.op === 'power' && o.ops.some((x) => x.op === 'forge')),
+      );
+    owns(sharpensAnother, ['spellblade', 'drunkard']);
     owns((c) => c.tags?.includes('gun') === true, 'drunkard');
     owns((c) => c.tags?.includes('knife') === true, 'assassin');
     owns((c) => c.tags?.includes('shell') === true, 'drunkard');

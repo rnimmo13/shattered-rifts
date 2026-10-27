@@ -54,7 +54,7 @@ export interface Entry {
 // (15: card pools rebuilt to 20/30/25 per Riftwalker with cards retired and new ones, kits, 5 copies at most, Legendaries reworked,
 //  Kesh's Predator build path and no heal after fights, Valeria's Devotion spenders, #329-343)
 // (16: Fortified no longer stacks, Sunfall and Sunforged Edge spend X Devotion, Unbroken Wall 3, Retribution 2, #347-349)
-// (17: the Bear totem gives 2 Barrier a turn, #351)
+// (17: the Bear totem gives 2 Barrier a turn, Ilvane's Elements build path, #351-353)
 export const RULES_VERSION = 17;
 
 /** Who you are playing, before a game starts: their name and badges, not their deck or Riftwalker. */

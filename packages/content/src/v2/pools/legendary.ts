@@ -6,7 +6,6 @@
 import type { CardDef } from '@sr/combat';
 import {
   ACT,
-  addTo,
   barrier,
   dmg,
   forge,
@@ -80,16 +79,16 @@ export const LEGENDARIES: CardDef[] = [
   q('legendary', 'ten-thousand-cuts', 'Death by Inches', 'attack', 1, 'foe', [
     scaled(dmg(5, 'target', 2), per('discarded', 2, undefined, 'hits')),
   ]),
-  // Whittling: three Carvings in your hand every turn
+  // Elements: Spirit every turn, and every enemy struck for all of it (DECISIONS #353)
   i(
     'legendary',
     'the-spirit-council',
-    'The Spirit Council',
+    'Avatar of the Elements',
     'power',
-    2,
+    3,
     'none',
-    [on('turnStart', [addTo('live-wire'), addTo('sweeping-ray'), addTo('echo-of-glyphs')])],
-    { up: { cost: 1 } },
+    [on('turnStart', [status('resonance', 1), scaled(dmg(0, 'allFoes'), per('resonance'))])],
+    { up: { cost: 2 } },
   ),
   // Fury: in Fury every turn, and every turn it lashes out
   s(

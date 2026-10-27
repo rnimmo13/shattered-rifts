@@ -170,18 +170,18 @@ The attached image (Valeria) is the STYLE ANCHOR: match its cartoon game-art ren
 
 LAYOUT (critical): a clean 3 x 3 grid of landscape 4:3 pictures (each about 760 x 570), separated by thin flat dark navy (#14181f) gutters, with NO frames, NO borders, NO captions, NO text, NO numbers. Every picture fills its own cell completely; nothing crosses a gutter. Each picture has ONE clear subject in the middle that reads at thumbnail size, a simple scene behind it, light from the upper left.
 
-WORLD: Ilvane, a spirit shaman who calls glowing totems. An elder shaman who carves: totems that hold spirits, small Carvings by the handful, and the rites that wake them. Starts every fight with three totems (Hawk, Bear and Splinter). World: a teal-and-orange foundry of machines: hazard stripes, steel, glowing cyan, sparks and steam.
+WORLD: Ilvane, a spirit shaman who calls glowing totems. An elder shaman of the old spirits: totems that hold them, elemental spells that grow with Spirit, and the rites that wake them. Starts every fight with three totems (Hawk, Bear and Splinter). World: a teal-and-orange foundry of machines: hazard stripes, steel, glowing cyan, sparks and steam.
 
 THE PICTURES, in this exact order, left to right, top row first. Use the card name and its effect only to decide what to draw; never write the name:
-1. "Endless Whittling" (aura): At the start of your turn: Return a random Carving from your discard pile to your hand. Show a grand symbolic still-life: one iconic object or pose that stands for the idea. A little more dramatic and detailed.
-2. "Antler Carving" (attack): Deal 2 damage 2 times to a random enemy. Show a dynamic strike caught mid-action.
-3. "Bark Ward" (skill): Gain 7 Barrier. Plant Bear. Hold. Show a defensive or tactical moment, calm and clear.
-4. "Bear Pack" (skill): Plant Bear once per enemy. Consume. Show a defensive or tactical moment, calm and clear.
-5. "Carver's Rhythm" (skill): Draw 2 cards. Consume. Show a defensive or tactical moment, calm and clear.
-6. "Kindled Rite" (aura): At the end of your turn: Deal damage equal to the number of your Auras to ALL enemies. Show a grand symbolic still-life: one iconic object or pose that stands for the idea.
-7. "Moth Carving" (skill): Gain 2 Barrier. Apply 1 Exposed to a random enemy. Show a defensive or tactical moment, calm and clear.
-8. "Notch and Cut" (attack): Deal 3 damage 2 times. Add a Hawk Carving to your hand. Show a dynamic strike caught mid-action.
-9. "Smoke Offering" (aura): At the start of your turn: Gain Barrier equal to 2 times the number of your Auras. Show a grand symbolic still-life: one iconic object or pose that stands for the idea.
+1. "Deep Freeze" (attack): Deal 12 (+2 per Spirit) damage. Stun the target for 1 turn. Show a dynamic strike caught mid-action. A little more dramatic and detailed.
+2. "Firestorm" (attack): Deal 10 (+2 per Spirit) damage to ALL enemies. Show a dynamic strike caught mid-action. A little more dramatic and detailed.
+3. "Mountain's Heart" (skill): Gain 15 (+3 per Spirit) Barrier. Consume. Show a defensive or tactical moment, calm and clear. A little more dramatic and detailed.
+4. "Prismatic Cascade" (attack): Deal 4 (+1 per Spirit) damage 3 times to ALL enemies. Show a dynamic strike caught mid-action. A little more dramatic and detailed.
+5. "Skybreaker" (attack): Deal 24 (+3 per Spirit) damage. Consume. Show a dynamic strike caught mid-action. A little more dramatic and detailed.
+6. "Spiritfont" (aura): At the start of your turn: Gain 1 Spirit. Show a grand symbolic still-life: one iconic object or pose that stands for the idea. A little more dramatic and detailed.
+7. "Stormcrown" (aura): At the end of your turn: Deal damage equal to 2 times your Spirit to ALL enemies. Show a grand symbolic still-life: one iconic object or pose that stands for the idea. A little more dramatic and detailed.
+8. "Arc Lightning" (attack): Deal 3 (+1 per Spirit) damage 3 times to a random enemy. Show a dynamic strike caught mid-action.
+9. "Bark Ward" (skill): Gain 7 Barrier. Plant Bear. Hold. Show a defensive or tactical moment, calm and clear.
 
 NEGATIVE: text, letters, numbers, captions, labels, UI, card frames, borders, watermark, logo, photorealism, gritty texture, nudity, characters facing away.
 ```

@@ -58,7 +58,7 @@ reworked cards stayed the same, so their art and every saved deck still work.
 | 3 | **Kesh the Unfed** | Wyldmaw | 76 | **Bloodrage:** Might and self-damage | **Pack:** buffed companions | **Predator:** Mana and draw for burst turns |
 | 4 | **Vesper Nightlace** | Umbral | 80 | **Traps:** many, varied triggers | **Exposed:** debuff burst, Faltering control | **Patience:** Hold cards, keep Mana; payoffs for a full hand and the Mana you kept |
 | 5 | **Sylas** (id `assassin`) | Umbral | 72 | **Knives:** 0-cost, many hits | **Bleed:** stack, double, cash out | **Sleight:** discard / cycle payoffs |
-| 6 | **Ilvane** (id `totemist`) | Nexus-9 | 76 | **Totems:** plant, Spirit and slots, awaken | **Whittling:** 0-cost Carvings that keep coming back | **Rites:** Auras that pay when another Aura is played |
+| 6 | **Ilvane** (id `totemist`) | Nexus-9 | 76 | **Totems:** plant, Spirit and slots, awaken | **Elements:** spells of storm, ice, fire and earth that grow with Spirit | **Rites:** Auras that pay when another Aura is played |
 | 7 | **Sehra, the Still Flame** | Aurelion | 82 | **Fury:** get in, hit hard, live through it | **Flow:** change stance again and again; every change pays | **Radiant:** build Fervor to 10 for a triple-damage turn |
 | 8 | **Obsidia, Spellblade of the Hollow Crown** (id `spellblade`) | The Hollow Crown (id `starfall`) | 80 | **Blade:** sharpen one weapon | **Arcana:** spend for finishers | **Sigils:** Auras that tick |
 | 9 | **Mire, the Gravewarden** | Gloomfen | 76 | **Doom:** stack, double, cash in | **Thralls:** the dead fight for you | **Ashes:** consumed cards fuel you |

@@ -9,7 +9,6 @@
 
 import type { CardDef, RuneDef } from '@sr/combat';
 import {
-  addTo,
   barrier,
   channel,
   dmg,
@@ -26,9 +25,8 @@ import {
   status,
   upgradeOp,
   discoverOp,
-  discard,
-  fetchTag,
   lose,
+  forge,
 } from '../build';
 
 export const RUNES: RuneDef[] = [
@@ -73,7 +71,6 @@ export const RUNES: RuneDef[] = [
 
 const i = pool('totemist', 'nexus');
 /** a Carving: the Whittling build path's small cards (payoffs say "Whenever you play a Carving") */
-const CARVING = { tags: ['carving'] };
 
 export const TOTEMIST: CardDef[] = [
   // --- basics ---
@@ -151,74 +148,6 @@ export const TOTEMIST: CardDef[] = [
 
   // --- Whittling ---
   // Carvings: 0-cost, small, and they come back (Gather the Shavings, Fresh Shavings, Clear the Bench)
-  i('common', 'live-wire', 'Hawk Carving', 'attack', 0, 'foe', [dmg(4)], {
-    ...CARVING,
-    up: { effects: [dmg(6)] },
-  }),
-  i('common', 'sweeping-ray', 'Talon Carving', 'attack', 0, 'none', [dmg(3, 'allFoes')], CARVING),
-  i('common', 'echo-of-glyphs', 'Bear Carving', 'skill', 0, 'none', [barrier(4)], {
-    ...CARVING,
-    up: { effects: [barrier(6)] },
-  }),
-  i('common', 'skim-the-weave', 'Owl Carving', 'skill', 0, 'none', [scry(3)], CARVING),
-  i(
-    'uncommon',
-    'umbra-glyph',
-    'Elder Carving',
-    'attack',
-    0,
-    'foe',
-    [scaled(dmg(2), per('played'))],
-    CARVING,
-  ),
-  i('common', 'bleed-the-void', 'Splinter Carving', 'skill', 0, 'none', [channel('splinter')], {
-    ...CARVING,
-    exhaust: true,
-    up: { effects: [channel('splinter', 2)] },
-  }),
-  i('uncommon', 'rune-recall', 'Gather the Shavings', 'skill', 1, 'none', [
-    barrier(3),
-    fetchTag(2, 'carving'),
-  ]),
-  i('rare', 'void-dividend', 'Fresh Shavings', 'skill', 1, 'none', [
-    draw(2),
-    fetchTag(1, 'carving'),
-  ]),
-  i('uncommon', 'streamlined-strike', 'Whittle Down', 'attack', 1, 'foe', [
-    scaled(dmg(4), per('played', 2)),
-  ]),
-  i('rare', 'conduit', "Whittler's Knife", 'power', 1, 'none', [
-    on('play', [dmg(3, 'randomFoe')], { tag: 'carving' }),
-  ]),
-  i('rare', 'frozen-ledger', 'Shavings Underfoot', 'power', 1, 'none', [
-    on('play', [barrier(3)], { tag: 'carving' }),
-  ]),
-  i('rare', 'creative-engine', "Carver's Bench", 'power', 2, 'none', [
-    on('turnStart', [addTo('live-wire')]),
-  ]),
-  i('rare', 'rainbow-glyph', 'Living Wood', 'power', 3, 'none', [
-    on('play', [channel('splinter')], { tag: 'carving' }),
-  ]),
-  i(
-    'rare',
-    'reset-the-weave',
-    'Clear the Bench',
-    'skill',
-    1,
-    'none',
-    [discard(9, 'any'), fetchTag(10, 'carving'), draw(1)],
-    { exhaust: true },
-  ),
-  i(
-    'uncommon',
-    'prism-beam',
-    'Eye Carving',
-    'attack',
-    0,
-    'foe',
-    [dmg(3), status('exposed', 1, 'target')],
-    CARVING,
-  ),
 
   // --- Rites ---
   // Auras that pay off when another Aura is played, and cards that count your Auras
@@ -351,44 +280,6 @@ export const TOTEMIST: CardDef[] = [
   ]),
 
   // --- Whittling, filled to its minimum (DECISIONS #337) ---
-  i(
-    'uncommon',
-    'antler-carving',
-    'Antler Carving',
-    'attack',
-    0,
-    'none',
-    [dmg(2, 'randomFoe', 2)],
-    CARVING,
-  ),
-  i(
-    'common',
-    'serpent-carving',
-    'Serpent Carving',
-    'attack',
-    0,
-    'foe',
-    [dmg(2), status('faltering', 1, 'target')],
-    CARVING,
-  ),
-  i(
-    'uncommon',
-    'moth-carving',
-    'Moth Carving',
-    'skill',
-    0,
-    'none',
-    [barrier(2), status('exposed', 1, 'randomFoe')],
-    CARVING,
-  ),
-  i('uncommon', 'whittlers-kit', "Whittler's Kit", 'skill', 1, 'none', [
-    addTo('live-wire'),
-    addTo('echo-of-glyphs'),
-    draw(1),
-  ]),
-  i('rare', 'endless-whittling', 'Endless Whittling', 'power', 1, 'none', [
-    on('turnStart', [fetchTag(1, 'carving')]),
-  ]),
 
   // --- more glue: uncommons and rares for any build path (DECISIONS #339) ---
   i('uncommon', 'overtune', 'Spirit Surge', 'skill', 1, 'none', [status('resonance', 1), draw(1)], {
@@ -426,17 +317,102 @@ export const TOTEMIST: CardDef[] = [
   ),
 
   // --- new for the 20/30/25 rarity target (DECISIONS #341) ---
-  i('uncommon', 'whittle-down', 'Notch and Cut', 'attack', 1, 'foe', [
-    dmg(3, 'target', 2),
-    addTo('live-wire'),
-  ]),
-  i('uncommon', 'carvers-rhythm', "Carver's Rhythm", 'skill', 0, 'none', [draw(2)], {
-    exhaust: true,
-  }),
   i('uncommon', 'kindled-rite', 'Kindled Rite', 'power', 1, 'none', [
     on('turnEnd', [scaled(dmg(0, 'allFoes'), per('powers'))]),
   ]),
   i('uncommon', 'smoke-offering', 'Smoke Offering', 'power', 1, 'none', [
     on('turnStart', [scaled(barrier(0), per('powers', 2))]),
+  ]),
+
+  // --- Elements: lightning, ice, fire, water and earth spells that grow with Spirit (replaces Whittling; DECISIONS #353) ---
+  i('common', 'spark-lash', 'Spark Lash', 'attack', 1, 'foe', [scaled(dmg(5), per('resonance'))]),
+  i('common', 'frost-needle', 'Frost Needle', 'attack', 1, 'foe', [
+    scaled(dmg(4), per('resonance')),
+    status('faltering', 1, 'target'),
+  ]),
+  i('common', 'ember-toss', 'Ember Toss', 'attack', 1, 'none', [
+    scaled(dmg(3, 'allFoes'), per('resonance')),
+  ]),
+  i('common', 'stone-skin', 'Stone Skin', 'skill', 1, 'none', [
+    scaled(barrier(6), per('resonance', 2)),
+  ]),
+  i('common', 'clear-spring', 'Clear Spring', 'skill', 1, 'none', [draw(2)]),
+  i('common', 'elemental-focus', 'Elemental Focus', 'skill', 0, 'none', [status('resonance', 1)], {
+    exhaust: true,
+  }),
+  i('uncommon', 'storm-call', 'Storm Call', 'attack', 2, 'none', [
+    scaled(dmg(6, 'allFoes'), per('resonance', 2)),
+  ]),
+  // every copy grows each time one is cast (DECISIONS #353)
+  i(
+    'uncommon',
+    'gathering-storm',
+    'Gathering Storm',
+    'attack',
+    1,
+    'foe',
+    [scaled(dmg(4), per('bonus')), forge('gathering-storm', 2)],
+    // (upgraded it hits harder from the start; it grows by the same 2)
+    { up: { effects: [scaled(dmg(7), per('bonus')), forge('gathering-storm', 2)] } },
+  ),
+  i('uncommon', 'glacial-ward', 'Glacial Ward', 'skill', 1, 'none', [
+    scaled(barrier(8), per('resonance', 2)),
+    status('faltering', 1, 'allFoes'),
+  ]),
+  i('uncommon', 'tidecaller', 'Tidecaller', 'skill', 0, 'none', [mana(1), draw(1)], {
+    exhaust: true,
+  }),
+  i('uncommon', 'fire-bloom', 'Fire Bloom', 'attack', 2, 'foe', [
+    scaled(dmg(10), per('resonance', 2)),
+  ]),
+  i('uncommon', 'arc-lightning', 'Arc Lightning', 'attack', 1, 'none', [
+    scaled(dmg(3, 'randomFoe', 3), per('resonance')),
+  ]),
+  i('uncommon', 'earthen-rampart', 'Earthen Rampart', 'power', 1, 'none', [
+    on('turnStart', [scaled(barrier(2), per('resonance'))]),
+  ]),
+  i('uncommon', 'inner-flame', 'Inner Flame', 'skill', 1, 'none', [status('resonance', 2)], {
+    exhaust: true,
+  }),
+  i('uncommon', 'quench', 'Quench', 'skill', 1, 'none', [barrier(6), draw(1)]),
+  i('rare', 'firestorm', 'Firestorm', 'attack', 2, 'none', [
+    scaled(dmg(10, 'allFoes'), per('resonance', 2)),
+  ]),
+  i(
+    'rare',
+    'skybreaker',
+    'Skybreaker',
+    'attack',
+    2,
+    'foe',
+    [scaled(dmg(24), per('resonance', 3))],
+    {
+      exhaust: true,
+    },
+  ),
+  i('rare', 'deep-freeze', 'Deep Freeze', 'attack', 2, 'foe', [
+    scaled(dmg(12), per('resonance', 2)),
+    status('stunned', 1, 'target'),
+  ]),
+  i('rare', 'stormcrown', 'Stormcrown', 'power', 2, 'none', [
+    on('turnEnd', [scaled(dmg(0, 'allFoes'), per('resonance', 2))]),
+  ]),
+  i(
+    'rare',
+    'mountains-heart',
+    "Mountain's Heart",
+    'skill',
+    2,
+    'none',
+    [scaled(barrier(15), per('resonance', 3))],
+    {
+      exhaust: true,
+    },
+  ),
+  i('rare', 'spiritfont', 'Spiritfont', 'power', 2, 'none', [
+    on('turnStart', [status('resonance', 1)]),
+  ]),
+  i('rare', 'prismatic-cascade', 'Prismatic Cascade', 'attack', 2, 'none', [
+    scaled(dmg(4, 'allFoes', 3), per('resonance')),
   ]),
 ];

@@ -5,6 +5,7 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **Ilvane:** the Whittling build path is now **Elements**: lightning, ice, fire, water and earth spells that grow with Spirit, Gathering Storm that grows every time you cast it, and the Legendary Avatar of the Elements.
 - **The last Warden leaves a Gift too:** beating the stage 3 Warden offers rare cards of your class or a Warden's Heart, like the others. A Warden's Gift always has cards.
 - **Ilvane:** the Bear totem gives 2 Barrier at the end of your turn (was 1).
 - **Leaderboard:** a campaign run could be left off the board after a busy day of play (refused reports used up the daily limits); now only recorded runs count against them.

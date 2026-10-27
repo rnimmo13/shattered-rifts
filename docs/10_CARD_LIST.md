@@ -466,9 +466,9 @@ Tokens (made by other cards):
 
 ## Ilvane (nexus, 76 HP)
 
-An elder shaman who carves: totems that hold spirits, small Carvings by the handful, and the rites that wake them. Starts every fight with three totems (Hawk, Bear and Splinter).
+An elder shaman of the old spirits: totems that hold them, elemental spells that grow with Spirit, and the rites that wake them. Starts every fight with three totems (Hawk, Bear and Splinter).
 
-Paths: Totems: plant, empower with Spirit, awaken / Whittling: small free Carvings that keep coming back / Rites: every Aura makes the next one pay
+Paths: Totems: plant, empower with Spirit, awaken / Elements: spells of storm, ice, fire and earth that grow with Spirit / Rites: every Aura makes the next one pay
 
 Starter: Strike, Strike, Strike, Strike, Defend, Defend, Defend, Plant Hawk, Plant Hawk, Twin Awakening
 
@@ -482,11 +482,6 @@ Starter: Strike, Strike, Strike, Strike, Defend, Defend, Defend, Plant Hawk, Pla
 | Tune the Spirits | 1 | aura | common | Gain 1 Spirit. Gain 1 totem slot. |
 | Spirit Strike | 1 | attack | common | Deal 6 (+2 per Spirit) damage. |
 | Elder's Shelter | 1 | skill | common | Plant Elder. Gain 4 Barrier. |
-| Hawk Carving | 0 | attack | common | Deal 4 damage. |
-| Talon Carving | 0 | attack | common | Deal 3 damage to ALL enemies. |
-| Bear Carving | 0 | skill | common | Gain 4 Barrier. |
-| Owl Carving | 0 | skill | common | Foresee 3. |
-| Splinter Carving | 0 | skill | common | Plant Splinter. Consume. |
 | Rite Strike | 1 | attack | common | Deal 5 (+2 per Aura you have) damage. |
 | Rite of Warding | 1 | skill | common | Gain 5 (+2 per Aura you have) Barrier. |
 | Ember Rite | 0 | aura | common | At the end of your turn: Gain 3 Barrier. |
@@ -494,8 +489,13 @@ Starter: Strike, Strike, Strike, Strike, Defend, Defend, Defend, Plant Hawk, Pla
 | Drum Circle | 1 | skill | common | Draw 1 card. Draw cards equal to half of the number of your Auras. |
 | Totem Burst | 1 | skill | common | Awaken your first totem. Draw 1 card. |
 | Feather Storm | 1 | attack | common | Deal 4 damage to ALL enemies. Plant Hawk. |
-| Serpent Carving | 0 | attack | common | Deal 2 damage. Apply 1 Faltering. |
 | Totem Row | 1 | skill | common | Gain 2 totem slots. |
+| Spark Lash | 1 | attack | common | Deal 5 (+1 per Spirit) damage. |
+| Frost Needle | 1 | attack | common | Deal 4 (+1 per Spirit) damage. Apply 1 Faltering. |
+| Ember Toss | 1 | attack | common | Deal 3 (+1 per Spirit) damage to ALL enemies. |
+| Stone Skin | 1 | skill | common | Gain 6 (+2 per Spirit) Barrier. |
+| Clear Spring | 1 | skill | common | Draw 2 cards. |
+| Elemental Focus | 0 | skill | common | Gain 1 Spirit. Consume. |
 | Splintering Burst | 2 | attack | uncommon | Deal 6 damage to ALL enemies. Plant Splinter. |
 | Splinter Grove | 2 | skill | uncommon | Plant Splinter 2 times. |
 | Shatter the Row | 0 | skill | uncommon | Gain Mana equal to half of the number of your totems. Draw cards equal to the number of your totems. Awaken your first 10 totems. Consume. |
@@ -503,10 +503,6 @@ Starter: Strike, Strike, Strike, Strike, Defend, Defend, Defend, Plant Hawk, Pla
 | Forked Branch | 2 | attack | uncommon | Deal 8 damage to ALL enemies. Plant Hawk. |
 | Heartwood | 2 | attack | uncommon | Deal 6 damage 2 times. Plant Hawk. |
 | Bear's Patience | 1 | skill | uncommon | Plant Bear. Foresee 3. |
-| Elder Carving | 0 | attack | uncommon | Deal 2 (+1 per card played this turn) damage. |
-| Gather the Shavings | 1 | skill | uncommon | Gain 3 Barrier. Return 2 random Carvings from your discard pile to your hand. |
-| Whittle Down | 1 | attack | uncommon | Deal 4 (+2 per card played this turn) damage. |
-| Eye Carving | 0 | attack | uncommon | Deal 3 damage. Apply 1 Exposed. |
 | Thunder Rite | 1 | aura | uncommon | Whenever you play an Aura: Plant Splinter. Gain 2 Barrier. |
 | Sentinel Totem | 2 | aura | uncommon | Gain 1 Shielded. At the start of your turn: Gain 3 Barrier. |
 | Ancestral Learning | 1 | aura | uncommon | Whenever you play an Aura: Draw 1 card. |
@@ -515,17 +511,21 @@ Starter: Strike, Strike, Strike, Strike, Defend, Defend, Defend, Plant Hawk, Pla
 | Retune | 1 | skill | uncommon | Upgrade a random card in your hand for this fight. Consume. |
 | Spirit Drum | 2 | aura | uncommon | Whenever you play an Aura: Gain 4 Barrier. |
 | Bark Carapace | 1 | aura | uncommon | At the end of your turn: Gain Barrier equal to the number of your totems. |
-| Antler Carving | 0 | attack | uncommon | Deal 2 damage 2 times to a random enemy. |
-| Moth Carving | 0 | skill | uncommon | Gain 2 Barrier. Apply 1 Exposed to a random enemy. |
-| Whittler's Kit | 1 | skill | uncommon | Add a Hawk Carving to your hand. Add a Bear Carving to your hand. Draw 1 card. |
 | Spirit Surge | 1 | skill | uncommon | Gain 1 Spirit. Draw 1 card. Consume. |
 | Bark Ward | 1 | skill | uncommon | Gain 7 Barrier. Plant Bear. Hold. |
 | Bear Pack | 1 | skill | uncommon | Plant Bear once per enemy. Consume. |
 | Many Voices | X | skill | uncommon | Awaken your first totem X times (it stays). Consume. |
-| Notch and Cut | 1 | attack | uncommon | Deal 3 damage 2 times. Add a Hawk Carving to your hand. |
-| Carver's Rhythm | 0 | skill | uncommon | Draw 2 cards. Consume. |
 | Kindled Rite | 1 | aura | uncommon | At the end of your turn: Deal damage equal to the number of your Auras to ALL enemies. |
 | Smoke Offering | 1 | aura | uncommon | At the start of your turn: Gain Barrier equal to 2 times the number of your Auras. |
+| Storm Call | 2 | attack | uncommon | Deal 6 (+2 per Spirit) damage to ALL enemies. |
+| Gathering Storm | 1 | attack | uncommon | Deal 4 damage, plus all it has grown. Every copy of this card gains 2 damage for the rest of the fight. |
+| Glacial Ward | 1 | skill | uncommon | Gain 8 (+2 per Spirit) Barrier. Apply 1 Faltering to ALL enemies. |
+| Tidecaller | 0 | skill | uncommon | Gain 1 Mana. Draw 1 card. Consume. |
+| Fire Bloom | 2 | attack | uncommon | Deal 10 (+2 per Spirit) damage. |
+| Arc Lightning | 1 | attack | uncommon | Deal 3 (+1 per Spirit) damage 3 times to a random enemy. |
+| Earthen Rampart | 1 | aura | uncommon | At the start of your turn: Gain 2 (+1 per Spirit) Barrier. |
+| Inner Flame | 1 | skill | uncommon | Gain 2 Spirit. Consume. |
+| Quench | 1 | skill | uncommon | Gain 6 Barrier. Draw 1 card. |
 | Awakened Blow | 1 | attack | rare | Deal 4 (+2 per totem) damage. |
 | Blazing Eye | 3 | attack | rare | Deal 18 damage to ALL enemies. Awaken your first 3 totems. |
 | Bulwark Totem | 2 | skill | rare | Gain 4 (+3 per totem) Barrier. Gain 1 Bracing. |
@@ -533,12 +533,6 @@ Starter: Strike, Strike, Strike, Strike, Defend, Defend, Defend, Plant Hawk, Pla
 | Totem Trap | 2 | trap | rare | When you or an ally is attacked: Cancel that attack. Plant Bear. |
 | Chorus of Totems | 2 | aura | rare | Gain 2 Spirit. Gain 1 totem slot. |
 | Echo Cascade | 2 | skill | rare | Awaken your first totem 3 times (it stays). Consume. |
-| Fresh Shavings | 1 | skill | rare | Draw 2 cards. Return a random Carving from your discard pile to your hand. |
-| Whittler's Knife | 1 | aura | rare | Whenever you play a Carving: Deal 3 damage to a random enemy. |
-| Shavings Underfoot | 1 | aura | rare | Whenever you play a Carving: Gain 3 Barrier. |
-| Carver's Bench | 2 | aura | rare | At the start of your turn: Add a Hawk Carving to your hand. |
-| Living Wood | 3 | aura | rare | Whenever you play a Carving: Plant Splinter. |
-| Clear the Bench | 1 | skill | rare | Discard any number of cards. Return 10 random Carvings from your discard pile to your hand. Draw 1 card. Consume. |
 | Fevered Communion | 2 | aura | rare | Gain 1 Spirit. Whenever you play an Aura: Gain 1 Spirit. |
 | Skyfall Rite | 2 | attack | rare | Deal 8 (+2 per Aura you have) damage to ALL enemies. Consume. |
 | Echoing Chant | 3 | aura | rare | At the start of your turn: Deal damage equal to 2 times the number of your Auras to ALL enemies. |
@@ -549,11 +543,17 @@ Starter: Strike, Strike, Strike, Strike, Defend, Defend, Defend, Plant Hawk, Pla
 | Owl Cut | 1 | skill | rare | Plant Owl. Draw 1 card. |
 | Spirit Wave | 2 | attack | rare | Deal 11 damage to ALL enemies. Awaken your first totem. |
 | Toppling Row | 2 | attack | rare | Deal 8 (+4 per totem) damage to ALL enemies. Awaken your first 3 totems. Consume. |
-| Endless Whittling | 1 | aura | rare | At the start of your turn: Return a random Carving from your discard pile to your hand. |
 | Sap Offering | 2 | aura | rare | Gain 3 Spirit. At the start of your turn: Lose 1 HP. |
+| Firestorm | 2 | attack | rare | Deal 10 (+2 per Spirit) damage to ALL enemies. |
+| Skybreaker | 2 | attack | rare | Deal 24 (+3 per Spirit) damage. Consume. |
+| Deep Freeze | 2 | attack | rare | Deal 12 (+2 per Spirit) damage. Stun the target for 1 turn. |
+| Stormcrown | 2 | aura | rare | At the end of your turn: Deal damage equal to 2 times your Spirit to ALL enemies. |
+| Mountain's Heart | 2 | skill | rare | Gain 15 (+3 per Spirit) Barrier. Consume. |
+| Spiritfont | 2 | aura | rare | At the start of your turn: Gain 1 Spirit. |
+| Prismatic Cascade | 2 | attack | rare | Deal 4 (+1 per Spirit) damage 3 times to ALL enemies. |
 | The Great Pole | 3 | aura | legendary | Gain 3 totem slots. Gain 3 Spirit. At the start of your turn: Plant Elder. |
 | Cataclysm Totem | 2 | attack | legendary | Deal 10 damage to ALL enemies. Awaken your first 10 totems 2 times. Consume. |
-| The Spirit Council | 2 | aura | legendary | At the start of your turn: Add a Hawk Carving to your hand. Add a Talon Carving to your hand. Add a Bear Carving to your hand. |
+| Avatar of the Elements | 3 | aura | legendary | At the start of your turn: Gain 1 Spirit. Deal damage equal to your Spirit to ALL enemies. |
 
 ## Sehra (aurelion, 82 HP)
 

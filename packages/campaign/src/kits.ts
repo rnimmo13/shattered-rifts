@@ -36,7 +36,7 @@ export const KIT_CARDS: Record<HeroId, [Kit, Kit, Kit]> = {
   ],
   totemist: [
     ['prismatic-burst', 'driver-of-runes', 'rime-strike'],
-    ['umbra-glyph', 'streamlined-strike', 'live-wire'],
+    ['storm-call', 'glacial-ward', 'spark-lash'],
     ['thundercall', 'sentinel-sigil', 'spark-cluster'],
   ],
   barbarian: [
