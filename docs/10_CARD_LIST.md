@@ -219,9 +219,9 @@ Starter: Strike, Strike, Strike, Strike, Defend, Defend, Defend, Savage Bite, Bl
 
 | Card | Cost | Type | Rarity | Text |
 |---|---|---|---|---|
-| Savage Bite | 1 | attack | basic | Deal 6 damage. Lifesteal 50%. |
-| Blood Frenzy | 1 | attack | basic | Deal 4 damage to ALL enemies. Lose 2 HP. Gain 1 Might. |
-| Rend | 1 | attack | basic | Deal 9 damage. Lose 3 HP. Gain 1 Might. |
+| Savage Bite | 1 | attack | basic | Deal 8 damage. Lifesteal 50%. |
+| Blood Frenzy | 1 | attack | basic | Deal 4 damage to ALL enemies. Lose 1 HP. Gain 1 Might. |
+| Rend | 1 | attack | basic | Deal 9 damage. Lose 2 HP. Gain 1 Might. |
 | Twin Fang | 1 | attack | common | Deal 5 damage 2 times. Lose 2 HP. |
 | Feral Instinct | 0 | skill | common | Lose 3 HP. Draw 2 cards. Consume. |
 | Pain Ward | 1 | skill | common | Gain 5 (+1 per 5% HP missing) Barrier. |
