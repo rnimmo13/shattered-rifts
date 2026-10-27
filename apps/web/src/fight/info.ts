@@ -158,7 +158,7 @@ export const STATUS_INFO: Record<
   },
   devotion: {
     name: 'Devotion',
-    glyph: '✚',
+    glyph: '⚜',
     tone: 'good',
     text: 'Valeria gains it whenever she heals, even at full HP. Some of her cards spend it for big hits. It lasts the whole fight.',
   },

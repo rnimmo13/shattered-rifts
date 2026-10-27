@@ -5,6 +5,7 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **Devotion** costs show a ⚜ (it used a cross that read like a plus: "✚ 4" looked like "+4").
 - **Valeria:** Unbroken Wall costs 3 (2 upgraded). Retribution costs 2 (1 upgraded).
 - **Shielded** units glow inside a yellow bubble until the shield is spent.
 - **Fortified** no longer stacks; cards say "Gain Fortified".

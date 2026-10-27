@@ -29,8 +29,8 @@ Starter: Strike, Strike, Strike, Strike, Defend, Defend, Defend, Defend, Dawn Sm
 | Gilded Blow | 1 | attack | common | Deal 8 damage. Gain 2 Barrier. |
 | Tower Shield | 1 | aura | common | Whenever you play a Skill: Gain 3 Barrier. |
 | Sunforged Edge | 2 | attack | common | Deal 6 (+1 per Devotion) damage. Spend all your Devotion. |
-| Hand of Justice | 1 +4 devotion | attack | common | Deal 10 damage. Apply 1 Exposed. |
-| Lightbrand | 1 +5 devotion | attack | common | Deal 14 damage. |
+| Hand of Justice | 1 + 4 Devotion | attack | common | Deal 10 damage. Apply 1 Exposed. |
+| Lightbrand | 1 + 5 Devotion | attack | common | Deal 14 damage. |
 | Shield Bash | 1 | attack | common | Deal 3 (+1 per 2 Barrier) damage. |
 | Iron Tithe | 1 | skill | common | Gain 6 Barrier. Gain Barrier equal to 2 times the number of cards you have consumed. |
 | Gilded Wall | 1 | skill | common | Gain 5 (+1 per 2 Barrier) Barrier. |
@@ -55,8 +55,8 @@ Starter: Strike, Strike, Strike, Strike, Defend, Defend, Defend, Defend, Dawn Sm
 | Spiked Retort | 1 | trap | uncommon | When you or an ally is attacked: Deal 6 damage to the attacker. Gain 2 Thorns. |
 | Thorn Volley | 1 | attack | uncommon | Deal 2 (+1 per Thorns) damage to ALL enemies. |
 | Barbed Bastion | 2 | skill | uncommon | Gain 6 (+2 per Thorns) Barrier. |
-| Consecrated Blade | 2 +8 devotion | attack | uncommon | Deal 9 damage 2 times. Gain 6 Barrier. |
-| Hymn of Reckoning | 1 +6 devotion | attack | uncommon | Deal 10 damage to ALL enemies. |
+| Consecrated Blade | 2 + 8 Devotion | attack | uncommon | Deal 9 damage 2 times. Gain 6 Barrier. |
+| Hymn of Reckoning | 1 + 6 Devotion | attack | uncommon | Deal 10 damage to ALL enemies. |
 | Ember Ward | 1 | skill | uncommon | Gain 10 Barrier. Gain 4 Thorns until the end of your turn. |
 | Mirror Shield | 1 | trap | uncommon | When you or an ally is attacked: Deal 4 damage to the attacker. Deal damage equal to 2 times your Thorns to the attacker. |
 | Forged in Iron | X | skill | uncommon | Gain Barrier equal to 6 times the Mana spent. |
@@ -83,7 +83,7 @@ Starter: Strike, Strike, Strike, Strike, Defend, Defend, Defend, Defend, Dawn Sm
 | Briar Bloom | 1 | skill | rare | Double the Thorns to yourself (at most +8). Consume. |
 | Punishing Gale | 2 | trap | rare | At the start of the enemy turn: Deal 8 (+1 per Thorns) damage to ALL enemies. |
 | Martyr's Grace | 1 | skill | rare | Lose 5 HP. Gain 15 Barrier. Gain 2 Shielded. Consume. |
-| Hand of God | 2 +15 devotion | attack | rare | Deal 36 damage. |
+| Hand of God | 2 + 15 Devotion | attack | rare | Deal 36 damage. |
 | Sunfall | 2 | attack | rare | Deal 10 (+2 per Devotion) damage. Spend all your Devotion. |
 | Endless Vigil | 2 | aura | rare | At the end of your turn: Gain Barrier equal to 2 times the number of cards in your hand. |
 | Radiant Oath | 2 | aura | rare | Gain 4 Thorns for the rest of the fight. |

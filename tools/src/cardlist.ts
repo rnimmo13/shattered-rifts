@@ -13,7 +13,9 @@ const row = (c: (typeof cards)[number]): string => {
     ? 'X'
     : String(c.cost) +
       (c.starCost ? `+${c.starCost}◆` : '') +
-      (c.statusCost ? ` +${c.statusCost.amount} ${c.statusCost.status}` : '');
+      (c.statusCost
+        ? ` + ${c.statusCost.amount} ${c.statusCost.status[0]!.toUpperCase()}${c.statusCost.status.slice(1)}`
+        : '');
   const text = cardText(db, c).replace(/\|/g, '/');
   return `| ${c.name} | ${cost} | ${c.kind === 'snare' ? 'trap' : c.kind === 'power' ? 'aura' : c.kind} | ${c.rarity ?? ''} | ${text} |`;
 };

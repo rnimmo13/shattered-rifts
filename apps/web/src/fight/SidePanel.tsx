@@ -30,7 +30,7 @@ export function DevotionCounter(props: { value: number; second?: boolean }) {
       aria-label={`Devotion ${props.value}`}
       {...tipAttrs(UI_TIPS.devotion(props.value))}
     >
-      <span aria-hidden>✚</span>
+      <span aria-hidden>⚜</span>
       <b>{props.value}</b>
       <small>Devotion</small>
     </div>
