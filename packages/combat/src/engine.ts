@@ -573,6 +573,7 @@ function execOp(r: Run, a: Act, op: Op): void {
         ? stacks(a.actor, 'vigor')
         : 0;
       let took = 0;
+      const struck = new Set<string>();
       for (let i = 0; i < hits; i++) {
         // (a hit that wins the fight still pays its Lifesteal below: HP carries on in a run)
         if (r.s.winner) break;
@@ -582,7 +583,14 @@ function execOp(r: Run, a: Act, op: Op): void {
           const b = r.db.units[a.actor.def]?.brain;
           a.target = pickFoe(r, a.actor, b?.kind === 'enemy' ? (b.foe ?? 'hero') : 'hero');
         }
-        const ts = resolve(r, a, op.to);
+        let ts = resolve(r, a, op.to);
+        // a spread of hits: each finds an enemy not struck yet, and stops when every enemy has been
+        if (op.distinct && op.to === 'randomFoe') {
+          const fresh = resolve(r, a, 'allFoes').filter((u) => !struck.has(u.id));
+          if (!fresh.length) break;
+          ts = [fresh[nextInt(r.s.rng, fresh.length)] as Unit];
+          struck.add(ts[0]!.id);
+        }
         // Point Blank: a shot that finds only one enemy hits it harder
         const lone = op.lonePct && ts.length === 1 ? 1 + op.lonePct / 100 : 1;
         for (const t of ts)
@@ -1900,7 +1908,8 @@ function playCard(r: Run, action: Extract<Action, { type: 'play' }>): void {
     sd.stars -= cd.starCost;
     r.ev.push({ type: 'stars', side, stars: sd.stars });
   }
-  if (cd.statusCost) addStatus(r, hero, cd.statusCost.status, -cd.statusCost.amount);
+  if (cd.statusCost && cd.statusCost.amount > 0)
+    addStatus(r, hero, cd.statusCost.status, -cd.statusCost.amount);
   r.ev.push({ type: 'play', side, card: inst.id, def: inst.card, target: target?.id ?? null });
   r.ev.push({ type: 'mana', side, mana: sd.mana });
   // (the Auras that answer Arcana being spent go off once the card is paid for)

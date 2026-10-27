@@ -5,6 +5,7 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **Valeria:** Devotion costs show just the number; Sunfall and Sunforged Edge show an X (they spend it all). Sunfall strikes 2 different random enemies.
 - **Companions grow:** a heal on a companion gives it that much max HP instead (Rivet's Tinkerer, Sync Pulse, Primal Feast...).
 - **New starting kits:** Valeria (Bulwark: Bulwark Sweep, Shield Charge, Tower Shield; Thorns: Mirrored Aegis, Thorn Volley, Barbed Oath; Devotion: Sacred Vow, Hymn of Reckoning, Lightbearer) and Rivet's Swarm (Overcharge Blast, Call Turret, Breach Charge).
 - **Resolve:** losing a fight with Resolve left retries it at full HP (was at least half).

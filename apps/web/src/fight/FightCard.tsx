@@ -145,11 +145,13 @@ export const FightCard = memo(
           {def.statusCost ? (
             <div
               className={`card__stars card__stars--${def.statusCost.status}`}
-              aria-label={`Costs ${def.statusCost.amount} ${STATUS_INFO[def.statusCost.status].name}`}
+              aria-label={
+                def.statusCost.x
+                  ? `Spends all your ${STATUS_INFO[def.statusCost.status].name}`
+                  : `Costs ${def.statusCost.amount} ${STATUS_INFO[def.statusCost.status].name}`
+              }
             >
-              <span>
-                {STATUS_INFO[def.statusCost.status].glyph} {def.statusCost.amount}
-              </span>
+              <span>{def.statusCost.x ? 'X' : def.statusCost.amount}</span>
             </div>
           ) : null}
           <div className="card__type">

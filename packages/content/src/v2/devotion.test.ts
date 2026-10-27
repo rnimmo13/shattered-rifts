@@ -70,9 +70,16 @@ describe("Valeria's Devotion", () => {
   it('Sunfall spends X Devotion, all you have: 10 damage +2 per Devotion (DECISIONS #348)', () => {
     expect(playable(fight('knight', ['sunfall'], 0), 'T0')).toBe(true);
     let s = fight('knight', ['sunfall'], 25);
-    s = playCard(s, 'T0'); // 10 + 2 x 25 = 60
-    expect(s.sides.b.units[0]!.hp).toBe(40);
+    s = playCard(s, 'T0'); // 10 + 2 x 25 = 60, on each of the two enemies (DECISIONS #357)
+    expect(s.sides.b.units.map((u) => u.hp)).toEqual([40, 40]);
     expect(heroOf(s).statuses.devotion ?? 0).toBe(0);
+  });
+
+  it('Sunfall strikes two different enemies once each, and a lone enemy only once', () => {
+    let s = fight('knight', ['sunfall'], 5);
+    s.sides.b.units[1]!.hp = 0;
+    s = playCard(s, 'T0'); // 10 + 2 x 5 = 20, once
+    expect(s.sides.b.units[0]!.hp).toBe(80);
   });
 
   it('Sunforged Edge spends X Devotion, all you have: 6 damage +1 per Devotion (DECISIONS #348)', () => {

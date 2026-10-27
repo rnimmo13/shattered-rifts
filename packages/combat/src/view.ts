@@ -445,6 +445,9 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
   switch (o.op) {
     case 'damage': {
       const a = amountText(o.amount, o.scale);
+      // (a spread: "to 2 different random enemies")
+      if (o.distinct && o.to === 'randomFoe' && (o.hits ?? 1) > 1)
+        return `Deal ${a.equal ? `damage equal to ${a.num}` : `${a.num} damage`} to ${o.hits} different random enemies.`;
       let times = o.hits && o.hits > 1 ? ` ${o.hits} times` : '';
       if (o.scale?.into === 'hits') {
         const w = METRIC_WORDS[o.scale.by];
@@ -785,6 +788,15 @@ export function cardText(db: CombatDb, c: CardDef, live?: ReadonlyMap<number, Li
       const growsItself = c.effects.some(
         (x) => x.op === 'forge' && x.card === c.id.replace(/\+$/, ''),
       );
+      // an "X" status cost on the card already says it spends all of it, so the text does not (DECISIONS #357)
+      if (
+        o.op === 'scaleStatus' &&
+        o.mult === 0 &&
+        o.to === 'self' &&
+        c.statusCost?.x &&
+        o.status === c.statusCost.status
+      )
+        continue;
       if (o.op === 'forge' && growsItself) {
         parts.push(`Every copy of this card gains ${o.amount} damage for the rest of the fight.`);
         continue;

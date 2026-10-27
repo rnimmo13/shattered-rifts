@@ -297,7 +297,7 @@ export function keywordsOf(
     innate?: boolean | undefined;
     ethereal?: boolean | undefined;
     starCost?: number | undefined;
-    statusCost?: { status: string; amount: number } | undefined;
+    statusCost?: { status: string; amount: number; x?: boolean } | undefined;
     x?: boolean | undefined;
     effects: readonly {
       op: string;

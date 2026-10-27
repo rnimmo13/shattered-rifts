@@ -134,7 +134,8 @@ export function validateDb(db: CombatDb): string[] {
       errs.push(`${id}: bad star cost`);
     if (
       c.statusCost !== undefined &&
-      (!Number.isInteger(c.statusCost.amount) || c.statusCost.amount <= 0)
+      (!Number.isInteger(c.statusCost.amount) ||
+        (c.statusCost.x ? c.statusCost.amount !== 0 : c.statusCost.amount <= 0))
     )
       errs.push(`${id}: bad status cost`);
     if (

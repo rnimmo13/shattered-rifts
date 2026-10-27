@@ -28,7 +28,7 @@ Starter: Strike, Strike, Strike, Strike, Defend, Defend, Defend, Defend, Dawn Sm
 | Bell Toll | 1 | attack | common | Deal 5 damage to ALL enemies. Gain 3 Barrier. |
 | Gilded Blow | 1 | attack | common | Deal 8 damage. Gain 2 Barrier. |
 | Tower Shield | 1 | aura | common | Whenever you play a Skill: Gain 3 Barrier. |
-| Sunforged Edge | 2 | attack | common | Deal 6 (+1 per Devotion) damage. Spend all your Devotion. |
+| Sunforged Edge | 2 + X Devotion | attack | common | Deal 6 (+1 per Devotion) damage. |
 | Hand of Justice | 1 + 4 Devotion | attack | common | Deal 10 damage. Apply 1 Exposed. |
 | Lightbrand | 1 + 5 Devotion | attack | common | Deal 14 damage. |
 | Shield Bash | 1 | attack | common | Deal 3 (+1 per 2 Barrier) damage. |
@@ -44,7 +44,7 @@ Starter: Strike, Strike, Strike, Strike, Defend, Defend, Defend, Defend, Dawn Sm
 | Ward of Ages | 1 | skill | uncommon | Gain 1 Shielded. Draw 1 card. |
 | Sacred Vow | 2 | aura | uncommon | At the end of your turn: Heal 3. |
 | Radiant Renewal | 2 | skill | uncommon | Heal 8. Draw 2 cards. Consume. |
-| Heartening Hymn | 1 | skill | uncommon | Heal 6 to all friends. Gain 4 Barrier to all friends. |
+| Heartening Hymn | 1 | skill | uncommon | Heal 6. Your companions gain 6 max HP. Gain 4 Barrier to all friends. |
 | Zealous Charge | 1 | attack | uncommon | Deal 4 damage 3 times. |
 | Vengeful Light | 2 | attack | uncommon | Deal 11 damage. Heal HP equal to your Thorns. |
 | Steady Resolve | 1 | skill | uncommon | Gain 5 Barrier. Next turn, gain 2 extra Mana. |
@@ -75,7 +75,7 @@ Starter: Strike, Strike, Strike, Strike, Defend, Defend, Defend, Defend, Dawn Sm
 | Briar Heart | 3 | aura | rare | Whenever you gain Barrier: Gain 1 Thorns. |
 | Halo | 3 | aura | rare | At the start of your turn: Gain 1 Shielded. |
 | Absolution | 3 | skill | rare | Heal 12. Gain 12 Barrier. Gain 1 Shielded. Consume. |
-| Dawn Chorus | 2 | skill | rare | Heal 10 to all friends. Gain 1 Shielded. Consume. |
+| Dawn Chorus | 2 | skill | rare | Heal 10. Your companions gain 10 max HP. Gain 1 Shielded. Consume. |
 | Holy Reckoning | 2 | attack | rare | Deal 8 damage to ALL enemies. Heal 6. |
 | Sanctuary | 2 | trap | rare | When you or an ally is attacked: Cancel that attack. Gain 8 Barrier. |
 | Dawn's Verdict | 3 | attack | rare | Deal 28 damage. Apply 2 Exposed. |
@@ -84,7 +84,7 @@ Starter: Strike, Strike, Strike, Strike, Defend, Defend, Defend, Defend, Dawn Sm
 | Punishing Gale | 2 | trap | rare | At the start of the enemy turn: Deal 8 (+1 per Thorns) damage to ALL enemies. |
 | Martyr's Grace | 1 | skill | rare | Lose 5 HP. Gain 15 Barrier. Gain 2 Shielded. Consume. |
 | Hand of God | 2 + 15 Devotion | attack | rare | Deal 36 damage. |
-| Sunfall | 2 | attack | rare | Deal 10 (+2 per Devotion) damage. Spend all your Devotion. |
+| Sunfall | 2 + X Devotion | attack | rare | Deal 10 (+2 per Devotion) damage to 2 different random enemies. |
 | Endless Vigil | 2 | aura | rare | At the end of your turn: Gain Barrier equal to 2 times the number of cards in your hand. |
 | Radiant Oath | 2 | aura | rare | Gain 4 Thorns for the rest of the fight. |
 | Impregnable | 2 | skill | rare | Gain Barrier equal to your Barrier. Consume. |
@@ -123,7 +123,7 @@ Starter: Strike, Strike, Strike, Strike, Strike, Defend, Defend, Defend, Deploy 
 | Static Field | 1 | attack | common | Deal 3 damage to ALL enemies. Apply 1 Faltering to ALL enemies. |
 | Plating | 1 | skill | common | Gain 6 Barrier to all friends. |
 | Scrap Volley | 1 | attack | common | Deal 4 damage 2 times to a random enemy. |
-| Sync Pulse | 1 | skill | common | All your allies act now. Heal 3 to all friends. |
+| Sync Pulse | 1 | skill | common | All your allies act now. Heal 3. Your companions gain 3 max HP. |
 | Hardened Chassis | 1 | skill | common | Gain 9 Barrier to the ally. Draw 1 card. |
 | Call Turret | 1 | summon | uncommon | Summon Sentry Turret (10 HP, Taunt). At the end of your turn it will: Deal 3 damage. Gain 2 Barrier to your hero. |
 | Overcharge Blast | 2 | attack | uncommon | Deal 8 (+2 per ally) damage to ALL enemies. |
@@ -140,7 +140,7 @@ Starter: Strike, Strike, Strike, Strike, Strike, Defend, Defend, Defend, Deploy 
 | Clockwork Trap | 1 | trap | uncommon | When you lose 5+ HP at once: All your allies act now. Gain 8 Barrier. |
 | Surge Protocol | X | skill | uncommon | Apply equal to the Mana spent Might to all friends. All your allies act now. |
 | Reinforce | 1 | skill | uncommon | Gain 8 Barrier to the ally. Apply 2 Might to the ally. |
-| Upgrade Chip | 1 | skill | uncommon | Apply 2 Might to the ally. Heal 6 to the ally. |
+| Upgrade Chip | 1 | skill | uncommon | Apply 2 Might to the ally. The ally gains 6 max HP. |
 | Weld Armor | 1 | skill | uncommon | The ally gains 6 max HP. Gain 6 Barrier to the ally. |
 | Bulwark Frame | 1 | skill | uncommon | Gain 14 Barrier to the ally. |
 | Rebuild | 1 | skill | uncommon | Your most recently fallen ally returns with half its HP. Gain 6 Barrier. Consume. |
@@ -152,9 +152,9 @@ Starter: Strike, Strike, Strike, Strike, Strike, Defend, Defend, Defend, Deploy 
 | Salvage Rights | 1 | aura | uncommon | Whenever one of your allies dies: Draw 1 card. |
 | Scrapyard King | 2 | aura | uncommon | Whenever one of your allies dies: Apply 1 Might to all friends. |
 | Echo Command | 1 | skill | uncommon | All your allies act now. All your allies act now. Next turn, lose 1 Mana. Consume. Hold. |
-| Resonant Pulse | 1 | aura | uncommon | Whenever you play a Skill: Heal 1 to all friends. |
-| Self-Mending | 1 | aura | uncommon | At the start of your turn: Heal 2 to all friends. |
-| Patch Job | 0 | skill | uncommon | Heal 8 to the ally. Gain 3 Barrier to the ally. |
+| Resonant Pulse | 1 | aura | uncommon | Whenever you play a Skill: Heal 1. Your companions gain 1 max HP. |
+| Self-Mending | 1 | aura | uncommon | At the start of your turn: Heal 2. Your companions gain 2 max HP. |
+| Patch Job | 0 | skill | uncommon | The ally gains 8 max HP. Gain 3 Barrier to the ally. |
 | Swarm Protocol | 2 | summon | rare | Summon 2 Patrol Drones (7 HP each). At the end of your turn each will: Deal 4 damage. |
 | Legion | 2 | aura | rare | Whenever you summon an ally: Apply 1 Might to all friends. |
 | Swarm Tactics | 1 | aura | rare | Whenever you summon an ally: Deal 3 damage to a random enemy. |
@@ -212,7 +212,7 @@ Starter: Strike, Strike, Strike, Strike, Defend, Defend, Defend, Savage Bite, Bl
 | Lead the Charge | 1 | attack | common | Deal 5 (+3 per ally) damage. |
 | Throw Scraps | 0 | skill | common | Consume 1 card. Gain 1 Mana. |
 | Bone Crack | 1 | attack | common | Deal 7 damage. Apply 2 Exposed. |
-| Primal Feast | 1 | skill | common | Heal 7 to all friends. |
+| Primal Feast | 1 | skill | common | Heal 7. Your companions gain 7 max HP. |
 | Rush In | 1 | attack | common | Deal 6 damage. Draw 1 card. |
 | Pounding Heart | 0 | skill | common | Gain 1 Mana. Lose 2 HP. Consume. |
 | Wild Swings | 1 | attack | common | Deal 3 damage, 1 more time per card played this turn. |
@@ -900,7 +900,7 @@ Starter: Strike, Strike, Strike, Defend, Defend, Defend, Grave Touch, Grave Touc
 | Wake the Ashes | 1 | skill | uncommon | Return 2 random Consumed cards to your hand (never one that returns cards). Consume. |
 | Ashfall | 1 | aura | uncommon | Whenever a card is consumed: Deal 3 damage to a random enemy. |
 | Toll in Advance | 1 | skill | uncommon | Curse the target with 9 Fate. Lose 4 HP. |
-| Unquiet Rest | 2 | aura | uncommon | At the start of your turn: Heal 3 to all friends. |
+| Unquiet Rest | 2 | aura | uncommon | At the start of your turn: Heal 3. Your companions gain 3 max HP. |
 | Bone Pile | 1 | skill | uncommon | Curse the target with 4 Fate. Return a random Consumed card to your hand (never one that returns cards). Consume. |
 | Soul Tithe | 0 | skill | uncommon | Lose 4 HP. Gain 2 Mana. Consume. |
 | Death's Ledger | 1 | skill | uncommon | Curse the target with 6 Fate. Draw 1 card. |
@@ -914,7 +914,7 @@ Starter: Strike, Strike, Strike, Defend, Defend, Defend, Grave Touch, Grave Touc
 | Army of the Drowned | 3 | summon | rare | Summon 3 Bone Thralls (12 HP each). At the end of your turn each will: Deal 4 damage. Consume. |
 | Phylactery | 3 | aura | rare | At the start of your turn: Summon Bone Thrall (12 HP). At the end of your turn it will: Deal 4 damage. |
 | Bone Choir | 2 | aura | rare | Whenever one of your allies dies: Deal 8 damage to ALL enemies. |
-| Marrow Tide | 2 | skill | rare | Heal 10 to all friends. Apply 2 Might to all friends. Consume. |
+| Marrow Tide | 2 | skill | rare | Heal 10. Your companions gain 10 max HP. Apply 2 Might to all friends. Consume. |
 | Ashen Bargain | 1 | skill | rare | Consume any number of cards. Curse ALL enemies with Fate equal to the number of cards you have consumed. |
 | Ash Ritual | 2 | aura | rare | Whenever a card is consumed: Curse ALL enemies with 2 Fate. |
 | Pyre of the Dead | 2 | attack | rare | Consume any number of cards. Deal damage equal to the number of cards you have consumed to ALL enemies. |

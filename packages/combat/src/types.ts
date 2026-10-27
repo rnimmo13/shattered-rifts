@@ -200,6 +200,9 @@ export type Op =
       scale?: Scale;
       lonePct?: number;
       lifesteal?: number;
+      /** with `to: 'randomFoe'`: each hit finds an enemy no earlier hit of it struck, so `hits` is how many different
+       * enemies it strikes, once each (fewer when fewer are standing; DECISIONS #357) */
+      distinct?: boolean;
     }
   | { op: 'loseHp'; amount: number; to: Sel; scale?: Scale } // unblockable, unmodified
   | { op: 'barrier'; amount: number; to: Sel; scale?: Scale }
@@ -310,7 +313,8 @@ export interface CardDef {
   /** Stars paid on top of the Mana cost */
   starCost?: number;
   /** stacks of a status on your hero paid on top of the Mana cost (Valeria's Devotion); unplayable without them */
-  statusCost?: { status: StatusId; amount: number };
+  /** `x`: the card spends all of it (its effects do the spending; `amount` is 0), shown as "X" (DECISIONS #357) */
+  statusCost?: { status: StatusId; amount: number; x?: boolean };
   /** an X card: costs all your remaining Mana and the Metric 'x' is how much was spent (give it cost 0) */
   x?: boolean;
   /** an X card's "+1": X counts as this much more than the Mana spent (the "+" version of every X card has 1) */

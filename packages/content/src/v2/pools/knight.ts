@@ -4,7 +4,7 @@
 //   Devotion    - heal to build Devotion (her trait: even at full HP), then spend it on big hits; Shielded keeps her alive meanwhile
 // Glue cards (marked) serve two build paths. Numbers assume 3 Mana and a 5-card hand.
 
-import type { CardDef } from '@sr/combat';
+import type { CardDef, Op } from '@sr/combat';
 import {
   barrier,
   dmg,
@@ -272,10 +272,16 @@ export const KNIGHT: CardDef[] = [
 
   // --- Devotion (more) ---
   // spends X Devotion, all you have (DECISIONS #348)
-  m('common', 'sunforged-edge', 'Sunforged Edge', 'attack', 2, 'foe', [
-    scaled(dmg(6), per('devotion', 1)),
-    doubleSt('devotion', 'self', 0),
-  ]),
+  m(
+    'common',
+    'sunforged-edge',
+    'Sunforged Edge',
+    'attack',
+    2,
+    'foe',
+    [scaled(dmg(6), per('devotion', 1)), doubleSt('devotion', 'self', 0)],
+    { statusCost: { status: 'devotion', amount: 0, x: true } },
+  ),
   m(
     'rare',
     'martyrs-grace',
@@ -336,9 +342,13 @@ export const KNIGHT: CardDef[] = [
     'Sunfall',
     'attack',
     2,
-    'foe',
-    // spends X Devotion, all you have (DECISIONS #348)
-    [scaled(dmg(10), per('devotion', 2)), doubleSt('devotion', 'self', 0)],
+    'none',
+    // spends X Devotion, all you have (DECISIONS #348), on two random enemies (DECISIONS #357)
+    [
+      scaled({ ...dmg(10, 'randomFoe', 2), distinct: true } as Op, per('devotion', 2)),
+      doubleSt('devotion', 'self', 0),
+    ],
+    { statusCost: { status: 'devotion', amount: 0, x: true } },
   ),
 
   // --- brought back (DECISIONS #337) ---
