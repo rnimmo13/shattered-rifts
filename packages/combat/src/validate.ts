@@ -28,10 +28,20 @@ export function validateDb(db: CombatDb): string[] {
         errs.push(`${where}: uses "target" but nothing is aimed`);
       if ('amount' in o && !Number.isFinite(o.amount)) errs.push(`${where}: bad amount`);
       if (
-        (o.op === 'damage' || o.op === 'loseHp' || o.op === 'barrier' || o.op === 'heal') &&
+        (o.op === 'damage' ||
+          o.op === 'loseHp' ||
+          o.op === 'barrier' ||
+          o.op === 'heal' ||
+          o.op === 'growHp') &&
         o.amount < 0
       )
         errs.push(`${where}: negative amount`);
+      if (
+        o.op === 'damage' &&
+        o.lifesteal !== undefined &&
+        !(Number.isFinite(o.lifesteal) && o.lifesteal > 0 && o.lifesteal <= 100)
+      )
+        errs.push(`${where}: Lifesteal must be 1-100 percent`);
       if ((o.op === 'discard' || o.op === 'exhaustCards' || o.op === 'scry') && !opts.pick)
         errs.push(
           `${where}: "${o.op}" asks the player to choose, so only a card's own effects may use it`,

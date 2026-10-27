@@ -1193,6 +1193,29 @@ describe('Lifesteal, companions that grow, and Might shared with the pack (DECIS
     expect(hero(c).maxHp).toBe(hero(at([])).maxHp);
   });
 
+  it('"Might to all friends" on a side that shares it reaches a companion once, not twice', () => {
+    const t2: CombatDb = {
+      ...tdb,
+      cards: {
+        ...tdb.cards,
+        rally: card('rally', [{ op: 'status', status: 'might', amount: 2, to: 'allFriends' }]),
+      },
+    };
+    let c = at(['call-drone', 'rally']);
+    c = applyAction(t2, c, { type: 'play', card: 't0' }).state;
+    c = applyAction(t2, c, { type: 'play', card: 't1' }).state;
+    expect(c.sides.a.units.find((u) => u.kind === 'ally')!.statuses.might).toBe(2);
+    expect(hero(c).statuses.might).toBe(2);
+  });
+
+  it('a Lifesteal hit that wins the fight still heals', () => {
+    const c = at(['bite']);
+    foe(c).hp = 4;
+    const after = applyAction(tdb, c, { type: 'play', card: 't0', target: foe(c).id }).state;
+    expect(after.winner).toBe('a');
+    expect(hero(after).hp).toBe(40 + 2);
+  });
+
   it('a hero who shares Might passes it to the pack, and a new companion arrives with it', () => {
     let c = at(['call-drone', 'roar', 'call-drone']);
     c = applyAction(tdb, c, { type: 'play', card: 't0' }).state;

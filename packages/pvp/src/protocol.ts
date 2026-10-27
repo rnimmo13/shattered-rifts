@@ -43,7 +43,8 @@ export interface Entry {
  * browser still on the old version is told to reload instead of playing a different game from the server's, and a match saved under
  * the old rules is ended rather than replayed under the new ones (DECISIONS #237).
  */
-export const RULES_VERSION = 4;
+// (5: the 0.71-0.85 card changes, Lifesteal, growing companions and Kesh's shared Might; DECISIONS #287)
+export const RULES_VERSION = 5;
 
 export type ClientMsg =
   /** to the queue: wait for an opponent */

@@ -145,16 +145,19 @@ function addStatus(r: Run, u: Unit, st: StatusId, amount: number): boolean {
     r.ev.push({ type: 'status', target: u.id, status: 'steadfast', amount: -1, total: left });
     return false;
   }
-  let total = stacks(u, st) + amount;
+  const was = stacks(u, st);
+  let total = was + amount;
   if (st === 'stunned') total = Math.min(1, total);
   if (total <= 0) delete u.statuses[st];
   else u.statuses[st] = total;
   r.ev.push({ type: 'status', target: u.id, status: st, amount, total: Math.max(0, total) });
   // a hero whose trait shares Might: their companions gain (or lose) the same (DECISIONS #285)
-  if (st === 'might' && u.kind === 'hero' && traitOf(r, u.side)?.shareMight)
+  // (what the hero's Might really changed by, so a loss never takes more from a companion than the hero itself lost)
+  const delta = Math.max(0, total) - was;
+  if (st === 'might' && delta !== 0 && u.kind === 'hero' && traitOf(r, u.side)?.shareMight)
     for (const x of r.s.sides[u.side].units)
-      if (x.kind === 'ally' && x.hp > 0 && (amount > 0 || stacks(x, 'might') > 0))
-        addStatus(r, x, 'might', Math.max(amount, -stacks(x, 'might')));
+      if (x.kind === 'ally' && x.hp > 0 && (delta > 0 || stacks(x, 'might') > 0))
+        addStatus(r, x, 'might', Math.max(delta, -stacks(x, 'might')));
   // Mantra builds towards Radiant and is spent on entering it
   if (st === 'mantra' && total >= MANTRA_GOAL) {
     // one Radiant per goal reached; anything left over stays as Mantra
@@ -518,7 +521,8 @@ function execOp(r: Run, a: Act, op: Op): void {
         : 0;
       let took = 0;
       for (let i = 0; i < hits; i++) {
-        if (r.s.winner) return;
+        // (a hit that wins the fight still pays its Lifesteal below: HP carries on in a run)
+        if (r.s.winner) break;
         // a target that died mid-attack: the remaining hits find a new one (an enemy by its own rule for choosing, so a
         // random-picking foe picks again; anyone else the usual way: a minion still standing, then the hero)
         if (op.to === 'target' && (!a.target || a.target.hp <= 0)) {
@@ -604,8 +608,12 @@ function execOp(r: Run, a: Act, op: Op): void {
           addStatus(r, t, st, -off);
         }
       return;
-    case 'status':
+    case 'status': {
+      // (Might for all friends on a side whose hero shares it: the hero takes it and passes it on, so companions do not get it twice)
+      const shared =
+        op.status === 'might' && op.to === 'allFriends' && !!traitOf(r, side.id)?.shareMight;
       for (const t of resolve(r, a, op.to)) {
+        if (shared && t.kind === 'ally') continue;
         const n = amountOf(r, a, op.amount, op.scale, t);
         const applied = addStatus(
           r,
@@ -617,6 +625,7 @@ function execOp(r: Run, a: Act, op: Op): void {
           side.temps.push({ unit: t.id, status: op.status, amount: n });
       }
       return;
+    }
     case 'scaleStatus':
       for (const t of resolve(r, a, op.to)) {
         const n = stacks(t, op.status);

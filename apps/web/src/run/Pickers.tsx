@@ -41,6 +41,7 @@ import { RarityGem } from '../ui/RarityGem';
 import { Reel } from '../trials/Reel';
 import { PRIZE_MARK } from '../trials/prizes';
 import { WithArrows } from '../ui/Arrow';
+import { tipAttrs } from '../ui/tip';
 
 const defOf = (id: string): CardDef | undefined => COMBAT_DB.cards[id];
 
@@ -704,7 +705,17 @@ export function MerchantView(props: {
                 return (
                   <li key={`${id}-${i}`}>
                     <PotionIcon potion={def} size={24} />
-                    <span>{def.name}</span>
+                    {/* (what the potion does, on hover, so you know what you are selling) */}
+                    <span
+                      tabIndex={0}
+                      {...tipAttrs({
+                        kicker: `Potion · ${def.rarity}`,
+                        title: def.name,
+                        text: def.text,
+                      })}
+                    >
+                      {def.name}
+                    </span>
                     <button className="btn btn--small" onClick={() => props.onSellPotion(i)}>
                       <span>Sell {potionSellPrice(id)}</span>
                     </button>
