@@ -5,6 +5,8 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **Arena:** see how many players are looking for a match before you queue. Making or joining a friend's room has its own panel, and the room code box shows its hint in full.
+- **Constructed decks removed:** the Arena only ever takes decks saved from a campaign run.
 - **One Legendary Boon per run:** once you hold a Legendary Boon, no other one is offered, sold or given for the rest of the run.
 - **Kesh reworked:** her companions share her Might, she heals 6 after every won fight, and her basics no longer only cost HP (Savage Bite has Lifesteal, Blood Frenzy hits every enemy, Guard Dog brings a Hound). Her self-damage cards pay off properly now, and look-alike commons were pulled apart.
 - **Lifesteal:** some attacks heal you a share of the HP they take off.

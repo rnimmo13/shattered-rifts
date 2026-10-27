@@ -194,6 +194,17 @@ export async function fetchGhostBoss(tier: number, exclude: readonly string[]): 
   return d?.['ghost'] ?? null;
 }
 
+/** How many players are waiting in the Arena queue (null when the server cannot be reached). */
+export async function queueCount(): Promise<number | null> {
+  try {
+    const res = await fetch(`${httpBase()}/pvp/queue/count`);
+    const d = (await res.json()) as { ok?: unknown; waiting?: unknown };
+    return d.ok === true && typeof d.waiting === 'number' ? d.waiting : null;
+  } catch {
+    return null;
+  }
+}
+
 /** The decks that can be met as ghosts (null when the server cannot be reached). */
 export async function viewGhostDecks(): Promise<GhostDeckRow[] | null> {
   try {

@@ -5,7 +5,6 @@ export * from './trophies';
 export * from './ranks';
 export * from './seasons';
 export * from './replays';
-export * from './constructed';
 export {
   checkEntry,
   checkArenaEntry,

@@ -23,7 +23,6 @@ const HistoryScreen = lazy(() => import('../run/HistoryScreen'));
 const PatchNotesScreen = lazy(() => import('./PatchNotesScreen'));
 const ReplayScreen = lazy(() => import('../pvp/ReplayScreen'));
 const WatchScreen = lazy(() => import('../pvp/WatchScreen'));
-const ConstructedScreen = lazy(() => import('../pvp/ConstructedScreen'));
 const LeaderboardScreen = lazy(() =>
   import('../pvp/LeaderboardScreen').then((m) => ({ default: m.LeaderboardScreen })),
 );
@@ -133,13 +132,6 @@ function Screens({ hash }: { hash: string }) {
     return (
       <Suspense fallback={<div className="loading">Opening the rift…</div>}>
         <HistoryScreen />
-      </Suspense>
-    );
-  }
-  if (hash === '#/constructed') {
-    return (
-      <Suspense fallback={<div className="loading">Opening the rift…</div>}>
-        <ConstructedScreen />
       </Suspense>
     );
   }

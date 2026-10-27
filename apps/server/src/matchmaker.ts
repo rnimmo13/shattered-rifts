@@ -20,6 +20,11 @@ export class Matchmaker extends DurableObject<Env> {
   }
 
   override fetch(request: Request): Response {
+    // (the worker asks this on its own internal URL, never with a player's request)
+    if (new URL(request.url).pathname === '/count')
+      return new Response(JSON.stringify({ ok: true, waiting: this.waiting().length }), {
+        headers: { 'content-type': 'application/json' },
+      });
     if (request.headers.get('Upgrade') !== 'websocket')
       return new Response('Expected a WebSocket.', { status: 426 });
     const pair = new WebSocketPair();

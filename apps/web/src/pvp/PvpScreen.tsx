@@ -1,5 +1,5 @@
-// #/pvp: duel another player with a banked deck. Pick a deck from your Vault (or a Riftwalker's starting deck, so a match can
-// be tried before anyone has cleared a run), then find a match from the queue or play a friend with a room code.
+// #/pvp: duel another player with a deck saved from a campaign run (the only decks the Arena takes). Pick one from your Vault,
+// then find a match from the queue or play a friend with a room code.
 
 import { useEffect, useRef, useState } from 'react';
 import { QUEUE_WIDEN_MS, checkArenaEntry } from '@sr/pvp';
@@ -14,9 +14,8 @@ import { PvpSession, newRoomCode, savedRoom, type Snapshot } from './session';
 import { takeName } from './takeName';
 import { VAULT_SLOTS, entryFor, loadVault, saveVault, type VaultDeck } from './vault';
 import { ChoosePanel, CoinFlip, GhostOffer, WaitTimer } from './PvpParts';
-import { boardId, viewRanks, type RankedView } from './boardApi';
+import { boardId, queueCount, viewRanks, type RankedView } from './boardApi';
 import { RankPanel } from './RankedBoard';
-import { ARENA_MODES } from '@sr/pvp';
 /** where the saved decks stand online (still being checked, saved, partly saved, or not reachable) */
 type Online = 'checking' | 'saved' | 'partial' | 'offline';
 import { AccountBox } from './AccountBox';
@@ -27,6 +26,9 @@ import './decks.css';
 import { syncVault, vaultKey, whoAmI, type Me } from './vaultSync';
 import { Notice } from '../ui/Toast';
 import './pvp.css';
+
+/** how often the Arena page asks how many players are queued */
+const QUEUE_POLL_MS = 15_000;
 
 const EMPTY: Snapshot = {
   phase: 'idle',
@@ -60,6 +62,24 @@ export default function PvpScreen() {
       live = false;
     };
   }, []);
+  /** how many players are waiting in the Arena queue (null until the server says, or when it cannot be reached) */
+  const [queued, setQueued] = useState<number | null>(null);
+  // (the deck picker shows while idle or after an error, so the count is kept fresh for both)
+  const idle = snap.phase === 'idle' || snap.phase === 'error';
+  useEffect(() => {
+    if (!idle) return;
+    let live = true;
+    const look = (): void => {
+      if (document.visibilityState === 'visible')
+        void queueCount().then((n) => live && setQueued(n));
+    };
+    look();
+    const t = window.setInterval(look, QUEUE_POLL_MS);
+    return () => {
+      live = false;
+      window.clearInterval(t);
+    };
+  }, [idle]);
   /** why the name was not accepted (taken, not allowed) */
   const [nameProblem, setNameProblem] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
@@ -412,8 +432,7 @@ export default function PvpScreen() {
               <h2 className="pvp__h">Choose a deck</h2>
               <p className="pvp__deckslot">
                 {decks.length} of {VAULT_SLOTS} saved decks · <a href="#/decks">Saved decks</a> ·{' '}
-                <a href="#/board">Leaderboards</a>
-                <a href="#/ghosts">Ghost decks</a>
+                <a href="#/board">Leaderboards</a> · <a href="#/ghosts">Ghost decks</a>
               </p>
               {deckList}
               {problem && <p className="pvp__error">{problem}</p>}
@@ -433,31 +452,49 @@ export default function PvpScreen() {
                 >
                   <span>Fight a ghost</span>
                 </button>
-                <button
-                  className="btn"
-                  disabled={!entry || problem !== null}
-                  onClick={() => void begin('create')}
-                >
-                  <span>Make a room for a friend</span>
-                </button>
-                <span className="pvp__join">
-                  <input
-                    value={code}
-                    placeholder="ROOM CODE"
-                    maxLength={12}
-                    onChange={(e) =>
-                      setCode(e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, ''))
-                    }
-                    aria-label="Room code"
-                  />
+              </div>
+              {queued !== null && (
+                <p className="pvp__queued" aria-live="polite">
+                  <span className={`pvp__queued-dot${queued > 0 ? ' is-live' : ''}`} />
+                  {queued === 0
+                    ? 'Nobody is looking for a match right now'
+                    : `${queued} ${queued === 1 ? 'player is' : 'players are'} looking for a match`}
+                </p>
+              )}
+              <div className="pvp__friend" role="group" aria-label="Play a friend">
+                <h3 className="pvp__friend-h">Play a friend</h3>
+                <div className="pvp__friend-row">
                   <button
                     className="btn"
-                    disabled={!entry || problem !== null || code.trim().length < 4}
-                    onClick={() => void begin('join')}
+                    disabled={!entry || problem !== null}
+                    onClick={() => void begin('create')}
                   >
-                    <span>Join a room</span>
+                    <span>Make a room</span>
                   </button>
-                </span>
+                  <span className="pvp__friend-or">or</span>
+                  <span className="pvp__join">
+                    <input
+                      value={code}
+                      placeholder="Room code"
+                      maxLength={12}
+                      onChange={(e) =>
+                        setCode(e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, ''))
+                      }
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' && entry && problem === null && code.trim().length >= 4)
+                          void begin('join');
+                      }}
+                      aria-label="Room code"
+                    />
+                    <button
+                      className="btn"
+                      disabled={!entry || problem !== null || code.trim().length < 4}
+                      onClick={() => void begin('join')}
+                    >
+                      <span>Join</span>
+                    </button>
+                  </span>
+                </div>
               </div>
               <p className="pvp__hint">
                 A ghost is a deck another player has used in the Arena, played by the computer. It
@@ -465,10 +502,6 @@ export default function PvpScreen() {
                 Arena board.
               </p>
               <p className="pvp__hint">
-                <a href="#/constructed">Constructed decks</a>:{' '}
-                {ARENA_MODES.constructed
-                  ? 'build a deck card by card from your Riftwalker’s whole pool.'
-                  : 'build a deck card by card from your Riftwalker’s whole pool, ready for the Constructed Arena when it opens.'}{' '}
                 <a href="#/history">Match history and replays</a>
               </p>
             </>

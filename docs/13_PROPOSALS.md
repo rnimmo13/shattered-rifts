@@ -15,9 +15,9 @@ approved it moves into the real doc (`08_COMBAT_V2.md`, `03_CAMPAIGN.md`) and ge
 **How it plays**
 - An enemy's intent can be **Set a Trap** (its own icon). The Trap sits face-down above the enemy line, like yours do in
   the Arena.
-- **You see what sets it off, not what it does.** The face-down card shows its trigger ("when you attack", "when you
-  gain Barrier", "when you summon", "at the start of your turn"). You decide whether to set it off on purpose, play
-  around it, or deal with it.
+- **Fully hidden (Robert, 2026-10-27, "for now").** You see that a Trap is set and which enemy set it, nothing else:
+  not what sets it off, not what it does. Learning which enemies carry which Traps is part of the skill, and the
+  answers below matter more. (Showing the trigger stays an option if hidden Traps feel like a dice roll in play.)
 - The enemy side holds at most 3 Traps (the same cap as yours), and a Trap springs once.
 - **Answers:** a common potion (*Tripwire Shears*: reveal and remove an enemy Trap), one Neutral card (*Disarm*: 0
   Mana, reveal every enemy Trap, consumed), and Vesper gets her own better version (springs it against them instead).
@@ -46,9 +46,10 @@ new: an enemy move can set a Trap (a `setSnare` op), Trap cards for enemies (tok
 reveal/remove op for the answers, and the face-down Trap row on the enemy side in campaign fights.
 
 **Questions for Robert**
-1. Show the trigger, or keep it fully hidden? *(I recommend showing it: a fully hidden Trap is a dice roll, not a
-   decision.)*
-2. Are the answers (potion, Neutral card, Vesper's card) the right amount?
+1. Are the answers (potion, Neutral card, Vesper's card) the right amount? With fully hidden Traps a reveal is worth
+   more, so they may need to be a little more common.
+2. Should a Trap you have already seen sprung be recognised next time (the How to play page or a tooltip lists each
+   enemy's Traps once you have met them)?
 
 ---
 
@@ -127,8 +128,17 @@ Boon pool you see depends on who you play.
 
 ### 4. Riftwalker mastery
 
-**What's tracked:** for each Riftwalker, the **deepest Rift Tier you've reached** (a run counts when it reaches a Tier,
-whether or not it survives). This is the same number the campaign board already keeps per player and Riftwalker.
+**What's tracked (Robert, 2026-10-27):** for each Riftwalker, the **highest Rift Tier you have cleared** (beaten that
+Tier's Vorthax). Reaching a Tier and falling does not count. Kept with the profile on the server (D1, beside the
+campaign board's runs) so it follows a signed-in player, and in the browser for guests.
+
+**Showing it (Robert asked for a way to see mastery per Riftwalker)**
+- **Character picker:** each Riftwalker's figure wears a small Tier badge ("Cleared X") in the colour of its glow band,
+  and nothing for one never cleared.
+- **A Mastery page** (linked from the home page and your profile): all ten Riftwalkers in a row with the Tier cleared,
+  the next glow band ("3 more Tiers to violet") and the card back as it glows now.
+- **In the Arena:** the opponent's name plate shows the Tier cleared on the Riftwalker they brought, and their card
+  backs glow.
 
 **The one reward agreed so far:** your **card backs glow** in a colour for each 5 Tiers on that Riftwalker: **V**
 (ember), **X** (rift blue), **XV** (violet), **XX** (crimson-gold). The glow sits *on top of* whatever card back you
@@ -139,8 +149,8 @@ and that's where the bragging is.
 - a mastery number on your name plate in the Arena (cheap, earned, shows off);
 - a title at XX ("Riftbound").
 
-**Questions:** reached a Tier, or **cleared** it (beat its Vorthax)? *(I recommend cleared: "reached" can be done
-by Continuing and losing the first fight.)* Glow colours to be chosen with the card back art.
+**Questions:** glow colours to be chosen with the card back art. Does mastery count runs played before it exists (the
+server has the board's runs, but not whether each one cleared its Tier)?
 
 ---
 

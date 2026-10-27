@@ -1,14 +1,10 @@
 import { describe, expect, it } from 'vitest';
-import { RIFTWALKERS, COMBAT_DB } from '@sr/content/v2';
+import { RIFTWALKERS } from '@sr/content/v2';
 import {
-  CONSTRUCTED_RULES,
   RATING_START,
   carryOver,
-  checkConstructed,
   cleanRank,
   cleanReplay,
-  constructedPool,
-  constructedRoom,
   rankOf,
   rateMatch,
   seasonAt,
@@ -120,36 +116,5 @@ describe('replays', () => {
     expect(cleanReplay({ ...good, log: [{ seat: 'c', action: { type: 'endTurn' } }] })).toBeNull();
     expect(cleanReplay({ ...good, log: [{ seat: 'a', action: { type: 'cheat' } }] })).toBeNull();
     expect(cleanReplay({ ...good, a: { ...entry, deck: ['nope'] } })).toBeNull();
-  });
-});
-
-describe('Constructed decks', () => {
-  const pool = constructedPool('knight');
-  const own = pool.filter((id) => COMBAT_DB.cards[id]?.hero === 'knight');
-  const commons = own.filter((id) => COMBAT_DB.cards[id]?.rarity === 'common');
-
-  it('draw on the class, Neutral and Ancestral cards, plain versions only', () => {
-    expect(pool.length).toBeGreaterThan(30);
-    expect(pool.some((id) => id.endsWith('+'))).toBe(false);
-    expect(pool.some((id) => COMBAT_DB.cards[id]?.hero === 'hunter')).toBe(false);
-    expect(pool.some((id) => COMBAT_DB.cards[id]?.rarity === 'ancestral')).toBe(true);
-  });
-
-  it('take a legal deck, and say what is wrong with one that is not', () => {
-    const deck = commons.slice(0, 7).flatMap((id) => [id, id, id]);
-    expect(deck.length).toBeGreaterThanOrEqual(CONSTRUCTED_RULES.minSize);
-    expect(checkConstructed('knight', deck)).toEqual({ ok: true });
-    expect(checkConstructed('knight', deck.slice(0, 5)).ok).toBe(false);
-    expect(checkConstructed('knight', [...deck.slice(0, 19), commons[0]!]).ok).toBe(false);
-    const upgraded = [...deck.slice(1), `${commons[0]!}+`];
-    expect(checkConstructed('knight', upgraded).ok).toBe(false);
-  });
-
-  it('allow one Legendary and two Ancestral cards', () => {
-    const legends = own.filter((id) => COMBAT_DB.cards[id]?.rarity === 'legendary');
-    const ancients = pool.filter((id) => COMBAT_DB.cards[id]?.rarity === 'ancestral');
-    expect(constructedRoom('knight', [legends[0]!], legends[1] ?? legends[0]!)).toBe(false);
-    expect(constructedRoom('knight', [ancients[0]!, ancients[1]!], ancients[2]!)).toBe(false);
-    expect(constructedRoom('knight', [ancients[0]!], ancients[1]!)).toBe(true);
   });
 });

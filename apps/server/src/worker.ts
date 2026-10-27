@@ -3,6 +3,7 @@
 //
 //   GET /pvp/health            a quick "is the server up"
 //   GET /pvp/queue  (WebSocket)  the matchmaking queue
+//   GET /pvp/queue/count          how many players are in the queue (cached at the edge for a few seconds)
 //   GET /pvp/room/CODE (WebSocket)  a match room (a friend code, or the room the queue picked)
 //   POST /pvp/vault/list|bank|drop  a player's saved decks: under the signed-in account, or else the Vault code in the JSON body {code, ...}
 //   /pvp/board/*                    the weekly and monthly leaderboards (board.ts)
@@ -299,6 +300,30 @@ async function boardRoute(request: Request, env: Env, what: string, url: URL): P
   }
 }
 
+/** how long one answer to "how many are queued" is kept at the edge, so open Arena pages do not keep waking the matchmaker */
+const QUEUE_COUNT_CACHE_S = 5;
+
+/** GET /pvp/queue/count: how many players hold a place in the queue (the Arena page shows it). */
+async function queueCount(env: Env, url: URL): Promise<Response> {
+  const key = new Request(`${url.origin}/pvp/queue/count`);
+  const cached = await caches.default.match(key);
+  if (cached) return cached;
+  try {
+    const res = await env.MATCHMAKER.get(env.MATCHMAKER.idFromName('main')).fetch(
+      new Request('https://matchmaker.invalid/count'),
+    );
+    const body = await res.json<{ ok?: unknown; waiting?: unknown }>();
+    if (body.ok !== true || typeof body.waiting !== 'number')
+      return json({ ok: false, error: 'unavailable' }, 503);
+    const out = json({ ok: true, waiting: body.waiting });
+    out.headers.set('cache-control', `public, max-age=${QUEUE_COUNT_CACHE_S}`);
+    await caches.default.put(key, out.clone());
+    return out;
+  } catch {
+    return json({ ok: false, error: 'unavailable' }, 503);
+  }
+}
+
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
     const url = new URL(request.url);
@@ -327,6 +352,11 @@ export default {
     }
     const boardWhat = /^\/pvp\/board\/(\w+)$/.exec(url.pathname)?.[1];
     if (boardWhat !== undefined) return boardRoute(request, env, boardWhat, url);
+    // GET /pvp/queue/count: how many players are waiting for a match (shown on the Arena page)
+    if (url.pathname === '/pvp/queue/count') {
+      if (request.method !== 'GET') return json({ ok: false, error: 'GET only' }, 405);
+      return queueCount(env, url);
+    }
     if (url.pathname === '/pvp/queue') {
       const stub = env.MATCHMAKER.get(env.MATCHMAKER.idFromName('main'));
       return stub.fetch(request);

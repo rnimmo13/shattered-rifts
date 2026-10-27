@@ -27,9 +27,9 @@ export function DeckBuilder(props: {
   onChange: (next: Counts) => void;
   onReset: () => void;
   heroName: string;
-  /** only these cards are in the book (a Constructed deck's pool); every card when missing */
+  /** only these cards are in the book (a narrowed pool); every card when missing */
   allow?: (def: CardDef) => boolean;
-  /** whether one more copy of a card may go in (a Constructed deck's limits); always when missing */
+  /** whether one more copy of a card may go in (narrower limits); always when missing */
   canAdd?: (counts: Counts, id: string) => boolean;
   /** no "+" versions to choose from */
   noUpgrades?: boolean;
