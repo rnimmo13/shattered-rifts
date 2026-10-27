@@ -250,6 +250,15 @@ export class Leaderboard extends DurableObject<Env> {
   }
 
   /** Count one more of `key` in its current window, and say whether it is still within `max`. */
+  /** Whether `key` still has room in its window, without counting anything (DECISIONS #350). */
+  private hasRoom(key: string, windowMs: number, max: number, now: number): boolean {
+    const window = Math.floor(now / windowMs);
+    const row = this.ctx.storage.sql
+      .exec<{ window: number; n: number }>('SELECT window, n FROM limits WHERE key = ?', key)
+      .toArray()[0];
+    return (row && row.window === window ? row.n : 0) < max;
+  }
+
   private within(key: string, windowMs: number, max: number, now: number): boolean {
     const window = Math.floor(now / windowMs);
     const row = this.ctx.storage.sql
@@ -1002,11 +1011,14 @@ export class Leaderboard extends DurableObject<Env> {
       if (total < old.total || (total === old.total && tier <= old.tier))
         return json({ ok: true, counted: false });
       // a flood from one player or one address is ignored
+      // (checked first, counted only when it is let through: a report that was refused is tried again and must not use up the hour)
       if (
-        !this.within(`run:${b['player']}`, HOUR, RUN_REPORTS_PER_HOUR, now) ||
-        !this.within(`ip-run:${ip}`, HOUR, IP_REPORTS_PER_HOUR, now)
+        !this.hasRoom(`run:${b['player']}`, HOUR, RUN_REPORTS_PER_HOUR, now) ||
+        !this.hasRoom(`ip-run:${ip}`, HOUR, IP_REPORTS_PER_HOUR, now)
       )
         return json({ ok: true, counted: false, limited: true });
+      this.within(`run:${b['player']}`, HOUR, RUN_REPORTS_PER_HOUR, now);
+      this.within(`ip-run:${ip}`, HOUR, IP_REPORTS_PER_HOUR, now);
       // (judged on the progress since the last report, so a run the board first heard of far along climbs normally from there; a
       // little allowance covers a tier change and a report or two that went missing)
       if (total - old.total > RUN_STEP_ALLOWANCE + Math.floor((now - old.at) / RUN_MIN_STAGE_MS))
@@ -1026,13 +1038,18 @@ export class Leaderboard extends DurableObject<Env> {
     }
     // a run the board has not heard of is taken where it says it is (DECISIONS #232): runs played before the board, before a
     // username or while offline used to be refused for good once they were past the first few stages; the limits below still apply
-    if (
-      !this.within(`run:${b['player']}`, HOUR, RUN_REPORTS_PER_HOUR, now) ||
-      !this.within(`ip-run:${ip}`, HOUR, IP_REPORTS_PER_HOUR, now) ||
-      !this.within(`new-run:${b['player']}`, DAY, NEW_RUNS_PER_DAY, now) ||
-      !this.within(`ip-new-run:${ip}`, DAY, IP_NEW_RUNS_PER_DAY, now)
-    )
+    // (checked first and counted only once the run is in: the app repeats a report it has no answer to, after every stop and whenever
+    // the tab is looked at again, and counting each try used up a player's new runs for the day without one being recorded, so every
+    // run after that was dropped without a trace; DECISIONS #350)
+    const limits: [string, number, number][] = [
+      [`run:${b['player']}`, HOUR, RUN_REPORTS_PER_HOUR],
+      [`ip-run:${ip}`, HOUR, IP_REPORTS_PER_HOUR],
+      [`new-run:${b['player']}`, DAY, NEW_RUNS_PER_DAY],
+      [`ip-new-run:${ip}`, DAY, IP_NEW_RUNS_PER_DAY],
+    ];
+    if (!limits.every(([key, windowMs, max]) => this.hasRoom(key, windowMs, max, now)))
       return json({ ok: true, counted: false, limited: true });
+    for (const [key, windowMs, max] of limits) this.within(key, windowMs, max, now);
     this.ctx.storage.sql.exec(
       'INSERT INTO runs (player, run, name, hero, tier, stage, total, first_at, at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
       b['player'],
