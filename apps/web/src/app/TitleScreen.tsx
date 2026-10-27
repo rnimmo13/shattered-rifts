@@ -11,6 +11,7 @@ import {
   setActiveRun,
   unreadableRuns,
 } from '../run/saves';
+import { syncRuns } from '../run/runCloud';
 import { loseSavedDecks } from '../run/deckSave';
 import { endOnBoard } from '../run/boardEnd';
 import { whoAmI, type Me } from '../pvp/vaultSync';
@@ -44,15 +45,21 @@ export function TitleScreen() {
   const hero = RIFTWALKERS[picked];
   const color = HERO_COLOR[picked] ?? '#d4a84b';
 
-  // another window may have started, finished or abandoned a run
+  // another window may have started, finished or abandoned a run, and so may another device (the runs follow the player: DECISIONS #309)
   useEffect(() => {
     const refresh = (): void => {
       setRuns(listRuns());
       setBroken(unreadableRuns());
     };
+    const fromServer = (): void => {
+      void syncRuns().then((changed) => changed && refresh());
+    };
+    fromServer();
+    window.addEventListener('focus', fromServer);
     window.addEventListener('focus', refresh);
     window.addEventListener('storage', refresh);
     return () => {
+      window.removeEventListener('focus', fromServer);
       window.removeEventListener('focus', refresh);
       window.removeEventListener('storage', refresh);
     };

@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { RIFTWALKERS, type HeroId } from '@sr/content/v2';
-import { SECOND_PLAYER_HP, cleanRank, cleanTrophies, type Entry } from '@sr/pvp';
+import { SECOND_PLAYER_HP, cleanRank, cleanTrophies } from '@sr/pvp';
 import { HeroIcon } from '../ui/HeroIcon';
 import { progressLabel } from './deckLayout';
 import { TrophyBadges } from './Trophies';
@@ -81,17 +81,10 @@ const heroName = (hero: string): string =>
   Object.hasOwn(RIFTWALKERS, hero) ? RIFTWALKERS[hero as HeroId].hero.name : hero;
 
 /** "Do you want to go first?" Going second means more HP; the same answer from both means the coin decides. */
-/** The deck on show: the one picked, or else the one the server says you would play (matched by its contents). */
-function shownDeck(info: ChooseInfo): number {
-  if (info.pick !== null) return info.pick;
-  const same = (e: Entry): boolean =>
-    e.hero === info.me.hero && e.tier === info.me.tier && e.deck.join() === info.me.deck.join();
-  return Math.max(0, info.decks.findIndex(same));
-}
-
 /**
  * Before each game: choose the deck to play it with (blind: the opponent's deck and Riftwalker stay hidden until it starts;
- * DECISIONS #307), and who goes first. Clicking a deck picks it at once; it can be changed until the game starts.
+ * DECISIONS #307), and who goes first. Clicking a deck only looks at it; "Play this deck" (or answering who goes first) chooses it,
+ * and a choice can be changed until the game starts.
  */
 export function ChoosePanel(props: {
   info: ChooseInfo;
@@ -106,10 +99,14 @@ export function ChoosePanel(props: {
     return () => window.clearInterval(t);
   }, []);
   const left = Math.max(0, Math.ceil((info.deadline - (now + info.skew)) / 1000));
-  const shown = shownDeck(info);
+  // the deck being looked at (the one that would be played, until another is clicked)
+  const [looking, setLooking] = useState<number | null>(null);
+  const shown = looking !== null && looking < info.decks.length ? looking : info.at;
   const me = info.decks[shown] ?? info.me;
   const several = info.decks.length > 1;
   const needPick = several && info.pick === null;
+  /** the deck looked at is not the one chosen: it can be chosen (or the choice changed) */
+  const canPlay = several && shown !== info.pick;
   const title = info.series ? `Game ${info.series.game}` : 'Get ready';
   return (
     <section className="pvp__status pvp__choose" aria-live="polite">
@@ -160,7 +157,7 @@ export function ChoosePanel(props: {
                   type="button"
                   className={`pvp__deck${i === shown ? ' is-picked' : ''}`}
                   aria-pressed={i === shown}
-                  onClick={() => props.onPick(i)}
+                  onClick={() => setLooking(i)}
                 >
                   <HeroIcon hero={d.hero} size={32} />
                   <span>
@@ -176,6 +173,13 @@ export function ChoosePanel(props: {
               </li>
             ))}
           </ul>
+          {canPlay && (
+            <div className="pvp__actions">
+              <button className="btn btn--primary" onClick={() => props.onPick(shown)}>
+                <span>{info.pick === null ? 'Play this deck' : 'Play this deck instead'}</span>
+              </button>
+            </div>
+          )}
           <p className="pvp__hint pvp__hint--center">
             Your opponent cannot see your choice until the game starts.
             {needPick ? ' If time runs out, you play the highlighted deck.' : ''}
@@ -208,13 +212,6 @@ export function ChoosePanel(props: {
           </button>
           <button className="btn" onClick={() => props.onChoose(false, shown)}>
             <span>I will go second (+{SECOND_PLAYER_HP} HP)</span>
-          </button>
-        </div>
-      )}
-      {!info.chooser && !info.chosen && needPick && (
-        <div className="pvp__actions">
-          <button className="btn btn--primary" onClick={() => props.onPick(shown)}>
-            <span>Play this deck</span>
           </button>
         </div>
       )}

@@ -76,6 +76,8 @@ export class Matchmaker extends DurableObject<Env> {
       return;
     }
     const rating = await this.ratingOf(checked.decks[0]?.who);
+    // (while the board was asked the socket may have asked for a ghost instead, or closed: then it takes no place)
+    if (ws.readyState !== 1) return; // (1: open)
     // one place per player: a second tab replaces the first (its place is cleared at once, before its socket finishes closing)
     for (const w of this.waiting())
       if (w.place.playerId === msg.playerId && w.ws !== ws) {

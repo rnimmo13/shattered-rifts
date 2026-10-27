@@ -96,6 +96,7 @@ import {
   startRunSlot,
   setActiveRun,
 } from './saves';
+import { soonSyncRuns } from './runCloud';
 import '../play/play.css';
 import './run.css';
 
@@ -202,6 +203,8 @@ export default function RunScreen() {
       // the slot is gone (the run was abandoned in another window): do not bring it back
       slotRef.current = null;
     }
+    // (the player's other devices get the run soon after)
+    soonSyncRuns();
   }, [run]);
 
   // a run that is picked up again tells the leaderboards where it is (a report that was missed on the way is made up for)

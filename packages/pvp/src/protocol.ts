@@ -44,7 +44,8 @@ export interface Entry {
  * the old rules is ended rather than replayed under the new ones (DECISIONS #237).
  */
 // (5: the 0.71-0.85 card changes, Lifesteal, growing companions and Kesh's shared Might, DECISIONS #287; 6: Obsidia's Arcana, #288)
-export const RULES_VERSION = 7;
+// (7: 0.90 cards, Stunned heroes; 8: Kesh's basics and Hound, and decks chosen before each game, DECISIONS #307-308)
+export const RULES_VERSION = 8;
 
 /** Who you are playing, before a game starts: their name and badges, not their deck or Riftwalker. */
 export type FoeCard = Pick<Entry, 'name' | 'trophies' | 'rank'>;
@@ -87,6 +88,8 @@ export type ServerMsg =
       /** the decks you can choose from, and the one you have picked (null: not yet) */
       decks: Entry[];
       pick: number | null;
+      /** the deck you would play if the game started now (your pick, else the one you played last, else your first) */
+      at: number;
       /** the other player has picked their deck */
       foeReady: boolean;
       /** epoch ms by which to answer (no answer means the coin decides) */

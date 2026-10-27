@@ -50,6 +50,8 @@ const QUIET_MS = 60_000;
 const HEARTBEAT_CHECK_MS = 30_000;
 /** Between games there is this much more time to choose than before the first (the result is on screen first), ms. */
 const BETWEEN_EXTRA_MS = 10_000;
+/** Between games when nothing is left to choose (the ghost settled the order, the player has one deck): the result is read first, ms. */
+const GHOST_PAUSE_MS = 8_000;
 /** The most people watching one match at once. */
 const MAX_WATCHERS = 50;
 
@@ -387,7 +389,9 @@ export class MatchRoom extends DurableObject<Env> {
   /** A seat has its deck for the next game: picked, or it has only one, or the computer plays it. */
   private picked(seat: Seat): boolean {
     const d = this.data;
-    return seat === d.ghost?.seat || (d.decks[seat]?.length ?? 1) <= 1 || d.picks[seat] !== undefined;
+    return (
+      seat === d.ghost?.seat || (d.decks[seat]?.length ?? 1) <= 1 || d.picks[seat] !== undefined
+    );
   }
 
   /** Everything is settled for the next game: who goes first, and both decks. */
@@ -422,6 +426,7 @@ export class MatchRoom extends DurableObject<Env> {
       },
       decks: mine,
       pick: d.picks[seat] ?? null,
+      at,
       foeReady: this.picked(other(seat)),
       deadline: d.chooseBy,
       now: Date.now(),
@@ -640,8 +645,9 @@ export class MatchRoom extends DurableObject<Env> {
         send(ws, { type: 'error', code: 'no-match', message: 'Nobody is choosing a deck now.' });
         return;
       }
-      if (msg.deck >= (d.decks[seat]?.length ?? 0)) {
-        send(ws, { type: 'error', code: 'bad-message', message: 'There is no such deck.' });
+      const own = d.entries[seat];
+      if (msg.deck >= (d.decks[seat] ?? (own ? [own] : [])).length) {
+        send(ws, { type: 'error', code: 'no-match', message: 'There is no such deck.' });
         return;
       }
       d.picks[seat] = msg.deck;
@@ -842,8 +848,9 @@ export class MatchRoom extends DurableObject<Env> {
       const wants = Math.random() < 0.5;
       d.choices = { [loser]: wants, [other(loser)]: !wants };
     } else d.choices = {};
-    // (the result is on screen first, so there is a little more time than before the first game)
-    d.chooseBy = Date.now() + PICK_MS + BETWEEN_EXTRA_MS;
+    // (the result is on screen first, so there is a little more time than before the first game; with nothing left to choose,
+    // against a ghost that settled the order and a player with one deck, the next game starts after a short pause)
+    d.chooseBy = Date.now() + (this.ready() ? GHOST_PAUSE_MS : PICK_MS + BETWEEN_EXTRA_MS);
     await this.save();
     this.broadcast(over);
     for (const sock of this.sockets()) this.askChoice(sock.ws, sock.at.seat as Seat);

@@ -88,3 +88,4 @@ export {
   type VaultDeck,
 } from './vault';
 export { deckToPlay, picksDone } from './picks';
+export * from './runsync';

@@ -32,6 +32,8 @@ export interface ChooseInfo {
   /** your decks, and the one you have picked (null: not yet) */
   decks: Entry[];
   pick: number | null;
+  /** the deck you would play if the game started now */
+  at: number;
   /** your opponent has their deck */
   foeReady: boolean;
   deadline: number;
@@ -131,9 +133,13 @@ export function savedRoom(): { room: string; decks: Entry[] } | null {
   try {
     const raw = sessionStorage.getItem(ROOM_KEY);
     if (!raw) return null;
-    const v = JSON.parse(raw) as { room?: unknown; decks?: unknown };
-    return typeof v.room === 'string' && Array.isArray(v.decks) && v.decks.length > 0
-      ? { room: v.room, decks: v.decks as Entry[] }
+    const v = JSON.parse(raw) as { room?: unknown; decks?: unknown; entry?: unknown };
+    if (typeof v.room !== 'string') return null;
+    if (Array.isArray(v.decks) && v.decks.length > 0)
+      return { room: v.room, decks: v.decks as Entry[] };
+    // (a room remembered by an older build, with the one deck it took)
+    return typeof v.entry === 'object' && v.entry !== null
+      ? { room: v.room, decks: [v.entry as Entry] }
       : null;
   } catch {
     return null;
@@ -327,13 +333,13 @@ export class PvpSession {
   pickDeck(deck: number): void {
     const c = this.snap.choose;
     if (this.send({ type: 'pick', deck }) && c)
-      this.set({ choose: { ...c, pick: deck, me: c.decks[deck] ?? c.me } });
+      this.set({ choose: { ...c, pick: deck, at: deck, me: c.decks[deck] ?? c.me } });
   }
 
   /** Answer "who goes first?" (with the deck on show, if none has been picked yet: answering means playing it). */
   chooseOrder(first: boolean, deck?: number): void {
     const c = this.snap.choose;
-    if (c && c.pick === null && deck !== undefined) this.pickDeck(deck);
+    if (c && c.pick === null && c.decks.length > 1 && deck !== undefined) this.pickDeck(deck);
     if (this.send({ type: 'order', first }) && this.snap.choose)
       this.set({ choose: { ...this.snap.choose, chosen: true } });
   }
@@ -399,6 +405,7 @@ export class PvpSession {
           foe: m.foe,
           decks: m.decks,
           pick: m.pick,
+          at: m.at,
           foeReady: m.foeReady,
           deadline: m.deadline,
           skew: m.now - Date.now(),

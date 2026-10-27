@@ -5,6 +5,7 @@
 // guarded and the game still works without it (the run just is not remembered).
 
 import { parseRun, serializeRun, type RunState } from '@sr/campaign';
+import { mergeRunCopies, type RunCopy } from '@sr/pvp';
 
 /** How many unfinished runs a player can keep (Robert, 2026-10-26: 10 "for now"; was 3). */
 export const RUN_SLOTS = 10;
@@ -13,6 +14,8 @@ export const RUN_SLOTS = 10;
 const LEGACY_KEY = 'sr.run.v2';
 const SLOTS_KEY = 'sr.runs.v3';
 const ACTIVE_KEY = 'sr.run.active';
+/** runs that ended or were abandoned here, so the player's other devices let them go too (DECISIONS #309) */
+const GONE_KEY = 'sr.runs.gone';
 
 interface Slot {
   id: string;
@@ -167,15 +170,17 @@ export function saveRunSlot(id: string, run: RunState): boolean {
   return writeSlots(slots);
 }
 
-/** Throw away one saved run. */
+/** Throw away one saved run (it is remembered as gone, so the player's other devices let it go too). */
 export function clearSavedRun(id: string | null = activeRunId()): void {
   if (!id) return;
   writeSlots(readSlots().filter((s) => s.id !== id));
+  markGone([id]);
   if (id === activeRunId()) setActiveRun(null);
 }
 
 /** Throw away every saved run (a last resort when a save keeps crashing the game). */
 export function clearAllRuns(): void {
+  markGone(readSlots().map((s) => s.id));
   try {
     localStorage.removeItem(SLOTS_KEY);
     localStorage.removeItem(LEGACY_KEY);
@@ -183,6 +188,76 @@ export function clearAllRuns(): void {
     /* ignore */
   }
   setActiveRun(null);
+}
+
+// ---- the same runs on every device (DECISIONS #309) -----------------------------------------------------------------
+
+function readGone(): { id: string; updated: number }[] {
+  try {
+    const v: unknown = JSON.parse(localStorage.getItem(GONE_KEY) ?? '[]');
+    return Array.isArray(v)
+      ? v.filter(
+          (g): g is { id: string; updated: number } =>
+            typeof g === 'object' &&
+            g !== null &&
+            typeof (g as { id?: unknown }).id === 'string' &&
+            typeof (g as { updated?: unknown }).updated === 'number',
+        )
+      : [];
+  } catch {
+    return [];
+  }
+}
+
+function writeGone(gone: readonly { id: string; updated: number }[]): void {
+  try {
+    localStorage.setItem(GONE_KEY, JSON.stringify(gone.slice(-100)));
+  } catch {
+    /* not remembered: the run may come back from another device, which is the safe way to fail */
+  }
+}
+
+function markGone(ids: readonly string[]): void {
+  if (ids.length === 0) return;
+  const now = Date.now();
+  writeGone([
+    ...readGone().filter((g) => !ids.includes(g.id)),
+    ...ids.map((id) => ({ id, updated: now })),
+  ]);
+}
+
+/** Every run this browser knows, as copies to compare with the server's: saved ones, and ones that ended here. */
+export function runCopies(): RunCopy[] {
+  return [
+    ...readSlots().map((s): RunCopy => ({ id: s.id, updated: s.updated, text: s.text })),
+    ...readGone().map((g): RunCopy => ({ id: g.id, updated: g.updated, gone: true })),
+  ];
+}
+
+/**
+ * Take the runs as they stand after comparing with the server. What is stored now is compared once more, so a run saved here while
+ * the server was being asked keeps its newer save. Returns whether the browser's runs changed. Never more than RUN_SLOTS live runs
+ * are kept (the newest); the others stay on the server.
+ */
+export function applyRunCopies(theirs: readonly RunCopy[]): boolean {
+  const before = readSlots();
+  const { merged } = mergeRunCopies(runCopies(), theirs, Date.now());
+  const live = merged
+    .filter((c): c is RunCopy & { text: string } => !c.gone && typeof c.text === 'string')
+    .sort((a, b) => b.updated - a.updated)
+    .slice(0, RUN_SLOTS);
+  const slots: Slot[] = live.map((c) => ({ id: c.id, text: c.text, updated: c.updated }));
+  writeGone(merged.filter((c) => c.gone).map((c) => ({ id: c.id, updated: c.updated })));
+  const changed =
+    slots.length !== before.length ||
+    slots.some((x) => {
+      const b = before.find((y) => y.id === x.id);
+      return !b || b.updated !== x.updated;
+    });
+  if (changed) writeSlots(slots);
+  const active = activeRunId();
+  if (active && !slots.some((x) => x.id === active)) setActiveRun(null);
+  return changed;
 }
 
 // A duel that was begun and then left (the page closed) counts as lost. The marker is kept per run, so leaving one run's duel
