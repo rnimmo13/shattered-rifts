@@ -480,6 +480,8 @@ export interface Unit {
   dmgPct: number;
   /** a Stun landed during this unit's own turn: it does not count down at that turn's end */
   stunFresh?: boolean;
+  /** the unit whose attack killed this companion, so an Aura that answers "an ally dies" can strike back at it (DECISIONS #326) */
+  killedBy?: UnitId;
   lastMoves: string[];
   /**
    * its phases still to come (highest first): the first time its HP would fall below `atPct`% of its max, it stops there and rises

@@ -48,17 +48,30 @@ const RAW_ALLIES: UnitDef[] = [
   ally('gnashling', 'Gnashling', 4, [dmg(3)]),
 ];
 
+/**
+ * Companions whose "+" is not the usual +4 HP and +2 damage: the Pup's stays below the Hound (8 HP, 4 damage), whatever it is
+ * upgraded to (DECISIONS #326).
+ */
+const PLUS_STATS: Record<string, { hp: number; hit: number }> = {
+  pup: { hp: 8, hit: 3 },
+};
+
 /** The "+" companion a "+" summon card brings: tougher and hits or guards harder. */
 function plusAlly(a: UnitDef): UnitDef {
   if (a.brain.kind !== 'ally') return a;
+  const own = PLUS_STATS[a.id];
   const act = a.brain.act.map((o) =>
-    o.op === 'damage' || o.op === 'barrier' || o.op === 'heal' ? { ...o, amount: o.amount + 2 } : o,
+    o.op === 'damage'
+      ? { ...o, amount: own?.hit ?? o.amount + 2 }
+      : o.op === 'barrier' || o.op === 'heal'
+        ? { ...o, amount: o.amount + 2 }
+        : o,
   );
   return {
     ...a,
     id: `${a.id}+`,
     name: `${a.name}+`,
-    maxHp: a.maxHp + 4,
+    maxHp: own?.hp ?? a.maxHp + 4,
     brain: { kind: 'ally', act },
   };
 }

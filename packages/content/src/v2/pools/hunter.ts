@@ -181,15 +181,15 @@ export const HUNTER: CardDef[] = [
     'power',
     3,
     'none',
-    [on('allyDies', [dmg(15, 'randomFoe')])],
+    [on('allyDies', [dmg(15, 'attacker')])],
     {
-      up: { effects: [on('allyDies', [dmg(20, 'randomFoe')])] },
+      up: { effects: [on('allyDies', [dmg(20, 'attacker')])] },
     },
   ),
   // (the big summon: a Dire Wolf for 3, where Alpha Call brings the Alpha for 2)
   k('rare', 'dire-wolf', 'Dire Wolf', 'summon', 3, 'none', [summon('dire-wolf')]),
-  // (a cheap pup: DECISIONS #325)
-  k('common', 'whelp', 'Whelp', 'summon', 1, 'none', [summon('pup')]),
+  // (a cheap pup: DECISIONS #325, #326)
+  k('common', 'summon-pup', 'Summon Pup', 'summon', 1, 'none', [summon('pup')]),
 
   k('uncommon', 'feeding-time', 'Feeding Time', 'skill', 1, 'none', [
     growHp(3, 'allFriends'),

@@ -234,7 +234,7 @@ Starter: Strike, Strike, Strike, Strike, Defend, Defend, Defend, Savage Bite, Bl
 | Pack Tactics | 1 | skill | common | Gain 1 Might. Gain 4 Barrier to all friends. |
 | Loose the Hound | 1 | skill | common | Apply 2 Might to the ally. The ally gains 4 max HP. |
 | Thick Hide | 1 | skill | common | Gain 6 Barrier to all friends. |
-| Whelp | 1 | summon | common | Summon Pup (6 HP). At the end of your turn it will: Deal 3 damage. |
+| Summon Pup | 1 | summon | common | Summon Pup (6 HP). At the end of your turn it will: Deal 3 damage. |
 | Burn the Weak | 1 | skill | common | Consume 1 card. Gain 8 Barrier. |
 | Primal Feast | 1 | skill | common | Heal 7 to all friends. |
 | Bonepicker | 0 | skill | common | Gain 3 Barrier. Consume. If consumed: Heal 2. |
@@ -294,7 +294,7 @@ Starter: Strike, Strike, Strike, Strike, Defend, Defend, Defend, Savage Bite, Bl
 | Frenzied Thrash | 1 | attack | rare | Deal 4 damage 2 times. Consume 1 random card. |
 | Alpha Call | 2 | summon | rare | Summon Pack Alpha (16 HP). At the end of your turn it will: Deal 10 damage. Gain 1 Might. |
 | Unchained | 2 | aura | rare | Gain 3 Might for the rest of the fight. |
-| Den Mother | 3 | aura | rare | Whenever one of your allies dies: Deal 15 damage to a random enemy. |
+| Den Mother | 3 | aura | rare | Whenever one of your allies dies: Deal 15 damage to the attacker. |
 | Dire Wolf | 3 | summon | rare | Summon Dire Wolf (24 HP). At the end of your turn it will: Deal 14 damage. |
 | Pack Frenzy | 2 | skill | rare | Gain 2 Might. All your allies act now. Consume. |
 | Wild Hunt | 3 | aura | rare | At the start of your turn: All your allies act now. |

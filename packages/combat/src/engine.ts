@@ -344,6 +344,8 @@ function attackHit(r: Run, a: Act, t: Unit, base: number, single = false): numbe
   const capped = stacks(t, 'ghostly') > 0 || stacks(t, 'shielded') > 0;
   const lostHere = applyDamage(r, a.actor, t, amount, 'attack');
   let lost = lostHere;
+  // (a companion killed by an attack remembers by whom: Den Mother strikes back at it)
+  if (t.kind === 'ally' && t.hp <= 0 && t.side !== a.actor.side) t.killedBy = a.actor.id;
   // Overflow: a single-target attack that kills a companion carries part of what is left through to its hero (DECISIONS #321)
   if (single && t.kind === 'ally' && t.hp <= 0 && !capped && amount > room) {
     const hero = heroOf(r.s.sides[t.side]);
@@ -1091,7 +1093,7 @@ function fireTriggers(
   r: Run,
   sd: SideState,
   when: TriggerWhen,
-  ctx: { card?: CardDef; target?: Unit | null; stance?: Stance } = {},
+  ctx: { card?: CardDef; target?: Unit | null; stance?: Stance; attacker?: Unit | null } = {},
 ): void {
   const played = ctx.card;
   const hero = heroOf(sd);
@@ -1105,7 +1107,14 @@ function fireTriggers(
       if (p.tag && !played.tags?.includes(p.tag)) continue;
     }
     if (when === 'stance' && p.stance && p.stance !== ctx.stance) continue;
-    runOps(r, mkAct(hero, { target: ctx.target ?? null }), p.ops);
+    // an Aura that answers "an ally dies" by striking its attacker does nothing when nothing attacked it (a sacrifice, a Trap, Doom)
+    if (
+      when === 'allyDies' &&
+      !ctx.attacker &&
+      p.ops.some((o) => 'to' in o && (o as { to?: string }).to === 'attacker')
+    )
+      continue;
+    runOps(r, mkAct(hero, { target: ctx.target ?? null, attacker: ctx.attacker ?? null }), p.ops);
   }
   r.depth--;
 }
@@ -1170,7 +1179,11 @@ function reap(r: Run): void {
     // an ally that falls is remembered (Revive) and its owner's Auras hear about it
     const fell = dead.filter((u) => u.kind === 'ally');
     for (const u of fell) (sd.fallen ??= []).push(u.def);
-    for (let i = 0; i < fell.length; i++) fireTriggers(r, sd, 'allyDies');
+    for (const u of fell) {
+      // (the one that killed it, if it is still standing)
+      const killer = u.killedBy ? findUnit(r.s, u.killedBy) : null;
+      fireTriggers(r, sd, 'allyDies', { attacker: killer && killer.hp > 0 ? killer : null });
+    }
   }
   const lost = (side: Side): boolean => {
     const sd = r.s.sides[side];

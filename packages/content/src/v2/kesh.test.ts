@@ -38,26 +38,49 @@ describe('Den Mother', () => {
     expect(dmg('den-mother+')).toBe(20);
   });
 
-  it('strikes an enemy when one of her companions dies', () => {
-    let s = play(fight(['den-mother', 'whelp']), 'T0');
+  it('strikes the enemy that killed one of her companions, and only that', () => {
+    const run = (hand: string[]): { hp: number[]; fallen: number } => {
+      let s = fight(hand);
+      for (let k = 0; k < hand.length; k++) s = play(s, 'T' + k);
+      for (const u of s.sides.a.units) if (u.kind === 'ally') u.hp = 1;
+      const before = s.sides.a.units.filter((u) => u.kind === 'ally').length;
+      s = applyAction(db, s, { type: 'endTurn' }).state;
+      return {
+        hp: s.sides.b.units.map((u) => u.hp),
+        fallen: before - s.sides.a.units.filter((u) => u.kind === 'ally').length,
+      };
+    };
+    // the same turn without Den Mother, and with her: each companion an enemy killed costs that enemy 15 more
+    const without = run(['summon-pup']);
+    const withHer = run(['den-mother', 'summon-pup']);
+    expect(withHer.fallen).toBe(without.fallen);
+    expect(without.fallen).toBeGreaterThan(0);
+    const lost = without.hp.map((hp, i) => hp - (withHer.hp[i] ?? 0));
+    // (15, plus the 1 Might her trait gives her at the start of every fight)
+    expect(lost.reduce((a, b) => a + b, 0)).toBe((15 + 1) * withHer.fallen);
+  });
+
+  it('does nothing when a companion was not killed by an attack (a sacrifice)', () => {
+    let s = fight(['den-mother', 'summon-pup', 'devour-ally']);
+    s = play(s, 'T0');
     s = play(s, 'T1');
-    const pup = s.sides.a.units.find((u) => u.def === 'pup')!;
-    const enemyHp = (): number => s.sides.b.units.reduce((n, u) => n + u.hp, 0);
-    const before = enemyHp();
-    // the Hound she starts with stands in front; an enemy attack kills companions in turn
-    pup.hp = 1;
-    for (const u of s.sides.a.units) if (u.kind === 'ally') u.hp = 1;
-    s = applyAction(db, s, { type: 'endTurn' }).state;
-    const fallen = 2 - s.sides.a.units.filter((u) => u.kind === 'ally').length;
-    expect(fallen).toBeGreaterThan(0);
-    // each companion that fell cost the enemies 15 (the companions' own attacks at the end of the turn come first)
-    expect(before - enemyHp()).toBeGreaterThanOrEqual(15 * fallen);
+    const before = s.sides.b.units.map((u) => u.hp);
+    const act = legalActions(db, s).find(
+      (a) =>
+        a.type === 'play' &&
+        a.card === 'T2' &&
+        s.sides.a.units.find((u) => u.id === a.target)?.def === 'pup',
+    );
+    expect(act, 'Devour Ally on the Pup').toBeTruthy();
+    s = applyAction(db, s, act!).state;
+    expect(s.sides.a.units.some((u) => u.def === 'pup')).toBe(false);
+    expect(s.sides.b.units.map((u) => u.hp)).toEqual(before);
   });
 });
 
 describe('the summons, by cost', () => {
-  it('Whelp is 1 Mana for a Pup, Alpha Call 2 for the Alpha, Dire Wolf 3 for the Dire Wolf', () => {
-    expect(db.cards['whelp']!.cost).toBe(1);
+  it('Summon Pup is 1 Mana for a Pup, Alpha Call 2 for the Alpha, Dire Wolf 3 for the Dire Wolf', () => {
+    expect(db.cards['summon-pup']!.cost).toBe(1);
     expect(db.cards['alpha-call']!.cost).toBe(2);
     expect(db.cards['dire-wolf']!.cost).toBe(3);
     const hp = (id: string): number => db.units[id]!.maxHp;
@@ -70,5 +93,8 @@ describe('the summons, by cost', () => {
     expect(hp('dire-wolf')).toBeGreaterThan(hp('pack-alpha'));
     expect(hit('dire-wolf')).toBeGreaterThan(hit('pack-alpha'));
     expect(hp('pup')).toBeLessThan(hp('hound'));
+    // the Pup never outgrows the Hound, even upgraded
+    expect(hp('pup+')).toBeLessThanOrEqual(hp('hound'));
+    expect(hit('pup+')).toBeLessThanOrEqual(hit('hound'));
   });
 });

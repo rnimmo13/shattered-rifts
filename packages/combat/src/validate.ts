@@ -14,7 +14,15 @@ export function validateDb(db: CombatDb): string[] {
   const checkOps = (
     where: string,
     ops: readonly Op[],
-    opts: { aimed: boolean; snare: boolean; pick?: boolean; card?: boolean; rune?: boolean },
+    opts: {
+      aimed: boolean;
+      snare: boolean;
+      pick?: boolean;
+      card?: boolean;
+      rune?: boolean;
+      /** an Aura that answers an ally falling: it may strike the one that killed it (DECISIONS #326) */
+      attacker?: boolean;
+    },
   ): void => {
     for (const o of ops) {
       if (o.op === 'summon' && !db.units[o.unit])
@@ -22,8 +30,10 @@ export function validateDb(db: CombatDb): string[] {
       if (o.op === 'addCard' && !db.cards[o.card])
         errs.push(`${where}: adds unknown card "${o.card}"`);
       if (o.op === 'prevent' && !opts.snare) errs.push(`${where}: "prevent" only works in a Trap`);
-      if ('to' in o && o.to === 'attacker' && !opts.snare)
-        errs.push(`${where}: "attacker" only works in a Trap`);
+      if ('to' in o && o.to === 'attacker' && !opts.snare && !opts.attacker)
+        errs.push(
+          `${where}: "attacker" only works in a Trap, or an Aura that answers an ally dying`,
+        );
       if ('to' in o && o.to === 'target' && !opts.aimed)
         errs.push(`${where}: uses "target" but nothing is aimed`);
       if ('amount' in o && !Number.isFinite(o.amount)) errs.push(`${where}: bad amount`);
@@ -59,7 +69,11 @@ export function validateDb(db: CombatDb): string[] {
         errs.push(`${where}: bad discover count`);
       if (o.op === 'power') {
         if (!opts.card) errs.push(`${where}: "power" only works in a card`);
-        checkOps(`${where}.power`, o.ops, { aimed: o.when === 'play', snare: false });
+        checkOps(`${where}.power`, o.ops, {
+          aimed: o.when === 'play',
+          snare: false,
+          attacker: o.when === 'allyDies',
+        });
       }
       if (o.op === 'channel' && !db.runes?.[o.rune])
         errs.push(`${where}: channels unknown rune "${o.rune}"`);
