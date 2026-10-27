@@ -32,14 +32,18 @@ export function catalog(db: CombatDb): CatalogCard[] {
       : heroOrder.includes(p)
         ? heroOrder.indexOf(p)
         : 200 + ['wardens', 'tokens', 'other'].indexOf(p);
-  return Object.values(db.cards)
-    .map((def) => ({ def, pool: poolOf(def), upgraded: def.id.endsWith('+') }))
-    .sort(
-      (a, b) =>
-        rank(a.pool) - rank(b.pool) ||
-        a.def.cost - b.def.cost ||
-        a.def.name.localeCompare(b.def.name),
-    );
+  return (
+    Object.values(db.cards)
+      // (a card switched off for now is not shown: DECISIONS #317)
+      .filter((def) => def.source !== 'disabled')
+      .map((def) => ({ def, pool: poolOf(def), upgraded: def.id.endsWith('+') }))
+      .sort(
+        (a, b) =>
+          rank(a.pool) - rank(b.pool) ||
+          a.def.cost - b.def.cost ||
+          a.def.name.localeCompare(b.def.name),
+      )
+  );
 }
 
 export interface CatalogFilter {
@@ -193,7 +197,8 @@ export function paginate(
     }
     return pages;
   }
-  const keyOf = (c: CatalogCard): string => (byPath ? `${c.pool}|${pathOf(c.def.id) ?? ''}` : c.pool);
+  const keyOf = (c: CatalogCard): string =>
+    byPath ? `${c.pool}|${pathOf(c.def.id) ?? ''}` : c.pool;
   let i = 0;
   while (i < cards.length) {
     // the run of cards sharing a character and build path
@@ -210,7 +215,9 @@ export function paginate(
         cards: slice,
         heroes: hero ? [hero] : [],
         heroIds: hero ? [first.pool] : [],
-        ...(byPath && hero && path !== undefined ? { path: pathName(first.pool as HeroId, path) } : {}),
+        ...(byPath && hero && path !== undefined
+          ? { path: pathName(first.pool as HeroId, path) }
+          : {}),
       });
     }
     i = j;

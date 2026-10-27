@@ -276,7 +276,6 @@ Starter: Strike, Strike, Strike, Strike, Defend, Defend, Defend, Savage Bite, Bl
 | Frothing Rage | 1 | skill | uncommon | Lose 3 HP. Gain 3 Might until the end of your turn. Draw 2 cards. |
 | Wounded Wrath | 1 | aura | uncommon | Whenever you lose HP to your own cards: Deal 4 damage to a random enemy. |
 | Blood Bond | 1 | skill | uncommon | Lose 3 HP. Gain 2 Might. Gain 6 Barrier to all friends. |
-| Litter | 2 | skill | uncommon | Summon 2 Gnashlings (4 HP each). At the end of your turn each will: Deal 3 damage. |
 | Bone Collar | 1 | aura | uncommon | Whenever one of your allies dies: Gain 2 Might. Heal 4. |
 | Feast on Fear | 2 | attack | uncommon | Deal 12 damage. Heal 3 (+2 per Exposed on the target). |
 | Gore and Gulp | 1 | attack | uncommon | Deal 10 damage. Lifesteal 50%. Consume. |
@@ -1138,7 +1137,7 @@ Tokens (made by other cards):
 
 - knight: 92
 - engineer: 93
-- hunter: 93
+- hunter: 92
 - trapper: 99
 - assassin: 97
 - totemist: 96

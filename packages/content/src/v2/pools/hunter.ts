@@ -337,8 +337,19 @@ export const HUNTER: CardDef[] = [
     status('might', 2),
     barrier(6, 'allFriends'),
   ]),
-  // (two Gnashlings, the frailer pups: DECISIONS #316)
-  k('uncommon', 'litter', 'Litter', 'skill', 2, 'none', [summon('gnashling'), summon('gnashling')]),
+  // (two Gnashlings, the frailer pups: DECISIONS #316; switched off for now, #317: never offered, but a deck that holds it still plays it)
+  k(
+    'uncommon',
+    'litter',
+    'Litter',
+    'skill',
+    2,
+    'none',
+    [summon('gnashling'), summon('gnashling')],
+    {
+      source: 'disabled',
+    },
+  ),
   k('uncommon', 'bone-collar', 'Bone Collar', 'power', 1, 'none', [
     on('allyDies', [status('might', 2), heal(4)]),
   ]),
