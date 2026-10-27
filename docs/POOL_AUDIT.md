@@ -176,7 +176,7 @@ cost and effects whose numbers differ by about a third or less. "Shared" cards b
 | Repair Bot | common | summon | 1 | Summon Repair Bot (6 HP). At the end of your turn it will: Heal 3 to your hero. |
 | Retrofit | common | skill | 1 | Apply 3 Might to the ally. |
 | Bulwark Frame | uncommon | skill | 1 | Gain 14 Barrier to the ally. |
-| Calibrate | uncommon | skill | 0 | Apply 1 Might to the ally. Gain 4 Barrier to the ally. |
+| Patch Job | uncommon | skill | 0 | Heal 8 to the ally. Gain 3 Barrier to the ally. |
 | Rebuild | uncommon | skill | 1 | Your most recently fallen ally returns with half its HP. Gain 6 Barrier. Consume. |
 | Reinforce | uncommon | skill | 1 | Gain 8 Barrier to the ally. Apply 2 Might to the ally. |
 | Self-Mending | uncommon | aura | 1 | At the start of your turn: Heal 2 to all friends. |
@@ -203,13 +203,13 @@ cost and effects whose numbers differ by about a third or less. "Shared" cards b
 | Ion Lance | uncommon | attack | 2 | Deal 16 damage. |
 | Overcharge | uncommon | skill | 0 | Gain 2 Mana. Next turn, lose 1 Mana. Consume. |
 | Factory Floor | rare | aura | 2 | Whenever you summon an ally: Draw 1 card. |
-| Forge Titan | rare | summon | 3 | Summon War Engine (22 HP). At the end of your turn it will: Deal 9 damage. Apply 1 Might to all friends. |
 | Railgun | rare | attack | 3 | Deal 30 damage. |
+| Relay Network | rare | aura | 2 | Whenever one of your Traps is triggered: All your allies act now. |
 | Swarm Surge | rare | skill | 2 | Summon Patrol Drone (7 HP). At the end of your turn it will: Deal 4 damage. Draw cards equal to the number of your allies. Consume. |
 
 ## Kesh the Unfed (hunter)
 
-78 cards: Bloodrage 23, Pack 23, Berserker 23, shared 9.
+78 cards: Bloodrage 23, Pack 23, Predator 23, shared 9.
 
 ### Bloodrage
 
@@ -267,7 +267,7 @@ cost and effects whose numbers differ by about a third or less. "Shared" cards b
 | Wild Hunt | rare | aura | 3 | At the start of your turn: All your allies act now. |
 | Bloodmoon Hunt | legendary | skill | 2 | Summon 2 Hounds (8 HP each). At the end of your turn each will: Deal 4 damage. Apply 3 Might to each of your allies. All your allies act now. Consume. |
 
-### Berserker
+### Predator
 
 | Card | Rarity | Type | Cost | Text |
 |---|---|---|---|---|
@@ -293,7 +293,7 @@ cost and effects whose numbers differ by about a third or less. "Shared" cards b
 | Red Frenzy | rare | aura | 2 | Whenever you draw a card: Gain 1 Might until the end of your turn. |
 | Rising Howl | rare | attack | 2 | Deal 8 (+4 per card played this turn) damage. |
 | Unbridled | rare | skill | 0 | Gain 3 Mana. Draw 3 cards. Lose 6 HP. Consume. |
-| Apex Frenzy | legendary | attack | 2 | Deal 6 damage 2 times, 2 more times per card played this turn. Lifesteal 50%. Consume. |
+| Apex Frenzy | legendary | attack | 2 | Deal 6 damage 2 times, 1 more time per card played this turn. Lifesteal 50%. Consume. |
 
 ### Shared
 
@@ -305,8 +305,8 @@ cost and effects whose numbers differ by about a third or less. "Shared" cards b
 | Tear Loose | uncommon | attack | 1 | Deal 7 damage. Lose 3 HP. Gain 4 Primed. |
 | Whet the Fangs | uncommon | skill | 0 | Gain 6 Primed. |
 | Ancient Fury | rare | aura | 2 | At the start of your turn: Gain 2 Might. Lose 3 HP. |
-| Berserker | rare | aura | 2 | At the start of your turn: Lose 3 HP. Gain 1 Mana. |
 | Bloodsong | rare | aura | 1 | Lose 3 HP. Gain 1 Cadence for the rest of the fight. |
+| Hunger Unbound | rare | aura | 2 | Gain 1 Unbound. At the start of your turn: Lose 3 HP. |
 | Slip the Leash | rare | skill | 1 | Double the Might to yourself (at most +6). Consume. |
 
 ## Vesper Nightlace (trapper)
@@ -571,8 +571,8 @@ cost and effects whose numbers differ by about a third or less. "Shared" cards b
 | Eye Carving | uncommon | attack | 0 | Deal 3 damage. Apply 1 Exposed. |
 | Gather the Shavings | uncommon | skill | 1 | Gain 3 Barrier. Return 2 random Carvings from your discard pile to your hand. |
 | Moth Carving | uncommon | skill | 0 | Gain 2 Barrier. Apply 1 Exposed to a random enemy. |
+| Notch and Cut | uncommon | attack | 1 | Deal 3 damage 2 times. Add a Hawk Carving to your hand. |
 | Whittle Down | uncommon | attack | 1 | Deal 4 (+2 per card played this turn) damage. |
-| Whittle Down | uncommon | attack | 1 | Deal 3 damage 2 times. Add a Hawk Carving to your hand. |
 | Whittler's Kit | uncommon | skill | 1 | Add a Hawk Carving to your hand. Add a Bear Carving to your hand. Draw 1 card. |
 | Carver's Bench | rare | aura | 2 | At the start of your turn: Add a Hawk Carving to your hand. |
 | Clear the Bench | rare | skill | 1 | Discard any number of cards. Return 10 random Carvings from your discard pile to your hand. Draw 1 card. Consume. |

@@ -29,6 +29,49 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.98.0',
+    date: '2026-10-27',
+    title: 'Rarer, deeper card pools',
+    summary:
+      'Every Riftwalker’s cards were rebuilt like a proper deckbuilder: more uncommons and rares, each split over the three build paths, near-duplicates gone and Legendaries that build a deck around them.',
+    notes: [
+      {
+        kind: 'new',
+        text: 'Every Riftwalker now has 20 commons, 30 uncommons, 25 rares and 3 Legendaries, split evenly over the three build paths, so a rare is a find that defines a build. Near-duplicate cards are gone, many cards are new, and a card that left the game turns into a similar card in any old run or deck.',
+      },
+      {
+        kind: 'new',
+        text: 'Kesh: the Feast build path is now Predator: gain Mana, draw hard and play many cards in one turn; its attacks grow with every card played that turn. New cards include Unbridled, Killing Spree, Bloodstorm, Rising Howl and the Legendary Apex Frenzy.',
+      },
+      {
+        kind: 'changed',
+        text: 'Legendaries reworked: each one builds a deck around its build path. Valeria’s Dawn’s Mercy turns every heal into a strike; Eye of the Storm, Shatterstorm, Grave Harvest, The Spirit Council, Masquerade, The Twelve-Gauge Opera and more do far more than a one-off burst.',
+      },
+      {
+        kind: 'new',
+        text: 'Cards show their build path at the top right of the art, and the card library can filter by build path.',
+      },
+      {
+        kind: 'changed',
+        text: 'Starting decks: each kit swaps in two uncommons and a common of its build path. Valeria’s Devotion kit can spend Devotion from the start (Hymn of Reckoning).',
+      },
+      {
+        kind: 'changed',
+        text: 'A deck holds at most 5 copies of a card, in a run and in the Arena (a Legendary is one of a kind).',
+      },
+      {
+        kind: 'balance',
+        text: 'Kesh no longer heals after a won fight or starts each fight with Might. Valeria’s Devotion shows beside her Mana, and new Devotion attacks join her: Hand of Justice, Consecrated Blade and Hand of God.',
+      },
+      {
+        kind: 'changed',
+        text: 'After a fight, Continue sits on top, with the replay options under it.',
+      },
+    ],
+    heads:
+      'The rules changed: reload if the game asks you to. Arena games and replays from before this version can no longer be watched.',
+  },
+  {
     version: '0.97.0',
     date: '2026-10-27',
     title: 'Valeria’s Devotion',

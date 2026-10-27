@@ -34,7 +34,7 @@ const HEADS: Record<HeroId, [RegExp, number | null][]> = {
   hunter: [
     [/bloodrage/i, 0],
     [/pack/i, 1],
-    [/feast|berserker/i, 2],
+    [/feast|berserker|predator/i, 2],
     [/basics/i, null],
   ],
   trapper: [
@@ -85,6 +85,8 @@ const out: Record<string, number> = {};
 /** cards under a heading that is not a build path but that belong to one */
 const BY_ID: Record<string, number> = {
   // brought back for the 20/30/25 rarity target (DECISIONS #341)
+  'patch-job': 2,
+  // brought back for the 20/30/25 rarity target (DECISIONS #341)
   'palmed-card': 2,
   'wreath-of-flame': 2,
   // new cards of the 20/30/25 rarity target (DECISIONS #341)
@@ -111,7 +113,6 @@ const BY_ID: Record<string, number> = {
   'scrapyard-king': 0,
   'echo-command': 1,
   'resonant-pulse': 1,
-  calibrate: 2,
   'self-repair': 2,
   'pack-leader': 1,
   'poison-pantry': 0,
@@ -326,16 +327,17 @@ const NO_PATH = [
   'chaser',
   'dumpster-dive',
   // glue for the 20/30/25 rarity target (DECISIONS #341)
+  'hunger-unbound',
+  'relay-network',
   'thousand-palms',
   'unbroken-calm',
   'starlit-duel',
   // glue for the 20/30/25 rarity target (DECISIONS #341)
+  // glue for the 20/30/25 rarity target (DECISIONS #341)
   'radiance-eternal',
-  'forge-titan',
   'swarm-surge',
   'tear-loose',
   'ancient-fury',
-  'berserker',
   'curtain-call',
   'misdirection',
   'careful-plan',

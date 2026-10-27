@@ -124,12 +124,12 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     buildPaths: [
       'Bloodrage: HP for Might',
       'Pack: feed the companions',
-      'Berserker: Mana and draw for burst turns',
+      'Predator: Mana and draw for burst turns',
     ],
     howTo: [
       'You start with a Hound. Might makes every attack hit harder, permanently.',
-      'Many of your cards cost HP. Spend it to buff the pack, then heal with Devour and Feast cards.',
-      'Berserker: gain Mana, draw hard and play many cards in one turn; its attacks grow with every card played that turn.',
+      'Many of your cards cost HP. Spend it to buff the pack; Savage Bite and Devour heal some of it back.',
+      'Predator: gain Mana, draw hard and play many cards in one turn; its attacks grow with every card played that turn.',
     ],
   },
   trapper: {
@@ -612,7 +612,9 @@ export const RETIRED_CARDS: Readonly<Record<string, string>> = {
 /** A card id as it is now: a retired card becomes its replacement, keeping its roll, engraving and upgrade; anything else is unchanged. */
 export function canonicalCard(id: string): string {
   const m = /^((?:hi|lo)~)?((?:hold|opening|flare)\^)?(.+?)(\+?)$/.exec(id);
-  const now = m ? RETIRED_CARDS[m[3] as string] : undefined;
+  // (a card retired into one that was itself retired later follows the chain to a card still in the game)
+  let now = m ? RETIRED_CARDS[m[3] as string] : undefined;
+  for (let i = 0; now && RETIRED_CARDS[now] && i < 8; i++) now = RETIRED_CARDS[now];
   return m && now ? `${m[1] ?? ''}${m[2] ?? ''}${now}${m[4] ?? ''}` : id;
 }
 

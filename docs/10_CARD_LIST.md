@@ -153,8 +153,8 @@ Starter: Strike, Strike, Strike, Strike, Strike, Defend, Defend, Defend, Deploy 
 | Scrapyard King | 2 | aura | uncommon | Whenever one of your allies dies: Apply 1 Might to all friends. |
 | Echo Command | 1 | skill | uncommon | All your allies act now. All your allies act now. Next turn, lose 1 Mana. Consume. Hold. |
 | Resonant Pulse | 1 | aura | uncommon | Whenever you play a Skill: Heal 1 to all friends. |
-| Calibrate | 0 | skill | uncommon | Apply 1 Might to the ally. Gain 4 Barrier to the ally. |
 | Self-Mending | 1 | aura | uncommon | At the start of your turn: Heal 2 to all friends. |
+| Patch Job | 0 | skill | uncommon | Heal 8 to the ally. Gain 3 Barrier to the ally. |
 | Swarm Protocol | 2 | summon | rare | Summon 2 Patrol Drones (7 HP each). At the end of your turn each will: Deal 4 damage. |
 | Legion | 2 | aura | rare | Whenever you summon an ally: Apply 1 Might to all friends. |
 | Swarm Tactics | 1 | aura | rare | Whenever you summon an ally: Deal 3 damage to a random enemy. |
@@ -178,8 +178,8 @@ Starter: Strike, Strike, Strike, Strike, Strike, Defend, Defend, Defend, Deploy 
 | Railgun | 3 | attack | rare | Deal 30 damage. |
 | Overload | 2 | skill | rare | All your allies act now. All your allies act now. All your allies act now. Consume. |
 | Factory Floor | 2 | aura | rare | Whenever you summon an ally: Draw 1 card. |
-| Forge Titan | 3 | summon | rare | Summon War Engine (22 HP). At the end of your turn it will: Deal 9 damage. Apply 1 Might to all friends. |
 | Swarm Surge | 2 | skill | rare | Summon Patrol Drone (7 HP). At the end of your turn it will: Deal 4 damage. Draw cards equal to the number of your allies. Consume. |
+| Relay Network | 2 | aura | rare | Whenever one of your Traps is triggered: All your allies act now. |
 | The Foundry Awakens | 3 | aura | legendary | At the start of your turn: Summon Siege Engine (16 HP). At the end of your turn it will: Deal 13 damage. All your allies act now. |
 | Overclocked Legion | 2 | skill | legendary | Apply 3 Might to all friends. All your allies act now. All your allies act now. Consume. |
 | Drone Uprising | 2 | skill | legendary | Summon 3 Drones (8 HP each). At the end of your turn each will: Deal 3 damage. All your allies act now. Consume. |
@@ -188,7 +188,7 @@ Starter: Strike, Strike, Strike, Strike, Strike, Defend, Defend, Defend, Deploy 
 
 A hunter with a Hound. Pays HP to buff the whole pack with Might.
 
-Paths: Bloodrage: HP for Might / Pack: feed the companions / Berserker: Mana and draw for burst turns
+Paths: Bloodrage: HP for Might / Pack: feed the companions / Predator: Mana and draw for burst turns
 
 Starter: Strike, Strike, Strike, Strike, Defend, Defend, Defend, Savage Bite, Blood Frenzy, Rend
 
@@ -271,9 +271,9 @@ Starter: Strike, Strike, Strike, Strike, Defend, Defend, Defend, Savage Bite, Bl
 | Rising Howl | 2 | attack | rare | Deal 8 (+4 per card played this turn) damage. |
 | Killing Spree | 3 | aura | rare | Whenever you play an Attack: Draw 1 card. |
 | Ancient Fury | 2 | aura | rare | At the start of your turn: Gain 2 Might. Lose 3 HP. |
-| Berserker | 2 | aura | rare | At the start of your turn: Lose 3 HP. Gain 1 Mana. |
+| Hunger Unbound | 2 | aura | rare | Gain 1 Unbound. At the start of your turn: Lose 3 HP. |
 | The Hunger Unleashed | 2 | aura | legendary | Lose 7 HP. Gain 4 Might. Gain 2 Cadence. These last the rest of the fight. |
-| Apex Frenzy | 2 | attack | legendary | Deal 6 damage 2 times, 2 more times per card played this turn. Lifesteal 50%. Consume. |
+| Apex Frenzy | 2 | attack | legendary | Deal 6 damage 2 times, 1 more time per card played this turn. Lifesteal 50%. Consume. |
 | Bloodmoon Hunt | 2 | skill | legendary | Summon 2 Hounds (8 HP each). At the end of your turn each will: Deal 4 damage. Apply 3 Might to each of your allies. All your allies act now. Consume. |
 
 ## Vesper Nightlace (umbral, 80 HP)
@@ -522,7 +522,7 @@ Starter: Strike, Strike, Strike, Strike, Defend, Defend, Defend, Plant Hawk, Pla
 | Bark Ward | 1 | skill | uncommon | Gain 7 Barrier. Plant Bear. Hold. |
 | Bear Pack | 1 | skill | uncommon | Plant Bear once per enemy. Consume. |
 | Many Voices | X | skill | uncommon | Awaken your first totem X times (it stays). Consume. |
-| Whittle Down | 1 | attack | uncommon | Deal 3 damage 2 times. Add a Hawk Carving to your hand. |
+| Notch and Cut | 1 | attack | uncommon | Deal 3 damage 2 times. Add a Hawk Carving to your hand. |
 | Carver's Rhythm | 0 | skill | uncommon | Draw 2 cards. Consume. |
 | Kindled Rite | 1 | aura | uncommon | At the end of your turn: Deal damage equal to the number of your Auras to ALL enemies. |
 | Smoke Offering | 1 | aura | uncommon | At the start of your turn: Gain Barrier equal to 2 times the number of your Auras. |

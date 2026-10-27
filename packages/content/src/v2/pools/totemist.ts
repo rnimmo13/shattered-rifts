@@ -425,7 +425,7 @@ export const TOTEMIST: CardDef[] = [
   ),
 
   // --- new for the 20/30/25 rarity target (DECISIONS #341) ---
-  i('uncommon', 'whittle-down', 'Whittle Down', 'attack', 1, 'foe', [
+  i('uncommon', 'whittle-down', 'Notch and Cut', 'attack', 1, 'foe', [
     dmg(3, 'target', 2),
     addTo('live-wire'),
   ]),

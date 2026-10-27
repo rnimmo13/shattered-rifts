@@ -301,16 +301,8 @@ export const ENGINEER: CardDef[] = [
   r('uncommon', 'resonant-pulse', 'Resonant Pulse', 'power', 1, 'none', [
     on('play', [heal(1, 'allFriends')], { filter: 'skill' }),
   ]),
-  r('uncommon', 'calibrate', 'Calibrate', 'skill', 0, 'ally', [
-    status('might', 1, 'target'),
-    barrier(4, 'target'),
-  ]),
   r('uncommon', 'self-repair', 'Self-Mending', 'power', 1, 'none', [
     on('turnStart', [heal(2, 'allFriends')]),
-  ]),
-  r('rare', 'forge-titan', 'Forge Titan', 'summon', 3, 'none', [
-    summon('war-engine'),
-    status('might', 1, 'allFriends'),
   ]),
   r(
     'rare',
@@ -322,4 +314,11 @@ export const ENGINEER: CardDef[] = [
     [summon('patrol-drone'), scaled(draw(0), per('allies', 1))],
     { exhaust: true },
   ),
+
+  // --- brought back for the 20/30/25 rarity target (DECISIONS #341) ---
+  r('uncommon', 'patch-job', 'Patch Job', 'skill', 0, 'ally', [
+    heal(8, 'target'),
+    barrier(3, 'target'),
+  ]),
+  r('rare', 'relay-network', 'Relay Network', 'power', 2, 'none', [on('snare', [ACT])]),
 ];

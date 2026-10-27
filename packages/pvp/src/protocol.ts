@@ -51,7 +51,8 @@ export interface Entry {
 // (12: Overflow, #321-322)
 // (13: Kesh's pack and basics, Den Mother, Summon Pup, Dire Wolf, #323-326)
 // (14: Valeria's Devotion, a heal trigger and Devotion costs, #328)
-// (15: pools trimmed to 8/7/5/1 and 298 cards retired, rarities re-tiered, kits, no copy limit, Kesh's heal gone, #333-336)
+// (15: card pools rebuilt to 20/30/25 per Riftwalker with cards retired and new ones, kits, 5 copies at most, Legendaries reworked,
+//  Kesh's Predator build path and no heal after fights, Valeria's Devotion spenders, #329-343)
 export const RULES_VERSION = 15;
 
 /** Who you are playing, before a game starts: their name and badges, not their deck or Riftwalker. */

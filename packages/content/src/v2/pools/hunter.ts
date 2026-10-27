@@ -208,8 +208,8 @@ export const HUNTER: CardDef[] = [
     'attack',
     2,
     'foe',
-    // Berserker: the more cards played this turn, the more it hits (DECISIONS #340)
-    [lifesteal(scaled(dmg(6, 'target', 2), per('played', 2, undefined, 'hits')), 50)],
+    // Predator: the more cards played this turn, the more it hits (DECISIONS #340)
+    [lifesteal(scaled(dmg(6, 'target', 2), per('played', 1, undefined, 'hits')), 50)],
     // (upgraded, it costs 1: more damage per hit gains a burst card little)
     { exhaust: true, up: { cost: 1 } },
   ),
@@ -301,7 +301,7 @@ export const HUNTER: CardDef[] = [
     },
   ),
 
-  // --- Berserker: Mana and draw to burn through the deck, then a burst turn (replaces Feast; DECISIONS #340) ---
+  // --- Predator: Mana and draw to burn through the deck, then a burst turn (replaces Feast; DECISIONS #340) ---
   k('common', 'rush-in', 'Rush In', 'attack', 1, 'foe', [dmg(6), draw(1)]),
   k('common', 'heart-pound', 'Pounding Heart', 'skill', 0, 'none', [mana(1), lose(2)], {
     exhaust: true,
@@ -364,5 +364,10 @@ export const HUNTER: CardDef[] = [
   k('rare', 'ancient-fury', 'Ancient Fury', 'power', 2, 'none', [
     on('turnStart', [status('might', 2), lose(3)]),
   ]),
-  k('rare', 'berserker', 'Berserker', 'power', 2, 'none', [on('turnStart', [lose(3), mana(1)])]),
+
+  // --- brought back for the 20/30/25 rarity target (DECISIONS #341) ---
+  k('rare', 'hunger-unbound', 'Hunger Unbound', 'power', 2, 'none', [
+    status('unbound', 1),
+    on('turnStart', [lose(3)]),
+  ]),
 ];
