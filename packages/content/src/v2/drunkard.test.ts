@@ -160,12 +160,12 @@ describe('innate traits', () => {
     const hero = s.sides.a.units[s.sides.a.units.length - 1]!;
     hero.hp = 30;
     hero.statuses.clutch = 50;
-    s.sides.a.hand = [{ id: 'T0', card: 'last-call' }];
-    const after = playCard(s, 'T0'); // heals 6: still under half
+    s.sides.a.hand = [{ id: 'T0', card: 'sob-story' }];
+    const after = playCard(s, 'T0'); // heals 11: still under half
     expect(after.sides.a.units[after.sides.a.units.length - 1]!.statuses.clutch).toBe(50);
-    const h2 = fight('drunkard', ['last-call']);
+    const h2 = fight('drunkard', ['sob-story']);
     const hero2 = h2.sides.a.units[h2.sides.a.units.length - 1]!;
-    hero2.hp = Math.floor(hero2.maxHp * 0.5) - 2; // 42: one heal of 6 crosses the line
+    hero2.hp = Math.floor(hero2.maxHp * 0.5) - 2; // 42: one heal of 9 crosses the line
     hero2.statuses.clutch = 50;
     const healed = playCard(h2, 'T0');
     expect(healed.sides.a.units[healed.sides.a.units.length - 1]!.statuses.clutch ?? 0).toBe(0);

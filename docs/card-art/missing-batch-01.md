@@ -174,7 +174,7 @@ WORLD: Ilvane, a spirit shaman who calls glowing totems. An elder shaman of the 
 
 THE PICTURES, in this exact order, left to right, top row first. Use the card name and its effect only to decide what to draw; never write the name:
 1. "Deep Freeze" (attack): Deal 12 (+2 per Spirit) damage. Stun the target for 1 turn. Show a dynamic strike caught mid-action. A little more dramatic and detailed.
-2. "Firestorm" (attack): Deal 10 (+2 per Spirit) damage to ALL enemies. Show a dynamic strike caught mid-action. A little more dramatic and detailed.
+2. "Firestorm" (attack): Deal 8 (+2 per Spirit) damage to ALL enemies. Gain 1 Spirit. Show a dynamic strike caught mid-action. A little more dramatic and detailed.
 3. "Mountain's Heart" (skill): Gain 15 (+3 per Spirit) Barrier. Consume. Show a defensive or tactical moment, calm and clear. A little more dramatic and detailed.
 4. "Prismatic Cascade" (attack): Deal 4 (+1 per Spirit) damage 3 times to ALL enemies. Show a dynamic strike caught mid-action. A little more dramatic and detailed.
 5. "Skybreaker" (attack): Deal 24 (+3 per Spirit) damage. Consume. Show a dynamic strike caught mid-action. A little more dramatic and detailed.
@@ -251,15 +251,15 @@ LAYOUT (critical): a clean 3 x 3 grid of landscape 4:3 pictures (each about 760 
 WORLD: KP, a boisterous drunk dwarf with a shotgun and bottles. A short, fat, bald dwarf with a hammer, an Old Twelve Gauge that hits every enemy and gets sharper, and a trolley of window panes. Booby traps, glass and buckshot. World: the rift's rubbish dump: rusty junk, green bottle glass, amber oil-drum firelight, a deep blue-black sky.
 
 THE PICTURES, in this exact order, left to right, top row first. Use the card name and its effect only to decide what to draw; never write the name:
-1. "Ricochet" (aura): Whenever you play a shell: Draw 1 card. Show a grand symbolic still-life: one iconic object or pose that stands for the idea. A little more dramatic and detailed.
-2. "Scattergun Symphony" (aura): Whenever you play a shell: Deal 2 damage to ALL enemies. Show a grand symbolic still-life: one iconic object or pose that stands for the idea. A little more dramatic and detailed.
-3. "Bandolier" (aura): Whenever you play a shell: Gain 2 Barrier. Show a grand symbolic still-life: one iconic object or pose that stands for the idea.
-4. "Dead Eye" (skill): Sharpen 2 (Old Twelve Gauge gains 2 damage). Apply 1 Exposed to ALL enemies. Show a defensive or tactical moment, calm and clear.
-5. "Double Tap" (skill): Add an Old Twelve Gauge to your hand. Show a defensive or tactical moment, calm and clear.
-6. "Spare Barrel" (skill): Sharpen 2 (Old Twelve Gauge gains 2 damage). Add a Buckshot Shell to your hand. Show a defensive or tactical moment, calm and clear.
-7. "Swig" (skill): Heal 4. Gain 2 Might until the end of your turn. Consume. Show a defensive or tactical moment, calm and clear.
-8. "Aim" (skill): Sharpen 2 (Old Twelve Gauge gains 2 damage). Hold. Show a defensive or tactical moment, calm and clear.
-9. "Birdshot" (attack): Deal 3 damage to ALL enemies. Consume. Show a dynamic strike caught mid-action.
+1. "Bottoms Up" (skill): Gain 2 Mana. Draw 2 cards. Gain 6 Hangover. Consume. Show a defensive or tactical moment, calm and clear. A little more dramatic and detailed.
+2. "Ricochet" (aura): Whenever you play a shell: Draw 1 card. Show a grand symbolic still-life: one iconic object or pose that stands for the idea. A little more dramatic and detailed.
+3. "Scattergun Symphony" (aura): Whenever you play a shell: Deal 2 damage to ALL enemies. Show a grand symbolic still-life: one iconic object or pose that stands for the idea. A little more dramatic and detailed.
+4. "Bandolier" (aura): Whenever you play a shell: Gain 2 Barrier. Show a grand symbolic still-life: one iconic object or pose that stands for the idea.
+5. "Bender" (attack): Deal 3 damage, 1 more time per Hangover. Show a dynamic strike caught mid-action.
+6. "Dead Eye" (skill): Sharpen 2 (Old Twelve Gauge gains 2 damage). Apply 1 Exposed to ALL enemies. Show a defensive or tactical moment, calm and clear.
+7. "Double Tap" (skill): Add an Old Twelve Gauge to your hand. Show a defensive or tactical moment, calm and clear.
+8. "Hair of the Dog" (skill): Clear your Hangover. Gain 1 Mana. Draw 1 card. Gain 2 Hangover. Consume. Show a defensive or tactical moment, calm and clear.
+9. "Spare Barrel" (skill): Sharpen 2 (Old Twelve Gauge gains 2 damage). Add a Buckshot Shell to your hand. Show a defensive or tactical moment, calm and clear.
 
 NEGATIVE: text, letters, numbers, captions, labels, UI, card frames, borders, watermark, logo, photorealism, gritty texture, nudity, characters facing away.
 ```

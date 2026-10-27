@@ -5,6 +5,8 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **KP:** the Hangover build path is rebuilt around drinking: drinks (Liquid Lunch, Swig, One for the Road, Bottoms Up...) pay off now and leave a **Hangover**, HP you lose at the start of your next turn (never your last). Bottle to the Head, Bender and Haymaker hit harder the more you carry, Hair of the Dog and Sweat It Out clear it, and his heals (Sob Story, Liquid Dinner, Pass Out, Bottomless Flask) grow with the HP you are missing. Glass Trap, Glazier, Spare Change, Double Glazing, Trolley Barricade and Glass Underfoot are retired.
+- **Ilvane:** an upgraded Gathering Storm grows with the rest (it made a new copy instead).
 - **Ilvane:** the Whittling build path is now **Elements**: lightning, ice, fire, water and earth spells that grow with Spirit, Gathering Storm that grows every time you cast it, and the Legendary Avatar of the Elements.
 - **The last Warden leaves a Gift too:** beating the stage 3 Warden offers rare cards of your class or a Warden's Heart, like the others. A Warden's Gift always has cards.
 - **Ilvane:** the Bear totem gives 2 Barrier at the end of your turn (was 1).

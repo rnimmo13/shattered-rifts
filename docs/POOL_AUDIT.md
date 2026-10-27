@@ -844,8 +844,7 @@ cost and effects whose numbers differ by about a third or less. "Shared" cards b
 
 **Near-duplicates:**
 
-- **Glazier** and **Gun Oil**: Whenever you play a Skill: Gain 3 Barrier. / Whenever you play a gun: Gain 4 Barrier.
-- **Glazier** and **Bandolier**: Whenever you play a Skill: Gain 3 Barrier. / Whenever you play a shell: Gain 2 Barrier.
+- **Sob Story** and **Liquid Dinner**: Heal 3 (+1 per 8% HP missing). Draw 1 card. Consume. / Heal 4 (+1 per 5% HP missing). Draw 1 card. Consume.
 
 ### Gun
 
@@ -907,28 +906,28 @@ cost and effects whose numbers differ by about a third or less. "Shared" cards b
 
 | Card | Rarity | Type | Cost | Text |
 |---|---|---|---|---|
-| Drunken Swing | common | attack | 1 | Deal 12 damage. Gain 1 Faltering. |
-| Glass Trap | common | trap | 1 | When you or an ally is attacked: Deal 8 damage to the attacker. Apply 2 Brittle to the attacker. |
-| Glazier | common | aura | 1 | Whenever you play a Skill: Gain 3 Barrier. |
-| Liquid Lunch | common | skill | 0 | Gain 2 Mana. Next turn, lose 1 Mana. Consume. |
-| Sob Story | common | skill | 1 | Gain 4 Barrier. Draw 2 cards. |
-| Spare Change | common | skill | 0 | Gain 1 Mana. Foresee 2. Consume. |
-| Barroom Brawl | uncommon | attack | 2 | Deal 10 damage to ALL enemies. Lose 2 HP. |
-| Black Out | uncommon | skill | 1 | Gain 14 Barrier. Lose 3 HP. |
-| Double Glazing | uncommon | skill | 2 | Gain 12 (+1 per 6% HP missing) Barrier. |
-| Dutch Courage | uncommon | aura | 1 | At the start of your turn: Heal 2. Gain 1 Might until the end of your turn. |
-| Liquid Dinner | uncommon | skill | 1 | Heal 8. Draw 1 card. |
+| Bottle to the Head | common | attack | 1 | Deal 5 (+2 per Hangover) damage. |
+| Drunken Swing | common | attack | 1 | Deal 12 damage. Gain 3 Hangover. |
+| Liquid Lunch | common | skill | 0 | Gain 2 Mana. Gain 3 Hangover. Consume. |
+| One for the Road | common | skill | 0 | Draw 2 cards. Gain 3 Hangover. Consume. |
+| Sob Story | common | skill | 1 | Heal 3 (+1 per 8% HP missing). Draw 1 card. Consume. |
+| Sweat It Out | common | skill | 1 | Gain 4 Barrier. Heal HP equal to 2 times your Hangover. Clear your Hangover. |
+| Barroom Brawl | uncommon | attack | 2 | Deal 10 damage to ALL enemies. Gain 3 Hangover. |
+| Bender | uncommon | attack | 1 | Deal 3 damage, 1 more time per Hangover. |
+| Black Out | uncommon | skill | 1 | Gain 14 Barrier. Gain 4 Hangover. |
+| Dutch Courage | uncommon | aura | 1 | At the end of your turn: Gain Barrier equal to 2 times your Hangover. |
+| Hair of the Dog | uncommon | skill | 0 | Clear your Hangover. Gain 1 Mana. Draw 1 card. Gain 2 Hangover. Consume. |
+| Liquid Dinner | uncommon | skill | 1 | Heal 4 (+1 per 5% HP missing). Draw 1 card. Consume. |
 | Mean Drunk | uncommon | aura | 2 | Whenever you lose HP to your own cards: Gain 1 Might until the end of your turn. Gain 2 Barrier. |
 | Smash the Pane | uncommon | attack | 2 | Deal 8 (+1 per 4% HP missing) damage. |
-| Swig | uncommon | skill | 0 | Heal 4. Gain 2 Might until the end of your turn. Consume. |
-| Trolley Barricade | uncommon | trap | 1 | When you lose 6+ HP at once: Gain 12 Barrier. Deal 10 damage to the attacker. |
+| Swig | uncommon | skill | 0 | Gain 3 Might until the end of your turn. Gain 3 Hangover. |
 | Bar Stool | rare | attack | 1 | Deal 10 (+1 per 6% HP missing) damage. |
-| Bottomless Flask | rare | aura | 2 | At the start of your turn: Heal 3. Draw 1 card. |
+| Bottomless Flask | rare | aura | 2 | At the start of your turn: Heal 2 (+1 per 10% HP missing). Draw 1 card. |
+| Bottoms Up | rare | skill | 1 | Gain 2 Mana. Draw 2 cards. Gain 6 Hangover. Consume. |
 | Glass Jaw | rare | aura | 1 | Whenever you lose HP to your own cards: Deal 4 damage to ALL enemies. Gain 3 Barrier. |
-| Glass Underfoot | rare | aura | 1 | At the start of your turn: Gain 2 Thorns. |
-| Haymaker | rare | attack | 2 | Deal 22 damage. Apply 2 Brittle. |
-| Last Call | rare | skill | 2 | From your next turn, gain 1 more Mana every turn for the rest of the fight. Heal 6. Consume. |
-| Pass Out | rare | skill | 2 | Gain 18 Barrier. Heal 6. Consume. |
+| Haymaker | rare | attack | 2 | Deal 14 (+3 per Hangover) damage. |
+| Last Call | rare | skill | 2 | From your next turn, gain 1 more Mana every turn for the rest of the fight. Gain 4 Hangover. Consume. |
+| Pass Out | rare | skill | 2 | Heal 8 (+1 per 3% HP missing). Clear your Hangover. Consume. |
 | The Glass Palace | legendary | aura | 3 | At the start of your turn: Gain 6 (+1 per 6% HP missing) Barrier. Whenever you lose HP to your own cards: Deal 5 damage to ALL enemies. |
 
 ### Shared

@@ -61,7 +61,7 @@ LAYOUT (critical): a clean 3 x 3 grid of landscape 4:3 pictures (each about 760 
 WORLD: Ilvane, a spirit shaman who calls glowing totems. An elder shaman of the old spirits: totems that hold them, elemental spells that grow with Spirit, and the rites that wake them. Starts every fight with three totems (Hawk, Bear and Splinter). World: a teal-and-orange foundry of machines: hazard stripes, steel, glowing cyan, sparks and steam.
 
 THE PICTURES, in this exact order, left to right, top row first. Use the card name and its effect only to decide what to draw; never write the name:
-1. "Storm Call" (attack): Deal 6 (+2 per Spirit) damage to ALL enemies. Show a dynamic strike caught mid-action.
+1. "Storm Call" (attack): Deal 5 (+2 per Spirit) damage to ALL enemies. Apply 1 Exposed to ALL enemies. Show a dynamic strike caught mid-action.
 2. "Tidecaller" (skill): Gain 1 Mana. Draw 1 card. Consume. Show a defensive or tactical moment, calm and clear.
 3. "Clear Spring" (skill): Draw 2 cards. Show a defensive or tactical moment, calm and clear.
 4. "Elemental Focus" (skill): Gain 1 Spirit. Consume. Show a defensive or tactical moment, calm and clear.
@@ -76,19 +76,24 @@ NEGATIVE: text, letters, numbers, captions, labels, UI, card frames, borders, wa
 
 ## KP, the Homeless Drunk
 
-### Sheet `drunkard-m03` (2 pictures, common first)
+### Sheet `drunkard-m03` (7 pictures, common first)
 
 ```
-Create ONE ILLUSTRATION SHEET of 2 separate card-art pictures for a card-battler game (like Slay the Spire), 2400 x 1800, no text.
+Create ONE ILLUSTRATION SHEET of 7 separate card-art pictures for a card-battler game (like Slay the Spire), 2400 x 1800, no text.
 The attached image (Valeria) is the STYLE ANCHOR: match its cartoon game-art rendering exactly (bold clean dark outlines, flat saturated colours, simple cel shading, crisp polished shapes). Do NOT copy her character; paint scenes and objects. Backgrounds are softer and less contrasty than the main subject so the subject pops.
 
-LAYOUT (critical): a clean 3 x 1 grid of landscape 4:3 pictures (each about 760 x 570), separated by thin flat dark navy (#14181f) gutters, with NO frames, NO borders, NO captions, NO text, NO numbers. Every picture fills its own cell completely; nothing crosses a gutter. Each picture has ONE clear subject in the middle that reads at thumbnail size, a simple scene behind it, light from the upper left. Leave any unused cells plain dark navy.
+LAYOUT (critical): a clean 3 x 3 grid of landscape 4:3 pictures (each about 760 x 570), separated by thin flat dark navy (#14181f) gutters, with NO frames, NO borders, NO captions, NO text, NO numbers. Every picture fills its own cell completely; nothing crosses a gutter. Each picture has ONE clear subject in the middle that reads at thumbnail size, a simple scene behind it, light from the upper left. Leave any unused cells plain dark navy.
 
 WORLD: KP, a boisterous drunk dwarf with a shotgun and bottles. A short, fat, bald dwarf with a hammer, an Old Twelve Gauge that hits every enemy and gets sharper, and a trolley of window panes. Booby traps, glass and buckshot. World: the rift's rubbish dump: rusty junk, green bottle glass, amber oil-drum firelight, a deep blue-black sky.
 
 THE PICTURES, in this exact order, left to right, top row first. Use the card name and its effect only to decide what to draw; never write the name:
-1. "Shell Shock" (attack): Deal 3 damage to ALL enemies. Add a Buckshot Shell to your hand. Show a dynamic strike caught mid-action.
-2. "Slug Round" (attack): Deal 16 damage. Show a dynamic strike caught mid-action.
+1. "Pistol Whip" (attack): Deal 6 damage. Sharpen 2 (Old Twelve Gauge gains 2 damage). Show a dynamic strike caught mid-action.
+2. "Powder Load" (skill): Sharpen 4 (Old Twelve Gauge gains 4 damage). Consume. Show a defensive or tactical moment, calm and clear.
+3. "Rack the Slide" (skill): Sharpen 3 (Old Twelve Gauge gains 3 damage). Show a defensive or tactical moment, calm and clear.
+4. "Shard Toss" (attack): Deal 4 damage to ALL enemies. Apply 1 Brittle to ALL enemies. Show a dynamic strike caught mid-action.
+5. "Shell Shock" (attack): Deal 3 damage to ALL enemies. Add a Buckshot Shell to your hand. Show a dynamic strike caught mid-action.
+6. "Slug Round" (attack): Deal 16 damage. Show a dynamic strike caught mid-action.
+7. "Sweat It Out" (skill): Gain 4 Barrier. Heal HP equal to 2 times your Hangover. Clear your Hangover. Show a defensive or tactical moment, calm and clear.
 
 NEGATIVE: text, letters, numbers, captions, labels, UI, card frames, borders, watermark, logo, photorealism, gritty texture, nudity, characters facing away.
 ```

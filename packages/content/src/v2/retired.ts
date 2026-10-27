@@ -188,6 +188,13 @@ export const TRIMMED_CARDS: Readonly<Record<string, string>> = {
   'crushing-light': 'solar-flare',
   eclipse: 'pale-beacon',
   // drunkard
+  // Hangover rebuilt around drinks (DECISIONS #354)
+  'glass-trap': 'bottle-tripwire',
+  glazier: 'sob-story',
+  'spare-change': 'liquid-lunch',
+  'double-glazing': 'window-pane',
+  'trolley-barricade': 'black-out',
+  'glass-underfoot': 'dutch-courage',
   'barrel-roll': 'glass-cover',
   'steady-hands': 'reload',
   'gunmetal-polish': 'glass-cover',
@@ -198,7 +205,6 @@ export const TRIMMED_CARDS: Readonly<Record<string, string>> = {
   'rock-salt': 'shard-toss',
   'pit-of-bottles': 'rusty-nail-board',
   'pane-in-the-face': 'bar-stool',
-  'hair-of-the-dog': 'swig',
   'panorama-window': 'pass-out',
   'bar-tab': 'spare-change',
   'sheet-of-glass': 'glass-underfoot',

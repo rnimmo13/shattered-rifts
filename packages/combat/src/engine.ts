@@ -471,6 +471,7 @@ function metricValue(r: Run, a: Act, m: Metric, of: Scale['of'], t: Unit | null)
     case 'thorns':
     case 'mantra':
     case 'devotion':
+    case 'hangover':
     case 'resonance':
     case 'doom':
     case 'calm':
@@ -1363,6 +1364,14 @@ function startOfTurn(r: Run, side: Side): void {
       applyDamage(r, null, u, sear, 'direct');
       addStatus(r, u, 'seared', -1);
     }
+  }
+  // the morning after: Hangover costs that much HP, but never the last one, and it clears (DECISIONS #354)
+  for (const u of [...sd.units]) {
+    const owed = stacks(u, 'hangover');
+    if (owed <= 0 || u.hp <= 0) continue;
+    addStatus(r, u, 'hangover', -owed);
+    const lost = applyDamage(r, null, u, Math.min(owed, u.hp - 1), 'direct');
+    if (lost > 0 && u.kind === 'hero') fireTriggers(r, sd, 'loseHp');
   }
   reap(r);
 }

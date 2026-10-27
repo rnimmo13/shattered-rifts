@@ -312,13 +312,13 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     buildPaths: [
       'Gun: sharpen the Old Twelve Gauge',
       'Shells: buckshot that hits everyone',
-      'Hangover: the more it hurts, the harder you hit',
+      'Hangover: drink now, pay tomorrow',
     ],
     howTo: [
       'Window panes and hammer blows get stronger the more HP you are missing, and Clutch Genes makes you hit harder at half HP and below.',
       'You start every fight with the Old Twelve Gauge: it hits EVERY enemy, you keep it in hand, and every Sharpen card (Rack the Slide...) makes it hit harder for the whole fight.',
       'Shells are 0-cost attacks that hit every enemy and are consumed. Playing one can sharpen the gun (Hair Trigger).',
-      'Swigs heal and hit harder for a turn. KP has a few Traps, but he is not the trapper Vesper is.',
+      'Drinks (Swig, Liquid Lunch...) give Mana, cards or Might now and Hangover: at the start of your next turn you lose that much HP, never your last. Hangover cards hit harder the more of it you carry, and his heals grow with the HP you are missing.',
     ],
     quotes: [
       '"I ain\'t homeless. I\'m between windows."',

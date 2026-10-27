@@ -62,7 +62,7 @@ reworked cards stayed the same, so their art and every saved deck still work.
 | 7 | **Sehra, the Still Flame** | Aurelion | 82 | **Fury:** get in, hit hard, live through it | **Flow:** change stance again and again; every change pays | **Radiant:** build Fervor to 10 for a triple-damage turn |
 | 8 | **Obsidia, Spellblade of the Hollow Crown** (id `spellblade`) | The Hollow Crown (id `starfall`) | 80 | **Blade:** sharpen one weapon | **Arcana:** spend for finishers | **Sigils:** Auras that tick |
 | 9 | **Mire, the Gravewarden** | Gloomfen | 76 | **Doom:** stack, double, cash in | **Thralls:** the dead fight for you | **Ashes:** consumed cards fuel you |
-| 10 | **KP, the Homeless Drunk** | The Midden | 88 | **Gun:** sharpen the Old Twelve Gauge | **Shells:** buckshot and booby traps that hit every enemy | **Hangover:** the more it hurts the harder you hit: glass, Thorns, swigs, self-damage |
+| 10 | **KP, the Homeless Drunk** | The Midden | 88 | **Gun:** sharpen the Old Twelve Gauge | **Shells:** buckshot and booby traps that hit every enemy | **Hangover:** drink now, pay tomorrow: drinks give Mana, cards or Might plus Hangover (HP lost at the start of his next turn, never the last), payoffs that grow with Hangover, and heals that grow with missing HP (DECISIONS #354) |
 
 **KP's look (art brief):** short, fat, bald dwarf; ragged coat, ruddy drunk's nose; a hammer in one hand, a sawed-off 12 gauge across his back, a shopping trolley loaded with window panes and glass. Sigil/colour: bottle green and rust. He is a Drunkard (role): the Trapper role stays Vesper's, KP only has a few Traps. His signature is the Buckshot Shell (tag `shell`, 0-cost, hits every enemy, consumed), tested like Quill's knives.
 

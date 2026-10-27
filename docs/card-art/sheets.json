@@ -1747,15 +1747,15 @@
   "cols": 3,
   "rows": 3,
   "ids": [
+   "bottoms-up",
    "ricochet",
    "scattergun-symphony",
    "bandolier",
+   "bender",
    "dead-eye",
    "double-tap",
-   "spare-barrel",
-   "swig",
-   "aim",
-   "birdshot"
+   "hair-of-the-dog",
+   "spare-barrel"
   ]
  },
  {
@@ -1764,25 +1764,30 @@
   "cols": 3,
   "rows": 3,
   "ids": [
+   "swig",
+   "aim",
+   "birdshot",
+   "bottle-to-the-head",
    "broken-bottle",
    "buttstroke",
    "chaser",
-   "glass-trap",
    "gun-oil",
-   "pistol-whip",
-   "powder-load",
-   "rack-the-slide",
-   "shard-toss"
+   "one-for-the-road"
   ]
  },
  {
   "name": "drunkard-m03",
   "hero": "drunkard",
   "cols": 3,
-  "rows": 1,
+  "rows": 3,
   "ids": [
+   "pistol-whip",
+   "powder-load",
+   "rack-the-slide",
+   "shard-toss",
    "shell-shock",
-   "slug-round"
+   "slug-round",
+   "sweat-it-out"
   ]
  },
  {

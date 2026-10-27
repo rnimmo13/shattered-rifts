@@ -37,7 +37,8 @@ export function evaluate(db: CombatDb, s: CombatState, me: Side): number {
       (u.statuses.shielded ?? 0) * 4 +
       (u.statuses.resonance ?? 0) * 3 +
       (u.statuses.mantra ?? 0) * 1.5 +
-      (u.statuses.devotion ?? 0) * 1 +
+      (u.statuses.devotion ?? 0) * 1 -
+      (u.statuses.hangover ?? 0) * 0.8 +
       (u.statuses.edge ?? 0) * 3 +
       (u.statuses.wrath ?? 0) * 3 +
       (u.statuses.calm ?? 0) * 2 +

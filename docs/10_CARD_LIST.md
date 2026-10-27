@@ -748,7 +748,7 @@ Tokens (made by other cards):
 
 A short, fat, bald dwarf with a hammer, an Old Twelve Gauge that hits every enemy and gets sharper, and a trolley of window panes. Booby traps, glass and buckshot.
 
-Paths: Gun: sharpen the Old Twelve Gauge / Shells: buckshot that hits everyone / Hangover: the more it hurts, the harder you hit
+Paths: Gun: sharpen the Old Twelve Gauge / Shells: buckshot that hits everyone / Hangover: drink now, pay tomorrow
 
 Starter: Strike, Strike, Strike, Defend, Defend, Defend, Hammer Swing, Hammer Swing, Pane Up, Bottle Tripwire
 
@@ -757,42 +757,36 @@ Starter: Strike, Strike, Strike, Defend, Defend, Defend, Hammer Swing, Hammer Sw
 | Hammer Swing | 1 | attack | basic | Deal 6 damage. Apply 1 Brittle. |
 | Pane Up | 1 | skill | basic | Gain 6 (+1 per 11% HP missing) Barrier. |
 | Bottle Tripwire | 1 | trap | basic | When you or an ally is attacked: Deal 7 damage to the attacker. Apply 1 Faltering to the attacker. |
-| Glass Trap | 1 | trap | common | When you or an ally is attacked: Deal 8 damage to the attacker. Apply 2 Brittle to the attacker. |
 | Shard Toss | 1 | attack | common | Deal 4 damage to ALL enemies. Apply 1 Brittle to ALL enemies. |
-| Sob Story | 1 | skill | common | Gain 4 Barrier. Draw 2 cards. |
-| Glazier | 1 | aura | common | Whenever you play a Skill: Gain 3 Barrier. |
 | Load Shells | 1 | skill | common | Add 3 Buckshot Shells to your hand. |
 | Slug Round | 2 | attack | common | Deal 16 damage. |
 | Shell Game | 1 | aura | common | At the start of your turn: Add a Buckshot Shell to your hand. |
-| Drunken Swing | 1 | attack | common | Deal 12 damage. Gain 1 Faltering. |
-| Spare Change | 0 | skill | common | Gain 1 Mana. Foresee 2. Consume. |
 | Rack the Slide | 1 | skill | common | Sharpen 3 (Old Twelve Gauge gains 3 damage). |
 | Powder Load | 0 | skill | common | Sharpen 4 (Old Twelve Gauge gains 4 damage). Consume. |
 | Pistol Whip | 1 | attack | common | Deal 6 damage. Sharpen 2 (Old Twelve Gauge gains 2 damage). |
 | Shell Shock | 1 | attack | common | Deal 3 damage to ALL enemies. Add a Buckshot Shell to your hand. |
 | Aim | 0 | skill | common | Sharpen 2 (Old Twelve Gauge gains 2 damage). Hold. |
-| Liquid Lunch | 0 | skill | common | Gain 2 Mana. Next turn, lose 1 Mana. Consume. |
 | Birdshot | 0 | attack | common | Deal 3 damage to ALL enemies. Consume. |
 | Buttstroke | 1 | attack | common | Deal 5 damage. Apply 1 Faltering. Sharpen 1 (Old Twelve Gauge gains 1 damage). |
 | Gun Oil | 1 | aura | common | Whenever you play a gun: Gain 4 Barrier. |
 | Broken Bottle | 1 | attack | common | Deal 7 damage. Apply 1 Exposed. |
 | Chaser | 0 | skill | common | Lose 2 HP. Gain 1 Mana. Draw 1 card. Consume. |
-| Double Glazing | 2 | skill | uncommon | Gain 12 (+1 per 6% HP missing) Barrier. |
+| Liquid Lunch | 0 | skill | common | Gain 2 Mana. Gain 3 Hangover. Consume. |
+| One for the Road | 0 | skill | common | Draw 2 cards. Gain 3 Hangover. Consume. |
+| Drunken Swing | 1 | attack | common | Deal 12 damage. Gain 3 Hangover. |
+| Bottle to the Head | 1 | attack | common | Deal 5 (+2 per Hangover) damage. |
+| Sob Story | 1 | skill | common | Heal 3 (+1 per 8% HP missing). Draw 1 card. Consume. |
+| Sweat It Out | 1 | skill | common | Gain 4 Barrier. Heal HP equal to 2 times your Hangover. Clear your Hangover. |
 | Smash the Pane | 2 | attack | uncommon | Deal 8 (+1 per 4% HP missing) damage. |
 | Pump Action | 1 | skill | uncommon | Add 2 Buckshot Shells to your hand. Draw 1 card. |
 | Shotgun Wedding | 2 | attack | uncommon | Deal 7 damage 2 times to ALL enemies. |
-| Swig | 0 | skill | uncommon | Heal 4. Gain 2 Might until the end of your turn. Consume. |
-| Barroom Brawl | 2 | attack | uncommon | Deal 10 damage to ALL enemies. Lose 2 HP. |
 | Glass Cover | 1 | skill | uncommon | Gain 7 Barrier. Sharpen 2 (Old Twelve Gauge gains 2 damage). |
 | Hair Trigger | 1 | aura | uncommon | Whenever you play a shell: Sharpen 1 (Old Twelve Gauge gains 1 damage). |
 | Reload | 1 | skill | uncommon | Sharpen 3 (Old Twelve Gauge gains 3 damage). Draw 1 card. |
 | Slugfest | 2 | attack | uncommon | Deal 5 damage 4 times. |
 | Shellshocked | 1 | aura | uncommon | Whenever a card is consumed: Deal 2 damage to ALL enemies. |
 | Scope | 1 | aura | uncommon | At the start of your turn: Sharpen 1 (Old Twelve Gauge gains 1 damage). |
-| Black Out | 1 | skill | uncommon | Gain 14 Barrier. Lose 3 HP. |
-| Liquid Dinner | 1 | skill | uncommon | Heal 8. Draw 1 card. |
 | Rusty Nail Board | 1 | trap | uncommon | At the start of the enemy turn: Deal 5 damage to ALL enemies. Apply 1 Faltering to ALL enemies. |
-| Trolley Barricade | 1 | trap | uncommon | When you lose 6+ HP at once: Gain 12 Barrier. Deal 10 damage to the attacker. |
 | Molotov Cocktail | 1 | trap | uncommon | When the enemy summons: Deal 12 damage to ALL enemies. Apply 1 Brittle to ALL enemies. |
 | Sawn-Off | 1 | attack | uncommon | Deal 7 damage to ALL enemies. Lose 2 HP. |
 | Tin Can Alley | 1 | attack | uncommon | Deal 3 damage 3 times to ALL enemies. |
@@ -803,15 +797,18 @@ Starter: Strike, Strike, Strike, Defend, Defend, Defend, Hammer Swing, Hammer Sw
 | Dumpster Dive | 1 | skill | uncommon | Draw 2 cards. Discard 1 card. Heal 2. |
 | Liquid Courage | 1 | skill | uncommon | Gain 5 Barrier. Gain 6 Primed. |
 | Window Pane | 1 | skill | uncommon | Gain 7 (+1 per 8% HP missing) Barrier. |
-| Dutch Courage | 1 | aura | uncommon | At the start of your turn: Heal 2. Gain 1 Might until the end of your turn. |
 | Mean Drunk | 2 | aura | uncommon | Whenever you lose HP to your own cards: Gain 1 Might until the end of your turn. Gain 2 Barrier. |
 | Double Tap | 1 | skill | uncommon | Add an Old Twelve Gauge to your hand. |
 | Bandolier | 1 | aura | uncommon | Whenever you play a shell: Gain 2 Barrier. |
+| Swig | 0 | skill | uncommon | Gain 3 Might until the end of your turn. Gain 3 Hangover. |
+| Barroom Brawl | 2 | attack | uncommon | Deal 10 damage to ALL enemies. Gain 3 Hangover. |
+| Black Out | 1 | skill | uncommon | Gain 14 Barrier. Gain 4 Hangover. |
+| Bender | 1 | attack | uncommon | Deal 3 damage, 1 more time per Hangover. |
+| Hair of the Dog | 0 | skill | uncommon | Clear your Hangover. Gain 1 Mana. Draw 1 card. Gain 2 Hangover. Consume. |
+| Liquid Dinner | 1 | skill | uncommon | Heal 4 (+1 per 5% HP missing). Draw 1 card. Consume. |
+| Dutch Courage | 1 | aura | uncommon | At the end of your turn: Gain Barrier equal to 2 times your Hangover. |
 | Boomstick | 3 | attack | rare | Deal 12 (+2 per consumed card) damage to ALL enemies. |
 | The Last Shell | 2 | attack | rare | Deal 24 damage. Apply 1 Exposed. Consume. Hold. |
-| Haymaker | 2 | attack | rare | Deal 22 damage. Apply 2 Brittle. |
-| Bottomless Flask | 2 | aura | rare | At the start of your turn: Heal 3. Draw 1 card. |
-| Pass Out | 2 | skill | rare | Gain 18 Barrier. Heal 6. Consume. |
 | Extended Mag | 2 | aura | rare | At the start of your turn: Sharpen 2 (Old Twelve Gauge gains 2 damage). Add a Buckshot Shell to your hand. |
 | Rack and Ruin | 2 | attack | rare | Deal 10 damage to ALL enemies. Sharpen 4 (Old Twelve Gauge gains 4 damage). |
 | Trigger Discipline | 2 | aura | rare | Whenever you play an Attack: Sharpen 1 (Old Twelve Gauge gains 1 damage). |
@@ -822,8 +819,6 @@ Starter: Strike, Strike, Strike, Defend, Defend, Defend, Hammer Swing, Hammer Sw
 | Gunmetal Soul | 2 | aura | rare | At the end of your turn: Sharpen 1 (Old Twelve Gauge gains 1 damage). Gain 3 Barrier. |
 | Bar Stool | 1 | attack | rare | Deal 10 (+1 per 6% HP missing) damage. |
 | Last Orders | 2 | attack | rare | Deal 8 (+1 per 4% HP missing) damage to ALL enemies. |
-| Last Call | 2 | skill | rare | From your next turn, gain 1 more Mana every turn for the rest of the fight. Heal 6. Consume. |
-| Glass Underfoot | 1 | aura | rare | At the start of your turn: Gain 2 Thorns. |
 | Glass Jaw | 1 | aura | rare | Whenever you lose HP to your own cards: Deal 4 damage to ALL enemies. Gain 3 Barrier. |
 | Hot Brass | 1 | aura | rare | Whenever a card is consumed: Gain 2 Barrier. Sharpen 1 (Old Twelve Gauge gains 1 damage). |
 | Whiskey Miracle | 1 | skill | rare | Heal 15. Consume. |
@@ -832,6 +827,11 @@ Starter: Strike, Strike, Strike, Defend, Defend, Defend, Hammer Swing, Hammer Sw
 | Broken Window Theory | 2 | aura | rare | At the end of your turn: Deal 1 (+1 per 6% HP missing) damage to ALL enemies. |
 | Scattergun Symphony | 2 | aura | rare | Whenever you play a shell: Deal 2 damage to ALL enemies. |
 | Ricochet | 2 | aura | rare | Whenever you play a shell: Draw 1 card. |
+| Haymaker | 2 | attack | rare | Deal 14 (+3 per Hangover) damage. |
+| Bottoms Up | 1 | skill | rare | Gain 2 Mana. Draw 2 cards. Gain 6 Hangover. Consume. |
+| Last Call | 2 | skill | rare | From your next turn, gain 1 more Mana every turn for the rest of the fight. Gain 4 Hangover. Consume. |
+| Bottomless Flask | 2 | aura | rare | At the start of your turn: Heal 2 (+1 per 10% HP missing). Draw 1 card. |
+| Pass Out | 2 | skill | rare | Heal 8 (+1 per 3% HP missing). Clear your Hangover. Consume. |
 | The Twelve-Gauge Opera | 2 | aura | legendary | Sharpen 6 (Old Twelve Gauge gains 6 damage). Whenever you play a gun: Sharpen 2 (Old Twelve Gauge gains 2 damage). Gain 4 Barrier. |
 | One More Round | 3 | aura | legendary | At the start of your turn: Add 3 Buckshot Shells to your hand. Heal 3. |
 | The Glass Palace | 3 | aura | legendary | At the start of your turn: Gain 6 (+1 per 6% HP missing) Barrier. Whenever you lose HP to your own cards: Deal 5 damage to ALL enemies. |

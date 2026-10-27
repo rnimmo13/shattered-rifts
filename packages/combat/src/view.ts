@@ -326,6 +326,7 @@ const METRIC_WORDS: Record<Metric, { per: string; equal: string }> = {
   thorns: { per: 'Thorns', equal: 'Thorns' },
   mantra: { per: 'Fervor', equal: 'Fervor' },
   devotion: { per: 'Devotion', equal: 'Devotion' },
+  hangover: { per: 'Hangover', equal: 'Hangover' },
   resonance: { per: 'Spirit', equal: 'Spirit' },
   doom: { per: 'Fate', equal: 'Fate' },
   calm: { per: 'Serene', equal: 'Serene' },
@@ -367,6 +368,7 @@ const UNIT_METRICS: readonly Metric[] = [
   'thorns',
   'mantra',
   'devotion',
+  'hangover',
   'resonance',
   'doom',
   'calm',
@@ -545,7 +547,9 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
       // multiplying by 0 spends it all
       if (o.mult === 0)
         return o.to === 'self'
-          ? `${o.status === 'devotion' ? 'Spend' : 'Lose'} all your ${sname(o.status)}.`
+          ? o.status === 'hangover'
+            ? 'Clear your Hangover.'
+            : `${o.status === 'devotion' ? 'Spend' : 'Lose'} all your ${sname(o.status)}.`
           : `Remove all ${sname(o.status)}${who[o.to] || ' from the target'}.`;
       if (o.status === 'doom') {
         const noun =

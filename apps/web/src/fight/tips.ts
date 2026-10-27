@@ -71,6 +71,12 @@ export const TIP_RULES: TipRule[] = [
     when: (v) => !!hero(v)?.statuses.devotion,
   },
   {
+    id: 'hangover',
+    title: 'Hangover',
+    text: 'Drinks pay off now and leave a Hangover: at the start of your next turn you lose that much HP, but never your last one. Drop under half HP and Clutch Genes makes you hit harder; Hair of the Dog or Sweat It Out clears it.',
+    when: (v) => !!hero(v)?.statuses.hangover,
+  },
+  {
     id: 'doom',
     title: 'Fate',
     text: 'Cursing a unit with Fate does nothing until the end of its turn: then, if its HP is at or below its Fate, it dies. Stack it, double it, or hit it to bring the HP down to meet it.',

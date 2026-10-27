@@ -10,25 +10,28 @@ import {
   addTo,
   barrier,
   discard,
+  doubleSt,
   dmg,
   draw,
   forge,
   heal,
   lose,
   mana,
-  manaNext,
   maxMana,
   on,
   per,
   pool,
   reclaim,
   scaled,
-  scry,
   status,
   PREVENT,
 } from '../build';
 
 const p = pool('drunkard', 'midden');
+/** a drink's price: that much HP at the start of your next turn (DECISIONS #354) */
+const hangover = (n: number): Op => status('hangover', n);
+/** clear your Hangover */
+const soberUp: Op = doubleSt('hangover', 'self', 0);
 
 export const DRUNKARD: CardDef[] = [
   // --- basics ---
@@ -59,31 +62,14 @@ export const DRUNKARD: CardDef[] = [
   }),
 
   // --- Junk Traps (a few Traps; Vesper has the real arsenal) ---
-  p(
-    'common',
-    'glass-trap',
-    'Glass Trap',
-    'snare',
-    1,
-    'none',
-    [dmg(8, 'attacker'), status('brittle', 2, 'attacker')],
-    { trigger: { on: 'attacked' } },
-  ),
 
   // --- Glass: Barrier and Thorns ---
   p('common', 'shard-toss', 'Shard Toss', 'attack', 1, 'none', [
     dmg(4, 'allFoes'),
     status('brittle', 1, 'allFoes'),
   ]),
-  p('common', 'sob-story', 'Sob Story', 'skill', 1, 'none', [barrier(4), draw(2)]),
-  p('uncommon', 'double-glazing', 'Double Glazing', 'skill', 2, 'none', [
-    scaled(barrier(12), per('missingPct', 1 / 6)),
-  ]),
   p('uncommon', 'shatter', 'Smash the Pane', 'attack', 2, 'foe', [
     scaled(dmg(8), per('missingPct', 1 / 4)),
-  ]),
-  p('common', 'glazier', 'Glazier', 'power', 1, 'none', [
-    on('play', [barrier(3)], { filter: 'skill' }),
   ]),
 
   // --- Shells: the 12 gauge ---
@@ -112,30 +98,6 @@ export const DRUNKARD: CardDef[] = [
   ),
 
   // --- liquid courage ---
-  p('uncommon', 'swig', 'Swig', 'skill', 0, 'none', [heal(4), status('might', 2, 'self', true)], {
-    exhaust: true,
-  }),
-  p('common', 'drunken-swing', 'Drunken Swing', 'attack', 1, 'foe', [
-    dmg(12),
-    status('faltering', 1),
-  ]),
-  p('uncommon', 'barroom-brawl', 'Barroom Brawl', 'attack', 2, 'none', [
-    dmg(10, 'allFoes'),
-    lose(2),
-  ]),
-  p('common', 'spare-change', 'Spare Change', 'skill', 0, 'none', [mana(1), scry(2)], {
-    exhaust: true,
-  }),
-  p('rare', 'hammer-time', 'Haymaker', 'attack', 2, 'foe', [
-    dmg(22),
-    status('brittle', 2, 'target'),
-  ]),
-  p('rare', 'bottomless-flask', 'Bottomless Flask', 'power', 2, 'none', [
-    on('turnStart', [heal(3), draw(1)]),
-  ]),
-  p('rare', 'pass-out', 'Pass Out', 'skill', 2, 'none', [barrier(18), heal(6)], {
-    exhaust: true,
-  }),
 
   // --- legendary ---
   p('legendary', 'one-more-round', 'One More Round', 'power', 3, 'none', [
@@ -238,20 +200,13 @@ export const DRUNKARD: CardDef[] = [
   p('rare', 'gunmetal-soul', 'Gunmetal Soul', 'power', 2, 'none', [
     on('turnEnd', [forge('old-twelve-gauge', 1), barrier(3)]),
   ]),
-  // (more Hangover)
-  p('uncommon', 'black-out', 'Black Out', 'skill', 1, 'none', [barrier(14), lose(3)]),
   p('rare', 'bar-stool', 'Bar Stool', 'attack', 1, 'foe', [
     scaled(dmg(10), per('missingPct', 1 / 6)),
   ]),
-  p('uncommon', 'liquid-dinner', 'Liquid Dinner', 'skill', 1, 'none', [heal(8), draw(1)]),
   p('rare', 'last-orders', 'Last Orders', 'attack', 2, 'none', [
     scaled(dmg(8, 'allFoes'), per('missingPct', 1 / 4)),
   ]),
 
-  p('common', 'liquid-lunch', 'Liquid Lunch', 'skill', 0, 'none', [mana(2), manaNext(-1)], {
-    exhaust: true,
-  }),
-  p('rare', 'last-call', 'Last Call', 'skill', 2, 'none', [maxMana(1), heal(6)], { exhaust: true }),
   // --- Junk Traps (more) ---
   p(
     'uncommon',
@@ -265,16 +220,6 @@ export const DRUNKARD: CardDef[] = [
   ),
   p(
     'uncommon',
-    'trolley-barricade',
-    'Trolley Barricade',
-    'snare',
-    1,
-    'none',
-    [barrier(12), dmg(10, 'attacker')],
-    { trigger: { on: 'hpLost', min: 6 } },
-  ),
-  p(
-    'uncommon',
     'molotov-cocktail',
     'Molotov Cocktail',
     'snare',
@@ -285,9 +230,6 @@ export const DRUNKARD: CardDef[] = [
   ),
 
   // --- Glass (more) ---
-  p('rare', 'glass-underfoot', 'Glass Underfoot', 'power', 1, 'none', [
-    on('turnStart', [status('thorns', 2)]),
-  ]),
   p('rare', 'glass-jaw', 'Glass Jaw', 'power', 1, 'none', [
     on('loseHp', [dmg(4, 'allFoes'), barrier(3)]),
   ]),
@@ -355,9 +297,6 @@ export const DRUNKARD: CardDef[] = [
   ]),
 
   // --- brought back for the 20/30/25 rarity target (DECISIONS #341) ---
-  p('uncommon', 'dutch-courage', 'Dutch Courage', 'power', 1, 'none', [
-    on('turnStart', [heal(2), status('might', 1, 'self', true)]),
-  ]),
   p('uncommon', 'mean-drunk', 'Mean Drunk', 'power', 2, 'none', [
     on('loseHp', [status('might', 1, 'self', true), barrier(2)]),
   ]),
@@ -384,4 +323,75 @@ export const DRUNKARD: CardDef[] = [
     on('play', [dmg(2, 'allFoes')], { tag: 'shell' }),
   ]),
   p('rare', 'ricochet', 'Ricochet', 'power', 2, 'none', [on('play', [draw(1)], { tag: 'shell' })]),
+
+  // --- Hangover: drink now, pay tomorrow (DECISIONS #354) ---
+  // Drinks give something big now and Hangover: at the start of your next turn you lose that much HP (never your last). The HP
+  // lost takes KP under half, where Clutch Genes hits harder, and his heals grow with the HP he is missing to bring him back.
+  p('common', 'liquid-lunch', 'Liquid Lunch', 'skill', 0, 'none', [mana(2), hangover(3)], {
+    exhaust: true,
+    up: { effects: [mana(2), hangover(2)] },
+  }),
+  p('common', 'one-for-the-road', 'One for the Road', 'skill', 0, 'none', [draw(2), hangover(3)], {
+    exhaust: true,
+    up: { effects: [draw(3), hangover(3)] },
+  }),
+  p('common', 'drunken-swing', 'Drunken Swing', 'attack', 1, 'foe', [dmg(12), hangover(3)], {
+    up: { effects: [dmg(16), hangover(3)] },
+  }),
+  p('common', 'bottle-to-the-head', 'Bottle to the Head', 'attack', 1, 'foe', [
+    scaled(dmg(5), per('hangover', 2)),
+  ]),
+  p('common', 'sob-story', 'Sob Story', 'skill', 1, 'none', [
+    scaled(heal(3), per('missingPct', 1 / 8)),
+    draw(1),
+  ], { exhaust: true }),
+  p('common', 'sweat-it-out', 'Sweat It Out', 'skill', 1, 'none', [
+    barrier(4),
+    scaled(heal(0), per('hangover', 2)),
+    soberUp,
+  ]),
+  p('uncommon', 'swig', 'Swig', 'skill', 0, 'none', [status('might', 3, 'self', true), hangover(3)], {
+    up: { effects: [status('might', 4, 'self', true), hangover(3)] },
+  }),
+  p('uncommon', 'barroom-brawl', 'Barroom Brawl', 'attack', 2, 'none', [dmg(10, 'allFoes'), hangover(3)], {
+    up: { effects: [dmg(14, 'allFoes'), hangover(3)] },
+  }),
+  p('uncommon', 'black-out', 'Black Out', 'skill', 1, 'none', [barrier(14), hangover(4)], {
+    up: { effects: [barrier(18), hangover(4)] },
+  }),
+  p('uncommon', 'bender', 'Bender', 'attack', 1, 'foe', [
+    scaled(dmg(3, 'target', 1), per('hangover', 1, undefined, 'hits')),
+  ]),
+  // (the old cure: one more drink, and the morning never comes)
+  p('uncommon', 'hair-of-the-dog', 'Hair of the Dog', 'skill', 0, 'none', [
+    soberUp,
+    mana(1),
+    draw(1),
+    hangover(2),
+  ], { exhaust: true, up: { effects: [soberUp, mana(1), draw(2), hangover(2)] } }),
+  p('uncommon', 'liquid-dinner', 'Liquid Dinner', 'skill', 1, 'none', [
+    scaled(heal(4), per('missingPct', 1 / 5)),
+    draw(1),
+  ], { exhaust: true }),
+  p('uncommon', 'dutch-courage', 'Dutch Courage', 'power', 1, 'none', [
+    on('turnEnd', [scaled(barrier(0), per('hangover', 2))]),
+  ], { up: { cost: 0 } }),
+  p('rare', 'hammer-time', 'Haymaker', 'attack', 2, 'foe', [scaled(dmg(14), per('hangover', 3))], {
+    up: { effects: [scaled(dmg(20), per('hangover', 3))] },
+  }),
+  p('rare', 'bottoms-up', 'Bottoms Up', 'skill', 1, 'none', [mana(2), draw(2), hangover(6)], {
+    exhaust: true,
+    up: { effects: [mana(2), draw(3), hangover(6)] },
+  }),
+  p('rare', 'last-call', 'Last Call', 'skill', 2, 'none', [maxMana(1), hangover(4)], {
+    exhaust: true,
+    up: { cost: 1 },
+  }),
+  p('rare', 'bottomless-flask', 'Bottomless Flask', 'power', 2, 'none', [
+    on('turnStart', [scaled(heal(2), per('missingPct', 1 / 10)), draw(1)]),
+  ], { up: { cost: 1 } }),
+  p('rare', 'pass-out', 'Pass Out', 'skill', 2, 'none', [
+    scaled(heal(8), per('missingPct', 1 / 3)),
+    soberUp,
+  ], { exhaust: true }),
 ];

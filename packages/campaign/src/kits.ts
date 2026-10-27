@@ -57,7 +57,7 @@ export const KIT_CARDS: Record<HeroId, [Kit, Kit, Kit]> = {
   drunkard: [
     ['reload', 'glass-cover', 'pistol-whip'],
     ['pump-action', 'shotgun-wedding', 'load-shells'],
-    ['shatter', 'liquid-dinner', 'drunken-swing'],
+    ['swig', 'liquid-dinner', 'bottle-to-the-head'],
   ],
 };
 

@@ -40,6 +40,7 @@ export type StatusId =
   | 'plating' // you keep up to this much Barrier through each turn change, and it shrinks by 1 every turn
   | 'holdfast' // your whole hand is held at the end of your turn, per stack (one turn each)
   | 'devotion' // builds as your hero heals (even past full HP); cards spend it (permanent)
+  | 'hangover' // at the start of its turn it loses this much HP (never below 1), then it clears (KP's drinks; DECISIONS #354)
   | 'clutch'; // an innate trait's state: you deal this % more attack damage (set by the engine while you are hurt)
 export const STATUS_IDS: readonly StatusId[] = [
   'exposed',
@@ -70,6 +71,7 @@ export const STATUS_IDS: readonly StatusId[] = [
   'plating',
   'holdfast',
   'devotion',
+  'hangover',
   'clutch',
 ];
 /** Debuffs: a Steadfast unit ignores the next one put on it. */
@@ -132,6 +134,7 @@ export type Metric =
   | 'thorns'
   | 'mantra'
   | 'devotion'
+  | 'hangover'
   | 'resonance'
   | 'doom'
   | 'calm' // 1 while in that stance

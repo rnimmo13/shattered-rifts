@@ -223,7 +223,7 @@ NEGATIVE: text, letters, numbers, captions, labels, UI, card frames, borders, wa
 
 ## KP, the Homeless Drunk
 
-### Sheet `drunkard-m02` (9 pictures, common first)
+### Sheet `drunkard-m02` (9 pictures, uncommon first)
 
 ```
 Create ONE ILLUSTRATION SHEET of 9 separate card-art pictures for a card-battler game (like Slay the Spire), 2400 x 1800, no text.
@@ -234,15 +234,15 @@ LAYOUT (critical): a clean 3 x 3 grid of landscape 4:3 pictures (each about 760 
 WORLD: KP, a boisterous drunk dwarf with a shotgun and bottles. A short, fat, bald dwarf with a hammer, an Old Twelve Gauge that hits every enemy and gets sharper, and a trolley of window panes. Booby traps, glass and buckshot. World: the rift's rubbish dump: rusty junk, green bottle glass, amber oil-drum firelight, a deep blue-black sky.
 
 THE PICTURES, in this exact order, left to right, top row first. Use the card name and its effect only to decide what to draw; never write the name:
-1. "Broken Bottle" (attack): Deal 7 damage. Apply 1 Exposed. Show a dynamic strike caught mid-action.
-2. "Buttstroke" (attack): Deal 5 damage. Apply 1 Faltering. Sharpen 1 (Old Twelve Gauge gains 1 damage). Show a dynamic strike caught mid-action.
-3. "Chaser" (skill): Lose 2 HP. Gain 1 Mana. Draw 1 card. Consume. Show a defensive or tactical moment, calm and clear.
-4. "Glass Trap" (trap): When you or an ally is attacked: Deal 8 damage to the attacker. Apply 2 Brittle to the attacker. Show a hidden trap seen as it is being set, ominous.
-5. "Gun Oil" (aura): Whenever you play a gun: Gain 4 Barrier. Show a grand symbolic still-life: one iconic object or pose that stands for the idea.
-6. "Pistol Whip" (attack): Deal 6 damage. Sharpen 2 (Old Twelve Gauge gains 2 damage). Show a dynamic strike caught mid-action.
-7. "Powder Load" (skill): Sharpen 4 (Old Twelve Gauge gains 4 damage). Consume. Show a defensive or tactical moment, calm and clear.
-8. "Rack the Slide" (skill): Sharpen 3 (Old Twelve Gauge gains 3 damage). Show a defensive or tactical moment, calm and clear.
-9. "Shard Toss" (attack): Deal 4 damage to ALL enemies. Apply 1 Brittle to ALL enemies. Show a dynamic strike caught mid-action.
+1. "Swig" (skill): Gain 3 Might until the end of your turn. Gain 3 Hangover. Show a defensive or tactical moment, calm and clear.
+2. "Aim" (skill): Sharpen 2 (Old Twelve Gauge gains 2 damage). Hold. Show a defensive or tactical moment, calm and clear.
+3. "Birdshot" (attack): Deal 3 damage to ALL enemies. Consume. Show a dynamic strike caught mid-action.
+4. "Bottle to the Head" (attack): Deal 5 (+2 per Hangover) damage. Show a dynamic strike caught mid-action.
+5. "Broken Bottle" (attack): Deal 7 damage. Apply 1 Exposed. Show a dynamic strike caught mid-action.
+6. "Buttstroke" (attack): Deal 5 damage. Apply 1 Faltering. Sharpen 1 (Old Twelve Gauge gains 1 damage). Show a dynamic strike caught mid-action.
+7. "Chaser" (skill): Lose 2 HP. Gain 1 Mana. Draw 1 card. Consume. Show a defensive or tactical moment, calm and clear.
+8. "Gun Oil" (aura): Whenever you play a gun: Gain 4 Barrier. Show a grand symbolic still-life: one iconic object or pose that stands for the idea.
+9. "One for the Road" (skill): Draw 2 cards. Gain 3 Hangover. Consume. Show a defensive or tactical moment, calm and clear.
 
 NEGATIVE: text, letters, numbers, captions, labels, UI, card frames, borders, watermark, logo, photorealism, gritty texture, nudity, characters facing away.
 ```
