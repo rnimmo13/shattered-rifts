@@ -1,7 +1,7 @@
 // Ilvane (display name; the id stays 'totemist', DECISIONS #141). An elder shaman who carves. Three build paths (DECISIONS #255):
 //   Totems    - plant totems (Hawk hits one enemy, Splinter every enemy, Bear guards, Elder charges, Owl gives Mana), make them
 //               stronger with Spirit (the `resonance` status) and more slots, and awaken them for their big effect
-//   Whittling - Carvings (tag "carving"): small 0-cost cards that keep coming back from the discard pile, and payoffs for playing them
+//   Elements  - lightning, ice, fire, water and earth spells that grow with Spirit (DECISIONS #353)
 //   Rites     - Auras that pay you whenever you play another Aura, and cards that scale with how many Auras you have
 // Totems stand in 3 slots; a fourth pushes the oldest out and it topples, awakening it.
 // (Ids keep the old rune names: `channel`/`evoke` ops, rune ids spark/ward/hollow/prism. Many card ids are older than the card they
@@ -70,7 +70,6 @@ export const RUNES: RuneDef[] = [
 ];
 
 const i = pool('totemist', 'nexus');
-/** a Carving: the Whittling build path's small cards (payoffs say "Whenever you play a Carving") */
 
 export const TOTEMIST: CardDef[] = [
   // --- basics ---
@@ -146,8 +145,6 @@ export const TOTEMIST: CardDef[] = [
   }),
   // (the awakened totem stays: one totem answers again and again, but the card is spent)
 
-  // --- Whittling ---
-  // Carvings: 0-cost, small, and they come back (Gather the Shavings, Fresh Shavings, Clear the Bench)
 
   // --- Rites ---
   // Auras that pay off when another Aura is played, and cards that count your Auras
@@ -279,7 +276,6 @@ export const TOTEMIST: CardDef[] = [
     on('turnEnd', [scaled(barrier(0), per('runes'))]),
   ]),
 
-  // --- Whittling, filled to its minimum (DECISIONS #337) ---
 
   // --- more glue: uncommons and rares for any build path (DECISIONS #339) ---
   i('uncommon', 'overtune', 'Spirit Surge', 'skill', 1, 'none', [status('resonance', 1), draw(1)], {

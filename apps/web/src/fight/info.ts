@@ -51,7 +51,7 @@ export const STATUS_INFO: Record<
     name: 'Spirit',
     glyph: '❖',
     tone: 'good',
-    text: 'Your totems deal 1 more damage and give 1 more Barrier per stack, and Elder totems charge faster.',
+    text: 'Your totems deal 1 more damage and give 1 more Barrier per stack, and Elder totems charge faster. Elements spells grow with it too.',
   },
   calm: {
     name: 'Serene',

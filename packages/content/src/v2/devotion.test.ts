@@ -91,6 +91,15 @@ describe("Ilvane's Gathering Storm (DECISIONS #353)", () => {
     s = playCard(s, 'T1'); // 4 + 2
     expect(s.sides.b.units[0]!.hp).toBe(90);
   });
+
+  it('an upgraded copy grows with the base copies, and never makes a new card', () => {
+    let s = fight('totemist', ['gathering-storm+', 'gathering-storm', 'gathering-storm+']);
+    s = playCard(s, 'T0'); // the "+" grows every copy; nothing is added
+    expect(s.sides.a.hand.map((c) => c.id)).toEqual(['T1', 'T2']);
+    s = playCard(s, 'T1'); // a base cast grows the "+" copies too
+    expect(s.sides.a.hand.find((c) => c.id === 'T2')!.bonus).toBe(4);
+    expect(s.sides.a.discard.find((c) => c.id === 'T0')!.bonus).toBe(4);
+  });
 });
 
 describe("the paladin's judgments", () => {

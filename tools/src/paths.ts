@@ -91,8 +91,6 @@ const BY_ID: Record<string, number> = {
   'wreath-of-flame': 2,
   // new cards of the 20/30/25 rarity target (DECISIONS #341)
   'knotted-briars': 1,
-  'whittle-down': 1,
-  'carvers-rhythm': 1,
   'kindled-rite': 2,
   'smoke-offering': 2,
   sagitta: 2,
@@ -146,11 +144,6 @@ const BY_ID: Record<string, number> = {
   'gnarltooth-trap': 0,
   'gut-trap': 0,
   // new cards that fill a build path to its minimum (DECISIONS #337)
-  'antler-carving': 1,
-  'serpent-carving': 1,
-  'moth-carving': 1,
-  'whittlers-kit': 1,
-  'endless-whittling': 1,
   buttstroke: 0,
   'spare-barrel': 0,
   'gun-oil': 0,

@@ -966,9 +966,11 @@ function execOp(r: Run, a: Act, op: Op): void {
       return;
     }
     case 'forge': {
+      // a card and its upgrade ("+") grow together, so an upgraded Gathering Storm still grows itself
+      const same = (id: string) => id.replace(/\+$/, '') === op.card;
       const all = [...side.hand, ...side.draw, ...side.discard];
-      if (a.inst && a.inst.card === op.card) all.push(a.inst);
-      const mine = all.filter((c) => c.card === op.card);
+      if (a.inst && same(a.inst.card)) all.push(a.inst);
+      const mine = all.filter((c) => same(c.card));
       if (!mine.length) {
         const made = addCardTo(r, side, op.card, 'hand');
         made.bonus = op.amount;
