@@ -13,7 +13,7 @@ import {
   type StoredReplay,
   type Trophy,
 } from '@sr/pvp';
-import { getClaimed, getName, hasUsername, serverBase, setClaimed, setName } from './config';
+import { getClaimed, getName, serverBase, setClaimed, setName } from './config';
 import { vaultKey, whoAmI } from './vaultSync';
 
 const httpBase = (): string => serverBase().replace(/^ws/i, 'http');
@@ -240,10 +240,11 @@ export async function viewGhostDecks(): Promise<GhostDeckRow[] | null> {
  * #318). Returns the name it took, or null.
  */
 export async function restoreUsername(): Promise<string | null> {
-  if (hasUsername()) return null;
+  // (the name this identity has claimed wins: one claimed on this device under another identity, a guest's say, is not this one's)
   const d = await post('id', {});
   const name = d?.['name'];
-  if (typeof name !== 'string' || name === '' || getClaimed() === name) return null;
+  if (typeof name !== 'string' || name === '' || (getClaimed() === name && getName() === name))
+    return null;
   setName(name);
   setClaimed(name);
   return name;

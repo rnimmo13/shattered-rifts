@@ -211,7 +211,7 @@ function readGone(): { id: string; updated: number }[] {
 
 function writeGone(gone: readonly { id: string; updated: number }[]): void {
   try {
-    localStorage.setItem(GONE_KEY, JSON.stringify(gone.slice(-100)));
+    localStorage.setItem(GONE_KEY, JSON.stringify(gone.slice(-300)));
   } catch {
     /* not remembered: the run may come back from another device, which is the safe way to fail */
   }
@@ -242,12 +242,22 @@ export function runCopies(): RunCopy[] {
 export function applyRunCopies(theirs: readonly RunCopy[]): boolean {
   const before = readSlots();
   const { merged } = mergeRunCopies(runCopies(), theirs, Date.now());
-  const live = merged
+  // every run this device holds stays (unless it ended somewhere); runs only on the server fill the free slots, newest first, and
+  // wait on the server otherwise (nothing here is ever thrown away to make room)
+  const held = new Set(before.map((x) => x.id));
+  const liveAll = merged
     .filter((c): c is RunCopy & { text: string } => !c.gone && typeof c.text === 'string')
-    .sort((a, b) => b.updated - a.updated)
-    .slice(0, RUN_SLOTS);
+    .sort((a, b) => b.updated - a.updated);
+  const mine = liveAll.filter((c) => held.has(c.id));
+  const room = Math.max(0, RUN_SLOTS - mine.length);
+  const live = [...mine, ...liveAll.filter((c) => !held.has(c.id)).slice(0, room)];
   const slots: Slot[] = live.map((c) => ({ id: c.id, text: c.text, updated: c.updated }));
-  writeGone(merged.filter((c) => c.gone).map((c) => ({ id: c.id, updated: c.updated })));
+  writeGone(
+    merged
+      .filter((c) => c.gone)
+      .sort((a, b) => a.updated - b.updated)
+      .map((c) => ({ id: c.id, updated: c.updated })),
+  );
   const changed =
     slots.length !== before.length ||
     slots.some((x) => {

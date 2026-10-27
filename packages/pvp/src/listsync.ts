@@ -5,7 +5,7 @@
 /** Every list that is kept in the player's Vault, with how many items it keeps and the largest item it takes (bytes of JSON). */
 export const SYNCED_LISTS = {
   /** ended runs (the newest keep their last fight, a few KB of moves) */
-  history: { keep: 40, maxItem: 80_000 },
+  history: { keep: 40, maxItem: 80_000, withFight: 12 },
   /** Arena games kept as replays (the replay itself is on the server) */
   matches: { keep: 60, maxItem: 2_000 },
 } as const;
@@ -63,5 +63,15 @@ export function mergeList(
     const have = best.get(item.id);
     if (!have || item.at > have.at) best.set(item.id, item);
   }
-  return [...best.values()].sort((a, b) => b.at - a.at).slice(0, SYNCED_LISTS[name].keep);
+  const spec: { keep: number; withFight?: number } = SYNCED_LISTS[name];
+  return [...best.values()]
+    .sort((a, b) => b.at - a.at)
+    .slice(0, spec.keep)
+    .map((item, i) => {
+      // (only the newest few keep their last fight, so the list stays small: DECISIONS #318)
+      if (spec.withFight === undefined || i < spec.withFight || !('lastFight' in item)) return item;
+      const { lastFight: _gone, ...rest } = item;
+      void _gone;
+      return rest;
+    });
 }

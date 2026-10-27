@@ -18,7 +18,7 @@ export interface RunCopy {
 /** The longest saved run the server keeps (a long run is a few KB). */
 export const MAX_RUN_TEXT = 200_000;
 /** The most copies one Vault keeps (live runs and gone ones together); the oldest gone ones are let go first. */
-export const MAX_RUN_COPIES = 60;
+export const MAX_RUN_COPIES = 300;
 /** A gone copy is kept this long, so a device that has been away a while still hears that the run is over, ms. */
 export const GONE_KEEP_MS = 90 * 24 * 60 * 60 * 1000;
 
@@ -47,17 +47,24 @@ export function cleanRunCopies(raw: unknown): RunCopy[] {
   return newestPerRun(out);
 }
 
+/** Which of two copies of a run stands: a run that ended stays ended (a gone copy beats any live one), else the newer copy. */
+function better(a: RunCopy, b: RunCopy): RunCopy {
+  if (!!a.gone !== !!b.gone) return a.gone ? a : b;
+  return b.updated > a.updated ? b : a;
+}
+
 function newestPerRun(copies: readonly RunCopy[]): RunCopy[] {
   const best = new Map<string, RunCopy>();
   for (const c of copies) {
     const have = best.get(c.id);
-    if (!have || c.updated > have.updated) best.set(c.id, c);
+    best.set(c.id, have ? better(have, c) : c);
   }
   return [...best.values()];
 }
 
 /**
- * Bring a device's runs and the server's together: for each run the newest copy wins (a tie goes to the device's own). `merged` is
+ * Bring a device's runs and the server's together: a run that ended anywhere stays ended; otherwise the newest copy wins (a tie
+ * goes to the device's own). `merged` is
  * every run as it now stands (gone ones included, so they are remembered); `push` is what the server lacks or holds an older copy of.
  * Gone copies older than GONE_KEEP_MS are forgotten.
  */
@@ -73,7 +80,8 @@ export function mergeRunCopies(
   for (const id of new Set([...mine.keys(), ...theirs.keys()])) {
     const l = mine.get(id);
     const r = theirs.get(id);
-    const win = !r ? l : !l ? r : l.updated >= r.updated ? l : r;
+    // (a run that ended on any device stays ended: a later save from a device that still had it open cannot bring it back)
+    const win = !r ? l : !l ? r : better(r, l);
     if (!win) continue;
     if (win.gone && now - win.updated > GONE_KEEP_MS) continue;
     merged.push(win);

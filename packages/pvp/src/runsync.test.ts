@@ -42,12 +42,13 @@ describe('runs that follow a player between devices (DECISIONS #309)', () => {
     expect(mergeRunCopies([live('a', 2)], [live('a', 2)], 10).push).toEqual([]);
   });
 
-  it('keeps the newest copy of each run, live runs first, within the limit', () => {
+  it('keeps one copy of each run, live runs first, within the limit', () => {
     const many = Array.from({ length: MAX_RUN_COPIES + 5 }, (_, i) => gone(`g${i}`, i));
     const kept = keepRunCopies(many, [live('x', 0), live('g3', 100)]);
     expect(kept).toHaveLength(MAX_RUN_COPIES);
-    expect(kept[0]?.id).toBe('g3');
-    expect(kept.some((c) => c.id === 'x')).toBe(true);
+    // live runs first; a run that ended stays ended (g3's later live save does not bring it back)
+    expect(kept[0]?.id).toBe('x');
+    expect(kept.some((c) => c.id === 'g3' && !c.gone)).toBe(false);
   });
 
   it('cleans what arrives: bad ids, missing text, oversized runs are left out', () => {
@@ -60,5 +61,14 @@ describe('runs that follow a player between devices (DECISIONS #309)', () => {
       'nonsense',
     ]);
     expect(r.map((c) => c.id)).toEqual(['ok-1', 'done']);
+  });
+});
+
+describe('review fixes for run sync (DECISIONS #320)', () => {
+  it('a run that ended stays ended, even against a later save from a device that still had it', () => {
+    const fromStale = mergeRunCopies([live('a', 99)], [gone('a', 5)], 100);
+    expect(fromStale.merged).toEqual([gone('a', 5)]);
+    expect(fromStale.push).toEqual([]);
+    expect(cleanRunCopies([gone('b', 1), live('b', 9)])).toEqual([gone('b', 1)]);
   });
 });

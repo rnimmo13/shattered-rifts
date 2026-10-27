@@ -29,6 +29,29 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.94.0',
+    date: '2026-10-27',
+    title: 'Everything on every device',
+    summary:
+      'Signed in, your run history, Arena match history and username follow you as your runs do; Devour hits harder.',
+    notes: [
+      {
+        kind: 'new',
+        text: 'Signed in on shatteredrifts.app, your run history (with the last fight to watch again), your Arena match history and your username appear on every device you sign in on.',
+      },
+      {
+        kind: 'fixed',
+        text: 'A run that ended on one device can no longer come back from another device that still had it open, and a device never drops a run it holds to make room for runs from your other devices.',
+      },
+      {
+        kind: 'balance',
+        text: 'Kesh: Devour deals 16 (was 14). Fell the Prey, its near twin, is switched off for now.',
+      },
+    ],
+    heads:
+      'The rules changed: reload if the game asks you to. Arena games and replays from before this version can no longer be watched.',
+  },
+  {
     version: '0.93.0',
     date: '2026-10-27',
     title: 'A smaller pack, Stun cards tidied',
