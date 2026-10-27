@@ -314,9 +314,9 @@ export function LearnScreen() {
           </p>
           <h3>Resolve</h3>
           <p>
-            Losing a fight does not end the run: you retry it at the HP you started with, and spend
-            Resolve (1 for a normal fight or a Warden, 2 for an Elite). When Resolve hits 0 the run
-            collapses.
+            Losing a fight does not end the run: you retry it at the HP you started with (or half
+            your max HP, if that is more), and spend Resolve (1 for a normal fight or a Warden, 2
+            for an Elite). When Resolve hits 0 the run collapses.
           </p>
           <h3>Rift Tiers</h3>
           <p>

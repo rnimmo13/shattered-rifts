@@ -70,6 +70,7 @@ export {
   enterNode,
   finishDuel,
   resolveCost,
+  RETRY_HP_PCT,
   leaveMerchant,
   newRun,
   nextStage,
