@@ -290,3 +290,22 @@
   max-width: 54rem;
   box-sizing: border-box;
 }
+
+/* a run's state on the campaign board: still going, or how it ended (DECISIONS #292) */
+.board__status {
+  display: inline-block;
+  padding: 0.05rem 0.55rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  letter-spacing: 0.04em;
+  border: 1px solid currentColor;
+}
+.board__status--live {
+  color: #4ee08a;
+}
+.board__status--fell {
+  color: #ff6b81;
+}
+.board__status--abandoned {
+  color: var(--c-text-dim);
+}

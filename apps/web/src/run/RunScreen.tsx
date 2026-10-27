@@ -60,6 +60,7 @@ import { ChanceCoin, type Flip } from './ChanceCoin';
 import { PotionChip } from '../fight/PotionChip';
 import { BankedPanel } from './BankedPanel';
 import { autoSaveForArena, loseSavedDecks, savedArenaLabel, shouldAutoSave } from './deckSave';
+import { endOnBoard } from './boardEnd';
 import { stagesInAll } from '@sr/pvp';
 import { stagesCleared } from '../pvp/vault';
 import { progressLabel } from '../pvp/deckLayout';
@@ -192,7 +193,11 @@ export default function RunScreen() {
       // (an ended run goes into the run history, with the fight that ended it)
       addToHistory(recordOf(run, run.phase, Date.now(), lastFightRef.current ?? undefined));
       // a run that falls takes its saved Arena deck with it
-      if (run.phase === 'collapsed') void loseSavedDecks(run).then(setLostDecks);
+      if (run.phase === 'collapsed') {
+        void loseSavedDecks(run).then(setLostDecks);
+        // (the board shows the run as fallen)
+        endOnBoard(run, 'fell');
+      }
     } else if (!saveRunSlot(id, run)) {
       // the slot is gone (the run was abandoned in another window): do not bring it back
       slotRef.current = null;
@@ -332,6 +337,9 @@ export default function RunScreen() {
     // (giving up in the middle of a fight counts as falling: the run's deck leaves the Arena. Given up anywhere else, the deck as
     // last saved stays: going deeper risks it, stopping keeps it. DECISIONS #270)
     if (cur?.phase === 'duel') void loseSavedDecks(cur);
+    // (the board shows how it ended: given up mid-fight it fell, anywhere else it was abandoned)
+    if (cur && cur.phase !== 'collapsed' && cur.phase !== 'banked')
+      endOnBoard(cur, cur.phase === 'duel' ? 'fell' : 'abandoned');
     if (runRef.current) {
       clearFightLog(duelKey(runRef.current));
       clearGhostLog(duelKey(runRef.current));

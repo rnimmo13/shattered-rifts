@@ -445,4 +445,13 @@ describe('the campaign board: one entry per player and Riftwalker (DECISIONS #29
     expect(necro.tier).toBe(8);
     expect(board).toHaveLength(3);
   });
+
+  it('each entry says whether its furthest run is still going or how it ended (DECISIONS #292)', () => {
+    const board = rankRuns([
+      { player: 'a', name: 'Ann', hero: 'knight', tier: 4, stage: 1, at: 1, ended: 'fell' },
+      { player: 'b', name: 'Bo', hero: 'knight', tier: 2, stage: 0, at: 2, ended: null },
+      { player: 'c', name: 'Cy', hero: 'knight', tier: 1, stage: 2, at: 3, ended: 'abandoned' },
+    ]);
+    expect(board.map((r) => r.status)).toEqual(['fell', 'live', 'abandoned']);
+  });
 });

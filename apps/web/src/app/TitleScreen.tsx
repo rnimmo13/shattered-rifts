@@ -12,6 +12,7 @@ import {
   unreadableRuns,
 } from '../run/saves';
 import { loseSavedDecks } from '../run/deckSave';
+import { endOnBoard } from '../run/boardEnd';
 import { whoAmI, type Me } from '../pvp/vaultSync';
 import { progressLabel } from '../pvp/deckLayout';
 import { stagesCleared } from '../pvp/vault';
@@ -181,6 +182,8 @@ export function TitleScreen() {
                         onClick={() => {
                           // (given up in the middle of a fight it counts as falling, DECISIONS #270)
                           if (r.run.phase === 'duel') void loseSavedDecks(r.run);
+                          if (r.run.phase !== 'collapsed' && r.run.phase !== 'banked')
+                            endOnBoard(r.run, r.run.phase === 'duel' ? 'fell' : 'abandoned');
                           clearSavedRun(r.id);
                           refreshRuns();
                           setDropping(null);

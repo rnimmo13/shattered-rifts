@@ -238,6 +238,25 @@ export function boardId(): Promise<string | null> {
 }
 
 /** Tell the server how far a run has got (callers need not wait). `stage` is the stages cleared in this Rift Tier, 0 to 3. */
+/** Tell the board a run has ended: it fell, or was abandoned (DECISIONS #292). Best effort: the board just keeps showing it as live otherwise. */
+export async function reportRunEnd(
+  run: { seed: string; hero: string; tier: number; stage: number; name: string },
+  how: 'fell' | 'abandoned',
+): Promise<void> {
+  try {
+    await post('run', {
+      run: run.seed.slice(0, 64),
+      hero: run.hero,
+      tier: run.tier,
+      stage: run.stage,
+      name: run.name,
+      ended: how,
+    });
+  } catch {
+    /* the board stays as it was */
+  }
+}
+
 export async function reportRun(run: {
   seed: string;
   hero: string;

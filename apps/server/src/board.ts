@@ -85,6 +85,7 @@ interface RunSql extends Record<string, SqlStorageValue> {
   tier: number;
   stage: number;
   at: number;
+  ended: string | null;
 }
 
 interface GhostSql extends Record<string, SqlStorageValue> {
@@ -176,6 +177,12 @@ export class Leaderboard extends DurableObject<Env> {
       .toArray()
       .some((c) => c.name === 'run');
     if (!hasRun) ctx.storage.sql.exec('ALTER TABLE ghosts ADD COLUMN run TEXT');
+    // a run remembers how it ended (null while it is still going; DECISIONS #292)
+    const hasEnded = ctx.storage.sql
+      .exec<{ name: string }>("SELECT name FROM pragma_table_info('runs')")
+      .toArray()
+      .some((c) => c.name === 'ended');
+    if (!hasEnded) ctx.storage.sql.exec('ALTER TABLE runs ADD COLUMN ended TEXT');
     // The ghosts that can be met and listed: only the latest version of a deck (see ghostSql.ts)
     ctx.storage.sql.exec('DROP VIEW IF EXISTS current_ghosts');
     ctx.storage.sql.exec(CURRENT_GHOSTS_VIEW);
@@ -970,6 +977,16 @@ export class Leaderboard extends DurableObject<Env> {
     // a run counts under the player's username (one is needed to be on the campaign board)
     const name = this.claimedName(b['player']);
     if (!name) return json({ ok: true, counted: false, error: 'no-name' });
+    // the run has ended (it fell, or was abandoned): only a run the board knows is marked, and only once
+    if (b['ended'] === 'fell' || b['ended'] === 'abandoned') {
+      this.ctx.storage.sql.exec(
+        'UPDATE runs SET ended = ? WHERE player = ? AND run = ? AND ended IS NULL',
+        b['ended'],
+        b['player'],
+        run,
+      );
+      return json({ ok: true, counted: false, ended: b['ended'] });
+    }
     const old = this.ctx.storage.sql
       .exec<{ total: number; tier: number; first_at: number; at: number }>(
         'SELECT total, tier, first_at, at FROM runs WHERE player = ? AND run = ?',
@@ -1058,7 +1075,7 @@ export class Leaderboard extends DurableObject<Env> {
     // who made progress this week"; DECISIONS #281)
     const rows = this.ctx.storage.sql
       .exec<RunSql>(
-        'SELECT player, name, hero, tier, stage, at FROM runs WHERE at >= ? LIMIT 20000',
+        'SELECT player, name, hero, tier, stage, at, ended FROM runs WHERE at >= ? LIMIT 20000',
         from,
       )
       .toArray();
@@ -1069,6 +1086,7 @@ export class Leaderboard extends DurableObject<Env> {
       tier: r.tier,
       stage: r.stage,
       at: r.at,
+      ended: r.ended === 'fell' || r.ended === 'abandoned' ? r.ended : null,
     }));
     const all = standingsRuns(flat);
     return {

@@ -273,7 +273,13 @@ export interface RunRow {
   stage: number;
   /** when that progress was made */
   at: number;
+  /** how the run ended, if it has: it fell (Resolve ran out, or it was given up mid-fight) or it was abandoned (DECISIONS #292) */
+  ended?: RunEnd | null;
 }
+
+/** How a run on the board stands: still going, fallen, or abandoned. */
+export type RunEnd = 'fell' | 'abandoned';
+export type RunStatus = 'live' | RunEnd;
 
 export interface RunStanding {
   name: string;
@@ -281,6 +287,8 @@ export interface RunStanding {
   tier: number;
   stage: number;
   total: number;
+  /** the furthest run's state: still going, or how it ended */
+  status: RunStatus;
 }
 
 /** Each player's furthest run with each Riftwalker in the period, furthest first (a tie goes to whoever got there first). */
@@ -305,6 +313,7 @@ export function standingsRuns(rows: readonly RunRow[]): (RunStanding & { player:
       tier: r.tier,
       stage: r.stage,
       total: r.total,
+      status: r.ended ?? 'live',
     }));
 }
 
