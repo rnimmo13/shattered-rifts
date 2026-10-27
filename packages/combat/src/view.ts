@@ -233,6 +233,7 @@ const WHO: Record<Sel, string> = {
   randomFoe: ' to a random enemy',
   front: ' to the front enemy',
   allFriends: ' to all friends',
+  allAllies: ' to each of your allies',
   attacker: ' to the attacker',
 };
 /** The same targets as seen from an enemy's move: "you" are the other side. */
@@ -244,6 +245,7 @@ const WHO_ENEMY: Record<Sel, string> = {
   randomFoe: ' to a random unit of yours',
   front: ' to your front unit',
   allFriends: ' to all its allies',
+  allAllies: ' to each of its allies',
   attacker: ' to the attacker',
 };
 const KIND_PLURAL: Record<string, string[]> = {
@@ -463,6 +465,9 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
       return `Take ${a.num} HP${who[o.to]}.`;
     }
     case 'barrier':
+      // (on your own card: 'Each of your allies gains 3 Barrier.')
+      if (o.to === 'allAllies' && who.self === WHO.self && !amountText(o.amount, o.scale).equal)
+        return `Each of your allies gains ${at(o.amount, o.scale)} Barrier.`;
       return amountText(o.amount, o.scale).equal
         ? `Gain Barrier equal to ${amountText(o.amount, o.scale).num}${o.to === 'self' ? '' : who[o.to]}.`
         : `Gain ${at(o.amount, o.scale)} Barrier${o.to === 'self' ? '' : who[o.to]}.`;

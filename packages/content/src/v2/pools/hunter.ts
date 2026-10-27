@@ -136,7 +136,7 @@ export const HUNTER: CardDef[] = [
   k('uncommon', 'hamstring-slam', 'Hamstring Slam', 'attack', 2, 'foe', [
     dmg(11),
     status('faltering', 2, 'target'),
-    ACT,
+    barrier(3, 'allAllies'),
   ]),
   k('rare', 'ancient-fury', 'Ancient Fury', 'power', 2, 'none', [
     on('turnStart', [status('might', 2), lose(2)]),
@@ -187,7 +187,11 @@ export const HUNTER: CardDef[] = [
   ]),
 
   // (more Pack)
-  k('uncommon', 'rally-the-pack', 'Rally the Pack', 'skill', 2, 'none', [summon('hound'), ACT]),
+  // (an uncommon makes allies act only when that is what it is for; here they are shielded instead: DECISIONS #311)
+  k('uncommon', 'rally-the-pack', 'Rally the Pack', 'skill', 2, 'none', [
+    summon('hound'),
+    barrier(3, 'allAllies'),
+  ]),
   k('uncommon', 'trail-of-blood', 'Trail of Blood', 'power', 1, 'none', [
     on('summon', [status('might', 1)]),
   ]),

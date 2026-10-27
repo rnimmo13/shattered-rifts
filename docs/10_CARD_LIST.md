@@ -258,11 +258,11 @@ Starter: Strike, Strike, Strike, Strike, Defend, Defend, Defend, Savage Bite, Bl
 | Whirling Maul | X | attack | uncommon | Deal 6 damage X times to ALL enemies. Lose 2 HP. |
 | Reckless Blow | 1 | attack | uncommon | Lose 2 HP. Deal 7 damage 2 times. |
 | Frenzied Gulp | 0 | skill | uncommon | Draw 3 cards. Lose 3 HP. Consume. |
-| Hamstring Slam | 2 | attack | uncommon | Deal 11 damage. Apply 2 Faltering. All your allies act now. |
+| Hamstring Slam | 2 | attack | uncommon | Deal 11 damage. Apply 2 Faltering. Each of your allies gains 3 Barrier. |
 | Savage Command | 2 | skill | uncommon | All your allies act now. Gain 1 Might. |
 | Pack Bond | 2 | aura | uncommon | At the start of your turn: Gain 3 Barrier to all friends. |
 | Feeding Time | 1 | skill | uncommon | Your companions gain 5 max HP. Gain 1 Might. |
-| Rally the Pack | 2 | skill | uncommon | Summon Hound (8 HP). At the end of your turn it will: Deal 4 damage. All your allies act now. |
+| Rally the Pack | 2 | skill | uncommon | Summon Hound (8 HP). At the end of your turn it will: Deal 4 damage. Each of your allies gains 3 Barrier. |
 | Trail of Blood | 1 | aura | uncommon | Whenever you summon an ally: Gain 1 Might. |
 | Crimson Pact | 1 | skill | uncommon | Lose 3 HP. Consume 1 card. Draw 2 cards. |
 | Gnaw | 1 | attack | uncommon | Deal 5 (+1 per consumed card) damage. |
@@ -1046,7 +1046,7 @@ Starter: Strike, Strike, Strike, Defend, Defend, Defend, Grave Touch, Grave Touc
 | Toll in Advance | 1 | skill | uncommon | Curse the target with 9 Fate. Lose 4 HP. |
 | Bone Rain | 1 | skill | uncommon | Deal 13 damage to ALL enemies. Curse ALL enemies with 3 Fate. Sacrifice the chosen ally. |
 | Pallbearer | 1 | aura | uncommon | Whenever you summon an ally: Deal 5 damage to a random enemy. |
-| Second Death | 2 | skill | uncommon | Your most recently fallen ally returns with half its HP. All your allies act now. |
+| Second Death | 2 | skill | uncommon | Your most recently fallen ally returns with half its HP. Each of your allies gains 3 Barrier. |
 | Wake the Ashes | 1 | skill | uncommon | Return 2 random Consumed cards to your hand (never one that returns cards). Consume. |
 | Disinter | 2 | skill | uncommon | Return 2 random cards from your discard pile to your hand. Add a Gravesoul to your hand. |
 | Ashfall | 1 | aura | uncommon | Whenever a card is consumed: Deal 3 damage to a random enemy. |

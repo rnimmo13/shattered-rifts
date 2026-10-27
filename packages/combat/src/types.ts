@@ -101,7 +101,16 @@ export const RADIANT_ENTER_MANA = 1;
  *  attacker    inside a Trap: the unit whose attack sprang it
  */
 export type Sel =
-  'target' | 'self' | 'hero' | 'allFoes' | 'randomFoe' | 'front' | 'allFriends' | 'attacker';
+  | 'target'
+  | 'self'
+  | 'hero'
+  | 'allFoes'
+  | 'randomFoe'
+  | 'front'
+  | 'allFriends'
+  /** each of the actor's allies (companions, minions), never the hero */
+  | 'allAllies'
+  | 'attacker';
 
 /**
  * A number that depends on the board: `amount + floor(mult * metric)`. Unit metrics read `of` (default: the actor; "target" is the

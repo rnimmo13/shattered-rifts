@@ -418,6 +418,8 @@ function resolve(r: Run, a: Act, sel: Sel): Unit[] {
       return foes.length ? [foes[0] as Unit] : [];
     case 'allFriends':
       return r.s.sides[a.actor.side].units.filter((u) => u.hp > 0);
+    case 'allAllies':
+      return r.s.sides[a.actor.side].units.filter((u) => u.hp > 0 && u.kind !== 'hero');
     case 'attacker':
       if (a.attacker && a.attacker.hp > 0) return [a.attacker];
       return foes.length ? [foes[0] as Unit] : [];

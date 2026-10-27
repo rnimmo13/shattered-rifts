@@ -439,7 +439,11 @@ export const NECROMANCER: CardDef[] = [
   g('uncommon', 'pallbearer', 'Pallbearer', 'power', 1, 'none', [
     on('summon', [dmg(5, 'randomFoe')]),
   ]),
-  g('uncommon', 'second-death', 'Second Death', 'skill', 2, 'none', [revive, ACT]),
+  // (allies are shielded, not made to act: DECISIONS #311)
+  g('uncommon', 'second-death', 'Second Death', 'skill', 2, 'none', [
+    revive,
+    barrier(3, 'allAllies'),
+  ]),
   g('rare', 'bonded-dead', 'Bonded Dead', 'power', 2, 'none', [
     on('allyDies', [status('doom', 4, 'allFoes')]),
   ]),
