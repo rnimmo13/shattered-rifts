@@ -208,14 +208,17 @@ export const HUNTER: CardDef[] = [
     draw(2),
   ]),
   k('uncommon', 'gnaw', 'Gnaw', 'attack', 1, 'foe', [scaled(dmg(5), per('exhausted', 1))]),
-  k('uncommon', 'devour', 'Devour', 'attack', 2, 'foe', [lifesteal(dmg(14), 50)]),
+  // (16 now, and Fell the Prey, its twin, is switched off: DECISIONS #319)
+  k('uncommon', 'devour', 'Devour', 'attack', 2, 'foe', [lifesteal(dmg(16), 50)]),
   k('uncommon', 'devour-ally', 'Devour Ally', 'skill', 1, 'ally', [
     heal(12, 'hero'),
     status('might', 3, 'hero'),
     sacrifice,
   ]),
+  // (switched off for now: too like Devour, DECISIONS #319)
   k('uncommon', 'fell-the-prey', 'Fell the Prey', 'attack', 2, 'foe', [lifesteal(dmg(16), 50)], {
     exhaust: true,
+    source: 'disabled',
   }),
   k('uncommon', 'ravenous', 'Ravenous', 'power', 1, 'none', [on('exhaust', [draw(1), lose(2)])]),
   k('uncommon', 'thick-skin', 'Thick Skin', 'power', 1, 'none', [

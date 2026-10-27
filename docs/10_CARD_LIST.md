@@ -262,9 +262,8 @@ Starter: Strike, Strike, Strike, Strike, Defend, Defend, Defend, Savage Bite, Bl
 | Trail of Blood | 1 | aura | uncommon | Whenever you summon an ally: Gain 1 Might. |
 | Crimson Pact | 1 | skill | uncommon | Lose 4 HP. Consume 1 card. Draw 2 cards. |
 | Gnaw | 1 | attack | uncommon | Deal 5 (+1 per consumed card) damage. |
-| Devour | 2 | attack | uncommon | Deal 14 damage. Lifesteal 50%. |
+| Devour | 2 | attack | uncommon | Deal 16 damage. Lifesteal 50%. |
 | Devour Ally | 1 | skill | uncommon | Heal 12 to your hero. Apply 3 Might to your hero. Sacrifice the chosen ally. |
-| Fell the Prey | 2 | attack | uncommon | Deal 16 damage. Lifesteal 50%. Consume. |
 | Ravenous | 1 | aura | uncommon | Whenever a card is consumed: Draw 1 card. Lose 2 HP. |
 | Thick Skin | 1 | aura | uncommon | Whenever a card is consumed: Gain 2 Barrier to all friends. |
 | Gnarltooth Trap | 1 | trap | uncommon | When you or an ally is attacked: Deal 6 damage to the attacker. Gain 1 Might. |
@@ -1137,7 +1136,7 @@ Tokens (made by other cards):
 
 - knight: 92
 - engineer: 93
-- hunter: 92
+- hunter: 91
 - trapper: 99
 - assassin: 97
 - totemist: 96

@@ -5,6 +5,7 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **Kesh:** Devour deals 16 (was 14); Fell the Prey, its near twin, is switched off for now.
 - **Your history follows you:** signed in, your run history, your Arena match history and your username appear on every device, as your runs already do.
 - **Litter** is switched off for now: it is no longer offered (a deck that has it keeps it).
 - **Kesh:** Call Gnashlings is gone (old decks get Thick Hide), and Litter summons 2 Gnashlings.
