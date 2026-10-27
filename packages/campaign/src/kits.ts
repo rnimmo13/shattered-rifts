@@ -20,8 +20,8 @@ export const KIT_CARDS: Record<HeroId, [[string, string], [string, string], [str
   ],
   hunter: [
     ['run-wild', 'crushing-blow'],
-    ['rally-the-pack', 'feeding-time'],
-    ['devour', 'bone-offering'],
+    ['savage-command', 'feeding-time'],
+    ['gnaw', 'bone-offering'],
   ],
   trapper: [
     ['tripwire-garrote', 'snare-net'],

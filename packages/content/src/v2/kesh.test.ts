@@ -56,8 +56,7 @@ describe('Den Mother', () => {
     expect(withHer.fallen).toBe(without.fallen);
     expect(without.fallen).toBeGreaterThan(0);
     const lost = without.hp.map((hp, i) => hp - (withHer.hp[i] ?? 0));
-    // (15, plus the 1 Might her trait gives her at the start of every fight)
-    expect(lost.reduce((a, b) => a + b, 0)).toBe((15 + 1) * withHer.fallen);
+    expect(lost.reduce((a, b) => a + b, 0)).toBe(15 * withHer.fallen);
   });
 
   it('does nothing when a companion was not killed by an attack (a sacrifice)', () => {

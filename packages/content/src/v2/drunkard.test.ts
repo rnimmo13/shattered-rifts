@@ -110,7 +110,14 @@ describe('innate traits', () => {
       expect(t.name.length, h).toBeGreaterThan(2);
       expect(t.text.length, h).toBeGreaterThan(10);
       expect(
-        !!(t.fightStart?.length || t.turnStart?.length || t.triggers?.length || t.clutch),
+        !!(
+          t.fightStart?.length ||
+          t.turnStart?.length ||
+          t.triggers?.length ||
+          t.clutch ||
+          t.shareMight ||
+          t.healAfterFight
+        ),
         h,
       ).toBe(true);
     }

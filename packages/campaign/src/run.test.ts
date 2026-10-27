@@ -622,7 +622,7 @@ describe('the other rooms and the rules around them', () => {
 });
 
 describe("Kesh's trait heals after a won fight (DECISIONS #285)", () => {
-  it('a won fight heals Kesh 6; another Riftwalker nothing', () => {
+  it('a won fight heals Kesh 2; another Riftwalker nothing', () => {
     const won = (hero: HeroId): number => {
       const base = fresh(hero, 'trait-heal');
       const node = base.map.nodes.find((n) => n.kind === 'duel')!;
@@ -635,7 +635,7 @@ describe("Kesh's trait heals after a won fight (DECISIONS #285)", () => {
       };
       return finishDuel(run, true, 40).hp;
     };
-    expect(won('hunter')).toBe(46);
+    expect(won('hunter')).toBe(42);
     expect(won('knight')).toBe(40);
   });
 });

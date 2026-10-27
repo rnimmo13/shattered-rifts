@@ -15,6 +15,29 @@ pnpm test:property                                   10,000 random games with in
 flags: --ai heuristic|random  --personality …  --rules '{"secondPlayerExtraCards":1}'  --seed S  --workers N
 ```
 
+## Stage 1 by starting kit (2026-10-27, DECISIONS #329)
+
+`pnpm stage1sim -- --n 60`: a first run's stage 1 (tier 1, Normal) for every Riftwalker and each starting kit. `draft` takes the
+best-rarity card on offer; `starter` never takes a card. The goal (Robert): every kit in the same ball park, and a starter-only deck
+should need luck to beat the Warden (target about 15-25% starter-only). Clear rates, draft / starter only, before the Kesh change:
+
+| Riftwalker | Kit 1 | Kit 2 | Kit 3 |
+|---|---|---|---|
+| Valeria (Bulwark / Thorns / Devotion) | 17 / 0 | 52 / 22 | 40 / 20 |
+| Rivet (Swarm / Assemble / Core) | 22 / 13 | 17 / 5 | 20 / 7 |
+| Kesh (Bloodrage / Pack / Feast) | 43 / 62 | 72 / 95 | 73 / 90 |
+| Vesper (Traps / Exposed / Patience) | 3 / 0 | 7 / 0 | 5 / 0 |
+| Sylas (Knives / Bleed / Sleight) | 13 / 0 | 33 / 37 | 10 / 0 |
+| Ilvane (Totems / Whittling / Rites) | 2 / 0 | 5 / 0 | 8 / 0 |
+| Sehra (Fury / Flow / Radiant) | 2 / 0 | 22 / 13 | 3 / 0 |
+| Obsidia (Blade / Arcana / Sigils) | 5 / 2 | 0 / 0 | 3 / 0 |
+| KP (Gun / Shells / Hangover) | 15 / 22 | 3 / 0 | 28 / 20 |
+| Mire (Fate / Thralls / Ashes) | 12 / 0 | 70 / 48 | 10 / 0 |
+
+Kesh after #329: Bloodrage 32 / 25, Pack 27 / 18, Feast 25 / 15. Read the bottom rows with care: the greedy bot plays stances, Arcana,
+totems and Hold badly, and companions and plain damage well. Still open: Mire's Thralls kit (same companion pattern as Kesh), Valeria's
+Bulwark kit (0% starter-only: fights run long).
+
 ## Balance audit (2026-10-25, DECISIONS #223): read this first
 
 Robert: a Tier 2 Sehra dealt 450+ on turn 1 and the Warden never acted. Goal: Slay the Spire numbers, bosses that take 10+ turns,
