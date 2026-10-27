@@ -594,7 +594,7 @@ describe('the other rooms and the rules around them', () => {
   });
 
   it('elites heal a little, losing an elite costs 2 Resolve', () => {
-    const base = fresh('hunter', 'elite');
+    const base = fresh('knight', 'elite');
     const el = base.map.nodes.find((n) => n.kind === 'elite');
     if (!el) return; // this seed's stage 1 has no elite
     const run: RunState = { ...base, hp: 40, phase: 'duel', at: el.id, context: { nodeId: el.id } };
@@ -618,5 +618,24 @@ describe('the other rooms and the rules around them', () => {
     expect(bank(cleared).phase).toBe('banked');
     expect(continueLoop(cleared).tier).toBe(2);
     expect(() => bank(fresh('trapper', 'end'))).toThrow(RunError);
+  });
+});
+
+describe("Kesh's trait heals after a won fight (DECISIONS #285)", () => {
+  it('a won fight heals Kesh 6; another Riftwalker nothing', () => {
+    const won = (hero: HeroId): number => {
+      const base = fresh(hero, 'trait-heal');
+      const node = base.map.nodes.find((n) => n.kind === 'duel')!;
+      const run: RunState = {
+        ...base,
+        hp: 40,
+        phase: 'duel',
+        at: node.id,
+        context: { nodeId: node.id },
+      };
+      return finishDuel(run, true, 40).hp;
+    };
+    expect(won('hunter')).toBe(46);
+    expect(won('knight')).toBe(40);
   });
 });

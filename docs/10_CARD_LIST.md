@@ -137,7 +137,7 @@ Starter: Strike, Strike, Strike, Strike, Strike, Defend, Defend, Defend, Deploy 
 | Repair Bot | 1 | summon | common | Summon Repair Bot (6 HP). At the end of your turn it will: Heal 3 to your hero. |
 | Build Enforcer | 2 | summon | common | Summon Enforcer Mk.II (14 HP). At the end of your turn it will: Deal 6 damage. |
 | Reinforce | 1 | skill | common | Gain 8 Barrier to the ally. Apply 2 Might to the ally. |
-| Weld Armor | 1 | skill | common | Gain 10 Barrier to the ally. Heal 4 to the ally. |
+| Weld Armor | 1 | skill | common | The ally gains 6 max HP. Gain 6 Barrier to the ally. |
 | Patch Job | 0 | skill | common | Heal 8 to the ally. Gain 3 Barrier to the ally. |
 | Hardened Chassis | 1 | skill | common | Gain 9 Barrier to the ally. Draw 1 card. |
 | Field Engineer | 1 | summon | common | Summon Repair Bot (6 HP). At the end of your turn it will: Heal 3 to your hero. Gain 3 Barrier. |
@@ -215,63 +215,63 @@ A hunter with a Hound. Pays HP to buff the whole pack with Might.
 
 Paths: Bloodrage: HP for Might / Pack: feed the companions / Feast: Exhaust and Devour
 
-Starter: Strike, Strike, Strike, Strike, Strike, Defend, Defend, Defend, Savage Bite, Blood Frenzy
+Starter: Strike, Strike, Strike, Strike, Defend, Defend, Defend, Savage Bite, Blood Frenzy, Guard Dog
 
 | Card | Cost | Type | Rarity | Text |
 |---|---|---|---|---|
-| Savage Bite | 1 | attack | basic | Deal 8 damage. Lose 2 HP. |
-| Blood Frenzy | 1 | skill | basic | Lose 3 HP. Apply 2 Might to all friends. |
-| Rend | 1 | attack | common | Deal 11 damage. Lose 3 HP. |
-| Twin Fang | 1 | attack | common | Deal 6 damage 2 times. Lose 2 HP. |
+| Savage Bite | 1 | attack | basic | Deal 9 damage. Lifesteal 50%. |
+| Blood Frenzy | 1 | attack | basic | Deal 4 damage to ALL enemies. Lose 1 HP. Apply 1 Might. |
+| Guard Dog | 1 | skill | basic | Summon Hound (10 HP). At the end of your turn it will: Deal 4 damage. Gain 5 Barrier. |
+| Rend | 1 | attack | common | Deal 13 damage. Lose 2 HP. |
+| Twin Fang | 1 | attack | common | Deal 5 damage 2 times. Lose 1 HP. |
 | Feral Instinct | 0 | skill | common | Lose 2 HP. Draw 2 cards. Consume. |
 | Pain Ward | 1 | skill | common | Gain 5 (+1 per 5% HP missing) Barrier. |
-| Blood Rush | 0 | attack | common | Deal 4 damage. Lose 1 HP. |
-| Ripping Claws | 1 | attack | common | Deal 5 damage to ALL enemies. Lose 1 HP. |
+| Blood Rush | 0 | attack | common | Deal 5 damage. Lose 1 HP. |
+| Ripping Claws | 1 | attack | common | Deal 3 damage 2 times to ALL enemies. Lose 1 HP. |
 | Rummage | 1 | attack | common | Deal 8 damage. Put a random Attack card from your discard pile on top of your draw pile. |
 | Pound | 1 | attack | common | Deal 8 damage. Draw 1 card. Lose 1 HP. |
 | Bone Crack | 1 | attack | common | Deal 7 damage. Apply 2 Exposed. |
 | Flesh Wound | 1 | skill | common | Lose 2 HP. Gain 14 Barrier. |
-| Heel | 1 | summon | common | Summon Hound (10 HP). At the end of your turn it will: Deal 4 damage. |
+| Heel | 1 | summon | common | Summon Hound (10 HP). At the end of your turn it will: Deal 4 damage. All your allies act now. |
 | Call Gnashlings | 1 | summon | common | Summon 2 Gnashlings (4 HP each). At the end of your turn each will: Deal 3 damage. |
-| Pack Tactics | 1 | skill | common | Apply 1 Might to all friends. Gain 4 Barrier to all friends. |
-| Loose the Hound | 1 | skill | common | Apply 2 Might to the ally. Heal 4 to the ally. |
+| Pack Tactics | 1 | skill | common | Apply 1 Might. Gain 4 Barrier to all friends. |
+| Loose the Hound | 1 | skill | common | Apply 2 Might to the ally. The ally gains 4 max HP. |
 | Howl | 1 | skill | common | All your allies act now. |
-| Thick Hide | 1 | skill | common | Gain 5 Barrier to all friends. |
+| Thick Hide | 1 | skill | common | Gain 6 Barrier to all friends. |
 | Burn the Weak | 1 | skill | common | Consume 1 card. Gain 8 Barrier. |
-| Primal Feast | 1 | skill | common | Heal 5 to all friends. |
+| Primal Feast | 1 | skill | common | Heal 7 to all friends. |
 | Bonepicker | 0 | skill | common | Gain 3 Barrier. Consume. If consumed: Heal 2. |
-| Bloodscent | 1 | attack | common | Deal 5 damage. Apply 1 Might to all friends. |
+| Bloodscent | 1 | attack | common | Deal 5 damage. Apply 1 Might. |
 | Whet the Fangs | 0 | skill | common | Apply 6 Primed. |
 | Maddened Lunge | 1 | attack | common | Deal 5 (+1 per 5% HP missing) damage. |
-| Open a Vein | 0 | skill | common | Lose 3 HP. Apply 1 Might. Draw 1 card. Consume. |
-| Bloodied Howl | 1 | skill | common | Lose 2 HP. Apply 2 Exposed to ALL enemies. |
-| Guard Dog | 1 | skill | common | Summon Hound (10 HP). At the end of your turn it will: Deal 4 damage. Gain 5 Barrier. |
+| Open a Vein | 0 | skill | common | Lose 2 HP. Apply 2 Might. Consume. |
+| Bloodied Howl | 1 | skill | common | Lose 1 HP. Apply 2 Exposed to ALL enemies. Draw 1 card. |
 | Bared Teeth | 1 | skill | common | Gain 3 (+3 per ally) Barrier. |
 | Lead the Charge | 1 | attack | common | Deal 5 (+3 per ally) damage. |
-| Marrow Suck | 1 | attack | common | Deal 7 damage. Heal 2 (+1 per 2 consumed cards). |
+| Marrow Suck | 1 | attack | common | Deal 7 damage. Lifesteal 100%. |
 | Throw Scraps | 0 | skill | common | Consume 1 card. Gain 1 Mana. |
 | Crushing Blow | 2 | attack | uncommon | Deal 8 (+2 per Might) damage. |
 | Run Wild | 2 | attack | uncommon | Deal 6 damage 2 times. Apply 1 Might. |
-| Ravage | 2 | attack | uncommon | Deal 7 damage to ALL enemies. Lose 3 HP. |
-| Red Haze | 1 | skill | uncommon | Lose 4 HP. Apply 2 Might. Consume. |
-| Scar Tissue | 1 | power | uncommon | Whenever you lose HP to your own cards: Gain 3 Barrier. Apply 1 Might to all friends until the end of your turn. |
+| Ravage | 2 | attack | uncommon | Deal 9 damage to ALL enemies. Lose 2 HP. |
+| Red Haze | 1 | skill | uncommon | Lose 3 HP. Apply 2 Might. Consume. |
+| Scar Tissue | 1 | power | uncommon | Whenever you lose HP to your own cards: Gain 3 Barrier. Apply 1 Might until the end of your turn. |
 | Whirling Maul | X | attack | uncommon | Deal 6 damage X times to ALL enemies. Lose 2 HP. |
 | Reckless Blow | 1 | attack | uncommon | Lose 2 HP. Deal 7 damage 2 times. |
 | Frenzied Gulp | 0 | skill | uncommon | Draw 3 cards. Lose 3 HP. Consume. |
 | Hamstring Slam | 2 | attack | uncommon | Deal 11 damage. Apply 2 Faltering. All your allies act now. |
-| Savage Command | 2 | skill | uncommon | All your allies act now. Apply 1 Might to all friends. |
+| Savage Command | 2 | skill | uncommon | All your allies act now. Apply 1 Might. |
 | Pack Bond | 2 | power | uncommon | At the start of your turn: Gain 3 Barrier to all friends. |
-| Feeding Time | 1 | skill | uncommon | Heal 8 to the ally. Apply 1 Might to the ally. |
+| Feeding Time | 1 | skill | uncommon | Your companions gain 5 max HP. Apply 1 Might. |
 | Rally the Pack | 2 | skill | uncommon | Summon Hound (10 HP). At the end of your turn it will: Deal 4 damage. All your allies act now. |
-| Trail of Blood | 1 | power | uncommon | Whenever you summon an ally: Apply 1 Might to all friends. |
+| Trail of Blood | 1 | power | uncommon | Whenever you summon an ally: Apply 1 Might. |
 | Crimson Pact | 1 | skill | uncommon | Lose 3 HP. Consume 1 card. Draw 2 cards. |
 | Gnaw | 1 | attack | uncommon | Deal 5 (+1 per consumed card) damage. |
-| Devour | 2 | attack | uncommon | Deal 14 damage. Heal 5. |
+| Devour | 2 | attack | uncommon | Deal 14 damage. Lifesteal 50%. |
 | Devour Ally | 1 | skill | uncommon | Heal 12 to your hero. Apply 3 Might to your hero. Sacrifice the chosen ally. |
-| Fell the Prey | 2 | attack | uncommon | Deal 16 damage. Heal 6. Consume. |
+| Fell the Prey | 2 | attack | uncommon | Deal 16 damage. Lifesteal 50%. Consume. |
 | Ravenous | 1 | power | uncommon | Whenever a card is consumed: Draw 1 card. Lose 1 HP. |
 | Thick Skin | 1 | power | uncommon | Whenever a card is consumed: Gain 2 Barrier to all friends. |
-| Gnarltooth Trap | 1 | snare | uncommon | When you or an ally is attacked: Deal 6 damage to the attacker. Apply 1 Might to all friends. |
+| Gnarltooth Trap | 1 | snare | uncommon | When you or an ally is attacked: Deal 6 damage to the attacker. Apply 1 Might. |
 | Bone Offering | 1 | skill | uncommon | Consume 1 card. Draw 2 cards. Heal 2. |
 | Gorge | 1 | skill | uncommon | Gain 8 Barrier. Gain Barrier equal to half of the number of cards you have consumed. |
 | Rotten Meal | 1 | skill | uncommon | Gain 5 Barrier to all friends. Consume 1 random card. |
@@ -279,15 +279,15 @@ Starter: Strike, Strike, Strike, Strike, Strike, Defend, Defend, Defend, Savage 
 | Tear Loose | 1 | attack | uncommon | Deal 7 damage. Lose 2 HP. Apply 4 Primed. |
 | Frothing Rage | 1 | skill | uncommon | Lose 2 HP. Apply 3 Might until the end of your turn. Draw 2 cards. |
 | Wounded Wrath | 1 | power | uncommon | Whenever you lose HP to your own cards: Deal 4 damage to a random enemy. |
-| Blood Bond | 1 | skill | uncommon | Lose 2 HP. Apply 2 Might to the ally. Gain 6 Barrier to the ally. |
+| Blood Bond | 1 | skill | uncommon | Lose 2 HP. Apply 2 Might. Gain 6 Barrier to all friends. |
 | Litter | 2 | skill | uncommon | Summon 3 Gnashlings (4 HP each). At the end of your turn each will: Deal 3 damage. |
 | Bone Collar | 1 | power | uncommon | Whenever one of your allies dies: Apply 2 Might. Heal 4. |
 | Feast on Fear | 2 | attack | uncommon | Deal 12 damage. Heal 3 (+2 per Exposed on the target). |
-| Gore and Gulp | 1 | attack | uncommon | Deal 10 damage. Heal 4. Consume. |
+| Gore and Gulp | 1 | attack | uncommon | Deal 10 damage. Lifesteal 50%. Consume. |
 | Ossuary | 1 | power | uncommon | Whenever a card is consumed: Deal 3 damage to a random enemy. |
 | Famine | 2 | skill | uncommon | Consume any number of cards. Gain 2 Mana. Heal 4. |
 | Gut Trap | 1 | snare | uncommon | When you lose 5+ HP at once: Deal 8 damage to ALL enemies. Heal 4. |
-| Blood Tithe | 0 | skill | rare | Lose 6 HP. Gain 2 Mana. Draw 2 cards. Apply 1 Might to all friends. Consume. |
+| Blood Tithe | 0 | skill | rare | Lose 6 HP. Gain 2 Mana. Draw 2 cards. Apply 1 Might. Consume. |
 | The Hunger | 1 | power | rare | Lose 4 HP. Apply 2 Might. |
 | Slip the Leash | 1 | skill | rare | Double the Might to yourself (at most +6). Consume. |
 | Berserker | 2 | power | rare | At the start of your turn: Lose 2 HP. Gain 1 Mana. |
@@ -296,10 +296,10 @@ Starter: Strike, Strike, Strike, Strike, Strike, Defend, Defend, Defend, Savage 
 | Scarred Warrior | 1 | power | rare | At the start of your turn: Lose 1 HP. Gain 8 Barrier. |
 | Primal Surge | 0 | skill | rare | Lose 2 HP. Apply 2 Might. Consume. |
 | Frenzied Thrash | 1 | attack | rare | Deal 4 damage 2 times. Consume 1 random card. |
-| Alpha Call | 2 | summon | rare | Summon Hound (10 HP). At the end of your turn it will: Deal 4 damage. Apply 1 Might to all friends. |
-| Unchained | 2 | power | rare | Apply 3 Might to all friends. |
+| Alpha Call | 2 | summon | rare | Summon Hound (10 HP). At the end of your turn it will: Deal 4 damage. Apply 1 Might. |
+| Unchained | 2 | power | rare | Apply 3 Might. |
 | Den Mother | 3 | summon | rare | Summon Dire Wolf (18 HP). At the end of your turn it will: Deal 9 damage. |
-| Pack Frenzy | 2 | skill | rare | Apply 2 Might to all friends. All your allies act now. Consume. |
+| Pack Frenzy | 2 | skill | rare | Apply 2 Might. All your allies act now. Consume. |
 | Wild Hunt | 3 | power | rare | At the start of your turn: All your allies act now. |
 | The Maw Opens | 2 | attack | rare | Consume your hand. Deal damage equal to 2 times the number of cards you have consumed. |
 | Bloodsong | 1 | power | rare | Lose 2 HP. Apply 1 Cadence. |
@@ -309,12 +309,12 @@ Starter: Strike, Strike, Strike, Strike, Strike, Defend, Defend, Defend, Savage 
 | Last Gasp | 2 | attack | rare | Deal damage equal to the number of cards you have consumed to ALL enemies. |
 | Wolfhide | 2 | skill | rare | Gain 18 Barrier. Gain 9 Barrier to all friends. Consume. |
 | Death or Glory | 2 | attack | rare | Deal 10 (+1 per 2.5% HP missing) damage. Consume. |
-| Hunter's Call | 2 | power | rare | At the start of your turn: Apply 1 Might to all friends. |
+| Hunter's Call | 2 | power | rare | At the start of your turn: Apply 1 Might. |
 | Pack Leader | 2 | power | rare | Whenever you play an Attack: Gain 2 Barrier to all friends. |
 | Second Helping | 1 | skill | rare | Lose 2 HP. Return a random Consumed card to your hand (never one that returns cards). Consume. |
 | Grave Hunger | 2 | power | rare | Whenever a card is consumed: Heal 2. |
-| The Hunger Unleashed | 2 | power | legendary | Lose 6 HP. Apply 4 Might to all friends. Apply 2 Cadence. |
-| Apex Maw | 3 | attack | legendary | Deal 10 (+3 per Might) damage. Heal 10 (+2 per Might). Consume. |
+| The Hunger Unleashed | 2 | power | legendary | Lose 6 HP. Apply 4 Might. Apply 2 Cadence. |
+| Apex Maw | 3 | attack | legendary | Deal 10 (+3 per Might) damage. Lifesteal 75%. Consume. |
 | Bloodmoon Hunt | 3 | attack | legendary | Deal 20 damage to ALL enemies. Heal 15. Consume. |
 
 ## Vesper Nightlace (umbral, 80 HP)
@@ -991,7 +991,7 @@ Starter: Strike, Strike, Strike, Defend, Defend, Defend, Grave Touch, Grave Touc
 | Creeping Dread | 1 | attack | common | Deal 3 damage to ALL enemies. Curse ALL enemies with 3 Fate. |
 | Raise Thrall | 1 | summon | common | Summon Bone Thrall (12 HP). At the end of your turn it will: Deal 4 damage. |
 | Bone Chorus | 1 | skill | common | Apply 2 Might to the ally. Heal 4 to the ally. |
-| Shared Marrow | 1 | skill | common | Heal 4 to all friends. Gain 3 Barrier to all friends. |
+| Shared Marrow | 1 | skill | common | Your companions gain 4 max HP. Gain 3 Barrier to all friends. |
 | Thrall's Cue | 1 | skill | common | All your allies act now. Gain 4 Barrier. |
 | Bone Guard | 1 | skill | common | Gain 9 Barrier to the ally. Gain 4 Barrier to your hero. |
 | Unleash the Dead | 1 | attack | common | Deal 4 (+3 per ally) damage. |
@@ -1011,7 +1011,7 @@ Starter: Strike, Strike, Strike, Defend, Defend, Defend, Grave Touch, Grave Touc
 | Crypt Recruit | 1 | summon | common | Summon Bone Thrall (12 HP). At the end of your turn it will: Deal 4 damage. Gain 4 Barrier. |
 | Rally the Dead | 1 | skill | common | All your allies act now. Apply 1 Might to all friends until the end of your turn. |
 | Tithe of Bone | 1 | attack | common | Deal 4 (+4 per ally) damage. |
-| Grim Mending | 1 | skill | common | Heal 12 to the ally. Gain 6 Barrier to the ally. |
+| Grim Mending | 1 | skill | common | The ally gains 8 max HP. Gain 4 Barrier to the ally. |
 | Bone Sift | 0 | skill | common | Consume 1 card. Draw 2 cards. |
 | Ember Grasp | 0 | attack | common | Deal 3 (+1 per consumed card) damage. |
 | Tomb Feast | 1 | attack | common | Deal 8 damage. Consume 1 card. Heal 4. |

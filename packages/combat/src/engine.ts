@@ -30,6 +30,7 @@ import {
   type CardId,
   type CardInst,
   type CombatDb,
+  type HeroTrait,
   type CombatEvent,
   type CombatSetup,
   type CombatState,
@@ -149,6 +150,11 @@ function addStatus(r: Run, u: Unit, st: StatusId, amount: number): boolean {
   if (total <= 0) delete u.statuses[st];
   else u.statuses[st] = total;
   r.ev.push({ type: 'status', target: u.id, status: st, amount, total: Math.max(0, total) });
+  // a hero whose trait shares Might: their companions gain (or lose) the same (DECISIONS #285)
+  if (st === 'might' && u.kind === 'hero' && traitOf(r, u.side)?.shareMight)
+    for (const x of r.s.sides[u.side].units)
+      if (x.kind === 'ally' && x.hp > 0 && (amount > 0 || stacks(x, 'might') > 0))
+        addStatus(r, x, 'might', Math.max(amount, -stacks(x, 'might')));
   // Mantra builds towards Radiant and is spent on entering it
   if (st === 'mantra' && total >= MANTRA_GOAL) {
     // one Radiant per goal reached; anything left over stays as Mantra
@@ -212,6 +218,12 @@ export function modifiedDamage(base: number, attacker: Unit | null, target: Unit
   if (attacker && attacker.dmgPct !== 100 && n > 0)
     n = Math.max(1, Math.floor((n * attacker.dmgPct) / 100));
   return Math.max(0, n);
+}
+
+/** The innate trait of the hero on `side` (none for a side of enemies). */
+function traitOf(r: Run, side: Side): HeroTrait | undefined {
+  const sd = r.s.sides[side];
+  return sd.hero ? r.db.heroes[sd.hero]?.trait : undefined;
 }
 
 /** An innate trait that depends on HP (Clutch Genes): switch the hero's `clutch` status on or off as their HP crosses the line. */
@@ -295,15 +307,16 @@ function riseUp(r: Run, t: Unit, rise: Rise): void {
 }
 
 /** One attack hit from `a.actor` on `t`: Traps may spring first and may cancel it. */
-function attackHit(r: Run, a: Act, t: Unit, base: number): void {
-  if (t.hp <= 0) return;
+/** One hit of an attack. Returns the HP it took off (for Lifesteal). */
+function attackHit(r: Run, a: Act, t: Unit, base: number): number {
+  if (t.hp <= 0) return 0;
   if (t.side !== a.actor.side) {
     const hit = { prevented: false };
     fireSnare(r, t.side, { on: 'attacked', victim: t, attacker: a.actor, hit });
-    if (r.s.winner || t.hp <= 0 || a.actor.hp <= 0) return;
+    if (r.s.winner || t.hp <= 0 || a.actor.hp <= 0) return 0;
     if (hit.prevented) {
       r.ev.push({ type: 'prevented', unit: a.actor.id });
-      return;
+      return 0;
     }
   }
   const amount = modifiedDamage(base, a.actor, t);
@@ -316,6 +329,16 @@ function attackHit(r: Run, a: Act, t: Unit, base: number): void {
   const thorns = stacks(t, 'thorns');
   if (attacked && thorns > 0 && a.actor.hp > 0 && t.side !== a.actor.side)
     applyDamage(r, t, a.actor, thorns, 'direct');
+  return lost;
+}
+
+/** Heal a unit by up to `n` (never past its max HP). */
+function healUnit(r: Run, t: Unit, n: number): void {
+  const k = Math.min(n, t.maxHp - t.hp);
+  if (k <= 0 || t.hp <= 0) return;
+  t.hp += k;
+  r.ev.push({ type: 'heal', target: t.id, amount: k });
+  if (t.kind === 'hero') syncClutch(r, r.s.sides[t.side]);
 }
 
 // --- snares ---------------------------------------------------------------------------------------------------------
@@ -493,6 +516,7 @@ function execOp(r: Run, a: Act, op: Op): void {
       const vigor = (a.card ? a.card.kind === 'attack' : a.actor.kind === 'enemy')
         ? stacks(a.actor, 'vigor')
         : 0;
+      let took = 0;
       for (let i = 0; i < hits; i++) {
         if (r.s.winner) return;
         // a target that died mid-attack: the remaining hits find a new one (an enemy by its own rule for choosing, so a
@@ -505,7 +529,7 @@ function execOp(r: Run, a: Act, op: Op): void {
         // Point Blank: a shot that finds only one enemy hits it harder
         const lone = op.lonePct && ts.length === 1 ? 1 + op.lonePct / 100 : 1;
         for (const t of ts)
-          attackHit(
+          took += attackHit(
             r,
             a,
             t,
@@ -516,6 +540,9 @@ function execOp(r: Run, a: Act, op: Op): void {
         reap(r);
       }
       if (vigor > 0) addStatus(r, a.actor, 'vigor', -vigor);
+      // Lifesteal: the attacker heals a share of the HP the attack took off (DECISIONS #285)
+      if (op.lifesteal && took > 0 && a.actor.hp > 0)
+        healUnit(r, a.actor, Math.floor((took * op.lifesteal) / 100));
       return;
     }
     case 'loseHp':
@@ -543,6 +570,17 @@ function execOp(r: Run, a: Act, op: Op): void {
         t.barrier += n;
         r.ev.push({ type: 'barrier', target: t.id, amount: n, total: t.barrier });
         if (n > 0 && t.kind === 'hero') fireTriggers(r, r.s.sides[t.side], 'barrier');
+      }
+      return;
+    case 'growHp':
+      // a companion grows: more max HP, and as much healed (a hero never: their HP belongs to the run)
+      for (const t of resolve(r, a, op.to)) {
+        if (t.kind === 'hero' || t.hp <= 0) continue;
+        const n = amountOf(r, a, op.amount, op.scale, t);
+        if (n <= 0) continue;
+        t.maxHp += n;
+        t.hp += n;
+        r.ev.push({ type: 'heal', target: t.id, amount: n });
       }
       return;
     case 'heal':
@@ -599,6 +637,10 @@ function execOp(r: Run, a: Act, op: Op): void {
       return;
     case 'summon': {
       const u = spawn(r, side, op.unit, false, a.actor);
+      // (a hero who shares Might: the new companion arrives with it)
+      const lead = heroOf(side);
+      if (u && lead && traitOf(r, side.id)?.shareMight && stacks(lead, 'might') > 0)
+        addStatus(r, u, 'might', stacks(lead, 'might'));
       if (u) {
         fireSnare(r, other(side.id), { on: 'foeSummons', summoned: u });
         if (a.actor.kind === 'hero') fireTriggers(r, side, 'summon');

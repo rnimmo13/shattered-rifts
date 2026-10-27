@@ -172,10 +172,21 @@ export type TriggerWhen =
 
 export type Op =
   /** `lonePct`: Point Blank, this much more damage (percent) when it hits only one enemy */
-  | { op: 'damage'; amount: number; hits?: number; to: Sel; scale?: Scale; lonePct?: number }
+  /** `lifesteal`: the attacker heals this percent of the HP the attack took off (Barrier it hit does not count; DECISIONS #285) */
+  | {
+      op: 'damage';
+      amount: number;
+      hits?: number;
+      to: Sel;
+      scale?: Scale;
+      lonePct?: number;
+      lifesteal?: number;
+    }
   | { op: 'loseHp'; amount: number; to: Sel; scale?: Scale } // unblockable, unmodified
   | { op: 'barrier'; amount: number; to: Sel; scale?: Scale }
   | { op: 'heal'; amount: number; to: Sel; scale?: Scale }
+  /** companions (never a hero) gain this much max HP, and heal as much: a minion that grows instead of only being shielded */
+  | { op: 'growHp'; amount: number; to: Sel; scale?: Scale }
   /**
    * lessen every debuff (Exposed, Faltering, Seared, Stunned, Brittle, Doom) on the target by `amount` stacks, or by `pct`% of its
    * stacks (rounded up) when that is more, so it still bites on a big pile of Doom; `all` dispels them completely
@@ -349,6 +360,10 @@ export interface HeroTrait {
   turnStart?: Op[];
   triggers?: Extract<Op, { op: 'power' }>[];
   clutch?: { below: number; damagePct: number };
+  /** every point of Might the hero gains or loses, their companions gain or lose too, and a new companion arrives with it */
+  shareMight?: boolean;
+  /** HP healed after every fight the hero wins (in a run) */
+  healAfterFight?: number;
 }
 
 export interface HeroDef {

@@ -186,6 +186,14 @@ export const KEYWORD_INFO: Record<string, { name: string; text: string }> = {
     text: 'After you play it, it is removed from the rest of this fight.',
   },
   retain: { name: 'Hold', text: 'It stays in your hand when you end your turn.' },
+  lifesteal: {
+    name: 'Lifesteal',
+    text: 'You heal this share of the HP the attack takes off. Damage stopped by Barrier does not count.',
+  },
+  growHp: {
+    name: 'Max HP',
+    text: 'Your companion gets this much more maximum HP for the rest of the fight, and heals as much.',
+  },
   pointBlank: {
     name: 'Point Blank',
     text: 'It hits harder when there is only one enemy to hit: the whole spread lands on it.',
@@ -268,6 +276,7 @@ export function keywordsOf(
       card?: string;
       stance?: string;
       lonePct?: number;
+      lifesteal?: number;
     }[];
   },
   taunting: (unit: string) => boolean,
@@ -283,6 +292,8 @@ export function keywordsOf(
   for (const o of c.effects) {
     if (o.op === 'barrier') add(KEYWORD_INFO['barrier']);
     if (o.lonePct) add(KEYWORD_INFO['pointBlank']);
+    if (o.lifesteal) add(KEYWORD_INFO['lifesteal']);
+    if (o.op === 'growHp') add(KEYWORD_INFO['growHp']);
     if (o.op === 'mana') add(KEYWORD_INFO['mana']);
     if (o.op === 'discard') add(KEYWORD_INFO['discard']);
     if (o.op === 'scry') add(KEYWORD_INFO['scry']);

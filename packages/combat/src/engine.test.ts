@@ -1140,3 +1140,68 @@ describe('the damage preview, as the card will see it', () => {
     expect(previewCardDamage(tdb, c, 't0').size).toBe(0);
   });
 });
+
+describe('Lifesteal, companions that grow, and Might shared with the pack (DECISIONS #285)', () => {
+  const card = (id: string, effects: unknown[], target = 'none'): CardDef =>
+    ({ id, name: id, kind: 'attack', cost: 0, target, effects }) as unknown as CardDef;
+  const tdb: CombatDb = {
+    ...db,
+    cards: {
+      ...db.cards,
+      bite: card('bite', [{ op: 'damage', amount: 10, to: 'target', lifesteal: 50 }], 'foe'),
+      grow: card('grow', [{ op: 'growHp', amount: 5, to: 'allFriends' }]),
+      roar: card('roar', [{ op: 'status', status: 'might', amount: 2, to: 'self' }]),
+    },
+    heroes: {
+      ...db.heroes,
+      knight: {
+        ...db.heroes.knight!,
+        trait: { name: 'Pack', text: 'shares Might', shareMight: true },
+      },
+    },
+  };
+  const at = (cards: string[]) => {
+    const c = clone(start(['cultist'], cards));
+    hero(c).hp = 40;
+    return c;
+  };
+
+  it('Lifesteal heals a share of the HP the attack took off, and nothing for what Barrier stopped', () => {
+    const c = at(['bite']);
+    const after = applyAction(tdb, c, { type: 'play', card: 't0', target: foe(c).id }).state;
+    expect(hero(after).hp).toBe(40 + 5);
+    const shielded = at(['bite']);
+    foe(shielded).barrier = 6;
+    const after2 = applyAction(tdb, shielded, {
+      type: 'play',
+      card: 't0',
+      target: foe(shielded).id,
+    }).state;
+    // 10 damage, 6 into Barrier, 4 HP taken: heals 2
+    expect(hero(after2).hp).toBe(40 + 2);
+  });
+
+  it('a companion gains max HP and heals as much; the hero never does', () => {
+    let c = at(['call-drone', 'grow']);
+    c = applyAction(tdb, c, { type: 'play', card: 't0' }).state;
+    const drone = c.sides.a.units.find((u) => u.kind === 'ally')!;
+    const max = drone.maxHp;
+    c = applyAction(tdb, c, { type: 'play', card: 't1' }).state;
+    const grown = c.sides.a.units.find((u) => u.id === drone.id)!;
+    expect(grown.maxHp).toBe(max + 5);
+    expect(grown.hp).toBe(drone.hp + 5);
+    expect(hero(c).maxHp).toBe(hero(at([])).maxHp);
+  });
+
+  it('a hero who shares Might passes it to the pack, and a new companion arrives with it', () => {
+    let c = at(['call-drone', 'roar', 'call-drone']);
+    c = applyAction(tdb, c, { type: 'play', card: 't0' }).state;
+    c = applyAction(tdb, c, { type: 'play', card: 't1' }).state;
+    const might = hero(c).statuses.might ?? 0;
+    const first = c.sides.a.units.find((u) => u.kind === 'ally')!;
+    expect(first.statuses.might ?? 0).toBe(2);
+    c = applyAction(tdb, c, { type: 'play', card: 't2' }).state;
+    const second = c.sides.a.units.filter((u) => u.kind === 'ally')[1]!;
+    expect(second.statuses.might ?? 0).toBe(might);
+  });
+});

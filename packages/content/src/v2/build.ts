@@ -21,6 +21,14 @@ import type {
 export const dmg = (amount: number, to: Sel = 'target', hits?: number): Op =>
   hits && hits > 1 ? { op: 'damage', amount, hits, to } : { op: 'damage', amount, to };
 export const barrier = (amount: number, to: Sel = 'self'): Op => ({ op: 'barrier', amount, to });
+/** A damage effect with Lifesteal: the attacker heals `pct` percent of the HP it takes off (DECISIONS #285). */
+export const lifesteal = (o: Op, pct: number): Op => ({ ...o, lifesteal: pct }) as Op;
+/** Companions (never a hero) gain `amount` max HP, and heal as much. */
+export const growHp = (amount: number, to: Sel = 'allFriends'): Op => ({
+  op: 'growHp',
+  amount,
+  to,
+});
 export const heal = (amount: number, to: Sel = 'self'): Op => ({ op: 'heal', amount, to });
 /** Lessen every debuff on the target by `amount` stacks (it never removes one outright: that is `dispel`). */
 /** Lessen every debuff by `amount` stacks, or by `pct`% of them when that is more (DECISIONS #244). */
@@ -251,6 +259,9 @@ export function plus(c: CardDef): CardDef {
       case 'barrier':
         changed = true;
         return { ...o, amount: o.amount + 3 };
+      case 'growHp':
+        changed = true;
+        return { ...o, amount: o.amount + 2 };
       case 'scry':
         changed = true;
         // a long look gains two: one more card on top of 4 is a small step

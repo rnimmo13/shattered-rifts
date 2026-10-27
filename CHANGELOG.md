@@ -5,6 +5,9 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **Kesh reworked:** her companions share her Might, she heals 6 after every won fight, and her basics no longer only cost HP (Savage Bite has Lifesteal, Blood Frenzy hits every enemy, Guard Dog brings a Hound). Her self-damage cards pay off properly now, and look-alike commons were pulled apart.
+- **Lifesteal:** some attacks heal you a share of the HP they take off.
+- **Companions that grow:** some of Kesh's, Rivet's and Dorian's cards raise a companion's max HP instead of only shielding it.
 - **Wardens are gentler on Resolve:** losing to a Warden costs 1 Resolve (an Elite still costs 2), and every Warden fight shows how much Resolve you have and what a loss would leave.
 - **Ammo Dump** adds 6 Buckshot Shells (was 8); upgraded, 6 upgraded shells. **Fire in the Hole+** scales faster (+2 per 3 consumed cards) instead of gaining flat damage.
 - **See the random cards before you choose:** an event option that trades, transforms, copies, gives, removes or upgrades a random card now shows the exact cards: what leaves your deck, and what you get.

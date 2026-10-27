@@ -93,8 +93,11 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     role: 'Hunter',
     trait: {
       name: 'Pack Instinct',
-      text: 'Start every fight with 1 Might for you and your companions.',
-      fightStart: [status('might', 1, 'allFriends')],
+      // (DECISIONS #285: her Might is the pack's, and she recovers between fights from what her own cards cost her)
+      text: 'Your companions share your Might: whatever you gain, they gain, and a new companion arrives with it. Start every fight with 1 Might. Heal 6 after every fight you win.',
+      fightStart: [status('might', 1)],
+      shareMight: true,
+      healAfterFight: 6,
     },
     hero: {
       id: 'hunter',
@@ -104,7 +107,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
       handSize: 5,
       startUnits: ['hound'],
     },
-    starter: [...rep('strike', 5), ...rep('defend', 3), 'savage-bite', 'blood-frenzy'],
+    starter: [...rep('strike', 4), ...rep('defend', 3), 'savage-bite', 'blood-frenzy', 'guard-dog'],
     blurb: 'A hunter with a Hound. Pays HP to buff the whole pack with Might.',
     buildPaths: [
       'Bloodrage: HP for Might',

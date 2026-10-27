@@ -431,9 +431,11 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
       }
       // Point Blank: more against a lone enemy
       const lone = o.lonePct ? ` Point Blank: ${o.lonePct}% more when only one enemy is left.` : '';
+      // (Lifesteal: heal that percent of the HP it took off)
+      const steal = o.lifesteal ? ` Lifesteal ${o.lifesteal}%.` : '';
       return a.equal
-        ? `Deal damage equal to ${a.num}${times}${who[o.to]}.${lone}`
-        : `Deal ${a.num} damage${times}${who[o.to]}.${lone}`;
+        ? `Deal damage equal to ${a.num}${times}${who[o.to]}.${lone}${steal}`
+        : `Deal ${a.num} damage${times}${who[o.to]}.${lone}${steal}`;
     }
     case 'loseHp': {
       const a = amountText(o.amount, o.scale);
@@ -446,6 +448,10 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
       return amountText(o.amount, o.scale).equal
         ? `Gain Barrier equal to ${amountText(o.amount, o.scale).num}${o.to === 'self' ? '' : who[o.to]}.`
         : `Gain ${at(o.amount, o.scale)} Barrier${o.to === 'self' ? '' : who[o.to]}.`;
+    case 'growHp': {
+      const n = at(o.amount, o.scale);
+      return o.to === 'target' ? `The ally gains ${n} max HP.` : `Your companions gain ${n} max HP.`;
+    }
     case 'heal': {
       const a = amountText(o.amount, o.scale);
       return `Heal ${a.equal ? `HP equal to ${a.num}` : a.num}${o.to === 'self' ? '' : who[o.to]}.`;

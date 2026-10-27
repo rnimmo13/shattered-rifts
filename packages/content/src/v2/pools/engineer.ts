@@ -5,6 +5,7 @@
 
 import type { CardDef } from '@sr/combat';
 import {
+  growHp,
   ACT,
   barrier,
   dmg,
@@ -251,9 +252,10 @@ export const ENGINEER: CardDef[] = [
     on('turnStart', [status('might', 1, 'allFriends')]),
   ]),
 
+  // (a drone that grows instead of only being shielded: DECISIONS #285)
   r('common', 'weld-armor', 'Weld Armor', 'skill', 1, 'ally', [
-    barrier(10, 'target'),
-    heal(4, 'target'),
+    growHp(6, 'target'),
+    barrier(6, 'target'),
   ]),
   r('uncommon', 'heavy-plating', 'Heavy Plating', 'power', 1, 'none', [
     on('summon', [barrier(5, 'allFriends')]),

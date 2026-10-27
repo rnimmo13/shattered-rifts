@@ -6,6 +6,8 @@
 import type { CardDef } from '@sr/combat';
 import {
   ACT,
+  growHp,
+  lifesteal,
   barrier,
   dmg,
   doubleSt,
@@ -30,15 +32,18 @@ const k = pool('hunter', 'wyldmaw');
 
 export const HUNTER: CardDef[] = [
   // --- basics ---
-  k('basic', 'savage-bite', 'Savage Bite', 'attack', 1, 'foe', [dmg(8), lose(2)]),
-  k('basic', 'blood-frenzy', 'Blood Frenzy', 'skill', 1, 'none', [
-    lose(3),
-    status('might', 2, 'allFriends'),
+  // (DECISIONS #285: her basics no longer only cost HP. Savage Bite heals off what it bites; Blood Frenzy is her early area attack)
+  k('basic', 'savage-bite', 'Savage Bite', 'attack', 1, 'foe', [lifesteal(dmg(9), 50)]),
+  k('basic', 'blood-frenzy', 'Blood Frenzy', 'attack', 1, 'none', [
+    dmg(4, 'allFoes'),
+    lose(1),
+    status('might', 1),
   ]),
 
   // --- Bloodrage ---
-  k('common', 'rend', 'Rend', 'attack', 1, 'foe', [dmg(11), lose(3)]),
-  k('common', 'twin-fang', 'Twin Fang', 'attack', 1, 'foe', [dmg(6, 'target', 2), lose(2)]),
+  // (every HP a common pays buys about 3 damage or Barrier, or something lasting: DECISIONS #285)
+  k('common', 'rend', 'Rend', 'attack', 1, 'foe', [dmg(13), lose(2)]),
+  k('common', 'twin-fang', 'Twin Fang', 'attack', 1, 'foe', [dmg(5, 'target', 2), lose(1)]),
   k('common', 'feral-instinct', 'Feral Instinct', 'skill', 0, 'none', [lose(2), draw(2)], {
     exhaust: true,
   }),
@@ -53,10 +58,10 @@ export const HUNTER: CardDef[] = [
     'skill',
     0,
     'none',
-    [lose(6), mana(2), draw(2), status('might', 1, 'allFriends')],
+    [lose(6), mana(2), draw(2), status('might', 1)],
     {
       exhaust: true,
-      up: { effects: [lose(4), mana(2), draw(2), status('might', 1, 'allFriends')] },
+      up: { effects: [lose(4), mana(2), draw(2), status('might', 1)] },
     },
   ),
   k('uncommon', 'crushing-blow', 'Crushing Blow', 'attack', 2, 'foe', [
@@ -66,7 +71,7 @@ export const HUNTER: CardDef[] = [
     dmg(6, 'target', 2),
     status('might', 1),
   ]),
-  k('uncommon', 'ravage', 'Ravage', 'attack', 2, 'none', [dmg(7, 'allFoes'), lose(3)]),
+  k('uncommon', 'ravage', 'Ravage', 'attack', 2, 'none', [dmg(9, 'allFoes'), lose(2)]),
   k('rare', 'the-hunger', 'The Hunger', 'power', 1, 'none', [lose(4), status('might', 2)]),
   k(
     'rare',
@@ -82,13 +87,16 @@ export const HUNTER: CardDef[] = [
   ),
   k('rare', 'berserker', 'Berserker', 'power', 2, 'none', [on('turnStart', [lose(2), mana(1)])]),
 
-  k('uncommon', 'berserk', 'Red Haze', 'skill', 1, 'none', [lose(4), status('might', 2)], {
+  k('uncommon', 'berserk', 'Red Haze', 'skill', 1, 'none', [lose(3), status('might', 2)], {
     exhaust: true,
   }),
 
   // (more Bloodrage)
-  k('common', 'blood-rush', 'Blood Rush', 'attack', 0, 'foe', [dmg(4), lose(1)]),
-  k('common', 'ripping-claws', 'Ripping Claws', 'attack', 1, 'none', [dmg(5, 'allFoes'), lose(1)]),
+  k('common', 'blood-rush', 'Blood Rush', 'attack', 0, 'foe', [dmg(5), lose(1)]),
+  k('common', 'ripping-claws', 'Ripping Claws', 'attack', 1, 'none', [
+    dmg(3, 'allFoes', 2),
+    lose(1),
+  ]),
   k('common', 'scavenge', 'Rummage', 'attack', 1, 'foe', [dmg(8), fetchCards(1, 'draw', 'attack')]),
   k('common', 'pound', 'Pound', 'attack', 1, 'foe', [dmg(8), draw(1), lose(1)]),
   k('common', 'bone-crack', 'Bone Crack', 'attack', 1, 'foe', [
@@ -97,7 +105,7 @@ export const HUNTER: CardDef[] = [
   ]),
   k('common', 'flesh-wound', 'Flesh Wound', 'skill', 1, 'none', [lose(2), barrier(14)]),
   k('uncommon', 'scar-tissue', 'Scar Tissue', 'power', 1, 'none', [
-    on('loseHp', [barrier(3), status('might', 1, 'allFriends', true)]),
+    on('loseHp', [barrier(3), status('might', 1, 'self', true)]),
   ]),
   k(
     'uncommon',
@@ -140,81 +148,66 @@ export const HUNTER: CardDef[] = [
   ]),
 
   // --- Pack ---
-  k('common', 'heel', 'Heel', 'summon', 1, 'none', [summon('hound')]),
+  k('common', 'heel', 'Heel', 'summon', 1, 'none', [summon('hound'), ACT]),
   k('common', 'call-gnashlings', 'Call Gnashlings', 'summon', 1, 'none', [
     summon('gnashling'),
     summon('gnashling'),
   ]),
   k('common', 'pack-tactics', 'Pack Tactics', 'skill', 1, 'none', [
-    status('might', 1, 'allFriends'),
+    status('might', 1),
     barrier(4, 'allFriends'),
   ]),
+  // (a companion that grows instead of only being shielded: DECISIONS #285)
   k('common', 'sic-em', 'Loose the Hound', 'skill', 1, 'ally', [
     status('might', 2, 'target'),
-    heal(4, 'target'),
+    growHp(4, 'target'),
   ]),
   k('common', 'howl', 'Howl', 'skill', 1, 'none', [ACT]),
-  k('common', 'thick-hide', 'Thick Hide', 'skill', 1, 'none', [barrier(5, 'allFriends')]),
-  k('uncommon', 'savage-command', 'Savage Command', 'skill', 2, 'none', [
-    ACT,
-    status('might', 1, 'allFriends'),
-  ]),
+  k('common', 'thick-hide', 'Thick Hide', 'skill', 1, 'none', [barrier(6, 'allFriends')]),
+  k('uncommon', 'savage-command', 'Savage Command', 'skill', 2, 'none', [ACT, status('might', 1)]),
   k('uncommon', 'pack-bond', 'Pack Bond', 'power', 2, 'none', [
     on('turnStart', [barrier(3, 'allFriends')]),
   ]),
-  k('rare', 'alpha-call', 'Alpha Call', 'summon', 2, 'none', [
-    summon('hound'),
-    status('might', 1, 'allFriends'),
-  ]),
-  k('rare', 'unchained', 'Unchained', 'power', 2, 'none', [status('might', 3, 'allFriends')]),
+  k('rare', 'alpha-call', 'Alpha Call', 'summon', 2, 'none', [summon('hound'), status('might', 1)]),
+  k('rare', 'unchained', 'Unchained', 'power', 2, 'none', [status('might', 3)]),
   k('rare', 'den-mother', 'Den Mother', 'summon', 3, 'none', [summon('dire-wolf')]),
 
-  k('uncommon', 'feeding-time', 'Feeding Time', 'skill', 1, 'ally', [
-    heal(8, 'target'),
-    status('might', 1, 'target'),
+  k('uncommon', 'feeding-time', 'Feeding Time', 'skill', 1, 'none', [
+    growHp(5, 'allFriends'),
+    status('might', 1),
   ]),
 
   // (more Pack)
   k('uncommon', 'rally-the-pack', 'Rally the Pack', 'skill', 2, 'none', [summon('hound'), ACT]),
   k('uncommon', 'trail-of-blood', 'Trail of Blood', 'power', 1, 'none', [
-    on('summon', [status('might', 1, 'allFriends')]),
+    on('summon', [status('might', 1)]),
   ]),
-  k(
-    'rare',
-    'pack-frenzy',
-    'Pack Frenzy',
-    'skill',
-    2,
-    'none',
-    [status('might', 2, 'allFriends'), ACT],
-    { exhaust: true },
-  ),
+  k('rare', 'pack-frenzy', 'Pack Frenzy', 'skill', 2, 'none', [status('might', 2), ACT], {
+    exhaust: true,
+  }),
   k('rare', 'wild-hunt', 'Wild Hunt', 'power', 3, 'none', [on('turnStart', [ACT])]),
 
   // --- Feast ---
   k('common', 'burn-the-weak', 'Burn the Weak', 'skill', 1, 'none', [exhaustN(1), barrier(8)]),
-  k('common', 'primal-feast', 'Primal Feast', 'skill', 1, 'none', [heal(5, 'allFriends')]),
+  k('common', 'primal-feast', 'Primal Feast', 'skill', 1, 'none', [heal(7, 'allFriends')]),
   k('common', 'bonepicker', 'Bonepicker', 'skill', 0, 'none', [barrier(3)], {
     exhaust: true,
     onExhaust: [heal(2)],
   }),
-  k('common', 'bloodscent', 'Bloodscent', 'attack', 1, 'foe', [
-    dmg(5),
-    status('might', 1, 'allFriends'),
-  ]),
+  k('common', 'bloodscent', 'Bloodscent', 'attack', 1, 'foe', [dmg(5), status('might', 1)]),
   k('uncommon', 'crimson-pact', 'Crimson Pact', 'skill', 1, 'none', [
     lose(3),
     exhaustN(1),
     draw(2),
   ]),
   k('uncommon', 'gnaw', 'Gnaw', 'attack', 1, 'foe', [scaled(dmg(5), per('exhausted', 1))]),
-  k('uncommon', 'devour', 'Devour', 'attack', 2, 'foe', [dmg(14), heal(5)]),
+  k('uncommon', 'devour', 'Devour', 'attack', 2, 'foe', [lifesteal(dmg(14), 50)]),
   k('uncommon', 'devour-ally', 'Devour Ally', 'skill', 1, 'ally', [
     heal(12, 'hero'),
     status('might', 3, 'hero'),
     sacrifice,
   ]),
-  k('uncommon', 'fell-the-prey', 'Fell the Prey', 'attack', 2, 'foe', [dmg(16), heal(6)], {
+  k('uncommon', 'fell-the-prey', 'Fell the Prey', 'attack', 2, 'foe', [lifesteal(dmg(16), 50)], {
     exhaust: true,
   }),
   k('uncommon', 'ravenous', 'Ravenous', 'power', 1, 'none', [on('exhaust', [draw(1), lose(1)])]),
@@ -232,7 +225,7 @@ export const HUNTER: CardDef[] = [
     'snare',
     1,
     'none',
-    [dmg(6, 'attacker'), status('might', 1, 'allFriends')],
+    [dmg(6, 'attacker'), status('might', 1)],
     { trigger: { on: 'attacked' } },
   ),
   k('common', 'whet-the-fangs', 'Whet the Fangs', 'skill', 0, 'none', [status('vigor', 6)]),
@@ -243,7 +236,7 @@ export const HUNTER: CardDef[] = [
   ]),
   k('legendary', 'hunger-unleashed', 'The Hunger Unleashed', 'power', 2, 'none', [
     lose(6),
-    status('might', 4, 'allFriends'),
+    status('might', 4),
     status('ritual', 2),
   ]),
   k(
@@ -253,7 +246,7 @@ export const HUNTER: CardDef[] = [
     'attack',
     3,
     'foe',
-    [scaled(dmg(10), per('might', 3)), scaled(heal(10), per('might', 2))],
+    [lifesteal(scaled(dmg(10), per('might', 3)), 75)],
     // (upgraded, it costs 2: a big one-off card gains little from +3 damage, and +4 per Might is past the guard rail for a card that
     // is consumed; DECISIONS #282)
     { exhaust: true, up: { cost: 2 } },
@@ -289,19 +282,13 @@ export const HUNTER: CardDef[] = [
   k('common', 'maddened-lunge', 'Maddened Lunge', 'attack', 1, 'foe', [
     scaled(dmg(5), per('missingPct', 1 / 5)),
   ]),
-  k(
-    'common',
-    'open-a-vein',
-    'Open a Vein',
-    'skill',
-    0,
-    'none',
-    [lose(3), status('might', 1), draw(1)],
-    { exhaust: true },
-  ),
+  k('common', 'open-a-vein', 'Open a Vein', 'skill', 0, 'none', [lose(2), status('might', 2)], {
+    exhaust: true,
+  }),
   k('common', 'bloodied-howl', 'Bloodied Howl', 'skill', 1, 'none', [
-    lose(2),
+    lose(1),
     status('exposed', 2, 'allFoes'),
+    draw(1),
   ]),
   k('uncommon', 'blood-haze', 'Blood Haze', 'attack', 2, 'none', [
     scaled(dmg(6, 'allFoes'), per('might', 1)),
@@ -332,17 +319,18 @@ export const HUNTER: CardDef[] = [
   ),
 
   // --- Pack (batch 3) ---
-  k('common', 'guard-dog', 'Guard Dog', 'skill', 1, 'none', [summon('hound'), barrier(5)]),
+  // (one of her basics now: an early companion and a shield, DECISIONS #285)
+  k('basic', 'guard-dog', 'Guard Dog', 'skill', 1, 'none', [summon('hound'), barrier(5)]),
   k('common', 'bared-teeth', 'Bared Teeth', 'skill', 1, 'none', [
     scaled(barrier(3), per('allies', 3)),
   ]),
   k('common', 'lead-the-charge', 'Lead the Charge', 'attack', 1, 'foe', [
     scaled(dmg(5), per('allies', 3)),
   ]),
-  k('uncommon', 'blood-bond', 'Blood Bond', 'skill', 1, 'ally', [
+  k('uncommon', 'blood-bond', 'Blood Bond', 'skill', 1, 'none', [
     lose(2),
-    status('might', 2, 'target'),
-    barrier(6, 'target'),
+    status('might', 2),
+    barrier(6, 'allFriends'),
   ]),
   k('uncommon', 'litter', 'Litter', 'skill', 2, 'none', [
     summon('gnashling'),
@@ -353,23 +341,20 @@ export const HUNTER: CardDef[] = [
     on('allyDies', [status('might', 2), heal(4)]),
   ]),
   k('rare', 'hunters-call', "Hunter's Call", 'power', 2, 'none', [
-    on('turnStart', [status('might', 1, 'allFriends')]),
+    on('turnStart', [status('might', 1)]),
   ]),
   k('rare', 'pack-leader', 'Pack Leader', 'power', 2, 'none', [
     on('play', [barrier(2, 'allFriends')], { filter: 'attack' }),
   ]),
 
   // --- Feast (batch 3) ---
-  k('common', 'marrow-suck', 'Marrow Suck', 'attack', 1, 'foe', [
-    dmg(7),
-    scaled(heal(2), per('exhausted', 0.5)),
-  ]),
+  k('common', 'marrow-suck', 'Marrow Suck', 'attack', 1, 'foe', [lifesteal(dmg(7), 100)]),
   k('common', 'throw-scraps', 'Throw Scraps', 'skill', 0, 'none', [exhaustN(1), mana(1)]),
   k('uncommon', 'feast-on-fear', 'Feast on Fear', 'attack', 2, 'foe', [
     dmg(12),
     scaled(heal(3), per('exposed', 2, 'target')),
   ]),
-  k('uncommon', 'gore-and-gulp', 'Gore and Gulp', 'attack', 1, 'foe', [dmg(10), heal(4)], {
+  k('uncommon', 'gore-and-gulp', 'Gore and Gulp', 'attack', 1, 'foe', [lifesteal(dmg(10), 50)], {
     exhaust: true,
   }),
   k('uncommon', 'ossuary', 'Ossuary', 'power', 1, 'none', [on('exhaust', [dmg(3, 'randomFoe')])]),

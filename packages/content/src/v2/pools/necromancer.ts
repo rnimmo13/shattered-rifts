@@ -6,6 +6,7 @@
 
 import type { CardDef } from '@sr/combat';
 import {
+  growHp,
   ACT,
   addTo,
   barrier,
@@ -161,8 +162,9 @@ export const NECROMANCER: CardDef[] = [
     status('might', 2, 'target'),
     heal(4, 'target'),
   ]),
+  // (the dead that grow instead of only being shielded: DECISIONS #285)
   g('common', 'shared-marrow', 'Shared Marrow', 'skill', 1, 'none', [
-    heal(4, 'allFriends'),
+    growHp(4),
     barrier(3, 'allFriends'),
   ]),
   g('common', 'thralls-cue', "Thrall's Cue", 'skill', 1, 'none', [ACT, barrier(4)]),
@@ -426,8 +428,8 @@ export const NECROMANCER: CardDef[] = [
     scaled(dmg(4), per('allies', 4)),
   ]),
   g('common', 'grim-mending', 'Grim Mending', 'skill', 1, 'ally', [
-    heal(12, 'target'),
-    barrier(6, 'target'),
+    growHp(8, 'target'),
+    barrier(4, 'target'),
   ]),
   g('uncommon', 'bone-rain', 'Bone Rain', 'skill', 1, 'ally', [
     dmg(13, 'allFoes'),

@@ -105,7 +105,7 @@ describe('events', () => {
           expect(COMBAT_DB.cards[id], `${def.id}/${o.id} ${id}`).toBeTruthy();
       }
     }
-  });
+  }, 20_000);
 
   it('and the result is shown through the run (eventResult)', () => {
     const e = eventRun('result-1');

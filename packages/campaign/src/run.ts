@@ -684,6 +684,9 @@ export function finishDuel(
       (1 - omenEffects(r.tier).shardsPct / 100),
   );
   r.shards += gain;
+  // a Riftwalker whose trait heals after a won fight (Kesh's Pack Instinct; DECISIONS #285)
+  const traitHeal = COMBAT_DB.heroes[r.character]?.trait?.healAfterFight;
+  if (traitHeal) heal(r, traitHeal);
   for (const id of r.boons) {
     const b = COMBAT_DB.boons[id];
     if (b?.healAfterFight) heal(r, b.healAfterFight);
