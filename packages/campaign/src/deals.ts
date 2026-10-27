@@ -9,6 +9,7 @@ import {
   canMark,
   markOf,
   markedId,
+  rollOf,
   stripRoll,
   type CardMark,
 } from '@sr/content/v2';
@@ -343,8 +344,8 @@ export function chooseable(deck: readonly string[], act: DeckChoice, mark?: Card
     case 'mark':
       return all.filter((id) => {
         const c = COMBAT_DB.cards[id];
-        // one tag per card: a tagged card is not tagged again
-        return !!c && !!mark && markOf(id) === null && canMark(c, mark);
+        // one tag per card: a tagged card is not tagged again; and a sanctified card is final, it takes no tag (DECISIONS #327)
+        return !!c && !!mark && markOf(id) === null && rollOf(id) === 0 && canMark(c, mark);
       });
   }
 }
@@ -388,6 +389,7 @@ export function applyChoice(
       return `${name} is copied.`;
     case 'mark': {
       const mark = choice.mark as CardMark;
+      if (rollOf(id) !== 0) fail('A sanctified card cannot be changed again');
       r.deck[at] = markedId(id, mark);
       return `${name} gains ${MARK_INFO[mark].name}: it ${MARK_INFO[mark].text}.`;
     }

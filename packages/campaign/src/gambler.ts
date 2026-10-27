@@ -81,13 +81,19 @@ export function diceable(deck: readonly string[]): string[] {
   ];
 }
 
-/** Cards in the deck the chisel can engrave: no tag yet, and the keyword changes something. */
+/** Cards in the deck the chisel can engrave: no tag yet, not sanctified (that is final, DECISIONS #327), and the keyword changes something. */
 export function engravable(deck: readonly string[], mark: CardMark): string[] {
   return [
     ...new Set(
       deck.filter((id) => {
         const c = COMBAT_DB.cards[stripRoll(id).replace(/\+$/, '')];
-        return markOf(id) === null && !!COMBAT_DB.cards[id] && !!c && canMark(c, mark);
+        return (
+          markOf(id) === null &&
+          rollOf(id) === 0 &&
+          !!COMBAT_DB.cards[id] &&
+          !!c &&
+          canMark(c, mark)
+        );
       }),
     ),
   ];

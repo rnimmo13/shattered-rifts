@@ -2,11 +2,13 @@
 // can walk away at any time.
 
 import { describe, expect, it } from 'vitest';
-import { COMBAT_DB, markOf, rollOf } from '@sr/content/v2';
+import { COMBAT_DB, markOf, rolledId, rollOf } from '@sr/content/v2';
 import {
   GAMBLER_TIER,
   availableNodes,
   claimTrialPrize,
+  diceable,
+  engravable,
   diceOdds,
   enterNode,
   leaveShrine,
@@ -18,6 +20,7 @@ import {
   takeShrine,
   type RunState,
 } from './index';
+import { chooseable } from './deals';
 
 /** A run standing at a shrine (the first map node, made a shrine) at this tier. */
 function shrineAt(tier: number, seed = 'gambler'): RunState {
@@ -156,5 +159,23 @@ describe("the Gambler's Shrine", () => {
       claimed++;
     }
     expect(claimed).toBeGreaterThan(0);
+  });
+});
+
+describe('a sanctified card is final (DECISIONS #327)', () => {
+  const strike = 'strike';
+  it('the dice never roll it again, and neither the chisel nor an engraver event gives it a tag', () => {
+    const rolled = rolledId(strike, 1);
+    expect(rollOf(rolled)).toBe(1);
+    const deck = [rolled, strike, 'defend'];
+    expect(diceable(deck)).not.toContain(rolled);
+    expect(diceable(deck)).toContain(strike);
+    for (const mark of ['hold', 'opening', 'flare'] as const) {
+      expect(engravable(deck, mark)).not.toContain(rolled);
+      expect(chooseable(deck, 'mark', mark)).not.toContain(rolled);
+    }
+    // a card engraved first can still be sanctified, but not the other way round
+    expect(engravable([strike], 'hold')).toContain(strike);
+    expect(chooseable([strike], 'mark', 'hold')).toContain(strike);
   });
 });
