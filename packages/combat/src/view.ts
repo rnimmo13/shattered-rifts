@@ -494,7 +494,8 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
       const a = amountText(o.amount, o.scale);
       const n = a.equal ? `HP equal to ${a.num}` : a.num;
       // healing a companion grows it instead (DECISIONS #356), so say so
-      if (o.to === 'allFriends')
+      // (only on your own cards: an enemy's units are not companions, and only heal)
+      if (o.to === 'allFriends' && who.self === WHO.self)
         return a.equal
           ? `Heal ${n}. Your companions gain as much max HP.`
           : `Heal ${n}. Your companions gain ${n} max HP.`;

@@ -32,7 +32,7 @@ function deckOf(added: readonly string[]): string[] {
 function run(kit: readonly string[]): string {
   for (const id of kit) if (!db.cards[id]) throw new Error(`No card ${id}`);
   const deck = deckOf(kit);
-  const maxHp = db.units[hero]?.maxHp ?? 80;
+  const maxHp = db.heroes[hero]?.maxHp ?? 80;
   let wins = 0;
   let turns = 0;
   let left = 0;

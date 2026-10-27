@@ -56,7 +56,7 @@ for (const hero of Object.keys(RIFTWALKERS) as HeroId[]) {
     const losses = n - wins;
     const pct = (x: number) => `${Math.round(x * 100)}%`;
     console.log(
-      `| ${db.units[hero]?.name ?? hero} | ${kit.leans} | ${pct(wins / n)} | ${(turns / n).toFixed(1)} | ${wins ? (wonTurns / wins).toFixed(1) : '-'} | ${losses ? pct(bossLeft / losses) : '-'} | ${wins ? pct(hpLeft / wins) : '-'} |`,
+      `| ${hero} | ${kit.leans} | ${pct(wins / n)} | ${(turns / n).toFixed(1)} | ${wins ? (wonTurns / wins).toFixed(1) : '-'} | ${losses ? pct(bossLeft / losses) : '-'} | ${wins ? pct(hpLeft / wins) : '-'} |`,
     );
   }
 }
