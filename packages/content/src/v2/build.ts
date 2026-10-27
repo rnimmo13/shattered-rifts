@@ -179,6 +179,7 @@ type Extra = Partial<
     | 'hero'
     | 'tags'
     | 'starCost'
+    | 'statusCost'
     | 'x'
     | 'innate'
     | 'ethereal'

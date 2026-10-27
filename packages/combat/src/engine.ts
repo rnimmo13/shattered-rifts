@@ -79,6 +79,8 @@ interface Act {
   x: number;
   /** the charge of the rune being fired */
   charge: number;
+  /** in a 'heal' trigger: the HP the heal tried to restore */
+  healed: number;
   /** a rune (totem) is firing: Resonance (Spirit) adds to its damage and Barrier */
   rune: boolean;
   /** this frame may ask the player to choose (only a card's own effects can) */
@@ -94,6 +96,7 @@ const mkAct = (actor: Unit, extra: Partial<Act> = {}): Act => ({
   inst: null,
   x: 0,
   charge: 0,
+  healed: 0,
   rune: false,
   pick: false,
   ...extra,
@@ -364,13 +367,16 @@ function attackHit(r: Run, a: Act, t: Unit, base: number, single = false): numbe
   return lost;
 }
 
-/** Heal a unit by up to `n` (never past its max HP). */
+/** Heal a unit by up to `n` (never past its max HP). A hero's side hears of the whole heal, even what full HP wasted. */
 function healUnit(r: Run, t: Unit, n: number): void {
+  if (n <= 0 || t.hp <= 0) return;
   const k = Math.min(n, t.maxHp - t.hp);
-  if (k <= 0 || t.hp <= 0) return;
-  t.hp += k;
-  r.ev.push({ type: 'heal', target: t.id, amount: k, hp: t.hp });
-  if (t.kind === 'hero') syncClutch(r, r.s.sides[t.side]);
+  if (k > 0) {
+    t.hp += k;
+    r.ev.push({ type: 'heal', target: t.id, amount: k, hp: t.hp });
+    if (t.kind === 'hero') syncClutch(r, r.s.sides[t.side]);
+  }
+  if (t.kind === 'hero') fireTriggers(r, r.s.sides[t.side], 'heal', { healed: n });
 }
 
 // --- snares ---------------------------------------------------------------------------------------------------------
@@ -462,6 +468,7 @@ function metricValue(r: Run, a: Act, m: Metric, of: Scale['of'], t: Unit | null)
     case 'might':
     case 'thorns':
     case 'mantra':
+    case 'devotion':
     case 'resonance':
     case 'doom':
     case 'calm':
@@ -507,6 +514,8 @@ function metricValue(r: Run, a: Act, m: Metric, of: Scale['of'], t: Unit | null)
       return a.x;
     case 'charge':
       return a.charge;
+    case 'healed':
+      return a.healed;
     case 'bonus':
       return a.inst?.bonus ?? 0;
   }
@@ -621,13 +630,7 @@ function execOp(r: Run, a: Act, op: Op): void {
       }
       return;
     case 'heal':
-      for (const t of resolve(r, a, op.to)) {
-        const n = Math.min(amountOf(r, a, op.amount, op.scale, t), t.maxHp - t.hp);
-        if (n <= 0) continue;
-        t.hp += n;
-        r.ev.push({ type: 'heal', target: t.id, amount: n, hp: t.hp });
-        if (t.kind === 'hero') syncClutch(r, r.s.sides[t.side]);
-      }
+      for (const t of resolve(r, a, op.to)) healUnit(r, t, amountOf(r, a, op.amount, op.scale, t));
       return;
     case 'cleanse':
       // every debuff on the target is lessened (a Doom that is lowered kills later, or not at all); `all` dispels them for good
@@ -1093,7 +1096,13 @@ function fireTriggers(
   r: Run,
   sd: SideState,
   when: TriggerWhen,
-  ctx: { card?: CardDef; target?: Unit | null; stance?: Stance; attacker?: Unit | null } = {},
+  ctx: {
+    card?: CardDef;
+    target?: Unit | null;
+    stance?: Stance;
+    attacker?: Unit | null;
+    healed?: number;
+  } = {},
 ): void {
   const played = ctx.card;
   const hero = heroOf(sd);
@@ -1114,7 +1123,15 @@ function fireTriggers(
       p.ops.some((o) => 'to' in o && (o as { to?: string }).to === 'attacker')
     )
       continue;
-    runOps(r, mkAct(hero, { target: ctx.target ?? null, attacker: ctx.attacker ?? null }), p.ops);
+    runOps(
+      r,
+      mkAct(hero, {
+        target: ctx.target ?? null,
+        attacker: ctx.attacker ?? null,
+        healed: ctx.healed ?? 0,
+      }),
+      p.ops,
+    );
   }
   r.depth--;
 }
@@ -1708,6 +1725,10 @@ export function canPlay(r: { db: CombatDb; s: CombatState }, side: Side, c: Card
   const sd = r.s.sides[side];
   if (r.s.pending) return false;
   if (cd.unplayable || costOf(r.db, sd, c) > sd.mana || (cd.starCost ?? 0) > sd.stars) return false;
+  if (cd.statusCost) {
+    const hero = sd.units.find((u) => u.kind === 'hero');
+    if (!hero || stacks(hero, cd.statusCost.status) < cd.statusCost.amount) return false;
+  }
   if (cd.kind === 'snare' && sd.snares.length >= MAX_SNARES) return false;
   if (cd.target === 'foe' && legalFoes({ ...r, ev: [], depth: 0 }, side, cd).length === 0)
     return false;
@@ -1852,6 +1873,7 @@ function playCard(r: Run, action: Extract<Action, { type: 'play' }>): void {
     sd.stars -= cd.starCost;
     r.ev.push({ type: 'stars', side, stars: sd.stars });
   }
+  if (cd.statusCost) addStatus(r, hero, cd.statusCost.status, -cd.statusCost.amount);
   r.ev.push({ type: 'play', side, card: inst.id, def: inst.card, target: target?.id ?? null });
   r.ev.push({ type: 'mana', side, mana: sd.mana });
   // (the Auras that answer Arcana being spent go off once the card is paid for)

@@ -38,7 +38,10 @@ describe('balance guard rails', () => {
   it('a card that multiplies a status is consumed, caps what it adds, and no Power multiplies one every turn', () => {
     const bad: string[] = [];
     const multiplies = (ops: readonly Op[]): boolean =>
-      ops.some((o) => o.op === 'scaleStatus' || (o.op === 'power' && multiplies(o.ops)));
+      // (a multiplier under 1 spends a status, as Sunfall spends all your Devotion: nothing to run away)
+      ops.some(
+        (o) => (o.op === 'scaleStatus' && o.mult > 1) || (o.op === 'power' && multiplies(o.ops)),
+      );
     for (const c of playable) {
       if (!multiplies(c.effects)) continue;
       if (c.kind === 'power' || !c.exhaust) bad.push(`${c.id} (not consumed)`);
@@ -60,6 +63,7 @@ describe('balance guard rails', () => {
       'created',
       'resonance',
       'mantra',
+      'devotion',
       'powers',
     ];
     const bad: string[] = [];

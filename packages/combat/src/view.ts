@@ -325,6 +325,7 @@ const METRIC_WORDS: Record<Metric, { per: string; equal: string }> = {
   might: { per: 'Might', equal: 'Might' },
   thorns: { per: 'Thorns', equal: 'Thorns' },
   mantra: { per: 'Fervor', equal: 'Fervor' },
+  devotion: { per: 'Devotion', equal: 'Devotion' },
   resonance: { per: 'Spirit', equal: 'Spirit' },
   doom: { per: 'Fate', equal: 'Fate' },
   calm: { per: 'Serene', equal: 'Serene' },
@@ -352,6 +353,7 @@ const METRIC_WORDS: Record<Metric, { per: string; equal: string }> = {
   discarded: { per: 'card discarded this turn', equal: 'the cards discarded this turn' },
   x: { per: 'Mana spent', equal: 'the Mana spent' },
   charge: { per: 'charge', equal: 'its charge' },
+  healed: { per: 'HP healed', equal: 'the HP healed' },
   bonus: { per: 'point of sharpening', equal: 'its sharpening' },
 };
 const UNIT_METRICS: readonly Metric[] = [
@@ -364,6 +366,7 @@ const UNIT_METRICS: readonly Metric[] = [
   'might',
   'thorns',
   'mantra',
+  'devotion',
   'resonance',
   'doom',
   'calm',
@@ -424,6 +427,7 @@ const WHEN_TEXT: Record<string, string> = {
   snare: 'Whenever one of your Traps is triggered',
   stance: 'Whenever you enter a stance',
   barrier: 'Whenever you gain Barrier',
+  heal: 'Whenever you heal (even at full HP)',
   loseHp: 'Whenever you lose HP to your own cards',
   draw: 'Whenever you draw a card',
   created: 'Whenever a card is created',
@@ -529,6 +533,11 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
     case 'scaleStatus': {
       const times = o.mult === 2 ? 'Double' : o.mult === 3 ? 'Triple' : `Multiply by ${o.mult}`;
       const most = o.max !== undefined ? ` (at most +${o.max})` : '';
+      // multiplying by 0 spends it all
+      if (o.mult === 0)
+        return o.to === 'self'
+          ? `Lose all your ${sname(o.status)}.`
+          : `Remove all ${sname(o.status)}${who[o.to] || ' from the target'}.`;
       if (o.status === 'doom') {
         const noun =
           o.to === 'target' ? 'the target' : who[o.to].replace(/^ to /, '') || 'the target';

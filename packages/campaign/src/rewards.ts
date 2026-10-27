@@ -1,7 +1,7 @@
 // Card rewards (03_CAMPAIGN §2.3, §2.4) for Combat v2. Offers come from the Riftwalker's own pool plus Neutral; about 1 in 10
 // is "Rift-crossed" (another Riftwalker's pool). A card that would exceed the copy limit is never offered.
 
-import { nextInt, type RngState } from '@sr/combat';
+import { nextInt, type CardDef, type RngState } from '@sr/combat';
 import {
   BOONS,
   COMBAT_DB,
@@ -43,12 +43,23 @@ export function canAdd(deck: readonly string[], cardId: string, rarityLimits = t
 }
 
 /** Cards of every other Riftwalker's pool (the Rift-crossed pool). */
+/** Statuses only one Riftwalker builds (through their trait): cards that spend or count them never cross over. */
+const OWNER_ONLY = new Set<string>(['devotion']);
+const ownerOnly = (c: CardDef | undefined): boolean =>
+  !!c &&
+  ((!!c.statusCost && OWNER_ONLY.has(c.statusCost.status)) ||
+    c.effects.some((o) => 'scale' in o && !!o.scale && OWNER_ONLY.has(o.scale.by)));
+
 export function crossedPool(hero: HeroId): string[] {
   return (Object.keys(RIFTWALKERS) as HeroId[])
     .filter((h) => h !== hero)
     .flatMap((h) =>
       rewardPool(h).filter(
-        (id) => COMBAT_DB.cards[id]?.hero === h && COMBAT_DB.cards[id]?.rarity !== 'legendary',
+        // (a card that spends or counts a status only its owner builds, like Valeria's Devotion, would be dead in another deck)
+        (id) =>
+          COMBAT_DB.cards[id]?.hero === h &&
+          COMBAT_DB.cards[id]?.rarity !== 'legendary' &&
+          !ownerOnly(COMBAT_DB.cards[id]),
       ),
     );
 }

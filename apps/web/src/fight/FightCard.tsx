@@ -7,6 +7,7 @@ import { HeroIcon } from '../ui/HeroIcon';
 import { cardArtV2, paintedCardArt } from './art';
 import '../cards/card.css';
 import { Arrow, WithArrows } from '../ui/Arrow';
+import { STATUS_INFO } from './info';
 
 const KIND_LABEL: Record<CardDef['kind'], string> = {
   attack: 'Attack',
@@ -135,6 +136,16 @@ export const FightCard = memo(
           {def.starCost ? (
             <div className="card__stars" aria-label={`Costs ${def.starCost} Arcana`}>
               <span>◆ {def.starCost}</span>
+            </div>
+          ) : null}
+          {def.statusCost ? (
+            <div
+              className={`card__stars card__stars--${def.statusCost.status}`}
+              aria-label={`Costs ${def.statusCost.amount} ${STATUS_INFO[def.statusCost.status].name}`}
+            >
+              <span>
+                {STATUS_INFO[def.statusCost.status].glyph} {def.statusCost.amount}
+              </span>
             </div>
           ) : null}
           <div className="card__type">

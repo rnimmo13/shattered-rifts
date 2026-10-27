@@ -44,7 +44,7 @@ function setup(card: CardDef, hero: HeroId): CombatState {
   const me = sd.units[sd.units.length - 1]!;
   me.hp = Math.floor(me.maxHp * 0.6);
   for (const k of ['calm', 'wrath', 'radiant'] as const) delete me.statuses[k];
-  Object.assign(me.statuses, { might: 2, thorns: 2, mantra: 1, resonance: 1 });
+  Object.assign(me.statuses, { might: 2, thorns: 2, mantra: 1, resonance: 1, devotion: 12 });
   for (const u of s.sides.b.units) Object.assign(u.statuses, { seared: 3, doom: 2 });
   // a few cards already consumed, for cards that count them
   sd.exhausted = [

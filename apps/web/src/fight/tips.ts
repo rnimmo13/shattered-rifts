@@ -65,6 +65,12 @@ export const TIP_RULES: TipRule[] = [
     when: (v) => !!hero(v)?.statuses.mantra,
   },
   {
+    id: 'devotion',
+    title: 'Devotion',
+    text: 'Every time Valeria heals she gains that much Devotion, even at full HP, so no heal is wasted. Cards with a gold cost under their Mana cost spend it: cash in a little often, or save up for one big hit.',
+    when: (v) => !!hero(v)?.statuses.devotion,
+  },
+  {
     id: 'doom',
     title: 'Fate',
     text: 'Cursing a unit with Fate does nothing until the end of its turn: then, if its HP is at or below its Fate, it dies. Stack it, double it, or hit it to bring the HP down to meet it.',

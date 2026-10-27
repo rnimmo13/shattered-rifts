@@ -133,6 +133,11 @@ export function validateDb(db: CombatDb): string[] {
     if (c.starCost !== undefined && (!Number.isInteger(c.starCost) || c.starCost < 0))
       errs.push(`${id}: bad star cost`);
     if (
+      c.statusCost !== undefined &&
+      (!Number.isInteger(c.statusCost.amount) || c.statusCost.amount <= 0)
+    )
+      errs.push(`${id}: bad status cost`);
+    if (
       c.kind === 'snare' &&
       c.trigger !== undefined &&
       c.trigger.on !== 'attacked' &&

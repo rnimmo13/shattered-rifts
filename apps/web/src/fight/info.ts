@@ -156,6 +156,12 @@ export const STATUS_INFO: Record<
     tone: 'good',
     text: 'You are hurt, and fight harder for it: you deal more attack damage (the number is the bonus, in %).',
   },
+  devotion: {
+    name: 'Devotion',
+    glyph: '✚',
+    tone: 'good',
+    text: 'Valeria gains it whenever she heals, even at full HP. Some of her cards spend it for big hits. It lasts the whole fight.',
+  },
   holdfast: {
     name: 'Holdfast',
     glyph: '✋',
@@ -285,6 +291,7 @@ export function keywordsOf(
     innate?: boolean | undefined;
     ethereal?: boolean | undefined;
     starCost?: number | undefined;
+    statusCost?: { status: string; amount: number } | undefined;
     x?: boolean | undefined;
     effects: readonly {
       op: string;
@@ -332,6 +339,10 @@ export function keywordsOf(
   if (c.innate) add(KEYWORD_INFO['innate']);
   if (c.ethereal) add(KEYWORD_INFO['ethereal']);
   if (c.starCost) add(KEYWORD_INFO['stars']);
+  if (c.statusCost) {
+    const s = STATUS_INFO[c.statusCost.status as StatusId];
+    if (s) add({ name: s.name, text: s.text });
+  }
   // whatever else the rules text names, so no word on a card is left unexplained
   const names = (hay: string, name: string): boolean => wordOf(name).test(hay);
   if (text) {

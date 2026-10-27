@@ -1,7 +1,20 @@
 // Combat v2 content: heroes, starter decks, cards, companions and encounters (docs/08_COMBAT_V2.md).
 
 import { validateDb, type CombatDb, type HeroDef, type HeroTrait } from '@sr/combat';
-import { addTo, barrier, channel, draw, forge, heal, on, stance, stars, status } from './build';
+import {
+  addTo,
+  barrier,
+  channel,
+  draw,
+  forge,
+  heal,
+  on,
+  per,
+  scaled,
+  stance,
+  stars,
+  status,
+} from './build';
 import { BOONS, HEARTS } from './boons';
 import { V2_CARDS } from './cards';
 import { RUNES } from './pools/totemist';
@@ -48,8 +61,9 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     role: 'Knight',
     trait: {
       name: 'Oathkeeper',
-      text: 'Start every fight with 6 Barrier and 6 Plating: your Barrier survives each turn up to your Plating, which shrinks by 1 a turn.',
+      text: 'Start every fight with 6 Barrier and 6 Plating: your Barrier survives each turn up to your Plating, which shrinks by 1 a turn. Whenever you heal, gain that much Devotion, even at full HP.',
       fightStart: [barrier(6), status('plating', 6)],
+      triggers: [on('heal', [scaled(status('devotion', 0), per('healed'))])],
     },
     hero: { id: 'knight', name: 'Valeria', maxHp: 80, mana: 3, handSize: 5 },
     starter: [...rep('strike', 4), ...rep('defend', 4), 'dawn-smite', 'oathbound'],
@@ -57,12 +71,12 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     buildPaths: [
       'Bulwark: hit with your Barrier',
       'Thorns: punish attackers',
-      'Devotion: heal and Shielded',
+      'Devotion: heal to build Devotion, spend it on big hits',
     ],
     howTo: [
       'Barrier soaks damage, but it falls away at the start of your next turn. Your Plating keeps some of it through the first turns.',
       'Thorns hurt whatever attacks you, so being hit can be part of the plan.',
-      'Pick a build: hit with your Barrier (Bulwark), punish attackers (Thorns), or heal and stay Shielded (Devotion).',
+      'Pick a build: hit with your Barrier (Bulwark), punish attackers (Thorns), or heal to build Devotion and spend it on big hits (Devotion).',
     ],
   },
   engineer: {

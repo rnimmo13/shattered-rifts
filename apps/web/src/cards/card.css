@@ -78,6 +78,13 @@
     0 0 18px rgb(255 140 60 / 0.8);
   z-index: 3;
 }
+.card__stars--devotion {
+  background: radial-gradient(circle at 35% 28%, #fff6d8, #e0b54a 45%, #5a3a08 100%);
+  border-color: #f3dc97;
+  box-shadow:
+    0 0 0 3px rgb(0 0 0 / 0.55),
+    0 0 18px rgb(255 220 120 / 0.8);
+}
 .card__stars span {
   font-family: var(--font-numeric);
   font-size: 46px;

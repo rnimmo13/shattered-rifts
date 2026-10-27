@@ -39,6 +39,7 @@ export type StatusId =
   | 'fortified' // you keep 75% of your Barrier at the start of your turn instead of losing it all
   | 'plating' // you keep up to this much Barrier through each turn change, and it shrinks by 1 every turn
   | 'holdfast' // your whole hand is held at the end of your turn, per stack (one turn each)
+  | 'devotion' // builds as your hero heals (even past full HP); cards spend it (permanent)
   | 'clutch'; // an innate trait's state: you deal this % more attack damage (set by the engine while you are hurt)
 export const STATUS_IDS: readonly StatusId[] = [
   'exposed',
@@ -68,6 +69,7 @@ export const STATUS_IDS: readonly StatusId[] = [
   'fortified',
   'plating',
   'holdfast',
+  'devotion',
   'clutch',
 ];
 /** Debuffs: a Steadfast unit ignores the next one put on it. */
@@ -129,6 +131,7 @@ export type Metric =
   | 'might'
   | 'thorns'
   | 'mantra'
+  | 'devotion'
   | 'resonance'
   | 'doom'
   | 'calm' // 1 while in that stance
@@ -155,6 +158,7 @@ export type Metric =
   // about the thing being resolved
   | 'x' // Mana spent on an X card
   | 'charge' // a rune's charge
+  | 'healed' // in a 'heal' trigger: the HP the heal tried to restore (past full HP too)
   | 'bonus'; // the forge bonus of the card being played
 export interface Scale {
   by: Metric;
@@ -175,6 +179,7 @@ export type TriggerWhen =
   | 'snare' // one of your Traps sprang
   | 'stance' // you entered a stance
   | 'barrier' // your hero gained Barrier (from anything)
+  | 'heal' // your hero was healed (from anything; a heal at full HP still counts, for its whole amount)
   | 'loseHp' // your hero lost HP to one of your own effects
   | 'draw' // you drew a card
   | 'created' // a card was created in one of your piles
@@ -301,6 +306,8 @@ export interface CardDef {
   tags?: string[];
   /** Stars paid on top of the Mana cost */
   starCost?: number;
+  /** stacks of a status on your hero paid on top of the Mana cost (Valeria's Devotion); unplayable without them */
+  statusCost?: { status: StatusId; amount: number };
   /** an X card: costs all your remaining Mana and the Metric 'x' is how much was spent (give it cost 0) */
   x?: boolean;
   /** an X card's "+1": X counts as this much more than the Mana spent (the "+" version of every X card has 1) */

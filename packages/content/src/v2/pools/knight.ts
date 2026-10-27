@@ -1,7 +1,7 @@
 // Valeria, the knight (Aurelion). No companions. Three build paths:
 //   Bulwark     - Barrier that scales, and hits for the Barrier you hold
 //   Thorns      - retaliation: Thorns, punishing Traps, payoffs for the Thorns you carry
-//   Devotion  - healing, Shielded and Radiant Powers
+//   Devotion    - heal to build Devotion (her trait: even at full HP), then spend it on big hits; Shielded keeps her alive meanwhile
 // Glue cards (marked) serve two build paths. Numbers assume 3 Mana and a 5-card hand.
 
 import type { CardDef } from '@sr/combat';
@@ -207,16 +207,6 @@ export const KNIGHT: CardDef[] = [
     { exhaust: true },
   ),
   m('rare', 'holy-reckoning', 'Holy Reckoning', 'attack', 2, 'none', [dmg(8, 'allFoes'), heal(6)]),
-  m(
-    'rare',
-    'last-stand',
-    'Last Stand',
-    'skill',
-    1,
-    'none',
-    [scaled(barrier(8), per('missingPct', 0.4))],
-    { exhaust: true },
-  ),
 
   // --- glue and plain strikes ---
   m('common', 'bell-toll', 'Bell Toll', 'attack', 1, 'none', [dmg(5, 'allFoes'), barrier(3)]),
@@ -311,6 +301,16 @@ export const KNIGHT: CardDef[] = [
   m('rare', 'endless-vigil', 'Endless Vigil', 'power', 2, 'none', [
     on('turnEnd', [scaled(barrier(0), per('hand', 2))]),
   ]),
+  m(
+    'rare',
+    'last-stand',
+    'Last Stand',
+    'skill',
+    1,
+    'none',
+    [scaled(barrier(8), per('missingPct', 0.4))],
+    { exhaust: true },
+  ),
 
   // --- Thorns (more) ---
   m(
@@ -356,7 +356,7 @@ export const KNIGHT: CardDef[] = [
     exhaust: true,
   }),
   m('uncommon', 'sunforged-edge', 'Sunforged Edge', 'attack', 2, 'foe', [
-    scaled(dmg(8), per('missingPct', 1 / 5)),
+    scaled(dmg(8), per('devotion', 0.5)),
   ]),
   m('uncommon', 'vigil-of-dawn', 'Vigil of Dawn', 'power', 1, 'none', [on('exhaust', [heal(2)])]),
   m('uncommon', 'consecrate', 'Sanctified Ground', 'skill', 2, 'none', [
@@ -382,4 +382,31 @@ export const KNIGHT: CardDef[] = [
     on('turnStart', [heal(1)]),
     on('turnEnd', [status('shielded', 1)]),
   ]),
+
+  // (Devotion spenders: a small hit often, a sweep, or everything at once)
+  m('common', 'lightbrand', 'Lightbrand', 'attack', 1, 'foe', [dmg(14)], {
+    statusCost: { status: 'devotion', amount: 5 },
+  }),
+  m(
+    'uncommon',
+    'hymn-of-reckoning',
+    'Hymn of Reckoning',
+    'attack',
+    1,
+    'none',
+    [dmg(12, 'allFoes')],
+    {
+      statusCost: { status: 'devotion', amount: 8 },
+    },
+  ),
+  m(
+    'rare',
+    'sunfall',
+    'Sunfall',
+    'attack',
+    2,
+    'foe',
+    [scaled(dmg(20), per('devotion', 2)), doubleSt('devotion', 'self', 0)],
+    { statusCost: { status: 'devotion', amount: 10 } },
+  ),
 ];

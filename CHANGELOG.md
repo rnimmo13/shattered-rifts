@@ -5,6 +5,7 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **Valeria: Devotion is a resource.** Whenever she heals she gains that much Devotion, even at full HP. New cards spend it: Lightbrand (5 Devotion: deal 14), Hymn of Reckoning (8 Devotion: 12 to every enemy) and Sunfall (10 Devotion: 2 damage for every Devotion you had, then it is all spent). Sunforged Edge now grows with your Devotion, and Last Stand counts as a Bulwark card.
 - **Sanctified cards are final:** the shrine's chisel and the engraver no longer put a tag on a sanctified card.
 - **Kesh:** the 1 Mana Pup card is called Summon Pup and its upgrade stays at or below the Hound. Den Mother deals its damage to the enemy that killed your ally.
 - **Kesh:** Alpha Call brings a 16 HP / 10 damage Alpha. Den Mother is now an Aura that deals 15 damage to a random enemy whenever one of your allies dies (20 upgraded). New: Whelp (1 Mana, a Pup) and Dire Wolf (3 Mana, a 24 HP / 14 damage Dire Wolf).
