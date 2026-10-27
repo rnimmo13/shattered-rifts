@@ -1362,7 +1362,11 @@ function beginHeroTurn(r: Run, side: Side): void {
   sd.nextMana = Math.min(0, rawMana);
   sd.nextDraw = 0;
   r.ev.push({ type: 'mana', side, mana: sd.mana });
-  drawCards(r, sd, sd.handSize + (first ? 1 : 0) + extraDraw);
+  // a Stunned hero is not made to skip a turn: they draw one card fewer, and the Stun is spent (DECISIONS #306)
+  const stunned = heroOf(sd);
+  const dazed = stunned && stacks(stunned, 'stunned') > 0 ? 1 : 0;
+  if (stunned && dazed) addStatus(r, stunned, 'stunned', -1);
+  drawCards(r, sd, Math.max(0, sd.handSize + (first ? 1 : 0) + extraDraw - dazed));
   const hero = heroOf(sd);
   if (!hero) return;
   const opening = r.s.turn === (side === 'a' ? 1 : 2);

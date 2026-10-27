@@ -5,6 +5,7 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **Stunned heroes:** in the Arena and against a ghost Warden, a Stunned hero draws one card fewer at the start of their next turn (before, it did nothing to a hero). Companions and enemies still skip their next action.
 - **Campaign board:** the run state is the last column, called Status.
 - **Traps are called Traps everywhere:** Master Trapper, Gleeful Trapsmith and Curtain Call said "Snare". "Trap" is now bold on cards, with its note on hover.
 - **Deep Pockets** and every card that raises your maximum Mana: the extra Mana starts on your next turn. Deep Pockets+ costs 3 (not 2) and has Hold and Opening hand.

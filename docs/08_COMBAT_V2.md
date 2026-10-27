@@ -69,7 +69,7 @@ draw 5, +1 draw for the second player in PvP (§8).
 | **Faltering** | Deals 25% less damage with attacks. |
 | **Might** | +1 damage per stack on every attack (permanent for the fight). |
 | **Bleed** | Takes damage equal to stacks at the start of its turn, then loses 1 stack. |
-| **Stunned** | Skips its next action (its intent is cancelled). |
+| **Stunned** | A companion or enemy skips its next action (its intent is cancelled). A hero (Arena, ghost) draws one card fewer at the start of their next turn instead (DECISIONS #306). |
 | **Thorns** | Deals stacks damage back to anything that hits it with an attack. |
 | **Shielded** | Ignores the next instance of damage, then pops. |
 

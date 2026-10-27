@@ -26,7 +26,7 @@ export const STATUS_INFO: Record<
     tone: 'bad',
     text: 'Bleeding: takes damage equal to its stacks at the start of its turn, then loses 1 stack.',
   },
-  stunned: { name: 'Stunned', glyph: '✖', tone: 'bad', text: 'Skips its next action.' },
+  stunned: { name: 'Stunned', glyph: '✖', tone: 'bad', text: 'A companion or enemy skips its next action. A hero draws one card fewer at the start of their next turn.' },
   thorns: {
     name: 'Thorns',
     glyph: '✱',

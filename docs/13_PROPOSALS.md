@@ -155,6 +155,13 @@ Mastery counts only runs from the day it ships; earlier runs are not counted (Ro
 
 ---
 
+### 5. Arena: queue first, choose a deck before every game (approved 2026-10-27, to build)
+
+- You queue without choosing a deck (you need at least one saved deck). **Matchmaking uses your Arena rank**, not a deck's Tier.
+- Before **each** game of the match both players pick one of their own saved decks, **blind** (neither sees the other's pick until the game starts), on a timer; when time runs out you keep the deck you last used.
+- Decks can be **any of your Riftwalkers**: a match can see each player switch between up to 3 decks, or keep one.
+- One saved deck is enough to play: it is simply picked for every game.
+
 ## Kept for later
 
 - **Daily Rift:** everyone plays the same seed with the same Riftwalker and two or three twists, one attempt a day, on

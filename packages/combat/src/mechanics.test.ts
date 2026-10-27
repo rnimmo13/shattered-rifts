@@ -1486,3 +1486,26 @@ describe('PvP sudden death (DECISIONS #259)', () => {
     expect(hero(s).hp).toBeGreaterThan(hp - 10);
   });
 });
+
+describe('a Stunned hero draws one card fewer (DECISIONS #306)', () => {
+  const pvp = (): CombatState =>
+    clone(
+      createCombat(DB, {
+        seed: 'stun',
+        a: { hero: 'tester', deck: Array<string>(20).fill('filler') },
+        b: { hero: 'tester', deck: Array<string>(20).fill('filler') },
+      }).state,
+    );
+
+  it('loses no turn: draws one fewer, and the Stun is spent', () => {
+    let s = pvp();
+    s.turn = 10;
+    const plain = end(clone(s)).state;
+    const full = plain.sides.b.hand.length;
+    heroOf(s.sides.b)!.statuses.stunned = 1;
+    s = end(s).state;
+    expect(s.active).toBe('b');
+    expect(s.sides.b.hand.length).toBe(full - 1);
+    expect(heroOf(s.sides.b)!.statuses.stunned ?? 0).toBe(0);
+  });
+});
