@@ -307,8 +307,8 @@ export function LeaderboardScreen() {
               />
               <Table<RunStanding>
                 caption={`Furthest campaign runs this ${period}`}
-                head={['Player', 'Character', 'Where they are', 'Run', 'Stages cleared']}
-                numeric={[4]}
+                head={['Player', 'Character', 'Where they are', 'Stages cleared', 'Status']}
+                numeric={[3]}
                 rows={view.board as RunStanding[]}
                 you={view.you as (RunStanding & { rank: number }) | null}
                 empty={`No runs yet this ${period}. Be the first.`}
@@ -321,11 +321,11 @@ export function LeaderboardScreen() {
                     <small>{heroName(s.hero)}</small>
                   </span>,
                   <b key="t">{progressLabel(s.tier, s.stage)}</b>,
+                  s.total,
                   // (still going, or how it ended; DECISIONS #292)
                   <span key="s" className={`board__status board__status--${s.status ?? 'live'}`}>
                     {s.status === 'fell' ? 'Fell' : s.status === 'abandoned' ? 'Abandoned' : 'Live'}
                   </span>,
-                  s.total,
                 ]}
               />
             </>

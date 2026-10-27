@@ -148,7 +148,14 @@ export function describeIntent(db: CombatDb, s: CombatState, u: Unit): IntentVie
     name: mv.name,
     text: mv.effects.map((o) => opText(db, o, WHO_ENEMY)).join(' '),
     icons: opIcons(mv.effects),
-    damage: first ? modifiedDamage(first.amount, u, first.to === 'target' ? target : null) : null,
+    // (an enemy's Vigor adds to its next attack: the intent counts it)
+    damage: first
+      ? modifiedDamage(
+          first.amount + (u.statuses.vigor ?? 0),
+          u,
+          first.to === 'target' ? target : null,
+        )
+      : null,
     hits: first ? dmg.reduce((n, o) => n + (o.hits ?? 1), 0) : 0,
     target: u.intent.target,
   };
@@ -564,7 +571,8 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
     case 'scry':
       return `Foresee ${o.amount}.`;
     case 'power': {
-      const KIND_WORD: Record<string, string> = { power: 'Aura' };
+      // (a card kind by its player-facing name: an Aura, a Trap; DECISIONS #304)
+      const KIND_WORD: Record<string, string> = { power: 'Aura', snare: 'Trap' };
       const when =
         o.when === 'play'
           ? `Whenever you play ${o.tag ? `${article(TAG_NAMES[o.tag] ?? o.tag)} ${TAG_NAMES[o.tag] ?? o.tag}` : o.filter ? `${article(KIND_WORD[o.filter] ?? o.filter)} ${KIND_WORD[o.filter] ?? cap(o.filter)}` : 'a card'}`
@@ -598,7 +606,11 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
     case 'revive':
       return 'Your most recently fallen ally returns with half its HP.';
     case 'fetch': {
-      const what = o.tag ? (TAG_NAMES[o.tag] ?? o.tag) : o.kind ? `${cap(o.kind)} card` : 'card';
+      const what = o.tag
+        ? (TAG_NAMES[o.tag] ?? o.tag)
+        : o.kind
+          ? `${KIND_PLURAL[o.kind]?.[0] ?? cap(o.kind)} card`
+          : 'card';
       const n = o.amount === 1 ? `a random ${what}` : `${o.amount} random ${what}s`;
       return o.to === 'draw'
         ? `Put ${n} from your discard pile on top of your draw pile.`

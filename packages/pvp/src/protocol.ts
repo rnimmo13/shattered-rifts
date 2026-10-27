@@ -44,7 +44,7 @@ export interface Entry {
  * the old rules is ended rather than replayed under the new ones (DECISIONS #237).
  */
 // (5: the 0.71-0.85 card changes, Lifesteal, growing companions and Kesh's shared Might, DECISIONS #287; 6: Obsidia's Arcana, #288)
-export const RULES_VERSION = 6;
+export const RULES_VERSION = 7;
 
 export type ClientMsg =
   /** to the queue: wait for an opponent */

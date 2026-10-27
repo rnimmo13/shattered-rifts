@@ -5,6 +5,8 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **Campaign board:** the run state is the last column, called Status.
+- **Traps are called Traps everywhere:** Master Trapper, Gleeful Trapsmith and Curtain Call said "Snare". "Trap" is now bold on cards, with its note on hover.
 - **Deep Pockets** and every card that raises your maximum Mana: the extra Mana starts on your next turn. Deep Pockets+ costs 3 (not 2) and has Hold and Opening hand.
 - **See upgrades on hover:** the card library, your Grimoire and every deck view show the upgraded card beside the one you hover.
 - **Sandbox:** the book is no longer split by build path, and ticking Upgraded (+) keeps you on the same page.

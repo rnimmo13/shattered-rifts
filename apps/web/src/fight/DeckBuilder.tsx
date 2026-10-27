@@ -146,8 +146,11 @@ export function DeckBuilder(props: {
               <input
                 type="checkbox"
                 checked={filter.upgraded}
-                // (the "+" cards sit where their plain ones do: the book stays on the same pages, with no page turn)
-                onChange={(e) => setFilter({ ...filter, upgraded: e.target.checked })}
+                // (the book stays on the same pages, with no page turn: most "+" cards sit where their plain ones do)
+                onChange={(e) => {
+                  setFilter({ ...filter, upgraded: e.target.checked });
+                  setHover(null);
+                }}
               />
               <span>Upgraded (+)</span>
             </label>

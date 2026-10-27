@@ -11,7 +11,7 @@ const order = { basic: 0, common: 1, uncommon: 2, rare: 3, legendary: 4, ancestr
 const row = (c: (typeof cards)[number]): string => {
   const cost = c.x ? 'X' : String(c.cost) + (c.starCost ? `+${c.starCost}◆` : '');
   const text = cardText(db, c).replace(/\|/g, '/');
-  return `| ${c.name} | ${cost} | ${c.kind} | ${c.rarity ?? ''} | ${text} |`;
+  return `| ${c.name} | ${cost} | ${c.kind === 'snare' ? 'trap' : c.kind === 'power' ? 'aura' : c.kind} | ${c.rarity ?? ''} | ${text} |`;
 };
 
 const table = (list: typeof cards): string[] => [

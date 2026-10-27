@@ -382,3 +382,6 @@ No Boons (DECISIONS #236). Turn-one ceilings (deck optimizer, `pnpm audit:balanc
 Bot-drafted Arena matches (`tools/src/arenasim.ts`, the ghost pilot on both seats, no Boons): HP x3 / x5 / x6 / x8 -> median rounds 8 / 10 / 12 / 13-15; nobody died having had only one or two turns at any multiplier; seat a wins 40-51%. Biggest single turn (p90): 44% / 36% / 35% / 28% of max HP at Tier X.
 
 Ghost Wardens (`arenasim --ghost`): player deck and Boons of a level against another Riftwalker's deck of the same level. Bot win %: the old formula (1.65 + 0.07/tier, no damage) 46 / 31 / 40 at Tiers V / X / XX; the full tier table on a ghost 1-8%; the chosen growth (1.3x base at Tier IV, then the table's rise since Tier IV stage 1, HP and damage) about 45 / 13 / 14; the usual Warden 44 / 15 / 14.
+
+## Max-Mana cards pay from the next turn (2026-10-27, DECISIONS #302)
+Open question: with no Mana back on the turn they are played, Blood Pact (1, lose 6 HP), Attunement (2, consume), Last Call, Root Tap and The Long Memory all cost a turn's tempo now. Watch whether they still get picked. The bot puts no value on max Mana, so sims undervalue them.

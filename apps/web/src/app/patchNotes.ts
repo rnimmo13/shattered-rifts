@@ -29,6 +29,61 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.90.0',
+    date: '2026-10-27',
+    title: 'Kesh, Auras and the Arena page',
+    summary:
+      'Kesh is toned down early, Auras say how long they last, the battle log shows more, and the Arena page shows who is queued.',
+    notes: [
+      {
+        kind: 'balance',
+        text: 'Kesh: the cards that call her pack bring a companion by their rarity: a Pup (6 HP) from Guard Dog and Heel, a Hound (10 HP) from Rally the Pack, a Pack Alpha (14 HP) from Alpha Call. Her companions share half her Might (rounded down), not all of it.',
+      },
+      {
+        kind: 'balance',
+        text: 'Cards that raise your maximum Mana (Deep Pockets and others) start paying on your next turn, not the turn you play them. Deep Pockets+ costs 3 again and has Hold and Opening hand.',
+      },
+      {
+        kind: 'balance',
+        text: 'Rift Resonance gives 1 Might, and 1 more every time your deck is reshuffled (it gave 2 Might once).',
+      },
+      {
+        kind: 'balance',
+        text: 'A run holds one Legendary Boon at most: once you have one, no other is offered.',
+      },
+      {
+        kind: 'changed',
+        text: 'Auras that give you a status once now say it lasts the rest of the fight, and cards that give you a status say "Gain" instead of "Apply".',
+      },
+      {
+        kind: 'new',
+        text: 'The battle log shows how hard an enemy move hits ("Gilded Squire uses Slash (9)") and the HP before and after every hit or heal.',
+      },
+      {
+        kind: 'new',
+        text: 'The Arena page shows how many players are looking for a match. Making or joining a friend’s room has its own panel, and the room code box shows its hint in full.',
+      },
+      {
+        kind: 'changed',
+        text: 'Hovering a card in the card library, your Grimoire or a deck shows its upgrade beside it. In the sandbox the book is no longer split by build path, and ticking Upgraded keeps your page.',
+      },
+      {
+        kind: 'changed',
+        text: 'Constructed decks are gone: the Arena only ever takes decks saved from a campaign run.',
+      },
+      {
+        kind: 'changed',
+        text: 'The campaign board’s last column, Status, says whether each run is Live, Fell or was Abandoned. An enemy’s intent counts its Vigor.',
+      },
+      {
+        kind: 'fixed',
+        text: 'Master Trapper, Gleeful Trapsmith and Curtain Call said "Snare": they say Trap now. Trap is bold on cards, with its note on hover.',
+      },
+    ],
+    heads:
+      'Cards and the rules changed: reload if the game asks you to. Arena games and replays from before this version can no longer be watched.',
+  },
+  {
     version: '0.89.0',
     date: '2026-10-26',
     title: 'Board status',

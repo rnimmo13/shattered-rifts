@@ -57,7 +57,8 @@ export function filterCatalog(
 ): CatalogCard[] {
   const q = f.text.trim().toLowerCase();
   return cards.filter((c) => {
-    if (c.upgraded !== f.upgraded) return false;
+    // (a card with no "+" version, a token say, is shown either way)
+    if (c.upgraded !== f.upgraded && !(f.upgraded && !c.def.upgrade)) return false;
     // a token has no "+" version: show it either way
     if (f.pool !== 'all' && c.pool !== f.pool) return false;
     if (f.rarity !== 'all' && (c.def.rarity ?? 'common') !== f.rarity) return false;

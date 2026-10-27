@@ -24,3 +24,14 @@ describe('the words on a card are explained', () => {
     expect(keys).toContain('Radiant');
   });
 });
+
+describe('Traps are explained wherever a card names them (DECISIONS #304)', () => {
+  it('a card that says "Trap" gets the Trap note, and no card says "Snare"', () => {
+    const def = db.cards['gleeful-trapsmith']!;
+    const text = cardText(db, def);
+    expect(text).toContain('Trap');
+    expect(keywordsOf(def, () => false, text).some((k) => k.name === 'Trap')).toBe(true);
+    for (const c of Object.values(db.cards))
+      expect(cardText(db, c)).not.toMatch(/snare/i);
+  });
+});

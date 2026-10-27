@@ -1363,6 +1363,8 @@ describe('an Aura that answers Arcana being spent (DECISIONS #288)', () => {
 describe('events carry what the battle log needs', () => {
   it('an enemy attack says its damage per hit, and every hit and heal says the HP after', () => {
     let c = clone(start(['cultist'], ['strike', 'strike', 'strike', 'strike', 'strike']));
+    // (Vigor adds to the next attack: the logged number counts it)
+    foe(c).statuses.vigor = 3;
     let seen = false;
     for (let turn = 0; turn < 4 && !seen && !c.winner; turn++) {
       const out = applyAction(db, c, { type: 'endTurn' });

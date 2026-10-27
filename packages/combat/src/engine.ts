@@ -1261,16 +1261,21 @@ function actEnemy(r: Run, u: Unit): void {
     r.s.sides[other(u.side)].units.some((x) => x.kind === 'ally' && x.hp > 0);
   if (!target || target.hp <= 0 || target.side === u.side || taunted || bypassed)
     target = pickFoe(r, u, d.brain.foe ?? 'hero') ?? undefined;
-  // (what the move's first attack deals per hit, as its intent showed it: the battle log names it "Slash (9)")
-  const hit = mv.effects.find((o) => o.op === 'damage');
+  // (what the move's first attack deals per hit, as its intent shows it, Vigor counted: the battle log names it "Slash (9)")
+  const hits = mv.effects.filter((o) => o.op === 'damage');
+  const hit = hits[0];
   r.ev.push({
     type: 'act',
     unit: u.id,
     move: it.move,
     ...(hit?.op === 'damage' && !hit.scale
       ? {
-          damage: modifiedDamage(hit.amount, u, hit.to === 'target' ? (target ?? null) : null),
-          hits: hit.hits ?? 1,
+          damage: modifiedDamage(
+            hit.amount + stacks(u, 'vigor'),
+            u,
+            hit.to === 'target' ? (target ?? null) : null,
+          ),
+          hits: hits.reduce((n, o) => n + (o.op === 'damage' ? (o.hits ?? 1) : 0), 0),
         }
       : {}),
   });
