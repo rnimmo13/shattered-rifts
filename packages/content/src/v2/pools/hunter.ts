@@ -33,7 +33,10 @@ const k = pool('hunter', 'wyldmaw');
 export const HUNTER: CardDef[] = [
   // --- basics ---
   // (DECISIONS #285: her basics no longer only cost HP. Savage Bite heals off what it bites; Blood Frenzy is her early area attack)
-  k('basic', 'savage-bite', 'Savage Bite', 'attack', 1, 'foe', [lifesteal(dmg(9), 50)]),
+  // (a basic: 8, and its upgrade only +2; DECISIONS #308)
+  k('basic', 'savage-bite', 'Savage Bite', 'attack', 1, 'foe', [lifesteal(dmg(8), 50)], {
+    up: { effects: [lifesteal(dmg(10), 50)] },
+  }),
   k('basic', 'blood-frenzy', 'Blood Frenzy', 'attack', 1, 'none', [
     dmg(4, 'allFoes'),
     lose(1),
@@ -42,7 +45,10 @@ export const HUNTER: CardDef[] = [
 
   // --- Bloodrage ---
   // (every HP a common pays buys about 3 damage or Barrier, or something lasting: DECISIONS #285)
-  k('common', 'rend', 'Rend', 'attack', 1, 'foe', [dmg(13), lose(2)]),
+  // (one of her basics now, in Guard Dog's place: DECISIONS #308)
+  k('basic', 'rend', 'Rend', 'attack', 1, 'foe', [dmg(9), lose(2), status('might', 1)], {
+    up: { effects: [dmg(12), lose(2), status('might', 1)] },
+  }),
   k('common', 'twin-fang', 'Twin Fang', 'attack', 1, 'foe', [dmg(5, 'target', 2), lose(1)]),
   k('common', 'feral-instinct', 'Feral Instinct', 'skill', 0, 'none', [lose(2), draw(2)], {
     exhaust: true,
@@ -322,7 +328,7 @@ export const HUNTER: CardDef[] = [
   ),
 
   // --- Pack (batch 3) ---
-  // (one of her basics now: an early companion and a shield, DECISIONS #285)
+  // (no longer in her starting deck, DECISIONS #308: kept so decks that hold it still load)
   k('basic', 'guard-dog', 'Guard Dog', 'skill', 1, 'none', [summon('pup'), barrier(5)]),
   k('common', 'bared-teeth', 'Bared Teeth', 'skill', 1, 'none', [
     scaled(barrier(3), per('allies', 3)),

@@ -47,6 +47,11 @@ interface Bot {
   paused: boolean;
   /** what this player answers when asked who goes first */
   wantsFirst: boolean;
+  /** with several decks: the one this player picks before each game (DECISIONS #307) */
+  pickDeck?: number;
+  /** this player has answered for the coming game (the server may ask again as the other answers) */
+  answered?: boolean;
+  picked?: boolean;
   toss: { random: boolean } | null;
   /** a game of the best of three is over and the next has not started */
   between: boolean;
@@ -94,10 +99,19 @@ const send = (b: Bot, m: ClientMsg): void =>
 
 function handle(b: Bot, m: ServerMsg): void {
   if (m.type === 'choose') {
-    // (between games only the player who lost is asked; the other waits)
-    if (!m.chosen && m.chooser !== false && !b.paused) send(b, { type: 'order', first: b.wantsFirst });
+    // a deck first (with several), then the order (between games only the player who lost is asked; the other waits)
+    if (m.pick === null && m.decks.length > 1 && b.pickDeck !== undefined && !b.paused && !b.picked) {
+      b.picked = true;
+      send(b, { type: 'pick', deck: b.pickDeck });
+    }
+    if (!m.chosen && m.chooser !== false && !b.paused && !b.answered) {
+      b.answered = true;
+      send(b, { type: 'order', first: b.wantsFirst });
+    }
   } else if (m.type === 'start') {
     b.between = false;
+    b.answered = false;
+    b.picked = false;
     b.toss = m.toss;
     b.seat = m.seat;
     b.replay = m.replay;
@@ -145,14 +159,14 @@ async function playRoom(
   send(a, {
     type: 'join',
     playerId: a.id,
-    entry: { ...entryOf('knight', names[0]), ...(who ? { who: who[0] } : {}) },
+    decks: [{ ...entryOf('knight', names[0]), ...(who ? { who: who[0] } : {}) }],
   });
   await until(() => a.inbox.some((m) => m.type === 'waiting'), 'the waiting message');
   const b = await connect(`/pvp/room/${code}`, 'Bob', 'player-bob');
   send(b, {
     type: 'join',
     playerId: b.id,
-    entry: { ...entryOf('hunter', names[1]), ...(who ? { who: who[1] } : {}) },
+    decks: [{ ...entryOf('hunter', names[1]), ...(who ? { who: who[1] } : {}) }],
   });
   await until(() => a.match !== null && b.match !== null, 'both starts');
   if (who) {
@@ -170,7 +184,7 @@ async function playRoom(
     a.ws.close();
     await sleep(300);
     const again = await connect(`/pvp/room/${code}`, 'Ann', a.id);
-    send(again, { type: 'join', playerId: again.id, entry: entryOf('knight', 'Ann') });
+    send(again, { type: 'join', playerId: again.id, decks: [entryOf('knight', 'Ann')] });
     await until(() => again.match !== null, 'the rejoin');
     // the rejoined player replays every move so far, then plays on
     await until(() => again.ended !== null || b.ended !== null, 'the end after a rejoin');
@@ -193,12 +207,55 @@ async function playRoom(
   b.ws.close();
 }
 
+/** Both players bring several decks and pick before each game: the picks are played, and neither sees the other's decks first. */
+async function deckPicks(tag: string): Promise<void> {
+  const code = `PICKS${tag}`;
+  console.log(`deck picks: room ${code}`);
+  const a = await connect(`/pvp/room/${code}`, 'Ann', 'pick-ann');
+  a.pickDeck = 1;
+  send(a, {
+    type: 'join',
+    playerId: a.id,
+    decks: [entryOf('knight', 'Ann'), entryOf('hunter', 'Ann')],
+  });
+  await until(() => a.inbox.some((m) => m.type === 'waiting'), 'the waiting message');
+  const b = await connect(`/pvp/room/${code}`, 'Bob', 'pick-bob', false);
+  b.pickDeck = 2;
+  send(b, {
+    type: 'join',
+    playerId: b.id,
+    decks: [entryOf('engineer', 'Bob'), entryOf('trapper', 'Bob'), entryOf('spellblade', 'Bob')],
+  });
+  await until(() => a.match !== null && b.match !== null, 'both starts');
+  // before the game, nothing about the other's decks was sent: only their name and badges
+  for (const [bot, foeHeroes] of [
+    [a, ['engineer', 'trapper', 'spellblade']],
+    [b, ['knight', 'hunter']],
+  ] as const)
+    for (const m of bot.inbox)
+      if (m.type === 'choose') {
+        if ('hero' in m.foe || 'deck' in m.foe) throw new Error('a choose message showed the foe deck');
+        if (foeHeroes.some((h) => JSON.stringify(m).includes(`"${h}"`)))
+          throw new Error(`${bot.name} was told the other's Riftwalkers before the game`);
+      }
+  const start = a.inbox.find((m) => m.type === 'start') as Extract<ServerMsg, { type: 'start' }>;
+  const mine = a.seat === 'a' ? start.a : start.b;
+  const theirs = a.seat === 'a' ? start.b : start.a;
+  if (mine.hero !== 'hunter' || theirs.hero !== 'spellblade')
+    throw new Error(`the picks were not played: ${mine.hero} vs ${theirs.hero}`);
+  await until(() => a.ended !== null && b.ended !== null, 'the end', 600_000);
+  if (a.desync || b.desync) throw new Error(`desync: ${a.desync ?? b.desync}`);
+  console.log(`  ok: Ann played Hunter, Bob played Obsidia, over ${a.games} games`);
+  a.ws.close();
+  b.ws.close();
+}
+
 async function playQueue(): Promise<void> {
   console.log('queue:');
   const a = await connect('/pvp/queue', 'Cat', 'player-cat');
-  send(a, { type: 'queue', playerId: a.id, entry: entryOf('trapper', 'Cat', 1) });
+  send(a, { type: 'queue', playerId: a.id, decks: [entryOf('trapper', 'Cat', 1)] });
   const b = await connect('/pvp/queue', 'Dan', 'player-dan');
-  send(b, { type: 'queue', playerId: b.id, entry: entryOf('engineer', 'Dan', 2) });
+  send(b, { type: 'queue', playerId: b.id, decks: [entryOf('engineer', 'Dan', 2)] });
   await until(
     () => a.inbox.some((m) => m.type === 'matched') && b.inbox.some((m) => m.type === 'matched'),
     'a match',
@@ -212,9 +269,9 @@ async function playQueue(): Promise<void> {
   if (room !== other) throw new Error('the two players were sent to different rooms');
   console.log(`  matched into ${room}`);
   const ca = await connect(`/pvp/room/${room}`, 'Cat', a.id, true);
-  send(ca, { type: 'join', playerId: ca.id, entry: entryOf('trapper', 'Cat', 1) });
+  send(ca, { type: 'join', playerId: ca.id, decks: [entryOf('trapper', 'Cat', 1)] });
   const cb = await connect(`/pvp/room/${room}`, 'Dan', b.id, false);
-  send(cb, { type: 'join', playerId: cb.id, entry: entryOf('engineer', 'Dan', 2) });
+  send(cb, { type: 'join', playerId: cb.id, decks: [entryOf('engineer', 'Dan', 2)] });
   await until(() => ca.match !== null && cb.match !== null, 'both starts');
   // they asked for different things, so they get them: no coin, Cat first, Dan second with more HP
   if (ca.seat !== 'a' || cb.seat !== 'b' || ca.toss?.random !== false)
@@ -237,20 +294,20 @@ async function refusals(): Promise<void> {
   send(bad, {
     type: 'join',
     playerId: bad.id,
-    entry: { name: 'Eve', hero: 'knight', deck: ['strike'], boons: [], tier: 1 },
+    decks: [{ name: 'Eve', hero: 'knight', deck: ['strike'], boons: [], tier: 1 }],
   });
   await until(() => bad.inbox.some((m) => m.type === 'error'), 'a deck error');
   console.log(`  a one-card deck: ${(bad.inbox[0] as { message: string }).message}`);
   const full = `FULL${rnd()}`;
   const p1 = await connect(`/pvp/room/${full}`, 'p1', 'p1');
-  send(p1, { type: 'join', playerId: 'p1', entry: entryOf('knight', 'p1') });
+  send(p1, { type: 'join', playerId: 'p1', decks: [entryOf('knight', 'p1')] });
   const p2 = await connect(`/pvp/room/${full}`, 'p2', 'p2');
-  send(p2, { type: 'join', playerId: 'p2', entry: entryOf('hunter', 'p2') });
+  send(p2, { type: 'join', playerId: 'p2', decks: [entryOf('hunter', 'p2')] });
   await until(() => p1.match !== null && p2.match !== null, 'a start');
   p1.paused = true;
   p2.paused = true;
   const p3 = await connect(`/pvp/room/${full}`, 'p3', 'p3');
-  send(p3, { type: 'join', playerId: 'p3', entry: entryOf('engineer', 'p3') });
+  send(p3, { type: 'join', playerId: 'p3', decks: [entryOf('engineer', 'p3')] });
   await until(() => p3.inbox.some((m) => m.type === 'error'), 'room full');
   console.log('  a third player: refused as expected');
   // a move out of turn is refused and changes nothing
@@ -274,12 +331,12 @@ async function refusals(): Promise<void> {
   // a player who leaves before the match starts does not leave a ghost in the seat
   const ghostRoom = `GHOST${rnd()}`;
   const g1 = await connect(`/pvp/room/${ghostRoom}`, 'g1', 'g1');
-  send(g1, { type: 'join', playerId: 'g1', entry: entryOf('knight', 'g1') });
+  send(g1, { type: 'join', playerId: 'g1', decks: [entryOf('knight', 'g1')] });
   await until(() => g1.inbox.some((m) => m.type === 'waiting'), 'g1 waiting');
   g1.ws.close();
   await sleep(300);
   const g2 = await connect(`/pvp/room/${ghostRoom}`, 'g2', 'g2');
-  send(g2, { type: 'join', playerId: 'g2', entry: entryOf('hunter', 'g2') });
+  send(g2, { type: 'join', playerId: 'g2', decks: [entryOf('hunter', 'g2')] });
   await until(() => g2.inbox.length > 0, 'a reply for g2');
   if (g2.inbox.some((m) => m.type === 'start'))
     throw new Error('a match started against a player who had left');
@@ -483,14 +540,14 @@ async function ghost(tag: string): Promise<void> {
   const entry = { ...entryOf('spellblade', name), who: me };
   // a queue socket asks for a ghost, and is sent to a room
   const q = await connect('/pvp/queue', name, `player-${name}`);
-  send(q, { type: 'ghost', playerId: q.id, entry });
+  send(q, { type: 'ghost', playerId: q.id, decks: [entry] });
   await until(() => q.inbox.some((m) => m.type === 'matched' || m.type === 'error'), 'a ghost');
   const found = q.inbox.find((m) => m.type === 'matched' || m.type === 'error') as ServerMsg;
   if (found.type !== 'matched' || found.ghost !== true)
     throw new Error(`no ghost was offered: ${JSON.stringify(found)}`);
   console.log(`  a ghost was found: room ${found.room}`);
   const a = await connect(`/pvp/room/${found.room}`, name, q.id, true);
-  send(a, { type: 'join', playerId: a.id, entry });
+  send(a, { type: 'join', playerId: a.id, decks: [entry] });
   await until(() => a.match !== null, 'the match to start', 30_000);
   const start = a.inbox.find((m) => m.type === 'start') as Extract<ServerMsg, { type: 'start' }>;
   if (start.ghost === undefined || start.ghost === a.seat)
@@ -536,7 +593,7 @@ async function watchAndReplay(tag: string): Promise<void> {
   const hex = (): string =>
     Array.from({ length: 64 }, () => '0123456789abcdef'[Math.floor(Math.random() * 16)]).join('');
   const a = await connect(`/pvp/room/${code}`, 'Ann', 'player-ann-w');
-  send(a, { type: 'join', playerId: a.id, entry: { ...entryOf('knight', 'Ann'), who: hex() } });
+  send(a, { type: 'join', playerId: a.id, decks: [{ ...entryOf('knight', 'Ann'), who: hex() }] });
   await until(() => a.inbox.some((m) => m.type === 'waiting'), 'the waiting message');
   // a watcher before the match: told it has not begun, then shown it (it never plays: paused)
   const w = await connect(`/pvp/room/${code}`, 'Watcher', 'watcher');
@@ -544,7 +601,7 @@ async function watchAndReplay(tag: string): Promise<void> {
   w.ws.send(JSON.stringify({ type: 'watch', rules: RULES_VERSION }));
   await until(() => w.inbox.some((m) => m.type === 'waiting'), 'the watcher to be told to wait');
   const b = await connect(`/pvp/room/${code}`, 'Bob', 'player-bob-w');
-  send(b, { type: 'join', playerId: b.id, entry: { ...entryOf('hunter', 'Bob'), who: hex() } });
+  send(b, { type: 'join', playerId: b.id, decks: [{ ...entryOf('hunter', 'Bob'), who: hex() }] });
   await until(() => w.match !== null, 'the watcher to see the start');
   const start = w.inbox.find((m) => m.type === 'start') as Extract<ServerMsg, { type: 'start' }>;
   if (start.watching !== true || start.seat !== 'a') throw new Error('the watcher was not told it is watching');
@@ -578,6 +635,7 @@ const health = await fetch(`${BASE.replace(/^ws/, 'http')}/pvp/health`);
 console.log('health:', await health.text());
 const tag = rnd();
 await playRoom(`SMOKE${tag}`, 'friend code');
+await deckPicks(tag);
 await playQueue();
 await playRoom(`REJOIN${tag}`, 'friend code with a rejoin', true);
 await refusals();

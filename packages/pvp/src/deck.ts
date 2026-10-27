@@ -10,7 +10,7 @@ import {
   canonicalHero,
   stripRoll,
 } from '@sr/content/v2';
-import type { Entry } from './protocol';
+import { MAX_MATCH_DECKS, type Entry } from './protocol';
 
 export const MAX_DECK = 80;
 export const MAX_NAME = 24;
@@ -244,4 +244,29 @@ export function checkArenaEntry(raw: unknown): Checked | Rejected {
       message: `The Arena takes decks with at most ${V2_DECK_RULES.maxAncestral} Ancestral cards; this one holds ${ancestral}.`,
     };
   return checked;
+}
+
+/**
+ * Check the decks a player brings to a match (DECISIONS #307): 1 to MAX_MATCH_DECKS, each one fit for the Arena. They are one player's,
+ * so every deck carries the first one's name and board id. Any deck that fails refuses the lot (the browser only sends decks that pass).
+ */
+export function checkArenaDecks(raw: unknown): { ok: true; decks: Entry[] } | Rejected {
+  if (!Array.isArray(raw) || raw.length === 0) return { ok: false, message: 'No deck was sent.' };
+  if (raw.length > MAX_MATCH_DECKS)
+    return { ok: false, message: `Bring at most ${MAX_MATCH_DECKS} decks to a match.` };
+  const decks: Entry[] = [];
+  for (const d of raw as unknown[]) {
+    const c = checkArenaEntry(d);
+    if (!c.ok) return c;
+    decks.push(c.entry);
+  }
+  const first = decks[0] as Entry;
+  return {
+    ok: true,
+    decks: decks.map((e) => {
+      const { who: _who, ...rest } = e;
+      void _who;
+      return { ...rest, name: first.name, ...(first.who ? { who: first.who } : {}) };
+    }),
+  };
 }

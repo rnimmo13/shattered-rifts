@@ -107,7 +107,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
       handSize: 5,
       startUnits: ['hound'],
     },
-    starter: [...rep('strike', 4), ...rep('defend', 3), 'savage-bite', 'blood-frenzy', 'guard-dog'],
+    starter: [...rep('strike', 4), ...rep('defend', 3), 'savage-bite', 'blood-frenzy', 'rend'],
     blurb: 'A hunter with a Hound. Pays HP to buff the whole pack with Might.',
     buildPaths: [
       'Bloodrage: HP for Might',

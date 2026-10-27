@@ -1,8 +1,8 @@
-// #/pvp: duel another player with a deck saved from a campaign run (the only decks the Arena takes). Pick one from your Vault,
-// then find a match from the queue or play a friend with a room code.
+// #/pvp: duel another player with decks saved from campaign runs (the only decks the Arena takes). Find a match from the queue,
+// fight a ghost or play a friend with a room code; every deck in your Vault comes along, and you choose one before each game.
 
 import { useEffect, useRef, useState } from 'react';
-import { QUEUE_WIDEN_MS, checkArenaEntry } from '@sr/pvp';
+import { MAX_MATCH_DECKS, QUEUE_WIDEN_MS, checkArenaEntry, type Entry } from '@sr/pvp';
 import { COMBAT_DB } from '@sr/content/v2';
 import { FightView } from '../fight/FightView';
 import { arenaFor } from './arenaVenue';
@@ -48,7 +48,6 @@ export default function PvpScreen() {
   const touched = useRef(false);
   // only banked decks can be taken into the Arena
   const decks = vault;
-  const [deckId, setDeckId] = useState<string>(() => decks[0]?.id ?? '');
   const [name, setNameState] = useState(() => getName());
   const [code, setCode] = useState('');
   const [snap, setSnap] = useState<Snapshot>(EMPTY);
@@ -93,7 +92,7 @@ export default function PvpScreen() {
     if (!saved || session.current) return;
     const s = new PvpSession(serverBase(), playerId(), setSnap);
     session.current = s;
-    s.joinRoom(saved.room, saved.entry);
+    s.joinRoom(saved.room, saved.decks);
   }, []);
 
   // the decks saved on the server and the ones in this browser are brought together
@@ -132,7 +131,6 @@ export default function PvpScreen() {
     [],
   );
 
-  const deck = decks.find((d) => d.id === deckId) ?? decks[0];
   // who this player is on the leaderboards (asked once; a match without it is simply not recorded)
   const [who, setWho] = useState<string | null>(null);
   useEffect(() => {
@@ -142,20 +140,29 @@ export default function PvpScreen() {
       live = false;
     };
   }, []);
-  const entry = deck
-    ? { ...entryFor(deck, name.trim() || 'Riftwalker'), ...(who ? { who } : {}) }
-    : null;
-  const check = entry ? checkArenaEntry(entry) : null;
-  const problem = check && !check.ok ? check.message : null;
+  // every deck in the Vault the Arena takes comes to the match: one is chosen before each game (DECISIONS #307)
+  const playerName = name.trim() || 'Riftwalker';
+  const checks = decks.map((d) =>
+    checkArenaEntry({ ...entryFor(d, playerName), ...(who ? { who } : {}) }),
+  );
+  const usable = checks
+    .flatMap((c) => (c.ok ? [c.entry] : []))
+    .slice(0, MAX_MATCH_DECKS);
+  const firstProblem = checks.find((c) => !c.ok);
+  const problem =
+    decks.length > 0 && usable.length === 0 && firstProblem && !firstProblem.ok
+      ? firstProblem.message
+      : null;
+  const ready = usable.length > 0;
   const busy = snap.phase !== 'idle' && snap.phase !== 'error';
 
-  /** the entry that went to the server (with the board id), so a ghost can be asked for later from the queue */
-  const sent = useRef<typeof entry>(null);
+  /** the decks that went to the server (with the board id), so a ghost can be asked for later from the queue */
+  const sent = useRef<Entry[] | null>(null);
   const begin = async (how: 'queue' | 'create' | 'join' | 'ghost'): Promise<void> => {
-    if (!entry || !check?.ok) return;
-    // names are unique: the one on the entry must be this player's (a name the server has not confirmed is claimed now)
-    if (getClaimed() !== entry.name) {
-      const problem = await takeName(entry.name);
+    if (!ready) return;
+    // names are unique: the one on the decks must be this player's (a name the server has not confirmed is claimed now)
+    if (getClaimed() !== playerName) {
+      const problem = await takeName(playerName);
       if (problem && !problem.unreachable) {
         setNameProblem(problem.message);
         return;
@@ -163,12 +170,12 @@ export default function PvpScreen() {
     }
     setNameProblem(null);
     // (the name as the server wrote it, if it confirmed one)
-    if (getClaimed() === '') saveName(entry.name);
+    if (getClaimed() === '') saveName(playerName);
     // (the board id is normally here already; if it was slow, wait a moment for it rather than play an unrecorded match)
     const id =
       who ??
       (await Promise.race([boardId(), new Promise<null>((r) => setTimeout(() => r(null), 1500))]));
-    const toSend = id ? { ...check.entry, who: id } : check.entry;
+    const toSend = usable.map((e) => (id ? { ...e, who: id } : e));
     sent.current = toSend;
     // a new session (the server setting may have changed)
     session.current?.leave();
@@ -267,13 +274,7 @@ export default function PvpScreen() {
     <ul className="pvp__decks" aria-label="Your decks">
       {decks.map((d) => (
         <li key={d.id}>
-          <button
-            type="button"
-            className={`pvp__deck${d.id === deck?.id ? ' is-picked' : ''}`}
-            aria-pressed={d.id === deck?.id}
-            disabled={busy}
-            onClick={() => setDeckId(d.id)}
-          >
+          <div className="pvp__deck">
             <HeroIcon hero={d.hero} size={36} />
             <span>
               <b>
@@ -286,7 +287,7 @@ export default function PvpScreen() {
                 <RarityTally deck={d.deck} />
               </span>
             </span>
-          </button>
+          </div>
           {!busy && (
             <a className="pvp__viewdeck" href="#/decks">
               <span>View</span>
@@ -323,7 +324,8 @@ export default function PvpScreen() {
       {snap.phase === 'choose' && snap.choose ? (
         <ChoosePanel
           info={snap.choose}
-          onChoose={(first) => session.current?.chooseOrder(first)}
+          onPick={(deck) => session.current?.pickDeck(deck)}
+          onChoose={(first, deck) => session.current?.chooseOrder(first, deck)}
           onCancel={back}
         />
       ) : busy ? (
@@ -429,7 +431,11 @@ export default function PvpScreen() {
             </section>
           ) : (
             <>
-              <h2 className="pvp__h">Choose a deck</h2>
+              <h2 className="pvp__h">Your decks</h2>
+              <p className="pvp__hint pvp__hint--center">
+                All of them come to every match: once you are matched, you choose one before each game,
+                and your opponent does the same without seeing yours.
+              </p>
               <p className="pvp__deckslot">
                 {decks.length} of {VAULT_SLOTS} saved decks · <a href="#/decks">Saved decks</a> ·{' '}
                 <a href="#/board">Leaderboards</a> · <a href="#/ghosts">Ghost decks</a>
@@ -439,14 +445,14 @@ export default function PvpScreen() {
               <div className="pvp__actions">
                 <button
                   className="btn btn--primary"
-                  disabled={!entry || problem !== null}
+                  disabled={!ready}
                   onClick={() => void begin('queue')}
                 >
                   <span>Find a match</span>
                 </button>
                 <button
                   className="btn"
-                  disabled={!entry || problem !== null}
+                  disabled={!ready}
                   onClick={() => void begin('ghost')}
                   title="Face a deck another player has used in the Arena, played by the computer. It does not count on the Arena board."
                 >
@@ -466,7 +472,7 @@ export default function PvpScreen() {
                 <div className="pvp__friend-row">
                   <button
                     className="btn"
-                    disabled={!entry || problem !== null}
+                    disabled={!ready}
                     onClick={() => void begin('create')}
                   >
                     <span>Make a room</span>
@@ -481,14 +487,14 @@ export default function PvpScreen() {
                         setCode(e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, ''))
                       }
                       onKeyDown={(e) => {
-                        if (e.key === 'Enter' && entry && problem === null && code.trim().length >= 4)
+                        if (e.key === 'Enter' && ready && code.trim().length >= 4)
                           void begin('join');
                       }}
                       aria-label="Room code"
                     />
                     <button
                       className="btn"
-                      disabled={!entry || problem !== null || code.trim().length < 4}
+                      disabled={!ready || code.trim().length < 4}
                       onClick={() => void begin('join')}
                     >
                       <span>Join</span>

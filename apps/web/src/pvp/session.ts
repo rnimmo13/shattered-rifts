@@ -11,6 +11,7 @@ import {
   type TrophyCount,
   type ClientMsg,
   type Entry,
+  type FoeCard,
   type Series,
   type ServerMsg,
 } from '@sr/pvp';
@@ -22,10 +23,17 @@ const progressOf = (e: Entry): { tier: number; stage?: number } =>
 
 export type Phase = 'idle' | 'queue' | 'waiting' | 'choose' | 'match' | 'error';
 
-/** The question "who goes first?" while it is open. */
+/** Before a game: which deck to play it with (blind, DECISIONS #307), and "who goes first?" */
 export interface ChooseInfo {
+  /** the deck you have picked (or would play if time ran out) */
   me: Entry;
-  foe: Entry;
+  /** who you are playing: their name and badges only, until the game starts */
+  foe: FoeCard;
+  /** your decks, and the one you have picked (null: not yet) */
+  decks: Entry[];
+  pick: number | null;
+  /** your opponent has their deck */
+  foeReady: boolean;
   deadline: number;
   skew: number;
   /** you have answered and are waiting for the other player */
@@ -104,7 +112,7 @@ export function newRoomCode(len = 5): string {
 const ROOM_KEY = 'sr-pvp-room';
 
 /** The room this tab is in, remembered so that reloading the page puts the player back in their match. */
-function remember(v: { room: string; entry: Entry }): void {
+function remember(v: { room: string; decks: Entry[] }): void {
   try {
     sessionStorage.setItem(ROOM_KEY, JSON.stringify(v));
   } catch {
@@ -119,13 +127,13 @@ function forget(): void {
   }
 }
 /** The room a reload should return to, if any. */
-export function savedRoom(): { room: string; entry: Entry } | null {
+export function savedRoom(): { room: string; decks: Entry[] } | null {
   try {
     const raw = sessionStorage.getItem(ROOM_KEY);
     if (!raw) return null;
-    const v = JSON.parse(raw) as { room?: unknown; entry?: unknown };
-    return typeof v.room === 'string' && typeof v.entry === 'object' && v.entry !== null
-      ? { room: v.room, entry: v.entry as Entry }
+    const v = JSON.parse(raw) as { room?: unknown; decks?: unknown };
+    return typeof v.room === 'string' && Array.isArray(v.decks) && v.decks.length > 0
+      ? { room: v.room, decks: v.decks as Entry[] }
       : null;
   } catch {
     return null;
@@ -135,7 +143,8 @@ export function savedRoom(): { room: string; entry: Entry } | null {
 export class PvpSession {
   private snap: Snapshot = IDLE;
   private ws: WebSocket | null = null;
-  private entry: Entry | null = null;
+  /** every deck the player brings to the match (they choose one before each game) */
+  private decks: Entry[] | null = null;
   /** this session has put the player in the queue for a person (as opposed to asking only for a ghost) */
   private queuedForPerson = false;
   private room: string | null = null;
@@ -235,16 +244,16 @@ export class PvpSession {
     if (
       (phase === 'match' || phase === 'waiting' || phase === 'choose') &&
       this.room &&
-      this.entry &&
+      this.decks &&
       this.retries < 20
     ) {
       this.retries++;
       const room = this.room;
-      const entry = this.entry;
+      const decks = this.decks;
       this.retryTimer = window.setTimeout(
         () =>
           this.open(`/pvp/room/${room}`, () =>
-            this.send({ type: 'join', playerId: this.playerId, entry }),
+            this.send({ type: 'join', playerId: this.playerId, decks }),
           ),
         Math.min(4000, 500 * this.retries),
       );
@@ -268,54 +277,63 @@ export class PvpSession {
 
   // ---- what the player can do ----------------------------------------------------------------------------------
 
-  /** Wait in the queue for an opponent. */
-  queue(entry: Entry): void {
+  /** Wait in the queue for an opponent, with every deck the player holds (one is chosen before each game). */
+  queue(decks: Entry[]): void {
     this.reset();
-    this.entry = entry;
+    this.decks = decks;
     this.queuedForPerson = true;
     this.set({ phase: 'queue', ghosting: false, message: null, waiting: 1 });
-    this.open('/pvp/queue', () => this.send({ type: 'queue', playerId: this.playerId, entry }));
+    this.open('/pvp/queue', () => this.send({ type: 'queue', playerId: this.playerId, decks }));
   }
 
   /**
    * Face a ghost: a deck another player has used in the Arena, with the computer at the controls. If this player is waiting in the
    * queue the request goes on that same connection (and they leave the queue); otherwise a connection is made just for it.
    */
-  ghost(entry: Entry): void {
-    this.entry = entry;
+  ghost(decks: Entry[]): void {
+    this.decks = decks;
     if (this.snap.phase === 'queue' && this.ws?.readyState === WebSocket.OPEN) {
       this.set({ ghosting: true, message: null });
-      this.send({ type: 'ghost', playerId: this.playerId, entry });
+      this.send({ type: 'ghost', playerId: this.playerId, decks });
       return;
     }
     this.reset();
-    this.entry = entry;
+    this.decks = decks;
     this.set({ phase: 'queue', ghosting: true, message: null, waiting: 1 });
-    this.open('/pvp/queue', () => this.send({ type: 'ghost', playerId: this.playerId, entry }));
+    this.open('/pvp/queue', () => this.send({ type: 'ghost', playerId: this.playerId, decks }));
   }
 
   /** Take a seat in a room (a code from a friend, or one you just made). */
-  joinRoom(code: string, entry: Entry, fromQueue = false): void {
+  joinRoom(code: string, decks: Entry[], fromQueue = false): void {
     this.reset();
-    this.entry = entry;
+    this.decks = decks;
     this.room = code.toUpperCase();
-    remember({ room: this.room, entry });
+    remember({ room: this.room, decks });
     this.set({ phase: 'waiting', room: this.room, message: null });
     // a room the queue opened is for someone who may never arrive: after a while, go back to looking
     if (fromQueue)
       this.waitTimer = window.setTimeout(() => {
         if (this.snap.phase === 'waiting') {
-          this.queue(entry);
+          this.queue(decks);
           this.set({ message: 'Your opponent did not arrive. Looking for another…' });
         }
       }, 45_000);
     this.open(`/pvp/room/${this.room}`, () =>
-      this.send({ type: 'join', playerId: this.playerId, entry }),
+      this.send({ type: 'join', playerId: this.playerId, decks }),
     );
   }
 
-  /** Answer "who goes first?" */
-  chooseOrder(first: boolean): void {
+  /** Choose the deck for the next game (it can be changed until the game starts). */
+  pickDeck(deck: number): void {
+    const c = this.snap.choose;
+    if (this.send({ type: 'pick', deck }) && c)
+      this.set({ choose: { ...c, pick: deck, me: c.decks[deck] ?? c.me } });
+  }
+
+  /** Answer "who goes first?" (with the deck on show, if none has been picked yet: answering means playing it). */
+  chooseOrder(first: boolean, deck?: number): void {
+    const c = this.snap.choose;
+    if (c && c.pick === null && deck !== undefined) this.pickDeck(deck);
     if (this.send({ type: 'order', first }) && this.snap.choose)
       this.set({ choose: { ...this.snap.choose, chosen: true } });
   }
@@ -352,7 +370,7 @@ export class PvpSession {
     this.closing = true;
     window.clearTimeout(this.waitTimer);
     forget();
-    this.entry = null;
+    this.decks = null;
     this.queuedForPerson = false;
     this.closeSocket();
     this.lastSeq = 0;
@@ -370,7 +388,7 @@ export class PvpSession {
         return;
       case 'matched':
         // the queue found someone (or a ghost): leave it and take a seat in the room it opened
-        if (this.entry) this.joinRoom(m.room, this.entry, m.ghost !== true);
+        if (this.decks) this.joinRoom(m.room, this.decks, m.ghost !== true);
         return;
       case 'waiting':
         this.set({ phase: 'waiting', room: m.room, choose: null });
@@ -379,6 +397,9 @@ export class PvpSession {
         const info: ChooseInfo = {
           me: m.me,
           foe: m.foe,
+          decks: m.decks,
+          pick: m.pick,
+          foeReady: m.foeReady,
           deadline: m.deadline,
           skew: m.now - Date.now(),
           chosen: m.chosen,

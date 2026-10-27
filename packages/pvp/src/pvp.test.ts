@@ -11,6 +11,10 @@ import {
   MAX_BOONS,
   MAX_MISSED_TURNS,
   pairUp,
+  checkArenaDecks,
+  deckToPlay,
+  picksDone,
+  MAX_MATCH_DECKS,
   QUEUE_WIDEN_MS,
   ARENA_HP_MULT,
   SECOND_PLAYER_HP,
@@ -82,16 +86,16 @@ describe('checkEntry', () => {
 });
 
 describe('the queue', () => {
-  const w = (id: string, tier: number, since = 0): Waiting => ({ id, tier, since });
+  const w = (id: string, rating: number, since = 0): Waiting => ({ id, rating, since });
 
-  it('pairs close tiers, longest wait first', () => {
-    const r = pairUp([w('a', 1, 0), w('b', 5, 1), w('c', 2, 2)], 5_000);
+  it('pairs close Arena ratings, longest wait first', () => {
+    const r = pairUp([w('a', 1000, 0), w('b', 1400, 1), w('c', 1060, 2)], 5_000);
     expect(r.pairs.map((p) => p.map((x) => x.id))).toEqual([['a', 'c']]);
     expect(r.rest.map((x) => x.id)).toEqual(['b']);
   });
 
   it('pairs anyone once someone has waited long enough', () => {
-    const r = pairUp([w('a', 1, 0), w('b', 9, 1)], QUEUE_WIDEN_MS + 1);
+    const r = pairUp([w('a', 1000, 0), w('b', 1900, 1)], QUEUE_WIDEN_MS + 1);
     expect(r.pairs).toHaveLength(1);
   });
 
@@ -101,8 +105,8 @@ describe('the queue', () => {
     expect(r.rest).toHaveLength(1);
   });
 
-  it('picks the nearest tier and never pairs a player with themselves', () => {
-    const r = pairUp([w('a', 3, 0), w('b', 4, 1), w('c', 3, 2)], 1000);
+  it('picks the nearest rating and never pairs a player with themselves', () => {
+    const r = pairUp([w('a', 1100, 0), w('b', 1180, 1), w('c', 1110, 2)], 1000);
     expect(r.pairs[0]?.map((x) => x.id)).toEqual(['a', 'c']);
     const q = enqueue(enqueue([], w('x', 1)), w('x', 2));
     expect(q).toHaveLength(1);
@@ -306,5 +310,45 @@ describe('the game clock (DECISIONS #259)', () => {
       h.hp = h.maxHp / 2;
     }
     expect(m.callTime(1000 + GAME_MS)).toEqual({ winner: 'draw', reason: 'time' });
+  });
+});
+
+describe('the decks a player brings to a match (DECISIONS #307)', () => {
+  it('takes 1 to MAX_MATCH_DECKS decks of any Riftwalkers, under one name and board id', () => {
+    const who = 'a'.repeat(64);
+    const r = checkArenaDecks([
+      { ...entryOf('knight', 'Ann'), who },
+      { ...entryOf('hunter', 'Someone else'), who: 'b'.repeat(64) },
+    ]);
+    expect(r.ok).toBe(true);
+    if (!r.ok) return;
+    expect(r.decks.map((d) => d.hero)).toEqual(['knight', 'hunter']);
+    expect(r.decks.every((d) => d.name === 'Ann' && d.who === who)).toBe(true);
+  });
+  it('refuses none, too many, or a list with a bad deck in it', () => {
+    expect(checkArenaDecks([]).ok).toBe(false);
+    expect(checkArenaDecks('x').ok).toBe(false);
+    expect(
+      checkArenaDecks(Array.from({ length: MAX_MATCH_DECKS + 1 }, () => entryOf('knight'))).ok,
+    ).toBe(false);
+    expect(checkArenaDecks([entryOf('knight'), { ...entryOf('hunter'), deck: ['nope'] }]).ok).toBe(
+      false,
+    );
+  });
+});
+
+describe('choosing a deck before each game (DECISIONS #307)', () => {
+  it('plays the pick, else the last deck played, else the first', () => {
+    expect(deckToPlay(3, 2, 1)).toBe(2);
+    expect(deckToPlay(3, undefined, 1)).toBe(1);
+    expect(deckToPlay(3)).toBe(0);
+    expect(deckToPlay(2, 5, 9)).toBe(0);
+  });
+  it('waits for a pick from anyone with more than one deck, but not from the computer', () => {
+    expect(picksDone({ a: 1, b: 1 }, {})).toBe(true);
+    expect(picksDone({ a: 3, b: 1 }, {})).toBe(false);
+    expect(picksDone({ a: 3, b: 2 }, { a: 0 })).toBe(false);
+    expect(picksDone({ a: 3, b: 2 }, { a: 0, b: 1 })).toBe(true);
+    expect(picksDone({ a: 3, b: 1 }, { a: 2 }, 'b')).toBe(true);
   });
 });

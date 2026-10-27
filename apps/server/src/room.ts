@@ -7,10 +7,12 @@ import { DurableObject } from 'cloudflare:workers';
 import { chooseSmartAction, type Action } from '@sr/combat';
 import { COMBAT_DB } from '@sr/content/v2';
 import {
-  CHOOSE_MS,
   checkEntry,
-  checkArenaEntry,
+  checkArenaDecks,
   decideOrder,
+  deckToPlay,
+  picksDone,
+  PICK_MS,
   Match,
   newSeries,
   other,
@@ -19,7 +21,6 @@ import {
   RULES_VERSION,
   scoreGame,
   seatsFor,
-  SERIES_CHOOSE_MS,
   seriesFor,
   seriesWinner,
   type Accepted,
@@ -47,8 +48,8 @@ const LINGER_MS = 5 * 60_000;
 /** A browser pings every 20 s; one silent for this long is treated as gone, and how often we look. */
 const QUIET_MS = 60_000;
 const HEARTBEAT_CHECK_MS = 30_000;
-/** When the computer is to choose the order between games, it waits this long (the result is on screen first), ms. */
-const GHOST_PAUSE_MS = 8_000;
+/** Between games there is this much more time to choose than before the first (the result is on screen first), ms. */
+const BETWEEN_EXTRA_MS = 10_000;
 /** The most people watching one match at once. */
 const MAX_WATCHERS = 50;
 
@@ -56,7 +57,14 @@ interface Saved {
   created: number;
   /** who sits where, by their own random id (seats are only fixed when the second player joins) */
   ids: Partial<Record<Seat, string>>;
+  /** the deck each seat plays the game in progress with (one of its `decks`) */
   entries: Partial<Record<Seat, Entry>>;
+  /** every deck each player brought (DECISIONS #307): they choose one before each game */
+  decks: Partial<Record<Seat, Entry[]>>;
+  /** before a game: the deck each seat has picked for it (an index into its decks) */
+  picks: Partial<Record<Seat, number>>;
+  /** the deck each player (by id) played last: what they keep if they do not pick in time */
+  lastPick: Record<string, number>;
   /** a ghost sits in this room: a deck from a past match, played by the computer (never sent to a player) */
   ghost?: { seat: Seat; id: string };
   /** when the ghost's next move is due (ms), if it is the ghost's turn */
@@ -109,6 +117,9 @@ const fresh = (): Saved => ({
   created: Date.now(),
   ids: {},
   entries: {},
+  decks: {},
+  picks: {},
+  lastPick: {},
   started: false,
   seed: '',
   log: [],
@@ -183,6 +194,7 @@ export class MatchRoom extends DurableObject<Env> {
     d.ghost = { seat: 'b', id };
     d.ids.b = `ghost:${crypto.randomUUID()}`;
     d.entries.b = entry;
+    d.decks.b = [entry];
     await this.save();
     return new Response('ok');
   }
@@ -372,16 +384,45 @@ export class MatchRoom extends DurableObject<Env> {
     return seriesFor(d.series, d.ids, d.decided);
   }
 
-  /** Ask one player whether they want to go first. */
-  private askOrder(ws: WebSocket, seat: Seat): void {
+  /** A seat has its deck for the next game: picked, or it has only one, or the computer plays it. */
+  private picked(seat: Seat): boolean {
     const d = this.data;
-    const me = d.entries[seat];
+    return seat === d.ghost?.seat || (d.decks[seat]?.length ?? 1) <= 1 || d.picks[seat] !== undefined;
+  }
+
+  /** Everything is settled for the next game: who goes first, and both decks. */
+  private ready(): boolean {
+    const d = this.data;
+    return (
+      d.choices.a !== undefined &&
+      d.choices.b !== undefined &&
+      picksDone({ a: d.decks.a?.length ?? 1, b: d.decks.b?.length ?? 1 }, d.picks, d.ghost?.seat)
+    );
+  }
+
+  /**
+   * Ask one player to choose their deck for the next game (blind: the other's deck and Riftwalker are not shown until it starts) and
+   * whether they want to go first.
+   */
+  private askChoice(ws: WebSocket, seat: Seat): void {
+    const d = this.data;
+    const own = d.entries[seat];
+    const mine = d.decks[seat] ?? (own ? [own] : []);
     const foe = d.entries[other(seat)];
-    if (!me || !foe) return;
+    if (mine.length === 0 || !foe) return;
+    const id = d.ids[seat];
+    const at = deckToPlay(mine.length, d.picks[seat], id ? d.lastPick[id] : undefined);
     send(ws, {
       type: 'choose',
-      me,
-      foe,
+      me: mine[at] as Entry,
+      foe: {
+        name: foe.name,
+        ...(foe.trophies ? { trophies: foe.trophies } : {}),
+        ...(foe.rank ? { rank: foe.rank } : {}),
+      },
+      decks: mine,
+      pick: d.picks[seat] ?? null,
+      foeReady: this.picked(other(seat)),
       deadline: d.chooseBy,
       now: Date.now(),
       chosen: d.choices[seat] !== undefined,
@@ -400,6 +441,7 @@ export class MatchRoom extends DurableObject<Env> {
     const seats = seatsFor(order.first);
     const ids: Partial<Record<Seat, string>> = {};
     const entries: Partial<Record<Seat, Entry>> = {};
+    const decks: Partial<Record<Seat, Entry[]>> = {};
     const whos: Partial<Record<Seat, string>> = {};
     const away: Partial<Record<Seat, number>> = {};
     if (d.ghost) d.ghost = { ...d.ghost, seat: seats[d.ghost.seat] };
@@ -407,8 +449,13 @@ export class MatchRoom extends DurableObject<Env> {
       const id = d.ids[arrival];
       const entry = d.entries[arrival];
       if (id && entry) {
+        // the deck picked for this game (or the one played last, or the first)
+        const list = d.decks[arrival] ?? [entry];
+        const at = deckToPlay(list.length, d.picks[arrival], d.lastPick[id]);
+        d.lastPick[id] = at;
         ids[seats[arrival]] = id;
-        entries[seats[arrival]] = entry;
+        entries[seats[arrival]] = list[at] ?? entry;
+        decks[seats[arrival]] = list;
         const w = d.who?.[arrival];
         if (w) whos[seats[arrival]] = w;
         const gone = d.away[arrival];
@@ -418,6 +465,8 @@ export class MatchRoom extends DurableObject<Env> {
     d.away = away;
     d.ids = ids;
     d.entries = entries;
+    d.decks = decks;
+    d.picks = {};
     d.who = whos;
     d.choosing = false;
     d.between = false;
@@ -518,15 +567,16 @@ export class MatchRoom extends DurableObject<Env> {
         ws.close(1008, 'bad id');
         return;
       }
-      const checked = checkArenaEntry(msg.entry);
+      const checked = checkArenaDecks(msg.decks);
       if (!checked.ok) {
         send(ws, { type: 'error', code: 'bad-deck', message: checked.message });
         ws.close(1008, 'bad deck');
         return;
       }
+      const first = checked.decks[0] as Entry;
       // the trophies they hold go on their card for the opponent to see (the board is asked, briefly, before a seat is taken, so
       // nothing about the room changes while waiting for it; a browser cannot claim any)
-      const badge = checked.entry.who ? await this.badgeOf(checked.entry.who) : {};
+      const badge = first.who ? await this.badgeOf(first.who) : {};
       // (this socket may have been seated by a second join sent while the board was asked)
       if (ws.deserializeAttachment()) return;
       // a player already in the room is coming back
@@ -546,13 +596,21 @@ export class MatchRoom extends DurableObject<Env> {
         return;
       }
       d.ids[free] = msg.playerId;
-      // the leaderboard id is taken out of the entry before it is kept (the entry goes to the opponent)
-      const { who, ...publicEntry } = checked.entry;
-      d.entries[free] = {
-        ...publicEntry,
-        ...(badge.trophies ? { trophies: badge.trophies } : {}),
-        ...(badge.rank ? { rank: badge.rank } : {}),
-      };
+      // the leaderboard id is taken out of each deck before it is kept (the deck played goes to the opponent)
+      const who = first.who;
+      const mine = checked.decks.map((e): Entry => {
+        const { who: _w, ...rest } = e;
+        void _w;
+        return {
+          ...rest,
+          ...(badge.trophies ? { trophies: badge.trophies } : {}),
+          ...(badge.rank ? { rank: badge.rank } : {}),
+        };
+      });
+      d.decks[free] = mine;
+      // (until a game starts this stands for the player: their name and badges)
+      d.entries[free] = mine[0] as Entry;
+      delete d.picks[free];
       d.who ??= {};
       if (who) d.who[free] = who;
       else delete d.who[free];
@@ -562,12 +620,13 @@ export class MatchRoom extends DurableObject<Env> {
         send(ws, { type: 'waiting', room: this.code });
         return;
       }
-      // both are here: each is asked whether to go first
+      // both are here: each chooses a deck and is asked whether to go first
       d.choosing = true;
       d.choices = d.ghost ? { [d.ghost.seat]: Math.random() < 0.5 } : {};
-      d.chooseBy = Date.now() + CHOOSE_MS;
+      d.picks = {};
+      d.chooseBy = Date.now() + PICK_MS;
       await this.save();
-      for (const s of this.sockets()) this.askOrder(s.ws, s.at.seat as Seat);
+      for (const s of this.sockets()) this.askChoice(s.ws, s.at.seat as Seat);
       return;
     }
 
@@ -576,6 +635,25 @@ export class MatchRoom extends DurableObject<Env> {
       return;
     }
     const seat = at.seat;
+    if (msg.type === 'pick') {
+      if (!d.choosing) {
+        send(ws, { type: 'error', code: 'no-match', message: 'Nobody is choosing a deck now.' });
+        return;
+      }
+      if (msg.deck >= (d.decks[seat]?.length ?? 0)) {
+        send(ws, { type: 'error', code: 'bad-message', message: 'There is no such deck.' });
+        return;
+      }
+      d.picks[seat] = msg.deck;
+      if (this.ready()) {
+        await this.begin();
+        return;
+      }
+      await this.save();
+      // (both are told: the one who picked sees it held, the other that their opponent is ready)
+      for (const s of this.sockets()) this.askChoice(s.ws, s.at.seat as Seat);
+      return;
+    }
     if (msg.type === 'order') {
       if (!d.choosing) {
         send(ws, { type: 'error', code: 'no-match', message: 'Nobody is choosing the order now.' });
@@ -586,12 +664,14 @@ export class MatchRoom extends DurableObject<Env> {
         if (seat !== d.chooser || d.choices[seat] !== undefined) return;
         d.choices[seat] = msg.first;
         d.choices[other(seat)] = !msg.first;
+      } else d.choices[seat] = msg.first;
+      // the game starts once the order is settled and both decks are chosen (or when time runs out)
+      if (this.ready()) {
         await this.begin();
         return;
       }
-      d.choices[seat] = msg.first;
       await this.save();
-      if (d.choices.a !== undefined && d.choices.b !== undefined) await this.begin();
+      for (const s of this.sockets()) this.askChoice(s.ws, s.at.seat as Seat);
       return;
     }
     const match = this.match;
@@ -643,7 +723,7 @@ export class MatchRoom extends DurableObject<Env> {
     if (d.choosing) {
       // (someone who was away when the game ended is told how it ended before they are asked about the next)
       if (d.between && d.lastEnd) send(ws, this.endMessage(d.lastEnd));
-      this.askOrder(ws, seat);
+      this.askChoice(ws, seat);
       return;
     }
     if (!d.started) {
@@ -756,17 +836,17 @@ export class MatchRoom extends DurableObject<Env> {
     d.log = [];
     this.match = null;
     delete d.ghostAt;
+    d.picks = {};
     if (d.ghost?.seat === loser) {
+      // (the computer settles the order at once; the person still has the full time to choose a deck)
       const wants = Math.random() < 0.5;
       d.choices = { [loser]: wants, [other(loser)]: !wants };
-      d.chooseBy = Date.now() + GHOST_PAUSE_MS;
-    } else {
-      d.choices = {};
-      d.chooseBy = Date.now() + SERIES_CHOOSE_MS;
-    }
+    } else d.choices = {};
+    // (the result is on screen first, so there is a little more time than before the first game)
+    d.chooseBy = Date.now() + PICK_MS + BETWEEN_EXTRA_MS;
     await this.save();
     this.broadcast(over);
-    for (const sock of this.sockets()) this.askOrder(sock.ws, sock.at.seat as Seat);
+    for (const sock of this.sockets()) this.askChoice(sock.ws, sock.at.seat as Seat);
     await this.keepReplay(replay, seed);
   }
 
@@ -864,6 +944,8 @@ export class MatchRoom extends DurableObject<Env> {
       // a player who leaves before the match starts gives up their seat, so nobody is matched with an empty chair
       delete this.data.ids[at.seat];
       delete this.data.entries[at.seat];
+      delete this.data.decks[at.seat];
+      delete this.data.picks[at.seat];
       if (this.data.choosing) {
         // the other player goes back to waiting for someone
         this.data.choosing = false;

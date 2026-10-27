@@ -15,7 +15,7 @@ import type { Action } from '@sr/combat';
 
 export type Seat = 'a' | 'b';
 
-/** What a player brings to a match: a banked deck and the Riftwalker it belongs to. */
+/** One deck a player can bring into a game: a saved deck and the Riftwalker it belongs to. A player brings all of theirs to a match. */
 export interface Entry {
   /** shown to the opponent */
   name: string;
@@ -46,13 +46,22 @@ export interface Entry {
 // (5: the 0.71-0.85 card changes, Lifesteal, growing companions and Kesh's shared Might, DECISIONS #287; 6: Obsidia's Arcana, #288)
 export const RULES_VERSION = 7;
 
+/** Who you are playing, before a game starts: their name and badges, not their deck or Riftwalker. */
+export type FoeCard = Pick<Entry, 'name' | 'trophies' | 'rank'>;
+
+/**
+ * A player brings every Arena deck they hold (`decks`, 1 to MAX_MATCH_DECKS, the same name and board id on each) and chooses one
+ * before each game of the match (DECISIONS #307).
+ */
 export type ClientMsg =
   /** to the queue: wait for an opponent */
-  | { type: 'queue'; playerId: string; entry: Entry; rules?: number }
+  | { type: 'queue'; playerId: string; decks: Entry[]; rules?: number }
   /** to the queue (or instead of waiting in it): face a ghost, a deck that has played in the Arena, with the computer at the controls */
-  | { type: 'ghost'; playerId: string; entry: Entry; rules?: number }
+  | { type: 'ghost'; playerId: string; decks: Entry[]; rules?: number }
   /** to a room: take a seat (a code from a friend, or the room the queue made) */
-  | { type: 'join'; playerId: string; entry: Entry; rules?: number }
+  | { type: 'join'; playerId: string; decks: Entry[]; rules?: number }
+  /** before a game: the deck (an index into your decks) you will play it with; it can be changed until the game starts */
+  | { type: 'pick'; deck: number }
   | { type: 'action'; seq: number; action: Action }
   /** your answer to "who goes first?": true = I will go first, false = I will go second (and have more HP) */
   | { type: 'order'; first: boolean }
@@ -69,12 +78,17 @@ export type ServerMsg =
   | { type: 'matched'; room: string; /** the opponent is a ghost */ ghost?: boolean }
   /** in a room, waiting for the second player (a friend code is this room's name) */
   | { type: 'waiting'; room: string }
-  /** both players are in: each is asked who should go first (see order.ts) */
+  /** both players are in: before each game each chooses a deck (blind) and is asked who should go first (see order.ts) */
   | {
       type: 'choose';
-      /** you, and who you are playing */
+      /** you (the deck you have picked, or would play if time ran out), and who you are playing: never their deck until the game starts */
       me: Entry;
-      foe: Entry;
+      foe: FoeCard;
+      /** the decks you can choose from, and the one you have picked (null: not yet) */
+      decks: Entry[];
+      pick: number | null;
+      /** the other player has picked their deck */
+      foeReady: boolean;
       /** epoch ms by which to answer (no answer means the coin decides) */
       deadline: number;
       now: number;
@@ -160,10 +174,14 @@ export const GAME_MS = 15 * 60_000;
 export const RECONNECT_MS = 60_000;
 /** Turns missed in a row (timed out) that forfeit the match. */
 export const MAX_MISSED_TURNS = 2;
-/** After this long in the queue a player is paired with anyone, whatever their Rift Tier, ms. */
+/** After this long in the queue a player is paired with anyone, whatever their rank, ms. */
 export const QUEUE_WIDEN_MS = 20_000;
-/** Tiers further apart than this are not paired until the wait widens. */
-export const QUEUE_TIER_GAP = 1;
+/** Arena ratings further apart than this (about two divisions) are not paired until the wait widens. */
+export const QUEUE_RATING_GAP = 100;
+/** The most decks a player brings to a match (their whole Vault): they choose one before each game. */
+export const MAX_MATCH_DECKS = 10;
+/** How long both players have to choose a deck (and who goes first) before each game, ms. */
+export const PICK_MS = 30_000;
 
 /** A match is the best of three games: this many game wins take it. */
 export const SERIES_WINS = 2;

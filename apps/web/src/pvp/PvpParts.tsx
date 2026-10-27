@@ -1,8 +1,10 @@
-// The two small screens that settle who goes first: the question (go first, or go second with more HP) and the coin.
+// The small screens before a game: choosing the deck and who goes first (go first, or go second with more HP), and the coin.
 
 import { useEffect, useRef, useState } from 'react';
 import { RIFTWALKERS, type HeroId } from '@sr/content/v2';
-import { SECOND_PLAYER_HP, cleanRank, cleanTrophies } from '@sr/pvp';
+import { SECOND_PLAYER_HP, cleanRank, cleanTrophies, type Entry } from '@sr/pvp';
+import { HeroIcon } from '../ui/HeroIcon';
+import { progressLabel } from './deckLayout';
 import { TrophyBadges } from './Trophies';
 import { RankBadge } from './RankBadge';
 import { heroFigure } from '../fight/art';
@@ -25,7 +27,7 @@ export function WaitTimer(props: { label: string; widenAfterMs?: number }) {
       <b>
         {Math.floor(secs / 60)}:{String(secs % 60).padStart(2, '0')}
       </b>
-      {widened && <small> · now matching any Rift Tier</small>}
+      {widened && <small> · now matching any rank</small>}
     </p>
   );
 }
@@ -79,9 +81,22 @@ const heroName = (hero: string): string =>
   Object.hasOwn(RIFTWALKERS, hero) ? RIFTWALKERS[hero as HeroId].hero.name : hero;
 
 /** "Do you want to go first?" Going second means more HP; the same answer from both means the coin decides. */
+/** The deck on show: the one picked, or else the one the server says you would play (matched by its contents). */
+function shownDeck(info: ChooseInfo): number {
+  if (info.pick !== null) return info.pick;
+  const same = (e: Entry): boolean =>
+    e.hero === info.me.hero && e.tier === info.me.tier && e.deck.join() === info.me.deck.join();
+  return Math.max(0, info.decks.findIndex(same));
+}
+
+/**
+ * Before each game: choose the deck to play it with (blind: the opponent's deck and Riftwalker stay hidden until it starts;
+ * DECISIONS #307), and who goes first. Clicking a deck picks it at once; it can be changed until the game starts.
+ */
 export function ChoosePanel(props: {
   info: ChooseInfo;
-  onChoose: (first: boolean) => void;
+  onPick: (deck: number) => void;
+  onChoose: (first: boolean, deck: number) => void;
   onCancel: () => void;
 }) {
   const { info } = props;
@@ -91,42 +106,88 @@ export function ChoosePanel(props: {
     return () => window.clearInterval(t);
   }, []);
   const left = Math.max(0, Math.ceil((info.deadline - (now + info.skew)) / 1000));
+  const shown = shownDeck(info);
+  const me = info.decks[shown] ?? info.me;
+  const several = info.decks.length > 1;
+  const needPick = several && info.pick === null;
+  const title = info.series ? `Game ${info.series.game}` : 'Get ready';
   return (
     <section className="pvp__status pvp__choose" aria-live="polite">
-      <h2>{info.series ? `Game ${info.series.game}: who goes first?` : 'Who goes first?'}</h2>
+      <h2>{title}</h2>
       {info.series && info.seat && (
         <p className="pvp__series">{seriesLine(info.series, info.seat, info.foe.name)}</p>
       )}
       <div className="pvp__versus">
         <figure>
-          <Portrait hero={info.me.hero} size={110} />
+          <Portrait hero={me.hero} size={110} />
           <figcaption>
             <b>
-              {info.me.name} <TrophyBadges trophies={cleanTrophies(info.me.trophies)} />
+              {me.name} <TrophyBadges trophies={cleanTrophies(me.trophies)} />
             </b>
             <small>
-              {heroName(info.me.hero)} <RankBadge rank={cleanRank(info.me.rank)} />
+              {heroName(me.hero)} <RankBadge rank={cleanRank(me.rank)} />
             </small>
           </figcaption>
         </figure>
         <span className="pvp__vs">vs</span>
         <figure>
-          <Portrait hero={info.foe.hero} size={110} />
+          <span className="pvp__hidden" aria-hidden>
+            ?
+          </span>
           <figcaption>
             <b>
               {info.foe.name} <TrophyBadges trophies={cleanTrophies(info.foe.trophies)} />
             </b>
             <small>
-              {heroName(info.foe.hero)} <RankBadge rank={cleanRank(info.foe.rank)} />
+              <span className={info.foeReady ? 'pvp__ready' : 'pvp__notready'}>
+                {info.foeReady ? 'Deck chosen' : 'Choosing a deck…'}
+              </span>{' '}
+              <RankBadge rank={cleanRank(info.foe.rank)} />
             </small>
           </figcaption>
         </figure>
       </div>
+
+      {several && (
+        <>
+          <h3 className="pvp__pickh">
+            {needPick ? 'Choose your deck for this game' : 'Your deck for this game'}
+          </h3>
+          <ul className="pvp__picks" aria-label="Your decks">
+            {info.decks.map((d, i) => (
+              <li key={i}>
+                <button
+                  type="button"
+                  className={`pvp__deck${i === shown ? ' is-picked' : ''}`}
+                  aria-pressed={i === shown}
+                  onClick={() => props.onPick(i)}
+                >
+                  <HeroIcon hero={d.hero} size={32} />
+                  <span>
+                    <b>
+                      {heroName(d.hero)} · {progressLabel(d.tier, d.stage)}
+                    </b>
+                    <small>
+                      {d.deck.length} cards
+                      {i === info.pick ? ' · chosen' : ''}
+                    </small>
+                  </span>
+                </button>
+              </li>
+            ))}
+          </ul>
+          <p className="pvp__hint pvp__hint--center">
+            Your opponent cannot see your choice until the game starts.
+            {needPick ? ' If time runs out, you play the highlighted deck.' : ''}
+          </p>
+        </>
+      )}
+
       <p>
         Go second and you start with <b>{SECOND_PLAYER_HP} more HP</b>.{' '}
         {info.series
           ? info.chooser
-            ? 'You lost the last game, so the choice is yours. If you do not choose in time, a coin decides.'
+            ? 'You lost the last game, so the order is yours to choose. If you do not choose in time, a coin decides.'
             : ''
           : 'If you both want the same, a coin decides.'}
       </p>
@@ -136,15 +197,24 @@ export function ChoosePanel(props: {
         </p>
       ) : info.chosen ? (
         <p className="pvp__waiting">
-          Choice made. Waiting for {info.foe.name}… ({left}s)
+          {needPick
+            ? `Order settled. Choose your deck… (${left}s)`
+            : `Waiting for ${info.foe.name}… (${left}s)`}
         </p>
       ) : (
         <div className="pvp__actions">
-          <button className="btn btn--primary" onClick={() => props.onChoose(true)}>
+          <button className="btn btn--primary" onClick={() => props.onChoose(true, shown)}>
             <span>I will go first</span>
           </button>
-          <button className="btn" onClick={() => props.onChoose(false)}>
+          <button className="btn" onClick={() => props.onChoose(false, shown)}>
             <span>I will go second (+{SECOND_PLAYER_HP} HP)</span>
+          </button>
+        </div>
+      )}
+      {!info.chooser && !info.chosen && needPick && (
+        <div className="pvp__actions">
+          <button className="btn btn--primary" onClick={() => props.onPick(shown)}>
+            <span>Play this deck</span>
           </button>
         </div>
       )}

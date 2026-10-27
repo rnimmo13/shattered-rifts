@@ -3,13 +3,22 @@
 // the code of a fresh room and their queue sockets close; they then join the room as if a friend had sent them the code.
 
 import { DurableObject } from 'cloudflare:workers';
-import { RULES_VERSION, checkArenaEntry, pairUp, type Waiting } from '@sr/pvp';
+import {
+  RATING_START,
+  RULES_VERSION,
+  checkArenaDecks,
+  cleanRank,
+  pairUp,
+  type Entry,
+  type Waiting,
+} from '@sr/pvp';
 import type { Env } from './env';
 import { parse, roomCode as makeCode, send } from './wire';
 
 interface Place {
   playerId: string;
-  tier: number;
+  /** their Arena rating this season (DECISIONS #307: players are matched by rank) */
+  rating: number;
   since: number;
 }
 
@@ -56,42 +65,64 @@ export class Matchmaker extends DurableObject<Env> {
       return;
     }
     if (msg.type === 'ghost') {
-      await this.faceGhost(ws, msg.entry);
+      await this.faceGhost(ws, msg.decks);
       return;
     }
-    const checked = checkArenaEntry(msg.entry);
+    // (every deck the player holds comes along: they choose one before each game, once they are matched)
+    const checked = checkArenaDecks(msg.decks);
     if (!checked.ok) {
       send(ws, { type: 'error', code: 'bad-deck', message: checked.message });
       ws.close(1008, 'bad deck');
       return;
     }
+    const rating = await this.ratingOf(checked.decks[0]?.who);
     // one place per player: a second tab replaces the first (its place is cleared at once, before its socket finishes closing)
     for (const w of this.waiting())
       if (w.place.playerId === msg.playerId && w.ws !== ws) {
         w.ws.serializeAttachment(null);
         w.ws.close(1000, 'replaced');
       }
-    const place: Place = { playerId: msg.playerId, tier: checked.entry.tier, since: Date.now() };
+    const place: Place = { playerId: msg.playerId, rating, since: Date.now() };
     ws.serializeAttachment(place);
     send(ws, { type: 'queued', waiting: this.waiting().length });
     await this.pairAll();
   }
 
+  /** A player's Arena rating this season, from the board (where everyone starts, when they are new or it cannot be reached). */
+  private async ratingOf(who: string | undefined): Promise<number> {
+    if (!who) return RATING_START;
+    try {
+      const res = await this.env.BOARD.get(this.env.BOARD.idFromName('main')).fetch(
+        new Request('https://board.invalid/trophies/count', {
+          method: 'POST',
+          body: JSON.stringify({ players: [who] }),
+          signal: AbortSignal.timeout(1000),
+        }),
+      );
+      const data = await res.json<{ ranks?: Record<string, unknown> }>();
+      return cleanRank(data.ranks?.[who])?.rating ?? RATING_START;
+    } catch {
+      return RATING_START;
+    }
+  }
+
   /** Set up a match against a ghost and tell the player which room to join. They leave the queue if they were in it. */
-  private async faceGhost(ws: WebSocket, entry: unknown): Promise<void> {
-    const checked = checkArenaEntry(entry);
+  private async faceGhost(ws: WebSocket, decks: unknown): Promise<void> {
+    const checked = checkArenaDecks(decks);
     if (!checked.ok) {
       send(ws, { type: 'error', code: 'bad-deck', message: checked.message });
       ws.close(1008, 'bad deck');
       return;
     }
+    // (the ghost is found for the player's deepest deck: they may still choose any of theirs before each game)
+    const deepest = checked.decks.reduce((best: Entry, d) => (d.tier > best.tier ? d : best));
     try {
       // (someone whose id is not known still gets a ghost, only possibly one of their own decks)
-      const requester = checked.entry.who ?? '0'.repeat(64);
+      const requester = deepest.who ?? '0'.repeat(64);
       const res = await this.env.BOARD.get(this.env.BOARD.idFromName('main')).fetch(
         new Request('https://board.invalid/ghost/pick', {
           method: 'POST',
-          body: JSON.stringify({ requester, entry: checked.entry }),
+          body: JSON.stringify({ requester, entry: deepest }),
         }),
       );
       const picked = await res.json<{
@@ -161,7 +192,8 @@ export class Matchmaker extends DurableObject<Env> {
     const byId = new Map(all.map((w) => [w.place.playerId, w]));
     const queue: Waiting[] = all.map((w) => ({
       id: w.place.playerId,
-      tier: w.place.tier,
+      // (a place taken before ratings were used has none: it is where everyone starts)
+      rating: typeof w.place.rating === 'number' ? w.place.rating : RATING_START,
       since: w.place.since,
     }));
     const { pairs, rest } = pairUp(queue, Date.now());
@@ -174,7 +206,7 @@ export class Matchmaker extends DurableObject<Env> {
         sock.close(1000, 'matched');
       }
     }
-    // those still waiting are looked at again soon: the tier gap widens with time, and a quiet player is found out
+    // those still waiting are looked at again soon: the rating gap widens with time, and a quiet player is found out
     if (rest.length > 0)
       await this.ctx.storage.setAlarm(Date.now() + (rest.length > 1 ? 2000 : 8000));
   }

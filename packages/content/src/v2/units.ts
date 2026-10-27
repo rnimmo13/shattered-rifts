@@ -38,7 +38,7 @@ const RAW_ALLIES: UnitDef[] = [
   // (a pack grows with the card that calls it: basic and common cards bring a Pup, uncommon a Hound, rare a Pack Alpha or a
   // Dire Wolf; DECISIONS #298)
   ally('pup', 'Pup', 6, [dmg(3)]),
-  ally('hound', 'Hound', 10, [dmg(4)]),
+  ally('hound', 'Hound', 8, [dmg(4)]),
   ally('pack-alpha', 'Pack Alpha', 14, [dmg(5)]),
   ally('dire-wolf', 'Dire Wolf', 18, [dmg(9)]),
   // Gloomfen: Mire's dead

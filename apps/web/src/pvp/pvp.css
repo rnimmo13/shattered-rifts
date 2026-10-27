@@ -446,3 +446,47 @@
 .pvp__status p {
   margin-inline: auto;
 }
+
+/* before each game: the opponent is a hidden card until it starts (DECISIONS #307) */
+.pvp__hidden {
+  display: grid;
+  place-items: center;
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  border: 1px dashed rgb(212 168 75 / 0.5);
+  background: rgb(8 10 20 / 0.6);
+  color: var(--c-gold-pale);
+  font-size: 2.6rem;
+  font-family: var(--font-display, inherit);
+}
+.pvp__ready {
+  color: #7fd99a;
+}
+.pvp__notready {
+  color: var(--c-text-dim);
+  font-style: italic;
+}
+.pvp__pickh {
+  margin: 0.4rem 0 0;
+  font-size: 0.95rem;
+  color: var(--c-gold-pale);
+}
+.pvp__picks {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+  gap: 0.5rem;
+  width: min(100%, 50rem);
+}
+.pvp__hint--center {
+  text-align: center;
+  margin-left: auto;
+  margin-right: auto;
+}
+/* in the lobby a deck is shown, not chosen */
+div.pvp__deck {
+  cursor: default;
+}

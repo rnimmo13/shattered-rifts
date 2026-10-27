@@ -6,10 +6,10 @@ First playable version (friends test). Two players, each with a banked deck, pla
 ## What a player does
 
 1. Play a run. The deck is saved by itself (decision #219): after every finished stop on the map (every fight once its reward is taken, and every shop, shrine and event) a copy of the deck goes into the **Vault** and the run carries on, replacing that run's earlier copy (so a run uses one of the 10 slots; when the Vault is full the player is told once per stage and can free a slot on the Saved decks page). The run bar shows "Arena deck: Tier 2 · Stage 1/3", and the first time a banner explains that other players may face the deck as a ghost and that if the run collapses it leaves the Vault (it can no longer be taken to the Arena) but stays as a ghost others may face (decision #231). The Vault is kept in this browser and also on the server under a **Vault code** (see below). The Arena only offers banked decks: with an empty Vault the screen says so and points to a New Run (decision #167). **Test build only:** the run bar's **Save deck** button also works between stages: after stage 1 or 2 is cleared (`apps/web/src/run/deckSave.ts`, flag `MID_RUN_SAVES`, decisions #168 and #172), so the Arena can be tried without a full run. Remove that flag before release.
-2. Title screen → **Arena** (`#/arena`, also `#/pvp`). Pick a name (unique: no two players share one; it is claimed on the server when a match is looked for) and a deck.
+2. Title screen → **Arena** (`#/arena`, also `#/pvp`). Pick a name (unique: no two players share one; it is claimed on the server when a match is looked for). No deck is chosen here: every deck in the Vault the Arena takes (up to 10, `MAX_MATCH_DECKS`) comes along (DECISIONS #307).
 3. **Find a match** (the queue), **Make a room for a friend** (shows a 5-letter code to send), or **Join a room** (type a code).
-4. **Who goes first?** Both players are asked: *I will go first* or *I will go second (+60 HP)*. Different answers: everyone gets what they asked for. The same answer (or no answer in 20 s): the server flips a coin, and both players watch it spin and land on the portrait and name of whoever goes first.
-5. **A match is the best of three games** (first to two wins). After a game the player who lost it chooses who goes first in the next (a coin decides if they do not answer in 30 s); a resignation or two missed turns end only that game, and leaving for over a minute forfeits the match. A match is recorded on the leaderboard once, when it is decided.
+4. **Before each game: a deck, and who goes first.** Each player picks one of their decks, of any Riftwalker, **blind**: the other sees only their name, badges and whether they have picked, never the deck or Riftwalker, until the game starts. A player with one deck has it picked already. Picking is a click and can be changed until the game starts; with no pick when time runs out (30 s, `PICK_MS`) a player plays the deck they played last, or their first. Both are also asked: *I will go first* or *I will go second (+60 HP)*. Different answers: everyone gets what they asked for. The same answer (or no answer): the server flips a coin, and both players watch it spin and land on the portrait and name of whoever goes first. The game starts once the order is settled and both have a deck, or when time runs out.
+5. **A match is the best of three games** (first to two wins). Before every game both choose a deck again; the player who lost the last game chooses who goes first in the next (40 s to choose, a coin decides if they do not answer); a resignation or two missed turns end only that game, and leaving for over a minute forfeits the match. A match is recorded on the leaderboard once, when it is decided.
 6. Play. Turns alternate; each turn has **75 s**. Two missed turns in a row lose the game. **Resign** is in the top bar.
    Closing the tab is not a forfeit for 60 s: reload the page and join the same room to come back.
 
@@ -33,8 +33,8 @@ browser (apps/web/src/pvp)  ──WebSocket──►  Cloudflare Worker (apps/se
   left; the opponent (mirrored, facing you) on the right. The arena is picked from the seed, so both see the same one.
 - **Reconnecting.** The room saves its decks, seed and move list; a player who joins again is sent the moves so far (replayed
   silently) and carries on.
-- **Matchmaking** (`packages/pvp/src/queue.ts`): longest-waiting first, the closest Rift Tier, within 1 tier until someone has
-  waited 20 s, then anyone.
+- **Matchmaking** (`packages/pvp/src/queue.ts`): longest-waiting first, the closest Arena rating (looked up on the server from the
+  player's board id; a new player starts at 1000), within 100 until someone has waited 20 s, then anyone (DECISIONS #307).
 - **Deck check** (`deck.ts`): a real Riftwalker, 8 to 80 real cards, within the copy and Legendary limits. The server cannot
   know a deck was really banked, only that it is legal.
 

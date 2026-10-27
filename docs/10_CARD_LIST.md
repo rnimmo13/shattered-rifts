@@ -215,14 +215,14 @@ A hunter with a Hound. Pays HP to buff the whole pack with Might.
 
 Paths: Bloodrage: HP for Might / Pack: feed the companions / Feast: Exhaust and Devour
 
-Starter: Strike, Strike, Strike, Strike, Defend, Defend, Defend, Savage Bite, Blood Frenzy, Guard Dog
+Starter: Strike, Strike, Strike, Strike, Defend, Defend, Defend, Savage Bite, Blood Frenzy, Rend
 
 | Card | Cost | Type | Rarity | Text |
 |---|---|---|---|---|
-| Savage Bite | 1 | attack | basic | Deal 9 damage. Lifesteal 50%. |
+| Savage Bite | 1 | attack | basic | Deal 8 damage. Lifesteal 50%. |
 | Blood Frenzy | 1 | attack | basic | Deal 4 damage to ALL enemies. Lose 1 HP. Gain 1 Might. |
+| Rend | 1 | attack | basic | Deal 9 damage. Lose 2 HP. Gain 1 Might. |
 | Guard Dog | 1 | skill | basic | Summon Pup (6 HP). At the end of your turn it will: Deal 3 damage. Gain 5 Barrier. |
-| Rend | 1 | attack | common | Deal 13 damage. Lose 2 HP. |
 | Twin Fang | 1 | attack | common | Deal 5 damage 2 times. Lose 1 HP. |
 | Feral Instinct | 0 | skill | common | Lose 2 HP. Draw 2 cards. Consume. |
 | Pain Ward | 1 | skill | common | Gain 5 (+1 per 5% HP missing) Barrier. |
@@ -262,7 +262,7 @@ Starter: Strike, Strike, Strike, Strike, Defend, Defend, Defend, Savage Bite, Bl
 | Savage Command | 2 | skill | uncommon | All your allies act now. Gain 1 Might. |
 | Pack Bond | 2 | aura | uncommon | At the start of your turn: Gain 3 Barrier to all friends. |
 | Feeding Time | 1 | skill | uncommon | Your companions gain 5 max HP. Gain 1 Might. |
-| Rally the Pack | 2 | skill | uncommon | Summon Hound (10 HP). At the end of your turn it will: Deal 4 damage. All your allies act now. |
+| Rally the Pack | 2 | skill | uncommon | Summon Hound (8 HP). At the end of your turn it will: Deal 4 damage. All your allies act now. |
 | Trail of Blood | 1 | aura | uncommon | Whenever you summon an ally: Gain 1 Might. |
 | Crimson Pact | 1 | skill | uncommon | Lose 3 HP. Consume 1 card. Draw 2 cards. |
 | Gnaw | 1 | attack | uncommon | Deal 5 (+1 per consumed card) damage. |

@@ -8,6 +8,7 @@ export * from './replays';
 export {
   checkEntry,
   checkArenaEntry,
+  checkArenaDecks,
   cleanName,
   isProfane,
   MAX_BOONS,
@@ -86,3 +87,4 @@ export {
   type Banked,
   type VaultDeck,
 } from './vault';
+export { deckToPlay, picksDone } from './picks';

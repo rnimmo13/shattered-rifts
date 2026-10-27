@@ -3,8 +3,8 @@
 import type { Action } from '@sr/combat';
 import type { ClientMsg, ServerMsg } from '@sr/pvp';
 
-/** Biggest message accepted (a deck of 80 cards is about 2 KB). */
-export const MAX_MESSAGE_BYTES = 16_384;
+/** Biggest message accepted (a deck of 80 cards is about 2 KB, and a player brings up to MAX_MATCH_DECKS of them). */
+export const MAX_MESSAGE_BYTES = 65_536;
 
 export function send(ws: WebSocket, msg: ServerMsg): void {
   try {
@@ -40,6 +40,10 @@ export function parse(message: string | ArrayBuffer): ClientMsg | null {
         m['action'] !== null &&
         typeof (m['action'] as Record<string, unknown>)['type'] === 'string'
         ? (m as unknown as ClientMsg)
+        : null;
+    case 'pick':
+      return typeof m['deck'] === 'number' && Number.isInteger(m['deck']) && m['deck'] >= 0
+        ? { type: 'pick', deck: m['deck'] }
         : null;
     case 'order':
       return typeof m['first'] === 'boolean' ? { type: 'order', first: m['first'] } : null;
