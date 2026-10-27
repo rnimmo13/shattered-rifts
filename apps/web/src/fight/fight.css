@@ -2160,3 +2160,38 @@
   outline: 2px solid var(--c-gold-light);
   outline-offset: 2px;
 }
+
+/* the Sharpen number sits on a dark badge: on the gold chip it was dark brown on near-black, so it could not be read */
+.plate .chip--sharp.is-sharp b {
+  color: #ffe39a;
+  border-color: #ffe39a;
+}
+
+/* the result's buttons: Continue on its own, large, and the other options stacked beside it, quieter (DECISIONS #290) */
+.fight__resultButtons {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+  gap: 1rem;
+  align-items: stretch;
+  width: 100%;
+}
+.fight__resultGo {
+  min-height: 7.5rem;
+  font-size: 1.35rem;
+}
+.fight__resultButtons .fight__resultActions {
+  display: grid;
+  gap: 0.8rem;
+  align-content: center;
+}
+.fight__resultButtons .fight__resultActions .btn {
+  width: 100%;
+}
+@media (max-width: 34rem) {
+  .fight__resultButtons {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .fight__resultGo {
+    min-height: 3.2rem;
+  }
+}

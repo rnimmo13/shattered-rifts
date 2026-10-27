@@ -1853,37 +1853,43 @@ export function FightView(props: {
                         : 'The rift claims another.'}
                 </p>
                 {deathLine && <p className="fight__resultRecap">{deathLine}</p>}
-                <div className="fight__resultActions">
+                {/* Continue first and on its own; the rest stacked beside it, smaller (DECISIONS #290) */}
+                <div className="fight__resultButtons">
                   <button
-                    className="btn btn--small"
-                    onClick={() => setRecapFor(result.replay ?? replayOf())}
+                    className="btn btn--primary fight__resultGo"
+                    onClick={() => props.onDone(result)}
                   >
-                    <span>Recap and battle log</span>
+                    <span>
+                      {props.doneLabel
+                        ? props.doneLabel
+                        : watch
+                          ? (props.exitLabel ?? 'Close')
+                          : pvp?.series && !pvp.series.over
+                            ? 'Next game'
+                            : 'Continue'}
+                    </span>
                   </button>
-                  <button className="btn btn--small btn--ghost" onClick={() => setPeek(true)}>
-                    <span>Look at the board</span>
-                  </button>
-                  {!watch && result.replay && !(pvp?.series && !pvp.series.over) && (
+                  <div className="fight__resultActions">
                     <button
-                      className="btn btn--small"
-                      onClick={() => setReplaying(result.replay ?? null)}
+                      className="btn btn--small btn--ghost"
+                      onClick={() => setRecapFor(result.replay ?? replayOf())}
                     >
-                      <span>Watch the replay</span>
+                      <span>Recap and battle log</span>
                     </button>
-                  )}
-                  {props.resultExtra?.(result)}
+                    <button className="btn btn--small btn--ghost" onClick={() => setPeek(true)}>
+                      <span>Look at the board</span>
+                    </button>
+                    {!watch && result.replay && !(pvp?.series && !pvp.series.over) && (
+                      <button
+                        className="btn btn--small btn--ghost"
+                        onClick={() => setReplaying(result.replay ?? null)}
+                      >
+                        <span>Watch the replay</span>
+                      </button>
+                    )}
+                    {props.resultExtra?.(result)}
+                  </div>
                 </div>
-                <button className="btn btn--primary" onClick={() => props.onDone(result)}>
-                  <span>
-                    {props.doneLabel
-                      ? props.doneLabel
-                      : watch
-                        ? (props.exitLabel ?? 'Close')
-                        : pvp?.series && !pvp.series.over
-                          ? 'Next game'
-                          : 'Continue'}
-                  </span>
-                </button>
               </div>
             </div>
           )}
