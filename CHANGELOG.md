@@ -5,6 +5,7 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **Rivet:** Swarm and Core pulled apart. Swarm goes wide (Heavy Plating, Repair Bot and Reactor join it); Core goes tall: new Crankshaft, Reinforced Frame and Heavy Hitter grow with your biggest companion, and Reactor Meltdown deals the HP of the ally it blows up. Salvage Bot, Swarm Protocol and Scrap Volley are retired.
 - **Valeria:** Devotion costs show just the number; Sunfall and Sunforged Edge show an X (they spend it all). Sunfall strikes 2 different random enemies.
 - **Companions grow:** a heal on a companion gives it that much max HP instead (Rivet's Tinkerer, Sync Pulse, Primal Feast...).
 - **New starting kits:** Valeria (Bulwark: Bulwark Sweep, Shield Charge, Tower Shield; Thorns: Mirrored Aegis, Thorn Volley, Barbed Oath; Devotion: Sacred Vow, Hymn of Reckoning, Lightbearer) and Rivet's Swarm (Overcharge Blast, Call Turret, Breach Charge).

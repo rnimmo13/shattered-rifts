@@ -156,7 +156,10 @@ const BY_ID: Record<string, number> = {
   'ember-ward': 1,
   'mirror-shield': 1,
   'radiant-oath': 1,
-  'scrap-volley': 0,
+  // Swarm goes wide, Core goes tall (DECISIONS #358)
+  'heavy-plating': 0,
+  'repair-bot': 0,
+  reactor: 0,
   'sync-pulse': 1,
   overload: 1,
   'hardened-chassis': 2,

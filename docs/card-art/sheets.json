@@ -1460,6 +1460,7 @@
   "cols": 3,
   "rows": 3,
   "ids": [
+   "heavy-hitter",
    "ion-lance",
    "patch-job",
    "reinforce",
@@ -1467,8 +1468,7 @@
    "armor-piercer",
    "breach-charge",
    "build-enforcer",
-   "countermeasure-grid",
-   "formation-strike"
+   "countermeasure-grid"
   ]
  },
  {
@@ -1477,15 +1477,15 @@
   "cols": 3,
   "rows": 3,
   "ids": [
+   "crankshaft",
+   "formation-strike",
    "hardened-chassis",
    "jumpstart",
    "ping",
    "plating",
+   "reinforced-frame",
    "relay-strike",
-   "repair-bot",
-   "scrap-volley",
-   "static-field",
-   "sync-pulse"
+   "repair-bot"
   ]
  },
  {
@@ -1494,6 +1494,8 @@
   "cols": 3,
   "rows": 1,
   "ids": [
+   "static-field",
+   "sync-pulse",
    "overclock"
   ]
  },

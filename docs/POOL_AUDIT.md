@@ -71,24 +71,24 @@ cost and effects whose numbers differ by about a third or less. "Shared" cards b
 | Lightbearer | common | skill | 1 | Heal 4. Gain 5 Barrier. |
 | Lightbrand | common | attack | 1 +5 devotion | Deal 14 damage. |
 | Prayer | common | skill | 0 | Heal 4. Draw 1 card. Consume. |
-| Sunforged Edge | common | attack | 2 | Deal 6 (+1 per Devotion) damage. Spend all your Devotion. |
+| Sunforged Edge | common | attack | 2 +0 devotion | Deal 6 (+1 per Devotion) damage. |
 | Sunlit Blow | common | attack | 1 | Deal 6 damage. Heal 2. |
 | Aegis of the Warden | uncommon | skill | 2 | Gain 6 Barrier. Gain 1 Shielded. |
 | Benediction | uncommon | skill | 2 | Heal 10. Gain 6 Barrier. Consume. |
 | Consecrated Blade | uncommon | attack | 2 +8 devotion | Deal 9 damage 2 times. Gain 6 Barrier. |
 | Gracebound | uncommon | aura | 1 | Whenever you play a Skill: Heal 1. |
-| Heartening Hymn | uncommon | skill | 1 | Heal 6 to all friends. Gain 4 Barrier to all friends. |
+| Heartening Hymn | uncommon | skill | 1 | Heal 6. Your companions gain 6 max HP. Gain 4 Barrier to all friends. |
 | Hymn of Reckoning | uncommon | attack | 1 +6 devotion | Deal 10 damage to ALL enemies. |
 | Radiant Renewal | uncommon | skill | 2 | Heal 8. Draw 2 cards. Consume. |
 | Sacred Vow | uncommon | aura | 2 | At the end of your turn: Heal 3. |
 | Ward of Ages | uncommon | skill | 1 | Gain 1 Shielded. Draw 1 card. |
 | Absolution | rare | skill | 3 | Heal 12. Gain 12 Barrier. Gain 1 Shielded. Consume. |
-| Dawn Chorus | rare | skill | 2 | Heal 10 to all friends. Gain 1 Shielded. Consume. |
+| Dawn Chorus | rare | skill | 2 | Heal 10. Your companions gain 10 max HP. Gain 1 Shielded. Consume. |
 | Halo | rare | aura | 3 | At the start of your turn: Gain 1 Shielded. |
 | Hand of God | rare | attack | 2 +15 devotion | Deal 36 damage. |
 | Holy Reckoning | rare | attack | 2 | Deal 8 damage to ALL enemies. Heal 6. |
 | Martyr's Grace | rare | skill | 1 | Lose 5 HP. Gain 15 Barrier. Gain 2 Shielded. Consume. |
-| Sunfall | rare | attack | 2 | Deal 10 (+2 per Devotion) damage. Spend all your Devotion. |
+| Sunfall | rare | attack | 2 +0 devotion | Deal 10 (+2 per Devotion) damage to 2 different random enemies. |
 | Dawn's Mercy | legendary | aura | 3 | Whenever you heal (even at full HP): Deal damage equal to the HP healed to a random enemy. At the start of your turn: Heal 3. |
 
 ### Shared
@@ -115,8 +115,8 @@ cost and effects whose numbers differ by about a third or less. "Shared" cards b
 |---|---|---|---|---|
 | Breach Charge | common | attack | 1 | Deal 5 damage. Summon Micro Drone (4 HP). At the end of your turn it will: Deal 3 damage. |
 | Formation Strike | common | attack | 1 | Deal 2 (+4 per ally) damage. |
-| Salvage Bot | common | summon | 1 | Summon Salvage Bot (6 HP). At the end of your turn it will: Gain 4 Barrier to your hero. |
-| Scrap Volley | common | attack | 1 | Deal 4 damage 2 times to a random enemy. |
+| Heavy Plating | common | aura | 1 | Whenever you summon an ally: Gain 5 Barrier to all friends. |
+| Repair Bot | common | summon | 1 | Summon Repair Bot (6 HP). At the end of your turn it will: Heal 3 to your hero. |
 | Spare Parts | common | summon | 0 | Summon Micro Drone (4 HP). At the end of your turn it will: Deal 3 damage. Consume. |
 | Strip for Parts | common | skill | 0 | Gain Barrier equal to the target's HP. Draw 1 card. Sacrifice the chosen ally. |
 | Call Turret | uncommon | summon | 1 | Summon Sentry Turret (10 HP, Taunt). At the end of your turn it will: Deal 3 damage. Gain 2 Barrier to your hero. |
@@ -133,7 +133,7 @@ cost and effects whose numbers differ by about a third or less. "Shared" cards b
 | Legion | rare | aura | 2 | Whenever you summon an ally: Apply 1 Might to all friends. |
 | Mass Production | rare | aura | 3 | At the start of your turn: Summon Patrol Drone (7 HP). At the end of your turn it will: Deal 4 damage. |
 | Mob Rule | rare | attack | 2 | Deal 5 (+3 per ally) damage to ALL enemies. |
-| Swarm Protocol | rare | summon | 2 | Summon 2 Patrol Drones (7 HP each). At the end of your turn each will: Deal 4 damage. |
+| Reactor | rare | aura | 2 | Apply 3 Might to all friends for the rest of the fight. |
 | Swarm Tactics | rare | aura | 1 | Whenever you summon an ally: Deal 3 damage to a random enemy. |
 | Drone Uprising | legendary | skill | 2 | Summon 3 Drones (8 HP each). At the end of your turn each will: Deal 3 damage. All your allies act now. Consume. |
 
@@ -145,7 +145,7 @@ cost and effects whose numbers differ by about a third or less. "Shared" cards b
 | Jumpstart | common | skill | 1 | All your allies act now. Gain 4 Barrier. |
 | Ping | common | skill | 0 | All your allies act now. Consume. |
 | Relay Strike | common | attack | 1 | Deal 6 damage. All your allies act now. |
-| Sync Pulse | common | skill | 1 | All your allies act now. Heal 3 to all friends. |
+| Sync Pulse | common | skill | 1 | All your allies act now. Heal 3. Your companions gain 3 max HP. |
 | Tandem Strike | common | attack | 1 | Deal 3 (+2 per card played this turn) damage. |
 | Arc Relay | uncommon | attack | 2 | Deal 5 damage to ALL enemies. All your allies act now. |
 | Assemble | uncommon | skill | 1 | All your allies act now. Draw 1 card. |
@@ -154,7 +154,7 @@ cost and effects whose numbers differ by about a third or less. "Shared" cards b
 | Link Up | uncommon | skill | 1 | All your allies act now. Gain 4 Barrier to all friends. |
 | Overdrive | uncommon | skill | 1 | Apply 1 Might to all friends. All your allies act now. |
 | Overwatch | uncommon | trap | 1 | When you or an ally is attacked: All your allies act now. Deal 6 damage to the attacker. |
-| Resonant Pulse | uncommon | aura | 1 | Whenever you play a Skill: Heal 1 to all friends. |
+| Resonant Pulse | uncommon | aura | 1 | Whenever you play a Skill: Heal 1. Your companions gain 1 max HP. |
 | Surge Protocol | uncommon | skill | 0 | Apply equal to the Mana spent Might to all friends. All your allies act now. |
 | Chain Reaction | rare | skill | 2 | All your allies act now. All your allies act now. Draw 1 card. |
 | Command Chip | rare | aura | 3 | Whenever you play a Summon: All your allies act now. |
@@ -171,24 +171,24 @@ cost and effects whose numbers differ by about a third or less. "Shared" cards b
 |---|---|---|---|---|
 | Armor Piercer | common | attack | 1 | Deal 6 damage. Apply 1 Exposed. |
 | Build Enforcer | common | summon | 2 | Summon Enforcer Mk.II (14 HP). At the end of your turn it will: Deal 6 damage. |
+| Crankshaft | common | attack | 1 | Deal 4 (+1 per 4 max HP of your biggest companion) damage. |
 | Hardened Chassis | common | skill | 1 | Gain 9 Barrier to the ally. Draw 1 card. |
-| Heavy Plating | common | aura | 1 | Whenever you summon an ally: Gain 5 Barrier to all friends. |
-| Repair Bot | common | summon | 1 | Summon Repair Bot (6 HP). At the end of your turn it will: Heal 3 to your hero. |
+| Reinforced Frame | common | skill | 1 | The ally gains 5 max HP. Draw 1 card. |
 | Retrofit | common | skill | 1 | Apply 3 Might to the ally. |
 | Bulwark Frame | uncommon | skill | 1 | Gain 14 Barrier to the ally. |
-| Patch Job | uncommon | skill | 0 | Heal 8 to the ally. Gain 3 Barrier to the ally. |
+| Patch Job | uncommon | skill | 0 | The ally gains 8 max HP. Gain 3 Barrier to the ally. |
 | Rebuild | uncommon | skill | 1 | Your most recently fallen ally returns with half its HP. Gain 6 Barrier. Consume. |
 | Reinforce | uncommon | skill | 1 | Gain 8 Barrier to the ally. Apply 2 Might to the ally. |
-| Self-Mending | uncommon | aura | 1 | At the start of your turn: Heal 2 to all friends. |
+| Self-Mending | uncommon | aura | 1 | At the start of your turn: Heal 2. Your companions gain 2 max HP. |
 | Siege Protocol | uncommon | attack | 2 | Deal 6 (+2 per Might) damage. |
 | Titan Forge | uncommon | summon | 2 | Summon Enforcer Mk.II (14 HP). At the end of your turn it will: Deal 6 damage. Apply 2 Might to all friends. Consume. |
-| Upgrade Chip | uncommon | skill | 1 | Apply 2 Might to the ally. Heal 6 to the ally. |
+| Upgrade Chip | uncommon | skill | 1 | Apply 2 Might to the ally. The ally gains 6 max HP. |
 | Weld Armor | uncommon | skill | 1 | The ally gains 6 max HP. Gain 6 Barrier to the ally. |
 | Backup Core | rare | aura | 2 | Whenever one of your allies dies: Your most recently fallen ally returns with half its HP. |
+| Heavy Hitter | rare | attack | 2 | Deal damage equal to your biggest companion's max HP. |
 | Heavy Industry | rare | aura | 2 | At the start of your turn: Gain 4 Barrier to all friends. |
 | Overclock Core | rare | aura | 3 | At the start of your turn: Apply 1 Might to all friends. |
-| Reactor | rare | aura | 2 | Apply 3 Might to all friends for the rest of the fight. |
-| Reactor Meltdown | rare | skill | 0 | Deal 25 damage to ALL enemies. Sacrifice the chosen ally. Consume. |
+| Reactor Meltdown | rare | skill | 0 | Deal damage equal to the target's HP to ALL enemies. Sacrifice the chosen ally. Consume. |
 | Siege Engine | rare | summon | 2 | Summon Siege Engine (16 HP). At the end of your turn it will: Deal 13 damage. |
 | War Engine | rare | summon | 3 | Summon War Engine (22 HP). At the end of your turn it will: Deal 9 damage. |
 | The Foundry Awakens | legendary | aura | 3 | At the start of your turn: Summon Siege Engine (16 HP). At the end of your turn it will: Deal 13 damage. All your allies act now. |
@@ -300,7 +300,7 @@ cost and effects whose numbers differ by about a third or less. "Shared" cards b
 | Card | Rarity | Type | Cost | Text |
 |---|---|---|---|---|
 | Bone Crack | common | attack | 1 | Deal 7 damage. Apply 2 Exposed. |
-| Primal Feast | common | skill | 1 | Heal 7 to all friends. |
+| Primal Feast | common | skill | 1 | Heal 7. Your companions gain 7 max HP. |
 | Devour | uncommon | attack | 2 | Deal 16 damage. Lifesteal 50%. |
 | Tear Loose | uncommon | attack | 1 | Deal 7 damage. Lose 3 HP. Gain 4 Primed. |
 | Whet the Fangs | uncommon | skill | 0 | Gain 6 Primed. |
@@ -911,7 +911,7 @@ cost and effects whose numbers differ by about a third or less. "Shared" cards b
 | Liquid Lunch | common | skill | 0 | Gain 2 Mana. Gain 3 Hangover. Consume. |
 | One for the Road | common | skill | 0 | Draw 2 cards. Gain 3 Hangover. Consume. |
 | Sob Story | common | skill | 1 | Heal 3 (+1 per 8% HP missing). Draw 1 card. Consume. |
-| Sweat It Out | common | skill | 1 | Gain 4 Barrier. Heal HP equal to 2 times your Hangover. Clear your Hangover. |
+| Sweat It Out | common | skill | 1 | Gain 4 Barrier. Heal HP equal to your Hangover. Clear your Hangover. Consume. |
 | Barroom Brawl | uncommon | attack | 2 | Deal 10 damage to ALL enemies. Gain 3 Hangover. |
 | Bender | uncommon | attack | 1 | Deal 3 damage, 1 more time per Hangover. |
 | Black Out | uncommon | skill | 1 | Gain 14 Barrier. Gain 4 Hangover. |
@@ -920,7 +920,7 @@ cost and effects whose numbers differ by about a third or less. "Shared" cards b
 | Liquid Dinner | uncommon | skill | 1 | Heal 4 (+1 per 5% HP missing). Draw 1 card. Consume. |
 | Mean Drunk | uncommon | aura | 2 | Whenever you lose HP to your own cards: Gain 1 Might until the end of your turn. Gain 2 Barrier. |
 | Smash the Pane | uncommon | attack | 2 | Deal 8 (+1 per 4% HP missing) damage. |
-| Swig | uncommon | skill | 0 | Gain 3 Might until the end of your turn. Gain 3 Hangover. |
+| Swig | uncommon | skill | 0 | Gain 3 Might until the end of your turn. Gain 3 Hangover. Consume. |
 | Bar Stool | rare | attack | 1 | Deal 10 (+1 per 6% HP missing) damage. |
 | Bottomless Flask | rare | aura | 2 | At the start of your turn: Heal 2 (+1 per 10% HP missing). Draw 1 card. |
 | Bottoms Up | rare | skill | 1 | Gain 2 Mana. Draw 2 cards. Gain 6 Hangover. Consume. |
@@ -994,13 +994,13 @@ cost and effects whose numbers differ by about a third or less. "Shared" cards b
 | Rise Again | uncommon | skill | 2 | Your most recently fallen ally returns with half its HP. Gain 5 Barrier. |
 | Soul Chain | uncommon | aura | 1 | Whenever you summon an ally: Curse ALL enemies with 2 Fate. |
 | Twin Thralls | uncommon | summon | 2 | Summon 2 Bone Thralls (12 HP each). At the end of your turn each will: Deal 4 damage. |
-| Unquiet Rest | uncommon | aura | 2 | At the start of your turn: Heal 3 to all friends. |
+| Unquiet Rest | uncommon | aura | 2 | At the start of your turn: Heal 3. Your companions gain 3 max HP. |
 | Army of the Drowned | rare | summon | 3 | Summon 3 Bone Thralls (12 HP each). At the end of your turn each will: Deal 4 damage. Consume. |
 | Bonded Dead | rare | aura | 2 | Whenever one of your allies dies: Curse ALL enemies with 4 Fate. |
 | Bone Choir | rare | aura | 2 | Whenever one of your allies dies: Deal 8 damage to ALL enemies. |
 | Death Feeds | rare | aura | 1 | Whenever one of your allies dies: Gain 8 Barrier. Draw 1 card. |
 | Grave Colossus | rare | summon | 2 | Summon Grave Colossus (22 HP). At the end of your turn it will: Deal 9 damage. |
-| Marrow Tide | rare | skill | 2 | Heal 10 to all friends. Apply 2 Might to all friends. Consume. |
+| Marrow Tide | rare | skill | 2 | Heal 10. Your companions gain 10 max HP. Apply 2 Might to all friends. Consume. |
 | Phylactery | rare | aura | 3 | At the start of your turn: Summon Bone Thrall (12 HP). At the end of your turn it will: Deal 4 damage. |
 | The Drowned King | legendary | summon | 3 | Summon The Drowned King (22 HP). At the end of your turn it will: Deal 10 damage. Gain 4 Barrier to your hero. Apply 1 Might to all friends. |
 

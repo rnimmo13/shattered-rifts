@@ -498,6 +498,8 @@ function metricValue(r: Run, a: Act, m: Metric, of: Scale['of'], t: Unit | null)
       return sd.exhausted.filter((c) => r.db.cards[c.card]?.kind !== 'power').length;
     case 'allies':
       return sd.units.filter((x) => x.kind === 'ally' && x.hp > 0).length;
+    case 'biggestAlly':
+      return sd.units.reduce((m, x) => (x.kind === 'ally' && x.hp > 0 ? Math.max(m, x.maxHp) : m), 0);
     case 'foes':
       return r.s.sides[other(sd.id)].units.filter((x) => x.hp > 0).length;
     case 'snares':

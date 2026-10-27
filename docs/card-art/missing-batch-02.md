@@ -64,15 +64,15 @@ LAYOUT (critical): a clean 3 x 3 grid of landscape 4:3 pictures (each about 760 
 WORLD: Rivet, an engineer with a hovering drone. A tinkerer of machines. She starts every fight with a Drone and builds an army of them. World: a teal-and-orange foundry of machines: hazard stripes, steel, glowing cyan, sparks and steam.
 
 THE PICTURES, in this exact order, left to right, top row first. Use the card name and its effect only to decide what to draw; never write the name:
-1. "Hardened Chassis" (skill): Gain 9 Barrier to the ally. Draw 1 card. Show a defensive or tactical moment, calm and clear.
-2. "Jumpstart" (skill): All your allies act now. Gain 4 Barrier. Show a defensive or tactical moment, calm and clear.
-3. "Ping" (skill): All your allies act now. Consume. Show a defensive or tactical moment, calm and clear.
-4. "Plating" (skill): Gain 6 Barrier to all friends. Show a defensive or tactical moment, calm and clear.
-5. "Relay Strike" (attack): Deal 6 damage. All your allies act now. Show a dynamic strike caught mid-action.
-6. "Repair Bot" (summon): Summon Repair Bot (6 HP). At the end of your turn it will: Heal 3 to your hero. Show the creature or machine arriving, shown whole.
-7. "Scrap Volley" (attack): Deal 4 damage 2 times to a random enemy. Show a dynamic strike caught mid-action.
-8. "Static Field" (attack): Deal 3 damage to ALL enemies. Apply 1 Faltering to ALL enemies. Show a dynamic strike caught mid-action.
-9. "Sync Pulse" (skill): All your allies act now. Heal 3 to all friends. Show a defensive or tactical moment, calm and clear.
+1. "Crankshaft" (attack): Deal 4 (+1 per 4 max HP of your biggest companion) damage. Show a dynamic strike caught mid-action.
+2. "Formation Strike" (attack): Deal 2 (+4 per ally) damage. Show a dynamic strike caught mid-action.
+3. "Hardened Chassis" (skill): Gain 9 Barrier to the ally. Draw 1 card. Show a defensive or tactical moment, calm and clear.
+4. "Jumpstart" (skill): All your allies act now. Gain 4 Barrier. Show a defensive or tactical moment, calm and clear.
+5. "Ping" (skill): All your allies act now. Consume. Show a defensive or tactical moment, calm and clear.
+6. "Plating" (skill): Gain 6 Barrier to all friends. Show a defensive or tactical moment, calm and clear.
+7. "Reinforced Frame" (skill): The ally gains 5 max HP. Draw 1 card. Show a defensive or tactical moment, calm and clear.
+8. "Relay Strike" (attack): Deal 6 damage. All your allies act now. Show a dynamic strike caught mid-action.
+9. "Repair Bot" (summon): Summon Repair Bot (6 HP). At the end of your turn it will: Heal 3 to your hero. Show the creature or machine arriving, shown whole.
 
 NEGATIVE: text, letters, numbers, captions, labels, UI, card frames, borders, watermark, logo, photorealism, gritty texture, nudity, characters facing away.
 ```
@@ -234,7 +234,7 @@ LAYOUT (critical): a clean 3 x 3 grid of landscape 4:3 pictures (each about 760 
 WORLD: KP, a boisterous drunk dwarf with a shotgun and bottles. A short, fat, bald dwarf with a hammer, an Old Twelve Gauge that hits every enemy and gets sharper, and a trolley of window panes. Booby traps, glass and buckshot. World: the rift's rubbish dump: rusty junk, green bottle glass, amber oil-drum firelight, a deep blue-black sky.
 
 THE PICTURES, in this exact order, left to right, top row first. Use the card name and its effect only to decide what to draw; never write the name:
-1. "Swig" (skill): Gain 3 Might until the end of your turn. Gain 3 Hangover. Show a defensive or tactical moment, calm and clear.
+1. "Swig" (skill): Gain 3 Might until the end of your turn. Gain 3 Hangover. Consume. Show a defensive or tactical moment, calm and clear.
 2. "Aim" (skill): Sharpen 2 (Old Twelve Gauge gains 2 damage). Hold. Show a defensive or tactical moment, calm and clear.
 3. "Birdshot" (attack): Deal 3 damage to ALL enemies. Consume. Show a dynamic strike caught mid-action.
 4. "Bottle to the Head" (attack): Deal 5 (+2 per Hangover) damage. Show a dynamic strike caught mid-action.

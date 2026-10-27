@@ -47,6 +47,19 @@ describe('healing a companion grows it', () => {
     expect(after.maxHp).toBe(max);
   });
 
+  it("Core cashes in its biggest companion (DECISIONS #358)", () => {
+    let s = play(fight(['build-enforcer', 'heavy-hitter', 'reactor-meltdown']), 'T0'); // a 14 HP Enforcer
+    const foe = () => s.sides.b.units[0]!;
+    foe().hp = foe().maxHp = 200;
+    foe().barrier = 0;
+    s = play(s, 'T1');
+    expect(foe().hp).toBe(186); // its max HP
+    const enforcer = allies(s).find((u) => u.maxHp === 14)!; // (not the Drone Rivet starts with)
+    s = play(s, 'T2', enforcer.id);
+    expect(foe().hp).toBe(186 - 14); // its HP, and it is gone
+    expect(allies(s).some((u) => u.id === enforcer.id && u.hp > 0)).toBe(false);
+  });
+
   it('says so on the card', () => {
     expect(cardText(db, db.cards['sync-pulse']!)).toContain('Your companions gain 3 max HP');
   });

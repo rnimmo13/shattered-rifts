@@ -146,6 +146,7 @@ export type Metric =
   | 'discardPile'
   | 'exhausted'
   | 'allies'
+  | 'biggestAlly' // the max HP of your biggest living companion (DECISIONS #358)
   | 'foes'
   | 'snares'
   | 'stars'

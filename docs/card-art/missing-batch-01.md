@@ -58,7 +58,7 @@ NEGATIVE: text, letters, numbers, captions, labels, UI, card frames, borders, wa
 
 ## Rivet
 
-### Sheet `engineer-m01` (9 pictures, uncommon first)
+### Sheet `engineer-m01` (9 pictures, rare first)
 
 ```
 Create ONE ILLUSTRATION SHEET of 9 separate card-art pictures for a card-battler game (like Slay the Spire), 2400 x 1800, no text.
@@ -69,15 +69,15 @@ LAYOUT (critical): a clean 3 x 3 grid of landscape 4:3 pictures (each about 760 
 WORLD: Rivet, an engineer with a hovering drone. A tinkerer of machines. She starts every fight with a Drone and builds an army of them. World: a teal-and-orange foundry of machines: hazard stripes, steel, glowing cyan, sparks and steam.
 
 THE PICTURES, in this exact order, left to right, top row first. Use the card name and its effect only to decide what to draw; never write the name:
-1. "Ion Lance" (attack): Deal 16 damage. Show a dynamic strike caught mid-action.
-2. "Patch Job" (skill): Heal 8 to the ally. Gain 3 Barrier to the ally. Show a defensive or tactical moment, calm and clear.
-3. "Reinforce" (skill): Gain 8 Barrier to the ally. Apply 2 Might to the ally. Show a defensive or tactical moment, calm and clear.
-4. "Weld Armor" (skill): The ally gains 6 max HP. Gain 6 Barrier to the ally. Show a defensive or tactical moment, calm and clear.
-5. "Armor Piercer" (attack): Deal 6 damage. Apply 1 Exposed. Show a dynamic strike caught mid-action.
-6. "Breach Charge" (attack): Deal 5 damage. Summon Micro Drone (4 HP). At the end of your turn it will: Deal 3 damage. Show a dynamic strike caught mid-action.
-7. "Build Enforcer" (summon): Summon Enforcer Mk.II (14 HP). At the end of your turn it will: Deal 6 damage. Show the creature or machine arriving, shown whole.
-8. "Countermeasure Grid" (trap): When you or an ally is attacked: Deal 5 damage to the attacker. Gain 5 Barrier. Show a hidden trap seen as it is being set, ominous.
-9. "Formation Strike" (attack): Deal 2 (+4 per ally) damage. Show a dynamic strike caught mid-action.
+1. "Heavy Hitter" (attack): Deal damage equal to your biggest companion's max HP. Show a dynamic strike caught mid-action. A little more dramatic and detailed.
+2. "Ion Lance" (attack): Deal 16 damage. Show a dynamic strike caught mid-action.
+3. "Patch Job" (skill): The ally gains 8 max HP. Gain 3 Barrier to the ally. Show a defensive or tactical moment, calm and clear.
+4. "Reinforce" (skill): Gain 8 Barrier to the ally. Apply 2 Might to the ally. Show a defensive or tactical moment, calm and clear.
+5. "Weld Armor" (skill): The ally gains 6 max HP. Gain 6 Barrier to the ally. Show a defensive or tactical moment, calm and clear.
+6. "Armor Piercer" (attack): Deal 6 damage. Apply 1 Exposed. Show a dynamic strike caught mid-action.
+7. "Breach Charge" (attack): Deal 5 damage. Summon Micro Drone (4 HP). At the end of your turn it will: Deal 3 damage. Show a dynamic strike caught mid-action.
+8. "Build Enforcer" (summon): Summon Enforcer Mk.II (14 HP). At the end of your turn it will: Deal 6 damage. Show the creature or machine arriving, shown whole.
+9. "Countermeasure Grid" (trap): When you or an ally is attacked: Deal 5 damage to the attacker. Gain 5 Barrier. Show a hidden trap seen as it is being set, ominous.
 
 NEGATIVE: text, letters, numbers, captions, labels, UI, card frames, borders, watermark, logo, photorealism, gritty texture, nudity, characters facing away.
 ```

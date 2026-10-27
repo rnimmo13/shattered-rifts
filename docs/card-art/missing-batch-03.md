@@ -6,18 +6,20 @@ One prompt at a time: copy the text in ONE box, paste it, attach the Valeria ima
 
 ## Rivet
 
-### Sheet `engineer-m03` (1 pictures, basic first)
+### Sheet `engineer-m03` (3 pictures, common first)
 
 ```
-Create ONE ILLUSTRATION SHEET of 1 separate card-art pictures for a card-battler game (like Slay the Spire), 2400 x 1800, no text.
+Create ONE ILLUSTRATION SHEET of 3 separate card-art pictures for a card-battler game (like Slay the Spire), 2400 x 1800, no text.
 The attached image (Valeria) is the STYLE ANCHOR: match its cartoon game-art rendering exactly (bold clean dark outlines, flat saturated colours, simple cel shading, crisp polished shapes). Do NOT copy her character; paint scenes and objects. Backgrounds are softer and less contrasty than the main subject so the subject pops.
 
-LAYOUT (critical): a clean 3 x 1 grid of landscape 4:3 pictures (each about 760 x 570), separated by thin flat dark navy (#14181f) gutters, with NO frames, NO borders, NO captions, NO text, NO numbers. Every picture fills its own cell completely; nothing crosses a gutter. Each picture has ONE clear subject in the middle that reads at thumbnail size, a simple scene behind it, light from the upper left. Leave any unused cells plain dark navy.
+LAYOUT (critical): a clean 3 x 1 grid of landscape 4:3 pictures (each about 760 x 570), separated by thin flat dark navy (#14181f) gutters, with NO frames, NO borders, NO captions, NO text, NO numbers. Every picture fills its own cell completely; nothing crosses a gutter. Each picture has ONE clear subject in the middle that reads at thumbnail size, a simple scene behind it, light from the upper left.
 
 WORLD: Rivet, an engineer with a hovering drone. A tinkerer of machines. She starts every fight with a Drone and builds an army of them. World: a teal-and-orange foundry of machines: hazard stripes, steel, glowing cyan, sparks and steam.
 
 THE PICTURES, in this exact order, left to right, top row first. Use the card name and its effect only to decide what to draw; never write the name:
-1. "Tune-Up" (skill): Apply 1 Might to all friends. Show a defensive or tactical moment, calm and clear.
+1. "Static Field" (attack): Deal 3 damage to ALL enemies. Apply 1 Faltering to ALL enemies. Show a dynamic strike caught mid-action.
+2. "Sync Pulse" (skill): All your allies act now. Heal 3. Your companions gain 3 max HP. Show a defensive or tactical moment, calm and clear.
+3. "Tune-Up" (skill): Apply 1 Might to all friends. Show a defensive or tactical moment, calm and clear.
 
 NEGATIVE: text, letters, numbers, captions, labels, UI, card frames, borders, watermark, logo, photorealism, gritty texture, nudity, characters facing away.
 ```
@@ -38,7 +40,7 @@ THE PICTURES, in this exact order, left to right, top row first. Use the card na
 1. "Pain Ward" (skill): Gain 5 (+1 per 5% HP missing) Barrier. Show a defensive or tactical moment, calm and clear.
 2. "Pound" (attack): Deal 8 damage. Draw 1 card. Lose 2 HP. Show a dynamic strike caught mid-action.
 3. "Pounding Heart" (skill): Gain 1 Mana. Lose 2 HP. Consume. Show a defensive or tactical moment, calm and clear.
-4. "Primal Feast" (skill): Heal 7 to all friends. Show a defensive or tactical moment, calm and clear.
+4. "Primal Feast" (skill): Heal 7. Your companions gain 7 max HP. Show a defensive or tactical moment, calm and clear.
 5. "Rummage" (attack): Deal 8 damage. Put a random Attack card from your discard pile on top of your draw pile. Show a dynamic strike caught mid-action.
 6. "Rush In" (attack): Deal 6 damage. Draw 1 card. Show a dynamic strike caught mid-action.
 7. "Shake Loose" (skill): Draw 2 cards. Gain 3 Barrier. Show a defensive or tactical moment, calm and clear.
@@ -93,7 +95,7 @@ THE PICTURES, in this exact order, left to right, top row first. Use the card na
 4. "Shard Toss" (attack): Deal 4 damage to ALL enemies. Apply 1 Brittle to ALL enemies. Show a dynamic strike caught mid-action.
 5. "Shell Shock" (attack): Deal 3 damage to ALL enemies. Add a Buckshot Shell to your hand. Show a dynamic strike caught mid-action.
 6. "Slug Round" (attack): Deal 16 damage. Show a dynamic strike caught mid-action.
-7. "Sweat It Out" (skill): Gain 4 Barrier. Heal HP equal to 2 times your Hangover. Clear your Hangover. Show a defensive or tactical moment, calm and clear.
+7. "Sweat It Out" (skill): Gain 4 Barrier. Heal HP equal to your Hangover. Clear your Hangover. Consume. Show a defensive or tactical moment, calm and clear.
 
 NEGATIVE: text, letters, numbers, captions, labels, UI, card frames, borders, watermark, logo, photorealism, gritty texture, nudity, characters facing away.
 ```

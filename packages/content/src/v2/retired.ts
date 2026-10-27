@@ -34,6 +34,10 @@ export const TRIMMED_CARDS: Readonly<Record<string, string>> = {
   overtime: 'ping',
   synchronise: 'overdrive',
   'field-engineer': 'repair-bot',
+  // Swarm and Core pulled apart (DECISIONS #358)
+  'salvage-bot': 'repair-bot',
+  'swarm-protocol': 'drone-carrier',
+  'scrap-volley': 'formation-strike',
   recompile: 'plating',
   'arc-welder': 'armor-piercer',
   'assembly-line': 'mass-production',

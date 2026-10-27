@@ -97,7 +97,7 @@ Starter: Strike, Strike, Strike, Strike, Defend, Defend, Defend, Defend, Dawn Sm
 
 A tinkerer of machines. She starts every fight with a Drone and builds an army of them.
 
-Paths: Swarm: many cheap bodies / Assemble: allies act again / Core: a few big constructs
+Paths: Swarm: many cheap drones, spent freely / Assemble: allies act again / Core: one big construct, built up
 
 Starter: Strike, Strike, Strike, Strike, Strike, Defend, Defend, Defend, Deploy Drone, Tune-Up
 
@@ -107,7 +107,6 @@ Starter: Strike, Strike, Strike, Strike, Strike, Defend, Defend, Defend, Deploy 
 | Tune-Up | 1 | skill | basic | Apply 1 Might to all friends. |
 | Spare Parts | 0 | summon | common | Summon Micro Drone (4 HP). At the end of your turn it will: Deal 3 damage. Consume. |
 | Formation Strike | 1 | attack | common | Deal 2 (+4 per ally) damage. |
-| Salvage Bot | 1 | summon | common | Summon Salvage Bot (6 HP). At the end of your turn it will: Gain 4 Barrier to your hero. |
 | Strip for Parts | 0 | skill | common | Gain Barrier equal to the target's HP. Draw 1 card. Sacrifice the chosen ally. |
 | Breach Charge | 1 | attack | common | Deal 5 damage. Summon Micro Drone (4 HP). At the end of your turn it will: Deal 3 damage. |
 | Ping | 0 | skill | common | All your allies act now. Consume. |
@@ -122,9 +121,10 @@ Starter: Strike, Strike, Strike, Strike, Strike, Defend, Defend, Defend, Deploy 
 | Armor Piercer | 1 | attack | common | Deal 6 damage. Apply 1 Exposed. |
 | Static Field | 1 | attack | common | Deal 3 damage to ALL enemies. Apply 1 Faltering to ALL enemies. |
 | Plating | 1 | skill | common | Gain 6 Barrier to all friends. |
-| Scrap Volley | 1 | attack | common | Deal 4 damage 2 times to a random enemy. |
 | Sync Pulse | 1 | skill | common | All your allies act now. Heal 3. Your companions gain 3 max HP. |
 | Hardened Chassis | 1 | skill | common | Gain 9 Barrier to the ally. Draw 1 card. |
+| Crankshaft | 1 | attack | common | Deal 4 (+1 per 4 max HP of your biggest companion) damage. |
+| Reinforced Frame | 1 | skill | common | The ally gains 5 max HP. Draw 1 card. |
 | Call Turret | 1 | summon | uncommon | Summon Sentry Turret (10 HP, Taunt). At the end of your turn it will: Deal 3 damage. Gain 2 Barrier to your hero. |
 | Overcharge Blast | 2 | attack | uncommon | Deal 8 (+2 per ally) damage to ALL enemies. |
 | Parts Bin | 1 | skill | uncommon | Summon Micro Drone (4 HP). At the end of your turn it will: Deal 3 damage. Draw 1 card. |
@@ -155,7 +155,6 @@ Starter: Strike, Strike, Strike, Strike, Strike, Defend, Defend, Defend, Deploy 
 | Resonant Pulse | 1 | aura | uncommon | Whenever you play a Skill: Heal 1. Your companions gain 1 max HP. |
 | Self-Mending | 1 | aura | uncommon | At the start of your turn: Heal 2. Your companions gain 2 max HP. |
 | Patch Job | 0 | skill | uncommon | The ally gains 8 max HP. Gain 3 Barrier to the ally. |
-| Swarm Protocol | 2 | summon | rare | Summon 2 Patrol Drones (7 HP each). At the end of your turn each will: Deal 4 damage. |
 | Legion | 2 | aura | rare | Whenever you summon an ally: Apply 1 Might to all friends. |
 | Swarm Tactics | 1 | aura | rare | Whenever you summon an ally: Deal 3 damage to a random enemy. |
 | Hive Mind | 2 | aura | rare | Whenever one of your allies dies: Draw 1 card. Summon Micro Drone (4 HP). At the end of your turn it will: Deal 3 damage. |
@@ -172,7 +171,7 @@ Starter: Strike, Strike, Strike, Strike, Strike, Defend, Defend, Defend, Deploy 
 | War Engine | 3 | summon | rare | Summon War Engine (22 HP). At the end of your turn it will: Deal 9 damage. |
 | Reactor | 2 | aura | rare | Apply 3 Might to all friends for the rest of the fight. |
 | Overclock Core | 3 | aura | rare | At the start of your turn: Apply 1 Might to all friends. |
-| Reactor Meltdown | 0 | skill | rare | Deal 25 damage to ALL enemies. Sacrifice the chosen ally. Consume. |
+| Reactor Meltdown | 0 | skill | rare | Deal damage equal to the target's HP to ALL enemies. Sacrifice the chosen ally. Consume. |
 | Heavy Industry | 2 | aura | rare | At the start of your turn: Gain 4 Barrier to all friends. |
 | Backup Core | 2 | aura | rare | Whenever one of your allies dies: Your most recently fallen ally returns with half its HP. |
 | Railgun | 3 | attack | rare | Deal 30 damage. |
@@ -180,6 +179,7 @@ Starter: Strike, Strike, Strike, Strike, Strike, Defend, Defend, Defend, Deploy 
 | Factory Floor | 2 | aura | rare | Whenever you summon an ally: Draw 1 card. |
 | Swarm Surge | 2 | skill | rare | Summon Patrol Drone (7 HP). At the end of your turn it will: Deal 4 damage. Draw cards equal to the number of your allies. Consume. |
 | Relay Network | 2 | aura | rare | Whenever one of your Traps is triggered: All your allies act now. |
+| Heavy Hitter | 2 | attack | rare | Deal damage equal to your biggest companion's max HP. |
 | The Foundry Awakens | 3 | aura | legendary | At the start of your turn: Summon Siege Engine (16 HP). At the end of your turn it will: Deal 13 damage. All your allies act now. |
 | Overclocked Legion | 2 | skill | legendary | Apply 3 Might to all friends. All your allies act now. All your allies act now. Consume. |
 | Drone Uprising | 2 | skill | legendary | Summon 3 Drones (8 HP each). At the end of your turn each will: Deal 3 damage. All your allies act now. Consume. |

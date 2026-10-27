@@ -38,12 +38,7 @@ export const ENGINEER: CardDef[] = [
   r('common', 'formation-strike', 'Formation Strike', 'attack', 1, 'foe', [
     scaled(dmg(2), per('allies', 4)),
   ]),
-  r('common', 'salvage-bot', 'Salvage Bot', 'summon', 1, 'none', [summon('salvage-bot')]),
   r('uncommon', 'call-turret', 'Call Turret', 'summon', 1, 'none', [summon('sentry-turret')]),
-  r('rare', 'swarm-protocol', 'Swarm Protocol', 'summon', 2, 'none', [
-    summon('patrol-drone'),
-    summon('patrol-drone'),
-  ]),
   r('common', 'recycle', 'Strip for Parts', 'skill', 0, 'ally', [
     scaled(barrier(0), per('hp', 1, 'target')),
     draw(1),
@@ -221,7 +216,8 @@ export const ENGINEER: CardDef[] = [
     'skill',
     0,
     'ally',
-    [dmg(25, 'allFoes'), sacrifice],
+    // the bigger the construct you give up, the bigger the blast (DECISIONS #358)
+    [scaled(dmg(0, 'allFoes'), per('hp', 1, 'target')), sacrifice],
     { exhaust: true },
   ),
   r('uncommon', 'rebuild', 'Rebuild', 'skill', 1, 'none', [revive, barrier(6)], { exhaust: true }),
@@ -275,7 +271,6 @@ export const ENGINEER: CardDef[] = [
   }),
 
   // --- brought back (DECISIONS #337) ---
-  r('common', 'scrap-volley', 'Scrap Volley', 'attack', 1, 'none', [dmg(4, 'randomFoe', 2)]),
   r('common', 'sync-pulse', 'Sync Pulse', 'skill', 1, 'none', [ACT, heal(3, 'allFriends')]),
   r('rare', 'overload', 'Overload', 'skill', 2, 'none', [ACT, ACT, ACT], { exhaust: true }),
   r('common', 'hardened-chassis', 'Hardened Chassis', 'skill', 1, 'ally', [
@@ -321,4 +316,9 @@ export const ENGINEER: CardDef[] = [
     barrier(3, 'target'),
   ]),
   r('rare', 'relay-network', 'Relay Network', 'power', 2, 'none', [on('snare', [ACT])]),
+
+  // --- Core: one big construct, built up and cashed in (DECISIONS #358) ---
+  r('common', 'crankshaft', 'Crankshaft', 'attack', 1, 'foe', [scaled(dmg(4), per('biggestAlly', 1 / 4))]),
+  r('common', 'reinforced-frame', 'Reinforced Frame', 'skill', 1, 'ally', [growHp(5, 'target'), draw(1)]),
+  r('rare', 'heavy-hitter', 'Heavy Hitter', 'attack', 2, 'foe', [scaled(dmg(0), per('biggestAlly'))]),
 ];
