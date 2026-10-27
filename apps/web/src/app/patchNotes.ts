@@ -29,6 +29,18 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.102.0',
+    date: '2026-10-27',
+    title: 'Back on your feet',
+    summary: 'Spending Resolve after a lost fight brings you back at full HP.',
+    notes: [
+      {
+        kind: 'changed',
+        text: 'Lose a fight with Resolve left and you retry it at full HP (it was the HP you came in with, or half your max HP).',
+      },
+    ],
+  },
+  {
     version: '0.101.0',
     date: '2026-10-27',
     title: 'Elements and the morning after',
