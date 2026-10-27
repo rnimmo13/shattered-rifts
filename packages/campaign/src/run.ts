@@ -254,9 +254,14 @@ export function chooseHeart(run: RunState, id: string): RunState {
     r.hp = Math.max(1, Math.min(r.maxHp, r.hp + h.maxHp));
   }
   r.eventResult = `You take the ${h.name}.${old ? ` The ${old.name} is given back.` : ''}`;
-  r.phase = 'stageClear';
-  r.context = null;
+  afterGift(r);
   return r;
+}
+
+/** After the Warden's Gift: the next stage, or, after the last stage, the loop is cleared (DECISIONS #352). */
+function afterGift(r: RunState): void {
+  r.phase = r.stage >= FINAL_STAGE ? 'loopCleared' : 'stageClear';
+  r.context = null;
 }
 
 const heal = (r: RunState, n: number): void => {
@@ -732,15 +737,13 @@ export function finishDuel(
           r.eventResult = `${r.eventResult} The Heart of the Rift leaves something behind: the Legendary Boon ${COMBAT_DB.boons[legend]?.name ?? legend}.`;
         }
       }
-      r.phase = 'loopCleared';
-      return r;
     }
-    // two Warden's Hearts wait beside the Gift: take a card, a Heart, or nothing (DECISIONS #246)
+    // every Warden, the last one too, leaves its Gift: a card, one of two Warden's Hearts, or nothing (DECISIONS #246, #352)
     const hearts = heartOffers(r);
     const offers = giftOffers(r.rng, r.character, r.deck, r.tier >= 5 ? 4 : 3, node.enemyId);
-    if (offers.length === 0) {
-      r.phase = 'stageClear';
-      r.context = null;
+    // (the Gift always has cards; only if there were neither cards nor Hearts would there be nothing to choose)
+    if (offers.length === 0 && hearts.length === 0) {
+      afterGift(r);
       return r;
     }
     r.context = {
@@ -805,10 +808,8 @@ export function chooseCard(run: RunState, cardId: string | null): RunState {
     need(canAdd(r.deck, cardId), 'That card would break the deck rules');
     r.deck.push(cardId);
   }
-  if (r.phase === 'gift') {
-    r.phase = 'stageClear';
-    r.context = null;
-  } else if (c.nodeId === '') {
+  if (r.phase === 'gift') afterGift(r);
+  else if (c.nodeId === '') {
     // a card chosen at the Threshold or a Waymark: no node is behind it
     r.context = null;
     r.phase = 'map';

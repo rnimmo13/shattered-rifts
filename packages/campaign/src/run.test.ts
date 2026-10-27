@@ -40,6 +40,7 @@ import {
   type RunState,
   type StageRealm,
 } from './index';
+import { giftOffers } from './rewards';
 
 /** Most tests are about the map and what is on it: step past the opening choice without taking anything from it. */
 const open = (r: RunState): RunState => ({ ...r, phase: 'map', context: null });
@@ -592,6 +593,34 @@ describe('the other rooms and the rules around them', () => {
     const picked = chooseCard(won, won.context!.offers![0]!);
     expect(picked.phase).toBe('stageClear');
     expect(nextStage(picked).stage).toBe(2);
+  });
+
+  it('the last Warden leaves its Gift too, and then the loop is cleared (DECISIONS #352)', () => {
+    const base = { ...fresh('knight', 'final-boss'), stage: FINAL_STAGE };
+    const wardenNode = base.map.nodes.find((n) => n.kind === 'warden')!;
+    const run: RunState = {
+      ...base,
+      phase: 'duel',
+      at: wardenNode.id,
+      context: { nodeId: wardenNode.id },
+    };
+    const won = finishDuel(run, true, 30);
+    expect(won.phase).toBe('gift');
+    expect(won.context!.offers!.length).toBeGreaterThanOrEqual(3);
+    expect(chooseCard(won, null).phase).toBe('loopCleared');
+    const picked = chooseCard(won, won.context!.offers![0]!);
+    expect(picked.phase).toBe('loopCleared');
+    expect(picked.deck).toContain(won.context!.offers![0]);
+  });
+
+  it("a Warden's Gift always has cards: with every rare at its copy limit, the next rarity down fills it (DECISIONS #352)", () => {
+    const rares = Object.values(COMBAT_DB.cards)
+      .filter((c) => c.hero === 'knight' && c.rarity === 'rare' && !c.id.endsWith('+') && !c.source)
+      .map((c) => c.id);
+    const deck = rares.flatMap((id) => Array<string>(5).fill(id));
+    const offers = giftOffers(seedRng('gift-full'), 'knight', deck, 3);
+    expect(offers).toHaveLength(3);
+    expect(offers.every((id) => COMBAT_DB.cards[id]?.rarity !== 'rare')).toBe(true);
   });
 
   it('elites heal a little, losing an elite costs 2 Resolve', () => {

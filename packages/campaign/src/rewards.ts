@@ -199,10 +199,15 @@ export function giftOffers(
   const chance = GIFT_LEGEND_CHANCE;
   if (legends.length && nextInt(rng, 100) < chance)
     out.push(legends[nextInt(rng, legends.length)] as string);
-  const rares = own.filter((id) => rarityOf(id) === 'rare' && !out.includes(id));
-  for (let guard = 0; out.length < count && rares.length && guard < 100; guard++) {
-    const pick = rares[nextInt(rng, rares.length)] as string;
-    if (!out.includes(pick)) out.push(pick);
+  // rare cards of your class; should your deck already hold every one it may (5 copies each), the next rarity down fills the
+  // Gift, so a Warden always has cards to give (DECISIONS #352)
+  for (const rarity of ['rare', 'uncommon', 'common']) {
+    const pool = own.filter((id) => rarityOf(id) === rarity && !out.includes(id));
+    for (let guard = 0; out.length < count && pool.length && guard < 100; guard++) {
+      const pick = pool[nextInt(rng, pool.length)] as string;
+      if (!out.includes(pick)) out.push(pick);
+    }
+    if (out.length >= count) break;
   }
   return out;
 }
