@@ -409,6 +409,7 @@ const WHEN_TEXT: Record<string, string> = {
   loseHp: 'Whenever you lose HP to your own cards',
   draw: 'Whenever you draw a card',
   created: 'Whenever a card is created',
+  arcana: 'Whenever you spend Arcana',
 };
 
 export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): string {

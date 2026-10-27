@@ -49,10 +49,8 @@ export const SPELLBLADE: CardDef[] = [
 
   // --- Blade ---
   a('common', 'hone', 'Hone', 'skill', 1, 'none', [forge('starforged-blade', 4)]),
-  a('common', 'honed-strike', 'Honed Strike', 'attack', 1, 'foe', [
-    dmg(6),
-    forge('starforged-blade', 2),
-  ]),
+  // (was a weaker Forged in Fury: now an attack that makes Arcana; DECISIONS #288)
+  a('common', 'honed-strike', 'Honed Strike', 'attack', 1, 'foe', [dmg(5), stars(2)]),
   a('common', 'blade-ward', 'Blade Ward', 'skill', 1, 'none', [
     barrier(5),
     forge('starforged-blade', 1),
@@ -60,10 +58,8 @@ export const SPELLBLADE: CardDef[] = [
   a('common', 'whetstone', 'Whetstone', 'skill', 0, 'none', [forge('starforged-blade', 4)], {
     exhaust: true,
   }),
-  a('uncommon', 'crown-strike', 'Crown Strike', 'attack', 1, 'foe', [
-    dmg(7),
-    forge('starforged-blade', 1),
-  ]),
+  // (was weaker than the common Blacksteel: now a finisher paid in Arcana alone)
+  a('uncommon', 'crown-strike', 'Crown Strike', 'attack', 0, 'foe', [dmg(18)], { starCost: 3 }),
   a('uncommon', 'edgewise', 'Edgewise', 'skill', 1, 'none', [
     barrier(7),
     forge('starforged-blade', 2),
@@ -143,13 +139,26 @@ export const SPELLBLADE: CardDef[] = [
     exhaust: true,
   }),
   a('common', 'starshield', 'Glass Shield', 'skill', 1, 'none', [barrier(6), stars(1)]),
-  a('common', 'ray-of-light', 'Searing Ray', 'attack', 1, 'foe', [dmg(9)]),
+  // (was a plain Emberstrike without the Arcana: now a cheap jab paid in Arcana alone)
+  a(
+    'common',
+    'ray-of-light',
+    'Searing Ray',
+    'attack',
+    0,
+    'foe',
+    [dmg(6), status('exposed', 1, 'target')],
+    {
+      starCost: 1,
+    },
+  ),
   a('common', 'gleam', 'Glint', 'attack', 1, 'foe', [dmg(7), scry(2)]),
-  a('common', 'skybolt', 'Spellbolt', 'attack', 1, 'foe', [dmg(20)], { starCost: 1 }),
-  a('common', 'star-barrier', 'Arcane Barrier', 'skill', 1, 'none', [barrier(16)], { starCost: 1 }),
+  // (paid in Arcana alone: what stored Arcana does on a turn with no Mana left; DECISIONS #288)
+  a('common', 'skybolt', 'Spellbolt', 'attack', 0, 'foe', [dmg(12)], { starCost: 2 }),
+  a('common', 'star-barrier', 'Arcane Barrier', 'skill', 0, 'none', [barrier(10)], { starCost: 2 }),
   a('uncommon', 'nova', 'Shatterburst', 'attack', 2, 'foe', [dmg(34)], { starCost: 2 }),
-  a('uncommon', 'falling-sky', 'Falling Shards', 'attack', 1, 'none', [dmg(8, 'allFoes', 3)], {
-    starCost: 3,
+  a('uncommon', 'falling-sky', 'Falling Shards', 'attack', 0, 'none', [dmg(8, 'allFoes', 3)], {
+    starCost: 4,
   }),
   a(
     'uncommon',
@@ -261,12 +270,11 @@ export const SPELLBLADE: CardDef[] = [
   a('uncommon', 'lyra', 'Sigil of Ward', 'power', 2, 'none', [
     on('turnEnd', [scaled(barrier(0), per('stars'))]),
   ]),
-  a('uncommon', 'draco', 'Sigil of Scorch', 'power', 2, 'none', [
-    on('turnStart', [dmg(3, 'allFoes')]),
+  // (payoffs for spending Arcana: DECISIONS #288)
+  a('uncommon', 'draco', 'Sigil of Scorch', 'power', 1, 'none', [
+    on('arcana', [dmg(3, 'allFoes')]),
   ]),
-  a('uncommon', 'cygnus', 'Sigil of Glass', 'power', 1, 'none', [
-    on('play', [barrier(2)], { filter: 'skill' }),
-  ]),
+  a('uncommon', 'cygnus', 'Sigil of Glass', 'power', 1, 'none', [on('arcana', [barrier(4)])]),
   a('uncommon', 'ursa', 'Sigil of Stone', 'power', 1, 'none', [on('turnEnd', [barrier(3)])]),
   a('rare', 'cassiopeia', 'Sigil of Conduit', 'power', 2, 'none', [
     on('play', [stars(1)], { filter: 'attack' }),

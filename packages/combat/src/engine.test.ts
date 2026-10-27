@@ -1228,3 +1228,42 @@ describe('Lifesteal, companions that grow, and Might shared with the pack (DECIS
     expect(second.statuses.might ?? 0).toBe(might);
   });
 });
+
+describe('an Aura that answers Arcana being spent (DECISIONS #288)', () => {
+  it('fires when a card is paid for in Arcana, and not for a card that costs none', () => {
+    const tdb: CombatDb = {
+      ...db,
+      cards: {
+        ...db.cards,
+        ward: {
+          id: 'ward',
+          name: 'Ward',
+          kind: 'power',
+          cost: 0,
+          target: 'none',
+          effects: [
+            { op: 'power', when: 'arcana', ops: [{ op: 'barrier', amount: 4, to: 'self' }] },
+          ],
+        } as unknown as CardDef,
+        bolt: {
+          id: 'bolt',
+          name: 'Bolt',
+          kind: 'attack',
+          cost: 0,
+          starCost: 2,
+          target: 'foe',
+          effects: [{ op: 'damage', amount: 1, to: 'target' }],
+        } as unknown as CardDef,
+      },
+    };
+    let c = clone(start(['cultist'], ['ward', 'bolt', 'strike']));
+    c.sides.a.stars = 5;
+    hero(c).barrier = 0;
+    c = applyAction(tdb, c, { type: 'play', card: 't0' }).state;
+    c = applyAction(tdb, c, { type: 'play', card: 't2', target: foe(c).id }).state;
+    expect(hero(c).barrier).toBe(0);
+    c = applyAction(tdb, c, { type: 'play', card: 't1', target: foe(c).id }).state;
+    expect(c.sides.a.stars).toBe(3);
+    expect(hero(c).barrier).toBe(4);
+  });
+});

@@ -168,7 +168,8 @@ export type TriggerWhen =
   | 'barrier' // your hero gained Barrier (from anything)
   | 'loseHp' // your hero lost HP to one of your own effects
   | 'draw' // you drew a card
-  | 'created'; // a card was created in one of your piles
+  | 'created' // a card was created in one of your piles
+  | 'arcana'; // you spent Arcana (a card's Arcana cost was paid; DECISIONS #288)
 
 export type Op =
   /** `lonePct`: Point Blank, this much more damage (percent) when it hits only one enemy */

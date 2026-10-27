@@ -1771,6 +1771,8 @@ function playCard(r: Run, action: Extract<Action, { type: 'play' }>): void {
   }
   r.ev.push({ type: 'play', side, card: inst.id, def: inst.card, target: target?.id ?? null });
   r.ev.push({ type: 'mana', side, mana: sd.mana });
+  // (the Auras that answer Arcana being spent go off once the card is paid for)
+  if (cd.starCost) fireTriggers(r, sd, 'arcana');
   if (cd.kind === 'snare') {
     sd.snares.push({ id: inst.id, card: inst.card });
     r.ev.push({ type: 'snareSet', side, snare: inst.id });

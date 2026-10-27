@@ -766,7 +766,7 @@ Starter: Strike, Strike, Defend, Defend, Defend, Defend, Glass Jab, Gather Arcan
 | Gather Arcana | 1 | skill | basic | Gain 3 Arcana. Opening hand. |
 | Arcane Bolt | 1+1◆ | attack | basic | Costs 1 Arcana. Deal 12 damage. Opening hand. |
 | Hone | 1 | skill | common | Sharpen 4 (Obsidian Blade gains 4 damage). |
-| Honed Strike | 1 | attack | common | Deal 6 damage. Sharpen 2 (Obsidian Blade gains 2 damage). |
+| Honed Strike | 1 | attack | common | Deal 5 damage. Gain 2 Arcana. |
 | Blade Ward | 1 | skill | common | Gain 5 Barrier. Sharpen 1 (Obsidian Blade gains 1 damage). |
 | Whetstone | 0 | skill | common | Sharpen 4 (Obsidian Blade gains 4 damage). Consume. |
 | Blacksteel | 1 | attack | common | Deal 8 damage. Sharpen 1 (Obsidian Blade gains 1 damage). |
@@ -775,10 +775,10 @@ Starter: Strike, Strike, Defend, Defend, Defend, Defend, Glass Jab, Gather Arcan
 | Forged in Fury | 1 | attack | common | Deal 7 damage. Sharpen 3 (Obsidian Blade gains 3 damage). |
 | Scrying Glass | 0 | skill | common | Gain 1 Arcana. Draw 1 card. Consume. |
 | Glass Shield | 1 | skill | common | Gain 6 Barrier. Gain 1 Arcana. |
-| Searing Ray | 1 | attack | common | Deal 9 damage. |
+| Searing Ray | 0+1◆ | attack | common | Costs 1 Arcana. Deal 6 damage. Apply 1 Exposed. |
 | Glint | 1 | attack | common | Deal 7 damage. Foresee 2. |
-| Spellbolt | 1+1◆ | attack | common | Costs 1 Arcana. Deal 20 damage. |
-| Arcane Barrier | 1+1◆ | skill | common | Costs 1 Arcana. Gain 16 Barrier. |
+| Spellbolt | 0+2◆ | attack | common | Costs 2 Arcana. Deal 12 damage. |
+| Arcane Barrier | 0+2◆ | skill | common | Costs 2 Arcana. Gain 10 Barrier. |
 | Faint Ember | 1 | skill | common | Gain 1 Arcana. Draw 1 card. Next turn, draw 1 extra card. |
 | Arcane Pulse | 1 | attack | common | Deal 6 damage 2 times to ALL enemies. |
 | Molten Might | 2 | attack | common | Deal 6 damage 3 times. |
@@ -791,7 +791,7 @@ Starter: Strike, Strike, Defend, Defend, Defend, Defend, Glass Jab, Gather Arcan
 | Ley Strike | 1 | attack | common | Deal 4 (+1 per Arcana) damage. |
 | Wishing Well | 0 | skill | common | Gain 2 Arcana. Next turn, lose 1 Mana. |
 | Ash Wind | 1 | skill | common | Draw 2 cards. Gain 1 Arcana. Discard 1 card. |
-| Crown Strike | 1 | attack | uncommon | Deal 7 damage. Sharpen 1 (Obsidian Blade gains 1 damage). |
+| Crown Strike | 0+3◆ | attack | uncommon | Costs 3 Arcana. Deal 18 damage. |
 | Edgewise | 1 | skill | uncommon | Gain 7 Barrier. Sharpen 2 (Obsidian Blade gains 2 damage). |
 | Royal Decree | 2 | skill | uncommon | Sharpen 6 (Obsidian Blade gains 6 damage). Draw 1 card. |
 | Knight's Oath | 1 | power | uncommon | Whenever you play an Obsidian Blade: Gain 1 Arcana. |
@@ -802,7 +802,7 @@ Starter: Strike, Strike, Defend, Defend, Defend, Defend, Glass Jab, Gather Arcan
 | Glass Guard | 1 | power | uncommon | Whenever you play an Obsidian Blade: Gain 6 Barrier. |
 | Sword Rain | 1 | skill | uncommon | Add 2 Obsidian Blades to your hand. |
 | Shatterburst | 2+2◆ | attack | uncommon | Costs 2 Arcana. Deal 34 damage. |
-| Falling Shards | 1+3◆ | attack | uncommon | Costs 3 Arcana. Deal 8 damage 3 times to ALL enemies. |
+| Falling Shards | 0+4◆ | attack | uncommon | Costs 4 Arcana. Deal 8 damage 3 times to ALL enemies. |
 | Magma Flare | 1+2◆ | attack | uncommon | Costs 2 Arcana. Deal 14 damage to ALL enemies. Apply 1 Exposed to ALL enemies. |
 | Ember Weft | 1 | skill | uncommon | Gain 1 Arcana. Sharpen 1 (Obsidian Blade gains 1 damage). Draw 1 card. |
 | Obsidian Lance | 2 | attack | uncommon | Deal 14 damage. Gain 1 Arcana. |
@@ -814,8 +814,8 @@ Starter: Strike, Strike, Defend, Defend, Defend, Defend, Glass Jab, Gather Arcan
 | Molten Ruin | 2+2◆ | attack | uncommon | Costs 2 Arcana. Deal 20 damage. Sharpen 4 (Obsidian Blade gains 4 damage). |
 | Sigil of Kindling | 2 | power | uncommon | At the start of your turn: Gain 1 Arcana. |
 | Sigil of Ward | 2 | power | uncommon | At the end of your turn: Gain Barrier equal to your Arcana. |
-| Sigil of Scorch | 2 | power | uncommon | At the start of your turn: Deal 3 damage to ALL enemies. |
-| Sigil of Glass | 1 | power | uncommon | Whenever you play a Skill: Gain 2 Barrier. |
+| Sigil of Scorch | 1 | power | uncommon | Whenever you spend Arcana: Deal 3 damage to ALL enemies. |
+| Sigil of Glass | 1 | power | uncommon | Whenever you spend Arcana: Gain 4 Barrier. |
 | Sigil of Stone | 1 | power | uncommon | At the end of your turn: Gain 3 Barrier. |
 | Arcana Trap | 1 | snare | uncommon | At the start of the enemy turn: Gain 2 Arcana. Deal 6 damage to ALL enemies. |
 | Spellbook | 1 | power | uncommon | Whenever you discard a card: Gain 1 Arcana. |
