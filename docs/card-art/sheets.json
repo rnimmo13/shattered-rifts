@@ -1390,5 +1390,411 @@
    "wound",
    "static"
   ]
+ },
+ {
+  "name": "neutral-m01",
+  "hero": "neutral",
+  "cols": 3,
+  "rows": 3,
+  "ids": [
+   "alarm-bell",
+   "catch-breath",
+   "glimpse-ahead",
+   "haft-strike",
+   "heave",
+   "pitfall",
+   "needling-blow",
+   "reckless-swing",
+   "rift-bolt"
+  ]
+ },
+ {
+  "name": "neutral-m02",
+  "hero": "neutral",
+  "cols": 3,
+  "rows": 2,
+  "ids": [
+   "shrug-it-off",
+   "shatter-strike",
+   "stagger",
+   "steady-guard",
+   "defend",
+   "strike"
+  ]
+ },
+ {
+  "name": "knight-m01",
+  "hero": "knight",
+  "cols": 3,
+  "rows": 3,
+  "ids": [
+   "consecrated-blade",
+   "crushing-weight",
+   "knotted-briars",
+   "spiked-retort",
+   "zealous-charge",
+   "barbed-guard",
+   "bulwark-blow",
+   "gilded-blow",
+   "hand-of-justice"
+  ]
+ },
+ {
+  "name": "knight-m02",
+  "hero": "knight",
+  "cols": 3,
+  "rows": 3,
+  "ids": [
+   "iron-tithe",
+   "lightbrand",
+   "prayer",
+   "reprisal",
+   "shield-bash",
+   "stand-firm",
+   "oathbound"
+  ]
+ },
+ {
+  "name": "engineer-m01",
+  "hero": "engineer",
+  "cols": 3,
+  "rows": 3,
+  "ids": [
+   "ion-lance",
+   "patch-job",
+   "reinforce",
+   "weld-armor",
+   "armor-piercer",
+   "breach-charge",
+   "build-enforcer",
+   "countermeasure-grid",
+   "formation-strike"
+  ]
+ },
+ {
+  "name": "engineer-m02",
+  "hero": "engineer",
+  "cols": 3,
+  "rows": 3,
+  "ids": [
+   "hardened-chassis",
+   "jumpstart",
+   "ping",
+   "plating",
+   "relay-strike",
+   "repair-bot",
+   "scrap-volley",
+   "static-field",
+   "sync-pulse"
+  ]
+ },
+ {
+  "name": "engineer-m03",
+  "hero": "engineer",
+  "cols": 3,
+  "rows": 1,
+  "ids": [
+   "overclock"
+  ]
+ },
+ {
+  "name": "hunter-m01",
+  "hero": "hunter",
+  "cols": 3,
+  "rows": 3,
+  "ids": [
+   "berserk-tempo",
+   "bloodstorm",
+   "killing-spree",
+   "red-frenzy",
+   "rising-howl",
+   "unbridled",
+   "adrenal-surge",
+   "battle-rhythm",
+   "bloodied-howl"
+  ]
+ },
+ {
+  "name": "hunter-m02",
+  "hero": "hunter",
+  "cols": 3,
+  "rows": 3,
+  "ids": [
+   "blur-of-claws",
+   "burst-of-speed",
+   "reckless-abandon",
+   "rip-and-tear",
+   "whet-the-fangs",
+   "bared-teeth",
+   "bone-crack",
+   "lead-the-charge",
+   "open-a-vein"
+  ]
+ },
+ {
+  "name": "hunter-m03",
+  "hero": "hunter",
+  "cols": 3,
+  "rows": 3,
+  "ids": [
+   "pain-ward",
+   "pound",
+   "heart-pound",
+   "primal-feast",
+   "scavenge",
+   "rush-in",
+   "shake-loose",
+   "throw-scraps",
+   "wild-swings"
+  ]
+ },
+ {
+  "name": "hunter-m04",
+  "hero": "hunter",
+  "cols": 3,
+  "rows": 1,
+  "ids": [
+   "blood-frenzy"
+  ]
+ },
+ {
+  "name": "trapper-m01",
+  "hero": "trapper",
+  "cols": 3,
+  "rows": 3,
+  "ids": [
+   "cripple",
+   "hamstring",
+   "step-aside",
+   "trapline-rider",
+   "whisper-net",
+   "cheap-shot",
+   "fang-pit",
+   "discarded-hand",
+   "low-blow"
+  ]
+ },
+ {
+  "name": "trapper-m02",
+  "hero": "trapper",
+  "cols": 3,
+  "rows": 2,
+  "ids": [
+   "mark-prey",
+   "patient-blade",
+   "slit-and-run",
+   "tear-the-veil",
+   "trip-line",
+   "veil-dance"
+  ]
+ },
+ {
+  "name": "assassin-m01",
+  "hero": "assassin",
+  "cols": 3,
+  "rows": 3,
+  "ids": [
+   "choking-haze",
+   "quick-hands",
+   "rising-tempo",
+   "smoke-and-slip",
+   "whetstone-pass",
+   "cold-open",
+   "ember-dose",
+   "knife-fan",
+   "knife-volley"
+  ]
+ },
+ {
+  "name": "assassin-m02",
+  "hero": "assassin",
+  "cols": 3,
+  "rows": 1,
+  "ids": [
+   "quick-draw",
+   "tangle-wire",
+   "slip-away"
+  ]
+ },
+ {
+  "name": "totemist-m01",
+  "hero": "totemist",
+  "cols": 3,
+  "rows": 3,
+  "ids": [
+   "endless-whittling",
+   "antler-carving",
+   "crystal-ward",
+   "cold-snap",
+   "carvers-rhythm",
+   "kindled-rite",
+   "moth-carving",
+   "whittle-down",
+   "smoke-offering"
+  ]
+ },
+ {
+  "name": "totemist-m02",
+  "hero": "totemist",
+  "cols": 3,
+  "rows": 2,
+  "ids": [
+   "whittlers-kit",
+   "arc-flash",
+   "serpent-carving",
+   "rune-burst"
+  ]
+ },
+ {
+  "name": "barbarian-m01",
+  "hero": "barbarian",
+  "cols": 3,
+  "rows": 3,
+  "ids": [
+   "thousand-palms",
+   "unbroken-calm",
+   "inner-sight",
+   "open-palm",
+   "rending-hands",
+   "shield-of-faith",
+   "ashen-fist",
+   "bowing-low",
+   "centre-yourself"
+  ]
+ },
+ {
+  "name": "barbarian-m02",
+  "hero": "barbarian",
+  "cols": 3,
+  "rows": 3,
+  "ids": [
+   "crushing-palm",
+   "flurry-of-palms",
+   "prostrate",
+   "quick-palms",
+   "empty-fist",
+   "sunlit-blade",
+   "vigilance",
+   "whispered-vow"
+  ]
+ },
+ {
+  "name": "spellblade-m01",
+  "hero": "spellblade",
+  "cols": 3,
+  "rows": 3,
+  "ids": [
+   "starlit-duel",
+   "aquila",
+   "stellar-wind",
+   "faint-glow",
+   "gleam",
+   "sagitta",
+   "spoils",
+   "star-barrier",
+   "astral-pulse"
+  ]
+ },
+ {
+  "name": "spellblade-m02",
+  "hero": "spellblade",
+  "cols": 3,
+  "rows": 3,
+  "ids": [
+   "sunstrike",
+   "forged-in-fury",
+   "pale-beacon",
+   "ray-of-light",
+   "skybolt",
+   "gather-light",
+   "meteor-jab"
+  ]
+ },
+ {
+  "name": "drunkard-m01",
+  "hero": "drunkard",
+  "cols": 3,
+  "rows": 3,
+  "ids": [
+   "ricochet",
+   "scattergun-symphony",
+   "bandolier",
+   "dead-eye",
+   "double-tap",
+   "spare-barrel",
+   "swig",
+   "aim",
+   "birdshot"
+  ]
+ },
+ {
+  "name": "drunkard-m02",
+  "hero": "drunkard",
+  "cols": 3,
+  "rows": 3,
+  "ids": [
+   "broken-bottle",
+   "buttstroke",
+   "chaser",
+   "glass-trap",
+   "gun-oil",
+   "pistol-whip",
+   "powder-load",
+   "rack-the-slide",
+   "shard-toss"
+  ]
+ },
+ {
+  "name": "drunkard-m03",
+  "hero": "drunkard",
+  "cols": 3,
+  "rows": 1,
+  "ids": [
+   "shell-shock",
+   "slug-round"
+  ]
+ },
+ {
+  "name": "necromancer-m01",
+  "hero": "necromancer",
+  "cols": 3,
+  "rows": 3,
+  "ids": [
+   "bone-pile",
+   "deaths-ledger",
+   "last-rites",
+   "soul-chain",
+   "tomb-feast",
+   "bone-sift",
+   "burial-shroud",
+   "creeping-dread",
+   "gather-souls"
+  ]
+ },
+ {
+  "name": "necromancer-m02",
+  "hero": "necromancer",
+  "cols": 3,
+  "rows": 3,
+  "ids": [
+   "dirge",
+   "raise-thrall",
+   "rally-the-dead",
+   "rattle-the-bones",
+   "sepulchral-gaze",
+   "shared-marrow",
+   "thralls-cue",
+   "tithe-of-bone",
+   "bone-ward"
+  ]
+ },
+ {
+  "name": "necromancer-m03",
+  "hero": "necromancer",
+  "cols": 3,
+  "rows": 1,
+  "ids": [
+   "grave-touch"
+  ]
  }
 ]

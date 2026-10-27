@@ -26,7 +26,8 @@
     "pvpbalance": "tsx src/pvpbalance.ts",
     "ghostsim": "tsx src/ghostsim.ts",
     "arenasim": "tsx src/arenasim.ts",
-    "cardprompts:extra": "tsx src/cardprompts-extra.ts"
+    "cardprompts:extra": "tsx src/cardprompts-extra.ts",
+    "cardprompts:missing": "tsx src/cardprompts-missing.ts"
   },
   "dependencies": {
     "@sr/campaign": "workspace:*",
