@@ -58,7 +58,7 @@ const SETUP: Record<string, Partial<RunState>> = {
       'thornmail',
     ],
   },
-  'step-up': { deck: [...RIFTWALKERS.knight.starter, 'anvil-strike'], shards: 100 },
+  'step-up': { deck: [...RIFTWALKERS.knight.starter, 'hold-the-line'], shards: 100 },
 };
 
 describe('events', () => {

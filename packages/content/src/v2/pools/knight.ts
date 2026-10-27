@@ -30,9 +30,9 @@ export const KNIGHT: CardDef[] = [
 
   // --- Bulwark ---
   m('common', 'stand-firm', 'Stand Firm', 'skill', 1, 'none', [barrier(10)], { retain: true }),
-  m('common', 'gilded-bastion', 'Gilded Bastion', 'skill', 2, 'none', [barrier(16)]),
+  m('uncommon', 'gilded-bastion', 'Gilded Bastion', 'skill', 2, 'none', [barrier(16)]),
   m('common', 'bulwark-blow', 'Bulwark Blow', 'attack', 1, 'foe', [scaled(dmg(2), per('barrier'))]),
-  m('uncommon', 'anvil-strike', 'Anvil Strike', 'attack', 2, 'foe', [
+  m('rare', 'anvil-strike', 'Anvil Strike', 'attack', 2, 'foe', [
     scaled(dmg(11), per('barrier', 1)),
   ]),
   m('uncommon', 'plate-discipline', 'Plate Discipline', 'power', 1, 'none', [
@@ -73,9 +73,7 @@ export const KNIGHT: CardDef[] = [
   m('common', 'reprisal', 'Reprisal', 'snare', 1, 'none', [dmg(9, 'allFoes')], {
     trigger: { on: 'hpLost', min: 4 },
   }),
-  m('uncommon', 'retribution', 'Retribution', 'attack', 1, 'foe', [
-    scaled(dmg(0), per('thorns', 2)),
-  ]),
+  m('rare', 'retribution', 'Retribution', 'attack', 1, 'foe', [scaled(dmg(0), per('thorns', 2))]),
   m('common', 'barbed-oath', 'Barbed Oath', 'power', 1, 'none', [
     on('turnStart', [status('thorns', 1)]),
   ]),
@@ -121,7 +119,7 @@ export const KNIGHT: CardDef[] = [
     status('shielded', 1),
     draw(1),
   ]),
-  m('common', 'sacred-vow', 'Sacred Vow', 'power', 2, 'none', [on('turnEnd', [heal(3)])]),
+  m('uncommon', 'sacred-vow', 'Sacred Vow', 'power', 2, 'none', [on('turnEnd', [heal(3)])]),
   m('rare', 'halo', 'Halo', 'power', 3, 'none', [on('turnStart', [status('shielded', 1)])]),
   m(
     'rare',
@@ -158,13 +156,13 @@ export const KNIGHT: CardDef[] = [
 
   // --- glue and plain strikes ---
   m('common', 'bell-toll', 'Bell Toll', 'attack', 1, 'none', [dmg(5, 'allFoes'), barrier(3)]),
-  m('common', 'zealous-charge', 'Zealous Charge', 'attack', 1, 'foe', [dmg(4, 'target', 3)]),
+  m('uncommon', 'zealous-charge', 'Zealous Charge', 'attack', 1, 'foe', [dmg(4, 'target', 3)]),
   m('common', 'gilded-blow', 'Gilded Blow', 'attack', 1, 'foe', [dmg(8), barrier(2)]),
   m('uncommon', 'vengeful-light', 'Vengeful Light', 'attack', 2, 'foe', [
     dmg(11),
     scaled(heal(0), per('thorns')),
   ]), // Thorns + Devotion
-  m('uncommon', 'sanctuary', 'Sanctuary', 'snare', 2, 'none', [PREVENT, barrier(8)], {
+  m('rare', 'sanctuary', 'Sanctuary', 'snare', 2, 'none', [PREVENT, barrier(8)], {
     trigger: { on: 'attacked' },
   }),
   m('rare', 'dawns-verdict', "Dawn's Verdict", 'attack', 3, 'foe', [
@@ -201,7 +199,7 @@ export const KNIGHT: CardDef[] = [
     [barrier(10), scaled(dmg(0, 'allFoes'), per('barrier', 1))],
     { exhaust: true },
   ),
-  m('common', 'steady-resolve', 'Steady Resolve', 'skill', 1, 'none', [barrier(5), manaNext(2)]),
+  m('uncommon', 'steady-resolve', 'Steady Resolve', 'skill', 1, 'none', [barrier(5), manaNext(2)]),
 
   // --- Bulwark (more) ---
   m('uncommon', 'bulwark-sweep', 'Bulwark Sweep', 'attack', 2, 'none', [
@@ -220,7 +218,7 @@ export const KNIGHT: CardDef[] = [
   m('common', 'tower-shield', 'Tower Shield', 'power', 1, 'none', [
     on('play', [barrier(3)], { filter: 'skill' }),
   ]),
-  m('common', 'crushing-weight', 'Crushing Weight', 'attack', 2, 'foe', [
+  m('uncommon', 'crushing-weight', 'Crushing Weight', 'attack', 2, 'foe', [
     scaled(dmg(9), per('barrier', 0.5)),
     status('exposed', 1, 'target'),
   ]),
@@ -237,7 +235,7 @@ export const KNIGHT: CardDef[] = [
 
   // --- Thorns (more) ---
   m(
-    'common',
+    'uncommon',
     'spiked-retort',
     'Spiked Retort',
     'snare',
@@ -246,7 +244,7 @@ export const KNIGHT: CardDef[] = [
     [dmg(6, 'attacker'), status('thorns', 2)],
     { trigger: { on: 'attacked' } },
   ),
-  m('common', 'thorn-volley', 'Thorn Volley', 'attack', 1, 'none', [
+  m('uncommon', 'thorn-volley', 'Thorn Volley', 'attack', 1, 'none', [
     scaled(dmg(2, 'allFoes'), per('thorns', 1)),
   ]),
   m('uncommon', 'barbed-bastion', 'Barbed Bastion', 'skill', 2, 'none', [
@@ -256,7 +254,7 @@ export const KNIGHT: CardDef[] = [
     exhaust: true,
   }),
   m(
-    'uncommon',
+    'rare',
     'punishing-gale',
     'Punishing Gale',
     'snare',
@@ -271,7 +269,7 @@ export const KNIGHT: CardDef[] = [
     scaled(dmg(8), per('devotion', 0.5)),
   ]),
   m(
-    'uncommon',
+    'rare',
     'martyrs-grace',
     "Martyr's Grace",
     'skill',
@@ -295,7 +293,7 @@ export const KNIGHT: CardDef[] = [
     },
   ),
   m(
-    'common',
+    'uncommon',
     'consecrated-blade',
     'Consecrated Blade',
     'attack',
@@ -325,7 +323,7 @@ export const KNIGHT: CardDef[] = [
     },
   ),
   m(
-    'uncommon',
+    'rare',
     'sunfall',
     'Sunfall',
     'attack',
@@ -364,4 +362,48 @@ export const KNIGHT: CardDef[] = [
     { trigger: { on: 'attacked' } },
   ),
   m('rare', 'radiant-oath', 'Radiant Oath', 'power', 2, 'none', [status('thorns', 4)]),
+
+  // --- brought back for the 20/30/25 rarity target (DECISIONS #341) ---
+  m(
+    'rare',
+    'impregnable',
+    'Impregnable',
+    'skill',
+    2,
+    'none',
+    [scaled(barrier(0), per('barrier', 1))],
+    {
+      exhaust: true,
+    },
+  ),
+  m(
+    'uncommon',
+    'forged-in-iron',
+    'Forged in Iron',
+    'skill',
+    0,
+    'none',
+    [scaled(barrier(0), per('x', 6))],
+    { x: true },
+  ),
+  m('uncommon', 'thorn-covenant', 'Thorn Covenant', 'power', 1, 'none', [
+    on('snare', [status('thorns', 2)]),
+  ]),
+  m('uncommon', 'aegis-of-the-warden', 'Aegis of the Warden', 'skill', 2, 'none', [
+    barrier(6),
+    status('shielded', 1),
+  ]),
+  m('uncommon', 'gracebound', 'Gracebound', 'power', 1, 'none', [
+    on('play', [heal(1)], { filter: 'skill' }),
+  ]),
+  m('rare', 'radiance-eternal', 'Radiance Eternal', 'power', 3, 'none', [
+    on('turnStart', [heal(1)]),
+    on('turnEnd', [status('shielded', 1)]),
+  ]),
+
+  // --- new for the 20/30/25 rarity target (DECISIONS #341) ---
+  m('uncommon', 'knotted-briars', 'Knotted Briars', 'skill', 1, 'none', [
+    status('thorns', 2),
+    draw(1),
+  ]),
 ];

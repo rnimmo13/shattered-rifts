@@ -59,7 +59,7 @@ export const SPELLBLADE: CardDef[] = [
     barrier(7),
     forge('starforged-blade', 2),
   ]),
-  a('uncommon', 'royal-decree', 'Royal Decree', 'skill', 2, 'none', [
+  a('rare', 'royal-decree', 'Royal Decree', 'skill', 2, 'none', [
     forge('starforged-blade', 6),
     draw(1),
   ]),
@@ -75,7 +75,7 @@ export const SPELLBLADE: CardDef[] = [
   ]),
 
   // (more Blade)
-  a('common', 'spoils', 'Spoils', 'skill', 1, 'none', [forge('starforged-blade', 3), draw(2)]),
+  a('uncommon', 'spoils', 'Spoils', 'skill', 1, 'none', [forge('starforged-blade', 3), draw(2)]),
   a('common', 'forged-in-fury', 'Forged in Fury', 'attack', 1, 'foe', [
     dmg(7),
     forge('starforged-blade', 3),
@@ -94,7 +94,7 @@ export const SPELLBLADE: CardDef[] = [
   a('common', 'parry', 'Glass Guard', 'power', 1, 'none', [
     on('play', [barrier(6)], { tag: 'blade' }),
   ]),
-  a('common', 'sword-rain', 'Sword Rain', 'skill', 1, 'none', [addTo('starforged-blade', 2)]),
+  a('uncommon', 'sword-rain', 'Sword Rain', 'skill', 1, 'none', [addTo('starforged-blade', 2)]),
   a('rare', 'hammer-and-anvil', 'Hammer and Anvil', 'attack', 2, 'foe', [
     dmg(6, 'target', 2),
     forge('starforged-blade', 4),
@@ -117,8 +117,8 @@ export const SPELLBLADE: CardDef[] = [
   // (was a plain Emberstrike without the Arcana: now a cheap jab paid in Arcana alone)
   // (paid in Arcana alone: what stored Arcana does on a turn with no Mana left; DECISIONS #288)
   a('common', 'skybolt', 'Spellbolt', 'attack', 0, 'foe', [dmg(12)], { starCost: 2 }),
-  a('uncommon', 'nova', 'Shatterburst', 'attack', 2, 'foe', [dmg(34)], { starCost: 2 }),
-  a('common', 'falling-sky', 'Falling Shards', 'attack', 0, 'none', [dmg(8, 'allFoes', 3)], {
+  a('rare', 'nova', 'Shatterburst', 'attack', 2, 'foe', [dmg(34)], { starCost: 2 }),
+  a('uncommon', 'falling-sky', 'Falling Shards', 'attack', 0, 'none', [dmg(8, 'allFoes', 3)], {
     starCost: 4,
   }),
   a(
@@ -244,7 +244,7 @@ export const SPELLBLADE: CardDef[] = [
     { exhaust: true },
   ),
   // (more Sigils)
-  a('uncommon', 'dawn-engine', 'Furnace Engine', 'power', 2, 'none', [
+  a('rare', 'dawn-engine', 'Furnace Engine', 'power', 2, 'none', [
     on('turnStart', [stars(2), barrier(3)]),
   ]),
   a('uncommon', 'pillar-of-light', 'Pillar of Glass', 'power', 1, 'none', [
@@ -253,7 +253,7 @@ export const SPELLBLADE: CardDef[] = [
   a('rare', 'orrery', 'Sigil of Echoes', 'power', 3, 'none', [on('play', [stars(1)])]),
 
   // --- more Blade (batch 3) ---
-  a('uncommon', 'sparring-partner', 'Sparring Partner', 'power', 2, 'none', [
+  a('rare', 'sparring-partner', 'Sparring Partner', 'power', 2, 'none', [
     on('play', [draw(1)], { tag: 'blade' }),
   ]),
   a('rare', 'kingsbane', 'Kingsbane', 'attack', 3, 'foe', [
@@ -275,7 +275,7 @@ export const SPELLBLADE: CardDef[] = [
 
   // --- more Arcana (batch 3) ---
   a('common', 'pale-beacon', 'Pale Ward', 'skill', 1, 'none', [barrier(5), scry(2), stars(1)]),
-  a('common', 'stellar-wind', 'Ash Wind', 'skill', 1, 'none', [draw(2), stars(1), discard(1)]),
+  a('uncommon', 'stellar-wind', 'Ash Wind', 'skill', 1, 'none', [draw(2), stars(1), discard(1)]),
   a(
     'rare',
     'event-horizon',
@@ -286,19 +286,21 @@ export const SPELLBLADE: CardDef[] = [
     [dmg(20), status('exposed', 2, 'target'), status('faltering', 2, 'target')],
     { starCost: 2 },
   ),
-  a('uncommon', 'zenith', 'Zenith', 'attack', 1, 'foe', [scaled(dmg(0), per('stars', 2))], {
+  a('rare', 'zenith', 'Zenith', 'attack', 1, 'foe', [scaled(dmg(0), per('stars', 2))], {
     exhaust: true,
   }),
 
   // --- more Sigils (batch 3) ---
-  a('uncommon', 'perseus', 'Sigil of Spite', 'power', 2, 'none', [
+  a('rare', 'perseus', 'Sigil of Spite', 'power', 2, 'none', [
     on('play', [dmg(4, 'randomFoe')], { filter: 'attack' }),
   ]),
-  a('common', 'pleiades', 'Sigil of Shelter', 'power', 1, 'none', [
+  a('uncommon', 'pleiades', 'Sigil of Shelter', 'power', 1, 'none', [
     on('turnStart', [barrier(4), draw(1)]),
   ]),
   a('common', 'polaris', 'Sigil of Ash', 'power', 1, 'none', [on('exhaust', [stars(1)])]),
-  a('common', 'vega', 'Sigil of Ruin', 'power', 1, 'none', [on('discard', [dmg(4, 'randomFoe')])]),
+  a('uncommon', 'vega', 'Sigil of Ruin', 'power', 1, 'none', [
+    on('discard', [dmg(4, 'randomFoe')]),
+  ]),
   a('rare', 'andromeda', 'Sigil of the Storm', 'power', 2, 'none', [
     on('turnEnd', [scaled(dmg(0, 'allFoes'), per('stars', 0.5))]),
   ]),
@@ -319,7 +321,7 @@ export const SPELLBLADE: CardDef[] = [
       starCost: 1,
     },
   ),
-  a('common', 'gleam', 'Glint', 'attack', 1, 'foe', [dmg(7), scry(2)]),
+  a('uncommon', 'gleam', 'Glint', 'attack', 1, 'foe', [dmg(7), scry(2)]),
   a('common', 'star-barrier', 'Arcane Barrier', 'skill', 0, 'none', [barrier(10)], { starCost: 2 }),
 
   // --- more glue: uncommons and rares for any build path (DECISIONS #339) ---
@@ -340,4 +342,32 @@ export const SPELLBLADE: CardDef[] = [
     [status('faltering', 1, 'target'), status('exposed', 1, 'target')],
     { exhaust: true },
   ),
+
+  // --- brought back for the 20/30/25 rarity target (DECISIONS #341) ---
+  a('uncommon', 'blade-oath', 'Blade Oath', 'skill', 1, 'none', [
+    addTo('starforged-blade'),
+    status('might', 1),
+  ]),
+  a('uncommon', 'conqueror', 'Crowned Edge', 'skill', 1, 'none', [
+    forge('starforged-blade', 4),
+    status('twinned', 1),
+  ]),
+  a('uncommon', 'sovereign-strike', 'Tyrant Strike', 'attack', 2, 'foe', [dmg(15), manaNext(2)]),
+  a('uncommon', 'meteor-shower', 'Shard Shower', 'attack', 2, 'none', [
+    dmg(5, 'allFoes', 3),
+    stars(1),
+  ]),
+  a('rare', 'celestial-edge', 'Volcanic Edge', 'attack', 2, 'foe', [
+    dmg(12),
+    forge('starforged-blade', 3),
+  ]),
+
+  // --- new for the 20/30/25 rarity target (DECISIONS #341) ---
+  a('uncommon', 'sagitta', 'Sagitta', 'power', 1, 'none', [on('arcana', [draw(1)])]),
+  a('uncommon', 'aquila', 'Aquila', 'power', 1, 'none', [on('turnEnd', [dmg(4, 'randomFoe')])]),
+  a('rare', 'starlit-duel', 'Starlit Duel', 'attack', 2, 'foe', [
+    dmg(10),
+    stars(2),
+    forge('starforged-blade', 2),
+  ]),
 ];

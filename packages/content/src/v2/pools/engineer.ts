@@ -39,8 +39,8 @@ export const ENGINEER: CardDef[] = [
     scaled(dmg(2), per('allies', 4)),
   ]),
   r('common', 'salvage-bot', 'Salvage Bot', 'summon', 1, 'none', [summon('salvage-bot')]),
-  r('common', 'call-turret', 'Call Turret', 'summon', 1, 'none', [summon('sentry-turret')]),
-  r('uncommon', 'swarm-protocol', 'Swarm Protocol', 'summon', 2, 'none', [
+  r('uncommon', 'call-turret', 'Call Turret', 'summon', 1, 'none', [summon('sentry-turret')]),
+  r('rare', 'swarm-protocol', 'Swarm Protocol', 'summon', 2, 'none', [
     summon('patrol-drone'),
     summon('patrol-drone'),
   ]),
@@ -60,7 +60,7 @@ export const ENGINEER: CardDef[] = [
 
   // (more Swarm)
   r(
-    'common',
+    'uncommon',
     'nanoswarm',
     'Nanoswarm',
     'skill',
@@ -79,7 +79,7 @@ export const ENGINEER: CardDef[] = [
     [summon('micro-drone'), summon('micro-drone')],
     { exhaust: true },
   ),
-  r('uncommon', 'swarm-tactics', 'Swarm Tactics', 'power', 1, 'none', [
+  r('rare', 'swarm-tactics', 'Swarm Tactics', 'power', 1, 'none', [
     on('summon', [dmg(3, 'randomFoe')]),
   ]),
   r('uncommon', 'detonate', 'Detonate', 'skill', 0, 'ally', [dmg(10, 'allFoes'), sacrifice]),
@@ -133,18 +133,18 @@ export const ENGINEER: CardDef[] = [
     { trigger: { on: 'attacked' } },
   ),
   r('uncommon', 'assemble', 'Assemble', 'skill', 1, 'none', [ACT, draw(1)]),
-  r('uncommon', 'double-time', 'Double Time', 'skill', 2, 'none', [ACT, ACT]),
+  r('rare', 'double-time', 'Double Time', 'skill', 2, 'none', [ACT, ACT]),
   r('uncommon', 'overdrive', 'Overdrive', 'skill', 1, 'none', [
     status('might', 1, 'allFriends'),
     ACT,
   ]),
-  r('uncommon', 'emp', 'EMP', 'snare', 1, 'none', [status('stunned', 1, 'attacker')], {
+  r('rare', 'emp', 'EMP', 'snare', 1, 'none', [status('stunned', 1, 'attacker')], {
     trigger: { on: 'attacked' },
   }),
   r('rare', 'perpetual-motion', 'Perpetual Motion', 'power', 2, 'none', [on('turnStart', [ACT])]),
 
   r('common', 'relay-strike', 'Relay Strike', 'attack', 1, 'foe', [dmg(6), ACT]),
-  r('common', 'overwatch', 'Overwatch', 'snare', 1, 'none', [ACT, dmg(6, 'attacker')], {
+  r('uncommon', 'overwatch', 'Overwatch', 'snare', 1, 'none', [ACT, dmg(6, 'attacker')], {
     trigger: { on: 'attacked' },
   }),
   r(
@@ -174,7 +174,7 @@ export const ENGINEER: CardDef[] = [
     trigger: { on: 'hpLost', min: 5 },
   }),
   r(
-    'common',
+    'uncommon',
     'surge-protocol',
     'Surge Protocol',
     'skill',
@@ -187,7 +187,7 @@ export const ENGINEER: CardDef[] = [
   // --- Core ---
   r('common', 'repair-bot', 'Repair Bot', 'summon', 1, 'none', [summon('repair-bot')]),
   r('common', 'build-enforcer', 'Build Enforcer', 'summon', 2, 'none', [summon('enforcer')]),
-  r('common', 'reinforce', 'Reinforce', 'skill', 1, 'ally', [
+  r('uncommon', 'reinforce', 'Reinforce', 'skill', 1, 'ally', [
     barrier(8, 'target'),
     status('might', 2, 'target'),
   ]),
@@ -195,7 +195,7 @@ export const ENGINEER: CardDef[] = [
     status('might', 2, 'target'),
     heal(6, 'target'),
   ]),
-  r('uncommon', 'siege-engine', 'Siege Engine', 'summon', 2, 'none', [summon('siege-engine')]),
+  r('rare', 'siege-engine', 'Siege Engine', 'summon', 2, 'none', [summon('siege-engine')]),
   r('rare', 'war-engine', 'War Engine', 'summon', 3, 'none', [summon('war-engine')]),
   r('rare', 'reactor', 'Reactor', 'power', 2, 'none', [status('might', 3, 'allFriends')]),
   r('rare', 'overclock-core', 'Overclock Core', 'power', 3, 'none', [
@@ -203,7 +203,7 @@ export const ENGINEER: CardDef[] = [
   ]),
 
   // (a drone that grows instead of only being shielded: DECISIONS #285)
-  r('common', 'weld-armor', 'Weld Armor', 'skill', 1, 'ally', [
+  r('uncommon', 'weld-armor', 'Weld Armor', 'skill', 1, 'ally', [
     growHp(6, 'target'),
     barrier(6, 'target'),
   ]),
@@ -215,7 +215,7 @@ export const ENGINEER: CardDef[] = [
   // (more Core)
   r('uncommon', 'bulwark-frame', 'Bulwark Frame', 'skill', 1, 'ally', [barrier(14, 'target')]),
   r(
-    'uncommon',
+    'rare',
     'reactor-meltdown',
     'Reactor Meltdown',
     'skill',
@@ -255,7 +255,7 @@ export const ENGINEER: CardDef[] = [
     status('faltering', 1, 'allFoes'),
   ]),
   r('common', 'plating', 'Plating', 'skill', 1, 'none', [barrier(6, 'allFriends')]),
-  r('common', 'ion-lance', 'Ion Lance', 'attack', 2, 'foe', [dmg(16)]),
+  r('uncommon', 'ion-lance', 'Ion Lance', 'attack', 2, 'foe', [dmg(16)]),
   r('rare', 'railgun', 'Railgun', 'attack', 3, 'foe', [dmg(30)]),
   r('legendary', 'foundry-awakens', 'The Foundry Awakens', 'power', 3, 'none', [
     on('turnStart', [summon('siege-engine'), ACT]),
@@ -270,7 +270,7 @@ export const ENGINEER: CardDef[] = [
     [status('might', 3, 'allFriends'), ACT, ACT],
     { exhaust: true, up: { cost: 1, effects: [status('might', 4, 'allFriends'), ACT, ACT] } },
   ),
-  r('common', 'overcharge', 'Overcharge', 'skill', 0, 'none', [mana(2), manaNext(-1)], {
+  r('uncommon', 'overcharge', 'Overcharge', 'skill', 0, 'none', [mana(2), manaNext(-1)], {
     exhaust: true,
   }),
 
@@ -286,4 +286,40 @@ export const ENGINEER: CardDef[] = [
   // --- more glue: uncommons and rares for any build path (DECISIONS #339) ---
   r('rare', 'factory-floor', 'Factory Floor', 'power', 2, 'none', [on('summon', [draw(1)])]),
   r('uncommon', 'blueprint', 'Blueprint', 'skill', 1, 'none', [discoverOp('summon', 1, false)]),
+
+  // --- brought back for the 20/30/25 rarity target (DECISIONS #341) ---
+  r('uncommon', 'salvage-rights', 'Salvage Rights', 'power', 1, 'none', [
+    on('allyDies', [draw(1)]),
+  ]),
+  r('uncommon', 'scrapyard-king', 'Scrapyard King', 'power', 2, 'none', [
+    on('allyDies', [status('might', 1, 'allFriends')]),
+  ]),
+  r('uncommon', 'echo-command', 'Echo Command', 'skill', 1, 'none', [ACT, ACT, manaNext(-1)], {
+    exhaust: true,
+    retain: true,
+  }),
+  r('uncommon', 'resonant-pulse', 'Resonant Pulse', 'power', 1, 'none', [
+    on('play', [heal(1, 'allFriends')], { filter: 'skill' }),
+  ]),
+  r('uncommon', 'calibrate', 'Calibrate', 'skill', 0, 'ally', [
+    status('might', 1, 'target'),
+    barrier(4, 'target'),
+  ]),
+  r('uncommon', 'self-repair', 'Self-Mending', 'power', 1, 'none', [
+    on('turnStart', [heal(2, 'allFriends')]),
+  ]),
+  r('rare', 'forge-titan', 'Forge Titan', 'summon', 3, 'none', [
+    summon('war-engine'),
+    status('might', 1, 'allFriends'),
+  ]),
+  r(
+    'rare',
+    'swarm-surge',
+    'Swarm Surge',
+    'skill',
+    2,
+    'none',
+    [summon('patrol-drone'), scaled(draw(0), per('allies', 1))],
+    { exhaust: true },
+  ),
 ];

@@ -28,6 +28,7 @@ import {
   discoverOp,
   discard,
   fetchTag,
+  lose,
 } from '../build';
 
 export const RUNES: RuneDef[] = [
@@ -84,12 +85,10 @@ export const TOTEMIST: CardDef[] = [
     channel('splinter'),
   ]),
   i('uncommon', 'shard-chorus', 'Splinter Grove', 'skill', 2, 'none', [channel('splinter', 2)]),
-  i('uncommon', 'charged-blow', 'Awakened Blow', 'attack', 1, 'foe', [
-    scaled(dmg(4), per('runes', 2)),
-  ]),
+  i('rare', 'charged-blow', 'Awakened Blow', 'attack', 1, 'foe', [scaled(dmg(4), per('runes', 2))]),
   // (awakens the whole row; half a Mana for each totem, so it is never a free Mana engine)
   i(
-    'common',
+    'uncommon',
     'shatter-the-row',
     'Shatter the Row',
     'skill',
@@ -102,7 +101,7 @@ export const TOTEMIST: CardDef[] = [
     dmg(7),
     scaled(draw(0), per('runes', 0.5)),
   ]),
-  i('common', 'forked-current', 'Forked Branch', 'attack', 2, 'none', [
+  i('uncommon', 'forked-current', 'Forked Branch', 'attack', 2, 'none', [
     dmg(8, 'allFoes'),
     channel('spark'),
   ]),
@@ -127,7 +126,7 @@ export const TOTEMIST: CardDef[] = [
     status('bracing', 1),
   ]),
   i('rare', 'aegis-array', 'Totem Ring', 'skill', 3, 'none', [barrier(8), channel('ward', 3)]),
-  i('uncommon', 'rune-snare', 'Totem Trap', 'snare', 2, 'none', [PREVENT, channel('ward')], {
+  i('rare', 'rune-snare', 'Totem Trap', 'snare', 2, 'none', [PREVENT, channel('ward')], {
     trigger: { on: 'attacked' },
   }),
   i('common', 'echo-chamber', 'Echo Chamber', 'skill', 1, 'none', [evoke(1, 1, true)]),
@@ -180,14 +179,14 @@ export const TOTEMIST: CardDef[] = [
     barrier(3),
     fetchTag(2, 'carving'),
   ]),
-  i('uncommon', 'void-dividend', 'Fresh Shavings', 'skill', 1, 'none', [
+  i('rare', 'void-dividend', 'Fresh Shavings', 'skill', 1, 'none', [
     draw(2),
     fetchTag(1, 'carving'),
   ]),
   i('uncommon', 'streamlined-strike', 'Whittle Down', 'attack', 1, 'foe', [
     scaled(dmg(4), per('played', 2)),
   ]),
-  i('uncommon', 'conduit', "Whittler's Knife", 'power', 1, 'none', [
+  i('rare', 'conduit', "Whittler's Knife", 'power', 1, 'none', [
     on('play', [dmg(3, 'randomFoe')], { tag: 'carving' }),
   ]),
   i('rare', 'frozen-ledger', 'Shavings Underfoot', 'power', 1, 'none', [
@@ -252,7 +251,7 @@ export const TOTEMIST: CardDef[] = [
     status('shielded', 1),
     on('turnStart', [barrier(3)]),
   ]),
-  i('common', 'machine-learning', 'Ancestral Learning', 'power', 1, 'none', [
+  i('uncommon', 'machine-learning', 'Ancestral Learning', 'power', 1, 'none', [
     on('play', [draw(1)], { filter: 'power' }),
   ]),
   i('rare', 'fevered-attunement', 'Fevered Communion', 'power', 2, 'none', [
@@ -260,7 +259,7 @@ export const TOTEMIST: CardDef[] = [
     on('play', [status('resonance', 1)], { filter: 'power' }),
   ]),
   i(
-    'common',
+    'uncommon',
     'white-noise',
     'Spirit Whisper',
     'skill',
@@ -272,7 +271,7 @@ export const TOTEMIST: CardDef[] = [
     },
   ),
   i(
-    'uncommon',
+    'rare',
     'hyperbeam',
     'Skyfall Rite',
     'attack',
@@ -286,7 +285,7 @@ export const TOTEMIST: CardDef[] = [
   i('rare', 'echoing-form', 'Echoing Chant', 'power', 3, 'none', [
     on('turnStart', [scaled(dmg(0, 'allFoes'), per('powers', 2))]),
   ]),
-  i('uncommon', 'sparkstorm', 'Hawkstorm', 'power', 2, 'none', [
+  i('rare', 'sparkstorm', 'Hawkstorm', 'power', 2, 'none', [
     on('turnEnd', [scaled(dmg(0, 'allFoes'), per('runes'))]),
   ]),
   i('uncommon', 'permafrost', 'Den of Bears', 'power', 2, 'none', [
@@ -301,7 +300,7 @@ export const TOTEMIST: CardDef[] = [
 
   // --- glue ---
   i('uncommon', 'retune', 'Retune', 'skill', 1, 'none', [upgradeOp('random')], { exhaust: true }),
-  i('uncommon', 'leyline-tap', 'Root Tap', 'skill', 2, 'none', [maxMana(1), barrier(6)], {
+  i('rare', 'leyline-tap', 'Root Tap', 'skill', 2, 'none', [maxMana(1), barrier(6)], {
     exhaust: true,
   }),
   i(
@@ -352,7 +351,7 @@ export const TOTEMIST: CardDef[] = [
 
   // --- Whittling, filled to its minimum (DECISIONS #337) ---
   i(
-    'common',
+    'uncommon',
     'antler-carving',
     'Antler Carving',
     'attack',
@@ -372,7 +371,7 @@ export const TOTEMIST: CardDef[] = [
     CARVING,
   ),
   i(
-    'common',
+    'uncommon',
     'moth-carving',
     'Moth Carving',
     'skill',
@@ -394,5 +393,49 @@ export const TOTEMIST: CardDef[] = [
   i('uncommon', 'overtune', 'Spirit Surge', 'skill', 1, 'none', [status('resonance', 1), draw(1)], {
     exhaust: true,
   }),
-  i('uncommon', 'glyph-lattice', 'Totem Row', 'skill', 1, 'none', [{ op: 'runeSlots', amount: 2 }]),
+  i('common', 'glyph-lattice', 'Totem Row', 'skill', 1, 'none', [{ op: 'runeSlots', amount: 2 }]),
+
+  // --- brought back for the 20/30/25 rarity target (DECISIONS #341) ---
+  i('uncommon', 'crystal-ward', 'Bark Ward', 'skill', 1, 'none', [barrier(7), channel('ward')], {
+    retain: true,
+  }),
+  i(
+    'uncommon',
+    'cold-snap',
+    'Bear Pack',
+    'skill',
+    1,
+    'none',
+    [{ op: 'channel', rune: 'ward', times: 0, scale: per('foes') }],
+    { exhaust: true },
+  ),
+  i('rare', 'biased-weave', 'Sap Offering', 'power', 2, 'none', [
+    status('resonance', 3),
+    on('turnStart', [lose(1)]),
+  ]),
+  i(
+    'uncommon',
+    'many-voices',
+    'Many Voices',
+    'skill',
+    0,
+    'none',
+    [{ op: 'evoke', times: 0, keep: true, scale: per('x') }],
+    { x: true, exhaust: true },
+  ),
+
+  // --- new for the 20/30/25 rarity target (DECISIONS #341) ---
+  i('uncommon', 'whittle-down', 'Whittle Down', 'attack', 1, 'foe', [
+    dmg(3, 'target', 2),
+    addTo('live-wire'),
+  ]),
+  i('uncommon', 'carvers-rhythm', "Carver's Rhythm", 'skill', 0, 'none', [draw(2)], {
+    exhaust: true,
+  }),
+  i('uncommon', 'kindled-rite', 'Kindled Rite', 'power', 1, 'none', [
+    on('turnEnd', [scaled(dmg(0, 'allFoes'), per('powers'))]),
+  ]),
+  i('uncommon', 'smoke-offering', 'Smoke Offering', 'power', 1, 'none', [
+    on('turnStart', [scaled(barrier(0), per('powers', 2))]),
+  ]),
 ];

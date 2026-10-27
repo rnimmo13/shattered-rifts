@@ -5,6 +5,9 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **Bigger, rarer pools:** every Riftwalker has 20 commons, 30 uncommons, 25 rares and 3 Legendaries, split evenly over the three build paths, so a rare is a build-defining find. 16 new cards, and many earlier cards back.
+- **Kesh:** the Feast build path is now **Berserker**: gain Mana, draw hard and play many cards in one turn. 16 new cards, and Apex Frenzy as its Legendary.
+- **Cards show their build path** at the top right of the art.
 - **Card pools trimmed:** every build path has at least 8 commons, 7 uncommons, 5 rares and a Legendary, plus a few cards for any build, near-duplicates removed (63-71 cards each, down from about 90). A removed card in an old run or deck becomes a similar card of the same build path.
 - **Starting kits:** each kit is now two uncommons and a common of its build path.
 - **5 copies at most:** a deck holds at most 5 copies of a card, in a run and in the Arena (a Legendary is still one of a kind).

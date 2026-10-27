@@ -5,31 +5,33 @@ cost and effects whose numbers differ by about a third or less. "Shared" cards b
 
 ## Valeria (knight)
 
-71 cards: Bulwark 21, Thorns 21, Devotion 21, shared 8.
+78 cards: Bulwark 23, Thorns 23, Devotion 23, shared 9.
 
 ### Bulwark
 
 | Card | Rarity | Type | Cost | Text |
 |---|---|---|---|---|
 | Bulwark Blow | common | attack | 1 | Deal 2 (+1 per Barrier) damage. |
-| Crushing Weight | common | attack | 2 | Deal 9 (+1 per 2 Barrier) damage. Apply 1 Exposed. |
-| Gilded Bastion | common | skill | 2 | Gain 16 Barrier. |
 | Gilded Wall | common | skill | 1 | Gain 5 (+1 per 2 Barrier) Barrier. |
 | Iron Tithe | common | skill | 1 | Gain 6 Barrier. Gain Barrier equal to 2 times the number of cards you have consumed. |
 | Shield Bash | common | attack | 1 | Deal 3 (+1 per 2 Barrier) damage. |
 | Stand Firm | common | skill | 1 | Gain 10 Barrier. Hold. |
 | Tower Shield | common | aura | 1 | Whenever you play a Skill: Gain 3 Barrier. |
-| Anvil Strike | uncommon | attack | 2 | Deal 11 (+1 per Barrier) damage. |
 | Bulwark Sweep | uncommon | attack | 2 | Deal 4 (+1 per 2 Barrier) damage to ALL enemies. |
+| Crushing Weight | uncommon | attack | 2 | Deal 9 (+1 per 2 Barrier) damage. Apply 1 Exposed. |
+| Forged in Iron | uncommon | skill | 0 | Gain Barrier equal to 6 times the Mana spent. |
+| Gilded Bastion | uncommon | skill | 2 | Gain 16 Barrier. |
 | Hold the Line | uncommon | skill | 1 | Gain 4 (+3 per Skill played this turn) Barrier. Hold. |
 | Last Stand | uncommon | skill | 1 | Gain 8 (+1 per 2.5% HP missing) Barrier. Consume. |
 | Oath of Iron | uncommon | skill | 1 | Gain 8 Barrier. Draw 1 card. Hold. |
 | Plate Discipline | uncommon | aura | 1 | At the end of your turn: Gain 4 Barrier. |
 | Shield Charge | uncommon | attack | 2 | Deal 12 damage. Gain 8 Barrier. |
+| Anvil Strike | rare | attack | 2 | Deal 11 (+1 per Barrier) damage. |
 | Bastion Engine | rare | aura | 2 | Whenever you gain Barrier: Deal 2 damage to ALL enemies. |
 | Citadel March | rare | aura | 2 | At the end of your turn: Deal damage equal to a quarter of your Barrier to ALL enemies. |
 | Endless Vigil | rare | aura | 2 | At the end of your turn: Gain Barrier equal to 2 times the number of cards in your hand. |
 | Immovable Oath | rare | skill | 2 | Gain 20 Barrier. Gain 6 Plating. Consume. |
+| Impregnable | rare | skill | 2 | Gain Barrier equal to your Barrier. Consume. |
 | Rampart of Ages | rare | aura | 2 | Gain 2 Bracing for the rest of the fight. |
 | Dawn Incarnate | legendary | attack | 3 | Gain 10 Barrier. Deal damage equal to your Barrier to ALL enemies. Consume. |
 
@@ -41,21 +43,23 @@ cost and effects whose numbers differ by about a third or less. "Shared" cards b
 | Barbed Oath | common | aura | 1 | At the start of your turn: Gain 1 Thorns. |
 | Reprisal | common | trap | 1 | When you lose 4+ HP at once: Deal 9 damage to ALL enemies. |
 | Righteous Rebuke | common | trap | 1 | When you or an ally is attacked: Deal 10 damage to the attacker. |
-| Spiked Retort | common | trap | 1 | When you or an ally is attacked: Deal 6 damage to the attacker. Gain 2 Thorns. |
 | Thorn Lash | common | attack | 1 | Deal 4 (+1 per Thorns) damage. |
-| Thorn Volley | common | attack | 1 | Deal 2 (+1 per Thorns) damage to ALL enemies. |
 | Thornmail | common | skill | 1 | Gain 3 Thorns. |
 | Barbed Bastion | uncommon | skill | 2 | Gain 6 (+2 per Thorns) Barrier. |
 | Ember Ward | uncommon | skill | 1 | Gain 10 Barrier. Gain 4 Thorns until the end of your turn. |
 | Iron Spikes | uncommon | trap | 1 | When you or an ally is attacked: Deal 5 damage to the attacker. Apply 1 Faltering to the attacker. |
+| Knotted Briars | uncommon | skill | 1 | Gain 2 Thorns. Draw 1 card. |
 | Mirror Shield | uncommon | trap | 1 | When you or an ally is attacked: Deal 4 damage to the attacker. Deal damage equal to 2 times your Thorns to the attacker. |
 | Mirrored Aegis | uncommon | skill | 2 | Gain 14 Barrier. Gain 2 Thorns. |
-| Punishing Gale | uncommon | trap | 2 | At the start of the enemy turn: Deal 8 (+1 per Thorns) damage to ALL enemies. |
-| Retribution | uncommon | attack | 1 | Deal damage equal to 2 times your Thorns. |
+| Spiked Retort | uncommon | trap | 1 | When you or an ally is attacked: Deal 6 damage to the attacker. Gain 2 Thorns. |
+| Thorn Covenant | uncommon | aura | 1 | Whenever one of your Traps is triggered: Gain 2 Thorns. |
+| Thorn Volley | uncommon | attack | 1 | Deal 2 (+1 per Thorns) damage to ALL enemies. |
 | Bramble Storm | rare | aura | 2 | At the end of your turn: Deal damage equal to half of your Thorns to ALL enemies. |
 | Briar Bloom | rare | skill | 1 | Double the Thorns to yourself (at most +8). Consume. |
 | Briar Heart | rare | aura | 3 | Whenever you gain Barrier: Gain 1 Thorns. |
+| Punishing Gale | rare | trap | 2 | At the start of the enemy turn: Deal 8 (+1 per Thorns) damage to ALL enemies. |
 | Radiant Oath | rare | aura | 2 | Gain 4 Thorns for the rest of the fight. |
+| Retribution | rare | attack | 1 | Deal damage equal to 2 times your Thorns. |
 | Thornlord | rare | aura | 2 | Whenever you play a Skill: Gain 1 Thorns. |
 | The Last Oath | legendary | aura | 3 | Gain 1 Fortified. Gain 3 Thorns. At the start of your turn: Gain 2 Thorns. |
 
@@ -63,26 +67,28 @@ cost and effects whose numbers differ by about a third or less. "Shared" cards b
 
 | Card | Rarity | Type | Cost | Text |
 |---|---|---|---|---|
-| Consecrated Blade | common | attack | 2 +8 devotion | Deal 9 damage 2 times. Gain 6 Barrier. |
 | Hand of Justice | common | attack | 1 +4 devotion | Deal 10 damage. Apply 1 Exposed. |
 | Lightbearer | common | skill | 1 | Heal 4. Gain 5 Barrier. |
 | Lightbrand | common | attack | 1 +5 devotion | Deal 14 damage. |
 | Prayer | common | skill | 0 | Heal 4. Draw 1 card. Consume. |
-| Sacred Vow | common | aura | 2 | At the end of your turn: Heal 3. |
 | Sunforged Edge | common | attack | 2 | Deal 8 (+1 per 2 Devotion) damage. |
 | Sunlit Blow | common | attack | 1 | Deal 6 damage. Heal 2. |
+| Aegis of the Warden | uncommon | skill | 2 | Gain 6 Barrier. Gain 1 Shielded. |
 | Benediction | uncommon | skill | 2 | Heal 10. Gain 6 Barrier. Consume. |
+| Consecrated Blade | uncommon | attack | 2 +8 devotion | Deal 9 damage 2 times. Gain 6 Barrier. |
+| Gracebound | uncommon | aura | 1 | Whenever you play a Skill: Heal 1. |
 | Heartening Hymn | uncommon | skill | 1 | Heal 6 to all friends. Gain 4 Barrier to all friends. |
 | Hymn of Reckoning | uncommon | attack | 1 +6 devotion | Deal 10 damage to ALL enemies. |
-| Martyr's Grace | uncommon | skill | 1 | Lose 5 HP. Gain 15 Barrier. Gain 2 Shielded. Consume. |
 | Radiant Renewal | uncommon | skill | 2 | Heal 8. Draw 2 cards. Consume. |
-| Sunfall | uncommon | attack | 2 +10 devotion | Deal 20 (+2 per Devotion) damage. Lose all your Devotion. |
+| Sacred Vow | uncommon | aura | 2 | At the end of your turn: Heal 3. |
 | Ward of Ages | uncommon | skill | 1 | Gain 1 Shielded. Draw 1 card. |
 | Absolution | rare | skill | 3 | Heal 12. Gain 12 Barrier. Gain 1 Shielded. Consume. |
 | Dawn Chorus | rare | skill | 2 | Heal 10 to all friends. Gain 1 Shielded. Consume. |
 | Halo | rare | aura | 3 | At the start of your turn: Gain 1 Shielded. |
 | Hand of God | rare | attack | 2 +15 devotion | Deal 36 damage. |
 | Holy Reckoning | rare | attack | 2 | Deal 8 damage to ALL enemies. Heal 6. |
+| Martyr's Grace | rare | skill | 1 | Lose 5 HP. Gain 15 Barrier. Gain 2 Shielded. Consume. |
+| Sunfall | rare | attack | 2 +10 devotion | Deal 20 (+2 per Devotion) damage. Lose all your Devotion. |
 | Dawn's Mercy | legendary | aura | 3 | Whenever you heal (even at full HP): Deal damage equal to the HP healed to a random enemy. At the start of your turn: Heal 3. |
 
 ### Shared
@@ -91,41 +97,44 @@ cost and effects whose numbers differ by about a third or less. "Shared" cards b
 |---|---|---|---|---|
 | Bell Toll | common | attack | 1 | Deal 5 damage to ALL enemies. Gain 3 Barrier. |
 | Gilded Blow | common | attack | 1 | Deal 8 damage. Gain 2 Barrier. |
-| Steady Resolve | common | skill | 1 | Gain 5 Barrier. Next turn, gain 2 extra Mana. |
-| Zealous Charge | common | attack | 1 | Deal 4 damage 3 times. |
-| Sanctuary | uncommon | trap | 2 | When you or an ally is attacked: Cancel that attack. Gain 8 Barrier. |
+| Steady Resolve | uncommon | skill | 1 | Gain 5 Barrier. Next turn, gain 2 extra Mana. |
 | Vengeful Light | uncommon | attack | 2 | Deal 11 damage. Heal HP equal to your Thorns. |
+| Zealous Charge | uncommon | attack | 1 | Deal 4 damage 3 times. |
 | Dawn's Verdict | rare | attack | 3 | Deal 28 damage. Apply 2 Exposed. |
+| Radiance Eternal | rare | aura | 3 | At the start of your turn: Heal 1. At the end of your turn: Gain 1 Shielded. |
+| Sanctuary | rare | trap | 2 | When you or an ally is attacked: Cancel that attack. Gain 8 Barrier. |
 | Unbroken Wall | rare | aura | 2 | Gain 1 Fortified for the rest of the fight. |
 
 ## Rivet (engineer)
 
-68 cards: Swarm 21, Assemble 21, Core 21, shared 5.
+78 cards: Swarm 23, Assemble 23, Core 23, shared 9.
 
 ### Swarm
 
 | Card | Rarity | Type | Cost | Text |
 |---|---|---|---|---|
 | Breach Charge | common | attack | 1 | Deal 5 damage. Summon Micro Drone (4 HP). At the end of your turn it will: Deal 3 damage. |
-| Call Turret | common | summon | 1 | Summon Sentry Turret (10 HP, Taunt). At the end of your turn it will: Deal 3 damage. Gain 2 Barrier to your hero. |
 | Formation Strike | common | attack | 1 | Deal 2 (+4 per ally) damage. |
-| Nanoswarm | common | skill | 1 | Summon 3 Micro Drones (4 HP each). At the end of your turn each will: Deal 3 damage. Consume. |
 | Salvage Bot | common | summon | 1 | Summon Salvage Bot (6 HP). At the end of your turn it will: Gain 4 Barrier to your hero. |
 | Scrap Volley | common | attack | 1 | Deal 4 damage 2 times to a random enemy. |
 | Spare Parts | common | summon | 0 | Summon Micro Drone (4 HP). At the end of your turn it will: Deal 3 damage. Consume. |
 | Strip for Parts | common | skill | 0 | Gain Barrier equal to the target's HP. Draw 1 card. Sacrifice the chosen ally. |
+| Call Turret | uncommon | summon | 1 | Summon Sentry Turret (10 HP, Taunt). At the end of your turn it will: Deal 3 damage. Gain 2 Barrier to your hero. |
 | Detonate | uncommon | skill | 0 | Deal 10 damage to ALL enemies. Sacrifice the chosen ally. |
 | Drone Ambush | uncommon | trap | 1 | At the start of the enemy turn: Deal 4 damage to ALL enemies. Summon Micro Drone (4 HP). At the end of your turn it will: Deal 3 damage. |
+| Nanoswarm | uncommon | skill | 1 | Summon 3 Micro Drones (4 HP each). At the end of your turn each will: Deal 3 damage. Consume. |
 | Overcharge Blast | uncommon | attack | 2 | Deal 8 (+2 per ally) damage to ALL enemies. |
 | Parts Bin | uncommon | skill | 1 | Summon Micro Drone (4 HP). At the end of your turn it will: Deal 3 damage. Draw 1 card. |
+| Salvage Rights | uncommon | aura | 1 | Whenever one of your allies dies: Draw 1 card. |
 | Scrap Heap | uncommon | skill | 1 | Summon 2 Micro Drones (4 HP each). At the end of your turn each will: Deal 3 damage. Consume. |
-| Swarm Protocol | uncommon | summon | 2 | Summon 2 Patrol Drones (7 HP each). At the end of your turn each will: Deal 4 damage. |
-| Swarm Tactics | uncommon | aura | 1 | Whenever you summon an ally: Deal 3 damage to a random enemy. |
+| Scrapyard King | uncommon | aura | 2 | Whenever one of your allies dies: Apply 1 Might to all friends. |
 | Drone Carrier | rare | summon | 3 | Summon 3 Patrol Drones (7 HP each). At the end of your turn each will: Deal 4 damage. Consume. |
 | Hive Mind | rare | aura | 2 | Whenever one of your allies dies: Draw 1 card. Summon Micro Drone (4 HP). At the end of your turn it will: Deal 3 damage. |
 | Legion | rare | aura | 2 | Whenever you summon an ally: Apply 1 Might to all friends. |
 | Mass Production | rare | aura | 3 | At the start of your turn: Summon Patrol Drone (7 HP). At the end of your turn it will: Deal 4 damage. |
 | Mob Rule | rare | attack | 2 | Deal 5 (+3 per ally) damage to ALL enemies. |
+| Swarm Protocol | rare | summon | 2 | Summon 2 Patrol Drones (7 HP each). At the end of your turn each will: Deal 4 damage. |
+| Swarm Tactics | rare | aura | 1 | Whenever you summon an ally: Deal 3 damage to a random enemy. |
 | Drone Uprising | legendary | skill | 2 | Summon 3 Drones (8 HP each). At the end of your turn each will: Deal 3 damage. All your allies act now. Consume. |
 
 ### Assemble
@@ -134,21 +143,23 @@ cost and effects whose numbers differ by about a third or less. "Shared" cards b
 |---|---|---|---|---|
 | Countermeasure Grid | common | trap | 1 | When you or an ally is attacked: Deal 5 damage to the attacker. Gain 5 Barrier. |
 | Jumpstart | common | skill | 1 | All your allies act now. Gain 4 Barrier. |
-| Overwatch | common | trap | 1 | When you or an ally is attacked: All your allies act now. Deal 6 damage to the attacker. |
 | Ping | common | skill | 0 | All your allies act now. Consume. |
 | Relay Strike | common | attack | 1 | Deal 6 damage. All your allies act now. |
-| Surge Protocol | common | skill | 0 | Apply equal to the Mana spent Might to all friends. All your allies act now. |
 | Sync Pulse | common | skill | 1 | All your allies act now. Heal 3 to all friends. |
 | Tandem Strike | common | attack | 1 | Deal 3 (+2 per card played this turn) damage. |
 | Arc Relay | uncommon | attack | 2 | Deal 5 damage to ALL enemies. All your allies act now. |
 | Assemble | uncommon | skill | 1 | All your allies act now. Draw 1 card. |
 | Clockwork Trap | uncommon | trap | 1 | When you lose 5+ HP at once: All your allies act now. Gain 8 Barrier. |
-| Double Time | uncommon | skill | 2 | All your allies act now. All your allies act now. |
-| EMP | uncommon | trap | 1 | When you or an ally is attacked: Stun the attacker for 1 turn. |
+| Echo Command | uncommon | skill | 1 | All your allies act now. All your allies act now. Next turn, lose 1 Mana. Consume. Hold. |
 | Link Up | uncommon | skill | 1 | All your allies act now. Gain 4 Barrier to all friends. |
 | Overdrive | uncommon | skill | 1 | Apply 1 Might to all friends. All your allies act now. |
+| Overwatch | uncommon | trap | 1 | When you or an ally is attacked: All your allies act now. Deal 6 damage to the attacker. |
+| Resonant Pulse | uncommon | aura | 1 | Whenever you play a Skill: Heal 1 to all friends. |
+| Surge Protocol | uncommon | skill | 0 | Apply equal to the Mana spent Might to all friends. All your allies act now. |
 | Chain Reaction | rare | skill | 2 | All your allies act now. All your allies act now. Draw 1 card. |
 | Command Chip | rare | aura | 3 | Whenever you play a Summon: All your allies act now. |
+| Double Time | rare | skill | 2 | All your allies act now. All your allies act now. |
+| EMP | rare | trap | 1 | When you or an ally is attacked: Stun the attacker for 1 turn. |
 | Grand Assembly | rare | skill | 2 | All your allies act now. All your allies act now. Apply 1 Might to all friends. Consume. |
 | Overload | rare | skill | 2 | All your allies act now. All your allies act now. All your allies act now. Consume. |
 | Perpetual Motion | rare | aura | 2 | At the start of your turn: All your allies act now. |
@@ -162,21 +173,23 @@ cost and effects whose numbers differ by about a third or less. "Shared" cards b
 | Build Enforcer | common | summon | 2 | Summon Enforcer Mk.II (14 HP). At the end of your turn it will: Deal 6 damage. |
 | Hardened Chassis | common | skill | 1 | Gain 9 Barrier to the ally. Draw 1 card. |
 | Heavy Plating | common | aura | 1 | Whenever you summon an ally: Gain 5 Barrier to all friends. |
-| Reinforce | common | skill | 1 | Gain 8 Barrier to the ally. Apply 2 Might to the ally. |
 | Repair Bot | common | summon | 1 | Summon Repair Bot (6 HP). At the end of your turn it will: Heal 3 to your hero. |
 | Retrofit | common | skill | 1 | Apply 3 Might to the ally. |
-| Weld Armor | common | skill | 1 | The ally gains 6 max HP. Gain 6 Barrier to the ally. |
 | Bulwark Frame | uncommon | skill | 1 | Gain 14 Barrier to the ally. |
-| Reactor Meltdown | uncommon | skill | 0 | Deal 25 damage to ALL enemies. Sacrifice the chosen ally. Consume. |
+| Calibrate | uncommon | skill | 0 | Apply 1 Might to the ally. Gain 4 Barrier to the ally. |
 | Rebuild | uncommon | skill | 1 | Your most recently fallen ally returns with half its HP. Gain 6 Barrier. Consume. |
-| Siege Engine | uncommon | summon | 2 | Summon Siege Engine (16 HP). At the end of your turn it will: Deal 13 damage. |
+| Reinforce | uncommon | skill | 1 | Gain 8 Barrier to the ally. Apply 2 Might to the ally. |
+| Self-Mending | uncommon | aura | 1 | At the start of your turn: Heal 2 to all friends. |
 | Siege Protocol | uncommon | attack | 2 | Deal 6 (+2 per Might) damage. |
 | Titan Forge | uncommon | summon | 2 | Summon Enforcer Mk.II (14 HP). At the end of your turn it will: Deal 6 damage. Apply 2 Might to all friends. Consume. |
 | Upgrade Chip | uncommon | skill | 1 | Apply 2 Might to the ally. Heal 6 to the ally. |
+| Weld Armor | uncommon | skill | 1 | The ally gains 6 max HP. Gain 6 Barrier to the ally. |
 | Backup Core | rare | aura | 2 | Whenever one of your allies dies: Your most recently fallen ally returns with half its HP. |
 | Heavy Industry | rare | aura | 2 | At the start of your turn: Gain 4 Barrier to all friends. |
 | Overclock Core | rare | aura | 3 | At the start of your turn: Apply 1 Might to all friends. |
 | Reactor | rare | aura | 2 | Apply 3 Might to all friends for the rest of the fight. |
+| Reactor Meltdown | rare | skill | 0 | Deal 25 damage to ALL enemies. Sacrifice the chosen ally. Consume. |
+| Siege Engine | rare | summon | 2 | Summon Siege Engine (16 HP). At the end of your turn it will: Deal 13 damage. |
 | War Engine | rare | summon | 3 | Summon War Engine (22 HP). At the end of your turn it will: Deal 9 damage. |
 | The Foundry Awakens | legendary | aura | 3 | At the start of your turn: Summon Siege Engine (16 HP). At the end of your turn it will: Deal 13 damage. All your allies act now. |
 
@@ -184,38 +197,43 @@ cost and effects whose numbers differ by about a third or less. "Shared" cards b
 
 | Card | Rarity | Type | Cost | Text |
 |---|---|---|---|---|
-| Ion Lance | common | attack | 2 | Deal 16 damage. |
-| Overcharge | common | skill | 0 | Gain 2 Mana. Next turn, lose 1 Mana. Consume. |
 | Plating | common | skill | 1 | Gain 6 Barrier to all friends. |
 | Static Field | common | attack | 1 | Deal 3 damage to ALL enemies. Apply 1 Faltering to ALL enemies. |
+| Blueprint | uncommon | skill | 1 | Add a random Summon card from your pool to your hand. |
+| Ion Lance | uncommon | attack | 2 | Deal 16 damage. |
+| Overcharge | uncommon | skill | 0 | Gain 2 Mana. Next turn, lose 1 Mana. Consume. |
+| Factory Floor | rare | aura | 2 | Whenever you summon an ally: Draw 1 card. |
+| Forge Titan | rare | summon | 3 | Summon War Engine (22 HP). At the end of your turn it will: Deal 9 damage. Apply 1 Might to all friends. |
 | Railgun | rare | attack | 3 | Deal 30 damage. |
+| Swarm Surge | rare | skill | 2 | Summon Patrol Drone (7 HP). At the end of your turn it will: Deal 4 damage. Draw cards equal to the number of your allies. Consume. |
 
 ## Kesh the Unfed (hunter)
 
-68 cards: Bloodrage 22, Pack 21, Feast 22, shared 3.
+78 cards: Bloodrage 23, Pack 23, Berserker 23, shared 9.
 
 ### Bloodrage
 
 | Card | Rarity | Type | Cost | Text |
 |---|---|---|---|---|
-| Bloodied Howl | common | skill | 1 | Lose 2 HP. Apply 2 Exposed to ALL enemies. Draw 1 card. |
-| Feral Instinct | common | skill | 0 | Lose 3 HP. Draw 2 cards. Consume. |
 | Open a Vein | common | skill | 0 | Lose 3 HP. Gain 2 Might. Consume. |
 | Pain Ward | common | skill | 1 | Gain 5 (+1 per 5% HP missing) Barrier. |
 | Pound | common | attack | 1 | Deal 8 damage. Draw 1 card. Lose 2 HP. |
 | Rummage | common | attack | 1 | Deal 8 damage. Put a random Attack card from your discard pile on top of your draw pile. |
 | Twin Fang | common | attack | 1 | Deal 5 damage 2 times. Lose 2 HP. |
-| Whirling Maul | common | attack | 0 | Deal 6 damage X times to ALL enemies. Lose 3 HP. |
 | Wounded Wrath | common | aura | 1 | Whenever you lose HP to your own cards: Deal 4 damage to a random enemy. |
+| Bloodied Howl | uncommon | skill | 1 | Lose 2 HP. Apply 2 Exposed to ALL enemies. Draw 1 card. |
 | Crushing Blow | uncommon | attack | 2 | Deal 8 (+2 per Might) damage. |
-| Frothing Rage | uncommon | skill | 1 | Lose 3 HP. Gain 3 Might until the end of your turn. Draw 2 cards. |
+| Gnarltooth Trap | uncommon | trap | 1 | When you or an ally is attacked: Deal 6 damage to the attacker. Gain 1 Might. |
+| Gut Trap | uncommon | trap | 1 | When you lose 5+ HP at once: Deal 8 damage to ALL enemies. Heal 4. |
 | Hamstring Slam | uncommon | attack | 2 | Deal 11 damage. Apply 2 Faltering. Each of your allies gains 3 Barrier. |
 | Ravage | uncommon | attack | 2 | Deal 9 damage to ALL enemies. Lose 3 HP. |
 | Reckless Blow | uncommon | attack | 1 | Lose 3 HP. Deal 7 damage 2 times. |
 | Run Wild | uncommon | attack | 2 | Deal 6 damage 2 times. Gain 1 Might. |
-| Scar Tissue | uncommon | aura | 1 | Whenever you lose HP to your own cards: Gain 3 Barrier. Gain 1 Might until the end of your turn. |
+| Whirling Maul | uncommon | attack | 0 | Deal 6 damage X times to ALL enemies. Lose 3 HP. |
 | Blood Tithe | rare | skill | 0 | Lose 7 HP. Gain 2 Mana. Draw 2 cards. Gain 1 Might. Consume. |
 | Death or Glory | rare | attack | 2 | Deal 10 (+1 per 2.5% HP missing) damage. Consume. |
+| Frothing Rage | rare | skill | 1 | Lose 3 HP. Gain 3 Might until the end of your turn. Draw 2 cards. |
+| Scar Tissue | rare | aura | 1 | Whenever you lose HP to your own cards: Gain 3 Barrier. Gain 1 Might until the end of your turn. |
 | Scarred Warrior | rare | aura | 1 | At the start of your turn: Lose 2 HP. Gain 8 Barrier. |
 | Skullcrusher | rare | attack | 3 | Deal 26 damage. All your allies act now. |
 | The Hunger | rare | aura | 1 | Lose 5 HP. Gain 2 Might for the rest of the fight. |
@@ -226,53 +244,56 @@ cost and effects whose numbers differ by about a third or less. "Shared" cards b
 | Card | Rarity | Type | Cost | Text |
 |---|---|---|---|---|
 | Bared Teeth | common | skill | 1 | Gain 3 (+3 per ally) Barrier. |
-| Blood Bond | common | skill | 1 | Lose 3 HP. Gain 2 Might. Gain 6 Barrier to all friends. |
-| Bone Collar | common | aura | 1 | Whenever one of your allies dies: Gain 2 Might. Heal 4. |
 | Lead the Charge | common | attack | 1 | Deal 5 (+3 per ally) damage. |
 | Pack Tactics | common | skill | 1 | Gain 1 Might. Gain 4 Barrier to all friends. |
 | Summon Pup | common | summon | 1 | Summon Pup (6 HP). At the end of your turn it will: Deal 3 damage. |
 | Thick Hide | common | skill | 1 | Gain 6 Barrier to all friends. |
 | Trail of Blood | common | aura | 1 | Whenever you summon an ally: Gain 1 Might. |
+| Blood Bond | uncommon | skill | 1 | Lose 3 HP. Gain 2 Might. Gain 6 Barrier to all friends. |
+| Bone Collar | uncommon | aura | 1 | Whenever one of your allies dies: Gain 2 Might. Heal 4. |
+| Devour Ally | uncommon | skill | 1 | Heal 12 to your hero. Apply 3 Might to your hero. Sacrifice the chosen ally. |
 | Feeding Time | uncommon | skill | 1 | Your companions gain 3 max HP. Gain 1 Might. |
 | Litter | uncommon | skill | 2 | Summon 2 Hounds (8 HP each). At the end of your turn each will: Deal 4 damage. |
 | Pack Bond | uncommon | aura | 2 | At the start of your turn: Gain 3 Barrier to all friends. |
-| Pack Frenzy | uncommon | skill | 2 | Gain 2 Might. All your allies act now. Consume. |
+| Pack Leader | uncommon | aura | 2 | Whenever you play an Attack: Gain 2 Barrier to all friends. |
 | Rally the Pack | uncommon | skill | 2 | Summon Hound (8 HP). At the end of your turn it will: Deal 4 damage. Each of your allies gains 4 Barrier. |
 | Savage Command | uncommon | skill | 2 | All your allies act now. Gain 1 Might. |
-| Unchained | uncommon | aura | 2 | Gain 3 Might for the rest of the fight. |
 | Alpha Call | rare | summon | 2 | Summon Pack Alpha (16 HP). At the end of your turn it will: Deal 10 damage. Gain 1 Might. |
 | Den Mother | rare | aura | 3 | Whenever one of your allies dies: Deal 15 damage to the attacker. |
 | Dire Wolf | rare | summon | 3 | Summon Dire Wolf (24 HP). At the end of your turn it will: Deal 14 damage. |
 | Hunter's Call | rare | aura | 2 | At the start of your turn: Gain 1 Might. |
+| Pack Frenzy | rare | skill | 2 | Gain 2 Might. All your allies act now. Consume. |
+| Unchained | rare | aura | 2 | Gain 3 Might for the rest of the fight. |
 | Wild Hunt | rare | aura | 3 | At the start of your turn: All your allies act now. |
 | Bloodmoon Hunt | legendary | skill | 2 | Summon 2 Hounds (8 HP each). At the end of your turn each will: Deal 4 damage. Apply 3 Might to each of your allies. All your allies act now. Consume. |
 
-### Feast
+### Berserker
 
 | Card | Rarity | Type | Cost | Text |
 |---|---|---|---|---|
-| Bloodscent | common | attack | 1 | Deal 5 damage. Gain 1 Might. |
-| Bonepicker | common | skill | 0 | Gain 3 Barrier. Consume. If consumed: Heal 2. |
-| Burn the Weak | common | skill | 1 | Consume 1 card. Gain 8 Barrier. |
-| Gore and Gulp | common | attack | 1 | Deal 10 damage. Lifesteal 50%. Consume. |
-| Gorge | common | skill | 1 | Gain 8 Barrier. Gain Barrier equal to half of the number of cards you have consumed. |
-| Gut Trap | common | trap | 1 | When you lose 5+ HP at once: Deal 8 damage to ALL enemies. Heal 4. |
-| Ravenous | common | aura | 1 | Whenever a card is consumed: Draw 1 card. Lose 2 HP. |
-| Thick Skin | common | aura | 1 | Whenever a card is consumed: Gain 2 Barrier to all friends. |
+| Feral Instinct | common | skill | 0 | Lose 3 HP. Draw 2 cards. Consume. |
+| Pounding Heart | common | skill | 0 | Gain 1 Mana. Lose 2 HP. Consume. |
+| Rush In | common | attack | 1 | Deal 6 damage. Draw 1 card. |
+| Shake Loose | common | skill | 1 | Draw 2 cards. Gain 3 Barrier. |
 | Throw Scraps | common | skill | 0 | Consume 1 card. Gain 1 Mana. |
+| Wild Swings | common | attack | 1 | Deal 3 damage, 1 more time per card played this turn. |
+| Adrenal Surge | uncommon | skill | 0 | Gain 2 Mana. Draw 1 card. Lose 3 HP. Consume. |
+| Battle Rhythm | uncommon | aura | 1 | At the start of your turn: Draw 1 card. Lose 1 HP. |
+| Blur of Claws | uncommon | attack | 1 | Deal 4 (+2 per card played this turn) damage. |
 | Bone Offering | uncommon | skill | 1 | Consume 1 card. Draw 2 cards. Heal 2. |
+| Burst of Speed | uncommon | skill | 1 | Next turn, gain 2 extra Mana. Next turn, draw 2 extra cards. |
 | Crimson Pact | uncommon | skill | 1 | Lose 4 HP. Consume 1 card. Draw 2 cards. |
-| Devour | uncommon | attack | 2 | Deal 16 damage. Lifesteal 50%. |
-| Devour Ally | uncommon | skill | 1 | Heal 12 to your hero. Apply 3 Might to your hero. Sacrifice the chosen ally. |
-| Feast on Fear | uncommon | attack | 2 | Deal 12 damage. Heal 3 (+2 per Exposed on the target). |
-| Gnarltooth Trap | uncommon | trap | 1 | When you or an ally is attacked: Deal 6 damage to the attacker. Gain 1 Might. |
-| Gnaw | uncommon | attack | 1 | Deal 5 (+1 per consumed card) damage. |
+| Frenzied Gulp | uncommon | skill | 0 | Draw 3 cards. Lose 4 HP. Consume. |
+| Reckless Abandon | uncommon | skill | 1 | Draw 3 cards. Discard 1 card. |
+| Rip and Tear | uncommon | attack | 2 | Deal 5 damage 3 times. Draw 1 card. |
+| Berserk Tempo | rare | aura | 2 | At the start of your turn: Gain 1 Mana. Draw 1 card. Lose 2 HP. |
 | Blood Pact | rare | skill | 1 | Lose 7 HP. From your next turn, gain 1 more Mana every turn for the rest of the fight. Consume. |
-| Carrion Engine | rare | aura | 2 | Whenever a card is consumed: Deal 2 damage to ALL enemies. |
-| Grave Hunger | rare | aura | 2 | Whenever a card is consumed: Heal 2. |
-| The Maw Opens | rare | attack | 2 | Consume your hand. Deal damage equal to 2 times the number of cards you have consumed. |
-| Wolfhide | rare | skill | 2 | Gain 18 Barrier. Gain 9 Barrier to all friends. Consume. |
-| Apex Maw | legendary | attack | 3 | Deal 10 (+3 per consumed card) damage. Lifesteal 75%. Consume. |
+| Bloodstorm | rare | attack | 0 | Deal 7 damage X times. Draw cards equal to the Mana spent. |
+| Killing Spree | rare | aura | 3 | Whenever you play an Attack: Draw 1 card. |
+| Red Frenzy | rare | aura | 2 | Whenever you draw a card: Gain 1 Might until the end of your turn. |
+| Rising Howl | rare | attack | 2 | Deal 8 (+4 per card played this turn) damage. |
+| Unbridled | rare | skill | 0 | Gain 3 Mana. Draw 3 cards. Lose 6 HP. Consume. |
+| Apex Frenzy | legendary | attack | 2 | Deal 6 damage 2 times, 2 more times per card played this turn. Lifesteal 50%. Consume. |
 
 ### Shared
 
@@ -280,11 +301,17 @@ cost and effects whose numbers differ by about a third or less. "Shared" cards b
 |---|---|---|---|---|
 | Bone Crack | common | attack | 1 | Deal 7 damage. Apply 2 Exposed. |
 | Primal Feast | common | skill | 1 | Heal 7 to all friends. |
-| Whet the Fangs | common | skill | 0 | Gain 6 Primed. |
+| Devour | uncommon | attack | 2 | Deal 16 damage. Lifesteal 50%. |
+| Tear Loose | uncommon | attack | 1 | Deal 7 damage. Lose 3 HP. Gain 4 Primed. |
+| Whet the Fangs | uncommon | skill | 0 | Gain 6 Primed. |
+| Ancient Fury | rare | aura | 2 | At the start of your turn: Gain 2 Might. Lose 3 HP. |
+| Berserker | rare | aura | 2 | At the start of your turn: Lose 3 HP. Gain 1 Mana. |
+| Bloodsong | rare | aura | 1 | Lose 3 HP. Gain 1 Cadence for the rest of the fight. |
+| Slip the Leash | rare | skill | 1 | Double the Might to yourself (at most +6). Consume. |
 
 ## Vesper Nightlace (trapper)
 
-66 cards: Traps 21, Exposed 21, Patience 21, shared 3.
+78 cards: Traps 23, Exposed 23, Patience 23, shared 9.
 
 ### Traps
 
@@ -293,22 +320,24 @@ cost and effects whose numbers differ by about a third or less. "Shared" cards b
 | False Floor | common | trap | 1 | When the enemy summons: Deal 12 damage to the attacker. Apply 2 Exposed to the attacker. |
 | Fang Pit | common | trap | 1 | When you lose 3+ HP at once: Deal 5 damage to ALL enemies. Apply 1 Exposed to ALL enemies. |
 | Hollow Trap | common | trap | 1 | When you or an ally is attacked: Deal 10 damage to the attacker. Apply 1 Faltering to the attacker. |
-| Metronome Trap | common | trap | 0 | At the start of the enemy turn: Deal 4 damage to ALL enemies. Gain 4 Barrier. |
 | Spring-Loaded | common | skill | 1 | Gain Barrier equal to 5 times the number of Traps you have set. |
 | Trap Kit | common | skill | 1 | Add 2 Trip Lines to your hand. Consume. |
-| Trapline Rider | common | attack | 1 | Deal 4 damage, 1 more time per Trap set. |
 | Trip Line | common | trap | 0 | When you or an ally is attacked: Deal 8 damage to the attacker. |
 | Grim Collection | uncommon | attack | 2 | Deal 10 damage. Gain Barrier equal to 4 times the number of Traps you have set. |
-| Master Trapper | uncommon | aura | 1 | Whenever you play a Trap: Draw 1 card. |
+| Metronome Trap | uncommon | trap | 0 | At the start of the enemy turn: Deal 4 damage to ALL enemies. Gain 4 Barrier. |
 | Mirror Veil | uncommon | trap | 2 | When you or an ally is attacked: Cancel that attack. Apply 2 Faltering to the attacker. |
-| Time Bomb | uncommon | trap | 1 | At the start of the enemy turn: Deal 12 damage to ALL enemies. |
+| Poison Pantry | uncommon | trap | 1 | When an enemy gains Barrier: Deal 8 damage to the attacker. Apply 2 Brittle to the attacker. |
 | Trap Door | uncommon | aura | 1 | At the start of your turn: Add a Trip Line to your hand. |
 | Trap Net | uncommon | trap | 2 | At the start of the enemy turn: Deal 6 damage to ALL enemies. Apply 1 Faltering to ALL enemies. |
+| Trapline Rider | uncommon | attack | 1 | Deal 4 damage, 1 more time per Trap set. |
 | Tripwire Garrote | uncommon | trap | 1 | When you or an ally is attacked: Deal 7 damage to the attacker. Apply 2 Exposed to the attacker. |
+| Whisper Net | uncommon | trap | 1 | When the enemy summons: Deal 8 damage to the attacker. Stun the attacker for 1 turn. |
 | Bait and Switch | rare | trap | 2 | When you or an ally is attacked: Cancel that attack. Deal 12 damage to the attacker. |
 | Death Trap | rare | trap | 2 | When you or an ally is attacked: Cancel that attack. Deal 18 damage to the attacker. Apply 2 Exposed to the attacker. |
+| Master Trapper | rare | aura | 1 | Whenever you play a Trap: Draw 1 card. |
 | Silencing Trap | rare | trap | 2 | When you or an ally is attacked: Stun the attacker for 2 turns. Gain 1 Shielded. |
 | Spring the Trap | rare | attack | 1 | Deal 6 (+8 per Trap set) damage. |
+| Time Bomb | rare | trap | 1 | At the start of the enemy turn: Deal 12 damage to ALL enemies. |
 | Trapper's Dividend | rare | aura | 2 | Whenever one of your Traps is triggered: Draw 1 card. Gain 5 Barrier. |
 | The Perfect Trap | legendary | trap | 3 | When you or an ally is attacked: Cancel that attack. Deal 22 damage to the attacker. Stun the attacker for 2 turns. Gain 2 Shielded. |
 
@@ -317,64 +346,74 @@ cost and effects whose numbers differ by about a third or less. "Shared" cards b
 | Card | Rarity | Type | Cost | Text |
 |---|---|---|---|---|
 | Cheap Shot | common | attack | 1 | Deal 8 damage. Apply 1 Faltering. |
-| Cripple | common | skill | 1 | Apply 2 Faltering. Apply 2 Exposed. Gain 5 Barrier. |
 | Exploit Weakness | common | attack | 1 | Deal 5 (+2 per Exposed on the target) damage. |
 | Mark Prey | common | skill | 0 | Apply 2 Exposed. |
 | Slit and Run | common | attack | 1 | Deal 7 damage. Gain 4 Barrier. Apply 1 Exposed. |
-| Stalk | common | attack | 2 | Deal 15 damage. Next turn, draw 2 extra cards. |
 | Unmask | common | skill | 1 | Apply 2 Exposed to ALL enemies. |
 | Veil Dance | common | skill | 1 | Apply 1 Faltering to ALL enemies. Gain 5 Barrier. |
+| Cripple | uncommon | skill | 1 | Apply 2 Faltering. Apply 2 Exposed. Gain 5 Barrier. |
 | Death Mark | uncommon | attack | 2 | Deal 12 damage. Apply 3 Exposed. |
 | Dread Gaze | uncommon | skill | 0 | Apply 4 Exposed. Consume. |
-| Patient Hunter | uncommon | aura | 1 | At the start of your turn: Apply 1 Exposed to ALL enemies. |
+| Hamstring | uncommon | attack | 1 | Deal 6 damage. Apply 2 Exposed. |
 | Shadow Volley | uncommon | attack | 1 | Deal 4 damage 3 times to a random enemy. |
 | Smoke Bomb | uncommon | skill | 1 | Apply 1 Faltering to ALL enemies. Apply 1 Exposed to ALL enemies. Gain 4 Barrier. |
 | Spotlight | uncommon | skill | 1 | Apply 3 Exposed. Apply 1 Faltering. |
+| Stalk | uncommon | attack | 2 | Deal 15 damage. Next turn, draw 2 extra cards. |
 | Strip the Guard | uncommon | skill | 1 | Apply 3 Exposed. Apply 2 Brittle. |
 | Blindside | rare | attack | 2 | Deal 22 damage. Apply 3 Exposed. Consume. |
+| Compound Fear | rare | skill | 1 | Apply 1 Exposed. Double the Exposed on the target (at most +3). Consume. |
 | Coup de Grace | rare | attack | 3 | Deal 16 (+3 per Exposed on the target) damage. |
 | Culling | rare | attack | 2 | Deal 6 (+2 per Exposed on each) damage to ALL enemies. |
 | Hunter's Eye | rare | aura | 2 | Whenever you play an Attack: Apply 1 Exposed. |
 | Opening Strike | rare | attack | 0 | Deal 12 damage. Apply 2 Exposed. Consume. Opening hand. |
+| Patient Hunter | rare | aura | 1 | At the start of your turn: Apply 1 Exposed to ALL enemies. |
 | The Long Ambush | legendary | trap | 3 | At the start of the enemy turn: Deal 25 damage to ALL enemies. Stun ALL enemies for 2 turns. Apply 3 Exposed to ALL enemies. |
 
 ### Patience
 
 | Card | Rarity | Type | Cost | Text |
 |---|---|---|---|---|
-| Coiled Patience | common | aura | 1 | At the end of your turn: Deal damage equal to 2 times your Mana to a random enemy. |
 | Cold Read | common | skill | 0 | Foresee 4. |
 | Hidden Hand | common | skill | 1 | Draw 2 cards. Hold. |
 | Patient Blade | common | attack | 1 | Deal 9 damage. Hold. |
-| Saved Breath | common | skill | 0 | Next turn, gain 2 extra Mana. Foresee 2. Consume. |
 | Shadow Cloak | common | skill | 1 | Gain 6 Barrier. Draw 1 card. |
 | Waiting Game | common | attack | 1 | Deal 4 (+2 per card in hand) damage. |
 | Weigh the Odds | common | skill | 1 | Foresee 3. Draw 1 card. Hold. |
 | Banked Breath | uncommon | aura | 1 | At the end of your turn: Gain Barrier equal to 2 times your Mana. |
+| Coiled Patience | uncommon | aura | 1 | At the end of your turn: Deal damage equal to 2 times your Mana to a random enemy. |
 | Fade Back | uncommon | skill | 1 | Gain 7 Barrier. Hold. |
 | Gleeful Trapsmith | uncommon | aura | 1 | Whenever you play a Trap: Deal 4 damage to ALL enemies. |
 | Long Con | uncommon | attack | 2 | Deal 14 damage. Apply 1 Exposed. Hold. |
 | Measured Breath | uncommon | skill | 1 | Next turn, gain 2 extra Mana. Gain 3 Barrier. |
-| Sandbag | uncommon | attack | 1 | Deal 5 (+3 per Mana left) damage. |
-| Second Act | uncommon | skill | 1 | Gain 1 Reverb. Hold. |
+| Saved Breath | uncommon | skill | 0 | Next turn, gain 2 extra Mana. Foresee 2. Consume. |
+| Stolen Moment | uncommon | skill | 0 | Gain 1 Mana. Foresee 2. Consume. |
+| Trick of the Light | uncommon | skill | 0 | Foresee 2. Gain 3 Barrier. |
 | Deep Pockets | rare | aura | 3 | From your next turn, gain 1 more Mana every turn for the rest of the fight. |
 | Fade Away | rare | skill | 1 | Gain 1 Ghostly. Consume. Hold. |
 | Frozen Moment | rare | skill | 1 | Cards in your hand cost 1 less the next time you play them. Consume. |
 | Pickpocket Master | rare | skill | 2 | Add 2 random cards from your pool to your hand (they cost 0 the next time you play them). Consume. |
+| Sandbag | rare | attack | 1 | Deal 5 (+3 per Mana left) damage. |
+| Second Act | rare | skill | 1 | Gain 1 Reverb. Hold. |
 | The Long Game | rare | aura | 2 | At the start of your turn: Draw 1 card. |
-| Masquerade | legendary | aura | 2 | At the end of your turn: Deal damage equal to 3 times your Mana to ALL enemies. Gain 1 Holdfast. |
+| Masquerade | legendary | aura | 2 | At the end of your turn: Deal damage equal to 3 times your Mana to ALL enemies. Next turn, gain 1 extra Mana. |
 
 ### Shared
 
 | Card | Rarity | Type | Cost | Text |
 |---|---|---|---|---|
 | Low Blow | common | attack | 0 | Deal 3 damage. Apply 1 Faltering. |
-| Step Aside | common | skill | 1 | Gain 5 Barrier. Next turn, draw 1 extra card. |
 | Tear the Veil | common | skill | 1 | Apply 1 Exposed to ALL enemies. Draw 1 card. |
+| Mask of Faces | uncommon | skill | 1 | Gain 2 Steadfast. |
+| Sleight of Hand | uncommon | skill | 1 | Draw 2 cards. Next turn, gain 1 extra Mana. |
+| Step Aside | uncommon | skill | 1 | Gain 5 Barrier. Next turn, draw 1 extra card. |
+| Between Worlds | rare | skill | 2 | Gain 2 Ghostly. Next turn, lose 1 Mana. Consume. |
+| Curtain Call | rare | skill | 1 | Draw 1 card. Return 2 random Trap cards from your discard pile to your hand. Consume. |
+| Patient Guard | rare | aura | 1 | At the end of your turn: Gain 4 (+1 per card in hand) Barrier. |
+| Perfect Alibi | rare | skill | 1 | Gain 20 Barrier. Discard 1 card. |
 
 ## Sylas (assassin)
 
-67 cards: Knives 21, Bleed 22, Sleight 21, shared 3.
+78 cards: Knives 23, Bleed 23, Sleight 23, shared 9.
 
 **Near-duplicates:**
 
@@ -388,23 +427,25 @@ cost and effects whose numbers differ by about a third or less. "Shared" cards b
 |---|---|---|---|---|
 | Cut Low | common | attack | 0 | Deal 5 damage. |
 | Hidden Blade | common | skill | 1 | Gain 4 Barrier. Add a Sleeve Knife to your hand. Gain 1 Edge: your Sleeve Knives deal 1 more damage this turn. |
-| Killing Flourish | common | attack | 1 | Deal 4 damage for each Attack played this turn. |
 | Knife Fan | common | attack | 1 | Deal 3 damage to ALL enemies. Add a Sleeve Knife to your hand. |
 | Knife Volley | common | attack | 1 | Deal 3 damage 3 times. |
 | Palmed Knives | common | skill | 1 | Add 2 Sleeve Knives to your hand. Draw 1 card. |
-| Smoke and Slip | common | skill | 1 | Gain 6 Barrier. Discard 1 card. Add a Sleeve Knife to your hand. |
 | Whirling Knives | common | attack | 1 | Deal 4 damage 2 times to ALL enemies. |
 | Ambush Cut | uncommon | attack | 0 | Deal 11 damage. Consume. Opening hand. |
-| Empty the Sleeves | uncommon | skill | 1 | Discard your hand. Add Sleeve Knives to your hand equal to the cards discarded this turn. Gain 1 Edge: your Sleeve Knives deal 1 more damage this turn. |
 | Gather the Blades | uncommon | skill | 1 | Return 3 random Consumed cards to your hand (never one that returns cards). Consume. |
 | Juggler's Poise | uncommon | aura | 1 | Whenever you play a Sleeve Knife: Gain 2 Barrier. |
 | Keen Edge | uncommon | aura | 1 | Gain 2 Edge: your Sleeve Knives deal 2 more damage for the rest of the fight. |
-| Razor Halo | uncommon | aura | 2 | Whenever you play a Sleeve Knife: Deal 2 damage to ALL enemies. |
+| Killing Flourish | uncommon | attack | 1 | Deal 4 damage for each Attack played this turn. |
+| Rising Tempo | uncommon | attack | 0 | Deal 2 (+1 per card played this turn) damage. |
+| Smoke and Slip | uncommon | skill | 1 | Gain 6 Barrier. Discard 1 card. Add a Sleeve Knife to your hand. |
 | Spent Steel | uncommon | attack | 1 | Deal 5 (+1 per 5 cards created this fight) damage. |
+| Whetstone Pass | uncommon | skill | 0 | Gain 2 Edge: your Sleeve Knives deal 2 more damage this turn. |
 | Assassin's Mark | rare | attack | 0 | Deal 10 damage. Apply 1 Exposed. Consume. Opening hand. |
+| Empty the Sleeves | rare | skill | 1 | Discard your hand. Add Sleeve Knives to your hand equal to the cards discarded this turn. Gain 1 Edge: your Sleeve Knives deal 1 more damage this turn. |
 | Endless Edges | rare | aura | 2 | At the start of your turn: Add 2 Sleeve Knives to your hand. |
 | Knife Cascade | rare | aura | 3 | At the start of your turn: Add 3 Sleeve Knives to your hand. |
 | Knife Storm | rare | attack | 0 | Deal 5 damage X times. |
+| Razor Halo | rare | aura | 2 | Whenever you play a Sleeve Knife: Deal 2 damage to ALL enemies. |
 | Spent Blades Sing | rare | aura | 1 | Whenever a card is consumed: Deal 2 damage to a random enemy. |
 | Deck of a Thousand Knives | legendary | aura | 2 | At the start of your turn: Add 3 Sleeve Knives to your hand. Gain 2 Edge: your Sleeve Knives deal 2 more damage for the rest of the fight. |
 
@@ -412,23 +453,24 @@ cost and effects whose numbers differ by about a third or less. "Shared" cards b
 
 | Card | Rarity | Type | Cost | Text |
 |---|---|---|---|---|
-| Choking Haze | common | skill | 2 | Apply 3 Bleed to ALL enemies. Apply 2 Faltering to ALL enemies. Gain 4 Barrier. |
 | Deadly Vial | common | skill | 1 | Apply 4 Bleed. Draw 1 card. |
 | Ember Dose | common | skill | 1 | Apply 5 Bleed. Gain 3 Barrier. |
 | Needle Jab | common | attack | 0 | Deal 4 damage. Apply 1 Bleed. |
 | Poison Tip | common | attack | 1 | Deal 4 damage. Apply 4 Bleed. |
-| Scatter Shot | common | attack | 1 | Deal 3 damage to ALL enemies. Apply 2 Bleed to ALL enemies. |
-| Sour Sleight | common | aura | 1 | Whenever you discard a card: Apply 2 Bleed to a random enemy. |
 | Tainted Edges | common | aura | 1 | Whenever you play a Sleeve Knife: Apply 1 Bleed. |
 | Withering Slash | common | attack | 1 | Deal 6 damage. Apply 2 Bleed. Apply 1 Faltering. |
-| Cash In | uncommon | skill | 1 | The target loses HP equal to the target's Bleed. Consume. |
-| Contagion | uncommon | skill | 2 | Apply 2 Bleed. Apply equal to the target's Bleed Bleed to ALL enemies. Consume. |
+| Choking Haze | uncommon | skill | 2 | Apply 3 Bleed to ALL enemies. Apply 2 Faltering to ALL enemies. Gain 4 Barrier. |
 | Flashpoint | uncommon | skill | 1 | Double the Bleed on the target (at most +15). Consume. |
 | Hungering Dark | uncommon | skill | 2 | Apply 3 Bleed to ALL enemies. |
 | Mindrot | uncommon | skill | 1 | Apply 4 Bleed. Apply 1 Exposed. |
+| Noxious Haze | uncommon | aura | 1 | At the start of your turn: Apply 3 Bleed to a random enemy. |
+| Scatter Shot | uncommon | attack | 1 | Deal 3 damage to ALL enemies. Apply 2 Bleed to ALL enemies. |
 | Smouldering Air | uncommon | aura | 1 | At the start of your turn: Apply 1 Bleed to ALL enemies. Gain 2 Barrier. |
+| Sour Sleight | uncommon | aura | 1 | Whenever you discard a card: Apply 2 Bleed to a random enemy. |
 | Venom Fang | uncommon | attack | 2 | Deal 10 damage. Apply 5 Bleed. |
+| Cash In | rare | skill | 1 | The target loses HP equal to the target's Bleed. Consume. |
 | Compounding Interest | rare | aura | 2 | At the start of your turn: Apply 3 Bleed to ALL enemies. |
+| Contagion | rare | skill | 2 | Apply 2 Bleed. Apply equal to the target's Bleed Bleed to ALL enemies. Consume. |
 | Festering Wound | rare | attack | 2 | Deal 8 (+1 per Bleed on the target) damage. |
 | Nightfall | rare | skill | 2 | Apply 5 Bleed to ALL enemies. Apply 2 Exposed to ALL enemies. Consume. |
 | Plague Bloom | rare | skill | 2 | Double the Bleed to ALL enemies (at most +12). Consume. |
@@ -440,38 +482,46 @@ cost and effects whose numbers differ by about a third or less. "Shared" cards b
 | Card | Rarity | Type | Cost | Text |
 |---|---|---|---|---|
 | Ace Up the Sleeve | common | skill | 0 | Unplayable. If discarded: Draw 2 cards. Add a Sleeve Knife to your hand. |
-| All In | common | skill | 0 | Discard your hand. Draw cards equal to the cards discarded this turn. Add a Sleeve Knife to your hand. Consume. |
 | Dart Throw | common | attack | 1 | Deal 7 damage. Discard 1 card. Draw 2 cards. |
-| Fold the Hand | common | skill | 0 | Discard 3 cards. Gain 2 Mana. Consume. |
 | Loaded Die | common | skill | 0 | Unplayable. If discarded: Deal 6 damage to ALL enemies. |
 | Quick Draw | common | skill | 1 | Gain 3 Barrier. Draw 1 card. Add a Sleeve Knife to your hand. |
 | Roll Clear | common | skill | 1 | Gain 4 Barrier. Draw 2 cards. Discard 1 card. |
 | Showman's Flourish | common | attack | 1 | Deal 4 (+4 per Skill played this turn) damage. |
-| Encore | uncommon | skill | 1 | Gain 1 Mirrored. Draw 1 card. |
-| Flaying Spree | uncommon | attack | 2 | Deal 8 damage, 1 more time per card discarded this turn. |
+| All In | uncommon | skill | 0 | Discard your hand. Draw cards equal to the cards discarded this turn. Add a Sleeve Knife to your hand. Consume. |
+| Blur Step | uncommon | skill | 1 | Discard any number of cards. Gain 1 Reverb. |
+| Fold the Hand | uncommon | skill | 0 | Discard 3 cards. Gain 2 Mana. Consume. |
 | Fortune's Edge | uncommon | attack | 1 | Deal 6 (+3 per card discarded this turn) damage. |
 | Hidden Palm | uncommon | aura | 1 | Whenever you discard a card: Gain 3 Barrier. |
 | Knife in the Dark | uncommon | trap | 1 | When an enemy gains Barrier: Deal 5 damage to the attacker. Add 2 Sleeve Knives to your hand. |
 | Light Fingers | uncommon | skill | 1 | Gain 2 Mana. Discard 1 card. |
 | Magician's Exit | uncommon | skill | 1 | Discard any number of cards. Gain Barrier equal to 4 times the cards discarded this turn. |
+| Palmed Card | uncommon | skill | 0 | Add a random Attack card from your pool to your hand. Consume. |
 | Cold Sweat | rare | skill | 0 | Gain 1 Mana. Draw 1 card. Add a Sleeve Knife to your hand. Consume. |
+| Encore | rare | skill | 1 | Gain 1 Mirrored. Draw 1 card. |
+| Flaying Spree | rare | attack | 2 | Deal 8 damage, 1 more time per card discarded this turn. |
 | Joker's Gambit | rare | skill | 0 | Unplayable. If discarded: Add 3 Sleeve Knives to your hand. |
 | Showy Reflex | rare | aura | 1 | Whenever you discard a card: Deal 4 damage to a random enemy. |
 | Speed Reader | rare | aura | 1 | Whenever you draw a card: Deal 2 damage to ALL enemies. |
 | Tradecraft | rare | aura | 1 | At the start of your turn: Draw 1 card. |
-| Death by Inches | legendary | attack | 1 | Deal 5 damage, 1 more time per card discarded this turn. |
+| Death by Inches | legendary | attack | 1 | Deal 5 damage 2 times, 2 more times per card discarded this turn. |
 
 ### Shared
 
 | Card | Rarity | Type | Cost | Text |
 |---|---|---|---|---|
 | Cold Open | common | attack | 0 | Deal 6 damage. Discard 1 card. |
-| Quick Hands | common | skill | 0 | Draw 2 cards. Discard 2 cards. |
 | Tangle Wire | common | attack | 1 | Deal 8 damage. Apply 1 Faltering. |
+| Careful Plan | uncommon | skill | 1 | Draw 1 card. Gain 1 Holdfast. |
+| Nimble Hands | uncommon | skill | 0 | A random card in your hand costs 1 less the next time you play it. Draw 1 card. Consume. |
+| Quick Hands | uncommon | skill | 0 | Draw 2 cards. Discard 2 cards. |
+| Countless Nicks | rare | aura | 2 | Whenever you play a card: Apply 1 Bleed to a random enemy. |
+| Plague Cloud | rare | skill | 2 | Apply 9 Bleed to ALL enemies. Consume. |
+| Trickster's Vanish | rare | skill | 1 | Gain 12 Barrier. Next turn, draw 2 extra cards. Consume. |
+| Veil of Dust | rare | skill | 1 | Gain Barrier equal to your Barrier. Consume. |
 
 ## Ilvane (totemist)
 
-68 cards: Totems 21, Whittling 21, Rites 21, shared 5.
+78 cards: Totems 23, Whittling 23, Rites 23, shared 9.
 
 **Near-duplicates:**
 
@@ -485,73 +535,79 @@ cost and effects whose numbers differ by about a third or less. "Shared" cards b
 | Echo Chamber | common | skill | 1 | Awaken your first totem (it stays). |
 | Elder's Shelter | common | skill | 1 | Plant Elder. Gain 4 Barrier. |
 | Feather Storm | common | attack | 1 | Deal 4 damage to ALL enemies. Plant Hawk. |
-| Forked Branch | common | attack | 2 | Deal 8 damage to ALL enemies. Plant Hawk. |
 | Frostbark | common | skill | 2 | Gain 4 Barrier. Plant Bear. Plant Elder. |
-| Shatter the Row | common | skill | 0 | Gain Mana equal to half of the number of your totems. Draw cards equal to the number of your totems. Awaken your first 10 totems. Consume. |
 | Spirit Strike | common | attack | 1 | Deal 6 (+2 per Spirit) damage. |
-| Awakened Blow | uncommon | attack | 1 | Deal 4 (+2 per totem) damage. |
+| Bark Ward | uncommon | skill | 1 | Gain 7 Barrier. Plant Bear. Hold. |
+| Bear Pack | uncommon | skill | 1 | Plant Bear once per enemy. Consume. |
 | Bear's Patience | uncommon | skill | 1 | Plant Bear. Foresee 3. |
+| Forked Branch | uncommon | attack | 2 | Deal 8 damage to ALL enemies. Plant Hawk. |
 | Heartwood | uncommon | attack | 2 | Deal 6 damage 2 times. Plant Hawk. |
+| Shatter the Row | uncommon | skill | 0 | Gain Mana equal to half of the number of your totems. Draw cards equal to the number of your totems. Awaken your first 10 totems. Consume. |
 | Splinter Grove | uncommon | skill | 2 | Plant Splinter 2 times. |
 | Splintering Burst | uncommon | attack | 2 | Deal 6 damage to ALL enemies. Plant Splinter. |
 | Totem Driver | uncommon | attack | 1 | Deal 7 damage. Draw cards equal to half of the number of your totems. |
-| Totem Trap | uncommon | trap | 2 | When you or an ally is attacked: Cancel that attack. Plant Bear. |
+| Awakened Blow | rare | attack | 1 | Deal 4 (+2 per totem) damage. |
 | Blazing Eye | rare | attack | 3 | Deal 18 damage to ALL enemies. Awaken your first 3 totems. |
 | Bulwark Totem | rare | skill | 2 | Gain 4 (+3 per totem) Barrier. Gain 1 Bracing. |
 | Echo Cascade | rare | skill | 2 | Awaken your first totem 3 times (it stays). Consume. |
 | Toppling Row | rare | attack | 2 | Deal 8 (+4 per totem) damage to ALL enemies. Awaken your first 3 totems. Consume. |
 | Totem Ring | rare | skill | 3 | Gain 8 Barrier. Plant Bear 3 times. |
+| Totem Trap | rare | trap | 2 | When you or an ally is attacked: Cancel that attack. Plant Bear. |
 | Cataclysm Totem | legendary | attack | 2 | Deal 10 damage to ALL enemies. Awaken your first 10 totems 2 times. Consume. |
 
 ### Whittling
 
 | Card | Rarity | Type | Cost | Text |
 |---|---|---|---|---|
-| Antler Carving | common | attack | 0 | Deal 2 damage 2 times to a random enemy. |
 | Bear Carving | common | skill | 0 | Gain 4 Barrier. |
 | Hawk Carving | common | attack | 0 | Deal 4 damage. |
-| Moth Carving | common | skill | 0 | Gain 2 Barrier. Apply 1 Exposed to a random enemy. |
 | Owl Carving | common | skill | 0 | Foresee 3. |
 | Serpent Carving | common | attack | 0 | Deal 2 damage. Apply 1 Faltering. |
 | Splinter Carving | common | skill | 0 | Plant Splinter. Consume. |
 | Talon Carving | common | attack | 0 | Deal 3 damage to ALL enemies. |
+| Antler Carving | uncommon | attack | 0 | Deal 2 damage 2 times to a random enemy. |
+| Carver's Rhythm | uncommon | skill | 0 | Draw 2 cards. Consume. |
 | Elder Carving | uncommon | attack | 0 | Deal 2 (+1 per card played this turn) damage. |
 | Eye Carving | uncommon | attack | 0 | Deal 3 damage. Apply 1 Exposed. |
-| Fresh Shavings | uncommon | skill | 1 | Draw 2 cards. Return a random Carving from your discard pile to your hand. |
 | Gather the Shavings | uncommon | skill | 1 | Gain 3 Barrier. Return 2 random Carvings from your discard pile to your hand. |
+| Moth Carving | uncommon | skill | 0 | Gain 2 Barrier. Apply 1 Exposed to a random enemy. |
 | Whittle Down | uncommon | attack | 1 | Deal 4 (+2 per card played this turn) damage. |
+| Whittle Down | uncommon | attack | 1 | Deal 3 damage 2 times. Add a Hawk Carving to your hand. |
 | Whittler's Kit | uncommon | skill | 1 | Add a Hawk Carving to your hand. Add a Bear Carving to your hand. Draw 1 card. |
-| Whittler's Knife | uncommon | aura | 1 | Whenever you play a Carving: Deal 3 damage to a random enemy. |
 | Carver's Bench | rare | aura | 2 | At the start of your turn: Add a Hawk Carving to your hand. |
 | Clear the Bench | rare | skill | 1 | Discard any number of cards. Return 10 random Carvings from your discard pile to your hand. Draw 1 card. Consume. |
 | Endless Whittling | rare | aura | 1 | At the start of your turn: Return a random Carving from your discard pile to your hand. |
+| Fresh Shavings | rare | skill | 1 | Draw 2 cards. Return a random Carving from your discard pile to your hand. |
 | Living Wood | rare | aura | 3 | Whenever you play a Carving: Plant Splinter. |
 | Shavings Underfoot | rare | aura | 1 | Whenever you play a Carving: Gain 3 Barrier. |
+| Whittler's Knife | rare | aura | 1 | Whenever you play a Carving: Deal 3 damage to a random enemy. |
 | The Spirit Council | legendary | aura | 2 | At the start of your turn: Add a Hawk Carving to your hand. Add a Talon Carving to your hand. Add a Bear Carving to your hand. |
 
 ### Rites
 
 | Card | Rarity | Type | Cost | Text |
 |---|---|---|---|---|
-| Ancestral Learning | common | aura | 1 | Whenever you play an Aura: Draw 1 card. |
 | Drum Circle | common | skill | 1 | Draw 1 card. Draw cards equal to half of the number of your Auras. |
 | Ember Rite | common | aura | 0 | At the end of your turn: Gain 3 Barrier. |
 | Rite of Thorns | common | aura | 0 | At the start of your turn: Deal 3 damage to a random enemy. |
 | Rite of Warding | common | skill | 1 | Gain 5 (+2 per Aura you have) Barrier. |
 | Rite Strike | common | attack | 1 | Deal 5 (+2 per Aura you have) damage. |
-| Spirit Whisper | common | skill | 1 | Add a random Aura card from your pool to your hand (it costs 0 the next time you play it). Draw 1 card. Consume. |
 | Tune the Spirits | common | aura | 1 | Gain 1 Spirit. Gain 1 totem slot. |
+| Ancestral Learning | uncommon | aura | 1 | Whenever you play an Aura: Draw 1 card. |
 | Bark Carapace | uncommon | aura | 1 | At the end of your turn: Gain Barrier equal to the number of your totems. |
 | Den of Bears | uncommon | aura | 2 | At the start of your turn: Plant Bear. |
-| Hawkstorm | uncommon | aura | 2 | At the end of your turn: Deal damage equal to the number of your totems to ALL enemies. |
+| Kindled Rite | uncommon | aura | 1 | At the end of your turn: Deal damage equal to the number of your Auras to ALL enemies. |
 | Sentinel Totem | uncommon | aura | 2 | Gain 1 Shielded. At the start of your turn: Gain 3 Barrier. |
-| Skyfall Rite | uncommon | attack | 2 | Deal 8 (+2 per Aura you have) damage to ALL enemies. Consume. |
+| Smoke Offering | uncommon | aura | 1 | At the start of your turn: Gain Barrier equal to 2 times the number of your Auras. |
 | Spirit Drum | uncommon | aura | 2 | Whenever you play an Aura: Gain 4 Barrier. |
+| Spirit Whisper | uncommon | skill | 1 | Add a random Aura card from your pool to your hand (it costs 0 the next time you play it). Draw 1 card. Consume. |
 | Thunder Rite | uncommon | aura | 1 | Whenever you play an Aura: Plant Splinter. Gain 2 Barrier. |
 | Chorus of Totems | rare | aura | 2 | Gain 2 Spirit. Gain 1 totem slot. |
 | Echoing Chant | rare | aura | 3 | At the start of your turn: Deal damage equal to 2 times the number of your Auras to ALL enemies. |
 | Fevered Communion | rare | aura | 2 | Gain 1 Spirit. Whenever you play an Aura: Gain 1 Spirit. |
 | Gathering Elders | rare | aura | 2 | Whenever you play a Skill: Plant Elder. |
+| Hawkstorm | rare | aura | 2 | At the end of your turn: Deal damage equal to the number of your totems to ALL enemies. |
+| Skyfall Rite | rare | attack | 2 | Deal 8 (+2 per Aura you have) damage to ALL enemies. Consume. |
 | Unending Call | rare | aura | 2 | At the end of your turn: Awaken your first totem (it stays). |
 | The Great Pole | legendary | aura | 3 | Gain 3 totem slots. Gain 3 Spirit. At the start of your turn: Plant Elder. |
 
@@ -560,14 +616,18 @@ cost and effects whose numbers differ by about a third or less. "Shared" cards b
 | Card | Rarity | Type | Cost | Text |
 |---|---|---|---|---|
 | Totem Burst | common | skill | 1 | Awaken your first totem. Draw 1 card. |
+| Totem Row | common | skill | 1 | Gain 2 totem slots. |
+| Many Voices | uncommon | skill | 0 | Awaken your first totem X times (it stays). Consume. |
 | Retune | uncommon | skill | 1 | Upgrade a random card in your hand for this fight. Consume. |
-| Root Tap | uncommon | skill | 2 | From your next turn, gain 1 more Mana every turn for the rest of the fight. Gain 6 Barrier. Consume. |
+| Spirit Surge | uncommon | skill | 1 | Gain 1 Spirit. Draw 1 card. Consume. |
 | Owl Cut | rare | skill | 1 | Plant Owl. Draw 1 card. |
+| Root Tap | rare | skill | 2 | From your next turn, gain 1 more Mana every turn for the rest of the fight. Gain 6 Barrier. Consume. |
+| Sap Offering | rare | aura | 2 | Gain 3 Spirit. At the start of your turn: Lose 1 HP. |
 | Spirit Wave | rare | attack | 2 | Deal 11 damage to ALL enemies. Awaken your first totem. |
 
 ## Sehra (barbarian)
 
-67 cards: Fury 21, Flow 22, Radiant 21, shared 3.
+78 cards: Fury 23, Flow 23, Radiant 23, shared 9.
 
 **Near-duplicates:**
 
@@ -580,23 +640,25 @@ cost and effects whose numbers differ by about a third or less. "Shared" cards b
 |---|---|---|---|---|
 | Angry Palm | common | attack | 1 | Deal 7 (+6 per Fury) damage. |
 | Ashen Fist | common | attack | 2 | Deal 14 damage. Enter Fury. |
-| Berserk Tide | common | attack | 0 | Deal 4 damage X times. Enter Fury. |
 | Flurry of Palms | common | attack | 0 | Deal 3 damage 2 times. |
 | Red Mist | common | attack | 1 | Deal 5 damage to ALL enemies. Enter Fury. |
 | Rising Ire | common | skill | 0 | Enter Fury. Draw 1 card. Consume. |
-| Swift Step | common | skill | 1 | Enter Fury. Gain 4 Primed. |
 | Unleashed Roar | common | skill | 1 | Apply 1 Exposed to ALL enemies. Enter Fury. |
+| Berserk Tide | uncommon | attack | 0 | Deal 4 damage X times. Enter Fury. |
+| Blood on the Sand | uncommon | aura | 1 | Whenever you enter Fury: Lose 2 HP. Gain 2 Primed. |
 | Cornered Beast | uncommon | trap | 1 | When you lose 5+ HP at once: Deal 12 damage to the attacker. Gain 4 Primed. Enter Fury. |
-| Final Account | uncommon | attack | 2 | Deal 10 (+8 per Fury) damage. |
 | Hot-Blooded | uncommon | attack | 1 | Deal 8 (+1 per 6% HP missing) damage. Enter Fury. |
+| Rending Hands | uncommon | attack | 1 | Deal 5 damage 2 times. Lose 2 HP. |
 | Spinning Heel | uncommon | attack | 2 | Deal 12 damage. Apply 2 Exposed. Draw 1 card. |
-| Surge of Ire | uncommon | aura | 1 | Whenever you enter Fury: Gain 6 Barrier. Draw 1 card. |
+| Swift Step | uncommon | skill | 1 | Enter Fury. Gain 4 Primed. |
 | Temper Flare | uncommon | attack | 1 | Deal 3 damage 3 times. Enter Fury. |
 | Wrathful Guard | uncommon | skill | 1 | Gain 8 Barrier. Enter Fury. |
 | Ashes of Restraint | rare | attack | 2 | Deal 6 (+2 per consumed card) damage. Enter Fury. |
+| Final Account | rare | attack | 2 | Deal 10 (+8 per Fury) damage. |
 | Rage of Ages | rare | attack | 3 | Deal 5 damage 3 times to ALL enemies. |
 | Rage Unbound | rare | skill | 0 | Enter Fury. Gain 1 Mana. Consume. |
 | Rampage of Ire | rare | aura | 2 | Whenever you enter Fury: Deal 6 damage to ALL enemies. |
+| Surge of Ire | rare | aura | 1 | Whenever you enter Fury: Gain 6 Barrier. Draw 1 card. |
 | Wrath Incarnate | rare | aura | 2 | At the start of your turn: Enter Fury. |
 | Eye of the Storm | legendary | aura | 2 | At the start of your turn: Enter Fury. Deal 6 damage to ALL enemies. Gain 6 Barrier. |
 
@@ -605,24 +667,25 @@ cost and effects whose numbers differ by about a third or less. "Shared" cards b
 | Card | Rarity | Type | Cost | Text |
 |---|---|---|---|---|
 | Centre Yourself | common | skill | 1 | Draw 2 cards. Enter Serene. |
-| Exhale | common | skill | 0 | Leave your stance. Gain 1 Mana. Draw 1 card. Consume. |
 | Hushed Stillness | common | skill | 0 | Enter Serene. Draw 1 card. Consume. |
-| Settled Mind | common | skill | 1 | Draw cards equal to 3 times your Serene. Enter Serene. |
 | Settling Fist | common | attack | 1 | Deal 8 damage. Gain 3 Barrier. Leave your stance. |
 | Shifting Guard | common | skill | 1 | Gain 5 Barrier. Enter Fury. Enter Serene. |
-| Still Water | common | skill | 1 | Gain 4 (+6 per Serene) Barrier. Draw 1 card. |
 | Thread-Cutter | common | attack | 1 | Deal 5 damage. Enter Fury. Enter Serene. |
 | Watchful Calm | common | skill | 1 | Gain 6 Barrier. Enter Serene. Foresee 2. |
-| Gentle Return | uncommon | aura | 1 | Whenever you enter Serene: Heal 2. Gain 3 Barrier. |
+| Exhale | uncommon | skill | 0 | Leave your stance. Gain 1 Mana. Draw 1 card. Consume. |
 | Let Go | uncommon | skill | 1 | Draw 2 cards. Leave your stance. |
 | Mirror Pool | uncommon | skill | 1 | Gain Barrier equal to 3 times your Mana. Enter Serene. Hold. |
-| Recollect | uncommon | skill | 1 | Return a random card from your discard pile to your hand. Enter Serene. Hold. |
+| Open Palm | uncommon | attack | 1 | Deal 5 damage 2 times. Leave your stance. |
+| Settled Mind | uncommon | skill | 1 | Draw cards equal to 3 times your Serene. Enter Serene. |
+| Still Water | uncommon | skill | 1 | Gain 4 (+6 per Serene) Barrier. Draw 1 card. |
 | Unafraid | uncommon | attack | 1 | Deal 8 damage. Enter Serene. |
 | Unmoved Mind | uncommon | aura | 1 | Whenever you enter a stance: Gain 3 Barrier. Deal 2 damage to a random enemy. |
 | Wheel of Motion | uncommon | aura | 1 | Whenever you enter a stance: Deal 3 damage to ALL enemies. |
 | All-Seeing | rare | skill | 3 | Add 2 random cards from your pool to your hand (they cost 0 the next time you play them). Consume. |
 | Ascendant Form | rare | aura | 2 | At the start of your turn: Gain 1 Mana. |
+| Gentle Return | rare | aura | 1 | Whenever you enter Serene: Heal 2. Gain 3 Barrier. |
 | Perfect Calm | rare | skill | 2 | Gain 12 Barrier. Enter Serene. Draw 1 card. |
+| Recollect | rare | skill | 1 | Return a random card from your discard pile to your hand. Enter Serene. Hold. |
 | Serenity Incarnate | rare | aura | 3 | At the end of your turn: Heal 3. Gain 6 Barrier. |
 | Tide of Peace | rare | skill | 0 | Gain Barrier equal to 5 times the Mana spent. Draw cards equal to the Mana spent. Enter Serene. |
 | Perfect Balance | legendary | aura | 2 | Whenever you enter a stance: Draw 1 card. Gain 5 Barrier. Gain 1 Fervor. |
@@ -634,20 +697,22 @@ cost and effects whose numbers differ by about a third or less. "Shared" cards b
 | Bowing Low | common | skill | 0 | Gain 2 Fervor. Gain 6 Barrier. |
 | Faith Kept | common | skill | 1 | Gain 2 Fervor. Hold. If consumed: Gain 3 Fervor. |
 | Kneel | common | skill | 0 | Gain 2 Fervor. Draw 1 card. Consume. |
-| Mantra Engine | common | aura | 1 | At the end of your turn: Gain Barrier equal to your Fervor. |
-| Morning Prayer | common | aura | 1 | At the start of your turn: Gain 1 Fervor. Gain 3 Barrier. |
 | Reading the Signs | common | aura | 1 | Whenever you discard a card: Gain 1 Fervor. |
 | Sunlit Blade | common | attack | 1 | Deal 9 damage. Gain 1 Fervor. |
 | Whispered Vow | common | skill | 1 | Gain 3 Fervor. Foresee 2. |
+| Crown of Embers | uncommon | skill | 1 | Gain 5 Primed. Gain 1 Fervor. |
 | Daily Rite | uncommon | aura | 1 | At the start of your turn: Gain 2 Fervor. |
-| Flood of Visions | uncommon | skill | 1 | Draw 5 cards. Gain 2 Fervor. Consume. |
 | Foretold Flame | uncommon | attack | 1 | Deal 5 (+1 per Fervor) damage. Foresee 2. |
 | Gather Breath | uncommon | skill | 1 | Next turn, gain 2 extra Mana. Draw 1 card. |
 | Hymn of Embers | uncommon | skill | 2 | Gain 4 Fervor. Gain 6 Barrier. |
-| Litany | uncommon | aura | 2 | Whenever you play a Skill: Gain 1 Fervor. |
+| Mantra Engine | uncommon | aura | 1 | At the end of your turn: Gain Barrier equal to your Fervor. |
+| Morning Prayer | uncommon | aura | 1 | At the start of your turn: Gain 1 Fervor. Gain 3 Barrier. |
+| Shield of Faith | uncommon | skill | 1 | Gain 7 Barrier. Gain 1 Fervor. |
 | The Offering | uncommon | skill | 2 | Gain 5 Fervor. Hold. |
 | Burning Litany | rare | skill | 2 | Deal damage equal to your Fervor to ALL enemies. Enter Radiant. Consume. |
+| Flood of Visions | rare | skill | 1 | Draw 5 cards. Gain 2 Fervor. Consume. |
 | Last Rites of the Flame | rare | attack | 3 | Deal 14 damage to ALL enemies. Gain 5 Fervor. |
+| Litany | rare | aura | 2 | Whenever you play a Skill: Gain 1 Fervor. |
 | Radiant Heart | rare | aura | 2 | Whenever you enter Radiant: Draw 2 cards. |
 | Rise Radiant | rare | skill | 2 | Enter Radiant. Consume. |
 | Unwavering | rare | aura | 2 | Whenever you discard a card: Gain 4 Barrier. Gain 1 Fervor. Whenever a card is consumed: Gain 4 Barrier. Gain 1 Fervor. |
@@ -658,12 +723,18 @@ cost and effects whose numbers differ by about a third or less. "Shared" cards b
 | Card | Rarity | Type | Cost | Text |
 |---|---|---|---|---|
 | Crushing Palm | common | attack | 1 | Deal 8 damage. Apply 1 Exposed. |
-| Inner Sight | common | skill | 1 | Gain 5 Barrier. Foresee 4. |
 | Quick Palms | common | attack | 0 | Deal 3 damage. |
+| Held Breath | uncommon | skill | 1 | Gain 1 Holdfast. |
+| Inner Sight | uncommon | skill | 1 | Gain 5 Barrier. Foresee 4. |
+| Poise | uncommon | aura | 1 | Gain 2 Bracing for the rest of the fight. |
+| Breath Between Blows | rare | aura | 1 | Whenever you play a Skill: Gain 2 Barrier. |
+| Mountain's Stillness | rare | skill | 2 | Gain 4 (+2 per card in hand) Barrier. |
+| Thousand Palms | rare | attack | 2 | Deal 3 damage 6 times. |
+| Unbroken Calm | rare | aura | 2 | At the start of your turn: Gain 4 Barrier. Draw 1 card. |
 
 ## Obsidia (spellblade)
 
-66 cards: Blade 21, Arcana 21, Sigils 21, shared 3.
+78 cards: Blade 23, Arcana 23, Sigils 23, shared 9.
 
 **Near-duplicates:**
 
@@ -677,22 +748,24 @@ cost and effects whose numbers differ by about a third or less. "Shared" cards b
 | Forged in Fury | common | attack | 1 | Deal 7 damage. Sharpen 3 (Obsidian Blade gains 3 damage). |
 | Glass Guard | common | aura | 1 | Whenever you play an Obsidian Blade: Gain 6 Barrier. |
 | Knight's Oath | common | aura | 1 | Whenever you play an Obsidian Blade: Gain 1 Arcana. |
-| Spoils | common | skill | 1 | Sharpen 3 (Obsidian Blade gains 3 damage). Draw 2 cards. |
-| Sword Rain | common | skill | 1 | Add 2 Obsidian Blades to your hand. |
 | Warm Anvil | common | aura | 1 | At the start of your turn: Sharpen 1 (Obsidian Blade gains 1 damage). Gain 3 Barrier. |
 | Whetstone | common | skill | 0 | Sharpen 4 (Obsidian Blade gains 4 damage). Consume. |
+| Blade Oath | uncommon | skill | 1 | Add an Obsidian Blade to your hand. Gain 1 Might. |
 | Bladewall | uncommon | skill | 2 | Gain 12 Barrier. Sharpen 4 (Obsidian Blade gains 4 damage). |
 | Call the Blade | uncommon | skill | 1 | Add an Obsidian Blade to your hand. Sharpen 3 (Obsidian Blade gains 3 damage). |
 | Crown Strike | uncommon | attack | 0 +3 Arcana | Deal 18 damage. |
+| Crowned Edge | uncommon | skill | 1 | Sharpen 4 (Obsidian Blade gains 4 damage). Gain 1 Reverb. |
 | Edgewise | uncommon | skill | 1 | Gain 7 Barrier. Sharpen 2 (Obsidian Blade gains 2 damage). |
 | Magma Surge | uncommon | skill | 1 | Gain 3 Arcana. Sharpen 3 (Obsidian Blade gains 3 damage). Gain 5 Barrier. Consume. |
-| Royal Decree | uncommon | skill | 2 | Sharpen 6 (Obsidian Blade gains 6 damage). Draw 1 card. |
-| Sparring Partner | uncommon | aura | 2 | Whenever you play an Obsidian Blade: Draw 1 card. |
+| Spoils | uncommon | skill | 1 | Sharpen 3 (Obsidian Blade gains 3 damage). Draw 2 cards. |
+| Sword Rain | uncommon | skill | 1 | Add 2 Obsidian Blades to your hand. |
 | Collapsing Vein | rare | attack | 2 | Deal 5 (+2 per card created this fight) damage. |
 | Ever-Sharpening | rare | aura | 2 | At the start of your turn: Sharpen 2 (Obsidian Blade gains 2 damage). |
 | Hammer and Anvil | rare | attack | 2 | Deal 6 damage 2 times. Sharpen 4 (Obsidian Blade gains 4 damage). |
 | Kingsbane | rare | attack | 3 | Deal 8 damage 3 times. Sharpen 4 (Obsidian Blade gains 4 damage). |
 | Obsidian Legion | rare | skill | 2 | Add 3 Obsidian Blades to your hand. Consume. |
+| Royal Decree | rare | skill | 2 | Sharpen 6 (Obsidian Blade gains 6 damage). Draw 1 card. |
+| Sparring Partner | rare | aura | 2 | Whenever you play an Obsidian Blade: Draw 1 card. |
 | The Obsidian Crown | legendary | aura | 2 | Sharpen 8 (Obsidian Blade gains 8 damage). At the start of your turn: Sharpen 3 (Obsidian Blade gains 3 damage). Gain 2 Arcana. |
 
 ### Arcana
@@ -701,24 +774,26 @@ cost and effects whose numbers differ by about a third or less. "Shared" cards b
 |---|---|---|---|---|
 | Arcane Pulse | common | attack | 1 | Deal 6 damage 2 times to ALL enemies. |
 | Arcane Surge | common | skill | 1 | Gain 3 Arcana. Consume. |
-| Ash Wind | common | skill | 1 | Draw 2 cards. Gain 1 Arcana. Discard 1 card. |
 | Emberstrike | common | attack | 1 | Deal 9 damage. Gain 1 Arcana. |
-| Falling Shards | common | attack | 0 +4 Arcana | Deal 8 damage 3 times to ALL enemies. |
 | Overflow | common | attack | 1 | Deal 3 (+1 per Arcana) damage to ALL enemies. |
 | Pale Ward | common | skill | 1 | Gain 5 Barrier. Foresee 2. Gain 1 Arcana. |
 | Spellbolt | common | attack | 0 +2 Arcana | Deal 12 damage. |
+| Ash Wind | uncommon | skill | 1 | Draw 2 cards. Gain 1 Arcana. Discard 1 card. |
 | Binding Hex | uncommon | skill | 1 | Apply 2 Exposed. Gain 1 Arcana. |
 | Ember Weft | uncommon | skill | 1 | Gain 1 Arcana. Sharpen 1 (Obsidian Blade gains 1 damage). Draw 1 card. |
+| Falling Shards | uncommon | attack | 0 +4 Arcana | Deal 8 damage 3 times to ALL enemies. |
 | Magma Flare | uncommon | attack | 1 +2 Arcana | Deal 14 damage to ALL enemies. Apply 1 Exposed to ALL enemies. |
 | Molten Ruin | uncommon | attack | 2 +2 Arcana | Deal 20 damage. Sharpen 4 (Obsidian Blade gains 4 damage). |
 | Obsidian Lance | uncommon | attack | 2 | Deal 14 damage. Gain 1 Arcana. |
-| Shatterburst | uncommon | attack | 2 +2 Arcana | Deal 34 damage. |
-| Zenith | uncommon | attack | 1 | Deal damage equal to 2 times your Arcana. Consume. |
+| Shard Shower | uncommon | attack | 2 | Deal 5 damage 3 times to ALL enemies. Gain 1 Arcana. |
+| Tyrant Strike | uncommon | attack | 2 | Deal 15 damage. Next turn, gain 2 extra Mana. |
 | Cataclysm | rare | attack | 3 +4 Arcana | Deal 54 damage. Apply 2 Exposed. |
 | Dying Ember | rare | attack | 1 | Deal 10 damage to ALL enemies. Apply 2 Faltering to ALL enemies. Fleeting. |
 | Fault Line | rare | attack | 2 +2 Arcana | Deal 20 damage. Apply 2 Exposed. Apply 2 Faltering. |
 | Lava Bomb | rare | attack | 3 +3 Arcana | Deal 33 damage. Apply 3 Faltering. Apply 3 Exposed. |
+| Shatterburst | rare | attack | 2 +2 Arcana | Deal 34 damage. |
 | Wellspring | rare | skill | 1 | Gain 5 Arcana. Draw 2 cards. Consume. |
+| Zenith | rare | attack | 1 | Deal damage equal to 2 times your Arcana. Consume. |
 | Volcano's Birth | legendary | skill | 2 | Gain 8 Arcana. Draw 3 cards. From your next turn, gain 1 more Mana every turn for the rest of the fight. Consume. |
 
 ### Sigils
@@ -730,18 +805,20 @@ cost and effects whose numbers differ by about a third or less. "Shared" cards b
 | Ley Line | common | skill | 1 | Next turn, gain 2 extra Mana. Sharpen 1 (Obsidian Blade gains 1 damage). |
 | Sigil of Ash | common | aura | 1 | Whenever a card is consumed: Gain 1 Arcana. |
 | Sigil of Glass | common | aura | 1 | Whenever you spend Arcana: Gain 4 Barrier. |
-| Sigil of Ruin | common | aura | 1 | Whenever you discard a card: Deal 4 damage to a random enemy. |
-| Sigil of Shelter | common | aura | 1 | At the start of your turn: Gain 4 Barrier. Draw 1 card. |
 | Spellbook | common | aura | 1 | Whenever you discard a card: Gain 1 Arcana. |
-| Furnace Engine | uncommon | aura | 2 | At the start of your turn: Gain 2 Arcana. Gain 3 Barrier. |
+| Aquila | uncommon | aura | 1 | At the end of your turn: Deal 4 damage to a random enemy. |
 | Pillar of Glass | uncommon | aura | 1 | Whenever a card is created: Gain 4 Barrier. |
+| Sagitta | uncommon | aura | 1 | Whenever you spend Arcana: Draw 1 card. |
 | Sigil of Kindling | uncommon | aura | 2 | At the start of your turn: Gain 1 Arcana. |
+| Sigil of Ruin | uncommon | aura | 1 | Whenever you discard a card: Deal 4 damage to a random enemy. |
 | Sigil of Scorch | uncommon | aura | 1 | Whenever you spend Arcana: Deal 3 damage to ALL enemies. |
-| Sigil of Spite | uncommon | aura | 2 | Whenever you play an Attack: Deal 4 damage to a random enemy. |
+| Sigil of Shelter | uncommon | aura | 1 | At the start of your turn: Gain 4 Barrier. Draw 1 card. |
 | Sigil of Stone | uncommon | aura | 1 | At the end of your turn: Gain 3 Barrier. |
 | Sigil of Ward | uncommon | aura | 2 | At the end of your turn: Gain Barrier equal to your Arcana. |
+| Furnace Engine | rare | aura | 2 | At the start of your turn: Gain 2 Arcana. Gain 3 Barrier. |
 | Sigil of Conduit | rare | aura | 2 | Whenever you play an Attack: Gain 1 Arcana. |
 | Sigil of Echoes | rare | aura | 3 | Whenever you play a card: Gain 1 Arcana. |
+| Sigil of Spite | rare | aura | 2 | Whenever you play an Attack: Deal 4 damage to a random enemy. |
 | Sigil of the Pyre | rare | aura | 3 | At the start of your turn: Gain 1 Mana. Sharpen 2 (Obsidian Blade gains 2 damage). |
 | Sigil of the Storm | rare | aura | 2 | At the end of your turn: Deal damage equal to half of your Arcana to ALL enemies. |
 | Sigil of Twins | rare | aura | 3 | At the start of your turn: Draw 1 card. Gain 1 Arcana. |
@@ -752,16 +829,23 @@ cost and effects whose numbers differ by about a third or less. "Shared" cards b
 | Card | Rarity | Type | Cost | Text |
 |---|---|---|---|---|
 | Arcane Barrier | common | skill | 0 +2 Arcana | Gain 10 Barrier. |
-| Glint | common | attack | 1 | Deal 7 damage. Foresee 2. |
 | Searing Ray | common | attack | 0 +1 Arcana | Deal 6 damage. Apply 1 Exposed. |
+| Faint Ember | uncommon | skill | 1 | Gain 1 Arcana. Draw 1 card. Next turn, draw 1 extra card. |
+| Glint | uncommon | attack | 1 | Deal 7 damage. Foresee 2. |
+| Humble | uncommon | skill | 1 | Apply 1 Faltering. Apply 1 Exposed. Consume. |
+| Arcane Burst | rare | skill | 1 | Gain 6 Arcana. Consume. |
+| Glass Burst | rare | attack | 2 | Deal 13 damage. Apply 2 Faltering. Apply 2 Exposed. |
+| Starlit Duel | rare | attack | 2 | Deal 10 damage. Gain 2 Arcana. Sharpen 2 (Obsidian Blade gains 2 damage). |
+| Volcanic Edge | rare | attack | 2 | Deal 12 damage. Sharpen 3 (Obsidian Blade gains 3 damage). |
 
 ## KP, the Homeless Drunk (drunkard)
 
-66 cards: Gun 21, Shells 21, Hangover 21, shared 3.
+78 cards: Gun 23, Shells 23, Hangover 23, shared 9.
 
 **Near-duplicates:**
 
 - **Glazier** and **Gun Oil**: Whenever you play a Skill: Gain 3 Barrier. / Whenever you play a gun: Gain 4 Barrier.
+- **Glazier** and **Bandolier**: Whenever you play a Skill: Gain 3 Barrier. / Whenever you play a shell: Gain 2 Barrier.
 
 ### Gun
 
@@ -769,21 +853,23 @@ cost and effects whose numbers differ by about a third or less. "Shared" cards b
 |---|---|---|---|---|
 | Aim | common | skill | 0 | Sharpen 2 (Old Twelve Gauge gains 2 damage). Hold. |
 | Buttstroke | common | attack | 1 | Deal 5 damage. Apply 1 Faltering. Sharpen 1 (Old Twelve Gauge gains 1 damage). |
-| Dead Eye | common | skill | 1 | Sharpen 2 (Old Twelve Gauge gains 2 damage). Apply 1 Exposed to ALL enemies. |
 | Gun Oil | common | aura | 1 | Whenever you play a gun: Gain 4 Barrier. |
 | Pistol Whip | common | attack | 1 | Deal 6 damage. Sharpen 2 (Old Twelve Gauge gains 2 damage). |
 | Powder Load | common | skill | 0 | Sharpen 4 (Old Twelve Gauge gains 4 damage). Consume. |
 | Rack the Slide | common | skill | 1 | Sharpen 3 (Old Twelve Gauge gains 3 damage). |
-| Spare Barrel | common | skill | 1 | Sharpen 2 (Old Twelve Gauge gains 2 damage). Add a Buckshot Shell to your hand. |
+| Bandolier | uncommon | aura | 1 | Whenever you play a shell: Gain 2 Barrier. |
+| Dead Eye | uncommon | skill | 1 | Sharpen 2 (Old Twelve Gauge gains 2 damage). Apply 1 Exposed to ALL enemies. |
+| Double Tap | uncommon | skill | 1 | Add an Old Twelve Gauge to your hand. |
 | Glass Cover | uncommon | skill | 1 | Gain 7 Barrier. Sharpen 2 (Old Twelve Gauge gains 2 damage). |
 | Hair Trigger | uncommon | aura | 1 | Whenever you play a shell: Sharpen 1 (Old Twelve Gauge gains 1 damage). |
-| Hot Brass | uncommon | aura | 1 | Whenever a card is consumed: Gain 2 Barrier. Sharpen 1 (Old Twelve Gauge gains 1 damage). |
-| Ironsights | uncommon | skill | 1 | Sharpen 5 (Old Twelve Gauge gains 5 damage). Add 2 Buckshot Shells to your hand. Consume. |
 | Pick Up the Brass | uncommon | skill | 1 | Return 2 random Consumed cards to your hand (never one that returns cards). Consume. |
 | Reload | uncommon | skill | 1 | Sharpen 3 (Old Twelve Gauge gains 3 damage). Draw 1 card. |
 | Scope | uncommon | aura | 1 | At the start of your turn: Sharpen 1 (Old Twelve Gauge gains 1 damage). |
+| Spare Barrel | uncommon | skill | 1 | Sharpen 2 (Old Twelve Gauge gains 2 damage). Add a Buckshot Shell to your hand. |
 | Extended Mag | rare | aura | 2 | At the start of your turn: Sharpen 2 (Old Twelve Gauge gains 2 damage). Add a Buckshot Shell to your hand. |
 | Gunmetal Soul | rare | aura | 2 | At the end of your turn: Sharpen 1 (Old Twelve Gauge gains 1 damage). Gain 3 Barrier. |
+| Hot Brass | rare | aura | 1 | Whenever a card is consumed: Gain 2 Barrier. Sharpen 1 (Old Twelve Gauge gains 1 damage). |
+| Ironsights | rare | skill | 1 | Sharpen 5 (Old Twelve Gauge gains 5 damage). Add 2 Buckshot Shells to your hand. Consume. |
 | Rack and Ruin | rare | attack | 2 | Deal 10 damage to ALL enemies. Sharpen 4 (Old Twelve Gauge gains 4 damage). |
 | Rolling Thunder | rare | aura | 2 | At the start of your turn: Add 2 Buckshot Shells to your hand. |
 | Trigger Discipline | rare | aura | 2 | Whenever you play an Attack: Sharpen 1 (Old Twelve Gauge gains 1 damage). |
@@ -795,15 +881,15 @@ cost and effects whose numbers differ by about a third or less. "Shared" cards b
 |---|---|---|---|---|
 | Birdshot | common | attack | 0 | Deal 3 damage to ALL enemies. Consume. |
 | Load Shells | common | skill | 1 | Add 3 Buckshot Shells to your hand. |
-| Sawn-Off | common | attack | 1 | Deal 7 damage to ALL enemies. Lose 2 HP. |
 | Shard Toss | common | attack | 1 | Deal 4 damage to ALL enemies. Apply 1 Brittle to ALL enemies. |
 | Shell Game | common | aura | 1 | At the start of your turn: Add a Buckshot Shell to your hand. |
 | Shell Shock | common | attack | 1 | Deal 3 damage to ALL enemies. Add a Buckshot Shell to your hand. |
-| Shellshocked | common | aura | 1 | Whenever a card is consumed: Deal 2 damage to ALL enemies. |
 | Slug Round | common | attack | 2 | Deal 16 damage. |
 | Molotov Cocktail | uncommon | trap | 1 | When the enemy summons: Deal 12 damage to ALL enemies. Apply 1 Brittle to ALL enemies. |
 | Pump Action | uncommon | skill | 1 | Add 2 Buckshot Shells to your hand. Draw 1 card. |
 | Rusty Nail Board | uncommon | trap | 1 | At the start of the enemy turn: Deal 5 damage to ALL enemies. Apply 1 Faltering to ALL enemies. |
+| Sawn-Off | uncommon | attack | 1 | Deal 7 damage to ALL enemies. Lose 2 HP. |
+| Shellshocked | uncommon | aura | 1 | Whenever a card is consumed: Deal 2 damage to ALL enemies. |
 | Shotgun Wedding | uncommon | attack | 2 | Deal 7 damage 2 times to ALL enemies. |
 | Slugfest | uncommon | attack | 2 | Deal 5 damage 4 times. |
 | Spray and Pray | uncommon | attack | 2 | Deal 4 (+1 per 4 cards created this fight) damage to ALL enemies. |
@@ -812,6 +898,8 @@ cost and effects whose numbers differ by about a third or less. "Shared" cards b
 | Boomstick | rare | attack | 3 | Deal 12 (+2 per consumed card) damage to ALL enemies. |
 | Fire in the Hole | rare | attack | 2 | Deal 6 (+1 per 2 consumed cards) damage to ALL enemies. |
 | Last Orders | rare | attack | 2 | Deal 8 (+1 per 4% HP missing) damage to ALL enemies. |
+| Ricochet | rare | aura | 2 | Whenever you play a shell: Draw 1 card. |
+| Scattergun Symphony | rare | aura | 2 | Whenever you play a shell: Deal 2 damage to ALL enemies. |
 | The Last Shell | rare | attack | 2 | Deal 24 damage. Apply 1 Exposed. Consume. Hold. |
 | One More Round | legendary | aura | 3 | At the start of your turn: Add 3 Buckshot Shells to your hand. Heal 3. |
 
@@ -825,17 +913,19 @@ cost and effects whose numbers differ by about a third or less. "Shared" cards b
 | Liquid Lunch | common | skill | 0 | Gain 2 Mana. Next turn, lose 1 Mana. Consume. |
 | Sob Story | common | skill | 1 | Gain 4 Barrier. Draw 2 cards. |
 | Spare Change | common | skill | 0 | Gain 1 Mana. Foresee 2. Consume. |
-| Swig | common | skill | 0 | Heal 4. Gain 2 Might until the end of your turn. Consume. |
-| Trolley Barricade | common | trap | 1 | When you lose 6+ HP at once: Gain 12 Barrier. Deal 10 damage to the attacker. |
-| Bar Stool | uncommon | attack | 1 | Deal 10 (+1 per 6% HP missing) damage. |
 | Barroom Brawl | uncommon | attack | 2 | Deal 10 damage to ALL enemies. Lose 2 HP. |
 | Black Out | uncommon | skill | 1 | Gain 14 Barrier. Lose 3 HP. |
 | Double Glazing | uncommon | skill | 2 | Gain 12 (+1 per 6% HP missing) Barrier. |
-| Glass Underfoot | uncommon | aura | 1 | At the start of your turn: Gain 2 Thorns. |
+| Dutch Courage | uncommon | aura | 1 | At the start of your turn: Heal 2. Gain 1 Might until the end of your turn. |
 | Liquid Dinner | uncommon | skill | 1 | Heal 8. Draw 1 card. |
+| Mean Drunk | uncommon | aura | 2 | Whenever you lose HP to your own cards: Gain 1 Might until the end of your turn. Gain 2 Barrier. |
 | Smash the Pane | uncommon | attack | 2 | Deal 8 (+1 per 4% HP missing) damage. |
+| Swig | uncommon | skill | 0 | Heal 4. Gain 2 Might until the end of your turn. Consume. |
+| Trolley Barricade | uncommon | trap | 1 | When you lose 6+ HP at once: Gain 12 Barrier. Deal 10 damage to the attacker. |
+| Bar Stool | rare | attack | 1 | Deal 10 (+1 per 6% HP missing) damage. |
 | Bottomless Flask | rare | aura | 2 | At the start of your turn: Heal 3. Draw 1 card. |
 | Glass Jaw | rare | aura | 1 | Whenever you lose HP to your own cards: Deal 4 damage to ALL enemies. Gain 3 Barrier. |
+| Glass Underfoot | rare | aura | 1 | At the start of your turn: Gain 2 Thorns. |
 | Haymaker | rare | attack | 2 | Deal 22 damage. Apply 2 Brittle. |
 | Last Call | rare | skill | 2 | From your next turn, gain 1 more Mana every turn for the rest of the fight. Heal 6. Consume. |
 | Pass Out | rare | skill | 2 | Gain 18 Barrier. Heal 6. Consume. |
@@ -847,11 +937,17 @@ cost and effects whose numbers differ by about a third or less. "Shared" cards b
 |---|---|---|---|---|
 | Broken Bottle | common | attack | 1 | Deal 7 damage. Apply 1 Exposed. |
 | Chaser | common | skill | 0 | Lose 2 HP. Gain 1 Mana. Draw 1 card. Consume. |
-| Dumpster Dive | common | skill | 1 | Draw 2 cards. Discard 1 card. Heal 2. |
+| Dumpster Dive | uncommon | skill | 1 | Draw 2 cards. Discard 1 card. Heal 2. |
+| Liquid Courage | uncommon | skill | 1 | Gain 5 Barrier. Gain 6 Primed. |
+| Window Pane | uncommon | skill | 1 | Gain 7 (+1 per 8% HP missing) Barrier. |
+| Booby-Trapped Window | rare | trap | 2 | When you or an ally is attacked: Cancel that attack. Deal 10 damage to the attacker. |
+| Broken Window Theory | rare | aura | 2 | At the end of your turn: Deal 1 (+1 per 6% HP missing) damage to ALL enemies. |
+| Rock Bottom | rare | aura | 2 | Gain 2 Might. At the start of your turn: Lose 1 HP. |
+| Whiskey Miracle | rare | skill | 1 | Heal 15. Consume. |
 
 ## Dorian Blackthorn (necromancer)
 
-68 cards: Fate 21, Thralls 21, Ashes 22, shared 4.
+78 cards: Fate 23, Thralls 23, Ashes 23, shared 9.
 
 ### Fate
 
@@ -859,33 +955,33 @@ cost and effects whose numbers differ by about a third or less. "Shared" cards b
 |---|---|---|---|---|
 | Creeping Dread | common | attack | 1 | Deal 3 damage to ALL enemies. Curse ALL enemies with 3 Fate. |
 | Creeping End | common | skill | 1 | Curse ALL enemies with 4 Fate. |
-| Grim Tally | common | attack | 1 | Deal 3 (+2 per card played this turn) damage. Curse the target with 3 Fate. |
 | Harvest | common | attack | 1 | Deal 4 (+1 per 4 Fate on the target) damage. |
 | Lament | common | skill | 1 | Curse the target with 4 (+2 per enemy) Fate. |
-| Last Rites | common | attack | 2 | Deal 8 damage. Curse the target with 10 Fate. |
 | Mark of Ending | common | skill | 0 | Curse the target with 4 Fate. Consume. |
 | Tolling Bell | common | attack | 1 | Deal 3 damage. Curse the target with 7 Fate. |
+| Death's Ledger | uncommon | skill | 1 | Curse the target with 6 Fate. Draw 1 card. |
 | Deathknell | uncommon | skill | 2 | Curse the target with 14 Fate. |
+| Grim Tally | uncommon | attack | 1 | Deal 3 (+2 per card played this turn) damage. Curse the target with 3 Fate. |
 | Hasten the End | uncommon | skill | 1 | Double the Fate cursing the target (at most +20). Consume. |
 | Inevitable | uncommon | aura | 1 | At the start of your turn: Curse ALL enemies with 3 Fate. |
+| Last Rites | uncommon | attack | 2 | Deal 8 damage. Curse the target with 10 Fate. |
 | Omen | uncommon | skill | 1 | Curse ALL enemies with 3 Fate. Draw 1 card. |
-| Reaping Scythe | uncommon | attack | 2 | Deal 5 (+1 per 4 Fate on each) damage to ALL enemies. |
 | Soul Lance | uncommon | attack | 1 | Deal 7 damage. Apply 2 Exposed. Curse the target with 2 Fate. |
-| Wailing Cry | uncommon | attack | 2 | Deal 12 damage to ALL enemies. Curse ALL enemies with 8 Fate. Consume. |
+| Toll in Advance | uncommon | skill | 1 | Curse the target with 9 Fate. Lose 4 HP. |
 | Final Reckoning | rare | skill | 2 | The target loses HP equal to half of the target's Fate. Consume. |
+| Reaping Scythe | rare | attack | 2 | Deal 5 (+1 per 4 Fate on each) damage to ALL enemies. |
 | The Final Hour | rare | skill | 3 | Curse ALL enemies with 14 Fate. Consume. |
 | The Long Night | rare | aura | 2 | Whenever you play an Attack: Curse the target with 2 Fate. |
 | Thin the Veil | rare | skill | 2 | Multiply by 1.5 the Fate cursing ALL enemies (at most +15). Consume. |
 | Unmaking | rare | skill | 2 | Curse the target with 25 Fate. Consume. |
+| Wailing Cry | rare | attack | 2 | Deal 12 damage to ALL enemies. Curse ALL enemies with 8 Fate. Consume. |
 | The Last Toll | legendary | skill | 3 | Curse ALL enemies with 25 Fate. Consume. |
 
 ### Thralls
 
 | Card | Rarity | Type | Cost | Text |
 |---|---|---|---|---|
-| Bone Rain | common | skill | 1 | Deal 13 damage to ALL enemies. Curse ALL enemies with 3 Fate. Sacrifice the chosen ally. |
 | Fen Offering | common | skill | 0 | Curse ALL enemies with 8 Fate. Gain 8 Barrier. Sacrifice the chosen ally. |
-| Pallbearer | common | aura | 1 | Whenever you summon an ally: Deal 5 damage to a random enemy. |
 | Raise Thrall | common | summon | 1 | Summon Bone Thrall (12 HP). At the end of your turn it will: Deal 4 damage. |
 | Rally the Dead | common | skill | 1 | All your allies act now. Apply 1 Might to all friends until the end of your turn. |
 | Shared Marrow | common | skill | 1 | Your companions gain 4 max HP. Gain 3 Barrier to all friends. |
@@ -893,14 +989,18 @@ cost and effects whose numbers differ by about a third or less. "Shared" cards b
 | Tithe of Bone | common | attack | 1 | Deal 4 (+4 per ally) damage. |
 | Blood Sacrifice | uncommon | skill | 0 | Gain 2 Mana. Draw 2 cards. Sacrifice the chosen ally. Consume. |
 | Bone Bulwark | uncommon | skill | 1 | Gain 10 Barrier to the ally. Apply 1 Might to the ally. |
-| Death Feeds | uncommon | aura | 1 | Whenever one of your allies dies: Gain 8 Barrier. Draw 1 card. |
-| Grave Colossus | uncommon | summon | 2 | Summon Grave Colossus (22 HP). At the end of your turn it will: Deal 9 damage. |
+| Bone Rain | uncommon | skill | 1 | Deal 13 damage to ALL enemies. Curse ALL enemies with 3 Fate. Sacrifice the chosen ally. |
 | Ossify | uncommon | aura | 1 | At the end of your turn: Gain 3 Barrier to all friends. |
+| Pallbearer | uncommon | aura | 1 | Whenever you summon an ally: Deal 5 damage to a random enemy. |
 | Rise Again | uncommon | skill | 2 | Your most recently fallen ally returns with half its HP. Gain 5 Barrier. |
+| Soul Chain | uncommon | aura | 1 | Whenever you summon an ally: Curse ALL enemies with 2 Fate. |
 | Twin Thralls | uncommon | summon | 2 | Summon 2 Bone Thralls (12 HP each). At the end of your turn each will: Deal 4 damage. |
+| Unquiet Rest | uncommon | aura | 2 | At the start of your turn: Heal 3 to all friends. |
 | Army of the Drowned | rare | summon | 3 | Summon 3 Bone Thralls (12 HP each). At the end of your turn each will: Deal 4 damage. Consume. |
 | Bonded Dead | rare | aura | 2 | Whenever one of your allies dies: Curse ALL enemies with 4 Fate. |
 | Bone Choir | rare | aura | 2 | Whenever one of your allies dies: Deal 8 damage to ALL enemies. |
+| Death Feeds | rare | aura | 1 | Whenever one of your allies dies: Gain 8 Barrier. Draw 1 card. |
+| Grave Colossus | rare | summon | 2 | Summon Grave Colossus (22 HP). At the end of your turn it will: Deal 9 damage. |
 | Marrow Tide | rare | skill | 2 | Heal 10 to all friends. Apply 2 Might to all friends. Consume. |
 | Phylactery | rare | aura | 3 | At the start of your turn: Summon Bone Thrall (12 HP). At the end of your turn it will: Deal 4 damage. |
 | The Drowned King | legendary | summon | 3 | Summon The Drowned King (22 HP). At the end of your turn it will: Deal 10 damage. Gain 4 Barrier to your hero. Apply 1 Might to all friends. |
@@ -912,24 +1012,25 @@ cost and effects whose numbers differ by about a third or less. "Shared" cards b
 | Bone Sift | common | skill | 0 | Consume 1 card. Draw 2 cards. |
 | Burial Shroud | common | skill | 1 | Consume 1 card. Gain 8 Barrier. Draw 1 card. |
 | Gather Souls | common | skill | 1 | Add 2 Gravesouls to your hand. |
-| Grave Robbery | common | skill | 1 | Return a random Consumed card to your hand (never one that returns cards). Gain 4 Barrier. Consume. |
 | Rattle the Bones | common | attack | 1 | Deal 6 damage. Add a Gravesoul to your hand. |
 | Soulbind | common | aura | 1 | Whenever a card is consumed: Gain 2 Barrier. Curse a random enemy with 1 Fate. |
 | Spectral Ledger | common | skill | 1 | Draw cards equal to half of the number of cards you have consumed. |
-| Tomb Feast | common | attack | 1 | Deal 8 damage. Consume 1 card. Heal 4. |
-| Wake the Ashes | common | skill | 1 | Return 2 random Consumed cards to your hand (never one that returns cards). Consume. |
-| Ashen Bargain | uncommon | skill | 1 | Consume any number of cards. Curse ALL enemies with Fate equal to the number of cards you have consumed. |
 | Ashen Visage | uncommon | skill | 1 | Gain Barrier equal to the number of cards you have consumed. Draw 1 card. |
 | Ashfall | uncommon | aura | 1 | Whenever a card is consumed: Deal 3 damage to a random enemy. |
+| Bone Pile | uncommon | skill | 1 | Curse the target with 4 Fate. Return a random Consumed card to your hand (never one that returns cards). Consume. |
 | Cremation | uncommon | skill | 0 | Consume 1 card. Gain 1 Mana. |
 | Funeral Pyre | uncommon | attack | 1 | Deal 3 (+1 per consumed card) damage to ALL enemies. |
+| Grave Robbery | uncommon | skill | 1 | Return a random Consumed card to your hand (never one that returns cards). Gain 4 Barrier. Consume. |
 | Soul Siphon | uncommon | attack | 1 | Deal 7 damage. Heal HP equal to half of the number of cards you have consumed. |
-| Spirit Walk | uncommon | skill | 1 | Gain 1 Ghostly. Draw 1 card. Consume. |
+| Tomb Feast | uncommon | attack | 1 | Deal 8 damage. Consume 1 card. Heal 4. |
+| Wake the Ashes | uncommon | skill | 1 | Return 2 random Consumed cards to your hand (never one that returns cards). Consume. |
 | Ash Ritual | rare | aura | 2 | Whenever a card is consumed: Curse ALL enemies with 2 Fate. |
+| Ashen Bargain | rare | skill | 1 | Consume any number of cards. Curse ALL enemies with Fate equal to the number of cards you have consumed. |
 | Disinter | rare | skill | 2 | Return 2 random cards from your discard pile to your hand. Add a Gravesoul to your hand. |
 | Last Embers | rare | skill | 1 | Consume any number of cards. Gain Mana equal to half of the number of cards you have consumed. |
 | Pyre of the Dead | rare | attack | 2 | Consume any number of cards. Deal damage equal to the number of cards you have consumed to ALL enemies. |
 | Soul Furnace | rare | aura | 2 | At the start of your turn: Add a Gravesoul to your hand. |
+| Spirit Walk | rare | skill | 1 | Gain 1 Ghostly. Draw 1 card. Consume. |
 | Grave Harvest | legendary | aura | 2 | Whenever a card is consumed: Deal 4 damage to ALL enemies. Curse ALL enemies with 2 Fate. |
 
 ### Shared
@@ -940,3 +1041,8 @@ cost and effects whose numbers differ by about a third or less. "Shared" cards b
 | Sepulchral Gaze | common | attack | 2 | Deal 6 damage to ALL enemies. Curse ALL enemies with 2 Fate. |
 | Grave Digging | uncommon | skill | 1 | Draw 2 cards. Gain 3 Barrier. |
 | Rattling Charge | uncommon | attack | 2 | Deal 7 damage 2 times. Curse the target with 3 Fate. |
+| Soul Tithe | uncommon | skill | 0 | Lose 4 HP. Gain 2 Mana. Consume. |
+| Deathless | rare | aura | 2 | Whenever you summon an ally: Gain 6 Barrier to all friends. |
+| Ominous Chimes | rare | aura | 2 | Whenever you draw a card: Curse a random enemy with 1 Fate. |
+| Requiem | rare | attack | 2 | Deal damage equal to the number of cards you have consumed. |
+| Soul Harvest | rare | aura | 2 | Whenever a card is consumed: Heal 2. Curse ALL enemies with 1 Fate. |

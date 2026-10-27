@@ -25,6 +25,7 @@ import {
   scaled,
   scry,
   status,
+  PREVENT,
 } from '../build';
 
 const p = pool('drunkard', 'midden');
@@ -111,7 +112,7 @@ export const DRUNKARD: CardDef[] = [
   ),
 
   // --- liquid courage ---
-  p('common', 'swig', 'Swig', 'skill', 0, 'none', [heal(4), status('might', 2, 'self', true)], {
+  p('uncommon', 'swig', 'Swig', 'skill', 0, 'none', [heal(4), status('might', 2, 'self', true)], {
     exhaust: true,
   }),
   p('common', 'drunken-swing', 'Drunken Swing', 'attack', 1, 'foe', [
@@ -197,7 +198,7 @@ export const DRUNKARD: CardDef[] = [
 
   // (more Shells)
   p('uncommon', 'slugfest', 'Slugfest', 'attack', 2, 'foe', [dmg(5, 'target', 4)]),
-  p('common', 'shellshocked', 'Shellshocked', 'power', 1, 'none', [
+  p('uncommon', 'shellshocked', 'Shellshocked', 'power', 1, 'none', [
     on('exhaust', [dmg(2, 'allFoes')]),
   ]),
   // (upgraded, the scaling grows rather than the base: +2 per 3 consumed cards instead of +1 per 2, so a third faster, not twice)
@@ -225,7 +226,7 @@ export const DRUNKARD: CardDef[] = [
     on('turnStart', [forge('old-twelve-gauge', 1)]),
   ]),
   p(
-    'uncommon',
+    'rare',
     'ironsights',
     'Ironsights',
     'skill',
@@ -239,7 +240,7 @@ export const DRUNKARD: CardDef[] = [
   ]),
   // (more Hangover)
   p('uncommon', 'black-out', 'Black Out', 'skill', 1, 'none', [barrier(14), lose(3)]),
-  p('uncommon', 'bar-stool', 'Bar Stool', 'attack', 1, 'foe', [
+  p('rare', 'bar-stool', 'Bar Stool', 'attack', 1, 'foe', [
     scaled(dmg(10), per('missingPct', 1 / 6)),
   ]),
   p('uncommon', 'liquid-dinner', 'Liquid Dinner', 'skill', 1, 'none', [heal(8), draw(1)]),
@@ -263,7 +264,7 @@ export const DRUNKARD: CardDef[] = [
     { trigger: { on: 'foeTurn' } },
   ),
   p(
-    'common',
+    'uncommon',
     'trolley-barricade',
     'Trolley Barricade',
     'snare',
@@ -284,7 +285,7 @@ export const DRUNKARD: CardDef[] = [
   ),
 
   // --- Glass (more) ---
-  p('uncommon', 'glass-underfoot', 'Glass Underfoot', 'power', 1, 'none', [
+  p('rare', 'glass-underfoot', 'Glass Underfoot', 'power', 1, 'none', [
     on('turnStart', [status('thorns', 2)]),
   ]),
   p('rare', 'glass-jaw', 'Glass Jaw', 'power', 1, 'none', [
@@ -292,12 +293,12 @@ export const DRUNKARD: CardDef[] = [
   ]),
 
   // --- Shells (more) ---
-  p('common', 'sawn-off', 'Sawn-Off', 'attack', 1, 'none', [dmg(7, 'allFoes'), lose(2)]),
+  p('uncommon', 'sawn-off', 'Sawn-Off', 'attack', 1, 'none', [dmg(7, 'allFoes'), lose(2)]),
   p('uncommon', 'tin-can-alley', 'Tin Can Alley', 'attack', 1, 'none', [dmg(3, 'allFoes', 3)]),
   p('uncommon', 'pick-up-the-brass', 'Pick Up the Brass', 'skill', 1, 'none', [reclaim(2)], {
     exhaust: true,
   }),
-  p('uncommon', 'hot-brass', 'Hot Brass', 'power', 1, 'none', [
+  p('rare', 'hot-brass', 'Hot Brass', 'power', 1, 'none', [
     on('exhaust', [barrier(2), forge('old-twelve-gauge', 1)]),
   ]),
   p('uncommon', 'spray-and-pray', 'Spray and Pray', 'attack', 2, 'none', [
@@ -313,12 +314,12 @@ export const DRUNKARD: CardDef[] = [
     status('faltering', 1, 'target'),
     forge('old-twelve-gauge', 1),
   ]),
-  p('common', 'spare-barrel', 'Spare Barrel', 'skill', 1, 'none', [
+  p('uncommon', 'spare-barrel', 'Spare Barrel', 'skill', 1, 'none', [
     forge('old-twelve-gauge', 2),
     addTo('buckshot-shell'),
   ]),
   p('common', 'gun-oil', 'Gun Oil', 'power', 1, 'none', [on('play', [barrier(4)], { tag: 'gun' })]),
-  p('common', 'dead-eye', 'Dead Eye', 'skill', 1, 'none', [
+  p('uncommon', 'dead-eye', 'Dead Eye', 'skill', 1, 'none', [
     forge('old-twelve-gauge', 2),
     status('exposed', 1, 'allFoes'),
   ]),
@@ -331,7 +332,11 @@ export const DRUNKARD: CardDef[] = [
   p('common', 'chaser', 'Chaser', 'skill', 0, 'none', [lose(2), mana(1), draw(1)], {
     exhaust: true,
   }),
-  p('common', 'dumpster-dive', 'Dumpster Dive', 'skill', 1, 'none', [draw(2), discard(1), heal(2)]),
+  p('uncommon', 'dumpster-dive', 'Dumpster Dive', 'skill', 1, 'none', [
+    draw(2),
+    discard(1),
+    heal(2),
+  ]),
 
   // --- more glue: uncommons and rares for any build path (DECISIONS #339) ---
   p('rare', 'whiskey-miracle', 'Whiskey Miracle', 'skill', 1, 'none', [heal(15)], {
@@ -348,4 +353,35 @@ export const DRUNKARD: CardDef[] = [
   p('uncommon', 'window-pane', 'Window Pane', 'skill', 1, 'none', [
     scaled(barrier(7), per('missingPct', 1 / 8)),
   ]),
+
+  // --- brought back for the 20/30/25 rarity target (DECISIONS #341) ---
+  p('uncommon', 'dutch-courage', 'Dutch Courage', 'power', 1, 'none', [
+    on('turnStart', [heal(2), status('might', 1, 'self', true)]),
+  ]),
+  p('uncommon', 'mean-drunk', 'Mean Drunk', 'power', 2, 'none', [
+    on('loseHp', [status('might', 1, 'self', true), barrier(2)]),
+  ]),
+  p(
+    'rare',
+    'booby-trapped-window',
+    'Booby-Trapped Window',
+    'snare',
+    2,
+    'none',
+    [PREVENT, dmg(10, 'attacker')],
+    { trigger: { on: 'attacked' } },
+  ),
+  p('rare', 'broken-window-theory', 'Broken Window Theory', 'power', 2, 'none', [
+    on('turnEnd', [scaled(dmg(1, 'allFoes'), per('missingPct', 1 / 6))]),
+  ]),
+
+  // --- new for the 20/30/25 rarity target (DECISIONS #341) ---
+  p('uncommon', 'double-tap', 'Double Tap', 'skill', 1, 'none', [addTo('old-twelve-gauge')]),
+  p('uncommon', 'bandolier', 'Bandolier', 'power', 1, 'none', [
+    on('play', [barrier(2)], { tag: 'shell' }),
+  ]),
+  p('rare', 'scattergun-symphony', 'Scattergun Symphony', 'power', 2, 'none', [
+    on('play', [dmg(2, 'allFoes')], { tag: 'shell' }),
+  ]),
+  p('rare', 'ricochet', 'Ricochet', 'power', 2, 'none', [on('play', [draw(1)], { tag: 'shell' })]),
 ];

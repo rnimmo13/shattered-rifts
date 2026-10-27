@@ -24,6 +24,7 @@ import {
   fetchCards,
   discoverOp,
   heal,
+  lose,
 } from '../build';
 
 const s = pool('barbarian', 'aurelion');
@@ -43,15 +44,15 @@ export const BARBARIAN: CardDef[] = [
   s('common', 'rising-ire', 'Rising Ire', 'skill', 0, 'none', [stance('wrath'), draw(1)], {
     exhaust: true,
   }),
-  s('common', 'swift-step', 'Swift Step', 'skill', 1, 'none', [
+  s('uncommon', 'swift-step', 'Swift Step', 'skill', 1, 'none', [
     stance('wrath'),
     status('vigor', 4),
   ]),
-  s('uncommon', 'final-account', 'Final Account', 'attack', 2, 'foe', [
+  s('rare', 'final-account', 'Final Account', 'attack', 2, 'foe', [
     scaled(dmg(10), per('wrath', 8)),
   ]),
   // (Fury lets damage in: entering it is when to put a guard up)
-  s('uncommon', 'surge-of-ire', 'Surge of Ire', 'power', 1, 'none', [
+  s('rare', 'surge-of-ire', 'Surge of Ire', 'power', 1, 'none', [
     on('stance', [barrier(6), draw(1)], { stance: 'wrath' }),
   ]),
   s('rare', 'rage-of-ages', 'Rage of Ages', 'attack', 3, 'none', [dmg(5, 'allFoes', 3)]),
@@ -80,7 +81,7 @@ export const BARBARIAN: CardDef[] = [
     stance('wrath'),
   ]),
   s(
-    'common',
+    'uncommon',
     'berserk-tide',
     'Berserk Tide',
     'attack',
@@ -124,7 +125,7 @@ export const BARBARIAN: CardDef[] = [
     stance('wrath'),
     stance('calm'),
   ]),
-  s('common', 'settled-mind', 'Settled Mind', 'skill', 1, 'none', [
+  s('uncommon', 'settled-mind', 'Settled Mind', 'skill', 1, 'none', [
     scaled(draw(0), per('calm', 3)),
     stance('calm'),
   ]),
@@ -163,7 +164,7 @@ export const BARBARIAN: CardDef[] = [
     on('stance', [dmg(3, 'allFoes')]),
   ]),
   s('uncommon', 'fearless', 'Unafraid', 'attack', 1, 'foe', [dmg(8), stance('calm')]),
-  s('uncommon', 'meditate', 'Recollect', 'skill', 1, 'none', [fetchCards(1), stance('calm')], {
+  s('rare', 'meditate', 'Recollect', 'skill', 1, 'none', [fetchCards(1), stance('calm')], {
     retain: true,
   }),
   s('uncommon', 'sanctity', 'Let Go', 'skill', 1, 'none', [draw(2), stance('none')]),
@@ -173,11 +174,11 @@ export const BARBARIAN: CardDef[] = [
   s('rare', 'serenity-incarnate', 'Serenity Incarnate', 'power', 3, 'none', [
     on('turnEnd', [heal(3), barrier(6)]),
   ]),
-  s('common', 'still-water', 'Still Water', 'skill', 1, 'none', [
+  s('uncommon', 'still-water', 'Still Water', 'skill', 1, 'none', [
     scaled(barrier(4), per('calm', 6)),
     draw(1),
   ]),
-  s('common', 'exhale', 'Exhale', 'skill', 0, 'none', [stance('none'), mana(1), draw(1)], {
+  s('uncommon', 'exhale', 'Exhale', 'skill', 0, 'none', [stance('none'), mana(1), draw(1)], {
     exhaust: true,
   }),
   s(
@@ -190,7 +191,7 @@ export const BARBARIAN: CardDef[] = [
     [scaled(barrier(0), per('mana', 3)), stance('calm')],
     { retain: true },
   ),
-  s('uncommon', 'gentle-return', 'Gentle Return', 'power', 1, 'none', [
+  s('rare', 'gentle-return', 'Gentle Return', 'power', 1, 'none', [
     on('stance', [heal(2), barrier(3)], { stance: 'calm' }),
   ]),
   s(
@@ -211,7 +212,7 @@ export const BARBARIAN: CardDef[] = [
   s('uncommon', 'the-offering', 'The Offering', 'skill', 2, 'none', [status('mantra', 5)], {
     retain: true,
   }),
-  s('uncommon', 'litany', 'Litany', 'power', 2, 'none', [
+  s('rare', 'litany', 'Litany', 'power', 2, 'none', [
     on('play', [status('mantra', 1)], { filter: 'skill' }),
   ]),
   s('uncommon', 'daily-rite', 'Daily Rite', 'power', 1, 'none', [
@@ -241,10 +242,10 @@ export const BARBARIAN: CardDef[] = [
     exhaust: true,
   }),
   s('uncommon', 'worship', 'Hymn of Embers', 'skill', 2, 'none', [status('mantra', 4), barrier(6)]),
-  s('common', 'devotion', 'Morning Prayer', 'power', 1, 'none', [
+  s('uncommon', 'devotion', 'Morning Prayer', 'power', 1, 'none', [
     on('turnStart', [status('mantra', 1), barrier(3)]),
   ]),
-  s('uncommon', 'scrawl', 'Flood of Visions', 'skill', 1, 'none', [draw(5), status('mantra', 2)], {
+  s('rare', 'scrawl', 'Flood of Visions', 'skill', 1, 'none', [draw(5), status('mantra', 2)], {
     exhaust: true,
   }),
   s('rare', 'last-rites-of-flame', 'Last Rites of the Flame', 'attack', 3, 'none', [
@@ -262,7 +263,7 @@ export const BARBARIAN: CardDef[] = [
     retain: true,
     onExhaust: [status('mantra', 3)],
   }),
-  s('common', 'mantra-engine', 'Mantra Engine', 'power', 1, 'none', [
+  s('uncommon', 'mantra-engine', 'Mantra Engine', 'power', 1, 'none', [
     on('turnEnd', [scaled(barrier(0), per('mantra', 1))]),
   ]),
   s(
@@ -285,7 +286,7 @@ export const BARBARIAN: CardDef[] = [
     dmg(8),
     status('exposed', 1, 'target'),
   ]),
-  s('common', 'inner-sight', 'Inner Sight', 'skill', 1, 'none', [barrier(5), scry(4)]),
+  s('uncommon', 'inner-sight', 'Inner Sight', 'skill', 1, 'none', [barrier(5), scry(4)]),
   s('common', 'quick-palms', 'Quick Palms', 'attack', 0, 'foe', [dmg(3)]),
 
   // --- more glue: uncommons and rares for any build path (DECISIONS #339) ---
@@ -296,4 +297,34 @@ export const BARBARIAN: CardDef[] = [
     on('play', [barrier(2)], { filter: 'skill' }),
   ]),
   s('uncommon', 'held-breath', 'Held Breath', 'skill', 1, 'none', [status('holdfast', 1)]),
+
+  // --- brought back for the 20/30/25 rarity target (DECISIONS #341) ---
+  s('uncommon', 'rending-hands', 'Rending Hands', 'attack', 1, 'foe', [
+    dmg(5, 'target', 2),
+    lose(2),
+  ]),
+  s('uncommon', 'blood-on-the-sand', 'Blood on the Sand', 'power', 1, 'none', [
+    on('stance', [lose(2), status('vigor', 2)], { stance: 'wrath' }),
+  ]),
+  s('uncommon', 'open-palm', 'Open Palm', 'attack', 1, 'foe', [
+    dmg(5, 'target', 2),
+    stance('none'),
+  ]),
+  s('uncommon', 'shield-of-faith', 'Shield of Faith', 'skill', 1, 'none', [
+    barrier(7),
+    status('mantra', 1),
+  ]),
+  s('uncommon', 'poise', 'Poise', 'power', 1, 'none', [status('bracing', 2)]),
+
+  // --- new for the 20/30/25 rarity target (DECISIONS #341) ---
+  s('rare', 'thousand-palms', 'Thousand Palms', 'attack', 2, 'foe', [dmg(3, 'target', 6)]),
+  s('rare', 'unbroken-calm', 'Unbroken Calm', 'power', 2, 'none', [
+    on('turnStart', [barrier(4), draw(1)]),
+  ]),
+
+  // --- brought back for the 20/30/25 rarity target (DECISIONS #341) ---
+  s('uncommon', 'wreath-of-flame', 'Crown of Embers', 'skill', 1, 'none', [
+    status('vigor', 5),
+    status('mantra', 1),
+  ]),
 ];

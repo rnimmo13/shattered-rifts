@@ -13,9 +13,8 @@ deck takes one and a half of them. Our pools were ~16 cards and one build path e
 1. **A pool belongs to a character**, not a realm (`CardDef.hero`). A realm is flavour and enemy stage; two characters can
    share one (Maren and Sehra are both Aurelion). Reward offers come from *your* pool + Neutral (+ the 1-in-10 Rift-crossed
    card from another character's pool).
-2. **Every build path holds at least 8 commons, 7 uncommons, 5 rares and 1 Legendary** (at least 63 cards in paths), plus a few
-   **glue** cards with no build path, about 70 cards in all (DECISIONS #334, #337). Every Legendary belongs to a build path and is a
-   build-around for it (#338). Each build path works alone; two build paths can
+2. **Every Riftwalker has 20 commons, 30 uncommons, 25 rares and 3 Legendaries (78 cards).** Each build path holds 6 commons, 9
+   uncommons, 7 rares and 1 Legendary; a few **glue** cards (2/3/4) have no build path (DECISIONS #341). Rares define a build. Each build path works alone; two build paths can
    combine; all three at once is a bad deck. `pnpm poolaudit` (docs/POOL_AUDIT.md) lists each pool by build path and flags near-duplicates.
 3. **Shared toolkit, owned signatures.** Everyone has some of the common StS tools in their own flavour: draw, Barrier,
    Heal, Consume, Retain, Might, 0-cost cards, AoE, Mana gain, Exposed/Faltering, self-damage. A mechanic with its own
@@ -56,7 +55,7 @@ reworked cards stayed the same, so their art and every saved deck still work.
 |---|---|---|---|---|---|---|
 | 1 | **Ser Maren Ashcourt** | Aurelion | 80 | **Bulwark:** Barrier scaling, hits for your Barrier | **Thorns:** retaliation, punishing attackers | **Devotion:** heal (even at full HP) to build Devotion, spend it on big hits; Shielded to last |
 | 2 | **Rivet** | Nexus-9 | 72 | **Swarm:** many cheap Drones | **Assemble:** make allies act again, burst turns | **Core:** a few big constructs, Might, upgrades |
-| 3 | **Kesh the Unfed** | Wyldmaw | 76 | **Bloodrage:** Might and self-damage | **Pack:** buffed companions | **Feast:** Consume, Devour, lifesteal |
+| 3 | **Kesh the Unfed** | Wyldmaw | 76 | **Bloodrage:** Might and self-damage | **Pack:** buffed companions | **Berserker:** Mana and draw for burst turns |
 | 4 | **Vesper Nightlace** | Umbral | 80 | **Traps:** many, varied triggers | **Exposed:** debuff burst, Faltering control | **Patience:** Hold cards, keep Mana; payoffs for a full hand and the Mana you kept |
 | 5 | **Sylas** (id `assassin`) | Umbral | 72 | **Knives:** 0-cost, many hits | **Bleed:** stack, double, cash out | **Sleight:** discard / cycle payoffs |
 | 6 | **Ilvane** (id `totemist`) | Nexus-9 | 76 | **Totems:** plant, Spirit and slots, awaken | **Whittling:** 0-cost Carvings that keep coming back | **Rites:** Auras that pay when another Aura is played |

@@ -23,6 +23,9 @@ import {
   discoverOp,
   maxMana,
   discard,
+  doubleSt,
+  mana,
+  fetchCards,
 } from '../build';
 
 const v = pool('trapper', 'umbral');
@@ -71,13 +74,13 @@ export const TRAPPER: CardDef[] = [
     [PREVENT, status('faltering', 2, 'attacker')],
     { trigger: { on: 'attacked' } },
   ),
-  v('uncommon', 'time-bomb', 'Time Bomb', 'snare', 1, 'none', [dmg(12, 'allFoes')], {
+  v('rare', 'time-bomb', 'Time Bomb', 'snare', 1, 'none', [dmg(12, 'allFoes')], {
     trigger: { on: 'foeTurn' },
   }),
   v('common', 'spring-loaded', 'Spring-Loaded', 'skill', 1, 'none', [
     scaled(barrier(0), per('snares', 5)),
   ]),
-  v('uncommon', 'master-trapper', 'Master Trapper', 'power', 1, 'none', [
+  v('rare', 'master-trapper', 'Master Trapper', 'power', 1, 'none', [
     on('play', [draw(1)], { filter: 'snare' }),
   ]),
   v(
@@ -166,7 +169,7 @@ export const TRAPPER: CardDef[] = [
     scaled(dmg(16), per('exposed', 3, 'target')),
   ]),
 
-  v('uncommon', 'patient-hunter', 'Patient Hunter', 'power', 1, 'none', [
+  v('rare', 'patient-hunter', 'Patient Hunter', 'power', 1, 'none', [
     on('turnStart', [status('exposed', 1, 'allFoes')]),
   ]),
 
@@ -175,7 +178,7 @@ export const TRAPPER: CardDef[] = [
     dmg(8),
     status('faltering', 1, 'target'),
   ]),
-  v('common', 'stalk', 'Stalk', 'attack', 2, 'foe', [dmg(15), drawNext(2)]),
+  v('uncommon', 'stalk', 'Stalk', 'attack', 2, 'foe', [dmg(15), drawNext(2)]),
   v('uncommon', 'strip-the-guard', 'Strip the Guard', 'skill', 1, 'foe', [
     status('exposed', 3, 'target'),
     status('brittle', 2, 'target'),
@@ -224,7 +227,7 @@ export const TRAPPER: CardDef[] = [
   v('uncommon', 'gleeful-trapsmith', 'Gleeful Trapsmith', 'power', 1, 'none', [
     on('play', [dmg(4, 'allFoes')], { filter: 'snare' }),
   ]),
-  v('common', 'marked-cards', 'Coiled Patience', 'power', 1, 'none', [
+  v('uncommon', 'marked-cards', 'Coiled Patience', 'power', 1, 'none', [
     on('turnEnd', [scaled(dmg(0, 'randomFoe'), per('mana', 2))]),
   ]),
   v(
@@ -241,7 +244,7 @@ export const TRAPPER: CardDef[] = [
   v('legendary', 'masquerade', 'Masquerade', 'power', 2, 'none', [
     on('turnEnd', [scaled(dmg(0, 'allFoes'), per('mana', 3)), manaNext(1)]),
   ]),
-  v('common', 'saved-breath', 'Saved Breath', 'skill', 0, 'none', [manaNext(2), scry(2)], {
+  v('uncommon', 'saved-breath', 'Saved Breath', 'skill', 0, 'none', [manaNext(2), scry(2)], {
     exhaust: true,
   }),
   // (more Patience)
@@ -253,7 +256,7 @@ export const TRAPPER: CardDef[] = [
     barrier(3),
   ]),
   v('common', 'gambit', 'Waiting Game', 'attack', 1, 'foe', [scaled(dmg(4), per('hand', 2))]),
-  v('uncommon', 'second-act', 'Second Act', 'skill', 1, 'none', [status('twinned', 1)], {
+  v('rare', 'second-act', 'Second Act', 'skill', 1, 'none', [status('twinned', 1)], {
     retain: true,
   }),
   v('rare', 'frozen-moment', 'Frozen Moment', 'skill', 1, 'none', [cheapen(1, 'hand')], {
@@ -296,7 +299,7 @@ export const TRAPPER: CardDef[] = [
     { trigger: { on: 'foeSummons' } },
   ),
   v(
-    'common',
+    'uncommon',
     'metronome-trap',
     'Metronome Trap',
     'snare',
@@ -307,7 +310,7 @@ export const TRAPPER: CardDef[] = [
       trigger: { on: 'foeTurn' },
     },
   ),
-  v('common', 'trapline-rider', 'Trapline Rider', 'attack', 1, 'foe', [
+  v('uncommon', 'trapline-rider', 'Trapline Rider', 'attack', 1, 'foe', [
     scaled(dmg(4), per('snares', 1, 'self', 'hits')),
   ]),
   v('uncommon', 'grim-collection', 'Grim Collection', 'attack', 2, 'foe', [
@@ -330,7 +333,7 @@ export const TRAPPER: CardDef[] = [
   v('rare', 'culling', 'Culling', 'attack', 2, 'none', [
     scaled(dmg(6, 'allFoes'), per('exposed', 2, 'each')),
   ]),
-  v('common', 'cripple', 'Cripple', 'skill', 1, 'foe', [
+  v('uncommon', 'cripple', 'Cripple', 'skill', 1, 'foe', [
     status('faltering', 2, 'target'),
     status('exposed', 2, 'target'),
     barrier(5),
@@ -354,7 +357,7 @@ export const TRAPPER: CardDef[] = [
     },
   ),
   v('common', 'discarded-hand', 'Hidden Hand', 'skill', 1, 'none', [draw(2)], { retain: true }),
-  v('uncommon', 'sandbag', 'Sandbag', 'attack', 1, 'foe', [scaled(dmg(5), per('mana', 3))]),
+  v('rare', 'sandbag', 'Sandbag', 'attack', 1, 'foe', [scaled(dmg(5), per('mana', 3))]),
 
   // --- brought back (DECISIONS #337) ---
   v('uncommon', 'spotlight', 'Spotlight', 'skill', 1, 'foe', [
@@ -371,7 +374,7 @@ export const TRAPPER: CardDef[] = [
     status('exposed', 1, 'allFoes'),
     draw(1),
   ]),
-  v('common', 'step-aside', 'Step Aside', 'skill', 1, 'none', [barrier(5), drawNext(1)]),
+  v('uncommon', 'step-aside', 'Step Aside', 'skill', 1, 'none', [barrier(5), drawNext(1)]),
 
   // --- more glue: uncommons and rares for any build path (DECISIONS #339) ---
   v(
@@ -389,4 +392,64 @@ export const TRAPPER: CardDef[] = [
   v('rare', 'perfect-alibi', 'Perfect Alibi', 'skill', 1, 'none', [barrier(20), discard(1)]),
   v('uncommon', 'sleight-of-hand', 'Sleight of Hand', 'skill', 1, 'none', [draw(2), manaNext(1)]),
   v('uncommon', 'mask-of-faces', 'Mask of Faces', 'skill', 1, 'none', [status('steadfast', 2)]),
+
+  // --- brought back for the 20/30/25 rarity target (DECISIONS #341) ---
+  v(
+    'uncommon',
+    'poison-pantry',
+    'Poison Pantry',
+    'snare',
+    1,
+    'none',
+    [dmg(8, 'attacker'), status('brittle', 2, 'attacker')],
+    { trigger: { on: 'foeDefends' } },
+  ),
+  v(
+    'uncommon',
+    'whisper-net',
+    'Whisper Net',
+    'snare',
+    1,
+    'none',
+    [dmg(8, 'attacker'), status('stunned', 1, 'attacker')],
+    { trigger: { on: 'foeSummons' } },
+  ),
+  v(
+    'rare',
+    'compound-fear',
+    'Compound Fear',
+    'skill',
+    1,
+    'foe',
+    [status('exposed', 1, 'target'), doubleSt('exposed', 'target', 2, 3)],
+    {
+      exhaust: true,
+    },
+  ),
+  v('uncommon', 'hamstring', 'Hamstring', 'attack', 1, 'foe', [
+    dmg(6),
+    status('exposed', 2, 'target'),
+  ]),
+  v('uncommon', 'trick-of-the-light', 'Trick of the Light', 'skill', 0, 'none', [
+    scry(2),
+    barrier(3),
+  ]),
+  v('uncommon', 'stolen-moment', 'Stolen Moment', 'skill', 0, 'none', [mana(1), scry(2)], {
+    exhaust: true,
+  }),
+  v(
+    'rare',
+    'curtain-call',
+    'Curtain Call',
+    'skill',
+    1,
+    'none',
+    [draw(1), fetchCards(2, 'hand', 'snare')],
+    {
+      exhaust: true,
+    },
+  ),
+  v('rare', 'misdirection', 'Patient Guard', 'power', 1, 'none', [
+    on('turnEnd', [scaled(barrier(4), per('hand', 1))]),
+  ]),
 ];

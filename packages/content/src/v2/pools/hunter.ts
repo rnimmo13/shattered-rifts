@@ -85,11 +85,11 @@ export const HUNTER: CardDef[] = [
   // (more Bloodrage)
   k('common', 'scavenge', 'Rummage', 'attack', 1, 'foe', [dmg(8), fetchCards(1, 'draw', 'attack')]),
   k('common', 'pound', 'Pound', 'attack', 1, 'foe', [dmg(8), draw(1), lose(2)]),
-  k('uncommon', 'scar-tissue', 'Scar Tissue', 'power', 1, 'none', [
+  k('rare', 'scar-tissue', 'Scar Tissue', 'power', 1, 'none', [
     on('loseHp', [barrier(3), status('might', 1, 'self', true)]),
   ]),
   k(
-    'common',
+    'uncommon',
     'whirling-maul',
     'Whirling Maul',
     'attack',
@@ -130,7 +130,7 @@ export const HUNTER: CardDef[] = [
     summon('pack-alpha'),
     status('might', 1),
   ]),
-  k('uncommon', 'unchained', 'Unchained', 'power', 2, 'none', [status('might', 3)]),
+  k('rare', 'unchained', 'Unchained', 'power', 2, 'none', [status('might', 3)]),
   // (an Aura now: when a companion of hers falls, she strikes back; its upgrade hits harder. DECISIONS #325)
   k(
     'rare',
@@ -163,7 +163,7 @@ export const HUNTER: CardDef[] = [
   k('common', 'trail-of-blood', 'Trail of Blood', 'power', 1, 'none', [
     on('summon', [status('might', 1)]),
   ]),
-  k('uncommon', 'pack-frenzy', 'Pack Frenzy', 'skill', 2, 'none', [status('might', 2), ACT], {
+  k('rare', 'pack-frenzy', 'Pack Frenzy', 'skill', 2, 'none', [status('might', 2), ACT], {
     exhaust: true,
   }),
   k('rare', 'wild-hunt', 'Wild Hunt', 'power', 3, 'none', [on('turnStart', [ACT])]),
@@ -227,12 +227,12 @@ export const HUNTER: CardDef[] = [
   k('common', 'open-a-vein', 'Open a Vein', 'skill', 0, 'none', [lose(3), status('might', 2)], {
     exhaust: true,
   }),
-  k('common', 'bloodied-howl', 'Bloodied Howl', 'skill', 1, 'none', [
+  k('uncommon', 'bloodied-howl', 'Bloodied Howl', 'skill', 1, 'none', [
     lose(2),
     status('exposed', 2, 'allFoes'),
     draw(1),
   ]),
-  k('uncommon', 'frothing-rage', 'Frothing Rage', 'skill', 1, 'none', [
+  k('rare', 'frothing-rage', 'Frothing Rage', 'skill', 1, 'none', [
     lose(3),
     status('might', 3, 'self', true),
     draw(2),
@@ -258,14 +258,14 @@ export const HUNTER: CardDef[] = [
   k('common', 'lead-the-charge', 'Lead the Charge', 'attack', 1, 'foe', [
     scaled(dmg(5), per('allies', 3)),
   ]),
-  k('common', 'blood-bond', 'Blood Bond', 'skill', 1, 'none', [
+  k('uncommon', 'blood-bond', 'Blood Bond', 'skill', 1, 'none', [
     lose(3),
     status('might', 2),
     barrier(6, 'allFriends'),
   ]),
   // (two Hounds and nothing else: DECISIONS #323)
   k('uncommon', 'litter', 'Litter', 'skill', 2, 'none', [summon('hound'), summon('hound')]),
-  k('common', 'bone-collar', 'Bone Collar', 'power', 1, 'none', [
+  k('uncommon', 'bone-collar', 'Bone Collar', 'power', 1, 'none', [
     on('allyDies', [status('might', 2), heal(4)]),
   ]),
   k('rare', 'hunters-call', "Hunter's Call", 'power', 2, 'none', [
@@ -274,7 +274,7 @@ export const HUNTER: CardDef[] = [
 
   // --- Feast (batch 3) ---
   k('common', 'throw-scraps', 'Throw Scraps', 'skill', 0, 'none', [exhaustN(1), mana(1)]),
-  k('common', 'gut-trap', 'Gut Trap', 'snare', 1, 'none', [dmg(8, 'allFoes'), heal(4)], {
+  k('uncommon', 'gut-trap', 'Gut Trap', 'snare', 1, 'none', [dmg(8, 'allFoes'), heal(4)], {
     trigger: { on: 'hpLost', min: 5 },
   }),
 
@@ -283,7 +283,7 @@ export const HUNTER: CardDef[] = [
     dmg(7),
     status('exposed', 2, 'target'),
   ]),
-  k('common', 'whet-the-fangs', 'Whet the Fangs', 'skill', 0, 'none', [status('vigor', 6)]),
+  k('uncommon', 'whet-the-fangs', 'Whet the Fangs', 'skill', 0, 'none', [status('vigor', 6)]),
   k('common', 'primal-feast', 'Primal Feast', 'skill', 1, 'none', [heal(7, 'allFriends')]),
 
   // --- more glue: uncommons and rares for any build path (DECISIONS #339) ---
@@ -351,4 +351,18 @@ export const HUNTER: CardDef[] = [
   k('rare', 'killing-spree', 'Killing Spree', 'power', 3, 'none', [
     on('play', [draw(1)], { filter: 'attack' }),
   ]),
+
+  // --- brought back for the 20/30/25 rarity target (DECISIONS #341) ---
+  k('uncommon', 'pack-leader', 'Pack Leader', 'power', 2, 'none', [
+    on('play', [barrier(2, 'allFriends')], { filter: 'attack' }),
+  ]),
+  k('uncommon', 'tear-loose', 'Tear Loose', 'attack', 1, 'foe', [
+    dmg(7),
+    lose(3),
+    status('vigor', 4),
+  ]),
+  k('rare', 'ancient-fury', 'Ancient Fury', 'power', 2, 'none', [
+    on('turnStart', [status('might', 2), lose(3)]),
+  ]),
+  k('rare', 'berserker', 'Berserker', 'power', 2, 'none', [on('turnStart', [lose(3), mana(1)])]),
 ];
