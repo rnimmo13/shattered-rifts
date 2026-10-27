@@ -6,7 +6,9 @@ import {
   ENCOUNTERS,
   RIFTWALKERS,
   V2_DECK_RULES,
+  canonicalCard,
   canonicalHero,
+  RETIRED_CARDS,
   isDeckCard,
   MARK_INFO,
 } from '@sr/content/v2';
@@ -337,12 +339,24 @@ function validDeal(steps: unknown, depth = 0): boolean {
 }
 
 /** Returns the run, or null when the text is not a valid save. */
+/** A retired card's id, as a whole JSON string (with any Sanctum roll, engraving or upgrade on it). */
+const RETIRED_CARD_STRING = new RegExp(
+  `"(?:(?:hi|lo)~)?(?:(?:hold|opening|flare)\\^)?(?:${Object.keys(RETIRED_CARDS)
+    .map((id) => id.replace(/[-]/g, '\\-'))
+    .join('|')})\\+?"`,
+  'g',
+);
+
 export function parseRun(text: string): RunState | null {
   if (text.length > 2_000_000) return null;
   let raw: unknown;
   try {
-    // a card that was renamed keeps working in old saves
-    raw = JSON.parse(text.replace(/"twelve-gauge(\+?)"/g, '"slug-round$1"'));
+    // a card that was renamed keeps working in old saves, and a card taken out of the game becomes its replacement (DECISIONS #312)
+    raw = JSON.parse(
+      text
+        .replace(/"twelve-gauge(\+?)"/g, '"slug-round$1"')
+        .replace(RETIRED_CARD_STRING, (m: string) => `"${canonicalCard(m.slice(1, -1))}"`),
+    );
   } catch {
     return null;
   }

@@ -352,3 +352,15 @@ describe('choosing a deck before each game (DECISIONS #307)', () => {
     expect(picksDone({ a: 3, b: 1 }, { a: 2 }, 'b')).toBe(true);
   });
 });
+
+describe('a saved deck holding a card taken out of the game (DECISIONS #312)', () => {
+  it('is still accepted, with the replacement', () => {
+    const e = {
+      ...entryOf('hunter'),
+      deck: [...RIFTWALKERS.hunter.starter.slice(0, 9), 'guard-dog'],
+    };
+    const r = checkEntry(e);
+    expect(r.ok).toBe(true);
+    if (r.ok) expect(r.entry.deck).toContain('rend');
+  });
+});

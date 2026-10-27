@@ -7,6 +7,7 @@ import {
   RIFTWALKERS,
   V2_DECK_RULES,
   isDeckCard,
+  canonicalCard,
   canonicalHero,
   stripRoll,
 } from '@sr/content/v2';
@@ -161,9 +162,11 @@ export function checkEntry(raw: unknown): Checked | Rejected {
   const hero = typeof sent === 'string' ? canonicalHero(sent) : sent;
   if (typeof hero !== 'string' || !Object.hasOwn(RIFTWALKERS, hero))
     return { ok: false, message: 'Unknown Riftwalker.' };
-  const deck = e['deck'];
-  if (!Array.isArray(deck) || !deck.every((c) => typeof c === 'string'))
+  const sentDeck = e['deck'];
+  if (!Array.isArray(sentDeck) || !sentDeck.every((c) => typeof c === 'string'))
     return { ok: false, message: 'The deck is not a list of cards.' };
+  // (a card taken out of the game becomes its replacement, so a deck saved before still plays: DECISIONS #312)
+  const deck = sentDeck.map(canonicalCard);
   if (deck.length < V2_DECK_RULES.minSize || deck.length > MAX_DECK)
     return {
       ok: false,

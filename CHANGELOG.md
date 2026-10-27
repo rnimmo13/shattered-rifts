@@ -5,6 +5,7 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **Kesh:** every card of hers that costs HP costs 1 more (she has Lifesteal now). Heel, Howl and Guard Dog are gone: a saved run or deck that holds one gets Call Gnashlings, Pack Tactics or Rend in its place.
 - **Rally the Pack, Hamstring Slam and Second Death** no longer make your allies act: each of your allies gains 3 Barrier instead.
 - **Stun reworked:** a Stunned unit no longer skips its turn. It counts as Exposed, Faltering and Brittle at once (they never stack with the real ones) for 1 turn, or as many as the card says.
 - **Arena: choose your deck after you are matched.** Every saved deck comes to the match, and before each game you pick one, of any Riftwalker, without seeing your opponent's (they cannot see yours either). One deck is enough. Players are matched by Arena rank.

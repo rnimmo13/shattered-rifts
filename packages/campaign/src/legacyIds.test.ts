@@ -1,5 +1,12 @@
 import { describe, expect, it } from 'vitest';
-import { LEGACY_HERO_IDS, RIFTWALKERS, canonicalHero } from '@sr/content/v2';
+import {
+  COMBAT_DB,
+  LEGACY_HERO_IDS,
+  RETIRED_CARDS,
+  RIFTWALKERS,
+  canonicalCard,
+  canonicalHero,
+} from '@sr/content/v2';
 import { newRun, parseRun, serializeRun } from './index';
 
 describe('Riftwalker ids are named for their class', () => {
@@ -38,5 +45,21 @@ describe('Riftwalker ids are named for their class', () => {
     expect(
       parseRun(serializeRun(run).replace('"character":"knight"', '"character":"nobody"')),
     ).toBeNull();
+  });
+});
+
+describe('cards taken out of the game (DECISIONS #312)', () => {
+  it('an old save holding them loads with their replacements, roll, engraving and upgrade kept', () => {
+    const run = newRun('hunter', 'retired-cards');
+    const text = serializeRun({
+      ...run,
+      deck: [...run.deck, 'guard-dog', 'heel+', 'hi~howl', 'hold^heel'],
+    });
+    const back = parseRun(text);
+    expect(back).not.toBeNull();
+    const tail = back!.deck.slice(-4);
+    expect(tail).toEqual(['rend', 'call-gnashlings+', 'hi~pack-tactics', 'hold^call-gnashlings']);
+    for (const id of Object.keys(RETIRED_CARDS)) expect(COMBAT_DB.cards[id]).toBeUndefined();
+    expect(canonicalCard('strike')).toBe('strike');
   });
 });

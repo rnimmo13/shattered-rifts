@@ -572,6 +572,23 @@ export const LEGACY_HERO_IDS: Readonly<Record<string, HeroId>> = {
   kp: 'drunkard',
 };
 
+/**
+ * Cards taken out of the game, and the card each becomes wherever an old save or deck still holds it (DECISIONS #312): a run, a
+ * saved Arena deck, a ghost. Its Sanctum roll, engraving and upgrade carry over ("hi~heel+" becomes "hi~call-gnashlings+").
+ */
+export const RETIRED_CARDS: Readonly<Record<string, string>> = {
+  'guard-dog': 'rend',
+  heel: 'call-gnashlings',
+  howl: 'pack-tactics',
+};
+
+/** A card id as it is now: a retired card becomes its replacement, keeping its roll, engraving and upgrade; anything else is unchanged. */
+export function canonicalCard(id: string): string {
+  const m = /^((?:hi|lo)~)?((?:hold|opening|flare)\^)?(.+?)(\+?)$/.exec(id);
+  const now = m ? RETIRED_CARDS[m[3] as string] : undefined;
+  return m && now ? `${m[1] ?? ''}${m[2] ?? ''}${now}${m[4] ?? ''}` : id;
+}
+
 /** A Riftwalker id as it is now: an old id becomes its class id, and anything else comes back as it was. */
 export function canonicalHero(id: string): string {
   return Object.hasOwn(LEGACY_HERO_IDS, id) ? (LEGACY_HERO_IDS[id] as string) : id;
