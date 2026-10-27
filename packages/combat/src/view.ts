@@ -116,7 +116,14 @@ function describeAllyAct(db: CombatDb, s: CombatState, u: Unit, act: Op[]): Inte
     name: 'End of turn',
     text: `At the end of its side's turn: ${act.map((o) => opText(db, o, WHO)).join(' ')}`,
     icons: opIcons(act),
-    damage: first ? modifiedDamage(first.amount, u, first.to === 'target' ? front : null) : null,
+    // (its Primed goes into that strike, as an enemy's does: DECISIONS #361)
+    damage: first
+      ? modifiedDamage(
+          first.amount + (first.scale ? 0 : (u.statuses.vigor ?? 0)),
+          u,
+          first.to === 'target' ? front : null,
+        )
+      : null,
     hits: first ? dmg.reduce((n, o) => n + (o.hits ?? 1), 0) : 0,
     target: first?.to === 'target' ? (front?.id ?? null) : null,
   };
@@ -340,7 +347,10 @@ const METRIC_WORDS: Record<Metric, { per: string; equal: string }> = {
   },
   exhausted: { per: 'consumed card', equal: 'the number of cards you have consumed' },
   allies: { per: 'ally', equal: 'the number of your allies' },
-  biggestAlly: { per: 'max HP of your biggest companion', equal: "your biggest companion's max HP" },
+  biggestAlly: {
+    per: 'max HP of your biggest companion',
+    equal: "your biggest companion's max HP",
+  },
   foes: { per: 'enemy', equal: 'the number of enemies' },
   snares: { per: 'Trap set', equal: 'the number of Traps you have set' },
   stars: { per: 'Arcana', equal: 'your Arcana' },
@@ -500,7 +510,8 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
         return a.equal
           ? `Heal ${n}. Your companions gain as much max HP.`
           : `Heal ${n}. Your companions gain ${n} max HP.`;
-      if (o.to === 'allAllies') return `Your companions gain ${a.equal ? `max HP equal to ${a.num}` : `${n} max HP`}.`;
+      if (o.to === 'allAllies')
+        return `Your companions gain ${a.equal ? `max HP equal to ${a.num}` : `${n} max HP`}.`;
       return `Heal ${n}${o.to === 'self' ? '' : who[o.to]}.`;
     }
     case 'cleanse': {

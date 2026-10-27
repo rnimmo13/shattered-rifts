@@ -72,7 +72,7 @@ Generated 2026-10-27 for Robert's review. "same" = the upgrade's text is unchang
 | Kesh the Unfed | Bloodrage | Scar Tissue | rare | aura | 1 → 0 | Whenever you lose HP to your own cards: Gain 3 Barrier. Gain 1 Might until the end of your turn. | same |
 | Kesh the Unfed | Bloodrage | Scarred Warrior | rare | aura | 1 → 0 | At the start of your turn: Lose 2 HP. Gain 8 Barrier. | same |
 | Kesh the Unfed | Bloodrage | Wounded Wrath | common | aura | 1 → 0 | Whenever you lose HP to your own cards: Deal 4 damage to a random enemy. | same |
-| Kesh the Unfed | Pack | Bloodmoon Hunt | legendary | skill | 2 → 1 | Summon 2 Hounds (8 HP each). At the end of your turn each will: Deal 4 damage. Apply 3 Might to each of your allies. All your allies act now. Consume. | same |
+| Kesh the Unfed | Pack | Bloodmoon Hunt | legendary | skill | 2 → 1 | Summon 2 Hounds (8 HP each). At the end of your turn each will: Deal 4 damage. Each of your companions gains 3 Might. All your allies act now. Consume. | same |
 | Kesh the Unfed | Pack | Bone Collar | uncommon | aura | 1 → 0 | Whenever one of your allies dies: Gain 2 Might. Heal 4. | same |
 | Kesh the Unfed | Pack | Hunter's Call | rare | aura | 2 → 1 | At the start of your turn: Gain 1 Might. | same |
 | Kesh the Unfed | Pack | Pack Bond | uncommon | aura | 2 → 1 | At the start of your turn: Gain 3 Barrier to all friends. | same |
@@ -113,18 +113,14 @@ Generated 2026-10-27 for Robert's review. "same" = the upgrade's text is unchang
 | Obsidia | Sigils | Sigil of the Storm | rare | aura | 2 → 1 | At the end of your turn: Deal damage equal to half of your Arcana to ALL enemies. | same |
 | Obsidia | Sigils | Spellbook | common | aura | 1 → 0 | Whenever you discard a card: Gain 1 Arcana. | same |
 | Rivet | Assemble | Command Chip | rare | aura | 3 → 2 | Whenever you play a Summon: All your allies act now. | same |
-| Rivet | Assemble | Double Time | rare | skill | 2 → 1 | All your allies act now. All your allies act now. | same |
 | Rivet | Assemble | EMP | rare | trap | 1 → 0 | When you or an ally is attacked: Stun the attacker for 1 turn. | same |
-| Rivet | Assemble | Echo Command | uncommon | skill | 1 → 0 | All your allies act now. All your allies act now. Next turn, lose 1 Mana. Consume. Hold. | same |
-| Rivet | Assemble | Overclocked Legion | legendary | skill | 2 → 1 | Apply 3 Might to all friends. All your allies act now. All your allies act now. Consume. | Apply 4 Might to all friends. All your allies act now. All your allies act now. Consume. |
-| Rivet | Assemble | Overload | rare | skill | 2 → 1 | All your allies act now. All your allies act now. All your allies act now. Consume. | same |
-| Rivet | Assemble | Perpetual Motion | rare | aura | 2 → 1 | At the start of your turn: All your allies act now. | same |
+| Rivet | Assemble | Perpetual Motion | rare | aura | 2 → 1 | At the start of your turn: Each of your companions gains 2 Primed. | same |
 | Rivet | Assemble | Resonant Pulse | uncommon | aura | 1 → 0 | Whenever you play a Skill: Heal 1. Your companions gain 1 max HP. | same |
 | Rivet | Core | Backup Core | rare | aura | 2 → 1 | Whenever one of your allies dies: Your most recently fallen ally returns with half its HP. | same |
 | Rivet | Core | Heavy Industry | rare | aura | 2 → 1 | At the start of your turn: Gain 4 Barrier to all friends. | same |
 | Rivet | Core | Overclock Core | rare | aura | 3 → 2 | At the start of your turn: Apply 1 Might to all friends. | same |
 | Rivet | Core | Self-Mending | uncommon | aura | 1 → 0 | At the start of your turn: Heal 2. Your companions gain 2 max HP. | same |
-| Rivet | Core | The Foundry Awakens | legendary | aura | 3 → 2 | At the start of your turn: Summon Siege Engine (16 HP). At the end of your turn it will: Deal 13 damage. All your allies act now. | same |
+| Rivet | Core | The Foundry Awakens | legendary | aura | 3 → 2 | At the start of your turn: Summon Siege Engine (16 HP). At the end of your turn it will: Deal 13 damage. Each of your companions gains 3 Primed. | same |
 | Rivet | Swarm | Heavy Plating | common | aura | 1 → 0 | Whenever you summon an ally: Gain 5 Barrier to all friends. | same |
 | Rivet | Swarm | Hive Mind | rare | aura | 2 → 1 | Whenever one of your allies dies: Draw 1 card. Summon Micro Drone (3 HP). At the end of your turn it will: Deal 3 damage. | same |
 | Rivet | Swarm | Legion | rare | aura | 2 → 1 | Whenever you summon an ally: Apply 1 Might to all friends. | same |
@@ -133,7 +129,7 @@ Generated 2026-10-27 for Robert's review. "same" = the upgrade's text is unchang
 | Rivet | Swarm | Scrapyard King | uncommon | aura | 2 → 1 | Whenever one of your allies dies: Apply 1 Might to all friends. | same |
 | Rivet | Swarm | Swarm Tactics | rare | aura | 1 → 0 | Whenever you summon an ally: Deal 3 damage to a random enemy. | same |
 | Rivet | no path | Factory Floor | rare | aura | 2 → 1 | Whenever you summon an ally: Draw 1 card. | same |
-| Rivet | no path | Relay Network | rare | aura | 2 → 1 | Whenever one of your Traps is triggered: All your allies act now. | same |
+| Rivet | no path | Relay Network | rare | aura | 2 → 1 | Whenever one of your Traps is triggered: Each of your companions gains 3 Primed. | same |
 | Sehra | Flow | All-Seeing | rare | skill | 3 → 2 | Add 2 random cards from your pool to your hand (they cost 0 the next time you play them). Consume. | same |
 | Sehra | Flow | Ascendant Form | rare | aura | 2 → 1 | At the start of your turn: Gain 1 Mana. | same |
 | Sehra | Flow | Gentle Return | rare | aura | 1 → 0 | Whenever you enter Serene: Heal 2. Gain 3 Barrier. | same |

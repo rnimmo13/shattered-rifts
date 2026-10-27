@@ -16,7 +16,7 @@ export const KIT_CARDS: Record<HeroId, [Kit, Kit, Kit]> = {
   ],
   engineer: [
     ['overcharge-blast', 'call-turret', 'breach-charge'],
-    ['link-up', 'arc-relay', 'relay-strike'],
+    ['overdrive', 'arc-relay', 'relay-strike'],
     ['upgrade-chip', 'bulwark-frame', 'build-enforcer'],
   ],
   hunter: [

@@ -135,35 +135,35 @@ cost and effects whose numbers differ by about a third or less. "Shared" cards b
 | Mob Rule | rare | attack | 2 | Deal 5 (+3 per ally) damage to ALL enemies. |
 | Reactor | rare | aura | 2 | Apply 3 Might to all friends for the rest of the fight. |
 | Swarm Tactics | rare | aura | 1 | Whenever you summon an ally: Deal 3 damage to a random enemy. |
-| Drone Uprising | legendary | skill | 2 | Summon 3 Drones (8 HP each). At the end of your turn each will: Deal 3 damage. All your allies act now. Consume. |
+| Drone Uprising | legendary | skill | 2 | Summon 3 Drones (8 HP each). At the end of your turn each will: Deal 3 damage. Each of your companions gains 3 Primed. Consume. |
 
 ### Assemble
 
 | Card | Rarity | Type | Cost | Text |
 |---|---|---|---|---|
 | Countermeasure Grid | common | trap | 1 | When you or an ally is attacked: Deal 5 damage to the attacker. Gain 5 Barrier. |
-| Jumpstart | common | skill | 1 | All your allies act now. Gain 4 Barrier. |
-| Ping | common | skill | 0 | All your allies act now. Consume. |
+| Jumpstart | common | skill | 1 | Each of your companions gains 3 Primed. Gain 4 Barrier. |
+| Ping | common | skill | 0 | Each of your companions gains 2 Primed. Consume. |
 | Relay Strike | common | attack | 1 | Deal 6 damage. All your allies act now. |
-| Sync Pulse | common | skill | 1 | All your allies act now. Heal 3. Your companions gain 3 max HP. |
+| Sync Pulse | common | skill | 1 | Heal 3. Your companions gain 3 max HP. Draw 1 card. |
 | Tandem Strike | common | attack | 1 | Deal 3 (+2 per card played this turn) damage. |
-| Arc Relay | uncommon | attack | 2 | Deal 5 damage to ALL enemies. All your allies act now. |
+| Arc Relay | uncommon | attack | 2 | Deal 6 damage to ALL enemies. Each of your companions gains 3 Primed. |
 | Assemble | uncommon | skill | 1 | All your allies act now. Draw 1 card. |
-| Clockwork Trap | uncommon | trap | 1 | When you lose 5+ HP at once: All your allies act now. Gain 8 Barrier. |
-| Echo Command | uncommon | skill | 1 | All your allies act now. All your allies act now. Next turn, lose 1 Mana. Consume. Hold. |
-| Link Up | uncommon | skill | 1 | All your allies act now. Gain 4 Barrier to all friends. |
-| Overdrive | uncommon | skill | 1 | Apply 1 Might to all friends. All your allies act now. |
-| Overwatch | uncommon | trap | 1 | When you or an ally is attacked: All your allies act now. Deal 6 damage to the attacker. |
+| Clockwork Trap | uncommon | trap | 1 | When you lose 5+ HP at once: Each of your companions gains 3 Primed. Gain 8 Barrier. |
+| Echo Command | uncommon | skill | 1 | Each of your companions gains 5 Primed. Consume. |
+| Link Up | uncommon | skill | 1 | Gain 4 Barrier to all friends. Draw 1 card. |
+| Overdrive | uncommon | skill | 1 | Apply 1 Might to all friends. Each of your companions gains 2 Primed. |
+| Overwatch | uncommon | trap | 1 | When you or an ally is attacked: Each of your companions gains 3 Primed. Deal 6 damage to the attacker. |
 | Resonant Pulse | uncommon | aura | 1 | Whenever you play a Skill: Heal 1. Your companions gain 1 max HP. |
-| Surge Protocol | uncommon | skill | 0 | Apply equal to the Mana spent Might to all friends. All your allies act now. |
-| Chain Reaction | rare | skill | 2 | All your allies act now. All your allies act now. Draw 1 card. |
+| Surge Protocol | uncommon | skill | 0 | Apply Might equal to the Mana spent to all friends. |
+| Chain Reaction | rare | skill | 2 | Draw 2 cards. Each of your companions gains 4 Primed. |
 | Command Chip | rare | aura | 3 | Whenever you play a Summon: All your allies act now. |
-| Double Time | rare | skill | 2 | All your allies act now. All your allies act now. |
+| Double Time | rare | skill | 2 | Each of your companions gains 6 Primed. |
 | EMP | rare | trap | 1 | When you or an ally is attacked: Stun the attacker for 1 turn. |
-| Grand Assembly | rare | skill | 2 | All your allies act now. All your allies act now. Apply 1 Might to all friends. Consume. |
-| Overload | rare | skill | 2 | All your allies act now. All your allies act now. All your allies act now. Consume. |
-| Perpetual Motion | rare | aura | 2 | At the start of your turn: All your allies act now. |
-| Overclocked Legion | legendary | skill | 2 | Apply 3 Might to all friends. All your allies act now. All your allies act now. Consume. |
+| Grand Assembly | rare | skill | 2 | Apply 2 Might to all friends. Consume. |
+| Overload | rare | skill | 2 | Each of your companions gains 10 Primed. Consume. |
+| Perpetual Motion | rare | aura | 2 | At the start of your turn: Each of your companions gains 2 Primed. |
+| Overclocked Legion | legendary | aura | 2 | Apply 2 Might to all friends. At the start of your turn: Each of your companions gains 3 Primed. |
 
 ### Core
 
@@ -191,7 +191,7 @@ cost and effects whose numbers differ by about a third or less. "Shared" cards b
 | Reactor Meltdown | rare | skill | 0 | Deal damage equal to the target's HP to ALL enemies. Sacrifice the chosen ally. Consume. |
 | Siege Engine | rare | summon | 2 | Summon Siege Engine (16 HP). At the end of your turn it will: Deal 13 damage. |
 | War Engine | rare | summon | 3 | Summon War Engine (22 HP). At the end of your turn it will: Deal 9 damage. |
-| The Foundry Awakens | legendary | aura | 3 | At the start of your turn: Summon Siege Engine (16 HP). At the end of your turn it will: Deal 13 damage. All your allies act now. |
+| The Foundry Awakens | legendary | aura | 3 | At the start of your turn: Summon Siege Engine (16 HP). At the end of your turn it will: Deal 13 damage. Each of your companions gains 3 Primed. |
 
 ### Shared
 
@@ -204,7 +204,7 @@ cost and effects whose numbers differ by about a third or less. "Shared" cards b
 | Overcharge | uncommon | skill | 0 | Gain 2 Mana. Next turn, lose 1 Mana. Consume. |
 | Factory Floor | rare | aura | 2 | Whenever you summon an ally: Draw 1 card. |
 | Railgun | rare | attack | 3 | Deal 30 damage. |
-| Relay Network | rare | aura | 2 | Whenever one of your Traps is triggered: All your allies act now. |
+| Relay Network | rare | aura | 2 | Whenever one of your Traps is triggered: Each of your companions gains 3 Primed. |
 | Swarm Surge | rare | skill | 2 | Summon Patrol Drone (5 HP). At the end of your turn it will: Deal 4 damage. Draw cards equal to the number of your allies. Consume. |
 
 ## Kesh the Unfed (hunter)
@@ -265,7 +265,7 @@ cost and effects whose numbers differ by about a third or less. "Shared" cards b
 | Pack Frenzy | rare | skill | 2 | Gain 2 Might. All your allies act now. Consume. |
 | Unchained | rare | aura | 2 | Gain 3 Might for the rest of the fight. |
 | Wild Hunt | rare | aura | 3 | At the start of your turn: All your allies act now. |
-| Bloodmoon Hunt | legendary | skill | 2 | Summon 2 Hounds (8 HP each). At the end of your turn each will: Deal 4 damage. Apply 3 Might to each of your allies. All your allies act now. Consume. |
+| Bloodmoon Hunt | legendary | skill | 2 | Summon 2 Hounds (8 HP each). At the end of your turn each will: Deal 4 damage. Each of your companions gains 3 Might. All your allies act now. Consume. |
 
 ### Predator
 
@@ -470,7 +470,7 @@ cost and effects whose numbers differ by about a third or less. "Shared" cards b
 | Venom Fang | uncommon | attack | 2 | Deal 10 damage. Apply 5 Bleed. |
 | Cash In | rare | skill | 1 | The target loses HP equal to the target's Bleed. Consume. |
 | Compounding Interest | rare | aura | 2 | At the start of your turn: Apply 3 Bleed to ALL enemies. |
-| Contagion | rare | skill | 2 | Apply 2 Bleed. Apply equal to the target's Bleed Bleed to ALL enemies. Consume. |
+| Contagion | rare | skill | 2 | Apply 2 Bleed. Apply Bleed equal to the target's Bleed to ALL enemies. Consume. |
 | Festering Wound | rare | attack | 2 | Deal 8 (+1 per Bleed on the target) damage. |
 | Nightfall | rare | skill | 2 | Apply 5 Bleed to ALL enemies. Apply 2 Exposed to ALL enemies. Consume. |
 | Plague Bloom | rare | skill | 2 | Double the Bleed to ALL enemies (at most +12). Consume. |
@@ -525,35 +525,35 @@ cost and effects whose numbers differ by about a third or less. "Shared" cards b
 
 **Near-duplicates:**
 
-- **Splintering Burst** and **Forked Branch**: Deal 6 damage to ALL enemies. Plant Splinter. / Deal 8 damage to ALL enemies. Plant Hawk.
+- **Splintering Burst** and **Forked Branch**: Deal 7 damage to ALL enemies. Plant Splinter. / Deal 9 damage to ALL enemies. Plant Hawk.
 
 ### Totems
 
 | Card | Rarity | Type | Cost | Text |
 |---|---|---|---|---|
-| Barkskin Strike | common | attack | 1 | Deal 5 damage. Gain 4 Barrier. Plant Bear. |
+| Barkskin Strike | common | attack | 1 | Deal 6 damage. Gain 4 Barrier. Plant Bear. |
 | Echo Chamber | common | skill | 1 | Awaken your first totem (it stays). |
 | Elder's Shelter | common | skill | 1 | Plant Elder. Gain 4 Barrier. |
-| Feather Storm | common | attack | 1 | Deal 4 damage to ALL enemies. Plant Hawk. |
+| Feather Storm | common | attack | 1 | Deal 5 damage to ALL enemies. Plant Hawk. |
 | Frostbark | common | skill | 2 | Gain 4 Barrier. Plant Bear. Plant Elder. |
-| Spirit Strike | common | attack | 1 | Deal 6 (+2 per Spirit) damage. |
+| Spirit Strike | common | attack | 1 | Deal 7 (+2 per Spirit) damage. |
 | Bark Ward | uncommon | skill | 1 | Gain 7 Barrier. Plant Bear. Hold. |
 | Bear Pack | uncommon | skill | 1 | Plant Bear once per enemy. Consume. |
 | Bear's Patience | uncommon | skill | 1 | Plant Bear. Foresee 3. |
-| Forked Branch | uncommon | attack | 2 | Deal 8 damage to ALL enemies. Plant Hawk. |
-| Heartwood | uncommon | attack | 2 | Deal 6 damage 2 times. Plant Hawk. |
+| Forked Branch | uncommon | attack | 2 | Deal 9 damage to ALL enemies. Plant Hawk. |
+| Heartwood | uncommon | attack | 2 | Deal 7 damage 2 times. Plant Hawk. |
 | Shatter the Row | uncommon | skill | 0 | Gain Mana equal to half of the number of your totems. Draw cards equal to the number of your totems. Awaken your first 10 totems. Consume. |
 | Splinter Grove | uncommon | skill | 2 | Plant Splinter 2 times. |
-| Splintering Burst | uncommon | attack | 2 | Deal 6 damage to ALL enemies. Plant Splinter. |
-| Totem Driver | uncommon | attack | 1 | Deal 7 damage. Draw cards equal to half of the number of your totems. |
-| Awakened Blow | rare | attack | 1 | Deal 4 (+2 per totem) damage. |
-| Blazing Eye | rare | attack | 3 | Deal 18 damage to ALL enemies. Awaken your first 3 totems. |
+| Splintering Burst | uncommon | attack | 2 | Deal 7 damage to ALL enemies. Plant Splinter. |
+| Totem Driver | uncommon | attack | 1 | Deal 8 damage. Draw cards equal to half of the number of your totems. |
+| Awakened Blow | rare | attack | 1 | Deal 5 (+2 per totem) damage. |
+| Blazing Eye | rare | attack | 3 | Deal 19 damage to ALL enemies. Awaken your first 3 totems. |
 | Bulwark Totem | rare | skill | 2 | Gain 4 (+3 per totem) Barrier. Gain 1 Bracing. |
 | Echo Cascade | rare | skill | 2 | Awaken your first totem 3 times (it stays). Consume. |
-| Toppling Row | rare | attack | 2 | Deal 8 (+4 per totem) damage to ALL enemies. Awaken your first 3 totems. Consume. |
+| Toppling Row | rare | attack | 2 | Deal 9 (+4 per totem) damage to ALL enemies. Awaken your first 3 totems. Consume. |
 | Totem Ring | rare | skill | 3 | Gain 8 Barrier. Plant Bear 3 times. |
 | Totem Trap | rare | trap | 2 | When you or an ally is attacked: Cancel that attack. Plant Bear. |
-| Cataclysm Totem | legendary | attack | 2 | Deal 10 damage to ALL enemies. Awaken your first 10 totems 2 times. Consume. |
+| Cataclysm Totem | legendary | attack | 2 | Deal 11 damage to ALL enemies. Awaken your first 10 totems 2 times. Consume. |
 
 ### Elements
 
@@ -561,24 +561,24 @@ cost and effects whose numbers differ by about a third or less. "Shared" cards b
 |---|---|---|---|---|
 | Clear Spring | common | skill | 1 | Draw 2 cards. |
 | Elemental Focus | common | skill | 0 | Gain 1 Spirit. Consume. |
-| Ember Toss | common | attack | 1 | Deal 3 (+1 per Spirit) damage to ALL enemies. |
-| Frost Needle | common | attack | 1 | Deal 4 (+1 per Spirit) damage. Apply 1 Faltering. |
-| Spark Lash | common | attack | 1 | Deal 5 (+1 per Spirit) damage. |
+| Ember Toss | common | attack | 1 | Deal 4 (+1 per Spirit) damage to ALL enemies. |
+| Frost Needle | common | attack | 1 | Deal 5 (+1 per Spirit) damage. Apply 1 Faltering. |
+| Spark Lash | common | attack | 1 | Deal 6 (+1 per Spirit) damage. |
 | Stone Skin | common | skill | 1 | Gain 6 (+2 per Spirit) Barrier. |
-| Arc Lightning | uncommon | attack | 1 | Deal 3 (+1 per Spirit) damage 3 times to a random enemy. |
+| Arc Lightning | uncommon | attack | 1 | Deal 4 (+1 per Spirit) damage 3 times to a random enemy. |
 | Earthen Rampart | uncommon | aura | 1 | At the start of your turn: Gain 2 (+1 per Spirit) Barrier. |
-| Fire Bloom | uncommon | attack | 2 | Deal 10 (+2 per Spirit) damage. |
-| Gathering Storm | uncommon | attack | 1 | Deal 4 damage, plus all it has grown. Every copy of this card gains 2 damage for the rest of the fight. |
+| Fire Bloom | uncommon | attack | 2 | Deal 11 (+2 per Spirit) damage. |
+| Gathering Storm | uncommon | attack | 1 | Deal 5 damage, plus all it has grown. Every copy of this card gains 2 damage for the rest of the fight. |
 | Glacial Ward | uncommon | skill | 1 | Gain 8 (+2 per Spirit) Barrier. Apply 1 Faltering to ALL enemies. |
 | Inner Flame | uncommon | skill | 1 | Gain 2 Spirit. Consume. |
 | Quench | uncommon | skill | 1 | Gain 6 Barrier. Draw 1 card. |
-| Storm Call | uncommon | attack | 2 | Deal 5 (+2 per Spirit) damage to ALL enemies. Apply 1 Exposed to ALL enemies. |
+| Storm Call | uncommon | attack | 2 | Deal 6 (+2 per Spirit) damage to ALL enemies. Apply 1 Exposed to ALL enemies. |
 | Tidecaller | uncommon | skill | 0 | Gain 1 Mana. Draw 1 card. Consume. |
-| Deep Freeze | rare | attack | 2 | Deal 12 (+2 per Spirit) damage. Stun the target for 1 turn. |
-| Firestorm | rare | attack | 2 | Deal 8 (+2 per Spirit) damage to ALL enemies. Gain 1 Spirit. |
+| Deep Freeze | rare | attack | 2 | Deal 13 (+2 per Spirit) damage. Stun the target for 1 turn. |
+| Firestorm | rare | attack | 2 | Deal 9 (+2 per Spirit) damage to ALL enemies. Gain 1 Spirit. |
 | Mountain's Heart | rare | skill | 2 | Gain 15 (+3 per Spirit) Barrier. Consume. |
-| Prismatic Cascade | rare | attack | 2 | Deal 4 (+1 per Spirit) damage 3 times to ALL enemies. |
-| Skybreaker | rare | attack | 2 | Deal 24 (+3 per Spirit) damage. Consume. |
+| Prismatic Cascade | rare | attack | 2 | Deal 5 (+1 per Spirit) damage 3 times to ALL enemies. |
+| Skybreaker | rare | attack | 2 | Deal 25 (+3 per Spirit) damage. Consume. |
 | Spiritfont | rare | aura | 2 | At the start of your turn: Gain 1 Spirit. |
 | Stormcrown | rare | aura | 2 | At the end of your turn: Deal damage equal to 2 times your Spirit to ALL enemies. |
 | Avatar of the Elements | legendary | aura | 3 | At the start of your turn: Gain 1 Spirit. Deal damage equal to your Spirit to ALL enemies. |
@@ -589,9 +589,9 @@ cost and effects whose numbers differ by about a third or less. "Shared" cards b
 |---|---|---|---|---|
 | Drum Circle | common | skill | 1 | Draw 1 card. Draw cards equal to half of the number of your Auras. |
 | Ember Rite | common | aura | 0 | At the end of your turn: Gain 3 Barrier. |
-| Rite of Thorns | common | aura | 0 | At the start of your turn: Deal 3 damage to a random enemy. |
+| Rite of Thorns | common | aura | 0 | At the start of your turn: Deal 4 damage to a random enemy. |
 | Rite of Warding | common | skill | 1 | Gain 5 (+2 per Aura you have) Barrier. |
-| Rite Strike | common | attack | 1 | Deal 5 (+2 per Aura you have) damage. |
+| Rite Strike | common | attack | 1 | Deal 6 (+2 per Aura you have) damage. |
 | Tune the Spirits | common | aura | 1 | Gain 1 Spirit. Gain 1 totem slot. |
 | Ancestral Learning | uncommon | aura | 1 | Whenever you play an Aura: Draw 1 card. |
 | Bark Carapace | uncommon | aura | 1 | At the end of your turn: Gain Barrier equal to the number of your totems. |
@@ -607,7 +607,7 @@ cost and effects whose numbers differ by about a third or less. "Shared" cards b
 | Fevered Communion | rare | aura | 2 | Gain 1 Spirit. Whenever you play an Aura: Gain 1 Spirit. |
 | Gathering Elders | rare | aura | 2 | Whenever you play a Skill: Plant Elder. |
 | Hawkstorm | rare | aura | 2 | At the end of your turn: Deal damage equal to the number of your totems to ALL enemies. |
-| Skyfall Rite | rare | attack | 2 | Deal 8 (+2 per Aura you have) damage to ALL enemies. Consume. |
+| Skyfall Rite | rare | attack | 2 | Deal 9 (+2 per Aura you have) damage to ALL enemies. Consume. |
 | Unending Call | rare | aura | 2 | At the end of your turn: Awaken your first totem (it stays). |
 | The Great Pole | legendary | aura | 3 | Gain 3 totem slots. Gain 3 Spirit. At the start of your turn: Plant Elder. |
 
@@ -623,7 +623,7 @@ cost and effects whose numbers differ by about a third or less. "Shared" cards b
 | Owl Cut | rare | skill | 1 | Plant Owl. Draw 1 card. |
 | Root Tap | rare | skill | 2 | From your next turn, gain 1 more Mana every turn for the rest of the fight. Gain 6 Barrier. Consume. |
 | Sap Offering | rare | aura | 2 | Gain 3 Spirit. At the start of your turn: Lose 1 HP. |
-| Spirit Wave | rare | attack | 2 | Deal 11 damage to ALL enemies. Awaken your first totem. |
+| Spirit Wave | rare | attack | 2 | Deal 12 damage to ALL enemies. Awaken your first totem. |
 
 ## Sehra (barbarian)
 
