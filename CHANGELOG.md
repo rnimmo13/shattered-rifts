@@ -5,6 +5,7 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **Kesh:** Call Gnashlings is gone (old decks get Thick Hide), and Litter summons 2 Gnashlings.
 - **Kesh** can have 2 companions at once (was 3).
 - **Kesh:** the Hound has 5 HP and hits for 3, Savage Bite deals 6 (8 upgraded), Feeding Time gives 3 max HP.
 - **Stun cards** apply only Stun (no extra Exposed); rare and Legendary ones Stun for 2 turns. Card text says how many turns.

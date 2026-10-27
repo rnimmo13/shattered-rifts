@@ -58,7 +58,7 @@ describe('cards taken out of the game (DECISIONS #312)', () => {
     const back = parseRun(text);
     expect(back).not.toBeNull();
     const tail = back!.deck.slice(-4);
-    expect(tail).toEqual(['rend', 'call-gnashlings+', 'hi~pack-tactics', 'hold^call-gnashlings']);
+    expect(tail).toEqual(['rend', 'thick-hide+', 'hi~pack-tactics', 'hold^thick-hide']);
     for (const id of Object.keys(RETIRED_CARDS)) expect(COMBAT_DB.cards[id]).toBeUndefined();
     expect(canonicalCard('strike')).toBe('strike');
   });

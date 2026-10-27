@@ -576,11 +576,12 @@ export const LEGACY_HERO_IDS: Readonly<Record<string, HeroId>> = {
 
 /**
  * Cards taken out of the game, and the card each becomes wherever an old save or deck still holds it (DECISIONS #312): a run, a
- * saved Arena deck, a ghost. Its Sanctum roll, engraving and upgrade carry over ("hi~heel+" becomes "hi~call-gnashlings+").
+ * saved Arena deck, a ghost. Its Sanctum roll, engraving and upgrade carry over ("hi~heel+" becomes "hi~thick-hide+").
  */
 export const RETIRED_CARDS: Readonly<Record<string, string>> = {
   'guard-dog': 'rend',
-  heel: 'call-gnashlings',
+  heel: 'thick-hide',
+  'call-gnashlings': 'thick-hide',
   howl: 'pack-tactics',
 };
 

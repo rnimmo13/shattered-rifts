@@ -154,10 +154,6 @@ export const HUNTER: CardDef[] = [
   ]),
 
   // --- Pack ---
-  k('common', 'call-gnashlings', 'Call Gnashlings', 'summon', 1, 'none', [
-    summon('gnashling'),
-    summon('gnashling'),
-  ]),
   k('common', 'pack-tactics', 'Pack Tactics', 'skill', 1, 'none', [
     status('might', 1),
     barrier(4, 'allFriends'),
@@ -341,11 +337,8 @@ export const HUNTER: CardDef[] = [
     status('might', 2),
     barrier(6, 'allFriends'),
   ]),
-  k('uncommon', 'litter', 'Litter', 'skill', 2, 'none', [
-    summon('gnashling'),
-    summon('gnashling'),
-    summon('gnashling'),
-  ]),
+  // (two Gnashlings, the frailer pups: DECISIONS #316)
+  k('uncommon', 'litter', 'Litter', 'skill', 2, 'none', [summon('gnashling'), summon('gnashling')]),
   k('uncommon', 'bone-collar', 'Bone Collar', 'power', 1, 'none', [
     on('allyDies', [status('might', 2), heal(4)]),
   ]),
