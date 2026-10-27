@@ -29,6 +29,49 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.103.0',
+    date: '2026-10-27',
+    title: 'Machines, Primed and growing companions',
+    summary:
+      'Rivet’s three build paths pull apart, companions grow when healed, Valeria and Rivet get new starting kits, and Ilvane hits harder.',
+    notes: [
+      {
+        kind: 'changed',
+        text: 'Companions grow: a heal on a companion gives it that much max HP (and HP) instead of mending it. Rivet’s Tinkerer gives each companion 1 max HP a turn.',
+      },
+      {
+        kind: 'changed',
+        text: 'Rivet: Swarm goes wide (many drones, spent freely) and Core goes tall (one big machine you build up). New Core cards Crankshaft, Reinforced Frame and Heavy Hitter read your biggest companion, and Reactor Meltdown deals the HP of the ally it blows up.',
+      },
+      {
+        kind: 'changed',
+        text: 'Rivet: only Assemble, Relay Strike and Command Chip make companions act now. The rest of Assemble charges them up with Primed, and companions now spend Primed on their next strike.',
+      },
+      {
+        kind: 'balance',
+        text: 'Rivet’s cheaper companions have less HP: Patrol Drone 5, Micro Drone 3, Sentry Turret 7, Repair Bot 4, Enforcer Mk.II 12.',
+      },
+      {
+        kind: 'balance',
+        text: 'Ilvane: every damage number on his cards is 1 higher; Hawk deals 4 a turn and Awakens for 10, Splinter Awakens for 7.',
+      },
+      {
+        kind: 'changed',
+        text: 'Valeria: Devotion costs show just the number; Sunfall and Sunforged Edge show an X. Sunfall strikes 2 different random enemies.',
+      },
+      {
+        kind: 'new',
+        text: 'New starting kits for all of Valeria’s build paths and for Rivet’s Swarm and Assemble.',
+      },
+      {
+        kind: 'fixed',
+        text: 'An upgraded Gathering Storm grows with the others, and Reactor Meltdown shows its real damage while you aim it.',
+      },
+    ],
+    heads:
+      'The rules changed: reload if the game asks you to. Arena games and replays from before this version can no longer be watched. Retired cards in saved decks are swapped for their replacements.',
+  },
+  {
     version: '0.102.0',
     date: '2026-10-27',
     title: 'Back on your feet',
