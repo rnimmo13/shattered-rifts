@@ -29,6 +29,28 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.93.0',
+    date: '2026-10-27',
+    title: 'A smaller pack, Stun cards tidied',
+    summary: 'Kesh runs a smaller, frailer pack, and Stun cards apply only Stun, longer on rare ones.',
+    notes: [
+      {
+        kind: 'balance',
+        text: 'Kesh: she can have 2 companions at once (was 3). Her Hound has 5 HP and hits for 3, Savage Bite deals 6 (8 upgraded), and Feeding Time gives 3 max HP.',
+      },
+      {
+        kind: 'balance',
+        text: 'Kesh: Call Gnashlings is gone (a saved deck that held it, or Heel, gets Thick Hide), and Litter is switched off for now (a deck that has it keeps it).',
+      },
+      {
+        kind: 'balance',
+        text: 'Stun cards apply only Stun (no extra Exposed: Stun already counts as Exposed). Rare and Legendary ones Stun for 2 turns: Override Virus, Silencing Trap, The Perfect Trap, The Long Ambush. Cards now say how many turns.',
+      },
+    ],
+    heads:
+      'The rules changed: reload if the game asks you to. Arena games and replays from before this version can no longer be watched.',
+  },
+  {
     version: '0.92.0',
     date: '2026-10-27',
     title: 'Stun reworked, Kesh retuned',
