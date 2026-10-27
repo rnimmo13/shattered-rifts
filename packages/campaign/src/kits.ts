@@ -10,12 +10,12 @@ import type { KitOption } from './types';
 type Kit = [string, string, string];
 export const KIT_CARDS: Record<HeroId, [Kit, Kit, Kit]> = {
   knight: [
-    ['shield-charge', 'oath-of-iron', 'bulwark-blow'],
-    ['mirrored-aegis', 'caltrops', 'thornmail'],
-    ['heartening-hymn', 'hymn-of-reckoning', 'lightbearer'],
+    ['bulwark-sweep', 'shield-charge', 'tower-shield'],
+    ['mirrored-aegis', 'thorn-volley', 'barbed-oath'],
+    ['sacred-vow', 'hymn-of-reckoning', 'lightbearer'],
   ],
   engineer: [
-    ['scrap-heap', 'overcharge-blast', 'breach-charge'],
+    ['overcharge-blast', 'call-turret', 'breach-charge'],
     ['link-up', 'arc-relay', 'relay-strike'],
     ['upgrade-chip', 'bulwark-frame', 'build-enforcer'],
   ],

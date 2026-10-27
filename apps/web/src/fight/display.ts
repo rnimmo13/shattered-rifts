@@ -181,7 +181,10 @@ export function reduceEvent(db: CombatDb, s: CombatState, e: CombatEvent): void 
     }
     case 'heal': {
       const u = unitOf(s, e.target);
-      if (u) u.hp = Math.min(u.maxHp, u.hp + e.amount);
+      if (!u) return;
+      // (a companion grows instead of healing: its max HP comes with the event)
+      if (e.maxHp !== undefined) u.maxHp = e.maxHp;
+      u.hp = Math.min(u.maxHp, u.hp + e.amount);
       return;
     }
     case 'status': {

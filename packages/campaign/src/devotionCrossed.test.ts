@@ -37,14 +37,18 @@ describe('copies a deck may take (DECISIONS #337)', () => {
 });
 
 describe("Valeria's Devotion kit", () => {
-  it('comes with a card that spends Devotion, and a heal that pays for it', () => {
+  it('comes with a card that spends Devotion, and heals that pay for it within two turns', () => {
     const kit = makeKits('knight')[2]!.deck.map((id) => COMBAT_DB.cards[id]!);
     const spender = kit.find((c) => c.statusCost?.status === 'devotion');
     expect(spender).toBeTruthy();
-    const healed = kit
-      .flatMap((c) => c.effects)
-      .filter((o) => o.op === 'heal')
-      .reduce((n, o) => Math.max(n, (o as { amount: number }).amount), 0);
+    // a heal now counts once, an Aura's heal (Sacred Vow) twice: two turns of it
+    let healed = 0;
+    for (const c of kit)
+      for (const o of c.effects) {
+        if (o.op === 'heal') healed += o.amount;
+        if (o.op === 'power')
+          for (const p of o.ops) if (p.op === 'heal') healed += 2 * p.amount;
+      }
     expect(healed).toBeGreaterThanOrEqual(spender!.statusCost!.amount);
   });
 });

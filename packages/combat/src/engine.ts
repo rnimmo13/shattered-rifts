@@ -374,6 +374,13 @@ function attackHit(r: Run, a: Act, t: Unit, base: number, single = false): numbe
 /** Heal a unit by up to `n` (never past its max HP). A hero's side hears of the whole heal, even what full HP wasted. */
 function healUnit(r: Run, t: Unit, n: number): void {
   if (n <= 0 || t.hp <= 0) return;
+  // a heal never mends a companion: it grows it, as much max HP and HP (DECISIONS #356)
+  if (t.kind === 'ally') {
+    t.maxHp += n;
+    t.hp += n;
+    r.ev.push({ type: 'heal', target: t.id, amount: n, hp: t.hp, maxHp: t.maxHp });
+    return;
+  }
   const k = Math.min(n, t.maxHp - t.hp);
   if (k > 0) {
     t.hp += k;
@@ -632,7 +639,7 @@ function execOp(r: Run, a: Act, op: Op): void {
         if (n <= 0) continue;
         t.maxHp += n;
         t.hp += n;
-        r.ev.push({ type: 'heal', target: t.id, amount: n, hp: t.hp });
+        r.ev.push({ type: 'heal', target: t.id, amount: n, hp: t.hp, maxHp: t.maxHp });
       }
       return;
     case 'heal':

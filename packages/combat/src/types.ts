@@ -747,7 +747,8 @@ export type CombatEvent =
       /** Barrier left after the drop (Fortified keeps some) */ total?: number;
     }
   /** `hp`: the target's HP after the heal (for the battle log) */
-  | { type: 'heal'; target: UnitId; amount: number; hp?: number }
+  /** `maxHp`: set when the unit grew (a companion healed, or growHp), its new max HP */
+  | { type: 'heal'; target: UnitId; amount: number; hp?: number; maxHp?: number }
   | { type: 'status'; target: UnitId; status: StatusId; amount: number; total: number }
   | { type: 'summon'; side: Side; unit: UnitId; def: string; index: number }
   | {

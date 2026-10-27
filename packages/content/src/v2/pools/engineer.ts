@@ -193,7 +193,7 @@ export const ENGINEER: CardDef[] = [
   ]),
   r('uncommon', 'upgrade-chip', 'Upgrade Chip', 'skill', 1, 'ally', [
     status('might', 2, 'target'),
-    heal(6, 'target'),
+    growHp(6, 'target'),
   ]),
   r('rare', 'siege-engine', 'Siege Engine', 'summon', 2, 'none', [summon('siege-engine')]),
   r('rare', 'war-engine', 'War Engine', 'summon', 3, 'none', [summon('war-engine')]),
@@ -317,7 +317,7 @@ export const ENGINEER: CardDef[] = [
 
   // --- brought back for the 20/30/25 rarity target (DECISIONS #341) ---
   r('uncommon', 'patch-job', 'Patch Job', 'skill', 0, 'ally', [
-    heal(8, 'target'),
+    growHp(8, 'target'),
     barrier(3, 'target'),
   ]),
   r('rare', 'relay-network', 'Relay Network', 'power', 2, 'none', [on('snare', [ACT])]),

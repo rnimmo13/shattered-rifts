@@ -489,7 +489,14 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
     }
     case 'heal': {
       const a = amountText(o.amount, o.scale);
-      return `Heal ${a.equal ? `HP equal to ${a.num}` : a.num}${o.to === 'self' ? '' : who[o.to]}.`;
+      const n = a.equal ? `HP equal to ${a.num}` : a.num;
+      // healing a companion grows it instead (DECISIONS #356), so say so
+      if (o.to === 'allFriends')
+        return a.equal
+          ? `Heal ${n}. Your companions gain as much max HP.`
+          : `Heal ${n}. Your companions gain ${n} max HP.`;
+      if (o.to === 'allAllies') return `Your companions gain ${a.equal ? `max HP equal to ${a.num}` : `${n} max HP`}.`;
+      return `Heal ${n}${o.to === 'self' ? '' : who[o.to]}.`;
     }
     case 'cleanse': {
       const noun =

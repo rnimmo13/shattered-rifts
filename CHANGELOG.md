@@ -5,6 +5,8 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **Companions grow:** a heal on a companion gives it that much max HP instead (Rivet's Tinkerer, Sync Pulse, Primal Feast...).
+- **New starting kits:** Valeria (Bulwark: Bulwark Sweep, Shield Charge, Tower Shield; Thorns: Mirrored Aegis, Thorn Volley, Barbed Oath; Devotion: Sacred Vow, Hymn of Reckoning, Lightbearer) and Rivet's Swarm (Overcharge Blast, Call Turret, Breach Charge).
 - **Resolve:** losing a fight with Resolve left retries it at full HP (was at least half).
 - **KP:** the Hangover build path is rebuilt around drinking: drinks (Liquid Lunch, Swig, One for the Road, Bottoms Up...) pay off now and leave a **Hangover**, HP you lose at the start of your next turn (never your last). Bottle to the Head, Bender and Haymaker hit harder the more you carry, Hair of the Dog and Sweat It Out clear it, and his heals (Sob Story, Liquid Dinner, Pass Out, Bottomless Flask) grow with the HP you are missing. Glass Trap, Glazier, Spare Change, Double Glazing, Trolley Barricade and Glass Underfoot are retired.
 - **Ilvane:** an upgraded Gathering Storm grows with the rest (it made a new copy instead).

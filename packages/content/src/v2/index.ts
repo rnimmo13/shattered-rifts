@@ -84,7 +84,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     role: 'Engineer',
     trait: {
       name: 'Tinkerer',
-      text: 'At the start of your turn, you and your companions heal 1.',
+      text: 'At the start of your turn, you heal 1 and your companions gain 1 max HP.',
       turnStart: [heal(1, 'allFriends')],
     },
     hero: { id: 'engineer', name: 'Rivet', maxHp: 70, mana: 3, handSize: 5, startUnits: ['drone'] },
