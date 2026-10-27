@@ -29,6 +29,40 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.101.0',
+    date: '2026-10-27',
+    title: 'Elements and the morning after',
+    summary: 'Ilvane casts the Elements, KP drinks now and pays tomorrow, and every Warden leaves a Gift.',
+    notes: [
+      {
+        kind: 'new',
+        text: 'Ilvane: the Whittling build path is now Elements, lightning, ice, fire, water and earth spells that grow with Spirit. Gathering Storm grows every time you cast it, and the Legendary is Avatar of the Elements.',
+      },
+      {
+        kind: 'new',
+        text: 'KP: the Hangover build path is rebuilt around drinking. Drinks pay off now and leave a Hangover, HP you lose at the start of your next turn (never your last). Some cards hit harder the more you carry, Hair of the Dog and Sweat It Out clear it, and his heals grow with the HP you are missing.',
+      },
+      {
+        kind: 'changed',
+        text: 'The last Warden leaves a Gift too, and a Warden’s Gift always has cards.',
+      },
+      {
+        kind: 'balance',
+        text: 'Ilvane: the Bear totem gives 2 Barrier at the end of your turn (was 1).',
+      },
+      {
+        kind: 'fixed',
+        text: 'Leaderboard: a run could be left off the board after a busy day of play. Only recorded runs count against the limits now.',
+      },
+      {
+        kind: 'fixed',
+        text: 'Devotion costs show a ⚜ (the old cross read like a plus).',
+      },
+    ],
+    heads:
+      'The rules changed: reload if the game asks you to. Arena games and replays from before this version can no longer be watched. Retired cards in saved decks are swapped for their replacements.',
+  },
+  {
     version: '0.100.0',
     date: '2026-10-27',
     title: 'Shields you can see',

@@ -161,6 +161,8 @@ function addStatus(r: Run, u: Unit, st: StatusId, amount: number): boolean {
   }
   // Fortified is on or off: a second source adds nothing (DECISIONS #347)
   if (st === 'fortified') total = Math.min(total, 1);
+  // Hangover stops at HANGOVER_MAX, so the cards that grow with it stay in reach (DECISIONS #354)
+  if (st === 'hangover') total = Math.min(total, HANGOVER_MAX);
   if (total <= 0) delete u.statuses[st];
   else u.statuses[st] = total;
   r.ev.push({ type: 'status', target: u.id, status: st, amount, total: Math.max(0, total) });
@@ -1343,6 +1345,8 @@ function actEnemy(r: Run, u: Unit): void {
 
 /** The share of your Barrier that Fortified keeps each turn (75%; 50% if testing says it is too strong). */
 export const FORTIFIED_KEEP = 0.75;
+/** The most Hangover a unit can carry. */
+export const HANGOVER_MAX = 10;
 
 /** barrier falls away, Seared burns, then (for a hero side) mana refills and the hand is drawn */
 function startOfTurn(r: Run, side: Side): void {
@@ -1370,7 +1374,9 @@ function startOfTurn(r: Run, side: Side): void {
     const owed = stacks(u, 'hangover');
     if (owed <= 0 || u.hp <= 0) continue;
     addStatus(r, u, 'hangover', -owed);
-    const lost = applyDamage(r, null, u, Math.min(owed, u.hp - 1), 'direct');
+    const due = Math.min(owed, u.hp - 1);
+    if (due <= 0) continue;
+    const lost = applyDamage(r, null, u, due, 'direct');
     if (lost > 0 && u.kind === 'hero') fireTriggers(r, sd, 'loseHp');
   }
   reap(r);

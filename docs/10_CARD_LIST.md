@@ -776,7 +776,7 @@ Starter: Strike, Strike, Strike, Defend, Defend, Defend, Hammer Swing, Hammer Sw
 | Drunken Swing | 1 | attack | common | Deal 12 damage. Gain 3 Hangover. |
 | Bottle to the Head | 1 | attack | common | Deal 5 (+2 per Hangover) damage. |
 | Sob Story | 1 | skill | common | Heal 3 (+1 per 8% HP missing). Draw 1 card. Consume. |
-| Sweat It Out | 1 | skill | common | Gain 4 Barrier. Heal HP equal to 2 times your Hangover. Clear your Hangover. |
+| Sweat It Out | 1 | skill | common | Gain 4 Barrier. Heal HP equal to your Hangover. Clear your Hangover. Consume. |
 | Smash the Pane | 2 | attack | uncommon | Deal 8 (+1 per 4% HP missing) damage. |
 | Pump Action | 1 | skill | uncommon | Add 2 Buckshot Shells to your hand. Draw 1 card. |
 | Shotgun Wedding | 2 | attack | uncommon | Deal 7 damage 2 times to ALL enemies. |
@@ -800,7 +800,7 @@ Starter: Strike, Strike, Strike, Defend, Defend, Defend, Hammer Swing, Hammer Sw
 | Mean Drunk | 2 | aura | uncommon | Whenever you lose HP to your own cards: Gain 1 Might until the end of your turn. Gain 2 Barrier. |
 | Double Tap | 1 | skill | uncommon | Add an Old Twelve Gauge to your hand. |
 | Bandolier | 1 | aura | uncommon | Whenever you play a shell: Gain 2 Barrier. |
-| Swig | 0 | skill | uncommon | Gain 3 Might until the end of your turn. Gain 3 Hangover. |
+| Swig | 0 | skill | uncommon | Gain 3 Might until the end of your turn. Gain 3 Hangover. Consume. |
 | Barroom Brawl | 2 | attack | uncommon | Deal 10 damage to ALL enemies. Gain 3 Hangover. |
 | Black Out | 1 | skill | uncommon | Gain 14 Barrier. Gain 4 Hangover. |
 | Bender | 1 | attack | uncommon | Deal 3 damage, 1 more time per Hangover. |

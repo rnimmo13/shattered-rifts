@@ -166,7 +166,7 @@ export const STATUS_INFO: Record<
     name: 'Hangover',
     glyph: '🍺',
     tone: 'bad',
-    text: 'At the start of your next turn you lose this much HP (never your last one), then it clears. Some of KP\'s cards hit harder the more of it you carry.',
+    text: 'At the start of your next turn you lose this much HP (never your last one), then it clears. It stops at 10. Some of KP\'s cards hit harder the more of it you carry.',
   },
   holdfast: {
     name: 'Holdfast',

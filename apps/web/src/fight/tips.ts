@@ -73,7 +73,7 @@ export const TIP_RULES: TipRule[] = [
   {
     id: 'hangover',
     title: 'Hangover',
-    text: 'Drinks pay off now and leave a Hangover: at the start of your next turn you lose that much HP, but never your last one. Drop under half HP and Clutch Genes makes you hit harder; Hair of the Dog or Sweat It Out clears it.',
+    text: 'Drinks pay off now and leave a Hangover: at the start of your next turn you lose that much HP, but never your last one. It stops at 10. Drop under half HP and Clutch Genes makes you hit harder; Sweat It Out and Pass Out clear it, Hair of the Dog trades it for a little one.',
     when: (v) => !!hero(v)?.statuses.hangover,
   },
   {

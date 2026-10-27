@@ -1,8 +1,8 @@
 // DRUNKARD, the Homeless Drunk (the Midden, the rift's rubbish heap). A short, fat, bald dwarf with a hammer, a sawed-off 12 gauge and a shopping trolley of
 // window panes. No companions. Three build paths:
-//   Junk Traps - a few booby traps built from bottles and glass (Traps are a shared tool; Vesper still owns the most)
-//   Glass      - hang panes of glass: Barrier and Thorns, then break them over someone's head
-//   Shells     - Buckshot Shells (0-cost, hit EVERY enemy, consumed) and liquid courage to keep swinging
+//   Gun        - the Old Twelve Gauge: it hits every enemy, and Sharpen cards make it hit harder for the fight
+//   Shells     - Buckshot Shells (0-cost, hit EVERY enemy, consumed) and a few junk Traps
+//   Hangover   - drink now, pay tomorrow: drinks leave Hangover (HP lost next turn), payoffs grow with it, heals grow with missing HP
 // Shells are KP's alone, the way Sleeve Knives are Quill's: a shell hits the whole room for a little, a knife one enemy.
 
 import type { CardDef, Op } from '@sr/combat';
@@ -103,7 +103,7 @@ export const DRUNKARD: CardDef[] = [
   p('legendary', 'one-more-round', 'One More Round', 'power', 3, 'none', [
     on('turnStart', [addTo('buckshot-shell', 3), heal(3)]),
   ]),
-  // Hangover: Barrier that grows as you hurt, and every wound you deal yourself cuts every enemy (DECISIONS #338)
+  // Hangover: Barrier that grows as you hurt, and every wound you deal yourself (a Hangover too) cuts every enemy (DECISIONS #338, #354)
   p('legendary', 'the-glass-palace', 'The Glass Palace', 'power', 3, 'none', [
     on('turnStart', [scaled(barrier(6), per('missingPct', 1 / 6))]),
     on('loseHp', [dmg(5, 'allFoes')]),
@@ -347,10 +347,11 @@ export const DRUNKARD: CardDef[] = [
   ], { exhaust: true }),
   p('common', 'sweat-it-out', 'Sweat It Out', 'skill', 1, 'none', [
     barrier(4),
-    scaled(heal(0), per('hangover', 2)),
+    scaled(heal(0), per('hangover')),
     soberUp,
-  ]),
+  ], { exhaust: true }),
   p('uncommon', 'swig', 'Swig', 'skill', 0, 'none', [status('might', 3, 'self', true), hangover(3)], {
+    exhaust: true,
     up: { effects: [status('might', 4, 'self', true), hangover(3)] },
   }),
   p('uncommon', 'barroom-brawl', 'Barroom Brawl', 'attack', 2, 'none', [dmg(10, 'allFoes'), hangover(3)], {

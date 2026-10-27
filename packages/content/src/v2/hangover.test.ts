@@ -76,11 +76,18 @@ describe("KP's Hangover", () => {
     expect(heroOf(s).statuses.hangover).toBe(2);
   });
 
-  it('Sweat It Out heals twice the Hangover and clears it', () => {
+  it('stops at 10', () => {
+    let s = fight(['bottoms-up', 'bottoms-up'], 0);
+    s = playCard(s, 'T0');
+    s = playCard(s, 'T1');
+    expect(heroOf(s).statuses.hangover).toBe(10);
+  });
+
+  it('Sweat It Out heals the Hangover and clears it', () => {
     let s = fight(['sweat-it-out'], 5);
     heroOf(s).hp = 30;
     s = playCard(s, 'T0');
-    expect(heroOf(s).hp).toBe(40);
+    expect(heroOf(s).hp).toBe(35);
     expect(heroOf(s).statuses.hangover ?? 0).toBe(0);
   });
 
