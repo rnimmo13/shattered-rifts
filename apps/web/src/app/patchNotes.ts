@@ -29,6 +29,19 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.104.0',
+    date: '2026-10-27',
+    title: 'Foundry fix',
+    summary: 'Rivet’s The Foundry Awakens reads clearly.',
+    notes: [
+      {
+        kind: 'changed',
+        text: 'The Foundry Awakens gives your companions their Primed before the Siege Engine arrives, so the text no longer reads as if the engine does it.',
+      },
+    ],
+    heads: 'The rules changed: reload if the game asks you to. Arena games and replays from before this version can no longer be watched.',
+  },
+  {
     version: '0.103.0',
     date: '2026-10-27',
     title: 'Machines, Primed and growing companions',
