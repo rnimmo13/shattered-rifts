@@ -5,8 +5,12 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **Valeria:** her Devotion shows beside her Mana. Her Devotion starting deck now has Hymn of Reckoning (6 Devotion: 10 to every enemy) instead of Ward of Ages. New Devotion attacks: Hand of Justice (4 Devotion: deal 10, Exposed), Consecrated Blade (8 Devotion: deal 9 twice, 6 Barrier) and Hand of God (15 Devotion: deal 36).
+- **Copy limits by rarity:** a deck takes at most 4 of a common, 3 of an uncommon and 2 of a rare.
+- **Fight result:** Continue sits on top, the replay options under it.
+- **Card library:** filter a Riftwalker's cards by build path.
 - **Kesh rebalanced:** Pack Instinct heals 2 after a won fight (was 6) and she no longer starts each fight with 1 Might. Her Pack starting deck has Savage Command instead of Rally the Pack, and her Feast starting deck Gnaw instead of Devour (both can still be found as rewards).
-- **Valeria: Devotion is a resource.** Whenever she heals she gains that much Devotion, even at full HP. New cards spend it: Lightbrand (5 Devotion: deal 14), Hymn of Reckoning (8 Devotion: 12 to every enemy) and Sunfall (10 Devotion: 2 damage for every Devotion you had, then it is all spent). Sunforged Edge now grows with your Devotion, and Last Stand counts as a Bulwark card.
+- **Valeria: Devotion is a resource.** Whenever she heals she gains that much Devotion, even at full HP. New cards spend it: Lightbrand (5 Devotion: deal 14), Hymn of Reckoning (6 Devotion: 10 to every enemy) and Sunfall (10 Devotion: 2 damage for every Devotion you had, then it is all spent). Sunforged Edge now grows with your Devotion, and Last Stand counts as a Bulwark card.
 - **Sanctified cards are final:** the shrine's chisel and the engraver no longer put a tag on a sanctified card.
 - **Kesh:** the 1 Mana Pup card is called Summon Pup and its upgrade stays at or below the Hound. Den Mother deals its damage to the enemy that killed your ally.
 - **Kesh:** Alpha Call brings a 16 HP / 10 damage Alpha. Den Mother is now an Aura that deals 15 damage to a random enemy whenever one of your allies dies (20 upgraded). New: Whelp (1 Mana, a Pup) and Dire Wolf (3 Mana, a 24 HP / 14 damage Dire Wolf).

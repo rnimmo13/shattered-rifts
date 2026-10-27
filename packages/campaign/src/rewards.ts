@@ -8,6 +8,7 @@ import {
   POTIONS,
   RIFTWALKERS,
   V2_DECK_RULES,
+  maxCopiesOf,
   ancestralCards,
   stripRoll,
   rewardPool,
@@ -22,7 +23,8 @@ const rarityOf = (id: string): string => COMBAT_DB.cards[id]?.rarity ?? 'common'
 /**
  * A card can be added unless the deck already holds the copy limit of it (basic cards are exempt), or (with `rarityLimits`, the
  * default) the deck already holds its Legendary or its two Ancestral cards. Checking a deck that already exists (a Vault deck, a
- * ghost) passes false: one built before the limits came down (DECISIONS #238) is still a deck, only not one for the Arena.
+ * ghost) passes false: one built before the limits came down (DECISIONS #238) is still a deck, only not one for the Arena; it also
+ * keeps the old flat 4 copies of a card instead of the limit by rarity (DECISIONS #330).
  */
 export function canAdd(deck: readonly string[], cardId: string, rarityLimits = true): boolean {
   const c = COMBAT_DB.cards[cardId];
@@ -36,13 +38,17 @@ export function canAdd(deck: readonly string[], cardId: string, rarityLimits = t
     return false;
   if (rarityLimits && c.rarity === 'ancestral' && held('ancestral') >= V2_DECK_RULES.maxAncestral)
     return false;
-  // a card and its "+" version share one limit; a legendary is one of a kind
+  // a card and its "+" version share one limit, by rarity: 4 of a common, 3 of an uncommon, 2 of a rare, 1 of a Legendary
   const base = (id: string): string => stripRoll(id).replace(/\+$/, '');
-  const limit = c.rarity === 'legendary' || c.rarity === 'ancestral' ? 1 : V2_DECK_RULES.maxCopies;
+  // (a deck checked without the rarity limits, one built before they came down, keeps the old flat 4: DECISIONS #330)
+  const limit = rarityLimits
+    ? maxCopiesOf(c.rarity)
+    : c.rarity === 'legendary' || c.rarity === 'ancestral'
+      ? 1
+      : V2_DECK_RULES.maxCopies;
   return deck.filter((x) => base(x) === base(cardId)).length < limit;
 }
 
-/** Cards of every other Riftwalker's pool (the Rift-crossed pool). */
 /** Statuses only one Riftwalker builds (through their trait): cards that spend or count them never cross over. */
 const OWNER_ONLY = new Set<string>(['devotion']);
 const ownerOnly = (c: CardDef | undefined): boolean =>
@@ -50,6 +56,7 @@ const ownerOnly = (c: CardDef | undefined): boolean =>
   ((!!c.statusCost && OWNER_ONLY.has(c.statusCost.status)) ||
     c.effects.some((o) => 'scale' in o && !!o.scale && OWNER_ONLY.has(o.scale.by)));
 
+/** Cards of every other Riftwalker's pool (the Rift-crossed pool). */
 export function crossedPool(hero: HeroId): string[] {
   return (Object.keys(RIFTWALKERS) as HeroId[])
     .filter((h) => h !== hero)

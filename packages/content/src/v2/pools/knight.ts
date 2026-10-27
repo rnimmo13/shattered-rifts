@@ -383,7 +383,34 @@ export const KNIGHT: CardDef[] = [
     on('turnEnd', [status('shielded', 1)]),
   ]),
 
-  // (Devotion spenders: a small hit often, a sweep, or everything at once)
+  // (Devotion spenders, the paladin's judgments: a small hit often, a sweep, a big blow, or everything at once)
+  m(
+    'common',
+    'hand-of-justice',
+    'Hand of Justice',
+    'attack',
+    1,
+    'foe',
+    [dmg(10), status('exposed', 1, 'target')],
+    {
+      statusCost: { status: 'devotion', amount: 4 },
+    },
+  ),
+  m(
+    'uncommon',
+    'consecrated-blade',
+    'Consecrated Blade',
+    'attack',
+    2,
+    'foe',
+    [dmg(9, 'target', 2), barrier(6)],
+    {
+      statusCost: { status: 'devotion', amount: 8 },
+    },
+  ),
+  m('rare', 'hand-of-god', 'Hand of God', 'attack', 2, 'foe', [dmg(36)], {
+    statusCost: { status: 'devotion', amount: 15 },
+  }),
   m('common', 'lightbrand', 'Lightbrand', 'attack', 1, 'foe', [dmg(14)], {
     statusCost: { status: 'devotion', amount: 5 },
   }),
@@ -394,9 +421,9 @@ export const KNIGHT: CardDef[] = [
     'attack',
     1,
     'none',
-    [dmg(12, 'allFoes')],
+    [dmg(10, 'allFoes')],
     {
-      statusCost: { status: 'devotion', amount: 8 },
+      statusCost: { status: 'devotion', amount: 6 },
     },
   ),
   m(

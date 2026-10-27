@@ -4,7 +4,13 @@
 // damage ceiling for the character: if one character's ceiling is far above the others', it has a broken combination.
 
 import { applyAction, chooseSmartAction, createCombat, type CombatEvent } from '@sr/combat';
-import { COMBAT_DB as db, rewardPool, V2_DECK_RULES, type HeroId } from '@sr/content/v2';
+import {
+  COMBAT_DB as db,
+  maxCopiesOf,
+  rewardPool,
+  V2_DECK_RULES,
+  type HeroId,
+} from '@sr/content/v2';
 import { buildDeck, hashSeed, rng, type Level } from './decks';
 
 export interface OptimizeSpec {
@@ -67,8 +73,7 @@ function legal(deck: string[]): boolean {
     count.set(base, (count.get(base) ?? 0) + 1);
     const c = db.cards[id];
     if (c?.rarity === 'legendary') legends++;
-    const lim =
-      c?.rarity === 'legendary' ? 1 : c?.rarity === 'basic' ? 99 : V2_DECK_RULES.maxCopies;
+    const lim = c?.rarity === 'basic' ? 99 : maxCopiesOf(c?.rarity);
     if ((count.get(base) ?? 0) > lim) return false;
   }
   return legends <= V2_DECK_RULES.maxLegendary;

@@ -11,7 +11,7 @@ export const KIT_CARDS: Record<HeroId, [[string, string], [string, string], [str
   knight: [
     ['shield-charge', 'oath-of-iron'],
     ['mirrored-aegis', 'caltrops'],
-    ['ward-of-ages', 'heartening-hymn'],
+    ['heartening-hymn', 'hymn-of-reckoning'],
   ],
   engineer: [
     ['scrap-heap', 'overcharge-blast'],

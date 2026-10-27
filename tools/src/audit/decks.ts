@@ -9,6 +9,7 @@ import {
   rewardPool,
   RIFTWALKERS,
   V2_DECK_RULES,
+  maxCopiesOf,
   BOONS,
   type HeroId,
 } from '@sr/content/v2';
@@ -211,7 +212,7 @@ export function buildDeck(hero: HeroId, path: number, level: Level, seed: number
     const c = db.cards[id];
     if (!c) continue;
     const copies = kept.filter((x) => x === id).length;
-    const limit = c.rarity === 'legendary' ? 1 : V2_DECK_RULES.maxCopies;
+    const limit = maxCopiesOf(c.rarity);
     if (copies >= limit) continue;
     if (c.rarity === 'legendary') {
       if (legends >= V2_DECK_RULES.maxLegendary) continue;

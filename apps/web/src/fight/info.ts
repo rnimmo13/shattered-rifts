@@ -387,6 +387,11 @@ export const UI_TIPS = {
     title: `Arcana ${n}`,
     text: 'Some cards gain Arcana. Cards with an orange orb under their Mana gem spend it. Unlike Mana it lasts the whole fight.',
   }),
+  devotion: (n: number): TipContent => ({
+    kicker: 'Second resource',
+    title: `Devotion ${n}`,
+    text: 'Every heal gives you that much Devotion, even at full HP. Cards with a gold orb under their Mana gem spend it. It lasts the whole fight.',
+  }),
   draw: {
     kicker: 'Pile',
     title: 'Draw pile',

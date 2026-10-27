@@ -1026,6 +1026,14 @@
   cursor: help;
   pointer-events: auto;
 }
+.fight__lumen--devotion {
+  background: radial-gradient(circle at 35% 30%, #fff6d8, #e0b54a 45%, #5a3a08 100%);
+  border-color: #f3dc97;
+  box-shadow: 0 0 16px rgb(255 214 120 / 0.55);
+}
+.fight__lumen--second {
+  left: calc(1.4rem + 5.2rem + 0.7rem + 4.6rem);
+}
 .fight__lumen span {
   position: absolute;
   top: -0.55rem;
@@ -2168,29 +2176,26 @@
 }
 
 /* the result's buttons: Continue on its own, large, and the other options stacked beside it, quieter (DECISIONS #290) */
+/* Continue on top, the replay options in a row under it (DECISIONS #331) */
 .fight__resultButtons {
   display: grid;
-  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
-  gap: 1rem;
-  align-items: stretch;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0.9rem;
   width: 100%;
 }
 .fight__resultGo {
-  min-height: 7.5rem;
+  min-height: 4rem;
   font-size: 1.35rem;
 }
 .fight__resultButtons .fight__resultActions {
   display: grid;
-  gap: 0.8rem;
-  align-content: center;
+  grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+  gap: 0.6rem;
 }
 .fight__resultButtons .fight__resultActions .btn {
   width: 100%;
 }
 @media (max-width: 34rem) {
-  .fight__resultButtons {
-    grid-template-columns: minmax(0, 1fr);
-  }
   .fight__resultGo {
     min-height: 3.2rem;
   }

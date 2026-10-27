@@ -60,11 +60,11 @@ describe("Valeria's Devotion", () => {
     expect(s.sides.b.units[0]!.hp).toBe(86);
   });
 
-  it('Hymn of Reckoning spends 8 Devotion to hit every enemy for 12', () => {
-    let s = fight('knight', ['hymn-of-reckoning'], 8);
+  it('Hymn of Reckoning spends 6 Devotion to hit every enemy for 10', () => {
+    let s = fight('knight', ['hymn-of-reckoning'], 6);
     s = playCard(s, 'T0');
     expect(heroOf(s).statuses.devotion ?? 0).toBe(0);
-    for (const u of s.sides.b.units) expect(u.hp).toBe(88);
+    for (const u of s.sides.b.units) expect(u.hp).toBe(90);
   });
 
   it('Sunfall needs 10 Devotion and spends it all: 2 damage per Devotion you had', () => {
@@ -80,5 +80,30 @@ describe("Valeria's Devotion", () => {
     s = playCard(s, 'T0'); // 8 + 10 / 2
     expect(s.sides.b.units[0]!.hp).toBe(87);
     expect(heroOf(s).statuses.devotion).toBe(10);
+  });
+});
+
+describe("the paladin's judgments", () => {
+  it('Hand of Justice: 4 Devotion, deal 10 and Expose', () => {
+    let s = fight('knight', ['hand-of-justice'], 4);
+    s = playCard(s, 'T0');
+    expect(s.sides.b.units[0]!.hp).toBe(90);
+    expect(s.sides.b.units[0]!.statuses.exposed).toBe(1);
+    expect(heroOf(s).statuses.devotion ?? 0).toBe(0);
+  });
+
+  it('Consecrated Blade: 8 Devotion, deal 9 twice and gain 6 Barrier', () => {
+    let s = fight('knight', ['consecrated-blade'], 8);
+    const barrier = heroOf(s).barrier;
+    s = playCard(s, 'T0');
+    expect(s.sides.b.units[0]!.hp).toBe(82);
+    expect(heroOf(s).barrier).toBe(barrier + 6);
+  });
+
+  it('Hand of God: 15 Devotion, deal 36', () => {
+    expect(playable(fight('knight', ['hand-of-god'], 14), 'T0')).toBe(false);
+    let s = fight('knight', ['hand-of-god'], 15);
+    s = playCard(s, 'T0');
+    expect(s.sides.b.units[0]!.hp).toBe(64);
   });
 });

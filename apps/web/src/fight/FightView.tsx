@@ -53,7 +53,7 @@ import { PickModal } from './PickModal';
 import { tipAttrs, type TipContent } from '../ui/tip';
 import { STATUS_INFO, UI_TIPS } from './info';
 import { loadSeen, loadTipsOn, nextTip, saveSeen, saveTipsOn } from './tips';
-import { AuraList, LumenCounter, RuneArc, SnareRow } from './SidePanel';
+import { AuraList, DevotionCounter, LumenCounter, RuneArc, SnareRow } from './SidePanel';
 import { StanceAura, StanceChip } from './StanceAura';
 import { BattleLog } from './BattleLog';
 import { LOG_LIMIT, Namer, createDescriber, type LogLine } from './logLines';
@@ -1248,6 +1248,13 @@ export function FightView(props: {
   const usesStars = useMemo(() => deckUsesStars(db, mine), [db, mine]);
   const usesRunes = useMemo(() => deckUsesRunes(db, mine), [db, mine]);
   const showStars = usesStars || (me?.stars ?? 0) > 0;
+  // Devotion shows for a Riftwalker whose trait builds it (Valeria), or whenever the hero has some
+  const devotion = heroUnit?.statuses.devotion ?? 0;
+  const showDevotion =
+    devotion > 0 ||
+    !!db.heroes[mine.hero]?.trait?.triggers?.some((t) =>
+      t.ops.some((o) => o.op === 'status' && o.status === 'devotion'),
+    );
   // the Obsidian Blade's sharpness (null when this deck has no blade): every copy carries the same bonus
   const ownSide = live?.sides[mySide];
   const blades = ownSide
@@ -1754,6 +1761,7 @@ export function FightView(props: {
             </div>
           )}
           {me && showStars && <LumenCounter value={me.stars} />}
+          {me && showDevotion && <DevotionCounter value={devotion} second={showStars} />}
           {me && showRunes && heroPlaced && (
             <RuneArc db={db} me={me} x={heroPlaced.x + 185} cy={heroPlaced.y - 110} />
           )}
@@ -1854,7 +1862,7 @@ export function FightView(props: {
                         : 'The rift claims another.'}
                 </p>
                 {deathLine && <p className="fight__resultRecap">{deathLine}</p>}
-                {/* Continue first and on its own; the rest stacked beside it, smaller (DECISIONS #290) */}
+                {/* Continue first, on top and full width; the replay options in a row under it, smaller (DECISIONS #290, #331) */}
                 <div className="fight__resultButtons">
                   <button
                     className="btn btn--primary fight__resultGo"

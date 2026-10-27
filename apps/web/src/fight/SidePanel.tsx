@@ -22,6 +22,21 @@ export function LumenCounter(props: { value: number }) {
   );
 }
 
+/** Valeria's Devotion beside Mana, like Arcana (`second`: Arcana is showing too, so it sits one place further along). */
+export function DevotionCounter(props: { value: number; second?: boolean }) {
+  return (
+    <div
+      className={`fight__lumen fight__lumen--devotion${props.second ? ' fight__lumen--second' : ''}`}
+      aria-label={`Devotion ${props.value}`}
+      {...tipAttrs(UI_TIPS.devotion(props.value))}
+    >
+      <span aria-hidden>✚</span>
+      <b>{props.value}</b>
+      <small>Devotion</small>
+    </div>
+  );
+}
+
 /** The totem slots in a curved column beside the hero (towards the enemies), so they never sit on the buffs under the health bar: `x` is where the column bows out to, `cy` its vertical centre (host px). */
 export function RuneArc(props: {
   db: CombatDb;

@@ -566,6 +566,20 @@ export const V2_DECK_RULES = {
   maxAncestral: 2,
 } as const;
 
+/**
+ * The most copies of one card (and its "+" version) a deck may take, by rarity (Robert, 2026-10-27; DECISIONS #330): the rarer the
+ * card, the fewer. Basic cards have no limit.
+ */
+export const COPIES_BY_RARITY: Readonly<Record<string, number>> = {
+  common: 4,
+  uncommon: 3,
+  rare: 2,
+  legendary: 1,
+  ancestral: 1,
+};
+export const maxCopiesOf = (rarity: string | undefined): number =>
+  COPIES_BY_RARITY[rarity ?? 'common'] ?? V2_DECK_RULES.maxCopies;
+
 export { BOONS, HEARTS, POTIONS };
 
 /**

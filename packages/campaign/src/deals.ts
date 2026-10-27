@@ -6,6 +6,7 @@ import {
   COMBAT_DB,
   MARK_INFO,
   V2_DECK_RULES,
+  maxCopiesOf,
   canMark,
   markOf,
   markedId,
@@ -200,7 +201,14 @@ function step(r: RunState, s: DealStep, ev: EventCtx, h: DealHelpers, out: strin
       const rarity = (id: string): string | undefined =>
         COMBAT_DB.cards[stripRoll(id).replace(/\+$/, '')]?.rarity;
       const like = rarity(s.from) === rarity(s.to);
-      if (!canAdd(rest, s.to, !like)) fail('That card would break the deck rules');
+      // (the copy limit by rarity holds either way, DECISIONS #330)
+      const base = (id: string): string => stripRoll(id).replace(/[+]$/, '');
+      const copies = rest.filter((x) => base(x) === base(s.to)).length;
+      if (
+        !canAdd(rest, s.to, !like) ||
+        (rarity(s.to) !== 'basic' && copies >= maxCopiesOf(rarity(s.to)))
+      )
+        fail('That card would break the deck rules');
       r.deck[at] = s.to;
       out.push(`${nameOf(s.from)} is given up for ${nameOf(s.to)}.`);
       return;

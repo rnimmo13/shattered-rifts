@@ -1,9 +1,9 @@
-// #/cards: every card in the game, read-only, in the grimoire. Filter by character, type, rarity or words; show the base
+// #/cards: every card in the game, read-only, in the grimoire. Filter by character (and their build path), type, rarity or words; show the base
 // cards, their upgraded versions, or both side by side. Hover any card for a big preview (with its upgrade).
 
 import { useMemo, useState } from 'react';
 import { cardText, type CardDef } from '@sr/combat';
-import { COMBAT_DB, RIFTWALKERS } from '@sr/content/v2';
+import { COMBAT_DB, RIFTWALKERS, pathName, pathOf, type HeroId } from '@sr/content/v2';
 import { Grimoire } from './Grimoire';
 import { catalog, type PoolKey } from './deckCatalog';
 import '../play/play.css';
@@ -35,6 +35,9 @@ export function CardLibrary() {
   const all = useMemo(() => catalog(COMBAT_DB), []);
   const [text, setText] = useState('');
   const [pool, setPool] = useState<PoolKey>('all');
+  // a build path (0-2) of the chosen Riftwalker, 'none' for their cards that belong to no build path (basics, glue), or 'all'
+  const [path, setPath] = useState<'all' | 'none' | 0 | 1 | 2>('all');
+  const hero = Object.hasOwn(RIFTWALKERS, pool) ? (pool as HeroId) : null;
   const [kind, setKind] = useState<CardDef['kind'] | 'all'>('all');
   const [rarity, setRarity] = useState<(typeof RARITIES)[number]>('all');
   const [show, setShow] = useState<'base' | 'upgraded' | 'both'>('base');
@@ -46,6 +49,10 @@ export function CardLibrary() {
         if (show === 'base' && c.upgraded) return false;
         if (show === 'upgraded' && !c.upgraded) return false;
         if (pool !== 'all' && c.pool !== pool) return false;
+        if (hero && path !== 'all') {
+          const p = pathOf(c.def.id);
+          if (path === 'none' ? p !== undefined : p !== path) return false;
+        }
         if (kind !== 'all' && c.def.kind !== kind) return false;
         if (rarity !== 'all' && (c.def.rarity ?? 'common') !== rarity) return false;
         if (q && !`${c.def.name} ${cardText(COMBAT_DB, c.def)}`.toLowerCase().includes(q))
@@ -53,7 +60,7 @@ export function CardLibrary() {
         return true;
       })
       .map((c) => ({ def: c.def, n: 1 }));
-  }, [all, text, pool, kind, rarity, show]);
+  }, [all, text, pool, hero, path, kind, rarity, show]);
 
   const pools: PoolKey[] = [
     'all',
@@ -64,7 +71,7 @@ export function CardLibrary() {
     'other',
   ];
   // a new filter starts the book from its first page again
-  const bookKey = `${text}|${pool}|${kind}|${rarity}|${show}`;
+  const bookKey = `${text}|${pool}|${path}|${kind}|${rarity}|${show}`;
 
   return (
     <main className="setup setup--wide">
@@ -90,7 +97,13 @@ export function CardLibrary() {
         </label>
         <label>
           <span>Character</span>
-          <select value={pool} onChange={(e) => setPool(e.target.value)}>
+          <select
+            value={pool}
+            onChange={(e) => {
+              setPool(e.target.value);
+              setPath('all');
+            }}
+          >
             {pools.map((p) => (
               <option key={p} value={p}>
                 {POOL_LABEL(p)}
@@ -98,6 +111,26 @@ export function CardLibrary() {
             ))}
           </select>
         </label>
+        {hero && (
+          <label>
+            <span>Build path</span>
+            <select
+              value={String(path)}
+              onChange={(e) => {
+                const v = e.target.value;
+                setPath(v === 'all' || v === 'none' ? v : (Number(v) as 0 | 1 | 2));
+              }}
+            >
+              <option value="all">Any</option>
+              {[0, 1, 2].map((i) => (
+                <option key={i} value={i}>
+                  {pathName(hero, i)}
+                </option>
+              ))}
+              <option value="none">Shared (no build path)</option>
+            </select>
+          </label>
+        )}
         <label>
           <span>Type</span>
           <select value={kind} onChange={(e) => setKind(e.target.value as typeof kind)}>
