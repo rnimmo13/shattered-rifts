@@ -156,7 +156,7 @@ export function LearnOdds() {
           {pct(BOON_WEIGHTS.elite?.['legendary'] ?? 0, total(BOON_WEIGHTS.elite ?? {}))} Legendary
           (the merchant&apos;s Boon rolls the same way, but never Legendary). Wardens give their
           Gift, not a Boon. Beating Vorthax leaves a Legendary Boon {LOOP_LEGEND_CHANCE}% of the
-          time. An Elite also heals {ELITE_HEAL_PCT}% of your HP.
+          time. A run holds one Legendary Boon at most: once you have one, no other turns up. An Elite also heals {ELITE_HEAL_PCT}% of your HP.
         </li>
       </ul>
 

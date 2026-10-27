@@ -365,7 +365,7 @@ export function LearnScreen() {
           <p>
             Boons last for the whole run, and every tier after it. Elites give one; the merchant
             sells one (never a Legendary); some events and Threshold options give one; and beating
-            Vorthax leaves a Legendary Boon {LOOP_LEGEND_CHANCE}% of the time. Wardens give their
+            Vorthax leaves a Legendary Boon {LOOP_LEGEND_CHANCE}% of the time. A run holds one Legendary Boon at most. Wardens give their
             Gift instead.
           </p>
           <BoonList />

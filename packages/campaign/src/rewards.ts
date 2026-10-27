@@ -145,13 +145,19 @@ export function cardOfRarity(
   return pool.length ? (pool[nextInt(rng, pool.length)] as string) : null;
 }
 
+/** A run holds at most one Legendary Boon (DECISIONS #293): once it has one, no other is offered, sold or given. */
+export function holdsLegendBoon(owned: readonly string[]): boolean {
+  return owned.some((id) => BOONS.some((b) => b.id === id && b.rarity === 'legendary'));
+}
+
 /** A Boon of one rarity the player does not own (any rarity if that one is used up), or null if they own them all. */
 export function boonOfRarity(
   rng: RngState,
   owned: readonly string[],
   rarity: 'common' | 'uncommon' | 'rare' | 'legendary',
 ): string | null {
-  const left = BOONS.filter((b) => !owned.includes(b.id));
+  const legendOk = !holdsLegendBoon(owned);
+  const left = BOONS.filter((b) => !owned.includes(b.id) && (legendOk || b.rarity !== 'legendary'));
   if (left.length === 0) return null;
   const same = left.filter((b) => b.rarity === rarity);
   // (a Legendary Boon is only ever given when one was asked for)
@@ -210,6 +216,7 @@ export function offerBoon(
   /** a shop never sells a Legendary Boon */
   noLegend = false,
 ): string | null {
+  noLegend = noLegend || holdsLegendBoon(owned);
   const left = BOONS.filter(
     (b) => !owned.includes(b.id) && !(noLegend && b.rarity === 'legendary'),
   );

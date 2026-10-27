@@ -4,6 +4,9 @@ import { BOONS, COMBAT_DB, RIFTWALKERS } from '@sr/content/v2';
 import {
   RunError,
   buyBoon,
+  boonOfRarity,
+  holdsLegendBoon,
+  offerBoon,
   buyPotion,
   sellPotion,
   chooseCard,
@@ -270,5 +273,24 @@ describe('a lost fight is retried with at least half your HP (DECISIONS #289)', 
       false,
     );
     expect(high.hp).toBe(70);
+  });
+});
+
+describe('one Legendary Boon per run (DECISIONS #293)', () => {
+  const legends = BOONS.filter((b) => b.rarity === 'legendary').map((b) => b.id);
+  it('holding one, no offer or gift is ever another Legendary', () => {
+    const owned = [legends[0] as string];
+    expect(holdsLegendBoon(owned)).toBe(true);
+    expect(holdsLegendBoon([])).toBe(false);
+    for (let i = 0; i < 300; i++) {
+      const rng = seedRng(`legend-cap${i}`);
+      const a = offerBoon(rng, owned, 'elite');
+      const b = boonOfRarity(rng, owned, 'legendary');
+      for (const id of [a, b]) if (id) expect(COMBAT_DB.boons[id]?.rarity).not.toBe('legendary');
+    }
+  });
+  it('without one, a Legendary can still be asked for', () => {
+    const id = boonOfRarity(seedRng('legend-free'), [], 'legendary');
+    expect(legends).toContain(id);
   });
 });

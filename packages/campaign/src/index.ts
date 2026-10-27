@@ -21,6 +21,8 @@ export {
   canAdd,
   giftOffers,
   offerBoon,
+  boonOfRarity,
+  holdsLegendBoon,
   offerPotion,
   MAX_POTIONS,
   MAX_TIER,
