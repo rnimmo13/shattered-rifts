@@ -620,9 +620,9 @@ export const MAX_ALLIES = 3;
 
 /**
  * Overflow (DECISIONS #321): when a single-target attack kills one of a hero's companions, this percent of the damage left over
- * (after the companion's Barrier and HP) carries through to that hero. One number, to tune.
+ * (after the companion's Barrier and HP) carries through to that hero. One number, to tune (50 at first, 100 since #322).
  */
-export const OVERFLOW_PCT = 50;
+export const OVERFLOW_PCT = 100;
 /** What the rule is called to players. */
 export const OVERFLOW_NAME = 'Overflow';
 /** Maximum Mana can be raised during a fight, but never past this */
