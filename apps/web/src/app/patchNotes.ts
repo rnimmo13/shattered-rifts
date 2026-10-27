@@ -29,6 +29,27 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.87.0',
+    date: '2026-10-26',
+    title: 'Arcana unbound',
+    summary: 'Obsidia gets cards paid in Arcana alone, and payoffs for spending it.',
+    heads: 'Arena games and replays from earlier versions can no longer be played or watched: the rules have changed.',
+    notes: [
+      {
+        kind: 'balance',
+        text: 'Arcane Bolt deals 12 (was 16).',
+      },
+      {
+        kind: 'new',
+        text: 'Obsidia: Spellbolt, Arcane Barrier, Falling Shards, Searing Ray and Crown Strike cost no Mana, only Arcana. Sigil of Scorch and Sigil of Glass now answer whenever you spend Arcana, and Honed Strike makes Arcana.',
+      },
+      {
+        kind: 'changed',
+        text: 'A card’s Arcana cost shows only on the card itself, not again in its text.',
+      },
+    ],
+  },
+  {
     version: '0.86.0',
     date: '2026-10-26',
     title: 'Kesh unleashed',
