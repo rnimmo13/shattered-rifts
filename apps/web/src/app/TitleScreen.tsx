@@ -11,7 +11,7 @@ import {
   setActiveRun,
   unreadableRuns,
 } from '../run/saves';
-import { syncRuns } from '../run/runCloud';
+import { syncLists, syncRuns } from '../run/runCloud';
 import { loseSavedDecks } from '../run/deckSave';
 import { endOnBoard } from '../run/boardEnd';
 import { whoAmI, type Me } from '../pvp/vaultSync';
@@ -53,6 +53,7 @@ export function TitleScreen() {
     };
     const fromServer = (): void => {
       void syncRuns().then((changed) => changed && refresh());
+      void syncLists();
     };
     fromServer();
     window.addEventListener('focus', fromServer);

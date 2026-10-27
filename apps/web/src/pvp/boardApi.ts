@@ -13,7 +13,7 @@ import {
   type StoredReplay,
   type Trophy,
 } from '@sr/pvp';
-import { getName, serverBase } from './config';
+import { getClaimed, getName, hasUsername, serverBase, setClaimed, setName } from './config';
 import { vaultKey, whoAmI } from './vaultSync';
 
 const httpBase = (): string => serverBase().replace(/^ws/i, 'http');
@@ -233,6 +233,20 @@ export async function viewGhostDecks(): Promise<GhostDeckRow[] | null> {
   } catch {
     return null;
   }
+}
+
+/**
+ * A device that has no username yet takes the one this player has claimed (signed in, the same player on every device: DECISIONS
+ * #318). Returns the name it took, or null.
+ */
+export async function restoreUsername(): Promise<string | null> {
+  if (hasUsername()) return null;
+  const d = await post('id', {});
+  const name = d?.['name'];
+  if (typeof name !== 'string' || name === '' || getClaimed() === name) return null;
+  setName(name);
+  setClaimed(name);
+  return name;
 }
 
 let myId: Promise<string | null> | null = null;

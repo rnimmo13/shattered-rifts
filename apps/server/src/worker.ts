@@ -7,6 +7,7 @@
 //   GET /pvp/room/CODE (WebSocket)  a match room (a friend code, or the room the queue picked)
 //   POST /pvp/vault/list|bank|drop  a player's saved decks: under the signed-in account, or else the Vault code in the JSON body {code, ...}
 //   POST /pvp/vault/runs|runsave     the same player's runs, so they follow them between devices (DECISIONS #309)
+//   POST /pvp/vault/listsync         ... and their run history and Arena match history (DECISIONS #318)
 //   /pvp/board/*                    the weekly and monthly leaderboards (board.ts)
 //   GET /pvp/replay/ID               a finished Arena game, to watch again
 //   /auth/*                         sign in with Google (auth.ts)
@@ -46,7 +47,7 @@ const json = (body: unknown, status = 200): Response =>
     headers: { 'content-type': 'application/json', 'access-control-allow-origin': '*' },
   });
 
-const VAULT_ACTIONS = new Set(['list', 'bank', 'drop', 'runs', 'runsave']);
+const VAULT_ACTIONS = new Set(['list', 'bank', 'drop', 'runs', 'runsave', 'listsync']);
 /** The biggest Vault request: a deck is small; a device's runs go up together (DECISIONS #309). */
 const VAULT_MAX_BYTES = 20_000;
 const RUNSAVE_MAX_BYTES = 1_500_000;
@@ -62,7 +63,7 @@ async function vaultName(code: string): Promise<string> {
 async function vault(request: Request, env: Env, action: string): Promise<Response> {
   if (request.method !== 'POST' || !VAULT_ACTIONS.has(action))
     return json({ ok: false, error: 'not found' }, 404);
-  const max = action === 'runsave' ? RUNSAVE_MAX_BYTES : VAULT_MAX_BYTES;
+  const max = action === 'runsave' || action === 'listsync' ? RUNSAVE_MAX_BYTES : VAULT_MAX_BYTES;
   if (Number(request.headers.get('content-length') ?? 0) > max)
     return json({ ok: false, error: 'too big' }, 413);
   const text = await request.text();
@@ -271,7 +272,23 @@ async function boardRoute(request: Request, env: Env, what: string, url: URL): P
     }
     if (!id)
       return json({ ok: false, error: body['code'] === undefined ? 'signin' : 'bad-code' }, 401);
-    if (what === 'id') return json({ ok: true, id });
+    if (what === 'id') {
+      // (and the username this player claimed, so a device they have just signed in on knows it: DECISIONS #318)
+      let name: string | null = null;
+      try {
+        const res = await stub.fetch(
+          new Request('https://board.invalid/name/of', {
+            method: 'POST',
+            body: JSON.stringify({ player: id }),
+          }),
+        );
+        const d = await res.json<{ name?: unknown }>();
+        if (typeof d.name === 'string') name = d.name;
+      } catch {
+        /* the id is enough */
+      }
+      return json({ ok: true, id, ...(name ? { name } : {}) });
+    }
     if (what === 'trophies') {
       // the Trophy case: this player's Arena trophies
       const res = await stub.fetch(

@@ -6,6 +6,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { getName, hasUsername } from '../pvp/config';
+import { restoreUsername } from '../pvp/boardApi';
 import { NameClaim } from '../pvp/NameClaim';
 import { AccountBox } from '../pvp/AccountBox';
 import type { Me } from '../pvp/vaultSync';
@@ -14,6 +15,15 @@ export function PlayerChip(props: { me: Me; onSignedOut: () => void }) {
   const [name, setName] = useState<string | null>(() => (hasUsername() ? getName() : null));
   const [open, setOpen] = useState(false);
   const box = useRef<HTMLDivElement>(null);
+
+  // a device with no username yet takes the one this player claimed elsewhere (signed in: DECISIONS #318)
+  useEffect(() => {
+    let live = true;
+    void restoreUsername().then((n) => live && n && setName(n));
+    return () => {
+      live = false;
+    };
+  }, [props.me.signedIn]);
 
   // the panel closes on Escape or a click anywhere else
   useEffect(() => {

@@ -17,6 +17,7 @@ import {
 } from '@sr/pvp';
 import { MoveFeed, type PvpLink } from './link';
 import { recordMatch } from './matchHistory';
+import { soonSyncRuns } from '../run/runCloud';
 
 const progressOf = (e: Entry): { tier: number; stage?: number } =>
   e.stage === undefined ? { tier: e.tier } : { tier: e.tier, stage: e.stage };
@@ -502,6 +503,8 @@ export class PvpSession {
           ...(match.series ? { game: match.series.game } : {}),
         });
         this.setMatch({ replayId: m.id });
+        // (the player's other devices get it soon after: DECISIONS #318)
+        soonSyncRuns();
         return;
       }
       case 'error':

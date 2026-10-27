@@ -1134,6 +1134,11 @@ export class Leaderboard extends DurableObject<Env> {
     if (url.pathname === '/pvp') return this.recordPvp(body, now);
     if (url.pathname === '/run') return this.recordRun(body, now);
     if (url.pathname === '/name/claim') return this.claimName(body, now);
+    if (url.pathname === '/name/of')
+      return json({
+        ok: true,
+        name: isId(body['player']) ? this.claimedName(body['player']) : null,
+      });
     if (url.pathname === '/ghost/pick') return this.pick(body, now);
     if (url.pathname === '/ghost/boss') return this.ghostBoss(body, now);
     if (url.pathname === '/ghost/register') return this.registerSaved(body, now);

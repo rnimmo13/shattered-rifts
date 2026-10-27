@@ -93,7 +93,17 @@ export function recordOf(
 
 /** Keep a run that has ended (the newest few keep their last fight; the oldest go when the list is full). */
 export function addToHistory(rec: RunRecord): void {
-  const list = [rec, ...read().filter((r) => r.id !== rec.id)]
+  write([rec, ...read().filter((r) => r.id !== rec.id)]);
+}
+
+/** Take the history as it stands after comparing with the player's other devices (DECISIONS #318). */
+export function replaceHistory(list: readonly RunRecord[]): void {
+  write(list);
+}
+
+/** Write the history: newest first, the newest few with their last fight, the oldest dropped when it is full. */
+function write(all: readonly RunRecord[]): void {
+  const list = [...all]
     .sort((a, b) => b.at - a.at)
     .slice(0, HISTORY_RUNS)
     .map((r, i) => {
@@ -113,8 +123,31 @@ export function addToHistory(rec: RunRecord): void {
   }
 }
 
-/** Forget one run, or every run. */
+const REMOVED_KEY = 'sr.runHistory.removed';
+
+/** The runs forgotten here, so the player's other devices forget them too (DECISIONS #318). */
+export function historyRemoved(): string[] {
+  try {
+    const v: unknown = JSON.parse(localStorage.getItem(REMOVED_KEY) ?? '[]');
+    return Array.isArray(v) ? v.filter((x): x is string => typeof x === 'string') : [];
+  } catch {
+    return [];
+  }
+}
+
+/** Remember ids as removed (the list the server last agreed, or ones forgotten here). */
+export function setHistoryRemoved(ids: readonly string[]): void {
+  try {
+    localStorage.setItem(REMOVED_KEY, JSON.stringify([...new Set(ids)].slice(-200)));
+  } catch {
+    /* not remembered: a forgotten run may come back from another device */
+  }
+}
+
+/** Forget one run, or every run (on the player's other devices too). */
 export function forgetRun(id: string | null): void {
+  const ids = id === null ? read().map((r) => r.id) : [id];
+  setHistoryRemoved([...historyRemoved(), ...ids]);
   try {
     if (id === null) localStorage.removeItem(KEY);
     else localStorage.setItem(KEY, JSON.stringify(read().filter((r) => r.id !== id)));

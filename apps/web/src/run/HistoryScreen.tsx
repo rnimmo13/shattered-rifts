@@ -1,7 +1,8 @@
 // #/history: the runs that have ended on this device (with their decks and the last fight each played, to watch again or read
 // the recap of), and the Arena matches played here (each a replay, to watch or share).
 
-import { Suspense, lazy, useMemo, useState } from 'react';
+import { Suspense, lazy, useEffect, useMemo, useState } from 'react';
+import { syncLists } from './runCloud';
 import { COMBAT_DB, RIFTWALKERS, type HeroId } from '@sr/content/v2';
 import { DIFFICULTY, type Difficulty } from '@sr/campaign';
 import { HeroIcon } from '../ui/HeroIcon';
@@ -48,6 +49,19 @@ export default function HistoryScreen() {
   const [recap, setRecap] = useState<FightReplay | null>(null);
   const [watching, setWatching] = useState<FightReplay | null>(null);
   const [confirmClear, setConfirmClear] = useState(false);
+  /** bumped when the player's other devices brought something new (DECISIONS #318), so the lists are read again */
+  const [synced, setSynced] = useState(0);
+  useEffect(() => {
+    let live = true;
+    void syncLists().then((changed) => {
+      if (!live || !changed) return;
+      setRuns(runHistory());
+      setSynced((n) => n + 1);
+    });
+    return () => {
+      live = false;
+    };
+  }, []);
 
   if (watching)
     return (
@@ -81,7 +95,7 @@ export default function HistoryScreen() {
         </button>
       </div>
       {tab === 'arena' ? (
-        <MatchHistory />
+        <MatchHistory key={synced} />
       ) : (
         <>
           <p className="history__lead">

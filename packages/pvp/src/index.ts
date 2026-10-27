@@ -89,3 +89,4 @@ export {
 } from './vault';
 export { deckToPlay, picksDone } from './picks';
 export * from './runsync';
+export * from './listsync';

@@ -55,6 +55,16 @@ export function recordMatch(rec: MatchRecord): void {
   }
 }
 
+/** Take the match history as it stands after comparing with the player's other devices (DECISIONS #318). */
+export function replaceMatches(list: readonly MatchRecord[]): void {
+  try {
+    const clean = list.filter(isRecord).sort((a, b) => b.at - a.at);
+    localStorage.setItem(KEY, JSON.stringify(clean.slice(0, KEEP)));
+  } catch {
+    /* storage full or blocked */
+  }
+}
+
 /** The address of this page with another route on it (what a shared link points at). */
 const here = (route: string): string =>
   `${window.location.origin}${window.location.pathname}${route}`;

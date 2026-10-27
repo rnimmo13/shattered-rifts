@@ -7,9 +7,14 @@ import { DurableObject } from 'cloudflare:workers';
 import {
   bankInto,
   cleanDeck,
+  cleanListItems,
+  cleanRemoved,
   cleanRunCopies,
   dropFrom,
+  isListName,
   keepRunCopies,
+  mergeList,
+  type ListName,
   type RunCopy,
   type VaultDeck,
 } from '@sr/pvp';
@@ -55,6 +60,14 @@ export class Vault extends DurableObject<Env> {
     // ... and the stage the deck was saved at (empty for older decks)
     if (!columns.some((c) => c.name === 'stage'))
       ctx.storage.sql.exec('ALTER TABLE decks ADD COLUMN stage INTEGER');
+    // the player's synced lists (run history, Arena matches): one JSON row each (DECISIONS #318)
+    ctx.storage.sql.exec(
+      `CREATE TABLE IF NOT EXISTS lists (
+         name TEXT PRIMARY KEY,
+         items TEXT NOT NULL DEFAULT '[]',
+         removed TEXT NOT NULL DEFAULT '[]'
+       )`,
+    );
     // the player's runs: the newest copy of each (text is empty on a run that ended: gone = 1)
     ctx.storage.sql.exec(
       `CREATE TABLE IF NOT EXISTS runs (
@@ -64,6 +77,22 @@ export class Vault extends DurableObject<Env> {
          text TEXT NOT NULL DEFAULT ''
        )`,
     );
+  }
+
+  /** A synced list as kept here (DECISIONS #318): its items, newest first, and the ids removed from it. */
+  private list_(name: ListName): { items: ReturnType<typeof cleanListItems>; removed: string[] } {
+    const row = this.ctx.storage.sql
+      .exec<{ items: string; removed: string }>(
+        'SELECT items, removed FROM lists WHERE name = ?',
+        name,
+      )
+      .toArray()[0];
+    return row
+      ? {
+          items: cleanListItems(name, parseJson(row.items)),
+          removed: cleanRemoved(parseJson(row.removed)),
+        }
+      : { items: [], removed: [] };
   }
 
   private runs(): RunCopy[] {
@@ -168,6 +197,21 @@ export class Vault extends DurableObject<Env> {
         this.put(deck);
       }
       return json({ ok: true, decks: this.list() });
+    }
+
+    if (action === 'listsync') {
+      const name = body['list'];
+      if (!isListName(name)) return json({ ok: false, error: 'bad-list' }, 400);
+      const have = this.list_(name);
+      const removed = cleanRemoved([...have.removed, ...cleanRemoved(body['removed'])]);
+      const items = mergeList(name, have.items, cleanListItems(name, body['items']), removed);
+      this.ctx.storage.sql.exec(
+        'INSERT OR REPLACE INTO lists (name, items, removed) VALUES (?, ?, ?)',
+        name,
+        JSON.stringify(items),
+        JSON.stringify(removed),
+      );
+      return json({ ok: true, items, removed });
     }
 
     if (action === 'runsave') {
