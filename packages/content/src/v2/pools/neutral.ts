@@ -91,7 +91,11 @@ export const NEUTRAL: CardDef[] = [
     exhaust: true,
   }),
   n('uncommon', 'cull-the-hand', 'Cull the Hand', 'skill', 1, 'none', [exhaustN(1), draw(2)]),
-  n('rare', 'rift-resonance', 'Rift Resonance', 'power', 2, 'none', [status('might', 2)]),
+  // (an Aura that keeps working: Might now, and again every time the deck is reshuffled; DECISIONS #299)
+  n('rare', 'rift-resonance', 'Rift Resonance', 'power', 2, 'none', [
+    status('might', 1),
+    on('shuffle', [status('might', 1)]),
+  ]),
   n('common', 'pitfall', 'Hidden Pitfall', 'snare', 1, 'none', [dmg(7, 'attacker')], {
     trigger: { on: 'attacked' },
   }),

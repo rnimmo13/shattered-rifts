@@ -35,7 +35,11 @@ const RAW_ALLIES: UnitDef[] = [
   // Warden signature companions
   ally('gilded-guard', 'Gilded Guard', 16, [dmg(4), barrier(4, 'hero')], { taunt: true }),
   ally('maw-hatchling', 'Maw Hatchling', 12, [dmg(7)]),
+  // (a pack grows with the card that calls it: basic and common cards bring a Pup, uncommon a Hound, rare a Pack Alpha or a
+  // Dire Wolf; DECISIONS #298)
+  ally('pup', 'Pup', 6, [dmg(3)]),
   ally('hound', 'Hound', 10, [dmg(4)]),
+  ally('pack-alpha', 'Pack Alpha', 14, [dmg(5)]),
   ally('dire-wolf', 'Dire Wolf', 18, [dmg(9)]),
   // Gloomfen: Mire's dead
   ally('bone-thrall', 'Bone Thrall', 12, [dmg(4)]),

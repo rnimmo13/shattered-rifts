@@ -43,6 +43,8 @@ const UNIT: Record<string, [Archetype, Realm]> = {
   'bone-thrall': ['spirit', 'gloomfen'],
   'grave-colossus': ['mech', 'gloomfen'],
   hound: ['beast', 'wyldmaw'],
+  pup: ['beast', 'wyldmaw'],
+  'pack-alpha': ['beast', 'wyldmaw'],
   'gilded-guard': ['knight', 'aurelion'],
   'maw-hatchling': ['beast', 'wyldmaw'],
   gnashling: ['beast', 'wyldmaw'],

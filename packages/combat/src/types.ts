@@ -169,7 +169,8 @@ export type TriggerWhen =
   | 'loseHp' // your hero lost HP to one of your own effects
   | 'draw' // you drew a card
   | 'created' // a card was created in one of your piles
-  | 'arcana'; // you spent Arcana (a card's Arcana cost was paid; DECISIONS #288)
+  | 'arcana' // you spent Arcana (a card's Arcana cost was paid; DECISIONS #288)
+  | 'shuffle'; // your discard pile was shuffled into a new draw pile (DECISIONS #299)
 
 export type Op =
   /** `lonePct`: Point Blank, this much more damage (percent) when it hits only one enemy */
@@ -361,8 +362,8 @@ export interface HeroTrait {
   turnStart?: Op[];
   triggers?: Extract<Op, { op: 'power' }>[];
   clutch?: { below: number; damagePct: number };
-  /** every point of Might the hero gains or loses, their companions gain or lose too, and a new companion arrives with it */
-  shareMight?: boolean;
+  /** the share of the hero's Might their companions hold (rounded down): 1 shares it all, 0.5 half; a new companion arrives with it */
+  shareMight?: number;
   /** HP healed after every fight the hero wins (in a run) */
   healAfterFight?: number;
 }

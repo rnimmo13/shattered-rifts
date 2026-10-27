@@ -420,6 +420,8 @@ export const LOOKS: Record<string, Look> = {
   },
   // ---- companions: Wyldmaw pack
   hound: { badge: 'claw', trim: '#ffb48a' },
+  pup: { badge: 'claw', trim: '#ffd2b0', w: 0.82, h: 0.8, light: 1.1 },
+  'pack-alpha': { badge: 'claw', trim: '#ff8a5c', w: 1.1, h: 1.06, accessories: ['eyes'] },
   'dire-wolf': {
     hue: -25,
     light: 0.8,

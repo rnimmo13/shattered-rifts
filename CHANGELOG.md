@@ -5,6 +5,8 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **Kesh toned down:** cards that call her pack now bring a companion by their rarity: a Pup (6 HP) from Guard Dog and Heel, a Hound (10 HP) from Rally the Pack, a Pack Alpha (14 HP) from Alpha Call. Her companions share half her Might (rounded down) instead of all of it.
+- **Rift Resonance** gives 1 Might, and 1 more every time your deck is reshuffled (it gave 2 Might once). Auras can now answer a reshuffle.
 - **Arena:** see how many players are looking for a match before you queue. Making or joining a friend's room has its own panel, and the room code box shows its hint in full.
 - **Constructed decks removed:** the Arena only ever takes decks saved from a campaign run.
 - **One Legendary Boon per run:** once you hold a Legendary Boon, no other one is offered, sold or given for the rest of the run.

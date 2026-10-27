@@ -410,6 +410,7 @@ const WHEN_TEXT: Record<string, string> = {
   draw: 'Whenever you draw a card',
   created: 'Whenever a card is created',
   arcana: 'Whenever you spend Arcana',
+  shuffle: 'Whenever your deck is reshuffled',
 };
 
 export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): string {

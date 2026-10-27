@@ -148,7 +148,7 @@ export const HUNTER: CardDef[] = [
   ]),
 
   // --- Pack ---
-  k('common', 'heel', 'Heel', 'summon', 1, 'none', [summon('hound'), ACT]),
+  k('common', 'heel', 'Heel', 'summon', 1, 'none', [summon('pup'), ACT]),
   k('common', 'call-gnashlings', 'Call Gnashlings', 'summon', 1, 'none', [
     summon('gnashling'),
     summon('gnashling'),
@@ -168,7 +168,10 @@ export const HUNTER: CardDef[] = [
   k('uncommon', 'pack-bond', 'Pack Bond', 'power', 2, 'none', [
     on('turnStart', [barrier(3, 'allFriends')]),
   ]),
-  k('rare', 'alpha-call', 'Alpha Call', 'summon', 2, 'none', [summon('hound'), status('might', 1)]),
+  k('rare', 'alpha-call', 'Alpha Call', 'summon', 2, 'none', [
+    summon('pack-alpha'),
+    status('might', 1),
+  ]),
   k('rare', 'unchained', 'Unchained', 'power', 2, 'none', [status('might', 3)]),
   k('rare', 'den-mother', 'Den Mother', 'summon', 3, 'none', [summon('dire-wolf')]),
 
@@ -320,7 +323,7 @@ export const HUNTER: CardDef[] = [
 
   // --- Pack (batch 3) ---
   // (one of her basics now: an early companion and a shield, DECISIONS #285)
-  k('basic', 'guard-dog', 'Guard Dog', 'skill', 1, 'none', [summon('hound'), barrier(5)]),
+  k('basic', 'guard-dog', 'Guard Dog', 'skill', 1, 'none', [summon('pup'), barrier(5)]),
   k('common', 'bared-teeth', 'Bared Teeth', 'skill', 1, 'none', [
     scaled(barrier(3), per('allies', 3)),
   ]),

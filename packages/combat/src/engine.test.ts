@@ -1156,7 +1156,7 @@ describe('Lifesteal, companions that grow, and Might shared with the pack (DECIS
       ...db.heroes,
       knight: {
         ...db.heroes.knight!,
-        trait: { name: 'Pack', text: 'shares Might', shareMight: true },
+        trait: { name: 'Pack', text: 'shares Might', shareMight: 1 },
       },
     },
   };
@@ -1226,6 +1226,98 @@ describe('Lifesteal, companions that grow, and Might shared with the pack (DECIS
     c = applyAction(tdb, c, { type: 'play', card: 't2' }).state;
     const second = c.sides.a.units.filter((u) => u.kind === 'ally')[1]!;
     expect(second.statuses.might ?? 0).toBe(might);
+  });
+
+  it('a half share passes on half the Might, rounded down, step by step (DECISIONS #298)', () => {
+    const half: CombatDb = {
+      ...tdb,
+      cards: {
+        ...tdb.cards,
+        flex: card('flex', [{ op: 'status', status: 'might', amount: 1, to: 'self' }]),
+        drain: card('drain', [{ op: 'status', status: 'might', amount: -3, to: 'self' }]),
+      },
+      heroes: {
+        ...tdb.heroes,
+        knight: {
+          ...tdb.heroes.knight!,
+          trait: { name: 'Pack', text: 'half', shareMight: 0.5 },
+        },
+      },
+    };
+    let c = at(['call-drone', 'flex', 'flex', 'flex', 'call-drone', 'drain']);
+    const pet = (): number => c.sides.a.units.find((u) => u.kind === 'ally')!.statuses.might ?? 0;
+    c = applyAction(half, c, { type: 'play', card: 't0' }).state;
+    c = applyAction(half, c, { type: 'play', card: 't1' }).state;
+    expect(hero(c).statuses.might).toBe(1);
+    expect(pet()).toBe(0);
+    c = applyAction(half, c, { type: 'play', card: 't2' }).state;
+    expect(pet()).toBe(1);
+    c = applyAction(half, c, { type: 'play', card: 't3' }).state;
+    expect(pet()).toBe(1);
+    // a new companion arrives with half of the hero's 3, rounded down
+    c = applyAction(half, c, { type: 'play', card: 't4' }).state;
+    expect(c.sides.a.units.filter((u) => u.kind === 'ally')[1]!.statuses.might ?? 0).toBe(1);
+    // 3 -> 0: the share goes from 1 to 0
+    c = applyAction(half, c, { type: 'play', card: 't5' }).state;
+    expect(pet()).toBe(0);
+  });
+
+  it('at a half share, "Might to all friends" still gives every companion exactly that much', () => {
+    const half: CombatDb = {
+      ...tdb,
+      cards: {
+        ...tdb.cards,
+        rally: card('rally', [{ op: 'status', status: 'might', amount: 1, to: 'allFriends' }]),
+      },
+      heroes: {
+        ...tdb.heroes,
+        knight: { ...tdb.heroes.knight!, trait: { name: 'Pack', text: 'half', shareMight: 0.5 } },
+      },
+    };
+    let c = at(['call-drone', 'rally', 'rally']);
+    const pet = (): number => c.sides.a.units.find((u) => u.kind === 'ally')!.statuses.might ?? 0;
+    c = applyAction(half, c, { type: 'play', card: 't0' }).state;
+    // hero 0 -> 1 passes nothing on, so the card gives the companion its 1
+    c = applyAction(half, c, { type: 'play', card: 't1' }).state;
+    expect(hero(c).statuses.might).toBe(1);
+    expect(pet()).toBe(1);
+    // hero 1 -> 2 passes 1 on: the companion gets 1 in all, not 2
+    c = applyAction(half, c, { type: 'play', card: 't2' }).state;
+    expect(hero(c).statuses.might).toBe(2);
+    expect(pet()).toBe(2);
+  });
+});
+
+describe('an Aura that answers the deck being reshuffled (DECISIONS #299)', () => {
+  it('fires each time the discard pile becomes the draw pile, and not before', () => {
+    const tdb: CombatDb = {
+      ...db,
+      cards: {
+        ...db.cards,
+        echo: {
+          id: 'echo',
+          name: 'Echo',
+          kind: 'power',
+          cost: 0,
+          target: 'none',
+          effects: [
+            { op: 'power', when: 'shuffle', ops: [{ op: 'status', status: 'might', amount: 1, to: 'self' }] },
+          ],
+        } as unknown as CardDef,
+      },
+    };
+    let c = clone(start(['cultist'], ['echo', 'strike', 'strike', 'strike', 'strike', 'strike', 'strike']));
+    const echo = c.sides.a.hand.find((x) => x.card === 'echo') ?? c.sides.a.draw.find((x) => x.card === 'echo');
+    // put the Aura in hand and play it, then empty the draw pile into the discard and draw once
+    c.sides.a.hand = [echo!, ...c.sides.a.hand.filter((x) => x !== echo)];
+    c.sides.a.draw = c.sides.a.draw.filter((x) => x !== echo);
+    c = applyAction(tdb, c, { type: 'play', card: echo!.id }).state;
+    expect(hero(c).statuses.might ?? 0).toBe(0);
+    c.sides.a.discard = [...c.sides.a.discard, ...c.sides.a.draw];
+    c.sides.a.draw = [];
+    c = applyAction(tdb, c, { type: 'endTurn' }).state;
+    while (!c.winner && c.active !== 'a') c = applyAction(tdb, c, { type: 'endTurn' }).state;
+    expect(hero(c).statuses.might ?? 0).toBe(1);
   });
 });
 

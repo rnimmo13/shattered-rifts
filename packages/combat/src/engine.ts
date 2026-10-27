@@ -151,10 +151,11 @@ function addStatus(r: Run, u: Unit, st: StatusId, amount: number): boolean {
   if (total <= 0) delete u.statuses[st];
   else u.statuses[st] = total;
   r.ev.push({ type: 'status', target: u.id, status: st, amount, total: Math.max(0, total) });
-  // a hero whose trait shares Might: their companions gain (or lose) the same (DECISIONS #285)
-  // (what the hero's Might really changed by, so a loss never takes more from a companion than the hero itself lost)
-  const delta = Math.max(0, total) - was;
-  if (st === 'might' && delta !== 0 && u.kind === 'hero' && traitOf(r, u.side)?.shareMight)
+  // a hero whose trait shares Might: their companions gain (or lose) their share of it, rounded down (DECISIONS #285, #298)
+  // (the change in the share, so a hero going 1 -> 2 at half passes on 1; a loss never takes more than a companion has)
+  const share = u.kind === 'hero' && st === 'might' ? (traitOf(r, u.side)?.shareMight ?? 0) : 0;
+  const delta = Math.floor(Math.max(0, total) * share) - Math.floor(was * share);
+  if (delta !== 0)
     for (const x of r.s.sides[u.side].units)
       if (x.kind === 'ally' && x.hp > 0 && (delta > 0 || stacks(x, 'might') > 0))
         addStatus(r, x, 'might', Math.max(delta, -stacks(x, 'might')));
@@ -609,12 +610,24 @@ function execOp(r: Run, a: Act, op: Op): void {
         }
       return;
     case 'status': {
-      // (Might for all friends on a side whose hero shares it: the hero takes it and passes it on, so companions do not get it twice)
-      const shared =
-        op.status === 'might' && op.to === 'allFriends' && !!traitOf(r, side.id)?.shareMight;
-      for (const t of resolve(r, a, op.to)) {
-        if (shared && t.kind === 'ally') continue;
-        const n = amountOf(r, a, op.amount, op.scale, t);
+      // (Might for all friends on a side whose hero shares it: the hero takes it first and passes on their share, and each
+      // companion gets only the rest, so everyone ends up with exactly the amount the card says; DECISIONS #298)
+      const share =
+        op.status === 'might' && op.to === 'allFriends' ? (traitOf(r, side.id)?.shareMight ?? 0) : 0;
+      let passed = 0;
+      const targets = [...resolve(r, a, op.to)];
+      if (share > 0) targets.sort((x, y) => (x.kind === 'hero' ? 0 : 1) - (y.kind === 'hero' ? 0 : 1));
+      for (const t of targets) {
+        let n = amountOf(r, a, op.amount, op.scale, t);
+        if (share > 0 && t.kind === 'hero') {
+          const was = stacks(t, 'might');
+          addStatus(r, t, 'might', n);
+          passed = Math.floor(stacks(t, 'might') * share) - Math.floor(was * share);
+          if (op.temp && n > 0) side.temps.push({ unit: t.id, status: 'might', amount: n });
+          continue;
+        }
+        if (share > 0 && t.kind === 'ally') n -= passed;
+        if (n === 0) continue;
         const applied = addStatus(
           r,
           t,
@@ -648,8 +661,10 @@ function execOp(r: Run, a: Act, op: Op): void {
       const u = spawn(r, side, op.unit, false, a.actor);
       // (a hero who shares Might: the new companion arrives with it)
       const lead = heroOf(side);
-      if (u && lead && traitOf(r, side.id)?.shareMight && stacks(lead, 'might') > 0)
-        addStatus(r, u, 'might', stacks(lead, 'might'));
+      const given = lead
+        ? Math.floor(stacks(lead, 'might') * (traitOf(r, side.id)?.shareMight ?? 0))
+        : 0;
+      if (u && given > 0) addStatus(r, u, 'might', given);
       if (u) {
         fireSnare(r, other(side.id), { on: 'foeSummons', summoned: u });
         if (a.actor.kind === 'hero') fireTriggers(r, side, 'summon');
@@ -704,6 +719,7 @@ function execOp(r: Run, a: Act, op: Op): void {
         side.draw = [...side.draw, ...shuffle(r.s.rng, side.discard)];
         side.discard = [];
         r.ev.push({ type: 'shuffle', side: side.id });
+        fireTriggers(r, side, 'shuffle');
       }
       const top = side.draw.slice(0, op.amount);
       if (!top.length) return;
@@ -990,6 +1006,9 @@ function drawCards(r: Run, sd: SideState, n: number): void {
       sd.draw = shuffle(r.s.rng, sd.discard);
       sd.discard = [];
       r.ev.push({ type: 'shuffle', side: sd.id });
+      fireTriggers(r, sd, 'shuffle');
+      // (a reshuffle Aura may have moved cards out of the new draw pile)
+      if (sd.draw.length === 0) continue;
     }
     const c = sd.draw.shift() as CardInst;
     if (sd.hand.length >= MAX_HAND) {

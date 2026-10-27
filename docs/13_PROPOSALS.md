@@ -149,8 +149,9 @@ and that's where the bragging is.
 - a mastery number on your name plate in the Arena (cheap, earned, shows off);
 - a title at XX ("Riftbound").
 
-**Questions:** glow colours to be chosen with the card back art. Does mastery count runs played before it exists (the
-server has the board's runs, but not whether each one cleared its Tier)?
+Mastery counts only runs from the day it ships; earlier runs are not counted (Robert, 2026-10-27).
+
+**Questions:** glow colours to be chosen with the card back art.
 
 ---
 

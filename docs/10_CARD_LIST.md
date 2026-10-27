@@ -221,7 +221,7 @@ Starter: Strike, Strike, Strike, Strike, Defend, Defend, Defend, Savage Bite, Bl
 |---|---|---|---|---|
 | Savage Bite | 1 | attack | basic | Deal 9 damage. Lifesteal 50%. |
 | Blood Frenzy | 1 | attack | basic | Deal 4 damage to ALL enemies. Lose 1 HP. Apply 1 Might. |
-| Guard Dog | 1 | skill | basic | Summon Hound (10 HP). At the end of your turn it will: Deal 4 damage. Gain 5 Barrier. |
+| Guard Dog | 1 | skill | basic | Summon Pup (6 HP). At the end of your turn it will: Deal 3 damage. Gain 5 Barrier. |
 | Rend | 1 | attack | common | Deal 13 damage. Lose 2 HP. |
 | Twin Fang | 1 | attack | common | Deal 5 damage 2 times. Lose 1 HP. |
 | Feral Instinct | 0 | skill | common | Lose 2 HP. Draw 2 cards. Consume. |
@@ -232,7 +232,7 @@ Starter: Strike, Strike, Strike, Strike, Defend, Defend, Defend, Savage Bite, Bl
 | Pound | 1 | attack | common | Deal 8 damage. Draw 1 card. Lose 1 HP. |
 | Bone Crack | 1 | attack | common | Deal 7 damage. Apply 2 Exposed. |
 | Flesh Wound | 1 | skill | common | Lose 2 HP. Gain 14 Barrier. |
-| Heel | 1 | summon | common | Summon Hound (10 HP). At the end of your turn it will: Deal 4 damage. All your allies act now. |
+| Heel | 1 | summon | common | Summon Pup (6 HP). At the end of your turn it will: Deal 3 damage. All your allies act now. |
 | Call Gnashlings | 1 | summon | common | Summon 2 Gnashlings (4 HP each). At the end of your turn each will: Deal 3 damage. |
 | Pack Tactics | 1 | skill | common | Apply 1 Might. Gain 4 Barrier to all friends. |
 | Loose the Hound | 1 | skill | common | Apply 2 Might to the ally. The ally gains 4 max HP. |
@@ -296,7 +296,7 @@ Starter: Strike, Strike, Strike, Strike, Defend, Defend, Defend, Savage Bite, Bl
 | Scarred Warrior | 1 | power | rare | At the start of your turn: Lose 1 HP. Gain 8 Barrier. |
 | Primal Surge | 0 | skill | rare | Lose 2 HP. Apply 2 Might. Consume. |
 | Frenzied Thrash | 1 | attack | rare | Deal 4 damage 2 times. Consume 1 random card. |
-| Alpha Call | 2 | summon | rare | Summon Hound (10 HP). At the end of your turn it will: Deal 4 damage. Apply 1 Might. |
+| Alpha Call | 2 | summon | rare | Summon Pack Alpha (14 HP). At the end of your turn it will: Deal 5 damage. Apply 1 Might. |
 | Unchained | 2 | power | rare | Apply 3 Might. |
 | Den Mother | 3 | summon | rare | Summon Dire Wolf (18 HP). At the end of your turn it will: Deal 9 damage. |
 | Pack Frenzy | 2 | skill | rare | Apply 2 Might. All your allies act now. Consume. |
@@ -1114,7 +1114,7 @@ Tokens (made by other cards):
 | Stolen Time | 0 | skill | uncommon | Gain 3 Mana. Next turn, lose 2 Mana. Consume. |
 | Purging Light | 2 | skill | rare | Dispel every debuff on you. Gain 8 Barrier. Consume. |
 | Nerve Surge | 0 | skill | rare | Draw 2 cards. Gain 1 Mana. Consume. |
-| Rift Resonance | 2 | power | rare | Apply 2 Might. |
+| Rift Resonance | 2 | power | rare | Apply 1 Might. Whenever your deck is reshuffled: Apply 1 Might. |
 | Echoing Blow | 1 | skill | rare | Apply 1 Reverb. |
 | Rift Smithing | 2 | skill | rare | Upgrade every card in your hand for this fight. Consume. |
 | Attunement | 2 | skill | rare | Gain 1 maximum Mana for the rest of the fight (and 1 now). Consume. |

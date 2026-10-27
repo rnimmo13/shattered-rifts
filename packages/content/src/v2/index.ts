@@ -94,9 +94,9 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     trait: {
       name: 'Pack Instinct',
       // (DECISIONS #285: her Might is the pack's, and she recovers between fights from what her own cards cost her)
-      text: 'Your companions share your Might: whatever you gain, they gain, and a new companion arrives with it. Start every fight with 1 Might. Heal 6 after every fight you win.',
+      text: 'Your companions share half your Might (rounded down), and a new companion arrives with it. Start every fight with 1 Might. Heal 6 after every fight you win.',
       fightStart: [status('might', 1)],
-      shareMight: true,
+      shareMight: 0.5,
       healAfterFight: 6,
     },
     hero: {

@@ -30,6 +30,8 @@
                     "unit:hive-7":  "figures/hive-7.png",
                     "unit:hooded-acolyte":  "figures/hooded-acolyte.png",
                     "unit:hound":  "figures/hound.png",
+                    "unit:pup":  "figures/hound.png",
+                    "unit:pack-alpha":  "figures/hound.png",
                     "unit:inquisitor-maelis":  "figures/inquisitor-maelis.png",
                     "unit:kron":  "figures/kron.png",
                     "unit:lamplighter":  "figures/lamplighter.png",
