@@ -29,6 +29,33 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.91.0',
+    date: '2026-10-27',
+    title: 'Pick your deck, runs on every device',
+    summary:
+      'Choose your Arena deck after you are matched, before each game; your runs follow you to every device you sign in on; Kesh is toned down again.',
+    notes: [
+      {
+        kind: 'new',
+        text: 'Arena: every saved deck comes to the match. Once you are matched, you choose one before each game, of any Riftwalker, without seeing your opponent’s choice (they cannot see yours either). One deck is enough. Players are matched by Arena rank.',
+      },
+      {
+        kind: 'new',
+        text: 'Your runs follow you: sign in on shatteredrifts.app and the runs you have in progress appear on every device you sign in on. Open the game once on the device you played on, so its runs are sent up.',
+      },
+      {
+        kind: 'balance',
+        text: 'Kesh: her Hound has 8 HP. Her starting deck has Rend (Deal 9, lose 2 HP, gain 1 Might) instead of Guard Dog, and Savage Bite deals 8 (10 upgraded).',
+      },
+      {
+        kind: 'balance',
+        text: 'Stunned heroes: in the Arena and against a ghost Warden, a Stunned hero draws one card fewer at the start of their next turn. Companions and enemies still skip their next action.',
+      },
+    ],
+    heads:
+      'The rules changed: reload if the game asks you to. Arena games and replays from before this version can no longer be watched.',
+  },
+  {
     version: '0.90.0',
     date: '2026-10-27',
     title: 'Kesh, Auras and the Arena page',
