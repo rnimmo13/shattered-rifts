@@ -203,8 +203,30 @@ export const addTo = (
 export const on = (
   when: TriggerWhen,
   ops: Op[],
-  narrow: { filter?: CardKind; tag?: string; stance?: Stance; temp?: boolean } = {},
+  narrow: {
+    filter?: CardKind;
+    tag?: string;
+    stance?: Stance;
+    temp?: boolean;
+    /** the Defect copy (totemist): once a turn, a cost limit, a number of answers, one totem's awakening */
+    once?: boolean;
+    maxCost?: number;
+    times?: number;
+    rune?: string;
+  } = {},
 ): Extract<Op, { op: 'power' }> => ({ op: 'power', when, ops, ...narrow });
+
+// --- the Defect copy (totemist) -------------------------------------------------------------------------------------------
+/** totems' passives, now: every totem (or every one of a kind), or the oldest only (`first`); `aim` strikes the target */
+export const pulse = (
+  opts: { rune?: string; first?: boolean; times?: number; aim?: boolean } = {},
+): Op => ({ op: 'pulse', ...opts });
+/** this card costs `amount` more (less, if negative) for the rest of the fight */
+export const recost = (amount: number): Op => ({ op: 'recost', amount });
+export const reshuffle: Op = { op: 'reshuffle' };
+export const returnPlayed: Op = { op: 'returnPlayed' };
+/** a status card's tag (Wound, Haze, Scorch, Muck, Drain): the cards that pay off when you make one look for it */
+export const STATUS_TAG = 'status';
 
 // --- cards ---------------------------------------------------------------------------------------------------------
 
@@ -229,6 +251,9 @@ type Extra = Partial<
     | 'needsExhausted'
     | 'cheaperPerAttack'
     | 'replayFromExhaust'
+    | 'inHandAtEnd'
+    | 'onDraw'
+    | 'cheaperOnCreate'
   >
 > & {
   /** a hand-written "+" version: fields that replace the card's (instead of the generic rule in plus()) */

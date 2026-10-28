@@ -23,10 +23,7 @@ export const SHELVED_LEGENDARIES: readonly string[] = [
   'deck-of-a-thousand-knives',
   'death-warrant',
   'ten-thousand-cuts',
-  // totemist
-  'cataclysm-glyph',
-  'the-grand-design',
-  'the-spirit-council',
+  // totemist: none (he is the Defect's card list, which has no Legendary)
   // barbarian
   'perfect-balance',
   'still-flame-ascendant',

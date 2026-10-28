@@ -19,8 +19,8 @@ describe('legendary cards', () => {
       const own = rewardPool(h).filter(
         (id) => rarityOf(id) === 'legendary' && COMBAT_DB.cards[id]?.hero === h,
       );
-      // (Valeria has none: she is exactly the Ironclad's list, DECISIONS #367)
-      expect(own.length, h).toBeGreaterThanOrEqual(h === 'knight' ? 0 : 2);
+      // (Valeria has none: she is exactly the Ironclad's list, DECISIONS #367; nor Ilvane, the Defect's)
+      expect(own.length, h).toBeGreaterThanOrEqual(['knight', 'totemist'].includes(h) ? 0 : 2);
     }
     const neutral = Object.values(COMBAT_DB.cards).filter(
       (c) => c.hero === 'neutral' && c.rarity === 'legendary' && !c.source,

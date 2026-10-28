@@ -6,7 +6,7 @@ import type { CardDef } from '@sr/combat';
 import { withUpgrades } from './build';
 import { SPELLBLADE } from './pools/spellblade';
 import { LEGENDARIES } from './pools/legendary';
-import { TOTEMIST } from './pools/totemist';
+import { TOTEMIST, TOTEMIST_STATUSES } from './pools/totemist';
 import { HUNTER } from './pools/hunter';
 import { DRUNKARD } from './pools/drunkard';
 import { ANCESTRAL, JUNK, NEUTRAL, SIGNATURES } from './pools/neutral';
@@ -36,4 +36,5 @@ export const V2_CARDS: CardDef[] = [
     ...ANCESTRAL,
   ]),
   ...JUNK,
+  ...TOTEMIST_STATUSES,
 ];

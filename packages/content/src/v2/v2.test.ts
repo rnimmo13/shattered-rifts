@@ -45,6 +45,8 @@ describe('Combat v2 content', () => {
           b: c.xBonus,
           d: c.onDiscard,
           o: c.onExhaust,
+          n: c.innate,
+          f: c.ethereal,
         }) ===
         JSON.stringify({
           e: u.effects,
@@ -55,6 +57,8 @@ describe('Combat v2 content', () => {
           b: u.xBonus,
           d: u.onDiscard,
           o: u.onExhaust,
+          n: u.innate,
+          f: u.ethereal,
         });
       expect(same, `${c.id} upgrade changes nothing`).toBe(false);
     }

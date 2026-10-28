@@ -23,7 +23,6 @@ const r = pool('engineer', 'nexus');
 const k = pool('hunter', 'wyldmaw');
 const v = pool('trapper', 'umbral');
 const q = pool('assassin', 'umbral');
-const i = pool('totemist', 'nexus');
 const s = pool('barbarian', 'aurelion');
 const a = pool('spellblade', 'starfall');
 const g = pool('necromancer', 'gloomfen');
@@ -67,17 +66,7 @@ export const LEGENDARIES: CardDef[] = [
   q('rare', 'ten-thousand-cuts', 'Death by Inches', 'attack', 1, 'foe', [
     scaled(dmg(5, 'target', 2), per('discarded', 2, undefined, 'hits')),
   ]),
-  // Elements: Spirit every turn, and every enemy struck for all of it (DECISIONS #353)
-  i(
-    'rare',
-    'the-spirit-council',
-    'Avatar of the Elements',
-    'power',
-    3,
-    'none',
-    [on('turnStart', [status('resonance', 1), scaled(dmg(0, 'allFoes'), per('resonance'))])],
-    { up: { cost: 2 } },
-  ),
+  // (totemist: none; he is exactly the Defect's card list now, see pools/totemist.ts)
   // Fury: in Fury every turn, and every turn it lashes out
   s(
     'rare',

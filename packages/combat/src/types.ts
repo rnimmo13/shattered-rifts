@@ -45,7 +45,12 @@ export type StatusId =
   | 'cruelty' // your attacks deal 25% more to Exposed enemies
   | 'sturdy' // you take half damage from Exposed enemies (until the enemies' next turn is over)
   | 'unmovable' // the first Barrier a card gives you each turn is doubled
-  | 'freeattack'; // your next Attack costs 0, per stack
+  | 'freeattack' // your next Attack costs 0, per stack
+  // (the Defect copy, totemist: Echo Form, Signal Boost, Synthesis, One for All)
+  | 'echoing' // the first card you play each turn is played an extra time (the first N cards, for N stacks)
+  | 'boosted' // your next Aura is played an extra time, per stack
+  | 'freepower' // your next Aura costs 0, per stack
+  | 'deftness'; // your 0-cost Attacks deal this much more damage
 export const STATUS_IDS: readonly StatusId[] = [
   'exposed',
   'faltering',
@@ -81,6 +86,10 @@ export const STATUS_IDS: readonly StatusId[] = [
   'sturdy',
   'unmovable',
   'freeattack',
+  'echoing',
+  'boosted',
+  'freepower',
+  'deftness',
 ];
 /** Debuffs: a Steadfast unit ignores the next one put on it. */
 export const DEBUFFS: readonly StatusId[] = [
@@ -123,7 +132,9 @@ export type Sel =
   | 'allFriends'
   /** each of the actor's allies (companions, minions), never the hero */
   | 'allAllies'
-  | 'attacker';
+  | 'attacker'
+  /** the living enemy with the least HP (a Dark orb's awakening) */
+  | 'weakestFoe';
 
 /**
  * A number that depends on the board: `amount + floor(mult * metric)`. Unit metrics read `of` (default: the actor; "target" is the
@@ -175,6 +186,12 @@ export type Metric =
   | 'nonAttacksInHand'
   | 'exhaustedNow' // cards the card being played has consumed so far
   | 'exhaustedDamage' // the damage of the Attacks the card being played has consumed so far
+  // (the Defect copy, totemist)
+  | 'runeKinds' // how many different totems you have
+  | 'runesOf' // how many totems of the kind named by `rune` you have
+  | 'channeledOf' // how many totems of the kind named by `rune` you have planted this fight
+  | 'manaSpent' // Mana spent on cards this turn (this card's own cost included)
+  | 'attacking' // 1 if the unit (usually the target) means to attack this turn
   // about the thing being resolved
   | 'x' // Mana spent on an X card
   | 'charge' // a rune's charge
@@ -185,6 +202,8 @@ export interface Scale {
   mult?: number;
   of?: 'self' | 'target' | 'each';
   into?: 'amount' | 'hits';
+  /** for 'runesOf' and 'channeledOf': which totem */
+  rune?: string;
 }
 
 /** When a Power's trigger fires. */
@@ -205,7 +224,8 @@ export type TriggerWhen =
   | 'created' // a card was created in one of your piles
   | 'arcana' // you spent Arcana (a card's Arcana cost was paid; DECISIONS #288)
   | 'shuffle' // your discard pile was shuffled into a new draw pile (DECISIONS #299)
-  | 'exposeFoe'; // you put Exposed on an enemy
+  | 'exposeFoe' // you put Exposed on an enemy
+  | 'evoke'; // one of your totems awakened (`rune` narrows it; the target is each enemy its awakening struck)
 
 export type Op =
   /** `lonePct`: Point Blank, this much more damage (percent) when it hits only one enemy */
@@ -247,7 +267,8 @@ export type Op =
   /** multiply the stacks of a status already on the target (floor); 2 doubles it */
   /** multiply a status (Double the Seared...); `max` is the most stacks it adds, so a doubler played again and again cannot run away */
   | { op: 'scaleStatus'; status: StatusId; mult: number; to: Sel; max?: number }
-  | { op: 'draw'; amount: number; scale?: Scale }
+  /** `keepCost`: of the cards drawn this way, those that cost more than this are discarded at once (Scrape) */
+  | { op: 'draw'; amount: number; scale?: Scale; keepCost?: number }
   | { op: 'mana'; amount: number; scale?: Scale }
   | { op: 'stars'; amount: number; scale?: Scale }
   | { op: 'summon'; unit: string }
@@ -272,6 +293,10 @@ export type Op =
       /** only cards of this kind, or every kind but this one */
       only?: CardKind;
       not?: CardKind;
+      /** only cards with this tag */
+      tag?: string;
+      /** every such card in your hand, draw pile and discard pile, without a choice (Flak Cannon) */
+      everywhere?: boolean;
     }
   | { op: 'scry'; amount: number }
   // --- Powers: run `ops` whenever `when` happens (`filter`/`tag` narrow 'play')
@@ -285,10 +310,25 @@ export type Op =
       stance?: Stance;
       /** it ends with this turn (Rage) */
       temp?: boolean;
+      /** it answers only the first time each turn (Iteration, Feral) */
+      once?: boolean;
+      /** 'play': only cards that cost at most this much */
+      maxCost?: number;
+      /** it goes after answering this many times (Lightning Rod: the next 2 turns) */
+      times?: number;
+      /** 'evoke': only this totem */
+      rune?: string;
     }
   // --- runes
+  /** `rune: '*'` plants a random totem (any of them) */
   | { op: 'channel'; rune: string; times?: number; scale?: Scale }
-  | { op: 'evoke'; count?: number; times?: number; keep?: boolean; scale?: Scale }
+  /** `last`: the newest totems instead of the oldest */
+  | { op: 'evoke'; count?: number; times?: number; keep?: boolean; scale?: Scale; last?: boolean }
+  /**
+   * your totems' passives fire now, without the end of the turn: every totem (or every one of kind `rune`), or only the oldest
+   * (`first`); `aim`: what they would strike at random they strike at the card's target instead
+   */
+  | { op: 'pulse'; rune?: string; first?: boolean; times?: number; aim?: boolean }
   | { op: 'runeSlots'; amount: number }
   // --- stances
   | { op: 'stance'; stance: Stance | 'none' }
@@ -317,9 +357,12 @@ export type Op =
       tag?: string;
       /** the cards come back as their "+" versions */
       upgrade?: boolean;
+      /** only cards that cost at most this much */
+      maxCost?: number;
     }
   /** add a copy of the card being played */
-  | { op: 'copySelf'; to: 'hand' | 'discard' | 'draw' }
+  /** `free`: the copy costs 0 for the rest of the fight */
+  | { op: 'copySelf'; to: 'hand' | 'discard' | 'draw'; free?: boolean }
   // --- playing cards for free (Cascade, Havoc, Stampede, Hellraiser, Howl From Beyond)
   /**
    * play cards for free, each against a random enemy: from the top of the draw pile, the exhaust pile (it goes back there), a
@@ -343,13 +386,29 @@ export type Op =
   /** consume cards from the top of your draw pile */
   | { op: 'exhaustTop'; amount: number }
   /** every card of this kind in your hand becomes another card */
-  | { op: 'transform'; kind: CardKind; into: CardId }
+  | { op: 'transform'; kind?: CardKind; tag?: string; into: CardId }
   /** run these ops only while a metric is within bounds ("on your third Attack") */
-  | { op: 'when'; by: Metric; of?: Scale['of']; atLeast?: number; atMost?: number; ops: Op[] }
+  | {
+      op: 'when';
+      by: Metric;
+      of?: Scale['of'];
+      atLeast?: number;
+      atMost?: number;
+      ops: Op[];
+      /** for 'runesOf' and 'channeledOf': which totem */
+      rune?: string;
+    }
   /** add a copy of the card that has just been played (in a 'play' trigger) to your hand */
   | { op: 'copyPlayed' }
   /** raise max HP, and HP with it (for the fight; a run keeps what a card says it keeps) */
-  | { op: 'maxHp'; amount: number; to: Sel };
+  | { op: 'maxHp'; amount: number; to: Sel }
+  // --- the Defect copy (totemist)
+  /** this card costs `amount` more (less, if negative) for the rest of the fight, and it adds up (Modded, Momentum Strike) */
+  | { op: 'recost'; amount: number }
+  /** your hand and discard pile are shuffled into your draw pile (Reboot) */
+  | { op: 'reshuffle' }
+  /** in a 'play' trigger: the card just played comes back from your discard pile to your hand (Feral) */
+  | { op: 'returnPlayed' };
 
 export type CardKind = 'attack' | 'skill' | 'power' | 'summon' | 'snare';
 /** foe = an enemy; friend = any unit of yours (hero or ally); ally = one of your allies, never the hero */
@@ -409,6 +468,12 @@ export interface CardDef {
   onDiscard?: Op[];
   /** runs when this card is exhausted */
   onExhaust?: Op[];
+  /** runs if this card is in your hand at the end of your turn (Burn) */
+  inHandAtEnd?: Op[];
+  /** runs when you draw this card (Void) */
+  onDraw?: Op[];
+  /** whenever a card with this tag is created in your piles, this card costs 1 less until it is played (Rocket Punch) */
+  cheaperOnCreate?: string;
   /** where a special card comes from (e.g. 'boss:seraphine'); such cards are never ordinary rewards */
   source?: string;
 }
@@ -534,6 +599,14 @@ export interface RuneDef {
   evoke: Op[];
   /** charge gained each time the passive fires (Metric 'charge' in either list of ops) */
   grow?: number;
+  /** the charge it is planted with (a Dark orb starts at 6) */
+  start?: number;
+  /** charge lost each time the passive fires, after it fires (Glass fades), never below 0 */
+  decay?: number;
+  /** Spirit does not add to its awakening (a Dark orb's Focus went into its charge already) */
+  plainEvoke?: boolean;
+  /** its passive fires at the start of your turn instead of the end (Plasma) */
+  atStart?: boolean;
 }
 
 export interface CombatDb {
@@ -610,6 +683,8 @@ export interface CardInst {
   bonus?: number;
   /** cost change for the rest of the fight (negative = cheaper) */
   costMod?: number;
+  /** a lasting cost change that playing the card does not spend (the recost op, a free copy) */
+  costUp?: number;
 }
 
 /** A rune on the board. */
@@ -631,6 +706,13 @@ export interface PowerState {
   stance?: Stance;
   /** it ends with this turn (Rage) */
   temp?: boolean;
+  once?: boolean;
+  maxCost?: number;
+  /** answers left before it goes */
+  left?: number;
+  rune?: string;
+  /** the turn it last answered (for `once`) */
+  firedTurn?: number;
 }
 
 /** A choice the acting player owes before anything else happens. */
@@ -648,7 +730,7 @@ export interface Pending {
   finish: CardInst | null;
   x: number;
   /** the card is played a second time when it finishes (a Reverb attack or Mirrored skill) */
-  again?: 'twinned' | 'mirrored' | null;
+  again?: 'twinned' | 'mirrored' | 'boosted' | 'echo' | null;
 }
 
 export interface SnareState {
@@ -702,6 +784,9 @@ export interface SideState {
   barrierDoubled?: boolean;
   /** max HP the hero has gained this fight (a run keeps it) */
   maxHpGained?: number;
+  /** Mana spent on cards this turn; totems planted this fight, by kind */
+  spentTurn?: number;
+  channeledBy?: Record<string, number>;
   /** counters for the whole fight */
   drawn: number;
   created: number;
@@ -862,7 +947,8 @@ export type CombatEvent =
   | { type: 'stars'; side: Side; stars: number }
   | { type: 'runeChannel'; side: Side; rune: string; index: number }
   | { type: 'runeFire'; side: Side; rune: string; how: 'passive' | 'evoke' }
-  | { type: 'runeGone'; side: Side; rune: string }
+  /** `index`: where in the row it stood (the newest can go first, Consuming Shadow) */
+  | { type: 'runeGone'; side: Side; rune: string; index?: number }
   | { type: 'stance'; unit: UnitId; stance: Stance | 'none' }
   | { type: 'power'; side: Side; card: CardId }
   | { type: 'transform'; side: Side; card: InstId; def: CardId; costMod?: number }

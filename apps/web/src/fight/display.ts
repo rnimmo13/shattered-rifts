@@ -121,7 +121,11 @@ export function reduceEvent(db: CombatDb, s: CombatState, e: CombatEvent): void 
       return;
     case 'runeGone': {
       const row = s.sides[e.side].runes;
-      const i = row.findIndex((r) => r.rune === e.rune);
+      // (by its place in the row when the event says, since the newest totem can go first)
+      const i =
+        e.index !== undefined && row[e.index]?.rune === e.rune
+          ? e.index
+          : row.findIndex((r) => r.rune === e.rune);
       if (i >= 0) row.splice(i, 1);
       return;
     }

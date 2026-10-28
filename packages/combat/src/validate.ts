@@ -58,7 +58,7 @@ export function validateDb(db: CombatDb): string[] {
         errs.push(
           `${where}: "${o.op}" asks the player to choose, so only a card's own effects may use it`,
         );
-      if (opts.rune && (o.op === 'evoke' || o.op === 'channel'))
+      if (opts.rune && (o.op === 'evoke' || o.op === 'channel' || o.op === 'pulse'))
         errs.push(
           `${where}: a rune's own effects cannot evoke or channel (they would call themselves)`,
         );
@@ -71,18 +71,20 @@ export function validateDb(db: CombatDb): string[] {
         errs.push(`${where}: bad discover count`);
       if (o.op === 'when') checkOps(`${where}.when`, o.ops, opts);
       if (o.op === 'damage' && o.onKill) checkOps(`${where}.onKill`, o.onKill, opts);
-      if (o.op === 'copyPlayed' && !opts.played)
-        errs.push(`${where}: "copyPlayed" only works in a trigger that answers a card being played`);
+      if ((o.op === 'copyPlayed' || o.op === 'returnPlayed') && !opts.played)
+        errs.push(`${where}: "${o.op}" only works in a trigger that answers a card being played`);
+      if (o.op === 'recost' && !opts.card) errs.push(`${where}: "recost" only works in a card`);
       if (o.op === 'power') {
         if (!opts.card) errs.push(`${where}: "power" only works in a card`);
         checkOps(`${where}.power`, o.ops, {
-          aimed: o.when === 'play',
+          // (an awakening's Aura is aimed at each enemy the totem struck)
+          aimed: o.when === 'play' || o.when === 'evoke',
           snare: false,
           attacker: o.when === 'allyDies',
           played: o.when === 'play',
         });
       }
-      if (o.op === 'channel' && !db.runes?.[o.rune])
+      if (o.op === 'channel' && o.rune !== '*' && !db.runes?.[o.rune])
         errs.push(`${where}: channels unknown rune "${o.rune}"`);
       if (o.op === 'forge' && !db.cards[o.card])
         errs.push(`${where}: forges unknown card "${o.card}"`);
@@ -125,6 +127,9 @@ export function validateDb(db: CombatDb): string[] {
       checkOps(`${id}.onDiscard`, c.onDiscard, { aimed: false, snare: false, card: true });
     if (c.onExhaust)
       checkOps(`${id}.onExhaust`, c.onExhaust, { aimed: false, snare: false, card: true });
+    if (c.inHandAtEnd)
+      checkOps(`${id}.inHandAtEnd`, c.inHandAtEnd, { aimed: false, snare: false });
+    if (c.onDraw) checkOps(`${id}.onDraw`, c.onDraw, { aimed: false, snare: false });
     if (c.x && c.cost !== 0) errs.push(`${id}: an X card must have cost 0`);
     const flat = [...c.effects, ...c.effects.flatMap((o) => (o.op === 'power' ? o.ops : []))];
     const readsX = flat.some((o) => 'scale' in o && o.scale?.by === 'x');
