@@ -5,6 +5,7 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **The Hunter is rebalanced** card by card against the new card costing guide, and goes hunting: four new Traps (Bear Trap, Snare Line, Deadfall, Baited Snare), Hunting Grounds, Single Out and Run It Down. Her summons are smaller and cheaper to read (Pup 5 HP, Pack Alpha 12, Dire Wolf 18), Litter brings two Pups, and Crimson Pact and Unbridled are retired.
 - **Might only boosts attacks:** damage from Auras (Blood Fire, Serpent's Coil, Bastion Engine...), totems and Traps is the number on the card; Might, Exposed and Faltering only change attack damage, as their text says. Thorns and "when attacked" Traps only answer attacks. **Fixed:** Blood Fire showed twice in the Aura list.
 - **Three cards made whole:** Fated Hand lets you choose the 2 cards from your draw pile (they come next turn), Army of the Drowned raises two Thralls, and Marked for Death gives an extra card reward when it kills. **Fixed:** Bloodfeast's max HP (and Marked for Death's reward) is paid even when that kill ends the fight.
 - **No starting card pick:** a run starts with your Riftwalker's usual deck and goes straight to The Threshold.

@@ -60,7 +60,7 @@ export interface Entry {
 // (21: the Trapper is the Trickster (id trickster), free statuses spent only when they make a card free, Blade Echo/Replay after a choice, #372)
 // (20, also: Sylas, Obsidia, Dorian and Ilvane are the Silent, the Regent, the Necrobinder and the Defect; the Totemist is the Shaman, #368-371)
 // (20: Valeria is the Ironclad shape and there are new engine pieces, no Devotion, no Legendary cards, build paths hidden, two uncommons to start, #362-366)
-export const RULES_VERSION = 22;
+export const RULES_VERSION = 23;
 
 /** Who you are playing, before a game starts: their name and badges, not their deck or Riftwalker. */
 export type FoeCard = Pick<Entry, 'name' | 'trophies' | 'rank'>;

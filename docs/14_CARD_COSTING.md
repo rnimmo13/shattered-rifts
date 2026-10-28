@@ -209,7 +209,7 @@ For "whenever X" triggers, count how often X happens per turn in the deck that w
 | Card | Points | Budget | Reading |
 |---|---|---|---|
 | Hunter: Bone Crack (1, common): 7 + 2 Exposed | 7 + 6 = 13 | 10 | +30%. 7 + 1 Exposed, or 5 + 2 Exposed. |
-| Hunter: Rend (1, basic): 9, lose 2 HP, 1 Might | 9 - 3 + 5 = 11 | 7-9 (basic) | A hot basic, even before Bloodrage payoffs make the HP an upside. |
+| Hunter: Rend (1, basic): 9, lose 2 HP, 1 Might | 9 - 3 + 6 = 12 | 7-9 (basic) | A hot basic: now 6 damage (9), DECISIONS #377. |
 | Hunter: Twin Fang (1, common): 5 x2, lose 2 HP | 10 - 3 = 7 | 10 | Under unless the HP pays off; fine only as a Bloodrage card. |
 | Barbarian: Crushing Palm (1, common): 8 + 1 Exposed | 8 + 3 = 11 | 10 | ✓ |
 | Barbarian: Spinning Heel (2, uncommon): 12 + 2 Exposed, draw 1 | 12 + 6 + 3 = 21 | 21 | ✓ |
@@ -248,8 +248,9 @@ built from pieces the baselines already price: a companion is **sticky Barrier**
 | Bone Thrall, Raise 5 (no hit) | 6 + 3 = 9 | Raise Thrall: a basic at ~90% |
 | Pup (6 HP, hits 3) | 7.2 + 3 + 3 = 13.2 | a 1-cost common at +32% |
 | Hound (8 HP, hits 4) | 9.6 + 3 + 4 = 16.6 | a 1.5-cost card on its own |
-| Pack Alpha (16 HP, hits 10, +1 Might a hit) | 19.2 + 3 + 21 = 43 | far past a 2-cost rare (~24-30) |
-| Dire Wolf (24 HP, hits 14) | 28.8 + 3 + 42 = 74 | twice a 3-cost rare (35) |
+| Pack Alpha, before #377 (16 HP, hits 10) | 19.2 + 3 + 20 = 42 | far past a 2-cost rare (~24-30) |
+| Pack Alpha, since #377 (12 HP, hits 6) | 14.4 + 3 + 12 = 29.4 | a 2-cost rare |
+| Dire Wolf, before #377 (24 HP, hits 14) | 28.8 + 3 + 42 = 74 | twice a 3-cost rare (35); now 18 HP, hits 9: 43 |
 
 **Pack effects**
 

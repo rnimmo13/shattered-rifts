@@ -32,7 +32,7 @@ export const LEGENDARIES: CardDef[] = [
     'skill',
     2,
     'none',
-    [summon('hound'), summon('hound'), status('might', 3, 'allAllies'), ACT],
+    [summon('hound'), status('might', 2, 'allAllies'), ACT],
     { exhaust: true, up: { cost: 1 } },
   ),
   // Exposed: it marks every enemy as it springs

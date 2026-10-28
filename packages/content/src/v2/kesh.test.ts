@@ -23,11 +23,11 @@ const play = (s: CombatState, id: string): CombatState => {
 };
 
 describe('Den Mother', () => {
-  it('is a 3 Mana Aura, and the upgrade hits harder without costing less', () => {
+  it('is a 2 Mana Aura (DECISIONS #377), and the upgrade hits harder without costing less', () => {
     const c = db.cards['den-mother']!;
     const up = db.cards['den-mother+']!;
-    expect([c.kind, c.cost]).toEqual(['power', 3]);
-    expect([up.kind, up.cost]).toEqual(['power', 3]);
+    expect([c.kind, c.cost]).toEqual(['power', 2]);
+    expect([up.kind, up.cost]).toEqual(['power', 2]);
     expect(up.retain).toBeFalsy();
     expect(up.innate).toBeFalsy();
     const dmg = (id: string): number => {
@@ -88,7 +88,8 @@ describe('the summons, by cost', () => {
       const o = b.kind === 'ally' ? b.act[0] : undefined;
       return o?.op === 'damage' ? o.amount : 0;
     };
-    expect([hp('pack-alpha'), hit('pack-alpha')]).toEqual([16, 10]);
+    // (12 HP, hits 6 since the costing pass, DECISIONS #377)
+    expect([hp('pack-alpha'), hit('pack-alpha')]).toEqual([12, 6]);
     expect(hp('dire-wolf')).toBeGreaterThan(hp('pack-alpha'));
     expect(hit('dire-wolf')).toBeGreaterThan(hit('pack-alpha'));
     expect(hp('pup')).toBeLessThan(hp('hound'));

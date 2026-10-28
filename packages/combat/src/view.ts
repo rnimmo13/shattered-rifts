@@ -387,6 +387,7 @@ const METRIC_WORDS: Record<Metric, { per: string; equal: string }> = {
   missingPct: { per: '% HP missing', equal: 'share of HP missing' },
   seared: { per: 'Bleed', equal: 'Bleed' },
   exposed: { per: 'Exposed', equal: 'Exposed' },
+  faltering: { per: 'Faltering', equal: 'Faltering' },
   might: { per: 'Might', equal: 'Might' },
   thorns: { per: 'Thorns', equal: 'Thorns' },
   mantra: { per: 'Fervor', equal: 'Fervor' },
@@ -488,6 +489,7 @@ const UNIT_METRICS: readonly Metric[] = [
   'missingPct',
   'seared',
   'exposed',
+  'faltering',
   'might',
   'thorns',
   'mantra',
@@ -624,6 +626,7 @@ function whenText(o: Extract<Op, { op: 'when' }>, db?: CombatDb): string {
   if (o.by === 'played' && lo === undefined && hi !== undefined)
     return `you have played ${hi} or fewer other cards this turn`;
   if (o.by === 'exposed' && o.of === 'target' && (lo ?? 0) >= 1) return 'the target is Exposed';
+  if (o.by === 'faltering' && o.of === 'target' && (lo ?? 0) >= 1) return 'the target is Faltering';
   if (o.by === 'hpLostTurn' && (lo ?? 0) >= 1) return 'you have lost HP this turn';
   if (o.by === 'exhaustedTurn' && (lo ?? 0) >= 1) return 'you have consumed a card this turn';
   if (o.by === 'skillsDrawnNow' && (lo ?? 0) >= 1) return 'you drew a Skill';

@@ -600,6 +600,7 @@ function metricValue(
       return u ? Math.floor(((u.maxHp - u.hp) * 100) / Math.max(1, u.maxHp)) : 0;
     case 'seared':
     case 'exposed':
+    case 'faltering':
     case 'might':
     case 'thorns':
     case 'mantra':

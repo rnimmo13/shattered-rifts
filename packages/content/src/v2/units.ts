@@ -37,10 +37,11 @@ const RAW_ALLIES: UnitDef[] = [
   ally('maw-hatchling', 'Maw Hatchling', 12, [dmg(7)]),
   // (a pack grows with the card that calls it: basic and common cards bring a Pup, uncommon a Hound, rare a Pack Alpha or a
   // Dire Wolf; DECISIONS #298)
-  ally('pup', 'Pup', 6, [dmg(3)]),
+  // (the costing pass, DECISIONS #377: a companion is worth 1.2 x HP + 3 + its hit x its acts, docs/14_CARD_COSTING.md §10)
+  ally('pup', 'Pup', 5, [dmg(3)]),
   ally('hound', 'Hound', 8, [dmg(4)]),
-  ally('pack-alpha', 'Pack Alpha', 16, [dmg(10)]),
-  ally('dire-wolf', 'Dire Wolf', 24, [dmg(14)]),
+  ally('pack-alpha', 'Pack Alpha', 12, [dmg(6)]),
+  ally('dire-wolf', 'Dire Wolf', 18, [dmg(9)]),
   // Gloomfen: Dorian's dead. The Bone Thrall is his copy of the Necrobinder's Osty, several at once: it does not act on its own, a
   // Raise brings one with the HP the card says (5 here is only the one he starts with), and his Command cards make each one strike.
   // (Grave Colossus and The Drowned King are no longer summoned by any card; they are kept for their looks and for later.)
@@ -55,7 +56,7 @@ const RAW_ALLIES: UnitDef[] = [
  * upgraded to (DECISIONS #326).
  */
 const PLUS_STATS: Record<string, { hp: number; hit: number }> = {
-  pup: { hp: 8, hit: 3 },
+  pup: { hp: 7, hit: 3 },
 };
 
 /** The "+" companion a "+" summon card brings: tougher and hits or guards harder. */

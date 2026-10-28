@@ -122,6 +122,9 @@ export const TRIMMED_CARDS: Readonly<Record<string, string>> = {
   'arc-welder': 'armor-piercer',
   'assembly-line': 'mass-production',
   // hunter
+  // (the costing pass, DECISIONS #377)
+  'crimson-pact': 'bone-offering',
+  unbridled: 'blood-tithe',
   berserker: 'berserk-tempo',
   'burn-the-weak': 'shake-loose',
   bonepicker: 'shake-loose',

@@ -29,6 +29,35 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.108.0',
+    date: '2026-10-28',
+    title: 'Might hits, the Hunter hunts',
+    summary: 'Might and Exposed only change attacks now, and the Hunter is rebalanced card by card, with Traps of her own.',
+    notes: [
+      {
+        kind: 'changed',
+        text: 'Might, Exposed and Faltering only change attack damage, as their text says. Auras, totems, Traps and potions deal the number on the card (Blood Fire is 6, whatever your Might).',
+      },
+      {
+        kind: 'changed',
+        text: 'Thorns, Reflect, Armored and "when attacked" Traps only answer attacks.',
+      },
+      {
+        kind: 'new',
+        text: 'The Hunter goes hunting: Bear Trap, Snare Line, Deadfall and Baited Snare (Traps), Hunting Grounds, Single Out and Run It Down.',
+      },
+      {
+        kind: 'balance',
+        text: 'The Hunter: smaller summons (Pup 5 HP, Pack Alpha 12, Dire Wolf 18), Litter brings two Pups, about 40 cards retuned, four rares are now uncommon, and Crimson Pact and Unbridled are retired.',
+      },
+      {
+        kind: 'fixed',
+        text: 'Blood Fire showed twice in the Aura list.',
+      },
+    ],
+    heads: 'The rules changed: reload if the game asks you to. Arena games and replays from before this version can no longer be watched. Old runs and decks keep working: Crimson Pact and Unbridled turn into Bone Offering and Blood Tithe.',
+  },
+  {
     version: '0.107.0',
     date: '2026-10-28',
     title: 'Three cards made whole',

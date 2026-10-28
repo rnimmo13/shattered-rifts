@@ -210,6 +210,7 @@ export type Metric =
   | 'missingPct'
   | 'seared'
   | 'exposed'
+  | 'faltering'
   | 'might'
   | 'thorns'
   | 'mantra'
