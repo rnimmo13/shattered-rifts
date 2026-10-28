@@ -8,7 +8,6 @@ import type { CombatDb } from '@sr/combat';
 
 export const SHELVED_LEGENDARIES: readonly string[] = [
   // engineer
-  'drone-apotheosis',
   'overclocked-legion',
   'foundry-awakens',
   // hunter

@@ -15,10 +15,10 @@ describe('the shelved Legendaries', () => {
 
   it('can be lent as Legendaries for a test, and are Rares again afterwards', () => {
     const undo = lendLegendaries(db);
-    expect(db.cards['drone-apotheosis']?.rarity).toBe('legendary');
-    expect(db.cards['drone-apotheosis+']?.rarity).toBe('legendary');
+    expect(db.cards['overclocked-legion']?.rarity).toBe('legendary');
+    expect(db.cards['overclocked-legion+']?.rarity).toBe('legendary');
     undo();
-    expect(db.cards['drone-apotheosis']?.rarity).toBe('rare');
-    expect(db.cards['drone-apotheosis+']?.rarity).toBe('rare');
+    expect(db.cards['overclocked-legion']?.rarity).toBe('rare');
+    expect(db.cards['overclocked-legion+']?.rarity).toBe('rare');
   });
 });

@@ -194,7 +194,9 @@ export type Sel =
   | 'allAllies'
   | 'attacker'
   /** the living enemy with the least HP (a Dark orb's awakening) */
-  | 'weakestFoe';
+  | 'weakestFoe'
+  /** your living companion with the most max HP (DECISIONS #383) */
+  | 'biggestAlly';
 
 /**
  * A number that depends on the board: `amount + floor(mult * metric)`. Unit metrics read `of` (default: the actor; "target" is the
@@ -227,6 +229,7 @@ export type Metric =
   | 'exhausted'
   | 'allies'
   | 'biggestAlly' // the max HP of your biggest living companion (DECISIONS #358)
+  | 'slots' // the companion slots your companions fill: a Heavy counts 2, a Colossal 3 (DECISIONS #383)
   | 'foes'
   | 'snares'
   | 'stars'
@@ -301,6 +304,7 @@ export type TriggerWhen =
   | 'discard'
   | 'summon' // you summoned an ally
   | 'allyDies' // one of your allies died (or was sacrificed)
+  | 'allyLost' // one of your allies died or was scrapped (released to make room for another; DECISIONS #383)
   | 'snare' // one of your Traps sprang
   | 'stance' // you entered a stance
   | 'barrier' // your hero gained Barrier (from anything)
@@ -711,6 +715,8 @@ export interface UnitDef {
   name: string;
   maxHp: number;
   taunt?: boolean;
+  /** how many of its side's companion slots it takes: 1 Light (the default), 2 Heavy, 3 Colossal (DECISIONS #383) */
+  slots?: number;
   /** statuses it starts the fight with */
   statuses?: Partial<Record<StatusId, number>>;
   brain: Brain;
@@ -735,6 +741,9 @@ export interface HeroTrait {
   shareMight?: number;
   /** HP healed after every fight the hero wins (in a run) */
   healAfterFight?: number;
+  /** Salvage: a companion summoned by a card that scrapped others to make room takes their Might and Primed, and half their HP
+   * as extra max HP (DECISIONS #383) */
+  salvage?: boolean;
 }
 
 export interface HeroDef {
@@ -1132,8 +1141,9 @@ export interface CombatSetup {
 // --- actions & events ----------------------------------------------------------------------------------------
 
 export type Action =
-  /** `release` names the companion that leaves to make room, when a card that summons is played with every companion slot taken */
-  | { type: 'play'; card: InstId; target?: UnitId; release?: UnitId }
+  /** `release` names the companion that leaves (is scrapped) to make room, when a card summons more than the free companion slots
+   * hold; a list when several have to go (DECISIONS #383) */
+  | { type: 'play'; card: InstId; target?: UnitId; release?: UnitId | UnitId[] }
   /** `potion` names the potion meant, so a belt that has since shifted can never drink the wrong one */
   | { type: 'potion'; index: number; potion?: string; target?: UnitId }
   | { type: 'endTurn' }

@@ -69,6 +69,8 @@ interface Run {
   openingDraw?: boolean;
   /** a card said "end your turn": it ends once the card (and any choice it asked for) is done */
   endAfter?: boolean;
+  /** Salvage (DECISIONS #383): what the companions scrapped to make room for this card left behind, for the first companion it summons */
+  salvage?: { inst: string; might: number; vigor: number; hp: number };
 }
 
 /** Who is acting and what they are acting on. */
@@ -586,6 +588,10 @@ function resolve(r: Run, a: Act, sel: Sel): Unit[] {
       return foes.length ? [foes[0] as Unit] : [];
     case 'weakestFoe':
       return foes.length ? [foes.reduce((m, x) => (x.hp < m.hp ? x : m))] : [];
+    case 'biggestAlly': {
+      const crew = r.s.sides[a.actor.side].units.filter((u) => u.hp > 0 && u.kind !== 'hero');
+      return crew.length ? [crew.reduce((m, x) => (x.maxHp > m.maxHp ? x : m))] : [];
+    }
   }
 }
 
@@ -639,6 +645,8 @@ function metricValue(
         (m, x) => (x.kind === 'ally' && x.hp > 0 ? Math.max(m, x.maxHp) : m),
         0,
       );
+    case 'slots':
+      return slotsUsed(r.db, sd);
     case 'foes':
       return r.s.sides[other(sd.id)].units.filter((x) => x.hp > 0).length;
     case 'snares':
@@ -1140,6 +1148,19 @@ function execOp(r: Run, a: Act, op: Op): void {
         ? Math.floor(stacks(lead, 'might') * (traitOf(r, side.id)?.shareMight ?? 0))
         : 0;
       if (u && given > 0) addStatus(r, u, 'might', given);
+      // Salvage: the first companion this card builds takes what the scrapped ones left behind
+      const salv = r.salvage;
+      if (u && salv && a.inst?.id === salv.inst) {
+        delete r.salvage;
+        if (salv.might > 0) addStatus(r, u, 'might', salv.might);
+        if (salv.vigor > 0) addStatus(r, u, 'vigor', salv.vigor);
+        const grow = Math.floor(salv.hp / 2);
+        if (grow > 0) {
+          u.maxHp += grow;
+          u.hp += grow;
+          r.ev.push({ type: 'heal', target: u.id, amount: grow, hp: u.hp, maxHp: u.maxHp });
+        }
+      }
       if (u) {
         fireSnare(r, other(side.id), { on: 'foeSummons', summoned: u });
         if (a.actor.kind === 'hero') fireTriggers(r, side, 'summon');
@@ -1872,7 +1893,7 @@ function execOp(r: Run, a: Act, op: Op): void {
 function raiseAlly(r: Run, sd: SideState, unit: string, hp: number, actor: Unit): void {
   if (hp <= 0 || sd.hero === null) return;
   const crew = sd.units.filter((u) => u.kind !== 'hero');
-  if (crew.length < allyCap(r.db, sd)) {
+  if (slotsUsed(r.db, sd) + slotsOf(r.db, unit) <= allyCap(r.db, sd)) {
     const u = spawn(r, sd, unit, false);
     if (!u) return;
     u.maxHp = u.hp = hp;
@@ -2439,8 +2460,12 @@ function makeUnit(r: Run, side: Side, d: UnitDef): Unit {
 /** Add a unit to a side (allies: nearest the centre after existing ones, in front of the hero; an enemy summoner's minions: just in front of it). */
 function spawn(r: Run, sd: SideState, defId: string, quiet = false, summoner?: Unit): Unit | null {
   const d = def(r, defId);
-  const count = sd.units.filter((u) => u.kind !== 'hero').length;
-  if (count >= (sd.hero !== null ? allyCap(r.db, sd) : quiet ? MAX_START_ENEMIES : MAX_ENEMIES))
+  // (a hero's companions fill slots: a Heavy takes 2, a Colossal 3; enemies are counted one each)
+  if (sd.hero !== null) {
+    if (slotsUsed(r.db, sd) + slotsOf(r.db, defId) > allyCap(r.db, sd)) return null;
+  } else if (
+    sd.units.filter((u) => u.kind !== 'hero').length >= (quiet ? MAX_START_ENEMIES : MAX_ENEMIES)
+  )
     return null;
   const u = makeUnit(r, sd.id, d);
   // an enemy's summons stand in front of the summoner (nearer the centre), never behind it
@@ -2479,6 +2504,7 @@ function reap(r: Run): void {
       // (the one that killed it, if it is still standing)
       const killer = u.killedBy ? findUnit(r.s, u.killedBy) : null;
       fireTriggers(r, sd, 'allyDies', { attacker: killer && killer.hp > 0 ? killer : null });
+      fireTriggers(r, sd, 'allyLost', { attacker: killer && killer.hp > 0 ? killer : null });
     }
   }
   const lost = (side: Side): boolean => {
@@ -3182,13 +3208,48 @@ export function allyCap(db: CombatDb, sd: SideState): number {
   return (sd.hero ? db.heroes[sd.hero]?.maxAllies : undefined) ?? MAX_ALLIES;
 }
 
-/** A card that summons, played with every companion slot taken: one companion has to be released to make room. */
+/** How many companion slots a unit takes: 1 Light (the default), 2 Heavy, 3 Colossal (DECISIONS #383). */
+export function slotsOf(db: CombatDb, defId: string): number {
+  return Math.max(1, Math.floor(db.units[defId]?.slots ?? 1));
+}
+
+/** The companion slots a hero's side has filled. */
+export function slotsUsed(db: CombatDb, sd: SideState): number {
+  return sd.units.reduce((n, u) => (u.kind === 'hero' ? n : n + slotsOf(db, u.def)), 0);
+}
+
+/** The slots a card's summons need (all of them must fit), at most the side's cap. */
+function roomNeeded(db: CombatDb, sd: SideState, cd: CardDef): number {
+  const need = cd.effects.reduce((n, o) => (o.op === 'summon' ? n + slotsOf(db, o.unit) : n), 0);
+  return Math.min(need, allyCap(db, sd));
+}
+
+/** A card whose summons do not fit in the free companion slots: companions have to be released (scrapped) to make room. */
 function needsRelease(db: CombatDb, sd: SideState, cd: CardDef): boolean {
-  return (
-    sd.hero !== null &&
-    cd.effects.some((o) => o.op === 'summon') &&
-    sd.units.filter((u) => u.kind !== 'hero').length >= allyCap(db, sd)
-  );
+  // (a card that summons nothing never asks, even on a side somehow over its cap)
+  const need = roomNeeded(db, sd, cd);
+  return sd.hero !== null && need > 0 && need > allyCap(db, sd) - slotsUsed(db, sd);
+}
+
+/** Every smallest set of companions whose release makes room for the card: no companion in a set could be kept. */
+function releaseSets(db: CombatDb, sd: SideState, cd: CardDef): UnitId[][] {
+  const crew = sd.units.filter((u) => u.kind === 'ally' && u.hp > 0);
+  const short = roomNeeded(db, sd, cd) - (allyCap(db, sd) - slotsUsed(db, sd));
+  const out: UnitId[][] = [];
+  for (let mask = 1; mask < 1 << crew.length; mask++) {
+    const set = crew.filter((_, i) => mask & (1 << i));
+    const freed = set.reduce((n, u) => n + slotsOf(db, u.def), 0);
+    if (freed < short) continue;
+    if (set.some((u) => freed - slotsOf(db, u.def) >= short)) continue;
+    out.push(set.map((u) => u.id));
+  }
+  return out;
+}
+
+/** The companions an action releases, as a list. */
+function releaseIds(action: Extract<Action, { type: 'play' }>): UnitId[] {
+  const rel = action.release;
+  return rel === undefined ? [] : Array.isArray(rel) ? rel : [rel];
 }
 
 export function legalActions(db: CombatDb, s: CombatState): Action[] {
@@ -3211,11 +3272,13 @@ export function legalActions(db: CombatDb, s: CombatState): Action[] {
         if (t.hp > 0 && (cd.target === 'friend' || t.kind === 'ally'))
           plays.push({ type: 'play', card: c.id, target: t.id });
     if (!needsRelease(db, sd, cd)) out.push(...plays);
-    else
-      // every way to play it, once for each companion that could make room
+    else {
+      // every way to play it, once for each smallest set of companions that could make room (one id when one is enough)
+      const sets = releaseSets(db, sd, cd);
       for (const p of plays)
-        for (const u of sd.units)
-          if (u.kind === 'ally' && u.hp > 0) out.push({ ...p, release: u.id });
+        for (const set of sets)
+          out.push({ ...p, release: set.length === 1 ? (set[0] as UnitId) : set });
+    }
   }
   sd.potions.forEach((id, index) => {
     const p = db.potions[id];
@@ -3310,16 +3373,33 @@ function playCard(r: Run, action: Extract<Action, { type: 'play' }>): void {
   }
   const hero = heroOf(sd);
   if (!hero) throw new RulesError('No hero to play cards');
+  let scrapped = 0;
   if (needsRelease(r.db, sd, cd)) {
-    const out = findUnit(r.s, action.release);
-    if (!out || out.side !== side || out.kind !== 'ally' || out.hp <= 0)
-      throw new RulesError('Choose a companion to release to make room');
-    // it simply leaves, before the card is paid for: a release is not a death, so nothing that waits for an ally to fall
-    // (Auras, Revive, Doom payoffs) fires, and it cannot be brought back by one
-    sd.units = sd.units.filter((u) => u.id !== out.id);
-    r.ev.push({ type: 'died', unit: out.id, released: true });
+    const ids = [...new Set(releaseIds(action))];
+    const want = [...ids].sort().join(',');
+    const ok = releaseSets(r.db, sd, cd).some((set) => [...set].sort().join(',') === want);
+    if (!ok) throw new RulesError('Choose the companions to release to make room');
+    // they simply leave (are scrapped), before the card is paid for: a release is not a death, so nothing that waits for an
+    // ally to die (Revive, Doom payoffs) fires and none can be brought back; "dies or is scrapped" Auras hear of it (#383)
+    let might = 0;
+    let vigor = 0;
+    let hp = 0;
+    for (const id of ids) {
+      const out = findUnit(r.s, id);
+      if (!out) continue;
+      might += Math.max(0, stacks(out, 'might'));
+      vigor += Math.max(0, stacks(out, 'vigor'));
+      hp += Math.max(0, out.hp);
+      sd.units = sd.units.filter((u) => u.id !== out.id);
+      r.ev.push({ type: 'died', unit: out.id, released: true });
+    }
+    // Salvage: the companion this card builds takes what they leave behind
+    if (traitOf(r, side)?.salvage) r.salvage = { inst: inst.id, might, vigor, hp };
+    scrapped = ids.length;
   }
   sd.hand.splice(i, 1);
+  // ("dies or is scrapped" Auras hear of the scrapping once the card has left the hand: a draw can't move it)
+  for (let k = 0; k < scrapped; k++) fireTriggers(r, sd, 'allyLost');
   // a one-shot free card (Free Attack, Free Skill, a free Fleeting card, a free Aura) is spent only when it is what makes the card
   // free: a card that costs nothing anyway (Unbound, Free Play, a discount, a cost of 0) leaves it for the next one
   const makesFree = (st: StatusId, fits: boolean): boolean => {

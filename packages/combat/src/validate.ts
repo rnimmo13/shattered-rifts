@@ -99,7 +99,7 @@ export function validateDb(db: CombatDb): string[] {
             o.when === 'evoke' ||
             !!o.pin,
           snare: false,
-          attacker: o.when === 'allyDies',
+          attacker: o.when === 'allyDies' || o.when === 'allyLost',
           played: o.when === 'play',
         });
       }

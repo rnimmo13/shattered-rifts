@@ -121,6 +121,11 @@ export const TRIMMED_CARDS: Readonly<Record<string, string>> = {
   recompile: 'plating',
   'arc-welder': 'armor-piercer',
   'assembly-line': 'mass-production',
+  // (the costing pass and frames, DECISIONS #383)
+  nanoswarm: 'scrap-heap',
+  'drone-apotheosis': 'drone-carrier',
+  overload: 'double-time',
+  'mob-rule': 'overcharge-blast',
   // hunter
   // (the costing pass, DECISIONS #377)
   'crimson-pact': 'bone-offering',

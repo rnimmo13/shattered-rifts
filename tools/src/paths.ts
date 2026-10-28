@@ -137,7 +137,6 @@ const BY_ID: Record<string, number> = {
   'repair-bot': 0,
   reactor: 0,
   'sync-pulse': 1,
-  overload: 1,
   'hardened-chassis': 2,
   spotlight: 1,
   birdshot: 1,
@@ -150,7 +149,6 @@ const BY_ID: Record<string, number> = {
   // every Legendary has a build path, one per path (DECISIONS #334, #337); glue cards have none
   // knight: none (Valeria's rares sit under their own headings, and her Legendaries are Rares now, DECISIONS #363)
   // engineer
-  'drone-apotheosis': 0,
   'overclocked-legion': 1,
   'foundry-awakens': 2,
   // hunter

@@ -629,6 +629,17 @@ export const UI_TIPS = {
     tone: 'good',
     text: 'Enemies must attack this unit before anything else.',
   } as TipContent,
+  // a companion's frame: how many of the 3 companion slots it takes (DECISIONS #383)
+  frame: (slots: number): TipContent => ({
+    kicker: 'Frame',
+    title: slots >= 3 ? 'Colossal' : slots === 2 ? 'Heavy' : 'Light',
+    text:
+      slots >= 3
+        ? 'Takes all 3 companion slots: it stands alone.'
+        : slots === 2
+          ? 'Takes 2 of your 3 companion slots.'
+          : 'Takes 1 of your 3 companion slots.',
+  }),
   endTurn: {
     title: 'End turn',
     text: 'Your allies act, your totems pulse, your hand is discarded, then the enemies take their turn.',

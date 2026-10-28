@@ -40,6 +40,8 @@ export interface IntentView {
 
 export interface UnitView extends Unit {
   intentView: IntentView | null;
+  /** a companion's frame: the companion slots it takes (1 Light, 2 Heavy, 3 Colossal), shown as pips (DECISIONS #383) */
+  slots?: number;
 }
 
 export interface SideView {
@@ -195,7 +197,14 @@ export function viewFor(db: CombatDb, s: CombatState, me: Side): CombatView {
     const own = id === me;
     return {
       id,
-      units: sd.units.map((u) => ({ ...clone(u), intentView: describeIntent(db, s, u) })),
+      units: sd.units.map((u) => {
+        const slots = u.kind === 'ally' ? (db.units[u.def]?.slots ?? 1) : 1;
+        return {
+          ...clone(u),
+          intentView: describeIntent(db, s, u),
+          ...(u.kind === 'ally' ? { slots } : {}),
+        };
+      }),
       hand: own ? clone(sd.hand) : null,
       handCount: sd.hand.length,
       drawCount: sd.draw.length,
@@ -269,6 +278,7 @@ const WHO: Record<Sel, string> = {
   allAllies: ' to each of your allies',
   attacker: ' to the attacker',
   weakestFoe: ' to the enemy with the least HP',
+  biggestAlly: ' to your biggest companion',
 };
 /** The same targets as seen from an enemy's move: "you" are the other side. */
 const WHO_ENEMY: Record<Sel, string> = {
@@ -282,6 +292,7 @@ const WHO_ENEMY: Record<Sel, string> = {
   allAllies: ' to each of its allies',
   attacker: ' to the attacker',
   weakestFoe: ' to your unit with the least HP',
+  biggestAlly: ' to its biggest ally',
 };
 const KIND_PLURAL: Record<string, string[]> = {
   attack: ['Attack'],
@@ -409,6 +420,7 @@ const METRIC_WORDS: Record<Metric, { per: string; equal: string }> = {
     per: 'max HP of your biggest companion',
     equal: "your biggest companion's max HP",
   },
+  slots: { per: 'companion slot filled', equal: 'the companion slots filled' },
   foes: { per: 'enemy', equal: 'the number of enemies' },
   snares: { per: 'Trap set', equal: 'the number of Traps you have set' },
   stars: { per: 'Arcana', equal: 'your Arcana' },
@@ -592,6 +604,7 @@ const WHEN_TEXT: Record<string, string> = {
   discard: 'Whenever you discard a card',
   summon: 'Whenever you summon an ally',
   allyDies: 'Whenever one of your allies dies',
+  allyLost: 'Whenever one of your allies dies or is scrapped',
   snare: 'Whenever one of your Traps is triggered',
   stance: 'Whenever you enter a stance',
   barrier: 'Whenever you gain Barrier',
@@ -712,7 +725,9 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
       const n = at(o.amount, o.scale);
       return o.to === 'target'
         ? `The ally gains ${n} max HP.`
-        : `Your companions gain ${n} max HP.`;
+        : o.to === 'biggestAlly'
+          ? `Your biggest companion gains ${n} max HP.`
+          : `Your companions gain ${n} max HP.`;
     }
     case 'heal': {
       const a = amountText(o.amount, o.scale);
@@ -1248,10 +1263,13 @@ function summonText(db: CombatDb, unit: string, n: number, who: Record<Sel, stri
           .map((x) => opText(db, x, who))
           .join(' ')
       : '';
+  // (a Heavy or Colossal says how many companion slots it takes, DECISIONS #383)
+  const slots = u.slots ?? 1;
+  const frame = slots >= 3 ? 'Colossal: 3 slots, ' : slots === 2 ? 'Heavy: 2 slots, ' : '';
   const head =
     n > 1
-      ? `Summon ${n} ${u.name}s (${u.maxHp} HP each${u.taunt ? ', Taunt' : ''}).`
-      : `Summon ${u.name} (${u.maxHp} HP${u.taunt ? ', Taunt' : ''}).`;
+      ? `Summon ${n} ${u.name}s (${frame}${u.maxHp} HP each${u.taunt ? ', Taunt' : ''}).`
+      : `Summon ${u.name} (${frame}${u.maxHp} HP${u.taunt ? ', Taunt' : ''}).`;
   return `${head}${acts ? ` At the end of your turn ${n > 1 ? 'each' : 'it'} will: ${acts}` : ''}`;
 }
 

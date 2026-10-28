@@ -5,6 +5,7 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **The Engineer is rebalanced** against the card costing guide, and her machines come in three **frames**: a Light drone takes 1 of your 3 companion slots, a Heavy walker 2 and a Colossal war machine all 3 (pips on the card and the machine). With no room, a summon scraps companions to make room, and **Salvage** hands their Might, Primed and half their HP to the new machine. New: the Engineer's own guns (Pulse Pistol, Arc Welder, Laser Grid, Particle Cannon), Targeting Uplink, Full Salvo, Deploy Spotter, Bulwark Walker, Scrap Golem and Dreadnought. Nanoswarm, Drone Uprising, Overload and Mob Rule are retired. A card that summons two companions now needs room for both. New utility: Battery Pack (1 Mana), Schematics (pick a card from your draw pile) and Build Generator, a machine that powers your next turn.
 - **Enemies are a little gentler at every Rift Tier:** Tier I starts at 90% of their HP and damage, and each tier and stage adds less.
 - **The Hunter heals 2 HP after every fight she wins** again. **Attunement** is an Aura.
 - **Overflow is tanked by the rest of the pack:** what is left of a hit that kills a companion goes to your next companion first, and reaches you only when none is left. **Blood Pact** is an Aura.

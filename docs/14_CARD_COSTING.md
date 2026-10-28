@@ -264,6 +264,23 @@ built from pieces the baselines already price: a companion is **sticky Barrier**
 | Sacrifice an ally | minus what it had left: **1.2 x its HP + 3** | Devour Ally, Fen Offering. |
 | "Whenever an ally dies" | per death, x **~2 deaths a fight** in a deck that summons | |
 | Might, for a class whose companions share it | **6** a stack (5, plus half of it on the pack's hits) | the Hunter's Pack Instinct. |
+| Might to all friends (the companions take it themselves) | **5 + 2 per companion** (~8) | the Engineer's Tune-Up, Overdrive, Reactor. |
+| Might on one companion | **2.5** a stack; a companion that strikes twice gets twice that | Retrofit, Reinforce. Price it on the machine it is meant for (§8, the multiplier test). |
+| Primed on your companions | **1 a stack per companion** (~1.5); per hit on a machine that strikes twice | Jumpstart, Overdrive. |
+| "You and your companions gain N Primed" | **2.5** a stack | the hero's Primed goes into the next Attack card, on every hit (Ping, Full Salvo). |
+| Barrier on one companion | **1.0** a point | it is struck only while that companion stands in front (Hardened Chassis, Bulwark Frame). |
+
+**Frames (DECISIONS #383).** A hero has 3 companion slots. A **Light** companion takes 1, a **Heavy** 2 and a **Colossal** all 3.
+Take **2 points off for each slot past the first** (Heavy -2, Colossal -4): the slots it fills are Light bodies and per-ally payoffs
+the deck can't have. The Engineer's Salvage (scrapped companions hand their Might, Primed and half their HP to the machine built in
+their place) is not priced into the summon card; it is the reason to play Light machines before a big one.
+
+| Companion | Points | Reads as |
+|---|---|---|
+| Enforcer Mk.II (Heavy, 11 HP, hits 6) | 13.2 + 3 + 6 - 2 = 20.2 | a 2-cost common |
+| Siege Engine (Heavy, 12 HP, hits 3 twice) | 14.4 + 3 + (6 - 1) x 2 - 2 = 25.4 | a 2-cost rare |
+| War Engine (Colossal, 20 HP, hits 4 twice) | 24 + 3 + (8 - 1) x 2 - 4 = 37 | a 3-cost rare |
+| Dreadnought (Colossal, 18 HP, 5 to ALL) | 21.6 + 3 + 6.5 x 2 - 4 = 33.6 | a 3-cost rare |
 
 ---
 

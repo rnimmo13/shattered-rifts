@@ -2250,3 +2250,12 @@
     min-height: 3.2rem;
   }
 }
+
+/* a companion's frame (DECISIONS #383): pips for the companion slots it takes */
+.plate__pips {
+  margin-left: 0.35em;
+  font-size: 0.7em;
+  letter-spacing: 0.1em;
+  color: #f2c46b;
+  vertical-align: middle;
+}

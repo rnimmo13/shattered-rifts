@@ -9,6 +9,7 @@ import {
   dmg,
   foe,
   heal,
+  manaNext,
   lose,
   move,
   phases,
@@ -22,15 +23,23 @@ import {
 
 const RAW_ALLIES: UnitDef[] = [
   // Nexus: machines
+  // (the costing pass and frames, DECISIONS #383: Light takes 1 of the 3 companion slots, Heavy 2, Colossal 3; a companion is
+  // worth 1.2 x HP + 3 + its hit x its acts, less 2 for each slot past the first; docs/ENGINEER_REVIEW.md)
   ally('drone', 'Drone', 8, [dmg(3)]),
-  ally('patrol-drone', 'Patrol Drone', 5, [dmg(4)]),
-  ally('sentry-turret', 'Sentry Turret', 7, [dmg(3), barrier(2, 'hero')], { taunt: true }),
+  ally('patrol-drone', 'Patrol Drone', 4, [dmg(3)]),
+  ally('sentry-turret', 'Sentry Turret', 5, [dmg(2), barrier(2, 'hero')], { taunt: true }),
   ally('salvage-bot', 'Salvage Bot', 4, [barrier(4, 'hero')]),
-  ally('repair-bot', 'Repair Bot', 4, [heal(3, 'hero')]),
-  ally('enforcer', 'Enforcer Mk.II', 12, [dmg(6)]),
-  ally('war-engine', 'War Engine', 22, [dmg(9)]),
-  ally('micro-drone', 'Micro Drone', 3, [dmg(3)]),
-  ally('siege-engine', 'Siege Engine', 16, [dmg(13)]),
+  ally('repair-bot', 'Repair Bot', 4, [heal(2, 'hero')]),
+  ally('spotter-drone', 'Spotter Drone', 4, [status('exposed', 1, 'target')]),
+  ally('micro-drone', 'Micro Drone', 3, [dmg(2)]),
+  ally('enforcer', 'Enforcer Mk.II', 11, [dmg(6)], { slots: 2 }),
+  ally('siege-engine', 'Siege Engine', 12, [dmg(3, 'target', 2)], { slots: 2 }),
+  ally('bulwark-walker', 'Bulwark Walker', 12, [barrier(3, 'hero')], { taunt: true, slots: 2 }),
+  ally('war-engine', 'War Engine', 20, [dmg(4, 'target', 2)], { slots: 3 }),
+  ally('scrap-golem', 'Scrap Golem', 12, [dmg(5)], { slots: 3 }),
+  ally('dreadnought', 'Dreadnought', 18, [dmg(5, 'allFoes')], { slots: 3 }),
+  // (the Engineer's Mana engine: a Light machine that powers next turn, DECISIONS #384)
+  ally('generator', 'Generator', 8, [manaNext(1)]),
   // Wyldmaw: the pack
   // Warden signature companions
   ally('gilded-guard', 'Gilded Guard', 16, [dmg(4), barrier(4, 'hero')], { taunt: true }),

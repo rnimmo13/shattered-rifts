@@ -31,7 +31,7 @@ deck takes one and a half of them. Our pools were ~16 cards and one build path e
 | **Pack** buffs | Kesh | |
 | **Thorns** and Barrier-scaling | nobody since DECISIONS #367 (Valeria's Thorns went when she became the Ironclad's list) | Barrier is shared |
 | ~~**Devotion**~~ | gone (DECISIONS #364) | Valeria's heal-and-spend mechanic was removed when she became the Ironclad shape |
-| **Traps** (face-down, auto-springing) | Vesper gets the most (14, with payoffs for setting them) | **Shared toolkit** like Might or Consume: every deck but Valeria's (the Ironclad's list has none, #367) has a trap or two in its own flavour (the Hunter has 6 since DECISIONS #377: snares that slow the prey for the pack; Rivet 2, Quill 2 incl. a Bleed needle, Ilvane, Sehra, Obsidia 1 each) and Neutral has 2. Enforced by `cards.test.ts` |
+| **Traps** (face-down, auto-springing) | Vesper gets the most (14, with payoffs for setting them) | **Shared toolkit** like Might or Consume: every deck but Valeria's (the Ironclad's list has none, #367) has a trap or two in its own flavour (the Hunter has 6 since DECISIONS #377: snares that slow the prey for the pack; the Engineer 5, Quill 2 incl. a Bleed needle, Ilvane, Sehra, Obsidia 1 each) and Neutral has 2. Enforced by `cards.test.ts` |
 | **Foresee** | Vesper, Sehra, Obsidia | a Neutral common |
 | **Consume payoffs** | Kesh (Feast build path) | Neutral Consume-on-play is common |
 
@@ -54,7 +54,7 @@ reworked cards stayed the same, so their art and every saved deck still work.
 | # | Riftwalker | Realm | HP | Build path 1 | Build path 2 | Build path 3 |
 |---|---|---|---|---|---|---|
 | 1 | **Valeria** (id `knight`) | Aurelion | 80 | The Ironclad's card list, card for card (DECISIONS #367): the yardstick other classes are balanced against | Might and many hits, Barrier, burning your own cards, paying HP | (build paths hidden for now, #365) |
-| 2 | **Rivet** | Nexus-9 | 72 | **Swarm:** go wide: many cheap Drones, payoffs per ally, per summon and per death, sacrifice, Might for everyone | **Assemble:** charge companions up with Primed (their next strike hits harder); only Assemble, Relay Strike and Command Chip make them act now (supports the other two) | **Core:** go tall: one big construct you grow (max HP, Might, Barrier on one ally), revive, and cash in (Heavy Hitter, Crankshaft, Reactor Meltdown) |
+| 2 | **Rivet** | Nexus-9 | 72 | **Swarm:** go wide: many cheap Light drones (1 slot each), payoffs per ally, per summon and per death, sacrifice, Might for everyone | **Assemble:** charge companions (and the Engineer's own guns) up with Primed, then fire: only Assemble, Relay Strike, Command Chip and Full Salvo make them act now (#383) | **Core:** go tall: one Heavy (2 slots) or Colossal (all 3) machine you grow (max HP, Might, Barrier on one ally), revive, and cash in (Heavy Hitter, Crankshaft, Reactor Meltdown); Salvage passes scrapped drones into it (#383) |
 | 3 | **Kesh the Unfed** | Wyldmaw | 76 | **Bloodrage:** Might and self-damage | **Pack:** buffed companions | **Predator:** Mana and draw for burst turns |
 | 4 | **Vesper Nightlace** | Umbral | 80 | **Traps:** many, varied triggers | **Exposed:** debuff burst, Faltering control | **Patience:** Hold cards, keep Mana; payoffs for a full hand and the Mana you kept |
 | 5 | **Sylas** (id `assassin`) | Umbral | 72 | **Knives:** 0-cost, many hits | **Bleed:** stack, double, cash out | **Sleight:** discard / cycle payoffs |

@@ -895,3 +895,9 @@
 .card__live--calc {
   color: #ffd36a;
 }
+
+/* a companion's frame (DECISIONS #383): pips for the companion slots it takes, on the summon card */
+.card__frame {
+  letter-spacing: 0.08em;
+  color: #f2c46b;
+}

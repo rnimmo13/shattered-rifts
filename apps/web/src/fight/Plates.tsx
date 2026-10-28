@@ -135,6 +135,11 @@ export function UnitPlates({ items, targetable, hover, preview, heroId, sharp }:
               >
                 {u.kind === 'hero' && heroId ? <HeroIcon hero={heroId} size={22} /> : null}
                 {u.name}
+                {u.kind === 'ally' && u.slots !== undefined && (
+                  <span className="plate__pips" {...tipAttrs(UI_TIPS.frame(u.slots))}>
+                    {'●'.repeat(Math.min(3, u.slots))}
+                  </span>
+                )}
               </div>
               <div
                 className={`bar${u.barrier > 0 ? ' has-barrier' : ''}`}

@@ -33,6 +33,23 @@ const KEYWORDS =
  * Rules text with the keywords marked **bold** for the card renderer. A sanctified card ("hi~strike") also marks each number its roll
  * changed against the plain card, so the difference shows on the card itself.
  */
+/** The biggest frame a card summons (1 Light, 2 Heavy, 3 Colossal: the companion slots it takes), or 0 when it summons nothing (#383). */
+function frameOf(db: CombatDb, c: CardDef): number {
+  let most = 0;
+  const walk = (v: unknown): void => {
+    if (Array.isArray(v)) return v.forEach(walk);
+    if (!v || typeof v !== 'object') return;
+    const o = v as Record<string, unknown>;
+    if (o['op'] === 'summon' && typeof o['unit'] === 'string')
+      most = Math.max(most, db.units[o['unit']]?.slots ?? 1);
+    Object.values(o).forEach(walk);
+  };
+  walk(c.effects);
+  return Math.min(3, most);
+}
+
+const FRAME_NAME = ['', 'Light', 'Heavy', 'Colossal'];
+
 function rulesFor(db: CombatDb, c: CardDef, live?: ReadonlyMap<number, LiveDamage>): string {
   let text = cardText(db, c, live);
   const plainId = c.id.replace(/^(hi|lo)~/, '');
@@ -98,6 +115,7 @@ export const FightCard = memo(
     const realm = def.realm === 'junk' || !def.realm ? 'neutral' : def.realm;
     // a class colour: the owner's, or Neutral grey (Warden gifts keep their realm's colours)
     const owner = def.hero && !def.source?.startsWith('boss:') ? def.hero : undefined;
+    const frame = useMemo(() => frameOf(db, def), [db, def]);
     const style = { '--k': k, width, height: width * (CARD_H / CARD_W) } as CSSProperties;
     // the build path the card belongs to, top right on the art; basics, glue and tokens have none (DECISIONS #342)
     const pathIdx =
@@ -165,6 +183,15 @@ export const FightCard = memo(
           ) : null}
           <div className="card__type">
             {KIND_LABEL[def.kind]}
+            {frame > 0 && (
+              <span
+                className="card__frame"
+                title={`${FRAME_NAME[frame]}: takes ${frame} of your 3 companion slots`}
+              >
+                {' '}
+                {'●'.repeat(frame)}
+              </span>
+            )}
             <span className="card__rar"> · {RARITY_LABEL[rarityRaw] ?? rarityRaw}</span>
           </div>
           <div className={`card__rules card__rules--${size}`}>

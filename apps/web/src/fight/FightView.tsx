@@ -348,7 +348,12 @@ export function FightView(props: {
   const [hoverUnit, setHoverUnit] = useState<string | null>(null);
   const [dragTargets, setDragTargets] = useState<ReadonlySet<string> | null>(null);
   /** a card that summons, played with every companion slot taken: now choosing which companion leaves */
-  const [releasing, setReleasing] = useState<{ card: string; target?: string } | null>(null);
+  // (the companions picked so far to scrap: a Heavy or Colossal can need several, DECISIONS #383)
+  const [releasing, setReleasing] = useState<{
+    card: string;
+    target?: string;
+    picked: string[];
+  } | null>(null);
   const [dragCard, setDragCard] = useState<HandCard | null>(null);
   const [aimPotion, setAimPotion] = useState<string | null>(null);
   const [floats, setFloats] = useState<Float[]>([]);
@@ -1027,7 +1032,7 @@ export function FightView(props: {
     (c: HandCard, target: string | null | undefined) => {
       if (c.releases.length > 0) {
         setSelected(null);
-        setReleasing({ card: c.inst.id, ...(target ? { target } : {}) });
+        setReleasing({ card: c.inst.id, ...(target ? { target } : {}), picked: [] });
         return;
       }
       act({ type: 'play', card: c.inst.id, ...(target ? { target } : {}) });
@@ -1057,9 +1062,17 @@ export function FightView(props: {
       const targets = [
         ...new Set(mine.flatMap((a) => (a.type === 'play' && a.target ? [a.target] : []))),
       ];
-      const releases = [
-        ...new Set(mine.flatMap((a) => (a.type === 'play' && a.release ? [a.release] : []))),
-      ];
+      // every smallest set of companions that could make room (a single id is a set of one), once each: a card with several
+      // targets lists the same sets for every target
+      const seen = new Set<string>();
+      const releases = mine.flatMap((a) => {
+        if (a.type !== 'play' || !a.release) return [];
+        const set = Array.isArray(a.release) ? a.release : [a.release];
+        const key = [...set].sort().join(',');
+        if (seen.has(key)) return [];
+        seen.add(key);
+        return [set];
+      });
       return [
         {
           inst,
@@ -1080,10 +1093,37 @@ export function FightView(props: {
   const releaseCard = releasing
     ? (handCards.find((c) => c.inst.id === releasing.card) ?? null)
     : null;
+  // the sets still possible with what was picked, and the one the picks complete (if any)
+  const releaseFits = useMemo(
+    () =>
+      releaseCard && releasing
+        ? releaseCard.releases.filter((set) => releasing.picked.every((p) => set.includes(p)))
+        : [],
+    [releaseCard, releasing],
+  );
+  // a card whose only way in is to scrap every companion (a Colossal on a full board) asks once, with a button
+  const scrapAll =
+    releaseCard && releaseCard.releases.length === 1 && (releaseCard.releases[0]?.length ?? 0) > 1
+      ? (releaseCard.releases[0] ?? null)
+      : null;
+  const sendRelease = useCallback(
+    (set: string[]) => {
+      if (!releasing) return;
+      act({
+        type: 'play',
+        card: releasing.card,
+        release: set.length === 1 ? (set[0] as string) : set,
+        ...(releasing.target ? { target: releasing.target } : {}),
+      });
+      setReleasing(null);
+      setHoverCard(null);
+    },
+    [act, releasing],
+  );
   const aimSet = useMemo(
     () =>
-      releaseCard
-        ? new Set(releaseCard.releases)
+      releaseCard && releasing
+        ? new Set(releaseFits.flatMap((set) => set.filter((u) => !releasing.picked.includes(u))))
         : aimPotion !== null
           ? new Set(
               legal.flatMap((a) =>
@@ -1091,7 +1131,7 @@ export function FightView(props: {
               ),
             )
           : (dragTargets ?? (selectedCard ? new Set(selectedCard.targets) : new Set<string>())),
-    [selectedCard, dragTargets, aimPotion, legal, releaseCard],
+    [selectedCard, dragTargets, aimPotion, legal, releaseCard, releasing, releaseFits],
   );
   // what each card in hand would really deal right now (Might, Sharpen, Faltering...), and the card being aimed at the unit under
   // the pointer (its Exposed too); a card that could hit several enemies shows the range
@@ -1172,14 +1212,13 @@ export function FightView(props: {
       if (e.button !== 0) return setReleasing(null);
       const u = unitAt(e.clientX, e.clientY, aimSet);
       if (u && aimSet.has(u)) {
-        act({
-          type: 'play',
-          card: releasing.card,
-          release: u,
-          ...(releasing.target ? { target: releasing.target } : {}),
-        });
-        setReleasing(null);
-        setHoverCard(null);
+        // a pick that completes a set plays the card; otherwise it is remembered and the next companion is asked for
+        const picked = [...releasing.picked, u];
+        const done = releaseFits.find(
+          (set) => set.length === picked.length && picked.every((p) => set.includes(p)),
+        );
+        if (done) sendRelease(done);
+        else setReleasing({ ...releasing, picked });
       }
       return; // a miss keeps aiming: right-click or Esc lets go
     }
@@ -1528,7 +1567,18 @@ export function FightView(props: {
           <BattleLog lines={logLines} db={db} />
           {releasing && (
             <div className="fight__banner fight__banner--info" role="status">
-              <span>Your companions are full. Choose one to release.</span>
+              <span>
+                {scrapAll
+                  ? 'There is no room: building this scraps every companion you have.'
+                  : releasing.picked.length > 0
+                    ? 'Still not enough room. Choose another companion to scrap.'
+                    : 'There is no room. Choose a companion to scrap.'}
+              </span>
+              {scrapAll && (
+                <button className="btn btn--small" onClick={() => sendRelease(scrapAll)}>
+                  <span>Scrap them</span>
+                </button>
+              )}
               <button className="btn btn--small" onClick={() => setReleasing(null)}>
                 <span>Cancel</span>
               </button>

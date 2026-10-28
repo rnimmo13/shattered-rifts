@@ -68,7 +68,7 @@ describe('the reliquary of legends', () => {
 
 describe('a deck from before the one-Legendary limit', () => {
   it('can still use the reliquary: one of its two Legendaries is traded, in place', () => {
-    const two = [...RIFTWALKERS.engineer.starter, 'overclocked-legion', 'drone-apotheosis'];
+    const two = [...RIFTWALKERS.engineer.starter, 'overclocked-legion', 'foundry-awakens'];
     const r = at('legend-reliquary', two, 'old');
     const swaps = r.context!.event!.options.filter((o) => o.deal);
     expect(swaps.length).toBeGreaterThanOrEqual(2);

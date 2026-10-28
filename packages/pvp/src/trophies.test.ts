@@ -89,7 +89,7 @@ describe('the deck limits in the Arena (DECISIONS #238)', () => {
     const deck = {
       name: 'Ann',
       hero: 'knight',
-      deck: [...RIFTWALKERS.knight.starter, 'foundry-awakens', 'drone-apotheosis'],
+      deck: [...RIFTWALKERS.knight.starter, 'foundry-awakens', 'overclocked-legion'],
       boons: [],
       tier: 4,
     };
@@ -97,7 +97,7 @@ describe('the deck limits in the Arena (DECISIONS #238)', () => {
     const r = checkArenaEntry({
       name: 'Ann',
       hero: 'knight',
-      deck: [...RIFTWALKERS.knight.starter, 'foundry-awakens', 'drone-apotheosis'],
+      deck: [...RIFTWALKERS.knight.starter, 'foundry-awakens', 'overclocked-legion'],
       boons: [],
       tier: 4,
     });

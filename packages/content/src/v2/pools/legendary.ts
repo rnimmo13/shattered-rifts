@@ -6,24 +6,13 @@
 import type { CardDef } from '@sr/combat';
 import { ACT, barrier, dmg, forge, on, pool, stance, status, summon } from '../build';
 
-const r = pool('engineer', 'nexus');
 const k = pool('hunter', 'wyldmaw');
 const v = pool('trickster', 'umbral');
 const s = pool('barbarian', 'aurelion');
 const p = pool('drunkard', 'midden');
 
+// (the Engineer's Drone Uprising was retired into Drone Carrier by the costing pass, DECISIONS #383)
 export const LEGENDARIES: CardDef[] = [
-  r(
-    'rare',
-    'drone-apotheosis',
-    'Drone Uprising',
-    'skill',
-    2,
-    'none',
-    // (they arrive charged up: Rivet keeps only 3 "act now" cards, DECISIONS #361)
-    [summon('drone'), summon('drone'), summon('drone'), status('vigor', 3, 'allAllies')],
-    { exhaust: true },
-  ),
   // Pack: two more Hounds, and the whole pack strikes at once
   k(
     'rare',

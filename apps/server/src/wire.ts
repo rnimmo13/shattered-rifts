@@ -68,12 +68,19 @@ export function cleanAction(a: Action): Action {
       return { type: 'endTurn' };
     case 'play': {
       const target = str(o['target']);
-      const release = str(o['release']);
+      // (one companion, or a short list when several have to go to make room: DECISIONS #383)
+      const raw = o['release'];
+      const release = Array.isArray(raw)
+        ? raw
+            .slice(0, 8)
+            .map(str)
+            .filter((x): x is string => !!x)
+        : str(raw);
       return {
         type: 'play',
         card: str(o['card']) ?? '',
         ...(target ? { target } : {}),
-        ...(release ? { release } : {}),
+        ...(release && release.length ? { release } : {}),
       };
     }
     case 'potion': {

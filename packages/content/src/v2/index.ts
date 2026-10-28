@@ -101,14 +101,16 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     role: 'Engineer',
     trait: {
       name: 'Tinkerer',
-      text: 'At the start of your turn, you heal 1 and your companions gain 1 max HP.',
+      // (Salvage: scrapping small machines builds a bigger one, DECISIONS #383)
+      text: 'At the start of your turn, you heal 1 and your companions gain 1 max HP. Salvage: a companion you build by scrapping others to make room takes their Might and Primed, and half their HP as extra max HP.',
       turnStart: [heal(1, 'allFriends')],
+      salvage: true,
     },
     hero: { id: 'engineer', name: 'Engineer', maxHp: 70, mana: 3, handSize: 5, startUnits: ['drone'] },
     starter: [...rep('strike', 5), ...rep('defend', 3), 'deploy-drone', 'overclock'],
     blurb:
       'A tinkerer of machines. She starts every fight with a Drone and builds an army of them.',
-    mechanics: ['Companions', 'Primed', 'Might', 'Max HP growth'],
+    mechanics: ['Companions', 'Frames', 'Salvage', 'Primed', 'Might', 'Max HP growth'],
     buildPaths: [
       'Swarm: many cheap drones, spent freely',
       'Assemble: charge your companions up',
@@ -116,7 +118,8 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     ],
     howTo: [
       'You start with a Drone. Allies attack for you when you end your turn.',
-      'You can have 3 allies. Many small drones can be spent freely; one big machine can be built up (heals and upgrades give it max HP) and cashed in; and companions can be charged up (Primed: their next strike hits harder).',
+      'You have 3 companion slots. A Light machine takes 1, a Heavy 2 and a Colossal all 3 (the pips on the card and the machine). Many small drones can be spent freely; one big machine can be built up (heals and upgrades give it max HP) and cashed in; and companions can be charged up (Primed: their next strike hits harder).',
+      'With no room, a summon scraps companions to make room, and Salvage passes their Might, Primed and half their HP to the new machine.',
       'Enemies can hit your allies too; an ally with Taunt has to be attacked first.',
     ],
   },

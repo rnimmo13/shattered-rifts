@@ -14,8 +14,8 @@ export interface HandCard {
   playable: boolean;
   /** unit ids it may target (empty = it takes no target) */
   targets: string[];
-  /** companions that could be released to make room, when every companion slot is taken and the card summons one */
-  releases: string[];
+  /** each smallest set of companions that could be released (scrapped) to make room, when the card's summons do not fit */
+  releases: string[][];
   /** aim it by hand even when only one target is legal (a card that does something drastic to one of your allies) */
   aim?: boolean;
   /** what it costs now (a cost change or Unbound), when different from the printed one */

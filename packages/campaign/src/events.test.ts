@@ -59,7 +59,7 @@ const SETUP: Record<string, Partial<RunState>> = {
   'class-shrine': { stage: 2 },
   'potion-trade': { potions: ['healing-philtre', 'healing-philtre'] },
   'legend-reliquary': {
-    deck: [...RIFTWALKERS.knight.starter, 'oath-of-iron', 'drone-apotheosis+'],
+    deck: [...RIFTWALKERS.knight.starter, 'oath-of-iron', 'foundry-awakens+'],
   },
   // the trades (DECISIONS #256) name cards of your own class: two common Attacks, two common Skills, a rare, a card off the build
   // path the deck follows, an uncommon and the shards to step it up
