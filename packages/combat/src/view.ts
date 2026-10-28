@@ -63,6 +63,8 @@ export interface SideView {
   stars: number;
   /** Attacks played this turn (some cards cost less for each) */
   attacksPlayed: number;
+  /** cards played this turn (Free Play makes the first ones cost no Mana) */
+  played?: number;
   runes: RuneState[];
   runeSlots: number;
   powers: { id: string; card: string; when: PowerState['when'] }[];
@@ -195,6 +197,7 @@ export function viewFor(db: CombatDb, s: CombatState, me: Side): CombatView {
       potionCount: sd.potions.length,
       stars: sd.stars,
       attacksPlayed: sd.attacksPlayed,
+      played: sd.played,
       runes: clone(sd.runes),
       runeSlots: sd.runeSlots,
       powers: sd.powers
@@ -278,6 +281,11 @@ const STATUS_NAME: Record<string, string> = {
   freeattack: 'Free Attack',
   resonance: 'Spirit',
   twinned: 'Reverb',
+  bladesweep: 'Blade Sweep',
+  bladeecho: 'Blade Echo',
+  bladebane: 'Bladebane',
+  freeplay: 'Free Play',
+  orbit: 'Momentum',
 };
 const sname = (s: string): string => STATUS_NAME[s] ?? cap(s);
 /** a card kind by its player-facing name, for effects that pick cards by kind */
@@ -393,6 +401,14 @@ const METRIC_WORDS: Record<Metric, { per: string; equal: string }> = {
     equal: 'the damage of the Attacks consumed this way',
   },
   x: { per: 'Mana spent', equal: 'the Mana spent' },
+  starsGained: { per: 'Arcana gained this turn', equal: 'the Arcana gained this turn' },
+  starCards: {
+    per: 'card with an Arcana cost in your deck',
+    equal: 'the number of cards with an Arcana cost in your deck',
+  },
+  handRoom: { per: 'empty place in your hand', equal: 'the room left in your hand' },
+  hitsTaken: { per: 'time it was hit this turn', equal: 'the times it was hit this turn' },
+  spent: { per: 'Arcana spent', equal: 'the Arcana spent' },
   charge: { per: 'charge', equal: 'its charge' },
   healed: { per: 'HP healed', equal: 'the HP healed' },
   bonus: { per: 'point of sharpening', equal: 'its sharpening' },
@@ -413,6 +429,7 @@ const UNIT_METRICS: readonly Metric[] = [
   'calm',
   'wrath',
   'radiant',
+  'hitsTaken',
 ];
 
 /** Text for a number that may depend on the board: "6", "6 (+2 per Barrier)" or "equal to your Barrier". */
@@ -475,6 +492,7 @@ const WHEN_TEXT: Record<string, string> = {
   arcana: 'Whenever you spend Arcana',
   shuffle: 'Whenever your deck is reshuffled',
   exposeFoe: 'Whenever you apply Exposed to an enemy',
+  gainArcana: 'Whenever you gain Arcana',
 };
 
 const ORDINAL = ['zeroth', 'first', 'second', 'third', 'fourth', 'fifth', 'sixth'];
@@ -486,6 +504,9 @@ function whenText(o: Extract<Op, { op: 'when' }>): string {
   if (o.by === 'exposed' && o.of === 'target' && (lo ?? 0) >= 1) return 'the target is Exposed';
   if (o.by === 'hpLostTurn' && (lo ?? 0) >= 1) return 'you have lost HP this turn';
   if (o.by === 'exhaustedTurn' && (lo ?? 0) >= 1) return 'you have consumed a card this turn';
+  if (o.by === 'x' && lo !== undefined && hi === undefined) return `X is ${lo} or more`;
+  if (o.by === 'played' && lo !== undefined && hi === undefined)
+    return `you have played ${lo} or more cards this turn`;
   if (o.by === 'attacksPlayed' && lo !== undefined && lo === hi)
     return `this is your ${ORDINAL[lo] ?? lo + 'th'} Attack this turn`;
   const w = METRIC_WORDS[o.by].equal;
@@ -605,6 +626,22 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
       if (o.status === 'fortified' && o.amount > 0 && !o.scale) {
         const mine = o.to === 'self' && who.self === WHO.self;
         return `${mine ? 'Gain' : 'Apply'} Fortified${o.to === 'self' ? '' : who[o.to]}${o.temp === 'theirs' ? ' until the end of their next turn' : o.temp ? ' until the end of your turn' : ''}.`;
+      }
+      // the blade's statuses and the other Regent pieces say what they do (DECISIONS pending: spellblade)
+      if (o.amount > 0 && !o.scale && who.self === WHO.self) {
+        const n = o.amount;
+        if (o.status === 'reflect' && o.to === 'self')
+          return 'Until your next turn, attack damage your Barrier soaks is dealt back to the attacker.';
+        if (o.status === 'bladesweep' && o.to === 'self')
+          return 'Your Obsidian Blade strikes ALL enemies for the rest of the fight.';
+        if (o.status === 'bladeecho' && o.to === 'self')
+          return `Your Obsidian Blade is played ${n === 1 ? 'one more time' : `${n} more times`} for the rest of the fight.`;
+        if (o.status === 'bladebane' && o.to === 'target')
+          return 'Your Obsidian Blade deals double damage to the target this turn.';
+        if (o.status === 'freeplay' && o.to === 'self')
+          return `The first ${n === 1 ? 'card' : `${n} cards`} you play each turn cost no Mana.`;
+        if (o.status === 'orbit' && o.to === 'self')
+          return `For the rest of the fight, every 4 Mana you spend gives ${n} Mana back.`;
       }
       // (on your own cards a status you put on yourself is gained or lost, not "applied")
       const mine = o.to === 'self' && who.self === WHO.self;
@@ -734,6 +771,10 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
           : 'card';
       const n = o.amount === 1 ? `a random ${what}` : `${o.amount} random ${what}s`;
       const up = o.upgrade ? ' It is upgraded.' : '';
+      if (o.anywhere)
+        return o.tag && o.amount === 1
+          ? `Put your ${what} into your hand from wherever it is.${up}`
+          : `Put ${n} into your hand from your piles.${up}`;
       return o.to === 'draw'
         ? `Put ${n} from your discard pile on top of your draw pile.${up}`
         : `Return ${n} from your discard pile to your hand.${up}`;
@@ -755,6 +796,11 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
       const free = many
         ? ' (they cost 0 the next time you play them)'
         : ' (it costs 0 the next time you play it)';
+      const from = o.neutral ? 'Neutral' : 'from your pool';
+      const upg = o.upgraded ? 'upgraded ' : '';
+      const what2 = (o.count ?? 1) > 1 ? `${o.count} random ${upg}${kind}` : `a random ${upg}${kind}`;
+      if (o.neutral || o.upgraded)
+        return `Add ${what2}${o.neutral ? 'Neutral ' : ''}card${(o.count ?? 1) > 1 ? 's' : ''}${o.neutral ? '' : ` ${from}`} to your hand${o.free ? free : ''}.`;
       if (o.scale && (o.count ?? 1) === 0)
         return `Add a random card from your pool to your hand for each ${METRIC_WORDS[o.scale.by].per}.`;
       return `Add ${what} from your pool to your hand${o.free ? free : ''}.`;
@@ -764,6 +810,7 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
         ? 'Upgrade every card in your hand for this fight.'
         : 'Upgrade a random card in your hand for this fight.';
     case 'cheapen':
+      if (o.scope === 'self') return `This card costs ${o.amount} less until you play it.`;
       return o.scope === 'hand'
         ? `Cards in your hand cost ${o.amount} less the next time you play them.`
         : `A random card in your hand costs ${o.amount} less the next time you play it.`;
@@ -778,7 +825,10 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
           ? `Play ${n} of your draw pile.`
           : `Play the top card of your draw pile${end}.`;
       if (o.from === 'exhaust') return 'Play a random card from your consumed pile; it goes back there.';
-      if (o.from === 'hand') return `Play a random ${what} from your hand against a random enemy.`;
+      if (o.from === 'hand')
+        return (o.repeat ?? 1) > 1
+          ? `Play a random ${what} from your hand ${o.repeat} times.`
+          : `Play a random ${what} from your hand against a random enemy.`;
       return `Play it against a random enemy${o.match ? ` if it is a ${cap(o.match)} card` : ''}.`;
     }
     case 'manaLock':
@@ -791,8 +841,15 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
       return o.amount === 1
         ? 'Consume the top card of your draw pile.'
         : `Consume the top ${o.amount} cards of your draw pile.`;
-    case 'transform':
-      return `Turn every ${KIND_WORD2[o.kind] ?? o.kind} in your hand into ${article(db.cards[o.into]?.name ?? o.into)} ${db.cards[o.into]?.name ?? o.into}.`;
+    case 'transform': {
+      const into = db.cards[o.into]?.name ?? o.into;
+      const kindWord = o.kind ? (KIND_WORD2[o.kind] ?? o.kind) : 'card';
+      const pile = o.from === 'draw' ? 'your draw pile' : 'your hand';
+      if (o.amount === undefined && !o.choose) return `Turn every ${kindWord} in ${pile} into ${article(into)} ${into}.`;
+      if (o.amount === undefined) return `Turn any number of cards in ${pile} into ${plural(into)}.`;
+      const n = o.amount === 1 ? `${o.choose ? 'a' : 'a random'} ${kindWord}` : `${o.amount} ${o.choose ? '' : 'random '}${kindWord}s`;
+      return `Turn ${n} in ${pile} into ${o.amount === 1 ? `${article(into)} ${into}` : plural(into)}.`;
+    }
     case 'when':
       return `If ${whenText(o)}: ${o.ops.map((x) => opText(db, x, who)).join(' ')}`;
     case 'copyPlayed':
@@ -802,7 +859,20 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
       return `Raise your max HP by ${a.num}.`;
     }
     case 'forge':
+      if (o.scale) return `Sharpen ${at(o.amount, o.scale)}.`;
       return `Sharpen ${o.amount} (${db.cards[o.card]?.name ?? o.card} gains ${o.amount} damage).`;
+    case 'barrierNext':
+      return `Next turn, gain ${o.amount} Barrier.`;
+    case 'starsNext':
+      return `Next turn, gain ${o.amount} Arcana.`;
+    case 'topdeck':
+      return `Put ${o.amount === 1 ? 'a card' : `${o.amount} cards`} from your hand on top of your draw pile.`;
+    case 'endTurn':
+      return 'End your turn.';
+    case 'growSelf':
+      return `This card deals ${o.amount} more damage for the rest of the fight.`;
+    case 'copyInHand':
+      return `Add a copy of a random ${o.neutral ? 'Neutral ' : ''}card in your hand to your hand.`;
   }
 }
 
@@ -877,6 +947,7 @@ export function cardText(db: CombatDb, c: CardDef, live?: ReadonlyMap<number, Li
   if (c.replayFromExhaust)
     parts.push('At the start of your turn, if this is consumed, it is played for free and goes back.');
   // (an Arcana cost is shown on the card itself, under the Mana cost: it is not said again in the text)
+  if (c.starX) parts.push('Spend all your Arcana: X is the Arcana spent.');
   if (c.xBonus) parts.push(`X is ${c.xBonus} higher.`);
   const who: Record<Sel, string> =
     c.target === 'ally' || c.target === 'friend' ? { ...WHO, target: ' to the ally' } : WHO;
@@ -901,7 +972,7 @@ export function cardText(db: CombatDb, c: CardDef, live?: ReadonlyMap<number, Li
       // a card that grows every copy of itself (Gathering Storm) says so, instead of naming a weapon to Sharpen (DECISIONS #353)
       const growsItself = c.effects.some(
         (x) => x.op === 'forge' && x.card === c.id.replace(/\+$/, ''),
-      );
+      ) || (c.onDraw ?? []).some((x) => x.op === 'growSelf');
       // an "X" status cost on the card already says it spends all of it, so the text does not (DECISIONS #357)
       if (
         o.op === 'scaleStatus' &&
@@ -943,6 +1014,15 @@ export function cardText(db: CombatDb, c: CardDef, live?: ReadonlyMap<number, Li
   if (c.ethereal) parts.push('Fleeting.');
   if (c.onDiscard) parts.push(`If discarded: ${c.onDiscard.map((o) => opText(db, o)).join(' ')}`);
   if (c.onExhaust) parts.push(`If consumed: ${c.onExhaust.map((o) => opText(db, o)).join(' ')}`);
+  if (c.onDraw) parts.push(`When you draw this: ${c.onDraw.map((o) => opText(db, o)).join(' ')}`);
+  if (c.after === 'hand') parts.push('It goes back to your hand after you play it.');
+  if (c.after === 'drawTop') parts.push('It goes on top of your draw pile after you play it.');
+  if (c.returnEvery)
+    parts.push(
+      `Every ${c.returnEvery.n} ${KIND_WORD2[c.returnEvery.kind] ?? c.returnEvery.kind}s you play in a turn, it comes back to your hand.`,
+    );
+  if (c.playFromTop)
+    parts.push('At the end of your turn, if this is on top of your draw pile, it is played.');
   return parts.join(' ');
 }
 

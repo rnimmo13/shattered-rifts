@@ -1,4 +1,4 @@
-// The third top-rarity card of every Riftwalker (the others live in each pool file). These were the Legendaries: Robert put
+// The third top-rarity card of most Riftwalkers (the others live in each pool file; Obsidia has none). These were the Legendaries: Robert put
 // Legendary away for now (2026-10-28, DECISIONS #363: "do away with legendary cards for now, we will add those once the base set of
 // common/uncommon/rare is balanced"), so they are Rares until it comes back. Each belongs to one build path and is a build-around
 // for it, never a one-off pile of Barrier (Robert, 2026-10-27; DECISIONS #338).
@@ -14,7 +14,6 @@ import {
   pool,
   scaled,
   stance,
-  stars,
   status,
   summon,
 } from '../build';
@@ -25,7 +24,6 @@ const v = pool('trapper', 'umbral');
 const q = pool('assassin', 'umbral');
 const i = pool('totemist', 'nexus');
 const s = pool('barbarian', 'aurelion');
-const a = pool('spellblade', 'starfall');
 const g = pool('necromancer', 'gloomfen');
 const p = pool('drunkard', 'midden');
 
@@ -88,17 +86,6 @@ export const LEGENDARIES: CardDef[] = [
     'none',
     [on('turnStart', [stance('wrath'), dmg(6, 'allFoes'), barrier(6)])],
     { up: { cost: 1 } },
-  ),
-  // Sigils: Arcana every turn, and a strike on every enemy for each Aura you have
-  a(
-    'rare',
-    'shatterstorm',
-    'Shatterstorm',
-    'power',
-    3,
-    'none',
-    [on('turnStart', [stars(2), scaled(dmg(0, 'allFoes'), per('powers', 3))])],
-    { up: { cost: 2 } },
   ),
   // Ashes: every card consumed strikes and curses every enemy
   g(

@@ -138,9 +138,12 @@ export const FightCard = memo(
               </i>
             )}
           </div>
-          {def.starCost ? (
-            <div className="card__stars" aria-label={`Costs ${def.starCost} Arcana`}>
-              <span>◆ {def.starCost}</span>
+          {def.starCost || def.starX ? (
+            <div
+              className="card__stars"
+              aria-label={def.starX ? 'Spends all your Arcana' : `Costs ${def.starCost} Arcana`}
+            >
+              <span>◆ {def.starX ? 'X' : def.starCost}</span>
             </div>
           ) : null}
           {def.statusCost ? (

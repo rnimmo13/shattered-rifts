@@ -54,7 +54,14 @@ export function validateDb(db: CombatDb): string[] {
         !(Number.isFinite(o.lifesteal) && o.lifesteal > 0 && o.lifesteal <= 100)
       )
         errs.push(`${where}: Lifesteal must be 1-100 percent`);
-      if ((o.op === 'discard' || o.op === 'exhaustCards' || o.op === 'scry') && !opts.pick)
+      if (
+        (o.op === 'discard' ||
+          (o.op === 'exhaustCards' && !o.random) ||
+          o.op === 'scry' ||
+          o.op === 'topdeck' ||
+          (o.op === 'transform' && o.choose)) &&
+        !opts.pick
+      )
         errs.push(
           `${where}: "${o.op}" asks the player to choose, so only a card's own effects may use it`,
         );
@@ -86,6 +93,10 @@ export function validateDb(db: CombatDb): string[] {
         errs.push(`${where}: channels unknown rune "${o.rune}"`);
       if (o.op === 'forge' && !db.cards[o.card])
         errs.push(`${where}: forges unknown card "${o.card}"`);
+      if (o.op === 'transform' && !db.cards[o.into])
+        errs.push(`${where}: transforms into unknown card "${o.into}"`);
+      if ((o.op === 'growSelf' || o.op === 'endTurn') && !opts.card)
+        errs.push(`${where}: "${o.op}" only works in a card`);
       if ('scale' in o && o.scale) {
         if (o.scale.by === 'charge' && !opts.rune)
           errs.push(`${where}: "charge" only works in a rune`);
@@ -125,11 +136,15 @@ export function validateDb(db: CombatDb): string[] {
       checkOps(`${id}.onDiscard`, c.onDiscard, { aimed: false, snare: false, card: true });
     if (c.onExhaust)
       checkOps(`${id}.onExhaust`, c.onExhaust, { aimed: false, snare: false, card: true });
+    if (c.onDraw) checkOps(`${id}.onDraw`, c.onDraw, { aimed: false, snare: false, card: true });
+    if (c.returnEvery && (!Number.isInteger(c.returnEvery.n) || c.returnEvery.n < 1))
+      errs.push(`${id}: bad returnEvery`);
     if (c.x && c.cost !== 0) errs.push(`${id}: an X card must have cost 0`);
     const flat = [...c.effects, ...c.effects.flatMap((o) => (o.op === 'power' ? o.ops : []))];
     const readsX = flat.some((o) => 'scale' in o && o.scale?.by === 'x');
-    if (c.x && !readsX) errs.push(`${id}: an X card must scale something by x`);
-    if (!c.x && readsX) errs.push(`${id}: scales by x but is not an X card`);
+    if ((c.x || c.starX) && !readsX) errs.push(`${id}: an X card must scale something by x`);
+    if (!c.x && !c.starX && readsX) errs.push(`${id}: scales by x but is not an X card`);
+    if (c.x && c.starX) errs.push(`${id}: a card spends all its Mana or all its Arcana, not both`);
     if (c.effects.some((o) => o.op === 'sacrifice') && c.target !== 'ally')
       errs.push(`${id}: sacrifice needs a card that targets an ally`);
     if (

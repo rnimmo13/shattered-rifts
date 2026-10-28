@@ -45,6 +45,10 @@ describe('Combat v2 content', () => {
           b: c.xBonus,
           d: c.onDiscard,
           o: c.onExhaust,
+          // (an Opening hand or a card no longer Fleeting is an upgrade too: the Regent's Big Bang, Void Form)
+          i: c.innate,
+          f: c.ethereal,
+          w: c.onDraw,
         }) ===
         JSON.stringify({
           e: u.effects,
@@ -55,6 +59,9 @@ describe('Combat v2 content', () => {
           b: u.xBonus,
           d: u.onDiscard,
           o: u.onExhaust,
+          i: u.innate,
+          f: u.ethereal,
+          w: u.onDraw,
         });
       expect(same, `${c.id} upgrade changes nothing`).toBe(false);
     }

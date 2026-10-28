@@ -36,8 +36,12 @@ function setup(card: CardDef, hero: HeroId): CombatState {
     { id: 'T3', card: 'strike' },
   ];
   sd.mana = 6;
-  sd.stars = 6;
+  // (7: the Regent's Seven Stars, Obsidia's Seven Shards, costs 7 Arcana)
+  sd.stars = 7;
   sd.attacksPlayed = 2;
+  // (Skills played and Arcana gained this turn, for the cards that count them: Hex Volley, Overflow)
+  sd.skillsPlayed = 2;
+  sd.starsGainedTurn = 2;
   sd.discarded = 2;
   // (a lived-in turn: HP lost and a card consumed, for the cards that ask)
   sd.lostHpTurn = 1;
@@ -141,22 +145,20 @@ describe('every card plays', () => {
 });
 
 describe('second resources have a way in and a way out from the first hand', () => {
-  it("The spellblade's opening hand can both make Arcana and spend it", () => {
+  // (she has the Regent's starter now, 4 Strike, 4 Defend, Cinderfall and Gather Arcana, with nothing Innate, so the opening hand need
+  // not hold both: the way in is the 3 Arcana every fight starts with and the 1 Kindled adds each turn, enough for Cinderfall at once)
+  it('The spellblade starts every fight with Arcana to spend, and her starter both makes and spends it', () => {
+    const starter = RIFTWALKERS.spellblade.starter.map((id) => db.cards[id]!);
+    expect(starter.some((c) => c.effects.some((o) => o.op === 'stars' && o.amount > 0))).toBe(true);
+    const spender = starter.find((c) => (c.starCost ?? 0) > 0);
+    expect(spender).toBeDefined();
     for (let i = 0; i < 20; i++) {
       const { state } = createCombat(db, {
         seed: `arcana-${i}`,
         a: { hero: 'spellblade', deck: RIFTWALKERS.spellblade.starter },
         b: { enemies: ['squire'] },
       });
-      const hand = state.sides.a.hand.map((c) => db.cards[c.card]!);
-      expect(
-        hand.some((c) => c.effects.some((o) => o.op === 'stars' && o.amount > 0)),
-        `seed ${i} makes`,
-      ).toBe(true);
-      expect(
-        hand.some((c) => (c.starCost ?? 0) > 0),
-        `seed ${i} spends`,
-      ).toBe(true);
+      expect(state.sides.a.stars, `seed ${i}`).toBeGreaterThanOrEqual(spender!.starCost!);
     }
   });
 });
@@ -272,9 +274,10 @@ describe('pool shape (docs/09_ROSTER.md §1)', () => {
     const own = (h: string) =>
       cards.filter((c) => c.hero === h && c.kind === 'snare' && !c.id.endsWith('+')).length;
     const counts = HEROES.map((h) => [h, own(h)] as const);
-    // (Valeria is exactly the Ironclad's list, which has no Traps: DECISIONS #367)
+    // (Valeria is exactly the Ironclad's list, which has no Traps: DECISIONS #367; Obsidia is the Regent's, which has none either)
+    const noTraps: string[] = ['knight', 'spellblade'];
     for (const [h, n] of counts)
-      expect(n, `${h} snares`).toBeGreaterThanOrEqual(h === 'trapper' ? 10 : h === 'knight' ? 0 : 1);
+      expect(n, `${h} snares`).toBeGreaterThanOrEqual(h === 'trapper' ? 10 : noTraps.includes(h) ? 0 : 1);
     const others = Math.max(...counts.filter(([h]) => h !== 'trapper').map(([, n]) => n));
     expect(own('trapper')).toBeGreaterThanOrEqual(others * 2);
     expect(own('neutral')).toBeGreaterThanOrEqual(2);

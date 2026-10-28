@@ -271,34 +271,29 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
       text: 'At the start of your turn, gain 1 Arcana and Sharpen your Obsidian Blade by 1.',
       turnStart: [stars(1), forge('starforged-blade', 1)],
     },
+    // the Slay the Spire 2 Regent's shape (docs/decisions-pending/spellblade.md): 75 HP, 3 Arcana as every fight begins (his Divine
+    // Right), and his starter (4 Strike, 4 Defend, Falling Star = Cinderfall, Venerate = Gather Arcana). Kindled is hers, not his.
     hero: {
       id: 'spellblade',
       name: 'Obsidia',
-      maxHp: 82,
+      maxHp: 75,
       mana: 3,
       handSize: 5,
-      sigil: [stars(3), addTo('starforged-blade')],
+      sigil: [stars(3)],
     },
-    // Gather Arcana (makes Arcana) and Arcane Bolt (spends it) are Innate: the opening hand can always do both
-    starter: [
-      ...rep('strike', 2),
-      ...rep('defend', 4),
-      'meteor-jab',
-      'gather-light',
-      ...rep('lumen-bolt', 2),
-    ],
+    starter: [...rep('strike', 4), ...rep('defend', 4), 'meteor-jab', 'gather-light'],
     blurb:
-      'A spellblade of black glass and ember. Starts with 3 Arcana and an Obsidian Blade that every Sharpen improves for good.',
-    mechanics: ['Arcana', 'Sharpen', 'Auras'],
+      'A spellblade of black glass and ember. Spends Arcana on her biggest cards, calls an Obsidian Blade that every Sharpen improves for good, and fills her hand with Retainers and borrowed cards.',
+    mechanics: ['Arcana', 'Sharpen', 'Created cards', 'Auras'],
     buildPaths: [
-      'Blade: sharpen one weapon',
-      'Arcana: spend for finishers',
-      'Sigils: ticking Auras',
+      'Blade: sharpen the Obsidian Blade and swing it',
+      'Arcana: gain it, then spend it on big cards',
+      'Court: create cards and play many',
     ],
     howTo: [
-      'Arcana is a second resource. Cards with an orange orb spend it; others gain it.',
-      'You start with an Obsidian Blade. Every Sharpen card makes every copy hit harder for the whole fight.',
-      'Auras (your sigils) keep working until the fight ends.',
+      'Arcana is a second resource that lasts the whole fight. You start every fight with 3 and gain 1 more each turn. Cards with an orange orb spend it; others gain it.',
+      'The Obsidian Blade (2 Mana, Hold) comes to your hand on your first turn. Every Sharpen makes it hit harder for the rest of the fight, and some Auras make it strike every enemy or strike twice.',
+      'Court cards create cards: Retainers (free Attacks and guards), Neutral cards, Rubble. Created cards feed the Auras that count them.',
     ],
   },
   drunkard: {

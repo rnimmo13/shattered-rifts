@@ -45,7 +45,14 @@ export type StatusId =
   | 'cruelty' // your attacks deal 25% more to Exposed enemies
   | 'sturdy' // you take half damage from Exposed enemies (until the enemies' next turn is over)
   | 'unmovable' // the first Barrier a card gives you each turn is doubled
-  | 'freeattack'; // your next Attack costs 0, per stack
+  | 'freeattack' // your next Attack costs 0, per stack
+  // --- the Regent's pieces (Obsidia, the spellblade; docs/decisions-pending/spellblade.md)
+  | 'reflect' // Barrier that soaks an attack sends the soaked damage back to the attacker; it ends when your next turn starts
+  | 'bladesweep' // your blade cards (tag BLADE_TAG: the Obsidian Blade) strike every enemy instead of one
+  | 'bladeecho' // your blade-tagged attacks are played once more per stack
+  | 'bladebane' // takes double damage from blade-tagged attacks (a card puts it on for the rest of the turn)
+  | 'freeplay' // the first this-many cards you play each turn cost no Mana
+  | 'orbit'; // for every ORBIT_STEP Mana you spend, gain this much Mana
 export const STATUS_IDS: readonly StatusId[] = [
   'exposed',
   'faltering',
@@ -81,6 +88,12 @@ export const STATUS_IDS: readonly StatusId[] = [
   'sturdy',
   'unmovable',
   'freeattack',
+  'reflect',
+  'bladesweep',
+  'bladeecho',
+  'bladebane',
+  'freeplay',
+  'orbit',
 ];
 /** Debuffs: a Steadfast unit ignores the next one put on it. */
 export const DEBUFFS: readonly StatusId[] = [
@@ -91,6 +104,7 @@ export const DEBUFFS: readonly StatusId[] = [
   'brittle',
   'doom',
   'sapped',
+  'bladebane',
 ];
 export const STANCES = ['calm', 'wrath', 'radiant'] as const;
 export type Stance = (typeof STANCES)[number];
@@ -98,6 +112,10 @@ export type Stance = (typeof STANCES)[number];
 export const MANTRA_GOAL = 10;
 /** Attacks from cards with this tag gain the Edge status's bonus damage. */
 export const EDGE_TAG = 'knife';
+/** Cards with this tag are "the blade" for Blade Sweep, Blade Echo and Bladebane (Obsidia's Obsidian Blade). */
+export const BLADE_TAG = 'blade';
+/** Orbit pays out for every this much Mana spent. */
+export const ORBIT_STEP = 4;
 /** Mana gained when leaving Calm (the first time each turn: stepping in and out again pays nothing, so it cannot loop), and on entering Radiant. */
 export const CALM_EXIT_MANA = 2;
 export const RADIANT_ENTER_MANA = 1;
@@ -175,6 +193,11 @@ export type Metric =
   | 'nonAttacksInHand'
   | 'exhaustedNow' // cards the card being played has consumed so far
   | 'exhaustedDamage' // the damage of the Attacks the card being played has consumed so far
+  | 'starsGained' // Arcana gained this turn
+  | 'starCards' // cards with an Arcana cost anywhere in your deck (hand, piles, consumed, and the card being played)
+  | 'handRoom' // room left in your hand (MAX_HAND less the cards in it)
+  | 'hitsTaken' // (about a unit) times it has been hit by an attack this turn
+  | 'spent' // in an 'arcana' trigger: the Arcana just spent
   // about the thing being resolved
   | 'x' // Mana spent on an X card
   | 'charge' // a rune's charge
@@ -205,7 +228,8 @@ export type TriggerWhen =
   | 'created' // a card was created in one of your piles
   | 'arcana' // you spent Arcana (a card's Arcana cost was paid; DECISIONS #288)
   | 'shuffle' // your discard pile was shuffled into a new draw pile (DECISIONS #299)
-  | 'exposeFoe'; // you put Exposed on an enemy
+  | 'exposeFoe' // you put Exposed on an enemy
+  | 'gainArcana'; // you gained Arcana
 
 export type Op =
   /** `lonePct`: Point Blank, this much more damage (percent) when it hits only one enemy */
@@ -293,7 +317,7 @@ export type Op =
   // --- stances
   | { op: 'stance'; stance: Stance | 'none' }
   // --- scaling cards
-  | { op: 'forge'; card: CardId; amount: number }
+  | { op: 'forge'; card: CardId; amount: number; scale?: Scale }
   /** the targeted ally leaves the fight (put it after any effect that reads the target) */
   | { op: 'sacrifice' }
   | { op: 'reclaim'; amount: number } // bring random Consumed cards back to your hand (never Auras)
@@ -303,11 +327,21 @@ export type Op =
   | { op: 'maxMana'; amount: number } // more (or less) Mana every turn for the rest of the fight, from the next turn on
   | { op: 'drawNext'; amount: number } // extra cards at the start of your next turn
   /** add random cards from your own pool (and Neutral) to your hand; `free`: they cost 0 for the rest of the fight */
-  | { op: 'discover'; kind?: CardKind; count?: number; free?: boolean; scale?: Scale }
+  /** `neutral`: Neutral cards only; `upgraded`: their "+" versions */
+  | {
+      op: 'discover';
+      kind?: CardKind;
+      count?: number;
+      free?: boolean;
+      scale?: Scale;
+      neutral?: boolean;
+      upgraded?: boolean;
+    }
   /** replace cards in your hand with their "+" versions for the rest of the fight */
   | { op: 'upgrade'; scope: 'hand' | 'random' }
   /** cards in your hand cost less for the rest of the fight (one random card, or all of them) */
-  | { op: 'cheapen'; amount: number; scope: 'hand' | 'random' }
+  /** 'self': the card being resolved (one that gets cheaper when it is drawn) */
+  | { op: 'cheapen'; amount: number; scope: 'hand' | 'random' | 'self' }
   /** move random cards from your discard pile to your hand (or the top of your draw pile); `kind` and `tag` narrow which */
   | {
       op: 'fetch';
@@ -317,6 +351,8 @@ export type Op =
       tag?: string;
       /** the cards come back as their "+" versions */
       upgrade?: boolean;
+      /** look in the draw pile and the consumed pile too, not only the discard pile */
+      anywhere?: boolean;
     }
   /** add a copy of the card being played */
   | { op: 'copySelf'; to: 'hand' | 'discard' | 'draw' }
@@ -334,6 +370,8 @@ export type Op =
       kind?: CardKind;
       match?: string;
       exhaust?: boolean;
+      /** each card taken is played this many times */
+      repeat?: number;
     }
   /** no more Mana can be gained this turn / no more cards can be drawn this turn */
   | { op: 'manaLock' }
@@ -342,14 +380,36 @@ export type Op =
   | { op: 'drawUntil'; not: CardKind }
   /** consume cards from the top of your draw pile */
   | { op: 'exhaustTop'; amount: number }
-  /** every card of this kind in your hand becomes another card */
-  | { op: 'transform'; kind: CardKind; into: CardId }
+  /**
+   * cards become another card: every card of `kind` in your hand, or (`amount`) that many from your hand or your draw pile, at random
+   * or (`choose`, from the hand) chosen by the player; `choose` without `amount` is "any number"
+   */
+  | {
+      op: 'transform';
+      kind?: CardKind;
+      into: CardId;
+      from?: 'hand' | 'draw';
+      amount?: number;
+      choose?: boolean;
+    }
   /** run these ops only while a metric is within bounds ("on your third Attack") */
   | { op: 'when'; by: Metric; of?: Scale['of']; atLeast?: number; atMost?: number; ops: Op[] }
   /** add a copy of the card that has just been played (in a 'play' trigger) to your hand */
   | { op: 'copyPlayed' }
   /** raise max HP, and HP with it (for the fight; a run keeps what a card says it keeps) */
-  | { op: 'maxHp'; amount: number; to: Sel };
+  | { op: 'maxHp'; amount: number; to: Sel }
+  // --- the Regent's pieces (Obsidia, the spellblade)
+  /** Barrier / Arcana that arrive at the start of your next turn */
+  | { op: 'barrierNext'; amount: number }
+  | { op: 'starsNext'; amount: number }
+  /** put cards from your hand on top of your draw pile (the player chooses) */
+  | { op: 'topdeck'; amount: number }
+  /** your turn ends once this card is done */
+  | { op: 'endTurn' }
+  /** the card being resolved deals this much more damage for the rest of the fight (it reads the 'bonus' metric) */
+  | { op: 'growSelf'; amount: number }
+  /** add a copy of a random card in your hand (`neutral`: a Neutral one) */
+  | { op: 'copyInHand'; neutral?: boolean };
 
 export type CardKind = 'attack' | 'skill' | 'power' | 'summon' | 'snare';
 /** foe = an enemy; friend = any unit of yours (hero or ally); ally = one of your allies, never the hero */
@@ -409,6 +469,16 @@ export interface CardDef {
   onDiscard?: Op[];
   /** runs when this card is exhausted */
   onExhaust?: Op[];
+  /** runs when this card is drawn (the card is the one being resolved: growSelf, cheapen 'self') */
+  onDraw?: Op[];
+  /** an Arcana X card: it spends all your Arcana and the Metric 'x' is how much was spent */
+  starX?: boolean;
+  /** where it goes after it is played, instead of the discard pile: back to your hand, or on top of your draw pile */
+  after?: 'hand' | 'drawTop';
+  /** every `n`th card of `kind` you play in a turn brings this back to your hand from your draw or discard pile */
+  returnEvery?: { kind: CardKind; n: number };
+  /** at the end of your turn, if this is on top of your draw pile, it is played */
+  playFromTop?: boolean;
   /** where a special card comes from (e.g. 'boss:seraphine'); such cards are never ordinary rewards */
   source?: string;
 }
@@ -579,6 +649,8 @@ export interface Unit {
   /** the unit whose attack killed this companion, so an Aura that answers "an ally dies" can strike back at it (DECISIONS #326) */
   killedBy?: UnitId;
   lastMoves: string[];
+  /** attack hits it has taken this turn (Hammer and Anvil) */
+  hitsTaken?: number;
   /**
    * its phases still to come (highest first): the first time its HP would fall below `atPct`% of its max, it stops there and rises
    * into the next phase (Barrier, Might). Set by a setup's enemy mods (the campaign's Omens), never by a card.
@@ -635,7 +707,9 @@ export interface PowerState {
 
 /** A choice the acting player owes before anything else happens. */
 export interface Pending {
-  kind: 'discard' | 'exhaust' | 'scry';
+  kind: 'discard' | 'exhaust' | 'scry' | 'topdeck' | 'transform';
+  /** for 'transform': what the chosen cards become */
+  into?: CardId;
   /** the cards to choose among (your hand, or the top of your draw pile for scry) */
   pool: InstId[];
   min: number;
@@ -705,6 +779,11 @@ export interface SideState {
   /** counters for the whole fight */
   drawn: number;
   created: number;
+  /** Arcana gained this turn; Barrier and Arcana due at the start of the next turn; Mana spent towards Orbit */
+  starsGainedTurn?: number;
+  nextBarrier?: number;
+  nextStars?: number;
+  orbitSpent?: number;
 }
 
 export type Winner = Side | 'draw';

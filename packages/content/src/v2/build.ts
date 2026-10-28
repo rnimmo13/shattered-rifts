@@ -144,7 +144,7 @@ export const discoverOp = (kind?: CardKind, count = 1, free = false, scale?: Sca
 /** play cards for free against random enemies: from your draw pile, consumed pile, hand, or the card just drawn */
 export const playPile = (
   from: 'draw' | 'exhaust' | 'hand' | 'drawn',
-  opts: { amount?: number; scale?: Scale; kind?: CardKind; match?: string; exhaust?: boolean } = {},
+  opts: { amount?: number; scale?: Scale; kind?: CardKind; match?: string; exhaust?: boolean; repeat?: number } = {},
 ): Op => ({ op: 'playPile', from, ...opts });
 export const manaLock: Op = { op: 'manaLock' };
 export const drawLock: Op = { op: 'drawLock' };
@@ -162,7 +162,7 @@ export const maxHpUp = (amount: number, to: Sel = 'self'): Op => ({ op: 'maxHp',
 /** run these ops once for each enemy the damage op kills */
 export const onKill = (o: Op, ops: Op[]): Op => ({ ...o, onKill: ops }) as Op;
 export const upgradeOp = (scope: 'hand' | 'random'): Op => ({ op: 'upgrade', scope });
-export const cheapen = (amount: number, scope: 'hand' | 'random'): Op => ({
+export const cheapen = (amount: number, scope: 'hand' | 'random' | 'self'): Op => ({
   op: 'cheapen',
   amount,
   scope,
@@ -199,6 +199,30 @@ export const addTo = (
   ...(times !== 1 || scale ? { times } : {}),
   ...(scale ? { scale } : {}),
 });
+// --- the Regent's pieces (Obsidia, the spellblade) -------------------------------------------------------------------
+export const barrierNext = (amount: number): Op => ({ op: 'barrierNext', amount });
+export const starsNext = (amount: number): Op => ({ op: 'starsNext', amount });
+/** put cards from your hand on top of your draw pile (chosen) */
+export const topdeck = (amount = 1): Op => ({ op: 'topdeck', amount });
+export const endTurnOp: Op = { op: 'endTurn' };
+/** the card being resolved deals more damage for the rest of the fight (an onDraw effect: Kingly Punch) */
+export const growSelf = (amount: number): Op => ({ op: 'growSelf', amount });
+export const copyInHand = (neutral = false): Op => ({ op: 'copyInHand', ...(neutral ? { neutral } : {}) });
+/** random Neutral cards into your hand (their "+" versions when `upgraded`) */
+export const discoverNeutral = (count = 1, upgraded = false): Op => ({
+  op: 'discover',
+  neutral: true,
+  ...(count !== 1 ? { count } : {}),
+  ...(upgraded ? { upgraded } : {}),
+});
+/** a card with this tag comes to your hand from wherever it is (draw, discard or consumed pile) */
+export const fetchAnywhere = (tag: string): Op => ({ op: 'fetch', amount: 1, to: 'hand', tag, anywhere: true });
+/** cards become another card: `amount` of them (every one when missing), from your hand or draw pile, chosen or at random */
+export const transformSome = (
+  into: string,
+  opts: { amount?: number; from?: 'hand' | 'draw'; choose?: boolean } = {},
+): Op => ({ op: 'transform', into, ...opts });
+
 /** A Power's trigger: run `ops` whenever `when` happens. */
 export const on = (
   when: TriggerWhen,
@@ -229,6 +253,11 @@ type Extra = Partial<
     | 'needsExhausted'
     | 'cheaperPerAttack'
     | 'replayFromExhaust'
+    | 'onDraw'
+    | 'starX'
+    | 'after'
+    | 'returnEvery'
+    | 'playFromTop'
   >
 > & {
   /** a hand-written "+" version: fields that replace the card's (instead of the generic rule in plus()) */
