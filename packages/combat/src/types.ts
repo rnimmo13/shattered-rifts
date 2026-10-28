@@ -45,7 +45,15 @@ export type StatusId =
   | 'cruelty' // your attacks deal 25% more to Exposed enemies
   | 'sturdy' // you take half damage from Exposed enemies (until the enemies' next turn is over)
   | 'unmovable' // the first Barrier a card gives you each turn is doubled
-  | 'freeattack'; // your next Attack costs 0, per stack
+  | 'freeattack' // your next Attack costs 0, per stack
+  // --- the Necrobinder copy (Dorian; docs/decisions-pending/necromancer.md)
+  | 'marrow' // your companions' attacks deal this much more damage (Calcify)
+  | 'reaping' // whenever your Attacks take HP off an enemy, it is cursed with that much Fate (Reaper Form)
+  | 'debilitated' // Exposed and Faltering on it count double (turns: it wears off at the end of its own turn)
+  | 'lethality' // your first Attack each turn deals this % more damage
+  | 'noose' // cards tagged "noose" deal double damage to it, per stack (Hang)
+  | 'quarry' // whenever one of your companions hits it, a companion like the one that hit it is raised with this much HP (this turn)
+  | 'freeethereal'; // your next Fleeting card costs 0, per stack
 export const STATUS_IDS: readonly StatusId[] = [
   'exposed',
   'faltering',
@@ -81,6 +89,13 @@ export const STATUS_IDS: readonly StatusId[] = [
   'sturdy',
   'unmovable',
   'freeattack',
+  'marrow',
+  'reaping',
+  'debilitated',
+  'lethality',
+  'noose',
+  'quarry',
+  'freeethereal',
 ];
 /** Debuffs: a Steadfast unit ignores the next one put on it. */
 export const DEBUFFS: readonly StatusId[] = [
@@ -91,6 +106,7 @@ export const DEBUFFS: readonly StatusId[] = [
   'brittle',
   'doom',
   'sapped',
+  'debilitated',
 ];
 export const STANCES = ['calm', 'wrath', 'radiant'] as const;
 export type Stance = (typeof STANCES)[number];
@@ -179,12 +195,28 @@ export type Metric =
   | 'x' // Mana spent on an X card
   | 'charge' // a rune's charge
   | 'healed' // in a 'heal' trigger: the HP the heal tried to restore (past full HP too)
-  | 'bonus'; // the forge bonus of the card being played
+  | 'bonus' // the forge bonus of the card being played
+  // --- the Necrobinder copy (Dorian)
+  | 'maxHp' // a unit's max HP
+  | 'dealt' // the HP the card's last damage effect took off its target(s)
+  | 'lost' // in an 'allyHurt' trigger: the HP the companion lost
+  | 'allyStrikes' // times your companions were commanded to strike this turn (once per card)
+  | 'drawnTurn' // cards drawn this turn after the opening hand
+  | 'doomedTurn' // times you cursed an enemy with Fate this turn
+  | 'samePlayed' // copies of the card being played already played this turn
+  | 'etherealPlayed' // Fleeting cards played this fight
+  | 'deaths' // units (either side) that have died this fight
+  | 'tagExhausted' // consumed cards with the scale's `tag`
+  | 'tagDeck'; // cards with the scale's `tag` anywhere in your deck (the card being played included)
 export interface Scale {
   by: Metric;
   mult?: number;
   of?: 'self' | 'target' | 'each';
   into?: 'amount' | 'hits';
+  /** count the metric in steps: floor(metric / step) * mult ("5 more for every 10 Fate") */
+  step?: number;
+  /** for 'tagExhausted' / 'tagDeck': the tag counted */
+  tag?: string;
 }
 
 /** When a Power's trigger fires. */
@@ -205,7 +237,10 @@ export type TriggerWhen =
   | 'created' // a card was created in one of your piles
   | 'arcana' // you spent Arcana (a card's Arcana cost was paid; DECISIONS #288)
   | 'shuffle' // your discard pile was shuffled into a new draw pile (DECISIONS #299)
-  | 'exposeFoe'; // you put Exposed on an enemy
+  | 'exposeFoe' // you put Exposed on an enemy
+  | 'doomFoe' // you cursed an enemy with Fate (the target is that enemy)
+  | 'debuffFoe' // you put a debuff on an enemy (the target is that enemy)
+  | 'allyHurt'; // one of your companions lost HP (metric 'lost')
 
 export type Op =
   /** `lonePct`: Point Blank, this much more damage (percent) when it hits only one enemy */
@@ -285,6 +320,14 @@ export type Op =
       stance?: Stance;
       /** it ends with this turn (Rage) */
       temp?: boolean;
+      /** it fires once, then it is gone (Invoke: "next turn") */
+      once?: boolean;
+      /** 'play' / 'draw': only Fleeting cards */
+      ethereal?: boolean;
+      /** 'play': only cards that cost at least this much */
+      minCost?: number;
+      /** it remembers the card's target and aims at it whenever it fires (Oblivion) */
+      pin?: boolean;
     }
   // --- runes
   | { op: 'channel'; rune: string; times?: number; scale?: Scale }
@@ -295,7 +338,7 @@ export type Op =
   // --- scaling cards
   | { op: 'forge'; card: CardId; amount: number }
   /** the targeted ally leaves the fight (put it after any effect that reads the target) */
-  | { op: 'sacrifice' }
+  | { op: 'sacrifice'; self?: boolean }
   | { op: 'reclaim'; amount: number } // bring random Consumed cards back to your hand (never Auras)
   | { op: 'revive' } // your most recently fallen ally returns at half its HP
   // --- tempo and tricks
@@ -303,9 +346,18 @@ export type Op =
   | { op: 'maxMana'; amount: number } // more (or less) Mana every turn for the rest of the fight, from the next turn on
   | { op: 'drawNext'; amount: number } // extra cards at the start of your next turn
   /** add random cards from your own pool (and Neutral) to your hand; `free`: they cost 0 for the rest of the fight */
-  | { op: 'discover'; kind?: CardKind; count?: number; free?: boolean; scale?: Scale }
+  | {
+      op: 'discover';
+      kind?: CardKind;
+      count?: number;
+      free?: boolean;
+      scale?: Scale;
+      /** the cards it makes are Fleeting */
+      ethereal?: boolean;
+    }
   /** replace cards in your hand with their "+" versions for the rest of the fight */
-  | { op: 'upgrade'; scope: 'hand' | 'random' }
+  /** `discard`: `amount` random cards of your discard pile (default 1) */
+  | { op: 'upgrade'; scope: 'hand' | 'random' | 'discard'; amount?: number }
   /** cards in your hand cost less for the rest of the fight (one random card, or all of them) */
   | { op: 'cheapen'; amount: number; scope: 'hand' | 'random' }
   /** move random cards from your discard pile to your hand (or the top of your draw pile); `kind` and `tag` narrow which */
@@ -343,13 +395,30 @@ export type Op =
   /** consume cards from the top of your draw pile */
   | { op: 'exhaustTop'; amount: number }
   /** every card of this kind in your hand becomes another card */
-  | { op: 'transform'; kind: CardKind; into: CardId }
+  /** `from: 'draw'`: `amount` random cards of your draw pile instead (any kind unless `kind` is given) */
+  | { op: 'transform'; kind?: CardKind; into: CardId; from?: 'hand' | 'draw'; amount?: number }
   /** run these ops only while a metric is within bounds ("on your third Attack") */
   | { op: 'when'; by: Metric; of?: Scale['of']; atLeast?: number; atMost?: number; ops: Op[] }
   /** add a copy of the card that has just been played (in a 'play' trigger) to your hand */
   | { op: 'copyPlayed' }
   /** raise max HP, and HP with it (for the fight; a run keeps what a card says it keeps) */
-  | { op: 'maxHp'; amount: number; to: Sel };
+  | { op: 'maxHp'; amount: number; to: Sel }
+  // --- the Necrobinder copy (Dorian; his minions stand in for Osty, several at once)
+  /**
+   * Raise (Summon N): a companion of `unit` rises with `amount` max HP, `times` times (its scale adds to the times); with every
+   * companion slot taken, your weakest companion gains that much max HP instead
+   */
+  | { op: 'raise'; unit: string; amount: number; times?: number; scale?: Scale }
+  /** each of your living companions does these, as the actor ("Osty deals 6"); nothing happens with none. It counts as a strike */
+  | { op: 'command'; ops: Op[] }
+  /** every target whose HP is at or below its Fate dies now */
+  | { op: 'doomNow'; to: Sel }
+  /** the debuffs on the target are put on every other enemy too (Misery) */
+  | { op: 'spreadDebuffs' }
+  /** a random card in your hand (not one that has it already) gains Fleeting, Hold or Replay; `costUp` makes it cost more for the fight */
+  | { op: 'mark'; flag: 'ethereal' | 'retain' | 'replay'; costUp?: number }
+  /** cards cost this much more for the rest of the turn */
+  | { op: 'costTax'; amount: number };
 
 export type CardKind = 'attack' | 'skill' | 'power' | 'summon' | 'snare';
 /** foe = an enemy; friend = any unit of yours (hero or ally); ally = one of your allies, never the hero */
@@ -403,6 +472,12 @@ export interface CardDef {
   cheaperPerAttack?: number;
   /** at the start of your turn, if it is in your consumed pile, it is played for free and goes back */
   replayFromExhaust?: boolean;
+  /** costs 0 while a metric (of your side) is at least this much (Flatten) */
+  freeIf?: { by: Metric; atLeast: number };
+  /** costs `mult` less for every point of a metric (of your side) */
+  cheaperPer?: { by: Metric; mult: number };
+  /** whenever you play a card that costs at least this much, this comes back from your discard pile to your hand */
+  recallOnCost?: number;
   /** exhausts if it is still in your hand at the end of your turn */
   ethereal?: boolean;
   /** runs when an effect discards this card (not the end-of-turn discard) */
@@ -610,6 +685,12 @@ export interface CardInst {
   bonus?: number;
   /** cost change for the rest of the fight (negative = cheaper) */
   costMod?: number;
+  /** keywords a card gave this copy (Sculpting Strike, Snap, Transfigure): Fleeting, Hold, played this many more times */
+  ethereal?: boolean;
+  retain?: boolean;
+  replay?: number;
+  /** a lasting cost rise (unlike costMod it is not spent when played) */
+  costUp?: number;
 }
 
 /** A rune on the board. */
@@ -631,6 +712,12 @@ export interface PowerState {
   stance?: Stance;
   /** it ends with this turn (Rage) */
   temp?: boolean;
+  once?: boolean;
+  ethereal?: boolean;
+  minCost?: number;
+  /** the unit it aims at (a pinned power), and the card copy that made it (which does not set it off) */
+  target?: UnitId;
+  from?: InstId;
 }
 
 /** A choice the acting player owes before anything else happens. */
@@ -649,6 +736,8 @@ export interface Pending {
   x: number;
   /** the card is played a second time when it finishes (a Reverb attack or Mirrored skill) */
   again?: 'twinned' | 'mirrored' | null;
+  /** what the card cost when it was played (a "costs 2 or more" Aura reads it when the card finishes) */
+  paid?: number;
 }
 
 export interface SnareState {
@@ -705,6 +794,16 @@ export interface SideState {
   /** counters for the whole fight */
   drawn: number;
   created: number;
+  // --- the Necrobinder copy (Dorian): counters for this turn and this fight
+  allyStrikes?: number;
+  drawnTurn?: number;
+  doomedTurn?: number;
+  /** base card ids played this turn */
+  playedTurn?: string[];
+  etherealPlayed?: number;
+  deaths?: number;
+  /** cards cost this much more this turn (Borrowed Time) */
+  costTax?: number;
 }
 
 export type Winner = Side | 'draw';

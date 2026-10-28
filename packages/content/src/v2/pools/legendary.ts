@@ -26,7 +26,6 @@ const q = pool('assassin', 'umbral');
 const i = pool('totemist', 'nexus');
 const s = pool('barbarian', 'aurelion');
 const a = pool('spellblade', 'starfall');
-const g = pool('necromancer', 'gloomfen');
 const p = pool('drunkard', 'midden');
 
 export const LEGENDARIES: CardDef[] = [
@@ -100,17 +99,7 @@ export const LEGENDARIES: CardDef[] = [
     [on('turnStart', [stars(2), scaled(dmg(0, 'allFoes'), per('powers', 3))])],
     { up: { cost: 2 } },
   ),
-  // Ashes: every card consumed strikes and curses every enemy
-  g(
-    'rare',
-    'grave-harvest',
-    'Grave Harvest',
-    'power',
-    2,
-    'none',
-    [on('exhaust', [dmg(4, 'allFoes'), status('doom', 2, 'allFoes')])],
-    { up: { cost: 1 } },
-  ),
+  // (the necromancer's Grave Harvest is gone: Dorian is the Necrobinder's card list, docs/decisions-pending/necromancer.md)
   // Gun: a sharper gun at once, and every shot sharpens it again and covers you
   p(
     'rare',

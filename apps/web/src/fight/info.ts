@@ -132,6 +132,49 @@ export const STATUS_INFO: Record<
     tone: 'good',
     text: 'Your next Skill card is played twice.',
   },
+  // --- the Necrobinder copy (Dorian)
+  marrow: {
+    name: 'Marrow',
+    glyph: '⚚',
+    tone: 'good',
+    text: 'Your companions’ attacks deal that much more damage.',
+  },
+  reaping: {
+    name: 'Reaping',
+    glyph: '☽',
+    tone: 'good',
+    text: 'Whenever your Attacks take HP off an enemy, it is cursed with that much Fate.',
+  },
+  debilitated: {
+    name: 'Debilitated',
+    glyph: '⇊',
+    tone: 'bad',
+    text: 'Exposed and Faltering on it count double: it takes 100% more attack damage, or deals 50% less. Wears off at the end of its turns, one each.',
+  },
+  lethality: {
+    name: 'Lethality',
+    glyph: '➹',
+    tone: 'good',
+    text: 'Your first Attack each turn deals this much % more damage.',
+  },
+  noose: {
+    name: 'Noose',
+    glyph: '➰',
+    tone: 'bad',
+    text: 'Gallows cards deal double damage to it, once more for every stack.',
+  },
+  quarry: {
+    name: 'Quarry',
+    glyph: '⌖',
+    tone: 'bad',
+    text: 'This turn, whenever one of the enemy’s companions hits it, another rises with this much HP.',
+  },
+  freeethereal: {
+    name: 'Free Fleeting',
+    glyph: '❍',
+    tone: 'good',
+    text: 'Your next Fleeting card costs 0.',
+  },
   unbound: {
     name: 'Unbound',
     glyph: '⚯',
@@ -296,6 +339,11 @@ export const KEYWORD_INFO: Record<string, { name: string; text: string }> = {
     text: 'A 0-cost Attack that hits every enemy and is consumed.',
   },
   power: { name: 'Aura', text: 'Played once: its effect lasts for the rest of the fight.' },
+  raise: {
+    name: 'Raise',
+    text: 'A Bone Thrall rises with that much HP (up to three companions). With every slot taken, your weakest companion gains that much max HP instead. Thralls take hits meant for you but never act on their own.',
+  },
+  replay: { name: 'Replay', text: 'The card is played one more time each time you play it.' },
 };
 
 const WORDS = new Map<string, RegExp>();

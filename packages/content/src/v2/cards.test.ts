@@ -42,6 +42,13 @@ function setup(card: CardDef, hero: HeroId): CombatState {
   // (a lived-in turn: HP lost and a card consumed, for the cards that ask)
   sd.lostHpTurn = 1;
   sd.exhaustedTurn = 1;
+  // (Fleeting cards played and a death this fight, for the cards that get cheaper with them; a discard pile to take back from)
+  sd.etherealPlayed = 2;
+  sd.deaths = 1;
+  sd.discard = [
+    { id: 'D1', card: 'strike' },
+    { id: 'D2', card: 'defend' },
+  ];
   sd.runes = [{ rune: 'spark', charge: 2 }];
   // a lived-in board, so healing, doubling, stances and the like have something to act on
   const me = sd.units[sd.units.length - 1]!;
@@ -272,9 +279,12 @@ describe('pool shape (docs/09_ROSTER.md §1)', () => {
     const own = (h: string) =>
       cards.filter((c) => c.hero === h && c.kind === 'snare' && !c.id.endsWith('+')).length;
     const counts = HEROES.map((h) => [h, own(h)] as const);
-    // (Valeria is exactly the Ironclad's list, which has no Traps: DECISIONS #367)
+    // (Valeria is exactly the Ironclad's list and Dorian the Necrobinder's, which have no Traps: DECISIONS #367)
+    const noTraps = ['knight', 'necromancer'];
     for (const [h, n] of counts)
-      expect(n, `${h} snares`).toBeGreaterThanOrEqual(h === 'trapper' ? 10 : h === 'knight' ? 0 : 1);
+      expect(n, `${h} snares`).toBeGreaterThanOrEqual(
+        h === 'trapper' ? 10 : noTraps.includes(h) ? 0 : 1,
+      );
     const others = Math.max(...counts.filter(([h]) => h !== 'trapper').map(([, n]) => n));
     expect(own('trapper')).toBeGreaterThanOrEqual(others * 2);
     expect(own('neutral')).toBeGreaterThanOrEqual(2);

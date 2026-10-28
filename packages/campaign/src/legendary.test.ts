@@ -19,8 +19,8 @@ describe('legendary cards', () => {
       const own = rewardPool(h).filter(
         (id) => rarityOf(id) === 'legendary' && COMBAT_DB.cards[id]?.hero === h,
       );
-      // (Valeria has none: she is exactly the Ironclad's list, DECISIONS #367)
-      expect(own.length, h).toBeGreaterThanOrEqual(h === 'knight' ? 0 : 2);
+      // (Valeria and Dorian have none: they are exactly the Ironclad's and the Necrobinder's lists, DECISIONS #367)
+      expect(own.length, h).toBeGreaterThanOrEqual(h === 'knight' || h === 'necromancer' ? 0 : 2);
     }
     const neutral = Object.values(COMBAT_DB.cards).filter(
       (c) => c.hero === 'neutral' && c.rarity === 'legendary' && !c.source,
@@ -39,7 +39,10 @@ describe('legendary cards', () => {
   it('they are never a starter card, and ordinary offers hold none while Legendary is away (DECISIONS #363)', () => {
     for (const h of HEROES)
       for (const id of RIFTWALKERS[h].starter) expect(rarityOf(id)).not.toBe('legendary');
-    for (const [kind, tag] of [['duel', 'l'], ['elite', 'e']] as const) {
+    for (const [kind, tag] of [
+      ['duel', 'l'],
+      ['elite', 'e'],
+    ] as const) {
       let seen = 0;
       for (let i = 0; i < 600; i++)
         for (const id of offerCards(seedRng(`${tag}${i}`), 'assassin', [], kind, 3))
@@ -52,7 +55,7 @@ describe('legendary cards', () => {
     let withLegend = 0;
     for (let i = 0; i < 300; i++)
       if (
-        giftOffers(seedRng(`g${i}`), 'necromancer', [], 3, 'seraphine').some(
+        giftOffers(seedRng(`g${i}`), 'engineer', [], 3, 'seraphine').some(
           (id) => rarityOf(id) === 'legendary',
         )
       )
@@ -60,9 +63,9 @@ describe('legendary cards', () => {
     expect(withLegend / 300).toBeGreaterThan(0.2);
     expect(withLegend / 300).toBeLessThan(0.4);
     // and the gift never offers a legendary the deck already holds
-    const held = rewardPool('necromancer').filter((id) => rarityOf(id) === 'legendary');
+    const held = rewardPool('engineer').filter((id) => rarityOf(id) === 'legendary');
     for (let i = 0; i < 100; i++)
-      for (const id of giftOffers(seedRng(`h${i}`), 'necromancer', held, 3, 'nyxara'))
+      for (const id of giftOffers(seedRng(`h${i}`), 'engineer', held, 3, 'nyxara'))
         expect(held.includes(id)).toBe(false);
   });
 });

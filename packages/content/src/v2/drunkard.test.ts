@@ -131,13 +131,13 @@ describe('innate traits', () => {
     const hero = m.sides.a.units[m.sides.a.units.length - 1]!;
     expect(hero.barrier).toBeGreaterThanOrEqual(6);
     expect(hero.statuses.plating).toBe(6);
-    let g = fight('necromancer', ['mark-of-ending']);
+    let g = fight('necromancer', ['gather-souls']);
     const fate = (s: CombatState) =>
       s.sides.b.units.reduce((n, u) => n + (u.statuses.doom ?? 0), 0);
     for (const u of g.sides.b.units) expect(u.statuses.doom).toBe(3); // every enemy starts with 3
     const before = fate(g);
-    g = playCard(g, 'T0'); // 4 Fate on the target, and the card is consumed: 3 more on a random enemy
-    expect(fate(g)).toBe(before + 7);
+    g = playCard(g, 'T0'); // the card is consumed: 3 more Fate on a random enemy
+    expect(fate(g)).toBe(before + 3);
   });
 
   it('Clutch Genes: KP deals 50% more attack damage at or below half HP, and not above', () => {

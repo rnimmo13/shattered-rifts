@@ -35,10 +35,7 @@ export const SHELVED_LEGENDARIES: readonly string[] = [
   'the-sovereigns-crown',
   'birth-of-a-star',
   'shatterstorm',
-  // necromancer
-  'the-last-toll',
-  'the-drowned-king',
-  'grave-harvest',
+  // necromancer: none (Dorian is the Necrobinder's card list, which has no Legendary)
   // drunkard
   'one-more-round',
   'the-glass-palace',

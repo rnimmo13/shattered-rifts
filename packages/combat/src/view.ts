@@ -63,6 +63,14 @@ export interface SideView {
   stars: number;
   /** Attacks played this turn (some cards cost less for each) */
   attacksPlayed: number;
+  /** the other counters a card's cost can read (the Necrobinder copy: Bone Crush, Mourning, Wailing Cry, Toll in Advance) */
+  played?: number;
+  allyStrikes?: number;
+  drawnTurn?: number;
+  doomedTurn?: number;
+  etherealPlayed?: number;
+  deaths?: number;
+  costTax?: number;
   runes: RuneState[];
   runeSlots: number;
   powers: { id: string; card: string; when: PowerState['when'] }[];
@@ -133,7 +141,9 @@ function describeAllyAct(db: CombatDb, s: CombatState, u: Unit, act: Op[]): Inte
 
 export function describeIntent(db: CombatDb, s: CombatState, u: Unit): IntentView | null {
   const d = db.units[u.def];
-  if (d?.brain.kind === 'ally' && u.hp > 0) return describeAllyAct(db, s, u, d.brain.act);
+  // (a companion that does nothing on its own, such as a Bone Thrall, shows no intent)
+  if (d?.brain.kind === 'ally' && u.hp > 0)
+    return d.brain.act.length ? describeAllyAct(db, s, u, d.brain.act) : null;
   if (!u.intent) return null;
   if (!d || d.brain.kind !== 'enemy') return null;
   const mv = d.brain.moves[u.intent.move];
@@ -195,6 +205,13 @@ export function viewFor(db: CombatDb, s: CombatState, me: Side): CombatView {
       potionCount: sd.potions.length,
       stars: sd.stars,
       attacksPlayed: sd.attacksPlayed,
+      played: sd.played,
+      allyStrikes: sd.allyStrikes ?? 0,
+      drawnTurn: sd.drawnTurn ?? 0,
+      doomedTurn: sd.doomedTurn ?? 0,
+      etherealPlayed: sd.etherealPlayed ?? 0,
+      deaths: sd.deaths ?? 0,
+      costTax: sd.costTax ?? 0,
       runes: clone(sd.runes),
       runeSlots: sd.runeSlots,
       powers: sd.powers
@@ -278,6 +295,13 @@ const STATUS_NAME: Record<string, string> = {
   freeattack: 'Free Attack',
   resonance: 'Spirit',
   twinned: 'Reverb',
+  marrow: 'Marrow',
+  reaping: 'Reaping',
+  debilitated: 'Debilitated',
+  lethality: 'Lethality',
+  noose: 'Noose',
+  quarry: 'Quarry',
+  freeethereal: 'Free Fleeting',
 };
 const sname = (s: string): string => STATUS_NAME[s] ?? cap(s);
 /** a card kind by its player-facing name, for effects that pick cards by kind */
@@ -301,6 +325,8 @@ const TAG_NAMES: Record<string, string> = {
   knife: 'Sleeve Knife',
   blade: 'Obsidian Blade',
   carving: 'Carving',
+  soul: 'Gravesoul',
+  command: 'Command card',
 };
 
 /** A scale under 1 as a small fraction: 0.5 is 1 per 2, 2/3 is 2 per 3 (the smallest whole numbers that give it). */
@@ -396,6 +422,24 @@ const METRIC_WORDS: Record<Metric, { per: string; equal: string }> = {
   charge: { per: 'charge', equal: 'its charge' },
   healed: { per: 'HP healed', equal: 'the HP healed' },
   bonus: { per: 'point of sharpening', equal: 'its sharpening' },
+  // --- the Necrobinder copy
+  maxHp: { per: 'max HP', equal: 'max HP' },
+  dealt: { per: 'damage dealt', equal: 'the damage dealt' },
+  lost: { per: 'HP lost', equal: 'the HP it lost' },
+  allyStrikes: {
+    per: 'time your companions have struck this turn',
+    equal: 'the times your companions have struck this turn',
+  },
+  drawnTurn: { per: 'card drawn this turn', equal: 'the cards drawn this turn' },
+  doomedTurn: { per: 'Fate curse this turn', equal: 'the Fate curses this turn' },
+  samePlayed: { per: 'copy played this turn', equal: 'the copies played this turn' },
+  etherealPlayed: {
+    per: 'Fleeting card played this fight',
+    equal: 'the Fleeting cards played this fight',
+  },
+  deaths: { per: 'death this fight', equal: 'the deaths this fight' },
+  tagExhausted: { per: 'consumed card of that kind', equal: 'the consumed cards of that kind' },
+  tagDeck: { per: 'card of that kind in your deck', equal: 'the cards of that kind in your deck' },
 };
 const UNIT_METRICS: readonly Metric[] = [
   'barrier',
@@ -413,12 +457,26 @@ const UNIT_METRICS: readonly Metric[] = [
   'calm',
   'wrath',
   'radiant',
+  'maxHp',
 ];
 
 /** Text for a number that may depend on the board: "6", "6 (+2 per Barrier)" or "equal to your Barrier". */
 function amountText(n: number, sc: Scale | undefined): { num: string; equal: boolean } {
   if (!sc || sc.into === 'hits') return { num: String(n), equal: false };
-  const w = METRIC_WORDS[sc.by];
+  // (a tagged count names its cards: "per consumed Gravesoul", "per Command card in your deck")
+  const tagged = sc.tag ? (TAG_NAMES[sc.tag] ?? cap(sc.tag)) : null;
+  const w =
+    tagged && sc.by === 'tagExhausted'
+      ? { per: `consumed ${tagged}`, equal: `the number of consumed ${plural(tagged)}` }
+      : tagged && sc.by === 'tagDeck'
+        ? { per: `${tagged} in your deck`, equal: `the number of ${plural(tagged)} in your deck` }
+        : METRIC_WORDS[sc.by];
+  // (a count in steps: "+5 per 10 Fate on the target")
+  if (sc.step && n > 0)
+    return {
+      num: `${n} (+${sc.mult ?? 1} per ${sc.step} ${w.per}${sc.of === 'target' ? ' on the target' : ''})`,
+      equal: false,
+    };
   const m = sc.mult ?? 1;
   const unit = UNIT_METRICS.includes(sc.by);
   const whose = unit
@@ -475,6 +533,9 @@ const WHEN_TEXT: Record<string, string> = {
   arcana: 'Whenever you spend Arcana',
   shuffle: 'Whenever your deck is reshuffled',
   exposeFoe: 'Whenever you apply Exposed to an enemy',
+  doomFoe: 'Whenever you curse an enemy with Fate',
+  debuffFoe: 'Whenever you put a debuff on an enemy',
+  allyHurt: 'Whenever one of your companions loses HP',
 };
 
 const ORDINAL = ['zeroth', 'first', 'second', 'third', 'fourth', 'fifth', 'sixth'];
@@ -488,6 +549,12 @@ function whenText(o: Extract<Op, { op: 'when' }>): string {
   if (o.by === 'exhaustedTurn' && (lo ?? 0) >= 1) return 'you have consumed a card this turn';
   if (o.by === 'attacksPlayed' && lo !== undefined && lo === hi)
     return `this is your ${ORDINAL[lo] ?? lo + 'th'} Attack this turn`;
+  if (o.by === 'samePlayed' && hi === 0 && lo === undefined)
+    return 'this is the first time you play it this turn';
+  if (o.by === 'doomedTurn' && (lo ?? 0) >= 1 && hi === undefined)
+    return 'you have cursed an enemy with Fate this turn';
+  if (o.by === 'exhaustedNow' && lo !== undefined && hi === undefined)
+    return `${lo} or more cards were consumed this way`;
   const w = METRIC_WORDS[o.by].equal;
   if (lo !== undefined && hi !== undefined) return `${w} is ${lo === hi ? lo : `${lo}-${hi}`}`;
   if (lo !== undefined) return `${w} is ${lo} or more`;
@@ -530,9 +597,14 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
     }
     case 'loseHp': {
       const a = amountText(o.amount, o.scale);
+      if (a.equal && o.to === 'allFoes' && who.self === WHO.self)
+        return `ALL enemies lose HP equal to ${a.num}.`;
       if (a.equal) return `${o.to === 'self' ? 'Lose' : 'The target loses'} HP equal to ${a.num}.`;
       if (o.to === 'self') return `Lose ${a.num} HP.`;
       if (o.to === 'target') return `The target loses ${a.num} HP.`;
+      // (on your own cards: Haunt, Necro Mastery)
+      if (o.to === 'randomFoe' && who.self === WHO.self) return `A random enemy loses ${a.num} HP.`;
+      if (o.to === 'allFoes' && who.self === WHO.self) return `ALL enemies lose ${a.num} HP.`;
       return `Take ${a.num} HP${who[o.to]}.`;
     }
     case 'barrier':
@@ -605,6 +677,19 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
       if (o.status === 'fortified' && o.amount > 0 && !o.scale) {
         const mine = o.to === 'self' && who.self === WHO.self;
         return `${mine ? 'Gain' : 'Apply'} Fortified${o.to === 'self' ? '' : who[o.to]}${o.temp === 'theirs' ? ' until the end of their next turn' : o.temp ? ' until the end of your turn' : ''}.`;
+      }
+      // (the Necrobinder copy's statuses for yourself say what they do: they are not counted down)
+      if (o.to === 'self' && who.self === WHO.self && !o.scale && o.amount > 0 && !o.temp) {
+        if (o.status === 'marrow')
+          return `Your companions’ attacks deal ${o.amount} more damage for the rest of the fight.`;
+        if (o.status === 'lethality')
+          return `For the rest of the fight, your first Attack each turn deals ${o.amount}% more damage.`;
+        if (o.status === 'reaping')
+          return 'For the rest of the fight, whenever your Attacks take HP off an enemy, curse it with that much Fate.';
+        if (o.status === 'freeethereal')
+          return o.amount === 1
+            ? 'Your next Fleeting card costs 0.'
+            : `Your next ${o.amount} Fleeting cards cost 0.`;
       }
       // (on your own cards a status you put on yourself is gained or lost, not "applied")
       const mine = o.to === 'self' && who.self === WHO.self;
@@ -696,11 +781,18 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
       const KIND_WORD: Record<string, string> = { power: 'Aura', snare: 'Trap' };
       const when =
         o.when === 'play'
-          ? `Whenever you play ${o.tag ? `${article(TAG_NAMES[o.tag] ?? o.tag)} ${TAG_NAMES[o.tag] ?? o.tag}` : o.filter ? `${article(KIND_WORD[o.filter] ?? o.filter)} ${KIND_WORD[o.filter] ?? cap(o.filter)}` : 'a card'}`
-          : o.when === 'stance'
-            ? `Whenever you enter ${o.stance ? sname(o.stance) : 'a stance'}`
-            : (WHEN_TEXT[o.when] ?? o.when);
-      return `${o.temp ? `This turn, ${when.charAt(0).toLowerCase()}${when.slice(1)}` : when}: ${o.ops.map((x) => opText(db, x, who)).join(' ')}`;
+          ? `Whenever you play ${o.tag ? `${article(TAG_NAMES[o.tag] ?? o.tag)} ${TAG_NAMES[o.tag] ?? o.tag}` : o.filter ? `${article(KIND_WORD[o.filter] ?? o.filter)} ${KIND_WORD[o.filter] ?? cap(o.filter)}` : o.ethereal ? 'a Fleeting card' : o.minCost !== undefined ? `a card that costs ${o.minCost} or more` : 'a card'}`
+          : o.when === 'draw' && o.ethereal
+            ? 'Whenever you draw a Fleeting card'
+            : o.when === 'stance'
+              ? `Whenever you enter ${o.stance ? sname(o.stance) : 'a stance'}`
+              : o.once && o.when === 'turnStart'
+                ? 'Next turn'
+                : (WHEN_TEXT[o.when] ?? o.when);
+      // (an Aura that answers something done to an enemy aims at that enemy)
+      const inner =
+        o.when === 'doomFoe' || o.when === 'debuffFoe' ? { ...who, target: ' to that enemy' } : who;
+      return `${o.temp ? `This turn, ${when.charAt(0).toLowerCase()}${when.slice(1)}` : when}: ${o.ops.map((x) => opText(db, x, inner)).join(' ')}`;
     }
     case 'channel': {
       const nm = db.runes?.[o.rune]?.name ?? o.rune;
@@ -721,7 +813,7 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
     case 'stance':
       return o.stance === 'none' ? 'Leave your stance.' : `Enter ${sname(o.stance)}.`;
     case 'sacrifice':
-      return 'Sacrifice the chosen ally.';
+      return o.self ? 'Then it dies.' : 'Sacrifice the chosen ally.';
     case 'reclaim':
       return `Return ${o.amount === 1 ? 'a random Consumed card' : `${o.amount} random Consumed cards`} to your hand (never one that returns cards).`;
     case 'revive':
@@ -757,9 +849,13 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
         : ' (it costs 0 the next time you play it)';
       if (o.scale && (o.count ?? 1) === 0)
         return `Add a random card from your pool to your hand for each ${METRIC_WORDS[o.scale.by].per}.`;
-      return `Add ${what} from your pool to your hand${o.free ? free : ''}.`;
+      return `Add ${what} from your pool to your hand${o.free ? free : ''}.${o.ethereal ? ` ${many ? 'They are' : 'It is'} Fleeting.` : ''}`;
     }
     case 'upgrade':
+      if (o.scope === 'discard') {
+        const n = o.amount ?? 1;
+        return `Upgrade ${n === 1 ? 'a random card' : `${n} random cards`} in your discard pile for this fight.`;
+      }
       return o.scope === 'hand'
         ? 'Upgrade every card in your hand for this fight.'
         : 'Upgrade a random card in your hand for this fight.';
@@ -791,8 +887,15 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
       return o.amount === 1
         ? 'Consume the top card of your draw pile.'
         : `Consume the top ${o.amount} cards of your draw pile.`;
-    case 'transform':
-      return `Turn every ${KIND_WORD2[o.kind] ?? o.kind} in your hand into ${article(db.cards[o.into]?.name ?? o.into)} ${db.cards[o.into]?.name ?? o.into}.`;
+    case 'transform': {
+      const into = db.cards[o.into]?.name ?? o.into;
+      if (o.from === 'draw') {
+        const n = o.amount ?? 1;
+        return `Turn ${n === 1 ? 'a random card' : `${n} random cards`} in your draw pile into ${n === 1 ? `${article(into)} ${into}` : plural(into)}.`;
+      }
+      const k = o.kind ? (KIND_WORD2[o.kind] ?? o.kind) : 'card';
+      return `Turn every ${k} in your hand into ${article(into)} ${into}.`;
+    }
     case 'when':
       return `If ${whenText(o)}: ${o.ops.map((x) => opText(db, x, who)).join(' ')}`;
     case 'copyPlayed':
@@ -803,6 +906,60 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
     }
     case 'forge':
       return `Sharpen ${o.amount} (${db.cards[o.card]?.name ?? o.card} gains ${o.amount} damage).`;
+    // --- the Necrobinder copy
+    case 'raise': {
+      const times = o.scale
+        ? o.scale.by === 'x'
+          ? ' X times'
+          : ` once per ${METRIC_WORDS[o.scale.by].per}`
+        : (o.times ?? 1) > 1
+          ? ` ${o.times} times`
+          : '';
+      return `Raise ${o.amount}${times}.`;
+    }
+    case 'command': {
+      // "Your companions each deal 6 damage." (what they read of themselves is theirs: "equal to its HP")
+      const lines = o.ops.map((x, i) => {
+        if (x.op === 'sacrifice' && x.self) return 'Then they die.';
+        // ("deal 6 damage plus its own HP": a blow that reads the companion itself)
+        if (
+          x.op === 'damage' &&
+          x.scale &&
+          (x.scale.by === 'hp' || x.scale.by === 'maxHp') &&
+          (x.scale.mult ?? 1) === 1 &&
+          !x.scale.of &&
+          !x.scale.into
+        ) {
+          const plain = { ...x };
+          delete plain.scale;
+          const t = opText(db, plain, who).replace(
+            / damage(.*)\.$/,
+            ` damage$1, plus its own ${x.scale.by === 'hp' ? 'HP' : 'max HP'}.`,
+          );
+          return i === 0 ? t.charAt(0).toLowerCase() + t.slice(1) : t;
+        }
+        const t = opText(db, x, who).replace(/\byour (HP|max HP)\b/g, 'its $1');
+        return i === 0 ? t.charAt(0).toLowerCase() + t.slice(1) : t;
+      });
+      return `Your companions each ${lines.join(' ')}`;
+    }
+    case 'doomNow':
+      return o.to === 'target'
+        ? 'If its HP is at or below its Fate, the target dies now.'
+        : `Every enemy whose HP is at or below its Fate dies now.`;
+    case 'spreadDebuffs':
+      return "Put the target's debuffs on every other enemy too.";
+    case 'mark': {
+      const what =
+        o.flag === 'ethereal'
+          ? 'Fleeting'
+          : o.flag === 'retain'
+            ? 'Hold'
+            : 'Replay (it is played one more time)';
+      return `A random card in your hand gains ${what}${o.costUp ? ` and costs ${o.costUp} more for this fight` : ''}.`;
+    }
+    case 'costTax':
+      return `Cards cost ${o.amount} more this turn.`;
   }
 }
 
@@ -874,6 +1031,19 @@ export function cardText(db: CombatDb, c: CardDef, live?: ReadonlyMap<number, Li
     parts.push(`Only playable with ${c.needsExhausted} or more cards consumed.`);
   if (c.cheaperPerAttack)
     parts.push(`Costs ${c.cheaperPerAttack} less for each Attack played this turn.`);
+  // (the Necrobinder copy)
+  if (c.cheaperPer)
+    parts.push(`Costs ${c.cheaperPer.mult} less for each ${METRIC_WORDS[c.cheaperPer.by].per}.`);
+  if (c.freeIf)
+    parts.push(
+      c.freeIf.by === 'allyStrikes' && c.freeIf.atLeast === 1
+        ? 'Costs 0 if your companions have struck this turn.'
+        : `Costs 0 while ${METRIC_WORDS[c.freeIf.by].equal} is ${c.freeIf.atLeast} or more.`,
+    );
+  if (c.recallOnCost)
+    parts.push(
+      `Whenever you play a card that costs ${c.recallOnCost} or more, this returns from your discard pile to your hand.`,
+    );
   if (c.replayFromExhaust)
     parts.push('At the start of your turn, if this is consumed, it is played for free and goes back.');
   // (an Arcana cost is shown on the card itself, under the Mana cost: it is not said again in the text)

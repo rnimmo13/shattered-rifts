@@ -73,10 +73,14 @@ export function validateDb(db: CombatDb): string[] {
       if (o.op === 'damage' && o.onKill) checkOps(`${where}.onKill`, o.onKill, opts);
       if (o.op === 'copyPlayed' && !opts.played)
         errs.push(`${where}: "copyPlayed" only works in a trigger that answers a card being played`);
+      // (the Necrobinder copy) a command's ops run with each companion as the actor; a Raise needs a known unit
+      if (o.op === 'command') checkOps(`${where}.command`, o.ops, opts);
+      if (o.op === 'raise' && !db.units[o.unit])
+        errs.push(`${where}: raises unknown unit "${o.unit}"`);
       if (o.op === 'power') {
         if (!opts.card) errs.push(`${where}: "power" only works in a card`);
         checkOps(`${where}.power`, o.ops, {
-          aimed: o.when === 'play',
+          aimed: o.when === 'play' || o.when === 'doomFoe' || o.when === 'debuffFoe' || !!o.pin,
           snare: false,
           attacker: o.when === 'allyDies',
           played: o.when === 'play',
@@ -130,7 +134,7 @@ export function validateDb(db: CombatDb): string[] {
     const readsX = flat.some((o) => 'scale' in o && o.scale?.by === 'x');
     if (c.x && !readsX) errs.push(`${id}: an X card must scale something by x`);
     if (!c.x && readsX) errs.push(`${id}: scales by x but is not an X card`);
-    if (c.effects.some((o) => o.op === 'sacrifice') && c.target !== 'ally')
+    if (c.effects.some((o) => o.op === 'sacrifice' && !o.self) && c.target !== 'ally')
       errs.push(`${id}: sacrifice needs a card that targets an ally`);
     if (
       (c.target === 'ally' || c.target === 'friend') &&
@@ -152,7 +156,28 @@ export function validateDb(db: CombatDb): string[] {
       c.effects.some((o) => o.op === 'prevent')
     )
       errs.push(`${id}: "prevent" only cancels an attack`);
-    if (c.target === 'foe' && !c.effects.some((o) => 'to' in o && o.to === 'target'))
+    // (a command aims its companions at the card's target; a pinned Aura remembers it; a spread reads it)
+    const usesTarget = (ops: readonly Op[]): boolean =>
+      ops.some(
+        (o) =>
+          ('to' in o && o.to === 'target') ||
+          (o.op === 'command' && usesTarget(o.ops)) ||
+          (o.op === 'power' && !!o.pin) ||
+          o.op === 'spreadDebuffs',
+      );
+    // (a cost can only read the side counters costOf knows)
+    const COUNTERS = [
+      'attacksPlayed',
+      'played',
+      'allyStrikes',
+      'drawnTurn',
+      'doomedTurn',
+      'etherealPlayed',
+      'deaths',
+    ];
+    for (const by of [c.freeIf?.by, c.cheaperPer?.by])
+      if (by && !COUNTERS.includes(by)) errs.push(`${id}: a cost cannot read "${by}"`);
+    if (c.target === 'foe' && !usesTarget(c.effects))
       errs.push(`${id}: asks for a target but no effect uses it`);
   }
 

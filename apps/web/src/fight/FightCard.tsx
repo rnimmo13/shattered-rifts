@@ -61,12 +61,14 @@ export interface FightCardProps {
   cost?: number;
   /** what its damage would really be right now (a card in your hand), by effect index: shown in place of the printed numbers */
   live?: ReadonlyMap<number, LiveDamage>;
+  /** keywords another card gave this copy in the fight (Fleeting, Hold, Replay), added to its text */
+  note?: string;
 }
 
 /** A Combat v2 card, drawn with the shared card frame (same canonical size and scaling as every other card). */
 export const FightCard = memo(
   forwardRef<HTMLDivElement, FightCardProps>(function FightCard(
-    { db, def, width, playable, dimmed, bonus, cost, live },
+    { db, def, width, playable, dimmed, bonus, cost, live, note },
     ref,
   ) {
     const k = width / CARD_W;
@@ -76,8 +78,11 @@ export const FightCard = memo(
     const shown = artFailed === def.id ? paintedCardArt(def) : art;
     const text = useMemo(
       // (a sharpened card in your hand shows the sharpened damage itself; anywhere else the text says how much was added)
-      () => rulesFor(db, def, live) + (bonus && !live?.size ? ` Sharpened: +${bonus}.` : ''),
-      [db, def, bonus, live],
+      () =>
+        rulesFor(db, def, live) +
+        (bonus && !live?.size ? ` Sharpened: +${bonus}.` : '') +
+        (note ? ` ${note.replace(KEYWORDS, '**$1**')}` : ''),
+      [db, def, bonus, live, note],
     );
     const runs = useMemo(() => parseRules(text), [text]);
     const n = text

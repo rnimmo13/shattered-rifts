@@ -203,8 +203,37 @@ export const addTo = (
 export const on = (
   when: TriggerWhen,
   ops: Op[],
-  narrow: { filter?: CardKind; tag?: string; stance?: Stance; temp?: boolean } = {},
+  narrow: {
+    filter?: CardKind;
+    tag?: string;
+    stance?: Stance;
+    temp?: boolean;
+    once?: boolean;
+    ethereal?: boolean;
+    minCost?: number;
+    pin?: boolean;
+  } = {},
 ): Extract<Op, { op: 'power' }> => ({ op: 'power', when, ops, ...narrow });
+
+// --- ops for the Necrobinder copy (Dorian: his minions stand in for Osty, several at once) ----------------------------------
+/** Raise N (Summon N): a companion of `unit` rises with N HP, or with every slot taken the weakest gains N max HP (Dorian's Bone Thrall by default) */
+export const raise = (amount: number, unit = 'bone-thrall', times?: number, scale?: Scale): Op => ({
+  op: 'raise',
+  unit,
+  amount,
+  ...(times !== undefined ? { times } : {}),
+  ...(scale ? { scale } : {}),
+});
+/** each of your companions does these ("Osty deals 6") */
+export const command = (...ops: Op[]): Op => ({ op: 'command', ops });
+export const doomNow = (to: Sel = 'allFoes'): Op => ({ op: 'doomNow', to });
+export const spreadDebuffs: Op = { op: 'spreadDebuffs' };
+export const mark = (flag: 'ethereal' | 'retain' | 'replay', costUp?: number): Op => ({
+  op: 'mark',
+  flag,
+  ...(costUp ? { costUp } : {}),
+});
+export const costTax = (amount: number): Op => ({ op: 'costTax', amount });
 
 // --- cards ---------------------------------------------------------------------------------------------------------
 
@@ -229,6 +258,9 @@ type Extra = Partial<
     | 'needsExhausted'
     | 'cheaperPerAttack'
     | 'replayFromExhaust'
+    | 'freeIf'
+    | 'cheaperPer'
+    | 'recallOnCost'
   >
 > & {
   /** a hand-written "+" version: fields that replace the card's (instead of the generic rule in plus()) */
@@ -365,7 +397,9 @@ export function plus(c: CardDef): CardDef {
           o.status !== 'sturdy' &&
           o.status !== 'unmovable' &&
           o.status !== 'cruelty' &&
-          o.status !== 'freeattack'
+          o.status !== 'freeattack' &&
+          o.status !== 'reaping' &&
+          o.status !== 'freeethereal'
         ) {
           changed = true;
           // a big stack (Bleed 5, Primed 6, a plague of 9) gains two: +1 on 5 is barely felt
@@ -381,6 +415,12 @@ export function plus(c: CardDef): CardDef {
       case 'when':
         // the effects it guards improve like any other
         return { ...o, ops: o.ops.map(upOp) };
+      case 'command':
+        // what the companions do improves like any other
+        return { ...o, ops: o.ops.map(upOp) };
+      case 'raise':
+        changed = true;
+        return { ...o, amount: o.amount + 2 };
       case 'mana':
         // Mana is the one number an upgrade never raises (a free +1 Mana card upgraded into +2 is a different card)
         return o;

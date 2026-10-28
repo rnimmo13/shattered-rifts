@@ -91,6 +91,10 @@ interface Act {
   /** what the card being played has consumed so far */
   exhaustedNow: number;
   exhaustedDmg: number;
+  /** the HP the card's last damage effect took off (Blight Strike) */
+  dealt: number;
+  /** in an 'allyHurt' trigger: the HP the companion lost */
+  lost: number;
 }
 
 const mkAct = (actor: Unit, extra: Partial<Act> = {}): Act => ({
@@ -109,6 +113,8 @@ const mkAct = (actor: Unit, extra: Partial<Act> = {}): Act => ({
   drawn: null,
   exhaustedNow: 0,
   exhaustedDmg: 0,
+  dealt: 0,
+  lost: 0,
   ...extra,
 });
 
@@ -195,6 +201,17 @@ function addStatus(r: Run, u: Unit, st: StatusId, amount: number): boolean {
   }
   // an Aura that answers Exposed being put on an enemy (Vicious)
   if (st === 'exposed' && amount > 0 && u.kind !== 'hero') fireTriggers(r, r.s.sides[other(u.side)], 'exposeFoe');
+  // (the Necrobinder copy) Auras that answer Fate, or any debuff, being put on an enemy (Shroud, Sleight of Flesh)
+  // (an enemy unit, or in PvP the other player's hero while you act)
+  const foeUnit = u.kind === 'enemy' || (u.kind === 'hero' && u.side !== r.s.active);
+  if (amount > 0 && foeUnit && DEBUFFS.includes(st)) {
+    const foe = r.s.sides[other(u.side)];
+    if (st === 'doom') {
+      foe.doomedTurn = (foe.doomedTurn ?? 0) + 1;
+      fireTriggers(r, foe, 'doomFoe', { target: u });
+    }
+    fireTriggers(r, foe, 'debuffFoe', { target: u });
+  }
   return true;
 }
 
@@ -243,13 +260,14 @@ export function modifiedDamage(base: number, attacker: Unit | null, target: Unit
   if (attacker && stacks(attacker, 'clutch') > 0)
     n = Math.floor((n * (100 + stacks(attacker, 'clutch'))) / 100);
   // (Stunned counts as Faltering, Exposed and Brittle at once, never on top of them: DECISIONS #310)
+  // (Debilitated: Faltering and Exposed on it count double)
   if (attacker && (stacks(attacker, 'faltering') > 0 || stacks(attacker, 'stunned') > 0))
-    n = Math.floor(n * 0.75);
+    n = Math.floor(n * (stacks(attacker, 'debilitated') > 0 ? 0.5 : 0.75));
   if (attacker && stacks(attacker, 'radiant') > 0) n *= 3;
   else if (attacker && stacks(attacker, 'wrath') > 0) n *= 2;
   if (target && stacks(target, 'wrath') > 0) n = Math.floor(n * 1.5);
   if (target && (stacks(target, 'exposed') > 0 || stacks(target, 'stunned') > 0)) {
-    n = Math.floor(n * 1.5);
+    n = Math.floor(n * (stacks(target, 'debilitated') > 0 ? 2 : 1.5));
     // Cruelty: an Exposed enemy takes a quarter more from you
     if (attacker && stacks(attacker, 'cruelty') > 0) n = Math.floor(n * 1.25);
   }
@@ -339,6 +357,8 @@ function applyDamage(
     fireSnare(r, t.side, { on: 'hpLost', lost, attacker: source, hit: null });
   }
   if (rises && rise) riseUp(r, t, rise);
+  // (the Necrobinder copy) an Aura that answers a companion losing HP (Necro Mastery)
+  if (lost > 0 && t.kind === 'ally') fireTriggers(r, r.s.sides[t.side], 'allyHurt', { lost });
   return lost;
 }
 
@@ -484,7 +504,14 @@ function resolve(r: Run, a: Act, sel: Sel): Unit[] {
 }
 
 /** The value of a metric for `a` (`t` is the unit an op is being applied to, for metrics "of the target"). */
-function metricValue(r: Run, a: Act, m: Metric, of: Scale['of'], t: Unit | null): number {
+function metricValue(
+  r: Run,
+  a: Act,
+  m: Metric,
+  of: Scale['of'],
+  t: Unit | null,
+  tag?: string,
+): number {
   const sd = r.s.sides[a.actor.side];
   const u = of === 'each' ? (t ?? a.target) : of === 'target' ? a.target : a.actor;
   switch (m) {
@@ -580,13 +607,89 @@ function metricValue(r: Run, a: Act, m: Metric, of: Scale['of'], t: Unit | null)
       return a.healed;
     case 'bonus':
       return a.inst?.bonus ?? 0;
+    // --- the Necrobinder copy
+    case 'maxHp':
+      return u?.maxHp ?? 0;
+    case 'dealt':
+      return a.dealt;
+    case 'lost':
+      return a.lost;
+    case 'samePlayed': {
+      const base = a.card?.id.replace(/\+$/, '');
+      return base ? (sd.playedTurn ?? []).filter((x) => x === base).length : 0;
+    }
+    case 'tagExhausted':
+      return sd.exhausted.filter((c) => !!tag && r.db.cards[c.card]?.tags?.includes(tag)).length;
+    case 'tagDeck': {
+      const seen = new Set<string>();
+      let n = 0;
+      for (const c of [
+        ...sd.hand,
+        ...sd.draw,
+        ...sd.discard,
+        ...sd.exhausted,
+        ...(a.inst ? [a.inst] : []),
+      ]) {
+        if (seen.has(c.id)) continue;
+        seen.add(c.id);
+        if (tag && r.db.cards[c.card]?.tags?.includes(tag)) n++;
+      }
+      return n;
+    }
+    case 'allyStrikes':
+    case 'drawnTurn':
+    case 'doomedTurn':
+    case 'etherealPlayed':
+    case 'deaths':
+      return sideCount(sd, m);
   }
+}
+
+/** The counters of a side that a card's cost can read (the combat view carries them too). */
+export type CostCounter =
+  | 'attacksPlayed'
+  | 'played'
+  | 'allyStrikes'
+  | 'drawnTurn'
+  | 'doomedTurn'
+  | 'etherealPlayed'
+  | 'deaths'
+  | 'costTax';
+
+/** The Necrobinder copy's counters of a side (also read by costOf, which has no frame to act in). */
+function sideCount(sd: Partial<Pick<SideState, CostCounter>>, m: Metric): number {
+  switch (m) {
+    case 'allyStrikes':
+      return sd.allyStrikes ?? 0;
+    case 'drawnTurn':
+      return sd.drawnTurn ?? 0;
+    case 'doomedTurn':
+      return sd.doomedTurn ?? 0;
+    case 'etherealPlayed':
+      return sd.etherealPlayed ?? 0;
+    case 'deaths':
+      return sd.deaths ?? 0;
+    case 'attacksPlayed':
+      return sd.attacksPlayed ?? 0;
+    case 'played':
+      return sd.played ?? 0;
+    default:
+      return 0;
+  }
+}
+
+/** A card copy is Fleeting (Ethereal) by its card or because a card made it so; Hold likewise. */
+export function isEthereal(cd: CardDef, c: Pick<CardInst, 'ethereal'> | null | undefined): boolean {
+  return !!cd.ethereal || !!c?.ethereal;
 }
 
 /** `amount` plus whatever its scale adds (never below 0 for amounts that cannot be negative). */
 function scaleValue(r: Run, a: Act, sc: Scale, t: Unit | null): number {
   // (a tiny allowance, so a factor like 1/11 times 55 is 5 and not 4.999...)
-  return Math.floor((sc.mult ?? 1) * metricValue(r, a, sc.by, sc.of, t) + 1e-9);
+  const v = metricValue(r, a, sc.by, sc.of, t, sc.tag);
+  // (a step counts whole steps only: "5 more for every 10 Fate")
+  const counted = sc.step ? Math.floor(v / sc.step) : v;
+  return Math.floor((sc.mult ?? 1) * counted + 1e-9);
 }
 
 function amountOf(r: Run, a: Act, base: number, sc: Scale | undefined, t: Unit | null): number {
@@ -625,6 +728,15 @@ function execOp(r: Run, a: Act, op: Op): void {
       let took = 0;
       let kills = 0;
       const struck = new Set<string>();
+      // (the Necrobinder copy) Calcify: your companions hit harder; Lethality: your first Attack of the turn hits harder;
+      // Reaper Form: what your Attacks take off curses the enemy with as much Fate
+      const lead = heroOf(side);
+      const marrow = a.actor.kind === 'ally' && lead ? stacks(lead, 'marrow') : 0;
+      const isAttack = a.card?.kind === 'attack';
+      const leth =
+        isAttack && lead && side.attacksPlayed === 0 ? 1 + stacks(lead, 'lethality') / 100 : 1;
+      const reaping = isAttack && lead ? stacks(lead, 'reaping') > 0 : false;
+      const noosed = a.card?.tags?.includes('noose') === true;
       for (let i = 0; i < hits; i++) {
         // (a hit that wins the fight still pays its Lifesteal below: HP carries on in a run)
         if (r.s.winner) break;
@@ -646,21 +758,34 @@ function execOp(r: Run, a: Act, op: Op): void {
         const lone = op.lonePct && ts.length === 1 ? 1 + op.lonePct / 100 : 1;
         for (const t of ts) {
           const alive = t.hp > 0;
-          took += attackHit(
+          // (Hang: cards tagged "noose" deal double to it per stack, capped so the number stays sane)
+          const noose = noosed ? 2 ** Math.min(10, stacks(t, 'noose')) : 1;
+          const lostHere = attackHit(
             r,
             a,
             t,
             Math.round(
-              (amountOf(r, a, op.amount, op.scale, t) + edge + vigor + resonanceOf(a)) * lone,
+              (amountOf(r, a, op.amount, op.scale, t) + edge + vigor + resonanceOf(a) + marrow) *
+                lone *
+                leth *
+                noose,
             ),
             op.to === 'target' || op.to === 'front',
           );
+          took += lostHere;
+          if (reaping && lostHere > 0 && t.side !== a.actor.side && t.hp > 0)
+            addStatus(r, t, 'doom', lostHere);
+          // Sic 'Em: a companion that hits its quarry raises another like it
+          const quarry = stacks(t, 'quarry');
+          if (a.actor.kind === 'ally' && quarry > 0 && t.side !== a.actor.side && !r.s.winner)
+            raiseAlly(r, side, a.actor.def, quarry, a.actor);
           if (alive && t.hp <= 0) kills++;
         }
         reap(r);
       }
       // what a kill pays (Feed), once for each enemy this attack took down
       for (let k = 0; k < kills && op.onKill && !r.s.winner; k++) runOps(r, a, op.onKill);
+      a.dealt = took;
       if (vigor > 0) addStatus(r, a.actor, 'vigor', -vigor);
       // Lifesteal: the attacker heals a share of the HP the attack took off (DECISIONS #285)
       if (op.lifesteal && took > 0 && a.actor.hp > 0)
@@ -893,6 +1018,11 @@ function execOp(r: Run, a: Act, op: Op): void {
         ...(op.tag ? { tag: op.tag } : {}),
         ...(op.stance ? { stance: op.stance } : {}),
         ...(op.temp ? { temp: true } : {}),
+        ...(op.once ? { once: true } : {}),
+        ...(op.ethereal ? { ethereal: true } : {}),
+        ...(op.minCost !== undefined ? { minCost: op.minCost } : {}),
+        ...(op.pin && a.target ? { target: a.target.id } : {}),
+        ...(op.pin && a.inst ? { from: a.inst.id } : {}),
       });
       r.ev.push({ type: 'power', side: side.id, card: a.card?.id ?? '' });
       return;
@@ -965,20 +1095,25 @@ function execOp(r: Run, a: Act, op: Op): void {
         const pick = pool[nextInt(r.s.rng, pool.length)] as CardDef;
         const made = addCardTo(r, side, pick.id, 'hand');
         if (op.free && pick.cost > 0) made.costMod = -pick.cost;
+        if (op.ethereal) made.ethereal = true;
       }
       return;
     }
     case 'upgrade': {
-      const upgradable = side.hand.filter((c) => {
+      const upgradable = (op.scope === 'discard' ? side.discard : side.hand).filter((c) => {
         const up = cardDef(r.db, c.card).upgrade;
         return !!up && !!r.db.cards[up];
       });
+      // (the discard pile: that many random cards, each at most once)
+      const some = (n: number): CardInst[] => {
+        const left = [...upgradable];
+        const out: CardInst[] = [];
+        for (let k = 0; k < n && left.length; k++)
+          out.push(left.splice(nextInt(r.s.rng, left.length), 1)[0] as CardInst);
+        return out;
+      };
       const chosen =
-        op.scope === 'hand'
-          ? upgradable
-          : upgradable.length
-            ? [upgradable[nextInt(r.s.rng, upgradable.length)] as CardInst]
-            : [];
+        op.scope === 'hand' ? upgradable : some(op.scope === 'discard' ? (op.amount ?? 1) : 1);
       for (const c of chosen) {
         c.card = cardDef(r.db, c.card).upgrade as CardId;
         r.ev.push({ type: 'transform', side: side.id, card: c.id, def: c.card });
@@ -1087,6 +1222,21 @@ function execOp(r: Run, a: Act, op: Op): void {
       }
       return;
     case 'transform':
+      // (the Necrobinder copy: Seance turns random cards of your draw pile)
+      if (op.from === 'draw') {
+        const pool = side.draw.filter(
+          (c) => c.card !== op.into && (!op.kind || r.db.cards[c.card]?.kind === op.kind),
+        );
+        for (let k = 0; k < (op.amount ?? 1) && pool.length; k++) {
+          const c = pool.splice(nextInt(r.s.rng, pool.length), 1)[0] as CardInst;
+          c.card = op.into;
+          // (it is a new card: nothing the old one was given carries over)
+          for (const k of ['costMod', 'bonus', 'ethereal', 'retain', 'replay', 'costUp'] as const)
+            delete c[k];
+          r.ev.push({ type: 'transform', side: side.id, card: c.id, def: c.card });
+        }
+        return;
+      }
       for (const c of side.hand) {
         if (r.db.cards[c.card]?.kind !== op.kind) continue;
         c.card = op.into;
@@ -1137,7 +1287,8 @@ function execOp(r: Run, a: Act, op: Op): void {
       return;
     }
     case 'sacrifice': {
-      const t = a.target;
+      // (`self`: a companion acting under a command gives itself up: Bone Shards)
+      const t = op.self ? a.actor : a.target;
       if (t && t.kind === 'ally' && t.side === a.actor.side && t.hp > 0) t.hp = 0;
       return;
     }
@@ -1154,7 +1305,95 @@ function execOp(r: Run, a: Act, op: Op): void {
       r.ev.push({ type: 'forge', side: side.id, card: op.card, amount: op.amount });
       return;
     }
+    // --- the Necrobinder copy (Dorian: his minions stand in for Osty, several at once) ---------------------------------
+    case 'raise': {
+      const n = amountOf(r, a, op.times ?? 1, op.scale, null);
+      for (let k = 0; k < n && !r.s.winner; k++) raiseAlly(r, side, op.unit, op.amount, a.actor);
+      return;
+    }
+    case 'command': {
+      // each companion strikes in turn, at the card's target (or, if it has fallen, the front enemy)
+      const crew = side.units.filter((u) => u.kind === 'ally' && u.hp > 0);
+      if (!crew.length) return;
+      for (const u of crew) {
+        if (r.s.winner) break;
+        if (u.hp <= 0) continue;
+        const front = r.s.sides[other(u.side)].units.find((x) => x.hp > 0) ?? null;
+        const at = a.target && a.target.hp > 0 && a.target.side !== u.side ? a.target : front;
+        r.ev.push({ type: 'act', unit: u.id, move: null });
+        runOps(r, mkAct(u, { target: at, card: a.card, inst: a.inst, x: a.x }), op.ops);
+        reap(r);
+      }
+      side.allyStrikes = (side.allyStrikes ?? 0) + 1;
+      return;
+    }
+    case 'doomNow':
+      for (const t of resolve(r, a, op.to)) {
+        const doom = stacks(t, 'doom');
+        if (doom > 0 && t.hp > 0 && t.hp <= doom) applyDamage(r, null, t, t.hp, 'direct');
+      }
+      return;
+    case 'spreadDebuffs': {
+      const from = a.target;
+      if (!from) return;
+      const rest = r.s.sides[from.side].units.filter((u) => u.hp > 0 && u.id !== from.id);
+      for (const st of DEBUFFS) {
+        const n = stacks(from, st);
+        if (n > 0) for (const u of rest) addStatus(r, u, st, n);
+      }
+      return;
+    }
+    case 'mark': {
+      const has = (c: CardInst): boolean =>
+        op.flag === 'ethereal'
+          ? isEthereal(cardDef(r.db, c.card), c)
+          : op.flag === 'retain'
+            ? !!cardDef(r.db, c.card).retain || !!c.retain
+            : false;
+      const pool = side.hand.filter((c) => !has(c) && !cardDef(r.db, c.card).unplayable);
+      if (!pool.length) return;
+      const c = pool[nextInt(r.s.rng, pool.length)] as CardInst;
+      if (op.flag === 'ethereal') c.ethereal = true;
+      else if (op.flag === 'retain') c.retain = true;
+      else c.replay = (c.replay ?? 0) + 1;
+      if (op.costUp) c.costUp = (c.costUp ?? 0) + op.costUp;
+      r.ev.push({ type: 'transform', side: side.id, card: c.id, def: c.card });
+      return;
+    }
+    case 'costTax':
+      side.costTax = (side.costTax ?? 0) + op.amount;
+      return;
   }
+}
+
+/**
+ * Raise (the Necrobinder copy's Summon N): a companion of `unit` rises with `hp` max HP while a slot is free; with every slot
+ * taken, the weakest companion (least max HP) gains that much max HP and HP instead, so a Raise is never wasted.
+ */
+function raiseAlly(r: Run, sd: SideState, unit: string, hp: number, actor: Unit): void {
+  if (hp <= 0 || sd.hero === null) return;
+  const crew = sd.units.filter((u) => u.kind !== 'hero');
+  if (crew.length < allyCap(r.db, sd)) {
+    const u = spawn(r, sd, unit, false);
+    if (!u) return;
+    u.maxHp = u.hp = hp;
+    // (the summon event carries only the def: the screen learns its real HP from this)
+    r.ev.push({ type: 'heal', target: u.id, amount: 0, hp: u.hp, maxHp: u.maxHp });
+    const lead = heroOf(sd);
+    const given = lead
+      ? Math.floor(stacks(lead, 'might') * (traitOf(r, sd.id)?.shareMight ?? 0))
+      : 0;
+    if (given > 0) addStatus(r, u, 'might', given);
+    fireSnare(r, other(sd.id), { on: 'foeSummons', summoned: u });
+    if (actor.kind === 'hero') fireTriggers(r, sd, 'summon');
+    return;
+  }
+  const alive = crew.filter((u) => u.hp > 0);
+  if (!alive.length) return;
+  const weak = alive.reduce((m, u) => (u.maxHp < m.maxHp ? u : m));
+  weak.maxHp += hp;
+  weak.hp += hp;
+  r.ev.push({ type: 'heal', target: weak.id, amount: hp, hp: weak.hp, maxHp: weak.maxHp });
 }
 
 // --- runes -----------------------------------------------------------------------------------------------------------
@@ -1237,6 +1476,7 @@ function drawCards(r: Run, sd: SideState, n: number): void {
       sd.hand.push(c);
       r.ev.push({ type: 'draw', side: sd.id, card: c.id, def: c.card });
       sd.drawn++;
+      sd.drawnTurn = (sd.drawnTurn ?? 0) + 1;
       fireTriggers(r, sd, 'draw', { drawn: c });
     }
   }
@@ -1381,8 +1621,9 @@ function playFree(
     sd.played++;
     if (cd.kind === 'attack') sd.attacksPlayed++;
     if (cd.kind === 'skill') sd.skillsPlayed++;
-    fireTriggers(r, sd, 'play', { card: cd, target, inst });
-  } else finishCard(r, sd, inst, cd, target);
+    countPlayed(sd, cd, inst);
+    fireTriggers(r, sd, 'play', { card: cd, target, inst, cost: 0 });
+  } else finishCard(r, sd, inst, cd, target, 0);
 }
 
 /** Powers: run every trigger of `sd` for `when` (for 'play', only those that match the card). */
@@ -1399,6 +1640,10 @@ function fireTriggers(
     /** the card just played / just drawn */
     inst?: CardInst;
     drawn?: CardInst;
+    /** in an 'allyHurt' trigger: the HP lost */
+    lost?: number;
+    /** in a 'play' trigger: what the card cost */
+    cost?: number;
   } = {},
 ): void {
   const played = ctx.card;
@@ -1408,10 +1653,22 @@ function fireTriggers(
   for (const p of [...sd.powers]) {
     if (r.s.winner) break;
     if (p.when !== when) continue;
+    // (a power that fired once already is gone; another trigger in this loop may have removed it)
+    if (!sd.powers.includes(p)) continue;
     if (when === 'play' && played) {
       if (p.filter && p.filter !== played.kind) continue;
       if (p.tag && !played.tags?.includes(p.tag)) continue;
+      if (p.minCost !== undefined && (ctx.cost ?? played.cost) < p.minCost) continue;
+      if (p.ethereal && !isEthereal(played, ctx.inst)) continue;
     }
+    if (when === 'draw' && p.ethereal) {
+      const d = ctx.drawn ? r.db.cards[ctx.drawn.card] : undefined;
+      if (!d || !isEthereal(d, ctx.drawn)) continue;
+    }
+    // a pinned power aims at the unit it was played on, and does nothing once that unit is gone (Oblivion)
+    const pinned = p.target ? findUnit(r.s, p.target) : undefined;
+    if (p.target && (!pinned || pinned.hp <= 0)) continue;
+    if (p.from && ctx.inst?.id === p.from) continue;
     if (when === 'stance' && p.stance && p.stance !== ctx.stance) continue;
     // an Aura that answers "an ally dies" by striking its attacker does nothing when nothing attacked it (a sacrifice, a Trap, Doom)
     if (
@@ -1420,14 +1677,17 @@ function fireTriggers(
       p.ops.some((o) => 'to' in o && (o as { to?: string }).to === 'attacker')
     )
       continue;
+    // (a power that fires once is gone as it fires: Invoke's "next turn")
+    if (p.once) sd.powers = sd.powers.filter((x) => x !== p);
     runOps(
       r,
       mkAct(hero, {
-        target: ctx.target ?? null,
+        target: pinned ?? ctx.target ?? null,
         attacker: ctx.attacker ?? null,
         healed: ctx.healed ?? 0,
         played: ctx.inst ?? null,
         drawn: ctx.drawn ?? null,
+        lost: ctx.lost ?? 0,
       }),
       p.ops,
     );
@@ -1492,6 +1752,9 @@ function reap(r: Run): void {
     if (!dead.length) continue;
     sd.units = sd.units.filter((u) => u.hp > 0);
     for (const u of dead) r.ev.push({ type: 'died', unit: u.id });
+    // (the Necrobinder copy: Melancholy counts every death, on either side)
+    for (const s2 of ['a', 'b'] as const)
+      r.s.sides[s2].deaths = (r.s.sides[s2].deaths ?? 0) + dead.length;
     // an ally that falls is remembered (Revive) and its owner's Auras hear about it
     const fell = dead.filter((u) => u.kind === 'ally');
     for (const u of fell) (sd.fallen ??= []).push(u.def);
@@ -1588,7 +1851,8 @@ function chooseIntent(r: Run, u: Unit): void {
 
 function actAlly(r: Run, u: Unit): void {
   const d = def(r, u.def);
-  if (d.brain.kind !== 'ally' || u.hp <= 0) return;
+  // (a companion with nothing to do on its own, such as a Bone Thrall, does not act at all)
+  if (d.brain.kind !== 'ally' || u.hp <= 0 || d.brain.act.length === 0) return;
   const front = r.s.sides[other(u.side)].units.find((x) => x.hp > 0) ?? null;
   r.ev.push({ type: 'act', unit: u.id, move: null });
   runOps(r, mkAct(u, { target: front }), d.brain.act);
@@ -1720,6 +1984,11 @@ function beginHeroTurn(r: Run, side: Side): void {
   sd.drawLocked = false;
   sd.barrierDoubled = false;
   sd.calmPaid = false;
+  // (the Necrobinder copy's counters for the turn)
+  sd.allyStrikes = 0;
+  sd.doomedTurn = 0;
+  sd.playedTurn = [];
+  sd.costTax = 0;
   // the second PvP player gets a small head start on their first turn
   const first = r.s.mode === 'pvp' && side === 'b' && r.s.turn === 2;
   // Mana owed from a borrowed turn comes off the top, but a turn never starts below 0
@@ -1731,6 +2000,8 @@ function beginHeroTurn(r: Run, side: Side): void {
   sd.nextDraw = 0;
   r.ev.push({ type: 'mana', side, mana: sd.mana });
   drawCards(r, sd, sd.handSize + (first ? 1 : 0) + extraDraw);
+  // (cards drawn "during your turn" are the ones after the opening hand: Death March)
+  sd.drawnTurn = 0;
   const hero = heroOf(sd);
   if (!hero) return;
   const opening = r.s.turn === (side === 'a' ? 1 : 2);
@@ -1799,6 +2070,7 @@ function decay(r: Run, side: Side): void {
     if (ritual > 0) addStatus(r, u, 'might', ritual);
     if (stacks(u, 'ghostly') > 0) addStatus(r, u, 'ghostly', -1);
     if (stacks(u, 'brittle') > 0) addStatus(r, u, 'brittle', -1);
+    if (stacks(u, 'debilitated') > 0) addStatus(r, u, 'debilitated', -1);
     // (a Stun that landed during this turn waits for the next: DECISIONS #310)
     if (u.stunFresh) delete u.stunFresh;
     else if (stacks(u, 'stunned') > 0) addStatus(r, u, 'stunned', -1);
@@ -1864,8 +2136,9 @@ function endTurn(r: Run): void {
   const holdAll = !!hero && stacks(hero, 'holdfast') > 0;
   for (const c of hand) {
     const cd = cardDef(r.db, c.card);
-    if (cd.ethereal && !cd.retain) exhaustCard(r, sd, c);
-    else if (cd.retain || holdAll) keep.push(c);
+    const held = !!cd.retain || !!c.retain;
+    if (isEthereal(cd, c) && !held) exhaustCard(r, sd, c);
+    else if (held || holdAll) keep.push(c);
     else {
       sd.discard.push(c);
       r.ev.push({ type: 'discard', side, card: c.id, def: c.card });
@@ -2040,16 +2313,24 @@ function legalFoes(r: Run, side: Side, cd: CardDef): Unit[] {
 /** What a card costs right now: its cost, any change to this copy, and free skills while Unbound. */
 export function costOf(
   db: CombatDb,
-  sd: Pick<SideState, 'units' | 'attacksPlayed'>,
-  c: Pick<CardInst, 'card' | 'costMod'>,
+  sd: Pick<SideState, 'units' | 'attacksPlayed'> & Partial<Pick<SideState, CostCounter>>,
+  c: Pick<CardInst, 'card' | 'costMod'> & Partial<CardInst>,
 ): number {
   const cd = cardDef(db, c.card);
   const hero = sd.units.find((u) => u.kind === 'hero');
   if (cd.kind === 'skill' && hero && stacks(hero, 'unbound') > 0) return 0;
   if (cd.kind === 'attack' && hero && stacks(hero, 'freeattack') > 0) return 0;
+  // (the Necrobinder copy) Veilpiercer: the next Fleeting card is free; Flatten: free once a companion has struck
+  if (hero && stacks(hero, 'freeethereal') > 0 && isEthereal(cd, c)) return 0;
+  if (cd.freeIf && sideCount(sd, cd.freeIf.by) >= cd.freeIf.atLeast) return 0;
   return Math.max(
     0,
-    cd.cost + (c.costMod ?? 0) - (cd.cheaperPerAttack ?? 0) * (sd.attacksPlayed ?? 0),
+    cd.cost +
+      (c.costMod ?? 0) +
+      (c.costUp ?? 0) +
+      (sd.costTax ?? 0) -
+      (cd.cheaperPerAttack ?? 0) * (sd.attacksPlayed ?? 0) -
+      (cd.cheaperPer ? Math.floor(cd.cheaperPer.mult * sideCount(sd, cd.cheaperPer.by)) : 0),
   );
 }
 
@@ -2155,7 +2436,14 @@ const unbound = (sd: SideState): boolean => {
   return !!h && stacks(h, 'unbound') > 0;
 };
 
-function finishCard(r: Run, sd: SideState, inst: CardInst, cd: CardDef, target: Unit | null): void {
+function finishCard(
+  r: Run,
+  sd: SideState,
+  inst: CardInst,
+  cd: CardDef,
+  target: Unit | null,
+  paid?: number,
+): void {
   if (cd.kind === 'power') {
     // a Power stays in effect for the fight and leaves the deck (without counting as "exhausted")
     sd.exhausted.push(inst);
@@ -2165,7 +2453,29 @@ function finishCard(r: Run, sd: SideState, inst: CardInst, cd: CardDef, target: 
   sd.played++;
   if (cd.kind === 'attack') sd.attacksPlayed++;
   if (cd.kind === 'skill') sd.skillsPlayed++;
-  fireTriggers(r, sd, 'play', { card: cd, target, inst });
+  countPlayed(sd, cd, inst);
+  const cost = paid ?? cd.cost + (inst.costUp ?? 0);
+  fireTriggers(r, sd, 'play', { card: cd, target, inst, cost });
+  recallOnCost(r, sd, cost, inst.id);
+}
+
+/** (the Necrobinder copy) what a played card adds to the turn's and fight's counters: Fetch's "first time", Fleeting cards played */
+function countPlayed(sd: SideState, cd: CardDef, inst: CardInst): void {
+  (sd.playedTurn ??= []).push(cd.id.replace(/\+$/, ''));
+  if (isEthereal(cd, inst)) sd.etherealPlayed = (sd.etherealPlayed ?? 0) + 1;
+}
+
+/** (the Necrobinder copy) Right Hand Hand: cards that come back from the discard pile when a card of at least their cost is played */
+function recallOnCost(r: Run, sd: SideState, cost: number, played: string): void {
+  for (const c of [...sd.discard]) {
+    // (the card just played never calls itself back)
+    if (c.id === played) continue;
+    const d = r.db.cards[c.card];
+    if (!d?.recallOnCost || cost < d.recallOnCost || sd.hand.length >= MAX_HAND) continue;
+    sd.discard = sd.discard.filter((x) => x.id !== c.id);
+    sd.hand.push(c);
+    r.ev.push({ type: 'draw', side: sd.id, card: c.id, def: c.card });
+  }
 }
 
 function playCard(r: Run, action: Extract<Action, { type: 'play' }>): void {
@@ -2200,8 +2510,18 @@ function playCard(r: Run, action: Extract<Action, { type: 'play' }>): void {
   }
   sd.hand.splice(i, 1);
   const freeAttack = cd.kind === 'attack' && stacks(hero, 'freeattack') > 0;
-  sd.mana -= costOf(r.db, sd, inst);
+  // (the Necrobinder copy) Veilpiercer's free Fleeting card is spent only when it is what makes the card free
+  let freeEthereal = !freeAttack && isEthereal(cd, inst) && stacks(hero, 'freeethereal') > 0;
+  if (freeEthereal) {
+    const held = stacks(hero, 'freeethereal');
+    delete hero.statuses.freeethereal;
+    freeEthereal = costOf(r.db, sd, inst) > 0;
+    hero.statuses.freeethereal = held;
+  }
+  const paid = costOf(r.db, sd, inst);
+  sd.mana -= paid;
   if (freeAttack) addStatus(r, hero, 'freeattack', -1);
+  if (freeEthereal) addStatus(r, hero, 'freeethereal', -1);
   // a discount (Cheapen, a free Discover) is spent on the play: a card made free for good would loop for ever
   delete inst.costMod;
   let x = 0;
@@ -2236,13 +2556,23 @@ function playCard(r: Run, action: Extract<Action, { type: 'play' }>): void {
   if (r.s.pending) {
     r.s.pending.finish = inst;
     r.s.pending.again = again;
+    r.s.pending.paid = cd.x ? x : paid;
     return;
   }
   if (again && !r.s.winner) {
     addStatus(r, hero, again, -1);
     runOps(r, mkAct(hero, { target, card: cd, inst, x }), cd.effects);
   }
-  finishCard(r, sd, inst, cd, target);
+  // (the Necrobinder copy) Replay, given by Transfigure: the copy is played that many more times (without asking for choices)
+  for (let k = 0; k < (inst.replay ?? 0) && !r.s.winner && !r.s.pending; k++)
+    runOps(r, mkAct(hero, { target, card: cd, inst, x }), cd.effects);
+  const asked = r.s.pending as CombatState['pending'];
+  if (asked) {
+    asked.finish = inst;
+    asked.paid = cd.x ? x : paid;
+    return;
+  }
+  finishCard(r, sd, inst, cd, target, cd.x ? x : paid);
 }
 
 /** The answer to a pending choice: carry it out, then let the card finish. */
@@ -2286,6 +2616,7 @@ function pickCards(r: Run, action: Extract<Action, { type: 'pick' }>): void {
         sd.hand.push(c);
         r.ev.push({ type: 'draw', side, card: c.id, def: c.card });
         sd.drawn++;
+        sd.drawnTurn = (sd.drawnTurn ?? 0) + 1;
         fireTriggers(r, sd, 'draw');
       }
     }
@@ -2310,6 +2641,7 @@ function pickCards(r: Run, action: Extract<Action, { type: 'pick' }>): void {
   if (more) {
     more.finish = fin;
     more.again = p.again ?? null;
+    if (p.paid !== undefined) more.paid = p.paid;
     return;
   }
   if (p.again && hero && cd && !r.s.winner) {
@@ -2320,7 +2652,7 @@ function pickCards(r: Run, action: Extract<Action, { type: 'pick' }>): void {
       cd.effects,
     );
   }
-  if (fin && cd) finishCard(r, sd, fin, cd, findUnit(r.s, p.target) ?? null);
+  if (fin && cd) finishCard(r, sd, fin, cd, findUnit(r.s, p.target) ?? null, p.paid);
 }
 
 function usePotion(r: Run, action: Extract<Action, { type: 'potion' }>): void {
