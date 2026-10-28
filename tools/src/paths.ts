@@ -12,7 +12,7 @@ const POOLS: Record<HeroId, string> = {
   trickster: 'trickster',
   assassin: 'assassin',
   shaman: 'shaman',
-  barbarian: 'barbarian',
+  monk: 'monk',
   spellblade: 'spellblade',
   necromancer: 'necromancer',
   drunkard: 'drunkard',
@@ -56,7 +56,7 @@ const HEADS: Record<HeroId, [RegExp, number | null][]> = {
     [/rites/i, 2],
     [/basics|glue/i, null],
   ],
-  barbarian: [
+  monk: [
     [/fury/i, 0],
     [/flow/i, 1],
     [/radiant/i, 2],
@@ -159,7 +159,7 @@ const BY_ID: Record<string, number> = {
   masquerade: 2,
   // assassin: none (his Legendaries went with his older cards: the Silent's list, DECISIONS #368)
   // shaman: none (his cards sit under their own headings: he is the Defect's list now)
-  // barbarian
+  // monk (was barbarian)
   'eye-of-the-storm': 0,
   'perfect-balance': 1,
   'still-flame-ascendant': 2,

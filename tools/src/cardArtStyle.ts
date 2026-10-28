@@ -31,7 +31,7 @@ export const OWN_LOOK: Record<string, string> = {
   trickster: 'Vesper, a masked trapper with teal glow',
   assassin: 'Sylas, a flamboyant rogue throwing teal-glowing knives',
   shaman: 'Ilvane, a spirit shaman who calls glowing totems',
-  barbarian: 'Sehra, a flame-bound warrior with twin scimitars',
+  monk: 'Sehra, a flame-bound warrior with twin scimitars',
   spellblade: 'Obsidia, a queen of black volcanic glass with floating shards',
   necromancer: 'Mire, a spectral green-eyed reaper with thralls',
   drunkard: 'KP, a boisterous drunk dwarf with a shotgun and bottles',

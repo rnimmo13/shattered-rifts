@@ -241,7 +241,7 @@ describe('pool shape (docs/09_ROSTER.md §1)', () => {
         (o) => o.op === op || (o.op === 'power' && o.ops.some((x) => x.op === op)),
       );
     owns((c) => uses(c, 'channel') || uses(c, 'evoke') || uses(c, 'runeSlots'), 'shaman');
-    owns((c) => uses(c, 'stance'), 'barbarian');
+    owns((c) => uses(c, 'stance'), 'monk');
     owns((c) => c.starCost !== undefined, 'spellblade');
     // (sharpening a weapon is theirs; a card that grows only itself, like Gathering Storm, is not: DECISIONS #353)
     const sharpensAnother = (c: CardDef) =>

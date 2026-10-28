@@ -114,7 +114,7 @@ export const EMBLEMS: Record<string, Emblem> = {
       'M46 22L50 26L34 38L30 34Z',
     ],
   },
-  // Sehra: two curved scimitars crossed (the Barbarian's icon)
+  // Sehra: two curved scimitars crossed (the Monk's icon)
   scimitars: {
     f: [
       'M56 6C48 20 34 34 16 48L21 53C40 42 54 26 56 6Z',
@@ -299,7 +299,7 @@ export const HERO_EMBLEM: Record<string, string> = {
   trickster: 'mask',
   assassin: 'daggers',
   shaman: 'totem',
-  barbarian: 'scimitars',
+  monk: 'scimitars',
   spellblade: 'shard',
   necromancer: 'skull',
   drunkard: 'bottlepane',
@@ -312,7 +312,7 @@ export const HERO_COLOR: Record<string, string> = {
   trickster: '#b99aff',
   assassin: '#e0384f',
   shaman: '#7fd08a',
-  barbarian: '#ffb060',
+  monk: '#ffb060',
   spellblade: '#b9c3d9', // Obsidia: obsidian and steel, so no orange (that is KP's)
   necromancer: '#9be86a',
   drunkard: '#ff9a3c',

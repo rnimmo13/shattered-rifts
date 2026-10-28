@@ -339,7 +339,7 @@ export const TRIMMED_CARDS: Readonly<Record<string, string>> = {
   gloomwave: 'harmonic-wave',
   'deep-charge': 'void-pulse',
   glyphstorm: 'shard-chorus',
-  // barbarian
+  // monk (was barbarian)
   'chanted-blow': 'sunlit-blade',
   'ember-jab': 'flurry-of-palms',
   'war-breath': 'rising-ire',

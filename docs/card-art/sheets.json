@@ -842,8 +842,8 @@
   ]
  },
  {
-  "name": "barbarian-01",
-  "hero": "barbarian",
+  "name": "monk-01",
+  "hero": "monk",
   "cols": 3,
   "rows": 3,
   "ids": [
@@ -859,8 +859,8 @@
   ]
  },
  {
-  "name": "barbarian-02",
-  "hero": "barbarian",
+  "name": "monk-02",
+  "hero": "monk",
   "cols": 3,
   "rows": 3,
   "ids": [
@@ -876,8 +876,8 @@
   ]
  },
  {
-  "name": "barbarian-03",
-  "hero": "barbarian",
+  "name": "monk-03",
+  "hero": "monk",
   "cols": 3,
   "rows": 3,
   "ids": [
@@ -893,8 +893,8 @@
   ]
  },
  {
-  "name": "barbarian-04",
-  "hero": "barbarian",
+  "name": "monk-04",
+  "hero": "monk",
   "cols": 3,
   "rows": 3,
   "ids": [
@@ -910,8 +910,8 @@
   ]
  },
  {
-  "name": "barbarian-05",
-  "hero": "barbarian",
+  "name": "monk-05",
+  "hero": "monk",
   "cols": 3,
   "rows": 3,
   "ids": [
@@ -927,8 +927,8 @@
   ]
  },
  {
-  "name": "barbarian-06",
-  "hero": "barbarian",
+  "name": "monk-06",
+  "hero": "monk",
   "cols": 3,
   "rows": 3,
   "ids": [
@@ -944,8 +944,8 @@
   ]
  },
  {
-  "name": "barbarian-07",
-  "hero": "barbarian",
+  "name": "monk-07",
+  "hero": "monk",
   "cols": 3,
   "rows": 3,
   "ids": [
@@ -1679,8 +1679,8 @@
   ]
  },
  {
-  "name": "barbarian-m01",
-  "hero": "barbarian",
+  "name": "monk-m01",
+  "hero": "monk",
   "cols": 3,
   "rows": 3,
   "ids": [
@@ -1696,8 +1696,8 @@
   ]
  },
  {
-  "name": "barbarian-m02",
-  "hero": "barbarian",
+  "name": "monk-m02",
+  "hero": "monk",
   "cols": 3,
   "rows": 3,
   "ids": [

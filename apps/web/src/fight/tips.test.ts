@@ -24,7 +24,7 @@ describe('teaching tips', () => {
     const seen = new Set(['basics']);
     expect(nextTip(viewOf('shaman'), { ...ctx, usesRunes: true }, seen)?.id).toBe('runes');
     expect(nextTip(viewOf('spellblade'), { ...ctx, usesStars: true }, seen)?.id).toBe('lumen');
-    expect(nextTip(viewOf('barbarian'), ctx, seen)?.id).toBe('stance');
+    expect(nextTip(viewOf('monk'), ctx, seen)?.id).toBe('stance');
     expect(nextTip(viewOf('engineer'), ctx, seen)?.id).toBe('ally');
     expect(nextTip(viewOf('necromancer'), ctx, seen)?.id).toBe('ally');
   });
@@ -37,6 +37,6 @@ describe('teaching tips', () => {
       expect(r.text.length).toBeGreaterThan(30);
     }
     const seen = new Set(ids);
-    expect(nextTip(viewOf('barbarian'), { usesRunes: true, usesStars: true }, seen)).toBeNull();
+    expect(nextTip(viewOf('monk'), { usesRunes: true, usesStars: true }, seen)).toBeNull();
   });
 });

@@ -1,7 +1,7 @@
 // `pnpm audit:balance`: the balance audit (docs/BALANCE.md, "Balance audit"). Decks are drafted the way a person drafts (one build path, best card
 // on offer, Strikes cut, upgrades and Boons by depth: tools/src/audit/decks.ts), played by the beam-search bot, on every core.
 //
-//   pnpm audit:balance -- burst  [--seeds 12] [--heroes barbarian,knight]   the most damage a deck can deal on turn 1 and turn 3 (a combo search)
+//   pnpm audit:balance -- burst  [--seeds 12] [--heroes monk,knight]   the most damage a deck can deal on turn 1 and turn 3 (a combo search)
 //   pnpm audit:balance -- ladder [--decks 4] [--levels t1s1,t5]             each deck level against its own tier: win %, turns, HP lost, peak round
 //   pnpm audit:balance -- matrix [--decks 3] [--tiers 1,2,3,5,10,15,20]     deck level x tier: Warden + Vorthax win % (is a tier an accomplishment?)
 //

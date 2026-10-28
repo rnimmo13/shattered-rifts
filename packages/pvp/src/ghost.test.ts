@@ -40,7 +40,7 @@ describe('the smart bot that pilots a ghost', () => {
       ['trickster', 'knight'],
       ['assassin', 'engineer'],
       ['spellblade', 'hunter'],
-      ['barbarian', 'necromancer'],
+      ['monk', 'necromancer'],
     ] as const)
       for (const seat of ['a', 'b'] as const) {
         const m = new Match(`ghost-vs-${x}-${y}-${seat}`, entry(x), entry(y), 0);

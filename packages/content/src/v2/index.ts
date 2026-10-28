@@ -30,7 +30,7 @@ export type HeroId =
   | 'trickster'
   | 'assassin'
   | 'shaman'
-  | 'barbarian'
+  | 'monk'
   | 'spellblade'
   | 'necromancer'
   | 'drunkard';
@@ -265,10 +265,10 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
       'Some of your cards make status cards (Haze, Muck, Scorch, Drain, Wound) that clutter your deck; others pay off whenever you make one.',
     ],
   },
-  barbarian: {
+  monk: {
     realm: 'aurelion',
     persona: 'Sehra',
-    role: 'Barbarian',
+    role: 'Monk',
     trait: {
       name: 'Inner Fire',
       // (its 2 Barrier went: a Flow deck changes stance two or three times a turn, DECISIONS #390)
@@ -276,8 +276,8 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
       triggers: [on('stance', [status('mantra', 1)])],
     },
     hero: {
-      id: 'barbarian',
-      name: 'Barbarian',
+      id: 'monk',
+      name: 'Monk',
       maxHp: 82,
       mana: 3,
       handSize: 5,
@@ -285,7 +285,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     },
     starter: [...rep('strike', 4), ...rep('defend', 4), 'kindle-fury', 'still-guard'],
     blurb:
-      'A barbarian who fights in stances. Starts every fight Serene, and every stance she enters stokes her Fervor towards Radiance.',
+      'A monk who fights in stances. Starts every fight Serene, and every stance she enters stokes her Fervor towards Radiance.',
     mechanics: ['Stances', 'Fervor', 'Foresee', 'Self-damage'],
     buildPaths: [
       'Fury: get in, hit hard, live through it',
@@ -649,7 +649,9 @@ export const LEGACY_HERO_IDS: Readonly<Record<string, HeroId>> = {
   ilvane: 'shaman',
   // (the totemist became the Shaman, DECISIONS #371)
   totemist: 'shaman',
-  sehra: 'barbarian',
+  sehra: 'monk',
+  // (the Barbarian became the Monk, DECISIONS #391)
+  barbarian: 'monk',
   astra: 'spellblade',
   mire: 'necromancer',
   kp: 'drunkard',

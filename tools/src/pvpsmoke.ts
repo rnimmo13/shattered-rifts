@@ -549,7 +549,7 @@ async function board(tag: string): Promise<void> {
   need((await run(2, { hero: 'nobody' })).status === 400, 'an unknown character is refused');
   // a second character is its own place on the board
   need(
-    (await run(1, { run: `second${tag}`, hero: 'barbarian' }))['counted'] === true,
+    (await run(1, { run: `second${tag}`, hero: 'monk' }))['counted'] === true,
     'a second character counts',
   );
   const runs = (await (await fetch(`${http}/pvp/board/runs?period=month`)).json()) as {

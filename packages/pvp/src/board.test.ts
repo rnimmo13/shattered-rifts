@@ -137,12 +137,12 @@ describe('the campaign board with several characters', () => {
     const board = rankRuns([
       run('a', 'knight', 3, 1, 10),
       run('a', 'knight', 1, 2, 5), // an earlier, shorter knight run
-      run('a', 'barbarian', 2, 3, 20),
+      run('a', 'monk', 2, 3, 20),
       run('b', 'hunter', 1, 3, 15),
     ]);
     expect(board.map((s) => [s.name, s.hero])).toEqual([
       ['a', 'knight'],
-      ['a', 'barbarian'],
+      ['a', 'monk'],
       ['b', 'hunter'],
     ]);
   });

@@ -995,7 +995,7 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
           : o.when === 'draw' && o.ethereal
             ? 'Whenever you draw a Fleeting card'
             : o.when === 'stance'
-              ? `Whenever you enter ${o.stance ? sname(o.stance) : 'a stance'}`
+              ? `${o.once ? 'The first time each turn you enter' : 'Whenever you enter'} ${o.stance ? sname(o.stance) : 'a stance'}`
               : o.when === 'evoke'
                 ? `Whenever ${rune ? `${article(rune)} ${rune}` : 'a totem'} awakens`
                 : (o.when === 'created' || o.when === 'draw') && (o.tag || o.filter)

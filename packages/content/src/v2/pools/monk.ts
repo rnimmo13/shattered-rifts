@@ -1,4 +1,5 @@
-// Sehra, the Still Flame (Aurelion). A barbarian of the Gilded Order's silent branch. No companions. Starts the fight Serene.
+// Sehra, the Still Flame (Aurelion). A monk of the Gilded Order's silent branch (the Barbarian until DECISIONS #391). No companions.
+// Starts the fight Serene.
 // Stances (ids calm/wrath/radiant): Serene (leaving it gives 2 Mana, once a turn), Fury (deal double, take 50% more), Radiant (deal
 // triple, ends with your turn). Fervor (id mantra) builds to 10, then you enter Radiant.
 // Three build paths (DECISIONS #255):
@@ -27,9 +28,9 @@ import {
   lose,
 } from '../build';
 
-const s = pool('barbarian', 'aurelion');
+const s = pool('monk', 'aurelion');
 
-export const BARBARIAN: CardDef[] = [
+export const MONK: CardDef[] = [
   // --- basics ---
   s('basic', 'kindle-fury', 'Kindle Fury', 'attack', 2, 'foe', [dmg(9), stance('wrath')]),
   // (7 Barrier and Serene for 1 Mana was the Watcher's 2-cost Vigilance at half price: DECISIONS #390)
@@ -60,7 +61,10 @@ export const BARBARIAN: CardDef[] = [
   s('rare', 'wrath-incarnate', 'Wrath Incarnate', 'power', 2, 'none', [
     on('turnStart', [stance('wrath')]),
   ]),
-  s('common', 'red-mist', 'Red Mist', 'attack', 1, 'none', [dmg(4, 'allFoes'), stance('wrath')]),
+  s('common', 'red-mist', 'Burning Breath', 'attack', 1, 'none', [
+    dmg(4, 'allFoes'),
+    stance('wrath'),
+  ]),
   s('common', 'flurry-of-palms', 'Flurry of Palms', 'attack', 0, 'foe', [dmg(3, 'target', 2)]),
   s('uncommon', 'wheel-kick', 'Spinning Heel', 'attack', 2, 'foe', [
     dmg(12),
@@ -93,7 +97,7 @@ export const BARBARIAN: CardDef[] = [
   s(
     'uncommon',
     'berserk-tide',
-    'Berserk Tide',
+    'Storm of Fists',
     'attack',
     0,
     'foe',
@@ -110,7 +114,7 @@ export const BARBARIAN: CardDef[] = [
   s(
     'uncommon',
     'cornered-beast',
-    'Cornered Beast',
+    'Coiled Serpent',
     'snare',
     1,
     'none',
@@ -265,6 +269,8 @@ export const BARBARIAN: CardDef[] = [
   // (it makes more Mana than it costs, so it Consumes: the costing guide's rule for Mana cards)
   s('uncommon', 'deep-breath', 'Gather Breath', 'skill', 1, 'none', [manaNext(2), draw(2)], {
     exhaust: true,
+    // (the "+" draws one more, not more Mana as well)
+    up: { effects: [manaNext(2), draw(3)] },
   }),
   s('common', 'prostrate', 'Kneel', 'skill', 0, 'none', [status('mantra', 2), draw(1)], {
     exhaust: true,
@@ -322,7 +328,9 @@ export const BARBARIAN: CardDef[] = [
     { up: { effects: [dmg(11), status('exposed', 1, 'target')] } },
   ),
   s('uncommon', 'inner-sight', 'Inner Sight', 'skill', 1, 'none', [barrier(5), scry(4)]),
-  s('common', 'quick-palms', 'Quick Palms', 'attack', 0, 'foe', [dmg(4), status('mantra', 1)]),
+  s('common', 'quick-palms', 'Quick Palms', 'attack', 0, 'foe', [dmg(4), status('mantra', 1)], {
+    up: { effects: [dmg(7), status('mantra', 1)] },
+  }),
 
   // --- more glue: uncommons and rares for any build path (DECISIONS #339) ---
   s('rare', 'spirit-shield', "Mountain's Stillness", 'skill', 2, 'none', [
@@ -338,7 +346,7 @@ export const BARBARIAN: CardDef[] = [
     dmg(6, 'target', 2),
     lose(1),
   ]),
-  s('uncommon', 'blood-on-the-sand', 'Blood on the Sand', 'power', 1, 'none', [
+  s('uncommon', 'blood-on-the-sand', 'Iron Body', 'power', 1, 'none', [
     on('stance', [lose(2), status('vigor', 3)], { stance: 'wrath' }),
   ]),
   s('uncommon', 'open-palm', 'Open Palm', 'attack', 1, 'foe', [

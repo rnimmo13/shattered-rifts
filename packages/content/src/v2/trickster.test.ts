@@ -83,7 +83,7 @@ describe('the Trickster costing pass', () => {
     expect(text('mirror-veil')).toContain('Cancel that hit.');
   });
 
-  it("an HP-lost Trap (the Barbarian's Cornered Beast) still names the attacker", () => {
+  it("an HP-lost Trap (the Monk's Coiled Serpent) still names the attacker", () => {
     expect(cardText(db, db.cards['cornered-beast']!)).toContain('to the attacker');
   });
 

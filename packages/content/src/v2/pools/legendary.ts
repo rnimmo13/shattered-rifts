@@ -8,7 +8,7 @@ import { ACT, barrier, dmg, forge, on, pool, stance, status, summon } from '../b
 
 const k = pool('hunter', 'wyldmaw');
 const v = pool('trickster', 'umbral');
-const s = pool('barbarian', 'aurelion');
+const s = pool('monk', 'aurelion');
 const p = pool('drunkard', 'midden');
 
 // (the Engineer's Drone Uprising was retired into Drone Carrier by the costing pass, DECISIONS #383)

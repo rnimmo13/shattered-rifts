@@ -2,7 +2,7 @@
 
 > Decision log: `DECISIONS.md` #95-#97 (ids: #190). Status of the build is at the bottom.
 
-**Internal ids are the class** (DECISIONS #190), so a name or a gender can change without touching code: knight (Valeria), engineer (Rivet), hunter (Kesh), trickster (Vesper; was trapper, #372), assassin (Sylas), shaman (Ilvane; was totemist, #371), barbarian (Sehra), spellblade (Obsidia), necromancer (Mire), drunkard (KP). Players only ever see the names in brackets. Older ids (maren, rivet, kesh, vesper, quill, ilvane, sehra, astra, mire, kp) are still read from saves, Vault decks and server rows through `canonicalHero` (`@sr/content/v2`).
+**Internal ids are the class** (DECISIONS #190), so a name or a gender can change without touching code: knight (Valeria), engineer (Rivet), hunter (Kesh), trickster (Vesper; was trapper, #372), assassin (Sylas), shaman (Ilvane; was totemist, #371), monk (Sehra; was barbarian, #391), spellblade (Obsidia), necromancer (Mire), drunkard (KP). Players only ever see the names in brackets. Older ids (maren, rivet, kesh, vesper, quill, ilvane, sehra, astra, mire, kp) are still read from saves, Vault decks and server rows through `canonicalHero` (`@sr/content/v2`).
 
 The goal (Robert, 2026-10-23): reach 8-10 characters, each with **real choices at the reward screen**, covering the same
 mechanics Slay the Spire's classes do. Silent works because her pool has three build paths (poison, shivs, discard) and a good
@@ -73,7 +73,7 @@ Sigils (a passive on turn 1, so each run has an identity). The original four use
 fight with a Dagger in hand); **Ilvane** *Primed* (start each fight with one Hawk totem); **Sehra** *Centred* (start each fight in
 Serene); **Obsidia** *Kindled* (3 Arcana at turn start; starts with 3 Arcana and an Obsidian Blade).
 
-Role tags (what kind of fighter, shown on every character screen): Maren **Knight**, Rivet **Engineer**, Kesh **Hunter**, Vesper **Trickster**, Quill **Assassin**, Ilvane **Shaman**, Sehra **Barbarian**, Obsidia **Spellblade**, Mire **Necromancer**. One word, unique per character (`Riftwalker.role`, tested).
+Role tags (what kind of fighter, shown on every character screen): Maren **Knight**, Rivet **Engineer**, Kesh **Hunter**, Vesper **Trickster**, Quill **Assassin**, Ilvane **Shaman**, Sehra **Monk** (was Barbarian, #391), Obsidia **Spellblade**, Mire **Necromancer**. One word, unique per character (`Riftwalker.role`, tested).
 
 ## 3. Engine pieces (all generic ops; never a card id in engine code)
 

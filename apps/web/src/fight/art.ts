@@ -22,7 +22,7 @@ const HERO: Record<string, [Archetype, Realm]> = {
   trickster: ['cultist', 'umbral'],
   assassin: ['wanderer', 'umbral'],
   shaman: ['mage', 'nexus'],
-  barbarian: ['cleric', 'aurelion'],
+  monk: ['cleric', 'aurelion'],
   spellblade: ['mage', 'starfall'],
   necromancer: ['shade', 'gloomfen'],
   drunkard: ['engineer', 'midden'],

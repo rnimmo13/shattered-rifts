@@ -128,7 +128,7 @@ const SCENES: Record<string, (g: G, W: number, H: number, c: SceneColors, r: R) 
     });
   },
   // temple pillars on a mountainside, the sun behind a peak
-  barbarian(g, W, H, c, r) {
+  monk(g, W, H, c, r) {
     lamp(g, c.glow, W * (0.3 + r() * 0.4), H * 0.42, 120, 0.35);
     fillPath(g, hexA(c.dark, 0.4), [
       [0, H * 0.75],

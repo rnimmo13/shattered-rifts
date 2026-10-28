@@ -593,9 +593,9 @@ Tokens (made by other cards):
 |---|---|---|---|---|
 | Kindling | 0 | skill | common | Gain 1 Mana. Consume. |
 
-## Barbarian (aurelion, 82 HP)
+## Monk (aurelion, 82 HP)
 
-A barbarian who fights in stances. Starts every fight Serene, and every stance she enters stokes her Fervor towards Radiance.
+A monk who fights in stances. Starts every fight Serene, and every stance she enters stokes her Fervor towards Radiance.
 
 Paths: Fury: get in, hit hard, live through it / Flow: change stance again and again; every change pays / Radiant: build Fervor to 10 for a triple-damage turn
 
@@ -608,7 +608,7 @@ Starter: Strike, Strike, Strike, Strike, Defend, Defend, Defend, Defend, Kindle 
 | Angry Palm | 1 | attack | common | Deal 7 (+6 per Fury) damage. |
 | Ashen Fist | 2 | attack | common | Deal 14 damage. Enter Fury. |
 | Rising Ire | 0 | skill | common | Enter Fury. Draw 1 card. Consume. |
-| Red Mist | 1 | attack | common | Deal 4 damage to ALL enemies. Enter Fury. |
+| Burning Breath | 1 | attack | common | Deal 4 damage to ALL enemies. Enter Fury. |
 | Flurry of Palms | 0 | attack | common | Deal 3 damage 2 times. |
 | Unleashed Roar | 1 | skill | common | Apply 1 Exposed to ALL enemies. Enter Fury. |
 | Centre Yourself | 1 | skill | common | Draw 1 card. Enter Serene. |
@@ -630,8 +630,8 @@ Starter: Strike, Strike, Strike, Strike, Defend, Defend, Defend, Defend, Kindle 
 | Spinning Heel | 2 | attack | uncommon | Deal 12 damage. Apply 2 Exposed. Draw 1 card. |
 | Wrathful Guard | 1 | skill | uncommon | Gain 6 Barrier. Enter Fury. |
 | Hot-Blooded | 1 | attack | uncommon | Deal 4 (+1 per 6% HP missing) damage. Enter Fury. |
-| Berserk Tide | X | attack | uncommon | Deal 4 damage X times. Enter Fury. |
-| Cornered Beast | 1 | trap | uncommon | When you lose 5+ HP at once: Deal 8 damage to the attacker. Gain 4 Primed. Enter Fury. |
+| Storm of Fists | X | attack | uncommon | Deal 4 damage X times. Enter Fury. |
+| Coiled Serpent | 1 | trap | uncommon | When you lose 5+ HP at once: Deal 8 damage to the attacker. Gain 4 Primed. Enter Fury. |
 | Settled Mind | 1 | skill | uncommon | Draw cards equal to 3 times your Serene. Enter Serene. |
 | Unmoved Mind | 2 | aura | uncommon | Whenever you enter a stance: Gain 2 Barrier. Deal 2 damage to a random enemy. |
 | Wheel of Motion | 2 | aura | uncommon | Whenever you enter a stance: Deal 3 damage to ALL enemies. |
@@ -650,13 +650,13 @@ Starter: Strike, Strike, Strike, Strike, Defend, Defend, Defend, Defend, Kindle 
 | Inner Sight | 1 | skill | uncommon | Gain 5 Barrier. Foresee 4. |
 | Held Breath | 1 | skill | uncommon | Gain 1 Holdfast. |
 | Rending Hands | 1 | attack | uncommon | Deal 6 damage 2 times. Lose 1 HP. |
-| Blood on the Sand | 1 | aura | uncommon | Whenever you enter Fury: Lose 2 HP. Gain 3 Primed. |
+| Iron Body | 1 | aura | uncommon | Whenever you enter Fury: Lose 2 HP. Gain 3 Primed. |
 | Open Palm | 1 | attack | uncommon | Deal 5 damage 2 times. Leave your stance. |
 | Shield of Faith | 1 | skill | uncommon | Gain 7 Barrier. Gain 1 Fervor. |
 | Poise | 1 | aura | uncommon | Gain 3 Bracing for the rest of the fight. |
 | Crown of Embers | 1 | skill | uncommon | Gain 6 Primed. Gain 2 Fervor. |
 | Final Account | 2 | attack | rare | Deal 14 (+10 per Fury) damage. |
-| Surge of Ire | 2 | aura | rare | Whenever you enter Fury: Gain 6 Barrier. Draw 1 card. |
+| Surge of Ire | 2 | aura | rare | The first time each turn you enter Fury: Gain 6 Barrier. Draw 1 card. |
 | Rage of Ages | 3 | attack | rare | Deal 8 damage 3 times to ALL enemies. |
 | Wrath Incarnate | 2 | aura | rare | At the start of your turn: Enter Fury. |
 | Rampage of Ire | 2 | aura | rare | Whenever you enter Fury: Deal 6 damage to ALL enemies. |
@@ -1051,7 +1051,7 @@ Tokens (made by other cards):
 - trickster: 84
 - assassin: 82
 - shaman: 83
-- barbarian: 80
+- monk: 80
 - spellblade: 82
 - drunkard: 81
 - necromancer: 85

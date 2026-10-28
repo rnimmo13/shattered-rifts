@@ -31,17 +31,21 @@ export const PATCH_NOTES: PatchNote[] = [
   {
     version: '0.113.0',
     date: '2026-10-28',
-    title: 'The Barbarian, priced',
+    title: 'The Monk, priced',
     summary:
-      'The Barbarian is rebalanced card by card; panels fold on a click again, and the Full Trick waits for the card that earned it.',
+      'The Barbarian is now the Monk, rebalanced card by card; panels fold on a click again, and the Full Trick waits for the card that earned it.',
     notes: [
       {
-        kind: 'balance',
-        text: 'Barbarian: Inner Fire gives 1 Fervor for each stance you enter, and no Barrier. Still Guard gives 3 Barrier. Unmoved Mind, Wheel of Motion and Surge of Ire cost 2 (Surge of Ire answers the first Fury each turn), and Perfect Balance, Eye of the Storm and Bowing Low give less.',
+        kind: 'changed',
+        text: 'The Barbarian is now the Monk: the same fighter and cards, and saved runs carry over. Red Mist, Cornered Beast, Blood on the Sand and Berserk Tide are Burning Breath, Coiled Serpent, Iron Body and Storm of Fists.',
       },
       {
         kind: 'balance',
-        text: 'Barbarian cards that were weak got stronger: Rage of Ages 8 x3 to every enemy, Final Account, Ashes of Restraint, The Offering, Litany, Radiant Heart, Last Rites of the Flame, Thousand Palms and more. All-Seeing costs 2.',
+        text: 'Monk: Inner Fire gives 1 Fervor for each stance you enter, and no Barrier. Still Guard gives 3 Barrier. Unmoved Mind, Wheel of Motion and Surge of Ire cost 2 (Surge of Ire answers the first Fury each turn), and Perfect Balance, Eye of the Storm and Bowing Low give less.',
+      },
+      {
+        kind: 'balance',
+        text: 'Monk cards that were weak got stronger: Rage of Ages 8 x3 to every enemy, Final Account, Ashes of Restraint, The Offering, Litany, Radiant Heart, Last Rites of the Flame, Thousand Palms and more. All-Seeing costs 2.',
       },
       {
         kind: 'fixed',
