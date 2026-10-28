@@ -1,4 +1,4 @@
-// Sylas, the Silent-shaped assassin (docs/decisions-pending/assassin.md): the starter is the Silent's, his cards are one for each
+// Sylas, the Silent-shaped assassin (DECISIONS #368): the starter is the Silent's, his cards are one for each
 // of the Silent's, and the cards that needed new engine pieces (Sly, Bleed that burns harder, knives that Hold or hit everyone,
 // next-turn effects) do what their text says.
 

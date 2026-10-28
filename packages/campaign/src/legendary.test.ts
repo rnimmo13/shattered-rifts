@@ -22,7 +22,7 @@ describe('legendary cards', () => {
       // (Valeria, Sylas, Obsidia, Dorian and Ilvane have none: they are exactly the Ironclad's, the Silent's, the Regent's, the
       // Necrobinder's and the Defect's lists)
       expect(own.length, h).toBeGreaterThanOrEqual(
-        ['knight', 'assassin', 'spellblade', 'necromancer', 'totemist'].includes(h) ? 0 : 2,
+        ['knight', 'assassin', 'spellblade', 'necromancer', 'shaman'].includes(h) ? 0 : 2,
       );
     }
     const neutral = Object.values(COMBAT_DB.cards).filter(

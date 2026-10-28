@@ -22,7 +22,7 @@ describe('teaching tips', () => {
 
   it('show what a character brings the first time it is on the board', () => {
     const seen = new Set(['basics']);
-    expect(nextTip(viewOf('totemist'), { ...ctx, usesRunes: true }, seen)?.id).toBe('runes');
+    expect(nextTip(viewOf('shaman'), { ...ctx, usesRunes: true }, seen)?.id).toBe('runes');
     expect(nextTip(viewOf('spellblade'), { ...ctx, usesStars: true }, seen)?.id).toBe('lumen');
     expect(nextTip(viewOf('barbarian'), ctx, seen)?.id).toBe('stance');
     expect(nextTip(viewOf('engineer'), ctx, seen)?.id).toBe('ally');

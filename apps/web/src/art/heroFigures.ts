@@ -2524,7 +2524,7 @@ const PAINTERS: Record<string, { paint: Painter; shadow: number; rim: string }> 
   hunter: { paint: hunter, shadow: 125, rim: '#c8e070' },
   trapper: { paint: trapper, shadow: 115, rim: '#b48cff' },
   assassin: { paint: assassin, shadow: 125, rim: '#ff5a5a' },
-  totemist: { paint: totemist, shadow: 125, rim: '#7fd08a' },
+  shaman: { paint: totemist, shadow: 125, rim: '#7fd08a' },
   barbarian: { paint: barbarian, shadow: 140, rim: '#ff9a4a' },
   spellblade: { paint: spellblade, shadow: 115, rim: '#c4ccdf' },
   necromancer: { paint: necromancer, shadow: 125, rim: '#7affa8' },

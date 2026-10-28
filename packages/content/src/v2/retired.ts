@@ -190,7 +190,7 @@ export const TRIMMED_CARDS: Readonly<Record<string, string>> = {
   'lingering-blur': 'hidden-palm',
   'coiled-strike': 'showy-reflex',
   // (Sylas is exactly the Silent's card list, so every older card of his went into the nearest card of the same job:
-  // docs/decisions-pending/assassin.md)
+  // DECISIONS #368)
   'quick-jab': 'hobbling-jab',
   'slip-away': 'duck-and-weave',
   'palmed-knives': 'knife-juggle',
@@ -353,7 +353,7 @@ export const TRIMMED_CARDS: Readonly<Record<string, string>> = {
   'quenching-strike': 'forged-in-fury',
   'crushing-light': 'solar-flare',
   eclipse: 'pale-beacon',
-  // spellblade, the Regent rework: every card with no Regent counterpart is gone (docs/decisions-pending/spellblade.md)
+  // spellblade, the Regent rework: every card with no Regent counterpart is gone (DECISIONS #369)
   'lumen-bolt': 'skybolt',
   'crown-strike': 'devastate',
   edgewise: 'bladewall',
@@ -438,7 +438,7 @@ export const TRIMMED_CARDS: Readonly<Record<string, string>> = {
   'bone-shard': 'rattling-charge',
   'burial-rites': 'burial-shroud',
   'bone-chorus': 'bone-bulwark',
-  // (Dorian is the Necrobinder's card list: his cards with no Necrobinder counterpart are gone; docs/decisions-pending/necromancer.md)
+  // (Dorian is the Necrobinder's card list: his cards with no Necrobinder counterpart are gone; DECISIONS #370)
   'ash-ritual': 'inevitable',
   'ashen-bargain': 'the-final-hour',
   'ashen-visage': 'barrow-keeper',
@@ -481,8 +481,8 @@ export const TRIMMED_CARDS: Readonly<Record<string, string>> = {
   'tomb-feast': 'grave-robbery',
   'wake-the-ashes': 'dredge',
   'grave-harvest': 'restless-spirits',
-  // totemist, the Defect rework: every card with no Defect counterpart is gone, into the nearest card of the same job (DECISIONS
-  // pending, docs/decisions-pending/totemist.md)
+  // shaman (was totemist), the Defect rework: every card with no Defect counterpart is gone, into the nearest card of the same job (DECISIONS
+  // #371)
   'prismatic-burst': 'prismatic-cascade',
   'forked-current': 'spark-lash',
   'arc-reactor': 'spark-lash',

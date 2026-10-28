@@ -666,7 +666,7 @@ function metricValue(
       return u?.hitsTaken ?? 0;
     case 'spent':
       return a.spent;
-    // (the Defect copy, totemist)
+    // (the Defect copy, shaman)
     case 'runeKinds':
       return new Set(sd.runes.map((x) => x.rune)).size;
     case 'runesOf':
@@ -1690,7 +1690,7 @@ function execOp(r: Run, a: Act, op: Op): void {
     case 'costTax':
       side.costTax = (side.costTax ?? 0) + op.amount;
       return;
-    // --- the Defect copy (totemist) ---
+    // --- the Defect copy (shaman) ---
     case 'recost': {
       // this card costs more (or less) for the rest of the fight, and the change adds up; a play does not spend it
       const c = a.inst;

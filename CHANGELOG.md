@@ -5,6 +5,11 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- Sylas is rebuilt on the Slay the Spire 2 Silent's card list under his own names: Sleeve Knives, Bleed and sleight of hand, with Sly cards that play themselves when you discard them. He starts with 5 Strikes, 5 Defends, Hobbling Jab and Duck and Weave at 70 HP; his old cards in saved runs and decks become the nearest new card.
+- Obsidia is rebuilt on the Slay the Spire 2 Regent's card list in her own theme: Arcana for Stars, the Obsidian Blade for the Sovereign Blade, Retainers and Neutral cards for minions and Colorless cards; 82 cards, a 75 HP Regent starter, and her old cards with no counterpart retired into the nearest new one.
+- **Dorian is now the Necrobinder's card list, card for card** (85 cards of his own plus Strike and Defend): Raise brings Bone Thralls with the HP the card says (up to three, then the weakest grows), Command cards make every Thrall strike, Gravesouls draw cards, and Fleeting cards have payoffs; 70 HP, and a starting deck of 4 Strike, 4 Defend, Raise Thrall and Off the Leash. His other cards and his Trap are gone.
+- Ilvane is now the Slay the Spire 2 Defect, card for card, under his own names: totems work like the Defect's orbs (Hawk, Bear, Elder, Owl and Splinter), Spirit is Focus, 75 HP and a starter of 4 Strikes, 4 Defends, Hawk Call and Twin Awakening; his Elements and Rites cards are gone (old saves keep a close replacement), and status cards (Haze, Scorch, Muck, Drain) are new.
+- **The Totemist is now the Shaman** (Ilvane).
 - **Valeria is now the Ironclad's card list, card for card** (82 cards of her own plus Strike and Defend): her Thorns, Traps and other own cards are gone, Hot Temper, Pact of Embers and Inner Furnace are new, and several numbers match theirs (Ember Ward costs 2 for 12 Barrier, Immovable Oath gives 30 Barrier, Bastion Engine deals 5 to a random enemy, Dawn Smite is 5 damage and 5 Barrier, Oath of Iron no longer Holds).
 - **A run starts with two uncommon cards you choose** from your Riftwalker's own (they replace two plain cards). The three build-path starting decks are gone.
 - **Build paths are hidden for now:** cards show no build path, and offered cards no longer say whether they fit your build. Character screens list the mechanics each character uses instead.

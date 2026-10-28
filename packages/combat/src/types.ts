@@ -46,7 +46,7 @@ export type StatusId =
   | 'sturdy' // you take half damage from Exposed enemies (until the enemies' next turn is over)
   | 'unmovable' // the first Barrier a card gives you each turn is doubled
   | 'freeattack' // your next Attack costs 0, per stack
-  // (the Silent-shaped assassin's pieces: docs/decisions-pending/assassin.md)
+  // (the Silent-shaped assassin's pieces: DECISIONS #368)
   | 'virulent' // Bleed on your enemies deals its damage this many more times each turn (and loses 1 each time)
   | 'honed' // your Sleeve Knives Hold, and the first one you play each turn deals this much more
   | 'fanned' // your Sleeve Knives hit ALL enemies
@@ -59,14 +59,14 @@ export type StatusId =
   | 'strangled' // whenever the other side plays a card, it loses this much HP
   | 'freeskill' // your next Skill costs 0, per stack
   | 'planner' // a Skill you play gains Sly for the rest of the fight
-  // --- the Regent's pieces (Obsidia, the spellblade; docs/decisions-pending/spellblade.md)
+  // --- the Regent's pieces (Obsidia, the spellblade; DECISIONS #369)
   | 'reflect' // Barrier that soaks an attack sends the soaked damage back to the attacker; it ends when your next turn starts
   | 'bladesweep' // your blade cards (tag BLADE_TAG: the Obsidian Blade) strike every enemy instead of one
   | 'bladeecho' // your blade-tagged attacks are played once more per stack
   | 'bladebane' // takes double damage from blade-tagged attacks (a card puts it on for the rest of the turn)
   | 'freeplay' // the first this-many cards you play each turn cost no Mana
   | 'orbit' // for every ORBIT_STEP Mana you spend, gain this much Mana
-  // --- the Necrobinder copy (Dorian; docs/decisions-pending/necromancer.md)
+  // --- the Necrobinder copy (Dorian; DECISIONS #370)
   | 'marrow' // your companions' attacks deal this much more damage (Calcify)
   | 'reaping' // whenever your Attacks take HP off an enemy, it is cursed with that much Fate (Reaper Form)
   | 'debilitated' // Exposed and Faltering on it count double (turns: it wears off at the end of its own turn)
@@ -74,7 +74,7 @@ export type StatusId =
   | 'noose' // cards tagged "noose" deal double damage to it, per stack (Hang)
   | 'quarry' // whenever one of your companions hits it, a companion like the one that hit it is raised with this much HP (this turn)
   | 'freeethereal' // your next Fleeting card costs 0, per stack
-  // (the Defect copy, totemist: Echo Form, Signal Boost, Synthesis, One for All)
+  // (the Defect copy, shaman: Echo Form, Signal Boost, Synthesis, One for All)
   | 'echoing' // the first card you play each turn is played an extra time (the first N cards, for N stacks)
   | 'boosted' // your next Aura is played an extra time, per stack
   | 'freepower' // your next Aura costs 0, per stack
@@ -255,7 +255,7 @@ export type Metric =
   | 'handRoom' // room left in your hand (MAX_HAND less the cards in it)
   | 'hitsTaken' // (about a unit) times it has been hit by an attack this turn
   | 'spent' // in an 'arcana' trigger: the Arcana just spent
-  // (the Defect copy, totemist)
+  // (the Defect copy, shaman)
   | 'runeKinds' // how many different totems you have
   | 'runesOf' // how many totems of the kind named by `rune` you have
   | 'channeledOf' // how many totems of the kind named by `rune` you have planted this fight
@@ -577,7 +577,7 @@ export type Op =
   | { op: 'mark'; flag: 'ethereal' | 'retain' | 'replay'; costUp?: number }
   /** cards cost this much more for the rest of the turn */
   | { op: 'costTax'; amount: number }
-  // --- the Defect copy (totemist)
+  // --- the Defect copy (shaman)
   /** this card costs `amount` more (less, if negative) for the rest of the fight, and it adds up (Modded, Momentum Strike) */
   | { op: 'recost'; amount: number }
   /** your hand and discard pile are shuffled into your draw pile (Reboot) */

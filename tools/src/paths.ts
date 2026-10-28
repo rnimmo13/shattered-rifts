@@ -11,7 +11,7 @@ const POOLS: Record<HeroId, string> = {
   hunter: 'hunter',
   trapper: 'trapper',
   assassin: 'assassin',
-  totemist: 'totemist',
+  shaman: 'shaman',
   barbarian: 'barbarian',
   spellblade: 'spellblade',
   necromancer: 'necromancer',
@@ -50,7 +50,7 @@ const HEADS: Record<HeroId, [RegExp, number | null][]> = {
     [/sleight/i, 2],
     [/basics/i, null],
   ],
-  totemist: [
+  shaman: [
     [/totems/i, 0],
     [/whittling|elements/i, 1],
     [/rites/i, 2],
@@ -161,8 +161,8 @@ const BY_ID: Record<string, number> = {
   'the-perfect-trap': 0,
   'the-long-ambush': 1,
   masquerade: 2,
-  // assassin: none (his Legendaries went with his older cards: the Silent's list, docs/decisions-pending/assassin.md)
-  // totemist: none (his cards sit under their own headings: he is the Defect's list now)
+  // assassin: none (his Legendaries went with his older cards: the Silent's list, DECISIONS #368)
+  // shaman: none (his cards sit under their own headings: he is the Defect's list now)
   // barbarian
   'eye-of-the-storm': 0,
   'perfect-balance': 1,

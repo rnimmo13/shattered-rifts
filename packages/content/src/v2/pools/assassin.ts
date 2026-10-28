@@ -1,6 +1,6 @@
 // Sylas (id assassin, Umbral). No companions. He is the Slay the Spire 2 Silent on purpose, for now (Robert, 2026-10-28: "close
 // copies of the originals, but obviously change names and keep our theme, i will adjust things going forward, but we need good
-// baselines right now"; docs/decisions-pending/assassin.md): one card for every card of the Silent's under an original name, and
+// baselines right now"; DECISIONS #368): one card for every card of the Silent's under an original name, and
 // nothing else. Shivs are his Sleeve Knives (cards tagged "knife"; Edge is the Silent's Accuracy), Poison is Bleed (the engine's
 // `seared`), Weak is Faltering, Vulnerable is Exposed, Dexterity is Bracing, Strength lost is Sapped, Sly is Sly. Each card's
 // comment names the Silent card it imitates; numbers and rarities are the Silent's (slaythespire.wiki.gg, 2026-10-27: the v0.110

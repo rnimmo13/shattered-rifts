@@ -1,4 +1,4 @@
-// Ilvane (display name; the id stays 'totemist', DECISIONS #141), an elder shaman. He is the Slay the Spire 2 Defect on purpose, for
+// Ilvane (display name; the id stays 'shaman', DECISIONS #141), an elder shaman. He is the Slay the Spire 2 Defect on purpose, for
 // now, as Valeria is the Ironclad (Robert, 2026-10-28: "close copies of the originals, but obviously change names and keep our theme, i
 // will adjust things going forward, but we need good baselines right now"): one card for every Defect card under an original name, and
 // nothing else. The Defect's orbs are his totems (`channel`/`evoke` ops, the rune ids spark/ward/hollow/prism/splinter) and Focus is
@@ -98,7 +98,7 @@ export const RUNES: RuneDef[] = [
   },
 ];
 
-const i = pool('totemist', 'nexus');
+const i = pool('shaman', 'nexus');
 const RAND = '*';
 /** "Deal N damage once for every totem you have" (Barrage) */
 const perTotem = (n: number): Op => ({
@@ -123,7 +123,7 @@ const scrape = (n: number): Op => ({ op: 'draw', amount: n, keepCost: 0 });
 const freeCopy: Op = { op: 'copySelf', to: 'discard', free: true };
 const spiritThisTurn = (n: number): Op => status('resonance', n, 'self', true);
 
-export const TOTEMIST: CardDef[] = [
+export const SHAMAN: CardDef[] = [
   // --- basics ---
   // (Zap)
   i('basic', 'spark-cast', 'Hawk Call', 'skill', 1, 'none', [channel('spark')]),
@@ -763,7 +763,7 @@ const junk = (
   ...extra,
 });
 
-export const TOTEMIST_STATUSES: CardDef[] = [
+export const SHAMAN_STATUSES: CardDef[] = [
   // (Dazed)
   junk('haze', 'Haze', 0, [], { unplayable: true, ethereal: true }),
   // (Burn: 2 damage in their game, which Block stops; here HP lost)

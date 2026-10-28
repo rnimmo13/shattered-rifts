@@ -1,4 +1,4 @@
-// Dorian is the Slay the Spire 2 Necrobinder's card list (docs/decisions-pending/necromancer.md). Her one Osty is his Bone Thralls,
+// Dorian is the Slay the Spire 2 Necrobinder's card list (DECISIONS #370). Her one Osty is his Bone Thralls,
 // several at once: Raise N brings a Thrall with N HP (or grows the weakest when all three slots are taken), and Command cards make
 // each Thrall strike. These are the scenario tests for the new rules and the trickier cards.
 

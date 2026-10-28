@@ -22,7 +22,7 @@ Ko-fi-funded) → Steam full game ($7.99–$9.99) with PvP later. Owner: Robert.
 | `docs/07_TECH_ARCHITECTURE.md` | Stack, repo layout, engine API, testing, **milestones M0–M7** |
 | `ROADMAP.md` | Player-facing roadmap |
 
-**Riftwalker ids are class names** (knight, engineer, hunter, trapper, assassin, totemist, barbarian, spellblade, necromancer, drunkard; DECISIONS #190). Never use a character's display name as an id; old ids are read through `canonicalHero`.
+**Riftwalker ids are class names** (knight, engineer, hunter, trapper, assassin, shaman, barbarian, spellblade, necromancer, drunkard; DECISIONS #190, #371). Never use a character's display name as an id; old ids are read through `canonicalHero`.
 
 ## Golden rules
 1. **The engine is pure and deterministic.** `packages/combat` has no DOM, no `Math.random`, no
@@ -68,7 +68,7 @@ Toolchain: Node 22, pnpm 11 (corepack), TypeScript 6.0 (see DECISIONS #39). Work
 ## Current status
 **Combat v2 (Slay-the-Spire-style) replaced the old duel on 2026-10-23** (DECISIONS #86-90, design in `docs/08_COMBAT_V2.md`).
 **Roster of 9 (2026-10-23, DECISIONS #95-105; Mire added with Doom, tier-3 mechanics, tips and a Learn page):** Maren, Rivet, Kesh, Vesper + Quill (Sleeve Knives/Seared/discard), Ilvane (totems), Sehra (stances), Obsidia (id `spellblade`; Arcana/Sharpen), Mire (Doom/Thralls/Ashes); names are original, see DECISIONS #99; pools belong to a character (`CardDef.hero`), ~35-40 cards in three lanes each; engine gained choices (`pending`/`pick`), scaling amounts, Auras (`power` op) as triggers, totems (`channel`/`evoke` ops), stances, Arcana (`stars` op), sharpen (`forge` op). Next: balance, art for the new four, enemy counterparts, stretch characters Cinder and Mire.
-**2026-10-28 (DECISIONS #362-364):** no limit of three build paths; Legendary cards are put away (they are Rares, `SHELVED_LEGENDARIES`); Valeria (`knight`) is rebuilt as the Slay the Spire 2 Ironclad shape with original names, no Devotion, five build paths (Bulwark, Thorns, Might, Consume, Blood). Robert will change her cards himself; the "no copied card effects" rule is waived for her only.
+**2026-10-28 (DECISIONS #362-364):** no limit of three build paths; Legendary cards are put away (they are Rares, `SHELVED_LEGENDARIES`); Valeria (`knight`) is rebuilt as the Slay the Spire 2 Ironclad shape with original names, no Devotion, five build paths (Bulwark, Thorns, Might, Consume, Blood). Robert will change her cards himself; the "no copied card effects" rule is waived for her only. Sylas, Obsidia, Dorian and Ilvane (now the Shaman, id shaman) were then rebuilt the same way on the Silent, the Regent, the Necrobinder and the Defect (DECISIONS #368-371): these five classes are the balancing baselines.
 Done: **C1** engine (`packages/combat`: pure, seeded, events, intents, allies, Traps, tiers, PvP mode, greedy bot) ·
 **C2** content (`packages/content/src/v2`: 4 Riftwalkers, ~80 cards with "+" upgrades, 12 companions, 26 encounters incl. Wardens and
 Vorthax) · **C3** the side-to-side fight screen (`apps/web/src/fight`, route `#/fight`) · **C4** campaign Run v2 (`packages/campaign`,

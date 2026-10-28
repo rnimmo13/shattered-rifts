@@ -1,4 +1,4 @@
-// Obsidia, the Regent-shaped spellblade (docs/decisions-pending/spellblade.md): her starter and Arcana, the Obsidian Blade (the
+// Obsidia, the Regent-shaped spellblade (DECISIONS #369): her starter and Arcana, the Obsidian Blade (the
 // Sovereign Blade) and what sharpens and changes it, and the generic engine pieces her Regent cards brought in.
 
 import { describe, expect, it } from 'vitest';

@@ -32,7 +32,7 @@ const HERO_ATTACK: Record<string, AttackSpec> = {
   hunter: a('claw', '#ff4a4a'), // feral cleaver
   trapper: a('stab', '#7ff0e0'), // stiletto
   assassin: a('throw', '#b79bff'), // thrown knives
-  totemist: a('cast', '#6ee8ff'), // totem magic
+  shaman: a('cast', '#6ee8ff'), // totem magic
   barbarian: a('slash', '#ff7a3a', 2), // flame blades: a flurry
   spellblade: a('slash', '#c4ccdf'), // Obsidia: the obsidian blade
   necromancer: a('cast', '#8dff9a'), // lantern fire

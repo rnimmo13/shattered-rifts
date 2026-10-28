@@ -6,7 +6,7 @@
 // One card for every card of the Regent's (StS2 Beta v0.111; Arcana costs from sts2.untapped.gg), and nothing else. Not copied:
 // Constellation, Largesse, Tutor and Hammer Time (they need a second player) and Royalties (gold after a fight is an economy change,
 // for Robert to decide). Each card's comment names the Regent card it copies; numbers and rarities are the Regent's unless the comment
-// says why not (docs/decisions-pending/spellblade.md).
+// says why not (DECISIONS #369).
 //
 // Build paths are hidden for now (DECISIONS #365) and the headings below are only a first sort, to be redone when they come back:
 //   Blade  - sharpen the Obsidian Blade and swing it

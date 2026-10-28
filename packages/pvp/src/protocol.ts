@@ -57,6 +57,7 @@ export interface Entry {
 // (17: the Bear totem gives 2 Barrier a turn, Ilvane's Elements build path, #351-353)
 // (18: a heal grows a companion, Hangover, Sunfall strikes 2 enemies, X Devotion costs, Rivet's Swarm and Core, Ilvane +1 damage, Assemble's Primed, #354-361)
 // (19: The Foundry Awakens primes before it summons)
+// (20, also: Sylas, Obsidia, Dorian and Ilvane are the Silent, the Regent, the Necrobinder and the Defect; the Totemist is the Shaman, #368-371)
 // (20: Valeria is the Ironclad shape and there are new engine pieces, no Devotion, no Legendary cards, build paths hidden, two uncommons to start, #362-366)
 export const RULES_VERSION = 20;
 

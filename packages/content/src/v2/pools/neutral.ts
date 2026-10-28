@@ -283,7 +283,7 @@ export const SIGNATURES: CardDef[] = [
 ];
 
 export const JUNK: CardDef[] = [
-  // (status cards: the totemist's Smokestack-like cards count them, DECISIONS pending: totemist)
+  // (status cards: the shaman's Smokestack-like cards count them, DECISIONS #371)
   card('junk', 'basic', 'wound', 'Wound', 'skill', 0, 'none', [], {
     unplayable: true,
     hero: 'junk',

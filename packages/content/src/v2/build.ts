@@ -236,7 +236,7 @@ export const on = (
     ethereal?: boolean;
     minCost?: number;
     pin?: boolean;
-    /** the Defect copy (totemist): a cost limit, a number of answers, one totem's awakening */
+    /** the Defect copy (shaman): a cost limit, a number of answers, one totem's awakening */
     maxCost?: number;
     times?: number;
     rune?: string;
@@ -263,7 +263,7 @@ export const mark = (flag: 'ethereal' | 'retain' | 'replay', costUp?: number): O
 });
 export const costTax = (amount: number): Op => ({ op: 'costTax', amount });
 
-// --- the Defect copy (totemist) -------------------------------------------------------------------------------------------
+// --- the Defect copy (shaman) -------------------------------------------------------------------------------------------
 /** totems' passives, now: every totem (or every one of a kind), or the oldest only (`first`); `aim` strikes the target */
 export const pulse = (
   opts: { rune?: string; first?: boolean; times?: number; aim?: boolean } = {},

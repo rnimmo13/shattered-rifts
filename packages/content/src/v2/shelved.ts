@@ -20,7 +20,7 @@ export const SHELVED_LEGENDARIES: readonly string[] = [
   'the-long-ambush',
   'masquerade',
   // assassin: none (Sylas is exactly the Silent's list, and his three went with his older cards)
-  // totemist: none (he is the Defect's card list, which has no Legendary)
+  // shaman: none (he is the Defect's card list, which has no Legendary)
   // barbarian
   'perfect-balance',
   'still-flame-ascendant',

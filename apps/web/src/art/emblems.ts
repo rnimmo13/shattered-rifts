@@ -298,7 +298,7 @@ export const HERO_EMBLEM: Record<string, string> = {
   hunter: 'paw',
   trapper: 'mask',
   assassin: 'daggers',
-  totemist: 'totem',
+  shaman: 'totem',
   barbarian: 'scimitars',
   spellblade: 'shard',
   necromancer: 'skull',
@@ -311,7 +311,7 @@ export const HERO_COLOR: Record<string, string> = {
   hunter: '#ff8a6a',
   trapper: '#b99aff',
   assassin: '#e0384f',
-  totemist: '#7fd08a',
+  shaman: '#7fd08a',
   barbarian: '#ffb060',
   spellblade: '#b9c3d9', // Obsidia: obsidian and steel, so no orange (that is KP's)
   necromancer: '#9be86a',

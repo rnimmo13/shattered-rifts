@@ -1,4 +1,4 @@
-// Ilvane, the Defect-shaped totemist (docs/decisions-pending/totemist.md): the starter is the Defect's, his totems are the Defect's
+// Ilvane, the Defect-shaped shaman (DECISIONS #371): the starter is the Defect's, his totems are the Defect's
 // orbs with their numbers, Spirit is Focus, and the trickier copied cards do what their text says.
 
 import { describe, expect, it } from 'vitest';
@@ -14,13 +14,13 @@ import {
   type RuneState,
 } from '@sr/combat';
 import { COMBAT_DB as db, RIFTWALKERS, pathSizes, rewardPool } from './index';
-import { TOTEMIST } from './pools/totemist';
+import { SHAMAN } from './pools/shaman';
 
 /** One Squire with 200 HP; `hand` in hand, nothing else in any pile; `runes` replaces the three the trait planted. */
 function fight(hand: string[], runes?: string[]): CombatState {
   const { state } = createCombat(db, {
     seed: 'totemist-test',
-    a: { hero: 'totemist', deck: RIFTWALKERS.totemist.starter },
+    a: { hero: 'shaman', deck: RIFTWALKERS.shaman.starter },
     b: { enemies: ['squire'] },
   });
   const s = clone(state);
@@ -62,34 +62,34 @@ const passives = (events: CombatEvent[], foeId: string, heroId: string) => ({
 
 describe('Ilvane is the Defect shape', () => {
   it("starts with the Defect's ten (4 Strike, 4 Defend, Zap, Dualcast) and 75 HP, and keeps his three totems", () => {
-    expect(RIFTWALKERS.totemist.starter).toEqual([
+    expect(RIFTWALKERS.shaman.starter).toEqual([
       ...Array<string>(4).fill('strike'),
       ...Array<string>(4).fill('defend'),
       'spark-cast',
       'twin-evocation',
     ]);
-    expect(RIFTWALKERS.totemist.hero.maxHp).toBe(75);
+    expect(RIFTWALKERS.shaman.hero.maxHp).toBe(75);
     const { state } = createCombat(db, {
       seed: 'ilvane-start',
-      a: { hero: 'totemist', deck: RIFTWALKERS.totemist.starter },
+      a: { hero: 'shaman', deck: RIFTWALKERS.shaman.starter },
       b: { enemies: ['squire'] },
     });
     expect(state.sides.a.runes.map((r) => r.rune)).toEqual(['spark', 'ward', 'splinter']);
   });
 
   it('has one card for each Defect card it copies (83) plus the Kindling token, and no Trap or Legendary', () => {
-    const own = TOTEMIST.filter((c) => !c.source);
+    const own = SHAMAN.filter((c) => !c.source);
     expect(own).toHaveLength(83);
-    expect(TOTEMIST.filter((c) => c.source === 'token').map((c) => c.id)).toEqual(['kindling']);
+    expect(SHAMAN.filter((c) => c.source === 'token').map((c) => c.id)).toEqual(['kindling']);
     expect(own.filter((c) => c.rarity === 'basic')).toHaveLength(2);
     expect(own.filter((c) => c.rarity === 'common')).toHaveLength(20);
     expect(own.filter((c) => c.rarity === 'uncommon')).toHaveLength(36);
     expect(own.filter((c) => c.rarity === 'rare')).toHaveLength(25);
     expect(own.filter((c) => c.kind === 'snare')).toEqual([]);
-    expect(rewardPool('totemist').filter((id) => db.cards[id]?.hero === 'totemist')).toHaveLength(
+    expect(rewardPool('shaman').filter((id) => db.cards[id]?.hero === 'shaman')).toHaveLength(
       81,
     );
-    for (const n of pathSizes('totemist')) expect(n).toBeGreaterThanOrEqual(12);
+    for (const n of pathSizes('shaman')) expect(n).toBeGreaterThanOrEqual(12);
   });
 });
 

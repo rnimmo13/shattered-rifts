@@ -26,7 +26,7 @@ describe('the weapon a hero strikes with', () => {
       'hunter',
       'trapper',
       'assassin',
-      'totemist',
+      'shaman',
       'barbarian',
       'spellblade',
       'necromancer',

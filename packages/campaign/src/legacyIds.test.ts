@@ -18,7 +18,8 @@ describe('Riftwalker ids are named for their class', () => {
       // the id is the class: it is what the character screen calls them
       expect(RIFTWALKERS[now].role.toLowerCase()).toBe(now);
     }
-    expect(Object.keys(LEGACY_HERO_IDS)).toHaveLength(Object.keys(RIFTWALKERS).length);
+    // (one old name per Riftwalker, and the totemist's class id from before the Shaman, DECISIONS #371)
+    expect(Object.keys(LEGACY_HERO_IDS)).toHaveLength(Object.keys(RIFTWALKERS).length + 1);
     // anything else comes back as it was
     expect(canonicalHero('knight')).toBe('knight');
     expect(canonicalHero('constructor')).toBe('constructor');

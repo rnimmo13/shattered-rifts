@@ -314,7 +314,7 @@ const STATUS_NAME: Record<string, string> = {
   noose: 'Noose',
   quarry: 'Quarry',
   freeethereal: 'Free Fleeting',
-  // (the Defect copy, totemist)
+  // (the Defect copy, shaman)
   echoing: 'Echo',
   boosted: 'Resound',
   freepower: 'Free Aura',
@@ -469,7 +469,7 @@ const METRIC_WORDS: Record<Metric, { per: string; equal: string }> = {
   deaths: { per: 'death this fight', equal: 'the deaths this fight' },
   tagExhausted: { per: 'consumed card of that kind', equal: 'the consumed cards of that kind' },
   tagDeck: { per: 'card of that kind in your deck', equal: 'the cards of that kind in your deck' },
-  // (the Defect copy, totemist)
+  // (the Defect copy, shaman)
   runeKinds: { per: 'different totem you have', equal: 'the number of different totems you have' },
   runesOf: { per: 'such totem you have', equal: 'the number of such totems you have' },
   channeledOf: {
@@ -589,7 +589,7 @@ const ORDINAL = ['zeroth', 'first', 'second', 'third', 'fourth', 'fifth', 'sixth
 function whenText(o: Extract<Op, { op: 'when' }>, db?: CombatDb): string {
   const lo = o.atLeast;
   const hi = o.atMost;
-  // (the Defect copy, totemist)
+  // (the Defect copy, shaman)
   if (o.by === 'attacking' && (lo ?? 0) >= 1) return 'the enemy means to attack';
   if (o.by === 'runesOf' && (lo ?? 0) >= 1 && hi === undefined) {
     const nm = (o.rune && db?.runes?.[o.rune]?.name) || 'such totem';
@@ -742,7 +742,7 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
         const mine = o.to === 'self' && who.self === WHO.self;
         return `${mine ? 'Gain' : 'Apply'} Fortified${o.to === 'self' ? '' : who[o.to]}${o.temp === 'theirs' ? (o.to === 'self' ? ' until the enemy turn is over' : ' until the end of their next turn') : o.temp ? ' until the end of your turn' : ''}.`;
       }
-      // the blade's statuses and the other Regent pieces say what they do (DECISIONS pending: spellblade)
+      // the blade's statuses and the other Regent pieces say what they do (DECISIONS #369)
       if (o.amount > 0 && !o.scale && who.self === WHO.self) {
         const n = o.amount;
         if (o.status === 'reflect' && o.to === 'self')
@@ -771,7 +771,7 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
             ? 'Your next Fleeting card costs 0.'
             : `Your next ${o.amount} Fleeting cards cost 0.`;
       }
-      // (the Defect copy, totemist: these say what they do)
+      // (the Defect copy, shaman: these say what they do)
       if (o.to === 'self' && !o.scale && o.amount > 0 && who.self === WHO.self) {
         if (o.status === 'freepower')
           return o.amount === 1 ? 'Your next Aura costs 0.' : `Your next ${o.amount} Auras cost 0.`;
@@ -1162,7 +1162,7 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
     }
     case 'costTax':
       return `Cards cost ${o.amount} more this turn.`;
-    // (the Defect copy, totemist)
+    // (the Defect copy, shaman)
     case 'recost':
       return o.amount > 0
         ? `This card costs ${o.amount} more for the rest of the fight.`

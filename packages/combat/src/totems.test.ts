@@ -1,4 +1,4 @@
-// Rules tests for the engine pieces the Defect copy (the totemist) added: totems that start charged, fade, or pulse at the start of
+// Rules tests for the engine pieces the Defect copy (the shaman) added: totems that start charged, fade, or pulse at the start of
 // the turn; pulses and newest-first awakenings; "evoke" Auras; once-a-turn and limited Auras; status-card triggers; lasting cost
 // changes; Echo, Resound, Free Aura and Deftness. A tiny self-contained ruleset, so nothing here depends on real card data.
 

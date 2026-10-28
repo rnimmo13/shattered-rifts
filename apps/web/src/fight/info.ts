@@ -247,7 +247,7 @@ export const STATUS_INFO: Record<
     tone: 'good',
     text: 'Your next Attack costs 0.',
   },
-  // (Sylas, the Silent's shape: docs/decisions-pending/assassin.md)
+  // (Sylas, the Silent's shape: DECISIONS #368)
   virulent: {
     name: 'Virulent',
     glyph: '☣',
@@ -356,7 +356,7 @@ export const STATUS_INFO: Record<
     tone: 'good',
     text: 'For every 4 Mana you spend, gain this much Mana.',
   },
-  // (the Defect copy, totemist)
+  // (the Defect copy, shaman)
   echoing: {
     name: 'Echo',
     glyph: '≋',

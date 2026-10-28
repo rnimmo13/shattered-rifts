@@ -240,7 +240,7 @@ describe('pool shape (docs/09_ROSTER.md §1)', () => {
       [...c.effects, ...(c.onDiscard ?? []), ...(c.onExhaust ?? [])].some(
         (o) => o.op === op || (o.op === 'power' && o.ops.some((x) => x.op === op)),
       );
-    owns((c) => uses(c, 'channel') || uses(c, 'evoke') || uses(c, 'runeSlots'), 'totemist');
+    owns((c) => uses(c, 'channel') || uses(c, 'evoke') || uses(c, 'runeSlots'), 'shaman');
     owns((c) => uses(c, 'stance'), 'barbarian');
     owns((c) => c.starCost !== undefined, 'spellblade');
     // (sharpening a weapon is theirs; a card that grows only itself, like Gathering Storm, is not: DECISIONS #353)
@@ -289,7 +289,7 @@ describe('pool shape (docs/09_ROSTER.md §1)', () => {
     const counts = HEROES.map((h) => [h, own(h)] as const);
     // (Valeria, Sylas, Obsidia, Dorian and Ilvane are exactly the Ironclad's, the Silent's, the Regent's, the Necrobinder's and
     // the Defect's lists, which have no Traps)
-    const NO_TRAPS = ['knight', 'assassin', 'spellblade', 'necromancer', 'totemist'];
+    const NO_TRAPS = ['knight', 'assassin', 'spellblade', 'necromancer', 'shaman'];
     for (const [h, n] of counts)
       expect(n, `${h} snares`).toBeGreaterThanOrEqual(h === 'trapper' ? 10 : NO_TRAPS.includes(h) ? 0 : 1);
     const others = Math.max(...counts.filter(([h]) => h !== 'trapper').map(([, n]) => n));

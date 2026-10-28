@@ -177,7 +177,7 @@ const SCENES: Record<string, (g: G, W: number, H: number, c: SceneColors, r: R) 
     });
   },
   // a forest of pines and carved totem poles, spirit-lights drifting
-  totemist(g, W, H, c, r) {
+  shaman(g, W, H, c, r) {
     layers(c, (col, near) => {
       const base = H * (near ? 0.86 : 0.74);
       for (let x = r() * 30; x < W; x += 34 + r() * 40)

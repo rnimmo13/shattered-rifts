@@ -30,7 +30,7 @@ export const OWN_LOOK: Record<string, string> = {
   hunter: 'Kesh, a tribal huntress with bone weapons',
   trapper: 'Vesper, a masked trapper with teal glow',
   assassin: 'Sylas, a flamboyant rogue throwing teal-glowing knives',
-  totemist: 'Ilvane, a spirit shaman who calls glowing totems',
+  shaman: 'Ilvane, a spirit shaman who calls glowing totems',
   barbarian: 'Sehra, a flame-bound warrior with twin scimitars',
   spellblade: 'Obsidia, a queen of black volcanic glass with floating shards',
   necromancer: 'Mire, a spectral green-eyed reaper with thralls',

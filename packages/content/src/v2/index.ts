@@ -15,7 +15,7 @@ import {
 } from './build';
 import { BOONS, HEARTS } from './boons';
 import { V2_CARDS } from './cards';
-import { RUNES } from './pools/totemist';
+import { RUNES } from './pools/shaman';
 import { POTIONS } from './potions';
 import { isVariant, stripRoll, withRolls } from './sanctify';
 import { ALLIES, ENEMY_UNITS } from './units';
@@ -28,7 +28,7 @@ export type HeroId =
   | 'hunter'
   | 'trapper'
   | 'assassin'
-  | 'totemist'
+  | 'shaman'
   | 'barbarian'
   | 'spellblade'
   | 'necromancer'
@@ -177,7 +177,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
       text: 'At the start of your turn, add a Sleeve Knife to your hand.',
       turnStart: [addTo('sleeve-knife')],
     },
-    // (the Silent's shape, docs/decisions-pending/assassin.md: 70 HP, 5 Strikes, 5 Defends, Neutralize and Survivor)
+    // (the Silent's shape, DECISIONS #368: 70 HP, 5 Strikes, 5 Defends, Neutralize and Survivor)
     hero: {
       id: 'assassin',
       name: 'Sylas',
@@ -200,17 +200,17 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
       'Discarding is a resource: a card with Sly is played for free when a card makes you discard it.',
     ],
   },
-  totemist: {
+  shaman: {
     realm: 'nexus',
-    role: 'Totemist',
+    role: 'Shaman',
     trait: {
       name: 'Totem-bound',
       text: 'Start every fight with three different totems: Hawk, Bear and Splinter.',
       fightStart: [channel('spark'), channel('ward'), channel('splinter')],
     },
-    // (the Slay the Spire 2 Defect's shape: 75 HP, 4 Strike, 4 Defend, Zap and Dualcast; his trait stays, see pools/totemist.ts)
+    // (the Slay the Spire 2 Defect's shape: 75 HP, 4 Strike, 4 Defend, Zap and Dualcast; his trait stays, see pools/shaman.ts)
     hero: {
-      id: 'totemist',
+      id: 'shaman',
       name: 'Ilvane',
       maxHp: 75,
       mana: 3,
@@ -272,7 +272,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
       text: 'At the start of your turn, gain 1 Arcana and Sharpen your Obsidian Blade by 1.',
       turnStart: [stars(1), forge('starforged-blade', 1)],
     },
-    // the Slay the Spire 2 Regent's shape (docs/decisions-pending/spellblade.md): 75 HP, 3 Arcana as every fight begins (his Divine
+    // the Slay the Spire 2 Regent's shape (DECISIONS #369): 75 HP, 3 Arcana as every fight begins (his Divine
     // Right), and his starter (4 Strike, 4 Defend, Falling Star = Cinderfall, Venerate = Gather Arcana). Kindled is hers, not his.
     hero: {
       id: 'spellblade',
@@ -355,7 +355,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
         on('exhaust', [status('doom', 3, 'randomFoe')]),
       ],
     },
-    // (the Slay the Spire 2 Necrobinder's shape, DECISIONS pending (docs/decisions-pending/necromancer.md): her 66 HP is below the
+    // (the Slay the Spire 2 Necrobinder's shape, DECISIONS #370: her 66 HP is below the
     // 70 floor every Riftwalker keeps, so 70; her Osty is his Bone Thrall, and he may have several)
     hero: {
       id: 'necromancer',
@@ -605,7 +605,9 @@ export const LEGACY_HERO_IDS: Readonly<Record<string, HeroId>> = {
   kesh: 'hunter',
   vesper: 'trapper',
   quill: 'assassin',
-  ilvane: 'totemist',
+  ilvane: 'shaman',
+  // (the totemist became the Shaman, DECISIONS #371)
+  totemist: 'shaman',
   sehra: 'barbarian',
   astra: 'spellblade',
   mire: 'necromancer',
