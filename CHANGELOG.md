@@ -5,6 +5,7 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **Fixed:** beating a Warden shows one page of rewards, the Warden's Gift with its Hearts. An extra card reward earned in that fight (Marked for Death) is one more card on the Gift instead of a second page.
 - **The Barbarian is now the Monk.** Same fighter and cards (her palms, prayers and stances always were a monk's); Red Mist, Cornered Beast, Blood on the Sand and Berserk Tide are Burning Breath, Coiled Serpent, Iron Body and Storm of Fists. Saved runs and decks carry over.
 - **The Barbarian is rebalanced** against the card costing guide. Inner Fire now gives 1 Fervor for each stance you enter (no Barrier), Still Guard gives 3 Barrier, the Auras that pay for every stance change cost more or pay less, and about 40 cards move towards their budget (the weak ones up: Rage of Ages, Final Account, Radiant Heart...). All-Seeing costs 2.
 - **Fixed:** clicking a panel title folds it again; the Full Trick goes off after the card that earned it; Suits cards are no longer offered to other Riftwalkers.

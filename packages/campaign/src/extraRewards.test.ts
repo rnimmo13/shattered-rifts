@@ -1,4 +1,4 @@
-// Extra card rewards a fight earned (Marked for Death, The Hunt): they follow the fight's own reward, or the Warden's Gift.
+// Extra card rewards a fight earned (Marked for Death): they follow the fight's own reward; after a Warden they are more cards on the Gift.
 
 import { describe, expect, it } from 'vitest';
 import {
@@ -47,9 +47,11 @@ describe('extra card rewards', () => {
     expect(run.deck.filter((c) => c === first).length).toBeGreaterThan(0);
   });
 
-  it('after a Warden, the extra reward follows the Gift and then the stage is cleared', () => {
-    let run = finishDuel(
-      inFight(open(newRun('assassin', 'xr-w')), 'warden'),
+  // (the Gift is the only page after a Warden, Robert 2026-10-28: an extra reward is one more card on it; DECISIONS #392)
+  it('after a Warden, an extra reward is one more card on the Gift, and the Gift is the only page', () => {
+    const plain = finishDuel(inFight(open(newRun('hunter', 'xr-w')), 'warden'), true, 30);
+    const run = finishDuel(
+      inFight(open(newRun('hunter', 'xr-w')), 'warden'),
       true,
       30,
       undefined,
@@ -57,16 +59,15 @@ describe('extra card rewards', () => {
       1,
     );
     expect(run.phase).toBe('gift');
-    run = chooseCard(run, null);
-    expect(run.phase).toBe('reward');
-    expect(run.context?.extraReward).toBe(true);
-    run = chooseCard(run, null);
-    expect(['stageClear', 'loopCleared']).toContain(run.phase);
+    expect(run.context?.extraRewards).toBeUndefined();
+    expect(run.context!.offers!.length).toBe(plain.context!.offers!.length + 1);
+    const next = chooseCard(run, run.context!.offers![0]!);
+    expect(['stageClear', 'loopCleared']).toContain(next.phase);
   });
 
-  it('taking a Warden’s Heart instead of the card still leads to the extra reward', () => {
+  it('taking a Warden’s Heart ends the Gift too', () => {
     const run = finishDuel(
-      inFight(open(newRun('assassin', 'xr-h')), 'warden'),
+      inFight(open(newRun('hunter', 'xr-h')), 'warden'),
       true,
       30,
       undefined,
@@ -74,11 +75,8 @@ describe('extra card rewards', () => {
       1,
     );
     const heart = run.context?.hearts?.[0];
-    if (!heart) return; // (no Heart on offer at this tier: the Gift path above covers it)
-    const next = chooseHeart(run, heart);
-    expect(next.phase).toBe('reward');
-    expect(next.context?.afterWarden).toBe(true);
-    expect(['stageClear', 'loopCleared']).toContain(chooseCard(next, null).phase);
+    if (!heart) return; // (no Heart on offer at this tier: the card path above covers it)
+    expect(['stageClear', 'loopCleared']).toContain(chooseHeart(run, heart).phase);
   });
 
   it('pays at most MAX_EXTRA_REWARDS (more are dropped, the fight still reports), and refuses a negative count', () => {

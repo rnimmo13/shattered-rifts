@@ -59,6 +59,10 @@ export const PATCH_NOTES: PatchNote[] = [
         kind: 'fixed',
         text: 'Suits cards are no longer offered to other Riftwalkers, where they did nothing.',
       },
+      {
+        kind: 'fixed',
+        text: "A Warden's reward is one page: the Gift and its Hearts. An extra card reward earned in that fight is one more card to choose from on it, not a second page.",
+      },
     ],
     heads: 'Rules changed: replays and Arena games from before this version no longer play.',
   },

@@ -253,7 +253,7 @@ export function chooseHeart(run: RunState, id: string): RunState {
     r.hp = Math.max(1, Math.min(r.maxHp, r.hp + h.maxHp));
   }
   r.eventResult = `You take the ${h.name}.${old ? ` The ${old.name} is given back.` : ''}`;
-  if (!nextReward(r, run.context as NonNullable<RunState['context']>, true)) afterGift(r);
+  afterGift(r);
   return r;
 }
 
@@ -788,9 +788,17 @@ export function finishDuel(
         }
       }
     }
-    // every Warden, the last one too, leaves its Gift: a card, one of two Warden's Hearts, or nothing (DECISIONS #246, #352)
+    // every Warden, the last one too, leaves its Gift: a card, one of two Warden's Hearts, or nothing (DECISIONS #246, #352). It is
+    // the only page after a Warden: an extra card reward the fight earned (Marked for Death) is one more card to choose from on it
+    // (Robert, 2026-10-28; DECISIONS #392)
     const hearts = heartOffers(r);
-    const offers = giftOffers(r.rng, r.character, r.deck, r.tier >= 5 ? 4 : 3, node.enemyId);
+    const offers = giftOffers(
+      r.rng,
+      r.character,
+      r.deck,
+      (r.tier >= 5 ? 4 : 3) + (extra.extraRewards ?? 0),
+      node.enemyId,
+    );
     // (the Gift always has cards; only if there were neither cards nor Hearts would there be nothing to choose)
     if (offers.length === 0 && hearts.length === 0) {
       if (!nextReward(r, { nodeId: node.id, ...extra }, true)) afterGift(r);
@@ -798,7 +806,6 @@ export function finishDuel(
     }
     r.context = {
       nodeId: node.id,
-      ...extra,
       offers,
       ...(hearts.length ? { hearts } : {}),
       shardsGained: gain,
@@ -860,7 +867,7 @@ export function chooseCard(run: RunState, cardId: string | null): RunState {
     need(canAdd(r.deck, cardId), 'That card would break the deck rules');
     r.deck.push(cardId);
   }
-  if (nextReward(r, c, r.phase === 'gift' || c.afterWarden === true)) return r;
+  if (r.phase !== 'gift' && nextReward(r, c, c.afterWarden === true)) return r;
   if (r.phase === 'gift' || c.afterWarden) afterGift(r);
   else if (c.nodeId === '') {
     // a card chosen at the Threshold or a Waymark: no node is behind it
