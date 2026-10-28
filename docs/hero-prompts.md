@@ -72,3 +72,7 @@ FILE: when the image is done, save it as a PNG file named exactly trickster.png 
 ```
 
 Variations: "No top hat, the mask's crest taller, hair pinned up" / "A long cape with a violet lining instead of tails" / "Cards fanned in both hands". Save as `assets-src/heroes/trickster.png` (the cutter names the figure after the file, so it lands on `hero-trickster.png`; move the old `trapper.png` to `assets-src/heroes/_source/`) and run `powershell -File tools/pack-heroes.ps1`.
+
+## Skins (alternate looks for the Store)
+
+Make a skin like a hero figure (the same prompt shape: one figure facing right on the flat dark navy background, the Valeria style anchor) and save it as `assets-src/heroes/skins/<heroId>-<skin-name>.png`: the class id, then the skin's name in kebab case, for example `knight-moonlit-regent.png`. For the class drawn as the other gender, use `<heroId>-gender-female.png` or `<heroId>-gender-male.png`. Run `powershell -File tools/pack-heroes.ps1`: the Store shows every skin in the folder, named from the file ("Moonlit Regent", "Female Engineer"). The Engineer's drone corner is wiped as for his figure, so keep his drone at the top left.

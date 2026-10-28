@@ -66,7 +66,7 @@ export interface Entry {
 // (28: the Drunkard rebalanced, with Stagger, #393)
 // (29: Aura upgrades the Slay the Spire way, #396)
 // (30: the Necromancer's Grave Chill raises a Thrall every turn, and five card fixes, #397)
-// (31: Lying in Wait and Grave Chill toned down, the Full Trick grows, Sharpen carries over to a new weapon copy, #398-399)
+// (31: Lying in Wait and Grave Chill toned down, the Full Trick grows, Sharpen carries over to a new weapon copy, the gun's is Precision, Grave Chill Raise 2, #398-401)
 export const RULES_VERSION = 31;
 
 /** Who you are playing, before a game starts: their name and badges, not their deck or Riftwalker. */

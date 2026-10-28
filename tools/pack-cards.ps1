@@ -59,10 +59,21 @@ function Save-Jpeg($bmp, $path, $q) {
   $bmp.Save($path, $enc, $ep)
 }
 
-$sheets = Get-Content (Join-Path $root 'docs/card-art/sheets.json') -Raw | ConvertFrom-Json
+$listed = @(Get-Content (Join-Path $root 'docs/card-art/sheets.json') -Raw | ConvertFrom-Json)
+# missing-art sheets already cut live in assets-src/cards/_cut/ with their own list (sheets-cut.json, DECISIONS #402): the next
+# round of prompts numbers its sheets from -m01 again, so they must never be read from the main folder under the new list. They run
+# after the regular sheets (their pictures replace borrowed copies) and before this round's missing-art sheets.
+$archive = @()
+$archiveList = Join-Path $root 'docs/card-art/sheets-cut.json'
+if (Test-Path $archiveList) {
+  $archive = @(Get-Content $archiveList -Raw | ConvertFrom-Json)
+  foreach ($sh in $archive) { $sh | Add-Member -NotePropertyName dir -NotePropertyValue (Join-Path $srcDir '_cut') -Force }
+}
+$sheets = @($listed | Where-Object { $_.name -notmatch '-m\d+$' }) + $archive + @($listed | Where-Object { $_.name -match '-m\d+$' })
 $done = 0
 foreach ($sh in $sheets) {
-  $path = Join-Path $srcDir "$($sh.name).png"
+  $dir = if ($sh.PSObject.Properties['dir']) { $sh.dir } else { $srcDir }
+  $path = Join-Path $dir "$($sh.name).png"
   if (-not (Test-Path $path)) { continue }
   $img = New-Object System.Drawing.Bitmap $path
   # a sheet can name its picture rectangles itself ('cells': [[x0,y0,x1,y1],...]) when the gutters cannot be found and the pictures are not an even grid

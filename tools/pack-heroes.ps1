@@ -3,7 +3,7 @@
 # The background is removed by flood-filling from the edges (colour sampled from the corner), so dark clothing inside the
 # figure is kept. Rivet's drone is a companion in the game already, so that corner is wiped first.
 # (Valeria's old gritty sheet had its own script, tools/pack-knight.ps1; her new art goes through this one as knight.png.)
-# Run: powershell -File tools/pack-heroes.ps1
+# Skins for the Store go in assets-src/heroes/skins/ (see below). Run: powershell -File tools/pack-heroes.ps1
 Add-Type -AssemblyName System.Drawing
 $ErrorActionPreference = 'Stop'
 $root = Split-Path $PSScriptRoot
@@ -76,18 +76,16 @@ $wipe = @{
   engineer = @(, @(0, 0, 345, 300))   # the hovering drone, top left (a companion in the game already)
 }
 
-foreach ($f in Get-ChildItem $srcDir -Filter *.png | Sort-Object Name) {
-  $id = $f.BaseName
-  # old class names (DECISIONS #371, #391): their figures are hero-shaman / hero-trickster / hero-monk now, so a leftover source is skipped
-  if (@('totemist', 'trapper', 'barbarian') -contains $id) { "skip $($f.Name) (old class name)"; continue }
-  $src = New-Object System.Drawing.Bitmap $f.FullName
+# Cut one figure: key the flat background out, crop to the figure, scale to at most $maxH tall. $wipeKey names the regions to wipe.
+function Cut-Figure($file, $wipeKey, $dest) {
+  $src = New-Object System.Drawing.Bitmap $file
   $bmp = New-Object System.Drawing.Bitmap $src.Width, $src.Height, ([System.Drawing.Imaging.PixelFormat]::Format32bppArgb)
   $g0 = [System.Drawing.Graphics]::FromImage($bmp)
   $g0.DrawImage($src, 0, 0, $src.Width, $src.Height)
   $bg = $bmp.GetPixel(3, 3)
-  if ($wipe.ContainsKey($id)) {
+  if ($wipe.ContainsKey($wipeKey)) {
     $brush = New-Object System.Drawing.SolidBrush ([System.Drawing.Color]::FromArgb(255, $bg.R, $bg.G, $bg.B))
-    foreach ($r in $wipe[$id]) { $g0.FillRectangle($brush, $r[0], $r[1], $r[2], $r[3]) }
+    foreach ($r in $wipe[$wipeKey]) { $g0.FillRectangle($brush, $r[0], $r[1], $r[2], $r[3]) }
   }
   $g0.Dispose(); $src.Dispose()
   $b = [HeroKey]::Run($bmp, $bg.R, $bg.G, $bg.B, 24, 40)
@@ -99,9 +97,32 @@ foreach ($f in Get-ChildItem $srcDir -Filter *.png | Sort-Object Name) {
   $g.InterpolationMode = 'HighQualityBicubic'; $g.PixelOffsetMode = 'HighQuality'; $g.SmoothingMode = 'HighQuality'
   $g.DrawImage($bmp, (New-Object System.Drawing.Rectangle 0, 0, $ow, $oh), $crop, 'Pixel')
   $g.Dispose()
-  $dest = Join-Path $outDir "hero-$id.png"
   $out.Save($dest, [System.Drawing.Imaging.ImageFormat]::Png)
-  "$id -> $dest ${ow}x${oh} (bg $($bg.R),$($bg.G),$($bg.B))"
+  "$([System.IO.Path]::GetFileName($file)) -> $dest ${ow}x${oh} (bg $($bg.R),$($bg.G),$($bg.B))"
   $out.Dispose(); $bmp.Dispose()
+}
+
+foreach ($f in Get-ChildItem $srcDir -Filter *.png | Sort-Object Name) {
+  $id = $f.BaseName
+  # old class names (DECISIONS #371, #391): their figures are hero-shaman / hero-trickster / hero-monk now, so a leftover source is skipped
+  if (@('totemist', 'trapper', 'barbarian') -contains $id) { "skip $($f.Name) (old class name)"; continue }
+  Cut-Figure $f.FullName $id (Join-Path $outDir "hero-$id.png")
+}
+
+# Skins (DECISIONS #402): assets-src/heroes/skins/<heroId>-<skin>.png (the class id, then the skin's name in kebab case, e.g.
+# knight-moonlit-regent.png) -> apps/web/public/art/figures/skins/<heroId>-<skin>.png, cut like the hero (the Engineer's drone wiped)
+# (class ids have no hyphen, so the first word of the file name is the class)
+$skinSrc = Join-Path $srcDir 'skins'
+$skinOut = Join-Path $outDir 'skins'
+# the old class names (DECISIONS #371, #372, #391): a skin named with one is filed under the class it is now
+$renamed = @{ totemist = 'shaman'; trapper = 'trickster'; barbarian = 'monk' }
+if (Test-Path $skinSrc) {
+  New-Item -ItemType Directory -Force $skinOut | Out-Null
+  foreach ($f in Get-ChildItem $skinSrc -Filter *.png | Sort-Object Name) {
+    $old = $f.BaseName.Split('-')[0]
+    $hero = if ($renamed.ContainsKey($old)) { $renamed[$old] } else { $old }
+    $name = $hero + $f.BaseName.Substring($old.Length) + '.png'
+    Cut-Figure $f.FullName $hero (Join-Path $skinOut $name)
+  }
 }
 & (Join-Path $PSScriptRoot 'pack-manifest.ps1')

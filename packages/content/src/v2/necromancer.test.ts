@@ -213,12 +213,12 @@ describe('Dorian, the Necrobinder copy', () => {
     s = play(s, 'T0');
     expect(thralls(s)).toHaveLength(1);
     s = applyAction(db, s, { type: 'endTurn' }).state;
-    // Call at Dusk's 2, beside Grave Chill's 3 for the turn
+    // Call at Dusk's 2, beside Grave Chill's 2 for the turn
     expect(
       thralls(s)
         .map((u) => u.maxHp)
         .sort((x, y) => x - y),
-    ).toEqual([2, 3, 80]);
+    ).toEqual([2, 2, 80]);
     expect(s.sides.a.mana).toBe(5);
     s = applyAction(db, s, { type: 'endTurn' }).state;
     expect(s.sides.a.mana).toBe(3);
@@ -426,10 +426,10 @@ describe('Grave Chill raises a Thrall every turn (DECISIONS #397)', () => {
       b: { enemies: ['squire'] },
     }).state;
 
-  it('turn 1: the starting Thrall and a new one with 3 HP', () => {
-    expect(thralls(start()).map((u) => u.maxHp)).toEqual([5, 3]);
+  it('turn 1: the starting Thrall and a new one with 2 HP', () => {
+    expect(thralls(start()).map((u) => u.maxHp)).toEqual([5, 2]);
     expect(cardText(db, db.cards['raise-thrall']!)).toBe('Raise 5.');
-    expect(RIFTWALKERS.necromancer.trait.text).toMatch(/^At the start of your turn, Raise 3./);
+    expect(RIFTWALKERS.necromancer.trait.text).toMatch(/^At the start of your turn, Raise 2./);
   });
 
   it('a Thrall is standing at the start of every turn, even after the enemy kills them', () => {

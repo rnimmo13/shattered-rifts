@@ -1,5 +1,6 @@
 # Rebuilds apps/web/public/art/manifest.json from the PNGs in public/art/figures: figures/<id>.png is the real figure
-# for enemy unit <id> (art key "unit:<id>"), figures/hero-<id>.png for a Riftwalker (art key "hero:<id>"). Called by the pack-*.ps1 tools that write figures.
+# for enemy unit <id> (art key "unit:<id>"), figures/hero-<id>.png for a Riftwalker (art key "hero:<id>"), and figures/skins/<heroId>-<skin>.png an
+# alternate look for the Store ("skins": skin id -> file, DECISIONS #402). Called by the pack-*.ps1 tools that write figures.
 $ErrorActionPreference = 'Stop'
 $root = Split-Path $PSScriptRoot
 $dir = Join-Path $root 'apps/web/public/art/figures'
@@ -13,8 +14,12 @@ foreach ($f in Get-ChildItem $dir -Filter *.png | Sort-Object Name) {
 $cards = [ordered]@{}
 $cardDir = Join-Path $root 'apps/web/public/art/cards'
 if (Test-Path $cardDir) { foreach ($f in Get-ChildItem $cardDir -Include *.jpg, *.png, *.webp -Recurse | Sort-Object Name) { $cards[$f.BaseName] = "cards/$($f.Name)" } }
+$skins = [ordered]@{}
+$skinDir = Join-Path $dir 'skins'
+if (Test-Path $skinDir) { foreach ($f in Get-ChildItem $skinDir -Filter *.png | Sort-Object Name) { $skins[$f.BaseName] = "figures/skins/$($f.Name)" } }
 $manifest = [ordered]@{ figures = $figures }
+if ($skins.Count -gt 0) { $manifest['skins'] = $skins }
 if ($cards.Count -gt 0) { $manifest['cards'] = $cards }
 $json = $manifest | ConvertTo-Json -Depth 4
 [System.IO.File]::WriteAllText((Join-Path $root 'apps/web/public/art/manifest.json'), $json, (New-Object System.Text.UTF8Encoding($false)))
-"manifest: $($figures.Count) figures, $($cards.Count) cards"
+"manifest: $($figures.Count) figures, $($skins.Count) skins, $($cards.Count) cards"

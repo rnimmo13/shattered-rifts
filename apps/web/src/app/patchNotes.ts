@@ -33,15 +33,23 @@ export const PATCH_NOTES: PatchNote[] = [
     date: '2026-10-28',
     title: 'Tricks and traits',
     summary:
-      'The Trickster and the Necromancer traits are toned down, Sharpen carries over, and the Suits get their own panel.',
+      'Every card has its own art, the Store shows the first Riftwalker looks, and the Trickster and Necromancer traits are toned down.',
     notes: [
+      {
+        kind: 'new',
+        text: 'Every card now has its own art: the last 169 pictures are in.',
+      },
+      {
+        kind: 'new',
+        text: 'The Store shows the first Riftwalker looks: twenty of them, two for every Riftwalker (a new outfit and the other gender). They are coming soon, and they will never change how a hero plays.',
+      },
       {
         kind: 'balance',
         text: 'Lying in Wait no longer gives 4 Barrier every turn, but every Full Trick in a fight deals 3 more than the last (5, 8, 11...).',
       },
       {
         kind: 'balance',
-        text: 'Grave Chill no longer puts 3 Fate on every enemy at the start; a Thrall that dies curses an enemy with 5 Fate (was 3).',
+        text: 'Grave Chill raises 2 a turn (was 3) and no longer puts 3 Fate on every enemy at the start; a Thrall that dies curses an enemy with 5 Fate (was 3).',
       },
       {
         kind: 'changed',

@@ -70,3 +70,70 @@
   text-transform: uppercase;
   color: #7fd3ff;
 }
+
+/* Riftwalker looks (DECISIONS #402): each skin's figure on a dark stage, its name and class, "Coming soon" */
+.store__looks {
+  margin-bottom: 2rem;
+}
+.store__section {
+  margin: 0 0 0.3rem;
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--c-gold-light);
+}
+.store__note {
+  margin: 0 0 1rem;
+  max-width: 40rem;
+  color: var(--c-text-dim);
+}
+.store__skins {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr));
+  gap: 1rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.store__skin {
+  position: relative;
+  display: grid;
+  gap: 0.2rem;
+  padding: 0.8rem 0.8rem 2.4rem;
+  border-radius: 14px;
+  border: 1px solid rgb(212 168 75 / 0.35);
+  background:
+    radial-gradient(90% 60% at 50% 35%, rgb(95 200 255 / 0.14), transparent 70%),
+    linear-gradient(170deg, rgb(24 34 78 / 0.9), rgb(8 10 20 / 0.95));
+}
+.store__figure {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  height: 15rem;
+  margin-bottom: 0.4rem;
+  overflow: hidden;
+}
+/* (the figure fits the stage's height, so its feet never reach the name below) */
+.store__figure img {
+  display: block;
+  height: 100%;
+  max-width: 100%;
+  object-fit: contain;
+  object-position: bottom;
+  filter: drop-shadow(0 6px 10px rgb(0 0 0 / 0.55));
+}
+.store__skin b {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  color: var(--c-gold-light);
+}
+.store__skin span {
+  color: var(--c-text-dim);
+  font-size: 0.9rem;
+}
+.store__skin .store__soon {
+  left: 0.8rem;
+  bottom: 0.8rem;
+}

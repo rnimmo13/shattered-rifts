@@ -13,11 +13,14 @@ interface Manifest {
   figures?: Record<string, string>;
   cards?: Record<string, string>;
   backdrops?: Record<string, string>;
+  /** alternate looks for the Store: skin id ("knight-moonlit-regent": the class id, then the skin) -> figure (DECISIONS #402) */
+  skins?: Record<string, string>;
 }
 
 const figures = new Map<string, HTMLCanvasElement>();
 const cards = new Map<string, string>();
 const backdrops = new Map<string, string>();
+const skins = new Map<string, string>();
 let loading: Promise<void> | null = null;
 let staged: Stages | null = null;
 
@@ -54,6 +57,8 @@ function load(): Stages {
     for (const [id, path] of Object.entries(m.cards ?? {})) cards.set(id, `${base()}art/${path}`);
     for (const [id, path] of Object.entries(m.backdrops ?? {}))
       backdrops.set(id, `${base()}art/${path}`);
+    // (skins are only listed: the Store shows them as plain images, so nothing is fetched here)
+    for (const [id, path] of Object.entries(m.skins ?? {})) skins.set(id, `${base()}art/${path}`);
     const fetchFigure = (key: string, path: string): Promise<void> =>
       loadImage(`${base()}art/${path}`).then((img) => {
         if (!img) return;
@@ -65,10 +70,12 @@ function load(): Stages {
       });
     const entries = Object.entries(m.figures ?? {});
     // the heroes come first: the home screen and every character screen show them
-    const heroes = Promise.all(entries.filter(([k]) => k.startsWith('hero:')).map(([k, p]) => fetchFigure(k, p))).then(
-      () => undefined,
+    const heroes = Promise.all(
+      entries.filter(([k]) => k.startsWith('hero:')).map(([k, p]) => fetchFigure(k, p)),
+    ).then(() => undefined);
+    const rest = Promise.all(
+      entries.filter(([k]) => !k.startsWith('hero:')).map(([k, p]) => fetchFigure(k, p)),
     );
-    const rest = Promise.all(entries.filter(([k]) => !k.startsWith('hero:')).map(([k, p]) => fetchFigure(k, p)));
     return { heroes, all: Promise.all([heroes, rest]).then(() => undefined) };
   };
   const staged = start();
@@ -80,7 +87,8 @@ const HEROES_WAIT_MS = 15000;
 /** How long a fight waits for the rest of the figures (enemies, companions). */
 const ALL_WAIT_MS = 10000;
 
-const wait = (ms: number): Promise<void> => new Promise<void>((resolve) => window.setTimeout(resolve, ms));
+const wait = (ms: number): Promise<void> =>
+  new Promise<void>((resolve) => window.setTimeout(resolve, ms));
 
 /** Tell the screens that art which was not there in time is there now (a first visit on a slow connection). */
 export const ART_READY_EVENT = 'sr-art-ready';
@@ -120,3 +128,14 @@ export const realCardArt = (id: string): string | undefined => cards.get(artKey(
 
 /** A real backdrop URL for a realm, if one was supplied. */
 export const realBackdrop = (realm: string): string | undefined => backdrops.get(realm);
+
+/** An alternate look for a Riftwalker (a Store cosmetic, DECISIONS #402): its id, the class it dresses, and its figure's URL. */
+export interface Skin {
+  id: string;
+  hero: string;
+  url: string;
+}
+
+/** Every skin the manifest lists, in its order (empty until the manifest has loaded: call after preloadArt). */
+export const realSkins = (): Skin[] =>
+  [...skins].map(([id, url]) => ({ id, hero: id.split('-')[0] ?? id, url }));

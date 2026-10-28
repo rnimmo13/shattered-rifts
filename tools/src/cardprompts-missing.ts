@@ -6,7 +6,15 @@
 // still need a picture are listed.
 
 import { createHash } from 'node:crypto';
-import { readFileSync, writeFileSync } from 'node:fs';
+import {
+  existsSync,
+  mkdirSync,
+  readdirSync,
+  readFileSync,
+  renameSync,
+  rmSync,
+  writeFileSync,
+} from 'node:fs';
 import { cardText } from '@sr/combat';
 import { COMBAT_DB as db, RIFTWALKERS } from '@sr/content/v2';
 import { KIND_HINT, OWN_LOOK, REALM_STYLE, strip } from './cardArtStyle';
@@ -34,9 +42,29 @@ const manifest = JSON.parse(readFileSync(new URL('manifest.json', ART), 'utf8'))
   cards: Record<string, string>;
 };
 const isMissingSheet = (name: string): boolean => /-m\d+$/.test(name);
-const sheets = (JSON.parse(readFileSync(SHEETS, 'utf8')) as Sheet[]).filter(
-  (s) => !isMissingSheet(s.name),
-);
+const listed = JSON.parse(readFileSync(SHEETS, 'utf8')) as Sheet[];
+const sheets = listed.filter((s) => !isMissingSheet(s.name));
+
+// The last round's missing-art sheets that are in (and so were cut) go to assets-src/cards/_cut/ with their card list in
+// sheets-cut.json (DECISIONS #402): this run numbers its sheets from -m01 again, so a sheet left in place would later be cut for
+// another round's cards. A name already in the archive gets a number (knight-m01-2), so every round stays re-cuttable.
+const CARDS_SRC = new URL('../../assets-src/cards/', import.meta.url);
+const CUT = new URL('_cut/', CARDS_SRC);
+const ARCHIVE = new URL('../../docs/card-art/sheets-cut.json', import.meta.url);
+const archive: Sheet[] = existsSync(ARCHIVE)
+  ? (JSON.parse(readFileSync(ARCHIVE, 'utf8')) as Sheet[])
+  : [];
+let archived = 0;
+for (const sh of listed.filter((x) => isMissingSheet(x.name))) {
+  if (!existsSync(new URL(`${sh.name}.png`, CARDS_SRC))) continue;
+  mkdirSync(CUT, { recursive: true });
+  let name = sh.name;
+  for (let k = 2; existsSync(new URL(`${name}.png`, CUT)); k++) name = `${sh.name}-${k}`;
+  renameSync(new URL(`${sh.name}.png`, CARDS_SRC), new URL(`${name}.png`, CUT));
+  archive.push({ ...sh, name });
+  archived++;
+}
+if (archived) writeFileSync(ARCHIVE, JSON.stringify(archive, null, 1) + '\n');
 
 // every card a player can see: no upgrades or rolls (they share their base card's picture), no junk
 const live = Object.values(db.cards).filter(
@@ -74,11 +102,12 @@ const index: string[] = [
   '',
   `${need.length} cards: ${need.length - borrowed.size} with no picture, ${borrowed.size} showing a borrowed copy of another card's picture. Nine to a sheet, best cards first in each character.`,
   '',
+  ...(need.length === 0 ? ['Every card has its own picture: nothing to make.', ''] : []),
   '## How to use',
   '1. Start with [missing-batch-01.md](missing-batch-01.md) (the first sheet of every character: their best cards). Paste ONE prompt at a time into the image AI and attach the Valeria image (`Sunlit Paladin with Shield and Sword.png`) as the style anchor.',
   '2. Check that the pictures are separate, in a clean 3 x 3 grid, with no text. If a picture is wrong, regenerate the whole sheet (I cut by position).',
-  "3. Each prompt ends by asking ChatGPT to save the picture as a PNG with the right name (for example `knight-m01.png`) and give a download link: download it into `assets-src/cards/`. If it hands back a plain image instead, save it under the name in the sheet heading.",
-  '4. Tell me which sheets are in: I cut them (`tools/pack-cards.ps1`) and run this tool again, so only what is still missing is listed.',
+  '3. Each prompt ends by asking ChatGPT to save the picture as a PNG with the right name (for example `knight-m01.png`) and give a download link: download it into `assets-src/cards/`. If it hands back a plain image instead, save it under the name in the sheet heading.',
+  '4. Tell me which sheets are in: I cut them (`tools/pack-cards.ps1`) and run this tool again, so only what is still missing is listed. That run moves the sheets that were cut into `assets-src/cards/_cut/` (their card lists are kept in `sheets-cut.json`, and `pack-cards.ps1` still reads them there), because the next sheets reuse the names from -m01.',
   '',
   '| Character | Cards | Sheets |',
   '|---|---|---|',
@@ -163,6 +192,12 @@ for (const [no, blocks] of batches) {
   index.push(`| [missing-batch-${n}.md](missing-batch-${n}.md) | ${count} |`);
 }
 index.push('', '# Every sheet', '', ...files);
+// a batch file from an earlier run that this run did not write is stale: its sheets are in, so it goes
+const DOCS = new URL('../../docs/card-art/', import.meta.url);
+for (const name of readdirSync(DOCS)) {
+  const m = /^missing-batch-(\d+)\.md$/.exec(name);
+  if (m && !batches.has(Number(m[1]))) rmSync(new URL(name, DOCS));
+}
 writeFileSync(new URL('../../docs/card-art/missing.md', import.meta.url), index.join('\n') + '\n');
 writeFileSync(SHEETS, JSON.stringify([...sheets, ...added], null, 1) + '\n');
 console.log(
