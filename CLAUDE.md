@@ -13,6 +13,7 @@ Ko-fi-funded) → Steam full game ($7.99–$9.99) with PvP later. Owner: Robert.
 | `docs/09_ROSTER.md` | **The Riftwalkers**: pool rules (build paths, shared toolkit, owned signatures), build paths per character, traits, engine pieces. `10_CARD_LIST.md` is the generated card list (`pnpm cardlist`) |
 | `docs/11_PVP.md` | PvP: how a match works, the Cloudflare server (`apps/server`), running and deploying it |
 | `docs/12_STEAM_READINESS.md` | Steam checklist: shell, accounts, verified runs, achievements, disclosures, store page (plan only, nothing built) |
+| `docs/14_CARD_COSTING.md` | **Card costing**: the points each effect is worth (damage, Barrier, Exposed, draw, Mana, Bleed, Fate...), budgets by cost and rarity, worked from the five baseline classes. Use it to price new cards and rebalance the other classes |
 | `docs/13_PROPOSALS.md` | Designs waiting on Robert's review, ideas kept for later, ideas decided against (check before proposing features) |
 | `docs/DECISIONS.md` | Every design decision and rules clarification, with dates and reasons |
 | `docs/BALANCE.md` | Sim results (first-player advantage, starter matrix, tier model, enemy difficulty) and open balance questions |
