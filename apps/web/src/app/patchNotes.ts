@@ -29,10 +29,41 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.110.0',
+    date: '2026-10-28',
+    title: 'The Engineer builds big',
+    summary:
+      'Companions come in three sizes, small machines can be scrapped into big ones, and the Engineer is rebalanced with her own guns.',
+    notes: [
+      {
+        kind: 'new',
+        text: 'Frames: a Light machine takes 1 of your 3 companion slots, a Heavy 2 and a Colossal all 3. Pips on the card and on the machine show its size.',
+      },
+      {
+        kind: 'new',
+        text: "With no room, a summon scraps companions to make room (you choose which). The Engineer's Salvage hands their Might, Primed and half their HP to the new machine.",
+      },
+      {
+        kind: 'new',
+        text: 'Engineer cards: Pulse Pistol, Arc Welder, Laser Grid, Particle Cannon, Targeting Uplink, Full Salvo, Deploy Spotter, Build Bulwark Walker, Scrap Golem, Dreadnought, Battery Pack, Schematics and Build Generator.',
+      },
+      {
+        kind: 'balance',
+        text: 'Every Engineer card was priced again: smaller drones, Heavy Enforcer and Siege Engine, a Colossal War Engine, about 50 number changes and hand-written upgrades. Nanoswarm, Drone Uprising, Overload and Mob Rule are retired (saved decks get the closest card).',
+      },
+      {
+        kind: 'changed',
+        text: "A card that summons two or three companions needs room for all of them (the Hunter's Litter too).",
+      },
+    ],
+    heads: 'Rules changed: replays and Arena games from before this version no longer play.',
+  },
+  {
     version: '0.109.0',
     date: '2026-10-28',
     title: 'Daggers, and the pack holds the line',
-    summary: 'Overflow is tanked by the rest of your companions, the Assassin throws Daggers, and enemies are a little gentler at every tier.',
+    summary:
+      'Overflow is tanked by the rest of your companions, the Assassin throws Daggers, and enemies are a little gentler at every tier.',
     notes: [
       {
         kind: 'changed',
@@ -55,13 +86,15 @@ export const PATCH_NOTES: PatchNote[] = [
         text: 'A Trap whose damage kills the attacker no longer puts its Exposed or Faltering on another enemy.',
       },
     ],
-    heads: 'The rules changed: reload if the game asks you to. Arena games and replays from before this version can no longer be watched.',
+    heads:
+      'The rules changed: reload if the game asks you to. Arena games and replays from before this version can no longer be watched.',
   },
   {
     version: '0.108.0',
     date: '2026-10-28',
     title: 'Might hits, the Hunter hunts',
-    summary: 'Might and Exposed only change attacks now, and the Hunter is rebalanced card by card, with Traps of her own.',
+    summary:
+      'Might and Exposed only change attacks now, and the Hunter is rebalanced card by card, with Traps of her own.',
     notes: [
       {
         kind: 'changed',
@@ -84,13 +117,15 @@ export const PATCH_NOTES: PatchNote[] = [
         text: 'Blood Fire showed twice in the Aura list.',
       },
     ],
-    heads: 'The rules changed: reload if the game asks you to. Arena games and replays from before this version can no longer be watched. Old runs and decks keep working: Crimson Pact and Unbridled turn into Bone Offering and Blood Tithe.',
+    heads:
+      'The rules changed: reload if the game asks you to. Arena games and replays from before this version can no longer be watched. Old runs and decks keep working: Crimson Pact and Unbridled turn into Bone Offering and Blood Tithe.',
   },
   {
     version: '0.107.0',
     date: '2026-10-28',
     title: 'Three cards made whole',
-    summary: 'Three cards that had lost part of what they do now do all of it, and a killing blow that ends a fight pays out.',
+    summary:
+      'Three cards that had lost part of what they do now do all of it, and a killing blow that ends a fight pays out.',
     notes: [
       {
         kind: 'changed',
@@ -114,7 +149,8 @@ export const PATCH_NOTES: PatchNote[] = [
     version: '0.106.0',
     date: '2026-10-28',
     title: 'Classes by name, the Trickster',
-    summary: 'Every Riftwalker goes by their class for now, the Trapper is the Trickster, and a few card fixes.',
+    summary:
+      'Every Riftwalker goes by their class for now, the Trapper is the Trickster, and a few card fixes.',
     notes: [
       {
         kind: 'changed',
@@ -141,7 +177,8 @@ export const PATCH_NOTES: PatchNote[] = [
         text: 'Clearer card text: Hammer and Anvil, At the Threshold, Off the Leash, The Drowned King and Bloodfeast.',
       },
     ],
-    heads: 'The rules changed: reload if the game asks you to. Arena games and replays from before this version can no longer be watched.',
+    heads:
+      'The rules changed: reload if the game asks you to. Arena games and replays from before this version can no longer be watched.',
   },
   {
     version: '0.105.0',
@@ -187,7 +224,8 @@ export const PATCH_NOTES: PatchNote[] = [
         text: 'Every card of these five is new and untested: expect big swings while they are balanced.',
       },
     ],
-    heads: 'The rules changed: reload if the game asks you to. Arena games and replays from before this version can no longer be watched. Old runs and decks keep working: retired cards turn into the closest new one.',
+    heads:
+      'The rules changed: reload if the game asks you to. Arena games and replays from before this version can no longer be watched. Old runs and decks keep working: retired cards turn into the closest new one.',
   },
   {
     version: '0.104.0',
@@ -200,7 +238,8 @@ export const PATCH_NOTES: PatchNote[] = [
         text: 'The Foundry Awakens gives your companions their Primed before the Siege Engine arrives, so the text no longer reads as if the engine does it.',
       },
     ],
-    heads: 'The rules changed: reload if the game asks you to. Arena games and replays from before this version can no longer be watched.',
+    heads:
+      'The rules changed: reload if the game asks you to. Arena games and replays from before this version can no longer be watched.',
   },
   {
     version: '0.103.0',
@@ -261,7 +300,8 @@ export const PATCH_NOTES: PatchNote[] = [
     version: '0.101.0',
     date: '2026-10-27',
     title: 'Elements and the morning after',
-    summary: 'Ilvane casts the Elements, KP drinks now and pays tomorrow, and every Warden leaves a Gift.',
+    summary:
+      'Ilvane casts the Elements, KP drinks now and pays tomorrow, and every Warden leaves a Gift.',
     notes: [
       {
         kind: 'new',

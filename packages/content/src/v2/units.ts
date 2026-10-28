@@ -66,6 +66,9 @@ const RAW_ALLIES: UnitDef[] = [
  */
 const PLUS_STATS: Record<string, { hp: number; hit: number }> = {
   pup: { hp: 7, hit: 3 },
+  // (machines that strike twice gain 1 a hit, as a multi-hit attack card does: +2 a hit doubled their upgrade; DECISIONS #385)
+  'siege-engine': { hp: 16, hit: 4 },
+  'war-engine': { hp: 24, hit: 5 },
 };
 
 /** The "+" companion a "+" summon card brings: tougher and hits or guards harder. */
