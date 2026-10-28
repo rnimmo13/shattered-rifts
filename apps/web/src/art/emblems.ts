@@ -114,7 +114,7 @@ export const EMBLEMS: Record<string, Emblem> = {
       'M46 22L50 26L34 38L30 34Z',
     ],
   },
-  // Sehra: two curved scimitars crossed (the Monk's icon)
+  // Solen: two curved scimitars crossed (the Monk's icon)
   scimitars: {
     f: [
       'M56 6C48 20 34 34 16 48L21 53C40 42 54 26 56 6Z',
@@ -125,7 +125,7 @@ export const EMBLEMS: Record<string, Emblem> = {
       'M52 52L48 56L55 62L59 58Z',
     ],
   },
-  // Sehra: a closed fist, wrapped
+  // Solen: a closed fist, wrapped
   fist: {
     f: [
       'M14 28C14 20 20 18 24 20C26 14 34 14 36 18C40 16 46 18 46 24C52 24 54 30 52 36L50 46C48 54 40 58 32 58C22 58 14 52 14 42Z',

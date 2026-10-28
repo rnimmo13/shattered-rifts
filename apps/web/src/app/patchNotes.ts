@@ -29,6 +29,22 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.115.0',
+    date: '2026-10-28',
+    title: 'New faces',
+    summary: 'New art for the Monk, the Trickster and seven companions.',
+    notes: [
+      {
+        kind: 'new',
+        text: 'The Monk has a new look: a bare-handed, shaved-headed monk with golden fire around his palm and fist. The Trickster is now a masked stage magician with a fan of glowing cards.',
+      },
+      {
+        kind: 'new',
+        text: "Art for the Engineer's Spotter Drone, Generator, Bulwark Walker, Scrap Golem and Dreadnought, and the Hunter's Pup and Pack Alpha.",
+      },
+    ],
+  },
+  {
     version: '0.114.0',
     date: '2026-10-28',
     title: 'The Drunkard staggers',

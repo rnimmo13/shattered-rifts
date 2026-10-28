@@ -104,7 +104,7 @@ Numbers are measured against today's Boons (a common is worth about "6 Barrier a
 | Grave Candle | Whenever one of your allies dies, gain 1 Mana next turn. | Mire, Rivet, Kesh | — |
 | Bloodletter's Cup | Whenever you lose HP to your own card, gain 2 Barrier. | Kesh, Mire | — |
 | Second Wind | The first time each fight you fall to half HP, gain 10 Barrier. | all | a "below half HP" trigger |
-| Flowing Sash | Whenever you change stance, gain 2 Barrier. | Sehra | — |
+| Flowing Sash | Whenever you change stance, gain 2 Barrier. | Solen | — |
 | Star Chart | Whenever you spend Arcana, deal 3 damage to a random enemy. | Obsidia | — |
 
 **Rare**
@@ -119,7 +119,7 @@ Numbers are measured against today's Boons (a common is worth about "6 Barrier a
 |---|---|---|---|
 | Snaremaster's Codex | You can hold 1 more Trap, and the first Trap that springs each turn springs twice. | Vesper, Maren | a per-side Trap cap; "springs twice" |
 | Crown of the Pack | Your allies act twice at the end of the first turn of each fight. | Rivet, Kesh, Mire | — (`actAllies` at fightStart) |
-| Heart of the Storm | Start each fight in the stance you last ended a fight in. | Sehra | the campaign remembers the stance |
+| Heart of the Storm | Start each fight in the stance you last ended a fight in. | Solen | the campaign remembers the stance |
 
 **Questions:** which to keep, cut or retune. Also, is restricting a Boon to some Riftwalkers (`for`) okay? It means the
 Boon pool you see depends on who you play.

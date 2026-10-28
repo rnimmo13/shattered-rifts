@@ -253,6 +253,11 @@ $minions = @(
      ids = 'hound', 'dire-wolf', 'maw-hatchling', 'gnashling', 'gilded-guard'; flip = @() },
   @{ file = 'minions/gloomfen.png'; cols = 3; rows = 1
      ids = 'bone-thrall', 'grave-colossus', 'drowned-king'; flip = @() },
+  # the companions added after the first sheets (docs/companion-prompts.md)
+  @{ file = 'minions/mechs-2.png'; cols = 3; rows = 2; holes = 12  # holes: also clear background seen through gaps (arm and body, behind the shield)
+     ids = 'spotter-drone', 'generator', 'bulwark-walker', 'scrap-golem', 'dreadnought'; flip = @() },
+  @{ file = 'minions/pack-2.png'; cols = 2; rows = 1
+     ids = 'pup', 'pack-alpha'; flip = @() },
   # enemies (assets-src/enemies, see docs/enemy-prompts.md): they face LEFT on the sheet, toward the player
   @{ file = 'enemies/aurelion.png'; cols = 3; rows = 3
      ids = 'squire', 'squire-recruit', 'gilded-page', 'gilded-halberdier', 'bell-cleric', 'wandering-knight', 'templar-aldric', 'inquisitor-maelis', 'seraphine'; flip = @() },
@@ -270,7 +275,7 @@ foreach ($m in $minions) {
   $path = Join-Path $src $m.file
   if (-not (Test-Path $path)) { "skip $($m.file) (missing)"; continue }
   $sheet = Open-Bmp $path
-  $keyed = Key-Sheet $sheet 26 0
+  $keyed = Key-Sheet $sheet 26 $(if ($m.holes) { $m.holes } else { 0 })
   $found = @([ArtCut]::Objects($keyed, 140, 2, 8, $(if ($m.frac) { $m.frac } else { 0.04 })))
   if ($found.Count -gt $m.ids.Count) {
     # more pieces than figures (a lantern apart from its bearer): join the pieces that share a cell of the sheet

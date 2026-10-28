@@ -78,6 +78,8 @@ $wipe = @{
 
 foreach ($f in Get-ChildItem $srcDir -Filter *.png | Sort-Object Name) {
   $id = $f.BaseName
+  # old class names (DECISIONS #371, #391): their figures are hero-shaman / hero-trickster / hero-monk now, so a leftover source is skipped
+  if (@('totemist', 'trapper', 'barbarian') -contains $id) { "skip $($f.Name) (old class name)"; continue }
   $src = New-Object System.Drawing.Bitmap $f.FullName
   $bmp = New-Object System.Drawing.Bitmap $src.Width, $src.Height, ([System.Drawing.Imaging.PixelFormat]::Format32bppArgb)
   $g0 = [System.Drawing.Graphics]::FromImage($bmp)

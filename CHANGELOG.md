@@ -5,6 +5,7 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **New looks for the Monk and the Trickster.** The Monk is a bare-handed, shaved-headed monk with fire around his fists (no more scimitars), and the Trickster is a masked stage magician with a fan of glowing cards. Spotter Drone, Generator, Bulwark Walker, Scrap Golem, Dreadnought, Pup and Pack Alpha have their own art.
 - **The Drunkard is rebalanced and learns to Stagger.** Stagger cards are a drunk's swing: they hit a random enemy and hit harder for it (Haphazard Hook, Drunken Lurch, Stumble, Free-for-All, Drunken Master, Blind Drunk). Fewer Buckshot Shells (Load Shells gives 2), drinks give more for their Hangover (Barroom Brawl 16 to every enemy, One for the Road draws 3), the self-damage Auras are trimmed, the gun Auras are cheaper, and two new utility cards: Rummage the Bin and Sway.
 - **Fixed:** beating a Warden shows one page of rewards, the Warden's Gift with its Hearts. An extra card reward earned in that fight (Marked for Death) is one more card on the Gift instead of a second page.
 - **The Barbarian is now the Monk.** Same fighter and cards (her palms, prayers and stances always were a monk's); Red Mist, Cornered Beast, Blood on the Sand and Berserk Tide are Burning Breath, Coiled Serpent, Iron Body and Storm of Fists. Saved runs and decks carry over.

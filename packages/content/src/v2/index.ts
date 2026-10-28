@@ -267,7 +267,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
   },
   monk: {
     realm: 'aurelion',
-    persona: 'Sehra',
+    persona: 'Solen',
     role: 'Monk',
     trait: {
       name: 'Inner Fire',
@@ -285,7 +285,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     },
     starter: [...rep('strike', 4), ...rep('defend', 4), 'kindle-fury', 'still-guard'],
     blurb:
-      'A monk who fights in stances. Starts every fight Serene, and every stance she enters stokes her Fervor towards Radiance.',
+      'A monk who fights in stances. Starts every fight Serene, and every stance he enters stokes his Fervor towards Radiance.',
     mechanics: ['Stances', 'Fervor', 'Foresee', 'Self-damage'],
     buildPaths: [
       'Fury: get in, hit hard, live through it',

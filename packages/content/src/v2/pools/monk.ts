@@ -1,4 +1,4 @@
-// Sehra, the Still Flame (Aurelion). A monk of the Gilded Order's silent branch (the Barbarian until DECISIONS #391). No companions.
+// Solen, the Still Flame (Aurelion). A monk of the Gilded Order's silent branch (the Barbarian until DECISIONS #391). No companions.
 // Starts the fight Serene.
 // Stances (ids calm/wrath/radiant): Serene (leaving it gives 2 Mana, once a turn), Fury (deal double, take 50% more), Radiant (deal
 // triple, ends with your turn). Fervor (id mantra) builds to 10, then you enter Radiant.

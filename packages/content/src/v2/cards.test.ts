@@ -302,7 +302,7 @@ describe('pool shape (docs/09_ROSTER.md §1)', () => {
       new Set(cards.filter((c) => c.hero !== 'neutral' && pred(c)).map((c) => c.hero)).size;
     expect(count((c) => c.effects.some((o) => o.op === 'draw'))).toBeGreaterThanOrEqual(7);
     expect(count((c) => c.effects.some((o) => o.op === 'barrier'))).toBeGreaterThanOrEqual(7);
-    // (Foresee: Sehra and Vesper; the Slay the Spire list copies, Obsidia and Ilvane among them, have none)
+    // (Foresee: Solen and Vesper; the Slay the Spire list copies, Obsidia and Ilvane among them, have none)
     expect(count((c) => c.effects.some((o) => o.op === 'scry'))).toBeGreaterThanOrEqual(2);
     expect(count((c) => c.exhaust === true)).toBeGreaterThanOrEqual(6);
   });

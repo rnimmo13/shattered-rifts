@@ -77,7 +77,7 @@ const index: string[] = [
   '## How to use',
   '1. Start with [missing-batch-01.md](missing-batch-01.md) (the first sheet of every character: their best cards). Paste ONE prompt at a time into the image AI and attach the Valeria image (`Sunlit Paladin with Shield and Sword.png`) as the style anchor.',
   '2. Check that the pictures are separate, in a clean 3 x 3 grid, with no text. If a picture is wrong, regenerate the whole sheet (I cut by position).',
-  "3. Save the result as `assets-src/cards/<sheet name>.png` (the name is in each sheet's heading, for example `knight-m01`).",
+  "3. Each prompt ends by asking ChatGPT to save the picture as a PNG with the right name (for example `knight-m01.png`) and give a download link: download it into `assets-src/cards/`. If it hands back a plain image instead, save it under the name in the sheet heading.",
   '4. Tell me which sheets are in: I cut them (`tools/pack-cards.ps1`) and run this tool again, so only what is still missing is listed.',
   '',
   '| Character | Cards | Sheets |',
@@ -131,6 +131,8 @@ for (const hero of order) {
       picture,
       '',
       'NEGATIVE: text, letters, numbers, captions, labels, UI, card frames, borders, watermark, logo, photorealism, gritty texture, nudity, characters facing away.',
+      '',
+      `FILE: when the image is done, save it as a PNG file named exactly ${name}.png and give me a download link to that file.`,
       '```',
       '',
     ];

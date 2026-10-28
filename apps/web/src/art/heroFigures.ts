@@ -1537,7 +1537,7 @@ const totemist: Painter = (g, fx) => {
   glowHex(fx, '#5a8a3a', CX, 420, 150, 0.1);
 };
 
-// ---- Sehra: a monk (was the Barbarian), bare to the waist, braided beard, fists wrapped, in a roaring stance ----
+// ---- Solen: a monk (was the Barbarian), bare to the waist, braided beard, fists wrapped, in a roaring stance ----
 const monk: Painter = (g, fx) => {
   // fur cloak behind
   gpoly(
