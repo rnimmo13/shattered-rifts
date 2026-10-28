@@ -62,7 +62,8 @@ export interface Entry {
 // (20: Valeria is the Ironclad shape and there are new engine pieces, no Devotion, no Legendary cards, build paths hidden, two uncommons to start, #362-366)
 // (25: companion frames (slots), scrapping several to make room, Salvage, the Engineer rebalanced with new cards, #383-385)
 // (26: the Trickster rebalanced by the card costing guide, Death Trap and Whisper Net retired, #386)
-export const RULES_VERSION = 26;
+// (27: the Full Trick goes off after the card that earned it, #389)
+export const RULES_VERSION = 27;
 
 /** Who you are playing, before a game starts: their name and badges, not their deck or Riftwalker. */
 export type FoeCard = Pick<Entry, 'name' | 'trophies' | 'rank'>;

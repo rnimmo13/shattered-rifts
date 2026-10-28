@@ -153,6 +153,10 @@ export function reduceEvent(db: CombatDb, s: CombatState, e: CombatEvent): void 
       if (played) delete played.costMod;
       return;
     }
+    // (the Trickster's Suits: the pips light as the card is played, not when the whole step has played out)
+    case 'suits':
+      s.sides[e.side].suitsTurn = [...e.suits];
+      return;
     case 'snareSet': {
       const sd = s.sides[e.side];
       const i = sd.discard.findIndex((c) => c.id === e.snare);

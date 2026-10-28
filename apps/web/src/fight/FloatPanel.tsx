@@ -53,6 +53,8 @@ export function FloatPanel(props: {
   const drag = useRef<{ dx: number; dy: number; moved: boolean } | null>(null);
   /** the press that just ended moved the panel: its click must not fold it */
   const dragged = useRef(false);
+  /** where the drag has got to (the render's `spot` can be one move behind) */
+  const latest = useRef<Spot | null>(null);
 
   const keep = useCallback(
     (next: Spot | null, fold = folded): void => {
@@ -67,30 +69,33 @@ export function FloatPanel(props: {
   // (a spot of -1 only remembers the fold: the panel stays in the layout)
   const placed = spot && spot.fx >= 0 ? spot : null;
 
-  // the corner resize: the panel's size before a press on it, so a press that changed it is known to be a resize (a size that
-  // only grew with its content is never remembered)
-  const sizeAtPress = useRef<{ w: number; h: number } | null>(null);
-  const onPanelDown = (): void => {
+  // the corner resize: a press that starts on the grip (the bottom-right corner) arms it, and the size the panel has when the press
+  // ends is remembered (a size that only grew with its content is never saved)
+  const resizing = useRef(false);
+  const onPanelDown = (e: React.PointerEvent): void => {
     const el = box.current;
-    sizeAtPress.current = el ? { w: el.offsetWidth, h: el.offsetHeight } : null;
-  };
-  const onPanelUp = (): void => {
-    const el = box.current;
-    const was = sizeAtPress.current;
-    sizeAtPress.current = null;
-    if (!el || !was || folded) return;
-    const w = Math.round(el.offsetWidth);
-    const h = Math.round(el.offsetHeight);
-    if (Math.abs(w - was.w) < 2 && Math.abs(h - was.h) < 2) return;
-    // (resized where the layout put it: it stays there, now with its own size)
+    if (!el || folded) return;
     const r = el.getBoundingClientRect();
-    keep({
-      fx: placed?.fx ?? r.left / window.innerWidth,
-      fy: placed?.fy ?? r.top / window.innerHeight,
-      w,
-      h,
-    });
+    resizing.current = e.clientX > r.right - 18 && e.clientY > r.bottom - 18;
   };
+  useEffect(() => {
+    const done = (): void => {
+      if (!resizing.current) return;
+      resizing.current = false;
+      const el = box.current;
+      if (!el) return;
+      const r = el.getBoundingClientRect();
+      keep({
+        fx: placed?.fx ?? r.left / window.innerWidth,
+        fy: placed?.fy ?? r.top / window.innerHeight,
+        w: Math.round(r.width),
+        h: Math.round(r.height),
+      });
+    };
+    // (the release can land anywhere: the grip is dragged past the panel's edge)
+    window.addEventListener('pointerup', done);
+    return () => window.removeEventListener('pointerup', done);
+  }, [placed, keep]);
 
   // a smaller window never strands a panel off screen
   useEffect(() => {
@@ -105,7 +110,6 @@ export function FloatPanel(props: {
     if (!r) return;
     drag.current = { dx: e.clientX - r.left, dy: e.clientY - r.top, moved: false };
     dragged.current = false;
-    (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
   };
   const onMove = (e: React.PointerEvent): void => {
     const d = drag.current;
@@ -115,19 +119,22 @@ export function FloatPanel(props: {
     const x = Math.max(0, Math.min(window.innerWidth - r.width, e.clientX - d.dx));
     const y = Math.max(0, Math.min(window.innerHeight - 40, e.clientY - d.dy));
     if (!d.moved && Math.abs(x - r.left) + Math.abs(y - r.top) < 4) return;
+    if (!d.moved) (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
     d.moved = true;
-    setSpot({
+    const next: Spot = {
       fx: x / window.innerWidth,
       fy: y / window.innerHeight,
       w: placed?.w ?? Math.round(r.width),
       ...(placed?.h !== undefined ? { h: placed.h } : {}),
-    });
+    };
+    latest.current = next;
+    setSpot(next);
   };
   const onUp = (): void => {
     const d = drag.current;
     drag.current = null;
     dragged.current = !!d?.moved;
-    if (d?.moved && spot) keep(spot);
+    if (d?.moved && latest.current) keep(latest.current);
   };
 
   const style: React.CSSProperties | undefined = placed
@@ -148,14 +155,17 @@ export function FloatPanel(props: {
       className={`fpanel${placed ? ' is-moved' : ''}${folded ? ' is-folded' : ''} ${props.className ?? ''}`}
       style={style}
       onPointerDown={onPanelDown}
-      onPointerUp={onPanelUp}
     >
       <header
         className="fpanel__head"
         onPointerDown={onDown}
         onPointerMove={onMove}
         onPointerUp={onUp}
-        onDoubleClick={() => keep(null)}
+        onDoubleClick={(e) => {
+          // (a double-click on the Cards button is two clicks of that button, not "put it back")
+          if ((e.target as HTMLElement).closest('button:not(.fpanel__title)')) return;
+          keep(null);
+        }}
         title="Drag to move, drag the corner to resize, double-click to put it back"
       >
         <button

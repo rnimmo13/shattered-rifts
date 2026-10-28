@@ -1025,6 +1025,8 @@ export interface SideState {
   /** (the Trickster's Suits) the suits showing this turn, and whether the Full Trick has gone off */
   suitsTurn?: Suit[];
   fullTrickTurn?: boolean;
+  /** the card being played lit the fourth suit: its Full Trick goes off once the card has done what it does */
+  fullTrickDue?: boolean;
   discarded: number;
   /** leaving Calm has already paid its Mana this turn */
   calmPaid?: boolean;

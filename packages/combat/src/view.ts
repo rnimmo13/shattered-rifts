@@ -678,7 +678,6 @@ function whenText(o: Extract<Op, { op: 'when' }>, db?: CombatDb): string {
   if (o.by === 'suits' && lo !== undefined && hi === undefined)
     return `you have played ${lo} or more suits this turn`;
   if (SUIT_GLYPH[o.by] && lo === 1) return `you have played a ${SUIT_GLYPH[o.by]} this turn`;
-  if (SUIT_GLYPH[o.by] && hi === 0) return `it is the first ${SUIT_GLYPH[o.by]} you play this turn`;
   if (o.by === 'exhaustedTurn' && (lo ?? 0) >= 1) return 'you have consumed a card this turn';
   if (o.by === 'skillsDrawnNow' && (lo ?? 0) >= 1) return 'you drew a Skill';
   if (o.by === 'seared' && o.of === 'target' && (lo ?? 0) >= 1) return 'the target has Bleed';

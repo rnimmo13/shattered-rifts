@@ -1,7 +1,19 @@
 // Combat v2 content: heroes, starter decks, cards, companions and encounters (docs/08_COMBAT_V2.md).
 
 import { validateDb, type CombatDb, type HeroDef, type HeroTrait } from '@sr/combat';
-import { addTo, barrier, channel, dmg, draw, forge, heal, on, stance, stars, status } from './build';
+import {
+  addTo,
+  barrier,
+  channel,
+  dmg,
+  draw,
+  forge,
+  heal,
+  on,
+  stance,
+  stars,
+  status,
+} from './build';
 import { BOONS, HEARTS } from './boons';
 import { V2_CARDS } from './cards';
 import { RUNES } from './pools/shaman';
@@ -158,7 +170,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     role: 'Trickster',
     trait: {
       name: 'Lying in Wait',
-      text: 'Start every fight with 6 Barrier and 2 extra cards in hand. At the start of your turn, gain 4 Barrier.',
+      text: 'Start every fight with 6 Barrier and 2 extra cards in hand. At the start of your turn, gain 4 Barrier. The first time each turn you have played all four suits (♠ ♥ ♦ ♣), a Full Trick: deal 5 damage to ALL enemies and draw 1 card.',
       fightStart: [barrier(6), draw(2)],
       turnStart: [barrier(4)],
       // Suits (DECISIONS #387): the first time in a turn all four suits are showing, a Full Trick

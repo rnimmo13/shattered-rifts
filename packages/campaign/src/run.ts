@@ -71,6 +71,7 @@ import {
   offerBoon,
   offerCards,
   priceOf,
+  deadElsewhere,
 } from './rewards';
 import type {
   DealStep,
@@ -351,7 +352,13 @@ export function enterNode(run: RunState, nodeId: string): RunState {
         stock = [];
         for (let g = 0; g < 40 && stock.length < 4; g++)
           for (const id of offerCards(r.rng, crossed, r.deck, 'elite', 4))
-            if (COMBAT_DB.cards[id]?.hero === crossed && !stock.includes(id) && stock.length < 4)
+            if (
+              COMBAT_DB.cards[id]?.hero === crossed &&
+              // (not a card that only works in its owner's deck: the Trickster's Suits, DECISIONS #387)
+              !deadElsewhere(id) &&
+              !stock.includes(id) &&
+              stock.length < 4
+            )
               stock.push(id);
       } else {
         stock = offerCards(r.rng, r.character, r.deck, 'elite', 4);

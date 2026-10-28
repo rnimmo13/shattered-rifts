@@ -29,6 +29,27 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.113.0',
+    date: '2026-10-28',
+    title: 'Fixes for Suits and panels',
+    summary: 'Panels fold on a click again, and the Full Trick waits for the card that earned it.',
+    notes: [
+      {
+        kind: 'fixed',
+        text: 'Clicking a panel title folds and unfolds it again (the battle log could not be opened on a phone).',
+      },
+      {
+        kind: 'fixed',
+        text: "The Full Trick goes off after the card that earned it, so its damage never kills that card's target first. The pips light as each card is played, and the battle log says when you make a Full Trick.",
+      },
+      {
+        kind: 'fixed',
+        text: 'Suits cards are no longer offered to other Riftwalkers, where they did nothing.',
+      },
+    ],
+    heads: 'Rules changed: replays and Arena games from before this version no longer play.',
+  },
+  {
     version: '0.112.0',
     date: '2026-10-28',
     title: 'The Trickster deals the cards',

@@ -1,7 +1,7 @@
 // Card rewards (03_CAMPAIGN §2.3, §2.4) for Combat v2. Offers come from the Riftwalker's own pool plus Neutral; about 1 in 10
 // is "Rift-crossed" (another Riftwalker's pool). A card the deck already holds 5 of (or a Legendary or Ancestral one it holds) is never offered (DECISIONS #337).
 
-import { nextInt, type CardDef, type RngState } from '@sr/combat';
+import { nextInt, type CardDef, type Op, type RngState } from '@sr/combat';
 import {
   BOONS,
   COMBAT_DB,
@@ -42,12 +42,25 @@ export function canAdd(deck: readonly string[], cardId: string, rarityLimits = t
   return deck.filter((x) => base(x) === base(cardId)).length < maxCopiesOf(c.rarity);
 }
 
-/** Statuses only one Riftwalker builds (through their trait): cards that spend or count them never cross over. */
-const OWNER_ONLY = new Set<string>();
+/**
+ * What only one Riftwalker builds (through their trait): cards that spend, count or wait for it never cross over, since they would be
+ * dead in another deck. The Trickster's Suits (DECISIONS #387): only her trait keeps the suits played, so "per suit", "if you have
+ * played a ♥" and "whenever you make a Full Trick" do nothing for anyone else.
+ */
+const OWNER_ONLY = new Set<string>(['suits', 'spades', 'hearts', 'diamonds', 'clubs', 'allSuits']);
+/** whether an effect, or anything it holds (an Aura's trigger, a condition's effects), reads or waits for an owner-only thing */
+const readsOwnerOnly = (o: Op): boolean =>
+  ('scale' in o && !!o.scale && OWNER_ONLY.has(o.scale.by)) ||
+  (o.op === 'when' && (OWNER_ONLY.has(o.by) || o.ops.some(readsOwnerOnly))) ||
+  (o.op === 'power' && (OWNER_ONLY.has(o.when) || o.ops.some(readsOwnerOnly)));
 const ownerOnly = (c: CardDef | undefined): boolean =>
   !!c &&
   ((!!c.statusCost && OWNER_ONLY.has(c.statusCost.status)) ||
-    c.effects.some((o) => 'scale' in o && !!o.scale && OWNER_ONLY.has(o.scale.by)));
+    (!!c.cheaperPer && OWNER_ONLY.has(c.cheaperPer.by)) ||
+    c.effects.some(readsOwnerOnly));
+
+/** Whether a card would be dead in any deck but its owner's (it reads something only its owner's trait builds). */
+export const deadElsewhere = (id: string): boolean => ownerOnly(COMBAT_DB.cards[id]);
 
 /** Cards of every other Riftwalker's pool (the Rift-crossed pool). */
 export function crossedPool(hero: HeroId): string[] {

@@ -18,6 +18,7 @@ import {
   type OptSpec,
 } from './eventDeals';
 import type { EventDef } from './events';
+import { deadElsewhere } from './rewards';
 import type { DealStep, RunState } from './types';
 
 const swap = (from: string, to: string): DealStep => ({ k: 'swap', from, to });
@@ -67,7 +68,7 @@ function reliquary(r: RunState): { opts: OptSpec[]; cards: string[] } {
   for (let tries = 0; tries < 12 && crossed.length < 2; tries++) {
     const h = pick(r, others);
     const id = h ? pick(r, legendsOf(h)) : undefined;
-    if (id && !held.has(id) && !crossed.includes(id)) crossed.push(id);
+    if (id && !held.has(id) && !crossed.includes(id) && !deadElsewhere(id)) crossed.push(id);
   }
   const offers = [...(own ? [own] : []), ...crossed].map(asCard);
   const whose = (id: string): string => {

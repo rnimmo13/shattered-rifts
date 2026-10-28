@@ -244,6 +244,14 @@ export function createDescriber(c: LogContext): (e: CombatEvent) => Omit<LogLine
               : `${verb(c.nameOf(e.unit), 'enter', 'enters')} ${STANCE_NAME[e.stance] ?? pretty(e.stance)}`,
           tone: tone(c.sideOf(e.unit)),
         };
+      case 'suits':
+        // (only the Full Trick is worth a line: the pips show the rest)
+        return e.full
+          ? {
+              text: `${c.who(e.side)} ${e.side === c.me ? 'make' : 'makes'} a Full Trick: all four suits this turn`,
+              tone: tone(e.side),
+            }
+          : null;
       case 'snareSet':
         return {
           text: `${c.who(e.side)} ${e.side === c.me ? 'set' : 'sets'} a Trap`,

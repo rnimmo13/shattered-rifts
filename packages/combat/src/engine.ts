@@ -2325,12 +2325,14 @@ function playFree(
   clearTurnFlags(inst);
   strangle(r, sd);
   if (r.s.winner) return back();
-  showSuit(r, sd, hero, cd);
+  if (cd.kind !== 'snare') showSuit(r, sd, cd);
   if (r.s.winner) return back();
   if (cd.kind === 'snare') {
     if (sd.snares.length < MAX_SNARES) {
+      showSuit(r, sd, cd);
       sd.snares.push({ id: inst.id, card: inst.card });
       r.ev.push({ type: 'snareSet', side: sd.id, snare: inst.id });
+      payFullTrick(r, sd);
     } else back();
     return;
   }
@@ -2353,6 +2355,7 @@ function playFree(
     bringBack(r, sd, cd);
     countPlayed(sd, cd, inst);
     fireTriggers(r, sd, 'play', { card: cd, target, inst, cost: 0 });
+    payFullTrick(r, sd);
   } else finishCard(r, sd, inst, cd, target, 0);
 }
 
@@ -2360,7 +2363,7 @@ function playFree(
  * (the Trickster's Suits) A card is being played: its suit shows (a Wild card shows them all). The first time in a turn all four
  * are showing, the hero's Full Trick goes off and the Auras that wait for it answer. Only a hero whose trait has Suits keeps them.
  */
-function showSuit(r: Run, sd: SideState, hero: Unit, cd: CardDef): void {
+function showSuit(r: Run, sd: SideState, cd: CardDef): void {
   const suits = traitOf(r, sd.id)?.suits;
   if (!suits) return;
   const shown = sd.suitsTurn ?? [];
@@ -2373,6 +2376,19 @@ function showSuit(r: Run, sd: SideState, hero: Unit, cd: CardDef): void {
   r.ev.push({ type: 'suits', side: sd.id, suits: [...sd.suitsTurn], full });
   if (!full) return;
   sd.fullTrickTurn = true;
+  sd.fullTrickDue = true;
+}
+
+/**
+ * The Full Trick a card earned goes off once that card has done what it does (so its 5 damage to every enemy never takes the card's
+ * own target from it), and the Auras that wait for it answer.
+ */
+function payFullTrick(r: Run, sd: SideState): void {
+  if (!sd.fullTrickDue) return;
+  sd.fullTrickDue = false;
+  const suits = traitOf(r, sd.id)?.suits;
+  const hero = heroOf(sd);
+  if (!suits || !hero || r.s.winner) return;
   r.depth++;
   runOps(r, mkAct(hero), suits.fullTrick);
   r.depth--;
@@ -2753,6 +2769,13 @@ function beginHeroTurn(r: Run, side: Side): void {
   r.s.active = side;
   r.s.turn++;
   r.ev.push({ type: 'turnStart', side, turn: r.s.turn });
+  // (the suits clear first, so a card played as the turn begins keeps its suit)
+  if (traitOf(r, side)?.suits) {
+    sd.suitsTurn = [];
+    sd.fullTrickTurn = false;
+    sd.fullTrickDue = false;
+    r.ev.push({ type: 'suits', side, suits: [], full: false });
+  }
   suddenDeath(r, side);
   if (r.s.winner) return;
   startOfTurn(r, side);
@@ -2765,11 +2788,6 @@ function beginHeroTurn(r: Run, side: Side): void {
   sd.played = 0;
   sd.attacksPlayed = 0;
   sd.skillsPlayed = 0;
-  if (traitOf(r, side)?.suits) {
-    sd.suitsTurn = [];
-    sd.fullTrickTurn = false;
-    r.ev.push({ type: 'suits', side, suits: [], full: false });
-  }
   sd.discarded = 0;
   sd.lostHpTurn = 0;
   sd.exhaustedTurn = 0;
@@ -3375,6 +3393,7 @@ function finishCard(
   countPlayed(sd, cd, inst);
   const cost = paid ?? cd.cost + (inst.costUp ?? 0);
   fireTriggers(r, sd, 'play', { card: cd, target, inst, cost });
+  payFullTrick(r, sd);
   recallOnCost(r, sd, cost, inst.id);
 }
 
@@ -3498,7 +3517,7 @@ function playCard(r: Run, action: Extract<Action, { type: 'play' }>): void {
     sd.discard.push(inst);
     return;
   }
-  showSuit(r, sd, hero, cd);
+  showSuit(r, sd, cd);
   if (r.s.winner) {
     sd.discard.push(inst);
     return;
@@ -3510,6 +3529,7 @@ function playCard(r: Run, action: Extract<Action, { type: 'play' }>): void {
     r.ev.push({ type: 'snareSet', side, snare: inst.id });
     sd.played++;
     fireTriggers(r, sd, 'play', { card: cd, target: null });
+    payFullTrick(r, sd);
     return;
   }
   // Reverb attacks and Mirrored skills happen twice (the second time without asking for choices). Whether this card is

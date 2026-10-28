@@ -578,6 +578,13 @@ export function FightView(props: {
           reduceEvent(db, d, e);
           await wait(120);
           return;
+        case 'suits':
+          reduceEvent(db, d, e);
+          if (e.full) {
+            setBanner('Full Trick!', e.side === mySide ? 'good' : 'bad');
+            await wait(260);
+          }
+          return;
         case 'snareSprung': {
           reduceEvent(db, d, e);
           const name = db.cards[e.card]?.name ?? 'Trap';
