@@ -138,6 +138,10 @@ Percentage debuffs (Exposed, Faltering, Debilitated) are worth more as numbers g
 | Sharpen N | **0.8** per point if played early, ~0.5 late | The Blade costs 2 and comes back a few times a fight. Forged in Fury 7 + Sharpen 7, Whetstone 8 + Mana next turn, Bladewall 12 Barrier + 10. |
 | Plant a totem | Hawk **4**, Bear **4**, Elder **5**, Splinter **6**, Owl **7** (+2 each per Spirit) | It pulses until pushed, then bursts. Spark Lash 7 + Hawk, Rime Strike 6 + Bear, Splinter Ward 5 Barrier + Splinter. |
 | Spirit (Focus) | this turn: **1 per totem** in the row (~3); for the fight: **~2.5 per totem** | Spirit Strike 9 + 1 Spirit this turn, Elemental Focus. |
+| Enter Fury (double attack damage, take 50% more) | **4**, plus the Barbarian's trait per stance entered | Kindle Fury (2, basic: 9 and Fury). Worth the attacks after it this turn; staying in Fury through the enemy turn costs ~6 HP. |
+| Enter Serene (leaving it gives 2 Mana, once a turn) | **4**, plus the trait | Still Guard / Vigilance. Leaving Serene on a card: about **+3.5**. |
+| Fervor | **2** a stack | 10 is a Radiant turn (~35-40), but it can't be timed. |
+| Enter Radiant now | **~31** | Rise Radiant (2, rare, Consume). |
 | Primed N | **1 per stack per hit** of the next attack | Feint 8 Barrier + 2 Primed, Heat of the Forge 7. Much better before a multi-hit attack. |
 | Might, rest of fight | **5** per stack | Steel Resolve: 2 for 1 Mana. Also lifts companions' strikes if the class shares Might with them. Attacks only: Aura, totem and Trap damage is flat (DECISIONS #376), so an Aura's damage never scales with Might, Exposed or Faltering. |
 
