@@ -218,12 +218,12 @@ export const SPELLBLADE: CardDef[] = [
     manaNext(2),
     forge('starforged-blade', 1),
   ]),
-  a('legendary', 'the-sovereigns-crown', 'The Obsidian Crown', 'power', 2, 'none', [
+  a('rare', 'the-sovereigns-crown', 'The Obsidian Crown', 'power', 2, 'none', [
     forge('starforged-blade', 8),
     on('turnStart', [forge('starforged-blade', 3), stars(2)]),
   ]),
   a(
-    'legendary',
+    'rare',
     'birth-of-a-star',
     "Volcano's Birth",
     'skill',

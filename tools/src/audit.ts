@@ -93,7 +93,7 @@ async function burstMode(): Promise<void> {
   const meta: { hero: HeroId; level: Level; turn: number }[] = [];
   for (const hero of HEROES)
     for (const level of LVLS)
-      for (const path of [0, 1, 2])
+      for (const path of RIFTWALKERS[hero].buildPaths.keys())
         for (let s = 0; s < SEEDS; s++)
           for (const turn of [1, 3]) {
             meta[jobs.length] = { hero, level, turn };
@@ -189,7 +189,7 @@ async function ladderMode(): Promise<void> {
               : byKind(kind);
         const stage = kind === 'finale' ? 3 : sp.stage;
         const sc = scale(sp.tier, stage);
-        for (const path of [0, 1, 2])
+        for (const path of RIFTWALKERS[hero].buildPaths.keys())
           for (let d = 0; d < DECKS; d++)
             for (const e of encs) {
               meta[jobs.length] = { hero, level, kind, path };
@@ -257,7 +257,7 @@ async function matrixMode(): Promise<void> {
   for (const hero of HEROES)
     for (const level of LVLS)
       for (const tier of tiers)
-        for (const path of [0, 1, 2])
+        for (const path of RIFTWALKERS[hero].buildPaths.keys())
           for (let d = 0; d < DECKS; d++)
             for (const { e, stage } of bosses) {
               const sc = scale(tier, stage);
@@ -323,7 +323,7 @@ async function optimizeMode(): Promise<void> {
   const dmgPct = scale(sp.tier, sp.stage).dmg;
   const jobs: Job[] = [];
   for (const hero of HEROES)
-    for (const path of [0, 1, 2])
+    for (const path of RIFTWALKERS[hero].buildPaths.keys())
       jobs.push({
         id: jobs.length,
         kind: 'optimize',

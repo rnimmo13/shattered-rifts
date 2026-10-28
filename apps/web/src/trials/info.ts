@@ -10,14 +10,14 @@ export const TRIAL_INFO = {
       'Thirteen prizes are on the reel, and you can see all of them. They stand in a different order every time.',
       'A spin costs 25 shards. The reel scrolls past the pointer and slows to a stop on one prize.',
       'Take it, or pay another 25 shards to let it go and spin again. A new spin never stops on the prize you are holding, and every other prize is equally likely.',
-      'Walk away at any time: the shards you have spent are gone, and so is the prize you were holding. Only one prize on the reel is a Legendary card.',
+      'Walk away at any time: the shards you have spent are gone, and so is the prize you were holding. Only one prize on the reel is a rare card of yours, the top prize.',
     ],
   },
 } as const;
 
 /** A sample reel, for the practice page. */
 export const SAMPLE_PRIZES: LanePrize[] = [
-  { icon: 'card', short: 'A Legendary card', label: 'Take a Legendary card' },
+  { icon: 'card', short: 'A rare card', label: 'Take the top prize: a rare card of yours' },
   { icon: 'rare', short: 'A rare card', label: 'Take a rare card of yours' },
   { icon: 'boon', short: 'A Boon', label: 'Take a Boon' },
   { icon: 'crossed', short: 'Rift-crossed rare', label: 'Take a Rift-crossed rare card' },

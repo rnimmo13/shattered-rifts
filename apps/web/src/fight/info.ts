@@ -156,12 +156,6 @@ export const STATUS_INFO: Record<
     tone: 'good',
     text: 'You are hurt, and fight harder for it: you deal more attack damage (the number is the bonus, in %).',
   },
-  devotion: {
-    name: 'Devotion',
-    glyph: '⚜',
-    tone: 'good',
-    text: 'Valeria gains it whenever she heals, even at full HP. Some of her cards spend it for big hits. It lasts the whole fight.',
-  },
   hangover: {
     name: 'Hangover',
     glyph: '🍺',
@@ -179,6 +173,36 @@ export const STATUS_INFO: Record<
     glyph: '†',
     tone: 'good',
     text: 'Your Sleeve Knives deal 1 more damage per stack.',
+  },
+  sapped: {
+    name: 'Sapped',
+    glyph: '⇣',
+    tone: 'bad',
+    text: 'Its attacks deal this much less damage. It wears off at the end of its next turn.',
+  },
+  cruelty: {
+    name: 'Cruelty',
+    glyph: '☠',
+    tone: 'good',
+    text: 'Your attacks deal 25% more damage to Exposed enemies.',
+  },
+  sturdy: {
+    name: 'Sturdy',
+    glyph: '⛨',
+    tone: 'good',
+    text: 'Exposed enemies deal half damage to you until their next turn is over.',
+  },
+  unmovable: {
+    name: 'Unmovable',
+    glyph: '⛰',
+    tone: 'good',
+    text: 'The first Barrier a card gives you each turn counts double.',
+  },
+  freeattack: {
+    name: 'Free Attack',
+    glyph: '➤',
+    tone: 'good',
+    text: 'Your next Attack costs 0.',
   },
 };
 
@@ -392,11 +416,6 @@ export const UI_TIPS = {
     kicker: 'Second resource',
     title: `Arcana ${n}`,
     text: 'Some cards gain Arcana. Cards with an orange orb under their Mana gem spend it. Unlike Mana it lasts the whole fight.',
-  }),
-  devotion: (n: number): TipContent => ({
-    kicker: 'Second resource',
-    title: `Devotion ${n}`,
-    text: 'Every heal gives you that much Devotion, even at full HP. Cards with a gold orb under their Mana gem spend it. It lasts the whole fight.',
   }),
   draw: {
     kicker: 'Pile',

@@ -231,7 +231,7 @@ export const TRAPPER: CardDef[] = [
     on('turnEnd', [scaled(dmg(0, 'randomFoe'), per('mana', 2))]),
   ]),
   v(
-    'legendary',
+    'rare',
     'the-perfect-trap',
     'The Perfect Trap',
     'snare',
@@ -241,7 +241,7 @@ export const TRAPPER: CardDef[] = [
     { trigger: { on: 'attacked' }, up: { cost: 2 } },
   ),
   // Patience: the Mana you keep strikes every enemy and comes back as more Mana next turn (DECISIONS #338)
-  v('legendary', 'masquerade', 'Masquerade', 'power', 2, 'none', [
+  v('rare', 'masquerade', 'Masquerade', 'power', 2, 'none', [
     on('turnEnd', [scaled(dmg(0, 'allFoes'), per('mana', 3)), manaNext(1)]),
   ]),
   v('uncommon', 'saved-breath', 'Saved Breath', 'skill', 0, 'none', [manaNext(2), scry(2)], {

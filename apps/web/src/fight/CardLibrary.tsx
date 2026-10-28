@@ -3,7 +3,14 @@
 
 import { useMemo, useState } from 'react';
 import { cardText, type CardDef } from '@sr/combat';
-import { COMBAT_DB, RIFTWALKERS, pathName, pathOf, type HeroId } from '@sr/content/v2';
+import {
+  BUILD_PATHS_SHOWN,
+  COMBAT_DB,
+  RIFTWALKERS,
+  pathName,
+  pathOf,
+  type HeroId,
+} from '@sr/content/v2';
 import { Grimoire } from './Grimoire';
 import { catalog, type PoolKey } from './deckCatalog';
 import '../play/play.css';
@@ -35,8 +42,8 @@ export function CardLibrary() {
   const all = useMemo(() => catalog(COMBAT_DB), []);
   const [text, setText] = useState('');
   const [pool, setPool] = useState<PoolKey>('all');
-  // a build path (0-2) of the chosen Riftwalker, 'none' for their cards that belong to no build path (basics, glue), or 'all'
-  const [path, setPath] = useState<'all' | 'none' | 0 | 1 | 2>('all');
+  // a build path (an index) of the chosen Riftwalker, 'none' for their cards that belong to no build path (basics, glue), or 'all'
+  const [path, setPath] = useState<'all' | 'none' | number>('all');
   const hero = Object.hasOwn(RIFTWALKERS, pool) ? (pool as HeroId) : null;
   const [kind, setKind] = useState<CardDef['kind'] | 'all'>('all');
   const [rarity, setRarity] = useState<(typeof RARITIES)[number]>('all');
@@ -111,18 +118,18 @@ export function CardLibrary() {
             ))}
           </select>
         </label>
-        {hero && (
+        {BUILD_PATHS_SHOWN && hero && (
           <label>
             <span>Build path</span>
             <select
               value={String(path)}
               onChange={(e) => {
                 const v = e.target.value;
-                setPath(v === 'all' || v === 'none' ? v : (Number(v) as 0 | 1 | 2));
+                setPath(v === 'all' || v === 'none' ? v : Number(v));
               }}
             >
               <option value="all">Any</option>
-              {[0, 1, 2].map((i) => (
+              {RIFTWALKERS[hero].buildPaths.map((_, i) => (
                 <option key={i} value={i}>
                   {pathName(hero, i)}
                 </option>

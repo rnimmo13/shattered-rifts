@@ -65,12 +65,6 @@ export const TIP_RULES: TipRule[] = [
     when: (v) => !!hero(v)?.statuses.mantra,
   },
   {
-    id: 'devotion',
-    title: 'Devotion',
-    text: 'Every time Valeria heals she gains that much Devotion, even at full HP, so no heal is wasted. Cards with a gold cost under their Mana cost spend it: cash in a little often, or save up for one big hit.',
-    when: (v) => !!hero(v)?.statuses.devotion,
-  },
-  {
     id: 'hangover',
     title: 'Hangover',
     text: 'Drinks pay off now and leave a Hangover: at the start of your next turn you lose that much HP, but never your last one. It stops at 10. Drop under half HP and Clutch Genes makes you hit harder; Sweat It Out and Pass Out clear it, Hair of the Dog trades it for a little one.',

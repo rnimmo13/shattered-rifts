@@ -26,8 +26,6 @@
     "runsim": "pnpm --filter @sr/tools runsim",
     "stage1sim": "pnpm --filter @sr/tools stage1sim",
     "bosssim": "pnpm --filter @sr/tools bosssim",
-    "kittry": "pnpm --filter @sr/tools kittry",
-    "kitsearch": "pnpm --filter @sr/tools kitsearch",
     "poolaudit": "pnpm --filter @sr/tools poolaudit",
     "audit:balance": "pnpm --filter @sr/tools audit:balance",
     "cardscan": "pnpm --filter @sr/tools cardscan",

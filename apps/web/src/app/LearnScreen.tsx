@@ -305,12 +305,10 @@ export function LearnScreen() {
               </div>
             ))}
           </dl>
-          <h3>Legendary cards</h3>
+          <h3>Ancestral cards</h3>
           <p>
-            Every Riftwalker has three Legendary cards, but a deck can hold only one, and two
-            Ancestral cards. Once your deck has its Legendary, no more are offered, so taking one is
-            a real choice. Some events let you trade yours for another, even one from another
-            Riftwalker.
+            A deck can hold two Ancestral cards, which only special events offer. There are no
+            Legendary cards for now.
           </p>
           <h3>Resolve</h3>
           <p>
@@ -449,7 +447,7 @@ export function LearnScreen() {
       {tab === 'heroes' && (
         <section>
           <h2>Riftwalkers</h2>
-          <p>How each character plays, and what their three card builds are.</p>
+          <p>How each character plays, and the mechanics their cards use.</p>
           {heroesByRealm().map((g) => (
             <div key={g.realm} className="learn__realm">
               <h3>{g.name}</h3>
@@ -467,9 +465,9 @@ export function LearnScreen() {
                       <li key={l}>{l}</li>
                     ))}
                   </ul>
-                  <h5>Card builds</h5>
+                  <h5>Mechanics</h5>
                   <ul>
-                    {RIFTWALKERS[h].buildPaths.map((l) => (
+                    {RIFTWALKERS[h].mechanics.map((l) => (
                       <li key={l}>{l}</li>
                     ))}
                   </ul>

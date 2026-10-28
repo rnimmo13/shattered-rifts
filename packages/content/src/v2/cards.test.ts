@@ -39,12 +39,15 @@ function setup(card: CardDef, hero: HeroId): CombatState {
   sd.stars = 6;
   sd.attacksPlayed = 2;
   sd.discarded = 2;
+  // (a lived-in turn: HP lost and a card consumed, for the cards that ask)
+  sd.lostHpTurn = 1;
+  sd.exhaustedTurn = 1;
   sd.runes = [{ rune: 'spark', charge: 2 }];
   // a lived-in board, so healing, doubling, stances and the like have something to act on
   const me = sd.units[sd.units.length - 1]!;
   me.hp = Math.floor(me.maxHp * 0.6);
   for (const k of ['calm', 'wrath', 'radiant'] as const) delete me.statuses[k];
-  Object.assign(me.statuses, { might: 2, thorns: 2, mantra: 1, resonance: 1, devotion: 20 });
+  Object.assign(me.statuses, { might: 2, thorns: 2, mantra: 1, resonance: 1 });
   for (const u of s.sides.b.units) Object.assign(u.statuses, { seared: 3, doom: 2 });
   // a few cards already consumed, for cards that count them
   sd.exhausted = [
@@ -269,8 +272,9 @@ describe('pool shape (docs/09_ROSTER.md §1)', () => {
     const own = (h: string) =>
       cards.filter((c) => c.hero === h && c.kind === 'snare' && !c.id.endsWith('+')).length;
     const counts = HEROES.map((h) => [h, own(h)] as const);
+    // (Valeria is exactly the Ironclad's list, which has no Traps: DECISIONS #367)
     for (const [h, n] of counts)
-      expect(n, `${h} snares`).toBeGreaterThanOrEqual(h === 'trapper' ? 10 : 1);
+      expect(n, `${h} snares`).toBeGreaterThanOrEqual(h === 'trapper' ? 10 : h === 'knight' ? 0 : 1);
     const others = Math.max(...counts.filter(([h]) => h !== 'trapper').map(([, n]) => n));
     expect(own('trapper')).toBeGreaterThanOrEqual(others * 2);
     expect(own('neutral')).toBeGreaterThanOrEqual(2);
@@ -286,13 +290,16 @@ describe('pool shape (docs/09_ROSTER.md §1)', () => {
   });
 });
 
-describe('buildPaths (each character has three, each with room to build a deck)', async () => {
+describe('buildPaths (each with room to build a deck; most characters have three, there is no rule, DECISIONS #362)', async () => {
   const { pathOf, pathSizes } = await import('./index');
-  it('every Riftwalker has three buildPaths of at least 12 cards each, and most of their cards belong to one', () => {
+  it('every Riftwalker has buildPaths of at least 12 cards each, and most of their cards belong to one', () => {
+    for (const h of HEROES) expect(RIFTWALKERS[h].buildPaths.length, h).toBeGreaterThanOrEqual(3);
     for (const h of HEROES) {
       const sizes = pathSizes(h);
-      for (const n of sizes)
-        expect(n, `${h} buildPaths ${sizes.join('/')}`).toBeGreaterThanOrEqual(12);
+      // (Valeria's cards are sorted into build paths again later, DECISIONS #365: her first sort is lopsided)
+      if (h !== 'knight')
+        for (const n of sizes)
+          expect(n, `${h} buildPaths ${sizes.join('/')}`).toBeGreaterThanOrEqual(12);
       const own = rewardPool(h).filter(
         (id) => db.cards[id]?.hero === h && db.cards[id]?.rarity !== 'legendary',
       );
@@ -313,7 +320,7 @@ describe('Aura wording (DECISIONS #299, #300)', () => {
   const text = (id: string): string => cardText(db, db.cards[id]!);
   it('an Aura that gives a lasting status once says it lasts the rest of the fight', () => {
     expect(text('unchained')).toBe('Gain 3 Might for the rest of the fight.');
-    expect(text('the-last-oath')).toMatch(/At the start of your turn: Gain 2 Thorns\.$/);
+    expect(text('rock-bottom')).toMatch(/At the start of your turn: Lose 1 HP\.$/);
   });
   it('an Aura with an ongoing trigger does not, and Rift Resonance answers a reshuffle', () => {
     expect(text('rift-resonance')).toBe(

@@ -21,18 +21,18 @@ export interface TierRow {
 }
 
 /** enemy HP at Tier I stage 1, percent of the written numbers */
-export const HP_START = 125;
+export const HP_START = 100;
 /** added to enemy HP for every Rift Tier up (percentage points) */
-export const HP_PER_TIER = 50;
+export const HP_PER_TIER = 33;
 /** added to enemy HP for each stage inside a tier (percentage points) */
-export const HP_PER_STAGE = 12;
+export const HP_PER_STAGE = 10;
 
 /** enemy attack damage at Tier I stage 1, percent of the written numbers */
 export const DMG_START = 100;
 /** added to enemy damage for every Rift Tier up (percentage points) */
-export const DMG_PER_TIER = 20;
+export const DMG_PER_TIER = 15;
 /** added to enemy damage for each stage inside a tier (percentage points) */
-export const DMG_PER_STAGE = 5;
+export const DMG_PER_STAGE = 4;
 
 /** how many Rift Tiers there are */
 const TIERS = 20;

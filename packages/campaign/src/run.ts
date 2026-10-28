@@ -35,7 +35,7 @@ import {
 
 export { CROSSED_MERCHANT_CHANCE };
 import { enemyScale } from './tierTable';
-import { makeKits } from './kits';
+import { starterDeck, starterPick } from './starters';
 import { rollEvent, resolveEvent } from './events';
 import { applyChoice, applyDeal } from './deals';
 import { GAMBLER_REEL, buildElite, spinReel, takePrize } from './trials';
@@ -194,9 +194,9 @@ export function newRun(hero: HeroId, seed: string, difficulty: Difficulty = 'nor
     rng,
     stats: { duelsWon: 0, duelsLost: 0, nodesCleared: 0 },
   };
-  // the very start: choose one of two starting decks, and then meet The Threshold
+  // the very start: choose two uncommon cards to start with, and then meet The Threshold
   run.phase = 'kit';
-  run.context = { nodeId: '', kits: makeKits(hero) };
+  run.context = { nodeId: '', starterPick: starterPick(hero) };
   return run;
 }
 
@@ -648,11 +648,16 @@ export function resolveCost(kind: MapNode['kind']): number {
   return kind === 'elite' ? 2 : 1;
 }
 
+/** The most max HP a card can give for good in one fight (Bloodfeast is 3 per kill): a guard against a hand-made result. */
+export const MAX_HP_GAIN_PER_FIGHT = 30;
+
 export function finishDuel(
   run: RunState,
   won: boolean,
   hpLeft = run.hp,
   potionsLeft: readonly string[] = run.potions,
+  /** max HP the hero gained for good in the fight (a card that raises it when it kills), at most a few per fight */
+  maxHpGained = 0,
 ): RunState {
   need(run.phase === 'duel' && run.context, 'No fight is in progress');
   const r = clone(run);
@@ -670,6 +675,11 @@ export function finishDuel(
     else r.hp = Math.max(r.hp, Math.ceil((r.maxHp * RETRY_HP_PCT) / 100));
     return r;
   }
+  need(
+    Number.isInteger(maxHpGained) && maxHpGained >= 0 && maxHpGained <= MAX_HP_GAIN_PER_FIGHT,
+    'Invalid max HP gain at the end of a fight',
+  );
+  r.maxHp += maxHpGained;
   need(
     Number.isInteger(hpLeft) && hpLeft >= 1 && hpLeft <= r.maxHp,
     'Invalid HP at the end of a fight',
@@ -840,13 +850,21 @@ export function nextStage(run: RunState): RunState {
 }
 
 // ---- the starting deck
-/** Take one of the three starting decks on offer; The Threshold follows. */
-export function chooseKit(run: RunState, kitId: string): RunState {
-  need(run.phase === 'kit' && run.context?.kits, 'There is no starting deck to choose');
-  const kit = run.context.kits.find((k) => k.id === kitId);
-  need(kit, 'That is not one of the starting decks');
+/**
+ * Take the two uncommon cards you start with (the first two on offer when none are named); The Threshold follows.
+ */
+export function chooseStarters(run: RunState, picks?: readonly string[]): RunState {
+  need(run.phase === 'kit' && run.context?.starterPick, 'There is no starting choice to make');
+  const offer = run.context.starterPick;
+  const take = picks ?? offer.options.slice(0, offer.count);
+  need(take.length === offer.count, `Choose ${offer.count} cards`);
+  need(new Set(take).size === take.length, 'Choose different cards');
+  need(
+    take.every((id) => offer.options.includes(id)),
+    'That is not one of the cards on offer',
+  );
   const r = clone(run);
-  r.deck = [...kit.deck];
+  r.deck = starterDeck(r.character, take);
   openPrelude(r, 'threshold');
   return r;
 }

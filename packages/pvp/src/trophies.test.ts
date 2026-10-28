@@ -1,7 +1,7 @@
 // Arena trophies (DECISIONS #238): who earns a finished board's trophy, which period just ended, and what a count may be.
 
-import { describe, expect, it } from 'vitest';
-import { RIFTWALKERS } from '@sr/content/v2';
+import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import { COMBAT_DB, RIFTWALKERS, lendLegendaries } from '@sr/content/v2';
 import {
   TROPHY_PLACES,
   checkEntry,
@@ -78,11 +78,18 @@ describe('a trophy count from the wire', () => {
 });
 
 describe('the deck limits in the Arena (DECISIONS #238)', () => {
+  // Legendary is put away (DECISIONS #363): the shelved cards are lent as Legendaries so the limit stays tested
+  let undo = (): void => {};
+  beforeAll(() => {
+    undo = lendLegendaries(COMBAT_DB);
+  });
+  afterAll(() => undo());
+
   it('a deck with two Legendary cards is refused at the Arena, and told why, but is still a deck', () => {
     const deck = {
       name: 'Ann',
       hero: 'knight',
-      deck: [...RIFTWALKERS.knight.starter, 'the-last-oath', 'dawn-incarnate'],
+      deck: [...RIFTWALKERS.knight.starter, 'foundry-awakens', 'drone-apotheosis'],
       boons: [],
       tier: 4,
     };
@@ -90,7 +97,7 @@ describe('the deck limits in the Arena (DECISIONS #238)', () => {
     const r = checkArenaEntry({
       name: 'Ann',
       hero: 'knight',
-      deck: [...RIFTWALKERS.knight.starter, 'the-last-oath', 'dawn-incarnate'],
+      deck: [...RIFTWALKERS.knight.starter, 'foundry-awakens', 'drone-apotheosis'],
       boons: [],
       tier: 4,
     });

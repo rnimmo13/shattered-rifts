@@ -313,7 +313,7 @@ describe('a Rift-crossed rare from an event is a choice of three', () => {
   it('the event lays out three different rares from other classes and waits for the pick', () => {
     const broker = EVENTS.find((e) => e.id === 'rift-broker')!;
     const base = { ...eliteRun(0), phase: 'event' as const };
-    const deck = [...base.deck, 'gilded-bastion', 'dawn-smite'];
+    const deck = [...base.deck, 'cold-stare', 'dawn-smite'];
     const run: RunState = { ...base, deck };
     const ev = broker.build(run);
     const two = ev.options.find((o) => o.label.includes('two cards'))!;
@@ -369,7 +369,7 @@ describe('the Brass Reel is fair', () => {
     expect(first.size).toBeGreaterThanOrEqual(6);
   });
 
-  it('only one lane is a Legendary card, and where it stands is different from one event to the next', () => {
+  it('the top prize is one rare card of yours, and where it stands is different from one event to the next', () => {
     const where = new Set<number>();
     for (let i = 0; i < 40; i++) {
       const base = open(newRun('knight', `shuffle-${i}`));
@@ -383,13 +383,14 @@ describe('the Brass Reel is fair', () => {
       };
       const entered = enterNode(run, node.id);
       const ev = buildElite(ELITE_EVENTS[i % ELITE_EVENTS.length]!, entered);
-      const legends = ev.trial!.prizes.flatMap((p, k) =>
-        p.card && COMBAT_DB.cards[p.card]?.rarity === 'legendary' ? [k] : [],
+      // (the top prize is the lane with a `card` icon and a card of the hero's own pool; Legendary is away, DECISIONS #363)
+      const top = ev.trial!.prizes.flatMap((p, k) =>
+        p.icon === 'card' && p.card && COMBAT_DB.cards[p.card]?.rarity === 'rare' ? [k] : [],
       );
-      expect(legends.length).toBeLessThanOrEqual(1);
-      if (legends[0] !== undefined) where.add(legends[0]);
+      expect(top.length).toBeLessThanOrEqual(1);
+      if (top[0] !== undefined) where.add(top[0]);
     }
-    // (the Legendary can be in any of the lanes)
+    // (the top prize can be in any of the lanes)
     expect(where.size).toBeGreaterThanOrEqual(6);
   });
 });

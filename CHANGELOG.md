@@ -5,6 +5,14 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **Valeria is now the Ironclad's card list, card for card** (82 cards of her own plus Strike and Defend): her Thorns, Traps and other own cards are gone, Hot Temper, Pact of Embers and Inner Furnace are new, and several numbers match theirs (Ember Ward costs 2 for 12 Barrier, Immovable Oath gives 30 Barrier, Bastion Engine deals 5 to a random enemy, Dawn Smite is 5 damage and 5 Barrier, Oath of Iron no longer Holds).
+- **A run starts with two uncommon cards you choose** from your Riftwalker's own (they replace two plain cards). The three build-path starting decks are gone.
+- **Build paths are hidden for now:** cards show no build path, and offered cards no longer say whether they fit your build. Character screens list the mechanics each character uses instead.
+- **Valeria has the rest of the Ironclad's cards** (29 more: Wild Gamble, Unravel, Bitter Breath, Fan the Flames, Howl of the Fallen, Raised Hell, Juggler's Rhythm, Bloodfeast, Crippling Blow...), and her older cards were trimmed to a pool of 95. Grim Focus draws 3 and then no more cards this turn; Break Guard hits twice against an Exposed enemy.
+- **New card rules:** play a card from the top of your draw pile (or your consumed pile) for free; "no more Mana / cards this turn"; "if ..., then ..." cards; Sapped (an enemy hits for less through its next turn); Cruelty, Sturdy, Unmovable and Free Attack; max HP gained from a kill is kept for the run.
+- **Valeria is rebuilt as an Ironclad-style fighter. Devotion is gone,** and so are the healing and judgment cards that fed it (they turn into a card that does the same job in old saves and Arena decks). She starts with 5 Strikes, 4 Defends and **Sundering Blow** (8 damage, 2 Exposed), and has five build paths: Bulwark, Thorns, and the new **Might** (Twin Cut, Challenge, Whirling Blade, Mounting Fury, Warlord's Oath...), **Consume** (Burn It All, Rite of Recall, Unholy Pact...) and **Blood** (Draw Blood, Scar Over, Blood Fire, Bloodied Plate...). New: Mastered Strike counts every Strike in your deck.
+- **No Legendary cards for now:** the old Legendaries are Rares, rewards, Warden Gifts and the Spin to win top prize give Rares instead, and the Arena has no Legendary limit to meet. Legendary Boons are unchanged.
+- **Characters can have more than three build paths** (Valeria has five).
 - **Rivet:** only Assemble, Relay Strike and Command Chip still make companions act now (once each); the rest of Assemble charges them up with Primed, so their next strike hits harder. Companions now spend Primed.
 - **Ilvane:** every damage number on his cards is 1 higher; the Hawk totem deals 4 a turn (was 3) and Awakens for 10 (9), Splinter Awakens for 7 (6).
 - **Rivet:** cheaper companions have less HP: Patrol Drone 5 (was 7), Micro Drone 3 (4), Sentry Turret 7 (10), Repair Bot 4 (6), Enforcer Mk.II 12 (14).

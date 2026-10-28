@@ -1026,19 +1026,6 @@
   cursor: help;
   pointer-events: auto;
 }
-.fight__lumen--devotion {
-  background: radial-gradient(circle at 35% 30%, #fff6d8, #e0b54a 45%, #5a3a08 100%);
-  border-color: #f3dc97;
-  box-shadow: 0 0 16px rgb(255 214 120 / 0.55);
-}
-/* "Devotion" is two letters longer than "Arcana": a smaller, tighter caption so it stays inside the orb */
-.fight__lumen.fight__lumen--devotion small {
-  font-size: 0.6rem;
-  letter-spacing: 0.02em;
-}
-.fight__lumen--second {
-  left: calc(1.4rem + 5.2rem + 0.7rem + 4.6rem);
-}
 .fight__lumen span {
   position: absolute;
   top: -0.55rem;

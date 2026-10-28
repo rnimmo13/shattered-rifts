@@ -100,11 +100,11 @@ export const DRUNKARD: CardDef[] = [
   // --- liquid courage ---
 
   // --- legendary ---
-  p('legendary', 'one-more-round', 'One More Round', 'power', 3, 'none', [
+  p('rare', 'one-more-round', 'One More Round', 'power', 3, 'none', [
     on('turnStart', [addTo('buckshot-shell', 3), heal(3)]),
   ]),
   // Hangover: Barrier that grows as you hurt, and every wound you deal yourself (a Hangover too) cuts every enemy (DECISIONS #338, #354)
-  p('legendary', 'the-glass-palace', 'The Glass Palace', 'power', 3, 'none', [
+  p('rare', 'the-glass-palace', 'The Glass Palace', 'power', 3, 'none', [
     on('turnStart', [scaled(barrier(6), per('missingPct', 1 / 6))]),
     on('loseHp', [dmg(5, 'allFoes')]),
   ]),

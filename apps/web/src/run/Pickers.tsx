@@ -1234,38 +1234,46 @@ export function PreludeView(props: { run: RunState; onChoose: (id: string) => vo
   );
 }
 
-/** The first choice of a run: one of three starting decks, one per build of your Riftwalker. */
-export function KitView(props: { run: RunState; onChoose: (id: string) => void }) {
-  const kits = props.run.context?.kits;
+/** The first choice of a run: any two of your Riftwalker's uncommon cards to start with (they replace two plain cards of the usual starter). */
+export function StarterView(props: { run: RunState; onChoose: (ids: string[]) => void }) {
+  const offer = props.run.context?.starterPick;
   const [hover, setHover] = useState<CardDef | null>(null);
-  if (!kits) return null;
+  const [chosen, setChosen] = useState<string[]>([]);
+  if (!offer) return null;
+  const toggle = (id: string): void =>
+    setChosen((c) =>
+      c.includes(id) ? c.filter((x) => x !== id) : c.length < offer.count ? [...c, id] : c,
+    );
   return (
-    <section className="stage-panel" aria-label="Choose your starting deck">
-      <h2 className="stage-panel__title">Choose your starting deck</h2>
+    <section className="stage-panel" aria-label="Choose your starting cards">
+      <h2 className="stage-panel__title">Choose {offer.count} uncommon cards to start with</h2>
       <p className="stage-panel__hint">
-        Three ways to begin, one for each of your builds. Each swaps {kits[0]?.removed.length ?? 2}{' '}
-        plain cards of your usual starter for two that lean that way.
+        They take the place of {offer.count} plain cards of your usual starting deck. Hover a card to read it.
       </p>
-      <div className="kits">
-        {kits.map((k) => (
-          <article key={k.id} className="kit">
-            <h3 className="kit__lean">
-              Build: <b>{k.leans}</b>
-            </h3>
-            <p className="kit__sub">Adds these two to your starter:</p>
-            <div className="kit__cards">
-              {k.added.map((id, i) => (
-                <Pickable key={`${id}-${i}`} id={id} width={170} onHover={setHover} />
-              ))}
-            </div>
-            <p className="kit__sub">
-              Everything else is your usual starting deck ({k.deck.length} cards in all).
-            </p>
-            <button className="btn btn--primary" onClick={() => props.onChoose(k.id)}>
-              <span>Take this deck</span>
-            </button>
-          </article>
+      <div className="starters">
+        {offer.options.map((id) => (
+          <div key={id} className={`starters__card${chosen.includes(id) ? ' is-chosen' : ''}`}>
+            <Pickable
+              id={id}
+              width={150}
+              onHover={setHover}
+              onClick={() => toggle(id)}
+              badge={chosen.includes(id) ? '✓' : undefined}
+            />
+          </div>
         ))}
+      </div>
+      <div className="starters__bar">
+        <span>
+          {chosen.length} of {offer.count} chosen
+        </span>
+        <button
+          className="btn btn--primary"
+          disabled={chosen.length !== offer.count}
+          onClick={() => props.onChoose(chosen)}
+        >
+          <span>Start with these</span>
+        </button>
       </div>
       <CardHover def={hover} />
     </section>

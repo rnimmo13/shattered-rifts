@@ -13,9 +13,9 @@ deck takes one and a half of them. Our pools were ~16 cards and one build path e
 1. **A pool belongs to a character**, not a realm (`CardDef.hero`). A realm is flavour and enemy stage; two characters can
    share one (Maren and Sehra are both Aurelion). Reward offers come from *your* pool + Neutral (+ the 1-in-10 Rift-crossed
    card from another character's pool).
-2. **Every Riftwalker has 20 commons, 30 uncommons, 25 rares and 3 Legendaries (78 cards).** Each build path holds 6 commons, 9
-   uncommons, 7 rares and 1 Legendary; a few **glue** cards (2/3/4) have no build path (DECISIONS #341). Rares define a build. Each build path works alone; two build paths can
-   combine; all three at once is a bad deck. `pnpm poolaudit` (docs/POOL_AUDIT.md) lists each pool by build path and flags near-duplicates.
+2. **Every Riftwalker has about 20 commons, 30 uncommons and 25-28 rares (the Legendaries are Rares for now, DECISIONS #363).** Each build path holds 6 commons, 9
+   uncommons and 7-8 rares; a few **glue** cards have no build path (DECISIONS #341). **There is no rule that a character has three build paths** (DECISIONS #362): most have three, Valeria has five. Rares define a build. Each build path works alone; two build paths can
+   combine; all of them at once is a bad deck. `pnpm poolaudit` (docs/POOL_AUDIT.md) lists each pool by build path and flags near-duplicates.
 3. **Shared toolkit, owned signatures.** Everyone has some of the common StS tools in their own flavour: draw, Barrier,
    Heal, Consume, Retain, Might, 0-cost cards, AoE, Mana gain, Exposed/Faltering, self-damage. A mechanic with its own
    *rules* belongs to exactly one character:
@@ -30,7 +30,7 @@ deck takes one and a half of them. Our pools were ~16 cards and one build path e
 | **Drones** and Assemble | Rivet | |
 | **Pack** buffs | Kesh | |
 | **Thorns** and Barrier-scaling | Maren | Barrier is shared; Thorns is Maren's |
-| **Devotion** (built by healing, spent on big hits) | Valeria (id `knight`) | Heal is shared; Devotion is hers (her trait makes it), and its cards are never Rift-crossed |
+| ~~**Devotion**~~ | gone (DECISIONS #364) | Valeria's heal-and-spend mechanic was removed when she became the Ironclad shape |
 | **Traps** (face-down, auto-springing) | Vesper gets the most (14, with payoffs for setting them) | **Shared toolkit** like Might or Consume: every deck has a trap or two in its own flavour (Maren 4, Rivet 2, Quill 2 incl. a Bleed needle, Kesh, Ilvane, Sehra, Obsidia 1 each) and Neutral has 2. Enforced by `cards.test.ts` |
 | **Foresee** | Vesper, Sehra, Obsidia | a Neutral common |
 | **Consume payoffs** | Kesh (Feast build path) | Neutral Consume-on-play is common |
@@ -45,7 +45,7 @@ A build path passes when it has **its own verb** (something you do on your turn 
 cards**, and **a name that says how you play**, not what you collect. Three flavours of one resource (Ilvane's old Hawk, Bear and
 Elder totems) are one build path, not three. The build paths are the tags players see on the character picker.
 
-**A trait helps all three build paths** (Sylas's used to be Bleed, which only his Bleed build path cared about). **No card copies
+**A trait helps every build path** (Sylas's used to be Bleed, which only his Bleed build path cared about). **No card copies
 another game:** no Slay the Spire 1 or 2 card name, and no card that is a famous card's effect with its numbers. The ids of the
 reworked cards stayed the same, so their art and every saved deck still work.
 
@@ -53,7 +53,7 @@ reworked cards stayed the same, so their art and every saved deck still work.
 
 | # | Riftwalker | Realm | HP | Build path 1 | Build path 2 | Build path 3 |
 |---|---|---|---|---|---|---|
-| 1 | **Ser Maren Ashcourt** | Aurelion | 80 | **Bulwark:** Barrier scaling, hits for your Barrier | **Thorns:** retaliation, punishing attackers | **Devotion:** heal (even at full HP) to build Devotion, spend it on big hits; Shielded to last |
+| 1 | **Valeria** (id `knight`) | Aurelion | 80 | The Ironclad's card list, card for card (DECISIONS #367): the yardstick other classes are balanced against | Might and many hits, Barrier, burning your own cards, paying HP | (build paths hidden for now, #365) |
 | 2 | **Rivet** | Nexus-9 | 72 | **Swarm:** go wide: many cheap Drones, payoffs per ally, per summon and per death, sacrifice, Might for everyone | **Assemble:** charge companions up with Primed (their next strike hits harder); only Assemble, Relay Strike and Command Chip make them act now (supports the other two) | **Core:** go tall: one big construct you grow (max HP, Might, Barrier on one ally), revive, and cash in (Heavy Hitter, Crankshaft, Reactor Meltdown) |
 | 3 | **Kesh the Unfed** | Wyldmaw | 76 | **Bloodrage:** Might and self-damage | **Pack:** buffed companions | **Predator:** Mana and draw for burst turns |
 | 4 | **Vesper Nightlace** | Umbral | 80 | **Traps:** many, varied triggers | **Exposed:** debuff burst, Faltering control | **Patience:** Hold cards, keep Mana; payoffs for a full hand and the Mana you kept |
@@ -142,4 +142,4 @@ pending kind). Say the word if you want them.
 
 ## Innate traits
 
-Every Riftwalker has one passive (`Riftwalker.trait`), and it helps all three of their build paths (DECISIONS #255): Valeria (id knight) Oathkeeper (6 Barrier and 6 Plating at the start; every heal, even at full HP, gives that much Devotion, DECISIONS #328), Rivet Tinkerer (heal 1 each turn, and each companion gains 1 max HP; DECISIONS #356), Kesh Pack Instinct (her companions share half her Might, rounded down; DECISIONS #285, #329, #333), Vesper Lying in Wait (6 Barrier and 2 extra cards at the start, 4 Barrier each turn; was Ambusher, Exposed for 3 turns), Sylas (id assassin) Hidden Blades (a Sleeve Knife every turn; was Envenomed, 2 Bleed a turn), Ilvane Totem-bound (starts with a Hawk, a Bear and a Splinter totem), Sehra Inner Fire (1 Fervor and 2 Barrier whenever she enters a stance; was 2 Fervor at the start), Obsidia Kindled (1 Arcana and Sharpen 1 each turn; she starts with 3 Arcana), Dorian (id necromancer) Grave Chill (3 Fate on every enemy at the start, and 3 on a random enemy whenever an ally dies or a card is consumed; was 4 Fate at the start), KP Clutch Genes (+50% attack damage at or below half HP). A trait can have triggers (`HeroTrait.triggers`) that fire like an Aura's but never count or show as one. Hero HP is 70-88, Slay the Spire's range.
+Every Riftwalker has one passive (`Riftwalker.trait`), and it helps all of their build paths (DECISIONS #255): Valeria (id knight) Oathkeeper (6 Barrier and 6 Plating at the start; her Devotion went in DECISIONS #364), Rivet Tinkerer (heal 1 each turn, and each companion gains 1 max HP; DECISIONS #356), Kesh Pack Instinct (her companions share half her Might, rounded down; DECISIONS #285, #329, #333), Vesper Lying in Wait (6 Barrier and 2 extra cards at the start, 4 Barrier each turn; was Ambusher, Exposed for 3 turns), Sylas (id assassin) Hidden Blades (a Sleeve Knife every turn; was Envenomed, 2 Bleed a turn), Ilvane Totem-bound (starts with a Hawk, a Bear and a Splinter totem), Sehra Inner Fire (1 Fervor and 2 Barrier whenever she enters a stance; was 2 Fervor at the start), Obsidia Kindled (1 Arcana and Sharpen 1 each turn; she starts with 3 Arcana), Dorian (id necromancer) Grave Chill (3 Fate on every enemy at the start, and 3 on a random enemy whenever an ally dies or a card is consumed; was 4 Fate at the start), KP Clutch Genes (+50% attack damage at or below half HP). A trait can have triggers (`HeroTrait.triggers`) that fire like an Aura's but never count or show as one. Hero HP is 70-88, Slay the Spire's range.

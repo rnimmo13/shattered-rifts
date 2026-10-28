@@ -71,12 +71,12 @@ for (const h of Object.keys(RIFTWALKERS) as HeroId[]) {
   lines.push(
     `## ${RIFTWALKERS[h].hero.name} (${h})`,
     '',
-    `${cards.length} cards: ${[0, 1, 2].map((p) => `${pathName(h, p)} ${byPath(p).length}`).join(', ')}, shared ${shared.length}.`,
+    `${cards.length} cards: ${RIFTWALKERS[h].buildPaths.map((_, p) => `${pathName(h, p)} ${byPath(p).length}`).join(', ')}, shared ${shared.length}.`,
     '',
   );
   if (dups.length) lines.push('**Near-duplicates:**', '', ...dups, '');
   for (const [label, list] of [
-    ...[0, 1, 2].map((p) => [pathName(h, p), byPath(p)] as const),
+    ...RIFTWALKERS[h].buildPaths.map((_, p) => [pathName(h, p), byPath(p)] as const),
     ['Shared', shared] as const,
   ]) {
     lines.push(

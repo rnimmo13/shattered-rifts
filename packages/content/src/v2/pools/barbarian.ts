@@ -224,11 +224,11 @@ export const BARBARIAN: CardDef[] = [
   s('common', 'reading-the-signs', 'Reading the Signs', 'power', 1, 'none', [
     on('discard', [status('mantra', 1)]),
   ]),
-  s('legendary', 'perfect-balance', 'Perfect Balance', 'power', 2, 'none', [
+  s('rare', 'perfect-balance', 'Perfect Balance', 'power', 2, 'none', [
     on('stance', [draw(1), barrier(5), status('mantra', 1)]),
   ]),
   s(
-    'legendary',
+    'rare',
     'still-flame-ascendant',
     'Still Flame Ascendant',
     'skill',

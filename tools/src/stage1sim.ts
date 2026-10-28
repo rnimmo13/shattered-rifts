@@ -41,7 +41,7 @@ function row(h: HeroId, k: number, bot: Bot) {
 
 const NONE = { reach: 0, clear: 0, hp: 0, lost: 0, cards: 0 };
 const all: { s: typeof NONE; d: typeof NONE }[] = [];
-console.log(`stage1sim: ${N} runs per kit, ${DIFF}, tier 1, stage 1 only\n`);
+console.log(`stage1sim: ${N} runs per pair of starting uncommons, ${DIFF}, tier 1, stage 1 only\n`);
 console.log(
   'hero        kit  path               | starter: boss  clear  HP@boss | draft: boss  clear  HP@boss cards',
 );
@@ -50,7 +50,7 @@ for (const h of HEROES) {
     const s = ONLY.includes('starter') ? row(h, k, 'starter') : NONE;
     const d = ONLY.includes('draft') ? row(h, k, 'draft') : NONE;
     all.push({ s, d });
-    const path = (RIFTWALKERS[h].buildPaths[k] ?? '').split(':')[0] ?? '';
+    const path = `pair ${k + 1}`;
     console.log(
       `${h.padEnd(12)}${String.fromCharCode(97 + k).padEnd(5)}${path.padEnd(19)}|        ${pct(s.reach)}  ${pct(s.clear)}    ${pct(s.hp)} |      ${pct(d.reach)}  ${pct(d.clear)}    ${pct(d.hp)} ${d.cards.toFixed(1).padStart(5)}`,
     );

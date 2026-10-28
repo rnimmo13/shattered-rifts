@@ -85,6 +85,12 @@ interface Act {
   rune: boolean;
   /** this frame may ask the player to choose (only a card's own effects can) */
   pick: boolean;
+  /** in a 'play' trigger: the card that was just played; in a 'draw' trigger: the card just drawn */
+  played: CardInst | null;
+  drawn: CardInst | null;
+  /** what the card being played has consumed so far */
+  exhaustedNow: number;
+  exhaustedDmg: number;
 }
 
 const mkAct = (actor: Unit, extra: Partial<Act> = {}): Act => ({
@@ -99,6 +105,10 @@ const mkAct = (actor: Unit, extra: Partial<Act> = {}): Act => ({
   healed: 0,
   rune: false,
   pick: false,
+  played: null,
+  drawn: null,
+  exhaustedNow: 0,
+  exhaustedDmg: 0,
   ...extra,
 });
 
@@ -183,6 +193,8 @@ function addStatus(r: Run, u: Unit, st: StatusId, amount: number): boolean {
     r.ev.push({ type: 'status', target: u.id, status: 'mantra', amount: -MANTRA_GOAL, total });
     enterStance(r, u, 'radiant');
   }
+  // an Aura that answers Exposed being put on an enemy (Vicious)
+  if (st === 'exposed' && amount > 0 && u.kind !== 'hero') fireTriggers(r, r.s.sides[other(u.side)], 'exposeFoe');
   return true;
 }
 
@@ -209,6 +221,7 @@ function enterStance(r: Run, u: Unit, to: Stance | 'none'): void {
 }
 
 function gainMana(r: Run, sd: SideState, n: number): void {
+  if (sd.manaLocked && n > 0) return;
   sd.mana = Math.max(0, sd.mana + n);
   r.ev.push({ type: 'mana', side: sd.id, mana: sd.mana });
 }
@@ -226,7 +239,7 @@ function scaledByDifficulty(actor: Unit, target: Unit, amount: number): number {
  * (Radiant triples, Wrath doubles what you deal; Wrath makes you take 50% more)
  */
 export function modifiedDamage(base: number, attacker: Unit | null, target: Unit | null): number {
-  let n = base + (attacker ? stacks(attacker, 'might') : 0);
+  let n = Math.max(0, base + (attacker ? stacks(attacker, 'might') - stacks(attacker, 'sapped') : 0));
   if (attacker && stacks(attacker, 'clutch') > 0)
     n = Math.floor((n * (100 + stacks(attacker, 'clutch'))) / 100);
   // (Stunned counts as Faltering, Exposed and Brittle at once, never on top of them: DECISIONS #310)
@@ -235,8 +248,14 @@ export function modifiedDamage(base: number, attacker: Unit | null, target: Unit
   if (attacker && stacks(attacker, 'radiant') > 0) n *= 3;
   else if (attacker && stacks(attacker, 'wrath') > 0) n *= 2;
   if (target && stacks(target, 'wrath') > 0) n = Math.floor(n * 1.5);
-  if (target && (stacks(target, 'exposed') > 0 || stacks(target, 'stunned') > 0))
+  if (target && (stacks(target, 'exposed') > 0 || stacks(target, 'stunned') > 0)) {
     n = Math.floor(n * 1.5);
+    // Cruelty: an Exposed enemy takes a quarter more from you
+    if (attacker && stacks(attacker, 'cruelty') > 0) n = Math.floor(n * 1.25);
+  }
+  // Colossus: an Exposed enemy's blows land at half strength for the turn
+  if (target && attacker && stacks(target, 'sturdy') > 0 && (stacks(attacker, 'exposed') > 0 || stacks(attacker, 'stunned') > 0))
+    n = Math.floor(n * 0.5);
   if (attacker && attacker.dmgPct !== 100 && n > 0)
     n = Math.max(1, Math.floor((n * attacker.dmgPct) / 100));
   return Math.max(0, n);
@@ -313,6 +332,9 @@ function applyDamage(
     ...(overflow ? { overflow: true as const } : {}),
   });
   if (lost > 0 && t.kind === 'hero') {
+    const hsd = r.s.sides[t.side];
+    hsd.lostHpTurn = (hsd.lostHpTurn ?? 0) + 1;
+    hsd.lostHpFight = (hsd.lostHpFight ?? 0) + 1;
     syncClutch(r, r.s.sides[t.side]);
     fireSnare(r, t.side, { on: 'hpLost', lost, attacker: source, hit: null });
   }
@@ -479,7 +501,6 @@ function metricValue(r: Run, a: Act, m: Metric, of: Scale['of'], t: Unit | null)
     case 'might':
     case 'thorns':
     case 'mantra':
-    case 'devotion':
     case 'hangover':
     case 'resonance':
     case 'doom':
@@ -519,12 +540,38 @@ function metricValue(r: Run, a: Act, m: Metric, of: Scale['of'], t: Unit | null)
       return sd.attacksPlayed;
     case 'skillsPlayed':
       return sd.skillsPlayed;
+    case 'strikes': {
+      // the whole deck, wherever a card is right now (the card being played is on none of the piles while it resolves)
+      const seen = new Set<string>();
+      const all = [...sd.hand, ...sd.draw, ...sd.discard, ...sd.exhausted, ...(a.inst ? [a.inst] : [])];
+      let n = 0;
+      for (const c of all) {
+        if (seen.has(c.id)) continue;
+        seen.add(c.id);
+        if (/strike/i.test(r.db.cards[c.card]?.name ?? '')) n++;
+      }
+      return n;
+    }
     case 'drawn':
       return sd.drawn;
     case 'created':
       return sd.created;
     case 'discarded':
       return sd.discarded;
+    case 'hpLostTurn':
+      return sd.lostHpTurn ?? 0;
+    case 'hpLostFight':
+      return sd.lostHpFight ?? 0;
+    case 'exhaustedTurn':
+      return sd.exhaustedTurn ?? 0;
+    case 'attacksInHand':
+      return sd.hand.filter((c) => r.db.cards[c.card]?.kind === 'attack').length;
+    case 'nonAttacksInHand':
+      return sd.hand.filter((c) => r.db.cards[c.card]?.kind !== 'attack').length;
+    case 'exhaustedNow':
+      return a.exhaustedNow;
+    case 'exhaustedDamage':
+      return a.exhaustedDmg;
     case 'x':
       return a.x;
     case 'charge':
@@ -537,10 +584,14 @@ function metricValue(r: Run, a: Act, m: Metric, of: Scale['of'], t: Unit | null)
 }
 
 /** `amount` plus whatever its scale adds (never below 0 for amounts that cannot be negative). */
+function scaleValue(r: Run, a: Act, sc: Scale, t: Unit | null): number {
+  // (a tiny allowance, so a factor like 1/11 times 55 is 5 and not 4.999...)
+  return Math.floor((sc.mult ?? 1) * metricValue(r, a, sc.by, sc.of, t) + 1e-9);
+}
+
 function amountOf(r: Run, a: Act, base: number, sc: Scale | undefined, t: Unit | null): number {
   if (!sc || sc.into === 'hits') return base;
-  // (a tiny allowance, so a factor like 1/11 times 55 is 5 and not 4.999...)
-  return base + Math.floor((sc.mult ?? 1) * metricValue(r, a, sc.by, sc.of, t) + 1e-9);
+  return base + scaleValue(r, a, sc, t);
 }
 
 /** Rune effects get +1 damage / Barrier per Resonance. */
@@ -565,16 +616,14 @@ function execOp(r: Run, a: Act, op: Op): void {
   switch (op.op) {
     case 'damage': {
       let hits = op.hits ?? 1;
-      if (op.scale?.into === 'hits')
-        hits += Math.floor(
-          (op.scale.mult ?? 1) * metricValue(r, a, op.scale.by, op.scale.of, a.target),
-        );
+      if (op.scale?.into === 'hits') hits += scaleValue(r, a, op.scale, a.target);
       const edge = a.card?.tags?.includes(EDGE_TAG) ? stacks(a.actor, 'edge') : 0;
       // (a hero's Vigor goes into its next attack card; an enemy's or a companion's into its next attacking move, DECISIONS #361)
       const vigor = (a.card ? a.card.kind === 'attack' : a.actor.kind !== 'hero')
         ? stacks(a.actor, 'vigor')
         : 0;
       let took = 0;
+      let kills = 0;
       const struck = new Set<string>();
       for (let i = 0; i < hits; i++) {
         // (a hit that wins the fight still pays its Lifesteal below: HP carries on in a run)
@@ -595,7 +644,8 @@ function execOp(r: Run, a: Act, op: Op): void {
         }
         // Point Blank: a shot that finds only one enemy hits it harder
         const lone = op.lonePct && ts.length === 1 ? 1 + op.lonePct / 100 : 1;
-        for (const t of ts)
+        for (const t of ts) {
+          const alive = t.hp > 0;
           took += attackHit(
             r,
             a,
@@ -605,8 +655,12 @@ function execOp(r: Run, a: Act, op: Op): void {
             ),
             op.to === 'target' || op.to === 'front',
           );
+          if (alive && t.hp <= 0) kills++;
+        }
         reap(r);
       }
+      // what a kill pays (Feed), once for each enemy this attack took down
+      for (let k = 0; k < kills && op.onKill && !r.s.winner; k++) runOps(r, a, op.onKill);
       if (vigor > 0) addStatus(r, a.actor, 'vigor', -vigor);
       // Lifesteal: the attacker heals a share of the HP the attack took off (DECISIONS #285)
       if (op.lifesteal && took > 0 && a.actor.hp > 0)
@@ -630,6 +684,18 @@ function execOp(r: Run, a: Act, op: Op): void {
     case 'barrier':
       for (const t of resolve(r, a, op.to)) {
         let n = amountOf(r, a, op.amount, op.scale, t) + resonanceOf(a);
+        // Unmovable: the first Barrier a card gives you each turn counts double
+        if (
+          n > 0 &&
+          a.card &&
+          t === a.actor &&
+          t.kind === 'hero' &&
+          stacks(t, 'unmovable') > 0 &&
+          !side.barrierDoubled
+        ) {
+          side.barrierDoubled = true;
+          n *= 2;
+        }
         if (n > 0) n += stacks(a.actor, 'bracing');
         if (n > 0 && (stacks(t, 'brittle') > 0 || stacks(t, 'stunned') > 0))
           n = Math.floor(n * 0.75);
@@ -696,7 +762,11 @@ function execOp(r: Run, a: Act, op: Op): void {
           op.status === 'seared' ? scaledByDifficulty(a.actor, t, n) : n,
         );
         if (op.temp && n > 0 && applied)
-          side.temps.push({ unit: t.id, status: op.status, amount: n });
+          (op.temp === 'theirs' ? r.s.sides[t.side] : side).temps.push({
+            unit: t.id,
+            status: op.status,
+            amount: n,
+          });
       }
       return;
     }
@@ -749,20 +819,34 @@ function execOp(r: Run, a: Act, op: Op): void {
     case 'discard':
     case 'exhaustCards': {
       const kind = op.op === 'discard' ? 'discard' : 'exhaust';
-      const n = Math.min(op.amount, side.hand.length);
+      // (only some of the hand can be asked for: all but a kind, or only a kind)
+      const only = op.op === 'exhaustCards' ? op.only : undefined;
+      const not = op.op === 'exhaustCards' ? op.not : undefined;
+      const eligible = side.hand.filter((c) => {
+        const k = r.db.cards[c.card]?.kind;
+        return (!only || k === only) && (!not || k !== not);
+      });
+      const n = Math.min(op.amount, eligible.length);
       if (n <= 0) return;
-      if (op.random || !a.pick || (!op.any && n >= side.hand.length)) {
-        // no choice to make (or no one to ask): random cards, or the whole hand when it is no bigger than the number
+      if (op.random || !a.pick || (!op.any && n >= eligible.length)) {
+        // no choice to make (or no one to ask): random cards, or every eligible card when no more than the number
         for (let i = 0; i < n; i++) {
-          if (!side.hand.length) break;
-          const [c] = side.hand.splice(nextInt(r.s.rng, side.hand.length), 1);
-          if (c) moveFromHand(r, side, c, kind);
+          const left = side.hand.filter((c) => eligible.includes(c));
+          if (!left.length) break;
+          const c = left[nextInt(r.s.rng, left.length)] as CardInst;
+          side.hand = side.hand.filter((x) => x.id !== c.id);
+          if (kind === 'exhaust') {
+            a.exhaustedNow++;
+            const dmg = r.db.cards[c.card]?.effects.find((o) => o.op === 'damage');
+            if (dmg && dmg.op === 'damage') a.exhaustedDmg += dmg.amount;
+          }
+          moveFromHand(r, side, c, kind);
         }
         return;
       }
       r.s.pending = {
         kind,
-        pool: side.hand.map((c) => c.id),
+        pool: eligible.map((c) => c.id),
         min: op.any ? 0 : n,
         max: n,
         rest: [],
@@ -808,6 +892,7 @@ function execOp(r: Run, a: Act, op: Op): void {
         ...(op.filter ? { filter: op.filter } : {}),
         ...(op.tag ? { tag: op.tag } : {}),
         ...(op.stance ? { stance: op.stance } : {}),
+        ...(op.temp ? { temp: true } : {}),
       });
       r.ev.push({ type: 'power', side: side.id, card: a.card?.id ?? '' });
       return;
@@ -875,7 +960,8 @@ function execOp(r: Run, a: Act, op: Op): void {
             (!op.kind || c.kind === op.kind),
         )
         .sort((x, y) => (x.id < y.id ? -1 : 1));
-      for (let i = 0; i < (op.count ?? 1) && pool.length; i++) {
+      const count = (op.count ?? 1) + (op.scale ? amountOf(r, a, 0, op.scale, null) : 0);
+      for (let i = 0; i < count && pool.length; i++) {
         const pick = pool[nextInt(r.s.rng, pool.length)] as CardDef;
         const made = addCardTo(r, side, pick.id, 'hand');
         if (op.free && pick.cost > 0) made.costMod = -pick.cost;
@@ -956,6 +1042,8 @@ function execOp(r: Run, a: Act, op: Op): void {
         if (!pool.length) break;
         const pick = pool[nextInt(r.s.rng, pool.length)] as CardInst;
         side.discard = side.discard.filter((c) => c.id !== pick.id);
+        const better = op.upgrade ? r.db.cards[pick.card]?.upgrade : undefined;
+        if (better && r.db.cards[better]) pick.card = better;
         if (op.to === 'draw') {
           side.draw.unshift(pick);
           r.ev.push({ type: 'addCard', side: side.id, card: pick.id, def: pick.card, to: 'draw' });
@@ -966,6 +1054,74 @@ function execOp(r: Run, a: Act, op: Op): void {
           side.hand.push(pick);
           r.ev.push({ type: 'draw', side: side.id, card: pick.id, def: pick.card });
         }
+      }
+      return;
+    }
+    case 'manaLock':
+      side.manaLocked = true;
+      return;
+    case 'drawLock':
+      side.drawLocked = true;
+      return;
+    case 'drawUntil':
+      // (one at a time; it stops when a card of another kind comes, or when nothing more can be drawn)
+      for (let i = 0; i < 60; i++) {
+        const before = side.drawn;
+        drawCards(r, side, 1);
+        if (side.drawn === before) break;
+        const last = side.hand[side.hand.length - 1];
+        if (last && r.db.cards[last.card]?.kind !== op.not) break;
+      }
+      return;
+    case 'exhaustTop':
+      for (let i = 0; i < op.amount; i++) {
+        if (side.draw.length === 0 && side.discard.length > 0) {
+          side.draw = shuffle(r.s.rng, side.discard);
+          side.discard = [];
+          r.ev.push({ type: 'shuffle', side: side.id });
+          fireTriggers(r, side, 'shuffle');
+        }
+        const top = side.draw.shift();
+        if (!top) break;
+        exhaustCard(r, side, top);
+      }
+      return;
+    case 'transform':
+      for (const c of side.hand) {
+        if (r.db.cards[c.card]?.kind !== op.kind) continue;
+        c.card = op.into;
+        delete c.costMod;
+        r.ev.push({ type: 'transform', side: side.id, card: c.id, def: c.card });
+      }
+      return;
+    case 'when': {
+      const v = metricValue(r, a, op.by, op.of, a.target);
+      if ((op.atLeast !== undefined && v < op.atLeast) || (op.atMost !== undefined && v > op.atMost))
+        return;
+      runOps(r, a, op.ops);
+      return;
+    }
+    case 'copyPlayed':
+      if (a.played) addCardTo(r, side, a.played.card, 'hand');
+      return;
+    case 'maxHp':
+      for (const t of resolve(r, a, op.to)) {
+        const n = amountOf(r, a, op.amount, undefined, t);
+        if (n <= 0 || t.hp <= 0) continue;
+        t.maxHp += n;
+        t.hp += n;
+        if (t.kind === 'hero') side.maxHpGained = (side.maxHpGained ?? 0) + n;
+        r.ev.push({ type: 'heal', target: t.id, amount: n, hp: t.hp, maxHp: t.maxHp });
+      }
+      return;
+    case 'playPile': {
+      const hero = heroOf(side);
+      if (!hero) return;
+      const times = amountOf(r, a, op.amount ?? 1, op.scale, null);
+      for (let i = 0; i < times && !r.s.winner; i++) {
+        const inst = takeForFree(r, side, a, op);
+        if (!inst) break;
+        playFree(r, side, hero, inst, op.from === 'exhaust' ? 'stay' : op.exhaust ? 'exhaust' : 'normal');
       }
       return;
     }
@@ -1062,6 +1218,7 @@ function addCardTo(r: Run, sd: SideState, card: CardId, to: 'hand' | 'discard' |
 }
 
 function drawCards(r: Run, sd: SideState, n: number): void {
+  if (sd.drawLocked) return;
   for (let i = 0; i < n; i++) {
     if (sd.draw.length === 0) {
       if (sd.discard.length === 0) return;
@@ -1080,7 +1237,7 @@ function drawCards(r: Run, sd: SideState, n: number): void {
       sd.hand.push(c);
       r.ev.push({ type: 'draw', side: sd.id, card: c.id, def: c.card });
       sd.drawn++;
-      fireTriggers(r, sd, 'draw');
+      fireTriggers(r, sd, 'draw', { drawn: c });
     }
   }
 }
@@ -1105,6 +1262,7 @@ function moveFromHand(r: Run, sd: SideState, c: CardInst, kind: 'discard' | 'exh
 /** Puts a card (already out of every pile) into the exhaust pile and runs what exhausting it does. */
 function exhaustCard(r: Run, sd: SideState, c: CardInst): void {
   sd.exhausted.push(c);
+  sd.exhaustedTurn = (sd.exhaustedTurn ?? 0) + 1;
   r.ev.push({ type: 'exhaust', side: sd.id, card: c.id, def: c.card });
   const cd = cardDef(r.db, c.card);
   const hero = heroOf(sd);
@@ -1114,6 +1272,117 @@ function exhaustCard(r: Run, sd: SideState, c: CardInst): void {
     r.depth--;
   }
   fireTriggers(r, sd, 'exhaust');
+}
+
+/** Picks the card a 'playPile' op plays and takes it out of its pile (null when there is none). */
+function takeForFree(
+  r: Run,
+  sd: SideState,
+  a: Act,
+  op: Extract<Op, { op: 'playPile' }>,
+): CardInst | null {
+  const fits = (c: CardInst): boolean => {
+    const d = r.db.cards[c.card];
+    return (
+      !!d &&
+      (!op.kind || d.kind === op.kind) &&
+      (!op.match || d.name.toLowerCase().includes(op.match.toLowerCase()))
+    );
+  };
+  if (op.from === 'draw') {
+    if (sd.draw.length === 0 && sd.discard.length > 0) {
+      sd.draw = shuffle(r.s.rng, sd.discard);
+      sd.discard = [];
+      r.ev.push({ type: 'shuffle', side: sd.id });
+      fireTriggers(r, sd, 'shuffle');
+    }
+    const top = sd.draw[0];
+    if (!top) return null;
+    sd.draw.shift();
+    return top;
+  }
+  if (op.from === 'drawn') {
+    const c = a.drawn;
+    if (!c || !fits(c) || !sd.hand.includes(c)) return null;
+    sd.hand = sd.hand.filter((x) => x.id !== c.id);
+    // (once only: the same card cannot be taken twice)
+    a.drawn = null;
+    return c;
+  }
+  const pile = op.from === 'hand' ? sd.hand : sd.exhausted;
+  const pool = pile.filter(
+    (c) =>
+      fits(c) &&
+      // a Power in the consumed pile is in play, and a card that plays cards could play itself for ever
+      (op.from !== 'exhaust' ||
+        (r.db.cards[c.card]?.kind !== 'power' &&
+          !r.db.cards[c.card]?.effects.some((o) => o.op === 'playPile') &&
+          !r.db.cards[c.card]?.replayFromExhaust)),
+  );
+  if (!pool.length) return null;
+  const pick = pool[nextInt(r.s.rng, pool.length)] as CardInst;
+  if (op.from === 'hand') sd.hand = sd.hand.filter((x) => x.id !== pick.id);
+  else sd.exhausted = sd.exhausted.filter((x) => x.id !== pick.id);
+  return pick;
+}
+
+/**
+ * Plays a card for free, against a random enemy, without asking the player anything. 'normal': it goes where a played card goes;
+ * 'exhaust': it is consumed; 'stay': it goes back to the consumed pile.
+ */
+function playFree(
+  r: Run,
+  sd: SideState,
+  hero: Unit,
+  inst: CardInst,
+  how: 'normal' | 'exhaust' | 'stay',
+): void {
+  const cd = cardDef(r.db, inst.card);
+  // (a card that could not be played goes where it came from; the screen is told, so its piles stay right)
+  const back = (): void => {
+    if (how === 'stay') {
+      sd.exhausted.push(inst);
+      r.ev.push({ type: 'exhaust', side: sd.id, card: inst.id, def: inst.card });
+    } else {
+      sd.discard.push(inst);
+      r.ev.push({ type: 'discard', side: sd.id, card: inst.id, def: inst.card });
+    }
+  };
+  // it shows up in the hand for a moment, so the screen can play it
+  r.ev.push({ type: 'draw', side: sd.id, card: inst.id, def: inst.card });
+  if (cd.unplayable || r.depth >= MAX_DEPTH) return back();
+  let target: Unit | null = null;
+  if (cd.target === 'foe') {
+    const foes = legalFoes(r, sd.id, cd);
+    if (!foes.length) return back();
+    target = foes[nextInt(r.s.rng, foes.length)] as Unit;
+  } else if (cd.target === 'friend') target = hero;
+  else if (cd.target === 'ally') {
+    const allies = sd.units.filter((u) => u.kind === 'ally' && u.hp > 0);
+    if (!allies.length) return back();
+    target = allies[nextInt(r.s.rng, allies.length)] as Unit;
+  }
+  r.ev.push({ type: 'play', side: sd.id, card: inst.id, def: inst.card, target: target?.id ?? null });
+  if (cd.kind === 'snare') {
+    if (sd.snares.length < MAX_SNARES) {
+      sd.snares.push({ id: inst.id, card: inst.card });
+      r.ev.push({ type: 'snareSet', side: sd.id, snare: inst.id });
+    } else back();
+    return;
+  }
+  r.depth++;
+  runOps(r, mkAct(hero, { target, card: cd, inst, x: 0 }), cd.effects);
+  r.depth--;
+  if ((how === 'stay' || how === 'exhaust') && cd.kind !== 'power') {
+    if (how === 'stay') {
+      sd.exhausted.push(inst);
+      r.ev.push({ type: 'exhaust', side: sd.id, card: inst.id, def: inst.card });
+    } else exhaustCard(r, sd, inst);
+    sd.played++;
+    if (cd.kind === 'attack') sd.attacksPlayed++;
+    if (cd.kind === 'skill') sd.skillsPlayed++;
+    fireTriggers(r, sd, 'play', { card: cd, target, inst });
+  } else finishCard(r, sd, inst, cd, target);
 }
 
 /** Powers: run every trigger of `sd` for `when` (for 'play', only those that match the card). */
@@ -1127,6 +1396,9 @@ function fireTriggers(
     stance?: Stance;
     attacker?: Unit | null;
     healed?: number;
+    /** the card just played / just drawn */
+    inst?: CardInst;
+    drawn?: CardInst;
   } = {},
 ): void {
   const played = ctx.card;
@@ -1154,6 +1426,8 @@ function fireTriggers(
         target: ctx.target ?? null,
         attacker: ctx.attacker ?? null,
         healed: ctx.healed ?? 0,
+        played: ctx.inst ?? null,
+        drawn: ctx.drawn ?? null,
       }),
       p.ops,
     );
@@ -1440,6 +1714,11 @@ function beginHeroTurn(r: Run, side: Side): void {
   sd.attacksPlayed = 0;
   sd.skillsPlayed = 0;
   sd.discarded = 0;
+  sd.lostHpTurn = 0;
+  sd.exhaustedTurn = 0;
+  sd.manaLocked = false;
+  sd.drawLocked = false;
+  sd.barrierDoubled = false;
   sd.calmPaid = false;
   // the second PvP player gets a small head start on their first turn
   const first = r.s.mode === 'pvp' && side === 'b' && r.s.turn === 2;
@@ -1484,6 +1763,14 @@ function beginHeroTurn(r: Run, side: Side): void {
     if (b.turnStart) runOps(r, mkAct(hero), b.turnStart);
   }
   fireTriggers(r, sd, 'turnStart');
+  // a card that comes back from the consumed pile every turn (Howl From Beyond)
+  for (const c of [...sd.exhausted]) {
+    if (r.s.winner) break;
+    if (!r.db.cards[c.card]?.replayFromExhaust) continue;
+    if (!sd.exhausted.includes(c)) continue;
+    sd.exhausted = sd.exhausted.filter((x) => x.id !== c.id);
+    playFree(r, sd, hero, c, 'stay');
+  }
 }
 
 /**
@@ -1494,8 +1781,11 @@ function beginHeroTurn(r: Run, side: Side): void {
 function decay(r: Run, side: Side): void {
   for (const u of r.s.sides[side].units)
     if (stacks(u, 'faltering') > 0) addStatus(r, u, 'faltering', -1);
-  for (const u of r.s.sides[other(side)].units)
+  for (const u of r.s.sides[other(side)].units) {
     if (stacks(u, 'exposed') > 0) addStatus(r, u, 'exposed', -1);
+    // Sturdy (Giant's Stance) holds through the other side's whole turn, then it is spent
+    if (stacks(u, 'sturdy') > 0) addStatus(r, u, 'sturdy', -stacks(u, 'sturdy'));
+  }
   const sd = r.s.sides[side];
   for (const u of [...sd.units]) {
     if (u.hp <= 0) continue;
@@ -1558,6 +1848,8 @@ function endTurn(r: Run): void {
   // end-of-turn Powers, then every rune's passive, then Radiant fades
   fireTriggers(r, sd, 'turnEnd');
   if (r.s.winner) return;
+  // what was only for this turn ends with it (Rage)
+  sd.powers = sd.powers.filter((p) => !p.temp);
   for (const rs of [...sd.runes]) {
     if (r.s.winner) return;
     if (sd.runes.includes(rs)) fireRune(r, sd, rs, 'passive');
@@ -1748,13 +2040,17 @@ function legalFoes(r: Run, side: Side, cd: CardDef): Unit[] {
 /** What a card costs right now: its cost, any change to this copy, and free skills while Unbound. */
 export function costOf(
   db: CombatDb,
-  sd: Pick<SideState, 'units'>,
+  sd: Pick<SideState, 'units' | 'attacksPlayed'>,
   c: Pick<CardInst, 'card' | 'costMod'>,
 ): number {
   const cd = cardDef(db, c.card);
   const hero = sd.units.find((u) => u.kind === 'hero');
   if (cd.kind === 'skill' && hero && stacks(hero, 'unbound') > 0) return 0;
-  return Math.max(0, cd.cost + (c.costMod ?? 0));
+  if (cd.kind === 'attack' && hero && stacks(hero, 'freeattack') > 0) return 0;
+  return Math.max(
+    0,
+    cd.cost + (c.costMod ?? 0) - (cd.cheaperPerAttack ?? 0) * (sd.attacksPlayed ?? 0),
+  );
 }
 
 export function canPlay(r: { db: CombatDb; s: CombatState }, side: Side, c: CardInst): boolean {
@@ -1767,6 +2063,11 @@ export function canPlay(r: { db: CombatDb; s: CombatState }, side: Side, c: Card
     if (!hero || stacks(hero, cd.statusCost.status) < cd.statusCost.amount) return false;
   }
   if (cd.kind === 'snare' && sd.snares.length >= MAX_SNARES) return false;
+  if (
+    cd.needsExhausted &&
+    sd.exhausted.filter((x) => r.db.cards[x.card]?.kind !== 'power').length < cd.needsExhausted
+  )
+    return false;
   if (cd.target === 'foe' && legalFoes({ ...r, ev: [], depth: 0 }, side, cd).length === 0)
     return false;
   if (cd.target === 'ally' && !sd.units.some((u) => u.kind === 'ally' && u.hp > 0)) return false;
@@ -1864,7 +2165,7 @@ function finishCard(r: Run, sd: SideState, inst: CardInst, cd: CardDef, target: 
   sd.played++;
   if (cd.kind === 'attack') sd.attacksPlayed++;
   if (cd.kind === 'skill') sd.skillsPlayed++;
-  fireTriggers(r, sd, 'play', { card: cd, target });
+  fireTriggers(r, sd, 'play', { card: cd, target, inst });
 }
 
 function playCard(r: Run, action: Extract<Action, { type: 'play' }>): void {
@@ -1898,7 +2199,9 @@ function playCard(r: Run, action: Extract<Action, { type: 'play' }>): void {
     r.ev.push({ type: 'died', unit: out.id, released: true });
   }
   sd.hand.splice(i, 1);
+  const freeAttack = cd.kind === 'attack' && stacks(hero, 'freeattack') > 0;
   sd.mana -= costOf(r.db, sd, inst);
+  if (freeAttack) addStatus(r, hero, 'freeattack', -1);
   // a discount (Cheapen, a free Discover) is spent on the play: a card made free for good would loop for ever
   delete inst.costMod;
   let x = 0;

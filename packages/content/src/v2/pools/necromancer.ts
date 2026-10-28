@@ -269,7 +269,7 @@ export const NECROMANCER: CardDef[] = [
     { trigger: { on: 'attacked' } },
   ),
   g(
-    'legendary',
+    'rare',
     'the-last-toll',
     'The Last Toll',
     'skill',
@@ -282,7 +282,7 @@ export const NECROMANCER: CardDef[] = [
       up: { cost: 2, effects: [status('doom', 30, 'allFoes')] },
     },
   ),
-  g('legendary', 'the-drowned-king', 'The Drowned King', 'summon', 3, 'none', [
+  g('rare', 'the-drowned-king', 'The Drowned King', 'summon', 3, 'none', [
     summon('drowned-king'),
     status('might', 1, 'allFriends'),
   ]),

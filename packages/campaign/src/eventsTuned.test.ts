@@ -45,11 +45,11 @@ describe('events that let you choose the card', () => {
     // a run waiting for the choice is a valid save, and nothing else can be chosen meanwhile
     expect(parseRun(serializeRun(r))?.context?.event?.chooseDeck?.act).toBe('upgrade');
     expect(() => chooseEvent(r, 'leave')).toThrow();
-    const card = pick.cards.find((c) => c === 'dawn-smite')!;
+    const card = pick.cards.find((c) => c === 'sundering-blow')!;
     const done = pickDeckCard(r, card);
     expect(done.phase).toBe('map');
-    expect(done.deck).toContain('dawn-smite+');
-    expect(done.deck).not.toContain('dawn-smite');
+    expect(done.deck).toContain('sundering-blow+');
+    expect(done.deck).not.toContain('sundering-blow');
     expect(() => pickDeckCard(r, 'not-in-deck')).toThrow();
   });
 
@@ -132,7 +132,7 @@ describe('a random removal names its card (DECISIONS #233)', () => {
     };
     const run: RunState = {
       ...base,
-      deck: [...base.deck, 'wound', 'gilded-blow', 'barbed-guard+'],
+      deck: [...base.deck, 'wound', 'dawn-smite', 'field-repairs+'],
     };
     let seen = 0;
     for (const def of EVENTS) {

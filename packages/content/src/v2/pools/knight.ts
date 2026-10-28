@@ -1,56 +1,96 @@
-// Valeria, the knight (Aurelion). No companions. Three build paths:
-//   Bulwark     - Barrier that scales, and hits for the Barrier you hold
-//   Thorns      - retaliation: Thorns, punishing Traps, payoffs for the Thorns you carry
-//   Devotion    - heal to build Devotion (her trait: even at full HP), then spend it on big hits; Shielded keeps her alive meanwhile
-// Glue cards (marked) serve two build paths. Numbers assume 3 Mana and a 5-card hand.
+// Valeria, the knight (Aurelion). No companions. She is the Slay the Spire 2 Ironclad on purpose, for now (Robert, 2026-10-28:
+// "our knight should more closely resemble the ironclad with some different mechanics"; "just add all of those"; DECISIONS #364, #366):
+// the same cards under original names, one for every card of the Ironclad's (DECISIONS #367: "i want this class as a reference point for
+// balancing other classes"), and nothing else: Thorns, Traps and her own older cards are gone. The only Ironclad cards missing are
+// Tank and Demonic Shield (they need a second player) and Break (an event card in their game). Each card's comment names the Ironclad
+// card it imitates; numbers and rarities are the Ironclad's (StS2 v0.103.2) unless a comment says why not.
+//
+// Build paths are hidden for now (DECISIONS #365) and the headings below are only a first sort, to be redone when they come back:
+//   Bulwark - Barrier that scales, and hits for the Barrier you hold
+//   Might   - Might (Strength) and cards that hit many times, so it pays; Exposed as the setup
+//   Consume - Consume your own cards for value (draw, Barrier, damage); Corruption, Dark Embrace, Fiend Fire
+//   Blood   - pay HP for Mana, cards and Might; payoffs for losing it
+// Numbers assume 3 Mana and a 5-card hand.
 
-import type { CardDef, Op } from '@sr/combat';
+import type { CardDef } from '@sr/combat';
 import {
   barrier,
+  copyPlayed,
+  copySelf,
+  discoverOp,
   dmg,
   doubleSt,
   draw,
+  drawLock,
+  drawUntil,
+  exhaustN,
+  exhaustTop,
+  fetchCards,
+  forge,
   heal,
   lose,
-  manaNext,
+  mana,
+  manaLock,
+  maxHpUp,
   on,
+  onKill,
   per,
+  playPile,
   pool,
-  PREVENT,
   scaled,
   status,
+  statusTheirs,
+  transformHand,
+  upgradeOp,
+  when,
 } from '../build';
 
 const m = pool('knight', 'aurelion');
 
 export const KNIGHT: CardDef[] = [
   // --- basics ---
-  m('basic', 'dawn-smite', 'Dawn Smite', 'attack', 1, 'foe', [dmg(6), barrier(3)]),
-  m('basic', 'oathbound', 'Oathbound', 'skill', 1, 'none', [barrier(7), status('thorns', 1)]),
+  // (the Bash of the deck: a 2-Mana hit that sets up Exposed)
+  m('basic', 'sundering-blow', 'Sundering Blow', 'attack', 2, 'foe', [
+    dmg(8),
+    status('exposed', 2, 'target'),
+  ]),
 
   // --- Bulwark ---
-  m('common', 'stand-firm', 'Stand Firm', 'skill', 1, 'none', [barrier(10)], { retain: true }),
-  m('uncommon', 'gilded-bastion', 'Gilded Bastion', 'skill', 2, 'none', [barrier(16)]),
-  m('common', 'bulwark-blow', 'Bulwark Blow', 'attack', 1, 'foe', [scaled(dmg(2), per('barrier'))]),
-  m('rare', 'anvil-strike', 'Anvil Strike', 'attack', 2, 'foe', [
-    scaled(dmg(11), per('barrier', 1)),
+  // (Body Slam: your Barrier, as damage)
+  m('common', 'bulwark-blow', 'Bulwark Blow', 'attack', 1, 'foe', [
+    scaled(dmg(0), per('barrier', 1)),
   ]),
-  m('uncommon', 'plate-discipline', 'Plate Discipline', 'power', 1, 'none', [
-    on('turnEnd', [barrier(4)]),
+  // (Shrug It Off)
+  m('common', 'oath-of-iron', 'Oath of Iron', 'skill', 1, 'none', [barrier(8), draw(1)]),
+  // (Armaments: a little Barrier, and one card in your hand is upgraded for the fight)
+  m('common', 'field-repairs', 'Field Repairs', 'skill', 1, 'none', [
+    barrier(5),
+    upgradeOp('random'),
   ]),
-
-  m('rare', 'citadel-march', 'Citadel March', 'power', 2, 'none', [
-    on('turnEnd', [scaled(dmg(0, 'allFoes'), per('barrier', 0.25))]),
+  // (Evil Eye)
+  m('uncommon', 'cold-stare', 'Cold Stare', 'skill', 1, 'none', [
+    barrier(8),
+    when('exhaustedTurn', { atLeast: 1 }, [barrier(8)]),
   ]),
-
-  // (more Bulwark)
-  m('uncommon', 'oath-of-iron', 'Oath of Iron', 'skill', 1, 'none', [barrier(8), draw(1)], {
-    retain: true,
+  // (Taunt)
+  m('uncommon', 'provoke', 'Provoke', 'skill', 1, 'foe', [
+    barrier(7),
+    status('exposed', 1, 'target'),
+  ]),
+  // (Stone Armor)
+  m('uncommon', 'stoneskin', 'Stoneskin', 'power', 1, 'none', [status('plating', 4)], {
+    up: { effects: [status('plating', 6)] },
   }),
-  m('uncommon', 'shield-charge', 'Shield Charge', 'attack', 2, 'foe', [dmg(12), barrier(8)]),
-  m('rare', 'bastion-engine', 'Bastion Engine', 'power', 2, 'none', [
-    on('barrier', [dmg(2, 'allFoes')]),
+  // (Colossus: Exposed enemies hit you half as hard until your next turn)
+  m('uncommon', 'giants-stance', "Giant's Stance", 'skill', 1, 'none', [
+    barrier(5),
+    status('sturdy', 1),
   ]),
+  // (Juggernaut)
+  m('rare', 'bastion-engine', 'Bastion Engine', 'power', 2, 'none', [
+    on('barrier', [dmg(5, 'randomFoe')]),
+  ]),
+  // (Impervious)
   m(
     'rare',
     'immovable-oath',
@@ -58,370 +98,362 @@ export const KNIGHT: CardDef[] = [
     'skill',
     2,
     'none',
-    [barrier(20), status('plating', 6)],
+    [barrier(30)],
     {
       exhaust: true,
     },
   ),
-  m('rare', 'rampart-of-ages', 'Rampart of Ages', 'power', 2, 'none', [status('bracing', 2)]),
-
-  // --- Thorns ---
-  m('common', 'thornmail', 'Thornmail', 'skill', 1, 'none', [status('thorns', 3)]),
-  m('common', 'righteous-rebuke', 'Righteous Rebuke', 'snare', 1, 'none', [dmg(10, 'attacker')], {
-    trigger: { on: 'attacked' },
-  }),
-  m('common', 'reprisal', 'Reprisal', 'snare', 1, 'none', [dmg(9, 'allFoes')], {
-    trigger: { on: 'hpLost', min: 4 },
-  }),
-  // 2 Mana, 1 upgraded: both versions read the same (DECISIONS #349)
-  m('rare', 'retribution', 'Retribution', 'attack', 2, 'foe', [scaled(dmg(0), per('thorns', 2))], {
-    up: { cost: 1 },
-  }),
-  m('common', 'barbed-oath', 'Barbed Oath', 'power', 1, 'none', [
-    on('turnStart', [status('thorns', 1)]),
-  ]),
-  m('rare', 'thornlord', 'Thornlord', 'power', 2, 'none', [
-    on('play', [status('thorns', 1)], { filter: 'skill' }),
-  ]),
-
-  m('common', 'barbed-guard', 'Barbed Guard', 'skill', 1, 'none', [
-    barrier(5),
-    status('thorns', 2),
-  ]),
-  m('common', 'thorn-lash', 'Thorn Lash', 'attack', 1, 'foe', [scaled(dmg(4), per('thorns', 1))]),
-  m(
-    'uncommon',
-    'caltrops',
-    'Iron Spikes',
-    'snare',
-    1,
-    'none',
-    [dmg(5, 'attacker'), status('faltering', 1, 'attacker')],
-    { trigger: { on: 'attacked' } },
-  ),
-  m('rare', 'bramble-storm', 'Bramble Storm', 'power', 2, 'none', [
-    on('turnEnd', [scaled(dmg(0, 'allFoes'), per('thorns', 0.5))]),
-  ]),
-
-  // (more Thorns)
-  m('uncommon', 'mirrored-aegis', 'Mirrored Aegis', 'skill', 2, 'none', [
-    barrier(14),
-    status('thorns', 2),
-  ]),
-  m('rare', 'briar-heart', 'Briar Heart', 'power', 3, 'none', [
-    on('barrier', [status('thorns', 1)]),
-  ]),
-
-  // --- Devotion ---
-  m('common', 'lightbearer', 'Lightbearer', 'skill', 1, 'none', [heal(4), barrier(5)]),
-  m('common', 'prayer', 'Prayer', 'skill', 0, 'none', [heal(4), draw(1)], { exhaust: true }),
-  m('uncommon', 'benediction', 'Benediction', 'skill', 2, 'none', [heal(10), barrier(6)], {
-    exhaust: true,
-  }),
-  m('uncommon', 'ward-of-ages', 'Ward of Ages', 'skill', 1, 'none', [
-    status('shielded', 1),
-    draw(1),
-  ]),
-  m('uncommon', 'sacred-vow', 'Sacred Vow', 'power', 2, 'none', [on('turnEnd', [heal(3)])]),
-  m('rare', 'halo', 'Halo', 'power', 3, 'none', [on('turnStart', [status('shielded', 1)])]),
-  m(
-    'rare',
-    'absolution',
-    'Absolution',
-    'skill',
-    3,
-    'none',
-    [heal(12), barrier(12), status('shielded', 1)],
-    { exhaust: true },
-  ),
-
-  m('common', 'sunlit-blow', 'Sunlit Blow', 'attack', 1, 'foe', [dmg(6), heal(2)]),
-  m('uncommon', 'radiant-renewal', 'Radiant Renewal', 'skill', 2, 'none', [heal(8), draw(2)], {
-    exhaust: true,
-  }),
-
-  // (more Devotion)
-  m('uncommon', 'heartening-hymn', 'Heartening Hymn', 'skill', 1, 'none', [
-    heal(6, 'allFriends'),
-    barrier(4, 'allFriends'),
-  ]),
-  m(
-    'rare',
-    'dawn-chorus',
-    'Dawn Chorus',
-    'skill',
-    2,
-    'none',
-    [heal(10, 'allFriends'), status('shielded', 1)],
-    { exhaust: true },
-  ),
-  m('rare', 'holy-reckoning', 'Holy Reckoning', 'attack', 2, 'none', [dmg(8, 'allFoes'), heal(6)]),
-
-  // --- glue and plain strikes ---
-  m('common', 'bell-toll', 'Bell Toll', 'attack', 1, 'none', [dmg(5, 'allFoes'), barrier(3)]),
-  m('uncommon', 'zealous-charge', 'Zealous Charge', 'attack', 1, 'foe', [dmg(4, 'target', 3)]),
-  m('common', 'gilded-blow', 'Gilded Blow', 'attack', 1, 'foe', [dmg(8), barrier(2)]),
-  m('uncommon', 'vengeful-light', 'Vengeful Light', 'attack', 2, 'foe', [
-    dmg(11),
-    scaled(heal(0), per('thorns')),
-  ]), // Thorns + Devotion
-  m('rare', 'sanctuary', 'Sanctuary', 'snare', 2, 'none', [PREVENT, barrier(8)], {
-    trigger: { on: 'attacked' },
-  }),
-  m('rare', 'dawns-verdict', "Dawn's Verdict", 'attack', 3, 'foe', [
-    dmg(28),
-    status('exposed', 2, 'target'),
-  ]),
-  // Fortified is huge: 3 Mana, 2 upgraded (DECISIONS #349)
+  // (Barricade) Fortified is huge: 3 Mana, 2 upgraded (DECISIONS #349)
   m('rare', 'unbroken-wall', 'Unbroken Wall', 'power', 3, 'none', [status('fortified', 1)], {
     up: { cost: 2 },
   }),
-  m(
-    'legendary',
-    'the-last-oath',
-    'The Last Oath',
-    'power',
-    3,
-    'none',
-    // Thorns: keep most of your Barrier, and your Thorns grow every turn (DECISIONS #338)
-    [status('fortified', 1), status('thorns', 3), on('turnStart', [status('thorns', 2)])],
-    {
-      up: {
-        effects: [
-          status('fortified', 1),
-          status('thorns', 5),
-          on('turnStart', [status('thorns', 2)]),
-        ],
-      },
-    },
-  ),
-  m(
-    'legendary',
-    'dawn-incarnate',
-    'Dawn Incarnate',
-    'attack',
-    3,
-    'none',
-    [barrier(10), scaled(dmg(0, 'allFoes'), per('barrier', 1))],
-    { exhaust: true },
-  ),
-  m('uncommon', 'steady-resolve', 'Steady Resolve', 'skill', 1, 'none', [barrier(5), manaNext(2)]),
-
-  // --- Bulwark (more) ---
-  m('uncommon', 'bulwark-sweep', 'Bulwark Sweep', 'attack', 2, 'none', [
-    scaled(dmg(4, 'allFoes'), per('barrier', 0.5)),
-  ]),
-  m(
-    'uncommon',
-    'hold-the-line',
-    'Hold the Line',
-    'skill',
-    1,
-    'none',
-    [scaled(barrier(4), per('skillsPlayed', 3))],
-    { retain: true },
-  ),
-  m('common', 'tower-shield', 'Tower Shield', 'power', 1, 'none', [
-    on('play', [barrier(3)], { filter: 'skill' }),
-  ]),
-  m('uncommon', 'crushing-weight', 'Crushing Weight', 'attack', 2, 'foe', [
-    scaled(dmg(9), per('barrier', 0.5)),
-    status('exposed', 1, 'target'),
-  ]),
-  m(
-    'uncommon',
-    'last-stand',
-    'Last Stand',
-    'skill',
-    1,
-    'none',
-    [scaled(barrier(8), per('missingPct', 0.4))],
-    { exhaust: true },
-  ),
-
-  // --- Thorns (more) ---
-  m(
-    'uncommon',
-    'spiked-retort',
-    'Spiked Retort',
-    'snare',
-    1,
-    'none',
-    [dmg(6, 'attacker'), status('thorns', 2)],
-    { trigger: { on: 'attacked' } },
-  ),
-  m('uncommon', 'thorn-volley', 'Thorn Volley', 'attack', 1, 'none', [
-    scaled(dmg(2, 'allFoes'), per('thorns', 1)),
-  ]),
-  m('uncommon', 'barbed-bastion', 'Barbed Bastion', 'skill', 2, 'none', [
-    scaled(barrier(6), per('thorns', 2)),
-  ]),
-  m('rare', 'briar-bloom', 'Briar Bloom', 'skill', 1, 'none', [doubleSt('thorns', 'self', 2, 8)], {
-    exhaust: true,
-  }),
-  m(
-    'rare',
-    'punishing-gale',
-    'Punishing Gale',
-    'snare',
-    2,
-    'none',
-    [scaled(dmg(8, 'allFoes'), per('thorns'))],
-    { trigger: { on: 'foeTurn' } },
-  ),
-
-  // --- Devotion (more) ---
-  // spends X Devotion, all you have (DECISIONS #348)
-  m(
-    'common',
-    'sunforged-edge',
-    'Sunforged Edge',
-    'attack',
-    2,
-    'foe',
-    [scaled(dmg(6), per('devotion', 1)), doubleSt('devotion', 'self', 0)],
-    { statusCost: { status: 'devotion', amount: 0, x: true } },
-  ),
-  m(
-    'rare',
-    'martyrs-grace',
-    "Martyr's Grace",
-    'skill',
-    1,
-    'none',
-    [lose(5), barrier(15), status('shielded', 2)],
-    { exhaust: true },
-  ),
-
-  // (Devotion spenders, the paladin's judgments: a small hit often, a sweep, a big blow, or everything at once)
-  m(
-    'common',
-    'hand-of-justice',
-    'Hand of Justice',
-    'attack',
-    1,
-    'foe',
-    [dmg(10), status('exposed', 1, 'target')],
-    {
-      statusCost: { status: 'devotion', amount: 4 },
-    },
-  ),
-  m(
-    'uncommon',
-    'consecrated-blade',
-    'Consecrated Blade',
-    'attack',
-    2,
-    'foe',
-    [dmg(9, 'target', 2), barrier(6)],
-    {
-      statusCost: { status: 'devotion', amount: 8 },
-    },
-  ),
-  m('rare', 'hand-of-god', 'Hand of God', 'attack', 2, 'foe', [dmg(36)], {
-    statusCost: { status: 'devotion', amount: 15 },
-  }),
-  m('common', 'lightbrand', 'Lightbrand', 'attack', 1, 'foe', [dmg(14)], {
-    statusCost: { status: 'devotion', amount: 5 },
-  }),
-  m(
-    'uncommon',
-    'hymn-of-reckoning',
-    'Hymn of Reckoning',
-    'attack',
-    1,
-    'none',
-    [dmg(10, 'allFoes')],
-    {
-      statusCost: { status: 'devotion', amount: 6 },
-    },
-  ),
-  m(
-    'rare',
-    'sunfall',
-    'Sunfall',
-    'attack',
-    2,
-    'none',
-    // spends X Devotion, all you have (DECISIONS #348), on two random enemies (DECISIONS #357)
-    [
-      scaled({ ...dmg(10, 'randomFoe', 2), distinct: true } as Op, per('devotion', 2)),
-      doubleSt('devotion', 'self', 0),
-    ],
-    { statusCost: { status: 'devotion', amount: 0, x: true } },
-  ),
-
-  // --- brought back (DECISIONS #337) ---
-  m('common', 'shield-bash', 'Shield Bash', 'attack', 1, 'foe', [
-    scaled(dmg(3), per('barrier', 0.5)),
-  ]),
-  m('common', 'iron-tithe', 'Iron Tithe', 'skill', 1, 'none', [
-    barrier(6),
-    scaled(barrier(0), per('exhausted', 2)),
-  ]),
-  m('common', 'gilded-wall', 'Gilded Wall', 'skill', 1, 'none', [
-    scaled(barrier(5), per('barrier', 0.5)),
-  ]),
-  m('rare', 'endless-vigil', 'Endless Vigil', 'power', 2, 'none', [
-    on('turnEnd', [scaled(barrier(0), per('hand', 2))]),
-  ]),
-  m('uncommon', 'ember-ward', 'Ember Ward', 'skill', 1, 'none', [
-    barrier(10),
+  // (Unmovable)
+  m('rare', 'stone-stance', 'Stone Stance', 'power', 2, 'none', [status('unmovable', 1)]),
+  // (Flame Barrier: hits back for 4 this turn, as Thorns that wear off)
+  m('uncommon', 'ember-ward', 'Ember Ward', 'skill', 2, 'none', [
+    barrier(12),
     status('thorns', 4, 'self', true),
   ]),
+
+  // --- Might ---
+  // (Twin Strike)
+  m('common', 'twin-cut', 'Twin Cut', 'attack', 1, 'foe', [dmg(5, 'target', 2)]),
+  // (Setup Strike)
+  m('common', 'braced-strike', 'Braced Strike', 'attack', 1, 'foe', [
+    dmg(7),
+    status('might', 2, 'self', true),
+  ]),
+  // (Sword Boomerang)
+  m('common', 'cleaving-throws', 'Cleaving Throws', 'attack', 1, 'none', [
+    dmg(3, 'randomFoe', 3),
+  ]),
+  // (Pommel Strike)
+  m('common', 'hilt-strike', 'Hilt Strike', 'attack', 1, 'foe', [dmg(9), draw(1)]),
+  // (Thunderclap)
+  m('common', 'clarion-clap', 'Clarion Clap', 'attack', 1, 'none', [
+    dmg(4, 'allFoes'),
+    status('exposed', 1, 'allFoes'),
+  ]),
+  // (Tremble)
+  m('common', 'rattle', 'Rattle', 'skill', 1, 'foe', [status('exposed', 3, 'target')], {
+    exhaust: true,
+  }),
+  // (Perfected Strike: every card with Strike in its name, in the whole deck)
+  m('common', 'mastered-strike', 'Mastered Strike', 'attack', 2, 'foe', [
+    scaled(dmg(6), per('strikes', 2)),
+  ]),
+  // (Inflame)
+  m('uncommon', 'steel-resolve', 'Steel Resolve', 'power', 1, 'none', [status('might', 2)]),
+  // (Fight Me!)
   m(
     'uncommon',
-    'mirror-shield',
-    'Mirror Shield',
-    'snare',
-    1,
-    'none',
-    [dmg(4, 'attacker'), scaled(dmg(0, 'attacker'), per('thorns', 2))],
-    { trigger: { on: 'attacked' } },
+    'challenge',
+    'Challenge',
+    'attack',
+    2,
+    'foe',
+    [dmg(5, 'target', 2), status('might', 2), status('might', 1, 'target')],
+    // (the enemy's Might stays 1: more Might for you is the upgrade)
+    { up: { effects: [dmg(5, 'target', 2), status('might', 3), status('might', 1, 'target')] } },
   ),
-  m('rare', 'radiant-oath', 'Radiant Oath', 'power', 2, 'none', [status('thorns', 4)]),
-
-  // --- brought back for the 20/30/25 rarity target (DECISIONS #341) ---
+  // (Dominate)
+  m(
+    'uncommon',
+    'intimidate',
+    'Intimidate',
+    'skill',
+    1,
+    'foe',
+    [status('exposed', 1, 'target'), scaled(status('might', 0), per('exposed', 1, 'target'))],
+    { exhaust: true },
+  ),
+  // (Dismantle: it hits twice against an Exposed enemy)
+  m('uncommon', 'break-guard', 'Break Guard', 'attack', 1, 'foe', [
+    dmg(8),
+    when('exposed', { atLeast: 1, of: 'target' }, [dmg(8)]),
+  ]),
+  // (Uppercut)
+  m('uncommon', 'rising-fist', 'Rising Fist', 'attack', 2, 'foe', [
+    dmg(13),
+    status('faltering', 1, 'target'),
+    status('exposed', 1, 'target'),
+  ]),
+  // (Bully)
+  m('uncommon', 'pile-on', 'Pile On', 'attack', 0, 'foe', [
+    scaled(dmg(4), per('exposed', 2, 'target')),
+  ]),
+  // (Whirlwind)
+  m(
+    'uncommon',
+    'whirling-blade',
+    'Whirling Blade',
+    'attack',
+    0,
+    'none',
+    [{ op: 'damage', amount: 5, hits: 0, to: 'allFoes', scale: { by: 'x', into: 'hits' } }],
+    { x: true },
+  ),
+  // (Rampage: every copy gains damage each time you play one)
+  m(
+    'uncommon',
+    'mounting-fury',
+    'Mounting Fury',
+    'attack',
+    1,
+    'foe',
+    [scaled(dmg(9), per('bonus')), forge('mounting-fury', 5)],
+    { up: { effects: [scaled(dmg(9), per('bonus')), forge('mounting-fury', 8)] } },
+  ),
+  // (Bludgeon)
+  m('uncommon', 'hammer-fall', 'Hammer Fall', 'attack', 3, 'foe', [dmg(32)]),
+  // (Pillage)
+  m('uncommon', 'plunder', 'Plunder', 'attack', 1, 'foe', [dmg(6), drawUntil('attack')]),
+  // (Stomp: 12 to everyone, and it costs 1 less for every Attack you have played this turn)
+  m('uncommon', 'trampling-charge', 'Trampling Charge', 'attack', 3, 'none', [dmg(12, 'allFoes')], {
+    cheaperPerAttack: 1,
+  }),
+  // (Unrelenting)
+  m('uncommon', 'relentless-push', 'Relentless Push', 'attack', 2, 'foe', [
+    dmg(12),
+    status('freeattack', 1),
+  ]),
+  // (Rage)
+  m('uncommon', 'berserkers-rage', "Berserker's Rage", 'skill', 0, 'none', [
+    on('play', [barrier(3)], { filter: 'attack', temp: true }),
+  ]),
+  // (Stampede)
+  m('uncommon', 'charging-herd', 'Charging Herd', 'power', 2, 'none', [
+    on('turnEnd', [playPile('hand', { kind: 'attack' })]),
+  ]),
+  // (Juggling: your third Attack each turn comes back to your hand)
+  m('uncommon', 'jugglers-rhythm', "Juggler's Rhythm", 'power', 1, 'none', [
+    on('play', [when('attacksPlayed', { atLeast: 3, atMost: 3 }, [copyPlayed])], {
+      filter: 'attack',
+    }),
+  ]),
+  // (Vicious)
+  m('uncommon', 'scent-of-weakness', 'Scent of Weakness', 'power', 1, 'none', [
+    on('exposeFoe', [draw(1)]),
+  ]),
+  // (Demon Form)
+  m('rare', 'warlords-oath', "Warlord's Oath", 'power', 3, 'none', [
+    on('turnStart', [status('might', 2)]),
+  ]),
+  // (Conflagration)
+  m('rare', 'wildfire', 'Wildfire', 'attack', 1, 'none', [
+    scaled(dmg(8, 'allFoes'), per('attacksPlayed', 2)),
+  ]),
+  // (One-Two Punch)
+  m('rare', 'double-down', 'Double Down', 'skill', 1, 'none', [status('twinned', 1)]),
+  // (Cruelty)
+  m('rare', 'cruel-streak', 'Cruel Streak', 'power', 1, 'none', [status('cruelty', 1)]),
+  // (Mangle: the enemy hits 10 softer through its next turn)
+  m('rare', 'crippling-blow', 'Crippling Blow', 'attack', 3, 'foe', [
+    dmg(15),
+    statusTheirs('sapped', 10, 'target'),
+  ]),
+  // (Feed: if it kills, your max HP grows for good)
   m(
     'rare',
-    'impregnable',
-    'Impregnable',
-    'skill',
-    2,
-    'none',
-    [scaled(barrier(0), per('barrier', 1))],
-    {
-      exhaust: true,
-    },
+    'bloodfeast',
+    'Bloodfeast',
+    'attack',
+    1,
+    'foe',
+    [onKill(dmg(10), [maxHpUp(3)])],
+    { exhaust: true },
   ),
+  // (Hellraiser: every Strike you draw is played against a random enemy)
+  m('rare', 'raised-hell', 'Raised Hell', 'power', 2, 'none', [
+    on('draw', [playPile('drawn', { match: 'strike' })]),
+  ]),
+  // (Aggression: an Attack from your discard pile comes back upgraded every turn)
+  m('rare', 'unforgiving-drill', 'Unforgiving Drill', 'power', 1, 'none', [
+    on('turnStart', [fetchCards(1, 'hand', 'attack', true)]),
+  ]),
+  // (Primal Force: every Attack in your hand becomes a Giant Rock)
+  m('rare', 'stone-fury', 'Stone Fury', 'skill', 0, 'none', [transformHand('attack', 'giant-rock')]),
+  m('common', 'giant-rock', 'Giant Rock', 'attack', 1, 'foe', [dmg(16)], { source: 'token' }),
+
+  // --- Consume ---
+  // (True Grit)
+  m('common', 'sacrificial-guard', 'Sacrificial Guard', 'skill', 1, 'none', [
+    barrier(7),
+    exhaustN(1, 'random'),
+  ]),
+  // (Cinder)
+  m('common', 'scorching-blow', 'Scorching Blow', 'attack', 2, 'foe', [
+    dmg(17),
+    exhaustN(1, 'random'),
+  ]),
+  // (Molten Fist)
+  m(
+    'common',
+    'searing-fist',
+    'Searing Fist',
+    'attack',
+    1,
+    'foe',
+    [dmg(10), doubleSt('exposed', 'target', 2, 3)],
+    { exhaust: true },
+  ),
+  // (Headbutt)
+  m('common', 'ram-home', 'Ram Home', 'attack', 1, 'foe', [dmg(9), fetchCards(1, 'draw')]),
+  // (Havoc: play the top card of your draw pile, and consume it)
+  m('common', 'wild-gamble', 'Wild Gamble', 'skill', 1, 'none', [
+    playPile('draw', { exhaust: true }),
+  ]),
+  // (Ashen Strike)
+  m('uncommon', 'smoldering-blow', 'Smoldering Blow', 'attack', 1, 'foe', [
+    scaled(dmg(6), per('exhausted', 1)),
+  ]),
+  // (Battle Trance: draw 3, and no more this turn)
+  m('uncommon', 'grim-focus', 'Grim Focus', 'skill', 0, 'none', [draw(3), drawLock]),
+  // (Feel No Pain)
+  m('uncommon', 'numbing-rite', 'Numbing Rite', 'power', 1, 'none', [
+    on('exhaust', [barrier(3)]),
+  ]),
+  // (Infernal Blade)
   m(
     'uncommon',
-    'forged-in-iron',
-    'Forged in Iron',
+    'borrowed-blade',
+    'Borrowed Blade',
+    'skill',
+    1,
+    'none',
+    [discoverOp('attack', 1, true)],
+    {
+      exhaust: true,
+      up: { effects: [discoverOp('attack', 2, true)] },
+    },
+  ),
+  // (Second Wind: every card that is not an Attack is consumed, 5 Barrier for each)
+  m('uncommon', 'bitter-breath', 'Bitter Breath', 'skill', 1, 'none', [
+    exhaustN(99, 'choose', { not: 'attack' }),
+    scaled(barrier(0), per('exhaustedNow', 5)),
+  ]),
+  // (Drum of Battle)
+  m('uncommon', 'war-drums', 'War Drums', 'power', 0, 'none', [
+    draw(2),
+    on('turnStart', [exhaustTop(1)]),
+  ]),
+  // (Expect a Fight: a Mana for every Attack in your hand, and no more Mana this turn)
+  m('uncommon', 'brace-for-battle', 'Brace for Battle', 'skill', 2, 'none', [
+    scaled(mana(0), per('attacksInHand')),
+    manaLock,
+  ]),
+  // (Forgotten Ritual)
+  m(
+    'uncommon',
+    'ritual-of-ash',
+    'Ritual of Ash',
+    'skill',
+    1,
+    'none',
+    [when('exhaustedTurn', { atLeast: 1 }, [mana(3)])],
+    { exhaust: true },
+  ),
+  // (Thrash: consume a random Attack in your hand and add its damage)
+  m('rare', 'flailing-blows', 'Flailing Blows', 'attack', 1, 'foe', [
+    exhaustN(1, 'random', { only: 'attack' }),
+    dmg(4, 'target', 2),
+    scaled(dmg(0), per('exhaustedDamage')),
+  ]),
+  // (Dark Embrace)
+  m('rare', 'rite-of-recall', 'Rite of Recall', 'power', 2, 'none', [on('exhaust', [draw(1)])]),
+  // (Corruption: your Skills cost 0 and are consumed)
+  m('rare', 'unholy-pact', 'Unholy Pact', 'power', 3, 'none', [status('unbound', 1)], {
+    up: { cost: 2 },
+  }),
+  // (Fiend Fire: 7 damage for every card in your hand, and the whole hand is consumed)
+  m(
+    'rare',
+    'burn-it-all',
+    'Burn It All',
+    'attack',
+    2,
+    'foe',
+    [scaled(dmg(0), per('hand', 7)), exhaustN(99)],
+    { exhaust: true, up: { effects: [scaled(dmg(0), per('hand', 10)), exhaustN(99)] } },
+  ),
+  // (Brand)
+  m('rare', 'forsake', 'Forsake', 'skill', 0, 'none', [
+    lose(1),
+    exhaustN(1),
+    status('might', 1),
+  ]),
+  // (Cascade: play the top X cards of your draw pile)
+  m(
+    'rare',
+    'unravel',
+    'Unravel',
     'skill',
     0,
     'none',
-    [scaled(barrier(0), per('x', 6))],
+    [playPile('draw', { amount: 0, scale: per('x') })],
     { x: true },
   ),
-  m('uncommon', 'thorn-covenant', 'Thorn Covenant', 'power', 1, 'none', [
-    on('snare', [status('thorns', 2)]),
+  // (Stoke: consume your hand, and a random card of your pool comes for each one)
+  m('rare', 'fan-the-flames', 'Fan the Flames', 'skill', 1, 'none', [
+    exhaustN(99),
+    discoverOp(undefined, 0, false, per('exhaustedNow')),
   ]),
-  m('uncommon', 'aegis-of-the-warden', 'Aegis of the Warden', 'skill', 2, 'none', [
-    barrier(6),
-    status('shielded', 1),
-  ]),
-  m('uncommon', 'gracebound', 'Gracebound', 'power', 1, 'none', [
-    on('play', [heal(1)], { filter: 'skill' }),
-  ]),
-  m('rare', 'radiance-eternal', 'Radiance Eternal', 'power', 3, 'none', [
-    on('turnStart', [heal(1)]),
-    on('turnEnd', [status('shielded', 1)]),
-  ]),
+  // (Howl From Beyond: it comes back from the consumed pile every turn)
+  m('uncommon', 'howl-of-the-fallen', 'Howl of the Fallen', 'attack', 3, 'none', [dmg(16, 'allFoes')], {
+    exhaust: true,
+    replayFromExhaust: true,
+  }),
+  m('rare', 'ashen-reckoning', 'Ashen Reckoning', 'attack', 0, 'none', [dmg(17, 'allFoes')], {
+    needsExhausted: 3,
+  }),
 
-  // --- new for the 20/30/25 rarity target (DECISIONS #341) ---
-  m('uncommon', 'knotted-briars', 'Knotted Briars', 'skill', 1, 'none', [
-    status('thorns', 2),
-    draw(1),
+  // --- Blood ---
+  // (Bloodletting)
+  m('common', 'draw-blood', 'Draw Blood', 'skill', 0, 'none', [lose(3), mana(2)], {
+    exhaust: true,
+  }),
+  // (Blood Wall)
+  m('common', 'blood-plate', 'Blood Plate', 'skill', 2, 'none', [lose(2), barrier(16)]),
+  // (Breakthrough)
+  m('common', 'breach', 'Breach', 'attack', 1, 'none', [lose(1), dmg(9, 'allFoes')]),
+  // (Hemokinesis)
+  m('uncommon', 'reckless-smite', 'Reckless Smite', 'attack', 1, 'foe', [lose(2), dmg(15)]),
+  // (Rupture)
+  m('uncommon', 'scar-over', 'Scar Over', 'power', 1, 'none', [
+    on('loseHp', [status('might', 1)]),
   ]),
+  // (Inferno)
+  m('uncommon', 'blood-fire', 'Blood Fire', 'power', 1, 'none', [
+    on('turnStart', [lose(1)]),
+    on('loseHp', [dmg(6, 'allFoes')]),
+  ]),
+  // (Spite: it hits twice if you have lost HP this turn)
+  m('uncommon', 'spiteful-jab', 'Spiteful Jab', 'attack', 0, 'foe', [
+    dmg(6),
+    when('hpLostTurn', { atLeast: 1 }, [dmg(6)]),
+  ]),
+  // (Offering)
+  m('rare', 'crimson-offering', 'Crimson Offering', 'skill', 0, 'none', [lose(6), mana(2), draw(3)], {
+    exhaust: true,
+  }),
+  // (Crimson Mantle)
+  m('rare', 'bloodied-plate', 'Bloodied Plate', 'power', 1, 'none', [
+    on('turnStart', [lose(1), barrier(8)]),
+  ]),
+  // (Tear Asunder: one more hit for every time you have lost HP this fight)
+  m('rare', 'rending-fury', 'Rending Fury', 'attack', 2, 'foe', [
+    scaled(dmg(5), per('hpLostFight', 1, undefined, 'hits')),
+  ]),
+  // (Not Yet)
+  m('rare', 'rally', 'Rally', 'skill', 2, 'none', [heal(10)], { exhaust: true }),
+
+  // --- glue ---
+  // (Iron Wave)
+  m('common', 'dawn-smite', 'Dawn Smite', 'attack', 1, 'foe', [dmg(5), barrier(5)]),
+  // (Anger)
+  m('common', 'hot-temper', 'Hot Temper', 'attack', 0, 'foe', [dmg(6), copySelf('discard')]),
+  // (Burning Pact)
+  m('uncommon', 'pact-of-embers', 'Pact of Embers', 'skill', 1, 'none', [exhaustN(1), draw(2)]),
+  // (Pyre)
+  m('rare', 'inner-furnace', 'Inner Furnace', 'power', 2, 'none', [on('turnStart', [mana(1)])]),
 ];

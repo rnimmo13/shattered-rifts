@@ -3,7 +3,7 @@ import { seedRng } from '@sr/combat';
 import { COMBAT_DB, RIFTWALKERS, V2_DECK_RULES, type HeroId } from '@sr/content/v2';
 import {
   RunError,
-  chooseKit,
+  chooseStarters,
   choosePrelude,
   chooseCard,
   continueLoop,
@@ -60,7 +60,7 @@ describe('the choice at the start of a run', () => {
     for (const h of HEROES) {
       const r0 = newRun(h, `thr-${h}`, 'normal');
       expect(r0.phase).toBe('kit');
-      const r = chooseKit(r0, 'a');
+      const r = chooseStarters(r0);
       expect(r.phase).toBe('prelude');
       const offer = r.context?.prelude;
       expect(offer?.kind).toBe('threshold');
@@ -73,7 +73,7 @@ describe('the choice at the start of a run', () => {
 
   it('is the same offer for the same seed, and varies between seeds', () => {
     const ids = (s: string) =>
-      chooseKit(newRun('knight', s, 'normal'), 'a')
+      chooseStarters(newRun('knight', s, 'normal'))
         .context?.prelude?.options.map((o) => o.id)
         .join();
     expect(ids('same')).toBe(ids('same'));
@@ -81,7 +81,7 @@ describe('the choice at the start of a run', () => {
   });
 
   it('taking an option applies it and opens the map', () => {
-    const r = chooseKit(newRun('knight', 'take', 'normal'), 'a');
+    const r = chooseStarters(newRun('knight', 'take', 'normal'));
     const pick = r.context?.prelude?.options[0]?.id as string;
     const after = choosePrelude(r, pick);
     expect(after.phase).toBe('map');
@@ -90,7 +90,7 @@ describe('the choice at the start of a run', () => {
   });
 
   it('refuses anything that is not on offer', () => {
-    const r = chooseKit(newRun('knight', 'bad', 'normal'), 'a');
+    const r = chooseStarters(newRun('knight', 'bad', 'normal'));
     expect(() => choosePrelude(r, 'nope')).toThrow(RunError);
     expect(() => choosePrelude({ ...r, phase: 'map', context: null }, 'x')).toThrow(RunError);
   });
@@ -190,7 +190,7 @@ describe('what each effect does', () => {
   it('a Wound-bearing deck is still a valid save, and so is a run standing at a prelude', () => {
     const r = take(offering([{ k: 'wound', n: 1 }]));
     expect(parseRun(serializeRun(r))).not.toBeNull();
-    const standing = chooseKit(newRun('assassin', 'save-me', 'normal'), 'a');
+    const standing = chooseStarters(newRun('assassin', 'save-me', 'normal'));
     expect(parseRun(serializeRun(standing))?.phase).toBe('prelude');
     const broken = JSON.parse(serializeRun(standing)) as RunState;
     broken.context = {
@@ -212,7 +212,7 @@ describe('the Threshold draws from a wide pool', () => {
       for (const x of o) (x.risky ? risky : seen).add(x.id);
     }
     expect(seen.size).toBeGreaterThanOrEqual(15);
-    expect(risky.size).toBeGreaterThanOrEqual(14);
+    expect(risky.size).toBeGreaterThanOrEqual(13); // (14 until "A Legend's Price" went with Legendary, DECISIONS #363)
   });
 });
 
@@ -247,9 +247,10 @@ describe('Threshold choices are worth taking (DECISIONS #224)', () => {
   });
 
   it('upgrades go to your own cards before Strikes and Defends', () => {
-    const after = take(offering([{ k: 'upgrade', n: 2 }]));
+    // (the knight starts with one card of her own, Sundering Blow)
+    const after = take(offering([{ k: 'upgrade', n: 1 }]));
     const upped = after.deck.filter((c) => c.endsWith('+'));
-    expect(upped).toHaveLength(2);
+    expect(upped).toHaveLength(1);
     for (const c of upped) expect(['strike+', 'defend+']).not.toContain(c);
   });
 

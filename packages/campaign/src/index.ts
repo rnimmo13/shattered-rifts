@@ -59,7 +59,7 @@ export {
   rollTrial,
   settleInterrupted,
   claimTrialPrize,
-  chooseKit,
+  chooseStarters,
   choosePrelude,
   CROSSED_MERCHANT_CHANCE,
   HOLD_DEPOSIT,
@@ -82,7 +82,7 @@ export {
   type ShrineChoice,
 } from './run';
 export { makePrelude, describeEffect, preludeCatalogue } from './preludes';
-export { KIT_CARDS, makeKits } from './kits';
+export { STARTER_PICKS, starterDeck, starterOptions, starterPick } from './starters';
 export { RUN_SAVE_VERSION, parseRun, serializeRun } from './save';
 export {
   ELITE_EVENTS,
@@ -143,7 +143,16 @@ export {
   type GamblerShrine,
   type ShrineKind,
 } from './gambler';
-export { FIT_AT, fitLabel, fitOf, pathCounts, mainPath, type Fit } from './synergy';
+export {
+  FIT_AT,
+  fitLabel,
+  fitOf,
+  fitOfPaths,
+  pathCounts,
+  mainPath,
+  mainPathOf,
+  type Fit,
+} from './synergy';
 export {
   OMENS,
   OMEN_TUNING,

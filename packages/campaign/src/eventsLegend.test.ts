@@ -1,16 +1,23 @@
 // The third event batch (DECISIONS #238): the reliquary trades a Legendary for another, and the deck keeps its one-Legendary limit.
 
-import { describe, expect, it } from 'vitest';
-import { COMBAT_DB, RIFTWALKERS, stripRoll } from '@sr/content/v2';
+import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import { COMBAT_DB, RIFTWALKERS, lendLegendaries, stripRoll } from '@sr/content/v2';
 import { availableNodes, chooseEvent, enterNode, newRun, type RunState } from './index';
 import { LEGEND_EVENTS } from './eventsLegend';
+
+// Legendary is put away (DECISIONS #363): the shelved cards are lent as Legendaries so the reliquary stays tested
+let undo = (): void => {};
+beforeAll(() => {
+  undo = lendLegendaries(COMBAT_DB);
+});
+afterAll(() => undo());
 
 const legendsIn = (deck: readonly string[]): string[] =>
   deck.filter((id) => COMBAT_DB.cards[stripRoll(id).replace(/\+$/, '')]?.rarity === 'legendary');
 
 /** a run standing at the given event, with this deck */
 function at(id: string, deck: string[], seed = 'legend'): RunState {
-  const base: RunState = { ...newRun('knight', `${seed}-${id}`), phase: 'map', context: null };
+  const base: RunState = { ...newRun('engineer', `${seed}-${id}`), phase: 'map', context: null };
   const node = availableNodes(base)[0]!;
   const r: RunState = {
     ...base,
@@ -29,12 +36,12 @@ function at(id: string, deck: string[], seed = 'legend'): RunState {
 }
 
 describe('the reliquary of legends', () => {
-  const deck = [...RIFTWALKERS.knight.starter, 'the-last-oath+'];
+  const deck = [...RIFTWALKERS.engineer.starter, 'overclocked-legion+'];
 
   it('is only met with a Legendary in the deck', () => {
     const def = LEGEND_EVENTS.find((e) => e.id === 'legend-reliquary')!;
     const r = at('legend-reliquary', deck);
-    expect(def.when({ ...r, deck: [...RIFTWALKERS.knight.starter] })).toBe(false);
+    expect(def.when({ ...r, deck: [...RIFTWALKERS.engineer.starter] })).toBe(false);
   });
 
   it('swaps your Legendary for the one you choose (upgraded, as yours was), one of them Rift-crossed, or lets you keep it', () => {
@@ -49,19 +56,19 @@ describe('the reliquary of legends', () => {
         const done = chooseEvent(r, o.id);
         const held = legendsIn(done.deck);
         expect(held).toHaveLength(1);
-        expect(held[0]).not.toBe('the-last-oath+');
+        expect(held[0]).not.toBe('overclocked-legion+');
         expect(held[0]!.endsWith('+')).toBe(true);
         expect(done.deck).toHaveLength(deck.length);
       }
       const kept = chooseEvent(r, 'leave');
-      expect(legendsIn(kept.deck)).toEqual(['the-last-oath+']);
+      expect(legendsIn(kept.deck)).toEqual(['overclocked-legion+']);
     }
   });
 });
 
 describe('a deck from before the one-Legendary limit', () => {
   it('can still use the reliquary: one of its two Legendaries is traded, in place', () => {
-    const two = [...RIFTWALKERS.knight.starter, 'the-last-oath', 'dawn-incarnate'];
+    const two = [...RIFTWALKERS.engineer.starter, 'overclocked-legion', 'drone-apotheosis'];
     const r = at('legend-reliquary', two, 'old');
     const swaps = r.context!.event!.options.filter((o) => o.deal);
     expect(swaps.length).toBeGreaterThanOrEqual(2);
@@ -77,7 +84,7 @@ describe('the new events', () => {
   it('each can be met and every option resolves', () => {
     for (const def of LEGEND_EVENTS) {
       if (def.id === 'legend-reliquary') continue;
-      const r = at(def.id, [...RIFTWALKERS.knight.starter, 'gilded-bastion']);
+      const r = at(def.id, [...RIFTWALKERS.knight.starter, 'cold-stare']);
       for (const o of r.context!.event!.options) {
         const done = chooseEvent(r, o.id);
         expect(done.hp).toBeGreaterThanOrEqual(1);

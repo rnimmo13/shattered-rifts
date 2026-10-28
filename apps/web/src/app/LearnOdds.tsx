@@ -16,7 +16,6 @@ import {
   wardenMaxHp,
   GHOST_FROM_TIER,
   GHOST_WARDEN_CHANCE,
-  GIFT_LEGEND_CHANCE,
   REEL_KINDS,
   REEL_PRIZES,
   ROLL_COST,
@@ -35,11 +34,11 @@ import { WithArrows } from '../ui/Arrow';
 
 const pct = (w: number, total: number): string => `${Math.round((w / total) * 100)}%`;
 const total = (w: Record<string, number>): number => Object.values(w).reduce((a, b) => a + b, 0);
-const RARITIES = ['common', 'uncommon', 'rare', 'legendary'] as const;
+const RARITIES = ['common', 'uncommon', 'rare'] as const;
 
 /** what a prize on the Brass Reel is, by kind */
 const LANE_LABEL: Record<string, string> = {
-  card: 'A Legendary card of yours (only one prize)',
+  card: 'A rare card of yours (the top prize, only one)',
   rare: 'A rare card of yours',
   boon: 'A Boon',
   crossed: 'Pick 1 of 3 Rift-crossed rares',
@@ -92,12 +91,11 @@ export function LearnOdds() {
       <h3>Warden, merchants and prices</h3>
       <ul>
         <li>
-          A Warden&apos;s Gift offers rare cards of your class, and a Legendary of yours{' '}
-          {GIFT_LEGEND_CHANCE}% of the time.
+          A Warden&apos;s Gift offers rare cards of your class.
         </li>
         <li>
           Merchant cards cost {PRICE['common']} (common), {PRICE['uncommon']} (uncommon),{' '}
-          {PRICE['rare']} (rare) and {PRICE['legendary']} (Legendary) shards. Taking a card out of
+          {PRICE['rare']} (rare) shards. Taking a card out of
           your deck costs {REMOVE_PRICE}.
         </li>
         <li>
@@ -193,7 +191,7 @@ export function LearnOdds() {
         {Math.round(100 / REEL_PRIZES)}% of the time, and a spin after that never stops on the prize
         you are holding (so each of the other {REEL_PRIZES - 1} is about{' '}
         {Math.round(100 / (REEL_PRIZES - 1))}%). The prizes stand in different places on the reel
-        every time, and only one of them is a Legendary card. Getting one particular prize takes
+        every time. Getting one particular prize takes
         about {REEL_PRIZES} spins ({REEL_PRIZES * ROLL_COST} shards) on average.
       </p>
       <p>

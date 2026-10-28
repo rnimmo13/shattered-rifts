@@ -1,7 +1,7 @@
-// The third Legendary of every Riftwalker (the first two live in each pool file). A deck holds at most
-// V2_DECK_RULES.maxLegendary of them at a time (rewards.ts, canAdd), so being offered one is a real choice: it takes
-// a Legendary slot another one could have had. Each belongs to one build path and is a build-around for it, never a one-off pile of
-// Barrier (Robert, 2026-10-27; DECISIONS #338).
+// The third top-rarity card of every Riftwalker (the others live in each pool file). These were the Legendaries: Robert put
+// Legendary away for now (2026-10-28, DECISIONS #363: "do away with legendary cards for now, we will add those once the base set of
+// common/uncommon/rare is balanced"), so they are Rares until it comes back. Each belongs to one build path and is a build-around
+// for it, never a one-off pile of Barrier (Robert, 2026-10-27; DECISIONS #338).
 
 import type { CardDef } from '@sr/combat';
 import {
@@ -9,7 +9,6 @@ import {
   barrier,
   dmg,
   forge,
-  heal,
   on,
   per,
   pool,
@@ -20,7 +19,6 @@ import {
   summon,
 } from '../build';
 
-const m = pool('knight', 'aurelion');
 const r = pool('engineer', 'nexus');
 const k = pool('hunter', 'wyldmaw');
 const v = pool('trapper', 'umbral');
@@ -32,19 +30,8 @@ const g = pool('necromancer', 'gloomfen');
 const p = pool('drunkard', 'midden');
 
 export const LEGENDARIES: CardDef[] = [
-  // Devotion: every heal also strikes (the whole heal, past full HP too), and she heals every turn
-  m(
-    'legendary',
-    'bastion-of-dawn',
-    "Dawn's Mercy",
-    'power',
-    3,
-    'none',
-    [on('heal', [scaled(dmg(0, 'randomFoe'), per('healed'))]), on('turnStart', [heal(3)])],
-    { up: { cost: 2 } },
-  ),
   r(
-    'legendary',
+    'rare',
     'drone-apotheosis',
     'Drone Uprising',
     'skill',
@@ -56,7 +43,7 @@ export const LEGENDARIES: CardDef[] = [
   ),
   // Pack: two more Hounds, and the whole pack strikes at once
   k(
-    'legendary',
+    'rare',
     'bloodmoon-hunt',
     'Bloodmoon Hunt',
     'skill',
@@ -67,7 +54,7 @@ export const LEGENDARIES: CardDef[] = [
   ),
   // Exposed: it marks every enemy as it springs
   v(
-    'legendary',
+    'rare',
     'the-long-ambush',
     'The Long Ambush',
     'snare',
@@ -77,12 +64,12 @@ export const LEGENDARIES: CardDef[] = [
     { trigger: { on: 'foeTurn' } },
   ),
   // Sleight: the more you discarded this turn, the more it hits
-  q('legendary', 'ten-thousand-cuts', 'Death by Inches', 'attack', 1, 'foe', [
+  q('rare', 'ten-thousand-cuts', 'Death by Inches', 'attack', 1, 'foe', [
     scaled(dmg(5, 'target', 2), per('discarded', 2, undefined, 'hits')),
   ]),
   // Elements: Spirit every turn, and every enemy struck for all of it (DECISIONS #353)
   i(
-    'legendary',
+    'rare',
     'the-spirit-council',
     'Avatar of the Elements',
     'power',
@@ -93,7 +80,7 @@ export const LEGENDARIES: CardDef[] = [
   ),
   // Fury: in Fury every turn, and every turn it lashes out
   s(
-    'legendary',
+    'rare',
     'eye-of-the-storm',
     'Eye of the Storm',
     'power',
@@ -104,7 +91,7 @@ export const LEGENDARIES: CardDef[] = [
   ),
   // Sigils: Arcana every turn, and a strike on every enemy for each Aura you have
   a(
-    'legendary',
+    'rare',
     'shatterstorm',
     'Shatterstorm',
     'power',
@@ -115,7 +102,7 @@ export const LEGENDARIES: CardDef[] = [
   ),
   // Ashes: every card consumed strikes and curses every enemy
   g(
-    'legendary',
+    'rare',
     'grave-harvest',
     'Grave Harvest',
     'power',
@@ -126,7 +113,7 @@ export const LEGENDARIES: CardDef[] = [
   ),
   // Gun: a sharper gun at once, and every shot sharpens it again and covers you
   p(
-    'legendary',
+    'rare',
     'the-twelve-gauge-opera',
     'The Twelve-Gauge Opera',
     'power',

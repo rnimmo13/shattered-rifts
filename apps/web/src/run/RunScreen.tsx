@@ -31,7 +31,7 @@ import {
   pickDeckCard,
   settleInterrupted,
   rollTrial,
-  chooseKit,
+  chooseStarters,
   choosePrelude,
   continueLoop,
   attachGhost,
@@ -73,7 +73,7 @@ import {
   CardOffer,
   DeckModal,
   EventView,
-  KitView,
+  StarterView,
   MerchantView,
   PreludeView,
   ShrineView,
@@ -298,12 +298,12 @@ export default function RunScreen() {
   );
 
   const reportResult = useCallback(
-    (won: boolean, hp?: number, potions?: string[]) => {
+    (won: boolean, hp?: number, potions?: string[], maxHpGained?: number) => {
       if (runRef.current) {
         clearFightLog(duelKey(runRef.current));
         clearGhostLog(duelKey(runRef.current));
       }
-      act((r) => finishDuel(r, won, hp, potions));
+      act((r) => finishDuel(r, won, hp, potions, maxHpGained));
     },
     [act],
   );
@@ -492,7 +492,12 @@ export default function RunScreen() {
           onExit={() => setConfirmForfeit(true)}
           onDone={(r) => {
             if (r.replay) lastFightRef.current = { ...r.replay, won: r.winner === 'a' };
-            reportResult(r.winner === 'a', r.winner === 'a' ? r.hp : undefined, r.potions);
+            reportResult(
+              r.winner === 'a',
+              r.winner === 'a' ? r.hp : undefined,
+              r.potions,
+              r.winner === 'a' ? r.maxHpGained : undefined,
+            );
           }}
         />
       );
@@ -989,7 +994,7 @@ function Body(props: {
         />
       );
     case 'kit':
-      return <KitView run={run} onChoose={(id) => act((r) => chooseKit(r, id))} />;
+      return <StarterView run={run} onChoose={(ids) => act((r) => chooseStarters(r, ids))} />;
     case 'prelude':
       return <PreludeView run={run} onChoose={(id) => act((r) => choosePrelude(r, id))} />;
     case 'stageClear':

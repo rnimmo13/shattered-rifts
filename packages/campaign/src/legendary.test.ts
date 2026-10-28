@@ -1,10 +1,17 @@
-import { describe, expect, it } from 'vitest';
+import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { seedRng } from '@sr/combat';
-import { COMBAT_DB, RIFTWALKERS, rewardPool, type HeroId } from '@sr/content/v2';
+import { COMBAT_DB, RIFTWALKERS, lendLegendaries, rewardPool, type HeroId } from '@sr/content/v2';
 import { canAdd, giftOffers, offerCards } from './index';
 
 const HEROES = Object.keys(RIFTWALKERS) as HeroId[];
 const rarityOf = (id: string) => COMBAT_DB.cards[id]?.rarity;
+
+// Legendary is put away (DECISIONS #363): the shelved cards are lent as Legendaries so the rules stay tested for when it returns
+let undo = (): void => {};
+beforeAll(() => {
+  undo = lendLegendaries(COMBAT_DB);
+});
+afterAll(() => undo());
 
 describe('legendary cards', () => {
   it('every Riftwalker has at least two of their own, and Neutral has some for anyone', () => {
@@ -12,7 +19,8 @@ describe('legendary cards', () => {
       const own = rewardPool(h).filter(
         (id) => rarityOf(id) === 'legendary' && COMBAT_DB.cards[id]?.hero === h,
       );
-      expect(own.length, h).toBeGreaterThanOrEqual(2);
+      // (Valeria has none: she is exactly the Ironclad's list, DECISIONS #367)
+      expect(own.length, h).toBeGreaterThanOrEqual(h === 'knight' ? 0 : 2);
     }
     const neutral = Object.values(COMBAT_DB.cards).filter(
       (c) => c.hero === 'neutral' && c.rarity === 'legendary' && !c.source,
@@ -21,35 +29,23 @@ describe('legendary cards', () => {
   });
 
   it('a legendary is one of a kind: a deck can hold only one copy', () => {
-    const id = rewardPool('knight').find((x) => rarityOf(x) === 'legendary') as string;
+    const id = rewardPool('engineer').find((x) => rarityOf(x) === 'legendary') as string;
     expect(canAdd([], id)).toBe(true);
     expect(canAdd([id], id)).toBe(false);
     expect(canAdd([`${id}+`], id)).toBe(false);
     expect(canAdd(['strike', 'strike', 'strike', 'strike', 'rift-bolt'], 'rift-bolt')).toBe(true);
   });
 
-  it('they are never a starter card, and are rare in ordinary offers (about 1 card in 100 after a fight, 3 after an Elite)', () => {
+  it('they are never a starter card, and ordinary offers hold none while Legendary is away (DECISIONS #363)', () => {
     for (const h of HEROES)
       for (const id of RIFTWALKERS[h].starter) expect(rarityOf(id)).not.toBe('legendary');
-    let seen = 0;
-    let total = 0;
-    for (let i = 0; i < 600; i++)
-      for (const id of offerCards(seedRng(`l${i}`), 'assassin', [], 'duel', 3)) {
-        total++;
-        if (rarityOf(id) === 'legendary') seen++;
-      }
-    // (DECISIONS #269: a fight offers one 1% of the time per card)
-    expect(seen / total).toBeGreaterThan(0.002);
-    expect(seen / total).toBeLessThan(0.025);
-    seen = 0;
-    total = 0;
-    for (let i = 0; i < 600; i++)
-      for (const id of offerCards(seedRng(`e${i}`), 'assassin', [], 'elite', 3)) {
-        total++;
-        if (rarityOf(id) === 'legendary') seen++;
-      }
-    expect(seen / total).toBeGreaterThan(0.002);
-    expect(seen / total).toBeLessThan(0.05);
+    for (const [kind, tag] of [['duel', 'l'], ['elite', 'e']] as const) {
+      let seen = 0;
+      for (let i = 0; i < 600; i++)
+        for (const id of offerCards(seedRng(`${tag}${i}`), 'assassin', [], kind, 3))
+          if (rarityOf(id) === 'legendary') seen++;
+      expect(seen, kind).toBe(0);
+    }
   });
 
   it('a Warden sometimes leaves one in the Gift (about GIFT_LEGEND_CHANCE of the time)', () => {

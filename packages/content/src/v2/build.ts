@@ -43,6 +43,14 @@ export const status = (st: StatusId, amount: number, to: Sel = 'self', temp = fa
   to,
   ...(temp ? { temp } : {}),
 });
+/** a status that wears off at the end of the target's own next turn (Mangle's Sapped) */
+export const statusTheirs = (st: StatusId, amount: number, to: Sel = 'target'): Op => ({
+  op: 'status',
+  status: st,
+  amount,
+  to,
+  temp: 'theirs',
+});
 export const lose = (amount: number, to: Sel = 'self'): Op => ({ op: 'loseHp', amount, to });
 export const draw = (amount: number): Op => ({ op: 'draw', amount });
 export const mana = (amount: number): Op => ({ op: 'mana', amount });
@@ -71,10 +79,16 @@ export const discard = (amount: number, mode: 'choose' | 'random' | 'any' = 'cho
   amount,
   ...(mode === 'random' ? { random: true } : mode === 'any' ? { any: true } : {}),
 });
-export const exhaustN = (amount: number, mode: 'choose' | 'random' | 'any' = 'choose'): Op => ({
+export const exhaustN = (
+  amount: number,
+  mode: 'choose' | 'random' | 'any' = 'choose',
+  /** only cards of this kind (`only`), or every kind but this one (`not`) */
+  filter: { only?: CardKind; not?: CardKind } = {},
+): Op => ({
   op: 'exhaustCards',
   amount,
   ...(mode === 'random' ? { random: true } : mode === 'any' ? { any: true } : {}),
+  ...filter,
 });
 export const scry = (amount: number): Op => ({ op: 'scry', amount });
 export const stars = (amount: number): Op => ({ op: 'stars', amount });
@@ -97,11 +111,17 @@ export const forge = (cardId: string, amount: number): Op => ({
 });
 export const sacrifice: Op = { op: 'sacrifice' };
 export const reclaim = (amount: number): Op => ({ op: 'reclaim', amount });
-export const fetchCards = (amount: number, to: 'hand' | 'draw' = 'hand', kind?: CardKind): Op => ({
+export const fetchCards = (
+  amount: number,
+  to: 'hand' | 'draw' = 'hand',
+  kind?: CardKind,
+  upgrade = false,
+): Op => ({
   op: 'fetch',
   amount,
   to,
   ...(kind ? { kind } : {}),
+  ...(upgrade ? { upgrade } : {}),
 });
 /** return random cards with a tag (Carvings...) from your discard pile to your hand */
 export const fetchTag = (amount: number, tag: string): Op => ({
@@ -114,12 +134,33 @@ export const revive: Op = { op: 'revive' };
 export const manaNext = (amount: number): Op => ({ op: 'manaNext', amount });
 export const maxMana = (amount: number): Op => ({ op: 'maxMana', amount });
 export const drawNext = (amount: number): Op => ({ op: 'drawNext', amount });
-export const discoverOp = (kind?: CardKind, count = 1, free = false): Op => ({
+export const discoverOp = (kind?: CardKind, count = 1, free = false, scale?: Scale): Op => ({
   op: 'discover',
   ...(kind ? { kind } : {}),
   ...(count !== 1 ? { count } : {}),
   ...(free ? { free } : {}),
+  ...(scale ? { scale } : {}),
 });
+/** play cards for free against random enemies: from your draw pile, consumed pile, hand, or the card just drawn */
+export const playPile = (
+  from: 'draw' | 'exhaust' | 'hand' | 'drawn',
+  opts: { amount?: number; scale?: Scale; kind?: CardKind; match?: string; exhaust?: boolean } = {},
+): Op => ({ op: 'playPile', from, ...opts });
+export const manaLock: Op = { op: 'manaLock' };
+export const drawLock: Op = { op: 'drawLock' };
+export const drawUntil = (not: CardKind): Op => ({ op: 'drawUntil', not });
+export const exhaustTop = (amount = 1): Op => ({ op: 'exhaustTop', amount });
+export const transformHand = (kind: CardKind, into: string): Op => ({ op: 'transform', kind, into });
+/** run `ops` only while a metric is within bounds */
+export const when = (
+  by: Metric,
+  bounds: { atLeast?: number; atMost?: number; of?: Scale['of'] },
+  ops: Op[],
+): Op => ({ op: 'when', by, ...bounds, ops });
+export const copyPlayed: Op = { op: 'copyPlayed' };
+export const maxHpUp = (amount: number, to: Sel = 'self'): Op => ({ op: 'maxHp', amount, to });
+/** run these ops once for each enemy the damage op kills */
+export const onKill = (o: Op, ops: Op[]): Op => ({ ...o, onKill: ops }) as Op;
 export const upgradeOp = (scope: 'hand' | 'random'): Op => ({ op: 'upgrade', scope });
 export const cheapen = (amount: number, scope: 'hand' | 'random'): Op => ({
   op: 'cheapen',
@@ -162,7 +203,7 @@ export const addTo = (
 export const on = (
   when: TriggerWhen,
   ops: Op[],
-  narrow: { filter?: CardKind; tag?: string; stance?: Stance } = {},
+  narrow: { filter?: CardKind; tag?: string; stance?: Stance; temp?: boolean } = {},
 ): Extract<Op, { op: 'power' }> => ({ op: 'power', when, ops, ...narrow });
 
 // --- cards ---------------------------------------------------------------------------------------------------------
@@ -185,6 +226,9 @@ type Extra = Partial<
     | 'ethereal'
     | 'onDiscard'
     | 'onExhaust'
+    | 'needsExhausted'
+    | 'cheaperPerAttack'
+    | 'replayFromExhaust'
   >
 > & {
   /** a hand-written "+" version: fields that replace the card's (instead of the generic rule in plus()) */
@@ -317,7 +361,11 @@ export function plus(c: CardDef): CardDef {
           o.status !== 'shielded' &&
           o.status !== 'unbound' &&
           o.status !== 'fortified' &&
-          o.status !== 'plating'
+          o.status !== 'plating' &&
+          o.status !== 'sturdy' &&
+          o.status !== 'unmovable' &&
+          o.status !== 'cruelty' &&
+          o.status !== 'freeattack'
         ) {
           changed = true;
           // a big stack (Bleed 5, Primed 6, a plague of 9) gains two: +1 on 5 is barely felt
@@ -330,6 +378,9 @@ export function plus(c: CardDef): CardDef {
       case 'draw':
         changed = true;
         return { ...o, amount: o.amount + 1 };
+      case 'when':
+        // the effects it guards improve like any other
+        return { ...o, ops: o.ops.map(upOp) };
       case 'mana':
         // Mana is the one number an upgrade never raises (a free +1 Mana card upgraded into +2 is a different card)
         return o;

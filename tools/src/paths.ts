@@ -22,7 +22,9 @@ const HEADS: Record<HeroId, [RegExp, number | null][]> = {
   knight: [
     [/bulwark/i, 0],
     [/thorns/i, 1],
-    [/devotion/i, 2],
+    [/might/i, 2],
+    [/consume/i, 3],
+    [/blood/i, 4],
     [/basics|glue/i, null],
   ],
   engineer: [
@@ -90,7 +92,6 @@ const BY_ID: Record<string, number> = {
   'palmed-card': 2,
   'wreath-of-flame': 2,
   // new cards of the 20/30/25 rarity target (DECISIONS #341)
-  'knotted-briars': 1,
   'kindled-rite': 2,
   'smoke-offering': 2,
   sagitta: 2,
@@ -102,11 +103,6 @@ const BY_ID: Record<string, number> = {
   'deaths-ledger': 0,
   'soul-chain': 1,
   // brought back for the 20/30/25 rarity target (DECISIONS #341)
-  impregnable: 0,
-  'forged-in-iron': 0,
-  'thorn-covenant': 1,
-  'aegis-of-the-warden': 2,
-  gracebound: 2,
   'salvage-rights': 0,
   'scrapyard-king': 0,
   'echo-command': 1,
@@ -149,13 +145,6 @@ const BY_ID: Record<string, number> = {
   'gun-oil': 0,
   'dead-eye': 0,
   // brought back to fill a build path to its minimum (DECISIONS #337)
-  'shield-bash': 0,
-  'iron-tithe': 0,
-  'gilded-wall': 0,
-  'endless-vigil': 0,
-  'ember-ward': 1,
-  'mirror-shield': 1,
-  'radiant-oath': 1,
   // Swarm goes wide, Core goes tall (DECISIONS #358)
   'heavy-plating': 0,
   'repair-bot': 0,
@@ -176,10 +165,7 @@ const BY_ID: Record<string, number> = {
   reanimate: 1,
   'death-feeds': 1,
   // every Legendary has a build path, one per path (DECISIONS #334, #337); glue cards have none
-  // knight
-  'dawn-incarnate': 0,
-  'the-last-oath': 1,
-  'bastion-of-dawn': 2,
+  // knight: none (Valeria's rares sit under their own headings, and her Legendaries are Rares now, DECISIONS #363)
   // engineer
   'drone-apotheosis': 0,
   'overclocked-legion': 1,
@@ -330,7 +316,6 @@ const NO_PATH = [
   'starlit-duel',
   // glue for the 20/30/25 rarity target (DECISIONS #341)
   // glue for the 20/30/25 rarity target (DECISIONS #341)
-  'radiance-eternal',
   'swarm-surge',
   'tear-loose',
   'ancient-fury',

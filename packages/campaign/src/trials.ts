@@ -116,14 +116,9 @@ function prizesFor(r: RunState): { prizes: TrialPrize[] } {
   const own = rewardPool(r.character).filter(
     (id) => COMBAT_DB.cards[id]?.hero === r.character && canAdd(r.deck, id),
   );
-  const legends = pick(
-    r.rng,
-    own.filter((id) => COMBAT_DB.cards[id]?.rarity === 'legendary'),
-    2,
-  );
   const rares = pick(
     r.rng,
-    own.filter((id) => COMBAT_DB.cards[id]?.rarity === 'rare' && !legends.includes(id)),
+    own.filter((id) => COMBAT_DB.cards[id]?.rarity === 'rare'),
     6,
   );
   const boons = pick(
@@ -148,11 +143,11 @@ function prizesFor(r: RunState): { prizes: TrialPrize[] } {
 
   const cardSlot = (id: string | undefined, icon: string, again: number): Omit<TrialPrize, 'id'> =>
     id ? slot(icon, name(id), `Take ${name(id)}`, [{ k: 'card', id }], { card: id }) : purse(again);
-  // the one Legendary prize (a rare of yours if your class has none left)
+  // the top prize: a rare of yours (it was a Legendary card until Legendary was put away, DECISIONS #363)
   const legend =
     (k: number): Maker =>
     () =>
-      cardSlot(legends[k / 2] ?? rares[4 + k / 2], 'card', 260);
+      cardSlot(rares[4 + k / 2], 'card', 260);
   // a rare card of your class (a lane of its own)
   const rareCard =
     (k: number): Maker =>

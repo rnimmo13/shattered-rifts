@@ -61,6 +61,8 @@ export interface SideView {
   potions: string[] | null;
   potionCount: number;
   stars: number;
+  /** Attacks played this turn (some cards cost less for each) */
+  attacksPlayed: number;
   runes: RuneState[];
   runeSlots: number;
   powers: { id: string; card: string; when: PowerState['when'] }[];
@@ -192,6 +194,7 @@ export function viewFor(db: CombatDb, s: CombatState, me: Side): CombatView {
       potions: own ? [...sd.potions] : null,
       potionCount: sd.potions.length,
       stars: sd.stars,
+      attacksPlayed: sd.attacksPlayed,
       runes: clone(sd.runes),
       runeSlots: sd.runeSlots,
       powers: sd.powers
@@ -272,10 +275,19 @@ const STATUS_NAME: Record<string, string> = {
   ritual: 'Cadence',
   vigor: 'Primed',
   seared: 'Bleed',
+  freeattack: 'Free Attack',
   resonance: 'Spirit',
   twinned: 'Reverb',
 };
 const sname = (s: string): string => STATUS_NAME[s] ?? cap(s);
+/** a card kind by its player-facing name, for effects that pick cards by kind */
+const KIND_WORD2: Record<string, string> = {
+  attack: 'Attack',
+  skill: 'Skill',
+  power: 'Aura',
+  snare: 'Trap',
+  summon: 'Summon',
+};
 const plural = (word: string): string =>
   // ("Buckshot Shell+" several times over reads "upgraded Buckshot Shells")
   word.endsWith('+')
@@ -314,6 +326,7 @@ const PLURAL: Partial<Record<Metric, string>> = {
   played: 'cards played this turn',
   attacksPlayed: 'Attacks played this turn',
   skillsPlayed: 'Skills played this turn',
+  strikes: 'Strike cards in your deck',
   drawn: 'cards drawn this fight',
   created: 'cards created this fight',
   discarded: 'cards discarded this turn',
@@ -332,7 +345,6 @@ const METRIC_WORDS: Record<Metric, { per: string; equal: string }> = {
   might: { per: 'Might', equal: 'Might' },
   thorns: { per: 'Thorns', equal: 'Thorns' },
   mantra: { per: 'Fervor', equal: 'Fervor' },
-  devotion: { per: 'Devotion', equal: 'Devotion' },
   hangover: { per: 'Hangover', equal: 'Hangover' },
   resonance: { per: 'Spirit', equal: 'Spirit' },
   doom: { per: 'Fate', equal: 'Fate' },
@@ -360,9 +372,26 @@ const METRIC_WORDS: Record<Metric, { per: string; equal: string }> = {
   played: { per: 'card played this turn', equal: 'the cards played this turn' },
   attacksPlayed: { per: 'Attack played this turn', equal: 'the Attacks played this turn' },
   skillsPlayed: { per: 'Skill played this turn', equal: 'the Skills played this turn' },
+  strikes: { per: 'Strike card in your deck', equal: 'the number of Strike cards in your deck' },
   drawn: { per: 'card drawn this fight', equal: 'the cards you have drawn this fight' },
   created: { per: 'card created this fight', equal: 'the cards you have created this fight' },
   discarded: { per: 'card discarded this turn', equal: 'the cards discarded this turn' },
+  hpLostTurn: { per: 'time you lost HP this turn', equal: 'the times you lost HP this turn' },
+  hpLostFight: {
+    per: 'time you lost HP this fight',
+    equal: 'the times you have lost HP this fight',
+  },
+  exhaustedTurn: { per: 'card consumed this turn', equal: 'the cards consumed this turn' },
+  attacksInHand: { per: 'Attack in your hand', equal: 'the number of Attacks in your hand' },
+  nonAttacksInHand: {
+    per: 'other card in your hand',
+    equal: 'the number of cards in your hand that are not Attacks',
+  },
+  exhaustedNow: { per: 'card consumed this way', equal: 'the cards consumed this way' },
+  exhaustedDamage: {
+    per: 'damage of the Attacks consumed this way',
+    equal: 'the damage of the Attacks consumed this way',
+  },
   x: { per: 'Mana spent', equal: 'the Mana spent' },
   charge: { per: 'charge', equal: 'its charge' },
   healed: { per: 'HP healed', equal: 'the HP healed' },
@@ -378,7 +407,6 @@ const UNIT_METRICS: readonly Metric[] = [
   'might',
   'thorns',
   'mantra',
-  'devotion',
   'hangover',
   'resonance',
   'doom',
@@ -446,7 +474,25 @@ const WHEN_TEXT: Record<string, string> = {
   created: 'Whenever a card is created',
   arcana: 'Whenever you spend Arcana',
   shuffle: 'Whenever your deck is reshuffled',
+  exposeFoe: 'Whenever you apply Exposed to an enemy',
 };
+
+const ORDINAL = ['zeroth', 'first', 'second', 'third', 'fourth', 'fifth', 'sixth'];
+
+/** How a condition reads in a card ("If the target is Exposed: ..."). */
+function whenText(o: Extract<Op, { op: 'when' }>): string {
+  const lo = o.atLeast;
+  const hi = o.atMost;
+  if (o.by === 'exposed' && o.of === 'target' && (lo ?? 0) >= 1) return 'the target is Exposed';
+  if (o.by === 'hpLostTurn' && (lo ?? 0) >= 1) return 'you have lost HP this turn';
+  if (o.by === 'exhaustedTurn' && (lo ?? 0) >= 1) return 'you have consumed a card this turn';
+  if (o.by === 'attacksPlayed' && lo !== undefined && lo === hi)
+    return `this is your ${ORDINAL[lo] ?? lo + 'th'} Attack this turn`;
+  const w = METRIC_WORDS[o.by].equal;
+  if (lo !== undefined && hi !== undefined) return `${w} is ${lo === hi ? lo : `${lo}-${hi}`}`;
+  if (lo !== undefined) return `${w} is ${lo} or more`;
+  return `${w} is ${hi ?? 0} or fewer`;
+}
 
 export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): string {
   const at = (n: number, sc: Scale | undefined): string => {
@@ -477,9 +523,10 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
       const lone = o.lonePct ? ` Point Blank: ${o.lonePct}% more when only one enemy is left.` : '';
       // (Lifesteal: heal that percent of the HP it took off)
       const steal = o.lifesteal ? ` Lifesteal ${o.lifesteal}%.` : '';
+      const kill = o.onKill ? ` If this is fatal: ${o.onKill.map((x) => opText(db, x, who)).join(' ')}` : '';
       return a.equal
-        ? `Deal damage equal to ${a.num}${times}${who[o.to]}.${lone}${steal}`
-        : `Deal ${a.num} damage${times}${who[o.to]}.${lone}${steal}`;
+        ? `Deal damage equal to ${a.num}${times}${who[o.to]}.${lone}${steal}${kill}`
+        : `Deal ${a.num} damage${times}${who[o.to]}.${lone}${steal}${kill}`;
     }
     case 'loseHp': {
       const a = amountText(o.amount, o.scale);
@@ -557,7 +604,7 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
       // Fortified is on or off, so it has no number: "Gain Fortified" (DECISIONS #347)
       if (o.status === 'fortified' && o.amount > 0 && !o.scale) {
         const mine = o.to === 'self' && who.self === WHO.self;
-        return `${mine ? 'Gain' : 'Apply'} Fortified${o.to === 'self' ? '' : who[o.to]}${o.temp ? ' until the end of your turn' : ''}.`;
+        return `${mine ? 'Gain' : 'Apply'} Fortified${o.to === 'self' ? '' : who[o.to]}${o.temp === 'theirs' ? ' until the end of their next turn' : o.temp ? ' until the end of your turn' : ''}.`;
       }
       // (on your own cards a status you put on yourself is gained or lost, not "applied")
       const mine = o.to === 'self' && who.self === WHO.self;
@@ -571,8 +618,8 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
       }
       // (a number that depends on something reads "Apply Might equal to the Mana spent", not "Apply equal to ... Might")
       if (amountText(Math.abs(o.amount), o.scale).equal)
-        return `${verb} ${sname(o.status)} equal to ${amountText(Math.abs(o.amount), o.scale).num}${o.to === 'self' ? '' : who[o.to]}${o.temp ? ' until the end of your turn' : ''}.`;
-      return `${verb} ${at(Math.abs(o.amount), o.scale)} ${sname(o.status)}${o.to === 'self' ? '' : who[o.to]}${o.temp ? ' until the end of your turn' : ''}.`;
+        return `${verb} ${sname(o.status)} equal to ${amountText(Math.abs(o.amount), o.scale).num}${o.to === 'self' ? '' : who[o.to]}${o.temp === 'theirs' ? ' until the end of their next turn' : o.temp ? ' until the end of your turn' : ''}.`;
+      return `${verb} ${at(Math.abs(o.amount), o.scale)} ${sname(o.status)}${o.to === 'self' ? '' : who[o.to]}${o.temp === 'theirs' ? ' until the end of their next turn' : o.temp ? ' until the end of your turn' : ''}.`;
     }
     case 'scaleStatus': {
       const times = o.mult === 2 ? 'Double' : o.mult === 3 ? 'Triple' : `Multiply by ${o.mult}`;
@@ -582,7 +629,7 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
         return o.to === 'self'
           ? o.status === 'hangover'
             ? 'Clear your Hangover.'
-            : `${o.status === 'devotion' ? 'Spend' : 'Lose'} all your ${sname(o.status)}.`
+            : `Lose all your ${sname(o.status)}.`
           : `Remove all ${sname(o.status)}${who[o.to] || ' from the target'}.`;
       if (o.status === 'doom') {
         const noun =
@@ -633,6 +680,9 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
           ? 'Discard any number of cards.'
           : `Discard ${o.amount} card${o.amount === 1 ? '' : 's'}.`;
     case 'exhaustCards':
+      if (o.not && o.amount >= 9) return `Consume every card in your hand that is not ${article(KIND_WORD2[o.not] ?? o.not)} ${KIND_WORD2[o.not] ?? o.not}.`;
+      if (o.only)
+        return `Consume ${o.amount === 1 ? `${o.random ? 'a random' : article(KIND_WORD2[o.only] ?? o.only)} ${KIND_WORD2[o.only] ?? o.only}` : `${o.amount} ${o.random ? 'random ' : ''}${KIND_WORD2[o.only] ?? o.only}s`} in your hand.`;
       if (o.amount >= 9 && !o.random && !o.any) return 'Consume your hand.';
       return o.random
         ? `Consume ${o.amount} random card${o.amount === 1 ? '' : 's'}.`
@@ -650,7 +700,7 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
           : o.when === 'stance'
             ? `Whenever you enter ${o.stance ? sname(o.stance) : 'a stance'}`
             : (WHEN_TEXT[o.when] ?? o.when);
-      return `${when}: ${o.ops.map((x) => opText(db, x, who)).join(' ')}`;
+      return `${o.temp ? `This turn, ${when.charAt(0).toLowerCase()}${when.slice(1)}` : when}: ${o.ops.map((x) => opText(db, x, who)).join(' ')}`;
     }
     case 'channel': {
       const nm = db.runes?.[o.rune]?.name ?? o.rune;
@@ -683,9 +733,10 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
           ? `${KIND_PLURAL[o.kind]?.[0] ?? cap(o.kind)} card`
           : 'card';
       const n = o.amount === 1 ? `a random ${what}` : `${o.amount} random ${what}s`;
+      const up = o.upgrade ? ' It is upgraded.' : '';
       return o.to === 'draw'
-        ? `Put ${n} from your discard pile on top of your draw pile.`
-        : `Return ${n} from your discard pile to your hand.`;
+        ? `Put ${n} from your discard pile on top of your draw pile.${up}`
+        : `Return ${n} from your discard pile to your hand.${up}`;
     }
     case 'manaNext':
       return o.amount < 0
@@ -704,6 +755,8 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
       const free = many
         ? ' (they cost 0 the next time you play them)'
         : ' (it costs 0 the next time you play it)';
+      if (o.scale && (o.count ?? 1) === 0)
+        return `Add a random card from your pool to your hand for each ${METRIC_WORDS[o.scale.by].per}.`;
       return `Add ${what} from your pool to your hand${o.free ? free : ''}.`;
     }
     case 'upgrade':
@@ -716,6 +769,38 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
         : `A random card in your hand costs ${o.amount} less the next time you play it.`;
     case 'copySelf':
       return `Add a copy of this card to your ${o.to === 'hand' ? 'hand' : o.to === 'draw' ? 'draw pile' : 'discard pile'}.`;
+    case 'playPile': {
+      const what = o.kind ? (KIND_WORD2[o.kind] ?? o.kind) : 'card';
+      const n = o.scale ? (o.scale.by === 'x' ? 'the top X cards' : 'cards') : o.amount && o.amount > 1 ? `the top ${o.amount} cards` : 'the top card';
+      const end = o.exhaust ? ' and consume it' : '';
+      if (o.from === 'draw')
+        return o.scale?.by === 'x' || (o.amount ?? 1) > 1
+          ? `Play ${n} of your draw pile.`
+          : `Play the top card of your draw pile${end}.`;
+      if (o.from === 'exhaust') return 'Play a random card from your consumed pile; it goes back there.';
+      if (o.from === 'hand') return `Play a random ${what} from your hand against a random enemy.`;
+      return `Play it against a random enemy${o.match ? ` if it is a ${cap(o.match)} card` : ''}.`;
+    }
+    case 'manaLock':
+      return 'No more Mana can be gained this turn.';
+    case 'drawLock':
+      return 'You cannot draw more cards this turn.';
+    case 'drawUntil':
+      return `Draw cards until you draw a card that is not ${article(KIND_WORD2[o.not] ?? o.not)} ${KIND_WORD2[o.not] ?? o.not}.`;
+    case 'exhaustTop':
+      return o.amount === 1
+        ? 'Consume the top card of your draw pile.'
+        : `Consume the top ${o.amount} cards of your draw pile.`;
+    case 'transform':
+      return `Turn every ${KIND_WORD2[o.kind] ?? o.kind} in your hand into ${article(db.cards[o.into]?.name ?? o.into)} ${db.cards[o.into]?.name ?? o.into}.`;
+    case 'when':
+      return `If ${whenText(o)}: ${o.ops.map((x) => opText(db, x, who)).join(' ')}`;
+    case 'copyPlayed':
+      return 'Add a copy of that card to your hand.';
+    case 'maxHp': {
+      const a = amountText(o.amount, undefined);
+      return `Raise your max HP by ${a.num}.`;
+    }
     case 'forge':
       return `Sharpen ${o.amount} (${db.cards[o.card]?.name ?? o.card} gains ${o.amount} damage).`;
   }
@@ -785,6 +870,12 @@ export function cardText(db: CombatDb, c: CardDef, live?: ReadonlyMap<number, Li
     );
   }
   if (c.unplayable) parts.push('Unplayable.');
+  if (c.needsExhausted)
+    parts.push(`Only playable with ${c.needsExhausted} or more cards consumed.`);
+  if (c.cheaperPerAttack)
+    parts.push(`Costs ${c.cheaperPerAttack} less for each Attack played this turn.`);
+  if (c.replayFromExhaust)
+    parts.push('At the start of your turn, if this is consumed, it is played for free and goes back.');
   // (an Arcana cost is shown on the card itself, under the Mana cost: it is not said again in the text)
   if (c.xBonus) parts.push(`X is ${c.xBonus} higher.`);
   const who: Record<Sel, string> =
@@ -870,6 +961,7 @@ export function eventsFor(
       case 'burn':
       case 'discard':
       case 'addCard':
+      case 'transform':
         return e.side === viewer ? e : { ...e, def: '' };
       case 'play':
         return e.side !== viewer && db.cards[e.def]?.kind === 'snare' ? { ...e, def: '' } : e;

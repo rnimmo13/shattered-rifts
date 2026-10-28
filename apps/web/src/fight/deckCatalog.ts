@@ -2,7 +2,17 @@
 // turning counts into a deck, and a random deck for quick experiments.
 
 import { nextInt, seedRng, type CardDef, type CombatDb } from '@sr/combat';
-import { REALMS, RIFTWALKERS, pathName, pathOf, type HeroId } from '@sr/content/v2';
+import {
+  BUILD_PATHS_SHOWN,
+  REALMS,
+  RIFTWALKERS,
+  pathName,
+  pathOf as rawPathOf,
+  type HeroId,
+} from '@sr/content/v2';
+
+/** a card's build path, or undefined while build paths are hidden (DECISIONS #365) */
+const pathOf = (id: string): number | undefined => (BUILD_PATHS_SHOWN ? rawPathOf(id) : undefined);
 
 export type PoolKey = 'all' | 'neutral' | 'wardens' | 'tokens' | 'other' | string; // or a Riftwalker id
 

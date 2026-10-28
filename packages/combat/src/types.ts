@@ -39,9 +39,13 @@ export type StatusId =
   | 'fortified' // you keep 75% of your Barrier at the start of your turn instead of losing it all
   | 'plating' // you keep up to this much Barrier through each turn change, and it shrinks by 1 every turn
   | 'holdfast' // your whole hand is held at the end of your turn, per stack (one turn each)
-  | 'devotion' // builds as your hero heals (even past full HP); cards spend it (permanent)
   | 'hangover' // at the start of its turn it loses this much HP (never below 1), then it clears (KP's drinks; DECISIONS #354)
-  | 'clutch'; // an innate trait's state: you deal this % more attack damage (set by the engine while you are hurt)
+  | 'clutch' // an innate trait's state: you deal this % more attack damage (set by the engine while you are hurt)
+  | 'sapped' // its attacks deal this much less damage (it wears off at the end of its own turn when a card puts it on an enemy)
+  | 'cruelty' // your attacks deal 25% more to Exposed enemies
+  | 'sturdy' // you take half damage from Exposed enemies (until the enemies' next turn is over)
+  | 'unmovable' // the first Barrier a card gives you each turn is doubled
+  | 'freeattack'; // your next Attack costs 0, per stack
 export const STATUS_IDS: readonly StatusId[] = [
   'exposed',
   'faltering',
@@ -70,9 +74,13 @@ export const STATUS_IDS: readonly StatusId[] = [
   'fortified',
   'plating',
   'holdfast',
-  'devotion',
   'hangover',
   'clutch',
+  'sapped',
+  'cruelty',
+  'sturdy',
+  'unmovable',
+  'freeattack',
 ];
 /** Debuffs: a Steadfast unit ignores the next one put on it. */
 export const DEBUFFS: readonly StatusId[] = [
@@ -82,6 +90,7 @@ export const DEBUFFS: readonly StatusId[] = [
   'stunned',
   'brittle',
   'doom',
+  'sapped',
 ];
 export const STANCES = ['calm', 'wrath', 'radiant'] as const;
 export type Stance = (typeof STANCES)[number];
@@ -133,7 +142,6 @@ export type Metric =
   | 'might'
   | 'thorns'
   | 'mantra'
-  | 'devotion'
   | 'hangover'
   | 'resonance'
   | 'doom'
@@ -156,9 +164,17 @@ export type Metric =
   | 'played' // cards played this turn (before this one)
   | 'attacksPlayed'
   | 'skillsPlayed' // Skills played this turn (before this one)
+  | 'strikes' // cards with "Strike" in their name anywhere in your deck (hand, piles, consumed, and the card being played)
   | 'drawn' // cards drawn this fight
   | 'created' // cards created (added to a pile by an effect) this fight
   | 'discarded' // cards discarded by effects this turn
+  | 'hpLostTurn' // times your hero lost HP this turn
+  | 'hpLostFight' // times your hero lost HP this fight
+  | 'exhaustedTurn' // cards consumed this turn
+  | 'attacksInHand'
+  | 'nonAttacksInHand'
+  | 'exhaustedNow' // cards the card being played has consumed so far
+  | 'exhaustedDamage' // the damage of the Attacks the card being played has consumed so far
   // about the thing being resolved
   | 'x' // Mana spent on an X card
   | 'charge' // a rune's charge
@@ -188,7 +204,8 @@ export type TriggerWhen =
   | 'draw' // you drew a card
   | 'created' // a card was created in one of your piles
   | 'arcana' // you spent Arcana (a card's Arcana cost was paid; DECISIONS #288)
-  | 'shuffle'; // your discard pile was shuffled into a new draw pile (DECISIONS #299)
+  | 'shuffle' // your discard pile was shuffled into a new draw pile (DECISIONS #299)
+  | 'exposeFoe'; // you put Exposed on an enemy
 
 export type Op =
   /** `lonePct`: Point Blank, this much more damage (percent) when it hits only one enemy */
@@ -204,6 +221,8 @@ export type Op =
       /** with `to: 'randomFoe'`: each hit finds an enemy no earlier hit of it struck, so `hits` is how many different
        * enemies it strikes, once each (fewer when fewer are standing; DECISIONS #357) */
       distinct?: boolean;
+      /** run these once for each enemy this kills (Feed: gain max HP) */
+      onKill?: Op[];
     }
   | { op: 'loseHp'; amount: number; to: Sel; scale?: Scale } // unblockable, unmodified
   | { op: 'barrier'; amount: number; to: Sel; scale?: Scale }
@@ -216,7 +235,15 @@ export type Op =
    */
   | { op: 'cleanse'; amount: number; to: Sel; all?: boolean; pct?: number }
   /** `temp`: the stacks wear off again at the end of the acting side's turn (a Flex) */
-  | { op: 'status'; status: StatusId; amount: number; to: Sel; scale?: Scale; temp?: boolean }
+  | {
+      op: 'status';
+      status: StatusId;
+      amount: number;
+      to: Sel;
+      scale?: Scale;
+      /** true: wears off at the end of your turn; 'theirs': wears off at the end of the target's own turn (Mangle) */
+      temp?: boolean | 'theirs';
+    }
   /** multiply the stacks of a status already on the target (floor); 2 doubles it */
   /** multiply a status (Double the Seared...); `max` is the most stacks it adds, so a doubler played again and again cannot run away */
   | { op: 'scaleStatus'; status: StatusId; mult: number; to: Sel; max?: number }
@@ -237,7 +264,15 @@ export type Op =
   | { op: 'prevent' } // Trap only: cancel the attack that sprang it
   // --- choices and card movement (card effects only; a choice asks the player and the card resumes afterwards)
   | { op: 'discard'; amount: number; random?: boolean; any?: boolean }
-  | { op: 'exhaustCards'; amount: number; random?: boolean; any?: boolean }
+  | {
+      op: 'exhaustCards';
+      amount: number;
+      random?: boolean;
+      any?: boolean;
+      /** only cards of this kind, or every kind but this one */
+      only?: CardKind;
+      not?: CardKind;
+    }
   | { op: 'scry'; amount: number }
   // --- Powers: run `ops` whenever `when` happens (`filter`/`tag` narrow 'play')
   | {
@@ -248,6 +283,8 @@ export type Op =
       filter?: CardKind;
       tag?: string;
       stance?: Stance;
+      /** it ends with this turn (Rage) */
+      temp?: boolean;
     }
   // --- runes
   | { op: 'channel'; rune: string; times?: number; scale?: Scale }
@@ -266,15 +303,53 @@ export type Op =
   | { op: 'maxMana'; amount: number } // more (or less) Mana every turn for the rest of the fight, from the next turn on
   | { op: 'drawNext'; amount: number } // extra cards at the start of your next turn
   /** add random cards from your own pool (and Neutral) to your hand; `free`: they cost 0 for the rest of the fight */
-  | { op: 'discover'; kind?: CardKind; count?: number; free?: boolean }
+  | { op: 'discover'; kind?: CardKind; count?: number; free?: boolean; scale?: Scale }
   /** replace cards in your hand with their "+" versions for the rest of the fight */
   | { op: 'upgrade'; scope: 'hand' | 'random' }
   /** cards in your hand cost less for the rest of the fight (one random card, or all of them) */
   | { op: 'cheapen'; amount: number; scope: 'hand' | 'random' }
   /** move random cards from your discard pile to your hand (or the top of your draw pile); `kind` and `tag` narrow which */
-  | { op: 'fetch'; amount: number; to: 'hand' | 'draw'; kind?: CardKind; tag?: string }
+  | {
+      op: 'fetch';
+      amount: number;
+      to: 'hand' | 'draw';
+      kind?: CardKind;
+      tag?: string;
+      /** the cards come back as their "+" versions */
+      upgrade?: boolean;
+    }
   /** add a copy of the card being played */
-  | { op: 'copySelf'; to: 'hand' | 'discard' | 'draw' };
+  | { op: 'copySelf'; to: 'hand' | 'discard' | 'draw' }
+  // --- playing cards for free (Cascade, Havoc, Stampede, Hellraiser, Howl From Beyond)
+  /**
+   * play cards for free, each against a random enemy: from the top of the draw pile, the exhaust pile (it goes back there), a
+   * random one of your hand, or the card you have just drawn. `amount` (and `scale`) is how many; `kind` and `match` (a part of the
+   * name) narrow which; `exhaust` consumes each one afterwards
+   */
+  | {
+      op: 'playPile';
+      from: 'draw' | 'exhaust' | 'hand' | 'drawn';
+      amount?: number;
+      scale?: Scale;
+      kind?: CardKind;
+      match?: string;
+      exhaust?: boolean;
+    }
+  /** no more Mana can be gained this turn / no more cards can be drawn this turn */
+  | { op: 'manaLock' }
+  | { op: 'drawLock' }
+  /** draw until a card that is not of this kind comes up */
+  | { op: 'drawUntil'; not: CardKind }
+  /** consume cards from the top of your draw pile */
+  | { op: 'exhaustTop'; amount: number }
+  /** every card of this kind in your hand becomes another card */
+  | { op: 'transform'; kind: CardKind; into: CardId }
+  /** run these ops only while a metric is within bounds ("on your third Attack") */
+  | { op: 'when'; by: Metric; of?: Scale['of']; atLeast?: number; atMost?: number; ops: Op[] }
+  /** add a copy of the card that has just been played (in a 'play' trigger) to your hand */
+  | { op: 'copyPlayed' }
+  /** raise max HP, and HP with it (for the fight; a run keeps what a card says it keeps) */
+  | { op: 'maxHp'; amount: number; to: Sel };
 
 export type CardKind = 'attack' | 'skill' | 'power' | 'summon' | 'snare';
 /** foe = an enemy; friend = any unit of yours (hero or ally); ally = one of your allies, never the hero */
@@ -313,7 +388,7 @@ export interface CardDef {
   tags?: string[];
   /** Stars paid on top of the Mana cost */
   starCost?: number;
-  /** stacks of a status on your hero paid on top of the Mana cost (Valeria's Devotion); unplayable without them */
+  /** stacks of a status on your hero paid on top of the Mana cost; unplayable without them (no card uses it right now: Devotion, its only user, is gone; DECISIONS #364) */
   /** `x`: the card spends all of it (its effects do the spending; `amount` is 0), shown as "X" (DECISIONS #357) */
   statusCost?: { status: StatusId; amount: number; x?: boolean };
   /** an X card: costs all your remaining Mana and the Metric 'x' is how much was spent (give it cost 0) */
@@ -322,6 +397,12 @@ export interface CardDef {
   xBonus?: number;
   /** starts in your opening hand */
   innate?: boolean;
+  /** only playable while this many cards (not Auras) are in your consumed pile */
+  needsExhausted?: number;
+  /** costs this much less for each Attack played this turn */
+  cheaperPerAttack?: number;
+  /** at the start of your turn, if it is in your consumed pile, it is played for free and goes back */
+  replayFromExhaust?: boolean;
   /** exhausts if it is still in your hand at the end of your turn */
   ethereal?: boolean;
   /** runs when an effect discards this card (not the end-of-turn discard) */
@@ -548,6 +629,8 @@ export interface PowerState {
   filter?: CardKind;
   tag?: string;
   stance?: Stance;
+  /** it ends with this turn (Rage) */
+  temp?: boolean;
 }
 
 /** A choice the acting player owes before anything else happens. */
@@ -608,6 +691,17 @@ export interface SideState {
   discarded: number;
   /** leaving Calm has already paid its Mana this turn */
   calmPaid?: boolean;
+  /** times your hero lost HP this turn / this fight, cards consumed this turn */
+  lostHpTurn?: number;
+  lostHpFight?: number;
+  exhaustedTurn?: number;
+  /** no more Mana / cards can come this turn (Expect a Fight, Battle Trance) */
+  manaLocked?: boolean;
+  drawLocked?: boolean;
+  /** the first Barrier from a card this turn has been doubled (Unmovable) */
+  barrierDoubled?: boolean;
+  /** max HP the hero has gained this fight (a run keeps it) */
+  maxHpGained?: number;
   /** counters for the whole fight */
   drawn: number;
   created: number;

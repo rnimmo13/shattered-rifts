@@ -232,7 +232,7 @@ export const TOTEMIST: CardDef[] = [
     exhaust: true,
   }),
   i(
-    'legendary',
+    'rare',
     'the-grand-design',
     'The Great Pole',
     'power',
@@ -242,7 +242,7 @@ export const TOTEMIST: CardDef[] = [
     { up: { cost: 2 } },
   ),
   i(
-    'legendary',
+    'rare',
     'cataclysm-glyph',
     'Cataclysm Totem',
     'attack',

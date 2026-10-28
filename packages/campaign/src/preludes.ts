@@ -176,15 +176,7 @@ function bargains(stage: number): PreludeOption[] {
       ],
       true,
     ),
-    opt(
-      'legends-price',
-      "A Legend's Price",
-      [
-        { k: 'hp', n: 15 },
-        { k: 'pick', rarity: 'legendary' },
-      ],
-      true,
-    ),
+    // ("A Legend's Price": 15 HP for a pick of three Legendary cards. Gone while there are no Legendary cards, DECISIONS #363)
     opt(
       'call-ancestors',
       'Call on the Ancestors',

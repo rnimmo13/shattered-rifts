@@ -35,15 +35,14 @@ describe('Powers that react to your own effects', () => {
     expect(hero(s).statuses.might).toBe(might + 1);
   });
 
-  it('"Whenever you gain Barrier" (Bastion Engine) hits every enemy, and Briar Heart grows Thorns', () => {
-    let s = fight('knight', ['bastion-engine', 'briar-heart', 'stand-firm']);
+  it('"Whenever you gain Barrier" (Bastion Engine) hits a random enemy for 5', () => {
+    let s = fight('knight', ['bastion-engine', 'oath-of-iron']);
     s = play(s, 'T0');
+    const total = (x: typeof s): number => x.sides.b.units.reduce((n, u) => n + u.hp + u.barrier, 0);
+    const hp = total(s);
     s = play(s, 'T1');
-    const hp = foe(s).hp;
-    s = play(s, 'T2');
-    expect(hero(s).barrier).toBeGreaterThanOrEqual(10);
-    expect(foe(s).hp).toBe(hp - 2);
-    expect(hero(s).statuses.thorns).toBe(1);
+    expect(hero(s).barrier).toBeGreaterThanOrEqual(8);
+    expect(total(s)).toBe(hp - 5);
   });
 });
 
@@ -97,9 +96,9 @@ describe('draw, created and Skills-played hooks', () => {
 
 describe('counters', () => {
   it('count cards drawn and created over the fight', () => {
-    let s = fight('knight', ['prayer']);
+    let s = fight('knight', ['oath-of-iron']);
     const drawn = s.sides.a.drawn;
-    s = play(s, 'T0'); // Prayer: heal 4, draw 1
+    s = play(s, 'T0'); // Oath of Iron: Barrier, draw 1
     expect(s.sides.a.drawn).toBe(drawn + 1);
   });
 });

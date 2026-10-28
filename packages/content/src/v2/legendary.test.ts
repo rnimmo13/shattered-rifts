@@ -9,7 +9,7 @@ import {
   type CombatState,
   type Unit,
 } from '@sr/combat';
-import { COMBAT_DB as db, RIFTWALKERS, type HeroId } from './index';
+import { COMBAT_DB as db, RIFTWALKERS, SHELVED_LEGENDARIES, type HeroId } from './index';
 
 function play(hero: HeroId, card: string, tweak?: (s: CombatState) => void): CombatState {
   const { state } = createFight(hero);
@@ -60,13 +60,6 @@ describe('legendary effects', () => {
     for (const u of s.sides.a.units) expect(u.statuses.might).toBeGreaterThanOrEqual(1);
   });
 
-  it('Dawn Incarnate raises 10 Barrier, then deals your Barrier to everything', () => {
-    const s = play('knight', 'dawn-incarnate', (st) => {
-      heroUnit(st).barrier = 10;
-    });
-    for (const u of s.sides.b.units) expect(u.hp).toBe(200 - 20);
-  });
-
   it('Death Warrant takes two HP per Seared', () => {
     const s = play('assassin', 'death-warrant', (st) => {
       st.sides.b.units[0]!.statuses.seared = 5;
@@ -85,9 +78,9 @@ describe('legendary effects', () => {
     expect(s0.sides.a.hand.length).toBeGreaterThan(0);
   });
 
-  it('every Aura-type legendary lands on the board and stays', () => {
+  it('every Aura-type shelved legendary lands on the board and stays', () => {
     for (const c of Object.values(db.cards).filter(
-      (x) => x.rarity === 'legendary' && x.kind === 'power',
+      (x) => SHELVED_LEGENDARIES.includes(x.id) && x.kind === 'power',
     )) {
       const hero = (RIFTWALKERS[c.hero as HeroId] ? c.hero : 'knight') as HeroId;
       const s = play(hero, c.id);
@@ -99,20 +92,14 @@ describe('legendary effects', () => {
   });
 });
 
-describe('three Legendary cards per Riftwalker', () => {
-  it('every Riftwalker owns exactly three, and each is playable', () => {
-    for (const hero of Object.keys(RIFTWALKERS) as HeroId[]) {
-      const own = Object.values(db.cards).filter(
-        (c) => c.hero === hero && c.rarity === 'legendary' && !c.id.endsWith('+'),
-      );
-      expect(
-        own.map((c) => c.id),
-        `${hero} legendaries`,
-      ).toHaveLength(3);
-      for (const c of own) {
-        if (c.kind === 'snare') continue; // a Trap is set, not played for an effect
-        play(hero, c.id);
-      }
+describe('the shelved Legendary cards (DECISIONS #363)', () => {
+  it('each is still playable, as a Rare', () => {
+    for (const id of SHELVED_LEGENDARIES) {
+      const c = db.cards[id]!;
+      expect(c.rarity, id).toBe('rare');
+      if (c.kind === 'snare') continue; // a Trap is set, not played for an effect
+      const hero = (RIFTWALKERS[c.hero as HeroId] ? c.hero : 'knight') as HeroId;
+      play(hero, id);
     }
   });
 });

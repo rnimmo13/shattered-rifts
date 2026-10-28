@@ -196,13 +196,13 @@ export const HUNTER: CardDef[] = [
     [dmg(6, 'attacker'), status('might', 1)],
     { trigger: { on: 'attacked' } },
   ),
-  k('legendary', 'hunger-unleashed', 'The Hunger Unleashed', 'power', 2, 'none', [
+  k('rare', 'hunger-unleashed', 'The Hunger Unleashed', 'power', 2, 'none', [
     lose(7),
     status('might', 4),
     status('ritual', 2),
   ]),
   k(
-    'legendary',
+    'rare',
     'apex-maw',
     'Apex Frenzy',
     'attack',

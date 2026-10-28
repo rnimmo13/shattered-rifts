@@ -2,7 +2,7 @@ import { forwardRef, memo, useMemo, useState, type CSSProperties } from 'react';
 import { cardText, type CardDef, type CombatDb, type LiveDamage } from '@sr/combat';
 import { CARD_H, CARD_W } from '../cards/size';
 import { markRollDiff, parseRules } from '../cards/cardText';
-import { RIFTWALKERS, pathName, pathOf, type HeroId } from '@sr/content/v2';
+import { BUILD_PATHS_SHOWN, RIFTWALKERS, pathName, pathOf, type HeroId } from '@sr/content/v2';
 import { HeroIcon } from '../ui/HeroIcon';
 import { cardArtV2, paintedCardArt } from './art';
 import '../cards/card.css';
@@ -94,8 +94,9 @@ export const FightCard = memo(
     // a class colour: the owner's, or Neutral grey (Warden gifts keep their realm's colours)
     const owner = def.hero && !def.source?.startsWith('boss:') ? def.hero : undefined;
     const style = { '--k': k, width, height: width * (CARD_H / CARD_W) } as CSSProperties;
-    // the build path the card belongs to, top right on the art ("Devotion"); basics, glue and tokens have none (DECISIONS #342)
-    const pathIdx = owner && Object.hasOwn(RIFTWALKERS, owner) ? pathOf(def.id) : undefined;
+    // the build path the card belongs to, top right on the art; basics, glue and tokens have none (DECISIONS #342)
+    const pathIdx =
+      BUILD_PATHS_SHOWN && owner && Object.hasOwn(RIFTWALKERS, owner) ? pathOf(def.id) : undefined;
     const path = pathIdx === undefined ? null : pathName(owner as HeroId, pathIdx);
     return (
       <div

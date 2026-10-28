@@ -6,7 +6,7 @@ import {
   availableNodes,
   chooseCard,
   chooseEvent,
-  chooseKit,
+  chooseStarters,
   choosePrelude,
   duelPlan,
   enterNode,
@@ -42,6 +42,12 @@ export interface Result {
 
 /** Experiment knobs: multiply enemy HP and damage in ordinary fights (duels and elites) and in the Warden fight, on top of the game's. */
 export const scale = { duelHp: 1, duelDmg: 1, wardenHp: 1, wardenDmg: 1 };
+
+/** the two uncommon cards a bot run starts with: set `k` takes the k-th pair on offer, so different runs try different pairs */
+const startersFor = (run: RunState, k: number): string[] => {
+  const o = run.context?.starterPick?.options ?? [];
+  return [o[(2 * k) % o.length] as string, o[(2 * k + 1) % o.length] as string];
+};
 
 function fight(run: RunState): { won: boolean; hp: number } {
   const plan = duelPlan(run);
@@ -96,7 +102,7 @@ export function playStage1(
     const hpFrac = run.hp / run.maxHp;
     switch (run.phase) {
       case 'kit':
-        run = chooseKit(run, (['a', 'b', 'c'] as const)[kit] as string);
+        run = chooseStarters(run, startersFor(run, kit));
         break;
       case 'prelude': {
         const opts = run.context?.prelude?.options ?? [];

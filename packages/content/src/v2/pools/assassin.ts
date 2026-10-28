@@ -279,7 +279,7 @@ export const ASSASSIN: CardDef[] = [
   ),
   q('rare', 'encore', 'Encore', 'skill', 1, 'none', [status('mirrored', 1), draw(1)]),
   q(
-    'legendary',
+    'rare',
     'deck-of-a-thousand-knives',
     'Deck of a Thousand Knives',
     'power',
@@ -289,7 +289,7 @@ export const ASSASSIN: CardDef[] = [
     { up: { cost: 1, effects: [on('turnStart', [addTo('sleeve-knife', 3)]), status('edge', 3)] } },
   ),
   q(
-    'legendary',
+    'rare',
     'death-warrant',
     'Death Warrant',
     'skill',

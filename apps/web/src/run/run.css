@@ -933,43 +933,32 @@
   color: var(--c-text-dim);
 }
 
-/* ---- choosing a starting deck ---- */
-.kits {
+/* ---- choosing the two uncommon cards to start with ---- */
+.starters {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 1.4rem;
+  gap: 0.9rem;
+  max-width: 1500px;
+  margin: 0 auto;
 }
-.kit {
-  display: grid;
-  gap: 0.7rem;
-  justify-items: center;
-  padding: 1.1rem 1.3rem 1.3rem;
-  border-radius: 16px;
-  border: 1px solid transparent;
-  background:
-    linear-gradient(160deg, rgb(20 32 74 / 0.92), rgb(8 10 20 / 0.96)) padding-box,
-    linear-gradient(160deg, var(--c-gold-light), var(--c-gold-dark)) border-box;
+.starters__card {
+  border-radius: 14px;
+  padding: 0.3rem;
+  border: 2px solid transparent;
 }
-.kit__lean {
-  margin: 0;
-  font-family: var(--font-display);
-  font-weight: 400;
-  color: var(--c-ivory);
+.starters__card.is-chosen {
+  border-color: var(--c-gold-light);
+  box-shadow: 0 0 18px rgb(255 214 120 / 0.55);
 }
-.kit__lean b {
-  color: var(--c-gold-light);
-}
-.kit__sub {
-  margin: 0;
-  font-size: 1.02rem;
+.starters__bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.2rem;
+  margin-top: 1.2rem;
+  font-size: 1.1rem;
   color: var(--c-text-dim);
-}
-.kit__cards {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 0.6rem;
 }
 
 /* potions on the run bar and in shops */

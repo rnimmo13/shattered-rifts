@@ -132,11 +132,11 @@ export const NEUTRAL: CardDef[] = [
   n('rare', 'rift-smithing', 'Rift Smithing', 'skill', 2, 'none', [upgradeOp('hand')], {
     exhaust: true,
   }),
-  n('legendary', 'heart-of-the-rift', 'Heart of the Rift', 'power', 3, 'none', [
+  n('rare', 'heart-of-the-rift', 'Heart of the Rift', 'power', 3, 'none', [
     on('turnStart', [mana(1), draw(1)]),
   ]),
   n(
-    'legendary',
+    'rare',
     'rift-collapse',
     'Rift Collapse',
     'attack',

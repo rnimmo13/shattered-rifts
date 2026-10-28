@@ -10,7 +10,7 @@ Ko-fi-funded) → Steam full game ($7.99–$9.99) with PvP later. Owner: Robert.
 | `docs/01_GAME_DESIGN.md` | LEGACY (old duel rules: Essence, slots, the Chain). Pillars in §2 still apply; the rules do not |
 | `docs/02_CARDS.md` | LEGACY card list and DSL for the old engine; realms and flavour still apply. Real data: `packages/content/src/v2` |
 | `docs/03_CAMPAIGN.md` | Characters, run structure (3 stages), Resolve, Bank/Continue, Rift Tiers, Wardens, Boons, Vault & seasons |
-| `docs/09_ROSTER.md` | **The Riftwalkers**: pool rules (3 build paths, shared toolkit, owned signatures), build paths per character, traits, engine pieces. `10_CARD_LIST.md` is the generated card list (`pnpm cardlist`) |
+| `docs/09_ROSTER.md` | **The Riftwalkers**: pool rules (build paths, shared toolkit, owned signatures), build paths per character, traits, engine pieces. `10_CARD_LIST.md` is the generated card list (`pnpm cardlist`) |
 | `docs/11_PVP.md` | PvP: how a match works, the Cloudflare server (`apps/server`), running and deploying it |
 | `docs/12_STEAM_READINESS.md` | Steam checklist: shell, accounts, verified runs, achievements, disclosures, store page (plan only, nothing built) |
 | `docs/13_PROPOSALS.md` | Designs waiting on Robert's review, ideas kept for later, ideas decided against (check before proposing features) |
@@ -68,6 +68,7 @@ Toolchain: Node 22, pnpm 11 (corepack), TypeScript 6.0 (see DECISIONS #39). Work
 ## Current status
 **Combat v2 (Slay-the-Spire-style) replaced the old duel on 2026-10-23** (DECISIONS #86-90, design in `docs/08_COMBAT_V2.md`).
 **Roster of 9 (2026-10-23, DECISIONS #95-105; Mire added with Doom, tier-3 mechanics, tips and a Learn page):** Maren, Rivet, Kesh, Vesper + Quill (Sleeve Knives/Seared/discard), Ilvane (totems), Sehra (stances), Obsidia (id `spellblade`; Arcana/Sharpen), Mire (Doom/Thralls/Ashes); names are original, see DECISIONS #99; pools belong to a character (`CardDef.hero`), ~35-40 cards in three lanes each; engine gained choices (`pending`/`pick`), scaling amounts, Auras (`power` op) as triggers, totems (`channel`/`evoke` ops), stances, Arcana (`stars` op), sharpen (`forge` op). Next: balance, art for the new four, enemy counterparts, stretch characters Cinder and Mire.
+**2026-10-28 (DECISIONS #362-364):** no limit of three build paths; Legendary cards are put away (they are Rares, `SHELVED_LEGENDARIES`); Valeria (`knight`) is rebuilt as the Slay the Spire 2 Ironclad shape with original names, no Devotion, five build paths (Bulwark, Thorns, Might, Consume, Blood). Robert will change her cards himself; the "no copied card effects" rule is waived for her only.
 Done: **C1** engine (`packages/combat`: pure, seeded, events, intents, allies, Traps, tiers, PvP mode, greedy bot) ·
 **C2** content (`packages/content/src/v2`: 4 Riftwalkers, ~80 cards with "+" upgrades, 12 companions, 26 encounters incl. Wardens and
 Vorthax) · **C3** the side-to-side fight screen (`apps/web/src/fight`, route `#/fight`) · **C4** campaign Run v2 (`packages/campaign`,

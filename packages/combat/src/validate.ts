@@ -22,6 +22,8 @@ export function validateDb(db: CombatDb): string[] {
       rune?: boolean;
       /** an Aura that answers an ally falling: it may strike the one that killed it (DECISIONS #326) */
       attacker?: boolean;
+      /** inside an Aura that answers a card being played */
+      played?: boolean;
     },
   ): void => {
     for (const o of ops) {
@@ -64,15 +66,20 @@ export function validateDb(db: CombatDb): string[] {
       if (
         o.op === 'discover' &&
         o.count !== undefined &&
-        (!Number.isInteger(o.count) || o.count < 1)
+        (!Number.isInteger(o.count) || o.count < (o.scale ? 0 : 1))
       )
         errs.push(`${where}: bad discover count`);
+      if (o.op === 'when') checkOps(`${where}.when`, o.ops, opts);
+      if (o.op === 'damage' && o.onKill) checkOps(`${where}.onKill`, o.onKill, opts);
+      if (o.op === 'copyPlayed' && !opts.played)
+        errs.push(`${where}: "copyPlayed" only works in a trigger that answers a card being played`);
       if (o.op === 'power') {
         if (!opts.card) errs.push(`${where}: "power" only works in a card`);
         checkOps(`${where}.power`, o.ops, {
           aimed: o.when === 'play',
           snare: false,
           attacker: o.when === 'allyDies',
+          played: o.when === 'play',
         });
       }
       if (o.op === 'channel' && !db.runes?.[o.rune])

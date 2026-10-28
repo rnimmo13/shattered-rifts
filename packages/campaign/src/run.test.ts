@@ -16,7 +16,7 @@ import {
   chooseEvent,
   pickEventCard,
   pickDeckCard,
-  chooseKit,
+  chooseStarters,
   choosePrelude,
   continueLoop,
   duelPlan,
@@ -258,6 +258,18 @@ describe('the run', () => {
     expect(r.shards).toBe(15);
   });
 
+  it('max HP gained in a fight (Bloodfeast) is kept for good, and cannot be made up', () => {
+    const r = enterNode(fresh('knight', 'maxhp'), availableNodes(fresh('knight', 'maxhp'))[0]!.id);
+    const max = r.maxHp;
+    const won = finishDuel(r, true, max + 3, undefined, 3);
+    expect(won.maxHp).toBe(max + 3);
+    expect(won.hp).toBe(max + 3);
+    // HP above the new maximum, or an absurd gain, is refused
+    expect(() => finishDuel(r, true, max + 4, undefined, 3)).toThrow(RunError);
+    expect(() => finishDuel(r, true, max, undefined, 999)).toThrow(RunError);
+    expect(() => finishDuel(r, true, max, undefined, -1)).toThrow(RunError);
+  });
+
   it('collapses at 0 Resolve', () => {
     let r = enterNode(fresh('trapper', 'c'), availableNodes(fresh('trapper', 'c'))[0]!.id);
     for (let i = 0; i < 2; i++) r = finishDuel(r, false);
@@ -275,10 +287,10 @@ describe('the run', () => {
     });
     const rested = takeShrine(shrineRun(), { kind: 'rest' });
     expect(rested.hp).toBe(30 + Math.ceil(RIFTWALKERS.knight.hero.maxHp * 0.35));
-    const up = takeShrine(shrineRun(), { kind: 'upgrade', card: 'dawn-smite' });
-    expect(up.deck).toContain('dawn-smite+');
-    expect(up.deck).not.toContain('dawn-smite');
-    expect(upgradable(up.deck)).not.toContain('dawn-smite+');
+    const up = takeShrine(shrineRun(), { kind: 'upgrade', card: 'sundering-blow' });
+    expect(up.deck).toContain('sundering-blow+');
+    expect(up.deck).not.toContain('sundering-blow');
+    expect(upgradable(up.deck)).not.toContain('sundering-blow+');
     expect(() => takeShrine(shrineRun(), { kind: 'upgrade', card: 'rift-bolt' })).toThrow(RunError);
     const small = { ...shrineRun(), deck: base.deck.slice(0, DECK_RULES.minSize) };
     expect(() => takeShrine(small, { kind: 'remove', card: 'strike' })).toThrow(RunError);
@@ -342,7 +354,7 @@ function botRun(hero: HeroId, seed: string): { run: RunState; fights: number } {
             : chooseEvent(run, run.context!.event!.options.find((o) => o.id !== 'trial')!.id);
         break;
       case 'kit':
-        run = chooseKit(run, run.context!.kits![0]!.id);
+        run = chooseStarters(run);
         break;
       case 'prelude':
         run = choosePrelude(run, run.context!.prelude!.options[0]!.id);

@@ -43,7 +43,7 @@ export function canAdd(deck: readonly string[], cardId: string, rarityLimits = t
 }
 
 /** Statuses only one Riftwalker builds (through their trait): cards that spend or count them never cross over. */
-const OWNER_ONLY = new Set<string>(['devotion']);
+const OWNER_ONLY = new Set<string>();
 const ownerOnly = (c: CardDef | undefined): boolean =>
   !!c &&
   ((!!c.statusCost && OWNER_ONLY.has(c.statusCost.status)) ||
@@ -55,7 +55,7 @@ export function crossedPool(hero: HeroId): string[] {
     .filter((h) => h !== hero)
     .flatMap((h) =>
       rewardPool(h).filter(
-        // (a card that spends or counts a status only its owner builds, like Valeria's Devotion, would be dead in another deck)
+        // (a card that spends or counts a status only its owner builds, would be dead in another deck)
         (id) =>
           COMBAT_DB.cards[id]?.hero === h &&
           COMBAT_DB.cards[id]?.rarity !== 'legendary' &&
@@ -88,8 +88,9 @@ export function crossedOffers(
 // top 1% of a fight and rare sits at about Slay the Spire's elite rate; an Elite is a step up from both. (The merchant's stock is
 // rolled at the Elite odds too.)
 export const CARD_ODDS: Record<OfferQuality, Record<string, number>> = {
-  duel: { common: 55, uncommon: 35, rare: 9, legendary: 1 },
-  elite: { common: 35, uncommon: 42, rare: 20, legendary: 3 },
+  // (no Legendary cards for now, DECISIONS #363: their 1% and 3% went to Rare; put them back when Legendary does)
+  duel: { common: 55, uncommon: 35, rare: 10, legendary: 0 },
+  elite: { common: 35, uncommon: 42, rare: 23, legendary: 0 },
 };
 
 function rollRarity(rng: RngState, quality: OfferQuality): string {

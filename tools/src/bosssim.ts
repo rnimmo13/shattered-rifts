@@ -3,7 +3,7 @@
 //   --warden kron|seraphine|gorrmaw|nyxara   (default gorrmaw)   --n 60   --pilot smart|greedy
 
 import { applyAction, chooseAction, chooseSmartAction, createCombat, heroOf } from '@sr/combat';
-import { chooseKit, enemyScale, newRun } from '@sr/campaign';
+import { chooseStarters, enemyScale, newRun } from '@sr/campaign';
 import { COMBAT_DB as db, ENCOUNTERS, RIFTWALKERS, type HeroId } from '@sr/content/v2';
 
 const arg = (k: string, d: string): string => {
@@ -24,9 +24,12 @@ console.log('|---|---|---|---|---|---|---|');
 
 for (const hero of Object.keys(RIFTWALKERS) as HeroId[]) {
   const base = newRun(hero, `boss-${hero}`);
-  const kits = base.context?.kits ?? [];
-  for (const kit of kits) {
-    const run = chooseKit(base, kit.id);
+  const options = base.context?.starterPick?.options ?? [];
+  for (const kit of [0, 1, 2].map((k) => ({ id: `pair ${k + 1}`, k }))) {
+    const run = chooseStarters(base, [
+      options[(2 * kit.k) % options.length] as string,
+      options[(2 * kit.k + 1) % options.length] as string,
+    ]);
     let wins = 0;
     let turns = 0;
     let wonTurns = 0;
@@ -56,7 +59,7 @@ for (const hero of Object.keys(RIFTWALKERS) as HeroId[]) {
     const losses = n - wins;
     const pct = (x: number) => `${Math.round(x * 100)}%`;
     console.log(
-      `| ${hero} | ${kit.leans} | ${pct(wins / n)} | ${(turns / n).toFixed(1)} | ${wins ? (wonTurns / wins).toFixed(1) : '-'} | ${losses ? pct(bossLeft / losses) : '-'} | ${wins ? pct(hpLeft / wins) : '-'} |`,
+      `| ${hero} | ${kit.id} | ${pct(wins / n)} | ${(turns / n).toFixed(1)} | ${wins ? (wonTurns / wins).toFixed(1) : '-'} | ${losses ? pct(bossLeft / losses) : '-'} | ${wins ? pct(hpLeft / wins) : '-'} |`,
     );
   }
 }

@@ -1,4 +1,4 @@
-// The picked Riftwalker on show (figure, name, role, build paths, trait) with the row of icons to pick another. The home page and
+// The picked Riftwalker on show (figure, name, role, mechanics, trait) with the row of icons to pick another. The home page and
 // the Sandbox both use it, so a Riftwalker is chosen the same way everywhere.
 
 import { useEffect, useMemo, useRef, type CSSProperties } from 'react';
@@ -52,8 +52,8 @@ export function HeroShowcase(props: {
           {hero.role} · {realm}
         </p>
         <p className="home__paths">
-          {hero.buildPaths.map((l) => (
-            <span key={l}>{l.split(':')[0]}</span>
+          {hero.mechanics.map((l) => (
+            <span key={l}>{l}</span>
           ))}
         </p>
         <p className="home__trait">

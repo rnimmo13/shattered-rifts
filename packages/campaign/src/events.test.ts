@@ -1,6 +1,14 @@
-import { describe, expect, it } from 'vitest';
+import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { applyAction, createCombat, legalActions, clone, cardText } from '@sr/combat';
-import { COMBAT_DB, RIFTWALKERS, canRoll, rolledId, rollOf, stripRoll } from '@sr/content/v2';
+import {
+  COMBAT_DB,
+  RIFTWALKERS,
+  canRoll,
+  lendLegendaries,
+  rolledId,
+  rollOf,
+  stripRoll,
+} from '@sr/content/v2';
 import {
   availableNodes,
   canAdd,
@@ -17,6 +25,13 @@ import {
 } from './index';
 import { EVENTS, resolveEvent } from './events';
 import type { DealStep } from './types';
+
+// Legendary is put away (DECISIONS #363): the shelved cards are lent as Legendaries so the reliquary and the copy limit stay tested
+let undo = (): void => {};
+beforeAll(() => {
+  undo = lendLegendaries(COMBAT_DB);
+});
+afterAll(() => undo());
 
 const open = (r: RunState): RunState => ({ ...r, phase: 'map', context: null });
 
@@ -43,22 +58,22 @@ const SETUP: Record<string, Partial<RunState>> = {
   'deep-spring': { stage: 2, potions: ['healing-philtre'] },
   'class-shrine': { stage: 2 },
   'potion-trade': { potions: ['healing-philtre', 'healing-philtre'] },
-  'legend-reliquary': { deck: [...RIFTWALKERS.knight.starter, 'gilded-bastion', 'the-last-oath+'] },
+  'legend-reliquary': { deck: [...RIFTWALKERS.knight.starter, 'oath-of-iron', 'drone-apotheosis+'] },
   // the trades (DECISIONS #256) name cards of your own class: two common Attacks, two common Skills, a rare, a card off the build
   // path the deck follows, an uncommon and the shards to step it up
-  smelter: { deck: [...RIFTWALKERS.knight.starter, 'bulwark-blow', 'thorn-lash'] },
-  'binders-table': { deck: [...RIFTWALKERS.knight.starter, 'stand-firm', 'barbed-guard'] },
-  'the-fence': { deck: [...RIFTWALKERS.knight.starter, 'citadel-march'] },
+  smelter: { deck: [...RIFTWALKERS.knight.starter, 'bulwark-blow', 'twin-cut'] },
+  'binders-table': { deck: [...RIFTWALKERS.knight.starter, 'oath-of-iron', 'field-repairs'] },
+  'the-fence': { deck: [...RIFTWALKERS.knight.starter, 'bastion-engine'] },
   'the-specialist': {
     deck: [
       ...RIFTWALKERS.knight.starter,
-      'stand-firm',
-      'gilded-bastion',
+      'oath-of-iron',
+      'cold-stare',
       'bulwark-blow',
-      'thornmail',
+      'field-repairs',
     ],
   },
-  'step-up': { deck: [...RIFTWALKERS.knight.starter, 'hold-the-line'], shards: 100 },
+  'step-up': { deck: [...RIFTWALKERS.knight.starter, 'rising-fist'], shards: 100 },
 };
 
 describe('events', () => {
@@ -86,11 +101,13 @@ describe('events', () => {
 
   it('every option of every event resolves, says what happened, and leaves a sane run', () => {
     for (const def of EVENTS) {
+      // (The specialist needs a main build path, and build paths are hidden for now, DECISIONS #365)
+      if (def.id === 'the-specialist') continue;
       const first = eventRun(`def-${def.id}`);
       // a deck with one non-basic card in it, so every event has something to work with
       const base: RunState = {
         ...first,
-        deck: [...first.deck, 'gilded-bastion'],
+        deck: [...first.deck, 'cold-stare'],
         ...(SETUP[def.id] ?? {}),
       };
       expect(def.when(base), def.id).toBe(true);
@@ -254,7 +271,7 @@ describe('sanctifying the deck', () => {
     expect(back?.deck).toEqual(run.deck);
     // one copy limit is shared with the plain card and the upgraded one
     const rare = Object.values(COMBAT_DB.cards).find(
-      (c) => c.rarity === 'legendary' && c.hero === 'knight',
+      (c) => c.rarity === 'legendary' && c.hero === 'engineer',
     )!;
     expect(canAdd([`hi~${rare.id}`], rare.id)).toBe(false);
     expect(stripRoll(`lo~${rare.id}+`)).toBe(`${rare.id}+`);
@@ -369,7 +386,7 @@ describe('Rift-crossed and sacrifice events', () => {
     ...eventRun('crossed-steps'),
     hp: 40,
     shards: 100,
-    deck: [...eventRun('crossed-steps').deck, 'gilded-bastion'],
+    deck: [...eventRun('crossed-steps').deck, 'cold-stare'],
   });
   const run = (r: RunState, ...deal: DealStep[]): RunState => {
     const c = clone(r);
@@ -385,7 +402,7 @@ describe('Rift-crossed and sacrifice events', () => {
     expect(COMBAT_DB.cards[got]!.rarity).toBe('rare');
     const swapped = run(b, { k: 'exchange' });
     expect(swapped.deck).toHaveLength(b.deck.length);
-    expect(swapped.deck).not.toContain('gilded-bastion');
+    expect(swapped.deck).not.toContain('cold-stare');
     expect(COMBAT_DB.cards[swapped.deck.at(-1) ?? '']?.hero).not.toBe('knight');
   });
 

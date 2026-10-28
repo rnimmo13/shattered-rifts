@@ -10,13 +10,14 @@ import { V2_CARDS } from './cards';
 const playable = V2_CARDS.filter((c) => !c.unplayable && c.source !== 'token');
 /** a card that eats other cards for good (Consume, a companion) cannot loop: the deck runs out */
 const consumes = (c: CardDef): boolean =>
-  c.effects.some((o) => o.op === 'exhaustCards' || o.op === 'sacrifice');
+  c.effects.some((o) => o.op === 'exhaustCards' || o.op === 'sacrifice' || o.op === 'drawLock');
 
 describe('balance guard rails', () => {
   it('a free card that replaces itself or makes Mana is consumed when played (no infinite loops)', () => {
     const bad: string[] = [];
     for (const c of playable) {
-      if (c.cost !== 0 || c.exhaust || c.x || consumes(c)) continue;
+      // (an Aura leaves the deck when it is played, so it cannot be played again either)
+      if (c.cost !== 0 || c.exhaust || c.x || c.kind === 'power' || consumes(c)) continue;
       // cards into the hand: draws, fetches, discovers and cards made in hand (a scaled amount counts as at least one)
       const draws = c.effects.reduce((n, o) => {
         if (o.op === 'draw') return n + Math.max(o.scale ? 1 : 0, o.amount);
@@ -63,7 +64,6 @@ describe('balance guard rails', () => {
       'created',
       'resonance',
       'mantra',
-      'devotion',
       'powers',
     ];
     const bad: string[] = [];

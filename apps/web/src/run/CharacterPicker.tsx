@@ -2,7 +2,7 @@
 // Used by the Sanctum (campaign).
 
 import { useMemo, useState } from 'react';
-import { RIFTWALKERS, heroesByRealm, pathSizes, type HeroId } from '@sr/content/v2';
+import { RIFTWALKERS, heroesByRealm, type HeroId } from '@sr/content/v2';
 import { heroFigure } from '../fight/art';
 import { HeroIcon } from '../ui/HeroIcon';
 import { DeckStrip } from './Pickers';
@@ -40,7 +40,7 @@ export function CharacterPicker(props: { value: HeroId; onChange: (id: HeroId) =
                       <span className="picker__name">{x.hero.name}</span>
                       <span className="picker__role">{x.role}</span>
                       <span className="picker__realm">
-                        {x.buildPaths.map((l) => l.split(':')[0]).join(' · ')}
+                        {x.mechanics.slice(0, 3).join(' · ')}
                       </span>
                     </button>
                   );
@@ -70,11 +70,9 @@ export function CharacterPicker(props: { value: HeroId; onChange: (id: HeroId) =
               <li key={l}>{l}</li>
             ))}
           </ul>
-          <ul className="picker__paths" aria-label="Build paths">
-            {c.buildPaths.map((l, i) => (
-              <li key={l}>
-                {l} <small>· {pathSizes(props.value)[i]} cards</small>
-              </li>
+          <ul className="picker__paths" aria-label="Mechanics">
+            {c.mechanics.map((l) => (
+              <li key={l}>{l}</li>
             ))}
           </ul>
           <p className="picker__deckname">
