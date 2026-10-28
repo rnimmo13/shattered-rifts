@@ -29,6 +29,27 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.117.0',
+    date: '2026-10-28',
+    title: 'The Necromancer rises',
+    summary: 'The Necromancer is stronger from the first fight, and Sharpen names the right weapon.',
+    notes: [
+      {
+        kind: 'balance',
+        text: 'Grave Chill now Raises 3 at the start of every turn: a Bone Thrall is standing for your Command cards from turn 1, and every one that falls still curses an enemy with 3 Fate.',
+      },
+      {
+        kind: 'balance',
+        text: 'Bone Bulwark: Raise 5 and 8 Barrier. Bone Sift: Raise 5. Grave Robbery: 6 damage. Spirit Walk needs 6 cards consumed, not 9. Toll in Advance gives 5 Mana.',
+      },
+      {
+        kind: 'fixed',
+        text: "The Sharpen tip names the Old Twelve Gauge on the Drunkard's cards, not the Obsidian Blade.",
+      },
+    ],
+    heads: 'Rules changed: replays and Arena games from before this version no longer play.',
+  },
+  {
     version: '0.116.0',
     date: '2026-10-28',
     title: 'Auras upgrade properly',

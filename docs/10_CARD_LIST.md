@@ -909,7 +909,7 @@ Starter: Strike, Strike, Strike, Strike, Defend, Defend, Defend, Defend, Raise T
 | Bone Crush | 2 | attack | common | Costs 0 if your companions have struck this turn. Your companions each deal 12 damage. |
 | Call at Dusk | 1 | skill | common | Next turn: Raise 2. Gain 2 Mana. |
 | Knucklebone | 0 | attack | common | Your companions each deal 6 damage. |
-| Bone Bulwark | 2 | skill | common | Raise 4. Gain 7 Barrier. |
+| Bone Bulwark | 2 | skill | common | Raise 5. Gain 8 Barrier. |
 | Bone Snap | 1 | attack | common | Your companions each deal 7 damage. A random card in your hand gains Hold. |
 | Rot Strike | 1 | attack | common | Deal 8 damage. Curse the target with Fate equal to the damage dealt. |
 | Creeping End | 1 | skill | common | Gain 5 Barrier. Curse ALL enemies with 7 Fate. |
@@ -922,12 +922,12 @@ Starter: Strike, Strike, Strike, Strike, Defend, Defend, Defend, Defend, Raise T
 | Wraith Strike | 1 | attack | common | Deal 9 damage. A random card in your hand gains Fleeting. |
 | Marsh Light | 0 | skill | common | Gain 1 Mana. Consume. |
 | Leech Lore | 1 | attack | common | Deal 10 damage. Upgrade 2 random cards in your discard pile for this fight. |
-| Grave Robbery | 1 | attack | common | Deal 4 damage. Return a random card from your discard pile to your hand. Consume. |
+| Grave Robbery | 1 | attack | common | Deal 6 damage. Return a random card from your discard pile to your hand. Consume. |
 | Harvest | 3 | attack | common | Deal 27 damage. Hold. |
 | Scatter Ashes | 1 | attack | common | Deal 8 damage to ALL enemies. Hold. |
 | Bone Rain | 1 | attack | uncommon | Gain Barrier equal to 9 times the number of your allies. Your companions each deal 9 damage to ALL enemies. Then they die. |
 | Ossify | 1 | aura | uncommon | Your companions’ attacks deal 4 more damage for the rest of the fight. |
-| Bone Sift | 1 | skill | uncommon | Raise 3. Consume the top card of your draw pile. |
+| Bone Sift | 1 | skill | uncommon | Raise 5. Consume the top card of your draw pile. |
 | Bone Toss | 0 | attack | uncommon | Your companions each deal 3 damage. If this is the first time you play it this turn: Draw 1 card. |
 | Grasping Hands | 2 | attack | uncommon | Your companions each deal 11 damage to ALL enemies. Apply 2 Exposed to ALL enemies. |
 | Army of the Drowned | 2 | skill | uncommon | Raise 6 twice. Consume. |
@@ -941,7 +941,7 @@ Starter: Strike, Strike, Strike, Strike, Defend, Defend, Defend, Defend, Raise T
 | Last Rites | 1 | skill | uncommon | Curse the target with 10 (+5 per 10 Fate on the target) Fate. |
 | Burial Shroud | 1 | aura | uncommon | Whenever you curse an enemy with Fate: Gain 2 Barrier. |
 | Fleshcraft | 2 | aura | uncommon | Whenever you put a debuff on an enemy: Deal 9 damage to that enemy. |
-| Toll in Advance | 1 | skill | uncommon | Gain 4 Mana. Cards cost 1 more this turn. |
+| Toll in Advance | 1 | skill | uncommon | Gain 5 Mana. Cards cost 1 more this turn. |
 | Wither | 1 | attack | uncommon | Deal 10 damage. Apply 2 Debilitated. |
 | Fester | 1 | skill | uncommon | Apply 2 Faltering. Apply 2 Exposed. Consume. |
 | Bottled Soul | 1 | skill | uncommon | The target loses 3 HP. Add 3 Gravesouls to your draw pile. |
@@ -978,7 +978,7 @@ Starter: Strike, Strike, Strike, Strike, Defend, Defend, Defend, Defend, Raise T
 | Whispers Beyond | 1 | aura | rare | At the start of your turn: Add a random card from your pool to your hand. It is Fleeting. |
 | Phylactery | 3 | aura | rare | At the start of your turn: Gain 1 Mana. Draw 1 card. Fleeting. |
 | Soul Harvest | 1 | aura | rare | Whenever you play a Gravesoul: Raise 1. |
-| Spirit Walk | 2 | skill | rare | Consume your hand. If 9 or more cards were consumed this way: Gain 2 Ghostly. |
+| Spirit Walk | 2 | skill | rare | Consume your hand. If 6 or more cards were consumed this way: Gain 2 Ghostly. |
 | Unmaking | X | attack | rare | Deal 11 damage X times. Hold. |
 | Gather Souls | 1 | skill | rare | Add 3 Gravesouls to your draw pile. Consume. |
 | Gallows | 1 | attack | rare | Deal 10 damage. Apply 1 Noose. |

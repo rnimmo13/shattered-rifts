@@ -254,11 +254,14 @@ export const displayCopy = (s: CombatState): CombatState => clone(s);
 
 /**
  * The display state at the very start of a fight: like the real state, but with nobody holding cards yet, so the
- * opening draw plays out as the events replay.
+ * opening draw plays out as the events replay. Pass the opening events that will be replayed: a unit they summon (Grave Chill's
+ * turn-1 Thrall) is left out here, so it arrives with its event instead of standing there twice.
  */
-export function startingDisplay(s: CombatState): CombatState {
+export function startingDisplay(s: CombatState, events: readonly CombatEvent[] = []): CombatState {
   const d = clone(s);
+  const summoned = new Set(events.flatMap((e) => (e.type === 'summon' ? [e.unit] : [])));
   for (const side of ['a', 'b'] as const) {
+    d.sides[side].units = d.sides[side].units.filter((u) => !summoned.has(u.id));
     d.sides[side].draw = [...d.sides[side].draw, ...d.sides[side].hand];
     d.sides[side].hand = [];
     d.sides[side].mana = 0;

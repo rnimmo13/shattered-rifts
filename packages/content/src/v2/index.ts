@@ -10,6 +10,7 @@ import {
   forge,
   heal,
   on,
+  raise,
   stance,
   stars,
   status,
@@ -387,7 +388,9 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     role: 'Necromancer',
     trait: {
       name: 'Grave Chill',
-      text: 'Every enemy starts the fight with 3 Fate. Whenever one of your allies dies or a card is consumed, curse a random enemy with 3 Fate.',
+      text: 'At the start of your turn, Raise 3. Every enemy starts the fight with 3 Fate. Whenever one of your allies dies or a card is consumed, curse a random enemy with 3 Fate.',
+      // (Raise 3 a turn, DECISIONS #397: his Commands need a Thrall standing on his turn, and the one he starts with died to the first hit)
+      turnStart: [raise(3)],
       fightStart: [status('doom', 3, 'allFoes')],
       triggers: [
         on('allyDies', [status('doom', 3, 'randomFoe')]),
@@ -419,7 +422,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
       'Command cards (Knucklebone, Off the Leash...) make each of your Thralls strike. Off the Leash adds each Thrall’s own HP to its blow.',
       'Cursed with Fate, an enemy dies at the end of its turn if its HP is at or below its Fate.',
       'Gravesouls are free cards that draw 2 and are consumed; Fleeting cards are consumed if you still hold them when your turn ends, and some of your cards grow with every one you play.',
-      'Grave Chill: every enemy starts with 3 Fate, and whenever a Thrall dies or a card is consumed a random enemy is cursed with 3 more.',
+      'Grave Chill: Raise 3 at the start of every turn; every enemy starts with 3 Fate, and whenever one of your allies dies or a card is consumed a random enemy is cursed with 3 more.',
     ],
   },
 };

@@ -27,6 +27,9 @@ function fight(hand: string[], enemies: string[] = ['squire']): CombatState {
   const s = clone(state);
   s.sides.a.hand = hand.map((card, i) => ({ id: `T${i}`, card }));
   s.sides.a.mana = 9;
+  // one card at a time: take away the Thrall Grave Chill raised this turn (the trait has its own test)
+  const first = s.sides.a.units.findIndex((u) => u.kind === 'ally');
+  s.sides.a.units = s.sides.a.units.filter((u, i) => u.kind !== 'ally' || i === first);
   // big, plain enemies, so a number read off them is the card's own
   for (const u of s.sides.b.units) {
     u.hp = u.maxHp = 300;
@@ -210,7 +213,8 @@ describe('Dorian, the Necrobinder copy', () => {
     s = play(s, 'T0');
     expect(thralls(s)).toHaveLength(1);
     s = applyAction(db, s, { type: 'endTurn' }).state;
-    expect(thralls(s)).toHaveLength(2);
+    // Call at Dusk's 2, beside Grave Chill's 3 for the turn
+    expect(thralls(s).map((u) => u.maxHp).sort((x, y) => x - y)).toEqual([2, 3, 80]);
     expect(s.sides.a.mana).toBe(5);
     s = applyAction(db, s, { type: 'endTurn' }).state;
     expect(s.sides.a.mana).toBe(3);
@@ -354,11 +358,11 @@ describe('the other new rules', () => {
     expect(foe(s).hp).toBe(300 - 10 - 20 - 40);
   });
 
-  it('Toll in Advance (Borrowed Time): 4 Mana, and every card costs 1 more this turn', () => {
+  it('Toll in Advance (Borrowed Time): 5 Mana, and every card costs 1 more this turn', () => {
     let s = fight(['toll-in-advance', 'strike']);
     s.sides.a.mana = 3;
     s = play(s, 'T0');
-    expect(s.sides.a.mana).toBe(6);
+    expect(s.sides.a.mana).toBe(7);
     expect(costOf(db, s.sides.a, s.sides.a.hand[0]!)).toBe(2);
     s = applyAction(db, s, { type: 'endTurn' }).state;
     expect(s.sides.a.costTax).toBe(0);
@@ -407,5 +411,39 @@ describe('the other new rules', () => {
     expect(t('knucklebone')).toBe('Your companions each deal 6 damage.');
     expect(t('call-at-dusk')).toBe('Next turn: Raise 2. Gain 2 Mana.');
     expect(t('bone-crush')).toMatch(/^Costs 0 if your companions have struck this turn\./);
+  });
+});
+
+describe('Grave Chill raises a Thrall every turn (DECISIONS #397)', () => {
+  const start = (): CombatState =>
+    createCombat(db, {
+      seed: 'grave-chill',
+      a: { hero: 'necromancer', deck: [...RIFTWALKERS.necromancer.starter] },
+      b: { enemies: ['squire'] },
+    }).state;
+
+  it('turn 1: the starting Thrall and a new one with 3 HP', () => {
+    expect(thralls(start()).map((u) => u.maxHp)).toEqual([5, 3]);
+    expect(cardText(db, db.cards['raise-thrall']!)).toBe('Raise 5.');
+    expect(RIFTWALKERS.necromancer.trait.text).toMatch(/^At the start of your turn, Raise 3./);
+  });
+
+  it('a Thrall is standing at the start of every turn, even after the enemy kills them', () => {
+    let s = start();
+    for (let turn = 0; turn < 3; turn++) {
+      s = applyAction(db, s, { type: 'endTurn' }).state;
+      if (s.winner) break;
+      expect(thralls(s).length, `turn ${turn + 2}`).toBeGreaterThan(0);
+    }
+  });
+});
+
+describe('the small card fixes (DECISIONS #397)', () => {
+  it('Bone Bulwark, Bone Sift, Grave Robbery and Spirit Walk read as reviewed', () => {
+    const text = (id: string) => cardText(db, db.cards[id]!);
+    expect(text('bone-bulwark')).toBe('Raise 5. Gain 8 Barrier.');
+    expect(text('bone-sift')).toMatch(/^Raise 5./);
+    expect(text('grave-robbery')).toMatch(/^Deal 6 damage./);
+    expect(text('ghostform')).toMatch(/6 or more/);
   });
 });

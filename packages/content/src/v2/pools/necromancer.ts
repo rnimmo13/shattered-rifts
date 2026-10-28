@@ -126,8 +126,8 @@ export const NECROMANCER: CardDef[] = [
   // (Poke)
   g('common', 'knucklebone', 'Knucklebone', 'attack', 0, 'foe', [command(dmg(6))], CMD),
   // (Pull Aggro)
-  g('common', 'bone-bulwark', 'Bone Bulwark', 'skill', 2, 'none', [raise(4), barrier(7)], {
-    up: { effects: [raise(5), barrier(9)] },
+  g('common', 'bone-bulwark', 'Bone Bulwark', 'skill', 2, 'none', [raise(5), barrier(8)], {
+    up: { effects: [raise(6), barrier(10)] },
   }),
   // (Snap)
   g('common', 'bone-snap', 'Bone Snap', 'attack', 1, 'foe', [command(dmg(7)), mark('retain')], CMD),
@@ -150,7 +150,7 @@ export const NECROMANCER: CardDef[] = [
     up: { effects: [status('marrow', 6)] },
   }),
   // (Cleanse: the top card of your draw pile is consumed, as there is no choosing from the draw pile)
-  g('uncommon', 'bone-sift', 'Bone Sift', 'skill', 1, 'none', [raise(3), exhaustTop(1)]),
+  g('uncommon', 'bone-sift', 'Bone Sift', 'skill', 1, 'none', [raise(5), exhaustTop(1)]),
   // (Fetch)
   g(
     'uncommon',
@@ -412,9 +412,9 @@ export const NECROMANCER: CardDef[] = [
       up: { effects: [on('debuffFoe', [dmg(13, 'target')])] },
     },
   ),
-  // (Borrowed Time)
-  g('uncommon', 'toll-in-advance', 'Toll in Advance', 'skill', 1, 'none', [mana(4), costTax(1)], {
-    up: { effects: [mana(6), costTax(1)] },
+  // (Borrowed Time; 5 Mana, not 4: with every card 1 dearer, 4 came to about nothing, DECISIONS #397)
+  g('uncommon', 'toll-in-advance', 'Toll in Advance', 'skill', 1, 'none', [mana(5), costTax(1)], {
+    up: { effects: [mana(7), costTax(1)] },
   }),
   // (Debilitate)
   g(
@@ -742,7 +742,7 @@ export const NECROMANCER: CardDef[] = [
     [on('play', [raise(1)], { tag: 'soul' })],
     { up: { effects: [on('play', [raise(2)], { tag: 'soul' })] } },
   ),
-  // (Eidolon: Ghostly 2 lasts through the enemy's turn, as her Intangible 1 does)
+  // (Eidolon: Ghostly 2 lasts through the enemy's turn, as her Intangible 1 does; 6 cards, not 9: a hand of 9 almost never happened, DECISIONS #397)
   g(
     'rare',
     'ghostform',
@@ -750,7 +750,7 @@ export const NECROMANCER: CardDef[] = [
     'skill',
     2,
     'none',
-    [exhaustN(99), when('exhaustedNow', { atLeast: 9 }, [status('ghostly', 2)])],
+    [exhaustN(99), when('exhaustedNow', { atLeast: 6 }, [status('ghostly', 2)])],
     { up: { cost: 1 } },
   ),
   // (Eradicate)
@@ -833,9 +833,9 @@ export const NECROMANCER: CardDef[] = [
     { up: { effects: [dmg(12), { op: 'upgrade', scope: 'discard', amount: 3 }] } },
   ),
   // (Graveblast: a random card, as there is no choosing from the discard pile)
-  g('common', 'grave-robbery', 'Grave Robbery', 'attack', 1, 'foe', [dmg(4), fetchCards(1)], {
+  g('common', 'grave-robbery', 'Grave Robbery', 'attack', 1, 'foe', [dmg(6), fetchCards(1)], {
     exhaust: true,
-    up: { exhaust: false, effects: [dmg(6), fetchCards(1)] },
+    up: { exhaust: false, effects: [dmg(8), fetchCards(1)] },
   }),
   // (Reap)
   g('common', 'harvest', 'Harvest', 'attack', 3, 'foe', [dmg(27)], {

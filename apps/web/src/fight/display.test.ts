@@ -53,7 +53,7 @@ describe('display reducer', () => {
         b: { enemies: enc.units, tier: i % 3 === 0 ? 3 : 1 },
       });
       let state = start.state;
-      const shown = startingDisplay(state);
+      const shown = startingDisplay(state, start.events);
       for (const e of start.events) reduceEvent(db, shown, e);
       compare(shown, state, `${enc.id} start`);
       for (let n = 0; n < 200 && !state.winner; n++) {
@@ -79,7 +79,7 @@ describe('display reducer: potions', () => {
         enemies: ['squire-pair'].flatMap((id) => ENCOUNTERS.find((e) => e.id === id)?.units ?? []),
       },
     });
-    const shown = startingDisplay(start.state);
+    const shown = startingDisplay(start.state, start.events);
     for (const e of start.events) reduceEvent(db, shown, e);
     expect(shown.sides.a.potions).toEqual(['fire-flask', 'guard-draught']);
     const r = applyAction(db, start.state, { type: 'potion', index: 1 });

@@ -816,13 +816,18 @@ export function FightView(props: {
           finishRef.current = finishing;
           return;
         }
-        game.current = { state: start.state, display: startingDisplay(start.state) };
+        // (the opening events are replayed only when the player sees the opening; see below)
+        const opening = !pvp || pvp.replay === 0;
+        game.current = {
+          state: start.state,
+          display: startingDisplay(start.state, opening ? start.events : []),
+        };
         setLive(start.state);
         s.fighters.sync(specsFrom(db, game.current.display, mySide), { instant: true });
         show(game.current.display);
         setReady(true);
         // (a player coming back to a match in progress skips the opening: the moves so far are replayed silently)
-        if (!pvp || pvp.replay === 0) enqueue(start.events, start.state);
+        if (opening) enqueue(start.events, start.state);
         // the opening: events replay the draw; then the player may act
         chain.current = chain.current.then(() => {
           if (!cancelledRef.current) setLocked(false);
