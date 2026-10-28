@@ -140,8 +140,8 @@ describe('the knight is the Ironclad shape', () => {
     s = play(s, 'draw-blood'); // lose 3 HP, gain 2 Mana
     expect(hero(s).hp).toBe(hp - 3);
     expect(hero(s).statuses.might).toBe(1);
-    // (6 damage, and the Might that Scar Over just gave adds 1)
-    for (const u of s.sides.b.units) expect(u.hp).toBe(200 - 7);
+    // (6 damage: an Aura's damage is no attack, so the Might that Scar Over just gave does not add to it, DECISIONS #376)
+    for (const u of s.sides.b.units) expect(u.hp).toBe(200 - 6);
   });
 
   it('Bulwark Blow deals your Barrier as damage', () => {

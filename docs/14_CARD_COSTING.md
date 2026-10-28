@@ -133,7 +133,7 @@ Percentage debuffs (Exposed, Faltering, Debilitated) are worth more as numbers g
 | Plant a totem | Hawk **4**, Bear **4**, Elder **5**, Splinter **6**, Owl **7** (+2 each per Spirit) | It pulses until pushed, then bursts. Spark Lash 7 + Hawk, Rime Strike 6 + Bear, Splinter Ward 5 Barrier + Splinter. |
 | Spirit (Focus) | this turn: **1 per totem** in the row (~3); for the fight: **~2.5 per totem** | Spirit Strike 9 + 1 Spirit this turn, Elemental Focus. |
 | Primed N | **1 per stack per hit** of the next attack | Feint 8 Barrier + 2 Primed, Heat of the Forge 7. Much better before a multi-hit attack. |
-| Might, rest of fight | **5** per stack | Steel Resolve: 2 for 1 Mana. Also lifts companions' strikes if the class shares Might with them. |
+| Might, rest of fight | **5** per stack | Steel Resolve: 2 for 1 Mana. Also lifts companions' strikes if the class shares Might with them. Attacks only: Aura, totem and Trap damage is flat (DECISIONS #376), so an Aura's damage never scales with Might, Exposed or Faltering. |
 
 ---
 
@@ -141,7 +141,7 @@ Percentage debuffs (Exposed, Faltering, Debilitated) are worth more as numbers g
 
 | Modifier | Effect on the budget | Notes |
 |---|---|---|
-| **Consume** on a card you'd play every reshuffle | **+25%** | Immovable Oath 30 Barrier for 2 (rare + Consume). Required on Mana, card-making and heal cards that would loop. In a class with Consume payoffs (Knight) it is upside, so don't also give it the +25%. |
+| **Consume** on a card you'd play every reshuffle | **+25%** | Immovable Oath 30 Barrier for 2 (rare + Consume). Required on Mana, card-making and heal cards that would loop. In a class with Consume payoffs (Knight) it is upside, so don't also give it the +25%. On a 0-cost card that makes Mana, Consume is the price of the card, not a bonus: compare it with **Draw Blood** (lose 3 HP, +2 Mana, Consume: a common) and **Rift Surge** (1 Mana for +2, Consume) instead of adding up points. |
 | **Fleeting** | **+15%** on a card you would always play when drawn; more on one you'd rather keep | Desecrate 13 (Fleeting) vs ~11. Necromancer payoffs make it upside for him. |
 | **Hold** | **+1**, **+2-3** on a big or conditional card you want to time | Steady Guard 8 + Hold vs Stone Skin 9. |
 | **Opening hand** | **+3-4** | With Consume on a 0-cost card it may carry a 1-cost card's budget: Knife in the Back 11, Crystal Ward 10 Barrier, Killing Stroke 10 + 1 Exposed. |
@@ -179,10 +179,7 @@ For "whenever X" triggers, count how often X happens per turn in the deck that w
    rare's budget by turn 4 in an ordinary deck of its build path, lower the per-X.
 4. **The tier test.** Flat numbers (Sapped, Thorns, Bleed, Fate, Barrier) shrink against Tier X enemies; percentages grow. A card on
    budget at Tier I may be weak or strong at Tier X.
-5. **The upgrade check.** `plus()` adds +3 damage or Barrier (about +30% on a 1-cost card), +1 to statuses and draws, +2 to Raise and
-   Sharpen, or takes 1 off the cost when there is nothing to grow (1 → 0 is a +60% jump, from a 10 budget to a 6 one that no longer
-   uses Mana). A card balanced right at budget whose upgrade is a cost cut can become the best card in the pool once upgraded.
-   See `UPGRADE_COST_AUDIT.md`.
+5. **The upgrade check.** Price the "+" version too (§12).
 
 ---
 
@@ -231,7 +228,94 @@ into another class)
 
 ---
 
-## 10. Keeping this file true
+## 10. Companions (summons)
+
+No baseline class summons a companion that acts on its own (the Necromancer's Thralls never act; DECISIONS #370), so this rate is
+built from pieces the baselines already price: a companion is **sticky Barrier** (Raise, §3) plus **a body** plus **its hits**.
+
+**Companion value = 1.2 x HP + 3 + its hit x expected acts**
+
+- **1.2 x HP:** single attacks aimed at your side hit a companion first, and what kills it carries on to you (overflow 100%), so each
+  HP is a point of Barrier that lasts until it is struck. The same rate as Raise. It does nothing against attacks that hit everyone.
+- **+3 for the body:** every "per ally" card, Might shared with the pack, "all your allies act now" and "whenever an ally dies"
+  get one more to work with. The same +3 a new Thrall gets.
+- **Expected acts = 1 + 1 per 12 HP** (at most 3). It acts at the end of the turn it arrives, then a Tier I enemy (~12 a hit) takes
+  about 12 HP off it each enemy turn while it stands in front. A Pup or a Hound acts about once; a 16-HP body twice.
+- A companion that grows (Pack Alpha's Might each act) counts the growth in its later acts.
+
+| Companion | Points | Reads as |
+|---|---|---|
+| Bone Thrall, Raise 5 (no hit) | 6 + 3 = 9 | Raise Thrall: a basic at ~90% |
+| Pup (6 HP, hits 3) | 7.2 + 3 + 3 = 13.2 | a 1-cost common at +32% |
+| Hound (8 HP, hits 4) | 9.6 + 3 + 4 = 16.6 | a 1.5-cost card on its own |
+| Pack Alpha (16 HP, hits 10, +1 Might a hit) | 19.2 + 3 + 21 = 43 | far past a 2-cost rare (~24-30) |
+| Dire Wolf (24 HP, hits 14) | 28.8 + 3 + 42 = 74 | twice a 3-cost rare (35) |
+
+**Pack effects**
+
+| Modifier | Points | Notes |
+|---|---|---|
+| All your allies act now | each companion's hit, added up (**~8** with the usual 1-2 companions) | Worth much more with a full pack: price the card at 1-2 companions. |
+| Your companions gain N max HP | **1.2 x N per companion** (~1.5 companions) | Like Raise on a Thrall already standing. |
+| Barrier to all friends | **1.2 x N for you + 0.6 x N per companion** | Only the companion in front is struck, so the others' Barrier is often wasted. |
+| Each of your allies gains N Barrier | **0.6 x N per companion** | |
+| Your companions each deal N | §2 (0.7-1.0 x a normal attack per companion) | |
+| Sacrifice an ally | minus what it had left: **1.2 x its HP + 3** | Devour Ally, Fen Offering. |
+| "Whenever an ally dies" | per death, x **~2 deaths a fight** in a deck that summons | |
+| Might, for a class whose companions share it | **6** a stack (5, plus half of it on the pack's hits) | the Hunter's Pack Instinct. |
+
+---
+
+## 11. Traps
+
+No baseline class has Traps (the five copies have none), so this rate is the Trap's effect, priced as any card's, times how likely
+and how soon it springs. A Trap returns to the discard pile after springing, like any played card, and at most 3 can be set.
+
+**Trap value = its effect x the spring factor**
+
+| Trigger | Spring factor | Why |
+|---|---|---|
+| When the enemy turn begins (`foeTurn`) | **0.9** | Always springs, one enemy turn later. Barrier gained then protects you that turn. |
+| When you or an ally is attacked (`attacked`) | **0.85** | Springs on the next attack; a turn of buffs or defending makes it wait. It springs before the hit lands, so Faltering, Sapped or Stun on the attacker shrink that very hit. |
+| When you lose 5+ HP at once (`hpLost`) | **0.7** | Needs a hit that gets through your Barrier. |
+| When an enemy gains Barrier (`foeDefends`) | **0.6** | Depends on the enemy. |
+| When the enemy summons (`foeSummons`) | **0.4** | Most fights never set it off; it needs a big payoff to be worth a card. |
+
+| Trap | Points | Budget | |
+|---|---|---|---|
+| Gnarltooth Trap (Hunter, 1, uncommon): 6 to the attacker, gain 1 Might | (6 + 6) x 0.85 = 10.2 | 11.2 | ✓ |
+| Gut Trap (Hunter, 1, uncommon): 8 to ALL, heal 4 (5+ HP lost) | (10.4 + 6) x 0.7 = 11.5 | 11.2 | ✓ |
+| Hidden Pitfall (Neutral, 1, common): 7 to the attacker | 7 x 0.85 = 6 | 10 | weak |
+| Alarm Bell (Neutral, 1, common): 6 + 2 Faltering + 4 Barrier on a summon | 16.8 x 0.4 = 6.7 | 10 | weak (a rare trigger) |
+
+---
+
+## 12. Upgrades
+
+From the base and "+" versions of every card of the five baseline classes (most of theirs are hand-written in their game):
+
+**An upgrade is worth about +30% of the card's points**, at least 3: about **+3** on a 0- or 1-cost card, **+5-6** on a 2-cost card,
+**+8-10** on a 3-cost card. Up to +50% is fine; past that, the upgrade is too big.
+
+| The baselines' upgrades | Gain | Examples |
+|---|---|---|
+| One number +3 (damage or Barrier) | +30% on a 1-cost card | Stone Skin 9 → 12, Twin Cut 5x2 → 6x2, Dawn Smite 5+5 → 8+8 |
+| A bigger card's main number | +20-35% | Stalker's Lunge 15 → 20, Molten Ruin 35 → 45, Harvest 27 → 33, Hammer Fall 32 → 35 |
+| A status +1 (+2 from 5 stacks up) | +30-50% | Steel Resolve 2 → 3 Might, Open Vein 5 → 7 Bleed, Rattle 3 → 4 Exposed |
+| X cards: X is 1 higher | about one more Mana's worth (+30% at X = 3) | Whirling Blade, Run Through, Unmaking |
+| An Aura: 1 less Mana, or Opening hand | +33-60% (a cost cut), +3-4 (Opening hand) | Warlord's Oath 3 → 2, Bastion Engine 2 → 1, Bottomless Sleeves gains Opening hand |
+| A cheap card loses Consume, or gains Hold | ~+25% / +1-3 | Owl Call, Circle of Spirits, Elemental Focus lose Consume; Stone Fury gains Hold |
+| Paying less HP | +1.5 per HP | Draw Blood 3 → 2 HP, Reckless Smite 2 → 1 HP |
+
+**What to watch:** `plus()` (`packages/content/src/v2/build.ts`) raises *every* number on a card that has no hand-written upgrade, so
+a card with three numbers gains three times as much. Hilt Strike+ (+3 damage and +1 card: +7, +58%) and Clarion Clap+ (+3 to all and
++1 Exposed to all: +8.4, +87%) are the baselines' own examples. When the automatic upgrade of a new card is past +50%, give it a
+hand-written `up` that raises one number (the one that makes the card what it is). A 1 → 0 cost cut on a card that is not an Aura is
+a +60% jump: only on cards with nothing else to grow, and never on a card that makes Mana or cards (`plus()` already refuses those).
+
+---
+
+## 13. Keeping this file true
 
 When a baseline card's numbers change, or a new keyword or status is added, add its rate here with one reference card. If a rate
 stops fitting most of the cards that use it, change the rate, not the cards.

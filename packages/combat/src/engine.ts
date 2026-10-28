@@ -268,9 +268,22 @@ function scaledByDifficulty(actor: Unit, target: Unit, amount: number): number {
 
 /**
  * attack damage after the attacker's Might / Faltering / stance and the target's Wrath / Exposed
- * (Radiant triples, Wrath doubles what you deal; Wrath makes you take 50% more)
+ * (Radiant triples, Wrath doubles what you deal; Wrath makes you take 50% more).
+ * `attack` false: damage that is no attack (an Aura, a totem, a Trap, a potion, a Skill) is the number printed, as every one of those
+ * statuses says "attacks" (DECISIONS #376); only the difficulty's damage percent still applies.
  */
-export function modifiedDamage(base: number, attacker: Unit | null, target: Unit | null): number {
+export function modifiedDamage(
+  base: number,
+  attacker: Unit | null,
+  target: Unit | null,
+  attack = true,
+): number {
+  if (!attack) {
+    const flat = Math.max(0, base);
+    return attacker && attacker.dmgPct !== 100 && flat > 0
+      ? Math.max(1, Math.floor((flat * attacker.dmgPct) / 100))
+      : flat;
+  }
   let n = Math.max(
     0,
     base + (attacker ? stacks(attacker, 'might') - stacks(attacker, 'sapped') : 0),
@@ -407,11 +420,21 @@ function riseUp(r: Run, t: Unit, rise: Rise): void {
   if (rise.might > 0) addStatus(r, t, 'might', rise.might);
 }
 
+/**
+ * Whether damage from this frame is an attack: an Attack card, or a unit's own strike (an enemy's move, a companion's, whatever card
+ * made it act). An Aura, a totem, a Trap, a potion or a Skill that deals damage is no attack: Might, Faltering, Exposed and the rest
+ * leave it alone, Thorns and Reflect do not answer it, and "when attacked" Traps do not spring (DECISIONS #376).
+ */
+function isAttackAct(a: Act): boolean {
+  return a.actor.kind !== 'hero' || a.card?.kind === 'attack';
+}
+
 /** One attack hit from `a.actor` on `t`: Traps may spring first and may cancel it. */
 /** One hit of an attack. Returns the HP it took off (for Lifesteal). */
 function attackHit(r: Run, a: Act, t: Unit, base: number, single = false): number {
   if (t.hp <= 0) return 0;
-  if (t.side !== a.actor.side) {
+  const attacked = isAttackAct(a);
+  if (attacked && t.side !== a.actor.side) {
     const hit = { prevented: false };
     fireSnare(r, t.side, { on: 'attacked', victim: t, attacker: a.actor, hit });
     if (r.s.winner || t.hp <= 0 || a.actor.hp <= 0) return 0;
@@ -420,7 +443,7 @@ function attackHit(r: Run, a: Act, t: Unit, base: number, single = false): numbe
       return 0;
     }
   }
-  let amount = modifiedDamage(base, a.actor, t);
+  let amount = modifiedDamage(base, a.actor, t, attacked);
   // Bladebane: the blade strikes it twice as hard
   if (a.card?.tags?.includes(BLADE_TAG) && stacks(t, 'bladebane') > 0) amount *= 2;
   const room = t.hp + t.barrier;
@@ -440,23 +463,22 @@ function attackHit(r: Run, a: Act, t: Unit, base: number, single = false): numbe
   if (t.side !== a.actor.side) {
     t.hitsTaken = (t.hitsTaken ?? 0) + 1;
     const soaked = Math.max(0, barrierBefore - t.barrier);
-    if (soaked > 0 && stacks(t, 'reflect') > 0 && a.actor.hp > 0)
+    if (attacked && soaked > 0 && stacks(t, 'reflect') > 0 && a.actor.hp > 0)
       applyDamage(r, t, a.actor, soaked, 'direct');
   }
   // (a companion killed by an attack remembers by whom: Den Mother strikes back at it)
-  if (t.kind === 'ally' && t.hp <= 0 && t.side !== a.actor.side) t.killedBy = a.actor.id;
+  if (attacked && t.kind === 'ally' && t.hp <= 0 && t.side !== a.actor.side)
+    t.killedBy = a.actor.id;
   // Overflow: a single-target attack that kills a companion carries part of what is left through to its hero (DECISIONS #321)
-  if (single && t.kind === 'ally' && t.hp <= 0 && !capped && amount > room) {
+  if (attacked && single && t.kind === 'ally' && t.hp <= 0 && !capped && amount > room) {
     const hero = heroOf(r.s.sides[t.side]);
     const carried = Math.floor(((amount - room) * OVERFLOW_PCT) / 100);
     if (hero && hero.hp > 0 && carried > 0)
       lost += applyDamage(r, a.actor, hero, carried, 'attack', true);
   }
   // Armored wears thin each time an attack gets through
-  if (lost > 0 && stacks(t, 'armored') > 0) addStatus(r, t, 'armored', -1);
-  // Thorns answer an attack: an Attack card, or a unit's own move (an enemy's, a companion's, which takes the Thorns itself). A Trap,
-  // an Aura, a totem, a potion or a Skill that deals damage is no attack, so its owner is never hurt by them.
-  const attacked = a.card ? a.card.kind === 'attack' : a.actor.kind !== 'hero';
+  if (attacked && lost > 0 && stacks(t, 'armored') > 0) addStatus(r, t, 'armored', -1);
+  // Thorns answer an attack (isAttackAct): a companion that strikes takes the Thorns itself
   const thorns = stacks(t, 'thorns');
   if (attacked && thorns > 0 && a.actor.hp > 0 && t.side !== a.actor.side)
     applyDamage(r, t, a.actor, thorns, 'direct');
@@ -864,9 +886,7 @@ function execOp(r: Run, a: Act, op: Op): void {
         knife && a.actor.kind === 'hero' && !side.honedUsed ? stacks(a.actor, 'honed') : 0;
       if (knife && a.actor.kind === 'hero') side.honedUsed = true;
       // (a hero's Vigor goes into its next attack card; an enemy's or a companion's into its next attacking move, DECISIONS #361)
-      const vigor = (a.card ? a.card.kind === 'attack' : a.actor.kind !== 'hero')
-        ? stacks(a.actor, 'vigor')
-        : 0;
+      const vigor = isAttackAct(a) ? stacks(a.actor, 'vigor') : 0;
       // (One for All: a 0-cost Attack hits harder)
       const deft = deftOf(a);
       let took = 0;
@@ -3621,6 +3641,7 @@ export function previewCardDamage(
         Math.round((amountOf(r, at, op.amount, op.scale, t) + edge + v) * lone),
         hero,
         t,
+        def.kind === 'attack',
       );
       // Ghostly lets 1 through, Shielded none
       if (t && stacks(t, 'shielded') > 0) return 0;

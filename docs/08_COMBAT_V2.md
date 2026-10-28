@@ -73,7 +73,9 @@ draw 5, +1 draw for the second player in PvP (§8).
 | **Thorns** | Deals stacks damage back to anything that hits it with an attack. |
 | **Shielded** | Ignores the next instance of damage, then pops. |
 
-- Damage order: Might adds, Faltering/Exposed multiply, **Barrier** takes the hit first, then **HP**.
+- Damage order: Might adds, Faltering/Exposed multiply, **Barrier** takes the hit first, then **HP**. Might, Faltering, Exposed and
+  the other attack statuses touch **attack** damage only (an Attack card or a unit's own strike); an Aura's, totem's, Trap's or
+  potion's damage is the number printed (DECISIONS #376).
 
 ## 5. Allies (companions and minions)
 

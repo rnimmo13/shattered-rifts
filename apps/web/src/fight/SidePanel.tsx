@@ -22,7 +22,6 @@ export function LumenCounter(props: { value: number }) {
   );
 }
 
-
 /** The totem slots in a curved column beside the hero (towards the enemies), so they never sit on the buffs under the health bar: `x` is where the column bows out to, `cy` its vertical centre (host px). */
 export function RuneArc(props: {
   db: CombatDb;
@@ -80,11 +79,27 @@ export function RuneArc(props: {
 export function AuraList(props: { db: CombatDb; me: SideView }) {
   const { db, me } = props;
   if (me.powers.length === 0) return null;
+  // one row per Aura card, not per trigger: a card with two triggers (Blood Fire: lose HP at the start of your turn, and hit
+  // when you lose HP) registers two, and a second copy of a card shows as "x2"
+  const rows: { id: string; card: string; copies: number }[] = [];
+  const seen = new Map<string, { id: string; card: string; triggers: number }>();
+  for (const p of me.powers) {
+    const g = seen.get(p.card);
+    if (g) g.triggers++;
+    else seen.set(p.card, { id: p.id, card: p.card, triggers: 1 });
+  }
+  for (const g of seen.values()) {
+    const perCopy = Math.max(
+      1,
+      db.cards[g.card]?.effects.filter((o) => o.op === 'power').length ?? 1,
+    );
+    rows.push({ id: g.id, card: g.card, copies: Math.ceil(g.triggers / perCopy) });
+  }
   return (
     <div className="fight__aux fight__aux--auras" aria-label="Auras in play">
-      {me.powers.length > 5 && <div className="aux__count">Auras · {me.powers.length}</div>}
-      <div className={`aux aux--powers${me.powers.length > 5 ? ' aux--scroll' : ''}`}>
-        {me.powers.map((p) => {
+      {rows.length > 5 && <div className="aux__count">Auras · {rows.length}</div>}
+      <div className={`aux aux--powers${rows.length > 5 ? ' aux--scroll' : ''}`}>
+        {rows.map((p) => {
           const c = db.cards[p.card];
           return (
             <span
@@ -97,6 +112,7 @@ export function AuraList(props: { db: CombatDb; me: SideView }) {
               })}
             >
               {c?.name ?? 'Aura'}
+              {p.copies > 1 ? ` ×${p.copies}` : ''}
             </span>
           );
         })}
