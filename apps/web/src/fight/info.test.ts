@@ -31,7 +31,27 @@ describe('Traps are explained wherever a card names them (DECISIONS #304)', () =
     const text = cardText(db, def);
     expect(text).toContain('Trap');
     expect(keywordsOf(def, () => false, text).some((k) => k.name === 'Trap')).toBe(true);
-    for (const c of Object.values(db.cards))
-      expect(cardText(db, c)).not.toMatch(/snare/i);
+    for (const c of Object.values(db.cards)) expect(cardText(db, c)).not.toMatch(/snare/i);
+  });
+});
+
+describe('Sharpen names the weapon it sharpens', () => {
+  const sharpen = (id: string) =>
+    keywordsOf(db.cards[id]!, () => false, cardText(db, db.cards[id]!)).find(
+      (k) => k.name === 'Sharpen',
+    )?.text;
+
+  it("the Drunkard's cards name the Old Twelve Gauge, Auras too", () => {
+    for (const id of ['scope', 'reload', 'hair-trigger', 'the-twelve-gauge-opera'])
+      expect(sharpen(id), id).toContain('the Old Twelve Gauge');
+  });
+
+  it("the Spellblade's cards name the Obsidian Blade", () => {
+    const blade = Object.values(db.cards).find(
+      (c) => c.hero === 'spellblade' && c.effects.some((o) => o.op === 'forge'),
+    );
+    expect(blade).toBeDefined();
+    expect(sharpen(blade!.id)).toContain('the Obsidian Blade');
+    expect(sharpen(blade!.id)).not.toContain('Twelve Gauge');
   });
 });

@@ -469,7 +469,7 @@ export const KEYWORD_INFO: Record<string, { name: string; text: string }> = {
   },
   forge: {
     name: 'Sharpen',
-    text: 'Every copy of the Obsidian Blade permanently gains damage. If you have none, you get one.',
+    text: 'Every copy of your weapon (the Obsidian Blade or the Old Twelve Gauge) permanently gains damage. If you have none, you get one.',
   },
   'sleeve-knife': { name: 'Dagger', text: 'A 0-cost Attack that is consumed.' },
   sly: {
@@ -506,6 +506,23 @@ function wordOf(name: string): RegExp {
   return re;
 }
 
+/** The weapons Sharpen can name: the Spellblade's blade and the Drunkard's gun. */
+const WEAPON_NAME: Record<string, string> = {
+  'starforged-blade': 'the Obsidian Blade',
+  'old-twelve-gauge': 'the Old Twelve Gauge',
+};
+
+/** Sharpen, naming the weapon this card sharpens (the plain note when it is not known). */
+function sharpenInfo(weapon: string | undefined): { name: string; text: string } {
+  const name = weapon && WEAPON_NAME[weapon];
+  return name
+    ? {
+        name: 'Sharpen',
+        text: `Every copy of ${name} permanently gains damage. If you have none, you get one.`,
+      }
+    : KEYWORD_INFO['forge']!;
+}
+
 /** The keywords a card uses, in reading order. */
 export function keywordsOf(
   c: {
@@ -527,6 +544,8 @@ export function keywordsOf(
       stance?: string;
       lonePct?: number;
       lifesteal?: number;
+      /** an Aura's own ops (Scope: "At the start of your turn: Sharpen 2") */
+      ops?: readonly { op: string; card?: string }[];
     }[];
   },
   taunting: (unit: string) => boolean,
@@ -537,6 +556,10 @@ export function keywordsOf(
   const add = (k: { name: string; text: string } | undefined) => {
     if (k && !out.some((x) => x.name === k.name)) out.push(k);
   };
+  // the weapon a Sharpen on this card names: from its forge op (an Aura's too), else from what its text names
+  const weapon =
+    c.effects.flatMap((o) => [o, ...(o.ops ?? [])]).find((o) => o.op === 'forge')?.card ??
+    Object.keys(WEAPON_NAME).find((id) => text?.includes(WEAPON_NAME[id]!.replace(/^the /, '')));
   if (c.kind === 'snare') add(KEYWORD_INFO['snare']);
   if (c.tags?.includes('stagger')) add(KEYWORD_INFO['stagger']);
   if (c.kind === 'summon') add(KEYWORD_INFO['companion']);
@@ -552,7 +575,7 @@ export function keywordsOf(
     if (o.op === 'channel' || o.op === 'evoke' || o.op === 'runeSlots') add(KEYWORD_INFO['rune']);
     if (o.op === 'stance') add(KEYWORD_INFO['stance']);
     if (o.op === 'stars') add(KEYWORD_INFO['stars']);
-    if (o.op === 'forge') add(KEYWORD_INFO['forge']);
+    if (o.op === 'forge') add(sharpenInfo(weapon));
     if (o.op === 'addCard' && o.card === 'sleeve-knife') add(KEYWORD_INFO['sleeve-knife']);
     if (o.op === 'addCard' && o.card === 'buckshot-shell') add(KEYWORD_INFO['buckshot-shell']);
     if (o.op === 'summon' && o.unit && taunting(o.unit)) add(KEYWORD_INFO['taunt']);
@@ -574,6 +597,7 @@ export function keywordsOf(
   const names = (hay: string, name: string): boolean => wordOf(name).test(hay);
   if (text) {
     const hay = text.replace(/\*\*/g, '');
+    if (names(hay, 'Sharpen')) add(sharpenInfo(weapon));
     for (const s of Object.values(STATUS_INFO)) if (names(hay, s.name)) add(s);
     for (const k of Object.values(KEYWORD_INFO)) if (names(hay, k.name)) add(k);
   }
