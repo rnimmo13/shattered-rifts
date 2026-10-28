@@ -58,7 +58,9 @@ const SETUP: Record<string, Partial<RunState>> = {
   'deep-spring': { stage: 2, potions: ['healing-philtre'] },
   'class-shrine': { stage: 2 },
   'potion-trade': { potions: ['healing-philtre', 'healing-philtre'] },
-  'legend-reliquary': { deck: [...RIFTWALKERS.knight.starter, 'oath-of-iron', 'drone-apotheosis+'] },
+  'legend-reliquary': {
+    deck: [...RIFTWALKERS.knight.starter, 'oath-of-iron', 'drone-apotheosis+'],
+  },
   // the trades (DECISIONS #256) name cards of your own class: two common Attacks, two common Skills, a rare, a card off the build
   // path the deck follows, an uncommon and the shards to step it up
   smelter: { deck: [...RIFTWALKERS.knight.starter, 'bulwark-blow', 'twin-cut'] },
@@ -219,7 +221,7 @@ describe('sanctifying the deck', () => {
     expect(up).toBeGreaterThan(0);
     expect(down).toBeGreaterThan(0);
     expect(r.eventResult).toMatch(/rise/);
-  });
+  }, 30_000); // (rolls every card in the game: slow, and slower as the card list grows)
 
   it('a rolled card is the same card with its numbers scaled, and is never listed as a card of its own', () => {
     const base = COMBAT_DB.cards['strike']!;
@@ -287,7 +289,7 @@ describe('sanctifying the deck', () => {
       { kind: 'upgrade', card: 'hi~strike' },
     );
     expect(up.deck).toContain('hi~strike+');
-  });
+  }, 30_000);
 });
 
 describe('the data-driven events', () => {

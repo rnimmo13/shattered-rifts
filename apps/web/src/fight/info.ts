@@ -215,7 +215,7 @@ export const STATUS_INFO: Record<
     name: 'Edge',
     glyph: '†',
     tone: 'good',
-    text: 'Your Sleeve Knives deal 1 more damage per stack.',
+    text: 'Your Daggers deal 1 more damage per stack.',
   },
   sapped: {
     name: 'Sapped',
@@ -258,13 +258,13 @@ export const STATUS_INFO: Record<
     name: 'Honed',
     glyph: '⚔',
     tone: 'good',
-    text: 'Your Sleeve Knives Hold, and the first one you play each turn deals this much more damage.',
+    text: 'Your Daggers Hold, and the first one you play each turn deals this much more damage.',
   },
   fanned: {
     name: 'Fanned',
     glyph: '✷',
     tone: 'good',
-    text: 'Your Sleeve Knives hit ALL enemies.',
+    text: 'Your Daggers hit ALL enemies.',
   },
   tracking: {
     name: 'Tracking',
@@ -471,7 +471,7 @@ export const KEYWORD_INFO: Record<string, { name: string; text: string }> = {
     name: 'Sharpen',
     text: 'Every copy of the Obsidian Blade permanently gains damage. If you have none, you get one.',
   },
-  'sleeve-knife': { name: 'Sleeve Knife', text: 'A 0-cost Attack that is consumed.' },
+  'sleeve-knife': { name: 'Dagger', text: 'A 0-cost Attack that is consumed.' },
   sly: {
     name: 'Sly',
     text: 'When a card makes you discard it, it is played for free (not when you end your turn).',

@@ -340,7 +340,7 @@ const plural = (word: string): string =>
 const article = (word: string): string => (/^[aeiou]/i.test(word) ? 'an' : 'a');
 /** What players call the cards with a tag ("Whenever you play a Carving"). */
 const TAG_NAMES: Record<string, string> = {
-  knife: 'Sleeve Knife',
+  knife: 'Dagger',
   blade: 'Obsidian Blade',
   carving: 'Carving',
   soul: 'Gravesoul',
@@ -766,7 +766,7 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
       }
       // Edge is what makes Sleeve Knives hit harder: say so on the card instead of leaving it to a tooltip
       if (o.status === 'edge' && o.to === 'self' && !o.scale && o.amount > 0)
-        return `Gain ${o.amount} Edge: your Sleeve Knives deal ${o.amount} more damage ${o.temp ? 'this turn' : 'for the rest of the fight'}.`;
+        return `Gain ${o.amount} Edge: your Daggers deal ${o.amount} more damage ${o.temp ? 'this turn' : 'for the rest of the fight'}.`;
       // Fortified is on or off, so it has no number: "Gain Fortified" (DECISIONS #347)
       if (o.status === 'fortified' && o.amount > 0 && !o.scale) {
         const mine = o.to === 'self' && who.self === WHO.self;

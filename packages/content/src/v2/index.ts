@@ -185,7 +185,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     role: 'Assassin',
     trait: {
       name: 'Hidden Blades',
-      text: 'At the start of your turn, add a Sleeve Knife to your hand.',
+      text: 'At the start of your turn, add a Dagger to your hand.',
       turnStart: [addTo('sleeve-knife')],
     },
     // (the Silent's shape, DECISIONS #368: 70 HP, 5 Strikes, 5 Defends, Neutralize and Survivor)
@@ -198,15 +198,15 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     },
     starter: [...rep('strike', 5), ...rep('defend', 5), 'hobbling-jab', 'duck-and-weave'],
     blurb:
-      'A cutpurse with a sleeve full of blades: a Sleeve Knife finds its way into his hand every turn. Knives, Bleed and sleight of hand.',
-    mechanics: ['Sleeve Knives', 'Bleed', 'Discard', 'Sly', 'Faltering'],
+      'A cutpurse with a sleeve full of blades: a Dagger finds its way into his hand every turn. Daggers, Bleed and sleight of hand.',
+    mechanics: ['Daggers', 'Bleed', 'Discard', 'Sly', 'Faltering'],
     buildPaths: [
-      'Shivs: Sleeve Knives, and the attacks around them',
+      'Daggers: Daggers, and the attacks around them',
       'Bleed: stack it, make it burn harder',
       'Sleight: draw, discard and dodge',
     ],
     howTo: [
-      'Every turn a Sleeve Knife comes to your hand (Hidden Blades): a 0-cost Attack that is consumed when played. Many cards make more of them, and Edge makes each one hit harder.',
+      'Every turn a Dagger comes to your hand (Hidden Blades): a 0-cost Attack that is consumed when played. Many cards make more of them, and Edge makes each one hit harder.',
       'Bleed hurts for its stacks at the start of the enemy’s turn and then shrinks by 1. Pile it on and let it work.',
       'Discarding is a resource: a card with Sly is played for free when a card makes you discard it.',
     ],

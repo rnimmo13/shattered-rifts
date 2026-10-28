@@ -122,7 +122,7 @@ describe('Bleed is the Silent’s Poison', () => {
   });
 });
 
-describe('Sleeve Knives are the Silent’s Shivs', () => {
+describe('Daggers (Sleeve Knives) are the Silent’s Shivs', () => {
   it('Knife Juggle (Blade Dance) adds three; Whetted Edge (Accuracy) makes each hit 4 harder', () => {
     let s = play(fight(['knife-juggle', 'whetted-edge']), 'knife-juggle');
     expect(inHand(s, 'sleeve-knife')).toBe(3);

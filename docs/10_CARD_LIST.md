@@ -382,9 +382,9 @@ Starter: Strike, Strike, Strike, Defend, Defend, Defend, Defend, Veil Strike, Ve
 
 ## Assassin (umbral, 70 HP)
 
-A cutpurse with a sleeve full of blades: a Sleeve Knife finds its way into his hand every turn. Knives, Bleed and sleight of hand.
+A cutpurse with a sleeve full of blades: a Dagger finds its way into his hand every turn. Daggers, Bleed and sleight of hand.
 
-Paths: Shivs: Sleeve Knives, and the attacks around them / Bleed: stack it, make it burn harder / Sleight: draw, discard and dodge
+Paths: Daggers: Daggers, and the attacks around them / Bleed: stack it, make it burn harder / Sleight: draw, discard and dodge
 
 Starter: Strike, Strike, Strike, Strike, Strike, Defend, Defend, Defend, Defend, Defend, Hobbling Jab, Duck and Weave
 
@@ -392,9 +392,9 @@ Starter: Strike, Strike, Strike, Strike, Strike, Defend, Defend, Defend, Defend,
 |---|---|---|---|---|
 | Hobbling Jab | 0 | attack | basic | Deal 3 damage. Apply 1 Faltering. |
 | Duck and Weave | 1 | skill | basic | Gain 8 Barrier. Discard 1 card. |
-| Knife Juggle | 1 | skill | common | Add 3 Sleeve Knives to your hand. Consume. |
-| Shroud and Shank | 1 | skill | common | Gain 6 Barrier. Add a Sleeve Knife to your hand. |
-| Feint Strike | 1 | attack | common | Deal 3 damage. Add 2 Sleeve Knives to your hand. |
+| Knife Juggle | 1 | skill | common | Add 3 Daggers to your hand. Consume. |
+| Shroud and Shank | 1 | skill | common | Gain 6 Barrier. Add a Dagger to your hand. |
+| Feint Strike | 1 | attack | common | Deal 3 damage. Add 2 Daggers to your hand. |
 | Blade Flurry | 1 | attack | common | Deal 4 damage 2 times to ALL enemies. |
 | Quick Slash | 0 | attack | common | Deal 6 damage. |
 | Dirty Hit | 1 | attack | common | Deal 8 damage. Apply 1 Faltering. |
@@ -412,12 +412,12 @@ Starter: Strike, Strike, Strike, Strike, Strike, Defend, Defend, Defend, Defend,
 | Roll Away | 1 | skill | common | Gain 4 Barrier. Gain 4 Guarded. |
 | Shuffle Up | 0 | skill | common | Draw 1 card. Discard 1 card. |
 | Slip the Blow | 2 | skill | common | Sly. Gain 6 Barrier. |
-| Whetted Edge | 1 | aura | uncommon | Gain 4 Edge: your Sleeve Knives deal 4 more damage for the rest of the fight. |
+| Whetted Edge | 1 | aura | uncommon | Gain 4 Edge: your Daggers deal 4 more damage for the rest of the fight. |
 | Knife in the Back | 0 | attack | uncommon | Deal 11 damage. Consume. Opening hand. |
-| Sleeve Drop | 0 | skill | uncommon | Discard 2 cards. Add 2 Sleeve Knives to your hand. |
-| Bottomless Sleeves | 1 | aura | uncommon | At the start of your turn: Add a Sleeve Knife to your hand. |
+| Sleeve Drop | 0 | skill | uncommon | Discard 2 cards. Add 2 Daggers to your hand. |
+| Bottomless Sleeves | 1 | aura | uncommon | At the start of your turn: Add a Dagger to your hand. |
 | Ghost Knives | 1 | aura | uncommon | Gain 9 Honed. |
-| Spare Blades | 2 | skill | uncommon | Add 3 Sleeve Knives to your hand. This card costs 1 less for the rest of the fight. |
+| Spare Blades | 2 | skill | uncommon | Add 3 Daggers to your hand. This card costs 1 less for the rest of the fight. |
 | Rippling Cut | 1 | attack | uncommon | Deal 10 damage to ALL enemies. Repeat this for each enemy it kills. |
 | Darting Strike | 2 | attack | uncommon | Gain 10 Barrier. Deal 10 damage. |
 | Final Flourish | 1 | attack | uncommon | Deal damage equal to 6 times the Attacks played this turn. |
@@ -448,12 +448,12 @@ Starter: Strike, Strike, Strike, Strike, Strike, Defend, Defend, Defend, Defend,
 | Fleet Fingers | 2 | aura | uncommon | Whenever you draw a card during your turn: Deal 2 damage to ALL enemies. |
 | Cool Head | 3 | skill | uncommon | Sly. Gain 1 Mana. |
 | Killing Stroke | 0 | attack | rare | Deal 10 damage. Apply 1 Exposed. Consume. Opening hand. |
-| Inked Blades | 1 | skill | rare | Add 2 Inked Knives to your hand. |
-| Wide Arc | 2 | aura | rare | Gain 1 Fanned. Add 4 Sleeve Knives to your hand. |
-| Recall the Blades | 2 | skill | rare | Play every Sleeve Knife in your consumed pile against the target; they go back there. |
+| Inked Blades | 1 | skill | rare | Add 2 Inked Daggers to your hand. |
+| Wide Arc | 2 | aura | rare | Gain 1 Fanned. Add 4 Daggers to your hand. |
+| Recall the Blades | 2 | skill | rare | Play every Dagger in your consumed pile against the target; they go back there. |
 | Serpent's Coil | 3 | aura | rare | Whenever you play a card: Deal 4 damage to a random enemy. |
 | Into the Shadows | 1 | skill | rare | Discard your hand. Gain 1 Poised. |
-| Steel Monsoon | 1 | skill | rare | Discard your hand. Add Sleeve Knives to your hand equal to the cards discarded this way. |
+| Steel Monsoon | 1 | skill | rare | Discard your hand. Add Daggers to your hand equal to the cards discarded this way. |
 | Marked for Death | 1 | attack | rare | Deal 10 damage. If this is fatal: Gain an extra card reward after this fight. Consume. |
 | Final Bow | 0 | attack | rare | Only playable while your draw pile is empty. Deal 60 damage to ALL enemies. |
 | Hemorrhage | 1 | skill | rare | This turn, whenever you draw a card: Apply 2 Bleed to ALL enemies. |
@@ -477,8 +477,8 @@ Tokens (made by other cards):
 
 | Card | Cost | Type | Rarity | Text |
 |---|---|---|---|---|
-| Sleeve Knife | 0 | attack | common | Deal 4 damage. Consume. |
-| Inked Knife | 0 | attack | common | Deal 5 damage. Apply 1 Faltering. Consume. |
+| Dagger | 0 | attack | common | Deal 4 damage. Consume. |
+| Inked Dagger | 0 | attack | common | Deal 5 damage. Apply 1 Faltering. Consume. |
 
 ## Shaman (nexus, 75 HP)
 

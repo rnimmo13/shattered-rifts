@@ -22,7 +22,7 @@ deck takes one and a half of them. Our pools were ~16 cards and one build path e
 
 | Signature mechanic | Owner | Everyone else gets |
 |---|---|---|
-| **Sleeve Knives** + discard payoffs | Quill | one or two 0-cost attacks, never the engine |
+| **Daggers** + discard payoffs | Quill | one or two 0-cost attacks, never the engine |
 | **Bleed** stacking (our poison): double, spread, cash out | Quill | a Bleed hit now and then (Neutral, enemies) |
 | **Totems** (was Runes: plant / awaken / Spirit) | Ilvane (id `totemist`) | nothing |
 | **Stances** and Fervor | Sehra | nothing |
@@ -69,8 +69,8 @@ reworked cards stayed the same, so their art and every saved deck still work.
 Mire was the stretch character and is now built (Doom is hers alone). Still open: **Cinder** (a Consume engine) for a tenth.
 
 Sigils (a passive on turn 1, so each run has an identity). The original four use starting companions or their starter cards
-(Rivet starts with a Drone, Kesh with a Hound; Maren's and Vesper's Sigils from `03_CAMPAIGN.md` are not built yet). The new four have real Sigils: **Quill** *Sleeve Knives* (start each
-fight with a Sleeve Knife in hand); **Ilvane** *Primed* (start each fight with one Hawk totem); **Sehra** *Centred* (start each fight in
+(Rivet starts with a Drone, Kesh with a Hound; Maren's and Vesper's Sigils from `03_CAMPAIGN.md` are not built yet). The new four have real Sigils: **Quill** *Daggers* (start each
+fight with a Dagger in hand); **Ilvane** *Primed* (start each fight with one Hawk totem); **Sehra** *Centred* (start each fight in
 Serene); **Obsidia** *Kindled* (3 Arcana at turn start; starts with 3 Arcana and an Obsidian Blade).
 
 Role tags (what kind of fighter, shown on every character screen): Maren **Knight**, Rivet **Engineer**, Kesh **Hunter**, Vesper **Trickster**, Quill **Assassin**, Ilvane **Shaman**, Sehra **Barbarian**, Obsidia **Spellblade**, Mire **Necromancer**. One word, unique per character (`Riftwalker.role`, tested).
@@ -108,7 +108,7 @@ Card and keyword names are original to Shattered Rifts. Mechanics are free to sh
 vocabulary and trade dress are not. When adding a card, give it a name nobody else's game uses, and check `10_CARD_LIST.md`.
 Player-facing words: Barrier, Exposed, Faltering, Might, Bleed, Thorns, Shielded, Trap, Aura (a card whose effect lasts the
 fight), Consume (the card leaves the fight), Hold (stays in hand), Fleeting, Foresee, Fury / Serene / Radiant (stances), Fervor
-(builds to Radiant), Arcana (the second resource), Sharpen (grow the Obsidian Blade), Sleeve Knife (the 0-cost knife).
+(builds to Radiant), Arcana (the second resource), Sharpen (grow the Obsidian Blade), Dagger (the 0-cost knife).
 Internal ids in code (`exhaust`, `scry`, `forge`, `stars`, `wrath`, `calm`, `mantra`) are not renamed: only what the player reads.
 
 ## 6. Mechanic coverage (2026-10-23)
@@ -142,4 +142,4 @@ pending kind). Say the word if you want them.
 
 ## Innate traits
 
-Every Riftwalker has one passive (`Riftwalker.trait`), and it helps all of their build paths (DECISIONS #255): Valeria (id knight) Oathkeeper (6 Barrier and 6 Plating at the start; her Devotion went in DECISIONS #364), Rivet Tinkerer (heal 1 each turn, and each companion gains 1 max HP; DECISIONS #356), Kesh Pack Instinct (her companions share half her Might, rounded down; DECISIONS #285, #329, #333), Vesper Lying in Wait (6 Barrier and 2 extra cards at the start, 4 Barrier each turn; was Ambusher, Exposed for 3 turns), Sylas (id assassin) Hidden Blades (a Sleeve Knife every turn; was Envenomed, 2 Bleed a turn), Ilvane Totem-bound (starts with a Hawk, a Bear and a Splinter totem), Sehra Inner Fire (1 Fervor and 2 Barrier whenever she enters a stance; was 2 Fervor at the start), Obsidia Kindled (1 Arcana and Sharpen 1 each turn; she starts with 3 Arcana), Dorian (id necromancer) Grave Chill (3 Fate on every enemy at the start, and 3 on a random enemy whenever an ally dies or a card is consumed; was 4 Fate at the start), KP Clutch Genes (+50% attack damage at or below half HP). A trait can have triggers (`HeroTrait.triggers`) that fire like an Aura's but never count or show as one. Hero HP is 70-88, Slay the Spire's range.
+Every Riftwalker has one passive (`Riftwalker.trait`), and it helps all of their build paths (DECISIONS #255): Valeria (id knight) Oathkeeper (6 Barrier and 6 Plating at the start; her Devotion went in DECISIONS #364), Rivet Tinkerer (heal 1 each turn, and each companion gains 1 max HP; DECISIONS #356), Kesh Pack Instinct (her companions share half her Might, rounded down; DECISIONS #285, #329, #333), Vesper Lying in Wait (6 Barrier and 2 extra cards at the start, 4 Barrier each turn; was Ambusher, Exposed for 3 turns), Sylas (id assassin) Hidden Blades (a Dagger every turn; was Envenomed, 2 Bleed a turn), Ilvane Totem-bound (starts with a Hawk, a Bear and a Splinter totem), Sehra Inner Fire (1 Fervor and 2 Barrier whenever she enters a stance; was 2 Fervor at the start), Obsidia Kindled (1 Arcana and Sharpen 1 each turn; she starts with 3 Arcana), Dorian (id necromancer) Grave Chill (3 Fate on every enemy at the start, and 3 on a random enemy whenever an ally dies or a card is consumed; was 4 Fate at the start), KP Clutch Genes (+50% attack damage at or below half HP). A trait can have triggers (`HeroTrait.triggers`) that fire like an Aura's but never count or show as one. Hero HP is 70-88, Slay the Spire's range.

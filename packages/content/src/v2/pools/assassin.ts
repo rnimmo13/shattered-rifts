@@ -62,8 +62,8 @@ export const ASSASSIN: CardDef[] = [
   ),
   // (Survivor)
   q('basic', 'duck-and-weave', 'Duck and Weave', 'skill', 1, 'none', [barrier(8), discard(1)]),
-  // (Shiv: 4 damage, Consume; Shiv+ deals 6)
-  q('common', 'sleeve-knife', 'Sleeve Knife', 'attack', 0, 'foe', [dmg(4)], {
+  // (Shiv: 4 damage, Consume; Shiv+ deals 6. Shown as the Dagger since 2026-10-28, DECISIONS #379; the id stays for saves)
+  q('common', 'sleeve-knife', 'Dagger', 'attack', 0, 'foe', [dmg(4)], {
     exhaust: true,
     tags: ['knife'],
     source: 'token',
@@ -73,7 +73,7 @@ export const ASSASSIN: CardDef[] = [
   q(
     'common',
     'inked-knife',
-    'Inked Knife',
+    'Inked Dagger',
     'attack',
     0,
     'foe',

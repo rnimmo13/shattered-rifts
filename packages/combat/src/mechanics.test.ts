@@ -1368,7 +1368,7 @@ describe('fetch by tag and the Auras metric', () => {
     const s = play(s0, 'h0').state;
     expect(s.sides.a.hand.map((x) => x.id).sort()).toEqual(['x1', 'x3']);
     expect(s.sides.a.discard.map((x) => x.id)).toContain('x2');
-    expect(cardText(DB, DB.cards['gather-knives']!)).toContain('Sleeve Knife');
+    expect(cardText(DB, DB.cards['gather-knives']!)).toContain('Dagger');
   });
 
   it('a card can scale with the number of Auras you have', () => {

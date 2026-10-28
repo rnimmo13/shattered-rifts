@@ -177,7 +177,7 @@ describe('second resources have a way in and a way out from the first hand', () 
 });
 
 describe('real card data, end to end', () => {
-  it('Whetted Edge (Edge) makes Sleeve Knives hit harder (and only knives)', () => {
+  it('Whetted Edge (Edge) makes Daggers hit harder (and only knives)', () => {
     const s0 = setup(db.cards['whetted-edge']!, 'assassin');
     s0.sides.a.hand = [
       { id: 'K', card: 'whetted-edge' },

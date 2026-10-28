@@ -48,8 +48,8 @@ export type StatusId =
   | 'freeattack' // your next Attack costs 0, per stack
   // (the Silent-shaped assassin's pieces: DECISIONS #368)
   | 'virulent' // Bleed on your enemies deals its damage this many more times each turn (and loses 1 each time)
-  | 'honed' // your Sleeve Knives Hold, and the first one you play each turn deals this much more
-  | 'fanned' // your Sleeve Knives hit ALL enemies
+  | 'honed' // your Daggers Hold, and the first one you play each turn deals this much more
+  | 'fanned' // your Daggers hit ALL enemies
   | 'tracking' // your attacks deal 50% more to Faltering enemies
   | 'guarded' // at the start of your next turn you gain this much Barrier, then it clears
   | 'blur' // your Barrier is not removed at the start of your next turn (one turn per stack)

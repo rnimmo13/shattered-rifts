@@ -126,7 +126,7 @@ Percentage debuffs (Exposed, Faltering, Debilitated) are worth more as numbers g
 | Put a card on top of your draw pile / Foresee | **+1.5** | Ram Home, Glint. |
 | Return a random card from discard to hand | **+3** (a draw); a chosen card **+4** | |
 | Add a random card to your hand | **+4** (Neutral), **~9** if it is from your pool and costs 0 (Consume) | Royal Decree, Borrowed Blade, Rift Windfall. |
-| A Sleeve Knife | **4** (its damage) + Edge | Knife Juggle 3 knives + Consume; Feint Strike 3 + 2 knives. |
+| A Dagger | **4** (its damage) + Edge | Knife Juggle 3 knives + Consume; Feint Strike 3 + 2 knives. |
 | **Arcana gained** | **2.5** each | Gather Arcana 2, Emberstrike 9 + 1, Pale Ward 8 Barrier + 1. |
 | **Arcana spent** (a ◆ cost) | each ◆ buys **~6** points on top of the Mana budget | Molten Ruin 1+4◆ = 10 + 24 = 34 → 35 damage. Glass Burst 0+3◆ = 6 + 18 = 24 → 13 + 2 Faltering + 2 Exposed. Gaining is cheap and spending is rich: the gap is what the class pays for needing both halves. |
 | Sharpen N | **0.8** per point if played early, ~0.5 late | The Blade costs 2 and comes back a few times a fight. Forged in Fury 7 + Sharpen 7, Whetstone 8 + Mana next turn, Bladewall 12 Barrier + 10. |
