@@ -36,7 +36,7 @@ export function MatchHistory() {
                 <span className={won ? 'matchlist__won' : 'matchlist__lost'}>
                   {m.winner === 'draw' ? 'Draw' : won ? 'Won' : 'Lost'}
                 </span>{' '}
-                as {heroName(m.heroes[m.seat])} against <b>{m.names[foe]}</b>
+                as the {heroName(m.heroes[m.seat])} against <b>{m.names[foe]}</b>
                 {m.ghost ? ' (ghost)' : ''} · {heroName(m.heroes[foe])}
                 {m.game ? ` · game ${m.game}` : ''}
                 <br />

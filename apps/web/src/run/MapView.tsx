@@ -171,7 +171,7 @@ export function MapView(props: {
             style={{ left: p.x, top: p.y }}
             disabled={!open}
             onClick={() => props.onEnter(n.id)}
-            aria-label={`${KIND_LABEL[n.kind]}: ${labelOf(n)}${n.crossed ? ` (Rift-crossed: sells ${RIFTWALKERS[n.crossed as keyof typeof RIFTWALKERS]?.hero.name ?? 'another'}'s cards)` : ''}${n.ghost && n.ghostDeck ? " (a ghost: another player's deck from the Arena, played by the computer)" : ''}${done ? ' (cleared)' : ''}`}
+            aria-label={`${KIND_LABEL[n.kind]}: ${labelOf(n)}${n.crossed ? ` (Rift-crossed: sells ${RIFTWALKERS[n.crossed as keyof typeof RIFTWALKERS] ? `the ${RIFTWALKERS[n.crossed as keyof typeof RIFTWALKERS].hero.name}` : 'another Riftwalker'}'s cards)` : ''}${n.ghost && n.ghostDeck ? " (a ghost: another player's deck from the Arena, played by the computer)" : ''}${done ? ' (cleared)' : ''}`}
           >
             <NodeIcon kind={n.kind} />
             {n.crossed && (

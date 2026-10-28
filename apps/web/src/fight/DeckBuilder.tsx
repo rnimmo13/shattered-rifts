@@ -266,7 +266,7 @@ export function DeckBuilder(props: {
         </h3>
         <div className="db__deckbtns">
           <button className="btn btn--small" onClick={props.onReset}>
-            <span>{props.heroName}’s starter</span>
+            <span>The {props.heroName}’s starter</span>
           </button>
           <button className="btn btn--small" onClick={() => props.onChange({})}>
             <span>Clear</span>

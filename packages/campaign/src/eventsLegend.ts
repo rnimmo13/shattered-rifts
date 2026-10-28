@@ -73,7 +73,7 @@ function reliquary(r: RunState): { opts: OptSpec[]; cards: string[] } {
   const whose = (id: string): string => {
     const h = COMBAT_DB.cards[base(id)]?.hero as HeroId | undefined;
     return h && h !== r.character
-      ? ` (Rift-crossed: ${RIFTWALKERS[h]?.hero.name.split(',')[0] ?? 'another'}'s)`
+      ? ` (Rift-crossed: ${RIFTWALKERS[h] ? `the ${RIFTWALKERS[h].hero.name}` : 'another Riftwalker'}'s)`
       : ' (your own class)';
   };
   return {

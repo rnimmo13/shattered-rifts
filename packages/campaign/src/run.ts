@@ -578,7 +578,7 @@ function meetGhost(r: RunState, g: GhostBoss): void {
   // said plainly, so nobody takes it for the realm's usual Warden
   const who = RIFTWALKERS[g.hero]?.role ?? 'Riftwalker';
   // (whose deck it is stays unsaid: a ghost in the campaign is a nameless challenger)
-  r.eventResult = `Ghost Warden! This Warden is a ${who} deck from the Arena (Tier ${g.tier}), played by the computer.`;
+  r.eventResult = `Ghost Warden! This Warden is ${/^[AEIOU]/.test(who) ? 'an' : 'a'} ${who} deck from the Arena (Tier ${g.tier}), played by the computer.`;
 }
 
 /** What the fight at the current node is. */

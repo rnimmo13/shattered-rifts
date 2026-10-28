@@ -232,7 +232,7 @@ export function TitleScreen() {
             <small>
               {full
                 ? `You have ${RUN_SLOTS} runs in progress. Finish or abandon one to start another.`
-                : `Three stages as ${hero.hero.name}. Build a deck and face Vorthax.`}
+                : `Three stages as the ${hero.hero.name}. Build a deck and face Vorthax.`}
             </small>
           </button>
           <a className="home__play" href="#/arena">
@@ -241,7 +241,7 @@ export function TitleScreen() {
           </a>
           <a className="home__play" href="#/fight">
             <b>Sandbox</b>
-            <small>Try any fight as {hero.hero.name}, no run needed. Elite events too.</small>
+            <small>Try any fight as the {hero.hero.name}, no run needed. Elite events too.</small>
           </a>
           <a className="home__play home__play--store" href="#/store">
             <StoreIcon size={36} />

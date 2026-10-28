@@ -476,7 +476,7 @@ export default function RunScreen() {
                   mods: plan.mods,
                 },
           }}
-          title={`${plan.ghost ? `Ghost Warden: a ${RIFTWALKERS[plan.ghost.hero]?.role ?? 'Riftwalker'} deck` : encounter(plan.encounterId).name} · Tier ${run.tier} · Stage ${run.stage}${floorLabel(run) && ` · ${floorLabel(run)}`}`}
+          title={`${plan.ghost ? `Ghost Warden: ${/^[AEIOU]/.test(RIFTWALKERS[plan.ghost.hero]?.role ?? 'R') ? 'an' : 'a'} ${RIFTWALKERS[plan.ghost.hero]?.role ?? 'Riftwalker'} deck` : encounter(plan.encounterId).name} · Tier ${run.tier} · Stage ${run.stage}${floorLabel(run) && ` · ${floorLabel(run)}`}`}
           exitLabel="Forfeit"
           topFirst={
             <button className="btn btn--small btn--ghost" onClick={() => setShowMap(true)}>
