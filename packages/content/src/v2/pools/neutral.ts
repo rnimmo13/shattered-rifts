@@ -335,12 +335,16 @@ export const ANCESTRAL: CardDef[] = [
   anc('rite-of-renewal', 'Rite of Renewal', 'skill', 2, 'none', [heal(14), barrier(10)], {
     exhaust: true,
   }),
-  anc('ancient-pact', 'Ancient Pact', 'power', 1, 'none', [on('turnStart', [mana(1), lose(2)])]),
+  anc('ancient-pact', 'Ancient Pact', 'power', 1, 'none', [on('turnStart', [mana(1), lose(2)])], {
+    up: { effects: [on('turnStart', [mana(1), lose(1)])] },
+  }),
   anc('ancestral-memory', 'Ancestral Memory', 'skill', 1, 'none', [draw(2), upgradeOp('hand')], {
     exhaust: true,
   }),
   anc('spirit-hunt', 'Spirit Hunt', 'attack', 1, 'none', [dmg(12, 'allFoes')], { exhaust: true }),
-  anc('lineage', 'Lineage', 'power', 2, 'none', [on('play', [draw(1)], { filter: 'power' })]),
+  anc('lineage', 'Lineage', 'power', 2, 'none', [on('play', [draw(1)], { filter: 'power' })], {
+    up: { innate: true },
+  }),
   anc(
     'wrath-of-ages',
     'Wrath of Ages',
@@ -354,7 +358,13 @@ export const ANCESTRAL: CardDef[] = [
     exhaust: true,
     retain: true,
   }),
-  anc('unbroken-line', 'Unbroken Line', 'power', 3, 'none', [
-    on('turnStart', [barrier(6), heal(2)]),
-  ]),
+  anc(
+    'unbroken-line',
+    'Unbroken Line',
+    'power',
+    3,
+    'none',
+    [on('turnStart', [barrier(6), heal(2)])],
+    { up: { effects: [on('turnStart', [barrier(9), heal(2)])] } },
+  ),
 ];

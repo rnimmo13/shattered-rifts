@@ -96,9 +96,16 @@ export const HUNTER: CardDef[] = [
   k('common', 'pound', 'Pound', 'attack', 1, 'foe', [dmg(8), draw(1), lose(1)], {
     up: { effects: [dmg(12), draw(1), lose(1)] },
   }),
-  k('rare', 'scar-tissue', 'Scar Tissue', 'power', 1, 'none', [
-    on('loseHp', [barrier(2), status('might', 1, 'self', true)]),
-  ]),
+  k(
+    'rare',
+    'scar-tissue',
+    'Scar Tissue',
+    'power',
+    1,
+    'none',
+    [on('loseHp', [barrier(2), status('might', 1, 'self', true)])],
+    { up: { effects: [on('loseHp', [barrier(4), status('might', 1, 'self', true)])] } },
+  ),
   k(
     'uncommon',
     'whirling-maul',
@@ -122,9 +129,16 @@ export const HUNTER: CardDef[] = [
     barrier(3, 'allAllies'),
   ]),
   k('rare', 'skullcrusher', 'Skullcrusher', 'attack', 3, 'foe', [dmg(26), ACT]),
-  k('rare', 'scarred-warrior', 'Scarred Warrior', 'power', 1, 'none', [
-    on('turnStart', [lose(2), barrier(8)]),
-  ]),
+  k(
+    'rare',
+    'scarred-warrior',
+    'Scarred Warrior',
+    'power',
+    1,
+    'none',
+    [on('turnStart', [lose(2), barrier(8)])],
+    { up: { effects: [on('turnStart', [lose(2), barrier(10)])] } },
+  ),
 
   // --- Pack ---
   k(
@@ -140,9 +154,16 @@ export const HUNTER: CardDef[] = [
   // (a companion that grows instead of only being shielded: DECISIONS #285)
   k('common', 'thick-hide', 'Thick Hide', 'skill', 1, 'none', [barrier(5, 'allFriends')]),
   k('uncommon', 'savage-command', 'Savage Command', 'skill', 1, 'none', [ACT, status('might', 1)]),
-  k('uncommon', 'pack-bond', 'Pack Bond', 'power', 2, 'none', [
-    on('turnStart', [barrier(4, 'allFriends')]),
-  ]),
+  k(
+    'uncommon',
+    'pack-bond',
+    'Pack Bond',
+    'power',
+    2,
+    'none',
+    [on('turnStart', [barrier(4, 'allFriends')])],
+    { up: { effects: [on('turnStart', [barrier(6, 'allFriends')])] } },
+  ),
   // (the Alpha alone: with 1 Might for you as well it was ~47% over a 2-cost rare, DECISIONS #377)
   k('rare', 'alpha-call', 'Alpha Call', 'summon', 2, 'none', [summon('pack-alpha')]),
   k('uncommon', 'unchained', 'Unchained', 'power', 2, 'none', [status('might', 4)]),
@@ -181,9 +202,16 @@ export const HUNTER: CardDef[] = [
     summon('hound'),
     barrier(3, 'allAllies'),
   ]),
-  k('common', 'trail-of-blood', 'Trail of Blood', 'power', 1, 'none', [
-    on('summon', [status('might', 1)]),
-  ]),
+  k(
+    'common',
+    'trail-of-blood',
+    'Trail of Blood',
+    'power',
+    1,
+    'none',
+    [on('summon', [status('might', 1)])],
+    { up: { innate: true } },
+  ),
   k('rare', 'pack-frenzy', 'Pack Frenzy', 'skill', 2, 'none', [status('might', 2), ACT], {
     exhaust: true,
   }),
@@ -278,9 +306,16 @@ export const HUNTER: CardDef[] = [
     [lose(3), status('might', 3, 'self', true), draw(2)],
     { up: { effects: [lose(3), status('might', 3, 'self', true), draw(3)] } },
   ),
-  k('common', 'wounded-wrath', 'Wounded Wrath', 'power', 1, 'none', [
-    on('loseHp', [dmg(4, 'randomFoe')]),
-  ]),
+  k(
+    'common',
+    'wounded-wrath',
+    'Wounded Wrath',
+    'power',
+    1,
+    'none',
+    [on('loseHp', [dmg(4, 'randomFoe')])],
+    { up: { effects: [on('loseHp', [dmg(6, 'randomFoe')])] } },
+  ),
   k(
     'rare',
     'death-or-glory',
@@ -311,12 +346,26 @@ export const HUNTER: CardDef[] = [
   ),
   // (two Pups: two Hounds for 2 Mana was half again a card's worth, DECISIONS #377)
   k('uncommon', 'litter', 'Litter', 'skill', 2, 'none', [summon('pup'), summon('pup')]),
-  k('uncommon', 'bone-collar', 'Bone Collar', 'power', 1, 'none', [
-    on('allyDies', [status('might', 1), heal(2)]),
-  ]),
-  k('uncommon', 'hunters-call', "Hunter's Call", 'power', 1, 'none', [
-    on('turnStart', [status('might', 1)]),
-  ]),
+  k(
+    'uncommon',
+    'bone-collar',
+    'Bone Collar',
+    'power',
+    1,
+    'none',
+    [on('allyDies', [status('might', 1), heal(2)])],
+    { up: { effects: [on('allyDies', [status('might', 1), heal(4)])] } },
+  ),
+  k(
+    'uncommon',
+    'hunters-call',
+    "Hunter's Call",
+    'power',
+    1,
+    'none',
+    [on('turnStart', [status('might', 1)])],
+    { up: { innate: true } },
+  ),
 
   // --- Feast (batch 3) ---
   k('common', 'throw-scraps', 'Throw Scraps', 'skill', 0, 'none', [exhaustN(1), mana(1)]),
@@ -379,9 +428,16 @@ export const HUNTER: CardDef[] = [
   k('uncommon', 'blur-of-claws', 'Blur of Claws', 'attack', 1, 'foe', [
     scaled(dmg(5), per('played', 3)),
   ]),
-  k('uncommon', 'battle-rhythm', 'Battle Rhythm', 'power', 1, 'none', [
-    on('turnStart', [draw(1), lose(1)]),
-  ]),
+  k(
+    'uncommon',
+    'battle-rhythm',
+    'Battle Rhythm',
+    'power',
+    1,
+    'none',
+    [on('turnStart', [draw(1), lose(1)])],
+    { up: { innate: true } },
+  ),
   k('uncommon', 'reckless-abandon', 'Reckless Abandon', 'skill', 1, 'none', [draw(3), discard(1)]),
   k(
     'uncommon',
@@ -396,9 +452,16 @@ export const HUNTER: CardDef[] = [
     },
   ),
   k('uncommon', 'rip-and-tear', 'Rip and Tear', 'attack', 2, 'foe', [dmg(6, 'target', 3), draw(1)]),
-  k('rare', 'berserk-tempo', 'Berserk Tempo', 'power', 2, 'none', [
-    on('turnStart', [mana(1), draw(1), lose(2)]),
-  ]),
+  k(
+    'rare',
+    'berserk-tempo',
+    'Berserk Tempo',
+    'power',
+    2,
+    'none',
+    [on('turnStart', [mana(1), draw(1), lose(2)])],
+    { up: { effects: [on('turnStart', [mana(1), draw(1), lose(1)])] } },
+  ),
   // (only what you draw during your turn: the turn's own five gave five Might, DECISIONS #377)
   k('rare', 'red-frenzy', 'Red Frenzy', 'power', 1, 'none', [
     on('drawMidTurn', [status('might', 1, 'self', true)]),
@@ -422,17 +485,31 @@ export const HUNTER: CardDef[] = [
   ]),
 
   // --- brought back for the 20/30/25 rarity target (DECISIONS #341) ---
-  k('uncommon', 'pack-leader', 'Pack Leader', 'power', 2, 'none', [
-    on('play', [barrier(2, 'allFriends')], { filter: 'attack' }),
-  ]),
+  k(
+    'uncommon',
+    'pack-leader',
+    'Pack Leader',
+    'power',
+    2,
+    'none',
+    [on('play', [barrier(2, 'allFriends')], { filter: 'attack' })],
+    { up: { effects: [on('play', [barrier(3, 'allFriends')], { filter: 'attack' })] } },
+  ),
   k('uncommon', 'tear-loose', 'Tear Loose', 'attack', 1, 'foe', [
     dmg(9),
     lose(2),
     status('vigor', 4),
   ]),
-  k('rare', 'ancient-fury', 'Ancient Fury', 'power', 2, 'none', [
-    on('turnStart', [status('might', 2), lose(3)]),
-  ]),
+  k(
+    'rare',
+    'ancient-fury',
+    'Ancient Fury',
+    'power',
+    2,
+    'none',
+    [on('turnStart', [status('might', 2), lose(3)])],
+    { up: { effects: [on('turnStart', [status('might', 2), lose(2)])] } },
+  ),
 
   // --- brought back for the 20/30/25 rarity target (DECISIONS #341) ---
   k('rare', 'hunger-unbound', 'Hunger Unbound', 'power', 3, 'none', [

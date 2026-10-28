@@ -334,9 +334,17 @@ From the base and "+" versions of every card of the five baseline classes (most 
 | A bigger card's main number | +20-35% | Stalker's Lunge 15 → 20, Molten Ruin 35 → 45, Harvest 27 → 33, Hammer Fall 32 → 35 |
 | A status +1 (+2 from 5 stacks up) | +30-50% | Steel Resolve 2 → 3 Might, Open Vein 5 → 7 Bleed, Rattle 3 → 4 Exposed |
 | X cards: X is 1 higher | about one more Mana's worth (+30% at X = 3) | Whirling Blade, Run Through, Unmaking |
-| An Aura: 1 less Mana, or Opening hand | +33-60% (a cost cut), +3-4 (Opening hand) | Warlord's Oath 3 → 2, Bastion Engine 2 → 1, Bottomless Sleeves gains Opening hand |
+| An Aura: its main number +30-50% | +30-50% | Rampage of Ire 6 → 9, Daily Rite 2 → 3 Fervor, Pack Bond 4 → 6 Barrier |
+| An Aura: Opening hand, when +1 would double it | +3-4 | Shell Game, Battle Rhythm, Legion, Bottomless Sleeves |
+| An Aura: a smaller drawback | +1.5 per HP | Ancient Fury 3 → 2 HP a turn, Berserk Tempo 2 → 1 |
+| An Aura: 1 less Mana, only when the effect is on/off or an engine | +33-60% | Unbroken Wall, Unholy Pact, Command Chip, Ascendant Form |
 | A cheap card loses Consume, or gains Hold | ~+25% / +1-3 | Owl Call, Circle of Spirits, Elemental Focus lose Consume; Stone Fury gains Hold |
 | Paying less HP | +1.5 per HP | Draw Blood 3 → 2 HP, Reckless Smite 2 → 1 HP |
+
+**Auras (DECISIONS #396):** Slay the Spire upgrades a Power by raising its number (about two in three), giving it Innate (about one in
+six) or costing 1 less (about one in six, only when the effect is on/off: Barricade, Corruption, Dark Embrace). `plus()` never looks
+inside an Aura's `power` op, so an Aura with no hand-written `up` falls back to the cost cut. Give every new Aura an `up`; a cost cut
+has to be listed in `auraUpgrades.test.ts`.
 
 **What to watch:** `plus()` (`packages/content/src/v2/build.ts`) raises *every* number on a card that has no hand-written upgrade, so
 a card with three numbers gains three times as much. Hilt Strike+ (+3 damage and +1 card: +7, +58%) and Clarion Clap+ (+3 to all and

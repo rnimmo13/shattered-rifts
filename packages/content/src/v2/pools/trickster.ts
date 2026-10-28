@@ -104,7 +104,7 @@ export const TRICKSTER: CardDef[] = [
     1,
     'none',
     [on('play', [draw(1), barrier(3)], { filter: 'snare' })],
-    { suit: 'clubs' },
+    { suit: 'clubs', up: { effects: [on('play', [draw(1), barrier(5)], { filter: 'snare' })] } },
   ),
   v(
     'rare',
@@ -166,7 +166,7 @@ export const TRICKSTER: CardDef[] = [
     1,
     'none',
     [on('snare', [draw(1), barrier(5)])],
-    { suit: 'clubs' },
+    { suit: 'clubs', up: { effects: [on('snare', [draw(1), barrier(8)])] } },
   ),
   v('rare', 'spring-the-trap', 'Spring the Trap', 'attack', 1, 'foe', [
     scaled(dmg(6), per('snares', 5)),
@@ -204,9 +204,16 @@ export const TRICKSTER: CardDef[] = [
     { up: { effects: [scaled(dmg(22), per('exposed', 5, 'target'))] } },
   ),
 
-  v('rare', 'patient-hunter', 'Patient Hunter', 'power', 1, 'none', [
-    on('turnStart', [status('exposed', 1, 'allFoes')]),
-  ]),
+  v(
+    'rare',
+    'patient-hunter',
+    'Patient Hunter',
+    'power',
+    1,
+    'none',
+    [on('turnStart', [status('exposed', 1, 'allFoes')])],
+    { up: { innate: true } },
+  ),
 
   // (more Exposed)
   // (Cheap Shot and Stalk were the Assassin's Dirty Hit and Stalker's Lunge word for word: each now leans on a Trickster build path)
@@ -392,19 +399,35 @@ export const TRICKSTER: CardDef[] = [
   v('rare', 'the-joker', 'The Joker', 'skill', 1, 'none', [discoverOp(undefined, 1, true)], {
     suit: 'wild',
   }),
-  v('rare', 'the-whole-deck', 'The Whole Deck', 'power', 1, 'none', [
-    on('allSuits', [draw(2), manaNext(1)]),
-  ]),
+  v(
+    'rare',
+    'the-whole-deck',
+    'The Whole Deck',
+    'power',
+    1,
+    'none',
+    [on('allSuits', [draw(2), manaNext(1)])],
+    { up: { effects: [on('allSuits', [draw(3), manaNext(1)])] } },
+  ),
   // (was the Patience Legendary, DECISIONS #338: now every suit you showed strikes every enemy as the turn ends)
-  v('rare', 'masquerade', 'Masquerade', 'power', 2, 'none', [
-    on('turnEnd', [scaled(dmg(0, 'allFoes'), per('suits', 3))]),
-  ]),
+  v(
+    'rare',
+    'masquerade',
+    'Masquerade',
+    'power',
+    2,
+    'none',
+    [on('turnEnd', [scaled(dmg(0, 'allFoes'), per('suits', 3))])],
+    { up: { effects: [on('turnEnd', [scaled(dmg(0, 'allFoes'), per('suits', 4))])] } },
+  ),
 
   // --- glue: Mana and time, for any build path ---
   v('uncommon', 'saved-breath', 'Saved Breath', 'skill', 0, 'none', [manaNext(2), scry(2)], {
     exhaust: true,
   }),
-  v('uncommon', 'long-game', 'The Long Game', 'power', 1, 'none', [on('turnStart', [draw(1)])]),
+  v('uncommon', 'long-game', 'The Long Game', 'power', 1, 'none', [on('turnStart', [draw(1)])], {
+    up: { innate: true },
+  }),
   v('uncommon', 'frozen-moment', 'Frozen Moment', 'skill', 1, 'none', [cheapen(1, 'hand')], {
     exhaust: true,
   }),
@@ -433,7 +456,7 @@ export const TRICKSTER: CardDef[] = [
     1,
     'none',
     [on('play', [dmg(4, 'allFoes')], { filter: 'snare' })],
-    { suit: 'clubs' },
+    { suit: 'clubs', up: { effects: [on('play', [dmg(6, 'allFoes')], { filter: 'snare' })] } },
   ),
   v(
     'common',
@@ -486,7 +509,7 @@ export const TRICKSTER: CardDef[] = [
     2,
     'none',
     [on('turnStart', [addTo('trip-line')])],
-    { suit: 'clubs' },
+    { suit: 'clubs', up: { effects: [on('turnStart', [addTo('trip-line+')])] } },
   ),
 
   // --- Exposed (more marks) ---
@@ -627,7 +650,14 @@ export const TRICKSTER: CardDef[] = [
     [draw(1), fetchCards(2, 'hand', 'snare')],
     { suit: 'clubs', up: { effects: [draw(1), fetchCards(3, 'hand', 'snare')] } },
   ),
-  v('rare', 'misdirection', 'Patient Guard', 'power', 1, 'none', [
-    on('turnEnd', [scaled(barrier(2), per('hand', 1))]),
-  ]),
+  v(
+    'rare',
+    'misdirection',
+    'Patient Guard',
+    'power',
+    1,
+    'none',
+    [on('turnEnd', [scaled(barrier(2), per('hand', 1))])],
+    { up: { effects: [on('turnEnd', [scaled(barrier(4), per('hand', 1))])] } },
+  ),
 ];

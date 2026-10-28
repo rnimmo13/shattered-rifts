@@ -54,9 +54,16 @@ export const MONK: CardDef[] = [
     scaled(dmg(14), per('wrath', 10)),
   ]),
   // (Fury lets damage in: entering it is when to put a guard up)
-  s('rare', 'surge-of-ire', 'Surge of Ire', 'power', 2, 'none', [
-    on('stance', [barrier(6), draw(1)], { stance: 'wrath', once: true }),
-  ]),
+  s(
+    'rare',
+    'surge-of-ire',
+    'Surge of Ire',
+    'power',
+    2,
+    'none',
+    [on('stance', [barrier(6), draw(1)], { stance: 'wrath', once: true })],
+    { up: { effects: [on('stance', [barrier(9), draw(1)], { stance: 'wrath', once: true })] } },
+  ),
   s('rare', 'rage-of-ages', 'Rage of Ages', 'attack', 3, 'none', [dmg(8, 'allFoes', 3)]),
   s('rare', 'wrath-incarnate', 'Wrath Incarnate', 'power', 2, 'none', [
     on('turnStart', [stance('wrath')]),
@@ -75,9 +82,16 @@ export const MONK: CardDef[] = [
     barrier(6),
     stance('wrath'),
   ]),
-  s('rare', 'rampage-of-ire', 'Rampage of Ire', 'power', 2, 'none', [
-    on('stance', [dmg(6, 'allFoes')], { stance: 'wrath' }),
-  ]),
+  s(
+    'rare',
+    'rampage-of-ire',
+    'Rampage of Ire',
+    'power',
+    2,
+    'none',
+    [on('stance', [dmg(6, 'allFoes')], { stance: 'wrath' })],
+    { up: { effects: [on('stance', [dmg(9, 'allFoes')], { stance: 'wrath' })] } },
+  ),
   s(
     'rare',
     'rage-unbound',
@@ -160,9 +174,16 @@ export const MONK: CardDef[] = [
       exhaust: true,
     },
   ),
-  s('uncommon', 'unmoved-mind', 'Unmoved Mind', 'power', 2, 'none', [
-    on('stance', [barrier(2), dmg(2, 'randomFoe')]),
-  ]),
+  s(
+    'uncommon',
+    'unmoved-mind',
+    'Unmoved Mind',
+    'power',
+    2,
+    'none',
+    [on('stance', [barrier(2), dmg(2, 'randomFoe')])],
+    { up: { effects: [on('stance', [barrier(3), dmg(3, 'randomFoe')])] } },
+  ),
   s('rare', 'ascendant-form', 'Ascendant Form', 'power', 2, 'none', [on('turnStart', [mana(1)])]),
   s('rare', 'perfect-calm', 'Perfect Calm', 'skill', 2, 'none', [
     barrier(12),
@@ -180,9 +201,16 @@ export const MONK: CardDef[] = [
     { up: { effects: [barrier(5), stance('calm'), scry(2)] } },
   ),
   s('common', 'empty-fist', 'Settling Fist', 'attack', 1, 'foe', [dmg(7), stance('none')]),
-  s('uncommon', 'inner-calm', 'Wheel of Motion', 'power', 2, 'none', [
-    on('stance', [dmg(3, 'allFoes')]),
-  ]),
+  s(
+    'uncommon',
+    'inner-calm',
+    'Wheel of Motion',
+    'power',
+    2,
+    'none',
+    [on('stance', [dmg(3, 'allFoes')])],
+    { up: { effects: [on('stance', [dmg(4, 'allFoes')])] } },
+  ),
   s('uncommon', 'fearless', 'Unafraid', 'attack', 1, 'foe', [dmg(6), stance('calm')]),
   s('rare', 'meditate', 'Recollect', 'skill', 1, 'none', [fetchCards(1), stance('calm')], {
     retain: true,
@@ -192,9 +220,16 @@ export const MONK: CardDef[] = [
   s('rare', 'all-seeing', 'All-Seeing', 'skill', 2, 'none', [discoverOp(undefined, 2, true)], {
     exhaust: true,
   }),
-  s('rare', 'serenity-incarnate', 'Serenity Incarnate', 'power', 3, 'none', [
-    on('turnEnd', [heal(3), barrier(6)]),
-  ]),
+  s(
+    'rare',
+    'serenity-incarnate',
+    'Serenity Incarnate',
+    'power',
+    3,
+    'none',
+    [on('turnEnd', [heal(3), barrier(6)])],
+    { up: { effects: [on('turnEnd', [heal(3), barrier(9)])] } },
+  ),
   s(
     'uncommon',
     'still-water',
@@ -218,9 +253,16 @@ export const MONK: CardDef[] = [
     [scaled(barrier(0), per('mana', 3)), stance('calm')],
     { retain: true },
   ),
-  s('rare', 'gentle-return', 'Gentle Return', 'power', 1, 'none', [
-    on('stance', [heal(1), barrier(3)], { stance: 'calm' }),
-  ]),
+  s(
+    'rare',
+    'gentle-return',
+    'Gentle Return',
+    'power',
+    1,
+    'none',
+    [on('stance', [heal(1), barrier(3)], { stance: 'calm' })],
+    { up: { effects: [on('stance', [heal(1), barrier(5)], { stance: 'calm' })] } },
+  ),
   s(
     'rare',
     'tide-of-peace',
@@ -244,18 +286,39 @@ export const MONK: CardDef[] = [
   s('rare', 'litany', 'Litany', 'power', 1, 'none', [
     on('play', [status('mantra', 1)], { filter: 'skill' }),
   ]),
-  s('uncommon', 'daily-rite', 'Daily Rite', 'power', 1, 'none', [
-    on('turnStart', [status('mantra', 2)]),
-  ]),
+  s(
+    'uncommon',
+    'daily-rite',
+    'Daily Rite',
+    'power',
+    1,
+    'none',
+    [on('turnStart', [status('mantra', 2)])],
+    { up: { effects: [on('turnStart', [status('mantra', 3)])] } },
+  ),
   s('rare', 'rise-radiant', 'Rise Radiant', 'skill', 2, 'none', [stance('radiant')], {
     exhaust: true,
   }),
-  s('common', 'reading-the-signs', 'Reading the Signs', 'power', 1, 'none', [
-    on('discard', [status('mantra', 1)]),
-  ]),
-  s('rare', 'perfect-balance', 'Perfect Balance', 'power', 2, 'none', [
-    on('stance', [draw(1), barrier(2)]),
-  ]),
+  s(
+    'common',
+    'reading-the-signs',
+    'Reading the Signs',
+    'power',
+    1,
+    'none',
+    [on('discard', [status('mantra', 1)])],
+    { up: { innate: true } },
+  ),
+  s(
+    'rare',
+    'perfect-balance',
+    'Perfect Balance',
+    'power',
+    2,
+    'none',
+    [on('stance', [draw(1), barrier(2)])],
+    { up: { effects: [on('stance', [draw(1), barrier(4)])] } },
+  ),
   s(
     'rare',
     'still-flame-ascendant',
@@ -277,9 +340,16 @@ export const MONK: CardDef[] = [
     up: { effects: [status('mantra', 3), draw(1)] },
   }),
   s('uncommon', 'worship', 'Hymn of Embers', 'skill', 2, 'none', [status('mantra', 5), barrier(8)]),
-  s('uncommon', 'devotion', 'Morning Prayer', 'power', 1, 'none', [
-    on('turnStart', [status('mantra', 1), barrier(2)]),
-  ]),
+  s(
+    'uncommon',
+    'devotion',
+    'Morning Prayer',
+    'power',
+    1,
+    'none',
+    [on('turnStart', [status('mantra', 1), barrier(2)])],
+    { up: { effects: [on('turnStart', [status('mantra', 1), barrier(4)])] } },
+  ),
   s('rare', 'scrawl', 'Flood of Visions', 'skill', 1, 'none', [draw(5), status('mantra', 2)], {
     exhaust: true,
   }),
@@ -287,9 +357,16 @@ export const MONK: CardDef[] = [
     dmg(16, 'allFoes'),
     status('mantra', 5),
   ]),
-  s('rare', 'radiant-heart', 'Radiant Heart', 'power', 1, 'none', [
-    on('stance', [draw(3)], { stance: 'radiant' }),
-  ]),
+  s(
+    'rare',
+    'radiant-heart',
+    'Radiant Heart',
+    'power',
+    1,
+    'none',
+    [on('stance', [draw(3)], { stance: 'radiant' })],
+    { up: { effects: [on('stance', [draw(4)], { stance: 'radiant' })] } },
+  ),
   s('uncommon', 'foretold-flame', 'Foretold Flame', 'attack', 1, 'foe', [
     scaled(dmg(5), per('mantra', 1)),
     scry(2),
@@ -311,10 +388,26 @@ export const MONK: CardDef[] = [
     [scaled(dmg(0, 'allFoes'), per('mantra', 1)), stance('radiant')],
     { exhaust: true },
   ),
-  s('rare', 'unwavering', 'Unwavering', 'power', 2, 'none', [
-    on('discard', [barrier(4), status('mantra', 1)]),
-    on('exhaust', [barrier(4), status('mantra', 1)]),
-  ]),
+  s(
+    'rare',
+    'unwavering',
+    'Unwavering',
+    'power',
+    2,
+    'none',
+    [
+      on('discard', [barrier(4), status('mantra', 1)]),
+      on('exhaust', [barrier(4), status('mantra', 1)]),
+    ],
+    {
+      up: {
+        effects: [
+          on('discard', [barrier(6), status('mantra', 1)]),
+          on('exhaust', [barrier(6), status('mantra', 1)]),
+        ],
+      },
+    },
+  ),
 
   // --- glue: cards for any build path (DECISIONS #337) ---
   s(
@@ -336,9 +429,16 @@ export const MONK: CardDef[] = [
   s('rare', 'spirit-shield', "Mountain's Stillness", 'skill', 2, 'none', [
     scaled(barrier(6), per('hand', 3)),
   ]),
-  s('rare', 'breath-between-blows', 'Breath Between Blows', 'power', 1, 'none', [
-    on('play', [barrier(2)], { filter: 'skill' }),
-  ]),
+  s(
+    'rare',
+    'breath-between-blows',
+    'Breath Between Blows',
+    'power',
+    1,
+    'none',
+    [on('play', [barrier(2)], { filter: 'skill' })],
+    { up: { effects: [on('play', [barrier(3)], { filter: 'skill' })] } },
+  ),
   s('uncommon', 'held-breath', 'Held Breath', 'skill', 1, 'none', [status('holdfast', 1)]),
 
   // --- brought back for the 20/30/25 rarity target (DECISIONS #341) ---
@@ -346,9 +446,16 @@ export const MONK: CardDef[] = [
     dmg(6, 'target', 2),
     lose(1),
   ]),
-  s('uncommon', 'blood-on-the-sand', 'Iron Body', 'power', 1, 'none', [
-    on('stance', [lose(2), status('vigor', 3)], { stance: 'wrath' }),
-  ]),
+  s(
+    'uncommon',
+    'blood-on-the-sand',
+    'Iron Body',
+    'power',
+    1,
+    'none',
+    [on('stance', [lose(2), status('vigor', 3)], { stance: 'wrath' })],
+    { up: { effects: [on('stance', [lose(1), status('vigor', 3)], { stance: 'wrath' })] } },
+  ),
   s('uncommon', 'open-palm', 'Open Palm', 'attack', 1, 'foe', [
     dmg(5, 'target', 2),
     stance('none'),
@@ -369,9 +476,16 @@ export const MONK: CardDef[] = [
 
   // --- new for the 20/30/25 rarity target (DECISIONS #341) ---
   s('rare', 'thousand-palms', 'Thousand Palms', 'attack', 2, 'foe', [dmg(3, 'target', 7)]),
-  s('rare', 'unbroken-calm', 'Unbroken Calm', 'power', 2, 'none', [
-    on('turnStart', [barrier(4), draw(1)]),
-  ]),
+  s(
+    'rare',
+    'unbroken-calm',
+    'Unbroken Calm',
+    'power',
+    2,
+    'none',
+    [on('turnStart', [barrier(4), draw(1)])],
+    { up: { effects: [on('turnStart', [barrier(6), draw(1)])] } },
+  ),
 
   // --- brought back for the 20/30/25 rarity target (DECISIONS #341) ---
   s('uncommon', 'wreath-of-flame', 'Crown of Embers', 'skill', 1, 'none', [

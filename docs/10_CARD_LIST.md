@@ -595,7 +595,7 @@ Tokens (made by other cards):
 
 ## Monk (aurelion, 82 HP)
 
-A monk who fights in stances. Starts every fight Serene, and every stance she enters stokes her Fervor towards Radiance.
+A monk who fights in stances. Starts every fight Serene, and every stance he enters stokes his Fervor towards Radiance.
 
 Paths: Fury: get in, hit hard, live through it / Flow: change stance again and again; every change pays / Radiant: build Fervor to 10 for a triple-damage turn
 

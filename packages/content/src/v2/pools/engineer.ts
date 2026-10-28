@@ -67,7 +67,7 @@ export const ENGINEER: CardDef[] = [
     'none',
     [on('summon', [status('might', 1, 'allFriends')])],
     {
-      up: { cost: 1 },
+      up: { innate: true },
     },
   ),
 
@@ -84,9 +84,16 @@ export const ENGINEER: CardDef[] = [
     [summon('micro-drone'), summon('micro-drone')],
     { exhaust: true },
   ),
-  r('uncommon', 'swarm-tactics', 'Swarm Tactics', 'power', 1, 'none', [
-    on('summon', [dmg(6, 'randomFoe')]),
-  ]),
+  r(
+    'uncommon',
+    'swarm-tactics',
+    'Swarm Tactics',
+    'power',
+    1,
+    'none',
+    [on('summon', [dmg(6, 'randomFoe')])],
+    { up: { effects: [on('summon', [dmg(9, 'randomFoe')])] } },
+  ),
   r('uncommon', 'detonate', 'Detonate', 'skill', 0, 'ally', [dmg(12, 'allFoes'), sacrifice]),
   r(
     'rare',
@@ -98,9 +105,17 @@ export const ENGINEER: CardDef[] = [
     [on('allyDies', [draw(1), summon('micro-drone')])],
     { up: { innate: true } },
   ),
-  r('rare', 'mass-production', 'Mass Production', 'power', 3, 'none', [
-    on('turnStart', [summon('patrol-drone')]),
-  ]),
+  r(
+    'rare',
+    'mass-production',
+    'Mass Production',
+    'power',
+    3,
+    'none',
+    [on('turnStart', [summon('patrol-drone')])],
+    // (a machine every turn is an engine, like Rolling Thunder's Shells: the upgrade is the cost; Patrol Drone+ was +64%, DECISIONS #396)
+    { up: { cost: 2 } },
+  ),
   r(
     'rare',
     'drone-carrier',
@@ -166,9 +181,16 @@ export const ENGINEER: CardDef[] = [
   r('rare', 'emp', 'EMP', 'snare', 1, 'none', [status('stunned', 1, 'attacker')], {
     trigger: { on: 'attacked' },
   }),
-  r('rare', 'perpetual-motion', 'Perpetual Motion', 'power', 1, 'none', [
-    on('turnStart', [primeAll(2)]),
-  ]),
+  r(
+    'rare',
+    'perpetual-motion',
+    'Perpetual Motion',
+    'power',
+    1,
+    'none',
+    [on('turnStart', [primeAll(2)])],
+    { up: { effects: [on('turnStart', [primeAll(3)])] } },
+  ),
 
   r('common', 'relay-strike', 'Relay Strike', 'attack', 1, 'foe', [dmg(6), ACT]),
   r('uncommon', 'overwatch', 'Overwatch', 'snare', 1, 'none', [prime(4), dmg(7, 'attacker')], {
@@ -350,9 +372,16 @@ export const ENGINEER: CardDef[] = [
   r('rare', 'particle-cannon', 'Particle Cannon', 'attack', 2, 'foe', [
     scaled(dmg(8), per('slots', 6)),
   ]),
-  r('rare', 'foundry-awakens', 'The Foundry Awakens', 'power', 3, 'none', [
-    on('turnStart', [prime(3), summon('siege-engine')]),
-  ]),
+  r(
+    'rare',
+    'foundry-awakens',
+    'The Foundry Awakens',
+    'power',
+    3,
+    'none',
+    [on('turnStart', [prime(3), summon('siege-engine')])],
+    { up: { effects: [on('turnStart', [prime(5), summon('siege-engine')])] } },
+  ),
   r(
     'rare',
     'overclocked-legion',
@@ -408,7 +437,7 @@ export const ENGINEER: CardDef[] = [
     1,
     'none',
     [on('allyLost', [draw(1), barrier(2)])],
-    { up: { cost: 0 } },
+    { up: { effects: [on('allyLost', [draw(1), barrier(4)])] } },
   ),
   r(
     'uncommon',
@@ -442,7 +471,7 @@ export const ENGINEER: CardDef[] = [
     2,
     'none',
     [on('turnStart', [heal(2, 'allFriends')])],
-    { up: { cost: 1 } },
+    { up: { effects: [on('turnStart', [heal(3, 'allFriends')])] } },
   ),
   r('rare', 'swarm-surge', 'Swarm Surge', 'skill', 2, 'none', [
     summon('patrol-drone'),
@@ -451,7 +480,18 @@ export const ENGINEER: CardDef[] = [
 
   // --- brought back for the 20/30/25 rarity target (DECISIONS #341) ---
   r('uncommon', 'patch-job', 'Patch Job', 'skill', 0, 'ally', [growHp(5, 'target')]),
-  r('uncommon', 'relay-network', 'Relay Network', 'power', 1, 'none', [on('snare', [primeAll(3)])]),
+  r(
+    'uncommon',
+    'relay-network',
+    'Relay Network',
+    'power',
+    1,
+    'none',
+    [on('snare', [primeAll(3)])],
+    {
+      up: { effects: [on('snare', [primeAll(4)])] },
+    },
+  ),
 
   // --- Core: one big construct, built up and cashed in (DECISIONS #358) ---
   r('common', 'crankshaft', 'Crankshaft', 'attack', 1, 'foe', [

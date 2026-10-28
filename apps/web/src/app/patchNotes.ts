@@ -29,6 +29,23 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.116.0',
+    date: '2026-10-28',
+    title: 'Auras upgrade properly',
+    summary: 'Upgrading an Aura makes it do more, not just cost less.',
+    notes: [
+      {
+        kind: 'balance',
+        text: "62 Auras upgrade the Slay the Spire way: a bigger number (Rampage of Ire+ deals 9 to every enemy, Daily Rite+ gives 3 Fervor, Swarm Tactics+ deals 9, Masquerade+ 4 per suit), Opening hand for small engines (Shell Game+, Battle Rhythm+, Legion+, Hunter's Call+), or less HP lost (Ancient Fury+, Berserk Tempo+, Iron Body+).",
+      },
+      {
+        kind: 'changed',
+        text: "Auras whose effect cannot grow still cost 1 less when upgraded (Unholy Pact, Command Chip, Wild Hunt, Ascendant Form...). The Knight's Auras are unchanged.",
+      },
+    ],
+    heads: 'Rules changed: replays and Arena games from before this version no longer play.',
+  },
+  {
     version: '0.115.0',
     date: '2026-10-28',
     title: 'New faces',

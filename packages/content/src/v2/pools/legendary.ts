@@ -44,7 +44,7 @@ export const LEGENDARIES: CardDef[] = [
     2,
     'none',
     [on('turnStart', [stance('wrath'), dmg(4, 'allFoes'), barrier(4)])],
-    { up: { cost: 1 } },
+    { up: { effects: [on('turnStart', [stance('wrath'), dmg(6, 'allFoes'), barrier(6)])] } },
   ),
   // Gun: a sharper gun at once, and every shot sharpens it again and covers you
   p(
@@ -58,6 +58,13 @@ export const LEGENDARIES: CardDef[] = [
       forge('old-twelve-gauge', 6),
       on('play', [forge('old-twelve-gauge', 1), barrier(3)], { tag: 'gun' }),
     ],
-    { up: { cost: 1 } },
+    {
+      up: {
+        effects: [
+          forge('old-twelve-gauge', 9),
+          on('play', [forge('old-twelve-gauge', 1), barrier(3)], { tag: 'gun' }),
+        ],
+      },
+    },
   ),
 ];
