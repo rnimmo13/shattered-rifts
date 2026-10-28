@@ -14,7 +14,7 @@ deck takes one and a half of them. Our pools were ~16 cards and one build path e
    share one (Maren and Sehra are both Aurelion). Reward offers come from *your* pool + Neutral (+ the 1-in-10 Rift-crossed
    card from another character's pool).
 2. **Every Riftwalker has about 20 commons, 30 uncommons and 25-28 rares (the Legendaries are Rares for now, DECISIONS #363).** Each build path holds 6 commons, 9
-   uncommons and 7-8 rares; a few **glue** cards have no build path (DECISIONS #341). **There is no rule that a character has three build paths** (DECISIONS #362): most have three, Valeria has five. Rares define a build. Each build path works alone; two build paths can
+   uncommons and 7-8 rares; a few **glue** cards have no build path (DECISIONS #341). **There is no rule that a character has three build paths** (DECISIONS #362): most have three, Valeria four (her cards are the Ironclad's list, #367). Rares define a build. Each build path works alone; two build paths can
    combine; all of them at once is a bad deck. `pnpm poolaudit` (docs/POOL_AUDIT.md) lists each pool by build path and flags near-duplicates.
 3. **Shared toolkit, owned signatures.** Everyone has some of the common StS tools in their own flavour: draw, Barrier,
    Heal, Consume, Retain, Might, 0-cost cards, AoE, Mana gain, Exposed/Faltering, self-damage. A mechanic with its own
@@ -29,9 +29,9 @@ deck takes one and a half of them. Our pools were ~16 cards and one build path e
 | **Arcana** (was Lumen) and the Obsidian Blade (sharpen) | Obsidia (id `spellblade`) | nothing |
 | **Drones** and Assemble | Rivet | |
 | **Pack** buffs | Kesh | |
-| **Thorns** and Barrier-scaling | Maren | Barrier is shared; Thorns is Maren's |
+| **Thorns** and Barrier-scaling | nobody since DECISIONS #367 (Valeria's Thorns went when she became the Ironclad's list) | Barrier is shared |
 | ~~**Devotion**~~ | gone (DECISIONS #364) | Valeria's heal-and-spend mechanic was removed when she became the Ironclad shape |
-| **Traps** (face-down, auto-springing) | Vesper gets the most (14, with payoffs for setting them) | **Shared toolkit** like Might or Consume: every deck has a trap or two in its own flavour (Maren 4, Rivet 2, Quill 2 incl. a Bleed needle, Kesh, Ilvane, Sehra, Obsidia 1 each) and Neutral has 2. Enforced by `cards.test.ts` |
+| **Traps** (face-down, auto-springing) | Vesper gets the most (14, with payoffs for setting them) | **Shared toolkit** like Might or Consume: every deck but Valeria's (the Ironclad's list has none, #367) has a trap or two in its own flavour ( Rivet 2, Quill 2 incl. a Bleed needle, Kesh, Ilvane, Sehra, Obsidia 1 each) and Neutral has 2. Enforced by `cards.test.ts` |
 | **Foresee** | Vesper, Sehra, Obsidia | a Neutral common |
 | **Consume payoffs** | Kesh (Feast build path) | Neutral Consume-on-play is common |
 

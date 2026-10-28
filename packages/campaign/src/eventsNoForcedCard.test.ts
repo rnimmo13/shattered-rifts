@@ -41,10 +41,10 @@ function standing(seed: string): RunState {
       'bulwark-blow',
       'twin-cut',
       'oath-of-iron',
-      'barbed-guard',
+      'ember-ward',
       'bastion-engine',
       'cold-stare',
-      'anvil-strike',
+      'scorching-blow',
     ],
     map: {
       ...base.map,

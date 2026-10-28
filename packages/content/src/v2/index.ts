@@ -78,7 +78,6 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     mechanics: ['Barrier', 'Might', 'Exposed', 'Consume', 'Self-damage'],
     buildPaths: [
       'Bulwark: hit with your Barrier',
-      'Thorns: punish attackers',
       'Might: hit many times, harder and harder',
       'Consume: burn your own cards for value',
       'Blood: pay HP for Mana, cards and Might',

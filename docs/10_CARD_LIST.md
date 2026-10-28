@@ -6,7 +6,7 @@
 
 A knight of the Gilded Order. No companions: Might, Barrier and a deck she burns down to a point.
 
-Paths: Bulwark: hit with your Barrier / Thorns: punish attackers / Might: hit many times, harder and harder / Consume: burn your own cards for value / Blood: pay HP for Mana, cards and Might
+Paths: Bulwark: hit with your Barrier / Might: hit many times, harder and harder / Consume: burn your own cards for value / Blood: pay HP for Mana, cards and Might
 
 Starter: Strike, Strike, Strike, Strike, Strike, Defend, Defend, Defend, Defend, Sundering Blow
 

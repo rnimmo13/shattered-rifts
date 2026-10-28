@@ -53,9 +53,9 @@ describe('the knight is the Ironclad shape', () => {
     expect(RIFTWALKERS.knight.trait.triggers).toBeUndefined();
   });
 
-  it('keeps five build paths in its data (there is no limit of three, DECISIONS #362), though none is shown', () => {
-    expect(RIFTWALKERS.knight.buildPaths).toHaveLength(5);
-    expect(pathSizes('knight')).toHaveLength(5);
+  it('keeps four build paths in its data (there is no limit of three, DECISIONS #362), though none is shown', () => {
+    expect(RIFTWALKERS.knight.buildPaths).toHaveLength(4);
+    expect(pathSizes('knight')).toHaveLength(4);
     expect(BUILD_PATHS_SHOWN).toBe(false);
   });
 

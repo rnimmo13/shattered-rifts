@@ -320,7 +320,7 @@ describe('Aura wording (DECISIONS #299, #300)', () => {
   const text = (id: string): string => cardText(db, db.cards[id]!);
   it('an Aura that gives a lasting status once says it lasts the rest of the fight', () => {
     expect(text('unchained')).toBe('Gain 3 Might for the rest of the fight.');
-    expect(text('rock-bottom')).toMatch(/At the start of your turn: Lose 1 HP\.$/);
+    expect(text('warlords-oath')).toMatch(/^At the start of your turn: Gain 2 Might\.$/);
   });
   it('an Aura with an ongoing trigger does not, and Rift Resonance answers a reshuffle', () => {
     expect(text('rift-resonance')).toBe(

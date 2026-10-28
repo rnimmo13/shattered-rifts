@@ -403,6 +403,7 @@ export const KNIGHT: CardDef[] = [
     exhaust: true,
     replayFromExhaust: true,
   }),
+  // (Pact's End: 17 to everyone, playable once 3 cards are consumed)
   m('rare', 'ashen-reckoning', 'Ashen Reckoning', 'attack', 0, 'none', [dmg(17, 'allFoes')], {
     needsExhausted: 3,
   }),

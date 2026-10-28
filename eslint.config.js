@@ -36,7 +36,7 @@ const purityRules = {
 };
 
 export default tseslint.config(
-  { ignores: ['**/dist/**', '**/coverage/**', '**/node_modules/**', '**/.wrangler/**'] },
+  { ignores: ['**/dist/**', '**/coverage/**', '**/node_modules/**', '**/.wrangler/**', '.claude/**'] },
   js.configs.recommended,
   ...tseslint.configs.recommendedTypeChecked,
   {

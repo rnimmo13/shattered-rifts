@@ -21,10 +21,9 @@ const POOLS: Record<HeroId, string> = {
 const HEADS: Record<HeroId, [RegExp, number | null][]> = {
   knight: [
     [/bulwark/i, 0],
-    [/thorns/i, 1],
-    [/might/i, 2],
-    [/consume/i, 3],
-    [/blood/i, 4],
+    [/might/i, 1],
+    [/consume/i, 2],
+    [/blood/i, 3],
     [/basics|glue/i, null],
   ],
   engineer: [
