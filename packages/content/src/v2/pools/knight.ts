@@ -109,10 +109,10 @@ export const KNIGHT: CardDef[] = [
   }),
   // (Unmovable)
   m('rare', 'stone-stance', 'Stone Stance', 'power', 2, 'none', [status('unmovable', 1)]),
-  // (Flame Barrier: hits back for 4 this turn, as Thorns that wear off)
+  // (Flame Barrier: hits back for 4 through the enemy turn, as Thorns that then wear off)
   m('uncommon', 'ember-ward', 'Ember Ward', 'skill', 2, 'none', [
     barrier(12),
-    status('thorns', 4, 'self', true),
+    statusTheirs('thorns', 4, 'self'),
   ]),
 
   // --- Might ---

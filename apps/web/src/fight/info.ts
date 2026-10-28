@@ -178,7 +178,7 @@ export const STATUS_INFO: Record<
     name: 'Sapped',
     glyph: '⇣',
     tone: 'bad',
-    text: 'Its attacks deal this much less damage. It wears off at the end of its next turn.',
+    text: 'Its attacks deal this much less damage. A card says when it wears off (most: at the end of its next turn).',
   },
   cruelty: {
     name: 'Cruelty',
@@ -276,6 +276,42 @@ export const STATUS_INFO: Record<
     glyph: '✎',
     tone: 'good',
     text: 'A Skill you play gains Sly for the rest of the fight.',
+  },
+  reflect: {
+    name: 'Reflect',
+    glyph: '⟲',
+    tone: 'good',
+    text: 'Attack damage your Barrier soaks is dealt back to the attacker. It ends when your next turn starts.',
+  },
+  bladesweep: {
+    name: 'Blade Sweep',
+    glyph: '⟷',
+    tone: 'good',
+    text: 'Your Obsidian Blade strikes every enemy instead of one.',
+  },
+  bladeecho: {
+    name: 'Blade Echo',
+    glyph: '⧉',
+    tone: 'good',
+    text: 'Your Obsidian Blade is played once more for each stack.',
+  },
+  bladebane: {
+    name: 'Bladebane',
+    glyph: '✕',
+    tone: 'bad',
+    text: 'Takes double damage from the Obsidian Blade this turn.',
+  },
+  freeplay: {
+    name: 'Free Play',
+    glyph: '⚘',
+    tone: 'good',
+    text: 'The first this-many cards you play each turn cost no Mana.',
+  },
+  orbit: {
+    name: 'Momentum',
+    glyph: '◌',
+    tone: 'good',
+    text: 'For every 4 Mana you spend, gain this much Mana.',
   },
 };
 
@@ -398,6 +434,7 @@ export function keywordsOf(
     innate?: boolean | undefined;
     ethereal?: boolean | undefined;
     starCost?: number | undefined;
+    starX?: boolean | undefined;
     statusCost?: { status: string; amount: number; x?: boolean } | undefined;
     x?: boolean | undefined;
     effects: readonly {
@@ -445,7 +482,7 @@ export function keywordsOf(
   if (c.retain) add(KEYWORD_INFO['retain']);
   if (c.innate) add(KEYWORD_INFO['innate']);
   if (c.ethereal) add(KEYWORD_INFO['ethereal']);
-  if (c.starCost) add(KEYWORD_INFO['stars']);
+  if (c.starCost || c.starX) add(KEYWORD_INFO['stars']);
   if (c.statusCost) {
     const s = STATUS_INFO[c.statusCost.status as StatusId];
     if (s) add({ name: s.name, text: s.text });

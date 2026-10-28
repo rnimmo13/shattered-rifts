@@ -16,14 +16,18 @@ describe('balance guard rails', () => {
   it('a free card that replaces itself or makes Mana is consumed when played (no infinite loops)', () => {
     const bad: string[] = [];
     for (const c of playable) {
-      // (an Aura leaves the deck when it is played, so it cannot be played again either)
-      if (c.cost !== 0 || c.exhaust || c.x || c.kind === 'power' || consumes(c)) continue;
-      // cards into the hand: draws, fetches, discovers and cards made in hand (a scaled amount counts as at least one)
+      // (an Aura leaves the deck when it is played, so it cannot be played again either; a card with an Arcana cost is not free:
+      // every play spends Arcana, which no free card makes without being consumed, as the Regent's Alignment and Quasar)
+      if (c.cost !== 0 || c.exhaust || c.x || c.kind === 'power' || consumes(c) || (c.starCost ?? 0) > 0)
+        continue;
+      // cards into the hand: draws, fetches, discovers and cards made in hand (a scaled amount counts as at least one); a junk card
+      // made in hand only takes up room (Magma Crash's Rubble), so it is no draw
+      const junk = (id: string): boolean => V2_CARDS.find((x) => x.id === id)?.hero === 'junk';
       const draws = c.effects.reduce((n, o) => {
         if (o.op === 'draw') return n + Math.max(o.scale ? 1 : 0, o.amount);
         if (o.op === 'fetch') return n + o.amount;
         if (o.op === 'discover') return n + (o.count ?? 1);
-        if (o.op === 'addCard' && o.side === 'self' && o.to === 'hand')
+        if (o.op === 'addCard' && o.side === 'self' && o.to === 'hand' && !junk(o.card))
           return n + Math.max(o.scale ? 1 : 0, o.times ?? 1);
         return n;
       }, 0);

@@ -28,10 +28,7 @@ export const SHELVED_LEGENDARIES: readonly string[] = [
   'perfect-balance',
   'still-flame-ascendant',
   'eye-of-the-storm',
-  // spellblade
-  'the-sovereigns-crown',
-  'birth-of-a-star',
-  'shatterstorm',
+  // (spellblade: none, she is the Regent's card list, which has no Legendary to put away)
   // necromancer
   'the-last-toll',
   'the-drowned-king',

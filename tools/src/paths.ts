@@ -65,7 +65,7 @@ const HEADS: Record<HeroId, [RegExp, number | null][]> = {
   spellblade: [
     [/blade/i, 0],
     [/arcana/i, 1],
-    [/sigils/i, 2],
+    [/court/i, 2],
     [/basics/i, null],
   ],
   necromancer: [
@@ -119,10 +119,6 @@ const BY_ID: Record<string, number> = {
   'blood-on-the-sand': 0,
   'open-palm': 1,
   'shield-of-faith': 2,
-  'blade-oath': 0,
-  conqueror: 0,
-  'sovereign-strike': 1,
-  'meteor-shower': 1,
   'dutch-courage': 2,
   'mean-drunk': 2,
   'toll-in-advance': 0,
@@ -183,10 +179,7 @@ const BY_ID: Record<string, number> = {
   'eye-of-the-storm': 0,
   'perfect-balance': 1,
   'still-flame-ascendant': 2,
-  // spellblade
-  'the-sovereigns-crown': 0,
-  'birth-of-a-star': 1,
-  shatterstorm: 2,
+  // (spellblade: her headings decide, she has no Legendary)
   // drunkard
   'the-twelve-gauge-opera': 0,
   'one-more-round': 1,
@@ -293,9 +286,6 @@ const NO_PATH = [
   'crushing-palm',
   'inner-sight',
   'quick-palms',
-  'ray-of-light',
-  'gleam',
-  'star-barrier',
   'broken-bottle',
   'chaser',
   'dumpster-dive',
@@ -304,7 +294,6 @@ const NO_PATH = [
   'relay-network',
   'thousand-palms',
   'unbroken-calm',
-  'starlit-duel',
   // glue for the 20/30/25 rarity target (DECISIONS #341)
   // glue for the 20/30/25 rarity target (DECISIONS #341)
   'swarm-surge',
@@ -318,7 +307,6 @@ const NO_PATH = [
   'biased-weave',
   'many-voices',
   'poise',
-  'celestial-edge',
   'booby-trapped-window',
   'broken-window-theory',
   'soul-tithe',
@@ -342,10 +330,6 @@ const NO_PATH = [
   'spirit-shield',
   'breath-between-blows',
   'held-breath',
-  'gamma-burst',
-  'starburst',
-  'faint-glow',
-  'humble',
   'whiskey-miracle',
   'rock-bottom',
   'liquid-courage',

@@ -60,17 +60,6 @@ describe('legendary effects', () => {
     for (const u of s.sides.a.units) expect(u.statuses.might).toBeGreaterThanOrEqual(1);
   });
 
-  it("Volcano's Birth gives Arcana, cards and a Mana more every turn (DECISIONS #338)", () => {
-    const s0 = createFight('spellblade').state;
-    const s = play('spellblade', 'birth-of-a-star', (st) => {
-      st.sides.a.stars = 0;
-    });
-    expect(s.sides.a.stars).toBeGreaterThanOrEqual(8);
-    expect(s.sides.a.maxMana).toBe(s0.sides.a.maxMana + 1);
-    expect(s.sides.a.hand.length).toBeGreaterThanOrEqual(3);
-    expect(s0.sides.a.hand.length).toBeGreaterThan(0);
-  });
-
   it('every Aura-type shelved legendary lands on the board and stays', () => {
     for (const c of Object.values(db.cards).filter(
       (x) => SHELVED_LEGENDARIES.includes(x.id) && x.kind === 'power',
