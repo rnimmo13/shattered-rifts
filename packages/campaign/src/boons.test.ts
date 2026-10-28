@@ -23,7 +23,7 @@ import {
 
 /** Most tests are about the map and what is on it: step past the opening choice without taking anything from it. */
 const open = (r: RunState): RunState => ({ ...r, phase: 'map', context: null });
-const fresh = (hero: 'knight' | 'hunter' | 'trapper', seed: string): RunState =>
+const fresh = (hero: 'knight' | 'hunter' | 'trickster', seed: string): RunState =>
   open(newRun(hero, seed, 'normal'));
 
 const inFight = (base: RunState, kind: 'elite' | 'warden' | 'duel'): RunState => {
@@ -112,7 +112,7 @@ describe('boons in a run', () => {
   });
 
   it('saves refuse unknown or repeated boons', () => {
-    const r = fresh('trapper', 'sv');
+    const r = fresh('trickster', 'sv');
     expect(parseRun(JSON.stringify({ ...r, boons: ['nope'] }))).toBeNull();
     expect(parseRun(JSON.stringify({ ...r, boons: ['iron-sigil', 'iron-sigil'] }))).toBeNull();
     expect(parseRun(JSON.stringify({ ...r, boons: ['iron-sigil'] }))).not.toBeNull();
@@ -234,7 +234,7 @@ describe('potions in a run', () => {
   });
 
   it('saves refuse unknown potions or more than three', () => {
-    const r = fresh('trapper', 'sp');
+    const r = fresh('trickster', 'sp');
     expect(parseRun(JSON.stringify({ ...r, potions: ['nope'] }))).toBeNull();
     expect(parseRun(JSON.stringify({ ...r, potions: Array(4).fill('fire-flask') }))).toBeNull();
     expect(parseRun(JSON.stringify({ ...r, potions: ['fire-flask'] }))).not.toBeNull();

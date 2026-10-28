@@ -211,7 +211,7 @@ const SCENES: Record<string, (g: G, W: number, H: number, c: SceneColors, r: R) 
     });
   },
   // moonlit rooftops, with web lines strung between the chimneys
-  trapper(g, W, H, c, r) {
+  trickster(g, W, H, c, r) {
     lamp(g, '#e8e0ff', W * (0.2 + r() * 0.6), H * 0.22, 50, 0.4);
     const tops: [number, number][] = [];
     const windows: [number, number][] = [];

@@ -2,7 +2,7 @@
 
 886 cards. Design rules for pools are in `09_ROSTER.md`.
 
-## Valeria (aurelion, 80 HP)
+## Knight (aurelion, 80 HP)
 
 A knight of the Gilded Order. No companions: Might, Barrier and a deck she burns down to a point.
 
@@ -101,7 +101,7 @@ Tokens (made by other cards):
 |---|---|---|---|---|
 | Giant Rock | 1 | attack | common | Deal 16 damage. |
 
-## Rivet (nexus, 70 HP)
+## Engineer (nexus, 70 HP)
 
 A tinkerer of machines. She starts every fight with a Drone and builds an army of them.
 
@@ -192,7 +192,7 @@ Starter: Strike, Strike, Strike, Strike, Strike, Defend, Defend, Defend, Deploy 
 | Heavy Hitter | 2 | attack | rare | Deal damage equal to your biggest companion's max HP. |
 | Drone Uprising | 2 | skill | rare | Summon 3 Drones (8 HP each). At the end of your turn each will: Deal 3 damage. Each of your companions gains 3 Primed. Consume. |
 
-## Kesh the Unfed (wyldmaw, 80 HP)
+## Hunter (wyldmaw, 80 HP)
 
 A hunter with a Hound. Pays HP to buff the whole pack with Might.
 
@@ -284,9 +284,9 @@ Starter: Strike, Strike, Strike, Strike, Defend, Defend, Defend, Savage Bite, Bl
 | Hunger Unbound | 2 | aura | rare | Gain 1 Unbound. At the start of your turn: Lose 3 HP. |
 | Bloodmoon Hunt | 2 | skill | rare | Summon 2 Hounds (8 HP each). At the end of your turn each will: Deal 4 damage. Each of your companions gains 3 Might. All your allies act now. Consume. |
 
-## Vesper Nightlace (umbral, 80 HP)
+## Trickster (umbral, 80 HP)
 
-A masked trapper who always sees the next move coming. No companions: Traps, Exposed and patience.
+A masked trickster who always sees the next move coming. No companions: Traps, Exposed and patience.
 
 Paths: Traps: one for every trigger / Exposed: mark, then spend the mark / Patience: Hold your cards, keep your Mana, strike later
 
@@ -375,7 +375,7 @@ Starter: Strike, Strike, Strike, Defend, Defend, Defend, Defend, Veil Strike, Ve
 | Patient Guard | 1 | aura | rare | At the end of your turn: Gain 4 (+1 per card in hand) Barrier. |
 | The Long Ambush | 3 | trap | rare | At the start of the enemy turn: Deal 25 damage to ALL enemies. Stun ALL enemies for 2 turns. Apply 3 Exposed to ALL enemies. |
 
-## Sylas (umbral, 70 HP)
+## Assassin (umbral, 70 HP)
 
 A cutpurse with a sleeve full of blades: a Sleeve Knife finds its way into his hand every turn. Knives, Bleed and sleight of hand.
 
@@ -475,7 +475,7 @@ Tokens (made by other cards):
 | Sleeve Knife | 0 | attack | common | Deal 4 damage. Consume. |
 | Inked Knife | 0 | attack | common | Deal 5 damage. Apply 1 Faltering. Consume. |
 
-## Ilvane (nexus, 75 HP)
+## Shaman (nexus, 75 HP)
 
 An elder shaman of the old spirits, who plants totems and wakes them. Starts every fight with three totems (Hawk, Bear and Splinter).
 
@@ -575,7 +575,7 @@ Tokens (made by other cards):
 |---|---|---|---|---|
 | Kindling | 0 | skill | common | Gain 1 Mana. Consume. |
 
-## Sehra (aurelion, 82 HP)
+## Barbarian (aurelion, 82 HP)
 
 A barbarian who fights in stances. Starts every fight Serene, and every stance she enters stokes her Fervor towards Radiance.
 
@@ -666,7 +666,7 @@ Starter: Strike, Strike, Strike, Strike, Defend, Defend, Defend, Defend, Kindle 
 | Unbroken Calm | 2 | aura | rare | At the start of your turn: Gain 4 Barrier. Draw 1 card. |
 | Eye of the Storm | 2 | aura | rare | At the start of your turn: Enter Fury. Deal 6 damage to ALL enemies. Gain 6 Barrier. |
 
-## Obsidia (starfall, 75 HP)
+## Spellblade (starfall, 75 HP)
 
 A spellblade of black glass and ember. Spends Arcana on her biggest cards, calls an Obsidian Blade that every Sharpen improves for good, and fills her hand with Retainers and borrowed cards.
 
@@ -768,7 +768,7 @@ Tokens (made by other cards):
 | Retainer Dive | 0 | attack | common | Deal 13 damage. Consume. |
 | Retainer Guard | 0 | skill | common | Gain 7 Barrier. Consume. |
 
-## KP, the Homeless Drunk (midden, 88 HP)
+## Drunkard (midden, 88 HP)
 
 A short, fat, bald dwarf with a hammer, an Old Twelve Gauge that hits every enemy and gets sharper, and a trolley of window panes. Booby traps, glass and buckshot.
 
@@ -867,7 +867,7 @@ Tokens (made by other cards):
 | Buckshot Shell | 0 | attack | common | Deal 4 damage to ALL enemies. Consume. |
 | Old Twelve Gauge | 1 | attack | common | Deal 5 (+1 per point of sharpening) damage to ALL enemies. Point Blank: 25% more when only one enemy is left. Hold. |
 
-## Dorian Blackthorn (gloomfen, 70 HP)
+## Necromancer (gloomfen, 70 HP)
 
 A warden of the drowned dead. His Bone Thralls stand between him and harm and strike when he commands; his enemies are cursed with Fate.
 
@@ -1030,7 +1030,7 @@ Tokens (made by other cards):
 - knight: 82
 - engineer: 80
 - hunter: 81
-- trapper: 80
+- trickster: 80
 - assassin: 82
 - shaman: 83
 - barbarian: 80

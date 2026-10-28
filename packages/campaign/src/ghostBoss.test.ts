@@ -42,8 +42,8 @@ function atWarden(tier: number, ghost: boolean): RunState {
 
 const entry = {
   name: 'Rob',
-  hero: 'trapper',
-  deck: [...RIFTWALKERS.trapper.starter],
+  hero: 'trickster',
+  deck: [...RIFTWALKERS.trickster.starter],
   boons: ['iron-sigil'],
   tier: 5,
   stage: 2,
@@ -88,13 +88,13 @@ describe('Wardens that are ghosts', () => {
     const withGhost = attachGhost(run, entry);
     expect(ghostWanted(withGhost)).toBe(false);
     const plan = duelPlan(withGhost)!;
-    expect(plan.ghost?.hero).toBe('trapper');
+    expect(plan.ghost?.hero).toBe('trickster');
     expect(plan.ghost?.name).toBe('Rob');
-    expect(plan.ghost?.hp).toBe(ghostBossHp('trapper', 5, run.stage));
+    expect(plan.ghost?.hp).toBe(ghostBossHp('trickster', 5, run.stage));
     expect(plan.ghost?.dmgPct).toBe(ghostBossDmg(5, run.stage));
     expect(plan.kind).toBe('warden');
     // the player is told plainly that this Warden is a ghost deck, but never whose
-    expect(withGhost.eventResult).toMatch(/^Ghost Warden! .*a Trapper deck from the Arena/);
+    expect(withGhost.eventResult).toMatch(/^Ghost Warden! .*a Trickster deck from the Arena/);
     // (whose deck it is is never said in the campaign)
     expect(withGhost.eventResult).not.toMatch(/Rob/);
     // none came: the usual Warden, and it is not asked for again (and nothing says ghost)
@@ -127,7 +127,7 @@ describe('Wardens that are ghosts', () => {
     expect(checkGhostBoss({ ...entry, deck: entry.deck.slice(0, 3) })).toBeNull();
     expect(checkGhostBoss({ ...entry, boons: ['no-such-boon'] })).toBeNull();
     expect(checkGhostBoss(null)).toBeNull();
-    expect(checkGhostBoss('trapper')).toBeNull();
+    expect(checkGhostBoss('trickster')).toBeNull();
     // a bad ghost is turned away and the usual Warden is fought
     const run = atWarden(5, true);
     const after = attachGhost(run, { ...entry, hero: 'nobody' });
@@ -136,9 +136,9 @@ describe('Wardens that are ghosts', () => {
   });
 
   it('has more HP than its Riftwalker does, and more with each Rift Tier', () => {
-    const base = RIFTWALKERS.trapper.hero.maxHp;
-    expect(ghostBossHp('trapper', 4)).toBeGreaterThan(base);
-    expect(ghostBossHp('trapper', 12)).toBeGreaterThan(ghostBossHp('trapper', 4));
+    const base = RIFTWALKERS.trickster.hero.maxHp;
+    expect(ghostBossHp('trickster', 4)).toBeGreaterThan(base);
+    expect(ghostBossHp('trickster', 12)).toBeGreaterThan(ghostBossHp('trickster', 4));
   });
 
   it('grows with the tier table like every Warden: HP and damage, stage by stage (DECISIONS #237)', () => {
@@ -146,7 +146,7 @@ describe('Wardens that are ghosts', () => {
     let last = { hp: 0, dmg: 0 };
     for (let t = 4; t <= 20; t++)
       for (let s = 1; s <= 3; s++) {
-        const now = { hp: ghostBossHp('trapper', t, s), dmg: ghostBossDmg(t, s) };
+        const now = { hp: ghostBossHp('trickster', t, s), dmg: ghostBossDmg(t, s) };
         expect(now.hp).toBeGreaterThan(last.hp);
         expect(now.dmg).toBeGreaterThanOrEqual(last.dmg);
         last = now;

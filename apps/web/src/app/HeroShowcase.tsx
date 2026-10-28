@@ -49,7 +49,7 @@ export function HeroShowcase(props: {
       <div className="home__info">
         <h2 className="home__hero">{hero.hero.name}</h2>
         <p className="home__role">
-          {hero.role} · {realm}
+          {realm}
         </p>
         <p className="home__paths">
           {hero.mechanics.map((l) => (

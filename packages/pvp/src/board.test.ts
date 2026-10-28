@@ -73,9 +73,9 @@ describe('the Arena board', () => {
       row('a', 'hunter', false, 3),
       row('b', 'engineer', true, 4),
       row('b', 'engineer', true, 5),
-      row('c', 'trapper', true, 6),
-      row('c', 'trapper', true, 7),
-      row('c', 'trapper', true, 8),
+      row('c', 'trickster', true, 6),
+      row('c', 'trickster', true, 7),
+      row('c', 'trickster', true, 8),
     ];
     const board = rankPvp(rows);
     expect(board.map((s) => s.name)).toEqual(['c', 'b', 'a']);

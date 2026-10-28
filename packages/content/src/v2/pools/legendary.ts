@@ -18,7 +18,7 @@ import {
 
 const r = pool('engineer', 'nexus');
 const k = pool('hunter', 'wyldmaw');
-const v = pool('trapper', 'umbral');
+const v = pool('trickster', 'umbral');
 const s = pool('barbarian', 'aurelion');
 const p = pool('drunkard', 'midden');
 

@@ -135,7 +135,7 @@ export const EVENTS: EventDef[] = [
         };
       return {
         title: 'A traveller from another world',
-        text: `${RIFTWALKERS[from].hero.name.split(',')[0]} left a card on the road. It is theirs, not yours: it works in your deck, but it leans on mechanics you may not build around.`,
+        text: `The ${RIFTWALKERS[from].hero.name} left a card on the road. It is theirs, not yours: it works in your deck, but it leans on mechanics you may not build around.`,
         options: [
           {
             id: 'cross',

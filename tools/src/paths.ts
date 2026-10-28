@@ -9,7 +9,7 @@ const POOLS: Record<HeroId, string> = {
   knight: 'knight',
   engineer: 'engineer',
   hunter: 'hunter',
-  trapper: 'trapper',
+  trickster: 'trickster',
   assassin: 'assassin',
   shaman: 'shaman',
   barbarian: 'barbarian',
@@ -38,7 +38,7 @@ const HEADS: Record<HeroId, [RegExp, number | null][]> = {
     [/feast|berserker|predator/i, 2],
     [/basics/i, null],
   ],
-  trapper: [
+  trickster: [
     [/snares|traps/i, 0],
     [/exposed/i, 1],
     [/patience/i, 2],
@@ -157,7 +157,7 @@ const BY_ID: Record<string, number> = {
   'hunger-unleashed': 0,
   'bloodmoon-hunt': 1,
   'apex-maw': 2,
-  // trapper
+  // trickster (was trapper, DECISIONS #372)
   'the-perfect-trap': 0,
   'the-long-ambush': 1,
   masquerade: 2,

@@ -1874,7 +1874,7 @@ function transformCard(r: Run, sd: SideState, c: CardInst, into: CardId): void {
   cardDef(r.db, into);
   c.card = into;
   // (it is a new card: nothing the old one was given carries over)
-  for (const k of ['costMod', 'bonus', 'ethereal', 'retain', 'replay', 'costUp'] as const) delete c[k];
+  for (const k of ['costMod', 'bonus', 'ethereal', 'retain', 'replay', 'costUp', 'costDown'] as const) delete c[k];
   r.ev.push({ type: 'transform', side: sd.id, card: c.id, def: c.card });
 }
 
@@ -3136,24 +3136,20 @@ function playCard(r: Run, action: Extract<Action, { type: 'play' }>): void {
     r.ev.push({ type: 'died', unit: out.id, released: true });
   }
   sd.hand.splice(i, 1);
-  const freeAttack = cd.kind === 'attack' && stacks(hero, 'freeattack') > 0;
-  // (a Skill that was free anyway, while Unbound, does not spend Pounce's free Skill)
-  const freeSkill =
-    cd.kind === 'skill' &&
-    stacks(hero, 'freeskill') > 0 &&
-    stacks(hero, 'unbound') <= 0 &&
-    !inst.freeTurn &&
-    cd.cost + (inst.costMod ?? 0) + (inst.costUp ?? 0) + (sd.costTax ?? 0) - (inst.costDown ?? 0) > 0;
-  // (the Necrobinder copy) Veilpiercer's free Fleeting card is spent only when it is what makes the card free
-  let freeEthereal =
-    !freeAttack && !freeSkill && isEthereal(cd, inst) && stacks(hero, 'freeethereal') > 0;
-  if (freeEthereal) {
-    const held = stacks(hero, 'freeethereal');
-    delete hero.statuses.freeethereal;
-    freeEthereal = costOf(r.db, sd, inst) > 0;
-    hero.statuses.freeethereal = held;
-  }
-  const freePower = cd.kind === 'power' && stacks(hero, 'freepower') > 0;
+  // a one-shot free card (Free Attack, Free Skill, a free Fleeting card, a free Aura) is spent only when it is what makes the card
+  // free: a card that costs nothing anyway (Unbound, Free Play, a discount, a cost of 0) leaves it for the next one
+  const makesFree = (st: StatusId, fits: boolean): boolean => {
+    const held = stacks(hero, st);
+    if (!fits || held <= 0) return false;
+    delete hero.statuses[st];
+    const without = costOf(r.db, sd, inst);
+    hero.statuses[st] = held;
+    return without > 0;
+  };
+  const freeAttack = makesFree('freeattack', cd.kind === 'attack');
+  const freeSkill = makesFree('freeskill', cd.kind === 'skill');
+  const freeEthereal = !freeAttack && !freeSkill && makesFree('freeethereal', isEthereal(cd, inst));
+  const freePower = makesFree('freepower', cd.kind === 'power');
   const paid = costOf(r.db, sd, inst);
   sd.mana -= paid;
   sd.spentTurn = (sd.spentTurn ?? 0) + paid + (cd.x ? sd.mana : 0);
@@ -3222,13 +3218,7 @@ function playCard(r: Run, action: Extract<Action, { type: 'play' }>): void {
     if (again !== 'echo') addStatus(r, hero, again, -1);
     runOps(r, mkAct(hero, { target, card: cd, inst, x }), cd.effects);
   }
-  // Blade Echo: the blade is played once more per stack
-  if (cd.kind === 'attack' && cd.tags?.includes(BLADE_TAG))
-    for (let k = 0; k < stacks(hero, 'bladeecho') && !r.s.winner && !r.s.pending; k++)
-      runOps(r, mkAct(hero, { target, card: cd, inst, x }), cd.effects);
-  // (the Necrobinder copy) Replay, given by Transfigure: the copy is played that many more times (without asking for choices)
-  for (let k = 0; k < (inst.replay ?? 0) && !r.s.winner && !r.s.pending; k++)
-    runOps(r, mkAct(hero, { target, card: cd, inst, x }), cd.effects);
+  extraPlays(r, hero, cd, inst, target, x);
   const asked = r.s.pending as CombatState['pending'];
   if (asked) {
     asked.finish = inst;
@@ -3236,6 +3226,23 @@ function playCard(r: Run, action: Extract<Action, { type: 'play' }>): void {
     return;
   }
   finishCard(r, sd, inst, cd, target, cd.x ? x : paid);
+}
+
+/** The plays a card gets on top of its own, without asking for choices: Blade Echo (the blade once more per stack) and Replay
+ * (Transfigure: that many more times). They run once the card's own play, and any choice it asked for, are done. */
+function extraPlays(
+  r: Run,
+  hero: Unit,
+  cd: CardDef,
+  inst: CardInst,
+  target: Unit | null,
+  x: number,
+): void {
+  if (cd.kind === 'attack' && cd.tags?.includes(BLADE_TAG))
+    for (let k = 0; k < stacks(hero, 'bladeecho') && !r.s.winner && !r.s.pending; k++)
+      runOps(r, mkAct(hero, { target, card: cd, inst, x }), cd.effects);
+  for (let k = 0; k < (inst.replay ?? 0) && !r.s.winner && !r.s.pending; k++)
+    runOps(r, mkAct(hero, { target, card: cd, inst, x }), cd.effects);
 }
 
 /** The answer to a pending choice: carry it out, then let the card finish. */
@@ -3327,6 +3334,8 @@ function pickCards(r: Run, action: Extract<Action, { type: 'pick' }>): void {
       cd.effects,
     );
   }
+  if (fin && cd && hero && !r.s.winner) extraPlays(r, hero, cd, fin, findUnit(r.s, p.target) ?? null, p.x);
+  // (an extra play cannot ask: it never sets a choice, so the card always finishes here)
   if (fin && cd) finishCard(r, sd, fin, cd, findUnit(r.s, p.target) ?? null, p.paid);
 }
 

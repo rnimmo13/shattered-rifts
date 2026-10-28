@@ -5,6 +5,8 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **Riftwalkers go by their class for now** (Knight, Engineer, Hunter, Trickster, Assassin, Shaman, Barbarian, Spellblade, Necromancer, Drunkard), and the **Trapper is now the Trickster**.
+- **Fixed:** a Free Attack, Free Skill or free Aura is no longer used up on a card that cost nothing anyway; Blade Echo and replayed cards also repeat cards that ask you to choose.
 - Sylas is rebuilt on the Slay the Spire 2 Silent's card list under his own names: Sleeve Knives, Bleed and sleight of hand, with Sly cards that play themselves when you discard them. He starts with 5 Strikes, 5 Defends, Hobbling Jab and Duck and Weave at 70 HP; his old cards in saved runs and decks become the nearest new card.
 - Obsidia is rebuilt on the Slay the Spire 2 Regent's card list in her own theme: Arcana for Stars, the Obsidian Blade for the Sovereign Blade, Retainers and Neutral cards for minions and Colorless cards; 82 cards, a 75 HP Regent starter, and her old cards with no counterpart retired into the nearest new one.
 - **Dorian is now the Necrobinder's card list, card for card** (85 cards of his own plus Strike and Defend): Raise brings Bone Thralls with the HP the card says (up to three, then the weakest grows), Command cards make every Thrall strike, Gravesouls draw cards, and Fleeting cards have payoffs; 70 HP, and a starting deck of 4 Strike, 4 Defend, Raise Thrall and Off the Leash. His other cards and his Trap are gone.

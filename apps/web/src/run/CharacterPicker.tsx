@@ -38,7 +38,6 @@ export function CharacterPicker(props: { value: HeroId; onChange: (id: HeroId) =
                     >
                       <HeroIcon hero={id} size={58} />
                       <span className="picker__name">{x.hero.name}</span>
-                      <span className="picker__role">{x.role}</span>
                       <span className="picker__realm">
                         {x.mechanics.slice(0, 3).join(' · ')}
                       </span>
@@ -50,7 +49,7 @@ export function CharacterPicker(props: { value: HeroId; onChange: (id: HeroId) =
           ))}
         </div>
         <figure className="picker__figure">
-          <img src={figureUrl} alt={`${c.hero.name}, ${c.role}`} />
+          <img src={figureUrl} alt={c.hero.name} />
         </figure>
       </div>
 
@@ -58,7 +57,7 @@ export function CharacterPicker(props: { value: HeroId; onChange: (id: HeroId) =
         <div className="picker__about">
           <h2 className="picker__title">
             <HeroIcon hero={props.value} size={44} />
-            {c.hero.name} <small className="picker__titlerole">{c.role}</small>
+            {c.hero.name}
           </h2>
           <p className="picker__style">{c.blurb}</p>
           {quote && <p className="picker__quote">{quote}</p>}

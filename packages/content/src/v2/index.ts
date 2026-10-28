@@ -26,7 +26,7 @@ export type HeroId =
   | 'knight'
   | 'engineer'
   | 'hunter'
-  | 'trapper'
+  | 'trickster'
   | 'assassin'
   | 'shaman'
   | 'barbarian'
@@ -42,6 +42,12 @@ export interface Riftwalker {
   /** the build paths of its card pool, shown on the character screen (docs/09_ROSTER.md); most have three, there is no rule (DECISIONS #362) */
   /** what kind of fighter this is, in one word players know ("Knight", "Assassin"...) */
   role: string;
+  /**
+   * the character's own name (Valeria, Rivet...). Hidden for now: players see the class name, which is `hero.name` too (Robert,
+   * 2026-10-28: "lets update each character to just display their class name instead of character names. i may bring them back";
+   * DECISIONS #372). Bringing them back is setting `hero.name` to this again.
+   */
+  persona: string;
   /** the innate trait every one of this character's fights starts with (shown on the character screens) */
   trait: HeroTrait;
   buildPaths: string[];
@@ -65,13 +71,14 @@ const rep = (id: string, n: number): string[] => Array<string>(n).fill(id);
 export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
   knight: {
     realm: 'aurelion',
+    persona: 'Valeria',
     role: 'Knight',
     trait: {
       name: 'Oathkeeper',
       text: 'Start every fight with 6 Barrier and 6 Plating: your Barrier survives each turn up to your Plating, which shrinks by 1 a turn.',
       fightStart: [barrier(6), status('plating', 6)],
     },
-    hero: { id: 'knight', name: 'Valeria', maxHp: 80, mana: 3, handSize: 5 },
+    hero: { id: 'knight', name: 'Knight', maxHp: 80, mana: 3, handSize: 5 },
     starter: [...rep('strike', 5), ...rep('defend', 4), 'sundering-blow'],
     blurb:
       'A knight of the Gilded Order. No companions: Might, Barrier and a deck she burns down to a point.',
@@ -90,13 +97,14 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
   },
   engineer: {
     realm: 'nexus',
+    persona: 'Rivet',
     role: 'Engineer',
     trait: {
       name: 'Tinkerer',
       text: 'At the start of your turn, you heal 1 and your companions gain 1 max HP.',
       turnStart: [heal(1, 'allFriends')],
     },
-    hero: { id: 'engineer', name: 'Rivet', maxHp: 70, mana: 3, handSize: 5, startUnits: ['drone'] },
+    hero: { id: 'engineer', name: 'Engineer', maxHp: 70, mana: 3, handSize: 5, startUnits: ['drone'] },
     starter: [...rep('strike', 5), ...rep('defend', 3), 'deploy-drone', 'overclock'],
     blurb:
       'A tinkerer of machines. She starts every fight with a Drone and builds an army of them.',
@@ -114,6 +122,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
   },
   hunter: {
     realm: 'wyldmaw',
+    persona: 'Kesh the Unfed',
     role: 'Hunter',
     trait: {
       name: 'Pack Instinct',
@@ -123,7 +132,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     },
     hero: {
       id: 'hunter',
-      name: 'Kesh the Unfed',
+      name: 'Hunter',
       maxHp: 80,
       mana: 3,
       handSize: 5,
@@ -143,19 +152,20 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
       'Predator: gain Mana, draw hard and play many cards in one turn; its attacks grow with every card played that turn.',
     ],
   },
-  trapper: {
+  trickster: {
     realm: 'umbral',
-    role: 'Trapper',
+    persona: 'Vesper Nightlace',
+    role: 'Trickster',
     trait: {
       name: 'Lying in Wait',
       text: 'Start every fight with 6 Barrier and 2 extra cards in hand. At the start of your turn, gain 4 Barrier.',
       fightStart: [barrier(6), draw(2)],
       turnStart: [barrier(4)],
     },
-    hero: { id: 'trapper', name: 'Vesper Nightlace', maxHp: 80, mana: 3, handSize: 5 },
+    hero: { id: 'trickster', name: 'Trickster', maxHp: 80, mana: 3, handSize: 5 },
     starter: [...rep('strike', 3), ...rep('defend', 4), ...rep('veil-strike', 2), 'set-the-web'],
     blurb:
-      'A masked trapper who always sees the next move coming. No companions: Traps, Exposed and patience.',
+      'A masked trickster who always sees the next move coming. No companions: Traps, Exposed and patience.',
     mechanics: ['Traps', 'Exposed', 'Hold', 'Foresee'],
     buildPaths: [
       'Traps: one for every trigger',
@@ -171,6 +181,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
   },
   assassin: {
     realm: 'umbral',
+    persona: 'Sylas',
     role: 'Assassin',
     trait: {
       name: 'Hidden Blades',
@@ -180,7 +191,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     // (the Silent's shape, DECISIONS #368: 70 HP, 5 Strikes, 5 Defends, Neutralize and Survivor)
     hero: {
       id: 'assassin',
-      name: 'Sylas',
+      name: 'Assassin',
       maxHp: 70,
       mana: 3,
       handSize: 5,
@@ -202,6 +213,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
   },
   shaman: {
     realm: 'nexus',
+    persona: 'Ilvane',
     role: 'Shaman',
     trait: {
       name: 'Totem-bound',
@@ -211,7 +223,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     // (the Slay the Spire 2 Defect's shape: 75 HP, 4 Strike, 4 Defend, Zap and Dualcast; his trait stays, see pools/shaman.ts)
     hero: {
       id: 'shaman',
-      name: 'Ilvane',
+      name: 'Shaman',
       maxHp: 75,
       mana: 3,
       handSize: 5,
@@ -234,6 +246,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
   },
   barbarian: {
     realm: 'aurelion',
+    persona: 'Sehra',
     role: 'Barbarian',
     trait: {
       name: 'Inner Fire',
@@ -242,7 +255,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     },
     hero: {
       id: 'barbarian',
-      name: 'Sehra',
+      name: 'Barbarian',
       maxHp: 82,
       mana: 3,
       handSize: 5,
@@ -266,6 +279,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
   },
   spellblade: {
     realm: 'starfall',
+    persona: 'Obsidia',
     role: 'Spellblade',
     trait: {
       name: 'Kindled',
@@ -276,7 +290,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     // Right), and his starter (4 Strike, 4 Defend, Falling Star = Cinderfall, Venerate = Gather Arcana). Kindled is hers, not his.
     hero: {
       id: 'spellblade',
-      name: 'Obsidia',
+      name: 'Spellblade',
       maxHp: 75,
       mana: 3,
       handSize: 5,
@@ -299,6 +313,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
   },
   drunkard: {
     realm: 'midden',
+    persona: 'KP, the Homeless Drunk',
     role: 'Drunkard',
     trait: {
       name: 'Clutch Genes',
@@ -307,7 +322,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     },
     hero: {
       id: 'drunkard',
-      name: 'KP, the Homeless Drunk',
+      name: 'Drunkard',
       maxHp: 88,
       mana: 3,
       handSize: 5,
@@ -345,6 +360,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
   },
   necromancer: {
     realm: 'gloomfen',
+    persona: 'Dorian Blackthorn',
     role: 'Necromancer',
     trait: {
       name: 'Grave Chill',
@@ -359,7 +375,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     // 70 floor every Riftwalker keeps, so 70; her Osty is his Bone Thrall, and he may have several)
     hero: {
       id: 'necromancer',
-      name: 'Dorian Blackthorn',
+      name: 'Necromancer',
       maxHp: 70,
       mana: 3,
       handSize: 5,
@@ -603,7 +619,9 @@ export const LEGACY_HERO_IDS: Readonly<Record<string, HeroId>> = {
   maren: 'knight',
   rivet: 'engineer',
   kesh: 'hunter',
-  vesper: 'trapper',
+  vesper: 'trickster',
+  // (the trapper became the Trickster, DECISIONS #372)
+  trapper: 'trickster',
   quill: 'assassin',
   ilvane: 'shaman',
   // (the totemist became the Shaman, DECISIONS #371)

@@ -271,7 +271,7 @@ describe('the run', () => {
   });
 
   it('collapses at 0 Resolve', () => {
-    let r = enterNode(fresh('trapper', 'c'), availableNodes(fresh('trapper', 'c'))[0]!.id);
+    let r = enterNode(fresh('trickster', 'c'), availableNodes(fresh('trickster', 'c'))[0]!.id);
     for (let i = 0; i < 2; i++) r = finishDuel(r, false);
     expect(r.phase).toBe('collapsed');
   });
@@ -658,10 +658,10 @@ describe('the other rooms and the rules around them', () => {
   });
 
   it('Bank ends the run with the deck, Continue goes a tier deeper', () => {
-    const cleared: RunState = { ...fresh('trapper', 'end'), phase: 'loopCleared' };
+    const cleared: RunState = { ...fresh('trickster', 'end'), phase: 'loopCleared' };
     expect(bank(cleared).phase).toBe('banked');
     expect(continueLoop(cleared).tier).toBe(2);
-    expect(() => bank(fresh('trapper', 'end'))).toThrow(RunError);
+    expect(() => bank(fresh('trickster', 'end'))).toThrow(RunError);
   });
 });
 

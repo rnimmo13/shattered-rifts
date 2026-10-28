@@ -28,7 +28,7 @@ export const OWN_LOOK: Record<string, string> = {
   knight: 'Valeria, a blonde knight in blue-and-gold plate',
   engineer: 'Rivet, an engineer with a hovering drone',
   hunter: 'Kesh, a tribal huntress with bone weapons',
-  trapper: 'Vesper, a masked trapper with teal glow',
+  trickster: 'Vesper, a masked trapper with teal glow',
   assassin: 'Sylas, a flamboyant rogue throwing teal-glowing knives',
   shaman: 'Ilvane, a spirit shaman who calls glowing totems',
   barbarian: 'Sehra, a flame-bound warrior with twin scimitars',

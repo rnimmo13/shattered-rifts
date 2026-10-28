@@ -19,7 +19,7 @@ const HERO: Record<string, [Archetype, Realm]> = {
   knight: ['knight', 'aurelion'],
   engineer: ['drone', 'nexus'],
   hunter: ['beast', 'wyldmaw'],
-  trapper: ['cultist', 'umbral'],
+  trickster: ['cultist', 'umbral'],
   assassin: ['wanderer', 'umbral'],
   shaman: ['mage', 'nexus'],
   barbarian: ['cleric', 'aurelion'],

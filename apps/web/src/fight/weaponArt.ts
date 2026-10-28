@@ -62,7 +62,7 @@ const HERO_WEAPON: Record<string, WeaponId> = {
   knight: 'sword',
   engineer: 'wrench',
   hunter: 'cleaver',
-  trapper: 'stiletto',
+  trickster: 'stiletto',
   assassin: 'throwing-knife',
   shaman: 'totem-staff',
   barbarian: 'flame-blade',

@@ -110,8 +110,8 @@ describe('Riftwalker identities (docs/08 §5)', () => {
     Object.values(db.cards).filter(
       (c) => c.realm === realm && c.kind === 'summon' && !c.id.endsWith('+'),
     );
-  it('The knight and the trapper have no companions at all', () => {
-    for (const h of ['knight', 'trapper'] as const) {
+  it('The knight and the trickster have no companions at all', () => {
+    for (const h of ['knight', 'trickster'] as const) {
       expect(RIFTWALKERS[h].hero.startUnits ?? []).toEqual([]);
     }
     expect(summonCards('aurelion')).toHaveLength(0);

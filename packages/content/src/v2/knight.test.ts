@@ -222,6 +222,17 @@ describe('the rest of the Ironclad list', () => {
     expect(s.sides.a.mana).toBe(0);
   });
 
+  it('a Free Attack is kept when the Attack costs nothing anyway (DECISIONS #372)', () => {
+    let s = fight(['relentless-push', 'hot-temper', 'strike']);
+    s.sides.a.mana = 3;
+    s = play(s, 'relentless-push');
+    s = play(s, 'hot-temper'); // 0 Mana: the Free Attack waits
+    expect(hero(s).statuses.freeattack).toBe(1);
+    s = play(s, 'strike');
+    expect(s.sides.a.mana).toBe(1);
+    expect(hero(s).statuses.freeattack).toBeUndefined();
+  });
+
   it('Bitter Breath consumes every card that is not an Attack, 5 Barrier for each', () => {
     const s0 = fight(['bitter-breath', 'strike', 'defend', 'defend', 'oath-of-iron']);
     const before = hero(s0).barrier;

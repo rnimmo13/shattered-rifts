@@ -53,13 +53,13 @@ function CrossTag(props: { def: CardDef; own?: string | undefined }) {
   return (
     <span
       className="pick__cross"
-      title={`This card belongs to ${r.hero.name}, the ${r.role}. It works in your deck, but it leans on mechanics your Riftwalker does not build around.`}
+      title={`This card belongs to the ${r.hero.name}. It works in your deck, but it leans on mechanics your Riftwalker does not build around.`}
     >
       <HeroIcon hero={h} size={26} />
       <span>
         <b>Rift-crossed</b>
         <small>
-          {r.hero.name.split(',')[0]} · {r.role}
+          {r.hero.name}
         </small>
       </span>
     </span>
@@ -547,7 +547,7 @@ export function MerchantView(props: {
       <header className="shop__head">
         <h2 className="stage-panel__title">
           {m.crossed
-            ? `A stranger from ${RIFTWALKERS[m.crossed as keyof typeof RIFTWALKERS]?.hero.name.split(',')[0] ?? 'another world'}'s world`
+            ? `A stranger from the ${RIFTWALKERS[m.crossed as keyof typeof RIFTWALKERS]?.hero.name ?? 'other'}'s world`
             : 'The rift merchant'}
         </h2>
         <div className="shop__purse" aria-label={`${shards} shards`}>
@@ -564,8 +564,7 @@ export function MerchantView(props: {
           <HeroIcon hero={m.crossed} size={34} />
           <span>
             <b>A visiting merchant.</b> Every card on this table belongs to{' '}
-            {RIFTWALKERS[m.crossed as keyof typeof RIFTWALKERS]?.hero.name}, the{' '}
-            {RIFTWALKERS[m.crossed as keyof typeof RIFTWALKERS]?.role}. They work in your deck, but
+            the {RIFTWALKERS[m.crossed as keyof typeof RIFTWALKERS]?.hero.name}. They work in your deck, but
             they lean on mechanics your Riftwalker does not build around.
           </span>
         </p>

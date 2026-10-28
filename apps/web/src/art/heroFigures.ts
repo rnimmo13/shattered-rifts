@@ -2522,7 +2522,7 @@ const PAINTERS: Record<string, { paint: Painter; shadow: number; rim: string }> 
   knight: { paint: knight, shadow: 130, rim: '#ffd27a' },
   engineer: { paint: engineer, shadow: 125, rim: '#6ad8ff' },
   hunter: { paint: hunter, shadow: 125, rim: '#c8e070' },
-  trapper: { paint: trapper, shadow: 115, rim: '#b48cff' },
+  trickster: { paint: trapper, shadow: 115, rim: '#b48cff' },
   assassin: { paint: assassin, shadow: 125, rim: '#ff5a5a' },
   shaman: { paint: totemist, shadow: 125, rim: '#7fd08a' },
   barbarian: { paint: barbarian, shadow: 140, rim: '#ff9a4a' },

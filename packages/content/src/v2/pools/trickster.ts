@@ -28,9 +28,9 @@ import {
   fetchCards,
 } from '../build';
 
-const v = pool('trapper', 'umbral');
+const v = pool('trickster', 'umbral');
 
-export const TRAPPER: CardDef[] = [
+export const TRICKSTER: CardDef[] = [
   // --- basics ---
   v('basic', 'veil-strike', 'Veil Strike', 'attack', 1, 'foe', [
     dmg(6),

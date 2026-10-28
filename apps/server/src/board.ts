@@ -108,7 +108,7 @@ const toDeck = (r: GhostSql): GhostDeck => ({
   id: r.id,
   owner: r.owner,
   ownerName: r.owner_name,
-  hero: r.hero,
+  hero: storedHero(r.hero),
   tier: r.tier,
   stage: r.stage,
   wins: r.wins,
@@ -193,8 +193,13 @@ export class Leaderboard extends DurableObject<Env> {
     }
     // rows written before the Riftwalkers were named for their class (maren -> knight) are brought up to date (it does nothing once they are)
     const legacy = Object.entries(LEGACY_HERO_IDS);
-    // (once only: a flag is kept, so a wake-up does not read every row again)
-    const done = ctx.storage.kv.get('heroIdsRenamed') === true;
+    // (once per set of renames: the set is kept, so a wake-up does not read every row again, but a new rename, like totemist ->
+    // shaman or trapper -> trickster, runs once more; DECISIONS #372)
+    const stamp = legacy
+      .map(([o, n]) => `${o}>${n}`)
+      .sort()
+      .join(',');
+    const done = ctx.storage.kv.get('heroIdsRenamed') === stamp;
     const rename = (table: string, col: string): void => {
       const cases = legacy.map(([o, n]) => `WHEN '${o}' THEN '${n}'`).join(' ');
       const olds = legacy.map(([o]) => `'${o}'`).join(',');
@@ -208,7 +213,7 @@ export class Leaderboard extends DurableObject<Env> {
       rename('runs', 'hero');
       rename('ghosts', 'hero');
       rename('ghost_games', 'human_hero');
-      ctx.storage.kv.put('heroIdsRenamed', true);
+      ctx.storage.kv.put('heroIdsRenamed', stamp);
     }
     // usernames: one per player, and no two players share one (compared by `key`, which ignores case and punctuation)
     ctx.storage.sql.exec(
@@ -664,7 +669,7 @@ export class Leaderboard extends DurableObject<Env> {
       ghost: {
         id: row.id,
         name: row.owner_name,
-        hero: row.hero,
+        hero: storedHero(row.hero),
         deck: parseList(row.deck),
         boons: parseList(row.boons),
         tier: row.tier,
@@ -704,7 +709,7 @@ export class Leaderboard extends DurableObject<Env> {
         owner: row.owner,
         entry: {
           name: `${row.owner_name}'s ghost`,
-          hero: row.hero,
+          hero: storedHero(row.hero),
           deck: parseList(row.deck),
           boons: parseList(row.boons),
           tier: row.tier,

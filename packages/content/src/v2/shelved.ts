@@ -15,7 +15,7 @@ export const SHELVED_LEGENDARIES: readonly string[] = [
   'hunger-unleashed',
   'bloodmoon-hunt',
   'apex-maw',
-  // trapper
+  // trickster (was trapper, DECISIONS #372)
   'the-perfect-trap',
   'the-long-ambush',
   'masquerade',

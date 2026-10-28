@@ -233,12 +233,12 @@ async function deckPicks(tag: string): Promise<void> {
   send(b, {
     type: 'join',
     playerId: b.id,
-    decks: [entryOf('engineer', 'Bob'), entryOf('trapper', 'Bob'), entryOf('spellblade', 'Bob')],
+    decks: [entryOf('engineer', 'Bob'), entryOf('trickster', 'Bob'), entryOf('spellblade', 'Bob')],
   });
   await until(() => a.match !== null && b.match !== null, 'both starts');
   // before the game, nothing about the other's decks was sent: only their name and badges
   for (const [bot, foeHeroes] of [
-    [a, ['engineer', 'trapper', 'spellblade']],
+    [a, ['engineer', 'trickster', 'spellblade']],
     [b, ['knight', 'hunter']],
   ] as const)
     for (const m of bot.inbox)
@@ -263,7 +263,7 @@ async function deckPicks(tag: string): Promise<void> {
 async function playQueue(): Promise<void> {
   console.log('queue:');
   const a = await connect('/pvp/queue', 'Cat', 'player-cat');
-  send(a, { type: 'queue', playerId: a.id, decks: [entryOf('trapper', 'Cat', 1)] });
+  send(a, { type: 'queue', playerId: a.id, decks: [entryOf('trickster', 'Cat', 1)] });
   const b = await connect('/pvp/queue', 'Dan', 'player-dan');
   send(b, { type: 'queue', playerId: b.id, decks: [entryOf('engineer', 'Dan', 2)] });
   await until(
@@ -279,7 +279,7 @@ async function playQueue(): Promise<void> {
   if (room !== other) throw new Error('the two players were sent to different rooms');
   console.log(`  matched into ${room}`);
   const ca = await connect(`/pvp/room/${room}`, 'Cat', a.id, true);
-  send(ca, { type: 'join', playerId: ca.id, decks: [entryOf('trapper', 'Cat', 1)] });
+  send(ca, { type: 'join', playerId: ca.id, decks: [entryOf('trickster', 'Cat', 1)] });
   const cb = await connect(`/pvp/room/${room}`, 'Dan', b.id, false);
   send(cb, { type: 'join', playerId: cb.id, decks: [entryOf('engineer', 'Dan', 2)] });
   await until(() => ca.match !== null && cb.match !== null, 'both starts');

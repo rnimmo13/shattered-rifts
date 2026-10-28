@@ -15,7 +15,7 @@ import { NECROMANCER } from './pools/necromancer';
 import { ASSASSIN } from './pools/assassin';
 import { ENGINEER } from './pools/engineer';
 import { BARBARIAN } from './pools/barbarian';
-import { TRAPPER } from './pools/trapper';
+import { TRICKSTER } from './pools/trickster';
 
 /** Every playable card with its "+" version, plus junk. */
 export const V2_CARDS: CardDef[] = [
@@ -24,7 +24,7 @@ export const V2_CARDS: CardDef[] = [
     ...KNIGHT,
     ...ENGINEER,
     ...HUNTER,
-    ...TRAPPER,
+    ...TRICKSTER,
     ...ASSASSIN,
     ...SHAMAN,
     ...BARBARIAN,

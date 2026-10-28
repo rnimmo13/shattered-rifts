@@ -102,13 +102,13 @@ describe('the Vault', () => {
   });
 
   it('names a deck by its Riftwalker and Rift Tier', () => {
-    expect(labelOf(deckFromRun(run('a', 3), 1))).toBe('Valeria: Tier 3 · Cleared');
+    expect(labelOf(deckFromRun(run('a', 3), 1))).toBe('Knight: Tier 3 · Cleared');
   });
 
   it('a copy taken after a stage says so', () => {
     const mid = deckFromStage(run('a', 2), 1, 1);
-    expect(labelOf(mid)).toBe('Valeria: Tier 2 · Stage 2/3');
-    expect(labelOf(deckFromStage(run('a', 2), 1, 0))).toBe('Valeria: Tier 2 · Stage 1/3');
+    expect(labelOf(mid)).toBe('Knight: Tier 2 · Stage 2/3');
+    expect(labelOf(deckFromStage(run('a', 2), 1, 0))).toBe('Knight: Tier 2 · Stage 1/3');
   });
 
   it('saving the same run again replaces its earlier save instead of adding a second', () => {

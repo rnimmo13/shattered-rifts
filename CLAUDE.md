@@ -22,7 +22,7 @@ Ko-fi-funded) → Steam full game ($7.99–$9.99) with PvP later. Owner: Robert.
 | `docs/07_TECH_ARCHITECTURE.md` | Stack, repo layout, engine API, testing, **milestones M0–M7** |
 | `ROADMAP.md` | Player-facing roadmap |
 
-**Riftwalker ids are class names** (knight, engineer, hunter, trapper, assassin, shaman, barbarian, spellblade, necromancer, drunkard; DECISIONS #190, #371). Never use a character's display name as an id; old ids are read through `canonicalHero`.
+**Riftwalker ids are class names** (knight, engineer, hunter, trickster, assassin, shaman, barbarian, spellblade, necromancer, drunkard; DECISIONS #190, #371, #372). Players see the class name (`hero.name`); the character names are kept in `Riftwalker.persona` for later (#372). Never use a character's display name as an id; old ids are read through `canonicalHero`.
 
 ## Golden rules
 1. **The engine is pure and deterministic.** `packages/combat` has no DOM, no `Math.random`, no

@@ -30,8 +30,8 @@ const setup = (seed: string): CombatSetup => ({
     potions: [],
   },
   b: {
-    hero: 'trapper',
-    deck: [...RIFTWALKERS.trapper.starter],
+    hero: 'trickster',
+    deck: [...RIFTWALKERS.trickster.starter],
     hp: 120,
     maxHp: 120,
     boons: [],

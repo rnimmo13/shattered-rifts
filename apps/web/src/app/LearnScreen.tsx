@@ -387,7 +387,7 @@ export function LearnScreen() {
             cards (or against enemies that use them).
           </p>
           <Words ids={SIGNATURE_WORDS} />
-          <h3>The totems (Ilvane)</h3>
+          <h3>The totems (Shaman)</h3>
           <dl>
             {runes.map((r) => (
               <div key={r.id} className="learn__row">
@@ -454,7 +454,7 @@ export function LearnScreen() {
               {g.heroes.map((h) => (
                 <div key={h} className="learn__hero learn__more">
                   <h4 className="learn__heroName">
-                    {RIFTWALKERS[h].hero.name} <small>{RIFTWALKERS[h].role}</small>
+                    {RIFTWALKERS[h].hero.name}
                   </h4>
                   <p className="learn__trait">
                     <b>{RIFTWALKERS[h].trait.name}.</b> {RIFTWALKERS[h].trait.text}
