@@ -29,6 +29,39 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.106.0',
+    date: '2026-10-28',
+    title: 'Classes by name, the Trickster',
+    summary: 'Every Riftwalker goes by their class for now, the Trapper is the Trickster, and a few card fixes.',
+    notes: [
+      {
+        kind: 'changed',
+        text: 'Riftwalkers are shown by their class: Knight, Engineer, Hunter, Trickster, Assassin, Shaman, Barbarian, Spellblade, Necromancer and Drunkard.',
+      },
+      {
+        kind: 'changed',
+        text: 'The Trapper is now the Trickster. Old runs, decks and ghosts keep working.',
+      },
+      {
+        kind: 'fixed',
+        text: 'A Free Attack, Free Skill or free Aura is no longer used up on a card that cost nothing anyway.',
+      },
+      {
+        kind: 'fixed',
+        text: 'Blade Echo and replayed cards also repeat cards that ask you to choose something.',
+      },
+      {
+        kind: 'fixed',
+        text: 'Ember Ward hits back through the enemy turn, as it says.',
+      },
+      {
+        kind: 'fixed',
+        text: 'Clearer card text: Hammer and Anvil, At the Threshold, Off the Leash, The Drowned King and Bloodfeast.',
+      },
+    ],
+    heads: 'The rules changed: reload if the game asks you to. Arena games and replays from before this version can no longer be watched.',
+  },
+  {
     version: '0.105.0',
     date: '2026-10-28',
     title: 'Five classes rebuilt',
