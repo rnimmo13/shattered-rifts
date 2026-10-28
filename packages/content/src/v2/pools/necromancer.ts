@@ -120,8 +120,8 @@ export const NECROMANCER: CardDef[] = [
     'skill',
     1,
     'none',
-    [on('turnStart', [raise(2), mana(2)], { once: true })],
-    { up: { effects: [on('turnStart', [raise(3), mana(3)], { once: true })] } },
+    [on('turnStart', [raise(2), mana(2)], { times: 1 })],
+    { up: { effects: [on('turnStart', [raise(3), mana(3)], { times: 1 })] } },
   ),
   // (Poke)
   g('common', 'knucklebone', 'Knucklebone', 'attack', 0, 'foe', [command(dmg(6))], CMD),

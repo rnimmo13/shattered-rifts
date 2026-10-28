@@ -10,7 +10,14 @@ import { V2_CARDS } from './cards';
 const playable = V2_CARDS.filter((c) => !c.unplayable && c.source !== 'token');
 /** a card that eats other cards for good (Consume, a companion) cannot loop: the deck runs out */
 const consumes = (c: CardDef): boolean =>
-  c.effects.some((o) => o.op === 'exhaustCards' || o.op === 'sacrifice' || o.op === 'drawLock');
+  c.effects.some(
+    (o) =>
+      o.op === 'exhaustCards' ||
+      o.op === 'sacrifice' ||
+      o.op === 'drawLock' ||
+      // (a card that costs more every time it is played cannot loop either: Modded)
+      (o.op === 'recost' && o.amount > 0),
+  );
 
 describe('balance guard rails', () => {
   it('a free card that replaces itself or makes Mana is consumed when played (no infinite loops)', () => {

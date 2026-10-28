@@ -91,8 +91,6 @@ const BY_ID: Record<string, number> = {
   // brought back for the 20/30/25 rarity target (DECISIONS #341)
   'wreath-of-flame': 2,
   // new cards of the 20/30/25 rarity target (DECISIONS #341)
-  'kindled-rite': 2,
-  'smoke-offering': 2,
   sagitta: 2,
   aquila: 2,
   'double-tap': 0,
@@ -114,8 +112,6 @@ const BY_ID: Record<string, number> = {
   hamstring: 1,
   'trick-of-the-light': 2,
   'stolen-moment': 2,
-  'crystal-ward': 0,
-  'cold-snap': 0,
   'rending-hands': 0,
   'blood-on-the-sand': 0,
   'open-palm': 1,
@@ -144,10 +140,6 @@ const BY_ID: Record<string, number> = {
   overload: 1,
   'hardened-chassis': 2,
   spotlight: 1,
-  'arc-flash': 0,
-  'lattice-collapse': 0,
-  'tuning-fork': 2,
-  'rune-carapace': 2,
   birdshot: 1,
   'creeping-dread': 0,
   'thralls-cue': 1,
@@ -170,12 +162,7 @@ const BY_ID: Record<string, number> = {
   'the-long-ambush': 1,
   masquerade: 2,
   // assassin: none (his Legendaries went with his older cards: the Silent's list, docs/decisions-pending/assassin.md)
-  // totemist
-  'cataclysm-glyph': 0,
-  'the-spirit-council': 1,
-  'the-grand-design': 2,
-  'chorus-of-glyphs': 2,
-  'tune-the-lattice': 2,
+  // totemist: none (his cards sit under their own headings: he is the Defect's list now)
   // barbarian
   'eye-of-the-storm': 0,
   'perfect-balance': 1,
@@ -302,8 +289,6 @@ const NO_PATH = [
   'careful-plan',
   'countless-nicks',
   'plague-cloud',
-  'biased-weave',
-  'many-voices',
   'poise',
   'booby-trapped-window',
   'broken-window-theory',
@@ -323,8 +308,6 @@ const NO_PATH = [
   'veil-of-dust',
   'tricksters-vanish',
   'nimble-hands',
-  'overtune',
-  'glyph-lattice',
   'spirit-shield',
   'breath-between-blows',
   'held-breath',

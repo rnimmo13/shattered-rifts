@@ -236,6 +236,10 @@ export const on = (
     ethereal?: boolean;
     minCost?: number;
     pin?: boolean;
+    /** the Defect copy (totemist): a cost limit, a number of answers, one totem's awakening */
+    maxCost?: number;
+    times?: number;
+    rune?: string;
   } = {},
 ): Extract<Op, { op: 'power' }> => ({ op: 'power', when, ops, ...narrow });
 
@@ -258,6 +262,18 @@ export const mark = (flag: 'ethereal' | 'retain' | 'replay', costUp?: number): O
   ...(costUp ? { costUp } : {}),
 });
 export const costTax = (amount: number): Op => ({ op: 'costTax', amount });
+
+// --- the Defect copy (totemist) -------------------------------------------------------------------------------------------
+/** totems' passives, now: every totem (or every one of a kind), or the oldest only (`first`); `aim` strikes the target */
+export const pulse = (
+  opts: { rune?: string; first?: boolean; times?: number; aim?: boolean } = {},
+): Op => ({ op: 'pulse', ...opts });
+/** this card costs `amount` more (less, if negative) for the rest of the fight */
+export const recost = (amount: number): Op => ({ op: 'recost', amount });
+export const reshuffle: Op = { op: 'reshuffle' };
+export const returnPlayed: Op = { op: 'returnPlayed' };
+/** a status card's tag (Wound, Haze, Scorch, Muck, Drain): the cards that pay off when you make one look for it */
+export const STATUS_TAG = 'status';
 
 // --- cards ---------------------------------------------------------------------------------------------------------
 
@@ -293,6 +309,8 @@ type Extra = Partial<
     | 'freeIf'
     | 'cheaperPer'
     | 'recallOnCost'
+    | 'inHandAtEnd'
+    | 'cheaperOnCreate'
   >
 > & {
   /** a hand-written "+" version: fields that replace the card's (instead of the generic rule in plus()) */

@@ -99,7 +99,7 @@ const DB: CombatDb = {
       ],
     }),
     c('invoke', {
-      effects: [{ op: 'power', when: 'turnStart', once: true, ops: [{ op: 'mana', amount: 2 }] }],
+      effects: [{ op: 'power', when: 'turnStart', times: 1, ops: [{ op: 'mana', amount: 2 }] }],
     }),
     c('oblivion', {
       target: 'foe',
@@ -423,7 +423,7 @@ describe('keywords and costs given in a fight', () => {
 });
 
 describe('one-shot and pinned Auras', () => {
-  it('a once Aura fires at the next turn start and is gone', () => {
+  it('a one-answer Aura (times: 1) fires at the next turn start and is gone', () => {
     let s = start(['invoke']);
     s = play(s, 'h0');
     s = end(s);

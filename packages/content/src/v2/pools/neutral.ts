@@ -283,13 +283,16 @@ export const SIGNATURES: CardDef[] = [
 ];
 
 export const JUNK: CardDef[] = [
+  // (status cards: the totemist's Smokestack-like cards count them, DECISIONS pending: totemist)
   card('junk', 'basic', 'wound', 'Wound', 'skill', 0, 'none', [], {
     unplayable: true,
     hero: 'junk',
+    tags: ['status'],
   }),
   card('junk', 'basic', 'static', 'Static', 'skill', 0, 'none', [], {
     unplayable: true,
     hero: 'junk',
+    tags: ['status'],
   }),
 ];
 

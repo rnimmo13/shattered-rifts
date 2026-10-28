@@ -536,6 +536,8 @@ function resolve(r: Run, a: Act, sel: Sel): Unit[] {
     case 'attacker':
       if (a.attacker && a.attacker.hp > 0) return [a.attacker];
       return foes.length ? [foes[0] as Unit] : [];
+    case 'weakestFoe':
+      return foes.length ? [foes.reduce((m, x) => (x.hp < m.hp ? x : m))] : [];
   }
 }
 
@@ -547,6 +549,7 @@ function metricValue(
   of: Scale['of'],
   t: Unit | null,
   tag?: string,
+  rune?: string,
 ): number {
   const sd = r.s.sides[a.actor.side];
   const u = of === 'each' ? (t ?? a.target) : of === 'target' ? a.target : a.actor;
@@ -663,6 +666,22 @@ function metricValue(
       return u?.hitsTaken ?? 0;
     case 'spent':
       return a.spent;
+    // (the Defect copy, totemist)
+    case 'runeKinds':
+      return new Set(sd.runes.map((x) => x.rune)).size;
+    case 'runesOf':
+      return sd.runes.filter((x) => x.rune === rune).length;
+    case 'channeledOf':
+      return rune ? (sd.channeledBy?.[rune] ?? 0) : 0;
+    case 'manaSpent':
+      return sd.spentTurn ?? 0;
+    case 'attacking': {
+      // (of: 'target' by default for this one: it is about the enemy you aim at)
+      const who = of === undefined || of === 'target' ? a.target : u;
+      const b = who ? r.db.units[who.def]?.brain : undefined;
+      const mv = b?.kind === 'enemy' && who?.intent ? b.moves[who.intent.move] : undefined;
+      return mv?.effects.some((o) => o.op === 'damage') ? 1 : 0;
+    }
     case 'x':
       return a.x;
     case 'charge':
@@ -751,7 +770,7 @@ export function isEthereal(cd: CardDef, c: Pick<CardInst, 'ethereal'> | null | u
 /** `amount` plus whatever its scale adds (never below 0 for amounts that cannot be negative). */
 function scaleValue(r: Run, a: Act, sc: Scale, t: Unit | null): number {
   // (a tiny allowance, so a factor like 1/11 times 55 is 5 and not 4.999...)
-  const v = metricValue(r, a, sc.by, sc.of, t, sc.tag);
+  const v = metricValue(r, a, sc.by, sc.of, t, sc.tag, sc.rune);
   // (a step counts whole steps only: "5 more for every 10 Fate")
   const counted = sc.step ? Math.floor(v / sc.step) : v;
   return Math.floor((sc.mult ?? 1) * counted + 1e-9);
@@ -764,6 +783,16 @@ function amountOf(r: Run, a: Act, base: number, sc: Scale | undefined, t: Unit |
 
 /** Rune effects get +1 damage / Barrier per Resonance. */
 const resonanceOf = (a: Act): number => (a.rune ? stacks(a.actor, 'resonance') : 0);
+
+/** A card's cost with its lasting changes (the recost op, a free copy), not the discounts a play spends. */
+const lastingCost = (cd: CardDef, inst: CardInst | null): number =>
+  Math.max(0, cd.cost + (inst?.costUp ?? 0) - (inst?.costDown ?? 0));
+
+/** Deftness (One for All): your 0-cost Attacks deal this much more. */
+const deftOf = (a: Act): number =>
+  a.card && a.card.kind === 'attack' && !a.card.x && lastingCost(a.card, a.inst) === 0
+    ? stacks(a.actor, 'deftness')
+    : 0;
 
 function runOps(r: Run, a: Act, ops: readonly Op[]): void {
   for (let i = 0; i < ops.length; i++) {
@@ -800,6 +829,8 @@ function execOp(r: Run, a: Act, op: Op): void {
       const vigor = (a.card ? a.card.kind === 'attack' : a.actor.kind !== 'hero')
         ? stacks(a.actor, 'vigor')
         : 0;
+      // (One for All: a 0-cost Attack hits harder)
+      const deft = deftOf(a);
       let took = 0;
       let kills = 0;
       const struck = new Set<string>();
@@ -842,7 +873,7 @@ function execOp(r: Run, a: Act, op: Op): void {
             a,
             t,
             Math.round(
-              (amountOf(r, a, op.amount, op.scale, t) + edge + honed + vigor + resonanceOf(a) + marrow) *
+              (amountOf(r, a, op.amount, op.scale, t) + edge + honed + vigor + deft + resonanceOf(a) + marrow) *
                 lone *
                 leth *
                 noose,
@@ -962,6 +993,7 @@ function execOp(r: Run, a: Act, op: Op): void {
         }
         if (share > 0 && t.kind === 'ally') n -= passed;
         if (n === 0) continue;
+        const had = stacks(t, op.status);
         const applied = addStatus(
           r,
           t,
@@ -973,6 +1005,13 @@ function execOp(r: Run, a: Act, op: Op): void {
             unit: t.id,
             status: op.status,
             amount: n,
+          });
+        // a loss "this turn" (Hyperbeam) comes back at the end of it: only what was really taken, as stacks never go below 0
+        if (op.temp && n < 0 && applied && had > stacks(t, op.status))
+          (op.temp === 'theirs' ? r.s.sides[t.side] : side).temps.push({
+            unit: t.id,
+            status: op.status,
+            amount: stacks(t, op.status) - had,
           });
       }
       return;
@@ -988,11 +1027,20 @@ function execOp(r: Run, a: Act, op: Op): void {
     case 'draw': {
       // (the cards it brings are counted, so a card can ask "if you drew a Skill" and mark them to Hold)
       const before = new Set(side.hand.map((c) => c.id));
-      drawCards(r, side, amountOf(r, a, op.amount, op.scale, null));
+      const got = drawCards(r, side, amountOf(r, a, op.amount, op.scale, null));
       for (const c of side.hand) {
         if (before.has(c.id)) continue;
         if (r.db.cards[c.card]?.kind === 'skill') a.skillsDrawnNow++;
         if (op.hold) c.held = true;
+      }
+      // Scrape: what was drawn this way and costs too much is discarded straight away
+      if (op.keepCost !== undefined) {
+        const keep = op.keepCost;
+        for (const c of got) {
+          if (!side.hand.includes(c) || costOf(r.db, side, c) <= keep) continue;
+          side.hand = side.hand.filter((x) => x.id !== c.id);
+          moveFromHand(r, side, c, 'discard');
+        }
       }
       return;
     }
@@ -1036,10 +1084,28 @@ function execOp(r: Run, a: Act, op: Op): void {
       // (only some of the hand can be asked for: all but a kind, or only a kind)
       const only = op.op === 'exhaustCards' ? op.only : undefined;
       const not = op.op === 'exhaustCards' ? op.not : undefined;
-      const eligible = side.hand.filter((c) => {
-        const k = r.db.cards[c.card]?.kind;
-        return (!only || k === only) && (!not || k !== not);
-      });
+      const tag = op.op === 'exhaustCards' ? op.tag : undefined;
+      const fits = (c: CardInst): boolean => {
+        const d = r.db.cards[c.card];
+        return (
+          (!only || d?.kind === only) &&
+          (!not || d?.kind !== not) &&
+          (!tag || d?.tags?.includes(tag) === true)
+        );
+      };
+      // Flak Cannon: every such card, in the hand and both piles, with no choice
+      if (op.op === 'exhaustCards' && op.everywhere) {
+        for (const pile of ['hand', 'draw', 'discard'] as const) {
+          const hit = side[pile].filter(fits).slice(0, Math.max(0, op.amount - a.exhaustedNow));
+          side[pile] = side[pile].filter((c) => !hit.includes(c));
+          for (const c of hit) {
+            a.exhaustedNow++;
+            exhaustCard(r, side, c);
+          }
+        }
+        return;
+      }
+      const eligible = side.hand.filter(fits);
       const n = Math.min(op.amount, eligible.length);
       if (n <= 0) return;
       if (op.random || !a.pick || (!op.any && n >= eligible.length)) {
@@ -1112,22 +1178,43 @@ function execOp(r: Run, a: Act, op: Op): void {
         ...(op.minCost !== undefined ? { minCost: op.minCost } : {}),
         ...(op.pin && a.target ? { target: a.target.id } : {}),
         ...(op.pin && a.inst ? { from: a.inst.id } : {}),
+        ...(op.maxCost !== undefined ? { maxCost: op.maxCost } : {}),
+        ...(op.times ? { left: op.times } : {}),
+        ...(op.rune ? { rune: op.rune } : {}),
       });
       r.ev.push({ type: 'power', side: side.id, card: a.card?.id ?? '' });
       return;
     case 'channel': {
       const n = amountOf(r, a, op.times ?? 1, op.scale, null);
-      for (let i = 0; i < n && !r.s.winner; i++) channel(r, side, op.rune);
+      // ('*': a random totem, any of them, each time)
+      const kinds = Object.keys(r.db.runes ?? {}).sort();
+      if (op.rune === '*' && !kinds.length) return;
+      for (let i = 0; i < n && !r.s.winner; i++)
+        channel(r, side, op.rune === '*' ? (kinds[nextInt(r.s.rng, kinds.length)] as string) : op.rune);
       return;
     }
     case 'evoke': {
-      const batch = side.runes.slice(0, op.count ?? 1);
+      // (the oldest first; `last`: the newest first)
+      const count = Math.max(0, op.count ?? 1);
+      const batch = !count ? [] : op.last ? side.runes.slice(-count).reverse() : side.runes.slice(0, count);
       for (const rs of batch) {
         const times = amountOf(r, a, op.times ?? 1, op.scale, null);
         for (let i = 0; i < times && !r.s.winner; i++) fireRune(r, side, rs, 'evoke');
+        // a totem that charges spends its charge when it awakens and stays (Echo Chamber): otherwise it hits ever harder for ever
+        if (op.keep && runeDef(r, rs.rune).grow) rs.charge = 0;
         if (!op.keep) removeRune(r, side, rs);
         if (r.s.winner) return;
       }
+      return;
+    }
+    case 'pulse': {
+      // totems' passives, now (Loop, Darkness, Tesla Coil)
+      const which = op.first
+        ? side.runes.slice(0, 1)
+        : side.runes.filter((x) => !op.rune || x.rune === op.rune);
+      for (const rs of which)
+        for (let i = 0; i < (op.times ?? 1) && !r.s.winner; i++)
+          if (side.runes.includes(rs)) fireRune(r, side, rs, 'passive', op.aim ? a.target : undefined);
       return;
     }
     case 'runeSlots':
@@ -1242,7 +1329,11 @@ function execOp(r: Run, a: Act, op: Op): void {
       return;
     }
     case 'copySelf':
-      if (a.card) addCardTo(r, side, a.card.id, op.to);
+      if (a.card) {
+        const made = addCardTo(r, side, a.card.id, op.to);
+        // (Adaptive Strike: a copy that costs 0 for good)
+        if (op.free && a.card.cost > 0) made.costUp = -a.card.cost;
+      }
       return;
     case 'reclaim': {
       // never a Power, and never another card that reclaims (two of them would fetch each other back for ever)
@@ -1273,7 +1364,8 @@ function execOp(r: Run, a: Act, op: Op): void {
         const pool = piles.filter(
           (c) =>
             (!op.kind || r.db.cards[c.card]?.kind === op.kind) &&
-            (!op.tag || r.db.cards[c.card]?.tags?.includes(op.tag) === true),
+            (!op.tag || r.db.cards[c.card]?.tags?.includes(op.tag) === true) &&
+            (op.maxCost === undefined || costOf(r.db, side, c) <= op.maxCost),
         );
         if (!pool.length) break;
         const pick = pool[nextInt(r.s.rng, pool.length)] as CardInst;
@@ -1331,7 +1423,9 @@ function execOp(r: Run, a: Act, op: Op): void {
       // (from the draw pile, a card that already is the new card is not picked: Seance)
       const eligible = pile.filter(
         (c) =>
-          (!op.kind || r.db.cards[c.card]?.kind === op.kind) && (op.from !== 'draw' || c.card !== op.into),
+          (!op.kind || r.db.cards[c.card]?.kind === op.kind) &&
+          (!op.tag || r.db.cards[c.card]?.tags?.includes(op.tag) === true) &&
+          (op.from !== 'draw' || c.card !== op.into),
       );
       if (!eligible.length) return;
       if (op.choose && a.pick && op.from !== 'draw') {
@@ -1361,7 +1455,7 @@ function execOp(r: Run, a: Act, op: Op): void {
       return;
     }
     case 'when': {
-      const v = metricValue(r, a, op.by, op.of, a.target);
+      const v = metricValue(r, a, op.by, op.of, a.target, undefined, op.rune);
       if ((op.atLeast !== undefined && v < op.atLeast) || (op.atMost !== undefined && v > op.atMost))
         return;
       runOps(r, a, op.ops);
@@ -1596,6 +1690,31 @@ function execOp(r: Run, a: Act, op: Op): void {
     case 'costTax':
       side.costTax = (side.costTax ?? 0) + op.amount;
       return;
+    // --- the Defect copy (totemist) ---
+    case 'recost': {
+      // this card costs more (or less) for the rest of the fight, and the change adds up; a play does not spend it
+      const c = a.inst;
+      if (!c || !a.card || a.card.x) return;
+      c.costUp = Math.max(-a.card.cost, (c.costUp ?? 0) + op.amount);
+      return;
+    }
+    case 'reshuffle': {
+      side.draw = shuffle(r.s.rng, [...side.draw, ...side.discard, ...side.hand]);
+      for (const c of side.hand) r.ev.push({ type: 'discard', side: side.id, card: c.id, def: c.card });
+      side.hand = [];
+      side.discard = [];
+      r.ev.push({ type: 'shuffle', side: side.id });
+      fireTriggers(r, side, 'shuffle');
+      return;
+    }
+    case 'returnPlayed': {
+      const c = a.played;
+      if (!c || !side.discard.includes(c) || side.hand.length >= MAX_HAND) return;
+      side.discard = side.discard.filter((x) => x.id !== c.id);
+      side.hand.push(c);
+      r.ev.push({ type: 'draw', side: side.id, card: c.id, def: c.card });
+      return;
+    }
   }
 }
 
@@ -1647,7 +1766,8 @@ function channel(r: Run, sd: SideState, id: string): void {
     removeRune(r, sd, first);
     if (r.s.winner) return;
   }
-  sd.runes.push({ rune: id, charge: 0 });
+  sd.runes.push({ rune: id, charge: runeDef(r, id).start ?? 0 });
+  (sd.channeledBy ??= {})[id] = (sd.channeledBy[id] ?? 0) + 1;
   r.ev.push({ type: 'runeChannel', side: sd.id, rune: id, index: sd.runes.length - 1 });
 }
 
@@ -1655,22 +1775,55 @@ function removeRune(r: Run, sd: SideState, rs: RuneState): void {
   const i = sd.runes.indexOf(rs);
   if (i < 0) return;
   sd.runes.splice(i, 1);
-  r.ev.push({ type: 'runeGone', side: sd.id, rune: rs.rune });
+  r.ev.push({ type: 'runeGone', side: sd.id, rune: rs.rune, index: i });
 }
 
-function fireRune(r: Run, sd: SideState, rs: RuneState, how: 'passive' | 'evoke'): void {
+/**
+ * A totem fires its passive or its awakening. `aim` (Tesla Coil): what it would strike at random, it strikes at this unit instead.
+ * An awakening tells the "evoke" Auras which enemies it struck (Thunder hits each of them).
+ */
+function fireRune(
+  r: Run,
+  sd: SideState,
+  rs: RuneState,
+  how: 'passive' | 'evoke',
+  aim?: Unit | null,
+): void {
   const d = runeDef(r, rs.rune);
   const hero = heroOf(sd);
   if (!hero || hero.hp <= 0) return;
   r.ev.push({ type: 'runeFire', side: sd.id, rune: rs.rune, how });
+  const from = r.ev.length;
+  const base = how === 'passive' ? d.passive : d.evoke;
+  const ops = aim
+    ? base.map((o): Op => ('to' in o && o.to === 'randomFoe' ? { ...o, to: 'target' } : o))
+    : base;
   runOps(
     r,
-    mkAct(hero, { rune: true, charge: rs.charge }),
-    how === 'passive' ? d.passive : d.evoke,
+    mkAct(hero, {
+      // (a Dark orb's Focus went into its charge: its awakening is plain)
+      rune: !(how === 'evoke' && d.plainEvoke),
+      charge: rs.charge,
+      target: aim ?? null,
+    }),
+    ops,
   );
   if (how === 'passive' && d.grow) rs.charge += d.grow + stacks(hero, 'resonance');
-  // a totem that charges spends its charge when it awakens, even one that stays (Echo Chamber): otherwise it hits ever harder for ever
-  if (how === 'evoke' && d.grow) rs.charge = 0;
+  // (Glass fades a little every time it fires)
+  if (how === 'passive' && d.decay) rs.charge = Math.max(0, rs.charge - d.decay);
+  if (how === 'evoke' && !r.s.winner) {
+    const struck = new Set<string>();
+    for (const e of r.ev.slice(from))
+      if (e.type === 'damage' && e.source === hero.id) {
+        const u = findUnit(r.s, e.target);
+        if (u && u.side !== sd.id) struck.add(u.id);
+      }
+    const hit = [...struck].map((id) => findUnit(r.s, id) ?? null);
+    for (const t of hit.length ? hit : [null]) {
+      if (r.s.winner) break;
+      fireTriggers(r, sd, 'evoke', { target: t, rune: rs.rune });
+    }
+  }
 }
 
 // --- cards & piles -----------------------------------------------------------------------------------------------
@@ -1685,7 +1838,17 @@ function addCardTo(r: Run, sd: SideState, card: CardId, to: 'hand' | 'discard' |
   else sd.draw.unshift(inst);
   r.ev.push({ type: 'addCard', side: sd.id, card: inst.id, def: card, to: where });
   sd.created++;
-  fireTriggers(r, sd, 'created');
+  // Rocket Punch: every copy gets cheaper (until it is played) when a card with its tag is made
+  const tags = r.db.cards[card]?.tags ?? [];
+  if (tags.length)
+    for (const c of [...sd.hand, ...sd.draw, ...sd.discard]) {
+      const d = r.db.cards[c.card];
+      if (!d?.cheaperOnCreate || !tags.includes(d.cheaperOnCreate)) continue;
+      c.costMod = Math.max(-d.cost, (c.costMod ?? 0) - 1);
+      if (sd.hand.includes(c))
+        r.ev.push({ type: 'transform', side: sd.id, card: c.id, def: c.card, costMod: c.costMod });
+    }
+  fireTriggers(r, sd, 'created', { card: cardDef(r.db, card), inst });
   return inst;
 }
 
@@ -1742,11 +1905,13 @@ function orbitPay(r: Run, sd: SideState, hero: Unit, spent: number): void {
   }
 }
 
-function drawCards(r: Run, sd: SideState, n: number): void {
-  if (sd.drawLocked) return;
+/** Returns the cards it drew itself (not those that Auras answering a draw drew in turn). */
+function drawCards(r: Run, sd: SideState, n: number): CardInst[] {
+  const got: CardInst[] = [];
+  if (sd.drawLocked) return got;
   for (let i = 0; i < n; i++) {
     if (sd.draw.length === 0) {
-      if (sd.discard.length === 0) return;
+      if (sd.discard.length === 0) return got;
       sd.draw = shuffle(r.s.rng, sd.discard);
       sd.discard = [];
       r.ev.push({ type: 'shuffle', side: sd.id });
@@ -1760,6 +1925,7 @@ function drawCards(r: Run, sd: SideState, n: number): void {
       r.ev.push({ type: 'burn', side: sd.id, card: c.id, def: c.card });
     } else {
       sd.hand.push(c);
+      got.push(c);
       r.ev.push({ type: 'draw', side: sd.id, card: c.id, def: c.card });
       sd.drawn++;
       sd.drawnTurn = (sd.drawnTurn ?? 0) + 1;
@@ -1775,6 +1941,7 @@ function drawCards(r: Run, sd: SideState, n: number): void {
       }
     }
   }
+  return got;
 }
 
 /** A card that an effect (not the end-of-turn sweep) sends away from the hand. It has already left the hand. */
@@ -1860,6 +2027,14 @@ function takeForFree(
   op: Extract<Op, { op: 'playPile' }>,
 ): CardInst | null {
   const fits = (c: CardInst): boolean => fitsFree(r, op, c);
+  // (Uproar: a random Attack from your draw pile, not the top card)
+  if (op.from === 'draw' && (op.kind || op.match)) {
+    const pool = sd.draw.filter(fits);
+    if (!pool.length) return null;
+    const pick = pool[nextInt(r.s.rng, pool.length)] as CardInst;
+    sd.draw = sd.draw.filter((x) => x.id !== pick.id);
+    return pick;
+  }
   if (op.from === 'draw') {
     if (sd.draw.length === 0 && sd.discard.length > 0) {
       sd.draw = shuffle(r.s.rng, sd.discard);
@@ -1995,6 +2170,8 @@ function fireTriggers(
     lost?: number;
     /** in a 'play' trigger: what the card cost */
     cost?: number;
+    /** 'evoke': the totem that awakened */
+    rune?: string;
   } = {},
 ): void {
   const played = ctx.card;
@@ -2011,6 +2188,7 @@ function fireTriggers(
       if (p.tag && !played.tags?.includes(p.tag)) continue;
       if (p.minCost !== undefined && (ctx.cost ?? played.cost) < p.minCost) continue;
       if (p.ethereal && !isEthereal(played, ctx.inst)) continue;
+      if (p.maxCost !== undefined && lastingCost(played, ctx.inst ?? null) > p.maxCost) continue;
     }
     if (when === 'draw' && p.ethereal) {
       const d = ctx.drawn ? r.db.cards[ctx.drawn.card] : undefined;
@@ -2020,6 +2198,14 @@ function fireTriggers(
     const pinned = p.target ? findUnit(r.s, p.target) : undefined;
     if (p.target && (!pinned || pinned.hp <= 0)) continue;
     if (p.from && ctx.inst?.id === p.from) continue;
+    // (the Defect copy: a card made or drawn can narrow it too, a totem's awakening by kind, and some answer once a turn)
+    if (when === 'created' || when === 'draw') {
+      const subject = when === 'created' ? played : ctx.drawn ? r.db.cards[ctx.drawn.card] : undefined;
+      if (p.filter && p.filter !== subject?.kind) continue;
+      if (p.tag && !subject?.tags?.includes(p.tag)) continue;
+    }
+    if (when === 'evoke' && p.rune && p.rune !== ctx.rune) continue;
+    if (p.once && p.firedTurn === r.s.turn) continue;
     if (when === 'stance' && p.stance && p.stance !== ctx.stance) continue;
     // an Aura that answers "an ally dies" by striking its attacker does nothing when nothing attacked it (a sacrifice, a Trap, Doom)
     if (
@@ -2028,8 +2214,9 @@ function fireTriggers(
       p.ops.some((o) => 'to' in o && (o as { to?: string }).to === 'attacker')
     )
       continue;
-    // (a power that fires once is gone as it fires: Invoke's "next turn")
-    if (p.once) sd.powers = sd.powers.filter((x) => x !== p);
+    // (it answers now: a once-a-turn Aura is spent for the turn, a limited one has one answer fewer)
+    if (p.once) p.firedTurn = r.s.turn;
+    if (p.left !== undefined && --p.left <= 0) sd.powers = sd.powers.filter((x) => x !== p);
     runOps(
       r,
       mkAct(hero, {
@@ -2347,6 +2534,7 @@ function beginHeroTurn(r: Run, side: Side): void {
   sd.doomedTurn = 0;
   sd.playedTurn = [];
   sd.costTax = 0;
+  sd.spentTurn = 0;
   // the second PvP player gets a small head start on their first turn
   const first = r.s.mode === 'pvp' && side === 'b' && r.s.turn === 2;
   // Mana owed from a borrowed turn comes off the top, but a turn never starts below 0
@@ -2420,6 +2608,11 @@ function beginHeroTurn(r: Run, side: Side): void {
     if (b.fightStart && opening) runOps(r, mkAct(hero), b.fightStart);
     if (b.turnStart) runOps(r, mkAct(hero), b.turnStart);
   }
+  // (a totem whose passive belongs to the start of the turn: Plasma's Mana)
+  for (const rs of [...sd.runes]) {
+    if (r.s.winner) return;
+    if (sd.runes.includes(rs) && runeDef(r, rs.rune).atStart) fireRune(r, sd, rs, 'passive');
+  }
   fireTriggers(r, sd, 'turnStart');
   // a card that comes back from the consumed pile every turn (Howl From Beyond)
   for (const c of [...sd.exhausted]) {
@@ -2463,7 +2656,8 @@ function decay(r: Run, side: Side): void {
     else if (stacks(u, 'stunned') > 0) addStatus(r, u, 'stunned', -1);
   }
   // Flex-style statuses wear off
-  for (const t of sd.temps.splice(0)) {
+  // (undone newest first, so a loss this turn on top of a gain this turn cannot leave a lasting gain: stacks never go below 0)
+  for (const t of sd.temps.splice(0).reverse()) {
     const u = findUnit(r.s, t.unit);
     if (u && u.hp > 0) addStatus(r, u, t.status, -t.amount);
   }
@@ -2523,11 +2717,18 @@ function endTurn(r: Run): void {
   sd.powers = sd.powers.filter((p) => !p.temp);
   for (const rs of [...sd.runes]) {
     if (r.s.winner) return;
-    if (sd.runes.includes(rs)) fireRune(r, sd, rs, 'passive');
+    if (sd.runes.includes(rs) && !runeDef(r, rs.rune).atStart) fireRune(r, sd, rs, 'passive');
   }
   if (r.s.winner) return;
   const hero = heroOf(sd);
   if (hero && stacks(hero, 'radiant') > 0) enterStance(r, hero, 'none');
+  // (Burn: a card that hurts if it is still in your hand now)
+  for (const c of [...sd.hand]) {
+    const ops = r.db.cards[c.card]?.inHandAtEnd;
+    if (!ops || !hero || r.s.winner) continue;
+    runOps(r, mkAct(hero), ops);
+  }
+  if (r.s.winner) return;
   // hand: retained cards stay, ethereal ones exhaust, the rest go to the discard pile
   const keep: CardInst[] = [];
   const hand = sd.hand;
@@ -2736,6 +2937,7 @@ export function costOf(
   // (the Necrobinder copy) Veilpiercer: the next Fleeting card is free; Flatten: free once a companion has struck
   if (hero && stacks(hero, 'freeethereal') > 0 && isEthereal(cd, c)) return 0;
   if (cd.freeIf && sideCount(sd, cd.freeIf.by) >= cd.freeIf.atLeast) return 0;
+  if (cd.kind === 'power' && hero && stacks(hero, 'freepower') > 0) return 0;
   return Math.max(
     0,
     cd.cost +
@@ -2951,11 +3153,14 @@ function playCard(r: Run, action: Extract<Action, { type: 'play' }>): void {
     freeEthereal = costOf(r.db, sd, inst) > 0;
     hero.statuses.freeethereal = held;
   }
+  const freePower = cd.kind === 'power' && stacks(hero, 'freepower') > 0;
   const paid = costOf(r.db, sd, inst);
   sd.mana -= paid;
+  sd.spentTurn = (sd.spentTurn ?? 0) + paid + (cd.x ? sd.mana : 0);
   if (freeAttack) addStatus(r, hero, 'freeattack', -1);
   if (freeSkill) addStatus(r, hero, 'freeskill', -1);
   if (freeEthereal) addStatus(r, hero, 'freeethereal', -1);
+  if (freePower) addStatus(r, hero, 'freepower', -1);
   // a discount (Cheapen, a free Discover) is spent on the play: a card made free for good would loop for ever
   delete inst.costMod;
   clearTurnFlags(inst);
@@ -3002,6 +3207,9 @@ function playCard(r: Run, action: Extract<Action, { type: 'play' }>): void {
   const again =
     (cd.kind === 'attack' && stacks(hero, 'twinned') > 0 && 'twinned') ||
     (cd.kind === 'skill' && stacks(hero, 'mirrored') > 0 && 'mirrored') ||
+    // (Signal Boost: the next Aura; Echo Form: the first card of each turn, which spends nothing)
+    (cd.kind === 'power' && stacks(hero, 'boosted') > 0 && 'boosted') ||
+    (sd.played < stacks(hero, 'echoing') && 'echo') ||
     null;
   runOps(r, mkAct(hero, { target, card: cd, inst, x, pick: true }), cd.effects);
   if (r.s.pending) {
@@ -3011,7 +3219,7 @@ function playCard(r: Run, action: Extract<Action, { type: 'play' }>): void {
     return;
   }
   if (again && !r.s.winner) {
-    addStatus(r, hero, again, -1);
+    if (again !== 'echo') addStatus(r, hero, again, -1);
     runOps(r, mkAct(hero, { target, card: cd, inst, x }), cd.effects);
   }
   // Blade Echo: the blade is played once more per stack
@@ -3112,7 +3320,7 @@ function pickCards(r: Run, action: Extract<Action, { type: 'pick' }>): void {
     return;
   }
   if (p.again && hero && cd && !r.s.winner) {
-    addStatus(r, hero, p.again, -1);
+    if (p.again !== 'echo') addStatus(r, hero, p.again, -1);
     runOps(
       r,
       mkAct(hero, { target: findUnit(r.s, p.target) ?? null, card: cd, inst: fin, x: p.x }),
@@ -3214,7 +3422,7 @@ export function previewCardDamage(
     target: friendly ? mine : chosen,
     x: def.x ? sd.mana + (def.xBonus ?? 0) : 0,
   });
-  const edge = def.tags?.includes(EDGE_TAG) ? stacks(hero, 'edge') : 0;
+  const edge = (def.tags?.includes(EDGE_TAG) ? stacks(hero, 'edge') : 0) + deftOf(a);
   // (Vigor goes into the first damage effect only, as the engine spends it)
   let vigor = def.kind === 'attack' ? stacks(hero, 'vigor') : 0;
   let earlier = false;
@@ -3236,7 +3444,7 @@ export function previewCardDamage(
             : foes
         : op.to === 'front'
           ? foes.slice(0, 1)
-          : op.to === 'allFoes' || op.to === 'randomFoe'
+          : op.to === 'allFoes' || op.to === 'randomFoe' || op.to === 'weakestFoe'
             ? foes
             : null;
     if (!pool) return;

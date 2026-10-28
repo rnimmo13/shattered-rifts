@@ -1,4 +1,4 @@
-// The third top-rarity card of most Riftwalkers (the others live in each pool file; Obsidia and Dorian have none). These were the Legendaries: Robert put
+// The third top-rarity card of most Riftwalkers (the others live in each pool file; Sylas, Obsidia, Dorian and Ilvane have none). These were the Legendaries: Robert put
 // Legendary away for now (2026-10-28, DECISIONS #363: "do away with legendary cards for now, we will add those once the base set of
 // common/uncommon/rare is balanced"), so they are Rares until it comes back. Each belongs to one build path and is a build-around
 // for it, never a one-off pile of Barrier (Robert, 2026-10-27; DECISIONS #338).
@@ -10,9 +10,7 @@ import {
   dmg,
   forge,
   on,
-  per,
   pool,
-  scaled,
   stance,
   status,
   summon,
@@ -21,7 +19,6 @@ import {
 const r = pool('engineer', 'nexus');
 const k = pool('hunter', 'wyldmaw');
 const v = pool('trapper', 'umbral');
-const i = pool('totemist', 'nexus');
 const s = pool('barbarian', 'aurelion');
 const p = pool('drunkard', 'midden');
 
@@ -58,17 +55,6 @@ export const LEGENDARIES: CardDef[] = [
     'none',
     [dmg(25, 'allFoes'), status('stunned', 2, 'allFoes'), status('exposed', 3, 'allFoes')],
     { trigger: { on: 'foeTurn' } },
-  ),
-  // Elements: Spirit every turn, and every enemy struck for all of it (DECISIONS #353)
-  i(
-    'rare',
-    'the-spirit-council',
-    'Avatar of the Elements',
-    'power',
-    3,
-    'none',
-    [on('turnStart', [status('resonance', 1), scaled(dmg(0, 'allFoes'), per('resonance'))])],
-    { up: { cost: 2 } },
   ),
   // Fury: in Fury every turn, and every turn it lashes out
   s(

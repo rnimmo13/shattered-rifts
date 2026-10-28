@@ -51,7 +51,7 @@ export const STATUS_INFO: Record<
     name: 'Spirit',
     glyph: '❖',
     tone: 'good',
-    text: 'Your totems deal 1 more damage and give 1 more Barrier per stack, and Elder totems charge faster. Elements spells grow with it too.',
+    text: 'Your totems deal 1 more damage and give 1 more Barrier per stack, and Elder totems charge faster.',
   },
   calm: {
     name: 'Serene',
@@ -356,6 +356,31 @@ export const STATUS_INFO: Record<
     tone: 'good',
     text: 'For every 4 Mana you spend, gain this much Mana.',
   },
+  // (the Defect copy, totemist)
+  echoing: {
+    name: 'Echo',
+    glyph: '≋',
+    tone: 'good',
+    text: 'The first card you play each turn is played an extra time (the first 2 cards with 2 stacks, and so on).',
+  },
+  boosted: {
+    name: 'Resound',
+    glyph: '♫',
+    tone: 'good',
+    text: 'Your next Aura is played an extra time, per stack.',
+  },
+  freepower: {
+    name: 'Free Aura',
+    glyph: '✧',
+    tone: 'good',
+    text: 'Your next Aura costs 0.',
+  },
+  deftness: {
+    name: 'Deftness',
+    glyph: '➶',
+    tone: 'good',
+    text: 'Your 0-cost Attacks deal this much more damage.',
+  },
 };
 
 /** One glyph per totem, for the totem row. */
@@ -428,7 +453,11 @@ export const KEYWORD_INFO: Record<string, { name: string; text: string }> = {
   },
   rune: {
     name: 'Totem',
-    text: 'Totems stand in a row (3 slots). Each pulses a small effect at the end of your turn. A totem pushed out of a full row, or awakened by a card, bursts with its big effect and is gone.',
+    text: 'Totems stand in a row (3 slots). Each pulses a small effect at the end of your turn (the Owl at the start of it). A totem pushed out of a full row, or awakened by a card, bursts with its big effect and is gone.',
+  },
+  status: {
+    name: 'Status card',
+    text: 'A card that clutters your deck (Wound, Static, Haze, Scorch, Muck, Drain). Some of your cards pay off when you make one.',
   },
   stance: {
     name: 'Stance',
