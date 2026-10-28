@@ -31,9 +31,18 @@ export const PATCH_NOTES: PatchNote[] = [
   {
     version: '0.113.0',
     date: '2026-10-28',
-    title: 'Fixes for Suits and panels',
-    summary: 'Panels fold on a click again, and the Full Trick waits for the card that earned it.',
+    title: 'The Barbarian, priced',
+    summary:
+      'The Barbarian is rebalanced card by card; panels fold on a click again, and the Full Trick waits for the card that earned it.',
     notes: [
+      {
+        kind: 'balance',
+        text: 'Barbarian: Inner Fire gives 1 Fervor for each stance you enter, and no Barrier. Still Guard gives 3 Barrier. Unmoved Mind, Wheel of Motion and Surge of Ire cost 2 (Surge of Ire answers the first Fury each turn), and Perfect Balance, Eye of the Storm and Bowing Low give less.',
+      },
+      {
+        kind: 'balance',
+        text: 'Barbarian cards that were weak got stronger: Rage of Ages 8 x3 to every enemy, Final Account, Ashes of Restraint, The Offering, Litany, Radiant Heart, Last Rites of the Flame, Thousand Palms and more. All-Seeing costs 2.',
+      },
       {
         kind: 'fixed',
         text: 'Clicking a panel title folds and unfolds it again (the battle log could not be opened on a phone).',

@@ -1,6 +1,6 @@
 # Barbarian review: balance by the card costing guide (proposal, 2026-10-28)
 
-**Status: proposal, waiting on Robert.** Nothing in the game has changed yet. Robert: "i feel like its already pretty good, maybe too
+**Status: applied 2026-10-28 (DECISIONS #390)** as proposed: Inner Fire gives Fervor only, Still Guard is 3 Barrier at 1 Mana, and every change in §3-§4. Robert also asked to re-theme her as a monk (being confirmed; not done yet). Robert: "i feel like its already pretty good, maybe too
 strong right now. i want you to run it through the card cost analysis, and propose some changes. and let me know if there are any
 other mechanics you would want to add."
 

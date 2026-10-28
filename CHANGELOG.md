@@ -5,6 +5,7 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **The Barbarian is rebalanced** against the card costing guide. Inner Fire now gives 1 Fervor for each stance you enter (no Barrier), Still Guard gives 3 Barrier, the Auras that pay for every stance change cost more or pay less, and about 40 cards move towards their budget (the weak ones up: Rage of Ages, Final Account, Radiant Heart...). All-Seeing costs 2.
 - **Fixed:** clicking a panel title folds it again; the Full Trick goes off after the card that earned it; Suits cards are no longer offered to other Riftwalkers.
 - **Fixed: Backup Core** brought a companion back every time it died, so it soaked every hit; it now revives one companion a turn.
 - **The Trickster plays with Suits.** Every card is a ♠ (Attacks), ♥ (Barrier), ♦ (cards and Mana) or ♣ (Traps and debuffs). Four pips beside the Trickster light as you play each suit in a turn, and the card you're aiming shows which one it would light. Light all four for a **Full Trick**: 5 damage to every enemy and a card. The Patience build path is now Suits, with new cards (Flourish, Card Fan, Card Sharp, Cut the Deck, Queen of Hearts, Ace of Clubs, Wild Card, Royal Flourish, Showstopper, The Joker, The Whole Deck) and a new Masquerade. The starting deck has Pick a Card in place of a Defend. Banked Breath, Coiled Patience, Sandbag, Waiting Game, Measured Breath and Fade Away are retired (saved decks get the closest card).

@@ -271,8 +271,9 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     role: 'Barbarian',
     trait: {
       name: 'Inner Fire',
-      text: 'Whenever you enter a stance, gain 1 Fervor and 2 Barrier.',
-      triggers: [on('stance', [status('mantra', 1), barrier(2)])],
+      // (its 2 Barrier went: a Flow deck changes stance two or three times a turn, DECISIONS #390)
+      text: 'Whenever you enter a stance, gain 1 Fervor.',
+      triggers: [on('stance', [status('mantra', 1)])],
     },
     hero: {
       id: 'barbarian',
@@ -292,7 +293,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
       'Radiant: build Fervor to 10 for a triple-damage turn',
     ],
     howTo: [
-      'You start Serene. You are in at most one stance at a time, and every stance you enter gives 1 Fervor and 2 Barrier (Inner Fire).',
+      'You start Serene. You are in at most one stance at a time, and every stance you enter gives 1 Fervor (Inner Fire).',
       'Fury doubles the damage you deal, but you take 50% more. Leaving Serene gives you 2 Mana (once a turn).',
       'Fervor builds to 10, then you enter Radiant: triple damage until your turn ends.',
       'Burst in Fury, dance between stances, or build Fervor towards Radiant.',

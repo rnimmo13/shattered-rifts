@@ -604,85 +604,85 @@ Starter: Strike, Strike, Strike, Strike, Defend, Defend, Defend, Defend, Kindle 
 | Card | Cost | Type | Rarity | Text |
 |---|---|---|---|---|
 | Kindle Fury | 2 | attack | basic | Deal 9 damage. Enter Fury. |
-| Still Guard | 1 | skill | basic | Gain 7 Barrier. Enter Serene. |
+| Still Guard | 1 | skill | basic | Gain 3 Barrier. Enter Serene. |
 | Angry Palm | 1 | attack | common | Deal 7 (+6 per Fury) damage. |
 | Ashen Fist | 2 | attack | common | Deal 14 damage. Enter Fury. |
 | Rising Ire | 0 | skill | common | Enter Fury. Draw 1 card. Consume. |
-| Red Mist | 1 | attack | common | Deal 5 damage to ALL enemies. Enter Fury. |
+| Red Mist | 1 | attack | common | Deal 4 damage to ALL enemies. Enter Fury. |
 | Flurry of Palms | 0 | attack | common | Deal 3 damage 2 times. |
 | Unleashed Roar | 1 | skill | common | Apply 1 Exposed to ALL enemies. Enter Fury. |
-| Centre Yourself | 1 | skill | common | Draw 2 cards. Enter Serene. |
-| Shifting Guard | 1 | skill | common | Gain 5 Barrier. Enter Fury. Enter Serene. |
-| Thread-Cutter | 1 | attack | common | Deal 5 damage. Enter Fury. Enter Serene. |
+| Centre Yourself | 1 | skill | common | Draw 1 card. Enter Serene. |
+| Shifting Guard | 1 | skill | common | Gain 2 Barrier. Enter Fury. Enter Serene. |
+| Thread-Cutter | 1 | attack | common | Deal 3 damage. Enter Fury. Enter Serene. |
 | Hushed Stillness | 0 | skill | common | Enter Serene. Draw 1 card. Consume. |
-| Watchful Calm | 1 | skill | common | Gain 6 Barrier. Enter Serene. Foresee 2. |
-| Settling Fist | 1 | attack | common | Deal 8 damage. Gain 3 Barrier. Leave your stance. |
+| Watchful Calm | 1 | skill | common | Gain 2 Barrier. Enter Serene. Foresee 2. |
+| Settling Fist | 1 | attack | common | Deal 7 damage. Leave your stance. |
 | Whispered Vow | 1 | skill | common | Gain 3 Fervor. Foresee 2. |
-| Bowing Low | 0 | skill | common | Gain 2 Fervor. Gain 6 Barrier. |
+| Bowing Low | 0 | skill | common | Gain 2 Fervor. Gain 2 Barrier. |
 | Sunlit Blade | 1 | attack | common | Deal 9 damage. Gain 1 Fervor. |
 | Reading the Signs | 1 | aura | common | Whenever you discard a card: Gain 1 Fervor. |
 | Kneel | 0 | skill | common | Gain 2 Fervor. Draw 1 card. Consume. |
-| Faith Kept | 1 | skill | common | Gain 2 Fervor. Hold. If consumed: Gain 3 Fervor. |
+| Faith Kept | 1 | skill | common | Gain 3 Fervor. Hold. If consumed: Gain 3 Fervor. |
 | Crushing Palm | 1 | attack | common | Deal 8 damage. Apply 1 Exposed. |
-| Quick Palms | 0 | attack | common | Deal 3 damage. |
-| Temper Flare | 1 | attack | uncommon | Deal 3 damage 3 times. Enter Fury. |
+| Quick Palms | 0 | attack | common | Deal 4 damage. Gain 1 Fervor. |
+| Temper Flare | 1 | attack | uncommon | Deal 2 damage 3 times. Enter Fury. |
 | Swift Step | 1 | skill | uncommon | Enter Fury. Gain 4 Primed. |
 | Spinning Heel | 2 | attack | uncommon | Deal 12 damage. Apply 2 Exposed. Draw 1 card. |
-| Wrathful Guard | 1 | skill | uncommon | Gain 8 Barrier. Enter Fury. |
-| Hot-Blooded | 1 | attack | uncommon | Deal 8 (+1 per 6% HP missing) damage. Enter Fury. |
+| Wrathful Guard | 1 | skill | uncommon | Gain 6 Barrier. Enter Fury. |
+| Hot-Blooded | 1 | attack | uncommon | Deal 4 (+1 per 6% HP missing) damage. Enter Fury. |
 | Berserk Tide | X | attack | uncommon | Deal 4 damage X times. Enter Fury. |
-| Cornered Beast | 1 | trap | uncommon | When you lose 5+ HP at once: Deal 12 damage to the attacker. Gain 4 Primed. Enter Fury. |
+| Cornered Beast | 1 | trap | uncommon | When you lose 5+ HP at once: Deal 8 damage to the attacker. Gain 4 Primed. Enter Fury. |
 | Settled Mind | 1 | skill | uncommon | Draw cards equal to 3 times your Serene. Enter Serene. |
-| Unmoved Mind | 1 | aura | uncommon | Whenever you enter a stance: Gain 3 Barrier. Deal 2 damage to a random enemy. |
-| Wheel of Motion | 1 | aura | uncommon | Whenever you enter a stance: Deal 3 damage to ALL enemies. |
-| Unafraid | 1 | attack | uncommon | Deal 8 damage. Enter Serene. |
+| Unmoved Mind | 2 | aura | uncommon | Whenever you enter a stance: Gain 2 Barrier. Deal 2 damage to a random enemy. |
+| Wheel of Motion | 2 | aura | uncommon | Whenever you enter a stance: Deal 3 damage to ALL enemies. |
+| Unafraid | 1 | attack | uncommon | Deal 6 damage. Enter Serene. |
 | Let Go | 1 | skill | uncommon | Draw 2 cards. Leave your stance. |
 | Still Water | 1 | skill | uncommon | Gain 4 (+6 per Serene) Barrier. Draw 1 card. |
-| Exhale | 0 | skill | uncommon | Leave your stance. Gain 1 Mana. Draw 1 card. Consume. |
+| Exhale | 0 | skill | uncommon | Leave your stance. Gain 1 Mana. Consume. |
 | Mirror Pool | 1 | skill | uncommon | Gain Barrier equal to 3 times your Mana. Enter Serene. Hold. |
-| The Offering | 2 | skill | uncommon | Gain 5 Fervor. Hold. |
+| The Offering | 1 | skill | uncommon | Gain 5 Fervor. Hold. |
 | Daily Rite | 1 | aura | uncommon | At the start of your turn: Gain 2 Fervor. |
-| Gather Breath | 1 | skill | uncommon | Next turn, gain 2 extra Mana. Draw 1 card. |
-| Hymn of Embers | 2 | skill | uncommon | Gain 4 Fervor. Gain 6 Barrier. |
-| Morning Prayer | 1 | aura | uncommon | At the start of your turn: Gain 1 Fervor. Gain 3 Barrier. |
+| Gather Breath | 1 | skill | uncommon | Next turn, gain 2 extra Mana. Draw 2 cards. Consume. |
+| Hymn of Embers | 2 | skill | uncommon | Gain 5 Fervor. Gain 8 Barrier. |
+| Morning Prayer | 1 | aura | uncommon | At the start of your turn: Gain 1 Fervor. Gain 2 Barrier. |
 | Foretold Flame | 1 | attack | uncommon | Deal 5 (+1 per Fervor) damage. Foresee 2. |
 | Mantra Engine | 1 | aura | uncommon | At the end of your turn: Gain Barrier equal to your Fervor. |
 | Inner Sight | 1 | skill | uncommon | Gain 5 Barrier. Foresee 4. |
 | Held Breath | 1 | skill | uncommon | Gain 1 Holdfast. |
-| Rending Hands | 1 | attack | uncommon | Deal 5 damage 2 times. Lose 2 HP. |
-| Blood on the Sand | 1 | aura | uncommon | Whenever you enter Fury: Lose 2 HP. Gain 2 Primed. |
+| Rending Hands | 1 | attack | uncommon | Deal 6 damage 2 times. Lose 1 HP. |
+| Blood on the Sand | 1 | aura | uncommon | Whenever you enter Fury: Lose 2 HP. Gain 3 Primed. |
 | Open Palm | 1 | attack | uncommon | Deal 5 damage 2 times. Leave your stance. |
 | Shield of Faith | 1 | skill | uncommon | Gain 7 Barrier. Gain 1 Fervor. |
-| Poise | 1 | aura | uncommon | Gain 2 Bracing for the rest of the fight. |
-| Crown of Embers | 1 | skill | uncommon | Gain 5 Primed. Gain 1 Fervor. |
-| Final Account | 2 | attack | rare | Deal 10 (+8 per Fury) damage. |
-| Surge of Ire | 1 | aura | rare | Whenever you enter Fury: Gain 6 Barrier. Draw 1 card. |
-| Rage of Ages | 3 | attack | rare | Deal 5 damage 3 times to ALL enemies. |
+| Poise | 1 | aura | uncommon | Gain 3 Bracing for the rest of the fight. |
+| Crown of Embers | 1 | skill | uncommon | Gain 6 Primed. Gain 2 Fervor. |
+| Final Account | 2 | attack | rare | Deal 14 (+10 per Fury) damage. |
+| Surge of Ire | 2 | aura | rare | Whenever you enter Fury: Gain 6 Barrier. Draw 1 card. |
+| Rage of Ages | 3 | attack | rare | Deal 8 damage 3 times to ALL enemies. |
 | Wrath Incarnate | 2 | aura | rare | At the start of your turn: Enter Fury. |
 | Rampage of Ire | 2 | aura | rare | Whenever you enter Fury: Deal 6 damage to ALL enemies. |
-| Rage Unbound | 0 | skill | rare | Enter Fury. Gain 1 Mana. Consume. |
-| Ashes of Restraint | 2 | attack | rare | Deal 6 (+2 per consumed card) damage. Enter Fury. |
+| Rage Unbound | 0 | skill | rare | Enter Fury. Gain 1 Mana. Lose 3 HP. Consume. |
+| Ashes of Restraint | 2 | attack | rare | Deal 9 (+2 per consumed card) damage. Enter Fury. |
 | Ascendant Form | 2 | aura | rare | At the start of your turn: Gain 1 Mana. |
 | Perfect Calm | 2 | skill | rare | Gain 12 Barrier. Enter Serene. Draw 1 card. |
 | Recollect | 1 | skill | rare | Return a random card from your discard pile to your hand. Enter Serene. Hold. |
-| All-Seeing | 3 | skill | rare | Add 2 random cards from your pool to your hand (they cost 0 the next time you play them). Consume. |
+| All-Seeing | 2 | skill | rare | Add 2 random cards from your pool to your hand (they cost 0 the next time you play them). Consume. |
 | Serenity Incarnate | 3 | aura | rare | At the end of your turn: Heal 3. Gain 6 Barrier. |
-| Gentle Return | 1 | aura | rare | Whenever you enter Serene: Heal 2. Gain 3 Barrier. |
-| Tide of Peace | X | skill | rare | Gain Barrier equal to 5 times the Mana spent. Draw cards equal to the Mana spent. Enter Serene. |
-| Litany | 2 | aura | rare | Whenever you play a Skill: Gain 1 Fervor. |
+| Gentle Return | 1 | aura | rare | Whenever you enter Serene: Heal 1. Gain 3 Barrier. |
+| Tide of Peace | X | skill | rare | Gain Barrier equal to 4 times the Mana spent. Draw 2 cards. Enter Serene. |
+| Litany | 1 | aura | rare | Whenever you play a Skill: Gain 1 Fervor. |
 | Rise Radiant | 2 | skill | rare | Enter Radiant. Consume. |
-| Perfect Balance | 2 | aura | rare | Whenever you enter a stance: Draw 1 card. Gain 5 Barrier. Gain 1 Fervor. |
+| Perfect Balance | 2 | aura | rare | Whenever you enter a stance: Draw 1 card. Gain 2 Barrier. |
 | Still Flame Ascendant | 3 | skill | rare | Enter Radiant. Gain 4 Primed. Draw 2 cards. Consume. |
 | Flood of Visions | 1 | skill | rare | Draw 5 cards. Gain 2 Fervor. Consume. |
-| Last Rites of the Flame | 3 | attack | rare | Deal 14 damage to ALL enemies. Gain 5 Fervor. |
-| Radiant Heart | 2 | aura | rare | Whenever you enter Radiant: Draw 2 cards. |
-| Burning Litany | 2 | skill | rare | Deal damage equal to your Fervor to ALL enemies. Enter Radiant. Consume. |
+| Last Rites of the Flame | 3 | attack | rare | Deal 16 damage to ALL enemies. Gain 5 Fervor. |
+| Radiant Heart | 1 | aura | rare | Whenever you enter Radiant: Draw 3 cards. |
+| Burning Litany | 3 | skill | rare | Deal damage equal to your Fervor to ALL enemies. Enter Radiant. Consume. |
 | Unwavering | 2 | aura | rare | Whenever you discard a card: Gain 4 Barrier. Gain 1 Fervor. Whenever a card is consumed: Gain 4 Barrier. Gain 1 Fervor. |
-| Mountain's Stillness | 2 | skill | rare | Gain 4 (+2 per card in hand) Barrier. |
+| Mountain's Stillness | 2 | skill | rare | Gain 6 (+3 per card in hand) Barrier. |
 | Breath Between Blows | 1 | aura | rare | Whenever you play a Skill: Gain 2 Barrier. |
-| Thousand Palms | 2 | attack | rare | Deal 3 damage 6 times. |
+| Thousand Palms | 2 | attack | rare | Deal 3 damage 7 times. |
 | Unbroken Calm | 2 | aura | rare | At the start of your turn: Gain 4 Barrier. Draw 1 card. |
-| Eye of the Storm | 2 | aura | rare | At the start of your turn: Enter Fury. Deal 6 damage to ALL enemies. Gain 6 Barrier. |
+| Eye of the Storm | 2 | aura | rare | At the start of your turn: Enter Fury. Deal 4 damage to ALL enemies. Gain 4 Barrier. |
 
 ## Spellblade (starfall, 75 HP)
 

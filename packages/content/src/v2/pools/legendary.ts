@@ -43,7 +43,7 @@ export const LEGENDARIES: CardDef[] = [
     'power',
     2,
     'none',
-    [on('turnStart', [stance('wrath'), dmg(6, 'allFoes'), barrier(6)])],
+    [on('turnStart', [stance('wrath'), dmg(4, 'allFoes'), barrier(4)])],
     { up: { cost: 1 } },
   ),
   // Gun: a sharper gun at once, and every shot sharpens it again and covers you
