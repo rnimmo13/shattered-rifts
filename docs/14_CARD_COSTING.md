@@ -225,9 +225,9 @@ into another class)
 - **Rot Strike** (1, common: 8 + Fate equal to the damage): 13.6, +36%.
 - **Tidecaller** (1, common: 7 Barrier, +1 Mana next turn): 12.4, +24%.
 - **Heart of Flame** (0, rare: +4 Mana, Consume): ~21 with the diminishing Mana rate, against ~10 for a 0-cost rare with Consume.
-- Lost part of their original in translation, so they read weak: **Army of the Drowned** (the original raised for every player),
-  **Fated Hand** (the original let you choose the cards; ours is Scheme's text at rare), **Marked for Death** (the original's kill reward
-  doesn't exist here).
+- Fixed 2026-10-28 (DECISIONS #375), after reading weak because part of the original was lost in the copy: **Army of the Drowned**
+  now raises two Thralls (Raise 6 twice, ~20 points against ~26), **Fated Hand** chooses its 2 cards from the draw pile, and **Marked for
+  Death** gives an extra card reward when it kills.
 
 ---
 

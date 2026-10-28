@@ -449,7 +449,7 @@ Starter: Strike, Strike, Strike, Strike, Strike, Defend, Defend, Defend, Defend,
 | Serpent's Coil | 3 | aura | rare | Whenever you play a card: Deal 4 damage to a random enemy. |
 | Into the Shadows | 1 | skill | rare | Discard your hand. Gain 1 Poised. |
 | Steel Monsoon | 1 | skill | rare | Discard your hand. Add Sleeve Knives to your hand equal to the cards discarded this way. |
-| Marked for Death | 1 | attack | rare | Deal 10 damage. Consume. |
+| Marked for Death | 1 | attack | rare | Deal 10 damage. If this is fatal: Gain an extra card reward after this fight. Consume. |
 | Final Bow | 0 | attack | rare | Only playable while your draw pile is empty. Deal 60 damage to ALL enemies. |
 | Hemorrhage | 1 | skill | rare | This turn, whenever you draw a card: Apply 2 Bleed to ALL enemies. |
 | Serrated Edges | 2 | aura | rare | Whenever an Attack of yours deals damage to an enemy’s HP: Apply 1 Bleed. |
@@ -755,7 +755,7 @@ Starter: Strike, Strike, Strike, Strike, Defend, Defend, Defend, Defend, Cinderf
 | Iron Rule | 1 | aura | rare | At the start of your turn: Draw 1 card. Consume 1 random card. |
 | Hollow Form | 3 | aura | rare | End your turn. The first 2 cards you play each turn cost no Mana. Fleeting. |
 | Rift Gifts | 1 | skill | rare | Add 3 random Neutral cards to your hand. Consume. |
-| Fated Hand | 1 | skill | rare | Next turn, draw 2 extra cards. |
+| Fated Hand | 1 | skill | rare | Choose 2 cards in your draw pile and put them on top. Next turn, draw 2 extra cards. |
 | Call the Guard! | 2 | skill | rare | Turn any number of cards in your hand into Retainer Guards. Consume. |
 | Unbreakable Crown | 1 | skill | rare | Gain 10 Barrier. At the end of your turn, if this is on top of your draw pile, it is played. |
 
@@ -904,7 +904,7 @@ Starter: Strike, Strike, Strike, Strike, Defend, Defend, Defend, Defend, Raise T
 | Bone Sift | 1 | skill | uncommon | Raise 3. Consume the top card of your draw pile. |
 | Bone Toss | 0 | attack | uncommon | Your companions each deal 3 damage. If this is the first time you play it this turn: Draw 1 card. |
 | Grasping Hands | 2 | attack | uncommon | Your companions each deal 11 damage to ALL enemies. Apply 2 Exposed to ALL enemies. |
-| Army of the Drowned | 2 | skill | uncommon | Raise 6. Consume. |
+| Army of the Drowned | 2 | skill | uncommon | Raise 6 twice. Consume. |
 | Rattle the Bones | 1 | attack | uncommon | Your companions each deal 7 damage, 1 more time per time your companions have struck this turn. |
 | Helping Hand | 0 | attack | uncommon | Whenever you play a card that costs 2 or more, this returns from your discard pile to your hand. Your companions each deal 4 damage. |
 | Seize Them | 1 | attack | uncommon | Your companions each deal 5 damage. Apply 3 Quarry until the end of your turn. |

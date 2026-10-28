@@ -70,6 +70,7 @@ export {
   duelPlan,
   enterNode,
   finishDuel,
+  MAX_EXTRA_REWARDS,
   resolveCost,
   RETRY_HP_PCT,
   leaveMerchant,

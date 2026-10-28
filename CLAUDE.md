@@ -48,6 +48,8 @@ Ko-fi-funded) → Steam full game ($7.99–$9.99) with PvP later. Owner: Robert.
   change to the core rules, the economy or monetisation.
 - Small, frequent commits with clear messages. Keep `CHANGELOG.md` updated for player-visible changes.
 - When balance numbers change, update `02_CARDS.md` so the docs stay the source of truth.
+- **Balance is checked with `docs/14_CARD_COSTING.md`, not bot sims** (Robert, 2026-10-28): price the card or deck by hand, and work out a
+  rate for a new mechanic when one comes up (then add it to the guide). Run a sim only when Robert asks for one.
 - Windows dev machine (VS Code terminal). Use cross-platform scripts (no bash-only syntax in npm scripts).
 
 ## Commands

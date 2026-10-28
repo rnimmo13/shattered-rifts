@@ -536,6 +536,8 @@ export type Op =
   | { op: 'copyPlayed' }
   /** raise max HP, and HP with it (for the fight; a run keeps what a card says it keeps) */
   | { op: 'maxHp'; amount: number; to: Sel }
+  /** this many more card rewards after the fight, if it is won (a run reads `SideState.extraRewards`; The Hunt) */
+  | { op: 'extraReward'; amount: number }
   // --- the Silent-shaped assassin's pieces
   /** Bleed on the targets deals its damage now (and loses 1), as it does at the start of their turn */
   | { op: 'tick'; to: Sel }
@@ -553,8 +555,9 @@ export type Op =
   /** Barrier / Arcana that arrive at the start of your next turn */
   | { op: 'barrierNext'; amount: number }
   | { op: 'starsNext'; amount: number }
-  /** put cards from your hand on top of your draw pile (the player chooses) */
-  | { op: 'topdeck'; amount: number }
+  /** put cards from your hand on top of your draw pile (the player chooses); `from: 'draw'`: cards chosen from anywhere in the
+   * draw pile go to its top (Foregone Conclusion, with a next-turn draw) */
+  | { op: 'topdeck'; amount: number; from?: 'hand' | 'draw' }
   /** your turn ends once this card is done */
   | { op: 'endTurn' }
   /** the card being resolved deals this much more damage for the rest of the fight (it reads the 'bonus' metric) */
@@ -947,6 +950,8 @@ export interface Pending {
   /** the card being played, put away when the choice (and everything after it) is done */
   finish: CardInst | null;
   x: number;
+  /** 'topdeck': the cards are chosen from the draw pile, not the hand */
+  from?: 'draw';
   /** the card is played a second time when it finishes (a Reverb attack or Mirrored skill) */
   again?: 'twinned' | 'mirrored' | 'boosted' | 'echo' | null;
   /** what the card cost when it was played (a "costs 2 or more" Aura reads it when the card finishes) */
@@ -1004,6 +1009,8 @@ export interface SideState {
   barrierDoubled?: boolean;
   /** max HP the hero has gained this fight (a run keeps it) */
   maxHpGained?: number;
+  /** extra card rewards earned this fight (a run offers them after a win) */
+  extraRewards?: number;
   /** cards whose copies arrive at the start of your next turn (Nightmare); Honed's first knife this turn has been played */
   nextCopies?: { card: CardId; times: number }[];
   honedUsed?: boolean;

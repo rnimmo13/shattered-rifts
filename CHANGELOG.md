@@ -5,6 +5,7 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **Three cards made whole:** Fated Hand lets you choose the 2 cards from your draw pile (they come next turn), Army of the Drowned raises two Thralls, and Marked for Death gives an extra card reward when it kills. **Fixed:** Bloodfeast's max HP (and Marked for Death's reward) is paid even when that kill ends the fight.
 - **No starting card pick:** a run starts with your Riftwalker's usual deck and goes straight to The Threshold.
 - **Riftwalkers go by their class for now** (Knight, Engineer, Hunter, Trickster, Assassin, Shaman, Barbarian, Spellblade, Necromancer, Drunkard), and the **Trapper is now the Trickster**.
 - **Fixed:** a Free Attack, Free Skill or free Aura is no longer used up on a card that cost nothing anyway; Blade Echo and replayed cards also repeat cards that ask you to choose.

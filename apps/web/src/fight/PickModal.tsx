@@ -18,6 +18,8 @@ function prompt(p: PendingView): string {
   const many = p.max > 1 ? `${p.max} cards` : 'a card';
   if (p.kind === 'scry') return 'Choose a card to draw. The rest are discarded.';
   if (p.kind === 'copy') return 'Choose a card: copies of it come to your hand next turn.';
+  if (p.kind === 'topdeck' && p.from === 'draw')
+    return `Choose ${many} from your draw pile to put on top of it.`;
   if (p.kind === 'topdeck') return `Put ${many} on top of your draw pile.`;
   if (p.kind === 'transform')
     return p.min === 0 ? `Transform up to ${p.max} cards.` : `Transform ${many}.`;
@@ -42,13 +44,14 @@ export function PickModal(props: {
       return c.length >= p.max ? c : [...c, id];
     });
   const ok = chosen.length >= p.min && chosen.length <= p.max;
+  const title = p.kind === 'topdeck' && p.from === 'draw' ? 'Choose' : TITLE[p.kind];
 
   return (
-    <div className="fight__modal fight__modal--pick" role="dialog" aria-label={TITLE[p.kind]}>
+    <div className="fight__modal fight__modal--pick" role="dialog" aria-label={title}>
       <div className="fight__modalBody">
         <header>
           <h3>
-            {TITLE[p.kind]} <small>{prompt(p)}</small>
+            {title} <small>{prompt(p)}</small>
           </h3>
           <button
             className="btn btn--primary btn--small"
@@ -77,7 +80,7 @@ export function PickModal(props: {
                   dimmed={!on && chosen.length >= p.max}
                   {...(c.bonus ? { bonus: c.bonus } : {})}
                 />
-                <span className="pick__tag">{on ? TITLE[p.kind] : ''}</span>
+                <span className="pick__tag">{on ? title : ''}</span>
               </button>
             );
           })}

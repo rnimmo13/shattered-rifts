@@ -15,7 +15,7 @@ import {
 const hasCard = (id: unknown): boolean => isDeckCard(id);
 import type { MapNode, NodeKind, RunPhase, RunState } from './types';
 import { FINAL_STAGE } from './mapgen';
-import { checkGhostBoss, restartAtThreshold } from './run';
+import { MAX_EXTRA_REWARDS, checkGhostBoss, restartAtThreshold } from './run';
 
 export const RUN_SAVE_VERSION = 2;
 
@@ -96,6 +96,11 @@ function validContext(r: RunState): boolean {
   const fromPrelude = r.phase === 'reward' && c['nodeId'] === '';
   if (!fromPrelude && !ids.has(c['nodeId'])) return false;
   const cards = (x: unknown): x is string[] => isStrArray(x) && x.every((id) => hasCard(id));
+  // extra card rewards a fight earned (Marked for Death): a small count, and two flags
+  if (c['extraRewards'] !== undefined && !isInt(c['extraRewards'], 1, MAX_EXTRA_REWARDS))
+    return false;
+  for (const k of ['extraReward', 'afterWarden'])
+    if (c[k] !== undefined && typeof c[k] !== 'boolean') return false;
   switch (r.phase) {
     case 'duel': {
       const node = r.map.nodes.find((n) => n.id === c['nodeId']);

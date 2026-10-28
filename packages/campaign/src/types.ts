@@ -277,6 +277,12 @@ export interface NodeContext {
   boonGained?: string;
   /** reward: a Potion the fight dropped (already in your belt) */
   potionGained?: string;
+  /** reward / gift: more card rewards to come after this one (a card that kills earned them, The Hunt) */
+  extraRewards?: number;
+  /** reward: this is one of those extra card rewards */
+  extraReward?: boolean;
+  /** reward: an extra reward that follows a Warden's Gift (the stage is cleared once it is chosen) */
+  afterWarden?: boolean;
   merchant?: {
     items: MerchantItem[];
     /** a visiting merchant from another Riftwalker's world: every card here is that Riftwalker's (a hero id) */

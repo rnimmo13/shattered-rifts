@@ -4,17 +4,7 @@
 // for it, never a one-off pile of Barrier (Robert, 2026-10-27; DECISIONS #338).
 
 import type { CardDef } from '@sr/combat';
-import {
-  ACT,
-  barrier,
-  dmg,
-  forge,
-  on,
-  pool,
-  stance,
-  status,
-  summon,
-} from '../build';
+import { ACT, barrier, dmg, forge, on, pool, stance, status, summon } from '../build';
 
 const r = pool('engineer', 'nexus');
 const k = pool('hunter', 'wyldmaw');

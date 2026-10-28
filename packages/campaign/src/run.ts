@@ -252,8 +252,32 @@ export function chooseHeart(run: RunState, id: string): RunState {
     r.hp = Math.max(1, Math.min(r.maxHp, r.hp + h.maxHp));
   }
   r.eventResult = `You take the ${h.name}.${old ? ` The ${old.name} is given back.` : ''}`;
-  afterGift(r);
+  if (!nextReward(r, run.context as NonNullable<RunState['context']>, true)) afterGift(r);
   return r;
+}
+
+/**
+ * One more card reward, if the fight earned any (a card that kills: Marked for Death, The Hunt). It replaces the context, keeping
+ * the node, and says whether it did. Its cards are a fight's or an Elite's, as the fight's own reward was (a Warden's are an Elite's).
+ */
+function nextReward(
+  r: RunState,
+  c: NonNullable<RunState['context']>,
+  afterWarden: boolean,
+): boolean {
+  const left = c.extraRewards ?? 0;
+  if (left <= 0 || c.nodeId === '') return false;
+  const kind = nodeOf(r, c.nodeId).kind;
+  const count = Math.max(2, (r.tier >= 4 ? 4 : 3) - omenEffects(r.tier).fewerChoices);
+  r.context = {
+    nodeId: c.nodeId,
+    offers: offerCards(r.rng, r.character, r.deck, kind === 'duel' ? 'duel' : 'elite', count),
+    extraReward: true,
+    ...(left > 1 ? { extraRewards: left - 1 } : {}),
+    ...(afterWarden ? { afterWarden: true } : {}),
+  };
+  r.phase = 'reward';
+  return true;
 }
 
 /** After the Warden's Gift: the next stage, or, after the last stage, the loop is cleared (DECISIONS #352). */
@@ -649,6 +673,9 @@ export function resolveCost(kind: MapNode['kind']): number {
 /** The most max HP a card can give for good in one fight (Bloodfeast is 3 per kill): a guard against a hand-made result. */
 export const MAX_HP_GAIN_PER_FIGHT = 30;
 
+/** The most extra card rewards one fight pays (Marked for Death is one per kill): more than this are earned but not paid. */
+export const MAX_EXTRA_REWARDS = 3;
+
 export function finishDuel(
   run: RunState,
   won: boolean,
@@ -656,6 +683,8 @@ export function finishDuel(
   potionsLeft: readonly string[] = run.potions,
   /** max HP the hero gained for good in the fight (a card that raises it when it kills), at most a few per fight */
   maxHpGained = 0,
+  /** extra card rewards the fight earned (a card that gives one when it kills) */
+  extraRewards = 0,
 ): RunState {
   need(run.phase === 'duel' && run.context, 'No fight is in progress');
   const r = clone(run);
@@ -678,6 +707,12 @@ export function finishDuel(
     'Invalid max HP gain at the end of a fight',
   );
   r.maxHp += maxHpGained;
+  need(
+    Number.isInteger(extraRewards) && extraRewards >= 0,
+    'Invalid extra card rewards at the end of a fight',
+  );
+  // (copies, replays and a crowd of enemies could earn more: the extra are dropped, never a fight that cannot be reported)
+  const extra = extraRewards > 0 ? { extraRewards: Math.min(MAX_EXTRA_REWARDS, extraRewards) } : {};
   need(
     Number.isInteger(hpLeft) && hpLeft >= 1 && hpLeft <= r.maxHp,
     'Invalid HP at the end of a fight',
@@ -751,11 +786,12 @@ export function finishDuel(
     const offers = giftOffers(r.rng, r.character, r.deck, r.tier >= 5 ? 4 : 3, node.enemyId);
     // (the Gift always has cards; only if there were neither cards nor Hearts would there be nothing to choose)
     if (offers.length === 0 && hearts.length === 0) {
-      afterGift(r);
+      if (!nextReward(r, { nodeId: node.id, ...extra }, true)) afterGift(r);
       return r;
     }
     r.context = {
       nodeId: node.id,
+      ...extra,
       offers,
       ...(hearts.length ? { hearts } : {}),
       shardsGained: gain,
@@ -794,6 +830,7 @@ export function finishDuel(
   r.context = {
     nodeId: node.id,
     offers: offerCards(r.rng, r.character, r.deck, node.kind === 'elite' ? 'elite' : 'duel', count),
+    ...extra,
     shardsGained: gain,
     ...(boonGained ? { boonGained } : {}),
     ...(potionGained ? { potionGained } : {}),
@@ -816,7 +853,8 @@ export function chooseCard(run: RunState, cardId: string | null): RunState {
     need(canAdd(r.deck, cardId), 'That card would break the deck rules');
     r.deck.push(cardId);
   }
-  if (r.phase === 'gift') afterGift(r);
+  if (nextReward(r, c, r.phase === 'gift' || c.afterWarden === true)) return r;
+  if (r.phase === 'gift' || c.afterWarden) afterGift(r);
   else if (c.nodeId === '') {
     // a card chosen at the Threshold or a Waymark: no node is behind it
     r.context = null;

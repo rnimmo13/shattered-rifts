@@ -38,6 +38,7 @@ import {
   playPile,
   pool,
   scaled,
+  seekTop,
   stars,
   starsNext,
   status,
@@ -52,7 +53,11 @@ const a = pool('spellblade', 'starfall');
 const BLADE = 'starforged-blade';
 const sharpen = (n: number): Op => forge(BLADE, n);
 /** "Deal N damage for each M" as a number of hits */
-const hitsPer = (amount: number, by: Parameters<typeof per>[0], to: 'target' | 'allFoes' | 'randomFoe' = 'target'): Op => ({
+const hitsPer = (
+  amount: number,
+  by: Parameters<typeof per>[0],
+  to: 'target' | 'allFoes' | 'randomFoe' = 'target',
+): Op => ({
   op: 'damage',
   amount,
   hits: 0,
@@ -60,7 +65,10 @@ const hitsPer = (amount: number, by: Parameters<typeof per>[0], to: 'target' | '
   scale: per(by, 1, undefined, 'hits'),
 });
 /** Weak and Vulnerable: Faltering and Exposed */
-const weakVuln = (n: number): Op[] => [status('faltering', n, 'target'), status('exposed', n, 'target')];
+const weakVuln = (n: number): Op[] => [
+  status('faltering', n, 'target'),
+  status('exposed', n, 'target'),
+];
 
 export const SPELLBLADE: CardDef[] = [
   // --- basics and tokens ---
@@ -129,10 +137,19 @@ export const SPELLBLADE: CardDef[] = [
     up: { effects: [dmg(35)] },
   }),
   // (Kingly Punch: every time you draw it, it hits harder for the fight)
-  a('uncommon', 'crowned-fist', 'Crowned Fist', 'attack', 1, 'foe', [scaled(dmg(8), per('bonus'))], {
-    onDraw: [growSelf(4)],
-    up: { effects: [scaled(dmg(10), per('bonus'))], onDraw: [growSelf(6)] },
-  }),
+  a(
+    'uncommon',
+    'crowned-fist',
+    'Crowned Fist',
+    'attack',
+    1,
+    'foe',
+    [scaled(dmg(8), per('bonus'))],
+    {
+      onDraw: [growSelf(4)],
+      up: { effects: [scaled(dmg(10), per('bonus'))], onDraw: [growSelf(6)] },
+    },
+  ),
   // (Bulwark)
   a('uncommon', 'bladewall', 'Bladewall', 'skill', 2, 'none', [barrier(12), sharpen(10)], {
     up: { effects: [barrier(15), sharpen(13)] },
@@ -149,9 +166,18 @@ export const SPELLBLADE: CardDef[] = [
     { up: { effects: [sharpen(5), status('bladebane', 1, 'target', true)] } },
   ),
   // (Summon Forth: the Blade comes to your hand from wherever it is, then is sharpened; a new one is made if there is none)
-  a('uncommon', 'call-the-blade', 'Call the Blade', 'skill', 1, 'none', [fetchAnywhere('blade'), sharpen(8)], {
-    up: { effects: [fetchAnywhere('blade'), sharpen(11)] },
-  }),
+  a(
+    'uncommon',
+    'call-the-blade',
+    'Call the Blade',
+    'skill',
+    1,
+    'none',
+    [fetchAnywhere('blade'), sharpen(8)],
+    {
+      up: { effects: [fetchAnywhere('blade'), sharpen(11)] },
+    },
+  ),
   // (Terraforming)
   a('uncommon', 'forge-heat', 'Heat of the Forge', 'skill', 1, 'none', [status('vigor', 7)], {
     up: { effects: [status('vigor', 10)] },
@@ -161,9 +187,18 @@ export const SPELLBLADE: CardDef[] = [
     up: { effects: [on('turnStart', [sharpen(7)])] },
   }),
   // (Parry)
-  a('uncommon', 'parry', 'Glass Guard', 'power', 1, 'none', [on('play', [barrier(10)], { tag: 'blade' })], {
-    up: { effects: [on('play', [barrier(14)], { tag: 'blade' })] },
-  }),
+  a(
+    'uncommon',
+    'parry',
+    'Glass Guard',
+    'power',
+    1,
+    'none',
+    [on('play', [barrier(10)], { tag: 'blade' })],
+    {
+      up: { effects: [on('play', [barrier(14)], { tag: 'blade' })] },
+    },
+  ),
   // (Beat into Shape: the Sharpen grows with every earlier hit on that enemy this turn)
   a(
     'rare',
@@ -187,9 +222,18 @@ export const SPELLBLADE: CardDef[] = [
     { x: true },
   ),
   // (Seeking Edge)
-  a('rare', 'cleaving-edge', 'Cleaving Edge', 'power', 1, 'none', [sharpen(7), status('bladesweep', 1)], {
-    up: { effects: [sharpen(11), status('bladesweep', 1)] },
-  }),
+  a(
+    'rare',
+    'cleaving-edge',
+    'Cleaving Edge',
+    'power',
+    1,
+    'none',
+    [sharpen(7), status('bladesweep', 1)],
+    {
+      up: { effects: [sharpen(11), status('bladesweep', 1)] },
+    },
+  ),
   // (Sword Sage: the Blade is played twice; the source gives no upgrade, so it is a Mana cheaper)
   a('rare', 'echoing-blade', 'Echoing Blade', 'power', 2, 'none', [status('bladeecho', 1)], {
     up: { cost: 1 },
@@ -200,10 +244,19 @@ export const SPELLBLADE: CardDef[] = [
     up: { effects: [sharpen(40)] },
   }),
   // (Big Bang)
-  a('rare', 'big-bang', 'Magma Surge', 'skill', 0, 'none', [draw(1), mana(1), stars(1), sharpen(5)], {
-    exhaust: true,
-    up: { innate: true },
-  }),
+  a(
+    'rare',
+    'big-bang',
+    'Magma Surge',
+    'skill',
+    0,
+    'none',
+    [draw(1), mana(1), stars(1), sharpen(5)],
+    {
+      exhaust: true,
+      up: { innate: true },
+    },
+  ),
 
   // --- Arcana ---
   // (Astral Pulse)
@@ -212,10 +265,19 @@ export const SPELLBLADE: CardDef[] = [
     up: { effects: [dmg(8, 'allFoes', 2)] },
   }),
   // (Crescent Spear: 2 more for every card with an Arcana cost in your deck)
-  a('common', 'cosmic-lance', 'Obsidian Lance', 'attack', 1, 'foe', [scaled(dmg(8), per('starCards', 2))], {
-    starCost: 1,
-    up: { effects: [scaled(dmg(8), per('starCards', 3))] },
-  }),
+  a(
+    'common',
+    'cosmic-lance',
+    'Obsidian Lance',
+    'attack',
+    1,
+    'foe',
+    [scaled(dmg(8), per('starCards', 2))],
+    {
+      starCost: 1,
+      up: { effects: [scaled(dmg(8), per('starCards', 3))] },
+    },
+  ),
   // (Guiding Star)
   a('common', 'skybolt', 'Spellbolt', 'attack', 1, 'foe', [dmg(12), drawNext(2)], {
     starCost: 2,
@@ -255,23 +317,50 @@ export const SPELLBLADE: CardDef[] = [
     up: { effects: [dmg(18), ...weakVuln(2)] },
   }),
   // (Knockout Blow)
-  a('uncommon', 'final-shatter', 'Final Shatter', 'attack', 3, 'foe', [onKill(dmg(30), [stars(5)])], {
-    up: { effects: [onKill(dmg(38), [stars(5)])] },
-  }),
+  a(
+    'uncommon',
+    'final-shatter',
+    'Final Shatter',
+    'attack',
+    3,
+    'foe',
+    [onKill(dmg(30), [stars(5)])],
+    {
+      up: { effects: [onKill(dmg(38), [stars(5)])] },
+    },
+  ),
   // (Radiate: one hit on every enemy for each Arcana gained this turn)
-  a('uncommon', 'radiance', 'Arcane Flood', 'attack', 0, 'none', [hitsPer(3, 'starsGained', 'allFoes')], {
-    up: { effects: [hitsPer(4, 'starsGained', 'allFoes')] },
-  }),
+  a(
+    'uncommon',
+    'radiance',
+    'Arcane Flood',
+    'attack',
+    0,
+    'none',
+    [hitsPer(3, 'starsGained', 'allFoes')],
+    {
+      up: { effects: [hitsPer(4, 'starsGained', 'allFoes')] },
+    },
+  ),
   // (Shining Strike)
   a('uncommon', 'shard-strike', 'Shard Strike', 'attack', 1, 'foe', [dmg(8), stars(2)], {
     after: 'drawTop',
     up: { effects: [dmg(11), stars(2)] },
   }),
   // (Stardust: it spends all your Arcana, one hit on a random enemy for each)
-  a('uncommon', 'falling-sky', 'Falling Shards', 'attack', 0, 'none', [hitsPer(5, 'x', 'randomFoe')], {
-    starX: true,
-    up: { effects: [hitsPer(7, 'x', 'randomFoe')] },
-  }),
+  a(
+    'uncommon',
+    'falling-sky',
+    'Falling Shards',
+    'attack',
+    0,
+    'none',
+    [hitsPer(5, 'x', 'randomFoe')],
+    {
+      starX: true,
+      up: { effects: [hitsPer(7, 'x', 'randomFoe')] },
+    },
+  ),
   // (Hegemony)
   a('uncommon', 'sovereign-strike', 'Tyrant Strike', 'attack', 2, 'foe', [dmg(15), manaNext(2)], {
     up: { effects: [dmg(18), manaNext(3)] },
@@ -288,9 +377,18 @@ export const SPELLBLADE: CardDef[] = [
     { up: { effects: [on('gainArcana', [dmg(4, 'allFoes')]), on('arcana', [dmg(4, 'allFoes')])] } },
   ),
   // (Child of the Stars: 2 Barrier for each Arcana spent)
-  a('uncommon', 'cygnus', 'Sigil of Glass', 'power', 1, 'none', [on('arcana', [scaled(barrier(0), per('spent', 2))])], {
-    up: { effects: [on('arcana', [scaled(barrier(0), per('spent', 3))])] },
-  }),
+  a(
+    'uncommon',
+    'cygnus',
+    'Sigil of Glass',
+    'power',
+    1,
+    'none',
+    [on('arcana', [scaled(barrier(0), per('spent', 2))])],
+    {
+      up: { effects: [on('arcana', [scaled(barrier(0), per('spent', 3))])] },
+    },
+  ),
   // (Alignment)
   a('uncommon', 'chart-the-orbit', 'Ley Line', 'skill', 0, 'none', [mana(2)], {
     starCost: 3,
@@ -308,10 +406,19 @@ export const SPELLBLADE: CardDef[] = [
     { up: { effects: [manaNext(1), starsNext(2), status('holdfast', 1)] } },
   ),
   // (Reflect)
-  a('uncommon', 'mirror-glass', 'Mirror Glass', 'skill', 1, 'none', [barrier(15), status('reflect', 1)], {
-    starCost: 3,
-    up: { effects: [barrier(20), status('reflect', 1)] },
-  }),
+  a(
+    'uncommon',
+    'mirror-glass',
+    'Mirror Glass',
+    'skill',
+    1,
+    'none',
+    [barrier(15), status('reflect', 1)],
+    {
+      starCost: 3,
+      up: { effects: [barrier(20), status('reflect', 1)] },
+    },
+  ),
   // (Resonance: Arcana cost 2, the newer list's; the enemies' Might loss lasts)
   a(
     'uncommon',
@@ -417,9 +524,18 @@ export const SPELLBLADE: CardDef[] = [
     { up: { effects: [transformSome('retainer-strike+', { amount: 1, choose: true })] } },
   ),
   // (Cosmic Indifference: the card put back on top of your draw pile is a random one of your discard pile)
-  a('common', 'hollow-gaze', 'Hollow Gaze', 'skill', 1, 'none', [barrier(6), fetchCards(1, 'draw')], {
-    up: { effects: [barrier(9), fetchCards(1, 'draw')] },
-  }),
+  a(
+    'common',
+    'hollow-gaze',
+    'Hollow Gaze',
+    'skill',
+    1,
+    'none',
+    [barrier(6), fetchCards(1, 'draw')],
+    {
+      up: { effects: [barrier(9), fetchCards(1, 'draw')] },
+    },
+  ),
   // (Glitterstream: 5 Barrier next turn, as sts2.untapped.gg has it)
   a('common', 'glass-veil', 'Glass Veil', 'skill', 2, 'none', [barrier(11), barrierNext(5)], {
     up: { effects: [barrier(13), barrierNext(7)] },
@@ -429,9 +545,18 @@ export const SPELLBLADE: CardDef[] = [
     up: { effects: [hitsPer(5, 'skillsPlayed')] },
   }),
   // (Supermassive: 2 per card created, not 3: balance.test allows at most 2 per point of something that only grows)
-  a('uncommon', 'collapsing-star', 'Collapsing Vein', 'attack', 1, 'foe', [scaled(dmg(5), per('created', 2))], {
-    up: { effects: [scaled(dmg(8), per('created', 2))] },
-  }),
+  a(
+    'uncommon',
+    'collapsing-star',
+    'Collapsing Vein',
+    'attack',
+    1,
+    'foe',
+    [scaled(dmg(5), per('created', 2))],
+    {
+      up: { effects: [scaled(dmg(8), per('created', 2))] },
+    },
+  ),
   // (Orbit: the source gives no upgrade, so it is a Mana cheaper)
   a('uncommon', 'orbit', 'Sigil of Momentum', 'power', 2, 'none', [status('orbit', 1)], {
     up: { cost: 1 },
@@ -448,9 +573,18 @@ export const SPELLBLADE: CardDef[] = [
     { up: { effects: [on('turnEnd', [when('played', { atLeast: 5 }, [drawNext(2)])])] } },
   ),
   // (Pillar of Creation)
-  a('uncommon', 'pillar-of-light', 'Pillar of Glass', 'power', 1, 'none', [on('created', [barrier(2)])], {
-    up: { effects: [on('created', [barrier(3)])] },
-  }),
+  a(
+    'uncommon',
+    'pillar-of-light',
+    'Pillar of Glass',
+    'power',
+    1,
+    'none',
+    [on('created', [barrier(2)])],
+    {
+      up: { effects: [on('created', [barrier(3)])] },
+    },
+  ),
   // (Spectrum Shift: the source gives no upgrade, so it is a Mana cheaper)
   a(
     'uncommon',
@@ -478,9 +612,18 @@ export const SPELLBLADE: CardDef[] = [
     up: { effects: [draw(4), topdeck(1)] },
   }),
   // (Manifest Authority)
-  a('uncommon', 'royal-decree', 'Royal Decree', 'skill', 1, 'none', [barrier(7), discoverNeutral()], {
-    up: { effects: [barrier(8), discoverNeutral(1, true)] },
-  }),
+  a(
+    'uncommon',
+    'royal-decree',
+    'Royal Decree',
+    'skill',
+    1,
+    'none',
+    [barrier(7), discoverNeutral()],
+    {
+      up: { effects: [barrier(8), discoverNeutral(1, true)] },
+    },
+  ),
   // (Monologue)
   a(
     'uncommon',
@@ -529,9 +672,18 @@ export const SPELLBLADE: CardDef[] = [
     returnEvery: { kind: 'skill', n: 3 },
   }),
   // (Arsenal)
-  a('rare', 'glass-armory', 'Glass Armory', 'power', 1, 'none', [on('created', [status('might', 1)])], {
-    up: { innate: true },
-  }),
+  a(
+    'rare',
+    'glass-armory',
+    'Glass Armory',
+    'power',
+    1,
+    'none',
+    [on('created', [status('might', 1)])],
+    {
+      up: { innate: true },
+    },
+  ),
   // (Monarch's Gaze: the enemy each Attack is aimed at hits 1 softer through its next turn; no upgrade given, so a Mana cheaper)
   a(
     'rare',
@@ -544,9 +696,18 @@ export const SPELLBLADE: CardDef[] = [
     { up: { cost: 1 } },
   ),
   // (Tyranny: the card consumed is a random one of your hand, not chosen)
-  a('rare', 'iron-rule', 'Iron Rule', 'power', 1, 'none', [on('turnStart', [draw(1), exhaustN(1, 'random')])], {
-    up: { innate: true },
-  }),
+  a(
+    'rare',
+    'iron-rule',
+    'Iron Rule',
+    'power',
+    1,
+    'none',
+    [on('turnStart', [draw(1), exhaustN(1, 'random')])],
+    {
+      up: { innate: true },
+    },
+  ),
   // (Void Form)
   a('rare', 'hollow-form', 'Hollow Form', 'power', 3, 'none', [endTurnOp, status('freeplay', 2)], {
     ethereal: true,
@@ -557,13 +718,25 @@ export const SPELLBLADE: CardDef[] = [
     exhaust: true,
     up: { effects: [discoverNeutral(4)] },
   }),
-  // (Foregone Conclusion: next turn's 2 extra cards are drawn, not chosen from your draw pile)
-  a('rare', 'fated-hand', 'Fated Hand', 'skill', 1, 'none', [drawNext(2)]),
-  // (GUARDS!!!: any number of cards in your hand become Retainer Guards)
-  a('rare', 'call-the-guard', 'Call the Guard!', 'skill', 2, 'none', [transformSome('retainer-guard', { choose: true })], {
-    exhaust: true,
-    up: { effects: [transformSome('retainer-guard+', { choose: true })] },
+  // (Foregone Conclusion: "next turn, put 2 cards of your choice from your draw pile into your hand". The choice is made now and the
+  // cards wait on top of the draw pile, then 2 extra are drawn next turn: the same hand, with no choice at the start of a turn)
+  a('rare', 'fated-hand', 'Fated Hand', 'skill', 1, 'none', [seekTop(2), drawNext(2)], {
+    up: { effects: [seekTop(3), drawNext(3)] },
   }),
+  // (GUARDS!!!: any number of cards in your hand become Retainer Guards)
+  a(
+    'rare',
+    'call-the-guard',
+    'Call the Guard!',
+    'skill',
+    2,
+    'none',
+    [transformSome('retainer-guard', { choose: true })],
+    {
+      exhaust: true,
+      up: { effects: [transformSome('retainer-guard+', { choose: true })] },
+    },
+  ),
   // (I Am Invincible)
   a('rare', 'unbreakable-crown', 'Unbreakable Crown', 'skill', 1, 'none', [barrier(10)], {
     playFromTop: true,

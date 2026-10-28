@@ -214,7 +214,8 @@ function addStatus(r: Run, u: Unit, st: StatusId, amount: number): boolean {
     enterStance(r, u, 'radiant');
   }
   // an Aura that answers Exposed being put on an enemy (Vicious)
-  if (st === 'exposed' && amount > 0 && u.kind !== 'hero') fireTriggers(r, r.s.sides[other(u.side)], 'exposeFoe');
+  if (st === 'exposed' && amount > 0 && u.kind !== 'hero')
+    fireTriggers(r, r.s.sides[other(u.side)], 'exposeFoe');
   // (the Necrobinder copy) Auras that answer Fate, or any debuff, being put on an enemy (Shroud, Sleight of Flesh)
   // (an enemy unit, or in PvP the other player's hero while you act)
   const foeUnit = u.kind === 'enemy' || (u.kind === 'hero' && u.side !== r.s.active);
@@ -270,7 +271,10 @@ function scaledByDifficulty(actor: Unit, target: Unit, amount: number): number {
  * (Radiant triples, Wrath doubles what you deal; Wrath makes you take 50% more)
  */
 export function modifiedDamage(base: number, attacker: Unit | null, target: Unit | null): number {
-  let n = Math.max(0, base + (attacker ? stacks(attacker, 'might') - stacks(attacker, 'sapped') : 0));
+  let n = Math.max(
+    0,
+    base + (attacker ? stacks(attacker, 'might') - stacks(attacker, 'sapped') : 0),
+  );
   if (attacker && stacks(attacker, 'clutch') > 0)
     n = Math.floor((n * (100 + stacks(attacker, 'clutch'))) / 100);
   // (Stunned counts as Faltering, Exposed and Brittle at once, never on top of them: DECISIONS #310)
@@ -295,7 +299,12 @@ export function modifiedDamage(base: number, attacker: Unit | null, target: Unit
   )
     n = Math.floor(n * 1.5);
   // Colossus: an Exposed enemy's blows land at half strength for the turn
-  if (target && attacker && stacks(target, 'sturdy') > 0 && (stacks(attacker, 'exposed') > 0 || stacks(attacker, 'stunned') > 0))
+  if (
+    target &&
+    attacker &&
+    stacks(target, 'sturdy') > 0 &&
+    (stacks(attacker, 'exposed') > 0 || stacks(attacker, 'stunned') > 0)
+  )
     n = Math.floor(n * 0.5);
   if (attacker && attacker.dmgPct !== 100 && n > 0)
     n = Math.max(1, Math.floor((n * attacker.dmgPct) / 100));
@@ -420,7 +429,12 @@ function attackHit(r: Run, a: Act, t: Unit, base: number, single = false): numbe
   const lostHere = applyDamage(r, a.actor, t, amount, 'attack');
   let lost = lostHere;
   // (assassin) an Aura that answers your Attack getting through to an enemy (Envenom)
-  if (lostHere > 0 && a.actor.kind === 'hero' && a.card?.kind === 'attack' && t.side !== a.actor.side)
+  if (
+    lostHere > 0 &&
+    a.actor.kind === 'hero' &&
+    a.card?.kind === 'attack' &&
+    t.side !== a.actor.side
+  )
     fireTriggers(r, r.s.sides[a.actor.side], 'hitFoe', { target: t });
   // (hits taken this turn, for Hammer and Anvil; Reflect sends what its Barrier soaked back to the attacker)
   if (t.side !== a.actor.side) {
@@ -586,7 +600,10 @@ function metricValue(
     case 'allies':
       return sd.units.filter((x) => x.kind === 'ally' && x.hp > 0).length;
     case 'biggestAlly':
-      return sd.units.reduce((m, x) => (x.kind === 'ally' && x.hp > 0 ? Math.max(m, x.maxHp) : m), 0);
+      return sd.units.reduce(
+        (m, x) => (x.kind === 'ally' && x.hp > 0 ? Math.max(m, x.maxHp) : m),
+        0,
+      );
     case 'foes':
       return r.s.sides[other(sd.id)].units.filter((x) => x.hp > 0).length;
     case 'snares':
@@ -609,7 +626,13 @@ function metricValue(
     case 'strikes': {
       // the whole deck, wherever a card is right now (the card being played is on none of the piles while it resolves)
       const seen = new Set<string>();
-      const all = [...sd.hand, ...sd.draw, ...sd.discard, ...sd.exhausted, ...(a.inst ? [a.inst] : [])];
+      const all = [
+        ...sd.hand,
+        ...sd.draw,
+        ...sd.discard,
+        ...sd.exhausted,
+        ...(a.inst ? [a.inst] : []),
+      ];
       let n = 0;
       for (const c of all) {
         if (seen.has(c.id)) continue;
@@ -641,7 +664,10 @@ function metricValue(
     case 'skillsInHand':
       return sd.hand.filter((c) => r.db.cards[c.card]?.kind === 'skill').length;
     case 'foesSeared':
-      return r.s.sides[other(sd.id)].units.reduce((n, x) => n + (x.hp > 0 ? stacks(x, 'seared') : 0), 0);
+      return r.s.sides[other(sd.id)].units.reduce(
+        (n, x) => n + (x.hp > 0 ? stacks(x, 'seared') : 0),
+        0,
+      );
     case 'discardedNow':
       return a.discardedNow;
     case 'skillsDrawnNow':
@@ -650,7 +676,13 @@ function metricValue(
       return sd.starsGainedTurn ?? 0;
     case 'starCards': {
       const seen = new Set<string>();
-      const all = [...sd.hand, ...sd.draw, ...sd.discard, ...sd.exhausted, ...(a.inst ? [a.inst] : [])];
+      const all = [
+        ...sd.hand,
+        ...sd.draw,
+        ...sd.discard,
+        ...sd.exhausted,
+        ...(a.inst ? [a.inst] : []),
+      ];
       let n = 0;
       for (const c of all) {
         if (seen.has(c.id)) continue;
@@ -813,7 +845,11 @@ function execOp(r: Run, a: Act, op: Op): void {
   switch (op.op) {
     case 'damage': {
       // Blade Sweep: a blade card that strikes one enemy strikes every enemy
-      if (op.to === 'target' && a.card?.tags?.includes(BLADE_TAG) && stacks(a.actor, 'bladesweep') > 0) {
+      if (
+        op.to === 'target' &&
+        a.card?.tags?.includes(BLADE_TAG) &&
+        stacks(a.actor, 'bladesweep') > 0
+      ) {
         execOp(r, a, { ...op, to: 'allFoes' });
         return;
       }
@@ -822,8 +858,10 @@ function execOp(r: Run, a: Act, op: Op): void {
       const knife = a.card?.tags?.includes(EDGE_TAG) === true;
       const edge = knife ? stacks(a.actor, 'edge') : 0;
       // (assassin) Fanned knives hit every enemy; Honed adds to the first knife of the turn
-      const to: Sel = knife && op.to === 'target' && stacks(a.actor, 'fanned') > 0 ? 'allFoes' : op.to;
-      const honed = knife && a.actor.kind === 'hero' && !side.honedUsed ? stacks(a.actor, 'honed') : 0;
+      const to: Sel =
+        knife && op.to === 'target' && stacks(a.actor, 'fanned') > 0 ? 'allFoes' : op.to;
+      const honed =
+        knife && a.actor.kind === 'hero' && !side.honedUsed ? stacks(a.actor, 'honed') : 0;
       if (knife && a.actor.kind === 'hero') side.honedUsed = true;
       // (a hero's Vigor goes into its next attack card; an enemy's or a companion's into its next attacking move, DECISIONS #361)
       const vigor = (a.card ? a.card.kind === 'attack' : a.actor.kind !== 'hero')
@@ -873,7 +911,13 @@ function execOp(r: Run, a: Act, op: Op): void {
             a,
             t,
             Math.round(
-              (amountOf(r, a, op.amount, op.scale, t) + edge + honed + vigor + deft + resonanceOf(a) + marrow) *
+              (amountOf(r, a, op.amount, op.scale, t) +
+                edge +
+                honed +
+                vigor +
+                deft +
+                resonanceOf(a) +
+                marrow) *
                 lone *
                 leth *
                 noose,
@@ -892,15 +936,20 @@ function execOp(r: Run, a: Act, op: Op): void {
         reap(r);
       }
       // what a kill pays (Feed), once for each enemy this attack took down
-      for (let k = 0; k < kills && op.onKill && !r.s.winner; k++) runOps(r, a, op.onKill);
+      // (a blow that wins the fight still pays what outlasts it: max HP for good, an extra card reward)
+      for (let k = 0; k < kills && op.onKill; k++) {
+        if (!r.s.winner) runOps(r, a, op.onKill);
+        else
+          for (const o of op.onKill)
+            if (o.op === 'maxHp' || o.op === 'extraReward') execOp(r, a, o);
+      }
       a.dealt = took;
       if (vigor > 0) addStatus(r, a.actor, 'vigor', -vigor);
       // Lifesteal: the attacker heals a share of the HP the attack took off (DECISIONS #285)
       if (op.lifesteal && took > 0 && a.actor.hp > 0)
         healUnit(r, a.actor, Math.floor((took * op.lifesteal) / 100));
       // (assassin) Echoing Slash: the whole effect again for each enemy it killed (each kill needs an enemy, so it ends)
-      if (op.repeatOnKill)
-        for (let k = 0; k < kills && !r.s.winner; k++) execOp(r, a, op);
+      if (op.repeatOnKill) for (let k = 0; k < kills && !r.s.winner; k++) execOp(r, a, op);
       return;
     }
     case 'loseHp':
@@ -1190,13 +1239,21 @@ function execOp(r: Run, a: Act, op: Op): void {
       const kinds = Object.keys(r.db.runes ?? {}).sort();
       if (op.rune === '*' && !kinds.length) return;
       for (let i = 0; i < n && !r.s.winner; i++)
-        channel(r, side, op.rune === '*' ? (kinds[nextInt(r.s.rng, kinds.length)] as string) : op.rune);
+        channel(
+          r,
+          side,
+          op.rune === '*' ? (kinds[nextInt(r.s.rng, kinds.length)] as string) : op.rune,
+        );
       return;
     }
     case 'evoke': {
       // (the oldest first; `last`: the newest first)
       const count = Math.max(0, op.count ?? 1);
-      const batch = !count ? [] : op.last ? side.runes.slice(-count).reverse() : side.runes.slice(0, count);
+      const batch = !count
+        ? []
+        : op.last
+          ? side.runes.slice(-count).reverse()
+          : side.runes.slice(0, count);
       for (const rs of batch) {
         const times = amountOf(r, a, op.times ?? 1, op.scale, null);
         for (let i = 0; i < times && !r.s.winner; i++) fireRune(r, side, rs, 'evoke');
@@ -1214,7 +1271,8 @@ function execOp(r: Run, a: Act, op: Op): void {
         : side.runes.filter((x) => !op.rune || x.rune === op.rune);
       for (const rs of which)
         for (let i = 0; i < (op.times ?? 1) && !r.s.winner; i++)
-          if (side.runes.includes(rs)) fireRune(r, side, rs, 'passive', op.aim ? a.target : undefined);
+          if (side.runes.includes(rs))
+            fireRune(r, side, rs, 'passive', op.aim ? a.target : undefined);
       return;
     }
     case 'runeSlots':
@@ -1269,7 +1327,8 @@ function execOp(r: Run, a: Act, op: Op): void {
       const count = (op.count ?? 1) + (op.scale ? amountOf(r, a, 0, op.scale, null) : 0);
       for (let i = 0; i < count && pool.length; i++) {
         const pick = pool[nextInt(r.s.rng, pool.length)] as CardDef;
-        const better = op.upgraded && pick.upgrade && r.db.cards[pick.upgrade] ? pick.upgrade : pick.id;
+        const better =
+          op.upgraded && pick.upgrade && r.db.cards[pick.upgrade] ? pick.upgrade : pick.id;
         const made = addCardTo(r, side, better, 'hand');
         if (op.free && pick.cost > 0) made.costMod = -pick.cost;
         if (op.ethereal) made.ethereal = true;
@@ -1302,7 +1361,13 @@ function execOp(r: Run, a: Act, op: Op): void {
         if (!a.inst) return;
         const d = cardDef(r.db, a.inst.card);
         a.inst.costMod = Math.max(-d.cost, (a.inst.costMod ?? 0) - op.amount);
-        r.ev.push({ type: 'transform', side: side.id, card: a.inst.id, def: a.inst.card, costMod: a.inst.costMod });
+        r.ev.push({
+          type: 'transform',
+          side: side.id,
+          card: a.inst.id,
+          def: a.inst.card,
+          costMod: a.inst.costMod,
+        });
         return;
       }
       const eligible = side.hand.filter((c) => {
@@ -1359,7 +1424,11 @@ function execOp(r: Run, a: Act, op: Op): void {
       for (let i = 0; i < op.amount; i++) {
         // (anywhere: the draw pile and the consumed pile too, never an Aura in play)
         const piles = op.anywhere
-          ? [...side.discard, ...side.draw, ...side.exhausted.filter((c) => r.db.cards[c.card]?.kind !== 'power')]
+          ? [
+              ...side.discard,
+              ...side.draw,
+              ...side.exhausted.filter((c) => r.db.cards[c.card]?.kind !== 'power'),
+            ]
           : side.discard;
         const pool = piles.filter(
           (c) =>
@@ -1456,7 +1525,10 @@ function execOp(r: Run, a: Act, op: Op): void {
     }
     case 'when': {
       const v = metricValue(r, a, op.by, op.of, a.target, undefined, op.rune);
-      if ((op.atLeast !== undefined && v < op.atLeast) || (op.atMost !== undefined && v > op.atMost))
+      if (
+        (op.atLeast !== undefined && v < op.atLeast) ||
+        (op.atMost !== undefined && v > op.atMost)
+      )
         return;
       runOps(r, a, op.ops);
       return;
@@ -1473,6 +1545,9 @@ function execOp(r: Run, a: Act, op: Op): void {
         if (t.kind === 'hero') side.maxHpGained = (side.maxHpGained ?? 0) + n;
         r.ev.push({ type: 'heal', target: t.id, amount: n, hp: t.hp, maxHp: t.maxHp });
       }
+      return;
+    case 'extraReward':
+      if (op.amount > 0) side.extraRewards = (side.extraRewards ?? 0) + op.amount;
       return;
     case 'playPile': {
       const hero = heroOf(side);
@@ -1520,7 +1595,13 @@ function execOp(r: Run, a: Act, op: Op): void {
       for (const c of side.hand) {
         if (c.freeTurn) continue;
         c.freeTurn = true;
-        r.ev.push({ type: 'transform', side: side.id, card: c.id, def: c.card, costMod: -cardDef(r.db, c.card).cost });
+        r.ev.push({
+          type: 'transform',
+          side: side.id,
+          card: c.id,
+          def: c.card,
+          costMod: -cardDef(r.db, c.card).cost,
+        });
       }
       return;
     case 'giveSly': {
@@ -1595,6 +1676,38 @@ function execOp(r: Run, a: Act, op: Op): void {
       side.nextStars = (side.nextStars ?? 0) + op.amount;
       return;
     case 'topdeck': {
+      if (op.from === 'draw') {
+        // (Foregone Conclusion) choose cards from the whole draw pile; they go to its top. The choice is shown sorted, so it
+        // never tells the draw order; with no more cards than that, there is nothing to choose (they are already all there is)
+        const n = Math.min(op.amount, side.draw.length);
+        if (n <= 0 || n >= side.draw.length) return;
+        if (!a.pick) {
+          // (played with no one to ask: a Sly or replayed copy) random cards of the pile go to its top
+          for (let i = 0; i < n; i++) {
+            const k = n + nextInt(r.s.rng, side.draw.length - n);
+            const [c] = side.draw.splice(k, 1);
+            if (c) putOnTop(r, side, c);
+          }
+          return;
+        }
+        const pool = [...side.draw].sort((x, y) =>
+          x.card < y.card ? -1 : x.card > y.card ? 1 : x.id < y.id ? -1 : 1,
+        );
+        r.s.pending = {
+          kind: 'topdeck',
+          from: 'draw',
+          pool: pool.map((c) => c.id),
+          min: n,
+          max: n,
+          rest: [],
+          actor: a.actor.id,
+          target: a.target?.id ?? null,
+          finish: null,
+          x: a.x,
+        };
+        r.ev.push({ type: 'pending', side: side.id, kind: 'topdeck' });
+        return;
+      }
       const n = Math.min(op.amount, side.hand.length);
       if (n <= 0) return;
       if (!a.pick || n >= side.hand.length) {
@@ -1700,7 +1813,8 @@ function execOp(r: Run, a: Act, op: Op): void {
     }
     case 'reshuffle': {
       side.draw = shuffle(r.s.rng, [...side.draw, ...side.discard, ...side.hand]);
-      for (const c of side.hand) r.ev.push({ type: 'discard', side: side.id, card: c.id, def: c.card });
+      for (const c of side.hand)
+        r.ev.push({ type: 'discard', side: side.id, card: c.id, def: c.card });
       side.hand = [];
       side.discard = [];
       r.ev.push({ type: 'shuffle', side: side.id });
@@ -1874,14 +1988,27 @@ function transformCard(r: Run, sd: SideState, c: CardInst, into: CardId): void {
   cardDef(r.db, into);
   c.card = into;
   // (it is a new card: nothing the old one was given carries over)
-  for (const k of ['costMod', 'bonus', 'ethereal', 'retain', 'replay', 'costUp', 'costDown'] as const) delete c[k];
+  for (const k of [
+    'costMod',
+    'bonus',
+    'ethereal',
+    'retain',
+    'replay',
+    'costUp',
+    'costDown',
+  ] as const)
+    delete c[k];
   r.ev.push({ type: 'transform', side: sd.id, card: c.id, def: c.card });
 }
 
 /** Cards that come back to the hand on every nth card of a kind played this turn (Make It So). */
 function bringBack(r: Run, sd: SideState, played: CardDef): void {
   const count =
-    played.kind === 'attack' ? sd.attacksPlayed : played.kind === 'skill' ? sd.skillsPlayed : sd.played;
+    played.kind === 'attack'
+      ? sd.attacksPlayed
+      : played.kind === 'skill'
+        ? sd.skillsPlayed
+        : sd.played;
   if (count <= 0) return;
   for (const pile of ['draw', 'discard'] as const)
     for (const c of [...sd[pile]]) {
@@ -1967,7 +2094,14 @@ function moveFromHand(
       r.depth--;
     }
     // (assassin) Sly: a card an effect discards is played for free
-    if (fromHand && (cd.sly || slyNow) && hero && hero.hp > 0 && !r.s.winner && sd.discard.includes(c)) {
+    if (
+      fromHand &&
+      (cd.sly || slyNow) &&
+      hero &&
+      hero.hp > 0 &&
+      !r.s.winner &&
+      sd.discard.includes(c)
+    ) {
       sd.discard = sd.discard.filter((x) => x.id !== c.id);
       playFree(r, sd, hero, c, 'normal');
     }
@@ -2112,7 +2246,13 @@ function playFree(
     if (!allies.length) return back();
     target = allies[nextInt(r.s.rng, allies.length)] as Unit;
   }
-  r.ev.push({ type: 'play', side: sd.id, card: inst.id, def: inst.card, target: target?.id ?? null });
+  r.ev.push({
+    type: 'play',
+    side: sd.id,
+    card: inst.id,
+    def: inst.card,
+    target: target?.id ?? null,
+  });
   clearTurnFlags(inst);
   strangle(r, sd);
   if (r.s.winner) return back();
@@ -2125,7 +2265,11 @@ function playFree(
   }
   r.depth++;
   for (let k = 0; k < Math.max(1, repeat) && !r.s.winner; k++)
-    runOps(r, mkAct(hero, { target: target && target.hp > 0 ? target : null, card: cd, inst, x: 0 }), cd.effects);
+    runOps(
+      r,
+      mkAct(hero, { target: target && target.hp > 0 ? target : null, card: cd, inst, x: 0 }),
+      cd.effects,
+    );
   r.depth--;
   if ((how === 'stay' || how === 'exhaust') && cd.kind !== 'power') {
     if (how === 'stay') {
@@ -2200,7 +2344,8 @@ function fireTriggers(
     if (p.from && ctx.inst?.id === p.from) continue;
     // (the Defect copy: a card made or drawn can narrow it too, a totem's awakening by kind, and some answer once a turn)
     if (when === 'created' || when === 'draw') {
-      const subject = when === 'created' ? played : ctx.drawn ? r.db.cards[ctx.drawn.card] : undefined;
+      const subject =
+        when === 'created' ? played : ctx.drawn ? r.db.cards[ctx.drawn.card] : undefined;
       if (p.filter && p.filter !== subject?.kind) continue;
       if (p.tag && !subject?.tags?.includes(p.tag)) continue;
     }
@@ -2446,7 +2591,8 @@ export const HANGOVER_MAX = 10;
 function startOfTurn(r: Run, side: Side): void {
   const sd = r.s.sides[side];
   // Reflect lasts through the other side's turn, and ends as yours begins
-  for (const u of sd.units) if (stacks(u, 'reflect') > 0) addStatus(r, u, 'reflect', -stacks(u, 'reflect'));
+  for (const u of sd.units)
+    if (stacks(u, 'reflect') > 0) addStatus(r, u, 'reflect', -stacks(u, 'reflect'));
   for (const u of sd.units) {
     // (assassin) Blur: this turn change keeps all of it
     if (stacks(u, 'blur') > 0) {
@@ -2572,7 +2718,12 @@ function beginHeroTurn(r: Run, side: Side): void {
   // Barrier and Arcana put by last turn (Glitterstream, Hidden Cache)
   if ((sd.nextBarrier ?? 0) > 0 && hero.hp > 0) {
     hero.barrier += sd.nextBarrier ?? 0;
-    r.ev.push({ type: 'barrier', target: hero.id, amount: sd.nextBarrier ?? 0, total: hero.barrier });
+    r.ev.push({
+      type: 'barrier',
+      target: hero.id,
+      amount: sd.nextBarrier ?? 0,
+      total: hero.barrier,
+    });
     fireTriggers(r, sd, 'barrier');
   }
   sd.nextBarrier = 0;
@@ -3268,7 +3419,7 @@ function pickCards(r: Run, action: Extract<Action, { type: 'pick' }>): void {
       if (c) (sd.nextCopies ??= []).push({ card: c.card, times: p.times ?? 1 });
     }
   for (const id of p.kind === 'copy' ? [] : ids) {
-    const pile = p.kind === 'scry' ? sd.draw : sd.hand;
+    const pile = p.kind === 'scry' || p.from === 'draw' ? sd.draw : sd.hand;
     const k = pile.findIndex((c) => c.id === id);
     const [c] = k >= 0 ? pile.splice(k, 1) : [];
     if (c) picked.push(c);
@@ -3334,7 +3485,8 @@ function pickCards(r: Run, action: Extract<Action, { type: 'pick' }>): void {
       cd.effects,
     );
   }
-  if (fin && cd && hero && !r.s.winner) extraPlays(r, hero, cd, fin, findUnit(r.s, p.target) ?? null, p.x);
+  if (fin && cd && hero && !r.s.winner)
+    extraPlays(r, hero, cd, fin, findUnit(r.s, p.target) ?? null, p.x);
   // (an extra play cannot ask: it never sets a choice, so the card always finishes here)
   if (fin && cd) finishCard(r, sd, fin, cd, findUnit(r.s, p.target) ?? null, p.paid);
 }
@@ -3424,7 +3576,8 @@ export function previewCardDamage(
   const chosen = targetId ? (foes.find((u) => u.id === targetId) ?? null) : null;
   // a card aimed at your own unit (Reactor Meltdown reads the ally's HP) previews with that unit as its target
   const friendly = def.target === 'ally' || def.target === 'friend';
-  const mine = friendly && targetId ? (sd.units.find((u) => u.id === targetId && u.hp > 0) ?? null) : null;
+  const mine =
+    friendly && targetId ? (sd.units.find((u) => u.id === targetId && u.hp > 0) ?? null) : null;
   const a = mkAct(hero, {
     card: def,
     inst,

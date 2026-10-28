@@ -22,9 +22,11 @@ import {
   draw,
   drawLock,
   drawNext,
+  extraReward,
   mana,
   manaNext,
   on,
+  onKill,
   per,
   playPile,
   pool,
@@ -284,11 +286,20 @@ export const ASSASSIN: CardDef[] = [
     [discard(99), addTo('sleeve-knife', 0, 'hand', per('discardedNow'))],
     { up: { effects: [discard(99), addTo('sleeve-knife+', 0, 'hand', per('discardedNow'))] } },
   ),
-  // (The Hunt: the extra card reward for a kill is not copied, there is no such reward in a fight)
-  q('rare', 'marked-for-death', 'Marked for Death', 'attack', 1, 'foe', [dmg(10)], {
-    exhaust: true,
-    up: { effects: [dmg(15)] },
-  }),
+  // (The Hunt: a kill gives one more card reward after the fight, which the run hands out)
+  q(
+    'rare',
+    'marked-for-death',
+    'Marked for Death',
+    'attack',
+    1,
+    'foe',
+    [onKill(dmg(10), [extraReward(1)])],
+    {
+      exhaust: true,
+      up: { effects: [onKill(dmg(15), [extraReward(1)])] },
+    },
+  ),
   // (Grand Finale)
   q('rare', 'final-bow', 'Final Bow', 'attack', 0, 'none', [dmg(60, 'allFoes')], {
     needsEmptyDraw: true,

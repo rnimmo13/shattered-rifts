@@ -68,14 +68,7 @@ import { syncSavedRuns } from './syncRuns';
 import { getName, hasUsername } from '../pvp/config';
 import { CharacterPicker } from './CharacterPicker';
 import { MapLegend, MapView } from './MapView';
-import {
-  CardOffer,
-  DeckModal,
-  EventView,
-  MerchantView,
-  PreludeView,
-  ShrineView,
-} from './Pickers';
+import { CardOffer, DeckModal, EventView, MerchantView, PreludeView, ShrineView } from './Pickers';
 import { appendFightMove, clearFightLog, loadFightLog } from './fightLog';
 import { addToHistory, recordOf } from './history';
 import type { FightReplay } from '../fight/recap';
@@ -296,12 +289,18 @@ export default function RunScreen() {
   );
 
   const reportResult = useCallback(
-    (won: boolean, hp?: number, potions?: string[], maxHpGained?: number) => {
+    (
+      won: boolean,
+      hp?: number,
+      potions?: string[],
+      maxHpGained?: number,
+      extraRewards?: number,
+    ) => {
       if (runRef.current) {
         clearFightLog(duelKey(runRef.current));
         clearGhostLog(duelKey(runRef.current));
       }
-      act((r) => finishDuel(r, won, hp, potions, maxHpGained));
+      act((r) => finishDuel(r, won, hp, potions, maxHpGained, extraRewards));
     },
     [act],
   );
@@ -495,6 +494,7 @@ export default function RunScreen() {
               r.winner === 'a' ? r.hp : undefined,
               r.potions,
               r.winner === 'a' ? r.maxHpGained : undefined,
+              r.winner === 'a' ? r.extraRewards : undefined,
             );
           }}
         />
@@ -899,8 +899,12 @@ function Body(props: {
     case 'reward':
       return (
         <CardOffer
-          title="Choose a card"
-          hint="Add one to your deck, or skip: a thin deck draws its best cards more often."
+          title={run.context?.extraReward ? 'Choose another card' : 'Choose a card'}
+          hint={
+            run.context?.extraReward
+              ? 'An extra card reward, earned by a killing blow. Add one to your deck, or skip.'
+              : 'Add one to your deck, or skip: a thin deck draws its best cards more often.'
+          }
           offers={run.context?.offers ?? []}
           deck={run.deck}
           character={run.character}

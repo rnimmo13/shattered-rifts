@@ -82,6 +82,8 @@ export interface SideView {
 /** A choice you owe: the cards to choose among, resolved to their instances. */
 export interface PendingView {
   kind: Pending['kind'];
+  /** 'topdeck': chosen from the draw pile, not the hand */
+  from?: 'draw';
   pool: CardInst[];
   min: number;
   max: number;
@@ -177,13 +179,13 @@ function pendingView(s: CombatState, me: Side): PendingView | null {
   const p = s.pending;
   if (!p || s.active !== me) return null;
   const sd = s.sides[me];
-  const pile = p.kind === 'scry' ? sd.draw : sd.hand;
+  const pile = p.kind === 'scry' || p.from === 'draw' ? sd.draw : sd.hand;
   const pool: CardInst[] = [];
   for (const id of p.pool) {
     const c = pile.find((x) => x.id === id);
     if (c) pool.push(clone(c));
   }
-  return { kind: p.kind, pool, min: p.min, max: p.max };
+  return { kind: p.kind, ...(p.from ? { from: p.from } : {}), pool, min: p.min, max: p.max };
 }
 
 /** A hero's-eye view: the other side's hand, draw order and Traps stay hidden. */
@@ -512,7 +514,10 @@ function amountText(n: number, sc: Scale | undefined): { num: string; equal: boo
         : sc.by === 'hitsTaken'
           ? // (who was hit is part of the phrase: "per time the target was hit this turn")
             sc.of === 'target'
-            ? { per: 'time the target was hit this turn', equal: 'the times the target was hit this turn' }
+            ? {
+                per: 'time the target was hit this turn',
+                equal: 'the times the target was hit this turn',
+              }
             : sc.of === 'each'
               ? { per: 'time it was hit this turn', equal: 'the times it was hit this turn' }
               : { per: 'time you were hit this turn', equal: 'the times you were hit this turn' }
@@ -557,10 +562,10 @@ function amountText(n: number, sc: Scale | undefined): { num: string; equal: boo
     m <= -1
       ? `-${-m} per ${w.per}`
       : m >= 1
-      ? `+${m} per ${w.per}`
-      : sc.by === 'missingPct'
-        ? `+1 per ${step}${w.per}`
-        : `+${frac(m).a} per ${frac(m).b} ${PLURAL[sc.by] ?? w.per}`;
+        ? `+${m} per ${w.per}`
+        : sc.by === 'missingPct'
+          ? `+1 per ${step}${w.per}`
+          : `+${frac(m).a} per ${frac(m).b} ${PLURAL[sc.by] ?? w.per}`;
   return { num: `${n} (${per}${on})`, equal: false };
 }
 
@@ -674,8 +679,9 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
       // (Lifesteal: heal that percent of the HP it took off)
       const steal = o.lifesteal ? ` Lifesteal ${o.lifesteal}%.` : '';
       const kill =
-        (o.onKill ? ` If this is fatal: ${o.onKill.map((x) => opText(db, x, who)).join(' ')}` : '') +
-        (o.repeatOnKill ? ' Repeat this for each enemy it kills.' : '');
+        (o.onKill
+          ? ` If this is fatal: ${o.onKill.map((x) => opText(db, x, who)).join(' ')}`
+          : '') + (o.repeatOnKill ? ' Repeat this for each enemy it kills.' : '');
       return a.equal
         ? `Deal damage equal to ${a.num}${times}${who[o.to]}.${lone}${steal}${kill}`
         : `Deal ${a.num} damage${times}${who[o.to]}.${lone}${steal}${kill}`;
@@ -841,7 +847,9 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
     }
     case 'draw': {
       const a = amountText(o.amount, o.scale);
-      const hold = o.hold ? ` ${o.amount === 1 && !o.scale ? 'It Holds' : 'They Hold'} this turn.` : '';
+      const hold = o.hold
+        ? ` ${o.amount === 1 && !o.scale ? 'It Holds' : 'They Hold'} this turn.`
+        : '';
       // (Scrape)
       const keep =
         o.keepCost !== undefined
@@ -891,7 +899,8 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
       if (o.everywhere && o.tag)
         return `Consume every ${TAG_NAMES[o.tag] ?? o.tag} in your hand, draw pile and discard pile.`;
       if (o.tag && o.amount >= 9) return `Consume every ${TAG_NAMES[o.tag] ?? o.tag} in your hand.`;
-      if (o.not && o.amount >= 9) return `Consume every card in your hand that is not ${article(KIND_WORD2[o.not] ?? o.not)} ${KIND_WORD2[o.not] ?? o.not}.`;
+      if (o.not && o.amount >= 9)
+        return `Consume every card in your hand that is not ${article(KIND_WORD2[o.not] ?? o.not)} ${KIND_WORD2[o.not] ?? o.not}.`;
       if (o.only)
         return `Consume ${o.amount === 1 ? `${o.random ? 'a random' : article(KIND_WORD2[o.only] ?? o.only)} ${KIND_WORD2[o.only] ?? o.only}` : `${o.amount} ${o.random ? 'random ' : ''}${KIND_WORD2[o.only] ?? o.only}s`} in your hand.`;
       if (o.amount >= 9 && !o.random && !o.any) return 'Consume your hand.';
@@ -911,8 +920,7 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
           ? `${article(KIND_WORD[o.filter] ?? o.filter)} ${KIND_WORD[o.filter] ?? cap(o.filter)}`
           : 'a card';
       // (a cost limit: "a 0-cost Attack")
-      const costed =
-        o.maxCost !== undefined ? what.replace(/^an? /, `a ${o.maxCost}-cost `) : what;
+      const costed = o.maxCost !== undefined ? what.replace(/^an? /, `a ${o.maxCost}-cost `) : what;
       const rune = o.rune ? (db.runes?.[o.rune]?.name ?? o.rune) : '';
       // (with no kind or tag, a Fleeting or cost-floor narrowing names the card: "a card that costs 2 or more")
       const playWhat =
@@ -973,7 +981,11 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
     }
     case 'pulse': {
       const nm = o.rune ? (db.runes?.[o.rune]?.name ?? o.rune) : '';
-      const which = o.first ? 'your first totem' : nm ? `every ${nm} you have` : 'every totem you have';
+      const which = o.first
+        ? 'your first totem'
+        : nm
+          ? `every ${nm} you have`
+          : 'every totem you have';
       const t = (o.times ?? 1) > 1 ? ` ${o.times} times` : '';
       return `Trigger the passive of ${which}${t}${o.aim ? ', against the target' : ''}.`;
     }
@@ -1027,7 +1039,8 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
         : ' (it costs 0 the next time you play it)';
       const from = o.neutral ? 'Neutral' : 'from your pool';
       const upg = o.upgraded ? 'upgraded ' : '';
-      const what2 = (o.count ?? 1) > 1 ? `${o.count} random ${upg}${kind}` : `a random ${upg}${kind}`;
+      const what2 =
+        (o.count ?? 1) > 1 ? `${o.count} random ${upg}${kind}` : `a random ${upg}${kind}`;
       if (o.neutral || o.upgraded)
         return `Add ${what2}${o.neutral ? 'Neutral ' : ''}card${(o.count ?? 1) > 1 ? 's' : ''}${o.neutral ? '' : ` ${from}`} to your hand${o.free ? free : ''}.`;
       if (o.scale && (o.count ?? 1) === 0)
@@ -1051,7 +1064,13 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
       return `Add a ${o.free ? '0-cost ' : ''}copy of this card to your ${o.to === 'hand' ? 'hand' : o.to === 'draw' ? 'draw pile' : 'discard pile'}.`;
     case 'playPile': {
       const what = o.kind ? (KIND_WORD2[o.kind] ?? o.kind) : 'card';
-      const n = o.scale ? (o.scale.by === 'x' ? 'the top X cards' : 'cards') : o.amount && o.amount > 1 ? `the top ${o.amount} cards` : 'the top card';
+      const n = o.scale
+        ? o.scale.by === 'x'
+          ? 'the top X cards'
+          : 'cards'
+        : o.amount && o.amount > 1
+          ? `the top ${o.amount} cards`
+          : 'the top card';
       const end = o.exhaust ? ' and consume it' : '';
       if (o.from === 'draw' && o.kind)
         return `Play a random ${what} from your draw pile against a random enemy${end}.`;
@@ -1063,7 +1082,8 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
         const nm = o.tag ? (TAG_NAMES[o.tag] ?? o.tag) : what;
         return `${o.upgrade ? 'Upgrade and play' : 'Play'} every ${nm} in your consumed pile${o.aim === 'target' ? ' against the target' : ''}; they go back there.`;
       }
-      if (o.from === 'exhaust') return 'Play a random card from your consumed pile; it goes back there.';
+      if (o.from === 'exhaust')
+        return 'Play a random card from your consumed pile; it goes back there.';
       if (o.from === 'hand')
         return (o.repeat ?? 1) > 1
           ? `Play a random ${what} from your hand ${o.repeat} times.`
@@ -1082,11 +1102,20 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
         : `Consume the top ${o.amount} cards of your draw pile.`;
     case 'transform': {
       const into = db.cards[o.into]?.name ?? o.into;
-      const kindWord = o.tag ? (TAG_NAMES[o.tag] ?? o.tag) : o.kind ? (KIND_WORD2[o.kind] ?? o.kind) : 'card';
+      const kindWord = o.tag
+        ? (TAG_NAMES[o.tag] ?? o.tag)
+        : o.kind
+          ? (KIND_WORD2[o.kind] ?? o.kind)
+          : 'card';
       const pile = o.from === 'draw' ? 'your draw pile' : 'your hand';
-      if (o.amount === undefined && !o.choose) return `Turn every ${kindWord} in ${pile} into ${article(into)} ${into}.`;
-      if (o.amount === undefined) return `Turn any number of cards in ${pile} into ${plural(into)}.`;
-      const n = o.amount === 1 ? `${o.choose ? 'a' : 'a random'} ${kindWord}` : `${o.amount} ${o.choose ? '' : 'random '}${kindWord}s`;
+      if (o.amount === undefined && !o.choose)
+        return `Turn every ${kindWord} in ${pile} into ${article(into)} ${into}.`;
+      if (o.amount === undefined)
+        return `Turn any number of cards in ${pile} into ${plural(into)}.`;
+      const n =
+        o.amount === 1
+          ? `${o.choose ? 'a' : 'a random'} ${kindWord}`
+          : `${o.amount} ${o.choose ? '' : 'random '}${kindWord}s`;
       return `Turn ${n} in ${pile} into ${o.amount === 1 ? `${article(into)} ${into}` : plural(into)}.`;
     }
     case 'when':
@@ -1097,16 +1126,22 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
       const a = amountText(o.amount, undefined);
       return `Raise your max HP by ${a.num} for good.`;
     }
+    case 'extraReward':
+      return o.amount === 1
+        ? 'Gain an extra card reward after this fight.'
+        : `Gain ${o.amount} extra card rewards after this fight.`;
     case 'forge':
       if (o.scale) return `Sharpen ${at(o.amount, o.scale)}.`;
       return `Sharpen ${o.amount} (${db.cards[o.card]?.name ?? o.card} gains ${o.amount} damage).`;
     // (assassin) the Silent-shaped pieces
     case 'tick': {
-      const whom = o.to === 'target' ? 'the target' : who[o.to].replace(/^ to /, '') || 'the target';
+      const whom =
+        o.to === 'target' ? 'the target' : who[o.to].replace(/^ to /, '') || 'the target';
       return `The Bleed on ${whom} deals its damage now.`;
     }
     case 'strip': {
-      const whom = o.to === 'target' ? 'the target' : who[o.to].replace(/^ to /, '') || 'the target';
+      const whom =
+        o.to === 'target' ? 'the target' : who[o.to].replace(/^ to /, '') || 'the target';
       return `Remove all Barrier and Steadfast from ${whom}.`;
     }
     case 'selfCost':
@@ -1122,6 +1157,8 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
     case 'starsNext':
       return `Next turn, gain ${o.amount} Arcana.`;
     case 'topdeck':
+      if (o.from === 'draw')
+        return `Choose ${o.amount === 1 ? 'a card' : `${o.amount} cards`} in your draw pile and put ${o.amount === 1 ? 'it' : 'them'} on top.`;
       return `Put ${o.amount === 1 ? 'a card' : `${o.amount} cards`} from your hand on top of your draw pile.`;
     case 'endTurn':
       return 'End your turn.';
@@ -1135,9 +1172,11 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
         ? o.scale.by === 'x'
           ? ' X times'
           : ` once per ${METRIC_WORDS[o.scale.by].per}`
-        : (o.times ?? 1) > 1
-          ? ` ${o.times} times`
-          : '';
+        : o.times === 2
+          ? ' twice'
+          : (o.times ?? 1) > 1
+            ? ` ${o.times} times`
+            : '';
       return `Raise ${o.amount}${times}.`;
     }
     case 'command': {
@@ -1282,7 +1321,9 @@ export function cardText(db: CombatDb, c: CardDef, live?: ReadonlyMap<number, Li
       `Whenever you play a card that costs ${c.recallOnCost} or more, this returns from your discard pile to your hand.`,
     );
   if (c.replayFromExhaust)
-    parts.push('At the start of your turn, if this is consumed, it is played for free and goes back.');
+    parts.push(
+      'At the start of your turn, if this is consumed, it is played for free and goes back.',
+    );
   // (an Arcana cost is shown on the card itself, under the Mana cost: it is not said again in the text)
   if (c.starX) parts.push('Spend all your Arcana: X is the Arcana spent.');
   if (c.xBonus) parts.push(`X is ${c.xBonus} higher.`);
@@ -1307,9 +1348,9 @@ export function cardText(db: CombatDb, c: CardDef, live?: ReadonlyMap<number, Li
       i += n - 1;
     } else {
       // a card that grows every copy of itself (Gathering Storm) says so, instead of naming a weapon to Sharpen (DECISIONS #353)
-      const growsItself = c.effects.some(
-        (x) => x.op === 'forge' && x.card === c.id.replace(/\+$/, ''),
-      ) || (c.onDraw ?? []).some((x) => x.op === 'growSelf');
+      const growsItself =
+        c.effects.some((x) => x.op === 'forge' && x.card === c.id.replace(/\+$/, '')) ||
+        (c.onDraw ?? []).some((x) => x.op === 'growSelf');
       // an "X" status cost on the card already says it spends all of it, so the text does not (DECISIONS #357)
       if (
         o.op === 'scaleStatus' &&

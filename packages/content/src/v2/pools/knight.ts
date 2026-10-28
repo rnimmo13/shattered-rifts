@@ -91,18 +91,9 @@ export const KNIGHT: CardDef[] = [
     on('barrier', [dmg(5, 'randomFoe')]),
   ]),
   // (Impervious)
-  m(
-    'rare',
-    'immovable-oath',
-    'Immovable Oath',
-    'skill',
-    2,
-    'none',
-    [barrier(30)],
-    {
-      exhaust: true,
-    },
-  ),
+  m('rare', 'immovable-oath', 'Immovable Oath', 'skill', 2, 'none', [barrier(30)], {
+    exhaust: true,
+  }),
   // (Barricade) Fortified is huge: 3 Mana, 2 upgraded (DECISIONS #349)
   m('rare', 'unbroken-wall', 'Unbroken Wall', 'power', 3, 'none', [status('fortified', 1)], {
     up: { cost: 2 },
@@ -124,9 +115,7 @@ export const KNIGHT: CardDef[] = [
     status('might', 2, 'self', true),
   ]),
   // (Sword Boomerang)
-  m('common', 'cleaving-throws', 'Cleaving Throws', 'attack', 1, 'none', [
-    dmg(3, 'randomFoe', 3),
-  ]),
+  m('common', 'cleaving-throws', 'Cleaving Throws', 'attack', 1, 'none', [dmg(3, 'randomFoe', 3)]),
   // (Pommel Strike)
   m('common', 'hilt-strike', 'Hilt Strike', 'attack', 1, 'foe', [dmg(9), draw(1)]),
   // (Thunderclap)
@@ -253,16 +242,9 @@ export const KNIGHT: CardDef[] = [
     statusTheirs('sapped', 10, 'target'),
   ]),
   // (Feed: if it kills, your max HP grows for good)
-  m(
-    'rare',
-    'bloodfeast',
-    'Bloodfeast',
-    'attack',
-    1,
-    'foe',
-    [onKill(dmg(10), [maxHpUp(3)])],
-    { exhaust: true },
-  ),
+  m('rare', 'bloodfeast', 'Bloodfeast', 'attack', 1, 'foe', [onKill(dmg(10), [maxHpUp(3)])], {
+    exhaust: true,
+  }),
   // (Hellraiser: every Strike you draw is played against a random enemy)
   m('rare', 'raised-hell', 'Raised Hell', 'power', 2, 'none', [
     on('draw', [playPile('drawn', { match: 'strike' })]),
@@ -272,7 +254,9 @@ export const KNIGHT: CardDef[] = [
     on('turnStart', [fetchCards(1, 'hand', 'attack', true)]),
   ]),
   // (Primal Force: every Attack in your hand becomes a Giant Rock)
-  m('rare', 'stone-fury', 'Stone Fury', 'skill', 0, 'none', [transformHand('attack', 'giant-rock')]),
+  m('rare', 'stone-fury', 'Stone Fury', 'skill', 0, 'none', [
+    transformHand('attack', 'giant-rock'),
+  ]),
   m('common', 'giant-rock', 'Giant Rock', 'attack', 1, 'foe', [dmg(16)], { source: 'token' }),
 
   // --- Consume ---
@@ -310,9 +294,7 @@ export const KNIGHT: CardDef[] = [
   // (Battle Trance: draw 3, and no more this turn)
   m('uncommon', 'grim-focus', 'Grim Focus', 'skill', 0, 'none', [draw(3), drawLock]),
   // (Feel No Pain)
-  m('uncommon', 'numbing-rite', 'Numbing Rite', 'power', 1, 'none', [
-    on('exhaust', [barrier(3)]),
-  ]),
+  m('uncommon', 'numbing-rite', 'Numbing Rite', 'power', 1, 'none', [on('exhaust', [barrier(3)])]),
   // (Infernal Blade)
   m(
     'uncommon',
@@ -377,11 +359,7 @@ export const KNIGHT: CardDef[] = [
     { exhaust: true, up: { effects: [scaled(dmg(0), per('hand', 10)), exhaustN(99)] } },
   ),
   // (Brand)
-  m('rare', 'forsake', 'Forsake', 'skill', 0, 'none', [
-    lose(1),
-    exhaustN(1),
-    status('might', 1),
-  ]),
+  m('rare', 'forsake', 'Forsake', 'skill', 0, 'none', [lose(1), exhaustN(1), status('might', 1)]),
   // (Cascade: play the top X cards of your draw pile)
   m(
     'rare',
@@ -399,10 +377,19 @@ export const KNIGHT: CardDef[] = [
     discoverOp(undefined, 0, false, per('exhaustedNow')),
   ]),
   // (Howl From Beyond: it comes back from the consumed pile every turn)
-  m('uncommon', 'howl-of-the-fallen', 'Howl of the Fallen', 'attack', 3, 'none', [dmg(16, 'allFoes')], {
-    exhaust: true,
-    replayFromExhaust: true,
-  }),
+  m(
+    'uncommon',
+    'howl-of-the-fallen',
+    'Howl of the Fallen',
+    'attack',
+    3,
+    'none',
+    [dmg(16, 'allFoes')],
+    {
+      exhaust: true,
+      replayFromExhaust: true,
+    },
+  ),
   // (Pact's End: 17 to everyone, playable once 3 cards are consumed)
   m('rare', 'ashen-reckoning', 'Ashen Reckoning', 'attack', 0, 'none', [dmg(17, 'allFoes')], {
     needsExhausted: 3,
@@ -420,9 +407,7 @@ export const KNIGHT: CardDef[] = [
   // (Hemokinesis)
   m('uncommon', 'reckless-smite', 'Reckless Smite', 'attack', 1, 'foe', [lose(2), dmg(15)]),
   // (Rupture)
-  m('uncommon', 'scar-over', 'Scar Over', 'power', 1, 'none', [
-    on('loseHp', [status('might', 1)]),
-  ]),
+  m('uncommon', 'scar-over', 'Scar Over', 'power', 1, 'none', [on('loseHp', [status('might', 1)])]),
   // (Inferno)
   m('uncommon', 'blood-fire', 'Blood Fire', 'power', 1, 'none', [
     on('turnStart', [lose(1)]),
@@ -434,9 +419,18 @@ export const KNIGHT: CardDef[] = [
     when('hpLostTurn', { atLeast: 1 }, [dmg(6)]),
   ]),
   // (Offering)
-  m('rare', 'crimson-offering', 'Crimson Offering', 'skill', 0, 'none', [lose(6), mana(2), draw(3)], {
-    exhaust: true,
-  }),
+  m(
+    'rare',
+    'crimson-offering',
+    'Crimson Offering',
+    'skill',
+    0,
+    'none',
+    [lose(6), mana(2), draw(3)],
+    {
+      exhaust: true,
+    },
+  ),
   // (Crimson Mantle)
   m('rare', 'bloodied-plate', 'Bloodied Plate', 'power', 1, 'none', [
     on('turnStart', [lose(1), barrier(8)]),

@@ -138,7 +138,9 @@ export const ENGINEER: CardDef[] = [
   r('rare', 'emp', 'EMP', 'snare', 1, 'none', [status('stunned', 1, 'attacker')], {
     trigger: { on: 'attacked' },
   }),
-  r('rare', 'perpetual-motion', 'Perpetual Motion', 'power', 2, 'none', [on('turnStart', [prime(2)])]),
+  r('rare', 'perpetual-motion', 'Perpetual Motion', 'power', 2, 'none', [
+    on('turnStart', [prime(2)]),
+  ]),
 
   r('common', 'relay-strike', 'Relay Strike', 'attack', 1, 'foe', [dmg(6), ACT]),
   r('uncommon', 'overwatch', 'Overwatch', 'snare', 1, 'none', [prime(3), dmg(6, 'attacker')], {
@@ -319,7 +321,14 @@ export const ENGINEER: CardDef[] = [
   r('rare', 'relay-network', 'Relay Network', 'power', 2, 'none', [on('snare', [prime(3)])]),
 
   // --- Core: one big construct, built up and cashed in (DECISIONS #358) ---
-  r('common', 'crankshaft', 'Crankshaft', 'attack', 1, 'foe', [scaled(dmg(4), per('biggestAlly', 1 / 4))]),
-  r('common', 'reinforced-frame', 'Reinforced Frame', 'skill', 1, 'ally', [growHp(5, 'target'), draw(1)]),
-  r('rare', 'heavy-hitter', 'Heavy Hitter', 'attack', 2, 'foe', [scaled(dmg(0), per('biggestAlly'))]),
+  r('common', 'crankshaft', 'Crankshaft', 'attack', 1, 'foe', [
+    scaled(dmg(4), per('biggestAlly', 1 / 4)),
+  ]),
+  r('common', 'reinforced-frame', 'Reinforced Frame', 'skill', 1, 'ally', [
+    growHp(5, 'target'),
+    draw(1),
+  ]),
+  r('rare', 'heavy-hitter', 'Heavy Hitter', 'attack', 2, 'foe', [
+    scaled(dmg(0), per('biggestAlly')),
+  ]),
 ];

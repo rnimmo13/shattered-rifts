@@ -173,10 +173,20 @@ export const NECROMANCER: CardDef[] = [
     [command(dmg(11, 'allFoes')), status('exposed', 2, 'allFoes')],
     { ...CMD, up: { effects: [command(dmg(13, 'allFoes')), status('exposed', 3, 'allFoes')] } },
   ),
-  // (Legion of Bone: "ALL players Summon 6"; alone, it is you)
-  g('uncommon', 'army-of-the-drowned', 'Army of the Drowned', 'skill', 2, 'none', [raise(6)], {
-    exhaust: true,
-  }),
+  // (Legion of Bone: "ALL players Summon 6". Alone, "all players" was only you, a 2-Mana After the End; it raises two Thralls
+  // instead, as it would for a pair of players: 2 x Raise 6 is ~20 points against a 2-cost uncommon's ~26 with Consume, docs/14)
+  g(
+    'uncommon',
+    'army-of-the-drowned',
+    'Army of the Drowned',
+    'skill',
+    2,
+    'none',
+    [raise(6, 'bone-thrall', 2)],
+    {
+      exhaust: true,
+    },
+  ),
   // (Rattle: one more hit for every other time your Thralls have struck this turn)
   g(
     'uncommon',

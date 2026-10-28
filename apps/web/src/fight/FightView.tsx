@@ -83,6 +83,8 @@ export interface FightResult {
   potions: string[];
   /** max HP your hero gained for good during the fight (Bloodfeast) */
   maxHpGained?: number;
+  /** extra card rewards earned during the fight (Marked for Death) */
+  extraRewards?: number;
   /** the fight as it was played (its setup and every move), to watch again or keep */
   replay?: FightReplay;
 }
@@ -722,6 +724,7 @@ export function FightView(props: {
                 hp: hero?.hp ?? 0,
                 potions: [...after.sides[mySide].potions],
                 maxHpGained: after.sides[mySide].maxHpGained ?? 0,
+                extraRewards: after.sides[mySide].extraRewards ?? 0,
                 replay: replayOf(),
               }),
             300,

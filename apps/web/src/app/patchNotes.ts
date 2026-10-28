@@ -29,6 +29,30 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.107.0',
+    date: '2026-10-28',
+    title: 'Three cards made whole',
+    summary: 'Three cards that had lost part of what they do now do all of it, and a killing blow that ends a fight pays out.',
+    notes: [
+      {
+        kind: 'changed',
+        text: 'Fated Hand (Spellblade): choose 2 cards in your draw pile; they wait on top and come to your hand next turn, with 2 extra cards.',
+      },
+      {
+        kind: 'changed',
+        text: 'Army of the Drowned (Necromancer): raises two Thralls of 6 HP, not one.',
+      },
+      {
+        kind: 'changed',
+        text: 'Marked for Death (Assassin): if it kills, you get an extra card reward after the fight.',
+      },
+      {
+        kind: 'fixed',
+        text: 'Bloodfeast raises your max HP even when its kill ends the fight.',
+      },
+    ],
+  },
+  {
     version: '0.106.0',
     date: '2026-10-28',
     title: 'Classes by name, the Trickster',

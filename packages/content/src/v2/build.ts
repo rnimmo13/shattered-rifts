@@ -204,6 +204,10 @@ export const barrierNext = (amount: number): Op => ({ op: 'barrierNext', amount 
 export const starsNext = (amount: number): Op => ({ op: 'starsNext', amount });
 /** put cards from your hand on top of your draw pile (chosen) */
 export const topdeck = (amount = 1): Op => ({ op: 'topdeck', amount });
+/** choose cards anywhere in your draw pile and put them on top of it */
+export const seekTop = (amount: number): Op => ({ op: 'topdeck', amount, from: 'draw' });
+/** more card rewards after the fight, if it is won */
+export const extraReward = (amount = 1): Op => ({ op: 'extraReward', amount });
 export const endTurnOp: Op = { op: 'endTurn' };
 /** the card being resolved deals more damage for the rest of the fight (an onDraw effect: Kingly Punch) */
 export const growSelf = (amount: number): Op => ({ op: 'growSelf', amount });
