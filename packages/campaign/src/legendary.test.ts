@@ -19,8 +19,9 @@ describe('legendary cards', () => {
       const own = rewardPool(h).filter(
         (id) => rarityOf(id) === 'legendary' && COMBAT_DB.cards[id]?.hero === h,
       );
-      // (Valeria has none: she is exactly the Ironclad's list, DECISIONS #367)
-      expect(own.length, h).toBeGreaterThanOrEqual(h === 'knight' ? 0 : 2);
+      // (Valeria and Sylas have none: they are exactly the Ironclad's and the Silent's lists, DECISIONS #367,
+      // docs/decisions-pending/assassin.md)
+      expect(own.length, h).toBeGreaterThanOrEqual(h === 'knight' || h === 'assassin' ? 0 : 2);
     }
     const neutral = Object.values(COMBAT_DB.cards).filter(
       (c) => c.hero === 'neutral' && c.rarity === 'legendary' && !c.source,

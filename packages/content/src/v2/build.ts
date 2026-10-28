@@ -144,7 +144,7 @@ export const discoverOp = (kind?: CardKind, count = 1, free = false, scale?: Sca
 /** play cards for free against random enemies: from your draw pile, consumed pile, hand, or the card just drawn */
 export const playPile = (
   from: 'draw' | 'exhaust' | 'hand' | 'drawn',
-  opts: { amount?: number; scale?: Scale; kind?: CardKind; match?: string; exhaust?: boolean } = {},
+  opts: Omit<Extract<Op, { op: 'playPile' }>, 'op' | 'from'> = {},
 ): Op => ({ op: 'playPile', from, ...opts });
 export const manaLock: Op = { op: 'manaLock' };
 export const drawLock: Op = { op: 'drawLock' };
@@ -229,6 +229,9 @@ type Extra = Partial<
     | 'needsExhausted'
     | 'cheaperPerAttack'
     | 'replayFromExhaust'
+    | 'sly'
+    | 'cheaperPerSkill'
+    | 'needsEmptyDraw'
   >
 > & {
   /** a hand-written "+" version: fields that replace the card's (instead of the generic rule in plus()) */

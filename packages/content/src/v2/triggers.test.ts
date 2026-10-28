@@ -57,12 +57,12 @@ describe('fetching cards back from the discard pile', () => {
 });
 
 describe('draw, created and Skills-played hooks', () => {
-  it('"Whenever you draw a card" (Speed Reader) hits every enemy for each card drawn', () => {
-    let s = fight('assassin', ['speed-reader', 'quick-draw']);
+  it('"Whenever you draw a card during your turn" (Fleet Fingers) hits every enemy for each card drawn', () => {
+    let s = fight('assassin', ['fleet-fingers', 'backspring']);
     s = play(s, 'T0');
     const hp = foe(s).hp;
-    s = play(s, 'T1'); // Quick Draw: draw 1, so a hit of at least 2
-    expect(foe(s).hp).toBeLessThanOrEqual(hp - 2);
+    s = play(s, 'T1'); // Backspring: draw 2, so two hits of 2
+    expect(foe(s).hp).toBe(hp - 4);
   });
 
   it('"Whenever a card is created" (Pillar of Light) gives Barrier for each card Sword Rain makes', () => {
@@ -75,13 +75,13 @@ describe('draw, created and Skills-played hooks', () => {
     expect(hero(s).barrier).toBe(barrier + 8);
   });
 
-  it("Showman's Flourish counts the Skills played this turn", () => {
-    let s = fight('assassin', ['quick-draw', 'quick-draw', 'showmans-flourish']);
+  it('Nerve Strike costs 1 less for each Skill played this turn', () => {
+    let s = fight('assassin', ['turn-aside', 'turn-aside', 'nerve-strike']);
     s = play(s, 'T0');
     s = play(s, 'T1');
-    const hp = foe(s).hp;
+    const mana = s.sides.a.mana;
     s = play(s, 'T2');
-    expect(hp - foe(s).hp).toBeGreaterThanOrEqual(12);
+    expect(mana - s.sides.a.mana).toBe(1);
   });
 
   it('a fetch with a full hand sends the card back to the discard pile', () => {

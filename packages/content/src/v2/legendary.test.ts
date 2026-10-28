@@ -60,13 +60,6 @@ describe('legendary effects', () => {
     for (const u of s.sides.a.units) expect(u.statuses.might).toBeGreaterThanOrEqual(1);
   });
 
-  it('Death Warrant takes two HP per Seared', () => {
-    const s = play('assassin', 'death-warrant', (st) => {
-      st.sides.b.units[0]!.statuses.seared = 5;
-    });
-    expect(s.sides.b.units[0]!.hp).toBe(200 - 10);
-  });
-
   it("Volcano's Birth gives Arcana, cards and a Mana more every turn (DECISIONS #338)", () => {
     const s0 = createFight('spellblade').state;
     const s = play('spellblade', 'birth-of-a-star', (st) => {

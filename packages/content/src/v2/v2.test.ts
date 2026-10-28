@@ -14,9 +14,9 @@ describe('Combat v2 content', () => {
     expect(validateDb(db)).toEqual([]);
   });
 
-  it('has the four Riftwalkers with 10-card starters of valid cards', () => {
+  it('has the Riftwalkers with 10-card starters of valid cards (12 for Sylas, the Silent shape)', () => {
     for (const [id, r] of Object.entries(RIFTWALKERS)) {
-      expect(r.starter).toHaveLength(10);
+      expect(r.starter, id).toHaveLength(id === 'assassin' ? 12 : 10);
       for (const c of r.starter) expect(db.cards[c], `${id}: ${c}`).toBeDefined();
     }
   });
@@ -45,6 +45,7 @@ describe('Combat v2 content', () => {
           b: c.xBonus,
           d: c.onDiscard,
           o: c.onExhaust,
+          i: c.innate,
         }) ===
         JSON.stringify({
           e: u.effects,
@@ -55,6 +56,7 @@ describe('Combat v2 content', () => {
           b: u.xBonus,
           d: u.onDiscard,
           o: u.onExhaust,
+          i: u.innate,
         });
       expect(same, `${c.id} upgrade changes nothing`).toBe(false);
     }

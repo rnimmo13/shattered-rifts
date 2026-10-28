@@ -54,7 +54,12 @@ export function validateDb(db: CombatDb): string[] {
         !(Number.isFinite(o.lifesteal) && o.lifesteal > 0 && o.lifesteal <= 100)
       )
         errs.push(`${where}: Lifesteal must be 1-100 percent`);
-      if ((o.op === 'discard' || o.op === 'exhaustCards' || o.op === 'scry') && !opts.pick)
+      // (a random discard asks no one, so an Aura may do it: Tools of the Trade)
+      if (
+        (o.op === 'discard' || o.op === 'exhaustCards' || o.op === 'scry') &&
+        !opts.pick &&
+        !(o.op === 'discard' && o.random)
+      )
         errs.push(
           `${where}: "${o.op}" asks the player to choose, so only a card's own effects may use it`,
         );
@@ -76,7 +81,8 @@ export function validateDb(db: CombatDb): string[] {
       if (o.op === 'power') {
         if (!opts.card) errs.push(`${where}: "power" only works in a card`);
         checkOps(`${where}.power`, o.ops, {
-          aimed: o.when === 'play',
+          // (an Aura that answers your Attack hitting an enemy aims at that enemy: Envenom)
+          aimed: o.when === 'play' || o.when === 'hitFoe',
           snare: false,
           attacker: o.when === 'allyDies',
           played: o.when === 'play',
@@ -152,7 +158,12 @@ export function validateDb(db: CombatDb): string[] {
       c.effects.some((o) => o.op === 'prevent')
     )
       errs.push(`${id}: "prevent" only cancels an attack`);
-    if (c.target === 'foe' && !c.effects.some((o) => 'to' in o && o.to === 'target'))
+    // (inside a condition, or a card played at the target: Bubble Bubble, Knife Trap)
+    const usesTarget = (o: Op): boolean =>
+      ('to' in o && o.to === 'target') ||
+      (o.op === 'when' && o.ops.some(usesTarget)) ||
+      (o.op === 'playPile' && o.aim === 'target');
+    if (c.target === 'foe' && !c.effects.some(usesTarget))
       errs.push(`${id}: asks for a target but no effect uses it`);
   }
 

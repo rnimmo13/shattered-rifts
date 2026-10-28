@@ -204,6 +204,79 @@ export const STATUS_INFO: Record<
     tone: 'good',
     text: 'Your next Attack costs 0.',
   },
+  // (Sylas, the Silent's shape: docs/decisions-pending/assassin.md)
+  virulent: {
+    name: 'Virulent',
+    glyph: '☣',
+    tone: 'good',
+    text: 'Bleed on your enemies deals its damage this many more times each turn, losing 1 each time.',
+  },
+  honed: {
+    name: 'Honed',
+    glyph: '⚔',
+    tone: 'good',
+    text: 'Your Sleeve Knives Hold, and the first one you play each turn deals this much more damage.',
+  },
+  fanned: {
+    name: 'Fanned',
+    glyph: '✷',
+    tone: 'good',
+    text: 'Your Sleeve Knives hit ALL enemies.',
+  },
+  tracking: {
+    name: 'Tracking',
+    glyph: '⌖',
+    tone: 'good',
+    text: 'Your attacks deal 50% more damage to Faltering enemies.',
+  },
+  guarded: {
+    name: 'Guarded',
+    glyph: '⛉',
+    tone: 'good',
+    text: 'At the start of your next turn, gain this much Barrier.',
+  },
+  blur: {
+    name: 'Blur',
+    glyph: '◌',
+    tone: 'good',
+    text: 'Your Barrier is not removed at the start of your next turn (one turn per stack).',
+  },
+  meld: {
+    name: 'Meld',
+    glyph: '◐',
+    tone: 'good',
+    text: 'Barrier you gain is doubled. It wears off at the end of your turn.',
+  },
+  poised: {
+    name: 'Poised',
+    glyph: '↯',
+    tone: 'good',
+    text: 'At the start of your next turn you become Empowered.',
+  },
+  empowered: {
+    name: 'Empowered',
+    glyph: '⚡',
+    tone: 'good',
+    text: 'Your attacks deal double damage. It wears off at the end of your turn.',
+  },
+  strangled: {
+    name: 'Strangled',
+    glyph: '➰',
+    tone: 'bad',
+    text: 'Whenever the other side plays a card, it loses this much HP. It wears off at the end of that turn.',
+  },
+  freeskill: {
+    name: 'Free Skill',
+    glyph: '➤',
+    tone: 'good',
+    text: 'Your next Skill costs 0.',
+  },
+  planner: {
+    name: 'Planner',
+    glyph: '✎',
+    tone: 'good',
+    text: 'A Skill you play gains Sly for the rest of the fight.',
+  },
 };
 
 /** One glyph per totem, for the totem row. */
@@ -291,6 +364,10 @@ export const KEYWORD_INFO: Record<string, { name: string; text: string }> = {
     text: 'Every copy of the Obsidian Blade permanently gains damage. If you have none, you get one.',
   },
   'sleeve-knife': { name: 'Sleeve Knife', text: 'A 0-cost Attack that is consumed.' },
+  sly: {
+    name: 'Sly',
+    text: 'When a card makes you discard it, it is played for free (not when you end your turn).',
+  },
   'buckshot-shell': {
     name: 'Buckshot Shell',
     text: 'A 0-cost Attack that hits every enemy and is consumed.',

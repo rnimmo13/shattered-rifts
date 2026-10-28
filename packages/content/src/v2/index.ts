@@ -178,26 +178,27 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
       text: 'At the start of your turn, add a Sleeve Knife to your hand.',
       turnStart: [addTo('sleeve-knife')],
     },
+    // (the Silent's shape, docs/decisions-pending/assassin.md: 70 HP, 5 Strikes, 5 Defends, Neutralize and Survivor)
     hero: {
       id: 'assassin',
       name: 'Sylas',
-      maxHp: 72,
+      maxHp: 70,
       mana: 3,
       handSize: 5,
     },
-    starter: [...rep('strike', 4), ...rep('defend', 3), ...rep('quick-jab', 2), 'slip-away'],
+    starter: [...rep('strike', 5), ...rep('defend', 5), 'hobbling-jab', 'duck-and-weave'],
     blurb:
-      'A cutpurse with a sleeve full of blades: a Sleeve Knife finds its way into his hand every turn. Knives, Bleed and discard tricks.',
-    mechanics: ['Sleeve Knives', 'Bleed', 'Discard', 'Free cards'],
+      'A cutpurse with a sleeve full of blades: a Sleeve Knife finds its way into his hand every turn. Knives, Bleed and sleight of hand.',
+    mechanics: ['Sleeve Knives', 'Bleed', 'Discard', 'Sly', 'Faltering'],
     buildPaths: [
-      'Knives: 0-cost blades',
-      'Bleed: stack, double, cash out',
-      'Sleight: discard and cycle',
+      'Shivs: Sleeve Knives, and the attacks around them',
+      'Bleed: stack it, make it burn harder',
+      'Sleight: draw, discard and dodge',
     ],
     howTo: [
-      'Every turn a Sleeve Knife comes to your hand (Hidden Blades): a 0-cost Attack that is consumed when played. Knife payoffs, Bleed on knives (Tainted Edges) and discard payoffs all use it.',
-      'Bleed hurts for its stacks every turn and then shrinks. Double it, then cash it out.',
-      'Discarding is a resource: Foresee and Discard cards trigger payoffs.',
+      'Every turn a Sleeve Knife comes to your hand (Hidden Blades): a 0-cost Attack that is consumed when played. Many cards make more of them, and Edge makes each one hit harder.',
+      'Bleed hurts for its stacks at the start of the enemy’s turn and then shrinks by 1. Pile it on and let it work.',
+      'Discarding is a resource: a card with Sly is played for free when a card makes you discard it.',
     ],
   },
   totemist: {
