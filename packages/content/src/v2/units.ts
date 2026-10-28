@@ -41,8 +41,10 @@ const RAW_ALLIES: UnitDef[] = [
   ally('hound', 'Hound', 8, [dmg(4)]),
   ally('pack-alpha', 'Pack Alpha', 16, [dmg(10)]),
   ally('dire-wolf', 'Dire Wolf', 24, [dmg(14)]),
-  // Gloomfen: Mire's dead
-  ally('bone-thrall', 'Bone Thrall', 12, [dmg(4)]),
+  // Gloomfen: Dorian's dead. The Bone Thrall is his copy of the Necrobinder's Osty, several at once: it does not act on its own, a
+  // Raise brings one with the HP the card says (5 here is only the one he starts with), and his Command cards make each one strike.
+  // (Grave Colossus and The Drowned King are no longer summoned by any card; they are kept for their looks and for later.)
+  ally('bone-thrall', 'Bone Thrall', 5, []),
   ally('grave-colossus', 'Grave Colossus', 22, [dmg(9)]),
   ally('drowned-king', 'The Drowned King', 22, [dmg(10), barrier(4, 'hero')]),
   ally('gnashling', 'Gnashling', 4, [dmg(3)]),

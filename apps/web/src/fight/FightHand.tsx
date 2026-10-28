@@ -24,6 +24,15 @@ export interface HandCard {
 
 const needsAim = (c: HandCard): boolean => c.aim === true || c.targets.length > 1;
 
+/** The keywords another card gave this copy in the fight (Wraith Strike, Bone Snap, Echo of the Dead), for its text. */
+function instNote(inst: CardInst, def: CardDef): string | null {
+  const parts: string[] = [];
+  if (inst.ethereal && !def.ethereal) parts.push('Fleeting.');
+  if (inst.retain && !def.retain) parts.push('Hold.');
+  if (inst.replay) parts.push(`Replay ${inst.replay}.`);
+  return parts.length ? parts.join(' ') : null;
+}
+
 export interface FightHandProps {
   db: CombatDb;
   cards: HandCard[];
@@ -259,6 +268,7 @@ export function FightHand(p: FightHandProps) {
                 {...(c.inst.bonus ? { bonus: c.inst.bonus } : {})}
                 {...(c.cost !== undefined && c.cost !== c.def.cost ? { cost: c.cost } : {})}
                 {...(p.live?.has(c.inst.id) ? { live: p.live.get(c.inst.id)! } : {})}
+                {...(instNote(c.inst, c.def) ? { note: instNote(c.inst, c.def)! } : {})}
               />
             </div>
             <div

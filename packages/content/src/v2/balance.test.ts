@@ -76,7 +76,8 @@ describe('balance guard rails', () => {
         const sc = 'scale' in o ? o.scale : undefined;
         if (!sc || !GROWS.includes(sc.by)) continue;
         const cap = c.exhaust ? 3 : 2;
-        if ((sc.mult ?? 1) > cap) bad.push(`${c.id}: x${sc.mult} per ${sc.by}`);
+        // (a count in steps pays its mult once per step: "5 more for every 10 Fate" is half a point per Fate)
+        if ((sc.mult ?? 1) / (sc.step ?? 1) > cap) bad.push(`${c.id}: x${sc.mult} per ${sc.by}`);
       }
     expect(bad).toEqual([]);
   });

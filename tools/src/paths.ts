@@ -68,11 +68,12 @@ const HEADS: Record<HeroId, [RegExp, number | null][]> = {
     [/court/i, 2],
     [/basics/i, null],
   ],
+  // (Dorian is the Necrobinder's card list: a first sort only, as build paths are hidden for now, DECISIONS #365)
   necromancer: [
-    [/doom/i, 0],
+    [/fate/i, 0],
     [/thralls/i, 1],
-    [/ashes/i, 2],
-    [/basics|shared|dead come back/i, null],
+    [/souls/i, 2],
+    [/basics|glue/i, null],
   ],
   drunkard: [
     [/junk traps/i, 0],
@@ -186,10 +187,7 @@ const BY_ID: Record<string, number> = {
   'the-glass-palace': 2,
   'rolling-thunder': 0,
   'pick-up-the-brass': 0,
-  // necromancer
-  'the-last-toll': 0,
-  'the-drowned-king': 1,
-  'grave-harvest': 2,
+  // (necromancer: none, his former Legendaries sit under his pool headings now)
 };
 const report: string[] = [];
 for (const h of Object.keys(POOLS) as HeroId[]) {

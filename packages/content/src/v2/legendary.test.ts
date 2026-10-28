@@ -46,19 +46,7 @@ describe('legendary effects', () => {
     expect(heroUnit(s).hp).toBe(hp0 - 15);
   });
 
-  it('The Last Toll puts 25 Fate on every enemy', () => {
-    const s = play('necromancer', 'the-last-toll');
-    // 25 from the card and 3 from Grave Chill on each; the card is consumed, so Grave Chill adds 3 to one of them
-    for (const u of s.sides.b.units) expect(u.statuses.doom).toBeGreaterThanOrEqual(25);
-    const total = s.sides.b.units.reduce((n, u) => n + (u.statuses.doom ?? 0), 0);
-    expect(total).toBe(28 * s.sides.b.units.length + 3);
-  });
-
-  it('The Drowned King summons the king and gives every friend Might', () => {
-    const s = play('necromancer', 'the-drowned-king');
-    expect(s.sides.a.units.some((u) => u.def === 'drowned-king')).toBe(true);
-    for (const u of s.sides.a.units) expect(u.statuses.might).toBeGreaterThanOrEqual(1);
-  });
+  // (Dorian's former Legendaries are Necrobinder copies now and are tested in necromancer.test.ts)
 
   it('every Aura-type shelved legendary lands on the board and stays', () => {
     for (const c of Object.values(db.cards).filter(

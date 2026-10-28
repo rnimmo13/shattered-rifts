@@ -354,33 +354,32 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
         on('exhaust', [status('doom', 3, 'randomFoe')]),
       ],
     },
+    // (the Slay the Spire 2 Necrobinder's shape, DECISIONS pending (docs/decisions-pending/necromancer.md): her 66 HP is below the
+    // 70 floor every Riftwalker keeps, so 70; her Osty is his Bone Thrall, and he may have several)
     hero: {
       id: 'necromancer',
       name: 'Dorian Blackthorn',
-      maxHp: 76,
+      maxHp: 70,
       mana: 3,
       handSize: 5,
       startUnits: ['bone-thrall'],
     },
-    starter: [
-      ...rep('strike', 3),
-      ...rep('defend', 3),
-      ...rep('grave-touch', 2),
-      ...rep('bone-ward', 2),
-    ],
+    starter: [...rep('strike', 4), ...rep('defend', 4), 'raise-thrall', 'off-the-leash'],
     blurb:
-      'A warden of the drowned dead. Starts with a Bone Thrall. Every death and every spent card brings the end closer for his enemies.',
-    mechanics: ['Fate', 'Thralls', 'Consume'],
+      'A warden of the drowned dead. His Bone Thralls stand between him and harm and strike when he commands; his enemies are cursed with Fate.',
+    mechanics: ['Thralls', 'Fate', 'Souls', 'Fleeting'],
     buildPaths: [
-      'Fate: curse, double, cash in',
-      'Thralls: the dead fight for you',
-      'Ashes: consumed cards fuel you',
+      'Fate: curse, then cash it in',
+      'Thralls: raise them, grow them, command them',
+      'Souls: Gravesouls and Fleeting cards',
     ],
     howTo: [
-      'You start with a Bone Thrall, which attacks when you end your turn.',
-      'Cursed with Fate, an enemy dies at the end of its turn if its HP is at or below its Fate. Curse it, double it, finish it.',
-      'Cards you consume fuel your Ashes build: Gravesouls, Requiem and more.',
-      'Grave Chill: every enemy starts with 3 Fate, and whenever an ally of yours dies or a card is consumed a random enemy is cursed with 3 more, whichever build you follow.',
+      'You start with a Bone Thrall. Thralls stand in front of you and take the hits meant for you, but they never act on their own.',
+      'Raise N brings a new Bone Thrall with N HP (up to three). With three already standing, your weakest Thrall gains N max HP instead.',
+      'Command cards (Knucklebone, Off the Leash...) make each of your Thralls strike. Off the Leash adds each Thrall’s own HP to its blow.',
+      'Cursed with Fate, an enemy dies at the end of its turn if its HP is at or below its Fate.',
+      'Gravesouls are free cards that draw 2 and are consumed; Fleeting cards are consumed if you still hold them when your turn ends, and some of your cards grow with every one you play.',
+      'Grave Chill: every enemy starts with 3 Fate, and whenever a Thrall dies or a card is consumed a random enemy is cursed with 3 more.',
     ],
   },
 };

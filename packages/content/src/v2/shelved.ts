@@ -29,10 +29,7 @@ export const SHELVED_LEGENDARIES: readonly string[] = [
   'still-flame-ascendant',
   'eye-of-the-storm',
   // (spellblade: none, she is the Regent's card list, which has no Legendary to put away)
-  // necromancer
-  'the-last-toll',
-  'the-drowned-king',
-  'grave-harvest',
+  // necromancer: none (Dorian is the Necrobinder's card list, which has no Legendary)
   // drunkard
   'one-more-round',
   'the-glass-palace',
