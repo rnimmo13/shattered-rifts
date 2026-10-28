@@ -29,6 +29,52 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.105.0',
+    date: '2026-10-28',
+    title: 'Five classes rebuilt',
+    summary:
+      'Valeria, Sylas, Obsidia, Dorian and Ilvane are rebuilt card for card on five classic deckbuilder classes, as the baseline the game is balanced from. Ilvane is now the Shaman.',
+    notes: [
+      {
+        kind: 'changed',
+        text: 'Valeria: Might, Barrier, Exposed and burning her own cards; Strikes, Whirlwind-style sweeps and HP-for-power cards. Devotion, Thorns and her Traps are gone.',
+      },
+      {
+        kind: 'changed',
+        text: 'Sylas: Sleeve Knives, Bleed and sleight of hand, with Sly cards that play themselves when you discard them.',
+      },
+      {
+        kind: 'changed',
+        text: 'Obsidia: Arcana and the Obsidian Blade at the heart of a new deck, with Retainers at her call.',
+      },
+      {
+        kind: 'changed',
+        text: 'Dorian: Raise Bone Thralls (up to three), command them to strike, curse with Fate, and make use of Fleeting cards.',
+      },
+      {
+        kind: 'changed',
+        text: 'Ilvane is now the Shaman: his totems are elemental spirits that pulse every turn and burst when awakened, and Spirit makes them stronger.',
+      },
+      {
+        kind: 'new',
+        text: 'A run starts with two uncommon cards of your choice from your Riftwalker’s pool, in place of two plain cards.',
+      },
+      {
+        kind: 'changed',
+        text: 'Build paths are hidden for now: character screens list the mechanics each Riftwalker uses instead, and offered cards no longer say whether they fit your build.',
+      },
+      {
+        kind: 'changed',
+        text: 'No Legendary cards for now: the old ones are Rares, and rewards, Warden Gifts and Spin to win give Rares instead. Legendary Boons are unchanged.',
+      },
+      {
+        kind: 'balance',
+        text: 'Every card of these five is new and untested: expect big swings while they are balanced.',
+      },
+    ],
+    heads: 'The rules changed: reload if the game asks you to. Arena games and replays from before this version can no longer be watched. Old runs and decks keep working: retired cards turn into the closest new one.',
+  },
+  {
     version: '0.104.0',
     date: '2026-10-27',
     title: 'Foundry fix',
