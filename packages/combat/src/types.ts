@@ -690,6 +690,11 @@ export interface CardDef {
   inHandAtEnd?: Op[];
   /** whenever a card with this tag is created in your piles, this card costs 1 less until it is played (Rocket Punch) */
   cheaperOnCreate?: string;
+  /** a weapon's own name for Sharpen (the Old Twelve Gauge's Precision: a separate stat from the Obsidian Blade's, DECISIONS #400) */
+  forgeWord?: string;
+  /** a weapon (the Obsidian Blade, the Old Twelve Gauge): a new copy starts as sharp as the rest (DECISIONS #399). Cards that grow
+   * themselves with `forge` (Mounting Fury, Reaping Scythe, Gathering Storm) are not weapons, so a new copy of them starts fresh */
+  weapon?: boolean;
   /** where a special card comes from (e.g. 'boss:seraphine'); such cards are never ordinary rewards */
   source?: string;
 }
@@ -1059,6 +1064,8 @@ export interface SideState {
   starsGainedTurn?: number;
   nextBarrier?: number;
   nextStars?: number;
+  /** Sharpen so far this fight, by card: a copy made later starts this sharp (DECISIONS #399) */
+  forged?: Record<CardId, number>;
   orbitSpent?: number;
   // --- the Necrobinder copy (Dorian): counters for this turn and this fight
   allyStrikes?: number;

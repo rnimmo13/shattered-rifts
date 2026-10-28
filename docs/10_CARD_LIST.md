@@ -802,13 +802,13 @@ Starter: Strike, Strike, Strike, Defend, Defend, Defend, Hammer Swing, Hammer Sw
 | Shard Toss | 1 | attack | common | Deal 6 damage to ALL enemies. Apply 1 Brittle to ALL enemies. |
 | Load Shells | 1 | skill | common | Add 2 Buckshot Shells to your hand. |
 | Slug Round | 2 | attack | common | Deal 16 damage. |
-| Rack the Slide | 1 | skill | common | Sharpen 4 (Old Twelve Gauge gains 4 damage). |
-| Powder Load | 0 | skill | common | Sharpen 3 (Old Twelve Gauge gains 3 damage). Consume. |
-| Pistol Whip | 1 | attack | common | Deal 6 damage. Sharpen 2 (Old Twelve Gauge gains 2 damage). |
+| Rack the Slide | 1 | skill | common | Precision 4 (Old Twelve Gauge gains 4 damage). |
+| Powder Load | 0 | skill | common | Precision 3 (Old Twelve Gauge gains 3 damage). Consume. |
+| Pistol Whip | 1 | attack | common | Deal 6 damage. Precision 2 (Old Twelve Gauge gains 2 damage). |
 | Shell Shock | 1 | attack | common | Deal 3 damage to ALL enemies. Add a Buckshot Shell to your hand. |
-| Aim | 0 | skill | common | Sharpen 2 (Old Twelve Gauge gains 2 damage). Hold. |
+| Aim | 0 | skill | common | Precision 2 (Old Twelve Gauge gains 2 damage). Hold. |
 | Birdshot | 0 | attack | common | Deal 6 damage to ALL enemies. Consume. |
-| Buttstroke | 1 | attack | common | Deal 5 damage. Apply 1 Faltering. Sharpen 1 (Old Twelve Gauge gains 1 damage). |
+| Buttstroke | 1 | attack | common | Deal 5 damage. Apply 1 Faltering. Precision 1 (Old Twelve Gauge gains 1 damage). |
 | Gun Oil | 1 | aura | common | Whenever you play a gun: Gain 3 Barrier. |
 | Broken Bottle | 1 | attack | common | Deal 7 damage. Apply 1 Exposed. |
 | Chaser | 0 | skill | common | Lose 2 HP. Gain 1 Mana. Draw 1 card. Consume. |
@@ -825,12 +825,12 @@ Starter: Strike, Strike, Strike, Defend, Defend, Defend, Hammer Swing, Hammer Sw
 | Pump Action | 1 | skill | uncommon | Add 2 Buckshot Shells to your hand. Draw 1 card. |
 | Shotgun Wedding | 2 | attack | uncommon | Deal 7 damage 2 times to ALL enemies. |
 | Shell Game | 1 | aura | uncommon | At the start of your turn: Add a Buckshot Shell to your hand. |
-| Glass Cover | 1 | skill | uncommon | Gain 7 Barrier. Sharpen 2 (Old Twelve Gauge gains 2 damage). |
-| Hair Trigger | 1 | aura | uncommon | Whenever you play a shell: Sharpen 1 (Old Twelve Gauge gains 1 damage). |
-| Reload | 1 | skill | uncommon | Sharpen 3 (Old Twelve Gauge gains 3 damage). Draw 1 card. |
+| Glass Cover | 1 | skill | uncommon | Gain 7 Barrier. Precision 2 (Old Twelve Gauge gains 2 damage). |
+| Hair Trigger | 1 | aura | uncommon | Whenever you play a shell: Precision 1 (Old Twelve Gauge gains 1 damage). |
+| Reload | 1 | skill | uncommon | Precision 3 (Old Twelve Gauge gains 3 damage). Draw 1 card. |
 | Slugfest | 2 | attack | uncommon | Deal 5 damage 4 times. |
 | Shellshocked | 1 | aura | uncommon | Whenever a card is consumed: Deal 2 damage to ALL enemies. |
-| Scope | 1 | aura | uncommon | At the start of your turn: Sharpen 2 (Old Twelve Gauge gains 2 damage). |
+| Scope | 1 | aura | uncommon | At the start of your turn: Precision 2 (Old Twelve Gauge gains 2 damage). |
 | Bar Stool | 1 | attack | uncommon | Deal 7 (+1 per 6% HP missing) damage. |
 | Rusty Nail Board | 1 | trap | uncommon | At the start of the enemy turn: Deal 5 damage to ALL enemies. Apply 1 Faltering to ALL enemies. |
 | Molotov Cocktail | 0 | trap | uncommon | When the enemy summons: Deal 12 damage to ALL enemies. Apply 1 Brittle to ALL enemies. |
@@ -838,8 +838,8 @@ Starter: Strike, Strike, Strike, Defend, Defend, Defend, Hammer Swing, Hammer Sw
 | Tin Can Alley | 1 | attack | uncommon | Deal 3 damage 3 times to ALL enemies. |
 | Pick Up the Brass | 1 | skill | uncommon | Return 2 random Consumed cards to your hand (never one that returns cards). Consume. |
 | Spray and Pray | 2 | attack | uncommon | Deal 10 (+1 per 2 cards created this fight) damage to ALL enemies. |
-| Spare Barrel | 1 | skill | uncommon | Sharpen 2 (Old Twelve Gauge gains 2 damage). Add a Buckshot Shell to your hand. |
-| Dead Eye | 1 | skill | uncommon | Sharpen 2 (Old Twelve Gauge gains 2 damage). Apply 1 Exposed to ALL enemies. |
+| Spare Barrel | 1 | skill | uncommon | Precision 2 (Old Twelve Gauge gains 2 damage). Add a Buckshot Shell to your hand. |
+| Dead Eye | 1 | skill | uncommon | Precision 2 (Old Twelve Gauge gains 2 damage). Apply 1 Exposed to ALL enemies. |
 | Dumpster Dive | 1 | skill | uncommon | Draw 2 cards. Discard 1 card. Heal 4. |
 | Sway | 1 | skill | uncommon | Gain 7 Barrier. Draw 1 card. |
 | Liquid Courage | 1 | skill | uncommon | Gain 5 Barrier. Gain 6 Primed. |
@@ -857,22 +857,22 @@ Starter: Strike, Strike, Strike, Defend, Defend, Defend, Hammer Swing, Hammer Sw
 | Stumble | 1 | attack | uncommon | Stagger. Deal 9 damage to a random enemy. Gain 4 Barrier. Gain 2 Hangover. |
 | Free-for-All | 2 | attack | uncommon | Stagger. Deal 7 damage to a random enemy 3 times. |
 | Drunken Master | 1 | aura | uncommon | Whenever you play a Stagger card: Gain 2 Barrier. Deal 2 damage to a random enemy. |
-| The Twelve-Gauge Opera | 2 | aura | rare | Sharpen 6 (Old Twelve Gauge gains 6 damage). Whenever you play a gun: Sharpen 1 (Old Twelve Gauge gains 1 damage). Gain 3 Barrier. |
+| The Twelve-Gauge Opera | 2 | aura | rare | Precision 6 (Old Twelve Gauge gains 6 damage). Whenever you play a gun: Precision 1 (Old Twelve Gauge gains 1 damage). Gain 3 Barrier. |
 | Boomstick | 3 | attack | rare | Deal 14 (+2 per consumed card) damage to ALL enemies. |
 | The Last Shell | 2 | attack | rare | Deal 24 damage. Apply 1 Exposed. Consume. Hold. |
 | One More Round | 3 | aura | rare | At the start of your turn: Add 2 Buckshot Shells to your hand. Heal 3. |
 | The Glass Palace | 3 | aura | rare | At the start of your turn: Gain 3 (+1 per 6% HP missing) Barrier. Whenever you lose HP to your own cards: Deal 3 damage to ALL enemies. |
-| Extended Mag | 2 | aura | rare | At the start of your turn: Sharpen 2 (Old Twelve Gauge gains 2 damage). Add a Buckshot Shell to your hand. |
-| Rack and Ruin | 2 | attack | rare | Deal 10 damage to ALL enemies. Sharpen 4 (Old Twelve Gauge gains 4 damage). |
-| Trigger Discipline | 1 | aura | rare | Whenever you play an Attack: Sharpen 1 (Old Twelve Gauge gains 1 damage). |
+| Extended Mag | 2 | aura | rare | At the start of your turn: Precision 2 (Old Twelve Gauge gains 2 damage). Add a Buckshot Shell to your hand. |
+| Rack and Ruin | 2 | attack | rare | Deal 10 damage to ALL enemies. Precision 4 (Old Twelve Gauge gains 4 damage). |
+| Trigger Discipline | 1 | aura | rare | Whenever you play an Attack: Precision 1 (Old Twelve Gauge gains 1 damage). |
 | Fire in the Hole | 2 | attack | rare | Deal 12 (+1 per consumed card) damage to ALL enemies. |
 | Ammo Dump | 2 | skill | rare | Add 6 Buckshot Shells to your hand. Consume. |
 | Rolling Thunder | 2 | aura | rare | At the start of your turn: Add 2 Buckshot Shells to your hand. |
-| Ironsights | 1 | skill | rare | Sharpen 3 (Old Twelve Gauge gains 3 damage). Add 2 Buckshot Shells to your hand. Consume. |
-| Gunmetal Soul | 1 | aura | rare | At the end of your turn: Sharpen 1 (Old Twelve Gauge gains 1 damage). Gain 3 Barrier. |
+| Ironsights | 1 | skill | rare | Precision 3 (Old Twelve Gauge gains 3 damage). Add 2 Buckshot Shells to your hand. Consume. |
+| Gunmetal Soul | 1 | aura | rare | At the end of your turn: Precision 1 (Old Twelve Gauge gains 1 damage). Gain 3 Barrier. |
 | Last Orders | 2 | attack | rare | Deal 8 (+1 per 4% HP missing) damage to ALL enemies. |
 | Glass Jaw | 2 | aura | rare | Whenever you lose HP to your own cards: Deal 3 damage to ALL enemies. Gain 2 Barrier. |
-| Hot Brass | 1 | aura | rare | Whenever a card is consumed: Gain 1 Barrier. Sharpen 1 (Old Twelve Gauge gains 1 damage). |
+| Hot Brass | 1 | aura | rare | Whenever a card is consumed: Gain 1 Barrier. Precision 1 (Old Twelve Gauge gains 1 damage). |
 | Whiskey Miracle | 1 | skill | rare | Heal 10. Consume. |
 | Rock Bottom | 1 | aura | rare | Gain 2 Might. At the start of your turn: Lose 1 HP. |
 | Booby-Trapped Window | 2 | trap | rare | When you or an ally is attacked: Cancel that hit. Deal 13 damage to the attacker. |

@@ -84,6 +84,7 @@ export const SPELLBLADE: CardDef[] = [
     retain: true,
     tags: ['blade'],
     source: 'token',
+    weapon: true,
   }),
   // (Debris: a card that only takes up room; it costs 1 to play away)
   a('basic', 'rubble', 'Rubble', 'skill', 1, 'none', [], {

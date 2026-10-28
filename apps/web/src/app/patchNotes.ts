@@ -29,10 +29,37 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.118.0',
+    date: '2026-10-28',
+    title: 'Tricks and traits',
+    summary:
+      'The Trickster and the Necromancer traits are toned down, Sharpen carries over, and the Suits get their own panel.',
+    notes: [
+      {
+        kind: 'balance',
+        text: 'Lying in Wait no longer gives 4 Barrier every turn, but every Full Trick in a fight deals 3 more than the last (5, 8, 11...).',
+      },
+      {
+        kind: 'balance',
+        text: 'Grave Chill no longer puts 3 Fate on every enemy at the start; a Thrall that dies curses an enemy with 5 Fate (was 3).',
+      },
+      {
+        kind: 'changed',
+        text: 'The Old Twelve Gauge’s Sharpen is now called Precision, its own stat, separate from the Obsidian Blade’s Sharpen. Both carry over: a new gun or Blade is as sharp as the ones you have, and the hero shows the buff for either weapon.',
+      },
+      {
+        kind: 'fixed',
+        text: 'The Suits pips were hidden under the Auras list. They are a panel in the top-left column now, and so are your Boons: drag, resize or fold them like the Auras and the battle log.',
+      },
+    ],
+    heads: 'Rules changed: replays and Arena games from before this version no longer play.',
+  },
+  {
     version: '0.117.0',
     date: '2026-10-28',
     title: 'The Necromancer rises',
-    summary: 'The Necromancer is stronger from the first fight, about 300 cards get their own art, and Sharpen names the right weapon.',
+    summary:
+      'The Necromancer is stronger from the first fight, about 300 cards get their own art, and Sharpen names the right weapon.',
     notes: [
       {
         kind: 'new',

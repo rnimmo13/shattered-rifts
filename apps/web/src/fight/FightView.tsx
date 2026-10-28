@@ -2,10 +2,20 @@
 // bottom, Mana, piles and End turn. It never decides a rule: it shows the engine's state, offers only legalActions(),
 // and replays the engine's events one by one (display.ts) so numbers change exactly when the animation lands.
 
-import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import {
+  lazy,
+  Suspense,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type ReactNode,
+} from 'react';
 import { createPortal } from 'react-dom';
 import {
   applyAction,
+  forgeWord,
   costOf,
   clone,
   cardText,
@@ -48,7 +58,8 @@ import { ErrorDetails } from '../ui/ErrorDetails';
 import { packLine } from './lineLayout';
 import { looksLikeNewVersion } from '../ui/errorReport';
 import { keywordsOf, sanctifiedNote } from './info';
-import { BoonChip } from './BoonChip';
+import { BoonPanel } from './BoonPanel';
+import { FloatPanel } from './FloatPanel';
 import { CardTips } from './CardTips';
 import { CardHover } from './CardHover';
 import { preloadAllArt } from '../art/assets';
@@ -262,6 +273,32 @@ function WhoTag(props: {
       <StanceChip unit={props.unit} />
     </div>
   );
+}
+
+/** The weapons Sharpen grows (the gun's is called Precision), shown as a buff on the hero (DECISIONS #399, #400). */
+const SHARPENED = [
+  { card: 'starforged-blade', name: 'The Obsidian Blade' },
+  { card: 'old-twelve-gauge', name: 'The Old Twelve Gauge' },
+] as const;
+
+/** How sharp a side's weapon is: every copy carries the same bonus, and the running total covers copies all consumed. */
+function sharpOf(
+  db: CombatDb,
+  sd: CombatState['sides']['a'] | undefined,
+): { weapon: string; word: string; amount: number } | null {
+  if (!sd) return null;
+  const cards = [...sd.hand, ...sd.draw, ...sd.discard, ...sd.exhausted];
+  for (const weapon of SHARPENED) {
+    const copies = cards.filter((c) => c.card.replace(/\+$/, '') === weapon.card);
+    const total = sd.forged?.[weapon.card];
+    if (copies.length || total !== undefined)
+      return {
+        weapon: weapon.name,
+        word: forgeWord(db, weapon.card),
+        amount: Math.max(total ?? 0, ...copies.map((c) => c.bonus ?? 0)),
+      };
+  }
+  return null;
 }
 
 export function FightView(props: {
@@ -1335,14 +1372,31 @@ export function FightView(props: {
   const usesStars = useMemo(() => deckUsesStars(db, mine), [db, mine]);
   const usesRunes = useMemo(() => deckUsesRunes(db, mine), [db, mine]);
   const showStars = usesStars || (me?.stars ?? 0) > 0;
-  // the Obsidian Blade's sharpness (null when this deck has no blade): every copy carries the same bonus
+  // how sharp this deck's weapon is (the Obsidian Blade or the Old Twelve Gauge; null with neither): every copy carries the
+  // same bonus, and the side's running total covers a deck whose copies were all consumed
   const ownSide = live?.sides[mySide];
-  const blades = ownSide
-    ? [...ownSide.hand, ...ownSide.draw, ...ownSide.discard, ...ownSide.exhausted].filter(
-        (c) => c.card === 'starforged-blade',
-      )
-    : [];
-  const blade = blades.length > 0 ? Math.max(...blades.map((c) => c.bonus ?? 0)) : null;
+  const sharp = sharpOf(db, ownSide);
+  // the Trickster's Suits, as a panel in that side's column (it used to float over the hero, under the Auras list)
+  const suitsPanel = (side: Side): ReactNode => {
+    const shown = view?.sides[side].suitsTurn;
+    if (!shown) return null;
+    const hero = view.sides[side].hero;
+    const trick = hero ? db.heroes[hero]?.trait?.suits?.fullTrick : undefined;
+    const aiming = side === mySide ? (dragCard ?? selectedCard ?? hoverCard) : null;
+    return (
+      <FloatPanel
+        id={side === mySide ? 'suits-mine' : 'suits-foe'}
+        className="fight__aux fight__aux--suits"
+        title={side === mySide ? 'Suits' : 'Their Suits'}
+      >
+        <SuitTrack
+          shown={shown}
+          preview={aiming ? suitOf(aiming.def) : null}
+          {...(trick ? { fullTrick: trick.map((o) => opText(db, o)).join(' ') } : {})}
+        />
+      </FloatPanel>
+    );
+  };
   const showRunes = usesRunes || (me?.runes.length ?? 0) > 0;
   const tip =
     view && tipsOn && !result && !view.pending
@@ -1524,26 +1578,8 @@ export function FightView(props: {
             targetable={aimSet}
             hover={hoverUnit}
             names
-            sharp={blade}
+            sharp={sharp}
           />
-          {/* the Trickster's Suits: four pips at the top left of each hero who keeps them */}
-          {placed.map((p) => {
-            const shown = p.unit.kind === 'hero' ? view?.sides[p.unit.side].suitsTurn : undefined;
-            if (!shown) return null;
-            const hero = view?.sides[p.unit.side].hero;
-            const trick = hero ? db.heroes[hero]?.trait?.suits?.fullTrick : undefined;
-            const aiming = p.unit.side === mySide ? (dragCard ?? selectedCard ?? hoverCard) : null;
-            return (
-              <SuitTrack
-                key={`suits-${p.unit.id}`}
-                shown={shown}
-                preview={aiming ? suitOf(aiming.def) : null}
-                x={p.x - p.w * 0.5}
-                y={p.y - p.h}
-                {...(trick ? { fullTrick: trick.map((o) => opText(db, o)).join(' ') } : {})}
-              />
-            );
-          })}
           <div className="floats" aria-hidden>
             {floats.map((f) => {
               const pos = floatPos(f);
@@ -1813,23 +1849,25 @@ export function FightView(props: {
           {/* (your Riftwalker's innate trait is always shown first, so it can be read in the fight) */}
           {(traitOf(setup[mySide]) ||
             (mine.boons?.length ?? 0) > 0 ||
+            view?.sides[mySide].suitsTurn ||
             (me?.powers.length ?? 0) > 0) && (
             <div className="fight__side">
               <TraitChip setup={setup[mySide]} />
               {(mine.boons?.length ?? 0) > 0 && (
-                <div className="fight__boons" aria-label="Boons">
-                  {mine.boons?.map((id) => (
-                    <BoonChip key={id} id={id} />
-                  ))}
-                </div>
+                <BoonPanel panel="boons-mine" title="Your Boons" boons={mine.boons ?? []} />
               )}
+              {suitsPanel(mySide)}
               {me && <AuraList db={db} me={me} panel="auras-mine" title="Your Auras" />}
             </div>
           )}
           {/* the other side, top right: the Omens of this Rift Tier, then an opponent's Boons and Auras (the Arena, a ghost Warden) */}
           {/* the other side, top right, stacked so nothing covers anything: an opponent's piles and trait first (the Arena, a ghost
               Warden), then the Rift Tier's Omens, their Boons and their Auras (a long list of Auras scrolls) */}
-          {(pvp || omens.length > 0 || foeBoons.length > 0 || (them?.powers.length ?? 0) > 0) && (
+          {(pvp ||
+            omens.length > 0 ||
+            foeBoons.length > 0 ||
+            view?.sides[foeSide].suitsTurn ||
+            (them?.powers.length ?? 0) > 0) && (
             <div className="fight__side fight__side--foe">
               {pvp && <FoeBadge side={view.sides[foeSide]} name={foeName} />}
               {pvp && <TraitChip setup={setup[foeSide]} />}
@@ -1854,12 +1892,9 @@ export function FightView(props: {
                 </div>
               )}
               {foeBoons.length > 0 && (
-                <div className="fight__boons" aria-label="Their Boons">
-                  {foeBoons.map((id) => (
-                    <BoonChip key={id} id={id} />
-                  ))}
-                </div>
+                <BoonPanel panel="boons-foe" title="Their Boons" boons={foeBoons} />
               )}
+              {suitsPanel(foeSide)}
               {them && (
                 <AuraList
                   db={db}

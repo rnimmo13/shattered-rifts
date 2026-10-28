@@ -1,4 +1,4 @@
-// The Trickster's Suits on the battle screen (DECISIONS #387): four pips beside the hero, above and to the left of the figure,
+// The Trickster's Suits on the battle screen (DECISIONS #387): four pips, in a panel of their own in that side's column (#399),
 // that light as each suit is played this turn. The card being aimed or hovered shows which pip it would light. When all four are
 // lit the row flares: a Full Trick. Presentation only: the suits come from the combat view.
 
@@ -17,9 +17,6 @@ export function SuitTrack(props: {
   shown: readonly Suit[];
   /** the suit the card in hand under the pointer would show (wild: every one) */
   preview?: Suit | 'wild' | null;
-  /** host-relative px: the top-left corner of the hero's figure */
-  x: number;
-  y: number;
   /** the Full Trick's damage and draw, for the tip */
   fullTrick?: string;
 }) {
@@ -27,7 +24,6 @@ export function SuitTrack(props: {
   return (
     <div
       className={`suittrack${full ? ' is-full' : ''}`}
-      style={{ left: props.x, top: props.y }}
       role="group"
       aria-label={`Suits this turn: ${props.shown.length} of 4`}
       {...tipAttrs({

@@ -5,6 +5,7 @@
 
 import {
   OVERFLOW_NAME,
+  forgeWord,
   type CardId,
   type CombatDb,
   type CombatEvent,
@@ -273,7 +274,10 @@ export function createDescriber(c: LogContext): (e: CombatEvent) => Omit<LogLine
           card: e.card,
         };
       case 'forge':
-        return { text: `Blade sharpened by ${e.amount}`, tone: tone(e.side) };
+        return {
+          text: `${cardName(c.db, e.card)}: ${forgeWord(c.db, e.card)} +${e.amount}`,
+          tone: tone(e.side),
+        };
       case 'phase':
         return {
           text: `${verb(c.nameOf(e.unit), 'rise', 'rises')} into ${e.left > 0 ? 'a new' : 'its last'} phase`,

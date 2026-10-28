@@ -2,12 +2,13 @@ import {
   OVERFLOW_NAME,
   OVERFLOW_PCT,
   cardText,
+  forgeWord,
   type CardDef,
   type CombatDb,
   type IntentIcon,
   type StatusId,
 } from '@sr/combat';
-import { rollOf } from '@sr/content/v2';
+import { COMBAT_DB, rollOf } from '@sr/content/v2';
 import type { TipContent } from '../ui/tip';
 import { rollNote } from '../cards/cardText';
 
@@ -512,13 +513,14 @@ const WEAPON_NAME: Record<string, string> = {
   'old-twelve-gauge': 'the Old Twelve Gauge',
 };
 
-/** Sharpen, naming the weapon this card sharpens (the plain note when it is not known). */
+/** Sharpen, naming the weapon this card sharpens and the weapon's own word for it (the Old Twelve Gauge's Precision, DECISIONS
+ * #400); the plain note when it is not known. */
 function sharpenInfo(weapon: string | undefined): { name: string; text: string } {
   const name = weapon && WEAPON_NAME[weapon];
   return name
     ? {
-        name: 'Sharpen',
-        text: `Every copy of ${name} permanently gains damage. If you have none, you get one.`,
+        name: forgeWord(COMBAT_DB, weapon),
+        text: `Every copy of ${name} permanently gains damage, new copies too. If you have none, you get one.`,
       }
     : KEYWORD_INFO['forge']!;
 }
@@ -597,7 +599,7 @@ export function keywordsOf(
   const names = (hay: string, name: string): boolean => wordOf(name).test(hay);
   if (text) {
     const hay = text.replace(/\*\*/g, '');
-    if (names(hay, 'Sharpen')) add(sharpenInfo(weapon));
+    if (names(hay, 'Sharpen') || names(hay, 'Precision')) add(sharpenInfo(weapon));
     for (const s of Object.values(STATUS_INFO)) if (names(hay, s.name)) add(s);
     for (const k of Object.values(KEYWORD_INFO)) if (names(hay, k.name)) add(k);
   }

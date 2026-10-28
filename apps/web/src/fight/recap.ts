@@ -145,7 +145,8 @@ export function replayFight(
   const feed = (events: readonly CombatEvent[], after: CombatState): void => {
     namer.learn(after);
     for (const e of events) {
-      if (e.type === 'summon') namer.register(e.unit, db.units[e.def]?.name ?? e.def, e.side, e.def);
+      if (e.type === 'summon')
+        namer.register(e.unit, db.units[e.def]?.name ?? e.def, e.side, e.def);
       const line = describe(e);
       if (line) lines.push({ id: lines.length, ...line });
       switch (e.type) {

@@ -700,6 +700,13 @@ function whenText(o: Extract<Op, { op: 'when' }>, db?: CombatDb): string {
   return `${w} is ${hi ?? 0} or fewer`;
 }
 
+/** What Sharpen is called on this weapon: "Sharpen", or the weapon's own word (the Old Twelve Gauge's Precision). */
+export const forgeWord = (db: CombatDb, card: string): string =>
+  db.cards[card.replace(/\+$/, '')]?.forgeWord ?? 'Sharpen';
+
+/** The buff a weapon wears for it: "Sharpened +3", "Precision +3". */
+export const forgeLabel = (word: string): string => (word === 'Sharpen' ? 'Sharpened' : word);
+
 export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): string {
   const at = (n: number, sc: Scale | undefined): string => {
     const a = amountText(n, sc);
@@ -1197,9 +1204,11 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
       return o.amount === 1
         ? 'Gain an extra card reward after this fight.'
         : `Gain ${o.amount} extra card rewards after this fight.`;
-    case 'forge':
-      if (o.scale) return `Sharpen ${at(o.amount, o.scale)}.`;
-      return `Sharpen ${o.amount} (${db.cards[o.card]?.name ?? o.card} gains ${o.amount} damage).`;
+    case 'forge': {
+      const word = forgeWord(db, o.card);
+      if (o.scale) return `${word} ${at(o.amount, o.scale)}.`;
+      return `${word} ${o.amount} (${db.cards[o.card]?.name ?? o.card} gains ${o.amount} damage).`;
+    }
     // (assassin) the Silent-shaped pieces
     case 'tick': {
       const whom =

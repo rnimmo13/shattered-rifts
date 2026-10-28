@@ -1,6 +1,6 @@
 // DRUNKARD, the Homeless Drunk (the Midden, the rift's rubbish heap). A short, fat, bald dwarf with a hammer, a sawed-off 12 gauge and a shopping trolley of
 // window panes. No companions. Three build paths:
-//   Gun        - the Old Twelve Gauge: it hits every enemy, and Sharpen cards make it hit harder for the fight
+//   Gun        - the Old Twelve Gauge: it hits every enemy, and Precision cards (its Sharpen) make it hit harder for the fight
 //   Shells     - Buckshot Shells (0-cost, hit EVERY enemy, consumed) and a few junk Traps
 //   Hangover   - drink now, pay tomorrow: drinks leave Hangover (HP lost next turn), payoffs grow with it, heals grow with missing HP
 // Shells are KP's alone, the way Sleeve Knives are Quill's: a shell hits the whole room for a little, a knife one enemy.
@@ -173,6 +173,9 @@ export const DRUNKARD: CardDef[] = [
       retain: true,
       tags: ['gun'],
       source: 'token',
+      // (his Sharpen is called Precision: its own stat, never the Obsidian Blade's, DECISIONS #400)
+      forgeWord: 'Precision',
+      weapon: true,
     },
   ),
   p('common', 'rack-the-slide', 'Rack the Slide', 'skill', 1, 'none', [

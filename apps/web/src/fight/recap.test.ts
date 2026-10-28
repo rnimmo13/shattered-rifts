@@ -57,7 +57,11 @@ describe('the fight recap', () => {
 
   it('a hero that loses names the blow that ended it', () => {
     // a weak deck against a Warden at full strength: it falls
-    const lost: CombatSetup = { ...setup, seed: 'recap-loss', a: { ...setup.a, hp: 12, maxHp: 80 } };
+    const lost: CombatSetup = {
+      ...setup,
+      seed: 'recap-loss',
+      a: { ...setup.a, hp: 12, maxHp: 80 },
+    };
     const m = played(lost);
     const { recap } = replayFight(db, lost, m, 'a');
     expect(recap.winner).toBe('b');
@@ -65,7 +69,12 @@ describe('the fight recap', () => {
   });
 
   it('moves that no longer fit the rules are a broken replay, not a crash', () => {
-    const { broken } = replayFight(db, setup, [{ seat: 'a', action: { type: 'play', card: 'nope' } }], 'a');
+    const { broken } = replayFight(
+      db,
+      setup,
+      [{ seat: 'a', action: { type: 'play', card: 'nope' } }],
+      'a',
+    );
     expect(broken).toBe(true);
   });
 });

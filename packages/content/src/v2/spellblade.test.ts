@@ -30,6 +30,8 @@ function fight(
   s.sides.a.draw = (opts.draw ?? []).map((card, i) => ({ id: `D${i}`, card }));
   s.sides.a.discard = [];
   s.sides.a.exhausted = [];
+  // (the piles start empty, so Kindled's turn-1 Sharpen is forgotten too: a Blade made here starts at 0)
+  s.sides.a.forged = {};
   s.sides.a.mana = 9;
   s.sides.a.stars = opts.stars ?? 10;
   // (the 3 Arcana the fight opened with and Kindled's 1 do not count as gained in the turn under test)

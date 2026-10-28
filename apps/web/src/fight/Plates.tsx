@@ -1,7 +1,7 @@
 // The DOM layer over the fighters: HP bars with Barrier, status chips and enemy intents. Pure presentation.
 
 import type { CSSProperties } from 'react';
-import type { StatusId, UnitView } from '@sr/combat';
+import { forgeLabel, type StatusId, type UnitView } from '@sr/combat';
 import { RIFTWALKERS, type HeroId } from '@sr/content/v2';
 import { HeroIcon } from '../ui/HeroIcon';
 import { tipAttrs } from '../ui/tip';
@@ -23,8 +23,8 @@ export interface PlatesProps {
   targetable: ReadonlySet<string>;
   hover: string | null;
   names: boolean;
-  /** how far the Obsidian Blade has been sharpened, shown as a buff on the hero (null: this deck has no blade) */
-  sharp?: number | null;
+  /** how far this deck's weapon (Obsidian Blade, Old Twelve Gauge) has been sharpened, shown as a buff on the hero (null: none) */
+  sharp?: { weapon: string; word: string; amount: number } | null;
   /** the damage the card being aimed would do to this unit */
   preview?: { id: string; text: string } | null;
 }
@@ -197,19 +197,19 @@ export function UnitPlates({ items, targetable, hover, preview, heroId, sharp }:
                 )}
               </div>
               <div className="chips">
-                {u.kind === 'hero' && u.id === heroId && sharp !== undefined && sharp !== null && (
+                {u.kind === 'hero' && u.id === heroId && sharp && (
                   <span
-                    className={`chip chip--good chip--sharp${sharp > 0 ? ' is-sharp' : ''}`}
-                    aria-label={`Blade sharpened by ${sharp}`}
+                    className={`chip chip--good chip--sharp${sharp.amount > 0 ? ' is-sharp' : ''}`}
+                    aria-label={`${sharp.weapon}: ${forgeLabel(sharp.word)} +${sharp.amount}`}
                     {...tipAttrs({
                       kicker: 'Buff',
-                      title: `Sharpened +${sharp}`,
+                      title: `${forgeLabel(sharp.word)} +${sharp.amount}`,
                       tone: 'good',
-                      text: 'The Obsidian Blade has permanently gained this much damage this fight. Every Sharpen adds more.',
+                      text: `${sharp.weapon} has permanently gained this much damage this fight, every copy, new ones too. Every ${sharp.word} adds more.`,
                     })}
                   >
                     <Arrow dir="up" plain />
-                    <b>{sharp}</b>
+                    <b>{sharp.amount}</b>
                   </span>
                 )}
                 {(Object.entries(u.statuses) as [StatusId, number][]).map(([id, n]) => {

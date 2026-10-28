@@ -492,7 +492,7 @@ LAYOUT (critical): a clean 3 x 2 grid of landscape 4:3 pictures (each about 760 
 WORLD: KP, a boisterous drunk dwarf with a shotgun and bottles. A short, fat, bald dwarf with a hammer, an Old Twelve Gauge that hits every enemy and gets sharper, and a trolley of window panes. Booby traps, glass and buckshot. World: the rift's rubbish dump: rusty junk, green bottle glass, amber oil-drum firelight, a deep blue-black sky.
 
 THE PICTURES, in this exact order, left to right, top row first. Use the card name and its effect only to decide what to draw; never write the name:
-1. "Rack the Slide" (skill): Sharpen 4 (Old Twelve Gauge gains 4 damage). Show a defensive or tactical moment, calm and clear.
+1. "Rack the Slide" (skill): Precision 4 (Old Twelve Gauge gains 4 damage). Show a defensive or tactical moment, calm and clear.
 2. "Rummage the Bin" (skill): Foresee 3. Show a defensive or tactical moment, calm and clear.
 3. "Shard Toss" (attack): Deal 6 damage to ALL enemies. Apply 1 Brittle to ALL enemies. Show a dynamic strike caught mid-action.
 4. "Shell Shock" (attack): Deal 3 damage to ALL enemies. Add a Buckshot Shell to your hand. Show a dynamic strike caught mid-action.

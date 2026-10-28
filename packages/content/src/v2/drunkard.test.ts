@@ -198,3 +198,17 @@ describe('innate traits', () => {
     expect(h.statuses.clutch).toBe(50);
   });
 });
+
+describe('Sharpen carries over to new copies (DECISIONS #399)', () => {
+  it('a gun made after the Old Twelve Gauge was sharpened is as sharp as it', () => {
+    let s = fight('drunkard', ['reload', 'double-tap']);
+    s = playCard(s, 'T0'); // Reload: Sharpen 3 (no gun yet, so one is made)
+    const guns = () =>
+      [...s.sides.a.hand, ...s.sides.a.draw, ...s.sides.a.discard].filter(
+        (c) => c.card === 'old-twelve-gauge',
+      );
+    expect(guns().map((c) => c.bonus)).toEqual([3]);
+    s = playCard(s, 'T1'); // Double Tap: another Old Twelve Gauge
+    expect(guns().map((c) => c.bonus)).toEqual([3, 3]);
+  });
+});

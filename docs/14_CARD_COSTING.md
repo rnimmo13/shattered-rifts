@@ -138,7 +138,7 @@ Percentage debuffs (Exposed, Faltering, Debilitated) are worth more as numbers g
 | Sharpen N | **0.8** per point if played early, ~0.5 late | The Blade costs 2 and comes back a few times a fight. Forged in Fury 7 + Sharpen 7, Whetstone 8 + Mana next turn, Bladewall 12 Barrier + 10. |
 | Plant a totem | Hawk **4**, Bear **4**, Elder **5**, Splinter **6**, Owl **7** (+2 each per Spirit) | It pulses until pushed, then bursts. Spark Lash 7 + Hawk, Rime Strike 6 + Bear, Splinter Ward 5 Barrier + Splinter. |
 | Spirit (Focus) | this turn: **1 per totem** in the row (~3); for the fight: **~2.5 per totem** | Spirit Strike 9 + 1 Spirit this turn, Elemental Focus. |
-| Sharpen the Old Twelve Gauge | **2.5** a point | The Gun costs 1, hits every enemy, Holds and comes round 2-3 times a fight (the Obsidian Blade's Sharpen is 0.8: 2 Mana, one target, fewer shots). |
+| Precision (the Old Twelve Gauge's Sharpen, DECISIONS #400) | **2.5** a point | The Gun costs 1, hits every enemy, Holds and comes round 2-3 times a fight (the Obsidian Blade's Sharpen is 0.8: 2 Mana, one target, fewer shots). |
 | A Buckshot Shell (0, 4 to ALL, Consume) | **5.2** | A Dagger that hits every enemy. |
 | Hangover N (lose N HP next turn, never the last) | **-1.5** a stack | HP, at the usual rate; its payoffs are priced on ~3 stacks already there. |
 | Enter Fury (double attack damage, take 50% more) | **4**, plus the Barbarian's trait per stance entered | Kindle Fury (2, basic: 9 and Fury). Worth the attacks after it this turn; staying in Fury through the enemy turn costs ~6 HP. |

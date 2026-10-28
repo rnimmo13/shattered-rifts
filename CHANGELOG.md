@@ -5,6 +5,8 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **Precision and Sharpen:** the Old Twelve Gauge's Sharpen is called Precision, a stat of its own (it never stacks with the Obsidian Blade's Sharpen). Both carry over: a new gun or Blade (Double Tap, Spare Barrel...) is as sharp as the ones you already have, and the hero shows the buff for either weapon.
+- **The Suits and your Boons are panels** in the top-left column, under your trait: nothing covers them any more, and like the Auras and the battle log you can drag, resize and fold them.
 - **Trait changes:** the Trickster no longer gains 4 Barrier every turn, but each Full Trick in a fight deals 3 more than the last (5, 8, 11...). The Necromancer's Grave Chill no longer puts 3 Fate on every enemy at the start; a Thrall that dies now curses an enemy with 5 Fate (was 3).
 - **About 300 cards get their own art** (every class; 169 cards still to go).
 - **The Necromancer is stronger early.** Grave Chill now Raises 3 at the start of every turn, so a Bone Thrall is standing for your Command cards from turn 1 (and every one that falls still curses an enemy with Fate). Bone Bulwark (Raise 5, 8 Barrier), Bone Sift (Raise 5), Grave Robbery (6 damage), Spirit Walk (needs 6 cards) and Toll in Advance (5 Mana) are better.

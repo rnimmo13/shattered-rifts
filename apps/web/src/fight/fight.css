@@ -2332,15 +2332,14 @@
   vertical-align: middle;
 }
 
-/* ---- the Trickster's Suits (SuitTrack.tsx, DECISIONS #387): four pips at the top left of the hero ---- */
+/* ---- the Trickster's Suits (SuitTrack.tsx, DECISIONS #387): four pips, in their own panel in the side column (#399) ---- */
+/* (in its own panel in the side column now, DECISIONS #399: it used to float over the hero, under the Auras list) */
 .suittrack {
-  position: absolute;
-  z-index: 12;
   display: flex;
+  width: max-content;
   gap: 0.3rem;
   padding: 0.3rem 0.45rem;
   border-radius: 999px;
-  transform: translate(-35%, -40%);
   background: rgb(8 10 20 / 0.72);
   border: 1px solid rgb(255 255 255 / 0.18);
   box-shadow: 0 4px 14px rgb(0 0 0 / 0.5);
@@ -2505,5 +2504,19 @@
   max-height: 11rem;
 }
 .fight__side .fpanel.fight__aux--auras.is-moved {
+  max-height: none;
+}
+
+/* the Suits and the Boons inside a movable panel (DECISIONS #399): the panel is the frame, so they drop their own, and the Boons fill
+   the panel as it is resized instead of keeping their small scrolling window */
+.fpanel.fight__aux--suits .suittrack,
+.fpanel.fight__aux--boons .fight__boons {
+  background: none;
+  border: 0;
+  box-shadow: none;
+  padding: 0.2rem 0;
+}
+.fpanel.fight__aux--boons .fight__boons {
+  max-width: none;
   max-height: none;
 }

@@ -1,5 +1,5 @@
 import { forwardRef, memo, useMemo, useState, type CSSProperties } from 'react';
-import { cardText, type CardDef, type CombatDb, type LiveDamage } from '@sr/combat';
+import { cardText, forgeLabel, type CardDef, type CombatDb, type LiveDamage } from '@sr/combat';
 import { CARD_H, CARD_W } from '../cards/size';
 import { markRollDiff, parseRules } from '../cards/cardText';
 import { BUILD_PATHS_SHOWN, RIFTWALKERS, pathName, pathOf, type HeroId } from '@sr/content/v2';
@@ -27,7 +27,7 @@ const RARITY_LABEL: Record<string, string> = {
 };
 
 const KEYWORDS =
-  /\b(Barrier|Exposed|Faltering|Might|Bleed|Stunned|Thorns|Shielded|Exhaust|Retain|Mana|Spirit|Edge|Fervor|Serene|Fury|Radiant|Arcana|Foresee|Sharpen|Sharpened|Consume|Lifesteal|Hold|Fleeting|Unplayable|Traps?)\b/g;
+  /\b(Barrier|Exposed|Faltering|Might|Bleed|Stunned|Thorns|Shielded|Exhaust|Retain|Mana|Spirit|Edge|Fervor|Serene|Fury|Radiant|Arcana|Foresee|Sharpen|Sharpened|Precision|Consume|Lifesteal|Hold|Fleeting|Unplayable|Traps?)\b/g;
 
 /**
  * Rules text with the keywords marked **bold** for the card renderer. A sanctified card ("hi~strike") also marks each number its roll
@@ -97,7 +97,7 @@ export const FightCard = memo(
       // (a sharpened card in your hand shows the sharpened damage itself; anywhere else the text says how much was added)
       () =>
         rulesFor(db, def, live) +
-        (bonus && !live?.size ? ` Sharpened: +${bonus}.` : '') +
+        (bonus && !live?.size ? ` ${forgeLabel(def.forgeWord ?? 'Sharpen')}: +${bonus}.` : '') +
         (note ? ` ${note.replace(KEYWORDS, '**$1**')}` : ''),
       [db, def, bonus, live, note],
     );
@@ -226,8 +226,11 @@ export const FightCard = memo(
             </div>
           )}
           {bonus ? (
-            <div className="card__sharp" aria-label={`Sharpened by ${bonus}`}>
-              <Arrow dir="up" plain /> Sharpened +{bonus}
+            <div
+              className="card__sharp"
+              aria-label={`${forgeLabel(def.forgeWord ?? 'Sharpen')} +${bonus}`}
+            >
+              <Arrow dir="up" plain /> {forgeLabel(def.forgeWord ?? 'Sharpen')} +{bonus}
             </div>
           ) : null}
           <div className="card__gem" title={rarity} />

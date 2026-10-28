@@ -150,7 +150,11 @@ export const manaLock: Op = { op: 'manaLock' };
 export const drawLock: Op = { op: 'drawLock' };
 export const drawUntil = (not: CardKind): Op => ({ op: 'drawUntil', not });
 export const exhaustTop = (amount = 1): Op => ({ op: 'exhaustTop', amount });
-export const transformHand = (kind: CardKind, into: string): Op => ({ op: 'transform', kind, into });
+export const transformHand = (kind: CardKind, into: string): Op => ({
+  op: 'transform',
+  kind,
+  into,
+});
 /** run `ops` only while a metric is within bounds */
 export const when = (
   by: Metric,
@@ -211,7 +215,10 @@ export const extraReward = (amount = 1): Op => ({ op: 'extraReward', amount });
 export const endTurnOp: Op = { op: 'endTurn' };
 /** the card being resolved deals more damage for the rest of the fight (an onDraw effect: Kingly Punch) */
 export const growSelf = (amount: number): Op => ({ op: 'growSelf', amount });
-export const copyInHand = (neutral = false): Op => ({ op: 'copyInHand', ...(neutral ? { neutral } : {}) });
+export const copyInHand = (neutral = false): Op => ({
+  op: 'copyInHand',
+  ...(neutral ? { neutral } : {}),
+});
 /** random Neutral cards into your hand (their "+" versions when `upgraded`) */
 export const discoverNeutral = (count = 1, upgraded = false): Op => ({
   op: 'discover',
@@ -220,7 +227,13 @@ export const discoverNeutral = (count = 1, upgraded = false): Op => ({
   ...(upgraded ? { upgraded } : {}),
 });
 /** a card with this tag comes to your hand from wherever it is (draw, discard or consumed pile) */
-export const fetchAnywhere = (tag: string): Op => ({ op: 'fetch', amount: 1, to: 'hand', tag, anywhere: true });
+export const fetchAnywhere = (tag: string): Op => ({
+  op: 'fetch',
+  amount: 1,
+  to: 'hand',
+  tag,
+  anywhere: true,
+});
 /** cards become another card: `amount` of them (every one when missing), from your hand or draw pile, chosen or at random */
 export const transformSome = (
   into: string,
@@ -292,6 +305,8 @@ type Extra = Partial<
     | 'source'
     | 'hero'
     | 'tags'
+    | 'forgeWord'
+    | 'weapon'
     | 'starCost'
     | 'statusCost'
     | 'x'
