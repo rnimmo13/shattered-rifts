@@ -149,7 +149,8 @@ export const NEUTRAL: CardDef[] = [
   n('uncommon', 'borrowed-time', 'Stolen Time', 'skill', 0, 'none', [mana(3), manaNext(-2)], {
     exhaust: true,
   }),
-  n('rare', 'attunement', 'Attunement', 'skill', 2, 'none', [maxMana(1)], { exhaust: true }),
+  // (an Aura: its Mana lasts the rest of the fight, like Blood Pact; DECISIONS #381)
+  n('rare', 'attunement', 'Attunement', 'power', 2, 'none', [maxMana(1)]),
 ];
 
 // Warden signature cards: one set per Warden, offered as the Warden's Gift. Any Riftwalker can take them.

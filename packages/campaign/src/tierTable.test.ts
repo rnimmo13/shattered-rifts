@@ -1,14 +1,16 @@
 import { describe, expect, it } from 'vitest';
-import { TIER_TABLE, enemyScale } from './tierTable';
+import { DMG_START, HP_START, TIER_TABLE, enemyScale } from './tierTable';
 
 describe('the tier table', () => {
   it('has a row for every Rift Tier up to 20', () => {
     expect(TIER_TABLE).toHaveLength(20);
   });
 
-  it('Tier I already asks more than the enemies as written (they are the base the table scales)', () => {
-    expect(enemyScale(1, 1).hp).toBeGreaterThanOrEqual(100);
-    expect(enemyScale(1, 1).dmg).toBeGreaterThanOrEqual(100);
+  // (Tier I may sit below the enemies as written: Robert set it to 90% on 2026-10-28, DECISIONS #382)
+  it('Tier I starts where the table says, and enemies are never scaled to nothing', () => {
+    expect(enemyScale(1, 1)).toEqual({ hp: HP_START, dmg: DMG_START });
+    expect(enemyScale(1, 1).hp).toBeGreaterThan(0);
+    expect(enemyScale(1, 1).dmg).toBeGreaterThan(0);
   });
 
   it('reads each stage straight from the row', () => {

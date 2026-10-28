@@ -1167,7 +1167,7 @@ export type CombatEvent =
       kind: 'attack' | 'direct';
       /** the target's HP after the hit (for the battle log) */
       hp?: number;
-      /** this is the part of an attack that carried through a fallen companion to its hero (OVERFLOW_PCT) */
+      /** this is the part of an attack that carried on past a fallen companion, to the next companion or the hero (OVERFLOW_PCT) */
       overflow?: true;
     }
   | { type: 'barrier'; target: UnitId; amount: number; total: number }

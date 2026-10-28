@@ -1011,7 +1011,7 @@ Tokens (made by other cards):
 | Rift Smithing | 2 | skill | rare | Upgrade every card in your hand for this fight. Consume. |
 | Heart of the Rift | 3 | aura | rare | At the start of your turn: Gain 1 Mana. Draw 1 card. |
 | Rift Collapse | 3 | attack | rare | Deal 40 damage to ALL enemies. Lose 15 HP. Consume. |
-| Attunement | 2 | skill | rare | From your next turn, gain 1 more Mana every turn for the rest of the fight. Consume. |
+| Attunement | 2 | aura | rare | From your next turn, gain 1 more Mana every turn for the rest of the fight. |
 
 ## Warden signature cards
 

@@ -29,6 +29,35 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.109.0',
+    date: '2026-10-28',
+    title: 'Daggers, and the pack holds the line',
+    summary: 'Overflow is tanked by the rest of your companions, the Assassin throws Daggers, and enemies are a little gentler at every tier.',
+    notes: [
+      {
+        kind: 'changed',
+        text: 'When a hit kills one of your companions, what is left goes to your next companion before it can reach you.',
+      },
+      {
+        kind: 'changed',
+        text: "The Assassin's Sleeve Knives are now Daggers (and Inked Knives are Inked Daggers).",
+      },
+      {
+        kind: 'balance',
+        text: 'Enemies have less HP and hit a little softer at every Rift Tier: Tier I starts at 90% of both.',
+      },
+      {
+        kind: 'balance',
+        text: 'The Hunter heals 2 HP after every fight she wins again. Blood Pact and Attunement are Auras.',
+      },
+      {
+        kind: 'fixed',
+        text: 'A Trap whose damage kills the attacker no longer puts its Exposed or Faltering on another enemy.',
+      },
+    ],
+    heads: 'The rules changed: reload if the game asks you to. Arena games and replays from before this version can no longer be watched.',
+  },
+  {
     version: '0.108.0',
     date: '2026-10-28',
     title: 'Might hits, the Hunter hunts',

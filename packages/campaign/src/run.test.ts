@@ -662,7 +662,7 @@ describe('the other rooms and the rules around them', () => {
 });
 
 describe('the heal after a won fight (DECISIONS #285, removed from Kesh in #333)', () => {
-  it('no Riftwalker heals after a won fight any more (DECISIONS #333)', () => {
+  it('the Hunter heals 2 after a won fight (DECISIONS #381); the others do not', () => {
     const won = (hero: HeroId): number => {
       const base = fresh(hero, 'trait-heal');
       const node = base.map.nodes.find((n) => n.kind === 'duel')!;
@@ -675,7 +675,7 @@ describe('the heal after a won fight (DECISIONS #285, removed from Kesh in #333)
       };
       return finishDuel(run, true, 40).hp;
     };
-    expect(won('hunter')).toBe(40);
+    expect(won('hunter')).toBe(42);
     expect(won('knight')).toBe(40);
   });
 });

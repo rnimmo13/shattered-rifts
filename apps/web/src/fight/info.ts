@@ -435,7 +435,7 @@ export const KEYWORD_INFO: Record<string, { name: string; text: string }> = {
   },
   overflow: {
     name: OVERFLOW_NAME,
-    text: `When a single attack kills a companion, ${OVERFLOW_PCT}% of the damage left over (after its Barrier and HP) carries through to its hero.`,
+    text: `When a single attack kills a companion, ${OVERFLOW_PCT}% of the damage left over (after its Barrier and HP) goes on to your next companion in line, and reaches the hero only when no companion is left.`,
   },
   taunt: { name: 'Taunt', text: 'Enemies must attack this unit before anything else.' },
   innate: { name: 'Opening hand', text: 'It starts in your opening hand.' },

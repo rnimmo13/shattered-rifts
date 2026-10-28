@@ -126,9 +126,10 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     role: 'Hunter',
     trait: {
       name: 'Pack Instinct',
-      // (DECISIONS #285: her Might is the pack's; the heal after a won fight is gone, DECISIONS #333)
-      text: 'Your companions share half your Might (rounded down), and a new companion arrives with it.',
+      // (DECISIONS #285: her Might is the pack's; the heal after a won fight went in #333 and is back at 2, #381)
+      text: 'Your companions share half your Might (rounded down), and a new companion arrives with it. Heal 2 HP after every fight you win.',
       shareMight: 0.5,
+      healAfterFight: 2,
     },
     hero: {
       id: 'hunter',

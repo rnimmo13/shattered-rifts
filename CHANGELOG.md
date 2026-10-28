@@ -5,6 +5,8 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **Enemies are a little gentler at every Rift Tier:** Tier I starts at 90% of their HP and damage, and each tier and stage adds less.
+- **The Hunter heals 2 HP after every fight she wins** again. **Attunement** is an Aura.
 - **Overflow is tanked by the rest of the pack:** what is left of a hit that kills a companion goes to your next companion first, and reaches you only when none is left. **Blood Pact** is an Aura.
 - **The Assassin's Sleeve Knives are Daggers** (and Inked Knives are Inked Daggers). **Fixed:** a Trap whose damage kills the attacker no longer puts its Exposed or Faltering on another enemy.
 - **The Hunter is rebalanced** card by card against the new card costing guide, and goes hunting: four new Traps (Bear Trap, Snare Line, Deadfall, Baited Snare), Hunting Grounds, Single Out and Run It Down. Her summons are smaller and cheaper to read (Pup 5 HP, Pack Alpha 12, Dire Wolf 18), Litter brings two Pups, and Crimson Pact and Unbridled are retired.

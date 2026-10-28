@@ -480,8 +480,9 @@ function attackHit(r: Run, a: Act, t: Unit, base: number, single = false): numbe
       const nextRoom = next.hp + next.barrier;
       const nextCapped = stacks(next, 'ghostly') > 0 || stacks(next, 'shielded') > 0;
       lost += applyDamage(r, a.actor, next, carried, 'attack', true);
+      // (a companion the overflow kills, exactly or through Ghostly too, remembers its killer: Den Mother)
+      if (next.kind === 'ally' && next.hp <= 0) next.killedBy = a.actor.id;
       if (next.kind !== 'ally' || next.hp > 0 || nextCapped || carried <= nextRoom) break;
-      next.killedBy = a.actor.id;
       carried = Math.floor(((carried - nextRoom) * OVERFLOW_PCT) / 100);
     }
   }
