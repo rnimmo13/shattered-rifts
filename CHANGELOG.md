@@ -5,6 +5,7 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **Trait changes:** the Trickster no longer gains 4 Barrier every turn, but each Full Trick in a fight deals 3 more than the last (5, 8, 11...). The Necromancer's Grave Chill no longer puts 3 Fate on every enemy at the start; a Thrall that dies now curses an enemy with 5 Fate (was 3).
 - **About 300 cards get their own art** (every class; 169 cards still to go).
 - **The Necromancer is stronger early.** Grave Chill now Raises 3 at the start of every turn, so a Bone Thrall is standing for your Command cards from turn 1 (and every one that falls still curses an enemy with Fate). Bone Bulwark (Raise 5, 8 Barrier), Bone Sift (Raise 5), Grave Robbery (6 damage), Spirit Walk (needs 6 cards) and Toll in Advance (5 Mana) are better.
 - **Fixed:** the Sharpen tooltip names the Old Twelve Gauge on the Drunkard's cards (Scope, Reload, Hair Trigger...), not the Obsidian Blade.

@@ -134,3 +134,21 @@ describe('Suits', () => {
     expect(mana - r.state.sides.a.mana).toBe(1);
   });
 });
+
+describe('the Full Trick grows (DECISIONS #398)', () => {
+  it('deals 3 more for every Full Trick before it this fight, and counts itself', () => {
+    const s0 = fight(['strike', 'defend', 'pick-a-card', 'mark-prey']);
+    s0.sides.a.fullTricks = 2;
+    const three = playAll(s0, ['strike', 'defend', 'mark-prey']).state;
+    const hp = foe(three).hp;
+    const r = play(three, 'pick-a-card').state;
+    const done = applyAction(db, r, { type: 'pick', cards: [r.pending!.pool[0]!] }).state;
+    expect(hp - foe(done).hp).toBe(5 + 2 * 3);
+    expect(done.sides.a.fullTricks).toBe(3);
+  });
+
+  it('Lying in Wait gives no Barrier a turn now', () => {
+    expect(RIFTWALKERS.trickster.trait.turnStart).toBeUndefined();
+    expect(RIFTWALKERS.trickster.trait.text).not.toMatch(/4 Barrier/);
+  });
+});

@@ -264,6 +264,7 @@ export type Metric =
   | 'hearts'
   | 'diamonds'
   | 'clubs'
+  | 'fullTricks' // Full Tricks made earlier this fight (DECISIONS #398)
   | 'spent' // in an 'arcana' trigger: the Arcana just spent
   // (the Defect copy, shaman)
   | 'runeKinds' // how many different totems you have
@@ -1027,6 +1028,8 @@ export interface SideState {
   fullTrickTurn?: boolean;
   /** the card being played lit the fourth suit: its Full Trick goes off once the card has done what it does */
   fullTrickDue?: boolean;
+  /** Full Tricks made this fight (the trait's damage grows with them) */
+  fullTricks?: number;
   discarded: number;
   /** leaving Calm has already paid its Mana this turn */
   calmPaid?: boolean;

@@ -506,6 +506,7 @@ const METRIC_WORDS: Record<Metric, { per: string; equal: string }> = {
     equal: 'the Fleeting cards played this fight',
   },
   deaths: { per: 'death this fight', equal: 'the deaths this fight' },
+  fullTricks: { per: 'Full Trick this fight', equal: 'the Full Tricks this fight' },
   tagExhausted: { per: 'consumed card of that kind', equal: 'the consumed cards of that kind' },
   tagDeck: { per: 'card of that kind in your deck', equal: 'the cards of that kind in your deck' },
   // (the Defect copy, shaman)

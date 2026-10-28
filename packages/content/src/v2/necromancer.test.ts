@@ -214,7 +214,11 @@ describe('Dorian, the Necrobinder copy', () => {
     expect(thralls(s)).toHaveLength(1);
     s = applyAction(db, s, { type: 'endTurn' }).state;
     // Call at Dusk's 2, beside Grave Chill's 3 for the turn
-    expect(thralls(s).map((u) => u.maxHp).sort((x, y) => x - y)).toEqual([2, 3, 80]);
+    expect(
+      thralls(s)
+        .map((u) => u.maxHp)
+        .sort((x, y) => x - y),
+    ).toEqual([2, 3, 80]);
     expect(s.sides.a.mana).toBe(5);
     s = applyAction(db, s, { type: 'endTurn' }).state;
     expect(s.sides.a.mana).toBe(3);
@@ -445,5 +449,15 @@ describe('the small card fixes (DECISIONS #397)', () => {
     expect(text('bone-sift')).toMatch(/^Raise 5./);
     expect(text('grave-robbery')).toMatch(/^Deal 6 damage./);
     expect(text('ghostform')).toMatch(/6 or more/);
+  });
+});
+
+describe('Grave Chill: 5 Fate a death, none at the start (DECISIONS #398)', () => {
+  it('starts with no Fate, and a Thrall that dies curses an enemy with 5', () => {
+    const s = fight(['bone-rain']);
+    for (const u of s.sides.b.units) expect(u.statuses.doom ?? 0).toBe(0);
+    // Bone Rain: the Thrall strikes and dies
+    const out = play(s, 'T0');
+    expect(out.sides.b.units.reduce((n, u) => n + (u.statuses.doom ?? 0), 0)).toBe(5);
   });
 });

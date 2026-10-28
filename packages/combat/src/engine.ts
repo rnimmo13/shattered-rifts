@@ -806,6 +806,8 @@ function metricValue(
     case 'diamonds':
     case 'clubs':
       return sideCount(sd, m);
+    case 'fullTricks':
+      return sd.fullTricks ?? 0;
   }
 }
 
@@ -2392,6 +2394,8 @@ function payFullTrick(r: Run, sd: SideState): void {
   r.depth++;
   runOps(r, mkAct(hero), suits.fullTrick);
   r.depth--;
+  // (counted after it goes off: the first Full Trick of a fight reads 0)
+  sd.fullTricks = (sd.fullTricks ?? 0) + 1;
   if (!r.s.winner) fireTriggers(r, sd, 'allSuits');
 }
 

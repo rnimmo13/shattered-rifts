@@ -10,7 +10,9 @@ import {
   forge,
   heal,
   on,
+  per,
   raise,
+  scaled,
   stance,
   stars,
   status,
@@ -171,11 +173,11 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     role: 'Trickster',
     trait: {
       name: 'Lying in Wait',
-      text: 'Start every fight with 6 Barrier and 2 extra cards in hand. At the start of your turn, gain 4 Barrier. The first time each turn you have played all four suits (♠ ♥ ♦ ♣), a Full Trick: deal 5 damage to ALL enemies and draw 1 card.',
+      text: 'Start every fight with 6 Barrier and 2 extra cards in hand. The first time each turn you have played all four suits (♠ ♥ ♦ ♣), a Full Trick: deal 5 damage to ALL enemies, 3 more for every Full Trick before it this fight, and draw 1 card.',
       fightStart: [barrier(6), draw(2)],
-      turnStart: [barrier(4)],
       // Suits (DECISIONS #387): the first time in a turn all four suits are showing, a Full Trick
-      suits: { fullTrick: [dmg(5, 'allFoes'), draw(1)] },
+      // (no 4 Barrier a turn now; the Full Trick grows instead: 5, 8, 11... DECISIONS #398)
+      suits: { fullTrick: [scaled(dmg(5, 'allFoes'), per('fullTricks', 3)), draw(1)] },
     },
     hero: { id: 'trickster', name: 'Trickster', maxHp: 80, mana: 3, handSize: 5 },
     // (one Defend is Pick a Card, a ♦, so the starting deck holds all four suits: DECISIONS #387)
@@ -198,7 +200,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
       'A Trap is played face down and springs on its own when its trigger happens.',
       'Read the icon above each enemy and set the Trap that answers what it is about to do.',
       'Exposed enemies take 50% more damage: mark them, then spend the mark.',
-      'Suits: every card is a ♠ (Attacks), ♥ (Barrier), ♦ (cards and Mana) or ♣ (Traps and debuffs). Play all four in one turn for a Full Trick: 5 damage to every enemy and a card.',
+      'Suits: every card is a ♠ (Attacks), ♥ (Barrier), ♦ (cards and Mana) or ♣ (Traps and debuffs). Play all four in one turn for a Full Trick: 5 damage to every enemy and a card, and every Full Trick after it in a fight deals 3 more.',
     ],
   },
   assassin: {
@@ -388,12 +390,12 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     role: 'Necromancer',
     trait: {
       name: 'Grave Chill',
-      text: 'At the start of your turn, Raise 3. Every enemy starts the fight with 3 Fate. Whenever one of your allies dies or a card is consumed, curse a random enemy with 3 Fate.',
+      text: 'At the start of your turn, Raise 3. Whenever one of your allies dies, curse a random enemy with 5 Fate. Whenever a card is consumed, curse a random enemy with 3 Fate.',
       // (Raise 3 a turn, DECISIONS #397: his Commands need a Thrall standing on his turn, and the one he starts with died to the first hit)
+      // (no Fate at the start; 5 a death instead of 3, DECISIONS #398)
       turnStart: [raise(3)],
-      fightStart: [status('doom', 3, 'allFoes')],
       triggers: [
-        on('allyDies', [status('doom', 3, 'randomFoe')]),
+        on('allyDies', [status('doom', 5, 'randomFoe')]),
         on('exhaust', [status('doom', 3, 'randomFoe')]),
       ],
     },
@@ -422,7 +424,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
       'Command cards (Knucklebone, Off the Leash...) make each of your Thralls strike. Off the Leash adds each Thrall’s own HP to its blow.',
       'Cursed with Fate, an enemy dies at the end of its turn if its HP is at or below its Fate.',
       'Gravesouls are free cards that draw 2 and are consumed; Fleeting cards are consumed if you still hold them when your turn ends, and some of your cards grow with every one you play.',
-      'Grave Chill: Raise 3 at the start of every turn; every enemy starts with 3 Fate, and whenever one of your allies dies or a card is consumed a random enemy is cursed with 3 more.',
+      'Grave Chill: Raise 3 at the start of every turn; whenever one of your allies dies a random enemy is cursed with 5 Fate, and whenever a card is consumed with 3.',
     ],
   },
 };
