@@ -52,6 +52,10 @@ export const PATCH_NOTES: PatchNote[] = [
         text: 'Card rarity colours match the cards everywhere: uncommon blue and rare gold on the saved decks page too.',
       },
       {
+        kind: 'fixed',
+        text: 'Backup Core revives one companion a turn: it used to bring the same machine back after every hit, so nothing reached you.',
+      },
+      {
         kind: 'new',
         text: 'An enemy move that strikes every unit on your side carries a red "Hits all" tag, and every unit it will hit is marked. A move whose hits land at random says so too.',
       },

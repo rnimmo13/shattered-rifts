@@ -318,7 +318,10 @@ export const ENGINEER: CardDef[] = [
     [summon('enforcer'), status('might', 1, 'allFriends')],
     { exhaust: true },
   ),
-  r('rare', 'backup-core', 'Backup Core', 'power', 2, 'none', [on('allyDies', [revive])]),
+  // (only the first death each turn: every death brought back made the machine an endless wall, Robert 2026-10-28)
+  r('rare', 'backup-core', 'Backup Core', 'power', 2, 'none', [
+    on('allyDies', [revive], { once: true }),
+  ]),
   // Heavy and Colossal machines, and the gun that welds them bigger (DECISIONS #383)
   r('uncommon', 'build-bulwark-walker', 'Build Bulwark Walker', 'summon', 2, 'none', [
     summon('bulwark-walker'),

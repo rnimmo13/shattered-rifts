@@ -5,6 +5,7 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **Fixed: Backup Core** brought a companion back every time it died, so it soaked every hit; it now revives one companion a turn.
 - **The Trickster plays with Suits.** Every card is a ♠ (Attacks), ♥ (Barrier), ♦ (cards and Mana) or ♣ (Traps and debuffs). Four pips beside the Trickster light as you play each suit in a turn, and the card you're aiming shows which one it would light. Light all four for a **Full Trick**: 5 damage to every enemy and a card. The Patience build path is now Suits, with new cards (Flourish, Card Fan, Card Sharp, Cut the Deck, Queen of Hearts, Ace of Clubs, Wild Card, Royal Flourish, Showstopper, The Joker, The Whole Deck) and a new Masquerade. The starting deck has Pick a Card in place of a Defend. Banked Breath, Coiled Patience, Sandbag, Waiting Game, Measured Breath and Fade Away are retired (saved decks get the closest card).
 - **Move your panels:** your Auras, the other side's Auras and the battle log can be dragged by their title, resized from the corner and folded; double-click a title to put it back. Where you left them is remembered.
 - **Card rarities have one set of colours everywhere:** uncommon blue and rare gold, as on the cards, on the saved decks page too.

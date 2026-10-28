@@ -191,7 +191,7 @@ Starter: Strike, Strike, Strike, Strike, Strike, Defend, Defend, Defend, Deploy 
 | Overclock Core | 2 | aura | rare | At the start of your turn: Apply 1 Might to all friends. |
 | Reactor Meltdown | 0 | skill | rare | Deal damage equal to the target's HP to ALL enemies. Sacrifice the chosen ally. Consume. |
 | Heavy Industry | 2 | aura | rare | At the start of your turn: Gain 4 Barrier to all friends. |
-| Backup Core | 2 | aura | rare | Whenever one of your allies dies: Your most recently fallen ally returns with half its HP. |
+| Backup Core | 2 | aura | rare | The first time each turn one of your allies dies: Your most recently fallen ally returns with half its HP. |
 | Dreadnought | 3 | summon | rare | Summon Dreadnought (Colossal: 3 slots, 18 HP). At the end of your turn it will: Deal 5 damage to ALL enemies. |
 | Railgun | 3 | attack | rare | Deal 34 damage. |
 | Particle Cannon | 2 | attack | rare | Deal 8 (+6 per companion slot filled) damage. |
