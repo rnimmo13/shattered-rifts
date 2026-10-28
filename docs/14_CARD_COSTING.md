@@ -68,7 +68,7 @@ So `Deal 10` = `Deal 7, Apply 1 Exposed` = `Deal 4, Apply 2 Exposed` = `Deal 7, 
 | "Your companions each deal N" | **0.7-1.0 x** a normal attack's number per Thrall | Price it at one companion; the second and third are the build's payoff. 0-cost Commands sit at 100% (Knucklebone 6), 1+ cost at ~70% (Bone Snap 7, Bone Crush 12). |
 | X cost | **~7 points per X** at uncommon (70-80% of the 9-per-Mana slope) | X cards never waste Mana and grow with every Mana effect. Run Through 8/X, Whirling Blade 5 AoE/X. The upgrade is always X+1 (`plus()`). |
 | Damage that grows ("every copy gains N") | first play at ~90% of budget, then **N x 1.2** for the growth | A card comes round every 2-3 turns, so expect 1-2 more plays (Mounting Fury 9 + 5, Gathering Storm 3 + 2 at 0 cost). |
-| "+N per X" scaling | price at the X you expect **mid-fight**, not the best case | Mastered Strike: 6 + 2 per Strike, about 16-19 in a starter-based deck. Price the median; then check the ceiling with the combo test in §8. |
+| "+N per X" scaling | price at the X you expect **mid-fight**, not the best case | Mastered Strike: 6 + 2 per Strike, about 16-19 in a starter-based deck. Price the median; then check the ceiling with the combo test in §8. Usual X: **3-4 cards in hand** (more in a Hold deck), **1-2 Mana left** in a Patience deck (0-1 otherwise), **1.5 Traps set** in a Trap deck (3 at most). |
 
 ---
 
@@ -81,6 +81,9 @@ So `Deal 10` = `Deal 7, Apply 1 Exposed` = `Deal 4, Apply 2 Exposed` = `Deal 7, 
 | Plating N | **~2.5** per stack | Only keeps Barrier you already have; shrinks each turn. Stoneskin (4) is a 1-cost uncommon. |
 | Blur | the Barrier you expect to carry over (~4-5) | Smoke Veil: 5 Barrier + Blur. |
 | Shielded | **~one enemy hit** (10-12 at Tier I) | Great against one big hit, nearly nothing against chip damage. |
+| Cancel a hit (a Trap's "cancel that attack") | **~12**, one Tier I hit | The Trap springs on the first hit of a move and stops that hit only. Mirror Veil, Bait and Switch. |
+| Ghostly (each hit capped at 1, fades each turn) | **~13** a stack: one enemy turn's damage | More against multi-hit enemies. Fade Away, Between Worlds. |
+| Steadfast (ignore the next debuff) | **~2.5** a stack | 0 against an enemy that never debuffs. Mask of Faces. |
 | Thorns until the enemy turn ends | **1 per stack per hit** the enemy makes that turn (~1.5 hits) | Ember Ward: 12 Barrier + 4 Thorns = 2 Mana. |
 | Raise N (Thrall HP) | **1.2 per HP**, **+3** when it makes a new Thrall | A Thrall is Barrier that stays until struck, and another body for every Command. Raise Thrall 5 = ~9; After the End 6 + Consume. |
 | Heal | **1.5** per HP | HP carries through the run. Expect Consume on any heal (Wanderer's Draught 6, Rally 10). |
@@ -107,6 +110,7 @@ Percentage debuffs (Exposed, Faltering, Debilitated) are worth more as numbers g
 | **Fate** | **0.7** per stack (**0.9** to ALL) | Nothing until it reaches the enemy's HP, then everything. Tolling Bell 13 Fate + draw 1, Creeping End 5 Barrier + 7 to all. Weakest against bosses (it has to climb to their HP), strongest as a finisher on regular fights. |
 | Strangled N (loses N per card you play) | **N x the cards you will still play this turn** (~3) | Garrote: 8 + 2 Strangled ≈ 14 (uncommon). |
 | Stunned | Exposed + Faltering + Brittle together, so **~7 per turn** of it, more on a big attacker | Keep it rare. |
+| Brittle (its Barrier gains are 25% smaller) | **~0.75** a stack | Only against enemies that defend. Strip the Guard, Poison Pantry. |
 
 ---
 
@@ -123,7 +127,9 @@ Percentage debuffs (Exposed, Faltering, Debilitated) are worth more as numbers g
 | Each further card drawn | **4** (halve past the 3rd extra card in a turn: no Mana left to play them) | Catch Breath (draw 2) = 7, Clear Spring (draw 3) = 11, Read the Embers (draw 6, 2 cost) ≈ 17. |
 | Extra draw next turn | **3.5** each | Scheme, Stalker's Lunge. |
 | Discard 1 (yours, as a cost) | **-2**, or **+2** with Sly / discard payoffs in the deck | Duck and Weave, Flick Knife. In the Assassin's pool call it 0. |
-| Put a card on top of your draw pile / Foresee | **+1.5** | Ram Home, Glint. |
+| Put a card on top of your draw pile | **+1.5** | Ram Home, Glint. |
+| Foresee N (look at the top N, draw the one you choose, discard the rest) | a draw (**3** as an extra, **4** on its own) **+0.5 per card past the first** (at most +2) | Cold Read (0: Foresee 4) ≈ 5.5. |
+| Reverb (your next Attack is played twice) | the next Attack's value, **~12** in an ordinary deck | Second Act. Check it against the best Attack in its build path (§8). |
 | Return a random card from discard to hand | **+3** (a draw); a chosen card **+4** | |
 | Add a random card to your hand | **+4** (Neutral), **~9** if it is from your pool and costs 0 (Consume) | Royal Decree, Borrowed Blade, Rift Windfall. |
 | A Dagger | **4** (its damage) + Edge | Knife Juggle 3 knives + Consume; Feint Strike 3 + 2 knives. |
@@ -295,7 +301,7 @@ and how soon it springs. A Trap returns to the discard pile after springing, lik
 |---|---|---|
 | When the enemy turn begins (`foeTurn`) | **0.9** | Always springs, one enemy turn later. Barrier gained then protects you that turn. |
 | When you or an ally is attacked (`attacked`) | **0.85** | Springs on the next attack; a turn of buffs or defending makes it wait. It springs before the hit lands, so Faltering, Sapped or Stun on the attacker shrink that very hit. |
-| When you lose 5+ HP at once (`hpLost`) | **0.7** | Needs a hit that gets through your Barrier. |
+| When you lose 5+ HP at once (`hpLost`) | **0.7** (3+ HP: **0.75**) | Needs a hit that gets through your Barrier. |
 | When an enemy gains Barrier (`foeDefends`) | **0.6** | Depends on the enemy. |
 | When the enemy summons (`foeSummons`) | **0.4** | Most fights never set it off; it needs a big payoff to be worth a card. |
 
