@@ -56,7 +56,9 @@ describe('the hunt', () => {
     const them = foe(s0).id;
     const { events } = endTurn(s0);
     expect(events.some((e) => e.type === 'snareSprung' && e.card === 'snare-line')).toBe(true);
-    expect(events.some((e) => e.type === 'barrier' && e.target === me && e.amount === 5)).toBe(true);
+    expect(events.some((e) => e.type === 'barrier' && e.target === me && e.amount === 5)).toBe(
+      true,
+    );
     const falter = events.filter((e) => e.type === 'status' && e.status === 'faltering');
     expect(falter.length).toBeGreaterThan(0);
     expect(falter.every((e) => e.type === 'status' && e.target === them)).toBe(true);
@@ -85,6 +87,30 @@ describe('the hunt', () => {
     expect(foe(s).statuses.exposed).toBe(1);
     expect(hound(s).statuses.vigor).toBe(3);
     expect(s.sides.a.hand.map((c) => c.id)).toEqual(['D0']);
+  });
+
+  it('a Trap whose damage kills the attacker puts nothing on another enemy', () => {
+    const { state } = createCombat(db, {
+      seed: 'hunt-test-2',
+      a: { hero: 'hunter', deck: [...RIFTWALKERS.hunter.starter, ...RIFTWALKERS.hunter.starter] },
+      b: { enemies: ['squire', 'squire'] },
+    });
+    let s = clone(state);
+    s.sides.a.hand = [{ id: 'T0', card: 'bear-trap' }];
+    s.sides.a.mana = 9;
+    for (const u of s.sides.b.units) {
+      u.hp = u.maxHp = 200;
+      u.statuses = {};
+    }
+    // the first Squire attacks first, and Bear Trap's 6 kills it
+    s.sides.b.units[0]!.hp = 6;
+    s = play(s, 'bear-trap');
+    const second = s.sides.b.units[1]!.id;
+    const { events } = endTurn(s);
+    expect(events.some((e) => e.type === 'snareSprung' && e.card === 'bear-trap')).toBe(true);
+    expect(
+      events.some((e) => e.type === 'status' && e.status === 'faltering' && e.target === second),
+    ).toBe(false);
   });
 
   it('Run It Down: 7, and the pack joins in on a Faltering target', () => {

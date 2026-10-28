@@ -570,7 +570,9 @@ function resolve(r: Run, a: Act, sel: Sel): Unit[] {
     case 'allAllies':
       return r.s.sides[a.actor.side].units.filter((u) => u.hp > 0 && u.kind !== 'hero');
     case 'attacker':
-      if (a.attacker && a.attacker.hp > 0) return [a.attacker];
+      // an attacker that has just died (a Trap's damage killed it) takes the rest with it: nothing lands on another enemy. With
+      // no attacker at all (a Trap set off by a summon), the front enemy
+      if (a.attacker) return a.attacker.hp > 0 ? [a.attacker] : [];
       return foes.length ? [foes[0] as Unit] : [];
     case 'weakestFoe':
       return foes.length ? [foes.reduce((m, x) => (x.hp < m.hp ? x : m))] : [];
