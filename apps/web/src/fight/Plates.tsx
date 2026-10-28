@@ -71,11 +71,19 @@ export function UnitPlates({ items, targetable, hover, preview, heroId, sharp }:
       });
     }
   }
+  // an enemy's attack that strikes every unit of the other side: each unit it will hit is marked (with the moves, for its tip)
+  const sweeps = (side: string): { name: string; by: string }[] =>
+    items.flatMap(({ unit: e }) =>
+      e.kind === 'enemy' && e.side !== side && e.hp > 0 && e.intentView?.area === 'all'
+        ? [{ name: e.intentView.name, by: e.name }]
+        : [],
+    );
   return (
     <div className="plates" aria-hidden={false}>
       {items.map(({ unit: u, x, y, h, w }) => {
         const pct = Math.max(0, Math.min(100, (u.hp / u.maxHp) * 100));
         const iv = u.intentView;
+        const incoming = u.hp > 0 ? sweeps(u.side) : [];
         const slot = lane.get(u.id) ?? { width: Math.max(165, Math.min(215, w * 1.05)), dy: 0 };
         const width = slot.width;
         const style: CSSProperties = { left: x, top: y + 10 + slot.dy, width };
@@ -113,16 +121,35 @@ export function UnitPlates({ items, targetable, hover, preview, heroId, sharp }:
                   </b>
                 )}
                 <span className="intent__name">{iv.name}</span>
+                {iv.area && (
+                  <span className={`intent__area intent__area--${iv.area}`}>
+                    {iv.area === 'all' ? '⇶ Hits all' : '⁇ Random'}
+                  </span>
+                )}
                 <span className="intent__tip" role="tooltip">
                   <b>{iv.name}</b> {iv.text}
                 </span>
               </div>
             )}
             <div
-              className={`plate${targetable.has(u.id) ? ' is-target' : ''}${hover === u.id ? ' is-hover' : ''}${u.kind === 'hero' ? ' plate--hero' : ''}`}
+              className={`plate${incoming.length ? ' is-incoming' : ''}${targetable.has(u.id) ? ' is-target' : ''}${hover === u.id ? ' is-hover' : ''}${u.kind === 'hero' ? ' plate--hero' : ''}`}
               style={style}
             >
               {preview?.id === u.id && <div className="plate__preview">{preview.text}</div>}
+              {incoming.length > 0 && (
+                <span
+                  className="plate__incoming"
+                  aria-label={`Will be hit by ${incoming.map((i) => i.name).join(', ')}`}
+                  {...tipAttrs({
+                    kicker: 'Incoming',
+                    title: incoming.map((i) => i.name).join(' + '),
+                    tone: 'bad',
+                    text: `${incoming.map((i) => `${i.by}'s ${i.name}`).join(' and ')} will strike everyone on this side, this one included.`,
+                  })}
+                >
+                  ⇶
+                </span>
+              )}
               <div
                 className="plate__name"
                 {...(u.kind === 'hero' && heroId && RIFTWALKERS[heroId as HeroId]

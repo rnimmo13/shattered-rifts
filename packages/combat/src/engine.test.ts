@@ -554,6 +554,29 @@ describe('enemies and intents', () => {
     expect(v.sides.b.units[0]?.intentView).toMatchObject({ damage: 7, hits: 2, icons: ['attack'] });
   });
 
+  it('says when an attack strikes every unit of your side, or random ones', () => {
+    const c = clone(start(['cultist']));
+    foe(c).intent = { move: 'stab', target: hero(c).id };
+    const area = (to: 'allFoes' | 'randomFoe' | 'target') => {
+      const cultist = db.units.cultist;
+      if (cultist?.brain.kind !== 'enemy') throw new Error('cultist');
+      const stab = cultist.brain.moves.stab;
+      if (!stab) throw new Error('stab');
+      const moves = {
+        ...cultist.brain.moves,
+        stab: { ...stab, effects: [{ op: 'damage' as const, amount: 5, to }] },
+      };
+      const d = {
+        ...db,
+        units: { ...db.units, cultist: { ...cultist, brain: { ...cultist.brain, moves } } },
+      };
+      return viewFor(d, c, 'a').sides.b.units[0]?.intentView?.area;
+    };
+    expect(area('allFoes')).toBe('all');
+    expect(area('randomFoe')).toBe('random');
+    expect(area('target')).toBeUndefined();
+  });
+
   it('a summoner adds enemies (up to four) which show intents immediately', () => {
     let s = start(['summoner']);
     const r = end(s); // first move is "call"

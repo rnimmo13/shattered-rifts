@@ -242,6 +242,56 @@
 .intent--summon .intent__icons {
   color: var(--c-heal);
 }
+/* an attack that strikes more than its one target: a loud tag under the move's name */
+.intent__area {
+  padding: 0.05rem 0.5rem;
+  border-radius: 999px;
+  font-family: var(--font-display);
+  font-size: 0.78rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #fff;
+  background: #b8344c;
+  box-shadow: 0 0 10px rgb(255 74 110 / 0.7);
+}
+.intent__area--random {
+  background: #7a3fb0;
+  box-shadow: 0 0 10px rgb(170 110 255 / 0.6);
+}
+/* a unit an enemy's sweeping attack will strike: its HP bar glows red and a marker sits on its plate */
+.plate.is-incoming .bar {
+  animation: incoming-pulse 1.4s ease-in-out infinite;
+}
+.plate__incoming {
+  position: absolute;
+  top: -0.2rem;
+  right: -0.6rem;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  width: 1.7rem;
+  height: 1.7rem;
+  border-radius: 50%;
+  font-size: 1.05rem;
+  line-height: 1;
+  color: #fff;
+  background: #b8344c;
+  border: 1px solid #ff9aab;
+  box-shadow: 0 0 10px rgb(255 74 110 / 0.85);
+}
+@keyframes incoming-pulse {
+  50% {
+    box-shadow:
+      0 0 0 2px #ff4a6e,
+      0 0 16px rgb(255 74 110 / 0.85);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .plate.is-incoming .bar {
+    animation: none;
+    box-shadow: 0 0 0 2px #ff4a6e;
+  }
+}
 /* an ally's end-of-turn action: the same badge, a size down and calmer, so the enemies' intents stay the loudest */
 .intent--ally {
   padding: 0.18rem 0.55rem 0.22rem;

@@ -36,6 +36,8 @@ export interface IntentView {
   damage: number | null;
   hits: number;
   target: UnitId | null;
+  /** an attack that lands on more than its one target: 'all' strikes every unit of the other side, 'random' picks its own */
+  area?: 'all' | 'random';
 }
 
 export interface UnitView extends Unit {
@@ -124,10 +126,19 @@ function opIcons(ops: readonly Op[]): IntentIcon[] {
  * What an ally will do at the end of its owner's turn, shown like an enemy's intent: its attacks land on the first living unit of the
  * other side (as the engine has it, actAlly), so the damage is worked out against that unit with every modifier.
  */
+/** Whether the damage in these ops strikes every unit of the other side, or random ones, rather than one target. */
+function areaOf(ops: readonly Op[]): 'all' | 'random' | undefined {
+  const dmg = ops.filter((o): o is Extract<Op, { op: 'damage' }> => o.op === 'damage');
+  if (dmg.some((o) => o.to === 'allFoes')) return 'all';
+  if (dmg.some((o) => o.to === 'randomFoe')) return 'random';
+  return undefined;
+}
+
 function describeAllyAct(db: CombatDb, s: CombatState, u: Unit, act: Op[]): IntentView {
   const front = s.sides[other(u.side)].units.find((x) => x.hp > 0) ?? null;
   const dmg = act.filter((o): o is Extract<Op, { op: 'damage' }> => o.op === 'damage');
   const first = dmg[0];
+  const area = areaOf(act);
   return {
     move: 'act',
     name: 'End of turn',
@@ -143,6 +154,7 @@ function describeAllyAct(db: CombatDb, s: CombatState, u: Unit, act: Op[]): Inte
       : null,
     hits: first ? dmg.reduce((n, o) => n + (o.hits ?? 1), 0) : 0,
     target: first?.to === 'target' ? (front?.id ?? null) : null,
+    ...(area ? { area } : {}),
   };
 }
 
@@ -159,6 +171,7 @@ export function describeIntent(db: CombatDb, s: CombatState, u: Unit): IntentVie
     [...s.sides.a.units, ...s.sides.b.units].find((x) => x.id === u.intent?.target) ?? null;
   const dmg = mv.effects.filter((o): o is Extract<Op, { op: 'damage' }> => o.op === 'damage');
   const first = dmg[0];
+  const area = areaOf(mv.effects);
   return {
     move: mv.id,
     name: mv.name,
@@ -174,6 +187,7 @@ export function describeIntent(db: CombatDb, s: CombatState, u: Unit): IntentVie
       : null,
     hits: first ? dmg.reduce((n, o) => n + (o.hits ?? 1), 0) : 0,
     target: u.intent.target,
+    ...(area ? { area } : {}),
   };
 }
 

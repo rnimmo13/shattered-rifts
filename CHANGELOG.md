@@ -5,6 +5,7 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **Sweeping attacks are marked:** an enemy move that strikes every unit on your side (Cleave, Dirge, Orbital Strike...) carries a red "Hits all" tag, and every unit it will hit gets a red marker and a glowing HP bar. A move whose hits land at random says so too.
 - **The grimoire opens over the whole window** wherever you look at cards (your deck, a pile in a fight, choosing a card to upgrade or remove, an event that asks for a card). Cards always stay within a readable size range and fit on the page; they no longer grow, shrink or jump when you resize the window, open a ribbon or turn a page. The arrow keys turn its pages.
 - **Event options that show cards** put their words on the left and the cards on the right, with a tag saying what happens (Removes, Adds, Swaps or Upgrades a card) and a strip on each card (Removed, Added, Out, In, Upgraded).
 - **The Arena button** on the map is a glowing button before your Deck: green when your deck is in the Arena, red and struck through until your first fight saves it.
