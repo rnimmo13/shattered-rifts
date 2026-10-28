@@ -18,7 +18,7 @@ Starter: Strike, Strike, Strike, Strike, Strike, Defend, Defend, Defend, Defend,
 | Field Repairs | 1 | skill | common | Gain 5 Barrier. Upgrade a random card in your hand for this fight. |
 | Twin Cut | 1 | attack | common | Deal 5 damage 2 times. |
 | Braced Strike | 1 | attack | common | Deal 7 damage. Gain 2 Might until the end of your turn. |
-| Cleaving Throws | 1 | attack | common | Deal 3 damage 3 times to a random enemy. |
+| Cleaving Throws | 1 | attack | common | Deal 3 damage to a random enemy 3 times. |
 | Hilt Strike | 1 | attack | common | Deal 9 damage. Draw 1 card. |
 | Clarion Clap | 1 | attack | common | Deal 4 damage to ALL enemies. Apply 1 Exposed to ALL enemies. |
 | Rattle | 1 | skill | common | Apply 3 Exposed. Consume. |
@@ -335,7 +335,7 @@ Starter: Strike, Strike, Strike, Defend, Defend, Defend, Veil Strike, Veil Strik
 | Tripwire Garrote | 1 | trap | uncommon | When you or an ally is attacked: Deal 7 damage to the attacker. Apply 2 Exposed to the attacker. |
 | Trap Net | 1 | trap | uncommon | At the start of the enemy turn: Deal 6 damage to ALL enemies. Apply 1 Faltering to ALL enemies. |
 | Death Mark | 2 | attack | uncommon | Deal 12 damage. Apply 3 Exposed. |
-| Shadow Volley | 1 | attack | uncommon | Deal 4 damage 3 times to a random enemy. |
+| Shadow Volley | 1 | attack | uncommon | Deal 4 damage to a random enemy 3 times. |
 | Stalk | 2 | attack | uncommon | Deal 16 damage. If the target is Exposed: Next turn, draw 2 extra cards. |
 | Strip the Guard | 1 | skill | uncommon | Apply 3 Exposed. Apply 2 Brittle. |
 | Smoke Bomb | 1 | skill | uncommon | Apply 1 Faltering to ALL enemies. Apply 1 Exposed to ALL enemies. Gain 3 Barrier. |
@@ -412,7 +412,7 @@ Starter: Strike, Strike, Strike, Strike, Strike, Defend, Defend, Defend, Defend,
 | Quick Slash | 0 | attack | common | Deal 6 damage. |
 | Dirty Hit | 1 | attack | common | Deal 8 damage. Apply 1 Faltering. |
 | Stalker's Lunge | 2 | attack | common | Deal 15 damage. Next turn, draw 2 extra cards. |
-| Glancing Knives | 2 | attack | common | Sly. Deal 3 damage 4 times to a random enemy. |
+| Glancing Knives | 2 | attack | common | Sly. Deal 3 damage to a random enemy 4 times. |
 | Cartwheel Cut | 1 | attack | common | Sly. Deal 7 damage to ALL enemies. |
 | Open Vein | 1 | skill | common | Apply 5 Bleed. |
 | Barbed Stab | 1 | attack | common | Deal 6 damage. Apply 3 Bleed. |
@@ -729,7 +729,7 @@ Starter: Strike, Strike, Strike, Strike, Defend, Defend, Defend, Defend, Cinderf
 | Final Shatter | 3 | attack | uncommon | Deal 30 damage. If this is fatal: Gain 5 Arcana. |
 | Arcane Flood | 0 | attack | uncommon | Deal 3 damage for each Arcana gained this turn to ALL enemies. |
 | Shard Strike | 1 | attack | uncommon | Deal 8 damage. Gain 2 Arcana. It goes on top of your draw pile after you play it. |
-| Falling Shards | 0 | attack | uncommon | Spend all your Arcana: X is the Arcana spent. Deal 5 damage X times to a random enemy. |
+| Falling Shards | 0 | attack | uncommon | Spend all your Arcana: X is the Arcana spent. Deal 5 damage to a random enemy X times. |
 | Tyrant Strike | 2 | attack | uncommon | Deal 15 damage. Next turn, gain 2 extra Mana. |
 | Hungering Void | 1 | aura | uncommon | Whenever you gain Arcana: Deal 3 damage to ALL enemies. Whenever you spend Arcana: Deal 3 damage to ALL enemies. |
 | Sigil of Glass | 1 | aura | uncommon | Whenever you spend Arcana: Gain Barrier equal to 2 times the Arcana spent. |
@@ -855,9 +855,9 @@ Starter: Strike, Strike, Strike, Defend, Defend, Defend, Hammer Swing, Hammer Sw
 | Liquid Dinner | 1 | skill | uncommon | Heal 2 (+1 per 5% HP missing). Draw 1 card. Consume. |
 | Dutch Courage | 1 | aura | uncommon | At the end of your turn: Gain Barrier equal to your Hangover. |
 | Stumble | 1 | attack | uncommon | Stagger. Deal 9 damage to a random enemy. Gain 4 Barrier. Gain 2 Hangover. |
-| Free-for-All | 2 | attack | uncommon | Stagger. Deal 7 damage 3 times to a random enemy. |
-| Drunken Master | 1 | aura | uncommon | Whenever you play a Stagger card: Gain 2 Barrier. |
-| The Twelve-Gauge Opera | 2 | aura | rare | Sharpen 6 (Old Twelve Gauge gains 6 damage). Whenever you play a gun: Sharpen 2 (Old Twelve Gauge gains 2 damage). Gain 4 Barrier. |
+| Free-for-All | 2 | attack | uncommon | Stagger. Deal 7 damage to a random enemy 3 times. |
+| Drunken Master | 1 | aura | uncommon | Whenever you play a Stagger card: Gain 2 Barrier. Deal 2 damage to a random enemy. |
+| The Twelve-Gauge Opera | 2 | aura | rare | Sharpen 6 (Old Twelve Gauge gains 6 damage). Whenever you play a gun: Sharpen 1 (Old Twelve Gauge gains 1 damage). Gain 3 Barrier. |
 | Boomstick | 3 | attack | rare | Deal 14 (+2 per consumed card) damage to ALL enemies. |
 | The Last Shell | 2 | attack | rare | Deal 24 damage. Apply 1 Exposed. Consume. Hold. |
 | One More Round | 3 | aura | rare | At the start of your turn: Add 2 Buckshot Shells to your hand. Heal 3. |
@@ -865,7 +865,7 @@ Starter: Strike, Strike, Strike, Defend, Defend, Defend, Hammer Swing, Hammer Sw
 | Extended Mag | 2 | aura | rare | At the start of your turn: Sharpen 2 (Old Twelve Gauge gains 2 damage). Add a Buckshot Shell to your hand. |
 | Rack and Ruin | 2 | attack | rare | Deal 10 damage to ALL enemies. Sharpen 4 (Old Twelve Gauge gains 4 damage). |
 | Trigger Discipline | 1 | aura | rare | Whenever you play an Attack: Sharpen 1 (Old Twelve Gauge gains 1 damage). |
-| Fire in the Hole | 2 | attack | rare | Deal 6 (+1 per 2 consumed cards) damage to ALL enemies. |
+| Fire in the Hole | 2 | attack | rare | Deal 12 (+1 per consumed card) damage to ALL enemies. |
 | Ammo Dump | 2 | skill | rare | Add 6 Buckshot Shells to your hand. Consume. |
 | Rolling Thunder | 2 | aura | rare | At the start of your turn: Add 2 Buckshot Shells to your hand. |
 | Ironsights | 1 | skill | rare | Sharpen 3 (Old Twelve Gauge gains 3 damage). Add 2 Buckshot Shells to your hand. Consume. |
@@ -884,7 +884,7 @@ Starter: Strike, Strike, Strike, Defend, Defend, Defend, Hammer Swing, Hammer Sw
 | Last Call | 1 | skill | rare | From your next turn, gain 1 more Mana every turn for the rest of the fight. Gain 4 Hangover. Consume. |
 | Bottomless Flask | 2 | aura | rare | At the start of your turn: Heal 2 (+1 per 10% HP missing). Draw 1 card. |
 | Pass Out | 2 | skill | rare | Heal 8 (+1 per 3% HP missing). Clear your Hangover. Consume. |
-| Blind Drunk | 2 | attack | rare | Stagger. Deal 6 damage 2 times, 1 more time per Hangover to a random enemy. |
+| Blind Drunk | 2 | attack | rare | Stagger. Deal 6 damage to a random enemy 2 times, 1 more time per Hangover. |
 
 Tokens (made by other cards):
 
@@ -1008,7 +1008,7 @@ Tokens (made by other cards):
 | Haft Strike | 1 | attack | common | Deal 8 damage. Draw 1 card. |
 | Shatter Strike | 2 | attack | common | Deal 14 damage. |
 | Reckless Swing | 0 | attack | common | Deal 7 damage. Lose 3 HP. |
-| Stagger | 1 | attack | common | Deal 4 damage. Apply 2 Faltering. |
+| Off Balance | 1 | attack | common | Deal 4 damage. Apply 2 Faltering. |
 | Glimpse Ahead | 1 | skill | common | Foresee 4. |
 | Shake It Off | 1 | skill | common | Lessen every debuff on you by 25% (at least 1). Gain 4 Barrier. |
 | Hidden Pitfall | 1 | trap | common | When you or an ally is attacked: Deal 7 damage to the attacker. |

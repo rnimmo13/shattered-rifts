@@ -21,7 +21,7 @@ const CORE_KEYWORDS = ['mana', 'barrier', 'companion', 'overflow', 'taunt', 'sna
 /** Card words (what a card's text says it does) */
 const CARD_WORDS = ['exhaust', 'retain', 'ethereal', 'innate', 'discard', 'scry'];
 /** Mechanics that belong to one Riftwalker's way of playing */
-const SIGNATURE_WORDS = ['rune', 'stance', 'stars', 'forge', 'sleeve-knife', 'buckshot-shell'];
+const SIGNATURE_WORDS = ['rune', 'stance', 'stars', 'forge', 'sleeve-knife', 'buckshot-shell', 'stagger'];
 
 const TABS = [
   { id: 'start', label: 'Start here' },

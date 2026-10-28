@@ -736,9 +736,12 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
         (o.onKill
           ? ` If this is fatal: ${o.onKill.map((x) => opText(db, x, who)).join(' ')}`
           : '') + (o.repeatOnKill ? ' Repeat this for each enemy it kills.' : '');
+      // (each hit at a random enemy finds its own: "to a random enemy 3 times", not "3 times to a random enemy")
+      const randomEach = o.to === 'randomFoe' && times !== '';
+      const tail = randomEach ? `${who[o.to]}${times}` : `${times}${who[o.to]}`;
       return a.equal
-        ? `Deal damage equal to ${a.num}${times}${who[o.to]}.${lone}${steal}${kill}`
-        : `Deal ${a.num} damage${times}${who[o.to]}.${lone}${steal}${kill}`;
+        ? `Deal damage equal to ${a.num}${tail}.${lone}${steal}${kill}`
+        : `Deal ${a.num} damage${tail}.${lone}${steal}${kill}`;
     }
     case 'loseHp': {
       const a = amountText(o.amount, o.scale);

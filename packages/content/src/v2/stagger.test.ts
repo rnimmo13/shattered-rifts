@@ -11,9 +11,9 @@ import {
 } from '@sr/combat';
 import { COMBAT_DB as db, RIFTWALKERS } from './index';
 
-function fight(hand: string[], hangover = 0): CombatState {
+function fight(hand: string[], hangover = 0, seed = 'stagger-test'): CombatState {
   const { state } = createCombat(db, {
-    seed: 'stagger-test',
+    seed,
     a: { hero: 'drunkard', deck: [...RIFTWALKERS.drunkard.starter] },
     b: { enemies: ['squire', 'squire'] },
   });
@@ -63,10 +63,41 @@ describe('Stagger', () => {
   });
 
   it('Blind Drunk hits twice, and once more for every point of Hangover', () => {
-    const hits = (h: number) =>
-      play(fight(['blind-drunk'], h), 'blind-drunk').events.filter(
-        (e) => e.type === 'damage' && e.source !== undefined,
+    const hits = (h: number) => {
+      const s0 = fight(['blind-drunk'], h);
+      const hero = s0.sides.a.units.find((u) => u.kind === 'hero')!.id;
+      return play(s0, 'blind-drunk').events.filter(
+        (e) => e.type === 'damage' && e.source === hero && e.target !== hero,
       ).length;
-    expect(hits(3) - hits(0)).toBe(3);
+    };
+    expect(hits(0)).toBe(2);
+    expect(hits(3)).toBe(5);
+  });
+
+  it('Free-for-All: three hits, each at an enemy of its own choosing (two enemies both get hit over a few seeds)', () => {
+    let split = false;
+    for (let i = 0; i < 12 && !split; i++) {
+      const s0 = fight(['free-for-all'], 0, `ffa-${i}`);
+      const s = play(s0, 'free-for-all').state;
+      expect(lost(s)).toBe(21);
+      split = s.sides.b.units.every((u) => u.hp < 200);
+    }
+    expect(split).toBe(true);
+  });
+
+  it('Stumble: 9 to a random enemy, 4 Barrier and 2 Hangover', () => {
+    const s = play(fight(['stumble']), 'stumble').state;
+    const hero = s.sides.a.units.find((u) => u.kind === 'hero')!;
+    expect(lost(s)).toBe(9);
+    expect(hero.barrier).toBe(4);
+    expect(hero.statuses.hangover).toBe(2);
+  });
+
+  it('the utility cards: Rummage the Bin asks for a Foresee pick, Sway gives 7 Barrier and a card', () => {
+    expect(play(fight(['rummage-the-bin']), 'rummage-the-bin').state.pending?.kind).toBe('scry');
+    const s0 = fight(['sway']);
+    const s = play(s0, 'sway').state;
+    expect(s.sides.a.units.find((u) => u.kind === 'hero')!.barrier).toBe(7);
+    expect(s.sides.a.hand.length).toBe(s0.sides.a.hand.length);
   });
 });

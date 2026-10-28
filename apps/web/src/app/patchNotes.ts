@@ -43,6 +43,10 @@ export const PATCH_NOTES: PatchNote[] = [
         text: 'Fewer Buckshot Shells: Load Shells gives 2, Shell Game is an uncommon, One More Round gives 2 a turn. Drinks give more for their Hangover: Barroom Brawl 16 to every enemy, One for the Road draws 3, Drunken Swing 14, Swig 4 Might.',
       },
       {
+        kind: 'changed',
+        text: 'The Neutral card Stagger is called Off Balance now, so Stagger means one thing.',
+      },
+      {
         kind: 'balance',
         text: 'Glass Jaw, The Glass Palace and Dutch Courage are trimmed; Trigger Discipline, Gunmetal Soul, Scattergun Symphony, Ricochet, Rock Bottom and Last Call cost 1; Rack the Slide, Scope, Birdshot, Spray and Pray, Fire in the Hole and more are stronger.',
       },

@@ -150,6 +150,7 @@ export const DRUNKARD: CardDef[] = [
   ]),
   p('common', 'powder-load', 'Powder Load', 'skill', 0, 'none', [forge('old-twelve-gauge', 3)], {
     exhaust: true,
+    up: { effects: [forge('old-twelve-gauge', 4)] },
   }),
   p(
     'common',
@@ -184,9 +185,16 @@ export const DRUNKARD: CardDef[] = [
     dmg(10, 'allFoes'),
     forge('old-twelve-gauge', 4),
   ]),
-  p('rare', 'trigger-discipline', 'Trigger Discipline', 'power', 1, 'none', [
-    on('play', [forge('old-twelve-gauge', 1)], { filter: 'attack' }),
-  ]),
+  p(
+    'rare',
+    'trigger-discipline',
+    'Trigger Discipline',
+    'power',
+    1,
+    'none',
+    [on('play', [forge('old-twelve-gauge', 1)], { filter: 'attack' })],
+    { up: { innate: true } },
+  ),
   p('common', 'shell-shock', 'Shell Shock', 'attack', 1, 'none', [
     dmg(3, 'allFoes'),
     addTo('buckshot-shell'),
@@ -197,7 +205,6 @@ export const DRUNKARD: CardDef[] = [
   p('uncommon', 'shellshocked', 'Shellshocked', 'power', 1, 'none', [
     on('exhaust', [dmg(2, 'allFoes')]),
   ]),
-  // (upgraded, the scaling grows rather than the base: +2 per 3 consumed cards instead of +1 per 2, so a third faster, not twice)
   p(
     'rare',
     'fire-in-the-hole',
@@ -205,8 +212,8 @@ export const DRUNKARD: CardDef[] = [
     'attack',
     2,
     'none',
-    [scaled(dmg(6, 'allFoes'), per('exhausted', 0.5))],
-    { up: { effects: [scaled(dmg(6, 'allFoes'), per('exhausted', 2 / 3))] } },
+    [scaled(dmg(12, 'allFoes'), per('exhausted', 1))],
+    { up: { effects: [scaled(dmg(15, 'allFoes'), per('exhausted', 1))] } },
   ),
   // (six shells, not eight (Robert, 2026-10-26); upgraded, the same six, each one upgraded)
   p('rare', 'ammo-dump', 'Ammo Dump', 'skill', 2, 'none', [addTo('buckshot-shell', 6)], {
@@ -229,11 +236,18 @@ export const DRUNKARD: CardDef[] = [
     1,
     'none',
     [forge('old-twelve-gauge', 3), addTo('buckshot-shell', 2)],
-    { exhaust: true },
+    { exhaust: true, up: { effects: [forge('old-twelve-gauge', 3), addTo('buckshot-shell', 3)] } },
   ),
-  p('rare', 'gunmetal-soul', 'Gunmetal Soul', 'power', 1, 'none', [
-    on('turnEnd', [forge('old-twelve-gauge', 1), barrier(3)]),
-  ]),
+  p(
+    'rare',
+    'gunmetal-soul',
+    'Gunmetal Soul',
+    'power',
+    1,
+    'none',
+    [on('turnEnd', [forge('old-twelve-gauge', 1), barrier(3)])],
+    { up: { effects: [on('turnEnd', [forge('old-twelve-gauge', 1), barrier(5)])] } },
+  ),
   p('uncommon', 'bar-stool', 'Bar Stool', 'attack', 1, 'foe', [
     scaled(dmg(7), per('missingPct', 1 / 6)),
   ]),
@@ -387,10 +401,19 @@ export const DRUNKARD: CardDef[] = [
   p('uncommon', 'bandolier', 'Bandolier', 'power', 1, 'none', [
     on('play', [barrier(2)], { tag: 'shell' }),
   ]),
-  p('rare', 'scattergun-symphony', 'Scattergun Symphony', 'power', 1, 'none', [
-    on('play', [dmg(3, 'allFoes')], { tag: 'shell' }),
-  ]),
-  p('rare', 'ricochet', 'Ricochet', 'power', 1, 'none', [on('play', [draw(1)], { tag: 'shell' })]),
+  p(
+    'rare',
+    'scattergun-symphony',
+    'Scattergun Symphony',
+    'power',
+    1,
+    'none',
+    [on('play', [dmg(3, 'allFoes')], { tag: 'shell' })],
+    { up: { effects: [on('play', [dmg(4, 'allFoes')], { tag: 'shell' })] } },
+  ),
+  p('rare', 'ricochet', 'Ricochet', 'power', 1, 'none', [on('play', [draw(1)], { tag: 'shell' })], {
+    up: { innate: true },
+  }),
 
   // --- Hangover: drink now, pay tomorrow (DECISIONS #354) ---
   // Drinks give something big now and Hangover: at the start of your next turn you lose that much HP (never your last). The HP
@@ -548,9 +571,11 @@ export const DRUNKARD: CardDef[] = [
   ),
   p('uncommon', 'free-for-all', 'Free-for-All', 'attack', 2, 'none', [dmg(7, 'randomFoe', 3)], {
     tags: ['stagger'],
+    up: { effects: [dmg(9, 'randomFoe', 3)] },
   }),
+  // (a deck plays one or two Stagger cards a turn, so each one pays a little more than a Shell's Bandolier)
   p('uncommon', 'drunken-master', 'Drunken Master', 'power', 1, 'none', [
-    on('play', [barrier(2)], { tag: 'stagger' }),
+    on('play', [barrier(2), dmg(2, 'randomFoe')], { tag: 'stagger' }),
   ]),
   // (two hits, and one more for every point of Hangover: the drunker, the wilder)
   p(

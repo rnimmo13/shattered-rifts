@@ -12,7 +12,7 @@
   | Drunken Lurch | 1, Attack, common | Stagger. 12 to a random enemy. | 10.8 / 10 |
   | Stumble | 1, Attack, uncommon | Stagger. 9 to a random enemy, 4 Barrier, 2 Hangover. | 9.9 / 11.2 |
   | Free-for-All | 2, Attack, uncommon | Stagger. 7 to a random enemy, 3 times. | 18.9 / 21.3 |
-  | Drunken Master | 1, Aura, uncommon | Whenever you play a Stagger card: gain 2 Barrier. | 1.0x |
+  | Drunken Master | 1, Aura, uncommon | Whenever you play a Stagger card: gain 2 Barrier, deal 2 to a random enemy. | ~1.1x at a Stagger card a turn |
   | Blind Drunk | 2, Attack, rare | Stagger. 6 to a random enemy twice, and once more per Hangover. | ~27 / 23.8 at 3 Hangover |
 
 - **Utility** (glue, any build path):
@@ -26,7 +26,16 @@
   - Barrier: Pane Up, Window Pane, Glass Cover, Black Out, Sway, Stumble, the Barrier Auras.
   - Debuffs: Brittle, Faltering, Exposed (Dead Eye to all).
   - Getting cards back: Pick Up the Brass.
-- **Bar Stool** moved to uncommon at 7 (+1 per 6% missing), to make room for the two Stagger rares.
+- **Bar Stool** moved to uncommon at 7 (+1 per 6% missing), to make room for Blind Drunk.
+- **The Neutral card that was called "Stagger"** (4 damage, 2 Faltering, aimed) is **Off Balance** now (id kept), so the keyword means
+  one thing.
+- **Review fixes (DECISIONS #394):**
+  - Fire in the Hole and The Twelve-Gauge Opera are now as §2 says; they had been missed.
+  - Drunken Master also deals 2 to a random enemy.
+  - Hand-written upgrades: Powder Load+, Ironsights+, Free-for-All+ (9 x3), Gunmetal Soul+, Scattergun Symphony+.
+  - Trigger Discipline+ and Ricochet+ gain Opening hand rather than costing 0.
+  - Random multi-hits read "to a random enemy 3 times": each hit finds its own enemy.
+- **Rolling Thunder** (2, rare Aura: 2 Shells a turn) is left as it is: about 1.1x.
 - **Rarity:** 22 commons, 36 uncommons, 28 rares.
 - **Upgrades:** Sway+ has a hand-written upgrade (10 Barrier). Last Call+ costs 2 less Hangover instead of 1 less Mana, since Last Call
   is now 1 Mana.

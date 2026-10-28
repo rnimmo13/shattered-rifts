@@ -56,7 +56,7 @@ export const LEGENDARIES: CardDef[] = [
     'none',
     [
       forge('old-twelve-gauge', 6),
-      on('play', [forge('old-twelve-gauge', 2), barrier(4)], { tag: 'gun' }),
+      on('play', [forge('old-twelve-gauge', 1), barrier(3)], { tag: 'gun' }),
     ],
     { up: { cost: 1 } },
   ),
