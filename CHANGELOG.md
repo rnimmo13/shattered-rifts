@@ -5,6 +5,7 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **Overflow is tanked by the rest of the pack:** what is left of a hit that kills a companion goes to your next companion first, and reaches you only when none is left. **Blood Pact** is an Aura.
 - **The Assassin's Sleeve Knives are Daggers** (and Inked Knives are Inked Daggers). **Fixed:** a Trap whose damage kills the attacker no longer puts its Exposed or Faltering on another enemy.
 - **The Hunter is rebalanced** card by card against the new card costing guide, and goes hunting: four new Traps (Bear Trap, Snare Line, Deadfall, Baited Snare), Hunting Grounds, Single Out and Run It Down. Her summons are smaller and cheaper to read (Pup 5 HP, Pack Alpha 12, Dire Wolf 18), Litter brings two Pups, and Crimson Pact and Unbridled are retired.
 - **Might only boosts attacks:** damage from Auras (Blood Fire, Serpent's Coil, Bastion Engine...), totems and Traps is the number on the card; Might, Exposed and Faltering only change attack damage, as their text says. Thorns and "when attacked" Traps only answer attacks. **Fixed:** Blood Fire showed twice in the Aura list.

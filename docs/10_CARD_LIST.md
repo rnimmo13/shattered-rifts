@@ -276,7 +276,7 @@ Starter: Strike, Strike, Strike, Strike, Defend, Defend, Defend, Savage Bite, Bl
 | Wild Hunt | 3 | aura | rare | At the start of your turn: All your allies act now. |
 | The Hunger Unleashed | 2 | aura | rare | Lose 6 HP. Gain 2 Might. Gain 1 Cadence. These last the rest of the fight. |
 | Apex Frenzy | 2 | attack | rare | Deal 5 damage 2 times, 1 more time per card played this turn. Lifesteal 50%. Consume. |
-| Blood Pact | 1 | skill | rare | Lose 7 HP. From your next turn, gain 1 more Mana every turn for the rest of the fight. Consume. |
+| Blood Pact | 1 | aura | rare | Lose 7 HP. From your next turn, gain 1 more Mana every turn for the rest of the fight. |
 | Death or Glory | 2 | attack | rare | Deal 10 (+1 per 2.5% HP missing) damage. Consume. |
 | Bloodsong | 0 | aura | rare | Lose 3 HP. Gain 1 Cadence for the rest of the fight. |
 | Slip the Leash | 2 | skill | rare | Double the Might to yourself (at most +4). Consume. |

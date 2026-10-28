@@ -1386,6 +1386,40 @@ describe('Overflow: what is left of a hit that kills a companion carries through
     };
   };
 
+  it('what is left goes to the next companion in line first, and reaches the hero only past the last (DECISIONS #380)', () => {
+    const { plain } = heroLoss(1000, 0);
+    const twoDrones = (secondHp: number) => {
+      let s = clone(start(['slime'], ['call-drone', 'call-drone']));
+      s.sides.a.mana = 9;
+      for (let i = 0; i < 2; i++)
+        s = applyAction(db, s, {
+          type: 'play',
+          card: s.sides.a.hand.find((c) => c.card === 'call-drone')!.id,
+        }).state;
+      const [front, back] = s.sides.a.units.filter((u) => u.kind === 'ally') as [Unit, Unit];
+      front.hp = 1;
+      back.hp = back.maxHp = secondHp;
+      back.barrier = 0;
+      front.barrier = 0;
+      s.sides.a.units.find((u) => u.kind === 'hero')!.barrier = 0;
+      const after = end(s).state;
+      return {
+        heroLoss: 60 - hero(after).hp,
+        // (a companion that died is gone from the board: 0 HP)
+        backHp: after.sides.a.units.find((u) => u.id === back.id)?.hp ?? 0,
+      };
+    };
+    // a sturdy second companion takes all that is left of the hit
+    const sturdy = twoDrones(1000);
+    expect(sturdy.heroLoss).toBe(0);
+    expect(1000 - sturdy.backHp).toBe(Math.floor(((plain - 1) * OVERFLOW_PCT) / 100));
+    // a frail one dies too, and only then does the rest reach the hero
+    const frail = twoDrones(1);
+    expect(frail.backHp).toBe(0);
+    const pastFirst = Math.floor(((plain - 1) * OVERFLOW_PCT) / 100);
+    expect(frail.heroLoss).toBe(Math.floor(((pastFirst - 1) * OVERFLOW_PCT) / 100));
+  });
+
   it('a frail companion lets half of the rest of the hit through; a sturdy one lets none', () => {
     const { plain } = heroLoss(1000, 0);
     expect(plain).toBeGreaterThan(3);

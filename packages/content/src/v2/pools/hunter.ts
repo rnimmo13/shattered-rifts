@@ -239,9 +239,8 @@ export const HUNTER: CardDef[] = [
     // (upgraded, it costs 1: more damage per hit gains a burst card little)
     { exhaust: true, up: { cost: 1 } },
   ),
-  k('rare', 'blood-pact', 'Blood Pact', 'skill', 1, 'none', [lose(7), maxMana(1)], {
-    exhaust: true,
-  }),
+  // (an Aura: its Mana lasts the rest of the fight, DECISIONS #380)
+  k('rare', 'blood-pact', 'Blood Pact', 'power', 1, 'none', [lose(7), maxMana(1)]),
   // (more Feast)
   k(
     'uncommon',

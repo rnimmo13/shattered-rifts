@@ -469,12 +469,21 @@ function attackHit(r: Run, a: Act, t: Unit, base: number, single = false): numbe
   // (a companion killed by an attack remembers by whom: Den Mother strikes back at it)
   if (attacked && t.kind === 'ally' && t.hp <= 0 && t.side !== a.actor.side)
     t.killedBy = a.actor.id;
-  // Overflow: a single-target attack that kills a companion carries part of what is left through to its hero (DECISIONS #321)
+  // Overflow: a single-target attack that kills a companion carries what is left on to the next one in line, the way a single
+  // attack picks (a Taunt companion first, then the one in front), and only past the last of them to the hero (DECISIONS #321, #380)
   if (attacked && single && t.kind === 'ally' && t.hp <= 0 && !capped && amount > room) {
-    const hero = heroOf(r.s.sides[t.side]);
-    const carried = Math.floor(((amount - room) * OVERFLOW_PCT) / 100);
-    if (hero && hero.hp > 0 && carried > 0)
-      lost += applyDamage(r, a.actor, hero, carried, 'attack', true);
+    let carried = Math.floor(((amount - room) * OVERFLOW_PCT) / 100);
+    while (carried > 0 && !r.s.winner) {
+      const standing = r.s.sides[t.side].units.filter((u) => u.kind === 'ally' && u.hp > 0);
+      const next = standing.find((u) => u.taunt) ?? standing[0] ?? heroOf(r.s.sides[t.side]);
+      if (!next || next.hp <= 0) break;
+      const nextRoom = next.hp + next.barrier;
+      const nextCapped = stacks(next, 'ghostly') > 0 || stacks(next, 'shielded') > 0;
+      lost += applyDamage(r, a.actor, next, carried, 'attack', true);
+      if (next.kind !== 'ally' || next.hp > 0 || nextCapped || carried <= nextRoom) break;
+      next.killedBy = a.actor.id;
+      carried = Math.floor(((carried - nextRoom) * OVERFLOW_PCT) / 100);
+    }
   }
   // Armored wears thin each time an attack gets through
   if (attacked && lost > 0 && stacks(t, 'armored') > 0) addStatus(r, t, 'armored', -1);
