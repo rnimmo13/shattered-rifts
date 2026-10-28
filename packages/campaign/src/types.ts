@@ -39,7 +39,6 @@ export interface StageMap {
 }
 
 export type RunPhase =
-  | 'kit' // choose two uncommon cards to start with (the very start of a run)
   | 'map' // choose the next node
   | 'duel' // a fight is waiting to be played at the current node
   | 'reward' // pick a card (or skip)
@@ -202,11 +201,6 @@ export type DealStep =
 /** What an event does to a card you choose from your deck. */
 export type DeckChoice = 'upgrade' | 'remove' | 'transform' | 'copy' | 'mark';
 
-/** The first choice of a run: take `count` of these uncommon cards of your Riftwalker's (DECISIONS #365). */
-export interface StarterPick {
-  options: string[];
-  count: number;
-}
 
 /** One thing a prelude option does. Amounts are fixed; "random" ones are rolled when the option is taken. */
 export type PreludeEffect =
@@ -320,8 +314,6 @@ export interface NodeContext {
   gambler?: GamblerShrine;
   /** prelude: the choice on offer (nodeId is empty) */
   prelude?: PreludeOffer;
-  /** kit: the uncommon cards to start with, on offer (nodeId is empty) */
-  starterPick?: StarterPick;
 }
 
 export interface RunStats {

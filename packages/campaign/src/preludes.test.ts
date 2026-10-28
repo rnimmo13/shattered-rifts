@@ -3,7 +3,6 @@ import { seedRng } from '@sr/combat';
 import { COMBAT_DB, RIFTWALKERS, V2_DECK_RULES, type HeroId } from '@sr/content/v2';
 import {
   RunError,
-  chooseStarters,
   choosePrelude,
   chooseCard,
   continueLoop,
@@ -56,11 +55,10 @@ describe('what a choice did is told', () => {
 });
 
 describe('the choice at the start of a run', () => {
-  it('after the starting deck, every run meets The Threshold: three blessings and one bargain', () => {
+  it('every run opens at The Threshold: three blessings and one bargain', () => {
     for (const h of HEROES) {
-      const r0 = newRun(h, `thr-${h}`, 'normal');
-      expect(r0.phase).toBe('kit');
-      const r = chooseStarters(r0);
+      const r = newRun(h, `thr-${h}`, 'normal');
+      expect(r.deck).toEqual(RIFTWALKERS[h].starter);
       expect(r.phase).toBe('prelude');
       const offer = r.context?.prelude;
       expect(offer?.kind).toBe('threshold');
@@ -73,7 +71,7 @@ describe('the choice at the start of a run', () => {
 
   it('is the same offer for the same seed, and varies between seeds', () => {
     const ids = (s: string) =>
-      chooseStarters(newRun('knight', s, 'normal'))
+      newRun('knight', s, 'normal')
         .context?.prelude?.options.map((o) => o.id)
         .join();
     expect(ids('same')).toBe(ids('same'));
@@ -81,7 +79,7 @@ describe('the choice at the start of a run', () => {
   });
 
   it('taking an option applies it and opens the map', () => {
-    const r = chooseStarters(newRun('knight', 'take', 'normal'));
+    const r = newRun('knight', 'take', 'normal');
     const pick = r.context?.prelude?.options[0]?.id as string;
     const after = choosePrelude(r, pick);
     expect(after.phase).toBe('map');
@@ -90,7 +88,7 @@ describe('the choice at the start of a run', () => {
   });
 
   it('refuses anything that is not on offer', () => {
-    const r = chooseStarters(newRun('knight', 'bad', 'normal'));
+    const r = newRun('knight', 'bad', 'normal');
     expect(() => choosePrelude(r, 'nope')).toThrow(RunError);
     expect(() => choosePrelude({ ...r, phase: 'map', context: null }, 'x')).toThrow(RunError);
   });
@@ -190,7 +188,7 @@ describe('what each effect does', () => {
   it('a Wound-bearing deck is still a valid save, and so is a run standing at a prelude', () => {
     const r = take(offering([{ k: 'wound', n: 1 }]));
     expect(parseRun(serializeRun(r))).not.toBeNull();
-    const standing = chooseStarters(newRun('assassin', 'save-me', 'normal'));
+    const standing = newRun('assassin', 'save-me', 'normal');
     expect(parseRun(serializeRun(standing))?.phase).toBe('prelude');
     const broken = JSON.parse(serializeRun(standing)) as RunState;
     broken.context = {
@@ -198,6 +196,20 @@ describe('what each effect does', () => {
       prelude: { kind: 'threshold', title: 't', text: 't', options: [] },
     };
     expect(parseRun(JSON.stringify(broken))).toBeNull();
+  });
+
+  it('a run saved at the old starting choice (kits, or two uncommons) starts at The Threshold (DECISIONS #374)', () => {
+    const fresh = newRun('knight', 'old-kit', 'normal');
+    for (const context of [
+      { nodeId: '', kits: [{ id: 'a', leans: 'Bulwark', deck: [], added: [], removed: [] }] },
+      { nodeId: '', starterPick: { options: ['twin-cut', 'challenge'], count: 2 } },
+    ]) {
+      const old = { ...(JSON.parse(serializeRun(fresh)) as object), phase: 'kit', context, deck: [] };
+      const back = parseRun(JSON.stringify(old));
+      expect(back?.phase).toBe('prelude');
+      expect(back?.context?.prelude?.kind).toBe('threshold');
+      expect(back?.deck).toEqual(RIFTWALKERS.knight.starter);
+    }
   });
 });
 

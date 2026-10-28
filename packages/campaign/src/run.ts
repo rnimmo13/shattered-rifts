@@ -35,7 +35,6 @@ import {
 
 export { CROSSED_MERCHANT_CHANCE };
 import { enemyScale } from './tierTable';
-import { starterDeck, starterPick } from './starters';
 import { rollEvent, resolveEvent } from './events';
 import { applyChoice, applyDeal } from './deals';
 import { GAMBLER_REEL, buildElite, spinReel, takePrize } from './trials';
@@ -194,9 +193,8 @@ export function newRun(hero: HeroId, seed: string, difficulty: Difficulty = 'nor
     rng,
     stats: { duelsWon: 0, duelsLost: 0, nodesCleared: 0 },
   };
-  // the very start: choose two uncommon cards to start with, and then meet The Threshold
-  run.phase = 'kit';
-  run.context = { nodeId: '', starterPick: starterPick(hero) };
+  // the very start: The Threshold (the run starts with the Riftwalker's plain starting deck, DECISIONS #374)
+  openPrelude(run, 'threshold');
   return run;
 }
 
@@ -849,24 +847,14 @@ export function nextStage(run: RunState): RunState {
   return r;
 }
 
-// ---- the starting deck
+// ---- the start of a run
 /**
- * Take the two uncommon cards you start with (the first two on offer when none are named); The Threshold follows.
+ * A run saved before it left the old starting choice (the kits of DECISIONS #333, the two uncommons of #365): it starts again at
+ * The Threshold with the plain starting deck (changes `run`, which must be a copy).
  */
-export function chooseStarters(run: RunState, picks?: readonly string[]): RunState {
-  need(run.phase === 'kit' && run.context?.starterPick, 'There is no starting choice to make');
-  const offer = run.context.starterPick;
-  const take = picks ?? offer.options.slice(0, offer.count);
-  need(take.length === offer.count, `Choose ${offer.count} cards`);
-  need(new Set(take).size === take.length, 'Choose different cards');
-  need(
-    take.every((id) => offer.options.includes(id)),
-    'That is not one of the cards on offer',
-  );
-  const r = clone(run);
-  r.deck = starterDeck(r.character, take);
-  openPrelude(r, 'threshold');
-  return r;
+export function restartAtThreshold(run: RunState): void {
+  run.deck = [...RIFTWALKERS[run.character].starter];
+  openPrelude(run, 'threshold');
 }
 
 // ---- the choice at the start of a run or a stage

@@ -16,7 +16,6 @@ import {
   chooseEvent,
   pickEventCard,
   pickDeckCard,
-  chooseStarters,
   choosePrelude,
   continueLoop,
   duelPlan,
@@ -352,9 +351,6 @@ function botRun(hero: HeroId, seed: string): { run: RunState; fights: number } {
           : run.context!.event!.chooseDeck
             ? pickDeckCard(run, run.context!.event!.chooseDeck.cards[0]!)
             : chooseEvent(run, run.context!.event!.options.find((o) => o.id !== 'trial')!.id);
-        break;
-      case 'kit':
-        run = chooseStarters(run);
         break;
       case 'prelude':
         run = choosePrelude(run, run.context!.prelude!.options[0]!.id);

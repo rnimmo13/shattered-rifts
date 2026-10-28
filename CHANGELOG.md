@@ -5,6 +5,7 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **No starting card pick:** a run starts with your Riftwalker's usual deck and goes straight to The Threshold.
 - **Riftwalkers go by their class for now** (Knight, Engineer, Hunter, Trickster, Assassin, Shaman, Barbarian, Spellblade, Necromancer, Drunkard), and the **Trapper is now the Trickster**.
 - **Fixed:** a Free Attack, Free Skill or free Aura is no longer used up on a card that cost nothing anyway; Blade Echo and replayed cards also repeat cards that ask you to choose.
 - Sylas is rebuilt on the Slay the Spire 2 Silent's card list under his own names: Sleeve Knives, Bleed and sleight of hand, with Sly cards that play themselves when you discard them. He starts with 5 Strikes, 5 Defends, Hobbling Jab and Duck and Weave at 70 HP; his old cards in saved runs and decks become the nearest new card.

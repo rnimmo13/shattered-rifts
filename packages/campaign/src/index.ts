@@ -59,7 +59,6 @@ export {
   rollTrial,
   settleInterrupted,
   claimTrialPrize,
-  chooseStarters,
   choosePrelude,
   CROSSED_MERCHANT_CHANCE,
   HOLD_DEPOSIT,
@@ -82,7 +81,6 @@ export {
   type ShrineChoice,
 } from './run';
 export { makePrelude, describeEffect, preludeCatalogue } from './preludes';
-export { STARTER_PICKS, starterDeck, starterOptions, starterPick } from './starters';
 export { RUN_SAVE_VERSION, parseRun, serializeRun } from './save';
 export {
   ELITE_EVENTS,

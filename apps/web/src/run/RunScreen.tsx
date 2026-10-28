@@ -31,7 +31,6 @@ import {
   pickDeckCard,
   settleInterrupted,
   rollTrial,
-  chooseStarters,
   choosePrelude,
   continueLoop,
   attachGhost,
@@ -73,7 +72,6 @@ import {
   CardOffer,
   DeckModal,
   EventView,
-  StarterView,
   MerchantView,
   PreludeView,
   ShrineView,
@@ -993,8 +991,6 @@ function Body(props: {
           onPrize={(id, pick, cards) => act((r) => claimTrialPrize(r, id, pick, cards))}
         />
       );
-    case 'kit':
-      return <StarterView run={run} onChoose={(ids) => act((r) => chooseStarters(r, ids))} />;
     case 'prelude':
       return <PreludeView run={run} onChoose={(id) => act((r) => choosePrelude(r, id))} />;
     case 'stageClear':

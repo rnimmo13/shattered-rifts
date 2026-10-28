@@ -933,34 +933,6 @@
   color: var(--c-text-dim);
 }
 
-/* ---- choosing the two uncommon cards to start with ---- */
-.starters {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 0.9rem;
-  max-width: 1500px;
-  margin: 0 auto;
-}
-.starters__card {
-  border-radius: 14px;
-  padding: 0.3rem;
-  border: 2px solid transparent;
-}
-.starters__card.is-chosen {
-  border-color: var(--c-gold-light);
-  box-shadow: 0 0 18px rgb(255 214 120 / 0.55);
-}
-.starters__bar {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 1.2rem;
-  margin-top: 1.2rem;
-  font-size: 1.1rem;
-  color: var(--c-text-dim);
-}
-
 /* potions on the run bar and in shops */
 .potionchip {
   display: inline-grid;

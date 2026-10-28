@@ -15,13 +15,11 @@ import {
 const hasCard = (id: unknown): boolean => isDeckCard(id);
 import type { MapNode, NodeKind, RunPhase, RunState } from './types';
 import { FINAL_STAGE } from './mapgen';
-import { checkGhostBoss } from './run';
-import { starterPick } from './starters';
+import { checkGhostBoss, restartAtThreshold } from './run';
 
 export const RUN_SAVE_VERSION = 2;
 
 const PHASES: readonly RunPhase[] = [
-  'kit',
   'map',
   'duel',
   'reward',
@@ -79,16 +77,6 @@ function validMap(map: unknown): map is RunState['map'] {
 /** The context must be what the phase needs, so no screen can be handed missing data. */
 function validContext(r: RunState): boolean {
   const ids = new Set(r.map.nodes.map((n) => n.id));
-  if (r.phase === 'kit') {
-    const k = isObj(r.context) ? r.context['starterPick'] : undefined;
-    return (
-      isObj(k) &&
-      isInt(k['count'], 1, 10) &&
-      Array.isArray(k['options']) &&
-      k['options'].length >= k['count'] &&
-      k['options'].every((id) => hasCard(id))
-    );
-  }
   if (r.phase === 'prelude') {
     const p = isObj(r.context) ? r.context['prelude'] : undefined;
     return (
@@ -368,9 +356,9 @@ export function parseRun(text: string): RunState | null {
   if (shop && typeof shop.crossed === 'string') shop.crossed = canonicalHero(shop.crossed);
   if (typeof r.seed !== 'string') return null;
   if (typeof r.character !== 'string' || !Object.hasOwn(RIFTWALKERS, r.character)) return null;
-  // a run saved at the old choice of three starting decks (DECISIONS #333) now chooses two uncommon cards instead (DECISIONS #365)
-  if (r.phase === 'kit' && isObj(r.context) && !('starterPick' in r.context))
-    r.context = { nodeId: '', starterPick: starterPick(r.character) };
+  // a run saved at the old starting choice (the kits, then the two uncommons) starts at The Threshold instead (DECISIONS #374)
+  if ((r.phase as string) === 'kit' && Array.isArray(r.map?.nodes) && r.rng)
+    restartAtThreshold(r as RunState);
   if (!isInt(r.maxHp, 1, 9999) || !isInt(r.hp, 1, r.maxHp)) return null;
   // saves from before the difficulty setting were all played on Easy
   if (r.difficulty === undefined) r.difficulty = 'easy';

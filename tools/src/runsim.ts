@@ -18,7 +18,6 @@ import {
   claimTrialPrize,
   ROLL_COST,
   rollTrial,
-  chooseStarters,
   choosePrelude,
   duelPlan,
   enterNode,
@@ -89,11 +88,6 @@ function fight(run: RunState): { won: boolean; hp: number } {
   return { won: state.winner === 'a' && hp >= 1, hp };
 }
 
-/** the two uncommon cards a bot run starts with: set `k` takes the k-th pair on offer, so different runs try different pairs */
-const startersFor = (run: RunState, k: number): string[] => {
-  const o = run.context?.starterPick?.options ?? [];
-  return [o[(2 * k) % o.length] as string, o[(2 * k + 1) % o.length] as string];
-};
 
 function playRun(h: HeroId, d: Difficulty, i: number): Result {
   let run = newRun(h, `runsim-${h}-${d}-${i}`, d);
@@ -101,9 +95,6 @@ function playRun(h: HeroId, d: Difficulty, i: number): Result {
   for (let step = 0; step < 4000; step++) {
     const hpFrac = run.hp / run.maxHp;
     switch (run.phase) {
-      case 'kit':
-        run = chooseStarters(run, startersFor(run, i));
-        break;
       case 'prelude': {
         const opts = run.context?.prelude?.options ?? [];
         run = choosePrelude(run, (opts.find((o) => !o.risky) ?? opts[0])!.id);

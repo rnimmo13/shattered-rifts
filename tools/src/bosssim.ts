@@ -3,7 +3,7 @@
 //   --warden kron|seraphine|gorrmaw|nyxara   (default gorrmaw)   --n 60   --pilot smart|greedy
 
 import { applyAction, chooseAction, chooseSmartAction, createCombat, heroOf } from '@sr/combat';
-import { chooseStarters, enemyScale, newRun } from '@sr/campaign';
+import { enemyScale, newRun } from '@sr/campaign';
 import { COMBAT_DB as db, ENCOUNTERS, RIFTWALKERS, type HeroId } from '@sr/content/v2';
 
 const arg = (k: string, d: string): string => {
@@ -24,12 +24,8 @@ console.log('|---|---|---|---|---|---|---|');
 
 for (const hero of Object.keys(RIFTWALKERS) as HeroId[]) {
   const base = newRun(hero, `boss-${hero}`);
-  const options = base.context?.starterPick?.options ?? [];
-  for (const kit of [0, 1, 2].map((k) => ({ id: `pair ${k + 1}`, k }))) {
-    const run = chooseStarters(base, [
-      options[(2 * kit.k) % options.length] as string,
-      options[(2 * kit.k + 1) % options.length] as string,
-    ]);
+  for (const kit of [{ id: 'starter', k: 0 }]) {
+    const run = base;
     let wins = 0;
     let turns = 0;
     let wonTurns = 0;
