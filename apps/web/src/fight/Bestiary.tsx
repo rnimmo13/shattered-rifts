@@ -40,7 +40,12 @@ export function Bestiary() {
       <h2 className="setup__h">Riftwalkers</h2>
       <div className="bestiary">
         {Object.values(RIFTWALKERS).map((r) => (
-          <Figure key={r.hero.id} src={heroFigure(r.hero.id)} name={r.hero.name} note={`${r.hero.maxHp} HP`} />
+          <Figure
+            key={r.hero.id}
+            src={heroFigure(r.hero.id)}
+            name={r.hero.name}
+            note={`${r.hero.maxHp} HP`}
+          />
         ))}
       </div>
       <h2 className="setup__h">Companions</h2>

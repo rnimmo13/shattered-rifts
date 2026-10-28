@@ -683,28 +683,28 @@
 
 /* ---- rarity you can read at a glance: the name banner, the frame ring and the word on the type line all wear it ---- */
 .card {
-  --rar: #aeb4c4;
-  --rar-hi: #eef0f8;
+  --rar: var(--rar-common);
+  --rar-hi: var(--rar-common-hi);
 }
 .card--rar-basic {
-  --rar: #8a90a2;
-  --rar-hi: #d4d8e4;
+  --rar: var(--rar-basic);
+  --rar-hi: var(--rar-basic-hi);
 }
 .card--rar-common {
-  --rar: #aeb4c4;
-  --rar-hi: #eef0f8;
+  --rar: var(--rar-common);
+  --rar-hi: var(--rar-common-hi);
 }
 .card--rar-uncommon {
-  --rar: #3fa0ff;
-  --rar-hi: #bfe0ff;
+  --rar: var(--rar-uncommon);
+  --rar-hi: var(--rar-uncommon-hi);
 }
 .card--rar-rare {
-  --rar: #ffc23a;
-  --rar-hi: #fff0b8;
+  --rar: var(--rar-rare);
+  --rar-hi: var(--rar-rare-hi);
 }
 .card--rar-legendary {
-  --rar: #ff6a2a;
-  --rar-hi: #ffd2a8;
+  --rar: var(--rar-legendary);
+  --rar-hi: var(--rar-legendary-hi);
 }
 .card__banner {
   background:
@@ -762,8 +762,8 @@
 
 /* ancestral: old jade-teal, between rare and legendary */
 .card--rar-ancestral {
-  --rar: #2fe0b0;
-  --rar-hi: #c8fff0;
+  --rar: var(--rar-ancestral);
+  --rar-hi: var(--rar-ancestral-hi);
 }
 .card--rar-ancestral .card__face {
   box-shadow:

@@ -315,6 +315,7 @@ type Extra = Partial<
     | 'recallOnCost'
     | 'inHandAtEnd'
     | 'cheaperOnCreate'
+    | 'suit'
   >
 > & {
   /** a hand-written "+" version: fields that replace the card's (instead of the generic rule in plus()) */

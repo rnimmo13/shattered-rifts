@@ -1,18 +1,7 @@
 // Combat v2 content: heroes, starter decks, cards, companions and encounters (docs/08_COMBAT_V2.md).
 
 import { validateDb, type CombatDb, type HeroDef, type HeroTrait } from '@sr/combat';
-import {
-  addTo,
-  barrier,
-  channel,
-  draw,
-  forge,
-  heal,
-  on,
-  stance,
-  stars,
-  status,
-} from './build';
+import { addTo, barrier, channel, dmg, draw, forge, heal, on, stance, stars, status } from './build';
 import { BOONS, HEARTS } from './boons';
 import { V2_CARDS } from './cards';
 import { RUNES } from './pools/shaman';
@@ -106,7 +95,14 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
       turnStart: [heal(1, 'allFriends')],
       salvage: true,
     },
-    hero: { id: 'engineer', name: 'Engineer', maxHp: 70, mana: 3, handSize: 5, startUnits: ['drone'] },
+    hero: {
+      id: 'engineer',
+      name: 'Engineer',
+      maxHp: 70,
+      mana: 3,
+      handSize: 5,
+      startUnits: ['drone'],
+    },
     starter: [...rep('strike', 5), ...rep('defend', 3), 'deploy-drone', 'overclock'],
     blurb:
       'A tinkerer of machines. She starts every fight with a Drone and builds an army of them.',
@@ -165,22 +161,31 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
       text: 'Start every fight with 6 Barrier and 2 extra cards in hand. At the start of your turn, gain 4 Barrier.',
       fightStart: [barrier(6), draw(2)],
       turnStart: [barrier(4)],
+      // Suits (DECISIONS #387): the first time in a turn all four suits are showing, a Full Trick
+      suits: { fullTrick: [dmg(5, 'allFoes'), draw(1)] },
     },
     hero: { id: 'trickster', name: 'Trickster', maxHp: 80, mana: 3, handSize: 5 },
-    starter: [...rep('strike', 3), ...rep('defend', 4), ...rep('veil-strike', 2), 'set-the-web'],
+    // (one Defend is Pick a Card, a ♦, so the starting deck holds all four suits: DECISIONS #387)
+    starter: [
+      ...rep('strike', 3),
+      ...rep('defend', 3),
+      ...rep('veil-strike', 2),
+      'set-the-web',
+      'pick-a-card',
+    ],
     blurb:
-      'A masked trickster who always sees the next move coming. No companions: Traps, Exposed and patience.',
-    mechanics: ['Traps', 'Exposed', 'Hold', 'Foresee'],
+      'A masked trickster who always sees the next move coming. No companions: Traps, Exposed and a deck of tricks.',
+    mechanics: ['Traps', 'Exposed', 'Suits', 'Foresee'],
     buildPaths: [
       'Traps: one for every trigger',
       'Exposed: mark, then spend the mark',
-      'Patience: Hold your cards, keep your Mana, strike later',
+      'Suits: show all four suits in a turn for a Full Trick',
     ],
     howTo: [
       'A Trap is played face down and springs on its own when its trigger happens.',
       'Read the icon above each enemy and set the Trap that answers what it is about to do.',
       'Exposed enemies take 50% more damage: mark them, then spend the mark.',
-      'Patience: Hold cards for later and leave Mana unspent; those cards pay for a full hand and for the Mana you kept.',
+      'Suits: every card is a ♠ (Attacks), ♥ (Barrier), ♦ (cards and Mana) or ♣ (Traps and debuffs). Play all four in one turn for a Full Trick: 5 damage to every enemy and a card.',
     ],
   },
   assassin: {
@@ -583,7 +588,8 @@ export function pathName(hero: HeroId, path: number): string {
 export function pathSizes(hero: HeroId): number[] {
   const n = RIFTWALKERS[hero].buildPaths.map(() => 0);
   for (const [id, path] of Object.entries(PATH_OF))
-    if (COMBAT_DB.cards[id]?.hero === hero && path >= 0 && path < n.length) n[path] = (n[path] ?? 0) + 1;
+    if (COMBAT_DB.cards[id]?.hero === hero && path >= 0 && path < n.length)
+      n[path] = (n[path] ?? 0) + 1;
   return n;
 }
 

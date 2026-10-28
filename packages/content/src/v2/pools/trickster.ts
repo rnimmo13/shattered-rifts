@@ -1,7 +1,7 @@
-// Vesper Nightlace (Umbral). No companions. Three build paths (DECISIONS #255):
+// Vesper Nightlace (Umbral). No companions. Three build paths (DECISIONS #255, #387):
 //   Traps    - set traps with different triggers; payoffs for having them out
 //   Exposed  - mark the enemy, then spend the mark
-//   Patience - Hold cards and leave Mana unspent: payoffs for a full hand and for the Mana you kept
+//   Suits    - every card shows a suit; show all four in a turn for a Full Trick, and payoffs for every suit shown
 // (Card ids are older than some names: an id keeps a card's art and every saved deck.)
 
 import type { CardDef } from '@sr/combat';
@@ -58,6 +58,9 @@ export const TRICKSTER: CardDef[] = [
     },
   ),
 
+  // a ♦ for the starting deck, so it holds all four suits (DECISIONS #387)
+  v('basic', 'pick-a-card', 'Pick a Card', 'skill', 0, 'none', [scry(2)]),
+
   // --- Traps ---
   v('common', 'trip-line', 'Trip Line', 'snare', 0, 'none', [dmg(8, 'attacker')], {
     trigger: { on: 'attacked' },
@@ -72,8 +75,10 @@ export const TRICKSTER: CardDef[] = [
     [dmg(10, 'attacker'), status('faltering', 1, 'attacker')],
     { trigger: { on: 'attacked' } },
   ),
+  // (the Trap engine cards are ♣, whatever they give you: DECISIONS #387)
   v('common', 'snare-kit', 'Trap Kit', 'skill', 1, 'none', [addTo('trip-line', 2)], {
     exhaust: true,
+    suit: 'clubs',
   }),
   v(
     'uncommon',
@@ -91,9 +96,16 @@ export const TRICKSTER: CardDef[] = [
   v('common', 'spring-loaded', 'Spring-Loaded', 'skill', 1, 'none', [
     scaled(barrier(0), per('snares', 5)),
   ]),
-  v('rare', 'master-trapper', 'Master Trapper', 'power', 1, 'none', [
-    on('play', [draw(1), barrier(3)], { filter: 'snare' }),
-  ]),
+  v(
+    'rare',
+    'master-trapper',
+    'Master Trapper',
+    'power',
+    1,
+    'none',
+    [on('play', [draw(1), barrier(3)], { filter: 'snare' })],
+    { suit: 'clubs' },
+  ),
   v(
     'rare',
     'bait-and-switch',
@@ -146,9 +158,16 @@ export const TRICKSTER: CardDef[] = [
       up: { effects: [dmg(9, 'allFoes'), status('faltering', 1, 'allFoes')] },
     },
   ),
-  v('rare', 'trappers-dividend', "Trapper's Dividend", 'power', 1, 'none', [
-    on('snare', [draw(1), barrier(5)]),
-  ]),
+  v(
+    'rare',
+    'trappers-dividend',
+    "Trapper's Dividend",
+    'power',
+    1,
+    'none',
+    [on('snare', [draw(1), barrier(5)])],
+    { suit: 'clubs' },
+  ),
   v('rare', 'spring-the-trap', 'Spring the Trap', 'attack', 1, 'foe', [
     scaled(dmg(6), per('snares', 5)),
   ]),
@@ -262,71 +281,87 @@ export const TRICKSTER: CardDef[] = [
     { exhaust: true },
   ),
 
-  // --- Patience ---
+  // --- Suits ---
+  // (DECISIONS #387) every card shows a suit: ♠ Attacks, ♥ protection, ♦ cards and Mana, ♣ Traps and debuffs (the rule is in
+  // @sr/combat suits.ts); a turn that shows all four is a Full Trick (the trait). These cards pay for the suits you show.
   v('common', 'cold-read', 'Cold Read', 'skill', 0, 'none', [scry(4)]),
   v('common', 'patient-blade', 'Patient Blade', 'attack', 1, 'foe', [dmg(9)], { retain: true }),
   v('common', 'shadow-cloak', 'Shadow Cloak', 'skill', 1, 'none', [barrier(6), draw(1)], {
     up: { effects: [barrier(9), draw(1)] },
   }),
-  v('uncommon', 'banked-breath', 'Banked Breath', 'power', 1, 'none', [
-    on('turnEnd', [scaled(barrier(0), per('mana', 2))]),
-  ]),
-  v('uncommon', 'shadow-step', 'Fade Back', 'skill', 1, 'none', [barrier(6), barrierNext(4)], {
-    retain: true,
-  }),
-  v('rare', 'long-game', 'The Long Game', 'power', 1, 'none', [on('turnStart', [draw(1)])]),
-  v('uncommon', 'gleeful-trapsmith', 'Gleeful Trapsmith', 'power', 1, 'none', [
-    on('play', [dmg(4, 'allFoes')], { filter: 'snare' }),
-  ]),
-  v('uncommon', 'marked-cards', 'Coiled Patience', 'power', 1, 'none', [
-    on('turnEnd', [scaled(dmg(0, 'randomFoe'), per('mana', 2))]),
-  ]),
-  v(
-    'rare',
-    'the-perfect-trap',
-    'The Perfect Trap',
-    'snare',
-    3,
-    'none',
-    [PREVENT, dmg(22, 'attacker'), status('stunned', 2, 'attacker')],
-    { trigger: { on: 'attacked' }, up: { cost: 2 } },
-  ),
-  // Patience: the Mana you keep strikes every enemy and comes back as more Mana next turn (DECISIONS #338)
-  v('rare', 'masquerade', 'Masquerade', 'power', 2, 'none', [
-    on('turnEnd', [scaled(dmg(0, 'allFoes'), per('mana', 3)), manaNext(1)]),
-  ]),
-  v('uncommon', 'saved-breath', 'Saved Breath', 'skill', 0, 'none', [manaNext(2), scry(2)], {
-    exhaust: true,
-  }),
-  // (more Patience)
   v('common', 'roll-with-it', 'Weigh the Odds', 'skill', 1, 'none', [scry(3), draw(1)], {
     retain: true,
   }),
-  // (it makes more Mana than it costs, so it Consumes: the costing guide's rule for Mana cards)
+  v('common', 'discarded-hand', 'Hidden Hand', 'skill', 1, 'none', [draw(2), barrier(3)], {
+    retain: true,
+    up: { effects: [draw(3), barrier(3)] },
+  }),
+  v(
+    'common',
+    'flourish',
+    'Flourish',
+    'attack',
+    1,
+    'foe',
+    [dmg(7), when('hearts', { atLeast: 1 }, [barrier(4)])],
+    { up: { effects: [dmg(10), when('hearts', { atLeast: 1 }, [barrier(4)])] } },
+  ),
+  v('uncommon', 'shadow-step', 'Fade Back', 'skill', 1, 'none', [barrier(6), barrierNext(4)], {
+    retain: true,
+  }),
   v(
     'uncommon',
-    'calculated-move',
-    'Measured Breath',
-    'skill',
-    1,
-    'none',
-    [manaNext(2), barrier(5)],
+    'long-con',
+    'Long Con',
+    'attack',
+    2,
+    'foe',
+    [dmg(14), status('exposed', 1, 'target')],
     {
-      exhaust: true,
-      // (the "+" raises the Barrier only: more Mana is what made it Consume)
-      up: { effects: [manaNext(2), barrier(8)] },
+      retain: true,
     },
   ),
-  v('common', 'gambit', 'Waiting Game', 'attack', 1, 'foe', [scaled(dmg(4), per('hand', 2))]),
+  v('uncommon', 'card-fan', 'Card Fan', 'attack', 1, 'foe', [scaled(dmg(4), per('suits', 3))]),
+  v('uncommon', 'card-sharp', 'Card Sharp', 'attack', 1, 'foe', [
+    dmg(8),
+    when('suits', { atLeast: 4 }, [dmg(8)]),
+  ]),
+  v('uncommon', 'cut-the-deck', 'Cut the Deck', 'skill', 1, 'none', [
+    draw(2),
+    when('suits', { atLeast: 3 }, [mana(1)]),
+  ]),
+  v('uncommon', 'queen-of-hearts', 'Queen of Hearts', 'skill', 1, 'none', [
+    scaled(barrier(5), per('suits', 2)),
+  ]),
+  v(
+    'uncommon',
+    'ace-of-clubs',
+    'Ace of Clubs',
+    'skill',
+    1,
+    'foe',
+    [
+      status('exposed', 2, 'target'),
+      status('faltering', 1, 'target'),
+      when('suits', { atLeast: 3 }, [draw(1)]),
+    ],
+    {
+      up: {
+        effects: [
+          status('exposed', 3, 'target'),
+          status('faltering', 1, 'target'),
+          when('suits', { atLeast: 3 }, [draw(1)]),
+        ],
+      },
+    },
+  ),
+  v('uncommon', 'wild-card', 'Wild Card', 'skill', 0, 'none', [draw(1)], {
+    suit: 'wild',
+    // (a free card that draws must Consume: balance.test.ts)
+    exhaust: true,
+    up: { retain: true },
+  }),
   v('rare', 'second-act', 'Second Act', 'skill', 1, 'none', [status('twinned', 1)], {
-    retain: true,
-    up: { cost: 0 },
-  }),
-  v('rare', 'frozen-moment', 'Frozen Moment', 'skill', 1, 'none', [cheapen(1, 'hand')], {
-    exhaust: true,
-  }),
-  v('rare', 'fade-away', 'Fade Away', 'skill', 1, 'none', [status('ghostly', 1)], {
-    exhaust: true,
     retain: true,
     up: { cost: 0 },
   }),
@@ -340,8 +375,66 @@ export const TRICKSTER: CardDef[] = [
     [discoverOp(undefined, 2, true)],
     { exhaust: true },
   ),
+  v(
+    'rare',
+    'royal-flourish',
+    'Royal Flourish',
+    'attack',
+    2,
+    'foe',
+    [scaled(dmg(0), per('suits', 7))],
+    { up: { effects: [scaled(dmg(0), per('suits', 9))] } },
+  ),
+  v('rare', 'showstopper', 'Showstopper', 'attack', 3, 'foe', [dmg(30)], {
+    cheaperPer: { by: 'suits', mult: 1 },
+    up: { effects: [dmg(38)] },
+  }),
+  v('rare', 'the-joker', 'The Joker', 'skill', 1, 'none', [discoverOp(undefined, 1, true)], {
+    suit: 'wild',
+  }),
+  v('rare', 'the-whole-deck', 'The Whole Deck', 'power', 1, 'none', [
+    on('allSuits', [draw(2), manaNext(1)]),
+  ]),
+  // (was the Patience Legendary, DECISIONS #338: now every suit you showed strikes every enemy as the turn ends)
+  v('rare', 'masquerade', 'Masquerade', 'power', 2, 'none', [
+    on('turnEnd', [scaled(dmg(0, 'allFoes'), per('suits', 3))]),
+  ]),
+
+  // --- glue: Mana and time, for any build path ---
+  v('uncommon', 'saved-breath', 'Saved Breath', 'skill', 0, 'none', [manaNext(2), scry(2)], {
+    exhaust: true,
+  }),
+  v('uncommon', 'long-game', 'The Long Game', 'power', 1, 'none', [on('turnStart', [draw(1)])]),
+  v('uncommon', 'frozen-moment', 'Frozen Moment', 'skill', 1, 'none', [cheapen(1, 'hand')], {
+    exhaust: true,
+  }),
+  // (one more Mana every turn is huge: it starts next turn, and the upgrade only makes it easier to find; DECISIONS #302)
+  // (2 Mana, the cost of the Knight's Inner Furnace, which does the same: Robert, 2026-10-28)
+  v('rare', 'deep-pockets', 'Deep Pockets', 'power', 2, 'none', [maxMana(1)], {
+    up: { retain: true, innate: true },
+  }),
 
   // --- Traps (more traps) ---
+  v(
+    'rare',
+    'the-perfect-trap',
+    'The Perfect Trap',
+    'snare',
+    3,
+    'none',
+    [PREVENT, dmg(22, 'attacker'), status('stunned', 2, 'attacker')],
+    { trigger: { on: 'attacked' }, up: { cost: 2 } },
+  ),
+  v(
+    'uncommon',
+    'gleeful-trapsmith',
+    'Gleeful Trapsmith',
+    'power',
+    1,
+    'none',
+    [on('play', [dmg(4, 'allFoes')], { filter: 'snare' })],
+    { suit: 'clubs' },
+  ),
   v(
     'common',
     'fang-pit',
@@ -385,9 +478,16 @@ export const TRICKSTER: CardDef[] = [
     dmg(12),
     scaled(barrier(0), per('snares', 4)),
   ]),
-  v('uncommon', 'trap-door', 'Trap Door', 'power', 2, 'none', [
-    on('turnStart', [addTo('trip-line')]),
-  ]),
+  v(
+    'uncommon',
+    'trap-door',
+    'Trap Door',
+    'power',
+    2,
+    'none',
+    [on('turnStart', [addTo('trip-line')])],
+    { suit: 'clubs' },
+  ),
 
   // --- Exposed (more marks) ---
   v('uncommon', 'dread-gaze', 'Dread Gaze', 'skill', 0, 'foe', [status('exposed', 3, 'target')], {
@@ -420,30 +520,6 @@ export const TRICKSTER: CardDef[] = [
       },
     },
   ),
-
-  // --- Patience (more) ---
-  // (one more Mana every turn is huge: it starts next turn, and the upgrade only makes it easier to find; DECISIONS #302)
-  // (2 Mana, the cost of the Knight's Inner Furnace, which does the same: Robert, 2026-10-28)
-  v('rare', 'deep-pockets', 'Deep Pockets', 'power', 2, 'none', [maxMana(1)], {
-    up: { retain: true, innate: true },
-  }),
-  v(
-    'uncommon',
-    'long-con',
-    'Long Con',
-    'attack',
-    2,
-    'foe',
-    [dmg(14), status('exposed', 1, 'target')],
-    {
-      retain: true,
-    },
-  ),
-  v('common', 'discarded-hand', 'Hidden Hand', 'skill', 1, 'none', [draw(2), barrier(3)], {
-    retain: true,
-    up: { effects: [draw(3), barrier(3)] },
-  }),
-  v('uncommon', 'sandbag', 'Sandbag', 'attack', 1, 'foe', [scaled(dmg(5), per('mana', 3))]),
 
   // --- brought back (DECISIONS #337) ---
   v('uncommon', 'spotlight', 'Spotlight', 'skill', 1, 'foe', [
@@ -549,7 +625,7 @@ export const TRICKSTER: CardDef[] = [
     1,
     'none',
     [draw(1), fetchCards(2, 'hand', 'snare')],
-    { up: { effects: [draw(1), fetchCards(3, 'hand', 'snare')] } },
+    { suit: 'clubs', up: { effects: [draw(1), fetchCards(3, 'hand', 'snare')] } },
   ),
   v('rare', 'misdirection', 'Patient Guard', 'power', 1, 'none', [
     on('turnEnd', [scaled(barrier(2), per('hand', 1))]),

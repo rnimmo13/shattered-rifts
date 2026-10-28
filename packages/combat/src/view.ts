@@ -20,6 +20,7 @@ import {
   type Sel,
   type Side,
   type StatusId,
+  type Suit,
   type Unit,
   type UnitId,
 } from './types';
@@ -78,6 +79,8 @@ export interface SideView {
   etherealPlayed?: number;
   deaths?: number;
   costTax?: number;
+  /** (the Trickster's Suits) the suits showing this turn; missing for a hero without Suits */
+  suitsTurn?: Suit[];
   runes: RuneState[];
   runeSlots: number;
   powers: { id: string; card: string; when: PowerState['when'] }[];
@@ -241,6 +244,7 @@ export function viewFor(db: CombatDb, s: CombatState, me: Side): CombatView {
       etherealPlayed: sd.etherealPlayed ?? 0,
       deaths: sd.deaths ?? 0,
       costTax: sd.costTax ?? 0,
+      ...(sd.suitsTurn ? { suitsTurn: [...sd.suitsTurn] } : {}),
       runes: clone(sd.runes),
       runeSlots: sd.runeSlots,
       powers: sd.powers
@@ -476,6 +480,11 @@ const METRIC_WORDS: Record<Metric, { per: string; equal: string }> = {
   },
   handRoom: { per: 'empty place in your hand', equal: 'the room left in your hand' },
   hitsTaken: { per: 'time it was hit this turn', equal: 'the times it was hit this turn' },
+  suits: { per: 'suit played this turn', equal: 'the suits played this turn' },
+  spades: { per: '♠ played this turn', equal: 'whether a ♠ was played this turn' },
+  hearts: { per: '♥ played this turn', equal: 'whether a ♥ was played this turn' },
+  diamonds: { per: '♦ played this turn', equal: 'whether a ♦ was played this turn' },
+  clubs: { per: '♣ played this turn', equal: 'whether a ♣ was played this turn' },
   spent: { per: 'Arcana spent', equal: 'the Arcana spent' },
   charge: { per: 'charge', equal: 'its charge' },
   healed: { per: 'HP healed', equal: 'the HP healed' },
@@ -636,9 +645,18 @@ const WHEN_TEXT: Record<string, string> = {
   debuffFoe: 'Whenever you put a debuff on an enemy',
   allyHurt: 'Whenever one of your companions loses HP',
   evoke: 'Whenever a totem awakens',
+  allSuits: 'Whenever you make a Full Trick (all four suits this turn)',
 };
 
 const ORDINAL = ['zeroth', 'first', 'second', 'third', 'fourth', 'fifth', 'sixth'];
+
+/** The suits as they are printed in card text. */
+const SUIT_GLYPH: Partial<Record<Metric, string>> = {
+  spades: '♠',
+  hearts: '♥',
+  diamonds: '♦',
+  clubs: '♣',
+};
 
 /** How a condition reads in a card ("If the target is Exposed: ..."). */
 function whenText(o: Extract<Op, { op: 'when' }>, db?: CombatDb): string {
@@ -656,6 +674,11 @@ function whenText(o: Extract<Op, { op: 'when' }>, db?: CombatDb): string {
   if (o.by === 'faltering' && o.of === 'target' && (lo ?? 0) >= 1) return 'the target is Faltering';
   if (o.by === 'hpLostTurn' && (lo ?? 0) >= 1) return 'you have lost HP this turn';
   if (o.by === 'snares' && lo === 1 && hi === undefined) return 'you have a Trap set';
+  if (o.by === 'suits' && lo === 4) return 'all four suits are showing';
+  if (o.by === 'suits' && lo !== undefined && hi === undefined)
+    return `you have played ${lo} or more suits this turn`;
+  if (SUIT_GLYPH[o.by] && lo === 1) return `you have played a ${SUIT_GLYPH[o.by]} this turn`;
+  if (SUIT_GLYPH[o.by] && hi === 0) return `it is the first ${SUIT_GLYPH[o.by]} you play this turn`;
   if (o.by === 'exhaustedTurn' && (lo ?? 0) >= 1) return 'you have consumed a card this turn';
   if (o.by === 'skillsDrawnNow' && (lo ?? 0) >= 1) return 'you drew a Skill';
   if (o.by === 'seared' && o.of === 'target' && (lo ?? 0) >= 1) return 'the target has Bleed';

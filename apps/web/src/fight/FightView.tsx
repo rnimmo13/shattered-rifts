@@ -9,6 +9,8 @@ import {
   costOf,
   clone,
   cardText,
+  opText,
+  suitOf,
   createCombat,
   hashState,
   legalActions,
@@ -40,6 +42,7 @@ import { heroFigure, heroProp, hoverOf, unitFigure, unitHeight } from './art';
 import { FightHand, type HandCard } from './FightHand';
 import { GrimoireModal } from './Grimoire';
 import { AimArrow } from './AimArrow';
+import { SuitTrack } from './SuitTrack';
 import { UnitPlates, type Placed } from './Plates';
 import { ErrorDetails } from '../ui/ErrorDetails';
 import { packLine } from './lineLayout';
@@ -1511,6 +1514,24 @@ export function FightView(props: {
             names
             sharp={blade}
           />
+          {/* the Trickster's Suits: four pips at the top left of each hero who keeps them */}
+          {placed.map((p) => {
+            const shown = p.unit.kind === 'hero' ? view?.sides[p.unit.side].suitsTurn : undefined;
+            if (!shown) return null;
+            const hero = view?.sides[p.unit.side].hero;
+            const trick = hero ? db.heroes[hero]?.trait?.suits?.fullTrick : undefined;
+            const aiming = p.unit.side === mySide ? (dragCard ?? selectedCard ?? hoverCard) : null;
+            return (
+              <SuitTrack
+                key={`suits-${p.unit.id}`}
+                shown={shown}
+                preview={aiming ? suitOf(aiming.def) : null}
+                x={p.x - p.w * 0.5}
+                y={p.y - p.h}
+                {...(trick ? { fullTrick: trick.map((o) => opText(db, o)).join(' ') } : {})}
+              />
+            );
+          })}
           <div className="floats" aria-hidden>
             {floats.map((f) => {
               const pos = floatPos(f);
@@ -1790,7 +1811,7 @@ export function FightView(props: {
                   ))}
                 </div>
               )}
-              {me && <AuraList db={db} me={me} />}
+              {me && <AuraList db={db} me={me} panel="auras-mine" title="Your Auras" />}
             </div>
           )}
           {/* the other side, top right: the Omens of this Rift Tier, then an opponent's Boons and Auras (the Arena, a ghost Warden) */}
@@ -1827,7 +1848,14 @@ export function FightView(props: {
                   ))}
                 </div>
               )}
-              {them && <AuraList db={db} me={them} />}
+              {them && (
+                <AuraList
+                  db={db}
+                  me={them}
+                  panel={pvp ? 'auras-opponent' : 'auras-foe'}
+                  title={pvp ? 'Their Auras' : 'Enemy Auras'}
+                />
+              )}
             </div>
           )}
           {me && showStars && <LumenCounter value={me.stars} />}

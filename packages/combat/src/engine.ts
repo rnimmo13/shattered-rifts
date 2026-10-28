@@ -2,6 +2,7 @@
 // Randomness only through the seeded PRNG held in the state. The caller never mutates the state it passes in.
 
 import { nextInt, seedRng, shuffle } from './rng';
+import { SUITS, suitOf } from './suits';
 import {
   CALM_EXIT_MANA,
   DEBUFFS,
@@ -799,6 +800,11 @@ function metricValue(
     case 'doomedTurn':
     case 'etherealPlayed':
     case 'deaths':
+    case 'suits':
+    case 'spades':
+    case 'hearts':
+    case 'diamonds':
+    case 'clubs':
       return sideCount(sd, m);
   }
 }
@@ -813,11 +819,20 @@ export type CostCounter =
   | 'doomedTurn'
   | 'etherealPlayed'
   | 'deaths'
-  | 'costTax';
+  | 'costTax'
+  | 'suitsTurn';
 
 /** The Necrobinder copy's counters of a side (also read by costOf, which has no frame to act in). */
 function sideCount(sd: Partial<Pick<SideState, CostCounter>>, m: Metric): number {
   switch (m) {
+    // (the Trickster's Suits)
+    case 'suits':
+      return sd.suitsTurn?.length ?? 0;
+    case 'spades':
+    case 'hearts':
+    case 'diamonds':
+    case 'clubs':
+      return sd.suitsTurn?.includes(m) ? 1 : 0;
     case 'allyStrikes':
       return sd.allyStrikes ?? 0;
     case 'drawnTurn':
@@ -2310,6 +2325,8 @@ function playFree(
   clearTurnFlags(inst);
   strangle(r, sd);
   if (r.s.winner) return back();
+  showSuit(r, sd, hero, cd);
+  if (r.s.winner) return back();
   if (cd.kind === 'snare') {
     if (sd.snares.length < MAX_SNARES) {
       sd.snares.push({ id: inst.id, card: inst.card });
@@ -2337,6 +2354,29 @@ function playFree(
     countPlayed(sd, cd, inst);
     fireTriggers(r, sd, 'play', { card: cd, target, inst, cost: 0 });
   } else finishCard(r, sd, inst, cd, target, 0);
+}
+
+/**
+ * (the Trickster's Suits) A card is being played: its suit shows (a Wild card shows them all). The first time in a turn all four
+ * are showing, the hero's Full Trick goes off and the Auras that wait for it answer. Only a hero whose trait has Suits keeps them.
+ */
+function showSuit(r: Run, sd: SideState, hero: Unit, cd: CardDef): void {
+  const suits = traitOf(r, sd.id)?.suits;
+  if (!suits) return;
+  const shown = sd.suitsTurn ?? [];
+  const suit = suitOf(cd);
+  const add =
+    suit === 'wild' ? SUITS.filter((x) => !shown.includes(x)) : shown.includes(suit) ? [] : [suit];
+  if (!add.length) return;
+  sd.suitsTurn = SUITS.filter((x) => shown.includes(x) || add.includes(x));
+  const full = sd.suitsTurn.length === SUITS.length && !sd.fullTrickTurn;
+  r.ev.push({ type: 'suits', side: sd.id, suits: [...sd.suitsTurn], full });
+  if (!full) return;
+  sd.fullTrickTurn = true;
+  r.depth++;
+  runOps(r, mkAct(hero), suits.fullTrick);
+  r.depth--;
+  if (!r.s.winner) fireTriggers(r, sd, 'allSuits');
 }
 
 /** (assassin) Strangle: a card is being played by `sd`, so every enemy it has Strangled loses that much HP. */
@@ -2725,6 +2765,11 @@ function beginHeroTurn(r: Run, side: Side): void {
   sd.played = 0;
   sd.attacksPlayed = 0;
   sd.skillsPlayed = 0;
+  if (traitOf(r, side)?.suits) {
+    sd.suitsTurn = [];
+    sd.fullTrickTurn = false;
+    r.ev.push({ type: 'suits', side, suits: [], full: false });
+  }
   sd.discarded = 0;
   sd.lostHpTurn = 0;
   sd.exhaustedTurn = 0;
@@ -3449,6 +3494,11 @@ function playCard(r: Run, action: Extract<Action, { type: 'play' }>): void {
   r.ev.push({ type: 'mana', side, mana: sd.mana });
   // (assassin) Strangle: every card played costs the strangled enemies HP
   strangle(r, sd);
+  if (r.s.winner) {
+    sd.discard.push(inst);
+    return;
+  }
+  showSuit(r, sd, hero, cd);
   if (r.s.winner) {
     sd.discard.push(inst);
     return;

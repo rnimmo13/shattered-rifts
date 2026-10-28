@@ -130,6 +130,13 @@ export const TRIMMED_CARDS: Readonly<Record<string, string>> = {
   // (the costing pass, DECISIONS #386)
   'death-trap': 'bait-and-switch',
   'whisper-net': 'false-floor',
+  // (Suits takes the place of Patience, DECISIONS #387: the "keep your Mana" cards pull against showing many suits)
+  'banked-breath': 'misdirection',
+  'marked-cards': 'masquerade',
+  sandbag: 'card-sharp',
+  gambit: 'card-fan',
+  'calculated-move': 'saved-breath',
+  'fade-away': 'between-worlds',
   // hunter
   // (the costing pass, DECISIONS #377)
   'crimson-pact': 'bone-offering',

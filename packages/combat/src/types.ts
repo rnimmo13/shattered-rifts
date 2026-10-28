@@ -258,6 +258,12 @@ export type Metric =
   | 'starCards' // cards with an Arcana cost anywhere in your deck (hand, piles, consumed, and the card being played)
   | 'handRoom' // room left in your hand (MAX_HAND less the cards in it)
   | 'hitsTaken' // (about a unit) times it has been hit by an attack this turn
+  // (the Trickster's Suits) how many of the four suits are showing this turn (the card being played counts), and whether one is
+  | 'suits'
+  | 'spades'
+  | 'hearts'
+  | 'diamonds'
+  | 'clubs'
   | 'spent' // in an 'arcana' trigger: the Arcana just spent
   // (the Defect copy, shaman)
   | 'runeKinds' // how many different totems you have
@@ -321,7 +327,8 @@ export type TriggerWhen =
   | 'doomFoe' // you cursed an enemy with Fate (the target is that enemy)
   | 'debuffFoe' // you put a debuff on an enemy (the target is that enemy)
   | 'allyHurt' // one of your companions lost HP (metric 'lost')
-  | 'evoke'; // one of your totems awakened (`rune` narrows it; the target is each enemy its awakening struck)
+  | 'evoke' // one of your totems awakened (`rune` narrows it; the target is each enemy its awakening struck)
+  | 'allSuits'; // (the Trickster's Suits) all four suits are showing, the first time this turn (a Full Trick)
 
 export type Op =
   /** `lonePct`: Point Blank, this much more damage (percent) when it hits only one enemy */
@@ -605,8 +612,13 @@ export type SnareTrigger =
   | { on: 'foeDefends' } // an enemy gains Barrier
   | { on: 'foeTurn' }; // the enemy phase begins
 
+/** A card's suit (the Trickster's Suits, suits.ts): ♠ Attacks, ♥ protection, ♦ cards and Mana, ♣ Traps and debuffs. */
+export type Suit = 'spades' | 'hearts' | 'diamonds' | 'clubs';
+
 export interface CardDef {
   id: CardId;
+  /** its suit, when the rule in suits.ts would read it wrong; 'wild' counts as every suit */
+  suit?: Suit | 'wild';
   name: string;
   kind: CardKind;
   cost: number;
@@ -741,6 +753,11 @@ export interface HeroTrait {
   shareMight?: number;
   /** HP healed after every fight the hero wins (in a run) */
   healAfterFight?: number;
+  /**
+   * Suits: this hero shows the suits played each turn, and the first time in a turn all four are showing, `fullTrick` runs (a
+   * Full Trick) and `allSuits` Auras answer it.
+   */
+  suits?: { fullTrick: Op[] };
   /** Salvage: a companion summoned by a card that scrapped others to make room takes their Might and Primed, and half their HP
    * as extra max HP (DECISIONS #383) */
   salvage?: boolean;
@@ -1005,6 +1022,9 @@ export interface SideState {
   played: number;
   attacksPlayed: number;
   skillsPlayed: number;
+  /** (the Trickster's Suits) the suits showing this turn, and whether the Full Trick has gone off */
+  suitsTurn?: Suit[];
+  fullTrickTurn?: boolean;
   discarded: number;
   /** leaving Calm has already paid its Mana this turn */
   calmPaid?: boolean;
@@ -1198,6 +1218,8 @@ export type CombatEvent =
     }
   | { type: 'intent'; unit: UnitId; move: string; target: UnitId | null }
   | { type: 'snareSet'; side: Side; snare: string }
+  /** the suits showing this turn changed (`full`: all four, a Full Trick) */
+  | { type: 'suits'; side: Side; suits: Suit[]; full: boolean }
   | { type: 'snareSprung'; side: Side; snare: string; card: CardId }
   | { type: 'prevented'; unit: UnitId }
   | { type: 'stars'; side: Side; stars: number }

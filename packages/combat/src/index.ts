@@ -2,6 +2,7 @@
 
 export * from './types';
 export { validateDb } from './validate';
+export { SUITS, suitOf } from './suits';
 export { chooseAction, evaluate } from './bot';
 export { chooseSmartAction, type SmartOptions } from './smartBot';
 export { nextInt, seedRng, shuffle, type RngState } from './rng';

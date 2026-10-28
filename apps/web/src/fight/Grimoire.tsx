@@ -239,7 +239,9 @@ export function GrimoireModal(
       <div className="grimmodal__panel" ref={panelRef} tabIndex={-1}>
         <header className="grimmodal__head">
           <div>
-            <h2 className="grimmodal__title" id={titleId}>{title}</h2>
+            <h2 className="grimmodal__title" id={titleId}>
+              {title}
+            </h2>
             {hint && <p className="grimmodal__hint">{hint}</p>}
           </div>
           {onClose && (

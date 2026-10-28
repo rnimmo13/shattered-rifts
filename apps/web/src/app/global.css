@@ -2,6 +2,19 @@
    which write --c-*, --glow-*, --shadow-*, --t-* and --ease-* onto :root at startup. */
 
 :root {
+  /* a card's rarity, everywhere it is shown (the card frame, deck lists, counts): one set of colours */
+  --rar-basic: #8a90a2;
+  --rar-basic-hi: #d4d8e4;
+  --rar-common: #aeb4c4;
+  --rar-common-hi: #eef0f8;
+  --rar-uncommon: #3fa0ff;
+  --rar-uncommon-hi: #bfe0ff;
+  --rar-rare: #ffc23a;
+  --rar-rare-hi: #fff0b8;
+  --rar-legendary: #ff6a2a;
+  --rar-legendary-hi: #ffd2a8;
+  --rar-ancestral: #2fe0b0;
+  --rar-ancestral-hi: #c8fff0;
   --font-display: 'Cinzel', 'Trajan Pro', serif;
   --font-body: 'Source Sans 3', system-ui, sans-serif;
   --font-numeric: 'Bebas Neue', 'Cinzel', sans-serif;

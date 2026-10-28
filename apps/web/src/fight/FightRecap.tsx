@@ -37,7 +37,13 @@ export function FightRecap(props: { db: CombatDb; replay: FightReplay; onClose: 
   const most = recap.takenFrom[0]?.amount ?? 0;
 
   return (
-    <div className="recap" role="dialog" aria-modal="true" aria-label="Fight recap" onClick={onClose}>
+    <div
+      className="recap"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Fight recap"
+      onClick={onClose}
+    >
       <div className="recap__panel" onClick={(e) => e.stopPropagation()}>
         <header className="recap__head">
           <div>

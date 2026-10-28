@@ -70,21 +70,24 @@
   text-transform: capitalize;
   color: var(--c-ivory);
 }
+/* (the colours of the card frames: global.css) */
 .deckrep__rar--ancestral {
-  color: #ff9a4a;
+  color: var(--rar-ancestral);
 }
 .deckrep__rar--legendary {
-  color: #ffd35e;
+  color: var(--rar-legendary);
 }
 .deckrep__rar--rare {
-  color: #6fb4ff;
+  color: var(--rar-rare);
 }
 .deckrep__rar--uncommon {
-  color: #7be08d;
+  color: var(--rar-uncommon);
 }
-.deckrep__rar--common,
+.deckrep__rar--common {
+  color: var(--rar-common);
+}
 .deckrep__rar--basic {
-  color: var(--c-text-dim);
+  color: var(--rar-basic);
 }
 .deckrep__confirm {
   display: inline-flex;

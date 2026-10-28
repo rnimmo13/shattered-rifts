@@ -41,8 +41,8 @@ const HEADS: Record<HeroId, [RegExp, number | null][]> = {
   trickster: [
     [/snares|traps/i, 0],
     [/exposed/i, 1],
-    [/patience/i, 2],
-    [/basics/i, null],
+    [/suits/i, 2],
+    [/basics|glue/i, null],
   ],
   assassin: [
     [/shivs/i, 0],
@@ -110,7 +110,6 @@ const BY_ID: Record<string, number> = {
   'compound-fear': 1,
   hamstring: 1,
   'trick-of-the-light': 2,
-  'stolen-moment': 2,
   'rending-hands': 0,
   'blood-on-the-sand': 0,
   'open-palm': 1,
@@ -256,6 +255,7 @@ for (const m of kpFile.matchAll(
 Object.assign(out, BY_ID);
 // glue cards: any build path can use them, so they belong to none (DECISIONS #337)
 const NO_PATH = [
+  'stolen-moment',
   'bone-crack',
   'whet-the-fangs',
   'primal-feast',

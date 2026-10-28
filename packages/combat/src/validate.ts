@@ -150,8 +150,7 @@ export function validateDb(db: CombatDb): string[] {
       checkOps(`${id}.onDiscard`, c.onDiscard, { aimed: false, snare: false, card: true });
     if (c.onExhaust)
       checkOps(`${id}.onExhaust`, c.onExhaust, { aimed: false, snare: false, card: true });
-    if (c.inHandAtEnd)
-      checkOps(`${id}.inHandAtEnd`, c.inHandAtEnd, { aimed: false, snare: false });
+    if (c.inHandAtEnd) checkOps(`${id}.inHandAtEnd`, c.inHandAtEnd, { aimed: false, snare: false });
     if (c.onDraw) checkOps(`${id}.onDraw`, c.onDraw, { aimed: false, snare: false, card: true });
     if (c.returnEvery && (!Number.isInteger(c.returnEvery.n) || c.returnEvery.n < 1))
       errs.push(`${id}: bad returnEvery`);
@@ -204,6 +203,7 @@ export function validateDb(db: CombatDb): string[] {
       'doomedTurn',
       'etherealPlayed',
       'deaths',
+      'suits',
     ];
     for (const by of [c.freeIf?.by, c.cheaperPer?.by])
       if (by && !COUNTERS.includes(by)) errs.push(`${id}: a cost cannot read "${by}"`);

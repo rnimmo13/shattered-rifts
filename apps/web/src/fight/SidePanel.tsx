@@ -6,6 +6,7 @@ import { emblemSvg } from '../art/emblems';
 import { MAX_SNARES, cardText, type CombatDb, type SideView } from '@sr/combat';
 import { tipAttrs, type TipContent } from '../ui/tip';
 import { RUNE_GLYPH, UI_TIPS } from './info';
+import { FloatPanel } from './FloatPanel';
 
 /** The second resource, next to the Mana orb. */
 export function LumenCounter(props: { value: number }) {
@@ -76,7 +77,8 @@ export function RuneArc(props: {
 /** Auras (Powers) in play, as a small list at the top left. */
 /** Auras sit under the hero's plate (`x`, `top` in host px). */
 /** Your Auras in play, as a list in your side column (FightView's .fight__side). */
-export function AuraList(props: { db: CombatDb; me: SideView }) {
+/** A side's Auras in a panel the player can move, resize and fold (`panel` names it, so each side's is remembered apart). */
+export function AuraList(props: { db: CombatDb; me: SideView; panel: string; title: string }) {
   const { db, me } = props;
   if (me.powers.length === 0) return null;
   // one row per Aura card, not per trigger: a card with two triggers (Blood Fire: lose HP at the start of your turn, and hit
@@ -96,8 +98,11 @@ export function AuraList(props: { db: CombatDb; me: SideView }) {
     rows.push({ id: g.id, card: g.card, copies: Math.ceil(g.triggers / perCopy) });
   }
   return (
-    <div className="fight__aux fight__aux--auras" aria-label="Auras in play">
-      {rows.length > 5 && <div className="aux__count">Auras · {rows.length}</div>}
+    <FloatPanel
+      id={props.panel}
+      className="fight__aux fight__aux--auras"
+      title={`${props.title} · ${rows.length}`}
+    >
       <div className={`aux aux--powers${rows.length > 5 ? ' aux--scroll' : ''}`}>
         {rows.map((p) => {
           const c = db.cards[p.card];
@@ -117,7 +122,7 @@ export function AuraList(props: { db: CombatDb; me: SideView }) {
           );
         })}
       </div>
-    </div>
+    </FloatPanel>
   );
 }
 

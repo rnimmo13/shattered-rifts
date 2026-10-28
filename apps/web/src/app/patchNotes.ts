@@ -31,10 +31,26 @@ export const PATCH_NOTES: PatchNote[] = [
   {
     version: '0.112.0',
     date: '2026-10-28',
-    title: 'The Trickster, priced',
+    title: 'The Trickster deals the cards',
     summary:
-      'The Trickster is rebalanced card by card, and enemy attacks that hit your whole side are marked.',
+      'The Trickster plays with Suits and is rebalanced card by card; battle panels can be moved; attacks that hit your whole side are marked.',
     notes: [
+      {
+        kind: 'new',
+        text: 'Suits: every Trickster card is a ♠, ♥, ♦ or ♣, and four pips beside her light as you play them. Light all four in one turn for a Full Trick: 5 damage to every enemy and a card. New cards: Flourish, Card Fan, Card Sharp, Cut the Deck, Queen of Hearts, Ace of Clubs, Wild Card, Royal Flourish, Showstopper, The Joker and The Whole Deck.',
+      },
+      {
+        kind: 'changed',
+        text: "The Trickster's Patience build path is now Suits, and her starting deck has Pick a Card in place of a Defend. Banked Breath, Coiled Patience, Sandbag, Waiting Game, Measured Breath and Fade Away are retired; Masquerade strikes every enemy for each suit you showed.",
+      },
+      {
+        kind: 'new',
+        text: "Your Auras, the other side's Auras and the battle log can be moved, resized and folded. Double-click a title to put it back.",
+      },
+      {
+        kind: 'fixed',
+        text: 'Card rarity colours match the cards everywhere: uncommon blue and rare gold on the saved decks page too.',
+      },
       {
         kind: 'new',
         text: 'An enemy move that strikes every unit on your side carries a red "Hits all" tag, and every unit it will hit is marked. A move whose hits land at random says so too.',

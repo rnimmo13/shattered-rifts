@@ -1,8 +1,24 @@
 # Trickster: Suits, a playing-card build path (proposal, 2026-10-28)
 
-**Status: proposal, waiting on Robert.** Robert liked the idea ("i like the Suits idea, lets to that"); this is the full design to
-approve before it is built. Misdirection was turned down (DECISIONS #386). Prices are from `docs/14_CARD_COSTING.md`, against the
-pool after the costing pass (`docs/TRICKSTER_REVIEW.md`).
+**Status: built 2026-10-28 (DECISIONS #387), with Robert's changes:** "the suit pip shouldnt be on any cards, it should dynamically
+show up somwhere around the character, to the left and top of the character model, and it should populate the pip for each of the
+types when you play. if all we need to do is track 4 differnt types, then lets just show them and give them an effect when all 4 are
+there." So:
+
+- **No pips on the cards.** Four pips sit above and to the left of the Trickster (`SuitTrack.tsx`) and light as each suit is played
+  that turn; the card being aimed or hovered shows which pip it would light.
+- **All four lit is a Full Trick**, built into the trait (`HeroTrait.suits.fullTrick`): **5 damage to every enemy and draw 1**,
+  once a turn. The Whole Deck adds to it.
+- Differences from the card list below: **Card Sharp** is 8, and 8 more if all four suits are showing (only which suits are lit is
+  kept, not the order, so "the first ♠" could not be asked); **Wild Card** Consumes (a free card that draws must, `balance.test.ts`;
+  Wild Card+ Holds); **Masquerade** strikes every enemy for 3 per suit shown as the turn ends (no trigger exists for "a new suit");
+  Flourish+ (10 damage) and Ace of Clubs+ (3 Exposed) have hand-written upgrades; the Trap engine cards (Trap Kit, Master Trapper,
+  Trapper's Dividend, Gleeful Trapsmith, Trap Door, Curtain Call) are named ♣, and an Aura's status on "the target" reads as a debuff.
+- Robert's other two questions were not answered, so the recommendations stand: Pick a Card replaces a Defend, and the six cards
+  are retired. Both are easy to undo.
+
+The design as proposed follows. Prices are from `docs/14_CARD_COSTING.md`, against the pool after the costing pass
+(`docs/TRICKSTER_REVIEW.md`).
 
 ## 1. The idea
 
