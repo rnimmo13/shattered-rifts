@@ -77,7 +77,7 @@ Starter: Strike, Strike, Strike, Strike, Strike, Defend, Defend, Defend, Defend,
 | Double Down | 1 | skill | rare | Gain 1 Reverb. |
 | Cruel Streak | 1 | aura | rare | Gain 1 Cruelty. |
 | Crippling Blow | 3 | attack | rare | Deal 15 damage. Apply 10 Sapped until the end of their next turn. |
-| Bloodfeast | 1 | attack | rare | Deal 10 damage. If this is fatal: Raise your max HP by 3. Consume. |
+| Bloodfeast | 1 | attack | rare | Deal 10 damage. If this is fatal: Raise your max HP by 3 for good. Consume. |
 | Raised Hell | 2 | aura | rare | Whenever you draw a card: Play it against a random enemy if it is a Strike card. |
 | Unforgiving Drill | 1 | aura | rare | At the start of your turn: Return a random Attack card from your discard pile to your hand. It is upgraded. |
 | Stone Fury | 0 | skill | rare | Turn every Attack in your hand into a Giant Rock. |
@@ -734,7 +734,7 @@ Starter: Strike, Strike, Strike, Strike, Defend, Defend, Defend, Defend, Cinderf
 | Scheme | 1 | skill | uncommon | Next turn, draw 2 extra cards. |
 | Read the Embers | 2 | skill | uncommon | Draw 6 cards. |
 | Wild Spark | 0+2◆ | skill | uncommon | Add a random Neutral card to your hand. |
-| Hammer and Anvil | 1 | attack | rare | Sharpen 5 (+5 per time it was hit this turn on the target). Deal 5 damage. |
+| Hammer and Anvil | 1 | attack | rare | Sharpen 5 (+5 per time the target was hit this turn). Deal 5 damage. |
 | Obsidian Drill | X | attack | rare | Deal 8 damage X times. If X is 4 or more: Deal 8 damage X times. |
 | Cleaving Edge | 1 | aura | rare | Sharpen 7 (Obsidian Blade gains 7 damage). Your Obsidian Blade strikes ALL enemies for the rest of the fight. |
 | Echoing Blade | 2 | aura | rare | Your Obsidian Blade is played one more time for the rest of the fight. |
@@ -878,7 +878,7 @@ Starter: Strike, Strike, Strike, Strike, Defend, Defend, Defend, Defend, Raise T
 | Card | Cost | Type | Rarity | Text |
 |---|---|---|---|---|
 | Raise Thrall | 1 | skill | basic | Raise 5. |
-| Off the Leash | 1 | attack | basic | Your companions each deal 6 damage, plus its own HP. |
+| Off the Leash | 1 | attack | basic | Your companions each deal 6 damage, plus their own HP. |
 | After the End | 1 | skill | common | Raise 6. Consume. |
 | Bone Crush | 2 | attack | common | Costs 0 if your companions have struck this turn. Your companions each deal 12 damage. |
 | Call at Dusk | 1 | skill | common | Next turn: Raise 2. Gain 2 Mana. |
@@ -910,7 +910,7 @@ Starter: Strike, Strike, Strike, Strike, Defend, Defend, Defend, Defend, Raise T
 | Seize Them | 1 | attack | uncommon | Your companions each deal 5 damage. Apply 3 Quarry until the end of your turn. |
 | Goad | 1 | skill | uncommon | Raise 3. Your companions gain 5 max HP. Hold. |
 | Inevitable | 1 | aura | uncommon | At the start of your turn: Curse a random enemy with 6 Fate. |
-| At the Threshold | 1 | skill | uncommon | Gain 6 Barrier. If you have cursed an enemy with Fate this turn: Gain 6 Barrier. Gain 6 Barrier. |
+| At the Threshold | 1 | skill | uncommon | Gain 6 Barrier. If you have cursed an enemy with Fate this turn: Gain 6 Barrier twice. |
 | The Final Hour | 2 | skill | uncommon | Curse ALL enemies with 21 Fate. Apply 1 Faltering to ALL enemies. |
 | Last Rites | 1 | skill | uncommon | Curse the target with 10 (+5 per 10 Fate on the target) Fate. |
 | Burial Shroud | 1 | aura | uncommon | Whenever you curse an enemy with Fate: Gain 2 Barrier. |
@@ -940,7 +940,7 @@ Starter: Strike, Strike, Strike, Strike, Defend, Defend, Defend, Defend, Raise T
 | Fen Offering | 1 | skill | rare | Gain Barrier equal to 2 times the target's max HP. Sacrifice the chosen ally. Hold. |
 | Ever Watchful | 2 | aura | rare | At the start of your turn: Add a Baleful Glance to your hand. |
 | Death Grip | 3 | attack | rare | Your companions each deal 20 (+5 per Command card in your deck) damage. |
-| The Drowned King | 1 | attack | rare | Your companions each deal 10 damage, plus its own max HP. |
+| The Drowned King | 1 | attack | rare | Your companions each deal 10 damage, plus their own max HP. |
 | The Last Toll | 3 | skill | rare | Curse ALL enemies with 29 Fate. Every enemy whose HP is at or below its Fate dies now. |
 | Mark of Ending | 0 | skill | rare | This turn, whenever you play a card: Curse the target with 3 Fate. |
 | Reaper's Mantle | 3 | aura | rare | For the rest of the fight, whenever your Attacks take HP off an enemy, curse it with that much Fate. |

@@ -509,7 +509,15 @@ function amountText(n: number, sc: Scale | undefined): { num: string; equal: boo
       ? { per: `consumed ${tagged}`, equal: `the number of consumed ${plural(tagged)}` }
       : tagged && sc.by === 'tagDeck'
         ? { per: `${tagged} in your deck`, equal: `the number of ${plural(tagged)} in your deck` }
-        : METRIC_WORDS[sc.by];
+        : sc.by === 'hitsTaken'
+          ? // (who was hit is part of the phrase: "per time the target was hit this turn")
+            sc.of === 'target'
+            ? { per: 'time the target was hit this turn', equal: 'the times the target was hit this turn' }
+            : sc.of === 'each'
+              ? { per: 'time it was hit this turn', equal: 'the times it was hit this turn' }
+              : { per: 'time you were hit this turn', equal: 'the times you were hit this turn' }
+          : METRIC_WORDS[sc.by];
+  const named = sc.by === 'hitsTaken';
   // (a count in steps: "+5 per 10 Fate on the target")
   if (sc.step && n > 0)
     return {
@@ -517,7 +525,7 @@ function amountText(n: number, sc: Scale | undefined): { num: string; equal: boo
       equal: false,
     };
   const m = sc.mult ?? 1;
-  const unit = UNIT_METRICS.includes(sc.by);
+  const unit = UNIT_METRICS.includes(sc.by) && !named;
   const whose = unit
     ? sc.of === 'target'
       ? "the target's "
@@ -554,6 +562,19 @@ function amountText(n: number, sc: Scale | undefined): { num: string; equal: boo
         ? `+1 per ${step}${w.per}`
         : `+${frac(m).a} per ${frac(m).b} ${PLURAL[sc.by] ?? w.per}`;
   return { num: `${n} (${per}${on})`, equal: false };
+}
+
+/** Sentences that repeat one after another read once, with how often: "Gain 6 Barrier. Gain 6 Barrier." is "Gain 6 Barrier twice." */
+function sayRepeats(lines: readonly string[]): string[] {
+  const out: string[] = [];
+  for (let i = 0; i < lines.length; i++) {
+    let n = 1;
+    while (lines[i + n] === lines[i]) n++;
+    const line = lines[i] as string;
+    out.push(n === 1 ? line : line.replace(/\.$/, n === 2 ? ' twice.' : ` ${n} times.`));
+    i += n - 1;
+  }
+  return out;
 }
 
 const WHEN_TEXT: Record<string, string> = {
@@ -1069,12 +1090,12 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
       return `Turn ${n} in ${pile} into ${o.amount === 1 ? `${article(into)} ${into}` : plural(into)}.`;
     }
     case 'when':
-      return `If ${whenText(o, db)}: ${o.ops.map((x) => opText(db, x, who)).join(' ')}`;
+      return `If ${whenText(o, db)}: ${sayRepeats(o.ops.map((x) => opText(db, x, who))).join(' ')}`;
     case 'copyPlayed':
       return 'Add a copy of that card to your hand.';
     case 'maxHp': {
       const a = amountText(o.amount, undefined);
-      return `Raise your max HP by ${a.num}.`;
+      return `Raise your max HP by ${a.num} for good.`;
     }
     case 'forge':
       if (o.scale) return `Sharpen ${at(o.amount, o.scale)}.`;
@@ -1123,7 +1144,7 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
       // "Your companions each deal 6 damage." (what they read of themselves is theirs: "equal to its HP")
       const lines = o.ops.map((x, i) => {
         if (x.op === 'sacrifice' && x.self) return 'Then they die.';
-        // ("deal 6 damage plus its own HP": a blow that reads the companion itself)
+        // ("deal 6 damage plus their own HP": a blow that reads each companion itself)
         if (
           x.op === 'damage' &&
           x.scale &&
@@ -1136,7 +1157,7 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
           delete plain.scale;
           const t = opText(db, plain, who).replace(
             / damage(.*)\.$/,
-            ` damage$1, plus its own ${x.scale.by === 'hp' ? 'HP' : 'max HP'}.`,
+            ` damage$1, plus their own ${x.scale.by === 'hp' ? 'HP' : 'max HP'}.`,
           );
           return i === 0 ? t.charAt(0).toLowerCase() + t.slice(1) : t;
         }
