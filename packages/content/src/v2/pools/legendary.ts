@@ -22,7 +22,6 @@ import {
 const r = pool('engineer', 'nexus');
 const k = pool('hunter', 'wyldmaw');
 const v = pool('trapper', 'umbral');
-const q = pool('assassin', 'umbral');
 const i = pool('totemist', 'nexus');
 const s = pool('barbarian', 'aurelion');
 const a = pool('spellblade', 'starfall');
@@ -63,10 +62,6 @@ export const LEGENDARIES: CardDef[] = [
     [dmg(25, 'allFoes'), status('stunned', 2, 'allFoes'), status('exposed', 3, 'allFoes')],
     { trigger: { on: 'foeTurn' } },
   ),
-  // Sleight: the more you discarded this turn, the more it hits
-  q('rare', 'ten-thousand-cuts', 'Death by Inches', 'attack', 1, 'foe', [
-    scaled(dmg(5, 'target', 2), per('discarded', 2, undefined, 'hits')),
-  ]),
   // Elements: Spirit every turn, and every enemy struck for all of it (DECISIONS #353)
   i(
     'rare',

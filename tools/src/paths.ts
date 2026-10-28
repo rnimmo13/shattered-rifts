@@ -46,7 +46,7 @@ const HEADS: Record<HeroId, [RegExp, number | null][]> = {
   ],
   assassin: [
     [/shivs/i, 0],
-    [/seared/i, 1],
+    [/bleed|seared/i, 1],
     [/sleight/i, 2],
     [/basics/i, null],
   ],
@@ -88,7 +88,6 @@ const BY_ID: Record<string, number> = {
   // brought back for the 20/30/25 rarity target (DECISIONS #341)
   'patch-job': 2,
   // brought back for the 20/30/25 rarity target (DECISIONS #341)
-  'palmed-card': 2,
   'wreath-of-flame': 2,
   // new cards of the 20/30/25 rarity target (DECISIONS #341)
   'kindled-rite': 2,
@@ -114,10 +113,6 @@ const BY_ID: Record<string, number> = {
   hamstring: 1,
   'trick-of-the-light': 2,
   'stolen-moment': 2,
-  'whetstone-pass': 0,
-  'rising-tempo': 0,
-  'noxious-haze': 1,
-  'blur-step': 2,
   'crystal-ward': 0,
   'cold-snap': 0,
   'rending-hands': 0,
@@ -177,10 +172,7 @@ const BY_ID: Record<string, number> = {
   'the-perfect-trap': 0,
   'the-long-ambush': 1,
   masquerade: 2,
-  // assassin
-  'deck-of-a-thousand-knives': 0,
-  'death-warrant': 1,
-  'ten-thousand-cuts': 2,
+  // assassin: none (his Legendaries went with his older cards: the Silent's list, docs/decisions-pending/assassin.md)
   // totemist
   'cataclysm-glyph': 0,
   'the-spirit-council': 1,

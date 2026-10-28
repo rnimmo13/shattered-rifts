@@ -45,7 +45,20 @@ export type StatusId =
   | 'cruelty' // your attacks deal 25% more to Exposed enemies
   | 'sturdy' // you take half damage from Exposed enemies (until the enemies' next turn is over)
   | 'unmovable' // the first Barrier a card gives you each turn is doubled
-  | 'freeattack'; // your next Attack costs 0, per stack
+  | 'freeattack' // your next Attack costs 0, per stack
+  // (the Silent-shaped assassin's pieces: docs/decisions-pending/assassin.md)
+  | 'virulent' // Bleed on your enemies deals its damage this many more times each turn (and loses 1 each time)
+  | 'honed' // your Sleeve Knives Hold, and the first one you play each turn deals this much more
+  | 'fanned' // your Sleeve Knives hit ALL enemies
+  | 'tracking' // your attacks deal 50% more to Faltering enemies
+  | 'guarded' // at the start of your next turn you gain this much Barrier, then it clears
+  | 'blur' // your Barrier is not removed at the start of your next turn (one turn per stack)
+  | 'meld' // Barrier you gain is doubled
+  | 'poised' // at the start of your next turn it becomes Empowered
+  | 'empowered' // your attacks deal double damage (it wears off at the end of your turn)
+  | 'strangled' // whenever the other side plays a card, it loses this much HP
+  | 'freeskill' // your next Skill costs 0, per stack
+  | 'planner'; // a Skill you play gains Sly for the rest of the fight
 export const STATUS_IDS: readonly StatusId[] = [
   'exposed',
   'faltering',
@@ -81,6 +94,18 @@ export const STATUS_IDS: readonly StatusId[] = [
   'sturdy',
   'unmovable',
   'freeattack',
+  'virulent',
+  'honed',
+  'fanned',
+  'tracking',
+  'guarded',
+  'blur',
+  'meld',
+  'poised',
+  'empowered',
+  'strangled',
+  'freeskill',
+  'planner',
 ];
 /** Debuffs: a Steadfast unit ignores the next one put on it. */
 export const DEBUFFS: readonly StatusId[] = [
@@ -91,6 +116,7 @@ export const DEBUFFS: readonly StatusId[] = [
   'brittle',
   'doom',
   'sapped',
+  'strangled',
 ];
 export const STANCES = ['calm', 'wrath', 'radiant'] as const;
 export type Stance = (typeof STANCES)[number];
@@ -175,6 +201,10 @@ export type Metric =
   | 'nonAttacksInHand'
   | 'exhaustedNow' // cards the card being played has consumed so far
   | 'exhaustedDamage' // the damage of the Attacks the card being played has consumed so far
+  | 'skillsInHand'
+  | 'foesSeared' // the Bleed on all enemies together
+  | 'discardedNow' // cards the card being played has discarded so far
+  | 'skillsDrawnNow' // Skills the card being played has drawn so far
   // about the thing being resolved
   | 'x' // Mana spent on an X card
   | 'charge' // a rune's charge
@@ -205,7 +235,9 @@ export type TriggerWhen =
   | 'created' // a card was created in one of your piles
   | 'arcana' // you spent Arcana (a card's Arcana cost was paid; DECISIONS #288)
   | 'shuffle' // your discard pile was shuffled into a new draw pile (DECISIONS #299)
-  | 'exposeFoe'; // you put Exposed on an enemy
+  | 'exposeFoe' // you put Exposed on an enemy
+  | 'hitFoe' // one of your Attacks made an enemy lose HP (the trigger's target is that enemy)
+  | 'drawMidTurn'; // you drew a card during your turn (not the draw that starts it)
 
 export type Op =
   /** `lonePct`: Point Blank, this much more damage (percent) when it hits only one enemy */
@@ -223,6 +255,8 @@ export type Op =
       distinct?: boolean;
       /** run these once for each enemy this kills (Feed: gain max HP) */
       onKill?: Op[];
+      /** the whole effect happens again once for each enemy it kills (Echoing Slash) */
+      repeatOnKill?: boolean;
     }
   | { op: 'loseHp'; amount: number; to: Sel; scale?: Scale } // unblockable, unmodified
   | { op: 'barrier'; amount: number; to: Sel; scale?: Scale }
@@ -247,7 +281,8 @@ export type Op =
   /** multiply the stacks of a status already on the target (floor); 2 doubles it */
   /** multiply a status (Double the Seared...); `max` is the most stacks it adds, so a doubler played again and again cannot run away */
   | { op: 'scaleStatus'; status: StatusId; mult: number; to: Sel; max?: number }
-  | { op: 'draw'; amount: number; scale?: Scale }
+  /** `hold`: the cards drawn Hold this turn */
+  | { op: 'draw'; amount: number; scale?: Scale; hold?: boolean }
   | { op: 'mana'; amount: number; scale?: Scale }
   | { op: 'stars'; amount: number; scale?: Scale }
   | { op: 'summon'; unit: string }
@@ -334,6 +369,12 @@ export type Op =
       kind?: CardKind;
       match?: string;
       exhaust?: boolean;
+      /** only cards with this tag; `all`: every fitting card in the pile, once each; `aim`: at the card's target, not a random
+       * enemy; `upgrade`: each is upgraded first (Knife Trap) */
+      tag?: string;
+      all?: boolean;
+      aim?: 'target';
+      upgrade?: boolean;
     }
   /** no more Mana can be gained this turn / no more cards can be drawn this turn */
   | { op: 'manaLock' }
@@ -349,7 +390,20 @@ export type Op =
   /** add a copy of the card that has just been played (in a 'play' trigger) to your hand */
   | { op: 'copyPlayed' }
   /** raise max HP, and HP with it (for the fight; a run keeps what a card says it keeps) */
-  | { op: 'maxHp'; amount: number; to: Sel };
+  | { op: 'maxHp'; amount: number; to: Sel }
+  // --- the Silent-shaped assassin's pieces
+  /** Bleed on the targets deals its damage now (and loses 1), as it does at the start of their turn */
+  | { op: 'tick'; to: Sel }
+  /** remove the targets' Barrier and Steadfast */
+  | { op: 'strip'; to: Sel }
+  /** this copy of the card costs this much less for the rest of the fight (Up My Sleeve) */
+  | { op: 'selfCost'; amount: number }
+  /** every card in your hand costs 0 this turn */
+  | { op: 'freeHand' }
+  /** a random Skill in your hand gains Sly this turn */
+  | { op: 'giveSly' }
+  /** choose a card in your hand: at the start of your next turn, add this many copies of it to your hand */
+  | { op: 'copyNext'; times: number };
 
 export type CardKind = 'attack' | 'skill' | 'power' | 'summon' | 'snare';
 /** foe = an enemy; friend = any unit of yours (hero or ally); ally = one of your allies, never the hero */
@@ -401,6 +455,12 @@ export interface CardDef {
   needsExhausted?: number;
   /** costs this much less for each Attack played this turn */
   cheaperPerAttack?: number;
+  /** costs this much less for each Skill played this turn */
+  cheaperPerSkill?: number;
+  /** only playable while your draw pile is empty */
+  needsEmptyDraw?: boolean;
+  /** Sly: when an effect discards it from your hand, it is played for free */
+  sly?: boolean;
   /** at the start of your turn, if it is in your consumed pile, it is played for free and goes back */
   replayFromExhaust?: boolean;
   /** exhausts if it is still in your hand at the end of your turn */
@@ -610,6 +670,14 @@ export interface CardInst {
   bonus?: number;
   /** cost change for the rest of the fight (negative = cheaper) */
   costMod?: number;
+  /** this copy is cheaper by this much for the rest of the fight, however often it is played (Up My Sleeve) */
+  costDown?: number;
+  /** it costs 0 this turn (Bullet Time) */
+  freeTurn?: boolean;
+  /** it Holds this turn (Expertise) */
+  held?: boolean;
+  /** it has Sly: for this turn, or for the rest of the fight */
+  sly?: 'turn' | 'fight';
 }
 
 /** A rune on the board. */
@@ -635,7 +703,9 @@ export interface PowerState {
 
 /** A choice the acting player owes before anything else happens. */
 export interface Pending {
-  kind: 'discard' | 'exhaust' | 'scry';
+  kind: 'discard' | 'exhaust' | 'scry' | 'copy';
+  /** 'copy': how many copies come next turn */
+  times?: number;
   /** the cards to choose among (your hand, or the top of your draw pile for scry) */
   pool: InstId[];
   min: number;
@@ -702,6 +772,9 @@ export interface SideState {
   barrierDoubled?: boolean;
   /** max HP the hero has gained this fight (a run keeps it) */
   maxHpGained?: number;
+  /** cards whose copies arrive at the start of your next turn (Nightmare); Honed's first knife this turn has been played */
+  nextCopies?: { card: CardId; times: number }[];
+  honedUsed?: boolean;
   /** counters for the whole fight */
   drawn: number;
   created: number;

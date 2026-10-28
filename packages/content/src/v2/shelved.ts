@@ -19,10 +19,7 @@ export const SHELVED_LEGENDARIES: readonly string[] = [
   'the-perfect-trap',
   'the-long-ambush',
   'masquerade',
-  // assassin
-  'deck-of-a-thousand-knives',
-  'death-warrant',
-  'ten-thousand-cuts',
+  // assassin: none (Sylas is exactly the Silent's list, and his three went with his older cards)
   // totemist
   'cataclysm-glyph',
   'the-grand-design',

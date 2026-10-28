@@ -63,6 +63,8 @@ interface Run {
   depth: number;
   /** a side's turn is just beginning (its opponent's turn-start Traps are springing): a Stun put on now is not fresh */
   opening?: boolean;
+  /** the draw that starts a turn is happening (a "draw during your turn" trigger ignores it) */
+  openingDraw?: boolean;
 }
 
 /** Who is acting and what they are acting on. */
@@ -91,6 +93,9 @@ interface Act {
   /** what the card being played has consumed so far */
   exhaustedNow: number;
   exhaustedDmg: number;
+  /** what the card being played has discarded, and the Skills it has drawn, so far */
+  discardedNow: number;
+  skillsDrawnNow: number;
 }
 
 const mkAct = (actor: Unit, extra: Partial<Act> = {}): Act => ({
@@ -109,6 +114,8 @@ const mkAct = (actor: Unit, extra: Partial<Act> = {}): Act => ({
   drawn: null,
   exhaustedNow: 0,
   exhaustedDmg: 0,
+  discardedNow: 0,
+  skillsDrawnNow: 0,
   ...extra,
 });
 
@@ -253,6 +260,15 @@ export function modifiedDamage(base: number, attacker: Unit | null, target: Unit
     // Cruelty: an Exposed enemy takes a quarter more from you
     if (attacker && stacks(attacker, 'cruelty') > 0) n = Math.floor(n * 1.25);
   }
+  // (assassin) Shadow Step's Empowered doubles; Tracking: a Faltering enemy takes half as much again
+  if (attacker && stacks(attacker, 'empowered') > 0) n *= 2;
+  if (
+    target &&
+    attacker &&
+    stacks(attacker, 'tracking') > 0 &&
+    (stacks(target, 'faltering') > 0 || stacks(target, 'stunned') > 0)
+  )
+    n = Math.floor(n * 1.5);
   // Colossus: an Exposed enemy's blows land at half strength for the turn
   if (target && attacker && stacks(target, 'sturdy') > 0 && (stacks(attacker, 'exposed') > 0 || stacks(attacker, 'stunned') > 0))
     n = Math.floor(n * 0.5);
@@ -373,6 +389,9 @@ function attackHit(r: Run, a: Act, t: Unit, base: number, single = false): numbe
   const capped = stacks(t, 'ghostly') > 0 || stacks(t, 'shielded') > 0;
   const lostHere = applyDamage(r, a.actor, t, amount, 'attack');
   let lost = lostHere;
+  // (assassin) an Aura that answers your Attack getting through to an enemy (Envenom)
+  if (lostHere > 0 && a.actor.kind === 'hero' && a.card?.kind === 'attack' && t.side !== a.actor.side)
+    fireTriggers(r, r.s.sides[a.actor.side], 'hitFoe', { target: t });
   // (a companion killed by an attack remembers by whom: Den Mother strikes back at it)
   if (t.kind === 'ally' && t.hp <= 0 && t.side !== a.actor.side) t.killedBy = a.actor.id;
   // Overflow: a single-target attack that kills a companion carries part of what is left through to its hero (DECISIONS #321)
@@ -572,6 +591,14 @@ function metricValue(r: Run, a: Act, m: Metric, of: Scale['of'], t: Unit | null)
       return a.exhaustedNow;
     case 'exhaustedDamage':
       return a.exhaustedDmg;
+    case 'skillsInHand':
+      return sd.hand.filter((c) => r.db.cards[c.card]?.kind === 'skill').length;
+    case 'foesSeared':
+      return r.s.sides[other(sd.id)].units.reduce((n, x) => n + (x.hp > 0 ? stacks(x, 'seared') : 0), 0);
+    case 'discardedNow':
+      return a.discardedNow;
+    case 'skillsDrawnNow':
+      return a.skillsDrawnNow;
     case 'x':
       return a.x;
     case 'charge':
@@ -617,7 +644,12 @@ function execOp(r: Run, a: Act, op: Op): void {
     case 'damage': {
       let hits = op.hits ?? 1;
       if (op.scale?.into === 'hits') hits += scaleValue(r, a, op.scale, a.target);
-      const edge = a.card?.tags?.includes(EDGE_TAG) ? stacks(a.actor, 'edge') : 0;
+      const knife = a.card?.tags?.includes(EDGE_TAG) === true;
+      const edge = knife ? stacks(a.actor, 'edge') : 0;
+      // (assassin) Fanned knives hit every enemy; Honed adds to the first knife of the turn
+      const to: Sel = knife && op.to === 'target' && stacks(a.actor, 'fanned') > 0 ? 'allFoes' : op.to;
+      const honed = knife && a.actor.kind === 'hero' && !side.honedUsed ? stacks(a.actor, 'honed') : 0;
+      if (knife && a.actor.kind === 'hero') side.honedUsed = true;
       // (a hero's Vigor goes into its next attack card; an enemy's or a companion's into its next attacking move, DECISIONS #361)
       const vigor = (a.card ? a.card.kind === 'attack' : a.actor.kind !== 'hero')
         ? stacks(a.actor, 'vigor')
@@ -630,11 +662,11 @@ function execOp(r: Run, a: Act, op: Op): void {
         if (r.s.winner) break;
         // a target that died mid-attack: the remaining hits find a new one (an enemy by its own rule for choosing, so a
         // random-picking foe picks again; anyone else the usual way: a minion still standing, then the hero)
-        if (op.to === 'target' && (!a.target || a.target.hp <= 0)) {
+        if (to === 'target' && (!a.target || a.target.hp <= 0)) {
           const b = r.db.units[a.actor.def]?.brain;
           a.target = pickFoe(r, a.actor, b?.kind === 'enemy' ? (b.foe ?? 'hero') : 'hero');
         }
-        let ts = resolve(r, a, op.to);
+        let ts = resolve(r, a, to);
         // a spread of hits: each finds an enemy not struck yet, and stops when every enemy has been
         if (op.distinct && op.to === 'randomFoe') {
           const fresh = resolve(r, a, 'allFoes').filter((u) => !struck.has(u.id));
@@ -651,9 +683,10 @@ function execOp(r: Run, a: Act, op: Op): void {
             a,
             t,
             Math.round(
-              (amountOf(r, a, op.amount, op.scale, t) + edge + vigor + resonanceOf(a)) * lone,
+              (amountOf(r, a, op.amount, op.scale, t) + edge + honed + vigor + resonanceOf(a)) *
+                lone,
             ),
-            op.to === 'target' || op.to === 'front',
+            to === 'target' || to === 'front',
           );
           if (alive && t.hp <= 0) kills++;
         }
@@ -665,6 +698,9 @@ function execOp(r: Run, a: Act, op: Op): void {
       // Lifesteal: the attacker heals a share of the HP the attack took off (DECISIONS #285)
       if (op.lifesteal && took > 0 && a.actor.hp > 0)
         healUnit(r, a.actor, Math.floor((took * op.lifesteal) / 100));
+      // (assassin) Echoing Slash: the whole effect again for each enemy it killed (each kill needs an enemy, so it ends)
+      if (op.repeatOnKill)
+        for (let k = 0; k < kills && !r.s.winner; k++) execOp(r, a, op);
       return;
     }
     case 'loseHp':
@@ -697,6 +733,8 @@ function execOp(r: Run, a: Act, op: Op): void {
           n *= 2;
         }
         if (n > 0) n += stacks(a.actor, 'bracing');
+        // (assassin) Shadowmeld: what you gain is doubled
+        if (n > 0 && stacks(t, 'meld') > 0) n *= 2;
         if (n > 0 && (stacks(t, 'brittle') > 0 || stacks(t, 'stunned') > 0))
           n = Math.floor(n * 0.75);
         // a Trap that punishes defending springs first, so the Barrier cannot soak what it deals
@@ -778,9 +816,17 @@ function execOp(r: Run, a: Act, op: Op): void {
         if (n > 0 && next !== n) addStatus(r, t, op.status, next - n);
       }
       return;
-    case 'draw':
+    case 'draw': {
+      // (the cards it brings are counted, so a card can ask "if you drew a Skill" and mark them to Hold)
+      const before = new Set(side.hand.map((c) => c.id));
       drawCards(r, side, amountOf(r, a, op.amount, op.scale, null));
+      for (const c of side.hand) {
+        if (before.has(c.id)) continue;
+        if (r.db.cards[c.card]?.kind === 'skill') a.skillsDrawnNow++;
+        if (op.hold) c.held = true;
+      }
       return;
+    }
     case 'mana':
       gainMana(r, side, amountOf(r, a, op.amount, op.scale, null));
       return;
@@ -839,7 +885,7 @@ function execOp(r: Run, a: Act, op: Op): void {
             a.exhaustedNow++;
             const dmg = r.db.cards[c.card]?.effects.find((o) => o.op === 'damage');
             if (dmg && dmg.op === 'damage') a.exhaustedDmg += dmg.amount;
-          }
+          } else a.discardedNow++;
           moveFromHand(r, side, c, kind);
         }
         return;
@@ -1117,12 +1163,83 @@ function execOp(r: Run, a: Act, op: Op): void {
     case 'playPile': {
       const hero = heroOf(side);
       if (!hero) return;
+      const how = op.from === 'exhaust' ? 'stay' : op.exhaust ? 'exhaust' : 'normal';
+      const aim = op.aim === 'target' ? a.target : null;
+      // (assassin) Knife Trap: every fitting card in the pile, once each (one that goes back is not played again)
+      if (op.all && op.from === 'exhaust') {
+        const all = side.exhausted.filter((c) => fitsFree(r, op, c));
+        for (const inst of all) {
+          if (r.s.winner) break;
+          if (!side.exhausted.includes(inst)) continue;
+          side.exhausted = side.exhausted.filter((x) => x.id !== inst.id);
+          const better = op.upgrade ? r.db.cards[inst.card]?.upgrade : undefined;
+          if (better && r.db.cards[better]) inst.card = better;
+          playFree(r, side, hero, inst, how, aim);
+        }
+        return;
+      }
       const times = amountOf(r, a, op.amount ?? 1, op.scale, null);
       for (let i = 0; i < times && !r.s.winner; i++) {
         const inst = takeForFree(r, side, a, op);
         if (!inst) break;
-        playFree(r, side, hero, inst, op.from === 'exhaust' ? 'stay' : op.exhaust ? 'exhaust' : 'normal');
+        playFree(r, side, hero, inst, how, aim);
       }
+      return;
+    }
+    // --- (assassin) the Silent-shaped pieces
+    case 'tick':
+      for (const t of resolve(r, a, op.to)) bleedTick(r, t);
+      return;
+    case 'strip':
+      for (const t of resolve(r, a, op.to)) {
+        if (t.barrier > 0) {
+          t.barrier = 0;
+          r.ev.push({ type: 'barrierDrop', target: t.id, total: 0 });
+        }
+        if (stacks(t, 'steadfast') > 0) addStatus(r, t, 'steadfast', -stacks(t, 'steadfast'));
+      }
+      return;
+    case 'selfCost':
+      if (a.inst) a.inst.costDown = (a.inst.costDown ?? 0) + op.amount;
+      return;
+    case 'freeHand':
+      for (const c of side.hand) {
+        if (c.freeTurn) continue;
+        c.freeTurn = true;
+        r.ev.push({ type: 'transform', side: side.id, card: c.id, def: c.card, costMod: -cardDef(r.db, c.card).cost });
+      }
+      return;
+    case 'giveSly': {
+      const skills = side.hand.filter(
+        (c) => r.db.cards[c.card]?.kind === 'skill' && !r.db.cards[c.card]?.sly && !c.sly,
+      );
+      if (!skills.length) return;
+      const pick = skills[nextInt(r.s.rng, skills.length)] as CardInst;
+      pick.sly = 'turn';
+      r.ev.push({ type: 'transform', side: side.id, card: pick.id, def: pick.card });
+      return;
+    }
+    case 'copyNext': {
+      if (!side.hand.length) return;
+      if (!a.pick) {
+        // (no one to ask: a random card of the hand)
+        const c = side.hand[nextInt(r.s.rng, side.hand.length)] as CardInst;
+        (side.nextCopies ??= []).push({ card: c.card, times: op.times });
+        return;
+      }
+      r.s.pending = {
+        kind: 'copy',
+        times: op.times,
+        pool: side.hand.map((c) => c.id),
+        min: 1,
+        max: 1,
+        rest: [],
+        actor: a.actor.id,
+        target: a.target?.id ?? null,
+        finish: null,
+        x: a.x,
+      };
+      r.ev.push({ type: 'pending', side: side.id, kind: 'copy' });
       return;
     }
     case 'revive': {
@@ -1238,12 +1355,22 @@ function drawCards(r: Run, sd: SideState, n: number): void {
       r.ev.push({ type: 'draw', side: sd.id, card: c.id, def: c.card });
       sd.drawn++;
       fireTriggers(r, sd, 'draw', { drawn: c });
+      if (!r.openingDraw && r.s.active === sd.id) fireTriggers(r, sd, 'drawMidTurn', { drawn: c });
     }
   }
 }
 
 /** A card that an effect (not the end-of-turn sweep) sends away from the hand. It has already left the hand. */
-function moveFromHand(r: Run, sd: SideState, c: CardInst, kind: 'discard' | 'exhaust'): void {
+function moveFromHand(
+  r: Run,
+  sd: SideState,
+  c: CardInst,
+  kind: 'discard' | 'exhaust',
+  /** false: it comes from the draw pile (Foresee's leftovers), so Sly does not play it */
+  fromHand = true,
+): void {
+  const slyNow = c.sly !== undefined;
+  clearTurnFlags(c);
   if (kind === 'discard') {
     sd.discard.push(c);
     sd.discarded++;
@@ -1255,8 +1382,20 @@ function moveFromHand(r: Run, sd: SideState, c: CardInst, kind: 'discard' | 'exh
       runOps(r, mkAct(hero), cd.onDiscard);
       r.depth--;
     }
+    // (assassin) Sly: a card an effect discards is played for free
+    if (fromHand && (cd.sly || slyNow) && hero && hero.hp > 0 && !r.s.winner && sd.discard.includes(c)) {
+      sd.discard = sd.discard.filter((x) => x.id !== c.id);
+      playFree(r, sd, hero, c, 'normal');
+    }
     fireTriggers(r, sd, 'discard');
   } else exhaustCard(r, sd, c);
+}
+
+/** (assassin) what a copy had only for this turn (free, Held, Sly) ends when it leaves the hand */
+function clearTurnFlags(c: CardInst): void {
+  delete c.freeTurn;
+  delete c.held;
+  if (c.sly === 'turn') delete c.sly;
 }
 
 /** Puts a card (already out of every pile) into the exhaust pile and runs what exhausting it does. */
@@ -1274,6 +1413,28 @@ function exhaustCard(r: Run, sd: SideState, c: CardInst): void {
   fireTriggers(r, sd, 'exhaust');
 }
 
+/** Whether a card is one a 'playPile' op may play (its kind, a part of its name, its tag). */
+function fitsFree(r: Run, op: Extract<Op, { op: 'playPile' }>, c: CardInst): boolean {
+  const d = r.db.cards[c.card];
+  return (
+    !!d &&
+    (!op.kind || d.kind === op.kind) &&
+    (!op.match || d.name.toLowerCase().includes(op.match.toLowerCase())) &&
+    (!op.tag || d.tags?.includes(op.tag) === true) &&
+    // (a card that plays cards from the consumed pile never plays another: two would play each other for ever)
+    (op.from !== 'exhaust' ||
+      (d.kind !== 'power' && !d.effects.some((o) => o.op === 'playPile') && !d.replayFromExhaust))
+  );
+}
+
+/** Bleed (Seared) deals its stacks now and loses 1, as it does at the start of its turn. */
+function bleedTick(r: Run, u: Unit): void {
+  const sear = stacks(u, 'seared');
+  if (sear <= 0 || u.hp <= 0) return;
+  applyDamage(r, null, u, sear, 'direct');
+  addStatus(r, u, 'seared', -1);
+}
+
 /** Picks the card a 'playPile' op plays and takes it out of its pile (null when there is none). */
 function takeForFree(
   r: Run,
@@ -1281,14 +1442,7 @@ function takeForFree(
   a: Act,
   op: Extract<Op, { op: 'playPile' }>,
 ): CardInst | null {
-  const fits = (c: CardInst): boolean => {
-    const d = r.db.cards[c.card];
-    return (
-      !!d &&
-      (!op.kind || d.kind === op.kind) &&
-      (!op.match || d.name.toLowerCase().includes(op.match.toLowerCase()))
-    );
-  };
+  const fits = (c: CardInst): boolean => fitsFree(r, op, c);
   if (op.from === 'draw') {
     if (sd.draw.length === 0 && sd.discard.length > 0) {
       sd.draw = shuffle(r.s.rng, sd.discard);
@@ -1336,6 +1490,8 @@ function playFree(
   hero: Unit,
   inst: CardInst,
   how: 'normal' | 'exhaust' | 'stay',
+  /** aim it at this enemy instead of a random one (while it stands) */
+  aim: Unit | null = null,
 ): void {
   const cd = cardDef(r.db, inst.card);
   // (a card that could not be played goes where it came from; the screen is told, so its piles stay right)
@@ -1355,7 +1511,8 @@ function playFree(
   if (cd.target === 'foe') {
     const foes = legalFoes(r, sd.id, cd);
     if (!foes.length) return back();
-    target = foes[nextInt(r.s.rng, foes.length)] as Unit;
+    target =
+      aim && aim.hp > 0 && foes.includes(aim) ? aim : (foes[nextInt(r.s.rng, foes.length)] as Unit);
   } else if (cd.target === 'friend') target = hero;
   else if (cd.target === 'ally') {
     const allies = sd.units.filter((u) => u.kind === 'ally' && u.hp > 0);
@@ -1363,6 +1520,9 @@ function playFree(
     target = allies[nextInt(r.s.rng, allies.length)] as Unit;
   }
   r.ev.push({ type: 'play', side: sd.id, card: inst.id, def: inst.card, target: target?.id ?? null });
+  clearTurnFlags(inst);
+  strangle(r, sd);
+  if (r.s.winner) return back();
   if (cd.kind === 'snare') {
     if (sd.snares.length < MAX_SNARES) {
       sd.snares.push({ id: inst.id, card: inst.card });
@@ -1383,6 +1543,15 @@ function playFree(
     if (cd.kind === 'skill') sd.skillsPlayed++;
     fireTriggers(r, sd, 'play', { card: cd, target, inst });
   } else finishCard(r, sd, inst, cd, target);
+}
+
+/** (assassin) Strangle: a card is being played by `sd`, so every enemy it has Strangled loses that much HP. */
+function strangle(r: Run, sd: SideState): void {
+  for (const u of [...r.s.sides[other(sd.id)].units]) {
+    const n = stacks(u, 'strangled');
+    if (n > 0 && u.hp > 0) applyDamage(r, null, u, n, 'direct');
+  }
+  reap(r);
 }
 
 /** Powers: run every trigger of `sd` for `when` (for 'play', only those that match the card). */
@@ -1643,6 +1812,11 @@ export const HANGOVER_MAX = 10;
 function startOfTurn(r: Run, side: Side): void {
   const sd = r.s.sides[side];
   for (const u of sd.units) {
+    // (assassin) Blur: this turn change keeps all of it
+    if (stacks(u, 'blur') > 0) {
+      addStatus(r, u, 'blur', -1);
+      continue;
+    }
     if (u.barrier > 0) {
       // Fortified keeps a share of your Barrier through the turn change, Plating keeps up to its stacks; otherwise all of it falls away
       const fort = stacks(u, 'fortified') > 0 ? Math.floor(u.barrier * FORTIFIED_KEEP) : 0;
@@ -1653,13 +1827,10 @@ function startOfTurn(r: Run, side: Side): void {
   }
   // Plating wears thinner every turn
   for (const u of sd.units) if (stacks(u, 'plating') > 0) addStatus(r, u, 'plating', -1);
-  for (const u of [...sd.units]) {
-    const sear = stacks(u, 'seared');
-    if (sear > 0 && u.hp > 0) {
-      applyDamage(r, null, u, sear, 'direct');
-      addStatus(r, u, 'seared', -1);
-    }
-  }
+  // Seared (Bleed) burns; (assassin) an enemy hero's Virulent makes it burn more times over
+  const foeHero = heroOf(r.s.sides[other(side)]);
+  const ticks = 1 + (foeHero ? stacks(foeHero, 'virulent') : 0);
+  for (const u of [...sd.units]) for (let i = 0; i < ticks; i++) bleedTick(r, u);
   // the morning after: Hangover costs that much HP, but never the last one, and it clears (DECISIONS #354)
   for (const u of [...sd.units]) {
     const owed = stacks(u, 'hangover');
@@ -1730,9 +1901,28 @@ function beginHeroTurn(r: Run, side: Side): void {
   sd.nextMana = Math.min(0, rawMana);
   sd.nextDraw = 0;
   r.ev.push({ type: 'mana', side, mana: sd.mana });
+  r.openingDraw = true;
   drawCards(r, sd, sd.handSize + (first ? 1 : 0) + extraDraw);
+  r.openingDraw = false;
   const hero = heroOf(sd);
   if (!hero) return;
+  // (assassin) what was set up last turn arrives: Nightmare's copies, Dodge and Roll's Barrier, Shadow Step's double damage
+  sd.honedUsed = false;
+  for (const nc of (sd.nextCopies ?? []).splice(0))
+    for (let i = 0; i < nc.times; i++) addCardTo(r, sd, nc.card, 'hand');
+  const guard = stacks(hero, 'guarded');
+  if (guard > 0) {
+    addStatus(r, hero, 'guarded', -guard);
+    hero.barrier += guard;
+    r.ev.push({ type: 'barrier', target: hero.id, amount: guard, total: hero.barrier });
+    fireTriggers(r, sd, 'barrier');
+  }
+  const poised = stacks(hero, 'poised');
+  if (poised > 0) {
+    addStatus(r, hero, 'poised', -poised);
+    addStatus(r, hero, 'empowered', 1);
+    sd.temps.push({ unit: hero.id, status: 'empowered', amount: 1 });
+  }
   const opening = r.s.turn === (side === 'a' ? 1 : 2);
   // the Sigil, then Boons: the fight-start effects once, the turn-start effects every turn
   if (opening) {
@@ -1862,10 +2052,16 @@ function endTurn(r: Run): void {
   const hand = sd.hand;
   sd.hand = [];
   const holdAll = !!hero && stacks(hero, 'holdfast') > 0;
+  // (assassin) Honed knives Hold; a card drawn to Hold this turn does; what lasted only this turn ends
+  const honedKnives = !!hero && stacks(hero, 'honed') > 0;
   for (const c of hand) {
     const cd = cardDef(r.db, c.card);
-    if (cd.ethereal && !cd.retain) exhaustCard(r, sd, c);
-    else if (cd.retain || holdAll) keep.push(c);
+    const held = c.held === true || (honedKnives && cd.tags?.includes(EDGE_TAG) === true);
+    delete c.held;
+    delete c.freeTurn;
+    if (c.sly === 'turn') delete c.sly;
+    if (cd.ethereal && !cd.retain && !held) exhaustCard(r, sd, c);
+    else if (cd.retain || holdAll || held) keep.push(c);
     else {
       sd.discard.push(c);
       r.ev.push({ type: 'discard', side, card: c.id, def: c.card });
@@ -2040,16 +2236,23 @@ function legalFoes(r: Run, side: Side, cd: CardDef): Unit[] {
 /** What a card costs right now: its cost, any change to this copy, and free skills while Unbound. */
 export function costOf(
   db: CombatDb,
-  sd: Pick<SideState, 'units' | 'attacksPlayed'>,
-  c: Pick<CardInst, 'card' | 'costMod'>,
+  sd: Pick<SideState, 'units' | 'attacksPlayed'> & { skillsPlayed?: number },
+  c: Pick<CardInst, 'card' | 'costMod'> & Partial<Pick<CardInst, 'costDown' | 'freeTurn'>>,
 ): number {
   const cd = cardDef(db, c.card);
   const hero = sd.units.find((u) => u.kind === 'hero');
   if (cd.kind === 'skill' && hero && stacks(hero, 'unbound') > 0) return 0;
   if (cd.kind === 'attack' && hero && stacks(hero, 'freeattack') > 0) return 0;
+  // (assassin) Bullet Time's free hand, Pounce's free Skill
+  if (c.freeTurn) return 0;
+  if (cd.kind === 'skill' && hero && stacks(hero, 'freeskill') > 0) return 0;
   return Math.max(
     0,
-    cd.cost + (c.costMod ?? 0) - (cd.cheaperPerAttack ?? 0) * (sd.attacksPlayed ?? 0),
+    cd.cost +
+      (c.costMod ?? 0) -
+      (c.costDown ?? 0) -
+      (cd.cheaperPerAttack ?? 0) * (sd.attacksPlayed ?? 0) -
+      (cd.cheaperPerSkill ?? 0) * (sd.skillsPlayed ?? 0),
   );
 }
 
@@ -2068,6 +2271,7 @@ export function canPlay(r: { db: CombatDb; s: CombatState }, side: Side, c: Card
     sd.exhausted.filter((x) => r.db.cards[x.card]?.kind !== 'power').length < cd.needsExhausted
   )
     return false;
+  if (cd.needsEmptyDraw && sd.draw.length > 0) return false;
   if (cd.target === 'foe' && legalFoes({ ...r, ev: [], depth: 0 }, side, cd).length === 0)
     return false;
   if (cd.target === 'ally' && !sd.units.some((u) => u.kind === 'ally' && u.hp > 0)) return false;
@@ -2162,6 +2366,9 @@ function finishCard(r: Run, sd: SideState, inst: CardInst, cd: CardDef, target: 
     r.ev.push({ type: 'exhaust', side: sd.id, card: inst.id, def: inst.card });
   } else if (cd.exhaust || (cd.kind === 'skill' && unbound(sd))) exhaustCard(r, sd, inst);
   else sd.discard.push(inst);
+  // (assassin) Master Planner: a Skill you play keeps Sly for the rest of the fight
+  const lead = heroOf(sd);
+  if (cd.kind === 'skill' && lead && stacks(lead, 'planner') > 0) inst.sly = 'fight';
   sd.played++;
   if (cd.kind === 'attack') sd.attacksPlayed++;
   if (cd.kind === 'skill') sd.skillsPlayed++;
@@ -2200,10 +2407,19 @@ function playCard(r: Run, action: Extract<Action, { type: 'play' }>): void {
   }
   sd.hand.splice(i, 1);
   const freeAttack = cd.kind === 'attack' && stacks(hero, 'freeattack') > 0;
+  // (a Skill that was free anyway, while Unbound, does not spend Pounce's free Skill)
+  const freeSkill =
+    cd.kind === 'skill' &&
+    stacks(hero, 'freeskill') > 0 &&
+    stacks(hero, 'unbound') <= 0 &&
+    !inst.freeTurn &&
+    cd.cost + (inst.costMod ?? 0) - (inst.costDown ?? 0) > 0;
   sd.mana -= costOf(r.db, sd, inst);
   if (freeAttack) addStatus(r, hero, 'freeattack', -1);
+  if (freeSkill) addStatus(r, hero, 'freeskill', -1);
   // a discount (Cheapen, a free Discover) is spent on the play: a card made free for good would loop for ever
   delete inst.costMod;
+  clearTurnFlags(inst);
   let x = 0;
   if (cd.x) {
     x = sd.mana + (cd.xBonus ?? 0);
@@ -2217,6 +2433,12 @@ function playCard(r: Run, action: Extract<Action, { type: 'play' }>): void {
     addStatus(r, hero, cd.statusCost.status, -cd.statusCost.amount);
   r.ev.push({ type: 'play', side, card: inst.id, def: inst.card, target: target?.id ?? null });
   r.ev.push({ type: 'mana', side, mana: sd.mana });
+  // (assassin) Strangle: every card played costs the strangled enemies HP
+  strangle(r, sd);
+  if (r.s.winner) {
+    sd.discard.push(inst);
+    return;
+  }
   // (the Auras that answer Arcana being spent go off once the card is paid for)
   if (cd.starCost) fireTriggers(r, sd, 'arcana');
   if (cd.kind === 'snare') {
@@ -2261,7 +2483,13 @@ function pickCards(r: Run, action: Extract<Action, { type: 'pick' }>): void {
     throw new RulesError('That is not a legal choice');
   r.s.pending = null;
   const picked: CardInst[] = [];
-  for (const id of ids) {
+  // (assassin) Nightmare: the chosen card stays in your hand, and its copies come next turn
+  if (p.kind === 'copy')
+    for (const id of ids) {
+      const c = sd.hand.find((x) => x.id === id);
+      if (c) (sd.nextCopies ??= []).push({ card: c.card, times: p.times ?? 1 });
+    }
+  for (const id of p.kind === 'copy' ? [] : ids) {
     const pile = p.kind === 'scry' ? sd.draw : sd.hand;
     const k = pile.findIndex((c) => c.id === id);
     const [c] = k >= 0 ? pile.splice(k, 1) : [];
@@ -2277,7 +2505,7 @@ function pickCards(r: Run, action: Extract<Action, { type: 'pick' }>): void {
       if (c) left.push(c);
     }
     r.ev.push({ type: 'scry', side, cards: left.map((c) => c.id) });
-    for (const c of left) moveFromHand(r, sd, c, 'discard');
+    for (const c of left) moveFromHand(r, sd, c, 'discard', false);
     for (const c of picked) {
       if (sd.hand.length >= MAX_HAND) {
         sd.discard.push(c);
@@ -2289,7 +2517,7 @@ function pickCards(r: Run, action: Extract<Action, { type: 'pick' }>): void {
         fireTriggers(r, sd, 'draw');
       }
     }
-  } else for (const c of picked) moveFromHand(r, sd, c, p.kind);
+  } else if (p.kind !== 'copy') for (const c of picked) moveFromHand(r, sd, c, p.kind);
   const hero = findUnit(r.s, p.actor);
   const fin = p.finish;
   const cd = fin ? cardDef(r.db, fin.card) : null;

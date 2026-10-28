@@ -1,425 +1,661 @@
-// Sylas (id assassin, Umbral). No companions. Three build paths that mix (DECISIONS #255); his trait (a Sleeve Knife every turn)
-// feeds all three.
-//   Shivs   - 0-cost Shiv attacks, many hits, payoffs per card played
-//   Seared  - stack our poison, double it, cash it out
-//   Sleight - discard and cycle for value
-// Seared and Shivs are Quill's alone (docs/09_ROSTER.md): nobody else gets the engine.
+// Sylas (id assassin, Umbral). No companions. He is the Slay the Spire 2 Silent on purpose, for now (Robert, 2026-10-28: "close
+// copies of the originals, but obviously change names and keep our theme, i will adjust things going forward, but we need good
+// baselines right now"; docs/decisions-pending/assassin.md): one card for every card of the Silent's under an original name, and
+// nothing else. Shivs are his Sleeve Knives (cards tagged "knife"; Edge is the Silent's Accuracy), Poison is Bleed (the engine's
+// `seared`), Weak is Faltering, Vulnerable is Exposed, Dexterity is Bracing, Strength lost is Sapped, Sly is Sly. Each card's
+// comment names the Silent card it imitates; numbers and rarities are the Silent's (slaythespire.wiki.gg, 2026-10-27: the v0.110
+// beta list) unless a comment says why not. Not here: Blade Symphony, Concoct, Fade, Flanking and Sneaky (they need a second
+// player), and the Ancient cards Suppress and Wraith Form (an event's prize in their game, as the knight's Break is).
+//
+// Build paths are hidden for now (DECISIONS #365) and the headings below are only a first sort:
+//   Shivs  - Sleeve Knives and the attacks around them
+//   Bleed  - stack Bleed and make it burn harder
+//   Sleight - draw, discard (Sly cards play themselves when discarded) and dodge
+// Numbers assume 3 Mana and a 5-card hand.
 
-import type { CardDef } from '@sr/combat';
+import type { CardDef, Op } from '@sr/combat';
 import {
   addTo,
   barrier,
-  dmg,
-  doubleSt,
   discard,
+  dmg,
   draw,
-  reclaim,
+  drawLock,
+  drawNext,
   mana,
+  manaNext,
   on,
   per,
+  playPile,
   pool,
   scaled,
   status,
-  loseHpScaled,
-  drawNext,
-  cheapen,
-  discoverOp,
+  statusTheirs,
+  when,
 } from '../build';
 
 const q = pool('assassin', 'umbral');
 
+/** Deal `amount` damage once per point of a metric (Flechettes, Skewer). */
+const hitsPer = (amount: number, by: 'x' | 'skillsInHand'): Op =>
+  scaled({ op: 'damage', amount, hits: 0, to: 'target' }, per(by, 1, undefined, 'hits'));
+const knifeTrap = (upgrade: boolean): Op =>
+  playPile('exhaust', { tag: 'knife', all: true, aim: 'target', ...(upgrade ? { upgrade } : {}) });
+const tick = (to: 'allFoes' | 'target'): Op => ({ op: 'tick', to });
+
 export const ASSASSIN: CardDef[] = [
-  // --- basics and the token ---
-  q('basic', 'quick-jab', 'Quick Jab', 'attack', 0, 'foe', [
-    dmg(3),
-    status('faltering', 1, 'target'),
-  ]),
-  q('basic', 'slip-away', 'Slip Away', 'skill', 1, 'none', [barrier(7), discard(1)]),
+  // --- basics and tokens ---
+  // (Neutralize)
+  q(
+    'basic',
+    'hobbling-jab',
+    'Hobbling Jab',
+    'attack',
+    0,
+    'foe',
+    [dmg(3), status('faltering', 1, 'target')],
+    {
+      up: { effects: [dmg(4), status('faltering', 2, 'target')] },
+    },
+  ),
+  // (Survivor)
+  q('basic', 'duck-and-weave', 'Duck and Weave', 'skill', 1, 'none', [barrier(8), discard(1)]),
+  // (Shiv: 4 damage, Consume; Shiv+ deals 6)
   q('common', 'sleeve-knife', 'Sleeve Knife', 'attack', 0, 'foe', [dmg(4)], {
     exhaust: true,
     tags: ['knife'],
     source: 'token',
+    up: { effects: [dmg(6)] },
   }),
+  // (Blade of Ink's Inky Shiv: a Shiv with 1 more damage and 1 Weak)
+  q(
+    'common',
+    'inked-knife',
+    'Inked Knife',
+    'attack',
+    0,
+    'foe',
+    [dmg(5), status('faltering', 1, 'target')],
+    { exhaust: true, tags: ['knife'], source: 'token' },
+  ),
 
   // --- Shivs ---
-  q('common', 'palmed-knives', 'Palmed Knives', 'skill', 1, 'none', [
-    addTo('sleeve-knife', 2),
-    draw(1),
-  ]),
-  q('common', 'hidden-blade', 'Hidden Blade', 'skill', 1, 'none', [
-    barrier(4),
-    addTo('sleeve-knife'),
-    status('edge', 1, 'self', true),
-  ]),
-  q('common', 'whirling-knives', 'Whirling Knives', 'attack', 1, 'none', [dmg(4, 'allFoes', 2)]),
-  q('common', 'knife-volley', 'Knife Volley', 'attack', 1, 'foe', [dmg(3, 'target', 3)]),
-  q('rare', 'endless-edges', 'Endless Edges', 'power', 2, 'none', [
-    on('turnStart', [addTo('sleeve-knife', 2)]),
-  ]),
-  q('uncommon', 'keen-edge', 'Keen Edge', 'power', 1, 'none', [status('edge', 2)]),
-  q('rare', 'razor-halo', 'Razor Halo', 'power', 2, 'none', [
-    on('play', [dmg(2, 'allFoes')], { tag: 'knife' }),
-  ]),
-  q('rare', 'empty-the-sleeves', 'Empty the Sleeves', 'skill', 1, 'none', [
-    discard(9),
-    addTo('sleeve-knife', 0, 'hand', per('discarded')),
-    status('edge', 1, 'self', true),
-  ]),
-  q('uncommon', 'killing-flourish', 'Killing Flourish', 'attack', 1, 'foe', [
-    scaled(
-      { op: 'damage', amount: 4, hits: 0, to: 'target' },
-      per('attacksPlayed', 1, undefined, 'hits'),
-    ),
-  ]),
-
-  q('common', 'knife-fan', 'Knife Fan', 'attack', 1, 'none', [
-    dmg(3, 'allFoes'),
-    addTo('sleeve-knife'),
-  ]),
-
-  // (more Knives)
-  q('common', 'cut-low', 'Cut Low', 'attack', 0, 'foe', [dmg(5)]),
-  q('uncommon', 'smoke-and-slip', 'Smoke and Slip', 'skill', 1, 'none', [
-    barrier(6),
-    discard(1),
-    addTo('sleeve-knife'),
-  ]),
-  q('uncommon', 'ambush-cut', 'Ambush Cut', 'attack', 0, 'foe', [dmg(11)], {
-    innate: true,
+  // (Blade Dance)
+  q('common', 'knife-juggle', 'Knife Juggle', 'skill', 1, 'none', [addTo('sleeve-knife', 3)], {
     exhaust: true,
   }),
-  q('rare', 'knife-cascade', 'Knife Cascade', 'power', 3, 'none', [
-    on('turnStart', [addTo('sleeve-knife', 3)]),
+  // (Cloak and Dagger)
+  q(
+    'common',
+    'shroud-and-shank',
+    'Shroud and Shank',
+    'skill',
+    1,
+    'none',
+    [barrier(6), addTo('sleeve-knife')],
+    { up: { effects: [barrier(6), addTo('sleeve-knife', 2)] } },
+  ),
+  // (Leading Strike)
+  q(
+    'common',
+    'feint-strike',
+    'Feint Strike',
+    'attack',
+    1,
+    'foe',
+    [dmg(3), addTo('sleeve-knife', 2)],
+    {
+      up: { effects: [dmg(6), addTo('sleeve-knife', 2)] },
+    },
+  ),
+  // (Dagger Spray)
+  q('common', 'blade-flurry', 'Blade Flurry', 'attack', 1, 'none', [dmg(4, 'allFoes', 2)], {
+    up: { effects: [dmg(6, 'allFoes', 2)] },
+  }),
+  // (Slice)
+  q('common', 'quick-slash', 'Quick Slash', 'attack', 0, 'foe', [dmg(6)]),
+  // (Sucker Punch)
+  q(
+    'common',
+    'dirty-hit',
+    'Dirty Hit',
+    'attack',
+    1,
+    'foe',
+    [dmg(8), status('faltering', 1, 'target')],
+    {
+      up: { effects: [dmg(10), status('faltering', 2, 'target')] },
+    },
+  ),
+  // (Predator)
+  q('common', 'stalkers-lunge', "Stalker's Lunge", 'attack', 2, 'foe', [dmg(15), drawNext(2)], {
+    up: { effects: [dmg(20), drawNext(2)] },
+  }),
+  // (Ricochet: Sly)
+  q('common', 'glancing-knives', 'Glancing Knives', 'attack', 2, 'none', [dmg(3, 'randomFoe', 4)], {
+    sly: true,
+    up: { effects: [dmg(3, 'randomFoe', 5)] },
+  }),
+  // (Flick-Flack: Sly)
+  q('common', 'cartwheel-cut', 'Cartwheel Cut', 'attack', 1, 'none', [dmg(7, 'allFoes')], {
+    sly: true,
+    up: { effects: [dmg(9, 'allFoes')] },
+  }),
+  // (Accuracy: Edge is the knives' extra damage)
+  q('uncommon', 'whetted-edge', 'Whetted Edge', 'power', 1, 'none', [status('edge', 4)], {
+    up: { effects: [status('edge', 6)] },
+  }),
+  // (Backstab)
+  q('uncommon', 'knife-in-the-back', 'Knife in the Back', 'attack', 0, 'foe', [dmg(11)], {
+    innate: true,
+    exhaust: true,
+    up: { effects: [dmg(15)] },
+  }),
+  // (Hidden Daggers: the upgrade makes upgraded knives)
+  q(
+    'uncommon',
+    'sleeve-drop',
+    'Sleeve Drop',
+    'skill',
+    0,
+    'none',
+    [discard(2), addTo('sleeve-knife', 2)],
+    { up: { effects: [discard(2), addTo('sleeve-knife+', 2)] } },
+  ),
+  // (Infinite Blades: the upgrade is in your opening hand)
+  q(
+    'uncommon',
+    'bottomless-sleeves',
+    'Bottomless Sleeves',
+    'power',
+    1,
+    'none',
+    [on('turnStart', [addTo('sleeve-knife')])],
+    { up: { innate: true } },
+  ),
+  // (Phantom Blades: knives Hold, and the first each turn hits harder)
+  q('uncommon', 'ghost-knives', 'Ghost Knives', 'power', 1, 'none', [status('honed', 9)], {
+    up: { effects: [status('honed', 12)] },
+  }),
+  // (Up My Sleeve)
+  q('uncommon', 'spare-blades', 'Spare Blades', 'skill', 2, 'none', [
+    addTo('sleeve-knife', 3),
+    { op: 'selfCost', amount: 1 },
   ]),
+  // (Echoing Slash)
+  q('uncommon', 'rippling-cut', 'Rippling Cut', 'attack', 1, 'none', [
+    { op: 'damage', amount: 10, to: 'allFoes', repeatOnKill: true },
+  ]),
+  // (Dash)
+  q('uncommon', 'darting-strike', 'Darting Strike', 'attack', 2, 'foe', [barrier(10), dmg(10)]),
+  // (Finisher)
+  q(
+    'uncommon',
+    'final-flourish',
+    'Final Flourish',
+    'attack',
+    1,
+    'foe',
+    [scaled(dmg(0), per('attacksPlayed', 6))],
+    { up: { effects: [scaled(dmg(0), per('attacksPlayed', 8))] } },
+  ),
+  // (Skewer: an X card, so its upgrade is X+1, as every X card's is, not 11 damage)
+  q('uncommon', 'run-through', 'Run Through', 'attack', 0, 'foe', [hitsPer(8, 'x')], { x: true }),
+  // (Pounce)
+  q(
+    'uncommon',
+    'spring-attack',
+    'Spring Attack',
+    'attack',
+    2,
+    'foe',
+    [dmg(14), status('freeskill', 1)],
+    {
+      up: { effects: [dmg(20), status('freeskill', 1)] },
+    },
+  ),
+  // (Pinpoint)
+  q('uncommon', 'nerve-strike', 'Nerve Strike', 'attack', 3, 'foe', [dmg(15)], {
+    cheaperPerSkill: 1,
+    up: { effects: [dmg(19)] },
+  }),
+  // (Precise Cut: 2 less for each other card in your hand)
+  q('uncommon', 'clean-cut', 'Clean Cut', 'attack', 0, 'foe', [scaled(dmg(13), per('hand', -2))]),
+  // (Assassinate)
   q(
     'rare',
-    'assassins-mark',
-    "Assassin's Mark",
+    'killing-stroke',
+    'Killing Stroke',
     'attack',
     0,
     'foe',
     [dmg(10), status('exposed', 1, 'target')],
-    {
-      innate: true,
-      exhaust: true,
-    },
+    { innate: true, exhaust: true },
   ),
-
-  // (Knives, round three)
-  q('uncommon', 'spent-steel', 'Spent Steel', 'attack', 1, 'foe', [
-    scaled(dmg(5), per('created', 0.2)),
-  ]),
-  q('uncommon', 'gather-the-blades', 'Gather the Blades', 'skill', 1, 'none', [reclaim(3)], {
-    exhaust: true,
-  }),
-  q('uncommon', 'jugglers-poise', "Juggler's Poise", 'power', 1, 'none', [
-    on('play', [barrier(2)], { tag: 'knife' }),
-  ]),
+  // (Blade of Ink)
+  q('rare', 'inked-blades', 'Inked Blades', 'skill', 1, 'none', [addTo('inked-knife', 2)]),
+  // (Fan of Knives: knives hit every enemy for the rest of the fight)
   q(
     'rare',
-    'knife-storm',
-    'Knife Storm',
-    'attack',
-    0,
-    'foe',
-    [scaled({ op: 'damage', amount: 5, hits: 0, to: 'target' }, per('x', 1, undefined, 'hits'))],
-    { x: true },
-  ),
-  q('rare', 'spent-blades-sing', 'Spent Blades Sing', 'power', 1, 'none', [
-    on('exhaust', [dmg(2, 'randomFoe')]),
-  ]),
-
-  // --- Seared ---
-  q('common', 'needle-jab', 'Needle Jab', 'attack', 0, 'foe', [
-    dmg(4),
-    status('seared', 1, 'target'),
-  ]),
-  q('common', 'ember-dose', 'Ember Dose', 'skill', 1, 'foe', [
-    status('seared', 5, 'target'),
-    barrier(3),
-  ]),
-  q('uncommon', 'choking-haze', 'Choking Haze', 'skill', 2, 'none', [
-    status('seared', 3, 'allFoes'),
-    status('faltering', 2, 'allFoes'),
-    barrier(4),
-  ]),
-  q('uncommon', 'mindrot', 'Mindrot', 'skill', 1, 'foe', [
-    status('seared', 4, 'target'),
-    status('exposed', 1, 'target'),
-  ]),
-  q(
-    'uncommon',
-    'flashpoint',
-    'Flashpoint',
-    'skill',
-    1,
-    'foe',
-    [doubleSt('seared', 'target', 2, 15)],
-    {
-      exhaust: true,
-    },
-  ),
-  q('uncommon', 'smouldering-air', 'Smouldering Air', 'power', 1, 'none', [
-    on('turnStart', [status('seared', 1, 'allFoes'), barrier(2)]),
-  ]),
-  q('common', 'tainted-edges', 'Tainted Edges', 'power', 1, 'none', [
-    on('play', [status('seared', 1, 'target')], { tag: 'knife' }),
-  ]),
-  q('uncommon', 'hungering-dark', 'Hungering Dark', 'skill', 2, 'none', [
-    status('seared', 3, 'allFoes'),
-  ]),
-  q('uncommon', 'venom-fang', 'Venom Fang', 'attack', 2, 'foe', [
-    dmg(10),
-    status('seared', 5, 'target'),
-  ]),
-  q('rare', 'cash-in', 'Cash In', 'skill', 1, 'foe', [loseHpScaled(per('seared', 1, 'target'))], {
-    exhaust: true,
-  }),
-  q(
-    'rare',
-    'plague-bloom',
-    'Plague Bloom',
-    'skill',
-    2,
-    'none',
-    [doubleSt('seared', 'allFoes', 2, 12)],
-    {
-      exhaust: true,
-    },
-  ),
-  q(
-    'rare',
-    'nightfall',
-    'Nightfall',
-    'skill',
-    2,
-    'none',
-    [status('seared', 5, 'allFoes'), status('exposed', 2, 'allFoes')],
-    { exhaust: true },
-  ),
-
-  // (more Bleed)
-  q('common', 'poison-tip', 'Poison Tip', 'attack', 1, 'foe', [
-    dmg(4),
-    status('seared', 4, 'target'),
-  ]),
-  q('common', 'deadly-vial', 'Deadly Vial', 'skill', 1, 'foe', [
-    status('seared', 4, 'target'),
-    draw(1),
-  ]),
-  q('rare', 'tainted-edge', 'Tainted Edge', 'power', 2, 'none', [
-    on('play', [status('seared', 1, 'allFoes')], { filter: 'attack' }),
-  ]),
-  q('rare', 'festering-wound', 'Festering Wound', 'attack', 2, 'foe', [
-    scaled(dmg(8), per('seared', 1, 'target')),
-  ]),
-
-  // (Bleed, round three)
-  q('uncommon', 'scatter-shot', 'Scatter Shot', 'attack', 1, 'none', [
-    dmg(3, 'allFoes'),
-    status('seared', 2, 'allFoes'),
-  ]),
-  q('common', 'withering-slash', 'Withering Slash', 'attack', 1, 'foe', [
-    dmg(6),
-    status('seared', 2, 'target'),
-    status('faltering', 1, 'target'),
-  ]),
-  q(
-    'rare',
-    'contagion',
-    'Contagion',
-    'skill',
-    2,
-    'foe',
-    [
-      status('seared', 2, 'target'),
-      scaled(status('seared', 0, 'allFoes'), per('seared', 1, 'target')),
-    ],
-    { exhaust: true },
-  ),
-  q('uncommon', 'sour-sleight', 'Sour Sleight', 'power', 1, 'none', [
-    on('discard', [status('seared', 2, 'randomFoe')]),
-  ]),
-  q('rare', 'compounding-interest', 'Compounding Interest', 'power', 2, 'none', [
-    on('turnStart', [status('seared', 3, 'allFoes')]),
-  ]),
-
-  // --- Sleight ---
-  q('common', 'roll-clear', 'Roll Clear', 'skill', 1, 'none', [barrier(4), draw(2), discard(1)]),
-  q('common', 'ace-up-the-sleeve', 'Ace Up the Sleeve', 'skill', 0, 'none', [], {
-    unplayable: true,
-    onDiscard: [draw(2), addTo('sleeve-knife')],
-  }),
-  q('uncommon', 'fold-the-hand', 'Fold the Hand', 'skill', 0, 'none', [discard(3), mana(2)], {
-    exhaust: true,
-  }),
-  q(
-    'uncommon',
-    'all-in',
-    'All In',
-    'skill',
-    0,
-    'none',
-    [discard(9), scaled(draw(0), per('discarded')), addTo('sleeve-knife')],
-    { exhaust: true },
-  ),
-  q('uncommon', 'hidden-palm', 'Hidden Palm', 'power', 1, 'none', [on('discard', [barrier(3)])]),
-  q('rare', 'flaying-spree', 'Flaying Spree', 'attack', 2, 'foe', [
-    scaled({ op: 'damage', amount: 8, to: 'target' }, per('discarded', 1, undefined, 'hits')),
-  ]),
-  q(
-    'uncommon',
-    'knife-in-the-dark',
-    'Knife in the Dark',
-    'snare',
-    1,
-    'none',
-    [dmg(5, 'attacker'), addTo('sleeve-knife', 2)],
-    { trigger: { on: 'foeDefends' } },
-  ),
-  q('rare', 'encore', 'Encore', 'skill', 1, 'none', [status('mirrored', 1), draw(1)]),
-  q(
-    'rare',
-    'deck-of-a-thousand-knives',
-    'Deck of a Thousand Knives',
+    'wide-arc',
+    'Wide Arc',
     'power',
     2,
     'none',
-    [on('turnStart', [addTo('sleeve-knife', 3)]), status('edge', 2)],
-    { up: { cost: 1, effects: [on('turnStart', [addTo('sleeve-knife', 3)]), status('edge', 3)] } },
+    [status('fanned', 1), addTo('sleeve-knife', 4)],
+    { up: { effects: [status('fanned', 1), addTo('sleeve-knife', 5)] } },
   ),
+  // (Knife Trap)
+  q('rare', 'recall-the-blades', 'Recall the Blades', 'skill', 2, 'foe', [knifeTrap(false)], {
+    up: { effects: [knifeTrap(true)] },
+  }),
+  // (Serpent Form)
   q(
     'rare',
-    'death-warrant',
-    'Death Warrant',
+    'serpents-coil',
+    "Serpent's Coil",
+    'power',
+    3,
+    'none',
+    [on('play', [dmg(4, 'randomFoe')])],
+    { up: { effects: [on('play', [dmg(6, 'randomFoe')])] } },
+  ),
+  // (Shadow Step: next turn your Attacks deal double damage)
+  q(
+    'rare',
+    'into-the-shadows',
+    'Into the Shadows',
+    'skill',
+    1,
+    'none',
+    [discard(99), status('poised', 1)],
+    {
+      up: { cost: 0 },
+    },
+  ),
+  // (Storm of Steel: a knife for every card discarded; upgraded knives when upgraded)
+  q(
+    'rare',
+    'steel-monsoon',
+    'Steel Monsoon',
+    'skill',
+    1,
+    'none',
+    [discard(99), addTo('sleeve-knife', 0, 'hand', per('discardedNow'))],
+    { up: { effects: [discard(99), addTo('sleeve-knife+', 0, 'hand', per('discardedNow'))] } },
+  ),
+  // (The Hunt: the extra card reward for a kill is not copied, there is no such reward in a fight)
+  q('rare', 'marked-for-death', 'Marked for Death', 'attack', 1, 'foe', [dmg(10)], {
+    exhaust: true,
+    up: { effects: [dmg(15)] },
+  }),
+  // (Grand Finale)
+  q('rare', 'final-bow', 'Final Bow', 'attack', 0, 'none', [dmg(60, 'allFoes')], {
+    needsEmptyDraw: true,
+    up: { effects: [dmg(75, 'allFoes')] },
+  }),
+
+  // --- Bleed ---
+  // (Deadly Poison)
+  q('common', 'open-vein', 'Open Vein', 'skill', 1, 'foe', [status('seared', 5, 'target')]),
+  // (Poisoned Stab)
+  q(
+    'common',
+    'barbed-stab',
+    'Barbed Stab',
+    'attack',
+    1,
+    'foe',
+    [dmg(6), status('seared', 3, 'target')],
+    {
+      up: { effects: [dmg(8), status('seared', 4, 'target')] },
+    },
+  ),
+  // (Snakebite)
+  q('common', 'vipers-kiss', "Viper's Kiss", 'skill', 2, 'foe', [status('seared', 7, 'target')], {
+    retain: true,
+    up: { effects: [status('seared', 10, 'target')] },
+  }),
+  // (Piercing Wail: Strength lost for the turn is Sapped until the end of their turn)
+  q(
+    'common',
+    'chilling-shriek',
+    'Chilling Shriek',
+    'skill',
+    1,
+    'none',
+    [statusTheirs('sapped', 6, 'allFoes')],
+    {
+      exhaust: true,
+    },
+  ),
+  // (Accelerant)
+  q('uncommon', 'thin-the-blood', 'Thin the Blood', 'power', 1, 'none', [status('virulent', 1)]),
+  // (Bouncing Flask)
+  q(
+    'uncommon',
+    'tossed-vials',
+    'Tossed Vials',
+    'skill',
+    2,
+    'none',
+    [
+      status('seared', 3, 'randomFoe'),
+      status('seared', 3, 'randomFoe'),
+      status('seared', 3, 'randomFoe'),
+    ],
+    {
+      up: {
+        effects: [
+          status('seared', 3, 'randomFoe'),
+          status('seared', 3, 'randomFoe'),
+          status('seared', 3, 'randomFoe'),
+          status('seared', 3, 'randomFoe'),
+        ],
+      },
+    },
+  ),
+  // (Bubble Bubble)
+  q(
+    'uncommon',
+    'reopen-the-wound',
+    'Reopen the Wound',
     'skill',
     1,
     'foe',
-    [loseHpScaled(per('seared', 2, 'target'))],
-    { exhaust: true },
-  ),
-  q('uncommon', 'light-fingers', 'Light Fingers', 'skill', 1, 'none', [mana(2), discard(1)], {
-    up: { effects: [mana(2), draw(1), discard(1)] },
-  }),
-  // (more Sleight)
-  q('rare', 'speed-reader', 'Speed Reader', 'power', 1, 'none', [on('draw', [dmg(2, 'allFoes')])]),
-  q('common', 'showmans-flourish', "Showman's Flourish", 'attack', 1, 'foe', [
-    scaled(dmg(4), per('skillsPlayed', 4)),
-  ]),
-  q('common', 'dart-throw', 'Dart Throw', 'attack', 1, 'foe', [dmg(7), discard(1), draw(2)]),
-  q('common', 'quick-draw', 'Quick Draw', 'skill', 1, 'none', [
-    barrier(3),
-    draw(1),
-    addTo('sleeve-knife'),
-  ]),
-  q(
-    'rare',
-    'adrenaline-rush',
-    'Cold Sweat',
-    'skill',
-    0,
-    'none',
-    [mana(1), draw(1), addTo('sleeve-knife')],
+    [when('seared', { atLeast: 1, of: 'target' }, [status('seared', 9, 'target')])],
     {
-      exhaust: true,
+      up: {
+        effects: [when('seared', { atLeast: 1, of: 'target' }, [status('seared', 12, 'target')])],
+      },
     },
   ),
-  q('rare', 'tricks-of-the-trade', 'Tradecraft', 'power', 1, 'none', [on('turnStart', [draw(1)])]),
-
-  // (Sleight, round three)
-  q('uncommon', 'magicians-exit', "Magician's Exit", 'skill', 1, 'none', [
-    discard(9, 'any'),
-    scaled(barrier(0), per('discarded', 4)),
-  ]),
-  q('common', 'loaded-die', 'Loaded Die', 'skill', 0, 'none', [], {
-    unplayable: true,
-    onDiscard: [dmg(6, 'allFoes')],
-  }),
-  q('uncommon', 'fortunes-edge', "Fortune's Edge", 'attack', 1, 'foe', [
-    scaled(dmg(6), per('discarded', 3)),
-  ]),
-  q('rare', 'jokers-gambit', "Joker's Gambit", 'skill', 0, 'none', [], {
-    unplayable: true,
-    onDiscard: [addTo('sleeve-knife', 3)],
-  }),
-  q('rare', 'showy-reflex', 'Showy Reflex', 'power', 1, 'none', [
-    on('discard', [dmg(4, 'randomFoe')]),
-  ]),
-
-  // --- glue: cards for any build path (DECISIONS #337) ---
-  q('common', 'tangle-wire', 'Tangle Wire', 'attack', 1, 'foe', [
-    dmg(8),
-    status('faltering', 1, 'target'),
-  ]),
-  q('uncommon', 'quick-hands', 'Quick Hands', 'skill', 0, 'none', [draw(2), discard(2)], {
-    up: { effects: [draw(2), discard(2), barrier(3)] },
-  }),
-  q('common', 'cold-open', 'Cold Open', 'attack', 0, 'foe', [dmg(6), discard(1)]),
-
-  // --- more glue: uncommons and rares for any build path (DECISIONS #339) ---
-  q(
-    'rare',
-    'veil-of-dust',
-    'Veil of Dust',
-    'skill',
-    1,
-    'none',
-    [scaled(barrier(0), per('barrier', 1))],
-    {
-      exhaust: true,
-    },
-  ),
-  q(
-    'rare',
-    'tricksters-vanish',
-    "Trickster's Vanish",
-    'skill',
-    1,
-    'none',
-    [barrier(12), drawNext(2)],
-    { exhaust: true },
-  ),
+  // (Haze: 2 Mana since the v0.110 beta)
   q(
     'uncommon',
-    'nimble-hands',
-    'Nimble Hands',
+    'blood-mist',
+    'Blood Mist',
+    'skill',
+    2,
+    'none',
+    [status('seared', 4, 'allFoes'), status('faltering', 1, 'allFoes')],
+    { up: { effects: [status('seared', 6, 'allFoes'), status('faltering', 2, 'allFoes')] } },
+  ),
+  // (Mirage: the upgrade is no longer consumed)
+  q(
+    'uncommon',
+    'red-mirage',
+    'Red Mirage',
+    'skill',
+    1,
+    'none',
+    [scaled(barrier(0), per('foesSeared'))],
+    { exhaust: true, up: { exhaust: false } },
+  ),
+  // (Noxious Fumes)
+  q(
+    'uncommon',
+    'weeping-cuts',
+    'Weeping Cuts',
+    'power',
+    1,
+    'none',
+    [on('turnStart', [status('seared', 2, 'allFoes')])],
+    { up: { effects: [on('turnStart', [status('seared', 3, 'allFoes')])] } },
+  ),
+  // (Strangle: the enemy loses HP whenever you play a card this turn)
+  q(
+    'uncommon',
+    'garrote',
+    'Garrote',
+    'attack',
+    1,
+    'foe',
+    [dmg(8), status('strangled', 2, 'target', true)],
+    { up: { effects: [dmg(10), status('strangled', 3, 'target', true)] } },
+  ),
+  // (Corrosive Wave)
+  q(
+    'rare',
+    'hemorrhage',
+    'Hemorrhage',
+    'skill',
+    1,
+    'none',
+    [on('draw', [status('seared', 2, 'allFoes')], { temp: true })],
+    { up: { effects: [on('draw', [status('seared', 3, 'allFoes')], { temp: true })] } },
+  ),
+  // (Envenom)
+  q(
+    'rare',
+    'serrated-edges',
+    'Serrated Edges',
+    'power',
+    2,
+    'none',
+    [on('hitFoe', [status('seared', 1, 'target')])],
+    { up: { effects: [on('hitFoe', [status('seared', 2, 'target')])] } },
+  ),
+  // (Outbreak: Bleed on every enemy, and it burns at once)
+  q(
+    'rare',
+    'bloodburst',
+    'Bloodburst',
+    'skill',
+    1,
+    'none',
+    [status('seared', 9, 'allFoes'), tick('allFoes')],
+    { up: { effects: [status('seared', 12, 'allFoes'), tick('allFoes')] } },
+  ),
+  // (Malaise: Strength lost for good is Sapped for good)
+  q(
+    'rare',
+    'sapping-wound',
+    'Sapping Wound',
+    'skill',
+    0,
+    'foe',
+    [
+      scaled(status('sapped', 0, 'target'), per('x')),
+      scaled(status('faltering', 0, 'target'), per('x')),
+    ],
+    { x: true, exhaust: true },
+  ),
+  // (Tracking: Weak enemies take 50% more from Attacks)
+  q('rare', 'blood-scent', 'Blood Scent', 'power', 2, 'none', [status('tracking', 1)], {
+    up: { cost: 1 },
+  }),
+
+  // --- Sleight ---
+  // (Anticipate: Dexterity this turn is Bracing this turn)
+  q(
+    'common',
+    'sense-the-blow',
+    'Sense the Blow',
     'skill',
     0,
     'none',
-    [cheapen(1, 'random'), draw(1)],
+    [status('bracing', 2, 'self', true)],
+    {
+      up: { effects: [status('bracing', 4, 'self', true)] },
+    },
+  ),
+  // (Backflip)
+  q('common', 'backspring', 'Backspring', 'skill', 1, 'none', [barrier(5), draw(2)], {
+    up: { effects: [barrier(8), draw(2)] },
+  }),
+  // (Dagger Throw)
+  q('common', 'flick-knife', 'Flick Knife', 'attack', 1, 'foe', [dmg(9), draw(1), discard(1)], {
+    up: { effects: [dmg(12), draw(1), discard(1)] },
+  }),
+  // (Deflect)
+  q('common', 'turn-aside', 'Turn Aside', 'skill', 0, 'none', [barrier(4)]),
+  // (Dodge and Roll)
+  q('common', 'roll-away', 'Roll Away', 'skill', 1, 'none', [barrier(4), status('guarded', 4)], {
+    up: { effects: [barrier(6), status('guarded', 6)] },
+  }),
+  // (Prepared)
+  q('common', 'shuffle-up', 'Shuffle Up', 'skill', 0, 'none', [draw(1), discard(1)], {
+    up: { effects: [draw(2), discard(2)] },
+  }),
+  // (Untouchable: Sly)
+  q('common', 'slip-the-blow', 'Slip the Blow', 'skill', 2, 'none', [barrier(6)], { sly: true }),
+  // (Acrobatics)
+  q('uncommon', 'nimble-deal', 'Nimble Deal', 'skill', 1, 'none', [draw(3), discard(1)], {
+    up: { effects: [draw(4), discard(1)] },
+  }),
+  // (Blur)
+  q('uncommon', 'smoke-veil', 'Smoke Veil', 'skill', 1, 'none', [barrier(5), status('blur', 1)], {
+    up: { effects: [barrier(8), status('blur', 1)] },
+  }),
+  // (Calculated Gamble: the upgrade Holds)
+  q(
+    'uncommon',
+    'all-or-nothing',
+    'All or Nothing',
+    'skill',
+    0,
+    'none',
+    [discard(99), scaled(draw(0), per('discardedNow'))],
+    { exhaust: true, up: { retain: true } },
+  ),
+  // (Escape Plan: Consumed here, as a free card that draws must be: balance.test.ts)
+  q(
+    'uncommon',
+    'bolt-hole',
+    'Bolt Hole',
+    'skill',
+    0,
+    'none',
+    [draw(1), when('skillsDrawnNow', { atLeast: 1 }, [barrier(3)])],
+    {
+      exhaust: true,
+      up: { effects: [draw(1), when('skillsDrawnNow', { atLeast: 1 }, [barrier(5)])] },
+    },
+  ),
+  // (Expertise)
+  q('uncommon', 'practiced-hands', 'Practiced Hands', 'skill', 1, 'none', [
+    { op: 'draw', amount: 2, hold: true },
+  ]),
+  // (Expose: Artifact is Steadfast)
+  q(
+    'uncommon',
+    'lay-bare',
+    'Lay Bare',
+    'skill',
+    0,
+    'foe',
+    [{ op: 'strip', to: 'target' }, status('exposed', 2, 'target')],
+    { exhaust: true },
+  ),
+  // (Flechettes: 5 damage once for each Skill in your hand)
+  q('uncommon', 'needle-rain', 'Needle Rain', 'attack', 1, 'foe', [hitsPer(5, 'skillsInHand')], {
+    up: { effects: [hitsPer(7, 'skillsInHand')] },
+  }),
+  // (Footwork)
+  q('uncommon', 'fleet-step', 'Fleet Step', 'power', 1, 'none', [status('bracing', 2)]),
+  // (Hand Trick: a random Skill, not a chosen one)
+  q('uncommon', 'palm-switch', 'Palm Switch', 'skill', 1, 'none', [barrier(7), { op: 'giveSly' }]),
+  // (Leg Sweep)
+  q('uncommon', 'sweep-the-leg', 'Sweep the Leg', 'skill', 2, 'foe', [
+    status('faltering', 2, 'target'),
+    barrier(11),
+  ]),
+  // (Memento Mori)
+  q(
+    'uncommon',
+    'graveside-cut',
+    'Graveside Cut',
+    'attack',
+    1,
+    'foe',
+    [scaled(dmg(9), per('discarded', 4))],
+    { up: { effects: [scaled(dmg(11), per('discarded', 5))] } },
+  ),
+  // (Reflex: Sly)
+  q('uncommon', 'quick-reflexes', 'Quick Reflexes', 'skill', 3, 'none', [draw(2)], { sly: true }),
+  // (Sidestep)
+  q('uncommon', 'side-slip', 'Side Slip', 'skill', 0, 'none', [manaNext(1)]),
+  // (Speedster: the draw that starts your turn does not count; the upgrade is in your opening hand)
+  q(
+    'uncommon',
+    'fleet-fingers',
+    'Fleet Fingers',
+    'power',
+    2,
+    'none',
+    [on('drawMidTurn', [dmg(2, 'allFoes')])],
+    { up: { innate: true } },
+  ),
+  // (Tactician: Sly)
+  q('uncommon', 'cool-head', 'Cool Head', 'skill', 3, 'none', [mana(1)], {
+    sly: true,
+    up: { effects: [mana(2)] },
+  }),
+  // (Abrasive: Sly)
+  q(
+    'rare',
+    'razor-skin',
+    'Razor Skin',
+    'power',
+    3,
+    'none',
+    [status('bracing', 1), status('thorns', 4)],
+    { sly: true, up: { effects: [status('bracing', 1), status('thorns', 6)] } },
+  ),
+  // (Adrenaline)
+  q('rare', 'rush-of-blood', 'Rush of Blood', 'skill', 0, 'none', [mana(1), draw(2)], {
+    exhaust: true,
+    up: { effects: [mana(2), draw(2)] },
+  }),
+  // (Afterimage: the upgrade is in your opening hand)
+  q('rare', 'shadow-echo', 'Shadow Echo', 'power', 1, 'none', [on('play', [barrier(1)])], {
+    up: { innate: true },
+  }),
+  // (Bullet Time)
+  q('rare', 'stilled-time', 'Stilled Time', 'skill', 3, 'none', [drawLock, { op: 'freeHand' }]),
+  // (Burst)
+  q('rare', 'double-trick', 'Double Trick', 'skill', 1, 'none', [status('mirrored', 1)]),
+  // (Master Planner)
+  q('rare', 'grand-scheme', 'Grand Scheme', 'power', 2, 'none', [status('planner', 1)], {
+    up: { cost: 1 },
+  }),
+  // (Murder)
+  q('rare', 'slow-murder', 'Slow Murder', 'attack', 3, 'foe', [scaled(dmg(1), per('drawn'))], {
+    up: { cost: 2 },
+  }),
+  // (Nightmare)
+  q(
+    'rare',
+    'recurring-dream',
+    'Recurring Dream',
+    'skill',
+    3,
+    'none',
+    [{ op: 'copyNext', times: 3 }],
     {
       exhaust: true,
     },
   ),
-
-  // --- brought back for the 20/30/25 rarity target (DECISIONS #341) ---
-  q('uncommon', 'whetstone-pass', 'Whetstone Pass', 'skill', 0, 'none', [
-    status('edge', 2, 'self', true),
+  // (Shadowmeld: Barrier you gain this turn is doubled)
+  q(
+    'rare',
+    'mantle-of-night',
+    'Mantle of Night',
+    'skill',
+    1,
+    'none',
+    [status('meld', 1, 'self', true)],
+    {
+      up: { cost: 0 },
+    },
+  ),
+  // (Tools of the Trade: the card discarded is a random one)
+  q('rare', 'nimble-routine', 'Nimble Routine', 'power', 1, 'none', [
+    on('turnStart', [draw(1), discard(1, 'random')]),
   ]),
-  q('uncommon', 'rising-tempo', 'Rising Tempo', 'attack', 0, 'foe', [
-    scaled(dmg(2), per('played', 1)),
+  // (Well-Laid Plans: your whole hand Holds every turn)
+  q('rare', 'patient-hands', 'Patient Hands', 'power', 1, 'none', [
+    on('turnEnd', [status('holdfast', 1)]),
   ]),
-  q('uncommon', 'noxious-haze', 'Noxious Haze', 'power', 1, 'none', [
-    on('turnStart', [status('seared', 3, 'randomFoe')]),
-  ]),
-  q('uncommon', 'blur-step', 'Blur Step', 'skill', 1, 'none', [
-    discard(9, 'any'),
-    status('twinned', 1),
-  ]),
-  q('uncommon', 'careful-plan', 'Careful Plan', 'skill', 1, 'none', [
-    draw(1),
-    status('holdfast', 1),
-  ]),
-  q('rare', 'countless-nicks', 'Countless Nicks', 'power', 2, 'none', [
-    on('play', [status('seared', 1, 'randomFoe')]),
-  ]),
-  q('rare', 'plague-cloud', 'Plague Cloud', 'skill', 2, 'none', [status('seared', 9, 'allFoes')], {
-    exhaust: true,
-  }),
-
-  // --- brought back for the 20/30/25 rarity target (DECISIONS #341) ---
-  q('uncommon', 'palmed-card', 'Palmed Card', 'skill', 0, 'none', [discoverOp('attack')], {
-    exhaust: true,
-    up: { effects: [discoverOp('attack', 1, true)] },
-  }),
 ];

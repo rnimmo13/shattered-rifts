@@ -54,7 +54,11 @@ function setup(card: CardDef, hero: HeroId): CombatState {
     { id: 'X1', card: 'strike' },
     { id: 'X2', card: 'strike' },
     { id: 'X3', card: 'defend' },
+    // (a spent Sleeve Knife, for the cards that play them again: Knife Trap)
+    { id: 'X4', card: 'sleeve-knife' },
   ];
+  // (a card that needs an empty draw pile gets one: Grand Finale)
+  if (card.needsEmptyDraw) sd.draw = [];
   // an ally on the board for cards that aim at one (a copy of the first enemy re-sided is overkill: use the real thing)
   if (!sd.units.some((u) => u.kind === 'ally') && db.units['patrol-drone']) {
     const hero0 = sd.units[sd.units.length - 1]!;
@@ -162,10 +166,10 @@ describe('second resources have a way in and a way out from the first hand', () 
 });
 
 describe('real card data, end to end', () => {
-  it('Keen Edge makes Sleeve Knives hit harder (and only knives)', () => {
-    const s0 = setup(db.cards['keen-edge']!, 'assassin');
+  it('Whetted Edge (Edge) makes Sleeve Knives hit harder (and only knives)', () => {
+    const s0 = setup(db.cards['whetted-edge']!, 'assassin');
     s0.sides.a.hand = [
-      { id: 'K', card: 'keen-edge' },
+      { id: 'K', card: 'whetted-edge' },
       { id: 'N', card: 'sleeve-knife' },
       { id: 'S', card: 'strike' },
     ];
@@ -182,7 +186,7 @@ describe('real card data, end to end', () => {
     delete s0.sides.b.units[0]!.statuses.exposed;
     const base = dealt(s0, 'N');
     const buffed = applyAction(db, s0, { type: 'play', card: 'K' }).state;
-    expect(dealt(buffed, 'N')).toBe(base + 2);
+    expect(dealt(buffed, 'N')).toBe(base + 4);
     expect(dealt(buffed, 'S')).toBe(dealt(s0, 'S'));
   });
 
@@ -272,9 +276,11 @@ describe('pool shape (docs/09_ROSTER.md §1)', () => {
     const own = (h: string) =>
       cards.filter((c) => c.hero === h && c.kind === 'snare' && !c.id.endsWith('+')).length;
     const counts = HEROES.map((h) => [h, own(h)] as const);
-    // (Valeria is exactly the Ironclad's list, which has no Traps: DECISIONS #367)
+    // (Valeria is exactly the Ironclad's list and Sylas the Silent's, which have no Traps: DECISIONS #367,
+    // docs/decisions-pending/assassin.md)
+    const NO_TRAPS = ['knight', 'assassin'];
     for (const [h, n] of counts)
-      expect(n, `${h} snares`).toBeGreaterThanOrEqual(h === 'trapper' ? 10 : h === 'knight' ? 0 : 1);
+      expect(n, `${h} snares`).toBeGreaterThanOrEqual(h === 'trapper' ? 10 : NO_TRAPS.includes(h) ? 0 : 1);
     const others = Math.max(...counts.filter(([h]) => h !== 'trapper').map(([, n]) => n));
     expect(own('trapper')).toBeGreaterThanOrEqual(others * 2);
     expect(own('neutral')).toBeGreaterThanOrEqual(2);

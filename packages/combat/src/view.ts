@@ -63,6 +63,8 @@ export interface SideView {
   stars: number;
   /** Attacks played this turn (some cards cost less for each) */
   attacksPlayed: number;
+  /** Skills played this turn (Pinpoint costs less for each) */
+  skillsPlayed: number;
   runes: RuneState[];
   runeSlots: number;
   powers: { id: string; card: string; when: PowerState['when'] }[];
@@ -195,6 +197,7 @@ export function viewFor(db: CombatDb, s: CombatState, me: Side): CombatView {
       potionCount: sd.potions.length,
       stars: sd.stars,
       attacksPlayed: sd.attacksPlayed,
+      skillsPlayed: sd.skillsPlayed,
       runes: clone(sd.runes),
       runeSlots: sd.runeSlots,
       powers: sd.powers
@@ -276,6 +279,7 @@ const STATUS_NAME: Record<string, string> = {
   vigor: 'Primed',
   seared: 'Bleed',
   freeattack: 'Free Attack',
+  freeskill: 'Free Skill',
   resonance: 'Spirit',
   twinned: 'Reverb',
 };
@@ -392,6 +396,10 @@ const METRIC_WORDS: Record<Metric, { per: string; equal: string }> = {
     per: 'damage of the Attacks consumed this way',
     equal: 'the damage of the Attacks consumed this way',
   },
+  skillsInHand: { per: 'Skill in your hand', equal: 'the number of Skills in your hand' },
+  foesSeared: { per: 'Bleed on ALL enemies', equal: 'the Bleed on ALL enemies' },
+  discardedNow: { per: 'card discarded this way', equal: 'the cards discarded this way' },
+  skillsDrawnNow: { per: 'Skill drawn this way', equal: 'the Skills drawn this way' },
   x: { per: 'Mana spent', equal: 'the Mana spent' },
   charge: { per: 'charge', equal: 'its charge' },
   healed: { per: 'HP healed', equal: 'the HP healed' },
@@ -449,7 +457,9 @@ function amountText(n: number, sc: Scale | undefined): { num: string; equal: boo
   // (a share of HP reads "+1 per 6% HP missing", and a step that is not whole keeps its half: "per 2.5%")
   const step = Math.round(10 / m) / 10;
   const per =
-    m >= 1
+    m <= -1
+      ? `-${-m} per ${w.per}`
+      : m >= 1
       ? `+${m} per ${w.per}`
       : sc.by === 'missingPct'
         ? `+1 per ${step}${w.per}`
@@ -475,6 +485,8 @@ const WHEN_TEXT: Record<string, string> = {
   arcana: 'Whenever you spend Arcana',
   shuffle: 'Whenever your deck is reshuffled',
   exposeFoe: 'Whenever you apply Exposed to an enemy',
+  hitFoe: 'Whenever an Attack of yours deals damage to an enemy’s HP',
+  drawMidTurn: 'Whenever you draw a card during your turn',
 };
 
 const ORDINAL = ['zeroth', 'first', 'second', 'third', 'fourth', 'fifth', 'sixth'];
@@ -486,6 +498,8 @@ function whenText(o: Extract<Op, { op: 'when' }>): string {
   if (o.by === 'exposed' && o.of === 'target' && (lo ?? 0) >= 1) return 'the target is Exposed';
   if (o.by === 'hpLostTurn' && (lo ?? 0) >= 1) return 'you have lost HP this turn';
   if (o.by === 'exhaustedTurn' && (lo ?? 0) >= 1) return 'you have consumed a card this turn';
+  if (o.by === 'skillsDrawnNow' && (lo ?? 0) >= 1) return 'you drew a Skill';
+  if (o.by === 'seared' && o.of === 'target' && (lo ?? 0) >= 1) return 'the target has Bleed';
   if (o.by === 'attacksPlayed' && lo !== undefined && lo === hi)
     return `this is your ${ORDINAL[lo] ?? lo + 'th'} Attack this turn`;
   const w = METRIC_WORDS[o.by].equal;
@@ -523,7 +537,9 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
       const lone = o.lonePct ? ` Point Blank: ${o.lonePct}% more when only one enemy is left.` : '';
       // (Lifesteal: heal that percent of the HP it took off)
       const steal = o.lifesteal ? ` Lifesteal ${o.lifesteal}%.` : '';
-      const kill = o.onKill ? ` If this is fatal: ${o.onKill.map((x) => opText(db, x, who)).join(' ')}` : '';
+      const kill =
+        (o.onKill ? ` If this is fatal: ${o.onKill.map((x) => opText(db, x, who)).join(' ')}` : '') +
+        (o.repeatOnKill ? ' Repeat this for each enemy it kills.' : '');
       return a.equal
         ? `Deal damage equal to ${a.num}${times}${who[o.to]}.${lone}${steal}${kill}`
         : `Deal ${a.num} damage${times}${who[o.to]}.${lone}${steal}${kill}`;
@@ -640,9 +656,10 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
     }
     case 'draw': {
       const a = amountText(o.amount, o.scale);
+      const hold = o.hold ? ` ${o.amount === 1 && !o.scale ? 'It Holds' : 'They Hold'} this turn.` : '';
       return a.equal
-        ? `Draw cards equal to ${a.num}.`
-        : `Draw ${a.num} card${o.amount === 1 && !o.scale ? '' : 's'}.`;
+        ? `Draw cards equal to ${a.num}.${hold}`
+        : `Draw ${a.num} card${o.amount === 1 && !o.scale ? '' : 's'}.${hold}`;
     }
     case 'mana': {
       const a = amountText(o.amount, o.scale);
@@ -777,6 +794,10 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
         return o.scale?.by === 'x' || (o.amount ?? 1) > 1
           ? `Play ${n} of your draw pile.`
           : `Play the top card of your draw pile${end}.`;
+      if (o.from === 'exhaust' && o.all) {
+        const nm = o.tag ? (TAG_NAMES[o.tag] ?? o.tag) : what;
+        return `${o.upgrade ? 'Upgrade and play' : 'Play'} every ${nm} in your consumed pile${o.aim === 'target' ? ' against the target' : ''}; they go back there.`;
+      }
       if (o.from === 'exhaust') return 'Play a random card from your consumed pile; it goes back there.';
       if (o.from === 'hand') return `Play a random ${what} from your hand against a random enemy.`;
       return `Play it against a random enemy${o.match ? ` if it is a ${cap(o.match)} card` : ''}.`;
@@ -803,6 +824,23 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
     }
     case 'forge':
       return `Sharpen ${o.amount} (${db.cards[o.card]?.name ?? o.card} gains ${o.amount} damage).`;
+    // (assassin) the Silent-shaped pieces
+    case 'tick': {
+      const whom = o.to === 'target' ? 'the target' : who[o.to].replace(/^ to /, '') || 'the target';
+      return `The Bleed on ${whom} deals its damage now.`;
+    }
+    case 'strip': {
+      const whom = o.to === 'target' ? 'the target' : who[o.to].replace(/^ to /, '') || 'the target';
+      return `Remove all Barrier and Steadfast from ${whom}.`;
+    }
+    case 'selfCost':
+      return `This card costs ${o.amount} less for the rest of the fight.`;
+    case 'freeHand':
+      return 'Every card in your hand costs 0 this turn.';
+    case 'giveSly':
+      return 'A random Skill in your hand gains Sly this turn.';
+    case 'copyNext':
+      return `Choose a card in your hand. Next turn, add ${o.times} cop${o.times === 1 ? 'y' : 'ies'} of it to your hand.`;
   }
 }
 
@@ -874,6 +912,11 @@ export function cardText(db: CombatDb, c: CardDef, live?: ReadonlyMap<number, Li
     parts.push(`Only playable with ${c.needsExhausted} or more cards consumed.`);
   if (c.cheaperPerAttack)
     parts.push(`Costs ${c.cheaperPerAttack} less for each Attack played this turn.`);
+  // (assassin) Sly, Pinpoint's discount, Grand Finale's condition
+  if (c.sly) parts.push('Sly.');
+  if (c.cheaperPerSkill)
+    parts.push(`Costs ${c.cheaperPerSkill} less for each Skill played this turn.`);
+  if (c.needsEmptyDraw) parts.push('Only playable while your draw pile is empty.');
   if (c.replayFromExhaust)
     parts.push('At the start of your turn, if this is consumed, it is played for free and goes back.');
   // (an Arcana cost is shown on the card itself, under the Mana cost: it is not said again in the text)
@@ -921,6 +964,16 @@ export function cardText(db: CombatDb, c: CardDef, live?: ReadonlyMap<number, Li
         delete plain.scale;
         parts.push(opText(db, plain, who).replace(/ damage\.$/, ' damage, plus all it has grown.'));
         continue;
+      }
+      // (the same status to a random enemy several times in a row reads as one line: "... to a random enemy 3 times.")
+      if (o.op === 'status' && o.to === 'randomFoe') {
+        let n = 1;
+        while (JSON.stringify(c.effects[i + n]) === JSON.stringify(o)) n++;
+        if (n > 1) {
+          parts.push(opText(db, o, who).replace(/\.$/, ` ${n} times.`));
+          i += n - 1;
+          continue;
+        }
       }
       const l = o.op === 'damage' ? live?.get(i) : undefined;
       const line =
