@@ -38,7 +38,8 @@ import { handCardWidth, handReserve } from '../hand/fanLayout';
 import { reduceEvent, startingDisplay } from './display';
 import { heroFigure, heroProp, hoverOf, unitFigure, unitHeight } from './art';
 import { FightHand, type HandCard } from './FightHand';
-import { Grimoire } from './Grimoire';
+import { GrimoireModal } from './Grimoire';
+import { AimArrow } from './AimArrow';
 import { UnitPlates, type Placed } from './Plates';
 import { ErrorDetails } from '../ui/ErrorDetails';
 import { packLine } from './lineLayout';
@@ -1151,7 +1152,18 @@ export function FightView(props: {
 
   useEffect(() => {
     scene.current?.fighters.setTargetable(aimSet.size ? aimSet : null);
+    if (!aimSet.size) scene.current?.fighters.setHover(null);
   }, [aimSet]);
+
+  // the centre of the figure being aimed at (client px), for the arrow to lock onto (measured as the pointer moves)
+  const [lockOn, setLockOn] = useState<{ id: string; x: number; y: number } | null>(null);
+  const lockAt =
+    lockOn &&
+    lockOn.id === hoverUnit &&
+    aimSet.has(lockOn.id) &&
+    (selected || dragTargets || releasing)
+      ? lockOn
+      : null;
 
   const unitAt = useCallback(
     (cx: number, cy: number, among?: ReadonlySet<string>): string | null => {
@@ -1166,14 +1178,28 @@ export function FightView(props: {
   // aiming with a selected card: click a target, right-click or Esc cancels
   useEffect(() => {
     const onMove = (e: PointerEvent) => {
-      if (selected) setPointer({ x: e.clientX, y: e.clientY });
+      if (selected || releasing) setPointer({ x: e.clientX, y: e.clientY });
       // while aiming, the nearest figure that can be chosen is the one pointed at
       const aiming =
         !!(selected || dragTargets || releasing || aimPotion !== null) && aimSet.size > 0;
       const u = unitAt(e.clientX, e.clientY, aiming ? aimSet : undefined);
       setHoverUnit(u);
+      const sc = scene.current;
+      const at = u && aimSet.has(u) ? sc?.fighters.anchor(u) : null;
+      const c = sc && at ? sc.stageToClient(at.x, at.y - at.h * 0.5) : null;
+      setLockOn((prev) =>
+        prev && c && prev.id === u && prev.x === c.x && prev.y === c.y
+          ? prev
+          : u && c
+            ? { id: u, ...c }
+            : null,
+      );
       scene.current?.fighters.setHover(
-        selected || dragTargets || releasing ? (u && aimSet.has(u) ? u : null) : null,
+        selected || dragTargets || releasing || aimPotion !== null
+          ? u && aimSet.has(u)
+            ? u
+            : null
+          : null,
       );
     };
     window.addEventListener('pointermove', onMove);
@@ -1614,6 +1640,7 @@ export function FightView(props: {
             locked={waiting || finished}
             selectedId={selected}
             unitAt={unitAt}
+            lockAt={lockAt}
             onPlay={(c, target) => {
               commit(c, target);
               setHoverCard(null);
@@ -1659,31 +1686,13 @@ export function FightView(props: {
             window.innerHeight >= 600 &&
             keywords.length > 0 && <CardTips items={keywords} rect={hoverRect} cardWidth={cw} />}
 
-          {selectedCard && (
-            <svg className="fight__arrow" width="100%" height="100%" aria-hidden>
-              <defs>
-                <marker
-                  id="ah"
-                  viewBox="0 0 10 10"
-                  refX="6"
-                  refY="5"
-                  markerWidth="5"
-                  markerHeight="5"
-                  orient="auto"
-                >
-                  <path d="M0 0 L10 5 L0 10 z" fill="#f6dc94" />
-                </marker>
-              </defs>
-              <path
-                d={`M ${window.innerWidth / 2} ${window.innerHeight - cw * 1.1} Q ${(window.innerWidth / 2 + pointer.x) / 2} ${Math.min(pointer.y, window.innerHeight - cw * 1.1) - 140} ${pointer.x} ${pointer.y}`}
-                fill="none"
-                stroke="#f6dc94"
-                strokeWidth="5"
-                strokeDasharray="2 10"
-                strokeLinecap="round"
-                markerEnd="url(#ah)"
-              />
-            </svg>
+          {(selectedCard || releasing) && (
+            <AimArrow
+              className="fight__arrow"
+              from={{ x: window.innerWidth / 2, y: window.innerHeight - cw * 1.1 }}
+              to={pointer}
+              lock={lockAt}
+            />
           )}
           {me && showBelt && (
             <div className="fight__potions" aria-label="Potion belt">
@@ -2049,27 +2058,16 @@ function pileCards(
 
 function PileModal(props: { db: CombatDb; title: string; cards: CardDef[]; onClose: () => void }) {
   return (
-    <div
-      className="fight__modal"
-      onPointerDown={props.onClose}
-      role="dialog"
-      aria-label={props.title}
-    >
-      <div
-        className="fight__modalBody fight__modalBody--book"
-        onPointerDown={(e) => e.stopPropagation()}
-      >
-        <header>
-          <h3>
-            {props.title} <small>({props.cards.length})</small>
-          </h3>
-          <button className="btn btn--small" onClick={props.onClose}>
-            <span>Close</span>
-          </button>
-        </header>
-        <Grimoire cards={tallyDefs(props.cards)} emptyText="Empty." reading />
-      </div>
-    </div>
+    <GrimoireModal
+      title={
+        <>
+          {props.title} <i>({props.cards.length})</i>
+        </>
+      }
+      cards={tallyDefs(props.cards)}
+      emptyText="Empty."
+      onClose={props.onClose}
+    />
   );
 }
 

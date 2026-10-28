@@ -118,3 +118,123 @@ export function tally(ids: readonly string[], db: CombatDb): GrimoireCard[] {
     return def ? [{ def, n }] : [];
   });
 }
+
+/** The size of an element's border box in px, kept up to date ({0, 0} until measured). Use the returned function as its ref. */
+export function useSize(): [(el: HTMLElement | null) => void, { w: number; h: number }] {
+  const [el, setEl] = useState<HTMLElement | null>(null);
+  const [size, setSize] = useState({ w: 0, h: 0 });
+  const ref = useCallback((node: HTMLElement | null) => {
+    setEl(node);
+    if (node) setSize({ w: Math.floor(node.offsetWidth), h: Math.floor(node.offsetHeight) });
+  }, []);
+  useEffect(() => {
+    if (!el) return;
+    const ro = new ResizeObserver((entries) => {
+      const r = entries[0]?.borderBoxSize[0];
+      if (!r) return;
+      const next = { w: Math.floor(r.inlineSize), h: Math.floor(r.blockSize) };
+      setSize((s) => (s.w === next.w && s.h === next.h ? s : next));
+    });
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [el]);
+  return [ref, size];
+}
+
+/**
+ * How big a grimoire's cards may be, px wide (a card is 1.4 x as tall). Cards are never drawn outside their range: a window too
+ * small for the smallest gets fewer cards to a page, never smaller ones.
+ */
+export const CARD_SIZES = {
+  /** a starting deck beside the character picker */
+  small: { min: 100, max: 170 },
+  /** the Card library: many cards to a page */
+  browse: { min: 150, max: 200 },
+  /** a deck or a pile to read */
+  read: { min: 165, max: 220 },
+  /** choosing a card (to upgrade or remove it): big and easy to read */
+  pick: { min: 185, max: 250 },
+} as const;
+export type CardSize = keyof typeof CARD_SIZES;
+
+// the box measured is the whole book (cover, brass edge, page-turn buttons); these are what it spends on things other than cards.
+// They match play.css (.grim__book, .grim__page, .grim__cards): keep the two in step.
+/** the cover's padding and border plus the two page-turn columns, px */
+export const BOOK_SIDES = 104;
+/** the cover's padding and border, top and bottom, px */
+export const BOOK_ENDS = 40;
+/** a page's side padding, px */
+export const PAGE_SIDES = 36;
+/** a page's head, top padding and folio, px */
+export const PAGE_ENDS = 92;
+export const COL_GAP = 14;
+export const ROW_GAP = 12;
+const ASPECT = 1.4;
+
+export interface BookFit {
+  spread: 1 | 2;
+  cols: number;
+  rows: number;
+  cardWidth: number;
+}
+
+/**
+ * The layout of a book `w` x `h` px holding `n` cards (h: Infinity when the book grows with its cards). Of every page count, column
+ * count and row count whose cards stay inside the size range, it takes the one that shows the cards on the fewest spreads, then
+ * the one with the biggest cards, then the one with the fewest empty places. So a short deck fills one spread with big cards, a
+ * long one packs pages with cards near the low end of the range, and the size never depends on which realm ribbon is open.
+ */
+export function fitBook(
+  w: number,
+  h: number,
+  n: number,
+  size: CardSize,
+  fixed: { spread?: 1 | 2; cols?: number; rows?: number } = {},
+): BookFit {
+  const { min, max } = CARD_SIZES[size];
+  if (w <= 0) return { spread: 1, cols: fixed.cols ?? 3, rows: fixed.rows ?? 2, cardWidth: min };
+  const cards = Math.max(1, n);
+  let best: (BookFit & { spreads: number; spare: number }) | null = null;
+  for (const spread of fixed.spread ? [fixed.spread] : ([1, 2] as const)) {
+    const pageW = (w - BOOK_SIDES) / spread - PAGE_SIDES;
+    const pageH = h - BOOK_ENDS - PAGE_ENDS;
+    for (let cols = fixed.cols ?? 1; cols <= (fixed.cols ?? 8); cols++) {
+      const byW = Math.floor((pageW - (cols - 1) * COL_GAP) / cols);
+      if (byW < min) break;
+      // a book that grows with its cards: just enough rows for them
+      const rowRange = Number.isFinite(h)
+        ? [1, fixed.rows ?? 6]
+        : [
+            fixed.rows ?? Math.ceil(cards / spread / cols),
+            fixed.rows ?? Math.ceil(cards / spread / cols),
+          ];
+      for (let rows = fixed.rows ?? rowRange[0]!; rows <= rowRange[1]!; rows++) {
+        const byH = Number.isFinite(h)
+          ? Math.floor((pageH - (rows - 1) * ROW_GAP) / rows / ASPECT)
+          : Infinity;
+        // (a multiple of 5, so a window dragged a few px wider does not redraw every card)
+        const cardWidth = Math.floor(Math.min(max, byW, byH) / 5) * 5;
+        if (cardWidth < min) break;
+        const perSpread = spread * cols * rows;
+        const pages = Math.ceil(cards / (cols * rows));
+        // two pages with only one page of cards: one big page is better
+        if (spread === 2 && pages < 2 && !fixed.spread) continue;
+        // (a book that grows with its cards: the fewest rows, so as many across as fit)
+        const spreads = Number.isFinite(h) ? Math.ceil(cards / perSpread) : rows;
+        const spare = spreads * perSpread - cards;
+        const better =
+          !best ||
+          spreads < best.spreads ||
+          (spreads === best.spreads &&
+            (cardWidth > best.cardWidth || (cardWidth === best.cardWidth && spare < best.spare)));
+        if (better) best = { spread, cols, rows, cardWidth, spreads, spare };
+      }
+    }
+  }
+  if (best)
+    return { spread: best.spread, cols: best.cols, rows: best.rows, cardWidth: best.cardWidth };
+  // a box too small for even one card of the smallest size: one card a page, at that size (the page scrolls)
+  const cols = fixed.cols ?? 1;
+  const rows = fixed.rows ?? (Number.isFinite(h) ? 1 : Math.ceil(cards / cols));
+  return { spread: 1, cols, rows, cardWidth: min };
+}

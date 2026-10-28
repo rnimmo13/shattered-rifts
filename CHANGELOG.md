@@ -5,6 +5,10 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **The grimoire opens over the whole window** wherever you look at cards (your deck, a pile in a fight, choosing a card to upgrade or remove, an event that asks for a card). Cards always stay within a readable size range and fit on the page; they no longer grow, shrink or jump when you resize the window, open a ribbon or turn a page. The arrow keys turn its pages.
+- **Event options that show cards** put their words on the left and the cards on the right, with a tag saying what happens (Removes, Adds, Swaps or Upgrades a card) and a strip on each card (Removed, Added, Out, In, Upgraded).
+- **The Arena button** on the map is a glowing button before your Deck: green when your deck is in the Arena, red and struck through until your first fight saves it.
+- **The aiming arrow locks onto its target:** over anything you can choose (an enemy, or your own companion when scrapping one to make room), its point snaps to the target's centre, a ring closes round it and the target lights up.
 - **The Engineer is rebalanced** against the card costing guide, and her machines come in three **frames**: a Light drone takes 1 of your 3 companion slots, a Heavy walker 2 and a Colossal war machine all 3 (pips on the card and the machine). With no room, a summon scraps companions to make room, and **Salvage** hands their Might, Primed and half their HP to the new machine. New: the Engineer's own guns (Pulse Pistol, Arc Welder, Laser Grid, Particle Cannon), Targeting Uplink, Full Salvo, Deploy Spotter, Bulwark Walker, Scrap Golem and Dreadnought. Nanoswarm, Drone Uprising, Overload and Mob Rule are retired. A card that summons two companions now needs room for both. New utility: Battery Pack (1 Mana), Schematics (pick a card from your draw pile) and Build Generator, a machine that powers your next turn.
 - **Enemies are a little gentler at every Rift Tier:** Tier I starts at 90% of their HP and damage, and each tier and stage adds less.
 - **The Hunter heals 2 HP after every fight she wins** again. **Attunement** is an Aura.

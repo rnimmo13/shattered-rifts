@@ -167,7 +167,14 @@ export function CardLibrary() {
           </select>
         </label>
       </div>
-      <Grimoire key={bookKey} cards={cards} emptyText="No cards match those filters." />
+      <div className="lib__book">
+        <Grimoire
+          key={bookKey}
+          cards={cards}
+          size="browse"
+          emptyText="No cards match those filters."
+        />
+      </div>
     </main>
   );
 }

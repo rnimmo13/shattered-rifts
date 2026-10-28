@@ -302,6 +302,16 @@ export class BattlefieldScene {
     };
   }
 
+  /** Stage coordinates -> screen point (client px). */
+  stageToClient(x: number, y: number): { x: number; y: number } {
+    const rect = this.host.getBoundingClientRect();
+    const k = this.world.scale.x;
+    return {
+      x: rect.left + this.world.position.x + x * k,
+      y: rect.top + this.world.position.y + y * k,
+    };
+  }
+
   /** Stage coordinates -> position inside the host element (px), for DOM overlays. */
   stageToHost(x: number, y: number): { x: number; y: number; k: number } {
     const k = this.world.scale.x;

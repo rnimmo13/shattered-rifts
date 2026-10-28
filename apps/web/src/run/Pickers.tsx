@@ -33,7 +33,7 @@ import {
 import { FightCard } from '../fight/FightCard';
 import { CardHover } from '../fight/CardHover';
 import { HeroIcon } from '../ui/HeroIcon';
-import { Grimoire } from '../fight/Grimoire';
+import { Grimoire, GrimoireModal } from '../fight/Grimoire';
 import { tally } from '../fight/grimoireData';
 import { BoonCard, BoonChip } from '../fight/BoonChip';
 import { PotionCard, PotionIcon } from '../fight/PotionChip';
@@ -58,9 +58,7 @@ function CrossTag(props: { def: CardDef; own?: string | undefined }) {
       <HeroIcon hero={h} size={26} />
       <span>
         <b>Rift-crossed</b>
-        <small>
-          {r.hero.name}
-        </small>
+        <small>{r.hero.name}</small>
       </span>
     </span>
   );
@@ -150,17 +148,9 @@ function FitTag(props: { id: string; deck: readonly string[] }) {
 }
 
 /** A compact, readable list of a deck's cards (grouped, with counts). Hover any card to read it. */
-export function DeckStrip(props: { deck: readonly string[]; width?: number }) {
-  // a starting deck is ten or so cards: show them all on one page, five across, as big as the box allows
-  return (
-    <Grimoire
-      cards={tally(props.deck, COMBAT_DB)}
-      {...(props.width ? { cardWidth: props.width } : {})}
-      cols={5}
-      rows={Math.max(2, Math.ceil(props.deck.length / 5))}
-      spread={1}
-    />
-  );
+export function DeckStrip(props: { deck: readonly string[] }) {
+  // a starting deck is ten or so cards: show them all on one page, as many across as fit (the book grows to hold them)
+  return <Grimoire cards={tally(props.deck, COMBAT_DB)} spread={1} size="small" height="grow" />;
 }
 
 export function CardOffer(props: {
@@ -223,26 +213,21 @@ export function DeckModal(props: {
   onClose: () => void;
 }) {
   return (
-    <div className="modal" role="dialog" aria-modal="true" aria-label={props.title}>
-      <div className="modal__panel deckmodal">
-        <h2 className="modal__title">
+    <GrimoireModal
+      title={
+        <>
           {props.title} <i>({props.deck.length} cards)</i>
-        </h2>
-        {props.hint && <p className="modal__hint">{props.hint}</p>}
-        <Grimoire
-          cards={tally(props.deck, COMBAT_DB)}
-          // choosing a card (to remove or upgrade) needs cards big enough to read; just looking can fit more on a page
-          readable={!!props.onPick}
-          // just looking at your deck: many cards on a page, but big enough to read
-          reading={!props.onPick}
-          {...(props.onPick ? { onPick: props.onPick } : {})}
-          {...(props.pickable ? { pickable: props.pickable } : {})}
-        />
-        <button className="btn" onClick={props.onClose}>
-          <span>{props.onPick ? 'Cancel' : 'Close'}</span>
-        </button>
-      </div>
-    </div>
+        </>
+      }
+      hint={props.hint}
+      cards={tally(props.deck, COMBAT_DB)}
+      // choosing a card (to remove or upgrade) needs cards big enough to read; just looking can fit more on a page
+      size={props.onPick ? 'pick' : 'read'}
+      {...(props.onPick ? { onPick: props.onPick } : {})}
+      {...(props.pickable ? { pickable: props.pickable } : {})}
+      onClose={props.onClose}
+      closeLabel={props.onPick ? 'Cancel' : 'Close'}
+    />
   );
 }
 
@@ -563,9 +548,9 @@ export function MerchantView(props: {
         <p className="shop__foreign" role="note">
           <HeroIcon hero={m.crossed} size={34} />
           <span>
-            <b>A visiting merchant.</b> Every card on this table belongs to{' '}
-            the {RIFTWALKERS[m.crossed as keyof typeof RIFTWALKERS]?.hero.name}. They work in your deck, but
-            they lean on mechanics your Riftwalker does not build around.
+            <b>A visiting merchant.</b> Every card on this table belongs to the{' '}
+            {RIFTWALKERS[m.crossed as keyof typeof RIFTWALKERS]?.hero.name}. They work in your deck,
+            but they lean on mechanics your Riftwalker does not build around.
           </span>
         </p>
       )}
@@ -1011,17 +996,14 @@ export function EventView(props: {
         </div>
       )}
       {ev.chooseDeck && (
-        <div className="prizes" aria-label="Choose a card of your deck">
-          <h3 className="prizes__title" role="status">
-            {deckChoiceTitle(ev.chooseDeck)}
-          </h3>
-          <Grimoire
-            cards={tally(props.run.deck, COMBAT_DB)}
-            readable
-            onPick={props.onPickDeck}
-            pickable={new Set(ev.chooseDeck.cards)}
-          />
-        </div>
+        <GrimoireModal
+          title={deckChoiceTitle(ev.chooseDeck)}
+          hint={ev.title}
+          cards={tally(props.run.deck, COMBAT_DB)}
+          size="pick"
+          onPick={props.onPickDeck}
+          pickable={new Set(ev.chooseDeck.cards)}
+        />
       )}
       {trial && won && (
         <div className="prizes" aria-label="The prize on the table">
@@ -1104,10 +1086,23 @@ export function EventView(props: {
               disabled={o.id === 'trial' && !canRoll}
               onClick={() => (o.id === 'trial' ? roll() : props.onChoose(o.id))}
             >
-              <b className="eventopt__name">{head}</b>
-              {detail && <span className="eventopt__text">{detail}</span>}
-              {/* the random cards it means, picked already (DECISIONS #273), marked with what happens to them */}
-              {o.shows && <OptionCards shows={o.shows} onHover={setHover} />}
+              {o.shows ? (
+                <>
+                  {/* the words on the left, the random cards it means on the right (picked already, DECISIONS #273), each
+                      marked with what happens to it */}
+                  <span className="eventopt__body">
+                    <OptionAction shows={o.shows} />
+                    <b className="eventopt__name">{head}</b>
+                    {detail && <span className="eventopt__text">{detail}</span>}
+                  </span>
+                  <OptionCards shows={o.shows} onHover={setHover} />
+                </>
+              ) : (
+                <>
+                  <b className="eventopt__name">{head}</b>
+                  {detail && <span className="eventopt__text">{detail}</span>}
+                </>
+              )}
             </button>
           );
         })}
@@ -1116,6 +1111,41 @@ export function EventView(props: {
     </section>
   );
 }
+
+/** What an option does to your deck, from the cards it shows: removes, adds, swaps or upgrades. */
+function optionAction(shows: {
+  lose: readonly string[];
+  gain: readonly string[];
+}): 'remove' | 'add' | 'swap' | 'upgrade' | 'change' {
+  const { lose, gain } = shows;
+  if (gain.length === 0) return 'remove';
+  if (lose.length === 0) return 'add';
+  if (lose.length !== gain.length) return 'change';
+  return lose.every((id, i) => defOf(id)?.upgrade === gain[i]) ? 'upgrade' : 'swap';
+}
+
+const ACTION_TAG = {
+  remove: { icon: '✕', one: 'Removes a card', many: 'Removes cards' },
+  add: { icon: '+', one: 'Adds a card', many: 'Adds cards' },
+  swap: { icon: '⇄', one: 'Swaps a card', many: 'Swaps cards' },
+  upgrade: { icon: '⬆', one: 'Upgrades a card', many: 'Upgrades cards' },
+  change: { icon: '⇄', one: 'Changes your deck', many: 'Changes your deck' },
+} as const;
+
+/** The tag at the top of an option that shows cards: what it does to your deck, at a glance. */
+function OptionAction(props: { shows: { lose: string[]; gain: string[] } }) {
+  const act = optionAction(props.shows);
+  const n = Math.max(props.shows.lose.length, props.shows.gain.length);
+  const tag = ACTION_TAG[act];
+  return (
+    <span className={`optact optact--${act}`}>
+      <i aria-hidden="true">{tag.icon}</i>
+      {n > 1 ? tag.many : tag.one}
+    </span>
+  );
+}
+
+const OPTCARD_TAG = { lose: 'Removed', gain: 'Added', from: 'Out', to: 'In' } as const;
 
 /**
  * The cards an event option means, inside its box, each marked with what happens to it: crossed out when it leaves your deck, an
@@ -1126,7 +1156,7 @@ function OptionCards(props: {
   onHover: (def: CardDef | null) => void;
 }) {
   const { lose, gain } = props.shows;
-  const card = (id: string, mark: 'lose' | 'gain' | 'from' | 'to', key: string) => {
+  const card = (id: string, mark: 'lose' | 'gain' | 'from' | 'to', key: string, tag?: string) => {
     const def = defOf(id);
     if (!def) return null;
     return (
@@ -1136,7 +1166,8 @@ function OptionCards(props: {
         onPointerEnter={() => props.onHover(def)}
         onPointerLeave={() => props.onHover(null)}
       >
-        <FightCard db={COMBAT_DB} def={def} width={92} />
+        <FightCard db={COMBAT_DB} def={def} width={124} />
+        <b className="optcard__tag">{tag ?? OPTCARD_TAG[mark]}</b>
         {mark === 'lose' && (
           <i className="optcard__mark" aria-label="leaves your deck">
             ✕
@@ -1156,13 +1187,13 @@ function OptionCards(props: {
     return (
       <span className="optcards" aria-label="The cards this option means">
         {lose.map((id, i) => (
-          <span key={i} className="optcards__pair">
-            {card(id, 'from', `f${i}`)}
+          <span key={i} className={`optcards__pair${upgrade ? ' optcards__pair--upgrade' : ''}`}>
+            {card(id, 'from', `f${i}`, upgrade ? 'Now' : 'Out')}
             <span className="optcards__arrow" aria-label={upgrade ? 'is upgraded to' : 'becomes'}>
               {upgrade ? '⬆' : '⇄'}
               <small>{upgrade ? 'Upgrade' : 'Swap'}</small>
             </span>
-            {card(gain[i] as string, 'to', `t${i}`)}
+            {card(gain[i] as string, 'to', `t${i}`, upgrade ? 'Upgraded' : 'In')}
           </span>
         ))}
       </span>
@@ -1232,4 +1263,3 @@ export function PreludeView(props: { run: RunState; onChoose: (id: string) => vo
     </section>
   );
 }
-

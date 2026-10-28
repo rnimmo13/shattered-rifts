@@ -833,22 +833,27 @@ function RunBar(props: {
         </span>
       </div>
       <div className="runbar__actions">
-        <button className="btn btn--small" onClick={props.onDeck}>
-          <span>Deck ({run.deck.length})</span>
-        </button>
-        {/* the deck is an Arena deck: a small badge, the details in its tip (DECISIONS #345) */}
+        {/* whether the deck is in the Arena: green when it is, red and struck through until the first fight saves it; the
+            details in its tip (DECISIONS #345) */}
         <a
-          className={`runbar__arena${props.arenaLabel ? '' : ' is-waiting'}`}
+          className={`runbar__arena ${props.arenaLabel ? 'is-in' : 'is-out'}`}
           href="#/decks"
-          aria-label={`Arena deck: ${props.arenaLabel ?? 'saved after your first fight'}`}
+          aria-label={
+            props.arenaLabel
+              ? `In the Arena: ${props.arenaLabel}`
+              : 'Not in the Arena yet: saved after your first fight'
+          }
           {...tipAttrs({
-            kicker: 'Arena deck',
+            kicker: props.arenaLabel ? 'In the Arena' : 'Not in the Arena yet',
             title: props.arenaLabel ?? 'Saved after your first fight',
             text: 'Your deck is entered in the Arena by itself, and updated after every fight. Once it has cleared Tier 3, other players may face it as a ghost (the computer plays it). If this run collapses, you can no longer bring it to the Arena yourself, but a ghost stays. Click to see your saved decks.',
           })}
         >
-          <span aria-hidden>⚔</span>
+          <span>Arena</span>
         </a>
+        <button className="btn btn--small" onClick={props.onDeck}>
+          <span>Deck ({run.deck.length})</span>
+        </button>
         <button
           className="btn btn--small btn--ghost"
           title="Leave for now. This run is kept, and you can carry on from the home page."

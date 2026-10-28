@@ -29,6 +29,31 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.111.0',
+    date: '2026-10-28',
+    title: 'A grimoire that stays put',
+    summary:
+      'Your deck and piles open in a full-window grimoire with steady card sizes, event options show their cards clearly, and the aiming arrow locks on.',
+    notes: [
+      {
+        kind: 'changed',
+        text: 'The grimoire opens over the whole window wherever you look at cards. Cards stay a readable size and no longer resize when you change the window, open a ribbon or turn a page. The arrow keys turn its pages.',
+      },
+      {
+        kind: 'changed',
+        text: 'Event options that show cards have their words on the left and the cards on the right, with a tag saying whether a card is removed, added, swapped or upgraded.',
+      },
+      {
+        kind: 'changed',
+        text: 'The Arena button on the map sits before your Deck: glowing green when your deck is in the Arena, red and struck through until your first fight saves it.',
+      },
+      {
+        kind: 'new',
+        text: 'The aiming arrow locks onto the centre of what you point at, with a ring round it and the target lit up. It also shows when you choose a companion to scrap.',
+      },
+    ],
+  },
+  {
     version: '0.110.0',
     date: '2026-10-28',
     title: 'The Engineer builds big',

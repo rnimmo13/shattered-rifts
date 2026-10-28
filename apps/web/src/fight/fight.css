@@ -546,7 +546,30 @@
   position: absolute;
   inset: 0;
   z-index: 19;
+  pointer-events: none;
+}
+/* the aiming arrow (AimArrow): gold while it hunts, brighter and solid once locked onto a target, with a ring round it */
+.aimarrow {
+  --aim: #f6dc94;
   filter: drop-shadow(0 0 6px rgb(246 220 148 / 0.8));
+}
+.aimarrow.is-locked {
+  --aim: #fff1b8;
+  filter: drop-shadow(0 0 10px rgb(255 214 120 / 0.95));
+}
+.aimarrow__lock {
+  animation: aim-lock 0.18s var(--ease-pop, ease-out) both;
+}
+@keyframes aim-lock {
+  from {
+    opacity: 0;
+    scale: 1.6;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .aimarrow__lock {
+    animation: none;
+  }
 }
 .fight__aimbar {
   position: absolute;
@@ -1958,7 +1981,6 @@
   inset: 0;
   z-index: 520;
   pointer-events: none;
-  filter: drop-shadow(0 0 6px rgb(246 220 148 / 0.8));
 }
 
 /* ---- layout pass (DECISIONS #249): your side column, potions by the Mana, statuses like Boons ---- */

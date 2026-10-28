@@ -1846,13 +1846,69 @@
   }
 }
 
-/* a grimoire used to look at cards (deck, piles, starter) rather than to build a deck */
+/* a grimoire used to look at cards (deck, piles, starter) rather than to build a deck. Its sizes are in px and match the
+   chrome constants in grimoireData.ts (BOOK_SIDES, BOOK_ENDS, PAGE_SIDES, PAGE_ENDS, COL_GAP, ROW_GAP): keep the two in step. */
 .grim--view {
   display: block;
-  /* never wider than the room it sits in (its cards are sized from that width, so it must not be sized by them) */
+  /* never wider than the room it sits in (its cards are sized from the book, so the book must not be sized by them) */
   width: 100%;
   max-width: 100%;
   min-width: 0;
+}
+.grim--view .grim__book {
+  grid-template-columns: 40px minmax(0, 1fr) 40px;
+  padding: 16px 8px;
+}
+.grim--view .grim__flip {
+  align-self: center;
+  width: 34px;
+}
+.grim--view .grim__page {
+  min-height: 0;
+  padding: 12px 16px 28px;
+}
+.grim--view .grim__pagehead {
+  flex-wrap: nowrap;
+  min-height: 26px;
+  white-space: nowrap;
+  overflow: hidden;
+  margin-bottom: 10px;
+  padding-bottom: 5px;
+}
+.grim--view .grim__cards {
+  gap: 12px 14px;
+  align-content: start;
+}
+/* fill: the book takes all the height of the box it sits in, and the cards are fitted to it */
+.grim--fill {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  height: 100%;
+  min-height: 0;
+}
+.grim--fill .grim__main {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 0;
+  min-height: 0;
+}
+.grim--fill .grim__tabs {
+  flex: none;
+}
+.grim--fill .grim__book {
+  flex: 1 1 0;
+  min-height: 0;
+  grid-template-rows: minmax(0, 1fr);
+  align-items: stretch;
+  overflow: hidden;
+}
+.grim--fill .grim__spread {
+  min-height: 0;
+}
+.grim--fill .grim__page {
+  /* (only a window too small for one card of the smallest size ever needs this) */
+  overflow: auto;
 }
 .grim__slot--view {
   gap: 0;
@@ -1861,13 +1917,73 @@
   opacity: 0.4;
   cursor: not-allowed;
 }
-.fight__modalBody--book {
-  width: min(78rem, 96vw);
-  max-height: 94vh;
-  overflow: auto;
+
+/* a grimoire over the whole window (GrimoireModal): full width, and all the height there is */
+.grimmodal {
+  position: fixed;
+  inset: 0;
+  z-index: 190;
+  display: flex;
+  padding: clamp(0.4rem, 1.2vw, 1rem);
+  background: rgb(4 5 11 / 0.8);
+  backdrop-filter: blur(3px);
 }
-.deckmodal .grim__page {
-  min-height: 26rem;
+.grimmodal__panel {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  padding: 0.7rem 1rem 1rem;
+  border-radius: 16px;
+  border: 1px solid transparent;
+  background:
+    linear-gradient(160deg, rgb(20 32 74 / 0.97), rgb(8 10 20 / 0.98)) padding-box,
+    linear-gradient(160deg, var(--c-gold-light), var(--c-gold-dark) 55%, var(--c-violet)) border-box;
+  box-shadow: var(--shadow-deep);
+  animation: toast-in var(--t-slow) var(--ease-pop);
+}
+.grimmodal__head {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.grim--view .grim__pagehead span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.grimmodal__head > button {
+  flex: none;
+}
+.grimmodal__panel:focus {
+  outline: none;
+}
+.grimmodal__title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  color: var(--c-gold-light);
+}
+.grimmodal__title i {
+  font-style: normal;
+  font-size: 0.8em;
+  color: var(--c-text-dim);
+}
+.grimmodal__hint {
+  max-width: 60ch;
+  margin: 0.2rem 0 0;
+  color: var(--c-text-dim);
+}
+.grimmodal__body {
+  flex: 1 1 0;
+  min-height: 0;
+}
+/* the Card library's book: a full screen tall (the page scrolls to it) */
+.lib__book {
+  height: clamp(34rem, calc(100dvh - 2rem), 80rem);
 }
 
 .crest--midden {

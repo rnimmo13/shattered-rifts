@@ -2,6 +2,7 @@
 // one legal target) plays as soon as you release it above the hand: no arrow, no menus. A card with several possible
 // targets is dropped on one, or clicked and then aimed with the pointer.
 
+import { AimArrow } from './AimArrow';
 import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import type { CardDef, CardInst, CombatDb, LiveDamage } from '@sr/combat';
 import { fanLayout, HAND_SINK } from '../hand/fanLayout';
@@ -52,6 +53,8 @@ export interface FightHandProps {
   onRefuse: (card: HandCard) => void;
   /** the card under the pointer (or null), and where it rests, so a tooltip can sit beside it */
   onHover: (card: HandCard | null, rect?: DOMRect) => void;
+  /** the centre (client px) of the figure the card is aimed at, for the arrow to lock onto */
+  lockAt?: { x: number; y: number } | null;
 }
 
 interface Drag {
@@ -305,30 +308,12 @@ export function FightHand(p: FightHandProps) {
         );
       })}
       {aimingCard && drag && (
-        <svg className="fhand__arrow" width="100%" height="100%" aria-hidden>
-          <defs>
-            <marker
-              id="fhand-ah"
-              viewBox="0 0 10 10"
-              refX="6"
-              refY="5"
-              markerWidth="5"
-              markerHeight="5"
-              orient="auto"
-            >
-              <path d="M0 0 L10 5 L0 10 z" fill="#f6dc94" />
-            </marker>
-          </defs>
-          <path
-            d={`M ${drag.startX} ${window.innerHeight - w * 1.4 * 1.5} Q ${(drag.startX + drag.x) / 2} ${Math.min(drag.y, window.innerHeight - w * 1.4 * 1.5) - 140} ${drag.x} ${drag.y}`}
-            fill="none"
-            stroke="#f6dc94"
-            strokeWidth="5"
-            strokeDasharray="2 10"
-            strokeLinecap="round"
-            markerEnd="url(#fhand-ah)"
-          />
-        </svg>
+        <AimArrow
+          className="fhand__arrow"
+          from={{ x: drag.startX, y: window.innerHeight - w * 1.4 * 1.5 }}
+          to={{ x: drag.x, y: drag.y }}
+          lock={p.lockAt ?? null}
+        />
       )}
     </div>
   );

@@ -166,6 +166,8 @@ const RANGED_POSE: Partial<Record<WeaponLook['motion'], { from: number; aim: num
 
 export class Fighters {
   private readonly all = new Map<string, Fighter>();
+  /** the figure the aiming arrow is locked onto */
+  private locked: string | null = null;
   private readonly live = new Set<gsap.core.Animation>();
   private destroyed = false;
 
@@ -894,8 +896,9 @@ export class Fighters {
     }
   }
 
-  /** Emphasise one figure (the one under the pointer while aiming). */
+  /** Emphasise one figure (the one under the pointer while aiming): it grows a little and its ring burns bright. */
   setHover(id: string | null): void {
+    this.locked = id;
     for (const f of this.all.values()) {
       const k = f.spec.id === id ? 1.05 : 1;
       if (f.busy === 0 && !f.dying)
@@ -906,7 +909,13 @@ export class Fighters {
   tick(t: number, still: boolean): void {
     if (this.destroyed) return;
     for (const f of this.all.values()) {
-      if (f.targetable) f.ring.alpha = 0.32 + 0.3 * Math.sin(t * 5);
+      if (f.targetable) {
+        const lit = f.spec.id === this.locked;
+        f.ring.alpha = lit ? 0.95 : 0.32 + 0.3 * Math.sin(t * 5);
+        const w = f.width * (lit ? 1.6 : 1.3);
+        f.ring.scale.set(w / 128, (w * 0.4) / 128);
+        f.ring.tint = lit ? 0xffe39a : 0xff4a6e;
+      }
       if (still || f.dying || f.busy > 0) continue;
       const w = Math.sin(t * 1.5 + f.phase);
       const hover = f.spec.hover ?? 0;

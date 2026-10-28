@@ -62,27 +62,61 @@
   gap: 0.5rem;
   flex-wrap: nowrap;
 }
-/* the deck is in the Arena: a small badge beside Deck (the details are in its tip) */
+/* the Arena button: glowing green when the deck is in the Arena, red and struck through when it is not yet */
 .runbar__arena {
+  --glow: #4ee08a;
+  position: relative;
   display: inline-grid;
   place-items: center;
-  width: 2.3rem;
-  height: 2.3rem;
-  border-radius: 50%;
-  border: 1px solid var(--c-gold-dark);
-  background: radial-gradient(circle at 35% 30%, rgb(255 214 120 / 0.25), rgb(0 0 0 / 0.5));
-  color: var(--c-gold-light);
-  font-size: 1.05rem;
-  text-decoration: none;
   flex: none;
+  padding: 0.3rem 0.85rem;
+  border-radius: 8px;
+  border: 1px solid var(--glow);
+  background: color-mix(in srgb, var(--glow) 16%, rgb(0 0 0 / 0.55));
+  color: var(--glow);
+  font-family: var(--font-display);
+  font-size: 0.9rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-decoration: none;
+  text-shadow: 0 0 8px color-mix(in srgb, var(--glow) 70%, transparent);
+  box-shadow:
+    0 0 10px color-mix(in srgb, var(--glow) 55%, transparent),
+    inset 0 0 8px color-mix(in srgb, var(--glow) 25%, transparent);
+  animation: arena-glow 2.4s ease-in-out infinite;
+}
+.runbar__arena.is-out {
+  --glow: #ff4d62;
+}
+/* the slash through a deck not in the Arena */
+.runbar__arena.is-out::after {
+  content: '';
+  position: absolute;
+  left: 8%;
+  right: 8%;
+  top: 50%;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--glow);
+  box-shadow: 0 0 6px var(--glow);
+  transform: rotate(-14deg);
+  pointer-events: none;
 }
 .runbar__arena:hover,
 .runbar__arena:focus-visible {
-  border-color: var(--c-gold-light);
-  box-shadow: 0 0 10px rgb(255 214 120 / 0.45);
+  background: color-mix(in srgb, var(--glow) 28%, rgb(0 0 0 / 0.55));
 }
-.runbar__arena.is-waiting {
-  opacity: 0.45;
+@keyframes arena-glow {
+  50% {
+    box-shadow:
+      0 0 18px color-mix(in srgb, var(--glow) 75%, transparent),
+      inset 0 0 10px color-mix(in srgb, var(--glow) 35%, transparent);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .runbar__arena {
+    animation: none;
+  }
 }
 @media (max-width: 78rem) {
   .runbar {
@@ -279,14 +313,6 @@
 }
 
 /* deck viewer */
-.deckmodal {
-  width: min(70rem, 96vw);
-}
-.deckmodal .modal__title i {
-  font-style: normal;
-  font-size: 0.8em;
-  color: var(--c-text-dim);
-}
 .deckgrid {
   display: flex;
   flex-wrap: wrap;
@@ -933,6 +959,73 @@
   color: var(--c-text-dim);
 }
 
+/* an option that shows cards: its words on the left, the cards on the right, in the same box */
+.eventopts:has(.eventopt--cards) {
+  width: min(52rem, 100%);
+}
+.eventopt--cards {
+  grid-template-columns: minmax(12rem, 1fr) auto;
+  align-items: center;
+  gap: 0.6rem 1.2rem;
+}
+.eventopt__body {
+  display: grid;
+  gap: 0.3rem;
+  align-content: center;
+  justify-items: start;
+}
+.eventopt--cards .optcards {
+  margin-top: 0;
+  justify-content: flex-end;
+}
+@media (max-width: 40rem) {
+  .eventopt--cards {
+    grid-template-columns: 1fr;
+  }
+  .eventopt--cards .optcards {
+    justify-content: flex-start;
+  }
+}
+/* what the option does to your deck */
+.optact {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.15rem 0.6rem 0.15rem 0.2rem;
+  border-radius: 999px;
+  font-family: var(--font-display);
+  font-size: 0.82rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--act);
+  background: color-mix(in srgb, var(--act) 14%, transparent);
+  border: 1px solid color-mix(in srgb, var(--act) 60%, transparent);
+}
+.optact i {
+  display: grid;
+  place-items: center;
+  width: 1.3rem;
+  height: 1.3rem;
+  border-radius: 50%;
+  font-style: normal;
+  font-weight: 900;
+  color: #0a0c14;
+  background: var(--act);
+}
+.optact--remove {
+  --act: #ff6b7c;
+}
+.optact--add {
+  --act: #4ee08a;
+}
+.optact--swap,
+.optact--change {
+  --act: #f1c85a;
+}
+.optact--upgrade {
+  --act: #6cc8ff;
+}
+
 /* potions on the run bar and in shops */
 .potionchip {
   display: inline-grid;
@@ -968,11 +1061,6 @@
   border-color: #b98aff;
 }
 
-/* ---- the deck viewer: big enough to read ---- */
-.deckmodal {
-  width: min(92rem, 96vw);
-  max-width: min(92rem, 96vw);
-}
 .deckgrid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
@@ -1581,6 +1669,40 @@
   font-size: 4.2rem;
   color: #ff4d62;
   text-shadow: 0 2px 6px #000;
+}
+/* a strip along the bottom of each card naming what happens to it */
+.optcard__tag {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 0.2rem 0;
+  border-radius: 0 0 8px 8px;
+  font-family: var(--font-display);
+  font-size: 0.72rem;
+  line-height: 1.2;
+  letter-spacing: 0.12em;
+  text-align: center;
+  text-transform: uppercase;
+  pointer-events: none;
+}
+.optcard--lose .optcard__tag,
+.optcard--from .optcard__tag {
+  color: #fff;
+  background: rgb(170 30 50 / 0.92);
+}
+/* (an upgrade's card as it is now: it stays in your deck, so it is not marked as removed) */
+.optcards__pair--upgrade .optcard--from .optcard__tag {
+  color: #f4ead2;
+  background: rgb(60 70 100 / 0.92);
+}
+.optcards__pair--upgrade .optcard--from .card {
+  filter: none;
+}
+.optcard--gain .optcard__tag,
+.optcard--to .optcard__tag {
+  color: #04301d;
+  background: rgb(78 224 138 / 0.95);
 }
 /* joining your deck: a green plus in the corner, and a green edge */
 .optcard--gain,
