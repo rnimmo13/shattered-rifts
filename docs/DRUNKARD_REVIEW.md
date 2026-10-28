@@ -1,6 +1,35 @@
 # Drunkard review: balance by the card costing guide (proposal, 2026-10-28)
 
-**Status: proposal, waiting on Robert.** Nothing in the game has changed yet.
+**Status: applied 2026-10-28 (DECISIONS #393).** Robert: "lets make the balance changes, add stagger mechanic with cards that use it, cut how many shells he gets, hangover raise the drinks number. make sure he has enough utility in the deck". Everything in §2-§3 is in, plus:
+
+- **Stagger** (§5 idea 1): a card tag. A Stagger card's damage lands on a random enemy (the card needs no target) and it hits about
+  15% harder than an aimed card. Its text starts "Stagger." and the keyword tip explains it. Six cards, all in the Hangover build
+  path:
+
+  | Card | Cost, type, rarity | Text | Points / budget |
+  |---|---|---|---|
+  | Haphazard Hook | 0, Attack, common | Stagger. 7 to a random enemy. | 6.3 / 6 |
+  | Drunken Lurch | 1, Attack, common | Stagger. 12 to a random enemy. | 10.8 / 10 |
+  | Stumble | 1, Attack, uncommon | Stagger. 9 to a random enemy, 4 Barrier, 2 Hangover. | 9.9 / 11.2 |
+  | Free-for-All | 2, Attack, uncommon | Stagger. 7 to a random enemy, 3 times. | 18.9 / 21.3 |
+  | Drunken Master | 1, Aura, uncommon | Whenever you play a Stagger card: gain 2 Barrier. | 1.0x |
+  | Blind Drunk | 2, Attack, rare | Stagger. 6 to a random enemy twice, and once more per Hangover. | ~27 / 23.8 at 3 Hangover |
+
+- **Utility** (glue, any build path):
+  - **Rummage the Bin** (0, common): Foresee 3. He had no way to dig.
+  - **Sway** (1, uncommon): 7 Barrier, draw 1.
+- **His utility now:**
+  - Draw: Reload, Pump Action, Dumpster Dive, Chaser, One for the Road, Sob Story, Liquid Dinner, Bottoms Up, Ricochet, Bottomless
+    Flask, Sway.
+  - Card selection: Rummage the Bin.
+  - Mana: Liquid Lunch, Chaser, Hair of the Dog, Bottoms Up, Last Call.
+  - Barrier: Pane Up, Window Pane, Glass Cover, Black Out, Sway, Stumble, the Barrier Auras.
+  - Debuffs: Brittle, Faltering, Exposed (Dead Eye to all).
+  - Getting cards back: Pick Up the Brass.
+- **Bar Stool** moved to uncommon at 7 (+1 per 6% missing), to make room for the two Stagger rares.
+- **Rarity:** 22 commons, 36 uncommons, 28 rares.
+- **Upgrades:** Sway+ has a hand-written upgrade (10 Barrier). Last Call+ costs 2 less Hangover instead of 1 less Mana, since Last Call
+  is now 1 Mana.
 
 Every number is from `docs/14_CARD_COSTING.md`: a card's points against the budget for its cost and rarity, fine within ±15%.
 **Budgets:** 0 Mana 6, 1 Mana 10, 2 Mana 19, 3 Mana 28 for a common; uncommon x1.12, rare x1.25; basics 70-90% of a common; Consume

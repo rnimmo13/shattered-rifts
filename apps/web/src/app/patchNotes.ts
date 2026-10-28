@@ -29,6 +29,27 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.114.0',
+    date: '2026-10-28',
+    title: 'The Drunkard staggers',
+    summary: 'The Drunkard is rebalanced card by card and learns to Stagger.',
+    notes: [
+      {
+        kind: 'new',
+        text: "Stagger: a drunk's swing hits a random enemy, and hits harder for it. New cards: Haphazard Hook, Drunken Lurch, Stumble, Free-for-All, Drunken Master and Blind Drunk. Also new: Rummage the Bin (Foresee 3) and Sway (Barrier and a card).",
+      },
+      {
+        kind: 'balance',
+        text: 'Fewer Buckshot Shells: Load Shells gives 2, Shell Game is an uncommon, One More Round gives 2 a turn. Drinks give more for their Hangover: Barroom Brawl 16 to every enemy, One for the Road draws 3, Drunken Swing 14, Swig 4 Might.',
+      },
+      {
+        kind: 'balance',
+        text: 'Glass Jaw, The Glass Palace and Dutch Courage are trimmed; Trigger Discipline, Gunmetal Soul, Scattergun Symphony, Ricochet, Rock Bottom and Last Call cost 1; Rack the Slide, Scope, Birdshot, Spray and Pray, Fire in the Hole and more are stronger.',
+      },
+    ],
+    heads: 'Rules changed: replays and Arena games from before this version no longer play.',
+  },
+  {
     version: '0.113.0',
     date: '2026-10-28',
     title: 'The Monk, priced',

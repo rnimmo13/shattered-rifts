@@ -77,9 +77,11 @@ describe("KP's Hangover", () => {
   });
 
   it('stops at 10', () => {
-    let s = fight(['bottoms-up', 'bottoms-up'], 0);
+    // (three Bottoms Up: 4 Hangover each)
+    let s = fight(['bottoms-up', 'bottoms-up', 'bottoms-up'], 0);
     s = playCard(s, 'T0');
     s = playCard(s, 'T1');
+    s = playCard(s, 'T2');
     expect(heroOf(s).statuses.hangover).toBe(10);
   });
 
@@ -98,6 +100,7 @@ describe("KP's Hangover", () => {
       return heroOf(playCard(s, 'T0')).hp - hp;
     };
     expect(at(heroOf(fight([])).maxHp)).toBe(0);
-    expect(at(Math.floor(heroOf(fight([])).maxHp / 2))).toBeGreaterThanOrEqual(13);
+    // (Liquid Dinner: heal 2, and 1 more per 5% missing: about 12 at half HP)
+    expect(at(Math.floor(heroOf(fight([])).maxHp / 2))).toBeGreaterThanOrEqual(11);
   });
 });

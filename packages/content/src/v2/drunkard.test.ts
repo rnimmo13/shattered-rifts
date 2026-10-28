@@ -37,16 +37,16 @@ describe('KP and the Old Twelve Gauge', () => {
     let s = fight('drunkard', ['old-twelve-gauge', 'rack-the-slide']);
     s = playCard(s, 'T0');
     for (const u of s.sides.b.units) expect(u.hp).toBe(95);
-    s = playCard(s, 'T1'); // forge +3
+    s = playCard(s, 'T1'); // Sharpen 4 (DECISIONS #393)
     const gun = [...s.sides.a.hand, ...s.sides.a.discard, ...s.sides.a.draw].find(
       (c) => c.card === 'old-twelve-gauge',
     );
-    expect(gun?.bonus).toBe(3);
-    // it retains, so it is still there to fire again for 5 + 3
+    expect(gun?.bonus).toBe(4);
+    // it retains, so it is still there to fire again for 5 + 4
     s.sides.a.hand = s.sides.a.hand.filter((c) => c.card !== 'old-twelve-gauge');
     if (gun) s.sides.a.hand.push(gun);
     s = playCard(s, gun!.id);
-    for (const u of s.sides.b.units) expect(u.hp).toBe(95 - 8);
+    for (const u of s.sides.b.units) expect(u.hp).toBe(95 - 9);
   });
 
   it('Point Blank: against a lone enemy it deals 25% more (DECISIONS #247)', () => {

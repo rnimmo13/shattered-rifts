@@ -359,7 +359,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     ],
     blurb:
       'A short, fat, bald dwarf with a hammer, an Old Twelve Gauge that hits every enemy and gets sharper, and a trolley of window panes. Booby traps, glass and buckshot.',
-    mechanics: ['Old Twelve Gauge', 'Buckshot', 'Hangover', 'Traps'],
+    mechanics: ['Old Twelve Gauge', 'Buckshot', 'Hangover', 'Stagger'],
     buildPaths: [
       'Gun: sharpen the Old Twelve Gauge',
       'Shells: buckshot that hits everyone',
@@ -370,6 +370,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
       'You start every fight with the Old Twelve Gauge: it hits EVERY enemy, you keep it in hand, and every Sharpen card (Rack the Slide...) makes it hit harder for the whole fight.',
       'Shells are 0-cost attacks that hit every enemy and are consumed. Playing one can sharpen the gun (Hair Trigger).',
       'Drinks (Swig, Liquid Lunch...) give Mana, cards or Might now and Hangover: at the start of your next turn you lose that much HP, never your last. Hangover cards hit harder the more of it you carry, and his heals grow with the HP you are missing.',
+      "Stagger cards are a drunk's swing: they hit a random enemy instead of one you choose, and hit harder for it.",
     ],
     quotes: [
       '"I ain\'t homeless. I\'m between windows."',

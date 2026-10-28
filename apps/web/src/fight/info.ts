@@ -203,7 +203,7 @@ export const STATUS_INFO: Record<
     name: 'Hangover',
     glyph: '🍺',
     tone: 'bad',
-    text: 'At the start of your next turn you lose this much HP (never your last one), then it clears. It stops at 10. Some of the Drunkard\'s cards hit harder the more of it you carry.',
+    text: "At the start of your next turn you lose this much HP (never your last one), then it clears. It stops at 10. Some of the Drunkard's cards hit harder the more of it you carry.",
   },
   holdfast: {
     name: 'Holdfast',
@@ -476,6 +476,10 @@ export const KEYWORD_INFO: Record<string, { name: string; text: string }> = {
     name: 'Sly',
     text: 'When a card makes you discard it, it is played for free (not when you end your turn).',
   },
+  stagger: {
+    name: 'Stagger',
+    text: "A drunk's swing: its damage lands on a random enemy instead of one you choose, and it hits harder for it.",
+  },
   'buckshot-shell': {
     name: 'Buckshot Shell',
     text: 'A 0-cost Attack that hits every enemy and is consumed.',
@@ -514,6 +518,7 @@ export function keywordsOf(
     starX?: boolean | undefined;
     statusCost?: { status: string; amount: number; x?: boolean } | undefined;
     x?: boolean | undefined;
+    tags?: readonly string[] | undefined;
     effects: readonly {
       op: string;
       status?: string;
@@ -533,6 +538,7 @@ export function keywordsOf(
     if (k && !out.some((x) => x.name === k.name)) out.push(k);
   };
   if (c.kind === 'snare') add(KEYWORD_INFO['snare']);
+  if (c.tags?.includes('stagger')) add(KEYWORD_INFO['stagger']);
   if (c.kind === 'summon') add(KEYWORD_INFO['companion']);
   for (const o of c.effects) {
     if (o.op === 'barrier') add(KEYWORD_INFO['barrier']);

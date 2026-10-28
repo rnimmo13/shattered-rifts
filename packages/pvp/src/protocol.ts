@@ -63,7 +63,8 @@ export interface Entry {
 // (25: companion frames (slots), scrapping several to make room, Salvage, the Engineer rebalanced with new cards, #383-385)
 // (26: the Trickster rebalanced by the card costing guide, Death Trap and Whisper Net retired, #386)
 // (27: the Full Trick goes off after the card that earned it, #389)
-export const RULES_VERSION = 27;
+// (28: the Drunkard rebalanced, with Stagger, #393)
+export const RULES_VERSION = 28;
 
 /** Who you are playing, before a game starts: their name and badges, not their deck or Riftwalker. */
 export type FoeCard = Pick<Entry, 'name' | 'trophies' | 'rank'>;

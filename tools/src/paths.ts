@@ -255,6 +255,8 @@ for (const m of kpFile.matchAll(
 Object.assign(out, BY_ID);
 // glue cards: any build path can use them, so they belong to none (DECISIONS #337)
 const NO_PATH = [
+  'rummage-the-bin',
+  'sway',
   'stolen-moment',
   'bone-crack',
   'whet-the-fangs',

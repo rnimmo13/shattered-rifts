@@ -5,6 +5,7 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **The Drunkard is rebalanced and learns to Stagger.** Stagger cards are a drunk's swing: they hit a random enemy and hit harder for it (Haphazard Hook, Drunken Lurch, Stumble, Free-for-All, Drunken Master, Blind Drunk). Fewer Buckshot Shells (Load Shells gives 2), drinks give more for their Hangover (Barroom Brawl 16 to every enemy, One for the Road draws 3), the self-damage Auras are trimmed, the gun Auras are cheaper, and two new utility cards: Rummage the Bin and Sway.
 - **Fixed:** beating a Warden shows one page of rewards, the Warden's Gift with its Hearts. An extra card reward earned in that fight (Marked for Death) is one more card on the Gift instead of a second page.
 - **The Barbarian is now the Monk.** Same fighter and cards (her palms, prayers and stances always were a monk's); Red Mist, Cornered Beast, Blood on the Sand and Berserk Tide are Burning Breath, Coiled Serpent, Iron Body and Storm of Fists. Saved runs and decks carry over.
 - **The Barbarian is rebalanced** against the card costing guide. Inner Fire now gives 1 Fervor for each stance you enter (no Barrier), Still Guard gives 3 Barrier, the Auras that pay for every stance change cost more or pay less, and about 40 cards move towards their budget (the weak ones up: Rage of Ages, Final Account, Radiant Heart...). All-Seeing costs 2.

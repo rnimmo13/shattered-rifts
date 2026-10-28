@@ -375,6 +375,7 @@ const TAG_NAMES: Record<string, string> = {
   soul: 'Gravesoul',
   command: 'Command card',
   status: 'Status card',
+  stagger: 'Stagger card',
 };
 
 /** A scale under 1 as a small fraction: 0.5 is 1 per 2, 2/3 is 2 per 3 (the smallest whole numbers that give it). */
@@ -1369,6 +1370,8 @@ export function cardText(db: CombatDb, c: CardDef, live?: ReadonlyMap<number, Li
     parts.push(`Costs ${c.cheaperPerAttack} less for each Attack played this turn.`);
   // (assassin) Sly, Pinpoint's discount, Grand Finale's condition
   if (c.sly) parts.push('Sly.');
+  // (the Drunkard's Stagger: its damage lands on a random enemy, DECISIONS #393)
+  if (c.tags?.includes('stagger')) parts.push('Stagger.');
   if (c.cheaperPerSkill)
     parts.push(`Costs ${c.cheaperPerSkill} less for each Skill played this turn.`);
   if (c.needsEmptyDraw) parts.push('Only playable while your draw pile is empty.');
