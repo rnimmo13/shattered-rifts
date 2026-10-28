@@ -1392,106 +1392,7 @@
   ]
  },
  {
-  "name": "neutral-m01",
-  "hero": "neutral",
-  "cols": 3,
-  "rows": 3,
-  "ids": [
-   "alarm-bell",
-   "catch-breath",
-   "glimpse-ahead",
-   "haft-strike",
-   "heave",
-   "pitfall",
-   "needling-blow",
-   "stagger",
-   "reckless-swing"
-  ]
- },
- {
-  "name": "neutral-m02",
-  "hero": "neutral",
-  "cols": 3,
-  "rows": 2,
-  "ids": [
-   "rift-bolt",
-   "shrug-it-off",
-   "shatter-strike",
-   "steady-guard",
-   "defend",
-   "strike"
-  ]
- },
- {
   "name": "knight-m01",
-  "hero": "knight",
-  "cols": 3,
-  "rows": 3,
-  "ids": [
-   "ashen-reckoning",
-   "bloodfeast",
-   "bloodied-plate",
-   "burn-it-all",
-   "crimson-offering",
-   "crippling-blow",
-   "cruel-streak",
-   "double-down",
-   "fan-the-flames"
-  ]
- },
- {
-  "name": "knight-m02",
-  "hero": "knight",
-  "cols": 3,
-  "rows": 3,
-  "ids": [
-   "flailing-blows",
-   "forsake",
-   "inner-furnace",
-   "raised-hell",
-   "rally",
-   "rending-fury",
-   "rite-of-recall",
-   "stone-fury",
-   "stone-stance"
-  ]
- },
- {
-  "name": "knight-m03",
-  "hero": "knight",
-  "cols": 3,
-  "rows": 3,
-  "ids": [
-   "unforgiving-drill",
-   "unholy-pact",
-   "unravel",
-   "warlords-oath",
-   "wildfire",
-   "berserkers-rage",
-   "bitter-breath",
-   "blood-fire",
-   "borrowed-blade"
-  ]
- },
- {
-  "name": "knight-m04",
-  "hero": "knight",
-  "cols": 3,
-  "rows": 3,
-  "ids": [
-   "brace-for-battle",
-   "break-guard",
-   "challenge",
-   "charging-herd",
-   "cold-stare",
-   "giants-stance",
-   "grim-focus",
-   "hammer-fall",
-   "howl-of-the-fallen"
-  ]
- },
- {
-  "name": "knight-m05",
   "hero": "knight",
   "cols": 3,
   "rows": 3,
@@ -1508,7 +1409,7 @@
   ]
  },
  {
-  "name": "knight-m06",
+  "name": "knight-m02",
   "hero": "knight",
   "cols": 3,
   "rows": 3,
@@ -1525,7 +1426,7 @@
   ]
  },
  {
-  "name": "knight-m07",
+  "name": "knight-m03",
   "hero": "knight",
   "cols": 3,
   "rows": 3,
@@ -1542,7 +1443,7 @@
   ]
  },
  {
-  "name": "knight-m08",
+  "name": "knight-m04",
   "hero": "knight",
   "cols": 3,
   "rows": 3,
@@ -1559,7 +1460,7 @@
   ]
  },
  {
-  "name": "knight-m09",
+  "name": "knight-m05",
   "hero": "knight",
   "cols": 3,
   "rows": 2,
@@ -1571,257 +1472,7 @@
   ]
  },
  {
-  "name": "engineer-m01",
-  "hero": "engineer",
-  "cols": 3,
-  "rows": 3,
-  "ids": [
-   "build-generator",
-   "dreadnought",
-   "full-salvo",
-   "heavy-hitter",
-   "particle-cannon",
-   "build-bulwark-walker",
-   "ion-lance",
-   "laser-grid",
-   "patch-job"
-  ]
- },
- {
-  "name": "engineer-m02",
-  "hero": "engineer",
-  "cols": 3,
-  "rows": 3,
-  "ids": [
-   "reinforce",
-   "schematics",
-   "scrap-golem",
-   "targeting-uplink",
-   "weld-armor",
-   "welding-arc",
-   "armor-piercer",
-   "battery-pack",
-   "breach-charge"
-  ]
- },
- {
-  "name": "engineer-m03",
-  "hero": "engineer",
-  "cols": 3,
-  "rows": 3,
-  "ids": [
-   "build-enforcer",
-   "countermeasure-grid",
-   "crankshaft",
-   "deploy-spotter",
-   "formation-strike",
-   "hardened-chassis",
-   "jumpstart",
-   "ping",
-   "plating"
-  ]
- },
- {
-  "name": "engineer-m04",
-  "hero": "engineer",
-  "cols": 3,
-  "rows": 3,
-  "ids": [
-   "pulse-pistol",
-   "reinforced-frame",
-   "relay-strike",
-   "repair-bot",
-   "static-field",
-   "sync-pulse",
-   "overclock"
-  ]
- },
- {
-  "name": "hunter-m01",
-  "hero": "hunter",
-  "cols": 3,
-  "rows": 3,
-  "ids": [
-   "berserk-tempo",
-   "bloodstorm",
-   "killing-spree",
-   "red-frenzy",
-   "rising-howl",
-   "adrenal-surge",
-   "baited-snare",
-   "battle-rhythm",
-   "bloodied-howl"
-  ]
- },
- {
-  "name": "hunter-m02",
-  "hero": "hunter",
-  "cols": 3,
-  "rows": 3,
-  "ids": [
-   "blur-of-claws",
-   "burst-of-speed",
-   "deadfall",
-   "hunting-grounds",
-   "reckless-abandon",
-   "rip-and-tear",
-   "run-it-down",
-   "whet-the-fangs",
-   "bared-teeth"
-  ]
- },
- {
-  "name": "hunter-m03",
-  "hero": "hunter",
-  "cols": 3,
-  "rows": 3,
-  "ids": [
-   "bear-trap",
-   "bone-crack",
-   "lead-the-charge",
-   "open-a-vein",
-   "pain-ward",
-   "pound",
-   "heart-pound",
-   "primal-feast",
-   "scavenge"
-  ]
- },
- {
-  "name": "hunter-m04",
-  "hero": "hunter",
-  "cols": 3,
-  "rows": 3,
-  "ids": [
-   "rush-in",
-   "shake-loose",
-   "single-out",
-   "snare-line",
-   "throw-scraps",
-   "wild-swings",
-   "blood-frenzy"
-  ]
- },
- {
-  "name": "trickster-m01",
-  "hero": "trickster",
-  "cols": 3,
-  "rows": 3,
-  "ids": [
-   "royal-flourish",
-   "showstopper",
-   "the-joker",
-   "the-whole-deck",
-   "ace-of-clubs",
-   "card-fan",
-   "card-sharp",
-   "cripple",
-   "cut-the-deck"
-  ]
- },
- {
-  "name": "trickster-m02",
-  "hero": "trickster",
-  "cols": 3,
-  "rows": 3,
-  "ids": [
-   "hamstring",
-   "queen-of-hearts",
-   "step-aside",
-   "trapline-rider",
-   "wild-card",
-   "cheap-shot",
-   "fang-pit",
-   "flourish",
-   "discarded-hand"
-  ]
- },
- {
-  "name": "trickster-m03",
-  "hero": "trickster",
-  "cols": 3,
-  "rows": 3,
-  "ids": [
-   "low-blow",
-   "mark-prey",
-   "patient-blade",
-   "slit-and-run",
-   "tear-the-veil",
-   "trip-line",
-   "veil-dance",
-   "pick-a-card"
-  ]
- },
- {
   "name": "assassin-m01",
-  "hero": "assassin",
-  "cols": 3,
-  "rows": 3,
-  "ids": [
-   "blood-scent",
-   "bloodburst",
-   "double-trick",
-   "final-bow",
-   "grand-scheme",
-   "hemorrhage",
-   "inked-blades",
-   "into-the-shadows",
-   "killing-stroke"
-  ]
- },
- {
-  "name": "assassin-m02",
-  "hero": "assassin",
-  "cols": 3,
-  "rows": 3,
-  "ids": [
-   "mantle-of-night",
-   "marked-for-death",
-   "nimble-routine",
-   "patient-hands",
-   "razor-skin",
-   "recall-the-blades",
-   "recurring-dream",
-   "rush-of-blood",
-   "sapping-wound"
-  ]
- },
- {
-  "name": "assassin-m03",
-  "hero": "assassin",
-  "cols": 3,
-  "rows": 3,
-  "ids": [
-   "serpents-coil",
-   "serrated-edges",
-   "shadow-echo",
-   "slow-murder",
-   "steel-monsoon",
-   "stilled-time",
-   "wide-arc",
-   "all-or-nothing",
-   "blood-mist"
-  ]
- },
- {
-  "name": "assassin-m04",
-  "hero": "assassin",
-  "cols": 3,
-  "rows": 3,
-  "ids": [
-   "bolt-hole",
-   "bottomless-sleeves",
-   "clean-cut",
-   "cool-head",
-   "darting-strike",
-   "final-flourish",
-   "fleet-fingers",
-   "fleet-step",
-   "garrote"
-  ]
- },
- {
-  "name": "assassin-m05",
   "hero": "assassin",
   "cols": 3,
   "rows": 3,
@@ -1838,7 +1489,7 @@
   ]
  },
  {
-  "name": "assassin-m06",
+  "name": "assassin-m02",
   "hero": "assassin",
   "cols": 3,
   "rows": 3,
@@ -1855,7 +1506,7 @@
   ]
  },
  {
-  "name": "assassin-m07",
+  "name": "assassin-m03",
   "hero": "assassin",
   "cols": 3,
   "rows": 3,
@@ -1872,7 +1523,7 @@
   ]
  },
  {
-  "name": "assassin-m08",
+  "name": "assassin-m04",
   "hero": "assassin",
   "cols": 3,
   "rows": 3,
@@ -1889,7 +1540,7 @@
   ]
  },
  {
-  "name": "assassin-m09",
+  "name": "assassin-m05",
   "hero": "assassin",
   "cols": 3,
   "rows": 3,
@@ -1906,7 +1557,7 @@
   ]
  },
  {
-  "name": "assassin-m10",
+  "name": "assassin-m06",
   "hero": "assassin",
   "cols": 3,
   "rows": 1,
@@ -1917,57 +1568,6 @@
  },
  {
   "name": "shaman-m01",
-  "hero": "shaman",
-  "cols": 3,
-  "rows": 3,
-  "ids": [
-   "carve-a-notch",
-   "deep-freeze",
-   "falling-star",
-   "firestorm",
-   "shifting-strike",
-   "spiritfont",
-   "splinter-wheel",
-   "whirlpool",
-   "winds-favor"
-  ]
- },
- {
-  "name": "shaman-m02",
-  "hero": "shaman",
-  "cols": 3,
-  "rows": 3,
-  "ids": [
-   "arc-lightning",
-   "cold-snap",
-   "boulder-fist",
-   "clear-spring",
-   "crystal-ward",
-   "earthen-might",
-   "feed-the-fire",
-   "fire-bloom",
-   "gather-kindling"
-  ]
- },
- {
-  "name": "shaman-m03",
-  "hero": "shaman",
-  "cols": 3,
-  "rows": 3,
-  "ids": [
-   "gathering-dusk",
-   "ironbark",
-   "kindled-rite",
-   "night-veil",
-   "prismatic-cascade",
-   "rapids",
-   "river-scour",
-   "skybreaker",
-   "smoke-offering"
-  ]
- },
- {
-  "name": "shaman-m04",
   "hero": "shaman",
   "cols": 3,
   "rows": 3,
@@ -1984,7 +1584,7 @@
   ]
  },
  {
-  "name": "shaman-m05",
+  "name": "shaman-m02",
   "hero": "shaman",
   "cols": 3,
   "rows": 3,
@@ -2001,7 +1601,7 @@
   ]
  },
  {
-  "name": "shaman-m06",
+  "name": "shaman-m03",
   "hero": "shaman",
   "cols": 3,
   "rows": 1,
@@ -2011,91 +1611,7 @@
   ]
  },
  {
-  "name": "monk-m01",
-  "hero": "monk",
-  "cols": 3,
-  "rows": 3,
-  "ids": [
-   "thousand-palms",
-   "unbroken-calm",
-   "inner-sight",
-   "open-palm",
-   "rending-hands",
-   "shield-of-faith",
-   "ashen-fist",
-   "bowing-low",
-   "centre-yourself"
-  ]
- },
- {
-  "name": "monk-m02",
-  "hero": "monk",
-  "cols": 3,
-  "rows": 3,
-  "ids": [
-   "crushing-palm",
-   "flurry-of-palms",
-   "prostrate",
-   "quick-palms",
-   "empty-fist",
-   "sunlit-blade",
-   "vigilance",
-   "whispered-vow"
-  ]
- },
- {
   "name": "spellblade-m01",
-  "hero": "spellblade",
-  "cols": 3,
-  "rows": 3,
-  "ids": [
-   "by-decree",
-   "call-the-guard",
-   "cleaving-edge",
-   "echoing-blade",
-   "endless-barrage",
-   "fated-hand",
-   "glass-armory",
-   "heirloom-maul",
-   "hollow-form"
-  ]
- },
- {
-  "name": "spellblade-m02",
-  "hero": "spellblade",
-  "cols": 3,
-  "rows": 3,
-  "ids": [
-   "iron-rule",
-   "obsidian-aegis",
-   "obsidian-drill",
-   "rift-gifts",
-   "seven-shards",
-   "the-forgemaster",
-   "tyrants-gaze",
-   "unbreakable-crown",
-   "weigh-the-crown"
-  ]
- },
- {
-  "name": "spellblade-m03",
-  "hero": "spellblade",
-  "cols": 3,
-  "rows": 3,
-  "ids": [
-   "stellar-wind",
-   "banked-embers",
-   "crowned-fist",
-   "distant-ember",
-   "final-shatter",
-   "glass-wall",
-   "grand-speech",
-   "forge-heat",
-   "hex-volley"
-  ]
- },
- {
-  "name": "spellblade-m04",
   "hero": "spellblade",
   "cols": 3,
   "rows": 3,
@@ -2112,7 +1628,7 @@
   ]
  },
  {
-  "name": "spellblade-m05",
+  "name": "spellblade-m02",
   "hero": "spellblade",
   "cols": 3,
   "rows": 3,
@@ -2129,7 +1645,7 @@
   ]
  },
  {
-  "name": "spellblade-m06",
+  "name": "spellblade-m03",
   "hero": "spellblade",
   "cols": 3,
   "rows": 3,
@@ -2146,7 +1662,7 @@
   ]
  },
  {
-  "name": "spellblade-m07",
+  "name": "spellblade-m04",
   "hero": "spellblade",
   "cols": 3,
   "rows": 1,
@@ -2156,57 +1672,6 @@
  },
  {
   "name": "drunkard-m01",
-  "hero": "drunkard",
-  "cols": 3,
-  "rows": 3,
-  "ids": [
-   "blind-drunk",
-   "bottoms-up",
-   "ricochet",
-   "scattergun-symphony",
-   "bandolier",
-   "bender",
-   "dead-eye",
-   "double-tap",
-   "drunken-master"
-  ]
- },
- {
-  "name": "drunkard-m02",
-  "hero": "drunkard",
-  "cols": 3,
-  "rows": 3,
-  "ids": [
-   "free-for-all",
-   "hair-of-the-dog",
-   "spare-barrel",
-   "stumble",
-   "sway",
-   "swig",
-   "aim",
-   "birdshot",
-   "bottle-to-the-head"
-  ]
- },
- {
-  "name": "drunkard-m03",
-  "hero": "drunkard",
-  "cols": 3,
-  "rows": 3,
-  "ids": [
-   "broken-bottle",
-   "buttstroke",
-   "chaser",
-   "drunken-lurch",
-   "gun-oil",
-   "haphazard-hook",
-   "one-for-the-road",
-   "pistol-whip",
-   "powder-load"
-  ]
- },
- {
-  "name": "drunkard-m04",
   "hero": "drunkard",
   "cols": 3,
   "rows": 2,
@@ -2225,57 +1690,6 @@
   "cols": 3,
   "rows": 3,
   "ids": [
-   "call-the-departed",
-   "common-grave",
-   "death-grip",
-   "echo-of-the-dead",
-   "ever-watchful",
-   "gallows",
-   "gather-souls",
-   "reapers-mantle",
-   "shared-agony"
-  ]
- },
- {
-  "name": "necromancer-m02",
-  "hero": "necromancer",
-  "cols": 3,
-  "rows": 3,
-  "ids": [
-   "spreading-rot",
-   "whispers-beyond",
-   "at-the-threshold",
-   "bone-sift",
-   "bone-toss",
-   "bottled-soul",
-   "burial-shroud",
-   "dance-of-bones",
-   "drag-under"
-  ]
- },
- {
-  "name": "necromancer-m03",
-  "hero": "necromancer",
-  "cols": 3,
-  "rows": 3,
-  "ids": [
-   "entomb",
-   "fester",
-   "fleshcraft",
-   "funeral-march",
-   "goad",
-   "grasping-hands",
-   "grimoire-gale",
-   "helping-hand",
-   "killing-chill"
-  ]
- },
- {
-  "name": "necromancer-m04",
-  "hero": "necromancer",
-  "cols": 3,
-  "rows": 3,
-  "ids": [
    "dirge",
    "last-rites",
    "mourning",
@@ -2288,7 +1702,7 @@
   ]
  },
  {
-  "name": "necromancer-m05",
+  "name": "necromancer-m02",
   "hero": "necromancer",
   "cols": 3,
   "rows": 3,
@@ -2305,7 +1719,7 @@
   ]
  },
  {
-  "name": "necromancer-m06",
+  "name": "necromancer-m03",
   "hero": "necromancer",
   "cols": 3,
   "rows": 3,
@@ -2322,7 +1736,7 @@
   ]
  },
  {
-  "name": "necromancer-m07",
+  "name": "necromancer-m04",
   "hero": "necromancer",
   "cols": 3,
   "rows": 1,

@@ -5,6 +5,7 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **About 300 cards get their own art** (every class; 169 cards still to go).
 - **The Necromancer is stronger early.** Grave Chill now Raises 3 at the start of every turn, so a Bone Thrall is standing for your Command cards from turn 1 (and every one that falls still curses an enemy with Fate). Bone Bulwark (Raise 5, 8 Barrier), Bone Sift (Raise 5), Grave Robbery (6 damage), Spirit Walk (needs 6 cards) and Toll in Advance (5 Mana) are better.
 - **Fixed:** the Sharpen tooltip names the Old Twelve Gauge on the Drunkard's cards (Scope, Reload, Hair Trigger...), not the Obsidian Blade.
 - **Upgraded Auras do more, instead of just costing less.** 62 Auras now upgrade the way Slay the Spire's Powers do: a bigger number (Rampage of Ire+ deals 9, Daily Rite+ gives 3 Fervor, Masquerade+ 4 per suit), Opening hand for small engines (Shell Game+, Battle Rhythm+, Legion+), or a smaller cost in HP (Ancient Fury+, Berserk Tempo+). Auras whose effect can't grow (Unholy Pact, Command Chip, Ascendant Form...) still cost 1 less. The Knight's are unchanged.

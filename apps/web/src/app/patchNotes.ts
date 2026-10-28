@@ -32,8 +32,12 @@ export const PATCH_NOTES: PatchNote[] = [
     version: '0.117.0',
     date: '2026-10-28',
     title: 'The Necromancer rises',
-    summary: 'The Necromancer is stronger from the first fight, and Sharpen names the right weapon.',
+    summary: 'The Necromancer is stronger from the first fight, about 300 cards get their own art, and Sharpen names the right weapon.',
     notes: [
+      {
+        kind: 'new',
+        text: 'About 300 cards that had no picture, or borrowed another card’s, now have their own art: every class, from the new Trickster card tricks to the Monk’s palms and the Engineer’s guns.',
+      },
       {
         kind: 'balance',
         text: 'Grave Chill now Raises 3 at the start of every turn: a Bone Thrall is standing for your Command cards from turn 1, and every one that falls still curses an enemy with 3 Fate.',
