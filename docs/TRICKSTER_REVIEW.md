@@ -1,6 +1,9 @@
 # Trickster review: balance by the card costing guide (proposal, 2026-10-28)
 
-**Status: proposal, waiting on Robert.** Nothing in the game has changed yet.
+**Status: applied 2026-10-28 (DECISIONS #386).** Robert's answers to §7: a cancel stops one hit, like Shielded (the text now says
+"Cancel that hit"); Deep Pockets costs 2, as Inner Furnace does; summon and Barrier Traps name "that enemy". One difference from the
+proposal below: **Compound Fear keeps Consume** (every card that doubles a status must, `balance.test.ts`), so it is raised instead:
+2 Exposed and a cap of +4 (Compound Fear+: cap +6), about 14 points against 15.6.
 
 Every number below is from the card costing guide (`docs/14_CARD_COSTING.md`): add up a card's points, compare them with the budget
 for its cost and rarity, and call it fine within ±15%. Trap values use the spring factors in §11 of the guide. The Trickster brought
@@ -137,6 +140,10 @@ The automatic upgrade raises every number on a card, so cards with two or three 
 And one that gains too little: **Coup de Grace+** gains only 3 damage (+10% on a 3-cost card; the guide asks for +8-10). Proposed: **22
 (+5 per Exposed)**, +23% at 3 Exposed.
 
+Added when the pass was applied (DECISIONS #386): **Cheap Shot+** 9 damage (+27%) and **Measured Breath+** 8 Barrier, Mana
+unchanged (+28%; the automatic "+" also raised the Mana that made the card Consume). Checked and left automatic: Opening Strike+ (11, 3
+Exposed: +43%), Stalk+ (+30%), Poison Pantry+ and False Floor+ (+33% each).
+
 ---
 
 ## 5. Retire 2
@@ -187,7 +194,7 @@ leaves the uncommons 4-5 short of the baselines, which is the best argument for 
 |---|---|---|
 | Trickster cards (own pool, basics included) | 80 | **78** (80 - 2 retired) |
 | Trickster Traps | 17 | 15 |
-| Cards changed | | 34 number changes, 2 reworks, 2 rarity moves, 23 hand-written upgrades |
+| Cards changed | | 34 number changes, 2 reworks, 2 rarity moves, 25 hand-written upgrades |
 
 The roster test wants the Trickster to have at least twice the Traps of anyone else: 15 against the Hunter's 6 still passes.
 

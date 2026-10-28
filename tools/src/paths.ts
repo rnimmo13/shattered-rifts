@@ -107,7 +107,6 @@ const BY_ID: Record<string, number> = {
   'self-repair': 2,
   'pack-leader': 1,
   'poison-pantry': 0,
-  'whisper-net': 0,
   'compound-fear': 1,
   hamstring: 1,
   'trick-of-the-light': 2,

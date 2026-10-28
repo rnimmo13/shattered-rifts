@@ -655,6 +655,7 @@ function whenText(o: Extract<Op, { op: 'when' }>, db?: CombatDb): string {
   if (o.by === 'exposed' && o.of === 'target' && (lo ?? 0) >= 1) return 'the target is Exposed';
   if (o.by === 'faltering' && o.of === 'target' && (lo ?? 0) >= 1) return 'the target is Faltering';
   if (o.by === 'hpLostTurn' && (lo ?? 0) >= 1) return 'you have lost HP this turn';
+  if (o.by === 'snares' && lo === 1 && hi === undefined) return 'you have a Trap set';
   if (o.by === 'exhaustedTurn' && (lo ?? 0) >= 1) return 'you have consumed a card this turn';
   if (o.by === 'skillsDrawnNow' && (lo ?? 0) >= 1) return 'you drew a Skill';
   if (o.by === 'seared' && o.of === 'target' && (lo ?? 0) >= 1) return 'the target has Bleed';
@@ -919,7 +920,8 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
     case 'actAllies':
       return 'All your allies act now.';
     case 'prevent':
-      return 'Cancel that attack.';
+      // (it stops the one hit that sprang it, like Shielded; a move's other hits still land)
+      return 'Cancel that hit.';
     case 'discard':
       if (o.amount >= 9 && !o.random && !o.any) return 'Discard your hand.';
       return o.random
@@ -1454,7 +1456,12 @@ export function cardText(db: CombatDb, c: CardDef, live?: ReadonlyMap<number, Li
     parts.push(
       `Whenever you create ${article(TAG_NAMES[c.cheaperOnCreate] ?? c.cheaperOnCreate)} ${TAG_NAMES[c.cheaperOnCreate] ?? c.cheaperOnCreate}, this costs 1 less until played.`,
     );
-  return parts.join(' ');
+  const text = parts.join(' ');
+  // a Trap that springs on a summon or on Barrier answers an enemy that did not attack: "that enemy", not "the attacker"
+  // (an "HP lost" Trap still answers whoever hit you: it keeps "the attacker")
+  return c.kind === 'snare' && (c.trigger?.on === 'foeSummons' || c.trigger?.on === 'foeDefends')
+    ? text.replace(/the attacker/g, 'that enemy')
+    : text;
 }
 
 /**

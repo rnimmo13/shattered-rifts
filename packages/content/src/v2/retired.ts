@@ -126,6 +126,10 @@ export const TRIMMED_CARDS: Readonly<Record<string, string>> = {
   'drone-apotheosis': 'drone-carrier',
   overload: 'double-time',
   'mob-rule': 'overcharge-blast',
+  // trickster
+  // (the costing pass, DECISIONS #386)
+  'death-trap': 'bait-and-switch',
+  'whisper-net': 'false-floor',
   // hunter
   // (the costing pass, DECISIONS #377)
   'crimson-pact': 'bone-offering',

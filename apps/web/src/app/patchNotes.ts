@@ -29,6 +29,36 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.112.0',
+    date: '2026-10-28',
+    title: 'The Trickster, priced',
+    summary:
+      'The Trickster is rebalanced card by card, and enemy attacks that hit your whole side are marked.',
+    notes: [
+      {
+        kind: 'new',
+        text: 'An enemy move that strikes every unit on your side carries a red "Hits all" tag, and every unit it will hit is marked. A move whose hits land at random says so too.',
+      },
+      {
+        kind: 'balance',
+        text: "Trickster: Set the Web deals 7 and applies 1 Exposed. Cripple, Perfect Alibi, Slit and Run, Smoke Bomb, Metronome Trap, Spring the Trap, Opening Strike, The Perfect Trap and The Long Ambush come down; Mirror Veil, Trap Net, False Floor, Poison Pantry, Trapper's Dividend, The Long Game, Coup de Grace, Culling and more are cheaper or stronger.",
+      },
+      {
+        kind: 'changed',
+        text: 'Cheap Shot applies Exposed when you have a Trap set, and Stalk draws 2 extra cards next turn when its target is Exposed. Deep Pockets costs 2. Many Trickster upgrades now raise one number instead of all of them.',
+      },
+      {
+        kind: 'changed',
+        text: 'Death Trap and Whisper Net are retired: saved decks get Bait and Switch and False Floor.',
+      },
+      {
+        kind: 'fixed',
+        text: 'A Trap that cancels says "Cancel that hit": it stops the one hit that set it off, as Shielded does. Traps that answer a summon or an enemy gaining Barrier name "that enemy" instead of "the attacker".',
+      },
+    ],
+    heads: 'Rules changed: replays and Arena games from before this version no longer play.',
+  },
+  {
     version: '0.111.0',
     date: '2026-10-28',
     title: 'A grimoire that stays put',

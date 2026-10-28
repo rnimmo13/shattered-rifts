@@ -32,7 +32,7 @@ export const LEGENDARIES: CardDef[] = [
     'snare',
     3,
     'none',
-    [dmg(25, 'allFoes'), status('stunned', 2, 'allFoes'), status('exposed', 3, 'allFoes')],
+    [dmg(20, 'allFoes'), status('stunned', 1, 'allFoes'), status('exposed', 2, 'allFoes')],
     { trigger: { on: 'foeTurn' } },
   ),
   // Fury: in Fury every turn, and every turn it lashes out
