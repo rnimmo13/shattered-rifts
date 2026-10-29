@@ -80,7 +80,7 @@ In code: the Obsidian Blade panel (`EnchantSlots.tsx`: two positions, a mark and
 dotted ring, the aimed card's spend shown), the charge tiles of the discharge and replacement choices, tooltips, a teaching tip and Learn page words.
 
 
-## Shaman (elements, totems and Trinity, DECISIONS #420)
+## Shaman (the totem cycle, DECISIONS #430; elements, totems and Trinity before it, #420)
 
 Portrait: keep (`figures/hero-shaman.png` and his skins). Visual authority for anything new: `assets-src/heroes/shaman.png` (bold ink
 outlines, ochre carved wood, ivory feather and bone, teal cloth, cyan spirits).
@@ -90,6 +90,8 @@ outlines, ochre carved wood, ivory feather and bone, teal cloth, cyan spirits).
 | Kept ids with their picture: **review** whether each still shows the card (several were drawn as orbs or awakenings) | Frost Needle, Eye of the Tempest, Hail Rite, Bark Carapace, Ancestral Exchange, Communion, Spiritstorm, Hawk Call, Bear Call, Stone Skin, Tidecaller, Spirit Memory, Clear Spring, Crystal Ward, Ironbark, Skybreaker, Gale Strike, Smoke Offering, Wildfire, Flashpoint, Gathering Storm |
 | New, placeholder until drawn (62) | every other card in `pools/shaman.ts`: the Flame, Frost and Storm spells, the defences and Auras, the totem and Trinity cards |
 | Retired (unused now) | the cards of the Defect copy and of the first rework (`retired.ts`, the two Shaman blocks) |
+| New in the totem cycle (#430), placeholder until drawn (15) | Flare, Talon Strike, Pyroclasm, Raise a Totem, Hawk Feather, Bear Hide, Storm Feather, Totem Circle, Spirit Strike, Spirit Ward, Turn the Wheel, Last Called, Totem Strike, Totem Drum, Wind Whisper |
+| Totems still wanted | the Thunderbird and the Moon Owl, carved and as spirits (the Hawk, Bear and Elder Tree are drawn, #429) |
 
 Still wanted, **not made**: Hawk, Bear and Thunderbird totem silhouettes (and the rare Elder Tree and Moon Owl), their brief
 manifestations when called, and a picture per element (flame, frost, storm) for the spell families. Until then the Totems panel draws

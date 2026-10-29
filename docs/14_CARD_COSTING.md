@@ -463,33 +463,22 @@ The trait, **Glass and Ember** (a Ward on the blade at the start; the first Imbu
 + 4 turns x ~50% (one Imbue card in the starter's 10) x 5.4 = ~14 in the starter, ~22 in an Imbue deck (an Imbue most turns), level
 with the Assassin's Knife Work. Positions cap the blade at 2 charges, worth at most 7.2; nothing grows for good.
 
-### The Shaman: elements, totems and Trinity (DECISIONS #420; the first version, #418, is in the DECISIONS log)
+### The Shaman: the totem cycle (DECISIONS #430; his earlier versions, #418, #420-#422, are in the DECISIONS log)
 
-He casts Flame (one enemy, Burn, Thorns), Frost (Barrier, Faltering) and Storm (every enemy or random ones, Sapped) spells. Three
-totems from the start (Hawk, Bear, Thunderbird; up to 5 positions) each help the first spell of their element each turn (+3, +3, +2).
-Only cards command a totem (#421), and it aims by itself (Hawk 6 to a random enemy, Bear 5 Barrier, Thunderbird 3 to all). Trinity, a spell of every element in one turn, gives 1 Spirit. Spirit has no cap and never goes down (Robert, 2026-10-29): +1
-to every command, +1 per 2 to every totem's help.
+His totems stand in a row in planting order. Each works every turn while it stands (its passive); a command makes the front one act
+and consumes it; a plant into a full row pushes the front one out, and it acts. Spirit (never lost) adds 1 to every totem number but
+the Elder Tree's, the Moon Owl's and the Hawk's own Spirit.
 
 | Thing | Rate | Why |
 |---|---|---|
-| An element tag | **0** | the totems' help on the first spell of each element is the trait's. |
-| **Spirit** gained | **5** a point | permanent and uncapped: about 1.3 commands a turn and three helped spells over the rest of a fight, as much as a point of Might for the fight (§5). An exception to "no uncapped permanent scaling", by Robert's decision; the long boss fight is the check. |
-| A command (a card's effect) | over a fight: **a Hawk ~7.7, a Bear ~9.1, a Thunderbird ~7.3, one of your choice ~8.2, a random one ~7.6, every totem ~29** | weighed 40% early (one totem of the kind, 0 Spirit), 40% mid (two of it, 3 Spirit), 20% late (3-4, 7 Spirit), since Spirit only grows and duplicates are built on purpose (#422). A free command must Consume: the Elder Tree's command draws a card. |
-| The help on a multi-hit or mixed spell | the first number is the trait's; **each further hit or number: the help x0.6** | the chance the spell is the first of its element that turn. The help never adds to an "If" bonus, and a spell with no damage or Barrier of its own does not use it up (#422). |
-| Plant a totem | **~1.5** | he starts with three, so a plant is usually a replacement: worth the change of help and command, not a new choice. |
-| A totem position | **~2** | empty until he plants into it. |
-| Thorns until the enemy turn ends | **1.5** a stack | ~1.5 enemy hits (§3). |
-| Sapped on every enemy for a turn | **~1.56** a point | 1.2 a point a hit, x1.3 for all. |
-| Faltering on every enemy / on a random one | **3.9 / 2.7** | |
-| "Whenever you cast a Flame / Storm spell" | **~1.2 a turn** | in a deck built for that element. |
-| "Whenever Trinity triggers" | **~55%** of turns | in a deck built for all three. |
-| "Whenever you command a totem" | **~1.2 a turn** | each totem a card commands answers once; "every totem" answers once a totem. |
-
-The trait, **Spirit and Trinity** (the three totems and their help, Trinity's Spirit; no free command since #421): ~6 a turn from the
-help (about two helped spells: +3, +3.6, +2.6) and a Spirit every other turn with the starter, ~2 a turn: **~30 over four turns**,
-still above the other traits (14-21), by Robert's design; his cards are priced on their own. A command is a card's effect now, priced
-at its spirit's act (a Hawk's dive 5.4, a Bear's 6, a Thunderbird's 3.9, ~6 for one of your choice, ~5.3 for a random one). **Burn**
-is priced exactly as Bleed.
+| **1 Spirit** | **~10** | +1 to every totem number: with three standing, ~1.4 a totem a turn plus ~1 on its act, ~4 a turn, over the ~3 turns left when it is gained mid-fight. The commanded Hawk is his main source (1 each, flat). |
+| A totem's **act** (at 0 Spirit) | Hawk 1 Spirit **10**; Bear 6 Barrier **7.2**; Thunderbird 8 to ALL **10.4**; Elder Tree 2 Mana **14**; Moon Owl a doubled elemental spell **~9** | each scaled act is ~2 more at the ~2 Spirit of mid-fight. |
+| A **command** (it acts and is consumed) | **~8** | its act (~10.7) less the passive it no longer gives until the row is refilled. "Twice, then consumed": a second act. "Every totem": each, less every passive lost. |
+| A **plant** | **~8** (a random kind 7.5) | into a full row, its push-out acts; into a free position, its passive works for the turns left. A free plant Consumes. |
+| Passives, a turn | Hawk 2 Primed **~2.1** (only when not Primed); Bear 2 Barrier **2.4**; Thunderbird a Fork 2 of 3 **~5.1**; Elder Tree 1 Mana **7**; Moon Owl 1 off the first elemental spell **~5.4** | a rare totem's card prices its passive for ~2.5 turns and its act at x0.6 (it may be pushed out or commanded early). |
+| A **position** | **~3** | one more totem working later. |
+| "Whenever one of your totems acts" | **~1.3** a turn | a command or a push-out most turns; each copy of an Aura answers on its own. |
+| Primed on a multi-hit spell | the Primed on every hit | Storm multi-hits are kept to 2 hits or a Fork of 4; the Hawk Primes only when he is not Primed. |
 
 ### The Monk: Martial Forms and Mastery (DECISIONS #419)
 

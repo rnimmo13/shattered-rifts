@@ -73,11 +73,12 @@ describe('the Shaman: Forks (DECISIONS #427)', () => {
     expect(t.sides.b.units.map((u) => 200 - u.hp)).toEqual([10, 10]);
   });
 
-  it("a Fork is a Storm spell: the Thunderbird's help goes on every hit of it", () => {
+  it('a Fork is a Storm spell, and a totem no longer adds to it (the help went with the totem cycle, DECISIONS #430)', () => {
     let s = fight('shaman', ['forked-lightning'], ['squire', 'squire']);
-    s.sides.a.totems = [null, null, 'thunderbird'];
+    s.sides.a.totems = ['thunderbird', null, null];
     s = play(s, 'forked-lightning');
-    expect(s.sides.b.units.map((u) => 200 - u.hp)).toEqual([7, 7]);
+    expect(s.sides.b.units.map((u) => 200 - u.hp)).toEqual([5, 5]);
+    expect(db.cards['forked-lightning']!.tags).toContain('storm');
   });
 
   it('the preview shows the lone bonus against one enemy, and plain damage against several', () => {
