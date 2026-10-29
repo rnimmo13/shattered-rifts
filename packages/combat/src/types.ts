@@ -1131,8 +1131,10 @@ export interface CardInst {
   freeTurn?: boolean;
   /** it Holds this turn (Expertise) */
   held?: boolean;
-  /** it has Sly: for this turn, or for the rest of the fight */
+  /** it has Premeditate (the `sly` flag; was Sly until DECISIONS #433): for this turn, or for the rest of the fight */
   sly?: 'turn' | 'fight';
+  /** (DECISIONS #433) it came back through Premeditate: it costs 0 until it is played */
+  premeditated?: boolean;
   /** keywords a card gave this copy (Sculpting Strike, Snap, Transfigure): Fleeting, Hold, played this many more times */
   ethereal?: boolean;
   retain?: boolean;
@@ -1290,6 +1292,8 @@ export interface SideState {
   extraRewards?: number;
   /** cards whose copies arrive at the start of your next turn (Nightmare); Honed's first knife this turn has been played */
   nextCopies?: { card: CardId; times: number }[];
+  /** (DECISIONS #433) Premeditate: cards an effect discarded this turn, coming back to the hand next turn at 0 */
+  premeditating?: CardInst[];
   honedUsed?: boolean;
   /** Mana spent on cards this turn; totems planted this fight, by kind */
   spentTurn?: number;

@@ -62,7 +62,7 @@ So `Deal 10` = `Deal 7, Apply 1 Exposed` = `Deal 4, Apply 2 Exposed` = `Deal 7, 
 | Modifier | Points | Notes |
 |---|---|---|
 | Damage, one target | **1.0** per point | The unit. |
-| Damage to ALL enemies | **1.3** per point | AoE numbers sit at ~75-80% of single-target: Breach (9 AoE, lose 1 HP), Cartwheel Cut (7 AoE, Sly), Scatter Ashes (8 AoE, Hold), Ember Toss (6 AoE + draw 1). In a one-enemy fight it is plain damage, so don't push AoE past 1.4. |
+| Damage to ALL enemies | **1.3** per point | AoE numbers sit at ~75-80% of single-target: Breach (9 AoE, lose 1 HP), Cartwheel Cut (7 AoE, Premeditate), Scatter Ashes (8 AoE, Hold), Ember Toss (6 AoE + draw 1). In a one-enemy fight it is plain damage, so don't push AoE past 1.4. |
 | Damage to a random enemy | **0.9** per point | Can't focus a kill (Cleaving Throws 3 x3 = 9). |
 | Several hits | same total as one hit | Twin Cut 5 x2 = 10. But every hit gets Might, Primed, Edge and Thorns: in a class with Might sources, take **~1 point off per extra hit**; in a class with none, multi-hit is free flavour. |
 | "Your companions each deal N" | **0.7-1.0 x** a normal attack's number per Thrall | Price it at one companion; the second and third are the build's payoff. 0-cost Commands sit at 100% (Knucklebone 6), 1+ cost at ~70% (Bone Snap 7, Bone Crush 12). |
@@ -126,7 +126,7 @@ Percentage debuffs (Exposed, Faltering, Debilitated) are worth more as numbers g
 | **Draw 1** as an extra (the card replaces itself) | **3** | Hilt Strike 9 + draw = 12; Oath of Iron 8 Barrier + draw. |
 | Each further card drawn | **4** (halve past the 3rd extra card in a turn: no Mana left to play them) | Catch Breath (draw 2) = 7, Clear Spring (draw 3) = 11, Read the Embers (draw 6, 2 cost) ≈ 17. |
 | Extra draw next turn | **3.5** each | Scheme, Stalker's Lunge. |
-| Discard 1 (yours, as a cost) | **-2**, or **+2** with Sly / discard payoffs in the deck | Duck and Weave, Flick Knife. *(legacy: "in the Assassin's pool call it 0" held for his Sly engine, gone since #416; it is -2 for him now)* |
+| Discard 1 (yours, as a cost) | **-2**, or **+2** with Premeditate / discard payoffs in the deck | Duck and Weave, Flick Knife. *(legacy: "in the Assassin's pool call it 0" held for his Sly engine, gone since #416; it is -2 for him now)* |
 | Put a card on top of your draw pile | **+1.5** | Ram Home, Glint. |
 | Foresee N (look at the top N, draw the one you choose, discard the rest) | a draw (**3** as an extra, **4** on its own) **+0.5 per card past the first** (at most +2) | Cold Read (0: Foresee 4) ≈ 5.5. |
 | Reverb (your next Attack is played twice) | the next Attack's value, **~12** in an ordinary deck | Second Act. Check it against the best Attack in its build path (§8). |
@@ -158,7 +158,7 @@ Percentage debuffs (Exposed, Faltering, Debilitated) are worth more as numbers g
 | **Fleeting** | **+15%** on a card you would always play when drawn; more on one you'd rather keep | Desecrate 13 (Fleeting) vs ~11. Necromancer payoffs make it upside for him. |
 | **Hold** | **+1**, **+2-3** on a big or conditional card you want to time | Steady Guard 8 + Hold vs Stone Skin 9. |
 | **Opening hand** | **+3-4** | With Consume on a 0-cost card it may carry a 1-cost card's budget: Knife in the Back 11, Crystal Ward 10 Barrier, Killing Stroke 10 + 1 Exposed. |
-| **Sly** | price the free play on discard at **7-10**; the printed cost is there to stop you casting it | *(legacy: the archived Assassin's Slip the Blow, Quick Reflexes, Cool Head; no live Assassin card has Sly since #416)* Sly on a card that is fine to cast anyway ≈ +1. |
+| **Premeditate** (was Sly, DECISIONS #433) | a discard by a card is worth **the card again next turn at 0, on top of the hand**: about its own value less ~15% for the wait (it is not played now), so price the card as if its printed cost were ~1 lower when the deck discards on purpose | The printed cost is paid only when it is drawn and played normally. Slip the Blow (2: 6 Barrier) discarded by Duck and Weave is 6 Barrier next turn for 0. *(Sly, before #433: the free play now was priced at 7-10.)* |
 | Lose N HP (yours) | **-1.5** per HP (it carries through the run) | Reckless Smite 15 for 2 HP. In a Blood build the payoffs (Scar Over, Blood Fire, Spiteful Jab) make it upside; price the card for the deck that doesn't have them. |
 | A junk card into your deck (Wound, Haze, Muck...) | **-2** into the draw or discard pile, **-3** into your hand | Mudslide 4 x3 + Muck, Ironbark 13 Barrier + 2 Wounds. Shaman Status payoffs flip it. |
 | A copy of itself into the discard pile | **+2** | Hot Temper, Needling Blow. On a 0-cost card it is a combo risk (§8). |

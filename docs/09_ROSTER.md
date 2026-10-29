@@ -80,7 +80,7 @@ Role tags (what kind of fighter, shown on every character screen): Maren **Knigh
 | Piece | What | Used by |
 |---|---|---|
 | **Choices** (`pending`, action `pick`) | An op can ask the player to choose cards (discard / exhaust N from hand, scry) and the rest of the card resumes after. | Quill, Vesper, Solen, Obsidia, Kesh |
-| `discard`, `exhaustCards`, `scry` ops; `onDiscard` / `onExhaust` on a card | Cycling and payoffs (Sly-style) | Quill, Kesh |
+| `discard`, `exhaustCards`, `scry` ops; `onDiscard` / `onExhaust` on a card | Cycling and payoffs (Premeditate-style) | Quill, Kesh |
 | `scale` on any amount | "Deal 1 per Barrier / per card exhausted / per Bleed on the target ..." One field, a list of metrics | everyone |
 | `scaleStatus` op | Double Bleed, triple it, etc. | Quill |
 | `power` op | Register a trigger: turn start / turn end / on play / on exhaust / on discard | all Power cards |
@@ -125,7 +125,7 @@ The goal: every card *mechanic* a Slay the Spire player expects exists, with our
 | Double Tap / Burst | **Reverb** / **Mirrored** | Neutral (Echoing Blow) / Quill (Encore) |
 | Vigor, Flex | **Vigor**, temporary statuses (`temp`) | Kesh, Neutral (Heave) |
 | Exhaust / Ethereal / Retain / Innate | Consume / Fleeting / Hold / Opening hand | shared |
-| Sly (discard triggers) | `onDiscard` | Quill |
+| Premeditate (was Sly, #433: a card an effect discards comes back next turn at 0) | the `sly` flag, `SideState.premeditating`, `CardInst.premeditated` | Quill |
 | Scry | **Foresee N**: look at the top N cards, draw one of them, discard the rest; the cards it discards are real discards (payoffs fire) | shared; payoffs: Marked Cards (Vesper), Reading the Signs (Solen), Spellbook (Obsidia), Quill's discard cards |
 | X-cost, Unplayable, 0-cost chains | `x`, `unplayable`, cost 0 | shared |
 | Draw / Mana now / Mana and cards next turn | draw, mana, **manaNext**, **drawNext** | shared |

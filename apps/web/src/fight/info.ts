@@ -325,7 +325,7 @@ export const STATUS_INFO: Record<
     name: 'Planner',
     glyph: '✎',
     tone: 'good',
-    text: 'A Skill you play gains Sly for the rest of the fight.',
+    text: 'A Skill you play gains Premeditate for the rest of the fight.',
   },
   reflect: {
     name: 'Reflect',
@@ -588,9 +588,10 @@ export const KEYWORD_INFO: Record<string, { name: string; text: string }> = {
     text: 'Up to 3, kept from turn to turn. Setup cards and Knife Work give it; a finisher spends it ("spend up to 3 Preparation") for its bonus.',
   },
   'sleeve-knife': { name: 'Dagger', text: 'A 0-cost Attack that is consumed.' },
+  // (was Sly, played for free when discarded: DECISIONS #433)
   sly: {
-    name: 'Sly',
-    text: 'When a card makes you discard it, it is played for free (not when you end your turn).',
+    name: 'Premeditate',
+    text: 'When a card makes you discard it, it comes back to your hand at the start of your next turn (on top of the cards you draw) and costs 0 until you play it. Not when you end your turn.',
   },
   stagger: {
     name: 'Stagger',

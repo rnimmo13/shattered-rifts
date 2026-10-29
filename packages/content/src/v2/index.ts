@@ -232,7 +232,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     starter: [...rep('strike', 5), ...rep('defend', 5), 'hobbling-jab', 'duck-and-weave'],
     blurb:
       'A cutpurse with a sleeve full of blades: a Dagger finds its way into his hand every turn. Daggers, Bleed and sleight of hand.',
-    mechanics: ['Daggers', 'Bleed', 'Discard', 'Sly', 'Faltering'],
+    mechanics: ['Daggers', 'Bleed', 'Discard', 'Premeditate', 'Faltering'],
     buildPaths: [
       'Daggers: Daggers, and the attacks around them',
       'Bleed: stack it, make it burn harder',
@@ -241,7 +241,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     howTo: [
       'Every turn a Dagger comes to your hand (Hidden Blades): a 0-cost Attack that is consumed when played. Many cards make more of them, and Edge makes each one hit harder.',
       'Bleed hurts for its stacks at the start of the enemy’s turn and then shrinks by 1. Pile it on and let it work.',
-      'Discarding is a resource: a card with Sly is played for free when a card makes you discard it.',
+      'Discarding is a resource: a card with Premeditate that a card makes you discard comes back next turn, on top of your hand, and costs 0 until you play it.',
     ],
   },
   shaman: {

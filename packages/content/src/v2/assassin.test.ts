@@ -4,6 +4,7 @@
 
 import { describe, expect, it } from 'vitest';
 import {
+  costOf,
   applyAction,
   cardText,
   chooseAction,
@@ -178,14 +179,38 @@ describe('Daggers (Sleeve Knives) are the Silent’s Shivs', () => {
   });
 });
 
-describe('Sly and discarding', () => {
-  it('a Sly card discarded by a card is played for free; one discarded at the end of the turn is not', () => {
+describe('Premeditate (was Sly, DECISIONS #433) and discarding', () => {
+  it('a Premeditate card a card discards comes back next turn on top of the hand, at 0 until played; one the end of the turn discards does not', () => {
     let s = fight(['duck-and-weave', 'cartwheel-cut']);
     s = play(s, 'duck-and-weave');
-    expect(foeHp(s, 0)).toBe(193);
-    expect(foeHp(s, 1)).toBe(193);
-    expect(s.sides.a.discard.some((c) => c.card === 'cartwheel-cut')).toBe(true);
+    // (not played now: no damage, and not in the discard pile either)
+    expect(foeHp(s, 0)).toBe(200);
+    expect(s.sides.a.discard.some((c) => c.card === 'cartwheel-cut')).toBe(false);
+    expect(s.sides.a.premeditating?.map((c) => c.card)).toEqual(['cartwheel-cut']);
+    s = endTurn(s);
+    const back = s.sides.a.hand.find((c) => c.card === 'cartwheel-cut');
+    expect(back?.premeditated).toBe(true);
+    expect(costOf(db, s.sides.a, back!)).toBe(0);
+    // (the regular hand is drawn as well: five, the Dagger Hidden Blades brings, and the card back)
+    expect(s.sides.a.hand).toHaveLength(RIFTWALKERS.assassin.hero.handSize + 2);
+    // it keeps its 0 until it is played, then it costs what it costs again
+    s = endTurn(s);
+    const still = [...s.sides.a.hand, ...s.sides.a.discard, ...s.sides.a.draw].find(
+      (c) => c.id === back!.id,
+    );
+    expect(still?.premeditated).toBe(true);
+    let t = fight(['duck-and-weave', 'cartwheel-cut']);
+    t = endTurn(play(t, 'duck-and-weave'));
+    const mana = t.sides.a.mana;
+    t = play(t, 'cartwheel-cut');
+    expect(t.sides.a.mana).toBe(mana);
+    expect(foeHp(t, 0)).toBe(193);
+    const played = t.sides.a.discard.find((c) => c.card === 'cartwheel-cut');
+    expect(played?.premeditated).toBeUndefined();
+    expect(costOf(db, t.sides.a, played!)).toBe(db.cards['cartwheel-cut']!.cost);
+    // (the end-of-turn sweep is not a discard by a card)
     const s2 = endTurn(fight(['cartwheel-cut']));
+    expect(s2.sides.a.hand.find((c) => c.card === 'cartwheel-cut')?.premeditated).toBeUndefined();
     expect(foe(s2).hp).toBe(200);
   });
 
@@ -199,11 +224,17 @@ describe('Sly and discarding', () => {
     expect(p.sides.a.discard.find((c) => c.card === 'turn-aside')?.sly).toBe('fight');
   });
 
-  it('a Skill Palm Switch gave Sly is played when a card discards it', () => {
+  it('a Skill Palm Switch gave Premeditate comes back next turn at 0 when a card discards it', () => {
     let s = play(fight(['palm-switch', 'duck-and-weave', 'turn-aside']), 'palm-switch');
     s = play(s, 'duck-and-weave');
-    expect(hero(s).barrier).toBe(7 + 8 + 4);
-    expect(s.sides.a.discard.find((c) => c.card === 'turn-aside')?.sly).toBeUndefined();
+    // (not played now: only Palm Switch's 7 and Duck and Weave's Barrier)
+    expect(hero(s).barrier).toBe(7 + 8);
+    expect(s.sides.a.premeditating?.map((c) => c.card)).toEqual(['turn-aside']);
+    s = endTurn(s);
+    const back = s.sides.a.hand.find((c) => c.card === 'turn-aside');
+    expect(back?.premeditated).toBe(true);
+    // (its Premeditate was for that turn only: it does not come back again)
+    expect(back?.sly).toBeUndefined();
   });
 
   it('All or Nothing (Calculated Gamble) discards the hand and draws as many', () => {

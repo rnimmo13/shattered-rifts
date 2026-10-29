@@ -5,6 +5,7 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **The Assassin's Sly is now Premeditate:** a card with it that another card makes you discard comes back to your hand at the start of your next turn (on top of the cards you draw) and costs 0 until you play it. Cards that gave Sly give Premeditate.
 - **Damage you can read:** a card's number already includes Point Blank, Clutch Genes, Might, Exposed and the rest; the Old Twelve Gauge now says "(Point Blank +25% counted.)" when it is, and hovering a card shows the exact number step by step ("5 → Point Blank +25% = 6 → +2 Might = 8 → …").
 - **The Necromancer starts a fight with one Bone Thrall** (2 HP), not two.
 - **The Shaman's totems are drawn:** the Hawk, Bear and Elder Tree show as carved totems on the totem panel (they grow when you resize it), and a commanded totem's spirit rises out of it. Spirit shows as a glowing number with what it adds. **Clutch Genes** now gives 1% more attack damage for every 1% of your HP you are missing (it was 1% per HP).

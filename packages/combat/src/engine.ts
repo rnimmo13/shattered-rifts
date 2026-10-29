@@ -3009,7 +3009,7 @@ function moveFromHand(
   sd: SideState,
   c: CardInst,
   kind: 'discard' | 'exhaust',
-  /** false: it comes from the draw pile (Foresee's leftovers), so Sly does not play it */
+  /** false: it comes from the draw pile (Foresee's leftovers), so Premeditate does not take it */
   fromHand = true,
 ): void {
   const slyNow = c.sly !== undefined;
@@ -3025,7 +3025,8 @@ function moveFromHand(
       runOps(r, mkAct(hero), cd.onDiscard);
       r.depth--;
     }
-    // (assassin) Sly: a card an effect discards is played for free
+    // (assassin) Premeditate (DECISIONS #433; was Sly, played for free at once): a card an effect discards comes back to the hand
+    // next turn, on top of the hand drawn, and costs 0 until it is played. Not the end-of-turn sweep, which never comes here.
     if (
       fromHand &&
       (cd.sly || slyNow) &&
@@ -3035,7 +3036,7 @@ function moveFromHand(
       sd.discard.includes(c)
     ) {
       sd.discard = sd.discard.filter((x) => x.id !== c.id);
-      playFree(r, sd, hero, c, 'normal');
+      (sd.premeditating ??= []).push(c);
     }
     fireTriggers(r, sd, 'discard');
   } else exhaustCard(r, sd, c);
@@ -3710,6 +3711,15 @@ function beginHeroTurn(r: Run, side: Side): void {
   if (!hero) return;
   // (assassin) what was set up last turn arrives: Nightmare's copies, Dodge and Roll's Barrier, Shadow Step's double damage
   sd.honedUsed = false;
+  // (DECISIONS #433) Premeditate: what an effect discarded last turn comes back, at 0 until played (a full hand: the discard pile,
+  // still at 0)
+  for (const c of (sd.premeditating ?? []).splice(0)) {
+    c.premeditated = true;
+    if (sd.hand.length < MAX_HAND) {
+      sd.hand.push(c);
+      r.ev.push({ type: 'addCard', side: sd.id, card: c.id, def: c.card, to: 'hand' });
+    } else sd.discard.push(c);
+  }
   for (const nc of (sd.nextCopies ?? []).splice(0))
     for (let i = 0; i < nc.times; i++) addCardTo(r, sd, nc.card, 'hand');
   const guard = stacks(hero, 'guarded');
@@ -4113,8 +4123,8 @@ export function costOf(
   const hero = sd.units.find((u) => u.kind === 'hero');
   if (cd.kind === 'skill' && hero && stacks(hero, 'unbound') > 0) return 0;
   if (cd.kind === 'attack' && hero && stacks(hero, 'freeattack') > 0) return 0;
-  // (assassin) Bullet Time's free hand, Pounce's free Skill
-  if (c.freeTurn) return 0;
+  // (assassin) Bullet Time's free hand, Pounce's free Skill; a card back through Premeditate (#433)
+  if (c.freeTurn || c.premeditated) return 0;
   if (cd.kind === 'skill' && hero && stacks(hero, 'freeskill') > 0) return 0;
   // (the Shaman) Free Spell: the next elemental spell
   if (
@@ -4328,7 +4338,9 @@ function finishCard(
     r.ev.push({ type: 'addCard', side: sd.id, card: inst.id, def: inst.card, to: 'hand' });
   } else if (cd.after === 'drawTop') putOnTop(r, sd, inst);
   else sd.discard.push(inst);
-  // (assassin) Master Planner: a Skill you play keeps Sly for the rest of the fight
+  // (DECISIONS #433) a card back through Premeditate is played: its 0 is used up
+  delete inst.premeditated;
+  // (assassin) Master Planner: a Skill you play keeps Premeditate for the rest of the fight
   const lead = heroOf(sd);
   if (cd.kind === 'skill' && lead && stacks(lead, 'planner') > 0) inst.sly = 'fight';
   sd.played++;

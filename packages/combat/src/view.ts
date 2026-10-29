@@ -1513,7 +1513,7 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
     case 'freeHand':
       return 'Every card in your hand costs 0 this turn.';
     case 'giveSly':
-      return 'A random Skill in your hand gains Sly this turn.';
+      return 'A random Skill in your hand gains Premeditate this turn.';
     case 'copyNext':
       return `Choose a card in your hand. Next turn, add ${o.times} cop${o.times === 1 ? 'y' : 'ies'} of it to your hand.`;
     case 'barrierNext':
@@ -1783,8 +1783,8 @@ export function cardText(db: CombatDb, c: CardDef, live?: ReadonlyMap<number, Li
     parts.push(`Only playable with ${c.needsExhausted} or more cards consumed.`);
   if (c.cheaperPerAttack)
     parts.push(`Costs ${c.cheaperPerAttack} less for each Attack played this turn.`);
-  // (assassin) Sly, Pinpoint's discount, Grand Finale's condition
-  if (c.sly) parts.push('Sly.');
+  // (assassin) Premeditate (was Sly, DECISIONS #433), Pinpoint's discount, Grand Finale's condition
+  if (c.sly) parts.push('Premeditate.');
   // (the Drunkard's Stagger: its damage lands on a random enemy, DECISIONS #393)
   if (c.tags?.includes('stagger')) parts.push('Stagger.');
   // (the Shaman's elements, DECISIONS #420)
