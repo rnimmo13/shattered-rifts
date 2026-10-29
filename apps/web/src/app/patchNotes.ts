@@ -29,6 +29,24 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.125.0',
+    date: '2026-10-29',
+    title: 'Carved totems',
+    summary:
+      "The Shaman's totems are drawn, and Clutch Genes reads the share of HP you are missing.",
+    notes: [
+      {
+        kind: 'new',
+        text: "The Shaman's Hawk, Bear and Elder Tree show as carved totems on the totem panel (drag its corner to make them bigger), and a commanded totem's spirit rises out of it. Spirit shows as a glowing number with what it adds.",
+      },
+      {
+        kind: 'balance',
+        text: 'Clutch Genes: you deal 1% more attack damage for every 1% of your HP you are missing (it was 1% for every HP). At 19 of 88 HP that is +78%.',
+      },
+    ],
+    heads: 'Rules changed: replays and Arena games from before this version no longer play.',
+  },
+  {
     version: '0.124.0',
     date: '2026-10-29',
     title: 'Four classes restored',
