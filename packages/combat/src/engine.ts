@@ -1152,6 +1152,10 @@ function resolve(r: Run, a: Act, sel: Sel): Unit[] {
       const crew = r.s.sides[a.actor.side].units.filter((u) => u.hp > 0 && u.kind !== 'hero');
       return crew.length ? [crew.reduce((m, x) => (x.maxHp > m.maxHp ? x : m))] : [];
     }
+    case 'foeHero': {
+      const h = heroOf(r.s.sides[other(a.actor.side)]);
+      return h && h.hp > 0 ? [h] : [];
+    }
   }
 }
 

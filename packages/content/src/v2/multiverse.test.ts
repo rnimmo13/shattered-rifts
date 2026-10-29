@@ -88,3 +88,54 @@ describe('the multiverse expansion (DECISIONS #437)', () => {
     expect(enemies.length).toBe(MAX_ENEMIES); // (it did summon, up to the cap)
   });
 });
+
+describe('the multiverse enemies’ Exposed and Fate land where they count (DECISIONS #437 review)', () => {
+  // a hit on the hero while the hero is Exposed, counting the Exposed put on inside the same enemy turn, in event order
+  const exposedHit = (id: string): boolean => {
+    let { state } = createCombat(db, {
+      seed: `exp-${id}`,
+      a: { hero: 'knight', deck: RIFTWALKERS.knight.starter },
+      b: { enemies: [id] },
+    });
+    for (let i = 0; i < 12 && !state.winner; i++) {
+      const hero = state.sides.a.units.find((u) => u.kind === 'hero')!;
+      let exposed = hero.statuses.exposed ?? 0;
+      const r = applyAction(db, state, { type: 'endTurn' });
+      for (const e of r.events) {
+        if (e.type === 'status' && e.target === hero.id && e.status === 'exposed')
+          exposed = e.total;
+        if (e.type === 'damage' && e.kind === 'attack' && e.target === hero.id && exposed > 0)
+          return true;
+      }
+      state = r.state;
+      const h = state.sides.a.units.find((u) => u.kind === 'hero');
+      if (h) h.hp = h.maxHp = 9999;
+    }
+    return false;
+  };
+  for (const id of [
+    'marble-mantis',
+    'prism-magistrate',
+    'welding-cherub',
+    'mirror-moth',
+    'shard-peacock',
+  ])
+    it(`${id}: its Exposed is still on the hero when an attack lands`, () => {
+      expect(exposedHit(id)).toBe(true);
+    });
+
+  it('Fate goes on the hero, past a companion in front', () => {
+    let n = 0;
+    for (const u of MULTIVERSE_UNITS) {
+      const b = u.brain;
+      if (b?.kind !== 'enemy') continue;
+      for (const m of Object.values(b.moves))
+        for (const o of m.effects)
+          if (o.op === 'status' && o.status === 'doom') {
+            n++;
+            expect(o.to, u.id).toBe('foeHero');
+          }
+    }
+    expect(n).toBeGreaterThan(0);
+  });
+});

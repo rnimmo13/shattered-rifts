@@ -40,9 +40,10 @@ and a **Sigil**: a starting passive that gives every run an identity from turn 1
 
 ```
 Choose character ──► RUN at Rift Tier I (fresh 20-card starter, 2 Resolve on Normal: see DIFFICULTY)
-   Stage 1 ─ realm A  (seven floors + that realm's Warden)
-   Stage 2 ─ realm B  (seven floors + that realm's Warden)
-   Stage 3 ─ the Rift  (eight floors of the two realms not yet visited, then Vorthax, Heart of the Rift)
+   Stage 1 ─ realm A  (seven floors + one of that realm's two Wardens, even odds)
+   Stage 2 ─ realm B  (seven floors + a Warden: that realm's two, or one of the three far realms', each a fifth)
+   Stage 3 ─ the Rift  (eight floors of the two realms not yet visited and the far realms, then Vorthax, Heart of the Rift)
+   (the far realms, Gloomfen / the Hollow Crown / the Far Rifts, have no stage of their own: DECISIONS #437)
    (the four realms, Aurelion / Nexus-9 / Wyldmaw / Umbral Veil, are shuffled by the run seed)
 ──► LOOP CLEARED: choose
       SAVE      → a copy of the deck goes to your Vault (10 slots), eligible for PvP; the run carries on (decision #173).

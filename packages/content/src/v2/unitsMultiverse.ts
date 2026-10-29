@@ -21,8 +21,11 @@ import {
 
 const hit = (n: number, times?: number) => dmg(n, 'target', times);
 const weak = (n = 1) => status('faltering', n, 'target');
-const expose = (n = 1) => status('exposed', n, 'target');
-const fate = (n: number) => status('doom', n, 'target');
+// (Exposed from an enemy wears 1 a turn at the end of its own turn, so a single stack is gone before its next attack: 2, and
+// put before the hit of the same move, as the older enemies do; DECISIONS #437 review)
+const expose = (n = 2) => status('exposed', n, 'target');
+/** Fate on the hero, past any companion in front (the design: "Fate targets the opposing hero") */
+const fate = (n: number) => status('doom', n, 'foeHero');
 const might = (n = 1) => status('might', n);
 const mightAll = (n = 1) => status('might', n, 'allFriends');
 const guardAll = (n: number) => barrier(n, 'allFriends');
@@ -64,7 +67,7 @@ export const MULTIVERSE_UNITS: UnitDef[] = [
     [
       move('scythe', 'Marble Scythe', hit(12)),
       move('pose', 'Statue Pose', barrier(6)),
-      move('pin', 'Pinning Strike', hit(8), expose()),
+      move('pin', 'Pinning Strike', expose(), hit(8)),
     ],
     cycle('scythe', 'pose', 'pin'),
   ),
@@ -108,7 +111,7 @@ export const MULTIVERSE_UNITS: UnitDef[] = [
     [
       move('sentence', 'Sentence', hit(14)),
       move('facet', 'Faceted Ward', barrier(12)),
-      move('glare', 'Prism Glare', hit(10), expose()),
+      move('glare', 'Prism Glare', expose(), hit(10)),
     ],
     cycle('sentence', 'facet', 'glare'),
   ),
@@ -382,7 +385,7 @@ export const MULTIVERSE_UNITS: UnitDef[] = [
     'Mirror Moth',
     63,
     [
-      move('glint', 'Glint', hit(8), expose()),
+      move('glint', 'Glint', expose(), hit(8)),
       move('dust', 'Mirror Dust', barrier(7)),
       move('flutter', 'Razor Flutter', hit(10)),
     ],

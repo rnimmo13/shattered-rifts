@@ -252,7 +252,9 @@ export type Sel =
   /** the living enemy with the least HP (a Dark orb's awakening) */
   | 'weakestFoe'
   /** your living companion with the most max HP (DECISIONS #383) */
-  | 'biggestAlly';
+  | 'biggestAlly'
+  /** (DECISIONS #437 review) the other side's hero, past any companion in front of it (an enemy's Fate) */
+  | 'foeHero';
 
 /**
  * A number that depends on the board: `amount + floor(mult * metric)`. Unit metrics read `of` (default: the actor; "target" is the

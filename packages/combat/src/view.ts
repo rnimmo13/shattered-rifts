@@ -371,6 +371,7 @@ const WHO: Record<Sel, string> = {
   attacker: ' to the attacker',
   weakestFoe: ' to the enemy with the least HP',
   biggestAlly: ' to your biggest companion',
+  foeHero: ' to the enemy hero',
 };
 /** The same targets as seen from an enemy's move: "you" are the other side. */
 const WHO_ENEMY: Record<Sel, string> = {
@@ -385,6 +386,7 @@ const WHO_ENEMY: Record<Sel, string> = {
   attacker: ' to the attacker',
   weakestFoe: ' to your unit with the least HP',
   biggestAlly: ' to its biggest ally',
+  foeHero: ' to you',
 };
 const KIND_PLURAL: Record<string, string[]> = {
   attack: ['Attack'],
