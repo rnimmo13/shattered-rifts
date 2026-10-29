@@ -418,6 +418,12 @@ does with it *minus* what it uses up.
 | **Preparation** spent | the payoff a point **minus 1.5**, at the Preparation there usually is | ~2 for "up to 3" or "all", 1.5 for "up to 2". Finishing Thrust (2: 8 + 4 a point) = 8 + 2.5 x2 = 13. |
 | "Whenever you embed / pull a knife" | per knife: ~1.2 pulls and ~1.5 embeds a turn in a knife deck | "the first time each turn": 0.8-0.85 a turn. |
 | "Whenever you spend Preparation" (once a turn) | **2.4** answers over four turns | a finisher about every other turn, more in an Execution deck. |
+| "Spend up to 1 Preparation" | the payoff **minus 1.5**, **x0.9** | a point is nearly always there in a deck that makes it (#424). Measured Cut (7, +5) = 10.15. |
+| Preparation **held** ("+N per Preparation", read, not spent) | **~1.8** points | an Execution deck sits on 1-3; it competes with spending. Poised Strike (12 + 4 each) = 19.2. |
+| Knives **read** in a target (+N, Sapped, Faltering per knife; extra hits) | **~2** in one target, **~3** over all enemies, ~1.2 in each | a knife deck keeps them in; reading never removes them (#424). Thousand Cuts (7, once more a knife) = 21. |
+| "If the target has a knife in it" | **x0.75** | Knife Work plants one at the start and a knife deck refills. |
+| "At the start of your turn, with 3 Preparation" | **~0.4** of turns | it turns off when a finisher spends; The Waiting Blade = 21.8. |
+| "At the end of a turn you played no Attack" | **~0.4** of turns | the setup turns of a Shadow deck; Lie in Wait = 13.9. |
 
 The trait, **Knife Work** (1 Preparation and a knife in every enemy at the start; 1 Preparation the first time each turn you embed;
 3 damage to an enemy for every knife pulled from it): ~14 in the starter (one embed and one pull card in 11), ~24 in a knife deck.

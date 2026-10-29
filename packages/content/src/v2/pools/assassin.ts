@@ -15,7 +15,7 @@
 //   Shadow    - defence and cycling on the move, with small pulls for Barrier and cards
 // Costs and points: docs/reworks/ASSASSIN.md and assassin-ledger.md (docs/14_CARD_COSTING.md §15).
 
-import type { CardDef } from '@sr/combat';
+import type { CardDef, Op } from '@sr/combat';
 import {
   barrier,
   discard,
@@ -32,12 +32,24 @@ import {
   prepare,
   pull,
   scaled,
+  scry,
   spendPrep,
   status,
+  statusTheirs,
+  topdeck,
   when,
 } from '../build';
 
 const q = pool('assassin', 'umbral');
+// (the pool expansion, DECISIONS #424)
+/** if the target has a knife in it (it is read, not pulled) */
+const ifKnifed = (...ops: Op[]): Op => when('knives', { atLeast: 1, of: 'target' }, ops);
+/** Exacting Pull: a knife pulled for each Preparation spent (up to 2), each paying `each` to the target */
+const pullPerPrep = (each: number): Op[] => [
+  spendPrep(2),
+  when('prepSpent', { atLeast: 1 }, [pull(1, [dmg(each, 'target')])]),
+  when('prepSpent', { atLeast: 2 }, [pull(1, [dmg(each, 'target')])]),
+];
 
 export const ASSASSIN: CardDef[] = [
   // --- basics ---
@@ -601,5 +613,417 @@ export const ASSASSIN: CardDef[] = [
     {
       up: { effects: [barrier(19), embed(1, 'allFoes')] },
     },
+  ),
+  // --- Execution: precision (DECISIONS #424): partial spenders, and reasons to keep Preparation ---
+  q(
+    'common',
+    'measured-cut',
+    'Measured Cut',
+    'attack',
+    1,
+    'foe',
+    [spendPrep(1), scaled(dmg(7), per('prepSpent', 5))],
+    { up: { effects: [spendPrep(1), scaled(dmg(10), per('prepSpent', 5))] } },
+  ),
+  // (reads Preparation, never spends it)
+  q(
+    'uncommon',
+    'poised-strike',
+    'Poised Strike',
+    'attack',
+    2,
+    'foe',
+    [scaled(dmg(12), per('prep', 4))],
+    {
+      up: { effects: [scaled(dmg(16), per('prep', 4))] },
+    },
+  ),
+  q(
+    'uncommon',
+    'mark-the-vein',
+    'Mark the Vein',
+    'skill',
+    1,
+    'foe',
+    [
+      barrier(6),
+      spendPrep(1),
+      scaled(status('exposed', 0, 'target'), per('prepSpent')),
+      scaled(status('faltering', 0, 'target'), per('prepSpent')),
+    ],
+    {
+      up: {
+        effects: [
+          barrier(9),
+          spendPrep(1),
+          scaled(status('exposed', 0, 'target'), per('prepSpent')),
+          scaled(status('faltering', 0, 'target'), per('prepSpent')),
+        ],
+      },
+    },
+  ),
+  q(
+    'uncommon',
+    'calculated-retreat',
+    'Calculated Retreat',
+    'skill',
+    1,
+    'none',
+    [barrier(6), spendPrep(1), scaled(barrier(0), per('prepSpent', 6))],
+    { up: { effects: [barrier(9), spendPrep(1), scaled(barrier(0), per('prepSpent', 6))] } },
+  ),
+  q('common', 'steady-hand', 'Steady Hand', 'skill', 0, 'none', [barrier(3), prepare(1)], {
+    retain: true,
+    up: { effects: [barrier(5), prepare(1)] },
+  }),
+  q(
+    'common',
+    'weigh-the-moment',
+    'Weigh the Moment',
+    'skill',
+    1,
+    'none',
+    [scry(2), prepare(1), barrier(4)],
+    {
+      up: { effects: [scry(3), prepare(1), barrier(6)] },
+    },
+  ),
+  q(
+    'rare',
+    'silent-massacre',
+    'Silent Massacre',
+    'attack',
+    2,
+    'none',
+    [spendPrep(3), scaled(dmg(8, 'allFoes'), per('prepSpent', 5))],
+    { up: { effects: [spendPrep(3), scaled(dmg(11, 'allFoes'), per('prepSpent', 5))] } },
+  ),
+  // (a kill gives 2 back, at most 3 as always: never needed against one boss)
+  q(
+    'rare',
+    'assassinate',
+    'Assassinate',
+    'attack',
+    2,
+    'foe',
+    [spendPrep(3), onKill(scaled(dmg(12), per('prepSpent', 6)), [prepare(2)])],
+    { up: { effects: [spendPrep(3), onKill(scaled(dmg(16), per('prepSpent', 6)), [prepare(2)])] } },
+  ),
+  q(
+    'uncommon',
+    'economy-of-motion',
+    'Economy of Motion',
+    'power',
+    1,
+    'none',
+    [
+      on('spend', [when('prep', { atLeast: 1 }, [draw(1), barrier(3)])], {
+        status: 'prep',
+        once: true,
+      }),
+    ],
+    {
+      up: {
+        effects: [
+          on('spend', [when('prep', { atLeast: 1 }, [draw(1), barrier(5)])], {
+            status: 'prep',
+            once: true,
+          }),
+        ],
+      },
+    },
+  ),
+  q(
+    'uncommon',
+    'patient-coil',
+    'Patient Coil',
+    'power',
+    1,
+    'none',
+    [on('turnEnd', [scaled(barrier(0), per('prep', 2))])],
+    { up: { innate: true } },
+  ),
+  q(
+    'rare',
+    'the-waiting-blade',
+    'The Waiting Blade',
+    'power',
+    1,
+    'none',
+    [
+      on('turnStart', [
+        when('prep', { atLeast: 3 }, [{ op: 'mana', amount: 1 }, draw(1), barrier(3)]),
+      ]),
+    ],
+    { up: { innate: true } },
+  ),
+
+  // --- Execution: hybrid (DECISIONS #424): knives read into Preparation, Preparation into pulls (one way) ---
+  q(
+    'common',
+    'read-the-wound',
+    'Read the Wound',
+    'attack',
+    1,
+    'foe',
+    [dmg(8), ifKnifed(prepare(1))],
+    {
+      up: { effects: [dmg(11), ifKnifed(prepare(1))] },
+    },
+  ),
+  q('uncommon', 'exacting-pull', 'Exacting Pull', 'attack', 1, 'foe', [dmg(4), ...pullPerPrep(8)], {
+    up: { effects: [dmg(7), ...pullPerPrep(8)] },
+  }),
+
+  // --- Knives: leave the knife, and fieldwork (DECISIONS #424) ---
+  q(
+    'common',
+    'lodged-steel',
+    'Lodged Steel',
+    'attack',
+    1,
+    'foe',
+    [dmg(7), ifKnifed(status('faltering', 1, 'target'))],
+    { up: { effects: [dmg(10), ifKnifed(status('faltering', 1, 'target'))] } },
+  ),
+  q(
+    'uncommon',
+    'pinned',
+    'Pinned',
+    'skill',
+    1,
+    'foe',
+    [barrier(5), scaled(statusTheirs('sapped', 0, 'target'), per('knives', 2, 'target'))],
+    {
+      up: {
+        effects: [
+          barrier(8),
+          scaled(statusTheirs('sapped', 0, 'target'), per('knives', 2, 'target')),
+        ],
+      },
+    },
+  ),
+  q(
+    'uncommon',
+    'barbed-anchor',
+    'Barbed Anchor',
+    'skill',
+    1,
+    'foe',
+    [embed(), scaled(status('faltering', 0, 'target'), per('knives', 1, 'target')), barrier(3)],
+    {
+      up: {
+        effects: [
+          embed(),
+          scaled(status('faltering', 0, 'target'), per('knives', 1, 'target')),
+          barrier(6),
+        ],
+      },
+    },
+  ),
+  // (one hit, and one more for each knife in the target; the knives stay)
+  q(
+    'rare',
+    'thousand-cuts',
+    'Thousand Cuts',
+    'attack',
+    2,
+    'foe',
+    [scaled(dmg(7, 'target', 1), per('knives', 1, 'target', 'hits'))],
+    { up: { effects: [scaled(dmg(9, 'target', 1), per('knives', 1, 'target', 'hits'))] } },
+  ),
+  q(
+    'uncommon',
+    'steel-rain',
+    'Steel Rain',
+    'attack',
+    2,
+    'none',
+    [scaled(dmg(8, 'allFoes'), per('knives', 5, 'each'))],
+    { up: { effects: [scaled(dmg(11, 'allFoes'), per('knives', 5, 'each'))] } },
+  ),
+  q(
+    'common',
+    'fan-of-blades',
+    'Fan of Blades',
+    'skill',
+    1,
+    'none',
+    [embed(1, 'randomFoe'), embed(1, 'randomFoe'), draw(1), barrier(3)],
+    { up: { effects: [embed(1, 'randomFoe'), embed(1, 'randomFoe'), draw(1), barrier(5)] } },
+  ),
+  q(
+    'common',
+    'reaping-arc',
+    'Reaping Arc',
+    'attack',
+    1,
+    'none',
+    [dmg(5, 'allFoes'), pull(1, [dmg(4, 'target')], 'allFoes')],
+    { up: { effects: [dmg(7, 'allFoes'), pull(1, [dmg(4, 'target')], 'allFoes')] } },
+  ),
+  q(
+    'uncommon',
+    'lingering-steel',
+    'Lingering Steel',
+    'power',
+    1,
+    'none',
+    [on('turnStart', [scaled(statusTheirs('sapped', 0, 'allFoes'), per('knives', 1, 'each'))])],
+    { up: { innate: true } },
+  ),
+  q(
+    'uncommon',
+    'steel-thicket',
+    'Steel Thicket',
+    'power',
+    1,
+    'none',
+    [on('turnEnd', [scaled(barrier(0), per('knivesAll'))])],
+    { up: { innate: true } },
+  ),
+  q(
+    'uncommon',
+    'cruel-precision',
+    'Cruel Precision',
+    'power',
+    1,
+    'none',
+    [on('debuffFoe', [ifKnifed(barrier(2))])],
+    { up: { innate: true } },
+  ),
+
+  // --- Shadow: selective extraction, timing and setup (DECISIONS #424) ---
+  q(
+    'common',
+    'quick-pull',
+    'Quick Pull',
+    'attack',
+    0,
+    'foe',
+    [dmg(3), pull(1, [dmg(5, 'target')])],
+    {
+      up: { effects: [dmg(5), pull(1, [dmg(5, 'target')])] },
+    },
+  ),
+  q(
+    'uncommon',
+    'pry-loose',
+    'Pry Loose',
+    'attack',
+    1,
+    'foe',
+    [dmg(7), pull(1, [status('exposed', 2, 'target')])],
+    { up: { effects: [dmg(10), pull(1, [status('exposed', 2, 'target')])] } },
+  ),
+  q(
+    'common',
+    'sleight-of-steel',
+    'Sleight of Steel',
+    'skill',
+    1,
+    'foe',
+    [barrier(5), pull(1, [draw(2)])],
+    {
+      up: { effects: [barrier(8), pull(1, [draw(2)])] },
+    },
+  ),
+  q(
+    'uncommon',
+    'bide-in-shadow',
+    'Bide in Shadow',
+    'skill',
+    1,
+    'none',
+    [status('guarded', 6), drawNext(1)],
+    { retain: true, up: { effects: [status('guarded', 9), drawNext(1)] } },
+  ),
+  q('common', 'melt-away', 'Melt Away', 'skill', 1, 'none', [barrier(7), topdeck(1)], {
+    up: { effects: [barrier(10), topdeck(1)] },
+  }),
+  q(
+    'common',
+    'feign-weakness',
+    'Feign Weakness',
+    'skill',
+    1,
+    'foe',
+    [barrier(5), statusTheirs('sapped', 2, 'target'), prepare(1)],
+    { up: { effects: [barrier(8), statusTheirs('sapped', 2, 'target'), prepare(1)] } },
+  ),
+  q(
+    'uncommon',
+    'choking-smoke',
+    'Choking Smoke',
+    'skill',
+    1,
+    'none',
+    [status('faltering', 2, 'allFoes'), barrier(4)],
+    { up: { effects: [status('faltering', 2, 'allFoes'), barrier(7)] } },
+  ),
+  q('uncommon', 'set-the-stage', 'Set the Stage', 'skill', 1, 'none', [manaNext(1), drawNext(2)], {
+    retain: true,
+    up: { effects: [manaNext(1), drawNext(3)] },
+  }),
+  q(
+    'rare',
+    'cold-patience',
+    'Cold Patience',
+    'skill',
+    1,
+    'none',
+    [prepare(2), status('guarded', 8)],
+    {
+      retain: true,
+      up: { effects: [prepare(2), status('guarded', 11)] },
+    },
+  ),
+  q(
+    'uncommon',
+    'strike-from-shadow',
+    'Strike from Shadow',
+    'attack',
+    2,
+    'foe',
+    [dmg(16), when('faltering', { atLeast: 1, of: 'target' }, [dmg(8)])],
+    {
+      retain: true,
+      up: { effects: [dmg(20), when('faltering', { atLeast: 1, of: 'target' }, [dmg(8)])] },
+    },
+  ),
+  q(
+    'uncommon',
+    'clean-extraction',
+    'Clean Extraction',
+    'power',
+    1,
+    'none',
+    [on('extract', [draw(1), barrier(1)], { once: true })],
+    { up: { innate: true } },
+  ),
+  q(
+    'uncommon',
+    'lie-in-wait',
+    'Lie in Wait',
+    'power',
+    1,
+    'none',
+    [on('turnEnd', [when('attacksPlayed', { atMost: 0 }, [barrier(6), prepare(1)])])],
+    {
+      up: {
+        effects: [on('turnEnd', [when('attacksPlayed', { atMost: 0 }, [barrier(9), prepare(1)])])],
+      },
+    },
+  ),
+  // (once a turn: a knife pulled sends another into a random enemy)
+  q(
+    'rare',
+    'recycled-steel',
+    'Recycled Steel',
+    'power',
+    1,
+    'none',
+    [on('extract', [embed(1, 'randomFoe'), barrier(3)], { once: true })],
+    { up: { innate: true } },
   ),
 ];
