@@ -15,24 +15,7 @@ import { COMBAT_DB as db, RIFTWALKERS } from './index';
 
 /** Every Aura whose upgrade is 1 less Mana, on purpose. A new one goes here only when its effect cannot grow. */
 const COST_CUT_AURAS = [
-  // the Knight's are Robert's to set (the Ironclad's list, DECISIONS #367)
-  'bastion-engine',
-  'blood-fire',
-  'bloodied-plate',
-  'charging-herd',
-  'cruel-streak',
-  'inner-furnace',
-  'jugglers-rhythm',
-  'numbing-rite',
-  'raised-hell',
-  'rite-of-recall',
-  'scar-over',
-  'scent-of-weakness',
-  'stone-stance',
-  'unbroken-wall',
-  'unforgiving-drill',
-  'unholy-pact',
-  'warlords-oath',
+  // (the Knight's Ironclad list went with her rework, DECISIONS #415: her new Auras all have hand-written upgrades)
   // copies of Slay the Spire cards that get cheaper there (Spellblade, Necromancer, Shaman, Assassin)
   'echoing-blade',
   'orbit',

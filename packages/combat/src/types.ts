@@ -78,7 +78,9 @@ export type StatusId =
   | 'echoing' // the first card you play each turn is played an extra time (the first N cards, for N stacks)
   | 'boosted' // your next Aura is played an extra time, per stack
   | 'freepower' // your next Aura costs 0, per stack
-  | 'deftness'; // your 0-cost Attacks deal this much more damage
+  | 'deftness' // your 0-cost Attacks deal this much more damage
+  // (the Knight's Guard, DECISIONS #415)
+  | 'opening'; // Open: a hit of its was fully stopped by a Guard hero's Barrier (at most 1); a Riposte against it spends it
 export const STATUS_IDS: readonly StatusId[] = [
   'exposed',
   'faltering',
@@ -143,6 +145,7 @@ export const STATUS_IDS: readonly StatusId[] = [
   'boosted',
   'freepower',
   'deftness',
+  'opening',
 ];
 /** Debuffs: a Steadfast unit ignores the next one put on it. */
 export const DEBUFFS: readonly StatusId[] = [
@@ -289,7 +292,11 @@ export type Metric =
   | 'etherealPlayed' // Fleeting cards played this fight
   | 'deaths' // units (either side) that have died this fight
   | 'tagExhausted' // consumed cards with the scale's `tag`
-  | 'tagDeck'; // cards with the scale's `tag` anywhere in your deck (the card being played included)
+  | 'tagDeck' // cards with the scale's `tag` anywhere in your deck (the card being played included)
+  // (the Knight's Guard, DECISIONS #415)
+  | 'opening' // (about a unit) 1 while it is Open
+  | 'foesOpen' // enemies that are Open
+  | 'foesAttacking'; // enemies that mean to attack this turn
 export interface Scale {
   by: Metric;
   mult?: number;
@@ -331,7 +338,11 @@ export type TriggerWhen =
   | 'debuffFoe' // you put a debuff on an enemy (the target is that enemy)
   | 'allyHurt' // one of your companions lost HP (metric 'lost')
   | 'evoke' // one of your totems awakened (`rune` narrows it; the target is each enemy its awakening struck)
-  | 'allSuits'; // (the Trickster's Suits) all four suits are showing, the first time this turn (a Full Trick)
+  | 'allSuits' // (the Trickster's Suits) all four suits are showing, the first time this turn (a Full Trick)
+  // (the Knight's Guard, DECISIONS #415; the target is that enemy)
+  | 'opening' // your Barrier fully stopped an enemy's attack hit and left it Open (an Opening earned, not one a card gives)
+  | 'riposte' // you spent an enemy's Opening with a Riposte
+  | 'thorns'; // your Thorns struck an attacker
 
 export type Op =
   /** `lonePct`: Point Blank, this much more damage (percent) when it hits only one enemy */
@@ -351,6 +362,8 @@ export type Op =
       onKill?: Op[];
       /** the whole effect happens again once for each enemy it kills (Echoing Slash) */
       repeatOnKill?: boolean;
+      /** Riposte (the Knight, DECISIONS #415): against an Open target, every hit deals this much more and the Opening is spent */
+      riposte?: number;
     }
   | { op: 'loseHp'; amount: number; to: Sel; scale?: Scale } // unblockable, unmodified
   | { op: 'barrier'; amount: number; to: Sel; scale?: Scale }
@@ -601,7 +614,10 @@ export type Op =
   /** your hand and discard pile are shuffled into your draw pile (Reboot) */
   | { op: 'reshuffle' }
   /** in a 'play' trigger: the card just played comes back from your discard pile to your hand (Feral) */
-  | { op: 'returnPlayed' };
+  | { op: 'returnPlayed' }
+  // --- the Knight's Guard (DECISIONS #415)
+  /** Riposte: if the target is Open, spend its Opening and run these */
+  | { op: 'riposte'; ops: Op[] };
 
 export type CardKind = 'attack' | 'skill' | 'power' | 'summon' | 'snare';
 /** foe = an enemy; friend = any unit of yours (hero or ally); ally = one of your allies, never the hero */
@@ -769,6 +785,8 @@ export interface HeroTrait {
   /** Salvage: a companion summoned by a card that scrapped others to make room takes their Might and Primed, and half their HP
    * as extra max HP (DECISIONS #383) */
   salvage?: boolean;
+  /** Guard (the Knight, DECISIONS #415): an enemy attack hit this hero's Barrier stops completely leaves the attacker Open */
+  openings?: boolean;
 }
 
 export interface HeroDef {

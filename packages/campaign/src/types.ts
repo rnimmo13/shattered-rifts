@@ -330,6 +330,10 @@ export interface RunStats {
 
 export interface RunState {
   v: 2;
+  /** the rework of its character this run is played under (CLASS_REWORKS; missing: from before any rework) */
+  reworked?: number;
+  /** set when a run saved before its character's rework was migrated on load: what to tell the player (shown once, then dropped) */
+  reworkNotice?: string;
   /** the ghost Wardens this run has met (their server ids), so it never meets one twice */
   ghostsMet?: string[];
   /** how many times the Gambler's Ledger has been signed this run (each signature gives more Max HP) */

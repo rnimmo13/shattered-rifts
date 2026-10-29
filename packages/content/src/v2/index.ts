@@ -84,26 +84,28 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     realm: 'aurelion',
     persona: 'Valeria',
     role: 'Knight',
+    // (rebuilt 2026-10-29, docs/BASE_CLASS_REWORKS.md §4, DECISIONS #415: Guard, Riposte and Thorns; the Ironclad copy is archived)
     trait: {
-      name: 'Oathkeeper',
-      text: 'Start every fight with 6 Barrier and 6 Plating: your Barrier survives each turn up to your Plating, which shrinks by 1 a turn.',
-      fightStart: [barrier(6), status('plating', 6)],
+      name: 'Hold and Answer',
+      text: 'Start every fight with 6 Barrier. Guard: when your Barrier stops an enemy attack hit completely, that enemy is left Open until the end of your next turn (one Opening per enemy). The first time each turn you earn an Opening, gain 3 Barrier.',
+      fightStart: [barrier(6)],
+      openings: true,
+      triggers: [on('opening', [barrier(3)], { once: true })],
     },
     hero: { id: 'knight', name: 'Knight', maxHp: 80, mana: 3, handSize: 5 },
-    starter: [...rep('strike', 5), ...rep('defend', 4), 'sundering-blow'],
+    starter: [...rep('strike', 4), ...rep('defend', 4), 'sundering-blow', 'briarplate'],
     blurb:
-      'A knight of the Gilded Order. No companions: Might, Barrier and a deck that burns down to a point.',
-    mechanics: ['Barrier', 'Might', 'Exposed', 'Consume', 'Self-damage'],
+      'A knight of the Gilded Order. No companions: she meets every attack with her shield, answers the opening it gives her, and makes contact hurt.',
+    mechanics: ['Barrier', 'Openings', 'Riposte', 'Thorns', 'Exposed'],
     buildPaths: [
-      'Bulwark: hit with your Barrier',
-      'Might: hit many times, harder and harder',
-      'Consume: burn your own cards for value',
-      'Blood: pay HP for Mana, cards and Might',
+      'Guard: stop attacks completely, and gain from every Opening',
+      'Riposte: heavy counters that spend Openings',
+      'Thorns: hurt every enemy that hits you',
     ],
     howTo: [
-      'Barrier soaks damage, but it falls away at the start of your next turn. Your Plating keeps some of it through the first turns.',
-      'Exposed enemies take 50% more from your attacks: Sundering Blow sets it up.',
-      'Your cards come in many shapes: hit with your Barrier, pile up Might and hit many times, consume your own cards for value, or pay HP for Mana, cards and Might.',
+      'Barrier soaks damage, but it falls away at the start of your next turn. When it stops an enemy attack hit completely, that enemy is left Open.',
+      "A Riposte spends the target's Opening for its bonus (Sundering Blow, Return the Blow). Other attacks never spend it. An Opening lasts until the end of your next turn.",
+      'Thorns hurt each enemy that hits you, until the enemy turn is over (Briarplate). Some cards open an enemy themselves, even one that is not attacking.',
     ],
   },
   engineer: {
@@ -700,6 +702,16 @@ export function canonicalCard(id: string): string {
   for (let i = 0; now && RETIRED_CARDS[now] && i < 8; i++) now = RETIRED_CARDS[now];
   return m && now ? `${m[1] ?? ''}${m[2] ?? ''}${now}${m[4] ?? ''}` : id;
 }
+
+/**
+ * The classes rebuilt since runs were first saved (docs/BASE_CLASS_REWORKS.md, DECISIONS #415-#420), with the version of each rework. A
+ * run of one of them saved before its rework is migrated on load, never read as if it had been played by the new rules: its cards that
+ * left the pool become their nearest new cards (RETIRED_CARDS), a fight in progress starts again from its first turn (its move log was
+ * made under the old rules), and the player is told what happened (`reworkNotice`).
+ */
+export const CLASS_REWORKS: Partial<Record<HeroId, { version: number; summary: string }>> = {
+  knight: { version: 1, summary: 'Guard, Riposte and Thorns' },
+};
 
 /** A Riftwalker id as it is now: an old id becomes its class id, and anything else comes back as it was. */
 export function canonicalHero(id: string): string {

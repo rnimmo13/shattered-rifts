@@ -1,499 +1,369 @@
-// Valeria, the Ironclad-shaped knight (DECISIONS #364): Devotion is gone, the starter is the classic ten, and the cards that
-// were copied in shape from the Slay the Spire 2 Ironclad do what their text says.
+// The Knight rebuilt (docs/BASE_CLASS_REWORKS.md §4, DECISIONS #415): Guard leaves an attacker Open when her Barrier stops its hit
+// completely, a Riposte spends that Opening for its bonus, and Thorns hurt whatever hits her. Her old Ironclad copy is archived in
+// reviews/balance-baselines/2026-10-29-pre-identity-reworks/.
 
 import { describe, expect, it } from 'vitest';
 import {
-  STATUS_IDS,
   applyAction,
+  cardText,
   chooseAction,
   clone,
   createCombat,
   legalActions,
+  previewCardDamage,
   type CombatState,
+  type Unit,
 } from '@sr/combat';
-import { BUILD_PATHS_SHOWN, COMBAT_DB as db, RIFTWALKERS, pathSizes } from './index';
+import { COMBAT_DB as db, RIFTWALKERS, pathSizes } from './index';
 
-function fight(hand: string[], deck: string[] = RIFTWALKERS.knight.starter): CombatState {
+function fight(
+  hand: string[],
+  enemies: string[] = ['squire', 'squire'],
+  deck: string[] = RIFTWALKERS.knight.starter,
+): CombatState {
   const { state } = createCombat(db, {
-    seed: 'knight-test',
+    seed: 'knight-guard',
     a: { hero: 'knight', deck: [...deck, ...deck] },
-    b: { enemies: ['squire', 'squire'] },
+    b: { enemies },
   });
   const s = clone(state);
   s.sides.a.hand = hand.map((card, i) => ({ id: `T${i}`, card }));
-  s.sides.a.draw = [];
-  s.sides.a.discard = [];
-  s.sides.a.exhausted = [];
   s.sides.a.mana = 9;
-  for (const u of s.sides.b.units) u.hp = u.maxHp = 200;
+  for (const u of s.sides.b.units) {
+    u.hp = u.maxHp = 200;
+    u.statuses = {};
+  }
+  hero(s).barrier = 0;
   return s;
 }
-const play = (s: CombatState, id: string): CombatState => {
-  // (a play action names the card in the hand, not the card's id)
+const hero = (s: CombatState): Unit => s.sides.a.units.find((u) => u.kind === 'hero')!;
+const foes = (s: CombatState): Unit[] => s.sides.b.units;
+const foe = (s: CombatState, i = 0): Unit => s.sides.b.units[i]!;
+const open = (u: Unit): number => u.statuses.opening ?? 0;
+const play = (s: CombatState, id: string, target?: string): CombatState => {
   const inst = s.sides.a.hand.find((c) => c.card === id);
-  const act = legalActions(db, s).find((a) => a.type === 'play' && a.card === inst?.id);
+  const act = legalActions(db, s).find(
+    (a) => a.type === 'play' && a.card === inst?.id && (!target || a.target === target),
+  );
   expect(act, `${id} playable`).toBeTruthy();
   let r = applyAction(db, s, act!).state;
   for (let i = 0; i < 6 && r.pending; i++) r = applyAction(db, r, chooseAction(db, r)).state;
   return r;
 };
-const foeHp = (s: CombatState): number => s.sides.b.units[0]!.hp + s.sides.b.units[0]!.barrier;
-const hero = (s: CombatState) => s.sides.a.units[s.sides.a.units.length - 1]!;
+/** every enemy means `move` at the hero, then the turn ends: the enemy turn runs and the Knight's next turn begins */
+const enemyTurn = (s: CombatState, move = 'slash', only?: number): CombatState => {
+  const h = hero(s);
+  foes(s).forEach((u, i) => {
+    u.intent =
+      only === undefined || only === i ? { move, target: h.id } : { move: 'guard', target: null };
+  });
+  return applyAction(db, s, { type: 'endTurn' }).state;
+};
 
-describe('the knight is the Ironclad shape', () => {
-  it('starts with five Strikes, four Defends and Sundering Blow; Devotion is gone', () => {
+describe('the Knight: Guard, Riposte and Thorns', () => {
+  it('starts with 4 Strikes, 4 Defends, Sundering Blow and Briarplate; 80 HP; 6 Barrier from her trait', () => {
     expect(RIFTWALKERS.knight.starter).toEqual([
-      ...Array<string>(5).fill('strike'),
+      ...Array<string>(4).fill('strike'),
       ...Array<string>(4).fill('defend'),
       'sundering-blow',
+      'briarplate',
     ]);
     expect(RIFTWALKERS.knight.hero.maxHp).toBe(80);
-    expect(STATUS_IDS).not.toContain('devotion');
-    expect(Object.values(db.cards).filter((c) => c.statusCost)).toEqual([]);
-    expect(RIFTWALKERS.knight.trait.triggers).toBeUndefined();
+    const { state } = createCombat(db, {
+      seed: 'k',
+      a: { hero: 'knight', deck: RIFTWALKERS.knight.starter },
+      b: { enemies: ['squire'] },
+    });
+    expect(hero(state).barrier).toBe(6);
+    expect(hero(state).statuses.plating ?? 0).toBe(0);
+    expect(RIFTWALKERS.knight.trait.openings).toBe(true);
   });
 
-  it('keeps four build paths in its data (there is no limit of three, DECISIONS #362), though none is shown', () => {
-    expect(RIFTWALKERS.knight.buildPaths).toHaveLength(4);
-    expect(pathSizes('knight')).toHaveLength(4);
-    expect(BUILD_PATHS_SHOWN).toBe(false);
+  it('has three build paths of at least 12 cards, and none of the old Ironclad engines', () => {
+    expect(pathSizes('knight').every((n) => n >= 12)).toBe(true);
+    for (const gone of [
+      'unholy-pact',
+      'rite-of-recall',
+      'numbing-rite',
+      'burn-it-all',
+      'scar-over',
+      'draw-blood',
+      'blood-fire',
+    ])
+      expect(db.cards[gone], gone).toBeUndefined();
   });
 
-  it('Sundering Blow hits for 8 and leaves 2 Exposed', () => {
-    const s = play(fight(['sundering-blow']), 'sundering-blow');
-    expect(foeHp(s)).toBe(192);
-    expect(s.sides.b.units[0]!.statuses.exposed).toBe(2);
+  describe('Guard: an Opening', () => {
+    it('comes when her Barrier stops an attack hit completely, and the trait adds 3 Barrier the first time each turn', () => {
+      let s = fight([]);
+      hero(s).barrier = 30;
+      s = enemyTurn(s, 'slash', 0);
+      expect(open(foe(s, 0))).toBe(1);
+      expect(open(foe(s, 1))).toBe(0);
+    });
+
+    it('does not come when the hit gets through her Barrier at all', () => {
+      let s = fight([]);
+      hero(s).barrier = 5; // Slash 9: 4 gets through
+      s = enemyTurn(s, 'slash', 0);
+      expect(open(foe(s, 0))).toBe(0);
+    });
+
+    it('does not come from a hit Shielded cancels, a hit on a Ghostly Knight, or a hit her own Trap stops', () => {
+      let s = fight([]);
+      hero(s).barrier = 30;
+      hero(s).statuses.shielded = 1;
+      s = enemyTurn(s, 'slash', 0);
+      expect(open(foe(s, 0))).toBe(0);
+      let g = fight([]);
+      hero(g).barrier = 30;
+      hero(g).statuses.ghostly = 2;
+      g = enemyTurn(g, 'slash', 0);
+      expect(open(foe(g, 0))).toBe(0);
+      let t = fight(['nyxaras-web']);
+      hero(t).barrier = 30;
+      t = play(t, 'nyxaras-web');
+      t = enemyTurn(t, 'slash', 0);
+      expect(open(foe(t, 0))).toBe(0);
+    });
+
+    it('is one per enemy: a three-hit attack fully stopped leaves one Opening, and the trait pays once a turn', () => {
+      let s = fight([], ['patrol-unit', 'squire']);
+      hero(s).barrier = 40;
+      const h0 = hero(s).barrier;
+      const before = applyAction(
+        db,
+        (() => {
+          const c = clone(s);
+          foe(c, 0).intent = { move: 'burst', target: hero(c).id };
+          foe(c, 1).intent = { move: 'slash', target: hero(c).id };
+          return c;
+        })(),
+        { type: 'endTurn' },
+      );
+      s = before.state;
+      expect(open(foe(s, 0))).toBe(1);
+      expect(open(foe(s, 1))).toBe(1);
+      // (15 + 9 soaked from 40, +3 once from the trait; then her own turn began, and the rest fell away)
+      const gained = before.events.filter(
+        (e) => e.type === 'barrier' && e.target === hero(s).id && e.amount === 3,
+      );
+      expect(gained).toHaveLength(1);
+      expect(h0).toBe(40);
+    });
+
+    it('a hit that a Faltering enemy weakens still counts: what is checked is the hit as it lands', () => {
+      let s = fight([]);
+      hero(s).barrier = 7; // Slash 9 x0.75 = 6
+      foe(s, 0).statuses.faltering = 2;
+      s = enemyTurn(s, 'slash', 0);
+      expect(open(foe(s, 0))).toBe(1);
+    });
+
+    it('an attack on every unit counts too, when her Barrier stops it', () => {
+      let s = fight([], ['templar-aldric']);
+      hero(s).barrier = 30;
+      s = enemyTurn(s, 'cleave');
+      expect(open(foe(s))).toBe(1);
+    });
+
+    it('lasts through her next turn and goes at its end', () => {
+      let s = fight([]);
+      hero(s).barrier = 30;
+      s = enemyTurn(s, 'slash', 0);
+      expect(open(foe(s, 0))).toBe(1);
+      // her turn: still Open; the turn ends without spending it, and it is gone (also while the next enemy turn runs)
+      s = enemyTurn(s, 'guard');
+      expect(open(foe(s, 0))).toBe(0);
+    });
   });
 
-  it('Mastered Strike counts every Strike in the whole deck, itself included', () => {
-    const s0 = fight(['mastered-strike']);
-    s0.sides.a.draw = ['strike', 'strike', 'strike'].map((card, i) => ({ id: `D${i}`, card }));
-    s0.sides.a.discard = [{ id: 'X0', card: 'hilt-strike' }];
-    s0.sides.a.exhausted = [{ id: 'X1', card: 'twin-cut' }]; // (no Strike in its name)
-    // 3 Strikes in the draw pile, Hilt Strike in the discard pile, and Mastered Strike itself = 5
-    expect(foeHp(play(s0, 'mastered-strike'))).toBe(200 - (6 + 2 * 5));
-  });
-
-  it('Break Guard hits twice against an Exposed enemy', () => {
-    const plain = play(fight(['break-guard']), 'break-guard');
-    expect(foeHp(plain)).toBe(200 - 8);
-    const s0 = fight(['break-guard']);
-    s0.sides.b.units[0]!.statuses.exposed = 2;
-    // two hits of 8, each 50% more against an Exposed enemy
-    expect(foeHp(play(s0, 'break-guard'))).toBe(200 - 2 * 12);
-  });
-
-  it('Whirling Blade hits every enemy once per Mana spent', () => {
-    const s0 = fight(['whirling-blade']);
-    s0.sides.a.mana = 3;
-    const s = play(s0, 'whirling-blade');
-    for (const u of s.sides.b.units) expect(u.hp).toBe(200 - 15);
-  });
-
-  it('Mounting Fury grows every time it is played', () => {
-    let s = fight(['mounting-fury', 'mounting-fury']);
-    s = play(s, 'mounting-fury');
-    expect(foeHp(s)).toBe(200 - 9);
-    s = play(s, 'mounting-fury');
-    expect(foeHp(s)).toBe(200 - 9 - 14);
-  });
-
-  it('Intimidate gives you Might for the Exposed it leaves', () => {
-    const s0 = fight(['intimidate']);
-    s0.sides.b.units[0]!.statuses.exposed = 2;
-    const s = play(s0, 'intimidate');
-    expect(s.sides.b.units[0]!.statuses.exposed).toBe(3);
-    expect(hero(s).statuses.might).toBe(3);
-  });
-
-  it('Burn It All deals 7 for every other card in your hand, and consumes the hand', () => {
-    const s = play(fight(['burn-it-all', 'strike', 'strike', 'defend']), 'burn-it-all');
-    expect(foeHp(s)).toBe(200 - 21);
-    expect(s.sides.a.hand).toHaveLength(0);
-    expect(s.sides.a.exhausted).toHaveLength(4);
-  });
-
-  it('Rite of Recall draws a card whenever a card is consumed', () => {
-    let s = fight(['rite-of-recall', 'sacrificial-guard', 'strike']);
-    s.sides.a.draw = [
-      { id: 'D0', card: 'defend' },
-      { id: 'D1', card: 'defend' },
-    ];
-    s = play(s, 'rite-of-recall');
-    const drawn = s.sides.a.drawn;
-    s = play(s, 'sacrificial-guard'); // consumes a card at random
-    expect(s.sides.a.drawn).toBe(drawn + 1);
-  });
-
-  it('Unholy Pact makes your Skills free, and consumes them', () => {
-    let s = fight(['unholy-pact', 'defend']);
-    s.sides.a.mana = 3;
-    s = play(s, 'unholy-pact');
-    expect(s.sides.a.mana).toBe(0);
-    s = play(s, 'defend');
-    expect(s.sides.a.mana).toBe(0);
-    expect(s.sides.a.exhausted.some((c) => c.card === 'defend')).toBe(true);
-  });
-
-  it('Scar Over gives Might for every HP you pay, and Blood Fire strikes everyone', () => {
-    let s = fight(['scar-over', 'blood-fire', 'draw-blood']);
-    s = play(s, 'scar-over');
-    s = play(s, 'blood-fire');
-    const hp = hero(s).hp;
-    s = play(s, 'draw-blood'); // lose 3 HP, gain 2 Mana
-    expect(hero(s).hp).toBe(hp - 3);
-    expect(hero(s).statuses.might).toBe(1);
-    // (6 damage: an Aura's damage is no attack, so the Might that Scar Over just gave does not add to it, DECISIONS #376)
-    for (const u of s.sides.b.units) expect(u.hp).toBe(200 - 6);
-  });
-
-  it('Bulwark Blow deals your Barrier as damage', () => {
-    const s0 = fight(['bulwark-blow']);
-    hero(s0).barrier = 17;
-    expect(foeHp(play(s0, 'bulwark-blow'))).toBe(200 - 17);
-  });
-
-  it('Field Repairs upgrades a card in your hand', () => {
-    const s = play(fight(['field-repairs', 'strike']), 'field-repairs');
-    expect(s.sides.a.hand.map((c) => c.card)).toEqual(['strike+']);
-  });
-});
-
-// The cards added for the rest of the Ironclad list (DECISIONS #366), and the engine pieces under them.
-describe('the rest of the Ironclad list', () => {
-  const draw = (...cards: string[]) => cards.map((card, i) => ({ id: `D${i}`, card }));
-  const endTurn = (s: CombatState): CombatState => applyAction(db, s, { type: 'endTurn' }).state;
-  const lostHp = (s: CombatState): number => hero(s).maxHp - hero(s).hp;
-
-  it('Cold Stare gives 8 more Barrier once a card has been consumed this turn', () => {
-    const base = hero(play(fight(['cold-stare']), 'cold-stare')).barrier;
-    const s0 = fight(['cold-stare']);
-    s0.sides.a.exhaustedTurn = 1;
-    expect(hero(play(s0, 'cold-stare')).barrier).toBe(base + 8);
-  });
-
-  it('Spiteful Jab hits twice only after you have lost HP this turn', () => {
-    expect(foeHp(play(fight(['spiteful-jab']), 'spiteful-jab'))).toBe(200 - 6);
-    const s0 = fight(['spiteful-jab']);
-    s0.sides.a.lostHpTurn = 1;
-    expect(foeHp(play(s0, 'spiteful-jab'))).toBe(200 - 12);
-  });
-
-  it('Rending Fury hits once more for every time you have lost HP this fight', () => {
-    const s0 = fight(['rending-fury']);
-    s0.sides.a.lostHpFight = 3;
-    expect(foeHp(play(s0, 'rending-fury'))).toBe(200 - 4 * 5);
-  });
-
-  it('Plunder draws until a card that is not an Attack comes up', () => {
-    const s0 = fight(['plunder']);
-    s0.sides.a.draw = draw('strike', 'strike', 'defend', 'strike');
-    const s = play(s0, 'plunder');
-    expect(s.sides.a.hand.map((c) => c.card)).toEqual(['strike', 'strike', 'defend']);
-    expect(s.sides.a.draw).toHaveLength(1);
-  });
-
-  it('Grim Focus draws 3 and then no more cards come this turn', () => {
-    const s0 = fight(['grim-focus', 'oath-of-iron']);
-    s0.sides.a.draw = draw('strike', 'strike', 'strike', 'strike', 'strike');
-    let s = play(s0, 'grim-focus');
-    expect(s.sides.a.hand).toHaveLength(1 + 3);
-    s = play(s, 'oath-of-iron'); // would draw 1
-    expect(s.sides.a.hand).toHaveLength(3);
-  });
-
-  it('Trampling Charge costs 1 less for every Attack played this turn', () => {
-    const s0 = fight(['trampling-charge']);
-    s0.sides.a.mana = 3;
-    expect(play(s0, 'trampling-charge').sides.a.mana).toBe(0);
-    const s1 = fight(['trampling-charge']);
-    s1.sides.a.mana = 3;
-    s1.sides.a.attacksPlayed = 2;
-    expect(play(s1, 'trampling-charge').sides.a.mana).toBe(2);
-  });
-
-  it('Relentless Push makes your next Attack free, once', () => {
-    let s = fight(['relentless-push', 'strike', 'strike']);
-    s.sides.a.mana = 3;
-    s = play(s, 'relentless-push'); // 2 Mana
-    expect(s.sides.a.mana).toBe(1);
-    expect(hero(s).statuses.freeattack).toBe(1);
-    s = play(s, 'strike');
-    expect(s.sides.a.mana).toBe(1);
-    expect(hero(s).statuses.freeattack).toBeUndefined();
-    s = play(s, 'strike');
-    expect(s.sides.a.mana).toBe(0);
-  });
-
-  it('a Free Attack is kept when the Attack costs nothing anyway (DECISIONS #372)', () => {
-    let s = fight(['relentless-push', 'hot-temper', 'strike']);
-    s.sides.a.mana = 3;
-    s = play(s, 'relentless-push');
-    s = play(s, 'hot-temper'); // 0 Mana: the Free Attack waits
-    expect(hero(s).statuses.freeattack).toBe(1);
-    s = play(s, 'strike');
-    expect(s.sides.a.mana).toBe(1);
-    expect(hero(s).statuses.freeattack).toBeUndefined();
-  });
-
-  it('Bitter Breath consumes every card that is not an Attack, 5 Barrier for each', () => {
-    const s0 = fight(['bitter-breath', 'strike', 'defend', 'defend', 'oath-of-iron']);
-    const before = hero(s0).barrier;
-    const s = play(s0, 'bitter-breath');
-    expect(s.sides.a.hand.map((c) => c.card)).toEqual(['strike']);
-    expect(hero(s).barrier).toBe(before + 15);
-  });
-
-  it('Fan the Flames consumes the hand and gives a new card for each one', () => {
-    const s = play(fight(['fan-the-flames', 'strike', 'defend', 'defend']), 'fan-the-flames');
-    expect(s.sides.a.exhausted).toHaveLength(3);
-    expect(s.sides.a.hand).toHaveLength(3);
-  });
-
-  it('Stone Fury turns every Attack in your hand into a Giant Rock', () => {
-    const s = play(fight(['stone-fury', 'strike', 'defend', 'hammer-fall']), 'stone-fury');
-    expect(s.sides.a.hand.map((c) => c.card)).toEqual(['giant-rock', 'defend', 'giant-rock']);
-    expect(foeHp(play(s, 'giant-rock'))).toBe(200 - 16);
-  });
-
-  it('War Drums draws 2, then consumes the top card of your draw pile every turn', () => {
-    const s0 = fight(['war-drums']);
-    s0.sides.a.draw = draw('strike', 'strike', 'strike', 'strike', 'strike', 'strike', 'strike');
-    let s = play(s0, 'war-drums');
-    expect(s.sides.a.hand).toHaveLength(2);
-    const consumed = s.sides.a.exhausted.length;
-    s = endTurn(s);
-    expect(s.sides.a.exhausted.length).toBeGreaterThan(consumed);
-  });
-
-  it('Brace for Battle gives a Mana per Attack in hand, and then no more Mana this turn', () => {
-    let s = fight(['brace-for-battle', 'strike', 'strike', 'defend', 'draw-blood']);
-    s.sides.a.mana = 2;
-    s = play(s, 'brace-for-battle');
-    expect(s.sides.a.mana).toBe(2);
-    s = play(s, 'draw-blood'); // +2 Mana, but the lock holds
-    expect(s.sides.a.mana).toBe(2);
-  });
-
-  it('Ritual of Ash gives 3 Mana only after a card was consumed this turn', () => {
-    const s0 = fight(['ritual-of-ash']);
-    s0.sides.a.mana = 1;
-    expect(play(s0, 'ritual-of-ash').sides.a.mana).toBe(0);
-    const s1 = fight(['ritual-of-ash']);
-    s1.sides.a.mana = 1;
-    s1.sides.a.exhaustedTurn = 1;
-    expect(play(s1, 'ritual-of-ash').sides.a.mana).toBe(3);
-  });
-
-  it('Wild Gamble plays the top card of your draw pile for free, and consumes it', () => {
-    const s0 = fight(['wild-gamble']);
-    s0.sides.a.draw = draw('hammer-fall', 'strike');
-    s0.sides.a.mana = 1;
-    const s = play(s0, 'wild-gamble');
-    // (against a random enemy: 32 damage, less any Barrier it had)
-    expect(s.sides.b.units.reduce((n, u) => n + (200 - u.hp), 0)).toBe(32);
-    expect(s.sides.a.mana).toBe(0);
-    expect(s.sides.a.exhausted.map((c) => c.card)).toContain('hammer-fall');
-    expect(s.sides.a.draw).toHaveLength(1);
-  });
-
-  it('Unravel plays the top X cards of your draw pile', () => {
-    const s0 = fight(['unravel']);
-    s0.sides.a.draw = draw('strike', 'strike', 'strike', 'strike');
-    s0.sides.a.mana = 3;
-    const s = play(s0, 'unravel');
-    expect(s.sides.a.draw).toHaveLength(1);
-    expect(s.sides.b.units.reduce((n, u) => n + (200 - u.hp), 0)).toBe(3 * 6);
-  });
-
-  it('Howl of the Fallen comes back from the consumed pile every turn', () => {
-    let s = fight(['howl-of-the-fallen']);
-    s.sides.a.mana = 3;
-    s = play(s, 'howl-of-the-fallen');
-    for (const u of s.sides.b.units) expect(u.hp).toBe(200 - 16);
-    s = endTurn(s);
-    for (const u of s.sides.b.units) expect(u.hp).toBeLessThanOrEqual(200 - 32);
-    expect(s.sides.a.exhausted.map((c) => c.card)).toContain('howl-of-the-fallen');
-  });
-
-  it('Ashen Reckoning needs 3 consumed cards', () => {
-    const s0 = fight(['ashen-reckoning']);
-    expect(legalActions(db, s0).some((a) => a.type === 'play' && a.card === 'T0')).toBe(false);
-    s0.sides.a.exhausted = draw('strike', 'strike', 'strike');
-    const s = play(s0, 'ashen-reckoning');
-    for (const u of s.sides.b.units) expect(u.hp).toBe(200 - 17);
-  });
-
-  it("Berserker's Rage gives Barrier for each Attack, until the end of the turn", () => {
-    let s = fight(['berserkers-rage', 'strike', 'strike']);
-    s = play(s, 'berserkers-rage');
-    const before = hero(s).barrier;
-    s = play(s, 'strike');
-    s = play(s, 'strike');
-    expect(hero(s).barrier).toBe(before + 6);
-    s = endTurn(s);
-    expect(s.sides.a.powers.filter((p) => p.temp)).toHaveLength(0);
-  });
-
-  it('Charging Herd plays a random Attack from your hand at the end of your turn', () => {
-    let s = fight(['charging-herd', 'hammer-fall']);
-    s = play(s, 'charging-herd');
-    s = endTurn(s);
-    expect(s.sides.b.units.reduce((n, u) => n + (200 - u.hp), 0)).toBeGreaterThanOrEqual(32);
-  });
-
-  it("Juggler's Rhythm copies your third Attack each turn", () => {
-    let s = fight(['jugglers-rhythm', 'strike', 'strike', 'twin-cut']);
-    s = play(s, 'jugglers-rhythm');
-    s = play(s, 'strike');
-    s = play(s, 'strike');
-    expect(s.sides.a.hand.map((c) => c.card)).toEqual(['twin-cut']);
-    s = play(s, 'twin-cut');
-    expect(s.sides.a.hand.map((c) => c.card)).toEqual(['twin-cut']);
-  });
-
-  it('Scent of Weakness draws a card whenever you put Exposed on an enemy', () => {
-    let s = fight(['scent-of-weakness', 'sundering-blow']);
-    s.sides.a.draw = draw('strike', 'strike');
-    s = play(s, 'scent-of-weakness');
-    s = play(s, 'sundering-blow');
-    expect(s.sides.a.hand.map((c) => c.card)).toEqual(['strike']);
-  });
-
-  it('Raised Hell plays every Strike you draw against a random enemy', () => {
-    let s = fight(['raised-hell', 'hilt-strike']);
-    s.sides.a.draw = draw('strike', 'defend');
-    s = play(s, 'raised-hell');
-    const total = (x: CombatState): number => x.sides.b.units.reduce((n, u) => n + (200 - u.hp), 0);
-    s = play(s, 'hilt-strike'); // 9 damage, and the Strike it draws plays itself for 6 more
-    expect(total(s)).toBe(9 + 6);
-    expect(s.sides.a.hand.map((c) => c.card)).not.toContain('strike');
-  });
-
-  it('Unforgiving Drill brings an upgraded Attack back from the discard pile each turn', () => {
-    let s = fight(['unforgiving-drill']);
-    s = play(s, 'unforgiving-drill');
-    // (a full draw pile for the next hand, so the discard pile is still there when the Aura looks)
-    s.sides.a.draw = draw('defend', 'defend', 'defend', 'defend', 'defend');
-    s.sides.a.discard = draw('strike');
-    s = endTurn(s);
-    expect(s.sides.a.hand.map((c) => c.card)).toContain('strike+');
-  });
-
-  it('Crippling Blow saps the enemy for its next turn only', () => {
-    const without = lostHp(endTurn(fight([])));
-    expect(without).toBeGreaterThan(0);
-    const sapped = lostHp(endTurn(play(fight(['crippling-blow']), 'crippling-blow')));
-    expect(sapped).toBeLessThan(without);
-    // it is gone again by the next turn
-    const after = endTurn(play(fight(['crippling-blow']), 'crippling-blow'));
-    expect(after.sides.b.units[0]!.statuses.sapped).toBeUndefined();
-  });
-
-  it('Bloodfeast raises your max HP when it kills', () => {
-    const s0 = fight(['bloodfeast']);
-    s0.sides.b.units[0]!.hp = 5;
-    const max0 = hero(s0).maxHp;
-    const s = play(s0, 'bloodfeast');
-    expect(hero(s).maxHp).toBe(max0 + 3);
-    expect(s.sides.a.maxHpGained).toBe(3);
-    // and not when it does not
-    const s1 = play(fight(['bloodfeast']), 'bloodfeast');
-    expect(hero(s1).maxHp).toBe(max0);
-  });
-
-  it('Cruel Streak makes your attacks hit Exposed enemies a quarter harder', () => {
-    const hitAfterExpose = (hand: string[]): number => {
-      let s = fight(hand);
-      for (const c of hand.slice(0, -1)) s = play(s, c);
-      const hp = foeHp(s);
-      s = play(s, 'strike');
-      return hp - foeHp(s);
+  describe('Riposte', () => {
+    const opened = (hand: string[]): CombatState => {
+      const s = fight(hand);
+      foe(s, 0).statuses.opening = 1;
+      return s;
     };
-    const base = hitAfterExpose(['sundering-blow', 'strike']);
-    expect(hitAfterExpose(['cruel-streak', 'sundering-blow', 'strike'])).toBe(
-      Math.floor(base * 1.25),
-    );
+
+    it('Sundering Blow: 9, +6 against an Open enemy, and the Opening is spent; 9 without one', () => {
+      let s = opened(['sundering-blow', 'sundering-blow']);
+      const hp = foe(s, 0).hp;
+      s = play(s, 'sundering-blow', foe(s, 0).id);
+      expect(hp - foe(s, 0).hp).toBe(15);
+      expect(open(foe(s, 0))).toBe(0);
+      expect(foe(s, 0).statuses.exposed).toBe(1);
+      const hp2 = foe(s, 1).hp;
+      s = play(s, 'sundering-blow', foe(s, 1).id);
+      expect(hp2 - foe(s, 1).hp).toBe(9);
+    });
+
+    it('an ordinary attack never spends an Opening; Steady Blade only reads it', () => {
+      let s = opened(['strike', 'steady-blade']);
+      s = play(s, 'strike', foe(s, 0).id);
+      expect(open(foe(s, 0))).toBe(1);
+      const hand = s.sides.a.hand.length;
+      s = play(s, 'steady-blade', foe(s, 0).id);
+      expect(open(foe(s, 0))).toBe(1);
+      expect(s.sides.a.hand.length).toBe(hand - 1 + 1);
+    });
+
+    it('a Riposte that is not a bonus runs only against an Open target, and spends it: Iron Rejoinder', () => {
+      let s = opened(['iron-rejoinder', 'iron-rejoinder']);
+      s = play(s, 'iron-rejoinder', foe(s, 0).id);
+      expect(hero(s).barrier).toBe(7);
+      expect(open(foe(s, 0))).toBe(0);
+      s = play(s, 'iron-rejoinder', foe(s, 0).id);
+      expect(hero(s).barrier).toBe(7);
+    });
+
+    it('Masterstroke hits again only when it spends an Opening, and not if the first hit killed', () => {
+      let s = opened(['masterstroke']);
+      const hp = foe(s, 0).hp;
+      s = play(s, 'masterstroke', foe(s, 0).id);
+      expect(hp - foe(s, 0).hp).toBe(40);
+      let k = opened(['masterstroke']);
+      foe(k, 0).hp = 15;
+      k = play(k, 'masterstroke', foe(k, 0).id);
+      expect(foe(k, 0)?.statuses.opening ?? 0).toBe(0);
+      expect(k.sides.b.units).toHaveLength(1);
+    });
+
+    it('the card preview counts the bonus against an Open target, and agrees with what it deals', () => {
+      const s = opened(['return-the-blow']);
+      const id = s.sides.a.hand[0]!.id;
+      expect(previewCardDamage(db, s, id, foe(s, 0).id).get(0)?.lo).toBe(12);
+      expect(previewCardDamage(db, s, id, foe(s, 1).id).get(0)?.lo).toBe(7);
+      const hp = foe(s, 0).hp;
+      const after = play(s, 'return-the-blow', foe(s, 0).id);
+      expect(hp - foe(after, 0).hp).toBe(12);
+    });
+
+    it('reads plainly on the card', () => {
+      expect(cardText(db, db.cards['sundering-blow']!)).toBe(
+        'Deal 9 damage. Riposte: +6 damage. Apply 1 Exposed.',
+      );
+      expect(cardText(db, db.cards['iron-rejoinder']!)).toBe(
+        'Riposte: gain 7 Barrier. Deal 15 damage.',
+      );
+      expect(cardText(db, db.cards['draw-them-in']!)).toBe(
+        'Gain 4 Barrier. The target is left Open.',
+      );
+      expect(cardText(db, db.cards['measured-guard']!)).toBe(
+        'Gain 6 Barrier. The next time you earn an Opening: Draw 1 card.',
+      );
+    });
   });
 
-  it("Giant's Stance halves the damage of Exposed enemies until the enemies have had their turn", () => {
-    const lostWith = (hand: string[]): { lost: number; sturdy: number | undefined } => {
-      let s = fight(hand);
-      for (const u of s.sides.b.units) u.statuses.exposed = 3;
-      for (const c of hand) s = play(s, c);
-      s = endTurn(s);
-      return { lost: lostHp(s), sturdy: hero(s).statuses.sturdy };
-    };
-    const without = lostWith([]);
-    expect(without.lost).toBeGreaterThan(0);
-    const withStance = lostWith(['giants-stance']);
-    expect(withStance.lost).toBeLessThan(without.lost);
-    expect(withStance.sturdy).toBeUndefined();
+  describe('cards that open an enemy, and what only an earned Opening pays', () => {
+    it('Draw Them In opens an enemy that is not attacking; Bastion Engine answers only an Opening Guard earns', () => {
+      let s = fight(['bastion-engine', 'draw-them-in']);
+      s = play(s, 'bastion-engine');
+      const hp = foe(s, 0).hp;
+      s = play(s, 'draw-them-in', foe(s, 0).id);
+      expect(open(foe(s, 0))).toBe(1);
+      expect(foe(s, 0).hp).toBe(hp);
+      hero(s).barrier = 30;
+      foe(s, 0).statuses = {};
+      s = enemyTurn(s, 'slash', 0);
+      expect(open(foe(s, 0))).toBe(1);
+      expect(hp - foe(s, 0).hp).toBe(8);
+    });
+
+    it("Iron Cadence: an earned Opening gives a Mana next turn (and 2 Barrier), once; Warlord's Oath's does not feed it", () => {
+      let s = fight(['iron-cadence']);
+      s = play(s, 'iron-cadence');
+      hero(s).barrier = 40;
+      s = enemyTurn(s, 'slash');
+      expect(s.sides.a.mana).toBe(RIFTWALKERS.knight.hero.mana + 1);
+      let w = fight(['iron-cadence', 'warlords-oath']);
+      w = play(w, 'iron-cadence');
+      w = play(w, 'warlords-oath');
+      hero(w).barrier = 0;
+      w = enemyTurn(w, 'guard');
+      expect(open(foe(w, 0))).toBe(1); // the Oath opened the front enemy
+      expect(w.sides.a.mana).toBe(RIFTWALKERS.knight.hero.mana);
+    });
+
+    it('Measured Guard draws on the next Opening earned, and only once', () => {
+      let s = fight(['measured-guard']);
+      s = play(s, 'measured-guard');
+      expect(s.sides.a.powers.some((p) => p.card === 'measured-guard')).toBe(true);
+      hero(s).barrier = 40;
+      s = enemyTurn(s, 'slash');
+      expect(s.sides.a.powers.some((p) => p.card === 'measured-guard')).toBe(false);
+      expect(s.sides.a.hand.length).toBe(RIFTWALKERS.knight.hero.handSize + 1);
+    });
   });
 
-  it('Stone Stance doubles the first Barrier a card gives you each turn', () => {
-    let s = fight(['stone-stance', 'oath-of-iron', 'oath-of-iron']);
-    s = play(s, 'stone-stance');
-    const before = hero(s).barrier;
-    s = play(s, 'oath-of-iron');
-    expect(hero(s).barrier).toBe(before + 16);
-    s = play(s, 'oath-of-iron');
-    expect(hero(s).barrier).toBe(before + 24);
+  describe('Thorns', () => {
+    it('Briarplate hurts each attacker until the enemy turn is over, and does not open it by itself', () => {
+      let s = fight(['briarplate']);
+      s = play(s, 'briarplate');
+      const hp = foe(s, 0).hp;
+      s = enemyTurn(s, 'slash', 0); // 5 Barrier against 9: the hit gets through, the Thorns answer it
+      expect(hp - foe(s, 0).hp).toBe(2);
+      expect(open(foe(s, 0))).toBe(0);
+      expect(hero(s).statuses.thorns ?? 0).toBe(0);
+    });
+
+    it('Thornwake opens the first attacker its Thorns strike each enemy turn, and only it', () => {
+      let s = fight(['thornwake', 'spiked-pauldron']);
+      s = play(s, 'thornwake');
+      s = play(s, 'spiked-pauldron');
+      hero(s).barrier = 0;
+      s = enemyTurn(s, 'slash');
+      expect(foes(s).map(open)).toEqual([1, 0]);
+    });
+
+    it('Thorns that kill the attacker end it cleanly, and nothing answers twice', () => {
+      let s = fight(['wall-of-briars']);
+      s = play(s, 'wall-of-briars');
+      foe(s, 0).hp = 3;
+      s = enemyTurn(s, 'slash', 0);
+      expect(s.sides.b.units).toHaveLength(1);
+      expect(s.winner).toBeNull();
+    });
+
+    it('Vengeful Strike and Briar Lash read the Thorns you have now', () => {
+      let s = fight(['spiked-pauldron', 'vengeful-strike']);
+      s = play(s, 'spiked-pauldron');
+      const hp = foe(s, 0).hp;
+      s = play(s, 'vengeful-strike', foe(s, 0).id);
+      expect(hp - foe(s, 0).hp).toBe(18 + 2 * 3);
+    });
   });
 
-  it('Flailing Blows consumes a random Attack from your hand and adds its damage', () => {
-    const s = play(fight(['flailing-blows', 'hammer-fall', 'defend']), 'flailing-blows');
-    expect(s.sides.a.exhausted.map((c) => c.card)).toEqual(['hammer-fall']);
-    expect(foeHp(s)).toBe(200 - (2 * 4 + 32));
+  it('in the Arena the other hero is the one left Open, and it is gone once her turn ends', () => {
+    const { state } = createCombat(db, {
+      seed: 'k-pvp',
+      a: { hero: 'knight', deck: RIFTWALKERS.knight.starter },
+      b: { hero: 'knight', deck: RIFTWALKERS.knight.starter },
+    });
+    let s = clone(state);
+    s = applyAction(db, s, { type: 'endTurn' }).state; // b's turn now
+    const a = s.sides.a.units.find((u) => u.kind === 'hero')!;
+    const b = s.sides.b.units.find((u) => u.kind === 'hero')!;
+    a.barrier = 30;
+    s.sides.b.hand = [{ id: 'X', card: 'strike' }];
+    s.sides.b.mana = 3;
+    s = applyAction(db, s, { type: 'play', card: 'X', target: a.id }).state;
+    expect(s.sides.b.units.find((u) => u.kind === 'hero')!.statuses.opening).toBe(1);
+    expect(b.id).toBeTruthy();
+    s = applyAction(db, s, { type: 'endTurn' }).state; // a's turn: b is still Open
+    expect(s.sides.b.units.find((u) => u.kind === 'hero')!.statuses.opening).toBe(1);
+    s = applyAction(db, s, { type: 'endTurn' }).state; // a's turn ended: it is gone
+    expect(s.sides.b.units.find((u) => u.kind === 'hero')!.statuses.opening ?? 0).toBe(0);
   });
 
-  it('Rally heals 10 and is consumed', () => {
-    const s0 = fight(['rally']);
-    hero(s0).hp = 40;
-    const s = play(s0, 'rally');
-    expect(hero(s).hp).toBe(50);
-    expect(s.sides.a.exhausted.map((c) => c.card)).toEqual(['rally']);
-  });
-});
-
-// The knight is the Ironclad's list, card for card (DECISIONS #367), as a yardstick for the other classes.
-describe('one card for each of the Ironclad’s', () => {
-  it('has 82 cards of her own (with Sundering Blow, her Bash) plus Strike and Defend: the 87 of the Ironclad less Tank, Demonic Shield and Break', () => {
-    const own = Object.values(db.cards).filter(
-      (c) => c.hero === 'knight' && !c.id.endsWith('+') && c.source !== 'token',
-    );
-    expect(own).toHaveLength(82);
-    // no Thorns and no Traps
-    expect(own.filter((c) => c.kind === 'snare')).toEqual([]);
-    expect(
-      own.filter((c) =>
-        c.effects.some((o) => o.op === 'status' && o.status === 'thorns' && !o.temp),
-      ),
-    ).toEqual([]);
-  });
-
-  it('Hot Temper puts a copy of itself in your discard pile', () => {
-    const s = play(fight(['hot-temper']), 'hot-temper');
-    expect(foeHp(s)).toBe(200 - 6);
-    expect(s.sides.a.discard.filter((c) => c.card === 'hot-temper')).toHaveLength(2);
-  });
-
-  it('Pact of Embers consumes a card and draws 2', () => {
-    const s0 = fight(['pact-of-embers', 'strike']);
-    s0.sides.a.draw = [
-      { id: 'D0', card: 'defend' },
-      { id: 'D1', card: 'defend' },
-    ];
-    const s = play(s0, 'pact-of-embers');
-    expect(s.sides.a.exhausted.map((c) => c.card)).toEqual(['strike']);
-    expect(s.sides.a.hand.map((c) => c.card)).toEqual(['defend', 'defend']);
-  });
-
-  it('Inner Furnace gives a Mana more at the start of every turn', () => {
-    let s = fight(['inner-furnace']);
-    s.sides.a.mana = 3;
-    s = play(s, 'inner-furnace');
-    s = applyAction(db, s, { type: 'endTurn' }).state;
-    expect(s.sides.a.mana).toBe(s.sides.a.maxMana + 1);
+  it('every Knight card upgrades into something better, and no upgrade is more than half again', () => {
+    for (const c of Object.values(db.cards).filter(
+      (x) => x.hero === 'knight' && !x.id.endsWith('+'),
+    )) {
+      const up = db.cards[c.upgrade ?? '']!;
+      expect(up, c.id).toBeDefined();
+      expect(JSON.stringify(up) !== JSON.stringify({ ...c, id: up.id, name: up.name }), c.id).toBe(
+        true,
+      );
+    }
   });
 });

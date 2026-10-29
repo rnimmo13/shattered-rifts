@@ -5,7 +5,10 @@ import { describe, expect, it } from 'vitest';
 import { applyAction, clone, createCombat, legalActions, type CombatState } from '@sr/combat';
 import { COMBAT_DB as db, RIFTWALKERS } from './index';
 
-function fight(hand: string[], hero: 'knight' | 'hunter' | 'shaman' = 'knight'): CombatState {
+function fight(
+  hand: string[],
+  hero: 'knight' | 'hunter' | 'shaman' | 'drunkard' = 'drunkard',
+): CombatState {
   const deck = RIFTWALKERS[hero].starter;
   const { state } = createCombat(db, {
     seed: `attack-damage-${hero}`,
@@ -32,57 +35,57 @@ const hero = (s: CombatState) => s.sides.a.units.find((u) => u.kind === 'hero')!
 const foe = (s: CombatState) => s.sides.b.units[0]!;
 
 describe('attack statuses only touch attack damage', () => {
-  it('Might adds to a Strike, not to Blood Fire', () => {
-    let s = fight(['blood-fire', 'draw-blood', 'strike']);
+  it('Might adds to a Strike, not to The Glass Palace', () => {
+    let s = fight(['the-glass-palace', 'chaser', 'strike']);
     hero(s).statuses.might = 3;
-    s = play(s, 'blood-fire');
-    s = play(s, 'draw-blood'); // lose 3 HP: Blood Fire deals its 6 to every enemy
-    expect(foe(s).hp).toBe(200 - 6);
+    s = play(s, 'the-glass-palace');
+    s = play(s, 'chaser'); // lose 2 HP: The Glass Palace deals its 3 to every enemy
+    expect(foe(s).hp).toBe(200 - 3);
     s = play(s, 'strike');
-    expect(foe(s).hp).toBe(200 - 6 - (6 + 3));
+    expect(foe(s).hp).toBe(200 - 3 - (6 + 3));
   });
 
   it('Exposed on the enemy makes a Strike hit harder, not Blood Fire', () => {
-    let s = fight(['blood-fire', 'draw-blood', 'strike']);
+    let s = fight(['the-glass-palace', 'chaser', 'strike']);
     foe(s).statuses.exposed = 2;
-    s = play(s, 'blood-fire');
-    s = play(s, 'draw-blood');
-    expect(foe(s).hp).toBe(200 - 6);
+    s = play(s, 'the-glass-palace');
+    s = play(s, 'chaser');
+    expect(foe(s).hp).toBe(200 - 3);
     s = play(s, 'strike');
-    expect(foe(s).hp).toBe(200 - 6 - 9);
+    expect(foe(s).hp).toBe(200 - 3 - 9);
   });
 
   it('Faltering on you shrinks a Strike, not Blood Fire', () => {
-    let s = fight(['blood-fire', 'draw-blood', 'strike']);
+    let s = fight(['the-glass-palace', 'chaser', 'strike']);
     hero(s).statuses.faltering = 2;
-    s = play(s, 'blood-fire');
-    s = play(s, 'draw-blood');
-    expect(foe(s).hp).toBe(200 - 6);
+    s = play(s, 'the-glass-palace');
+    s = play(s, 'chaser');
+    expect(foe(s).hp).toBe(200 - 3);
     s = play(s, 'strike');
-    expect(foe(s).hp).toBe(200 - 6 - 4);
+    expect(foe(s).hp).toBe(200 - 3 - 4);
   });
 
-  it('Armored wears thin from a Strike, not from Blood Fire', () => {
-    let s = fight(['blood-fire', 'draw-blood', 'strike']);
+  it('Armored wears thin from a Strike, not from The Glass Palace', () => {
+    let s = fight(['the-glass-palace', 'chaser', 'strike']);
     foe(s).statuses.armored = 3;
-    s = play(s, 'blood-fire');
-    s = play(s, 'draw-blood');
+    s = play(s, 'the-glass-palace');
+    s = play(s, 'chaser');
     expect(foe(s).statuses.armored).toBe(3);
     s = play(s, 'strike');
     expect(foe(s).statuses.armored).toBe(2);
   });
 
-  it('Reflect sends back what a Strike put into its Barrier, not what Blood Fire did', () => {
-    let s = fight(['blood-fire', 'draw-blood', 'strike']);
+  it('Reflect sends back what a Strike put into its Barrier, not what The Glass Palace did', () => {
+    let s = fight(['the-glass-palace', 'chaser', 'strike']);
     foe(s).barrier = 20;
     foe(s).statuses.reflect = 1;
-    s = play(s, 'blood-fire');
+    s = play(s, 'the-glass-palace');
     const hp = hero(s).hp;
-    s = play(s, 'draw-blood');
-    expect(foe(s).barrier).toBe(14);
-    expect(hero(s).hp).toBe(hp - 3); // only Draw Blood's own 3
+    s = play(s, 'chaser');
+    expect(foe(s).barrier).toBe(17);
+    expect(hero(s).hp).toBe(hp - 2); // only Chaser's own 2
     s = play(s, 'strike');
-    expect(hero(s).hp).toBe(hp - 3 - 6);
+    expect(hero(s).hp).toBe(hp - 2 - 6);
   });
 
   it('totems deal the same with or without Might on you and Exposed on the enemy', () => {

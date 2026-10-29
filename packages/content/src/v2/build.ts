@@ -288,6 +288,17 @@ export const pulse = (
 /** this card costs `amount` more (less, if negative) for the rest of the fight */
 export const recost = (amount: number): Op => ({ op: 'recost', amount });
 export const reshuffle: Op = { op: 'reshuffle' };
+
+// --- the Knight's Guard (DECISIONS #415) ---------------------------------------------------------------------------
+/** An attack with a Riposte: against an Open target every hit deals `bonus` more, and the Opening is spent. */
+export const counter = (amount: number, bonus: number, to: Sel = 'target', hits?: number): Op => ({
+  ...(dmg(amount, to, hits) as Extract<Op, { op: 'damage' }>),
+  riposte: bonus,
+});
+/** Riposte: if the target is Open, spend its Opening and do these. */
+export const riposte = (...ops: Op[]): Op => ({ op: 'riposte', ops });
+/** The target (or every enemy...) is left Open: an Opening a card gives, not one earned by Guard. */
+export const leaveOpen = (to: Sel = 'target'): Op => status('opening', 1, to);
 export const returnPlayed: Op = { op: 'returnPlayed' };
 /** a status card's tag (Wound, Haze, Scorch, Muck, Drain): the cards that pay off when you make one look for it */
 export const STATUS_TAG = 'status';
@@ -469,7 +480,8 @@ export function plus(c: CardDef): CardDef {
           o.status !== 'cruelty' &&
           o.status !== 'freeattack' &&
           o.status !== 'reaping' &&
-          o.status !== 'freeethereal'
+          o.status !== 'freeethereal' &&
+          o.status !== 'opening'
         ) {
           changed = true;
           // a big stack (Bleed 5, Primed 6, a plague of 9) gains two: +1 on 5 is barely felt
@@ -487,6 +499,9 @@ export function plus(c: CardDef): CardDef {
         return { ...o, ops: o.ops.map(upOp) };
       case 'command':
         // what the companions do improves like any other
+        return { ...o, ops: o.ops.map(upOp) };
+      case 'riposte':
+        // (the Knight's) what a Riposte gives improves like any other
         return { ...o, ops: o.ops.map(upOp) };
       case 'raise':
         changed = true;

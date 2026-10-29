@@ -313,7 +313,7 @@ describe('a Rift-crossed rare from an event is a choice of three', () => {
   it('the event lays out three different rares from other classes and waits for the pick', () => {
     const broker = EVENTS.find((e) => e.id === 'rift-broker')!;
     const base = { ...eliteRun(0), phase: 'event' as const };
-    const deck = [...base.deck, 'cold-stare', 'dawn-smite'];
+    const deck = [...base.deck, 'giants-stance', 'dawn-smite'];
     const run: RunState = { ...base, deck };
     const ev = broker.build(run);
     const two = ev.options.find((o) => o.label.includes('two cards'))!;

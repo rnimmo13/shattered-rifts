@@ -191,8 +191,8 @@ function addStatus(r: Run, u: Unit, st: StatusId, amount: number): boolean {
     total = Math.max(was, amount);
     if (r.s.active === u.side && amount > was && !r.opening) u.stunFresh = true;
   }
-  // Fortified is on or off: a second source adds nothing (DECISIONS #347)
-  if (st === 'fortified') total = Math.min(total, 1);
+  // Fortified is on or off: a second source adds nothing (DECISIONS #347); so is an Opening, one per enemy (#415)
+  if (st === 'fortified' || st === 'opening') total = Math.min(total, 1);
   // Hangover stops at HANGOVER_MAX, so the cards that grow with it stay in reach (DECISIONS #354)
   if (st === 'hangover') total = Math.min(total, HANGOVER_MAX);
   if (total <= 0) delete u.statuses[st];
@@ -487,11 +487,48 @@ function attackHit(r: Run, a: Act, t: Unit, base: number, single = false): numbe
   }
   // Armored wears thin each time an attack gets through
   if (attacked && lost > 0 && stacks(t, 'armored') > 0) addStatus(r, t, 'armored', -1);
+  // Guard (the Knight, DECISIONS #415): a hit of at least 1 that this hero's Barrier soaked completely leaves the attacker Open. Not
+  // a hit Shielded cancelled or Ghostly capped, not one a Trap stopped (it returned above), not one that carried over from a fallen
+  // companion (that never comes through here)
+  if (
+    attacked &&
+    t.kind === 'hero' &&
+    t.side !== a.actor.side &&
+    amount > 0 &&
+    !capped &&
+    lostHere === 0 &&
+    barrierBefore - t.barrier === amount &&
+    a.actor.hp > 0 &&
+    traitOf(r, t.side)?.openings
+  )
+    openUp(r, a.actor, true);
   // Thorns answer an attack (isAttackAct): a companion that strikes takes the Thorns itself
   const thorns = stacks(t, 'thorns');
-  if (attacked && thorns > 0 && a.actor.hp > 0 && t.side !== a.actor.side)
+  if (attacked && thorns > 0 && a.actor.hp > 0 && t.side !== a.actor.side) {
     applyDamage(r, t, a.actor, thorns, 'direct');
+    // (the Knight's Thornwake answers it; the attacker is the target)
+    if (t.kind === 'hero' && !r.s.winner)
+      fireTriggers(r, r.s.sides[t.side], 'thorns', { target: a.actor, attacker: a.actor });
+  }
   return lost;
+}
+
+/**
+ * An enemy is left Open (the Knight, DECISIONS #415): at most one Opening each, and it lasts until the end of the turn of the side that
+ * can spend it. `earned`: the Guard hero's Barrier did it (the 'opening' Auras and trait answer only that, never a card that opens).
+ */
+function openUp(r: Run, u: Unit, earned: boolean): void {
+  if (u.hp <= 0 || stacks(u, 'opening') > 0) return;
+  addStatus(r, u, 'opening', 1);
+  if (earned) fireTriggers(r, r.s.sides[other(u.side)], 'opening', { target: u });
+}
+
+/** A Riposte spends the target's Opening; returns whether it had one. */
+function spendOpening(r: Run, side: SideState, t: Unit | null): boolean {
+  if (!t || t.hp <= 0 || t.side === side.id || stacks(t, 'opening') <= 0) return false;
+  addStatus(r, t, 'opening', -stacks(t, 'opening'));
+  fireTriggers(r, side, 'riposte', { target: t });
+  return true;
 }
 
 /** Heal a unit by up to `n` (never past its max HP). A hero's side hears of the whole heal, even what full HP wasted. */
@@ -750,9 +787,7 @@ function metricValue(
     case 'attacking': {
       // (of: 'target' by default for this one: it is about the enemy you aim at)
       const who = of === undefined || of === 'target' ? a.target : u;
-      const b = who ? r.db.units[who.def]?.brain : undefined;
-      const mv = b?.kind === 'enemy' && who?.intent ? b.moves[who.intent.move] : undefined;
-      return mv?.effects.some((o) => o.op === 'damage') ? 1 : 0;
+      return who && meansToAttack(r, who) ? 1 : 0;
     }
     case 'x':
       return a.x;
@@ -804,7 +839,22 @@ function metricValue(
       return sideCount(sd, m);
     case 'fullTricks':
       return sd.fullTricks ?? 0;
+    // (the Knight's Guard)
+    case 'opening':
+      return u ? stacks(u, 'opening') : 0;
+    case 'foesOpen':
+      return r.s.sides[other(sd.id)].units.filter((x) => x.hp > 0 && stacks(x, 'opening') > 0)
+        .length;
+    case 'foesAttacking':
+      return r.s.sides[other(sd.id)].units.filter((x) => x.hp > 0 && meansToAttack(r, x)).length;
   }
+}
+
+/** Whether a unit's intent is an attack (a move with damage in it); a hero has no intent, so never. */
+function meansToAttack(r: Run, u: Unit): boolean {
+  const b = r.db.units[u.def]?.brain;
+  const mv = b?.kind === 'enemy' && u.intent ? b.moves[u.intent.move] : undefined;
+  return !!mv?.effects.some((o) => o.op === 'damage');
 }
 
 /** The counters of a side that a card's cost can read (the combat view carries them too). */
@@ -935,6 +985,9 @@ function execOp(r: Run, a: Act, op: Op): void {
         isAttack && lead && side.attacksPlayed === 0 ? 1 + stacks(lead, 'lethality') / 100 : 1;
       const reaping = isAttack && lead ? stacks(lead, 'reaping') > 0 : false;
       const noosed = a.card?.tags?.includes('noose') === true;
+      // Riposte (the Knight): against an Open target the Opening is spent and every hit deals more (DECISIONS #415)
+      const riposte =
+        op.riposte && to === 'target' && spendOpening(r, side, a.target) ? op.riposte : 0;
       for (let i = 0; i < hits; i++) {
         // (a hit that wins the fight still pays its Lifesteal below: HP carries on in a run)
         if (r.s.winner) break;
@@ -970,6 +1023,7 @@ function execOp(r: Run, a: Act, op: Op): void {
                 honed +
                 vigor +
                 deft +
+                riposte +
                 resonanceOf(a) +
                 marrow) *
                 lone *
@@ -1899,6 +1953,10 @@ function execOp(r: Run, a: Act, op: Op): void {
       r.ev.push({ type: 'draw', side: side.id, card: c.id, def: c.card });
       return;
     }
+    // --- the Knight's Guard (DECISIONS #415)
+    case 'riposte':
+      if (spendOpening(r, side, a.target)) runOps(r, a, op.ops);
+      return;
   }
 }
 
@@ -2921,6 +2979,8 @@ function decay(r: Run, side: Side): void {
     if (stacks(u, 'faltering') > 0) addStatus(r, u, 'faltering', -1);
   for (const u of r.s.sides[other(side)].units) {
     if (stacks(u, 'exposed') > 0) addStatus(r, u, 'exposed', -1);
+    // an Opening lasts through the turn of the side that can spend it, and goes as that turn ends (DECISIONS #415)
+    if (stacks(u, 'opening') > 0) addStatus(r, u, 'opening', -stacks(u, 'opening'));
     // Sturdy (Giant's Stance) holds through the other side's whole turn, then it is spent
     if (stacks(u, 'sturdy') > 0) addStatus(r, u, 'sturdy', -stacks(u, 'sturdy'));
   }
@@ -3843,8 +3903,11 @@ export function previewCardDamage(
     const one = (t: Unit | null): number => {
       // (with no target chosen yet, a card that reads "the target's Bleed" reads each enemy's in turn)
       const at = op.to === 'target' && !chosen ? { ...a, target: t } : a;
+      // (Riposte: an Open target takes the bonus on every hit, as the engine spends it)
+      const rip =
+        op.riposte && op.to === 'target' && t && stacks(t, 'opening') > 0 ? op.riposte : 0;
       const n = modifiedDamage(
-        Math.round((amountOf(r, at, op.amount, op.scale, t) + edge + v) * lone),
+        Math.round((amountOf(r, at, op.amount, op.scale, t) + edge + v + rip) * lone),
         hero,
         t,
         def.kind === 'attack',

@@ -94,9 +94,9 @@ describe('the Trickster costing pass', () => {
     expect(canonicalCard('whisper-net')).toBe('false-floor');
   });
 
-  it('Compound Fear still Consumes; Deep Pockets costs what Inner Furnace costs', () => {
+  it('Compound Fear still Consumes; Deep Pockets costs 2, the price of a +1 Mana Aura (DECISIONS #410)', () => {
     expect(db.cards['compound-fear']?.exhaust).toBe(true);
-    expect(db.cards['deep-pockets']?.cost).toBe(db.cards['inner-furnace']?.cost);
+    expect(db.cards['deep-pockets']?.cost).toBe(2);
   });
 
   it('a hand-written upgrade replaces the automatic one (Veil Strike+ deals 9 and applies 1 Exposed)', () => {

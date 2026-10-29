@@ -217,11 +217,12 @@ export function UnitPlates({ items, targetable, hover, preview, heroId, sharp }:
                   return (
                     <span
                       key={id}
-                      className={`chip chip--${info.tone}`}
+                      className={`chip chip--${info.tone}${id === 'opening' ? ' chip--open' : ''}`}
                       {...tipAttrs(statusTip(id, n))}
                     >
                       {id === 'thorns' ? <ThornIcon /> : info.glyph}
-                      <b>{n}</b>
+                      {/* (an Opening is on or off: it reads "Open", not a count, DECISIONS #415) */}
+                      <b>{id === 'opening' ? 'Open' : n}</b>
                     </span>
                   );
                 })}

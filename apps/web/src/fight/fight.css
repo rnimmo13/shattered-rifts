@@ -1322,6 +1322,13 @@
   background: linear-gradient(180deg, rgb(130 24 44 / 0.88), rgb(34 6 12 / 0.92));
   border-color: #ff5a78;
 }
+/* the Knight's Opening on an enemy (DECISIONS #415): a gold ring around the mark, and the word "Open", so it reads without colour */
+.chip--open {
+  color: #fff1c2;
+  background: linear-gradient(180deg, rgb(150 110 24 / 0.92), rgb(46 30 6 / 0.94));
+  border-color: #ffd86a;
+  box-shadow: 0 0 0 1px rgb(255 216 106 / 0.45);
+}
 
 /* the pile boxes are wide enough for their words ("Consumed") at the larger text size */
 .pile {

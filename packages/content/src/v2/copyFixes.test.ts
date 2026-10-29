@@ -151,10 +151,41 @@ describe('Marked for Death (The Hunt)', () => {
     );
   });
 
-  it('a blow that wins the fight still pays what outlasts it (Bloodfeast’s max HP too)', () => {
-    const s0 = fight('knight', ['bloodfeast']);
+  it('a blow that wins the fight still pays what outlasts it (a test card with Feed’s max HP, now Bloodfeast is gone)', () => {
+    const tdb = {
+      ...db,
+      cards: {
+        ...db.cards,
+        'test-feed': {
+          id: 'test-feed',
+          name: 'Test Feed',
+          kind: 'attack' as const,
+          cost: 1,
+          target: 'foe' as const,
+          effects: [
+            {
+              op: 'damage' as const,
+              amount: 10,
+              to: 'target' as const,
+              onKill: [{ op: 'maxHp' as const, amount: 3, to: 'self' as const }],
+            },
+          ],
+        },
+      },
+    };
+    const { state } = createCombat(tdb, {
+      seed: 'feed-test',
+      a: { hero: 'knight', deck: RIFTWALKERS.knight.starter },
+      b: { enemies: ['squire'] },
+    });
+    const s0 = clone(state);
+    s0.sides.a.hand = [{ id: 'F', card: 'test-feed' }];
     s0.sides.b.units[0]!.hp = 5;
-    const s = applyAction(db, s0, playAct(s0, 'bloodfeast')).state;
+    const s = applyAction(tdb, s0, {
+      type: 'play',
+      card: 'F',
+      target: s0.sides.b.units[0]!.id,
+    }).state;
     expect(s.winner).toBe('a');
     expect(s.sides.a.maxHpGained).toBe(3);
   });

@@ -71,6 +71,13 @@ export const TIP_RULES: TipRule[] = [
     when: (v) => !!hero(v)?.statuses.hangover,
   },
   {
+    // (the Knight's Guard, DECISIONS #415)
+    id: 'opening',
+    title: 'Openings',
+    text: 'Your Barrier stopped an attack completely, so that enemy is Open (the gold mark). A Riposte against it, such as Sundering Blow, spends the Opening for its bonus; other attacks leave it. It goes at the end of your turn, and each enemy can only have one.',
+    when: (v) => v.sides.b.units.some((u) => !!u.statuses.opening),
+  },
+  {
     id: 'doom',
     title: 'Fate',
     text: 'Cursing a unit with Fate does nothing until the end of its turn: then, if its HP is at or below its Fate, it dies. Stack it, double it, or hit it to bring the HP down to meet it.',

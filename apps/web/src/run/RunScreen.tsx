@@ -103,6 +103,14 @@ export default function RunScreen() {
     const found = loadActiveRun();
     const saved = found?.run ?? null;
     const slot = found?.id ?? null;
+    // a run saved before its Riftwalker was rebuilt (DECISIONS #415): parseRun mapped its cards and wrote the notice; the fight it was
+    // in starts again (its move log was made under the old rules), and the run is saved without the notice
+    if (saved?.reworkNotice) {
+      const notice = saved.reworkNotice;
+      delete saved.reworkNotice;
+      clearFightLog(duelKey(saved));
+      return { run: saved, slot, loaded: null as RunState | null, notice };
+    }
     // ... and so does a trial that was begun: it is spent, and the run moves on
     const settled = saved ? settleInterrupted(saved) : null;
     if (saved && settled?.notice)
@@ -356,6 +364,13 @@ export default function RunScreen() {
     if (!parsed) {
       say('That file is not a valid run save.');
       return;
+    }
+    // (an imported run of a rebuilt Riftwalker is migrated the same way, and says so: DECISIONS #415)
+    const notice = parsed.reworkNotice;
+    delete parsed.reworkNotice;
+    if (notice) {
+      clearFightLog(duelKey(parsed));
+      say(notice);
     }
     begin(settleInterrupted(parsed).run);
   };

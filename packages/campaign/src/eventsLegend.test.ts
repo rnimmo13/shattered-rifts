@@ -84,7 +84,7 @@ describe('the new events', () => {
   it('each can be met and every option resolves', () => {
     for (const def of LEGEND_EVENTS) {
       if (def.id === 'legend-reliquary') continue;
-      const r = at(def.id, [...RIFTWALKERS.knight.starter, 'cold-stare']);
+      const r = at(def.id, [...RIFTWALKERS.knight.starter, 'giants-stance']);
       for (const o of r.context!.event!.options) {
         const done = chooseEvent(r, o.id);
         expect(done.hp).toBeGreaterThanOrEqual(1);

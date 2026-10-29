@@ -84,6 +84,13 @@ export function validateDb(db: CombatDb): string[] {
       if (o.op === 'recost' && !opts.card) errs.push(`${where}: "recost" only works in a card`);
       // (the Necrobinder copy) a command's ops run with each companion as the actor; a Raise needs a known unit
       if (o.op === 'command') checkOps(`${where}.command`, o.ops, opts);
+      // (the Knight's Riposte reads the target's Opening, so it needs one)
+      if (o.op === 'riposte') {
+        if (!opts.aimed) errs.push(`${where}: "riposte" needs a target`);
+        checkOps(`${where}.riposte`, o.ops, opts);
+      }
+      if (o.op === 'damage' && o.riposte && o.to !== 'target')
+        errs.push(`${where}: a Riposte bonus needs a damage effect aimed at the target`);
       if (o.op === 'raise' && !db.units[o.unit])
         errs.push(`${where}: raises unknown unit "${o.unit}"`);
       if (o.op === 'power') {
@@ -97,9 +104,13 @@ export function validateDb(db: CombatDb): string[] {
             o.when === 'doomFoe' ||
             o.when === 'debuffFoe' ||
             o.when === 'evoke' ||
+            // (the Knight's: the enemy left Open, the one whose Opening was spent, the attacker the Thorns struck)
+            o.when === 'opening' ||
+            o.when === 'riposte' ||
+            o.when === 'thorns' ||
             !!o.pin,
           snare: false,
-          attacker: o.when === 'allyDies' || o.when === 'allyLost',
+          attacker: o.when === 'allyDies' || o.when === 'allyLost' || o.when === 'thorns',
           played: o.when === 'play',
         });
       }

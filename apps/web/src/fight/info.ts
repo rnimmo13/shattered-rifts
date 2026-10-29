@@ -382,6 +382,13 @@ export const STATUS_INFO: Record<
     tone: 'good',
     text: 'Your 0-cost Attacks deal this much more damage.',
   },
+  // (the Knight's Guard, DECISIONS #415)
+  opening: {
+    name: 'Opening',
+    glyph: '⟡',
+    tone: 'bad',
+    text: 'Open: a Knight stopped its attack with her Barrier (or a card opened it). Her next Riposte against it spends this for its bonus. It goes at the end of her turn.',
+  },
 };
 
 /** One glyph per totem, for the totem row. */
@@ -413,6 +420,15 @@ export const KEYWORD_INFO: Record<string, { name: string; text: string }> = {
     text: 'After you play it, it is removed from the rest of this fight.',
   },
   retain: { name: 'Hold', text: 'It stays in your hand when you end your turn.' },
+  // (the Knight's Guard, DECISIONS #415)
+  riposte: {
+    name: 'Riposte',
+    text: 'Against an Open enemy, this gives its Riposte bonus and spends the Opening. Without one, the card still does the rest. Other attacks never spend an Opening.',
+  },
+  guard: {
+    name: 'Guard',
+    text: 'When your Barrier stops an enemy attack hit completely (at least 1 damage, not Shielded or Ghostly), that enemy is left Open until the end of your next turn. One Opening per enemy.',
+  },
   lifesteal: {
     name: 'Lifesteal',
     text: 'You heal this share of the HP the attack takes off. Damage stopped by Barrier does not count.',
@@ -576,6 +592,12 @@ export function keywordsOf(
     if (o.op === 'exhaustCards') add(KEYWORD_INFO['exhaust']);
     if (o.op === 'channel' || o.op === 'evoke' || o.op === 'runeSlots') add(KEYWORD_INFO['rune']);
     if (o.op === 'stance') add(KEYWORD_INFO['stance']);
+    // (the Knight's Riposte, and the Opening it spends)
+    if (o.op === 'riposte' || (o.op === 'damage' && (o as { riposte?: number }).riposte)) {
+      add(KEYWORD_INFO['riposte']);
+      add({ name: STATUS_INFO.opening.name, text: STATUS_INFO.opening.text });
+    }
+    if (o.ops?.some((x) => x.op === 'riposte')) add(KEYWORD_INFO['riposte']);
     if (o.op === 'stars') add(KEYWORD_INFO['stars']);
     if (o.op === 'forge') add(sharpenInfo(weapon));
     if (o.op === 'addCard' && o.card === 'sleeve-knife') add(KEYWORD_INFO['sleeve-knife']);
@@ -601,6 +623,8 @@ export function keywordsOf(
     const hay = text.replace(/\*\*/g, '');
     if (names(hay, 'Sharpen') || names(hay, 'Precision')) add(sharpenInfo(weapon));
     for (const s of Object.values(STATUS_INFO)) if (names(hay, s.name)) add(s);
+    // ("left Open", "If the target is Open": the Knight's Opening, DECISIONS #415)
+    if (/\bOpen\b/.test(hay)) add({ name: STATUS_INFO.opening.name, text: STATUS_INFO.opening.text });
     for (const k of Object.values(KEYWORD_INFO)) if (names(hay, k.name)) add(k);
   }
   // ...and what those explanations name in turn (Fervor ends in "enter Radiant": so Radiant is explained too)

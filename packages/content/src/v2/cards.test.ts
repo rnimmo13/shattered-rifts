@@ -316,10 +316,8 @@ describe('buildPaths (each with room to build a deck; most characters have three
     for (const h of HEROES) expect(RIFTWALKERS[h].buildPaths.length, h).toBeGreaterThanOrEqual(3);
     for (const h of HEROES) {
       const sizes = pathSizes(h);
-      // (Valeria's cards are sorted into build paths again later, DECISIONS #365: her first sort is lopsided)
-      if (h !== 'knight')
-        for (const n of sizes)
-          expect(n, `${h} buildPaths ${sizes.join('/')}`).toBeGreaterThanOrEqual(12);
+      for (const n of sizes)
+        expect(n, `${h} buildPaths ${sizes.join('/')}`).toBeGreaterThanOrEqual(12);
       const own = rewardPool(h).filter(
         (id) => db.cards[id]?.hero === h && db.cards[id]?.rarity !== 'legendary',
       );
@@ -340,7 +338,6 @@ describe('Aura wording (DECISIONS #299, #300)', () => {
   const text = (id: string): string => cardText(db, db.cards[id]!);
   it('an Aura that gives a lasting status once says it lasts the rest of the fight', () => {
     expect(text('unchained')).toBe('Gain 4 Might for the rest of the fight.');
-    expect(text('warlords-oath')).toMatch(/^At the start of your turn: Gain 2 Might\.$/);
   });
   it('an Aura with an ongoing trigger does not, and Rift Resonance answers a reshuffle', () => {
     expect(text('rift-resonance')).toBe(

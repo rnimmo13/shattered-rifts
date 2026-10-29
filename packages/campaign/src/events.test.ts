@@ -63,19 +63,19 @@ const SETUP: Record<string, Partial<RunState>> = {
   },
   // the trades (DECISIONS #256) name cards of your own class: two common Attacks, two common Skills, a rare, a card off the build
   // path the deck follows, an uncommon and the shards to step it up
-  smelter: { deck: [...RIFTWALKERS.knight.starter, 'bulwark-blow', 'twin-cut'] },
+  smelter: { deck: [...RIFTWALKERS.knight.starter, 'steady-blade', 'return-the-blow'] },
   'binders-table': { deck: [...RIFTWALKERS.knight.starter, 'oath-of-iron', 'field-repairs'] },
   'the-fence': { deck: [...RIFTWALKERS.knight.starter, 'bastion-engine'] },
   'the-specialist': {
     deck: [
       ...RIFTWALKERS.knight.starter,
       'oath-of-iron',
-      'cold-stare',
+      'giants-stance',
       'bulwark-blow',
       'field-repairs',
     ],
   },
-  'step-up': { deck: [...RIFTWALKERS.knight.starter, 'rising-fist'], shards: 100 },
+  'step-up': { deck: [...RIFTWALKERS.knight.starter, 'iron-rejoinder'], shards: 100 },
 };
 
 describe('events', () => {
@@ -109,7 +109,7 @@ describe('events', () => {
       // a deck with one non-basic card in it, so every event has something to work with
       const base: RunState = {
         ...first,
-        deck: [...first.deck, 'cold-stare'],
+        deck: [...first.deck, 'giants-stance'],
         ...(SETUP[def.id] ?? {}),
       };
       expect(def.when(base), def.id).toBe(true);
@@ -388,7 +388,7 @@ describe('Rift-crossed and sacrifice events', () => {
     ...eventRun('crossed-steps'),
     hp: 40,
     shards: 100,
-    deck: [...eventRun('crossed-steps').deck, 'cold-stare'],
+    deck: [...eventRun('crossed-steps').deck, 'giants-stance'],
   });
   const run = (r: RunState, ...deal: DealStep[]): RunState => {
     const c = clone(r);
@@ -404,7 +404,7 @@ describe('Rift-crossed and sacrifice events', () => {
     expect(COMBAT_DB.cards[got]!.rarity).toBe('rare');
     const swapped = run(b, { k: 'exchange' });
     expect(swapped.deck).toHaveLength(b.deck.length);
-    expect(swapped.deck).not.toContain('cold-stare');
+    expect(swapped.deck).not.toContain('giants-stance');
     expect(COMBAT_DB.cards[swapped.deck.at(-1) ?? '']?.hero).not.toBe('knight');
   });
 

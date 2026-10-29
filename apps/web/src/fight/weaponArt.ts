@@ -73,7 +73,7 @@ const HERO_WEAPON: Record<string, WeaponId> = {
 
 /**
  * The weapon a hero uses for a card: KP fires the Old Twelve Gauge for gun and shell cards and anything that hits every enemy,
- * and swings the hammer for the rest; Valeria bashes with her shield for a card that hits with her Barrier.
+ * and swings the hammer for the rest; Valeria answers with her shield for a Riposte (a counter that spends an Opening, DECISIONS #415).
  */
 export function weaponFor(hero: string, card?: CardDef | null): WeaponId | null {
   const def = HERO_WEAPON[hero];
@@ -85,7 +85,7 @@ export function weaponFor(hero: string, card?: CardDef | null): WeaponId | null 
     return tags.includes('gun') || tags.includes('shell') || spray ? 'shotgun' : 'hammer';
   }
   if (hero === 'knight')
-    return card.effects.some((o) => o.op === 'damage' && o.scale?.by === 'barrier')
+    return card.effects.some((o) => o.op === 'riposte' || (o.op === 'damage' && !!o.riposte))
       ? 'shield'
       : 'sword';
   return def;

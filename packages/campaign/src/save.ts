@@ -8,6 +8,7 @@ import {
   V2_DECK_RULES,
   canonicalCard,
   canonicalHero,
+  CLASS_REWORKS,
   RETIRED_CARDS,
   isDeckCard,
   MARK_INFO,
@@ -415,6 +416,16 @@ export function parseRun(text: string): RunState | null {
     delete loose.eventFlips;
   // card luck is gone (every run has the same odds): a save that still carries it just drops it
   delete (r as { luck?: unknown }).luck;
+  // a run of a class rebuilt since it was saved (DECISIONS #415): its old cards were mapped above; it is stamped with the rework and
+  // the player is told, and the screen starts any fight that was in progress again (its move log belongs to the old rules)
+  const rework = CLASS_REWORKS[r.character];
+  if (r.reworked !== undefined && !isInt(r.reworked, 0, 99)) return null;
+  if (typeof r.reworkNotice !== 'string') delete r.reworkNotice;
+  if (rework && (r.reworked ?? 0) < rework.version) {
+    r.reworked = rework.version;
+    const name = RIFTWALKERS[r.character].hero.name;
+    r.reworkNotice = `The ${name} was rebuilt (${rework.summary}) since this run was saved. Cards that left the ${name}'s pool became their nearest new cards, and a fight that was under way starts again from its first turn.`;
+  }
   if (!isInt(r.tier, 1, 99) || !isInt(r.stage, 1, FINAL_STAGE)) return null;
   if (!isInt(r.maxResolve, 1, 9) || !isInt(r.resolve, 0, r.maxResolve)) return null;
   if (!isInt(r.shards, 0, 1_000_000)) return null;

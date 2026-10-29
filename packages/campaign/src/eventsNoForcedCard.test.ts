@@ -39,12 +39,12 @@ function standing(seed: string): RunState {
     deck: [
       ...RIFTWALKERS.knight.starter,
       'bulwark-blow',
-      'twin-cut',
+      'return-the-blow',
       'oath-of-iron',
       'ember-ward',
       'bastion-engine',
-      'cold-stare',
-      'scorching-blow',
+      'giants-stance',
+      'counterstroke',
     ],
     map: {
       ...base.map,

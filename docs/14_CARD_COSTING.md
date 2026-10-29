@@ -360,3 +360,39 @@ a +60% jump: only on cards with nothing else to grow, and never on a card that m
 
 When a baseline card's numbers change, or a new keyword or status is added, add its rate here with one reference card. If a rate
 stops fitting most of the cards that use it, change the rate, not the cards.
+
+---
+
+## 14. Legacy rates (the archived baseline pools)
+
+The five baseline classes this guide was built from were rebuilt on 2026-10-29 (docs/BASE_CLASS_REWORKS.md, DECISIONS #415-#420). Their
+old pools are frozen in `reviews/balance-baselines/2026-10-29-pre-identity-reworks/`, with the guide as it was. The general rates
+(damage, Barrier, draw, Mana, Exposed, Faltering, Bleed, Fate, Plating, Might, Primed, Thorns, Consume...) still hold for every class.
+The rates that only described a rebuilt class's old engine are **legacy**: use them to read the archive, never to price the new
+resources. They are marked *(legacy)* in the tables above as each class is rebuilt; the new rates are in §15.
+
+## 15. Class identity rework rates (2026-10-29)
+
+These are hypotheses made by hand for the rebuilt classes, from how often a thing happens in a four-to-six-turn fight. A cap or a
+condition is priced at how often it is really met, never as a free multiplier. Gross output and the cost of building a resource are
+priced separately: a producer card is priced for what it makes, a consumer for what it does with it, and the package is checked as a
+whole (each class's ledger in `docs/reworks/`).
+
+### The Knight: Guard, Riposte, Thorns (DECISIONS #415)
+
+An **Opening** is put on an enemy when her Barrier stops one of its attack hits completely (at least 1 damage; not a Shielded,
+Ghostly, cancelled or overflow hit). One per enemy; it goes at the end of her next turn.
+
+| Thing | Rate | Why |
+|---|---|---|
+| A **Riposte** bonus (+N damage, or "Riposte: ...") | **0.55 x** its value | An Opening is there on about half her turns in an ordinary Knight deck (the starter blocks a whole hit on about half the enemy turns that attack), two in three in a deck built for Guard. Only one Riposte a turn finds it on a single enemy, so a second Riposte card the same turn is priced at its base. Reference: Return the Blow (1: 7, Riposte +5) = 9.75. |
+| A card that **leaves an enemy Open** | **4** | It makes one Riposte certain this turn: a typical bonus of ~6, times ~0.7 that you hold a Riposte card to spend it. 3 in a Thorns deck (fewer Ripostes). Draw Them In (1: 4 Barrier, open the target) = 8.8. |
+| "**Whenever you earn an Opening**" (an Aura or the trait) | **2.6** answers over four turns | 0.65 a turn in a Guard deck; only Guard earns one, a card that opens an enemy does not, so these never feed each other. Bastion Engine (8 to the opened enemy) = 20.8. |
+| "**Whenever you spend an Opening**" | **2.2** answers over four turns | about one Riposte that lands every other turn. Exploit the Gap = 14.5. |
+| "**Whenever your Thorns strike**" (once a turn) | **2.8** answers over four turns | a Thorns deck has Thorns up on about 70% of enemy turns. Thornwake = 15.1. |
+| Thorns you have on your own turn (for "+N per Thorns") | **~2.5** stacks in a Thorns deck | Thorns are temporary and only there after a Thorns card that turn. Briar Lash (5 + 2 per Thorns) = 10. |
+| "If an enemy means to attack" | **x0.7** | most Tier I intents are attacks. |
+
+The trait, **Hold and Answer** (6 Barrier at the start, Guard, and 3 Barrier the first time each turn an Opening is earned), prices at
+7.2 + 2.5 earned Openings x 3.6 = ~16, plus what Guard lets her Riposte cards do (about +5 in the starter, through Sundering Blow): ~21,
+level with the middle of the roster. It no longer starts with Plating.

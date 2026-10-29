@@ -6,6 +6,7 @@
 
 import { nextInt, seedRng, shuffle, type RngState } from '@sr/combat';
 import {
+  CLASS_REWORKS,
   COMBAT_DB,
   RIFTWALKERS,
   V2_DECK_RULES,
@@ -170,8 +171,10 @@ export function newRun(hero: HeroId, seed: string, difficulty: Difficulty = 'nor
   const map = generateStageMap(rng, 1, stageRealms[0] as StageRealm, hero);
   const rw = RIFTWALKERS[hero]; // throws on an unknown hero
   need(rw, `Unknown Riftwalker ${hero}`);
+  const rework = CLASS_REWORKS[hero]?.version;
   const run: RunState = {
     v: 2,
+    ...(rework ? { reworked: rework } : {}),
     seed,
     character: hero,
     difficulty,

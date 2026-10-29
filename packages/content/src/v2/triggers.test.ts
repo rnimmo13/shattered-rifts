@@ -35,13 +35,43 @@ describe('Powers that react to your own effects', () => {
     expect(hero(s).statuses.might).toBe(might + 1);
   });
 
-  it('"Whenever you gain Barrier" (Bastion Engine) hits a random enemy for 5', () => {
-    let s = fight('knight', ['bastion-engine', 'oath-of-iron']);
-    s = play(s, 'T0');
+  it('"Whenever you gain Barrier" hits a random enemy (a test Aura: Bastion Engine answers Openings now, DECISIONS #415)', () => {
+    const tdb = {
+      ...db,
+      cards: {
+        ...db.cards,
+        'test-bastion': {
+          id: 'test-bastion',
+          name: 'Test Bastion',
+          kind: 'power' as const,
+          cost: 0,
+          target: 'none' as const,
+          effects: [
+            {
+              op: 'power' as const,
+              when: 'barrier' as const,
+              ops: [{ op: 'damage' as const, amount: 5, to: 'randomFoe' as const }],
+            },
+          ],
+        },
+      },
+    };
+    const { state } = createCombat(tdb, {
+      seed: 'trig-barrier',
+      a: { hero: 'knight', deck: RIFTWALKERS.knight.starter },
+      b: { enemies: ['squire'] },
+    });
+    let s = clone(state);
+    s.sides.a.hand = [
+      { id: 'T0', card: 'test-bastion' },
+      { id: 'T1', card: 'oath-of-iron' },
+    ];
+    s.sides.a.mana = 9;
+    s = applyAction(tdb, s, { type: 'play', card: 'T0' }).state;
     const total = (x: typeof s): number =>
       x.sides.b.units.reduce((n, u) => n + u.hp + u.barrier, 0);
     const hp = total(s);
-    s = play(s, 'T1');
+    s = applyAction(tdb, s, { type: 'play', card: 'T1' }).state;
     expect(hero(s).barrier).toBeGreaterThanOrEqual(8);
     expect(total(s)).toBe(hp - 5);
   });

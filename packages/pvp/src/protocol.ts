@@ -69,7 +69,9 @@ export interface Entry {
 // (31: Lying in Wait and Grave Chill toned down, the Full Trick grows, Sharpen carries over to a new weapon copy, the gun's is Precision, Grave Chill Raise 2, #398-401)
 // (32: Grave Chill 3 Fate a death, the Full Trick starts at 3, a summon card can be played with no room for all of it, #403-405)
 // (33: Last Call and The Long Memory are 2-cost Auras, #410)
-export const RULES_VERSION = 33;
+// (34: the trait pass #411-413, and the class identity reworks: the Knight's Guard, Riposte and Thorns #415, then the Assassin, Spellblade,
+// Shaman and Monk #416-#419)
+export const RULES_VERSION = 34;
 
 /** Who you are playing, before a game starts: their name and badges, not their deck or Riftwalker. */
 export type FoeCard = Pick<Entry, 'name' | 'trophies' | 'rank'>;

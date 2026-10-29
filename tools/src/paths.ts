@@ -19,11 +19,11 @@ const POOLS: Record<HeroId, string> = {
 };
 /** which pool heading is which build path (a heading that matches nothing here carries on with the build path before it; null = no build path) */
 const HEADS: Record<HeroId, [RegExp, number | null][]> = {
+  // (the identity rework, DECISIONS #415)
   knight: [
-    [/bulwark/i, 0],
-    [/might/i, 1],
-    [/consume/i, 2],
-    [/blood/i, 3],
+    [/guard/i, 0],
+    [/riposte/i, 1],
+    [/thorns/i, 2],
     [/basics|glue/i, null],
   ],
   engineer: [

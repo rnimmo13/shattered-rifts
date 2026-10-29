@@ -202,7 +202,7 @@ describe('what each effect does', () => {
     const fresh = newRun('knight', 'old-kit', 'normal');
     for (const context of [
       { nodeId: '', kits: [{ id: 'a', leans: 'Bulwark', deck: [], added: [], removed: [] }] },
-      { nodeId: '', starterPick: { options: ['twin-cut', 'challenge'], count: 2 } },
+      { nodeId: '', starterPick: { options: ['return-the-blow', 'challenge'], count: 2 } },
     ]) {
       const old = { ...(JSON.parse(serializeRun(fresh)) as object), phase: 'kit', context, deck: [] };
       const back = parseRun(JSON.stringify(old));

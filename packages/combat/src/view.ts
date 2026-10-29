@@ -349,6 +349,8 @@ const STATUS_NAME: Record<string, string> = {
   echoing: 'Echo',
   boosted: 'Resound',
   freepower: 'Free Aura',
+  // (the Knight's Guard)
+  opening: 'Opening',
 };
 const sname = (s: string): string => STATUS_NAME[s] ?? cap(s);
 /** a card kind by its player-facing name, for effects that pick cards by kind */
@@ -518,6 +520,13 @@ const METRIC_WORDS: Record<Metric, { per: string; equal: string }> = {
   },
   manaSpent: { per: 'Mana spent this turn', equal: 'the Mana you have spent this turn' },
   attacking: { per: 'attack it means', equal: 'whether it means to attack' },
+  // (the Knight's Guard)
+  opening: { per: 'Opening', equal: 'whether it is Open' },
+  foesOpen: { per: 'Open enemy', equal: 'the number of Open enemies' },
+  foesAttacking: {
+    per: 'enemy that means to attack',
+    equal: 'the number of enemies that mean to attack',
+  },
 };
 const UNIT_METRICS: readonly Metric[] = [
   'barrier',
@@ -538,6 +547,7 @@ const UNIT_METRICS: readonly Metric[] = [
   'radiant',
   'hitsTaken',
   'maxHp',
+  'opening',
 ];
 
 /** Text for a number that may depend on the board: "6", "6 (+2 per Barrier)" or "equal to your Barrier". */
@@ -649,6 +659,10 @@ const WHEN_TEXT: Record<string, string> = {
   allyHurt: 'Whenever one of your companions loses HP',
   evoke: 'Whenever a totem awakens',
   allSuits: 'Whenever you make a Full Trick (all four suits this turn)',
+  // (the Knight's Guard)
+  opening: 'Whenever you earn an Opening',
+  riposte: 'Whenever you spend an Opening',
+  thorns: 'Whenever your Thorns strike an attacker',
 };
 
 const ORDINAL = ['zeroth', 'first', 'second', 'third', 'fourth', 'fifth', 'sixth'];
@@ -695,6 +709,11 @@ function whenText(o: Extract<Op, { op: 'when' }>, db?: CombatDb): string {
     return 'you have cursed an enemy with Fate this turn';
   if (o.by === 'exhaustedNow' && lo !== undefined && hi === undefined)
     return `${lo} or more cards were consumed this way`;
+  // (the Knight's Guard)
+  if (o.by === 'opening' && (lo ?? 0) >= 1 && o.of === 'target') return 'the target is Open';
+  if (o.by === 'foesOpen' && (lo ?? 0) >= 1 && hi === undefined)
+    return lo === 1 ? 'an enemy is Open' : `${lo} or more enemies are Open`;
+  if (o.by === 'thorns' && (lo ?? 0) >= 1 && hi === undefined && !o.of) return 'you have Thorns';
   const w = METRIC_WORDS[o.by].equal;
   if (lo !== undefined && hi !== undefined) return `${w} is ${lo === hi ? lo : `${lo}-${hi}`}`;
   if (lo !== undefined) return `${w} is ${lo} or more`;
@@ -744,7 +763,10 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
       const kill =
         (o.onKill
           ? ` If this is fatal: ${o.onKill.map((x) => opText(db, x, who)).join(' ')}`
-          : '') + (o.repeatOnKill ? ' Repeat this for each enemy it kills.' : '');
+          : '') +
+        (o.repeatOnKill ? ' Repeat this for each enemy it kills.' : '') +
+        // (Riposte, the Knight's: DECISIONS #415)
+        (o.riposte ? ` Riposte: +${o.riposte} damage${(o.hits ?? 1) > 1 ? ' each hit' : ''}.` : '');
       // (each hit at a random enemy finds its own: "to a random enemy 3 times", not "3 times to a random enemy")
       const randomEach = o.to === 'randomFoe' && times !== '';
       const tail = randomEach ? `${who[o.to]}${times}` : `${times}${who[o.to]}`;
@@ -816,6 +838,22 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
               : who[o.to].replace(/^ to /, '') || 'the target';
         const a = amountText(o.amount, o.scale);
         return `Curse ${noun} with ${a.equal ? `Fate equal to ${a.num}` : `${a.num} Fate`}.`;
+      }
+      // an Opening (the Knight's): "The target is left Open." (DECISIONS #415)
+      if (o.status === 'opening' && o.amount > 0 && !o.scale) {
+        const whom =
+          o.to === 'target'
+            ? 'The target is'
+            : o.to === 'allFoes'
+              ? 'Every enemy is'
+              : o.to === 'front'
+                ? 'The front enemy is'
+                : o.to === 'attacker'
+                  ? 'The attacker is'
+                  : o.to === 'randomFoe'
+                    ? 'A random enemy is'
+                    : 'It is';
+        return `${whom} left Open.`;
       }
       // a Stun is counted in turns (DECISIONS #310): "Stun the attacker for 2 turns."
       if (o.status === 'stunned' && o.amount > 0 && !o.scale) {
@@ -1024,15 +1062,22 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
                             'The first time each turn ',
                           )
                         : (WHEN_TEXT[o.when] ?? o.when);
-      const when =
-        o.times && !nextTurn
+      // ("the next time you earn an Opening": an answer that happens once, not a number of turns)
+      const once1 = o.times === 1 && o.when !== 'turnStart' && o.when !== 'turnEnd';
+      const when = once1
+        ? base.replace(/^Whenever /, 'The next time ')
+        : o.times && !nextTurn
           ? `For the next ${o.times} turn${o.times === 1 ? '' : 's'}, ${base.charAt(0).toLowerCase()}${base.slice(1)}`
           : base;
       // (an Aura that answers something done to an enemy aims at that enemy; an awakening's Aura strikes each enemy the totem struck)
       const inner =
         o.when === 'evoke'
           ? { ...who, target: ' to each enemy it struck' }
-          : o.when === 'doomFoe' || o.when === 'debuffFoe'
+          : o.when === 'doomFoe' ||
+              o.when === 'debuffFoe' ||
+              o.when === 'opening' ||
+              o.when === 'riposte' ||
+              o.when === 'thorns'
             ? { ...who, target: ' to that enemy' }
             : who;
       return `${o.temp ? `This turn, ${when.charAt(0).toLowerCase()}${when.slice(1)}` : when}: ${o.ops.map((x) => opText(db, x, inner)).join(' ')}`;
@@ -1310,6 +1355,11 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
       return 'Shuffle your hand and discard pile into your draw pile.';
     case 'returnPlayed':
       return 'Return it to your hand.';
+    // (the Knight's Guard)
+    case 'riposte': {
+      const t = sayRepeats(o.ops.map((x) => opText(db, x, who))).join(' ');
+      return `Riposte: ${t.charAt(0).toLowerCase()}${t.slice(1)}`;
+    }
   }
 }
 

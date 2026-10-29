@@ -1,454 +1,467 @@
-// Valeria, the knight (Aurelion). No companions. She is the Slay the Spire 2 Ironclad on purpose, for now (Robert, 2026-10-28:
-// "our knight should more closely resemble the ironclad with some different mechanics"; "just add all of those"; DECISIONS #364, #366):
-// the same cards under original names, one for every card of the Ironclad's (DECISIONS #367: "i want this class as a reference point for
-// balancing other classes"), and nothing else: Thorns, Traps and her own older cards are gone. The only Ironclad cards missing are
-// Tank and Demonic Shield (they need a second player) and Break (an event card in their game). Each card's comment names the Ironclad
-// card it imitates; numbers and rarities are the Ironclad's (StS2 v0.103.2) unless a comment says why not.
+// Valeria, the knight (Aurelion). No companions. Rebuilt 2026-10-29 (docs/BASE_CLASS_REWORKS.md §4, DECISIONS #415): a disciplined
+// armoured knight who meets attacks, makes openings and punishes contact. Her Ironclad copy (DECISIONS #364-367) is archived in
+// reviews/balance-baselines/2026-10-29-pre-identity-reworks/.
 //
-// Build paths are hidden for now (DECISIONS #365) and the headings below are only a first sort, to be redone when they come back:
-//   Bulwark - Barrier that scales, and hits for the Barrier you hold
-//   Might   - Might (Strength) and cards that hit many times, so it pays; Exposed as the setup
-//   Consume - Consume your own cards for value (draw, Barrier, damage); Corruption, Dark Embrace, Fiend Fire
-//   Blood   - pay HP for Mana, cards and Might; payoffs for losing it
-// Numbers assume 3 Mana and a 5-card hand.
+// Guard (her trait, `HeroTrait.openings`): an enemy attack hit her Barrier stops completely leaves the attacker Open (one Opening an
+// enemy, until the end of her next turn). A Riposte (`counter` damage or the `riposte` op) spends the target's Opening for a bonus;
+// ordinary attacks never spend it. Some cards leave an enemy Open themselves (`leaveOpen`); only a Guard block "earns" one (the
+// 'opening' trigger). Thorns are the temporary retaliation they always were (`statusTheirs`), with their own payoffs.
+//
+// Three strategies, plus glue (build paths stay hidden, DECISIONS #365):
+//   Guard   - precise defence: Barrier that answers attacks, and pays for every Opening earned
+//   Riposte - heavy counters that spend Openings, and ways to open enemies that will not attack
+//   Thorns  - retaliation: Thorns cards and the payoffs that read them
+// Costs and points are in docs/reworks/KNIGHT.md (priced with docs/14_CARD_COSTING.md, Openings at the §15 rates).
 
 import type { CardDef } from '@sr/combat';
 import {
   barrier,
-  copyPlayed,
-  copySelf,
-  discoverOp,
+  counter,
   dmg,
-  doubleSt,
   draw,
-  drawLock,
-  drawUntil,
-  exhaustN,
-  exhaustTop,
-  fetchCards,
-  forge,
-  heal,
-  lose,
-  mana,
-  manaLock,
-  maxHpUp,
+  drawNext,
+  leaveOpen,
+  manaNext,
   on,
-  onKill,
   per,
-  playPile,
   pool,
+  riposte,
   scaled,
   status,
   statusTheirs,
-  transformHand,
   upgradeOp,
   when,
 } from '../build';
 
 const m = pool('knight', 'aurelion');
+/** Thorns until the enemy turn is over (Ember Ward's) */
+const thornsTurn = (n: number) => statusTheirs('thorns', n, 'self');
 
 export const KNIGHT: CardDef[] = [
   // --- basics ---
-  // (the Bash of the deck: a 2-Mana hit that sets up Exposed)
-  m('basic', 'sundering-blow', 'Sundering Blow', 'attack', 2, 'foe', [
-    dmg(8),
-    status('exposed', 2, 'target'),
-  ]),
+  // (her signature: a strike that is good on its own and better as a counter)
+  m(
+    'basic',
+    'sundering-blow',
+    'Sundering Blow',
+    'attack',
+    2,
+    'foe',
+    [counter(9, 6), status('exposed', 1, 'target')],
+    { up: { effects: [counter(13, 6), status('exposed', 1, 'target')] } },
+  ),
+  m('basic', 'briarplate', 'Briarplate', 'skill', 1, 'none', [barrier(5), thornsTurn(2)], {
+    up: { effects: [barrier(8), thornsTurn(2)] },
+  }),
 
-  // --- Bulwark ---
-  // (Body Slam: your Barrier, as damage)
-  m('common', 'bulwark-blow', 'Bulwark Blow', 'attack', 1, 'foe', [
-    scaled(dmg(0), per('barrier', 1)),
-  ]),
-  // (Shrug It Off)
-  m('common', 'oath-of-iron', 'Oath of Iron', 'skill', 1, 'none', [barrier(8), draw(1)]),
-  // (Armaments: a little Barrier, and one card in your hand is upgraded for the fight)
+  // --- glue (kept from before the rework: general defence, draw and Exposed) ---
+  m('common', 'oath-of-iron', 'Oath of Iron', 'skill', 1, 'none', [barrier(8), draw(1)], {
+    up: { effects: [barrier(11), draw(1)] },
+  }),
+  m('common', 'dawn-smite', 'Dawn Smite', 'attack', 1, 'foe', [dmg(5), barrier(5)], {
+    up: { effects: [dmg(8), barrier(5)] },
+  }),
+  m('common', 'hilt-strike', 'Hilt Strike', 'attack', 1, 'foe', [dmg(9), draw(1)], {
+    up: { effects: [dmg(12), draw(1)] },
+  }),
   m('common', 'field-repairs', 'Field Repairs', 'skill', 1, 'none', [
     barrier(5),
     upgradeOp('random'),
   ]),
-  // (Evil Eye)
-  m('uncommon', 'cold-stare', 'Cold Stare', 'skill', 1, 'none', [
-    barrier(8),
-    when('exhaustedTurn', { atLeast: 1 }, [barrier(8)]),
-  ]),
-  // (Taunt)
-  m('uncommon', 'provoke', 'Provoke', 'skill', 1, 'foe', [
-    barrier(7),
-    status('exposed', 1, 'target'),
-  ]),
-  // (Stone Armor)
-  m('uncommon', 'stoneskin', 'Stoneskin', 'power', 1, 'none', [status('plating', 4)], {
-    up: { effects: [status('plating', 6)] },
+  m(
+    'common',
+    'clarion-clap',
+    'Clarion Clap',
+    'attack',
+    1,
+    'none',
+    [dmg(4, 'allFoes'), status('exposed', 1, 'allFoes')],
+    { up: { effects: [dmg(7, 'allFoes'), status('exposed', 1, 'allFoes')] } },
+  ),
+  m('common', 'squires-drill', "Squire's Drill", 'skill', 1, 'none', [draw(2), barrier(2)], {
+    up: { effects: [draw(2), barrier(5)] },
   }),
-  // (Colossus: Exposed enemies hit you half as hard until your next turn)
-  m('uncommon', 'giants-stance', "Giant's Stance", 'skill', 1, 'none', [
-    barrier(5),
-    status('sturdy', 1),
-  ]),
-  // (Juggernaut)
-  m('rare', 'bastion-engine', 'Bastion Engine', 'power', 2, 'none', [
-    on('barrier', [dmg(5, 'randomFoe')]),
-  ]),
-  // (Impervious)
-  m('rare', 'immovable-oath', 'Immovable Oath', 'skill', 2, 'none', [barrier(30)], {
-    exhaust: true,
+  m('common', 'rebuke', 'Rebuke', 'attack', 1, 'foe', [dmg(7), status('faltering', 1, 'target')], {
+    up: { effects: [dmg(10), status('faltering', 1, 'target')] },
   }),
-  // (Barricade) Fortified is huge: 3 Mana, 2 upgraded (DECISIONS #349)
-  m('rare', 'unbroken-wall', 'Unbroken Wall', 'power', 3, 'none', [status('fortified', 1)], {
-    up: { cost: 2 },
-  }),
-  // (Unmovable)
-  m('rare', 'stone-stance', 'Stone Stance', 'power', 2, 'none', [status('unmovable', 1)]),
-  // (Flame Barrier: hits back for 4 through the enemy turn, as Thorns that then wear off)
-  m('uncommon', 'ember-ward', 'Ember Ward', 'skill', 2, 'none', [
-    barrier(12),
-    statusTheirs('thorns', 4, 'self'),
-  ]),
+  m(
+    'uncommon',
+    'provoke',
+    'Provoke',
+    'skill',
+    1,
+    'foe',
+    [barrier(7), status('exposed', 1, 'target')],
+    {
+      up: { effects: [barrier(10), status('exposed', 1, 'target')] },
+    },
+  ),
+  m(
+    'uncommon',
+    'clang-of-steel',
+    'Clang of Steel',
+    'skill',
+    1,
+    'none',
+    [barrier(5), status('exposed', 1, 'allFoes')],
+    { up: { effects: [barrier(8), status('exposed', 1, 'allFoes')] } },
+  ),
+  m(
+    'uncommon',
+    'sweeping-guard',
+    'Sweeping Guard',
+    'attack',
+    2,
+    'none',
+    [dmg(9, 'allFoes'), barrier(6)],
+    { up: { effects: [dmg(11, 'allFoes'), barrier(8)] } },
+  ),
+  m(
+    'uncommon',
+    'rallying-cry',
+    'Rallying Cry',
+    'skill',
+    1,
+    'none',
+    // (the Mana is next turn's: a card that paid itself back now could be played again and again while an enemy is Open)
+    [draw(2), barrier(2), when('foesOpen', { atLeast: 1 }, [manaNext(1)])],
+    { up: { effects: [draw(3), barrier(2), when('foesOpen', { atLeast: 1 }, [manaNext(1)])] } },
+  ),
 
-  // --- Might ---
-  // (Twin Strike)
-  m('common', 'twin-cut', 'Twin Cut', 'attack', 1, 'foe', [dmg(5, 'target', 2)]),
-  // (Setup Strike)
-  m('common', 'braced-strike', 'Braced Strike', 'attack', 1, 'foe', [
-    dmg(7),
-    status('might', 2, 'self', true),
-  ]),
-  // (Sword Boomerang)
-  m('common', 'cleaving-throws', 'Cleaving Throws', 'attack', 1, 'none', [dmg(3, 'randomFoe', 3)]),
-  // (Pommel Strike)
-  m('common', 'hilt-strike', 'Hilt Strike', 'attack', 1, 'foe', [dmg(9), draw(1)]),
-  // (Thunderclap)
-  m('common', 'clarion-clap', 'Clarion Clap', 'attack', 1, 'none', [
-    dmg(4, 'allFoes'),
-    status('exposed', 1, 'allFoes'),
-  ]),
-  // (Tremble)
-  m('common', 'rattle', 'Rattle', 'skill', 1, 'foe', [status('exposed', 3, 'target')], {
-    exhaust: true,
+  // --- Guard: precise defence ---
+  m(
+    'common',
+    'measured-guard',
+    'Measured Guard',
+    'skill',
+    1,
+    'none',
+    [barrier(6), on('opening', [draw(1)], { times: 1 })],
+    { up: { effects: [barrier(9), on('opening', [draw(1)], { times: 1 })] } },
+  ),
+  m('common', 'shield-wall', 'Shield Wall', 'skill', 2, 'none', [barrier(14), drawNext(1)], {
+    up: { effects: [barrier(18), drawNext(1)] },
   }),
-  // (Perfected Strike: every card with Strike in its name, in the whole deck)
-  m('common', 'mastered-strike', 'Mastered Strike', 'attack', 2, 'foe', [
-    scaled(dmg(6), per('strikes', 2)),
-  ]),
-  // (Inflame)
-  m('uncommon', 'steel-resolve', 'Steel Resolve', 'power', 1, 'none', [status('might', 2)]),
-  // (Fight Me!)
+  m(
+    'common',
+    'guarded-advance',
+    'Guarded Advance',
+    'attack',
+    1,
+    'foe',
+    [counter(5, 3), barrier(4)],
+    {
+      up: { effects: [counter(8, 3), barrier(4)] },
+    },
+  ),
+  m(
+    'uncommon',
+    'stoneskin',
+    'Stoneskin',
+    'power',
+    1,
+    'none',
+    [on('turnEnd', [barrier(2)]), on('opening', [barrier(2)])],
+    { up: { effects: [on('turnEnd', [barrier(3)]), on('opening', [barrier(2)])] } },
+  ),
+  m(
+    'uncommon',
+    'giants-stance',
+    "Giant's Stance",
+    'skill',
+    1,
+    'foe',
+    [
+      barrier(6),
+      when('attacking', { atLeast: 1, of: 'target' }, [status('faltering', 2, 'target')]),
+    ],
+    {
+      up: {
+        effects: [
+          barrier(9),
+          when('attacking', { atLeast: 1, of: 'target' }, [status('faltering', 2, 'target')]),
+        ],
+      },
+    },
+  ),
+  m(
+    'uncommon',
+    'watchful-eye',
+    'Watchful Eye',
+    'skill',
+    1,
+    'none',
+    [barrier(6), when('foesOpen', { atLeast: 1 }, [draw(2)])],
+    { up: { effects: [barrier(9), when('foesOpen', { atLeast: 1 }, [draw(2)])] } },
+  ),
+  m(
+    'uncommon',
+    'sentinels-patience',
+    "Sentinel's Patience",
+    'skill',
+    1,
+    'none',
+    [scaled(barrier(6), per('foesAttacking', 2))],
+    { retain: true, up: { effects: [scaled(barrier(9), per('foesAttacking', 2))] } },
+  ),
+  m(
+    'uncommon',
+    'patient-guard',
+    'Patient Guard',
+    'skill',
+    1,
+    'none',
+    [barrier(5), status('guarded', 5)],
+    {
+      retain: true,
+      up: { effects: [barrier(7), status('guarded', 6)] },
+    },
+  ),
+  m('rare', 'immovable-oath', 'Immovable Oath', 'skill', 2, 'none', [barrier(26)], {
+    exhaust: true,
+    up: { effects: [barrier(34)] },
+  }),
+  m(
+    'rare',
+    'bastion-engine',
+    'Bastion Engine',
+    'power',
+    1,
+    'none',
+    [on('opening', [dmg(8, 'target')])],
+    { up: { effects: [on('opening', [dmg(10, 'target')])] } },
+  ),
+  // (an Opening earned by Guard, once a turn, pays next turn: one a card gives does not, so Warlord's Oath cannot feed it)
+  m(
+    'uncommon',
+    'iron-cadence',
+    'Iron Cadence',
+    'power',
+    1,
+    'none',
+    [on('opening', [manaNext(1), barrier(2)], { once: true })],
+    { up: { innate: true } },
+  ),
+  m(
+    'rare',
+    'aegis-eternal',
+    'Aegis Eternal',
+    'skill',
+    3,
+    'none',
+    [barrier(22), status('blur', 1)],
+    {
+      up: { effects: [barrier(29), status('blur', 1)] },
+    },
+  ),
+
+  // --- Riposte: heavy counters, and ways to open an enemy ---
+  m('common', 'return-the-blow', 'Return the Blow', 'attack', 1, 'foe', [counter(7, 5)], {
+    up: { effects: [counter(10, 5)] },
+  }),
+  m('common', 'draw-them-in', 'Draw Them In', 'skill', 1, 'foe', [barrier(4), leaveOpen()], {
+    up: { effects: [barrier(7), leaveOpen()] },
+  }),
+  m(
+    'common',
+    'steady-blade',
+    'Steady Blade',
+    'attack',
+    1,
+    'foe',
+    [dmg(8), when('opening', { atLeast: 1, of: 'target' }, [draw(1)])],
+    { up: { effects: [dmg(11), when('opening', { atLeast: 1, of: 'target' }, [draw(1)])] } },
+  ),
+  m('common', 'counterstroke', 'Counterstroke', 'attack', 2, 'foe', [counter(14, 7)], {
+    up: { effects: [counter(19, 7)] },
+  }),
+  m('common', 'shoulder-check', 'Shoulder Check', 'attack', 0, 'foe', [dmg(4), riposte(draw(1))], {
+    up: { effects: [dmg(6), riposte(draw(1))] },
+  }),
+  m('uncommon', 'bulwark-blow', 'Bulwark Blow', 'attack', 1, 'foe', [counter(4, 12)], {
+    up: { effects: [counter(7, 12)] },
+  }),
+  m(
+    'uncommon',
+    'iron-rejoinder',
+    'Iron Rejoinder',
+    'attack',
+    2,
+    'foe',
+    [riposte(barrier(7)), dmg(15)],
+    {
+      up: { effects: [riposte(barrier(7)), dmg(20)] },
+    },
+  ),
+  m(
+    'uncommon',
+    'break-guard',
+    'Break Guard',
+    'attack',
+    1,
+    'foe',
+    [dmg(8), riposte(status('exposed', 2, 'target'))],
+    {
+      up: { effects: [dmg(11), riposte(status('exposed', 2, 'target'))] },
+    },
+  ),
+  m('uncommon', 'breaking-point', 'Breaking Point', 'attack', 3, 'foe', [counter(22, 12)], {
+    up: { effects: [counter(30, 12)] },
+  }),
   m(
     'uncommon',
     'challenge',
     'Challenge',
-    'attack',
-    2,
-    'foe',
-    [dmg(5, 'target', 2), status('might', 2), status('might', 1, 'target')],
-    // (the enemy's Might stays 1: more Might for you is the upgrade)
-    { up: { effects: [dmg(5, 'target', 2), status('might', 3), status('might', 1, 'target')] } },
-  ),
-  // (Dominate)
-  m(
-    'uncommon',
-    'intimidate',
-    'Intimidate',
     'skill',
     1,
     'foe',
-    [status('exposed', 1, 'target'), scaled(status('might', 0), per('exposed', 1, 'target'))],
-    { exhaust: true },
+    [leaveOpen(), statusTheirs('sapped', 3, 'target'), barrier(4)],
+    { up: { effects: [leaveOpen(), statusTheirs('sapped', 3, 'target'), barrier(7)] } },
   ),
-  // (Dismantle: it hits twice against an Exposed enemy)
-  m('uncommon', 'break-guard', 'Break Guard', 'attack', 1, 'foe', [
-    dmg(8),
-    when('exposed', { atLeast: 1, of: 'target' }, [dmg(8)]),
-  ]),
-  // (Uppercut)
-  m('uncommon', 'rising-fist', 'Rising Fist', 'attack', 2, 'foe', [
-    dmg(13),
-    status('faltering', 1, 'target'),
-    status('exposed', 1, 'target'),
-  ]),
-  // (Bully)
-  m('uncommon', 'pile-on', 'Pile On', 'attack', 0, 'foe', [
-    scaled(dmg(4), per('exposed', 2, 'target')),
-  ]),
-  // (Whirlwind)
   m(
     'uncommon',
-    'whirling-blade',
-    'Whirling Blade',
-    'attack',
-    0,
-    'none',
-    [{ op: 'damage', amount: 5, hits: 0, to: 'allFoes', scale: { by: 'x', into: 'hits' } }],
-    { x: true },
-  ),
-  // (Rampage: every copy gains damage each time you play one)
-  m(
-    'uncommon',
-    'mounting-fury',
-    'Mounting Fury',
+    'deflecting-blow',
+    'Deflecting Blow',
     'attack',
     1,
     'foe',
-    [scaled(dmg(9), per('bonus')), forge('mounting-fury', 5)],
-    { up: { effects: [scaled(dmg(9), per('bonus')), forge('mounting-fury', 8)] } },
+    [dmg(6), when('attacking', { atLeast: 1, of: 'target' }, [barrier(6)])],
+    { up: { effects: [dmg(9), when('attacking', { atLeast: 1, of: 'target' }, [barrier(6)])] } },
   ),
-  // (Bludgeon)
-  m('uncommon', 'hammer-fall', 'Hammer Fall', 'attack', 3, 'foe', [dmg(32)]),
-  // (Pillage)
-  m('uncommon', 'plunder', 'Plunder', 'attack', 1, 'foe', [dmg(6), drawUntil('attack')]),
-  // (Stomp: 12 to everyone, and it costs 1 less for every Attack you have played this turn)
-  m('uncommon', 'trampling-charge', 'Trampling Charge', 'attack', 3, 'none', [dmg(12, 'allFoes')], {
-    cheaperPerAttack: 1,
+  m(
+    'uncommon',
+    'exploit-the-gap',
+    'Exploit the Gap',
+    'power',
+    1,
+    'none',
+    [on('riposte', [draw(1), barrier(3)])],
+    { up: { effects: [on('riposte', [draw(1), barrier(5)])] } },
+  ),
+  m('rare', 'perfect-counter', 'Perfect Counter', 'attack', 1, 'foe', [counter(6, 14)], {
+    up: { effects: [counter(8, 18)] },
   }),
-  // (Unrelenting)
-  m('uncommon', 'relentless-push', 'Relentless Push', 'attack', 2, 'foe', [
-    dmg(12),
-    status('freeattack', 1),
-  ]),
-  // (Rage)
-  m('uncommon', 'berserkers-rage', "Berserker's Rage", 'skill', 0, 'none', [
-    on('play', [barrier(3)], { filter: 'attack', temp: true }),
-  ]),
-  // (Stampede)
-  m('uncommon', 'charging-herd', 'Charging Herd', 'power', 2, 'none', [
-    on('turnEnd', [playPile('hand', { kind: 'attack' })]),
-  ]),
-  // (Juggling: your third Attack each turn comes back to your hand)
-  m('uncommon', 'jugglers-rhythm', "Juggler's Rhythm", 'power', 1, 'none', [
-    on('play', [when('attacksPlayed', { atLeast: 3, atMost: 3 }, [copyPlayed])], {
-      filter: 'attack',
-    }),
-  ]),
-  // (Vicious)
-  m('uncommon', 'scent-of-weakness', 'Scent of Weakness', 'power', 1, 'none', [
-    on('exposeFoe', [draw(1)]),
-  ]),
-  // (Demon Form)
-  m('rare', 'warlords-oath', "Warlord's Oath", 'power', 3, 'none', [
-    on('turnStart', [status('might', 2)]),
-  ]),
-  // (Conflagration)
-  m('rare', 'wildfire', 'Wildfire', 'attack', 1, 'none', [
-    scaled(dmg(8, 'allFoes'), per('attacksPlayed', 2)),
-  ]),
-  // (One-Two Punch)
-  m('rare', 'double-down', 'Double Down', 'skill', 1, 'none', [status('twinned', 1)]),
-  // (Cruelty)
-  m('rare', 'cruel-streak', 'Cruel Streak', 'power', 1, 'none', [status('cruelty', 1)]),
-  // (Mangle: the enemy hits 10 softer through its next turn)
-  m('rare', 'crippling-blow', 'Crippling Blow', 'attack', 3, 'foe', [
-    dmg(15),
-    statusTheirs('sapped', 10, 'target'),
-  ]),
-  // (Feed: if it kills, your max HP grows for good)
-  m('rare', 'bloodfeast', 'Bloodfeast', 'attack', 1, 'foe', [onKill(dmg(10), [maxHpUp(3)])], {
+  m('rare', 'masterstroke', 'Masterstroke', 'attack', 3, 'foe', [dmg(20), riposte(dmg(20))], {
+    up: { effects: [dmg(26), riposte(dmg(26))] },
+  }),
+  m(
+    'rare',
+    'last-bastion',
+    'Last Bastion',
+    'skill',
+    2,
+    'none',
+    [barrier(15), leaveOpen('allFoes')],
+    {
+      up: { effects: [barrier(20), leaveOpen('allFoes')] },
+    },
+  ),
+  m(
+    'rare',
+    'warlords-oath',
+    "Warlord's Oath",
+    'power',
+    2,
+    'none',
+    [on('turnStart', [leaveOpen('front'), barrier(5)])],
+    { up: { innate: true } },
+  ),
+  m('rare', 'duelists-focus', "Duelist's Focus", 'skill', 0, 'foe', [leaveOpen(), draw(1)], {
     exhaust: true,
+    retain: true,
+    up: { effects: [leaveOpen(), draw(2)] },
   }),
-  // (Hellraiser: every Strike you draw is played against a random enemy)
-  m('rare', 'raised-hell', 'Raised Hell', 'power', 2, 'none', [
-    on('draw', [playPile('drawn', { match: 'strike' })]),
-  ]),
-  // (Aggression: an Attack from your discard pile comes back upgraded every turn)
-  m('rare', 'unforgiving-drill', 'Unforgiving Drill', 'power', 1, 'none', [
-    on('turnStart', [fetchCards(1, 'hand', 'attack', true)]),
-  ]),
-  // (Primal Force: every Attack in your hand becomes a Giant Rock)
-  m('rare', 'stone-fury', 'Stone Fury', 'skill', 0, 'none', [
-    transformHand('attack', 'giant-rock'),
-  ]),
-  m('common', 'giant-rock', 'Giant Rock', 'attack', 1, 'foe', [dmg(16)], { source: 'token' }),
 
-  // --- Consume ---
-  // (True Grit)
-  m('common', 'sacrificial-guard', 'Sacrificial Guard', 'skill', 1, 'none', [
-    barrier(7),
-    exhaustN(1, 'random'),
-  ]),
-  // (Cinder)
-  m('common', 'scorching-blow', 'Scorching Blow', 'attack', 2, 'foe', [
-    dmg(17),
-    exhaustN(1, 'random'),
-  ]),
-  // (Molten Fist)
+  // --- Thorns: retaliation ---
   m(
     'common',
-    'searing-fist',
-    'Searing Fist',
+    'spiked-pauldron',
+    'Spiked Pauldron',
+    'skill',
+    1,
+    'none',
+    [barrier(4), thornsTurn(3)],
+    {
+      up: { effects: [barrier(4), thornsTurn(5)] },
+    },
+  ),
+  m(
+    'common',
+    'bramble-guard',
+    'Bramble Guard',
+    'skill',
+    1,
+    'none',
+    [barrier(7), when('thorns', { atLeast: 1 }, [barrier(3)])],
+    { up: { effects: [barrier(9), when('thorns', { atLeast: 1 }, [barrier(3)])] } },
+  ),
+  m('common', 'briar-lash', 'Briar Lash', 'attack', 1, 'foe', [scaled(dmg(5), per('thorns', 2))], {
+    up: { effects: [scaled(dmg(8), per('thorns', 2))] },
+  }),
+  m('common', 'thorned-gauntlet', 'Thorned Gauntlet', 'attack', 1, 'foe', [dmg(6), thornsTurn(2)], {
+    up: { effects: [dmg(9), thornsTurn(2)] },
+  }),
+  m('uncommon', 'ember-ward', 'Ember Ward', 'skill', 2, 'none', [barrier(12), thornsTurn(4)]),
+  m(
+    'uncommon',
+    'thornburst',
+    'Thornburst',
+    'attack',
+    1,
+    'none',
+    [scaled(dmg(3, 'allFoes'), per('thorns', 2))],
+    {
+      up: { effects: [scaled(dmg(6, 'allFoes'), per('thorns', 2))] },
+    },
+  ),
+  m('uncommon', 'barbed-vigil', 'Barbed Vigil', 'skill', 2, 'none', [barrier(11), thornsTurn(4)], {
+    up: { effects: [barrier(14), thornsTurn(5)] },
+  }),
+  m(
+    'uncommon',
+    'barbed-retort',
+    'Barbed Retort',
     'attack',
     1,
     'foe',
-    [dmg(10), doubleSt('exposed', 'target', 2, 3)],
-    { exhaust: true },
-  ),
-  // (Headbutt)
-  m('common', 'ram-home', 'Ram Home', 'attack', 1, 'foe', [dmg(9), fetchCards(1, 'draw')]),
-  // (Havoc: play the top card of your draw pile, and consume it)
-  m('common', 'wild-gamble', 'Wild Gamble', 'skill', 1, 'none', [
-    playPile('draw', { exhaust: true }),
-  ]),
-  // (Ashen Strike)
-  m('uncommon', 'smoldering-blow', 'Smoldering Blow', 'attack', 1, 'foe', [
-    scaled(dmg(6), per('exhausted', 1)),
-  ]),
-  // (Battle Trance: draw 3, and no more this turn)
-  m('uncommon', 'grim-focus', 'Grim Focus', 'skill', 0, 'none', [draw(3), drawLock]),
-  // (Feel No Pain)
-  m('uncommon', 'numbing-rite', 'Numbing Rite', 'power', 1, 'none', [on('exhaust', [barrier(3)])]),
-  // (Infernal Blade)
-  m(
-    'uncommon',
-    'borrowed-blade',
-    'Borrowed Blade',
-    'skill',
-    1,
-    'none',
-    [discoverOp('attack', 1, true)],
+    [dmg(8), riposte(thornsTurn(3))],
     {
-      exhaust: true,
-      up: { effects: [discoverOp('attack', 2, true)] },
+      up: { effects: [dmg(11), riposte(thornsTurn(3))] },
     },
   ),
-  // (Second Wind: every card that is not an Attack is consumed, 5 Barrier for each)
-  m('uncommon', 'bitter-breath', 'Bitter Breath', 'skill', 1, 'none', [
-    exhaustN(99, 'choose', { not: 'attack' }),
-    scaled(barrier(0), per('exhaustedNow', 5)),
-  ]),
-  // (Drum of Battle)
-  m('uncommon', 'war-drums', 'War Drums', 'power', 0, 'none', [
-    draw(2),
-    on('turnStart', [exhaustTop(1)]),
-  ]),
-  // (Expect a Fight: a Mana for every Attack in your hand, and no more Mana this turn)
-  m('uncommon', 'brace-for-battle', 'Brace for Battle', 'skill', 2, 'none', [
-    scaled(mana(0), per('attacksInHand')),
-    manaLock,
-  ]),
-  // (Forgotten Ritual)
   m(
     'uncommon',
-    'ritual-of-ash',
-    'Ritual of Ash',
-    'skill',
+    'thornwake',
+    'Thornwake',
+    'power',
     1,
     'none',
-    [when('exhaustedTurn', { atLeast: 1 }, [mana(3)])],
-    { exhaust: true },
+    [on('thorns', [leaveOpen('attacker'), barrier(2)], { once: true })],
+    { up: { effects: [on('thorns', [leaveOpen('attacker'), barrier(4)], { once: true })] } },
   ),
-  // (Thrash: consume a random Attack in your hand and add its damage)
-  m('rare', 'flailing-blows', 'Flailing Blows', 'attack', 1, 'foe', [
-    exhaustN(1, 'random', { only: 'attack' }),
-    dmg(4, 'target', 2),
-    scaled(dmg(0), per('exhaustedDamage')),
-  ]),
-  // (Dark Embrace)
-  m('rare', 'rite-of-recall', 'Rite of Recall', 'power', 2, 'none', [on('exhaust', [draw(1)])]),
-  // (Corruption: your Skills cost 0 and are consumed)
-  m('rare', 'unholy-pact', 'Unholy Pact', 'power', 3, 'none', [status('unbound', 1)], {
-    up: { cost: 2 },
+  m('rare', 'wall-of-briars', 'Wall of Briars', 'skill', 2, 'none', [barrier(12), thornsTurn(8)], {
+    up: { effects: [barrier(15), thornsTurn(10)] },
   }),
-  // (Fiend Fire: 7 damage for every card in your hand, and the whole hand is consumed)
   m(
     'rare',
-    'burn-it-all',
-    'Burn It All',
+    'vengeful-strike',
+    'Vengeful Strike',
     'attack',
     2,
     'foe',
-    [scaled(dmg(0), per('hand', 7)), exhaustN(99)],
-    { exhaust: true, up: { effects: [scaled(dmg(0), per('hand', 10)), exhaustN(99)] } },
-  ),
-  // (Brand)
-  m('rare', 'forsake', 'Forsake', 'skill', 0, 'none', [lose(1), exhaustN(1), status('might', 1)]),
-  // (Cascade: play the top X cards of your draw pile)
-  m(
-    'rare',
-    'unravel',
-    'Unravel',
-    'skill',
-    0,
-    'none',
-    [playPile('draw', { amount: 0, scale: per('x') })],
-    { x: true },
-  ),
-  // (Stoke: consume your hand, and a random card of your pool comes for each one)
-  m('rare', 'fan-the-flames', 'Fan the Flames', 'skill', 1, 'none', [
-    exhaustN(99),
-    discoverOp(undefined, 0, false, per('exhaustedNow')),
-  ]),
-  // (Howl From Beyond: it comes back from the consumed pile every turn)
-  m(
-    'uncommon',
-    'howl-of-the-fallen',
-    'Howl of the Fallen',
-    'attack',
-    3,
-    'none',
-    [dmg(16, 'allFoes')],
+    [scaled(dmg(18), per('thorns', 2))],
     {
-      exhaust: true,
-      replayFromExhaust: true,
+      up: { effects: [scaled(dmg(23), per('thorns', 2))] },
     },
   ),
-  // (Pact's End: 17 to everyone, playable once 3 cards are consumed)
-  m('rare', 'ashen-reckoning', 'Ashen Reckoning', 'attack', 0, 'none', [dmg(17, 'allFoes')], {
-    needsExhausted: 3,
-  }),
-
-  // --- Blood ---
-  // (Bloodletting)
-  m('common', 'draw-blood', 'Draw Blood', 'skill', 0, 'none', [lose(3), mana(2)], {
-    exhaust: true,
-  }),
-  // (Blood Wall)
-  m('common', 'blood-plate', 'Blood Plate', 'skill', 2, 'none', [lose(2), barrier(16)]),
-  // (Breakthrough)
-  m('common', 'breach', 'Breach', 'attack', 1, 'none', [lose(1), dmg(9, 'allFoes')]),
-  // (Hemokinesis)
-  m('uncommon', 'reckless-smite', 'Reckless Smite', 'attack', 1, 'foe', [lose(2), dmg(15)]),
-  // (Rupture)
-  m('uncommon', 'scar-over', 'Scar Over', 'power', 1, 'none', [on('loseHp', [status('might', 1)])]),
-  // (Inferno)
-  m('uncommon', 'blood-fire', 'Blood Fire', 'power', 1, 'none', [
-    on('turnStart', [lose(1)]),
-    on('loseHp', [dmg(6, 'allFoes')]),
-  ]),
-  // (Spite: it hits twice if you have lost HP this turn)
-  m('uncommon', 'spiteful-jab', 'Spiteful Jab', 'attack', 0, 'foe', [
-    dmg(6),
-    when('hpLostTurn', { atLeast: 1 }, [dmg(6)]),
-  ]),
-  // (Offering)
   m(
     'rare',
-    'crimson-offering',
-    'Crimson Offering',
-    'skill',
-    0,
+    'crown-of-thorns',
+    'Crown of Thorns',
+    'power',
+    1,
     'none',
-    [lose(6), mana(2), draw(3)],
-    {
-      exhaust: true,
-    },
+    [on('turnEnd', [thornsTurn(3)])],
+    { up: { effects: [on('turnEnd', [thornsTurn(4)])] } },
   ),
-  // (Crimson Mantle)
-  m('rare', 'bloodied-plate', 'Bloodied Plate', 'power', 1, 'none', [
-    on('turnStart', [lose(1), barrier(8)]),
-  ]),
-  // (Tear Asunder: one more hit for every time you have lost HP this fight)
-  m('rare', 'rending-fury', 'Rending Fury', 'attack', 2, 'foe', [
-    scaled(dmg(5), per('hpLostFight', 1, undefined, 'hits')),
-  ]),
-  // (Not Yet)
-  m('rare', 'rally', 'Rally', 'skill', 2, 'none', [heal(10)], { exhaust: true }),
-
-  // --- glue ---
-  // (Iron Wave)
-  m('common', 'dawn-smite', 'Dawn Smite', 'attack', 1, 'foe', [dmg(5), barrier(5)]),
-  // (Anger)
-  m('common', 'hot-temper', 'Hot Temper', 'attack', 0, 'foe', [dmg(6), copySelf('discard')]),
-  // (Burning Pact)
-  m('uncommon', 'pact-of-embers', 'Pact of Embers', 'skill', 1, 'none', [exhaustN(1), draw(2)]),
-  // (Pyre)
-  m('rare', 'inner-furnace', 'Inner Furnace', 'power', 2, 'none', [on('turnStart', [mana(1)])]),
 ];
