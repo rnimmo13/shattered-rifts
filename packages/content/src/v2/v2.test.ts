@@ -80,12 +80,25 @@ describe('Combat v2 content', () => {
     }
   });
 
-  it('has regulars, two elites and a Warden per realm, plus the finale', () => {
+  it('has regulars, Elites and Wardens per realm, plus the finale (two and one more of each since DECISIONS #437)', () => {
     for (const realm of ['aurelion', 'nexus', 'wyldmaw', 'umbral']) {
       const here = ENCOUNTERS.filter((e) => e.realm === realm);
-      expect(here.filter((e) => e.kind === 'regular').length).toBeGreaterThanOrEqual(3);
-      expect(here.filter((e) => e.kind === 'elite')).toHaveLength(2);
-      expect(here.filter((e) => e.kind === 'warden')).toHaveLength(1);
+      expect(here.filter((e) => e.kind === 'regular').length).toBeGreaterThanOrEqual(7);
+      expect(here.filter((e) => e.kind === 'elite')).toHaveLength(4);
+      expect(here.filter((e) => e.kind === 'warden')).toHaveLength(2);
+    }
+    // (the far realms: fights for the Rift, and a Warden each)
+    for (const realm of ['gloomfen', 'starfall', 'beyond']) {
+      const here = ENCOUNTERS.filter((e) => e.realm === realm);
+      expect(here.filter((e) => e.kind === 'regular').length, realm).toBeGreaterThanOrEqual(3);
+      expect(
+        here.filter((e) => e.kind === 'elite'),
+        realm,
+      ).toHaveLength(2);
+      expect(
+        here.filter((e) => e.kind === 'warden'),
+        realm,
+      ).toHaveLength(1);
     }
     expect(ENCOUNTERS.filter((e) => e.kind === 'finale')).toHaveLength(1);
   });
@@ -103,7 +116,8 @@ describe('Combat v2 content', () => {
         expect(state.winner, `${h} vs ${e.id} did not finish`).not.toBeNull();
       }
     }
-  });
+    // (ten heroes against every encounter, 84 since DECISIONS #437: well past the default 5 s under a full run)
+  }, 120_000);
 });
 
 describe('Riftwalker identities (docs/08 §5)', () => {

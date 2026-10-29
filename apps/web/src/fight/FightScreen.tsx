@@ -20,6 +20,7 @@ const REALM_NAME: Record<string, string> = {
   starfall: 'The Hollow Crown',
   gloomfen: 'Gloomfen',
   midden: 'The Midden',
+  beyond: 'The Far Rifts',
   all: 'All realms',
 };
 const KINDS = ['regular', 'elite', 'warden', 'finale'] as const;

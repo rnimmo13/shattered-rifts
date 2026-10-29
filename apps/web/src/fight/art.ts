@@ -6,6 +6,7 @@ import type { Motif } from '../art/motifs';
 import { loadSkin, realCardArt, realFigure, realSkinFigure } from '../art/assets';
 import { HERO_EMBLEM } from '../art/emblems';
 import { LOOKS, applyLook } from '../art/unitLooks';
+import { MULTIVERSE_UNIT_ART } from '../art/multiverseUnits';
 import { bespokeHero, heroProp } from '../art/heroFigures';
 import {
   avatarCutout,
@@ -89,6 +90,13 @@ const UNIT: Record<string, [Archetype, Realm]> = {
   // the finale
   'rift-shard': ['elemental', 'neutral'],
   vorthax: ['dragon', 'neutral'],
+  // (the multiverse expansion, DECISIONS #437)
+  ...Object.fromEntries(
+    Object.entries(MULTIVERSE_UNIT_ART).map(([id, u]): [string, [Archetype, Realm]] => [
+      id,
+      [u.kind, u.realm],
+    ]),
+  ),
 };
 
 const base = (id: string): string => id.replace(/\+$/, '');

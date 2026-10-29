@@ -468,10 +468,13 @@ export type EncounterKind = 'regular' | 'elite' | 'warden' | 'finale';
 export interface Encounter {
   id: string;
   name: string;
-  realm: RealmId | 'all';
+  /** (DECISIONS #437) 'beyond': the Far Rifts, a realm of enemies only (no Riftwalker comes from it) */
+  realm: RealmId | 'all' | 'beyond';
   kind: EncounterKind;
   /** front to back */
   units: string[];
+  /** (DECISIONS #437) the first stage it can be met on (missing: 1): a trio waits for the second */
+  fromStage?: number;
 }
 
 const enc = (
@@ -545,6 +548,288 @@ export const ENCOUNTERS: Encounter[] = [
   enc('nyxara', 'Nyxara, the Veiled Matriarch', 'umbral', 'warden', 'nyxara'),
 
   enc('vorthax', 'Vorthax, Heart of the Rift', 'all', 'finale', 'vorthax'),
+
+  // ---- the multiverse expansion (DECISIONS #437): pairs from stage 1, a trio from stage 2, two Elites and a Warden a realm; the
+  // Gloomfen, the Hollow Crown and the Far Rifts are not stages of their own: their fights join the Rift (the last stage), and their
+  // Wardens may hold the second stage ----
+  // Aurelion
+  enc(
+    'censer-crab-pair',
+    'Censer Crab and Waxwing Bailiff',
+    'aurelion',
+    'regular',
+    'censer-crab',
+    'waxwing-bailiff',
+  ),
+  enc(
+    'marble-mantis-pair',
+    'Marble Mantis and Reliquary Hound',
+    'aurelion',
+    'regular',
+    'marble-mantis',
+    'reliquary-hound',
+  ),
+  enc(
+    'bellows-pilgrim-pair',
+    'Bellows Pilgrim and Banner Leech',
+    'aurelion',
+    'regular',
+    'bellows-pilgrim',
+    'banner-leech',
+  ),
+  {
+    ...enc(
+      'aurelion-trio',
+      'Censer Crab, Marble Mantis and Banner Leech',
+      'aurelion',
+      'regular',
+      'censer-crab',
+      'marble-mantis',
+      'banner-leech',
+    ),
+    fromStage: 2,
+  },
+  enc('prism-magistrate', 'Prism Magistrate', 'aurelion', 'elite', 'prism-magistrate'),
+  enc('procession-engine', 'Procession Engine', 'aurelion', 'elite', 'procession-engine'),
+  enc(
+    'the-hollow-benediction',
+    'The Hollow Benediction',
+    'aurelion',
+    'warden',
+    'the-hollow-benediction',
+  ),
+  // Nexus
+  enc(
+    'magnet-tick-pair',
+    'Magnet Tick and Receipt Wraith',
+    'nexus',
+    'regular',
+    'magnet-tick',
+    'receipt-wraith',
+  ),
+  enc(
+    'cable-jelly-pair',
+    'Cable Jelly and Piston Hare',
+    'nexus',
+    'regular',
+    'cable-jelly',
+    'piston-hare',
+  ),
+  enc(
+    'welding-cherub-pair',
+    'Welding Cherub and Boiler Snail',
+    'nexus',
+    'regular',
+    'welding-cherub',
+    'boiler-snail',
+  ),
+  {
+    ...enc(
+      'nexus-trio',
+      'Magnet Tick, Cable Jelly and Boiler Snail',
+      'nexus',
+      'regular',
+      'magnet-tick',
+      'cable-jelly',
+      'boiler-snail',
+    ),
+    fromStage: 2,
+  },
+  enc('clockwork-guillotine', 'Clockwork Guillotine', 'nexus', 'elite', 'clockwork-guillotine'),
+  enc('scrapyard-centipede', 'Scrapyard Centipede', 'nexus', 'elite', 'scrapyard-centipede'),
+  enc('mother-of-static', 'Mother of Static', 'nexus', 'warden', 'mother-of-static'),
+  // Wyldmaw
+  enc(
+    'thornback-toad-pair',
+    'Thornback Toad and Orchid Maw',
+    'wyldmaw',
+    'regular',
+    'thornback-toad',
+    'orchid-maw',
+  ),
+  enc(
+    'antler-wasp-pair',
+    'Antler Wasp and Mossjaw Turtle',
+    'wyldmaw',
+    'regular',
+    'antler-wasp',
+    'mossjaw-turtle',
+  ),
+  enc(
+    'ribcage-eel-pair',
+    'Ribcage Eel and Fungal Drummer',
+    'wyldmaw',
+    'regular',
+    'ribcage-eel',
+    'fungal-drummer',
+  ),
+  {
+    ...enc(
+      'wyldmaw-trio',
+      'Thornback Toad, Antler Wasp and Fungal Drummer',
+      'wyldmaw',
+      'regular',
+      'thornback-toad',
+      'antler-wasp',
+      'fungal-drummer',
+    ),
+    fromStage: 2,
+  },
+  enc('hunger-orchard', 'Hunger Orchard', 'wyldmaw', 'elite', 'hunger-orchard'),
+  enc('molting-cathedral', 'Molting Cathedral', 'wyldmaw', 'elite', 'molting-cathedral'),
+  enc('the-upside-down-stag', 'The Upside-Down Stag', 'wyldmaw', 'warden', 'the-upside-down-stag'),
+  // Umbral
+  enc(
+    'velvet-lamprey-pair',
+    'Velvet Lamprey and Keyhole Imp',
+    'umbral',
+    'regular',
+    'velvet-lamprey',
+    'keyhole-imp',
+  ),
+  enc(
+    'umbrella-widow-pair',
+    'Umbrella Widow and Mirror Moth',
+    'umbral',
+    'regular',
+    'umbrella-widow',
+    'mirror-moth',
+  ),
+  enc(
+    'puppet-of-knots-pair',
+    'Puppet of Knots and Inkbound Usher',
+    'umbral',
+    'regular',
+    'puppet-of-knots',
+    'inkbound-usher',
+  ),
+  {
+    ...enc(
+      'umbral-trio',
+      'Velvet Lamprey, Umbrella Widow and Inkbound Usher',
+      'umbral',
+      'regular',
+      'velvet-lamprey',
+      'umbrella-widow',
+      'inkbound-usher',
+    ),
+    fromStage: 2,
+  },
+  enc('the-borrowed-face', 'The Borrowed Face', 'umbral', 'elite', 'the-borrowed-face'),
+  enc('midnight-seamstress', 'Midnight Seamstress', 'umbral', 'elite', 'midnight-seamstress'),
+  enc('the-applause-below', 'The Applause Below', 'umbral', 'warden', 'the-applause-below'),
+  // Gloomfen
+  enc(
+    'coffin-nautilus-pair',
+    'Coffin Nautilus and Bog Bell',
+    'gloomfen',
+    'regular',
+    'coffin-nautilus',
+    'bog-bell',
+  ),
+  enc(
+    'funeral-kite-pair',
+    'Funeral Kite and Gravewax Slug',
+    'gloomfen',
+    'regular',
+    'funeral-kite',
+    'gravewax-slug',
+  ),
+  enc(
+    'silt-bride-pair',
+    'Silt Bride and Lantern Angler',
+    'gloomfen',
+    'regular',
+    'silt-bride',
+    'lantern-angler',
+  ),
+  {
+    ...enc(
+      'gloomfen-trio',
+      'Coffin Nautilus, Funeral Kite and Silt Bride',
+      'gloomfen',
+      'regular',
+      'coffin-nautilus',
+      'funeral-kite',
+      'silt-bride',
+    ),
+    fromStage: 2,
+  },
+  enc('pallbearer-swarm', 'Pallbearer Swarm', 'gloomfen', 'elite', 'pallbearer-swarm'),
+  enc('the-unburied-hour', 'The Unburied Hour', 'gloomfen', 'elite', 'the-unburied-hour'),
+  enc('the-mourning-tide', 'The Mourning Tide', 'gloomfen', 'warden', 'the-mourning-tide'),
+  // Hollow Crown
+  enc(
+    'glass-hermit-pair',
+    'Glass Hermit and Crown Centipede',
+    'starfall',
+    'regular',
+    'glass-hermit',
+    'crown-centipede',
+  ),
+  enc(
+    'ember-chessman-pair',
+    'Ember Chessman and Shard Peacock',
+    'starfall',
+    'regular',
+    'ember-chessman',
+    'shard-peacock',
+  ),
+  enc(
+    'obsidian-anemone-pair',
+    'Obsidian Anemone and Cinder Scribe',
+    'starfall',
+    'regular',
+    'obsidian-anemone',
+    'cinder-scribe',
+  ),
+  {
+    ...enc(
+      'starfall-trio',
+      'Glass Hermit, Ember Chessman and Cinder Scribe',
+      'starfall',
+      'regular',
+      'glass-hermit',
+      'ember-chessman',
+      'cinder-scribe',
+    ),
+    fromStage: 2,
+  },
+  enc('the-cracked-heir', 'The Cracked Heir', 'starfall', 'elite', 'the-cracked-heir'),
+  enc('molten-reliquary', 'Molten Reliquary', 'starfall', 'elite', 'molten-reliquary'),
+  enc('queen-of-the-unmade', 'Queen of the Unmade', 'starfall', 'warden', 'queen-of-the-unmade'),
+  // Far Rifts
+  enc(
+    'pocket-singularity-pair',
+    'Pocket Singularity and Origami Leviathan',
+    'beyond',
+    'regular',
+    'pocket-singularity',
+    'origami-leviathan',
+  ),
+  enc(
+    'astral-teacup-pair',
+    'Astral Teacup and Inverse Diver',
+    'beyond',
+    'regular',
+    'astral-teacup',
+    'inverse-diver',
+  ),
+  {
+    ...enc(
+      'beyond-trio',
+      'Pocket Singularity, Astral Teacup and Paradox Jelly',
+      'beyond',
+      'regular',
+      'pocket-singularity',
+      'astral-teacup',
+      'paradox-jelly',
+    ),
+    fromStage: 2,
+  },
+  enc('planet-eater', 'Planet Eater', 'beyond', 'elite', 'planet-eater'),
+  enc('the-missing-frame', 'The Missing Frame', 'beyond', 'elite', 'the-missing-frame'),
+  enc('event-horizon-regent', 'Event Horizon Regent', 'beyond', 'warden', 'event-horizon-regent'),
 ];
 
 export const encounter = (id: string): Encounter => {

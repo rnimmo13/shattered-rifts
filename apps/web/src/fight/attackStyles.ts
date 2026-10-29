@@ -2,6 +2,8 @@
 // the engine never sees this. The kind picks the animation (see Fighters.attack and attackFx.ts), the tint colours the
 // slash arc, tracer or spell, and `hits` repeats it (a double slash, a shotgun spread).
 
+import { MULTIVERSE_UNIT_ART } from '../art/multiverseUnits';
+
 export type AttackKind =
   | 'lunge' // the plain body rush (the fallback for anything not listed)
   | 'slash' // a blade swing with a bright arc
@@ -75,6 +77,13 @@ const UNIT_ATTACK: Record<string, AttackSpec> = {
   // the Rift
   'rift-shard': a('shoot', '#e0b0ff'),
   vorthax: a('cast', '#ff7ad9'),
+  // (the multiverse expansion, DECISIONS #437)
+  ...Object.fromEntries(
+    Object.entries(MULTIVERSE_UNIT_ART).map(([id, u]) => [
+      id,
+      a(u.attack[0], u.attack[1], u.attack[2]),
+    ]),
+  ),
 };
 
 export function attackFor(def: string, isHero: boolean): AttackSpec {

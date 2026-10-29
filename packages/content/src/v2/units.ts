@@ -18,6 +18,7 @@ import {
   weighted,
   wound,
 } from './build';
+import { MULTIVERSE_UNITS } from './unitsMultiverse';
 
 // --- companions ---------------------------------------------------------------------------------------------
 
@@ -430,4 +431,7 @@ export const ENEMY_UNITS: UnitDef[] = [
       [33, { kind: 'cycle', order: ['core', 'beam', 'rupture', 'beam'] }],
     ),
   ),
+
+  // ---- the multiverse expansion (DECISIONS #437): seven realms, 62 more ----
+  ...MULTIVERSE_UNITS,
 ];

@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { FAR_REALMS, wardensFor } from './mapgen';
 import { applyAction, chooseAction, createCombat, seedRng, heroOf } from '@sr/combat';
 import { COMBAT_DB, RIFTWALKERS, encounter, type HeroId } from '@sr/content/v2';
 import {
@@ -98,7 +99,12 @@ describe('stage maps', () => {
   it('every fight node names a real encounter of the right realm', () => {
     const map = generateStageMap(seedRng('enc'), 2, 'nexus');
     for (const n of map.nodes.filter((x) => x.enemyId)) expect(n.enemyId).toBeTruthy();
-    expect(map.nodes.find((n) => n.kind === 'warden')?.enemyId).toBe('kron');
+    // (a realm has more than one Warden since DECISIONS #437: the second stage may also end with a far realm's)
+    const warden = map.nodes.find((n) => n.kind === 'warden')?.enemyId;
+    expect(wardensFor('nexus', 2).map((e) => e.id)).toContain(warden);
+    expect(wardensFor('nexus', 1).map((e) => e.id)).toEqual(['kron', 'mother-of-static']);
+    for (const n of map.nodes.filter((x) => x.kind === 'duel' || x.kind === 'elite'))
+      expect(encounter(n.enemyId as string).realm, n.id).toBe('nexus');
   });
 
   it('a run is three stages: seven floors and a Warden, twice, then the Rift of eight floors and Vorthax', () => {
@@ -147,13 +153,13 @@ describe('stage maps', () => {
         ).toBe(true);
       }
     expect(map.nodes.find((n) => n.kind === 'warden')?.enemyId).toBe('vorthax');
-    // its fights come only from the two realms the run has not visited
+    // its fights come from the two realms the run has not visited, and the far realms (DECISIONS #437)
     const realms = new Set(
       map.nodes
         .filter((n) => n.kind === 'duel' || n.kind === 'elite')
         .map((n) => encounter(n.enemyId as string).realm),
     );
-    for (const r of realms) expect(['umbral', 'wyldmaw']).toContain(r);
+    for (const r of realms) expect(['umbral', 'wyldmaw', ...FAR_REALMS]).toContain(r);
   });
 
   it('every run visits four realms: two as stages, two in the Rift', () => {
@@ -185,7 +191,7 @@ describe('rewards', () => {
         }
       }
     }
-  });
+  }, 30_000); // (about 2 s alone; past the default 5 s under a full parallel run)
   it('takes at most 5 copies of a card, basics too (DECISIONS #337)', () => {
     expect(canAdd(['rift-bolt', 'rift-bolt', 'rift-bolt', 'rift-bolt'], 'rift-bolt')).toBe(true);
     expect(canAdd(['strike', 'strike', 'strike', 'strike'], 'strike')).toBe(true);

@@ -169,7 +169,7 @@ describe('events', () => {
       }
     }
     expect(seen.size).toBeGreaterThanOrEqual(2);
-  });
+  }, 30_000); // (about 2 s alone; past the default 5 s under a full parallel run)
 });
 
 describe('potions in a run', () => {

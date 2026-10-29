@@ -458,6 +458,7 @@ export function enterNode(run: RunState, nodeId: string): RunState {
             enemyRealms(r, r.stage),
             ambush,
             r.map.nodes.map((n) => n.enemyId),
+            r.stage,
           )
         : null;
       if (ambush && foe) {
@@ -1405,6 +1406,7 @@ export function chooseEvent(run: RunState, option: EventOption['id']): RunState 
       enemyRealms(r, r.stage),
       ev.fight.kind,
       r.map.nodes.map((n) => n.enemyId),
+      r.stage,
     );
     need(foe, 'There is nothing here to fight');
     node.kind = ev.fight.kind;
