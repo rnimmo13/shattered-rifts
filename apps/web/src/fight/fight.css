@@ -2582,3 +2582,86 @@
 .pick--charge .enchant b {
   font-size: 2rem;
 }
+
+/* the Shaman's three totem positions and his Spirit (DECISIONS #418): a mark and a word each, so they read without colour; a totem
+   that can be commanded now is a button with a bright edge */
+.totems {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: 0.2rem 0;
+}
+.totems__row {
+  display: flex;
+  gap: 0.4rem;
+}
+.totem {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 3.6rem;
+  padding: 0.25rem 0.4rem;
+  border-radius: 0.5rem;
+  border: 1px solid rgb(255 255 255 / 0.3);
+  background: rgb(10 8 16 / 0.85);
+  color: inherit;
+  font: inherit;
+}
+.totem b {
+  font-size: 1.3rem;
+  line-height: 1.1;
+}
+.totem small {
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.totem.is-empty {
+  border-style: dashed;
+  opacity: 0.6;
+}
+.totem--hawk {
+  color: #ffd08a;
+  border-color: #c98a2c;
+}
+.totem--bear {
+  color: #cfe9e2;
+  border-color: #4fa89a;
+}
+.totem--elder {
+  color: #d8f2b8;
+  border-color: #7fae4a;
+}
+button.totem:disabled {
+  cursor: default;
+}
+.totem.is-ready {
+  cursor: pointer;
+  box-shadow: 0 0 0 2px rgb(255 255 255 / 0.75);
+}
+.totem.is-ready:hover,
+.totem.is-ready:focus-visible {
+  background: rgb(40 34 60 / 0.95);
+}
+.totem.is-aiming {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+.totems__spirit {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.85rem;
+}
+.totems__state {
+  margin: 0;
+  font-size: 0.75rem;
+  opacity: 0.8;
+}
+.pick--charge .totem {
+  min-width: 6rem;
+  padding: 0.6rem 0.8rem;
+}
+.pick--charge .totem b {
+  font-size: 2rem;
+}

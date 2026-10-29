@@ -49,7 +49,7 @@ export const STATUS_INFO: Record<
   },
   shielded: { name: 'Shielded', glyph: '◈', tone: 'good', text: 'Ignores the next hit.' },
   resonance: {
-    name: 'Spirit',
+    name: 'Focus (old totems)',
     glyph: '❖',
     tone: 'good',
     text: 'Your totems deal 1 more damage and give 1 more Barrier per stack, and Elder totems charge faster.',
@@ -402,6 +402,25 @@ export const STATUS_INFO: Record<
     tone: 'good',
     text: 'The next enchantment you discharge this turn takes effect twice (it is still spent once).',
   },
+  // (the Shaman's, DECISIONS #418)
+  spirit: {
+    name: 'Spirit',
+    glyph: '◉',
+    tone: 'good',
+    text: 'At most 3, kept from turn to turn. Spend 1 to empower a Hawk or Bear command: it deals or gives 2 more. Elders and some cards give it.',
+  },
+  rousing: {
+    name: 'Rousing',
+    glyph: '⇑',
+    tone: 'good',
+    text: 'Your next Hawk or Bear command this turn deals or gives this much more. It goes at the end of your turn.',
+  },
+  shelter: {
+    name: 'Shelter',
+    glyph: '⌂',
+    tone: 'good',
+    text: 'This turn, your next Bear command gives its Barrier to every friendly instead of one.',
+  },
   // (the Knight's Guard, DECISIONS #415)
   opening: {
     name: 'Opening',
@@ -490,7 +509,12 @@ export const KEYWORD_INFO: Record<string, { name: string; text: string }> = {
   },
   rune: {
     name: 'Totem',
-    text: 'Totems stand in a row (3 slots). Each pulses a small effect at the end of your turn (the Owl at the start of it). A totem pushed out of a full row, or awakened by a card, bursts with its big effect and is gone.',
+    text: 'You have three totem positions. Plant puts a totem in the first empty one (with all three taken you choose one to replace, or keep them). A totem does nothing on its own.',
+  },
+  // (the Shaman's, DECISIONS #418)
+  command: {
+    name: 'Command',
+    text: 'Once each turn, press one of your totems to command it: a Hawk deals 4 damage to the enemy you choose (not an attack), a Bear gives 4 Barrier to a friendly, an Elder gives 1 Spirit and draws a card. More totems give more choices, not more commands.',
   },
   status: {
     name: 'Status card',
@@ -627,6 +651,17 @@ export function keywordsOf(
     if (o.op === 'scry') add(KEYWORD_INFO['scry']);
     if (o.op === 'exhaustCards') add(KEYWORD_INFO['exhaust']);
     if (o.op === 'channel' || o.op === 'evoke' || o.op === 'runeSlots') add(KEYWORD_INFO['rune']);
+    // (the Shaman's totems: planting one, or anything about a command)
+    if (o.op === 'plant' || o.op === 'uproot' || o.ops?.some((x) => x.op === 'plant'))
+      add(KEYWORD_INFO['rune']);
+    if (
+      (o.op === 'status' && (o.status === 'rousing' || o.status === 'shelter')) ||
+      (o.op === 'power' && (o as { when?: string }).when === 'command') ||
+      o.ops?.some((x) => x.op === 'status' && (x as { status?: string }).status === 'rousing')
+    )
+      add(KEYWORD_INFO['command']);
+    if (o.op === 'spend' && (o as { status?: string }).status === 'spirit')
+      add({ name: STATUS_INFO.spirit.name, text: STATUS_INFO.spirit.text });
     if (o.op === 'stance') add(KEYWORD_INFO['stance']);
     // (the Knight's Riposte, and the Opening it spends)
     if (o.op === 'riposte' || (o.op === 'damage' && (o as { riposte?: number }).riposte)) {
@@ -643,7 +678,11 @@ export function keywordsOf(
       o.ops?.some((x) => x.op === 'embed' || x.op === 'extract')
     )
       add(KEYWORD_INFO['knives']);
-    if (o.op === 'spend' || (o.op === 'status' && o.status === 'prep')) add(KEYWORD_INFO['prep']);
+    if (
+      (o.op === 'spend' && (o as { status?: string }).status !== 'spirit') ||
+      (o.op === 'status' && o.status === 'prep')
+    )
+      add(KEYWORD_INFO['prep']);
     if (o.op === 'imbue' || o.op === 'recast' || o.ops?.some((x) => x.op === 'imbue'))
       add(KEYWORD_INFO['imbue']);
     if (o.op === 'discharge') add(KEYWORD_INFO['discharge']);
@@ -746,13 +785,13 @@ export const UI_TIPS = {
   }),
   endTurn: {
     title: 'End turn',
-    text: 'Your allies act, your totems pulse, your hand is discarded, then the enemies take their turn.',
+    text: 'Your allies act, your hand is discarded, then the enemies take their turn.',
     hint: 'Shortcut: E',
   } as TipContent,
   emptyRune: {
     kicker: 'Totem slot',
     title: 'Empty slot',
-    text: 'A totem you plant goes here. A new totem in a full row pushes the oldest out and it bursts with its big effect.',
+    text: 'A totem you plant goes here, in the first empty position.',
   } as TipContent,
   snare: (name: string | null, rules?: string): TipContent => ({
     kicker: 'Trap',

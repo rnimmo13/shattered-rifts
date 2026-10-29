@@ -23,6 +23,7 @@ const CARD_WORDS = ['exhaust', 'retain', 'ethereal', 'innate', 'discard', 'scry'
 /** Mechanics that belong to one Riftwalker's way of playing */
 const SIGNATURE_WORDS = [
   'rune',
+  'command',
   'stance',
   'stars',
   'forge',
@@ -227,7 +228,8 @@ function BoonList() {
 export function LearnScreen() {
   const [tab, setTab] = useState<Tab>('start');
   const basics = TIP_RULES.find((t) => t.id === 'basics');
-  const runes = Object.values(COMBAT_DB.runes ?? {});
+  // (the Shaman's spirits, DECISIONS #418)
+  const runes = Object.values(COMBAT_DB.totems ?? {});
   const statuses = Object.values(STATUS_INFO);
   return (
     <main className="learn">

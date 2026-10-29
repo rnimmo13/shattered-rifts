@@ -229,9 +229,19 @@ describe('pool shape (docs/09_ROSTER.md §1)', () => {
       [...c.effects, ...(c.onDiscard ?? []), ...(c.onExhaust ?? [])].some(
         (o) => o.op === op || (o.op === 'power' && o.ops.some((x) => x.op === op)),
       );
-    owns((c) => uses(c, 'channel') || uses(c, 'evoke') || uses(c, 'runeSlots'), 'shaman');
+    // (totems are the Shaman's: his planted ones since DECISIONS #418, the old runes for anyone who would still use them)
+    owns(
+      (c) =>
+        uses(c, 'plant') ||
+        uses(c, 'uproot') ||
+        uses(c, 'channel') ||
+        uses(c, 'evoke') ||
+        uses(c, 'runeSlots'),
+      'shaman',
+    );
     owns((c) => uses(c, 'stance'), 'monk');
-    owns((c) => c.starCost !== undefined, 'spellblade');
+    // (Arcana costs: nobody's since DECISIONS #417; the enchantments are the Spellblade's)
+    owns((c) => c.starCost !== undefined || uses(c, 'imbue') || uses(c, 'discharge'), 'spellblade');
     // (sharpening a weapon is theirs; a card that grows only itself, like Gathering Storm, is not: DECISIONS #353)
     const sharpensAnother = (c: CardDef) =>
       [...c.effects, ...(c.onDiscard ?? []), ...(c.onExhaust ?? [])].some(

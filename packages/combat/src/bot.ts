@@ -120,5 +120,19 @@ export function chooseAction(db: CombatDb, s: CombatState): Action {
       best = a;
     }
   }
+  // (the Shaman, DECISIONS #418) a totem's command once nothing in hand is worth playing, so the cards' Rousing lands on it
+  if (best.type === 'endTurn')
+    for (const a of legalActions(db, s)) {
+      if (a.type !== 'command') continue;
+      const after = applyAction(db, s, a).state;
+      const gain =
+        evaluate(db, after, me) -
+        base +
+        (after.sides[me].hand.length - s.sides[me].hand.length) * 1.2;
+      if (gain > bestGain - 0.5) {
+        bestGain = gain + 0.5;
+        best = a;
+      }
+    }
   return best;
 }

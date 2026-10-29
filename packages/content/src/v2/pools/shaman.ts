@@ -1,370 +1,135 @@
-// Ilvane (display name; the id stays 'shaman', DECISIONS #141), an elder shaman. He is the Slay the Spire 2 Defect on purpose, for
-// now, as Valeria is the Ironclad (Robert, 2026-10-28: "close copies of the originals, but obviously change names and keep our theme, i
-// will adjust things going forward, but we need good baselines right now"): one card for every Defect card under an original name, and
-// nothing else. The Defect's orbs are his totems (`channel`/`evoke` ops, the rune ids spark/ward/hollow/prism/splinter) and Focus is
-// his Spirit (the `resonance` status). Each card's comment names the Defect card it imitates; numbers and rarities are the Defect's
-// (StS2 Beta v0.111, slaythespire2.gg) unless a comment says why not. Not copied: Ignition and Imitation Learning (they need another
-// player), Hibernate (half of it gives other players Block), Genetic Algorithm (it grows for the whole run, which a card cannot yet),
-// and the two Ancient cards (Biased Cognition, Quadcast), which come from events in their game.
+// Ilvane (display name; the id stays 'shaman', DECISIONS #141), an elder shaman of the old spirits. Rebuilt 2026-10-29
+// (docs/BASE_CLASS_REWORKS.md §5, DECISIONS #418): he plants enduring totems in three fixed positions and, once each turn, commands
+// one of them; its spirit manifests, acts and returns. His Defect copy (orbs in a queue that pushes the oldest out, Focus, Owl Mana,
+// the 0-cost recursion package; DECISIONS #371) is archived in reviews/balance-baselines/2026-10-29-pre-identity-reworks/.
 //
-// Build paths are hidden for now (DECISIONS #365) and the headings below are only a first sort:
-//   Totems   - plant totems, more slots, awaken them (orbs)
-//   Elements - storm, ice and fire strikes, 0-cost cards and status cards
-//   Rites    - Auras, Spirit (Focus) and Mana
-// Totems stand in 3 slots; a fourth pushes the oldest (the Defect's "rightmost" orb) out and it awakens. Numbers assume 3 Mana and a
-// 5-card hand. (Many card ids are older than the card they name now: an id keeps a card's art and every saved deck.)
+// Spirits (TOTEMS below; a totem does nothing on its own: no passive, no awakening):
+//   Hawk  - command: 4 damage to an enemy you choose (not an attack: no Might, no Exposed)
+//   Bear  - command: 4 Barrier to a friendly you choose
+//   Elder - command: gain 1 Spirit and draw a card (Spirit can never empower the Elder)
+// `plant(spirit)`: into the first free position; with all three taken the player chooses one to replace, or keeps them all.
+// `plant(spirit, true)`: a position the player chooses. Spirit (at most 3, kept between turns): one may be spent on a Hawk or Bear
+// command for +2. Rousing: the next Hawk or Bear command this turn deals or gives N more. One command a turn, however many totems.
+//
+// Three strategies, plus glue (build paths stay hidden, DECISIONS #365):
+//   Storm   - the Hawk on the attack: Rousing, Hawk payoffs, direct damage
+//   Shelter - the Bear and Barrier: guard cards, Bear payoffs
+//   Rites   - Spirit, the Elder, and deliberate replacement and uprooting
+// Costs and points: docs/reworks/SHAMAN.md and shaman-ledger.md (docs/14_CARD_COSTING.md §15). Card ids that came through from the
+// old pool keep their art and every saved deck.
 
-import type { CardDef, Op, RuneDef } from '@sr/combat';
+import type { CardDef, Op, TotemDef } from '@sr/combat';
 import {
   addTo,
   barrier,
+  barrierNext,
   card,
-  channel,
-  discoverOp,
   dmg,
   draw,
-  evoke,
-  exhaustN,
+  drawNext,
   fetchCards,
-  forge,
+  gainSpirit,
+  ifTotem,
   lose,
   mana,
   manaNext,
   on,
   onKill,
   per,
-  playPile,
+  plant,
   pool,
-  pulse,
   recost,
-  reshuffle,
-  returnPlayed,
+  rouse,
   scaled,
+  shelter,
+  spendSpirit,
   status,
   STATUS_TAG,
+  uproot,
+  when,
 } from '../build';
 
-// The Defect's orbs (StS2): Lightning 3 / 8, Frost 2 / 5, Dark +6 a turn from 6 / its charge on the weakest enemy, Plasma 1 Mana at
-// the start of the turn / 2 Mana, Glass 4 to every enemy and fading / twice that. Spirit adds to every number but Mana and the Dark's
-// awakening (its Spirit went into the charge).
-export const RUNES: RuneDef[] = [
+export const TOTEMS: TotemDef[] = [
   {
-    // (Lightning)
-    id: 'spark',
+    id: 'hawk',
     name: 'Hawk',
-    text: 'Passive: 3 damage to a random enemy at the end of your turn. Awaken: 8 damage to a random enemy.',
-    passive: [dmg(3, 'randomFoe')],
-    evoke: [dmg(8, 'randomFoe')],
+    text: 'Command: 4 damage to an enemy you choose (not an attack).',
+    aim: 'foe',
+    command: [dmg(4, 'target')],
+    empower: true,
   },
   {
-    // (Glass: it fades a little every time it strikes)
-    id: 'splinter',
-    name: 'Splinter',
-    text: 'Planted with a charge of 4. Passive: damage equal to its charge to ALL enemies at the end of your turn, then its charge falls by 1. Awaken: twice its charge to ALL enemies.',
-    start: 4,
-    decay: 1,
-    passive: [
-      { op: 'when', by: 'charge', atLeast: 1, ops: [scaled(dmg(0, 'allFoes'), per('charge'))] },
-    ],
-    evoke: [scaled(dmg(0, 'allFoes'), per('charge', 2))],
-  },
-  {
-    // (Frost)
-    id: 'ward',
+    id: 'bear',
     name: 'Bear',
-    text: 'Passive: 2 Barrier at the end of your turn. Awaken: 5 Barrier.',
-    passive: [barrier(2)],
-    evoke: [barrier(5)],
+    text: 'Command: 4 Barrier to a friendly you choose.',
+    aim: 'friend',
+    command: [barrier(4, 'target')],
+    empower: true,
   },
   {
-    // (Dark)
-    id: 'hollow',
+    id: 'elder',
     name: 'Elder',
-    text: 'Planted with a charge of 6; charges by 6 more at the end of each of your turns (Spirit adds to that). Awaken: damage equal to its charge to the enemy with the least HP.',
-    start: 6,
-    grow: 6,
-    plainEvoke: true,
-    passive: [],
-    evoke: [scaled(dmg(0, 'weakestFoe'), per('charge'))],
-  },
-  {
-    // (Plasma)
-    id: 'prism',
-    name: 'Owl',
-    text: 'Passive: gain 1 Mana at the start of your turn. Awaken: gain 2 Mana.',
-    atStart: true,
-    passive: [mana(1)],
-    evoke: [mana(2)],
+    text: 'Command: gain 1 Spirit and draw a card. (Spirit cannot empower the Elder.)',
+    aim: 'none',
+    command: [gainSpirit(1), draw(1)],
+    empower: false,
   },
 ];
 
 const i = pool('shaman', 'nexus');
-const RAND = '*';
-/** "Deal N damage once for every totem you have" (Barrage) */
+const ifHawk = (ops: Op[]): Op => ifTotem('hawk', ops);
+const ifBear = (ops: Op[]): Op => ifTotem('bear', ops);
+const ifElder = (ops: Op[]): Op => ifTotem('elder', ops);
+/** "Deal N damage once for every totem you have" (Totem Volley) */
 const perTotem = (n: number): Op => ({
   op: 'damage',
   amount: n,
   hits: 0,
   to: 'target',
-  scale: { by: 'runes', into: 'hits' },
+  scale: { by: 'totems', into: 'hits' },
 });
-/** "If you have a Bear: ..." (Hailstorm) */
-const ifBear = (ops: Op[]): Op => ({ op: 'when', by: 'runesOf', rune: 'ward', atLeast: 1, ops });
-const exhaustStatuses: Op = { op: 'exhaustCards', amount: 99, tag: STATUS_TAG, everywhere: true };
-const perConsumed = (n: number): Op => ({
+/** "Deal N damage once for every kind of totem you have" (Chorus of Spirits) */
+const perKind = (n: number): Op => ({
   op: 'damage',
   amount: n,
   hits: 0,
-  to: 'randomFoe',
-  scale: { by: 'exhaustedNow', into: 'hits' },
+  to: 'target',
+  scale: { by: 'totemKinds', into: 'hits' },
 });
-const zeroCostFromDiscard: Op = { op: 'fetch', amount: 99, to: 'hand', maxCost: 0 };
-const scrape = (n: number): Op => ({ op: 'draw', amount: n, keepCost: 0 });
-const freeCopy: Op = { op: 'copySelf', to: 'discard', free: true };
-const spiritThisTurn = (n: number): Op => status('resonance', n, 'self', true);
 
 export const SHAMAN: CardDef[] = [
   // --- basics ---
-  // (Zap)
-  i('basic', 'spark-cast', 'Hawk Call', 'skill', 1, 'none', [channel('spark')]),
-  // (Dualcast)
-  i('basic', 'twin-evocation', 'Twin Awakening', 'skill', 1, 'none', [evoke(1, 2)]),
-
-  // --- Totems ---
-  // (Ball Lightning)
-  i('common', 'spark-lash', 'Spark Lash', 'attack', 1, 'foe', [dmg(7), channel('spark')]),
-  // (Barrage)
-  i('common', 'charged-blow', 'Totem Volley', 'attack', 1, 'foe', [perTotem(5)], {
-    up: { effects: [perTotem(7)] },
-  }),
-  // (Cold Snap)
-  i('common', 'rime-strike', 'Rime Strike', 'attack', 1, 'foe', [dmg(6), channel('ward')]),
-  // (Compile Driver)
   i(
-    'common',
-    'driver-of-runes',
-    'Totem Driver',
-    'attack',
-    1,
-    'foe',
-    [dmg(7), scaled(draw(0), per('runeKinds'))],
-    { up: { effects: [dmg(10), scaled(draw(0), per('runeKinds'))] } },
-  ),
-  // (Coolheaded)
-  i('common', 'chilled-focus', 'Still Water', 'skill', 1, 'none', [channel('ward'), draw(1)]),
-  // (Lightning Rod)
-  i('common', 'storm-pole', 'Storm Pole', 'skill', 1, 'none', [
-    barrier(4),
-    on('turnStart', [channel('spark')], { times: 2 }),
-  ]),
-  // (Capacitor)
-  i(
-    'uncommon',
-    'glyph-lattice',
-    'Totem Row',
-    'power',
+    'basic',
+    'wardkeepers-pact',
+    "Wardkeeper's Pact",
+    'skill',
     1,
     'none',
-    [{ op: 'runeSlots', amount: 2 }],
+    [barrier(5), plant('bear')],
     {
-      up: { effects: [{ op: 'runeSlots', amount: 3 }] },
+      up: { effects: [barrier(7), plant('bear')] },
     },
   ),
-  // (Chaos)
-  i('uncommon', 'wild-call', 'Wild Call', 'skill', 1, 'none', [channel(RAND)], {
-    up: { effects: [channel(RAND, 2)] },
+  i('basic', 'guided-talon', 'Guided Talon', 'attack', 1, 'foe', [dmg(6), ifHawk([rouse(3)])], {
+    up: { effects: [dmg(9), ifHawk([rouse(3)])] },
   }),
-  // (Chill)
-  i(
-    'uncommon',
-    'cold-snap',
-    'Bear Pack',
-    'skill',
-    0,
-    'none',
-    [{ op: 'channel', rune: 'ward', times: 0, scale: per('foes') }],
-    { exhaust: true, up: { exhaust: false } },
-  ),
-  // (Darkness)
-  i(
-    'uncommon',
-    'gathering-dusk',
-    'Gathering Dusk',
-    'skill',
-    1,
-    'none',
-    [channel('hollow'), pulse({ rune: 'hollow' })],
-    { up: { effects: [channel('hollow'), pulse({ rune: 'hollow', times: 2 })] } },
-  ),
-  // (Fusion)
-  i('uncommon', 'prism-cut', 'Owl Call', 'skill', 1, 'none', [channel('prism')], {
-    exhaust: true,
-    up: { exhaust: false },
-  }),
-  // (Glacier)
-  i('uncommon', 'frostglass', 'Frostbark', 'skill', 2, 'none', [barrier(6), channel('ward', 2)]),
-  // (Glasswork)
-  i('uncommon', 'shard-chorus', 'Splinter Ward', 'skill', 1, 'none', [
-    barrier(5),
-    channel('splinter'),
-  ]),
-  // (Loop: the oldest totem's passive, at the start of your turn)
-  i(
-    'uncommon',
-    'echoing-loop',
-    'Unending Call',
-    'power',
-    1,
-    'none',
-    [on('turnStart', [pulse({ first: true })])],
-    { up: { effects: [on('turnStart', [pulse({ first: true, times: 2 })])] } },
-  ),
-  // (Null)
-  i('uncommon', 'night-veil', 'Night Veil', 'attack', 2, 'foe', [
-    dmg(10),
-    status('faltering', 1, 'target'),
-    channel('hollow'),
-  ]),
-  // (Refract)
-  i(
-    'uncommon',
-    'prismatic-cascade',
-    'Prismatic Cascade',
-    'attack',
-    3,
-    'foe',
-    [dmg(10, 'target', 2), channel('splinter', 2)],
-    { up: { effects: [dmg(13, 'target', 2), channel('splinter', 2)] } },
-  ),
-  // (Shadow Shield)
-  i(
-    'uncommon',
-    'void-pulse',
-    "Elder's Shelter",
-    'skill',
-    2,
-    'none',
-    [barrier(11), channel('hollow')],
-    {
-      up: { effects: [barrier(15), channel('hollow')] },
-    },
-  ),
-  // (Tempest)
-  i(
-    'uncommon',
-    'sparkstorm',
-    'Hawkstorm',
-    'skill',
-    0,
-    'none',
-    [{ op: 'channel', rune: 'spark', times: 0, scale: per('x') }],
-    { x: true },
-  ),
-  // (Tesla Coil: every Hawk's passive, against the target)
-  i(
-    'uncommon',
-    'arc-lightning',
-    'Arc Lightning',
-    'attack',
-    0,
-    'foe',
-    [dmg(3), pulse({ rune: 'spark', aim: true })],
-    { up: { effects: [dmg(4), pulse({ rune: 'spark', aim: true, times: 2 })] } },
-  ),
-  // (Consuming Shadow: your newest totem awakens at the end of every turn)
-  i(
-    'rare',
-    'gathering-dark',
-    'Devouring Night',
-    'power',
-    2,
-    'none',
-    [channel('hollow', 2), on('turnEnd', [{ op: 'evoke', last: true }])],
-    { up: { effects: [channel('hollow', 3), on('turnEnd', [{ op: 'evoke', last: true }])] } },
-  ),
-  // (Coolant)
-  i(
-    'rare',
-    'rune-carapace',
-    'Bark Carapace',
-    'power',
-    1,
-    'none',
-    [on('turnStart', [scaled(barrier(0), per('runeKinds', 2))])],
-    { up: { effects: [on('turnStart', [scaled(barrier(0), per('runeKinds', 3))])] } },
-  ),
-  // (Ice Lance)
-  i('rare', 'deep-freeze', 'Deep Freeze', 'attack', 3, 'foe', [dmg(19), channel('ward', 3)], {
-    up: { effects: [dmg(24), channel('ward', 3)] },
-  }),
-  // (Meteor Strike)
-  i('rare', 'falling-star', 'Falling Star', 'attack', 5, 'foe', [dmg(24), channel('prism', 3)], {
-    up: { effects: [dmg(30), channel('prism', 3)] },
-  }),
-  // (Modded: it costs 1 more every time you play it)
-  i('rare', 'carve-a-notch', 'Carve a Notch', 'skill', 0, 'none', [
-    { op: 'runeSlots', amount: 1 },
-    draw(1),
-    recost(1),
-  ]),
-  // (Multi-Cast)
-  i(
-    'rare',
-    'many-voices',
-    'Many Voices',
-    'skill',
-    0,
-    'none',
-    [{ op: 'evoke', times: 0, scale: per('x') }],
-    { x: true },
-  ),
-  // (Rainbow)
-  i(
-    'rare',
-    'aegis-array',
-    'Circle of Spirits',
-    'skill',
-    2,
-    'none',
-    [channel('spark'), channel('ward'), channel('hollow')],
-    { exhaust: true, up: { exhaust: false } },
-  ),
-  // (Shatter: every totem awakens twice)
-  i(
-    'rare',
-    'shatter-the-row',
-    'Shatter the Row',
-    'attack',
-    1,
-    'none',
-    [dmg(7, 'allFoes'), evoke(10, 2)],
-    { exhaust: true, up: { effects: [dmg(11, 'allFoes'), evoke(10, 2)] } },
-  ),
-  // (Spinner)
-  i(
-    'rare',
-    'splinter-wheel',
-    'Splinter Wheel',
-    'power',
-    1,
-    'none',
-    [on('turnStart', [channel('splinter')])],
-    { up: { effects: [channel('splinter'), on('turnStart', [channel('splinter')])] } },
-  ),
-  // (Voltaic: a Hawk for every Hawk planted this fight)
-  i(
-    'rare',
-    'echo-cascade',
-    'Endless Storm',
-    'skill',
-    3,
-    'none',
-    [{ op: 'channel', rune: 'spark', times: 0, scale: { by: 'channeledOf', rune: 'spark' } }],
-    { exhaust: true, up: { exhaust: false } },
-  ),
 
-  // --- Elements ---
-  // (Beam Cell)
+  // --- glue: general attacks, Barrier and cards ---
+  i('common', 'stone-skin', 'Stone Skin', 'skill', 1, 'none', [barrier(9)]),
+  i('common', 'gale-strike', 'Gale Strike', 'attack', 1, 'foe', [dmg(8), recost(-1)], {
+    up: { effects: [dmg(11), recost(-1)] },
+  }),
+  i('common', 'ember-toss', 'Ember Toss', 'attack', 1, 'none', [dmg(6, 'allFoes'), draw(1)], {
+    up: { effects: [dmg(9, 'allFoes'), draw(1)] },
+  }),
+  i('common', 'mudslide', 'Mudslide', 'attack', 1, 'foe', [
+    dmg(4, 'target', 3),
+    addTo('muck', 1, 'discard'),
+  ]),
+  i('common', 'tidecaller', 'Tidecaller', 'skill', 1, 'none', [barrier(7), manaNext(1)], {
+    up: { effects: [barrier(10), manaNext(1)] },
+  }),
   i(
     'common',
     'arc-flash',
@@ -374,26 +139,9 @@ export const SHAMAN: CardDef[] = [
     'foe',
     [dmg(3), status('exposed', 1, 'target')],
     {
-      up: { effects: [dmg(4), status('exposed', 2, 'target')] },
+      up: { effects: [dmg(5), status('exposed', 1, 'target')] },
     },
   ),
-  // (Boost Away)
-  i('common', 'gust-step', 'Gust Step', 'skill', 0, 'none', [
-    barrier(6),
-    addTo('haze', 1, 'discard'),
-  ]),
-  // (Claw: every copy hits harder each time one is played)
-  i(
-    'common',
-    'gathering-storm',
-    'Gathering Storm',
-    'attack',
-    0,
-    'foe',
-    [scaled(dmg(3), per('bonus')), forge('gathering-storm', 2)],
-    { up: { effects: [scaled(dmg(4), per('bonus')), forge('gathering-storm', 3)] } },
-  ),
-  // (Go for the Eyes)
   i(
     'common',
     'frost-needle',
@@ -402,7 +150,7 @@ export const SHAMAN: CardDef[] = [
     0,
     'foe',
     [
-      dmg(3),
+      dmg(4),
       {
         op: 'when',
         by: 'attacking',
@@ -414,70 +162,26 @@ export const SHAMAN: CardDef[] = [
     {
       up: {
         effects: [
-          dmg(4),
+          dmg(6),
           {
             op: 'when',
             by: 'attacking',
             of: 'target',
             atLeast: 1,
-            ops: [status('faltering', 2, 'target')],
+            ops: [status('faltering', 1, 'target')],
           },
         ],
       },
     },
   ),
-  // (Gunk Up)
-  i('common', 'mudslide', 'Mudslide', 'attack', 1, 'foe', [
-    dmg(4, 'target', 3),
-    addTo('muck', 1, 'discard'),
-  ]),
-  // (Hologram: a random card comes back, not a chosen one)
-  i('common', 'spirit-memory', 'Spirit Memory', 'skill', 1, 'none', [barrier(3), fetchCards(1)], {
-    exhaust: true,
-    up: { effects: [barrier(5), fetchCards(1)], exhaust: false },
+  i('common', 'spirit-memory', 'Spirit Memory', 'skill', 1, 'none', [barrier(6), fetchCards(1)], {
+    up: { effects: [barrier(9), fetchCards(1)] },
   }),
-  // (Leap)
-  i('common', 'stone-skin', 'Stone Skin', 'skill', 1, 'none', [barrier(9)]),
-  // (Momentum Strike: after the first play it costs 0 for the fight)
-  i('common', 'gale-strike', 'Gale Strike', 'attack', 1, 'foe', [dmg(11), recost(-1)], {
-    up: { effects: [dmg(15), recost(-1)] },
-  }),
-  // (Sweeping Beam)
-  i('common', 'ember-toss', 'Ember Toss', 'attack', 1, 'none', [dmg(6, 'allFoes'), draw(1)], {
-    up: { effects: [dmg(9, 'allFoes'), draw(1)] },
-  }),
-  // (Uproar)
-  i(
-    'common',
-    'storm-call',
-    'Storm Call',
-    'attack',
-    2,
-    'foe',
-    [dmg(6, 'target', 2), playPile('draw', { kind: 'attack' })],
-    { up: { effects: [dmg(8, 'target', 2), playPile('draw', { kind: 'attack' })] } },
-  ),
-  // (Boot Sequence)
+  i('uncommon', 'clear-spring', 'Clear Spring', 'skill', 1, 'none', [draw(3)]),
   i('uncommon', 'crystal-ward', 'Crystal Ward', 'skill', 0, 'none', [barrier(10)], {
     innate: true,
     exhaust: true,
   }),
-  // (Compact: every status card in your hand becomes Kindling)
-  i(
-    'uncommon',
-    'gather-kindling',
-    'Gather Kindling',
-    'skill',
-    1,
-    'none',
-    [barrier(6), { op: 'transform', tag: STATUS_TAG, into: 'kindling' }],
-    { up: { effects: [barrier(7), { op: 'transform', tag: STATUS_TAG, into: 'kindling+' }] } },
-  ),
-  // (Feral: the first 0-cost Attack you play each turn comes back to your hand)
-  i('uncommon', 'wild-heart', 'Wild Heart', 'power', 2, 'none', [
-    on('play', [returnPlayed], { filter: 'attack', maxCost: 0, once: true }),
-  ]),
-  // (Fight Through)
   i(
     'uncommon',
     'ironbark',
@@ -490,190 +194,52 @@ export const SHAMAN: CardDef[] = [
       up: { effects: [barrier(17), addTo('wound', 2, 'discard')] },
     },
   ),
-  // (FTL)
-  i(
-    'uncommon',
-    'rapids',
-    'Rapids',
-    'attack',
-    0,
-    'foe',
-    [dmg(5), { op: 'when', by: 'played', atMost: 2, ops: [draw(1)] }],
-    { up: { effects: [dmg(6), { op: 'when', by: 'played', atMost: 3, ops: [draw(1)] }] } },
-  ),
-  // (Iteration)
-  i(
-    'uncommon',
-    'glacial-memory',
-    'Smoke Reading',
-    'power',
-    1,
-    'none',
-    [on('draw', [draw(2)], { tag: STATUS_TAG, once: true })],
-    { up: { effects: [on('draw', [draw(3)], { tag: STATUS_TAG, once: true })] } },
-  ),
-  // (Overclock) Consumed, unlike theirs: balance.test forbids a free card that draws and stays (as the knight's Bloodletting)
-  i(
-    'uncommon',
-    'feed-the-fire',
-    'Feed the Fire',
-    'skill',
-    0,
-    'none',
-    [draw(2), addTo('scorch', 1, 'discard')],
-    { exhaust: true },
-  ),
-  // (Rocket Punch)
-  i('uncommon', 'boulder-fist', 'Boulder Fist', 'attack', 2, 'foe', [dmg(13), draw(1)], {
-    cheaperOnCreate: STATUS_TAG,
-    up: { effects: [dmg(14), draw(2)] },
-  }),
-  // (Scavenge)
-  i('uncommon', 'smoke-offering', 'Smoke Offering', 'skill', 1, 'none', [exhaustN(1), manaNext(2)]),
-  // (Scrape)
-  i('uncommon', 'river-scour', 'Riverscour', 'attack', 1, 'foe', [dmg(7), scrape(4)], {
-    up: { effects: [dmg(10), scrape(5)] },
-  }),
-  // (Skim)
-  i('uncommon', 'clear-spring', 'Clear Spring', 'skill', 1, 'none', [draw(3)]),
-  // (Smokestack)
-  i(
-    'uncommon',
-    'kindled-rite',
-    'Kindled Rite',
-    'power',
-    1,
-    'none',
-    [on('created', [dmg(5, 'allFoes')], { tag: STATUS_TAG })],
-    { up: { effects: [on('created', [dmg(7, 'allFoes')], { tag: STATUS_TAG })] } },
-  ),
-  // (Sunder)
   i('uncommon', 'skybreaker', 'Skybreaker', 'attack', 3, 'foe', [onKill(dmg(26), [mana(1)])], {
     up: { effects: [onKill(dmg(34), [mana(1)])] },
   }),
-  // (Adaptive Strike)
-  i('rare', 'shifting-strike', 'Shifting Strike', 'attack', 2, 'foe', [dmg(18), freeCopy], {
-    up: { effects: [dmg(23), freeCopy] },
-  }),
-  // (All for One)
-  i('rare', 'harmonic-wave', 'Spirit Wave', 'attack', 2, 'foe', [dmg(10), zeroCostFromDiscard], {
-    up: { effects: [dmg(14), zeroCostFromDiscard] },
-  }),
-  // (Flak Cannon)
-  i(
-    'rare',
-    'blazing-aperture',
-    'Blazing Eye',
-    'attack',
-    2,
-    'none',
-    [exhaustStatuses, perConsumed(8)],
-    {
-      up: { effects: [exhaustStatuses, perConsumed(11)] },
-    },
-  ),
-  // (Helix Drill)
-  i('rare', 'whirlpool', 'Whirlpool', 'attack', 0, 'foe', [scaled(dmg(0), per('manaSpent', 3))], {
-    up: { effects: [scaled(dmg(0), per('manaSpent', 5))] },
-  }),
-  // (One for All: in their game everyone's 0-cost Attacks; here only yours)
-  i('rare', 'winds-favor', "Wind's Favor", 'power', 1, 'none', [status('deftness', 3)]),
-  // (Reboot)
-  i('rare', 'retune', 'Retune', 'skill', 0, 'none', [reshuffle, draw(4)], {
-    exhaust: true,
-    up: { effects: [reshuffle, draw(6)] },
-  }),
-  // (Trash to Treasure)
-  i('rare', 'biased-weave', 'Ash to Spirits', 'power', 1, 'none', [
-    on('created', [channel(RAND)], { tag: STATUS_TAG }),
-  ]),
 
-  // --- Rites ---
-  // (Charge Battery)
-  i('common', 'tidecaller', 'Tidecaller', 'skill', 1, 'none', [barrier(7), manaNext(1)], {
-    up: { effects: [barrier(10), manaNext(1)] },
-  }),
-  // (Focused Strike)
-  i('common', 'resonant-strike', 'Spirit Strike', 'attack', 1, 'foe', [dmg(9), spiritThisTurn(1)], {
-    up: { effects: [dmg(11), spiritThisTurn(2)] },
-  }),
-  // (Hotfix)
-  i('common', 'elemental-focus', 'Elemental Focus', 'skill', 0, 'none', [spiritThisTurn(2)], {
-    exhaust: true,
-    up: { exhaust: false },
-  }),
-  // (TURBO) Consumed, unlike theirs: balance.test forbids a free card that makes Mana and stays (as the knight's Bloodletting)
+  // --- Storm: the Hawk on the attack ---
   i(
     'common',
-    'inner-flame',
-    'Inner Flame',
+    'spark-cast',
+    'Hawk Call',
     'skill',
-    0,
+    1,
     'none',
-    [mana(2), addTo('void-drain', 1, 'discard')],
+    [plant('hawk'), rouse(4), barrier(4)],
     {
-      exhaust: true,
-      up: { effects: [mana(3), addTo('void-drain', 1, 'discard')] },
+      up: { effects: [plant('hawk'), rouse(6), barrier(4)] },
     },
   ),
-  // (Bulk Up: Bracing is the Dexterity)
-  i('uncommon', 'earthen-might', 'Earthen Might', 'power', 2, 'none', [
-    { op: 'runeSlots', amount: -1 },
-    status('might', 2),
-    status('bracing', 2),
-  ]),
-  // (Double Energy)
-  i('uncommon', 'leyline-tap', 'Root Tap', 'skill', 1, 'none', [scaled(mana(0), per('mana'))], {
-    exhaust: true,
-    up: { cost: 0 },
+  i('common', 'spark-lash', 'Spark Lash', 'attack', 1, 'foe', [dmg(7), plant('hawk'), rouse(2)], {
+    up: { effects: [dmg(10), plant('hawk'), rouse(2)] },
   }),
-  // (Energy Surge: in their game every player gains it)
-  i('uncommon', 'tidal-surge', 'Tidal Surge', 'skill', 1, 'none', [mana(2)], {
-    exhaust: true,
-    up: { effects: [mana(3)] },
+  i('common', 'charged-blow', 'Totem Volley', 'attack', 1, 'foe', [perTotem(4)], {
+    up: { effects: [perTotem(5)] },
   }),
-  // (Hailstorm)
   i(
-    'uncommon',
-    'permafrost',
-    'Hail Rite',
-    'power',
+    'common',
+    'hawkeye-strike',
+    "Hawk's Eye",
+    'attack',
     1,
-    'none',
-    [on('turnEnd', [ifBear([dmg(6, 'allFoes')])])],
-    { up: { effects: [on('turnEnd', [ifBear([dmg(8, 'allFoes')])])] } },
+    'foe',
+    [dmg(8), ifHawk([status('exposed', 1, 'target')])],
+    { up: { effects: [dmg(11), ifHawk([status('exposed', 1, 'target')])] } },
   ),
-  // (Storm)
+  i('common', 'diving-talon', 'Diving Talon', 'attack', 2, 'foe', [dmg(14), rouse(4)], {
+    up: { effects: [dmg(18), rouse(4)] },
+  }),
   i(
     'uncommon',
-    'thundercall',
-    'Thunder Rite',
-    'power',
-    1,
-    'none',
-    [on('play', [channel('spark')], { filter: 'power' })],
-    { up: { effects: [on('play', [channel('spark', 2)], { filter: 'power' })] } },
-  ),
-  // (Subroutine)
-  i('uncommon', 'tuning-fork', 'Spirit Drum', 'power', 1, 'none', [
-    on('play', [mana(1)], { filter: 'power' }),
-  ]),
-  // (Synchronize)
-  i(
-    'uncommon',
-    'chorus-of-glyphs',
-    'Chorus of Totems',
+    'hawks-counsel',
+    "Hawk's Counsel",
     'skill',
     1,
     'none',
-    [scaled(spiritThisTurn(0), per('runeKinds'))],
-    { up: { effects: [scaled(spiritThisTurn(0), per('runeKinds', 2))] } },
+    [plant('hawk', true), gainSpirit(1), draw(2)],
+    { up: { effects: [plant('hawk', true), gainSpirit(2), draw(2)] } },
   ),
-  // (Synthesis)
-  i('uncommon', 'fire-bloom', 'Fire Bloom', 'attack', 2, 'foe', [dmg(14), status('freepower', 1)], {
-    up: { effects: [dmg(20), status('freepower', 1)] },
-  }),
-  // (Thunder: each enemy a Hawk's awakening strikes is struck again)
   i(
     'uncommon',
     'stormcrown',
@@ -681,74 +247,294 @@ export const SHAMAN: CardDef[] = [
     'power',
     1,
     'none',
-    [on('evoke', [dmg(8)], { rune: 'spark' })],
-    { up: { effects: [on('evoke', [dmg(11)], { rune: 'spark' })] } },
+    [on('command', [dmg(4, 'allFoes')], { rune: 'hawk' })],
+    { up: { effects: [on('command', [dmg(5, 'allFoes')], { rune: 'hawk' })] } },
   ),
-  // (White Noise: free for the rest of the fight, not the turn)
+  i('uncommon', 'arc-lightning', 'Arc Lightning', 'attack', 0, 'foe', [dmg(4), ifHawk([dmg(3)])], {
+    up: { effects: [dmg(6), ifHawk([dmg(3)])] },
+  }),
   i(
     'uncommon',
-    'white-noise',
-    'Spirit Whisper',
+    'thunderhead',
+    'Thunderhead',
+    'attack',
+    2,
+    'none',
+    [dmg(12, 'allFoes'), ifHawk([rouse(4)])],
+    { up: { effects: [dmg(15, 'allFoes'), ifHawk([rouse(4)])] } },
+  ),
+  i(
+    'rare',
+    'eye-of-the-tempest',
+    'Eye of the Tempest',
+    'attack',
+    2,
+    'foe',
+    [dmg(7, 'target', 3), ifHawk([rouse(4)])],
+    { up: { effects: [dmg(9, 'target', 3), ifHawk([rouse(4)])] } },
+  ),
+  i(
+    'rare',
+    'stormcallers-rite',
+    "Stormcaller's Rite",
     'skill',
     1,
     'none',
-    [discoverOp('power', 1, true)],
-    {
-      exhaust: true,
-      up: { cost: 0 },
-    },
+    [rouse(8), gainSpirit(1), draw(1)],
+    { up: { effects: [rouse(11), gainSpirit(1), draw(1)] } },
   ),
-  // (Buffer)
-  i('rare', 'sentinel-sigil', 'Spirit Ward', 'power', 2, 'none', [status('shielded', 1)], {
-    up: { effects: [status('shielded', 2)] },
-  }),
-  // (Creative AI)
-  i('rare', 'spiritfont', 'Spiritfont', 'power', 3, 'none', [
-    on('turnStart', [discoverOp('power')]),
-  ]),
-  // (Defragment)
-  i('rare', 'tune-the-lattice', 'Tune the Spirits', 'power', 1, 'none', [status('resonance', 1)]),
-  // (Echo Form)
-  i('rare', 'echoing-form', 'Echoing Chant', 'power', 3, 'none', [status('echoing', 1)], {
-    ethereal: true,
-    up: { ethereal: false },
-  }),
-  // (Hyperbeam)
-  i('rare', 'hyperbeam', 'Skyfall', 'attack', 2, 'none', [dmg(24, 'allFoes'), spiritThisTurn(-3)], {
-    up: { effects: [dmg(30, 'allFoes'), spiritThisTurn(-3)] },
-  }),
-  // (Machine Learning)
   i(
     'rare',
-    'machine-learning',
-    'Ancestral Learning',
+    'falling-star',
+    'Verdict of the Sky',
+    'attack',
+    3,
+    'foe',
+    [dmg(24), status('exposed', 2, 'target'), ifHawk([rouse(5)])],
+    { up: { effects: [dmg(30), status('exposed', 2, 'target'), ifHawk([rouse(5)])] } },
+  ),
+
+  // --- Shelter: the Bear and Barrier ---
+  i(
+    'common',
+    'rime-strike',
+    'Rime Strike',
+    'attack',
+    1,
+    'foe',
+    [dmg(6), barrier(3), plant('bear')],
+    { up: { effects: [dmg(9), barrier(3), plant('bear')] } },
+  ),
+  i('common', 'chilled-focus', 'Still Water', 'skill', 1, 'none', [barrier(6), ifBear([draw(1)])], {
+    up: { effects: [barrier(9), ifBear([draw(1)])] },
+  }),
+  i('common', 'frostbark', 'Frostbark', 'skill', 1, 'none', [barrier(7), rouse(2)], {
+    up: { effects: [barrier(10), rouse(2)] },
+  }),
+  i('common', 'bear-hug', 'Bear Hug', 'attack', 1, 'foe', [dmg(7), ifBear([barrier(4)])], {
+    up: { effects: [dmg(10), ifBear([barrier(4)])] },
+  }),
+  i(
+    'uncommon',
+    'shared-shelter',
+    'Shared Shelter',
+    'skill',
+    1,
+    'none',
+    [barrier(6), shelter, draw(1)],
+    { up: { effects: [barrier(9), shelter, draw(1)] } },
+  ),
+  i(
+    'uncommon',
+    'frostglass',
+    'Frostglass',
+    'skill',
+    2,
+    'none',
+    [barrier(12), plant('bear'), rouse(3)],
+    { up: { effects: [barrier(15), plant('bear'), rouse(3)] } },
+  ),
+  i('uncommon', 'void-pulse', 'Deep Den', 'skill', 2, 'none', [barrier(11), barrierNext(6)], {
+    up: { effects: [barrier(14), barrierNext(8)] },
+  }),
+  i(
+    'uncommon',
+    'permafrost',
+    'Hail Rite',
     'power',
     1,
     'none',
-    [on('turnStart', [draw(1)])],
+    [on('turnEnd', [ifBear([dmg(4, 'allFoes')])])],
+    { up: { effects: [on('turnEnd', [ifBear([dmg(5, 'allFoes')])])] } },
+  ),
+  i(
+    'rare',
+    'rune-carapace',
+    'Bark Carapace',
+    'power',
+    1,
+    'none',
+    [on('turnStart', [scaled(barrier(0), per('totems', 2))])],
     { up: { innate: true } },
   ),
-  // (Signal Boost)
-  i('rare', 'overtune', 'Resounding Call', 'skill', 1, 'none', [status('boosted', 1)], {
-    exhaust: true,
-    up: { cost: 0 },
-  }),
-  // (Supercritical)
-  i('rare', 'firestorm', 'Heart of Flame', 'skill', 0, 'none', [mana(4)], {
-    exhaust: true,
-    up: { effects: [mana(6)] },
-  }),
+  i(
+    'rare',
+    'ancestral-bulwark',
+    'Ancestral Bulwark',
+    'skill',
+    2,
+    'none',
+    [barrier(14), ifBear([rouse(6)])],
+    { up: { effects: [barrier(18), ifBear([rouse(6)])] } },
+  ),
+  i(
+    'rare',
+    'deep-freeze',
+    'Deep Freeze',
+    'attack',
+    3,
+    'foe',
+    [dmg(18), barrier(10), plant('bear')],
+    { up: { effects: [dmg(23), barrier(10), plant('bear')] } },
+  ),
+  i(
+    'rare',
+    'roar-of-the-den',
+    'Roar of the Den',
+    'power',
+    1,
+    'none',
+    [on('command', [barrier(2), dmg(5, 'allFoes')], { rune: 'bear' })],
+    { up: { effects: [on('command', [barrier(2), dmg(7, 'allFoes')], { rune: 'bear' })] } },
+  ),
 
-  // --- glue: the cards his cards make ---
-  // (Fuel, which Compact makes)
-  i('common', 'kindling', 'Kindling', 'skill', 0, 'none', [mana(1)], {
-    exhaust: true,
-    source: 'token',
-    up: { effects: [mana(2)] },
+  // --- Rites: Spirit, the Elder, replacement and uprooting ---
+  i(
+    'common',
+    'gathering-dusk',
+    'Call the Elder',
+    'skill',
+    1,
+    'none',
+    [plant('elder'), gainSpirit(1), barrier(4)],
+    { up: { effects: [plant('elder'), gainSpirit(2), barrier(4)] } },
+  ),
+  i('common', 'resonant-strike', 'Resonant Strike', 'attack', 1, 'foe', [dmg(8), gainSpirit(1)], {
+    up: { effects: [dmg(11), gainSpirit(1)] },
   }),
+  i(
+    'common',
+    'tune-the-spirits',
+    'Tune the Spirits',
+    'skill',
+    1,
+    'none',
+    [gainSpirit(2), barrier(5)],
+    {
+      up: { effects: [gainSpirit(2), barrier(8)] },
+    },
+  ),
+  i('common', 'driver-of-runes', 'Spirit Guide', 'attack', 1, 'foe', [dmg(7), ifElder([draw(1)])], {
+    up: { effects: [dmg(10), ifElder([draw(1)])] },
+  }),
+  i(
+    'uncommon',
+    'ancestral-exchange',
+    'Ancestral Exchange',
+    'skill',
+    1,
+    'none',
+    [barrier(4), plant('*', true), when('replacedNow', { atLeast: 1 }, [gainSpirit(1), draw(1)])],
+    {
+      up: {
+        effects: [
+          barrier(7),
+          plant('*', true),
+          when('replacedNow', { atLeast: 1 }, [gainSpirit(1), draw(1)]),
+        ],
+      },
+    },
+  ),
+  i(
+    'uncommon',
+    'rite-of-returning',
+    'Rite of Returning',
+    'power',
+    1,
+    'none',
+    [on('command', [drawNext(1)], { once: true })],
+    { up: { innate: true } },
+  ),
+  i(
+    'uncommon',
+    'resounding-call',
+    'Resounding Call',
+    'skill',
+    2,
+    'none',
+    [rouse(6), gainSpirit(2), barrier(10)],
+    { up: { effects: [rouse(6), gainSpirit(2), barrier(13)] } },
+  ),
+  i(
+    'uncommon',
+    'elders-wisdom',
+    "Elder's Wisdom",
+    'skill',
+    1,
+    'none',
+    [barrier(6), spendSpirit(99), scaled(draw(0), per('spiritSpent'))],
+    { up: { effects: [barrier(9), spendSpirit(99), scaled(draw(0), per('spiritSpent'))] } },
+  ),
+  i(
+    'uncommon',
+    'chorus-of-glyphs',
+    'Chorus of Spirits',
+    'attack',
+    1,
+    'foe',
+    [perKind(4), gainSpirit(1)],
+    { up: { effects: [perKind(5), gainSpirit(1)] } },
+  ),
+  i(
+    'uncommon',
+    'spirit-drum',
+    'Spirit Drum',
+    'power',
+    1,
+    'none',
+    [on('command', [gainSpirit(1), barrier(2)])],
+    { up: { effects: [on('command', [gainSpirit(1), barrier(3)])] } },
+  ),
+  i(
+    'rare',
+    'circle-of-ancestors',
+    'Circle of Ancestors',
+    'power',
+    1,
+    'none',
+    [on('replace', [gainSpirit(1), draw(1), dmg(5, 'allFoes')], { once: true })],
+    { up: { innate: true } },
+  ),
+  i('rare', 'tune-the-lattice', 'Elder Communion', 'skill', 1, 'none', [gainSpirit(3), draw(2)], {
+    up: { effects: [gainSpirit(3), draw(3)] },
+  }),
+  i(
+    'rare',
+    'world-tree',
+    'Heart of the World Tree',
+    'power',
+    1,
+    'none',
+    [on('turnStart', [gainSpirit(1), barrier(3)])],
+    { up: { effects: [on('turnStart', [gainSpirit(1), barrier(4)])] } },
+  ),
+  i(
+    'rare',
+    'spiritstorm',
+    'Spiritstorm',
+    'attack',
+    1,
+    'none',
+    [spendSpirit(99), scaled(dmg(4, 'allFoes'), per('spiritSpent', 4))],
+    { up: { effects: [spendSpirit(99), scaled(dmg(7, 'allFoes'), per('spiritSpent', 4))] } },
+  ),
+  i(
+    'rare',
+    'shatter-the-row',
+    'Release the Spirits',
+    'skill',
+    1,
+    'none',
+    [uproot, scaled(dmg(0, 'allFoes'), per('uprooted', 6))],
+    {
+      exhaust: true,
+      up: { effects: [uproot, scaled(dmg(0, 'allFoes'), per('uprooted', 7))] },
+    },
+  ),
 ];
 
-// The Defect's status cards (Dazed, Burn, Slimed, Void; Wound is shared and lives in neutral.ts). Junk, like Wound: never a reward.
+// The status cards his old pool made (Dazed, Burn, Slimed, Void; Wound is shared and lives in neutral.ts). Junk, like Wound: never a
+// reward. Mudslide still makes a Muck; the others stay for the enemies and events that use them.
 const junk = (
   id: string,
   name: string,

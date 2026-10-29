@@ -85,7 +85,11 @@ export type StatusId =
   | 'knives' // knives embedded in it by the other side (at most KNIFE_MAX); a card pulls them for a payoff
   | 'prep' // Preparation: the Assassin's setup, at most PREP_MAX, kept between turns; finishers spend it
   // (the Spellblade's, DECISIONS #417)
-  | 'twinedge'; // the next enchantment you discharge this turn takes effect twice (it is still spent once)
+  | 'twinedge' // the next enchantment you discharge this turn takes effect twice (it is still spent once)
+  // (the Shaman's commanded totems, DECISIONS #418)
+  | 'spirit' // Spirit: at most SPIRIT_MAX, kept between turns; one is spent to empower a command (+SPIRIT_BOOST)
+  | 'rousing' // your next command this turn deals or gives this much more (it wears off at the end of your turn)
+  | 'shelter'; // this turn, your next command that aims at a friendly gives its Barrier to every friendly
 export const STATUS_IDS: readonly StatusId[] = [
   'exposed',
   'faltering',
@@ -154,6 +158,9 @@ export const STATUS_IDS: readonly StatusId[] = [
   'knives',
   'prep',
   'twinedge',
+  'spirit',
+  'rousing',
+  'shelter',
 ];
 /** Debuffs: a Steadfast unit ignores the next one put on it. */
 export const DEBUFFS: readonly StatusId[] = [
@@ -177,6 +184,10 @@ export const EDGE_TAG = 'knife';
 /** The most knives one unit can have embedded, and the most Preparation a hero can hold (the Assassin, DECISIONS #416). */
 export const KNIFE_MAX = 3;
 export const PREP_MAX = 3;
+/** The Shaman's totems (DECISIONS #418): fixed positions, the most Spirit, and what one Spirit adds to an empowered command. */
+export const TOTEM_SLOTS = 3;
+export const SPIRIT_MAX = 3;
+export const SPIRIT_BOOST = 2;
 /**
  * The Spellblade's enchantments (DECISIONS #417): her Obsidian Blade holds ENCHANT_SLOTS of them, in the order they were imbued. A
  * discharge spends them: Ember adds EMBER_DAMAGE to the first hit of the attack, Glass deals GLASS_DAMAGE to every enemy after it (a
@@ -329,7 +340,16 @@ export type Metric =
   | 'enchants' // enchantments on your blade (0-2)
   | 'enchantKinds' // different kinds of them
   | 'wards' // Ward enchantments on your blade
-  | 'discharged'; // enchantments the card being played has discharged
+  | 'discharged' // enchantments the card being played has discharged
+  // (the Shaman, DECISIONS #418)
+  | 'totems' // totems you have planted (0-3)
+  | 'totemKinds' // different kinds of them
+  | 'totemsOf' // your totems of the `rune` kind
+  | 'spirit' // (about a unit) its Spirit
+  | 'commanded' // 1 once you have commanded a totem this turn
+  | 'uprooted' // totems the card being played has uprooted
+  | 'replacedNow' // totems the card being played has replaced with a different kind
+  | 'spiritSpent'; // Spirit the card being played has spent
 export interface Scale {
   by: Metric;
   mult?: number;
@@ -383,7 +403,11 @@ export type TriggerWhen =
   // (the Spellblade's, DECISIONS #417)
   | 'imbue' // you imbued an enchantment
   | 'discharge' // a card of yours discharged at least one enchantment
-  | 'dischargeMixed'; // a card discharged two different kinds at once
+  | 'dischargeMixed' // a card discharged two different kinds at once
+  // (the Shaman's totems, DECISIONS #418; `rune` narrows them to one kind of spirit)
+  | 'command' // you commanded a totem (the target is what its spirit aimed at)
+  | 'plant' // you planted a totem
+  | 'replace'; // a totem you planted replaced one of a different kind
 
 export type Op =
   /** `lonePct`: Point Blank, this much more damage (percent) when it hits only one enemy */
@@ -680,7 +704,15 @@ export type Op =
   /** discharge 1 (the player chooses when the two differ) or 2 (both) enchantments: put it before the card's damage */
   | { op: 'discharge'; count: 1 | 2 }
   /** your newest enchantment becomes another kind (the player chooses which) */
-  | { op: 'recast' };
+  | { op: 'recast' }
+  // --- the Shaman's totems (DECISIONS #418)
+  /**
+   * plant a totem of `spirit` ('*': the player chooses the kind): into the first free position; with all taken, the player chooses
+   * one to replace or keeps them all (no plant). `anywhere`: the player chooses any position, free or taken (Hawk's Counsel).
+   */
+  | { op: 'plant'; spirit: string; anywhere?: boolean }
+  /** uproot every totem you have (the `uprooted` metric counts them) */
+  | { op: 'uproot' };
 
 export type CardKind = 'attack' | 'skill' | 'power' | 'summon' | 'snare';
 /** foe = an enemy; friend = any unit of yours (hero or ally); ally = one of your allies, never the hero */
@@ -850,6 +882,8 @@ export interface HeroTrait {
   salvage?: boolean;
   /** Guard (the Knight, DECISIONS #415): an enemy attack hit this hero's Barrier stops completely leaves the attacker Open */
   openings?: boolean;
+  /** Totems (the Shaman, DECISIONS #418): this many fixed totem positions, and once a turn the player commands one of them */
+  totems?: number;
 }
 
 export interface HeroDef {
@@ -923,8 +957,23 @@ export interface RuneDef {
   atStart?: boolean;
 }
 
+/**
+ * A spirit of the Shaman's totems (DECISIONS #418). It does nothing on its own: once a turn the player commands one planted totem and
+ * its `command` runs, aimed at a foe, a friendly or nothing. Rousing, and one Spirit when `empower` allows, add to its numbers.
+ */
+export interface TotemDef {
+  id: string;
+  name: string;
+  text: string;
+  aim: 'foe' | 'friend' | 'none';
+  command: Op[];
+  /** one Spirit may be spent on it for +SPIRIT_BOOST to its damage or Barrier */
+  empower: boolean;
+}
+
 export interface CombatDb {
   runes?: Record<string, RuneDef>;
+  totems?: Record<string, TotemDef>;
   cards: Record<CardId, CardDef>;
   potions: Record<string, PotionDef>;
   boons: Record<string, BoonDef>;
@@ -1063,7 +1112,12 @@ export interface Pending {
     | 'transform'
     | 'enchant'
     | 'discharge'
-    | 'recast';
+    | 'recast'
+    | 'plantKind'
+    | 'plantAt';
+  /** (the Shaman's: 'plantKind' which spirit to plant, pool the totem ids; 'plantAt' which position, pool 't0'-'t2', none = keep) */
+  spirit?: string;
+  anywhere?: boolean;
   /** 'enchant': the enchantment being imbued */
   charge?: Enchant;
   /** what the card had discharged so far (Ember's damage still to land, Glass still to break), carried over the choice */
@@ -1179,6 +1233,10 @@ export interface SideState {
   costTax?: number;
   /** (the Spellblade) the enchantments on her blade, oldest first (at most ENCHANT_SLOTS) */
   enchants?: Enchant[];
+  /** (the Shaman) totem positions, each a TotemDef id or null; missing for a hero without totems (DECISIONS #418) */
+  totems?: (string | null)[];
+  /** a totem was commanded this turn (once a turn) */
+  commanded?: boolean;
 }
 
 export type Winner = Side | 'draw';
@@ -1282,7 +1340,9 @@ export type Action =
   | { type: 'potion'; index: number; potion?: string; target?: UnitId }
   | { type: 'endTurn' }
   /** answer a pending choice with the cards picked (their ids, in any order) */
-  | { type: 'pick'; cards: InstId[] };
+  | { type: 'pick'; cards: InstId[] }
+  /** (the Shaman, DECISIONS #418) command the totem in position `totem`, once a turn; `empower` spends 1 Spirit on it */
+  | { type: 'command'; totem: number; target?: UnitId; empower?: boolean };
 
 export type CombatEvent =
   | { type: 'turnStart'; side: Side; turn: number }
@@ -1344,6 +1404,17 @@ export type CombatEvent =
   | { type: 'stance'; unit: UnitId; stance: Stance | 'none' }
   /** the enchantments on a side's blade changed (the Spellblade's); `spent`: these were just discharged */
   | { type: 'enchant'; side: Side; enchants: Enchant[]; spent?: Enchant[] }
+  /** a side's totems changed (the Shaman's); `at`: the position that changed */
+  | { type: 'totems'; side: Side; totems: (string | null)[]; at?: number }
+  /** a totem was commanded: its spirit manifests and acts */
+  | {
+      type: 'command';
+      side: Side;
+      totem: number;
+      spirit: string;
+      target: UnitId | null;
+      empowered: boolean;
+    }
   | { type: 'power'; side: Side; card: CardId }
   | { type: 'transform'; side: Side; card: InstId; def: CardId; costMod?: number }
   | { type: 'forge'; side: Side; card: CardId; amount: number }

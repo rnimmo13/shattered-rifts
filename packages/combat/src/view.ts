@@ -84,6 +84,9 @@ export interface SideView {
   suitsTurn?: Suit[];
   /** (the Spellblade) the enchantments on her blade, oldest first; missing for a side that never had one */
   enchants?: Enchant[];
+  /** (the Shaman) totem positions (a TotemDef id or null), and whether a totem was commanded this turn */
+  totems?: (string | null)[];
+  commanded?: boolean;
   runes: RuneState[];
   runeSlots: number;
   powers: { id: string; card: string; when: PowerState['when'] }[];
@@ -101,6 +104,10 @@ export interface PendingView {
   charges?: { id: string; kind: Enchant }[];
   /** 'enchant': the enchantment that is coming in */
   incoming?: Enchant;
+  /** (the Shaman's choices) the spirits to choose among ('plantKind'), or the positions ('plantAt': what stands there, null if free) */
+  spirits?: { id: string; spirit: string | null }[];
+  /** 'plantAt': the spirit being planted */
+  planting?: string;
 }
 
 export interface CombatView {
@@ -221,6 +228,22 @@ function pendingView(s: CombatState, me: Side): PendingView | null {
       ...(p.charge ? { incoming: p.charge } : {}),
     };
   }
+  // (the Shaman's: kinds of spirit, or totem positions)
+  if (p.kind === 'plantKind' || p.kind === 'plantAt') {
+    const list = sd.totems ?? [];
+    const spirits = p.pool.map((id) => ({
+      id,
+      spirit: p.kind === 'plantKind' ? id : (list[Number(id.replace(/^t/, ''))] ?? null),
+    }));
+    return {
+      kind: p.kind,
+      pool: [],
+      min: p.min,
+      max: p.max,
+      spirits,
+      ...(p.spirit ? { planting: p.spirit } : {}),
+    };
+  }
   const pile = p.kind === 'scry' || p.from === 'draw' ? sd.draw : sd.hand;
   const pool: CardInst[] = [];
   for (const id of p.pool) {
@@ -269,6 +292,7 @@ export function viewFor(db: CombatDb, s: CombatState, me: Side): CombatView {
       costTax: sd.costTax ?? 0,
       ...(sd.suitsTurn ? { suitsTurn: [...sd.suitsTurn] } : {}),
       ...(sd.enchants ? { enchants: [...sd.enchants] } : {}),
+      ...(sd.totems ? { totems: [...sd.totems], commanded: !!sd.commanded } : {}),
       runes: clone(sd.runes),
       runeSlots: sd.runeSlots,
       powers: sd.powers
@@ -570,6 +594,15 @@ const METRIC_WORDS: Record<Metric, { per: string; equal: string }> = {
   },
   wards: { per: 'Ward on your blade', equal: 'the Wards on your blade' },
   discharged: { per: 'enchantment discharged', equal: 'the enchantments discharged' },
+  // (the Shaman)
+  totems: { per: 'totem you have', equal: 'your totems' },
+  totemKinds: { per: 'kind of totem you have', equal: 'the kinds of totem you have' },
+  totemsOf: { per: 'such totem you have', equal: 'such totems you have' },
+  spirit: { per: 'Spirit', equal: 'your Spirit' },
+  commanded: { per: 'command this turn', equal: 'your commands this turn' },
+  uprooted: { per: 'totem uprooted', equal: 'the totems uprooted' },
+  replacedNow: { per: 'totem replaced', equal: 'the totems replaced' },
+  spiritSpent: { per: 'Spirit spent', equal: 'the Spirit spent' },
 };
 const UNIT_METRICS: readonly Metric[] = [
   'barrier',
@@ -716,6 +749,10 @@ const WHEN_TEXT: Record<string, string> = {
   imbue: 'Whenever you Imbue',
   discharge: 'Whenever you Discharge',
   dischargeMixed: 'Whenever you Discharge two different enchantments at once',
+  // (the Shaman)
+  command: 'Whenever you command a totem',
+  plant: 'Whenever you plant a totem',
+  replace: 'Whenever you replace a totem with one of another kind',
 };
 
 const ORDINAL = ['zeroth', 'first', 'second', 'third', 'fourth', 'fifth', 'sixth'];
@@ -774,6 +811,24 @@ function whenText(o: Extract<Op, { op: 'when' }>, db?: CombatDb): string {
     return `you have ${lo} or more Preparation`;
   if (o.by === 'prep' && hi === 0 && lo === undefined && !o.of) return 'you have no Preparation';
   if (o.by === 'extracted' && (lo ?? 0) >= 1 && hi === undefined) return 'you pulled a knife';
+  // (the Shaman)
+  if (o.by === 'totemsOf' && (lo ?? 0) === 1 && hi === undefined && !o.of) {
+    const nm = (o.rune && db?.totems?.[o.rune]?.name) || 'such totem';
+    return `you have ${article(nm)} ${nm}`;
+  }
+  if (o.by === 'totems' && lo !== undefined && hi === undefined && !o.of)
+    return lo === 1 ? 'you have a totem' : `you have ${lo} or more totems`;
+  if (o.by === 'spirit' && lo !== undefined && hi === undefined && !o.of)
+    return `you have ${lo} or more Spirit`;
+  if (o.by === 'commanded' && (lo ?? 0) >= 1 && hi === undefined)
+    return 'you have commanded a totem this turn';
+  if (o.by === 'replacedNow' && (lo ?? 0) >= 1 && hi === undefined)
+    return 'it replaced a totem of another kind';
+  // (the Spellblade)
+  if (o.by === 'enchants' && hi === 0 && lo === undefined && !o.of)
+    return 'your blade has no enchantments';
+  if (o.by === 'wards' && (lo ?? 0) === 1 && hi === undefined && !o.of)
+    return 'your blade holds a Ward';
   const w = METRIC_WORDS[o.by].equal;
   if (lo !== undefined && hi !== undefined) return `${w} is ${lo === hi ? lo : `${lo}-${hi}`}`;
   if (lo !== undefined) return `${w} is ${lo} or more`;
@@ -915,6 +970,13 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
                     : 'It is';
         return `${whom} left Open.`;
       }
+      // (the Shaman) Rousing and Shelter read as what they do to your next command
+      if (o.status === 'rousing' && o.amount > 0 && o.to === 'self') {
+        const a = amountText(o.amount, o.scale);
+        return `Your next command this turn deals or gives ${a.equal ? `more, ${a.num}` : `${a.num} more`}.`;
+      }
+      if (o.status === 'shelter' && o.amount > 0 && o.to === 'self')
+        return 'This turn, your next command that gives Barrier gives it to every friendly.';
       // a Stun is counted in turns (DECISIONS #310): "Stun the attacker for 2 turns."
       if (o.status === 'stunned' && o.amount > 0 && !o.scale) {
         const whom =
@@ -1113,17 +1175,19 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
                   ? `${o.once ? 'The first time each turn you leave' : 'Whenever you leave'} ${o.stance ? sname(o.stance) : 'a stance'}`
                   : o.when === 'evoke'
                     ? `Whenever ${rune ? `${article(rune)} ${rune}` : 'a totem'} awakens`
-                    : (o.when === 'created' || o.when === 'draw') && (o.tag || o.filter)
-                      ? `${o.once ? 'The first time' : 'Whenever'} you ${o.when === 'draw' ? 'draw' : 'create'} ${what}${o.once ? ' each turn' : ''}`
-                      : nextTurn
-                        ? 'Next turn'
-                        : o.once
-                          ? // ("Whenever one of your allies dies" answered once a turn: Backup Core)
-                            (WHEN_TEXT[o.when] ?? o.when).replace(
-                              /^Whenever /,
-                              'The first time each turn ',
-                            )
-                          : (WHEN_TEXT[o.when] ?? o.when);
+                    : o.when === 'command' && o.rune
+                      ? `Whenever you command your ${db.totems?.[o.rune]?.name ?? o.rune}`
+                      : (o.when === 'created' || o.when === 'draw') && (o.tag || o.filter)
+                        ? `${o.once ? 'The first time' : 'Whenever'} you ${o.when === 'draw' ? 'draw' : 'create'} ${what}${o.once ? ' each turn' : ''}`
+                        : nextTurn
+                          ? 'Next turn'
+                          : o.once
+                            ? // ("Whenever one of your allies dies" answered once a turn: Backup Core)
+                              (WHEN_TEXT[o.when] ?? o.when).replace(
+                                /^Whenever /,
+                                'The first time each turn ',
+                              )
+                            : (WHEN_TEXT[o.when] ?? o.when);
       // ("the next time you earn an Opening": an answer that happens once, not a number of turns)
       const once1 = o.times === 1 && o.when !== 'turnStart' && o.when !== 'turnEnd';
       const when = once1
@@ -1473,6 +1537,19 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
       return o.count >= 2 ? 'Discharge both enchantments.' : 'Discharge an enchantment.';
     case 'recast':
       return 'Your newest enchantment becomes another kind (your choice).';
+    // (the Shaman's totems)
+    case 'plant': {
+      if (o.spirit === '*')
+        return o.anywhere
+          ? 'Plant a totem of your choice, in a position you choose.'
+          : 'Plant a totem of your choice.';
+      const nm = db.totems?.[o.spirit]?.name ?? o.spirit;
+      return o.anywhere
+        ? `Plant ${article(nm)} ${nm} in a position you choose.`
+        : `Plant ${article(nm)} ${nm}.`;
+    }
+    case 'uproot':
+      return 'Uproot all your totems.';
   }
 }
 

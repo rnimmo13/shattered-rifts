@@ -10,7 +10,7 @@ import {
 import {
   addTo,
   barrier,
-  channel,
+  plant,
   dmg,
   draw,
   embed,
@@ -27,7 +27,7 @@ import {
 } from './build';
 import { BOONS, HEARTS } from './boons';
 import { V2_CARDS } from './cards';
-import { RUNES } from './pools/shaman';
+import { TOTEMS } from './pools/shaman';
 import { POTIONS } from './potions';
 import { isVariant, stripRoll, withRolls } from './sanctify';
 import { ALLIES, ENEMY_UNITS } from './units';
@@ -259,12 +259,13 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     realm: 'nexus',
     persona: 'Ilvane',
     role: 'Shaman',
+    // (rebuilt 2026-10-29, docs/BASE_CLASS_REWORKS.md §5, DECISIONS #418: commanded totems; the Defect copy is archived)
     trait: {
-      name: 'Totem-bound',
-      text: 'Start every fight with three different totems: Hawk, Bear and Splinter.',
-      fightStart: [channel('spark'), channel('ward'), channel('splinter')],
+      name: 'Spirit Caller',
+      text: 'You have three totem positions. Once each turn, command one of your totems to act. Start every fight with a Hawk planted.',
+      totems: 3,
+      fightStart: [plant('hawk')],
     },
-    // (the Slay the Spire 2 Defect's shape: 75 HP, 4 Strike, 4 Defend, Zap and Dualcast; his trait stays, see pools/shaman.ts)
     hero: {
       id: 'shaman',
       name: 'Shaman',
@@ -272,22 +273,22 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
       mana: 3,
       handSize: 5,
     },
-    starter: [...rep('strike', 4), ...rep('defend', 4), 'spark-cast', 'twin-evocation'],
+    starter: [...rep('strike', 4), ...rep('defend', 4), 'wardkeepers-pact', 'guided-talon'],
     blurb:
-      'An elder shaman of the old spirits, who plants totems and wakes them. Starts every fight with three totems (Hawk, Bear and Splinter).',
-    mechanics: ['Totems', 'Spirit', 'Auras', 'Status cards', '0-cost cards'],
+      'An elder shaman of the old spirits. He plants totems of Hawk, Bear and Elder, and once each turn calls one of them to act: a Hawk strikes, a Bear guards, an Elder brings Spirit and wisdom.',
+    mechanics: ['Totems', 'Commands', 'Spirit', 'Rousing'],
     buildPaths: [
-      'Totems: plant, add slots, awaken',
-      'Elements: storm, ice and fire strikes, 0-cost cards and status cards',
-      'Rites: Auras, Spirit and Mana',
+      'Storm: the Hawk on the attack, with Rousing and Hawk payoffs',
+      'Shelter: the Bear and Barrier',
+      'Rites: Spirit, the Elder, and replacing or uprooting your totems',
     ],
     howTo: [
-      'You start with a Hawk, a Bear and a Splinter totem. Totems stand in a row of 3 slots beside you and pulse at the end of your turn (the Owl at the start of it). A 4th pushes the oldest out, awakening it for its big effect.',
-      'Hawks strike a random enemy, Bears give Barrier, Elders charge up for one big blow on the weakest enemy, Owls give Mana, and Splinters hit every enemy but fade a little each turn.',
-      'Spirit makes every totem hit harder and guard more. Many of your Auras stay all fight and build on each other.',
-      'Some of your cards make status cards (Haze, Muck, Scorch, Drain, Wound) that clutter your deck; others pay off whenever you make one.',
+      'You have three totem positions (beside your hero) and start each fight with a Hawk. Cards plant more; with all three taken, you choose which one a new totem replaces, or keep them.',
+      'Once each turn, press a totem to command it: a Hawk deals 4 damage to the enemy you choose, a Bear gives 4 Barrier, an Elder gives 1 Spirit and draws a card. Planting more totems gives you more choices, not more commands.',
+      'Spirit (up to 3) stays from turn to turn: spend one on a Hawk or Bear command for 2 more. Rousing cards make your next command this turn stronger.',
     ],
   },
+
   monk: {
     realm: 'aurelion',
     persona: 'Solen',
@@ -555,7 +556,8 @@ export const encounter = (id: string): Encounter => {
 }
 
 export const COMBAT_DB: CombatDb = {
-  runes: Object.fromEntries(RUNES.map((r) => [r.id, r])),
+  // (the Shaman's spirits, DECISIONS #418; the old totem runes of his Defect copy are archived, not loaded)
+  totems: Object.fromEntries(TOTEMS.map((t) => [t.id, t])),
   // (also answers for sanctified ids like "hi~strike": derived on demand, never listed)
   cards: withRolls(Object.fromEntries(V2_CARDS.map((c) => [c.id, c]))),
   boons: Object.fromEntries([...BOONS, ...HEARTS].map((b) => [b.id, b])),
@@ -721,6 +723,7 @@ export const CLASS_REWORKS: Partial<Record<HeroId, { version: number; summary: s
   knight: { version: 1, summary: 'Guard, Riposte and Thorns' },
   assassin: { version: 1, summary: 'Preparation and embedded knives' },
   spellblade: { version: 1, summary: 'Imbue and Discharge' },
+  shaman: { version: 1, summary: 'commanded totems' },
 };
 
 /** A Riftwalker id as it is now: an old id becomes its class id, and anything else comes back as it was. */

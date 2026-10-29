@@ -133,10 +133,10 @@ Percentage debuffs (Exposed, Faltering, Debilitated) are worth more as numbers g
 | Return a random card from discard to hand | **+3** (a draw); a chosen card **+4** | |
 | Add a random card to your hand | **+4** (Neutral), **~9** if it is from your pool and costs 0 (Consume) | Royal Decree, Borrowed Blade, Rift Windfall. |
 | A Dagger | **4** (its damage) + Edge | *(legacy: the Assassin's Dagger tokens and Edge, gone since #416; his knives are embedded markers now, §15)* |
-| **Arcana gained** | **2.5** each | Gather Arcana 2, Emberstrike 9 + 1, Pale Ward 8 Barrier + 1. |
-| **Arcana spent** (a ◆ cost) | each ◆ buys **~6** points on top of the Mana budget | Molten Ruin 1+4◆ = 10 + 24 = 34 → 35 damage. Glass Burst 0+3◆ = 6 + 18 = 24 → 13 + 2 Faltering + 2 Exposed. Gaining is cheap and spending is rich: the gap is what the class pays for needing both halves. |
-| Sharpen N | **0.8** per point if played early, ~0.5 late | The Blade costs 2 and comes back a few times a fight. Forged in Fury 7 + Sharpen 7, Whetstone 8 + Mana next turn, Bladewall 12 Barrier + 10. |
-| Plant a totem | Hawk **4**, Bear **4**, Elder **5**, Splinter **6**, Owl **7** (+2 each per Spirit) | It pulses until pushed, then bursts. Spark Lash 7 + Hawk, Rime Strike 6 + Bear, Splinter Ward 5 Barrier + Splinter. |
+| **Arcana gained** *(legacy: the archived Spellblade; no live class makes Arcana since #417)* | **2.5** each | Gather Arcana 2, Emberstrike 9 + 1, Pale Ward 8 Barrier + 1. |
+| **Arcana spent** (a ◆ cost) *(legacy, as above)* | each ◆ buys **~6** points on top of the Mana budget | Molten Ruin 1+4◆ = 10 + 24 = 34 → 35 damage. Glass Burst 0+3◆ = 6 + 18 = 24 → 13 + 2 Faltering + 2 Exposed. Gaining is cheap and spending is rich: the gap is what the class pays for needing both halves. |
+| Sharpen N *(legacy for the Spellblade since #417; still the rate of the Drunkard's Precision)* | **0.8** per point if played early, ~0.5 late | The Blade costs 2 and comes back a few times a fight. Forged in Fury 7 + Sharpen 7, Whetstone 8 + Mana next turn, Bladewall 12 Barrier + 10. |
+| Plant a totem *(legacy: the archived Shaman's orb queue; his commanded totems since #418 are priced in §15)* | Hawk **4**, Bear **4**, Elder **5**, Splinter **6**, Owl **7** (+2 each per Spirit) | It pulses until pushed, then bursts. Spark Lash 7 + Hawk, Rime Strike 6 + Bear, Splinter Ward 5 Barrier + Splinter. |
 | Spirit (Focus) | this turn: **1 per totem** in the row (~3); for the fight: **~2.5 per totem** | Spirit Strike 9 + 1 Spirit this turn, Elemental Focus. |
 | Precision (the Old Twelve Gauge's Sharpen, DECISIONS #400) | **2.5** a point | The Gun costs 1, hits every enemy, Holds and comes round 2-3 times a fight (the Obsidian Blade's Sharpen is 0.8: 2 Mana, one target, fewer shots). |
 | A Buckshot Shell (0, 4 to ALL, Consume) | **5.2** | A Dagger that hits every enemy. |
@@ -413,3 +413,48 @@ does with it *minus* what it uses up.
 
 The trait, **Knife Work** (1 Preparation and a knife in every enemy at the start; 1 Preparation the first time each turn you embed;
 3 damage to an enemy for every knife pulled from it): ~14 in the starter (one embed and one pull card in 11), ~24 in a knife deck.
+
+### The Spellblade: Imbue and Discharge (DECISIONS #417)
+
+Two positions on the Obsidian Blade; a spell Imbues a charge, a blade attack Discharges it. The **producer** (the Imbue) is paid for the
+charge; the **consumer** (the Discharge) only for the choice and timing it adds, so a package is never counted twice.
+
+| Thing | Rate | Why |
+|---|---|---|
+| A charge, when discharged | **Ember 3, Glass 2.6, Ward 3.6** | Ember is 3 damage on one hit; Glass 2 to every enemy (x1.3); Ward 3 Barrier (x1.2). Flat, once. |
+| **Imbue** a charge | **0.85 x** its value: **Ember 2.5, Glass 2.2, Ward 3** | about one charge in seven is lost: the fight ends, a full blade forces a replacement, or no Discharge is drawn in time. The trait's first Ward is ~3. Ember Inscription (1: 5 spell damage, Imbue Ember) = 7.5. |
+| **Discharge one** | **+1** on the card's own effects | the choice of which charge, and the timing; the charge itself is the Imbue's. Obsidian Cut (1: Discharge, 6) = 7. |
+| **Discharge both** | **+1.5** | as above, for a pair. Crownfall (2: both, 17) = 18.5. |
+| "per enchantment discharged" (after a both-discharge) | **~1.6** charges | a Burst deck fills both positions before a full discharge most of the time, not every time. |
+| "per enchantment on your blade" (not spent) | **~1.3** | the blade is rarely empty in her decks (the trait's Ward, cheap Imbues) and rarely full and unspent. "Wards on your blade" after an Imbue Ward: ~1.5. |
+| "If your blade has no enchantments" | **~40%** | right after a spend. |
+| "Whenever you Discharge" | **~1 a turn** in a deck that wants it | most of her attacks discharge. |
+| "Whenever you Discharge two different enchantments at once" | **~45%** of turns in a Burst deck | needs a mixed blade and a both-discharge in hand. |
+| Twin Edge (the next first charge twice) | **~2.4** | one charge (~3) on about four Twin Edges in five. |
+
+The trait, **Glass and Ember** (a Ward on the blade at the start; the first Imbue each turn draws 1 and gives 2 Barrier), prices at ~3
++ 4 turns x ~50% (one Imbue card in the starter's 10) x 5.4 = ~14 in the starter, ~22 in an Imbue deck (an Imbue most turns), level
+with the Assassin's Knife Work. Positions cap the blade at 2 charges, worth at most 7.2; nothing grows for good.
+
+### The Shaman: commanded totems (DECISIONS #418)
+
+Three fixed positions; a totem does nothing on its own. Once a turn the player commands one: Hawk 4 damage to a chosen enemy (not an
+attack), Bear 4 Barrier to a chosen friendly, Elder 1 Spirit and a card. However many are planted, there is one command a turn, so
+planting buys choice, never output.
+
+| Thing | Rate | Why |
+|---|---|---|
+| A command (the trait's) | **~4.5 a turn** | the best of what is planted: Hawk 4, Bear 4.8, Elder 1.8 + 3. It is the trait's, not a card's. |
+| **Plant** a kind he has not got | **2** | one more choice for every remaining turn (about +0.5 a turn over the command he would make anyway), and it feeds "if you have a Bear" cards. The starter's Bear: Wardkeeper's Pact (1: 5 Barrier, Bear) = 8. |
+| Plant a kind he probably has (a Hawk) | **1** | the trait plants a Hawk; a second only matters to "per totem" cards and replacement. A chosen position: **1.5**. |
+| **Rousing** N (the next Hawk or Bear command this turn) | **0.8 a point** | he commands nearly every turn, but an Elder turn or a lost Hawk wastes it; x0.85 behind "if you have a Hawk/Bear". |
+| **Spirit** gained | **1.8 a point** | spent for +2 (2-2.4) on a later command, one a command; the cap of 3 and the fight's end waste some. |
+| Spirit spent by a card | its payoff **minus 1.8 a point**, at **~2** Spirit | Spiritstorm, Elder's Wisdom. |
+| "Whenever you command" | **~1 a turn**; "your Hawk" **~65%**, "your Bear" **~50%** | one command a turn caps every command payoff. |
+| "Whenever you replace a totem with another kind" (once a turn) | **~50%** of turns in a Rites deck | needs a full row or a chosen-position plant. |
+| Uproot | **-2 a totem** | each must be planted again, and with none there is no command. |
+
+The trait, **Spirit Caller** (three positions, one command a turn, a Hawk at the start), prices at ~4.5 a turn: ~18 over four turns, a
+little under the Knight's ~21, with nothing passive. Nothing loops: a command makes no Mana, the Elder's card is one a turn, Spirit is
+capped at 3 and spent one a command, and no card gives a second command.
+

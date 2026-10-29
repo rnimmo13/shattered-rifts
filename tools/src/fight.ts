@@ -64,6 +64,8 @@ function describe(s: CombatState, a: Action): string {
     return `Choose: ${a.cards.map((id) => db.cards[s.sides.a.hand.find((c) => c.id === id)?.card ?? s.sides.a.draw.find((c) => c.id === id)?.card ?? '']?.name ?? '?').join(', ') || 'nothing'}`;
   if (a.type === 'potion')
     return `Potion #${a.index + 1}${a.target ? ' -> ' + ([...s.sides.a.units, ...s.sides.b.units].find((u) => u.id === a.target)?.name ?? '?') : ''}`;
+  if (a.type === 'command')
+    return `Command totem ${a.totem + 1} (${db.totems?.[s.sides.a.totems?.[a.totem] ?? '']?.name ?? '?'})${a.empower ? ', empowered' : ''}${a.target ? ' -> ' + ([...s.sides.a.units, ...s.sides.b.units].find((u) => u.id === a.target)?.name ?? '?') : ''}`;
   const inst = s.sides.a.hand.find((c) => c.id === a.card);
   const cd = db.cards[inst?.card ?? ''];
   const target = a.target

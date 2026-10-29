@@ -221,7 +221,7 @@ describe('the Spellblade: Imbue and Discharge', () => {
     s.sides.a.enchants = ['ember', 'glass'];
     s = play(s, 'crownfall', foe(s).id);
     expect(s.sides.a.nextMana).toBe(1);
-    expect(hero(s).barrier).toBe(4);
+    expect(hero(s).barrier).toBe(6);
   });
 
   it('in the Arena each side has its own blade, and both are visible', () => {

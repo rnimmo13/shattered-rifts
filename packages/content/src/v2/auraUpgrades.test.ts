@@ -20,10 +20,6 @@ const COST_CUT_AURAS = [
   'ever-watchful',
   'grimoire-gale',
   'phylactery',
-  'biased-weave',
-  'spiritfont',
-  'tuning-fork',
-  'wild-heart',
   // on/off, a Mana engine, or a card or machine every turn
   'dutch-courage',
   'rolling-thunder',

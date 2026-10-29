@@ -166,6 +166,16 @@ export function reduceEvent(db: CombatDb, s: CombatState, e: CombatEvent): void 
     case 'suits':
       s.sides[e.side].suitsTurn = [...e.suits];
       return;
+    // (the Spellblade's blade and the Shaman's totems change as the events play)
+    case 'enchant':
+      s.sides[e.side].enchants = [...e.enchants];
+      return;
+    case 'totems':
+      s.sides[e.side].totems = [...e.totems];
+      return;
+    case 'command':
+      s.sides[e.side].commanded = true;
+      return;
     case 'snareSet': {
       const sd = s.sides[e.side];
       const i = sd.discard.findIndex((c) => c.id === e.snare);

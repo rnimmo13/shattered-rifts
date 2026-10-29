@@ -28,6 +28,9 @@ import {
   EMBER_DAMAGE,
   GLASS_DAMAGE,
   WARD_BARRIER,
+  TOTEM_SLOTS,
+  SPIRIT_MAX,
+  SPIRIT_BOOST,
   RADIANT_ENTER_MANA,
   RulesError,
   STANCES,
@@ -125,6 +128,11 @@ interface Act {
   ember: number;
   glass: number;
   discharged: number;
+  /** (the Shaman) a command's Rousing and Spirit: added to every damage and Barrier number of its spirit's ops */
+  plus: number;
+  /** totems the card has uprooted, and replaced with a different kind, so far */
+  uprooted: number;
+  replaced: number;
 }
 
 const mkAct = (actor: Unit, extra: Partial<Act> = {}): Act => ({
@@ -154,6 +162,9 @@ const mkAct = (actor: Unit, extra: Partial<Act> = {}): Act => ({
   ember: 0,
   glass: 0,
   discharged: 0,
+  plus: 0,
+  uprooted: 0,
+  replaced: 0,
   ...extra,
 });
 
@@ -219,6 +230,8 @@ function addStatus(r: Run, u: Unit, st: StatusId, amount: number): boolean {
   // (the Assassin, DECISIONS #416) a unit holds at most KNIFE_MAX knives and a hero PREP_MAX Preparation: more is simply lost
   if (st === 'knives') total = Math.min(total, KNIFE_MAX);
   if (st === 'prep') total = Math.min(total, PREP_MAX);
+  // (the Shaman, DECISIONS #418) Spirit stops at SPIRIT_MAX
+  if (st === 'spirit') total = Math.min(total, SPIRIT_MAX);
   // Hangover stops at HANGOVER_MAX, so the cards that grow with it stay in reach (DECISIONS #354)
   if (st === 'hangover') total = Math.min(total, HANGOVER_MAX);
   if (total <= 0) delete u.statuses[st];
@@ -625,6 +638,135 @@ function discharge(r: Run, a: Act, side: SideState, count: number): void {
   r.ev.push({ type: 'pending', side: side.id, kind: 'discharge' });
 }
 
+// --- the Shaman's totems (DECISIONS #418) ------------------------------------------------------------------------------
+
+function totemDef(r: Run, id: string) {
+  const d = r.db.totems?.[id];
+  if (!d) throw new RulesError(`Unknown totem "${id}"`);
+  return d;
+}
+
+/**
+ * Plant a totem: into the first free position; with all taken (or `anywhere`), the player chooses the position (a taken one is
+ * replaced; with all taken they may keep them all). '*': the player chooses the kind first. With no one to ask: the first kind, the
+ * first free position, and nothing replaced.
+ */
+function plant(r: Run, a: Act, side: SideState, spirit: string, anywhere: boolean): void {
+  const list = side.totems;
+  if (!list) return;
+  if (spirit === '*') {
+    const kinds = Object.keys(r.db.totems ?? {}).sort();
+    if (!kinds.length) return;
+    if (!a.pick) {
+      plant(r, a, side, kinds[0] as string, anywhere);
+      return;
+    }
+    r.s.pending = {
+      kind: 'plantKind',
+      pool: kinds,
+      min: 1,
+      max: 1,
+      rest: [],
+      actor: a.actor.id,
+      target: a.target?.id ?? null,
+      finish: null,
+      x: a.x,
+      ...(anywhere ? { anywhere } : {}),
+    };
+    r.ev.push({ type: 'pending', side: side.id, kind: 'plantKind' });
+    return;
+  }
+  totemDef(r, spirit);
+  const free = list.indexOf(null);
+  if (!anywhere && free >= 0) {
+    placeTotem(r, a, side, free, spirit);
+    return;
+  }
+  if (!a.pick) {
+    if (free >= 0) placeTotem(r, a, side, free, spirit);
+    return;
+  }
+  r.s.pending = {
+    kind: 'plantAt',
+    spirit,
+    pool: list.map((_, i) => `t${i}`),
+    // (all taken: choosing none keeps them, and nothing is planted)
+    min: anywhere && free >= 0 ? 1 : 0,
+    max: 1,
+    rest: [],
+    actor: a.actor.id,
+    target: a.target?.id ?? null,
+    finish: null,
+    x: a.x,
+    ...(anywhere ? { anywhere } : {}),
+  };
+  r.ev.push({ type: 'pending', side: side.id, kind: 'plantAt' });
+}
+
+/** A totem of `spirit` stands in position `at` now; what stood there is gone (a replacement is not a command). */
+function placeTotem(r: Run, a: Act, side: SideState, at: number, spirit: string): void {
+  const list = side.totems;
+  if (!list || at < 0 || at >= list.length) return;
+  const was = list[at];
+  list[at] = spirit;
+  r.ev.push({ type: 'totems', side: side.id, totems: [...list], at });
+  fireTriggers(r, side, 'plant', { rune: spirit });
+  if (was && was !== spirit && !r.s.winner) {
+    a.replaced++;
+    fireTriggers(r, side, 'replace', { rune: spirit });
+  }
+}
+
+/** The units a totem's command may aim at: any living enemy, or any living unit of your side. */
+function commandTargets(r: Run, side: Side, aim: 'foe' | 'friend' | 'none'): Unit[] {
+  if (aim === 'none') return [];
+  return r.s.sides[aim === 'foe' ? other(side) : side].units.filter((u) => u.hp > 0);
+}
+
+/**
+ * Command a totem (DECISIONS #418): once a turn, one planted totem's spirit manifests and acts. Rousing and an empowering Spirit add
+ * to its numbers; Shelter spreads a friendly command's Barrier to every friendly. It is not a card and not an attack.
+ */
+function commandTotem(r: Run, action: Extract<Action, { type: 'command' }>): void {
+  const side = r.s.active;
+  const sd = r.s.sides[side];
+  const hero = heroOf(sd);
+  if (!hero || !sd.totems) throw new RulesError('You have no totems');
+  if (sd.commanded) throw new RulesError('You have already commanded a totem this turn');
+  const kind = sd.totems[action.totem];
+  if (!kind) throw new RulesError('There is no totem there');
+  const d = totemDef(r, kind);
+  let target: Unit | null = null;
+  if (d.aim !== 'none') {
+    target = findUnit(r.s, action.target) ?? null;
+    if (!target || !commandTargets(r, side, d.aim).includes(target))
+      throw new RulesError('Choose a legal target');
+  }
+  const empower = action.empower === true;
+  if (empower && (!d.empower || stacks(hero, 'spirit') < 1))
+    throw new RulesError('That command cannot be empowered');
+  sd.commanded = true;
+  if (empower) addStatus(r, hero, 'spirit', -1);
+  const plus = (empower ? SPIRIT_BOOST : 0) + (d.empower ? stacks(hero, 'rousing') : 0);
+  if (d.empower && stacks(hero, 'rousing') > 0)
+    addStatus(r, hero, 'rousing', -stacks(hero, 'rousing'));
+  r.ev.push({
+    type: 'command',
+    side,
+    totem: action.totem,
+    spirit: kind,
+    target: target?.id ?? null,
+    empowered: empower,
+  });
+  const shelter = d.aim === 'friend' && stacks(hero, 'shelter') > 0;
+  if (shelter) addStatus(r, hero, 'shelter', -stacks(hero, 'shelter'));
+  for (const t of shelter ? commandTargets(r, side, 'friend') : [target]) {
+    if (r.s.winner) break;
+    runOps(r, mkAct(hero, { target: t, plus }), d.command);
+  }
+  if (!r.s.winner) fireTriggers(r, sd, 'command', { target, rune: kind });
+}
+
 /** The chosen enchantments are spent, once each: Ward's Barrier now, Ember and Glass for the card's attack (Twin Edge doubles the first). */
 function spendCharges(r: Run, a: Act, side: SideState, at: number[]): void {
   const list = side.enchants ?? [];
@@ -1006,6 +1148,23 @@ function metricValue(
       return (sd.enchants ?? []).filter((k) => k === 'ward').length;
     case 'discharged':
       return a.discharged;
+    // (the Shaman)
+    case 'totems':
+      return (sd.totems ?? []).filter((x) => x !== null).length;
+    case 'totemKinds':
+      return new Set((sd.totems ?? []).filter((x) => x !== null)).size;
+    case 'totemsOf':
+      return (sd.totems ?? []).filter((x) => x !== null && x === rune).length;
+    case 'spirit':
+      return u ? stacks(u, 'spirit') : 0;
+    case 'commanded':
+      return sd.commanded ? 1 : 0;
+    case 'uprooted':
+      return a.uprooted;
+    case 'replacedNow':
+      return a.replaced;
+    case 'spiritSpent':
+      return a.spentBy.spirit ?? 0;
   }
 }
 
@@ -1078,8 +1237,8 @@ function amountOf(r: Run, a: Act, base: number, sc: Scale | undefined, t: Unit |
   return base + scaleValue(r, a, sc, t);
 }
 
-/** Rune effects get +1 damage / Barrier per Resonance. */
-const resonanceOf = (a: Act): number => (a.rune ? stacks(a.actor, 'resonance') : 0);
+/** Rune effects get +1 damage / Barrier per Resonance; a totem's command its Rousing and Spirit (`plus`). */
+const resonanceOf = (a: Act): number => (a.rune ? stacks(a.actor, 'resonance') : 0) + a.plus;
 
 /** A card's cost with its lasting changes (the recost op, a free copy), not the discounts a play spends. */
 const lastingCost = (cd: CardDef, inst: CardInst | null): number =>
@@ -2189,6 +2348,20 @@ function execOp(r: Run, a: Act, op: Op): void {
       r.ev.push({ type: 'pending', side: side.id, kind: 'recast' });
       return;
     }
+    // --- the Shaman's totems (DECISIONS #418)
+    case 'plant':
+      plant(r, a, side, op.spirit, op.anywhere === true);
+      return;
+    case 'uproot': {
+      const list = side.totems;
+      if (!list) return;
+      const n = list.filter((x) => x !== null).length;
+      if (!n) return;
+      side.totems = list.map(() => null);
+      a.uprooted += n;
+      r.ev.push({ type: 'totems', side: side.id, totems: [...side.totems] });
+      return;
+    }
     case 'spend': {
       const n = Math.min(stacks(a.actor, op.status), Math.max(0, op.amount));
       if (n > 0) addStatus(r, a.actor, op.status, -n);
@@ -2766,6 +2939,12 @@ function fireTriggers(
       if (p.tag && !subject?.tags?.includes(p.tag)) continue;
     }
     if (when === 'evoke' && p.rune && p.rune !== ctx.rune) continue;
+    if (
+      (when === 'command' || when === 'plant' || when === 'replace') &&
+      p.rune &&
+      p.rune !== ctx.rune
+    )
+      continue;
     if (p.once && p.firedTurn === r.s.turn) continue;
     if ((when === 'stance' || when === 'stanceLeft') && p.stance && p.stance !== ctx.stance)
       continue;
@@ -3096,6 +3275,7 @@ function beginHeroTurn(r: Run, side: Side): void {
   sd.played = 0;
   sd.attacksPlayed = 0;
   sd.skillsPlayed = 0;
+  if (sd.totems) sd.commanded = false;
   sd.discarded = 0;
   sd.lostHpTurn = 0;
   sd.exhaustedTurn = 0;
@@ -3410,6 +3590,10 @@ function buildHeroSide(r: Run, id: Side, h: HeroSetup): SideState {
     maxMana: hd.mana,
     handSize: hd.handSize,
     hero: hd.id,
+    // (the Shaman's totem positions, DECISIONS #418)
+    ...(hd.trait?.totems
+      ? { totems: Array.from({ length: Math.min(TOTEM_SLOTS, hd.trait.totems) }, () => null) }
+      : {}),
   };
   for (const id of h.potions ?? []) {
     if (!r.db.potions[id]) throw new RulesError(`Unknown potion "${id}"`);
@@ -3699,6 +3883,23 @@ export function legalActions(db: CombatDb, s: CombatState): Action[] {
         if (t.hp > 0) out.push({ type: 'potion', index, potion: id, target: t.id });
     }
   });
+  // (the Shaman) a command: once a turn, each planted totem, at each legal target, plain or empowered with a Spirit
+  const hero = heroOf(sd);
+  if (hero && sd.totems && !sd.commanded)
+    sd.totems.forEach((kind, totem) => {
+      const d = kind ? db.totems?.[kind] : undefined;
+      if (!d) return;
+      const modes = d.empower && stacks(hero, 'spirit') > 0 ? [false, true] : [false];
+      const aims = d.aim === 'none' ? [null] : commandTargets(r, side, d.aim);
+      for (const t of aims)
+        for (const empower of modes)
+          out.push({
+            type: 'command',
+            totem,
+            ...(t ? { target: t.id } : {}),
+            ...(empower ? { empower } : {}),
+          });
+    });
   out.push({ type: 'endTurn' });
   return out;
 }
@@ -4012,6 +4213,10 @@ function pickCards(r: Run, action: Extract<Action, { type: 'pick' }>): void {
       list[list.length - 1] = ids[0] as Enchant;
       showEnchants(r, sd);
     }
+    // (the Shaman's: which spirit to plant, and where)
+    else if (p.kind === 'plantKind' && ids[0]) plant(r, act, sd, ids[0], p.anywhere === true);
+    else if (p.kind === 'plantAt' && p.spirit && ids[0])
+      placeTotem(r, act, sd, Number(ids[0].replace(/^t/, '')), p.spirit);
     const asked = r.s.pending as CombatState['pending'];
     // (a choice that asked for another one: the rest of the card waits for it too)
     if (asked) asked.rest = [...asked.rest, ...p.rest];
@@ -4071,6 +4276,7 @@ export function applyAction(db: CombatDb, state: CombatState, action: Action): S
   else if (action.type === 'play') playCard(r, action);
   else if (action.type === 'pick') pickCards(r, action);
   else if (action.type === 'potion') usePotion(r, action);
+  else if (action.type === 'command') commandTotem(r, action);
   else throw new RulesError('Unknown action');
   // a card said "end your turn" (Void Form): once it is done, the turn ends
   if (r.endAfter && !s.pending && !s.winner) {
@@ -4161,6 +4367,8 @@ export function previewCardDamage(
         emberLo = Math.min(worth([0]), worth([1]));
         emberHi = Math.max(worth([0]), worth([1]));
       }
+      // ("per enchantment discharged" reads what this discharge will spend)
+      a.discharged = op.count >= 2 ? list.length : Math.min(1, list.length);
       return;
     }
     if (op.op === 'spend' && !earlier) {

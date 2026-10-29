@@ -50,7 +50,9 @@ export function parse(message: string | ArrayBuffer): ClientMsg | null {
     case 'resign':
       return { type: 'resign' };
     case 'watch':
-      return typeof m['rules'] === 'number' ? { type: 'watch', rules: m['rules'] } : { type: 'watch' };
+      return typeof m['rules'] === 'number'
+        ? { type: 'watch', rules: m['rules'] }
+        : { type: 'watch' };
     default:
       return null;
   }
@@ -100,6 +102,16 @@ export function cleanAction(a: Action): Action {
           ? (o['cards'] as unknown[]).slice(0, 40).map((c) => str(c) ?? '')
           : [],
       };
+    // (the Shaman's command, DECISIONS #418)
+    case 'command': {
+      const target = str(o['target']);
+      return {
+        type: 'command',
+        totem: num(o['totem']) ?? -1,
+        ...(target ? { target } : {}),
+        ...(o['empower'] === true ? { empower: true } : {}),
+      };
+    }
     default:
       return { type: 'endTurn' };
   }

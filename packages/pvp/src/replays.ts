@@ -36,7 +36,7 @@ export const REPLAY_ID = /^[A-Za-z0-9]{10}$/;
 
 // (every way a game ends: a game the clock called could not be watched again while 'time' was missing here)
 const REASONS: readonly EndReason[] = ['win', 'resign', 'timeout', 'disconnect', 'time'];
-const ACTIONS = new Set(['play', 'potion', 'endTurn', 'pick']);
+const ACTIONS = new Set(['play', 'potion', 'endTurn', 'pick', 'command']);
 
 /** A replay as a browser receives it, checked (null if anything in it is not what a replay holds). */
 export function cleanReplay(raw: unknown): StoredReplay | null {

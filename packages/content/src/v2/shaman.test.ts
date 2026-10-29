@@ -1,234 +1,232 @@
-// Ilvane, the Defect-shaped shaman (DECISIONS #371): the starter is the Defect's, his totems are the Defect's
-// orbs with their numbers, Spirit is Focus, and the trickier copied cards do what their text says.
+// The Shaman rebuilt (docs/BASE_CLASS_REWORKS.md §5, DECISIONS #418): three fixed totem positions; once a turn the player commands one
+// totem and its spirit acts (Hawk 4 damage to a chosen enemy, Bear 4 Barrier to a chosen friendly, Elder 1 Spirit and a card). Spirit
+// (at most 3) empowers one command by 2; Rousing adds to the next. His old Defect copy (an orb queue, Focus, Owl Mana) is archived in
+// reviews/balance-baselines/2026-10-29-pre-identity-reworks/.
 
 import { describe, expect, it } from 'vitest';
 import {
   applyAction,
-  chooseAction,
+  cardText,
   clone,
-  costOf,
   createCombat,
   legalActions,
-  type CombatEvent,
+  RulesError,
+  viewFor,
+  type Action,
+  type Op,
   type CombatState,
-  type RuneState,
+  type Unit,
 } from '@sr/combat';
-import { COMBAT_DB as db, RIFTWALKERS, pathSizes, rewardPool } from './index';
-import { SHAMAN } from './pools/shaman';
+import { COMBAT_DB as db, RIFTWALKERS, pathSizes } from './index';
 
-/** One Squire with 200 HP; `hand` in hand, nothing else in any pile; `runes` replaces the three the trait planted. */
-function fight(hand: string[], runes?: string[]): CombatState {
+function fight(hand: string[], enemies: string[] = ['squire', 'squire']): CombatState {
+  const deck = RIFTWALKERS.shaman.starter;
   const { state } = createCombat(db, {
-    seed: 'totemist-test',
-    a: { hero: 'shaman', deck: RIFTWALKERS.shaman.starter },
-    b: { enemies: ['squire'] },
+    seed: 'shaman-totems',
+    a: { hero: 'shaman', deck: [...deck, ...deck] },
+    b: { enemies },
   });
   const s = clone(state);
   s.sides.a.hand = hand.map((card, i) => ({ id: `T${i}`, card }));
-  s.sides.a.draw = [];
-  s.sides.a.discard = [];
-  s.sides.a.exhausted = [];
   s.sides.a.mana = 9;
-  if (runes)
-    s.sides.a.runes = runes.map((rune): RuneState => ({
-      rune,
-      charge: db.runes?.[rune]?.start ?? 0,
-    }));
-  const u = s.sides.b.units[0]!;
-  u.hp = u.maxHp = 200;
+  for (const u of s.sides.b.units) {
+    u.hp = u.maxHp = 200;
+    u.statuses = {};
+    u.barrier = 0;
+  }
+  hero(s).statuses = {};
+  hero(s).barrier = 0;
   return s;
 }
-const play = (s: CombatState, id: string): CombatState => {
+const hero = (s: CombatState): Unit => s.sides.a.units.find((u) => u.kind === 'hero')!;
+const foe = (s: CombatState, i = 0): Unit => s.sides.b.units[i]!;
+const play = (s: CombatState, id: string, target?: string): CombatState => {
   const inst = s.sides.a.hand.find((c) => c.card === id);
-  const act = legalActions(db, s).find((a) => a.type === 'play' && a.card === inst?.id);
+  const act = legalActions(db, s).find(
+    (a) => a.type === 'play' && a.card === inst?.id && (!target || a.target === target),
+  );
   expect(act, `${id} playable`).toBeTruthy();
-  let r = applyAction(db, s, act!).state;
-  for (let i = 0; i < 6 && r.pending; i++) r = applyAction(db, r, chooseAction(db, r)).state;
-  return r;
+  return applyAction(db, s, act!).state;
 };
-const endTurn = (s: CombatState): { state: CombatState; events: CombatEvent[] } =>
-  applyAction(db, s, { type: 'endTurn' });
-const foeHp = (s: CombatState): number => s.sides.b.units[0]!.hp + s.sides.b.units[0]!.barrier;
-const hero = (s: CombatState) => s.sides.a.units[s.sides.a.units.length - 1]!;
-/** what the hero's totems dealt to the enemy and gave the hero at the end of a turn */
-const passives = (events: CombatEvent[], foeId: string, heroId: string) => ({
-  dealt: events
-    .filter((e) => e.type === 'damage' && e.target === foeId && e.source === heroId)
-    .reduce((n, e) => n + (e.type === 'damage' ? e.amount : 0), 0),
-  barrier: events
-    .filter((e) => e.type === 'barrier' && e.target === heroId)
-    .reduce((n, e) => n + (e.type === 'barrier' ? e.amount : 0), 0),
-});
+const pick = (s: CombatState, ids: string[]): CombatState =>
+  applyAction(db, s, { type: 'pick', cards: ids }).state;
+const command = (s: CombatState, a: Omit<Extract<Action, { type: 'command' }>, 'type'>) =>
+  applyAction(db, s, { type: 'command', ...a });
+const commands = (s: CombatState) => legalActions(db, s).filter((a) => a.type === 'command');
 
-describe('Ilvane is the Defect shape', () => {
-  it("starts with the Defect's ten (4 Strike, 4 Defend, Zap, Dualcast) and 75 HP, and keeps his three totems", () => {
-    expect(RIFTWALKERS.shaman.starter).toEqual([
-      ...Array<string>(4).fill('strike'),
-      ...Array<string>(4).fill('defend'),
-      'spark-cast',
-      'twin-evocation',
-    ]);
-    expect(RIFTWALKERS.shaman.hero.maxHp).toBe(75);
+describe('the Shaman: commanded totems', () => {
+  it('starts with a Hawk in the first of three positions; his starter plants a Bear and rouses the Hawk', () => {
     const { state } = createCombat(db, {
-      seed: 'ilvane-start',
+      seed: 'sh',
       a: { hero: 'shaman', deck: RIFTWALKERS.shaman.starter },
       b: { enemies: ['squire'] },
     });
-    expect(state.sides.a.runes.map((r) => r.rune)).toEqual(['spark', 'ward', 'splinter']);
+    expect(state.sides.a.totems).toEqual(['hawk', null, null]);
+    expect(state.sides.a.runes).toEqual([]);
+    expect(state.sides.a.commanded).toBe(false);
+    expect(RIFTWALKERS.shaman.starter).toEqual([
+      ...Array<string>(4).fill('strike'),
+      ...Array<string>(4).fill('defend'),
+      'wardkeepers-pact',
+      'guided-talon',
+    ]);
+    expect(pathSizes('shaman').every((n) => n >= 12)).toBe(true);
+    // (no card of his plants an old rune, awakens, adds slots or grows Focus)
+    for (const c of Object.values(db.cards).filter((x) => x.hero === 'shaman'))
+      for (const o of c.effects.flatMap((e): Op[] => [
+        e,
+        ...('ops' in e && Array.isArray(e.ops) ? (e.ops) : []),
+      ]))
+        expect(['channel', 'evoke', 'pulse', 'runeSlots'], c.id).not.toContain(o.op);
   });
 
-  it('has one card for each Defect card it copies (83) plus the Kindling token, and no Trap or Legendary', () => {
-    const own = SHAMAN.filter((c) => !c.source);
-    expect(own).toHaveLength(83);
-    expect(SHAMAN.filter((c) => c.source === 'token').map((c) => c.id)).toEqual(['kindling']);
-    expect(own.filter((c) => c.rarity === 'basic')).toHaveLength(2);
-    expect(own.filter((c) => c.rarity === 'common')).toHaveLength(20);
-    expect(own.filter((c) => c.rarity === 'uncommon')).toHaveLength(36);
-    expect(own.filter((c) => c.rarity === 'rare')).toHaveLength(25);
-    expect(own.filter((c) => c.kind === 'snare')).toEqual([]);
-    expect(rewardPool('shaman').filter((id) => db.cards[id]?.hero === 'shaman')).toHaveLength(81);
-    for (const n of pathSizes('shaman')) expect(n).toBeGreaterThanOrEqual(12);
-  });
-});
-
-describe("his totems are the Defect's orbs", () => {
-  it('Hawk (Lightning) 3 at the end of the turn, Bear (Frost) 2 Barrier; Spirit adds to both', () => {
-    const s = fight([], ['spark', 'ward']);
-    const foeId = s.sides.b.units[0]!.id;
-    const plain = passives(endTurn(s).events, foeId, hero(s).id);
-    expect(plain.dealt).toBe(3);
-    expect(plain.barrier).toBe(2);
-    const s2 = fight([], ['spark', 'ward']);
-    hero(s2).statuses.resonance = 2;
-    const focused = passives(endTurn(s2).events, foeId, hero(s2).id);
-    expect(focused.dealt).toBe(5);
-    expect(focused.barrier).toBe(4);
+  it('a Hawk command deals 4 to the chosen enemy, not as an attack (no Might, no Exposed); once a turn', () => {
+    let s = fight([]);
+    hero(s).statuses.might = 5;
+    foe(s, 1).statuses.exposed = 2;
+    const opts = commands(s);
+    expect(opts.map((a) => a.target).sort()).toEqual([foe(s, 0).id, foe(s, 1).id].sort());
+    const r = command(s, { totem: 0, target: foe(s, 1).id });
+    s = r.state;
+    expect(foe(s, 1).hp).toBe(196);
+    expect(foe(s, 0).hp).toBe(200);
+    expect(r.events.some((e) => e.type === 'command' && e.spirit === 'hawk')).toBe(true);
+    expect(s.sides.a.commanded).toBe(true);
+    expect(commands(s)).toEqual([]);
+    expect(() => command(s, { totem: 0, target: foe(s, 0).id })).toThrow(RulesError);
   });
 
-  it('Twin Awakening (Dualcast) awakens the oldest totem twice: a Hawk for 8 and 8', () => {
-    const s = play(fight(['twin-evocation'], ['spark', 'ward']), 'twin-evocation');
-    expect(foeHp(s)).toBe(200 - 16);
-    expect(s.sides.a.runes.map((r) => r.rune)).toEqual(['ward']);
+  it('planting three totems does not buy three commands; the next turn gives one again', () => {
+    let s = fight(['wardkeepers-pact', 'gathering-dusk']);
+    s = play(s, 'wardkeepers-pact');
+    s = play(s, 'gathering-dusk');
+    expect(s.sides.a.totems).toEqual(['hawk', 'bear', 'elder']);
+    s = command(s, { totem: 2 }).state;
+    expect(commands(s)).toEqual([]);
+    s = applyAction(db, s, { type: 'endTurn' }).state;
+    while (s.active !== 'a' && !s.winner) s = applyAction(db, s, { type: 'endTurn' }).state;
+    expect(s.sides.a.commanded).toBe(false);
+    expect(commands(s).length).toBeGreaterThan(0);
   });
 
-  it('Elder (Dark) starts at 6 and charges by 6; Splinter (Glass) hits for 4 and fades', () => {
-    let s = fight([], ['hollow', 'splinter']);
-    s = endTurn(s).state;
-    expect(s.sides.a.runes.map((r) => r.charge)).toEqual([12, 3]);
-    expect(foeHp(s)).toBeLessThanOrEqual(200 - 4);
+  it('a Bear command gives 4 Barrier to the chosen friendly; Shelter gives it to every friendly', () => {
+    let s = fight(['wardkeepers-pact', 'shared-shelter']);
+    s = play(s, 'wardkeepers-pact');
+    expect(hero(s).barrier).toBe(5);
+    s = command(s, { totem: 1, target: hero(s).id }).state;
+    expect(hero(s).barrier).toBe(9);
+    // (Shelter: with no companion it is the hero alone, still useful)
+    let t = fight(['wardkeepers-pact', 'shared-shelter']);
+    t = play(t, 'wardkeepers-pact');
+    t = play(t, 'shared-shelter');
+    const before = hero(t).barrier;
+    t = command(t, { totem: 1, target: hero(t).id }).state;
+    expect(hero(t).barrier).toBe(before + 4);
+    expect(hero(t).statuses.shelter ?? 0).toBe(0);
   });
 
-  it('Owls (Plasma) give their Mana at the start of your turn: Falling Star plants three', () => {
-    let s = fight(['falling-star'], []);
-    s = play(s, 'falling-star');
-    expect(foeHp(s)).toBe(200 - 24);
-    s = endTurn(s).state;
-    expect(s.sides.a.mana).toBe(3 + 3);
-  });
-
-  it('Totem Volley (Barrage) hits once per totem', () => {
-    const s = play(fight(['charged-blow'], ['spark', 'ward', 'splinter']), 'charged-blow');
-    expect(foeHp(s)).toBe(200 - 15);
-  });
-
-  it('Bear Pack (Chill) plants a Bear for each enemy', () => {
-    const s = play(fight(['cold-snap'], []), 'cold-snap');
-    expect(s.sides.a.runes.map((r) => r.rune)).toEqual(['ward']);
-  });
-
-  it('Devouring Night (Consuming Shadow) plants two Elders and awakens the newest totem at the end of every turn', () => {
-    let s = play(fight(['gathering-dark'], ['spark']), 'gathering-dark');
-    expect(s.sides.a.runes.map((r) => r.rune)).toEqual(['spark', 'hollow', 'hollow']);
-    s = endTurn(s).state;
-    // the newest Elder awakened for its 6, then the Hawk and the other Elder fired their passives
-    expect(s.sides.a.runes.map((r) => r.rune)).toEqual(['spark', 'hollow']);
-    expect(foeHp(s)).toBeLessThanOrEqual(200 - 6 - 3);
-  });
-});
-
-describe('Spirit (Focus)', () => {
-  it('Spirit Strike (Focused Strike) gives 1 Spirit for this turn only, so the Hawk hits for 4 tonight', () => {
-    const s = play(fight(['resonant-strike'], ['spark']), 'resonant-strike');
-    expect(foeHp(s)).toBe(200 - 9);
-    expect(hero(s).statuses.resonance).toBe(1);
-    const r = endTurn(s);
-    expect(passives(r.events, s.sides.b.units[0]!.id, hero(s).id).dealt).toBe(4);
-    expect(hero(r.state).statuses.resonance ?? 0).toBe(0);
-  });
-
-  it('Skyfall (Hyperbeam) costs 3 Spirit until the end of the turn, never more than you have, and it comes back', () => {
-    let s = fight(['tune-the-lattice', 'hyperbeam'], ['spark']);
+  it('an Elder gives 1 Spirit and draws; Spirit stops at 3; it can never be empowered', () => {
+    let s = fight(['gathering-dusk', 'tune-the-lattice']);
+    s.sides.a.draw = [{ id: 'D1', card: 'strike' }, ...s.sides.a.draw];
+    s = play(s, 'gathering-dusk');
     s = play(s, 'tune-the-lattice');
-    s = play(s, 'hyperbeam');
-    expect(foeHp(s)).toBe(200 - 24);
-    expect(hero(s).statuses.resonance ?? 0).toBe(0);
-    const r = endTurn(s);
-    expect(passives(r.events, s.sides.b.units[0]!.id, hero(s).id).dealt).toBe(3);
-    expect(hero(r.state).statuses.resonance).toBe(1);
-  });
-});
-
-describe('status cards', () => {
-  it('Ironbark (Fight Through) adds 2 Wounds, which make Boulder Fist (Rocket Punch) 2 cheaper until played', () => {
-    let s = fight(['ironbark', 'boulder-fist']);
-    s = play(s, 'ironbark');
-    expect(hero(s).barrier).toBe(13);
-    const fist = s.sides.a.hand.find((c) => c.card === 'boulder-fist')!;
-    expect(costOf(db, s.sides.a, fist)).toBe(0);
-    s = play(s, 'boulder-fist');
-    const back = s.sides.a.discard.find((c) => c.card === 'boulder-fist')!;
-    expect(costOf(db, s.sides.a, back)).toBe(2);
+    expect(hero(s).statuses.spirit).toBe(3);
+    expect(commands(s).some((a) => a.totem === 1 && a.empower)).toBe(false);
+    const hand = s.sides.a.hand.length;
+    s = command(s, { totem: 1 }).state;
+    expect(hero(s).statuses.spirit).toBe(3);
+    expect(s.sides.a.hand.length).toBe(hand + 1);
+    expect(() => command(fight([]), { totem: 0, target: 'nobody' })).toThrow(RulesError);
   });
 
-  it('Blazing Eye (Flak Cannon) consumes every status card and hits for 8 each', () => {
-    let s = fight(['ironbark', 'gust-step', 'blazing-aperture']);
-    s = play(s, 'ironbark');
-    s = play(s, 'gust-step');
-    s = play(s, 'blazing-aperture');
-    expect(foeHp(s)).toBe(200 - 3 * 8);
-    expect(s.sides.a.exhausted.map((c) => c.card).sort()).toEqual(['haze', 'wound', 'wound']);
+  it('empowering spends one Spirit for +2; Rousing adds to the next Hawk or Bear command and is spent by it', () => {
+    let s = fight(['guided-talon', 'tune-the-spirits']);
+    s = play(s, 'tune-the-spirits');
+    s = play(s, 'guided-talon', foe(s).id);
+    expect(hero(s).statuses.rousing).toBe(3);
+    expect(commands(s).filter((a) => a.empower).length).toBe(2);
+    s = command(s, { totem: 0, target: foe(s, 1).id, empower: true }).state;
+    // 4 + 3 Rousing + 2 Spirit
+    expect(foe(s, 1).hp).toBe(191);
+    expect(hero(s).statuses.spirit).toBe(1);
+    expect(hero(s).statuses.rousing ?? 0).toBe(0);
+    // (no Spirit: empowering is not offered, and is refused)
+    const t = fight([]);
+    expect(commands(t).some((a) => a.empower)).toBe(false);
+    expect(() => command(t, { totem: 0, target: foe(t).id, empower: true })).toThrow(RulesError);
   });
 
-  it('Kindled Rite (Smokestack) strikes every enemy whenever you make a status card', () => {
-    let s = fight(['kindled-rite', 'mudslide']);
-    s = play(s, 'kindled-rite');
-    s = play(s, 'mudslide');
-    expect(foeHp(s)).toBe(200 - 12 - 5);
+  it('with all three taken, a plant asks which to replace, or keeps them all; a replacement is not a command', () => {
+    let s = fight(['wardkeepers-pact', 'gathering-dusk', 'spark-lash']);
+    s = play(s, 'wardkeepers-pact');
+    s = play(s, 'gathering-dusk');
+    s = play(s, 'spark-lash', foe(s).id);
+    expect(s.pending?.kind).toBe('plantAt');
+    const v = viewFor(db, s, 'a').pending!;
+    expect(v.spirits?.map((x) => x.spirit)).toEqual(['hawk', 'bear', 'elder']);
+    expect(v.planting).toBe('hawk');
+    expect(v.min).toBe(0);
+    // keep them all
+    const kept = pick(s, []);
+    expect(kept.sides.a.totems).toEqual(['hawk', 'bear', 'elder']);
+    expect(kept.sides.a.commanded).toBe(false);
+    // replace the Elder
+    const swapped = pick(s, ['t2']);
+    expect(swapped.sides.a.totems).toEqual(['hawk', 'bear', 'hawk']);
+    expect(swapped.sides.a.commanded).toBe(false);
+    // (the rest of the card waits for the choice: its Rousing comes after)
+    expect(hero(swapped).statuses.rousing).toBe(2);
   });
 
-  it('Gather Kindling (Compact) turns status cards in hand into Kindling (Fuel), which gives Mana', () => {
-    let s = fight(['gather-kindling', 'wound', 'strike']);
-    s = play(s, 'gather-kindling');
-    expect(s.sides.a.hand.map((c) => c.card)).toEqual(['kindling', 'strike']);
-    const mana = s.sides.a.mana;
-    s = play(s, 'kindling');
-    expect(s.sides.a.mana).toBe(mana + 1);
+  it('Ancestral Exchange chooses a kind and a position, and pays only when the kind changed', () => {
+    let s = fight(['ancestral-exchange', 'ancestral-exchange']);
+    s.sides.a.draw = [
+      { id: 'D1', card: 'strike' },
+      { id: 'D2', card: 'strike' },
+      ...s.sides.a.draw,
+    ];
+    s = play(s, 'ancestral-exchange');
+    expect(s.pending?.kind).toBe('plantKind');
+    s = pick(s, ['bear']);
+    expect(s.pending?.kind).toBe('plantAt');
+    expect(s.pending?.min).toBe(1);
+    s = pick(s, ['t0']);
+    expect(s.sides.a.totems).toEqual(['bear', null, null]);
+    expect(hero(s).statuses.spirit).toBe(1);
+    // the same kind over itself: no bonus
+    s = play(s, 'ancestral-exchange');
+    s = pick(s, ['bear']);
+    s = pick(s, ['t0']);
+    expect(hero(s).statuses.spirit).toBe(1);
   });
 
-  it('Scorch (Burn) hurts if held, Drain (Void) costs a Mana when drawn', () => {
-    let s = fight(['scorch']);
-    s.sides.a.draw = [{ id: 'V', card: 'void-drain' }];
-    const hp = hero(s).hp;
-    s = endTurn(s).state;
-    expect(hero(s).hp).toBeLessThanOrEqual(hp - 2);
-    expect(s.sides.a.mana).toBe(3 - 1);
-  });
-});
-
-describe('the zero-cost cards', () => {
-  it('Gale Strike (Momentum Strike) costs 0 after its first play, for the rest of the fight', () => {
-    let s = fight(['gale-strike']);
-    s = play(s, 'gale-strike');
-    const back = s.sides.a.discard.find((c) => c.card === 'gale-strike')!;
-    expect(costOf(db, s.sides.a, back)).toBe(0);
+  it('Stormcrown answers only the Hawk; Release the Spirits uproots for damage and leaves nothing to command', () => {
+    let s = fight(['stormcrown', 'shatter-the-row', 'wardkeepers-pact']);
+    s = play(s, 'stormcrown');
+    s = command(s, { totem: 0, target: foe(s).id }).state;
+    expect(foe(s, 0).hp).toBe(200 - 4 - 4);
+    expect(foe(s, 1).hp).toBe(196);
+    s = play(s, 'wardkeepers-pact');
+    s = play(s, 'shatter-the-row');
+    expect(s.sides.a.totems).toEqual([null, null, null]);
+    expect(foe(s, 1).hp).toBe(196 - 12);
+    expect(viewFor(db, s, 'a').sides.a.totems).toEqual([null, null, null]);
   });
 
-  it("Wind's Favor (One for All) and Gathering Storm (Claw): a 0-cost Attack hits for 3 more, and every Claw grows", () => {
-    let s = fight(['winds-favor', 'gathering-storm', 'gathering-storm']);
-    s = play(s, 'winds-favor');
-    s = play(s, 'gathering-storm');
-    expect(foeHp(s)).toBe(200 - 6);
-    s = play(s, 'gathering-storm');
-    expect(foeHp(s)).toBe(200 - 6 - 8);
+  it('a command is deterministic, and the side view shows the totems and whether a command was used', () => {
+    const s = fight([]);
+    const a = command(s, { totem: 0, target: foe(s).id });
+    const b = command(s, { totem: 0, target: foe(s).id });
+    expect(a.state).toEqual(b.state);
+    const v = viewFor(db, a.state, 'b').sides.a;
+    expect(v.totems).toEqual(['hawk', null, null]);
+    expect(v.commanded).toBe(true);
+  });
+
+  it('every Shaman card has text, and the starter needs no rare', () => {
+    for (const c of Object.values(db.cards).filter((x) => x.hero === 'shaman' && !x.source))
+      expect(cardText(db, c).length, c.id).toBeGreaterThan(5);
+    for (const id of RIFTWALKERS.shaman.starter)
+      expect(['basic', 'common'], id).toContain(db.cards[id]?.rarity);
   });
 });

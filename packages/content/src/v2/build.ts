@@ -332,6 +332,31 @@ export const imbue = (kind: Enchant, ifRoom = false): Op => ({
 /** Discharge one enchantment (chosen when the two differ) or both: put it before the card's damage. */
 export const discharge = (count: 1 | 2 = 1): Op => ({ op: 'discharge', count });
 export const recast: Op = { op: 'recast' };
+
+// --- the Shaman's totems (DECISIONS #418) ------------------------------------------------------------------------------
+/** Plant a totem ('*': the player chooses the kind): the first free position, or a chosen one (`anywhere`, or all are taken). */
+export const plant = (spirit: string, anywhere = false): Op => ({
+  op: 'plant',
+  spirit,
+  ...(anywhere ? { anywhere } : {}),
+});
+export const uproot: Op = { op: 'uproot' };
+/** Your next command this turn deals or gives `n` more (Rousing). */
+export const rouse = (n: number): Op => status('rousing', n, 'self', true);
+/** Gain Spirit (at most 3, kept between turns). */
+export const gainSpirit = (n = 1): Op => status('spirit', n);
+/** Spend up to `n` Spirit (99: all of it); read how much with per('spiritSpent'). */
+export const spendSpirit = (n = 99): Op => ({ op: 'spend', status: 'spirit', amount: n });
+/** This turn your next command that gives Barrier gives it to every friendly. */
+export const shelter: Op = status('shelter', 1, 'self', true);
+/** "If you have a Hawk: ..." */
+export const ifTotem = (spirit: string, ops: Op[]): Op => ({
+  op: 'when',
+  by: 'totemsOf',
+  rune: spirit,
+  atLeast: 1,
+  ops,
+});
 export const returnPlayed: Op = { op: 'returnPlayed' };
 /** a status card's tag (Wound, Haze, Scorch, Muck, Drain): the cards that pay off when you make one look for it */
 export const STATUS_TAG = 'status';

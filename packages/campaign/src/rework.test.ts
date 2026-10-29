@@ -43,6 +43,34 @@ describe('runs saved before a class rework', () => {
     );
   });
 
+  it('an older Spellblade run swaps its Arcana, Sharpen and Retainer cards and says so', () => {
+    const run = newRun('spellblade', 'rework-old-s');
+    delete run.reworked;
+    run.deck = [...run.deck, 'starforged-blade', 'gather-light+', 'retainer-guard'];
+    const back = parseRun(serializeRun(run));
+    expect(back!.reworked).toBe(CLASS_REWORKS.spellblade?.version);
+    expect(back!.deck).toContain('obsidian-cut');
+    expect(back!.deck).toContain('ember-inscription+');
+    expect(back!.deck).toContain('glassward');
+    for (const id of back!.deck)
+      expect(COMBAT_DB.cards[id.replace(/^(hi|lo)~/, '')], id).toBeDefined();
+    expect(back!.reworkNotice).toMatch(/^The Spellblade was rebuilt \(Imbue and Discharge\)/);
+  });
+
+  it('an older Shaman run swaps its orb, Focus and recursion cards and says so', () => {
+    const run = newRun('shaman', 'rework-old-sh');
+    delete run.reworked;
+    run.deck = [...run.deck, 'twin-evocation', 'glyph-lattice+', 'harmonic-wave'];
+    const back = parseRun(serializeRun(run));
+    expect(back!.reworked).toBe(CLASS_REWORKS.shaman?.version);
+    expect(back!.deck).toContain('guided-talon');
+    expect(back!.deck).toContain('rune-carapace+');
+    expect(back!.deck).toContain('chorus-of-glyphs');
+    for (const id of back!.deck)
+      expect(COMBAT_DB.cards[id.replace(/^(hi|lo)~/, '')], id).toBeDefined();
+    expect(back!.reworkNotice).toMatch(/^The Shaman was rebuilt \(commanded totems\)/);
+  });
+
   it('a run of a class that was not rebuilt is left alone', () => {
     const unchanged = (Object.keys(RIFTWALKERS) as (keyof typeof RIFTWALKERS)[]).find(
       (h) => !CLASS_REWORKS[h],

@@ -88,6 +88,7 @@ describe('attack statuses only touch attack damage', () => {
     expect(hero(s).hp).toBe(hp - 2 - 6);
   });
 
+  // (the Shaman's Hawk command, DECISIONS #418: a spirit acting, not an attack)
   it('totems deal the same with or without Might on you and Exposed on the enemy', () => {
     const lost = (buffed: boolean): number => {
       let s = fight([], 'shaman');
@@ -95,7 +96,7 @@ describe('attack statuses only touch attack damage', () => {
         hero(s).statuses.might = 5;
         foe(s).statuses.exposed = 3;
       }
-      s = applyAction(db, s, { type: 'endTurn' }).state;
+      s = applyAction(db, s, { type: 'command', totem: 0, target: foe(s).id }).state;
       return 200 - foe(s).hp;
     };
     expect(lost(false)).toBeGreaterThan(0);

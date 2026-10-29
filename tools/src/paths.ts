@@ -51,9 +51,10 @@ const HEADS: Record<HeroId, [RegExp, number | null][]> = {
     [/shadow/i, 2],
     [/basics|glue/i, null],
   ],
+  // (the identity rework, DECISIONS #418)
   shaman: [
-    [/totems/i, 0],
-    [/whittling|elements/i, 1],
+    [/storm/i, 0],
+    [/shelter/i, 1],
     [/rites/i, 2],
     [/basics|glue/i, null],
   ],

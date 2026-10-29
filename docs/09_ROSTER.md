@@ -24,9 +24,9 @@ deck takes one and a half of them. Our pools were ~16 cards and one build path e
 |---|---|---|
 | **Daggers** + discard payoffs | Quill | one or two 0-cost attacks, never the engine |
 | **Bleed** stacking (our poison): double, spread, cash out | Quill | a Bleed hit now and then (Neutral, enemies) |
-| **Totems** (was Runes: plant / awaken / Spirit) | Ilvane (id `totemist`) | nothing |
+| **Totems** (three positions, one command a turn, Spirit; was an orb queue until #418) | Ilvane (id `shaman`) | nothing |
 | **Stances** and Fervor | Solen | nothing |
-| **Arcana** (was Lumen) and the Obsidian Blade (sharpen) | Obsidia (id `spellblade`) | nothing |
+| **Enchantments** on the Obsidian Blade (Imbue / Discharge; was Arcana and Sharpen until #417) | Obsidia (id `spellblade`) | nothing |
 | **Drones** and Assemble | Rivet | |
 | **Pack** buffs | Kesh | |
 | **Thorns** and Barrier-scaling | nobody since DECISIONS #367 (Valeria's Thorns went when she became the Ironclad's list) | Barrier is shared |
@@ -58,9 +58,9 @@ reworked cards stayed the same, so their art and every saved deck still work.
 | 3 | **Kesh the Unfed** | Wyldmaw | 76 | **Bloodrage:** Might and self-damage | **Pack:** buffed companions | **Predator:** Mana and draw for burst turns |
 | 4 | **Vesper Nightlace** | Umbral | 80 | **Traps:** many, varied triggers | **Exposed:** debuff burst, Faltering control | **Suits:** every card is ♠ ♥ ♦ or ♣; show all four in a turn for a Full Trick (DECISIONS #387; was Patience) |
 | 5 | **Sylas** (id `assassin`) | Umbral | 70 | **Execution:** build Preparation, spend it on a finisher (rebuilt 2026-10-29, DECISIONS #416; the Silent copy is archived) | **Knives:** embed knives in enemies, pull them for payoffs | **Shadow:** defence and cycling on the move (docs/reworks/ASSASSIN.md) |
-| 6 | **Ilvane** (id `totemist`) | Nexus-9 | 76 | **Totems:** plant, Spirit and slots, awaken | **Elements:** spells of storm, ice, fire and earth that grow with Spirit | **Rites:** Auras that pay when another Aura is played |
+| 6 | **Ilvane** (id `shaman`) | Nexus-9 | 75 | **Storm:** the Hawk on the attack, with Rousing and Hawk payoffs (rebuilt 2026-10-29, DECISIONS #418; the Defect copy is archived) | **Shelter:** the Bear and Barrier | **Rites:** Spirit, the Elder, and replacing or uprooting totems (docs/reworks/SHAMAN.md) |
 | 7 | **Solen, the Still Flame** | Aurelion | 82 | **Fury:** get in, hit hard, live through it | **Flow:** change stance again and again; every change pays | **Radiant:** build Fervor to 10 for a triple-damage turn |
-| 8 | **Obsidia, Spellblade of the Hollow Crown** (id `spellblade`) | The Hollow Crown (id `starfall`) | 80 | **Blade:** sharpen one weapon | **Arcana:** spend for finishers | **Sigils:** Auras that tick |
+| 8 | **Obsidia, Spellblade of the Hollow Crown** (id `spellblade`) | The Hollow Crown (id `starfall`) | 75 | **Edge:** Imbue cheaply, Discharge one charge at a time (rebuilt 2026-10-29, DECISIONS #417; the Regent copy is archived) | **Burst:** fill both positions with different charges, then Discharge both | **Ward:** Barrier, Wards, and payoffs for what the blade holds (docs/reworks/SPELLBLADE.md) |
 | 9 | **Mire, the Gravewarden** | Gloomfen | 76 | **Doom:** stack, double, cash in | **Thralls:** the dead fight for you | **Ashes:** consumed cards fuel you |
 | 10 | **KP, the Homeless Drunk** | The Midden | 88 | **Gun:** sharpen the Old Twelve Gauge | **Shells:** buckshot and booby traps that hit every enemy | **Hangover:** (with Stagger, attacks that hit a random enemy harder, #393) drink now, pay tomorrow: drinks give Mana, cards or Might plus Hangover (HP lost at the start of his next turn, never the last), payoffs that grow with Hangover, and heals that grow with missing HP (DECISIONS #354) |
 
@@ -70,8 +70,8 @@ Mire was the stretch character and is now built (Doom is hers alone). Still open
 
 Sigils (a passive on turn 1, so each run has an identity). The original four use starting companions or their starter cards
 (Rivet starts with a Drone, Kesh with a Hound; Maren's and Vesper's Sigils from `03_CAMPAIGN.md` are not built yet). The new four have real Sigils: **Quill** *Daggers* (start each
-fight with a Dagger in hand); **Ilvane** *Primed* (start each fight with one Hawk totem); **Solen** *Centred* (start each fight in
-Serene); **Obsidia** *Kindled* (3 Arcana at turn start; starts with 3 Arcana and an Obsidian Blade).
+fight with a Dagger in hand); **Ilvane** *Spirit Caller* (a Hawk planted at the start, and one command a turn; #418); **Solen** *Centred* (start each fight in
+Serene); **Obsidia** *Glass and Ember* (a Ward on her blade at the start; the first Imbue each turn draws 1 and gives 2 Barrier; #417).
 
 Role tags (what kind of fighter, shown on every character screen): Maren **Knight**, Rivet **Engineer**, Kesh **Hunter**, Vesper **Trickster**, Quill **Assassin**, Ilvane **Shaman**, Solen **Monk** (was Barbarian, #391), Obsidia **Spellblade**, Mire **Necromancer**. One word, unique per character (`Riftwalker.role`, tested).
 
@@ -84,10 +84,12 @@ Role tags (what kind of fighter, shown on every character screen): Maren **Knigh
 | `scale` on any amount | "Deal 1 per Barrier / per card exhausted / per Bleed on the target ..." One field, a list of metrics | everyone |
 | `scaleStatus` op | Double Bleed, triple it, etc. | Quill |
 | `power` op | Register a trigger: turn start / turn end / on play / on exhaust / on discard | all Power cards |
-| **Totems** (runes in the engine): `channel`, `evoke`, `runeSlots`; `RuneDef` in the DB | Passive at your turn end, evoke when pushed out or on demand | Ilvane |
+| **Totems** (runes in the engine): `channel`, `evoke`, `runeSlots`; `RuneDef` in the DB | Passive at your turn end, evoke when pushed out or on demand | nobody since #418 (kept in the engine) |
+| **Commanded totems** (`HeroTrait.totems`, `SideState.totems`, `TotemDef` in `db.totems`; ops `plant`, `uproot`; action `command`; statuses `spirit` (at most 3), `rousing`, `shelter`; triggers `command`, `plant`, `replace`; metrics `totems`, `totemKinds`, `totemsOf`, `spirit`, `commanded`, `uprooted`, `replacedNow`, `spiritSpent`) | Three fixed positions; once a turn one totem is commanded and its spirit acts (DECISIONS #418) | Ilvane |
 | **Stances**: `stance` op; statuses `calm`, `wrath`, `radiant`; `mantra` | Exclusive statuses with enter/exit effects and damage multipliers | Solen |
-| **Arcana** (`stars` op, `starCost` on a card) | Second resource that persists between turns | Obsidia |
-| `sharpen` op; per-card `bonus` | Grow every copy of a scaling card | Obsidia |
+| **Arcana** (`stars` op, `starCost` on a card) | Second resource that persists between turns | nobody since #417 (kept in the engine) |
+| `sharpen` op; per-card `bonus` | Grow every copy of a scaling card | KP's Precision (Obsidia's until #417) |
+| **Enchantments** (`SideState.enchants`, at most 2; ops `imbue`, `discharge`, `recast`; status `twinedge`; triggers `imbue`, `discharge`, `dischargeMixed`; metrics `enchants`, `enchantKinds`, `wards`, `discharged`) | Spells store Ember / Glass / Ward on the blade; blade attacks spend one or both (DECISIONS #417) | Obsidia |
 | More Trap triggers: `foeDefends`, `foeTurn` | Vesper's build path needs variety | Vesper |
 | **Preparation and knives** (statuses `prep`, `knives`, both at most 3; ops `embed`, `extract` (`pull`), `spend` (`spendPrep`); triggers `embed`, `extract`, `spend`; metrics `knives`, `knivesAll`, `prep`, `extracted`, `prepSpent`) | Setup that finishers spend, and knives that sit in an enemy until pulled for a payoff (DECISIONS #416) | Sylas |
 | **Guard** (`HeroTrait.openings`; status `opening`; `counter` damage with `riposte`, the `riposte` op; triggers `opening`, `riposte`, `thorns`; metrics `opening`, `foesOpen`, `foesAttacking`) | A hit her Barrier stops completely leaves the attacker Open; a Riposte spends it for a bonus (DECISIONS #415) | Valeria |
@@ -131,9 +133,9 @@ The goal: every card *mechanic* a Slay the Spire player expects exists, with our
 | X-cost, Unplayable, 0-cost chains | `x`, `unplayable`, cost 0 | shared |
 | Draw / Mana now / Mana and cards next turn | draw, mana, **manaNext**, **drawNext** | shared |
 | Discovery / Madness / Armaments / Anger | **discover**, **cheapen**, **upgrade** (hand), **copySelf** | Neutral, Quill, Ilvane |
-| Orbs and Focus | Totems and Spirit | Ilvane |
+| Orbs and Focus | (archived) commanded totems and capped Spirit, an original engine (#418) | Ilvane |
 | Stances, Mantra | Fury / Serene / Radiant, Fervor | Solen |
-| Stars, Forge, the Sovereign Blade | Arcana, Sharpen, the Obsidian Blade | Obsidia |
+| Stars, Forge, the Sovereign Blade | (Arcana, Sharpen: archived) Imbue and Discharge on the Obsidian Blade, an original engine (#417) | Obsidia |
 | Osty, Doom, Souls | Bone Thrall (a companion), **Doom**, Gravesouls | Mire |
 | Minions, Sacrifice | allies, `sacrifice` | Rivet, Kesh, Mire |
 | Traps (ours) | Traps | Vesper masters them; everyone has a few |
@@ -144,4 +146,4 @@ pending kind). Say the word if you want them.
 
 ## Innate traits
 
-Every Riftwalker has one passive (`Riftwalker.trait`), and it helps all of their build paths (DECISIONS #255): Valeria (id knight) Hold and Answer (6 Barrier at the start; Guard: an enemy attack hit her Barrier stops completely leaves it Open until the end of her next turn; 3 Barrier the first time each turn she earns an Opening; DECISIONS #415, was Oathkeeper: 6 Barrier and 6 Plating), Rivet Tinkerer (heal 1 each turn, and each companion gains 1 max HP; DECISIONS #356; her starting Drone has 6 HP, #411), Kesh Pack Instinct (her companions share half her Might, rounded down; DECISIONS #285, #329, #333), Vesper Lying in Wait (6 Barrier and 1 extra card at the start, #412; its 4 Barrier a turn went in #398, and its Full Trick deals 3 more for each one before it in a fight; was Ambusher, Exposed for 3 turns), with Suits: the first time in a turn all four suits are showing, a Full Trick (3 damage to a random enemy, +2 for each earlier one in the fight, draw 1; `HeroTrait.suits`, DECISIONS #387, #398, #404, #411, #412), Sylas (id assassin) Knife Work (1 Preparation and a knife in every enemy at the start; 1 Preparation the first time each turn he embeds a knife; 3 damage for every knife he pulls; DECISIONS #416, was Hidden Blades: a Dagger every turn), Ilvane Totem-bound (starts with a Hawk, a Bear and a Splinter totem), Solen Inner Fire (1 Fervor whenever he enters a stance, 2 Mana the first time each turn he leaves Serene (an engine rule until #413), and 2 Primed whenever he leaves Fury, #412; its 2 Barrier went in DECISIONS #390; was 2 Fervor at the start), Obsidia Kindled (1 Arcana and Sharpen 1 each turn; she starts with 3 Arcana), Dorian (id necromancer) Grave Chill (Raise 2 at the start of every turn, DECISIONS #397, #401; Fate on a random enemy whenever an ally dies (2, #413) or a card is consumed (3; #403; 5 a death for a while, #398); no Fate at the start; his starting Thrall has 2 HP, #411), KP Clutch Genes (1% more attack damage for every HP missing, #411; was +50% at or below half HP). A trait can have triggers (`HeroTrait.triggers`) that fire like an Aura's but never count or show as one. Hero HP is 70-88, Slay the Spire's range.
+Every Riftwalker has one passive (`Riftwalker.trait`), and it helps all of their build paths (DECISIONS #255): Valeria (id knight) Hold and Answer (6 Barrier at the start; Guard: an enemy attack hit her Barrier stops completely leaves it Open until the end of her next turn; 3 Barrier the first time each turn she earns an Opening; DECISIONS #415, was Oathkeeper: 6 Barrier and 6 Plating), Rivet Tinkerer (heal 1 each turn, and each companion gains 1 max HP; DECISIONS #356; her starting Drone has 6 HP, #411), Kesh Pack Instinct (her companions share half her Might, rounded down; DECISIONS #285, #329, #333), Vesper Lying in Wait (6 Barrier and 1 extra card at the start, #412; its 4 Barrier a turn went in #398, and its Full Trick deals 3 more for each one before it in a fight; was Ambusher, Exposed for 3 turns), with Suits: the first time in a turn all four suits are showing, a Full Trick (3 damage to a random enemy, +2 for each earlier one in the fight, draw 1; `HeroTrait.suits`, DECISIONS #387, #398, #404, #411, #412), Sylas (id assassin) Knife Work (1 Preparation and a knife in every enemy at the start; 1 Preparation the first time each turn he embeds a knife; 3 damage for every knife he pulls; DECISIONS #416, was Hidden Blades: a Dagger every turn), Ilvane Spirit Caller (three totem positions; once a turn, command one; a Hawk planted at the start; DECISIONS #418, was Totem-bound: a Hawk, a Bear and a Splinter that pulsed every turn), Solen Inner Fire (1 Fervor whenever he enters a stance, 2 Mana the first time each turn he leaves Serene (an engine rule until #413), and 2 Primed whenever he leaves Fury, #412; its 2 Barrier went in DECISIONS #390; was 2 Fervor at the start), Obsidia Glass and Ember (a Ward on her blade at the start; the first time each turn she Imbues, draw 1 and gain 2 Barrier; DECISIONS #417, was Kindled: Arcana and Sharpen each turn), Dorian (id necromancer) Grave Chill (Raise 2 at the start of every turn, DECISIONS #397, #401; Fate on a random enemy whenever an ally dies (2, #413) or a card is consumed (3; #403; 5 a death for a while, #398); no Fate at the start; his starting Thrall has 2 HP, #411), KP Clutch Genes (1% more attack damage for every HP missing, #411; was +50% at or below half HP). A trait can have triggers (`HeroTrait.triggers`) that fire like an Aura's but never count or show as one. Hero HP is 70-88, Slay the Spire's range.

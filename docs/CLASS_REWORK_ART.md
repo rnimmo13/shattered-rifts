@@ -54,3 +54,40 @@ the finish: for Draw Steel or Final Cut. Not made.
 
 In code: the Knives chip on an enemy (†, "n/3"), the Preparation chip on the hero (◔, "n/3"), tooltips, a teaching tip, and the dagger
 icon and flurry animation for cards that plant or pull knives (`art.ts`).
+
+## Spellblade (Imbue and Discharge)
+
+Portrait: keep (`figures/hero-spellblade.png` and her skins).
+
+| Kind | Cards |
+|---|---|
+| Kept with their picture, still fitting | Glint, Hollow Gaze, Humble, Molten Weight, Stellar Wind, Forged in Fury, Skybolt, Ember Cache, Faint Glow, Sunstrike, Astral Pulse, Gamma Burst, Shard Strike, Tyrant Strike, Echoing Blade, Cleaving Edge, Dying Ember, Obsidian Flurry, Devastate, Radiance, Final Shatter, Scheme, Lava Bomb, Seven Shards, Glass Veil, Pale Beacon, Star Barrier, Bladewall, Glass Guard, Mirror Glass, Glass Wall, Obsidian Aegis, Unbreakable Crown |
+| Kept picture, effect changed: **review** (drawn as a whetstone, a forge, stars or a crown: the brief's "mundane sharpening" concern) | Etch the Edge (`whetstone`), Warm Anvil, Banked Embers, Call the Blade, Heirloom Maul, Magma Surge, Obsidian Lance, Cataclysm |
+| New, placeholder until drawn (12) | Ember Inscription, Obsidian Cut, Fracture Script, Recast the Edge, Crownfall, Overcharge Edge, Emberglass Covenant, Twin Sigils, Glass Requiem, Shatterguard, Glassward, Ward Weave |
+| Pictures of removed cards that might fit (**look first**) | Starforged Blade -> Obsidian Cut; Gather Light -> Ember Inscription; Collapsing Star -> Overcharge Edge; Retainer Guard -> Glassward; Call the Guard -> Shatterguard |
+| Retired (unused now) | the 46 removed Spellblade cards' pictures (`retired.ts`, Spellblade identity block) |
+
+Signature illustration (priority 4): runes of ember and glass written along a black-glass blade, one rune flaring as it is released into
+a strike: for Ember Inscription or Crownfall. Not made.
+
+In code: the Obsidian Blade panel (`EnchantSlots.tsx`: two positions, a mark and a word each so it reads without colour, an empty
+dotted ring, the aimed card's spend shown), the charge tiles of the discharge and replacement choices, tooltips, a teaching tip and Learn page words.
+
+
+## Shaman (commanded totems)
+
+Portrait: keep (`figures/hero-shaman.png` and his skins). Visual authority for anything new: `assets-src/heroes/shaman.png` (bold ink
+outlines, ochre carved wood, ivory feather and bone, teal cloth, cyan spirits; the Elder is a branch-faced tree spirit).
+
+| Kind | Cards |
+|---|---|
+| Kept with their picture, still fitting | Stone Skin, Gale Strike, Ember Toss, Mudslide, Tidecaller, Arc Flash, Frost Needle, Spirit Memory, Clear Spring, Crystal Ward, Ironbark, Skybreaker, Spark Lash, Rime Strike, Deep Den, Deep Freeze, Resonant Strike |
+| Kept picture, effect changed: **review** (drawn as an orb row, a slot or an awakening burst) | Hawk Call, Totem Volley, Stormcrown, Arc Lightning, Verdict of the Sky, Still Water, Frostglass, Hail Rite, Bark Carapace, Call the Elder, Spirit Guide, Chorus of Spirits, Elder Communion, Release the Spirits |
+| New, placeholder until drawn (22) | Wardkeeper's Pact, Guided Talon, Hawk's Eye, Diving Talon, Hawk's Counsel, Thunderhead, Eye of the Tempest, Stormcaller's Rite, Frostbark, Bear Hug, Shared Shelter, Ancestral Bulwark, Roar of the Den, Tune the Spirits, Ancestral Exchange, Rite of Returning, Resounding Call, Elder's Wisdom, Spirit Drum, Circle of Ancestors, Heart of the World Tree, Spiritstorm |
+| Pictures of removed cards that might fit (**look first**) | Storm Pole -> Hawk's Counsel; Splinter Wheel -> Spirit Drum; Aegis Array -> Ancestral Bulwark; Gathering Dark -> Circle of Ancestors; Spiritfont -> Heart of the World Tree |
+| Retired (unused now) | the 53 removed Shaman cards' pictures (`retired.ts`, Shaman identity block); the old rune glyphs (`RUNE_GLYPH`) stay for the archive |
+
+Priority 1 in the brief, **not made**: Hawk, Bear and Elder totem silhouettes and their brief manifestations, with occupied, selected
+and commanded states. Until they exist the Totems panel draws each in code (a mark and a word: ⋀ Hawk, ◼ Bear, ✥ Elder) and a command
+plays the log line and the unit's hit or Barrier effect; no spirit becomes a unit or a target. The supplied reference strips the brief
+names (`shaman-totems-reference-v2.png`, `shaman-spirits-reference-v2.png`) are not in the repository.

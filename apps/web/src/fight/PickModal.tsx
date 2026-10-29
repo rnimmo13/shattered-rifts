@@ -4,7 +4,8 @@
 import { useState } from 'react';
 import type { CombatDb, PendingView } from '@sr/combat';
 import { FightCard } from './FightCard';
-import { ENCHANT_LOOK } from './EnchantSlots';
+import { ENCHANT_LOOK } from './enchantLook';
+import { totemLook } from './totemLook';
 
 const TITLE: Record<PendingView['kind'], string> = {
   discard: 'Discard',
@@ -17,6 +18,9 @@ const TITLE: Record<PendingView['kind'], string> = {
   enchant: 'Replace',
   discharge: 'Discharge',
   recast: 'Recast',
+  // (the Shaman's, DECISIONS #418)
+  plantKind: 'Plant',
+  plantAt: 'Plant',
 };
 
 function prompt(p: PendingView): string {
@@ -24,6 +28,13 @@ function prompt(p: PendingView): string {
     return `Your blade is full: choose the enchantment ${p.incoming ? ENCHANT_LOOK[p.incoming].name : 'the new one'} replaces.`;
   if (p.kind === 'discharge') return 'Choose the enchantment to discharge.';
   if (p.kind === 'recast') return 'Choose what your newest enchantment becomes.';
+  if (p.kind === 'plantKind') return 'Choose the spirit to plant.';
+  if (p.kind === 'plantAt') {
+    const nm = p.planting ? totemLook(p.planting).name : 'the totem';
+    return p.min === 0
+      ? `Your totems are all planted: choose the one ${article(nm)} ${nm} replaces, or keep them all.`
+      : `Choose where to plant ${article(nm)} ${nm} (a totem there is replaced).`;
+  }
   const many = p.max > 1 ? `${p.max} cards` : 'a card';
   if (p.kind === 'scry') return 'Choose a card to draw. The rest are discarded.';
   if (p.kind === 'copy') return 'Choose a card: copies of it come to your hand next turn.';
@@ -36,6 +47,8 @@ function prompt(p: PendingView): string {
   if (p.min === 0) return `${verb} up to ${p.max} cards.`;
   return `${verb} ${many}.`;
 }
+
+const article = (w: string): string => (/^[aeiou]/i.test(w) ? 'an' : 'a');
 
 export function PickModal(props: {
   db: CombatDb;
@@ -88,6 +101,36 @@ export function PickModal(props: {
                   <small>{look.name}</small>
                 </span>
                 <p className="pick__note">{look.text}</p>
+              </button>
+            );
+          })}
+          {/* (spirits or totem positions to choose among: DECISIONS #418) */}
+          {p.spirits?.map((c, k) => {
+            const on = chosen.includes(c.id);
+            const look = c.spirit ? totemLook(c.spirit) : null;
+            const text = c.spirit
+              ? (props.db.totems?.[c.spirit]?.text ?? '')
+              : 'An empty position.';
+            const label =
+              p.kind === 'plantAt'
+                ? `Position ${k + 1}: ${look ? look.name : 'empty'}`
+                : (look?.name ?? c.id);
+            return (
+              <button
+                key={c.id}
+                className={`pick pick--charge${on ? ' is-on' : ''}`}
+                aria-pressed={on}
+                aria-label={`${label}. ${text}`}
+                onClick={() => toggle(c.id)}
+              >
+                <span className={`totem${c.spirit ? ` totem--${c.spirit}` : ' is-empty'}`}>
+                  <b aria-hidden="true">{look ? look.glyph : '·'}</b>
+                  <small>{look ? look.name : 'empty'}</small>
+                </span>
+                <p className="pick__note">
+                  {p.kind === 'plantAt' ? `Position ${k + 1}. ` : ''}
+                  {text}
+                </p>
               </button>
             );
           })}

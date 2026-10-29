@@ -128,6 +128,8 @@ export function validateDb(db: CombatDb): string[] {
       }
       if (o.op === 'channel' && o.rune !== '*' && !db.runes?.[o.rune])
         errs.push(`${where}: channels unknown rune "${o.rune}"`);
+      if (o.op === 'plant' && o.spirit !== '*' && !db.totems?.[o.spirit])
+        errs.push(`${where}: plants unknown totem "${o.spirit}"`);
       if (o.op === 'forge' && !db.cards[o.card])
         errs.push(`${where}: forges unknown card "${o.card}"`);
       if (o.op === 'transform' && !db.cards[o.into])

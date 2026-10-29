@@ -44,6 +44,13 @@ export const TIP_RULES: TipRule[] = [
     when: (v, c) => c.usesRunes || v.sides.a.runes.length > 0,
   },
   {
+    // (the Shaman's, DECISIONS #418)
+    id: 'totems',
+    title: 'Commanding your totems',
+    text: 'Your totems stand in three positions (the Totems panel by your hero). Once each turn, press one to command it: a Hawk deals 4 damage to the enemy you choose, a Bear gives 4 Barrier, an Elder gives 1 Spirit and draws a card. Spend Spirit with Empower for 2 more. Play your Rousing cards first: they add to your next command.',
+    when: (v) => !!v.sides.a.totems,
+  },
+  {
     id: 'lumen',
     title: 'Arcana',
     text: 'Arcana is a second resource, in the orange orb beside your Mana. Some cards gain it; cards with an orange orb on them spend it. It lasts the whole fight, so you can save it for a big finisher.',

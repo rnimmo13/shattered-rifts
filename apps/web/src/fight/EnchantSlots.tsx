@@ -2,22 +2,9 @@
 // side's column, oldest first. Each shows its kind as a mark and a word (it reads without colour), an empty one a dotted ring. The card
 // being aimed shows what it would do to them. Presentation only: the enchantments come from the combat view.
 
-import type { Enchant } from '@sr/combat';
+import { EMBER_DAMAGE, GLASS_DAMAGE, WARD_BARRIER, type Enchant } from '@sr/combat';
 import { tipAttrs } from '../ui/tip';
-
-export const ENCHANT_LOOK: Record<Enchant, { glyph: string; name: string; text: string }> = {
-  ember: {
-    glyph: '♨',
-    name: 'Ember',
-    text: 'When discharged: the attack deals 3 more damage on its first hit.',
-  },
-  glass: {
-    glyph: '◇',
-    name: 'Glass',
-    text: 'When discharged: once the attack is done, 2 damage to every enemy (a shard, not an attack).',
-  },
-  ward: { glyph: '⛨', name: 'Ward', text: 'When discharged: gain 3 Barrier at once.' },
-};
+import { ENCHANT_LOOK } from './enchantLook';
 
 export function EnchantSlots(props: {
   enchants: readonly Enchant[];
@@ -34,7 +21,7 @@ export function EnchantSlots(props: {
       {...tipAttrs({
         kicker: 'Obsidian Blade',
         title: `${props.enchants.length} of 2 enchantments`,
-        text: 'Spells Imbue an enchantment (with both positions taken, you choose which one it replaces). Blade attacks Discharge them: Ember adds 3 to the first hit, Glass breaks for 2 on every enemy after the attack, Ward gives 3 Barrier. They last until spent or the fight ends.',
+        text: `Spells Imbue an enchantment (with both positions taken, you choose which one it replaces). Blade attacks Discharge them: Ember adds ${EMBER_DAMAGE} to the first hit, Glass breaks for ${GLASS_DAMAGE} on every enemy after the attack, Ward gives ${WARD_BARRIER} Barrier. They last until spent or the fight ends.`,
       })}
     >
       {slots.map((k, i) => {

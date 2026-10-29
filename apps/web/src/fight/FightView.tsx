@@ -55,6 +55,7 @@ import { GrimoireModal } from './Grimoire';
 import { AimArrow } from './AimArrow';
 import { SuitTrack } from './SuitTrack';
 import { EnchantSlots } from './EnchantSlots';
+import { TotemPanel } from './TotemPanel';
 import { UnitPlates, type Placed } from './Plates';
 import { ErrorDetails } from '../ui/ErrorDetails';
 import { packLine } from './lineLayout';
@@ -368,6 +369,8 @@ export function FightView(props: {
   /** watching: paused, and how fast */
   const pausedRef = useRef(false);
   const [paused, setPaused] = useState(false);
+  /** choices answered so far: two questions in a row with the same options still open a fresh choice window */
+  const [pickCount, setPickCount] = useState(0);
   /** watching, paused: let the moves up to this one play, then hold again (the Step button) */
   const stepTo = useRef<number | null>(null);
   /** watching: the move on screen, for the move counter */
@@ -423,6 +426,9 @@ export function FightView(props: {
   } | null>(null);
   const [dragCard, setDragCard] = useState<HandCard | null>(null);
   const [aimPotion, setAimPotion] = useState<string | null>(null);
+  // (the Shaman, DECISIONS #418) the totem whose command is being aimed, and whether the next command spends a Spirit
+  const [aimCommand, setAimCommand] = useState<number | null>(null);
+  const [empowerOn, setEmpowerOn] = useState(false);
   const [floats, setFloats] = useState<Float[]>([]);
   const [banner, setBannerText] = useState<string | null>(null);
   /** a banner is good news (green), bad news (red) or just information */
@@ -1228,8 +1234,29 @@ export function FightView(props: {
                 a.type === 'potion' && a.potion === aimPotion && a.target ? [a.target] : [],
               ),
             )
-          : (dragTargets ?? (selectedCard ? new Set(selectedCard.targets) : new Set<string>())),
-    [selectedCard, dragTargets, aimPotion, legal, releaseCard, releasing, releaseFits],
+          : aimCommand !== null
+            ? new Set(
+                legal.flatMap((a) =>
+                  a.type === 'command' &&
+                  a.totem === aimCommand &&
+                  !!a.empower === empowerOn &&
+                  a.target
+                    ? [a.target]
+                    : [],
+                ),
+              )
+            : (dragTargets ?? (selectedCard ? new Set(selectedCard.targets) : new Set<string>())),
+    [
+      selectedCard,
+      dragTargets,
+      aimPotion,
+      aimCommand,
+      empowerOn,
+      legal,
+      releaseCard,
+      releasing,
+      releaseFits,
+    ],
   );
   // what each card in hand would really deal right now (Might, Sharpen, Faltering...), and the card being aimed at the unit under
   // the pointer (its Exposed too); a card that could hit several enemies shows the range
@@ -1278,7 +1305,8 @@ export function FightView(props: {
       if (selected || releasing) setPointer({ x: e.clientX, y: e.clientY });
       // while aiming, the nearest figure that can be chosen is the one pointed at
       const aiming =
-        !!(selected || dragTargets || releasing || aimPotion !== null) && aimSet.size > 0;
+        !!(selected || dragTargets || releasing || aimPotion !== null || aimCommand !== null) &&
+        aimSet.size > 0;
       const u = unitAt(e.clientX, e.clientY, aiming ? aimSet : undefined);
       setHoverUnit(u);
       const sc = scene.current;
@@ -1292,7 +1320,7 @@ export function FightView(props: {
             : null,
       );
       scene.current?.fighters.setHover(
-        selected || dragTargets || releasing || aimPotion !== null
+        selected || dragTargets || releasing || aimPotion !== null || aimCommand !== null
           ? u && aimSet.has(u)
             ? u
             : null
@@ -1301,7 +1329,7 @@ export function FightView(props: {
     };
     window.addEventListener('pointermove', onMove);
     return () => window.removeEventListener('pointermove', onMove);
-  }, [unitAt, selected, dragTargets, releasing, aimPotion, aimSet]);
+  }, [unitAt, selected, dragTargets, releasing, aimPotion, aimCommand, aimSet]);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -1314,6 +1342,7 @@ export function FightView(props: {
         else {
           setSelected(null);
           setAimPotion(null);
+          setAimCommand(null);
           setReleasing(null);
         }
       } else if (e.key === 'e' || e.key === 'E') endTurn();
@@ -1344,6 +1373,21 @@ export function FightView(props: {
         else setReleasing({ ...releasing, picked });
       }
       return; // a miss keeps aiming: right-click or Esc lets go
+    }
+    if (aimCommand !== null) {
+      if (e.button !== 0) return setAimCommand(null);
+      const u = unitAt(e.clientX, e.clientY, aimSet);
+      if (u && aimSet.has(u)) {
+        act({
+          type: 'command',
+          totem: aimCommand,
+          target: u,
+          ...(empowerOn ? { empower: true } : {}),
+        });
+        setAimCommand(null);
+        setEmpowerOn(false);
+      }
+      return; // (a miss keeps aiming: right-click or Esc lets go)
     }
     if (aimPotion !== null) {
       if (e.button !== 0) return setAimPotion(null);
@@ -1417,7 +1461,7 @@ export function FightView(props: {
   const usesStars = useMemo(() => deckUsesStars(db, mine), [db, mine]);
   const usesRunes = useMemo(() => deckUsesRunes(db, mine), [db, mine]);
   const showStars = usesStars || (me?.stars ?? 0) > 0;
-  // how sharp this deck's weapon is (the Obsidian Blade or the Old Twelve Gauge; null with neither): every copy carries the
+  // how sharp this deck's weapon is (the Old Twelve Gauge; the Obsidian Blade is enchanted since #417): every copy carries the
   // same bonus, and the side's running total covers a deck whose copies were all consumed
   const ownSide = live?.sides[mySide];
   const sharp = sharpOf(db, ownSide);
@@ -1466,6 +1510,57 @@ export function FightView(props: {
                 }
               : null
           }
+        />
+      </FloatPanel>
+    );
+  };
+  // (the Shaman's totems: his three positions and his Spirit, as a panel in that side's column, DECISIONS #418)
+  const totemPanel = (side: Side): ReactNode => {
+    const sv = view?.sides[side];
+    const held = sv?.totems;
+    if (!sv || !held) return null;
+    const hero = sv.units.find((u) => u.kind === 'hero');
+    const spirit = hero?.statuses.spirit ?? 0;
+    const mine = side === mySide && !waiting && !finished && watch === null;
+    const cmds = mine
+      ? legal.filter((a): a is Extract<Action, { type: 'command' }> => a.type === 'command')
+      : [];
+    const ready = new Set(cmds.filter((a) => !!a.empower === empowerOn).map((a) => a.totem));
+    const command = (totem: number): void => {
+      setSelected(null);
+      setAimPotion(null);
+      const ways = cmds.filter((a) => a.totem === totem && !!a.empower === empowerOn);
+      const plain = ways.find((a) => !a.target);
+      if (plain) {
+        act(plain);
+        setEmpowerOn(false);
+        setAimCommand(null);
+      } else setAimCommand(aimCommand === totem ? null : totem);
+    };
+    return (
+      <FloatPanel
+        id={side === mySide ? 'totems-mine' : 'totems-foe'}
+        className="fight__aux fight__aux--totems"
+        title={side === mySide ? 'Totems' : 'Their Totems'}
+      >
+        <TotemPanel
+          db={db}
+          totems={held}
+          spirit={spirit}
+          commanded={!!sv.commanded}
+          ready={ready}
+          aiming={side === mySide ? aimCommand : null}
+          canEmpower={cmds.some((a) => a.empower)}
+          empower={empowerOn}
+          {...(mine
+            ? {
+                onEmpower: (on: boolean) => {
+                  setEmpowerOn(on);
+                  setAimCommand(null);
+                },
+                onCommand: command,
+              }
+            : {})}
         />
       </FloatPanel>
     );
@@ -1534,10 +1629,11 @@ export function FightView(props: {
         ref={host}
         onPointerDown={onStagePointerDown}
         onContextMenu={(e) => {
-          if (selected || aimPotion !== null || releasing) {
+          if (selected || aimPotion !== null || aimCommand !== null || releasing) {
             e.preventDefault();
             setSelected(null);
             setAimPotion(null);
+            setAimCommand(null);
             setReleasing(null);
           }
         }}
@@ -1877,6 +1973,15 @@ export function FightView(props: {
               </div>
             </div>
           )}
+          {aimCommand !== null && me?.totems?.[aimCommand] && (
+            <div className="fight__aimbar" role="status">
+              <b>Command: {db.totems?.[me.totems[aimCommand]]?.name ?? 'Totem'}</b>
+              {empowerOn ? <span> (empowered)</span> : null} <span>Click a glowing target.</span>
+              <button className="btn btn--small btn--ghost" onClick={() => setAimCommand(null)}>
+                <span>Cancel</span>
+              </button>
+            </div>
+          )}
           {aimPotion !== null && me?.potions?.includes(aimPotion) && (
             <div className="fight__aimbar" role="status">
               <b>{COMBAT_DB_POTION_NAME(aimPotion)}</b> <span>Click a glowing target.</span>
@@ -1940,6 +2045,7 @@ export function FightView(props: {
               )}
               {suitsPanel(mySide)}
               {enchantPanel(mySide)}
+              {totemPanel(mySide)}
               {me && <AuraList db={db} me={me} panel="auras-mine" title="Your Auras" />}
             </div>
           )}
@@ -1979,6 +2085,7 @@ export function FightView(props: {
               )}
               {suitsPanel(foeSide)}
               {enchantPanel(foeSide)}
+              {totemPanel(foeSide)}
               {them && (
                 <AuraList
                   db={db}
@@ -2044,11 +2151,15 @@ export function FightView(props: {
           )}
           {view.pending && !finished && !watch && (
             <PickModal
-              key={view.pending.pool.map((c) => c.id).join()}
+              // (a choice of enchantments or totems has no cards: its kind and options tell two questions in a row apart)
+              key={`${view.pending.kind}:${view.pending.pool.map((c) => c.id).join()}:${(view.pending.charges ?? []).map((c) => c.id + c.kind).join()}:${(view.pending.spirits ?? []).map((c) => c.id + (c.spirit ?? '')).join()}:${view.pending.incoming ?? ''}${view.pending.planting ?? ''}:${pickCount}`}
               db={db}
               pending={view.pending}
               width={Math.min(190, cw)}
-              onSubmit={(cards) => act({ type: 'pick', cards })}
+              onSubmit={(cards) => {
+                setPickCount((n) => n + 1);
+                act({ type: 'pick', cards });
+              }}
             />
           )}
           {pile && (

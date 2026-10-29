@@ -75,9 +75,9 @@ export const SPELLBLADE: CardDef[] = [
     'skill',
     1,
     'none',
-    [barrier(6), fetchCards(1, 'draw')],
+    [barrier(7), fetchCards(1, 'draw')],
     {
-      up: { effects: [barrier(9), fetchCards(1, 'draw')] },
+      up: { effects: [barrier(10), fetchCards(1, 'draw')] },
     },
   ),
   a(
@@ -184,10 +184,10 @@ export const SPELLBLADE: CardDef[] = [
     'attack',
     2,
     'foe',
-    [discharge(), dmg(13), manaNext(1)],
+    [discharge(), dmg(15), manaNext(1)],
     {
       tags: ['blade'],
-      up: { effects: [discharge(), dmg(17), manaNext(1)] },
+      up: { effects: [discharge(), dmg(19), manaNext(1)] },
     },
   ),
   a(
@@ -210,7 +210,7 @@ export const SPELLBLADE: CardDef[] = [
     1,
     'none',
     [on('turnStart', [imbue('ember', true), barrier(2)])],
-    { up: { effects: [on('turnStart', [imbue('ember', true), barrier(4)])] } },
+    { up: { effects: [on('turnStart', [imbue('ember', true), barrier(3)])] } },
   ),
   a(
     'uncommon',
@@ -219,9 +219,9 @@ export const SPELLBLADE: CardDef[] = [
     'skill',
     1,
     'none',
-    [drawUntil('skill'), imbue('glass')],
+    [drawUntil('skill'), imbue('glass'), barrier(3)],
     {
-      up: { effects: [drawUntil('skill'), imbue('glass'), barrier(4)] },
+      up: { effects: [drawUntil('skill'), imbue('glass'), barrier(6)] },
     },
   ),
   a(
@@ -247,7 +247,7 @@ export const SPELLBLADE: CardDef[] = [
     'none',
     [on('discharge', [dmg(4, 'allFoes')])],
     {
-      up: { effects: [on('discharge', [dmg(6, 'allFoes')])] },
+      up: { effects: [on('discharge', [dmg(5, 'allFoes')])] },
     },
   ),
   a('rare', 'big-bang', 'Magma Surge', 'skill', 0, 'none', [mana(1), imbue('ember')], {
@@ -261,10 +261,10 @@ export const SPELLBLADE: CardDef[] = [
     'attack',
     2,
     'none',
-    [discharge(), dmg(8, 'allFoes'), statusTheirs('sapped', 6, 'allFoes')],
+    [discharge(), dmg(10, 'allFoes'), statusTheirs('sapped', 6, 'allFoes')],
     {
       tags: ['blade'],
-      up: { effects: [discharge(), dmg(10, 'allFoes'), statusTheirs('sapped', 8, 'allFoes')] },
+      up: { effects: [discharge(), dmg(12, 'allFoes'), statusTheirs('sapped', 8, 'allFoes')] },
     },
   ),
 
@@ -358,11 +358,11 @@ export const SPELLBLADE: CardDef[] = [
     'skill',
     1,
     'none',
-    [imbue('ember'), manaNext(1), status('holdfast', 1)],
-    { up: { effects: [imbue('ember'), manaNext(1), status('holdfast', 1), barrier(3)] } },
+    [imbue('ember'), manaNext(1), status('holdfast', 1), barrier(3)],
+    { up: { effects: [imbue('ember'), manaNext(1), status('holdfast', 1), barrier(6)] } },
   ),
-  a('uncommon', 'scheme', 'Scheme', 'skill', 1, 'none', [drawNext(2), imbue('glass')], {
-    up: { effects: [drawNext(3), imbue('glass')] },
+  a('uncommon', 'scheme', 'Scheme', 'skill', 1, 'none', [drawNext(2), imbue('glass'), barrier(2)], {
+    up: { effects: [drawNext(3), imbue('glass'), barrier(2)] },
   }),
   a(
     'rare',
@@ -371,8 +371,8 @@ export const SPELLBLADE: CardDef[] = [
     'power',
     1,
     'none',
-    [on('dischargeMixed', [manaNext(1), barrier(4)], { once: true })],
-    { up: { effects: [on('dischargeMixed', [manaNext(1), barrier(7)], { once: true })] } },
+    [on('dischargeMixed', [manaNext(1), barrier(6)], { once: true })],
+    { up: { effects: [on('dischargeMixed', [manaNext(1), barrier(9)], { once: true })] } },
   ),
   a(
     'rare',
@@ -443,10 +443,21 @@ export const SPELLBLADE: CardDef[] = [
     'attack',
     2,
     'foe',
-    [discharge(2), dmg(14), scaled(dmg(0, 'allFoes'), per('discharged', 3))],
+    // (the shards only when something was discharged: a 0-damage hit on every enemy would still spring their Thorns and Traps)
+    [
+      discharge(2),
+      dmg(14),
+      when('discharged', { atLeast: 1 }, [scaled(dmg(0, 'allFoes'), per('discharged', 3))]),
+    ],
     {
       tags: ['blade'],
-      up: { effects: [discharge(2), dmg(19), scaled(dmg(0, 'allFoes'), per('discharged', 3))] },
+      up: {
+        effects: [
+          discharge(2),
+          dmg(19),
+          when('discharged', { atLeast: 1 }, [scaled(dmg(0, 'allFoes'), per('discharged', 3))]),
+        ],
+      },
     },
   ),
 
@@ -495,9 +506,9 @@ export const SPELLBLADE: CardDef[] = [
     'skill',
     2,
     'none',
-    [discharge(), barrier(10), status('reflect', 1)],
+    [discharge(), barrier(11), status('reflect', 1)],
     {
-      up: { effects: [discharge(), barrier(14), status('reflect', 1)] },
+      up: { effects: [discharge(), barrier(15), status('reflect', 1)] },
     },
   ),
   a(
