@@ -5,6 +5,7 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **A new Knight:** the Knight is a man in sun armour now; the Store's looks for him are the Sunwarden and the Female Knight (if you had the Moonlit Regent, you have the Female Knight).
 - **No more coin:** every chance in an event, and who goes first in the Arena, is shown on the slider reel. Its tiles are the real odds (a 60% chance is 12 of every 20 tiles your way), and the odds are written under it.
 - **Cosmetics:** get any Riftwalker look in the Store (free for now) and choose which one each Riftwalker wears on the new Cosmetics page. Your look is your hero on the home screen and in your fights, and it follows you to any device with your Vault or account.
 - **Summon cards with no room:** a card whose companions do not all fit can be played anyway (what fits comes); the prompt says how many will come, beside the choice of a companion to scrap.

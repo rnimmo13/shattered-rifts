@@ -85,7 +85,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     hero: { id: 'knight', name: 'Knight', maxHp: 80, mana: 3, handSize: 5 },
     starter: [...rep('strike', 5), ...rep('defend', 4), 'sundering-blow'],
     blurb:
-      'A knight of the Gilded Order. No companions: Might, Barrier and a deck she burns down to a point.',
+      'A knight of the Gilded Order. No companions: Might, Barrier and a deck that burns down to a point.',
     mechanics: ['Barrier', 'Might', 'Exposed', 'Consume', 'Self-damage'],
     buildPaths: [
       'Bulwark: hit with your Barrier',
@@ -640,7 +640,7 @@ export const maxCopiesOf = (rarity: string | undefined): number =>
 
 export { BOONS, HEARTS, POTIONS };
 export { SHELVED_LEGENDARIES, lendLegendaries } from './shelved';
-export { SKINS, skinDef, type SkinDef } from './cosmetics';
+export { SKINS, currentSkinId, skinDef, type SkinDef } from './cosmetics';
 
 /**
  * The Riftwalker ids before they were named for their class (DECISIONS #190, 2026-10-25). A run save, a Vault deck, a remembered

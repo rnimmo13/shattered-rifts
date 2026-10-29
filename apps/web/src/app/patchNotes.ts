@@ -42,6 +42,10 @@ export const PATCH_NOTES: PatchNote[] = [
         kind: 'changed',
         text: 'In the Arena, when both players want the same order, a reel of your two names decides who goes first.',
       },
+      {
+        kind: 'new',
+        text: 'A new Knight: a man in sun armour. His looks in the Store are the Sunwarden and the Female Knight (if you had the Moonlit Regent, you have the Female Knight).',
+      },
     ],
   },
   {
