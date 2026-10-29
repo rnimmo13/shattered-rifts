@@ -78,12 +78,14 @@ describe('the choice at the start of a run', () => {
     expect(new Set(Array.from({ length: 30 }, (_, i) => ids(`v${i}`))).size).toBeGreaterThan(5);
   });
 
-  it('taking an option applies it and opens the map', () => {
+  it('taking an option applies it and opens the map (or the card it gives first)', () => {
     const r = newRun('knight', 'take', 'normal');
-    const pick = r.context?.prelude?.options[0]?.id as string;
-    const after = choosePrelude(r, pick);
-    expect(after.phase).toBe('map');
-    expect(after.context).toBeNull();
+    for (const o of r.context?.prelude?.options ?? []) {
+      const after = choosePrelude(r, o.id);
+      // (an option that gives a card choice shows it before the map; the seed decides which options are on offer)
+      expect(['map', 'reward'], o.id).toContain(after.phase);
+      if (after.phase === 'map') expect(after.context).toBeNull();
+    }
     expect(r.phase).toBe('prelude'); // the input is never changed
   });
 
@@ -204,7 +206,12 @@ describe('what each effect does', () => {
       { nodeId: '', kits: [{ id: 'a', leans: 'Bulwark', deck: [], added: [], removed: [] }] },
       { nodeId: '', starterPick: { options: ['return-the-blow', 'challenge'], count: 2 } },
     ]) {
-      const old = { ...(JSON.parse(serializeRun(fresh)) as object), phase: 'kit', context, deck: [] };
+      const old = {
+        ...(JSON.parse(serializeRun(fresh)) as object),
+        phase: 'kit',
+        context,
+        deck: [],
+      };
       const back = parseRun(JSON.stringify(old));
       expect(back?.phase).toBe('prelude');
       expect(back?.context?.prelude?.kind).toBe('threshold');

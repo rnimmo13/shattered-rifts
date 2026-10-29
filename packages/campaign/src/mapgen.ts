@@ -26,6 +26,13 @@ const WARDEN_OF: Record<StageRealm, string> = {
   rift: 'vorthax',
 };
 
+/**
+ * (DECISIONS #437) The realms of the multiverse expansion that are not stages of their own: their regular fights and Elites join
+ * the Rift (the last stage), and their Wardens may hold the second stage.
+ */
+export const FAR_REALMS: readonly Encounter['realm'][] = ['gloomfen', 'starfall', 'beyond'];
+
+/** A realm's first Warden (the one it always had): the finale for the Rift. */
 export function wardenFor(realm: StageRealm): Encounter {
   const id = WARDEN_OF[realm];
   const e = ENCOUNTERS.find((x) => x.id === id);
@@ -33,9 +40,31 @@ export function wardenFor(realm: StageRealm): Encounter {
   return e;
 }
 
-function enemiesOf(realm: StageRealm, kind: Encounter['kind']): Encounter[] {
-  return ENCOUNTERS.filter((e) => e.realm === realm && e.kind === kind);
+/**
+ * (DECISIONS #437) Every Warden a stage of this realm can end with: its first Warden and the ones of the expansion; on the second
+ * stage the far realms' Wardens too. The Rift always ends with Vorthax.
+ */
+export function wardensFor(realm: StageRealm, stage: number): Encounter[] {
+  if (stage >= FINAL_STAGE || realm === 'rift') return [wardenFor('rift')];
+  const first = wardenFor(realm);
+  const more = ENCOUNTERS.filter(
+    (e) =>
+      e.kind === 'warden' &&
+      e.id !== first.id &&
+      (e.realm === realm || (stage === FINAL_STAGE - 1 && FAR_REALMS.includes(e.realm))),
+  );
+  return [first, ...more];
 }
+
+function enemiesOf(realm: string, kind: Encounter['kind'], stage = 1): Encounter[] {
+  return ENCOUNTERS.filter(
+    (e) => e.realm === realm && e.kind === kind && (e.fromStage ?? 1) <= stage,
+  );
+}
+
+/** (DECISIONS #437) where a stage's fights come from: its realm(s), and in the Rift the far realms as well */
+const fightRealms = (pool: readonly StageRealm[], stage: number): string[] =>
+  stage >= FINAL_STAGE ? [...pool, ...FAR_REALMS] : [...pool];
 
 function pick<T>(rng: RngState, list: readonly T[]): T {
   if (list.length === 0) throw new Error('Cannot pick from an empty list');
@@ -84,8 +113,11 @@ export function ambushEnemy(
   pool: readonly StageRealm[],
   kind: 'duel' | 'elite',
   taken: readonly (string | undefined)[],
+  stage = 1,
 ): string | null {
-  const all = pool.flatMap((r) => enemiesOf(r, kind === 'elite' ? 'elite' : 'regular'));
+  const all = fightRealms(pool, stage).flatMap((r) =>
+    enemiesOf(r, kind === 'elite' ? 'elite' : 'regular', stage),
+  );
   const fresh = all.filter((e) => !taken.includes(e.id));
   const from = fresh.length > 0 ? fresh : all;
   return from.length > 0 ? pick(rng, from).id : null;
@@ -122,8 +154,8 @@ export function generateStageMap(
   pool: readonly StageRealm[] = stage >= FINAL_STAGE ? ['umbral', 'wyldmaw'] : [realm],
   tier = 1,
 ): StageMap {
-  const regulars = pool.flatMap((r) => enemiesOf(r, 'regular'));
-  const elites = pool.flatMap((r) => enemiesOf(r, 'elite'));
+  const regulars = fightRealms(pool, stage).flatMap((r) => enemiesOf(r, 'regular', stage));
+  const elites = fightRealms(pool, stage).flatMap((r) => enemiesOf(r, 'elite', stage));
   const used = new Set<string>();
   const regular = (): string => {
     const fresh = regulars.filter((e) => !used.has(e.id));
@@ -177,7 +209,7 @@ export function generateStageMap(
     id: `s${stage}-warden`,
     floor: FLOORS + 1,
     kind: 'warden',
-    enemyId: wardenFor(stage >= FINAL_STAGE ? 'rift' : realm).id,
+    enemyId: pick(rng, wardensFor(realm, stage)).id,
     next: [],
   };
   // beyond the first few Rift Tiers, now and then the Warden is a ghost (decided with the map, so the map can say so)

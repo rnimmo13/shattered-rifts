@@ -4,6 +4,7 @@
 // a blade or a shield in hand, a glowing aura, and an emblem on the chest. Painted over the figure by where the figure actually is.
 
 import { paintEmblem } from './emblems';
+import { MULTIVERSE_UNIT_ART } from './multiverseUnits';
 
 type G = CanvasRenderingContext2D;
 
@@ -770,4 +771,6 @@ export const LOOKS: Record<string, Look> = {
     trim: '#ff6af0',
     aura: 'rgba(255,90,220,0.45)',
   },
+  // ---- the multiverse expansion (DECISIONS #437)
+  ...Object.fromEntries(Object.entries(MULTIVERSE_UNIT_ART).map(([id, u]) => [id, u.look])),
 };

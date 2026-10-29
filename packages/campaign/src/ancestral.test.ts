@@ -83,5 +83,6 @@ describe('ancestral cards', () => {
     expect(taken.deck).toContain(card);
     expect(rarityOf(card)).toBe('ancestral');
     expect(() => chooseEvent({ ...e, hp: 12 }, 'ancestor')).toThrow();
-  });
+    // (it walks up to 400 runs until both are found: past the default 5 s under a full run)
+  }, 60_000);
 });
