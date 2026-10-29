@@ -584,6 +584,7 @@ const METRIC_WORDS: Record<Metric, { per: string; equal: string }> = {
   maxHp: { per: 'max HP', equal: 'max HP' },
   dealt: { per: 'damage dealt', equal: 'the damage dealt' },
   lost: { per: 'HP lost', equal: 'the HP it lost' },
+  hpLostNow: { per: 'HP you lost', equal: 'the HP you lost' },
   allyStrikes: {
     per: 'time your companions have struck this turn',
     equal: 'the times your companions have struck this turn',
@@ -724,6 +725,8 @@ function amountText(n: number, sc: Scale | undefined): { num: string; equal: boo
         ? 'their '
         : 'your '
     : '';
+  // (DECISIONS #434) a capped count says its cap
+  const capped = sc.max !== undefined ? ` (at most ${sc.max})` : '';
   if (n === 0) {
     const mult =
       m === 1
@@ -736,7 +739,7 @@ function amountText(n: number, sc: Scale | undefined): { num: string; equal: boo
               ? `${m} times `
               : `${Math.round(m * 100)}% of `;
     return {
-      num: `${mult}${mult && !/ of $/.test(mult) && m < 1 ? 'of ' : ''}${whose}${w.equal}`,
+      num: `${mult}${mult && !/ of $/.test(mult) && m < 1 ? 'of ' : ''}${whose}${w.equal}${capped}`,
       equal: true,
     };
   }
@@ -752,7 +755,10 @@ function amountText(n: number, sc: Scale | undefined): { num: string; equal: boo
         : sc.by === 'missingPct'
           ? `+1 per ${step}${w.per}`
           : `+${frac(m).a} per ${frac(m).b} ${PLURAL[sc.by] ?? w.per}`;
-  return { num: `${n} (${per}${on})`, equal: false };
+  return {
+    num: `${n} (${per}${on}${sc.max !== undefined ? `, at most +${sc.max}` : ''})`,
+    equal: false,
+  };
 }
 
 /** Sentences that repeat one after another read once, with how often: "Gain 6 Barrier. Gain 6 Barrier." is "Gain 6 Barrier twice." */
@@ -782,7 +788,7 @@ const WHEN_TEXT: Record<string, string> = {
   stanceLeft: 'Whenever you leave a stance',
   barrier: 'Whenever you gain Barrier',
   heal: 'Whenever you heal (even at full HP)',
-  loseHp: 'Whenever you lose HP to your own cards',
+  loseHp: 'Whenever you lose HP to your own cards or Hangover',
   draw: 'Whenever you draw a card',
   created: 'Whenever a card is created',
   arcana: 'Whenever you spend Arcana',

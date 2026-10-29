@@ -338,6 +338,7 @@ export type Metric =
   | 'maxHp' // a unit's max HP
   | 'dealt' // the HP the card's last damage effect took off its target(s)
   | 'lost' // in an 'allyHurt' trigger: the HP the companion lost
+  | 'hpLostNow' // (DECISIONS #434) in a 'loseHp' trigger: the HP just lost
   | 'allyStrikes' // times your companions were commanded to strike this turn (once per card)
   | 'drawnTurn' // cards drawn this turn after the opening hand
   | 'doomedTurn' // times you cursed an enemy with Fate this turn
@@ -403,6 +404,8 @@ export interface Scale {
   tag?: string;
   /** for 'runesOf' and 'channeledOf': which totem */
   rune?: string;
+  /** (DECISIONS #434) the scaled part is at most this much ("+1 per HP you lost, at most 6") */
+  max?: number;
 }
 
 /** When a Power's trigger fires. */

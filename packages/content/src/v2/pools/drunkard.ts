@@ -27,6 +27,13 @@ import {
   PREVENT,
 } from '../build';
 
+/** (DECISIONS #434) damage to every enemy equal to the HP he just lost (to his own cards or Hangover), at most `cap` */
+const hurtBack = (cap: number): Op =>
+  ({ ...dmg(0, 'allFoes'), scale: { by: 'hpLostNow', max: cap } }) as Op;
+/** Might until the end of his turn: 1 for every 2 HP he just lost, at most `cap` */
+const hurtMight = (cap: number): Op =>
+  ({ ...status('might', 0, 'self', true), scale: { by: 'hpLostNow', mult: 0.5, max: cap } }) as Op;
+
 const p = pool('drunkard', 'midden');
 /** a drink's price: that much HP at the start of your next turn (DECISIONS #354) */
 const hangover = (n: number): Op => status('hangover', n);
@@ -144,15 +151,12 @@ export const DRUNKARD: CardDef[] = [
     'power',
     3,
     'none',
-    [
-      on('turnStart', [scaled(barrier(3), per('missingPct', 1 / 6))]),
-      on('loseHp', [dmg(3, 'allFoes')]),
-    ],
+    [on('turnStart', [scaled(barrier(3), per('missingPct', 1 / 6))]), on('loseHp', [hurtBack(5)])],
     {
       up: {
         effects: [
           on('turnStart', [scaled(barrier(3), per('missingPct', 1 / 6))]),
-          on('loseHp', [dmg(5, 'allFoes')]),
+          on('loseHp', [hurtBack(7)]),
         ],
       },
     },
@@ -345,8 +349,8 @@ export const DRUNKARD: CardDef[] = [
     'power',
     2,
     'none',
-    [on('loseHp', [dmg(3, 'allFoes'), barrier(2)])],
-    { up: { effects: [on('loseHp', [dmg(5, 'allFoes'), barrier(2)])] } },
+    [on('loseHp', [hurtBack(6), barrier(2)])],
+    { up: { effects: [on('loseHp', [hurtBack(8), barrier(3)])] } },
   ),
 
   // --- Shells (more) ---
@@ -471,8 +475,8 @@ export const DRUNKARD: CardDef[] = [
     'power',
     2,
     'none',
-    [on('loseHp', [status('might', 1, 'self', true), barrier(2)])],
-    { up: { effects: [on('loseHp', [status('might', 1, 'self', true), barrier(4)])] } },
+    [on('loseHp', [hurtMight(3), barrier(2)])],
+    { up: { effects: [on('loseHp', [hurtMight(3), barrier(4)])] } },
   ),
   p(
     'rare',
@@ -522,6 +526,37 @@ export const DRUNKARD: CardDef[] = [
   }),
 
   // --- Hangover: drink now, pay tomorrow (DECISIONS #354) ---
+  // (DECISIONS #434: more for the cards that pay off losing HP; Hangover counts as losing it)
+  p(
+    'common',
+    'bar-fight',
+    'Bar Fight',
+    'attack',
+    1,
+    'foe',
+    [scaled(dmg(7), { by: 'hpLostTurn', mult: 3, max: 9 })],
+    { up: { effects: [scaled(dmg(10), { by: 'hpLostTurn', mult: 3, max: 9 })] } },
+  ),
+  p(
+    'common',
+    'nurse-the-hangover',
+    'Nurse the Hangover',
+    'skill',
+    1,
+    'none',
+    [scaled(barrier(5), { by: 'hangover', max: 8 })],
+    { up: { effects: [scaled(barrier(8), { by: 'hangover', max: 8 })] } },
+  ),
+  p(
+    'uncommon',
+    'take-it-on-the-chin',
+    'Take It on the Chin',
+    'skill',
+    1,
+    'none',
+    [{ op: 'loseHp', amount: 3, to: 'self' }, barrier(10), draw(1)],
+    { up: { effects: [{ op: 'loseHp', amount: 3, to: 'self' }, barrier(13), draw(1)] } },
+  ),
   // Drinks give something big now and Hangover: at the start of your next turn you lose that much HP (never your last). Every HP
   // lost makes Clutch Genes hit harder (1% a HP, DECISIONS #411), and his heals grow with the HP he is missing to bring him back.
   p('common', 'liquid-lunch', 'Liquid Lunch', 'skill', 0, 'none', [mana(2), hangover(3)], {
@@ -629,9 +664,18 @@ export const DRUNKARD: CardDef[] = [
   }),
   // (an Aura, DECISIONS #410: +1 Mana a turn is ~28 over a fight, a 2-cost Aura like Inner Furnace and Deep Pockets; at 1 its 4
   // Hangover was too light a price, and nearly free in a Hangover deck. The Hangover stays as his flavour, and feeds his payoffs)
-  p('rare', 'last-call', 'Last Call', 'power', 2, 'none', [hangover(2), on('turnStart', [mana(1)])], {
-    up: { innate: true },
-  }),
+  p(
+    'rare',
+    'last-call',
+    'Last Call',
+    'power',
+    2,
+    'none',
+    [hangover(2), on('turnStart', [mana(1)])],
+    {
+      up: { innate: true },
+    },
+  ),
   p(
     'rare',
     'bottomless-flask',

@@ -1330,6 +1330,7 @@ function metricValue(
     case 'dealt':
       return a.dealt;
     case 'lost':
+    case 'hpLostNow':
       return a.lost;
     case 'samePlayed': {
       const base = a.card?.id.replace(/\+$/, '');
@@ -1523,7 +1524,8 @@ function scaleValue(r: Run, a: Act, sc: Scale, t: Unit | null): number {
 
 function amountOf(r: Run, a: Act, base: number, sc: Scale | undefined, t: Unit | null): number {
   if (!sc || sc.into === 'hits') return base;
-  return base + scaleValue(r, a, sc, t);
+  const v = scaleValue(r, a, sc, t);
+  return base + (sc.max !== undefined ? Math.min(sc.max, v) : v);
 }
 
 /** Rune effects get +1 damage / Barrier per Resonance; a totem's command its Rousing and Spirit (`plus`). */
@@ -1693,16 +1695,16 @@ function execOp(r: Run, a: Act, op: Op): void {
     }
     case 'loseHp':
       for (const t of resolve(r, a, op.to)) {
-        applyDamage(
+        const lost = applyDamage(
           r,
           a.actor,
           t,
           scaledByDifficulty(a.actor, t, amountOf(r, a, op.amount, op.scale, t) + resonanceOf(a)),
           'direct',
         );
-        // paying HP for your own card is something Powers can react to
-        if (t.kind === 'hero' && a.actor === t && t.hp > 0)
-          fireTriggers(r, r.s.sides[t.side], 'loseHp');
+        // paying HP for your own card is something Powers can react to (and how much: DECISIONS #434)
+        if (t.kind === 'hero' && a.actor === t && t.hp > 0 && lost > 0)
+          fireTriggers(r, r.s.sides[t.side], 'loseHp', { lost });
       }
       return;
     case 'barrier':
@@ -3605,7 +3607,7 @@ function startOfTurn(r: Run, side: Side): void {
     const due = Math.min(owed, u.hp - 1);
     if (due <= 0) continue;
     const lost = applyDamage(r, null, u, due, 'direct');
-    if (lost > 0 && u.kind === 'hero') fireTriggers(r, sd, 'loseHp');
+    if (lost > 0 && u.kind === 'hero') fireTriggers(r, sd, 'loseHp', { lost });
   }
   reap(r);
 }
@@ -3647,6 +3649,8 @@ function beginHeroTurn(r: Run, side: Side): void {
   }
   suddenDeath(r, side);
   if (r.s.winner) return;
+  // (DECISIONS #434) "this turn" for HP lost starts before the turn's own losses (Hangover, Seared), so they count for it
+  sd.lostHpTurn = 0;
   startOfTurn(r, side);
   if (r.s.winner) return;
   // the opposing Traps that wait for your turn to begin
@@ -3670,7 +3674,6 @@ function beginHeroTurn(r: Run, side: Side): void {
     sd.defensiveTurn = 0;
   }
   sd.discarded = 0;
-  sd.lostHpTurn = 0;
   sd.exhaustedTurn = 0;
   sd.manaLocked = false;
   sd.drawLocked = false;

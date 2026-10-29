@@ -39,10 +39,10 @@ describe('attack statuses only touch attack damage', () => {
     let s = fight(['the-glass-palace', 'chaser', 'strike']);
     hero(s).statuses.might = 3;
     s = play(s, 'the-glass-palace');
-    s = play(s, 'chaser'); // lose 2 HP: The Glass Palace deals its 3 to every enemy
-    expect(foe(s).hp).toBe(200 - 3);
+    s = play(s, 'chaser'); // lose 2 HP: The Glass Palace deals the 2 to every enemy (DECISIONS #434)
+    expect(foe(s).hp).toBe(200 - 2);
     s = play(s, 'strike');
-    expect(foe(s).hp).toBe(200 - 3 - (6 + 3));
+    expect(foe(s).hp).toBe(200 - 2 - (6 + 3));
   });
 
   it('Exposed on the enemy makes a Strike hit harder, not Blood Fire', () => {
@@ -50,9 +50,9 @@ describe('attack statuses only touch attack damage', () => {
     foe(s).statuses.exposed = 2;
     s = play(s, 'the-glass-palace');
     s = play(s, 'chaser');
-    expect(foe(s).hp).toBe(200 - 3);
+    expect(foe(s).hp).toBe(200 - 2);
     s = play(s, 'strike');
-    expect(foe(s).hp).toBe(200 - 3 - 9);
+    expect(foe(s).hp).toBe(200 - 2 - 9);
   });
 
   it('Faltering on you shrinks a Strike, not Blood Fire', () => {
@@ -60,9 +60,9 @@ describe('attack statuses only touch attack damage', () => {
     hero(s).statuses.faltering = 2;
     s = play(s, 'the-glass-palace');
     s = play(s, 'chaser');
-    expect(foe(s).hp).toBe(200 - 3);
+    expect(foe(s).hp).toBe(200 - 2);
     s = play(s, 'strike');
-    expect(foe(s).hp).toBe(200 - 3 - 4);
+    expect(foe(s).hp).toBe(200 - 2 - 4);
   });
 
   it('Armored wears thin from a Strike, not from The Glass Palace', () => {
@@ -82,7 +82,7 @@ describe('attack statuses only touch attack damage', () => {
     s = play(s, 'the-glass-palace');
     const hp = hero(s).hp;
     s = play(s, 'chaser');
-    expect(foe(s).barrier).toBe(17);
+    expect(foe(s).barrier).toBe(18);
     expect(hero(s).hp).toBe(hp - 2); // only Chaser's own 2
     s = play(s, 'strike');
     expect(hero(s).hp).toBe(hp - 2 - 6);

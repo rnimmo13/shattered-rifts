@@ -273,3 +273,66 @@ describe('the damage breakdown on a card (DECISIONS #432)', () => {
     );
   });
 });
+
+describe('losing HP to your own cards or Hangover pays by how much (DECISIONS #434)', () => {
+  const kp = (s: CombatState) => s.sides.a.units[s.sides.a.units.length - 1]!;
+  const foeLost = (before: CombatState, after: CombatState): number[] =>
+    after.sides.b.units.map((u, i) => before.sides.b.units[i]!.hp - u.hp);
+
+  it("Glass Jaw: Hangover's morning-after HP hits every enemy for that much, capped at 6", () => {
+    let s = fight('drunkard', ['glass-jaw']);
+    s = playCard(s, 'T0');
+    kp(s).statuses.hangover = 4;
+    // (they attack into a wall: no Barrier of their own to soak the answer)
+    for (const u of s.sides.b.units) u.intent = { move: 'slash', target: kp(s).id };
+    kp(s).barrier = 99;
+    const before = clone(s);
+    s = applyAction(db, s, { type: 'endTurn' }).state;
+    expect(foeLost(before, s)).toEqual([4, 4]);
+    let t = fight('drunkard', ['glass-jaw']);
+    t = playCard(t, 'T0');
+    kp(t).statuses.hangover = 9;
+    for (const u of t.sides.b.units) u.intent = { move: 'slash', target: kp(t).id };
+    kp(t).barrier = 99;
+    const b2 = clone(t);
+    t = applyAction(db, t, { type: 'endTurn' }).state;
+    expect(foeLost(b2, t)).toEqual([6, 6]);
+  });
+
+  it('Mean Drunk: 1 Might for the turn per 2 HP lost (Take It on the Chin: 3 HP, 1 Might), and its Barrier', () => {
+    let s = fight('drunkard', ['mean-drunk', 'take-it-on-the-chin']);
+    s = playCard(s, 'T0');
+    const hp = kp(s).hp;
+    s = playCard(s, 'T1');
+    expect(kp(s).hp).toBe(hp - 3);
+    expect(kp(s).statuses.might).toBe(1);
+    expect(kp(s).barrier).toBe(10 + 2);
+  });
+
+  it('Bar Fight counts the Hangover at the start of the turn as HP lost this turn', () => {
+    let s = fight('drunkard', ['bar-fight']);
+    kp(s).statuses.hangover = 3;
+    for (const u of s.sides.b.units) u.intent = { move: 'guard', target: null };
+    s = applyAction(db, s, { type: 'endTurn' }).state;
+    expect(s.sides.a.lostHpTurn).toBe(1);
+    s.sides.a.hand = [{ id: 'B', card: 'bar-fight' }];
+    for (const u of s.sides.b.units) u.barrier = 0;
+    const before = s.sides.b.units[0]!.hp;
+    const act = legalActions(db, s).find(
+      (a) => a.type === 'play' && a.card === 'B' && a.target === s.sides.b.units[0]!.id,
+    )!;
+    s = applyAction(db, s, act).state;
+    // 7 + 3 for the one loss, with the Clutch Genes of 3 HP missing (3%)
+    expect(before - s.sides.b.units[0]!.hp).toBe(Math.floor((10 * 103) / 100));
+  });
+
+  it('Nurse the Hangover: 5 Barrier +1 per Hangover, at most +8', () => {
+    let s = fight('drunkard', ['nurse-the-hangover', 'nurse-the-hangover']);
+    kp(s).statuses.hangover = 3;
+    s = playCard(s, 'T0');
+    expect(kp(s).barrier).toBe(8);
+    kp(s).statuses.hangover = 10;
+    s = playCard(s, 'T1');
+    expect(kp(s).barrier).toBe(8 + 13);
+  });
+});
