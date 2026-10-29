@@ -1,0 +1,2996 @@
+{
+  "takenAt": "2026-10-29",
+  "commit": "780256c3bfa137f5fa73a26443a9bf405bdb8ad3",
+  "dirty": [
+    "?? src/_acount.ts"
+  ],
+  "hero": {
+    "id": "assassin",
+    "name": "Assassin",
+    "maxHp": 70,
+    "mana": 3,
+    "handSize": 5
+  },
+  "trait": {
+    "name": "Knife Work",
+    "text": "Start every fight with 1 Preparation and a knife in every enemy. The first time each turn you embed a knife, gain 1 Preparation. Whenever you pull a knife, deal 3 damage to that enemy.",
+    "fightStart": [
+      {
+        "op": "status",
+        "status": "prep",
+        "amount": 1,
+        "to": "self"
+      },
+      {
+        "op": "embed",
+        "amount": 1,
+        "to": "allFoes"
+      }
+    ],
+    "triggers": [
+      {
+        "op": "power",
+        "when": "embed",
+        "ops": [
+          {
+            "op": "status",
+            "status": "prep",
+            "amount": 1,
+            "to": "self"
+          }
+        ],
+        "once": true
+      },
+      {
+        "op": "power",
+        "when": "extract",
+        "ops": [
+          {
+            "op": "damage",
+            "amount": 3,
+            "to": "target"
+          }
+        ]
+      }
+    ]
+  },
+  "starter": [
+    "strike",
+    "strike",
+    "strike",
+    "strike",
+    "defend",
+    "defend",
+    "defend",
+    "quiet-incision",
+    "draw-steel",
+    "finishing-thrust",
+    "patient-footwork"
+  ],
+  "rewardEligible": 51,
+  "cards": [
+    {
+      "id": "quiet-incision",
+      "name": "Quiet Incision",
+      "realm": "umbral",
+      "rarity": "basic",
+      "kind": "attack",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 6,
+          "to": "target"
+        },
+        {
+          "op": "embed",
+          "amount": 1
+        }
+      ],
+      "hero": "assassin",
+      "tags": [
+        "knife"
+      ],
+      "upgrade": "quiet-incision+"
+    },
+    {
+      "id": "quiet-incision+",
+      "name": "Quiet Incision+",
+      "realm": "umbral",
+      "rarity": "basic",
+      "kind": "attack",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 9,
+          "to": "target"
+        },
+        {
+          "op": "embed",
+          "amount": 1
+        }
+      ],
+      "hero": "assassin",
+      "tags": [
+        "knife"
+      ]
+    },
+    {
+      "id": "draw-steel",
+      "name": "Draw Steel",
+      "realm": "umbral",
+      "rarity": "basic",
+      "kind": "attack",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "extract",
+          "amount": 2
+        },
+        {
+          "op": "damage",
+          "amount": 4,
+          "to": "target",
+          "scale": {
+            "by": "extracted",
+            "mult": 4
+          }
+        }
+      ],
+      "hero": "assassin",
+      "upgrade": "draw-steel+"
+    },
+    {
+      "id": "draw-steel+",
+      "name": "Draw Steel+",
+      "realm": "umbral",
+      "rarity": "basic",
+      "kind": "attack",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "extract",
+          "amount": 2
+        },
+        {
+          "op": "damage",
+          "amount": 7,
+          "to": "target",
+          "scale": {
+            "by": "extracted",
+            "mult": 4
+          }
+        }
+      ],
+      "hero": "assassin"
+    },
+    {
+      "id": "finishing-thrust",
+      "name": "Finishing Thrust",
+      "realm": "umbral",
+      "rarity": "basic",
+      "kind": "attack",
+      "cost": 2,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "spend",
+          "status": "prep",
+          "amount": 3
+        },
+        {
+          "op": "damage",
+          "amount": 8,
+          "to": "target",
+          "scale": {
+            "by": "prepSpent",
+            "mult": 4
+          }
+        }
+      ],
+      "hero": "assassin",
+      "upgrade": "finishing-thrust+"
+    },
+    {
+      "id": "finishing-thrust+",
+      "name": "Finishing Thrust+",
+      "realm": "umbral",
+      "rarity": "basic",
+      "kind": "attack",
+      "cost": 2,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "spend",
+          "status": "prep",
+          "amount": 3
+        },
+        {
+          "op": "damage",
+          "amount": 12,
+          "to": "target",
+          "scale": {
+            "by": "prepSpent",
+            "mult": 4
+          }
+        }
+      ],
+      "hero": "assassin"
+    },
+    {
+      "id": "patient-footwork",
+      "name": "Patient Footwork",
+      "realm": "umbral",
+      "rarity": "basic",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 5,
+          "to": "self"
+        },
+        {
+          "op": "status",
+          "status": "prep",
+          "amount": 1,
+          "to": "self"
+        }
+      ],
+      "hero": "assassin",
+      "upgrade": "patient-footwork+"
+    },
+    {
+      "id": "patient-footwork+",
+      "name": "Patient Footwork+",
+      "realm": "umbral",
+      "rarity": "basic",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 7,
+          "to": "self"
+        },
+        {
+          "op": "status",
+          "status": "prep",
+          "amount": 1,
+          "to": "self"
+        }
+      ],
+      "hero": "assassin"
+    },
+    {
+      "id": "hobbling-jab",
+      "name": "Hobbling Jab",
+      "realm": "umbral",
+      "rarity": "common",
+      "kind": "attack",
+      "cost": 0,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 3,
+          "to": "target"
+        },
+        {
+          "op": "status",
+          "status": "faltering",
+          "amount": 1,
+          "to": "target"
+        }
+      ],
+      "hero": "assassin",
+      "upgrade": "hobbling-jab+"
+    },
+    {
+      "id": "hobbling-jab+",
+      "name": "Hobbling Jab+",
+      "realm": "umbral",
+      "rarity": "common",
+      "kind": "attack",
+      "cost": 0,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 5,
+          "to": "target"
+        },
+        {
+          "op": "status",
+          "status": "faltering",
+          "amount": 1,
+          "to": "target"
+        }
+      ],
+      "hero": "assassin"
+    },
+    {
+      "id": "dirty-hit",
+      "name": "Dirty Hit",
+      "realm": "umbral",
+      "rarity": "common",
+      "kind": "attack",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 8,
+          "to": "target"
+        },
+        {
+          "op": "status",
+          "status": "faltering",
+          "amount": 1,
+          "to": "target"
+        }
+      ],
+      "hero": "assassin",
+      "upgrade": "dirty-hit+"
+    },
+    {
+      "id": "dirty-hit+",
+      "name": "Dirty Hit+",
+      "realm": "umbral",
+      "rarity": "common",
+      "kind": "attack",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 10,
+          "to": "target"
+        },
+        {
+          "op": "status",
+          "status": "faltering",
+          "amount": 2,
+          "to": "target"
+        }
+      ],
+      "hero": "assassin"
+    },
+    {
+      "id": "quick-slash",
+      "name": "Quick Slash",
+      "realm": "umbral",
+      "rarity": "common",
+      "kind": "attack",
+      "cost": 0,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 6,
+          "to": "target"
+        }
+      ],
+      "hero": "assassin",
+      "upgrade": "quick-slash+"
+    },
+    {
+      "id": "quick-slash+",
+      "name": "Quick Slash+",
+      "realm": "umbral",
+      "rarity": "common",
+      "kind": "attack",
+      "cost": 0,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 9,
+          "to": "target"
+        }
+      ],
+      "hero": "assassin"
+    },
+    {
+      "id": "barbed-stab",
+      "name": "Barbed Stab",
+      "realm": "umbral",
+      "rarity": "common",
+      "kind": "attack",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 6,
+          "to": "target"
+        },
+        {
+          "op": "status",
+          "status": "seared",
+          "amount": 3,
+          "to": "target"
+        }
+      ],
+      "hero": "assassin",
+      "upgrade": "barbed-stab+"
+    },
+    {
+      "id": "barbed-stab+",
+      "name": "Barbed Stab+",
+      "realm": "umbral",
+      "rarity": "common",
+      "kind": "attack",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 8,
+          "to": "target"
+        },
+        {
+          "op": "status",
+          "status": "seared",
+          "amount": 4,
+          "to": "target"
+        }
+      ],
+      "hero": "assassin"
+    },
+    {
+      "id": "cartwheel-cut",
+      "name": "Cartwheel Cut",
+      "realm": "umbral",
+      "rarity": "common",
+      "kind": "attack",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 7,
+          "to": "allFoes"
+        }
+      ],
+      "hero": "assassin",
+      "upgrade": "cartwheel-cut+"
+    },
+    {
+      "id": "cartwheel-cut+",
+      "name": "Cartwheel Cut+",
+      "realm": "umbral",
+      "rarity": "common",
+      "kind": "attack",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 9,
+          "to": "allFoes"
+        }
+      ],
+      "hero": "assassin"
+    },
+    {
+      "id": "read-the-guard",
+      "name": "Read the Guard",
+      "realm": "umbral",
+      "rarity": "common",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "status",
+          "status": "prep",
+          "amount": 1,
+          "to": "self"
+        },
+        {
+          "op": "draw",
+          "amount": 2
+        },
+        {
+          "op": "barrier",
+          "amount": 2,
+          "to": "self"
+        }
+      ],
+      "hero": "assassin",
+      "upgrade": "read-the-guard+"
+    },
+    {
+      "id": "read-the-guard+",
+      "name": "Read the Guard+",
+      "realm": "umbral",
+      "rarity": "common",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "status",
+          "status": "prep",
+          "amount": 1,
+          "to": "self"
+        },
+        {
+          "op": "draw",
+          "amount": 3
+        },
+        {
+          "op": "barrier",
+          "amount": 2,
+          "to": "self"
+        }
+      ],
+      "hero": "assassin"
+    },
+    {
+      "id": "stalkers-lunge",
+      "name": "Stalker's Lunge",
+      "realm": "umbral",
+      "rarity": "common",
+      "kind": "attack",
+      "cost": 2,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 14,
+          "to": "target"
+        },
+        {
+          "op": "drawNext",
+          "amount": 2
+        }
+      ],
+      "hero": "assassin",
+      "upgrade": "stalkers-lunge+"
+    },
+    {
+      "id": "stalkers-lunge+",
+      "name": "Stalker's Lunge+",
+      "realm": "umbral",
+      "rarity": "common",
+      "kind": "attack",
+      "cost": 2,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 19,
+          "to": "target"
+        },
+        {
+          "op": "drawNext",
+          "amount": 2
+        }
+      ],
+      "hero": "assassin"
+    },
+    {
+      "id": "knife-in-the-back",
+      "name": "Knife in the Back",
+      "realm": "umbral",
+      "rarity": "uncommon",
+      "kind": "attack",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "spend",
+          "status": "prep",
+          "amount": 99
+        },
+        {
+          "op": "damage",
+          "amount": 5,
+          "to": "target",
+          "scale": {
+            "by": "prepSpent",
+            "mult": 5
+          }
+        }
+      ],
+      "hero": "assassin",
+      "upgrade": "knife-in-the-back+"
+    },
+    {
+      "id": "knife-in-the-back+",
+      "name": "Knife in the Back+",
+      "realm": "umbral",
+      "rarity": "uncommon",
+      "kind": "attack",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "spend",
+          "status": "prep",
+          "amount": 99
+        },
+        {
+          "op": "damage",
+          "amount": 8,
+          "to": "target",
+          "scale": {
+            "by": "prepSpent",
+            "mult": 5
+          }
+        }
+      ],
+      "hero": "assassin"
+    },
+    {
+      "id": "severing-finish",
+      "name": "Severing Finish",
+      "realm": "umbral",
+      "rarity": "uncommon",
+      "kind": "attack",
+      "cost": 2,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "spend",
+          "status": "prep",
+          "amount": 3
+        },
+        {
+          "op": "damage",
+          "amount": 14,
+          "to": "target",
+          "scale": {
+            "by": "prepSpent",
+            "mult": 4
+          }
+        }
+      ],
+      "hero": "assassin",
+      "upgrade": "severing-finish+"
+    },
+    {
+      "id": "severing-finish+",
+      "name": "Severing Finish+",
+      "realm": "umbral",
+      "rarity": "uncommon",
+      "kind": "attack",
+      "cost": 2,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "spend",
+          "status": "prep",
+          "amount": 3
+        },
+        {
+          "op": "damage",
+          "amount": 19,
+          "to": "target",
+          "scale": {
+            "by": "prepSpent",
+            "mult": 4
+          }
+        }
+      ],
+      "hero": "assassin"
+    },
+    {
+      "id": "throat-cut",
+      "name": "Throat Cut",
+      "realm": "umbral",
+      "rarity": "uncommon",
+      "kind": "attack",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "spend",
+          "status": "prep",
+          "amount": 2
+        },
+        {
+          "op": "damage",
+          "amount": 5,
+          "to": "target",
+          "scale": {
+            "by": "prepSpent",
+            "mult": 4
+          }
+        },
+        {
+          "op": "when",
+          "by": "prepSpent",
+          "atLeast": 1,
+          "ops": [
+            {
+              "op": "status",
+              "status": "faltering",
+              "amount": 1,
+              "to": "target"
+            }
+          ]
+        }
+      ],
+      "hero": "assassin",
+      "upgrade": "throat-cut+"
+    },
+    {
+      "id": "throat-cut+",
+      "name": "Throat Cut+",
+      "realm": "umbral",
+      "rarity": "uncommon",
+      "kind": "attack",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "spend",
+          "status": "prep",
+          "amount": 2
+        },
+        {
+          "op": "damage",
+          "amount": 8,
+          "to": "target",
+          "scale": {
+            "by": "prepSpent",
+            "mult": 4
+          }
+        },
+        {
+          "op": "when",
+          "by": "prepSpent",
+          "atLeast": 1,
+          "ops": [
+            {
+              "op": "status",
+              "status": "faltering",
+              "amount": 1,
+              "to": "target"
+            }
+          ]
+        }
+      ],
+      "hero": "assassin"
+    },
+    {
+      "id": "prepared-ambush",
+      "name": "Prepared Ambush",
+      "realm": "umbral",
+      "rarity": "uncommon",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "status",
+          "status": "prep",
+          "amount": 2,
+          "to": "self"
+        },
+        {
+          "op": "barrier",
+          "amount": 6,
+          "to": "self"
+        }
+      ],
+      "hero": "assassin",
+      "upgrade": "prepared-ambush+"
+    },
+    {
+      "id": "prepared-ambush+",
+      "name": "Prepared Ambush+",
+      "realm": "umbral",
+      "rarity": "uncommon",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "status",
+          "status": "prep",
+          "amount": 2,
+          "to": "self"
+        },
+        {
+          "op": "barrier",
+          "amount": 9,
+          "to": "self"
+        }
+      ],
+      "hero": "assassin"
+    },
+    {
+      "id": "side-slip",
+      "name": "Side Slip",
+      "realm": "umbral",
+      "rarity": "uncommon",
+      "kind": "skill",
+      "cost": 0,
+      "target": "none",
+      "effects": [
+        {
+          "op": "manaNext",
+          "amount": 1
+        },
+        {
+          "op": "status",
+          "status": "prep",
+          "amount": 1,
+          "to": "self"
+        },
+        {
+          "op": "barrier",
+          "amount": 1,
+          "to": "self"
+        }
+      ],
+      "hero": "assassin",
+      "upgrade": "side-slip+"
+    },
+    {
+      "id": "side-slip+",
+      "name": "Side Slip+",
+      "realm": "umbral",
+      "rarity": "uncommon",
+      "kind": "skill",
+      "cost": 0,
+      "target": "none",
+      "effects": [
+        {
+          "op": "manaNext",
+          "amount": 1
+        },
+        {
+          "op": "status",
+          "status": "prep",
+          "amount": 2,
+          "to": "self"
+        },
+        {
+          "op": "barrier",
+          "amount": 1,
+          "to": "self"
+        }
+      ],
+      "hero": "assassin"
+    },
+    {
+      "id": "lay-bare",
+      "name": "Lay Bare",
+      "realm": "umbral",
+      "rarity": "uncommon",
+      "kind": "skill",
+      "cost": 0,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "strip",
+          "to": "target"
+        },
+        {
+          "op": "status",
+          "status": "exposed",
+          "amount": 1,
+          "to": "target"
+        },
+        {
+          "op": "status",
+          "status": "prep",
+          "amount": 1,
+          "to": "self"
+        }
+      ],
+      "hero": "assassin",
+      "exhaust": true,
+      "upgrade": "lay-bare+"
+    },
+    {
+      "id": "lay-bare+",
+      "name": "Lay Bare+",
+      "realm": "umbral",
+      "rarity": "uncommon",
+      "kind": "skill",
+      "cost": 0,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "strip",
+          "to": "target"
+        },
+        {
+          "op": "status",
+          "status": "exposed",
+          "amount": 2,
+          "to": "target"
+        },
+        {
+          "op": "status",
+          "status": "prep",
+          "amount": 1,
+          "to": "self"
+        }
+      ],
+      "hero": "assassin",
+      "exhaust": true
+    },
+    {
+      "id": "killing-stroke",
+      "name": "Killing Stroke",
+      "realm": "umbral",
+      "rarity": "rare",
+      "kind": "attack",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "spend",
+          "status": "prep",
+          "amount": 99
+        },
+        {
+          "op": "damage",
+          "amount": 8,
+          "to": "target",
+          "scale": {
+            "by": "prepSpent",
+            "mult": 6
+          }
+        }
+      ],
+      "hero": "assassin",
+      "innate": true,
+      "exhaust": true,
+      "upgrade": "killing-stroke+"
+    },
+    {
+      "id": "killing-stroke+",
+      "name": "Killing Stroke+",
+      "realm": "umbral",
+      "rarity": "rare",
+      "kind": "attack",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "spend",
+          "status": "prep",
+          "amount": 99
+        },
+        {
+          "op": "damage",
+          "amount": 12,
+          "to": "target",
+          "scale": {
+            "by": "prepSpent",
+            "mult": 6
+          }
+        }
+      ],
+      "hero": "assassin",
+      "innate": true,
+      "exhaust": true
+    },
+    {
+      "id": "final-cut",
+      "name": "Final Cut",
+      "realm": "umbral",
+      "rarity": "rare",
+      "kind": "attack",
+      "cost": 3,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "spend",
+          "status": "prep",
+          "amount": 99
+        },
+        {
+          "op": "extract",
+          "amount": 99
+        },
+        {
+          "op": "damage",
+          "amount": 16,
+          "to": "target",
+          "scale": {
+            "by": "prepSpent",
+            "mult": 6
+          }
+        },
+        {
+          "op": "when",
+          "by": "extracted",
+          "atLeast": 1,
+          "ops": [
+            {
+              "op": "damage",
+              "amount": 0,
+              "to": "target",
+              "scale": {
+                "by": "extracted",
+                "mult": 6
+              }
+            }
+          ]
+        }
+      ],
+      "hero": "assassin",
+      "upgrade": "final-cut+"
+    },
+    {
+      "id": "final-cut+",
+      "name": "Final Cut+",
+      "realm": "umbral",
+      "rarity": "rare",
+      "kind": "attack",
+      "cost": 3,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "spend",
+          "status": "prep",
+          "amount": 99
+        },
+        {
+          "op": "extract",
+          "amount": 99
+        },
+        {
+          "op": "damage",
+          "amount": 22,
+          "to": "target",
+          "scale": {
+            "by": "prepSpent",
+            "mult": 6
+          }
+        },
+        {
+          "op": "when",
+          "by": "extracted",
+          "atLeast": 1,
+          "ops": [
+            {
+              "op": "damage",
+              "amount": 0,
+              "to": "target",
+              "scale": {
+                "by": "extracted",
+                "mult": 6
+              }
+            }
+          ]
+        }
+      ],
+      "hero": "assassin"
+    },
+    {
+      "id": "eyes-in-the-dark",
+      "name": "Eyes in the Dark",
+      "realm": "umbral",
+      "rarity": "rare",
+      "kind": "power",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "power",
+          "when": "spend",
+          "ops": [
+            {
+              "op": "draw",
+              "amount": 1
+            },
+            {
+              "op": "barrier",
+              "amount": 4,
+              "to": "self"
+            }
+          ],
+          "status": "prep",
+          "once": true
+        }
+      ],
+      "hero": "assassin",
+      "upgrade": "eyes-in-the-dark+"
+    },
+    {
+      "id": "eyes-in-the-dark+",
+      "name": "Eyes in the Dark+",
+      "realm": "umbral",
+      "rarity": "rare",
+      "kind": "power",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "power",
+          "when": "spend",
+          "ops": [
+            {
+              "op": "draw",
+              "amount": 1
+            },
+            {
+              "op": "barrier",
+              "amount": 6,
+              "to": "self"
+            }
+          ],
+          "status": "prep",
+          "once": true
+        }
+      ],
+      "hero": "assassin"
+    },
+    {
+      "id": "marked-for-death",
+      "name": "Marked for Death",
+      "realm": "umbral",
+      "rarity": "rare",
+      "kind": "attack",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 10,
+          "to": "target",
+          "onKill": [
+            {
+              "op": "extraReward",
+              "amount": 1
+            }
+          ]
+        }
+      ],
+      "hero": "assassin",
+      "exhaust": true,
+      "upgrade": "marked-for-death+"
+    },
+    {
+      "id": "marked-for-death+",
+      "name": "Marked for Death+",
+      "realm": "umbral",
+      "rarity": "rare",
+      "kind": "attack",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 15,
+          "to": "target",
+          "onKill": [
+            {
+              "op": "extraReward",
+              "amount": 1
+            }
+          ]
+        }
+      ],
+      "hero": "assassin",
+      "exhaust": true
+    },
+    {
+      "id": "knife-juggle",
+      "name": "Knife Juggle",
+      "realm": "umbral",
+      "rarity": "common",
+      "kind": "skill",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "embed",
+          "amount": 2
+        },
+        {
+          "op": "barrier",
+          "amount": 4,
+          "to": "self"
+        }
+      ],
+      "hero": "assassin",
+      "upgrade": "knife-juggle+"
+    },
+    {
+      "id": "knife-juggle+",
+      "name": "Knife Juggle+",
+      "realm": "umbral",
+      "rarity": "common",
+      "kind": "skill",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "embed",
+          "amount": 2
+        },
+        {
+          "op": "barrier",
+          "amount": 7,
+          "to": "self"
+        }
+      ],
+      "hero": "assassin"
+    },
+    {
+      "id": "feint-strike",
+      "name": "Feint Strike",
+      "realm": "umbral",
+      "rarity": "common",
+      "kind": "attack",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 5,
+          "to": "target"
+        },
+        {
+          "op": "embed",
+          "amount": 2
+        }
+      ],
+      "hero": "assassin",
+      "tags": [
+        "knife"
+      ],
+      "upgrade": "feint-strike+"
+    },
+    {
+      "id": "feint-strike+",
+      "name": "Feint Strike+",
+      "realm": "umbral",
+      "rarity": "common",
+      "kind": "attack",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 8,
+          "to": "target"
+        },
+        {
+          "op": "embed",
+          "amount": 2
+        }
+      ],
+      "hero": "assassin",
+      "tags": [
+        "knife"
+      ]
+    },
+    {
+      "id": "shroud-and-shank",
+      "name": "Shroud and Shank",
+      "realm": "umbral",
+      "rarity": "common",
+      "kind": "skill",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 6,
+          "to": "self"
+        },
+        {
+          "op": "embed",
+          "amount": 1
+        }
+      ],
+      "hero": "assassin",
+      "upgrade": "shroud-and-shank+"
+    },
+    {
+      "id": "shroud-and-shank+",
+      "name": "Shroud and Shank+",
+      "realm": "umbral",
+      "rarity": "common",
+      "kind": "skill",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 9,
+          "to": "self"
+        },
+        {
+          "op": "embed",
+          "amount": 1
+        }
+      ],
+      "hero": "assassin"
+    },
+    {
+      "id": "blade-flurry",
+      "name": "Blade Flurry",
+      "realm": "umbral",
+      "rarity": "common",
+      "kind": "attack",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 5,
+          "to": "allFoes"
+        },
+        {
+          "op": "embed",
+          "amount": 1,
+          "to": "allFoes"
+        }
+      ],
+      "hero": "assassin",
+      "tags": [
+        "knife"
+      ],
+      "upgrade": "blade-flurry+"
+    },
+    {
+      "id": "blade-flurry+",
+      "name": "Blade Flurry+",
+      "realm": "umbral",
+      "rarity": "common",
+      "kind": "attack",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 7,
+          "to": "allFoes"
+        },
+        {
+          "op": "embed",
+          "amount": 1,
+          "to": "allFoes"
+        }
+      ],
+      "hero": "assassin",
+      "tags": [
+        "knife"
+      ]
+    },
+    {
+      "id": "pinning-throw",
+      "name": "Pinning Throw",
+      "realm": "umbral",
+      "rarity": "common",
+      "kind": "attack",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 5,
+          "to": "target"
+        },
+        {
+          "op": "embed",
+          "amount": 1
+        },
+        {
+          "op": "status",
+          "status": "faltering",
+          "amount": 1,
+          "to": "target"
+        }
+      ],
+      "hero": "assassin",
+      "tags": [
+        "knife"
+      ],
+      "upgrade": "pinning-throw+"
+    },
+    {
+      "id": "pinning-throw+",
+      "name": "Pinning Throw+",
+      "realm": "umbral",
+      "rarity": "common",
+      "kind": "attack",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 8,
+          "to": "target"
+        },
+        {
+          "op": "embed",
+          "amount": 1
+        },
+        {
+          "op": "status",
+          "status": "faltering",
+          "amount": 1,
+          "to": "target"
+        }
+      ],
+      "hero": "assassin",
+      "tags": [
+        "knife"
+      ]
+    },
+    {
+      "id": "twist-the-blade",
+      "name": "Twist the Blade",
+      "realm": "umbral",
+      "rarity": "common",
+      "kind": "attack",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "extract",
+          "amount": 1
+        },
+        {
+          "op": "damage",
+          "amount": 6,
+          "to": "target",
+          "scale": {
+            "by": "extracted",
+            "mult": 6
+          }
+        }
+      ],
+      "hero": "assassin",
+      "upgrade": "twist-the-blade+"
+    },
+    {
+      "id": "twist-the-blade+",
+      "name": "Twist the Blade+",
+      "realm": "umbral",
+      "rarity": "common",
+      "kind": "attack",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "extract",
+          "amount": 1
+        },
+        {
+          "op": "damage",
+          "amount": 9,
+          "to": "target",
+          "scale": {
+            "by": "extracted",
+            "mult": 6
+          }
+        }
+      ],
+      "hero": "assassin"
+    },
+    {
+      "id": "flick-knife",
+      "name": "Flick Knife",
+      "realm": "umbral",
+      "rarity": "common",
+      "kind": "attack",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 7,
+          "to": "target"
+        },
+        {
+          "op": "embed",
+          "amount": 1
+        },
+        {
+          "op": "draw",
+          "amount": 1
+        },
+        {
+          "op": "discard",
+          "amount": 1
+        }
+      ],
+      "hero": "assassin",
+      "tags": [
+        "knife"
+      ],
+      "upgrade": "flick-knife+"
+    },
+    {
+      "id": "flick-knife+",
+      "name": "Flick Knife+",
+      "realm": "umbral",
+      "rarity": "common",
+      "kind": "attack",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 10,
+          "to": "target"
+        },
+        {
+          "op": "embed",
+          "amount": 1
+        },
+        {
+          "op": "draw",
+          "amount": 1
+        },
+        {
+          "op": "discard",
+          "amount": 1
+        }
+      ],
+      "hero": "assassin",
+      "tags": [
+        "knife"
+      ]
+    },
+    {
+      "id": "whetted-edge",
+      "name": "Whetted Edge",
+      "realm": "umbral",
+      "rarity": "uncommon",
+      "kind": "power",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "power",
+          "when": "extract",
+          "ops": [
+            {
+              "op": "damage",
+              "amount": 2,
+              "to": "target"
+            },
+            {
+              "op": "barrier",
+              "amount": 1,
+              "to": "self"
+            }
+          ]
+        }
+      ],
+      "hero": "assassin",
+      "upgrade": "whetted-edge+"
+    },
+    {
+      "id": "whetted-edge+",
+      "name": "Whetted Edge+",
+      "realm": "umbral",
+      "rarity": "uncommon",
+      "kind": "power",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "power",
+          "when": "extract",
+          "ops": [
+            {
+              "op": "damage",
+              "amount": 3,
+              "to": "target"
+            },
+            {
+              "op": "barrier",
+              "amount": 1,
+              "to": "self"
+            }
+          ]
+        }
+      ],
+      "hero": "assassin"
+    },
+    {
+      "id": "pincushion",
+      "name": "Pincushion",
+      "realm": "umbral",
+      "rarity": "uncommon",
+      "kind": "attack",
+      "cost": 2,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 5,
+          "hits": 3,
+          "to": "target"
+        },
+        {
+          "op": "embed",
+          "amount": 3
+        }
+      ],
+      "hero": "assassin",
+      "tags": [
+        "knife"
+      ],
+      "upgrade": "pincushion+"
+    },
+    {
+      "id": "pincushion+",
+      "name": "Pincushion+",
+      "realm": "umbral",
+      "rarity": "uncommon",
+      "kind": "attack",
+      "cost": 2,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 7,
+          "hits": 3,
+          "to": "target"
+        },
+        {
+          "op": "embed",
+          "amount": 3
+        }
+      ],
+      "hero": "assassin",
+      "tags": [
+        "knife"
+      ]
+    },
+    {
+      "id": "harvest-the-field",
+      "name": "Harvest the Field",
+      "realm": "umbral",
+      "rarity": "uncommon",
+      "kind": "attack",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "extract",
+          "amount": 99,
+          "to": "allFoes",
+          "ops": [
+            {
+              "op": "damage",
+              "amount": 6,
+              "to": "target"
+            }
+          ]
+        }
+      ],
+      "hero": "assassin",
+      "upgrade": "harvest-the-field+"
+    },
+    {
+      "id": "harvest-the-field+",
+      "name": "Harvest the Field+",
+      "realm": "umbral",
+      "rarity": "uncommon",
+      "kind": "attack",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "extract",
+          "amount": 99,
+          "to": "allFoes",
+          "ops": [
+            {
+              "op": "damage",
+              "amount": 7,
+              "to": "target"
+            }
+          ]
+        }
+      ],
+      "hero": "assassin"
+    },
+    {
+      "id": "scatter-knives",
+      "name": "Scatter Knives",
+      "realm": "umbral",
+      "rarity": "uncommon",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "embed",
+          "amount": 1,
+          "to": "allFoes"
+        },
+        {
+          "op": "status",
+          "status": "prep",
+          "amount": 1,
+          "to": "self"
+        },
+        {
+          "op": "barrier",
+          "amount": 5,
+          "to": "self"
+        }
+      ],
+      "hero": "assassin",
+      "upgrade": "scatter-knives+"
+    },
+    {
+      "id": "scatter-knives+",
+      "name": "Scatter Knives+",
+      "realm": "umbral",
+      "rarity": "uncommon",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "embed",
+          "amount": 1,
+          "to": "allFoes"
+        },
+        {
+          "op": "status",
+          "status": "prep",
+          "amount": 1,
+          "to": "self"
+        },
+        {
+          "op": "barrier",
+          "amount": 8,
+          "to": "self"
+        }
+      ],
+      "hero": "assassin"
+    },
+    {
+      "id": "worry-the-wound",
+      "name": "Worry the Wound",
+      "realm": "umbral",
+      "rarity": "uncommon",
+      "kind": "attack",
+      "cost": 0,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 2,
+          "to": "target",
+          "scale": {
+            "by": "knives",
+            "mult": 3,
+            "of": "target"
+          }
+        }
+      ],
+      "hero": "assassin",
+      "upgrade": "worry-the-wound+"
+    },
+    {
+      "id": "worry-the-wound+",
+      "name": "Worry the Wound+",
+      "realm": "umbral",
+      "rarity": "uncommon",
+      "kind": "attack",
+      "cost": 0,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 4,
+          "to": "target",
+          "scale": {
+            "by": "knives",
+            "mult": 3,
+            "of": "target"
+          }
+        }
+      ],
+      "hero": "assassin"
+    },
+    {
+      "id": "executioners-mark",
+      "name": "Executioner's Mark",
+      "realm": "umbral",
+      "rarity": "rare",
+      "kind": "skill",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "embed",
+          "amount": 3
+        },
+        {
+          "op": "status",
+          "status": "prep",
+          "amount": 1,
+          "to": "self"
+        },
+        {
+          "op": "barrier",
+          "amount": 4,
+          "to": "self"
+        }
+      ],
+      "hero": "assassin",
+      "upgrade": "executioners-mark+"
+    },
+    {
+      "id": "executioners-mark+",
+      "name": "Executioner's Mark+",
+      "realm": "umbral",
+      "rarity": "rare",
+      "kind": "skill",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "embed",
+          "amount": 3
+        },
+        {
+          "op": "status",
+          "status": "prep",
+          "amount": 1,
+          "to": "self"
+        },
+        {
+          "op": "barrier",
+          "amount": 7,
+          "to": "self"
+        }
+      ],
+      "hero": "assassin"
+    },
+    {
+      "id": "flurry-of-steel",
+      "name": "Flurry of Steel",
+      "realm": "umbral",
+      "rarity": "rare",
+      "kind": "attack",
+      "cost": 2,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 5,
+          "hits": 4,
+          "to": "target"
+        },
+        {
+          "op": "embed",
+          "amount": 1
+        }
+      ],
+      "hero": "assassin",
+      "tags": [
+        "knife"
+      ],
+      "upgrade": "flurry-of-steel+"
+    },
+    {
+      "id": "flurry-of-steel+",
+      "name": "Flurry of Steel+",
+      "realm": "umbral",
+      "rarity": "rare",
+      "kind": "attack",
+      "cost": 2,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 6,
+          "hits": 4,
+          "to": "target"
+        },
+        {
+          "op": "embed",
+          "amount": 2
+        }
+      ],
+      "hero": "assassin",
+      "tags": [
+        "knife"
+      ]
+    },
+    {
+      "id": "twist-and-pull",
+      "name": "Twist and Pull",
+      "realm": "umbral",
+      "rarity": "rare",
+      "kind": "skill",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "extract",
+          "amount": 99,
+          "ops": [
+            {
+              "op": "loseHp",
+              "amount": 5,
+              "to": "target"
+            },
+            {
+              "op": "status",
+              "status": "faltering",
+              "amount": 1,
+              "to": "target"
+            }
+          ]
+        }
+      ],
+      "hero": "assassin",
+      "upgrade": "twist-and-pull+"
+    },
+    {
+      "id": "twist-and-pull+",
+      "name": "Twist and Pull+",
+      "realm": "umbral",
+      "rarity": "rare",
+      "kind": "skill",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "extract",
+          "amount": 99,
+          "ops": [
+            {
+              "op": "loseHp",
+              "amount": 7,
+              "to": "target"
+            },
+            {
+              "op": "status",
+              "status": "faltering",
+              "amount": 1,
+              "to": "target"
+            }
+          ]
+        }
+      ],
+      "hero": "assassin"
+    },
+    {
+      "id": "recall-the-blades",
+      "name": "Recall the Blades",
+      "realm": "umbral",
+      "rarity": "rare",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "extract",
+          "amount": 99,
+          "to": "allFoes",
+          "ops": [
+            {
+              "op": "status",
+              "status": "prep",
+              "amount": 1,
+              "to": "self"
+            },
+            {
+              "op": "barrier",
+              "amount": 4,
+              "to": "self"
+            }
+          ]
+        }
+      ],
+      "hero": "assassin",
+      "upgrade": "recall-the-blades+"
+    },
+    {
+      "id": "recall-the-blades+",
+      "name": "Recall the Blades+",
+      "realm": "umbral",
+      "rarity": "rare",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "extract",
+          "amount": 99,
+          "to": "allFoes",
+          "ops": [
+            {
+              "op": "status",
+              "status": "prep",
+              "amount": 1,
+              "to": "self"
+            },
+            {
+              "op": "barrier",
+              "amount": 5,
+              "to": "self"
+            }
+          ]
+        }
+      ],
+      "hero": "assassin"
+    },
+    {
+      "id": "thread-the-needle",
+      "name": "Thread the Needle",
+      "realm": "umbral",
+      "rarity": "rare",
+      "kind": "attack",
+      "cost": 0,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "when",
+          "by": "knives",
+          "atLeast": 3,
+          "of": "target",
+          "ops": [
+            {
+              "op": "extract",
+              "amount": 99
+            }
+          ]
+        },
+        {
+          "op": "damage",
+          "amount": 4,
+          "to": "target",
+          "scale": {
+            "by": "extracted",
+            "mult": 5
+          }
+        }
+      ],
+      "hero": "assassin",
+      "upgrade": "thread-the-needle+"
+    },
+    {
+      "id": "thread-the-needle+",
+      "name": "Thread the Needle+",
+      "realm": "umbral",
+      "rarity": "rare",
+      "kind": "attack",
+      "cost": 0,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "when",
+          "by": "knives",
+          "atLeast": 3,
+          "of": "target",
+          "ops": [
+            {
+              "op": "extract",
+              "amount": 99
+            }
+          ]
+        },
+        {
+          "op": "damage",
+          "amount": 7,
+          "to": "target",
+          "scale": {
+            "by": "extracted",
+            "mult": 5
+          }
+        }
+      ],
+      "hero": "assassin"
+    },
+    {
+      "id": "reap-the-steel",
+      "name": "Reap the Steel",
+      "realm": "umbral",
+      "rarity": "rare",
+      "kind": "attack",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 6,
+          "to": "allFoes"
+        },
+        {
+          "op": "extract",
+          "amount": 99,
+          "to": "allFoes",
+          "ops": [
+            {
+              "op": "damage",
+              "amount": 4,
+              "to": "target"
+            }
+          ]
+        }
+      ],
+      "hero": "assassin",
+      "upgrade": "reap-the-steel+"
+    },
+    {
+      "id": "reap-the-steel+",
+      "name": "Reap the Steel+",
+      "realm": "umbral",
+      "rarity": "rare",
+      "kind": "attack",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 8,
+          "to": "allFoes"
+        },
+        {
+          "op": "extract",
+          "amount": 99,
+          "to": "allFoes",
+          "ops": [
+            {
+              "op": "damage",
+              "amount": 4,
+              "to": "target"
+            }
+          ]
+        }
+      ],
+      "hero": "assassin"
+    },
+    {
+      "id": "duck-and-weave",
+      "name": "Duck and Weave",
+      "realm": "umbral",
+      "rarity": "common",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 8,
+          "to": "self"
+        },
+        {
+          "op": "discard",
+          "amount": 1
+        },
+        {
+          "op": "status",
+          "status": "prep",
+          "amount": 1,
+          "to": "self"
+        }
+      ],
+      "hero": "assassin",
+      "upgrade": "duck-and-weave+"
+    },
+    {
+      "id": "duck-and-weave+",
+      "name": "Duck and Weave+",
+      "realm": "umbral",
+      "rarity": "common",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 11,
+          "to": "self"
+        },
+        {
+          "op": "discard",
+          "amount": 1
+        },
+        {
+          "op": "status",
+          "status": "prep",
+          "amount": 1,
+          "to": "self"
+        }
+      ],
+      "hero": "assassin"
+    },
+    {
+      "id": "backspring",
+      "name": "Backspring",
+      "realm": "umbral",
+      "rarity": "common",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 3,
+          "to": "self"
+        },
+        {
+          "op": "draw",
+          "amount": 2
+        }
+      ],
+      "hero": "assassin",
+      "upgrade": "backspring+"
+    },
+    {
+      "id": "backspring+",
+      "name": "Backspring+",
+      "realm": "umbral",
+      "rarity": "common",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 6,
+          "to": "self"
+        },
+        {
+          "op": "draw",
+          "amount": 2
+        }
+      ],
+      "hero": "assassin"
+    },
+    {
+      "id": "turn-aside",
+      "name": "Turn Aside",
+      "realm": "umbral",
+      "rarity": "common",
+      "kind": "skill",
+      "cost": 0,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 4,
+          "to": "self"
+        }
+      ],
+      "hero": "assassin",
+      "upgrade": "turn-aside+"
+    },
+    {
+      "id": "turn-aside+",
+      "name": "Turn Aside+",
+      "realm": "umbral",
+      "rarity": "common",
+      "kind": "skill",
+      "cost": 0,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 6,
+          "to": "self"
+        }
+      ],
+      "hero": "assassin"
+    },
+    {
+      "id": "roll-away",
+      "name": "Roll Away",
+      "realm": "umbral",
+      "rarity": "common",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 4,
+          "to": "self"
+        },
+        {
+          "op": "status",
+          "status": "guarded",
+          "amount": 4,
+          "to": "self"
+        }
+      ],
+      "hero": "assassin",
+      "upgrade": "roll-away+"
+    },
+    {
+      "id": "roll-away+",
+      "name": "Roll Away+",
+      "realm": "umbral",
+      "rarity": "common",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 6,
+          "to": "self"
+        },
+        {
+          "op": "status",
+          "status": "guarded",
+          "amount": 5,
+          "to": "self"
+        }
+      ],
+      "hero": "assassin"
+    },
+    {
+      "id": "leave-no-trace",
+      "name": "Leave No Trace",
+      "realm": "umbral",
+      "rarity": "uncommon",
+      "kind": "skill",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 5,
+          "to": "self"
+        },
+        {
+          "op": "extract",
+          "amount": 1,
+          "ops": [
+            {
+              "op": "barrier",
+              "amount": 6,
+              "to": "self"
+            }
+          ]
+        }
+      ],
+      "hero": "assassin",
+      "upgrade": "leave-no-trace+"
+    },
+    {
+      "id": "leave-no-trace+",
+      "name": "Leave No Trace+",
+      "realm": "umbral",
+      "rarity": "uncommon",
+      "kind": "skill",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 8,
+          "to": "self"
+        },
+        {
+          "op": "extract",
+          "amount": 1,
+          "ops": [
+            {
+              "op": "barrier",
+              "amount": 6,
+              "to": "self"
+            }
+          ]
+        }
+      ],
+      "hero": "assassin"
+    },
+    {
+      "id": "cut-and-run",
+      "name": "Cut and Run",
+      "realm": "umbral",
+      "rarity": "uncommon",
+      "kind": "attack",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 8,
+          "to": "target"
+        },
+        {
+          "op": "extract",
+          "amount": 1,
+          "ops": [
+            {
+              "op": "draw",
+              "amount": 1
+            },
+            {
+              "op": "status",
+              "status": "prep",
+              "amount": 1,
+              "to": "self"
+            }
+          ]
+        }
+      ],
+      "hero": "assassin",
+      "upgrade": "cut-and-run+"
+    },
+    {
+      "id": "cut-and-run+",
+      "name": "Cut and Run+",
+      "realm": "umbral",
+      "rarity": "uncommon",
+      "kind": "attack",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 11,
+          "to": "target"
+        },
+        {
+          "op": "extract",
+          "amount": 1,
+          "ops": [
+            {
+              "op": "draw",
+              "amount": 1
+            },
+            {
+              "op": "status",
+              "status": "prep",
+              "amount": 1,
+              "to": "self"
+            }
+          ]
+        }
+      ],
+      "hero": "assassin"
+    },
+    {
+      "id": "disarm",
+      "name": "Disarm",
+      "realm": "umbral",
+      "rarity": "uncommon",
+      "kind": "skill",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "extract",
+          "amount": 3,
+          "ops": [
+            {
+              "op": "status",
+              "status": "faltering",
+              "amount": 1,
+              "to": "target"
+            },
+            {
+              "op": "barrier",
+              "amount": 4,
+              "to": "self"
+            }
+          ]
+        }
+      ],
+      "hero": "assassin",
+      "upgrade": "disarm+"
+    },
+    {
+      "id": "disarm+",
+      "name": "Disarm+",
+      "realm": "umbral",
+      "rarity": "uncommon",
+      "kind": "skill",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "extract",
+          "amount": 3,
+          "ops": [
+            {
+              "op": "status",
+              "status": "faltering",
+              "amount": 1,
+              "to": "target"
+            },
+            {
+              "op": "barrier",
+              "amount": 5,
+              "to": "self"
+            }
+          ]
+        }
+      ],
+      "hero": "assassin"
+    },
+    {
+      "id": "darting-strike",
+      "name": "Darting Strike",
+      "realm": "umbral",
+      "rarity": "uncommon",
+      "kind": "attack",
+      "cost": 2,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 10,
+          "to": "self"
+        },
+        {
+          "op": "damage",
+          "amount": 10,
+          "to": "target"
+        }
+      ],
+      "hero": "assassin",
+      "upgrade": "darting-strike+"
+    },
+    {
+      "id": "darting-strike+",
+      "name": "Darting Strike+",
+      "realm": "umbral",
+      "rarity": "uncommon",
+      "kind": "attack",
+      "cost": 2,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 13,
+          "to": "self"
+        },
+        {
+          "op": "damage",
+          "amount": 13,
+          "to": "target"
+        }
+      ],
+      "hero": "assassin"
+    },
+    {
+      "id": "nimble-deal",
+      "name": "Nimble Deal",
+      "realm": "umbral",
+      "rarity": "uncommon",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "draw",
+          "amount": 3
+        },
+        {
+          "op": "discard",
+          "amount": 1
+        },
+        {
+          "op": "status",
+          "status": "prep",
+          "amount": 1,
+          "to": "self"
+        }
+      ],
+      "hero": "assassin",
+      "upgrade": "nimble-deal+"
+    },
+    {
+      "id": "nimble-deal+",
+      "name": "Nimble Deal+",
+      "realm": "umbral",
+      "rarity": "uncommon",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "draw",
+          "amount": 4
+        },
+        {
+          "op": "discard",
+          "amount": 1
+        },
+        {
+          "op": "status",
+          "status": "prep",
+          "amount": 1,
+          "to": "self"
+        }
+      ],
+      "hero": "assassin"
+    },
+    {
+      "id": "smoke-veil",
+      "name": "Smoke Veil",
+      "realm": "umbral",
+      "rarity": "uncommon",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 5,
+          "to": "self"
+        },
+        {
+          "op": "status",
+          "status": "blur",
+          "amount": 1,
+          "to": "self"
+        }
+      ],
+      "hero": "assassin",
+      "upgrade": "smoke-veil+"
+    },
+    {
+      "id": "smoke-veil+",
+      "name": "Smoke Veil+",
+      "realm": "umbral",
+      "rarity": "uncommon",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 8,
+          "to": "self"
+        },
+        {
+          "op": "status",
+          "status": "blur",
+          "amount": 1,
+          "to": "self"
+        }
+      ],
+      "hero": "assassin"
+    },
+    {
+      "id": "practiced-hands",
+      "name": "Practiced Hands",
+      "realm": "umbral",
+      "rarity": "uncommon",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "draw",
+          "amount": 2,
+          "hold": true
+        },
+        {
+          "op": "status",
+          "status": "prep",
+          "amount": 1,
+          "to": "self"
+        }
+      ],
+      "hero": "assassin",
+      "upgrade": "practiced-hands+"
+    },
+    {
+      "id": "practiced-hands+",
+      "name": "Practiced Hands+",
+      "realm": "umbral",
+      "rarity": "uncommon",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "draw",
+          "amount": 3,
+          "hold": true
+        },
+        {
+          "op": "status",
+          "status": "prep",
+          "amount": 1,
+          "to": "self"
+        }
+      ],
+      "hero": "assassin"
+    },
+    {
+      "id": "sweep-the-leg",
+      "name": "Sweep the Leg",
+      "realm": "umbral",
+      "rarity": "uncommon",
+      "kind": "skill",
+      "cost": 2,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "status",
+          "status": "faltering",
+          "amount": 2,
+          "to": "target"
+        },
+        {
+          "op": "barrier",
+          "amount": 11,
+          "to": "self"
+        }
+      ],
+      "hero": "assassin",
+      "upgrade": "sweep-the-leg+"
+    },
+    {
+      "id": "sweep-the-leg+",
+      "name": "Sweep the Leg+",
+      "realm": "umbral",
+      "rarity": "uncommon",
+      "kind": "skill",
+      "cost": 2,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "status",
+          "status": "faltering",
+          "amount": 3,
+          "to": "target"
+        },
+        {
+          "op": "barrier",
+          "amount": 14,
+          "to": "self"
+        }
+      ],
+      "hero": "assassin"
+    },
+    {
+      "id": "fade-out",
+      "name": "Fade Out",
+      "realm": "umbral",
+      "rarity": "uncommon",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 7,
+          "to": "self"
+        },
+        {
+          "op": "draw",
+          "amount": 1
+        },
+        {
+          "op": "when",
+          "by": "prep",
+          "atMost": 0,
+          "ops": [
+            {
+              "op": "status",
+              "status": "prep",
+              "amount": 1,
+              "to": "self"
+            }
+          ]
+        }
+      ],
+      "hero": "assassin",
+      "upgrade": "fade-out+"
+    },
+    {
+      "id": "fade-out+",
+      "name": "Fade Out+",
+      "realm": "umbral",
+      "rarity": "uncommon",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 10,
+          "to": "self"
+        },
+        {
+          "op": "draw",
+          "amount": 1
+        },
+        {
+          "op": "when",
+          "by": "prep",
+          "atMost": 0,
+          "ops": [
+            {
+              "op": "status",
+              "status": "prep",
+              "amount": 1,
+              "to": "self"
+            }
+          ]
+        }
+      ],
+      "hero": "assassin"
+    },
+    {
+      "id": "hidden-in-plain-sight",
+      "name": "Hidden in Plain Sight",
+      "realm": "umbral",
+      "rarity": "rare",
+      "kind": "power",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "power",
+          "when": "extract",
+          "ops": [
+            {
+              "op": "status",
+              "status": "prep",
+              "amount": 1,
+              "to": "self"
+            },
+            {
+              "op": "barrier",
+              "amount": 4,
+              "to": "self"
+            }
+          ],
+          "once": true
+        }
+      ],
+      "hero": "assassin",
+      "upgrade": "hidden-in-plain-sight+"
+    },
+    {
+      "id": "hidden-in-plain-sight+",
+      "name": "Hidden in Plain Sight+",
+      "realm": "umbral",
+      "rarity": "rare",
+      "kind": "power",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "power",
+          "when": "extract",
+          "ops": [
+            {
+              "op": "status",
+              "status": "prep",
+              "amount": 1,
+              "to": "self"
+            },
+            {
+              "op": "barrier",
+              "amount": 6,
+              "to": "self"
+            }
+          ],
+          "once": true
+        }
+      ],
+      "hero": "assassin"
+    },
+    {
+      "id": "vanishing-act",
+      "name": "Vanishing Act",
+      "realm": "umbral",
+      "rarity": "rare",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 6,
+          "to": "self"
+        },
+        {
+          "op": "status",
+          "status": "blur",
+          "amount": 1,
+          "to": "self"
+        },
+        {
+          "op": "status",
+          "status": "prep",
+          "amount": 2,
+          "to": "self"
+        }
+      ],
+      "hero": "assassin",
+      "upgrade": "vanishing-act+"
+    },
+    {
+      "id": "vanishing-act+",
+      "name": "Vanishing Act+",
+      "realm": "umbral",
+      "rarity": "rare",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 9,
+          "to": "self"
+        },
+        {
+          "op": "status",
+          "status": "blur",
+          "amount": 1,
+          "to": "self"
+        },
+        {
+          "op": "status",
+          "status": "prep",
+          "amount": 2,
+          "to": "self"
+        }
+      ],
+      "hero": "assassin"
+    },
+    {
+      "id": "bladestorm-ward",
+      "name": "Bladestorm Ward",
+      "realm": "umbral",
+      "rarity": "rare",
+      "kind": "skill",
+      "cost": 2,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 15,
+          "to": "self"
+        },
+        {
+          "op": "embed",
+          "amount": 1,
+          "to": "allFoes"
+        }
+      ],
+      "hero": "assassin",
+      "upgrade": "bladestorm-ward+"
+    },
+    {
+      "id": "bladestorm-ward+",
+      "name": "Bladestorm Ward+",
+      "realm": "umbral",
+      "rarity": "rare",
+      "kind": "skill",
+      "cost": 2,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 19,
+          "to": "self"
+        },
+        {
+          "op": "embed",
+          "amount": 1,
+          "to": "allFoes"
+        }
+      ],
+      "hero": "assassin"
+    }
+  ]
+}

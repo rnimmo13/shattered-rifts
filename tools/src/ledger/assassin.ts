@@ -1,7 +1,8 @@
 // The Assassin's hand prices (docs/reworks/assassin-ledger.md is generated from these). New rates (docs/14_CARD_COSTING.md §15): a
 // knife embedded 2 (its producer); a pull pays its payoff minus 2 a knife (the stored value is spent), at the knives there usually
 // are (1.5 on one target for "up to 2", 2 for "every"/"up to 3"; 0.8 for "a knife"); Preparation gained 1.5; a spend pays its payoff
-// minus 1.5 a point, at ~2 Preparation for "up to 3" or "all" (1.5 for "up to 2"). Knife Work's 3 damage a pull is the trait's.
+// minus 1.5 a point, at ~2 Preparation for "up to 3" or "all" (1.5 for "up to 2", 0.9 for "up to 1"). Knife Work's 3 damage a pull is
+// the trait's. Preparation held (read, not spent) ~1.8 in an Execution deck; knives in one target ~2, ~3 over the enemies (#424).
 
 import type { Price } from './common';
 
@@ -275,5 +276,221 @@ export const ASSASSIN_PRICES: Record<string, Price> = {
     up: 25.4,
     how: '15 Barrier 18 + a knife in each (2 x1.3)',
     role: 'Shadow/Knives',
+  },
+  'measured-cut': {
+    pts: 10.15,
+    up: 13.15,
+    how: '7 + (5 - 1.5) a Preparation spent, up to 1 (x0.9)',
+    role: 'Precision: the small spender (DECISIONS #424)',
+  },
+  'poised-strike': {
+    pts: 19.2,
+    up: 23.2,
+    how: '12 + 4 per Preparation held (~1.8; none spent)',
+    role: 'Precision: pays for keeping Preparation',
+  },
+  'mark-the-vein': {
+    pts: 11.25,
+    up: 14.85,
+    how: '6 Barrier 7.2 + up to 1 Preparation: 1 Exposed + 1 Faltering (6 - 1.5) x0.9',
+    role: 'Precision/utility: the setup spender',
+  },
+  'calculated-retreat': {
+    pts: 12.33,
+    up: 15.93,
+    how: '6 Barrier 7.2 + up to 1 Preparation: 6 Barrier (7.2 - 1.5) x0.9',
+    role: 'Precision/defence',
+  },
+  'steady-hand': {
+    pts: 6.1,
+    up: 8.5,
+    how: '3 Barrier 3.6 + 1 Preparation 1.5 + Hold 1',
+    role: 'Precision/defence: a free point to time',
+  },
+  'weigh-the-moment': {
+    pts: 9.8,
+    up: 12.7,
+    how: 'Foresee 2 (an extra) 3.5 + 1 Preparation 1.5 + 4 Barrier 4.8',
+    role: 'Utility: selection while building',
+  },
+  'silent-massacre': {
+    pts: 20.4,
+    up: 24.3,
+    how: '8 to ALL 10.4 + (5 x1.3 - 1.5) a Preparation x2',
+    role: 'Precision: the group finisher',
+  },
+  assassinate: {
+    pts: 21.9,
+    up: 25.9,
+    how: '12 + (6 - 1.5) x2 + a kill (~0.3) refunds 2 Preparation 0.9',
+    role: 'Precision: the chaining finisher (a kill is a bonus, never needed)',
+  },
+  'economy-of-motion': {
+    pts: 14.9,
+    up: 20.2,
+    how: 'Aura: first spend each turn (~3 in four turns in a partial-spend deck) x0.75 some left: draw 1 (3) + 3 Barrier 3.6',
+    role: 'Spending management: rewards partial spends',
+  },
+  'patient-coil': {
+    pts: 15.4,
+    up: 18.9,
+    how: 'Aura: 2 Barrier per Preparation held at turn end (~1.6) x2.4 x4; upgrade Opening hand 3.5',
+    role: 'Preparation management: saving pays defence',
+  },
+  'the-waiting-blade': {
+    pts: 21.8,
+    up: 25.3,
+    how: 'Aura: at the start of a turn on 3 Preparation (~0.4 of turns): 1 Mana 7 + draw 1 (3) + 3 Barrier 3.6, x4; Opening hand 3.5',
+    role: 'Setup to finisher: the full count pays until it is spent',
+  },
+  'read-the-wound': {
+    pts: 9.1,
+    up: 12.1,
+    how: '8 + 1 Preparation if the target has a knife (x0.75)',
+    role: 'Hybrid: knives read into Preparation, no pull',
+  },
+  'exacting-pull': {
+    pts: 10.75,
+    up: 13.75,
+    how: '4 + per Preparation spent (up to 2, ~1.5): a knife pulled for 8 (8 - 2 knife - 1.5 Preparation)',
+    role: 'Hybrid: Preparation buys extraction, one way (+3 a knife from Knife Work)',
+  },
+  'lodged-steel': {
+    pts: 9.25,
+    up: 12.25,
+    how: '7 + 1 Faltering if the target has a knife (3 x0.75)',
+    role: 'Leave the knife: control',
+  },
+  pinned: {
+    pts: 10.3,
+    up: 13.9,
+    how: '5 Barrier 6 + 2 Sapped a knife in the target (~1.8) x1.2 for its turn',
+    role: 'Leave the knife/defence',
+  },
+  'barbed-anchor': {
+    pts: 12.2,
+    up: 15.8,
+    how: 'a knife 2 + 1 Faltering per knife there after it (~2.2) x3 + 3 Barrier 3.6',
+    role: 'Leave the knife: a debuff that grows with the knives',
+  },
+  'thousand-cuts': {
+    pts: 21,
+    up: 27,
+    how: '7 x(1 + ~2 knives); the knives stay',
+    role: 'Leave the knife: the payoff for not pulling',
+  },
+  'steel-rain': {
+    pts: 18.2,
+    up: 22.1,
+    how: '8 to ALL 10.4 + 5 a knife in each (~1.2) x1.3',
+    role: 'Fieldwork: spread, then hit all',
+  },
+  'fan-of-blades': {
+    pts: 10.6,
+    up: 13,
+    how: 'two knives at random 4 + draw 1 (3) + 3 Barrier 3.6',
+    role: 'Fieldwork: the cheap spread',
+  },
+  'reaping-arc': {
+    pts: 8.9,
+    up: 11.5,
+    how: '5 to ALL 6.5 + one knife from each (~1.2 pulled) x(4 - 2)',
+    role: 'Fieldwork: a light group pull that keeps the rest',
+  },
+  'lingering-steel': {
+    pts: 14.4,
+    up: 17.9,
+    how: 'Aura: each enemy Sapped 1 a knife in it for its turn (~3 knives in attackers) x1.2 x4; Opening hand 3.5',
+    role: 'Retained knives: defence while they sit',
+  },
+  'steel-thicket': {
+    pts: 14.4,
+    up: 17.9,
+    how: 'Aura: 1 Barrier per knife in all enemies at turn end (~3) x1.2 x4',
+    role: 'Group specialisation: spread wide',
+  },
+  'cruel-precision': {
+    pts: 14.4,
+    up: 17.9,
+    how: 'Aura: 2 Barrier per debuff on a knifed enemy (~1.5 a turn) x4',
+    role: 'Debuff management',
+  },
+  'quick-pull': {
+    pts: 5.4,
+    up: 7.4,
+    how: '3 + a knife pulled for 5 ((5 - 2) x0.8)',
+    role: 'Selective: the free damage pull',
+  },
+  'pry-loose': {
+    pts: 10.2,
+    up: 13.2,
+    how: '7 + a knife pulled for 2 Exposed ((6 - 2) x0.8)',
+    role: 'Selective: the setup pull',
+  },
+  'sleight-of-steel': {
+    pts: 9.2,
+    up: 12.8,
+    how: '5 Barrier 6 + a knife pulled for 2 cards ((6 - 2) x0.8)',
+    role: 'Selective/utility: the selection pull',
+  },
+  'bide-in-shadow': {
+    pts: 10,
+    up: 13,
+    how: '6 Guarded 6 + draw 1 next turn 3 + Hold 1',
+    role: 'Shadow: set up the next turn',
+  },
+  'melt-away': {
+    pts: 9.9,
+    up: 13.5,
+    how: '7 Barrier 8.4 + topdeck a card 1.5',
+    role: 'Shadow/utility: keep the finisher for next turn',
+  },
+  'feign-weakness': {
+    pts: 9.9,
+    up: 13.5,
+    how: '5 Barrier 6 + 2 Sapped for its turn 2.4 + 1 Preparation 1.5',
+    role: 'Shadow/defence: a safe setup turn',
+  },
+  'choking-smoke': {
+    pts: 12.6,
+    up: 16.2,
+    how: '2 Faltering to ALL 7.8 + 4 Barrier 4.8',
+    role: 'Shadow/group defence',
+  },
+  'set-the-stage': {
+    pts: 11,
+    up: 14,
+    how: '1 Mana next turn 4 + 2 cards next turn 6 + Hold 1',
+    role: 'Shadow/resources: the attack window',
+  },
+  'cold-patience': {
+    pts: 12,
+    up: 15,
+    how: '2 Preparation 3 + 8 Guarded 8 + Hold 1',
+    role: 'Shadow/precision: a guarded setup',
+  },
+  'strike-from-shadow': {
+    pts: 21,
+    up: 25,
+    how: '16 + 8 if the target is Faltering (x0.5) + Hold 1',
+    role: 'Shadow: the debuff-timed hit',
+  },
+  'clean-extraction': {
+    pts: 14.3,
+    up: 17.8,
+    how: 'Aura: first pull each turn (0.85) x(draw 1 (3) + 1 Barrier 1.2) x4',
+    role: 'Bounded extraction: selection',
+  },
+  'lie-in-wait': {
+    pts: 13.9,
+    up: 19.7,
+    how: 'Aura: end of a turn with no Attack (~0.4) x(6 Barrier 7.2 + 1 Preparation 1.5) x4',
+    role: 'Defensive sequencing: the setup turn leads to a finisher',
+  },
+  'recycled-steel': {
+    pts: 21.6,
+    up: 25.1,
+    how: 'Aura: first pull each turn (0.85) x(a knife 2 + 3 Barrier 3.6 + Knife Work Preparation ~0.75) x4',
+    role: 'Extraction that keeps a knife in play',
   },
 };

@@ -616,9 +616,9 @@ const METRIC_WORDS: Record<Metric, { per: string; equal: string }> = {
     equal: 'the number of enemies that mean to attack',
   },
   // (the Assassin)
-  knives: { per: 'knife in it', equal: 'the knives in it' },
+  knives: { per: 'knife in it', equal: 'knives' },
   knivesAll: { per: 'knife in your enemies', equal: 'the knives in your enemies' },
-  prep: { per: 'Preparation', equal: 'your Preparation' },
+  prep: { per: 'Preparation', equal: 'Preparation' },
   extracted: { per: 'knife pulled', equal: 'the knives pulled' },
   prepSpent: { per: 'Preparation spent', equal: 'the Preparation spent' },
   // (the Spellblade)
@@ -873,6 +873,12 @@ function whenText(o: Extract<Op, { op: 'when' }>, db?: CombatDb): string {
     return `you have ${lo} or more Preparation`;
   if (o.by === 'prep' && hi === 0 && lo === undefined && !o.of) return 'you have no Preparation';
   if (o.by === 'extracted' && (lo ?? 0) >= 1 && hi === undefined) return 'you pulled a knife';
+  // (DECISIONS #424)
+  if (o.by === 'prepSpent' && lo === 1 && hi === undefined) return 'you spent Preparation';
+  if (o.by === 'prepSpent' && (lo ?? 0) >= 2 && hi === undefined)
+    return `you spent ${lo} Preparation`;
+  if (o.by === 'attacksPlayed' && hi === 0 && lo === undefined && !o.of)
+    return 'you played no Attack this turn';
   // (the Knight)
   if (o.by === 'thornsSpent' && (lo ?? 0) >= 1 && hi === undefined) return 'you shed Thorns';
   // (the Shaman)
