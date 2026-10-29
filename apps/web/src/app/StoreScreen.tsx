@@ -1,122 +1,107 @@
-// #/store: the Store. It sells cosmetics only (never power: the game's pillars rule out pay-to-win). Riftwalker looks (skins, DECISIONS
-// #402, #406) are on sale, free for now: each one's figure, named, grouped by class, with Get (it goes on your account) and Wear (it
-// becomes your hero's look, chosen again on #/cosmetics). The other shelves are locked tiles with the Store's mark, coming soon.
+// #/store: the Store. It sells cosmetics only (never power: the game's pillars rule out pay-to-win). One kind of cosmetic at a time, its
+// tabs in a bar that stays at the top while the page scrolls (DECISIONS #409). Riftwalker looks (skins, #402, #406) are on sale, free for
+// now: a grid of tiles, filtered by class, each with Get (it goes on your account) and then Wear; what you own is in the Cosmetics
+// Vault (#/cosmetics). The other kinds are coming soon.
 
 import { useEffect, useState } from 'react';
-import { RIFTWALKERS, skinDef } from '@sr/content/v2';
+import { RIFTWALKERS, SKINS } from '@sr/content/v2';
 import { wornSkin } from '@sr/pvp';
+import { preloadArt, realSkins } from '../art/assets';
+import { skinName } from '../art/skins';
 import { getSkin, useCosmetics, wear } from '../cosmetics/cosmetics';
-import { preloadArt, realSkins, type Skin } from '../art/assets';
-import { skinClass as className, skinName } from '../art/skins';
-import { StoreIcon } from './StoreIcon';
-import './store.css';
+import { LookTile, ShopFrame, SoonPanel } from './ShopParts';
+import { HEROES, SHOP_TABS, remember, remembered, type ShopTab } from './shopTabs';
 
-const SHELVES: { name: string; text: string }[] = [
-  { name: 'Card backs', text: 'New designs for the back of every card you draw.' },
-  { name: 'Riftwalker looks', text: 'Other outfits and colours for your Riftwalkers.' },
-  { name: 'Battlefields', text: 'Arenas to fight on, from drowned halls to burning skies.' },
-  { name: 'Card frames', text: 'Foil and gilded frames for the cards you love most.' },
-  { name: 'Titles and banners', text: 'Show them on your Arena player card.' },
-  { name: 'Emotes', text: 'Something to say to your opponent in the Arena.' },
-];
+const isTab = (v: string): boolean => SHOP_TABS.some((t) => t.id === v);
+const isHeroOrAll = (v: string): boolean => v === 'all' || (HEROES as string[]).includes(v);
 
 export function StoreScreen() {
   const mine = useCosmetics();
-  const [skins, setSkins] = useState<Skin[]>(() => realSkins());
+  const [art, setArt] = useState<Map<string, string>>(
+    () => new Map(realSkins().map((s) => [s.id, s.url])),
+  );
   useEffect(() => {
     let live = true;
     void preloadArt().then(() => {
-      if (live) setSkins(realSkins());
+      if (live) setArt(new Map(realSkins().map((s) => [s.id, s.url])));
     });
     return () => {
       live = false;
     };
   }, []);
-  // in the order the classes are shown everywhere else
-  const order = Object.keys(RIFTWALKERS);
-  // (a skin for a class the game does not have sorts last)
-  const rank = (hero: string): number => {
-    const i = order.indexOf(hero);
-    return i < 0 ? order.length : i;
+  const [tab, setTab] = useState<ShopTab>(() => remembered('sr-store-tab', 'looks', isTab));
+  const [hero, setHero] = useState<string>(() => remembered('sr-store-hero', 'all', isHeroOrAll));
+  const pickTab = (t: ShopTab): void => {
+    setTab(t);
+    remember('sr-store-tab', t);
   };
-  // (only what the Store sells: a figure with no catalog entry is not for sale)
-  const looks = [...skins]
-    .filter((s) => skinDef(s.id))
-    .sort((a, b) => rank(a.hero) - rank(b.hero) || a.id.localeCompare(b.id));
+  const pickHero = (h: string): void => {
+    setHero(h);
+    remember('sr-store-hero', h);
+  };
+
+  // the looks on sale with a figure, in class order, for the class picked
+  const looks = SKINS.filter((s) => art.has(s.id) && (hero === 'all' || s.hero === hero));
   return (
-    <main className="store">
-      <a className="btn btn--small store__back" href="#/">
-        <span>Back</span>
-      </a>
-      <header className="store__head">
-        <StoreIcon size={56} className="store__mark" />
-        <div>
-          <h1 className="store__title">Store</h1>
-          <p className="store__lead">
-            Cosmetics only: ways to make the game look like yours. Nothing in it will ever make a
-            deck stronger. Riftwalker looks are free for now.
-          </p>
-          <a className="btn btn--small" href="#/cosmetics">
-            <span>Choose your looks</span>
-          </a>
-        </div>
-      </header>
-      {looks.length > 0 && (
-        <section className="store__looks" aria-labelledby="store-looks">
-          <h2 id="store-looks" className="store__section">
-            Riftwalker looks
-          </h2>
-          <p className="store__note">
-            Other outfits for your Riftwalkers. They change how a hero looks, never how it plays.
-          </p>
-          <ul className="store__skins">
-            {looks.map((s) => (
-              <li key={s.id} className={`store__skin store__skin--${s.hero}`}>
-                <div className="store__figure">
-                  <img
-                    src={s.url}
-                    alt={`${skinName(s)}: a look for the ${className(s.hero)}`}
-                    loading="lazy"
-                  />
-                </div>
-                <b>{skinName(s)}</b>
-                <span>{className(s.hero)}</span>
-                {!mine.owned.includes(s.id) ? (
-                  <button
-                    type="button"
-                    className="btn btn--small store__get"
-                    onClick={() => getSkin(s.id)}
-                  >
-                    <span>Get (free)</span>
-                  </button>
-                ) : wornSkin(mine, s.hero) === s.id ? (
-                  <button type="button" className="btn btn--small store__wear is-on" disabled>
-                    <span>Wearing</span>
-                  </button>
-                ) : (
-                  <button
-                    type="button"
-                    className="btn btn--small store__wear"
-                    onClick={() => wear(s.hero, s.id)}
-                  >
-                    <span>Wear</span>
-                  </button>
-                )}
-              </li>
-            ))}
-          </ul>
-        </section>
+    <ShopFrame
+      page="store"
+      lead="Cosmetics only: nothing here ever makes a deck stronger. Riftwalker looks are free for now."
+      tab={tab}
+      onTab={pickTab}
+      hero={{ value: hero, onPick: pickHero, all: true }}
+    >
+      {tab !== 'looks' ? (
+        <SoonPanel tab={tab} />
+      ) : looks.length === 0 ? (
+        <SoonPanel tab="looks" text="No looks for this Riftwalker yet." />
+      ) : (
+        <ul className="shop__grid">
+          {looks.map((s) => {
+            const owned = mine.owned.includes(s.id);
+            const worn = wornSkin(mine, s.hero) === s.id;
+            const cls = RIFTWALKERS[s.hero].hero.name;
+            return (
+              <LookTile
+                key={s.id}
+                src={art.get(s.id) ?? ''}
+                name={skinName(s)}
+                sub={cls}
+                tag={worn ? 'Wearing' : owned ? 'Owned' : s.price === 0 ? 'Free' : `${s.price}`}
+                on={worn}
+                action={
+                  !owned ? (
+                    <button
+                      type="button"
+                      className="btn btn--small"
+                      aria-label={`Get ${skinName(s)} for the ${cls} (free)`}
+                      onClick={() => getSkin(s.id)}
+                    >
+                      <span>Get (free)</span>
+                    </button>
+                  ) : worn ? (
+                    <a
+                      className="btn btn--small btn--ghost"
+                      href="#/cosmetics"
+                      aria-label={`Wearing ${skinName(s)}: change looks in your Cosmetics Vault`}
+                    >
+                      <span>Wearing</span>
+                    </a>
+                  ) : (
+                    <button
+                      type="button"
+                      className="btn btn--small"
+                      aria-label={`Wear ${skinName(s)} on the ${cls}`}
+                      onClick={() => wear(s.hero, s.id)}
+                    >
+                      <span>Wear</span>
+                    </button>
+                  )
+                }
+              />
+            );
+          })}
+        </ul>
       )}
-      <ul className="store__shelves">
-        {SHELVES.filter((s) => !(looks.length > 0 && s.name === 'Riftwalker looks')).map((s) => (
-          <li key={s.name} className="store__shelf">
-            <StoreIcon size={34} />
-            <b>{s.name}</b>
-            <span>{s.text}</span>
-            <i className="store__soon">Coming soon</i>
-          </li>
-        ))}
-      </ul>
-    </main>
+    </ShopFrame>
   );
 }

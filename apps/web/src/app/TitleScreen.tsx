@@ -247,7 +247,7 @@ export function TitleScreen() {
             <StoreIcon size={36} />
             <b>Store</b>
             <small>
-              New looks for your Riftwalkers, free for now. Choose them on the Cosmetics page.
+              New looks for your Riftwalkers, free for now. What you own is in your Cosmetics Vault.
             </small>
           </a>
 

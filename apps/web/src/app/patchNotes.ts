@@ -31,8 +31,9 @@ export const PATCH_NOTES: PatchNote[] = [
   {
     version: '0.120.0',
     date: '2026-10-28',
-    title: 'The reel decides',
-    summary: 'Every chance is shown on the slider reel, with tiles that are the real odds.',
+    title: 'The reel, the Store and a new Knight',
+    summary:
+      'Every chance is shown on the slider reel with tiles that are the real odds, a redesigned Store and a Cosmetics Vault, and a new Knight.',
     notes: [
       {
         kind: 'changed',
@@ -45,6 +46,10 @@ export const PATCH_NOTES: PatchNote[] = [
       {
         kind: 'new',
         text: 'A new Knight: a man in sun armour. His looks in the Store are the Sunwarden and the Female Knight (if you had the Moonlit Regent, you have the Female Knight).',
+      },
+      {
+        kind: 'new',
+        text: 'A better Store and a Cosmetics Vault: one kind of cosmetic at a time, with its tabs and the classes in a bar that stays at the top as you scroll, and every look on a lit stage. The Vault shows what you own and the look each Riftwalker wears.',
       },
     ],
   },
