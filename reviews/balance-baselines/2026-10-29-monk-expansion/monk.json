@@ -1,0 +1,2915 @@
+{
+  "takenAt": "2026-10-29",
+  "commit": "780256c3bfa137f5fa73a26443a9bf405bdb8ad3",
+  "dirty": [
+    "?? src/_ids.ts"
+  ],
+  "hero": {
+    "id": "monk",
+    "name": "Monk",
+    "maxHp": 82,
+    "mana": 3,
+    "handSize": 5
+  },
+  "trait": {
+    "name": "Martial Forms",
+    "text": "You fight in a form, starting in Current. Once each turn, completing your form's technique gives 1 Mastery and 3 Barrier.",
+    "forms": "current",
+    "triggers": [
+      {
+        "op": "power",
+        "when": "technique",
+        "ops": [
+          {
+            "op": "barrier",
+            "amount": 3,
+            "to": "self"
+          }
+        ]
+      }
+    ]
+  },
+  "starter": [
+    "strike",
+    "strike",
+    "strike",
+    "defend",
+    "defend",
+    "defend",
+    "still-guard",
+    "planted-heel",
+    "kindle-fury",
+    "turning-palm"
+  ],
+  "rewardEligible": 51,
+  "cards": [
+    {
+      "id": "kindle-fury",
+      "name": "Kindle Strike",
+      "realm": "aurelion",
+      "rarity": "basic",
+      "kind": "attack",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "spend",
+          "status": "mastery",
+          "amount": 1
+        },
+        {
+          "op": "damage",
+          "amount": 6,
+          "to": "target",
+          "scale": {
+            "by": "masterySpent",
+            "mult": 4
+          }
+        }
+      ],
+      "hero": "monk",
+      "tags": [
+        "striking"
+      ],
+      "upgrade": "kindle-fury+"
+    },
+    {
+      "id": "kindle-fury+",
+      "name": "Kindle Strike+",
+      "realm": "aurelion",
+      "rarity": "basic",
+      "kind": "attack",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "spend",
+          "status": "mastery",
+          "amount": 1
+        },
+        {
+          "op": "damage",
+          "amount": 9,
+          "to": "target",
+          "scale": {
+            "by": "masterySpent",
+            "mult": 4
+          }
+        }
+      ],
+      "hero": "monk",
+      "tags": [
+        "striking"
+      ]
+    },
+    {
+      "id": "still-guard",
+      "name": "Still Guard",
+      "realm": "aurelion",
+      "rarity": "basic",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 6,
+          "to": "self"
+        }
+      ],
+      "hero": "monk",
+      "tags": [
+        "defensive"
+      ],
+      "upgrade": "still-guard+"
+    },
+    {
+      "id": "still-guard+",
+      "name": "Still Guard+",
+      "realm": "aurelion",
+      "rarity": "basic",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 8,
+          "to": "self"
+        }
+      ],
+      "hero": "monk",
+      "tags": [
+        "defensive"
+      ]
+    },
+    {
+      "id": "settle-the-root",
+      "name": "Settle into Root",
+      "realm": "aurelion",
+      "rarity": "common",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 7,
+          "to": "self"
+        },
+        {
+          "op": "form",
+          "form": "root"
+        }
+      ],
+      "hero": "monk",
+      "upgrade": "settle-the-root+"
+    },
+    {
+      "id": "settle-the-root+",
+      "name": "Settle into Root+",
+      "realm": "aurelion",
+      "rarity": "common",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 10,
+          "to": "self"
+        },
+        {
+          "op": "form",
+          "form": "root"
+        }
+      ],
+      "hero": "monk"
+    },
+    {
+      "id": "find-the-current",
+      "name": "Find the Current",
+      "realm": "aurelion",
+      "rarity": "common",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 2,
+          "to": "self"
+        },
+        {
+          "op": "draw",
+          "amount": 2
+        },
+        {
+          "op": "form",
+          "form": "current"
+        }
+      ],
+      "hero": "monk",
+      "upgrade": "find-the-current+"
+    },
+    {
+      "id": "find-the-current+",
+      "name": "Find the Current+",
+      "realm": "aurelion",
+      "rarity": "common",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 5,
+          "to": "self"
+        },
+        {
+          "op": "draw",
+          "amount": 2
+        },
+        {
+          "op": "form",
+          "form": "current"
+        }
+      ],
+      "hero": "monk"
+    },
+    {
+      "id": "stoke-the-ember",
+      "name": "Stoke the Ember",
+      "realm": "aurelion",
+      "rarity": "common",
+      "kind": "attack",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 7,
+          "to": "target"
+        },
+        {
+          "op": "status",
+          "status": "exposed",
+          "amount": 1,
+          "to": "target"
+        },
+        {
+          "op": "form",
+          "form": "ember"
+        }
+      ],
+      "hero": "monk",
+      "upgrade": "stoke-the-ember+"
+    },
+    {
+      "id": "stoke-the-ember+",
+      "name": "Stoke the Ember+",
+      "realm": "aurelion",
+      "rarity": "common",
+      "kind": "attack",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 10,
+          "to": "target"
+        },
+        {
+          "op": "status",
+          "status": "exposed",
+          "amount": 1,
+          "to": "target"
+        },
+        {
+          "op": "form",
+          "form": "ember"
+        }
+      ],
+      "hero": "monk"
+    },
+    {
+      "id": "read-the-rhythm",
+      "name": "Read the Rhythm",
+      "realm": "aurelion",
+      "rarity": "uncommon",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 4,
+          "to": "self"
+        },
+        {
+          "op": "scry",
+          "amount": 3
+        },
+        {
+          "op": "form",
+          "form": "*"
+        }
+      ],
+      "hero": "monk",
+      "upgrade": "read-the-rhythm+"
+    },
+    {
+      "id": "read-the-rhythm+",
+      "name": "Read the Rhythm+",
+      "realm": "aurelion",
+      "rarity": "uncommon",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 7,
+          "to": "self"
+        },
+        {
+          "op": "scry",
+          "amount": 3
+        },
+        {
+          "op": "form",
+          "form": "*"
+        }
+      ],
+      "hero": "monk"
+    },
+    {
+      "id": "inner-sight",
+      "name": "Inner Sight",
+      "realm": "aurelion",
+      "rarity": "uncommon",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 5,
+          "to": "self"
+        },
+        {
+          "op": "scry",
+          "amount": 4
+        }
+      ],
+      "hero": "monk",
+      "upgrade": "inner-sight+"
+    },
+    {
+      "id": "inner-sight+",
+      "name": "Inner Sight+",
+      "realm": "aurelion",
+      "rarity": "uncommon",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 8,
+          "to": "self"
+        },
+        {
+          "op": "scry",
+          "amount": 4
+        }
+      ],
+      "hero": "monk"
+    },
+    {
+      "id": "deep-breath",
+      "name": "Gather Breath",
+      "realm": "aurelion",
+      "rarity": "uncommon",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "manaNext",
+          "amount": 2
+        },
+        {
+          "op": "draw",
+          "amount": 2
+        }
+      ],
+      "hero": "monk",
+      "exhaust": true,
+      "upgrade": "deep-breath+"
+    },
+    {
+      "id": "deep-breath+",
+      "name": "Gather Breath+",
+      "realm": "aurelion",
+      "rarity": "uncommon",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "manaNext",
+          "amount": 2
+        },
+        {
+          "op": "draw",
+          "amount": 3
+        }
+      ],
+      "hero": "monk",
+      "exhaust": true
+    },
+    {
+      "id": "held-breath",
+      "name": "Held Breath",
+      "realm": "aurelion",
+      "rarity": "uncommon",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 7,
+          "to": "self"
+        },
+        {
+          "op": "status",
+          "status": "holdfast",
+          "amount": 1,
+          "to": "self"
+        }
+      ],
+      "hero": "monk",
+      "upgrade": "held-breath+"
+    },
+    {
+      "id": "held-breath+",
+      "name": "Held Breath+",
+      "realm": "aurelion",
+      "rarity": "uncommon",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 10,
+          "to": "self"
+        },
+        {
+          "op": "status",
+          "status": "holdfast",
+          "amount": 1,
+          "to": "self"
+        }
+      ],
+      "hero": "monk"
+    },
+    {
+      "id": "cornered-beast",
+      "name": "Coiled Serpent",
+      "realm": "aurelion",
+      "rarity": "uncommon",
+      "kind": "snare",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 9,
+          "to": "attacker"
+        },
+        {
+          "op": "barrier",
+          "amount": 4,
+          "to": "self"
+        },
+        {
+          "op": "status",
+          "status": "mastery",
+          "amount": 1,
+          "to": "self"
+        }
+      ],
+      "hero": "monk",
+      "trigger": {
+        "on": "hpLost",
+        "min": 5
+      },
+      "upgrade": "cornered-beast+"
+    },
+    {
+      "id": "cornered-beast+",
+      "name": "Coiled Serpent+",
+      "realm": "aurelion",
+      "rarity": "uncommon",
+      "kind": "snare",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 12,
+          "to": "attacker"
+        },
+        {
+          "op": "barrier",
+          "amount": 4,
+          "to": "self"
+        },
+        {
+          "op": "status",
+          "status": "mastery",
+          "amount": 1,
+          "to": "self"
+        }
+      ],
+      "hero": "monk",
+      "trigger": {
+        "on": "hpLost",
+        "min": 5
+      }
+    },
+    {
+      "id": "scrawl",
+      "name": "Flood of Visions",
+      "realm": "aurelion",
+      "rarity": "rare",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "draw",
+          "amount": 5
+        }
+      ],
+      "hero": "monk",
+      "exhaust": true,
+      "upgrade": "scrawl+"
+    },
+    {
+      "id": "scrawl+",
+      "name": "Flood of Visions+",
+      "realm": "aurelion",
+      "rarity": "rare",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "draw",
+          "amount": 6
+        }
+      ],
+      "hero": "monk",
+      "exhaust": true
+    },
+    {
+      "id": "perfected-motion",
+      "name": "Perfected Motion",
+      "realm": "aurelion",
+      "rarity": "rare",
+      "kind": "power",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "power",
+          "when": "technique",
+          "ops": [
+            {
+              "op": "draw",
+              "amount": 1
+            },
+            {
+              "op": "barrier",
+              "amount": 3,
+              "to": "self"
+            }
+          ]
+        }
+      ],
+      "hero": "monk",
+      "upgrade": "perfected-motion+"
+    },
+    {
+      "id": "perfected-motion+",
+      "name": "Perfected Motion+",
+      "realm": "aurelion",
+      "rarity": "rare",
+      "kind": "power",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "power",
+          "when": "technique",
+          "ops": [
+            {
+              "op": "draw",
+              "amount": 1
+            },
+            {
+              "op": "barrier",
+              "amount": 3,
+              "to": "self"
+            }
+          ]
+        }
+      ],
+      "hero": "monk",
+      "innate": true
+    },
+    {
+      "id": "grandmasters-patience",
+      "name": "Grandmaster's Patience",
+      "realm": "aurelion",
+      "rarity": "rare",
+      "kind": "power",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "power",
+          "when": "turnStart",
+          "ops": [
+            {
+              "op": "when",
+              "by": "mastery",
+              "atLeast": 3,
+              "ops": [
+                {
+                  "op": "barrier",
+                  "amount": 6,
+                  "to": "self"
+                },
+                {
+                  "op": "damage",
+                  "amount": 6,
+                  "to": "allFoes"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "hero": "monk",
+      "upgrade": "grandmasters-patience+"
+    },
+    {
+      "id": "grandmasters-patience+",
+      "name": "Grandmaster's Patience+",
+      "realm": "aurelion",
+      "rarity": "rare",
+      "kind": "power",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "power",
+          "when": "turnStart",
+          "ops": [
+            {
+              "op": "when",
+              "by": "mastery",
+              "atLeast": 3,
+              "ops": [
+                {
+                  "op": "barrier",
+                  "amount": 8,
+                  "to": "self"
+                },
+                {
+                  "op": "damage",
+                  "amount": 8,
+                  "to": "allFoes"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "hero": "monk"
+    },
+    {
+      "id": "planted-heel",
+      "name": "Planted Heel",
+      "realm": "aurelion",
+      "rarity": "common",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 6,
+          "to": "self"
+        },
+        {
+          "op": "when",
+          "by": "techniquesTurn",
+          "atMost": 0,
+          "ops": [
+            {
+              "op": "barrier",
+              "amount": 2,
+              "to": "self"
+            }
+          ]
+        }
+      ],
+      "hero": "monk",
+      "tags": [
+        "defensive"
+      ],
+      "upgrade": "planted-heel+"
+    },
+    {
+      "id": "planted-heel+",
+      "name": "Planted Heel+",
+      "realm": "aurelion",
+      "rarity": "common",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 8,
+          "to": "self"
+        },
+        {
+          "op": "when",
+          "by": "techniquesTurn",
+          "atMost": 0,
+          "ops": [
+            {
+              "op": "barrier",
+              "amount": 2,
+              "to": "self"
+            }
+          ]
+        }
+      ],
+      "hero": "monk",
+      "tags": [
+        "defensive"
+      ]
+    },
+    {
+      "id": "iron-shirt",
+      "name": "Iron Shirt",
+      "realm": "aurelion",
+      "rarity": "common",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 8,
+          "to": "self"
+        }
+      ],
+      "hero": "monk",
+      "tags": [
+        "defensive"
+      ],
+      "upgrade": "iron-shirt+"
+    },
+    {
+      "id": "iron-shirt+",
+      "name": "Iron Shirt+",
+      "realm": "aurelion",
+      "rarity": "common",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 11,
+          "to": "self"
+        }
+      ],
+      "hero": "monk",
+      "tags": [
+        "defensive"
+      ]
+    },
+    {
+      "id": "centre-yourself",
+      "name": "Centre Yourself",
+      "realm": "aurelion",
+      "rarity": "common",
+      "kind": "skill",
+      "cost": 0,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 5,
+          "to": "self"
+        }
+      ],
+      "hero": "monk",
+      "tags": [
+        "defensive"
+      ],
+      "upgrade": "centre-yourself+"
+    },
+    {
+      "id": "centre-yourself+",
+      "name": "Centre Yourself+",
+      "realm": "aurelion",
+      "rarity": "common",
+      "kind": "skill",
+      "cost": 0,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 7,
+          "to": "self"
+        }
+      ],
+      "hero": "monk",
+      "tags": [
+        "defensive"
+      ]
+    },
+    {
+      "id": "bowing-low",
+      "name": "Bowing Low",
+      "realm": "aurelion",
+      "rarity": "common",
+      "kind": "skill",
+      "cost": 0,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 3,
+          "to": "self"
+        },
+        {
+          "op": "scry",
+          "amount": 1
+        }
+      ],
+      "hero": "monk",
+      "tags": [
+        "defensive"
+      ],
+      "exhaust": true,
+      "upgrade": "bowing-low+"
+    },
+    {
+      "id": "bowing-low+",
+      "name": "Bowing Low+",
+      "realm": "aurelion",
+      "rarity": "common",
+      "kind": "skill",
+      "cost": 0,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 5,
+          "to": "self"
+        },
+        {
+          "op": "scry",
+          "amount": 1
+        }
+      ],
+      "hero": "monk",
+      "tags": [
+        "defensive"
+      ],
+      "exhaust": true
+    },
+    {
+      "id": "rooted-resolve",
+      "name": "Rooted Resolve",
+      "realm": "aurelion",
+      "rarity": "uncommon",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 7,
+          "to": "self"
+        },
+        {
+          "op": "spend",
+          "status": "mastery",
+          "amount": 1
+        },
+        {
+          "op": "when",
+          "by": "masterySpent",
+          "atLeast": 1,
+          "ops": [
+            {
+              "op": "barrier",
+              "amount": 2,
+              "to": "self"
+            },
+            {
+              "op": "draw",
+              "amount": 1
+            }
+          ]
+        }
+      ],
+      "hero": "monk",
+      "tags": [
+        "defensive"
+      ],
+      "upgrade": "rooted-resolve+"
+    },
+    {
+      "id": "rooted-resolve+",
+      "name": "Rooted Resolve+",
+      "realm": "aurelion",
+      "rarity": "uncommon",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 10,
+          "to": "self"
+        },
+        {
+          "op": "spend",
+          "status": "mastery",
+          "amount": 1
+        },
+        {
+          "op": "when",
+          "by": "masterySpent",
+          "atLeast": 1,
+          "ops": [
+            {
+              "op": "barrier",
+              "amount": 2,
+              "to": "self"
+            },
+            {
+              "op": "draw",
+              "amount": 1
+            }
+          ]
+        }
+      ],
+      "hero": "monk",
+      "tags": [
+        "defensive"
+      ]
+    },
+    {
+      "id": "shield-of-faith",
+      "name": "Shield of Calm",
+      "realm": "aurelion",
+      "rarity": "uncommon",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "spend",
+          "status": "mastery",
+          "amount": 1
+        },
+        {
+          "op": "barrier",
+          "amount": 7,
+          "to": "self",
+          "scale": {
+            "by": "masterySpent",
+            "mult": 4
+          }
+        }
+      ],
+      "hero": "monk",
+      "tags": [
+        "defensive"
+      ],
+      "upgrade": "shield-of-faith+"
+    },
+    {
+      "id": "shield-of-faith+",
+      "name": "Shield of Calm+",
+      "realm": "aurelion",
+      "rarity": "uncommon",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "spend",
+          "status": "mastery",
+          "amount": 1
+        },
+        {
+          "op": "barrier",
+          "amount": 10,
+          "to": "self",
+          "scale": {
+            "by": "masterySpent",
+            "mult": 4
+          }
+        }
+      ],
+      "hero": "monk",
+      "tags": [
+        "defensive"
+      ]
+    },
+    {
+      "id": "still-water",
+      "name": "Still Water",
+      "realm": "aurelion",
+      "rarity": "uncommon",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 8,
+          "to": "self"
+        },
+        {
+          "op": "when",
+          "by": "techniquesTurn",
+          "atLeast": 1,
+          "ops": [
+            {
+              "op": "draw",
+              "amount": 1
+            }
+          ]
+        }
+      ],
+      "hero": "monk",
+      "tags": [
+        "defensive"
+      ],
+      "upgrade": "still-water+"
+    },
+    {
+      "id": "still-water+",
+      "name": "Still Water+",
+      "realm": "aurelion",
+      "rarity": "uncommon",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 11,
+          "to": "self"
+        },
+        {
+          "op": "when",
+          "by": "techniquesTurn",
+          "atLeast": 1,
+          "ops": [
+            {
+              "op": "draw",
+              "amount": 1
+            }
+          ]
+        }
+      ],
+      "hero": "monk",
+      "tags": [
+        "defensive"
+      ]
+    },
+    {
+      "id": "perfect-calm",
+      "name": "Perfect Calm",
+      "realm": "aurelion",
+      "rarity": "rare",
+      "kind": "skill",
+      "cost": 2,
+      "target": "none",
+      "effects": [
+        {
+          "op": "spend",
+          "status": "mastery",
+          "amount": 2
+        },
+        {
+          "op": "barrier",
+          "amount": 14,
+          "to": "self",
+          "scale": {
+            "by": "masterySpent",
+            "mult": 4
+          }
+        }
+      ],
+      "hero": "monk",
+      "tags": [
+        "defensive"
+      ],
+      "upgrade": "perfect-calm+"
+    },
+    {
+      "id": "perfect-calm+",
+      "name": "Perfect Calm+",
+      "realm": "aurelion",
+      "rarity": "rare",
+      "kind": "skill",
+      "cost": 2,
+      "target": "none",
+      "effects": [
+        {
+          "op": "spend",
+          "status": "mastery",
+          "amount": 2
+        },
+        {
+          "op": "barrier",
+          "amount": 18,
+          "to": "self",
+          "scale": {
+            "by": "masterySpent",
+            "mult": 4
+          }
+        }
+      ],
+      "hero": "monk",
+      "tags": [
+        "defensive"
+      ]
+    },
+    {
+      "id": "spirit-shield",
+      "name": "Mountain's Stillness",
+      "realm": "aurelion",
+      "rarity": "rare",
+      "kind": "skill",
+      "cost": 2,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 8,
+          "to": "self",
+          "scale": {
+            "by": "hand",
+            "mult": 3
+          }
+        }
+      ],
+      "hero": "monk",
+      "tags": [
+        "defensive"
+      ],
+      "upgrade": "spirit-shield+"
+    },
+    {
+      "id": "spirit-shield+",
+      "name": "Mountain's Stillness+",
+      "realm": "aurelion",
+      "rarity": "rare",
+      "kind": "skill",
+      "cost": 2,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 11,
+          "to": "self",
+          "scale": {
+            "by": "hand",
+            "mult": 3
+          }
+        }
+      ],
+      "hero": "monk",
+      "tags": [
+        "defensive"
+      ]
+    },
+    {
+      "id": "unbroken-calm",
+      "name": "Unbroken Calm",
+      "realm": "aurelion",
+      "rarity": "rare",
+      "kind": "power",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "power",
+          "when": "turnStart",
+          "ops": [
+            {
+              "op": "barrier",
+              "amount": 3,
+              "to": "self"
+            },
+            {
+              "op": "when",
+              "by": "inRoot",
+              "atLeast": 1,
+              "ops": [
+                {
+                  "op": "draw",
+                  "amount": 1
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "hero": "monk",
+      "upgrade": "unbroken-calm+"
+    },
+    {
+      "id": "unbroken-calm+",
+      "name": "Unbroken Calm+",
+      "realm": "aurelion",
+      "rarity": "rare",
+      "kind": "power",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "power",
+          "when": "turnStart",
+          "ops": [
+            {
+              "op": "barrier",
+              "amount": 4,
+              "to": "self"
+            },
+            {
+              "op": "when",
+              "by": "inRoot",
+              "atLeast": 1,
+              "ops": [
+                {
+                  "op": "draw",
+                  "amount": 1
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "hero": "monk"
+    },
+    {
+      "id": "breath-between-blows",
+      "name": "Breath Between Blows",
+      "realm": "aurelion",
+      "rarity": "rare",
+      "kind": "power",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "power",
+          "when": "play",
+          "ops": [
+            {
+              "op": "barrier",
+              "amount": 3,
+              "to": "self"
+            }
+          ],
+          "tag": "defensive"
+        }
+      ],
+      "hero": "monk",
+      "upgrade": "breath-between-blows+"
+    },
+    {
+      "id": "breath-between-blows+",
+      "name": "Breath Between Blows+",
+      "realm": "aurelion",
+      "rarity": "rare",
+      "kind": "power",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "power",
+          "when": "play",
+          "ops": [
+            {
+              "op": "barrier",
+              "amount": 4,
+              "to": "self"
+            }
+          ],
+          "tag": "defensive"
+        }
+      ],
+      "hero": "monk"
+    },
+    {
+      "id": "deflecting-palm",
+      "name": "Deflecting Palm",
+      "realm": "aurelion",
+      "rarity": "common",
+      "kind": "attack",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 4,
+          "to": "target"
+        },
+        {
+          "op": "barrier",
+          "amount": 5,
+          "to": "self"
+        }
+      ],
+      "hero": "monk",
+      "tags": [
+        "defensive"
+      ],
+      "upgrade": "deflecting-palm+"
+    },
+    {
+      "id": "deflecting-palm+",
+      "name": "Deflecting Palm+",
+      "realm": "aurelion",
+      "rarity": "common",
+      "kind": "attack",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 7,
+          "to": "target"
+        },
+        {
+          "op": "barrier",
+          "amount": 5,
+          "to": "self"
+        }
+      ],
+      "hero": "monk",
+      "tags": [
+        "defensive"
+      ]
+    },
+    {
+      "id": "swift-step",
+      "name": "Swift Step",
+      "realm": "aurelion",
+      "rarity": "common",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 6,
+          "to": "self"
+        },
+        {
+          "op": "draw",
+          "amount": 1
+        }
+      ],
+      "hero": "monk",
+      "tags": [
+        "defensive"
+      ],
+      "upgrade": "swift-step+"
+    },
+    {
+      "id": "swift-step+",
+      "name": "Swift Step+",
+      "realm": "aurelion",
+      "rarity": "common",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 9,
+          "to": "self"
+        },
+        {
+          "op": "draw",
+          "amount": 1
+        }
+      ],
+      "hero": "monk",
+      "tags": [
+        "defensive"
+      ]
+    },
+    {
+      "id": "flowing-step",
+      "name": "Flowing Step",
+      "realm": "aurelion",
+      "rarity": "common",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 6,
+          "to": "self"
+        },
+        {
+          "op": "when",
+          "by": "inCurrent",
+          "atLeast": 1,
+          "ops": [
+            {
+              "op": "draw",
+              "amount": 1
+            }
+          ]
+        }
+      ],
+      "hero": "monk",
+      "tags": [
+        "defensive"
+      ],
+      "upgrade": "flowing-step+"
+    },
+    {
+      "id": "flowing-step+",
+      "name": "Flowing Step+",
+      "realm": "aurelion",
+      "rarity": "common",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 9,
+          "to": "self"
+        },
+        {
+          "op": "when",
+          "by": "inCurrent",
+          "atLeast": 1,
+          "ops": [
+            {
+              "op": "draw",
+              "amount": 1
+            }
+          ]
+        }
+      ],
+      "hero": "monk",
+      "tags": [
+        "defensive"
+      ]
+    },
+    {
+      "id": "vigilance",
+      "name": "Vigilance",
+      "realm": "aurelion",
+      "rarity": "common",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 5,
+          "to": "self"
+        },
+        {
+          "op": "scry",
+          "amount": 2
+        }
+      ],
+      "hero": "monk",
+      "tags": [
+        "defensive"
+      ],
+      "upgrade": "vigilance+"
+    },
+    {
+      "id": "vigilance+",
+      "name": "Vigilance+",
+      "realm": "aurelion",
+      "rarity": "common",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 8,
+          "to": "self"
+        },
+        {
+          "op": "scry",
+          "amount": 2
+        }
+      ],
+      "hero": "monk",
+      "tags": [
+        "defensive"
+      ]
+    },
+    {
+      "id": "turning-palm",
+      "name": "Turning Palm",
+      "realm": "aurelion",
+      "rarity": "common",
+      "kind": "attack",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 7,
+          "to": "target"
+        },
+        {
+          "op": "when",
+          "by": "defensiveTurn",
+          "atLeast": 1,
+          "ops": [
+            {
+              "op": "damage",
+              "amount": 4,
+              "to": "target"
+            }
+          ]
+        }
+      ],
+      "hero": "monk",
+      "tags": [
+        "striking"
+      ],
+      "upgrade": "turning-palm+"
+    },
+    {
+      "id": "turning-palm+",
+      "name": "Turning Palm+",
+      "realm": "aurelion",
+      "rarity": "common",
+      "kind": "attack",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 10,
+          "to": "target"
+        },
+        {
+          "op": "when",
+          "by": "defensiveTurn",
+          "atLeast": 1,
+          "ops": [
+            {
+              "op": "damage",
+              "amount": 4,
+              "to": "target"
+            }
+          ]
+        }
+      ],
+      "hero": "monk",
+      "tags": [
+        "striking"
+      ]
+    },
+    {
+      "id": "redirect",
+      "name": "Redirect",
+      "realm": "aurelion",
+      "rarity": "common",
+      "kind": "attack",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 6,
+          "to": "target"
+        },
+        {
+          "op": "when",
+          "by": "defensiveTurn",
+          "atLeast": 1,
+          "ops": [
+            {
+              "op": "barrier",
+              "amount": 4,
+              "to": "self"
+            }
+          ]
+        }
+      ],
+      "hero": "monk",
+      "tags": [
+        "striking"
+      ],
+      "upgrade": "redirect+"
+    },
+    {
+      "id": "redirect+",
+      "name": "Redirect+",
+      "realm": "aurelion",
+      "rarity": "common",
+      "kind": "attack",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 9,
+          "to": "target"
+        },
+        {
+          "op": "when",
+          "by": "defensiveTurn",
+          "atLeast": 1,
+          "ops": [
+            {
+              "op": "barrier",
+              "amount": 4,
+              "to": "self"
+            }
+          ]
+        }
+      ],
+      "hero": "monk",
+      "tags": [
+        "striking"
+      ]
+    },
+    {
+      "id": "fearless",
+      "name": "Fearless",
+      "realm": "aurelion",
+      "rarity": "uncommon",
+      "kind": "attack",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 6,
+          "to": "target"
+        },
+        {
+          "op": "barrier",
+          "amount": 4,
+          "to": "self"
+        }
+      ],
+      "hero": "monk",
+      "tags": [
+        "striking"
+      ],
+      "upgrade": "fearless+"
+    },
+    {
+      "id": "fearless+",
+      "name": "Fearless+",
+      "realm": "aurelion",
+      "rarity": "uncommon",
+      "kind": "attack",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 9,
+          "to": "target"
+        },
+        {
+          "op": "barrier",
+          "amount": 4,
+          "to": "self"
+        }
+      ],
+      "hero": "monk",
+      "tags": [
+        "striking"
+      ]
+    },
+    {
+      "id": "open-palm",
+      "name": "Open Palm",
+      "realm": "aurelion",
+      "rarity": "uncommon",
+      "kind": "attack",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 5,
+          "hits": 2,
+          "to": "target"
+        }
+      ],
+      "hero": "monk",
+      "tags": [
+        "striking"
+      ],
+      "upgrade": "open-palm+"
+    },
+    {
+      "id": "open-palm+",
+      "name": "Open Palm+",
+      "realm": "aurelion",
+      "rarity": "uncommon",
+      "kind": "attack",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 6,
+          "hits": 2,
+          "to": "target"
+        }
+      ],
+      "hero": "monk",
+      "tags": [
+        "striking"
+      ]
+    },
+    {
+      "id": "foretold-flame",
+      "name": "Foretold Flame",
+      "realm": "aurelion",
+      "rarity": "uncommon",
+      "kind": "attack",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "spend",
+          "status": "mastery",
+          "amount": 2
+        },
+        {
+          "op": "damage",
+          "amount": 5,
+          "to": "target",
+          "scale": {
+            "by": "masterySpent",
+            "mult": 3
+          }
+        },
+        {
+          "op": "scry",
+          "amount": 2
+        }
+      ],
+      "hero": "monk",
+      "tags": [
+        "striking"
+      ],
+      "upgrade": "foretold-flame+"
+    },
+    {
+      "id": "foretold-flame+",
+      "name": "Foretold Flame+",
+      "realm": "aurelion",
+      "rarity": "uncommon",
+      "kind": "attack",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "spend",
+          "status": "mastery",
+          "amount": 2
+        },
+        {
+          "op": "damage",
+          "amount": 8,
+          "to": "target",
+          "scale": {
+            "by": "masterySpent",
+            "mult": 3
+          }
+        },
+        {
+          "op": "scry",
+          "amount": 2
+        }
+      ],
+      "hero": "monk",
+      "tags": [
+        "striking"
+      ]
+    },
+    {
+      "id": "river-turns",
+      "name": "The River Turns",
+      "realm": "aurelion",
+      "rarity": "uncommon",
+      "kind": "power",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "power",
+          "when": "play",
+          "ops": [
+            {
+              "op": "barrier",
+              "amount": 1,
+              "to": "self"
+            }
+          ],
+          "tag": "defensive"
+        },
+        {
+          "op": "power",
+          "when": "play",
+          "ops": [
+            {
+              "op": "damage",
+              "amount": 2,
+              "to": "randomFoe"
+            }
+          ],
+          "tag": "striking"
+        }
+      ],
+      "hero": "monk",
+      "upgrade": "river-turns+"
+    },
+    {
+      "id": "river-turns+",
+      "name": "The River Turns+",
+      "realm": "aurelion",
+      "rarity": "uncommon",
+      "kind": "power",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "power",
+          "when": "play",
+          "ops": [
+            {
+              "op": "barrier",
+              "amount": 1,
+              "to": "self"
+            }
+          ],
+          "tag": "defensive"
+        },
+        {
+          "op": "power",
+          "when": "play",
+          "ops": [
+            {
+              "op": "damage",
+              "amount": 3,
+              "to": "randomFoe"
+            }
+          ],
+          "tag": "striking"
+        }
+      ],
+      "hero": "monk"
+    },
+    {
+      "id": "unmoved-mind",
+      "name": "Unmoved Mind",
+      "realm": "aurelion",
+      "rarity": "uncommon",
+      "kind": "power",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "power",
+          "when": "technique",
+          "ops": [
+            {
+              "op": "damage",
+              "amount": 4,
+              "to": "allFoes"
+            }
+          ]
+        }
+      ],
+      "hero": "monk",
+      "upgrade": "unmoved-mind+"
+    },
+    {
+      "id": "unmoved-mind+",
+      "name": "Unmoved Mind+",
+      "realm": "aurelion",
+      "rarity": "uncommon",
+      "kind": "power",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "power",
+          "when": "technique",
+          "ops": [
+            {
+              "op": "damage",
+              "amount": 5,
+              "to": "allFoes"
+            }
+          ]
+        }
+      ],
+      "hero": "monk"
+    },
+    {
+      "id": "wreath-of-flame",
+      "name": "Wreath of Flame",
+      "realm": "aurelion",
+      "rarity": "uncommon",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 6,
+          "to": "self"
+        },
+        {
+          "op": "draw",
+          "amount": 1
+        },
+        {
+          "op": "when",
+          "by": "techniqueDone",
+          "atLeast": 1,
+          "ops": [
+            {
+              "op": "status",
+              "status": "mastery",
+              "amount": 1,
+              "to": "self"
+            }
+          ]
+        }
+      ],
+      "hero": "monk",
+      "upgrade": "wreath-of-flame+"
+    },
+    {
+      "id": "wreath-of-flame+",
+      "name": "Wreath of Flame+",
+      "realm": "aurelion",
+      "rarity": "uncommon",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 9,
+          "to": "self"
+        },
+        {
+          "op": "draw",
+          "amount": 1
+        },
+        {
+          "op": "when",
+          "by": "techniqueDone",
+          "atLeast": 1,
+          "ops": [
+            {
+              "op": "status",
+              "status": "mastery",
+              "amount": 1,
+              "to": "self"
+            }
+          ]
+        }
+      ],
+      "hero": "monk"
+    },
+    {
+      "id": "ember-step",
+      "name": "Ember Step",
+      "realm": "aurelion",
+      "rarity": "common",
+      "kind": "attack",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 7,
+          "to": "target"
+        },
+        {
+          "op": "status",
+          "status": "exposed",
+          "amount": 1,
+          "to": "target"
+        }
+      ],
+      "hero": "monk",
+      "tags": [
+        "striking"
+      ],
+      "upgrade": "ember-step+"
+    },
+    {
+      "id": "ember-step+",
+      "name": "Ember Step+",
+      "realm": "aurelion",
+      "rarity": "common",
+      "kind": "attack",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 10,
+          "to": "target"
+        },
+        {
+          "op": "status",
+          "status": "exposed",
+          "amount": 1,
+          "to": "target"
+        }
+      ],
+      "hero": "monk",
+      "tags": [
+        "striking"
+      ]
+    },
+    {
+      "id": "crushing-palm",
+      "name": "Crushing Palm",
+      "realm": "aurelion",
+      "rarity": "common",
+      "kind": "attack",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 8,
+          "to": "target"
+        },
+        {
+          "op": "status",
+          "status": "faltering",
+          "amount": 1,
+          "to": "target"
+        }
+      ],
+      "hero": "monk",
+      "tags": [
+        "striking"
+      ],
+      "upgrade": "crushing-palm+"
+    },
+    {
+      "id": "crushing-palm+",
+      "name": "Crushing Palm+",
+      "realm": "aurelion",
+      "rarity": "common",
+      "kind": "attack",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 11,
+          "to": "target"
+        },
+        {
+          "op": "status",
+          "status": "faltering",
+          "amount": 1,
+          "to": "target"
+        }
+      ],
+      "hero": "monk",
+      "tags": [
+        "striking"
+      ]
+    },
+    {
+      "id": "flurry-of-palms",
+      "name": "Flurry of Palms",
+      "realm": "aurelion",
+      "rarity": "common",
+      "kind": "attack",
+      "cost": 0,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 3,
+          "hits": 2,
+          "to": "target"
+        }
+      ],
+      "hero": "monk",
+      "tags": [
+        "striking"
+      ],
+      "upgrade": "flurry-of-palms+"
+    },
+    {
+      "id": "flurry-of-palms+",
+      "name": "Flurry of Palms+",
+      "realm": "aurelion",
+      "rarity": "common",
+      "kind": "attack",
+      "cost": 0,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 4,
+          "hits": 2,
+          "to": "target"
+        }
+      ],
+      "hero": "monk",
+      "tags": [
+        "striking"
+      ]
+    },
+    {
+      "id": "quick-palms",
+      "name": "Quick Palms",
+      "realm": "aurelion",
+      "rarity": "common",
+      "kind": "attack",
+      "cost": 0,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 6,
+          "to": "target"
+        }
+      ],
+      "hero": "monk",
+      "tags": [
+        "striking"
+      ],
+      "upgrade": "quick-palms+"
+    },
+    {
+      "id": "quick-palms+",
+      "name": "Quick Palms+",
+      "realm": "aurelion",
+      "rarity": "common",
+      "kind": "attack",
+      "cost": 0,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 8,
+          "to": "target"
+        }
+      ],
+      "hero": "monk",
+      "tags": [
+        "striking"
+      ]
+    },
+    {
+      "id": "sunlit-blade",
+      "name": "Sunlit Kick",
+      "realm": "aurelion",
+      "rarity": "common",
+      "kind": "attack",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 9,
+          "to": "target"
+        }
+      ],
+      "hero": "monk",
+      "tags": [
+        "striking"
+      ],
+      "upgrade": "sunlit-blade+"
+    },
+    {
+      "id": "sunlit-blade+",
+      "name": "Sunlit Kick+",
+      "realm": "aurelion",
+      "rarity": "common",
+      "kind": "attack",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 12,
+          "to": "target"
+        }
+      ],
+      "hero": "monk",
+      "tags": [
+        "striking"
+      ]
+    },
+    {
+      "id": "focused-strike",
+      "name": "Focused Strike",
+      "realm": "aurelion",
+      "rarity": "common",
+      "kind": "attack",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 8,
+          "to": "target"
+        },
+        {
+          "op": "when",
+          "by": "inEmber",
+          "atLeast": 1,
+          "ops": [
+            {
+              "op": "damage",
+              "amount": 3,
+              "to": "target"
+            }
+          ]
+        }
+      ],
+      "hero": "monk",
+      "tags": [
+        "striking"
+      ],
+      "upgrade": "focused-strike+"
+    },
+    {
+      "id": "focused-strike+",
+      "name": "Focused Strike+",
+      "realm": "aurelion",
+      "rarity": "common",
+      "kind": "attack",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 11,
+          "to": "target"
+        },
+        {
+          "op": "when",
+          "by": "inEmber",
+          "atLeast": 1,
+          "ops": [
+            {
+              "op": "damage",
+              "amount": 3,
+              "to": "target"
+            }
+          ]
+        }
+      ],
+      "hero": "monk",
+      "tags": [
+        "striking"
+      ]
+    },
+    {
+      "id": "ashen-fist",
+      "name": "Ashen Fist",
+      "realm": "aurelion",
+      "rarity": "common",
+      "kind": "attack",
+      "cost": 2,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 14,
+          "to": "target"
+        },
+        {
+          "op": "status",
+          "status": "exposed",
+          "amount": 1,
+          "to": "target"
+        }
+      ],
+      "hero": "monk",
+      "tags": [
+        "striking"
+      ],
+      "upgrade": "ashen-fist+"
+    },
+    {
+      "id": "ashen-fist+",
+      "name": "Ashen Fist+",
+      "realm": "aurelion",
+      "rarity": "common",
+      "kind": "attack",
+      "cost": 2,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 18,
+          "to": "target"
+        },
+        {
+          "op": "status",
+          "status": "exposed",
+          "amount": 1,
+          "to": "target"
+        }
+      ],
+      "hero": "monk",
+      "tags": [
+        "striking"
+      ]
+    },
+    {
+      "id": "angry-palm",
+      "name": "Angry Palm",
+      "realm": "aurelion",
+      "rarity": "common",
+      "kind": "attack",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "spend",
+          "status": "mastery",
+          "amount": 1
+        },
+        {
+          "op": "damage",
+          "amount": 6,
+          "to": "target",
+          "scale": {
+            "by": "masterySpent",
+            "mult": 5
+          }
+        }
+      ],
+      "hero": "monk",
+      "tags": [
+        "striking"
+      ],
+      "upgrade": "angry-palm+"
+    },
+    {
+      "id": "angry-palm+",
+      "name": "Angry Palm+",
+      "realm": "aurelion",
+      "rarity": "common",
+      "kind": "attack",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "spend",
+          "status": "mastery",
+          "amount": 1
+        },
+        {
+          "op": "damage",
+          "amount": 9,
+          "to": "target",
+          "scale": {
+            "by": "masterySpent",
+            "mult": 5
+          }
+        }
+      ],
+      "hero": "monk",
+      "tags": [
+        "striking"
+      ]
+    },
+    {
+      "id": "red-mist",
+      "name": "Scattering Kick",
+      "realm": "aurelion",
+      "rarity": "common",
+      "kind": "attack",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 7,
+          "to": "allFoes"
+        }
+      ],
+      "hero": "monk",
+      "tags": [
+        "striking"
+      ],
+      "upgrade": "red-mist+"
+    },
+    {
+      "id": "red-mist+",
+      "name": "Scattering Kick+",
+      "realm": "aurelion",
+      "rarity": "common",
+      "kind": "attack",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 9,
+          "to": "allFoes"
+        }
+      ],
+      "hero": "monk",
+      "tags": [
+        "striking"
+      ]
+    },
+    {
+      "id": "mountain-breaker",
+      "name": "Mountain Breaker",
+      "realm": "aurelion",
+      "rarity": "uncommon",
+      "kind": "attack",
+      "cost": 2,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "spend",
+          "status": "mastery",
+          "amount": 2
+        },
+        {
+          "op": "damage",
+          "amount": 16,
+          "to": "target",
+          "scale": {
+            "by": "masterySpent",
+            "mult": 3
+          }
+        }
+      ],
+      "hero": "monk",
+      "tags": [
+        "striking"
+      ],
+      "upgrade": "mountain-breaker+"
+    },
+    {
+      "id": "mountain-breaker+",
+      "name": "Mountain Breaker+",
+      "realm": "aurelion",
+      "rarity": "uncommon",
+      "kind": "attack",
+      "cost": 2,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "spend",
+          "status": "mastery",
+          "amount": 2
+        },
+        {
+          "op": "damage",
+          "amount": 21,
+          "to": "target",
+          "scale": {
+            "by": "masterySpent",
+            "mult": 3
+          }
+        }
+      ],
+      "hero": "monk",
+      "tags": [
+        "striking"
+      ]
+    },
+    {
+      "id": "wheel-kick",
+      "name": "Spinning Heel",
+      "realm": "aurelion",
+      "rarity": "uncommon",
+      "kind": "attack",
+      "cost": 2,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 12,
+          "to": "target"
+        },
+        {
+          "op": "status",
+          "status": "exposed",
+          "amount": 2,
+          "to": "target"
+        },
+        {
+          "op": "draw",
+          "amount": 1
+        }
+      ],
+      "hero": "monk",
+      "tags": [
+        "striking"
+      ],
+      "upgrade": "wheel-kick+"
+    },
+    {
+      "id": "wheel-kick+",
+      "name": "Spinning Heel+",
+      "realm": "aurelion",
+      "rarity": "uncommon",
+      "kind": "attack",
+      "cost": 2,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 16,
+          "to": "target"
+        },
+        {
+          "op": "status",
+          "status": "exposed",
+          "amount": 2,
+          "to": "target"
+        },
+        {
+          "op": "draw",
+          "amount": 1
+        }
+      ],
+      "hero": "monk",
+      "tags": [
+        "striking"
+      ]
+    },
+    {
+      "id": "temper-flare",
+      "name": "Temper Flare",
+      "realm": "aurelion",
+      "rarity": "uncommon",
+      "kind": "attack",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 3,
+          "hits": 3,
+          "to": "target"
+        },
+        {
+          "op": "status",
+          "status": "exposed",
+          "amount": 1,
+          "to": "target"
+        }
+      ],
+      "hero": "monk",
+      "tags": [
+        "striking"
+      ],
+      "upgrade": "temper-flare+"
+    },
+    {
+      "id": "temper-flare+",
+      "name": "Temper Flare+",
+      "realm": "aurelion",
+      "rarity": "uncommon",
+      "kind": "attack",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 4,
+          "hits": 3,
+          "to": "target"
+        },
+        {
+          "op": "status",
+          "status": "exposed",
+          "amount": 1,
+          "to": "target"
+        }
+      ],
+      "hero": "monk",
+      "tags": [
+        "striking"
+      ]
+    },
+    {
+      "id": "masters-flourish",
+      "name": "Master's Flourish",
+      "realm": "aurelion",
+      "rarity": "uncommon",
+      "kind": "attack",
+      "cost": 0,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "spend",
+          "status": "mastery",
+          "amount": 2
+        },
+        {
+          "op": "damage",
+          "amount": 0,
+          "to": "target",
+          "scale": {
+            "by": "masterySpent",
+            "mult": 5
+          }
+        }
+      ],
+      "hero": "monk",
+      "tags": [
+        "striking"
+      ],
+      "upgrade": "masters-flourish+"
+    },
+    {
+      "id": "masters-flourish+",
+      "name": "Master's Flourish+",
+      "realm": "aurelion",
+      "rarity": "uncommon",
+      "kind": "attack",
+      "cost": 0,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "spend",
+          "status": "mastery",
+          "amount": 2
+        },
+        {
+          "op": "damage",
+          "amount": 0,
+          "to": "target",
+          "scale": {
+            "by": "masterySpent",
+            "mult": 6
+          }
+        }
+      ],
+      "hero": "monk",
+      "tags": [
+        "striking"
+      ]
+    },
+    {
+      "id": "thousand-palms",
+      "name": "Thousand Palms",
+      "realm": "aurelion",
+      "rarity": "rare",
+      "kind": "attack",
+      "cost": 2,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 3,
+          "hits": 7,
+          "to": "target"
+        }
+      ],
+      "hero": "monk",
+      "tags": [
+        "striking"
+      ],
+      "upgrade": "thousand-palms+"
+    },
+    {
+      "id": "thousand-palms+",
+      "name": "Thousand Palms+",
+      "realm": "aurelion",
+      "rarity": "rare",
+      "kind": "attack",
+      "cost": 2,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 4,
+          "hits": 7,
+          "to": "target"
+        }
+      ],
+      "hero": "monk",
+      "tags": [
+        "striking"
+      ]
+    },
+    {
+      "id": "final-account",
+      "name": "Final Account",
+      "realm": "aurelion",
+      "rarity": "rare",
+      "kind": "attack",
+      "cost": 3,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "spend",
+          "status": "mastery",
+          "amount": 2
+        },
+        {
+          "op": "damage",
+          "amount": 24,
+          "to": "target",
+          "scale": {
+            "by": "masterySpent",
+            "mult": 6
+          }
+        }
+      ],
+      "hero": "monk",
+      "tags": [
+        "striking"
+      ],
+      "upgrade": "final-account+"
+    },
+    {
+      "id": "final-account+",
+      "name": "Final Account+",
+      "realm": "aurelion",
+      "rarity": "rare",
+      "kind": "attack",
+      "cost": 3,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "spend",
+          "status": "mastery",
+          "amount": 2
+        },
+        {
+          "op": "damage",
+          "amount": 30,
+          "to": "target",
+          "scale": {
+            "by": "masterySpent",
+            "mult": 6
+          }
+        }
+      ],
+      "hero": "monk",
+      "tags": [
+        "striking"
+      ]
+    },
+    {
+      "id": "rage-of-ages",
+      "name": "Rage of Ages",
+      "realm": "aurelion",
+      "rarity": "rare",
+      "kind": "attack",
+      "cost": 3,
+      "target": "none",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 8,
+          "hits": 3,
+          "to": "allFoes"
+        }
+      ],
+      "hero": "monk",
+      "tags": [
+        "striking"
+      ],
+      "upgrade": "rage-of-ages+"
+    },
+    {
+      "id": "rage-of-ages+",
+      "name": "Rage of Ages+",
+      "realm": "aurelion",
+      "rarity": "rare",
+      "kind": "attack",
+      "cost": 3,
+      "target": "none",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 9,
+          "hits": 3,
+          "to": "allFoes"
+        }
+      ],
+      "hero": "monk",
+      "tags": [
+        "striking"
+      ]
+    },
+    {
+      "id": "last-rites-of-flame",
+      "name": "Last Ember",
+      "realm": "aurelion",
+      "rarity": "rare",
+      "kind": "attack",
+      "cost": 3,
+      "target": "none",
+      "effects": [
+        {
+          "op": "spend",
+          "status": "mastery",
+          "amount": 2
+        },
+        {
+          "op": "damage",
+          "amount": 19,
+          "to": "allFoes",
+          "scale": {
+            "by": "masterySpent",
+            "mult": 4
+          }
+        }
+      ],
+      "hero": "monk",
+      "tags": [
+        "striking"
+      ],
+      "upgrade": "last-rites-of-flame+"
+    },
+    {
+      "id": "last-rites-of-flame+",
+      "name": "Last Ember+",
+      "realm": "aurelion",
+      "rarity": "rare",
+      "kind": "attack",
+      "cost": 3,
+      "target": "none",
+      "effects": [
+        {
+          "op": "spend",
+          "status": "mastery",
+          "amount": 2
+        },
+        {
+          "op": "damage",
+          "amount": 24,
+          "to": "allFoes",
+          "scale": {
+            "by": "masterySpent",
+            "mult": 4
+          }
+        }
+      ],
+      "hero": "monk",
+      "tags": [
+        "striking"
+      ]
+    }
+  ]
+}

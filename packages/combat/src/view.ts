@@ -654,6 +654,8 @@ const METRIC_WORDS: Record<Metric, { per: string; equal: string }> = {
   inRoot: { per: 'Root form', equal: 'Root form' },
   inCurrent: { per: 'Current form', equal: 'Current form' },
   inEmber: { per: 'Ember form', equal: 'Ember form' },
+  formProgress: { per: 'step of your technique', equal: 'the steps of your technique' },
+  vigor: { per: 'Primed', equal: 'your Primed' },
 };
 const UNIT_METRICS: readonly Metric[] = [
   'barrier',
@@ -879,6 +881,11 @@ function whenText(o: Extract<Op, { op: 'when' }>, db?: CombatDb): string {
   // (the Monk)
   if (o.by === 'techniqueDone' && (lo ?? 0) >= 1 && hi === undefined)
     return 'you have completed your technique this turn';
+  if (o.by === 'techniqueDone' && hi === 0 && lo === undefined)
+    return 'you have not completed your technique this turn';
+  if (o.by === 'formProgress' && lo === 1 && hi === 1)
+    return 'your technique is one step from done';
+  if (o.by === 'vigor' && hi === 0 && lo === undefined && !o.of) return 'you are not Primed';
   if (o.by === 'techniquesTurn' && hi === 0 && lo === undefined)
     return 'this is your first technique this turn';
   if (o.by === 'techniquesTurn' && lo === 1 && hi === undefined)

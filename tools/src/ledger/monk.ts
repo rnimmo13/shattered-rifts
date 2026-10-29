@@ -4,6 +4,8 @@
 // gives 2.5. A card's technique tag is priced at nothing (the completion it enables is the trait's). A form change 1 (a chosen one
 // 1.5). "If this is your first technique" and "if you played a Defensive technique" x0.65; "if you completed your technique" and "in
 // <form>" x0.5; "whenever you complete your technique" ~0.75 a turn; a Defensive or a Striking technique played ~1.2 a turn each.
+// The expansion (DECISIONS #426): "+N per Mastery you have" (kept, not spent) at ~1.5 Mastery; Primed 1 a stack a hit at ~1.3 hits
+// on his attacks; a missed completion ~0.4 of turns.
 
 import type { Price } from './common';
 
@@ -293,5 +295,222 @@ export const MONK_PRICES: Record<string, Price> = {
     up: 37.44,
     how: '19 to ALL 24.7 + 4 to ALL a Mastery up to 2 (5.2 x1.5 x0.8)',
     role: 'Ember: the spender for many enemies',
+  },
+  // (the expansion, DECISIONS #426)
+  'coiled-stance': {
+    pts: 11.1,
+    up: 14.7,
+    how: '6 Barrier 7.2 + 3 Primed (1 a stack a hit, ~1.3 hits) 3.9',
+    role: 'Root: a step that banks damage',
+  },
+  'mountain-roots': {
+    pts: 9.9,
+    up: 13.5,
+    how: '5 Barrier 6 + 1 Faltering to ALL 3.9',
+    role: 'Root: group defence',
+  },
+  'unleashed-stillness': {
+    pts: 10.6,
+    up: 13.6,
+    how: '7 + 3 per Defensive technique this turn (~1.2 in a Root deck)',
+    role: 'Root: the finisher after the pair',
+  },
+  'earth-shrug': {
+    pts: 10.4,
+    up: 14,
+    how: '7 Barrier 8.4 + 1 Mana next turn in Root (4 x0.5)',
+    role: 'Root: a resource for staying',
+  },
+  'patient-thunder': {
+    pts: 13.3,
+    up: 17,
+    how: '7 Barrier 8.4 + 6 to ALL in Root (7.8 x0.5) + Hold 1',
+    role: 'Root rare: defence that hits back',
+  },
+  'stored-strength': {
+    pts: 13.4,
+    up: 16.9,
+    how: 'Aura: a Root completion with no Primed (~0.6 of turns in a Root deck) x 4 Primed x ~1.4 hits x4; + Opening hand 3.5',
+    role: 'Root engine toward damage (never stacks)',
+  },
+  'quiet-confidence': {
+    pts: 10.8,
+    up: 14.4,
+    how: '6 Barrier + 2 per Mastery held (~1.5) = 9 Barrier',
+    role: 'conservation: Mastery kept, defence',
+  },
+  'masters-calm': {
+    pts: 11.8,
+    up: 14.2,
+    how: '3 Barrier + 4 per Mastery held (~1.5) = 9 Barrier 10.8 + Hold 1',
+    role: 'conservation rare: held defence for a reserve',
+  },
+  'inner-reserve': {
+    pts: 16.3,
+    up: 20.4,
+    how: 'Aura: 4 Barrier at the end of a turn with 1+ Mastery (~0.85) x4',
+    role: 'conservation engine: spend to 1, not 0',
+  },
+  'deflecting-spirit': {
+    pts: 10.7,
+    up: 14.3,
+    how: '5 Barrier 6 + 1 Faltering to ALL per Mastery spent, up to 2 (3.9 x1.5 x0.8)',
+    role: 'spending: group defence',
+  },
+  'ebbing-guard': {
+    pts: 9.4,
+    up: 13,
+    how: '7 Barrier 8.4 + Hold 1',
+    role: 'Current: the held opener',
+  },
+  'riverstone-strike': {
+    pts: 10.9,
+    up: 13.9,
+    how: '7 + 2 Faltering after a Defensive technique (6 x0.65)',
+    role: 'Current: the closer that defends',
+  },
+  undertow: {
+    pts: 11,
+    up: 14,
+    how: '8 + a Defensive technique from the discard pile to the hand ~3',
+    role: 'Current: assembles the next pair',
+  },
+  'read-the-water': {
+    pts: 11.1,
+    up: 14.7,
+    how: '3 Barrier 3.6 + draw 2 (6) + put one back on top (planning) 1.5',
+    role: 'Current: selection',
+  },
+  'rivers-answer': {
+    pts: 21.8,
+    up: 25.8,
+    how: '14 + 12 after a Defensive technique (x0.65) 7.8',
+    role: 'Current rare: the payoff',
+  },
+  'ebb-and-flow': {
+    pts: 16.2,
+    up: 19.7,
+    how: 'Aura: the first Striking technique each turn after a Defensive one (~0.75): 2 Barrier 2.4 + 1 Faltering 3, x4; + Opening hand 3.5',
+    role: 'Current engine',
+  },
+  'clear-mind': {
+    pts: 10,
+    up: 13.6,
+    how: '4 Barrier 4.8 + draw 3 + draw 1 for up to 1 Mastery (3 x0.9 x0.8) 2.2',
+    role: 'spending: a card now or Mastery later',
+  },
+  'long-exhale': {
+    pts: 10.1,
+    up: 13.7,
+    how: '6 Barrier 7.2 + 1 Mana next turn for up to 1 Mastery (4 x0.72)',
+    role: 'spending: Mastery into Mana',
+  },
+  'composed-mind': {
+    pts: 10.5,
+    up: 14.1,
+    how: '5 Barrier 6 + draw 3 + draw 1 with 2+ Mastery (x0.5)',
+    role: 'conservation: utility',
+  },
+  'decisive-moment': {
+    pts: 11.5,
+    up: 15.1,
+    how: '3 Barrier 3.6 + per Mastery spent up to 2: draw 1 and 3 Barrier (6.6 x1.5 x0.8) 7.9',
+    role: 'spending rare: cards and defence now',
+  },
+  'flowing-release': {
+    pts: 14.4,
+    up: 19.2,
+    how: 'Aura: 3 Barrier per spending card (~1 a turn) x4',
+    role: 'spending engine',
+  },
+  'first-touch': {
+    pts: 6,
+    up: 8,
+    how: '3 + 1 Exposed 3',
+    role: 'Ember: the free first step',
+  },
+  'follow-through': {
+    pts: 10,
+    up: 13,
+    how: '8 + 4 if the target is Exposed (x0.5)',
+    role: 'Ember: the second step',
+  },
+  'embers-edge': {
+    pts: 11,
+    up: 14,
+    how: '9 + 4 when the technique is one step from done (x0.5)',
+    role: 'Ember/any form: the closer',
+  },
+  'searing-combination': {
+    pts: 18.5,
+    up: 22.5,
+    how: '10 + 5 if the target is Exposed (x0.5) 2.5 + 2 Exposed 6',
+    role: 'Ember: heavy, and sets up the next',
+  },
+  'heart-of-the-ember': {
+    pts: 22,
+    up: 26.4,
+    how: '10 + one more hit of 10 per Mastery spent up to 2 (10 x1.5 x0.8)',
+    role: 'Ember rare: the multi-hit spender',
+  },
+  'kindled-focus': {
+    pts: 16.2,
+    up: 19.7,
+    how: 'Aura: the first Striking technique each turn (~0.9): 1 Exposed 3, 1 more in Ember (x0.5) 1.5, x4; + Opening hand 3.5',
+    role: 'Ember engine: the second strike at the same enemy',
+  },
+  'centred-strike': {
+    pts: 10,
+    up: 13,
+    how: '7 + 2 per Mastery held (~1.5)',
+    role: 'conservation: the strike',
+  },
+  'unhurried-sweep': {
+    pts: 19.5,
+    up: 23.4,
+    how: '(12 + 2 per Mastery held ~1.5) to ALL x1.3',
+    role: 'conservation: group damage',
+  },
+  'pinpoint-strike': {
+    pts: 11.3,
+    up: 14.3,
+    how: '7 + 2 Exposed before the hit for up to 1 Mastery (6 x0.72)',
+    role: 'spending: the offensive one',
+  },
+  'shifting-stance': {
+    pts: 8.7,
+    up: 12.3,
+    how: "6 Barrier 7.2 + a chosen form 1.5 (and it is the new form's first step)",
+    role: 'adaptive forms',
+  },
+  'change-of-heart': {
+    pts: 9.5,
+    up: 12.5,
+    how: '8 + a chosen form 1.5',
+    role: 'adaptive forms',
+  },
+  'adapting-flow': {
+    pts: 11.1,
+    up: 14.7,
+    how: '3 Barrier 3.6 + draw 2 (6) + a chosen form if not done 1.5',
+    role: 'adaptive forms: recovery',
+  },
+  'seek-the-strike': {
+    pts: 9.5,
+    up: 13.1,
+    how: '5 Barrier 6 + a Striking technique from the discard pile ~3.5',
+    role: 'adaptive forms: recovery',
+  },
+  'thousand-forms': {
+    pts: 21.3,
+    up: 26.1,
+    how: '14 Barrier 16.8 + a chosen form 1.5 + draw 3',
+    role: 'adaptive rare: the big block that reshapes the turn',
+  },
+  'unfinished-form': {
+    pts: 14.1,
+    up: 17.6,
+    how: 'Aura: a missed turn (~0.4): Hold the hand ~4 + 4 Barrier 4.8, x4; + Opening hand 3.5',
+    role: 'adaptive engine: recovery',
   },
 };
