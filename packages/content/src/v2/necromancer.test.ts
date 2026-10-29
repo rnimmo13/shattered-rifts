@@ -452,12 +452,12 @@ describe('the small card fixes (DECISIONS #397)', () => {
   });
 });
 
-describe('Grave Chill: 5 Fate a death, none at the start (DECISIONS #398)', () => {
-  it('starts with no Fate, and a Thrall that dies curses an enemy with 5', () => {
+describe('Grave Chill: 3 Fate a death, none at the start (DECISIONS #398, #403)', () => {
+  it('starts with no Fate, and a Thrall that dies curses an enemy with 3', () => {
     const s = fight(['bone-rain']);
     for (const u of s.sides.b.units) expect(u.statuses.doom ?? 0).toBe(0);
     // Bone Rain: the Thrall strikes and dies
     const out = play(s, 'T0');
-    expect(out.sides.b.units.reduce((n, u) => n + (u.statuses.doom ?? 0), 0)).toBe(5);
+    expect(out.sides.b.units.reduce((n, u) => n + (u.statuses.doom ?? 0), 0)).toBe(3);
   });
 });

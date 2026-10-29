@@ -403,11 +403,12 @@ describe('allies', () => {
     );
     for (let i = 0; i < 3; i++) s = play(s, `t${i}`).state;
     expect(s.sides.a.units.filter((u) => u.kind === 'ally')).toHaveLength(3);
-    // with the board full, a summon card can only be played by releasing one of the three
+    // with the board full, a summon card is played by releasing one of the three, or as it is (DECISIONS #405): nothing is summoned
     const fourth = legalActions(db, s).filter((a) => a.type === 'play' && a.card === 't3');
-    expect(fourth).toHaveLength(3);
-    expect(fourth.every((a) => a.type === 'play' && a.release !== undefined)).toBe(true);
-    expect(() => play(s, 't3')).toThrow();
+    expect(fourth).toHaveLength(4);
+    expect(fourth.filter((a) => a.type === 'play' && a.release !== undefined)).toHaveLength(3);
+    const asIs = play(s, 't3').state;
+    expect(asIs.sides.a.units.filter((u) => u.kind === 'ally')).toHaveLength(3);
     const allies = s.sides.a.units.filter((u) => u.kind === 'ally');
     const leaving = allies[1]?.id as string;
     const after = applyAction(db, s, { type: 'play', card: 't3', release: leaving }).state;
@@ -1490,7 +1491,7 @@ describe('Overflow in the Arena works both ways (DECISIONS #321)', () => {
 });
 
 describe('a Riftwalker with a smaller pack (DECISIONS #315)', () => {
-  it('can have only maxAllies companions; a summon past it asks for one to be released', () => {
+  it('can have only maxAllies companions; a summon past it offers to release one, or to play it as it is', () => {
     const tdb: CombatDb = {
       ...db,
       heroes: { ...db.heroes, knight: { ...db.heroes.knight!, maxAllies: 2 } },
@@ -1502,8 +1503,9 @@ describe('a Riftwalker with a smaller pack (DECISIONS #315)', () => {
     s = applyAction(tdb, s, { type: 'play', card: calls[1]!.id }).state;
     expect(s.sides.a.units.filter((u) => u.kind === 'ally')).toHaveLength(2);
     const plays = legalActions(tdb, s).filter((x) => x.type === 'play' && x.card === calls[2]!.id);
-    expect(plays.length).toBeGreaterThan(0);
-    expect(plays.every((x) => x.type === 'play' && x.release !== undefined)).toBe(true);
+    expect(plays.filter((x) => x.type === 'play' && x.release !== undefined)).toHaveLength(2);
+    // (and as it is, last: DECISIONS #405)
+    expect(plays.at(-1)).toEqual({ type: 'play', card: calls[2]!.id });
   });
 });
 

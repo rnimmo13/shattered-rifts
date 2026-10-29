@@ -10,7 +10,8 @@ import './app/global.css';
 import './ui/controls.css';
 import './duel/duel.css';
 import { App } from './app/App';
-import { preloadArt } from './art/assets';
+import { loadSkin, preloadArt } from './art/assets';
+import { cosmetics, syncCosmetics } from './cosmetics/cosmetics';
 
 applyCssTokens();
 
@@ -32,10 +33,23 @@ const root = document.getElementById('root');
 if (!root) throw new Error('Missing #root element');
 
 // real artwork (if any was supplied) is fetched before the first screen, so no card or figure flashes its placeholder
-void preloadArt().then(() => {
-  createRoot(root).render(
-    <StrictMode>
-      <App />
-    </StrictMode>,
-  );
+// (with the skins your Riftwalkers wear, DECISIONS #406: a slow one shows the hero's own look until it arrives)
+const wornSkins = (): Promise<unknown> =>
+  Promise.race([
+    Promise.all(Object.values(cosmetics().worn).flatMap((w) => (w.skin ? [loadSkin(w.skin)] : []))),
+    new Promise((resolve) => window.setTimeout(resolve, 3000)),
+  ]);
+void preloadArt()
+  .then(wornSkins)
+  .then(() => {
+    createRoot(root).render(
+      <StrictMode>
+        <App />
+      </StrictMode>,
+    );
+  });
+
+// your cosmetics follow you from device to device: this browser's copy is merged with your Vault's (and the skins that arrive load)
+void syncCosmetics().then((ok) => {
+  if (ok) for (const w of Object.values(cosmetics().worn)) if (w.skin) void loadSkin(w.skin);
 });

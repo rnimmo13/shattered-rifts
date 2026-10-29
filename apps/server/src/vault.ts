@@ -9,11 +9,14 @@ import {
   cleanDeck,
   cleanListItems,
   cleanRemoved,
+  cleanCosmetics,
   cleanRunCopies,
   dropFrom,
   isListName,
   keepRunCopies,
+  mergeCosmetics,
   mergeList,
+  type Cosmetics,
   type ListName,
   type RunCopy,
   type VaultDeck,
@@ -68,6 +71,10 @@ export class Vault extends DurableObject<Env> {
          removed TEXT NOT NULL DEFAULT '[]'
        )`,
     );
+    // the player's cosmetics (DECISIONS #406): one JSON row, the skins they own and the look each Riftwalker wears
+    ctx.storage.sql.exec(
+      'CREATE TABLE IF NOT EXISTS cosmetics (k TEXT PRIMARY KEY, data TEXT NOT NULL)',
+    );
     // the player's runs: the newest copy of each (text is empty on a run that ended: gone = 1)
     ctx.storage.sql.exec(
       `CREATE TABLE IF NOT EXISTS runs (
@@ -93,6 +100,13 @@ export class Vault extends DurableObject<Env> {
           removed: cleanRemoved(parseJson(row.removed)),
         }
       : { items: [], removed: [] };
+  }
+
+  private cosmetics(): Cosmetics {
+    const row = this.ctx.storage.sql
+      .exec<{ data: string }>("SELECT data FROM cosmetics WHERE k = 'me'")
+      .toArray()[0];
+    return cleanCosmetics(row ? parseJson(row.data) : null);
   }
 
   private runs(): RunCopy[] {
@@ -212,6 +226,17 @@ export class Vault extends DurableObject<Env> {
         JSON.stringify(removed),
       );
       return json({ ok: true, items, removed });
+    }
+
+    // what a device has, merged with what is kept here (owning only grows; the newest choice of look wins), and the result back.
+    // (every skin is free for now, so a device may claim any skin it names; a priced skin will need the server to grant it)
+    if (action === 'cosmetics') {
+      const merged = mergeCosmetics(this.cosmetics(), cleanCosmetics(body['cosmetics']));
+      this.ctx.storage.sql.exec(
+        "INSERT OR REPLACE INTO cosmetics (k, data) VALUES ('me', ?)",
+        JSON.stringify(merged),
+      );
+      return json({ ok: true, cosmetics: merged });
     }
 
     if (action === 'runsave') {

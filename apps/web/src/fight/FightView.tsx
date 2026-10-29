@@ -16,6 +16,7 @@ import { createPortal } from 'react-dom';
 import {
   applyAction,
   forgeWord,
+  summonsThatFit,
   costOf,
   clone,
   cardText,
@@ -59,10 +60,11 @@ import { packLine } from './lineLayout';
 import { looksLikeNewVersion } from '../ui/errorReport';
 import { keywordsOf, sanctifiedNote } from './info';
 import { BoonPanel } from './BoonPanel';
+import { mySkin } from '../cosmetics/cosmetics';
 import { FloatPanel } from './FloatPanel';
 import { CardTips } from './CardTips';
 import { CardHover } from './CardHover';
-import { preloadAllArt } from '../art/assets';
+import { preloadAllArt, realSkinFigure } from '../art/assets';
 import { PotionButton } from './PotionChip';
 import { PickModal } from './PickModal';
 import { tipAttrs, type TipContent } from '../ui/tip';
@@ -177,7 +179,13 @@ const shown = (w: Winner, me: Side): Winner => (w === 'draw' ? 'draw' : w === me
  * What stands where. `me` is the seat the player sits in: that side stands on the left (display side 'a'), the other on the
  * right (display side 'b'). Only the display side reaches the stage; unit ids stay the engine's.
  */
-function specsFrom(db: CombatDb, s: CombatState, me: Side = 'a'): FighterSpec[] {
+/** `skinOf`: the skin your own hero wears in this fight (none when watching someone else's match, DECISIONS #406). */
+function specsFrom(
+  db: CombatDb,
+  s: CombatState,
+  me: Side = 'a',
+  skinOf?: (hero: string) => string | undefined,
+): FighterSpec[] {
   const out: FighterSpec[] = [];
   const pvp = s.mode === 'pvp';
   for (const side of ['a', 'b'] as const) {
@@ -191,7 +199,10 @@ function specsFrom(db: CombatDb, s: CombatState, me: Side = 'a'): FighterSpec[] 
     const sized = units.map((u) => {
       const hero = u.kind === 'hero';
       const flies = !hero && hoverOf(u.def) > 0;
-      const raw = hero ? heroFigure(u.def) : unitFigure(u.def);
+      // (your own hero wears the skin you chose; the other side keeps its own look, DECISIONS #406)
+      const raw = hero
+        ? heroFigure(u.def, side === me ? skinOf?.(u.def) : undefined)
+        : unitFigure(u.def);
       const canvas = flip && u.kind !== 'enemy' ? mirror(raw) : raw;
       const height = fitHeight(
         canvas,
@@ -337,6 +348,22 @@ export function FightView(props: {
   const pvp = props.pvp ?? null;
   const watch = props.watch ?? null;
   const hideHand = watch?.hideHand === true;
+  // the skin your hero wears, decided once per fight and only if its figure is already in (so the figure never changes size mid-fight);
+  // watching someone else's match or a replay draws everyone in their own look (DECISIONS #406)
+  const skinOf = useRef<(hero: string) => string | undefined>(
+    watch
+      ? () => undefined
+      : (() => {
+          const fixed = new Map<string, string | undefined>();
+          return (hero: string) => {
+            if (!fixed.has(hero)) {
+              const skin = mySkin(hero);
+              fixed.set(hero, skin && realSkinFigure(skin) ? skin : undefined);
+            }
+            return fixed.get(hero);
+          };
+        })(),
+  );
   /** every move of the fight so far, both seats', in order (the recap and the replay are made from it) */
   const movesRef = useRef<FightMove[]>([]);
   /** watching: paused, and how fast */
@@ -471,7 +498,7 @@ export function FightView(props: {
       const heroOf = (side: Side): string =>
         d.sides[side].units.find((u) => u.kind === 'hero')?.id ?? '';
       const heroId = heroOf(mySide);
-      const respec = () => sc.fighters.sync(specsFrom(db, d, mySide));
+      const respec = () => sc.fighters.sync(specsFrom(db, d, mySide, skinOf.current));
       switch (e.type) {
         case 'turnStart': {
           reduceEvent(db, d, e);
@@ -731,7 +758,7 @@ export function FightView(props: {
       // whatever happened, the screen ends exactly where the engine is
       try {
         g.display = clone(after);
-        sc.fighters.sync(specsFrom(db, g.display, mySide), { instant: true });
+        sc.fighters.sync(specsFrom(db, g.display, mySide, skinOf.current), { instant: true });
         show(g.display);
         bump((n) => n + 1);
       } catch (err) {
@@ -845,7 +872,9 @@ export function FightView(props: {
         if (resumedAt > 0 || finishing) {
           game.current = { state: from, display: clone(from) };
           setLive(from);
-          s.fighters.sync(specsFrom(db, game.current.display, mySide), { instant: true });
+          s.fighters.sync(specsFrom(db, game.current.display, mySide, skinOf.current), {
+            instant: true,
+          });
           show(game.current.display);
           setReady(true);
           setLocked(false);
@@ -860,7 +889,9 @@ export function FightView(props: {
           display: startingDisplay(start.state, opening ? start.events : []),
         };
         setLive(start.state);
-        s.fighters.sync(specsFrom(db, game.current.display, mySide), { instant: true });
+        s.fighters.sync(specsFrom(db, game.current.display, mySide, skinOf.current), {
+          instant: true,
+        });
         show(game.current.display);
         setReady(true);
         // (a player coming back to a match in progress skips the opening: the moves so far are replayed silently)
@@ -1035,7 +1066,7 @@ export function FightView(props: {
       // the last of the history: put the screen where the engine is
       if (item.history && pvp && m.seq === pvp.replay) {
         g.display = clone(g.state);
-        sc.fighters.sync(specsFrom(db, g.display, mySide), { instant: true });
+        sc.fighters.sync(specsFrom(db, g.display, mySide, skinOf.current), { instant: true });
         show(g.display);
         setLocked(false);
         bump((n) => n + 1);
@@ -1173,6 +1204,21 @@ export function FightView(props: {
     },
     [act, releasing],
   );
+  // how many of the card's companions would come if it is played as it is, with no room made (DECISIONS #405)
+  const releaseFit = useMemo(() => {
+    const side = live?.sides[mySide];
+    return releaseCard && side ? summonsThatFit(db, side, releaseCard.def) : null;
+  }, [releaseCard, db, mySide, live]);
+  const playAnyway = useCallback(() => {
+    if (!releasing) return;
+    act({
+      type: 'play',
+      card: releasing.card,
+      ...(releasing.target ? { target: releasing.target } : {}),
+    });
+    setReleasing(null);
+    setHoverCard(null);
+  }, [act, releasing]);
   const aimSet = useMemo(
     () =>
       releaseCard && releasing
@@ -1664,14 +1710,23 @@ export function FightView(props: {
             <div className="fight__banner fight__banner--info" role="status">
               <span>
                 {scrapAll
-                  ? 'There is no room: building this scraps every companion you have.'
+                  ? 'There is no room: making room scraps every companion you have.'
                   : releasing.picked.length > 0
                     ? 'Still not enough room. Choose another companion to scrap.'
-                    : 'There is no room. Choose a companion to scrap.'}
+                    : 'Not enough room. Choose a companion to scrap to make room.'}{' '}
+                {releaseFit &&
+                  (releaseFit.fit === 0
+                    ? `Or play it anyway: ${releaseFit.total === 1 ? 'its companion does not come' : 'none of its companions come'}.`
+                    : `Or play it anyway: only ${releaseFit.fit} of its ${releaseFit.total} companions ${releaseFit.fit === 1 ? 'comes' : 'come'}.`)}
               </span>
               {scrapAll && (
                 <button className="btn btn--small" onClick={() => sendRelease(scrapAll)}>
                   <span>Scrap them</span>
+                </button>
+              )}
+              {releaseFit && (
+                <button className="btn btn--small" onClick={playAnyway}>
+                  <span>Play anyway</span>
                 </button>
               )}
               <button className="btn btn--small" onClick={() => setReleasing(null)}>

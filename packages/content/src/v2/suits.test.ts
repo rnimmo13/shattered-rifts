@@ -55,7 +55,7 @@ describe('Suits', () => {
     expect(suit('wild-card')).toBe('wild');
   });
 
-  it('shows each suit once, and the fourth makes a Full Trick: 5 to every enemy and a card', () => {
+  it('shows each suit once, and the fourth makes a Full Trick: 3 to every enemy and a card', () => {
     const s0 = fight(['strike', 'defend', 'pick-a-card', 'mark-prey', 'strike']);
     const three = playAll(s0, ['strike', 'defend', 'mark-prey']).state;
     expect(three.sides.a.suitsTurn).toEqual(['spades', 'hearts', 'clubs']);
@@ -68,7 +68,7 @@ describe('Suits', () => {
     expect(foe(r.state).hp).toBe(hp);
     const pending = r.state.pending!;
     const done = applyAction(db, r.state, { type: 'pick', cards: [pending.pool[0]!] }).state;
-    expect(foe(done).hp).toBe(hp - 5);
+    expect(foe(done).hp).toBe(hp - 3);
     // (Pick a Card left the hand, Foresee drew one, the Full Trick drew one)
     expect(done.sides.a.hand.length).toBe(hand + 1);
     expect(done.sides.a.fullTrickTurn).toBe(true);
@@ -143,7 +143,7 @@ describe('the Full Trick grows (DECISIONS #398)', () => {
     const hp = foe(three).hp;
     const r = play(three, 'pick-a-card').state;
     const done = applyAction(db, r, { type: 'pick', cards: [r.pending!.pool[0]!] }).state;
-    expect(hp - foe(done).hp).toBe(5 + 2 * 3);
+    expect(hp - foe(done).hp).toBe(3 + 2 * 3);
     expect(done.sides.a.fullTricks).toBe(3);
   });
 

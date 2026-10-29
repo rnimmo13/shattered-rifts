@@ -1,9 +1,12 @@
 // Choose a Riftwalker: a row of crests, then the chosen character's playstyle and starter deck.
 // Used by the Sanctum (campaign).
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import { ART_READY_EVENT } from '../art/assets';
 import { RIFTWALKERS, heroesByRealm, type HeroId } from '@sr/content/v2';
 import { heroFigure } from '../fight/art';
+import { wornSkin } from '@sr/pvp';
+import { useCosmetics } from '../cosmetics/cosmetics';
 import { HeroIcon } from '../ui/HeroIcon';
 import { DeckStrip } from './Pickers';
 import './run.css';
@@ -11,7 +14,19 @@ import './run.css';
 export function CharacterPicker(props: { value: HeroId; onChange: (id: HeroId) => void }) {
   const c = RIFTWALKERS[props.value];
   // the chosen Riftwalker, standing beside the tiles
-  const figureUrl = useMemo(() => heroFigure(props.value).toDataURL('image/png'), [props.value]);
+  // (in the look you chose for them, DECISIONS #406)
+  const skin = wornSkin(useCosmetics(), props.value);
+  // (drawn again when a skin's figure arrives after the picker opened)
+  const [art, setArt] = useState(0);
+  useEffect(() => {
+    const on = (): void => setArt((v) => v + 1);
+    window.addEventListener(ART_READY_EVENT, on);
+    return () => window.removeEventListener(ART_READY_EVENT, on);
+  }, []);
+  const figureUrl = useMemo(
+    () => (art >= 0 ? heroFigure(props.value, skin).toDataURL('image/png') : ''),
+    [props.value, skin, art],
+  );
   // a line of their own; picking a character draws a new one
   const [pick, setPick] = useState(() => Math.floor(Math.random() * 1000));
   const quote = c.quotes?.[pick % c.quotes.length];
@@ -38,9 +53,7 @@ export function CharacterPicker(props: { value: HeroId; onChange: (id: HeroId) =
                     >
                       <HeroIcon hero={id} size={58} />
                       <span className="picker__name">{x.hero.name}</span>
-                      <span className="picker__realm">
-                        {x.mechanics.slice(0, 3).join(' · ')}
-                      </span>
+                      <span className="picker__realm">{x.mechanics.slice(0, 3).join(' · ')}</span>
                     </button>
                   );
                 })}

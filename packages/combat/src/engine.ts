@@ -3320,6 +3320,30 @@ function releaseSets(db: CombatDb, sd: SideState, cd: CardDef): UnitId[][] {
   return out;
 }
 
+/**
+ * How many of a card's summons fit as the side stands, in the order the card makes them (a big one that does not fit leaves room for a
+ * smaller one after it), and how many it makes (DECISIONS #405): what the player is told before playing it with no room.
+ */
+export function summonsThatFit(
+  db: CombatDb,
+  sd: SideState,
+  cd: CardDef,
+): { fit: number; total: number } {
+  let free = allyCap(db, sd) - slotsUsed(db, sd);
+  let fit = 0;
+  let total = 0;
+  for (const o of cd.effects) {
+    if (o.op !== 'summon') continue;
+    total++;
+    const need = slotsOf(db, o.unit);
+    if (need <= free) {
+      fit++;
+      free -= need;
+    }
+  }
+  return { fit, total };
+}
+
 /** The companions an action releases, as a list. */
 function releaseIds(action: Extract<Action, { type: 'play' }>): UnitId[] {
   const rel = action.release;
@@ -3345,14 +3369,15 @@ export function legalActions(db: CombatDb, s: CombatState): Action[] {
       for (const t of sd.units)
         if (t.hp > 0 && (cd.target === 'friend' || t.kind === 'ally'))
           plays.push({ type: 'play', card: c.id, target: t.id });
-    if (!needsRelease(db, sd, cd)) out.push(...plays);
-    else {
-      // every way to play it, once for each smallest set of companions that could make room (one id when one is enough)
+    if (needsRelease(db, sd, cd)) {
+      // every way to play it, once for each smallest set of companions that could make room (one id when one is enough) ...
       const sets = releaseSets(db, sd, cd);
       for (const p of plays)
         for (const set of sets)
           out.push({ ...p, release: set.length === 1 ? (set[0] as UnitId) : set });
     }
+    // ... and as it is, last: what fits is summoned, the rest is not (DECISIONS #405)
+    out.push(...plays);
   }
   sd.potions.forEach((id, index) => {
     const p = db.potions[id];
@@ -3449,7 +3474,8 @@ function playCard(r: Run, action: Extract<Action, { type: 'play' }>): void {
   const hero = heroOf(sd);
   if (!hero) throw new RulesError('No hero to play cards');
   let scrapped = 0;
-  if (needsRelease(r.db, sd, cd)) {
+  // (with no room and no companion named, the card is played as it is: what fits is summoned, DECISIONS #405)
+  if (needsRelease(r.db, sd, cd) && releaseIds(action).length > 0) {
     const ids = [...new Set(releaseIds(action))];
     const want = [...ids].sort().join(',');
     const ok = releaseSets(r.db, sd, cd).some((set) => [...set].sort().join(',') === want);

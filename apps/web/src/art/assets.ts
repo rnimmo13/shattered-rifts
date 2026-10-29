@@ -139,3 +139,32 @@ export interface Skin {
 /** Every skin the manifest lists, in its order (empty until the manifest has loaded: call after preloadArt). */
 export const realSkins = (): Skin[] =>
   [...skins].map(([id, url]) => ({ id, hero: id.split('-')[0] ?? id, url }));
+
+const skinLoads = new Map<string, Promise<void>>();
+
+/**
+ * Load a skin's figure once (an equipped skin is drawn as the hero's figure, DECISIONS #406). Screens on show redraw when it arrives
+ * (ART_READY_EVENT), so a figure asked for before it is in shows the hero's own look until then.
+ */
+export function loadSkin(id: string): Promise<void> {
+  const url = skins.get(id);
+  if (!url) return Promise.resolve();
+  let p = skinLoads.get(id);
+  if (!p) {
+    p = loadImage(url).then((img) => {
+      if (!img) return;
+      const c = document.createElement('canvas');
+      c.width = img.naturalWidth;
+      c.height = img.naturalHeight;
+      c.getContext('2d')?.drawImage(img, 0, 0);
+      figures.set(`skin:${id}`, c);
+      window.dispatchEvent(new Event(ART_READY_EVENT));
+    });
+    skinLoads.set(id, p);
+  }
+  return p;
+}
+
+/** A skin's figure, if it has been loaded (see loadSkin). */
+export const realSkinFigure = (id: string): HTMLCanvasElement | undefined =>
+  figures.get(`skin:${id}`);

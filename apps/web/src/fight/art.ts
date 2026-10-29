@@ -3,7 +3,7 @@
 
 import type { CardDef, UnitDef } from '@sr/combat';
 import type { Motif } from '../art/motifs';
-import { realCardArt, realFigure } from '../art/assets';
+import { loadSkin, realCardArt, realFigure, realSkinFigure } from '../art/assets';
 import { HERO_EMBLEM } from '../art/emblems';
 import { LOOKS, applyLook } from '../art/unitLooks';
 import { bespokeHero, heroProp } from '../art/heroFigures';
@@ -93,7 +93,16 @@ const UNIT: Record<string, [Archetype, Realm]> = {
 
 const base = (id: string): string => id.replace(/\+$/, '');
 
-export function heroFigure(heroId: string): HTMLCanvasElement {
+/**
+ * A Riftwalker's figure. With a skin (the player's own hero wearing one, DECISIONS #406), the skin's figure once it has loaded; it is
+ * asked for here, and until it arrives the hero's own look stands in.
+ */
+export function heroFigure(heroId: string, skin?: string): HTMLCanvasElement {
+  if (skin) {
+    const worn = realSkinFigure(skin);
+    if (worn) return worn;
+    void loadSkin(skin);
+  }
   const real = realFigure(`hero:${heroId}`);
   if (real) return real;
   const own = bespokeHero(heroId);

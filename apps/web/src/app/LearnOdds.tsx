@@ -90,13 +90,10 @@ export function LearnOdds() {
 
       <h3>Warden, merchants and prices</h3>
       <ul>
-        <li>
-          A Warden&apos;s Gift offers rare cards of your class.
-        </li>
+        <li>A Warden&apos;s Gift offers rare cards of your class.</li>
         <li>
           Merchant cards cost {PRICE['common']} (common), {PRICE['uncommon']} (uncommon),{' '}
-          {PRICE['rare']} (rare) shards. Taking a card out of
-          your deck costs {REMOVE_PRICE}.
+          {PRICE['rare']} (rare) shards. Taking a card out of your deck costs {REMOVE_PRICE}.
         </li>
         <li>
           Potions cost {POTION_PRICE['common']} / {POTION_PRICE['uncommon']} /{' '}
@@ -154,7 +151,8 @@ export function LearnOdds() {
           {pct(BOON_WEIGHTS.elite?.['legendary'] ?? 0, total(BOON_WEIGHTS.elite ?? {}))} Legendary
           (the merchant&apos;s Boon rolls the same way, but never Legendary). Wardens give their
           Gift, not a Boon. Beating Vorthax leaves a Legendary Boon {LOOP_LEGEND_CHANCE}% of the
-          time. A run holds one Legendary Boon at most: once you have one, no other turns up. An Elite also heals {ELITE_HEAL_PCT}% of your HP.
+          time. A run holds one Legendary Boon at most: once you have one, no other turns up. An
+          Elite also heals {ELITE_HEAL_PCT}% of your HP.
         </li>
       </ul>
 
@@ -191,8 +189,8 @@ export function LearnOdds() {
         {Math.round(100 / REEL_PRIZES)}% of the time, and a spin after that never stops on the prize
         you are holding (so each of the other {REEL_PRIZES - 1} is about{' '}
         {Math.round(100 / (REEL_PRIZES - 1))}%). The prizes stand in different places on the reel
-        every time. Getting one particular prize takes
-        about {REEL_PRIZES} spins ({REEL_PRIZES * ROLL_COST} shards) on average.
+        every time. Getting one particular prize takes about {REEL_PRIZES} spins (
+        {REEL_PRIZES * ROLL_COST} shards) on average.
       </p>
       <p>
         Every Elite Event has the same {REEL_PRIZES} prizes (where they stand on the reel is

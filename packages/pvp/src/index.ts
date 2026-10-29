@@ -5,6 +5,7 @@ export * from './trophies';
 export * from './ranks';
 export * from './seasons';
 export * from './replays';
+export * from './cosmetics';
 export {
   checkEntry,
   checkArenaEntry,

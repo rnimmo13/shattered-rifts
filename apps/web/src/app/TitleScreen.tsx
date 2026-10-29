@@ -246,7 +246,9 @@ export function TitleScreen() {
           <a className="home__play home__play--store" href="#/store">
             <StoreIcon size={36} />
             <b>Store</b>
-            <small>Cosmetics for your Riftwalkers and cards. Coming soon.</small>
+            <small>
+              New looks for your Riftwalkers, free for now. Choose them on the Cosmetics page.
+            </small>
           </a>
 
           <HomeLinks unreadNotes={unread} />

@@ -5,6 +5,9 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **Cosmetics:** get any Riftwalker look in the Store (free for now) and choose which one each Riftwalker wears on the new Cosmetics page. Your look is your hero on the home screen and in your fights, and it follows you to any device with your Vault or account.
+- **Summon cards with no room:** a card whose companions do not all fit can be played anyway (what fits comes); the prompt says how many will come, beside the choice of a companion to scrap.
+- **Balance:** a Thrall that dies curses an enemy with 3 Fate again (was 5); the Full Trick starts at 3 damage (was 5), still 3 more each time.
 - **Every card has its own art** (the last 169 pictures are in).
 - **The Store shows Riftwalker looks:** twenty alternate outfits, two for every Riftwalker, marked "Coming soon".
 - **Precision and Sharpen:** the Old Twelve Gauge's Sharpen is called Precision, a stat of its own (it never stacks with the Obsidian Blade's Sharpen). Both carry over: a new gun or Blade (Double Tap, Spare Barrel...) is as sharp as the ones you already have, and the hero shows the buff for either weapon.

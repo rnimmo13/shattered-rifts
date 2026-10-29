@@ -29,6 +29,28 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.119.0',
+    date: '2026-10-28',
+    title: 'Your look',
+    summary:
+      'Get Riftwalker looks free in the Store and choose them on the Cosmetics page; summon cards can be played with no room.',
+    notes: [
+      {
+        kind: 'new',
+        text: 'Cosmetics: get any Riftwalker look in the Store (free for now) and choose which one each Riftwalker wears on the new Cosmetics page. Your look is your hero on the home screen and in your fights, and it follows you to any device with your Vault code or account.',
+      },
+      {
+        kind: 'changed',
+        text: 'A summon card whose companions do not all fit can be played anyway: what fits comes. The prompt says how many will come, beside the choice of a companion to scrap to make room.',
+      },
+      {
+        kind: 'balance',
+        text: 'Grave Chill: a Thrall that dies curses an enemy with 3 Fate again (was 5). The Full Trick starts at 3 damage (was 5), still 3 more for each one before it in a fight.',
+      },
+    ],
+    heads: 'Rules changed: replays and Arena games from before this version no longer play.',
+  },
+  {
     version: '0.118.0',
     date: '2026-10-28',
     title: 'Tricks and traits',

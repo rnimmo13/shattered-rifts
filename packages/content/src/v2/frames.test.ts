@@ -10,6 +10,7 @@ import {
   legalActions,
   type Action,
   type CombatState,
+  summonsThatFit,
 } from '@sr/combat';
 import { COMBAT_DB as db, RIFTWALKERS } from './index';
 
@@ -30,6 +31,12 @@ const plays = (s: CombatState, id: string) =>
   legalActions(db, s).filter(
     (a): a is Extract<Action, { type: 'play' }> => a.type === 'play' && a.card === id,
   );
+/** the ways to play a card that scrap companions to make room (it can also be played as it is, last: DECISIONS #405) */
+const scraps = (s: CombatState, id: string) => {
+  const all = plays(s, id);
+  expect(all.at(-1)?.release, `${id} can be played as it is`).toBeUndefined();
+  return all.filter((a) => a.release !== undefined);
+};
 const play = (s: CombatState, id: string): CombatState => {
   const act = plays(s, id)[0];
   expect(act, `${id} playable`).toBeTruthy();
@@ -44,7 +51,7 @@ describe('frames', () => {
     let s = play(fight(['build-enforcer', 'deploy-drone']), 'T0');
     expect(allies(s).map((u) => u.def)).toEqual(['drone', 'enforcer']);
     // a Light summon now has to scrap one of them
-    const ways = plays(s, 'T1');
+    const ways = scraps(s, 'T1');
     expect(ways.length).toBe(2);
     for (const w of ways) expect(asList(w.release)).toHaveLength(1);
     s = applyAction(
@@ -58,7 +65,7 @@ describe('frames', () => {
   it('a Heavy on three Light companions scraps any two of them, never one or all three', () => {
     let s = play(play(fight(['spare-parts', 'spare-parts', 'build-enforcer']), 'T0'), 'T1');
     expect(allies(s)).toHaveLength(3);
-    const ways = plays(s, 'T2');
+    const ways = scraps(s, 'T2');
     expect(ways).toHaveLength(3);
     for (const w of ways) expect(asList(w.release)).toHaveLength(2);
     s = applyAction(db, s, ways[0]!).state;
@@ -68,7 +75,7 @@ describe('frames', () => {
 
   it('a Colossal on a full board scraps every companion: one way to play it', () => {
     const s = play(fight(['build-enforcer', 'war-engine']), 'T0');
-    const ways = plays(s, 'T1');
+    const ways = scraps(s, 'T1');
     expect(ways).toHaveLength(1);
     expect(asList(ways[0]!.release).sort()).toEqual(
       allies(s)
@@ -88,7 +95,7 @@ describe('frames', () => {
 
   it('a card that summons several needs room for all of them (Drone Carrier)', () => {
     const s = fight(['drone-carrier']);
-    const ways = plays(s, 'T0');
+    const ways = scraps(s, 'T0');
     expect(ways).toHaveLength(1);
     expect(asList(ways[0]!.release)).toEqual([allies(s)[0]!.id]);
     const after = applyAction(db, s, ways[0]!).state;
@@ -97,6 +104,16 @@ describe('frames', () => {
       'patrol-drone',
       'patrol-drone',
     ]);
+  });
+
+  it('a card whose summons do not all fit can be played as it is: what fits comes, the rest does not (DECISIONS #405)', () => {
+    // Drone Carrier makes three Patrol Drones; beside the starting Drone only two fit
+    const s = fight(['drone-carrier']);
+    expect(summonsThatFit(db, s.sides.a, db.cards['drone-carrier']!)).toEqual({ fit: 2, total: 3 });
+    const asIs = plays(s, 'T0').at(-1)!;
+    expect(asIs.release).toBeUndefined();
+    const after = applyAction(db, s, asIs).state;
+    expect(allies(after).map((u) => u.def)).toEqual(['drone', 'patrol-drone', 'patrol-drone']);
   });
 
   it('a summon from an Aura only fills free slots (Mass Production beside a Colossal)', () => {

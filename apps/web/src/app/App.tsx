@@ -6,6 +6,7 @@ import { Bestiary } from '../fight/Bestiary';
 import { CardLibrary } from '../fight/CardLibrary';
 import { CreditsScreen } from './CreditsScreen';
 import { StoreScreen } from './StoreScreen';
+import { CosmeticsScreen } from './CosmeticsScreen';
 import { NameGate } from '../pvp/NameClaim';
 import { syncSavedRuns } from '../run/syncRuns';
 import { LearnScreen } from './LearnScreen';
@@ -76,6 +77,7 @@ function Screens({ hash }: { hash: string }) {
   if (hash === '#/learn') return <LearnScreen />;
   if (hash === '#/credits') return <CreditsScreen />;
   if (hash === '#/store') return <StoreScreen />;
+  if (hash === '#/cosmetics') return <CosmeticsScreen />;
   if (hash === '#/cards') return <CardLibrary />;
   if (hash === '#/models') return <Bestiary />;
   // the PvP mode is called the Arena (#/pvp keeps working for links already shared)

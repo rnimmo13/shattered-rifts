@@ -1,9 +1,11 @@
-// #/store: the Store. It will sell cosmetics only (never power: the game's pillars rule out pay-to-win); for now it says what is
-// coming. Riftwalker looks (skins) are shown as they arrive (DECISIONS #402): each one's figure, named, marked "Coming soon", grouped
-// by class; nothing can be bought or worn yet. The other shelves are locked tiles with the Store's mark.
+// #/store: the Store. It sells cosmetics only (never power: the game's pillars rule out pay-to-win). Riftwalker looks (skins, DECISIONS
+// #402, #406) are on sale, free for now: each one's figure, named, grouped by class, with Get (it goes on your account) and Wear (it
+// becomes your hero's look, chosen again on #/cosmetics). The other shelves are locked tiles with the Store's mark, coming soon.
 
 import { useEffect, useState } from 'react';
-import { RIFTWALKERS } from '@sr/content/v2';
+import { RIFTWALKERS, skinDef } from '@sr/content/v2';
+import { wornSkin } from '@sr/pvp';
+import { getSkin, useCosmetics, wear } from '../cosmetics/cosmetics';
 import { preloadArt, realSkins, type Skin } from '../art/assets';
 import { skinClass as className, skinName } from '../art/skins';
 import { StoreIcon } from './StoreIcon';
@@ -19,6 +21,7 @@ const SHELVES: { name: string; text: string }[] = [
 ];
 
 export function StoreScreen() {
+  const mine = useCosmetics();
   const [skins, setSkins] = useState<Skin[]>(() => realSkins());
   useEffect(() => {
     let live = true;
@@ -36,7 +39,10 @@ export function StoreScreen() {
     const i = order.indexOf(hero);
     return i < 0 ? order.length : i;
   };
-  const looks = [...skins].sort((a, b) => rank(a.hero) - rank(b.hero) || a.id.localeCompare(b.id));
+  // (only what the Store sells: a figure with no catalog entry is not for sale)
+  const looks = [...skins]
+    .filter((s) => skinDef(s.id))
+    .sort((a, b) => rank(a.hero) - rank(b.hero) || a.id.localeCompare(b.id));
   return (
     <main className="store">
       <a className="btn btn--small store__back" href="#/">
@@ -47,9 +53,12 @@ export function StoreScreen() {
         <div>
           <h1 className="store__title">Store</h1>
           <p className="store__lead">
-            Coming soon. The Store will sell cosmetics only: ways to make the game look like yours.
-            Nothing in it will ever make a deck stronger.
+            Cosmetics only: ways to make the game look like yours. Nothing in it will ever make a
+            deck stronger. Riftwalker looks are free for now.
           </p>
+          <a className="btn btn--small" href="#/cosmetics">
+            <span>Choose your looks</span>
+          </a>
         </div>
       </header>
       {looks.length > 0 && (
@@ -72,7 +81,27 @@ export function StoreScreen() {
                 </div>
                 <b>{skinName(s)}</b>
                 <span>{className(s.hero)}</span>
-                <i className="store__soon">Coming soon</i>
+                {!mine.owned.includes(s.id) ? (
+                  <button
+                    type="button"
+                    className="btn btn--small store__get"
+                    onClick={() => getSkin(s.id)}
+                  >
+                    <span>Get (free)</span>
+                  </button>
+                ) : wornSkin(mine, s.hero) === s.id ? (
+                  <button type="button" className="btn btn--small store__wear is-on" disabled>
+                    <span>Wearing</span>
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    className="btn btn--small store__wear"
+                    onClick={() => wear(s.hero, s.id)}
+                  >
+                    <span>Wear</span>
+                  </button>
+                )}
               </li>
             ))}
           </ul>

@@ -21,7 +21,15 @@ const CORE_KEYWORDS = ['mana', 'barrier', 'companion', 'overflow', 'taunt', 'sna
 /** Card words (what a card's text says it does) */
 const CARD_WORDS = ['exhaust', 'retain', 'ethereal', 'innate', 'discard', 'scry'];
 /** Mechanics that belong to one Riftwalker's way of playing */
-const SIGNATURE_WORDS = ['rune', 'stance', 'stars', 'forge', 'sleeve-knife', 'buckshot-shell', 'stagger'];
+const SIGNATURE_WORDS = [
+  'rune',
+  'stance',
+  'stars',
+  'forge',
+  'sleeve-knife',
+  'buckshot-shell',
+  'stagger',
+];
 
 const TABS = [
   { id: 'start', label: 'Start here' },
@@ -453,9 +461,7 @@ export function LearnScreen() {
               <h3>{g.name}</h3>
               {g.heroes.map((h) => (
                 <div key={h} className="learn__hero learn__more">
-                  <h4 className="learn__heroName">
-                    {RIFTWALKERS[h].hero.name}
-                  </h4>
+                  <h4 className="learn__heroName">{RIFTWALKERS[h].hero.name}</h4>
                   <p className="learn__trait">
                     <b>{RIFTWALKERS[h].trait.name}.</b> {RIFTWALKERS[h].trait.text}
                   </p>

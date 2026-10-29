@@ -137,3 +137,26 @@
   left: 0.8rem;
   bottom: 0.8rem;
 }
+
+/* Get and Wear (DECISIONS #406): a skin's button sits where "Coming soon" did; the look a Riftwalker wears glows */
+.store__skin .store__get,
+.store__skin .store__wear {
+  position: absolute;
+  left: 0.8rem;
+  bottom: 0.55rem;
+}
+.store__skin {
+  padding-bottom: 3rem;
+}
+.store__wear.is-on {
+  opacity: 0.85;
+}
+.store__skin.is-worn {
+  border-color: var(--c-gold-light);
+  box-shadow:
+    0 0 0 1px rgb(255 211 106 / 0.5),
+    0 0 18px rgb(255 211 106 / 0.35);
+}
+.store__head .btn {
+  margin-top: 0.6rem;
+}

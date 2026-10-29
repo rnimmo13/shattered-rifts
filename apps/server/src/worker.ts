@@ -47,7 +47,7 @@ const json = (body: unknown, status = 200): Response =>
     headers: { 'content-type': 'application/json', 'access-control-allow-origin': '*' },
   });
 
-const VAULT_ACTIONS = new Set(['list', 'bank', 'drop', 'runs', 'runsave', 'listsync']);
+const VAULT_ACTIONS = new Set(['list', 'bank', 'drop', 'runs', 'runsave', 'listsync', 'cosmetics']);
 /** The biggest Vault request: a deck is small; a device's runs go up together (DECISIONS #309). */
 const VAULT_MAX_BYTES = 20_000;
 const RUNSAVE_MAX_BYTES = 1_500_000;
