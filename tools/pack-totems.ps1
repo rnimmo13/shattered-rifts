@@ -1,4 +1,4 @@
-﻿# Cuts the Shaman's totem sheets in assets-src/weapons into the game (DECISIONS #429):
+# Cuts the Shaman's totem sheets in assets-src/weapons into the game (DECISIONS #429):
 #   totem.png          three carved totems, left to right Hawk, Bear, Elder Tree -> apps/web/public/art/totems/<kind>.png
 #   totem-spirits.png  the same three as spirits                                 -> apps/web/public/art/totems/<kind>-spirit.png
 # Both sheets already carry alpha. Each is cut at the emptiest column near each third (the figures can touch); in each piece, a small
@@ -121,6 +121,23 @@ foreach ($sheet in $sheets) {
     $index[$sheet.key][$sheet.kinds[$i]] = "totems/$name"
   }
   $bmp.Dispose()
+}
+# Individual totem assets override sheet exports.
+$individualDir = Join-Path $srcDir 'individual-totems'
+foreach ($kind in @('hawk', 'bear', 'elder', 'thunderbird', 'owl')) {
+  foreach ($spirit in @($false, $true)) {
+    $suffix = if ($spirit) { '-spirit' } else { '' }
+    $key = if ($spirit) { 'spirits' } else { 'totems' }
+    $height = if ($spirit) { 360 } else { 320 }
+    $name = "$kind$suffix.png"
+    $src = Join-Path $individualDir $name
+    if (-not (Test-Path $src)) { continue }
+    $bmp = [System.Drawing.Bitmap]::FromFile($src)
+    $piece = [TotemCut]::Piece($bmp, 0, $bmp.Width)
+    Save-Scaled $piece (Join-Path $outDir $name) $height
+    $piece.Dispose(); $bmp.Dispose()
+    $index[$key][$kind] = "totems/$name"
+  }
 }
 $index | ConvertTo-Json -Depth 4 | Set-Content -Encoding utf8 (Join-Path $outDir 'index.json')
 "wrote $(Join-Path $outDir 'index.json')"

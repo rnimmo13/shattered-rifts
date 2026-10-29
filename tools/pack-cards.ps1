@@ -109,4 +109,19 @@ foreach ($sh in $sheets) {
   $img.Dispose()
 }
 "$done card pictures"
+# Individual corrections override older sheet art.
+$individualDir = Join-Path $srcDir 'individual'
+if (Test-Path $individualDir) {
+  foreach ($file in Get-ChildItem $individualDir -Filter *.png) {
+    $img = [System.Drawing.Image]::FromFile($file.FullName)
+    $out = New-Object System.Drawing.Bitmap 640, 480
+    $g = [System.Drawing.Graphics]::FromImage($out)
+    $g.InterpolationMode = 'HighQualityBicubic'
+    $g.DrawImage($img, 0, 0, 640, 480)
+    $g.Dispose(); $img.Dispose()
+    Save-Jpeg $out (Join-Path $outDir "$($file.BaseName).jpg") 90
+    $out.Dispose()
+    "individual: $($file.BaseName)"
+  }
+}
 & (Join-Path $PSScriptRoot 'pack-manifest.ps1')

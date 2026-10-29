@@ -29,6 +29,27 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.127.0',
+    date: '2026-10-29',
+    title: 'Monsters of the multiverse',
+    summary: "62 new enemies, new Wardens, and the Shaman's totems beside him.",
+    notes: [
+      {
+        kind: 'new',
+        text: '62 new enemies from seven realms (93 in all), in 48 new fights: new pairs and later-stage trios, new Elites, and a second Warden for every realm. Gloomfen, the Hollow Crown and the Far Rifts send their monsters through the Rift.',
+      },
+      {
+        kind: 'changed',
+        text: "The Shaman's totems stand in an arc beside him, numbered in order with the next one lit, each showing exactly what it does every turn and when it acts. The Thunderbird and the Moon Owl are drawn now.",
+      },
+      {
+        kind: 'changed',
+        text: 'Tempest Call (and other cards that grow a card) says plainly what it does.',
+      },
+    ],
+    heads: 'Rules changed: replays and Arena games from before this version no longer play.',
+  },
+  {
     version: '0.126.0',
     date: '2026-10-29',
     title: 'The totem cycle',
