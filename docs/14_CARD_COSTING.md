@@ -489,6 +489,10 @@ most once a turn, for 1 Mastery (at most 3, kept) and the trait's 3 Barrier. No 
 | "If you completed your technique this turn" / "in <form>" | **x0.5** | |
 | "Whenever you complete your technique" | **~0.75 a turn** | once a turn at most. |
 | A Defensive or Striking technique played | **~1.2 a turn** each in a technique deck | River Turns, Breath Between Blows. |
+| "+N per Mastery you have" (read, not spent) | **~1.5** Mastery | he holds 1-2 most turns; it never competes with a spender. Centred Strike (7 +2) = 10 (#426). |
+| "If you did not complete your technique this turn" | **~0.4** of turns | the recovery cards: Unfinished Form, Adapting Flow. |
+| "If your technique is one step from done" | **x0.5** | Ember's Edge. |
+| Primed on the Monk's attacks | **~1.3 hits** | Thousand Palms (7) is the ceiling: Coiled Stance's 3 adds 21 there. |
 
 The trait, **Martial Forms** (start in Current; a completion gives 1 Mastery and 3 Barrier), prices at ~0.6 x (Kindle Strike's 4 a
 Mastery 3 + 3.6 Barrier) x 4 turns = ~16 with the starter, ~21 in a technique deck, level with the Knight. Nothing loops: no card

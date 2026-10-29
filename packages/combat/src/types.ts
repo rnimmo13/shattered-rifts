@@ -378,6 +378,9 @@ export type Metric =
   | 'inRoot' // 1 while you are in Root form
   | 'inCurrent' // 1 while you are in Current form
   | 'inEmber' // 1 while you are in Ember form
+  // (the Monk's expansion, DECISIONS #426)
+  | 'formProgress' // how far your form's objective is this turn: 0, 1 or 2 (complete)
+  | 'vigor' // (about a unit) its Vigor: damage its next attack adds
   // (the Shaman, DECISIONS #420)
   | 'elementsTurn' // different elements you have cast this turn (0-3)
   | 'trinityDone'; // 1 once Trinity has triggered this turn

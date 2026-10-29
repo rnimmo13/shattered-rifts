@@ -1365,6 +1365,10 @@ function metricValue(
       return sd.form === 'current' ? 1 : 0;
     case 'inEmber':
       return sd.form === 'ember' ? 1 : 0;
+    case 'formProgress':
+      return sd.form ? formProgress(sd) : 0;
+    case 'vigor':
+      return u ? stacks(u, 'vigor') : 0;
     // (the Shaman, DECISIONS #420)
     case 'elementsTurn':
       return sd.elementsTurn?.length ?? 0;

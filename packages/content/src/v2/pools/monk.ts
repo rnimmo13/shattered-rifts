@@ -18,7 +18,7 @@
 // Costs and points: docs/reworks/MONK.md and monk-ledger.md (docs/14_CARD_COSTING.md §15). (Card ids are older than some names: an
 // id keeps a card's art and every saved deck.)
 
-import type { CardDef } from '@sr/combat';
+import type { CardDef, Op } from '@sr/combat';
 import {
   barrier,
   DEFENSIVE,
@@ -34,10 +34,30 @@ import {
   spendMastery,
   status,
   STRIKING,
+  topdeck,
   when,
 } from '../build';
 
 const s = pool('monk', 'aurelion');
+// (the expansion, DECISIONS #426)
+/** "if you played a Defensive technique this turn" */
+const afterDefensive = (...ops: Op[]): Op => when('defensiveTurn', { atLeast: 1 }, ops);
+/** "if the target is Exposed" */
+const ifExposed = (...ops: Op[]): Op => when('exposed', { atLeast: 1, of: 'target' }, ops);
+/** Vigor: its next attack deals this much more (spent by that attack) */
+const vigor = (n: number): Op => status('vigor', n);
+/** a random technique of the tag from the discard pile into the hand */
+const recover = (tag: 'defensive' | 'striking'): Op => ({
+  op: 'fetch',
+  amount: 1,
+  to: 'hand',
+  tag,
+});
+/** spend up to n Mastery, then these ops if any was spent */
+const ifSpent = (n: 1 | 2, ...ops: Op[]): Op[] => [
+  spendMastery(n),
+  when('masterySpent', { atLeast: 1 }, ops),
+];
 
 export const MONK: CardDef[] = [
   // --- basics ---
@@ -537,5 +557,411 @@ export const MONK: CardDef[] = [
       ...STRIKING,
       up: { effects: [spendMastery(2), scaled(dmg(24, 'allFoes'), per('masterySpent', 4))] },
     },
+  ),
+
+  // --- Root: discipline that turns into damage (DECISIONS #426) ---
+  s('common', 'coiled-stance', 'Coiled Stance', 'skill', 1, 'none', [barrier(6), vigor(3)], {
+    ...DEFENSIVE,
+    up: { effects: [barrier(9), vigor(3)] },
+  }),
+  s(
+    'common',
+    'mountain-roots',
+    'Mountain Roots',
+    'skill',
+    1,
+    'none',
+    [barrier(5), status('faltering', 1, 'allFoes')],
+    { ...DEFENSIVE, up: { effects: [barrier(8), status('faltering', 1, 'allFoes')] } },
+  ),
+  s(
+    'uncommon',
+    'unleashed-stillness',
+    'Unleashed Stillness',
+    'attack',
+    1,
+    'foe',
+    [scaled(dmg(7), per('defensiveTurn', 3))],
+    { ...STRIKING, up: { effects: [scaled(dmg(10), per('defensiveTurn', 3))] } },
+  ),
+  s(
+    'uncommon',
+    'earth-shrug',
+    'Earth Shrug',
+    'skill',
+    1,
+    'none',
+    [barrier(7), when('inRoot', { atLeast: 1 }, [manaNext(1)])],
+    { ...DEFENSIVE, up: { effects: [barrier(10), when('inRoot', { atLeast: 1 }, [manaNext(1)])] } },
+  ),
+  s(
+    'rare',
+    'patient-thunder',
+    'Patient Thunder',
+    'skill',
+    1,
+    'none',
+    [barrier(7), when('inRoot', { atLeast: 1 }, [dmg(6, 'allFoes')])],
+    {
+      ...DEFENSIVE,
+      retain: true,
+      up: { effects: [barrier(9), when('inRoot', { atLeast: 1 }, [dmg(8, 'allFoes')])] },
+    },
+  ),
+  // (it never stacks: only when not Primed, so a turtle cannot grow a hit; Primed goes on every hit, so it stays small)
+  s(
+    'uncommon',
+    'stored-strength',
+    'Stored Strength',
+    'power',
+    1,
+    'none',
+    [
+      on('turnEnd', [
+        when('inRoot', { atLeast: 1 }, [
+          when('techniqueDone', { atLeast: 1 }, [when('vigor', { atMost: 0 }, [vigor(4)])]),
+        ]),
+      ]),
+    ],
+    { up: { innate: true } },
+  ),
+  // (Mastery kept, not spent: benefits at 1 or 2 as well as 3)
+  s(
+    'common',
+    'quiet-confidence',
+    'Quiet Confidence',
+    'skill',
+    1,
+    'none',
+    [scaled(barrier(6), per('mastery', 2))],
+    { ...DEFENSIVE, up: { effects: [scaled(barrier(9), per('mastery', 2))] } },
+  ),
+  s(
+    'rare',
+    'masters-calm',
+    "Master's Calm",
+    'skill',
+    1,
+    'none',
+    [scaled(barrier(3), per('mastery', 4))],
+    { ...DEFENSIVE, retain: true, up: { effects: [scaled(barrier(5), per('mastery', 4))] } },
+  ),
+  s(
+    'uncommon',
+    'inner-reserve',
+    'Inner Reserve',
+    'power',
+    1,
+    'none',
+    [on('turnEnd', [when('mastery', { atLeast: 1 }, [barrier(4)])])],
+    { up: { effects: [on('turnEnd', [when('mastery', { atLeast: 1 }, [barrier(5)])])] } },
+  ),
+  s(
+    'uncommon',
+    'deflecting-spirit',
+    'Deflecting Spirit',
+    'skill',
+    1,
+    'none',
+    [barrier(5), spendMastery(2), scaled(status('faltering', 0, 'allFoes'), per('masterySpent'))],
+    {
+      ...DEFENSIVE,
+      up: {
+        effects: [
+          barrier(8),
+          spendMastery(2),
+          scaled(status('faltering', 0, 'allFoes'), per('masterySpent')),
+        ],
+      },
+    },
+  ),
+
+  // --- Current: the ordered pair, and small spends (DECISIONS #426) ---
+  s('common', 'ebbing-guard', 'Ebbing Guard', 'skill', 1, 'none', [barrier(7)], {
+    ...DEFENSIVE,
+    retain: true,
+    up: { effects: [barrier(10)] },
+  }),
+  s(
+    'uncommon',
+    'riverstone-strike',
+    'Riverstone Strike',
+    'attack',
+    1,
+    'foe',
+    [dmg(7), afterDefensive(status('faltering', 2, 'target'))],
+    { ...STRIKING, up: { effects: [dmg(10), afterDefensive(status('faltering', 2, 'target'))] } },
+  ),
+  s('uncommon', 'undertow', 'Undertow', 'attack', 1, 'foe', [dmg(8), recover('defensive')], {
+    ...STRIKING,
+    up: { effects: [dmg(11), recover('defensive')] },
+  }),
+  s(
+    'uncommon',
+    'read-the-water',
+    'Read the Water',
+    'skill',
+    1,
+    'none',
+    [barrier(3), draw(2), topdeck(1)],
+    {
+      up: { effects: [barrier(6), draw(2), topdeck(1)] },
+    },
+  ),
+  s(
+    'rare',
+    'rivers-answer',
+    "River's Answer",
+    'attack',
+    2,
+    'foe',
+    [dmg(14), afterDefensive(dmg(12))],
+    { ...STRIKING, up: { effects: [dmg(18), afterDefensive(dmg(12))] } },
+  ),
+  s(
+    'uncommon',
+    'ebb-and-flow',
+    'Ebb and Flow',
+    'power',
+    1,
+    'none',
+    [
+      on('play', [afterDefensive(barrier(2), status('faltering', 1, 'target'))], {
+        tag: 'striking',
+        once: true,
+      }),
+    ],
+    { up: { innate: true } },
+  ),
+  s(
+    'common',
+    'clear-mind',
+    'Clear Mind',
+    'skill',
+    1,
+    'none',
+    [barrier(4), draw(1), ...ifSpent(1, draw(1))],
+    {
+      up: { effects: [barrier(7), draw(1), ...ifSpent(1, draw(1))] },
+    },
+  ),
+  s(
+    'uncommon',
+    'long-exhale',
+    'Long Exhale',
+    'skill',
+    1,
+    'none',
+    [barrier(6), ...ifSpent(1, manaNext(1))],
+    {
+      ...DEFENSIVE,
+      up: { effects: [barrier(9), ...ifSpent(1, manaNext(1))] },
+    },
+  ),
+  s(
+    'uncommon',
+    'composed-mind',
+    'Composed Mind',
+    'skill',
+    1,
+    'none',
+    [barrier(5), draw(1), when('mastery', { atLeast: 2 }, [draw(1)])],
+    { up: { effects: [barrier(8), draw(1), when('mastery', { atLeast: 2 }, [draw(1)])] } },
+  ),
+  s(
+    'rare',
+    'decisive-moment',
+    'Decisive Moment',
+    'skill',
+    1,
+    'none',
+    [
+      barrier(3),
+      spendMastery(2),
+      scaled(draw(0), per('masterySpent')),
+      scaled(barrier(0), per('masterySpent', 3)),
+    ],
+    {
+      up: {
+        effects: [
+          barrier(6),
+          spendMastery(2),
+          scaled(draw(0), per('masterySpent')),
+          scaled(barrier(0), per('masterySpent', 3)),
+        ],
+      },
+    },
+  ),
+  s(
+    'uncommon',
+    'flowing-release',
+    'Flowing Release',
+    'power',
+    1,
+    'none',
+    [on('spend', [barrier(3)], { status: 'mastery' })],
+    { up: { effects: [on('spend', [barrier(4)], { status: 'mastery' })] } },
+  ),
+
+  // --- Ember: commitment to one enemy (DECISIONS #426) ---
+  s(
+    'common',
+    'first-touch',
+    'First Touch',
+    'attack',
+    0,
+    'foe',
+    [dmg(3), status('exposed', 1, 'target')],
+    {
+      ...STRIKING,
+      up: { effects: [dmg(5), status('exposed', 1, 'target')] },
+    },
+  ),
+  s('common', 'follow-through', 'Follow-Through', 'attack', 1, 'foe', [dmg(8), ifExposed(dmg(4))], {
+    ...STRIKING,
+    up: { effects: [dmg(11), ifExposed(dmg(4))] },
+  }),
+  s(
+    'uncommon',
+    'embers-edge',
+    "Ember's Edge",
+    'attack',
+    1,
+    'foe',
+    [dmg(9), when('formProgress', { atLeast: 1, atMost: 1 }, [dmg(4)])],
+    {
+      ...STRIKING,
+      up: { effects: [dmg(12), when('formProgress', { atLeast: 1, atMost: 1 }, [dmg(4)])] },
+    },
+  ),
+  s(
+    'uncommon',
+    'searing-combination',
+    'Searing Combination',
+    'attack',
+    2,
+    'foe',
+    [dmg(10), ifExposed(dmg(5)), status('exposed', 2, 'target')],
+    { ...STRIKING, up: { effects: [dmg(14), ifExposed(dmg(5)), status('exposed', 2, 'target')] } },
+  ),
+  s(
+    'rare',
+    'heart-of-the-ember',
+    'Heart of the Ember',
+    'attack',
+    2,
+    'foe',
+    [spendMastery(2), scaled(dmg(10), per('masterySpent', 1, undefined, 'hits'))],
+    {
+      ...STRIKING,
+      up: {
+        effects: [spendMastery(2), scaled(dmg(12), per('masterySpent', 1, undefined, 'hits'))],
+      },
+    },
+  ),
+  s(
+    'uncommon',
+    'kindled-focus',
+    'Kindled Focus',
+    'power',
+    1,
+    'none',
+    [
+      on(
+        'play',
+        [
+          status('exposed', 1, 'target'),
+          when('inEmber', { atLeast: 1 }, [status('exposed', 1, 'target')]),
+        ],
+        { tag: 'striking', once: true },
+      ),
+    ],
+    { up: { innate: true } },
+  ),
+  s(
+    'common',
+    'centred-strike',
+    'Centred Strike',
+    'attack',
+    1,
+    'foe',
+    [scaled(dmg(7), per('mastery', 2))],
+    {
+      ...STRIKING,
+      up: { effects: [scaled(dmg(10), per('mastery', 2))] },
+    },
+  ),
+  s(
+    'uncommon',
+    'unhurried-sweep',
+    'Unhurried Sweep',
+    'attack',
+    2,
+    'none',
+    [scaled(dmg(12, 'allFoes'), per('mastery', 2))],
+    { ...STRIKING, up: { effects: [scaled(dmg(15, 'allFoes'), per('mastery', 2))] } },
+  ),
+  // (the spend comes first, so the hit lands on the Exposed)
+  s(
+    'common',
+    'pinpoint-strike',
+    'Pinpoint Strike',
+    'attack',
+    1,
+    'foe',
+    [...ifSpent(1, status('exposed', 2, 'target')), dmg(7)],
+    { ...STRIKING, up: { effects: [...ifSpent(1, status('exposed', 2, 'target')), dmg(10)] } },
+  ),
+
+  // --- glue: adapting the form to the hand (DECISIONS #426; a change still starts the progress again) ---
+  s('common', 'shifting-stance', 'Shifting Stance', 'skill', 1, 'none', [barrier(6), form('*')], {
+    ...DEFENSIVE,
+    up: { effects: [barrier(9), form('*')] },
+  }),
+  s('common', 'change-of-heart', 'Change of Heart', 'attack', 1, 'foe', [dmg(8), form('*')], {
+    ...STRIKING,
+    up: { effects: [dmg(11), form('*')] },
+  }),
+  s(
+    'uncommon',
+    'adapting-flow',
+    'Adapting Flow',
+    'skill',
+    1,
+    'none',
+    [barrier(3), draw(2), when('techniqueDone', { atMost: 0 }, [form('*')])],
+    { up: { effects: [barrier(6), draw(2), when('techniqueDone', { atMost: 0 }, [form('*')])] } },
+  ),
+  s(
+    'common',
+    'seek-the-strike',
+    'Seek the Strike',
+    'skill',
+    1,
+    'none',
+    [barrier(5), recover('striking')],
+    {
+      up: { effects: [barrier(8), recover('striking')] },
+    },
+  ),
+  s(
+    'rare',
+    'thousand-forms',
+    'Thousand Forms',
+    'skill',
+    2,
+    'none',
+    [barrier(14), form('*'), draw(1)],
+    { ...DEFENSIVE, up: { effects: [barrier(18), form('*'), draw(1)] } },
+  ),
+  s(
+    'uncommon',
+    'unfinished-form',
+    'Unfinished Form',
+    'power',
+    1,
+    'none',
+    [on('turnEnd', [when('techniqueDone', { atMost: 0 }, [status('holdfast', 1), barrier(4)])])],
+    { up: { innate: true } },
   ),
 ];
