@@ -4,7 +4,7 @@
 
 ## Knight (aurelion, 80 HP)
 
-A knight of the Gilded Order. No companions: Might, Barrier and a deck she burns down to a point.
+A knight of the Gilded Order. No companions: Might, Barrier and a deck that burns down to a point.
 
 Paths: Bulwark: hit with your Barrier / Might: hit many times, harder and harder / Consume: burn your own cards for value / Blood: pay HP for Mana, cards and Might
 
@@ -881,7 +881,7 @@ Starter: Strike, Strike, Strike, Defend, Defend, Defend, Hammer Swing, Hammer Sw
 | Ricochet | 1 | aura | rare | Whenever you play a shell: Draw 1 card. |
 | Haymaker | 2 | attack | rare | Deal 14 (+3 per Hangover) damage. |
 | Bottoms Up | 1 | skill | rare | Gain 2 Mana. Draw 2 cards. Gain 4 Hangover. Consume. |
-| Last Call | 1 | skill | rare | From your next turn, gain 1 more Mana every turn for the rest of the fight. Gain 4 Hangover. Consume. |
+| Last Call | 2 | aura | rare | Gain 2 Hangover. At the start of your turn: Gain 1 Mana. |
 | Bottomless Flask | 2 | aura | rare | At the start of your turn: Heal 2 (+1 per 10% HP missing). Draw 1 card. |
 | Pass Out | 2 | skill | rare | Heal 8 (+1 per 3% HP missing). Clear your Hangover. Consume. |
 | Blind Drunk | 2 | attack | rare | Stagger. Deal 6 damage to a random enemy 2 times, 1 more time per Hangover. |

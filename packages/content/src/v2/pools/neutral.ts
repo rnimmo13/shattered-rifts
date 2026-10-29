@@ -354,9 +354,11 @@ export const ANCESTRAL: CardDef[] = [
     [dmg(40), status('exposed', 2, 'target')],
     { exhaust: true },
   ),
-  anc('the-long-memory', 'The Long Memory', 'skill', 1, 'none', [maxMana(1)], {
-    exhaust: true,
-    retain: true,
+  // (an Aura, DECISIONS #410: +1 Mana a turn for 1 with no price was ~40% over; at 2 like the other Mana Auras, with Opening hand as
+  // an ancestral card's edge over Attunement)
+  anc('the-long-memory', 'The Long Memory', 'power', 2, 'none', [on('turnStart', [mana(1)])], {
+    innate: true,
+    up: { cost: 1 },
   }),
   anc(
     'unbroken-line',

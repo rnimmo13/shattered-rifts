@@ -17,7 +17,6 @@ import {
   heal,
   lose,
   mana,
-  maxMana,
   on,
   per,
   pool,
@@ -628,10 +627,10 @@ export const DRUNKARD: CardDef[] = [
     exhaust: true,
     up: { effects: [mana(2), draw(3), hangover(4)] },
   }),
-  // (1 Mana: it Consumes and costs Hangover, where Deep Pockets and Inner Furnace, at 2, do neither)
-  p('rare', 'last-call', 'Last Call', 'skill', 1, 'none', [maxMana(1), hangover(4)], {
-    exhaust: true,
-    up: { effects: [maxMana(1), hangover(2)] },
+  // (an Aura, DECISIONS #410: +1 Mana a turn is ~28 over a fight, a 2-cost Aura like Inner Furnace and Deep Pockets; at 1 its 4
+  // Hangover was too light a price, and nearly free in a Hangover deck. The Hangover stays as his flavour, and feeds his payoffs)
+  p('rare', 'last-call', 'Last Call', 'power', 2, 'none', [hangover(2), on('turnStart', [mana(1)])], {
+    up: { innate: true },
   }),
   p(
     'rare',

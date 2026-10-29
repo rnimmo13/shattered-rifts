@@ -179,6 +179,8 @@ The extra is because the turn you play it you did nothing else, and you might dr
 a Knife a turn: 16 over 4 turns, 1.6x), Inner Furnace (2 cost, +1 Mana a turn: ~28, 1.5x, a little low for a rare), Warm Anvil (Sharpen 5 a turn: 16, 1.6x).
 For "whenever X" triggers, count how often X happens per turn in the deck that wants it, not in a starter deck.
 
+**+1 Mana every turn** is ~28 over the four turns (7 a Mana): a 2-cost Aura with no price (Inner Furnace, Ascendant Form, Deep Pockets, Attunement, Last Call with 2 Hangover). At 1 it needs a real price, ~-10 (Blood Pact: 7 HP). A Skill that does it and Consumes is an Aura in disguise: make it an Aura (DECISIONS #410).
+
 ---
 
 ## 8. Checks the points can't do

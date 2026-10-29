@@ -5,6 +5,7 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **Last Call and The Long Memory are Auras:** both cost 2 and give 1 Mana at the start of every turn. Last Call also gives 2 Hangover (Last Call+ starts in your opening hand); The Long Memory starts in your opening hand (The Long Memory+ costs 1).
 - **A better Store, and a Cosmetics Vault:** one kind of cosmetic at a time, its tabs and the classes in a bar that stays at the top as you scroll, and every look on a lit stage. The Cosmetics Vault shows what you own and the look each Riftwalker wears.
 - **A new Knight:** the Knight is a man in sun armour now; the Store's looks for him are the Sunwarden and the Female Knight (if you had the Moonlit Regent, you have the Female Knight).
 - **No more coin:** every chance in an event, and who goes first in the Arena, is shown on the slider reel. Its tiles are the real odds (a 60% chance is 12 of every 20 tiles your way), and the odds are written under it.

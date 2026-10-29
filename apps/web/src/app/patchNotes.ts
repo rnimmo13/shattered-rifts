@@ -29,6 +29,23 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.121.0',
+    date: '2026-10-28',
+    title: 'Last Call',
+    summary: 'Last Call and The Long Memory are Auras.',
+    notes: [
+      {
+        kind: 'balance',
+        text: 'Last Call is an Aura: 2 Mana, gain 2 Hangover, and gain 1 Mana at the start of every turn (Last Call+ starts in your opening hand). It was a 1-Mana Skill with 4 Hangover, too cheap for Mana every turn.',
+      },
+      {
+        kind: 'balance',
+        text: 'The Long Memory is an Aura: 2 Mana, gain 1 Mana at the start of every turn, and it starts in your opening hand (The Long Memory+ costs 1).',
+      },
+    ],
+    heads: 'Rules changed: replays and Arena games from before this version no longer play.',
+  },
+  {
     version: '0.120.0',
     date: '2026-10-28',
     title: 'The reel, the Store and a new Knight',
