@@ -55,7 +55,7 @@ import { GrimoireModal } from './Grimoire';
 import { AimArrow } from './AimArrow';
 import { SuitTrack } from './SuitTrack';
 import { EnchantSlots } from './EnchantSlots';
-import { TotemPanel, type TotemSummon } from './TotemPanel';
+import { TotemArc, type TotemSummon } from './TotemArc';
 import { FormPanel } from './FormPanel';
 import { UnitPlates, type Placed } from './Plates';
 import { ErrorDetails } from '../ui/ErrorDetails';
@@ -1503,21 +1503,29 @@ export function FightView(props: {
     const held = sv?.totems;
     if (!sv || !held) return null;
     const hero = sv.units.find((u) => u.kind === 'hero');
-    // (DECISIONS #438) a fixed block in that side's column, under the Boons: no floating window; the front totem, the next to act,
-    // first and marked "Next"
+    // (DECISIONS #439) on the stage, in an arc beside the hero: to the left of mine (who faces right), to the right of an opponent's;
+    // no panel. Sized from the figure, the next to act at the top.
+    const at = side === mySide ? heroPlaced : foePlaced;
+    if (!at) return null;
+    const mirror = side !== mySide;
+    const size = Math.max(54, Math.round(at.h * 0.24));
     return (
-      <section
-        className="fight__totems"
-        aria-label={side === mySide ? 'Your totems' : 'Their totems'}
-      >
-        <h3 className="fight__totemsTitle">{side === mySide ? 'Totems' : 'Their Totems'}</h3>
-        <TotemPanel
-          db={db}
-          totems={held}
-          spirit={hero?.statuses.spirit ?? 0}
-          summon={summon?.side === side ? summon : null}
-        />
-      </section>
+      <TotemArc
+        key={`totems-${side}`}
+        db={db}
+        totems={held}
+        spirit={hero?.statuses.spirit ?? 0}
+        summon={summon?.side === side ? summon : null}
+        // (close beside the figure, and never off the edge of the stage: the arc bows out by half a position)
+        x={
+          mirror
+            ? at.x + at.w * 0.38 + size * 0.45
+            : Math.max(size * 1.05 + 6, at.x - at.w * 0.38 - size * 0.45)
+        }
+        cy={at.y - at.h * 0.55}
+        size={size}
+        mirror={mirror}
+      />
     );
   };
   // (the Monk's Martial Forms: his form, its progress this turn and his Mastery, as a panel in that side's column, DECISIONS #419)
@@ -1760,6 +1768,9 @@ export function FightView(props: {
                 />
               ) : null;
             })}
+          {/* the Shaman's totems, in an arc beside him (DECISIONS #439) */}
+          {totemPanel(mySide)}
+          {pvp && totemPanel(foeSide)}
           {/* a yellow bubble around every Shielded unit, gone with its last stack (DECISIONS #346) */}
           {placed.map((p) => (
             <ShieldBubble
@@ -2008,7 +2019,6 @@ export function FightView(props: {
           {/* your side of the screen, top left under the top bar: your Boons, then your Auras (clear of your HP and name) */}
           {/* (your Riftwalker's innate trait is always shown first, so it can be read in the fight) */}
           {(traitOf(setup[mySide]) ||
-            !!view?.sides[mySide].totems ||
             (mine.boons?.length ?? 0) > 0 ||
             view?.sides[mySide].suitsTurn ||
             (me?.powers.length ?? 0) > 0) && (
@@ -2019,7 +2029,6 @@ export function FightView(props: {
               )}
               {suitsPanel(mySide)}
               {enchantPanel(mySide)}
-              {totemPanel(mySide)}
               {formPanel(mySide)}
               {me && <AuraList db={db} me={me} panel="auras-mine" title="Your Auras" />}
             </div>
@@ -2060,7 +2069,6 @@ export function FightView(props: {
               )}
               {suitsPanel(foeSide)}
               {enchantPanel(foeSide)}
-              {totemPanel(foeSide)}
               {formPanel(foeSide)}
               {them && (
                 <AuraList

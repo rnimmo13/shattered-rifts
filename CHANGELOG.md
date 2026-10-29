@@ -5,6 +5,7 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **The Shaman's totems stand in an arc beside him**, numbered in order with the next one lit, each showing exactly what it does every turn and when it acts (with your Spirit counted).
 - **The Shaman's totems** sit in order under your Boons (the next to act is marked), not in a floating window. Tempest Call says plainly what it does.
 - **You can remove the Old Twelve Gauge and the Obsidian Blade:** they are now cards of the Drunkard's and Spellblade's starting decks (always in your opening hand), and shrines and merchants can take them out like any card. Sharpen no longer makes one when you have none.
 - **The open rift shows the three cards** in its option boxes, so you can see what you are reaching for.
