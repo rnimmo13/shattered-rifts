@@ -3,16 +3,48 @@
 // Aura, so without a hand-written upgrade it falls back to the cost cut: that fallback has to be chosen, so it is listed here.
 
 import { describe, expect, it } from 'vitest';
-import { createCombat, type CardDef } from '@sr/combat';
-import { COMBAT_DB as db } from './index';
+import {
+  applyAction,
+  clone,
+  createCombat,
+  legalActions,
+  type CardDef,
+  type CombatState,
+} from '@sr/combat';
+import { COMBAT_DB as db, RIFTWALKERS } from './index';
 
 /** Every Aura whose upgrade is 1 less Mana, on purpose. A new one goes here only when its effect cannot grow. */
 const COST_CUT_AURAS = [
-  // (the Knight's Ironclad list went with her rework, DECISIONS #415: her new Auras all have hand-written upgrades)
+  // the Knight's are Robert's to set (the Ironclad's list, DECISIONS #367)
+  'bastion-engine',
+  'blood-fire',
+  'bloodied-plate',
+  'charging-herd',
+  'cruel-streak',
+  'inner-furnace',
+  'jugglers-rhythm',
+  'numbing-rite',
+  'raised-hell',
+  'rite-of-recall',
+  'scar-over',
+  'scent-of-weakness',
+  'stone-stance',
+  'unbroken-wall',
+  'unforgiving-drill',
+  'unholy-pact',
+  'warlords-oath',
   // copies of Slay the Spire cards that get cheaper there (Spellblade, Necromancer, Shaman, Assassin)
+  'echoing-blade',
+  'orbit',
+  'sigil-of-wandering',
+  'tyrants-gaze',
   'ever-watchful',
   'grimoire-gale',
   'phylactery',
+  'blood-scent',
+  'grand-scheme',
+  'nimble-routine',
+  'patient-hands',
   // on/off, a Mana engine, or a card or machine every turn
   'dutch-courage',
   'rolling-thunder',
@@ -26,6 +58,10 @@ const COST_CUT_AURAS = [
   'killing-spree',
   'red-frenzy',
   'wild-hunt',
+  'ascendant-form',
+  'litany',
+  'mantra-engine',
+  'wrath-incarnate',
   'attunement',
   'heart-of-the-rift',
   'hunters-eye',
@@ -67,7 +103,7 @@ describe('Aura upgrades', () => {
       'shell-game',
       'legion',
       'patient-hunter',
-      'perfected-motion',
+      'reading-the-signs',
       'hair-trigger',
       'hunters-call',
       'trail-of-blood',
@@ -86,5 +122,31 @@ describe('Aura upgrades', () => {
         id,
       ).toContain(`${id}+`);
     }
+  });
+
+  it('Rampage of Ire+ deals 9 to every enemy when you enter Fury', () => {
+    const { state } = createCombat(db, {
+      seed: 'aura-up-rampage',
+      a: { hero: 'monk', deck: [...RIFTWALKERS.monk.starter] },
+      b: { enemies: ['squire', 'squire'] },
+    });
+    let s: CombatState = clone(state);
+    s.sides.a.hand = [
+      { id: 'R0', card: 'rampage-of-ire+' },
+      { id: 'R1', card: 'kindle-fury' },
+    ];
+    s.sides.a.mana = 9;
+    const play = (id: string): void => {
+      const act = legalActions(db, s).find((a) => a.type === 'play' && a.card === id);
+      expect(act, id).toBeTruthy();
+      s = applyAction(db, s, act!).state;
+    };
+    play('R0');
+    const foes = () => s.sides.b.units.map((u) => u.hp);
+    const before = foes();
+    play('R1');
+    const after = foes();
+    // the one Kindle Fury hits takes its 9 as well; the other takes only Rampage of Ire+'s 9
+    expect(Math.min(...before.map((hp, i) => hp - after[i]!))).toBe(9);
   });
 });

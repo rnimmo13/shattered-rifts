@@ -7,18 +7,12 @@ import { writeFileSync } from 'node:fs';
 import { cardText } from '@sr/combat';
 import { COMBAT_DB as db, pathOf, pathName, RIFTWALKERS, type HeroId } from '@sr/content/v2';
 import { budgetOf, pct, type Price } from './common';
-import { ASSASSIN_PRICES } from './assassin';
-import { KNIGHT_PRICES } from './knight';
-import { MONK_PRICES } from './monk';
 import { SHAMAN_PRICES } from './shaman';
-import { SPELLBLADE_PRICES } from './spellblade';
 
+// (the Knight, Assassin, Spellblade and Monk ledgers went with their reverted reworks, DECISIONS #428:
+// reviews/balance-baselines/2026-10-29-reverted-reworks/)
 const PRICES: Partial<Record<HeroId, Record<string, Price>>> = {
-  knight: KNIGHT_PRICES,
-  assassin: ASSASSIN_PRICES,
-  spellblade: SPELLBLADE_PRICES,
   shaman: SHAMAN_PRICES,
-  monk: MONK_PRICES,
 };
 
 const hero = process.argv[2] as HeroId;

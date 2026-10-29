@@ -24,7 +24,7 @@ describe('teaching tips', () => {
     const seen = new Set(['basics']);
     expect(nextTip(viewOf('shaman'), ctx, seen)?.id).toBe('totems');
     expect(nextTip(viewOf('spellblade'), { ...ctx, usesStars: true }, seen)?.id).toBe('lumen');
-    expect(nextTip(viewOf('monk'), ctx, seen)?.id).toBe('forms');
+    expect(nextTip(viewOf('monk'), ctx, seen)?.id).toBe('stance');
     expect(nextTip(viewOf('engineer'), ctx, seen)?.id).toBe('ally');
     expect(nextTip(viewOf('necromancer'), ctx, seen)?.id).toBe('ally');
   });

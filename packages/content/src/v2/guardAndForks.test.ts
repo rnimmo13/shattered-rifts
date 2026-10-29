@@ -1,5 +1,4 @@
-// DECISIONS #427: the Knight's Guard counts a hit her Barrier stops at least half of, and her starter gains a 1-Mana counter (Counter
-// Cut); the Shaman's Forks (N different random enemies, 25% more when only one enemy stands) and his new starter, Forked Lightning,
+// DECISIONS #427: the Shaman's Forks (N different random enemies, 25% more when only one enemy stands) and his new starter, Forked Lightning,
 // with Gathering Storm moved to the rewards.
 
 import { describe, expect, it } from 'vitest';
@@ -45,49 +44,6 @@ const play = (s: CombatState, id: string, target?: string): CombatState => {
   expect(act, `${id} playable`).toBeTruthy();
   return applyAction(db, s, act!).state;
 };
-const enemyTurn = (s: CombatState, move = 'slash'): CombatState => {
-  const h = heroOf(s);
-  for (const u of s.sides.b.units) u.intent = { move, target: h.id };
-  return applyAction(db, s, { type: 'endTurn' }).state;
-};
-
-describe('the Knight: Guard on half a hit, and Counter Cut (DECISIONS #427)', () => {
-  it('a big hit she stops half of leaves the attacker Open, and the earned-Opening trigger answers', () => {
-    // Slash 9 against 5 Barrier: 5 stopped, 4 through; the trait's 3 Barrier is the earned trigger
-    let s = fight('knight', []);
-    heroOf(s).barrier = 5;
-    s = enemyTurn(s);
-    expect(foe(s).statuses.opening).toBe(1);
-    expect(heroOf(s).hp).toBe(RIFTWALKERS.knight.hero.maxHp - 4);
-  });
-
-  it('exactly half counts; one short does not', () => {
-    // (a Squire's Slash is 9: 5 is more than half, 4 less; check the boundary with an even hit)
-    let s = fight('knight', []);
-    foe(s).statuses.sapped = 1; // Slash 9 - 1 = 8: 4 stopped is exactly half
-    heroOf(s).barrier = 4;
-    s = enemyTurn(s);
-    expect(foe(s).statuses.opening).toBe(1);
-    let t = fight('knight', []);
-    t.sides.b.units[0]!.statuses.sapped = 1;
-    heroOf(t).barrier = 3;
-    t = enemyTurn(t);
-    expect(foe(t).statuses.opening ?? 0).toBe(0);
-  });
-
-  it('Counter Cut: 6, +4 against an Open target (spent); 9 upgraded; in the starter', () => {
-    let s = fight('knight', ['counter-cut', 'counter-cut']);
-    foe(s).statuses.opening = 1;
-    s = play(s, 'counter-cut', foe(s).id);
-    expect(foe(s).hp).toBe(190);
-    expect(foe(s).statuses.opening ?? 0).toBe(0);
-    s = play(s, 'counter-cut', foe(s).id);
-    expect(foe(s).hp).toBe(184);
-    expect(db.cards['counter-cut+']!.effects[0]).toMatchObject({ amount: 9, riposte: 4 });
-    expect(RIFTWALKERS.knight.starter.filter((c) => c === 'counter-cut')).toHaveLength(1);
-    expect(db.cards['counter-cut']!.cost).toBe(1);
-  });
-});
 
 describe('the Shaman: Forks (DECISIONS #427)', () => {
   it('Forked Lightning hits two different enemies once each', () => {

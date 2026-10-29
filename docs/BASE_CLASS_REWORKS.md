@@ -1,5 +1,7 @@
 # BASE_CLASS_REWORKS — Shattered Rifts design and Claude Code handoff
 
+> **2026-10-29, DECISIONS #428:** the Knight, Assassin, Spellblade and Monk reworks were reverted to their earlier cards (Robert: they could not fight bosses and lost what he wants them to be). Only the Shaman's rework is live. Their documents and ledgers are archived in `reviews/balance-baselines/2026-10-29-reverted-reworks/`; nothing for those four classes below is in the game.
+
 Status: **implemented 2026-10-29** (DECISIONS #414-#419). The Knight, Assassin, Spellblade and Shaman directions below, and the Monk's Option A (Martial Forms and Mastery, approved by Robert with this brief), are live; the old versions are archived in `reviews/balance-baselines/2026-10-29-pre-identity-reworks/`. Each class's contract, disposition and checks are in `docs/reworks/<CLASS>.md`, its hand-priced ledger beside it, the new rates in `docs/14_CARD_COSTING.md` §15, and the art inventory in `docs/CLASS_REWORK_ART.md`. The Monk sections (§10, §12) are kept as written for the record; Options B and C were not chosen. Below is the brief as it was handed over.
 
 Work in `D:\Code\ShatteredRifts`. Implement these authorized class reworks, starting by archiving the existing versions intact. Preserve the class themes, deepen their strategies, and replace the recognizable Slay the Spire character engines rather than merely rename their effects. Complete implementation and validation; do not stop at a proposal. Do not deploy, publish, or discard unrelated changes.

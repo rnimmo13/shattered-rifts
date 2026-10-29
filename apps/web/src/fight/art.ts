@@ -256,7 +256,7 @@ function motifOf(c: CardDef): Motif {
   if (
     ops.some(
       (o) =>
-        (o.op === 'addCard' && o.card === 'buckshot-shell') ||
+        (o.op === 'addCard' && (o.card === 'sleeve-knife' || o.card === 'buckshot-shell')) ||
         // (the Assassin's knives: planting or pulling them, DECISIONS #416)
         o.op === 'embed' ||
         o.op === 'extract',
@@ -307,7 +307,10 @@ function effectEmblems(c: CardDef): string[] {
     else if (o.op === 'forge') out.push(c.hero === 'drunkard' ? 'shell' : 'sword');
     else if (o.op === 'stance') out.push('fist');
     else if (o.op === 'embed' || o.op === 'extract') out.push('daggers');
-    else if (o.op === 'addCard') out.push(o.card === 'buckshot-shell' ? 'shell' : 'book');
+    else if (o.op === 'addCard')
+      out.push(
+        o.card === 'buckshot-shell' ? 'shell' : o.card === 'sleeve-knife' ? 'daggers' : 'book',
+      );
     else if (o.op === 'status')
       out.push(
         o.status === 'might' || o.status === 'vigor'

@@ -1,20 +1,27 @@
 // Combat v2 content: heroes, starter decks, cards, companions and encounters (docs/08_COMBAT_V2.md).
 
-import { validateDb, type CombatDb, type HeroDef, type HeroTrait } from '@sr/combat';
+import {
+  CALM_EXIT_MANA,
+  validateDb,
+  type CombatDb,
+  type HeroDef,
+  type HeroTrait,
+} from '@sr/combat';
 import {
   addTo,
   barrier,
   plant,
   dmg,
   draw,
-  embed,
-  imbue,
+  forge,
   heal,
+  mana,
   on,
   per,
-  prepare,
   raise,
   scaled,
+  stance,
+  stars,
   status,
 } from './build';
 import { BOONS, HEARTS } from './boons';
@@ -77,34 +84,26 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     realm: 'aurelion',
     persona: 'Valeria',
     role: 'Knight',
-    // (rebuilt 2026-10-29, docs/BASE_CLASS_REWORKS.md §4, DECISIONS #415: Guard, Riposte and Thorns; the Ironclad copy is archived)
     trait: {
-      name: 'Hold and Answer',
-      text: 'Start every fight with 6 Barrier. Guard: when your Barrier stops at least half of an enemy attack hit, that enemy is left Open until the end of your next turn (one Opening per enemy). The first time each turn you earn an Opening, gain 3 Barrier.',
-      fightStart: [barrier(6)],
-      openings: true,
-      triggers: [on('opening', [barrier(3)], { once: true })],
+      name: 'Oathkeeper',
+      text: 'Start every fight with 6 Barrier and 6 Plating: your Barrier survives each turn up to your Plating, which shrinks by 1 a turn.',
+      fightStart: [barrier(6), status('plating', 6)],
     },
     hero: { id: 'knight', name: 'Knight', maxHp: 80, mana: 3, handSize: 5 },
-    starter: [
-      ...rep('strike', 3),
-      ...rep('defend', 4),
-      'counter-cut',
-      'sundering-blow',
-      'briarplate',
-    ],
+    starter: [...rep('strike', 5), ...rep('defend', 4), 'sundering-blow'],
     blurb:
-      'A knight of the Gilded Order. No companions: she meets every attack with her shield, answers the opening it gives her, and makes contact hurt.',
-    mechanics: ['Barrier', 'Openings', 'Riposte', 'Thorns', 'Exposed'],
+      'A knight of the Gilded Order. No companions: Might, Barrier and a deck that burns down to a point.',
+    mechanics: ['Barrier', 'Might', 'Exposed', 'Consume', 'Self-damage'],
     buildPaths: [
-      'Guard: stop at least half of an attack, and gain from every Opening',
-      'Riposte: heavy counters that spend Openings',
-      'Thorns: hurt every enemy that hits you',
+      'Bulwark: hit with your Barrier',
+      'Might: hit many times, harder and harder',
+      'Consume: burn your own cards for value',
+      'Blood: pay HP for Mana, cards and Might',
     ],
     howTo: [
-      'Barrier soaks damage, but it falls away at the start of your next turn. When it stops at least half of an enemy attack hit, that enemy is left Open.',
-      "A Riposte spends the target's Opening for its bonus (Sundering Blow, Return the Blow). Other attacks never spend it. An Opening lasts until the end of your next turn.",
-      'Thorns hurt each enemy that hits you, until the enemy turn is over (Briarplate). Some cards open an enemy themselves, even one that is not attacking.',
+      'Barrier soaks damage, but it falls away at the start of your next turn. Your Plating keeps some of it through the first turns.',
+      'Exposed enemies take 50% more from your attacks: Sundering Blow sets it up.',
+      'Your cards come in many shapes: hit with your Barrier, pile up Might and hit many times, consume your own cards for value, or pay HP for Mana, cards and Might.',
     ],
   },
   engineer: {
@@ -217,13 +216,12 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     realm: 'umbral',
     persona: 'Sylas',
     role: 'Assassin',
-    // (rebuilt 2026-10-29, docs/BASE_CLASS_REWORKS.md §6, DECISIONS #416: Preparation and embedded knives; the Silent copy is archived)
     trait: {
-      name: 'Knife Work',
-      text: 'Start every fight with 1 Preparation and a knife in every enemy. The first time each turn you embed a knife, gain 1 Preparation. Whenever you pull a knife, deal 3 damage to that enemy.',
-      fightStart: [prepare(1), embed(1, 'allFoes')],
-      triggers: [on('embed', [prepare(1)], { once: true }), on('extract', [dmg(3, 'target')])],
+      name: 'Hidden Blades',
+      text: 'At the start of your turn, add a Dagger to your hand.',
+      turnStart: [addTo('sleeve-knife')],
     },
+    // (the Silent's shape, DECISIONS #368: 70 HP, 5 Strikes, 5 Defends, Neutralize and Survivor)
     hero: {
       id: 'assassin',
       name: 'Assassin',
@@ -231,26 +229,19 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
       mana: 3,
       handSize: 5,
     },
-    starter: [
-      ...rep('strike', 4),
-      ...rep('defend', 3),
-      'quiet-incision',
-      'draw-steel',
-      'finishing-thrust',
-      'patient-footwork',
-    ],
+    starter: [...rep('strike', 5), ...rep('defend', 5), 'hobbling-jab', 'duck-and-weave'],
     blurb:
-      'A killer who sets up the perfect strike: he plants knives in his enemies, builds Preparation, and chooses the moment to pull them and finish the job.',
-    mechanics: ['Preparation', 'Knives', 'Faltering', 'Barrier'],
+      'A cutpurse with a sleeve full of blades: a Dagger finds its way into his hand every turn. Daggers, Bleed and sleight of hand.',
+    mechanics: ['Daggers', 'Bleed', 'Discard', 'Sly', 'Faltering'],
     buildPaths: [
-      'Execution: build Preparation, then spend it on a finisher',
-      'Knives: spread knives over the enemies, then pull them',
-      'Shadow: defence and cycling on the move',
+      'Daggers: Daggers, and the attacks around them',
+      'Bleed: stack it, make it burn harder',
+      'Sleight: draw, discard and dodge',
     ],
     howTo: [
-      'Preparation (up to 3) stays from turn to turn. Setup cards and your trait give it; finishers such as Finishing Thrust spend it for more damage.',
-      'Knife cards leave a knife in the enemy they hit (up to 3 each). Cards such as Draw Steel pull them out for a payoff, and every knife you pull deals 3 more damage.',
-      'A knife does nothing while it is in an enemy, and is lost if that enemy dies: pull them while they count.',
+      'Every turn a Dagger comes to your hand (Hidden Blades): a 0-cost Attack that is consumed when played. Many cards make more of them, and Edge makes each one hit harder.',
+      'Bleed hurts for its stacks at the start of the enemy’s turn and then shrinks by 1. Pile it on and let it work.',
+      'Discarding is a resource: a card with Sly is played for free when a card makes you discard it.',
     ],
   },
   shaman: {
@@ -299,12 +290,16 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     realm: 'aurelion',
     persona: 'Solen',
     role: 'Monk',
-    // (rebuilt 2026-10-29, docs/BASE_CLASS_REWORKS.md §12 Option A, DECISIONS #419: Martial Forms and Mastery; the stances are archived)
     trait: {
-      name: 'Martial Forms',
-      text: "You fight in a form, starting in Current. Once each turn, completing your form's technique gives 1 Mastery and 3 Barrier.",
-      forms: 'current',
-      triggers: [on('technique', [barrier(3)])],
+      name: 'Inner Fire',
+      // (its 2 Barrier went: a Flow deck changes stance two or three times a turn, DECISIONS #390; Primed on leaving Fury, #412)
+      // (leaving Serene's 2 Mana was an engine rule; it is the trait's now, so the trait table counts it: #413)
+      text: 'Whenever you enter a stance, gain 1 Fervor. The first time each turn you leave Serene, gain 2 Mana. Whenever you leave Fury, gain 2 Primed.',
+      triggers: [
+        on('stance', [status('mantra', 1)]),
+        on('stanceLeft', [mana(CALM_EXIT_MANA)], { stance: 'calm', once: true }),
+        on('stanceLeft', [status('vigor', 2)], { stance: 'wrath' }),
+      ],
     },
     hero: {
       id: 'monk',
@@ -312,27 +307,22 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
       maxHp: 82,
       mana: 3,
       handSize: 5,
+      sigil: [stance('calm')],
     },
-    starter: [
-      ...rep('strike', 3),
-      ...rep('defend', 3),
-      'still-guard',
-      'planted-heel',
-      'kindle-fury',
-      'turning-palm',
-    ],
+    starter: [...rep('strike', 4), ...rep('defend', 4), 'kindle-fury', 'still-guard'],
     blurb:
-      'A monk of the Still Flame who fights in martial forms. Each form asks for a different pair of techniques; complete it to gain Mastery, then spend Mastery on a finishing move.',
-    mechanics: ['Forms', 'Techniques', 'Mastery', 'Foresee'],
+      'A monk who fights in stances. Starts every fight Serene, and every stance he enters stokes his Fervor towards Radiance.',
+    mechanics: ['Stances', 'Fervor', 'Foresee', 'Self-damage'],
     buildPaths: [
-      'Root: discipline, with Defensive techniques and defensive Mastery',
-      'Current: flow, alternating guard and strike, planning your hand',
-      'Ember: pressure, varied strikes at one enemy and a Mastery finisher',
+      'Fury: get in, hit hard, live through it',
+      'Flow: change stance again and again; every change pays',
+      'Radiant: build Fervor to 10 for a triple-damage turn',
     ],
     howTo: [
-      'You are always in one form (the Form panel by your hero), starting in Current. Its technique is two cards: Root wants two different Defensive techniques, Current a Defensive then a Striking technique, Ember two different Striking techniques at the same enemy.',
-      'Only cards marked as a Defensive or Striking technique count, and only when you play them from your hand. Complete it (once a turn) for 1 Mastery and 3 Barrier.',
-      'Mastery (up to 3) stays from turn to turn. Cards such as Mountain Breaker spend up to 2 of it for more. Some cards change your form; your progress starts again when you do.',
+      'You start Serene. You are in at most one stance at a time, and every stance you enter gives 1 Fervor (Inner Fire); leaving Fury gives 2 Primed for your next attack.',
+      'Fury doubles the damage you deal, but you take 50% more. Leaving Serene gives you 2 Mana (once a turn).',
+      'Fervor builds to 10, then you enter Radiant: triple damage until your turn ends.',
+      'Burst in Fury, dance between stances, or build Fervor towards Radiant.',
     ],
   },
 
@@ -340,33 +330,34 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     realm: 'starfall',
     persona: 'Obsidia',
     role: 'Spellblade',
-    // (rebuilt 2026-10-29, docs/BASE_CLASS_REWORKS.md §7, DECISIONS #417: Imbue and Discharge; the Regent copy is archived)
     trait: {
-      name: 'Glass and Ember',
-      text: 'Start every fight with a Ward enchantment on your Obsidian Blade. The first time each turn you Imbue, draw 1 card and gain 2 Barrier.',
-      fightStart: [imbue('ward')],
-      triggers: [on('imbue', [draw(1), barrier(2)], { once: true })],
+      name: 'Kindled',
+      text: 'At the start of your turn, gain 1 Arcana and Sharpen your Obsidian Blade by 1.',
+      turnStart: [stars(1), forge('starforged-blade', 1)],
     },
+    // the Slay the Spire 2 Regent's shape (DECISIONS #369): 75 HP, 3 Arcana as every fight begins (his Divine
+    // Right), and his starter (4 Strike, 4 Defend, Falling Star = Cinderfall, Venerate = Gather Arcana). Kindled is hers, not his.
     hero: {
       id: 'spellblade',
       name: 'Spellblade',
       maxHp: 75,
       mana: 3,
       handSize: 5,
+      sigil: [stars(3)],
     },
-    starter: [...rep('strike', 4), ...rep('defend', 4), 'ember-inscription', 'obsidian-cut'],
+    starter: [...rep('strike', 4), ...rep('defend', 4), 'meteor-jab', 'gather-light'],
     blurb:
-      'A spellblade of black glass and ember. Her spells Imbue her Obsidian Blade with Ember, Glass or Ward, and her blade attacks Discharge them: spend one now, or hold two for a burst.',
-    mechanics: ['Imbue', 'Discharge', 'Enchantments', 'Barrier'],
+      'A spellblade of black glass and ember. Spends Arcana on her biggest cards, calls an Obsidian Blade that every Sharpen improves for good, and fills her hand with Retainers and borrowed cards.',
+    mechanics: ['Arcana', 'Sharpen', 'Created cards', 'Auras'],
     buildPaths: [
-      'Edge: imbue often and discharge one at a time',
-      'Burst: fill both positions, then discharge them together',
-      'Ward: weave Wards and Barrier, with payoffs for what the blade holds',
+      'Blade: sharpen the Obsidian Blade and swing it',
+      'Arcana: gain it, then spend it on big cards',
+      'Court: create cards and play many',
     ],
     howTo: [
-      'Your Obsidian Blade holds two enchantments (above your hero). Spells such as Ember Inscription Imbue one; with both taken, you choose which one the new one replaces.',
-      'Blade attacks such as Obsidian Cut Discharge them: Ember adds 3 to the first hit, Glass breaks for 2 on every enemy after the attack, Ward gives 3 Barrier. Spend one now, or keep it for a bigger attack.',
-      'An enchantment lasts until you discharge it or the fight ends. Some attacks discharge both at once.',
+      'Arcana is a second resource that lasts the whole fight. You start every fight with 3 and gain 1 more each turn. Cards with an orange orb spend it; others gain it.',
+      'The Obsidian Blade (2 Mana, Hold) comes to your hand on your first turn. Every Sharpen makes it hit harder for the rest of the fight, and some Auras make it strike every enemy or strike twice.',
+      'Court cards create cards: Retainers (free Attacks and guards), Neutral cards, Rubble. Created cards feed the Auras that count them.',
     ],
   },
   drunkard: {
@@ -718,7 +709,10 @@ export function canonicalCard(id: string): string {
   // (a card retired into one that was itself retired later follows the chain to a card still in the game)
   let now = m ? RETIRED_CARDS[m[3] as string] : undefined;
   for (let i = 0; now && RETIRED_CARDS[now] && i < 8; i++) now = RETIRED_CARDS[now];
-  return m && now ? `${m[1] ?? ''}${m[2] ?? ''}${now}${m[4] ?? ''}` : id;
+  if (!m || !now) return id;
+  const full = `${m[1] ?? ''}${m[2] ?? ''}${now}${m[4] ?? ''}`;
+  // (a roll or engraving the replacement cannot carry is dropped rather than losing the card, and the save with it: DECISIONS #428)
+  return COMBAT_DB.cards[full] ? full : `${now}${m[4] ?? ''}`;
 }
 
 /**
@@ -728,12 +722,13 @@ export function canonicalCard(id: string): string {
  * made under the old rules), and the player is told what happened (`reworkNotice`).
  */
 export const CLASS_REWORKS: Partial<Record<HeroId, { version: number; summary: string }>> = {
-  knight: { version: 1, summary: 'Guard, Riposte and Thorns' },
-  assassin: { version: 1, summary: 'Preparation and embedded knives' },
-  spellblade: { version: 1, summary: 'Imbue and Discharge' },
+  // (version 2: the rework reverted to her earlier cards, DECISIONS #428)
+  knight: { version: 2, summary: 'back to her earlier cards' },
+  assassin: { version: 2, summary: 'back to his earlier cards' },
+  spellblade: { version: 2, summary: 'back to her earlier cards' },
   // (the Shaman was rebuilt twice the same day: version 2 is the elements, totems and Trinity of DECISIONS #420)
   shaman: { version: 2, summary: 'elements, totems and Trinity' },
-  monk: { version: 1, summary: 'Martial Forms and Mastery' },
+  monk: { version: 2, summary: 'back to his earlier cards' },
 };
 
 /** A Riftwalker id as it is now: an old id becomes its class id, and anything else comes back as it was. */

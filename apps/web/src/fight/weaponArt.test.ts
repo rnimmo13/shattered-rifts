@@ -12,9 +12,8 @@ describe('the weapon a hero strikes with', () => {
     expect(weaponFor('drunkard')).toBe('shotgun');
   });
 
-  it('Valeria answers with her shield for a Riposte, and cuts with her sword otherwise (DECISIONS #415)', () => {
+  it('Valeria bashes with her shield when the damage grows with her Barrier, and cuts with her sword otherwise', () => {
     expect(weaponFor('knight', card('bulwark-blow'))).toBe('shield');
-    expect(weaponFor('knight', card('iron-rejoinder'))).toBe('shield');
     expect(weaponFor('knight', card('dawn-smite'))).toBe('sword');
   });
 

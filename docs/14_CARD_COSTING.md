@@ -376,9 +376,11 @@ resources. They are marked *(legacy)* in the tables above as each class is rebui
 These are hypotheses made by hand for the rebuilt classes, from how often a thing happens in a four-to-six-turn fight. A cap or a
 condition is priced at how often it is really met, never as a free multiplier. Gross output and the cost of building a resource are
 priced separately: a producer card is priced for what it makes, a consumer for what it does with it, and the package is checked as a
-whole (each class's ledger in `docs/reworks/`).
+whole (each class's ledger in `docs/reworks/`). Since DECISIONS #428 only the Shaman's rework is live; the other four are reverted.
 
 ### The Knight: Guard, Riposte, Thorns (DECISIONS #415)
+
+> **Reverted (2026-10-29, DECISIONS #428):** the Knight is back to the cards from before the identity rework; no live card uses these rates. Kept for reference (the rework is archived in `reviews/balance-baselines/2026-10-29-reverted-reworks/`).
 
 An **Opening** is put on an enemy when her Barrier stops one of its attack hits completely (at least 1 damage; not a Shielded,
 Ghostly, cancelled or overflow hit). One per enemy; it goes at the end of her next turn.
@@ -408,6 +410,8 @@ level with the middle of the roster. It no longer starts with Plating.
 
 ### The Assassin: Preparation and embedded knives (DECISIONS #416)
 
+> **Reverted (2026-10-29, DECISIONS #428):** the Assassin is back to the cards from before the identity rework; no live card uses these rates. Kept for reference (the rework is archived in `reviews/balance-baselines/2026-10-29-reverted-reworks/`).
+
 Two resources priced so a package is never counted twice: the **producer** is paid for what it stores, the **consumer** for what it
 does with it *minus* what it uses up.
 
@@ -430,6 +434,8 @@ The trait, **Knife Work** (1 Preparation and a knife in every enemy at the start
 3 damage to an enemy for every knife pulled from it): ~14 in the starter (one embed and one pull card in 11), ~24 in a knife deck.
 
 ### The Spellblade: Imbue and Discharge (DECISIONS #417)
+
+> **Reverted (2026-10-29, DECISIONS #428):** the Spellblade is back to the cards from before the identity rework; no live card uses these rates. Kept for reference (the rework is archived in `reviews/balance-baselines/2026-10-29-reverted-reworks/`).
 
 Two positions on the Obsidian Blade; a spell Imbues a charge, a blade attack Discharges it. The **producer** (the Imbue) is paid for the
 charge; the **consumer** (the Discharge) only for the choice and timing it adds, so a package is never counted twice.
@@ -486,6 +492,8 @@ at its spirit's act (a Hawk's dive 5.4, a Bear's 6, a Thunderbird's 3.9, ~6 for 
 is priced exactly as Bleed.
 
 ### The Monk: Martial Forms and Mastery (DECISIONS #419)
+
+> **Reverted (2026-10-29, DECISIONS #428):** the Monk is back to the cards from before the identity rework; no live card uses these rates. Kept for reference (the rework is archived in `reviews/balance-baselines/2026-10-29-reverted-reworks/`).
 
 One form at a time; a form names two techniques that complete his objective this turn (Root: two different Defensive; Current: a
 Defensive then a Striking; Ember: two different Striking at one enemy). Only tagged cards played from hand count; it completes at

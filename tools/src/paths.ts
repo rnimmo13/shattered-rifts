@@ -19,11 +19,11 @@ const POOLS: Record<HeroId, string> = {
 };
 /** which pool heading is which build path (a heading that matches nothing here carries on with the build path before it; null = no build path) */
 const HEADS: Record<HeroId, [RegExp, number | null][]> = {
-  // (the identity rework, DECISIONS #415)
   knight: [
-    [/guard/i, 0],
-    [/riposte/i, 1],
-    [/thorns/i, 2],
+    [/bulwark/i, 0],
+    [/might/i, 1],
+    [/consume/i, 2],
+    [/blood/i, 3],
     [/basics|glue/i, null],
   ],
   engineer: [
@@ -44,12 +44,11 @@ const HEADS: Record<HeroId, [RegExp, number | null][]> = {
     [/suits/i, 2],
     [/basics|glue/i, null],
   ],
-  // (the identity rework, DECISIONS #416)
   assassin: [
-    [/execution/i, 0],
-    [/knives/i, 1],
-    [/shadow/i, 2],
-    [/basics|glue/i, null],
+    [/shivs/i, 0],
+    [/bleed|seared/i, 1],
+    [/sleight/i, 2],
+    [/basics/i, null],
   ],
   // (the identity rework, DECISIONS #420: his three elements)
   shaman: [
@@ -58,19 +57,17 @@ const HEADS: Record<HeroId, [RegExp, number | null][]> = {
     [/storm/i, 2],
     [/basics|glue/i, null],
   ],
-  // (the identity rework, DECISIONS #419)
   monk: [
-    [/root/i, 0],
-    [/current/i, 1],
-    [/ember/i, 2],
-    [/basics|glue/i, null],
+    [/fury/i, 0],
+    [/flow/i, 1],
+    [/radiant/i, 2],
+    [/basics/i, null],
   ],
-  // (the identity rework, DECISIONS #417)
   spellblade: [
-    [/edge/i, 0],
-    [/burst/i, 1],
-    [/ward/i, 2],
-    [/basics|glue/i, null],
+    [/blade/i, 0],
+    [/arcana/i, 1],
+    [/court/i, 2],
+    [/basics/i, null],
   ],
   // (Dorian is the Necrobinder's card list: a first sort only, as build paths are hidden for now, DECISIONS #365)
   necromancer: [
@@ -114,11 +111,10 @@ const BY_ID: Record<string, number> = {
   'compound-fear': 1,
   hamstring: 1,
   'trick-of-the-light': 2,
-  // (the Monk's form-setting cards sit under glue but belong to their form, DECISIONS #419)
-  'settle-the-root': 0,
-  'find-the-current': 1,
-  'held-breath': 1,
-  'stoke-the-ember': 2,
+  'rending-hands': 0,
+  'blood-on-the-sand': 0,
+  'open-palm': 1,
+  'shield-of-faith': 2,
   'dutch-courage': 2,
   'mean-drunk': 2,
   'toll-in-advance': 0,
@@ -164,7 +160,10 @@ const BY_ID: Record<string, number> = {
   masquerade: 2,
   // assassin: none (his Legendaries went with his older cards: the Silent's list, DECISIONS #368)
   // shaman: none (his cards sit under their own headings: he is the Defect's list now)
-  // monk: none (his three went with his stances, DECISIONS #419)
+  // monk (was barbarian)
+  'eye-of-the-storm': 0,
+  'perfect-balance': 1,
+  'still-flame-ascendant': 2,
   // (spellblade: her headings decide, she has no Legendary)
   // drunkard
   'the-twelve-gauge-opera': 0,
@@ -269,13 +268,17 @@ const NO_PATH = [
   'tangle-wire',
   'quick-hands',
   'cold-open',
+  'crushing-palm',
   'inner-sight',
+  'quick-palms',
   'broken-bottle',
   'chaser',
   'dumpster-dive',
   // glue for the 20/30/25 rarity target (DECISIONS #341)
   'hunger-unbound',
   'relay-network',
+  'thousand-palms',
+  'unbroken-calm',
   // glue for the 20/30/25 rarity target (DECISIONS #341)
   // glue for the 20/30/25 rarity target (DECISIONS #341)
   'swarm-surge',
@@ -286,6 +289,7 @@ const NO_PATH = [
   'careful-plan',
   'countless-nicks',
   'plague-cloud',
+  'poise',
   'booby-trapped-window',
   'broken-window-theory',
   'soul-tithe',
@@ -304,6 +308,9 @@ const NO_PATH = [
   'veil-of-dust',
   'tricksters-vanish',
   'nimble-hands',
+  'spirit-shield',
+  'breath-between-blows',
+  'held-breath',
   'whiskey-miracle',
   'rock-bottom',
   'liquid-courage',

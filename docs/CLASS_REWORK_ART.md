@@ -1,5 +1,7 @@
 # Class rework art: what is reused, new, retired and missing (2026-10-29)
 
+> **2026-10-29, DECISIONS #428:** the Knight, Assassin, Spellblade and Monk reworks were reverted to their earlier cards (Robert: they could not fight bosses and lost what he wants them to be). Only the Shaman's rework is live. Their documents and ledgers are archived in `reviews/balance-baselines/2026-10-29-reverted-reworks/`; nothing for those four classes below is in the game.
+
 For the identity reworks of `docs/BASE_CLASS_REWORKS.md`. **No image was generated for this work**: every new card uses the game's
 procedural placeholder (`apps/web/src/art/proceduralArt.ts`) until a picture is made and approved, and every on-screen mark (Openings,
 knives, enchantments, totem positions, the command button, form pips) is drawn in code (CSS/SVG), never baked into a picture. Nothing

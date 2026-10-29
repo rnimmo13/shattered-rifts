@@ -23,19 +23,13 @@ const CARD_WORDS = ['exhaust', 'retain', 'ethereal', 'innate', 'discard', 'scry'
 /** Mechanics that belong to one Riftwalker's way of playing */
 const SIGNATURE_WORDS = [
   'rune',
+  'stance',
   'command',
   'element',
   'trinity',
-  'form',
-  'technique',
   'stars',
   'forge',
-  'knives',
-  'prep',
-  'imbue',
-  'discharge',
-  'riposte',
-  'guard',
+  'sleeve-knife',
   'buckshot-shell',
   'stagger',
 ];
@@ -233,8 +227,8 @@ export function LearnScreen() {
   const basics = TIP_RULES.find((t) => t.id === 'basics');
   // (the Shaman's spirits, DECISIONS #418)
   const runes = Object.values(COMBAT_DB.totems ?? {});
-  // (the stances, Fervor and the old totems' Focus left every live card with the 2026-10-29 reworks: not taught, still defined)
-  const RETIRED: readonly string[] = ['calm', 'wrath', 'radiant', 'mantra', 'resonance'];
+  // (the old totems' Focus left every live card with the Shaman's rework: not taught, still defined; the Monk's stances are back, #428)
+  const RETIRED: readonly string[] = ['resonance'];
   const statuses = Object.entries(STATUS_INFO)
     .filter(([id]) => !RETIRED.includes(id))
     .map(([, s]) => s);

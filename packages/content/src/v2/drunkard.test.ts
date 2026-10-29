@@ -130,11 +130,11 @@ describe('innate traits', () => {
     );
   });
 
-  it("the Knight's trait gives 6 Barrier (and no Plating now, DECISIONS #415), Dorian's Grave Chill curses when a card is consumed (no Fate at the start, DECISIONS #398)", () => {
+  it("Valeria's Oathkeeper gives 6 Barrier and 6 Plating, Dorian's Grave Chill curses when a card is consumed (no Fate at the start, DECISIONS #398)", () => {
     const m = fight('knight', []);
     const hero = m.sides.a.units[m.sides.a.units.length - 1]!;
     expect(hero.barrier).toBeGreaterThanOrEqual(6);
-    expect(hero.statuses.plating ?? 0).toBe(0);
+    expect(hero.statuses.plating).toBe(6);
     let g = fight('necromancer', ['gather-souls']);
     const fate = (s: CombatState) =>
       s.sides.b.units.reduce((n, u) => n + (u.statuses.doom ?? 0), 0);

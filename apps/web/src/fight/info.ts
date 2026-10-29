@@ -64,7 +64,7 @@ export const STATUS_INFO: Record<
     name: 'Serene',
     glyph: '☾',
     tone: 'good',
-    text: 'A stance (no live card enters it since the Monk became Martial Forms, DECISIONS #419).',
+    text: 'A stance. Leaving it gives the Monk 2 Mana (once a turn, his trait Inner Fire).',
   },
   wrath: {
     name: 'Fury',
@@ -567,7 +567,7 @@ export const KEYWORD_INFO: Record<string, { name: string; text: string }> = {
   },
   forge: {
     name: 'Sharpen',
-    text: 'Every copy of your weapon (the Old Twelve Gauge) permanently gains damage. If you have none, you get one.',
+    text: 'Every copy of your weapon (the Obsidian Blade or the Old Twelve Gauge) permanently gains damage. If you have none, you get one.',
   },
   // (the Spellblade's, DECISIONS #417)
   imbue: {
@@ -587,6 +587,7 @@ export const KEYWORD_INFO: Record<string, { name: string; text: string }> = {
     name: 'Preparation',
     text: 'Up to 3, kept from turn to turn. Setup cards and Knife Work give it; a finisher spends it ("spend up to 3 Preparation") for its bonus.',
   },
+  'sleeve-knife': { name: 'Dagger', text: 'A 0-cost Attack that is consumed.' },
   sly: {
     name: 'Sly',
     text: 'When a card makes you discard it, it is played for free (not when you end your turn).',
@@ -621,8 +622,9 @@ function wordOf(name: string): RegExp {
   return re;
 }
 
-/** The weapons Sharpen can name: the Drunkard's gun (the Spellblade's blade is enchanted, not sharpened, since DECISIONS #417). */
+/** The weapons Sharpen can name: the Spellblade's blade and the Drunkard's gun. */
 const WEAPON_NAME: Record<string, string> = {
+  'starforged-blade': 'the Obsidian Blade',
   'old-twelve-gauge': 'the Old Twelve Gauge',
 };
 
@@ -720,6 +722,7 @@ export function keywordsOf(
     if (o.ops?.some((x) => x.op === 'riposte')) add(KEYWORD_INFO['riposte']);
     if (o.op === 'stars') add(KEYWORD_INFO['stars']);
     if (o.op === 'forge') add(sharpenInfo(weapon));
+    if (o.op === 'addCard' && o.card === 'sleeve-knife') add(KEYWORD_INFO['sleeve-knife']);
     // (knives anywhere on the card: an Aura's trigger, a condition, a count of them)
     if (
       o.op === 'embed' ||

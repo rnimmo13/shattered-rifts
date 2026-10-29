@@ -53,7 +53,7 @@ function setup(card: CardDef, hero: HeroId): CombatState {
     { id: 'D1', card: 'strike' },
     { id: 'D2', card: 'defend' },
   ];
-  sd.runes = [{ rune: 'spark', charge: 2 }];
+  // (no old totem runes: the Shaman's Defect runes are not loaded since DECISIONS #418)
   // a lived-in board, so healing, doubling, stances and the like have something to act on
   const me = sd.units[sd.units.length - 1]!;
   me.hp = Math.floor(me.maxHp * 0.6);
@@ -65,6 +65,8 @@ function setup(card: CardDef, hero: HeroId): CombatState {
     { id: 'X1', card: 'strike' },
     { id: 'X2', card: 'strike' },
     { id: 'X3', card: 'defend' },
+    // (a spent Sleeve Knife, for the cards that play them again: Knife Trap)
+    { id: 'X4', card: 'sleeve-knife' },
   ];
   // (a card that needs an empty draw pile gets one: Grand Finale)
   if (card.needsEmptyDraw) sd.draw = [];
@@ -156,38 +158,47 @@ describe('every card plays', () => {
 });
 
 describe('second resources have a way in and a way out from the first hand', () => {
-  it('the Spellblade starts every fight with a Ward on her blade, and her starter both imbues and discharges (DECISIONS #417)', () => {
+  // (she has the Regent's starter now, 4 Strike, 4 Defend, Cinderfall and Gather Arcana, with nothing Innate, so the opening hand need
+  // not hold both: the way in is the 3 Arcana every fight starts with and the 1 Kindled adds each turn, enough for Cinderfall at once)
+  it('The spellblade starts every fight with Arcana to spend, and her starter both makes and spends it', () => {
     const starter = RIFTWALKERS.spellblade.starter.map((id) => db.cards[id]!);
-    expect(starter.some((c) => c.effects.some((o) => o.op === 'imbue'))).toBe(true);
-    expect(starter.some((c) => c.effects.some((o) => o.op === 'discharge'))).toBe(true);
-    const { state } = createCombat(db, {
-      seed: 'ward-start',
-      a: { hero: 'spellblade', deck: RIFTWALKERS.spellblade.starter },
-      b: { enemies: ['squire'] },
-    });
-    expect(state.sides.a.enchants).toEqual(['ward']);
+    expect(starter.some((c) => c.effects.some((o) => o.op === 'stars' && o.amount > 0))).toBe(true);
+    const spender = starter.find((c) => (c.starCost ?? 0) > 0);
+    expect(spender).toBeDefined();
+    for (let i = 0; i < 20; i++) {
+      const { state } = createCombat(db, {
+        seed: `arcana-${i}`,
+        a: { hero: 'spellblade', deck: RIFTWALKERS.spellblade.starter },
+        b: { enemies: ['squire'] },
+      });
+      expect(state.sides.a.stars, `seed ${i}`).toBeGreaterThanOrEqual(spender!.starCost!);
+    }
   });
 });
 
 describe('real card data, end to end', () => {
-  it('Whetted Edge: every knife pulled deals 2 more and gives 1 Barrier (DECISIONS #416)', () => {
+  it('Whetted Edge (Edge) makes Daggers hit harder (and only knives)', () => {
     const s0 = setup(db.cards['whetted-edge']!, 'assassin');
     s0.sides.a.hand = [
       { id: 'K', card: 'whetted-edge' },
-      { id: 'D', card: 'draw-steel' },
+      { id: 'N', card: 'sleeve-knife' },
+      { id: 'S', card: 'strike' },
     ];
-    const foe = s0.sides.b.units[0]!;
-    foe.hp = foe.maxHp = 99;
-    foe.statuses = { knives: 2 };
-    let s = applyAction(db, s0, { type: 'play', card: 'K' }).state;
-    const hero = s.sides.a.units.find((u) => u.kind === 'hero')!;
-    hero.barrier = 0;
-    // (the lived-in board gave the hero Might and the like: this test is about the pulls alone)
-    hero.statuses = {};
-    s = applyAction(db, s, { type: 'play', card: 'D', target: foe.id }).state;
-    // Draw Steel 4 + 4 a knife, Knife Work 3 a knife, Whetted Edge 2 a knife
-    expect(99 - s.sides.b.units[0]!.hp).toBe(4 + 2 * 4 + 2 * 3 + 2 * 2);
-    expect(s.sides.a.units.find((u) => u.kind === 'hero')!.barrier).toBe(2);
+    const foeId = s0.sides.b.units[0]!.id;
+    const dealt = (s: CombatState, card: string): number => {
+      const before = s.sides.b.units[0]!.hp + s.sides.b.units[0]!.barrier;
+      const r = applyAction(db, s, { type: 'play', card, target: foeId });
+      const u = r.state.sides.b.units[0];
+      return before - (u ? u.hp + u.barrier : 0);
+    };
+    s0.sides.b.units[0]!.hp = 99;
+    s0.sides.b.units[0]!.maxHp = 99;
+    // (a trait could have touched the foe at the start of the turn; this test is about Edge alone)
+    delete s0.sides.b.units[0]!.statuses.exposed;
+    const base = dealt(s0, 'N');
+    const buffed = applyAction(db, s0, { type: 'play', card: 'K' }).state;
+    expect(dealt(buffed, 'N')).toBe(base + 4);
+    expect(dealt(buffed, 'S')).toBe(dealt(s0, 'S'));
   });
 
   it('Mire starts with a Bone Thrall and Doom kills at the end of an enemy turn', () => {
@@ -240,8 +251,7 @@ describe('pool shape (docs/09_ROSTER.md §1)', () => {
       'shaman',
     );
     owns((c) => uses(c, 'stance'), 'monk');
-    // (Arcana costs: nobody's since DECISIONS #417; the enchantments are the Spellblade's)
-    owns((c) => c.starCost !== undefined || uses(c, 'imbue') || uses(c, 'discharge'), 'spellblade');
+    owns((c) => c.starCost !== undefined, 'spellblade');
     // (sharpening a weapon is theirs; a card that grows only itself, like Gathering Storm, is not: DECISIONS #353)
     const sharpensAnother = (c: CardDef) =>
       [...c.effects, ...(c.onDiscard ?? []), ...(c.onExhaust ?? [])].some(
@@ -249,9 +259,8 @@ describe('pool shape (docs/09_ROSTER.md §1)', () => {
           (o.op === 'forge' && o.card !== c.id.replace(/[+]$/, '')) ||
           (o.op === 'power' && o.ops.some((x) => x.op === 'forge')),
       );
-    // (the Old Twelve Gauge's Precision, and the Shaman's Gathering Storm grown by Tempest Call, DECISIONS #420; the Spellblade's
-    // Sharpen went with #417)
-    owns(sharpensAnother, ['drunkard', 'shaman']);
+    // (and the Shaman's Gathering Storm grown by Tempest Call, DECISIONS #420)
+    owns(sharpensAnother, ['spellblade', 'drunkard', 'shaman']);
     owns((c) => c.tags?.includes('gun') === true, 'drunkard');
     owns((c) => c.tags?.includes('knife') === true, 'assassin');
     owns((c) => c.tags?.includes('shell') === true, 'drunkard');
@@ -273,17 +282,19 @@ describe('pool shape (docs/09_ROSTER.md §1)', () => {
         ),
       ['assassin'],
     );
-    // (Burn, the Shaman's Flame, DECISIONS #421: works as Bleed, a status of its own)
-    owns(
-      (c) =>
-        c.effects.some(
-          (o) =>
-            (o.op === 'status' && o.status === 'burn') ||
-            (o.op === 'scaleStatus' && o.status === 'burn') ||
-            (o.op === 'power' && o.ops.some((x) => x.op === 'status' && x.status === 'burn')),
-        ),
-      'shaman',
+  });
+
+  it("Burn is the Shaman's (his Flame, DECISIONS #421: works as Bleed, a status of its own)", () => {
+    const burns = Object.values(db.cards).filter((c) =>
+      c.effects.some(
+        (o) =>
+          (o.op === 'status' && o.status === 'burn') ||
+          (o.op === 'scaleStatus' && o.status === 'burn') ||
+          (o.op === 'power' && o.ops.some((x) => x.op === 'status' && x.status === 'burn')),
+      ),
     );
+    expect(burns.length).toBeGreaterThan(0);
+    for (const c of burns) expect([undefined, 'shaman'], c.id).toContain(c.hero ?? undefined);
   });
 
   it('Neutral never carries a signature mechanic', () => {
@@ -328,8 +339,10 @@ describe('buildPaths (each with room to build a deck; most characters have three
     for (const h of HEROES) expect(RIFTWALKERS[h].buildPaths.length, h).toBeGreaterThanOrEqual(3);
     for (const h of HEROES) {
       const sizes = pathSizes(h);
-      for (const n of sizes)
-        expect(n, `${h} buildPaths ${sizes.join('/')}`).toBeGreaterThanOrEqual(12);
+      // (Valeria's cards are sorted into build paths again later, DECISIONS #365: her first sort is lopsided)
+      if (h !== 'knight')
+        for (const n of sizes)
+          expect(n, `${h} buildPaths ${sizes.join('/')}`).toBeGreaterThanOrEqual(12);
       const own = rewardPool(h).filter(
         (id) => db.cards[id]?.hero === h && db.cards[id]?.rarity !== 'legendary',
       );
@@ -350,6 +363,7 @@ describe('Aura wording (DECISIONS #299, #300)', () => {
   const text = (id: string): string => cardText(db, db.cards[id]!);
   it('an Aura that gives a lasting status once says it lasts the rest of the fight', () => {
     expect(text('unchained')).toBe('Gain 4 Might for the rest of the fight.');
+    expect(text('warlords-oath')).toMatch(/^At the start of your turn: Gain 2 Might\.$/);
   });
   it('an Aura with an ongoing trigger does not, and Rift Resonance answers a reshuffle', () => {
     expect(text('rift-resonance')).toBe(

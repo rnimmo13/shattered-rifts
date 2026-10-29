@@ -1,5 +1,7 @@
 # Base class reworks: progress (complete 2026-10-29)
 
+> **2026-10-29, DECISIONS #428:** the Knight, Assassin, Spellblade and Monk reworks were reverted to their earlier cards (Robert: they could not fight bosses and lost what he wants them to be). Only the Shaman's rework is live. Their documents and ledgers are archived in `reviews/balance-baselines/2026-10-29-reverted-reworks/`; nothing for those four classes below is in the game.
+
 Brief: `docs/BASE_CLASS_REWORKS.md` (Knight, Assassin, Spellblade, Shaman, and the Monk's Option A, Martial Forms and Mastery,
 approved by Robert). All five are implemented and committed. Nothing is pushed or deployed.
 
