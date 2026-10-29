@@ -228,7 +228,17 @@ export function LearnScreen() {
   // (the Shaman's spirits, DECISIONS #418)
   const runes = Object.values(COMBAT_DB.totems ?? {});
   // (the old totems' Focus left every live card with the Shaman's rework: not taught, still defined; the Monk's stances are back, #428)
-  const RETIRED: readonly string[] = ['resonance'];
+  // (and the reverted reworks' marks, #428: no live card makes them; the first Shaman rework's Rousing and Shelter too)
+  const RETIRED: readonly string[] = [
+    'resonance',
+    'knives',
+    'prep',
+    'twinedge',
+    'mastery',
+    'opening',
+    'rousing',
+    'shelter',
+  ];
   const statuses = Object.entries(STATUS_INFO)
     .filter(([id]) => !RETIRED.includes(id))
     .map(([, s]) => s);

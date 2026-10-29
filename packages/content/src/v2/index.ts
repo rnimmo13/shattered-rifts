@@ -721,14 +721,17 @@ export function canonicalCard(id: string): string {
  * left the pool become their nearest new cards (RETIRED_CARDS), a fight in progress starts again from its first turn (its move log was
  * made under the old rules), and the player is told what happened (`reworkNotice`).
  */
-export const CLASS_REWORKS: Partial<Record<HeroId, { version: number; summary: string }>> = {
+export const CLASS_REWORKS: Partial<
+  Record<HeroId, { version: number; summary: string; sameAsBefore?: boolean }>
+> = {
   // (version 2: the rework reverted to her earlier cards, DECISIONS #428)
-  knight: { version: 2, summary: 'back to her earlier cards' },
-  assassin: { version: 2, summary: 'back to his earlier cards' },
-  spellblade: { version: 2, summary: 'back to her earlier cards' },
+  // (`sameAsBefore`: the class is as it was before any rework, so a run saved then needs no notice and no restart)
+  knight: { version: 2, summary: 'back to her earlier cards', sameAsBefore: true },
+  assassin: { version: 2, summary: 'back to his earlier cards', sameAsBefore: true },
+  spellblade: { version: 2, summary: 'back to her earlier cards', sameAsBefore: true },
   // (the Shaman was rebuilt twice the same day: version 2 is the elements, totems and Trinity of DECISIONS #420)
   shaman: { version: 2, summary: 'elements, totems and Trinity' },
-  monk: { version: 2, summary: 'back to his earlier cards' },
+  monk: { version: 2, summary: 'back to his earlier cards', sameAsBefore: true },
 };
 
 /** A Riftwalker id as it is now: an old id becomes its class id, and anything else comes back as it was. */

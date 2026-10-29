@@ -65,6 +65,8 @@ describe('runs saved before a class rework', () => {
       expect(back!.deck).toContain(kept);
       expect(COMBAT_DB.cards[kept]?.hero).toBe(hero);
       expect(back!.reworked).toBe(CLASS_REWORKS[hero]?.version);
+      // (its cards never changed: no notice, and a fight under way is not restarted)
+      expect(back!.reworkNotice).toBeUndefined();
     });
   }
 

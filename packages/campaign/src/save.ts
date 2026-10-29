@@ -422,6 +422,8 @@ export function parseRun(text: string): RunState | null {
   if (r.reworked !== undefined && !isInt(r.reworked, 0, 99)) return null;
   // (a notice is only ever made here, by this load: one that came in with the text is dropped)
   delete r.reworkNotice;
+  // (a reverted rework, DECISIONS #428: a run saved before any rework already plays by these cards, so it is only stamped)
+  if (rework?.sameAsBefore && r.reworked === undefined) r.reworked = rework.version;
   if (rework && (r.reworked ?? 0) < rework.version) {
     r.reworked = rework.version;
     const name = RIFTWALKERS[r.character].hero.name;

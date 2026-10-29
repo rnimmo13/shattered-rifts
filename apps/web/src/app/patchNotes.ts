@@ -29,6 +29,28 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.124.0',
+    date: '2026-10-29',
+    title: 'Four classes restored',
+    summary:
+      'The Knight, Assassin, Spellblade and Monk are back to their earlier cards; the Shaman gets Forks and quicker totem picks.',
+    notes: [
+      {
+        kind: 'changed',
+        text: 'The Knight, Assassin, Spellblade and Monk are back to the cards they had before the rebuilds. A run saved with one of them gets the nearest earlier cards in place of the new ones, and is told so; a fight that was under way starts again.',
+      },
+      {
+        kind: 'new',
+        text: 'The Shaman starts with two Forked Lightning: 5 damage to two different enemies, or 25% more when only one is left. Spark Fork and Thunder Fork are new Forks; Gathering Storm is now a common reward instead of a starting card.',
+      },
+      {
+        kind: 'changed',
+        text: 'Choosing which totem a command moves (or which one a new totem replaces) now happens on the totem panel itself: it lights up the totems you can pick (or press 1-5). No pop-up.',
+      },
+    ],
+    heads: 'Rules changed: replays and Arena games from before this version no longer play.',
+  },
+  {
     version: '0.123.0',
     date: '2026-10-29',
     title: 'Deeper decks',
