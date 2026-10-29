@@ -632,6 +632,7 @@ const WHEN_TEXT: Record<string, string> = {
   allyLost: 'Whenever one of your allies dies or is scrapped',
   snare: 'Whenever one of your Traps is triggered',
   stance: 'Whenever you enter a stance',
+  stanceLeft: 'Whenever you leave a stance',
   barrier: 'Whenever you gain Barrier',
   heal: 'Whenever you heal (even at full HP)',
   loseHp: 'Whenever you lose HP to your own cards',
@@ -1008,19 +1009,21 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
             ? 'Whenever you draw a Fleeting card'
             : o.when === 'stance'
               ? `${o.once ? 'The first time each turn you enter' : 'Whenever you enter'} ${o.stance ? sname(o.stance) : 'a stance'}`
-              : o.when === 'evoke'
-                ? `Whenever ${rune ? `${article(rune)} ${rune}` : 'a totem'} awakens`
-                : (o.when === 'created' || o.when === 'draw') && (o.tag || o.filter)
-                  ? `${o.once ? 'The first time' : 'Whenever'} you ${o.when === 'draw' ? 'draw' : 'create'} ${what}${o.once ? ' each turn' : ''}`
-                  : nextTurn
-                    ? 'Next turn'
-                    : o.once
-                      ? // ("Whenever one of your allies dies" answered once a turn: Backup Core)
-                        (WHEN_TEXT[o.when] ?? o.when).replace(
-                          /^Whenever /,
-                          'The first time each turn ',
-                        )
-                      : (WHEN_TEXT[o.when] ?? o.when);
+              : o.when === 'stanceLeft'
+                ? `${o.once ? 'The first time each turn you leave' : 'Whenever you leave'} ${o.stance ? sname(o.stance) : 'a stance'}`
+                : o.when === 'evoke'
+                  ? `Whenever ${rune ? `${article(rune)} ${rune}` : 'a totem'} awakens`
+                  : (o.when === 'created' || o.when === 'draw') && (o.tag || o.filter)
+                    ? `${o.once ? 'The first time' : 'Whenever'} you ${o.when === 'draw' ? 'draw' : 'create'} ${what}${o.once ? ' each turn' : ''}`
+                    : nextTurn
+                      ? 'Next turn'
+                      : o.once
+                        ? // ("Whenever one of your allies dies" answered once a turn: Backup Core)
+                          (WHEN_TEXT[o.when] ?? o.when).replace(
+                            /^Whenever /,
+                            'The first time each turn ',
+                          )
+                        : (WHEN_TEXT[o.when] ?? o.when);
       const when =
         o.times && !nextTurn
           ? `For the next ${o.times} turn${o.times === 1 ? '' : 's'}, ${base.charAt(0).toLowerCase()}${base.slice(1)}`

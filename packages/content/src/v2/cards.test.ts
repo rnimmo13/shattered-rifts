@@ -291,7 +291,9 @@ describe('pool shape (docs/09_ROSTER.md §1)', () => {
     // the Defect's lists, which have no Traps)
     const NO_TRAPS = ['knight', 'assassin', 'spellblade', 'necromancer', 'shaman'];
     for (const [h, n] of counts)
-      expect(n, `${h} snares`).toBeGreaterThanOrEqual(h === 'trickster' ? 10 : NO_TRAPS.includes(h) ? 0 : 1);
+      expect(n, `${h} snares`).toBeGreaterThanOrEqual(
+        h === 'trickster' ? 10 : NO_TRAPS.includes(h) ? 0 : 1,
+      );
     const others = Math.max(...counts.filter(([h]) => h !== 'trickster').map(([, n]) => n));
     expect(own('trickster')).toBeGreaterThanOrEqual(others * 2);
     expect(own('neutral')).toBeGreaterThanOrEqual(2);

@@ -267,8 +267,7 @@ export function validateDb(db: CombatDb): string[] {
     if (h.sigil) checkOps(`hero ${id} sigil`, h.sigil, { aimed: false, snare: false });
     if (h.trait?.clutch) {
       const c = h.trait.clutch;
-      if (!(c.below > 0 && c.below <= 100) || !(c.damagePct > 0))
-        errs.push(`hero ${id}: clutch needs below in 1-100 and damagePct above 0`);
+      if (!(c.perMissingHp > 0)) errs.push(`hero ${id}: clutch needs perMissingHp above 0`);
     }
     if (
       h.trait &&
@@ -289,7 +288,10 @@ export function validateDb(db: CombatDb): string[] {
         if (t.op !== 'power') errs.push(`hero ${id}: a trait trigger must be a power op`);
         else checkOps(`hero ${id} trait`, t.ops, { aimed: false, snare: false });
       }
-    for (const s of h.startUnits ?? []) {
+    for (const e of h.startUnits ?? []) {
+      const s = typeof e === 'string' ? e : e.unit;
+      if (typeof e !== 'string' && !(Number.isInteger(e.hp) && e.hp >= 1))
+        errs.push(`hero ${id}: start unit "${s}" needs a whole hp of 1 or more`);
       const u = db.units[s];
       if (!u) errs.push(`hero ${id}: unknown start unit "${s}"`);
       else if (u.brain.kind !== 'ally') errs.push(`hero ${id}: start unit "${s}" is not an ally`);

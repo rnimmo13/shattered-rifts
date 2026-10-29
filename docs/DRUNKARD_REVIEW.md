@@ -55,7 +55,7 @@ Unlike the Monk, the Drunkard isn't too strong overall. He's uneven:
 - **A handful of self-damage Auras are far over:** Glass Jaw, The Glass Palace and Dutch Courage.
 - **Several Gun Auras are under:** Scope, Trigger Discipline and Gunmetal Soul.
 
-The trait, **Clutch Genes** (50% more attack damage at half HP or below), is fine: it only works when he's in trouble.
+The trait, **Clutch Genes** (50% more attack damage at half HP or below), is fine: it only works when he's in trouble. (2026-10-29, DECISIONS #411: now 1% more attack damage for every HP missing.)
 
 ## 1. New rates, added to the guide
 

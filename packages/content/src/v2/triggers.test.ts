@@ -38,7 +38,8 @@ describe('Powers that react to your own effects', () => {
   it('"Whenever you gain Barrier" (Bastion Engine) hits a random enemy for 5', () => {
     let s = fight('knight', ['bastion-engine', 'oath-of-iron']);
     s = play(s, 'T0');
-    const total = (x: typeof s): number => x.sides.b.units.reduce((n, u) => n + u.hp + u.barrier, 0);
+    const total = (x: typeof s): number =>
+      x.sides.b.units.reduce((n, u) => n + u.hp + u.barrier, 0);
     const hp = total(s);
     s = play(s, 'T1');
     expect(hero(s).barrier).toBeGreaterThanOrEqual(8);

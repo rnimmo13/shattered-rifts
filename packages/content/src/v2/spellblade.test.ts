@@ -50,7 +50,8 @@ const play = (s: CombatState, id: string, pick?: string[]): CombatState => {
 };
 const endTurn = (s: CombatState): CombatState => applyAction(db, s, { type: 'endTurn' }).state;
 const hero = (s: CombatState) => s.sides.a.units.find((u) => u.kind === 'hero')!;
-const foeHp = (s: CombatState, i = 0): number => s.sides.b.units[i]!.hp + s.sides.b.units[i]!.barrier;
+const foeHp = (s: CombatState, i = 0): number =>
+  s.sides.b.units[i]!.hp + s.sides.b.units[i]!.barrier;
 const blade = (s: CombatState) =>
   [...s.sides.a.hand, ...s.sides.a.draw, ...s.sides.a.discard].find((c) => c.card === BLADE);
 
@@ -59,7 +60,18 @@ describe('Obsidia is the Regent: starter, HP and Arcana', () => {
     const r = RIFTWALKERS.spellblade;
     expect(r.hero.maxHp).toBe(75);
     expect([...r.starter].sort()).toEqual(
-      ['defend', 'defend', 'defend', 'defend', 'gather-light', 'meteor-jab', 'strike', 'strike', 'strike', 'strike'].sort(),
+      [
+        'defend',
+        'defend',
+        'defend',
+        'defend',
+        'gather-light',
+        'meteor-jab',
+        'strike',
+        'strike',
+        'strike',
+        'strike',
+      ].sort(),
     );
     expect(r.trait.name).toBe('Kindled');
   });
@@ -230,7 +242,9 @@ describe('the other pieces the Regent cards brought in', () => {
   });
 
   it('Out of My Sight! turns the chosen card into a Retainer Strike; To Arms! turns 2 of the draw pile into Retainer Dives', () => {
-    let s = fight(['out-of-my-sight', 'defend', 'strike'], { draw: ['defend', 'defend', 'defend'] });
+    let s = fight(['out-of-my-sight', 'defend', 'strike'], {
+      draw: ['defend', 'defend', 'defend'],
+    });
     s = play(s, 'out-of-my-sight', ['T1']);
     expect(s.sides.a.hand.find((c) => c.id === 'T1')?.card).toBe('retainer-strike');
     expect(s.sides.a.hand.find((c) => c.id === 'T2')?.card).toBe('strike');
@@ -240,12 +254,22 @@ describe('the other pieces the Regent cards brought in', () => {
   });
 
   it('Call the Guard! turns any number of cards into Retainer Guards', () => {
-    const s = play(fight(['call-the-guard', 'strike', 'strike', 'defend']), 'call-the-guard', ['T1', 'T3']);
-    expect(s.sides.a.hand.map((c) => c.card).sort()).toEqual(['retainer-guard', 'retainer-guard', 'strike']);
+    const s = play(fight(['call-the-guard', 'strike', 'strike', 'defend']), 'call-the-guard', [
+      'T1',
+      'T3',
+    ]);
+    expect(s.sides.a.hand.map((c) => c.card).sort()).toEqual([
+      'retainer-guard',
+      'retainer-guard',
+      'strike',
+    ]);
   });
 
   it('Call the Guard! played for free (no one to ask) turns nothing, never the whole hand', () => {
-    const s = play(fight(['weigh-the-crown', 'call-the-guard', 'strike', 'defend'], { draw: [] }), 'weigh-the-crown');
+    const s = play(
+      fight(['weigh-the-crown', 'call-the-guard', 'strike', 'defend'], { draw: [] }),
+      'weigh-the-crown',
+    );
     expect(s.sides.a.hand.some((c) => c.card === 'retainer-guard')).toBe(false);
   });
 

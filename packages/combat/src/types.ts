@@ -314,6 +314,7 @@ export type TriggerWhen =
   | 'allyLost' // one of your allies died or was scrapped (released to make room for another; DECISIONS #383)
   | 'snare' // one of your Traps sprang
   | 'stance' // you entered a stance
+  | 'stanceLeft' // you left a stance (for another, or for none)
   | 'barrier' // your hero gained Barrier (from anything)
   | 'heal' // your hero was healed (from anything; a heal at full HP still counts, for its whole amount)
   | 'loseHp' // your hero lost HP to one of your own effects
@@ -410,7 +411,7 @@ export type Op =
       op: 'power';
       when: TriggerWhen;
       ops: Op[];
-      /** 'play': only cards of this kind / with this tag; 'stance': only entering this stance */
+      /** 'play': only cards of this kind / with this tag; 'stance' / 'stanceLeft': only entering / leaving this stance */
       filter?: CardKind;
       tag?: string;
       stance?: Stance;
@@ -745,7 +746,7 @@ export interface UnitDef {
 /**
  * An innate trait: a passive every Riftwalker has. `fightStart` ops run once as the fight begins, `turnStart` ops every one
  * of their turns, `triggers` work like an Aura's for the whole fight (but are not an Aura: they are never counted or listed as
- * one), and `clutch` makes them deal `damagePct`% more attack damage while at or below `below`% of their HP.
+ * one), and `clutch` makes them deal `perMissingHp`% more attack damage for every HP they are missing (rounded down).
  */
 export interface HeroTrait {
   name: string;
@@ -754,7 +755,7 @@ export interface HeroTrait {
   fightStart?: Op[];
   turnStart?: Op[];
   triggers?: Extract<Op, { op: 'power' }>[];
-  clutch?: { below: number; damagePct: number };
+  clutch?: { perMissingHp: number };
   /** the share of the hero's Might their companions hold (rounded down): 1 shares it all, 0.5 half; a new companion arrives with it */
   shareMight?: number;
   /** HP healed after every fight the hero wins (in a run) */
@@ -775,8 +776,8 @@ export interface HeroDef {
   maxHp: number;
   mana: number; // per turn
   handSize: number;
-  /** allies it starts every fight with */
-  startUnits?: string[];
+  /** allies it starts every fight with (an entry with `hp` starts with that HP instead of the unit's own) */
+  startUnits?: (string | { unit: string; hp: number })[];
   /** how many companions it can have at once (MAX_ALLIES when missing) */
   maxAllies?: number;
   /** the Sigil: ops run when the fight begins (after the first draw) */

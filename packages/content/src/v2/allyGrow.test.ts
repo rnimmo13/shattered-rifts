@@ -15,7 +15,10 @@ import { COMBAT_DB as db, RIFTWALKERS } from './index';
 function fight(hand: string[]): CombatState {
   const { state } = createCombat(db, {
     seed: 'grow-test',
-    a: { hero: 'engineer', deck: [...RIFTWALKERS.engineer.starter, ...RIFTWALKERS.engineer.starter] },
+    a: {
+      hero: 'engineer',
+      deck: [...RIFTWALKERS.engineer.starter, ...RIFTWALKERS.engineer.starter],
+    },
     b: { enemies: ['squire'] },
   });
   const s = clone(state);
@@ -25,7 +28,8 @@ function fight(hand: string[]): CombatState {
 }
 const play = (s: CombatState, id: string, target?: string): CombatState => {
   const act = legalActions(db, s).find(
-    (a) => a.type === 'play' && a.card === id && (!target || ('target' in a && a.target === target)),
+    (a) =>
+      a.type === 'play' && a.card === id && (!target || ('target' in a && a.target === target)),
   );
   expect(act, `${id} playable`).toBeTruthy();
   return applyAction(db, s, act!).state;
@@ -55,7 +59,7 @@ describe('healing a companion grows it', () => {
     expect(after.maxHp).toBe(max);
   });
 
-  it("Core cashes in its biggest companion (DECISIONS #358)", () => {
+  it('Core cashes in its biggest companion (DECISIONS #358)', () => {
     let s = play(fight(['build-enforcer', 'heavy-hitter', 'reactor-meltdown']), 'T0'); // an 11 HP Enforcer (Heavy: it and the Drone fill the 3 slots)
     const foe = () => s.sides.b.units[0]!;
     foe().hp = foe().maxHp = 200;
@@ -94,9 +98,16 @@ describe('healing a companion grows it', () => {
         (n, o) => n + (o.op === 'actAllies' ? 1 : 0) + (Array.isArray(o.ops) ? acts(o.ops) : 0),
         0,
       );
-    const rivet = Object.values(db.cards).filter((c) => c.hero === 'engineer' && !c.id.endsWith('+'));
+    const rivet = Object.values(db.cards).filter(
+      (c) => c.hero === 'engineer' && !c.id.endsWith('+'),
+    );
     const withAct = rivet.filter((c) => acts(c.effects) > 0);
-    expect(withAct.map((c) => c.id).sort()).toEqual(['assemble', 'command-chip', 'full-salvo', 'relay-strike']);
+    expect(withAct.map((c) => c.id).sort()).toEqual([
+      'assemble',
+      'command-chip',
+      'full-salvo',
+      'relay-strike',
+    ]);
     for (const c of withAct) expect(acts(c.effects)).toBe(1);
   });
 

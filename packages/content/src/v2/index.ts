@@ -116,7 +116,8 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
       maxHp: 70,
       mana: 3,
       handSize: 5,
-      startUnits: ['drone'],
+      // (6 HP, not the Drone's 8: DECISIONS #411)
+      startUnits: [{ unit: 'drone', hp: 6 }],
     },
     starter: [...rep('strike', 5), ...rep('defend', 3), 'deploy-drone', 'overclock'],
     blurb:
@@ -173,12 +174,12 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     role: 'Trickster',
     trait: {
       name: 'Lying in Wait',
-      text: 'Start every fight with 6 Barrier and 2 extra cards in hand. The first time each turn you have played all four suits (♠ ♥ ♦ ♣), a Full Trick: deal 3 damage to ALL enemies, 3 more for every Full Trick before it this fight, and draw 1 card.',
-      fightStart: [barrier(6), draw(2)],
+      text: 'Start every fight with 6 Barrier and 1 extra card in hand. The first time each turn you have played all four suits (♠ ♥ ♦ ♣), a Full Trick: deal 3 damage to a random enemy, 2 more for every Full Trick before it this fight, and draw 1 card.',
+      fightStart: [barrier(6), draw(1)],
       // Suits (DECISIONS #387): the first time in a turn all four suits are showing, a Full Trick
       // (no 4 Barrier a turn now; the Full Trick grows instead: 5, 8, 11... DECISIONS #398)
-      // (3 to start, not 5, DECISIONS #404: 3, 6, 9...)
-      suits: { fullTrick: [scaled(dmg(3, 'allFoes'), per('fullTricks', 3)), draw(1)] },
+      // (3 to start, not 5, DECISIONS #404; a random enemy, #411; 2 more a Full Trick and 1 card at the start, #412: 3, 5, 7...)
+      suits: { fullTrick: [scaled(dmg(3, 'randomFoe'), per('fullTricks', 2)), draw(1)] },
     },
     hero: { id: 'trickster', name: 'Trickster', maxHp: 80, mana: 3, handSize: 5 },
     // (one Defend is Pick a Card, a ♦, so the starting deck holds all four suits: DECISIONS #387)
@@ -275,9 +276,12 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     role: 'Monk',
     trait: {
       name: 'Inner Fire',
-      // (its 2 Barrier went: a Flow deck changes stance two or three times a turn, DECISIONS #390)
-      text: 'Whenever you enter a stance, gain 1 Fervor.',
-      triggers: [on('stance', [status('mantra', 1)])],
+      // (its 2 Barrier went: a Flow deck changes stance two or three times a turn, DECISIONS #390; Primed on leaving Fury, #412)
+      text: 'Whenever you enter a stance, gain 1 Fervor. Whenever you leave Fury, gain 2 Primed.',
+      triggers: [
+        on('stance', [status('mantra', 1)]),
+        on('stanceLeft', [status('vigor', 2)], { stance: 'wrath' }),
+      ],
     },
     hero: {
       id: 'monk',
@@ -297,7 +301,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
       'Radiant: build Fervor to 10 for a triple-damage turn',
     ],
     howTo: [
-      'You start Serene. You are in at most one stance at a time, and every stance you enter gives 1 Fervor (Inner Fire).',
+      'You start Serene. You are in at most one stance at a time, and every stance you enter gives 1 Fervor (Inner Fire); leaving Fury gives 2 Primed for your next attack.',
       'Fury doubles the damage you deal, but you take 50% more. Leaving Serene gives you 2 Mana (once a turn).',
       'Fervor builds to 10, then you enter Radiant: triple damage until your turn ends.',
       'Burst in Fury, dance between stances, or build Fervor towards Radiant.',
@@ -343,8 +347,9 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     role: 'Drunkard',
     trait: {
       name: 'Clutch Genes',
-      text: 'While at or below half HP, you deal 50% more attack damage.',
-      clutch: { below: 50, damagePct: 50 },
+      // (was +50% at half HP or below; it grows from the first HP lost now, DECISIONS #411)
+      text: 'You deal 1% more attack damage for every HP you are missing.',
+      clutch: { perMissingHp: 1 },
     },
     hero: {
       id: 'drunkard',
@@ -370,7 +375,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
       'Hangover: drink now, pay tomorrow',
     ],
     howTo: [
-      'Window panes and hammer blows get stronger the more HP you are missing, and Clutch Genes makes you hit harder at half HP and below.',
+      'Window panes and hammer blows get stronger the more HP you are missing, and Clutch Genes makes every attack hit 1% harder for each HP you are missing.',
       'You start every fight with the Old Twelve Gauge: it hits EVERY enemy, you keep it in hand, and every Sharpen card (Rack the Slide...) makes it hit harder for the whole fight.',
       'Shells are 0-cost attacks that hit every enemy and are consumed. Playing one can sharpen the gun (Hair Trigger).',
       'Drinks (Swig, Liquid Lunch...) give Mana, cards or Might now and Hangover: at the start of your next turn you lose that much HP, never your last. Hangover cards hit harder the more of it you carry, and his heals grow with the HP you are missing.',
@@ -408,7 +413,8 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
       maxHp: 70,
       mana: 3,
       handSize: 5,
-      startUnits: ['bone-thrall'],
+      // (2 HP: DECISIONS #411)
+      startUnits: [{ unit: 'bone-thrall', hp: 2 }],
     },
     starter: [...rep('strike', 4), ...rep('defend', 4), 'raise-thrall', 'off-the-leash'],
     blurb:

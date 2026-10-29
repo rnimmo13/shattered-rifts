@@ -5,6 +5,7 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **Trait changes:** the Full Trick hits a random enemy instead of every enemy, and grows by 2 each time (3, 5, 7...); the Trickster starts a fight with 1 extra card (was 2). Inner Fire also gives 2 Primed whenever you leave Fury. Clutch Genes grows from the first HP you lose: 1% more attack damage for every HP you're missing (it was +50% only at half HP or below). The Engineer's starting Drone has 6 HP (a Drone from a card still has 8) and the Necromancer's starting Thrall has 2.
 - **Last Call and The Long Memory are Auras:** both cost 2 and give 1 Mana at the start of every turn. Last Call also gives 2 Hangover (Last Call+ starts in your opening hand); The Long Memory starts in your opening hand (The Long Memory+ costs 1).
 - **A better Store, and a Cosmetics Vault:** one kind of cosmetic at a time, its tabs and the classes in a bar that stays at the top as you scroll, and every look on a lit stage. The Cosmetics Vault shows what you own and the look each Riftwalker wears.
 - **A new Knight:** the Knight is a man in sun armour now; the Store's looks for him are the Sunwarden and the Female Knight (if you had the Moonlit Regent, you have the Female Knight).

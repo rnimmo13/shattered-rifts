@@ -86,9 +86,7 @@ describe('Ilvane is the Defect shape', () => {
     expect(own.filter((c) => c.rarity === 'uncommon')).toHaveLength(36);
     expect(own.filter((c) => c.rarity === 'rare')).toHaveLength(25);
     expect(own.filter((c) => c.kind === 'snare')).toEqual([]);
-    expect(rewardPool('shaman').filter((id) => db.cards[id]?.hero === 'shaman')).toHaveLength(
-      81,
-    );
+    expect(rewardPool('shaman').filter((id) => db.cards[id]?.hero === 'shaman')).toHaveLength(81);
     for (const n of pathSizes('shaman')) expect(n).toBeGreaterThanOrEqual(12);
   });
 });

@@ -25,7 +25,14 @@ describe('balance guard rails', () => {
     for (const c of playable) {
       // (an Aura leaves the deck when it is played, so it cannot be played again either; a card with an Arcana cost is not free:
       // every play spends Arcana, which no free card makes without being consumed, as the Regent's Alignment and Quasar)
-      if (c.cost !== 0 || c.exhaust || c.x || c.kind === 'power' || consumes(c) || (c.starCost ?? 0) > 0)
+      if (
+        c.cost !== 0 ||
+        c.exhaust ||
+        c.x ||
+        c.kind === 'power' ||
+        consumes(c) ||
+        (c.starCost ?? 0) > 0
+      )
         continue;
       // cards into the hand: draws, fetches, discovers and cards made in hand (a scaled amount counts as at least one); a junk card
       // made in hand only takes up room (Magma Crash's Rubble), so it is no draw

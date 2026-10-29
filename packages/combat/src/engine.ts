@@ -252,6 +252,7 @@ function enterStance(r: Run, u: Unit, to: Stance | 'none'): void {
     if (to === 'radiant') gainMana(r, sd, RADIANT_ENTER_MANA);
   }
   r.ev.push({ type: 'stance', unit: u.id, stance: to });
+  if (cur && u.kind === 'hero') fireTriggers(r, sd, 'stanceLeft', { stance: cur });
   if (to !== 'none' && u.kind === 'hero') fireTriggers(r, sd, 'stance', { stance: to });
 }
 
@@ -333,15 +334,14 @@ function traitOf(r: Run, side: Side): HeroTrait | undefined {
   return sd.hero ? r.db.heroes[sd.hero]?.trait : undefined;
 }
 
-/** An innate trait that depends on HP (Clutch Genes): switch the hero's `clutch` status on or off as their HP crosses the line. */
+/** An innate trait that depends on HP (Clutch Genes): keep the hero's `clutch` status at their missing HP times the rate. */
 function syncClutch(r: Run, sd: SideState): void {
   const c = sd.hero ? r.db.heroes[sd.hero]?.trait?.clutch : undefined;
   const hero = heroOf(sd);
   if (!c || !hero || hero.hp <= 0) return;
-  const on = hero.hp * 100 <= hero.maxHp * c.below;
+  const want = Math.floor(Math.max(0, hero.maxHp - hero.hp) * c.perMissingHp);
   const cur = stacks(hero, 'clutch');
-  if (on && cur !== c.damagePct) addStatus(r, hero, 'clutch', c.damagePct - cur);
-  else if (!on && cur > 0) addStatus(r, hero, 'clutch', -cur);
+  if (want !== cur) addStatus(r, hero, 'clutch', want - cur);
 }
 
 function applyDamage(
@@ -2472,7 +2472,7 @@ function fireTriggers(
     }
     if (when === 'evoke' && p.rune && p.rune !== ctx.rune) continue;
     if (p.once && p.firedTurn === r.s.turn) continue;
-    if (when === 'stance' && p.stance && p.stance !== ctx.stance) continue;
+    if ((when === 'stance' || when === 'stanceLeft') && p.stance && p.stance !== ctx.stance) continue;
     // an Aura that answers "an ally dies" by striking its attacker does nothing when nothing attacked it (a sacrifice, a Trap, Doom)
     if (
       when === 'allyDies' &&
@@ -3146,7 +3146,10 @@ function buildHeroSide(r: Run, id: Side, h: HeroSetup): SideState {
   for (const [st, n] of Object.entries(h.statuses ?? {}) as [StatusId, number][])
     if (n > 0) hero.statuses[st] = (hero.statuses[st] ?? 0) + n;
   r.s.sides[id] = sd;
-  for (const u of hd.startUnits ?? []) spawn(r, sd, u, true);
+  for (const s of hd.startUnits ?? []) {
+    const u = spawn(r, sd, typeof s === 'string' ? s : s.unit, true);
+    if (u && typeof s !== 'string') u.maxHp = u.hp = s.hp;
+  }
   return sd;
 }
 

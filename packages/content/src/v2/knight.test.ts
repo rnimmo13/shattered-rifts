@@ -115,7 +115,10 @@ describe('the knight is the Ironclad shape', () => {
 
   it('Rite of Recall draws a card whenever a card is consumed', () => {
     let s = fight(['rite-of-recall', 'sacrificial-guard', 'strike']);
-    s.sides.a.draw = [{ id: 'D0', card: 'defend' }, { id: 'D1', card: 'defend' }];
+    s.sides.a.draw = [
+      { id: 'D0', card: 'defend' },
+      { id: 'D1', card: 'defend' },
+    ];
     s = play(s, 'rite-of-recall');
     const drawn = s.sides.a.drawn;
     s = play(s, 'sacrificial-guard'); // consumes a card at random
@@ -408,7 +411,9 @@ describe('the rest of the Ironclad list', () => {
       return hp - foeHp(s);
     };
     const base = hitAfterExpose(['sundering-blow', 'strike']);
-    expect(hitAfterExpose(['cruel-streak', 'sundering-blow', 'strike'])).toBe(Math.floor(base * 1.25));
+    expect(hitAfterExpose(['cruel-streak', 'sundering-blow', 'strike'])).toBe(
+      Math.floor(base * 1.25),
+    );
   });
 
   it("Giant's Stance halves the damage of Exposed enemies until the enemies have had their turn", () => {
@@ -461,7 +466,9 @@ describe('one card for each of the Ironclad’s', () => {
     // no Thorns and no Traps
     expect(own.filter((c) => c.kind === 'snare')).toEqual([]);
     expect(
-      own.filter((c) => c.effects.some((o) => o.op === 'status' && o.status === 'thorns' && !o.temp)),
+      own.filter((c) =>
+        c.effects.some((o) => o.op === 'status' && o.status === 'thorns' && !o.temp),
+      ),
     ).toEqual([]);
   });
 

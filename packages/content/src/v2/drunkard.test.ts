@@ -4,10 +4,14 @@ import { describe, expect, it } from 'vitest';
 import { applyAction, clone, createCombat, legalActions, type CombatState } from '@sr/combat';
 import { COMBAT_DB as db, RIFTWALKERS, type HeroId } from './index';
 
-function fight(hero: HeroId, hand: string[]): CombatState {
+function fight(hero: HeroId, hand: string[], hp?: number): CombatState {
   const { state } = createCombat(db, {
     seed: 'kp-test',
-    a: { hero, deck: [...RIFTWALKERS[hero].starter, ...RIFTWALKERS[hero].starter] },
+    a: {
+      hero,
+      deck: [...RIFTWALKERS[hero].starter, ...RIFTWALKERS[hero].starter],
+      ...(hp ? { hp } : {}),
+    },
     b: { enemies: ['squire', 'squire'] },
   });
   const s = clone(state);
@@ -140,62 +144,50 @@ describe('innate traits', () => {
     expect(fate(g)).toBe(before + 3);
   });
 
-  it('Clutch Genes: KP deals 50% more attack damage at or below half HP, and not above', () => {
-    const hit = (hp: number): number => {
-      const s = fight('drunkard', ['hammer-swing']);
-      const hero = s.sides.a.units[s.sides.a.units.length - 1]!;
-      hero.hp = hp;
-      // the trait switches the status on at turn start and whenever HP changes; set it as the engine would
-      if (hp * 100 <= hero.maxHp * 50) hero.statuses.clutch = 50;
+  it('Clutch Genes: 1% more attack damage for every HP missing (DECISIONS #411)', () => {
+    const hit = (missing: number): number => {
+      // (the fight begins hurt: the engine sets the status at turn start)
+      const s = fight('drunkard', ['hammer-swing'], RIFTWALKERS.drunkard.hero.maxHp - missing);
+      expect(s.sides.a.units[s.sides.a.units.length - 1]!.statuses.clutch ?? 0).toBe(missing);
       const before = s.sides.b.units[0]!.hp;
       const after = playCard(s, 'T0');
       return before - after.sides.b.units[0]!.hp;
     };
-    expect(hit(80)).toBe(6);
-    expect(hit(40)).toBe(9);
+    expect(hit(0)).toBe(6);
+    expect(hit(20)).toBe(7); // 6 x 1.2, rounded down
+    expect(hit(50)).toBe(9);
   });
 
-  it('Clutch Genes clears when KP is healed back above half', () => {
-    const s = fight('drunkard', ['liquid-lunch']);
+  it('Clutch Genes follows HP both ways: a heal lowers it, a hit raises it', () => {
+    const s = fight('drunkard', ['sob-story'], RIFTWALKERS.drunkard.hero.maxHp - 30);
     const hero = s.sides.a.units[s.sides.a.units.length - 1]!;
-    hero.hp = 30;
-    hero.statuses.clutch = 50;
-    s.sides.a.hand = [{ id: 'T0', card: 'sob-story' }];
-    const after = playCard(s, 'T0'); // heals 11: still under half
-    expect(after.sides.a.units[after.sides.a.units.length - 1]!.statuses.clutch).toBe(50);
-    const h2 = fight('drunkard', ['sob-story']);
-    const hero2 = h2.sides.a.units[h2.sides.a.units.length - 1]!;
-    hero2.hp = Math.floor(hero2.maxHp * 0.5) - 2; // 42: one heal of 9 crosses the line
-    hero2.statuses.clutch = 50;
-    const healed = playCard(h2, 'T0');
-    expect(healed.sides.a.units[healed.sides.a.units.length - 1]!.statuses.clutch ?? 0).toBe(0);
+    expect(hero.statuses.clutch).toBe(30);
+    const healed = playCard(s, 'T0');
+    const h = healed.sides.a.units[healed.sides.a.units.length - 1]!;
+    expect(h.hp).toBeGreaterThan(hero.hp);
+    expect(h.statuses.clutch).toBe(h.maxHp - h.hp);
   });
 
-  it('a fight that begins hurt starts with Clutch Genes already on', () => {
+  it('a fight that begins hurt starts with Clutch Genes already on, and an enemy hit adds to it', () => {
     const { state } = createCombat(db, {
       seed: 'c',
-      a: { hero: 'drunkard', deck: RIFTWALKERS.drunkard.starter },
+      a: { hero: 'drunkard', deck: RIFTWALKERS.drunkard.starter, hp: 30 },
       b: { enemies: ['squire'] },
     });
     const s = clone(state);
     const hero = s.sides.a.units[s.sides.a.units.length - 1]!;
-    hero.hp = 30;
+    expect(hero.statuses.clutch).toBe(hero.maxHp - 30);
     const after = applyAction(db, s, { type: 'endTurn' }).state;
     const h = after.sides.a.units[after.sides.a.units.length - 1]!;
-    expect(h.hp).toBeLessThan(h.maxHp * 0.5);
-    expect(h.statuses.clutch).toBe(50);
+    expect(h.hp).toBeLessThan(30);
+    expect(h.statuses.clutch).toBe(h.maxHp - h.hp);
   });
 
-  it('Clutch Genes switches on when damage drops KP under half, and off when healed', () => {
+  it('Clutch Genes is 0 at full HP', () => {
     const s = fight('drunkard', []);
     const hero = s.sides.a.units[s.sides.a.units.length - 1]!;
+    expect(hero.hp).toBe(hero.maxHp);
     expect(hero.statuses.clutch ?? 0).toBe(0);
-    // take a big hit from a Trap-free direct source: use the enemy turn via a fabricated heavy hit
-    hero.hp = 40;
-    const after = applyAction(db, s, { type: 'endTurn' }).state;
-    const h = after.sides.a.units[after.sides.a.units.length - 1]!;
-    expect(h.hp).toBeLessThan(h.maxHp * 0.5);
-    expect(h.statuses.clutch).toBe(50);
   });
 });
 

@@ -55,7 +55,7 @@ describe('Suits', () => {
     expect(suit('wild-card')).toBe('wild');
   });
 
-  it('shows each suit once, and the fourth makes a Full Trick: 3 to every enemy and a card', () => {
+  it('shows each suit once, and the fourth makes a Full Trick: 3 to an enemy and a card', () => {
     const s0 = fight(['strike', 'defend', 'pick-a-card', 'mark-prey', 'strike']);
     const three = playAll(s0, ['strike', 'defend', 'mark-prey']).state;
     expect(three.sides.a.suitsTurn).toEqual(['spades', 'hearts', 'clubs']);
@@ -135,16 +135,43 @@ describe('Suits', () => {
   });
 });
 
-describe('the Full Trick grows (DECISIONS #398)', () => {
-  it('deals 3 more for every Full Trick before it this fight, and counts itself', () => {
+describe('the Full Trick grows (DECISIONS #398, #412)', () => {
+  it('deals 2 more for every Full Trick before it this fight, and counts itself', () => {
     const s0 = fight(['strike', 'defend', 'pick-a-card', 'mark-prey']);
     s0.sides.a.fullTricks = 2;
     const three = playAll(s0, ['strike', 'defend', 'mark-prey']).state;
     const hp = foe(three).hp;
     const r = play(three, 'pick-a-card').state;
     const done = applyAction(db, r, { type: 'pick', cards: [r.pending!.pool[0]!] }).state;
-    expect(hp - foe(done).hp).toBe(3 + 2 * 3);
+    expect(hp - foe(done).hp).toBe(3 + 2 * 2);
     expect(done.sides.a.fullTricks).toBe(3);
+  });
+
+  it('strikes one random enemy, not all of them (DECISIONS #411)', () => {
+    const { state } = createCombat(db, {
+      seed: 'suits-two',
+      a: { hero: 'trickster', deck: [...RIFTWALKERS.trickster.starter] },
+      b: { enemies: ['squire', 'squire'] },
+    });
+    const s0 = clone(state);
+    s0.sides.a.hand = ['strike', 'defend', 'mark-prey', 'cold-read'].map((card, i) => ({
+      id: `T${i}`,
+      card,
+    }));
+    s0.sides.a.mana = 9;
+    for (const u of s0.sides.b.units) {
+      u.hp = u.maxHp = 200;
+      u.statuses = {};
+    }
+    let s = playAll(s0, ['strike', 'defend', 'mark-prey']).state;
+    const before = s.sides.b.units.map((u) => u.hp);
+    const r = play(s, 'cold-read');
+    s = r.state.pending
+      ? applyAction(db, r.state, { type: 'pick', cards: [r.state.pending.pool[0]!] }).state
+      : r.state;
+    expect(s.sides.a.fullTrickTurn).toBe(true);
+    const lost = s.sides.b.units.map((u, i) => before[i]! - u.hp);
+    expect(lost.filter((n) => n > 0)).toEqual([3]);
   });
 
   it('Lying in Wait gives no Barrier a turn now', () => {

@@ -7,7 +7,10 @@ import { COMBAT_DB as db, RIFTWALKERS } from './index';
 function fight(hand: string[], hangover = 0): CombatState {
   const { state } = createCombat(db, {
     seed: 'hangover-test',
-    a: { hero: 'drunkard', deck: [...RIFTWALKERS.drunkard.starter, ...RIFTWALKERS.drunkard.starter] },
+    a: {
+      hero: 'drunkard',
+      deck: [...RIFTWALKERS.drunkard.starter, ...RIFTWALKERS.drunkard.starter],
+    },
     b: { enemies: ['squire', 'squire'] },
   });
   const s = clone(state);

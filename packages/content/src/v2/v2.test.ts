@@ -118,8 +118,21 @@ describe('Riftwalker identities (docs/08 §5)', () => {
     expect(summonCards('umbral')).toHaveLength(0);
   });
   it('Rivet starts with a Drone and has many summon cards', () => {
-    expect(RIFTWALKERS.engineer.hero.startUnits).toEqual(['drone']);
+    expect(RIFTWALKERS.engineer.hero.startUnits).toEqual([{ unit: 'drone', hp: 6 }]);
     expect(summonCards('nexus').length).toBeGreaterThanOrEqual(6);
+  });
+  it('the starting Drone has 6 HP and the starting Thrall 2 (DECISIONS #411); a card-built Drone keeps 8', () => {
+    const start = (hero: 'engineer' | 'necromancer') =>
+      createCombat(db, {
+        seed: 'start-units',
+        a: { hero, deck: RIFTWALKERS[hero].starter },
+        b: { enemies: ['squire'] },
+      }).state.sides.a.units.find((u) => u.kind === 'ally')!;
+    // (Tinkerer's +1 max HP has already come on turn 1)
+    expect([start('engineer').hp, start('engineer').maxHp]).toEqual([7, 7]);
+    expect(start('necromancer').def).toBe('bone-thrall');
+    expect(start('necromancer').maxHp).toBe(2);
+    expect(db.units.drone!.maxHp).toBe(8);
   });
   it('Kesh starts with a Hound and mostly buffs it instead of summoning more', () => {
     expect(RIFTWALKERS.hunter.hero.startUnits).toEqual(['hound']);

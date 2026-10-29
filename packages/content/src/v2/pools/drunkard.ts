@@ -522,8 +522,8 @@ export const DRUNKARD: CardDef[] = [
   }),
 
   // --- Hangover: drink now, pay tomorrow (DECISIONS #354) ---
-  // Drinks give something big now and Hangover: at the start of your next turn you lose that much HP (never your last). The HP
-  // lost takes KP under half, where Clutch Genes hits harder, and his heals grow with the HP he is missing to bring him back.
+  // Drinks give something big now and Hangover: at the start of your next turn you lose that much HP (never your last). Every HP
+  // lost makes Clutch Genes hit harder (1% a HP, DECISIONS #411), and his heals grow with the HP he is missing to bring him back.
   p('common', 'liquid-lunch', 'Liquid Lunch', 'skill', 0, 'none', [mana(2), hangover(3)], {
     exhaust: true,
     up: { effects: [mana(2), hangover(2)] },

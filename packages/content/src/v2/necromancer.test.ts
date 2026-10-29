@@ -84,7 +84,7 @@ describe('Dorian, the Necrobinder copy', () => {
     expect(r.hero.maxHp).toBe(70);
     const s = fight([]);
     expect(thralls(s)).toHaveLength(1);
-    expect(thralls(s)[0]!.hp).toBe(5);
+    expect(thralls(s)[0]!.hp).toBe(2); // (DECISIONS #411)
     const hp0 = foe(s).hp;
     const out = applyAction(db, s, { type: 'endTurn' });
     // the Thrall never strikes on its own
@@ -97,7 +97,7 @@ describe('Dorian, the Necrobinder copy', () => {
 
   it('Raise brings a new Thrall with that much HP, and with three standing grows the weakest instead', () => {
     let s = play(fight(['raise-thrall', 'raise-thrall', 'raise-thrall']), 'T0');
-    expect(thralls(s).map((u) => u.maxHp)).toEqual([5, 5]);
+    expect(thralls(s).map((u) => u.maxHp)).toEqual([2, 5]);
     s = play(s, 'T1');
     expect(thralls(s)).toHaveLength(3);
     // a fourth: no room, so the weakest gains 5 max HP (and no release is asked for)
@@ -124,11 +124,11 @@ describe('Dorian, the Necrobinder copy', () => {
   it('Off the Leash adds each Thrall’s own HP; The Drowned King its max HP', () => {
     const s = fight(['off-the-leash', 'the-drowned-king']);
     addThrall(s, 10);
-    thralls(s)[0]!.hp = 3; // a hurt 5-HP Thrall
+    thralls(s)[0]!.hp = 1; // a hurt 2-HP Thrall
     let after = play(s, 'T0', foe(s).id);
-    expect(foe(after).hp).toBe(300 - (6 + 3) - (6 + 10));
+    expect(foe(after).hp).toBe(300 - (6 + 1) - (6 + 10));
     after = play(after, 'T1', foe(after).id);
-    expect(foe(after).hp).toBe(300 - 25 - (10 + 5) - (10 + 10));
+    expect(foe(after).hp).toBe(300 - 23 - (10 + 2) - (10 + 10));
   });
 
   it('Ossify (Calcify) makes the Thralls hit harder, and Rattle the Bones hits once more for every earlier command', () => {
@@ -427,7 +427,7 @@ describe('Grave Chill raises a Thrall every turn (DECISIONS #397)', () => {
     }).state;
 
   it('turn 1: the starting Thrall and a new one with 2 HP', () => {
-    expect(thralls(start()).map((u) => u.maxHp)).toEqual([5, 2]);
+    expect(thralls(start()).map((u) => u.maxHp)).toEqual([2, 2]);
     expect(cardText(db, db.cards['raise-thrall']!)).toBe('Raise 5.');
     expect(RIFTWALKERS.necromancer.trait.text).toMatch(/^At the start of your turn, Raise 2./);
   });

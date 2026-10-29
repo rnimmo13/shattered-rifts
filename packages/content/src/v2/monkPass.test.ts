@@ -34,13 +34,17 @@ const play = (s: CombatState, id: string, target?: string): CombatState => {
 const hero = (s: CombatState) => s.sides.a.units.find((u) => u.kind === 'hero')!;
 
 describe('the Monk costing pass', () => {
-  it('Inner Fire gives 1 Fervor for a stance, and no Barrier', () => {
-    const s0 = fight(['rising-ire']);
+  it('Inner Fire gives 1 Fervor for a stance and no Barrier, and 2 Primed on leaving Fury (DECISIONS #412)', () => {
+    const s0 = fight(['rising-ire', 'centre-yourself']);
     hero(s0).barrier = 0;
     const fervor = hero(s0).statuses.mantra ?? 0;
     const s = play(s0, 'rising-ire');
     expect(hero(s).statuses.mantra ?? 0).toBe(fervor + 1);
     expect(hero(s).barrier).toBe(0);
+    expect(hero(s).statuses.vigor ?? 0).toBe(0); // entering Fury gives none
+    const out = play(s, 'centre-yourself'); // Fury to Serene
+    expect(hero(out).statuses.vigor ?? 0).toBe(2);
+    expect(hero(out).statuses.mantra ?? 0).toBe(fervor + 2);
   });
 
   it('Still Guard: 3 Barrier and Serene', () => {
