@@ -1318,7 +1318,7 @@ export interface SideState {
   starsGainedTurn?: number;
   nextBarrier?: number;
   nextStars?: number;
-  /** Sharpen so far this fight, by card: a copy made later starts this sharp (DECISIONS #399) */
+  /** Sharpen played so far this fight, by card (a record: a copy made later starts fresh since DECISIONS #441) */
   forged?: Record<CardId, number>;
   orbitSpent?: number;
   // --- the Necrobinder copy (Dorian): counters for this turn and this fight

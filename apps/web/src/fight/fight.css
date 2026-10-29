@@ -322,12 +322,17 @@
 .float {
   position: absolute;
   transform: translate(-50%, -50%);
-  font-family: var(--font-display);
-  font-weight: 900;
-  font-size: 2.3rem;
+  /* (the numbers' face, as on the cards, with a thick black outline drawn behind the colour so it reads over anything) */
+  font-family: var(--font-numeric);
+  font-weight: 400;
+  font-size: 2.6rem;
+  line-height: 1;
+  letter-spacing: 0.02em;
+  -webkit-text-stroke: 6px #000;
+  paint-order: stroke fill;
   text-shadow:
-    0 2px 0 #000,
-    0 0 12px rgb(0 0 0 / 0.8);
+    0 3px 0 #000,
+    0 0 10px rgb(0 0 0 / 0.7);
   /* (it appears, holds and fades where it is: a number that travels is hard to read) */
   animation: float-up 1.4s var(--ease-out) forwards;
   white-space: nowrap;
@@ -335,22 +340,24 @@
 /* damage red, healing green, Barrier blue */
 .float--dmg {
   color: #ff4d62;
-  font-size: 2.6rem;
+  font-size: 3.6rem;
 }
 .float--block {
   color: #5fb4ff;
-  font-size: 1.9rem;
+  font-size: 2.6rem;
 }
 .float--heal {
   color: #4ee08a;
 }
 .float--good {
   color: var(--c-gold-light);
-  font-size: 1.3rem;
+  font-size: 1.6rem;
+  -webkit-text-stroke-width: 4px;
 }
 .float--bad {
   color: var(--c-violet-glow);
-  font-size: 1.3rem;
+  font-size: 1.6rem;
+  -webkit-text-stroke-width: 4px;
 }
 @keyframes float-up {
   0% {

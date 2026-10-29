@@ -2426,10 +2426,11 @@ function execOp(r: Run, a: Act, op: Op): void {
       if (a.inst && same(a.inst.card)) all.push(a.inst);
       const mine = all.filter((c) => same(c.card));
       const amount = amountOf(r, a, op.amount, op.scale, a.target);
-      // the running total: a copy made later (Spare Barrel, Double Tap...) starts as sharp as the rest
+      // (only the copies there now take it: a copy made later, by Double Tap or Spare Barrel, starts fresh, DECISIONS #441; the total
+      // is kept for the record only)
       side.forged = { ...side.forged, [op.card]: (side.forged?.[op.card] ?? 0) + amount };
       // (with none, a card that grows itself is made here and starts at this Sharpen; a weapon is not: it is a card of the deck the
-      // player may have removed, so its Sharpen only waits in the total for a copy that comes later, DECISIONS #436)
+      // player may have removed, so with none its Sharpen does nothing, DECISIONS #436, #441)
       if (!mine.length) {
         if (!cardDef(r.db, op.card).weapon) {
           const made = addCardTo(r, side, op.card, 'hand');
@@ -2873,10 +2874,8 @@ function fireRune(
 function addCardTo(r: Run, sd: SideState, card: CardId, to: 'hand' | 'discard' | 'draw'): CardInst {
   cardDef(r.db, card);
   const inst: CardInst = { id: newId(r.s, 'c'), card };
-  // a sharpened weapon's new copy is as sharp as the others (its upgrade shares the Sharpen)
-  const base = card.replace(/\+$/, '');
-  const sharp = r.db.cards[base]?.weapon ? sd.forged?.[base] : undefined;
-  if (sharp) inst.bonus = sharp;
+  // (a weapon's new copy starts unsharpened: only the copies there when a Sharpen is played take it, DECISIONS #441; #399 made new
+  // copies as sharp as the rest)
   let where = to;
   if (where === 'hand' && sd.hand.length >= MAX_HAND) where = 'discard';
   if (where === 'hand') sd.hand.push(inst);

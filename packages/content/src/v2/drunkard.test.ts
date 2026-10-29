@@ -231,8 +231,8 @@ describe('Sharpen carries over to new copies (DECISIONS #399)', () => {
         (c) => c.card === 'old-twelve-gauge',
       );
     expect(guns()).toEqual([]);
-    s = playCard(s, 'T1'); // Double Tap: an Old Twelve Gauge, as sharp as the 3 that waited
-    expect(guns().map((c) => c.bonus)).toEqual([3]);
+    s = playCard(s, 'T1'); // Double Tap: an Old Twelve Gauge, fresh: the 3 went nowhere (DECISIONS #441)
+    expect(guns().map((c) => c.bonus ?? 0)).toEqual([0]);
   });
 });
 

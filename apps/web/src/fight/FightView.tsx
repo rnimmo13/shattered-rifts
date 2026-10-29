@@ -149,6 +149,8 @@ const MAX_TOP = 640;
 /** where a side's line starts (nearest the middle) and the furthest it may reach, stage px */
 const FOE_NEAR = 1010;
 const FOE_FAR = 1850;
+/** where the far edge of the enemy group stands: back against their side, so a lone enemy stands where an Arena opponent would */
+const FOE_BACK = 1810;
 const ALLY_NEAR = 910;
 const ALLY_FAR = 440;
 
@@ -234,6 +236,14 @@ function specsFrom(
       ds === 'b'
         ? packLine(line, FOE_NEAR, pvp ? FOE_FAR_PVP : FOE_FAR)
         : packLine(line, ALLY_NEAR, ALLY_FAR);
+    // the enemies stand back against their own edge, as an Arena opponent does, not crowded at the middle: the group slides out
+    // until its far edge meets FOE_BACK (order kept, the front one nearest you), so one enemy stands where an Arena hero would
+    if (ds === 'b' && !pvp && line.length > 0) {
+      const last = line.length - 1;
+      const edge = (fit.xs[last] as number) + ((line[last] as { fw: number }).fw * fit.scale) / 2;
+      const shift = Math.max(0, FOE_BACK - edge);
+      fit.xs = fit.xs.map((x) => x + shift);
+    }
     let n = 0;
     for (const e of sized) {
       const prop = e.hero && !flip ? heroProp(e.u.def) : undefined;
@@ -291,9 +301,12 @@ function WhoTag(props: {
 
 /** The weapons Sharpen grows (the gun's is called Precision), shown as a buff on the hero (DECISIONS #399, #400; the Spellblade's
  * blade is enchanted now, not sharpened: DECISIONS #417). */
-const SHARPENED = [{ card: 'old-twelve-gauge', name: 'The Old Twelve Gauge' }] as const;
+const SHARPENED = [
+  { card: 'starforged-blade', name: 'The Obsidian Blade' },
+  { card: 'old-twelve-gauge', name: 'The Old Twelve Gauge' },
+] as const;
 
-/** How sharp a side's weapon is: every copy carries the same bonus, and the running total covers copies all consumed. */
+/** How sharp a side's weapon is: its sharpest copy (a copy made later starts fresh, DECISIONS #441). */
 function sharpOf(
   db: CombatDb,
   sd: CombatState['sides']['a'] | undefined,
@@ -302,12 +315,11 @@ function sharpOf(
   const cards = [...sd.hand, ...sd.draw, ...sd.discard, ...sd.exhausted];
   for (const weapon of SHARPENED) {
     const copies = cards.filter((c) => c.card.replace(/\+$/, '') === weapon.card);
-    const total = sd.forged?.[weapon.card];
-    if (copies.length || total !== undefined)
+    if (copies.length)
       return {
         weapon: weapon.name,
         word: forgeWord(db, weapon.card),
-        amount: Math.max(total ?? 0, ...copies.map((c) => c.bonus ?? 0)),
+        amount: Math.max(0, ...copies.map((c) => c.bonus ?? 0)),
       };
   }
   return null;

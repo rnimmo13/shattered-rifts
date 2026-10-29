@@ -5,6 +5,7 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- Enemies stand back toward their edge of the battlefield. Damage numbers are bigger, in the card font, with a black outline. A new Old Twelve Gauge or Obsidian Blade made mid-fight starts unsharpened: Sharpen only goes on the copies you already have.
 - **The Shaman's totems stand in an arc beside him**, numbered in order with the next one lit, each showing exactly what it does every turn and when it acts (with your Spirit counted).
 - **The Shaman's totems** sit in order under your Boons (the next to act is marked), not in a floating window. Tempest Call says plainly what it does.
 - **62 new enemies** from across the multiverse (93 in all): new fights, Elites and Wardens for every realm, and Gloomfen, the Hollow Crown and the Far Rifts break into the Rift and can hold the second stage. Groups of three start on the second stage.
