@@ -629,6 +629,11 @@ const METRIC_WORDS: Record<Metric, { per: string; equal: string }> = {
   },
   wards: { per: 'Ward on your blade', equal: 'the Wards on your blade' },
   discharged: { per: 'enchantment discharged', equal: 'the enchantments discharged' },
+  bladeEmbers: { per: 'Ember on your blade', equal: 'the Embers on your blade' },
+  bladeGlass: { per: 'Glass on your blade', equal: 'the Glass on your blade' },
+  bladePair: { per: 'matching pair on your blade', equal: 'a matching pair on your blade' },
+  dischargedPair: { per: 'matching pair discharged', equal: 'a matching pair discharged' },
+  dischargedMix: { per: 'mixed pair discharged', equal: 'a mixed pair discharged' },
   // (the Shaman)
   totems: { per: 'totem you have', equal: 'your totems' },
   totemKinds: { per: 'kind of totem you have', equal: 'the kinds of totem you have' },
@@ -803,6 +808,7 @@ const WHEN_TEXT: Record<string, string> = {
   imbue: 'Whenever you Imbue',
   discharge: 'Whenever you Discharge',
   dischargeMixed: 'Whenever you Discharge two different enchantments at once',
+  recast: 'Whenever you change an enchantment into another kind',
   // (the Shaman)
   command: 'Whenever you command a totem',
   plant: 'Whenever you plant a totem',
@@ -921,6 +927,16 @@ function whenText(o: Extract<Op, { op: 'when' }>, db?: CombatDb): string {
     return 'your blade has no enchantments';
   if (o.by === 'wards' && (lo ?? 0) === 1 && hi === undefined && !o.of)
     return 'your blade holds a Ward';
+  if (o.by === 'enchants' && lo === 2 && hi === undefined && !o.of) return 'your blade is full';
+  if (o.by === 'enchants' && lo === 1 && hi === undefined && !o.of)
+    return 'your blade still holds an enchantment';
+  if (o.by === 'bladeEmbers' && lo === 1 && hi === undefined) return 'your blade holds an Ember';
+  if (o.by === 'bladeGlass' && lo === 1 && hi === undefined) return 'your blade holds a Glass';
+  if (o.by === 'bladePair' && lo === 1 && hi === undefined)
+    return 'your blade holds a matching pair';
+  if (o.by === 'dischargedPair' && lo === 1 && hi === undefined) return 'they were the same kind';
+  if (o.by === 'dischargedMix' && lo === 1 && hi === undefined) return 'they were different kinds';
+  if (o.by === 'discharged' && lo === 1 && hi === undefined) return 'it did';
   const w = METRIC_WORDS[o.by].equal;
   if (lo !== undefined && hi !== undefined) return `${w} is ${lo === hi ? lo : `${lo}-${hi}`}`;
   if (lo !== undefined) return `${w} is ${lo} or more`;
@@ -1632,7 +1648,13 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
     case 'imbue':
       return o.ifRoom ? `Imbue ${cap(o.kind)} if your blade has room.` : `Imbue ${cap(o.kind)}.`;
     case 'discharge':
+      if (o.kind)
+        return o.count >= 2
+          ? `Discharge every ${cap(o.kind)}.`
+          : `Discharge ${o.kind === 'ember' ? 'an' : 'a'} ${cap(o.kind)}.`;
       return o.count >= 2 ? 'Discharge both enchantments.' : 'Discharge an enchantment.';
+    case 'echoCharges':
+      return 'They take effect again.';
     case 'recast':
       return 'Your newest enchantment becomes another kind (your choice).';
     // (the Shaman's totems)

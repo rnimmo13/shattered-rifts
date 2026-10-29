@@ -359,6 +359,12 @@ export type Metric =
   | 'enchantKinds' // different kinds of them
   | 'wards' // Ward enchantments on your blade
   | 'discharged' // enchantments the card being played has discharged
+  // (the Spellblade's expansion, DECISIONS #425)
+  | 'bladeEmbers' // Ember enchantments on your blade
+  | 'bladeGlass' // Glass enchantments on your blade
+  | 'bladePair' // 1 when both positions hold the same kind
+  | 'dischargedPair' // 1 when the card being played discharged two of the same kind at once
+  | 'dischargedMix' // 1 when it discharged two different kinds at once
   // (the Shaman, DECISIONS #418)
   | 'totems' // totems you have planted (0-3)
   | 'totemKinds' // different kinds of them
@@ -438,6 +444,7 @@ export type TriggerWhen =
   | 'imbue' // you imbued an enchantment
   | 'discharge' // a card of yours discharged at least one enchantment
   | 'dischargeMixed' // a card discharged two different kinds at once
+  | 'recast' // (DECISIONS #425) your newest enchantment was changed into another kind
   // (the Shaman's totems, DECISIONS #418; `rune` narrows them to one kind of spirit)
   | 'command' // you commanded a totem (the target is what its spirit aimed at)
   | 'plant' // you planted a totem
@@ -743,7 +750,10 @@ export type Op =
    */
   | { op: 'imbue'; kind: Enchant; ifRoom?: boolean }
   /** discharge 1 (the player chooses when the two differ) or 2 (both) enchantments: put it before the card's damage */
-  | { op: 'discharge'; count: 1 | 2 }
+  | { op: 'discharge'; count: 1 | 2; kind?: Enchant }
+  /** (DECISIONS #425) the charges this card has discharged take effect once more (Ember on the next hit, Glass after the attack, Ward
+   * Barrier now): nothing goes back on the blade and nothing answers it */
+  | { op: 'echoCharges' }
   /** your newest enchantment becomes another kind (the player chooses which) */
   | { op: 'recast' }
   // --- the Shaman's totems (DECISIONS #418)
@@ -1194,6 +1204,8 @@ export interface Pending {
   ember?: number;
   glass?: number;
   discharged?: number;
+  /** the kinds it had discharged (DECISIONS #425) */
+  charges?: Enchant[];
   /** 'copy': how many copies come next turn */
   times?: number;
   /** for 'transform': what the chosen cards become */

@@ -445,6 +445,12 @@ charge; the **consumer** (the Discharge) only for the choice and timing it adds,
 | "Whenever you Discharge" | **~1 a turn** in a deck that wants it | most of her attacks discharge. |
 | "Whenever you Discharge two different enchantments at once" | **~45%** of turns in a Burst deck | needs a mixed blade and a both-discharge in hand. |
 | Twin Edge (the next first charge twice) | **~2.4** | one charge (~3) on about four Twin Edges in five. |
+| A mixed pair on a both-discharge | **~55%** (**~70%** in a deck built for it) | (#425) Split the Light, Fault Line, Prism Break. |
+| A matching pair on a both-discharge | **~55%** in a matching deck | "they take effect again" is worth the pair: ~6.4 (Ember 6, Glass 5.2, Ward 7.2). Resonant Pair = 11. |
+| Discharge **one kind** only ("Discharge a Glass") | **+1**, and its "If it did" bonus **x0.6** | the kind is there about 60% of the time; the other charge stays. |
+| Recast | **1.5** | a card spent to fix a charge. |
+| A full blade at the start of a turn | **~55%** in a holding deck | Stored Light = 20.7. |
+| A Ward held at the end of a turn | **~75%** in a Ward deck | Sentinel Glass (4 to all) = 15.6. |
 
 The trait, **Glass and Ember** (a Ward on the blade at the start; the first Imbue each turn draws 1 and gives 2 Barrier), prices at ~3
 + 4 turns x ~50% (one Imbue card in the starter's 10) x 5.4 = ~14 in the starter, ~22 in an Imbue deck (an Imbue most turns), level
