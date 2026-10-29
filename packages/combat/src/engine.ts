@@ -134,6 +134,8 @@ interface Act {
   ember: number;
   glass: number;
   discharged: number;
+  /** the kinds discharged, in the order spent (DECISIONS #425: a matching or mixed pair, and echoCharges) */
+  charges: Enchant[];
   /** (the Shaman) a command's Rousing and Spirit: added to every damage and Barrier number of its spirit's ops */
   plus: number;
   /** totems the card has uprooted, and replaced with a different kind, so far */
@@ -168,6 +170,7 @@ const mkAct = (actor: Unit, extra: Partial<Act> = {}): Act => ({
   ember: 0,
   glass: 0,
   discharged: 0,
+  charges: [],
   plus: 0,
   uprooted: 0,
   replaced: 0,
@@ -614,9 +617,15 @@ function imbue(r: Run, a: Act, side: SideState, kind: Enchant, ifRoom: boolean):
 }
 
 /** Discharge 1 or 2 enchantments: with two different ones and a single discharge, the player chooses (with no one to ask, the oldest). */
-function discharge(r: Run, a: Act, side: SideState, count: number): void {
+function discharge(r: Run, a: Act, side: SideState, count: number, kind?: Enchant): void {
   const list = side.enchants ?? [];
   if (!list.length) return;
+  // (DECISIONS #425: "Discharge a Ward" spends only that kind, the oldest first, and leaves the rest; none of it: nothing)
+  if (kind) {
+    const at = list.flatMap((k, i) => (k === kind ? [i] : [])).slice(0, Math.max(1, count));
+    if (at.length) spendCharges(r, a, side, at);
+    return;
+  }
   if (count >= 2 || list.length === 1) {
     spendCharges(
       r,
@@ -964,10 +973,25 @@ function spendCharges(r: Run, a: Act, side: SideState, at: number[]): void {
     else if (hero) execOp(r, a, { op: 'barrier', amount: WARD_BARRIER * times, to: 'self' });
   });
   a.discharged += kinds.length;
+  a.charges = [...a.charges, ...kinds];
   fireTriggers(r, side, 'discharge');
   if (new Set(kinds).size >= 2) fireTriggers(r, side, 'dischargeMixed');
   // (a card with no attack to land on: its Glass breaks now, and its Ember is lost)
   if (!a.card?.effects.some((o) => o.op === 'damage')) {
+    a.ember = 0;
+    breakGlass(r, a);
+  }
+}
+
+/** (DECISIONS #425) the charges a card has discharged take effect once more: no charge returns to the blade, no trigger answers. */
+function echoCharges(r: Run, a: Act): void {
+  const hero = a.actor;
+  for (const k of a.charges) {
+    if (k === 'ember') a.ember += EMBER_DAMAGE;
+    else if (k === 'glass') a.glass += GLASS_DAMAGE;
+    else execOp(r, a, { op: 'barrier', amount: WARD_BARRIER, to: 'self' });
+  }
+  if (a.charges.length && hero.hp > 0 && !a.card?.effects.some((o) => o.op === 'damage')) {
     a.ember = 0;
     breakGlass(r, a);
   }
@@ -1327,6 +1351,18 @@ function metricValue(
       return new Set(sd.enchants ?? []).size;
     case 'wards':
       return (sd.enchants ?? []).filter((k) => k === 'ward').length;
+    case 'bladeEmbers':
+      return (sd.enchants ?? []).filter((k) => k === 'ember').length;
+    case 'bladeGlass':
+      return (sd.enchants ?? []).filter((k) => k === 'glass').length;
+    case 'bladePair': {
+      const l = sd.enchants ?? [];
+      return l.length >= 2 && l[0] === l[1] ? 1 : 0;
+    }
+    case 'dischargedPair':
+      return a.charges.length >= 2 && new Set(a.charges).size === 1 ? 1 : 0;
+    case 'dischargedMix':
+      return new Set(a.charges).size >= 2 ? 1 : 0;
     case 'discharged':
       return a.discharged;
     // (the Shaman)
@@ -1467,6 +1503,7 @@ function runOps(r: Run, a: Act, ops: readonly Op[]): void {
       if (a.ember) r.s.pending.ember = a.ember;
       if (a.glass) r.s.pending.glass = a.glass;
       if (a.discharged) r.s.pending.discharged = a.discharged;
+      if (a.charges.length) r.s.pending.charges = [...a.charges];
       return;
     }
   }
@@ -2539,7 +2576,10 @@ function execOp(r: Run, a: Act, op: Op): void {
       imbue(r, a, side, op.kind, op.ifRoom === true);
       return;
     case 'discharge':
-      discharge(r, a, side, op.count);
+      discharge(r, a, side, op.count, op.kind);
+      return;
+    case 'echoCharges':
+      echoCharges(r, a);
       return;
     case 'recast': {
       const list = side.enchants ?? [];
@@ -2549,6 +2589,7 @@ function execOp(r: Run, a: Act, op: Op): void {
       if (!a.pick) {
         list[list.length - 1] = into[0] as Enchant;
         showEnchants(r, side);
+        fireTriggers(r, side, 'recast');
         return;
       }
       r.s.pending = {
@@ -4498,6 +4539,7 @@ function pickCards(r: Run, action: Extract<Action, { type: 'pick' }>): void {
       ember: p.ember ?? 0,
       glass: p.glass ?? 0,
       discharged: p.discharged ?? 0,
+      charges: p.charges ?? [],
       plus: p.plus ?? 0,
     });
     // (the Spellblade's choices: which enchantment the new one replaces, which to discharge, what the newest becomes)
@@ -4512,6 +4554,7 @@ function pickCards(r: Run, action: Extract<Action, { type: 'pick' }>): void {
     else if (p.kind === 'recast' && list.length) {
       list[list.length - 1] = ids[0] as Enchant;
       showEnchants(r, sd);
+      fireTriggers(r, sd, 'recast');
     }
     // (the Shaman's: which spirit to plant, and where)
     else if (p.kind === 'plantKind' && ids[0]) plant(r, act, sd, ids[0], p.anywhere === true);
@@ -4678,6 +4721,14 @@ export function previewCardDamage(
           (n, k, j) => n + (list[k] === 'ember' ? EMBER_DAMAGE * (j === 0 ? twin : 1) : 0),
           0,
         );
+      if (op.kind) {
+        const at = list
+          .flatMap((k, j) => (k === op.kind ? [j] : []))
+          .slice(0, Math.max(1, op.count));
+        emberLo = emberHi = worth(at);
+        a.discharged = at.length;
+        return;
+      }
       if (op.count >= 2 || list.length <= 1) emberLo = emberHi = worth(list.map((_, k) => k));
       else if (list[0] === list[1]) emberLo = emberHi = worth([0]);
       else {

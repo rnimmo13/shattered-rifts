@@ -4,6 +4,9 @@
 // consumer and pays only the choice and timing it adds: +1 for one, +1.5 for both (the charge itself is the Imbue's). "Per enchantment
 // discharged" by a both-discharge counts ~1.6; "per enchantment on your blade" ~1.3; Wards on the blade in a Ward deck ~1.5 after an
 // Imbue. A trigger on Discharge fires about once a turn in a deck that wants it.
+// The expansion (DECISIONS #425): a mixed pair on a both-discharge ~55% (~70% in a deck built for it), a matching pair ~55% in a matching
+// deck; "they take effect again" is worth the pair (~6.4); Recast 1.5; a full blade at the start of a turn ~55% in a holding deck; a Ward
+// held at the end of a turn ~75% in a Ward deck.
 
 import type { Price } from './common';
 
@@ -333,5 +336,222 @@ export const SPELLBLADE_PRICES: Record<string, Price> = {
     up: 30,
     how: '16 Barrier 19.2 + two Imbue Ward 6',
     role: 'Ward: fills the blade with Wards',
+  },
+  'measured-release': {
+    pts: 9.5,
+    up: 12.5,
+    how: '7 + Discharge 1 + draw 1 if a charge is left (3 x0.5)',
+    role: 'Edge: spend one, keep one, and be paid for keeping it',
+  },
+  'spark-thrust': {
+    pts: 6,
+    up: 8,
+    how: '5 + Discharge 1',
+    role: 'Edge: the free single discharge (bounded by the charges on the blade)',
+  },
+  'glass-fang': {
+    pts: 9.9,
+    up: 12.9,
+    how: '7 + Discharge a Glass 1 + 2 Sapped on ALL for their turn (3.1) if it did (x0.6)',
+    role: 'Edge: a Glass spent on its own, the Ember or Ward kept',
+  },
+  'searing-edge': {
+    pts: 18.6,
+    up: 22.6,
+    how: '14 + Discharge an Ember 1 + 2 Exposed (6) if it did (x0.6)',
+    role: 'Edge: the Ember spent on its own, opening the next attack',
+  },
+  'double-release': {
+    pts: 10,
+    up: 14,
+    how: '4 + 4 + two single discharges 2: each charge on its own hit; each answers a discharge trigger',
+    role: 'Edge: two triggers from one card (Cleaving Edge, Glass Guard twice)',
+  },
+  'edge-discipline': {
+    pts: 15.1,
+    up: 18.6,
+    how: 'Aura: ~0.9 discharges a turn that leave a charge x (draw 3 + 1 Barrier 1.2) x4',
+    role: 'Edge engine: rewards spending one and keeping the other',
+  },
+  'shift-the-grain': {
+    pts: 6.3,
+    up: 8.7,
+    how: 'Recast 1.5 + 4 Barrier 4.8',
+    role: 'Recast: the cheap fix',
+  },
+  'adaptive-strike': {
+    pts: 10.5,
+    up: 13.5,
+    how: '8 + Recast 1.5 + Discharge 1',
+    role: 'Recast: change the newest, then fire the one you need',
+  },
+  'living-glass': {
+    pts: 15.8,
+    up: 19.3,
+    how: 'Aura: once a turn on a Recast (~0.6 a turn in a Recast deck) x (3 Barrier 3.6 + draw 3) x4',
+    role: 'Recast engine: paid adaptation, once a turn',
+  },
+  'obsidian-insight': {
+    pts: 9.5,
+    up: 10,
+    how: 'Foresee 3 (on its own) 5 + Recast 1.5 + draw 3',
+    role: 'Recast/selection: the free fix that finds the card',
+    consume: true,
+  },
+  rekindle: {
+    pts: 9.1,
+    up: 12.7,
+    how: '5 Barrier 6 + Imbue Ember and Glass and draw 1 (7.7) when the blade is empty (~40%)',
+    role: 'recovery: an empty blade refilled, so holding is never forced',
+  },
+  'spell-etched-steel': {
+    pts: 15.1,
+    up: 20.2,
+    how: 'Aura: ~1.4 Imbues a turn x 3 to a random enemy (x0.9) x4',
+    role: 'spell/weapon bridge: her spells hit as they charge',
+  },
+  'split-the-light': {
+    pts: 9.8,
+    up: 12.8,
+    how: '5 + Discharge both 1.5 + draw 2 (6) on a mixed pair (~55%)',
+    role: 'mixed burst: the cheap release that refills the hand',
+  },
+  'fault-line': {
+    pts: 18.3,
+    up: 22.2,
+    how: '11 to ALL 14.3 + Discharge both 1.5 + 1 Exposed on ALL (4.5) on a mixed pair (~55%)',
+    role: 'mixed burst: the group release',
+  },
+  'prism-break': {
+    pts: 21.5,
+    up: 25.5,
+    how: '13 + Discharge both 1.5 + 10 more on a mixed pair (~70% in the deck that takes it)',
+    role: 'mixed burst: the rare spike for a prepared mixed blade',
+  },
+  'kindle-the-blade': {
+    pts: 9.8,
+    up: 13.4,
+    how: 'two Imbue Ember 5 + 4 Barrier 4.8',
+    role: 'matching: the Ember pair',
+  },
+  'glaze-the-edge': {
+    pts: 9.2,
+    up: 12.8,
+    how: 'two Imbue Glass 4.4 + 4 Barrier 4.8',
+    role: 'matching: the Glass pair (a group answer)',
+  },
+  'resonant-pair': {
+    pts: 11,
+    up: 14,
+    how: '6 + Discharge both 1.5 + a matching pair takes effect again (~6.4, ~55%)',
+    role: 'matching payoff: Ember 6 more on the hit, Glass 4 more to all, Ward 6 Barrier',
+  },
+  'kindred-shards': {
+    pts: 21.7,
+    up: 26.7,
+    how: '15 + Discharge both 1.5 + a matching pair again and draw 1 (9.4 x0.55)',
+    role: 'matching payoff: the rare',
+  },
+  'matched-set': {
+    pts: 14.4,
+    up: 19.2,
+    how: 'Aura: ~1 Imbue a turn that makes or keeps a matching pair x 3 Barrier 3.6 x4',
+    role: 'matching engine: Barrier for building pairs',
+  },
+  'bide-the-blade': {
+    pts: 11.8,
+    up: 15.4,
+    how: '7 Barrier 8.4 + draw 2 (6) with a full blade (~40%) + Hold 1',
+    role: 'holding: a full blade pays cards',
+  },
+  'tempered-wait': {
+    pts: 9.2,
+    up: 12.8,
+    how: '6 Barrier 7.2 + 1 Mana next turn (4) while an Ember is held (~50%)',
+    role: 'holding: an Ember kept for next turn',
+  },
+  'glass-sight': {
+    pts: 10.9,
+    up: 14.5,
+    how: '5 Barrier 6 + draw 1 per kind on the blade (~1.3) 3.9 + Hold 1',
+    role: 'selection: a mixed blade draws more',
+  },
+  'stored-light': {
+    pts: 20.7,
+    up: 24.2,
+    how: 'Aura: a full blade at the start of the turn (~55% in a holding deck) x (1 Mana 7 + 2 Barrier 2.4) x4',
+    role: 'holding payoff: a full blade carried over pays Mana to spend it',
+  },
+  'obsidian-resonance': {
+    pts: 19.2,
+    up: 22.7,
+    how: 'Aura: Twin Edge each turn 2.4 + 2 Barrier 2.4, x4',
+    role: 'burst engine: the first charge of each turn counts twice',
+  },
+  'glass-and-guard': {
+    pts: 8.8,
+    up: 12.4,
+    how: 'Imbue Glass 2.2 + Imbue Ward 3 + 3 Barrier 3.6',
+    role: 'mixed setup: Glass and Ward',
+  },
+  'glimpse-through-glass': {
+    pts: 9.8,
+    up: 13.4,
+    how: 'Foresee 3 (on its own) 5 + 4 Barrier 4.8',
+    role: 'utility: selection and defence',
+  },
+  'blade-recall': {
+    pts: 10.6,
+    up: 14.2,
+    how: 'a blade Attack back from the discard pile ~4 + Imbue Ward 3 + 3 Barrier 3.6',
+    role: 'utility: controlled draw for the discharge you need',
+  },
+  'warding-strike': {
+    pts: 9.4,
+    up: 12.4,
+    how: '6 + Discharge a Ward 1 + 4 more if it did (x0.6)',
+    role: 'Ward weaving: a Ward spent as damage, the rest kept',
+  },
+  wardbreak: {
+    pts: 10,
+    up: 11.7,
+    how: 'every Ward discharged 1.5 + 5 to ALL a Ward (~1.3: 8.5)',
+    role: 'Ward weaving: held Wards turned into a group attack',
+  },
+  'hold-the-glass': {
+    pts: 9.4,
+    up: 13,
+    how: '5 Barrier + 2 a Ward (~1) 7.2 + Hold 1',
+    role: 'Ward weaving: defence that rewards keeping Wards',
+  },
+  'sentinel-glass': {
+    pts: 15.6,
+    up: 19.5,
+    how: 'Aura: 4 to ALL (5.2) at the end of a turn a Ward is held (~75% in a Ward deck) x4',
+    role: 'Ward route to victory: held Wards hit every turn',
+  },
+  'blunting-ward': {
+    pts: 9.6,
+    up: 13.2,
+    how: '1 Faltering 3 + Imbue Ward 3 + 3 Barrier 3.6',
+    role: 'debuff and defence',
+  },
+  'purifying-shard': {
+    pts: 11.4,
+    up: 15,
+    how: 'lessen your debuffs by 2 ~2 + 6 Barrier 7.2 + Imbue Glass 2.2',
+    role: 'debuff management',
+  },
+  'shattering-rebuke': {
+    pts: 10.6,
+    up: 14.2,
+    how: 'Discharge one from a Skill 1 (a Glass breaks now, a Ward gives Barrier, an Ember is lost) + 2 Faltering 6 + 3 Barrier 3.6',
+    role: 'defence: the blade spent as protection',
+  },
+  'scatter-glass': {
+    pts: 9.8,
+    up: 12.4,
+    how: '4 to ALL 5.2 + Imbue Glass 2.2 + 2 Barrier 2.4',
+    role: 'group: hit all and charge Glass',
   },
 };

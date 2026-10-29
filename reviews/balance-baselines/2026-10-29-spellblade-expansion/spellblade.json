@@ -1,0 +1,2847 @@
+{
+  "takenAt": "2026-10-29",
+  "commit": "780256c3bfa137f5fa73a26443a9bf405bdb8ad3",
+  "dirty": [
+    "?? src/_sbcheck.ts"
+  ],
+  "hero": {
+    "id": "spellblade",
+    "name": "Spellblade",
+    "maxHp": 75,
+    "mana": 3,
+    "handSize": 5
+  },
+  "trait": {
+    "name": "Glass and Ember",
+    "text": "Start every fight with a Ward enchantment on your Obsidian Blade. The first time each turn you Imbue, draw 1 card and gain 2 Barrier.",
+    "fightStart": [
+      {
+        "op": "imbue",
+        "kind": "ward"
+      }
+    ],
+    "triggers": [
+      {
+        "op": "power",
+        "when": "imbue",
+        "ops": [
+          {
+            "op": "draw",
+            "amount": 1
+          },
+          {
+            "op": "barrier",
+            "amount": 2,
+            "to": "self"
+          }
+        ],
+        "once": true
+      }
+    ]
+  },
+  "starter": [
+    "strike",
+    "strike",
+    "strike",
+    "strike",
+    "defend",
+    "defend",
+    "defend",
+    "defend",
+    "ember-inscription",
+    "obsidian-cut"
+  ],
+  "rewardEligible": 51,
+  "cards": [
+    {
+      "id": "ember-inscription",
+      "name": "Ember Inscription",
+      "realm": "starfall",
+      "rarity": "basic",
+      "kind": "skill",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 5,
+          "to": "target"
+        },
+        {
+          "op": "imbue",
+          "kind": "ember"
+        }
+      ],
+      "hero": "spellblade",
+      "upgrade": "ember-inscription+"
+    },
+    {
+      "id": "ember-inscription+",
+      "name": "Ember Inscription+",
+      "realm": "starfall",
+      "rarity": "basic",
+      "kind": "skill",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 8,
+          "to": "target"
+        },
+        {
+          "op": "imbue",
+          "kind": "ember"
+        }
+      ],
+      "hero": "spellblade"
+    },
+    {
+      "id": "obsidian-cut",
+      "name": "Obsidian Cut",
+      "realm": "starfall",
+      "rarity": "basic",
+      "kind": "attack",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "discharge",
+          "count": 1
+        },
+        {
+          "op": "damage",
+          "amount": 6,
+          "to": "target"
+        }
+      ],
+      "hero": "spellblade",
+      "tags": [
+        "blade"
+      ],
+      "upgrade": "obsidian-cut+"
+    },
+    {
+      "id": "obsidian-cut+",
+      "name": "Obsidian Cut+",
+      "realm": "starfall",
+      "rarity": "basic",
+      "kind": "attack",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "discharge",
+          "count": 1
+        },
+        {
+          "op": "damage",
+          "amount": 9,
+          "to": "target"
+        }
+      ],
+      "hero": "spellblade",
+      "tags": [
+        "blade"
+      ]
+    },
+    {
+      "id": "gleam",
+      "name": "Glint",
+      "realm": "starfall",
+      "rarity": "common",
+      "kind": "attack",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 7,
+          "to": "target"
+        },
+        {
+          "op": "draw",
+          "amount": 1
+        },
+        {
+          "op": "topdeck",
+          "amount": 1
+        }
+      ],
+      "hero": "spellblade",
+      "upgrade": "gleam+"
+    },
+    {
+      "id": "gleam+",
+      "name": "Glint+",
+      "realm": "starfall",
+      "rarity": "common",
+      "kind": "attack",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 10,
+          "to": "target"
+        },
+        {
+          "op": "draw",
+          "amount": 1
+        },
+        {
+          "op": "topdeck",
+          "amount": 1
+        }
+      ],
+      "hero": "spellblade"
+    },
+    {
+      "id": "hollow-gaze",
+      "name": "Hollow Gaze",
+      "realm": "starfall",
+      "rarity": "common",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 7,
+          "to": "self"
+        },
+        {
+          "op": "fetch",
+          "amount": 1,
+          "to": "draw"
+        }
+      ],
+      "hero": "spellblade",
+      "upgrade": "hollow-gaze+"
+    },
+    {
+      "id": "hollow-gaze+",
+      "name": "Hollow Gaze+",
+      "realm": "starfall",
+      "rarity": "common",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 10,
+          "to": "self"
+        },
+        {
+          "op": "fetch",
+          "amount": 1,
+          "to": "draw"
+        }
+      ],
+      "hero": "spellblade"
+    },
+    {
+      "id": "humble",
+      "name": "Humble",
+      "realm": "starfall",
+      "rarity": "common",
+      "kind": "skill",
+      "cost": 0,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "status",
+          "status": "faltering",
+          "amount": 1,
+          "to": "target"
+        },
+        {
+          "op": "status",
+          "status": "exposed",
+          "amount": 1,
+          "to": "target"
+        }
+      ],
+      "hero": "spellblade",
+      "exhaust": true,
+      "upgrade": "humble+"
+    },
+    {
+      "id": "humble+",
+      "name": "Humble+",
+      "realm": "starfall",
+      "rarity": "common",
+      "kind": "skill",
+      "cost": 0,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "status",
+          "status": "faltering",
+          "amount": 1,
+          "to": "target"
+        },
+        {
+          "op": "status",
+          "status": "exposed",
+          "amount": 1,
+          "to": "target"
+        }
+      ],
+      "hero": "spellblade",
+      "exhaust": false
+    },
+    {
+      "id": "molten-weight",
+      "name": "Molten Weight",
+      "realm": "starfall",
+      "rarity": "common",
+      "kind": "attack",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 7,
+          "to": "allFoes"
+        },
+        {
+          "op": "status",
+          "status": "sapped",
+          "amount": 1,
+          "to": "allFoes",
+          "temp": "theirs"
+        }
+      ],
+      "hero": "spellblade",
+      "upgrade": "molten-weight+"
+    },
+    {
+      "id": "molten-weight+",
+      "name": "Molten Weight+",
+      "realm": "starfall",
+      "rarity": "common",
+      "kind": "attack",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 9,
+          "to": "allFoes"
+        },
+        {
+          "op": "status",
+          "status": "sapped",
+          "amount": 1,
+          "to": "allFoes",
+          "temp": "theirs"
+        }
+      ],
+      "hero": "spellblade"
+    },
+    {
+      "id": "stellar-wind",
+      "name": "Ash Wind",
+      "realm": "starfall",
+      "rarity": "uncommon",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "draw",
+          "amount": 3
+        },
+        {
+          "op": "topdeck",
+          "amount": 1
+        }
+      ],
+      "hero": "spellblade",
+      "upgrade": "stellar-wind+"
+    },
+    {
+      "id": "stellar-wind+",
+      "name": "Ash Wind+",
+      "realm": "starfall",
+      "rarity": "uncommon",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "draw",
+          "amount": 4
+        },
+        {
+          "op": "topdeck",
+          "amount": 1
+        }
+      ],
+      "hero": "spellblade"
+    },
+    {
+      "id": "forged-in-fury",
+      "name": "Forged in Fury",
+      "realm": "starfall",
+      "rarity": "common",
+      "kind": "attack",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 7,
+          "to": "target"
+        },
+        {
+          "op": "imbue",
+          "kind": "ember"
+        }
+      ],
+      "hero": "spellblade",
+      "tags": [
+        "blade"
+      ],
+      "upgrade": "forged-in-fury+"
+    },
+    {
+      "id": "forged-in-fury+",
+      "name": "Forged in Fury+",
+      "realm": "starfall",
+      "rarity": "common",
+      "kind": "attack",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 10,
+          "to": "target"
+        },
+        {
+          "op": "imbue",
+          "kind": "ember"
+        }
+      ],
+      "hero": "spellblade",
+      "tags": [
+        "blade"
+      ]
+    },
+    {
+      "id": "skybolt",
+      "name": "Spellbolt",
+      "realm": "starfall",
+      "rarity": "common",
+      "kind": "attack",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "discharge",
+          "count": 1
+        },
+        {
+          "op": "damage",
+          "amount": 6,
+          "to": "target"
+        },
+        {
+          "op": "draw",
+          "amount": 1
+        }
+      ],
+      "hero": "spellblade",
+      "tags": [
+        "blade"
+      ],
+      "upgrade": "skybolt+"
+    },
+    {
+      "id": "skybolt+",
+      "name": "Spellbolt+",
+      "realm": "starfall",
+      "rarity": "common",
+      "kind": "attack",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "discharge",
+          "count": 1
+        },
+        {
+          "op": "damage",
+          "amount": 9,
+          "to": "target"
+        },
+        {
+          "op": "draw",
+          "amount": 1
+        }
+      ],
+      "hero": "spellblade",
+      "tags": [
+        "blade"
+      ]
+    },
+    {
+      "id": "ember-cache",
+      "name": "Ember Cache",
+      "realm": "starfall",
+      "rarity": "common",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "imbue",
+          "kind": "ember"
+        },
+        {
+          "op": "draw",
+          "amount": 2
+        }
+      ],
+      "hero": "spellblade",
+      "upgrade": "ember-cache+"
+    },
+    {
+      "id": "ember-cache+",
+      "name": "Ember Cache+",
+      "realm": "starfall",
+      "rarity": "common",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "imbue",
+          "kind": "ember"
+        },
+        {
+          "op": "draw",
+          "amount": 3
+        }
+      ],
+      "hero": "spellblade"
+    },
+    {
+      "id": "faint-glow",
+      "name": "Faint Ember",
+      "realm": "starfall",
+      "rarity": "common",
+      "kind": "skill",
+      "cost": 0,
+      "target": "none",
+      "effects": [
+        {
+          "op": "imbue",
+          "kind": "ember"
+        },
+        {
+          "op": "scry",
+          "amount": 2
+        }
+      ],
+      "hero": "spellblade",
+      "exhaust": true,
+      "upgrade": "faint-glow+"
+    },
+    {
+      "id": "faint-glow+",
+      "name": "Faint Ember+",
+      "realm": "starfall",
+      "rarity": "common",
+      "kind": "skill",
+      "cost": 0,
+      "target": "none",
+      "effects": [
+        {
+          "op": "imbue",
+          "kind": "ember"
+        },
+        {
+          "op": "scry",
+          "amount": 3
+        }
+      ],
+      "hero": "spellblade",
+      "exhaust": true
+    },
+    {
+      "id": "sunstrike",
+      "name": "Emberstrike",
+      "realm": "starfall",
+      "rarity": "common",
+      "kind": "attack",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 9,
+          "to": "target"
+        },
+        {
+          "op": "when",
+          "by": "enchants",
+          "atMost": 0,
+          "ops": [
+            {
+              "op": "imbue",
+              "kind": "ember"
+            }
+          ]
+        }
+      ],
+      "hero": "spellblade",
+      "tags": [
+        "blade"
+      ],
+      "upgrade": "sunstrike+"
+    },
+    {
+      "id": "sunstrike+",
+      "name": "Emberstrike+",
+      "realm": "starfall",
+      "rarity": "common",
+      "kind": "attack",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 12,
+          "to": "target"
+        },
+        {
+          "op": "when",
+          "by": "enchants",
+          "atMost": 0,
+          "ops": [
+            {
+              "op": "imbue",
+              "kind": "ember"
+            }
+          ]
+        }
+      ],
+      "hero": "spellblade",
+      "tags": [
+        "blade"
+      ]
+    },
+    {
+      "id": "fracture-script",
+      "name": "Fracture Script",
+      "realm": "starfall",
+      "rarity": "common",
+      "kind": "skill",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 7,
+          "to": "target"
+        },
+        {
+          "op": "imbue",
+          "kind": "glass"
+        }
+      ],
+      "hero": "spellblade",
+      "upgrade": "fracture-script+"
+    },
+    {
+      "id": "fracture-script+",
+      "name": "Fracture Script+",
+      "realm": "starfall",
+      "rarity": "common",
+      "kind": "skill",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 10,
+          "to": "target"
+        },
+        {
+          "op": "imbue",
+          "kind": "glass"
+        }
+      ],
+      "hero": "spellblade"
+    },
+    {
+      "id": "astral-pulse",
+      "name": "Shard Pulse",
+      "realm": "starfall",
+      "rarity": "common",
+      "kind": "attack",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "discharge",
+          "count": 1
+        },
+        {
+          "op": "damage",
+          "amount": 7,
+          "to": "allFoes"
+        }
+      ],
+      "hero": "spellblade",
+      "tags": [
+        "blade"
+      ],
+      "upgrade": "astral-pulse+"
+    },
+    {
+      "id": "astral-pulse+",
+      "name": "Shard Pulse+",
+      "realm": "starfall",
+      "rarity": "common",
+      "kind": "attack",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "discharge",
+          "count": 1
+        },
+        {
+          "op": "damage",
+          "amount": 9,
+          "to": "allFoes"
+        }
+      ],
+      "hero": "spellblade",
+      "tags": [
+        "blade"
+      ]
+    },
+    {
+      "id": "gamma-burst",
+      "name": "Glass Burst",
+      "realm": "starfall",
+      "rarity": "uncommon",
+      "kind": "attack",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "discharge",
+          "count": 1
+        },
+        {
+          "op": "damage",
+          "amount": 5,
+          "to": "target"
+        },
+        {
+          "op": "status",
+          "status": "faltering",
+          "amount": 1,
+          "to": "target"
+        },
+        {
+          "op": "status",
+          "status": "exposed",
+          "amount": 1,
+          "to": "target"
+        }
+      ],
+      "hero": "spellblade",
+      "tags": [
+        "blade"
+      ],
+      "upgrade": "gamma-burst+"
+    },
+    {
+      "id": "gamma-burst+",
+      "name": "Glass Burst+",
+      "realm": "starfall",
+      "rarity": "uncommon",
+      "kind": "attack",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "discharge",
+          "count": 1
+        },
+        {
+          "op": "damage",
+          "amount": 8,
+          "to": "target"
+        },
+        {
+          "op": "status",
+          "status": "faltering",
+          "amount": 1,
+          "to": "target"
+        },
+        {
+          "op": "status",
+          "status": "exposed",
+          "amount": 1,
+          "to": "target"
+        }
+      ],
+      "hero": "spellblade",
+      "tags": [
+        "blade"
+      ]
+    },
+    {
+      "id": "shard-strike",
+      "name": "Shard Strike",
+      "realm": "starfall",
+      "rarity": "uncommon",
+      "kind": "attack",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 8,
+          "to": "target"
+        },
+        {
+          "op": "imbue",
+          "kind": "glass"
+        }
+      ],
+      "hero": "spellblade",
+      "tags": [
+        "blade"
+      ],
+      "upgrade": "shard-strike+"
+    },
+    {
+      "id": "shard-strike+",
+      "name": "Shard Strike+",
+      "realm": "starfall",
+      "rarity": "uncommon",
+      "kind": "attack",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 11,
+          "to": "target"
+        },
+        {
+          "op": "imbue",
+          "kind": "glass"
+        }
+      ],
+      "hero": "spellblade",
+      "tags": [
+        "blade"
+      ]
+    },
+    {
+      "id": "sovereign-strike",
+      "name": "Tyrant Strike",
+      "realm": "starfall",
+      "rarity": "uncommon",
+      "kind": "attack",
+      "cost": 2,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "discharge",
+          "count": 1
+        },
+        {
+          "op": "damage",
+          "amount": 15,
+          "to": "target"
+        },
+        {
+          "op": "manaNext",
+          "amount": 1
+        }
+      ],
+      "hero": "spellblade",
+      "tags": [
+        "blade"
+      ],
+      "upgrade": "sovereign-strike+"
+    },
+    {
+      "id": "sovereign-strike+",
+      "name": "Tyrant Strike+",
+      "realm": "starfall",
+      "rarity": "uncommon",
+      "kind": "attack",
+      "cost": 2,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "discharge",
+          "count": 1
+        },
+        {
+          "op": "damage",
+          "amount": 19,
+          "to": "target"
+        },
+        {
+          "op": "manaNext",
+          "amount": 1
+        }
+      ],
+      "hero": "spellblade",
+      "tags": [
+        "blade"
+      ]
+    },
+    {
+      "id": "recast-the-edge",
+      "name": "Recast the Edge",
+      "realm": "starfall",
+      "rarity": "uncommon",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "recast"
+        },
+        {
+          "op": "barrier",
+          "amount": 6,
+          "to": "self"
+        },
+        {
+          "op": "draw",
+          "amount": 1
+        }
+      ],
+      "hero": "spellblade",
+      "upgrade": "recast-the-edge+"
+    },
+    {
+      "id": "recast-the-edge+",
+      "name": "Recast the Edge+",
+      "realm": "starfall",
+      "rarity": "uncommon",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "recast"
+        },
+        {
+          "op": "barrier",
+          "amount": 9,
+          "to": "self"
+        },
+        {
+          "op": "draw",
+          "amount": 1
+        }
+      ],
+      "hero": "spellblade"
+    },
+    {
+      "id": "warm-anvil",
+      "name": "Warm Anvil",
+      "realm": "starfall",
+      "rarity": "uncommon",
+      "kind": "power",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "power",
+          "when": "turnStart",
+          "ops": [
+            {
+              "op": "imbue",
+              "kind": "ember",
+              "ifRoom": true
+            },
+            {
+              "op": "barrier",
+              "amount": 2,
+              "to": "self"
+            }
+          ]
+        }
+      ],
+      "hero": "spellblade",
+      "upgrade": "warm-anvil+"
+    },
+    {
+      "id": "warm-anvil+",
+      "name": "Warm Anvil+",
+      "realm": "starfall",
+      "rarity": "uncommon",
+      "kind": "power",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "power",
+          "when": "turnStart",
+          "ops": [
+            {
+              "op": "imbue",
+              "kind": "ember",
+              "ifRoom": true
+            },
+            {
+              "op": "barrier",
+              "amount": 3,
+              "to": "self"
+            }
+          ]
+        }
+      ],
+      "hero": "spellblade"
+    },
+    {
+      "id": "call-the-blade",
+      "name": "Call the Blade",
+      "realm": "starfall",
+      "rarity": "uncommon",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "drawUntil",
+          "not": "skill"
+        },
+        {
+          "op": "imbue",
+          "kind": "glass"
+        },
+        {
+          "op": "barrier",
+          "amount": 3,
+          "to": "self"
+        }
+      ],
+      "hero": "spellblade",
+      "upgrade": "call-the-blade+"
+    },
+    {
+      "id": "call-the-blade+",
+      "name": "Call the Blade+",
+      "realm": "starfall",
+      "rarity": "uncommon",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "drawUntil",
+          "not": "skill"
+        },
+        {
+          "op": "imbue",
+          "kind": "glass"
+        },
+        {
+          "op": "barrier",
+          "amount": 6,
+          "to": "self"
+        }
+      ],
+      "hero": "spellblade"
+    },
+    {
+      "id": "echoing-blade",
+      "name": "Echoing Blade",
+      "realm": "starfall",
+      "rarity": "rare",
+      "kind": "skill",
+      "cost": 0,
+      "target": "none",
+      "effects": [
+        {
+          "op": "status",
+          "status": "twinedge",
+          "amount": 1,
+          "to": "self",
+          "temp": true
+        },
+        {
+          "op": "draw",
+          "amount": 1
+        },
+        {
+          "op": "barrier",
+          "amount": 3,
+          "to": "self"
+        }
+      ],
+      "hero": "spellblade",
+      "exhaust": true,
+      "upgrade": "echoing-blade+"
+    },
+    {
+      "id": "echoing-blade+",
+      "name": "Echoing Blade+",
+      "realm": "starfall",
+      "rarity": "rare",
+      "kind": "skill",
+      "cost": 0,
+      "target": "none",
+      "effects": [
+        {
+          "op": "status",
+          "status": "twinedge",
+          "amount": 1,
+          "to": "self",
+          "temp": true
+        },
+        {
+          "op": "draw",
+          "amount": 1
+        },
+        {
+          "op": "barrier",
+          "amount": 6,
+          "to": "self"
+        }
+      ],
+      "hero": "spellblade",
+      "exhaust": true
+    },
+    {
+      "id": "cleaving-edge",
+      "name": "Cleaving Edge",
+      "realm": "starfall",
+      "rarity": "rare",
+      "kind": "power",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "power",
+          "when": "discharge",
+          "ops": [
+            {
+              "op": "damage",
+              "amount": 4,
+              "to": "allFoes"
+            }
+          ]
+        }
+      ],
+      "hero": "spellblade",
+      "upgrade": "cleaving-edge+"
+    },
+    {
+      "id": "cleaving-edge+",
+      "name": "Cleaving Edge+",
+      "realm": "starfall",
+      "rarity": "rare",
+      "kind": "power",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "power",
+          "when": "discharge",
+          "ops": [
+            {
+              "op": "damage",
+              "amount": 5,
+              "to": "allFoes"
+            }
+          ]
+        }
+      ],
+      "hero": "spellblade"
+    },
+    {
+      "id": "big-bang",
+      "name": "Magma Surge",
+      "realm": "starfall",
+      "rarity": "rare",
+      "kind": "skill",
+      "cost": 0,
+      "target": "none",
+      "effects": [
+        {
+          "op": "mana",
+          "amount": 1
+        },
+        {
+          "op": "imbue",
+          "kind": "ember"
+        }
+      ],
+      "hero": "spellblade",
+      "exhaust": true,
+      "upgrade": "big-bang+"
+    },
+    {
+      "id": "big-bang+",
+      "name": "Magma Surge+",
+      "realm": "starfall",
+      "rarity": "rare",
+      "kind": "skill",
+      "cost": 0,
+      "target": "none",
+      "effects": [
+        {
+          "op": "mana",
+          "amount": 1
+        },
+        {
+          "op": "imbue",
+          "kind": "ember"
+        }
+      ],
+      "hero": "spellblade",
+      "exhaust": true,
+      "innate": true
+    },
+    {
+      "id": "dying-star",
+      "name": "Dying Ember",
+      "realm": "starfall",
+      "rarity": "rare",
+      "kind": "attack",
+      "cost": 2,
+      "target": "none",
+      "effects": [
+        {
+          "op": "discharge",
+          "count": 1
+        },
+        {
+          "op": "damage",
+          "amount": 10,
+          "to": "allFoes"
+        },
+        {
+          "op": "status",
+          "status": "sapped",
+          "amount": 6,
+          "to": "allFoes",
+          "temp": "theirs"
+        }
+      ],
+      "hero": "spellblade",
+      "tags": [
+        "blade"
+      ],
+      "upgrade": "dying-star+"
+    },
+    {
+      "id": "dying-star+",
+      "name": "Dying Ember+",
+      "realm": "starfall",
+      "rarity": "rare",
+      "kind": "attack",
+      "cost": 2,
+      "target": "none",
+      "effects": [
+        {
+          "op": "discharge",
+          "count": 1
+        },
+        {
+          "op": "damage",
+          "amount": 12,
+          "to": "allFoes"
+        },
+        {
+          "op": "status",
+          "status": "sapped",
+          "amount": 8,
+          "to": "allFoes",
+          "temp": "theirs"
+        }
+      ],
+      "hero": "spellblade",
+      "tags": [
+        "blade"
+      ]
+    },
+    {
+      "id": "whetstone",
+      "name": "Etch the Edge",
+      "realm": "starfall",
+      "rarity": "common",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "imbue",
+          "kind": "ember"
+        },
+        {
+          "op": "imbue",
+          "kind": "glass"
+        },
+        {
+          "op": "barrier",
+          "amount": 5,
+          "to": "self"
+        }
+      ],
+      "hero": "spellblade",
+      "upgrade": "whetstone+"
+    },
+    {
+      "id": "whetstone+",
+      "name": "Etch the Edge+",
+      "realm": "starfall",
+      "rarity": "common",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "imbue",
+          "kind": "ember"
+        },
+        {
+          "op": "imbue",
+          "kind": "glass"
+        },
+        {
+          "op": "barrier",
+          "amount": 8,
+          "to": "self"
+        }
+      ],
+      "hero": "spellblade"
+    },
+    {
+      "id": "obsidian-flurry",
+      "name": "Obsidian Flurry",
+      "realm": "starfall",
+      "rarity": "common",
+      "kind": "attack",
+      "cost": 2,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "discharge",
+          "count": 1
+        },
+        {
+          "op": "damage",
+          "amount": 6,
+          "hits": 3,
+          "to": "target"
+        }
+      ],
+      "hero": "spellblade",
+      "tags": [
+        "blade"
+      ],
+      "upgrade": "obsidian-flurry+"
+    },
+    {
+      "id": "obsidian-flurry+",
+      "name": "Obsidian Flurry+",
+      "realm": "starfall",
+      "rarity": "common",
+      "kind": "attack",
+      "cost": 2,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "discharge",
+          "count": 1
+        },
+        {
+          "op": "damage",
+          "amount": 8,
+          "hits": 3,
+          "to": "target"
+        }
+      ],
+      "hero": "spellblade",
+      "tags": [
+        "blade"
+      ]
+    },
+    {
+      "id": "cosmic-lance",
+      "name": "Obsidian Lance",
+      "realm": "starfall",
+      "rarity": "common",
+      "kind": "attack",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 5,
+          "to": "target",
+          "scale": {
+            "by": "enchants",
+            "mult": 3
+          }
+        }
+      ],
+      "hero": "spellblade",
+      "tags": [
+        "blade"
+      ],
+      "upgrade": "cosmic-lance+"
+    },
+    {
+      "id": "cosmic-lance+",
+      "name": "Obsidian Lance+",
+      "realm": "starfall",
+      "rarity": "common",
+      "kind": "attack",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 8,
+          "to": "target",
+          "scale": {
+            "by": "enchants",
+            "mult": 3
+          }
+        }
+      ],
+      "hero": "spellblade",
+      "tags": [
+        "blade"
+      ]
+    },
+    {
+      "id": "crownfall",
+      "name": "Crownfall",
+      "realm": "starfall",
+      "rarity": "uncommon",
+      "kind": "attack",
+      "cost": 2,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "discharge",
+          "count": 2
+        },
+        {
+          "op": "damage",
+          "amount": 17,
+          "to": "target"
+        }
+      ],
+      "hero": "spellblade",
+      "tags": [
+        "blade"
+      ],
+      "upgrade": "crownfall+"
+    },
+    {
+      "id": "crownfall+",
+      "name": "Crownfall+",
+      "realm": "starfall",
+      "rarity": "uncommon",
+      "kind": "attack",
+      "cost": 2,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "discharge",
+          "count": 2
+        },
+        {
+          "op": "damage",
+          "amount": 22,
+          "to": "target"
+        }
+      ],
+      "hero": "spellblade",
+      "tags": [
+        "blade"
+      ]
+    },
+    {
+      "id": "devastate",
+      "name": "Molten Ruin",
+      "realm": "starfall",
+      "rarity": "uncommon",
+      "kind": "attack",
+      "cost": 3,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "discharge",
+          "count": 2
+        },
+        {
+          "op": "damage",
+          "amount": 26,
+          "to": "target"
+        }
+      ],
+      "hero": "spellblade",
+      "tags": [
+        "blade"
+      ],
+      "upgrade": "devastate+"
+    },
+    {
+      "id": "devastate+",
+      "name": "Molten Ruin+",
+      "realm": "starfall",
+      "rarity": "uncommon",
+      "kind": "attack",
+      "cost": 3,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "discharge",
+          "count": 2
+        },
+        {
+          "op": "damage",
+          "amount": 34,
+          "to": "target"
+        }
+      ],
+      "hero": "spellblade",
+      "tags": [
+        "blade"
+      ]
+    },
+    {
+      "id": "radiance",
+      "name": "Shard Storm",
+      "realm": "starfall",
+      "rarity": "uncommon",
+      "kind": "attack",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "discharge",
+          "count": 1
+        },
+        {
+          "op": "damage",
+          "amount": 4,
+          "hits": 2,
+          "to": "allFoes"
+        }
+      ],
+      "hero": "spellblade",
+      "tags": [
+        "blade"
+      ],
+      "upgrade": "radiance+"
+    },
+    {
+      "id": "radiance+",
+      "name": "Shard Storm+",
+      "realm": "starfall",
+      "rarity": "uncommon",
+      "kind": "attack",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "discharge",
+          "count": 1
+        },
+        {
+          "op": "damage",
+          "amount": 5,
+          "hits": 2,
+          "to": "allFoes"
+        }
+      ],
+      "hero": "spellblade",
+      "tags": [
+        "blade"
+      ]
+    },
+    {
+      "id": "overcharge-edge",
+      "name": "Overcharge Edge",
+      "realm": "starfall",
+      "rarity": "uncommon",
+      "kind": "attack",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "discharge",
+          "count": 2
+        },
+        {
+          "op": "damage",
+          "amount": 4,
+          "to": "target",
+          "scale": {
+            "by": "discharged",
+            "mult": 4
+          }
+        }
+      ],
+      "hero": "spellblade",
+      "tags": [
+        "blade"
+      ],
+      "upgrade": "overcharge-edge+"
+    },
+    {
+      "id": "overcharge-edge+",
+      "name": "Overcharge Edge+",
+      "realm": "starfall",
+      "rarity": "uncommon",
+      "kind": "attack",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "discharge",
+          "count": 2
+        },
+        {
+          "op": "damage",
+          "amount": 7,
+          "to": "target",
+          "scale": {
+            "by": "discharged",
+            "mult": 4
+          }
+        }
+      ],
+      "hero": "spellblade",
+      "tags": [
+        "blade"
+      ]
+    },
+    {
+      "id": "final-shatter",
+      "name": "Final Shatter",
+      "realm": "starfall",
+      "rarity": "uncommon",
+      "kind": "attack",
+      "cost": 3,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 26,
+          "to": "target",
+          "onKill": [
+            {
+              "op": "imbue",
+              "kind": "ember",
+              "ifRoom": true
+            },
+            {
+              "op": "imbue",
+              "kind": "glass",
+              "ifRoom": true
+            }
+          ]
+        }
+      ],
+      "hero": "spellblade",
+      "tags": [
+        "blade"
+      ],
+      "upgrade": "final-shatter+"
+    },
+    {
+      "id": "final-shatter+",
+      "name": "Final Shatter+",
+      "realm": "starfall",
+      "rarity": "uncommon",
+      "kind": "attack",
+      "cost": 3,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 34,
+          "to": "target",
+          "onKill": [
+            {
+              "op": "imbue",
+              "kind": "ember",
+              "ifRoom": true
+            },
+            {
+              "op": "imbue",
+              "kind": "glass",
+              "ifRoom": true
+            }
+          ]
+        }
+      ],
+      "hero": "spellblade",
+      "tags": [
+        "blade"
+      ]
+    },
+    {
+      "id": "banked-embers",
+      "name": "Banked Embers",
+      "realm": "starfall",
+      "rarity": "uncommon",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "imbue",
+          "kind": "ember"
+        },
+        {
+          "op": "manaNext",
+          "amount": 1
+        },
+        {
+          "op": "status",
+          "status": "holdfast",
+          "amount": 1,
+          "to": "self"
+        },
+        {
+          "op": "barrier",
+          "amount": 3,
+          "to": "self"
+        }
+      ],
+      "hero": "spellblade",
+      "upgrade": "banked-embers+"
+    },
+    {
+      "id": "banked-embers+",
+      "name": "Banked Embers+",
+      "realm": "starfall",
+      "rarity": "uncommon",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "imbue",
+          "kind": "ember"
+        },
+        {
+          "op": "manaNext",
+          "amount": 1
+        },
+        {
+          "op": "status",
+          "status": "holdfast",
+          "amount": 1,
+          "to": "self"
+        },
+        {
+          "op": "barrier",
+          "amount": 6,
+          "to": "self"
+        }
+      ],
+      "hero": "spellblade"
+    },
+    {
+      "id": "scheme",
+      "name": "Scheme",
+      "realm": "starfall",
+      "rarity": "uncommon",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "drawNext",
+          "amount": 2
+        },
+        {
+          "op": "imbue",
+          "kind": "glass"
+        },
+        {
+          "op": "barrier",
+          "amount": 2,
+          "to": "self"
+        }
+      ],
+      "hero": "spellblade",
+      "upgrade": "scheme+"
+    },
+    {
+      "id": "scheme+",
+      "name": "Scheme+",
+      "realm": "starfall",
+      "rarity": "uncommon",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "drawNext",
+          "amount": 3
+        },
+        {
+          "op": "imbue",
+          "kind": "glass"
+        },
+        {
+          "op": "barrier",
+          "amount": 2,
+          "to": "self"
+        }
+      ],
+      "hero": "spellblade"
+    },
+    {
+      "id": "emberglass-covenant",
+      "name": "Emberglass Covenant",
+      "realm": "starfall",
+      "rarity": "rare",
+      "kind": "power",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "power",
+          "when": "dischargeMixed",
+          "ops": [
+            {
+              "op": "manaNext",
+              "amount": 1
+            },
+            {
+              "op": "barrier",
+              "amount": 6,
+              "to": "self"
+            }
+          ],
+          "once": true
+        }
+      ],
+      "hero": "spellblade",
+      "upgrade": "emberglass-covenant+"
+    },
+    {
+      "id": "emberglass-covenant+",
+      "name": "Emberglass Covenant+",
+      "realm": "starfall",
+      "rarity": "rare",
+      "kind": "power",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "power",
+          "when": "dischargeMixed",
+          "ops": [
+            {
+              "op": "manaNext",
+              "amount": 1
+            },
+            {
+              "op": "barrier",
+              "amount": 9,
+              "to": "self"
+            }
+          ],
+          "once": true
+        }
+      ],
+      "hero": "spellblade"
+    },
+    {
+      "id": "comet",
+      "name": "Lava Bomb",
+      "realm": "starfall",
+      "rarity": "rare",
+      "kind": "attack",
+      "cost": 3,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "discharge",
+          "count": 2
+        },
+        {
+          "op": "damage",
+          "amount": 20,
+          "to": "target"
+        },
+        {
+          "op": "status",
+          "status": "faltering",
+          "amount": 2,
+          "to": "target"
+        },
+        {
+          "op": "status",
+          "status": "exposed",
+          "amount": 2,
+          "to": "target"
+        }
+      ],
+      "hero": "spellblade",
+      "tags": [
+        "blade"
+      ],
+      "upgrade": "comet+"
+    },
+    {
+      "id": "comet+",
+      "name": "Lava Bomb+",
+      "realm": "starfall",
+      "rarity": "rare",
+      "kind": "attack",
+      "cost": 3,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "discharge",
+          "count": 2
+        },
+        {
+          "op": "damage",
+          "amount": 26,
+          "to": "target"
+        },
+        {
+          "op": "status",
+          "status": "faltering",
+          "amount": 2,
+          "to": "target"
+        },
+        {
+          "op": "status",
+          "status": "exposed",
+          "amount": 2,
+          "to": "target"
+        }
+      ],
+      "hero": "spellblade",
+      "tags": [
+        "blade"
+      ]
+    },
+    {
+      "id": "seven-shards",
+      "name": "Seven Shards",
+      "realm": "starfall",
+      "rarity": "rare",
+      "kind": "attack",
+      "cost": 2,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "discharge",
+          "count": 2
+        },
+        {
+          "op": "damage",
+          "amount": 3,
+          "hits": 7,
+          "to": "target"
+        }
+      ],
+      "hero": "spellblade",
+      "tags": [
+        "blade"
+      ],
+      "upgrade": "seven-shards+"
+    },
+    {
+      "id": "seven-shards+",
+      "name": "Seven Shards+",
+      "realm": "starfall",
+      "rarity": "rare",
+      "kind": "attack",
+      "cost": 2,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "discharge",
+          "count": 2
+        },
+        {
+          "op": "damage",
+          "amount": 4,
+          "hits": 7,
+          "to": "target"
+        }
+      ],
+      "hero": "spellblade",
+      "tags": [
+        "blade"
+      ]
+    },
+    {
+      "id": "heirloom-maul",
+      "name": "Heirloom Maul",
+      "realm": "starfall",
+      "rarity": "rare",
+      "kind": "attack",
+      "cost": 2,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "discharge",
+          "count": 2
+        },
+        {
+          "op": "damage",
+          "amount": 16,
+          "to": "target"
+        },
+        {
+          "op": "draw",
+          "amount": 0,
+          "scale": {
+            "by": "discharged"
+          }
+        }
+      ],
+      "hero": "spellblade",
+      "tags": [
+        "blade"
+      ],
+      "upgrade": "heirloom-maul+"
+    },
+    {
+      "id": "heirloom-maul+",
+      "name": "Heirloom Maul+",
+      "realm": "starfall",
+      "rarity": "rare",
+      "kind": "attack",
+      "cost": 2,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "discharge",
+          "count": 2
+        },
+        {
+          "op": "damage",
+          "amount": 21,
+          "to": "target"
+        },
+        {
+          "op": "draw",
+          "amount": 0,
+          "scale": {
+            "by": "discharged"
+          }
+        }
+      ],
+      "hero": "spellblade",
+      "tags": [
+        "blade"
+      ]
+    },
+    {
+      "id": "supernova",
+      "name": "Cataclysm",
+      "realm": "starfall",
+      "rarity": "rare",
+      "kind": "attack",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "discharge",
+          "count": 2
+        },
+        {
+          "op": "damage",
+          "amount": 9,
+          "to": "allFoes"
+        }
+      ],
+      "hero": "spellblade",
+      "tags": [
+        "blade"
+      ],
+      "upgrade": "supernova+"
+    },
+    {
+      "id": "supernova+",
+      "name": "Cataclysm+",
+      "realm": "starfall",
+      "rarity": "rare",
+      "kind": "attack",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "discharge",
+          "count": 2
+        },
+        {
+          "op": "damage",
+          "amount": 12,
+          "to": "allFoes"
+        }
+      ],
+      "hero": "spellblade",
+      "tags": [
+        "blade"
+      ]
+    },
+    {
+      "id": "twin-sigils",
+      "name": "Twin Sigils",
+      "realm": "starfall",
+      "rarity": "rare",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "imbue",
+          "kind": "ember"
+        },
+        {
+          "op": "imbue",
+          "kind": "ward"
+        },
+        {
+          "op": "barrier",
+          "amount": 4,
+          "to": "self"
+        },
+        {
+          "op": "draw",
+          "amount": 1
+        }
+      ],
+      "hero": "spellblade",
+      "upgrade": "twin-sigils+"
+    },
+    {
+      "id": "twin-sigils+",
+      "name": "Twin Sigils+",
+      "realm": "starfall",
+      "rarity": "rare",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "imbue",
+          "kind": "ember"
+        },
+        {
+          "op": "imbue",
+          "kind": "ward"
+        },
+        {
+          "op": "barrier",
+          "amount": 7,
+          "to": "self"
+        },
+        {
+          "op": "draw",
+          "amount": 1
+        }
+      ],
+      "hero": "spellblade"
+    },
+    {
+      "id": "glass-requiem",
+      "name": "Glass Requiem",
+      "realm": "starfall",
+      "rarity": "rare",
+      "kind": "attack",
+      "cost": 2,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "discharge",
+          "count": 2
+        },
+        {
+          "op": "damage",
+          "amount": 14,
+          "to": "target"
+        },
+        {
+          "op": "when",
+          "by": "discharged",
+          "atLeast": 1,
+          "ops": [
+            {
+              "op": "damage",
+              "amount": 0,
+              "to": "allFoes",
+              "scale": {
+                "by": "discharged",
+                "mult": 3
+              }
+            }
+          ]
+        }
+      ],
+      "hero": "spellblade",
+      "tags": [
+        "blade"
+      ],
+      "upgrade": "glass-requiem+"
+    },
+    {
+      "id": "glass-requiem+",
+      "name": "Glass Requiem+",
+      "realm": "starfall",
+      "rarity": "rare",
+      "kind": "attack",
+      "cost": 2,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "discharge",
+          "count": 2
+        },
+        {
+          "op": "damage",
+          "amount": 19,
+          "to": "target"
+        },
+        {
+          "op": "when",
+          "by": "discharged",
+          "atLeast": 1,
+          "ops": [
+            {
+              "op": "damage",
+              "amount": 0,
+              "to": "allFoes",
+              "scale": {
+                "by": "discharged",
+                "mult": 3
+              }
+            }
+          ]
+        }
+      ],
+      "hero": "spellblade",
+      "tags": [
+        "blade"
+      ]
+    },
+    {
+      "id": "glass-veil",
+      "name": "Glass Veil",
+      "realm": "starfall",
+      "rarity": "common",
+      "kind": "skill",
+      "cost": 2,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 11,
+          "to": "self"
+        },
+        {
+          "op": "barrierNext",
+          "amount": 5
+        }
+      ],
+      "hero": "spellblade",
+      "upgrade": "glass-veil+"
+    },
+    {
+      "id": "glass-veil+",
+      "name": "Glass Veil+",
+      "realm": "starfall",
+      "rarity": "common",
+      "kind": "skill",
+      "cost": 2,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 13,
+          "to": "self"
+        },
+        {
+          "op": "barrierNext",
+          "amount": 7
+        }
+      ],
+      "hero": "spellblade"
+    },
+    {
+      "id": "shatterguard",
+      "name": "Shatterguard",
+      "realm": "starfall",
+      "rarity": "uncommon",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "discharge",
+          "count": 2
+        },
+        {
+          "op": "barrier",
+          "amount": 0,
+          "to": "self",
+          "scale": {
+            "by": "discharged",
+            "mult": 5
+          }
+        }
+      ],
+      "hero": "spellblade",
+      "upgrade": "shatterguard+"
+    },
+    {
+      "id": "shatterguard+",
+      "name": "Shatterguard+",
+      "realm": "starfall",
+      "rarity": "uncommon",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "discharge",
+          "count": 2
+        },
+        {
+          "op": "barrier",
+          "amount": 2,
+          "to": "self",
+          "scale": {
+            "by": "discharged",
+            "mult": 5
+          }
+        }
+      ],
+      "hero": "spellblade"
+    },
+    {
+      "id": "glassward",
+      "name": "Glassward",
+      "realm": "starfall",
+      "rarity": "common",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 5,
+          "to": "self"
+        },
+        {
+          "op": "imbue",
+          "kind": "ward"
+        }
+      ],
+      "hero": "spellblade",
+      "upgrade": "glassward+"
+    },
+    {
+      "id": "glassward+",
+      "name": "Glassward+",
+      "realm": "starfall",
+      "rarity": "common",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 8,
+          "to": "self"
+        },
+        {
+          "op": "imbue",
+          "kind": "ward"
+        }
+      ],
+      "hero": "spellblade"
+    },
+    {
+      "id": "pale-beacon",
+      "name": "Pale Ward",
+      "realm": "starfall",
+      "rarity": "common",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 8,
+          "to": "self"
+        },
+        {
+          "op": "when",
+          "by": "wards",
+          "atLeast": 1,
+          "ops": [
+            {
+              "op": "draw",
+              "amount": 1
+            }
+          ]
+        }
+      ],
+      "hero": "spellblade",
+      "upgrade": "pale-beacon+"
+    },
+    {
+      "id": "pale-beacon+",
+      "name": "Pale Ward+",
+      "realm": "starfall",
+      "rarity": "common",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 11,
+          "to": "self"
+        },
+        {
+          "op": "when",
+          "by": "wards",
+          "atLeast": 1,
+          "ops": [
+            {
+              "op": "draw",
+              "amount": 1
+            }
+          ]
+        }
+      ],
+      "hero": "spellblade"
+    },
+    {
+      "id": "star-barrier",
+      "name": "Glass Barrier",
+      "realm": "starfall",
+      "rarity": "common",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "discharge",
+          "count": 1
+        },
+        {
+          "op": "barrier",
+          "amount": 7,
+          "to": "self"
+        }
+      ],
+      "hero": "spellblade",
+      "upgrade": "star-barrier+"
+    },
+    {
+      "id": "star-barrier+",
+      "name": "Glass Barrier+",
+      "realm": "starfall",
+      "rarity": "common",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "discharge",
+          "count": 1
+        },
+        {
+          "op": "barrier",
+          "amount": 10,
+          "to": "self"
+        }
+      ],
+      "hero": "spellblade"
+    },
+    {
+      "id": "bladewall",
+      "name": "Bladewall",
+      "realm": "starfall",
+      "rarity": "uncommon",
+      "kind": "skill",
+      "cost": 2,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 14,
+          "to": "self"
+        },
+        {
+          "op": "imbue",
+          "kind": "ward"
+        }
+      ],
+      "hero": "spellblade",
+      "upgrade": "bladewall+"
+    },
+    {
+      "id": "bladewall+",
+      "name": "Bladewall+",
+      "realm": "starfall",
+      "rarity": "uncommon",
+      "kind": "skill",
+      "cost": 2,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 18,
+          "to": "self"
+        },
+        {
+          "op": "imbue",
+          "kind": "ward"
+        }
+      ],
+      "hero": "spellblade"
+    },
+    {
+      "id": "parry",
+      "name": "Glass Guard",
+      "realm": "starfall",
+      "rarity": "uncommon",
+      "kind": "power",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "power",
+          "when": "discharge",
+          "ops": [
+            {
+              "op": "barrier",
+              "amount": 3,
+              "to": "self"
+            }
+          ]
+        }
+      ],
+      "hero": "spellblade",
+      "upgrade": "parry+"
+    },
+    {
+      "id": "parry+",
+      "name": "Glass Guard+",
+      "realm": "starfall",
+      "rarity": "uncommon",
+      "kind": "power",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "power",
+          "when": "discharge",
+          "ops": [
+            {
+              "op": "barrier",
+              "amount": 4,
+              "to": "self"
+            }
+          ]
+        }
+      ],
+      "hero": "spellblade"
+    },
+    {
+      "id": "mirror-glass",
+      "name": "Mirror Glass",
+      "realm": "starfall",
+      "rarity": "uncommon",
+      "kind": "skill",
+      "cost": 2,
+      "target": "none",
+      "effects": [
+        {
+          "op": "discharge",
+          "count": 1
+        },
+        {
+          "op": "barrier",
+          "amount": 11,
+          "to": "self"
+        },
+        {
+          "op": "status",
+          "status": "reflect",
+          "amount": 1,
+          "to": "self"
+        }
+      ],
+      "hero": "spellblade",
+      "upgrade": "mirror-glass+"
+    },
+    {
+      "id": "mirror-glass+",
+      "name": "Mirror Glass+",
+      "realm": "starfall",
+      "rarity": "uncommon",
+      "kind": "skill",
+      "cost": 2,
+      "target": "none",
+      "effects": [
+        {
+          "op": "discharge",
+          "count": 1
+        },
+        {
+          "op": "barrier",
+          "amount": 15,
+          "to": "self"
+        },
+        {
+          "op": "status",
+          "status": "reflect",
+          "amount": 1,
+          "to": "self"
+        }
+      ],
+      "hero": "spellblade"
+    },
+    {
+      "id": "glass-wall",
+      "name": "Glass Wall",
+      "realm": "starfall",
+      "rarity": "uncommon",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 5,
+          "to": "self"
+        },
+        {
+          "op": "imbue",
+          "kind": "ward"
+        },
+        {
+          "op": "scry",
+          "amount": 1
+        }
+      ],
+      "hero": "spellblade",
+      "upgrade": "glass-wall+"
+    },
+    {
+      "id": "glass-wall+",
+      "name": "Glass Wall+",
+      "realm": "starfall",
+      "rarity": "uncommon",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 8,
+          "to": "self"
+        },
+        {
+          "op": "imbue",
+          "kind": "ward"
+        },
+        {
+          "op": "scry",
+          "amount": 1
+        }
+      ],
+      "hero": "spellblade"
+    },
+    {
+      "id": "ward-weave",
+      "name": "Weave the Ward",
+      "realm": "starfall",
+      "rarity": "uncommon",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "imbue",
+          "kind": "ward"
+        },
+        {
+          "op": "barrier",
+          "amount": 0,
+          "to": "self",
+          "scale": {
+            "by": "wards",
+            "mult": 3
+          }
+        },
+        {
+          "op": "draw",
+          "amount": 1
+        }
+      ],
+      "hero": "spellblade",
+      "upgrade": "ward-weave+"
+    },
+    {
+      "id": "ward-weave+",
+      "name": "Weave the Ward+",
+      "realm": "starfall",
+      "rarity": "uncommon",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "imbue",
+          "kind": "ward"
+        },
+        {
+          "op": "barrier",
+          "amount": 0,
+          "to": "self",
+          "scale": {
+            "by": "wards",
+            "mult": 4
+          }
+        },
+        {
+          "op": "draw",
+          "amount": 1
+        }
+      ],
+      "hero": "spellblade"
+    },
+    {
+      "id": "obsidian-aegis",
+      "name": "Obsidian Aegis",
+      "realm": "starfall",
+      "rarity": "rare",
+      "kind": "power",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "power",
+          "when": "turnEnd",
+          "ops": [
+            {
+              "op": "barrier",
+              "amount": 0,
+              "to": "self",
+              "scale": {
+                "by": "enchants",
+                "mult": 3
+              }
+            }
+          ]
+        }
+      ],
+      "hero": "spellblade",
+      "upgrade": "obsidian-aegis+"
+    },
+    {
+      "id": "obsidian-aegis+",
+      "name": "Obsidian Aegis+",
+      "realm": "starfall",
+      "rarity": "rare",
+      "kind": "power",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "power",
+          "when": "turnEnd",
+          "ops": [
+            {
+              "op": "barrier",
+              "amount": 0,
+              "to": "self",
+              "scale": {
+                "by": "enchants",
+                "mult": 4
+              }
+            }
+          ]
+        }
+      ],
+      "hero": "spellblade"
+    },
+    {
+      "id": "unbreakable-crown",
+      "name": "Unbreakable Crown",
+      "realm": "starfall",
+      "rarity": "rare",
+      "kind": "skill",
+      "cost": 2,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 16,
+          "to": "self"
+        },
+        {
+          "op": "imbue",
+          "kind": "ward"
+        },
+        {
+          "op": "imbue",
+          "kind": "ward"
+        }
+      ],
+      "hero": "spellblade",
+      "upgrade": "unbreakable-crown+"
+    },
+    {
+      "id": "unbreakable-crown+",
+      "name": "Unbreakable Crown+",
+      "realm": "starfall",
+      "rarity": "rare",
+      "kind": "skill",
+      "cost": 2,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 20,
+          "to": "self"
+        },
+        {
+          "op": "imbue",
+          "kind": "ward"
+        },
+        {
+          "op": "imbue",
+          "kind": "ward"
+        }
+      ],
+      "hero": "spellblade"
+    }
+  ]
+}

@@ -333,6 +333,14 @@ export const imbue = (kind: Enchant, ifRoom = false): Op => ({
 });
 /** Discharge one enchantment (chosen when the two differ) or both: put it before the card's damage. */
 export const discharge = (count: 1 | 2 = 1): Op => ({ op: 'discharge', count });
+/** (DECISIONS #425) discharge only charges of one kind (the oldest first; 2: every one of them), leaving the rest */
+export const dischargeKind = (kind: Enchant, count: 1 | 2 = 1): Op => ({
+  op: 'discharge',
+  count,
+  kind,
+});
+/** the charges this card discharged take effect once more */
+export const echoCharges: Op = { op: 'echoCharges' };
 export const recast: Op = { op: 'recast' };
 
 // --- the Shaman's totems (DECISIONS #418) ------------------------------------------------------------------------------

@@ -1,4 +1,4 @@
-# The Spellblade rebuilt: Imbue and Discharge (2026-10-29, DECISIONS #417)
+# The Spellblade rebuilt: Imbue and Discharge (2026-10-29, DECISIONS #417; the pool expansion, DECISIONS #425)
 
 From `docs/BASE_CLASS_REWORKS.md` §7. The Regent copy she was (DECISIONS #369: Arcana, the Sovereign Blade's Sharpen, Retainers) is
 frozen in `reviews/balance-baselines/2026-10-29-pre-identity-reworks/` (`cards/spellblade.md`). Card prices:
@@ -19,6 +19,9 @@ attacks release it. Nothing grows for good: a charge is stored, then spent.
 | Twin Edge | `twinedge` (Echoing Blade): the first charge of the next discharge counts twice (Ember +6, Glass 4, Ward 6). One charge, once; it does not copy a charge into a position. Lasts the turn. |
 | Echoes and replays | A replayed or echoed card spends only the charges still on the blade when it resolves; nothing is copied. A discharge choice carries the spent Ember/Glass across the choice (`pending.ember`, `pending.glass`). |
 | Previews | The attack preview adds the Ember a discharge would land (exact when the choice is forced, a range when it is the player's), and "(+N on the first hit)" for multi-hit attacks. Previews spend nothing. |
+| Kind-specific discharge | `dischargeKind(kind, n)` (#425): spends only charges of that kind (the oldest first; 2: every one), never asks, leaves the rest; none of that kind: nothing, and "If it did" does not run. |
+| A pair | `dischargedPair` / `dischargedMix` (#425): the card discharged two of the same / of different kinds at once. `echoCharges`: those charges take effect once more (Ember 3 on the next hit, Glass 2 to all after the attack, Ward 3 Barrier); it is not a discharge: no trigger answers it, nothing returns to the blade. The spent kinds are carried over a choice. |
+| Recast trigger | `on('recast')` (#425): your newest enchantment was changed (Living Glass). |
 | No Arcana | Her new cards have no ◆ cost and gain no Arcana; the Stars/Arcana engine stays in the engine for anyone, unused by her. Her blade is not Sharpened: the Obsidian Blade is no longer a Sharpen weapon, and the Drunkard's Precision is untouched. |
 
 ## Trait and starter
@@ -85,6 +88,96 @@ Fist, Conqueror, Magma Crash, Out of My Sight, Weigh the Crown, Read the Embers.
 - **Tiers:** every charge is flat, so it shrinks against Tier X HP; Lava Bomb and Gamma Burst's debuffs keep up.
 - **Arena:** the blade is on her side and in the view for both players; no reaction prompts, the discharge choice is on her own turn.
 
+## The pool expansion (2026-10-29, DECISIONS #425): 89 cards, 87 reward-eligible
+
+The cards before it (53, 51 reward-eligible) are frozen in `reviews/balance-baselines/2026-10-29-spellblade-expansion/`. 36 added, none
+changed or removed; 12 Auras (was 5). Build paths (hidden): Edge 29, Burst 30, Ward 23. 88 of 89 within ±15% of budget.
+
+### Six ways to play her
+
+1. **Frequent single discharges** (Edge): spend one, keep the other for a purpose. Measured Release, Spark Thrust, Glass Fang, Searing
+   Edge and Warding Strike (each spends only its kind, so the other charge stays), Double Release (two triggers), Edge Discipline.
+   Sequencing: imbue the charge you want to keep first; the kind-specific cards then take the other.
+2. **Mixed-charge burst** (Burst): Split the Light, Fault Line, Prism Break and the Emberglass Covenant reward two different kinds; Glass
+   and Guard is the third mixed setup. The value is timing (draw 2, Exposed on all, 10 more), not only the printed number.
+3. **Matching charges** (Burst): Kindle the Blade (Ember pair), Glaze the Edge (Glass pair), Unbreakable Crown (Ward pair); Resonant
+   Pair and Kindred Shards make a matching pair take effect again, which is a different thing for each kind (6 on the hit, 4 to all,
+   6 Barrier); Matched Set pays Barrier for building pairs. A mixed blade draws and bursts instead: neither is better every time.
+4. **Ward weaving** (Ward): hold Wards (Hold the Glass, Sentinel Glass: 4 to all at the end of a turn a Ward is held) or spend them
+   (Warding Strike, Wardbreak: 5 to all a Ward, Shattering Rebuke). Sentinel Glass and Wardbreak are the route to victory.
+5. **Recast / adaptation**: Shift the Grain (0), Adaptive Strike, Obsidian Insight (Consume) and Living Glass (once a turn). Each Recast
+   costs a card; the Aura pays only the first each turn.
+6. **Delayed release**: holding pays (Bide the Blade, Tempered Wait, Glass Sight, Stored Light: 1 Mana at the start of a turn with a full
+   blade, Obsidian Resonance: Twin Edge every turn) but fills both positions and delays the spend; Rekindle refills an empty blade, so
+   holding is never forced.
+
+Utility and defence (13 non-Aura): Glass and Guard, Glimpse Through Glass, Blade Recall, Hold the Glass, Blunting Ward, Purifying Shard,
+Shattering Rebuke, Bide the Blade, Tempered Wait, Glass Sight, Shift the Grain, Rekindle, Obsidian Insight. Group: Fault Line, Wardbreak,
+Scatter Glass, Glaze the Edge, Sentinel Glass.
+
+### The expansion table
+
+| Card | Rarity | Mana | Type | Effect | Upgrade | Role | Decision | Points | Combo risk |
+|---|---|---|---|---|---|---|---|---|---|
+| Measured Release | C | 1 | Attack | Discharge one, 7; draw 1 if a charge is left | 10 | Edge | which charge to keep, so the draw comes | 7 + 1 + draw 3 x0.5 = 9.5 | Edge Discipline: 2 cards; bounded by the 2 positions |
+| Spark Thrust | C | 0 | Attack | Discharge one, 5 | 7 | Edge | a free spend: the charge, not the Mana, is the cost | 5 + 1 = 6 | needs a charge to spend (no charge, no trigger); no draw, no Mana |
+| Glass Fang | C | 1 | Attack | Discharge a Glass (only), 7; if it did, 2 Sapped on ALL for their turn | 10 | Edge | spend the Glass, keep the Ember/Ward | 7 + 1 + 3.1 x0.6 = 9.9 | none: one charge |
+| Searing Edge | U | 2 | Attack | Discharge an Ember (only), 14; if it did, 2 Exposed | 18 | Edge | the Ember for this hit, the rest for later | 14 + 1 + 6 x0.6 = 18.6 | Exposed into Molten Ruin / Lava Bomb: priced in the burst table |
+| Double Release | U | 1 | Attack | Discharge one, 4; discharge one, 4 | 6 / 6 | Edge | two triggers from one card, each charge on its own hit | 8 + 2 = 10 | Cleaving Edge/Glass Guard answer twice: at most 2 (two charges) |
+| Edge Discipline | U | 1 | Aura | whenever you Discharge and a charge is left: draw 1, 1 Barrier | Opening hand | Edge engine | single discharges over double ones | 0.9 x 4.2 x4 = 15.1 | at most once per charge you can keep; 0-cost Spark Thrust + it replaces itself once per pair |
+| Shift the Grain | C | 0 | Skill | Recast; 4 Barrier | 6 Barrier | Recast | fix the newest charge cheaply | 1.5 + 4.8 = 6.3 | no draw, no Mana: no loop |
+| Adaptive Strike | U | 1 | Attack | Recast, then discharge one, 8 | 11 | Recast | change it and spend it in one card | 8 + 1.5 + 1 = 10.5 | none |
+| Living Glass | U | 1 | Aura | first Recast each turn: 3 Barrier, draw 1 | Opening hand | Recast engine | pay a card for adaptation | 0.6 x 6.6 x4 = 15.8 | once a turn |
+| Obsidian Insight | R | 0 | Skill | Foresee 3, Recast, draw 1, Consume | Foresee 4 | Recast/selection | the free fix, once a fight | 5 + 1.5 + 3 = 9.5 (Consume budget 9.4) | Consumes |
+| Rekindle | C | 1 | Skill | 5 Barrier; if the blade is empty: Imbue Ember and Glass, draw 1 | 8 Barrier | recovery | play it after a full spend, not before | 6 + 7.7 x0.4 = 9.1 | only on an empty blade |
+| Spell-Etched Steel | U | 1 | Aura | whenever you Imbue: 3 to a random enemy | 4 | spell/weapon bridge | Imbue more, spend later | 1.4 x 2.7 x4 = 15.1 | bounded by Imbue cards; two copies 6 an Imbue |
+| Split the Light | U | 1 | Attack | Discharge both, 5; draw 2 on a mixed pair | 8 | mixed burst | build a mixed blade | 5 + 1.5 + 6 x0.55 = 9.8 | none |
+| Fault Line | U | 2 | Attack | Discharge both, 11 to ALL; 1 Exposed on ALL on a mixed pair | 14 | mixed burst, group | mixed release on a crowd | 14.3 + 1.5 + 4.5 x0.55 = 18.3 | none |
+| Prism Break | R | 2 | Attack | Discharge both, 13; 10 more on a mixed pair | 17 | mixed burst | hold a mixed blade for it | 13 + 1.5 + 10 x0.7 = 21.5 | Exposed: 26 x1.5 |
+| Kindle the Blade | C | 1 | Skill | Imbue Ember twice, 4 Barrier | 7 | matching | an Ember pair (or replace one) | 5 + 4.8 = 9.8 | two Imbues: Spell-Etched Steel twice |
+| Glaze the Edge | C | 1 | Skill | Imbue Glass twice, 4 Barrier | 7 | matching | a Glass pair for a crowd | 4.4 + 4.8 = 9.2 | as above |
+| Resonant Pair | U | 1 | Attack | Discharge both; a matching pair takes effect again; 6 | 9 | matching payoff | Ember pair: 6 more; Glass pair: 4 more to all; Ward pair: 6 Barrier | 6 + 1.5 + 6.4 x0.55 = 11 | the echo is no discharge: no trigger, no charge back |
+| Kindred Shards | R | 2 | Attack | Discharge both; a matching pair again and draw 1; 15 | 20 | matching payoff | as above | 15 + 1.5 + 9.4 x0.55 = 21.7 | as above |
+| Matched Set | U | 1 | Aura | whenever you Imbue and the blade holds a matching pair: 3 Barrier | 4 | matching engine | build pairs | 1 x 3.6 x4 = 14.4 | one Barrier per Imbue, bounded by Imbues |
+| Bide the Blade | U | 1 | Skill | 7 Barrier; draw 2 with a full blade; Hold | 10 | holding | keep the blade full one more turn | 8.4 + 6 x0.4 + 1 = 11.8 | none |
+| Tempered Wait | C | 1 | Skill | 6 Barrier; 1 Mana next turn while an Ember is held | 9 | holding | keep the Ember for next turn | 7.2 + 4 x0.5 = 9.2 | next turn only |
+| Glass Sight | U | 1 | Skill | 5 Barrier; draw 1 per kind on the blade; Hold | 8 | selection | a mixed blade draws more | 6 + 3.9 + 1 = 10.9 | at most 2 cards |
+| Stored Light | R | 1 | Aura | start of turn, full blade: 1 Mana, 2 Barrier | Opening hand | holding payoff | carry a full blade over and pay for spending it | 0.55 x 9.4 x4 = 20.7 | once a turn, needs both positions full |
+| Obsidian Resonance | R | 1 | Aura | start of turn: Twin Edge, 2 Barrier | Opening hand | burst engine | which charge to spend first | 4 x (2.4 + 2.4) = 19.2 | one charge doubled a turn: at most +3.6 |
+| Glass and Guard | C | 1 | Skill | Imbue Glass and Ward, 3 Barrier | 6 | mixed setup | Glass+Ward (the third mixed pair) | 2.2 + 3 + 3.6 = 8.8 | none |
+| Glimpse Through Glass | C | 1 | Skill | Foresee 3, 4 Barrier | 7 | utility | selection over Imbue | 5 + 4.8 = 9.8 | none |
+| Blade Recall | U | 1 | Skill | a blade Attack from discard to hand, Imbue Ward, 3 Barrier | 6 | utility | find the discharge you need | 4 + 3 + 3.6 = 10.6 | costs Mana, returns one card |
+| Warding Strike | C | 1 | Attack | Discharge a Ward (only), 6 +4 if it did | 9 | Ward weaving | spend a Ward as damage, keep the Ember | 6 + 1 + 4 x0.6 = 9.4 | none |
+| Wardbreak | U | 1 | Attack | Discharge every Ward; 5 to ALL a Ward | 6 a Ward | Ward weaving, group | held Wards into a group attack | 1.5 + 1.3 x 6.5 = 10 | at most 2 Wards |
+| Hold the Glass | C | 1 | Skill | 5 Barrier +2 a Ward; Hold | 8 | Ward weaving | keep the Wards | 7.2 + 1 + 1.2 = 9.4 | none |
+| Sentinel Glass | U | 1 | Aura | end of turn, a Ward held: 4 to ALL | 5 | Ward route to victory | hold a Ward or spend it for Barrier now | 0.75 x 5.2 x4 = 15.6 | once a turn; flat Aura damage |
+| Blunting Ward | C | 1 | Skill | 1 Faltering, Imbue Ward, 3 Barrier | 6 | debuff/defence | blunt the attacker | 3 + 3 + 3.6 = 9.6 | none |
+| Purifying Shard | U | 1 | Skill | lessen your debuffs by 2, 6 Barrier, Imbue Glass | 9 | debuff management | cleanse or not | 2 + 7.2 + 2.2 = 11.4 | none |
+| Shattering Rebuke | U | 1 | Skill | Discharge one (from a Skill), 2 Faltering, 3 Barrier | 6 | defence | spend a Glass or Ward as protection (an Ember is lost) | 1 + 6 + 3.6 = 10.6 | none |
+| Scatter Glass | C | 1 | Attack | 4 to ALL, Imbue Glass, 2 Barrier | 6 to ALL | group | a crowd now and a Glass for later | 5.2 + 2.2 + 2.4 = 9.8 | not a blade attack: discharges nothing |
+
+### Arena burst (legal actions; seat b 540 HP, no Barrier)
+
+| Turn | Mana | Damage |
+|---|---|---|
+| Kindle the Blade+, Resonant Pair+ | 2 | 21 |
+| Etch the Edge+, Prism Break+ | 3 | 32 |
+| Ember+Ember held, Twin Edge: Kindred Shards+, Spark Thrust+ | 2 | 42 |
+| Ember+Ember held, Twin Edge: Searing Edge+, Lava Bomb+ | 5 | 67 (12%) |
+| Cleaving Edge out, Ember+Glass held: Double Release+, Kindle the Blade, Resonant Pair+ | 3 | 50 |
+| Ward+Ward held: Wardbreak+, Glassward, Warding Strike+ | 3 | 25 and 16 Barrier |
+
+Charges are flat and capped at two, so no turn comes near a game. The opponent sees the blade (both positions) at all times; a human
+who does not attack takes nothing less: none of these cards reads an intent or needs a kill.
+
+### Checks
+
+- **Loops:** no new card returns a charge; Spark Thrust and Shift the Grain (0) draw nothing and make no Mana; Obsidian Insight Consumes;
+  Edge Discipline draws only on a discharge that leaves a charge (at most once per pair imbued); Stored Light's Mana is once a turn and
+  needs a full blade.
+- **Per card vs per charge:** Double Release answers discharge triggers twice (two charges); the echo answers none.
+- **Aura copies:** two Spell-Etched Steel deal 6 an Imbue; two Sentinel Glass 8 to all a turn: both bounded by Imbues and one Ward.
+
 ## Saves, decks and replays
 
 As for the Knight (DECISIONS #414): removed ids become their replacements (`RETIRED_CARDS`); a pre-rework Spellblade run is stamped
@@ -95,5 +188,5 @@ old action log replays under its own version or is rejected, never silently rere
 
 No new pictures. 41 cards keep theirs; those drawn as a whetstone, a forge, stars or a crown (Etch the Edge, Warm Anvil, Banked Embers,
 Call the Blade, Heirloom Maul, Magma Surge, Obsidian Lance, Cataclysm) are listed for review in `docs/CLASS_REWORK_ART.md`. The 12 new
-cards use the placeholder. In code: the Obsidian Blade panel (two positions, a mark and a word each, an empty dotted ring, the aimed
+cards use the placeholder; so do the 36 of the expansion (#425, listed in `docs/CLASS_REWORK_ART.md`). In code: the Obsidian Blade panel (two positions, a mark and a word each, an empty dotted ring, the aimed
 card's spend shown), the charge tiles of the choice, tooltips and a teaching tip.
