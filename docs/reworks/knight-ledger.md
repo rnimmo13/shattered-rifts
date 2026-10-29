@@ -2,11 +2,12 @@
 
 Hand prices from `tools/src/ledger/knight.ts`, against the budgets of docs/14_CARD_COSTING.md (1 Mana common = 10, then +9 a Mana; uncommon x1.12, rare x1.25, basic x0.8; an Aura over four turns at 1.5x (uncommon) or 2x (rare) its cost's budget; Consume +25%). The new rates are in the guide's §15. These are hypotheses for hand balance, not measured win rates.
 
-89 cards; 87 within ±15% of budget, the rest explained in the last column.
+90 cards; 88 within ±15% of budget, the rest explained in the last column.
 
 | Id | Card | Strategy | Rarity | Cost | Text | Price | Points | Budget | Off | Upgrade | Upgrade points | Role, package and notes |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|
 | `briarplate` | Briarplate | glue | basic | 1 | Gain 5 Barrier. Gain 2 Thorns until the enemy turn is over. | 5 Barrier 6 + 2 Thorns x1.5 hits (3) | 9 | 8 | +13% | Gain 8 Barrier. Gain 2 Thorns until the enemy turn is over. | 12.6 (+40%) | Thorns: the starter teaches retaliation |
+| `counter-cut` | Counter Cut | glue | basic | 1 | Deal 6 damage. Riposte: +4 damage. | 6 + Riposte 4 (x0.65: Openings come more often since Guard counts half a hit, #427) 2.6 | 8.6 | 8 | +7% | Deal 9 damage. Riposte: +4 damage. | 11.6 (+35%) | Riposte: the 1-Mana counter in the starter (DECISIONS #427) |
 | `sundering-blow` | Sundering Blow | glue | basic | 2 | Deal 9 damage. Riposte: +6 damage. Apply 1 Exposed. | 9 + Riposte 6 x0.55 (3.3) + 1 Exposed 3 | 15.3 | 15.2 | +1% | Deal 13 damage. Riposte: +6 damage. Apply 1 Exposed. | 19.3 (+26%) | Riposte: the signature counter; good without an Opening |
 | `guarded-advance` | Guarded Advance | Guard | common | 1 | Deal 5 damage. Riposte: +3 damage. Gain 4 Barrier. | 5 + Riposte 3 (1.65) + 4 Barrier 4.8 | 11.45 | 10 | +15% | Deal 8 damage. Riposte: +3 damage. Gain 4 Barrier. | 14.45 (+26%) | Guard/Riposte bridge |
 | `measured-guard` | Measured Guard | Guard | common | 1 | Gain 6 Barrier. The next time you earn an Opening: Draw 1 card. | 6 Barrier 7.2 + draw 1 on the next earned Opening (3, nearly always comes: x0.8) | 9.6 | 10 | -4% | Gain 9 Barrier. The next time you earn an Opening: Draw 1 card. | 13.2 (+38%) | Guard: a block that pays when it works |

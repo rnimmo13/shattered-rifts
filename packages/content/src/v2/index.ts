@@ -80,23 +80,29 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     // (rebuilt 2026-10-29, docs/BASE_CLASS_REWORKS.md §4, DECISIONS #415: Guard, Riposte and Thorns; the Ironclad copy is archived)
     trait: {
       name: 'Hold and Answer',
-      text: 'Start every fight with 6 Barrier. Guard: when your Barrier stops an enemy attack hit completely, that enemy is left Open until the end of your next turn (one Opening per enemy). The first time each turn you earn an Opening, gain 3 Barrier.',
+      text: 'Start every fight with 6 Barrier. Guard: when your Barrier stops at least half of an enemy attack hit, that enemy is left Open until the end of your next turn (one Opening per enemy). The first time each turn you earn an Opening, gain 3 Barrier.',
       fightStart: [barrier(6)],
       openings: true,
       triggers: [on('opening', [barrier(3)], { once: true })],
     },
     hero: { id: 'knight', name: 'Knight', maxHp: 80, mana: 3, handSize: 5 },
-    starter: [...rep('strike', 4), ...rep('defend', 4), 'sundering-blow', 'briarplate'],
+    starter: [
+      ...rep('strike', 3),
+      ...rep('defend', 4),
+      'counter-cut',
+      'sundering-blow',
+      'briarplate',
+    ],
     blurb:
       'A knight of the Gilded Order. No companions: she meets every attack with her shield, answers the opening it gives her, and makes contact hurt.',
     mechanics: ['Barrier', 'Openings', 'Riposte', 'Thorns', 'Exposed'],
     buildPaths: [
-      'Guard: stop attacks completely, and gain from every Opening',
+      'Guard: stop at least half of an attack, and gain from every Opening',
       'Riposte: heavy counters that spend Openings',
       'Thorns: hurt every enemy that hits you',
     ],
     howTo: [
-      'Barrier soaks damage, but it falls away at the start of your next turn. When it stops an enemy attack hit completely, that enemy is left Open.',
+      'Barrier soaks damage, but it falls away at the start of your next turn. When it stops at least half of an enemy attack hit, that enemy is left Open.',
       "A Riposte spends the target's Opening for its bonus (Sundering Blow, Return the Blow). Other attacks never spend it. An Opening lasts until the end of your next turn.",
       'Thorns hurt each enemy that hits you, until the enemy turn is over (Briarplate). Some cards open an enemy themselves, even one that is not attacking.',
     ],
@@ -272,7 +278,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
       'spirit-call',
       ...rep('ember-bolt', 2),
       ...rep('frost-ward', 2),
-      ...rep('gathering-storm', 2),
+      ...rep('forked-lightning', 2),
     ],
     blurb:
       'An elder shaman who casts Flame, Frost and Storm. His Hawk, Bear and Thunderbird totems help his spells every turn, and he calls on their spirits to strike and shield for him. A spell of every element in one turn, Trinity, raises his Spirit for good.',

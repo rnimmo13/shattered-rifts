@@ -445,7 +445,7 @@ export const STATUS_INFO: Record<
     name: 'Opening',
     glyph: '⟡',
     tone: 'bad',
-    text: 'Open: a Knight stopped its attack with her Barrier (or a card opened it). Her next Riposte against it spends this for its bonus. It goes at the end of her turn.',
+    text: 'Open: a Knight stopped at least half of its attack with her Barrier (or a card opened it). Her next Riposte against it spends this for its bonus. It goes at the end of her turn.',
   },
 };
 
@@ -485,7 +485,7 @@ export const KEYWORD_INFO: Record<string, { name: string; text: string }> = {
   },
   guard: {
     name: 'Guard',
-    text: 'When your Barrier stops an enemy attack hit completely (at least 1 damage, not Shielded or Ghostly), that enemy is left Open until the end of your next turn. One Opening per enemy.',
+    text: 'When your Barrier stops at least half of an enemy attack hit (at least 1 damage, not Shielded or Ghostly), that enemy is left Open until the end of your next turn, even if the rest gets through. One Opening per enemy.',
   },
   lifesteal: {
     name: 'Lifesteal',

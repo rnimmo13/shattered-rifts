@@ -942,7 +942,7 @@ export interface HeroTrait {
   /** Salvage: a companion summoned by a card that scrapped others to make room takes their Might and Primed, and half their HP
    * as extra max HP (DECISIONS #383) */
   salvage?: boolean;
-  /** Guard (the Knight, DECISIONS #415): an enemy attack hit this hero's Barrier stops completely leaves the attacker Open */
+  /** Guard (the Knight, DECISIONS #415, #427): an enemy attack hit this hero's Barrier stops at least half of leaves the attacker Open */
   openings?: boolean;
   /** Totems (the Shaman, DECISIONS #418, #420, #421): he starts with this many positions; cards command them */
   totems?: number;

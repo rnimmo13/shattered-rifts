@@ -22,11 +22,29 @@ export const SHAMAN_PRICES: Record<string, Price> = {
     how: '5 Barrier 6 + 1 Faltering on a random enemy 2.7',
     role: 'the starter Frost spell',
   },
+  'forked-lightning': {
+    pts: 8.5,
+    up: 11.9,
+    how: 'Fork 2 of 5: ~1.7 targets worth (40% of fights one enemy at +25%, 60% two or more: 0.4 x1.25 + 0.6 x2 = 1.7)',
+    role: 'the starter Storm spell (DECISIONS #427): two enemies, or one harder',
+  },
   'gathering-storm': {
-    pts: 7,
-    up: 9.9,
-    how: '3 to ALL 3.9 + every copy +2 (2 x1.2 x1.3) 3.1',
-    role: 'the starter Storm spell: two copies grow each other',
+    pts: 9.9,
+    up: 12.5,
+    how: '4 to ALL 5.2 + every copy +3 (3 x1.2 x1.3) 4.7',
+    role: 'Storm: the stacking spell, a common reward since #427 (it was a basic)',
+  },
+  'spark-fork': {
+    pts: 6.8,
+    up: 8.5,
+    how: 'Fork 2 of 4 (x1.7)',
+    role: 'Storm: a free Fork, the cheap Storm for Trinity',
+  },
+  'thunder-fork': {
+    pts: 20,
+    up: 26,
+    how: 'Fork 3 of 10: ~2.0 targets worth (0.4 x1.25 + 0.6 x ~2.4 enemies)',
+    role: 'Storm: the big Fork, three enemies or one hard',
   },
   // (Flame)
   'searing-lash': { pts: 8.95, up: 11.95, how: '7 + 2 Bleed 1.95', role: 'Flame' },

@@ -1,0 +1,4660 @@
+{
+  "takenAt": "2026-10-29",
+  "commit": "fe8883ef9f1863906456ca6e8a88f638d1e38bcd",
+  "dirty": [
+    "M ../apps/web/src/fight/FightView.tsx",
+    " M ../apps/web/src/fight/FloatPanel.tsx",
+    " M ../apps/web/src/fight/TotemPanel.tsx",
+    " M ../apps/web/src/fight/fight.css",
+    "?? ../docs/ART_AND_ANIMATION_EXPANSION_2026-10-29.md",
+    "?? ../docs/MULTIVERSE_ENEMY_EXPANSION.md",
+    "?? ../docs/reworks/ASSASSIN_EXPANSION_PROMPT.md",
+    "?? ../docs/reworks/MONK_EXPANSION_PROMPT.md",
+    "?? ../docs/reworks/SPELLBLADE_EXPANSION_PROMPT.md"
+  ],
+  "hero": {
+    "id": "knight",
+    "name": "Knight",
+    "maxHp": 80,
+    "mana": 3,
+    "handSize": 5
+  },
+  "trait": {
+    "name": "Hold and Answer",
+    "text": "Start every fight with 6 Barrier. Guard: when your Barrier stops an enemy attack hit completely, that enemy is left Open until the end of your next turn (one Opening per enemy). The first time each turn you earn an Opening, gain 3 Barrier.",
+    "fightStart": [
+      {
+        "op": "barrier",
+        "amount": 6,
+        "to": "self"
+      }
+    ],
+    "openings": true,
+    "triggers": [
+      {
+        "op": "power",
+        "when": "opening",
+        "ops": [
+          {
+            "op": "barrier",
+            "amount": 3,
+            "to": "self"
+          }
+        ],
+        "once": true
+      }
+    ]
+  },
+  "starter": [
+    "strike",
+    "strike",
+    "strike",
+    "strike",
+    "defend",
+    "defend",
+    "defend",
+    "defend",
+    "sundering-blow",
+    "briarplate"
+  ],
+  "rewardEligible": 87,
+  "cards": [
+    {
+      "id": "sundering-blow",
+      "name": "Sundering Blow",
+      "realm": "aurelion",
+      "rarity": "basic",
+      "kind": "attack",
+      "cost": 2,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 9,
+          "to": "target",
+          "riposte": 6
+        },
+        {
+          "op": "status",
+          "status": "exposed",
+          "amount": 1,
+          "to": "target"
+        }
+      ],
+      "hero": "knight",
+      "upgrade": "sundering-blow+"
+    },
+    {
+      "id": "sundering-blow+",
+      "name": "Sundering Blow+",
+      "realm": "aurelion",
+      "rarity": "basic",
+      "kind": "attack",
+      "cost": 2,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 13,
+          "to": "target",
+          "riposte": 6
+        },
+        {
+          "op": "status",
+          "status": "exposed",
+          "amount": 1,
+          "to": "target"
+        }
+      ],
+      "hero": "knight"
+    },
+    {
+      "id": "briarplate",
+      "name": "Briarplate",
+      "realm": "aurelion",
+      "rarity": "basic",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 5,
+          "to": "self"
+        },
+        {
+          "op": "status",
+          "status": "thorns",
+          "amount": 2,
+          "to": "self",
+          "temp": "theirs"
+        }
+      ],
+      "hero": "knight",
+      "upgrade": "briarplate+"
+    },
+    {
+      "id": "briarplate+",
+      "name": "Briarplate+",
+      "realm": "aurelion",
+      "rarity": "basic",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 8,
+          "to": "self"
+        },
+        {
+          "op": "status",
+          "status": "thorns",
+          "amount": 2,
+          "to": "self",
+          "temp": "theirs"
+        }
+      ],
+      "hero": "knight"
+    },
+    {
+      "id": "oath-of-iron",
+      "name": "Oath of Iron",
+      "realm": "aurelion",
+      "rarity": "common",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 8,
+          "to": "self"
+        },
+        {
+          "op": "draw",
+          "amount": 1
+        }
+      ],
+      "hero": "knight",
+      "upgrade": "oath-of-iron+"
+    },
+    {
+      "id": "oath-of-iron+",
+      "name": "Oath of Iron+",
+      "realm": "aurelion",
+      "rarity": "common",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 11,
+          "to": "self"
+        },
+        {
+          "op": "draw",
+          "amount": 1
+        }
+      ],
+      "hero": "knight"
+    },
+    {
+      "id": "dawn-smite",
+      "name": "Dawn Smite",
+      "realm": "aurelion",
+      "rarity": "common",
+      "kind": "attack",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 5,
+          "to": "target"
+        },
+        {
+          "op": "barrier",
+          "amount": 5,
+          "to": "self"
+        }
+      ],
+      "hero": "knight",
+      "upgrade": "dawn-smite+"
+    },
+    {
+      "id": "dawn-smite+",
+      "name": "Dawn Smite+",
+      "realm": "aurelion",
+      "rarity": "common",
+      "kind": "attack",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 8,
+          "to": "target"
+        },
+        {
+          "op": "barrier",
+          "amount": 5,
+          "to": "self"
+        }
+      ],
+      "hero": "knight"
+    },
+    {
+      "id": "hilt-strike",
+      "name": "Hilt Strike",
+      "realm": "aurelion",
+      "rarity": "common",
+      "kind": "attack",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 9,
+          "to": "target"
+        },
+        {
+          "op": "draw",
+          "amount": 1
+        }
+      ],
+      "hero": "knight",
+      "upgrade": "hilt-strike+"
+    },
+    {
+      "id": "hilt-strike+",
+      "name": "Hilt Strike+",
+      "realm": "aurelion",
+      "rarity": "common",
+      "kind": "attack",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 12,
+          "to": "target"
+        },
+        {
+          "op": "draw",
+          "amount": 1
+        }
+      ],
+      "hero": "knight"
+    },
+    {
+      "id": "field-repairs",
+      "name": "Field Repairs",
+      "realm": "aurelion",
+      "rarity": "common",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 5,
+          "to": "self"
+        },
+        {
+          "op": "upgrade",
+          "scope": "random"
+        }
+      ],
+      "hero": "knight",
+      "upgrade": "field-repairs+"
+    },
+    {
+      "id": "field-repairs+",
+      "name": "Field Repairs+",
+      "realm": "aurelion",
+      "rarity": "common",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 8,
+          "to": "self"
+        },
+        {
+          "op": "upgrade",
+          "scope": "random"
+        }
+      ],
+      "hero": "knight"
+    },
+    {
+      "id": "clarion-clap",
+      "name": "Clarion Clap",
+      "realm": "aurelion",
+      "rarity": "common",
+      "kind": "attack",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 4,
+          "to": "allFoes"
+        },
+        {
+          "op": "status",
+          "status": "exposed",
+          "amount": 1,
+          "to": "allFoes"
+        }
+      ],
+      "hero": "knight",
+      "upgrade": "clarion-clap+"
+    },
+    {
+      "id": "clarion-clap+",
+      "name": "Clarion Clap+",
+      "realm": "aurelion",
+      "rarity": "common",
+      "kind": "attack",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 7,
+          "to": "allFoes"
+        },
+        {
+          "op": "status",
+          "status": "exposed",
+          "amount": 1,
+          "to": "allFoes"
+        }
+      ],
+      "hero": "knight"
+    },
+    {
+      "id": "squires-drill",
+      "name": "Squire's Drill",
+      "realm": "aurelion",
+      "rarity": "common",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "draw",
+          "amount": 2
+        },
+        {
+          "op": "barrier",
+          "amount": 2,
+          "to": "self"
+        }
+      ],
+      "hero": "knight",
+      "upgrade": "squires-drill+"
+    },
+    {
+      "id": "squires-drill+",
+      "name": "Squire's Drill+",
+      "realm": "aurelion",
+      "rarity": "common",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "draw",
+          "amount": 2
+        },
+        {
+          "op": "barrier",
+          "amount": 5,
+          "to": "self"
+        }
+      ],
+      "hero": "knight"
+    },
+    {
+      "id": "rebuke",
+      "name": "Rebuke",
+      "realm": "aurelion",
+      "rarity": "common",
+      "kind": "attack",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 7,
+          "to": "target"
+        },
+        {
+          "op": "status",
+          "status": "faltering",
+          "amount": 1,
+          "to": "target"
+        }
+      ],
+      "hero": "knight",
+      "upgrade": "rebuke+"
+    },
+    {
+      "id": "rebuke+",
+      "name": "Rebuke+",
+      "realm": "aurelion",
+      "rarity": "common",
+      "kind": "attack",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 10,
+          "to": "target"
+        },
+        {
+          "op": "status",
+          "status": "faltering",
+          "amount": 1,
+          "to": "target"
+        }
+      ],
+      "hero": "knight"
+    },
+    {
+      "id": "provoke",
+      "name": "Provoke",
+      "realm": "aurelion",
+      "rarity": "uncommon",
+      "kind": "skill",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 7,
+          "to": "self"
+        },
+        {
+          "op": "status",
+          "status": "exposed",
+          "amount": 1,
+          "to": "target"
+        }
+      ],
+      "hero": "knight",
+      "upgrade": "provoke+"
+    },
+    {
+      "id": "provoke+",
+      "name": "Provoke+",
+      "realm": "aurelion",
+      "rarity": "uncommon",
+      "kind": "skill",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 10,
+          "to": "self"
+        },
+        {
+          "op": "status",
+          "status": "exposed",
+          "amount": 1,
+          "to": "target"
+        }
+      ],
+      "hero": "knight"
+    },
+    {
+      "id": "clang-of-steel",
+      "name": "Clang of Steel",
+      "realm": "aurelion",
+      "rarity": "uncommon",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 5,
+          "to": "self"
+        },
+        {
+          "op": "status",
+          "status": "exposed",
+          "amount": 1,
+          "to": "allFoes"
+        }
+      ],
+      "hero": "knight",
+      "upgrade": "clang-of-steel+"
+    },
+    {
+      "id": "clang-of-steel+",
+      "name": "Clang of Steel+",
+      "realm": "aurelion",
+      "rarity": "uncommon",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 8,
+          "to": "self"
+        },
+        {
+          "op": "status",
+          "status": "exposed",
+          "amount": 1,
+          "to": "allFoes"
+        }
+      ],
+      "hero": "knight"
+    },
+    {
+      "id": "sweeping-guard",
+      "name": "Sweeping Guard",
+      "realm": "aurelion",
+      "rarity": "uncommon",
+      "kind": "attack",
+      "cost": 2,
+      "target": "none",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 9,
+          "to": "allFoes"
+        },
+        {
+          "op": "barrier",
+          "amount": 6,
+          "to": "self"
+        }
+      ],
+      "hero": "knight",
+      "upgrade": "sweeping-guard+"
+    },
+    {
+      "id": "sweeping-guard+",
+      "name": "Sweeping Guard+",
+      "realm": "aurelion",
+      "rarity": "uncommon",
+      "kind": "attack",
+      "cost": 2,
+      "target": "none",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 11,
+          "to": "allFoes"
+        },
+        {
+          "op": "barrier",
+          "amount": 8,
+          "to": "self"
+        }
+      ],
+      "hero": "knight"
+    },
+    {
+      "id": "rallying-cry",
+      "name": "Rallying Cry",
+      "realm": "aurelion",
+      "rarity": "uncommon",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "draw",
+          "amount": 2
+        },
+        {
+          "op": "barrier",
+          "amount": 2,
+          "to": "self"
+        },
+        {
+          "op": "when",
+          "by": "foesOpen",
+          "atLeast": 1,
+          "ops": [
+            {
+              "op": "manaNext",
+              "amount": 1
+            }
+          ]
+        }
+      ],
+      "hero": "knight",
+      "upgrade": "rallying-cry+"
+    },
+    {
+      "id": "rallying-cry+",
+      "name": "Rallying Cry+",
+      "realm": "aurelion",
+      "rarity": "uncommon",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "draw",
+          "amount": 3
+        },
+        {
+          "op": "barrier",
+          "amount": 2,
+          "to": "self"
+        },
+        {
+          "op": "when",
+          "by": "foesOpen",
+          "atLeast": 1,
+          "ops": [
+            {
+              "op": "manaNext",
+              "amount": 1
+            }
+          ]
+        }
+      ],
+      "hero": "knight"
+    },
+    {
+      "id": "measured-guard",
+      "name": "Measured Guard",
+      "realm": "aurelion",
+      "rarity": "common",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 6,
+          "to": "self"
+        },
+        {
+          "op": "power",
+          "when": "opening",
+          "ops": [
+            {
+              "op": "draw",
+              "amount": 1
+            }
+          ],
+          "times": 1
+        }
+      ],
+      "hero": "knight",
+      "upgrade": "measured-guard+"
+    },
+    {
+      "id": "measured-guard+",
+      "name": "Measured Guard+",
+      "realm": "aurelion",
+      "rarity": "common",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 9,
+          "to": "self"
+        },
+        {
+          "op": "power",
+          "when": "opening",
+          "ops": [
+            {
+              "op": "draw",
+              "amount": 1
+            }
+          ],
+          "times": 1
+        }
+      ],
+      "hero": "knight"
+    },
+    {
+      "id": "shield-wall",
+      "name": "Shield Wall",
+      "realm": "aurelion",
+      "rarity": "common",
+      "kind": "skill",
+      "cost": 2,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 14,
+          "to": "self"
+        },
+        {
+          "op": "drawNext",
+          "amount": 1
+        }
+      ],
+      "hero": "knight",
+      "upgrade": "shield-wall+"
+    },
+    {
+      "id": "shield-wall+",
+      "name": "Shield Wall+",
+      "realm": "aurelion",
+      "rarity": "common",
+      "kind": "skill",
+      "cost": 2,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 18,
+          "to": "self"
+        },
+        {
+          "op": "drawNext",
+          "amount": 1
+        }
+      ],
+      "hero": "knight"
+    },
+    {
+      "id": "guarded-advance",
+      "name": "Guarded Advance",
+      "realm": "aurelion",
+      "rarity": "common",
+      "kind": "attack",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 5,
+          "to": "target",
+          "riposte": 3
+        },
+        {
+          "op": "barrier",
+          "amount": 4,
+          "to": "self"
+        }
+      ],
+      "hero": "knight",
+      "upgrade": "guarded-advance+"
+    },
+    {
+      "id": "guarded-advance+",
+      "name": "Guarded Advance+",
+      "realm": "aurelion",
+      "rarity": "common",
+      "kind": "attack",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 8,
+          "to": "target",
+          "riposte": 3
+        },
+        {
+          "op": "barrier",
+          "amount": 4,
+          "to": "self"
+        }
+      ],
+      "hero": "knight"
+    },
+    {
+      "id": "stoneskin",
+      "name": "Stoneskin",
+      "realm": "aurelion",
+      "rarity": "uncommon",
+      "kind": "power",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "power",
+          "when": "turnEnd",
+          "ops": [
+            {
+              "op": "barrier",
+              "amount": 2,
+              "to": "self"
+            }
+          ]
+        },
+        {
+          "op": "power",
+          "when": "opening",
+          "ops": [
+            {
+              "op": "barrier",
+              "amount": 2,
+              "to": "self"
+            }
+          ]
+        }
+      ],
+      "hero": "knight",
+      "upgrade": "stoneskin+"
+    },
+    {
+      "id": "stoneskin+",
+      "name": "Stoneskin+",
+      "realm": "aurelion",
+      "rarity": "uncommon",
+      "kind": "power",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "power",
+          "when": "turnEnd",
+          "ops": [
+            {
+              "op": "barrier",
+              "amount": 3,
+              "to": "self"
+            }
+          ]
+        },
+        {
+          "op": "power",
+          "when": "opening",
+          "ops": [
+            {
+              "op": "barrier",
+              "amount": 2,
+              "to": "self"
+            }
+          ]
+        }
+      ],
+      "hero": "knight"
+    },
+    {
+      "id": "giants-stance",
+      "name": "Giant's Stance",
+      "realm": "aurelion",
+      "rarity": "uncommon",
+      "kind": "skill",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 6,
+          "to": "self"
+        },
+        {
+          "op": "status",
+          "status": "faltering",
+          "amount": 1,
+          "to": "target"
+        },
+        {
+          "op": "when",
+          "by": "opening",
+          "atLeast": 1,
+          "of": "target",
+          "ops": [
+            {
+              "op": "status",
+              "status": "faltering",
+              "amount": 1,
+              "to": "target"
+            }
+          ]
+        }
+      ],
+      "hero": "knight",
+      "upgrade": "giants-stance+"
+    },
+    {
+      "id": "giants-stance+",
+      "name": "Giant's Stance+",
+      "realm": "aurelion",
+      "rarity": "uncommon",
+      "kind": "skill",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 9,
+          "to": "self"
+        },
+        {
+          "op": "status",
+          "status": "faltering",
+          "amount": 1,
+          "to": "target"
+        },
+        {
+          "op": "when",
+          "by": "opening",
+          "atLeast": 1,
+          "of": "target",
+          "ops": [
+            {
+              "op": "status",
+              "status": "faltering",
+              "amount": 1,
+              "to": "target"
+            }
+          ]
+        }
+      ],
+      "hero": "knight"
+    },
+    {
+      "id": "watchful-eye",
+      "name": "Watchful Eye",
+      "realm": "aurelion",
+      "rarity": "uncommon",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 6,
+          "to": "self"
+        },
+        {
+          "op": "when",
+          "by": "foesOpen",
+          "atLeast": 1,
+          "ops": [
+            {
+              "op": "draw",
+              "amount": 2
+            }
+          ]
+        }
+      ],
+      "hero": "knight",
+      "upgrade": "watchful-eye+"
+    },
+    {
+      "id": "watchful-eye+",
+      "name": "Watchful Eye+",
+      "realm": "aurelion",
+      "rarity": "uncommon",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 9,
+          "to": "self"
+        },
+        {
+          "op": "when",
+          "by": "foesOpen",
+          "atLeast": 1,
+          "ops": [
+            {
+              "op": "draw",
+              "amount": 2
+            }
+          ]
+        }
+      ],
+      "hero": "knight"
+    },
+    {
+      "id": "sentinels-patience",
+      "name": "Sentinel's Patience",
+      "realm": "aurelion",
+      "rarity": "uncommon",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 5,
+          "to": "self",
+          "scale": {
+            "by": "foes",
+            "mult": 2
+          }
+        }
+      ],
+      "hero": "knight",
+      "retain": true,
+      "upgrade": "sentinels-patience+"
+    },
+    {
+      "id": "sentinels-patience+",
+      "name": "Sentinel's Patience+",
+      "realm": "aurelion",
+      "rarity": "uncommon",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 8,
+          "to": "self",
+          "scale": {
+            "by": "foes",
+            "mult": 2
+          }
+        }
+      ],
+      "hero": "knight",
+      "retain": true
+    },
+    {
+      "id": "patient-guard",
+      "name": "Patient Guard",
+      "realm": "aurelion",
+      "rarity": "uncommon",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 5,
+          "to": "self"
+        },
+        {
+          "op": "status",
+          "status": "guarded",
+          "amount": 5,
+          "to": "self"
+        }
+      ],
+      "hero": "knight",
+      "retain": true,
+      "upgrade": "patient-guard+"
+    },
+    {
+      "id": "patient-guard+",
+      "name": "Patient Guard+",
+      "realm": "aurelion",
+      "rarity": "uncommon",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 7,
+          "to": "self"
+        },
+        {
+          "op": "status",
+          "status": "guarded",
+          "amount": 6,
+          "to": "self"
+        }
+      ],
+      "hero": "knight",
+      "retain": true
+    },
+    {
+      "id": "immovable-oath",
+      "name": "Immovable Oath",
+      "realm": "aurelion",
+      "rarity": "rare",
+      "kind": "skill",
+      "cost": 2,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 26,
+          "to": "self"
+        }
+      ],
+      "hero": "knight",
+      "exhaust": true,
+      "upgrade": "immovable-oath+"
+    },
+    {
+      "id": "immovable-oath+",
+      "name": "Immovable Oath+",
+      "realm": "aurelion",
+      "rarity": "rare",
+      "kind": "skill",
+      "cost": 2,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 34,
+          "to": "self"
+        }
+      ],
+      "hero": "knight",
+      "exhaust": true
+    },
+    {
+      "id": "bastion-engine",
+      "name": "Bastion Engine",
+      "realm": "aurelion",
+      "rarity": "rare",
+      "kind": "power",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "power",
+          "when": "opening",
+          "ops": [
+            {
+              "op": "damage",
+              "amount": 8,
+              "to": "target"
+            }
+          ]
+        }
+      ],
+      "hero": "knight",
+      "upgrade": "bastion-engine+"
+    },
+    {
+      "id": "bastion-engine+",
+      "name": "Bastion Engine+",
+      "realm": "aurelion",
+      "rarity": "rare",
+      "kind": "power",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "power",
+          "when": "opening",
+          "ops": [
+            {
+              "op": "damage",
+              "amount": 10,
+              "to": "target"
+            }
+          ]
+        }
+      ],
+      "hero": "knight"
+    },
+    {
+      "id": "iron-cadence",
+      "name": "Iron Cadence",
+      "realm": "aurelion",
+      "rarity": "uncommon",
+      "kind": "power",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "power",
+          "when": "opening",
+          "ops": [
+            {
+              "op": "manaNext",
+              "amount": 1
+            },
+            {
+              "op": "barrier",
+              "amount": 2,
+              "to": "self"
+            }
+          ],
+          "once": true
+        }
+      ],
+      "hero": "knight",
+      "upgrade": "iron-cadence+"
+    },
+    {
+      "id": "iron-cadence+",
+      "name": "Iron Cadence+",
+      "realm": "aurelion",
+      "rarity": "uncommon",
+      "kind": "power",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "power",
+          "when": "opening",
+          "ops": [
+            {
+              "op": "manaNext",
+              "amount": 1
+            },
+            {
+              "op": "barrier",
+              "amount": 2,
+              "to": "self"
+            }
+          ],
+          "once": true
+        }
+      ],
+      "hero": "knight",
+      "innate": true
+    },
+    {
+      "id": "aegis-eternal",
+      "name": "Aegis Eternal",
+      "realm": "aurelion",
+      "rarity": "rare",
+      "kind": "skill",
+      "cost": 3,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 22,
+          "to": "self"
+        },
+        {
+          "op": "status",
+          "status": "blur",
+          "amount": 1,
+          "to": "self"
+        }
+      ],
+      "hero": "knight",
+      "upgrade": "aegis-eternal+"
+    },
+    {
+      "id": "aegis-eternal+",
+      "name": "Aegis Eternal+",
+      "realm": "aurelion",
+      "rarity": "rare",
+      "kind": "skill",
+      "cost": 3,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 29,
+          "to": "self"
+        },
+        {
+          "op": "status",
+          "status": "blur",
+          "amount": 1,
+          "to": "self"
+        }
+      ],
+      "hero": "knight"
+    },
+    {
+      "id": "return-the-blow",
+      "name": "Return the Blow",
+      "realm": "aurelion",
+      "rarity": "common",
+      "kind": "attack",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 7,
+          "to": "target",
+          "riposte": 5
+        }
+      ],
+      "hero": "knight",
+      "upgrade": "return-the-blow+"
+    },
+    {
+      "id": "return-the-blow+",
+      "name": "Return the Blow+",
+      "realm": "aurelion",
+      "rarity": "common",
+      "kind": "attack",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 10,
+          "to": "target",
+          "riposte": 5
+        }
+      ],
+      "hero": "knight"
+    },
+    {
+      "id": "draw-them-in",
+      "name": "Draw Them In",
+      "realm": "aurelion",
+      "rarity": "common",
+      "kind": "skill",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 4,
+          "to": "self"
+        },
+        {
+          "op": "status",
+          "status": "opening",
+          "amount": 1,
+          "to": "target"
+        }
+      ],
+      "hero": "knight",
+      "upgrade": "draw-them-in+"
+    },
+    {
+      "id": "draw-them-in+",
+      "name": "Draw Them In+",
+      "realm": "aurelion",
+      "rarity": "common",
+      "kind": "skill",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 7,
+          "to": "self"
+        },
+        {
+          "op": "status",
+          "status": "opening",
+          "amount": 1,
+          "to": "target"
+        }
+      ],
+      "hero": "knight"
+    },
+    {
+      "id": "steady-blade",
+      "name": "Steady Blade",
+      "realm": "aurelion",
+      "rarity": "common",
+      "kind": "attack",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 8,
+          "to": "target"
+        },
+        {
+          "op": "when",
+          "by": "opening",
+          "atLeast": 1,
+          "of": "target",
+          "ops": [
+            {
+              "op": "draw",
+              "amount": 1
+            }
+          ]
+        }
+      ],
+      "hero": "knight",
+      "upgrade": "steady-blade+"
+    },
+    {
+      "id": "steady-blade+",
+      "name": "Steady Blade+",
+      "realm": "aurelion",
+      "rarity": "common",
+      "kind": "attack",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 11,
+          "to": "target"
+        },
+        {
+          "op": "when",
+          "by": "opening",
+          "atLeast": 1,
+          "of": "target",
+          "ops": [
+            {
+              "op": "draw",
+              "amount": 1
+            }
+          ]
+        }
+      ],
+      "hero": "knight"
+    },
+    {
+      "id": "counterstroke",
+      "name": "Counterstroke",
+      "realm": "aurelion",
+      "rarity": "common",
+      "kind": "attack",
+      "cost": 2,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 14,
+          "to": "target",
+          "riposte": 7
+        }
+      ],
+      "hero": "knight",
+      "upgrade": "counterstroke+"
+    },
+    {
+      "id": "counterstroke+",
+      "name": "Counterstroke+",
+      "realm": "aurelion",
+      "rarity": "common",
+      "kind": "attack",
+      "cost": 2,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 19,
+          "to": "target",
+          "riposte": 7
+        }
+      ],
+      "hero": "knight"
+    },
+    {
+      "id": "shoulder-check",
+      "name": "Shoulder Check",
+      "realm": "aurelion",
+      "rarity": "common",
+      "kind": "attack",
+      "cost": 0,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 4,
+          "to": "target"
+        },
+        {
+          "op": "riposte",
+          "ops": [
+            {
+              "op": "draw",
+              "amount": 1
+            }
+          ]
+        }
+      ],
+      "hero": "knight",
+      "upgrade": "shoulder-check+"
+    },
+    {
+      "id": "shoulder-check+",
+      "name": "Shoulder Check+",
+      "realm": "aurelion",
+      "rarity": "common",
+      "kind": "attack",
+      "cost": 0,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 6,
+          "to": "target"
+        },
+        {
+          "op": "riposte",
+          "ops": [
+            {
+              "op": "draw",
+              "amount": 1
+            }
+          ]
+        }
+      ],
+      "hero": "knight"
+    },
+    {
+      "id": "bulwark-blow",
+      "name": "Bulwark Blow",
+      "realm": "aurelion",
+      "rarity": "uncommon",
+      "kind": "attack",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 4,
+          "to": "target",
+          "riposte": 12
+        }
+      ],
+      "hero": "knight",
+      "upgrade": "bulwark-blow+"
+    },
+    {
+      "id": "bulwark-blow+",
+      "name": "Bulwark Blow+",
+      "realm": "aurelion",
+      "rarity": "uncommon",
+      "kind": "attack",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 7,
+          "to": "target",
+          "riposte": 12
+        }
+      ],
+      "hero": "knight"
+    },
+    {
+      "id": "iron-rejoinder",
+      "name": "Iron Rejoinder",
+      "realm": "aurelion",
+      "rarity": "uncommon",
+      "kind": "attack",
+      "cost": 2,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "riposte",
+          "ops": [
+            {
+              "op": "barrier",
+              "amount": 7,
+              "to": "self"
+            }
+          ]
+        },
+        {
+          "op": "damage",
+          "amount": 15,
+          "to": "target"
+        }
+      ],
+      "hero": "knight",
+      "upgrade": "iron-rejoinder+"
+    },
+    {
+      "id": "iron-rejoinder+",
+      "name": "Iron Rejoinder+",
+      "realm": "aurelion",
+      "rarity": "uncommon",
+      "kind": "attack",
+      "cost": 2,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "riposte",
+          "ops": [
+            {
+              "op": "barrier",
+              "amount": 7,
+              "to": "self"
+            }
+          ]
+        },
+        {
+          "op": "damage",
+          "amount": 20,
+          "to": "target"
+        }
+      ],
+      "hero": "knight"
+    },
+    {
+      "id": "break-guard",
+      "name": "Break Guard",
+      "realm": "aurelion",
+      "rarity": "uncommon",
+      "kind": "attack",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 8,
+          "to": "target"
+        },
+        {
+          "op": "riposte",
+          "ops": [
+            {
+              "op": "status",
+              "status": "exposed",
+              "amount": 2,
+              "to": "target"
+            }
+          ]
+        }
+      ],
+      "hero": "knight",
+      "upgrade": "break-guard+"
+    },
+    {
+      "id": "break-guard+",
+      "name": "Break Guard+",
+      "realm": "aurelion",
+      "rarity": "uncommon",
+      "kind": "attack",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 11,
+          "to": "target"
+        },
+        {
+          "op": "riposte",
+          "ops": [
+            {
+              "op": "status",
+              "status": "exposed",
+              "amount": 2,
+              "to": "target"
+            }
+          ]
+        }
+      ],
+      "hero": "knight"
+    },
+    {
+      "id": "breaking-point",
+      "name": "Breaking Point",
+      "realm": "aurelion",
+      "rarity": "uncommon",
+      "kind": "attack",
+      "cost": 3,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 22,
+          "to": "target",
+          "riposte": 12
+        }
+      ],
+      "hero": "knight",
+      "upgrade": "breaking-point+"
+    },
+    {
+      "id": "breaking-point+",
+      "name": "Breaking Point+",
+      "realm": "aurelion",
+      "rarity": "uncommon",
+      "kind": "attack",
+      "cost": 3,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 30,
+          "to": "target",
+          "riposte": 12
+        }
+      ],
+      "hero": "knight"
+    },
+    {
+      "id": "challenge",
+      "name": "Challenge",
+      "realm": "aurelion",
+      "rarity": "uncommon",
+      "kind": "skill",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "status",
+          "status": "opening",
+          "amount": 1,
+          "to": "target"
+        },
+        {
+          "op": "status",
+          "status": "sapped",
+          "amount": 3,
+          "to": "target",
+          "temp": "theirs"
+        },
+        {
+          "op": "barrier",
+          "amount": 4,
+          "to": "self"
+        }
+      ],
+      "hero": "knight",
+      "upgrade": "challenge+"
+    },
+    {
+      "id": "challenge+",
+      "name": "Challenge+",
+      "realm": "aurelion",
+      "rarity": "uncommon",
+      "kind": "skill",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "status",
+          "status": "opening",
+          "amount": 1,
+          "to": "target"
+        },
+        {
+          "op": "status",
+          "status": "sapped",
+          "amount": 3,
+          "to": "target",
+          "temp": "theirs"
+        },
+        {
+          "op": "barrier",
+          "amount": 7,
+          "to": "self"
+        }
+      ],
+      "hero": "knight"
+    },
+    {
+      "id": "deflecting-blow",
+      "name": "Deflecting Blow",
+      "realm": "aurelion",
+      "rarity": "uncommon",
+      "kind": "attack",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "riposte",
+          "ops": [
+            {
+              "op": "barrier",
+              "amount": 7,
+              "to": "self"
+            }
+          ]
+        },
+        {
+          "op": "damage",
+          "amount": 7,
+          "to": "target"
+        }
+      ],
+      "hero": "knight",
+      "upgrade": "deflecting-blow+"
+    },
+    {
+      "id": "deflecting-blow+",
+      "name": "Deflecting Blow+",
+      "realm": "aurelion",
+      "rarity": "uncommon",
+      "kind": "attack",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "riposte",
+          "ops": [
+            {
+              "op": "barrier",
+              "amount": 7,
+              "to": "self"
+            }
+          ]
+        },
+        {
+          "op": "damage",
+          "amount": 10,
+          "to": "target"
+        }
+      ],
+      "hero": "knight"
+    },
+    {
+      "id": "exploit-the-gap",
+      "name": "Exploit the Gap",
+      "realm": "aurelion",
+      "rarity": "uncommon",
+      "kind": "power",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "power",
+          "when": "riposte",
+          "ops": [
+            {
+              "op": "draw",
+              "amount": 1
+            },
+            {
+              "op": "barrier",
+              "amount": 3,
+              "to": "self"
+            }
+          ]
+        }
+      ],
+      "hero": "knight",
+      "upgrade": "exploit-the-gap+"
+    },
+    {
+      "id": "exploit-the-gap+",
+      "name": "Exploit the Gap+",
+      "realm": "aurelion",
+      "rarity": "uncommon",
+      "kind": "power",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "power",
+          "when": "riposte",
+          "ops": [
+            {
+              "op": "draw",
+              "amount": 1
+            },
+            {
+              "op": "barrier",
+              "amount": 5,
+              "to": "self"
+            }
+          ]
+        }
+      ],
+      "hero": "knight"
+    },
+    {
+      "id": "perfect-counter",
+      "name": "Perfect Counter",
+      "realm": "aurelion",
+      "rarity": "rare",
+      "kind": "attack",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 6,
+          "to": "target",
+          "riposte": 14
+        }
+      ],
+      "hero": "knight",
+      "upgrade": "perfect-counter+"
+    },
+    {
+      "id": "perfect-counter+",
+      "name": "Perfect Counter+",
+      "realm": "aurelion",
+      "rarity": "rare",
+      "kind": "attack",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 8,
+          "to": "target",
+          "riposte": 18
+        }
+      ],
+      "hero": "knight"
+    },
+    {
+      "id": "masterstroke",
+      "name": "Masterstroke",
+      "realm": "aurelion",
+      "rarity": "rare",
+      "kind": "attack",
+      "cost": 3,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 20,
+          "to": "target"
+        },
+        {
+          "op": "riposte",
+          "ops": [
+            {
+              "op": "damage",
+              "amount": 20,
+              "to": "target"
+            }
+          ]
+        }
+      ],
+      "hero": "knight",
+      "upgrade": "masterstroke+"
+    },
+    {
+      "id": "masterstroke+",
+      "name": "Masterstroke+",
+      "realm": "aurelion",
+      "rarity": "rare",
+      "kind": "attack",
+      "cost": 3,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 26,
+          "to": "target"
+        },
+        {
+          "op": "riposte",
+          "ops": [
+            {
+              "op": "damage",
+              "amount": 26,
+              "to": "target"
+            }
+          ]
+        }
+      ],
+      "hero": "knight"
+    },
+    {
+      "id": "last-bastion",
+      "name": "Last Bastion",
+      "realm": "aurelion",
+      "rarity": "rare",
+      "kind": "skill",
+      "cost": 2,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 15,
+          "to": "self"
+        },
+        {
+          "op": "status",
+          "status": "opening",
+          "amount": 1,
+          "to": "allFoes"
+        }
+      ],
+      "hero": "knight",
+      "upgrade": "last-bastion+"
+    },
+    {
+      "id": "last-bastion+",
+      "name": "Last Bastion+",
+      "realm": "aurelion",
+      "rarity": "rare",
+      "kind": "skill",
+      "cost": 2,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 20,
+          "to": "self"
+        },
+        {
+          "op": "status",
+          "status": "opening",
+          "amount": 1,
+          "to": "allFoes"
+        }
+      ],
+      "hero": "knight"
+    },
+    {
+      "id": "warlords-oath",
+      "name": "Warlord's Oath",
+      "realm": "aurelion",
+      "rarity": "rare",
+      "kind": "power",
+      "cost": 2,
+      "target": "none",
+      "effects": [
+        {
+          "op": "power",
+          "when": "turnStart",
+          "ops": [
+            {
+              "op": "status",
+              "status": "opening",
+              "amount": 1,
+              "to": "front"
+            },
+            {
+              "op": "barrier",
+              "amount": 5,
+              "to": "self"
+            }
+          ]
+        }
+      ],
+      "hero": "knight",
+      "upgrade": "warlords-oath+"
+    },
+    {
+      "id": "warlords-oath+",
+      "name": "Warlord's Oath+",
+      "realm": "aurelion",
+      "rarity": "rare",
+      "kind": "power",
+      "cost": 2,
+      "target": "none",
+      "effects": [
+        {
+          "op": "power",
+          "when": "turnStart",
+          "ops": [
+            {
+              "op": "status",
+              "status": "opening",
+              "amount": 1,
+              "to": "front"
+            },
+            {
+              "op": "barrier",
+              "amount": 5,
+              "to": "self"
+            }
+          ]
+        }
+      ],
+      "hero": "knight",
+      "innate": true
+    },
+    {
+      "id": "duelists-focus",
+      "name": "Duelist's Focus",
+      "realm": "aurelion",
+      "rarity": "rare",
+      "kind": "skill",
+      "cost": 0,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "status",
+          "status": "opening",
+          "amount": 1,
+          "to": "target"
+        },
+        {
+          "op": "draw",
+          "amount": 1
+        }
+      ],
+      "hero": "knight",
+      "exhaust": true,
+      "retain": true,
+      "upgrade": "duelists-focus+"
+    },
+    {
+      "id": "duelists-focus+",
+      "name": "Duelist's Focus+",
+      "realm": "aurelion",
+      "rarity": "rare",
+      "kind": "skill",
+      "cost": 0,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "status",
+          "status": "opening",
+          "amount": 1,
+          "to": "target"
+        },
+        {
+          "op": "draw",
+          "amount": 2
+        }
+      ],
+      "hero": "knight",
+      "exhaust": true,
+      "retain": true
+    },
+    {
+      "id": "spiked-pauldron",
+      "name": "Spiked Pauldron",
+      "realm": "aurelion",
+      "rarity": "common",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 4,
+          "to": "self"
+        },
+        {
+          "op": "status",
+          "status": "thorns",
+          "amount": 3,
+          "to": "self",
+          "temp": "theirs"
+        }
+      ],
+      "hero": "knight",
+      "upgrade": "spiked-pauldron+"
+    },
+    {
+      "id": "spiked-pauldron+",
+      "name": "Spiked Pauldron+",
+      "realm": "aurelion",
+      "rarity": "common",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 4,
+          "to": "self"
+        },
+        {
+          "op": "status",
+          "status": "thorns",
+          "amount": 5,
+          "to": "self",
+          "temp": "theirs"
+        }
+      ],
+      "hero": "knight"
+    },
+    {
+      "id": "bramble-guard",
+      "name": "Bramble Guard",
+      "realm": "aurelion",
+      "rarity": "common",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 7,
+          "to": "self"
+        },
+        {
+          "op": "when",
+          "by": "thorns",
+          "atLeast": 1,
+          "ops": [
+            {
+              "op": "barrier",
+              "amount": 3,
+              "to": "self"
+            }
+          ]
+        }
+      ],
+      "hero": "knight",
+      "upgrade": "bramble-guard+"
+    },
+    {
+      "id": "bramble-guard+",
+      "name": "Bramble Guard+",
+      "realm": "aurelion",
+      "rarity": "common",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 9,
+          "to": "self"
+        },
+        {
+          "op": "when",
+          "by": "thorns",
+          "atLeast": 1,
+          "ops": [
+            {
+              "op": "barrier",
+              "amount": 3,
+              "to": "self"
+            }
+          ]
+        }
+      ],
+      "hero": "knight"
+    },
+    {
+      "id": "briar-lash",
+      "name": "Briar Lash",
+      "realm": "aurelion",
+      "rarity": "common",
+      "kind": "attack",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 5,
+          "to": "target",
+          "scale": {
+            "by": "thorns",
+            "mult": 2
+          }
+        }
+      ],
+      "hero": "knight",
+      "upgrade": "briar-lash+"
+    },
+    {
+      "id": "briar-lash+",
+      "name": "Briar Lash+",
+      "realm": "aurelion",
+      "rarity": "common",
+      "kind": "attack",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 8,
+          "to": "target",
+          "scale": {
+            "by": "thorns",
+            "mult": 2
+          }
+        }
+      ],
+      "hero": "knight"
+    },
+    {
+      "id": "thorned-gauntlet",
+      "name": "Thorned Gauntlet",
+      "realm": "aurelion",
+      "rarity": "common",
+      "kind": "attack",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 6,
+          "to": "target"
+        },
+        {
+          "op": "status",
+          "status": "thorns",
+          "amount": 2,
+          "to": "self",
+          "temp": "theirs"
+        }
+      ],
+      "hero": "knight",
+      "upgrade": "thorned-gauntlet+"
+    },
+    {
+      "id": "thorned-gauntlet+",
+      "name": "Thorned Gauntlet+",
+      "realm": "aurelion",
+      "rarity": "common",
+      "kind": "attack",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 9,
+          "to": "target"
+        },
+        {
+          "op": "status",
+          "status": "thorns",
+          "amount": 2,
+          "to": "self",
+          "temp": "theirs"
+        }
+      ],
+      "hero": "knight"
+    },
+    {
+      "id": "ember-ward",
+      "name": "Ember Ward",
+      "realm": "aurelion",
+      "rarity": "uncommon",
+      "kind": "skill",
+      "cost": 2,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 12,
+          "to": "self"
+        },
+        {
+          "op": "status",
+          "status": "thorns",
+          "amount": 4,
+          "to": "self",
+          "temp": "theirs"
+        }
+      ],
+      "hero": "knight",
+      "upgrade": "ember-ward+"
+    },
+    {
+      "id": "ember-ward+",
+      "name": "Ember Ward+",
+      "realm": "aurelion",
+      "rarity": "uncommon",
+      "kind": "skill",
+      "cost": 2,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 15,
+          "to": "self"
+        },
+        {
+          "op": "status",
+          "status": "thorns",
+          "amount": 5,
+          "to": "self",
+          "temp": "theirs"
+        }
+      ],
+      "hero": "knight"
+    },
+    {
+      "id": "thornburst",
+      "name": "Thornburst",
+      "realm": "aurelion",
+      "rarity": "uncommon",
+      "kind": "attack",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 3,
+          "to": "allFoes",
+          "scale": {
+            "by": "thorns",
+            "mult": 2
+          }
+        }
+      ],
+      "hero": "knight",
+      "upgrade": "thornburst+"
+    },
+    {
+      "id": "thornburst+",
+      "name": "Thornburst+",
+      "realm": "aurelion",
+      "rarity": "uncommon",
+      "kind": "attack",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 6,
+          "to": "allFoes",
+          "scale": {
+            "by": "thorns",
+            "mult": 2
+          }
+        }
+      ],
+      "hero": "knight"
+    },
+    {
+      "id": "barbed-vigil",
+      "name": "Barbed Vigil",
+      "realm": "aurelion",
+      "rarity": "uncommon",
+      "kind": "skill",
+      "cost": 2,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 7,
+          "to": "self"
+        },
+        {
+          "op": "status",
+          "status": "guarded",
+          "amount": 6,
+          "to": "self"
+        },
+        {
+          "op": "status",
+          "status": "thorns",
+          "amount": 4,
+          "to": "self",
+          "temp": "theirs"
+        }
+      ],
+      "hero": "knight",
+      "retain": true,
+      "upgrade": "barbed-vigil+"
+    },
+    {
+      "id": "barbed-vigil+",
+      "name": "Barbed Vigil+",
+      "realm": "aurelion",
+      "rarity": "uncommon",
+      "kind": "skill",
+      "cost": 2,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 9,
+          "to": "self"
+        },
+        {
+          "op": "status",
+          "status": "guarded",
+          "amount": 8,
+          "to": "self"
+        },
+        {
+          "op": "status",
+          "status": "thorns",
+          "amount": 4,
+          "to": "self",
+          "temp": "theirs"
+        }
+      ],
+      "hero": "knight",
+      "retain": true
+    },
+    {
+      "id": "barbed-retort",
+      "name": "Barbed Retort",
+      "realm": "aurelion",
+      "rarity": "uncommon",
+      "kind": "attack",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 8,
+          "to": "target"
+        },
+        {
+          "op": "riposte",
+          "ops": [
+            {
+              "op": "status",
+              "status": "thorns",
+              "amount": 3,
+              "to": "self",
+              "temp": "theirs"
+            }
+          ]
+        }
+      ],
+      "hero": "knight",
+      "upgrade": "barbed-retort+"
+    },
+    {
+      "id": "barbed-retort+",
+      "name": "Barbed Retort+",
+      "realm": "aurelion",
+      "rarity": "uncommon",
+      "kind": "attack",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 11,
+          "to": "target"
+        },
+        {
+          "op": "riposte",
+          "ops": [
+            {
+              "op": "status",
+              "status": "thorns",
+              "amount": 3,
+              "to": "self",
+              "temp": "theirs"
+            }
+          ]
+        }
+      ],
+      "hero": "knight"
+    },
+    {
+      "id": "thornwake",
+      "name": "Thornwake",
+      "realm": "aurelion",
+      "rarity": "uncommon",
+      "kind": "power",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "power",
+          "when": "thorns",
+          "ops": [
+            {
+              "op": "status",
+              "status": "opening",
+              "amount": 1,
+              "to": "attacker"
+            },
+            {
+              "op": "barrier",
+              "amount": 2,
+              "to": "self"
+            }
+          ],
+          "once": true
+        }
+      ],
+      "hero": "knight",
+      "upgrade": "thornwake+"
+    },
+    {
+      "id": "thornwake+",
+      "name": "Thornwake+",
+      "realm": "aurelion",
+      "rarity": "uncommon",
+      "kind": "power",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "power",
+          "when": "thorns",
+          "ops": [
+            {
+              "op": "status",
+              "status": "opening",
+              "amount": 1,
+              "to": "attacker"
+            },
+            {
+              "op": "barrier",
+              "amount": 4,
+              "to": "self"
+            }
+          ],
+          "once": true
+        }
+      ],
+      "hero": "knight"
+    },
+    {
+      "id": "wall-of-briars",
+      "name": "Wall of Briars",
+      "realm": "aurelion",
+      "rarity": "rare",
+      "kind": "skill",
+      "cost": 2,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 12,
+          "to": "self"
+        },
+        {
+          "op": "status",
+          "status": "thorns",
+          "amount": 8,
+          "to": "self",
+          "temp": "theirs"
+        }
+      ],
+      "hero": "knight",
+      "upgrade": "wall-of-briars+"
+    },
+    {
+      "id": "wall-of-briars+",
+      "name": "Wall of Briars+",
+      "realm": "aurelion",
+      "rarity": "rare",
+      "kind": "skill",
+      "cost": 2,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 15,
+          "to": "self"
+        },
+        {
+          "op": "status",
+          "status": "thorns",
+          "amount": 10,
+          "to": "self",
+          "temp": "theirs"
+        }
+      ],
+      "hero": "knight"
+    },
+    {
+      "id": "vengeful-strike",
+      "name": "Vengeful Strike",
+      "realm": "aurelion",
+      "rarity": "rare",
+      "kind": "attack",
+      "cost": 2,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 18,
+          "to": "target",
+          "scale": {
+            "by": "thorns",
+            "mult": 2
+          }
+        }
+      ],
+      "hero": "knight",
+      "upgrade": "vengeful-strike+"
+    },
+    {
+      "id": "vengeful-strike+",
+      "name": "Vengeful Strike+",
+      "realm": "aurelion",
+      "rarity": "rare",
+      "kind": "attack",
+      "cost": 2,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 23,
+          "to": "target",
+          "scale": {
+            "by": "thorns",
+            "mult": 2
+          }
+        }
+      ],
+      "hero": "knight"
+    },
+    {
+      "id": "crown-of-thorns",
+      "name": "Crown of Thorns",
+      "realm": "aurelion",
+      "rarity": "rare",
+      "kind": "power",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "power",
+          "when": "turnEnd",
+          "ops": [
+            {
+              "op": "status",
+              "status": "thorns",
+              "amount": 3,
+              "to": "self",
+              "temp": "theirs"
+            }
+          ]
+        }
+      ],
+      "hero": "knight",
+      "upgrade": "crown-of-thorns+"
+    },
+    {
+      "id": "crown-of-thorns+",
+      "name": "Crown of Thorns+",
+      "realm": "aurelion",
+      "rarity": "rare",
+      "kind": "power",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "power",
+          "when": "turnEnd",
+          "ops": [
+            {
+              "op": "status",
+              "status": "thorns",
+              "amount": 4,
+              "to": "self",
+              "temp": "theirs"
+            }
+          ]
+        }
+      ],
+      "hero": "knight"
+    },
+    {
+      "id": "shed-the-spines",
+      "name": "Shed the Spines",
+      "realm": "aurelion",
+      "rarity": "uncommon",
+      "kind": "attack",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "shedTemp",
+          "status": "thorns",
+          "amount": 4
+        },
+        {
+          "op": "damage",
+          "amount": 6,
+          "to": "target",
+          "scale": {
+            "by": "thornsSpent",
+            "mult": 3
+          }
+        }
+      ],
+      "hero": "knight",
+      "upgrade": "shed-the-spines+"
+    },
+    {
+      "id": "shed-the-spines+",
+      "name": "Shed the Spines+",
+      "realm": "aurelion",
+      "rarity": "uncommon",
+      "kind": "attack",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "shedTemp",
+          "status": "thorns",
+          "amount": 4
+        },
+        {
+          "op": "damage",
+          "amount": 9,
+          "to": "target",
+          "scale": {
+            "by": "thornsSpent",
+            "mult": 3
+          }
+        }
+      ],
+      "hero": "knight"
+    },
+    {
+      "id": "testing-cut",
+      "name": "Testing Cut",
+      "realm": "aurelion",
+      "rarity": "common",
+      "kind": "attack",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 7,
+          "to": "target"
+        },
+        {
+          "op": "when",
+          "by": "opening",
+          "atLeast": 1,
+          "of": "target",
+          "ops": [
+            {
+              "op": "barrier",
+              "amount": 4,
+              "to": "self"
+            }
+          ]
+        }
+      ],
+      "hero": "knight",
+      "upgrade": "testing-cut+"
+    },
+    {
+      "id": "testing-cut+",
+      "name": "Testing Cut+",
+      "realm": "aurelion",
+      "rarity": "common",
+      "kind": "attack",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 10,
+          "to": "target"
+        },
+        {
+          "op": "when",
+          "by": "opening",
+          "atLeast": 1,
+          "of": "target",
+          "ops": [
+            {
+              "op": "barrier",
+              "amount": 4,
+              "to": "self"
+            }
+          ]
+        }
+      ],
+      "hero": "knight"
+    },
+    {
+      "id": "measured-footwork",
+      "name": "Measured Footwork",
+      "realm": "aurelion",
+      "rarity": "common",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 5,
+          "to": "self"
+        },
+        {
+          "op": "draw",
+          "amount": 1
+        },
+        {
+          "op": "when",
+          "by": "foesOpen",
+          "atLeast": 1,
+          "ops": [
+            {
+              "op": "barrier",
+              "amount": 2,
+              "to": "self"
+            }
+          ]
+        }
+      ],
+      "hero": "knight",
+      "upgrade": "measured-footwork+"
+    },
+    {
+      "id": "measured-footwork+",
+      "name": "Measured Footwork+",
+      "realm": "aurelion",
+      "rarity": "common",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 8,
+          "to": "self"
+        },
+        {
+          "op": "draw",
+          "amount": 1
+        },
+        {
+          "op": "when",
+          "by": "foesOpen",
+          "atLeast": 1,
+          "ops": [
+            {
+              "op": "barrier",
+              "amount": 2,
+              "to": "self"
+            }
+          ]
+        }
+      ],
+      "hero": "knight"
+    },
+    {
+      "id": "keep-your-distance",
+      "name": "Keep Your Distance",
+      "realm": "aurelion",
+      "rarity": "common",
+      "kind": "attack",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 8,
+          "to": "target"
+        },
+        {
+          "op": "when",
+          "by": "opening",
+          "atLeast": 1,
+          "of": "target",
+          "ops": [
+            {
+              "op": "status",
+              "status": "sapped",
+              "amount": 2,
+              "to": "target",
+              "temp": "theirs"
+            }
+          ]
+        }
+      ],
+      "hero": "knight",
+      "upgrade": "keep-your-distance+"
+    },
+    {
+      "id": "keep-your-distance+",
+      "name": "Keep Your Distance+",
+      "realm": "aurelion",
+      "rarity": "common",
+      "kind": "attack",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 11,
+          "to": "target"
+        },
+        {
+          "op": "when",
+          "by": "opening",
+          "atLeast": 1,
+          "of": "target",
+          "ops": [
+            {
+              "op": "status",
+              "status": "sapped",
+              "amount": 2,
+              "to": "target",
+              "temp": "theirs"
+            }
+          ]
+        }
+      ],
+      "hero": "knight"
+    },
+    {
+      "id": "patient-edge",
+      "name": "Patient Edge",
+      "realm": "aurelion",
+      "rarity": "uncommon",
+      "kind": "attack",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 8,
+          "to": "target",
+          "scale": {
+            "by": "opening",
+            "mult": 4,
+            "of": "target"
+          }
+        }
+      ],
+      "hero": "knight",
+      "retain": true,
+      "upgrade": "patient-edge+"
+    },
+    {
+      "id": "patient-edge+",
+      "name": "Patient Edge+",
+      "realm": "aurelion",
+      "rarity": "uncommon",
+      "kind": "attack",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 11,
+          "to": "target",
+          "scale": {
+            "by": "opening",
+            "mult": 4,
+            "of": "target"
+          }
+        }
+      ],
+      "hero": "knight",
+      "retain": true
+    },
+    {
+      "id": "read-the-duel",
+      "name": "Read the Duel",
+      "realm": "aurelion",
+      "rarity": "uncommon",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 5,
+          "to": "self"
+        },
+        {
+          "op": "scry",
+          "amount": 2
+        },
+        {
+          "op": "when",
+          "by": "foesOpen",
+          "atLeast": 1,
+          "ops": [
+            {
+              "op": "draw",
+              "amount": 1
+            }
+          ]
+        }
+      ],
+      "hero": "knight",
+      "upgrade": "read-the-duel+"
+    },
+    {
+      "id": "read-the-duel+",
+      "name": "Read the Duel+",
+      "realm": "aurelion",
+      "rarity": "uncommon",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 8,
+          "to": "self"
+        },
+        {
+          "op": "scry",
+          "amount": 2
+        },
+        {
+          "op": "when",
+          "by": "foesOpen",
+          "atLeast": 1,
+          "ops": [
+            {
+              "op": "draw",
+              "amount": 1
+            }
+          ]
+        }
+      ],
+      "hero": "knight"
+    },
+    {
+      "id": "closing-argument",
+      "name": "Closing Argument",
+      "realm": "aurelion",
+      "rarity": "uncommon",
+      "kind": "attack",
+      "cost": 2,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 16,
+          "to": "target"
+        },
+        {
+          "op": "riposte",
+          "ops": [
+            {
+              "op": "draw",
+              "amount": 2
+            }
+          ]
+        }
+      ],
+      "hero": "knight",
+      "upgrade": "closing-argument+"
+    },
+    {
+      "id": "closing-argument+",
+      "name": "Closing Argument+",
+      "realm": "aurelion",
+      "rarity": "uncommon",
+      "kind": "attack",
+      "cost": 2,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 21,
+          "to": "target"
+        },
+        {
+          "op": "riposte",
+          "ops": [
+            {
+              "op": "draw",
+              "amount": 2
+            }
+          ]
+        }
+      ],
+      "hero": "knight"
+    },
+    {
+      "id": "answer-them-all",
+      "name": "Answer Them All",
+      "realm": "aurelion",
+      "rarity": "uncommon",
+      "kind": "attack",
+      "cost": 2,
+      "target": "none",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 10,
+          "to": "allFoes",
+          "riposte": 8
+        }
+      ],
+      "hero": "knight",
+      "upgrade": "answer-them-all+"
+    },
+    {
+      "id": "answer-them-all+",
+      "name": "Answer Them All+",
+      "realm": "aurelion",
+      "rarity": "uncommon",
+      "kind": "attack",
+      "cost": 2,
+      "target": "none",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 13,
+          "to": "allFoes",
+          "riposte": 8
+        }
+      ],
+      "hero": "knight"
+    },
+    {
+      "id": "probing-thrust",
+      "name": "Probing Thrust",
+      "realm": "aurelion",
+      "rarity": "common",
+      "kind": "attack",
+      "cost": 0,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 5,
+          "to": "target"
+        },
+        {
+          "op": "when",
+          "by": "opening",
+          "atLeast": 1,
+          "of": "target",
+          "ops": [
+            {
+              "op": "status",
+              "status": "exposed",
+              "amount": 1,
+              "to": "target"
+            }
+          ]
+        }
+      ],
+      "hero": "knight",
+      "upgrade": "probing-thrust+"
+    },
+    {
+      "id": "probing-thrust+",
+      "name": "Probing Thrust+",
+      "realm": "aurelion",
+      "rarity": "common",
+      "kind": "attack",
+      "cost": 0,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 7,
+          "to": "target"
+        },
+        {
+          "op": "when",
+          "by": "opening",
+          "atLeast": 1,
+          "of": "target",
+          "ops": [
+            {
+              "op": "status",
+              "status": "exposed",
+              "amount": 1,
+              "to": "target"
+            }
+          ]
+        }
+      ],
+      "hero": "knight"
+    },
+    {
+      "id": "keen-eye",
+      "name": "Keen Eye",
+      "realm": "aurelion",
+      "rarity": "common",
+      "kind": "skill",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 5,
+          "to": "self"
+        },
+        {
+          "op": "when",
+          "by": "opening",
+          "atLeast": 1,
+          "of": "target",
+          "ops": [
+            {
+              "op": "status",
+              "status": "exposed",
+              "amount": 2,
+              "to": "target"
+            }
+          ]
+        }
+      ],
+      "hero": "knight",
+      "upgrade": "keen-eye+"
+    },
+    {
+      "id": "keen-eye+",
+      "name": "Keen Eye+",
+      "realm": "aurelion",
+      "rarity": "common",
+      "kind": "skill",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 8,
+          "to": "self"
+        },
+        {
+          "op": "when",
+          "by": "opening",
+          "atLeast": 1,
+          "of": "target",
+          "ops": [
+            {
+              "op": "status",
+              "status": "exposed",
+              "amount": 2,
+              "to": "target"
+            }
+          ]
+        }
+      ],
+      "hero": "knight"
+    },
+    {
+      "id": "second-intention",
+      "name": "Second Intention",
+      "realm": "aurelion",
+      "rarity": "uncommon",
+      "kind": "attack",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 8,
+          "to": "target"
+        },
+        {
+          "op": "riposte",
+          "ops": [
+            {
+              "op": "status",
+              "status": "opening",
+              "amount": 1,
+              "to": "target"
+            },
+            {
+              "op": "barrier",
+              "amount": 3,
+              "to": "self"
+            }
+          ]
+        }
+      ],
+      "hero": "knight",
+      "upgrade": "second-intention+"
+    },
+    {
+      "id": "second-intention+",
+      "name": "Second Intention+",
+      "realm": "aurelion",
+      "rarity": "uncommon",
+      "kind": "attack",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 11,
+          "to": "target"
+        },
+        {
+          "op": "riposte",
+          "ops": [
+            {
+              "op": "status",
+              "status": "opening",
+              "amount": 1,
+              "to": "target"
+            },
+            {
+              "op": "barrier",
+              "amount": 3,
+              "to": "self"
+            }
+          ]
+        }
+      ],
+      "hero": "knight"
+    },
+    {
+      "id": "measured-tempo",
+      "name": "Measured Tempo",
+      "realm": "aurelion",
+      "rarity": "uncommon",
+      "kind": "power",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "power",
+          "when": "hitFoe",
+          "ops": [
+            {
+              "op": "when",
+              "by": "opening",
+              "atLeast": 1,
+              "of": "target",
+              "ops": [
+                {
+                  "op": "barrier",
+                  "amount": 2,
+                  "to": "self"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "hero": "knight",
+      "upgrade": "measured-tempo+"
+    },
+    {
+      "id": "measured-tempo+",
+      "name": "Measured Tempo+",
+      "realm": "aurelion",
+      "rarity": "uncommon",
+      "kind": "power",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "power",
+          "when": "hitFoe",
+          "ops": [
+            {
+              "op": "when",
+              "by": "opening",
+              "atLeast": 1,
+              "of": "target",
+              "ops": [
+                {
+                  "op": "barrier",
+                  "amount": 2,
+                  "to": "self"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "hero": "knight",
+      "innate": true
+    },
+    {
+      "id": "seize-the-moment",
+      "name": "Seize the Moment",
+      "realm": "aurelion",
+      "rarity": "rare",
+      "kind": "skill",
+      "cost": 0,
+      "target": "none",
+      "effects": [
+        {
+          "op": "when",
+          "by": "foesOpen",
+          "atLeast": 1,
+          "ops": [
+            {
+              "op": "mana",
+              "amount": 2
+            }
+          ]
+        },
+        {
+          "op": "draw",
+          "amount": 1
+        }
+      ],
+      "hero": "knight",
+      "exhaust": true,
+      "upgrade": "seize-the-moment+"
+    },
+    {
+      "id": "seize-the-moment+",
+      "name": "Seize the Moment+",
+      "realm": "aurelion",
+      "rarity": "rare",
+      "kind": "skill",
+      "cost": 0,
+      "target": "none",
+      "effects": [
+        {
+          "op": "when",
+          "by": "foesOpen",
+          "atLeast": 1,
+          "ops": [
+            {
+              "op": "mana",
+              "amount": 2
+            }
+          ]
+        },
+        {
+          "op": "draw",
+          "amount": 2
+        }
+      ],
+      "hero": "knight",
+      "exhaust": true
+    },
+    {
+      "id": "knights-composure",
+      "name": "Knight's Composure",
+      "realm": "aurelion",
+      "rarity": "rare",
+      "kind": "power",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "power",
+          "when": "turnEnd",
+          "ops": [
+            {
+              "op": "when",
+              "by": "foesOpen",
+              "atLeast": 1,
+              "ops": [
+                {
+                  "op": "barrier",
+                  "amount": 6,
+                  "to": "self"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "hero": "knight",
+      "upgrade": "knights-composure+"
+    },
+    {
+      "id": "knights-composure+",
+      "name": "Knight's Composure+",
+      "realm": "aurelion",
+      "rarity": "rare",
+      "kind": "power",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "power",
+          "when": "turnEnd",
+          "ops": [
+            {
+              "op": "when",
+              "by": "foesOpen",
+              "atLeast": 1,
+              "ops": [
+                {
+                  "op": "barrier",
+                  "amount": 8,
+                  "to": "self"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "hero": "knight"
+    },
+    {
+      "id": "ring-of-steel",
+      "name": "Ring of Steel",
+      "realm": "aurelion",
+      "rarity": "common",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 5,
+          "to": "self",
+          "scale": {
+            "by": "foesOpen",
+            "mult": 3
+          }
+        }
+      ],
+      "hero": "knight",
+      "upgrade": "ring-of-steel+"
+    },
+    {
+      "id": "ring-of-steel+",
+      "name": "Ring of Steel+",
+      "realm": "aurelion",
+      "rarity": "common",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 8,
+          "to": "self",
+          "scale": {
+            "by": "foesOpen",
+            "mult": 3
+          }
+        }
+      ],
+      "hero": "knight"
+    },
+    {
+      "id": "sweep-the-line",
+      "name": "Sweep the Line",
+      "realm": "aurelion",
+      "rarity": "common",
+      "kind": "attack",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 6,
+          "to": "allFoes"
+        },
+        {
+          "op": "when",
+          "by": "foesOpen",
+          "atLeast": 1,
+          "ops": [
+            {
+              "op": "barrier",
+              "amount": 3,
+              "to": "self"
+            }
+          ]
+        }
+      ],
+      "hero": "knight",
+      "upgrade": "sweep-the-line+"
+    },
+    {
+      "id": "sweep-the-line+",
+      "name": "Sweep the Line+",
+      "realm": "aurelion",
+      "rarity": "common",
+      "kind": "attack",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 8,
+          "to": "allFoes"
+        },
+        {
+          "op": "when",
+          "by": "foesOpen",
+          "atLeast": 1,
+          "ops": [
+            {
+              "op": "barrier",
+              "amount": 3,
+              "to": "self"
+            }
+          ]
+        }
+      ],
+      "hero": "knight"
+    },
+    {
+      "id": "pick-them-apart",
+      "name": "Pick Them Apart",
+      "realm": "aurelion",
+      "rarity": "uncommon",
+      "kind": "attack",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 7,
+          "to": "target",
+          "scale": {
+            "by": "foesOpen",
+            "mult": 3
+          }
+        }
+      ],
+      "hero": "knight",
+      "retain": true,
+      "upgrade": "pick-them-apart+"
+    },
+    {
+      "id": "pick-them-apart+",
+      "name": "Pick Them Apart+",
+      "realm": "aurelion",
+      "rarity": "uncommon",
+      "kind": "attack",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 10,
+          "to": "target",
+          "scale": {
+            "by": "foesOpen",
+            "mult": 3
+          }
+        }
+      ],
+      "hero": "knight",
+      "retain": true
+    },
+    {
+      "id": "cleaving-riposte",
+      "name": "Cleaving Riposte",
+      "realm": "aurelion",
+      "rarity": "uncommon",
+      "kind": "attack",
+      "cost": 2,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "riposte",
+          "ops": [
+            {
+              "op": "damage",
+              "amount": 8,
+              "to": "allFoes"
+            }
+          ]
+        },
+        {
+          "op": "damage",
+          "amount": 14,
+          "to": "target"
+        }
+      ],
+      "hero": "knight",
+      "upgrade": "cleaving-riposte+"
+    },
+    {
+      "id": "cleaving-riposte+",
+      "name": "Cleaving Riposte+",
+      "realm": "aurelion",
+      "rarity": "uncommon",
+      "kind": "attack",
+      "cost": 2,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "riposte",
+          "ops": [
+            {
+              "op": "damage",
+              "amount": 8,
+              "to": "allFoes"
+            }
+          ]
+        },
+        {
+          "op": "damage",
+          "amount": 18,
+          "to": "target"
+        }
+      ],
+      "hero": "knight"
+    },
+    {
+      "id": "marshals-eye",
+      "name": "Marshal's Eye",
+      "realm": "aurelion",
+      "rarity": "uncommon",
+      "kind": "power",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "power",
+          "when": "riposte",
+          "ops": [
+            {
+              "op": "status",
+              "status": "opening",
+              "amount": 1,
+              "to": "front"
+            },
+            {
+              "op": "barrier",
+              "amount": 2,
+              "to": "self"
+            }
+          ],
+          "once": true
+        }
+      ],
+      "hero": "knight",
+      "upgrade": "marshals-eye+"
+    },
+    {
+      "id": "marshals-eye+",
+      "name": "Marshal's Eye+",
+      "realm": "aurelion",
+      "rarity": "uncommon",
+      "kind": "power",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "power",
+          "when": "riposte",
+          "ops": [
+            {
+              "op": "status",
+              "status": "opening",
+              "amount": 1,
+              "to": "front"
+            },
+            {
+              "op": "barrier",
+              "amount": 4,
+              "to": "self"
+            }
+          ],
+          "once": true
+        }
+      ],
+      "hero": "knight"
+    },
+    {
+      "id": "steady-breath",
+      "name": "Steady Breath",
+      "realm": "aurelion",
+      "rarity": "common",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 5,
+          "to": "self"
+        },
+        {
+          "op": "manaNext",
+          "amount": 1
+        }
+      ],
+      "hero": "knight",
+      "upgrade": "steady-breath+"
+    },
+    {
+      "id": "steady-breath+",
+      "name": "Steady Breath+",
+      "realm": "aurelion",
+      "rarity": "common",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 8,
+          "to": "self"
+        },
+        {
+          "op": "manaNext",
+          "amount": 1
+        }
+      ],
+      "hero": "knight"
+    },
+    {
+      "id": "night-watch",
+      "name": "Night Watch",
+      "realm": "aurelion",
+      "rarity": "uncommon",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "status",
+          "status": "guarded",
+          "amount": 5,
+          "to": "self"
+        },
+        {
+          "op": "drawNext",
+          "amount": 2
+        }
+      ],
+      "hero": "knight",
+      "retain": true,
+      "upgrade": "night-watch+"
+    },
+    {
+      "id": "night-watch+",
+      "name": "Night Watch+",
+      "realm": "aurelion",
+      "rarity": "uncommon",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "status",
+          "status": "guarded",
+          "amount": 8,
+          "to": "self"
+        },
+        {
+          "op": "drawNext",
+          "amount": 2
+        }
+      ],
+      "hero": "knight",
+      "retain": true
+    },
+    {
+      "id": "steel-before-dawn",
+      "name": "Steel Before Dawn",
+      "realm": "aurelion",
+      "rarity": "uncommon",
+      "kind": "skill",
+      "cost": 2,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 10,
+          "to": "self"
+        },
+        {
+          "op": "manaNext",
+          "amount": 1
+        },
+        {
+          "op": "drawNext",
+          "amount": 1
+        }
+      ],
+      "hero": "knight",
+      "upgrade": "steel-before-dawn+"
+    },
+    {
+      "id": "steel-before-dawn+",
+      "name": "Steel Before Dawn+",
+      "realm": "aurelion",
+      "rarity": "uncommon",
+      "kind": "skill",
+      "cost": 2,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 14,
+          "to": "self"
+        },
+        {
+          "op": "manaNext",
+          "amount": 1
+        },
+        {
+          "op": "drawNext",
+          "amount": 1
+        }
+      ],
+      "hero": "knight"
+    },
+    {
+      "id": "bulwark-of-dawn",
+      "name": "Bulwark of Dawn",
+      "realm": "aurelion",
+      "rarity": "rare",
+      "kind": "skill",
+      "cost": 2,
+      "target": "none",
+      "effects": [
+        {
+          "op": "status",
+          "status": "guarded",
+          "amount": 12,
+          "to": "self"
+        },
+        {
+          "op": "manaNext",
+          "amount": 2
+        }
+      ],
+      "hero": "knight",
+      "retain": true,
+      "upgrade": "bulwark-of-dawn+"
+    },
+    {
+      "id": "bulwark-of-dawn+",
+      "name": "Bulwark of Dawn+",
+      "realm": "aurelion",
+      "rarity": "rare",
+      "kind": "skill",
+      "cost": 2,
+      "target": "none",
+      "effects": [
+        {
+          "op": "status",
+          "status": "guarded",
+          "amount": 16,
+          "to": "self"
+        },
+        {
+          "op": "manaNext",
+          "amount": 2
+        }
+      ],
+      "hero": "knight",
+      "retain": true
+    },
+    {
+      "id": "prepared-ground",
+      "name": "Prepared Ground",
+      "realm": "aurelion",
+      "rarity": "rare",
+      "kind": "power",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "power",
+          "when": "turnEnd",
+          "ops": [
+            {
+              "op": "when",
+              "by": "barrier",
+              "atLeast": 8,
+              "ops": [
+                {
+                  "op": "manaNext",
+                  "amount": 1
+                },
+                {
+                  "op": "drawNext",
+                  "amount": 1
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "hero": "knight",
+      "upgrade": "prepared-ground+"
+    },
+    {
+      "id": "prepared-ground+",
+      "name": "Prepared Ground+",
+      "realm": "aurelion",
+      "rarity": "rare",
+      "kind": "power",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "power",
+          "when": "turnEnd",
+          "ops": [
+            {
+              "op": "when",
+              "by": "barrier",
+              "atLeast": 8,
+              "ops": [
+                {
+                  "op": "manaNext",
+                  "amount": 1
+                },
+                {
+                  "op": "drawNext",
+                  "amount": 1
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "hero": "knight",
+      "innate": true
+    },
+    {
+      "id": "bristle",
+      "name": "Bristle",
+      "realm": "aurelion",
+      "rarity": "common",
+      "kind": "skill",
+      "cost": 0,
+      "target": "none",
+      "effects": [
+        {
+          "op": "status",
+          "status": "thorns",
+          "amount": 4,
+          "to": "self",
+          "temp": "theirs"
+        }
+      ],
+      "hero": "knight",
+      "upgrade": "bristle+"
+    },
+    {
+      "id": "bristle+",
+      "name": "Bristle+",
+      "realm": "aurelion",
+      "rarity": "common",
+      "kind": "skill",
+      "cost": 0,
+      "target": "none",
+      "effects": [
+        {
+          "op": "status",
+          "status": "thorns",
+          "amount": 5,
+          "to": "self",
+          "temp": "theirs"
+        }
+      ],
+      "hero": "knight"
+    },
+    {
+      "id": "splinter-guard",
+      "name": "Splinter Guard",
+      "realm": "aurelion",
+      "rarity": "uncommon",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 5,
+          "to": "self"
+        },
+        {
+          "op": "status",
+          "status": "thorns",
+          "amount": 2,
+          "to": "self",
+          "temp": "theirs",
+          "scale": {
+            "by": "foes"
+          }
+        }
+      ],
+      "hero": "knight",
+      "upgrade": "splinter-guard+"
+    },
+    {
+      "id": "splinter-guard+",
+      "name": "Splinter Guard+",
+      "realm": "aurelion",
+      "rarity": "uncommon",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 8,
+          "to": "self"
+        },
+        {
+          "op": "status",
+          "status": "thorns",
+          "amount": 2,
+          "to": "self",
+          "temp": "theirs",
+          "scale": {
+            "by": "foes"
+          }
+        }
+      ],
+      "hero": "knight"
+    },
+    {
+      "id": "spine-volley",
+      "name": "Spine Volley",
+      "realm": "aurelion",
+      "rarity": "uncommon",
+      "kind": "attack",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "shedTemp",
+          "status": "thorns",
+          "amount": 3
+        },
+        {
+          "op": "damage",
+          "amount": 4,
+          "to": "allFoes",
+          "scale": {
+            "by": "thornsSpent",
+            "mult": 3
+          }
+        }
+      ],
+      "hero": "knight",
+      "upgrade": "spine-volley+"
+    },
+    {
+      "id": "spine-volley+",
+      "name": "Spine Volley+",
+      "realm": "aurelion",
+      "rarity": "uncommon",
+      "kind": "attack",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "shedTemp",
+          "status": "thorns",
+          "amount": 3
+        },
+        {
+          "op": "damage",
+          "amount": 7,
+          "to": "allFoes",
+          "scale": {
+            "by": "thornsSpent",
+            "mult": 3
+          }
+        }
+      ],
+      "hero": "knight"
+    },
+    {
+      "id": "thorned-momentum",
+      "name": "Thorned Momentum",
+      "realm": "aurelion",
+      "rarity": "uncommon",
+      "kind": "power",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "power",
+          "when": "play",
+          "ops": [
+            {
+              "op": "status",
+              "status": "thorns",
+              "amount": 1,
+              "to": "self",
+              "temp": "theirs"
+            }
+          ],
+          "filter": "attack"
+        }
+      ],
+      "hero": "knight",
+      "upgrade": "thorned-momentum+"
+    },
+    {
+      "id": "thorned-momentum+",
+      "name": "Thorned Momentum+",
+      "realm": "aurelion",
+      "rarity": "uncommon",
+      "kind": "power",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "power",
+          "when": "play",
+          "ops": [
+            {
+              "op": "status",
+              "status": "thorns",
+              "amount": 1,
+              "to": "self",
+              "temp": "theirs"
+            }
+          ],
+          "filter": "attack"
+        }
+      ],
+      "hero": "knight",
+      "innate": true
+    },
+    {
+      "id": "thornstorm-rush",
+      "name": "Thornstorm Rush",
+      "realm": "aurelion",
+      "rarity": "rare",
+      "kind": "attack",
+      "cost": 2,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "shedTemp",
+          "status": "thorns",
+          "amount": 6
+        },
+        {
+          "op": "damage",
+          "amount": 12,
+          "to": "target",
+          "scale": {
+            "by": "thornsSpent",
+            "mult": 4
+          }
+        }
+      ],
+      "hero": "knight",
+      "upgrade": "thornstorm-rush+"
+    },
+    {
+      "id": "thornstorm-rush+",
+      "name": "Thornstorm Rush+",
+      "realm": "aurelion",
+      "rarity": "rare",
+      "kind": "attack",
+      "cost": 2,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "shedTemp",
+          "status": "thorns",
+          "amount": 6
+        },
+        {
+          "op": "damage",
+          "amount": 16,
+          "to": "target",
+          "scale": {
+            "by": "thornsSpent",
+            "mult": 4
+          }
+        }
+      ],
+      "hero": "knight"
+    },
+    {
+      "id": "feinting-cut",
+      "name": "Feinting Cut",
+      "realm": "aurelion",
+      "rarity": "common",
+      "kind": "attack",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 6,
+          "to": "target"
+        },
+        {
+          "op": "status",
+          "status": "opening",
+          "amount": 1,
+          "to": "target"
+        }
+      ],
+      "hero": "knight",
+      "upgrade": "feinting-cut+"
+    },
+    {
+      "id": "feinting-cut+",
+      "name": "Feinting Cut+",
+      "realm": "aurelion",
+      "rarity": "common",
+      "kind": "attack",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 9,
+          "to": "target"
+        },
+        {
+          "op": "status",
+          "status": "opening",
+          "amount": 1,
+          "to": "target"
+        }
+      ],
+      "hero": "knight"
+    },
+    {
+      "id": "batter-down",
+      "name": "Batter Down",
+      "realm": "aurelion",
+      "rarity": "common",
+      "kind": "attack",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 8,
+          "to": "target"
+        },
+        {
+          "op": "status",
+          "status": "brittle",
+          "amount": 2,
+          "to": "target"
+        }
+      ],
+      "hero": "knight",
+      "upgrade": "batter-down+"
+    },
+    {
+      "id": "batter-down+",
+      "name": "Batter Down+",
+      "realm": "aurelion",
+      "rarity": "common",
+      "kind": "attack",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 11,
+          "to": "target"
+        },
+        {
+          "op": "status",
+          "status": "brittle",
+          "amount": 2,
+          "to": "target"
+        }
+      ],
+      "hero": "knight"
+    },
+    {
+      "id": "sunder-armour",
+      "name": "Sunder Armour",
+      "realm": "aurelion",
+      "rarity": "uncommon",
+      "kind": "attack",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "strip",
+          "to": "target"
+        },
+        {
+          "op": "damage",
+          "amount": 8,
+          "to": "target"
+        }
+      ],
+      "hero": "knight",
+      "upgrade": "sunder-armour+"
+    },
+    {
+      "id": "sunder-armour+",
+      "name": "Sunder Armour+",
+      "realm": "aurelion",
+      "rarity": "uncommon",
+      "kind": "attack",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "strip",
+          "to": "target"
+        },
+        {
+          "op": "damage",
+          "amount": 11,
+          "to": "target"
+        }
+      ],
+      "hero": "knight"
+    },
+    {
+      "id": "breach-the-wall",
+      "name": "Breach the Wall",
+      "realm": "aurelion",
+      "rarity": "uncommon",
+      "kind": "skill",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "strip",
+          "to": "target"
+        },
+        {
+          "op": "status",
+          "status": "opening",
+          "amount": 1,
+          "to": "target"
+        },
+        {
+          "op": "draw",
+          "amount": 1
+        }
+      ],
+      "hero": "knight",
+      "upgrade": "breach-the-wall+"
+    },
+    {
+      "id": "breach-the-wall+",
+      "name": "Breach the Wall+",
+      "realm": "aurelion",
+      "rarity": "uncommon",
+      "kind": "skill",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "strip",
+          "to": "target"
+        },
+        {
+          "op": "status",
+          "status": "opening",
+          "amount": 1,
+          "to": "target"
+        },
+        {
+          "op": "draw",
+          "amount": 2
+        }
+      ],
+      "hero": "knight"
+    },
+    {
+      "id": "siege-doctrine",
+      "name": "Siege Doctrine",
+      "realm": "aurelion",
+      "rarity": "uncommon",
+      "kind": "power",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "power",
+          "when": "debuffFoe",
+          "ops": [
+            {
+              "op": "status",
+              "status": "opening",
+              "amount": 1,
+              "to": "target"
+            }
+          ],
+          "once": true
+        }
+      ],
+      "hero": "knight",
+      "upgrade": "siege-doctrine+"
+    },
+    {
+      "id": "siege-doctrine+",
+      "name": "Siege Doctrine+",
+      "realm": "aurelion",
+      "rarity": "uncommon",
+      "kind": "power",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "power",
+          "when": "debuffFoe",
+          "ops": [
+            {
+              "op": "status",
+              "status": "opening",
+              "amount": 1,
+              "to": "target"
+            }
+          ],
+          "once": true
+        }
+      ],
+      "hero": "knight",
+      "innate": true
+    },
+    {
+      "id": "siege-line",
+      "name": "Siege Line",
+      "realm": "aurelion",
+      "rarity": "rare",
+      "kind": "attack",
+      "cost": 2,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 12,
+          "to": "target"
+        },
+        {
+          "op": "status",
+          "status": "opening",
+          "amount": 1,
+          "to": "target"
+        },
+        {
+          "op": "status",
+          "status": "exposed",
+          "amount": 2,
+          "to": "target"
+        }
+      ],
+      "hero": "knight",
+      "upgrade": "siege-line+"
+    },
+    {
+      "id": "siege-line+",
+      "name": "Siege Line+",
+      "realm": "aurelion",
+      "rarity": "rare",
+      "kind": "attack",
+      "cost": 2,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 16,
+          "to": "target"
+        },
+        {
+          "op": "status",
+          "status": "opening",
+          "amount": 1,
+          "to": "target"
+        },
+        {
+          "op": "status",
+          "status": "exposed",
+          "amount": 2,
+          "to": "target"
+        }
+      ],
+      "hero": "knight"
+    }
+  ]
+}

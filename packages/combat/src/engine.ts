@@ -539,17 +539,16 @@ function attackHit(r: Run, a: Act, t: Unit, base: number, single = false): numbe
   }
   // Armored wears thin each time an attack gets through
   if (attacked && lost > 0 && stacks(t, 'armored') > 0) addStatus(r, t, 'armored', -1);
-  // Guard (the Knight, DECISIONS #415): a hit of at least 1 that this hero's Barrier soaked completely leaves the attacker Open. Not
-  // a hit Shielded cancelled or Ghostly capped, not one a Trap stopped (it returned above), not one that carried over from a fallen
-  // companion (that never comes through here)
+  // Guard (the Knight, DECISIONS #415, #427): a hit of at least 1 that this hero's Barrier soaked at least half of leaves the attacker
+  // Open (a big hit she cannot stop completely still counts). Not a hit Shielded cancelled or Ghostly capped, not one a Trap stopped
+  // (it returned above), not one that carried over from a fallen companion (that never comes through here)
   if (
     attacked &&
     t.kind === 'hero' &&
     t.side !== a.actor.side &&
     amount > 0 &&
     !capped &&
-    lostHere === 0 &&
-    barrierBefore - t.barrier === amount &&
+    (barrierBefore - t.barrier) * 2 >= amount &&
     a.actor.hp > 0 &&
     traitOf(r, t.side)?.openings
   )
@@ -1562,6 +1561,8 @@ function execOp(r: Run, a: Act, op: Op): void {
         for (const t of resolve(r, a, 'allFoes').filter((x) => stacks(x, 'opening') > 0))
           if (spendOpening(r, side, t)) ripostes.add(t.id);
       const riposte = op.riposte ?? 0;
+      // (a Fork: whether only one enemy stood as the spread began)
+      const spreadAlone = resolve(r, a, 'allFoes').length === 1;
       // (the Spellblade) a discharged Ember lands on the first hit of the attack
       let ember = a.ember;
       a.ember = 0;
@@ -1584,8 +1585,12 @@ function execOp(r: Run, a: Act, op: Op): void {
           ts = [fresh[nextInt(r.s.rng, fresh.length)] as Unit];
           struck.add(ts[0]!.id);
         }
-        // Point Blank: a shot that finds only one enemy hits it harder
-        const lone = op.lonePct && ts.length === 1 ? 1 + op.lonePct / 100 : 1;
+        // Point Blank: a shot that finds only one enemy hits it harder (a spread to different enemies, a Fork: when only one enemy
+        // stood as it began, DECISIONS #427)
+        const lone =
+          op.lonePct && (op.distinct && op.to === 'randomFoe' ? spreadAlone : ts.length === 1)
+            ? 1 + op.lonePct / 100
+            : 1;
         for (const t of ts) {
           const alive = t.hp > 0;
           // (Hang: cards tagged "noose" deal double to it per stack, capped so the number stays sane)
@@ -4785,7 +4790,10 @@ export function previewCardDamage(
             : null;
     if (!pool) return;
     const hitsAll = op.to === 'allFoes';
-    const lone = op.lonePct && (hitsAll ? foes.length === 1 : true) ? 1 + op.lonePct / 100 : 1;
+    const lone =
+      op.lonePct && (hitsAll || (op.distinct && op.to === 'randomFoe') ? foes.length === 1 : true)
+        ? 1 + op.lonePct / 100
+        : 1;
     const v = vigor;
     vigor = 0;
     // (an Ember lands on the first hit: in the number of a one-hit attack, beside it for a many-hit one)

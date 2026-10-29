@@ -187,13 +187,13 @@ describe('the Shaman: elements, totems and Trinity', () => {
     expect(s.sides.a.totems).toHaveLength(5);
   });
 
-  it('Gathering Storm hits every enemy and every copy grows each time one is cast', () => {
+  it('Gathering Storm (a common since #427) hits every enemy and every copy grows 3 each time one is cast', () => {
     let s = fight(['gathering-storm', 'gathering-storm'], ['squire', 'squire']);
     s.sides.a.totems = ['hawk', 'bear', null];
     s = play(s, 'gathering-storm');
-    expect([foe(s, 0).hp, foe(s, 1).hp]).toEqual([197, 197]);
+    expect([foe(s, 0).hp, foe(s, 1).hp]).toEqual([196, 196]);
     s = play(s, 'gathering-storm');
-    expect([foe(s, 0).hp, foe(s, 1).hp]).toEqual([192, 192]);
+    expect([foe(s, 0).hp, foe(s, 1).hp]).toEqual([189, 189]);
   });
 
   it("the Moon Owl's command makes the next elemental spell free", () => {
@@ -327,8 +327,8 @@ describe('the Shaman balance pass (DECISIONS #422)', () => {
     t = play(t, 'tempest-call');
     expect(t.sides.a.elementsTurn).toEqual(['storm']);
     t = play(t, 'gathering-storm');
-    // 3 + 2 grown by Tempest Call + 2 help
-    expect(foe(t).hp).toBe(200 - 7);
+    // 4 + 2 grown by Tempest Call + 2 help
+    expect(foe(t).hp).toBe(200 - 8);
   });
 
   it('a named command moves one totem of the kind; "every totem" moves them all and answers Storm Sovereign once each', () => {

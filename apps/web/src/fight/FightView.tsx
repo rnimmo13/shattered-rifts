@@ -55,7 +55,8 @@ import { GrimoireModal } from './Grimoire';
 import { AimArrow } from './AimArrow';
 import { SuitTrack } from './SuitTrack';
 import { EnchantSlots } from './EnchantSlots';
-import { TotemPanel } from './TotemPanel';
+import { TotemPanel, type TotemPick } from './TotemPanel';
+import { totemLook } from './totemLook';
 import { TrinityTrack } from './TrinityTrack';
 import { elementTag } from './elementLook';
 import { FormPanel } from './FormPanel';
@@ -1036,6 +1037,14 @@ export function FightView(props: {
     },
     [applyMove, mySide, pvp, setBanner, watch],
   );
+  // (DECISIONS #427) a totem chosen on the totem panel answers the pending choice
+  const pickTotem = useCallback(
+    (cards: string[]) => {
+      setPickCount((n) => n + 1);
+      act({ type: 'pick', cards });
+    },
+    [act],
+  );
 
   // PvP: every accepted move arrives here, mine included, in the server's order
   const onFeed = useCallback(
@@ -1476,19 +1485,45 @@ export function FightView(props: {
       </FloatPanel>
     );
   };
+  // (DECISIONS #427) which totem a command moves, or which totem a new one replaces, is chosen on the totem panel itself, not in a
+  // pop-up: the totems that can be chosen light up there
+  const totemPickNow = (): TotemPick | null => {
+    const p = view?.pending;
+    if (!p || result !== null || watch || (p.kind !== 'commandPick' && p.kind !== 'plantAt'))
+      return null;
+    const name = p.planting ? totemLook(p.planting).name : 'the new totem';
+    return {
+      ids: (p.spirits ?? []).map((x) => x.id),
+      min: p.min,
+      prompt:
+        p.kind === 'commandPick'
+          ? 'Choose the totem whose spirit acts.'
+          : p.min === 0
+            ? `Your row is full: choose the totem ${name} replaces, or keep them all.`
+            : `Choose where to plant ${name}.`,
+    };
+  };
   // (the Shaman's totems and his Spirit, and his Trinity, as panels in that side's column, DECISIONS #420; cards command the totems, #421)
   const totemPanel = (side: Side): ReactNode => {
     const sv = view?.sides[side];
     const held = sv?.totems;
     if (!sv || !held) return null;
     const hero = sv.units.find((u) => u.kind === 'hero');
+    const pick = side === mySide ? totemPickNow() : null;
     return (
       <FloatPanel
         id={side === mySide ? 'totems-mine' : 'totems-foe'}
         className="fight__aux fight__aux--totems"
-        title={side === mySide ? 'Totems' : 'Their Totems'}
+        title={side === mySide ? (pick ? 'Totems: choose one' : 'Totems') : 'Their Totems'}
+        calling={!!pick}
       >
-        <TotemPanel db={db} totems={held} spirit={hero?.statuses.spirit ?? 0} />
+        <TotemPanel
+          db={db}
+          totems={held}
+          spirit={hero?.statuses.spirit ?? 0}
+          pick={pick}
+          onPick={pickTotem}
+        />
       </FloatPanel>
     );
   };
@@ -2108,7 +2143,7 @@ export function FightView(props: {
               </button>
             </aside>
           )}
-          {view.pending && !finished && !watch && (
+          {view.pending && !finished && !watch && !totemPickNow() && (
             <PickModal
               // (a choice of enchantments or totems has no cards: its kind and options tell two questions in a row apart)
               key={`${view.pending.kind}:${view.pending.pool.map((c) => c.id).join()}:${(view.pending.charges ?? []).map((c) => c.id + c.kind).join()}:${(view.pending.spirits ?? []).map((c) => c.id + (c.spirit ?? '')).join()}:${view.pending.incoming ?? ''}${view.pending.planting ?? ''}:${pickCount}`}

@@ -385,7 +385,7 @@ Ghostly, cancelled or overflow hit). One per enemy; it goes at the end of her ne
 
 | Thing | Rate | Why |
 |---|---|---|
-| A **Riposte** bonus (+N damage, or "Riposte: ...") | **0.55 x** its value | An Opening is there on about half her turns in an ordinary Knight deck (the starter blocks a whole hit on about half the enemy turns that attack), two in three in a deck built for Guard. Only one Riposte a turn finds it on a single enemy, so a second Riposte card the same turn is priced at its base. Reference: Return the Blow (1: 7, Riposte +5) = 9.75. |
+| A **Riposte** bonus (+N damage, or "Riposte: ...") | **0.55 x** its value (**~0.65** since Guard counts half a hit, #427: her cards were not repriced, a deliberate buff) | An Opening is there on about half her turns in an ordinary Knight deck (the starter blocks a whole hit on about half the enemy turns that attack), two in three in a deck built for Guard. Only one Riposte a turn finds it on a single enemy, so a second Riposte card the same turn is priced at its base. Reference: Return the Blow (1: 7, Riposte +5) = 9.75. |
 | A card that **leaves an enemy Open** | **4** | It makes one Riposte certain this turn: a typical bonus of ~6, times ~0.7 that you hold a Riposte card to spend it. 3 in a Thorns deck (fewer Ripostes). Draw Them In (1: 4 Barrier, open the target) = 8.8. |
 | "**Whenever you earn an Opening**" (an Aura or the trait) | **2.6** answers over four turns | 0.65 a turn in a Guard deck; only Guard earns one, a card that opens an enemy does not, so these never feed each other. Bastion Engine (8 to the opened enemy) = 20.8. |
 | "**Whenever you spend an Opening**" | **2.2** answers over four turns | about one Riposte that lands every other turn. Exploit the Gap = 14.5. |
@@ -393,6 +393,7 @@ Ghostly, cancelled or overflow hit). One per enemy; it goes at the end of her ne
 | Thorns you have on your own turn (for "+N per Thorns") | **~2.5** stacks in a Thorns deck | Thorns are temporary and only there after a Thorns card that turn. Briar Lash (5 + 2 per Thorns) = 10. |
 | "If an enemy means to attack" | **x0.7** | most Tier I intents are attacks. No Knight card reads it since #423 (it is 0 against an Arena hero). |
 | "If the target is Open" / "if an enemy is Open" (read, **not spent**) | **0.55 x** its value | the same chance as a Riposte bonus, but it keeps the Opening for the Riposte after it (#423). Testing Cut (7, 4 Barrier if Open) = 9.6. |
+| **Fork N** (N different random enemies, +25% when only one stands, #427) | a Fork 2 **~1.7x** its number, a Fork 3 **~2.0x** | 40% of fights have one enemy (+25%), the rest about 2.4. Forked Lightning (5) = 8.5. |
 | "+N per Open enemy" | **~0.8** Open enemies | in a deck that makes Openings, several enemies. Ring of Steel = 8.9. |
 | A Riposte bonus on **every enemy** | the bonus x **~0.7** Open enemies | each spends its own. Answer Them All (10 to all, +8 each Open) = 18.6. |
 | A temporary Thorns **shed** for +N damage | **N - 1.5** a stack (~3 stacks shed in a Thorns deck) | what the stack would have dealt kept is lost. Shed the Spines (6, +3 each, up to 4) = 10.5. |

@@ -43,6 +43,8 @@ export function FloatPanel(props: {
   extra?: ReactNode;
   /** folded when first shown (the player's own choice is remembered after) */
   startFolded?: boolean;
+  /** open whatever the player folded it to, and glowing: it is asking for a choice (the Shaman's totems, DECISIONS #427) */
+  calling?: boolean;
   children: ReactNode;
 }) {
   const [spot, setSpot] = useState<Spot | null>(() => load(props.id));
@@ -152,7 +154,7 @@ export function FloatPanel(props: {
   return (
     <section
       ref={box}
-      className={`fpanel${placed ? ' is-moved' : ''}${folded ? ' is-folded' : ''} ${props.className ?? ''}`}
+      className={`fpanel${placed ? ' is-moved' : ''}${folded && !props.calling ? ' is-folded' : ''}${props.calling ? ' is-calling' : ''} ${props.className ?? ''}`}
       style={style}
       onPointerDown={onPanelDown}
     >
@@ -187,7 +189,7 @@ export function FloatPanel(props: {
         </button>
         {props.extra}
       </header>
-      {!folded && <div className="fpanel__body">{props.children}</div>}
+      {(!folded || props.calling) && <div className="fpanel__body">{props.children}</div>}
     </section>
   );
 }

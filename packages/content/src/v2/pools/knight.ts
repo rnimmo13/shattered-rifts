@@ -67,6 +67,10 @@ export const KNIGHT: CardDef[] = [
     [counter(9, 6), status('exposed', 1, 'target')],
     { up: { effects: [counter(13, 6), status('exposed', 1, 'target')] } },
   ),
+  // (DECISIONS #427: a 1-Mana counter in the starter, so an Opening finds a Riposte more often than Sundering Blow alone)
+  m('basic', 'counter-cut', 'Counter Cut', 'attack', 1, 'foe', [counter(6, 4)], {
+    up: { effects: [counter(9, 4)] },
+  }),
   m('basic', 'briarplate', 'Briarplate', 'skill', 1, 'none', [barrier(5), thornsTurn(2)], {
     up: { effects: [barrier(8), thornsTurn(2)] },
   }),

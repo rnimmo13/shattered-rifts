@@ -27,7 +27,7 @@ spells, and he calls on their spirits to strike and shield for him. No summons: 
 - **Spirit and Trinity:** the three totems, their help, and Trinity's Spirit (no command of its own since #421). About 30 over four
   turns, still well above the other traits (14-21), by design. If he plays too strong, the levers are the +3/+3/+2 help and the
   command cards' numbers.
-- **Starter (10):** 2 Strike, 1 Defend, **Spirit Call** (a totem of your choice acts), 2 Ember Bolt (Flame), 2 Frost Ward (Frost), 2
+- **Starter (10, #427):** 2 Strike, 1 Defend, **Spirit Call** (a totem of your choice acts), 2 Ember Bolt (Flame), 2 Frost Ward (Frost), 2 Forked Lightning (Storm; was
   Gathering Storm (Storm). A 5-card hand holds a spell of every element about 40% of the time.
 
 ## Strategies (87 cards; Flame 17, Frost 15, Storm 16, glue 39)
@@ -74,6 +74,21 @@ Rules: the help skips spells with no damage or Barrier of their own and never ad
 totem of the kind. Verified examples before and after (starting totems, 0 Spirit, the help unused): Kindle 12 -> 9, Rime Shield 15
 -> 12, Squall on one enemy 24 -> 16; three Hawks at 4 Spirit, Hawk's Dive+ 60 -> 10 (Great Spirit's Call, 3 Mana, makes them all act:
 30). Frost now finishes: Ice Shatter on an enemy with 2 Faltering deals 12 (15 with the Bear's help), Absolute Zero 16 to it.
+
+## Forks, a new starter, and choosing totems on the panel (2026-10-29, DECISIONS #427)
+
+The cards as they stood are frozen in `reviews/balance-baselines/2026-10-29-shaman-forks/`.
+
+- **Fork N** (generic: a damage effect to N *different* random enemies, `distinct`, with `lonePct: 25`): N enemies once each, or,
+  when only one enemy stands as it begins, that one 25% harder (5 -> 6). The bonus reads the enemies standing when the spell begins,
+  so a first hit that kills does not make the second harder. Each hit takes the Thunderbird's help (+2), as any Storm hit.
+- **Starter:** 2 Strike, Defend, Spirit Call, 2 Ember Bolt, 2 Frost Ward, **2 Forked Lightning** (basic, 1 Mana: Fork 2 of 5; upgrade
+  7). **Gathering Storm** is a common reward now (4 to all, every copy +3 each cast; upgrade 6), not in the starter.
+- **New Forks:** Spark Fork (common, 0: Fork 2 of 4; upgrade 5), Thunder Fork (uncommon, 2: Fork 3 of 10; upgrade 13).
+- **Choosing a totem** (a command of your choice, or where a planted totem goes into a full row) is done on the totem panel itself:
+  the panel opens and glows, the totems that can be chosen pulse (number keys 1-5 pick them), the rest dim; no pop-up. Choosing a
+  kind of spirit to plant still uses the card choice window.
+- Pricing: a Fork 2 is worth ~1.7 times its number (40% of fights one enemy at +25%, 60% two or more), a Fork 3 ~2.0.
 
 ## Checks the points can't do (guide §8)
 

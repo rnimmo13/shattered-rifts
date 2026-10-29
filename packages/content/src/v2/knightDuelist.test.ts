@@ -83,11 +83,11 @@ function arena(handA: string[], handB: string[] = []): CombatState {
 }
 
 describe('the Knight expansion (DECISIONS #423)', () => {
-  it('87 reward-eligible Knight cards (89 with the two basics), 13 Auras, every new card in a build path', () => {
+  it('87 reward-eligible Knight cards (90 with the three basics), 13 Auras, every new card in a build path', () => {
     const own = Object.values(db.cards).filter(
       (c) => c.hero === 'knight' && !c.id.endsWith('+') && !c.id.includes('~'),
     );
-    expect(own).toHaveLength(89);
+    expect(own).toHaveLength(90);
     expect(rewardPool('knight').filter((id) => db.cards[id]?.hero === 'knight')).toHaveLength(87);
     expect(own.filter((c) => c.kind === 'power')).toHaveLength(13);
   });

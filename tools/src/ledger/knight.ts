@@ -7,6 +7,12 @@
 import type { Price } from './common';
 
 export const KNIGHT_PRICES: Record<string, Price> = {
+  'counter-cut': {
+    pts: 8.6,
+    up: 11.6,
+    how: '6 + Riposte 4 (x0.65: Openings come more often since Guard counts half a hit, #427) 2.6',
+    role: 'Riposte: the 1-Mana counter in the starter (DECISIONS #427)',
+  },
   'sundering-blow': {
     pts: 15.3,
     up: 19.3,

@@ -115,6 +115,15 @@ const sapAll = (n: number): Op => statusTheirs('sapped', n, 'allFoes');
 const ifBurning = (ops: Op[]): Op => ({ op: 'when', by: 'burn', of: 'target', atLeast: 1, ops });
 /** doubles the target's Burn, at most 10 more (balance.test: a multiplier Consumes and is capped) */
 const doubleBurn: Op = { op: 'scaleStatus', status: 'burn', mult: 2, to: 'target', max: 10 };
+/** Fork N (DECISIONS #427): N different random enemies once each, 25% more when only one enemy stands */
+const fork = (n: number, targets: number): Op => ({
+  op: 'damage',
+  amount: n,
+  to: 'randomFoe',
+  hits: targets,
+  distinct: true,
+  lonePct: 25,
+});
 const gatheringStorm = (n: number, grow: number): Op[] => [
   scaled(dmg(n, 'allFoes'), per('bonus')),
   forge('gathering-storm', grow),
@@ -136,11 +145,10 @@ export const SHAMAN: CardDef[] = [
     [barrier(5), status('faltering', 1, 'randomFoe')],
     { ...FROST, up: { effects: [barrier(8), status('faltering', 1, 'randomFoe')] } },
   ),
-  // (a stacking storm: every copy hits every enemy 2 harder each time one is cast, for the fight)
-  i('basic', 'gathering-storm', 'Gathering Storm', 'attack', 1, 'none', gatheringStorm(3, 2), {
+  // (his starting Storm spell, DECISIONS #427: a Fork, two enemies, or one harder)
+  i('basic', 'forked-lightning', 'Forked Lightning', 'attack', 1, 'none', [fork(5, 2)], {
     ...STORM,
-    forgeWord: 'Gather',
-    up: { effects: gatheringStorm(4, 3) },
+    up: { effects: [fork(7, 2)] },
   }),
 
   // --- Flame: single-target damage and Burn; Thorns for defence ---
@@ -450,6 +458,21 @@ export const SHAMAN: CardDef[] = [
   ),
 
   // --- Storm: every enemy, or random ones several times; Sapped for defence ---
+  // (a stacking storm: every copy hits every enemy 3 harder each time one is cast, for the fight; a reward since #427, not a basic)
+  i('common', 'gathering-storm', 'Gathering Storm', 'attack', 1, 'none', gatheringStorm(4, 3), {
+    ...STORM,
+    forgeWord: 'Gather',
+    up: { effects: gatheringStorm(6, 3) },
+  }),
+  // (Forks, DECISIONS #427)
+  i('common', 'spark-fork', 'Spark Fork', 'attack', 0, 'none', [fork(4, 2)], {
+    ...STORM,
+    up: { effects: [fork(5, 2)] },
+  }),
+  i('uncommon', 'thunder-fork', 'Thunder Fork', 'attack', 2, 'none', [fork(10, 3)], {
+    ...STORM,
+    up: { effects: [fork(13, 3)] },
+  }),
   i('common', 'chain-lightning', 'Chain Lightning', 'attack', 1, 'none', [dmg(3, 'randomFoe', 3)], {
     ...STORM,
     up: { effects: [dmg(4, 'randomFoe', 3)] },

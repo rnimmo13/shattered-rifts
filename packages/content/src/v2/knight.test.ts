@@ -61,10 +61,11 @@ const enemyTurn = (s: CombatState, move = 'slash', only?: number): CombatState =
 };
 
 describe('the Knight: Guard, Riposte and Thorns', () => {
-  it('starts with 4 Strikes, 4 Defends, Sundering Blow and Briarplate; 80 HP; 6 Barrier from her trait', () => {
+  it('starts with 3 Strikes, 4 Defends, Counter Cut, Sundering Blow and Briarplate; 80 HP; 6 Barrier from her trait', () => {
     expect(RIFTWALKERS.knight.starter).toEqual([
-      ...Array<string>(4).fill('strike'),
+      ...Array<string>(3).fill('strike'),
       ...Array<string>(4).fill('defend'),
+      'counter-cut',
       'sundering-blow',
       'briarplate',
     ]);
@@ -102,11 +103,22 @@ describe('the Knight: Guard, Riposte and Thorns', () => {
       expect(open(foe(s, 1))).toBe(0);
     });
 
-    it('does not come when the hit gets through her Barrier at all', () => {
+    it('comes when her Barrier stops at least half the hit, even if the rest gets through (DECISIONS #427)', () => {
       let s = fight([]);
-      hero(s).barrier = 5; // Slash 9: 4 gets through
+      hero(s).barrier = 5; // Slash 9: 5 stopped, 4 gets through
+      s = enemyTurn(s, 'slash', 0);
+      expect(open(foe(s, 0))).toBe(1);
+      expect(hero(s).hp).toBe(RIFTWALKERS.knight.hero.maxHp - 4);
+    });
+
+    it('does not come when her Barrier stops less than half the hit', () => {
+      let s = fight([]);
+      hero(s).barrier = 4; // Slash 9: 4 stopped, 5 gets through
       s = enemyTurn(s, 'slash', 0);
       expect(open(foe(s, 0))).toBe(0);
+      let t = fight([]);
+      t = enemyTurn(t, 'slash', 0); // no Barrier at all
+      expect(open(foe(t, 0))).toBe(0);
     });
 
     it('does not come from a hit that deals nothing (Sapped down to 0)', () => {
@@ -326,8 +338,9 @@ describe('the Knight: Guard, Riposte and Thorns', () => {
     it('Briarplate hurts each attacker until the enemy turn is over, and does not open it by itself', () => {
       let s = fight(['briarplate']);
       s = play(s, 'briarplate');
+      hero(s).barrier = 0; // (her Barrier gone: the hit gets through, the Thorns answer it, and Guard has nothing to stop it with)
       const hp = foe(s, 0).hp;
-      s = enemyTurn(s, 'slash', 0); // 5 Barrier against 9: the hit gets through, the Thorns answer it
+      s = enemyTurn(s, 'slash', 0);
       expect(hp - foe(s, 0).hp).toBe(2);
       expect(open(foe(s, 0))).toBe(0);
       expect(hero(s).statuses.thorns ?? 0).toBe(0);

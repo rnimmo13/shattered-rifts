@@ -2747,3 +2747,54 @@ button.totem:disabled {
   color: #d9d2ff;
   border-color: #7d72c9;
 }
+
+/* (DECISIONS #427) the totem panel asking for a choice: it opens, glows, and the totems that can be chosen pulse; the rest dim */
+.fpanel.is-calling {
+  box-shadow:
+    0 0 0 2px #ffe08a,
+    0 0 22px rgb(255 214 120 / 0.55);
+  z-index: 40;
+}
+.totems__prompt {
+  margin: 0;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #ffe08a;
+}
+.totem.is-choice {
+  position: relative;
+  box-shadow:
+    0 0 0 2px #ffe08a,
+    0 0 14px rgb(255 214 120 / 0.7);
+  animation: totem-call 1.1s ease-in-out infinite alternate;
+}
+.totem.is-dim {
+  opacity: 0.35;
+  filter: grayscale(0.6);
+}
+.totem__key {
+  position: absolute;
+  top: -0.45rem;
+  right: -0.35rem;
+  font-size: 0.65rem;
+  padding: 0 0.25rem;
+  border-radius: 0.25rem;
+  background: #ffe08a;
+  color: #1a1424;
+}
+.totems__keep {
+  align-self: flex-start;
+}
+@keyframes totem-call {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-2px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .totem.is-choice {
+    animation: none;
+  }
+}

@@ -11,7 +11,7 @@ no Consume engine, no Might-and-multihit package.
 
 | Rule | Exactly |
 |---|---|
-| Guard | A hero whose trait has `openings` (the Knight). When one enemy attack hit **aimed at her** lands with at least 1 damage after its modifiers and her Barrier soaks all of it (she loses no HP), the attacker gets an **Opening** (`opening` status). Not when: the hit was 0, Shielded cancelled it, she was Ghostly (it was capped), a Trap cancelled it, any of it got through, it was the overflow from a fallen companion, or it hit a companion. Faltering, Exposed and the like are counted first: what is checked is the hit as it lands. An attack on every unit counts for the hit on her. |
+| Guard | A hero whose trait has `openings` (the Knight). When one enemy attack hit **aimed at her** lands with at least 1 damage after its modifiers and her Barrier soaks **at least half of it** (since #427: a big hit she cannot stop completely still counts; the rest gets through), the attacker gets an **Opening** (`opening` status). Not when: the hit was 0, Shielded cancelled it, she was Ghostly (it was capped), a Trap cancelled it, her Barrier stopped less than half, it was the overflow from a fallen companion, or it hit a companion. Faltering, Exposed and the like are counted first: what is checked is the hit as it lands. An attack on every unit counts for the hit on her. |
 | Order in a hit | Traps spring (a cancel ends it) -> damage after modifiers -> Ghostly cap / Shielded -> Barrier soaks -> HP -> Guard (Opening, then the "earned" triggers) -> Thorns retaliate. So Thorns that kill the attacker come after its Opening, and nothing answers twice. |
 | One per enemy | An Opening is on or off (capped at 1). A multi-hit attack earns at most one. |
 | How long | Until the end of the turn of the side that can spend it: an Opening earned on the enemy turn lasts through her next turn and goes as it ends; one a card gives on her turn goes at the end of that turn. Units that die take theirs with them; a summoned or replaced unit is a new unit with none. |
@@ -174,6 +174,20 @@ and Hilt Strike, kept from before).
 - **Remaining limits:** Guard itself still needs the other side to attack; a human who never attacks earns her no Openings, which the
   proactive cards answer at a Mana cost. Engine note (unchanged, not Knight-only): the `exposeFoe` trigger ("whenever you put
   Exposed on an enemy") skips heroes, so an Aura on it would not answer in the Arena; Siege Doctrine uses `debuffFoe`, which does.
+
+## Guard on half a hit, and Counter Cut (2026-10-29, DECISIONS #427)
+
+Robert: "the knight feels weak against enemies that have powerful attacks that she cant fully block", and her starter's only Riposte
+was the 2-Mana Sundering Blow. The cards as they stood are frozen in `reviews/balance-baselines/2026-10-29-knight-half-block/`.
+
+- **Guard** counts a hit her Barrier stops at least half of (exactly half counts). A 24-damage boss hit needs 12 Barrier for an
+  Opening, not 24, so the enemies that hit hardest are the ones she opens, not the ones she cannot touch. Still one per enemy, still
+  only earned by Barrier (the "earn" triggers are unchanged).
+- **Starter:** 3 Strike, 4 Defend, **Counter Cut** (basic, 1 Mana: 6, Riposte +4; upgrade 9 / +4), Sundering Blow, Briarplate. Two
+  counters for an Opening, one of them cheap.
+- **Pricing:** Openings come on more of her turns, so a Riposte bonus or "if Open" is worth about **0.65** of its value (was 0.55).
+  Her cards keep their numbers (the change is meant as a buff); the ledger still shows them at 0.55, so Riposte cards sit a few points
+  low against the new rate. Earned-Opening Auras (Bastion Engine, Iron Cadence, Stoneskin) gain the most: watch them in play.
 
 ## Saves, decks and replays
 
