@@ -1,6 +1,6 @@
-// The small screens before a game: choosing the deck and who goes first (go first, or go second with more HP), and the coin.
+// The small screens before a game: choosing the deck and who goes first (go first, or go second with more HP), and the reel that decides it when both want the same.
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { RIFTWALKERS, type HeroId } from '@sr/content/v2';
 import { SECOND_PLAYER_HP, cleanRank, cleanTrophies } from '@sr/pvp';
 import { HeroIcon } from '../ui/HeroIcon';
@@ -10,6 +10,9 @@ import { RankBadge } from './RankBadge';
 import { heroFigure } from '../fight/art';
 import type { ChooseInfo } from './session';
 import { seriesLine } from './seriesText';
+import { Reel } from '../trials/Reel';
+import { oddsCycle } from '../trials/odds';
+import type { LanePrize } from '../trials/prizes';
 
 /** How long the player has waited: counts up from the moment it appears (so it restarts with each new search). */
 export function WaitTimer(props: { label: string; widenAfterMs?: number }) {
@@ -80,7 +83,7 @@ export function Portrait(props: { hero: string; size?: number; className?: strin
 const heroName = (hero: string): string =>
   Object.hasOwn(RIFTWALKERS, hero) ? RIFTWALKERS[hero as HeroId].hero.name : hero;
 
-/** "Do you want to go first?" Going second means more HP; the same answer from both means the coin decides. */
+/** "Do you want to go first?" Going second means more HP; the same answer from both means the reel decides. */
 /**
  * Before each game: choose the deck to play it with (blind: the opponent's deck and Riftwalker stay hidden until it starts;
  * DECISIONS #307), and who goes first. Clicking a deck only looks at it; "Play this deck" (or answering who goes first) chooses it,
@@ -191,9 +194,9 @@ export function ChoosePanel(props: {
         Go second and you start with <b>{SECOND_PLAYER_HP} more HP</b>.{' '}
         {info.series
           ? info.chooser
-            ? 'You lost the last game, so the order is yours to choose. If you do not choose in time, a coin decides.'
+            ? 'You lost the last game, so the order is yours to choose. If you do not choose in time, the reel decides.'
             : ''
-          : 'If you both want the same, a coin decides.'}
+          : 'If you both want the same, the reel decides.'}
       </p>
       {!info.chooser && !info.chosen ? (
         <p className="pvp__waiting">
@@ -223,11 +226,15 @@ export function ChoosePanel(props: {
   );
 }
 
+/** The two players' tiles on the who-goes-first reel: an even chance, half of each (DECISIONS #407). */
+const ORDER_CYCLE = oddsCycle(50);
+
 /**
- * The result, as a coin when the coin decided: it spins and lands showing the portrait of the player who goes first, with
- * their name below. When the players chose differently there is nothing to toss, so it just says what was agreed.
+ * The result, on the slider reel when chance decided (DECISIONS #407: it replaced a coin): a strip of the two players' names, half
+ * of each, that slows to a stop on the one who goes first; then their portrait and name. When the players chose differently there is
+ * nothing to roll, so it just says what was agreed.
  */
-export function CoinFlip(props: {
+export function WhoGoesFirst(props: {
   me: { name: string; hero: string };
   foe: { name: string; hero: string };
   /** the player who goes first */
@@ -236,45 +243,50 @@ export function CoinFlip(props: {
   onDone: () => void;
 }) {
   const { me, foe, first, random } = props;
-  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const [landed, setLanded] = useState(!random || reduced);
+  const [landed, setLanded] = useState(!random);
   const winner = first === 'me' ? me : foe;
   const loser = first === 'me' ? foe : me;
-  // the coin shows me on its front and the opponent on its back: it lands on whoever won
-  const turns = first === 'me' ? 1800 : 1980;
+  const tiles = useMemo<LanePrize[]>(
+    () => [
+      { icon: 'you', short: me.name, label: `${me.name} goes first` },
+      { icon: 'foe', short: foe.name, label: `${foe.name} goes first` },
+    ],
+    [me.name, foe.name],
+  );
 
-  // after the coin has landed, hold the result a moment, then go
+  // (the screen behind passes a new closure on every redraw: keep the latest without restarting the hold)
+  const doneRef = useRef(props.onDone);
+  useEffect(() => {
+    doneRef.current = props.onDone;
+  });
+  // after the reel has stopped, hold the result a moment, then go (the first player's turn clock is already running behind this)
   useEffect(() => {
     if (!landed) return;
-    const t = window.setTimeout(props.onDone, random && !reduced ? 2200 : 2600);
+    const t = window.setTimeout(() => doneRef.current(), random ? 1800 : 2600);
     return () => window.clearTimeout(t);
-  }, [landed, random, reduced, props.onDone]);
+  }, [landed, random]);
 
   return (
     <div className="coinscreen" role="dialog" aria-label="Who goes first">
       <h2>
         {random
           ? landed
-            ? 'The coin has decided'
-            : 'You both chose the same. Flipping a coin…'
+            ? 'The reel has decided'
+            : 'You both chose the same. The reel decides…'
           : 'The order is settled'}
       </h2>
       {random ? (
-        <div className="coinstage">
-          <div
-            className={`coin${landed ? ' is-landed' : ''}`}
-            style={{ '--end': `${turns}deg` } as React.CSSProperties}
-            onAnimationEnd={(e) => {
-              if (e.animationName === 'coin-spin') setLanded(true);
-            }}
-          >
-            <div className="coin__face coin__face--front">
-              <Portrait hero={me.hero} size={170} />
-            </div>
-            <div className="coin__face coin__face--back">
-              <Portrait hero={foe.hero} size={170} />
-            </div>
-          </div>
+        // (the reel stays up once it has stopped, the winner's tile lit, with their name below)
+        <div className="orderreel">
+          <Reel
+            prizes={tiles}
+            target={first === 'me' ? 0 : 1}
+            from={null}
+            spinKey={1}
+            spinning={!landed}
+            cycle={ORDER_CYCLE}
+            onSettled={() => setLanded(true)}
+          />
         </div>
       ) : (
         <div className="coinstage">

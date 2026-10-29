@@ -1,8 +1,8 @@
-// Practice for the elite-event reel (the Brass Reel) and the coin tossed for a chance, without needing a run. Nothing here is kept
+// Practice for the elite-event reel (the Brass Reel) and the reel spun for a chance (its tiles are the odds), without needing a run. Nothing here is kept
 // and nothing here costs anything.
 
 import { useState } from 'react';
-import { ChanceCoin } from '../run/ChanceCoin';
+import { ChanceReel } from '../run/ChanceReel';
 import { Reel } from './Reel';
 import { SAMPLE_PRIZES, TRIAL_INFO } from './info';
 import './trials.css';
@@ -57,13 +57,15 @@ export default function TrialsPractice() {
           </button>
         </li>
         <li>
-          <button type="button" onClick={() => setCoin({ pct: 50, won: Math.random() < 0.5 })}>
-            <b>The coin</b>
-            <small>The coin tossed for any chance in an event (this one is an even chance).</small>
+          <button type="button" onClick={() => setCoin({ pct: 60, won: Math.random() < 0.6 })}>
+            <b>A chance</b>
+            <small>
+              The reel spun for any chance in an event: its tiles are the odds (this one is 60%).
+            </small>
           </button>
         </li>
       </ul>
-      {coin && <ChanceCoin flips={[coin]} onDone={() => setCoin(null)} />}
+      {coin && <ChanceReel flips={[coin]} onDone={() => setCoin(null)} />}
     </main>
   );
 }

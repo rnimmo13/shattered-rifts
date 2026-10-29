@@ -55,7 +55,7 @@ import { tipAttrs } from '../ui/tip';
 import { Toast } from '../ui/Toast';
 import { getHero, rememberHero } from '../app/heroChoice';
 import { BoonToast } from './BoonToast';
-import { ChanceCoin, type Flip } from './ChanceCoin';
+import { ChanceReel, type Flip } from './ChanceReel';
 import { PotionChip } from '../fight/PotionChip';
 import { BankedPanel } from './BankedPanel';
 import { autoSaveForArena, loseSavedDecks, savedArenaLabel, shouldAutoSave } from './deckSave';
@@ -134,7 +134,7 @@ export default function RunScreen() {
     runRef.current = r;
     setRunState(r);
   }, []);
-  /** coins tossed by an event's chances, played before the result is shown (the result waits in `then`) */
+  /** reels spun for an event's chances, played before the result is shown (the result waits in `then`) */
   const [coin, setCoin] = useState<{ flips: Flip[]; then: string | null } | null>(null);
   const nextGained = useCallback(() => setGained((g) => g.slice(1)), []);
   const [notice, setNotice] = useState<string | null>(initial.notice);
@@ -275,7 +275,7 @@ export default function RunScreen() {
           ]
             .filter((x): x is string => x !== null)
             .join(' ') || null;
-        // a chance in the event is shown as a coin first, and the result waits for it
+        // a chance in the event is shown on the reel first, and the result waits for it
         if (cur.phase === 'event' && !cur.context?.event?.trial && next.eventFlips?.length) {
           setCoin({ flips: next.eventFlips, then: told });
           say(null);
@@ -656,7 +656,7 @@ export default function RunScreen() {
       )}
       <Body run={run} act={act} onLeave={leaveRun} onHome={goHome} lostDecks={lostDecks} />
       {coin && (
-        <ChanceCoin
+        <ChanceReel
           flips={coin.flips}
           onDone={() => {
             say(coin.then, true);

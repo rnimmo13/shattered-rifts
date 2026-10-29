@@ -490,3 +490,9 @@
 div.pvp__deck {
   cursor: default;
 }
+
+/* who goes first, on the slider reel (DECISIONS #407): a strip of the two players' names, half of each */
+.orderreel .reel {
+  width: min(44rem, 92vw);
+  margin: 1.4rem auto 0.8rem;
+}

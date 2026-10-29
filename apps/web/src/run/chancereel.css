@@ -1,0 +1,13 @@
+/* a chance in an event, on the slider reel (DECISIONS #407): the reel spans the dialog, its odds below */
+.chancereel .reel {
+  width: min(44rem, 92vw);
+  margin: 1.4rem auto 0.8rem;
+}
+.chancereel__pct {
+  font-size: 1.1rem;
+  color: var(--c-text-dim);
+  margin: 0;
+}
+.chancereel__skip {
+  margin-top: 1.4rem;
+}

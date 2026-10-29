@@ -2,6 +2,11 @@
 
 /** the mark of each kind of prize: a glyph and a colour */
 export const PRIZE_MARK: Record<string, { glyph: string; color: string }> = {
+  // (a chance's reel, DECISIONS #407: it goes your way, or not; and the Arena's who-goes-first reel: you, or them)
+  win: { glyph: '✦', color: '#ffd36a' },
+  lose: { glyph: '✖', color: '#8d93ad' },
+  you: { glyph: '▲', color: '#7fd4ff' },
+  foe: { glyph: '▼', color: '#ff8a7a' },
   // (a card and a rare card wear the card-rarity colours: global.css)
   card: { glyph: '★', color: 'var(--rar-uncommon)' },
   rare: { glyph: '☆', color: 'var(--rar-rare)' },

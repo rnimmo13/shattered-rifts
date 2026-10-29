@@ -49,7 +49,11 @@
   padding: 0.4rem;
   border-radius: 10px;
   border: 1px solid color-mix(in srgb, var(--mark) 60%, transparent);
-  background: linear-gradient(180deg, color-mix(in srgb, var(--mark) 16%, rgb(8 10 20)), rgb(8 10 20 / 0.9));
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--mark) 16%, rgb(8 10 20)),
+    rgb(8 10 20 / 0.9)
+  );
   text-align: center;
   font-size: 0.85rem;
   line-height: 1.2;
@@ -177,4 +181,12 @@
 }
 .trials__grid small {
   color: var(--c-text-dim);
+}
+
+/* a tile's name never spills into the next tile (a player's name on the who-goes-first reel can be 24 letters, DECISIONS #407) */
+.reel__tile span {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }

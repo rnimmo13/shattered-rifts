@@ -13,7 +13,7 @@ import { getClaimed, getName, playerId, serverBase, setName as saveName } from '
 import { PvpSession, newRoomCode, savedRoom, type Snapshot } from './session';
 import { takeName } from './takeName';
 import { VAULT_SLOTS, entryFor, loadVault, saveVault, type VaultDeck } from './vault';
-import { ChoosePanel, CoinFlip, GhostOffer, WaitTimer } from './PvpParts';
+import { ChoosePanel, GhostOffer, WaitTimer, WhoGoesFirst } from './PvpParts';
 import { boardId, queueCount, viewRanks, type RankedView } from './boardApi';
 import { RankPanel } from './RankedBoard';
 /** where the saved decks stand online (still being checked, saved, partly saved, or not reachable) */
@@ -82,7 +82,7 @@ export default function PvpScreen() {
   /** why the name was not accepted (taken, not allowed) */
   const [nameProblem, setNameProblem] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
-  /** the match whose coin has been shown (the match opens behind it, then stands ready) */
+  /** the match whose order reel has been shown (the match opens behind it, then stands ready) */
   const [tossShown, setTossShown] = useState<string | null>(null);
   const session = useRef<PvpSession | null>(null);
 
@@ -145,9 +145,7 @@ export default function PvpScreen() {
   const checks = decks.map((d) =>
     checkArenaEntry({ ...entryFor(d, playerName), ...(who ? { who } : {}) }),
   );
-  const usable = checks
-    .flatMap((c) => (c.ok ? [c.entry] : []))
-    .slice(0, MAX_MATCH_DECKS);
+  const usable = checks.flatMap((c) => (c.ok ? [c.entry] : [])).slice(0, MAX_MATCH_DECKS);
   const firstProblem = checks.find((c) => !c.ok);
   const problem =
     decks.length > 0 && usable.length === 0 && firstProblem && !firstProblem.ok
@@ -192,12 +190,12 @@ export default function PvpScreen() {
   if (snap.phase === 'match' && match) {
     const link = session.current?.link();
     const over = match.end !== null;
-    // the coin (or the agreed order) comes first; the match waits behind it with its moves held
+    // the order reel (or the agreed order) comes first; the match waits behind it with its moves held
     if (match.toss && tossShown !== match.setup.seed) {
       const meSeat = match.seat;
       const foeSeat = meSeat === 'a' ? 'b' : 'a';
       return (
-        <CoinFlip
+        <WhoGoesFirst
           me={{ name: match.names[meSeat], hero: match.heroes[meSeat] }}
           foe={{ name: match.names[foeSeat], hero: match.heroes[foeSeat] }}
           first={meSeat === 'a' ? 'me' : 'foe'}
@@ -433,8 +431,8 @@ export default function PvpScreen() {
             <>
               <h2 className="pvp__h">Your decks</h2>
               <p className="pvp__hint pvp__hint--center">
-                All of them come to every match: once you are matched, you choose one before each game,
-                and your opponent does the same without seeing yours.
+                All of them come to every match: once you are matched, you choose one before each
+                game, and your opponent does the same without seeing yours.
               </p>
               <p className="pvp__deckslot">
                 {decks.length} of {VAULT_SLOTS} saved decks · <a href="#/decks">Saved decks</a> ·{' '}
@@ -470,11 +468,7 @@ export default function PvpScreen() {
               <div className="pvp__friend" role="group" aria-label="Play a friend">
                 <h3 className="pvp__friend-h">Play a friend</h3>
                 <div className="pvp__friend-row">
-                  <button
-                    className="btn"
-                    disabled={!ready}
-                    onClick={() => void begin('create')}
-                  >
+                  <button className="btn" disabled={!ready} onClick={() => void begin('create')}>
                     <span>Make a room</span>
                   </button>
                   <span className="pvp__friend-or">or</span>

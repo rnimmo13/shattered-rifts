@@ -33,9 +33,29 @@ function mulberry(seed: number): () => number {
   };
 }
 
-/** The tiles of one spin: prizes in a shuffled-looking run, the one it started on near the start and the one it stops on at STOP. */
-function buildStrip(count: number, from: number | null, to: number, spinKey: number): number[] {
+/**
+ * The tiles of one spin: prizes in a shuffled-looking run, the one it started on near the start and the one it stops on at STOP. With a
+ * `cycle` (a chance's odds, DECISIONS #407) the strip is that run repeated, turned so a tile of the result lands at STOP: the mix of tiles
+ * on show is exactly the odds.
+ */
+function buildStrip(
+  count: number,
+  from: number | null,
+  to: number,
+  spinKey: number,
+  cycle?: readonly number[],
+): number[] {
   const r = mulberry(spinKey * 7919 + 17);
+  if (cycle && cycle.length > 0) {
+    const len = cycle.length;
+    const fits = Array.from({ length: len }, (_, o) => o).filter(
+      (o) => cycle[(STOP + o) % len] === to,
+    );
+    const off = fits.length ? (fits[Math.floor(r() * fits.length)] as number) : 0;
+    const out = Array.from({ length: LENGTH }, (_, i) => cycle[(i + off) % len] as number);
+    if (!fits.length) out[STOP] = to;
+    return out;
+  }
   const out: number[] = [];
   for (let i = 0; i < LENGTH; i++) {
     let k = Math.floor(r() * count);
@@ -60,9 +80,11 @@ export function Reel(props: {
   spinKey: number;
   /** the reel is turning now (and will stop on `target`) */
   spinning: boolean;
+  /** a run of prize indices the strip repeats (a chance's odds, see oddsCycle), instead of a shuffled-looking run */
+  cycle?: readonly number[];
   onSettled: () => void;
 }) {
-  const { prizes, target, from, spinKey, spinning } = props;
+  const { prizes, target, from, spinKey, spinning, cycle } = props;
   const box = useRef<HTMLDivElement>(null);
   const strip = useRef<HTMLDivElement>(null);
   const done = useRef(props.onSettled);
@@ -74,9 +96,9 @@ export function Reel(props: {
   const tiles = useMemo(
     () =>
       target === null
-        ? buildStrip(prizes.length, null, 0, 0)
-        : buildStrip(prizes.length, from, target, spinKey),
-    [prizes.length, target, from, spinKey],
+        ? buildStrip(prizes.length, null, 0, 0, cycle)
+        : buildStrip(prizes.length, from, target, spinKey, cycle),
+    [prizes.length, target, from, spinKey, cycle],
   );
 
   // where the strip rests so that tile `i` is under the pointer

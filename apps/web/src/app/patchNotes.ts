@@ -29,6 +29,22 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.120.0',
+    date: '2026-10-28',
+    title: 'The reel decides',
+    summary: 'Every chance is shown on the slider reel, with tiles that are the real odds.',
+    notes: [
+      {
+        kind: 'changed',
+        text: 'No more coin: every chance in an event is shown on the slider reel, and its tiles are the real odds (a 60% chance is 12 of every 20 tiles your way). The odds are written under it.',
+      },
+      {
+        kind: 'changed',
+        text: 'In the Arena, when both players want the same order, a reel of your two names decides who goes first.',
+      },
+    ],
+  },
+  {
     version: '0.119.0',
     date: '2026-10-28',
     title: 'Your look',

@@ -247,7 +247,7 @@ Choose 1 of 3 after Elites, from some Events, in Merchants and in the Warden's G
 ### 5.2 Events (examples; aim for ~15 at launch)
 - **The Weeping Statue:** *Pray* (Temper a random card) · *Take its tears* (+60 Shards, but your next duel loss costs
   1 extra Resolve) · *Leave*.
-- **Rift Merchant's Wager:** bet 50 Shards on a coin flip shown as a mini card reveal.
+- **Rift Merchant's Wager:** bet 50 Shards on an even chance, shown on the slider reel like every chance (DECISIONS #407).
 - **Lost Riftwalker:** duel a ghost using a copy of *your own deck*. Win: Boon.
 - **Forbidden Grimoire:** add a random Epic to your deck, but a Rift Curse is added too (counts toward deck size).
 - **The Cartographer's Cache:** choose 1 of 3 Rift-Touched cards. Add the normal version now, and the alt-art
