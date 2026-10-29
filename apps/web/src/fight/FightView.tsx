@@ -1476,38 +1476,19 @@ export function FightView(props: {
       </FloatPanel>
     );
   };
-  // (the Shaman's totems, his commands left and his Spirit, and his Trinity, as panels in that side's column, DECISIONS #420)
+  // (the Shaman's totems and his Spirit, and his Trinity, as panels in that side's column, DECISIONS #420; cards command the totems, #421)
   const totemPanel = (side: Side): ReactNode => {
     const sv = view?.sides[side];
     const held = sv?.totems;
     if (!sv || !held) return null;
     const hero = sv.units.find((u) => u.kind === 'hero');
-    const mine = side === mySide && !waiting && !finished && watch === null;
-    const cmds = mine
-      ? legal.filter((a): a is Extract<Action, { type: 'command' }> => a.type === 'command')
-      : [];
     return (
       <FloatPanel
         id={side === mySide ? 'totems-mine' : 'totems-foe'}
         className="fight__aux fight__aux--totems"
         title={side === mySide ? 'Totems' : 'Their Totems'}
       >
-        <TotemPanel
-          db={db}
-          totems={held}
-          spirit={hero?.statuses.spirit ?? 0}
-          commands={sv.commands ?? 0}
-          ready={new Set(cmds.map((a) => a.totem))}
-          {...(mine
-            ? {
-                onCommand: (totem: number) => {
-                  setSelected(null);
-                  setAimPotion(null);
-                  act({ type: 'command', totem });
-                },
-              }
-            : {})}
-        />
+        <TotemPanel db={db} totems={held} spirit={hero?.statuses.spirit ?? 0} />
       </FloatPanel>
     );
   };

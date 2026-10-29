@@ -359,10 +359,14 @@ export const spendMastery = (n: 1 | 2): Op => ({ op: 'spend', status: 'mastery',
 export const DEFENSIVE: { tags: string[] } = { tags: [DEFENSIVE_TAG] };
 export const STRIKING: { tags: string[] } = { tags: [STRIKING_TAG] };
 
-/** (DECISIONS #420) a totem position more; commands this turn; every totem acts once */
+/** (DECISIONS #420) a totem position more */
 export const totemSlot: Op = { op: 'totemSlot' };
-export const commands = (n = 1): Op => ({ op: 'commands', amount: n });
-export const commandAll: Op = { op: 'commandAll' };
+/** (DECISIONS #421) totems act: every totem of a kind, 'choose' one, a 'random' one, or 'all' of them, `times` times */
+export const commandTotem = (spirit: string, times = 1): Op => ({
+  op: 'totemCommand',
+  spirit,
+  ...(times > 1 ? { times } : {}),
+});
 /** the Shaman's element tags (a spell's `tags`) */
 export const FLAME: { tags: string[] } = { tags: ['flame'] };
 export const FROST: { tags: string[] } = { tags: ['frost'] };

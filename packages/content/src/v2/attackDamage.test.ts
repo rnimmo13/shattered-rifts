@@ -91,12 +91,14 @@ describe('attack statuses only touch attack damage', () => {
   // (the Shaman's Hawk command, DECISIONS #418: a spirit acting, not an attack)
   it('totems deal the same with or without Might on you and Exposed on the enemy', () => {
     const lost = (buffed: boolean): number => {
-      let s = fight([], 'shaman');
+      let s = fight(['hawks-dive'], 'shaman');
       if (buffed) {
         hero(s).statuses.might = 5;
         foe(s).statuses.exposed = 3;
       }
-      s = applyAction(db, s, { type: 'command', totem: 0 }).state;
+      // (a card commands the Hawk, DECISIONS #421)
+      const dive = s.sides.a.hand.find((c) => c.card === 'hawks-dive')!;
+      s = applyAction(db, s, { type: 'play', card: dive.id }).state;
       return 200 - foe(s).hp;
     };
     expect(lost(false)).toBeGreaterThan(0);

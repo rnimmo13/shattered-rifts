@@ -24,6 +24,7 @@ const TITLE: Record<PendingView['kind'], string> = {
   plantAt: 'Plant',
   // (the Monk's, DECISIONS #419)
   form: 'Change form',
+  commandPick: 'Command',
 };
 
 function prompt(p: PendingView): string {
@@ -32,6 +33,7 @@ function prompt(p: PendingView): string {
   if (p.kind === 'discharge') return 'Choose the enchantment to discharge.';
   if (p.kind === 'recast') return 'Choose what your newest enchantment becomes.';
   if (p.kind === 'plantKind') return 'Choose the spirit to plant.';
+  if (p.kind === 'commandPick') return 'Choose the totem whose spirit acts.';
   if (p.kind === 'form')
     return 'Choose a new form (your progress this turn starts again), or keep the one you are in.';
   if (p.kind === 'plantAt') {

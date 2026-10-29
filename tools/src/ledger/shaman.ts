@@ -1,11 +1,12 @@
-// The Shaman's hand prices (docs/reworks/shaman-ledger.md is generated from these), for the second rework (DECISIONS #420). New
+// The Shaman's hand prices (docs/reworks/shaman-ledger.md is generated from these), for the second rework (DECISIONS #420, #421). New
 // rates (docs/14_CARD_COSTING.md §15): an element tag 0 (the totems' help on the first spell of each element is the trait's); Spirit
 // gained 5 a point (it never goes down, +1 to every command and +1 per 2 to every totem's help, about a point of Might for the rest of
-// the fight); an extra command ~5-6 (a Hawk dive 6 x0.9, a Bear's 5 Barrier, a Thunderbird's 3 to all, plus the Spirit he has); a
-// plant ~1.5 (he starts with three totems, so a plant is usually a replacement); a totem position ~2 (empty until filled); Thorns
-// until the enemy turn ends 1.5 a stack; Sapped on every enemy for a turn ~1.56 a point; Faltering on every enemy 3.9, on a random one
-// 2.7; a random-enemy hit 0.9 a point; Bleed by the guide. "Whenever you cast a Flame / Storm spell" ~1.2 a turn; Trinity ~55% of
-// turns in a deck built for it; commands ~1.3 a turn.
+// the fight); a command (only cards command, #421) is worth its spirit's act: a Hawk's dive 5.4 (6 at random), a Bear's 6 (5 Barrier),
+// a Thunderbird's 3.9 (3 to all), ~5.3 for a random totem, ~6 for one of your choice, plus the Spirit he has; a plant ~1.5 (he starts
+// with three totems, so a plant is usually a replacement); a totem position ~2; Thorns until the enemy turn ends 1.5 a stack; Sapped on
+// every enemy for a turn ~1.56 a point; Faltering on every enemy 3.9, on a random one 2.7; a random-enemy hit 0.9 a point; Burn as
+// Bleed by the guide. 'Whenever you cast a Flame / Storm spell' ~1.2 a turn; Trinity ~55% of turns in a deck built for it; 'whenever
+// you command' ~1 a turn in a deck built for commands.
 
 import type { Price } from './common';
 
@@ -42,7 +43,7 @@ export const SHAMAN_PRICES: Record<string, Price> = {
     role: 'Flame: the defence (Thorns)',
   },
   immolate: { pts: 19.5, up: 23.5, how: '13 + 4 Bleed 6.5', role: 'Flame: Bleed' },
-  wildfire: {
+  'spreading-flames': {
     pts: 12.9,
     up: 15.9,
     consume: true,
@@ -79,7 +80,7 @@ export const SHAMAN_PRICES: Record<string, Price> = {
     how: '4 turns x ~1.2 Flame spells x 3 Bleed (~3.5 on a stack)',
     role: 'Flame: the Bleed engine',
   },
-  flashpoint: {
+  'flash-burn': {
     pts: 16,
     up: 20,
     consume: true,
@@ -210,9 +211,9 @@ export const SHAMAN_PRICES: Record<string, Price> = {
     role: 'Storm: many hits',
   },
   'storm-sovereign': {
-    pts: 20.3,
-    up: 27,
-    how: '4 turns x ~1.3 commands x 3 to ALL 3.9',
+    pts: 20.8,
+    up: 26,
+    how: '4 turns x ~1 command (cards only) x 4 to ALL 5.2',
     role: 'Storm/commands: the command payoff',
   },
   'calm-before-the-storm': {
@@ -223,10 +224,34 @@ export const SHAMAN_PRICES: Record<string, Price> = {
   },
   superstorm: { pts: 31.2, up: 41.6, how: '6 x4 to ALL', role: 'Storm: the finisher' },
   // (totems and commands)
+  'spirit-call': {
+    pts: 8.4,
+    up: 12,
+    how: 'a totem of your choice acts ~6 + 2 Barrier 2.4',
+    role: 'the starter command',
+  },
+  'hawks-dive': {
+    pts: 9,
+    up: 10.8,
+    how: 'your Hawks dive (6 at random) 5.4 + 3 Barrier 3.6; + twice',
+    role: 'commands: the Hawk',
+  },
+  'bears-guard': {
+    pts: 9.6,
+    up: 13.2,
+    how: 'your Bears guard (5 Barrier) 6 + 3 Barrier 3.6',
+    role: 'commands: the Bear',
+  },
+  'thunderbirds-cry': {
+    pts: 10.8,
+    up: 13.4,
+    how: 'your Thunderbirds strike (3 to all) 3.9 + 3 to ALL 3.9 + draw 3',
+    role: 'commands: the Thunderbird',
+  },
   'spark-cast': {
-    pts: 9.9,
-    up: 13.5,
-    how: 'plant a Hawk 1.5 + 2 Barrier 2.4 + a command 6',
+    pts: 10.4,
+    up: 14,
+    how: 'plant a Hawk 1.5 + your Hawks dive (often two) ~6.5 + 2 Barrier 2.4',
     role: 'totems: a second Hawk doubles the Flame help',
   },
   'wardkeepers-pact': {
@@ -241,7 +266,12 @@ export const SHAMAN_PRICES: Record<string, Price> = {
     how: 'plant a Thunderbird 1.5 + 4 to ALL 5.2 + 3 Barrier 3.6',
     role: 'totems',
   },
-  'call-again': { pts: 6, up: 8.4, how: 'a command 6', role: 'commands: a free one' },
+  'call-again': {
+    pts: 5.3,
+    up: 7.7,
+    how: 'a random totem acts ~5.3; + 2 Barrier',
+    role: 'commands: the cheap one',
+  },
   'raise-the-pole': {
     pts: 11,
     up: 14.6,
@@ -257,7 +287,7 @@ export const SHAMAN_PRICES: Record<string, Price> = {
   'rally-the-spirits': {
     pts: 12,
     up: 16.8,
-    how: '2 commands',
+    how: 'a totem of your choice acts twice ~12',
     role: 'commands: the command turn',
   },
   'ancestral-exchange': {
@@ -291,9 +321,9 @@ export const SHAMAN_PRICES: Record<string, Price> = {
     role: 'the rare totem: Mana on Trinity',
   },
   'spirit-chorus': {
-    pts: 20,
-    up: 23.5,
-    how: '4 turns x a command 5; + Opening hand 3.5',
+    pts: 21.2,
+    up: 24.7,
+    how: '4 turns x a random totem acts ~5.3; + Opening hand 3.5',
     role: 'commands: the command engine',
   },
   'great-spirits-call': {

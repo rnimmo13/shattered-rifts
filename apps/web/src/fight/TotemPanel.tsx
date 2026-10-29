@@ -1,6 +1,6 @@
-// The Shaman's totems on the battle screen (DECISIONS #420): his positions (three to start, up to five), his Spirit and the commands
-// he has left this turn. On his turn each planted totem is a button: press one to call its spirit (it aims by itself). Presentation
-// only: the totems and the legal commands come from the combat view and legalActions().
+// The Shaman's totems on the battle screen (DECISIONS #420, #421): his positions (three to start, up to five) and his Spirit. A totem
+// helps the first spell of its element each turn and acts only when a card commands it, so the panel shows them; it has nothing to
+// press. Presentation only: the totems come from the combat view.
 
 import type { CombatDb } from '@sr/combat';
 import { tipAttrs } from '../ui/tip';
@@ -10,32 +10,22 @@ export function TotemPanel(props: {
   db: CombatDb;
   totems: readonly (string | null)[];
   spirit: number;
-  /** commands left this turn */
-  commands: number;
-  /** the positions that can be commanded right now (none when it is not your turn, or on the other side's panel) */
-  ready: ReadonlySet<number>;
-  onCommand?: (totem: number) => void;
 }) {
-  const mine = !!props.onCommand;
   return (
     <div className="totems" role="group" aria-label="Totems">
       <div className="totems__row">
         {props.totems.map((kind, i) => {
           const def = kind ? props.db.totems?.[kind] : undefined;
           const look = kind ? totemLook(kind) : null;
-          const ready = props.ready.has(i);
           return (
-            <button
+            <span
               key={i}
-              type="button"
-              className={`totem${kind ? ` totem--${kind}` : ' is-empty'}${ready ? ' is-ready' : ''}`}
-              disabled={!ready}
+              className={`totem${kind ? ` totem--${kind}` : ' is-empty'}`}
               aria-label={
                 look && def
-                  ? `${look.name} totem, position ${i + 1}. ${def.text}${ready ? ' Press to call it.' : ''}`
+                  ? `${look.name} totem, position ${i + 1}. ${def.text}`
                   : `Position ${i + 1}: no totem`
               }
-              onClick={() => props.onCommand?.(i)}
               {...(look && def
                 ? tipAttrs({ kicker: 'Totem', title: look.name, text: def.text })
                 : tipAttrs({
@@ -46,7 +36,7 @@ export function TotemPanel(props: {
             >
               <b aria-hidden="true">{look ? look.glyph : '·'}</b>
               <small>{look ? look.name : 'empty'}</small>
-            </button>
+            </span>
           );
         })}
       </div>
@@ -61,13 +51,6 @@ export function TotemPanel(props: {
         <span aria-hidden="true">◉</span>
         <small>Spirit {props.spirit}</small>
       </div>
-      {(mine || props.commands > 0) && (
-        <p className="totems__state">
-          {props.commands > 0
-            ? `${props.commands} command${props.commands === 1 ? '' : 's'} left: press a totem`
-            : 'No commands left this turn'}
-        </p>
-      )}
     </div>
   );
 }

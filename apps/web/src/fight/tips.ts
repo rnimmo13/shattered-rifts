@@ -54,7 +54,7 @@ export const TIP_RULES: TipRule[] = [
     // (the Shaman's, DECISIONS #418)
     id: 'totems',
     title: 'Totems, elements and Trinity',
-    text: 'Your Hawk, Bear and Thunderbird (the Totems panel) each help the first Flame, Frost or Storm spell each turn. Press a totem to call its spirit, once a turn. Cast all three elements in one turn for Trinity (the Trinity panel): 1 Spirit, which never goes down and makes every command stronger.',
+    text: 'Your Hawk, Bear and Thunderbird (the Totems panel) each help the first Flame, Frost or Storm spell each turn. Cards such as Spirit Call command a totem to act. Cast all three elements in one turn for Trinity (the Trinity panel): 1 Spirit, which never goes down and makes every command stronger.',
     when: (v) => !!v.sides.a.totems,
   },
   {

@@ -829,26 +829,58 @@ function placeTotem(r: Run, a: Act, side: SideState, at: number, spirit: string)
 /** A totem's spirit acts: its command, with +1 to every damage and Barrier number for each Spirit he has. */
 function runCommand(r: Run, sd: SideState, hero: Unit, totem: number, kind: string): void {
   const d = totemDef(r, kind);
+  sd.commanded = true;
   r.ev.push({ type: 'command', side: sd.id, totem, spirit: kind, target: null, empowered: false });
   runOps(r, mkAct(hero, { plus: stacks(hero, 'spirit') }), d.command);
   if (!r.s.winner) fireTriggers(r, sd, 'command', { rune: kind });
 }
 
 /**
- * Command a totem (DECISIONS #420): one of the turn's commands (one a turn, more from cards); its spirit acts by itself (a random
- * enemy, him, every enemy). It is not a card and not an attack.
+ * A card commands totems (DECISIONS #421): every totem of a kind, one the player picks ('choose'), a random one, or all of them,
+ * `times` times. Each spirit acts by itself (a random enemy, him, every enemy): not a card and not an attack.
  */
-function commandTotem(r: Run, action: Extract<Action, { type: 'command' }>): void {
-  const side = r.s.active;
-  const sd = r.s.sides[side];
+function commandTotems(r: Run, a: Act, sd: SideState, spirit: string, times: number): void {
   const hero = heroOf(sd);
-  if (!hero || !sd.totems) throw new RulesError('You have no totems');
-  if ((sd.commands ?? 0) <= 0) throw new RulesError('You have no commands left this turn');
-  const kind = sd.totems[action.totem];
-  if (!kind) throw new RulesError('There is no totem there');
-  sd.commands = (sd.commands ?? 0) - 1;
-  sd.commanded = true;
-  runCommand(r, sd, hero, action.totem, kind);
+  const list = sd.totems;
+  if (!hero || !list) return;
+  const planted = list.flatMap((k, i) => (k ? [i] : []));
+  if (!planted.length) return;
+  if (spirit === 'choose') {
+    if (planted.length > 1 && a.pick) {
+      r.s.pending = {
+        kind: 'commandPick',
+        pool: planted.map((i) => `t${i}`),
+        min: 1,
+        max: 1,
+        rest: [],
+        actor: a.actor.id,
+        target: a.target?.id ?? null,
+        finish: null,
+        x: a.x,
+        times,
+      };
+      r.ev.push({ type: 'pending', side: sd.id, kind: 'commandPick' });
+      return;
+    }
+    commandAt(r, sd, hero, planted[0] as number, times);
+    return;
+  }
+  for (let k = 0; k < times && !r.s.winner; k++) {
+    const at =
+      spirit === 'all'
+        ? planted
+        : spirit === 'random'
+          ? [planted[nextInt(r.s.rng, planted.length)] as number]
+          : planted.filter((i) => list[i] === spirit);
+    for (const i of at) if (!r.s.winner && list[i]) runCommand(r, sd, hero, i, list[i]);
+  }
+}
+
+function commandAt(r: Run, sd: SideState, hero: Unit, at: number, times: number): void {
+  for (let k = 0; k < times && !r.s.winner; k++) {
+    const kind = sd.totems?.[at];
+    if (kind) runCommand(r, sd, hero, at, kind);
+  }
 }
 
 /** The element a spell counts as now: its tag; a prism spell, the first element not cast yet this turn (none once all three are). */
@@ -863,11 +895,12 @@ function elementOf(cd: CardDef, sd: SideState): Element | null {
  * The totems' help (DECISIONS #420): the first spell of each element each turn gets every totem's boost for that element, and the
  * first spell of any element the 'any' boosts (the Elder Tree); every 2 Spirit add 1 to each boost. Marks the boosts used.
  */
-function spellBoost(r: Run, sd: SideState, cd: CardDef): number {
+function spellBoost(r: Run, sd: SideState, cd: CardDef, mark = true): number {
   const hero = heroOf(sd);
   const el = elementOf(cd, sd);
   if (!hero || !el || !sd.totems) return 0;
-  const used = (sd.boostsUsed ??= []);
+  // (a preview only looks: it marks nothing)
+  const used = mark ? (sd.boostsUsed ??= []) : [...(sd.boostsUsed ?? [])];
   const half = Math.floor(stacks(hero, 'spirit') / 2);
   let plus = 0;
   for (const key of [el, 'any'] as const) {
@@ -1067,6 +1100,7 @@ function metricValue(
     case 'missingPct':
       return u ? Math.floor(((u.maxHp - u.hp) * 100) / Math.max(1, u.maxHp)) : 0;
     case 'seared':
+    case 'burn':
     case 'exposed':
     case 'faltering':
     case 'might':
@@ -1644,7 +1678,7 @@ function execOp(r: Run, a: Act, op: Op): void {
           r,
           t,
           op.status,
-          op.status === 'seared' ? scaledByDifficulty(a.actor, t, n) : n,
+          op.status === 'seared' || op.status === 'burn' ? scaledByDifficulty(a.actor, t, n) : n,
         );
         if (op.temp && n > 0 && applied)
           (op.temp === 'theirs' ? r.s.sides[other(side.id)] : side).temps.push({
@@ -2542,19 +2576,9 @@ function execOp(r: Run, a: Act, op: Op): void {
       r.ev.push({ type: 'totems', side: side.id, totems: [...list] });
       return;
     }
-    case 'commands':
-      if (!side.totems) return;
-      side.commands = (side.commands ?? 0) + Math.max(0, op.amount);
-      r.ev.push({ type: 'totems', side: side.id, totems: [...side.totems] });
+    case 'totemCommand':
+      commandTotems(r, a, side, op.spirit, Math.max(1, op.times ?? 1));
       return;
-    case 'commandAll': {
-      const hero = heroOf(side);
-      if (!hero || !side.totems) return;
-      side.totems.forEach((kind, i) => {
-        if (kind && !r.s.winner) runCommand(r, side, hero, i, kind);
-      });
-      return;
-    }
     case 'uproot': {
       const list = side.totems;
       if (!list) return;
@@ -2892,12 +2916,14 @@ function fitsFree(r: Run, op: Extract<Op, { op: 'playPile' }>, c: CardInst): boo
   );
 }
 
-/** Bleed (Seared) deals its stacks now and loses 1, as it does at the start of its turn. */
+/** Bleed (Seared) deals its stacks now and loses 1, as it does at the start of its turn; Burn (the Shaman's, #421) does the same. */
 function bleedTick(r: Run, u: Unit): void {
-  const sear = stacks(u, 'seared');
-  if (sear <= 0 || u.hp <= 0) return;
-  applyDamage(r, null, u, sear, 'direct');
-  addStatus(r, u, 'seared', -1);
+  for (const st of ['seared', 'burn'] as const) {
+    const n = stacks(u, st);
+    if (n <= 0 || u.hp <= 0) continue;
+    applyDamage(r, null, u, n, 'direct');
+    addStatus(r, u, st, -1);
+  }
 }
 
 /** Picks the card a 'playPile' op plays and takes it out of its pile (null when there is none). */
@@ -3480,7 +3506,6 @@ function beginHeroTurn(r: Run, side: Side): void {
   sd.skillsPlayed = 0;
   if (sd.totems) {
     sd.commanded = false;
-    sd.commands = (sd.hero ? r.db.heroes[sd.hero]?.trait?.commands : undefined) ?? 1;
     sd.elementsTurn = [];
     sd.boostsUsed = [];
     sd.trinityDone = false;
@@ -3811,7 +3836,6 @@ function buildHeroSide(r: Run, id: Side, h: HeroSetup): SideState {
     ...(hd.trait?.totems
       ? {
           totems: Array.from({ length: Math.min(TOTEM_SLOTS, hd.trait.totems) }, () => null),
-          commands: 0,
           elementsTurn: [],
           boostsUsed: [],
         }
@@ -4112,11 +4136,6 @@ export function legalActions(db: CombatDb, s: CombatState): Action[] {
         if (t.hp > 0) out.push({ type: 'potion', index, potion: id, target: t.id });
     }
   });
-  // (the Shaman) a command, while he has one left this turn: each planted totem
-  if (heroOf(sd) && sd.totems && (sd.commands ?? 0) > 0)
-    sd.totems.forEach((kind, totem) => {
-      if (kind && db.totems?.[kind]) out.push({ type: 'command', totem });
-    });
   out.push({ type: 'endTurn' });
   return out;
 }
@@ -4450,6 +4469,9 @@ function pickCards(r: Run, action: Extract<Action, { type: 'pick' }>): void {
     }
     // (the Shaman's: which spirit to plant, and where)
     else if (p.kind === 'plantKind' && ids[0]) plant(r, act, sd, ids[0], p.anywhere === true);
+    // (the Shaman's: the totem whose spirit acts)
+    else if (p.kind === 'commandPick' && ids[0] && heroOf(sd))
+      commandAt(r, sd, heroOf(sd) as Unit, Number(ids[0].replace(/^t/, '')), p.times ?? 1);
     // (the Monk's: a new form, or none to keep his)
     else if (p.kind === 'form' && ids[0]) changeForm(r, sd, ids[0] as Form);
     else if (p.kind === 'plantAt' && p.spirit && ids[0])
@@ -4524,7 +4546,6 @@ export function applyAction(db: CombatDb, state: CombatState, action: Action): S
   else if (action.type === 'play') playCard(r, action);
   else if (action.type === 'pick') pickCards(r, action);
   else if (action.type === 'potion') usePotion(r, action);
-  else if (action.type === 'command') commandTotem(r, action);
   else throw new RulesError('Unknown action');
   // a card said "end your turn" (Void Form): once it is done, the turn ends
   if (r.endAfter && !s.pending && !s.winner) {
@@ -4590,7 +4611,9 @@ export function previewCardDamage(
     target: friendly ? mine : chosen,
     x: def.x ? sd.mana + (def.xBonus ?? 0) : 0,
   });
-  const edge = (def.tags?.includes(EDGE_TAG) ? stacks(hero, 'edge') : 0) + deftOf(a);
+  // (the Shaman's totems: their help on the first spell of its element this turn, DECISIONS #420)
+  const help = sd.totems ? spellBoost(r, sd, def, false) : 0;
+  const edge = (def.tags?.includes(EDGE_TAG) ? stacks(hero, 'edge') : 0) + deftOf(a) + help;
   // (Vigor goes into the first damage effect only, as the engine spends it)
   let vigor = def.kind === 'attack' ? stacks(hero, 'vigor') : 0;
   let earlier = false;

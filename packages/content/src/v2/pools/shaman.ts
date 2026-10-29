@@ -5,14 +5,14 @@
 // No summons. The first rework (one aimed command a turn, Rousing, Empower; DECISIONS #418) and the Defect copy before it are recorded
 // in the DECISIONS log and reviews/balance-baselines/2026-10-29-pre-identity-reworks/.
 //
-// Totems (TOTEMS below): each helps the first spell of its element each turn (every 2 Spirit add 1 to that help), and acts when
-// commanded (one command a turn, more from cards; it aims by itself; every Spirit adds 1 to it):
+// Totems (TOTEMS below): each helps the first spell of its element each turn (every 2 Spirit add 1 to that help), and acts when a
+// card commands it (DECISIONS #421: no free command; it aims by itself; every Spirit adds 1 to it):
 //   Hawk        - Flame spells +3;  command: 6 damage to a random enemy
 //   Bear        - Frost spells +3;  command: 5 Barrier to him
 //   Thunderbird - Storm spells +2;  command: 3 damage to every enemy
 //   Elder Tree  - (rare) the first spell of any element +2; planting it gives 2 Spirit; command: 1 Spirit and a card
 //   Moon Owl    - (rare) 1 Mana whenever Trinity triggers; command: his next elemental spell costs 0
-// Elements (a spell's tag): Flame - single-target damage and Bleed, defence through Thorns; Frost - Barrier and Faltering, attacks that
+// Elements (a spell's tag): Flame - single-target damage and Burn (as Bleed, DECISIONS #421), defence through Thorns; Frost - Barrier and Faltering, attacks that
 // leave enemies Faltering; Storm - every enemy or random ones several times, defence through Sapped.
 //
 // Build paths stay hidden (DECISIONS #365); the three elements are the first sort, the totem, Trinity and utility cards are glue.
@@ -24,8 +24,7 @@ import {
   barrier,
   barrierNext,
   card,
-  commandAll,
-  commands,
+  commandTotem,
   dmg,
   draw,
   exhaustN,
@@ -59,7 +58,7 @@ export const TOTEMS: TotemDef[] = [
   {
     id: 'hawk',
     name: 'Hawk',
-    text: 'Your first Flame spell each turn deals 3 more. Command: 6 damage to a random enemy.',
+    text: 'Your first Flame spell each turn: +3 to every damage and Barrier number on it. Command: 6 damage to a random enemy.',
     aim: 'none',
     command: [dmg(6, 'randomFoe')],
     empower: false,
@@ -68,7 +67,7 @@ export const TOTEMS: TotemDef[] = [
   {
     id: 'bear',
     name: 'Bear',
-    text: 'Your first Frost spell each turn gives or deals 3 more. Command: gain 5 Barrier.',
+    text: 'Your first Frost spell each turn: +3 to every damage and Barrier number on it. Command: gain 5 Barrier.',
     aim: 'none',
     command: [barrier(5)],
     empower: false,
@@ -77,7 +76,7 @@ export const TOTEMS: TotemDef[] = [
   {
     id: 'thunderbird',
     name: 'Thunderbird',
-    text: 'Your first Storm spell each turn deals 2 more with each hit. Command: 3 damage to every enemy.',
+    text: 'Your first Storm spell each turn: +2 to every damage and Barrier number on it (each hit). Command: 3 damage to every enemy.',
     aim: 'none',
     command: [dmg(3, 'allFoes')],
     empower: false,
@@ -86,7 +85,7 @@ export const TOTEMS: TotemDef[] = [
   {
     id: 'elder',
     name: 'Elder Tree',
-    text: 'Planting it gives 2 Spirit. Your first spell each turn deals or gives 2 more. Command: gain 1 Spirit and draw a card.',
+    text: 'Planting it gives 2 Spirit. Your first elemental spell each turn: +2 to every damage and Barrier number on it. Command: gain 1 Spirit and draw a card.',
     aim: 'none',
     command: [gainSpirit(1), draw(1)],
     empower: false,
@@ -111,7 +110,7 @@ const i = pool('shaman', 'nexus');
 const thorns = (n: number): Op => statusTheirs('thorns', n, 'self');
 /** Sapped on every enemy until the end of their next turn (a Storm ward) */
 const sapAll = (n: number): Op => statusTheirs('sapped', n, 'allFoes');
-const ifBleeding = (ops: Op[]): Op => ({ op: 'when', by: 'seared', of: 'target', atLeast: 1, ops });
+const ifBurning = (ops: Op[]): Op => ({ op: 'when', by: 'burn', of: 'target', atLeast: 1, ops });
 const ifFaltering = (ops: Op[]): Op => ({
   op: 'when',
   by: 'faltering',
@@ -119,8 +118,8 @@ const ifFaltering = (ops: Op[]): Op => ({
   atLeast: 1,
   ops,
 });
-/** doubles the target's Bleed, at most 10 more (balance.test: a multiplier Consumes and is capped) */
-const doubleBleed: Op = { op: 'scaleStatus', status: 'seared', mult: 2, to: 'target', max: 10 };
+/** doubles the target's Burn, at most 10 more (balance.test: a multiplier Consumes and is capped) */
+const doubleBurn: Op = { op: 'scaleStatus', status: 'burn', mult: 2, to: 'target', max: 10 };
 const gatheringStorm = (n: number, grow: number): Op[] => [
   scaled(dmg(n, 'allFoes'), per('bonus')),
   forge('gathering-storm', grow),
@@ -149,7 +148,7 @@ export const SHAMAN: CardDef[] = [
     up: { effects: gatheringStorm(4, 3) },
   }),
 
-  // --- Flame: single-target damage and Bleed; Thorns for defence ---
+  // --- Flame: single-target damage and Burn; Thorns for defence ---
   i(
     'common',
     'searing-lash',
@@ -157,19 +156,19 @@ export const SHAMAN: CardDef[] = [
     'attack',
     1,
     'foe',
-    [dmg(7), status('seared', 2, 'target')],
+    [dmg(7), status('burn', 2, 'target')],
     {
       ...FLAME,
-      up: { effects: [dmg(10), status('seared', 2, 'target')] },
+      up: { effects: [dmg(10), status('burn', 2, 'target')] },
     },
   ),
   i('common', 'kindle', 'Kindle', 'attack', 0, 'foe', [dmg(4), ifTotem('hawk', [dmg(2)])], {
     ...FLAME,
     up: { effects: [dmg(6), ifTotem('hawk', [dmg(2)])] },
   }),
-  i('common', 'firebrand', 'Firebrand', 'attack', 1, 'foe', [dmg(7), ifBleeding([dmg(4)])], {
+  i('common', 'firebrand', 'Firebrand', 'attack', 1, 'foe', [dmg(7), ifBurning([dmg(4)])], {
     ...FLAME,
-    up: { effects: [dmg(10), ifBleeding([dmg(4)])] },
+    up: { effects: [dmg(10), ifBurning([dmg(4)])] },
   }),
   i('common', 'twin-cinders', 'Twin Cinders', 'attack', 1, 'foe', [dmg(5, 'target', 2)], {
     ...FLAME,
@@ -190,16 +189,16 @@ export const SHAMAN: CardDef[] = [
     'attack',
     2,
     'foe',
-    [dmg(13), status('seared', 4, 'target')],
+    [dmg(13), status('burn', 4, 'target')],
     {
       ...FLAME,
-      up: { effects: [dmg(17), status('seared', 4, 'target')] },
+      up: { effects: [dmg(17), status('burn', 4, 'target')] },
     },
   ),
-  i('uncommon', 'wildfire', 'Wildfire', 'attack', 1, 'foe', [dmg(9), doubleBleed], {
+  i('uncommon', 'spreading-flames', 'Wildfire', 'attack', 1, 'foe', [dmg(9), doubleBurn], {
     ...FLAME,
     exhaust: true,
-    up: { effects: [dmg(12), doubleBleed] },
+    up: { effects: [dmg(12), doubleBurn] },
   }),
   i(
     'uncommon',
@@ -245,18 +244,18 @@ export const SHAMAN: CardDef[] = [
     'power',
     1,
     'none',
-    [on('play', [status('seared', 3, 'target')], { tag: 'flame' })],
-    { up: { effects: [on('play', [status('seared', 4, 'target')], { tag: 'flame' })] } },
+    [on('play', [status('burn', 3, 'randomFoe')], { tag: 'flame' })],
+    { up: { effects: [on('play', [status('burn', 4, 'randomFoe')], { tag: 'flame' })] } },
   ),
   i(
     'rare',
-    'flashpoint',
+    'flash-burn',
     'Flashpoint',
     'attack',
     1,
     'foe',
-    [scaled(dmg(4), per('seared', 3, 'target'))],
-    { ...FLAME, exhaust: true, up: { effects: [scaled(dmg(8), per('seared', 3, 'target'))] } },
+    [scaled(dmg(4), per('burn', 3, 'target'))],
+    { ...FLAME, exhaust: true, up: { effects: [scaled(dmg(8), per('burn', 3, 'target'))] } },
   ),
   i(
     'rare',
@@ -271,9 +270,9 @@ export const SHAMAN: CardDef[] = [
   i('rare', 'burning-aegis', 'Burning Aegis', 'power', 1, 'none', [on('turnStart', [thorns(3)])], {
     up: { effects: [on('turnStart', [thorns(4)])] },
   }),
-  i('rare', 'inferno', 'Inferno', 'attack', 3, 'foe', [dmg(30), status('seared', 3, 'target')], {
+  i('rare', 'inferno', 'Inferno', 'attack', 3, 'foe', [dmg(30), status('burn', 3, 'target')], {
     ...FLAME,
-    up: { effects: [dmg(38), status('seared', 3, 'target')] },
+    up: { effects: [dmg(38), status('burn', 3, 'target')] },
   }),
 
   // --- Frost: Barrier and Faltering; attacks that leave enemies Faltering ---
@@ -540,9 +539,9 @@ export const SHAMAN: CardDef[] = [
     'power',
     1,
     'none',
-    [on('command', [dmg(3, 'allFoes')])],
+    [on('command', [dmg(4, 'allFoes')])],
     {
-      up: { effects: [on('command', [dmg(4, 'allFoes')])] },
+      up: { effects: [on('command', [dmg(5, 'allFoes')])] },
     },
   ),
   i(
@@ -560,7 +559,44 @@ export const SHAMAN: CardDef[] = [
     up: { effects: [dmg(8, 'allFoes', 4)] },
   }),
 
-  // --- glue: totems and commands ---
+  // --- glue: totems and commands (a totem acts only when a card commands it, DECISIONS #421) ---
+  i(
+    'basic',
+    'spirit-call',
+    'Spirit Call',
+    'skill',
+    1,
+    'none',
+    [commandTotem('choose'), barrier(2)],
+    {
+      up: { effects: [commandTotem('choose'), barrier(5)] },
+    },
+  ),
+  i('common', 'hawks-dive', "Hawk's Dive", 'skill', 1, 'none', [commandTotem('hawk'), barrier(3)], {
+    up: { effects: [commandTotem('hawk', 2)] },
+  }),
+  i(
+    'common',
+    'bears-guard',
+    "Bear's Guard",
+    'skill',
+    1,
+    'none',
+    [commandTotem('bear'), barrier(3)],
+    {
+      up: { effects: [commandTotem('bear'), barrier(6)] },
+    },
+  ),
+  i(
+    'common',
+    'thunderbirds-cry',
+    "Thunderbird's Cry",
+    'skill',
+    1,
+    'none',
+    [commandTotem('thunderbird'), dmg(3, 'allFoes'), draw(1)],
+    { up: { effects: [commandTotem('thunderbird'), dmg(5, 'allFoes'), draw(1)] } },
+  ),
   i(
     'common',
     'spark-cast',
@@ -568,9 +604,9 @@ export const SHAMAN: CardDef[] = [
     'skill',
     1,
     'none',
-    [plant('hawk'), barrier(2), commands(1)],
+    [plant('hawk'), commandTotem('hawk'), barrier(2)],
     {
-      up: { effects: [plant('hawk'), barrier(5), commands(1)] },
+      up: { effects: [plant('hawk'), commandTotem('hawk'), barrier(5)] },
     },
   ),
   i('common', 'wardkeepers-pact', 'Bear Call', 'skill', 1, 'none', [plant('bear'), barrier(7)], {
@@ -586,8 +622,8 @@ export const SHAMAN: CardDef[] = [
     [plant('thunderbird'), dmg(4, 'allFoes'), barrier(3)],
     { up: { effects: [plant('thunderbird'), dmg(6, 'allFoes'), barrier(4)] } },
   ),
-  i('common', 'call-again', 'Call Again', 'skill', 0, 'none', [commands(1)], {
-    up: { effects: [commands(1), barrier(2)] },
+  i('common', 'call-again', 'Call Again', 'skill', 0, 'none', [commandTotem('random')], {
+    up: { effects: [commandTotem('random'), barrier(2)] },
   }),
   i(
     'uncommon',
@@ -611,9 +647,18 @@ export const SHAMAN: CardDef[] = [
     [totemSlot, plant('*'), draw(2)],
     { up: { effects: [totemSlot, plant('*'), draw(3)] } },
   ),
-  i('uncommon', 'rally-the-spirits', 'Rally the Spirits', 'skill', 1, 'none', [commands(2)], {
-    up: { effects: [commands(2), barrier(4)] },
-  }),
+  i(
+    'uncommon',
+    'rally-the-spirits',
+    'Rally the Spirits',
+    'skill',
+    1,
+    'none',
+    [commandTotem('choose', 2)],
+    {
+      up: { effects: [commandTotem('choose', 2), barrier(4)] },
+    },
+  ),
   i(
     'uncommon',
     'ancestral-exchange',
@@ -666,7 +711,7 @@ export const SHAMAN: CardDef[] = [
     'power',
     1,
     'none',
-    [on('turnStart', [commands(1)])],
+    [on('turnStart', [commandTotem('random')])],
     {
       up: { innate: true },
     },
@@ -678,9 +723,9 @@ export const SHAMAN: CardDef[] = [
     'skill',
     2,
     'none',
-    [commandAll, barrier(5)],
+    [commandTotem('all'), barrier(5)],
     {
-      up: { effects: [commandAll, barrier(9)] },
+      up: { effects: [commandTotem('all'), barrier(9)] },
     },
   ),
 

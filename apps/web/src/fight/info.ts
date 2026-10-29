@@ -29,6 +29,12 @@ export const STATUS_INFO: Record<
     text: 'Deals 25% less damage with attacks.',
   },
   might: { name: 'Might', glyph: '✦', tone: 'good', text: 'Attacks deal 1 more damage per stack.' },
+  burn: {
+    name: 'Burn',
+    glyph: '♨',
+    tone: 'bad',
+    text: 'Burning: takes damage equal to its stacks at the start of its turn, then loses 1 stack (as Bleed does). The Shaman’s Flame.',
+  },
   seared: {
     name: 'Bleed',
     glyph: '❣',
@@ -536,12 +542,12 @@ export const KEYWORD_INFO: Record<string, { name: string; text: string }> = {
   // (the Shaman's, DECISIONS #418)
   command: {
     name: 'Command',
-    text: 'Press a totem to call its spirit, once a turn (some cards give more): the Hawk dives at a random enemy for 6, the Bear gives 5 Barrier, the Thunderbird hits every enemy for 3. Every Spirit adds 1.',
+    text: 'A card such as Spirit Call or Hawk’s Dive commands a totem, and its spirit acts by itself: the Hawk dives at a random enemy for 6, the Bear gives 5 Barrier, the Thunderbird hits every enemy for 3. Every Spirit adds 1. A totem never acts on its own.',
   },
   // (the Shaman's elements and Trinity, DECISIONS #420)
   element: {
     name: 'Flame, Frost, Storm',
-    text: 'The Shaman’s spells. Flame: one enemy, Bleed and Thorns. Frost: Barrier and Faltering. Storm: every enemy, or random ones, and Sapped. Each totem helps the first spell of its element each turn.',
+    text: 'The Shaman’s spells. Flame: one enemy, Burn and Thorns. Frost: Barrier and Faltering. Storm: every enemy, or random ones, and Sapped. Each totem helps the first spell of its element each turn.',
   },
   trinity: {
     name: 'Trinity',
@@ -693,8 +699,7 @@ export function keywordsOf(
     if (
       (o.op === 'status' && (o.status === 'rousing' || o.status === 'shelter')) ||
       (o.op === 'power' && (o as { when?: string }).when === 'command') ||
-      o.op === 'commands' ||
-      o.op === 'commandAll' ||
+      o.op === 'totemCommand' ||
       o.ops?.some((x) => x.op === 'status' && (x as { status?: string }).status === 'rousing')
     )
       add(KEYWORD_INFO['command']);

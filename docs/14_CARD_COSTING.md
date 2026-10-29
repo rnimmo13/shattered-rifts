@@ -438,17 +438,16 @@ with the Assassin's Knife Work. Positions cap the blade at 2 charges, worth at m
 
 ### The Shaman: elements, totems and Trinity (DECISIONS #420; the first version, #418, is in the DECISIONS log)
 
-He casts Flame (one enemy, Bleed, Thorns), Frost (Barrier, Faltering) and Storm (every enemy or random ones, Sapped) spells. Three
+He casts Flame (one enemy, Burn, Thorns), Frost (Barrier, Faltering) and Storm (every enemy or random ones, Sapped) spells. Three
 totems from the start (Hawk, Bear, Thunderbird; up to 5 positions) each help the first spell of their element each turn (+3, +3, +2).
-He commands a totem once a turn, more from cards, and it aims by itself (Hawk 6 to a random enemy, Bear 5 Barrier, Thunderbird 3 to
-all). Trinity, a spell of every element in one turn, gives 1 Spirit. Spirit has no cap and never goes down (Robert, 2026-10-29): +1
+Only cards command a totem (#421), and it aims by itself (Hawk 6 to a random enemy, Bear 5 Barrier, Thunderbird 3 to all). Trinity, a spell of every element in one turn, gives 1 Spirit. Spirit has no cap and never goes down (Robert, 2026-10-29): +1
 to every command, +1 per 2 to every totem's help.
 
 | Thing | Rate | Why |
 |---|---|---|
 | An element tag | **0** | the totems' help on the first spell of each element is the trait's. |
 | **Spirit** gained | **5** a point | permanent and uncapped: about 1.3 commands a turn and three helped spells over the rest of a fight, as much as a point of Might for the fight (§5). An exception to "no uncapped permanent scaling", by Robert's decision; the long boss fight is the check. |
-| An extra command | **~5-6** | the Hawk's 6 at random (x0.9), the Bear's 5 Barrier (6) or the Thunderbird's 3 to all (3.9), plus the Spirit he has. |
+| A command (a card's effect) | **~5-6** | the Hawk's 6 at random (x0.9), the Bear's 5 Barrier (6) or the Thunderbird's 3 to all (3.9), ~6 for one of your choice, ~5.3 for a random one, plus the Spirit he has. |
 | Plant a totem | **~1.5** | he starts with three, so a plant is usually a replacement: worth the change of help and command, not a new choice. |
 | A totem position | **~2** | empty until he plants into it. |
 | Thorns until the enemy turn ends | **1.5** a stack | ~1.5 enemy hits (§3). |
@@ -456,13 +455,13 @@ to every command, +1 per 2 to every totem's help.
 | Faltering on every enemy / on a random one | **3.9 / 2.7** | |
 | "Whenever you cast a Flame / Storm spell" | **~1.2 a turn** | in a deck built for that element. |
 | "Whenever Trinity triggers" | **~55%** of turns | in a deck built for all three. |
-| "Whenever you command a totem" | **~1.3 a turn** | |
+| "Whenever you command a totem" | **~1 a turn** | in a deck built for command cards. |
 
-The trait, **Spirit and Trinity** (the three totems, a command a turn, their help, Trinity's Spirit): about 5 a turn from the
-command, ~6 a turn from the help (about two helped spells: +3, +3.6, +2.6), and a Spirit every other turn with the starter (a
-Flame, a Frost and a Storm spell are in about 40% of its hands), ~2 a turn: **~50 over four turns, about 2.5 times the other traits
-(14-21)**. That is his design (Robert, 2026-10-29), not an oversight, and his cards are priced on their own; if he plays too strong,
-the levers are the Hawk's 6, the help (+3/+3/+2) and the command a turn, not the cards.
+The trait, **Spirit and Trinity** (the three totems and their help, Trinity's Spirit; no free command since #421): ~6 a turn from the
+help (about two helped spells: +3, +3.6, +2.6) and a Spirit every other turn with the starter, ~2 a turn: **~30 over four turns**,
+still above the other traits (14-21), by Robert's design; his cards are priced on their own. A command is a card's effect now, priced
+at its spirit's act (a Hawk's dive 5.4, a Bear's 6, a Thunderbird's 3.9, ~6 for one of your choice, ~5.3 for a random one). **Burn**
+is priced exactly as Bleed.
 
 ### The Monk: Martial Forms and Mastery (DECISIONS #419)
 

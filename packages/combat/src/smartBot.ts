@@ -116,7 +116,7 @@ export function chooseSmartAction(db: CombatDb, s: CombatState, opts: SmartOptio
     const next: Line[] = [];
     for (const line of frontier) {
       for (const a of legalActions(db, line.state)) {
-        if (a.type !== 'play' && a.type !== 'pick' && a.type !== 'command') continue;
+        if (a.type !== 'play' && a.type !== 'pick') continue;
         if (budget-- <= 0) break;
         let after: CombatState;
         try {

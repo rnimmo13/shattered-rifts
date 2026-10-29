@@ -271,8 +271,18 @@ describe('pool shape (docs/09_ROSTER.md §1)', () => {
             (o.op === 'scaleStatus' && o.status === 'seared') ||
             (o.op === 'status' && o.status === 'seared' && o.to !== 'target'),
         ),
-      // (Bleed stacking: the Assassin's until his rework, #416; the Shaman's Flame since #420)
-      ['assassin', 'shaman'],
+      ['assassin'],
+    );
+    // (Burn, the Shaman's Flame, DECISIONS #421: works as Bleed, a status of its own)
+    owns(
+      (c) =>
+        c.effects.some(
+          (o) =>
+            (o.op === 'status' && o.status === 'burn') ||
+            (o.op === 'scaleStatus' && o.status === 'burn') ||
+            (o.op === 'power' && o.ops.some((x) => x.op === 'status' && x.status === 'burn')),
+        ),
+      'shaman',
     );
   });
 

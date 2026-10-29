@@ -1,6 +1,6 @@
-// The Shaman rebuilt to Robert's direction (docs/reworks/SHAMAN_ELEMENTS_PROPOSAL.md, DECISIONS #420): he starts with a Hawk, a Bear
-// and a Thunderbird; each totem helps the first spell of its element each turn; he commands a totem once a turn (more from cards) and
-// its spirit aims by itself; Trinity (a Flame, a Frost and a Storm spell in one turn) gives 1 Spirit; Spirit never goes down, adds 1
+// The Shaman rebuilt to Robert's direction (docs/reworks/SHAMAN_ELEMENTS_PROPOSAL.md, DECISIONS #420, #421): he starts with a Hawk, a
+// Bear and a Thunderbird; each totem helps the first spell of its element each turn; a totem acts only when a card commands it, and its
+// spirit aims by itself; Trinity (a Flame, a Frost and a Storm spell in one turn) gives 1 Spirit; Spirit never goes down, adds 1
 // to every command and 1 per 2 to every totem's help.
 
 import { describe, expect, it } from 'vitest';
@@ -10,7 +10,7 @@ import {
   clone,
   createCombat,
   legalActions,
-  RulesError,
+  previewCardDamage,
   viewFor,
   type CombatState,
   type Op,
@@ -49,19 +49,17 @@ const play = (s: CombatState, id: string, target?: string): CombatState => {
   expect(act, `${id} playable`).toBeTruthy();
   return applyAction(db, s, act!).state;
 };
-const command = (s: CombatState, totem: number) => applyAction(db, s, { type: 'command', totem });
-const commands = (s: CombatState) => legalActions(db, s).filter((a) => a.type === 'command');
 const ops = (o: Op): Op[] => [o, ...('ops' in o && Array.isArray(o.ops) ? o.ops : [])];
 
 describe('the Shaman: elements, totems and Trinity', () => {
-  it('starts with a Hawk, a Bear and a Thunderbird and one command; his starter casts all three elements', () => {
+  it('starts with a Hawk, a Bear and a Thunderbird; his starter casts all three elements and commands a totem', () => {
     const { state } = createCombat(db, {
       seed: 'sh',
       a: { hero: 'shaman', deck: RIFTWALKERS.shaman.starter },
       b: { enemies: ['squire'] },
     });
     expect(state.sides.a.totems).toEqual(['hawk', 'bear', 'thunderbird']);
-    expect(state.sides.a.commands).toBe(1);
+    expect(RIFTWALKERS.shaman.starter).toContain('spirit-call');
     const tags = RIFTWALKERS.shaman.starter.flatMap((id) => db.cards[id]?.tags ?? []);
     for (const e of ['flame', 'frost', 'storm']) expect(tags, e).toContain(e);
     for (const id of RIFTWALKERS.shaman.starter)
@@ -75,32 +73,40 @@ describe('the Shaman: elements, totems and Trinity', () => {
         );
   });
 
-  it('a command aims by itself: Hawk 6 to a random enemy, Bear 5 Barrier, Thunderbird 3 to all; not attacks', () => {
-    let s = fight([], ['squire', 'squire']);
+  it('a card commands: the spirit aims by itself (Hawk 6 at random, Bear 5 Barrier, Thunderbird 3 to all); not attacks', () => {
+    let s = fight(['hawks-dive'], ['squire', 'squire']);
     hero(s).statuses.might = 5;
-    s = command(s, 0).state;
+    s = play(s, 'hawks-dive');
     expect(foe(s, 0).hp + foe(s, 1).hp).toBe(400 - 6);
-    let t = fight([]);
-    t = command(t, 1).state;
-    expect(hero(t).barrier).toBe(5);
-    let u = fight([], ['squire', 'squire']);
-    u = command(u, 2).state;
-    expect([foe(u, 0).hp, foe(u, 1).hp]).toEqual([197, 197]);
+    let t = fight(['bears-guard']);
+    t = play(t, 'bears-guard');
+    expect(hero(t).barrier).toBe(5 + 3);
+    let u = fight(['thunderbirds-cry'], ['squire', 'squire']);
+    u = play(u, 'thunderbirds-cry');
+    expect([foe(u, 0).hp, foe(u, 1).hp]).toEqual([200 - 3 - 3, 200 - 3 - 3]);
   });
 
-  it('one command a turn, more from cards, any totem as often as he likes; it comes back next turn', () => {
-    let s = fight(['rally-the-spirits']);
-    s = command(s, 0).state;
-    expect(commands(s)).toEqual([]);
-    expect(() => command(s, 0)).toThrow(RulesError);
-    s = play(s, 'rally-the-spirits');
-    expect(s.sides.a.commands).toBe(2);
-    s = command(s, 0).state;
-    s = command(s, 0).state;
-    expect(foe(s).hp).toBe(200 - 18);
+  it('there is no free command: nothing acts unless a card says so; Spirit Call asks which, Rally commands twice', () => {
+    let s = fight(['spirit-call', 'rally-the-spirits', 'great-spirits-call']);
+    expect(legalActions(db, s).map((a) => a.type)).not.toContain('command');
     s = applyAction(db, s, { type: 'endTurn' }).state;
     while (s.active !== 'a' && !s.winner) s = applyAction(db, s, { type: 'endTurn' }).state;
-    expect(s.sides.a.commands).toBe(1);
+    expect(s.sides.a.commanded).toBe(false);
+    let t = fight(['spirit-call', 'rally-the-spirits', 'great-spirits-call']);
+    t = play(t, 'spirit-call');
+    expect(t.pending?.kind).toBe('commandPick');
+    expect(viewFor(db, t, 'a').pending?.spirits?.map((x) => x.spirit)).toEqual([
+      'hawk',
+      'bear',
+      'thunderbird',
+    ]);
+    t = applyAction(db, t, { type: 'pick', cards: ['t1'] }).state;
+    expect(hero(t).barrier).toBe(2 + 5);
+    t = play(t, 'rally-the-spirits');
+    t = applyAction(db, t, { type: 'pick', cards: ['t0'] }).state;
+    expect(foe(t).hp).toBe(200 - 12);
+    t = play(t, 'great-spirits-call');
+    expect(foe(t).hp).toBe(200 - 12 - 6 - 3);
   });
 
   it('each totem helps the first spell of its element each turn; two Hawks help twice; Spirit adds 1 per 2', () => {
@@ -151,12 +157,12 @@ describe('the Shaman: elements, totems and Trinity', () => {
   });
 
   it('Spirit has no cap and adds 1 to every command', () => {
-    let s = fight(['spirit-walk']);
+    let s = fight(['spirit-walk', 'bears-guard']);
     hero(s).statuses.spirit = 12;
     s = play(s, 'spirit-walk');
     expect(hero(s).statuses.spirit).toBe(14);
-    s = command(s, 1).state;
-    expect(hero(s).barrier).toBe(5 + 14);
+    s = play(s, 'bears-guard');
+    expect(hero(s).barrier).toBe(5 + 14 + 3);
   });
 
   it('the Elder Tree gives 2 Spirit when planted; a full row asks which to replace; rare totems are never a free choice', () => {
@@ -190,9 +196,10 @@ describe('the Shaman: elements, totems and Trinity', () => {
   });
 
   it("the Moon Owl's command makes the next elemental spell free", () => {
-    let s = fight(['flame-spear']);
+    let s = fight(['spirit-call', 'flame-spear']);
     s.sides.a.totems = ['owl', 'bear', 'thunderbird'];
-    s = command(s, 0).state;
+    s = play(s, 'spirit-call');
+    s = applyAction(db, s, { type: 'pick', cards: ['t0'] }).state;
     const mana = s.sides.a.mana;
     s = play(s, 'flame-spear', foe(s).id);
     expect(s.sides.a.mana).toBe(mana);
@@ -208,14 +215,37 @@ describe('the Shaman: elements, totems and Trinity', () => {
     expect(foe(s, 1).statuses.sapped).toBe(2);
   });
 
-  it('commands are deterministic, and the side view shows totems, commands, elements and Trinity', () => {
-    const s = fight([], ['squire', 'squire']);
-    expect(command(s, 0).state).toEqual(command(s, 0).state);
-    const v = viewFor(db, command(s, 0).state, 'b').sides.a;
+  it('a command is deterministic, and the side view shows totems, elements and Trinity', () => {
+    const s = fight(['hawks-dive'], ['squire', 'squire']);
+    const card = s.sides.a.hand[0]!.id;
+    const a = applyAction(db, s, { type: 'play', card }).state;
+    expect(a).toEqual(applyAction(db, s, { type: 'play', card }).state);
+    const v = viewFor(db, a, 'b').sides.a;
     expect(v.totems).toEqual(['hawk', 'bear', 'thunderbird']);
-    expect(v.commands).toBe(0);
+    expect(v.commanded).toBe(true);
     expect(v.elementsTurn).toEqual([]);
     expect(v.trinityDone).toBe(false);
+  });
+
+  it('Burn works as Bleed: it ticks its stacks and loses 1; Wildfire doubles it', () => {
+    let s = fight(['searing-lash', 'spreading-flames']);
+    s.sides.a.totems = [null, 'bear', 'thunderbird'];
+    s = play(s, 'searing-lash', foe(s).id);
+    expect(foe(s).statuses.burn).toBe(2);
+    s = play(s, 'spreading-flames', foe(s).id);
+    expect(foe(s).statuses.burn).toBe(4);
+    const hp = foe(s).hp;
+    s = applyAction(db, s, { type: 'endTurn' }).state;
+    expect(foe(s).hp).toBeLessThanOrEqual(hp - 4);
+    expect(foe(s).statuses.burn).toBe(3);
+  });
+
+  it("the number on a card counts the totems' help it will get (review H1)", () => {
+    const s = fight(['ember-bolt', 'ember-bolt']);
+    const first = s.sides.a.hand[0]!.id;
+    expect(previewCardDamage(db, s, first, foe(s).id).get(0)?.lo).toBe(10);
+    const t = play(s, 'ember-bolt', foe(s).id);
+    expect(previewCardDamage(db, t, t.sides.a.hand[0]!.id, foe(t).id).get(0)?.lo).toBe(7);
   });
 
   it('every Shaman card has text', () => {

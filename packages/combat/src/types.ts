@@ -16,6 +16,7 @@ export type StatusId =
   | 'faltering' // deals 25% less attack damage (turns)
   | 'might' // +1 attack damage per stack (permanent)
   | 'seared' // takes stacks damage at the start of its turn, then loses 1
+  | 'burn' // (the Shaman's Flame, DECISIONS #421) Burn: exactly as Bleed, a status of its own
   | 'stunned' // counts as Exposed, Faltering and Brittle (never on top of them) for its own count of turns (DECISIONS #310)
   | 'thorns' // reflects stacks damage to attackers (permanent)
   | 'shielded' // ignores the next instance of damage per stack
@@ -98,6 +99,7 @@ export const STATUS_IDS: readonly StatusId[] = [
   'faltering',
   'might',
   'seared',
+  'burn',
   'stunned',
   'thorns',
   'shielded',
@@ -172,6 +174,7 @@ export const DEBUFFS: readonly StatusId[] = [
   'exposed',
   'faltering',
   'seared',
+  'burn',
   'stunned',
   'brittle',
   'doom',
@@ -262,6 +265,7 @@ export type Metric =
    * campaign and in the Arena, where heroes have several times the HP) */
   | 'missingPct'
   | 'seared'
+  | 'burn' // (about a unit) its Burn
   | 'exposed'
   | 'faltering'
   | 'might'
@@ -746,10 +750,11 @@ export type Op =
   | { op: 'uproot' }
   /** (DECISIONS #420) one more totem position (at most TOTEM_SLOTS), empty */
   | { op: 'totemSlot' }
-  /** command totems this many more times this turn */
-  | { op: 'commands'; amount: number }
-  /** every totem you have acts once now (not one of the turn's commands) */
-  | { op: 'commandAll' }
+  /**
+   * (DECISIONS #421) totems act, `times` times: every totem of the `spirit` kind; 'choose' one the player picks; 'random' a random
+   * one; 'all' every totem he has. The only way a totem acts: there is no free command.
+   */
+  | { op: 'totemCommand'; spirit: string; times?: number }
   // --- the Monk's Martial Forms (DECISIONS #419)
   /** change to this form ('*': the player may choose one, or keep the form they are in); the turn's progress starts again */
   | { op: 'form'; form: Form | '*' };
@@ -922,9 +927,8 @@ export interface HeroTrait {
   salvage?: boolean;
   /** Guard (the Knight, DECISIONS #415): an enemy attack hit this hero's Barrier stops completely leaves the attacker Open */
   openings?: boolean;
-  /** Totems (the Shaman, DECISIONS #418, #420): he starts with this many positions; `commands` a turn (default 1) */
+  /** Totems (the Shaman, DECISIONS #418, #420, #421): he starts with this many positions; cards command them */
   totems?: number;
-  commands?: number;
   /** Trinity (DECISIONS #420): the first time each turn he has cast a spell of every element, he gains 1 Spirit */
   trinity?: boolean;
   /** Martial Forms (the Monk, DECISIONS #419): the form he starts each fight in; completing its objective gives 1 Mastery */
@@ -1170,7 +1174,8 @@ export interface Pending {
     | 'recast'
     | 'plantKind'
     | 'plantAt'
-    | 'form';
+    | 'form'
+    | 'commandPick';
   /** (the Shaman's: 'plantKind' which spirit to plant, pool the totem ids; 'plantAt' which position, pool 't0'-'t4', none = keep) */
   spirit?: string;
   /** (the Shaman) the totem boost the card's first play got, carried over the choice */
@@ -1293,9 +1298,8 @@ export interface SideState {
   enchants?: Enchant[];
   /** (the Shaman) totem positions, each a TotemDef id or null; missing for a hero without totems (DECISIONS #418) */
   totems?: (string | null)[];
-  /** a totem was commanded this turn; the commands left this turn (DECISIONS #420: one a turn, more from cards) */
+  /** a totem was commanded this turn (only ever by a card, DECISIONS #421) */
   commanded?: boolean;
-  commands?: number;
   /** (the Shaman, DECISIONS #420) the elements cast this turn, the totem boosts already used ('flame' / 'frost' / 'storm' / 'any'),
    * and whether Trinity has triggered this turn */
   elementsTurn?: Element[];
@@ -1411,9 +1415,7 @@ export type Action =
   | { type: 'potion'; index: number; potion?: string; target?: UnitId }
   | { type: 'endTurn' }
   /** answer a pending choice with the cards picked (their ids, in any order) */
-  | { type: 'pick'; cards: InstId[] }
-  /** (DECISIONS #420) command the totem in position `totem`: one of the turn's commands; it aims by itself */
-  | { type: 'command'; totem: number };
+  | { type: 'pick'; cards: InstId[] };
 
 export type CombatEvent =
   | { type: 'turnStart'; side: Side; turn: number }

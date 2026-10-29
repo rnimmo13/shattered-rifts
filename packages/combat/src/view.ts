@@ -91,8 +91,7 @@ export interface SideView {
   /** (the Shaman) totem positions (a TotemDef id or null), and whether a totem was commanded this turn */
   totems?: (string | null)[];
   commanded?: boolean;
-  /** (DECISIONS #420) commands left this turn, the elements cast this turn, and whether Trinity triggered */
-  commands?: number;
+  /** (DECISIONS #420) the elements cast this turn, and whether Trinity triggered */
   elementsTurn?: Element[];
   trinityDone?: boolean;
   /** (the Monk) his form, its objective's progress this turn (0-2), and whether it is complete */
@@ -246,7 +245,7 @@ function pendingView(s: CombatState, me: Side): PendingView | null {
   if (p.kind === 'form')
     return { kind: p.kind, pool: [], min: p.min, max: p.max, forms: p.pool as Form[] };
   // (the Shaman's: kinds of spirit, or totem positions)
-  if (p.kind === 'plantKind' || p.kind === 'plantAt') {
+  if (p.kind === 'plantKind' || p.kind === 'plantAt' || p.kind === 'commandPick') {
     const list = sd.totems ?? [];
     const spirits = p.pool.map((id) => ({
       id,
@@ -313,7 +312,6 @@ export function viewFor(db: CombatDb, s: CombatState, me: Side): CombatView {
         ? {
             totems: [...sd.totems],
             commanded: !!sd.commanded,
-            commands: sd.commands ?? 0,
             elementsTurn: [...(sd.elementsTurn ?? [])],
             trinityDone: !!sd.trinityDone,
           }
@@ -405,6 +403,7 @@ const STATUS_NAME: Record<string, string> = {
   ritual: 'Cadence',
   vigor: 'Primed',
   seared: 'Bleed',
+  burn: 'Burn',
   freeattack: 'Free Attack',
   freeskill: 'Free Skill',
   resonance: 'Spirit',
@@ -506,6 +505,7 @@ const METRIC_WORDS: Record<Metric, { per: string; equal: string }> = {
   missingHp: { per: 'missing HP', equal: 'missing HP' },
   missingPct: { per: '% HP missing', equal: 'share of HP missing' },
   seared: { per: 'Bleed', equal: 'Bleed' },
+  burn: { per: 'Burn', equal: 'Burn' },
   exposed: { per: 'Exposed', equal: 'Exposed' },
   faltering: { per: 'Faltering', equal: 'Faltering' },
   might: { per: 'Might', equal: 'Might' },
@@ -660,6 +660,7 @@ const UNIT_METRICS: readonly Metric[] = [
   'missingHp',
   'missingPct',
   'seared',
+  'burn',
   'exposed',
   'faltering',
   'might',
@@ -845,6 +846,7 @@ function whenText(o: Extract<Op, { op: 'when' }>, db?: CombatDb): string {
   if (o.by === 'exhaustedTurn' && (lo ?? 0) >= 1) return 'you have consumed a card this turn';
   if (o.by === 'skillsDrawnNow' && (lo ?? 0) >= 1) return 'you drew a Skill';
   if (o.by === 'seared' && o.of === 'target' && (lo ?? 0) >= 1) return 'the target has Bleed';
+  if (o.by === 'burn' && o.of === 'target' && (lo ?? 0) >= 1) return 'the target is Burning';
   if (o.by === 'x' && lo !== undefined && hi === undefined) return `X is ${lo} or more`;
   if (o.by === 'played' && lo !== undefined && hi === undefined)
     return `you have played ${lo} or more cards this turn`;
@@ -1628,12 +1630,15 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
       return 'Uproot all your totems.';
     case 'totemSlot':
       return 'Gain a totem position.';
-    case 'commands':
-      return o.amount === 1
-        ? 'Command a totem once more this turn.'
-        : `Command totems ${o.amount} more times this turn.`;
-    case 'commandAll':
-      return 'Every totem you have acts once.';
+    case 'totemCommand': {
+      const n = o.times ?? 1;
+      const twice = n === 1 ? '' : n === 2 ? ' twice' : ` ${n} times`;
+      if (o.spirit === 'all') return `Command every totem you have${twice}.`;
+      if (o.spirit === 'random') return `Command a random totem${twice}.`;
+      if (o.spirit === 'choose') return `Command a totem of your choice${twice}.`;
+      const nm = db.totems?.[o.spirit]?.name ?? o.spirit;
+      return `Command your ${nm}s${twice}.`;
+    }
     // (the Monk's forms)
     case 'form':
       return o.form === '*' ? 'You may change form.' : `Enter ${cap(o.form)} form.`;
@@ -1734,7 +1739,9 @@ export function cardText(db: CombatDb, c: CardDef, live?: ReadonlyMap<number, Li
   if (c.tags?.includes('frost')) parts.push('Frost.');
   if (c.tags?.includes('storm')) parts.push('Storm.');
   if (c.tags?.includes('prism'))
-    parts.push('Prism (counts as an element you have not cast this turn).');
+    parts.push(
+      "Prism (for Trinity and your totems' help, it counts as an element you have not cast this turn).",
+    );
   // (the Monk's techniques, DECISIONS #419: a step of his form's objective)
   if (c.tags?.includes(DEFENSIVE_TAG)) parts.push('Defensive technique.');
   if (c.tags?.includes(STRIKING_TAG)) parts.push('Striking technique.');

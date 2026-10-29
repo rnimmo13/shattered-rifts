@@ -254,9 +254,8 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     // (rebuilt again 2026-10-29 to Robert's direction, docs/reworks/SHAMAN_ELEMENTS_PROPOSAL.md, DECISIONS #420)
     trait: {
       name: 'Spirit and Trinity',
-      text: "You start with a Hawk, a Bear and a Thunderbird totem, and command a totem once a turn. The first time each turn you cast a Flame, a Frost and a Storm spell, Trinity gives you 1 Spirit. Spirit never goes down: each point adds 1 to your commands, and every 2 add 1 to your totems' help.",
+      text: "You start with a Hawk, a Bear and a Thunderbird totem; each helps your first spell of its element each turn, and cards command them to act. The first time each turn you cast a Flame, a Frost and a Storm spell, Trinity gives you 1 Spirit. Spirit never goes down: each point adds 1 to your totems' commands, and every 2 add 1 to their help.",
       totems: 3,
-      commands: 1,
       trinity: true,
       fightStart: [plant('hawk'), plant('bear'), plant('thunderbird')],
     },
@@ -269,22 +268,23 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     },
     starter: [
       ...rep('strike', 2),
-      ...rep('defend', 2),
+      'defend',
+      'spirit-call',
       ...rep('ember-bolt', 2),
       ...rep('frost-ward', 2),
       ...rep('gathering-storm', 2),
     ],
     blurb:
       'An elder shaman who casts Flame, Frost and Storm. His Hawk, Bear and Thunderbird totems help his spells every turn, and he calls on their spirits to strike and shield for him. A spell of every element in one turn, Trinity, raises his Spirit for good.',
-    mechanics: ['Elements', 'Totems', 'Commands', 'Trinity', 'Spirit'],
+    mechanics: ['Elements', 'Totems', 'Commands', 'Trinity', 'Spirit', 'Burn'],
     buildPaths: [
-      'Flame: single-target damage and Bleed, with Thorns to guard',
+      'Flame: single-target damage and Burn, with Thorns to guard',
       'Frost: Barrier and Faltering',
       'Storm: every enemy at once, with Sapped to guard',
     ],
     howTo: [
       'His spells are Flame (one enemy), Frost (Barrier and Faltering) or Storm (every enemy). Each totem helps the first spell of its element each turn: the Hawk Flame, the Bear Frost, the Thunderbird Storm.',
-      'Once a turn, press a totem to call its spirit: the Hawk dives at a random enemy for 6, the Bear gives 5 Barrier, the Thunderbird hits every enemy for 3. Some cards give more commands.',
+      "Cards such as Spirit Call and Hawk's Dive command your totems: the Hawk dives at a random enemy for 6, the Bear gives 5 Barrier, the Thunderbird hits every enemy for 3. A totem never acts unless a card commands it.",
       "Cast a Flame, a Frost and a Storm spell in one turn for Trinity: 1 Spirit. Spirit never goes down; each point makes every command 1 stronger, and every 2 make every totem's help 1 stronger.",
     ],
   },

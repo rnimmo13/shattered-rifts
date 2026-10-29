@@ -102,9 +102,6 @@ export function cleanAction(a: Action): Action {
           ? (o['cards'] as unknown[]).slice(0, 40).map((c) => str(c) ?? '')
           : [],
       };
-    // (the Shaman's command, DECISIONS #418)
-    case 'command':
-      return { type: 'command', totem: num(o['totem']) ?? -1 };
     default:
       return { type: 'endTurn' };
   }
