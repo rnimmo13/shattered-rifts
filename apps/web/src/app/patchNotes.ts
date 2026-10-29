@@ -29,6 +29,27 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.123.0',
+    date: '2026-10-29',
+    title: 'Deeper decks',
+    summary: 'The Assassin, Spellblade and Monk each grow to 87 cards with new ways to play.',
+    notes: [
+      {
+        kind: 'new',
+        text: 'The Assassin: 36 new cards and 9 new Auras. Spend Preparation a point at a time or hold it for Poised Strike, leave knives in for their effect, pull one knife at a time, spread knives across a fight, and set up a strike from the shadows.',
+      },
+      {
+        kind: 'new',
+        text: 'The Spellblade: 36 new cards and 7 new Auras. Spend one charge and keep the other, release matching or mixed pairs (Resonant Pair makes a matching pair take effect again), weave Wards, Recast an awkward charge, or hold a full blade.',
+      },
+      {
+        kind: 'new',
+        text: 'The Monk: 36 new cards and 6 new Auras. Root defence that turns into damage, Current pairs that care about order, Ember strikes committed to one enemy, cards that reward keeping Mastery and small spends of it, and ways to change form.',
+      },
+    ],
+    heads: 'Rules changed: replays and Arena games from before this version no longer play.',
+  },
+  {
     version: '0.122.0',
     date: '2026-10-29',
     title: 'Five classes rebuilt',
