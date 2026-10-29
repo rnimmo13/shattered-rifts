@@ -514,6 +514,9 @@ function pinCard(
       const id = crossedOffers(r.rng, r.character, deck, [st.rarity], 1)[0];
       return id ? { step: { k: 'card', id }, lose: [], gain: [id] } : null;
     }
+    // (a card the event already named, the open rift's three: shown in its option too, DECISIONS #435)
+    case 'card':
+      return st.id ? { step: st, lose: [], gain: [st.id] } : null;
     default:
       return null;
   }
