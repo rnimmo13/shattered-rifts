@@ -20,10 +20,7 @@ export const SHELVED_LEGENDARIES: readonly string[] = [
   'masquerade',
   // assassin: none (Sylas is exactly the Silent's list, and his three went with his older cards)
   // shaman: none (he is the Defect's card list, which has no Legendary)
-  // monk (was barbarian)
-  'perfect-balance',
-  'still-flame-ascendant',
-  'eye-of-the-storm',
+  // monk: none (his three went with his stances, DECISIONS #419)
   // (spellblade: none, she is the Regent's card list, which has no Legendary to put away)
   // necromancer: none (Dorian is the Necrobinder's card list, which has no Legendary)
   // drunkard

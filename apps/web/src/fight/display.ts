@@ -176,6 +176,11 @@ export function reduceEvent(db: CombatDb, s: CombatState, e: CombatEvent): void 
     case 'command':
       s.sides[e.side].commanded = true;
       return;
+    // (the Monk's form: the panel follows the event; its steps come with the next resync)
+    case 'form':
+      s.sides[e.side].form = e.form;
+      s.sides[e.side].formDone = e.done;
+      return;
     case 'snareSet': {
       const sd = s.sides[e.side];
       const i = sd.discard.findIndex((c) => c.id === e.snare);

@@ -1,10 +1,12 @@
 // Small constructors so the Combat v2 content below reads like a card list, not like JSON.
 
+import { DEFENSIVE_TAG, STRIKING_TAG } from '@sr/combat';
 import type {
   CardDef,
   CardKind,
   CardTarget,
   Enchant,
+  Form,
   Move,
   Op,
   Pattern,
@@ -349,6 +351,14 @@ export const gainSpirit = (n = 1): Op => status('spirit', n);
 export const spendSpirit = (n = 99): Op => ({ op: 'spend', status: 'spirit', amount: n });
 /** This turn your next command that gives Barrier gives it to every friendly. */
 export const shelter: Op = status('shelter', 1, 'self', true);
+// --- the Monk's Martial Forms (DECISIONS #419) ------------------------------------------------------------------------
+/** Change form ('*': the player may choose one, or keep theirs); the turn's progress starts again. */
+export const form = (f: Form | '*'): Op => ({ op: 'form', form: f });
+/** Spend up to `n` Mastery (at most 2 on a card, DECISIONS #419); read how much with per('masterySpent'). */
+export const spendMastery = (n: 1 | 2): Op => ({ op: 'spend', status: 'mastery', amount: n });
+export const DEFENSIVE: { tags: string[] } = { tags: [DEFENSIVE_TAG] };
+export const STRIKING: { tags: string[] } = { tags: [STRIKING_TAG] };
+
 /** "If you have a Hawk: ..." */
 export const ifTotem = (spirit: string, ops: Op[]): Op => ({
   op: 'when',

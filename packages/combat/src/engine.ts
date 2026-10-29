@@ -31,6 +31,10 @@ import {
   TOTEM_SLOTS,
   SPIRIT_MAX,
   SPIRIT_BOOST,
+  FORMS,
+  MASTERY_MAX,
+  DEFENSIVE_TAG,
+  STRIKING_TAG,
   RADIANT_ENTER_MANA,
   RulesError,
   STANCES,
@@ -40,6 +44,7 @@ import {
   clone,
   type Action,
   type Enchant,
+  type Form,
   type CardDef,
   type CardId,
   type CardInst,
@@ -230,8 +235,9 @@ function addStatus(r: Run, u: Unit, st: StatusId, amount: number): boolean {
   // (the Assassin, DECISIONS #416) a unit holds at most KNIFE_MAX knives and a hero PREP_MAX Preparation: more is simply lost
   if (st === 'knives') total = Math.min(total, KNIFE_MAX);
   if (st === 'prep') total = Math.min(total, PREP_MAX);
-  // (the Shaman, DECISIONS #418) Spirit stops at SPIRIT_MAX
+  // (the Shaman, DECISIONS #418) Spirit stops at SPIRIT_MAX; (the Monk, #419) Mastery at MASTERY_MAX
   if (st === 'spirit') total = Math.min(total, SPIRIT_MAX);
+  if (st === 'mastery') total = Math.min(total, MASTERY_MAX);
   // Hangover stops at HANGOVER_MAX, so the cards that grow with it stay in reach (DECISIONS #354)
   if (st === 'hangover') total = Math.min(total, HANGOVER_MAX);
   if (total <= 0) delete u.statuses[st];
@@ -638,6 +644,92 @@ function discharge(r: Run, a: Act, side: SideState, count: number): void {
   r.ev.push({ type: 'pending', side: side.id, kind: 'discharge' });
 }
 
+// --- the Monk's Martial Forms (DECISIONS #419) ------------------------------------------------------------------------
+
+/**
+ * How far the form's objective is this turn, 0-2 (2: complete). Root: two different Defensive techniques. Current: a Defensive then
+ * a Striking technique, different cards, in that order. Ember: two different Striking techniques aimed at the same enemy.
+ */
+export function formProgress(sd: Pick<SideState, 'form' | 'formSteps' | 'formDone'>): number {
+  if (sd.formDone) return 2;
+  const steps = sd.formSteps ?? [];
+  if (sd.form === 'root')
+    return Math.min(2, new Set(steps.filter((x) => x.tag === 'defensive').map((x) => x.card)).size);
+  if (sd.form === 'current') {
+    // (any Defensive technique can open the sequence, and any later Striking one of another card closes it)
+    const done = steps.some(
+      (g, i) =>
+        g.tag === 'defensive' &&
+        steps.slice(i + 1).some((x) => x.tag === 'striking' && x.card !== g.card),
+    );
+    return done ? 2 : steps.some((x) => x.tag === 'defensive') ? 1 : 0;
+  }
+  if (sd.form === 'ember') {
+    let best = 0;
+    for (const t of new Set(
+      steps.flatMap((x) => (x.tag === 'striking' && x.target ? [x.target] : [])),
+    ))
+      best = Math.max(
+        best,
+        new Set(steps.filter((x) => x.tag === 'striking' && x.target === t).map((x) => x.card))
+          .size,
+      );
+    return Math.min(2, best);
+  }
+  return 0;
+}
+
+function showForm(r: Run, sd: SideState): void {
+  if (!sd.form) return;
+  r.ev.push({
+    type: 'form',
+    side: sd.id,
+    form: sd.form,
+    progress: formProgress(sd),
+    done: !!sd.formDone,
+  });
+}
+
+/** A new form: its objective's progress starts again (the turn's one completion stays spent if it was). */
+function changeForm(r: Run, sd: SideState, form: Form): void {
+  if (!sd.form || sd.form === form) return;
+  sd.form = form;
+  sd.formSteps = [];
+  showForm(r, sd);
+  fireTriggers(r, sd, 'formChange');
+}
+
+/**
+ * A technique card the player played from hand is a step of the form's objective (an echo, a replay or a card played for free is
+ * not). The first completion of a turn gives 1 Mastery and answers `technique` triggers; later ones give nothing.
+ */
+function techniqueStep(r: Run, sd: SideState, cd: CardDef, target: Unit | null): void {
+  if (!sd.form || r.s.winner) return;
+  const tag = cd.tags?.includes(DEFENSIVE_TAG)
+    ? 'defensive'
+    : cd.tags?.includes(STRIKING_TAG)
+      ? 'striking'
+      : null;
+  if (!tag) return;
+  sd.techniquesTurn = (sd.techniquesTurn ?? 0) + 1;
+  if (tag === 'defensive') sd.defensiveTurn = (sd.defensiveTurn ?? 0) + 1;
+  if (sd.formDone) return;
+  (sd.formSteps ??= []).push({
+    card: cd.id.replace(/\+$/, ''),
+    tag,
+    ...(target && target.side !== sd.id ? { target: target.id } : {}),
+  });
+  const hero = heroOf(sd);
+  if (formProgress(sd) >= 2 && hero) {
+    sd.formDone = true;
+    addStatus(r, hero, 'mastery', 1);
+    showForm(r, sd);
+    fireTriggers(r, sd, 'technique');
+    return;
+  }
+  showForm(r, sd);
+}
+
 // --- the Shaman's totems (DECISIONS #418) ------------------------------------------------------------------------------
 
 function totemDef(r: Run, id: string) {
@@ -717,10 +809,13 @@ function placeTotem(r: Run, a: Act, side: SideState, at: number, spirit: string)
   }
 }
 
-/** The units a totem's command may aim at: any living enemy, or any living unit of your side. */
+/** The units a totem's command may aim at: any living enemy (a taunting one first), or any living unit of your side. */
 function commandTargets(r: Run, side: Side, aim: 'foe' | 'friend' | 'none'): Unit[] {
   if (aim === 'none') return [];
-  return r.s.sides[aim === 'foe' ? other(side) : side].units.filter((u) => u.hp > 0);
+  const live = r.s.sides[aim === 'foe' ? other(side) : side].units.filter((u) => u.hp > 0);
+  // (an aimed Hawk is bound by Taunt as an aimed card is)
+  const taunters = aim === 'foe' ? live.filter((u) => u.taunt) : [];
+  return taunters.length ? taunters : live;
 }
 
 /**
@@ -1165,6 +1260,23 @@ function metricValue(
       return a.replaced;
     case 'spiritSpent':
       return a.spentBy.spirit ?? 0;
+    // (the Monk)
+    case 'mastery':
+      return u ? stacks(u, 'mastery') : 0;
+    case 'masterySpent':
+      return a.spentBy.mastery ?? 0;
+    case 'techniqueDone':
+      return sd.formDone ? 1 : 0;
+    case 'techniquesTurn':
+      return sd.techniquesTurn ?? 0;
+    case 'defensiveTurn':
+      return sd.defensiveTurn ?? 0;
+    case 'inRoot':
+      return sd.form === 'root' ? 1 : 0;
+    case 'inCurrent':
+      return sd.form === 'current' ? 1 : 0;
+    case 'inEmber':
+      return sd.form === 'ember' ? 1 : 0;
   }
 }
 
@@ -2352,6 +2464,29 @@ function execOp(r: Run, a: Act, op: Op): void {
     case 'plant':
       plant(r, a, side, op.spirit, op.anywhere === true);
       return;
+    // --- the Monk's Martial Forms (DECISIONS #419)
+    case 'form': {
+      if (!side.form) return;
+      if (op.form !== '*') {
+        changeForm(r, side, op.form);
+        return;
+      }
+      if (!a.pick) return;
+      r.s.pending = {
+        kind: 'form',
+        pool: FORMS.filter((x) => x !== side.form),
+        // (choosing none keeps the form, and its progress)
+        min: 0,
+        max: 1,
+        rest: [],
+        actor: a.actor.id,
+        target: a.target?.id ?? null,
+        finish: null,
+        x: a.x,
+      };
+      r.ev.push({ type: 'pending', side: side.id, kind: 'form' });
+      return;
+    }
     case 'uproot': {
       const list = side.totems;
       if (!list) return;
@@ -2831,7 +2966,7 @@ function playFree(
     countPlayed(sd, cd, inst);
     fireTriggers(r, sd, 'play', { card: cd, target, inst, cost: 0 });
     payFullTrick(r, sd);
-  } else finishCard(r, sd, inst, cd, target, 0);
+  } else finishCard(r, sd, inst, cd, target, 0, true);
 }
 
 /**
@@ -3276,6 +3411,12 @@ function beginHeroTurn(r: Run, side: Side): void {
   sd.attacksPlayed = 0;
   sd.skillsPlayed = 0;
   if (sd.totems) sd.commanded = false;
+  if (sd.form) {
+    sd.formSteps = [];
+    sd.formDone = false;
+    sd.techniquesTurn = 0;
+    sd.defensiveTurn = 0;
+  }
   sd.discarded = 0;
   sd.lostHpTurn = 0;
   sd.exhaustedTurn = 0;
@@ -3590,6 +3731,8 @@ function buildHeroSide(r: Run, id: Side, h: HeroSetup): SideState {
     maxMana: hd.mana,
     handSize: hd.handSize,
     hero: hd.id,
+    // (the Monk's form, DECISIONS #419)
+    ...(hd.trait?.forms ? { form: hd.trait.forms, formSteps: [], formDone: false } : {}),
     // (the Shaman's totem positions, DECISIONS #418)
     ...(hd.trait?.totems
       ? { totems: Array.from({ length: Math.min(TOTEM_SLOTS, hd.trait.totems) }, () => null) }
@@ -3917,6 +4060,7 @@ function finishCard(
   cd: CardDef,
   target: Unit | null,
   paid?: number,
+  free = false,
 ): void {
   if (cd.kind === 'power') {
     // a Power stays in effect for the fight and leaves the deck (without counting as "exhausted")
@@ -3938,6 +4082,8 @@ function finishCard(
   bringBack(r, sd, cd);
   countPlayed(sd, cd, inst);
   const cost = paid ?? cd.cost + (inst.costUp ?? 0);
+  // (the Monk) a technique played from hand is a step of his form's objective, before the Auras answer the play
+  if (!free) techniqueStep(r, sd, cd, target);
   fireTriggers(r, sd, 'play', { card: cd, target, inst, cost });
   payFullTrick(r, sd);
   recallOnCost(r, sd, cost, inst.id);
@@ -4215,6 +4361,8 @@ function pickCards(r: Run, action: Extract<Action, { type: 'pick' }>): void {
     }
     // (the Shaman's: which spirit to plant, and where)
     else if (p.kind === 'plantKind' && ids[0]) plant(r, act, sd, ids[0], p.anywhere === true);
+    // (the Monk's: a new form, or none to keep his)
+    else if (p.kind === 'form' && ids[0]) changeForm(r, sd, ids[0] as Form);
     else if (p.kind === 'plantAt' && p.spirit && ids[0])
       placeTotem(r, act, sd, Number(ids[0].replace(/^t/, '')), p.spirit);
     const asked = r.s.pending as CombatState['pending'];

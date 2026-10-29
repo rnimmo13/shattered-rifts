@@ -14,14 +14,16 @@ describe('the words on a card are explained', () => {
     }
   });
 
-  it('Fervor explains Radiant, which it ends in', () => {
-    const fervor = Object.values(db.cards).find((c) =>
-      c.effects.some((o) => o.op === 'status' && o.status === 'mantra'),
+  // (the Monk's Fervor and Radiant went with his stances, DECISIONS #419: his techniques and Mastery explain themselves now)
+  it('a technique explains techniques, and a Mastery spender explains Mastery', () => {
+    const breaker = db.cards['mountain-breaker']!;
+    const keys = keywordsOf(breaker, () => false, cardText(db, breaker)).map((k) => k.name);
+    expect(keys).toContain('Technique');
+    expect(keys).toContain('Mastery');
+    const rhythm = db.cards['read-the-rhythm']!;
+    expect(keywordsOf(rhythm, () => false, cardText(db, rhythm)).map((k) => k.name)).toContain(
+      'Form',
     );
-    expect(fervor).toBeDefined();
-    const keys = keywordsOf(fervor!, () => false, cardText(db, fervor!)).map((k) => k.name);
-    expect(keys).toContain('Fervor');
-    expect(keys).toContain('Radiant');
   });
 });
 

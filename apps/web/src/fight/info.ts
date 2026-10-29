@@ -402,6 +402,13 @@ export const STATUS_INFO: Record<
     tone: 'good',
     text: 'The next enchantment you discharge this turn takes effect twice (it is still spent once).',
   },
+  // (the Monk's, DECISIONS #419)
+  mastery: {
+    name: 'Mastery',
+    glyph: '◆',
+    tone: 'good',
+    text: 'At most 3, kept from turn to turn. Completing your form’s technique gives 1 (once a turn); techniques such as Mountain Breaker spend up to 2 for more.',
+  },
   // (the Shaman's, DECISIONS #418)
   spirit: {
     name: 'Spirit',
@@ -510,6 +517,15 @@ export const KEYWORD_INFO: Record<string, { name: string; text: string }> = {
   rune: {
     name: 'Totem',
     text: 'You have three totem positions. Plant puts a totem in the first empty one (with all three taken you choose one to replace, or keep them). A totem does nothing on its own.',
+  },
+  // (the Monk's, DECISIONS #419)
+  technique: {
+    name: 'Technique',
+    text: 'A card marked Defensive or Striking technique is a step of your form’s objective when you play it from your hand. Root: two different Defensive techniques. Current: a Defensive, then a Striking technique. Ember: two different Striking techniques at the same enemy. Once a turn, completing it gives 1 Mastery and 3 Barrier.',
+  },
+  form: {
+    name: 'Form',
+    text: 'You are always in one form (Root, Current or Ember); it decides which two techniques complete your objective. A card that changes your form starts the turn’s progress again.',
   },
   // (the Shaman's, DECISIONS #418)
   command: {
@@ -662,6 +678,10 @@ export function keywordsOf(
       add(KEYWORD_INFO['command']);
     if (o.op === 'spend' && (o as { status?: string }).status === 'spirit')
       add({ name: STATUS_INFO.spirit.name, text: STATUS_INFO.spirit.text });
+    // (the Monk's forms and Mastery)
+    if (o.op === 'form') add(KEYWORD_INFO['form']);
+    if (o.op === 'spend' && (o as { status?: string }).status === 'mastery')
+      add({ name: STATUS_INFO.mastery.name, text: STATUS_INFO.mastery.text });
     if (o.op === 'stance') add(KEYWORD_INFO['stance']);
     // (the Knight's Riposte, and the Opening it spends)
     if (o.op === 'riposte' || (o.op === 'damage' && (o as { riposte?: number }).riposte)) {
@@ -679,7 +699,9 @@ export function keywordsOf(
     )
       add(KEYWORD_INFO['knives']);
     if (
-      (o.op === 'spend' && (o as { status?: string }).status !== 'spirit') ||
+      (o.op === 'spend' &&
+        (o as { status?: string }).status !== 'spirit' &&
+        (o as { status?: string }).status !== 'mastery') ||
       (o.op === 'status' && o.status === 'prep')
     )
       add(KEYWORD_INFO['prep']);
@@ -693,6 +715,7 @@ export function keywordsOf(
       if (s) add({ name: s.name, text: s.text });
     }
   }
+  if (c.tags?.includes('defensive') || c.tags?.includes('striking')) add(KEYWORD_INFO['technique']);
   if (c.exhaust || c.kind === 'power') add(KEYWORD_INFO['exhaust']);
   if (c.retain) add(KEYWORD_INFO['retain']);
   if (c.innate) add(KEYWORD_INFO['innate']);

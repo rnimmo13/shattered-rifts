@@ -141,10 +141,10 @@ Percentage debuffs (Exposed, Faltering, Debilitated) are worth more as numbers g
 | Precision (the Old Twelve Gauge's Sharpen, DECISIONS #400) | **2.5** a point | The Gun costs 1, hits every enemy, Holds and comes round 2-3 times a fight (the Obsidian Blade's Sharpen is 0.8: 2 Mana, one target, fewer shots). |
 | A Buckshot Shell (0, 4 to ALL, Consume) | **5.2** | A Dagger that hits every enemy. |
 | Hangover N (lose N HP next turn, never the last) | **-1.5** a stack | HP, at the usual rate; its payoffs are priced on ~3 stacks already there. |
-| Enter Fury (double attack damage, take 50% more) | **4**, plus the Barbarian's trait per stance entered | Kindle Fury (2, basic: 9 and Fury). Worth the attacks after it this turn; staying in Fury through the enemy turn costs ~6 HP. |
-| Enter Serene (leaving it gives 2 Mana, once a turn) | **4**, plus the trait | Still Guard / Vigilance. Leaving Serene on a card: about **+3.5**. Since DECISIONS #413 the 2 Mana is the Monk's trait (Inner Fire), not an engine rule; his cards keep these prices, so the trait table counts the same Mana again (about 7.5 a Serene exit) and the two must not be added up. |
-| Fervor | **2** a stack | 10 is a Radiant turn (~35-40), but it can't be timed. |
-| Enter Radiant now | **~31** | Rise Radiant (2, rare, Consume). |
+| Enter Fury (double attack damage, take 50% more) *(legacy: the archived Monk; his Martial Forms since #419 are in §15)* | **4**, plus the Barbarian's trait per stance entered | Kindle Fury (2, basic: 9 and Fury). Worth the attacks after it this turn; staying in Fury through the enemy turn costs ~6 HP. |
+| Enter Serene (leaving it gives 2 Mana, once a turn) *(legacy, as above)* | **4**, plus the trait | Still Guard / Vigilance. Leaving Serene on a card: about **+3.5**. Since DECISIONS #413 the 2 Mana is the Monk's trait (Inner Fire), not an engine rule; his cards keep these prices, so the trait table counts the same Mana again (about 7.5 a Serene exit) and the two must not be added up. |
+| Fervor *(legacy, as above)* | **2** a stack | 10 is a Radiant turn (~35-40), but it can't be timed. |
+| Enter Radiant now *(legacy, as above)* | **~31** | Rise Radiant (2, rare, Consume). |
 | Primed N | **1 per stack per hit** of the next attack | Feint 8 Barrier + 2 Primed, Heat of the Forge 7. Much better before a multi-hit attack. |
 | Might, rest of fight | **5** per stack | Steel Resolve: 2 for 1 Mana. Also lifts companions' strikes if the class shares Might with them. Attacks only: Aura, totem and Trap damage is flat (DECISIONS #376), so an Aura's damage never scales with Might, Exposed or Faltering. |
 
@@ -457,4 +457,27 @@ planting buys choice, never output.
 The trait, **Spirit Caller** (three positions, one command a turn, a Hawk at the start), prices at ~4.5 a turn: ~18 over four turns, a
 little under the Knight's ~21, with nothing passive. Nothing loops: a command makes no Mana, the Elder's card is one a turn, Spirit is
 capped at 3 and spent one a command, and no card gives a second command.
+
+### The Monk: Martial Forms and Mastery (DECISIONS #419)
+
+One form at a time; a form names two techniques that complete his objective this turn (Root: two different Defensive; Current: a
+Defensive then a Striking; Ember: two different Striking at one enemy). Only tagged cards played from hand count; it completes at
+most once a turn, for 1 Mastery (at most 3, kept) and the trait's 3 Barrier. No form multiplies damage, makes Mana or hurts him.
+
+| Thing | Rate | Why |
+|---|---|---|
+| A completion (the trait's) | **~60% of turns** with the starter, **~80%** in a technique deck | the starter (10 cards: 2 Defensive, 2 Striking techniques, all different) holds a Defensive and a Striking one in about 58% of 5-card hands; a drafted deck has about half its cards tagged. |
+| **Mastery** spent (a spender's bonus) | **0.8 x** its payoff a point, at **~1.5** for "up to 2", **~0.9** for "up to 1" | Mastery comes from the trait, not from cards, so the spender is paid for what it turns it into (as the Knight's Riposte is), less the other spenders it competes with and the cap of 3. Mountain Breaker (2: 16 + 3 a point) = 19.6. |
+| Mastery a card gives | **2.5** | about one later point of a spender (+3 damage or +2.4 Barrier), with the delay. Rare on purpose: Wreath of Flame (only after a completion), Coiled Serpent. |
+| A technique tag | **0** | the completion it enables is the trait's; a card is priced for what it does. |
+| A form change | **1** (a chosen one **1.5**) | it moves the objective to the hand he holds, and starts the turn's progress again. |
+| "If this is your first technique" / "if you played a Defensive technique this turn" | **x0.65** | one of the two steps is usually played first. |
+| "If you completed your technique this turn" / "in <form>" | **x0.5** | |
+| "Whenever you complete your technique" | **~0.75 a turn** | once a turn at most. |
+| A Defensive or Striking technique played | **~1.2 a turn** each in a technique deck | River Turns, Breath Between Blows. |
+
+The trait, **Martial Forms** (start in Current; a completion gives 1 Mastery and 3 Barrier), prices at ~0.6 x (Kindle Strike's 4 a
+Mastery 3 + 3.6 Barrier) x 4 turns = ~16 with the starter, ~21 in a technique deck, level with the Knight. Nothing loops: no card
+makes Mana now, no completion gives a card or Mana on its own (Perfected Motion's card is one a turn), Mastery is capped at 3 and
+spent at most 2 a card.
 

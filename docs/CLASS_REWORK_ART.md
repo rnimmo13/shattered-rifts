@@ -91,3 +91,20 @@ Priority 1 in the brief, **not made**: Hawk, Bear and Elder totem silhouettes an
 and commanded states. Until they exist the Totems panel draws each in code (a mark and a word: ⋀ Hawk, ◼ Bear, ✥ Elder) and a command
 plays the log line and the unit's hit or Barrier effect; no spirit becomes a unit or a target. The supplied reference strips the brief
 names (`shaman-totems-reference-v2.png`, `shaman-spirits-reference-v2.png`) are not in the repository.
+
+## Monk (Martial Forms and Mastery)
+
+Portrait: keep (`figures/hero-monk.png` and his skins).
+
+| Kind | Cards |
+|---|---|
+| Kept with their picture, still fitting | Inner Sight, Gather Breath, Held Breath, Coiled Serpent, Flood of Visions, Centre Yourself, Bowing Low, Still Water, Mountain's Stillness, Unbroken Calm, Breath Between Blows, Swift Step, Vigilance, Open Palm, Crushing Palm, Flurry of Palms, Quick Palms, Spinning Heel, Thousand Palms, Rage of Ages |
+| Kept picture, effect changed: **review** (drawn as a stance aura, Fury's red or Radiant's light: the brief's warning against Calm/Wrath/Divinity recolours) | Kindle Strike (`kindle-fury`), Still Guard, Angry Palm, Ashen Fist, Scattering Kick (`red-mist`), Temper Flare, Fearless, Foretold Flame, Unmoved Mind, Wreath of Flame, Shield of Calm, Perfect Calm, Sunlit Kick, Final Account, Last Ember |
+| New, placeholder until drawn (18) | Settle into Root, Find the Current, Stoke the Ember, Read the Rhythm, Perfected Motion, Grandmaster's Patience, Planted Heel, Iron Shirt, Rooted Resolve, Deflecting Palm, Flowing Step, Turning Palm, Redirect, The River Turns, Ember Step, Focused Strike, Mountain Breaker, Master's Flourish |
+| Pictures of removed cards that might fit (**look first**) | Unburdened Guard -> Deflecting Palm; Thread-Cutter -> Redirect; Perfect Balance -> Perfected Motion; Settled Mind -> Read the Rhythm; Rending Hands -> Master's Flourish |
+| Retired (unused now) | the 45 removed Monk cards' pictures (`retired.ts`, Monk identity block), including his three former Legendaries |
+
+New illustrations the brief suggests, **not made**: Root (footwork planted on cracked marble), Current (a blow redirected through a
+flowing palm sequence), Ember (focused flame released through one finishing strike). In code: the Form panel (`FormPanel.tsx`: the
+form's mark and name, ⛰ Root, ≋ Current, ✺ Ember, its objective in a line, two progress pips and the Mastery pips), the form tiles of
+Read the Rhythm's choice, tooltips, a teaching tip and Learn page words. No stance aura is drawn for him any more.

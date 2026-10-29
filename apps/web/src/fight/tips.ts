@@ -44,6 +44,13 @@ export const TIP_RULES: TipRule[] = [
     when: (v, c) => c.usesRunes || v.sides.a.runes.length > 0,
   },
   {
+    // (the Monk's, DECISIONS #419)
+    id: 'forms',
+    title: 'Martial Forms',
+    text: 'Your form (the Form panel by your hero) asks for two techniques each turn. In Current: a Defensive technique, then a Striking one. Complete it for 1 Mastery and 3 Barrier, then spend Mastery on cards such as Mountain Breaker.',
+    when: (v) => !!v.sides.a.form,
+  },
+  {
     // (the Shaman's, DECISIONS #418)
     id: 'totems',
     title: 'Commanding your totems',

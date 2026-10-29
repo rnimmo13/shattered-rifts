@@ -2665,3 +2665,54 @@ button.totem:disabled {
 .pick--charge .totem b {
   font-size: 2rem;
 }
+
+/* the Monk's form panel (DECISIONS #419): the form's mark and name, the objective in a line, two pips and his Mastery */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  padding: 0.25rem 0.4rem;
+  border-radius: 0.5rem;
+  border: 1px solid rgb(255 255 255 / 0.3);
+  background: rgb(10 8 16 / 0.85);
+  max-width: 15rem;
+  cursor: help;
+}
+.form__head {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.form__head b,
+.form > b {
+  font-size: 1.3rem;
+  line-height: 1.1;
+}
+.form__pips {
+  margin-left: auto;
+  letter-spacing: 0.15em;
+}
+.form__goal,
+.form__mastery {
+  font-size: 0.75rem;
+}
+.form.is-done {
+  box-shadow: 0 0 0 2px rgb(255 255 255 / 0.75);
+}
+.form--root {
+  color: #e6d3a8;
+  border-color: #a6864a;
+}
+.form--current {
+  color: #bfe3f2;
+  border-color: #4d97b8;
+}
+.form--ember {
+  color: #ffc09a;
+  border-color: #d9692c;
+}
+.pick--charge .form {
+  align-items: center;
+  min-width: 6rem;
+  padding: 0.6rem 0.8rem;
+}

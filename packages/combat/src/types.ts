@@ -89,7 +89,9 @@ export type StatusId =
   // (the Shaman's commanded totems, DECISIONS #418)
   | 'spirit' // Spirit: at most SPIRIT_MAX, kept between turns; one is spent to empower a command (+SPIRIT_BOOST)
   | 'rousing' // your next command this turn deals or gives this much more (it wears off at the end of your turn)
-  | 'shelter'; // this turn, your next command that aims at a friendly gives its Barrier to every friendly
+  | 'shelter' // this turn, your next command that aims at a friendly gives its Barrier to every friendly
+  // (the Monk's Martial Forms, DECISIONS #419)
+  | 'mastery'; // Mastery: at most MASTERY_MAX, kept between turns; earned by completing a form's technique, spent by techniques
 export const STATUS_IDS: readonly StatusId[] = [
   'exposed',
   'faltering',
@@ -161,6 +163,7 @@ export const STATUS_IDS: readonly StatusId[] = [
   'spirit',
   'rousing',
   'shelter',
+  'mastery',
 ];
 /** Debuffs: a Steadfast unit ignores the next one put on it. */
 export const DEBUFFS: readonly StatusId[] = [
@@ -188,6 +191,13 @@ export const PREP_MAX = 3;
 export const TOTEM_SLOTS = 3;
 export const SPIRIT_MAX = 3;
 export const SPIRIT_BOOST = 2;
+/** The Monk's Martial Forms (DECISIONS #419): the form changes which two techniques complete his objective, once a turn, for 1 Mastery. */
+export const FORMS = ['root', 'current', 'ember'] as const;
+export type Form = (typeof FORMS)[number];
+export const MASTERY_MAX = 3;
+/** The technique tags his cards carry ("Defensive technique", "Striking technique"): only tagged cards are steps of an objective. */
+export const DEFENSIVE_TAG = 'defensive';
+export const STRIKING_TAG = 'striking';
 /**
  * The Spellblade's enchantments (DECISIONS #417): her Obsidian Blade holds ENCHANT_SLOTS of them, in the order they were imbued. A
  * discharge spends them: Ember adds EMBER_DAMAGE to the first hit of the attack, Glass deals GLASS_DAMAGE to every enemy after it (a
@@ -349,7 +359,16 @@ export type Metric =
   | 'commanded' // 1 once you have commanded a totem this turn
   | 'uprooted' // totems the card being played has uprooted
   | 'replacedNow' // totems the card being played has replaced with a different kind
-  | 'spiritSpent'; // Spirit the card being played has spent
+  | 'spiritSpent' // Spirit the card being played has spent
+  // (the Monk, DECISIONS #419)
+  | 'mastery' // (about a unit) its Mastery
+  | 'masterySpent' // Mastery the card being played has spent
+  | 'techniqueDone' // 1 once you have completed your form's technique this turn
+  | 'techniquesTurn' // technique cards (Defensive or Striking) you have played this turn
+  | 'defensiveTurn' // Defensive techniques you have played this turn
+  | 'inRoot' // 1 while you are in Root form
+  | 'inCurrent' // 1 while you are in Current form
+  | 'inEmber'; // 1 while you are in Ember form
 export interface Scale {
   by: Metric;
   mult?: number;
@@ -407,7 +426,10 @@ export type TriggerWhen =
   // (the Shaman's totems, DECISIONS #418; `rune` narrows them to one kind of spirit)
   | 'command' // you commanded a totem (the target is what its spirit aimed at)
   | 'plant' // you planted a totem
-  | 'replace'; // a totem you planted replaced one of a different kind
+  | 'replace' // a totem you planted replaced one of a different kind
+  // (the Monk's Martial Forms, DECISIONS #419)
+  | 'technique' // you completed your form's technique (at most once a turn)
+  | 'formChange'; // you changed form
 
 export type Op =
   /** `lonePct`: Point Blank, this much more damage (percent) when it hits only one enemy */
@@ -712,7 +734,10 @@ export type Op =
    */
   | { op: 'plant'; spirit: string; anywhere?: boolean }
   /** uproot every totem you have (the `uprooted` metric counts them) */
-  | { op: 'uproot' };
+  | { op: 'uproot' }
+  // --- the Monk's Martial Forms (DECISIONS #419)
+  /** change to this form ('*': the player may choose one, or keep the form they are in); the turn's progress starts again */
+  | { op: 'form'; form: Form | '*' };
 
 export type CardKind = 'attack' | 'skill' | 'power' | 'summon' | 'snare';
 /** foe = an enemy; friend = any unit of yours (hero or ally); ally = one of your allies, never the hero */
@@ -884,6 +909,8 @@ export interface HeroTrait {
   openings?: boolean;
   /** Totems (the Shaman, DECISIONS #418): this many fixed totem positions, and once a turn the player commands one of them */
   totems?: number;
+  /** Martial Forms (the Monk, DECISIONS #419): the form he starts each fight in; completing its objective gives 1 Mastery */
+  forms?: Form;
 }
 
 export interface HeroDef {
@@ -1114,7 +1141,8 @@ export interface Pending {
     | 'discharge'
     | 'recast'
     | 'plantKind'
-    | 'plantAt';
+    | 'plantAt'
+    | 'form';
   /** (the Shaman's: 'plantKind' which spirit to plant, pool the totem ids; 'plantAt' which position, pool 't0'-'t2', none = keep) */
   spirit?: string;
   anywhere?: boolean;
@@ -1237,6 +1265,13 @@ export interface SideState {
   totems?: (string | null)[];
   /** a totem was commanded this turn (once a turn) */
   commanded?: boolean;
+  /** (the Monk, DECISIONS #419) his form; the technique steps played in it this turn (card id, tag, aimed enemy), whether the
+   * objective is done this turn (once a turn, however often he changes form), and the turn's technique counters */
+  form?: Form;
+  formSteps?: { card: string; tag: 'defensive' | 'striking'; target?: UnitId }[];
+  formDone?: boolean;
+  techniquesTurn?: number;
+  defensiveTurn?: number;
 }
 
 export type Winner = Side | 'draw';
@@ -1406,6 +1441,8 @@ export type CombatEvent =
   | { type: 'enchant'; side: Side; enchants: Enchant[]; spent?: Enchant[] }
   /** a side's totems changed (the Shaman's); `at`: the position that changed */
   | { type: 'totems'; side: Side; totems: (string | null)[]; at?: number }
+  /** (the Monk) his form or its progress changed: the objective's steps done (0-2), and whether it is complete this turn */
+  | { type: 'form'; side: Side; form: Form; progress: number; done: boolean }
   /** a totem was commanded: its spirit manifests and acts */
   | {
       type: 'command';

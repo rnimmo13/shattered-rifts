@@ -6,6 +6,7 @@ import type { CombatDb, PendingView } from '@sr/combat';
 import { FightCard } from './FightCard';
 import { ENCHANT_LOOK } from './enchantLook';
 import { totemLook } from './totemLook';
+import { FORM_LOOK } from './formLook';
 
 const TITLE: Record<PendingView['kind'], string> = {
   discard: 'Discard',
@@ -21,6 +22,8 @@ const TITLE: Record<PendingView['kind'], string> = {
   // (the Shaman's, DECISIONS #418)
   plantKind: 'Plant',
   plantAt: 'Plant',
+  // (the Monk's, DECISIONS #419)
+  form: 'Change form',
 };
 
 function prompt(p: PendingView): string {
@@ -29,6 +32,8 @@ function prompt(p: PendingView): string {
   if (p.kind === 'discharge') return 'Choose the enchantment to discharge.';
   if (p.kind === 'recast') return 'Choose what your newest enchantment becomes.';
   if (p.kind === 'plantKind') return 'Choose the spirit to plant.';
+  if (p.kind === 'form')
+    return 'Choose a new form (your progress this turn starts again), or keep the one you are in.';
   if (p.kind === 'plantAt') {
     const nm = p.planting ? totemLook(p.planting).name : 'the totem';
     return p.min === 0
@@ -101,6 +106,26 @@ export function PickModal(props: {
                   <small>{look.name}</small>
                 </span>
                 <p className="pick__note">{look.text}</p>
+              </button>
+            );
+          })}
+          {/* (forms to change to: DECISIONS #419) */}
+          {p.forms?.map((f) => {
+            const on = chosen.includes(f);
+            const look = FORM_LOOK[f];
+            return (
+              <button
+                key={f}
+                className={`pick pick--charge${on ? ' is-on' : ''}`}
+                aria-pressed={on}
+                aria-label={`${look.name} form: ${look.goal}`}
+                onClick={() => toggle(f)}
+              >
+                <span className={`form form--${f}`}>
+                  <b aria-hidden="true">{look.glyph}</b>
+                  <small>{look.name}</small>
+                </span>
+                <p className="pick__note">{look.goal}</p>
               </button>
             );
           })}

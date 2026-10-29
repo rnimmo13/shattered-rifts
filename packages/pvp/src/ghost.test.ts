@@ -31,7 +31,8 @@ describe('the smart bot that pilots a ghost', () => {
       }
       expect(m.over, `${x} v ${y} should end`).not.toBeNull();
     }
-  });
+    // (three whole matches searched move by move: about 3.5 s alone, more under the full suite's load)
+  }, 20000);
 
   it('beats the greedy bot more often than not (a sample, not a proof: pnpm ghostsim measures it)', () => {
     let smart = 0;

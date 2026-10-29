@@ -4,11 +4,10 @@
 // for it, never a one-off pile of Barrier (Robert, 2026-10-27; DECISIONS #338).
 
 import type { CardDef } from '@sr/combat';
-import { ACT, barrier, dmg, forge, on, pool, stance, status, summon } from '../build';
+import { ACT, barrier, dmg, forge, on, pool, status, summon } from '../build';
 
 const k = pool('hunter', 'wyldmaw');
 const v = pool('trickster', 'umbral');
-const s = pool('monk', 'aurelion');
 const p = pool('drunkard', 'midden');
 
 // (the Engineer's Drone Uprising was retired into Drone Carrier by the costing pass, DECISIONS #383)
@@ -35,17 +34,7 @@ export const LEGENDARIES: CardDef[] = [
     [dmg(20, 'allFoes'), status('stunned', 1, 'allFoes'), status('exposed', 2, 'allFoes')],
     { trigger: { on: 'foeTurn' } },
   ),
-  // Fury: in Fury every turn, and every turn it lashes out
-  s(
-    'rare',
-    'eye-of-the-storm',
-    'Eye of the Storm',
-    'power',
-    2,
-    'none',
-    [on('turnStart', [stance('wrath'), dmg(4, 'allFoes'), barrier(4)])],
-    { up: { effects: [on('turnStart', [stance('wrath'), dmg(6, 'allFoes'), barrier(6)])] } },
-  ),
+  // (the Monk's Eye of the Storm went with his stances, DECISIONS #419)
   // Gun: a sharper gun at once, and every shot sharpens it again and covers you
   p(
     'rare',

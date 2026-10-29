@@ -56,6 +56,7 @@ import { AimArrow } from './AimArrow';
 import { SuitTrack } from './SuitTrack';
 import { EnchantSlots } from './EnchantSlots';
 import { TotemPanel } from './TotemPanel';
+import { FormPanel } from './FormPanel';
 import { UnitPlates, type Placed } from './Plates';
 import { ErrorDetails } from '../ui/ErrorDetails';
 import { packLine } from './lineLayout';
@@ -427,8 +428,9 @@ export function FightView(props: {
   const [dragCard, setDragCard] = useState<HandCard | null>(null);
   const [aimPotion, setAimPotion] = useState<string | null>(null);
   // (the Shaman, DECISIONS #418) the totem whose command is being aimed, and whether the next command spends a Spirit
-  const [aimCommand, setAimCommand] = useState<number | null>(null);
-  const [empowerOn, setEmpowerOn] = useState(false);
+  // (both are kept with the turn they were set on: a new turn lets go of them without an effect)
+  const [aimCommandAt, setAimCommandAt] = useState<{ totem: number; turn: number } | null>(null);
+  const [empowerAt, setEmpowerAt] = useState<number | null>(null);
   const [floats, setFloats] = useState<Float[]>([]);
   const [banner, setBannerText] = useState<string | null>(null);
   /** a banner is good news (green), bad news (red) or just information */
@@ -997,6 +999,7 @@ export function FightView(props: {
         setLegal(legalFor(r.state));
         setSelected(null);
         setAimPotion(null);
+        setAimCommandAt(null);
         setReleasing(null);
         if (!history) enqueue(r.events, r.state, pvp ? seat !== mySide : undefined);
         // a campaign fight keeps every move, so a reload can resume it
@@ -1224,6 +1227,21 @@ export function FightView(props: {
     setReleasing(null);
     setHoverCard(null);
   }, [act, releasing]);
+  // (the Shaman) Empower only counts while a legal command can spend Spirit; a command being aimed goes with the totem
+  // (set on an earlier turn, or for a totem that can no longer be commanded, they are let go)
+  const turnNow = view?.turn ?? 0;
+  const aimCommand =
+    aimCommandAt &&
+    aimCommandAt.turn === turnNow &&
+    legal.some((a) => a.type === 'command' && a.totem === aimCommandAt.totem)
+      ? aimCommandAt.totem
+      : null;
+  const empowering = empowerAt === turnNow && legal.some((a) => a.type === 'command' && a.empower);
+  const canEmpowerTotem = useCallback(
+    (totem: number | null): boolean =>
+      legal.some((a) => a.type === 'command' && a.totem === totem && a.empower),
+    [legal],
+  );
   const aimSet = useMemo(
     () =>
       releaseCard && releasing
@@ -1239,7 +1257,7 @@ export function FightView(props: {
                 legal.flatMap((a) =>
                   a.type === 'command' &&
                   a.totem === aimCommand &&
-                  !!a.empower === empowerOn &&
+                  !!a.empower === (empowering && canEmpowerTotem(aimCommand)) &&
                   a.target
                     ? [a.target]
                     : [],
@@ -1251,7 +1269,8 @@ export function FightView(props: {
       dragTargets,
       aimPotion,
       aimCommand,
-      empowerOn,
+      empowering,
+      canEmpowerTotem,
       legal,
       releaseCard,
       releasing,
@@ -1342,7 +1361,8 @@ export function FightView(props: {
         else {
           setSelected(null);
           setAimPotion(null);
-          setAimCommand(null);
+          setAimCommandAt(null);
+          setEmpowerAt(null);
           setReleasing(null);
         }
       } else if (e.key === 'e' || e.key === 'E') endTurn();
@@ -1375,17 +1395,17 @@ export function FightView(props: {
       return; // a miss keeps aiming: right-click or Esc lets go
     }
     if (aimCommand !== null) {
-      if (e.button !== 0) return setAimCommand(null);
+      if (e.button !== 0) return setAimCommandAt(null);
       const u = unitAt(e.clientX, e.clientY, aimSet);
       if (u && aimSet.has(u)) {
         act({
           type: 'command',
           totem: aimCommand,
           target: u,
-          ...(empowerOn ? { empower: true } : {}),
+          ...(empowering && canEmpowerTotem(aimCommand) ? { empower: true } : {}),
         });
-        setAimCommand(null);
-        setEmpowerOn(false);
+        setAimCommandAt(null);
+        setEmpowerAt(null);
       }
       return; // (a miss keeps aiming: right-click or Esc lets go)
     }
@@ -1525,17 +1545,23 @@ export function FightView(props: {
     const cmds = mine
       ? legal.filter((a): a is Extract<Action, { type: 'command' }> => a.type === 'command')
       : [];
-    const ready = new Set(cmds.filter((a) => !!a.empower === empowerOn).map((a) => a.totem));
+    const ready = new Set(
+      cmds
+        .filter((a) => !!a.empower === (empowering && canEmpowerTotem(a.totem)))
+        .map((a) => a.totem),
+    );
     const command = (totem: number): void => {
       setSelected(null);
       setAimPotion(null);
-      const ways = cmds.filter((a) => a.totem === totem && !!a.empower === empowerOn);
+      const ways = cmds.filter(
+        (a) => a.totem === totem && !!a.empower === (empowering && canEmpowerTotem(totem)),
+      );
       const plain = ways.find((a) => !a.target);
       if (plain) {
         act(plain);
-        setEmpowerOn(false);
-        setAimCommand(null);
-      } else setAimCommand(aimCommand === totem ? null : totem);
+        setEmpowerAt(null);
+        setAimCommandAt(null);
+      } else setAimCommandAt(aimCommand === totem ? null : { totem, turn: view?.turn ?? 0 });
     };
     return (
       <FloatPanel
@@ -1551,16 +1577,36 @@ export function FightView(props: {
           ready={ready}
           aiming={side === mySide ? aimCommand : null}
           canEmpower={cmds.some((a) => a.empower)}
-          empower={empowerOn}
+          empower={empowering}
           {...(mine
             ? {
                 onEmpower: (on: boolean) => {
-                  setEmpowerOn(on);
-                  setAimCommand(null);
+                  setEmpowerAt(on ? (view?.turn ?? 0) : null);
+                  setAimCommandAt(null);
                 },
                 onCommand: command,
               }
             : {})}
+        />
+      </FloatPanel>
+    );
+  };
+  // (the Monk's Martial Forms: his form, its progress this turn and his Mastery, as a panel in that side's column, DECISIONS #419)
+  const formPanel = (side: Side): ReactNode => {
+    const sv = view?.sides[side];
+    if (!sv?.form) return null;
+    const hero = sv.units.find((u) => u.kind === 'hero');
+    return (
+      <FloatPanel
+        id={side === mySide ? 'form-mine' : 'form-foe'}
+        className="fight__aux fight__aux--form"
+        title={side === mySide ? 'Form' : 'Their Form'}
+      >
+        <FormPanel
+          form={sv.form}
+          progress={sv.formProgress ?? 0}
+          done={!!sv.formDone}
+          mastery={hero?.statuses.mastery ?? 0}
         />
       </FloatPanel>
     );
@@ -1633,7 +1679,7 @@ export function FightView(props: {
             e.preventDefault();
             setSelected(null);
             setAimPotion(null);
-            setAimCommand(null);
+            setAimCommandAt(null);
             setReleasing(null);
           }
         }}
@@ -1894,6 +1940,7 @@ export function FightView(props: {
             }}
             onSelect={(c) => {
               setAimPotion(null);
+              setAimCommandAt(null);
               setReleasing(null);
               setSelected(c ? c.inst.id : null);
             }}
@@ -1958,6 +2005,7 @@ export function FightView(props: {
                           (x) => x.type === 'potion' && x.potion === id && x.target,
                         );
                         setSelected(null);
+                        setAimCommandAt(null);
                         if (!needs) act({ type: 'potion', index: i, potion: id });
                         else setAimPotion(aimPotion === id ? null : id);
                       }}
@@ -1976,8 +2024,9 @@ export function FightView(props: {
           {aimCommand !== null && me?.totems?.[aimCommand] && (
             <div className="fight__aimbar" role="status">
               <b>Command: {db.totems?.[me.totems[aimCommand]]?.name ?? 'Totem'}</b>
-              {empowerOn ? <span> (empowered)</span> : null} <span>Click a glowing target.</span>
-              <button className="btn btn--small btn--ghost" onClick={() => setAimCommand(null)}>
+              {empowering && canEmpowerTotem(aimCommand) ? <span> (empowered)</span> : null}{' '}
+              <span>Click a glowing target.</span>
+              <button className="btn btn--small btn--ghost" onClick={() => setAimCommandAt(null)}>
                 <span>Cancel</span>
               </button>
             </div>
@@ -2046,6 +2095,7 @@ export function FightView(props: {
               {suitsPanel(mySide)}
               {enchantPanel(mySide)}
               {totemPanel(mySide)}
+              {formPanel(mySide)}
               {me && <AuraList db={db} me={me} panel="auras-mine" title="Your Auras" />}
             </div>
           )}
@@ -2086,6 +2136,7 @@ export function FightView(props: {
               {suitsPanel(foeSide)}
               {enchantPanel(foeSide)}
               {totemPanel(foeSide)}
+              {formPanel(foeSide)}
               {them && (
                 <AuraList
                   db={db}

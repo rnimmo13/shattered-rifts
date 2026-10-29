@@ -9,6 +9,7 @@ import { COMBAT_DB as db, pathOf, pathName, RIFTWALKERS, type HeroId } from '@sr
 import { budgetOf, pct, type Price } from './common';
 import { ASSASSIN_PRICES } from './assassin';
 import { KNIGHT_PRICES } from './knight';
+import { MONK_PRICES } from './monk';
 import { SHAMAN_PRICES } from './shaman';
 import { SPELLBLADE_PRICES } from './spellblade';
 
@@ -17,6 +18,7 @@ const PRICES: Partial<Record<HeroId, Record<string, Price>>> = {
   assassin: ASSASSIN_PRICES,
   spellblade: SPELLBLADE_PRICES,
   shaman: SHAMAN_PRICES,
+  monk: MONK_PRICES,
 };
 
 const hero = process.argv[2] as HeroId;

@@ -75,7 +75,7 @@ describe('the Shaman: commanded totems', () => {
     for (const c of Object.values(db.cards).filter((x) => x.hero === 'shaman'))
       for (const o of c.effects.flatMap((e): Op[] => [
         e,
-        ...('ops' in e && Array.isArray(e.ops) ? (e.ops) : []),
+        ...('ops' in e && Array.isArray(e.ops) ? e.ops : []),
       ]))
         expect(['channel', 'evoke', 'pulse', 'runeSlots'], c.id).not.toContain(o.op);
   });
@@ -228,5 +228,84 @@ describe('the Shaman: commanded totems', () => {
       expect(cardText(db, c).length, c.id).toBeGreaterThan(5);
     for (const id of RIFTWALKERS.shaman.starter)
       expect(['basic', 'common'], id).toContain(db.cards[id]?.rarity);
+  });
+});
+
+describe('the Shaman: each card does what it says', () => {
+  it('Hawk Call, Thunderhead and Spiritstorm', () => {
+    let s = fight(['spark-cast', 'thunderhead', 'spiritstorm']);
+    s = play(s, 'spark-cast');
+    expect(s.sides.a.totems).toEqual(['hawk', 'hawk', null]);
+    expect(hero(s).statuses.rousing).toBe(4);
+    expect(hero(s).barrier).toBe(4);
+    s = play(s, 'thunderhead');
+    expect(foe(s, 0).hp).toBe(188);
+    expect(foe(s, 1).hp).toBe(188);
+    expect(hero(s).statuses.rousing).toBe(8);
+    hero(s).statuses.spirit = 2;
+    s = play(s, 'spiritstorm');
+    expect(foe(s, 0).hp).toBe(188 - 12);
+    expect(hero(s).statuses.spirit ?? 0).toBe(0);
+  });
+
+  it("Elder's Wisdom draws a card for each Spirit spent", () => {
+    let s = fight(['elders-wisdom']);
+    s.sides.a.draw = [
+      { id: 'D1', card: 'strike' },
+      { id: 'D2', card: 'strike' },
+      ...s.sides.a.draw,
+    ];
+    hero(s).statuses.spirit = 2;
+    s = play(s, 'elders-wisdom');
+    expect(s.sides.a.hand.map((c) => c.id)).toEqual(['D1', 'D2']);
+    expect(hero(s).barrier).toBe(6);
+  });
+
+  it('Roar of the Den and Spirit Drum answer commands; Rite of Returning draws next turn', () => {
+    let s = fight(['wardkeepers-pact', 'roar-of-the-den', 'spirit-drum', 'rite-of-returning']);
+    s = play(s, 'wardkeepers-pact');
+    s = play(s, 'roar-of-the-den');
+    s = play(s, 'spirit-drum');
+    s = play(s, 'rite-of-returning');
+    s = command(s, { totem: 1, target: hero(s).id }).state;
+    // 5 (the Pact) + 4 (the Bear) + 2 (Roar) + 2 (Drum)
+    expect(hero(s).barrier).toBe(13);
+    expect(foe(s, 0).hp).toBe(195);
+    expect(hero(s).statuses.spirit).toBe(1);
+    expect(s.sides.a.nextDraw).toBe(1);
+  });
+
+  it('Hail Rite strikes every enemy at the end of the turn while a Bear stands', () => {
+    let s = fight(['wardkeepers-pact', 'permafrost']);
+    s = play(s, 'wardkeepers-pact');
+    s = play(s, 'permafrost');
+    const r = applyAction(db, s, { type: 'endTurn' });
+    expect(
+      r.events.filter((e) => e.type === 'damage' && e.target === foe(s, 1).id && e.amount === 4)
+        .length,
+    ).toBe(1);
+  });
+
+  it('Circle of Ancestors answers a replacement of another kind, once a turn', () => {
+    let s = fight(['circle-of-ancestors', 'ancestral-exchange']);
+    s.sides.a.draw = [
+      { id: 'D1', card: 'strike' },
+      { id: 'D2', card: 'strike' },
+      ...s.sides.a.draw,
+    ];
+    s = play(s, 'circle-of-ancestors');
+    s = play(s, 'ancestral-exchange');
+    s = pick(s, ['elder']);
+    s = pick(s, ['t0']);
+    expect(s.sides.a.totems).toEqual(['elder', null, null]);
+    // 1 from the Exchange, 1 from the Circle; the Circle's 5 to every enemy
+    expect(hero(s).statuses.spirit).toBe(2);
+    expect(foe(s, 1).hp).toBe(195);
+  });
+
+  it('a Hawk is bound by Taunt', () => {
+    const s = fight([]);
+    foe(s, 1).taunt = true;
+    expect(commands(s).map((a) => a.target)).toEqual([foe(s, 1).id]);
   });
 });

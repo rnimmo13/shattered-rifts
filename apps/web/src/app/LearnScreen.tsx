@@ -24,6 +24,8 @@ const CARD_WORDS = ['exhaust', 'retain', 'ethereal', 'innate', 'discard', 'scry'
 const SIGNATURE_WORDS = [
   'rune',
   'command',
+  'form',
+  'technique',
   'stance',
   'stars',
   'forge',

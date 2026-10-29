@@ -19,10 +19,10 @@ describe('legendary cards', () => {
       const own = rewardPool(h).filter(
         (id) => rarityOf(id) === 'legendary' && COMBAT_DB.cards[id]?.hero === h,
       );
-      // (Valeria, Sylas, Obsidia, Dorian and Ilvane have none: they are exactly the Ironclad's, the Silent's, the Regent's, the
-      // Necrobinder's and the Defect's lists)
+      // (the six classes rebuilt or copied whole have none: the Knight, Assassin, Spellblade, Shaman and Monk lost theirs in their
+      // identity reworks, DECISIONS #415-#419, and Dorian is the Necrobinder's list)
       expect(own.length, h).toBeGreaterThanOrEqual(
-        ['knight', 'assassin', 'spellblade', 'necromancer', 'shaman'].includes(h) ? 0 : 2,
+        ['knight', 'assassin', 'spellblade', 'necromancer', 'shaman', 'monk'].includes(h) ? 0 : 2,
       );
     }
     const neutral = Object.values(COMBAT_DB.cards).filter(

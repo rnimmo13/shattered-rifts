@@ -71,6 +71,20 @@ describe('runs saved before a class rework', () => {
     expect(back!.reworkNotice).toMatch(/^The Shaman was rebuilt \(commanded totems\)/);
   });
 
+  it('an older Monk run swaps its stance, Fervor and Radiant cards and says so', () => {
+    const run = newRun('monk', 'rework-old-m');
+    delete run.reworked;
+    run.deck = [...run.deck, 'rise-radiant', 'thread-cutter+', 'eye-of-the-storm'];
+    const back = parseRun(serializeRun(run));
+    expect(back!.reworked).toBe(CLASS_REWORKS.monk?.version);
+    expect(back!.deck).toContain('last-rites-of-flame');
+    expect(back!.deck).toContain('redirect+');
+    expect(back!.deck).toContain('unmoved-mind');
+    for (const id of back!.deck)
+      expect(COMBAT_DB.cards[id.replace(/^(hi|lo)~/, '')], id).toBeDefined();
+    expect(back!.reworkNotice).toMatch(/^The Monk was rebuilt \(Martial Forms and Mastery\)/);
+  });
+
   it('a run of a class that was not rebuilt is left alone', () => {
     const unchanged = (Object.keys(RIFTWALKERS) as (keyof typeof RIFTWALKERS)[]).find(
       (h) => !CLASS_REWORKS[h],

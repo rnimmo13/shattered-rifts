@@ -1,12 +1,6 @@
 // Combat v2 content: heroes, starter decks, cards, companions and encounters (docs/08_COMBAT_V2.md).
 
-import {
-  CALM_EXIT_MANA,
-  validateDb,
-  type CombatDb,
-  type HeroDef,
-  type HeroTrait,
-} from '@sr/combat';
+import { validateDb, type CombatDb, type HeroDef, type HeroTrait } from '@sr/combat';
 import {
   addTo,
   barrier,
@@ -16,13 +10,11 @@ import {
   embed,
   imbue,
   heal,
-  mana,
   on,
   per,
   prepare,
   raise,
   scaled,
-  stance,
   status,
 } from './build';
 import { BOONS, HEARTS } from './boons';
@@ -293,16 +285,12 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     realm: 'aurelion',
     persona: 'Solen',
     role: 'Monk',
+    // (rebuilt 2026-10-29, docs/BASE_CLASS_REWORKS.md §12 Option A, DECISIONS #419: Martial Forms and Mastery; the stances are archived)
     trait: {
-      name: 'Inner Fire',
-      // (its 2 Barrier went: a Flow deck changes stance two or three times a turn, DECISIONS #390; Primed on leaving Fury, #412)
-      // (leaving Serene's 2 Mana was an engine rule; it is the trait's now, so the trait table counts it: #413)
-      text: 'Whenever you enter a stance, gain 1 Fervor. The first time each turn you leave Serene, gain 2 Mana. Whenever you leave Fury, gain 2 Primed.',
-      triggers: [
-        on('stance', [status('mantra', 1)]),
-        on('stanceLeft', [mana(CALM_EXIT_MANA)], { stance: 'calm', once: true }),
-        on('stanceLeft', [status('vigor', 2)], { stance: 'wrath' }),
-      ],
+      name: 'Martial Forms',
+      text: "You fight in a form, starting in Current. Once each turn, completing your form's technique gives 1 Mastery and 3 Barrier.",
+      forms: 'current',
+      triggers: [on('technique', [barrier(3)])],
     },
     hero: {
       id: 'monk',
@@ -310,24 +298,30 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
       maxHp: 82,
       mana: 3,
       handSize: 5,
-      sigil: [stance('calm')],
     },
-    starter: [...rep('strike', 4), ...rep('defend', 4), 'kindle-fury', 'still-guard'],
+    starter: [
+      ...rep('strike', 3),
+      ...rep('defend', 3),
+      'still-guard',
+      'planted-heel',
+      'kindle-fury',
+      'turning-palm',
+    ],
     blurb:
-      'A monk who fights in stances. Starts every fight Serene, and every stance he enters stokes his Fervor towards Radiance.',
-    mechanics: ['Stances', 'Fervor', 'Foresee', 'Self-damage'],
+      'A monk of the Still Flame who fights in martial forms. Each form asks for a different pair of techniques; complete it to gain Mastery, then spend Mastery on a finishing move.',
+    mechanics: ['Forms', 'Techniques', 'Mastery', 'Foresee'],
     buildPaths: [
-      'Fury: get in, hit hard, live through it',
-      'Flow: change stance again and again; every change pays',
-      'Radiant: build Fervor to 10 for a triple-damage turn',
+      'Root: discipline, with Defensive techniques and defensive Mastery',
+      'Current: flow, alternating guard and strike, planning your hand',
+      'Ember: pressure, varied strikes at one enemy and a Mastery finisher',
     ],
     howTo: [
-      'You start Serene. You are in at most one stance at a time, and every stance you enter gives 1 Fervor (Inner Fire); leaving Fury gives 2 Primed for your next attack.',
-      'Fury doubles the damage you deal, but you take 50% more. Leaving Serene gives you 2 Mana (once a turn).',
-      'Fervor builds to 10, then you enter Radiant: triple damage until your turn ends.',
-      'Burst in Fury, dance between stances, or build Fervor towards Radiant.',
+      'You are always in one form (the Form panel by your hero), starting in Current. Its technique is two cards: Root wants two different Defensive techniques, Current a Defensive then a Striking technique, Ember two different Striking techniques at the same enemy.',
+      'Only cards marked as a Defensive or Striking technique count, and only when you play them from your hand. Complete it (once a turn) for 1 Mastery and 3 Barrier.',
+      'Mastery (up to 3) stays from turn to turn. Cards such as Mountain Breaker spend up to 2 of it for more. Some cards change your form; your progress starts again when you do.',
     ],
   },
+
   spellblade: {
     realm: 'starfall',
     persona: 'Obsidia',
@@ -724,6 +718,7 @@ export const CLASS_REWORKS: Partial<Record<HeroId, { version: number; summary: s
   assassin: { version: 1, summary: 'Preparation and embedded knives' },
   spellblade: { version: 1, summary: 'Imbue and Discharge' },
   shaman: { version: 1, summary: 'commanded totems' },
+  monk: { version: 1, summary: 'Martial Forms and Mastery' },
 };
 
 /** A Riftwalker id as it is now: an old id becomes its class id, and anything else comes back as it was. */
