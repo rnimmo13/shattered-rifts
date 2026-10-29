@@ -58,7 +58,13 @@ import { BoonToast } from './BoonToast';
 import { ChanceReel, type Flip } from './ChanceReel';
 import { PotionChip } from '../fight/PotionChip';
 import { BankedPanel } from './BankedPanel';
-import { autoSaveForArena, loseSavedDecks, savedArenaLabel, shouldAutoSave } from './deckSave';
+import {
+  arenaProblem,
+  autoSaveForArena,
+  loseSavedDecks,
+  savedArenaLabel,
+  shouldAutoSave,
+} from './deckSave';
 import { endOnBoard } from './boardEnd';
 import { stagesInAll } from '@sr/pvp';
 import { stagesCleared } from '../pvp/vault';
@@ -634,6 +640,7 @@ export default function RunScreen() {
         run={run}
         onDeck={() => setShowDeck(true)}
         arenaLabel={arena?.seed === run.seed ? arena.label : savedArenaLabel(run)}
+        arenaProblem={arenaProblem(run)}
         onHome={goHome}
         onAbandon={() => setConfirmAbandon(true)}
       />
@@ -785,6 +792,8 @@ function RunBar(props: {
   onDeck: () => void;
   /** where the deck stands in the Arena (null: nothing saved yet) */
   arenaLabel: string | null;
+  /** why the deck as it stands could not be brought to the Arena (null: it could) */
+  arenaProblem: string | null;
   onHome: () => void;
   onAbandon: () => void;
 }) {
@@ -850,21 +859,31 @@ function RunBar(props: {
         </span>
       </div>
       <div className="runbar__actions">
-        {/* whether the deck is in the Arena: green when it is, red and struck through until the first fight saves it; the
-            details in its tip (DECISIONS #345) */}
+        {/* whether the deck is in the Arena: green when it is, red and struck through until the first fight saves it, or while
+            the deck as it stands would not pass the Arena's check (DECISIONS #442); the details in its tip (DECISIONS #345) */}
         <a
-          className={`runbar__arena ${props.arenaLabel ? 'is-in' : 'is-out'}`}
+          className={`runbar__arena ${props.arenaLabel && !props.arenaProblem ? 'is-in' : 'is-out'}`}
           href="#/decks"
           aria-label={
-            props.arenaLabel
-              ? `In the Arena: ${props.arenaLabel}`
-              : 'Not in the Arena yet: saved after your first fight'
+            props.arenaProblem
+              ? `Not valid for the Arena: ${props.arenaProblem}`
+              : props.arenaLabel
+                ? `In the Arena: ${props.arenaLabel}`
+                : 'Not in the Arena yet: saved after your first fight'
           }
-          {...tipAttrs({
-            kicker: props.arenaLabel ? 'In the Arena' : 'Not in the Arena yet',
-            title: props.arenaLabel ?? 'Saved after your first fight',
-            text: 'Your deck is entered in the Arena by itself, and updated after every fight. Once it has cleared Tier 3, other players may face it as a ghost (the computer plays it). If this run collapses, you can no longer bring it to the Arena yourself, but a ghost stays. Click to see your saved decks.',
-          })}
+          {...tipAttrs(
+            props.arenaProblem
+              ? {
+                  kicker: 'Not valid for the Arena',
+                  title: props.arenaProblem,
+                  text: 'The Arena checks every deck before a match, and this deck as it stands would not pass. Fix it on the way (add or remove cards at a shop or shrine) and it is entered again after your next fight. Click to see your saved decks.',
+                }
+              : {
+                  kicker: props.arenaLabel ? 'In the Arena' : 'Not in the Arena yet',
+                  title: props.arenaLabel ?? 'Saved after your first fight',
+                  text: 'Your deck is entered in the Arena by itself, and updated after every fight. Once it has cleared Tier 3, other players may face it as a ghost (the computer plays it). If this run collapses, you can no longer bring it to the Arena yourself, but a ghost stays. Click to see your saved decks.',
+                },
+          )}
         >
           <span>Arena</span>
         </a>

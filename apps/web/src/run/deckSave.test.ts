@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import type { RunState } from '@sr/campaign';
 import { RIFTWALKERS } from '@sr/content/v2';
-import { loseSavedDecks, shouldAutoSave } from './deckSave';
+import { arenaProblem, loseSavedDecks, shouldAutoSave } from './deckSave';
 import { loadVault, saveVault } from '../pvp/vault';
 
 const stepped = (nodes: number, phase = 'map', seed = 's'): RunState =>
@@ -68,5 +68,26 @@ describe('a run that collapses takes its saved deck out of the Vault (its ghost 
     // (it did ask the server: the Vault, to drop the deck there too)
     expect(asked.some((u) => u.includes('/pvp/vault/'))).toBe(true);
     expect(asked.some((u) => u.includes('/pvp/board/'))).toBe(false);
+  });
+});
+
+describe("the map's Arena button says whether the deck as it stands would pass the Arena's check (DECISIONS #442)", () => {
+  const run = (deck: string[]): RunState =>
+    ({
+      seed: 's',
+      tier: 1,
+      phase: 'map',
+      stage: 0,
+      character: 'knight',
+      deck,
+      boons: [],
+    }) as unknown as RunState;
+  it('a starter deck passes', () => {
+    expect(arenaProblem(run([...RIFTWALKERS.knight.starter]))).toBeNull();
+  });
+  it('a deck too small or too big does not, and says why', () => {
+    expect(arenaProblem(run(RIFTWALKERS.knight.starter.slice(0, 3)))).toMatch(/A deck holds/);
+    const huge = Array.from({ length: 81 }, () => [...RIFTWALKERS.knight.starter]).flat();
+    expect(arenaProblem(run(huge))).toMatch(/A deck holds/);
   });
 });
