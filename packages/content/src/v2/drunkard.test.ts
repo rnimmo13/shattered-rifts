@@ -222,14 +222,17 @@ describe('innate traits', () => {
 describe('Sharpen carries over to new copies (DECISIONS #399)', () => {
   it('a gun made after the Old Twelve Gauge was sharpened is as sharp as it', () => {
     let s = fight('drunkard', ['reload', 'double-tap']);
-    s = playCard(s, 'T0'); // Reload: Sharpen 3 (no gun yet, so one is made)
+    // (no gun anywhere: the helper's hand replaced the opening one, and the deck's copy is left out of the piles)
+    for (const pile of ['draw', 'discard'] as const)
+      s.sides.a[pile] = s.sides.a[pile].filter((c) => c.card !== 'old-twelve-gauge');
+    s = playCard(s, 'T0'); // Reload: Precision 3 with no gun: none is made (DECISIONS #436), the 3 waits
     const guns = () =>
       [...s.sides.a.hand, ...s.sides.a.draw, ...s.sides.a.discard].filter(
         (c) => c.card === 'old-twelve-gauge',
       );
+    expect(guns()).toEqual([]);
+    s = playCard(s, 'T1'); // Double Tap: an Old Twelve Gauge, as sharp as the 3 that waited
     expect(guns().map((c) => c.bonus)).toEqual([3]);
-    s = playCard(s, 'T1'); // Double Tap: another Old Twelve Gauge
-    expect(guns().map((c) => c.bonus)).toEqual([3, 3]);
   });
 });
 

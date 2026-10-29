@@ -344,7 +344,14 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
       handSize: 5,
       sigil: [stars(3)],
     },
-    starter: [...rep('strike', 4), ...rep('defend', 4), 'meteor-jab', 'gather-light'],
+    // (the Obsidian Blade is a card of her deck, in her opening hand, removable: DECISIONS #436; Kindled's Sharpen made it before)
+    starter: [
+      ...rep('strike', 4),
+      ...rep('defend', 4),
+      'meteor-jab',
+      'gather-light',
+      'starforged-blade',
+    ],
     blurb:
       'A spellblade of black glass and ember. Spends Arcana on her biggest cards, calls an Obsidian Blade that every Sharpen improves for good, and fills her hand with Retainers and borrowed cards.',
     mechanics: ['Arcana', 'Sharpen', 'Created cards', 'Auras'],
@@ -355,7 +362,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     ],
     howTo: [
       'Arcana is a second resource that lasts the whole fight. You start every fight with 3 and gain 1 more each turn. Cards with an orange orb spend it; others gain it.',
-      'The Obsidian Blade (2 Mana, Hold) comes to your hand on your first turn. Every Sharpen makes it hit harder for the rest of the fight, and some Auras make it strike every enemy or strike twice.',
+      'The Obsidian Blade (2 Mana, Hold) is a card of your deck, always in your opening hand. Every Sharpen makes it hit harder for the rest of the fight, and some Auras make it strike every enemy or strike twice.',
       'Court cards create cards: Retainers (free Attacks and guards), Neutral cards, Rubble. Created cards feed the Auras that count them.',
     ],
   },
@@ -375,14 +382,16 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
       maxHp: 88,
       mana: 3,
       handSize: 5,
-      sigil: [addTo('old-twelve-gauge')],
     },
+    // (the Old Twelve Gauge is a card of his deck, in his opening hand, that can be removed like any other: DECISIONS #436; it was
+    // given to him at the start of every fight)
     starter: [
       ...rep('strike', 3),
       ...rep('defend', 3),
       ...rep('hammer-swing', 2),
       'pane-up',
       'bottle-tripwire',
+      'old-twelve-gauge',
     ],
     blurb:
       'A short, fat, bald dwarf with a hammer, an Old Twelve Gauge that hits every enemy and gets sharper, and a trolley of window panes. Booby traps, glass and buckshot.',
@@ -733,6 +742,21 @@ export const CLASS_REWORKS: Partial<
   shaman: { version: 3, summary: 'the totem cycle' },
   monk: { version: 2, summary: 'back to his earlier cards', sameAsBefore: true },
 };
+
+/**
+ * (DECISIONS #436) A deck made before the weapons were cards of the deck gets its Riftwalker's starting weapon (the Old Twelve Gauge,
+ * the Obsidian Blade) once, if it has none: it used to be given at the start of every fight. A deck stamped after that keeps what the
+ * player chose.
+ */
+export function withStartingWeapons(hero: string, deck: readonly string[]): string[] {
+  // (an own key only: a hero named "constructor" from a tampered save is no Riftwalker)
+  const rw = Object.hasOwn(RIFTWALKERS, hero) ? RIFTWALKERS[hero as HeroId] : undefined;
+  const weapons = rw ? rw.starter.filter((id) => COMBAT_DB.cards[id]?.weapon) : [];
+  const base = (id: string): string => stripRoll(id).replace(/\+$/, '');
+  const out = [...deck];
+  for (const w of weapons) if (!out.some((id) => base(id) === w)) out.push(w);
+  return out;
+}
 
 /** A Riftwalker id as it is now: an old id becomes its class id, and anything else comes back as it was. */
 export function canonicalHero(id: string): string {

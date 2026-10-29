@@ -97,3 +97,27 @@ describe('Rift-crossed offers (DECISIONS #418)', () => {
       expect(deadElsewhere(id), id).toBe(false);
   });
 });
+
+describe('the starting weapons are cards of the deck (DECISIONS #436)', () => {
+  it('a new Drunkard or Spellblade run has its weapon in the deck, and it can be removed for good', () => {
+    const kp = newRun('drunkard', 'gun-new');
+    expect(kp.deck).toContain('old-twelve-gauge');
+    expect(kp.weaponCards).toBe(true);
+    kp.deck = kp.deck.filter((id) => id !== 'old-twelve-gauge');
+    const back = parseRun(serializeRun(kp));
+    expect(back!.deck).not.toContain('old-twelve-gauge');
+    expect(newRun('spellblade', 'blade-new').deck).toContain('starforged-blade');
+  });
+
+  it('a run saved before gets its weapon once, and a sharpened copy counts as having one', () => {
+    const old = newRun('drunkard', 'gun-old');
+    delete old.weaponCards;
+    old.deck = old.deck.filter((id) => id !== 'old-twelve-gauge');
+    const back = parseRun(serializeRun(old));
+    expect(back!.deck.filter((id) => id === 'old-twelve-gauge')).toHaveLength(1);
+    expect(back!.weaponCards).toBe(true);
+    const knight = newRun('knight', 'no-gun');
+    delete knight.weaponCards;
+    expect(parseRun(serializeRun(knight))!.deck).toEqual(knight.deck);
+  });
+});

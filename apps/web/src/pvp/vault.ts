@@ -46,6 +46,8 @@ export function deckFromRun(
     deck: [...run.deck],
     boons: [...run.boons],
     bankedAt: now,
+    // (its deck is the run's, weapon and all: DECISIONS #436)
+    weaponCards: true,
   };
 }
 

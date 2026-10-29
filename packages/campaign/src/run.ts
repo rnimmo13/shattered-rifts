@@ -175,6 +175,7 @@ export function newRun(hero: HeroId, seed: string, difficulty: Difficulty = 'nor
   const run: RunState = {
     v: 2,
     ...(rework ? { reworked: rework } : {}),
+    weaponCards: true,
     seed,
     character: hero,
     difficulty,

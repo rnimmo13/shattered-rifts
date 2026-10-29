@@ -329,6 +329,8 @@ export interface RunStats {
 
 export interface RunState {
   v: 2;
+  /** (DECISIONS #436) its deck holds its starting weapon as a card (missing: from before, and the weapon is added once on load) */
+  weaponCards?: true;
   /** the rework of its character this run is played under (CLASS_REWORKS; missing: from before any rework) */
   reworked?: number;
   /** set when a run saved before its character's rework was migrated on load: what to tell the player (shown once, then dropped) */

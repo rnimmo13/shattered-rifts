@@ -580,7 +580,7 @@ export const KEYWORD_INFO: Record<string, { name: string; text: string }> = {
   },
   forge: {
     name: 'Sharpen',
-    text: 'Every copy of your weapon (the Obsidian Blade or the Old Twelve Gauge) permanently gains damage. If you have none, you get one.',
+    text: 'Every copy of your weapon (the Obsidian Blade or the Old Twelve Gauge) permanently gains damage. With none, it waits for the next copy (your weapon is a card of your deck).',
   },
   // (the Spellblade's, DECISIONS #417)
   imbue: {
@@ -649,7 +649,7 @@ function sharpenInfo(weapon: string | undefined): { name: string; text: string }
   return name
     ? {
         name: forgeWord(COMBAT_DB, weapon),
-        text: `Every copy of ${name} permanently gains damage, new copies too. If you have none, you get one.`,
+        text: `Every copy of ${name} permanently gains damage, new copies too. With none, it waits for the next copy (your weapon is a card of your deck).`,
       }
     : KEYWORD_INFO['forge']!;
 }

@@ -37,7 +37,7 @@ describe('Vault rules', () => {
   });
 
   it('cleans decks that arrive from outside', () => {
-    expect(cleanDeck(deck('a:t1'))).toEqual(deck('a:t1'));
+    expect(cleanDeck(deck('a:t1'))).toEqual({ ...deck('a:t1'), weaponCards: true });
     // an id with odd characters (an old typed seed) is made safe, not dropped
     expect(cleanDeck({ ...deck('x'), id: 'has spaces' })?.id).toBe('has_spaces');
     expect(cleanDeck({ ...deck('x'), id: 'a'.repeat(150) })?.id).toHaveLength(100);
@@ -105,5 +105,15 @@ describe('runKey', () => {
   });
   it('is a short hex fingerprint that does not contain the seed', () => {
     expect(runKey('r~my-secret-seed')).toMatch(/^[0-9a-f]{14}$/);
+  });
+});
+
+describe('the starting weapons are cards of the deck (DECISIONS #436)', () => {
+  it('a Vault deck saved before gets its weapon once; one saved after keeps what the player chose', () => {
+    const deck = RIFTWALKERS.drunkard.starter.filter((id) => id !== 'old-twelve-gauge');
+    const base = { id: 'r~v', hero: 'drunkard', tier: 1, deck, boons: [], bankedAt: 1 };
+    expect(cleanDeck(base)!.deck).toContain('old-twelve-gauge');
+    expect(cleanDeck({ ...base, weaponCards: true })!.deck).not.toContain('old-twelve-gauge');
+    expect(cleanDeck({ ...base, hero: 'constructor' })).toBeNull();
   });
 });

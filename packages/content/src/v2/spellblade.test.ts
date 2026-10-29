@@ -67,6 +67,7 @@ describe('Obsidia is the Regent: starter, HP and Arcana', () => {
         'defend',
         'gather-light',
         'meteor-jab',
+        'starforged-blade',
         'strike',
         'strike',
         'strike',
@@ -116,9 +117,20 @@ describe('the Obsidian Blade (Sovereign Blade)', () => {
     expect(hp - foeHp(s)).toBe(17);
   });
 
-  it('a Sharpen with no Blade anywhere makes one in your hand', () => {
-    const s = play(fight(['spoils']), 'spoils');
-    expect(s.sides.a.hand.find((c) => c.card === BLADE)?.bonus).toBe(6);
+  it('a Sharpen with no Blade anywhere makes none (it is a card of her deck she may have removed); it waits for the next copy', () => {
+    const s0 = fight(['spoils']);
+    for (const pile of ['hand', 'draw', 'discard'] as const)
+      s0.sides.a[pile] = s0.sides.a[pile].filter((c) => c.card !== BLADE);
+    const s = play(s0, 'spoils');
+    expect(
+      [...s.sides.a.hand, ...s.sides.a.draw, ...s.sides.a.discard].some((c) => c.card === BLADE),
+    ).toBe(false);
+    expect(s.sides.a.forged?.[BLADE]).toBe(6);
+  });
+
+  it('the Obsidian Blade is a card of her starting deck, in her opening hand (DECISIONS #436)', () => {
+    expect(RIFTWALKERS.spellblade.starter).toContain(BLADE);
+    expect(db.cards[BLADE]!.innate).toBe(true);
   });
 
   it('Call the Blade brings it from the draw pile and sharpens it 8', () => {
@@ -170,7 +182,7 @@ describe('the Obsidian Blade (Sovereign Blade)', () => {
   });
 
   it('Hammer and Anvil sharpens 5 more for each earlier hit on that enemy this turn', () => {
-    let s = fight(['obsidian-flurry', 'hammer-and-anvil']);
+    let s = fight(['obsidian-flurry', 'hammer-and-anvil', BLADE]);
     s = play(s, 'obsidian-flurry'); // 3 hits
     s = play(s, 'hammer-and-anvil');
     expect(blade(s)?.bonus).toBe(5 + 3 * 5);

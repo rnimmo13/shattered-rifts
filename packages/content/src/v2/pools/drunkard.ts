@@ -174,6 +174,8 @@ export const DRUNKARD: CardDef[] = [
     [{ ...scaled(dmg(5, 'allFoes'), per('bonus')), lonePct: 25 } as Op],
     {
       retain: true,
+      // (a card of his starting deck since DECISIONS #436, always in the opening hand)
+      innate: true,
       tags: ['gun'],
       source: 'token',
       // (his Sharpen is called Precision: its own stat, never the Obsidian Blade's, DECISIONS #400)

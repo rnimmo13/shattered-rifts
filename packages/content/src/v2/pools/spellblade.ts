@@ -82,6 +82,8 @@ export const SPELLBLADE: CardDef[] = [
   // (Sovereign Blade: 2 Mana, 10 damage, Hold; every Sharpen adds to it for the fight)
   a('common', BLADE, 'Obsidian Blade', 'attack', 2, 'foe', [scaled(dmg(10), per('bonus'))], {
     retain: true,
+    // (a card of her starting deck since DECISIONS #436, always in the opening hand)
+    innate: true,
     tags: ['blade'],
     source: 'token',
     weapon: true,

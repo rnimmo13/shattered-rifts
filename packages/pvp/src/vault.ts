@@ -1,7 +1,7 @@
 // The Vault: the decks a player has banked. These are the pure rules for a list of them (shared by the browser and the server):
 // how many it holds, banking into it, and cleaning what arrives from outside. Where it is kept is not decided here.
 
-import { V2_DECK_RULES } from '@sr/content/v2';
+import { V2_DECK_RULES, withStartingWeapons } from '@sr/content/v2';
 import { checkEntry } from './deck';
 
 export interface VaultDeck {
@@ -15,6 +15,8 @@ export interface VaultDeck {
   /** the Boons the run held when it was saved (shown with the deck; a match does not use them) */
   boons: string[];
   bankedAt: number;
+  /** (DECISIONS #436) its deck holds the starting weapon as a card (missing: saved before; the weapon is added once) */
+  weaponCards?: true;
 }
 
 export const VAULT_SLOTS: number = V2_DECK_RULES.vaultSlots;
@@ -104,10 +106,15 @@ export function cleanDeck(raw: unknown): VaultDeck | null {
   if (typeof o['id'] !== 'string' || o['id'] === '') return null;
   const id = safeId(o['id']);
   const at = o['bankedAt'];
+  // (a deck saved before the weapons were cards of the deck gets its weapon once, DECISIONS #436)
+  const rawDeck =
+    o['weaponCards'] !== true && Array.isArray(o['deck']) && typeof o['hero'] === 'string'
+      ? withStartingWeapons(o['hero'], o['deck'] as string[])
+      : o['deck'];
   const checked = checkEntry({
     name: 'x',
     hero: o['hero'],
-    deck: o['deck'],
+    deck: rawDeck,
     tier: o['tier'],
     stage: o['stage'],
   });
@@ -120,6 +127,7 @@ export function cleanDeck(raw: unknown): VaultDeck | null {
     deck: checked.entry.deck,
     boons: cleanBoons(o['boons']),
     bankedAt: typeof at === 'number' && Number.isFinite(at) ? at : 0,
+    weaponCards: true,
   };
 }
 

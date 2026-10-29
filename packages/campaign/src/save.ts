@@ -7,6 +7,7 @@ import {
   RIFTWALKERS,
   V2_DECK_RULES,
   canonicalCard,
+  withStartingWeapons,
   canonicalHero,
   CLASS_REWORKS,
   RETIRED_CARDS,
@@ -416,6 +417,11 @@ export function parseRun(text: string): RunState | null {
     delete loose.eventFlips;
   // card luck is gone (every run has the same odds): a save that still carries it just drops it
   delete (r as { luck?: unknown }).luck;
+  // (DECISIONS #436) a run saved before the weapons were cards of the deck gets its weapon once
+  if (r.weaponCards !== true) {
+    if (Array.isArray(r.deck)) r.deck = withStartingWeapons(r.character, r.deck);
+    r.weaponCards = true;
+  }
   // a run of a class rebuilt since it was saved (DECISIONS #415): its old cards were mapped above; it is stamped with the rework and
   // the player is told, and the screen starts any fight that was in progress again (its move log belongs to the old rules)
   const rework = CLASS_REWORKS[r.character];

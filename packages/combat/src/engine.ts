@@ -2424,10 +2424,13 @@ function execOp(r: Run, a: Act, op: Op): void {
       const amount = amountOf(r, a, op.amount, op.scale, a.target);
       // the running total: a copy made later (Spare Barrel, Double Tap...) starts as sharp as the rest
       side.forged = { ...side.forged, [op.card]: (side.forged?.[op.card] ?? 0) + amount };
-      // (with none, the one made here takes a weapon's whole total from addCardTo; anything else starts at this Sharpen)
+      // (with none, a card that grows itself is made here and starts at this Sharpen; a weapon is not: it is a card of the deck the
+      // player may have removed, so its Sharpen only waits in the total for a copy that comes later, DECISIONS #436)
       if (!mine.length) {
-        const made = addCardTo(r, side, op.card, 'hand');
-        made.bonus ??= amount;
+        if (!cardDef(r.db, op.card).weapon) {
+          const made = addCardTo(r, side, op.card, 'hand');
+          made.bonus ??= amount;
+        }
       } else for (const c of mine) c.bonus = (c.bonus ?? 0) + amount;
       r.ev.push({ type: 'forge', side: side.id, card: op.card, amount });
       return;

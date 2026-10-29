@@ -692,7 +692,7 @@ A spellblade of black glass and ember. Spends Arcana on her biggest cards, calls
 
 Paths: Blade: sharpen the Obsidian Blade and swing it / Arcana: gain it, then spend it on big cards / Court: create cards and play many
 
-Starter: Strike, Strike, Strike, Strike, Defend, Defend, Defend, Defend, Cinderfall, Gather Arcana
+Starter: Strike, Strike, Strike, Strike, Defend, Defend, Defend, Defend, Cinderfall, Gather Arcana, Obsidian Blade
 
 | Card | Cost | Type | Rarity | Text |
 |---|---|---|---|---|
@@ -783,7 +783,7 @@ Tokens (made by other cards):
 
 | Card | Cost | Type | Rarity | Text |
 |---|---|---|---|---|
-| Obsidian Blade | 2 | attack | common | Deal 10 (+1 per point of sharpening) damage. Hold. |
+| Obsidian Blade | 2 | attack | common | Deal 10 (+1 per point of sharpening) damage. Hold. Opening hand. |
 | Retainer Strike | 0 | attack | common | Deal 6 damage. Draw 1 card. Consume. |
 | Retainer Dive | 0 | attack | common | Deal 13 damage. Consume. |
 | Retainer Guard | 0 | skill | common | Gain 7 Barrier. Consume. |
@@ -794,7 +794,7 @@ A short, fat, bald dwarf with a hammer, an Old Twelve Gauge that hits every enem
 
 Paths: Gun: sharpen the Old Twelve Gauge / Shells: buckshot that hits everyone / Hangover: drink now, pay tomorrow
 
-Starter: Strike, Strike, Strike, Defend, Defend, Defend, Hammer Swing, Hammer Swing, Pane Up, Bottle Tripwire
+Starter: Strike, Strike, Strike, Defend, Defend, Defend, Hammer Swing, Hammer Swing, Pane Up, Bottle Tripwire, Old Twelve Gauge
 
 | Card | Cost | Type | Rarity | Text |
 |---|---|---|---|---|
@@ -896,7 +896,7 @@ Tokens (made by other cards):
 | Card | Cost | Type | Rarity | Text |
 |---|---|---|---|---|
 | Buckshot Shell | 0 | attack | common | Deal 4 damage to ALL enemies. Consume. |
-| Old Twelve Gauge | 1 | attack | common | Deal 5 (+1 per point of sharpening) damage to ALL enemies. Point Blank: 25% more when only one enemy is left. Hold. |
+| Old Twelve Gauge | 1 | attack | common | Deal 5 (+1 per point of sharpening) damage to ALL enemies. Point Blank: 25% more when only one enemy is left. Hold. Opening hand. |
 
 ## Necromancer (gloomfen, 70 HP)
 
