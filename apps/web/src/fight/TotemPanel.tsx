@@ -101,25 +101,14 @@ export function TotemPanel(props: {
                   title: 'Empty',
                   text: 'A card that plants a totem puts it in the first empty position.',
                 });
-          const cls = `totem${kind ? ` totem--${kind}` : ' is-empty'}${kind && art.totems[kind] ? ' has-art' : ''}${props.summon?.totem === i ? ' is-acting' : ''}`;
+          const cls = `totem${kind ? ` totem--${kind}` : ' is-empty'}${kind && art.totems[kind] ? ' has-art' : ''}`;
           const picture = kind ? art.totems[kind] : undefined;
-          const summoned = props.summon && props.summon.totem === i ? props.summon : null;
-          const spiritPic = summoned ? art.spirits[summoned.spirit] : undefined;
           const face = (
             <>
               {picture ? (
                 <img className="totem__img" src={picture} alt="" draggable={false} />
               ) : (
                 <b aria-hidden="true">{look ? look.glyph : '·'}</b>
-              )}
-              {summoned && (
-                <span key={summoned.key} className="totem__spirit" aria-hidden="true">
-                  {spiritPic ? (
-                    <img src={spiritPic} alt="" draggable={false} />
-                  ) : (
-                    <b>{totemLook(summoned.spirit).glyph}</b>
-                  )}
-                </span>
               )}
               <small>{look ? look.name : 'empty'}</small>
               {pick && (
@@ -158,6 +147,25 @@ export function TotemPanel(props: {
             </button>
           );
         })}
+        {/* the spirit of the totem that acted rises from the position it acted from, over the row: the row may shift under it
+            as the totem leaves (DECISIONS #430), and the spirit is the one that acted, whatever stands there now */}
+        {props.summon && (
+          <span
+            key={props.summon.key}
+            className="totem__spirit"
+            aria-hidden="true"
+            style={{
+              left: `${((props.summon.totem + 0.5) / Math.max(1, props.totems.length)) * 100}%`,
+              width: `${(150 / Math.max(1, props.totems.length)).toFixed(1)}%`,
+            }}
+          >
+            {art.spirits[props.summon.spirit] ? (
+              <img src={art.spirits[props.summon.spirit]} alt="" draggable={false} />
+            ) : (
+              <b>{totemLook(props.summon.spirit).glyph}</b>
+            )}
+          </span>
+        )}
       </div>
       {pick && pick.min === 0 && (
         <button

@@ -2995,3 +2995,8 @@ button.totem:disabled {
   text-transform: uppercase;
   pointer-events: none;
 }
+
+/* (the spirit rises over the row, from the position its totem acted from) */
+.fight__aux--totems .totems__row {
+  position: relative;
+}
