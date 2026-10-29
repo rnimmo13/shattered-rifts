@@ -90,6 +90,7 @@ export type StatusId =
   | 'spirit' // Spirit: at most SPIRIT_MAX, kept between turns; one is spent to empower a command (+SPIRIT_BOOST)
   | 'rousing' // your next command this turn deals or gives this much more (it wears off at the end of your turn)
   | 'shelter' // this turn, your next command that aims at a friendly gives its Barrier to every friendly
+  | 'freespell' // (the Shaman, DECISIONS #420) your next elemental spell costs 0, per stack
   // (the Monk's Martial Forms, DECISIONS #419)
   | 'mastery'; // Mastery: at most MASTERY_MAX, kept between turns; earned by completing a form's technique, spent by techniques
 export const STATUS_IDS: readonly StatusId[] = [
@@ -164,6 +165,7 @@ export const STATUS_IDS: readonly StatusId[] = [
   'rousing',
   'shelter',
   'mastery',
+  'freespell',
 ];
 /** Debuffs: a Steadfast unit ignores the next one put on it. */
 export const DEBUFFS: readonly StatusId[] = [
@@ -187,10 +189,12 @@ export const EDGE_TAG = 'knife';
 /** The most knives one unit can have embedded, and the most Preparation a hero can hold (the Assassin, DECISIONS #416). */
 export const KNIFE_MAX = 3;
 export const PREP_MAX = 3;
-/** The Shaman's totems (DECISIONS #418): fixed positions, the most Spirit, and what one Spirit adds to an empowered command. */
-export const TOTEM_SLOTS = 3;
-export const SPIRIT_MAX = 3;
-export const SPIRIT_BOOST = 2;
+/** The Shaman's totems (DECISIONS #420): the most positions he can grow to. Spirit has no cap (Robert, 2026-10-29). */
+export const TOTEM_SLOTS = 5;
+/** The Shaman's elements (DECISIONS #420): a spell's tag. A prism spell counts as the element he has not cast yet this turn. */
+export const ELEMENTS = ['flame', 'frost', 'storm'] as const;
+export type Element = (typeof ELEMENTS)[number];
+export const PRISM_TAG = 'prism';
 /** The Monk's Martial Forms (DECISIONS #419): the form changes which two techniques complete his objective, once a turn, for 1 Mastery. */
 export const FORMS = ['root', 'current', 'ember'] as const;
 export type Form = (typeof FORMS)[number];
@@ -368,7 +372,10 @@ export type Metric =
   | 'defensiveTurn' // Defensive techniques you have played this turn
   | 'inRoot' // 1 while you are in Root form
   | 'inCurrent' // 1 while you are in Current form
-  | 'inEmber'; // 1 while you are in Ember form
+  | 'inEmber' // 1 while you are in Ember form
+  // (the Shaman, DECISIONS #420)
+  | 'elementsTurn' // different elements you have cast this turn (0-3)
+  | 'trinityDone'; // 1 once Trinity has triggered this turn
 export interface Scale {
   by: Metric;
   mult?: number;
@@ -429,7 +436,9 @@ export type TriggerWhen =
   | 'replace' // a totem you planted replaced one of a different kind
   // (the Monk's Martial Forms, DECISIONS #419)
   | 'technique' // you completed your form's technique (at most once a turn)
-  | 'formChange'; // you changed form
+  | 'formChange' // you changed form
+  // (the Shaman's Trinity, DECISIONS #420)
+  | 'trinity'; // you cast a Flame, a Frost and a Storm spell this turn (the first time each turn)
 
 export type Op =
   /** `lonePct`: Point Blank, this much more damage (percent) when it hits only one enemy */
@@ -735,6 +744,12 @@ export type Op =
   | { op: 'plant'; spirit: string; anywhere?: boolean }
   /** uproot every totem you have (the `uprooted` metric counts them) */
   | { op: 'uproot' }
+  /** (DECISIONS #420) one more totem position (at most TOTEM_SLOTS), empty */
+  | { op: 'totemSlot' }
+  /** command totems this many more times this turn */
+  | { op: 'commands'; amount: number }
+  /** every totem you have acts once now (not one of the turn's commands) */
+  | { op: 'commandAll' }
   // --- the Monk's Martial Forms (DECISIONS #419)
   /** change to this form ('*': the player may choose one, or keep the form they are in); the turn's progress starts again */
   | { op: 'form'; form: Form | '*' };
@@ -907,8 +922,11 @@ export interface HeroTrait {
   salvage?: boolean;
   /** Guard (the Knight, DECISIONS #415): an enemy attack hit this hero's Barrier stops completely leaves the attacker Open */
   openings?: boolean;
-  /** Totems (the Shaman, DECISIONS #418): this many fixed totem positions, and once a turn the player commands one of them */
+  /** Totems (the Shaman, DECISIONS #418, #420): he starts with this many positions; `commands` a turn (default 1) */
   totems?: number;
+  commands?: number;
+  /** Trinity (DECISIONS #420): the first time each turn he has cast a spell of every element, he gains 1 Spirit */
+  trinity?: boolean;
   /** Martial Forms (the Monk, DECISIONS #419): the form he starts each fight in; completing its objective gives 1 Mastery */
   forms?: Form;
 }
@@ -992,10 +1010,20 @@ export interface TotemDef {
   id: string;
   name: string;
   text: string;
+  /** (DECISIONS #420) every command aims by itself: 'none' (its ops say where: a random enemy, him, every enemy) */
   aim: 'foe' | 'friend' | 'none';
   command: Op[];
-  /** one Spirit may be spent on it for +SPIRIT_BOOST to its damage or Barrier */
+  /** (DECISIONS #418, retired) a Spirit could be spent on it */
   empower: boolean;
+  /** its help each turn: the first spell of this element each turn ('any': the first spell of any element) deals or gives this much
+   * more (each damage and Barrier number on it); every 2 Spirit add 1 */
+  boost?: { element: Element | 'any'; amount: number };
+  /** what planting it does (the Elder Tree's Spirit) */
+  onPlant?: Op[];
+  /** what it does when Trinity triggers (the Moon Owl's Mana) */
+  onTrinity?: Op[];
+  /** a rare totem (the Elder Tree, the Moon Owl): only a card that names it plants it, never a "totem of your choice" */
+  rare?: boolean;
 }
 
 export interface CombatDb {
@@ -1143,8 +1171,10 @@ export interface Pending {
     | 'plantKind'
     | 'plantAt'
     | 'form';
-  /** (the Shaman's: 'plantKind' which spirit to plant, pool the totem ids; 'plantAt' which position, pool 't0'-'t2', none = keep) */
+  /** (the Shaman's: 'plantKind' which spirit to plant, pool the totem ids; 'plantAt' which position, pool 't0'-'t4', none = keep) */
   spirit?: string;
+  /** (the Shaman) the totem boost the card's first play got, carried over the choice */
+  plus?: number;
   anywhere?: boolean;
   /** 'enchant': the enchantment being imbued */
   charge?: Enchant;
@@ -1263,8 +1293,14 @@ export interface SideState {
   enchants?: Enchant[];
   /** (the Shaman) totem positions, each a TotemDef id or null; missing for a hero without totems (DECISIONS #418) */
   totems?: (string | null)[];
-  /** a totem was commanded this turn (once a turn) */
+  /** a totem was commanded this turn; the commands left this turn (DECISIONS #420: one a turn, more from cards) */
   commanded?: boolean;
+  commands?: number;
+  /** (the Shaman, DECISIONS #420) the elements cast this turn, the totem boosts already used ('flame' / 'frost' / 'storm' / 'any'),
+   * and whether Trinity has triggered this turn */
+  elementsTurn?: Element[];
+  boostsUsed?: string[];
+  trinityDone?: boolean;
   /** (the Monk, DECISIONS #419) his form; the technique steps played in it this turn (card id, tag, aimed enemy), whether the
    * objective is done this turn (once a turn, however often he changes form), and the turn's technique counters */
   form?: Form;
@@ -1376,8 +1412,8 @@ export type Action =
   | { type: 'endTurn' }
   /** answer a pending choice with the cards picked (their ids, in any order) */
   | { type: 'pick'; cards: InstId[] }
-  /** (the Shaman, DECISIONS #418) command the totem in position `totem`, once a turn; `empower` spends 1 Spirit on it */
-  | { type: 'command'; totem: number; target?: UnitId; empower?: boolean };
+  /** (DECISIONS #420) command the totem in position `totem`: one of the turn's commands; it aims by itself */
+  | { type: 'command'; totem: number };
 
 export type CombatEvent =
   | { type: 'turnStart'; side: Side; turn: number }
@@ -1443,6 +1479,8 @@ export type CombatEvent =
   | { type: 'totems'; side: Side; totems: (string | null)[]; at?: number }
   /** (the Monk) his form or its progress changed: the objective's steps done (0-2), and whether it is complete this turn */
   | { type: 'form'; side: Side; form: Form; progress: number; done: boolean }
+  /** (the Shaman) the elements cast this turn, and whether Trinity just triggered */
+  | { type: 'elements'; side: Side; elements: Element[]; trinity: boolean }
   /** a totem was commanded: its spirit manifests and acts */
   | {
       type: 'command';

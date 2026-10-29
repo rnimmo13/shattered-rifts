@@ -53,8 +53,8 @@ export const TIP_RULES: TipRule[] = [
   {
     // (the Shaman's, DECISIONS #418)
     id: 'totems',
-    title: 'Commanding your totems',
-    text: 'Your totems stand in three positions (the Totems panel by your hero). Once each turn, press one to command it: a Hawk deals 4 damage to the enemy you choose, a Bear gives 4 Barrier, an Elder gives 1 Spirit and draws a card. Spend Spirit with Empower for 2 more. Play your Rousing cards first: they add to your next command.',
+    title: 'Totems, elements and Trinity',
+    text: 'Your Hawk, Bear and Thunderbird (the Totems panel) each help the first Flame, Frost or Storm spell each turn. Press a totem to call its spirit, once a turn. Cast all three elements in one turn for Trinity (the Trinity panel): 1 Spirit, which never goes down and makes every command stronger.',
     when: (v) => !!v.sides.a.totems,
   },
   {

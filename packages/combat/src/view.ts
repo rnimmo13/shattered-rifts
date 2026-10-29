@@ -14,6 +14,7 @@ import {
   type CombatEvent,
   type CombatState,
   type Enchant,
+  type Element,
   type Form,
   type Metric,
   type Op,
@@ -90,6 +91,10 @@ export interface SideView {
   /** (the Shaman) totem positions (a TotemDef id or null), and whether a totem was commanded this turn */
   totems?: (string | null)[];
   commanded?: boolean;
+  /** (DECISIONS #420) commands left this turn, the elements cast this turn, and whether Trinity triggered */
+  commands?: number;
+  elementsTurn?: Element[];
+  trinityDone?: boolean;
   /** (the Monk) his form, its objective's progress this turn (0-2), and whether it is complete */
   form?: Form;
   formProgress?: number;
@@ -304,7 +309,15 @@ export function viewFor(db: CombatDb, s: CombatState, me: Side): CombatView {
       costTax: sd.costTax ?? 0,
       ...(sd.suitsTurn ? { suitsTurn: [...sd.suitsTurn] } : {}),
       ...(sd.enchants ? { enchants: [...sd.enchants] } : {}),
-      ...(sd.totems ? { totems: [...sd.totems], commanded: !!sd.commanded } : {}),
+      ...(sd.totems
+        ? {
+            totems: [...sd.totems],
+            commanded: !!sd.commanded,
+            commands: sd.commands ?? 0,
+            elementsTurn: [...(sd.elementsTurn ?? [])],
+            trinityDone: !!sd.trinityDone,
+          }
+        : {}),
       ...(sd.form
         ? { form: sd.form, formProgress: formProgress(sd), formDone: !!sd.formDone }
         : {}),
@@ -449,6 +462,10 @@ const TAG_NAMES: Record<string, string> = {
   // (the Monk's techniques, DECISIONS #419)
   defensive: 'Defensive technique',
   striking: 'Striking technique',
+  // (the Shaman's elements, DECISIONS #420)
+  flame: 'Flame spell',
+  frost: 'Frost spell',
+  storm: 'Storm spell',
 };
 
 /** A scale under 1 as a small fraction: 0.5 is 1 per 2, 2/3 is 2 per 3 (the smallest whole numbers that give it). */
@@ -621,6 +638,9 @@ const METRIC_WORDS: Record<Metric, { per: string; equal: string }> = {
   uprooted: { per: 'totem uprooted', equal: 'the totems uprooted' },
   replacedNow: { per: 'totem replaced', equal: 'the totems replaced' },
   spiritSpent: { per: 'Spirit spent', equal: 'the Spirit spent' },
+  // (the Shaman, DECISIONS #420)
+  elementsTurn: { per: 'element cast this turn', equal: 'the elements cast this turn' },
+  trinityDone: { per: 'Trinity this turn', equal: 'Trinity this turn' },
   // (the Monk)
   mastery: { per: 'Mastery', equal: 'your Mastery' },
   masterySpent: { per: 'Mastery spent', equal: 'the Mastery spent' },
@@ -783,6 +803,8 @@ const WHEN_TEXT: Record<string, string> = {
   command: 'Whenever you command a totem',
   plant: 'Whenever you plant a totem',
   replace: 'Whenever you replace a totem with one of another kind',
+  // (the Shaman)
+  trinity: 'Whenever Trinity triggers',
   // (the Monk)
   technique: 'Whenever you complete your technique',
   formChange: 'Whenever you change form',
@@ -808,6 +830,8 @@ function whenText(o: Extract<Op, { op: 'when' }>, db?: CombatDb): string {
     const nm = (o.rune && db?.runes?.[o.rune]?.name) || 'such totem';
     return `you have ${lo === 1 ? article(nm) : lo} ${nm}${lo === 1 ? '' : 's'}`;
   }
+  if (o.by === 'played' && lo === undefined && hi === 0)
+    return 'it is the first card you play this turn';
   if (o.by === 'played' && lo === undefined && hi !== undefined)
     return `you have played ${hi} or fewer other cards this turn`;
   if (o.by === 'exposed' && o.of === 'target' && (lo ?? 0) >= 1) return 'the target is Exposed';
@@ -844,6 +868,9 @@ function whenText(o: Extract<Op, { op: 'when' }>, db?: CombatDb): string {
     return `you have ${lo} or more Preparation`;
   if (o.by === 'prep' && hi === 0 && lo === undefined && !o.of) return 'you have no Preparation';
   if (o.by === 'extracted' && (lo ?? 0) >= 1 && hi === undefined) return 'you pulled a knife';
+  // (the Shaman)
+  if (o.by === 'trinityDone' && (lo ?? 0) >= 1 && hi === undefined)
+    return 'Trinity has triggered this turn';
   // (the Monk)
   if (o.by === 'techniqueDone' && (lo ?? 0) >= 1 && hi === undefined)
     return 'you have completed your technique this turn';
@@ -1018,6 +1045,8 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
         return `${whom} left Open.`;
       }
       // (the Shaman) Rousing and Shelter read as what they do to your next command
+      if (o.status === 'freespell' && o.amount > 0 && o.to === 'self')
+        return 'Your next Flame, Frost, Storm or Prism spell costs 0.';
       if (o.status === 'rousing' && o.amount > 0 && o.to === 'self') {
         const a = amountText(o.amount, o.scale);
         return `Your next Hawk or Bear command this turn deals or gives ${a.equal ? `more, ${a.num}` : `${a.num} more`}.`;
@@ -1597,6 +1626,14 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
     }
     case 'uproot':
       return 'Uproot all your totems.';
+    case 'totemSlot':
+      return 'Gain a totem position.';
+    case 'commands':
+      return o.amount === 1
+        ? 'Command a totem once more this turn.'
+        : `Command totems ${o.amount} more times this turn.`;
+    case 'commandAll':
+      return 'Every totem you have acts once.';
     // (the Monk's forms)
     case 'form':
       return o.form === '*' ? 'You may change form.' : `Enter ${cap(o.form)} form.`;
@@ -1692,6 +1729,12 @@ export function cardText(db: CombatDb, c: CardDef, live?: ReadonlyMap<number, Li
   if (c.sly) parts.push('Sly.');
   // (the Drunkard's Stagger: its damage lands on a random enemy, DECISIONS #393)
   if (c.tags?.includes('stagger')) parts.push('Stagger.');
+  // (the Shaman's elements, DECISIONS #420)
+  if (c.tags?.includes('flame')) parts.push('Flame.');
+  if (c.tags?.includes('frost')) parts.push('Frost.');
+  if (c.tags?.includes('storm')) parts.push('Storm.');
+  if (c.tags?.includes('prism'))
+    parts.push('Prism (counts as an element you have not cast this turn).');
   // (the Monk's techniques, DECISIONS #419: a step of his form's objective)
   if (c.tags?.includes(DEFENSIVE_TAG)) parts.push('Defensive technique.');
   if (c.tags?.includes(STRIKING_TAG)) parts.push('Striking technique.');

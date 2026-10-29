@@ -66,6 +66,9 @@ const OWNER_ONLY = new Set<string>([
   'command',
   'plant',
   'replace',
+  'trinity',
+  'trinityDone',
+  'elementsTurn',
   // (the Monk's Martial Forms, DECISIONS #419: only his trait gives a form, its techniques and Mastery)
   'mastery',
   'masterySpent',
@@ -89,6 +92,9 @@ const readsOwnerOnly = (o: Op): boolean =>
   (o.op === 'stance' && o.stance === 'calm') ||
   o.op === 'plant' ||
   o.op === 'uproot' ||
+  o.op === 'totemSlot' ||
+  o.op === 'commands' ||
+  o.op === 'commandAll' ||
   o.op === 'form' ||
   ((o.op === 'spend' || o.op === 'status') && OWNER_STATUS.has(o.status)) ||
   ('scale' in o && !!o.scale && (OWNER_ONLY.has(o.scale.by) || o.scale.by === 'calm')) ||

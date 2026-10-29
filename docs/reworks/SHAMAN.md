@@ -1,100 +1,70 @@
-# The Shaman rebuilt: commanded totems (2026-10-29, DECISIONS #418)
+# The Shaman rebuilt: elements, totems and Trinity (2026-10-29, DECISIONS #420)
 
-From `docs/BASE_CLASS_REWORKS.md` §5. The Defect copy he was (DECISIONS #371: an orb queue that pushed the oldest out, Focus, Owl
-Mana, the 0-cost and status-card packages) is frozen in `reviews/balance-baselines/2026-10-29-pre-identity-reworks/`
-(`cards/shaman.md`). Card prices: [`shaman-ledger.md`](shaman-ledger.md) (generated); rates: `docs/14_CARD_COSTING.md` §15.
+Robert's direction, worked out in `SHAMAN_ELEMENTS_PROPOSAL.md`. It replaces the first rework (DECISIONS #418: one aimed command a
+turn, Empower, Rousing, Shelter), which never shipped. The Defect copy before both is frozen in
+`reviews/balance-baselines/2026-10-29-pre-identity-reworks/` (`cards/shaman.md`). Card prices: [`shaman-ledger.md`](shaman-ledger.md)
+(generated); rates: `docs/14_CARD_COSTING.md` §15.
 
-**Fantasy:** he plants enduring spirit anchors and chooses which spirit manifests. A totem is not an orb in a queue and its spirit is
-not a companion: it appears when called, acts once, and returns.
+**Fantasy:** an elder shaman who casts Flame, Frost and Storm himself. His totems stand beside him and lend their power to his
+spells, and he calls on their spirits to strike and shield for him. No summons: the spirits act and are gone.
 
 ## The rules (engine contract)
 
 | Rule | Exactly |
 |---|---|
-| Positions | `HeroTrait.totems` (3, `TOTEM_SLOTS`) gives the side `SideState.totems`: three fixed positions, each a spirit id or empty. Shown in the Totems panel by the hero. They last the fight. |
-| Spirits | `db.totems` (`TotemDef`): **Hawk** (aim: an enemy; 4 damage, not an attack: no Might, no Exposed, no Thorns or Traps), **Bear** (aim: a friendly; 4 Barrier), **Elder** (no aim; 1 Spirit and a card; cannot be empowered). A totem does nothing on its own: no passive, no awakening. |
-| Plant | `plant(spirit)`: into the first empty position. With all three taken the player chooses one to replace, **or keeps them all** (no plant). `plant(spirit, true)` (Hawk's Counsel, Ancestral Exchange): a position the player chooses, empty or taken. `plant('*')`: the player chooses the kind first. A replacement is not a command and gives nothing by itself; it fires `replace` only when the kind changed. With nobody to ask (a trigger), the first empty position, and nothing replaced. |
-| Command | The action `{ type: 'command', totem, target?, empower? }`, offered by `legalActions` on your own turn with no choice pending: **once a turn** (`SideState.commanded`, cleared at your turn's start), any planted totem, any legal target of its aim (a Hawk is bound by Taunt, as an aimed card is). It is an ability, not a card: it costs no Mana, is not played, and never counts as an Attack. Fires `command` (narrowed by `rune` to one spirit). |
-| Spirit | Status `spirit` on the hero: at most 3 (`SPIRIT_MAX`), kept between turns. `empower: true` spends one on a Hawk or Bear command for +2 (`SPIRIT_BOOST`): at most one a command. The Elder makes Spirit and can never spend it, so there is no gain/spend loop. |
-| Rousing | Status `rousing` (this turn): the next Hawk or Bear command adds it, and it is spent ("your next Hawk or Bear command" on the card). An Elder command neither uses nor wastes it. |
-| Shelter | Status `shelter` (this turn): the next Bear command gives its Barrier to every friendly (the hero alone when he has no companions). |
-| Uproot | `uproot` empties every position (`per('uprooted')` counts them). With none planted there is nothing to command until he plants again. |
-| Ownership and PvP | The positions are on his side and in the view for both players (`SideView.totems`, `commanded`); the command is his own action on his turn: no reaction prompts. The server's action cleaner and the replay checker know `command`. |
-| Bots | The greedy bot commands once nothing in hand is worth playing (so Rousing lands on it); the smart bot searches commands like plays. |
+| Elements | A spell's tag: `flame`, `frost` or `storm` (card text "Flame." and so on); `prism` counts as the element not cast yet this turn. Flame: single-target damage and Bleed, Thorns for defence. Frost: Barrier and Faltering, attacks that leave enemies Faltering. Storm: every enemy or random ones, Sapped for defence. Damage spells are Attacks; defensive spells are Skills. |
+| Totems | `HeroTrait.totems` 3 positions, grown to 5 by `totemSlot`. He starts with a **Hawk**, a **Bear** and a **Thunderbird**. A totem stays for the fight; planting into a full row asks which one to replace, or keep them all. "A totem of your choice" offers only the three basic kinds. |
+| Help each turn | `TotemDef.boost`: the first spell of its element each turn deals or gives more (each damage and Barrier number on it): Hawk +3 Flame, Bear +3 Frost, Thunderbird +2 Storm (each hit), Elder Tree +2 to the first spell of any element. Two of a kind help twice. Every 2 Spirit add 1 to each totem's help. The help goes to the card's own play, not its echo, and is carried over a choice it asks. |
+| Commands | `SideState.commands`: 1 at the start of his turn (`HeroTrait.commands`), more from `commands(n)` and Spirit Chorus; unused ones are lost. The action `{ type: 'command', totem }` spends one; the spirit aims by itself: Hawk 6 to a random enemy, Bear 5 Barrier to him, Thunderbird 3 to every enemy, Elder Tree 1 Spirit and a card, Moon Owl a Free Spell. Every Spirit adds 1 to every damage and Barrier number of a command. Not an attack, not a card. `commandAll` (Great Spirit's Call) makes every totem act once without spending commands. |
+| Rare totems | `rare: true`, planted only by Call the Elder Tree (`onPlant`: 2 Spirit) and Call the Moon Owl (`onTrinity`: 1 Mana). |
+| Trinity | The first time each turn he has cast a Flame, a Frost and a Storm spell: 1 Spirit (`trinity` trigger; the `elements` event carries the elements cast and whether Trinity fired). No count, streak or halving. |
+| Spirit | `spirit` on the hero: **no cap, never goes down** (Robert's decision). +1 to every command, +1 per 2 to every totem's help. Gained from Trinity, the Elder Tree and Spirit cards; nothing spends it. |
+| Free Spell | `freespell`: his next elemental spell costs 0 (Moon Owl's command, Shaman's Insight). |
+| Visibility | `SideView.totems`, `commands`, `elementsTurn`, `trinityDone` for both players. The server's action cleaner keeps only `totem`. |
 
 ## Trait and starter
 
-- **Spirit Caller:** three totem positions; once each turn, command one; start every fight with a Hawk planted. (~18 over four turns:
-  the command, nothing passive; guide §15.) No triple-totem start, no Splinter, no pulse every turn.
-- **Starter (10):** 4 Strike, 4 Defend, **Wardkeeper's Pact** (1: 5 Barrier, plant a Bear), **Guided Talon** (1: 6; if you have a
-  Hawk, Rousing 3). Turn 1 asks the question at once: Guided Talon and a 7-damage Hawk command, or Wardkeeper's Pact and a choice between
-  the Hawk and the Bear, given the enemy's intent. No rare is needed.
+- **Spirit and Trinity:** the three totems, a command a turn, their help, and Trinity's Spirit. About 50 over four turns, roughly 2.5
+  times the other traits, by design. If he plays too strong, the levers are the Hawk's 6, the +3/+3/+2 help and the one command a turn.
+- **Starter (10):** 2 Strike, 2 Defend, 2 Ember Bolt (Flame), 2 Frost Ward (Frost), 2 Gathering Storm (Storm). A 5-card hand holds a
+  spell of every element about 40% of the time.
 
-## Strategies
+## Strategies (83 cards; Flame 17, Frost 15, Storm 16, glue 35)
 
-1. **Storm (the Hawk on the attack):** Hawk Call, Spark Lash, Hawk's Eye, Diving Talon, Hawk's Counsel, Stormcrown, Arc Lightning,
-   Thunderhead, Eye of the Tempest, Stormcaller's Rite, Verdict of the Sky. Package: Stormcaller's Rite (Rousing 8, 1 Spirit) then an
-   empowered Hawk: 4 + 8 + 2 = 14 to one enemy, and Stormcrown's 4 to all.
-2. **Shelter (the Bear and Barrier):** Rime Strike, Still Water, Frostbark, Bear Hug, Shared Shelter, Frostglass, Deep Den, Hail Rite,
-   Bark Carapace, Ancestral Bulwark, Deep Freeze, Roar of the Den. Package: Ancestral Bulwark (14 Barrier, Rousing 6) and the Bear:
-   24 Barrier for 2 Mana, Roar of the Den's 5 to all.
-3. **Rites (Spirit, the Elder, replacement):** Call the Elder, Resonant Strike, Tune the Spirits, Spirit Guide, Ancestral Exchange,
-   Rite of Returning, Resounding Call, Elder's Wisdom, Chorus of Spirits, Spirit Drum, Circle of Ancestors, Elder Communion, Heart of
-   the World Tree, Spiritstorm, Release the Spirits, Totem Volley. Package: the Elder most turns for Spirit and cards, Circle of
-   Ancestors paying for a deliberate swap, then Spiritstorm (4 + 12 to all) or Release the Spirits (6 a totem to all).
+1. **Flame:** Searing Lash, Kindle, Firebrand, Twin Cinders, Flame Spear, Immolate, Wildfire, Ember Lance, Spirit Lance, Phoenix
+   Feather, Flashpoint, Inferno; defence: Flame Shield, Pyre Ward; Auras: Smoulder, Heart of the Pyre, Burning Aegis.
+2. **Frost:** Frost Needle, Chill Touch, Ice Shatter, Avalanche, Absolute Zero; defence: Frost Ward, Rime Shield, Hoarfrost, Ice Wall,
+   Glacier Guard, Frozen Grasp, Ice Mirror, Winter's Embrace, Glacial Fortress; Auras: Hail Rite, Frostbound.
+3. **Storm:** Gathering Storm, Chain Lightning, Static Crackle, Gale Call, Thunderclap, Squall, Storm Front, Maelstrom, Charged Sky,
+   Eye of the Tempest, Superstorm, Tempest Call; defence: Wind Wall, Static Veil; Auras: Lightning Rod, Calm Before the Storm, Storm
+   Sovereign.
 
-Glue: Stone Skin, Gale Strike, Ember Toss, Mudslide, Tidecaller, Arc Flash, Frost Needle, Spirit Memory, Clear Spring, Crystal Ward,
-Ironbark, Skybreaker. All three strategies work against a single boss; no kill or attack intent is needed.
-
-## Card disposition (53 live: 31 kept or changed, 22 new; 53 removed)
-
-**Kept (same card or lightly tuned):** Stone Skin, Ember Toss, Mudslide, Tidecaller, Arc Flash (upgrade 5 + 1 Exposed), Frost Needle
-(4, upgrade 6), Gale Strike (8: its cost cut was free), Clear Spring, Crystal Ward, Ironbark, Skybreaker, Spirit Memory (6 Barrier, no
-Consume).
-
-**Changed (same id, new job):** Hawk Call (plant a Hawk, Rousing 4, 4 Barrier), Spark Lash (7, plant a Hawk, Rousing 2), Totem Volley (4
-a totem), Rime Strike (6, 3 Barrier, plant a Bear), Still Water (`chilled-focus`: Barrier, a card if a Bear), Call the Elder
-(`gathering-dusk`), Resonant Strike (8 and 1 Spirit), Spirit Guide (`driver-of-runes`: a card if an Elder), Stormcrown (Hawk
-commands hit all), Arc Lightning, Frostglass, Deep Den (`void-pulse`), Hail Rite (`permafrost`), Chorus of Spirits (per kind), Bark
-Carapace (per totem), Elder Communion (`tune-the-lattice`: 3 Spirit, draw 2; no permanent Focus), Deep Freeze, Verdict of the Sky
-(`falling-star`, 3 Mana, was 5), Release the Spirits (`shatter-the-row`: uproot for damage, no mass awakening).
-
-**New:** Wardkeeper's Pact, Guided Talon, Hawk's Eye, Diving Talon, Frostbark, Bear Hug, Tune the Spirits, Hawk's Counsel, Thunderhead,
-Shared Shelter, Ancestral Exchange, Rite of Returning, Resounding Call, Elder's Wisdom, Spirit Drum, Eye of the Tempest, Stormcaller's
-Rite, Ancestral Bulwark, Roar of the Den, Circle of Ancestors, Heart of the World Tree, Spiritstorm.
-
-**Removed** (into the nearest new card, `retired.ts` Shaman identity block): the orb queue and slots (Twin Awakening, Many Voices,
-Glyph Lattice, Carve a Notch, Echoing Loop, Gathering Dark, Aegis Array, Echo Cascade, Sparkstorm, Storm Pole, Cold Snap, Wild Call,
-Splinter Wheel, Shard Chorus, Prism Cut, Night Veil, Prismatic Cascade); permanent Focus and the Rites-of-Auras package (Tune the
-Lattice's old Focus, Thundercall, Tuning Fork, White Noise, Spiritfont, Echoing Form, Overtune, Machine Learning, Sentinel Sigil,
-Earthen Might, Hyperbeam, Fire Bloom); the Owl Mana and free-Mana cards (Leyline Tap, Tidal Surge, Inner Flame, Heart of Flame,
-Smoke Offering); the 0-cost recursion package (Spirit Wave, Wild Heart, Wind's Favor, Rapids, River Scour, Whirlpool, Retune, Gathering
-Storm, Shifting Strike); the status-card package (Gather Kindling, Kindling, Kindled Rite, Glacial Memory, Feed the Fire, Boulder Fist,
-Blazing Aperture, Biased Weave, Gust Step, Elemental Focus); and Storm Call. Mudslide and Ironbark still make junk cards; the junk
-cards themselves stay (enemies and events use them).
+Glue: totems and commands (Hawk Call, Bear Call, Thunderbird Call, Call Again, Raise the Pole, Carve the Spirit Pole, Rally the
+Spirits, Ancestral Exchange, Thunder Roost, Bark Carapace, Call the Elder Tree, Call the Moon Owl, Spirit Chorus, Great Spirit's
+Call), Trinity and Spirit (Prism Spell, Spirit Surge, Communion, Spiritstorm, Harmony, Spirit Walk) and utility (Stone Skin,
+Tidecaller, Spirit Memory, Read the Winds, Clear Spring, Crystal Ward, Ironbark, Shaman's Insight, Smoke Offering, Skybreaker, Spirit
+Vision, Gale Strike).
 
 ## Checks the points can't do (guide §8)
 
-- **Loops:** no card or command makes Mana now except Skybreaker's kill; the Elder's draw is one a turn (one command); Spirit is capped
-  at 3 and spent one a command; no card grants a second command; Release the Spirits Consumes.
-- **Multipliers:** Rousing and Spirit add flat amounts to one command. The biggest single command: Stormcaller's Rite+ (11) and
-  Spirit: 4 + 11 + 2 = 17 for 1 Mana and the turn's command. The biggest turn: Verdict of the Sky (24, 2 Exposed, Rousing 5) and an
-  empowered Hawk (11), with Stormcrown out: about 40 for 3 Mana, a rare's turn.
-- **Turn-four ceiling:** a Rites deck with Spirit Drum and Heart of the World Tree empowers every command (+2) and gains Barrier: two
-  Auras' worth, bounded by one command.
-- **Tiers:** every command is flat, so it shrinks against Tier X HP; Verdict of the Sky's Exposed keeps up.
-- **Arena:** totems and commands are visible to both players; a Hawk aims at the other hero or a companion, a Bear at his own side.
+- **Ramp:** Spirit has no cap. A Trinity deck with Spirit cards gains 2-3 a turn; by turn 10 of a boss fight it may hold 10-15
+  (+10-15 a command, +5-7 a help). That is the intended power curve. The long boss fight is the case to watch.
+- **Command loops:** extra commands come from cards (Call Again, Hawk Call, Rally the Spirits) and one rare Aura; no card makes
+  commands from commands, and no command makes Mana (the Moon Owl's is on Trinity, once a turn). Storm Sovereign with several commands
+  a turn is the multiplier.
+- **Bleed:** Wildfire doubles the target's Bleed (at most 10 more) and Consumes; Flashpoint (3 a Bleed) Consumes.
+- **Arena:** no reaction prompts; the Hawk's dive is random; totems, commands, elements and Trinity are on his side of the view.
 
 ## Saves, decks and replays
 
-As for the Knight (DECISIONS #414): removed ids become their replacements (`RETIRED_CARDS`); a pre-rework Shaman run is stamped
-(`CLASS_REWORKS.shaman`), the player told, and a fight in progress restarts. `RULES_VERSION` 34 (it covers every identity rework, none of which has shipped yet; the new `command` action is in it):
-an old action log replays under its own version or is rejected, never silently reread. The old rune machinery (`channel`, `evoke`,
-`pulse`, `runeSlots`, `resonance`) stays in the engine, unused by any live card, so archived fixtures still read.
+`CLASS_REWORKS.shaman` version 2 ("elements, totems and Trinity"): runs saved under the Defect copy or the first rework are migrated
+(their cards through `RETIRED_CARDS`, by a chain from the Defect ids), the player is told, and a fight in progress restarts.
+`RULES_VERSION` 34 still covers every unreleased rework.
 
 ## Art
 
-No new pictures. 31 cards keep theirs; those drawn as an orb row or an awakening burst are listed for review in
-`docs/CLASS_REWORK_ART.md`. The 22 new cards use the placeholder. In code: the Totems panel (three positions, a mark and a word each, the
-commandable ones as buttons with a bright edge, Spirit pips and the Empower toggle), the command aim bar, the spirit and position tiles
-of the plant choice, tooltips, a teaching tip and the Learn page's spirit list.
+No new pictures. Ids kept from earlier pools keep their art (Frost Needle, Eye of the Tempest, Hail Rite, Bark Carapace, Ancestral
+Exchange, Communion, Spiritstorm, Hawk Call, Bear Call, Stone Skin, Tidecaller, Spirit Memory, Clear Spring, Crystal Ward, Ironbark,
+Skybreaker, Gale Strike, Smoke Offering, Wildfire, Flashpoint, Gathering Storm); the rest use the placeholder (list in
+`docs/CLASS_REWORK_ART.md`). In code: the Totems panel, the Trinity panel (the Suits' row with three element pips), tooltips, a
+teaching tip and the Learn page's totem list.

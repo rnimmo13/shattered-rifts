@@ -359,6 +359,15 @@ export const spendMastery = (n: 1 | 2): Op => ({ op: 'spend', status: 'mastery',
 export const DEFENSIVE: { tags: string[] } = { tags: [DEFENSIVE_TAG] };
 export const STRIKING: { tags: string[] } = { tags: [STRIKING_TAG] };
 
+/** (DECISIONS #420) a totem position more; commands this turn; every totem acts once */
+export const totemSlot: Op = { op: 'totemSlot' };
+export const commands = (n = 1): Op => ({ op: 'commands', amount: n });
+export const commandAll: Op = { op: 'commandAll' };
+/** the Shaman's element tags (a spell's `tags`) */
+export const FLAME: { tags: string[] } = { tags: ['flame'] };
+export const FROST: { tags: string[] } = { tags: ['frost'] };
+export const STORM: { tags: string[] } = { tags: ['storm'] };
+export const PRISM: { tags: string[] } = { tags: ['prism'] };
 /** "If you have a Hawk: ..." */
 export const ifTotem = (spirit: string, ops: Op[]): Op => ({
   op: 'when',

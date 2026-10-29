@@ -56,6 +56,8 @@ import { AimArrow } from './AimArrow';
 import { SuitTrack } from './SuitTrack';
 import { EnchantSlots } from './EnchantSlots';
 import { TotemPanel } from './TotemPanel';
+import { TrinityTrack } from './TrinityTrack';
+import { elementTag } from './elementLook';
 import { FormPanel } from './FormPanel';
 import { UnitPlates, type Placed } from './Plates';
 import { ErrorDetails } from '../ui/ErrorDetails';
@@ -427,10 +429,6 @@ export function FightView(props: {
   } | null>(null);
   const [dragCard, setDragCard] = useState<HandCard | null>(null);
   const [aimPotion, setAimPotion] = useState<string | null>(null);
-  // (the Shaman, DECISIONS #418) the totem whose command is being aimed, and whether the next command spends a Spirit
-  // (both are kept with the turn they were set on: a new turn lets go of them without an effect)
-  const [aimCommandAt, setAimCommandAt] = useState<{ totem: number; turn: number } | null>(null);
-  const [empowerAt, setEmpowerAt] = useState<number | null>(null);
   const [floats, setFloats] = useState<Float[]>([]);
   const [banner, setBannerText] = useState<string | null>(null);
   /** a banner is good news (green), bad news (red) or just information */
@@ -999,7 +997,6 @@ export function FightView(props: {
         setLegal(legalFor(r.state));
         setSelected(null);
         setAimPotion(null);
-        setAimCommandAt(null);
         setReleasing(null);
         if (!history) enqueue(r.events, r.state, pvp ? seat !== mySide : undefined);
         // a campaign fight keeps every move, so a reload can resume it
@@ -1227,21 +1224,6 @@ export function FightView(props: {
     setReleasing(null);
     setHoverCard(null);
   }, [act, releasing]);
-  // (the Shaman) Empower only counts while a legal command can spend Spirit; a command being aimed goes with the totem
-  // (set on an earlier turn, or for a totem that can no longer be commanded, they are let go)
-  const turnNow = view?.turn ?? 0;
-  const aimCommand =
-    aimCommandAt &&
-    aimCommandAt.turn === turnNow &&
-    legal.some((a) => a.type === 'command' && a.totem === aimCommandAt.totem)
-      ? aimCommandAt.totem
-      : null;
-  const empowering = empowerAt === turnNow && legal.some((a) => a.type === 'command' && a.empower);
-  const canEmpowerTotem = useCallback(
-    (totem: number | null): boolean =>
-      legal.some((a) => a.type === 'command' && a.totem === totem && a.empower),
-    [legal],
-  );
   const aimSet = useMemo(
     () =>
       releaseCard && releasing
@@ -1252,30 +1234,8 @@ export function FightView(props: {
                 a.type === 'potion' && a.potion === aimPotion && a.target ? [a.target] : [],
               ),
             )
-          : aimCommand !== null
-            ? new Set(
-                legal.flatMap((a) =>
-                  a.type === 'command' &&
-                  a.totem === aimCommand &&
-                  !!a.empower === (empowering && canEmpowerTotem(aimCommand)) &&
-                  a.target
-                    ? [a.target]
-                    : [],
-                ),
-              )
-            : (dragTargets ?? (selectedCard ? new Set(selectedCard.targets) : new Set<string>())),
-    [
-      selectedCard,
-      dragTargets,
-      aimPotion,
-      aimCommand,
-      empowering,
-      canEmpowerTotem,
-      legal,
-      releaseCard,
-      releasing,
-      releaseFits,
-    ],
+          : (dragTargets ?? (selectedCard ? new Set(selectedCard.targets) : new Set<string>())),
+    [selectedCard, dragTargets, aimPotion, legal, releaseCard, releasing, releaseFits],
   );
   // what each card in hand would really deal right now (Might, Sharpen, Faltering...), and the card being aimed at the unit under
   // the pointer (its Exposed too); a card that could hit several enemies shows the range
@@ -1324,8 +1284,7 @@ export function FightView(props: {
       if (selected || releasing) setPointer({ x: e.clientX, y: e.clientY });
       // while aiming, the nearest figure that can be chosen is the one pointed at
       const aiming =
-        !!(selected || dragTargets || releasing || aimPotion !== null || aimCommand !== null) &&
-        aimSet.size > 0;
+        !!(selected || dragTargets || releasing || aimPotion !== null) && aimSet.size > 0;
       const u = unitAt(e.clientX, e.clientY, aiming ? aimSet : undefined);
       setHoverUnit(u);
       const sc = scene.current;
@@ -1339,7 +1298,7 @@ export function FightView(props: {
             : null,
       );
       scene.current?.fighters.setHover(
-        selected || dragTargets || releasing || aimPotion !== null || aimCommand !== null
+        selected || dragTargets || releasing || aimPotion !== null
           ? u && aimSet.has(u)
             ? u
             : null
@@ -1348,7 +1307,7 @@ export function FightView(props: {
     };
     window.addEventListener('pointermove', onMove);
     return () => window.removeEventListener('pointermove', onMove);
-  }, [unitAt, selected, dragTargets, releasing, aimPotion, aimCommand, aimSet]);
+  }, [unitAt, selected, dragTargets, releasing, aimPotion, aimSet]);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -1361,8 +1320,6 @@ export function FightView(props: {
         else {
           setSelected(null);
           setAimPotion(null);
-          setAimCommandAt(null);
-          setEmpowerAt(null);
           setReleasing(null);
         }
       } else if (e.key === 'e' || e.key === 'E') endTurn();
@@ -1393,21 +1350,6 @@ export function FightView(props: {
         else setReleasing({ ...releasing, picked });
       }
       return; // a miss keeps aiming: right-click or Esc lets go
-    }
-    if (aimCommand !== null) {
-      if (e.button !== 0) return setAimCommandAt(null);
-      const u = unitAt(e.clientX, e.clientY, aimSet);
-      if (u && aimSet.has(u)) {
-        act({
-          type: 'command',
-          totem: aimCommand,
-          target: u,
-          ...(empowering && canEmpowerTotem(aimCommand) ? { empower: true } : {}),
-        });
-        setAimCommandAt(null);
-        setEmpowerAt(null);
-      }
-      return; // (a miss keeps aiming: right-click or Esc lets go)
     }
     if (aimPotion !== null) {
       if (e.button !== 0) return setAimPotion(null);
@@ -1534,35 +1476,16 @@ export function FightView(props: {
       </FloatPanel>
     );
   };
-  // (the Shaman's totems: his three positions and his Spirit, as a panel in that side's column, DECISIONS #418)
+  // (the Shaman's totems, his commands left and his Spirit, and his Trinity, as panels in that side's column, DECISIONS #420)
   const totemPanel = (side: Side): ReactNode => {
     const sv = view?.sides[side];
     const held = sv?.totems;
     if (!sv || !held) return null;
     const hero = sv.units.find((u) => u.kind === 'hero');
-    const spirit = hero?.statuses.spirit ?? 0;
     const mine = side === mySide && !waiting && !finished && watch === null;
     const cmds = mine
       ? legal.filter((a): a is Extract<Action, { type: 'command' }> => a.type === 'command')
       : [];
-    const ready = new Set(
-      cmds
-        .filter((a) => !!a.empower === (empowering && canEmpowerTotem(a.totem)))
-        .map((a) => a.totem),
-    );
-    const command = (totem: number): void => {
-      setSelected(null);
-      setAimPotion(null);
-      const ways = cmds.filter(
-        (a) => a.totem === totem && !!a.empower === (empowering && canEmpowerTotem(totem)),
-      );
-      const plain = ways.find((a) => !a.target);
-      if (plain) {
-        act(plain);
-        setEmpowerAt(null);
-        setAimCommandAt(null);
-      } else setAimCommandAt(aimCommand === totem ? null : { totem, turn: view?.turn ?? 0 });
-    };
     return (
       <FloatPanel
         id={side === mySide ? 'totems-mine' : 'totems-foe'}
@@ -1572,21 +1495,36 @@ export function FightView(props: {
         <TotemPanel
           db={db}
           totems={held}
-          spirit={spirit}
-          commanded={!!sv.commanded}
-          ready={ready}
-          aiming={side === mySide ? aimCommand : null}
-          canEmpower={cmds.some((a) => a.empower)}
-          empower={empowering}
+          spirit={hero?.statuses.spirit ?? 0}
+          commands={sv.commands ?? 0}
+          ready={new Set(cmds.map((a) => a.totem))}
           {...(mine
             ? {
-                onEmpower: (on: boolean) => {
-                  setEmpowerAt(on ? (view?.turn ?? 0) : null);
-                  setAimCommandAt(null);
+                onCommand: (totem: number) => {
+                  setSelected(null);
+                  setAimPotion(null);
+                  act({ type: 'command', totem });
                 },
-                onCommand: command,
               }
             : {})}
+        />
+      </FloatPanel>
+    );
+  };
+  const trinityPanel = (side: Side): ReactNode => {
+    const sv = view?.sides[side];
+    if (!sv?.totems) return null;
+    const aiming = side === mySide ? (dragCard ?? selectedCard ?? hoverCard) : null;
+    return (
+      <FloatPanel
+        id={side === mySide ? 'trinity-mine' : 'trinity-foe'}
+        className="fight__aux fight__aux--trinity"
+        title={side === mySide ? 'Trinity' : 'Their Trinity'}
+      >
+        <TrinityTrack
+          cast={sv.elementsTurn ?? []}
+          done={!!sv.trinityDone}
+          preview={aiming ? elementTag(aiming.def) : null}
         />
       </FloatPanel>
     );
@@ -1675,11 +1613,10 @@ export function FightView(props: {
         ref={host}
         onPointerDown={onStagePointerDown}
         onContextMenu={(e) => {
-          if (selected || aimPotion !== null || aimCommand !== null || releasing) {
+          if (selected || aimPotion !== null || releasing) {
             e.preventDefault();
             setSelected(null);
             setAimPotion(null);
-            setAimCommandAt(null);
             setReleasing(null);
           }
         }}
@@ -1940,7 +1877,6 @@ export function FightView(props: {
             }}
             onSelect={(c) => {
               setAimPotion(null);
-              setAimCommandAt(null);
               setReleasing(null);
               setSelected(c ? c.inst.id : null);
             }}
@@ -2005,7 +1941,6 @@ export function FightView(props: {
                           (x) => x.type === 'potion' && x.potion === id && x.target,
                         );
                         setSelected(null);
-                        setAimCommandAt(null);
                         if (!needs) act({ type: 'potion', index: i, potion: id });
                         else setAimPotion(aimPotion === id ? null : id);
                       }}
@@ -2019,16 +1954,6 @@ export function FightView(props: {
                   );
                 })}
               </div>
-            </div>
-          )}
-          {aimCommand !== null && me?.totems?.[aimCommand] && (
-            <div className="fight__aimbar" role="status">
-              <b>Command: {db.totems?.[me.totems[aimCommand]]?.name ?? 'Totem'}</b>
-              {empowering && canEmpowerTotem(aimCommand) ? <span> (empowered)</span> : null}{' '}
-              <span>Click a glowing target.</span>
-              <button className="btn btn--small btn--ghost" onClick={() => setAimCommandAt(null)}>
-                <span>Cancel</span>
-              </button>
             </div>
           )}
           {aimPotion !== null && me?.potions?.includes(aimPotion) && (
@@ -2095,6 +2020,7 @@ export function FightView(props: {
               {suitsPanel(mySide)}
               {enchantPanel(mySide)}
               {totemPanel(mySide)}
+              {trinityPanel(mySide)}
               {formPanel(mySide)}
               {me && <AuraList db={db} me={me} panel="auras-mine" title="Your Auras" />}
             </div>
@@ -2136,6 +2062,7 @@ export function FightView(props: {
               {suitsPanel(foeSide)}
               {enchantPanel(foeSide)}
               {totemPanel(foeSide)}
+              {trinityPanel(foeSide)}
               {formPanel(foeSide)}
               {them && (
                 <AuraList

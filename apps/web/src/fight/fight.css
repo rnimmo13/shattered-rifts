@@ -2716,3 +2716,34 @@ button.totem:disabled {
   min-width: 6rem;
   padding: 0.6rem 0.8rem;
 }
+
+/* the Shaman's Trinity (DECISIONS #420): the Suits row, with three element pips (a mark each, named in its label) */
+.trinitypip--flame.is-lit {
+  color: #ffb27a;
+}
+.trinitypip--frost.is-lit {
+  color: #bfe7ff;
+}
+.trinitypip--storm.is-lit {
+  color: #f4e27a;
+}
+.trinitytrack__label {
+  align-self: center;
+  margin-left: 0.3rem;
+  font-size: 0.75rem;
+  white-space: nowrap;
+}
+.fpanel.fight__aux--trinity .suittrack {
+  background: none;
+  border: 0;
+  box-shadow: none;
+  padding: 0.2rem 0;
+}
+.totem--thunderbird {
+  color: #f4e27a;
+  border-color: #b8a23a;
+}
+.totem--owl {
+  color: #d9d2ff;
+  border-color: #7d72c9;
+}

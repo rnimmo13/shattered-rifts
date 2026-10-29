@@ -96,7 +96,7 @@ describe('attack statuses only touch attack damage', () => {
         hero(s).statuses.might = 5;
         foe(s).statuses.exposed = 3;
       }
-      s = applyAction(db, s, { type: 'command', totem: 0, target: foe(s).id }).state;
+      s = applyAction(db, s, { type: 'command', totem: 0 }).state;
       return 200 - foe(s).hp;
     };
     expect(lost(false)).toBeGreaterThan(0);

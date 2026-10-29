@@ -157,9 +157,16 @@ export function createDescriber(c: LogContext): (e: CombatEvent) => Omit<LogLine
       // (the Shaman's command, DECISIONS #418)
       case 'command':
         return {
-          text: `${c.who(e.side)} ${e.side === c.me ? 'command' : 'commands'} the ${c.db.totems?.[e.spirit]?.name ?? 'totem'}${e.empowered ? ' (empowered)' : ''}`,
+          text: `${c.who(e.side)} ${e.side === c.me ? 'call' : 'calls'} the ${c.db.totems?.[e.spirit]?.name ?? 'totem'}`,
           tone: tone(e.side),
         };
+      case 'elements':
+        return e.trinity
+          ? {
+              text: `${c.who(e.side)} ${e.side === c.me ? 'trigger' : 'triggers'} Trinity: +1 Spirit`,
+              tone: tone(e.side),
+            }
+          : null;
       case 'act':
         trap = null;
         lastHit = null;

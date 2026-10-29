@@ -402,6 +402,12 @@ export const STATUS_INFO: Record<
     tone: 'good',
     text: 'The next enchantment you discharge this turn takes effect twice (it is still spent once).',
   },
+  freespell: {
+    name: 'Free Spell',
+    glyph: '✧',
+    tone: 'good',
+    text: 'Your next Flame, Frost, Storm or Prism spell costs 0.',
+  },
   // (the Monk's, DECISIONS #419)
   mastery: {
     name: 'Mastery',
@@ -414,7 +420,7 @@ export const STATUS_INFO: Record<
     name: 'Spirit',
     glyph: '◉',
     tone: 'good',
-    text: 'At most 3, kept from turn to turn. Spend 1 to empower a Hawk or Bear command: it deals or gives 2 more. Elders and some cards give it.',
+    text: 'The Shaman’s Spirit never goes down. Each point adds 1 to every command; every 2 add 1 to every totem’s help. Trinity and some cards give it.',
   },
   rousing: {
     name: 'Rousing',
@@ -516,7 +522,7 @@ export const KEYWORD_INFO: Record<string, { name: string; text: string }> = {
   },
   rune: {
     name: 'Totem',
-    text: 'You have three totem positions. Plant puts a totem in the first empty one (with all three taken you choose one to replace, or keep them). A totem does nothing on its own.',
+    text: 'The Shaman starts with a Hawk, a Bear and a Thunderbird. Each helps the first spell of its element each turn. A totem stays for the fight; planting into a full row asks which one to replace (or keep them). Cards can add positions, up to 5.',
   },
   // (the Monk's, DECISIONS #419)
   technique: {
@@ -530,7 +536,16 @@ export const KEYWORD_INFO: Record<string, { name: string; text: string }> = {
   // (the Shaman's, DECISIONS #418)
   command: {
     name: 'Command',
-    text: 'Once each turn, press one of your totems to command it: a Hawk deals 4 damage to the enemy you choose (not an attack), a Bear gives 4 Barrier to a friendly, an Elder gives 1 Spirit and draws a card. More totems give more choices, not more commands.',
+    text: 'Press a totem to call its spirit, once a turn (some cards give more): the Hawk dives at a random enemy for 6, the Bear gives 5 Barrier, the Thunderbird hits every enemy for 3. Every Spirit adds 1.',
+  },
+  // (the Shaman's elements and Trinity, DECISIONS #420)
+  element: {
+    name: 'Flame, Frost, Storm',
+    text: 'The Shaman’s spells. Flame: one enemy, Bleed and Thorns. Frost: Barrier and Faltering. Storm: every enemy, or random ones, and Sapped. Each totem helps the first spell of its element each turn.',
+  },
+  trinity: {
+    name: 'Trinity',
+    text: 'Cast a Flame, a Frost and a Storm spell in one turn: 1 Spirit, the first time each turn. A Prism spell counts as an element you have not cast yet.',
   },
   status: {
     name: 'Status card',
@@ -668,14 +683,23 @@ export function keywordsOf(
     if (o.op === 'exhaustCards') add(KEYWORD_INFO['exhaust']);
     if (o.op === 'channel' || o.op === 'evoke' || o.op === 'runeSlots') add(KEYWORD_INFO['rune']);
     // (the Shaman's totems: planting one, or anything about a command)
-    if (o.op === 'plant' || o.op === 'uproot' || o.ops?.some((x) => x.op === 'plant'))
+    if (
+      o.op === 'plant' ||
+      o.op === 'uproot' ||
+      o.op === 'totemSlot' ||
+      o.ops?.some((x) => x.op === 'plant')
+    )
       add(KEYWORD_INFO['rune']);
     if (
       (o.op === 'status' && (o.status === 'rousing' || o.status === 'shelter')) ||
       (o.op === 'power' && (o as { when?: string }).when === 'command') ||
+      o.op === 'commands' ||
+      o.op === 'commandAll' ||
       o.ops?.some((x) => x.op === 'status' && (x as { status?: string }).status === 'rousing')
     )
       add(KEYWORD_INFO['command']);
+    if (o.op === 'power' && (o as { when?: string }).when === 'trinity')
+      add(KEYWORD_INFO['trinity']);
     if (o.op === 'spend' && (o as { status?: string }).status === 'spirit')
       add({ name: STATUS_INFO.spirit.name, text: STATUS_INFO.spirit.text });
     // (the Monk's forms and Mastery)
@@ -716,6 +740,11 @@ export function keywordsOf(
     }
   }
   if (c.tags?.includes('defensive') || c.tags?.includes('striking')) add(KEYWORD_INFO['technique']);
+  // (the Shaman's spells: their element, and Trinity)
+  if (c.tags?.some((t) => t === 'flame' || t === 'frost' || t === 'storm' || t === 'prism')) {
+    add(KEYWORD_INFO['element']);
+    add(KEYWORD_INFO['trinity']);
+  }
   if (c.exhaust || c.kind === 'power') add(KEYWORD_INFO['exhaust']);
   if (c.retain) add(KEYWORD_INFO['retain']);
   if (c.innate) add(KEYWORD_INFO['innate']);

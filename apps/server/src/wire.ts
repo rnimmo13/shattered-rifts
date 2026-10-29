@@ -103,15 +103,8 @@ export function cleanAction(a: Action): Action {
           : [],
       };
     // (the Shaman's command, DECISIONS #418)
-    case 'command': {
-      const target = str(o['target']);
-      return {
-        type: 'command',
-        totem: num(o['totem']) ?? -1,
-        ...(target ? { target } : {}),
-        ...(o['empower'] === true ? { empower: true } : {}),
-      };
-    }
+    case 'command':
+      return { type: 'command', totem: num(o['totem']) ?? -1 };
     default:
       return { type: 'endTurn' };
   }

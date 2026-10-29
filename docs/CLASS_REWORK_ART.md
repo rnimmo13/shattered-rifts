@@ -74,23 +74,21 @@ In code: the Obsidian Blade panel (`EnchantSlots.tsx`: two positions, a mark and
 dotted ring, the aimed card's spend shown), the charge tiles of the discharge and replacement choices, tooltips, a teaching tip and Learn page words.
 
 
-## Shaman (commanded totems)
+## Shaman (elements, totems and Trinity, DECISIONS #420)
 
 Portrait: keep (`figures/hero-shaman.png` and his skins). Visual authority for anything new: `assets-src/heroes/shaman.png` (bold ink
-outlines, ochre carved wood, ivory feather and bone, teal cloth, cyan spirits; the Elder is a branch-faced tree spirit).
+outlines, ochre carved wood, ivory feather and bone, teal cloth, cyan spirits).
 
 | Kind | Cards |
 |---|---|
-| Kept with their picture, still fitting | Stone Skin, Gale Strike, Ember Toss, Mudslide, Tidecaller, Arc Flash, Frost Needle, Spirit Memory, Clear Spring, Crystal Ward, Ironbark, Skybreaker, Spark Lash, Rime Strike, Deep Den, Deep Freeze, Resonant Strike |
-| Kept picture, effect changed: **review** (drawn as an orb row, a slot or an awakening burst) | Hawk Call, Totem Volley, Stormcrown, Arc Lightning, Verdict of the Sky, Still Water, Frostglass, Hail Rite, Bark Carapace, Call the Elder, Spirit Guide, Chorus of Spirits, Elder Communion, Release the Spirits |
-| New, placeholder until drawn (22) | Wardkeeper's Pact, Guided Talon, Hawk's Eye, Diving Talon, Hawk's Counsel, Thunderhead, Eye of the Tempest, Stormcaller's Rite, Frostbark, Bear Hug, Shared Shelter, Ancestral Bulwark, Roar of the Den, Tune the Spirits, Ancestral Exchange, Rite of Returning, Resounding Call, Elder's Wisdom, Spirit Drum, Circle of Ancestors, Heart of the World Tree, Spiritstorm |
-| Pictures of removed cards that might fit (**look first**) | Storm Pole -> Hawk's Counsel; Splinter Wheel -> Spirit Drum; Aegis Array -> Ancestral Bulwark; Gathering Dark -> Circle of Ancestors; Spiritfont -> Heart of the World Tree |
-| Retired (unused now) | the 53 removed Shaman cards' pictures (`retired.ts`, Shaman identity block); the old rune glyphs (`RUNE_GLYPH`) stay for the archive |
+| Kept ids with their picture: **review** whether each still shows the card (several were drawn as orbs or awakenings) | Frost Needle, Eye of the Tempest, Hail Rite, Bark Carapace, Ancestral Exchange, Communion, Spiritstorm, Hawk Call, Bear Call, Stone Skin, Tidecaller, Spirit Memory, Clear Spring, Crystal Ward, Ironbark, Skybreaker, Gale Strike, Smoke Offering, Wildfire, Flashpoint, Gathering Storm |
+| New, placeholder until drawn (62) | every other card in `pools/shaman.ts`: the Flame, Frost and Storm spells, the defences and Auras, the totem and Trinity cards |
+| Retired (unused now) | the cards of the Defect copy and of the first rework (`retired.ts`, the two Shaman blocks) |
 
-Priority 1 in the brief, **not made**: Hawk, Bear and Elder totem silhouettes and their brief manifestations, with occupied, selected
-and commanded states. Until they exist the Totems panel draws each in code (a mark and a word: ⋀ Hawk, ◼ Bear, ✥ Elder) and a command
-plays the log line and the unit's hit or Barrier effect; no spirit becomes a unit or a target. The supplied reference strips the brief
-names (`shaman-totems-reference-v2.png`, `shaman-spirits-reference-v2.png`) are not in the repository.
+Still wanted, **not made**: Hawk, Bear and Thunderbird totem silhouettes (and the rare Elder Tree and Moon Owl), their brief
+manifestations when called, and a picture per element (flame, frost, storm) for the spell families. Until then the Totems panel draws
+each totem in code (a mark and a word: ⋀ Hawk, ◼ Bear, ϟ Thunderbird, ✥ Elder Tree, ☾ Moon Owl), and the Trinity panel the elements
+(♨ Flame, ❄ Frost, ϟ Storm). The two reference strips the brief names are not in the repository.
 
 ## Monk (Martial Forms and Mastery)
 

@@ -176,6 +176,11 @@ export function reduceEvent(db: CombatDb, s: CombatState, e: CombatEvent): void 
     case 'command':
       s.sides[e.side].commanded = true;
       return;
+    // (the Shaman's elements: the Trinity pips light as each spell is cast)
+    case 'elements':
+      s.sides[e.side].elementsTurn = [...e.elements];
+      if (e.trinity) s.sides[e.side].trinityDone = true;
+      return;
     // (the Monk's form: the panel follows the event; its steps come with the next resync)
     case 'form': {
       const sd = s.sides[e.side];

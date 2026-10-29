@@ -4,7 +4,9 @@
 export const TOTEM_LOOK: Record<string, { glyph: string; name: string }> = {
   hawk: { glyph: '⋀', name: 'Hawk' },
   bear: { glyph: '◼', name: 'Bear' },
-  elder: { glyph: '✥', name: 'Elder' },
+  thunderbird: { glyph: 'ϟ', name: 'Thunderbird' },
+  elder: { glyph: '✥', name: 'Elder Tree' },
+  owl: { glyph: '☾', name: 'Moon Owl' },
 };
 
 export const totemLook = (id: string): { glyph: string; name: string } =>

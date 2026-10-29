@@ -251,12 +251,14 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     realm: 'nexus',
     persona: 'Ilvane',
     role: 'Shaman',
-    // (rebuilt 2026-10-29, docs/BASE_CLASS_REWORKS.md §5, DECISIONS #418: commanded totems; the Defect copy is archived)
+    // (rebuilt again 2026-10-29 to Robert's direction, docs/reworks/SHAMAN_ELEMENTS_PROPOSAL.md, DECISIONS #420)
     trait: {
-      name: 'Spirit Caller',
-      text: 'You have three totem positions. Once each turn, command one of your totems to act. Start every fight with a Hawk planted.',
+      name: 'Spirit and Trinity',
+      text: "You start with a Hawk, a Bear and a Thunderbird totem, and command a totem once a turn. The first time each turn you cast a Flame, a Frost and a Storm spell, Trinity gives you 1 Spirit. Spirit never goes down: each point adds 1 to your commands, and every 2 add 1 to your totems' help.",
       totems: 3,
-      fightStart: [plant('hawk')],
+      commands: 1,
+      trinity: true,
+      fightStart: [plant('hawk'), plant('bear'), plant('thunderbird')],
     },
     hero: {
       id: 'shaman',
@@ -265,19 +267,25 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
       mana: 3,
       handSize: 5,
     },
-    starter: [...rep('strike', 4), ...rep('defend', 4), 'wardkeepers-pact', 'guided-talon'],
+    starter: [
+      ...rep('strike', 2),
+      ...rep('defend', 2),
+      ...rep('ember-bolt', 2),
+      ...rep('frost-ward', 2),
+      ...rep('gathering-storm', 2),
+    ],
     blurb:
-      'An elder shaman of the old spirits. He plants totems of Hawk, Bear and Elder, and once each turn calls one of them to act: a Hawk strikes, a Bear guards, an Elder brings Spirit and wisdom.',
-    mechanics: ['Totems', 'Commands', 'Spirit', 'Rousing'],
+      'An elder shaman who casts Flame, Frost and Storm. His Hawk, Bear and Thunderbird totems help his spells every turn, and he calls on their spirits to strike and shield for him. A spell of every element in one turn, Trinity, raises his Spirit for good.',
+    mechanics: ['Elements', 'Totems', 'Commands', 'Trinity', 'Spirit'],
     buildPaths: [
-      'Storm: the Hawk on the attack, with Rousing and Hawk payoffs',
-      'Shelter: the Bear and Barrier',
-      'Rites: Spirit, the Elder, and replacing or uprooting your totems',
+      'Flame: single-target damage and Bleed, with Thorns to guard',
+      'Frost: Barrier and Faltering',
+      'Storm: every enemy at once, with Sapped to guard',
     ],
     howTo: [
-      'You have three totem positions (beside your hero) and start each fight with a Hawk. Cards plant more; with all three taken, you choose which one a new totem replaces, or keep them.',
-      'Once each turn, press a totem to command it: a Hawk deals 4 damage to the enemy you choose, a Bear gives 4 Barrier, an Elder gives 1 Spirit and draws a card. Planting more totems gives you more choices, not more commands.',
-      'Spirit (up to 3) stays from turn to turn: spend one on a Hawk or Bear command for 2 more. Rousing cards make your next command this turn stronger.',
+      'His spells are Flame (one enemy), Frost (Barrier and Faltering) or Storm (every enemy). Each totem helps the first spell of its element each turn: the Hawk Flame, the Bear Frost, the Thunderbird Storm.',
+      'Once a turn, press a totem to call its spirit: the Hawk dives at a random enemy for 6, the Bear gives 5 Barrier, the Thunderbird hits every enemy for 3. Some cards give more commands.',
+      "Cast a Flame, a Frost and a Storm spell in one turn for Trinity: 1 Spirit. Spirit never goes down; each point makes every command 1 stronger, and every 2 make every totem's help 1 stronger.",
     ],
   },
 
@@ -717,7 +725,8 @@ export const CLASS_REWORKS: Partial<Record<HeroId, { version: number; summary: s
   knight: { version: 1, summary: 'Guard, Riposte and Thorns' },
   assassin: { version: 1, summary: 'Preparation and embedded knives' },
   spellblade: { version: 1, summary: 'Imbue and Discharge' },
-  shaman: { version: 1, summary: 'commanded totems' },
+  // (the Shaman was rebuilt twice the same day: version 2 is the elements, totems and Trinity of DECISIONS #420)
+  shaman: { version: 2, summary: 'elements, totems and Trinity' },
   monk: { version: 1, summary: 'Martial Forms and Mastery' },
 };
 

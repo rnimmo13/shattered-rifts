@@ -249,7 +249,9 @@ describe('pool shape (docs/09_ROSTER.md §1)', () => {
           (o.op === 'forge' && o.card !== c.id.replace(/[+]$/, '')) ||
           (o.op === 'power' && o.ops.some((x) => x.op === 'forge')),
       );
-    owns(sharpensAnother, ['spellblade', 'drunkard']);
+    // (the Old Twelve Gauge's Precision, and the Shaman's Gathering Storm grown by Tempest Call, DECISIONS #420; the Spellblade's
+    // Sharpen went with #417)
+    owns(sharpensAnother, ['drunkard', 'shaman']);
     owns((c) => c.tags?.includes('gun') === true, 'drunkard');
     owns((c) => c.tags?.includes('knife') === true, 'assassin');
     owns((c) => c.tags?.includes('shell') === true, 'drunkard');
@@ -269,7 +271,8 @@ describe('pool shape (docs/09_ROSTER.md §1)', () => {
             (o.op === 'scaleStatus' && o.status === 'seared') ||
             (o.op === 'status' && o.status === 'seared' && o.to !== 'target'),
         ),
-      ['assassin'],
+      // (Bleed stacking: the Assassin's until his rework, #416; the Shaman's Flame since #420)
+      ['assassin', 'shaman'],
     );
   });
 

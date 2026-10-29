@@ -136,7 +136,7 @@ Percentage debuffs (Exposed, Faltering, Debilitated) are worth more as numbers g
 | **Arcana gained** *(legacy: the archived Spellblade; no live class makes Arcana since #417)* | **2.5** each | Gather Arcana 2, Emberstrike 9 + 1, Pale Ward 8 Barrier + 1. |
 | **Arcana spent** (a ◆ cost) *(legacy, as above)* | each ◆ buys **~6** points on top of the Mana budget | Molten Ruin 1+4◆ = 10 + 24 = 34 → 35 damage. Glass Burst 0+3◆ = 6 + 18 = 24 → 13 + 2 Faltering + 2 Exposed. Gaining is cheap and spending is rich: the gap is what the class pays for needing both halves. |
 | Sharpen N *(legacy for the Spellblade since #417; still the rate of the Drunkard's Precision)* | **0.8** per point if played early, ~0.5 late | The Blade costs 2 and comes back a few times a fight. Forged in Fury 7 + Sharpen 7, Whetstone 8 + Mana next turn, Bladewall 12 Barrier + 10. |
-| Plant a totem *(legacy: the archived Shaman's orb queue; his commanded totems since #418 are priced in §15)* | Hawk **4**, Bear **4**, Elder **5**, Splinter **6**, Owl **7** (+2 each per Spirit) | It pulses until pushed, then bursts. Spark Lash 7 + Hawk, Rime Strike 6 + Bear, Splinter Ward 5 Barrier + Splinter. |
+| Plant a totem *(legacy: the archived Shaman's orb queue; his totems since #418 and #420 are priced in §15)* | Hawk **4**, Bear **4**, Elder **5**, Splinter **6**, Owl **7** (+2 each per Spirit) | It pulses until pushed, then bursts. Spark Lash 7 + Hawk, Rime Strike 6 + Bear, Splinter Ward 5 Barrier + Splinter. |
 | Spirit (Focus) | this turn: **1 per totem** in the row (~3); for the fight: **~2.5 per totem** | Spirit Strike 9 + 1 Spirit this turn, Elemental Focus. |
 | Precision (the Old Twelve Gauge's Sharpen, DECISIONS #400) | **2.5** a point | The Gun costs 1, hits every enemy, Holds and comes round 2-3 times a fight (the Obsidian Blade's Sharpen is 0.8: 2 Mana, one target, fewer shots). |
 | A Buckshot Shell (0, 4 to ALL, Consume) | **5.2** | A Dagger that hits every enemy. |
@@ -436,27 +436,33 @@ The trait, **Glass and Ember** (a Ward on the blade at the start; the first Imbu
 + 4 turns x ~50% (one Imbue card in the starter's 10) x 5.4 = ~14 in the starter, ~22 in an Imbue deck (an Imbue most turns), level
 with the Assassin's Knife Work. Positions cap the blade at 2 charges, worth at most 7.2; nothing grows for good.
 
-### The Shaman: commanded totems (DECISIONS #418)
+### The Shaman: elements, totems and Trinity (DECISIONS #420; the first version, #418, is in the DECISIONS log)
 
-Three fixed positions; a totem does nothing on its own. Once a turn the player commands one: Hawk 4 damage to a chosen enemy (not an
-attack), Bear 4 Barrier to a chosen friendly, Elder 1 Spirit and a card. However many are planted, there is one command a turn, so
-planting buys choice, never output.
+He casts Flame (one enemy, Bleed, Thorns), Frost (Barrier, Faltering) and Storm (every enemy or random ones, Sapped) spells. Three
+totems from the start (Hawk, Bear, Thunderbird; up to 5 positions) each help the first spell of their element each turn (+3, +3, +2).
+He commands a totem once a turn, more from cards, and it aims by itself (Hawk 6 to a random enemy, Bear 5 Barrier, Thunderbird 3 to
+all). Trinity, a spell of every element in one turn, gives 1 Spirit. Spirit has no cap and never goes down (Robert, 2026-10-29): +1
+to every command, +1 per 2 to every totem's help.
 
 | Thing | Rate | Why |
 |---|---|---|
-| A command (the trait's) | **~4.5 a turn** | the best of what is planted: Hawk 4, Bear 4.8, Elder 1.8 + 3. It is the trait's, not a card's. |
-| **Plant** a kind he has not got | **2** | one more choice for every remaining turn (about +0.5 a turn over the command he would make anyway), and it feeds "if you have a Bear" cards. The starter's Bear: Wardkeeper's Pact (1: 5 Barrier, Bear) = 8. |
-| Plant a kind he probably has (a Hawk) | **1** | the trait plants a Hawk; a second only matters to "per totem" cards and replacement. A chosen position: **1.5**. |
-| **Rousing** N (the next Hawk or Bear command this turn) | **0.8 a point** | he commands nearly every turn, but an Elder turn or a lost Hawk wastes it; x0.85 behind "if you have a Hawk/Bear". |
-| **Spirit** gained | **1.8 a point** | spent for +2 (2-2.4) on a later command, one a command; the cap of 3 and the fight's end waste some. |
-| Spirit spent by a card | its payoff **minus 1.8 a point**, at **~2** Spirit | Spiritstorm, Elder's Wisdom. |
-| "Whenever you command" | **~1 a turn**; "your Hawk" **~65%**, "your Bear" **~50%** | one command a turn caps every command payoff. |
-| "Whenever you replace a totem with another kind" (once a turn) | **~50%** of turns in a Rites deck | needs a full row or a chosen-position plant. |
-| Uproot | **-2 a totem** | each must be planted again, and with none there is no command. |
+| An element tag | **0** | the totems' help on the first spell of each element is the trait's. |
+| **Spirit** gained | **5** a point | permanent and uncapped: about 1.3 commands a turn and three helped spells over the rest of a fight, as much as a point of Might for the fight (§5). An exception to "no uncapped permanent scaling", by Robert's decision; the long boss fight is the check. |
+| An extra command | **~5-6** | the Hawk's 6 at random (x0.9), the Bear's 5 Barrier (6) or the Thunderbird's 3 to all (3.9), plus the Spirit he has. |
+| Plant a totem | **~1.5** | he starts with three, so a plant is usually a replacement: worth the change of help and command, not a new choice. |
+| A totem position | **~2** | empty until he plants into it. |
+| Thorns until the enemy turn ends | **1.5** a stack | ~1.5 enemy hits (§3). |
+| Sapped on every enemy for a turn | **~1.56** a point | 1.2 a point a hit, x1.3 for all. |
+| Faltering on every enemy / on a random one | **3.9 / 2.7** | |
+| "Whenever you cast a Flame / Storm spell" | **~1.2 a turn** | in a deck built for that element. |
+| "Whenever Trinity triggers" | **~55%** of turns | in a deck built for all three. |
+| "Whenever you command a totem" | **~1.3 a turn** | |
 
-The trait, **Spirit Caller** (three positions, one command a turn, a Hawk at the start), prices at ~4.5 a turn: ~18 over four turns, a
-little under the Knight's ~21, with nothing passive. Nothing loops: a command makes no Mana, the Elder's card is one a turn, Spirit is
-capped at 3 and spent one a command, and no card gives a second command.
+The trait, **Spirit and Trinity** (the three totems, a command a turn, their help, Trinity's Spirit): about 5 a turn from the
+command, ~6 a turn from the help (about two helped spells: +3, +3.6, +2.6), and a Spirit every other turn with the starter (a
+Flame, a Frost and a Storm spell are in about 40% of its hands), ~2 a turn: **~50 over four turns, about 2.5 times the other traits
+(14-21)**. That is his design (Robert, 2026-10-29), not an oversight, and his cards are priced on their own; if he plays too strong,
+the levers are the Hawk's 6, the help (+3/+3/+2) and the command a turn, not the cards.
 
 ### The Monk: Martial Forms and Mastery (DECISIONS #419)
 

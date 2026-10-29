@@ -63,12 +63,13 @@ describe('runs saved before a class rework', () => {
     run.deck = [...run.deck, 'twin-evocation', 'glyph-lattice+', 'harmonic-wave'];
     const back = parseRun(serializeRun(run));
     expect(back!.reworked).toBe(CLASS_REWORKS.shaman?.version);
-    expect(back!.deck).toContain('guided-talon');
+    // (through the first rework's ids to the second's, DECISIONS #420: twin-evocation > guided-talon > ember-bolt)
+    expect(back!.deck).toContain('ember-bolt');
     expect(back!.deck).toContain('rune-carapace+');
-    expect(back!.deck).toContain('chorus-of-glyphs');
+    expect(back!.deck).toContain('prism-spell');
     for (const id of back!.deck)
       expect(COMBAT_DB.cards[id.replace(/^(hi|lo)~/, '')], id).toBeDefined();
-    expect(back!.reworkNotice).toMatch(/^The Shaman was rebuilt \(commanded totems\)/);
+    expect(back!.reworkNotice).toMatch(/^The Shaman was rebuilt \(elements, totems and Trinity\)/);
   });
 
   it('an older Monk run swaps its stance, Fervor and Radiant cards and says so', () => {
@@ -106,9 +107,10 @@ describe('Rift-crossed offers (DECISIONS #418, #419)', () => {
   it('never offer a card that only the Shaman or the Monk can use to anyone else', async () => {
     const { deadElsewhere } = await import('./rewards');
     for (const id of [
-      'stormcrown',
-      'hawks-counsel',
-      'tune-the-spirits',
+      'storm-sovereign',
+      'rally-the-spirits',
+      'spirit-surge',
+      'harmony',
       'perfected-motion',
       'unmoved-mind',
       'river-turns',
@@ -116,7 +118,7 @@ describe('Rift-crossed offers (DECISIONS #418, #419)', () => {
       'read-the-rhythm',
     ])
       expect(deadElsewhere(id), id).toBe(true);
-    for (const id of ['stone-skin', 'ember-toss', 'iron-shirt', 'quick-palms'])
+    for (const id of ['stone-skin', 'ember-bolt', 'iron-shirt', 'quick-palms'])
       expect(deadElsewhere(id), id).toBe(false);
   });
 });
