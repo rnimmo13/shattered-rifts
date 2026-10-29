@@ -1346,6 +1346,8 @@ function metricValue(
       return a.replaced;
     case 'spiritSpent':
       return a.spentBy.spirit ?? 0;
+    case 'thornsSpent':
+      return a.spentBy.thorns ?? 0;
     // (the Monk)
     case 'mastery':
       return u ? stacks(u, 'mastery') : 0;
@@ -1510,9 +1512,15 @@ function execOp(r: Run, a: Act, op: Op): void {
       const reaping = isAttack && lead ? stacks(lead, 'reaping') > 0 : false;
       const noosed = a.card?.tags?.includes('noose') === true;
       // Riposte (the Knight): against an Open target the Opening is spent and every hit deals more (DECISIONS #415)
-      const riposte =
-        op.riposte && to === 'target' && spendOpening(r, side, a.target) ? op.riposte : 0;
-      const ripTarget = riposte ? a.target : null;
+      // (an all-enemies Riposte, Answer Them All, DECISIONS #423: each Open enemy spends its own Opening for its own bonus, once)
+      const ripostes = new Set<UnitId>();
+      if (op.riposte && to === 'target' && spendOpening(r, side, a.target) && a.target)
+        ripostes.add(a.target.id);
+      // (the enemies Open when the card is played: an Opening a spend trigger gives back mid-card is kept, not spent again)
+      if (op.riposte && to === 'allFoes')
+        for (const t of resolve(r, a, 'allFoes').filter((x) => stacks(x, 'opening') > 0))
+          if (spendOpening(r, side, t)) ripostes.add(t.id);
+      const riposte = op.riposte ?? 0;
       // (the Spellblade) a discharged Ember lands on the first hit of the attack
       let ember = a.ember;
       a.ember = 0;
@@ -1551,7 +1559,7 @@ function execOp(r: Run, a: Act, op: Op): void {
                 honed +
                 vigor +
                 deft +
-                (t === ripTarget ? riposte : 0) +
+                (ripostes.has(t.id) ? riposte : 0) +
                 ember +
                 resonanceOf(a) +
                 marrow) *
@@ -2602,6 +2610,29 @@ function execOp(r: Run, a: Act, op: Op): void {
       side.totems = list.map(() => null);
       a.uprooted += n;
       r.ev.push({ type: 'totems', side: side.id, totems: [...side.totems] });
+      return;
+    }
+    case 'shedTemp': {
+      // (DECISIONS #423) up to `amount` of the actor's temporary stacks (those due to wear off: a 'temp' status), never its lasting
+      // ones; the expiry entries are taken down with them, so nothing is taken off twice when they would have worn off
+      const u = a.actor;
+      const entries = [...r.s.sides.a.temps, ...r.s.sides.b.temps].filter(
+        (t) => t.unit === u.id && t.status === op.status && t.amount > 0,
+      );
+      const temporary = entries.reduce((n, t) => n + t.amount, 0);
+      let n = Math.min(stacks(u, op.status), temporary, Math.max(0, op.amount));
+      const shed = n;
+      // (the newest first)
+      for (const t of entries.reverse()) {
+        if (n <= 0) break;
+        const k = Math.min(t.amount, n);
+        t.amount -= k;
+        n -= k;
+      }
+      for (const sd of [r.s.sides.a, r.s.sides.b])
+        sd.temps = sd.temps.filter((t) => t.amount !== 0);
+      if (shed > 0) addStatus(r, u, op.status, -shed);
+      a.spentBy[op.status] = (a.spentBy[op.status] ?? 0) + shed;
       return;
     }
     case 'spend': {
@@ -4661,6 +4692,14 @@ export function previewCardDamage(
       a.spentBy[op.status] = Math.min(stacks(hero, op.status), Math.max(0, op.amount));
       return;
     }
+    // (what a shed will take: the temporary stacks, as the op counts them)
+    if (op.op === 'shedTemp' && !earlier) {
+      const temporary = [...s.sides.a.temps, ...s.sides.b.temps]
+        .filter((t) => t.unit === hero.id && t.status === op.status && t.amount > 0)
+        .reduce((n, t) => n + t.amount, 0);
+      a.spentBy[op.status] = Math.min(stacks(hero, op.status), temporary, Math.max(0, op.amount));
+      return;
+    }
     if (op.op === 'extract' && (op.to ?? 'target') === 'target' && !op.ops?.length && !earlier) {
       pull = Math.max(0, op.amount);
       return;
@@ -4703,7 +4742,9 @@ export function previewCardDamage(
       at.extracted = pull && from ? Math.min(stacks(from, 'knives'), pull) : 0;
       // (Riposte: an Open target takes the bonus on every hit, as the engine spends it)
       const rip =
-        op.riposte && op.to === 'target' && t && stacks(t, 'opening') > 0 ? op.riposte : 0;
+        op.riposte && (op.to === 'target' || op.to === 'allFoes') && t && stacks(t, 'opening') > 0
+          ? op.riposte
+          : 0;
       if (rip && chosen) riposted = true;
       const n = modifiedDamage(
         Math.round((amountOf(r, at, op.amount, op.scale, t) + edge + v + rip + ember) * lone),

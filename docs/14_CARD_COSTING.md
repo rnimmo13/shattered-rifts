@@ -391,7 +391,15 @@ Ghostly, cancelled or overflow hit). One per enemy; it goes at the end of her ne
 | "**Whenever you spend an Opening**" | **2.2** answers over four turns | about one Riposte that lands every other turn. Exploit the Gap = 14.5. |
 | "**Whenever your Thorns strike**" (once a turn) | **2.8** answers over four turns | a Thorns deck has Thorns up on about 70% of enemy turns. Thornwake = 15.1. |
 | Thorns you have on your own turn (for "+N per Thorns") | **~2.5** stacks in a Thorns deck | Thorns are temporary and only there after a Thorns card that turn. Briar Lash (5 + 2 per Thorns) = 10. |
-| "If an enemy means to attack" | **x0.7** | most Tier I intents are attacks. |
+| "If an enemy means to attack" | **x0.7** | most Tier I intents are attacks. No Knight card reads it since #423 (it is 0 against an Arena hero). |
+| "If the target is Open" / "if an enemy is Open" (read, **not spent**) | **0.55 x** its value | the same chance as a Riposte bonus, but it keeps the Opening for the Riposte after it (#423). Testing Cut (7, 4 Barrier if Open) = 9.6. |
+| "+N per Open enemy" | **~0.8** Open enemies | in a deck that makes Openings, several enemies. Ring of Steel = 8.9. |
+| A Riposte bonus on **every enemy** | the bonus x **~0.7** Open enemies | each spends its own. Answer Them All (10 to all, +8 each Open) = 18.6. |
+| A temporary Thorns **shed** for +N damage | **N - 1.5** a stack (~3 stacks shed in a Thorns deck) | what the stack would have dealt kept is lost. Shed the Spines (6, +3 each, up to 4) = 10.5. |
+| Remove the target's Barrier | **~3** | most enemies hold little; far more against a defender or an Arena Knight. Sunder Armour = 11. |
+| A trigger on a hit that takes HP from an Open enemy | **~1.5** a turn in a Duelist deck | a Riposte spends first and does not count; a hit its Barrier soaks completely does not either. Measured Tempo (2 Barrier) = 14.4. |
+| "At the end of your turn, if an enemy is Open" | **~0.65** of turns in a Duelist deck | she keeps it on purpose; with Warlord's Oath nearly always. Knight's Composure (6 Barrier) = 18.7. |
+| "At the end of your turn, if you have 8+ Barrier" | **~0.65** of turns in a Guard deck | Prepared Ground (a Mana and a card next turn) = 18.2. |
 
 The trait, **Hold and Answer** (6 Barrier at the start, Guard, and 3 Barrier the first time each turn an Opening is earned), prices at
 7.2 + 2.5 earned Openings x 3.6 = ~16, plus what Guard lets her Riposte cards do (about +5 in the starter, through Sundering Blow): ~21,

@@ -13,7 +13,7 @@
 //   Thorns  - retaliation: Thorns cards and the payoffs that read them
 // Costs and points are in docs/reworks/KNIGHT.md (priced with docs/14_CARD_COSTING.md, Openings at the §15 rates).
 
-import type { CardDef } from '@sr/combat';
+import type { CardDef, Op } from '@sr/combat';
 import {
   barrier,
   counter,
@@ -27,6 +27,7 @@ import {
   pool,
   riposte,
   scaled,
+  scry,
   status,
   statusTheirs,
   upgradeOp,
@@ -36,6 +37,22 @@ import {
 const m = pool('knight', 'aurelion');
 /** Thorns until the enemy turn is over (Ember Ward's) */
 const thornsTurn = (n: number) => statusTheirs('thorns', n, 'self');
+/** the target is Open (it does not spend the Opening) */
+const ifOpen = (...ops: Op[]): Op => when('opening', { atLeast: 1, of: 'target' }, ops);
+/** an enemy is Open */
+const anyOpen = (...ops: Op[]): Op => when('foesOpen', { atLeast: 1 }, ops);
+/** Shed the Spines: shed up to n temporary Thorns, then one hit of base + per a Thorns shed (a played card's target is alive, so
+ * nothing is shed into a dead enemy) */
+const shed = (base: number, n: number, each: number): Op[] => [
+  { op: 'shedTemp', status: 'thorns', amount: n },
+  scaled(dmg(base), per('thornsSpent', each)),
+];
+/** Spine Volley: the same against every enemy (no target to check) */
+const shedAll = (base: number, n: number, each: number): Op[] => [
+  { op: 'shedTemp', status: 'thorns', amount: n },
+  scaled(dmg(base, 'allFoes'), per('thornsSpent', each)),
+];
+const strip: Op = { op: 'strip', to: 'target' };
 
 export const KNIGHT: CardDef[] = [
   // --- basics ---
@@ -171,15 +188,13 @@ export const KNIGHT: CardDef[] = [
     'skill',
     1,
     'foe',
-    [
-      barrier(6),
-      when('attacking', { atLeast: 1, of: 'target' }, [status('faltering', 2, 'target')]),
-    ],
+    [barrier(6), status('faltering', 1, 'target'), ifOpen(status('faltering', 1, 'target'))],
     {
       up: {
         effects: [
           barrier(9),
-          when('attacking', { atLeast: 1, of: 'target' }, [status('faltering', 2, 'target')]),
+          status('faltering', 1, 'target'),
+          ifOpen(status('faltering', 1, 'target')),
         ],
       },
     },
@@ -201,8 +216,8 @@ export const KNIGHT: CardDef[] = [
     'skill',
     1,
     'none',
-    [scaled(barrier(6), per('foesAttacking', 2))],
-    { retain: true, up: { effects: [scaled(barrier(9), per('foesAttacking', 2))] } },
+    [scaled(barrier(5), per('foes', 2))],
+    { retain: true, up: { effects: [scaled(barrier(8), per('foes', 2))] } },
   ),
   m(
     'uncommon',
@@ -325,8 +340,8 @@ export const KNIGHT: CardDef[] = [
     'attack',
     1,
     'foe',
-    [dmg(6), when('attacking', { atLeast: 1, of: 'target' }, [barrier(6)])],
-    { up: { effects: [dmg(9), when('attacking', { atLeast: 1, of: 'target' }, [barrier(6)])] } },
+    [riposte(barrier(7)), dmg(7)],
+    { up: { effects: [riposte(barrier(7)), dmg(10)] } },
   ),
   m(
     'uncommon',
@@ -414,9 +429,17 @@ export const KNIGHT: CardDef[] = [
       up: { effects: [scaled(dmg(6, 'allFoes'), per('thorns', 2))] },
     },
   ),
-  m('uncommon', 'barbed-vigil', 'Barbed Vigil', 'skill', 2, 'none', [barrier(11), thornsTurn(4)], {
-    up: { effects: [barrier(14), thornsTurn(5)] },
-  }),
+  // (DECISIONS #423: Barrier over two enemy turns and Thorns for this one, Hold; Ember Ward stays the plain big source)
+  m(
+    'uncommon',
+    'barbed-vigil',
+    'Barbed Vigil',
+    'skill',
+    2,
+    'none',
+    [barrier(7), status('guarded', 6), thornsTurn(4)],
+    { retain: true, up: { effects: [barrier(9), status('guarded', 8), thornsTurn(4)] } },
+  ),
   m(
     'uncommon',
     'barbed-retort',
@@ -463,5 +486,320 @@ export const KNIGHT: CardDef[] = [
     'none',
     [on('turnEnd', [thornsTurn(3)])],
     { up: { effects: [on('turnEnd', [thornsTurn(4)])] } },
+  ),
+  // (active Thorns: the ones she put up this turn, spent as damage instead of kept for the enemy turn)
+  m('uncommon', 'shed-the-spines', 'Shed the Spines', 'attack', 1, 'foe', shed(6, 4, 3), {
+    up: { effects: shed(9, 4, 3) },
+  }),
+
+  // --- Riposte: the Duelist (DECISIONS #423): attacks that keep an Opening, and pay for keeping it ---
+  m('common', 'testing-cut', 'Testing Cut', 'attack', 1, 'foe', [dmg(7), ifOpen(barrier(4))], {
+    up: { effects: [dmg(10), ifOpen(barrier(4))] },
+  }),
+  m(
+    'common',
+    'measured-footwork',
+    'Measured Footwork',
+    'skill',
+    1,
+    'none',
+    [barrier(5), draw(1), anyOpen(barrier(2))],
+    { up: { effects: [barrier(8), draw(1), anyOpen(barrier(2))] } },
+  ),
+  m(
+    'common',
+    'keep-your-distance',
+    'Keep Your Distance',
+    'attack',
+    1,
+    'foe',
+    [dmg(8), ifOpen(statusTheirs('sapped', 2, 'target'))],
+    { up: { effects: [dmg(11), ifOpen(statusTheirs('sapped', 2, 'target'))] } },
+  ),
+  m(
+    'uncommon',
+    'patient-edge',
+    'Patient Edge',
+    'attack',
+    1,
+    'foe',
+    [scaled(dmg(8), per('opening', 4, 'target'))],
+    { retain: true, up: { effects: [scaled(dmg(11), per('opening', 4, 'target'))] } },
+  ),
+  m(
+    'uncommon',
+    'read-the-duel',
+    'Read the Duel',
+    'skill',
+    1,
+    'none',
+    [barrier(5), scry(2), anyOpen(draw(1))],
+    { up: { effects: [barrier(8), scry(2), anyOpen(draw(1))] } },
+  ),
+  // (the Riposte reward comes after the hit: a kill leaves nothing to spend)
+  m(
+    'uncommon',
+    'closing-argument',
+    'Closing Argument',
+    'attack',
+    2,
+    'foe',
+    [dmg(16), riposte(draw(2))],
+    { up: { effects: [dmg(21), riposte(draw(2))] } },
+  ),
+  // (every enemy: each Open one spends its own Opening for its own bonus, and answers Exploit the Gap once)
+  m(
+    'uncommon',
+    'answer-them-all',
+    'Answer Them All',
+    'attack',
+    2,
+    'none',
+    [counter(10, 8, 'allFoes')],
+    { up: { effects: [counter(13, 8, 'allFoes')] } },
+  ),
+  m(
+    'common',
+    'probing-thrust',
+    'Probing Thrust',
+    'attack',
+    0,
+    'foe',
+    [dmg(5), ifOpen(status('exposed', 1, 'target'))],
+    {
+      up: { effects: [dmg(7), ifOpen(status('exposed', 1, 'target'))] },
+    },
+  ),
+  m(
+    'common',
+    'keen-eye',
+    'Keen Eye',
+    'skill',
+    1,
+    'foe',
+    [barrier(5), ifOpen(status('exposed', 2, 'target'))],
+    { up: { effects: [barrier(8), ifOpen(status('exposed', 2, 'target'))] } },
+  ),
+  // (spend the Opening for its triggers and the Barrier, and leave the enemy Open again: not an earned one)
+  m(
+    'uncommon',
+    'second-intention',
+    'Second Intention',
+    'attack',
+    1,
+    'foe',
+    [dmg(8), riposte(leaveOpen(), barrier(3))],
+    { up: { effects: [dmg(11), riposte(leaveOpen(), barrier(3))] } },
+  ),
+  // (a Riposte spends the Opening before its hit, so only an attack that keeps it answers this)
+  m(
+    'uncommon',
+    'measured-tempo',
+    'Measured Tempo',
+    'power',
+    1,
+    'none',
+    [on('hitFoe', [ifOpen(barrier(2))])],
+    { up: { innate: true } },
+  ),
+  // (Mana made for less than it costs: Consume, guide §6)
+  m(
+    'rare',
+    'seize-the-moment',
+    'Seize the Moment',
+    'skill',
+    0,
+    'none',
+    [anyOpen({ op: 'mana', amount: 2 }), draw(1)],
+    { exhaust: true, up: { effects: [anyOpen({ op: 'mana', amount: 2 }), draw(2)] } },
+  ),
+  // (her turn-end triggers run before her Openings wear off, so one she kept still counts)
+  m(
+    'rare',
+    'knights-composure',
+    "Knight's Composure",
+    'power',
+    1,
+    'none',
+    [on('turnEnd', [anyOpen(barrier(6))])],
+    { up: { effects: [on('turnEnd', [anyOpen(barrier(8))])] } },
+  ),
+
+  // --- Guard: the formation fighter (DECISIONS #423): many enemies, and which of them are Open ---
+  m(
+    'common',
+    'ring-of-steel',
+    'Ring of Steel',
+    'skill',
+    1,
+    'none',
+    [scaled(barrier(5), per('foesOpen', 3))],
+    { up: { effects: [scaled(barrier(8), per('foesOpen', 3))] } },
+  ),
+  m(
+    'common',
+    'sweep-the-line',
+    'Sweep the Line',
+    'attack',
+    1,
+    'none',
+    [dmg(6, 'allFoes'), anyOpen(barrier(3))],
+    { up: { effects: [dmg(8, 'allFoes'), anyOpen(barrier(3))] } },
+  ),
+  m(
+    'uncommon',
+    'pick-them-apart',
+    'Pick Them Apart',
+    'attack',
+    1,
+    'foe',
+    [scaled(dmg(7), per('foesOpen', 3))],
+    { retain: true, up: { effects: [scaled(dmg(10), per('foesOpen', 3))] } },
+  ),
+  // (the splash comes first, so a killing blow still splashes)
+  m(
+    'uncommon',
+    'cleaving-riposte',
+    'Cleaving Riposte',
+    'attack',
+    2,
+    'foe',
+    [riposte(dmg(8, 'allFoes')), dmg(14)],
+    { up: { effects: [riposte(dmg(8, 'allFoes')), dmg(18)] } },
+  ),
+  m(
+    'uncommon',
+    'marshals-eye',
+    "Marshal's Eye",
+    'power',
+    1,
+    'none',
+    [on('riposte', [leaveOpen('front'), barrier(2)], { once: true })],
+    { up: { effects: [on('riposte', [leaveOpen('front'), barrier(4)], { once: true })] } },
+  ),
+
+  // --- Guard: the patient defender (DECISIONS #423): defence now, Mana and cards for the next turn ---
+  m('common', 'steady-breath', 'Steady Breath', 'skill', 1, 'none', [barrier(5), manaNext(1)], {
+    up: { effects: [barrier(8), manaNext(1)] },
+  }),
+  m(
+    'uncommon',
+    'night-watch',
+    'Night Watch',
+    'skill',
+    1,
+    'none',
+    [status('guarded', 5), drawNext(2)],
+    { retain: true, up: { effects: [status('guarded', 8), drawNext(2)] } },
+  ),
+  m(
+    'uncommon',
+    'steel-before-dawn',
+    'Steel Before Dawn',
+    'skill',
+    2,
+    'none',
+    [barrier(10), manaNext(1), drawNext(1)],
+    { up: { effects: [barrier(14), manaNext(1), drawNext(1)] } },
+  ),
+  m(
+    'rare',
+    'bulwark-of-dawn',
+    'Bulwark of Dawn',
+    'skill',
+    2,
+    'none',
+    [status('guarded', 12), manaNext(2)],
+    { retain: true, up: { effects: [status('guarded', 16), manaNext(2)] } },
+  ),
+  // (it pays in Mana and cards, never in more Barrier: a defence that turns into the next attack)
+  m(
+    'rare',
+    'prepared-ground',
+    'Prepared Ground',
+    'power',
+    1,
+    'none',
+    [on('turnEnd', [when('barrier', { atLeast: 8 }, [manaNext(1), drawNext(1)])])],
+    { up: { innate: true } },
+  ),
+
+  // --- Thorns: offensive Thorns (DECISIONS #423): keep them for the enemy turn, or spend them now ---
+  m('common', 'bristle', 'Bristle', 'skill', 0, 'none', [thornsTurn(4)], {
+    up: { effects: [thornsTurn(5)] },
+  }),
+  m(
+    'uncommon',
+    'splinter-guard',
+    'Splinter Guard',
+    'skill',
+    1,
+    'none',
+    [barrier(5), scaled(thornsTurn(2), per('foes'))],
+    { up: { effects: [barrier(8), scaled(thornsTurn(2), per('foes'))] } },
+  ),
+  m('uncommon', 'spine-volley', 'Spine Volley', 'attack', 1, 'none', shedAll(4, 3, 3), {
+    up: { effects: shedAll(7, 3, 3) },
+  }),
+  m(
+    'uncommon',
+    'thorned-momentum',
+    'Thorned Momentum',
+    'power',
+    1,
+    'none',
+    [on('play', [thornsTurn(1)], { filter: 'attack' })],
+    { up: { innate: true } },
+  ),
+  m('rare', 'thornstorm-rush', 'Thornstorm Rush', 'attack', 2, 'foe', shed(12, 6, 4), {
+    up: { effects: shed(16, 6, 4) },
+  }),
+
+  // --- Riposte: the siege fighter (DECISIONS #423): open enemies that will not attack, and break their defence ---
+  m('common', 'feinting-cut', 'Feinting Cut', 'attack', 1, 'foe', [dmg(6), leaveOpen()], {
+    up: { effects: [dmg(9), leaveOpen()] },
+  }),
+  m(
+    'common',
+    'batter-down',
+    'Batter Down',
+    'attack',
+    1,
+    'foe',
+    [dmg(8), status('brittle', 2, 'target')],
+    { up: { effects: [dmg(11), status('brittle', 2, 'target')] } },
+  ),
+  m('uncommon', 'sunder-armour', 'Sunder Armour', 'attack', 1, 'foe', [strip, dmg(8)], {
+    up: { effects: [strip, dmg(11)] },
+  }),
+  m(
+    'uncommon',
+    'breach-the-wall',
+    'Breach the Wall',
+    'skill',
+    1,
+    'foe',
+    [strip, leaveOpen(), draw(1)],
+    { up: { effects: [strip, leaveOpen(), draw(2)] } },
+  ),
+  m(
+    'uncommon',
+    'siege-doctrine',
+    'Siege Doctrine',
+    'power',
+    1,
+    'none',
+    [on('debuffFoe', [leaveOpen('target')], { once: true })],
+    { up: { innate: true } },
+  ),
+  m(
+    'rare',
+    'siege-line',
+    'Siege Line',
+    'attack',
+    2,
+    'foe',
+    [dmg(12), leaveOpen(), status('exposed', 2, 'target')],
+    { up: { effects: [dmg(16), leaveOpen(), status('exposed', 2, 'target')] } },
   ),
 ];

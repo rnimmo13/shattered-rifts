@@ -368,6 +368,7 @@ export type Metric =
   | 'uprooted' // totems the card being played has uprooted
   | 'replacedNow' // totems the card being played has replaced with a different kind
   | 'spiritSpent' // Spirit the card being played has spent
+  | 'thornsSpent' // (the Knight, DECISIONS #423) temporary Thorns the card being played has shed
   // (the Monk, DECISIONS #419)
   | 'mastery' // (about a unit) its Mastery
   | 'masterySpent' // Mastery the card being played has spent
@@ -730,6 +731,8 @@ export type Op =
   | { op: 'extract'; amount: number; to?: 'target' | 'allFoes'; ops?: Op[] }
   /** spend up to `amount` stacks of a status of your own (Preparation): the `prepSpent` metric says how many were spent */
   | { op: 'spend'; status: StatusId; amount: number }
+  /** (DECISIONS #423) take away up to `amount` of your temporary stacks of a status (never lasting ones); `thornsSpent` reads it */
+  | { op: 'shedTemp'; status: StatusId; amount: number }
   // --- the Spellblade's enchantments (DECISIONS #417)
   /**
    * imbue an enchantment: into a free position; with both taken, the player chooses which one it replaces (a replacement is not a

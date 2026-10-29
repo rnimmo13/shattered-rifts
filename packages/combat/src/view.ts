@@ -638,6 +638,7 @@ const METRIC_WORDS: Record<Metric, { per: string; equal: string }> = {
   uprooted: { per: 'totem uprooted', equal: 'the totems uprooted' },
   replacedNow: { per: 'totem replaced', equal: 'the totems replaced' },
   spiritSpent: { per: 'Spirit spent', equal: 'the Spirit spent' },
+  thornsSpent: { per: 'Thorns shed', equal: 'the Thorns shed' },
   // (the Shaman, DECISIONS #420)
   elementsTurn: { per: 'element cast this turn', equal: 'the elements cast this turn' },
   trinityDone: { per: 'Trinity this turn', equal: 'Trinity this turn' },
@@ -870,6 +871,8 @@ function whenText(o: Extract<Op, { op: 'when' }>, db?: CombatDb): string {
     return `you have ${lo} or more Preparation`;
   if (o.by === 'prep' && hi === 0 && lo === undefined && !o.of) return 'you have no Preparation';
   if (o.by === 'extracted' && (lo ?? 0) >= 1 && hi === undefined) return 'you pulled a knife';
+  // (the Knight)
+  if (o.by === 'thornsSpent' && (lo ?? 0) >= 1 && hi === undefined) return 'you shed Thorns';
   // (the Shaman)
   if (o.by === 'trinityDone' && (lo ?? 0) >= 1 && hi === undefined)
     return 'Trinity has triggered this turn';
@@ -957,7 +960,9 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
           : '') +
         (o.repeatOnKill ? ' Repeat this for each enemy it kills.' : '') +
         // (Riposte, the Knight's: DECISIONS #415)
-        (o.riposte ? ` Riposte: +${o.riposte} damage${(o.hits ?? 1) > 1 ? ' each hit' : ''}.` : '');
+        (o.riposte
+          ? ` Riposte: +${o.riposte} damage${(o.hits ?? 1) > 1 ? ' each hit' : ''}${o.to === 'allFoes' ? ' to each Open enemy' : ''}.`
+          : '');
       // (each hit at a random enemy finds its own: "to a random enemy 3 times", not "3 times to a random enemy")
       const randomEach = o.to === 'randomFoe' && times !== '';
       const tail = randomEach ? `${who[o.to]}${times}` : `${times}${who[o.to]}`;
@@ -1604,6 +1609,8 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
         : '.';
       return `Pull ${what}${each}`;
     }
+    case 'shedTemp':
+      return `Shed up to ${o.amount} of your temporary ${sname(o.status)}.`;
     case 'spend':
       return o.amount >= 9
         ? `Spend all your ${sname(o.status)}.`

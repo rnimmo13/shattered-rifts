@@ -89,8 +89,11 @@ export function validateDb(db: CombatDb): string[] {
         if (!opts.aimed) errs.push(`${where}: "riposte" needs a target`);
         checkOps(`${where}.riposte`, o.ops, opts);
       }
-      if (o.op === 'damage' && o.riposte && o.to !== 'target')
-        errs.push(`${where}: a Riposte bonus needs a damage effect aimed at the target`);
+      // (or at every enemy: each Open one spends its own Opening, Answer Them All, DECISIONS #423)
+      if (o.op === 'damage' && o.riposte && o.to !== 'target' && o.to !== 'allFoes')
+        errs.push(
+          `${where}: a Riposte bonus needs a damage effect aimed at the target or every enemy`,
+        );
       // (the Assassin's knives: in the target needs one; a pull's ops are aimed at the enemy each knife came from)
       if (
         (o.op === 'embed' || o.op === 'extract') &&
