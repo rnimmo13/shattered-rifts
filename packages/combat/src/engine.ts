@@ -378,12 +378,17 @@ function traitOf(r: Run, side: Side): HeroTrait | undefined {
   return sd.hero ? r.db.heroes[sd.hero]?.trait : undefined;
 }
 
-/** An innate trait that depends on HP (Clutch Genes): keep the hero's `clutch` status at their missing HP times the rate. */
+/** An innate trait that depends on HP (Clutch Genes): keep the hero's `clutch` status at their missing HP (or the percent of their max
+ * HP they are missing, DECISIONS #429) times the rate, rounded down. */
 function syncClutch(r: Run, sd: SideState): void {
   const c = sd.hero ? r.db.heroes[sd.hero]?.trait?.clutch : undefined;
   const hero = heroOf(sd);
   if (!c || !hero || hero.hp <= 0) return;
-  const want = Math.floor(Math.max(0, hero.maxHp - hero.hp) * c.perMissingHp);
+  const missing = Math.max(0, hero.maxHp - hero.hp);
+  const want =
+    c.perMissingPct !== undefined
+      ? Math.floor((missing * 100 * c.perMissingPct) / Math.max(1, hero.maxHp))
+      : Math.floor(missing * (c.perMissingHp ?? 0));
   const cur = stacks(hero, 'clutch');
   if (want !== cur) addStatus(r, hero, 'clutch', want - cur);
 }

@@ -920,7 +920,8 @@ export interface UnitDef {
 /**
  * An innate trait: a passive every Riftwalker has. `fightStart` ops run once as the fight begins, `turnStart` ops every one
  * of their turns, `triggers` work like an Aura's for the whole fight (but are not an Aura: they are never counted or listed as
- * one), and `clutch` makes them deal `perMissingHp`% more attack damage for every HP they are missing (rounded down).
+ * one), and `clutch` makes them deal `perMissingHp`% more attack damage for every HP they are missing, or `perMissingPct`% for every 1% of
+ * their max HP they are missing (rounded down; the same in a run and in the Arena's bigger HP, DECISIONS #429).
  */
 export interface HeroTrait {
   name: string;
@@ -929,7 +930,7 @@ export interface HeroTrait {
   fightStart?: Op[];
   turnStart?: Op[];
   triggers?: Extract<Op, { op: 'power' }>[];
-  clutch?: { perMissingHp: number };
+  clutch?: { perMissingHp?: number; perMissingPct?: number };
   /** the share of the hero's Might their companions hold (rounded down): 1 shares it all, 0.5 half; a new companion arrives with it */
   shareMight?: number;
   /** HP healed after every fight the hero wins (in a run) */

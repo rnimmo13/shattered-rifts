@@ -311,7 +311,8 @@ export function validateDb(db: CombatDb): string[] {
     if (h.sigil) checkOps(`hero ${id} sigil`, h.sigil, { aimed: false, snare: false });
     if (h.trait?.clutch) {
       const c = h.trait.clutch;
-      if (!(c.perMissingHp > 0)) errs.push(`hero ${id}: clutch needs perMissingHp above 0`);
+      if (!((c.perMissingHp ?? 0) > 0) === !((c.perMissingPct ?? 0) > 0))
+        errs.push(`hero ${id}: clutch needs one of perMissingHp or perMissingPct above 0`);
     }
     if (
       h.trait &&

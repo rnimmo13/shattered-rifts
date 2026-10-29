@@ -55,7 +55,7 @@ import { GrimoireModal } from './Grimoire';
 import { AimArrow } from './AimArrow';
 import { SuitTrack } from './SuitTrack';
 import { EnchantSlots } from './EnchantSlots';
-import { TotemPanel, type TotemPick } from './TotemPanel';
+import { TotemPanel, type TotemPick, type TotemSummon } from './TotemPanel';
 import { totemLook } from './totemLook';
 import { TrinityTrack } from './TrinityTrack';
 import { elementTag } from './elementLook';
@@ -375,6 +375,16 @@ export function FightView(props: {
   const [paused, setPaused] = useState(false);
   /** choices answered so far: two questions in a row with the same options still open a fresh choice window */
   const [pickCount, setPickCount] = useState(0);
+  // (DECISIONS #429) a totem commanded just now: its spirit rises over it on the totem panel for a moment
+  const [summon, setSummon] = useState<(TotemSummon & { side: Side }) | null>(null);
+  const summonTimer = useRef<number | null>(null);
+  const summonKey = useRef(0);
+  useEffect(
+    () => () => {
+      if (summonTimer.current !== null) window.clearTimeout(summonTimer.current);
+    },
+    [],
+  );
   /** watching, paused: let the moves up to this one play, then hold again (the Step button) */
   const stepTo = useRef<number | null>(null);
   /** watching: the move on screen, for the move counter */
@@ -648,6 +658,19 @@ export function FightView(props: {
           reduceEvent(db, d, e);
           await wait(120);
           return;
+        case 'command': {
+          // the spirit manifests over its totem; the effects it causes come as their own events, a beat later
+          reduceEvent(db, d, e);
+          summonKey.current += 1;
+          setSummon({ side: e.side, totem: e.totem, spirit: e.spirit, key: summonKey.current });
+          if (summonTimer.current !== null) window.clearTimeout(summonTimer.current);
+          summonTimer.current = window.setTimeout(() => {
+            summonTimer.current = null;
+            setSummon(null);
+          }, 1100);
+          await wait(340);
+          return;
+        }
         case 'suits':
           reduceEvent(db, d, e);
           if (e.full) {
@@ -1523,6 +1546,7 @@ export function FightView(props: {
           spirit={hero?.statuses.spirit ?? 0}
           pick={pick}
           onPick={pickTotem}
+          summon={summon?.side === side ? summon : null}
         />
       </FloatPanel>
     );

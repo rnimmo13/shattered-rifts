@@ -144,28 +144,43 @@ describe('innate traits', () => {
     expect(fate(g)).toBe(before + 3);
   });
 
-  it('Clutch Genes: 1% more attack damage for every HP missing (DECISIONS #411)', () => {
+  it('Clutch Genes: 1% more attack damage for every 1% of max HP missing (DECISIONS #429)', () => {
+    const max = RIFTWALKERS.drunkard.hero.maxHp;
+    const pct = (missing: number): number => Math.floor((missing * 100) / max);
     const hit = (missing: number): number => {
       // (the fight begins hurt: the engine sets the status at turn start)
-      const s = fight('drunkard', ['hammer-swing'], RIFTWALKERS.drunkard.hero.maxHp - missing);
-      expect(s.sides.a.units[s.sides.a.units.length - 1]!.statuses.clutch ?? 0).toBe(missing);
+      const s = fight('drunkard', ['hammer-swing'], max - missing);
+      expect(s.sides.a.units[s.sides.a.units.length - 1]!.statuses.clutch ?? 0).toBe(pct(missing));
       const before = s.sides.b.units[0]!.hp;
       const after = playCard(s, 'T0');
       return before - after.sides.b.units[0]!.hp;
     };
     expect(hit(0)).toBe(6);
-    expect(hit(20)).toBe(7); // 6 x 1.2, rounded down
-    expect(hit(50)).toBe(9);
+    // (Robert's game: 19 of 88 HP, 69 missing, is 78% missing: +78%, not +69%)
+    expect(max).toBe(88);
+    expect(pct(69)).toBe(78);
+    expect(hit(69)).toBe(Math.floor((6 * 178) / 100));
+    expect(hit(44)).toBe(9); // half his HP: +50%
+  });
+
+  it("Clutch Genes reads the share of HP missing, so the Arena's bigger HP gives the same bonus", () => {
+    const { state } = createCombat(db, {
+      seed: 'c-arena',
+      a: { hero: 'drunkard', deck: RIFTWALKERS.drunkard.starter, hp: 264, maxHp: 528 },
+      b: { enemies: ['squire'] },
+    });
+    const hero = state.sides.a.units[state.sides.a.units.length - 1]!;
+    expect(hero.statuses.clutch).toBe(50);
   });
 
   it('Clutch Genes follows HP both ways: a heal lowers it, a hit raises it', () => {
     const s = fight('drunkard', ['sob-story'], RIFTWALKERS.drunkard.hero.maxHp - 30);
     const hero = s.sides.a.units[s.sides.a.units.length - 1]!;
-    expect(hero.statuses.clutch).toBe(30);
+    expect(hero.statuses.clutch).toBe(Math.floor((30 * 100) / hero.maxHp));
     const healed = playCard(s, 'T0');
     const h = healed.sides.a.units[healed.sides.a.units.length - 1]!;
     expect(h.hp).toBeGreaterThan(hero.hp);
-    expect(h.statuses.clutch).toBe(h.maxHp - h.hp);
+    expect(h.statuses.clutch).toBe(Math.floor(((h.maxHp - h.hp) * 100) / h.maxHp));
   });
 
   it('a fight that begins hurt starts with Clutch Genes already on, and an enemy hit adds to it', () => {
@@ -176,11 +191,11 @@ describe('innate traits', () => {
     });
     const s = clone(state);
     const hero = s.sides.a.units[s.sides.a.units.length - 1]!;
-    expect(hero.statuses.clutch).toBe(hero.maxHp - 30);
+    expect(hero.statuses.clutch).toBe(Math.floor(((hero.maxHp - 30) * 100) / hero.maxHp));
     const after = applyAction(db, s, { type: 'endTurn' }).state;
     const h = after.sides.a.units[after.sides.a.units.length - 1]!;
     expect(h.hp).toBeLessThan(30);
-    expect(h.statuses.clutch).toBe(h.maxHp - h.hp);
+    expect(h.statuses.clutch).toBe(Math.floor(((h.maxHp - h.hp) * 100) / h.maxHp));
   });
 
   it('Clutch Genes is 0 at full HP', () => {

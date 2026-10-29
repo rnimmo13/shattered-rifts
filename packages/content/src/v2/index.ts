@@ -366,9 +366,9 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     role: 'Drunkard',
     trait: {
       name: 'Clutch Genes',
-      // (was +50% at half HP or below; it grows from the first HP lost now, DECISIONS #411)
-      text: 'You deal 1% more attack damage for every HP you are missing.',
-      clutch: { perMissingHp: 1 },
+      // (was +50% at half HP or below; it grows from the first HP lost, DECISIONS #411; by the share of HP missing, not HP, #429)
+      text: 'You deal 1% more attack damage for every 1% of your HP you are missing.',
+      clutch: { perMissingPct: 1 },
     },
     hero: {
       id: 'drunkard',
@@ -394,7 +394,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
       'Hangover: drink now, pay tomorrow',
     ],
     howTo: [
-      'Window panes and hammer blows get stronger the more HP you are missing, and Clutch Genes makes every attack hit 1% harder for each HP you are missing.',
+      'Window panes and hammer blows get stronger the more HP you are missing, and Clutch Genes makes every attack hit 1% harder for each 1% of your HP you are missing.',
       'You start every fight with the Old Twelve Gauge: it hits EVERY enemy, you keep it in hand, and every Sharpen card (Rack the Slide...) makes it hit harder for the whole fight.',
       'Shells are 0-cost attacks that hit every enemy and are consumed. Playing one can sharpen the gun (Hair Trigger).',
       'Drinks (Swig, Liquid Lunch...) give Mana, cards or Might now and Hangover: at the start of your next turn you lose that much HP, never your last. Hangover cards hit harder the more of it you carry, and his heals grow with the HP you are missing.',

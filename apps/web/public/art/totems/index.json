@@ -1,0 +1,12 @@
+﻿{
+    "totems":  {
+                   "hawk":  "totems/hawk.png",
+                   "bear":  "totems/bear.png",
+                   "elder":  "totems/elder.png"
+               },
+    "spirits":  {
+                    "hawk":  "totems/hawk-spirit.png",
+                    "bear":  "totems/bear-spirit.png",
+                    "elder":  "totems/elder-spirit.png"
+                }
+}

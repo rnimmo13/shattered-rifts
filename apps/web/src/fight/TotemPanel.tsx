@@ -1,11 +1,13 @@
 // The Shaman's totems on the battle screen (DECISIONS #420, #421): his positions (three to start, up to five) and his Spirit. A totem
 // helps the first spell of its element each turn and acts only when a card commands it. When a card asks which totem acts, or where
 // a new one goes, the choice is made here, on the panel itself (DECISIONS #427: no pop-up): the totems that can be chosen light up
-// as buttons, the rest dim. Presentation only: the totems and the choice come from the combat view.
+// as buttons, the rest dim. The carved totems are pictures where one is drawn (DECISIONS #429; they fill the panel, so they grow when
+// it is resized), and a commanded totem's spirit rises out of it. Presentation only: the totems and the choice come from the combat view.
 
 import { useEffect, useRef } from 'react';
 import type { CombatDb } from '@sr/combat';
 import { tipAttrs } from '../ui/tip';
+import { useTotemArt } from './totemArt';
 import { totemLook } from './totemLook';
 
 /** a choice of totem positions the panel offers ('t0'..'t4'), and what picking does */
@@ -20,6 +22,13 @@ export interface TotemPick {
   keep?: string;
 }
 
+/** a totem commanded just now: its spirit shows over it for a moment (`key` tells two commands of the same totem apart) */
+export interface TotemSummon {
+  totem: number;
+  spirit: string;
+  key: number;
+}
+
 export function TotemPanel(props: {
   db: CombatDb;
   totems: readonly (string | null)[];
@@ -27,8 +36,11 @@ export function TotemPanel(props: {
   pick?: TotemPick | null;
   /** a choice answered: the positions picked (none: kept) */
   onPick?: (ids: string[]) => void;
+  summon?: TotemSummon | null;
 }) {
   const pick = props.pick ?? null;
+  const art = useTotemArt();
+  const help = Math.floor(props.spirit / 2);
   const first = useRef<HTMLButtonElement>(null);
   const ids = pick ? pick.ids.join() : '';
   const asking = pick ? `${pick.prompt}|${ids}` : '';
@@ -80,10 +92,26 @@ export function TotemPanel(props: {
                   title: 'Empty',
                   text: 'A card that plants a totem puts it in the first empty position.',
                 });
-          const cls = `totem${kind ? ` totem--${kind}` : ' is-empty'}`;
+          const cls = `totem${kind ? ` totem--${kind}` : ' is-empty'}${kind && art.totems[kind] ? ' has-art' : ''}${props.summon?.totem === i ? ' is-acting' : ''}`;
+          const picture = kind ? art.totems[kind] : undefined;
+          const summoned = props.summon && props.summon.totem === i ? props.summon : null;
+          const spiritPic = summoned ? art.spirits[summoned.spirit] : undefined;
           const face = (
             <>
-              <b aria-hidden="true">{look ? look.glyph : '·'}</b>
+              {picture ? (
+                <img className="totem__img" src={picture} alt="" draggable={false} />
+              ) : (
+                <b aria-hidden="true">{look ? look.glyph : '·'}</b>
+              )}
+              {summoned && (
+                <span key={summoned.key} className="totem__spirit" aria-hidden="true">
+                  {spiritPic ? (
+                    <img src={spiritPic} alt="" draggable={false} />
+                  ) : (
+                    <b>{totemLook(summoned.spirit).glyph}</b>
+                  )}
+                </span>
+              )}
               <small>{look ? look.name : 'empty'}</small>
               {pick && (
                 <kbd className="totem__key" aria-hidden="true">
@@ -127,15 +155,23 @@ export function TotemPanel(props: {
         </button>
       )}
       <div
-        className="totems__spirit"
+        className={`totems__spirit${props.spirit > 0 ? ' is-lit' : ''}`}
+        aria-label={`Spirit ${props.spirit}: every command +${props.spirit}, every totem's help +${help}`}
         {...tipAttrs({
           kicker: 'Spirit',
           title: `${props.spirit} Spirit`,
           text: 'Never goes down. Each point adds 1 to every command; every 2 add 1 to every totem’s help. Trinity gives 1 each turn it triggers.',
         })}
       >
-        <span aria-hidden="true">◉</span>
-        <small>Spirit {props.spirit}</small>
+        <span className="totems__orb" aria-hidden="true">
+          {props.spirit}
+        </span>
+        <span className="totems__spiritText" aria-hidden="true">
+          <b>Spirit</b>
+          <small>
+            Commands +{props.spirit} · Help +{help}
+          </small>
+        </span>
       </div>
     </div>
   );
