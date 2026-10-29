@@ -50,9 +50,13 @@ export function canAdd(deck: readonly string[], cardId: string, rarityLimits = t
 const OWNER_ONLY = new Set<string>(['suits', 'spades', 'hearts', 'diamonds', 'clubs', 'allSuits']);
 /** whether an effect, or anything it holds (an Aura's trigger, a condition's effects), reads or waits for an owner-only thing */
 const readsOwnerOnly = (o: Op): boolean =>
-  ('scale' in o && !!o.scale && OWNER_ONLY.has(o.scale.by)) ||
+  // (leaving Serene pays only through the Monk's trait, DECISIONS #413: a card that enters it loses most of its worth for anyone else)
+  // (and so does one that pays for being in it or entering it: Still Water, Gentle Return)
+  (o.op === 'stance' && o.stance === 'calm') ||
+  ('scale' in o && !!o.scale && (OWNER_ONLY.has(o.scale.by) || o.scale.by === 'calm')) ||
   (o.op === 'when' && (OWNER_ONLY.has(o.by) || o.ops.some(readsOwnerOnly))) ||
-  (o.op === 'power' && (OWNER_ONLY.has(o.when) || o.ops.some(readsOwnerOnly)));
+  (o.op === 'power' &&
+    (OWNER_ONLY.has(o.when) || o.stance === 'calm' || o.ops.some(readsOwnerOnly)));
 const ownerOnly = (c: CardDef | undefined): boolean =>
   !!c &&
   ((!!c.statusCost && OWNER_ONLY.has(c.statusCost.status)) ||

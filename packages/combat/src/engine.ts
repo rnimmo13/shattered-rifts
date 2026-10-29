@@ -4,7 +4,6 @@
 import { nextInt, seedRng, shuffle } from './rng';
 import { SUITS, suitOf } from './suits';
 import {
-  CALM_EXIT_MANA,
   DEBUFFS,
   EDGE_TAG,
   BLADE_TAG,
@@ -241,10 +240,7 @@ function enterStance(r: Run, u: Unit, to: Stance | 'none'): void {
   if (cur) {
     delete u.statuses[cur];
     r.ev.push({ type: 'status', target: u.id, status: cur, amount: -1, total: 0 });
-    if (cur === 'calm' && !sd.calmPaid) {
-      sd.calmPaid = true;
-      gainMana(r, sd, CALM_EXIT_MANA);
-    }
+    // (leaving Serene pays its Mana through the Monk's trait, a 'stanceLeft' trigger: DECISIONS #413)
   }
   if (to !== 'none') {
     u.statuses[to] = 1;
@@ -2472,7 +2468,8 @@ function fireTriggers(
     }
     if (when === 'evoke' && p.rune && p.rune !== ctx.rune) continue;
     if (p.once && p.firedTurn === r.s.turn) continue;
-    if ((when === 'stance' || when === 'stanceLeft') && p.stance && p.stance !== ctx.stance) continue;
+    if ((when === 'stance' || when === 'stanceLeft') && p.stance && p.stance !== ctx.stance)
+      continue;
     // an Aura that answers "an ally dies" by striking its attacker does nothing when nothing attacked it (a sacrifice, a Trap, Doom)
     if (
       when === 'allyDies' &&
@@ -2805,7 +2802,6 @@ function beginHeroTurn(r: Run, side: Side): void {
   sd.manaLocked = false;
   sd.drawLocked = false;
   sd.barrierDoubled = false;
-  sd.calmPaid = false;
   sd.starsGainedTurn = 0;
   for (const u of [...r.s.sides.a.units, ...r.s.sides.b.units]) delete u.hitsTaken;
   // (the Necrobinder copy's counters for the turn)
@@ -2879,6 +2875,13 @@ function beginHeroTurn(r: Run, side: Side): void {
         ...(t.filter ? { filter: t.filter } : {}),
         ...(t.tag ? { tag: t.tag } : {}),
         ...(t.stance ? { stance: t.stance } : {}),
+        // (a trait's trigger narrows like an Aura's: once a turn is the Monk's Serene Mana, DECISIONS #413)
+        ...(t.once ? { once: true } : {}),
+        ...(t.ethereal ? { ethereal: true } : {}),
+        ...(t.minCost !== undefined ? { minCost: t.minCost } : {}),
+        ...(t.maxCost !== undefined ? { maxCost: t.maxCost } : {}),
+        ...(t.times ? { left: t.times } : {}),
+        ...(t.rune ? { rune: t.rune } : {}),
       });
   }
   {

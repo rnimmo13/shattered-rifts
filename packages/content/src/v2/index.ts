@@ -1,6 +1,12 @@
 // Combat v2 content: heroes, starter decks, cards, companions and encounters (docs/08_COMBAT_V2.md).
 
-import { validateDb, type CombatDb, type HeroDef, type HeroTrait } from '@sr/combat';
+import {
+  CALM_EXIT_MANA,
+  validateDb,
+  type CombatDb,
+  type HeroDef,
+  type HeroTrait,
+} from '@sr/combat';
 import {
   addTo,
   barrier,
@@ -9,6 +15,7 @@ import {
   draw,
   forge,
   heal,
+  mana,
   on,
   per,
   raise,
@@ -277,9 +284,11 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     trait: {
       name: 'Inner Fire',
       // (its 2 Barrier went: a Flow deck changes stance two or three times a turn, DECISIONS #390; Primed on leaving Fury, #412)
-      text: 'Whenever you enter a stance, gain 1 Fervor. Whenever you leave Fury, gain 2 Primed.',
+      // (leaving Serene's 2 Mana was an engine rule; it is the trait's now, so the trait table counts it: #413)
+      text: 'Whenever you enter a stance, gain 1 Fervor. The first time each turn you leave Serene, gain 2 Mana. Whenever you leave Fury, gain 2 Primed.',
       triggers: [
         on('stance', [status('mantra', 1)]),
+        on('stanceLeft', [mana(CALM_EXIT_MANA)], { stance: 'calm', once: true }),
         on('stanceLeft', [status('vigor', 2)], { stance: 'wrath' }),
       ],
     },
@@ -396,12 +405,12 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     role: 'Necromancer',
     trait: {
       name: 'Grave Chill',
-      text: 'At the start of your turn, Raise 2. Whenever one of your allies dies or a card is consumed, curse a random enemy with 3 Fate.',
+      text: 'At the start of your turn, Raise 2. Whenever one of your allies dies, curse a random enemy with 2 Fate; whenever a card is consumed, with 3.',
       // (Raise a turn, DECISIONS #397: his Commands need a Thrall standing on his turn, and the one he starts with died to the first hit; 2, not 3, #401)
       // (no Fate at the start, #398; a death curses 3, as a consumed card does: 5 had pushed him back to the top, #403)
       turnStart: [raise(2)],
       triggers: [
-        on('allyDies', [status('doom', 3, 'randomFoe')]),
+        on('allyDies', [status('doom', 2, 'randomFoe')]),
         on('exhaust', [status('doom', 3, 'randomFoe')]),
       ],
     },

@@ -80,3 +80,17 @@ describe('the Monk costing pass', () => {
     expect(db.cards['deep-breath']?.exhaust).toBe(true);
   });
 });
+
+describe('Inner Fire holds the stance exits (DECISIONS #413)', () => {
+  it('leaving Serene gives 2 Mana once a turn through the trait', () => {
+    const s0 = fight(['rising-ire', 'centre-yourself', 'rising-ire']);
+    expect(hero(s0).statuses.calm).toBe(1); // he starts Serene
+    const mana = s0.sides.a.mana;
+    let s = play(s0, 'rising-ire'); // leave Serene: +2 (Rising Ire costs 0)
+    expect(s.sides.a.mana).toBe(mana + 2);
+    s = play(s, 'centre-yourself'); // Serene again, 1 Mana
+    s = play(s, 'rising-ire'); // and out again: nothing more this turn
+    expect(s.sides.a.mana).toBe(mana + 2 - 1);
+    expect(RIFTWALKERS.monk.trait.text).toMatch(/leave Serene, gain 2 Mana/);
+  });
+});

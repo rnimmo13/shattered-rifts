@@ -52,7 +52,7 @@ export const TIP_RULES: TipRule[] = [
   {
     id: 'stance',
     title: 'Stances',
-    text: 'You are in at most one stance. Fury doubles the damage you deal but you take 50% more. Serene gives you 2 Mana when you leave it (once a turn). Radiant triples your damage until your turn ends.',
+    text: 'You are in at most one stance. Fury doubles the damage you deal but you take 50% more. Leaving Serene gives the Monk 2 Mana (once a turn, his Inner Fire). Radiant triples your damage until your turn ends.',
     when: (v) => {
       const h = hero(v);
       return !!h && (!!h.statuses.calm || !!h.statuses.wrath || !!h.statuses.radiant);

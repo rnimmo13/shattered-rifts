@@ -11,6 +11,7 @@ import {
   heroOf,
   legalActions,
   validateDb,
+  CALM_EXIT_MANA,
   RADIANT_ENTER_MANA,
   viewFor,
   type Action,
@@ -423,6 +424,27 @@ const DB: CombatDb = {
   },
   heroes: {
     tester: { id: 'tester', name: 'Tester', maxHp: 100, mana: 3, handSize: 5 },
+    serene: {
+      id: 'serene',
+      name: 'Serene',
+      maxHp: 100,
+      mana: 3,
+      handSize: 5,
+      // (the Serene Mana is a trait now, the Monk's: DECISIONS #413)
+      trait: {
+        name: 'Test',
+        text: 'The first time each turn you leave Calm, gain 2 Mana.',
+        triggers: [
+          {
+            op: 'power',
+            when: 'stanceLeft',
+            stance: 'calm',
+            once: true,
+            ops: [{ op: 'mana', amount: CALM_EXIT_MANA }],
+          },
+        ],
+      },
+    },
     triggered: {
       id: 'triggered',
       name: 'Triggered',
@@ -797,7 +819,7 @@ describe('stances', () => {
   });
 
   it('leaving Calm gives Mana; stances are exclusive', () => {
-    let s = start(['calm', 'wrath', 'leave'], { mana: 3 });
+    let s = start(['calm', 'wrath', 'leave'], { mana: 3, hero: 'serene' });
     s = play(s, 'h0').state;
     expect(s.sides.a.mana).toBe(2);
     s = play(s, 'h1').state;
@@ -809,7 +831,7 @@ describe('stances', () => {
   });
 
   it('leaving Calm pays its Mana once a turn, so stepping in and out cannot loop', () => {
-    let s = start(['calm', 'wrath', 'calm', 'wrath'], { mana: 6 });
+    let s = start(['calm', 'wrath', 'calm', 'wrath'], { mana: 6, hero: 'serene' });
     s = play(s, 'h0').state; // Calm: 5
     s = play(s, 'h1').state; // leave it: 5 - 1 + 2
     expect(s.sides.a.mana).toBe(6);
@@ -819,7 +841,14 @@ describe('stances', () => {
     expect(hero(s).statuses.wrath).toBe(1);
     // the next turn it pays again
     s = end(s).state;
-    expect(s.sides.a.calmPaid).toBe(false);
+    s.sides.a.hand = [
+      { id: 'n0', card: 'calm' },
+      { id: 'n1', card: 'wrath' },
+    ];
+    s.sides.a.mana = 6;
+    s = play(s, 'n0').state;
+    s = play(s, 'n1').state;
+    expect(s.sides.a.mana).toBe(6 - 2 + 2);
   });
 
   it('Mantra builds to Radiant: triple damage, Mana on entry, gone at end of turn', () => {

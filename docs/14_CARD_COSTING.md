@@ -142,7 +142,7 @@ Percentage debuffs (Exposed, Faltering, Debilitated) are worth more as numbers g
 | A Buckshot Shell (0, 4 to ALL, Consume) | **5.2** | A Dagger that hits every enemy. |
 | Hangover N (lose N HP next turn, never the last) | **-1.5** a stack | HP, at the usual rate; its payoffs are priced on ~3 stacks already there. |
 | Enter Fury (double attack damage, take 50% more) | **4**, plus the Barbarian's trait per stance entered | Kindle Fury (2, basic: 9 and Fury). Worth the attacks after it this turn; staying in Fury through the enemy turn costs ~6 HP. |
-| Enter Serene (leaving it gives 2 Mana, once a turn) | **4**, plus the trait | Still Guard / Vigilance. Leaving Serene on a card: about **+3.5**. |
+| Enter Serene (leaving it gives 2 Mana, once a turn) | **4**, plus the trait | Still Guard / Vigilance. Leaving Serene on a card: about **+3.5**. Since DECISIONS #413 the 2 Mana is the Monk's trait (Inner Fire), not an engine rule; his cards keep these prices, so the trait table counts the same Mana again (about 7.5 a Serene exit) and the two must not be added up. |
 | Fervor | **2** a stack | 10 is a Radiant turn (~35-40), but it can't be timed. |
 | Enter Radiant now | **~31** | Rise Radiant (2, rare, Consume). |
 | Primed N | **1 per stack per hit** of the next attack | Feint 8 Barrier + 2 Primed, Heat of the Forge 7. Much better before a multi-hit attack. |

@@ -167,7 +167,8 @@ export const EDGE_TAG = 'knife';
 export const BLADE_TAG = 'blade';
 /** Orbit pays out for every this much Mana spent. */
 export const ORBIT_STEP = 4;
-/** Mana gained when leaving Calm (the first time each turn: stepping in and out again pays nothing, so it cannot loop), and on entering Radiant. */
+/** Mana gained when leaving Calm (the Monk's trait, the first time each turn: stepping in and out again pays nothing, so it cannot loop;
+ * DECISIONS #413), and on entering Radiant (the engine). */
 export const CALM_EXIT_MANA = 2;
 export const RADIANT_ENTER_MANA = 1;
 
@@ -1037,8 +1038,6 @@ export interface SideState {
   /** Full Tricks made this fight (the trait's damage grows with them) */
   fullTricks?: number;
   discarded: number;
-  /** leaving Calm has already paid its Mana this turn */
-  calmPaid?: boolean;
   /** times your hero lost HP this turn / this fight, cards consumed this turn */
   lostHpTurn?: number;
   lostHpFight?: number;

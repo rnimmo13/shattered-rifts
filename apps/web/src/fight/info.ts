@@ -58,7 +58,7 @@ export const STATUS_INFO: Record<
     name: 'Serene',
     glyph: '☾',
     tone: 'good',
-    text: 'A stance. Leaving it gives you 2 Mana (once a turn).',
+    text: 'A stance. Leaving it gives the Monk 2 Mana (once a turn, his trait Inner Fire).',
   },
   wrath: {
     name: 'Fury',
