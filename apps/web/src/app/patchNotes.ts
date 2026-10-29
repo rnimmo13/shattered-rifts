@@ -29,6 +29,40 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.122.0',
+    date: '2026-10-29',
+    title: 'Five classes rebuilt',
+    summary:
+      'The Knight, Assassin, Spellblade, Shaman and Monk each have a playstyle of their own.',
+    notes: [
+      {
+        kind: 'changed',
+        text: 'The Knight: Guard, Riposte and Thorns. Block a whole hit to leave the attacker Open; Riposte cards spend the Opening for a big counter. 87 cards in five styles: the Duelist keeps an Opening and uses it first, the formation fighter handles many enemies (Answer Them All), the patient defender turns defence into Mana for the next turn, offensive Thorns spends Thorns as damage (Shed the Spines), the siege fighter opens enemies that will not attack.',
+      },
+      {
+        kind: 'changed',
+        text: 'The Assassin: Preparation and knives. Setup cards build Preparation for big finishers; knives stay in enemies until you pull them for a payoff.',
+      },
+      {
+        kind: 'changed',
+        text: 'The Spellblade: Imbue and Discharge. Spells put Ember, Glass or Ward on her blade; blade attacks discharge them.',
+      },
+      {
+        kind: 'changed',
+        text: 'The Shaman: Flame, Frost and Storm spells, a Hawk, a Bear and a Thunderbird totem that help each element, cards that command them, Burn, and Trinity: all three elements in a turn for Spirit, which makes everything stronger.',
+      },
+      {
+        kind: 'changed',
+        text: 'The Monk: Martial Forms and Mastery. Complete your form (Root, Current or Ember) with the right techniques for Mastery, spent by finishers.',
+      },
+      {
+        kind: 'changed',
+        text: 'Saved runs with these classes are updated, with a note when you load them.',
+      },
+    ],
+    heads: 'Rules changed: replays and Arena games from before this version no longer play.',
+  },
+  {
     version: '0.121.0',
     date: '2026-10-28',
     title: 'Last Call',
