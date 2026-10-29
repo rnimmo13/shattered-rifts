@@ -101,3 +101,22 @@ describe('runs saved before a class rework', () => {
     expect(parseRun(text)).toBeNull();
   });
 });
+
+describe('Rift-crossed offers (DECISIONS #418, #419)', () => {
+  it('never offer a card that only the Shaman or the Monk can use to anyone else', async () => {
+    const { deadElsewhere } = await import('./rewards');
+    for (const id of [
+      'stormcrown',
+      'hawks-counsel',
+      'tune-the-spirits',
+      'perfected-motion',
+      'unmoved-mind',
+      'river-turns',
+      'mountain-breaker',
+      'read-the-rhythm',
+    ])
+      expect(deadElsewhere(id), id).toBe(true);
+    for (const id of ['stone-skin', 'ember-toss', 'iron-shirt', 'quick-palms'])
+      expect(deadElsewhere(id), id).toBe(false);
+  });
+});

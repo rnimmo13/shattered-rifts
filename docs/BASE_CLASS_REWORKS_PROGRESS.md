@@ -1,97 +1,41 @@
-# Base class reworks: progress (paused 2026-10-29)
+# Base class reworks: progress (complete 2026-10-29)
 
-Brief: `docs/BASE_CLASS_REWORKS.md` (Knight, Assassin, Spellblade, Shaman, plus the Monk's Option A, Martial Forms and Mastery, approved
-by Robert). Paused at Robert's request at a coherent checkpoint, part-way through the Spellblade. **The Shaman and the Monk have not
-been started.** Nothing is pushed or deployed.
-
-## Completed (committed)
+Brief: `docs/BASE_CLASS_REWORKS.md` (Knight, Assassin, Spellblade, Shaman, and the Monk's Option A, Martial Forms and Mastery,
+approved by Robert). All five are implemented and committed. Nothing is pushed or deployed.
 
 | Step | Commit | Notes |
 |---|---|---|
-| Archive of the old Knight, Assassin, Shaman, Spellblade, Necromancer and Monk | `611e616` | `reviews/balance-baselines/2026-10-29-pre-identity-reworks/`: resolved JSON of every card, upgrade, hero, trait and totem; readable lists and rules; a `git archive` source snapshot with the lockfile; asset hashes; metadata. `tools/src/baselineVerify.ts <dir>` re-checks it (81 checks passed). It is ignored by ESLint and Prettier. |
-| Knight: Guard, Riposte, Thorns | `323ef83` | DECISIONS #414-#415. It also adds the shared pieces: the run-save migration (`CLASS_REWORKS`, `RunState.reworked` and `reworkNotice`, a fight in progress restarts, a notice is shown), `RULES_VERSION` 34, costing guide §14 (legacy rates) and §15 (new rates), and the ledger generator `tools/src/ledger/`. A reviewer found no critical or high issues; its fixes are in the next commit. |
-| Assassin: Preparation and embedded knives | `035004b` | DECISIONS #416. A reviewer found no critical or high issues. |
-| Assassin review fixes, and the Spellblade (work in progress) | the checkpoint commit made with this file (message starts "0.121.0: WIP checkpoint") | See below. |
+| Archive of the old Knight, Assassin, Shaman, Spellblade, Necromancer and Monk | `611e616` | `reviews/balance-baselines/2026-10-29-pre-identity-reworks/`; `tools/src/baselineVerify.ts <dir>` re-checks it: 81 of 81 pass after all five reworks (the archive is unchanged). |
+| Knight: Guard, Riposte, Thorns | `46de0bd` | DECISIONS #414-#415, `docs/reworks/KNIGHT.md`. Also the shared pieces: run migration (`CLASS_REWORKS`), the costing guide's §14-15, the ledger generator. |
+| Assassin: Preparation and embedded knives | `035004b`, fixes in `c6ccec6` | DECISIONS #416, `docs/reworks/ASSASSIN.md`. |
+| Spellblade: Imbue and Discharge | `c6ccec6` (work in progress), `6db0196` (finished) | DECISIONS #417, `docs/reworks/SPELLBLADE.md`, review `reviews/spellblade-review.md` (no critical issues; the one high and three medium issues fixed). |
+| Shaman: commanded totems | `6db0196`, review fixes in `8d4e296` | DECISIONS #418, `docs/reworks/SHAMAN.md`, review `reviews/shaman-review.md` (no critical issues; the two high fixed, and Taunt, the Rousing wording, the deviations logged, more scenarios). |
+| Monk: Martial Forms and Mastery | `8d4e296`, review fixes in the next commit | DECISIONS #419, `docs/reworks/MONK.md`, review `reviews/monk-review.md` (no critical issues; the high issue and three medium fixed). |
+| Final pass | `8d4e296` | The brief's status line; `pnpm cardlist` (763 cards); the CLAUDE.md status; the roster's stale Dagger, Bleed, Sigil and keyword text; the helper scripts deleted. |
 
-## Partial: the Spellblade (Imbue and Discharge), committed as a checkpoint but not finished
+## Check results (2026-10-29, after the Monk)
 
-**Built and tested:**
-- **Engine** (`packages/combat`):
-  - `Enchant` type, two ordered positions (`SideState.enchants`).
-  - Ops `imbue` (with `ifRoom`), `discharge` (1 or 2) and `recast`.
-  - Choices (pending `enchant`, `discharge`, `recast`) that carry what was discharged across the choice.
-  - Ember +3 on the first hit; Glass 2 to every enemy after the attack, as a non-attack shard; Ward 3 Barrier at once.
-  - Status `twinedge`; triggers `imbue`, `discharge`, `dischargeMixed`; metrics `enchants`, `enchantKinds`, `wards`, `discharged`.
-  - Previews: an exact or ranged Ember, and "(+N on the first hit)" for multi-hit attacks.
-  - Validator: a discharge must come before the card's damage.
-- **Content:**
-  - `pools/spellblade.ts`: 53 cards (41 ids kept or changed, 12 new).
-  - Trait "Glass and Ember": start with a Ward, and the first Imbue each turn draws 1 and gives 2 Barrier. No Arcana Sigil.
-  - Starter: 4 Strike, 4 Defend, Ember Inscription, Obsidian Cut.
-  - `CLASS_REWORKS.spellblade`, 46 removed ids in `retired.ts`, and the paths (edge 17, burst 17, ward 12).
-- **Web:**
-  - `EnchantSlots.tsx`, a movable "Obsidian Blade" panel.
-  - `PickModal` charge tiles.
-  - Tooltips and keywords, a teaching tip, and Learn page words.
-  - The Obsidian Blade removed from Sharpen.
-- **Display fix (`display.ts`):** a card being played is no longer swept into a mid-play reshuffle. This was a pre-existing bug, exposed by the trait's draw.
-- **Tests:** `spellblade.test.ts` (16 tests); updated `cards`, `copyFixes`, `triggers`, `auraUpgrades`, `deckCatalog` and `info` tests.
-
-**Not yet done for the Spellblade:**
-1. **Ledger:** `tools/src/ledger/spellblade.ts`, registered in `tools/src/ledger/write.ts`.
-   - Rates: Ember 3, Glass 2.6, Ward 3.6; an Imbue at 0.85 of the charge's value; a discharge card at its base +1 (one) or +1.5 (both).
-   - Run `npx tsx src/ledger/write.ts spellblade` from `tools/` and tune any card more than 15% off budget.
-2. **Docs:**
-   - `docs/reworks/SPELLBLADE.md`: contract, strategies, disposition, loop and multiplier checks.
-   - Costing guide §15 Spellblade rates, and *(legacy)* marks on the Arcana, Sharpen and Obsidian Blade rows.
-   - DECISIONS #417; the CHANGELOG entry.
-   - The `09_ROSTER.md` row, trait line and engine-pieces line.
-   - The Spellblade section of `CLASS_REWORK_ART.md` (use `tools/src/_art.ts spellblade`).
-3. **Test:** a Spellblade case in `packages/campaign/src/rework.test.ts`.
-4. **Review:** a reviewer subagent on the Spellblade (the global rule); fix critical and high findings.
-5. **Lint:** move `ENCHANT_LOOK` out of `EnchantSlots.tsx` to clear the react-refresh warning.
-
-## Remaining after the Spellblade (not started)
-
-1. **Shaman** (brief §5):
-   - Three fixed, selectable totem positions: no FIFO, no auto-awaken.
-   - One command a turn, through a visible action and UI.
-   - Hawk, Bear and Elder spirits; Spirit capped at 3, with one enhancement per command.
-   - Retire Owl and Splinter.
-   - Audit every `runeSlots`, `channel`, `evoke`, `pulse` and `resonance` use first.
-   - The full slice: ledger, docs, tests and migration.
-2. **Monk** (brief §12, Option A):
-   - Forms Root, Current and Ember, with one objective completion a turn.
-   - Mastery capped at 3, at most 2 spent a card (reuse the `spend` op and trigger).
-   - Retire Fervor, Radiant and the Serene/Fury trait; audit stance use by enemies and neutral cards.
-   - `CLASS_REWORKS.monk`, and the full slice.
-3. **Final pass:**
-   - Update the status line of `docs/BASE_CLASS_REWORKS.md`: no longer "proposal only", and the Monk is approved.
-   - `pnpm cardlist`; the `CLAUDE.md` status line; the stale Dagger, Bleed and Sigil text in `09_ROSTER.md` (about lines 25, 72, 113).
-   - Delete the uncommitted helper scripts `tools/src/_art.ts`, `_chk.ts`, `_refs.ts`, `_val.ts` and `_dbg.ts`.
-   - `pnpm check`; a look at the UI in the running game; the final report.
-
-## Actual check results at this checkpoint (2026-10-29)
-
-**Environment note:** partway through the session, the shell's active Node was switched to v20.10 (nvm), and `pnpm` was no longer on the PATH. Vitest 5 and rolldown need Node 22, so the checks below were run with nvm's v22.21.1 put first on the PATH for each command only. The global nvm setting was not changed.
+Run with nvm's Node 22.21.1 first on the PATH for each command only (the shell's default had become Node 20.10, where Vitest 5 and
+rolldown do not run; the global nvm setting was not changed).
 
 | Check | Result |
 |---|---|
-| Tests (`vitest run`, the whole repo) | **97 files, 2611 passed, 1 skipped, 0 failed** |
-| ESLint (`eslint .`) | **0 errors**, 1 warning: react-refresh `only-export-components` in `apps/web/src/fight/EnchantSlots.tsx` |
-| TypeScript (`tsc --noEmit`) | combat, content, campaign, pvp, apps/web, apps/server: pass. tools: pass on rerun; the first run exited 1 with no error output, likely a PowerShell redirection quirk. |
+| Tests (`vitest run`, the whole repo) | 97 files, 2504 passed, 1 skipped, 0 failed |
+| ESLint (`eslint .`) | 0 errors, 0 warnings |
+| TypeScript (`tsc --noEmit`) | combat, content, campaign, pvp, apps/web, apps/server, tools: all pass |
 | Web build (`vite build`) | pass |
+| Ledgers (`tools/src/ledger/write.ts`) | Knight 52/54, Assassin 53/55, Spellblade 52/53, Shaman 51/53, Monk 53/53 within ±15% (the rest give a reason) |
+| Archive check | 81 of 81 pass |
 | Balance simulations | none run (by instruction) |
-| Archive check (`baselineVerify.ts`) | 81 of 81 passed (run when the archive was made) |
-| Running game UI | not reviewed yet |
-
-## Left untouched on purpose
-
-- `docs/ART_AND_ANIMATION_EXPANSION_2026-10-29.md` and `docs/MULTIVERSE_ENEMY_EXPANSION.md`: untracked files from other work. They are not part of these commits.
-- Agent worktrees under `.claude/worktrees/`.
+| The running game | checked by hand in the dev server: the Shaman's Totems panel, a Hawk command and its log line; the Monk's Form panel and technique text |
 
 ## Open points for Robert
 
-- **Smaller pools:** each rebuilt class has about 52-55 cards, against about 80 before (no near-duplicates). This is a smaller reward depth.
+- **Smaller pools:** each rebuilt class has 53-55 cards, down from about 80 (no near-duplicates). That means fewer distinct card
+  rewards.
+- **New art:** none was made (brief priorities 1-4). 18-38 placeholders per class, plus kept pictures to review, are listed in
+  `docs/CLASS_REWORK_ART.md`. The two Shaman reference strips the brief names are not in the repository.
+- **Low starter traits:** the Assassin's and Spellblade's traits price at about 14 in the starter, the low end of the roster.
 - **Arena gap:** "if the target means to attack" reads 0 against a hero, so a few Knight cards are weaker in the Arena.
-- **Low trait:** the Assassin's trait prices at about 14 in the starter, the low end of the roster.
+- **Shaman:** Shared Shelter gives full Barrier to every friendly, not the brief's "hero and one companion at reduced values". He has no
+  companions of his own. Logged in DECISIONS #418.

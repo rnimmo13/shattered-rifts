@@ -47,7 +47,7 @@ const play = (s: CombatState, id: string, target?: string): CombatState => {
   return applyAction(db, s, act!).state;
 };
 const mastery = (s: CombatState): number => hero(s).statuses.mastery ?? 0;
-const ops = (o: Op): Op[] => [o, ...('ops' in o && Array.isArray(o.ops) ? (o.ops) : [])];
+const ops = (o: Op): Op[] => [o, ...('ops' in o && Array.isArray(o.ops) ? o.ops : [])];
 
 describe('the Monk: Martial Forms and Mastery', () => {
   it('starts in Current with no stance, no Fervor and no Mana refund; his starter has two of each technique', () => {
@@ -138,10 +138,13 @@ describe('the Monk: Martial Forms and Mastery', () => {
   });
 
   it('Mastery stops at 3, a card spends at most 2, and the spend pays exactly what it says', () => {
-    let s = fight(['mountain-breaker', 'angry-palm']);
-    hero(s).statuses.mastery = 5;
-    expect(mastery(s)).toBe(5);
-    s = fight(['mountain-breaker', 'angry-palm']);
+    // (the cap holds for a gain: Wreath of Flame's 1 on top of 3 stays 3)
+    let s = fight(['mountain-breaker', 'angry-palm', 'wreath-of-flame']);
+    hero(s).statuses.mastery = 3;
+    s.sides.a.formDone = true;
+    s = play(s, 'wreath-of-flame');
+    expect(mastery(s)).toBe(3);
+    hero(s).statuses.mastery = 3;
     hero(s).statuses.mastery = 3;
     s = play(s, 'mountain-breaker', foe(s).id);
     expect(foe(s).hp).toBe(200 - 16 - 6);
@@ -190,6 +193,35 @@ describe('the Monk: Martial Forms and Mastery', () => {
     expect(s.sides.a.hand.length).toBe(hand - 1 + 1);
     expect(foe(s, 0).hp).toBe(200 - 4);
     expect(foe(s, 1).hp).toBe(200 - 6 - 4);
+  });
+
+  it('a strike that kills its target and then asks a choice still completes Ember (review H1)', () => {
+    let s = fight(['stoke-the-ember', 'quick-palms', 'foretold-flame']);
+    s.sides.a.draw = [
+      { id: 'D1', card: 'strike' },
+      { id: 'D2', card: 'strike' },
+      ...s.sides.a.draw,
+    ];
+    s = play(s, 'stoke-the-ember', foe(s).id);
+    s = play(s, 'quick-palms', foe(s).id);
+    foe(s).hp = 3;
+    const id = foe(s).id;
+    s = play(s, 'foretold-flame', id);
+    expect(s.sides.b.units.some((u) => u.id === id)).toBe(false);
+    expect(s.pending?.kind).toBe('scry');
+    s = applyAction(db, s, { type: 'pick', cards: ['D1'] }).state;
+    expect(s.sides.a.formDone).toBe(true);
+    expect(mastery(s)).toBe(1);
+  });
+
+  it('Still Water draws on the play that completes Root', () => {
+    let s = fight(['settle-the-root', 'still-guard', 'still-water']);
+    s.sides.a.draw = [{ id: 'D1', card: 'strike' }, ...s.sides.a.draw];
+    s = play(s, 'settle-the-root');
+    s = play(s, 'still-guard');
+    s = play(s, 'still-water');
+    expect(s.sides.a.formDone).toBe(true);
+    expect(s.sides.a.hand.map((c) => c.id)).toContain('D1');
   });
 
   it('every Monk card has text', () => {

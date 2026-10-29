@@ -85,7 +85,13 @@ export function PickModal(props: {
             disabled={!ok}
             onClick={() => props.onSubmit(chosen)}
           >
-            <span>{chosen.length === 0 && p.min === 0 ? 'Keep them all' : 'Confirm'}</span>
+            <span>
+              {chosen.length === 0 && p.min === 0
+                ? p.kind === 'form'
+                  ? 'Keep this form'
+                  : 'Keep them all'
+                : 'Confirm'}
+            </span>
           </button>
         </header>
         <div className="fight__grid">

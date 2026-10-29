@@ -26,7 +26,6 @@ const SIGNATURE_WORDS = [
   'command',
   'form',
   'technique',
-  'stance',
   'stars',
   'forge',
   'knives',
@@ -232,7 +231,11 @@ export function LearnScreen() {
   const basics = TIP_RULES.find((t) => t.id === 'basics');
   // (the Shaman's spirits, DECISIONS #418)
   const runes = Object.values(COMBAT_DB.totems ?? {});
-  const statuses = Object.values(STATUS_INFO);
+  // (the stances, Fervor and the old totems' Focus left every live card with the 2026-10-29 reworks: not taught, still defined)
+  const RETIRED: readonly string[] = ['calm', 'wrath', 'radiant', 'mantra', 'resonance'];
+  const statuses = Object.entries(STATUS_INFO)
+    .filter(([id]) => !RETIRED.includes(id))
+    .map(([, s]) => s);
   return (
     <main className="learn">
       <a className="btn btn--small" href="#/">

@@ -58,7 +58,7 @@ export const STATUS_INFO: Record<
     name: 'Serene',
     glyph: '☾',
     tone: 'good',
-    text: 'A stance. Leaving it gives the Monk 2 Mana (once a turn, his trait Inner Fire).',
+    text: 'A stance (no live card enters it since the Monk became Martial Forms, DECISIONS #419).',
   },
   wrath: {
     name: 'Fury',

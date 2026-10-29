@@ -849,6 +849,8 @@ function whenText(o: Extract<Op, { op: 'when' }>, db?: CombatDb): string {
     return 'you have completed your technique this turn';
   if (o.by === 'techniquesTurn' && hi === 0 && lo === undefined)
     return 'this is your first technique this turn';
+  if (o.by === 'techniquesTurn' && lo === 1 && hi === undefined)
+    return 'you have played another technique this turn';
   if (o.by === 'defensiveTurn' && (lo ?? 0) >= 1 && hi === undefined)
     return 'you have played a Defensive technique this turn';
   if (o.by === 'masterySpent' && (lo ?? 0) >= 1 && hi === undefined) return 'you spent Mastery';

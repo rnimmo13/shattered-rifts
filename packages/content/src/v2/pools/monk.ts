@@ -231,10 +231,10 @@ export const MONK: CardDef[] = [
     'skill',
     1,
     'none',
-    [barrier(8), when('techniqueDone', { atLeast: 1 }, [draw(1)])],
+    [barrier(8), when('techniquesTurn', { atLeast: 1 }, [draw(1)])],
     {
       ...DEFENSIVE,
-      up: { effects: [barrier(11), when('techniqueDone', { atLeast: 1 }, [draw(1)])] },
+      up: { effects: [barrier(11), when('techniquesTurn', { atLeast: 1 }, [draw(1)])] },
     },
   ),
   s(

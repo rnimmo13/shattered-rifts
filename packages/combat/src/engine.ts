@@ -703,7 +703,13 @@ function changeForm(r: Run, sd: SideState, form: Form): void {
  * A technique card the player played from hand is a step of the form's objective (an echo, a replay or a card played for free is
  * not). The first completion of a turn gives 1 Mastery and answers `technique` triggers; later ones give nothing.
  */
-function techniqueStep(r: Run, sd: SideState, cd: CardDef, target: Unit | null): void {
+function techniqueStep(
+  r: Run,
+  sd: SideState,
+  cd: CardDef,
+  target: Unit | null,
+  aimed?: UnitId,
+): void {
   if (!sd.form || r.s.winner) return;
   const tag = cd.tags?.includes(DEFENSIVE_TAG)
     ? 'defensive'
@@ -717,7 +723,12 @@ function techniqueStep(r: Run, sd: SideState, cd: CardDef, target: Unit | null):
   (sd.formSteps ??= []).push({
     card: cd.id.replace(/\+$/, ''),
     tag,
-    ...(target && target.side !== sd.id ? { target: target.id } : {}),
+    // (the enemy it was aimed at, by id: one it killed before a choice it asked is gone from the side, and still counts)
+    ...(cd.target === 'foe' && (aimed ?? target?.id)
+      ? { target: (aimed ?? target?.id) as UnitId }
+      : target && target.side !== sd.id
+        ? { target: target.id }
+        : {}),
   });
   const hero = heroOf(sd);
   if (formProgress(sd) >= 2 && hero) {
@@ -4061,6 +4072,7 @@ function finishCard(
   target: Unit | null,
   paid?: number,
   free = false,
+  aimed?: UnitId,
 ): void {
   if (cd.kind === 'power') {
     // a Power stays in effect for the fight and leaves the deck (without counting as "exhausted")
@@ -4083,7 +4095,7 @@ function finishCard(
   countPlayed(sd, cd, inst);
   const cost = paid ?? cd.cost + (inst.costUp ?? 0);
   // (the Monk) a technique played from hand is a step of his form's objective, before the Auras answer the play
-  if (!free) techniqueStep(r, sd, cd, target);
+  if (!free) techniqueStep(r, sd, cd, target, aimed);
   fireTriggers(r, sd, 'play', { card: cd, target, inst, cost });
   payFullTrick(r, sd);
   recallOnCost(r, sd, cost, inst.id);
@@ -4389,7 +4401,17 @@ function pickCards(r: Run, action: Extract<Action, { type: 'pick' }>): void {
   if (fin && cd && hero && !r.s.winner)
     extraPlays(r, hero, cd, fin, findUnit(r.s, p.target) ?? null, p.x);
   // (an extra play cannot ask: it never sets a choice, so the card always finishes here)
-  if (fin && cd) finishCard(r, sd, fin, cd, findUnit(r.s, p.target) ?? null, p.paid);
+  if (fin && cd)
+    finishCard(
+      r,
+      sd,
+      fin,
+      cd,
+      findUnit(r.s, p.target) ?? null,
+      p.paid,
+      false,
+      p.target ?? undefined,
+    );
 }
 
 function usePotion(r: Run, action: Extract<Action, { type: 'potion' }>): void {

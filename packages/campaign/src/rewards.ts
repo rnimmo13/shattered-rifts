@@ -47,16 +47,57 @@ export function canAdd(deck: readonly string[], cardId: string, rarityLimits = t
  * dead in another deck. The Trickster's Suits (DECISIONS #387): only her trait keeps the suits played, so "per suit", "if you have
  * played a ♥" and "whenever you make a Full Trick" do nothing for anyone else.
  */
-const OWNER_ONLY = new Set<string>(['suits', 'spades', 'hearts', 'diamonds', 'clubs', 'allSuits']);
+const OWNER_ONLY = new Set<string>([
+  'suits',
+  'spades',
+  'hearts',
+  'diamonds',
+  'clubs',
+  'allSuits',
+  // (the Shaman's totems, DECISIONS #418: only his trait gives the positions and the command)
+  'totems',
+  'totemKinds',
+  'totemsOf',
+  'spirit',
+  'commanded',
+  'uprooted',
+  'replacedNow',
+  'spiritSpent',
+  'command',
+  'plant',
+  'replace',
+  // (the Monk's Martial Forms, DECISIONS #419: only his trait gives a form, its techniques and Mastery)
+  'mastery',
+  'masterySpent',
+  'techniqueDone',
+  'techniquesTurn',
+  'defensiveTurn',
+  'inRoot',
+  'inCurrent',
+  'inEmber',
+  'technique',
+  'formChange',
+]);
+/** statuses and tags only those traits make worth anything: Spirit, Rousing and Shelter feed a command, Mastery a form, the
+ * technique tags a form's objective */
+const OWNER_STATUS = new Set<string>(['spirit', 'rousing', 'shelter', 'mastery']);
+const OWNER_TAG = new Set<string>(['defensive', 'striking']);
 /** whether an effect, or anything it holds (an Aura's trigger, a condition's effects), reads or waits for an owner-only thing */
 const readsOwnerOnly = (o: Op): boolean =>
   // (leaving Serene pays only through the Monk's trait, DECISIONS #413: a card that enters it loses most of its worth for anyone else)
   // (and so does one that pays for being in it or entering it: Still Water, Gentle Return)
   (o.op === 'stance' && o.stance === 'calm') ||
+  o.op === 'plant' ||
+  o.op === 'uproot' ||
+  o.op === 'form' ||
+  ((o.op === 'spend' || o.op === 'status') && OWNER_STATUS.has(o.status)) ||
   ('scale' in o && !!o.scale && (OWNER_ONLY.has(o.scale.by) || o.scale.by === 'calm')) ||
   (o.op === 'when' && (OWNER_ONLY.has(o.by) || o.ops.some(readsOwnerOnly))) ||
   (o.op === 'power' &&
-    (OWNER_ONLY.has(o.when) || o.stance === 'calm' || o.ops.some(readsOwnerOnly)));
+    (OWNER_ONLY.has(o.when) ||
+      o.stance === 'calm' ||
+      (!!o.tag && OWNER_TAG.has(o.tag)) ||
+      o.ops.some(readsOwnerOnly)));
 const ownerOnly = (c: CardDef | undefined): boolean =>
   !!c &&
   ((!!c.statusCost && OWNER_ONLY.has(c.statusCost.status)) ||

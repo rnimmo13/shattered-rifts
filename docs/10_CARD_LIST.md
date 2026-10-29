@@ -530,7 +530,7 @@ Starter: Strike, Strike, Strike, Defend, Defend, Defend, Still Guard, Planted He
 | Coiled Serpent | 1 | trap | uncommon | When you lose 5+ HP at once: Deal 9 damage to the attacker. Gain 4 Barrier. Gain 1 Mastery. |
 | Rooted Resolve | 1 | skill | uncommon | Defensive technique. Gain 7 Barrier. Spend up to 1 Mastery. If you spent Mastery: Gain 2 Barrier. Draw 1 card. |
 | Shield of Calm | 1 | skill | uncommon | Defensive technique. Spend up to 1 Mastery. Gain 7 (+4 per Mastery spent) Barrier. |
-| Still Water | 1 | skill | uncommon | Defensive technique. Gain 8 Barrier. If you have completed your technique this turn: Draw 1 card. |
+| Still Water | 1 | skill | uncommon | Defensive technique. Gain 8 Barrier. If you have played another technique this turn: Draw 1 card. |
 | Fearless | 1 | attack | uncommon | Striking technique. Deal 6 damage. Gain 4 Barrier. |
 | Open Palm | 1 | attack | uncommon | Striking technique. Deal 5 damage 2 times. |
 | Foretold Flame | 1 | attack | uncommon | Striking technique. Spend up to 2 Mastery. Deal 5 (+3 per Mastery spent) damage. Foresee 2. |

@@ -124,10 +124,10 @@ export const MONK_PRICES: Record<string, Price> = {
     role: 'Root: the defensive spender',
   },
   'still-water': {
-    pts: 11.1,
-    up: 14.7,
-    how: '8 Barrier 9.6 + draw if completed (3 x0.5)',
-    role: 'Root: rewards the finished pair',
+    pts: 11.55,
+    up: 15.15,
+    how: '8 Barrier 9.6 + draw after another technique (3 x0.65): on the play that completes a pair it draws',
+    role: 'Root: rewards the second step',
   },
   'perfect-calm': {
     pts: 22.56,
