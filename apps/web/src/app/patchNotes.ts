@@ -29,6 +29,41 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.126.0',
+    date: '2026-10-29',
+    title: 'The totem cycle',
+    summary:
+      'The Shaman plays a totem cycle, the Drunkard pays off pain, the Assassin premeditates, and damage says how it is made.',
+    notes: [
+      {
+        kind: 'changed',
+        text: "The Shaman's totems stand in a row in order. Each does something every turn (the Hawk primes your next attack, the Bear gives Barrier, the Thunderbird zaps two enemies), and every point of Spirit makes those numbers bigger. A command makes the front totem's spirit act, and the totem is used up; planting into a full row pushes the front one out, and it acts as it goes. Trinity is gone.",
+      },
+      {
+        kind: 'changed',
+        text: "The Assassin's Sly is now Premeditate: a card with it that another card makes you discard comes back next turn, on top of your hand, and costs 0 until you play it.",
+      },
+      {
+        kind: 'balance',
+        text: 'The Drunkard: cards that answer losing HP say that Hangover counts, and Glass Jaw, The Glass Palace and Mean Drunk pay by how much you lost. New: Bar Fight, Nurse the Hangover, Take It on the Chin.',
+      },
+      {
+        kind: 'changed',
+        text: 'The Old Twelve Gauge and the Obsidian Blade are cards of the starting decks (always in your opening hand), so you can remove them at a shrine or merchant. Sharpen no longer makes one if you have none.',
+      },
+      {
+        kind: 'new',
+        text: 'Hover a card in your hand to see exactly how its damage is made, step by step (Point Blank, Clutch Genes, Might, Exposed...). The Old Twelve Gauge says when Point Blank is counted.',
+      },
+      {
+        kind: 'fixed',
+        text: 'The open rift shows its three cards in the option boxes. The Necromancer starts a fight with one Bone Thrall, not two.',
+      },
+    ],
+    heads:
+      'Rules changed: replays and Arena games from before this version no longer play. Shaman runs are updated with a note.',
+  },
+  {
     version: '0.125.0',
     date: '2026-10-29',
     title: 'Carved totems',
