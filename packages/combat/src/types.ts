@@ -752,9 +752,10 @@ export type Op =
   | { op: 'totemSlot' }
   /**
    * (DECISIONS #421) totems act, `times` times: every totem of the `spirit` kind; 'choose' one the player picks; 'random' a random
-   * one; 'all' every totem he has. The only way a totem acts: there is no free command.
+   * one; 'all' every totem he has. `one` (with a kind): one totem of that kind, not every one (DECISIONS #422). The only way a totem
+   * acts: there is no free command.
    */
-  | { op: 'totemCommand'; spirit: string; times?: number }
+  | { op: 'totemCommand'; spirit: string; times?: number; one?: boolean }
   // --- the Monk's Martial Forms (DECISIONS #419)
   /** change to this form ('*': the player may choose one, or keep the form they are in); the turn's progress starts again */
   | { op: 'form'; form: Form | '*' };

@@ -362,11 +362,14 @@ export const STRIKING: { tags: string[] } = { tags: [STRIKING_TAG] };
 /** (DECISIONS #420) a totem position more */
 export const totemSlot: Op = { op: 'totemSlot' };
 /** (DECISIONS #421) totems act: every totem of a kind, 'choose' one, a 'random' one, or 'all' of them, `times` times */
-export const commandTotem = (spirit: string, times = 1): Op => ({
+export const commandTotem = (spirit: string, times = 1, one = false): Op => ({
   op: 'totemCommand',
   spirit,
   ...(times > 1 ? { times } : {}),
+  ...(one ? { one } : {}),
 });
+/** one totem of a kind acts ("Command a Hawk"), not every one (DECISIONS #422) */
+export const commandOne = (spirit: string): Op => commandTotem(spirit, 1, true);
 /** the Shaman's element tags (a spell's `tags`) */
 export const FLAME: { tags: string[] } = { tags: ['flame'] };
 export const FROST: { tags: string[] } = { tags: ['frost'] };

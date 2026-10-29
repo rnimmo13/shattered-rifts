@@ -438,28 +438,28 @@ Starter: Strike, Strike, Defend, Spirit Call, Ember Bolt, Ember Bolt, Frost Ward
 | Ember Bolt | 1 | attack | basic | Flame. Deal 7 damage. |
 | Frost Ward | 1 | skill | basic | Frost. Gain 5 Barrier. Apply 1 Faltering to a random enemy. |
 | Gathering Storm | 1 | attack | basic | Storm. Deal 3 damage to ALL enemies. Every copy of this card gains 2 damage for the rest of the fight. |
-| Spirit Call | 1 | skill | basic | Command a totem of your choice. Gain 2 Barrier. |
+| Spirit Call | 1 | skill | basic | Command a totem of your choice. |
 | Searing Lash | 1 | attack | common | Flame. Deal 7 damage. Apply 2 Burn. |
 | Kindle | 0 | attack | common | Flame. Deal 4 damage. If you have a Hawk: Deal 2 damage. |
 | Firebrand | 1 | attack | common | Flame. Deal 7 damage. If the target is Burning: Deal 4 damage. |
-| Twin Cinders | 1 | attack | common | Flame. Deal 5 damage 2 times. |
+| Twin Cinders | 1 | attack | common | Flame. Deal 4 damage 2 times. |
 | Flame Spear | 2 | attack | common | Flame. Deal 17 damage. |
 | Flame Shield | 1 | skill | common | Flame. Gain 5 Barrier. Gain 3 Thorns until the enemy turn is over. |
 | Frost Needle | 0 | attack | common | Frost. Deal 4 damage. If the enemy means to attack: Apply 1 Faltering. |
 | Rime Shield | 1 | skill | common | Frost. Gain 7 Barrier. If you have a Bear: Gain 2 Barrier. |
 | Chill Touch | 1 | attack | common | Frost. Deal 6 damage. Apply 1 Faltering. |
 | Hoarfrost | 1 | skill | common | Frost. Gain 5 Barrier. Apply 1 Faltering to ALL enemies. |
-| Chain Lightning | 1 | attack | common | Storm. Deal 4 damage to a random enemy 3 times. |
+| Chain Lightning | 1 | attack | common | Storm. Deal 3 damage to a random enemy 3 times. |
 | Static Crackle | 0 | attack | common | Storm. Deal 4 damage to ALL enemies. |
 | Gale Call | 1 | attack | common | Storm. Deal 5 damage to ALL enemies. Draw 1 card. |
 | Wind Wall | 1 | skill | common | Storm. Gain 5 Barrier. Apply 2 Sapped to ALL enemies until the end of their next turn. |
-| Hawk's Dive | 1 | skill | common | Command your Hawks. Gain 3 Barrier. |
-| Bear's Guard | 1 | skill | common | Command your Bears. Gain 3 Barrier. |
-| Thunderbird's Cry | 1 | skill | common | Command your Thunderbirds. Deal 3 damage to ALL enemies. Draw 1 card. |
-| Hawk Call | 1 | skill | common | Plant a Hawk. Command your Hawks. Gain 2 Barrier. |
+| Hawk's Dive | 1 | skill | common | Command a Hawk. Gain 3 Barrier. |
+| Bear's Guard | 1 | skill | common | Command a Bear. |
+| Thunderbird's Cry | 1 | skill | common | Command a Thunderbird. Draw 1 card. |
+| Hawk Call | 1 | skill | common | Plant a Hawk. Command a Hawk. |
 | Bear Call | 1 | skill | common | Plant a Bear. Gain 7 Barrier. |
 | Thunderbird Call | 1 | skill | common | Plant a Thunderbird. Deal 4 damage to ALL enemies. Gain 3 Barrier. |
-| Call Again | 0 | skill | common | Command a random totem. |
+| Call Again | 0 | skill | common | Command a random totem. Consume. |
 | Stone Skin | 1 | skill | common | Gain 9 Barrier. |
 | Tidecaller | 1 | skill | common | Gain 7 Barrier. Next turn, gain 1 extra Mana. |
 | Spirit Memory | 1 | skill | common | Gain 6 Barrier. Return a random card from your discard pile to your hand. |
@@ -474,21 +474,21 @@ Starter: Strike, Strike, Defend, Spirit Call, Ember Bolt, Ember Bolt, Frost Ward
 | Ice Wall | 2 | skill | uncommon | Frost. Gain 16 Barrier. |
 | Glacier Guard | 1 | skill | uncommon | Frost. Gain 6 Barrier. Next turn, gain 4 Barrier. |
 | Frozen Grasp | 1 | skill | uncommon | Frost. Apply 2 Faltering. Gain 4 Barrier. |
-| Ice Shatter | 1 | attack | uncommon | Frost. Deal 7 damage. If the target is Faltering: Deal 6 damage. |
+| Ice Shatter | 1 | attack | uncommon | Frost. Deal 6 (+3 per Faltering on the target) damage. |
 | Ice Mirror | 1 | skill | uncommon | Frost. Gain 6 Barrier. Until your next turn, attack damage your Barrier soaks is dealt back to the attacker. |
 | Hail Rite | 1 | aura | uncommon | At the end of your turn: If you have a Bear: Gain 4 Barrier. |
 | Thunderclap | 2 | attack | uncommon | Storm. Deal 15 damage to ALL enemies. |
-| Squall | 1 | attack | uncommon | Storm. Deal 2 damage to a random enemy 6 times. |
+| Squall | 1 | attack | uncommon | Storm. Deal 2 damage to a random enemy 4 times. |
 | Storm Front | 1 | attack | uncommon | Storm. Deal 3 damage 2 times to ALL enemies. Draw 1 card. |
 | Tempest Call | 1 | skill | uncommon | Storm. Gather 2 (Gathering Storm gains 2 damage). Draw 1 card. |
 | Charged Sky | 2 | attack | uncommon | Storm. Deal 10 damage to ALL enemies. Apply 2 Exposed to ALL enemies. |
 | Static Veil | 1 | skill | uncommon | Storm. Gain 6 Barrier. Apply 3 Sapped to ALL enemies until the end of their next turn. |
 | Lightning Rod | 1 | aura | uncommon | Whenever you play a Storm spell: Deal 3 damage to a random enemy. |
 | Raise the Pole | 1 | skill | uncommon | Gain a totem position. Gain 5 Barrier. Draw 1 card. |
-| Rally the Spirits | 1 | skill | uncommon | Command a totem of your choice twice. |
+| Rally the Spirits | 2 | skill | uncommon | Command a totem of your choice twice. Gain 4 Barrier. |
 | Ancestral Exchange | 1 | skill | uncommon | Plant a totem of your choice, in a position you choose. If it replaced a totem of another kind: Gain 1 Spirit. Draw 1 card. Gain 3 Barrier. |
 | Thunder Roost | 1 | aura | uncommon | At the start of your turn: If you have a Thunderbird: Deal 3 damage to ALL enemies. |
-| Prism Spell | 1 | attack | uncommon | Prism (for Trinity and your totems' help, it counts as an element you have not cast this turn). Deal 3 damage. Gain 3 Barrier. Deal 1 damage to ALL enemies. |
+| Prism Spell | 1 | attack | uncommon | Prism (for Trinity and your totems' help, it counts as an element you have not cast this turn). Deal 4 damage. Gain 3 Barrier. |
 | Spirit Surge | 1 | skill | uncommon | Gain 1 Spirit. Gain 5 Barrier. |
 | Communion | 1 | skill | uncommon | Gain 1 Spirit. Draw 1 card. Gain 3 Barrier. |
 | Clear Spring | 1 | skill | uncommon | Draw 3 cards. |
@@ -505,19 +505,19 @@ Starter: Strike, Strike, Defend, Spirit Call, Ember Bolt, Ember Bolt, Frost Ward
 | Winter's Embrace | 2 | skill | rare | Frost. Gain 12 Barrier. Apply 2 Faltering to ALL enemies. |
 | Frostbound | 1 | aura | rare | Whenever you put a debuff on an enemy: Gain 3 Barrier. |
 | Avalanche | 2 | attack | rare | Frost. Deal 14 damage to ALL enemies. Apply 1 Faltering to ALL enemies. |
-| Absolute Zero | 2 | attack | rare | Frost. Deal 10 damage to ALL enemies. Apply 2 Faltering to ALL enemies. |
+| Absolute Zero | 2 | attack | rare | Frost. Deal 10 (+3 per Faltering on each) damage to ALL enemies. Apply 2 Faltering to ALL enemies. |
 | Glacial Fortress | 3 | skill | rare | Frost. Gain 22 Barrier. Apply 2 Faltering to ALL enemies. |
 | Maelstrom | 2 | attack | rare | Storm. Deal 8 damage 2 times to ALL enemies. |
-| Eye of the Tempest | 2 | attack | rare | Storm. Deal 3 damage to a random enemy 7 times. If you have a Thunderbird: Deal 3 damage to a random enemy. |
-| Storm Sovereign | 1 | aura | rare | Whenever you command a totem: Deal 4 damage to ALL enemies. |
+| Eye of the Tempest | 2 | attack | rare | Storm. Deal 3 damage to a random enemy 6 times. If you have a Thunderbird: Deal 3 damage to a random enemy. |
+| Storm Sovereign | 1 | aura | rare | Whenever you command a totem: Deal 3 damage to ALL enemies. |
 | Calm Before the Storm | 1 | aura | rare | At the start of your turn: Apply 3 Sapped to ALL enemies until the end of their next turn. |
 | Superstorm | 3 | attack | rare | Storm. Deal 6 damage 4 times to ALL enemies. |
 | Carve the Spirit Pole | 1 | skill | rare | Gain a totem position. Plant a totem of your choice. Draw 2 cards. |
 | Bark Carapace | 1 | aura | rare | At the start of your turn: Gain 1 (+1 per totem you have) Barrier. |
 | Call the Elder Tree | 1 | skill | rare | Plant an Elder Tree. |
 | Call the Moon Owl | 1 | skill | rare | Plant a Moon Owl. Draw 1 card. |
-| Spirit Chorus | 1 | aura | rare | At the start of your turn: Command a random totem. |
-| Great Spirit's Call | 2 | skill | rare | Command every totem you have. Gain 5 Barrier. |
+| Spirit Chorus | 2 | aura | rare | At the start of your turn: Command a random totem. Gain 2 Barrier. |
+| Great Spirit's Call | 3 | skill | rare | Command every totem you have. Gain 5 Barrier. |
 | Spiritstorm | 1 | attack | rare | Deal 6 (+1 per Spirit) damage to ALL enemies. |
 | Harmony | 1 | aura | rare | Whenever Trinity triggers: Gain 6 Barrier. Draw 1 card. |
 | Spirit Walk | 1 | skill | rare | Gain 2 Spirit. Draw 2 cards. Consume. |

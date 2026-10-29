@@ -17,6 +17,7 @@ import {
   type Unit,
 } from '@sr/combat';
 import { COMBAT_DB as db, RIFTWALKERS, pathSizes } from './index';
+import type { CombatDb } from '@sr/combat';
 
 /** a fight on his turn with the given hand, his three starting totems planted, and one enemy (or the ones named) at 200 HP */
 function fight(hand: string[], enemies: string[] = ['squire']): CombatState {
@@ -80,10 +81,10 @@ describe('the Shaman: elements, totems and Trinity', () => {
     expect(foe(s, 0).hp + foe(s, 1).hp).toBe(400 - 6);
     let t = fight(['bears-guard']);
     t = play(t, 'bears-guard');
-    expect(hero(t).barrier).toBe(5 + 3);
+    expect(hero(t).barrier).toBe(5);
     let u = fight(['thunderbirds-cry'], ['squire', 'squire']);
     u = play(u, 'thunderbirds-cry');
-    expect([foe(u, 0).hp, foe(u, 1).hp]).toEqual([200 - 3 - 3, 200 - 3 - 3]);
+    expect([foe(u, 0).hp, foe(u, 1).hp]).toEqual([200 - 3, 200 - 3]);
   });
 
   it('there is no free command: nothing acts unless a card says so; Spirit Call asks which, Rally commands twice', () => {
@@ -101,7 +102,7 @@ describe('the Shaman: elements, totems and Trinity', () => {
       'thunderbird',
     ]);
     t = applyAction(db, t, { type: 'pick', cards: ['t1'] }).state;
-    expect(hero(t).barrier).toBe(2 + 5);
+    expect(hero(t).barrier).toBe(5);
     t = play(t, 'rally-the-spirits');
     t = applyAction(db, t, { type: 'pick', cards: ['t0'] }).state;
     expect(foe(t).hp).toBe(200 - 12);
@@ -162,7 +163,7 @@ describe('the Shaman: elements, totems and Trinity', () => {
     s = play(s, 'spirit-walk');
     expect(hero(s).statuses.spirit).toBe(14);
     s = play(s, 'bears-guard');
-    expect(hero(s).barrier).toBe(5 + 14 + 3);
+    expect(hero(s).barrier).toBe(5 + 14);
   });
 
   it('the Elder Tree gives 2 Spirit when planted; a full row asks which to replace; rare totems are never a free choice', () => {
@@ -251,5 +252,113 @@ describe('the Shaman: elements, totems and Trinity', () => {
   it('every Shaman card has text', () => {
     for (const c of Object.values(db.cards).filter((x) => x.hero === 'shaman' && !x.source))
       expect(cardText(db, c).length, c.id).toBeGreaterThan(5);
+  });
+});
+
+describe('the Shaman balance pass (DECISIONS #422)', () => {
+  /** play every copy of a card in hand, again and again while it can be played; returns how many times it was played */
+  const playAll = (
+    d: CombatDb,
+    s0: CombatState,
+    id: string,
+    cap: number,
+  ): { s: CombatState; n: number } => {
+    let s = s0;
+    let n = 0;
+    for (; n < cap; n++) {
+      const inst = s.sides.a.hand.find((c) => c.card === id);
+      const act = inst && legalActions(d, s).find((a) => a.type === 'play' && a.card === inst.id);
+      if (!act) break;
+      s = applyAction(d, s, act).state;
+    }
+    return { s, n };
+  };
+  const elderLoop = (): CombatState => {
+    const s = fight(['call-again', 'call-again']);
+    s.sides.a.totems = ['elder', 'elder', 'elder'];
+    s.sides.a.mana = 0;
+    s.sides.a.draw = [];
+    s.sides.a.discard = [];
+    return s;
+  };
+
+  it('the Call Again / Elder Tree loop: without Consume it never ends; Call Again Consumes, so it stops', () => {
+    // (the card as it was: no Consume) every Elder command draws the Call Again just played back from the reshuffled discard
+    const loose: CombatDb = {
+      ...db,
+      cards: { ...db.cards, 'call-again': { ...db.cards['call-again']!, exhaust: false } },
+    };
+    expect(playAll(loose, elderLoop(), 'call-again', 40).n).toBe(40);
+    const { s, n } = playAll(db, elderLoop(), 'call-again', 40);
+    expect(n).toBe(2);
+    expect(s.sides.a.exhausted.map((c) => c.card)).toEqual(['call-again', 'call-again']);
+    expect(hero(s).statuses.spirit).toBe(2);
+    expect(db.cards['call-again+']?.exhaust).toBe(true);
+  });
+
+  it('the help goes to every hit and number of a spell, never to an "If" bonus', () => {
+    // Kindle with a Hawk: 4 + 3 help, + 2 (If you have a Hawk: no help)
+    let s = fight(['kindle']);
+    s = play(s, 'kindle', foe(s).id);
+    expect(foe(s).hp).toBe(200 - 9);
+    // Rime Shield with a Bear: 7 + 3 help, + 2 (If you have a Bear)
+    let t = fight(['rime-shield']);
+    t = play(t, 'rime-shield');
+    expect(hero(t).barrier).toBe(12);
+    // Squall on one enemy with a Thunderbird: (2 + 2) x4
+    let u = fight(['squall']);
+    u = play(u, 'squall');
+    expect(foe(u).hp).toBe(200 - 16);
+    // Twin Cinders: (4 + 3) x2
+    let w = fight(['twin-cinders']);
+    w = play(w, 'twin-cinders', foe(w).id);
+    expect(foe(w).hp).toBe(200 - 14);
+  });
+
+  it('a utility spell with no damage or Barrier leaves the help for the next spell, and still counts for Trinity', () => {
+    let s = fight(['phoenix-feather', 'ember-bolt']);
+    s = play(s, 'phoenix-feather');
+    expect(s.sides.a.elementsTurn).toEqual(['flame']);
+    expect(s.sides.a.boostsUsed ?? []).not.toContain('flame');
+    s = play(s, 'ember-bolt', foe(s).id);
+    // 7 + 3 help, played twice by Phoenix Feather's Reverb (the echo gets no help)
+    expect(foe(s).hp).toBe(200 - 10 - 7);
+    let t = fight(['tempest-call', 'gathering-storm']);
+    t = play(t, 'tempest-call');
+    expect(t.sides.a.elementsTurn).toEqual(['storm']);
+    t = play(t, 'gathering-storm');
+    // 3 + 2 grown by Tempest Call + 2 help
+    expect(foe(t).hp).toBe(200 - 7);
+  });
+
+  it('a named command moves one totem of the kind; "every totem" moves them all and answers Storm Sovereign once each', () => {
+    let s = fight(['hawks-dive']);
+    s.sides.a.totems = ['hawk', 'hawk', 'hawk'];
+    hero(s).statuses.spirit = 4;
+    s = play(s, 'hawks-dive');
+    expect(foe(s).hp).toBe(200 - 10);
+    let t = fight(['storm-sovereign', 'great-spirits-call']);
+    t.sides.a.totems = ['hawk', 'hawk', 'hawk'];
+    t = play(t, 'storm-sovereign');
+    t = play(t, 'great-spirits-call');
+    // three dives of 6, and Storm Sovereign's 3 for each of the three commands
+    expect(foe(t).hp).toBe(200 - 18 - 9);
+    let u = fight(['rally-the-spirits']);
+    u = play(u, 'rally-the-spirits');
+    u = applyAction(db, u, { type: 'pick', cards: ['t0'] }).state;
+    expect(foe(u).hp).toBe(200 - 12);
+  });
+
+  it('Frost finishes: Ice Shatter and Absolute Zero hit harder for each Faltering already on the enemy', () => {
+    let s = fight(['frost-shatter', 'absolute-zero'], ['squire', 'squire']);
+    s.sides.a.totems = ['hawk', null, 'thunderbird'];
+    foe(s, 0).statuses.faltering = 2;
+    s = play(s, 'frost-shatter', foe(s, 0).id);
+    expect(foe(s, 0).hp).toBe(200 - 12);
+    s = play(s, 'absolute-zero');
+    // 10 + 3 a Faltering: the first squire has 2, the second none; then 2 Faltering on each
+    expect(foe(s, 0).hp).toBe(200 - 12 - 16);
+    expect(foe(s, 1).hp).toBe(200 - 10);
+    expect(foe(s, 1).statuses.faltering).toBe(2);
   });
 });

@@ -447,7 +447,8 @@ to every command, +1 per 2 to every totem's help.
 |---|---|---|
 | An element tag | **0** | the totems' help on the first spell of each element is the trait's. |
 | **Spirit** gained | **5** a point | permanent and uncapped: about 1.3 commands a turn and three helped spells over the rest of a fight, as much as a point of Might for the fight (§5). An exception to "no uncapped permanent scaling", by Robert's decision; the long boss fight is the check. |
-| A command (a card's effect) | **~5-6** | the Hawk's 6 at random (x0.9), the Bear's 5 Barrier (6) or the Thunderbird's 3 to all (3.9), ~6 for one of your choice, ~5.3 for a random one, plus the Spirit he has. |
+| A command (a card's effect) | over a fight: **a Hawk ~7.7, a Bear ~9.1, a Thunderbird ~7.3, one of your choice ~8.2, a random one ~7.6, every totem ~29** | weighed 40% early (one totem of the kind, 0 Spirit), 40% mid (two of it, 3 Spirit), 20% late (3-4, 7 Spirit), since Spirit only grows and duplicates are built on purpose (#422). A free command must Consume: the Elder Tree's command draws a card. |
+| The help on a multi-hit or mixed spell | the first number is the trait's; **each further hit or number: the help x0.6** | the chance the spell is the first of its element that turn. The help never adds to an "If" bonus, and a spell with no damage or Barrier of its own does not use it up (#422). |
 | Plant a totem | **~1.5** | he starts with three, so a plant is usually a replacement: worth the change of help and command, not a new choice. |
 | A totem position | **~2** | empty until he plants into it. |
 | Thorns until the enemy turn ends | **1.5** a stack | ~1.5 enemy hits (§3). |
@@ -455,7 +456,7 @@ to every command, +1 per 2 to every totem's help.
 | Faltering on every enemy / on a random one | **3.9 / 2.7** | |
 | "Whenever you cast a Flame / Storm spell" | **~1.2 a turn** | in a deck built for that element. |
 | "Whenever Trinity triggers" | **~55%** of turns | in a deck built for all three. |
-| "Whenever you command a totem" | **~1 a turn** | in a deck built for command cards. |
+| "Whenever you command a totem" | **~1.2 a turn** | each totem a card commands answers once; "every totem" answers once a totem. |
 
 The trait, **Spirit and Trinity** (the three totems and their help, Trinity's Spirit; no free command since #421): ~6 a turn from the
 help (about two helped spells: +3, +3.6, +2.6) and a Spirit every other turn with the starter, ~2 a turn: **~30 over four turns**,

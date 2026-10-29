@@ -1637,7 +1637,9 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
       if (o.spirit === 'random') return `Command a random totem${twice}.`;
       if (o.spirit === 'choose') return `Command a totem of your choice${twice}.`;
       const nm = db.totems?.[o.spirit]?.name ?? o.spirit;
-      return `Command your ${nm}s${twice}.`;
+      return o.one
+        ? `Command ${article(nm)} ${nm}${twice}.`
+        : `Command every ${nm} you have${twice}.`;
     }
     // (the Monk's forms)
     case 'form':

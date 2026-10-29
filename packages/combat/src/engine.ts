@@ -839,7 +839,14 @@ function runCommand(r: Run, sd: SideState, hero: Unit, totem: number, kind: stri
  * A card commands totems (DECISIONS #421): every totem of a kind, one the player picks ('choose'), a random one, or all of them,
  * `times` times. Each spirit acts by itself (a random enemy, him, every enemy): not a card and not an attack.
  */
-function commandTotems(r: Run, a: Act, sd: SideState, spirit: string, times: number): void {
+function commandTotems(
+  r: Run,
+  a: Act,
+  sd: SideState,
+  spirit: string,
+  times: number,
+  one = false,
+): void {
   const hero = heroOf(sd);
   const list = sd.totems;
   if (!hero || !list) return;
@@ -871,7 +878,7 @@ function commandTotems(r: Run, a: Act, sd: SideState, spirit: string, times: num
         ? planted
         : spirit === 'random'
           ? [planted[nextInt(r.s.rng, planted.length)] as number]
-          : planted.filter((i) => list[i] === spirit);
+          : planted.filter((i) => list[i] === spirit).slice(0, one ? 1 : undefined);
     for (const i of at) if (!r.s.winner && list[i]) runCommand(r, sd, hero, i, list[i]);
   }
 }
@@ -899,6 +906,8 @@ function spellBoost(r: Run, sd: SideState, cd: CardDef, mark = true): number {
   const hero = heroOf(sd);
   const el = elementOf(cd, sd);
   if (!hero || !el || !sd.totems) return 0;
+  // (only a spell with a damage or Barrier number of its own can use the help: a utility spell leaves it for the next one, #422)
+  if (!cd.effects.some((o) => o.op === 'damage' || o.op === 'barrier')) return 0;
   // (a preview only looks: it marks nothing)
   const used = mark ? (sd.boostsUsed ??= []) : [...(sd.boostsUsed ?? [])];
   const half = Math.floor(stacks(hero, 'spirit') / 2);
@@ -2175,7 +2184,13 @@ function execOp(r: Run, a: Act, op: Op): void {
         (op.atMost !== undefined && v > op.atMost)
       )
         return;
-      runOps(r, a, op.ops);
+      {
+        // (the Shaman's totem help goes to a card's own numbers, never to an 'If ...:' bonus, DECISIONS #422)
+        const plus = a.plus;
+        a.plus = 0;
+        runOps(r, a, op.ops);
+        a.plus = plus;
+      }
       return;
     }
     case 'copyPlayed':
@@ -2577,7 +2592,7 @@ function execOp(r: Run, a: Act, op: Op): void {
       return;
     }
     case 'totemCommand':
-      commandTotems(r, a, side, op.spirit, Math.max(1, op.times ?? 1));
+      commandTotems(r, a, side, op.spirit, Math.max(1, op.times ?? 1), op.one === true);
       return;
     case 'uproot': {
       const list = side.totems;
