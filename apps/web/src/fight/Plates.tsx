@@ -1,7 +1,7 @@
 // The DOM layer over the fighters: HP bars with Barrier, status chips and enemy intents. Pure presentation.
 
 import type { CSSProperties } from 'react';
-import { forgeLabel, type StatusId, type UnitView } from '@sr/combat';
+import { KNIFE_MAX, PREP_MAX, forgeLabel, type StatusId, type UnitView } from '@sr/combat';
 import { RIFTWALKERS, type HeroId } from '@sr/content/v2';
 import { HeroIcon } from '../ui/HeroIcon';
 import { tipAttrs } from '../ui/tip';
@@ -227,7 +227,7 @@ export function UnitPlates({ items, targetable, hover, preview, heroId, sharp }:
                         {id === 'opening'
                           ? 'Open'
                           : id === 'prep' || id === 'knives'
-                            ? `${n}/3`
+                            ? `${n}/${id === 'prep' ? PREP_MAX : KNIFE_MAX}`
                             : n}
                       </b>
                     </span>

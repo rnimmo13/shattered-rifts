@@ -4,6 +4,7 @@
 import { useState } from 'react';
 import type { CombatDb, PendingView } from '@sr/combat';
 import { FightCard } from './FightCard';
+import { ENCHANT_LOOK } from './EnchantSlots';
 
 const TITLE: Record<PendingView['kind'], string> = {
   discard: 'Discard',
@@ -12,9 +13,17 @@ const TITLE: Record<PendingView['kind'], string> = {
   copy: 'Copy',
   topdeck: 'Put back',
   transform: 'Transform',
+  // (the Spellblade's choices, DECISIONS #417)
+  enchant: 'Replace',
+  discharge: 'Discharge',
+  recast: 'Recast',
 };
 
 function prompt(p: PendingView): string {
+  if (p.kind === 'enchant')
+    return `Your blade is full: choose the enchantment ${p.incoming ? ENCHANT_LOOK[p.incoming].name : 'the new one'} replaces.`;
+  if (p.kind === 'discharge') return 'Choose the enchantment to discharge.';
+  if (p.kind === 'recast') return 'Choose what your newest enchantment becomes.';
   const many = p.max > 1 ? `${p.max} cards` : 'a card';
   if (p.kind === 'scry') return 'Choose a card to draw. The rest are discarded.';
   if (p.kind === 'copy') return 'Choose a card: copies of it come to your hand next turn.';
@@ -62,6 +71,26 @@ export function PickModal(props: {
           </button>
         </header>
         <div className="fight__grid">
+          {/* (enchantments to choose among, not cards: DECISIONS #417) */}
+          {p.charges?.map((c) => {
+            const on = chosen.includes(c.id);
+            const look = ENCHANT_LOOK[c.kind];
+            return (
+              <button
+                key={c.id}
+                className={`pick pick--charge${on ? ' is-on' : ''}`}
+                aria-pressed={on}
+                aria-label={`${look.name}: ${look.text}`}
+                onClick={() => toggle(c.id)}
+              >
+                <span className={`enchant enchant--${c.kind}`}>
+                  <b aria-hidden="true">{look.glyph}</b>
+                  <small>{look.name}</small>
+                </span>
+                <p className="pick__note">{look.text}</p>
+              </button>
+            );
+          })}
           {p.pool.map((c) => {
             const def = props.db.cards[c.card];
             if (!def) return null;

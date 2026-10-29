@@ -63,11 +63,12 @@ const HEADS: Record<HeroId, [RegExp, number | null][]> = {
     [/radiant/i, 2],
     [/basics/i, null],
   ],
+  // (the identity rework, DECISIONS #417)
   spellblade: [
-    [/blade/i, 0],
-    [/arcana/i, 1],
-    [/court/i, 2],
-    [/basics/i, null],
+    [/edge/i, 0],
+    [/burst/i, 1],
+    [/ward/i, 2],
+    [/basics|glue/i, null],
   ],
   // (Dorian is the Necrobinder's card list: a first sort only, as build paths are hidden for now, DECISIONS #365)
   necromancer: [

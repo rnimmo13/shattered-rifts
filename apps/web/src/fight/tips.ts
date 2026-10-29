@@ -85,6 +85,13 @@ export const TIP_RULES: TipRule[] = [
     when: (v) => v.sides.b.units.some((u) => !!u.statuses.knives) || !!hero(v)?.statuses.prep,
   },
   {
+    // (the Spellblade's, DECISIONS #417)
+    id: 'enchants',
+    title: 'Enchantments',
+    text: 'Your Obsidian Blade holds two enchantments (the panel by your hero). Spells Imbue them; blade attacks Discharge them: Ember adds 3 to the first hit, Glass breaks for 2 on every enemy after the attack, Ward gives 3 Barrier. Spend one now, or keep it for a bigger attack.',
+    when: (v) => !!v.sides.a.enchants,
+  },
+  {
     id: 'doom',
     title: 'Fate',
     text: 'Cursing a unit with Fate does nothing until the end of its turn: then, if its HP is at or below its Fate, it dies. Stack it, double it, or hit it to bring the HP down to meet it.',

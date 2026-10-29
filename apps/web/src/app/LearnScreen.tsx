@@ -28,6 +28,8 @@ const SIGNATURE_WORDS = [
   'forge',
   'knives',
   'prep',
+  'imbue',
+  'discharge',
   'riposte',
   'guard',
   'buckshot-shell',

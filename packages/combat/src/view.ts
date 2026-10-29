@@ -11,6 +11,7 @@ import {
   type CombatDb,
   type CombatEvent,
   type CombatState,
+  type Enchant,
   type Metric,
   type Op,
   type Pending,
@@ -81,6 +82,8 @@ export interface SideView {
   costTax?: number;
   /** (the Trickster's Suits) the suits showing this turn; missing for a hero without Suits */
   suitsTurn?: Suit[];
+  /** (the Spellblade) the enchantments on her blade, oldest first; missing for a side that never had one */
+  enchants?: Enchant[];
   runes: RuneState[];
   runeSlots: number;
   powers: { id: string; card: string; when: PowerState['when'] }[];
@@ -94,6 +97,10 @@ export interface PendingView {
   pool: CardInst[];
   min: number;
   max: number;
+  /** (the Spellblade's choices) the enchantments to choose among, instead of cards: the id to send back, and its kind */
+  charges?: { id: string; kind: Enchant }[];
+  /** 'enchant': the enchantment that is coming in */
+  incoming?: Enchant;
 }
 
 export interface CombatView {
@@ -198,6 +205,22 @@ function pendingView(s: CombatState, me: Side): PendingView | null {
   const p = s.pending;
   if (!p || s.active !== me) return null;
   const sd = s.sides[me];
+  // (the Spellblade's: positions on her blade, or kinds, not cards)
+  if (p.kind === 'enchant' || p.kind === 'discharge' || p.kind === 'recast') {
+    const list = sd.enchants ?? [];
+    const charges = p.pool.flatMap((id) => {
+      const kind = p.kind === 'recast' ? (id as Enchant) : list[Number(id.replace(/^e/, ''))];
+      return kind ? [{ id, kind }] : [];
+    });
+    return {
+      kind: p.kind,
+      pool: [],
+      min: p.min,
+      max: p.max,
+      charges,
+      ...(p.charge ? { incoming: p.charge } : {}),
+    };
+  }
   const pile = p.kind === 'scry' || p.from === 'draw' ? sd.draw : sd.hand;
   const pool: CardInst[] = [];
   for (const id of p.pool) {
@@ -245,6 +268,7 @@ export function viewFor(db: CombatDb, s: CombatState, me: Side): CombatView {
       deaths: sd.deaths ?? 0,
       costTax: sd.costTax ?? 0,
       ...(sd.suitsTurn ? { suitsTurn: [...sd.suitsTurn] } : {}),
+      ...(sd.enchants ? { enchants: [...sd.enchants] } : {}),
       runes: clone(sd.runes),
       runeSlots: sd.runeSlots,
       powers: sd.powers
@@ -354,6 +378,8 @@ const STATUS_NAME: Record<string, string> = {
   // (the Assassin's)
   prep: 'Preparation',
   knives: 'Knives',
+  // (the Spellblade's)
+  twinedge: 'Twin Edge',
 };
 const sname = (s: string): string => STATUS_NAME[s] ?? cap(s);
 /** a card kind by its player-facing name, for effects that pick cards by kind */
@@ -536,6 +562,14 @@ const METRIC_WORDS: Record<Metric, { per: string; equal: string }> = {
   prep: { per: 'Preparation', equal: 'your Preparation' },
   extracted: { per: 'knife pulled', equal: 'the knives pulled' },
   prepSpent: { per: 'Preparation spent', equal: 'the Preparation spent' },
+  // (the Spellblade)
+  enchants: { per: 'enchantment on your blade', equal: 'the enchantments on your blade' },
+  enchantKinds: {
+    per: 'kind of enchantment on your blade',
+    equal: 'the kinds of enchantment on your blade',
+  },
+  wards: { per: 'Ward on your blade', equal: 'the Wards on your blade' },
+  discharged: { per: 'enchantment discharged', equal: 'the enchantments discharged' },
 };
 const UNIT_METRICS: readonly Metric[] = [
   'barrier',
@@ -678,6 +712,10 @@ const WHEN_TEXT: Record<string, string> = {
   embed: 'Whenever you embed a knife',
   extract: 'Whenever you pull a knife',
   spend: 'Whenever you spend a resource',
+  // (the Spellblade)
+  imbue: 'Whenever you Imbue',
+  discharge: 'Whenever you Discharge',
+  dischargeMixed: 'Whenever you Discharge two different enchantments at once',
 };
 
 const ORDINAL = ['zeroth', 'first', 'second', 'third', 'fourth', 'fifth', 'sixth'];
@@ -734,6 +772,7 @@ function whenText(o: Extract<Op, { op: 'when' }>, db?: CombatDb): string {
     return lo === 1 ? 'the target has a knife in it' : `the target has ${lo} knives in it`;
   if (o.by === 'prep' && lo !== undefined && hi === undefined && !o.of)
     return `you have ${lo} or more Preparation`;
+  if (o.by === 'prep' && hi === 0 && lo === undefined && !o.of) return 'you have no Preparation';
   if (o.by === 'extracted' && (lo ?? 0) >= 1 && hi === undefined) return 'you pulled a knife';
   const w = METRIC_WORDS[o.by].equal;
   if (lo !== undefined && hi !== undefined) return `${w} is ${lo === hi ? lo : `${lo}-${hi}`}`;
@@ -1408,12 +1447,18 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
             : who.target.replace(/^ to /, '');
       const what = all
         ? `every knife from ${from}`
-        : `up to ${o.amount === 1 ? 'a knife' : `${o.amount} knives`} from ${from}`;
-      const each = o.ops?.length
-        ? `: for each, ${o.ops
-            .map((x) => opText(db, x, { ...who, target: ' to that enemy' }))
-            .join(' ')
-            .replace(/^./, (c) => c.toLowerCase())}`
+        : o.amount === 1
+          ? `a knife from ${from}`
+          : `up to ${o.amount} knives from ${from}`;
+      // (everything a knife pays reads as one clause: "for each, apply 1 Faltering and gain 4 Barrier")
+      const parts = (o.ops ?? []).map((x) =>
+        opText(db, x, { ...who, target: ' to that enemy' })
+          .replace(/\.$/, '')
+          .replace(/^./, (c) => c.toLowerCase())
+          .replace(/^the target /, 'that enemy '),
+      );
+      const each = parts.length
+        ? `: for each, ${parts.length > 1 ? `${parts.slice(0, -1).join(', ')} and ${parts[parts.length - 1]}` : parts[0]}.`
         : '.';
       return `Pull ${what}${each}`;
     }
@@ -1421,6 +1466,13 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
       return o.amount >= 9
         ? `Spend all your ${sname(o.status)}.`
         : `Spend up to ${o.amount} ${sname(o.status)}.`;
+    // (the Spellblade's enchantments)
+    case 'imbue':
+      return o.ifRoom ? `Imbue ${cap(o.kind)} if your blade has room.` : `Imbue ${cap(o.kind)}.`;
+    case 'discharge':
+      return o.count >= 2 ? 'Discharge both enchantments.' : 'Discharge an enchantment.';
+    case 'recast':
+      return 'Your newest enchantment becomes another kind (your choice).';
   }
 }
 
@@ -1471,7 +1523,17 @@ function liveDamageText(text: string, o: Extract<Op, { op: 'damage' }>, l: LiveD
   const body = l.riposte
     ? text.replace(/ Riposte: \+\d+ damage( each hit)?\./, ' (Riposte counted.)')
     : text;
-  return printed.test(body) ? body.replace(printed, `Deal [[live:${dir}:${num}]] damage`) : body;
+  const done = printed.test(body)
+    ? body.replace(printed, `Deal [[live:${dir}:${num}]] damage`)
+    : body;
+  // (the Spellblade: a discharged Ember adds to the first hit only of an attack that hits more than once)
+  const f = l.first;
+  if (!f) return done;
+  const extra = f.lo === f.hi ? `+${f.hi}` : `+${f.lo}-${f.hi}`;
+  const dot = done.indexOf('.');
+  return dot < 0
+    ? `${done} (${extra} on the first hit)`
+    : `${done.slice(0, dot)} (${extra} on the first hit)${done.slice(dot)}`;
 }
 
 /**

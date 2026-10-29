@@ -54,6 +54,7 @@ import { FightHand, type HandCard } from './FightHand';
 import { GrimoireModal } from './Grimoire';
 import { AimArrow } from './AimArrow';
 import { SuitTrack } from './SuitTrack';
+import { EnchantSlots } from './EnchantSlots';
 import { UnitPlates, type Placed } from './Plates';
 import { ErrorDetails } from '../ui/ErrorDetails';
 import { packLine } from './lineLayout';
@@ -286,11 +287,9 @@ function WhoTag(props: {
   );
 }
 
-/** The weapons Sharpen grows (the gun's is called Precision), shown as a buff on the hero (DECISIONS #399, #400). */
-const SHARPENED = [
-  { card: 'starforged-blade', name: 'The Obsidian Blade' },
-  { card: 'old-twelve-gauge', name: 'The Old Twelve Gauge' },
-] as const;
+/** The weapons Sharpen grows (the gun's is called Precision), shown as a buff on the hero (DECISIONS #399, #400; the Spellblade's
+ * blade is enchanted now, not sharpened: DECISIONS #417). */
+const SHARPENED = [{ card: 'old-twelve-gauge', name: 'The Old Twelve Gauge' }] as const;
 
 /** How sharp a side's weapon is: every copy carries the same bonus, and the running total covers copies all consumed. */
 function sharpOf(
@@ -1443,6 +1442,34 @@ export function FightView(props: {
       </FloatPanel>
     );
   };
+  // (the Spellblade's Obsidian Blade: its two enchantments, as a panel in that side's column, DECISIONS #417)
+  const enchantPanel = (side: Side): ReactNode => {
+    const held = view?.sides[side].enchants;
+    if (!held) return null;
+    const aiming = side === mySide ? (dragCard ?? selectedCard ?? hoverCard) : null;
+    const ops = aiming?.def.effects ?? [];
+    const dis = ops.find((o) => o.op === 'discharge');
+    const imbues = ops.flatMap((o) => (o.op === 'imbue' ? [o.kind] : []));
+    return (
+      <FloatPanel
+        id={side === mySide ? 'enchants-mine' : 'enchants-foe'}
+        className="fight__aux fight__aux--enchants"
+        title={side === mySide ? 'Obsidian Blade' : 'Their Blade'}
+      >
+        <EnchantSlots
+          enchants={held}
+          preview={
+            dis || imbues.length
+              ? {
+                  ...(dis && dis.op === 'discharge' ? { discharge: dis.count } : {}),
+                  ...(imbues.length ? { imbue: imbues } : {}),
+                }
+              : null
+          }
+        />
+      </FloatPanel>
+    );
+  };
   const showRunes = usesRunes || (me?.runes.length ?? 0) > 0;
   const tip =
     view && tipsOn && !result && !view.pending
@@ -1912,6 +1939,7 @@ export function FightView(props: {
                 <BoonPanel panel="boons-mine" title="Your Boons" boons={mine.boons ?? []} />
               )}
               {suitsPanel(mySide)}
+              {enchantPanel(mySide)}
               {me && <AuraList db={db} me={me} panel="auras-mine" title="Your Auras" />}
             </div>
           )}
@@ -1950,6 +1978,7 @@ export function FightView(props: {
                 <BoonPanel panel="boons-foe" title="Their Boons" boons={foeBoons} />
               )}
               {suitsPanel(foeSide)}
+              {enchantPanel(foeSide)}
               {them && (
                 <AuraList
                   db={db}

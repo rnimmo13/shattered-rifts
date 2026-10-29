@@ -233,6 +233,13 @@ export function validateDb(db: CombatDb): string[] {
     ];
     for (const by of [c.freeIf?.by, c.cheaperPer?.by])
       if (by && !COUNTERS.includes(by)) errs.push(`${id}: a cost cannot read "${by}"`);
+    // (the Spellblade's: a discharge feeds the card's attack, so it comes before the damage it adds to)
+    {
+      const d = c.effects.findIndex((o) => o.op === 'discharge');
+      const hit = c.effects.findIndex((o) => o.op === 'damage');
+      if (d >= 0 && hit >= 0 && d > hit)
+        errs.push(`${id}: a discharge must come before the card's damage`);
+    }
     if (c.target === 'foe' && !usesTarget(c.effects))
       errs.push(`${id}: asks for a target but no effect uses it`);
   }

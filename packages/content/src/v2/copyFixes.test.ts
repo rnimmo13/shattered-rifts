@@ -47,30 +47,51 @@ const playAct = (s: CombatState, id: string) => {
 };
 const thralls = (s: CombatState) => s.sides.a.units.filter((u) => u.kind === 'ally');
 
-describe('Fated Hand (Foregone Conclusion)', () => {
-  const draw = [
-    'strike',
-    'defend',
-    'strike',
-    'defend',
-    'strike',
-    'defend',
-    'gather-arcana',
-    'cinderfall',
-  ];
+describe('Fated Hand (Foregone Conclusion): a test card now, the engine piece stays (it went with the Regent copy, DECISIONS #417)', () => {
+  const tdb = {
+    ...db,
+    cards: {
+      ...db.cards,
+      'fated-hand': {
+        id: 'fated-hand',
+        name: 'Fated Hand',
+        kind: 'skill' as const,
+        cost: 1,
+        target: 'none' as const,
+        upgrade: 'fated-hand+',
+        effects: [
+          { op: 'topdeck' as const, amount: 2, from: 'draw' as const },
+          { op: 'drawNext' as const, amount: 2 },
+        ],
+      },
+      'fated-hand+': {
+        id: 'fated-hand+',
+        name: 'Fated Hand+',
+        kind: 'skill' as const,
+        cost: 1,
+        target: 'none' as const,
+        effects: [
+          { op: 'topdeck' as const, amount: 3, from: 'draw' as const },
+          { op: 'drawNext' as const, amount: 3 },
+        ],
+      },
+    },
+  };
+  const playFated = (s: CombatState) =>
+    applyAction(tdb, s, {
+      type: 'play',
+      card: s.sides.a.hand.find((c) => c.card === 'fated-hand')!.id,
+    });
+  const draw = ['strike', 'defend', 'strike', 'defend', 'strike', 'defend', 'strike', 'defend'];
 
   it('chooses 2 cards anywhere in the draw pile, puts them on top, and they are in next turn’s hand with 2 extra', () => {
-    let s = applyAction(
-      db,
-      fight('spellblade', ['fated-hand'], draw),
-      playAct(fight('spellblade', ['fated-hand'], draw), 'fated-hand'),
-    ).state;
+    let s = playFated(fight('spellblade', ['fated-hand'], draw)).state;
     expect(s.pending?.kind).toBe('topdeck');
     expect(s.pending?.from).toBe('draw');
     expect(s.pending?.pool).toHaveLength(draw.length);
     expect(s.pending?.min).toBe(2);
     // the two deepest cards
-    s = applyAction(db, s, { type: 'pick', cards: ['D6', 'D7'] }).state;
+    s = applyAction(tdb, s, { type: 'pick', cards: ['D6', 'D7'] }).state;
     expect(s.pending).toBeNull();
     expect(
       s.sides.a.draw
@@ -81,42 +102,34 @@ describe('Fated Hand (Foregone Conclusion)', () => {
     expect(s.sides.a.draw).toHaveLength(draw.length);
     expect(s.sides.a.nextDraw).toBe(2);
     // the enemy's turn, then ours: both chosen cards are in the hand
-    s = applyAction(db, s, { type: 'endTurn' }).state;
+    s = applyAction(tdb, s, { type: 'endTurn' }).state;
     for (let i = 0; i < 10 && s.active !== 'a'; i++)
-      s = applyAction(db, s, chooseAction(db, s)).state;
+      s = applyAction(tdb, s, chooseAction(tdb, s)).state;
     const ids = s.sides.a.hand.map((c) => c.id);
     expect(ids).toContain('D6');
     expect(ids).toContain('D7');
   });
 
   it('the choice is shown sorted, not in draw order', () => {
-    const s = applyAction(
-      db,
-      fight('spellblade', ['fated-hand'], draw),
-      playAct(fight('spellblade', ['fated-hand'], draw), 'fated-hand'),
-    ).state;
+    const s = playFated(fight('spellblade', ['fated-hand'], draw)).state;
     const cards = (s.pending?.pool ?? []).map(
       (id) => s.sides.a.draw.find((c) => c.id === id)!.card,
     );
     expect(cards).toEqual([...cards].sort());
     // the player's view resolves the choice from the draw pile (the pick dialog shows these)
-    const v = viewFor(db, s, 'a').pending;
+    const v = viewFor(tdb, s, 'a').pending;
     expect(v?.from).toBe('draw');
     expect(v?.pool.map((c) => c.id)).toEqual(s.pending?.pool);
   });
 
   it('asks nothing when the draw pile has 2 cards or fewer; the upgrade chooses 3 and draws 3', () => {
-    const s = applyAction(
-      db,
-      fight('spellblade', ['fated-hand'], ['strike', 'defend']),
-      playAct(fight('spellblade', ['fated-hand'], ['strike', 'defend']), 'fated-hand'),
-    ).state;
+    const s = playFated(fight('spellblade', ['fated-hand'], ['strike', 'defend'])).state;
     expect(s.pending).toBeNull();
     expect(s.sides.a.nextDraw).toBe(2);
-    expect(cardText(db, db.cards['fated-hand']!)).toBe(
+    expect(cardText(tdb, tdb.cards['fated-hand'])).toBe(
       'Choose 2 cards in your draw pile and put them on top. Next turn, draw 2 extra cards.',
     );
-    expect(cardText(db, db.cards['fated-hand+']!)).toContain('Choose 3 cards');
+    expect(cardText(tdb, tdb.cards['fated-hand+'])).toContain('Choose 3 cards');
   });
 });
 

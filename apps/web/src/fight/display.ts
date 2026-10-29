@@ -81,8 +81,15 @@ function moveCard(
   else sd[to].push(inst);
 }
 
+/**
+ * The card each side is playing right now: the screen puts it in the discard pile as it is played, but the engine only does once it is
+ * done, so a reshuffle in the middle of it (its own draw) must leave it out. Cleared when another card, a potion or a turn change comes.
+ */
+const IN_PLAY = new WeakMap<CombatState, Partial<Record<Side, string>>>();
+
 /** Advance `s` (a clone owned by the screen) by one engine event. */
 export function reduceEvent(db: CombatDb, s: CombatState, e: CombatEvent): void {
+  if (e.type === 'turnStart' || e.type === 'turnEnd' || e.type === 'potion') IN_PLAY.delete(s);
   switch (e.type) {
     case 'turnStart':
       s.active = e.side;
@@ -103,8 +110,9 @@ export function reduceEvent(db: CombatDb, s: CombatState, e: CombatEvent): void 
       return;
     case 'shuffle': {
       const sd = s.sides[e.side];
-      sd.draw.push(...sd.discard);
-      sd.discard = [];
+      const playing = IN_PLAY.get(s)?.[e.side];
+      sd.draw.push(...sd.discard.filter((c) => c.id !== playing));
+      sd.discard = sd.discard.filter((c) => c.id === playing);
       return;
     }
     case 'mana':
@@ -147,6 +155,7 @@ export function reduceEvent(db: CombatDb, s: CombatState, e: CombatEvent): void 
       return;
     }
     case 'play': {
+      IN_PLAY.set(s, { ...IN_PLAY.get(s), [e.side]: e.card });
       moveCard(s, e.side, e.card, e.def, 'discard');
       // the engine spends a discount on the play (as it does): a card that comes back costs full price
       const played = s.sides[e.side].discard.find((c) => c.id === e.card);

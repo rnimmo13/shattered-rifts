@@ -395,6 +395,13 @@ export const STATUS_INFO: Record<
     tone: 'good',
     text: 'The Assassin’s setup, at most 3, kept from turn to turn. Finishers spend it for more damage; ordinary attacks leave it.',
   },
+  // (the Spellblade's, DECISIONS #417)
+  twinedge: {
+    name: 'Twin Edge',
+    glyph: '⟁',
+    tone: 'good',
+    text: 'The next enchantment you discharge this turn takes effect twice (it is still spent once).',
+  },
   // (the Knight's Guard, DECISIONS #415)
   opening: {
     name: 'Opening',
@@ -499,7 +506,16 @@ export const KEYWORD_INFO: Record<string, { name: string; text: string }> = {
   },
   forge: {
     name: 'Sharpen',
-    text: 'Every copy of your weapon (the Obsidian Blade or the Old Twelve Gauge) permanently gains damage. If you have none, you get one.',
+    text: 'Every copy of your weapon (the Old Twelve Gauge) permanently gains damage. If you have none, you get one.',
+  },
+  // (the Spellblade's, DECISIONS #417)
+  imbue: {
+    name: 'Imbue',
+    text: 'Put an enchantment on your Obsidian Blade (it holds 2). With both positions taken, you choose which one the new one replaces; that is not a discharge.',
+  },
+  discharge: {
+    name: 'Discharge',
+    text: 'Spend an enchantment for this attack (you choose when the two differ; "both" spends both, once each): Ember adds 3 to the first hit, Glass deals 2 to every enemy after the attack, Ward gives 3 Barrier.',
   },
   // (the Assassin's, DECISIONS #416)
   knives: {
@@ -544,9 +560,8 @@ function wordOf(name: string): RegExp {
   return re;
 }
 
-/** The weapons Sharpen can name: the Spellblade's blade and the Drunkard's gun. */
+/** The weapons Sharpen can name: the Drunkard's gun (the Spellblade's blade is enchanted, not sharpened, since DECISIONS #417). */
 const WEAPON_NAME: Record<string, string> = {
-  'starforged-blade': 'the Obsidian Blade',
   'old-twelve-gauge': 'the Old Twelve Gauge',
 };
 
@@ -621,8 +636,17 @@ export function keywordsOf(
     if (o.ops?.some((x) => x.op === 'riposte')) add(KEYWORD_INFO['riposte']);
     if (o.op === 'stars') add(KEYWORD_INFO['stars']);
     if (o.op === 'forge') add(sharpenInfo(weapon));
-    if (o.op === 'embed' || o.op === 'extract') add(KEYWORD_INFO['knives']);
+    // (knives anywhere on the card: an Aura's trigger, a condition, a count of them)
+    if (
+      o.op === 'embed' ||
+      o.op === 'extract' ||
+      o.ops?.some((x) => x.op === 'embed' || x.op === 'extract')
+    )
+      add(KEYWORD_INFO['knives']);
     if (o.op === 'spend' || (o.op === 'status' && o.status === 'prep')) add(KEYWORD_INFO['prep']);
+    if (o.op === 'imbue' || o.op === 'recast' || o.ops?.some((x) => x.op === 'imbue'))
+      add(KEYWORD_INFO['imbue']);
+    if (o.op === 'discharge') add(KEYWORD_INFO['discharge']);
     if (o.op === 'addCard' && o.card === 'buckshot-shell') add(KEYWORD_INFO['buckshot-shell']);
     if (o.op === 'summon' && o.unit && taunting(o.unit)) add(KEYWORD_INFO['taunt']);
     if (o.op === 'status' && o.status) {
@@ -645,6 +669,7 @@ export function keywordsOf(
     const hay = text.replace(/\*\*/g, '');
     if (names(hay, 'Sharpen') || names(hay, 'Precision')) add(sharpenInfo(weapon));
     for (const s of Object.values(STATUS_INFO)) if (names(hay, s.name)) add(s);
+    if (/\b(knife|knives)\b/i.test(hay)) add(KEYWORD_INFO['knives']);
     // ("left Open", "If the target is Open": the Knight's Opening, DECISIONS #415)
     if (/\bOpen\b/.test(hay))
       add({ name: STATUS_INFO.opening.name, text: STATUS_INFO.opening.text });

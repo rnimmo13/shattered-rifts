@@ -116,12 +116,40 @@ describe('draw, created and Skills-played hooks', () => {
     expect(foe(s).hp).toBe(hp - 4);
   });
 
-  it('"Whenever a card is created" (Pillar of Glass) gives Barrier for each card Rift Gifts makes', () => {
-    let s = fight('spellblade', ['pillar-of-light', 'rift-gifts']);
-    s = play(s, 'T0');
+  it('"Whenever a card is created" gives Barrier for each card made (test cards: Pillar of Glass and Rift Gifts went with the Regent copy)', () => {
+    const tdb = {
+      ...db,
+      cards: {
+        ...db.cards,
+        'test-pillar': {
+          id: 'test-pillar',
+          name: 'Test Pillar',
+          kind: 'power' as const,
+          cost: 0,
+          target: 'none' as const,
+          effects: [
+            {
+              op: 'power' as const,
+              when: 'created' as const,
+              ops: [{ op: 'barrier' as const, amount: 2, to: 'self' as const }],
+            },
+          ],
+        },
+        'test-gifts': {
+          id: 'test-gifts',
+          name: 'Test Gifts',
+          kind: 'skill' as const,
+          cost: 0,
+          target: 'none' as const,
+          effects: [{ op: 'discover' as const, neutral: true, count: 3 }],
+        },
+      },
+    };
+    let s = fight('spellblade', ['test-pillar', 'test-gifts']);
+    s = applyAction(tdb, s, { type: 'play', card: 'T0' }).state;
     const barrier = hero(s).barrier;
     const created = s.sides.a.created;
-    s = play(s, 'T1');
+    s = applyAction(tdb, s, { type: 'play', card: 'T1' }).state;
     expect(s.sides.a.created).toBe(created + 3);
     expect(hero(s).barrier).toBe(barrier + 6);
   });

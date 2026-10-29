@@ -1,530 +1,73 @@
-// Obsidia, Spellblade of the Hollow Crown (display name; the id stays 'spellblade', DECISIONS #140). A spellblade of black glass and ember.
-// No companions. She is the Slay the Spire 2 Regent's card list on purpose, for now (Robert, 2026-10-28: "close copies of the originals,
-// but obviously change names and keep our theme, i will adjust things going forward, but we need good baselines right now"), in her own
-// theme: the Regent's Stars are her Arcana (the `stars` op and the `starCost` field), his Sovereign Blade is her Obsidian Blade (the
-// token 'starforged-blade', sharpened by the `forge` op), his minions are her Retainers and his Colorless cards are Neutral cards.
-// One card for every card of the Regent's (StS2 Beta v0.111; Arcana costs from sts2.untapped.gg), and nothing else. Not copied:
-// Constellation, Largesse, Tutor and Hammer Time (they need a second player) and Royalties (gold after a fight is an economy change,
-// for Robert to decide). Each card's comment names the Regent card it copies; numbers and rarities are the Regent's unless the comment
-// says why not (DECISIONS #369).
+// Obsidia, Spellblade of the Hollow Crown (id spellblade). A spellblade of black glass and ember. No companions. Rebuilt 2026-10-29
+// (docs/BASE_CLASS_REWORKS.md §7, DECISIONS #417): her Obsidian Blade holds two enchantments; her spells Imbue them and her blade
+// attacks Discharge them. Her Regent copy (Arcana, the Sovereign Blade's Sharpen, Retainers; DECISIONS #369) is archived in
+// reviews/balance-baselines/2026-10-29-pre-identity-reworks/.
 //
-// Build paths are hidden for now (DECISIONS #365) and the headings below are only a first sort, to be redone when they come back:
-//   Blade  - sharpen the Obsidian Blade and swing it
-//   Arcana - gain Arcana and spend it on big cards
-//   Court  - create cards (Retainers, Neutral cards, Rubble), play many, and the Auras that pay for it
+// Enchantments (SideState.enchants, at most 2, in the order imbued; duplicates allowed):
+//   Ember - the attack that discharges it deals 3 more on its first hit
+//   Glass - 2 damage to ALL enemies once that attack is done (a shard: not an attack)
+//   Ward  - 3 Barrier at once
+// `imbue(kind)`: into a free position; with both taken the player chooses which one it replaces (a replacement is not a discharge).
+// `discharge(1)`: the player chooses when the two differ; `discharge(2)`: both, once each. A charge lasts until it is spent or the
+// fight ends: nothing grows for good, and no Arcana.
+//
+// Three strategies, plus glue (build paths stay hidden, DECISIONS #365):
+//   Edge   - frequent single discharges: cheap Imbues and attacks that spend one at a time
+//   Burst  - mixed charges and full discharges: fill both positions, then spend them together
+//   Ward   - Ward-focused weaving: Barrier, Wards, and payoffs for what the blade holds
+// Costs and points: docs/reworks/SPELLBLADE.md and spellblade-ledger.md (docs/14_CARD_COSTING.md §15).
 
-import type { CardDef, Op } from '@sr/combat';
+import type { CardDef } from '@sr/combat';
 import {
-  addTo,
   barrier,
   barrierNext,
-  cheapen,
-  copyInHand,
-  discoverNeutral,
+  discharge,
   dmg,
   draw,
   drawNext,
-  endTurnOp,
-  exhaustN,
-  fetchAnywhere,
+  drawUntil,
   fetchCards,
-  forge,
-  growSelf,
+  imbue,
   mana,
   manaNext,
   on,
   onKill,
   per,
-  playPile,
   pool,
+  recast,
   scaled,
-  seekTop,
-  stars,
-  starsNext,
+  scry,
   status,
   statusTheirs,
   topdeck,
-  transformSome,
   when,
 } from '../build';
 
 const a = pool('spellblade', 'starfall');
-/** the Obsidian Blade: the Regent's Sovereign Blade */
-const BLADE = 'starforged-blade';
-const sharpen = (n: number): Op => forge(BLADE, n);
-/** "Deal N damage for each M" as a number of hits */
-const hitsPer = (
-  amount: number,
-  by: Parameters<typeof per>[0],
-  to: 'target' | 'allFoes' | 'randomFoe' = 'target',
-): Op => ({
-  op: 'damage',
-  amount,
-  hits: 0,
-  to,
-  scale: per(by, 1, undefined, 'hits'),
-});
-/** Weak and Vulnerable: Faltering and Exposed */
-const weakVuln = (n: number): Op[] => [
-  status('faltering', n, 'target'),
-  status('exposed', n, 'target'),
-];
 
 export const SPELLBLADE: CardDef[] = [
-  // --- basics and tokens ---
-  // (Falling Star)
-  a('basic', 'meteor-jab', 'Cinderfall', 'attack', 0, 'foe', [dmg(8), ...weakVuln(1)], {
-    starCost: 2,
-    up: { effects: [dmg(12), ...weakVuln(1)] },
-  }),
-  // (Venerate)
-  a('basic', 'gather-light', 'Gather Arcana', 'skill', 1, 'none', [stars(2)]),
-  // (Sovereign Blade: 2 Mana, 10 damage, Hold; every Sharpen adds to it for the fight)
-  a('common', BLADE, 'Obsidian Blade', 'attack', 2, 'foe', [scaled(dmg(10), per('bonus'))], {
-    retain: true,
+  // --- basics ---
+  a(
+    'basic',
+    'ember-inscription',
+    'Ember Inscription',
+    'skill',
+    1,
+    'foe',
+    [dmg(5), imbue('ember')],
+    {
+      up: { effects: [dmg(8), imbue('ember')] },
+    },
+  ),
+  a('basic', 'obsidian-cut', 'Obsidian Cut', 'attack', 1, 'foe', [discharge(), dmg(6)], {
     tags: ['blade'],
-    source: 'token',
-    weapon: true,
-  }),
-  // (Debris: a card that only takes up room; it costs 1 to play away)
-  a('basic', 'rubble', 'Rubble', 'skill', 1, 'none', [], {
-    exhaust: true,
-    source: 'token',
-    hero: 'junk',
-  }),
-  // (Minion Strike)
-  a('common', 'retainer-strike', 'Retainer Strike', 'attack', 0, 'foe', [dmg(6), draw(1)], {
-    exhaust: true,
-    source: 'token',
-    up: { effects: [dmg(9), draw(1)] },
-  }),
-  // (Minion Dive Bomb)
-  a('common', 'retainer-dive', 'Retainer Dive', 'attack', 0, 'foe', [dmg(13)], {
-    exhaust: true,
-    source: 'token',
-    up: { effects: [dmg(16)] },
-  }),
-  // (Minion Sacrifice)
-  a('common', 'retainer-guard', 'Retainer Guard', 'skill', 0, 'none', [barrier(7)], {
-    exhaust: true,
-    source: 'token',
-    up: { effects: [barrier(10)] },
+    up: { effects: [discharge(), dmg(9)] },
   }),
 
-  // --- Blade ---
-  // (Wrought in War)
-  a('common', 'forged-in-fury', 'Forged in Fury', 'attack', 1, 'foe', [dmg(7), sharpen(7)], {
-    up: { effects: [dmg(9), sharpen(9)] },
+  // --- glue: general attacks, Barrier and cards ---
+  a('common', 'gleam', 'Glint', 'attack', 1, 'foe', [dmg(7), draw(1), topdeck(1)], {
+    up: { effects: [dmg(10), draw(1), topdeck(1)] },
   }),
-  // (Refine Blade)
-  a('common', 'whetstone', 'Whetstone', 'skill', 1, 'none', [sharpen(8), manaNext(1)], {
-    up: { effects: [sharpen(12), manaNext(1)] },
-  }),
-  // (Spoils of Battle)
-  a('common', 'spoils', 'Spoils', 'skill', 1, 'none', [sharpen(6), draw(2)], {
-    up: { effects: [sharpen(9), draw(2)] },
-  }),
-  // (Patter)
-  a('common', 'feint', 'Feint', 'skill', 1, 'none', [barrier(8), status('vigor', 2)], {
-    up: { effects: [barrier(10), status('vigor', 3)] },
-  }),
-  // (Celestial Might)
-  a('common', 'obsidian-flurry', 'Obsidian Flurry', 'attack', 2, 'foe', [dmg(6, 'target', 3)], {
-    up: { effects: [dmg(6, 'target', 4)] },
-  }),
-  // (Kingly Kick: it costs 1 less every time you draw it, until you play it)
-  a('uncommon', 'tyrants-stomp', "Tyrant's Stomp", 'attack', 4, 'foe', [dmg(27)], {
-    onDraw: [cheapen(1, 'self')],
-    up: { effects: [dmg(35)] },
-  }),
-  // (Kingly Punch: every time you draw it, it hits harder for the fight)
-  a(
-    'uncommon',
-    'crowned-fist',
-    'Crowned Fist',
-    'attack',
-    1,
-    'foe',
-    [scaled(dmg(8), per('bonus'))],
-    {
-      onDraw: [growSelf(4)],
-      up: { effects: [scaled(dmg(10), per('bonus'))], onDraw: [growSelf(6)] },
-    },
-  ),
-  // (Bulwark)
-  a('uncommon', 'bladewall', 'Bladewall', 'skill', 2, 'none', [barrier(12), sharpen(10)], {
-    up: { effects: [barrier(15), sharpen(13)] },
-  }),
-  // (Conqueror: the Blade strikes the chosen enemy twice as hard this turn)
-  a(
-    'uncommon',
-    'conqueror',
-    'Crowned Edge',
-    'skill',
-    1,
-    'foe',
-    [sharpen(3), status('bladebane', 1, 'target', true)],
-    { up: { effects: [sharpen(5), status('bladebane', 1, 'target', true)] } },
-  ),
-  // (Summon Forth: the Blade comes to your hand from wherever it is, then is sharpened; a new one is made if there is none)
-  a(
-    'uncommon',
-    'call-the-blade',
-    'Call the Blade',
-    'skill',
-    1,
-    'none',
-    [fetchAnywhere('blade'), sharpen(8)],
-    {
-      up: { effects: [fetchAnywhere('blade'), sharpen(11)] },
-    },
-  ),
-  // (Terraforming)
-  a('uncommon', 'forge-heat', 'Heat of the Forge', 'skill', 1, 'none', [status('vigor', 7)], {
-    up: { effects: [status('vigor', 10)] },
-  }),
-  // (Furnace)
-  a('uncommon', 'warm-anvil', 'Warm Anvil', 'power', 1, 'none', [on('turnStart', [sharpen(5)])], {
-    up: { effects: [on('turnStart', [sharpen(7)])] },
-  }),
-  // (Parry)
-  a(
-    'uncommon',
-    'parry',
-    'Glass Guard',
-    'power',
-    1,
-    'none',
-    [on('play', [barrier(10)], { tag: 'blade' })],
-    {
-      up: { effects: [on('play', [barrier(14)], { tag: 'blade' })] },
-    },
-  ),
-  // (Beat into Shape: the Sharpen grows with every earlier hit on that enemy this turn)
-  a(
-    'rare',
-    'hammer-and-anvil',
-    'Hammer and Anvil',
-    'attack',
-    1,
-    'foe',
-    [scaled(sharpen(5), per('hitsTaken', 5, 'target')), dmg(5)],
-    { up: { effects: [scaled(sharpen(5), per('hitsTaken', 7, 'target')), dmg(7)] } },
-  ),
-  // (Heavenly Drill: X hits, twice as many at 4 or more; its "+" is X+1, as for every X card, not 10 damage)
-  a(
-    'rare',
-    'obsidian-drill',
-    'Obsidian Drill',
-    'attack',
-    0,
-    'foe',
-    [hitsPer(8, 'x'), when('x', { atLeast: 4 }, [hitsPer(8, 'x')])],
-    { x: true },
-  ),
-  // (Seeking Edge)
-  a(
-    'rare',
-    'cleaving-edge',
-    'Cleaving Edge',
-    'power',
-    1,
-    'none',
-    [sharpen(7), status('bladesweep', 1)],
-    {
-      up: { effects: [sharpen(11), status('bladesweep', 1)] },
-    },
-  ),
-  // (Sword Sage: the Blade is played twice; the source gives no upgrade, so it is a Mana cheaper)
-  a('rare', 'echoing-blade', 'Echoing Blade', 'power', 2, 'none', [status('bladeecho', 1)], {
-    up: { cost: 1 },
-  }),
-  // (The Smith)
-  a('rare', 'the-forgemaster', 'The Forgemaster', 'skill', 1, 'none', [sharpen(30)], {
-    starCost: 4,
-    up: { effects: [sharpen(40)] },
-  }),
-  // (Big Bang)
-  a(
-    'rare',
-    'big-bang',
-    'Magma Surge',
-    'skill',
-    0,
-    'none',
-    [draw(1), mana(1), stars(1), sharpen(5)],
-    {
-      exhaust: true,
-      up: { innate: true },
-    },
-  ),
-
-  // --- Arcana ---
-  // (Astral Pulse)
-  a('common', 'astral-pulse', 'Arcane Pulse', 'attack', 0, 'none', [dmg(6, 'allFoes', 2)], {
-    starCost: 3,
-    up: { effects: [dmg(8, 'allFoes', 2)] },
-  }),
-  // (Crescent Spear: 2 more for every card with an Arcana cost in your deck)
-  a(
-    'common',
-    'cosmic-lance',
-    'Obsidian Lance',
-    'attack',
-    1,
-    'foe',
-    [scaled(dmg(8), per('starCards', 2))],
-    {
-      starCost: 1,
-      up: { effects: [scaled(dmg(8), per('starCards', 3))] },
-    },
-  ),
-  // (Guiding Star)
-  a('common', 'skybolt', 'Spellbolt', 'attack', 1, 'foe', [dmg(12), drawNext(2)], {
-    starCost: 2,
-    up: { effects: [dmg(13), drawNext(3)] },
-  }),
-  // (Solar Strike)
-  a('common', 'sunstrike', 'Emberstrike', 'attack', 1, 'foe', [dmg(9), stars(1)], {
-    up: { effects: [dmg(10), stars(2)] },
-  }),
-  // (Cloak of Stars)
-  a('common', 'star-barrier', 'Arcane Barrier', 'skill', 0, 'none', [barrier(7)], { starCost: 1 }),
-  // (Gather Light)
-  a('common', 'pale-beacon', 'Pale Ward', 'skill', 1, 'none', [barrier(8), stars(1)], {
-    up: { effects: [barrier(11), stars(1)] },
-  }),
-  // (Glow)
-  a('common', 'faint-glow', 'Faint Ember', 'skill', 1, 'none', [stars(1), draw(1), drawNext(1)], {
-    up: { effects: [stars(2), draw(1), drawNext(1)] },
-  }),
-  // (Hidden Cache)
-  a('common', 'ember-cache', 'Ember Cache', 'skill', 1, 'none', [stars(1), starsNext(3)], {
-    up: { effects: [stars(1), starsNext(4)] },
-  }),
-  // (Know Thy Place)
-  a('common', 'humble', 'Humble', 'skill', 0, 'foe', weakVuln(1), {
-    exhaust: true,
-    up: { exhaust: false },
-  }),
-  // (Devastate)
-  a('uncommon', 'devastate', 'Molten Ruin', 'attack', 1, 'foe', [dmg(35)], {
-    starCost: 4,
-    up: { effects: [dmg(45)] },
-  }),
-  // (Gamma Blast)
-  a('uncommon', 'gamma-burst', 'Glass Burst', 'attack', 0, 'foe', [dmg(13), ...weakVuln(2)], {
-    starCost: 3,
-    up: { effects: [dmg(18), ...weakVuln(2)] },
-  }),
-  // (Knockout Blow)
-  a(
-    'uncommon',
-    'final-shatter',
-    'Final Shatter',
-    'attack',
-    3,
-    'foe',
-    [onKill(dmg(30), [stars(5)])],
-    {
-      up: { effects: [onKill(dmg(38), [stars(5)])] },
-    },
-  ),
-  // (Radiate: one hit on every enemy for each Arcana gained this turn)
-  a(
-    'uncommon',
-    'radiance',
-    'Arcane Flood',
-    'attack',
-    0,
-    'none',
-    [hitsPer(3, 'starsGained', 'allFoes')],
-    {
-      up: { effects: [hitsPer(4, 'starsGained', 'allFoes')] },
-    },
-  ),
-  // (Shining Strike)
-  a('uncommon', 'shard-strike', 'Shard Strike', 'attack', 1, 'foe', [dmg(8), stars(2)], {
-    after: 'drawTop',
-    up: { effects: [dmg(11), stars(2)] },
-  }),
-  // (Stardust: it spends all your Arcana, one hit on a random enemy for each)
-  a(
-    'uncommon',
-    'falling-sky',
-    'Falling Shards',
-    'attack',
-    0,
-    'none',
-    [hitsPer(5, 'x', 'randomFoe')],
-    {
-      starX: true,
-      up: { effects: [hitsPer(7, 'x', 'randomFoe')] },
-    },
-  ),
-  // (Hegemony)
-  a('uncommon', 'sovereign-strike', 'Tyrant Strike', 'attack', 2, 'foe', [dmg(15), manaNext(2)], {
-    up: { effects: [dmg(18), manaNext(3)] },
-  }),
-  // (Black Hole: whenever you gain or spend Arcana)
-  a(
-    'uncommon',
-    'gravity-well',
-    'Hungering Void',
-    'power',
-    1,
-    'none',
-    [on('gainArcana', [dmg(3, 'allFoes')]), on('arcana', [dmg(3, 'allFoes')])],
-    { up: { effects: [on('gainArcana', [dmg(4, 'allFoes')]), on('arcana', [dmg(4, 'allFoes')])] } },
-  ),
-  // (Child of the Stars: 2 Barrier for each Arcana spent)
-  a(
-    'uncommon',
-    'cygnus',
-    'Sigil of Glass',
-    'power',
-    1,
-    'none',
-    [on('arcana', [scaled(barrier(0), per('spent', 2))])],
-    {
-      up: { effects: [on('arcana', [scaled(barrier(0), per('spent', 3))])] },
-    },
-  ),
-  // (Alignment)
-  a('uncommon', 'chart-the-orbit', 'Ley Line', 'skill', 0, 'none', [mana(2)], {
-    starCost: 3,
-    up: { effects: [mana(3)] },
-  }),
-  // (Convergence)
-  a(
-    'uncommon',
-    'banked-embers',
-    'Banked Embers',
-    'skill',
-    1,
-    'none',
-    [manaNext(1), starsNext(1), status('holdfast', 1)],
-    { up: { effects: [manaNext(1), starsNext(2), status('holdfast', 1)] } },
-  ),
-  // (Reflect)
-  a(
-    'uncommon',
-    'mirror-glass',
-    'Mirror Glass',
-    'skill',
-    1,
-    'none',
-    [barrier(15), status('reflect', 1)],
-    {
-      starCost: 3,
-      up: { effects: [barrier(20), status('reflect', 1)] },
-    },
-  ),
-  // (Resonance: Arcana cost 2, the newer list's; the enemies' Might loss lasts)
-  a(
-    'uncommon',
-    'crowns-weight',
-    'Weight of the Crown',
-    'skill',
-    1,
-    'none',
-    [status('might', 1), status('sapped', 1, 'allFoes')],
-    { starCost: 2, up: { effects: [status('might', 2), status('sapped', 1, 'allFoes')] } },
-  ),
-  // (Royal Gamble)
-  a('uncommon', 'starburst', 'Arcane Burst', 'skill', 0, 'none', [stars(9)], {
-    starCost: 5,
-    exhaust: true,
-    up: { retain: true },
-  }),
-  // (Particle Wall)
-  a('uncommon', 'glass-wall', 'Glass Wall', 'skill', 0, 'none', [barrier(9)], {
-    starCost: 2,
-    after: 'hand',
-    up: { effects: [barrier(12)] },
-  }),
-  // (Comet)
-  a('rare', 'comet', 'Lava Bomb', 'attack', 0, 'foe', [dmg(33), ...weakVuln(3)], {
-    starCost: 5,
-    up: { effects: [dmg(44), ...weakVuln(3)] },
-  }),
-  // (Dying Star: every enemy hits 9 softer through its next turn)
-  a(
-    'rare',
-    'dying-star',
-    'Dying Ember',
-    'attack',
-    1,
-    'none',
-    [dmg(9, 'allFoes'), statusTheirs('sapped', 9, 'allFoes')],
-    {
-      starCost: 3,
-      ethereal: true,
-      up: { effects: [dmg(11, 'allFoes'), statusTheirs('sapped', 11, 'allFoes')] },
-    },
-  ),
-  // (Seven Stars: the source gives no upgrade, so it is a Mana cheaper)
-  a('rare', 'seven-shards', 'Seven Shards', 'attack', 2, 'none', [dmg(7, 'allFoes', 7)], {
-    starCost: 7,
-    up: { cost: 1 },
-  }),
-  // (Genesis)
-  a('rare', 'orion', 'Sigil of Kindling', 'power', 2, 'none', [on('turnStart', [stars(2)])], {
-    up: { effects: [on('turnStart', [stars(3)])] },
-  }),
-  // (Neutron Aegis: Plating, as Valeria's Stoneskin has it)
-  a('rare', 'obsidian-aegis', 'Obsidian Aegis', 'power', 1, 'none', [status('plating', 8)], {
-    starCost: 5,
-    up: { effects: [status('plating', 11)] },
-  }),
-  // (Decisions, Decisions: the Skill played 3 times is a random one of your hand, not chosen)
-  a(
-    'rare',
-    'weigh-the-crown',
-    'Weigh the Crown',
-    'skill',
-    0,
-    'none',
-    [draw(3), playPile('hand', { kind: 'skill', repeat: 3 })],
-    {
-      starCost: 6,
-      exhaust: true,
-      up: { effects: [draw(5), playPile('hand', { kind: 'skill', repeat: 3 })] },
-    },
-  ),
-
-  // --- Court ---
-  // (Collision Course)
-  a('common', 'magma-crash', 'Magma Crash', 'attack', 0, 'foe', [dmg(10), addTo('rubble')], {
-    up: { effects: [dmg(14), addTo('rubble')] },
-  }),
-  // (Crush Under: every enemy hits 1 softer through its next turn)
-  a(
-    'common',
-    'molten-weight',
-    'Molten Weight',
-    'attack',
-    1,
-    'none',
-    [dmg(8, 'allFoes'), statusTheirs('sapped', 1, 'allFoes')],
-    { up: { effects: [dmg(9, 'allFoes'), statusTheirs('sapped', 2, 'allFoes')] } },
-  ),
-  // (Photon Cut)
-  a('common', 'gleam', 'Glint', 'attack', 1, 'foe', [dmg(10), draw(1), topdeck(1)], {
-    up: { effects: [dmg(13), draw(2), topdeck(1)] },
-  }),
-  // (BEGONE!)
-  a(
-    'common',
-    'out-of-my-sight',
-    'Out of My Sight!',
-    'skill',
-    1,
-    'none',
-    [transformSome('retainer-strike', { amount: 1, choose: true })],
-    { up: { effects: [transformSome('retainer-strike+', { amount: 1, choose: true })] } },
-  ),
-  // (Cosmic Indifference: the card put back on top of your draw pile is a random one of your discard pile)
   a(
     'common',
     'hollow-gaze',
@@ -537,209 +80,468 @@ export const SPELLBLADE: CardDef[] = [
       up: { effects: [barrier(9), fetchCards(1, 'draw')] },
     },
   ),
-  // (Glitterstream: 5 Barrier next turn, as sts2.untapped.gg has it)
-  a('common', 'glass-veil', 'Glass Veil', 'skill', 2, 'none', [barrier(11), barrierNext(5)], {
-    up: { effects: [barrier(13), barrierNext(7)] },
-  }),
-  // (Lunar Blast: one hit for each Skill played this turn)
-  a('uncommon', 'hex-volley', 'Hex Volley', 'attack', 0, 'foe', [hitsPer(4, 'skillsPlayed')], {
-    up: { effects: [hitsPer(5, 'skillsPlayed')] },
-  }),
-  // (Supermassive: 2 per card created, not 3: balance.test allows at most 2 per point of something that only grows)
   a(
-    'uncommon',
-    'collapsing-star',
-    'Collapsing Vein',
+    'common',
+    'humble',
+    'Humble',
+    'skill',
+    0,
+    'foe',
+    [status('faltering', 1, 'target'), status('exposed', 1, 'target')],
+    {
+      exhaust: true,
+      up: { exhaust: false },
+    },
+  ),
+  a(
+    'common',
+    'molten-weight',
+    'Molten Weight',
     'attack',
     1,
-    'foe',
-    [scaled(dmg(5), per('created', 2))],
-    {
-      up: { effects: [scaled(dmg(8), per('created', 2))] },
-    },
-  ),
-  // (Orbit: the source gives no upgrade, so it is a Mana cheaper)
-  a('uncommon', 'orbit', 'Sigil of Momentum', 'power', 2, 'none', [status('orbit', 1)], {
-    up: { cost: 1 },
-  }),
-  // (Pale Blue Dot)
-  a(
-    'uncommon',
-    'distant-ember',
-    'Distant Ember',
-    'power',
-    1,
     'none',
-    [on('turnEnd', [when('played', { atLeast: 5 }, [drawNext(1)])])],
-    { up: { effects: [on('turnEnd', [when('played', { atLeast: 5 }, [drawNext(2)])])] } },
+    [dmg(7, 'allFoes'), statusTheirs('sapped', 1, 'allFoes')],
+    { up: { effects: [dmg(9, 'allFoes'), statusTheirs('sapped', 1, 'allFoes')] } },
   ),
-  // (Pillar of Creation)
-  a(
-    'uncommon',
-    'pillar-of-light',
-    'Pillar of Glass',
-    'power',
-    1,
-    'none',
-    [on('created', [barrier(2)])],
-    {
-      up: { effects: [on('created', [barrier(3)])] },
-    },
-  ),
-  // (Spectrum Shift: the source gives no upgrade, so it is a Mana cheaper)
-  a(
-    'uncommon',
-    'sigil-of-wandering',
-    'Sigil of Wandering',
-    'power',
-    2,
-    'none',
-    [on('turnStart', [discoverNeutral()])],
-    { up: { cost: 1 } },
-  ),
-  // (CHARGE!!: the two cards are random ones of your draw pile, not chosen)
-  a(
-    'uncommon',
-    'to-arms',
-    'To Arms!',
-    'skill',
-    1,
-    'none',
-    [transformSome('retainer-dive', { amount: 2, from: 'draw' })],
-    { up: { effects: [transformSome('retainer-dive+', { amount: 2, from: 'draw' })] } },
-  ),
-  // (Glimmer)
   a('uncommon', 'stellar-wind', 'Ash Wind', 'skill', 1, 'none', [draw(3), topdeck(1)], {
     up: { effects: [draw(4), topdeck(1)] },
   }),
-  // (Manifest Authority)
+
+  // --- Edge: frequent single discharges ---
+  a('common', 'forged-in-fury', 'Forged in Fury', 'attack', 1, 'foe', [dmg(7), imbue('ember')], {
+    tags: ['blade'],
+    up: { effects: [dmg(10), imbue('ember')] },
+  }),
+  a('common', 'skybolt', 'Spellbolt', 'attack', 1, 'foe', [discharge(), dmg(6), draw(1)], {
+    tags: ['blade'],
+    up: { effects: [discharge(), dmg(9), draw(1)] },
+  }),
+  a('common', 'ember-cache', 'Ember Cache', 'skill', 1, 'none', [imbue('ember'), draw(2)], {
+    up: { effects: [imbue('ember'), draw(3)] },
+  }),
+  // (a free card that draws must Consume: balance.test)
+  a('common', 'faint-glow', 'Faint Ember', 'skill', 0, 'none', [imbue('ember'), scry(2)], {
+    exhaust: true,
+    up: { effects: [imbue('ember'), scry(3)] },
+  }),
   a(
-    'uncommon',
-    'royal-decree',
-    'Royal Decree',
-    'skill',
+    'common',
+    'sunstrike',
+    'Emberstrike',
+    'attack',
     1,
-    'none',
-    [barrier(7), discoverNeutral()],
+    'foe',
+    [dmg(9), when('enchants', { atMost: 0 }, [imbue('ember')])],
     {
-      up: { effects: [barrier(8), discoverNeutral(1, true)] },
+      tags: ['blade'],
+      up: { effects: [dmg(12), when('enchants', { atMost: 0 }, [imbue('ember')])] },
     },
   ),
-  // (Monologue)
+  a('common', 'fracture-script', 'Fracture Script', 'skill', 1, 'foe', [dmg(7), imbue('glass')], {
+    up: { effects: [dmg(10), imbue('glass')] },
+  }),
   a(
-    'uncommon',
-    'grand-speech',
-    'Grand Speech',
-    'skill',
-    0,
-    'none',
-    [on('play', [status('might', 1, 'self', true)], { temp: true })],
-    { up: { retain: true } },
-  ),
-  // (Plot)
-  a('uncommon', 'scheme', 'Scheme', 'skill', 1, 'none', [drawNext(2)]),
-  // (Prophesize)
-  a('uncommon', 'read-the-embers', 'Read the Embers', 'skill', 2, 'none', [draw(6)], {
-    up: { effects: [draw(9)] },
-  }),
-  // (Quasar: a random Neutral card, not a choice of 3)
-  a('uncommon', 'wild-spark', 'Wild Spark', 'skill', 0, 'none', [discoverNeutral()], {
-    starCost: 2,
-    up: { effects: [discoverNeutral(1, true)] },
-  }),
-  // (Bombardment)
-  a('rare', 'endless-barrage', 'Endless Barrage', 'attack', 3, 'foe', [dmg(18)], {
-    exhaust: true,
-    replayFromExhaust: true,
-    up: { effects: [dmg(24)] },
-  }),
-  // (Crash Landing)
-  a(
-    'rare',
-    'supernova',
-    'Cataclysm',
+    'common',
+    'astral-pulse',
+    'Shard Pulse',
     'attack',
     1,
     'none',
-    [dmg(21, 'allFoes'), addTo('rubble', 0, 'hand', per('handRoom'))],
-    { up: { effects: [dmg(26, 'allFoes'), addTo('rubble', 0, 'hand', per('handRoom'))] } },
+    [discharge(), dmg(7, 'allFoes')],
+    {
+      tags: ['blade'],
+      up: { effects: [discharge(), dmg(9, 'allFoes')] },
+    },
   ),
-  // (Heirloom Hammer: the Neutral card copied is a random one of your hand, not chosen)
-  a('rare', 'heirloom-maul', 'Heirloom Maul', 'attack', 2, 'foe', [dmg(20), copyInHand(true)], {
-    up: { effects: [dmg(25), copyInHand(true)] },
-  }),
-  // (Make It So)
-  a('rare', 'by-decree', 'By Decree', 'attack', 0, 'foe', [dmg(6)], {
-    returnEvery: { kind: 'skill', n: 3 },
-  }),
-  // (Arsenal)
   a(
-    'rare',
-    'glass-armory',
-    'Glass Armory',
+    'uncommon',
+    'gamma-burst',
+    'Glass Burst',
+    'attack',
+    1,
+    'foe',
+    [discharge(), dmg(5), status('faltering', 1, 'target'), status('exposed', 1, 'target')],
+    {
+      tags: ['blade'],
+      up: {
+        effects: [
+          discharge(),
+          dmg(8),
+          status('faltering', 1, 'target'),
+          status('exposed', 1, 'target'),
+        ],
+      },
+    },
+  ),
+  a('uncommon', 'shard-strike', 'Shard Strike', 'attack', 1, 'foe', [dmg(8), imbue('glass')], {
+    tags: ['blade'],
+    up: { effects: [dmg(11), imbue('glass')] },
+  }),
+  a(
+    'uncommon',
+    'sovereign-strike',
+    'Tyrant Strike',
+    'attack',
+    2,
+    'foe',
+    [discharge(), dmg(13), manaNext(1)],
+    {
+      tags: ['blade'],
+      up: { effects: [discharge(), dmg(17), manaNext(1)] },
+    },
+  ),
+  a(
+    'uncommon',
+    'recast-the-edge',
+    'Recast the Edge',
+    'skill',
+    1,
+    'none',
+    [recast, barrier(6), draw(1)],
+    {
+      up: { effects: [recast, barrier(9), draw(1)] },
+    },
+  ),
+  a(
+    'uncommon',
+    'warm-anvil',
+    'Warm Anvil',
     'power',
     1,
     'none',
-    [on('created', [status('might', 1)])],
+    [on('turnStart', [imbue('ember', true), barrier(2)])],
+    { up: { effects: [on('turnStart', [imbue('ember', true), barrier(4)])] } },
+  ),
+  a(
+    'uncommon',
+    'call-the-blade',
+    'Call the Blade',
+    'skill',
+    1,
+    'none',
+    [drawUntil('skill'), imbue('glass')],
     {
-      up: { innate: true },
+      up: { effects: [drawUntil('skill'), imbue('glass'), barrier(4)] },
     },
   ),
-  // (Monarch's Gaze: the enemy each Attack is aimed at hits 1 softer through its next turn; no upgrade given, so a Mana cheaper)
   a(
     'rare',
-    'tyrants-gaze',
-    "Tyrant's Gaze",
+    'echoing-blade',
+    'Echoing Blade',
+    'skill',
+    0,
+    'none',
+    // (a free card that draws Consumes: balance.test)
+    [status('twinedge', 1, 'self', true), draw(1), barrier(3)],
+    {
+      exhaust: true,
+      up: { effects: [status('twinedge', 1, 'self', true), draw(1), barrier(6)] },
+    },
+  ),
+  a(
+    'rare',
+    'cleaving-edge',
+    'Cleaving Edge',
     'power',
+    1,
+    'none',
+    [on('discharge', [dmg(4, 'allFoes')])],
+    {
+      up: { effects: [on('discharge', [dmg(6, 'allFoes')])] },
+    },
+  ),
+  a('rare', 'big-bang', 'Magma Surge', 'skill', 0, 'none', [mana(1), imbue('ember')], {
+    exhaust: true,
+    up: { innate: true },
+  }),
+  a(
+    'rare',
+    'dying-star',
+    'Dying Ember',
+    'attack',
     2,
     'none',
-    [on('play', [statusTheirs('sapped', 1, 'target')], { filter: 'attack' })],
-    { up: { cost: 1 } },
+    [discharge(), dmg(8, 'allFoes'), statusTheirs('sapped', 6, 'allFoes')],
+    {
+      tags: ['blade'],
+      up: { effects: [discharge(), dmg(10, 'allFoes'), statusTheirs('sapped', 8, 'allFoes')] },
+    },
   ),
-  // (Tyranny: the card consumed is a random one of your hand, not chosen)
+
+  // --- Burst: mixed charges and full discharges ---
+  a(
+    'common',
+    'whetstone',
+    'Etch the Edge',
+    'skill',
+    1,
+    'none',
+    [imbue('ember'), imbue('glass'), barrier(5)],
+    {
+      up: { effects: [imbue('ember'), imbue('glass'), barrier(8)] },
+    },
+  ),
+  a(
+    'common',
+    'obsidian-flurry',
+    'Obsidian Flurry',
+    'attack',
+    2,
+    'foe',
+    [discharge(), dmg(6, 'target', 3)],
+    {
+      tags: ['blade'],
+      up: { effects: [discharge(), dmg(8, 'target', 3)] },
+    },
+  ),
+  a(
+    'common',
+    'cosmic-lance',
+    'Obsidian Lance',
+    'attack',
+    1,
+    'foe',
+    [scaled(dmg(5), per('enchants', 3))],
+    {
+      tags: ['blade'],
+      up: { effects: [scaled(dmg(8), per('enchants', 3))] },
+    },
+  ),
+  a('uncommon', 'crownfall', 'Crownfall', 'attack', 2, 'foe', [discharge(2), dmg(17)], {
+    tags: ['blade'],
+    up: { effects: [discharge(2), dmg(22)] },
+  }),
+  a('uncommon', 'devastate', 'Molten Ruin', 'attack', 3, 'foe', [discharge(2), dmg(26)], {
+    tags: ['blade'],
+    up: { effects: [discharge(2), dmg(34)] },
+  }),
+  a(
+    'uncommon',
+    'radiance',
+    'Shard Storm',
+    'attack',
+    1,
+    'none',
+    [discharge(), dmg(4, 'allFoes', 2)],
+    {
+      tags: ['blade'],
+      up: { effects: [discharge(), dmg(5, 'allFoes', 2)] },
+    },
+  ),
+  a(
+    'uncommon',
+    'overcharge-edge',
+    'Overcharge Edge',
+    'attack',
+    1,
+    'foe',
+    [discharge(2), scaled(dmg(4), per('discharged', 4))],
+    { tags: ['blade'], up: { effects: [discharge(2), scaled(dmg(7), per('discharged', 4))] } },
+  ),
+  a(
+    'uncommon',
+    'final-shatter',
+    'Final Shatter',
+    'attack',
+    3,
+    'foe',
+    [onKill(dmg(26), [imbue('ember', true), imbue('glass', true)])],
+    {
+      tags: ['blade'],
+      up: { effects: [onKill(dmg(34), [imbue('ember', true), imbue('glass', true)])] },
+    },
+  ),
+  a(
+    'uncommon',
+    'banked-embers',
+    'Banked Embers',
+    'skill',
+    1,
+    'none',
+    [imbue('ember'), manaNext(1), status('holdfast', 1)],
+    { up: { effects: [imbue('ember'), manaNext(1), status('holdfast', 1), barrier(3)] } },
+  ),
+  a('uncommon', 'scheme', 'Scheme', 'skill', 1, 'none', [drawNext(2), imbue('glass')], {
+    up: { effects: [drawNext(3), imbue('glass')] },
+  }),
   a(
     'rare',
-    'iron-rule',
-    'Iron Rule',
+    'emberglass-covenant',
+    'Emberglass Covenant',
     'power',
     1,
     'none',
-    [on('turnStart', [draw(1), exhaustN(1, 'random')])],
-    {
-      up: { innate: true },
-    },
+    [on('dischargeMixed', [manaNext(1), barrier(4)], { once: true })],
+    { up: { effects: [on('dischargeMixed', [manaNext(1), barrier(7)], { once: true })] } },
   ),
-  // (Void Form)
-  a('rare', 'hollow-form', 'Hollow Form', 'power', 3, 'none', [endTurnOp, status('freeplay', 2)], {
-    ethereal: true,
-    up: { ethereal: false },
-  }),
-  // (Bundle of Joy)
-  a('rare', 'rift-gifts', 'Rift Gifts', 'skill', 1, 'none', [discoverNeutral(3)], {
-    exhaust: true,
-    up: { effects: [discoverNeutral(4)] },
-  }),
-  // (Foregone Conclusion: "next turn, put 2 cards of your choice from your draw pile into your hand". The choice is made now and the
-  // cards wait on top of the draw pile, then 2 extra are drawn next turn: the same hand, with no choice at the start of a turn)
-  a('rare', 'fated-hand', 'Fated Hand', 'skill', 1, 'none', [seekTop(2), drawNext(2)], {
-    up: { effects: [seekTop(3), drawNext(3)] },
-  }),
-  // (GUARDS!!!: any number of cards in your hand become Retainer Guards)
   a(
     'rare',
-    'call-the-guard',
-    'Call the Guard!',
+    'comet',
+    'Lava Bomb',
+    'attack',
+    3,
+    'foe',
+    [discharge(2), dmg(20), status('faltering', 2, 'target'), status('exposed', 2, 'target')],
+    {
+      tags: ['blade'],
+      up: {
+        effects: [
+          discharge(2),
+          dmg(26),
+          status('faltering', 2, 'target'),
+          status('exposed', 2, 'target'),
+        ],
+      },
+    },
+  ),
+  a(
+    'rare',
+    'seven-shards',
+    'Seven Shards',
+    'attack',
+    2,
+    'foe',
+    [discharge(2), dmg(3, 'target', 7)],
+    {
+      tags: ['blade'],
+      up: { effects: [discharge(2), dmg(4, 'target', 7)] },
+    },
+  ),
+  a(
+    'rare',
+    'heirloom-maul',
+    'Heirloom Maul',
+    'attack',
+    2,
+    'foe',
+    [discharge(2), dmg(16), scaled(draw(0), per('discharged'))],
+    {
+      tags: ['blade'],
+      up: { effects: [discharge(2), dmg(21), scaled(draw(0), per('discharged'))] },
+    },
+  ),
+  a('rare', 'supernova', 'Cataclysm', 'attack', 1, 'none', [discharge(2), dmg(9, 'allFoes')], {
+    tags: ['blade'],
+    up: { effects: [discharge(2), dmg(12, 'allFoes')] },
+  }),
+  a(
+    'rare',
+    'twin-sigils',
+    'Twin Sigils',
+    'skill',
+    1,
+    'none',
+    [imbue('ember'), imbue('ward'), barrier(4), draw(1)],
+    {
+      up: { effects: [imbue('ember'), imbue('ward'), barrier(7), draw(1)] },
+    },
+  ),
+  a(
+    'rare',
+    'glass-requiem',
+    'Glass Requiem',
+    'attack',
+    2,
+    'foe',
+    [discharge(2), dmg(14), scaled(dmg(0, 'allFoes'), per('discharged', 3))],
+    {
+      tags: ['blade'],
+      up: { effects: [discharge(2), dmg(19), scaled(dmg(0, 'allFoes'), per('discharged', 3))] },
+    },
+  ),
+
+  // --- Ward: Barrier, Wards, and payoffs for what the blade holds ---
+  a('common', 'glass-veil', 'Glass Veil', 'skill', 2, 'none', [barrier(11), barrierNext(5)], {
+    up: { effects: [barrier(13), barrierNext(7)] },
+  }),
+  a(
+    'uncommon',
+    'shatterguard',
+    'Shatterguard',
+    'skill',
+    1,
+    'none',
+    [discharge(2), scaled(barrier(0), per('discharged', 5))],
+    {
+      up: { effects: [discharge(2), scaled(barrier(2), per('discharged', 5))] },
+    },
+  ),
+  a('common', 'glassward', 'Glassward', 'skill', 1, 'none', [barrier(5), imbue('ward')], {
+    up: { effects: [barrier(8), imbue('ward')] },
+  }),
+  a(
+    'common',
+    'pale-beacon',
+    'Pale Ward',
+    'skill',
+    1,
+    'none',
+    [barrier(8), when('wards', { atLeast: 1 }, [draw(1)])],
+    { up: { effects: [barrier(11), when('wards', { atLeast: 1 }, [draw(1)])] } },
+  ),
+  a('common', 'star-barrier', 'Glass Barrier', 'skill', 1, 'none', [discharge(), barrier(7)], {
+    up: { effects: [discharge(), barrier(10)] },
+  }),
+  a('uncommon', 'bladewall', 'Bladewall', 'skill', 2, 'none', [barrier(14), imbue('ward')], {
+    up: { effects: [barrier(18), imbue('ward')] },
+  }),
+  a('uncommon', 'parry', 'Glass Guard', 'power', 1, 'none', [on('discharge', [barrier(3)])], {
+    up: { effects: [on('discharge', [barrier(4)])] },
+  }),
+  a(
+    'uncommon',
+    'mirror-glass',
+    'Mirror Glass',
     'skill',
     2,
     'none',
-    [transformSome('retainer-guard', { choose: true })],
+    [discharge(), barrier(10), status('reflect', 1)],
     {
-      exhaust: true,
-      up: { effects: [transformSome('retainer-guard+', { choose: true })] },
+      up: { effects: [discharge(), barrier(14), status('reflect', 1)] },
     },
   ),
-  // (I Am Invincible)
-  a('rare', 'unbreakable-crown', 'Unbreakable Crown', 'skill', 1, 'none', [barrier(10)], {
-    playFromTop: true,
-  }),
+  a(
+    'uncommon',
+    'glass-wall',
+    'Glass Wall',
+    'skill',
+    1,
+    'none',
+    [barrier(5), imbue('ward'), scry(1)],
+    {
+      up: { effects: [barrier(8), imbue('ward'), scry(1)] },
+    },
+  ),
+  a(
+    'uncommon',
+    'ward-weave',
+    'Weave the Ward',
+    'skill',
+    1,
+    'none',
+    [imbue('ward'), scaled(barrier(0), per('wards', 3)), draw(1)],
+    { up: { effects: [imbue('ward'), scaled(barrier(0), per('wards', 4)), draw(1)] } },
+  ),
+  a(
+    'rare',
+    'obsidian-aegis',
+    'Obsidian Aegis',
+    'power',
+    1,
+    'none',
+    [on('turnEnd', [scaled(barrier(0), per('enchants', 3))])],
+    { up: { effects: [on('turnEnd', [scaled(barrier(0), per('enchants', 4))])] } },
+  ),
+  a(
+    'rare',
+    'unbreakable-crown',
+    'Unbreakable Crown',
+    'skill',
+    2,
+    'none',
+    [barrier(16), imbue('ward'), imbue('ward')],
+    {
+      up: { effects: [barrier(20), imbue('ward'), imbue('ward')] },
+    },
+  ),
 ];

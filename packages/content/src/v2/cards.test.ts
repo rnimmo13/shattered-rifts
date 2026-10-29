@@ -156,21 +156,16 @@ describe('every card plays', () => {
 });
 
 describe('second resources have a way in and a way out from the first hand', () => {
-  // (she has the Regent's starter now, 4 Strike, 4 Defend, Cinderfall and Gather Arcana, with nothing Innate, so the opening hand need
-  // not hold both: the way in is the 3 Arcana every fight starts with and the 1 Kindled adds each turn, enough for Cinderfall at once)
-  it('The spellblade starts every fight with Arcana to spend, and her starter both makes and spends it', () => {
+  it('the Spellblade starts every fight with a Ward on her blade, and her starter both imbues and discharges (DECISIONS #417)', () => {
     const starter = RIFTWALKERS.spellblade.starter.map((id) => db.cards[id]!);
-    expect(starter.some((c) => c.effects.some((o) => o.op === 'stars' && o.amount > 0))).toBe(true);
-    const spender = starter.find((c) => (c.starCost ?? 0) > 0);
-    expect(spender).toBeDefined();
-    for (let i = 0; i < 20; i++) {
-      const { state } = createCombat(db, {
-        seed: `arcana-${i}`,
-        a: { hero: 'spellblade', deck: RIFTWALKERS.spellblade.starter },
-        b: { enemies: ['squire'] },
-      });
-      expect(state.sides.a.stars, `seed ${i}`).toBeGreaterThanOrEqual(spender!.starCost!);
-    }
+    expect(starter.some((c) => c.effects.some((o) => o.op === 'imbue'))).toBe(true);
+    expect(starter.some((c) => c.effects.some((o) => o.op === 'discharge'))).toBe(true);
+    const { state } = createCombat(db, {
+      seed: 'ward-start',
+      a: { hero: 'spellblade', deck: RIFTWALKERS.spellblade.starter },
+      b: { enemies: ['squire'] },
+    });
+    expect(state.sides.a.enchants).toEqual(['ward']);
   });
 });
 

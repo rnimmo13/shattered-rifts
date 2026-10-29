@@ -48,12 +48,10 @@ describe('Sharpen names the weapon it sharpens (the gun calls it Precision, DECI
     }
   });
 
-  it("the Spellblade's cards name the Obsidian Blade", () => {
+  it("the Spellblade's cards never Sharpen now: her blade is enchanted (DECISIONS #417)", () => {
     const blade = Object.values(db.cards).find(
       (c) => c.hero === 'spellblade' && c.effects.some((o) => o.op === 'forge'),
     );
-    expect(blade).toBeDefined();
-    expect(sharpen(blade!.id)).toContain('the Obsidian Blade');
-    expect(sharpen(blade!.id)).not.toContain('Twelve Gauge');
+    expect(blade).toBeUndefined();
   });
 });

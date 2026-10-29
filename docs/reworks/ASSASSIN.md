@@ -14,10 +14,10 @@ connected but not the same: Preparation is the setup in his head, knives are the
 | Preparation | `prep` on the hero: at most 3 (`PREP_MAX`), kept between turns, never cleared by an ordinary attack. Gained by setup cards and his trait (`prepare`); spent by finishers (`spendPrep(n)`: up to n, or 99 for all), which read how much with `per('prepSpent')`. Nothing makes it every turn on its own. |
 | Embed | `embed(n)` puts n knives in the target (or each enemy, or a random one), at most 3 in a unit (`KNIFE_MAX`); more is simply lost (no refund, no overflow). After a card's attack: only into a living enemy, and only one the card's hits landed on (a hit a Trap or Shielded stopped does not land; one Barrier soaked does). An embed with no attack before it (Knife Juggle) always goes in. |
 | A knife sits there | It does nothing while it is in an enemy: no damage each turn. |
-| Pull | `pull(n, each?)` takes up to n knives from the target (99: all; or from every enemy), exactly what is there. Each knife pulled runs `each` once, aimed at the enemy it came from, and the trait deals 3 to that enemy; `per('extracted')` counts what this card pulled. A pulled knife is gone. |
+| Pull | `pull(n, each?)` takes up to n knives from the target (99: all; or from every enemy), exactly what is there. Each knife pulled runs `each` once, aimed at the enemy it came from, and the trait deals 3 to that enemy (every knife pays, even after the enemy died of an earlier one: what would land on it does nothing, what you gain you still gain); `per('extracted')` counts what this card pulled. A pulled knife is gone. |
 | Ownership | Knives sit in the other side's units (in the Arena, the other hero) and only their owner pulls them; a unit of your side never holds yours. |
 | Death | A unit that dies takes its knives with it: nothing is looted from the dead, nothing spreads. A summoned, replaced or revived unit is a new unit with none. |
-| Previews | A finisher's damage counts the Preparation you have; a pull's damage counts the knives in the target (exact, tested). |
+| Previews | A finisher's damage counts the Preparation you have; a pull's damage counts the knives in the target, and a Shield the pull's own hits will take off (exact, tested: Draw Steel, Twist the Blade, the finishers). A pull behind a condition (Thread the Needle), and the knife hit of Final Cut, show their printed text. |
 
 ## Trait and starter
 

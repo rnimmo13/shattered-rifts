@@ -160,6 +160,29 @@ describe('the Assassin: Preparation and knives', () => {
       expect(knives(foe(s, 0))).toBe(0);
     });
 
+    it('every knife pulled pays what is yours, even after the enemy dies of an earlier one', () => {
+      let s = fight(['recall-the-blades']);
+      foe(s, 0).statuses.knives = 3;
+      foe(s, 0).hp = 3;
+      hero(s).barrier = 0;
+      s = play(s, 'recall-the-blades');
+      expect(prep(s)).toBe(3);
+      expect(hero(s).barrier).toBe(12);
+    });
+
+    it('a pull into a Shielded enemy: its own first hit takes the Shield, and the preview says so', () => {
+      const s = fight(['draw-steel']);
+      foe(s, 0).statuses.knives = 2;
+      foe(s, 0).statuses.shielded = 1;
+      const id = s.sides.a.hand[0]!.id;
+      const shown = previewCardDamage(db, s, id, foe(s, 0).id).get(1)?.lo;
+      const hp = foe(s, 0).hp;
+      const after = play(s, 'draw-steel', foe(s, 0).id);
+      expect(shown).toBe(4 + 2 * 4);
+      // (the first Knife Work hit is cancelled by the Shield, the second lands: 3, then the attack's 12)
+      expect(hp - foe(after, 0).hp).toBe(3 + 12);
+    });
+
     it('the preview shows exactly what a pull will deal against the target', () => {
       const s = fight(['draw-steel']);
       foe(s, 0).statuses.knives = 2;
@@ -240,6 +263,12 @@ describe('the Assassin: Preparation and knives', () => {
     );
     expect(cardText(db, db.cards['harvest-the-field']!)).toBe(
       'Pull every knife from every enemy: for each, deal 6 damage to that enemy.',
+    );
+    expect(cardText(db, db.cards['disarm']!)).toBe(
+      'Pull up to 3 knives from the target: for each, apply 1 Faltering to that enemy and gain 4 Barrier.',
+    );
+    expect(cardText(db, db.cards['twist-the-blade']!)).toBe(
+      'Pull a knife from the target. Deal 6 (+6 per knife pulled) damage.',
     );
   });
 });

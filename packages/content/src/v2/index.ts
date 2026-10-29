@@ -14,7 +14,7 @@ import {
   dmg,
   draw,
   embed,
-  forge,
+  imbue,
   heal,
   mana,
   on,
@@ -23,7 +23,6 @@ import {
   raise,
   scaled,
   stance,
-  stars,
   status,
 } from './build';
 import { BOONS, HEARTS } from './boons';
@@ -332,34 +331,33 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     realm: 'starfall',
     persona: 'Obsidia',
     role: 'Spellblade',
+    // (rebuilt 2026-10-29, docs/BASE_CLASS_REWORKS.md §7, DECISIONS #417: Imbue and Discharge; the Regent copy is archived)
     trait: {
-      name: 'Kindled',
-      text: 'At the start of your turn, gain 1 Arcana and Sharpen your Obsidian Blade by 1.',
-      turnStart: [stars(1), forge('starforged-blade', 1)],
+      name: 'Glass and Ember',
+      text: 'Start every fight with a Ward enchantment on your Obsidian Blade. The first time each turn you Imbue, draw 1 card and gain 2 Barrier.',
+      fightStart: [imbue('ward')],
+      triggers: [on('imbue', [draw(1), barrier(2)], { once: true })],
     },
-    // the Slay the Spire 2 Regent's shape (DECISIONS #369): 75 HP, 3 Arcana as every fight begins (his Divine
-    // Right), and his starter (4 Strike, 4 Defend, Falling Star = Cinderfall, Venerate = Gather Arcana). Kindled is hers, not his.
     hero: {
       id: 'spellblade',
       name: 'Spellblade',
       maxHp: 75,
       mana: 3,
       handSize: 5,
-      sigil: [stars(3)],
     },
-    starter: [...rep('strike', 4), ...rep('defend', 4), 'meteor-jab', 'gather-light'],
+    starter: [...rep('strike', 4), ...rep('defend', 4), 'ember-inscription', 'obsidian-cut'],
     blurb:
-      'A spellblade of black glass and ember. Spends Arcana on her biggest cards, calls an Obsidian Blade that every Sharpen improves for good, and fills her hand with Retainers and borrowed cards.',
-    mechanics: ['Arcana', 'Sharpen', 'Created cards', 'Auras'],
+      'A spellblade of black glass and ember. Her spells Imbue her Obsidian Blade with Ember, Glass or Ward, and her blade attacks Discharge them: spend one now, or hold two for a burst.',
+    mechanics: ['Imbue', 'Discharge', 'Enchantments', 'Barrier'],
     buildPaths: [
-      'Blade: sharpen the Obsidian Blade and swing it',
-      'Arcana: gain it, then spend it on big cards',
-      'Court: create cards and play many',
+      'Edge: imbue often and discharge one at a time',
+      'Burst: fill both positions, then discharge them together',
+      'Ward: weave Wards and Barrier, with payoffs for what the blade holds',
     ],
     howTo: [
-      'Arcana is a second resource that lasts the whole fight. You start every fight with 3 and gain 1 more each turn. Cards with an orange orb spend it; others gain it.',
-      'The Obsidian Blade (2 Mana, Hold) comes to your hand on your first turn. Every Sharpen makes it hit harder for the rest of the fight, and some Auras make it strike every enemy or strike twice.',
-      'Court cards create cards: Retainers (free Attacks and guards), Neutral cards, Rubble. Created cards feed the Auras that count them.',
+      'Your Obsidian Blade holds two enchantments (above your hero). Spells such as Ember Inscription Imbue one; with both taken, you choose which one the new one replaces.',
+      'Blade attacks such as Obsidian Cut Discharge them: Ember adds 3 to the first hit, Glass breaks for 2 on every enemy after the attack, Ward gives 3 Barrier. Spend one now, or keep it for a bigger attack.',
+      'An enchantment lasts until you discharge it or the fight ends. Some attacks discharge both at once.',
     ],
   },
   drunkard: {
@@ -722,6 +720,7 @@ export function canonicalCard(id: string): string {
 export const CLASS_REWORKS: Partial<Record<HeroId, { version: number; summary: string }>> = {
   knight: { version: 1, summary: 'Guard, Riposte and Thorns' },
   assassin: { version: 1, summary: 'Preparation and embedded knives' },
+  spellblade: { version: 1, summary: 'Imbue and Discharge' },
 };
 
 /** A Riftwalker id as it is now: an old id becomes its class id, and anything else comes back as it was. */

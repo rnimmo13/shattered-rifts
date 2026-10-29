@@ -23,6 +23,11 @@ import {
   MAX_SNARES,
   KNIFE_MAX,
   PREP_MAX,
+  ENCHANTS,
+  ENCHANT_SLOTS,
+  EMBER_DAMAGE,
+  GLASS_DAMAGE,
+  WARD_BARRIER,
   RADIANT_ENTER_MANA,
   RulesError,
   STANCES,
@@ -31,6 +36,7 @@ import {
   tierMight,
   clone,
   type Action,
+  type Enchant,
   type CardDef,
   type CardId,
   type CardInst,
@@ -115,6 +121,10 @@ interface Act {
   /** knives this card has pulled so far, and the stacks of a status it has spent (Preparation) */
   extracted: number;
   spentBy: Partial<Record<StatusId, number>>;
+  /** (the Spellblade) what the card has discharged and not yet used: Ember damage for its next hit, Glass to break after its attack */
+  ember: number;
+  glass: number;
+  discharged: number;
 }
 
 const mkAct = (actor: Unit, extra: Partial<Act> = {}): Act => ({
@@ -141,6 +151,9 @@ const mkAct = (actor: Unit, extra: Partial<Act> = {}): Act => ({
   struck: new Map(),
   extracted: 0,
   spentBy: {},
+  ember: 0,
+  glass: 0,
+  discharged: 0,
   ...extra,
 });
 
@@ -540,6 +553,112 @@ function openUp(r: Run, u: Unit, earned: boolean): void {
   if (earned) fireTriggers(r, r.s.sides[other(u.side)], 'opening', { target: u });
 }
 
+/** (the Spellblade) the enchantments changed: the screen is told. */
+function showEnchants(r: Run, side: SideState, spent?: Enchant[]): void {
+  r.ev.push({
+    type: 'enchant',
+    side: side.id,
+    enchants: [...(side.enchants ?? [])],
+    ...(spent?.length ? { spent } : {}),
+  });
+}
+
+/**
+ * Imbue an enchantment (DECISIONS #417): into a free position; with both taken, the player chooses which one it replaces (with no one
+ * to ask, the oldest). `ifRoom`: only into a free position.
+ */
+function imbue(r: Run, a: Act, side: SideState, kind: Enchant, ifRoom: boolean): void {
+  const list = (side.enchants ??= []);
+  if (list.length >= ENCHANT_SLOTS) {
+    if (ifRoom) return;
+    if (a.pick) {
+      r.s.pending = {
+        kind: 'enchant',
+        charge: kind,
+        pool: list.map((_, i) => `e${i}`),
+        min: 1,
+        max: 1,
+        rest: [],
+        actor: a.actor.id,
+        target: a.target?.id ?? null,
+        finish: null,
+        x: a.x,
+      };
+      r.ev.push({ type: 'pending', side: side.id, kind: 'enchant' });
+      return;
+    }
+    list.shift();
+  }
+  list.push(kind);
+  showEnchants(r, side);
+  fireTriggers(r, side, 'imbue');
+}
+
+/** Discharge 1 or 2 enchantments: with two different ones and a single discharge, the player chooses (with no one to ask, the oldest). */
+function discharge(r: Run, a: Act, side: SideState, count: number): void {
+  const list = side.enchants ?? [];
+  if (!list.length) return;
+  if (count >= 2 || list.length === 1) {
+    spendCharges(
+      r,
+      a,
+      side,
+      list.map((_, i) => i),
+    );
+    return;
+  }
+  if (list[0] === list[1] || !a.pick) {
+    spendCharges(r, a, side, [0]);
+    return;
+  }
+  r.s.pending = {
+    kind: 'discharge',
+    pool: list.map((_, i) => `e${i}`),
+    min: 1,
+    max: 1,
+    rest: [],
+    actor: a.actor.id,
+    target: a.target?.id ?? null,
+    finish: null,
+    x: a.x,
+  };
+  r.ev.push({ type: 'pending', side: side.id, kind: 'discharge' });
+}
+
+/** The chosen enchantments are spent, once each: Ward's Barrier now, Ember and Glass for the card's attack (Twin Edge doubles the first). */
+function spendCharges(r: Run, a: Act, side: SideState, at: number[]): void {
+  const list = side.enchants ?? [];
+  const kinds = at.map((i) => list[i]).filter((k): k is Enchant => !!k);
+  if (!kinds.length) return;
+  side.enchants = list.filter((_, i) => !at.includes(i));
+  const hero = heroOf(side);
+  const twin = !!hero && stacks(hero, 'twinedge') > 0;
+  if (hero && twin) addStatus(r, hero, 'twinedge', -stacks(hero, 'twinedge'));
+  showEnchants(r, side, kinds);
+  kinds.forEach((k, j) => {
+    const times = twin && j === 0 ? 2 : 1;
+    if (k === 'ember') a.ember += EMBER_DAMAGE * times;
+    else if (k === 'glass') a.glass += GLASS_DAMAGE * times;
+    else if (hero) execOp(r, a, { op: 'barrier', amount: WARD_BARRIER * times, to: 'self' });
+  });
+  a.discharged += kinds.length;
+  fireTriggers(r, side, 'discharge');
+  if (new Set(kinds).size >= 2) fireTriggers(r, side, 'dischargeMixed');
+  // (a card with no attack to land on: its Glass breaks now, and its Ember is lost)
+  if (!a.card?.effects.some((o) => o.op === 'damage')) {
+    a.ember = 0;
+    breakGlass(r, a);
+  }
+}
+
+/** A discharged Glass breaks: its damage to every enemy still standing, a shard and not an attack (no Might, no Exposed). */
+function breakGlass(r: Run, a: Act): void {
+  if (a.glass <= 0 || r.s.winner) return;
+  const g = a.glass;
+  a.glass = 0;
+  runOps(r, mkAct(a.actor), [{ op: 'damage', amount: g, to: 'allFoes' }]);
+}
+
 /** A Riposte spends the target's Opening; returns whether it had one. */
 function spendOpening(r: Run, side: SideState, t: Unit | null): boolean {
   if (!t || t.hp <= 0 || t.side === side.id || stacks(t, 'opening') <= 0) return false;
@@ -878,6 +997,15 @@ function metricValue(
       return a.extracted;
     case 'prepSpent':
       return a.spentBy.prep ?? 0;
+    // (the Spellblade)
+    case 'enchants':
+      return sd.enchants?.length ?? 0;
+    case 'enchantKinds':
+      return new Set(sd.enchants ?? []).size;
+    case 'wards':
+      return (sd.enchants ?? []).filter((k) => k === 'ward').length;
+    case 'discharged':
+      return a.discharged;
   }
 }
 
@@ -970,8 +1098,11 @@ function runOps(r: Run, a: Act, ops: readonly Op[]): void {
     execOp(r, a, ops[i] as Op);
     reap(r);
     if (r.s.pending) {
-      // a choice was asked for: the rest of this card waits for the answer
+      // a choice was asked for: the rest of this card waits for the answer (with what it has discharged and not yet used)
       r.s.pending.rest = ops.slice(i + 1);
+      if (a.ember) r.s.pending.ember = a.ember;
+      if (a.glass) r.s.pending.glass = a.glass;
+      if (a.discharged) r.s.pending.discharged = a.discharged;
       return;
     }
   }
@@ -1020,6 +1151,9 @@ function execOp(r: Run, a: Act, op: Op): void {
       const riposte =
         op.riposte && to === 'target' && spendOpening(r, side, a.target) ? op.riposte : 0;
       const ripTarget = riposte ? a.target : null;
+      // (the Spellblade) a discharged Ember lands on the first hit of the attack
+      let ember = a.ember;
+      a.ember = 0;
       for (let i = 0; i < hits; i++) {
         // (a hit that wins the fight still pays its Lifesteal below: HP carries on in a run)
         if (r.s.winner) break;
@@ -1056,6 +1190,7 @@ function execOp(r: Run, a: Act, op: Op): void {
                 vigor +
                 deft +
                 (t === ripTarget ? riposte : 0) +
+                ember +
                 resonanceOf(a) +
                 marrow) *
                 lone *
@@ -1064,6 +1199,7 @@ function execOp(r: Run, a: Act, op: Op): void {
             ),
             to === 'target' || to === 'front',
           );
+          ember = 0;
           took += lostHere;
           if (reaping && lostHere > 0 && t.side !== a.actor.side && t.hp > 0)
             addStatus(r, t, 'doom', lostHere);
@@ -1085,6 +1221,8 @@ function execOp(r: Run, a: Act, op: Op): void {
       }
       a.dealt = took;
       if (vigor > 0) addStatus(r, a.actor, 'vigor', -vigor);
+      // (the Spellblade) a discharged Glass breaks once the attack is done, on every enemy still standing
+      breakGlass(r, a);
       // Lifesteal: the attacker heals a share of the HP the attack took off (DECISIONS #285)
       if (op.lifesteal && took > 0 && a.actor.hp > 0)
         healUnit(r, a.actor, Math.floor((took * op.lifesteal) / 100));
@@ -2012,11 +2150,43 @@ function execOp(r: Run, a: Act, op: Op): void {
         if (n <= 0) continue;
         addStatus(r, t, 'knives', -n);
         a.extracted += n;
-        for (let k = 0; k < n && !r.s.winner && t.hp > 0; k++) {
+        // (every knife pulled pays, even once the enemy has died of the earlier ones: what lands on it then simply does nothing)
+        for (let k = 0; k < n && !r.s.winner; k++) {
           if (op.ops?.length) runOps(r, { ...a, target: t }, op.ops);
           if (!r.s.winner) fireTriggers(r, side, 'extract', { target: t });
         }
       }
+      return;
+    }
+    // --- the Spellblade's enchantments (DECISIONS #417)
+    case 'imbue':
+      imbue(r, a, side, op.kind, op.ifRoom === true);
+      return;
+    case 'discharge':
+      discharge(r, a, side, op.count);
+      return;
+    case 'recast': {
+      const list = side.enchants ?? [];
+      const newest = list[list.length - 1];
+      if (!newest) return;
+      const into = ENCHANTS.filter((k) => k !== newest);
+      if (!a.pick) {
+        list[list.length - 1] = into[0] as Enchant;
+        showEnchants(r, side);
+        return;
+      }
+      r.s.pending = {
+        kind: 'recast',
+        pool: [...into],
+        min: 1,
+        max: 1,
+        rest: [],
+        actor: a.actor.id,
+        target: a.target?.id ?? null,
+        finish: null,
+        x: a.x,
+      };
+      r.ev.push({ type: 'pending', side: side.id, kind: 'recast' });
       return;
     }
     case 'spend': {
@@ -3812,22 +3982,41 @@ function pickCards(r: Run, action: Extract<Action, { type: 'pick' }>): void {
       sd.hand.push(c);
       transformCard(r, sd, c, p.into ?? c.card);
     }
-  else if (p.kind !== 'copy') for (const c of picked) moveFromHand(r, sd, c, p.kind);
+  else if (p.kind === 'discard' || p.kind === 'exhaust')
+    for (const c of picked) moveFromHand(r, sd, c, p.kind);
   const hero = findUnit(r.s, p.actor);
   const fin = p.finish;
   const cd = fin ? cardDef(r.db, fin.card) : null;
-  if (hero && !r.s.winner)
-    runOps(
-      r,
-      mkAct(hero, {
-        target: findUnit(r.s, p.target) ?? null,
-        card: cd,
-        inst: fin,
-        x: p.x,
-        pick: true,
-      }),
-      p.rest,
-    );
+  if (hero && !r.s.winner) {
+    // (what the card had discharged before the choice still waits for its attack)
+    const act = mkAct(hero, {
+      target: findUnit(r.s, p.target) ?? null,
+      card: cd,
+      inst: fin,
+      x: p.x,
+      pick: true,
+      ember: p.ember ?? 0,
+      glass: p.glass ?? 0,
+      discharged: p.discharged ?? 0,
+    });
+    // (the Spellblade's choices: which enchantment the new one replaces, which to discharge, what the newest becomes)
+    const list = sd.enchants ?? [];
+    const at = Number((ids[0] ?? '').replace(/^e/, ''));
+    if (p.kind === 'enchant' && p.charge && list[at]) {
+      list.splice(at, 1);
+      list.push(p.charge);
+      showEnchants(r, sd);
+      fireTriggers(r, sd, 'imbue');
+    } else if (p.kind === 'discharge') spendCharges(r, act, sd, [at]);
+    else if (p.kind === 'recast' && list.length) {
+      list[list.length - 1] = ids[0] as Enchant;
+      showEnchants(r, sd);
+    }
+    const asked = r.s.pending as CombatState['pending'];
+    // (a choice that asked for another one: the rest of the card waits for it too)
+    if (asked) asked.rest = [...asked.rest, ...p.rest];
+    else runOps(r, act, p.rest);
+  }
   // the rest of the card may have asked for another choice
   const more = r.s.pending as CombatState['pending'];
   if (more) {
@@ -3902,6 +4091,8 @@ export interface LiveDamage {
   calc: boolean;
   /** (the Knight) the live number already counts a Riposte bonus, against an Open target */
   riposte?: boolean;
+  /** (the Spellblade) a discharged Ember's damage on the first hit only, of an attack that hits more than once (lo-hi: by the choice) */
+  first?: { lo: number; hi: number };
 }
 
 /**
@@ -3952,7 +4143,26 @@ export function previewCardDamage(
   // (the Assassin: a Preparation spend or a knife pull before the damage is worked out as the engine will do it, DECISIONS #416)
   let pull = 0;
   let riposted = false;
+  // (the Spellblade: what a discharge before the attack adds to its first hit, at the least and at the most the choice allows)
+  let emberLo = 0;
+  let emberHi = 0;
   def.effects.forEach((op, i) => {
+    if (op.op === 'discharge' && !earlier) {
+      const list = sd.enchants ?? [];
+      const twin = stacks(hero, 'twinedge') > 0 ? 2 : 1;
+      const worth = (at: number[]): number =>
+        at.reduce(
+          (n, k, j) => n + (list[k] === 'ember' ? EMBER_DAMAGE * (j === 0 ? twin : 1) : 0),
+          0,
+        );
+      if (op.count >= 2 || list.length <= 1) emberLo = emberHi = worth(list.map((_, k) => k));
+      else if (list[0] === list[1]) emberLo = emberHi = worth([0]);
+      else {
+        emberLo = Math.min(worth([0]), worth([1]));
+        emberHi = Math.max(worth([0]), worth([1]));
+      }
+      return;
+    }
     if (op.op === 'spend' && !earlier) {
       a.spentBy[op.status] = Math.min(stacks(hero, op.status), Math.max(0, op.amount));
       return;
@@ -3986,7 +4196,12 @@ export function previewCardDamage(
     const lone = op.lonePct && (hitsAll ? foes.length === 1 : true) ? 1 + op.lonePct / 100 : 1;
     const v = vigor;
     vigor = 0;
-    const one = (t: Unit | null): number => {
+    // (an Ember lands on the first hit: in the number of a one-hit attack, beside it for a many-hit one)
+    const many = (op.hits ?? 1) > 1 || op.scale?.into === 'hits' || hitsAll;
+    const [eLo, eHi] = many ? [0, 0] : [emberLo, emberHi];
+    const firstBonus = many && emberHi > 0 ? { lo: emberLo, hi: emberHi } : null;
+    emberLo = emberHi = 0;
+    const one = (t: Unit | null, ember = 0): number => {
       // (with no target chosen yet, a card that reads "the target's Bleed" reads each enemy's in turn)
       const at = { ...a, target: op.to === 'target' && !chosen ? t : a.target };
       // (the knives a pull before this takes from the card's target)
@@ -3997,19 +4212,22 @@ export function previewCardDamage(
         op.riposte && op.to === 'target' && t && stacks(t, 'opening') > 0 ? op.riposte : 0;
       if (rip && chosen) riposted = true;
       const n = modifiedDamage(
-        Math.round((amountOf(r, at, op.amount, op.scale, t) + edge + v + rip) * lone),
+        Math.round((amountOf(r, at, op.amount, op.scale, t) + edge + v + rip + ember) * lone),
         hero,
         t,
         def.kind === 'attack',
       );
       // Ghostly lets 1 through, Shielded none
-      if (t && stacks(t, 'shielded') > 0) return 0;
+      // (a pull before the attack hits first, so its own damage takes the Shield off: Knife Work's)
+      if (t && stacks(t, 'shielded') > 0 && !(at.extracted > 0)) return 0;
       return t && stacks(t, 'ghostly') > 0 && n > 1 ? 1 : n;
     };
-    const vals = pool.length ? pool.map(one) : [one(null)];
+    const targets = pool.length ? pool : [null];
+    const vals = [...targets.map((t) => one(t, eLo)), ...targets.map((t) => one(t, eHi))];
     out.set(i, {
       lo: Math.min(...vals),
       hi: Math.max(...vals),
+      ...(firstBonus ? { first: firstBonus } : {}),
       printed: op.amount,
       // (Sharpen is not a formula to the player: the sharpened total simply replaces the printed number)
       calc: !!op.scale && op.scale.into !== 'hits' && op.scale.by !== 'bonus',

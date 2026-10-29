@@ -2527,3 +2527,58 @@
   max-width: none;
   max-height: none;
 }
+
+/* the Spellblade's two enchantment positions (DECISIONS #417): a mark and a word each, so they read without colour */
+.enchants {
+  display: flex;
+  gap: 0.4rem;
+  padding: 0.2rem 0;
+}
+.enchant {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 3.6rem;
+  padding: 0.25rem 0.4rem;
+  border-radius: 0.5rem;
+  border: 1px solid rgb(255 255 255 / 0.3);
+  background: rgb(10 8 16 / 0.85);
+  cursor: help;
+}
+.enchant b {
+  font-size: 1.3rem;
+  line-height: 1.1;
+}
+.enchant small {
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.enchant.is-empty {
+  border-style: dashed;
+  opacity: 0.6;
+}
+.enchant--ember {
+  color: #ffb27a;
+  border-color: #d9692c;
+}
+.enchant--glass {
+  color: #bfe7ff;
+  border-color: #6fb6e0;
+}
+.enchant--ward {
+  color: #f2e6b8;
+  border-color: #c9ad55;
+}
+.enchant.is-spent {
+  outline: 2px solid #fff;
+  outline-offset: 1px;
+}
+/* (a pick of an enchantment: the tiles in the choice dialog) */
+.pick--charge .enchant {
+  min-width: 6rem;
+  padding: 0.6rem 0.8rem;
+}
+.pick--charge .enchant b {
+  font-size: 2rem;
+}

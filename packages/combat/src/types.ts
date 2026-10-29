@@ -83,7 +83,9 @@ export type StatusId =
   | 'opening' // Open: a hit of its was fully stopped by a Guard hero's Barrier (at most 1); a Riposte against it spends it
   // (the Assassin's knives and Preparation, DECISIONS #416)
   | 'knives' // knives embedded in it by the other side (at most KNIFE_MAX); a card pulls them for a payoff
-  | 'prep'; // Preparation: the Assassin's setup, at most PREP_MAX, kept between turns; finishers spend it
+  | 'prep' // Preparation: the Assassin's setup, at most PREP_MAX, kept between turns; finishers spend it
+  // (the Spellblade's, DECISIONS #417)
+  | 'twinedge'; // the next enchantment you discharge this turn takes effect twice (it is still spent once)
 export const STATUS_IDS: readonly StatusId[] = [
   'exposed',
   'faltering',
@@ -151,6 +153,7 @@ export const STATUS_IDS: readonly StatusId[] = [
   'opening',
   'knives',
   'prep',
+  'twinedge',
 ];
 /** Debuffs: a Steadfast unit ignores the next one put on it. */
 export const DEBUFFS: readonly StatusId[] = [
@@ -174,6 +177,17 @@ export const EDGE_TAG = 'knife';
 /** The most knives one unit can have embedded, and the most Preparation a hero can hold (the Assassin, DECISIONS #416). */
 export const KNIFE_MAX = 3;
 export const PREP_MAX = 3;
+/**
+ * The Spellblade's enchantments (DECISIONS #417): her Obsidian Blade holds ENCHANT_SLOTS of them, in the order they were imbued. A
+ * discharge spends them: Ember adds EMBER_DAMAGE to the first hit of the attack, Glass deals GLASS_DAMAGE to every enemy after it (a
+ * shard, not an attack), Ward gives WARD_BARRIER at once.
+ */
+export type Enchant = 'ember' | 'glass' | 'ward';
+export const ENCHANTS: readonly Enchant[] = ['ember', 'glass', 'ward'];
+export const ENCHANT_SLOTS = 2;
+export const EMBER_DAMAGE = 3;
+export const GLASS_DAMAGE = 2;
+export const WARD_BARRIER = 3;
 /** Cards with this tag are "the blade" for Blade Sweep, Blade Echo and Bladebane (Obsidia's Obsidian Blade). */
 export const BLADE_TAG = 'blade';
 /** Orbit pays out for every this much Mana spent. */
@@ -310,7 +324,12 @@ export type Metric =
   | 'knivesAll' // knives embedded in all enemies together
   | 'prep' // (about a unit) its Preparation
   | 'extracted' // knives the card being played has pulled so far
-  | 'prepSpent'; // Preparation the card being played has spent
+  | 'prepSpent' // Preparation the card being played has spent
+  // (the Spellblade, DECISIONS #417)
+  | 'enchants' // enchantments on your blade (0-2)
+  | 'enchantKinds' // different kinds of them
+  | 'wards' // Ward enchantments on your blade
+  | 'discharged'; // enchantments the card being played has discharged
 export interface Scale {
   by: Metric;
   mult?: number;
@@ -360,7 +379,11 @@ export type TriggerWhen =
   // (the Assassin's knives, DECISIONS #416; the target is that enemy)
   | 'embed' // you embedded a knife in an enemy
   | 'extract' // you pulled a knife from an enemy
-  | 'spend'; // you spent stacks of a status of your own (`status` narrows which: Preparation)
+  | 'spend' // you spent stacks of a status of your own (`status` narrows which: Preparation)
+  // (the Spellblade's, DECISIONS #417)
+  | 'imbue' // you imbued an enchantment
+  | 'discharge' // a card of yours discharged at least one enchantment
+  | 'dischargeMixed'; // a card discharged two different kinds at once
 
 export type Op =
   /** `lonePct`: Point Blank, this much more damage (percent) when it hits only one enemy */
@@ -647,7 +670,17 @@ export type Op =
   /** pull up to `amount` knives from the target (or every enemy): each knife pulled runs `ops` once, aimed at that enemy, and is gone */
   | { op: 'extract'; amount: number; to?: 'target' | 'allFoes'; ops?: Op[] }
   /** spend up to `amount` stacks of a status of your own (Preparation): the `prepSpent` metric says how many were spent */
-  | { op: 'spend'; status: StatusId; amount: number };
+  | { op: 'spend'; status: StatusId; amount: number }
+  // --- the Spellblade's enchantments (DECISIONS #417)
+  /**
+   * imbue an enchantment: into a free position; with both taken, the player chooses which one it replaces (a replacement is not a
+   * discharge). `ifRoom`: only when a position is free (nothing is asked or replaced)
+   */
+  | { op: 'imbue'; kind: Enchant; ifRoom?: boolean }
+  /** discharge 1 (the player chooses when the two differ) or 2 (both) enchantments: put it before the card's damage */
+  | { op: 'discharge'; count: 1 | 2 }
+  /** your newest enchantment becomes another kind (the player chooses which) */
+  | { op: 'recast' };
 
 export type CardKind = 'attack' | 'skill' | 'power' | 'summon' | 'snare';
 /** foe = an enemy; friend = any unit of yours (hero or ally); ally = one of your allies, never the hero */
@@ -1019,7 +1052,24 @@ export interface PowerState {
 
 /** A choice the acting player owes before anything else happens. */
 export interface Pending {
-  kind: 'discard' | 'exhaust' | 'scry' | 'copy' | 'topdeck' | 'transform';
+  /** (the Spellblade's: 'enchant' which enchantment a new one replaces, 'discharge' which to spend, 'recast' what the newest becomes;
+   * their pool is enchantment positions 'e0'/'e1', or kinds for 'recast') */
+  kind:
+    | 'discard'
+    | 'exhaust'
+    | 'scry'
+    | 'copy'
+    | 'topdeck'
+    | 'transform'
+    | 'enchant'
+    | 'discharge'
+    | 'recast';
+  /** 'enchant': the enchantment being imbued */
+  charge?: Enchant;
+  /** what the card had discharged so far (Ember's damage still to land, Glass still to break), carried over the choice */
+  ember?: number;
+  glass?: number;
+  discharged?: number;
   /** 'copy': how many copies come next turn */
   times?: number;
   /** for 'transform': what the chosen cards become */
@@ -1127,6 +1177,8 @@ export interface SideState {
   deaths?: number;
   /** cards cost this much more this turn (Borrowed Time) */
   costTax?: number;
+  /** (the Spellblade) the enchantments on her blade, oldest first (at most ENCHANT_SLOTS) */
+  enchants?: Enchant[];
 }
 
 export type Winner = Side | 'draw';
@@ -1290,6 +1342,8 @@ export type CombatEvent =
   /** `index`: where in the row it stood (the newest can go first, Consuming Shadow) */
   | { type: 'runeGone'; side: Side; rune: string; index?: number }
   | { type: 'stance'; unit: UnitId; stance: Stance | 'none' }
+  /** the enchantments on a side's blade changed (the Spellblade's); `spent`: these were just discharged */
+  | { type: 'enchant'; side: Side; enchants: Enchant[]; spent?: Enchant[] }
   | { type: 'power'; side: Side; card: CardId }
   | { type: 'transform'; side: Side; card: InstId; def: CardId; costMod?: number }
   | { type: 'forge'; side: Side; card: CardId; amount: number }

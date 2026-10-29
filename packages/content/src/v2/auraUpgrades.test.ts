@@ -17,10 +17,6 @@ import { COMBAT_DB as db, RIFTWALKERS } from './index';
 const COST_CUT_AURAS = [
   // (the Knight's Ironclad list went with her rework, DECISIONS #415: her new Auras all have hand-written upgrades)
   // copies of Slay the Spire cards that get cheaper there (Spellblade, Necromancer, Shaman, Assassin)
-  'echoing-blade',
-  'orbit',
-  'sigil-of-wandering',
-  'tyrants-gaze',
   'ever-watchful',
   'grimoire-gale',
   'phylactery',

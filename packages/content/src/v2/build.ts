@@ -4,6 +4,7 @@ import type {
   CardDef,
   CardKind,
   CardTarget,
+  Enchant,
   Move,
   Op,
   Pattern,
@@ -320,6 +321,17 @@ export const pull = (amount: number, each?: Op[], to?: 'allFoes'): Op => ({
 export const prepare = (n = 1): Op => status('prep', n);
 /** Spend up to `n` Preparation (99: all of it); read how much with per('prepSpent'). */
 export const spendPrep = (n = 3): Op => ({ op: 'spend', status: 'prep', amount: n });
+
+// --- the Spellblade's enchantments (DECISIONS #417) --------------------------------------------------------------------
+/** Imbue an enchantment on the Obsidian Blade (a choice replaces one when both positions are taken; `ifRoom`: only into a free one). */
+export const imbue = (kind: Enchant, ifRoom = false): Op => ({
+  op: 'imbue',
+  kind,
+  ...(ifRoom ? { ifRoom } : {}),
+});
+/** Discharge one enchantment (chosen when the two differ) or both: put it before the card's damage. */
+export const discharge = (count: 1 | 2 = 1): Op => ({ op: 'discharge', count });
+export const recast: Op = { op: 'recast' };
 export const returnPlayed: Op = { op: 'returnPlayed' };
 /** a status card's tag (Wound, Haze, Scorch, Muck, Drain): the cards that pay off when you make one look for it */
 export const STATUS_TAG = 'status';
