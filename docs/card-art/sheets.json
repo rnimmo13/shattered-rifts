@@ -1390,5 +1390,179 @@
    "wound",
    "static"
   ]
+ },
+ {
+  "name": "shaman-m01",
+  "hero": "shaman",
+  "cols": 3,
+  "rows": 3,
+  "ids": [
+   "absolute-zero",
+   "avalanche",
+   "call-the-elder-tree",
+   "call-the-moon-owl",
+   "calm-before-the-storm",
+   "carve-the-spirit-pole",
+   "eye-of-the-tempest",
+   "flash-burn",
+   "frostbound"
+  ]
+ },
+ {
+  "name": "shaman-m02",
+  "hero": "shaman",
+  "cols": 3,
+  "rows": 3,
+  "ids": [
+   "glacial-fortress",
+   "great-spirits-call",
+   "harmony",
+   "heart-of-the-pyre",
+   "inferno",
+   "maelstrom",
+   "phoenix-feather",
+   "spirit-chorus",
+   "spirit-walk"
+  ]
+ },
+ {
+  "name": "shaman-m03",
+  "hero": "shaman",
+  "cols": 3,
+  "rows": 3,
+  "ids": [
+   "spiritstorm",
+   "storm-sovereign",
+   "superstorm",
+   "winters-embrace",
+   "ancestral-exchange",
+   "charged-sky",
+   "ember-lance",
+   "frozen-grasp",
+   "glacier-guard"
+  ]
+ },
+ {
+  "name": "shaman-m04",
+  "hero": "shaman",
+  "cols": 3,
+  "rows": 3,
+  "ids": [
+   "ice-mirror",
+   "frost-shatter",
+   "ice-wall",
+   "immolate",
+   "last-called",
+   "lightning-rod",
+   "pyroclasm",
+   "raise-the-pole",
+   "rally-the-spirits"
+  ]
+ },
+ {
+  "name": "shaman-m05",
+  "hero": "shaman",
+  "cols": 3,
+  "rows": 3,
+  "ids": [
+   "shamans-insight",
+   "smoulder",
+   "spirit-lance",
+   "spirit-surge",
+   "static-veil",
+   "storm-front",
+   "tempest-call",
+   "thunder-fork",
+   "thunder-roost"
+  ]
+ },
+ {
+  "name": "shaman-m06",
+  "hero": "shaman",
+  "cols": 3,
+  "rows": 3,
+  "ids": [
+   "thunderclap",
+   "totem-circle",
+   "totem-drum",
+   "totem-strike",
+   "spreading-flames",
+   "wardkeepers-pact",
+   "bear-hide",
+   "bears-guard",
+   "call-again"
+  ]
+ },
+ {
+  "name": "shaman-m07",
+  "hero": "shaman",
+  "cols": 3,
+  "rows": 3,
+  "ids": [
+   "chain-lightning",
+   "chill-touch",
+   "firebrand",
+   "flame-spear",
+   "flare",
+   "gale-call",
+   "hawk-feather",
+   "hawks-dive",
+   "hoarfrost"
+  ]
+ },
+ {
+  "name": "shaman-m08",
+  "hero": "shaman",
+  "cols": 3,
+  "rows": 3,
+  "ids": [
+   "kindle",
+   "raise-a-totem",
+   "read-the-winds",
+   "rime-shield",
+   "searing-lash",
+   "spark-fork",
+   "spirit-strike",
+   "spirit-ward",
+   "storm-feather"
+  ]
+ },
+ {
+  "name": "shaman-m09",
+  "hero": "shaman",
+  "cols": 3,
+  "rows": 3,
+  "ids": [
+   "talon-strike",
+   "thunderbird-call",
+   "thunderbirds-cry",
+   "turn-the-wheel",
+   "twin-cinders",
+   "wind-wall",
+   "wind-whisper",
+   "ember-bolt",
+   "forked-lightning"
+  ]
+ },
+ {
+  "name": "shaman-m10",
+  "hero": "shaman",
+  "cols": 3,
+  "rows": 1,
+  "ids": [
+   "frost-ward",
+   "spirit-call"
+  ]
+ },
+ {
+  "name": "drunkard-m01",
+  "hero": "drunkard",
+  "cols": 3,
+  "rows": 1,
+  "ids": [
+   "take-it-on-the-chin",
+   "bar-fight",
+   "nurse-the-hangover"
+  ]
  }
 ]

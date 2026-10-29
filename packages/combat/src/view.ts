@@ -1501,7 +1501,13 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
     case 'forge': {
       const word = forgeWord(db, o.card);
       if (o.scale) return `${word} ${at(o.amount, o.scale)}.`;
-      return `${word} ${o.amount} (${db.cards[o.card]?.name ?? o.card} gains ${o.amount} damage).`;
+      const target = db.cards[o.card.replace(/\+$/, '')];
+      const name = target?.name ?? o.card;
+      // (a weapon is a card of the deck: with none, the Sharpen waits for a copy, DECISIONS #436)
+      if (target?.weapon)
+        return `${word} ${o.amount} (every ${name} deals ${o.amount} more damage for the rest of the fight).`;
+      // (another card that grows, Gathering Storm grown by Tempest Call: said in full, and that it is made when there is none)
+      return `Every ${name} you have deals ${o.amount} more damage for the rest of the fight (with none, one is added to your hand).`;
     }
     // (assassin) the Silent-shaped pieces
     case 'tick': {

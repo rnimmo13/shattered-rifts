@@ -99,17 +99,26 @@ function Save-Scaled($bmp, $path, $maxH) {
   "$path ${ow}x${oh}"
 }
 
-$kinds = @('hawk', 'bear', 'elder')
 $index = [ordered]@{ totems = [ordered]@{}; spirits = [ordered]@{} }
-foreach ($sheet in @(@{ file = 'totem.png'; suffix = ''; key = 'totems'; maxH = 320 }, @{ file = 'totem-spirits.png'; suffix = '-spirit'; key = 'spirits'; maxH = 360 })) {
-  $bmp = [System.Drawing.Bitmap]::FromFile((Join-Path $srcDir $sheet.file))
-  $cuts = [TotemCut]::Cuts($bmp, 3)
-  for ($i = 0; $i -lt 3; $i++) {
-    $name = "$($kinds[$i])$($sheet.suffix).png"
+# (the second pair, the Thunderbird and the Moon Owl, docs/card-art/totem-prompts.md: cut when its sheets are in, skipped until then)
+$sheets = @(
+  @{ file = 'totem.png'; kinds = @('hawk', 'bear', 'elder'); suffix = ''; key = 'totems'; maxH = 320 },
+  @{ file = 'totem-spirits.png'; kinds = @('hawk', 'bear', 'elder'); suffix = '-spirit'; key = 'spirits'; maxH = 360 },
+  @{ file = 'totem-2.png'; kinds = @('thunderbird', 'owl'); suffix = ''; key = 'totems'; maxH = 320 },
+  @{ file = 'totem-spirits-2.png'; kinds = @('thunderbird', 'owl'); suffix = '-spirit'; key = 'spirits'; maxH = 360 }
+)
+foreach ($sheet in $sheets) {
+  $src = Join-Path $srcDir $sheet.file
+  if (-not (Test-Path $src)) { "skipped $($sheet.file) (not in yet)"; continue }
+  $bmp = [System.Drawing.Bitmap]::FromFile($src)
+  $n = $sheet.kinds.Count
+  $cuts = [TotemCut]::Cuts($bmp, $n)
+  for ($i = 0; $i -lt $n; $i++) {
+    $name = "$($sheet.kinds[$i])$($sheet.suffix).png"
     $piece = [TotemCut]::Piece($bmp, $cuts[$i], $cuts[$i + 1])
     Save-Scaled $piece (Join-Path $outDir $name) $sheet.maxH
     $piece.Dispose()
-    $index[$sheet.key][$kinds[$i]] = "totems/$name"
+    $index[$sheet.key][$sheet.kinds[$i]] = "totems/$name"
   }
   $bmp.Dispose()
 }
