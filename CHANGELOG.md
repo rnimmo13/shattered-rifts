@@ -5,6 +5,7 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **The Shaman's totems** sit in order under your Boons (the next to act is marked), not in a floating window. Tempest Call says plainly what it does.
 - **You can remove the Old Twelve Gauge and the Obsidian Blade:** they are now cards of the Drunkard's and Spellblade's starting decks (always in your opening hand), and shrines and merchants can take them out like any card. Sharpen no longer makes one when you have none.
 - **The open rift shows the three cards** in its option boxes, so you can see what you are reaching for.
 - **The Drunkard's pain pays:** cards that answer losing HP say that Hangover counts, and Glass Jaw, The Glass Palace and Mean Drunk now pay by how much you lost (capped). New: Bar Fight, Nurse the Hangover and Take It on the Chin.

@@ -1503,19 +1503,21 @@ export function FightView(props: {
     const held = sv?.totems;
     if (!sv || !held) return null;
     const hero = sv.units.find((u) => u.kind === 'hero');
+    // (DECISIONS #438) a fixed block in that side's column, under the Boons: no floating window; the front totem, the next to act,
+    // first and marked "Next"
     return (
-      <FloatPanel
-        id={side === mySide ? 'totems-mine' : 'totems-foe'}
-        className="fight__aux fight__aux--totems"
-        title={side === mySide ? 'Totems' : 'Their Totems'}
+      <section
+        className="fight__totems"
+        aria-label={side === mySide ? 'Your totems' : 'Their totems'}
       >
+        <h3 className="fight__totemsTitle">{side === mySide ? 'Totems' : 'Their Totems'}</h3>
         <TotemPanel
           db={db}
           totems={held}
           spirit={hero?.statuses.spirit ?? 0}
           summon={summon?.side === side ? summon : null}
         />
-      </FloatPanel>
+      </section>
     );
   };
   // (the Monk's Martial Forms: his form, its progress this turn and his Mastery, as a panel in that side's column, DECISIONS #419)
@@ -2006,6 +2008,7 @@ export function FightView(props: {
           {/* your side of the screen, top left under the top bar: your Boons, then your Auras (clear of your HP and name) */}
           {/* (your Riftwalker's innate trait is always shown first, so it can be read in the fight) */}
           {(traitOf(setup[mySide]) ||
+            !!view?.sides[mySide].totems ||
             (mine.boons?.length ?? 0) > 0 ||
             view?.sides[mySide].suitsTurn ||
             (me?.powers.length ?? 0) > 0) && (
