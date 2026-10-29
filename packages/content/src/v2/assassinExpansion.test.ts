@@ -225,17 +225,18 @@ describe('the Assassin expansion (DECISIONS #424)', () => {
       expect(hero(s).hp).toBe(MAX - (9 - 6));
     });
 
-    it('The Waiting Blade: a turn begun on 3 Preparation gives 1 Mana, a card and 3 Barrier; below 3 nothing', () => {
+    it('The Waiting Blade: a turn begun on 3 Preparation gives a card and 2 Barrier, no Mana; below 3 nothing', () => {
       let s = fight(['the-waiting-blade']);
       s = play(s, 'the-waiting-blade');
       hero(s).statuses.prep = 3;
       s = enemyTurn(s, 'guard');
-      expect(s.sides.a.mana).toBe(RIFTWALKERS.assassin.hero.mana + 1);
+      expect(s.sides.a.mana).toBe(RIFTWALKERS.assassin.hero.mana);
       expect(s.sides.a.hand.length).toBe(RIFTWALKERS.assassin.hero.handSize + 1);
-      expect(hero(s).barrier).toBe(3);
+      expect(hero(s).barrier).toBe(2);
       hero(s).statuses.prep = 2;
       s = enemyTurn(s, 'guard');
-      expect(s.sides.a.mana).toBe(RIFTWALKERS.assassin.hero.mana);
+      expect(s.sides.a.hand.length).toBe(RIFTWALKERS.assassin.hero.handSize);
+      expect(hero(s).barrier).toBe(0);
     });
   });
 

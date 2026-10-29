@@ -46,6 +46,8 @@ const afterDefensive = (...ops: Op[]): Op => when('defensiveTurn', { atLeast: 1 
 const ifExposed = (...ops: Op[]): Op => when('exposed', { atLeast: 1, of: 'target' }, ops);
 /** Vigor: its next attack deals this much more (spent by that attack) */
 const vigor = (n: number): Op => status('vigor', n);
+/** Primed only when not Primed already (Coiled Stance: copies and turns never stack it onto a many-hit attack, DECISIONS #426) */
+const unprimed = (n: number): Op => when('vigor', { atMost: 0 }, [vigor(n)]);
 /** a random technique of the tag from the discard pile into the hand */
 const recover = (tag: 'defensive' | 'striking'): Op => ({
   op: 'fetch',
@@ -560,9 +562,9 @@ export const MONK: CardDef[] = [
   ),
 
   // --- Root: discipline that turns into damage (DECISIONS #426) ---
-  s('common', 'coiled-stance', 'Coiled Stance', 'skill', 1, 'none', [barrier(6), vigor(3)], {
+  s('common', 'coiled-stance', 'Coiled Stance', 'skill', 1, 'none', [barrier(6), unprimed(3)], {
     ...DEFENSIVE,
-    up: { effects: [barrier(9), vigor(3)] },
+    up: { effects: [barrier(9), unprimed(3)] },
   }),
   s(
     'common',

@@ -368,9 +368,9 @@ export const SPELLBLADE_PRICES: Record<string, Price> = {
     role: 'Edge: two triggers from one card (Cleaving Edge, Glass Guard twice)',
   },
   'edge-discipline': {
-    pts: 15.1,
-    up: 18.6,
-    how: 'Aura: ~0.9 discharges a turn that leave a charge x (draw 3 + 1 Barrier 1.2) x4',
+    pts: 13.4,
+    up: 16.9,
+    how: 'Aura: the first discharge each turn that leaves a charge (~0.8 of turns) x (draw 3 + 1 Barrier 1.2) x4',
     role: 'Edge engine: rewards spending one and keeping the other',
   },
   'shift-the-grain': {
@@ -477,10 +477,10 @@ export const SPELLBLADE_PRICES: Record<string, Price> = {
     role: 'selection: a mixed blade draws more',
   },
   'stored-light': {
-    pts: 20.7,
-    up: 24.2,
-    how: 'Aura: a full blade at the start of the turn (~55% in a holding deck) x (1 Mana 7 + 2 Barrier 2.4) x4',
-    role: 'holding payoff: a full blade carried over pays Mana to spend it',
+    pts: 18.4,
+    up: 21.9,
+    how: 'Aura: a full blade at the start of the turn (~0.85 in a holding deck: Wards are never spent) x (draw 1 (3) + 2 Barrier 2.4) x4; Opening hand 3.5 on the upgrade. No Mana (review of #425)',
+    role: 'holding payoff: a full blade carried over pays a card and Barrier',
   },
   'obsidian-resonance': {
     pts: 19.2,

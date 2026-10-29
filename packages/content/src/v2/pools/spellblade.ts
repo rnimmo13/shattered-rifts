@@ -631,7 +631,7 @@ export const SPELLBLADE: CardDef[] = [
     'power',
     1,
     'none',
-    [on('discharge', [ifHolds(draw(1), barrier(1))])],
+    [on('discharge', [ifHolds(draw(1), barrier(1))], { once: true })],
     { up: { innate: true } },
   ),
   a('common', 'shift-the-grain', 'Shift the Grain', 'skill', 0, 'none', [recast, barrier(4)], {
@@ -815,7 +815,8 @@ export const SPELLBLADE: CardDef[] = [
     'power',
     1,
     'none',
-    [on('turnStart', [ifFull(mana(1), barrier(2))])],
+    // (no Mana: a Ward-holding deck keeps the blade full nearly every turn; Mana every turn is a 2-cost Aura's, guide §7)
+    [on('turnStart', [ifFull(draw(1), barrier(2))])],
     { up: { innate: true } },
   ),
   a(

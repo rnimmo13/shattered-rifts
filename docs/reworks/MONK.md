@@ -82,7 +82,7 @@ Planned before implementation (the brief); the cards as they stood (53, 51 rewar
 | Card | Rarity | Mana | Type | Effect | Upgrade | Role | Decision | Points | Combo risk |
 |---|---|---|---|---|---|---|---|---|---|
 | **1. Root discipline** (a route to damage) | | | | | | | | | |
-| Coiled Stance | C | 1 | Skill, Defensive | 6 Barrier, 3 Primed | 9 Barrier, 3 Primed | Root step that banks damage | a Root step now for a harder strike later | 7.2 + 3 Primed x ~1.3 hits = 11.1 | Primed (every hit of the next attack) stacks while he does not attack; with Thousand Palms +21 |
+| Coiled Stance | C | 1 | Skill, Defensive | 6 Barrier, 3 Primed if not Primed | 9 Barrier, the same | Root step that banks damage | a Root step now for a harder strike later | 7.2 + 3 Primed x ~1.3 hits = 11.1 | Primed (every hit of the next attack) stacks while he does not attack; with Thousand Palms +21 |
 | Unleashed Stillness | U | 1 | Attack, Striking | 7, +3 per Defensive technique played this turn | 10, +3 | Root finisher | play it after the Root pair, not before | 7 + 3 x1.2 = 10.6 | needs Defensive cards played first; capped by Mana |
 | Mountain Roots | C | 1 | Skill, Defensive | 5 Barrier, 1 Faltering to ALL | 8 Barrier | group defence | a Root step that blunts every enemy | 6 + 3.9 = 9.9 | - |
 | Earth Shrug | U | 1 | Skill, Defensive | 7 Barrier; in Root, 1 Mana next turn | 10 Barrier | Root resource | stay in Root for next turn's Mana | 8.4 + 4 x0.5 = 10.4 | one Mana a card, next turn only |
@@ -161,7 +161,7 @@ read, no reaction prompt is added; the form, its progress and his Mastery are on
 | Current: Ebbing Guard+, River's Answer+ | 3 | 0 | 30 |
 | Conservation at 3 Mastery: Centred Strike+, Unhurried Sweep+ | 3 | 3 | 37 |
 
-Primed goes on every hit of the next attack: Coiled Stance (3) before Thousand Palms+ adds 21, Stored Strength (4) 28, once.
+Primed goes on every hit of the next attack: Coiled Stance (3) before Thousand Palms+ adds 21, Stored Strength (4) 28, once: neither adds Primed while he is Primed, so copies and turns never stack it (the review found 3 Coiled Stances and Thousand Palms at 84, 5 over two turns at 119).
 
 ## Checks the points can't do (guide §8)
 

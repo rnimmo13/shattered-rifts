@@ -84,6 +84,14 @@ describe('the Monk expansion (DECISIONS #426)', () => {
       expect(hero(s).statuses.vigor ?? 0).toBe(0);
     });
 
+    it('Coiled Stance never stacks Primed: a second copy (or a second turn) while Primed adds none', () => {
+      let s = fight(['coiled-stance', 'coiled-stance']);
+      s = play(s, 'coiled-stance');
+      s = play(s, 'coiled-stance');
+      expect(hero(s).statuses.vigor).toBe(3);
+      expect(hero(s).barrier).toBe(12);
+    });
+
     it('Mountain Roots: 5 Barrier, 1 Faltering on every enemy; with Coiled Stance it completes Root', () => {
       let s = fight(['mountain-roots', 'coiled-stance']);
       s.sides.a.form = 'root';
@@ -434,7 +442,9 @@ describe('the Monk expansion (DECISIONS #426)', () => {
 
   it('the new cards read plainly', () => {
     const text = (id: string): string => cardText(db, db.cards[id]!);
-    expect(text('coiled-stance')).toBe('Defensive technique. Gain 6 Barrier. Gain 3 Primed.');
+    expect(text('coiled-stance')).toBe(
+      'Defensive technique. Gain 6 Barrier. If you are not Primed: Gain 3 Primed.',
+    );
     expect(text('embers-edge')).toBe(
       'Striking technique. Deal 9 damage. If your technique is one step from done: Deal 4 damage.',
     );

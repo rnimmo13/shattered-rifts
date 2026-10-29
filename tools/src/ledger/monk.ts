@@ -300,7 +300,7 @@ export const MONK_PRICES: Record<string, Price> = {
   'coiled-stance': {
     pts: 11.1,
     up: 14.7,
-    how: '6 Barrier 7.2 + 3 Primed (1 a stack a hit, ~1.3 hits) 3.9',
+    how: '6 Barrier 7.2 + 3 Primed only if not Primed (1 a stack a hit, ~1.3 hits) 3.9; copies and turns never stack it onto Thousand Palms (review of #426)',
     role: 'Root: a step that banks damage',
   },
   'mountain-roots': {

@@ -107,7 +107,7 @@ changed or removed; 12 Auras (was 5). Build paths (hidden): Edge 29, Burst 30, W
    (Warding Strike, Wardbreak: 5 to all a Ward, Shattering Rebuke). Sentinel Glass and Wardbreak are the route to victory.
 5. **Recast / adaptation**: Shift the Grain (0), Adaptive Strike, Obsidian Insight (Consume) and Living Glass (once a turn). Each Recast
    costs a card; the Aura pays only the first each turn.
-6. **Delayed release**: holding pays (Bide the Blade, Tempered Wait, Glass Sight, Stored Light: 1 Mana at the start of a turn with a full
+6. **Delayed release**: holding pays (Bide the Blade, Tempered Wait, Glass Sight, Stored Light: a card and 2 Barrier at the start of a turn with a full
    blade, Obsidian Resonance: Twin Edge every turn) but fills both positions and delays the spend; Rekindle refills an empty blade, so
    holding is never forced.
 
@@ -124,7 +124,7 @@ Scatter Glass, Glaze the Edge, Sentinel Glass.
 | Glass Fang | C | 1 | Attack | Discharge a Glass (only), 7; if it did, 2 Sapped on ALL for their turn | 10 | Edge | spend the Glass, keep the Ember/Ward | 7 + 1 + 3.1 x0.6 = 9.9 | none: one charge |
 | Searing Edge | U | 2 | Attack | Discharge an Ember (only), 14; if it did, 2 Exposed | 18 | Edge | the Ember for this hit, the rest for later | 14 + 1 + 6 x0.6 = 18.6 | Exposed into Molten Ruin / Lava Bomb: priced in the burst table |
 | Double Release | U | 1 | Attack | Discharge one, 4; discharge one, 4 | 6 / 6 | Edge | two triggers from one card, each charge on its own hit | 8 + 2 = 10 | Cleaving Edge/Glass Guard answer twice: at most 2 (two charges) |
-| Edge Discipline | U | 1 | Aura | whenever you Discharge and a charge is left: draw 1, 1 Barrier | Opening hand | Edge engine | single discharges over double ones | 0.9 x 4.2 x4 = 15.1 | at most once per charge you can keep; 0-cost Spark Thrust + it replaces itself once per pair |
+| Edge Discipline | U | 1 | Aura | the first time each turn you Discharge and a charge is left: draw 1, 1 Barrier | Opening hand | Edge engine | single discharges over double ones | 0.9 x 4.2 x4 = 15.1 | at most once per charge you can keep; 0-cost Spark Thrust + it replaces itself once per pair |
 | Shift the Grain | C | 0 | Skill | Recast; 4 Barrier | 6 Barrier | Recast | fix the newest charge cheaply | 1.5 + 4.8 = 6.3 | no draw, no Mana: no loop |
 | Adaptive Strike | U | 1 | Attack | Recast, then discharge one, 8 | 11 | Recast | change it and spend it in one card | 8 + 1.5 + 1 = 10.5 | none |
 | Living Glass | U | 1 | Aura | first Recast each turn: 3 Barrier, draw 1 | Opening hand | Recast engine | pay a card for adaptation | 0.6 x 6.6 x4 = 15.8 | once a turn |
@@ -142,7 +142,7 @@ Scatter Glass, Glaze the Edge, Sentinel Glass.
 | Bide the Blade | U | 1 | Skill | 7 Barrier; draw 2 with a full blade; Hold | 10 | holding | keep the blade full one more turn | 8.4 + 6 x0.4 + 1 = 11.8 | none |
 | Tempered Wait | C | 1 | Skill | 6 Barrier; 1 Mana next turn while an Ember is held | 9 | holding | keep the Ember for next turn | 7.2 + 4 x0.5 = 9.2 | next turn only |
 | Glass Sight | U | 1 | Skill | 5 Barrier; draw 1 per kind on the blade; Hold | 8 | selection | a mixed blade draws more | 6 + 3.9 + 1 = 10.9 | at most 2 cards |
-| Stored Light | R | 1 | Aura | start of turn, full blade: 1 Mana, 2 Barrier | Opening hand | holding payoff | carry a full blade over and pay for spending it | 0.55 x 9.4 x4 = 20.7 | once a turn, needs both positions full |
+| Stored Light | R | 1 | Aura | start of turn, full blade: draw 1, 2 Barrier (no Mana since the review) | Opening hand | holding payoff | carry a full blade over and pay for spending it | 0.55 x 9.4 x4 = 20.7 | once a turn, needs both positions full |
 | Obsidian Resonance | R | 1 | Aura | start of turn: Twin Edge, 2 Barrier | Opening hand | burst engine | which charge to spend first | 4 x (2.4 + 2.4) = 19.2 | one charge doubled a turn: at most +3.6 |
 | Glass and Guard | C | 1 | Skill | Imbue Glass and Ward, 3 Barrier | 6 | mixed setup | Glass+Ward (the third mixed pair) | 2.2 + 3 + 3.6 = 8.8 | none |
 | Glimpse Through Glass | C | 1 | Skill | Foresee 3, 4 Barrier | 7 | utility | selection over Imbue | 5 + 4.8 = 9.8 | none |
@@ -173,7 +173,7 @@ who does not attack takes nothing less: none of these cards reads an intent or n
 ### Checks
 
 - **Loops:** no new card returns a charge; Spark Thrust and Shift the Grain (0) draw nothing and make no Mana; Obsidian Insight Consumes;
-  Edge Discipline draws only on a discharge that leaves a charge (at most once per pair imbued); Stored Light's Mana is once a turn and
+  Edge Discipline draws only on a discharge that leaves a charge (at most once per pair imbued); Stored Light (a card, once a turn) and Edge Discipline are once a turn and
   needs a full blade.
 - **Per card vs per charge:** Double Release answers discharge triggers twice (two charges); the echo answers none.
 - **Aura copies:** two Spell-Etched Steel deal 6 an Imbue; two Sentinel Glass 8 to all a turn: both bounded by Imbues and one Ward.

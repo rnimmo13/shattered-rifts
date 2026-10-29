@@ -145,6 +145,18 @@ describe('the Spellblade expansion (DECISIONS #425)', () => {
       expect(s.sides.a.hand).toHaveLength(1);
       expect(hero(s).barrier).toBe(1);
     });
+
+    it('Edge Discipline answers once a turn: a second discharge that leaves a charge draws nothing', () => {
+      let s = fight(['edge-discipline', 'spark-thrust', 'spark-thrust'], ['ember', 'ember']);
+      s = play(s, 'edge-discipline');
+      s = play(s, 'spark-thrust', foe(s).id);
+      expect(hero(s).barrier).toBe(1);
+      s.sides.a.enchants = ['ember', 'ember'];
+      const n = s.sides.a.hand.length;
+      s = play(s, 'spark-thrust', foe(s).id);
+      expect(s.sides.a.enchants?.length).toBe(1);
+      expect(s.sides.a.hand.length).toBe(n - 1);
+    });
   });
 
   describe('Recast and recovery', () => {
@@ -300,16 +312,17 @@ describe('the Spellblade expansion (DECISIONS #425)', () => {
       expect(s.sides.a.mana).toBe(RIFTWALKERS.spellblade.hero.mana + 1);
     });
 
-    it('Stored Light: a full blade at the start of the turn gives 1 Mana and 2 Barrier', () => {
+    it('Stored Light: a full blade at the start of the turn gives a card and 2 Barrier, no Mana', () => {
       let s = fight(['stored-light'], ['glass', 'ward']);
       s = play(s, 'stored-light');
       for (const u of s.sides.b.units) u.intent = { move: 'guard', target: null };
       s = applyAction(db, s, { type: 'endTurn' }).state;
-      expect(s.sides.a.mana).toBe(RIFTWALKERS.spellblade.hero.mana + 1);
+      expect(s.sides.a.mana).toBe(RIFTWALKERS.spellblade.hero.mana);
+      const full = s.sides.a.hand.length;
       let t = fight(['stored-light'], ['glass']);
       t = play(t, 'stored-light');
       t = applyAction(db, t, { type: 'endTurn' }).state;
-      expect(t.sides.a.mana).toBe(RIFTWALKERS.spellblade.hero.mana);
+      expect(full).toBe(t.sides.a.hand.length + 1);
     });
 
     it('Obsidian Resonance gives Twin Edge every turn: the first charge discharged counts twice', () => {
@@ -419,7 +432,7 @@ describe('the Spellblade expansion (DECISIONS #425)', () => {
   it('the new cards read plainly', () => {
     const t = (id: string): string => cardText(db, db.cards[id]!);
     expect(t('glass-fang')).toBe(
-      'Discharge a Glass. Deal 7 damage. If it did: Apply 2 Sapped to ALL enemies until the end of their next turn.',
+      'Discharge a Glass. Deal 7 damage. If you discharged any: Apply 2 Sapped to ALL enemies until the end of their next turn.',
     );
     expect(t('resonant-pair')).toBe(
       'Discharge both enchantments. If they were the same kind: They take effect again. Deal 6 damage.',

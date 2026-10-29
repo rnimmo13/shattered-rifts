@@ -752,7 +752,8 @@ export const ASSASSIN: CardDef[] = [
     'none',
     [
       on('turnStart', [
-        when('prep', { atLeast: 3 }, [{ op: 'mana', amount: 1 }, draw(1), barrier(3)]),
+        // (no Mana: a holding deck keeps 3 Preparation nearly every turn, and Mana every turn is a 2-cost Aura's, guide §7)
+        when('prep', { atLeast: 3 }, [draw(1), barrier(2)]),
       ]),
     ],
     { up: { innate: true } },

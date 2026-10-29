@@ -120,7 +120,7 @@ Preparation gained 1.5, spent its payoff minus 1.5 a point; Knife Work's 3 a pul
 | Cold Patience | R | 1 | Skill | 2 Preparation, 8 Guarded, Hold | 11 Guarded | Shadow/precision: a guarded setup | two points and next turn safe | 3 + 8 + 1 = 12 | Preparation caps at 3 |
 | Strike from Shadow | U | 2 | Attack | Deal 16; if the target is Faltering, 8 more. Hold | 20 | Shadow: the debuff-timed hit | Faltering first (Hobbling Jab, Pinned), then this | 16 + 8 x0.5 + 1 = 21 | none |
 | Patient Coil | U | 1 | Aura | At the end of your turn: 2 Barrier per Preparation you have | Opening hand | Preparation management: saving pays defence | sit on 3 for 6 Barrier a turn, or spend | 1.6 x2.4 x4 = 15.4 | two copies: 12 at 3; it never makes Preparation |
-| The Waiting Blade | R | 1 | Aura | At the start of your turn, with 3 Preparation: 1 Mana, draw 1, 3 Barrier | Opening hand | Setup to finisher: the full count pays until spent | spend 3 on the finisher and lose it, or hold | 0.4 x(7 + 3 + 3.6) x4 = 21.8 | two copies 2 Mana a turn at 3 Preparation; spending turns it off |
+| The Waiting Blade | R | 1 | Aura | At the start of your turn, with 3 Preparation: draw 1, 2 Barrier (no Mana since the review: a holding deck keeps 3 nearly every turn) | Opening hand | Setup to finisher: the full count pays until spent | spend 3 on the finisher and lose it, or hold | 0.4 x(7 + 3 + 3.6) x4 = 21.8 | two copies 2 Mana a turn at 3 Preparation; spending turns it off |
 | Lingering Steel | U | 1 | Aura | At the start of your turn: each enemy is Sapped 1 per knife in it until its turn ends | Opening hand | Retained knives: defence while they sit | leave knives in the attackers | 3 knives x1.2 x4 = 14.4 | at most 3 an enemy; no damage |
 | Steel Thicket | U | 1 | Aura | At the end of your turn: 1 Barrier per knife in all enemies | Opening hand | Group specialisation: spread wide | many enemies with knives, kept in | 3 x1.2 x4 = 14.4 | 9 a turn against three full enemies; 3 against one boss |
 | Clean Extraction | U | 1 | Aura | The first time each turn you pull a knife: draw 1, 1 Barrier | Opening hand | Bounded extraction: selection | one pull a turn | 0.85 x4.2 x4 = 14.3 | once a turn |
@@ -155,7 +155,7 @@ Sleight of Steel, Bide in Shadow, Melt Away, Feign Weakness, Choking Smoke, Set 
   turn (Economy of Motion, Clean Extraction, Recycled Steel) or at a turn boundary (The Waiting Blade, Patient Coil, Lie in Wait, Steel
   Thicket, Lingering Steel). In an eight-card deck, Fan of Blades, Sleight of Steel, Clean Extraction and Recycled Steel gain cards but no
   Mana: three plays a turn at most. Recall the Blades turns knives into Preparation; nothing turns Preparation into knives.
-- **Multiple copies:** two Patient Coils on 3 Preparation give 12 Barrier a turn and make nothing; two Waiting Blades 2 Mana a turn, off
+- **Multiple copies:** two Patient Coils on 3 Preparation give 12 Barrier a turn and make nothing; two Waiting Blades 2 cards a turn (they made 2 Mana before the review), off
   the moment a finisher spends. Assassinate's kill refund is capped at 3 and needs a kill (never against one boss).
 - **Single boss / human:** every strategy needs no kill and no intent; Sapped, Faltering and Barrier from knives work on a hero; the
   group cards (Silent Massacre, Steel Rain, Reaping Arc, Steel Thicket) are plain single-target cards against one.
@@ -167,7 +167,7 @@ Sleight of Steel, Bide in Shadow, Melt Away, Feign Weakness, Choking Smoke, Set 
 | Pry Loose+, Exacting Pull+, Measured Cut+ | 3 | 3 Preparation, 3 knives | 75 (14%) |
 | Final Cut+ | 3 | 3, 3 | 67 (12%) |
 | Exacting Pull+, Measured Cut+, Quick Pull+ (tested) | 2 | 3, 3 | 57 (11%) |
-| The Waiting Blade turn: Poised Strike+, Measured Cut+, Quick Pull+ | 3 of 4 | 3, 1 | 56 (10%) |
+| The Waiting Blade turn: Poised Strike+, Measured Cut+, Quick Pull+ | 3 | 3, 1 | 56 (10%) |
 | Steady Hand+, Mark the Vein+ (Exposed), Thousand Cuts+ | 3 | 0, 3 | 52 (10%) |
 | Assassinate+, Quick Pull+ | 2 | 3, 1 | 47 (9%) |
 | No setup: Strike, Quick Pull+, Lodged Steel+, Strike | 3 | 0, 1 | 35 (6%) |

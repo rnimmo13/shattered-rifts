@@ -4716,8 +4716,12 @@ export function previewCardDamage(
   // (the Spellblade: what a discharge before the attack adds to its first hit, at the least and at the most the choice allows)
   let emberLo = 0;
   let emberHi = 0;
+  let discharging = false;
   def.effects.forEach((op, i) => {
+    // (a second discharge reads the blade the first one left: no guess, the printed text stays from there on: Double Release)
+    if (op.op === 'discharge' && discharging) earlier = true;
     if (op.op === 'discharge' && !earlier) {
+      discharging = true;
       const list = sd.enchants ?? [];
       const twin = stacks(hero, 'twinedge') > 0 ? 2 : 1;
       const worth = (at: number[]): number =>

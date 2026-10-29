@@ -491,7 +491,7 @@ Starter: Strike, Strike, Strike, Strike, Defend, Defend, Defend, Quiet Incision,
 | Bladestorm Ward | 2 | skill | rare | Gain 15 Barrier. Embed a knife in each enemy. |
 | Silent Massacre | 2 | attack | rare | Spend up to 3 Preparation. Deal 8 (+5 per Preparation spent) damage to ALL enemies. |
 | Assassinate | 2 | attack | rare | Spend up to 3 Preparation. Deal 12 (+6 per Preparation spent) damage. If this is fatal: Gain 2 Preparation. |
-| The Waiting Blade | 1 | aura | rare | At the start of your turn: If you have 3 or more Preparation: Gain 1 Mana. Draw 1 card. Gain 3 Barrier. |
+| The Waiting Blade | 1 | aura | rare | At the start of your turn: If you have 3 or more Preparation: Draw 1 card. Gain 2 Barrier. |
 | Thousand Cuts | 2 | attack | rare | Deal 7 damage, 1 more time per knife in it. |
 | Cold Patience | 1 | skill | rare | Gain 2 Preparation. Gain 8 Guarded. Hold. |
 | Recycled Steel | 1 | aura | rare | The first time each turn you pull a knife: Embed a knife in a random enemy. Gain 3 Barrier. |
@@ -628,7 +628,7 @@ Starter: Strike, Strike, Strike, Defend, Defend, Defend, Still Guard, Planted He
 | Ashen Fist | 2 | attack | common | Striking technique. Deal 14 damage. Apply 1 Exposed. |
 | Angry Palm | 1 | attack | common | Striking technique. Spend up to 1 Mastery. Deal 6 (+5 per Mastery spent) damage. |
 | Scattering Kick | 1 | attack | common | Striking technique. Deal 7 damage to ALL enemies. |
-| Coiled Stance | 1 | skill | common | Defensive technique. Gain 6 Barrier. Gain 3 Primed. |
+| Coiled Stance | 1 | skill | common | Defensive technique. Gain 6 Barrier. If you are not Primed: Gain 3 Primed. |
 | Mountain Roots | 1 | skill | common | Defensive technique. Gain 5 Barrier. Apply 1 Faltering to ALL enemies. |
 | Quiet Confidence | 1 | skill | common | Defensive technique. Gain 6 (+2 per Mastery) Barrier. |
 | Ebbing Guard | 1 | skill | common | Defensive technique. Gain 7 Barrier. Hold. |
@@ -726,7 +726,7 @@ Starter: Strike, Strike, Strike, Strike, Defend, Defend, Defend, Defend, Ember I
 | Glass Barrier | 1 | skill | common | Discharge an enchantment. Gain 7 Barrier. |
 | Measured Release | 1 | attack | common | Discharge an enchantment. Deal 7 damage. If your blade still holds an enchantment: Draw 1 card. |
 | Spark Thrust | 0 | attack | common | Discharge an enchantment. Deal 5 damage. |
-| Glass Fang | 1 | attack | common | Discharge a Glass. Deal 7 damage. If it did: Apply 2 Sapped to ALL enemies until the end of their next turn. |
+| Glass Fang | 1 | attack | common | Discharge a Glass. Deal 7 damage. If you discharged any: Apply 2 Sapped to ALL enemies until the end of their next turn. |
 | Shift the Grain | 0 | skill | common | Your newest enchantment becomes another kind (your choice). Gain 4 Barrier. |
 | Rekindle | 1 | skill | common | Gain 5 Barrier. If your blade has no enchantments: Imbue Ember. Imbue Glass. Draw 1 card. |
 | Kindle the Blade | 1 | skill | common | Imbue Ember. Imbue Ember. Gain 4 Barrier. |
@@ -758,9 +758,9 @@ Starter: Strike, Strike, Strike, Strike, Defend, Defend, Defend, Defend, Ember I
 | Mirror Glass | 2 | skill | uncommon | Discharge an enchantment. Gain 11 Barrier. Until your next turn, attack damage your Barrier soaks is dealt back to the attacker. |
 | Glass Wall | 1 | skill | uncommon | Gain 5 Barrier. Imbue Ward. Foresee 1. |
 | Weave the Ward | 1 | skill | uncommon | Imbue Ward. Gain Barrier equal to 3 times the Wards on your blade. Draw 1 card. |
-| Searing Edge | 2 | attack | uncommon | Discharge an Ember. Deal 14 damage. If it did: Apply 2 Exposed. |
+| Searing Edge | 2 | attack | uncommon | Discharge an Ember. Deal 14 damage. If you discharged any: Apply 2 Exposed. |
 | Double Release | 1 | attack | uncommon | Discharge an enchantment. Deal 4 damage. Discharge an enchantment. Deal 4 damage. |
-| Edge Discipline | 1 | aura | uncommon | Whenever you Discharge: If your blade still holds an enchantment: Draw 1 card. Gain 1 Barrier. |
+| Edge Discipline | 1 | aura | uncommon | The first time each turn you Discharge: If your blade still holds an enchantment: Draw 1 card. Gain 1 Barrier. |
 | Adaptive Strike | 1 | attack | uncommon | Your newest enchantment becomes another kind (your choice). Discharge an enchantment. Deal 8 damage. |
 | Living Glass | 1 | aura | uncommon | The first time each turn you change an enchantment into another kind: Gain 3 Barrier. Draw 1 card. |
 | Spell-Etched Steel | 1 | aura | uncommon | Whenever you Imbue: Deal 3 damage to a random enemy. |
@@ -771,7 +771,7 @@ Starter: Strike, Strike, Strike, Strike, Defend, Defend, Defend, Defend, Ember I
 | Bide the Blade | 1 | skill | uncommon | Gain 7 Barrier. If your blade is full: Draw 2 cards. Hold. |
 | Glass Sight | 1 | skill | uncommon | Gain 5 Barrier. Draw cards equal to the kinds of enchantment on your blade. Hold. |
 | Blade Recall | 1 | skill | uncommon | Return a random Obsidian Blade from your discard pile to your hand. Imbue Ward. Gain 3 Barrier. |
-| Wardbreak | 1 | attack | uncommon | Discharge every Ward. If it did: Deal damage equal to 5 times the enchantments discharged to ALL enemies. |
+| Wardbreak | 1 | attack | uncommon | Discharge every Ward. If you discharged any: Deal damage equal to 5 times the enchantments discharged to ALL enemies. |
 | Sentinel Glass | 1 | aura | uncommon | At the end of your turn: If your blade holds a Ward: Deal 4 damage to ALL enemies. |
 | Purifying Shard | 1 | skill | uncommon | Lessen every debuff on you by 2. Gain 6 Barrier. Imbue Glass. |
 | Shattering Rebuke | 1 | skill | uncommon | Discharge an enchantment. Apply 2 Faltering. Gain 3 Barrier. |
@@ -785,13 +785,13 @@ Starter: Strike, Strike, Strike, Strike, Defend, Defend, Defend, Defend, Ember I
 | Heirloom Maul | 2 | attack | rare | Discharge both enchantments. Deal 16 damage. Draw cards equal to the enchantments discharged. |
 | Cataclysm | 1 | attack | rare | Discharge both enchantments. Deal 9 damage to ALL enemies. |
 | Twin Sigils | 1 | skill | rare | Imbue Ember. Imbue Ward. Gain 4 Barrier. Draw 1 card. |
-| Glass Requiem | 2 | attack | rare | Discharge both enchantments. Deal 14 damage. If it did: Deal damage equal to 3 times the enchantments discharged to ALL enemies. |
+| Glass Requiem | 2 | attack | rare | Discharge both enchantments. Deal 14 damage. If you discharged any: Deal damage equal to 3 times the enchantments discharged to ALL enemies. |
 | Obsidian Aegis | 1 | aura | rare | At the end of your turn: Gain Barrier equal to 3 times the enchantments on your blade. |
 | Unbreakable Crown | 2 | skill | rare | Gain 16 Barrier. Imbue Ward. Imbue Ward. |
 | Obsidian Insight | 0 | skill | rare | Foresee 3. Your newest enchantment becomes another kind (your choice). Draw 1 card. Consume. |
 | Prism Break | 2 | attack | rare | Discharge both enchantments. Deal 13 damage. If they were different kinds: Deal 10 damage. |
 | Kindred Shards | 2 | attack | rare | Discharge both enchantments. If they were the same kind: They take effect again. Draw 1 card. Deal 15 damage. |
-| Stored Light | 1 | aura | rare | At the start of your turn: If your blade is full: Gain 1 Mana. Gain 2 Barrier. |
+| Stored Light | 1 | aura | rare | At the start of your turn: If your blade is full: Draw 1 card. Gain 2 Barrier. |
 | Obsidian Resonance | 1 | aura | rare | At the start of your turn: Gain 1 Twin Edge until the end of your turn. Gain 2 Barrier. |
 
 ## Drunkard (midden, 88 HP)

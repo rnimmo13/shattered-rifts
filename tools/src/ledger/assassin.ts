@@ -338,9 +338,9 @@ export const ASSASSIN_PRICES: Record<string, Price> = {
     role: 'Preparation management: saving pays defence',
   },
   'the-waiting-blade': {
-    pts: 21.8,
-    up: 25.3,
-    how: 'Aura: at the start of a turn on 3 Preparation (~0.4 of turns): 1 Mana 7 + draw 1 (3) + 3 Barrier 3.6, x4; Opening hand 3.5',
+    pts: 18.4,
+    up: 21.9,
+    how: 'Aura: at the start of a turn on 3 Preparation (~0.85 of turns in a holding deck: Preparation persists): draw 1 (3) + 2 Barrier 2.4, x4; Opening hand 3.5. No Mana: near-permanent Mana every turn is a 2-cost Aura (guide §7, review of #424)',
     role: 'Setup to finisher: the full count pays until it is spent',
   },
   'read-the-wound': {

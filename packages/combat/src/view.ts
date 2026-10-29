@@ -936,7 +936,7 @@ function whenText(o: Extract<Op, { op: 'when' }>, db?: CombatDb): string {
     return 'your blade holds a matching pair';
   if (o.by === 'dischargedPair' && lo === 1 && hi === undefined) return 'they were the same kind';
   if (o.by === 'dischargedMix' && lo === 1 && hi === undefined) return 'they were different kinds';
-  if (o.by === 'discharged' && lo === 1 && hi === undefined) return 'it did';
+  if (o.by === 'discharged' && lo === 1 && hi === undefined) return 'you discharged any';
   const w = METRIC_WORDS[o.by].equal;
   if (lo !== undefined && hi !== undefined) return `${w} is ${lo === hi ? lo : `${lo}-${hi}`}`;
   if (lo !== undefined) return `${w} is ${lo} or more`;
