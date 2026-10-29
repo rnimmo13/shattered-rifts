@@ -822,144 +822,124 @@ function totemDef(r: Run, id: string) {
   return d;
 }
 
-/**
- * Plant a totem: into the first free position; with all taken (or `anywhere`), the player chooses the position (a taken one is
- * replaced; with all taken they may keep them all). '*': the player chooses the kind first. With no one to ask: the first kind, the
- * first free position, and nothing replaced.
- */
-function plant(r: Run, a: Act, side: SideState, spirit: string, anywhere: boolean): void {
+/** The totems in a row, front first (DECISIONS #430): the row is kept packed, so its free positions are all at the back. */
+function packTotems(side: SideState): void {
   const list = side.totems;
   if (!list) return;
+  const held = list.filter((k): k is string => k !== null);
+  side.totems = [...held, ...list.slice(held.length).map(() => null)];
+}
+
+/**
+ * Plant a totem at the back of the row (DECISIONS #430, the totem cycle, as Slay the Spire 2 channels an orb): into the first free
+ * position; with every position taken, the front totem is pushed out first (its spirit acts as it goes) and the rest move up.
+ * '*': a random kind that is not rare.
+ */
+function plant(r: Run, a: Act, side: SideState, spirit: string): void {
+  if (!side.totems) return;
   if (spirit === '*') {
     // (a rare totem is only planted by a card that names it, DECISIONS #420)
     const kinds = Object.keys(r.db.totems ?? {})
       .filter((k) => !r.db.totems?.[k]?.rare)
       .sort();
     if (!kinds.length) return;
-    if (!a.pick) {
-      plant(r, a, side, kinds[0] as string, anywhere);
-      return;
-    }
-    r.s.pending = {
-      kind: 'plantKind',
-      pool: kinds,
-      min: 1,
-      max: 1,
-      rest: [],
-      actor: a.actor.id,
-      target: a.target?.id ?? null,
-      finish: null,
-      x: a.x,
-      ...(anywhere ? { anywhere } : {}),
-    };
-    r.ev.push({ type: 'pending', side: side.id, kind: 'plantKind' });
+    plant(r, a, side, kinds[nextInt(r.s.rng, kinds.length)] as string);
     return;
   }
   totemDef(r, spirit);
-  const free = list.indexOf(null);
-  if (!anywhere && free >= 0) {
-    placeTotem(r, a, side, free, spirit);
-    return;
+  packTotems(side);
+  if (!side.totems.includes(null)) {
+    const hero = heroOf(side);
+    const front = side.totems?.[0];
+    if (hero && front) leaveRow(r, side, hero, 0, front, 1, true);
+    if (r.s.winner) return;
   }
-  if (!a.pick) {
-    if (free >= 0) placeTotem(r, a, side, free, spirit);
-    return;
-  }
-  r.s.pending = {
-    kind: 'plantAt',
-    spirit,
-    pool: list.map((_, i) => `t${i}`),
-    // (all taken: choosing none keeps them, and nothing is planted)
-    min: anywhere && free >= 0 ? 1 : 0,
-    max: 1,
-    rest: [],
-    actor: a.actor.id,
-    target: a.target?.id ?? null,
-    finish: null,
-    x: a.x,
-    ...(anywhere ? { anywhere } : {}),
-  };
-  r.ev.push({ type: 'pending', side: side.id, kind: 'plantAt' });
+  const list = side.totems;
+  const at = list.indexOf(null);
+  if (at < 0) return;
+  placeTotem(r, a, side, at, spirit);
 }
 
-/** A totem of `spirit` stands in position `at` now; what stood there is gone (a replacement is not a command). */
+/** A totem of `spirit` stands in position `at` now. */
 function placeTotem(r: Run, a: Act, side: SideState, at: number, spirit: string): void {
   const list = side.totems;
   if (!list || at < 0 || at >= list.length) return;
-  const was = list[at];
   list[at] = spirit;
   r.ev.push({ type: 'totems', side: side.id, totems: [...list], at });
-  // (the Elder Tree's Spirit)
   const def = r.db.totems?.[spirit];
   if (def?.onPlant?.length) runOps(r, mkAct(a.actor), def.onPlant);
   fireTriggers(r, side, 'plant', { rune: spirit });
-  if (was && was !== spirit && !r.s.winner) {
-    a.replaced++;
-    fireTriggers(r, side, 'replace', { rune: spirit });
-  }
-}
-
-/** A totem's spirit acts: its command, with +1 to every damage and Barrier number for each Spirit he has. */
-function runCommand(r: Run, sd: SideState, hero: Unit, totem: number, kind: string): void {
-  const d = totemDef(r, kind);
-  sd.commanded = true;
-  r.ev.push({ type: 'command', side: sd.id, totem, spirit: kind, target: null, empowered: false });
-  runOps(r, mkAct(hero, { plus: stacks(hero, 'spirit') }), d.command);
-  if (!r.s.winner) fireTriggers(r, sd, 'command', { rune: kind });
 }
 
 /**
- * A card commands totems (DECISIONS #421): every totem of a kind, one the player picks ('choose'), a random one, or all of them,
- * `times` times. Each spirit acts by itself (a random enemy, him, every enemy): not a card and not an attack.
+ * A totem's spirit acts `times` times and the totem leaves the row (DECISIONS #430): consumed by a command, or pushed out by a plant
+ * into a full row. Its numbers read his Spirit through its own ops. Each act answers "whenever a totem acts" (the `command` trigger).
  */
-function commandTotems(
+function leaveRow(
   r: Run,
-  a: Act,
   sd: SideState,
-  spirit: string,
+  hero: Unit,
+  at: number,
+  kind: string,
   times: number,
-  one = false,
+  pushed: boolean,
 ): void {
-  const hero = heroOf(sd);
-  const list = sd.totems;
-  if (!hero || !list) return;
-  const planted = list.flatMap((k, i) => (k ? [i] : []));
-  if (!planted.length) return;
-  if (spirit === 'choose') {
-    if (planted.length > 1 && a.pick) {
-      r.s.pending = {
-        kind: 'commandPick',
-        pool: planted.map((i) => `t${i}`),
-        min: 1,
-        max: 1,
-        rest: [],
-        actor: a.actor.id,
-        target: a.target?.id ?? null,
-        finish: null,
-        x: a.x,
-        times,
-      };
-      r.ev.push({ type: 'pending', side: sd.id, kind: 'commandPick' });
-      return;
-    }
-    commandAt(r, sd, hero, planted[0] as number, times);
-    return;
-  }
+  const d = totemDef(r, kind);
+  sd.commanded = true;
   for (let k = 0; k < times && !r.s.winner; k++) {
-    const at =
-      spirit === 'all'
-        ? planted
-        : spirit === 'random'
-          ? [planted[nextInt(r.s.rng, planted.length)] as number]
-          : planted.filter((i) => list[i] === spirit).slice(0, one ? 1 : undefined);
-    for (const i of at) if (!r.s.winner && list[i]) runCommand(r, sd, hero, i, list[i]);
+    r.ev.push({
+      type: 'command',
+      side: sd.id,
+      totem: at,
+      spirit: kind,
+      target: null,
+      empowered: pushed,
+    });
+    runOps(r, mkAct(hero), d.command);
+    if (!r.s.winner) fireTriggers(r, sd, 'command', { rune: kind });
+  }
+  const list = sd.totems;
+  // (it is gone; the rest move up, so the next in the cycle is at the front)
+  if (list && list[at] === kind) {
+    list.splice(at, 1);
+    list.push(null);
+    r.ev.push({ type: 'totems', side: sd.id, totems: [...list] });
   }
 }
 
-function commandAt(r: Run, sd: SideState, hero: Unit, at: number, times: number): void {
-  for (let k = 0; k < times && !r.s.winner; k++) {
-    const kind = sd.totems?.[at];
-    if (kind) runCommand(r, sd, hero, at, kind);
+/**
+ * A card commands totems (DECISIONS #430, the totem cycle): the front one (the oldest), the newest, the front-most of a kind, or every
+ * totem in order. Each acts `times` times and is consumed. Not a card and not an attack.
+ */
+function commandTotems(r: Run, _a: Act, sd: SideState, spirit: string, times: number): void {
+  const hero = heroOf(sd);
+  if (!hero || !sd.totems) return;
+  packTotems(sd);
+  const list = (): (string | null)[] => sd.totems ?? [];
+  const held = (): number => list().filter((k) => k !== null).length;
+  if (!held()) return;
+  if (spirit === 'all') {
+    // (the totems standing when it began, front to back; one a push-out plants on the way is not commanded)
+    for (let n = held(); n > 0 && held() > 0 && !r.s.winner; n--) {
+      const kind = list()[0];
+      if (kind) leaveRow(r, sd, hero, 0, kind, times, false);
+    }
+    return;
+  }
+  let at = 0;
+  if (spirit === 'newest') at = held() - 1;
+  else if (spirit === 'random') at = nextInt(r.s.rng, held());
+  else if (spirit !== 'front' && spirit !== 'choose') at = list().indexOf(spirit);
+  const kind = at >= 0 ? list()[at] : null;
+  if (kind) leaveRow(r, sd, hero, at, kind, times, false);
+}
+
+/** (DECISIONS #430) every totem's passive of this timing, front to back: what it does each turn while it stands. */
+function totemPassives(r: Run, sd: SideState, hero: Unit, when: 'turnStart' | 'turnEnd'): void {
+  for (const kind of [...(sd.totems ?? [])]) {
+    if (r.s.winner || hero.hp <= 0) return;
+    const p = kind ? r.db.totems?.[kind]?.passive : undefined;
+    if (p && p.when === when) runOps(r, mkAct(hero), p.ops);
   }
 }
 
@@ -2682,7 +2662,7 @@ function execOp(r: Run, a: Act, op: Op): void {
     }
     // --- the Shaman's totems (DECISIONS #418)
     case 'plant':
-      plant(r, a, side, op.spirit, op.anywhere === true);
+      plant(r, a, side, op.spirit);
       return;
     // --- the Monk's Martial Forms (DECISIONS #419)
     case 'form': {
@@ -2715,8 +2695,19 @@ function execOp(r: Run, a: Act, op: Op): void {
       return;
     }
     case 'totemCommand':
-      commandTotems(r, a, side, op.spirit, Math.max(1, op.times ?? 1), op.one === true);
+      commandTotems(r, a, side, op.spirit, Math.max(1, op.times ?? 1));
       return;
+    case 'totemRotate': {
+      // (DECISIONS #430) the front totem goes to the back: the next command finds the one behind it
+      if (!side.totems) return;
+      packTotems(side);
+      const held = side.totems.filter((k) => k !== null);
+      if (held.length < 2) return;
+      const front = held.shift() as string;
+      side.totems = [...held, front, ...side.totems.slice(held.length + 1)];
+      r.ev.push({ type: 'totems', side: side.id, totems: [...side.totems] });
+      return;
+    }
     case 'uproot': {
       const list = side.totems;
       if (!list) return;
@@ -3709,6 +3700,9 @@ function beginHeroTurn(r: Run, side: Side): void {
   sd.drawnTurn = 0;
   const hero = heroOf(sd);
   if (!hero) return;
+  // (the Shaman's totems, DECISIONS #430: the passives of the start of the turn, once the hand is drawn and the Mana set)
+  if (sd.totems) totemPassives(r, sd, hero, 'turnStart');
+  if (r.s.winner) return;
   // (assassin) what was set up last turn arrives: Nightmare's copies, Dodge and Roll's Barrier, Shadow Step's double damage
   sd.honedUsed = false;
   // (DECISIONS #433) Premeditate: what an effect discarded last turn comes back, at 0 until played (a full hand: the discard pile,
@@ -3884,6 +3878,12 @@ function endTurn(r: Run): void {
   // end-of-turn Powers, then every rune's passive, then Radiant fades
   fireTriggers(r, sd, 'turnEnd');
   if (r.s.winner) return;
+  // (the Shaman's totems, DECISIONS #430: the passives of the end of the turn, front to back)
+  {
+    const h = heroOf(sd);
+    if (h && sd.totems) totemPassives(r, sd, h, 'turnEnd');
+    if (r.s.winner) return;
+  }
   // a card that plays itself from the top of the draw pile as your turn ends (I Am Invincible)
   {
     const top = sd.draw[0];
@@ -4133,6 +4133,13 @@ export function costOf(
     (cd.tags?.some((t) => t === PRISM_TAG || (ELEMENTS as readonly string[]).includes(t)) ?? false)
   )
     return 0;
+  // (the Moon Owl, DECISIONS #430) the next elemental spell this turn costs less
+  const cut =
+    hero &&
+    stacks(hero, 'spellcut') > 0 &&
+    (cd.tags?.some((t) => t === PRISM_TAG || (ELEMENTS as readonly string[]).includes(t)) ?? false)
+      ? stacks(hero, 'spellcut')
+      : 0;
   // Free Play: the first cards you play each turn cost no Mana (Void Form)
   if (hero && stacks(hero, 'freeplay') > (sd.played ?? 0)) return 0;
   // (the Necrobinder copy) Veilpiercer: the next Fleeting card is free; Flatten: free once a companion has struck
@@ -4148,7 +4155,8 @@ export function costOf(
       (c.costDown ?? 0) -
       (cd.cheaperPerAttack ?? 0) * (sd.attacksPlayed ?? 0) -
       (cd.cheaperPerSkill ?? 0) * (sd.skillsPlayed ?? 0) -
-      (cd.cheaperPer ? Math.floor(cd.cheaperPer.mult * sideCount(sd, cd.cheaperPer.by)) : 0),
+      (cd.cheaperPer ? Math.floor(cd.cheaperPer.mult * sideCount(sd, cd.cheaperPer.by)) : 0) -
+      cut,
   );
 }
 
@@ -4455,6 +4463,12 @@ function playCard(r: Run, action: Extract<Action, { type: 'play' }>): void {
   if (freeEthereal) addStatus(r, hero, 'freeethereal', -1);
   if (freePower) addStatus(r, hero, 'freepower', -1);
   if (freeSpell) addStatus(r, hero, 'freespell', -1);
+  // (the Moon Owl's discount is spent by the first elemental spell, whatever it saved)
+  if (
+    stacks(hero, 'spellcut') > 0 &&
+    cd.tags?.some((t) => t === PRISM_TAG || (ELEMENTS as readonly string[]).includes(t))
+  )
+    addStatus(r, hero, 'spellcut', -stacks(hero, 'spellcut'));
   // a discount (Cheapen, a free Discover) is spent on the play: a card made free for good would loop for ever
   delete inst.costMod;
   clearTurnFlags(inst);
@@ -4510,6 +4524,10 @@ function playCard(r: Run, action: Extract<Action, { type: 'play' }>): void {
     // (Signal Boost: the next Aura; Echo Form: the first card of each turn, which spends nothing)
     (cd.kind === 'power' && stacks(hero, 'boosted') > 0 && 'boosted') ||
     (sd.played < stacks(hero, 'echoing') && 'echo') ||
+    // (the Moon Owl's command, DECISIONS #430: the next elemental spell, whatever its kind)
+    ((cd.tags?.some((t) => (ELEMENTS as readonly string[]).includes(t)) ?? false) &&
+      stacks(hero, 'twinspell') > 0 &&
+      'twinspell') ||
     null;
   // (the Shaman) the totems' boost for the first spell of its element this turn
   const boost = sd.totems ? spellBoost(r, sd, cd) : 0;
@@ -4642,15 +4660,13 @@ function pickCards(r: Run, action: Extract<Action, { type: 'pick' }>): void {
       showEnchants(r, sd);
       fireTriggers(r, sd, 'recast');
     }
-    // (the Shaman's: which spirit to plant, and where)
-    else if (p.kind === 'plantKind' && ids[0]) plant(r, act, sd, ids[0], p.anywhere === true);
-    // (the Shaman's: the totem whose spirit acts)
-    else if (p.kind === 'commandPick' && ids[0] && heroOf(sd))
-      commandAt(r, sd, heroOf(sd) as Unit, Number(ids[0].replace(/^t/, '')), p.times ?? 1);
+    // (the Shaman's totem choices are gone with the totem cycle, DECISIONS #430: the order decides; an old choice plants or commands
+    // in the cycle's way)
+    else if (p.kind === 'plantKind' && ids[0]) plant(r, act, sd, ids[0]);
+    else if (p.kind === 'commandPick') commandTotems(r, act, sd, 'front', p.times ?? 1);
     // (the Monk's: a new form, or none to keep his)
     else if (p.kind === 'form' && ids[0]) changeForm(r, sd, ids[0] as Form);
-    else if (p.kind === 'plantAt' && p.spirit && ids[0])
-      placeTotem(r, act, sd, Number(ids[0].replace(/^t/, '')), p.spirit);
+    else if (p.kind === 'plantAt' && p.spirit && ids[0]) plant(r, act, sd, p.spirit);
     const asked = r.s.pending as CombatState['pending'];
     // (a choice that asked for another one: the rest of the card waits for it too)
     if (asked) asked.rest = [...asked.rest, ...p.rest];

@@ -135,7 +135,7 @@ export function validateDb(db: CombatDb): string[] {
         errs.push(`${where}: plants unknown totem "${o.spirit}"`);
       if (
         o.op === 'totemCommand' &&
-        !['choose', 'random', 'all'].includes(o.spirit) &&
+        !['choose', 'random', 'all', 'front', 'newest'].includes(o.spirit) &&
         !db.totems?.[o.spirit]
       )
         errs.push(`${where}: commands unknown totem "${o.spirit}"`);

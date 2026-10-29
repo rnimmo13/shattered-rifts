@@ -810,7 +810,7 @@ const WHEN_TEXT: Record<string, string> = {
   dischargeMixed: 'Whenever you Discharge two different enchantments at once',
   recast: 'Whenever you change an enchantment into another kind',
   // (the Shaman)
-  command: 'Whenever you command a totem',
+  command: 'Whenever one of your totems acts',
   plant: 'Whenever you plant a totem',
   replace: 'Whenever you replace a totem with one of another kind',
   // (the Shaman)
@@ -1658,30 +1658,27 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
     case 'recast':
       return 'Your newest enchantment becomes another kind (your choice).';
     // (the Shaman's totems)
+    // (the totem cycle, DECISIONS #430: a plant goes to the back; a command makes a totem act and consumes it)
     case 'plant': {
-      if (o.spirit === '*')
-        return o.anywhere
-          ? 'Plant a totem of your choice, in a position you choose.'
-          : 'Plant a totem of your choice.';
+      if (o.spirit === '*') return 'Plant a random totem.';
       const nm = db.totems?.[o.spirit]?.name ?? o.spirit;
-      return o.anywhere
-        ? `Plant ${article(nm)} ${nm} in a position you choose.`
-        : `Plant ${article(nm)} ${nm}.`;
+      return `Plant ${article(nm)} ${nm}.`;
     }
     case 'uproot':
       return 'Uproot all your totems.';
     case 'totemSlot':
       return 'Gain a totem position.';
+    case 'totemRotate':
+      return 'Your front totem moves to the back.';
     case 'totemCommand': {
       const n = o.times ?? 1;
       const twice = n === 1 ? '' : n === 2 ? ' twice' : ` ${n} times`;
-      if (o.spirit === 'all') return `Command every totem you have${twice}.`;
+      if (o.spirit === 'all') return `Command every totem, front to back${twice}.`;
       if (o.spirit === 'random') return `Command a random totem${twice}.`;
-      if (o.spirit === 'choose') return `Command a totem of your choice${twice}.`;
+      if (o.spirit === 'newest') return `Command your newest totem${twice}.`;
+      if (o.spirit === 'front' || o.spirit === 'choose') return `Command your front totem${twice}.`;
       const nm = db.totems?.[o.spirit]?.name ?? o.spirit;
-      return o.one
-        ? `Command ${article(nm)} ${nm}${twice}.`
-        : `Command every ${nm} you have${twice}.`;
+      return `Command your first ${nm}${twice}.`;
     }
     // (the Monk's forms)
     case 'form':

@@ -1,0 +1,4659 @@
+{
+  "takenAt": "2026-10-29",
+  "commit": "d3fd96203cc7a0419d318d79600aa9b3a67ea4d4",
+  "dirty": [],
+  "hero": {
+    "id": "shaman",
+    "name": "Shaman",
+    "maxHp": 75,
+    "mana": 3,
+    "handSize": 5
+  },
+  "trait": {
+    "name": "Spirit and Trinity",
+    "text": "You start with a Hawk, a Bear and a Thunderbird totem; each helps your first spell of its element each turn, and cards command them to act. The first time each turn you cast a Flame, a Frost and a Storm spell, Trinity gives you 1 Spirit. Spirit never goes down: each point adds 1 to your totems' commands, and every 2 add 1 to their help.",
+    "totems": 3,
+    "trinity": true,
+    "fightStart": [
+      {
+        "op": "plant",
+        "spirit": "hawk"
+      },
+      {
+        "op": "plant",
+        "spirit": "bear"
+      },
+      {
+        "op": "plant",
+        "spirit": "thunderbird"
+      }
+    ]
+  },
+  "starter": [
+    "strike",
+    "strike",
+    "defend",
+    "spirit-call",
+    "ember-bolt",
+    "ember-bolt",
+    "frost-ward",
+    "frost-ward",
+    "forked-lightning",
+    "forked-lightning"
+  ],
+  "totems": {
+    "hawk": {
+      "id": "hawk",
+      "name": "Hawk",
+      "text": "Your first Flame spell each turn with damage or Barrier: +3 to each of its damage and Barrier numbers (every hit; not \"If\" bonuses). Command: 6 damage to a random enemy.",
+      "aim": "none",
+      "command": [
+        {
+          "op": "damage",
+          "amount": 6,
+          "to": "randomFoe"
+        }
+      ],
+      "empower": false,
+      "boost": {
+        "element": "flame",
+        "amount": 3
+      }
+    },
+    "bear": {
+      "id": "bear",
+      "name": "Bear",
+      "text": "Your first Frost spell each turn with damage or Barrier: +3 to each of its damage and Barrier numbers (every hit; not \"If\" bonuses). Command: gain 5 Barrier.",
+      "aim": "none",
+      "command": [
+        {
+          "op": "barrier",
+          "amount": 5,
+          "to": "self"
+        }
+      ],
+      "empower": false,
+      "boost": {
+        "element": "frost",
+        "amount": 3
+      }
+    },
+    "thunderbird": {
+      "id": "thunderbird",
+      "name": "Thunderbird",
+      "text": "Your first Storm spell each turn with damage or Barrier: +2 to each of its damage and Barrier numbers (every hit; not \"If\" bonuses). Command: 3 damage to every enemy.",
+      "aim": "none",
+      "command": [
+        {
+          "op": "damage",
+          "amount": 3,
+          "to": "allFoes"
+        }
+      ],
+      "empower": false,
+      "boost": {
+        "element": "storm",
+        "amount": 2
+      }
+    },
+    "elder": {
+      "id": "elder",
+      "name": "Elder Tree",
+      "text": "Planting it gives 2 Spirit. Your first elemental spell each turn with damage or Barrier: +2 to each of its damage and Barrier numbers (every hit; not \"If\" bonuses). Command: gain 1 Spirit and draw a card.",
+      "aim": "none",
+      "command": [
+        {
+          "op": "status",
+          "status": "spirit",
+          "amount": 1,
+          "to": "self"
+        },
+        {
+          "op": "draw",
+          "amount": 1
+        }
+      ],
+      "empower": false,
+      "boost": {
+        "element": "any",
+        "amount": 2
+      },
+      "onPlant": [
+        {
+          "op": "status",
+          "status": "spirit",
+          "amount": 2,
+          "to": "self"
+        }
+      ],
+      "rare": true
+    },
+    "owl": {
+      "id": "owl",
+      "name": "Moon Owl",
+      "text": "Whenever Trinity triggers, gain 1 Mana. Command: your next elemental spell costs 0.",
+      "aim": "none",
+      "command": [
+        {
+          "op": "status",
+          "status": "freespell",
+          "amount": 1,
+          "to": "self"
+        }
+      ],
+      "empower": false,
+      "onTrinity": [
+        {
+          "op": "mana",
+          "amount": 1
+        }
+      ],
+      "rare": true
+    }
+  },
+  "rewardEligible": 86,
+  "cards": [
+    {
+      "id": "ember-bolt",
+      "name": "Ember Bolt",
+      "realm": "nexus",
+      "rarity": "basic",
+      "kind": "attack",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 7,
+          "to": "target"
+        }
+      ],
+      "hero": "shaman",
+      "tags": [
+        "flame"
+      ],
+      "upgrade": "ember-bolt+"
+    },
+    {
+      "id": "ember-bolt+",
+      "name": "Ember Bolt+",
+      "realm": "nexus",
+      "rarity": "basic",
+      "kind": "attack",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 10,
+          "to": "target"
+        }
+      ],
+      "hero": "shaman",
+      "tags": [
+        "flame"
+      ]
+    },
+    {
+      "id": "frost-ward",
+      "name": "Frost Ward",
+      "realm": "nexus",
+      "rarity": "basic",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 5,
+          "to": "self"
+        },
+        {
+          "op": "status",
+          "status": "faltering",
+          "amount": 1,
+          "to": "randomFoe"
+        }
+      ],
+      "hero": "shaman",
+      "tags": [
+        "frost"
+      ],
+      "upgrade": "frost-ward+"
+    },
+    {
+      "id": "frost-ward+",
+      "name": "Frost Ward+",
+      "realm": "nexus",
+      "rarity": "basic",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 8,
+          "to": "self"
+        },
+        {
+          "op": "status",
+          "status": "faltering",
+          "amount": 1,
+          "to": "randomFoe"
+        }
+      ],
+      "hero": "shaman",
+      "tags": [
+        "frost"
+      ]
+    },
+    {
+      "id": "forked-lightning",
+      "name": "Forked Lightning",
+      "realm": "nexus",
+      "rarity": "basic",
+      "kind": "attack",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 5,
+          "to": "randomFoe",
+          "hits": 2,
+          "distinct": true,
+          "lonePct": 25
+        }
+      ],
+      "hero": "shaman",
+      "tags": [
+        "storm"
+      ],
+      "upgrade": "forked-lightning+"
+    },
+    {
+      "id": "forked-lightning+",
+      "name": "Forked Lightning+",
+      "realm": "nexus",
+      "rarity": "basic",
+      "kind": "attack",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 7,
+          "to": "randomFoe",
+          "hits": 2,
+          "distinct": true,
+          "lonePct": 25
+        }
+      ],
+      "hero": "shaman",
+      "tags": [
+        "storm"
+      ]
+    },
+    {
+      "id": "searing-lash",
+      "name": "Searing Lash",
+      "realm": "nexus",
+      "rarity": "common",
+      "kind": "attack",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 7,
+          "to": "target"
+        },
+        {
+          "op": "status",
+          "status": "burn",
+          "amount": 2,
+          "to": "target"
+        }
+      ],
+      "hero": "shaman",
+      "tags": [
+        "flame"
+      ],
+      "upgrade": "searing-lash+"
+    },
+    {
+      "id": "searing-lash+",
+      "name": "Searing Lash+",
+      "realm": "nexus",
+      "rarity": "common",
+      "kind": "attack",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 10,
+          "to": "target"
+        },
+        {
+          "op": "status",
+          "status": "burn",
+          "amount": 2,
+          "to": "target"
+        }
+      ],
+      "hero": "shaman",
+      "tags": [
+        "flame"
+      ]
+    },
+    {
+      "id": "kindle",
+      "name": "Kindle",
+      "realm": "nexus",
+      "rarity": "common",
+      "kind": "attack",
+      "cost": 0,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 4,
+          "to": "target"
+        },
+        {
+          "op": "when",
+          "by": "totemsOf",
+          "rune": "hawk",
+          "atLeast": 1,
+          "ops": [
+            {
+              "op": "damage",
+              "amount": 2,
+              "to": "target"
+            }
+          ]
+        }
+      ],
+      "hero": "shaman",
+      "tags": [
+        "flame"
+      ],
+      "upgrade": "kindle+"
+    },
+    {
+      "id": "kindle+",
+      "name": "Kindle+",
+      "realm": "nexus",
+      "rarity": "common",
+      "kind": "attack",
+      "cost": 0,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 6,
+          "to": "target"
+        },
+        {
+          "op": "when",
+          "by": "totemsOf",
+          "rune": "hawk",
+          "atLeast": 1,
+          "ops": [
+            {
+              "op": "damage",
+              "amount": 2,
+              "to": "target"
+            }
+          ]
+        }
+      ],
+      "hero": "shaman",
+      "tags": [
+        "flame"
+      ]
+    },
+    {
+      "id": "firebrand",
+      "name": "Firebrand",
+      "realm": "nexus",
+      "rarity": "common",
+      "kind": "attack",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 7,
+          "to": "target"
+        },
+        {
+          "op": "when",
+          "by": "burn",
+          "of": "target",
+          "atLeast": 1,
+          "ops": [
+            {
+              "op": "damage",
+              "amount": 4,
+              "to": "target"
+            }
+          ]
+        }
+      ],
+      "hero": "shaman",
+      "tags": [
+        "flame"
+      ],
+      "upgrade": "firebrand+"
+    },
+    {
+      "id": "firebrand+",
+      "name": "Firebrand+",
+      "realm": "nexus",
+      "rarity": "common",
+      "kind": "attack",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 10,
+          "to": "target"
+        },
+        {
+          "op": "when",
+          "by": "burn",
+          "of": "target",
+          "atLeast": 1,
+          "ops": [
+            {
+              "op": "damage",
+              "amount": 4,
+              "to": "target"
+            }
+          ]
+        }
+      ],
+      "hero": "shaman",
+      "tags": [
+        "flame"
+      ]
+    },
+    {
+      "id": "twin-cinders",
+      "name": "Twin Cinders",
+      "realm": "nexus",
+      "rarity": "common",
+      "kind": "attack",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 4,
+          "hits": 2,
+          "to": "target"
+        }
+      ],
+      "hero": "shaman",
+      "tags": [
+        "flame"
+      ],
+      "upgrade": "twin-cinders+"
+    },
+    {
+      "id": "twin-cinders+",
+      "name": "Twin Cinders+",
+      "realm": "nexus",
+      "rarity": "common",
+      "kind": "attack",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 6,
+          "hits": 2,
+          "to": "target"
+        }
+      ],
+      "hero": "shaman",
+      "tags": [
+        "flame"
+      ]
+    },
+    {
+      "id": "flame-spear",
+      "name": "Flame Spear",
+      "realm": "nexus",
+      "rarity": "common",
+      "kind": "attack",
+      "cost": 2,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 17,
+          "to": "target"
+        }
+      ],
+      "hero": "shaman",
+      "tags": [
+        "flame"
+      ],
+      "upgrade": "flame-spear+"
+    },
+    {
+      "id": "flame-spear+",
+      "name": "Flame Spear+",
+      "realm": "nexus",
+      "rarity": "common",
+      "kind": "attack",
+      "cost": 2,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 22,
+          "to": "target"
+        }
+      ],
+      "hero": "shaman",
+      "tags": [
+        "flame"
+      ]
+    },
+    {
+      "id": "flame-shield",
+      "name": "Flame Shield",
+      "realm": "nexus",
+      "rarity": "common",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 5,
+          "to": "self"
+        },
+        {
+          "op": "status",
+          "status": "thorns",
+          "amount": 3,
+          "to": "self",
+          "temp": "theirs"
+        }
+      ],
+      "hero": "shaman",
+      "tags": [
+        "flame"
+      ],
+      "upgrade": "flame-shield+"
+    },
+    {
+      "id": "flame-shield+",
+      "name": "Flame Shield+",
+      "realm": "nexus",
+      "rarity": "common",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 8,
+          "to": "self"
+        },
+        {
+          "op": "status",
+          "status": "thorns",
+          "amount": 3,
+          "to": "self",
+          "temp": "theirs"
+        }
+      ],
+      "hero": "shaman",
+      "tags": [
+        "flame"
+      ]
+    },
+    {
+      "id": "immolate",
+      "name": "Immolate",
+      "realm": "nexus",
+      "rarity": "uncommon",
+      "kind": "attack",
+      "cost": 2,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 13,
+          "to": "target"
+        },
+        {
+          "op": "status",
+          "status": "burn",
+          "amount": 4,
+          "to": "target"
+        }
+      ],
+      "hero": "shaman",
+      "tags": [
+        "flame"
+      ],
+      "upgrade": "immolate+"
+    },
+    {
+      "id": "immolate+",
+      "name": "Immolate+",
+      "realm": "nexus",
+      "rarity": "uncommon",
+      "kind": "attack",
+      "cost": 2,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 17,
+          "to": "target"
+        },
+        {
+          "op": "status",
+          "status": "burn",
+          "amount": 4,
+          "to": "target"
+        }
+      ],
+      "hero": "shaman",
+      "tags": [
+        "flame"
+      ]
+    },
+    {
+      "id": "spreading-flames",
+      "name": "Wildfire",
+      "realm": "nexus",
+      "rarity": "uncommon",
+      "kind": "attack",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 9,
+          "to": "target"
+        },
+        {
+          "op": "scaleStatus",
+          "status": "burn",
+          "mult": 2,
+          "to": "target",
+          "max": 10
+        }
+      ],
+      "hero": "shaman",
+      "tags": [
+        "flame"
+      ],
+      "exhaust": true,
+      "upgrade": "spreading-flames+"
+    },
+    {
+      "id": "spreading-flames+",
+      "name": "Wildfire+",
+      "realm": "nexus",
+      "rarity": "uncommon",
+      "kind": "attack",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 12,
+          "to": "target"
+        },
+        {
+          "op": "scaleStatus",
+          "status": "burn",
+          "mult": 2,
+          "to": "target",
+          "max": 10
+        }
+      ],
+      "hero": "shaman",
+      "tags": [
+        "flame"
+      ],
+      "exhaust": true
+    },
+    {
+      "id": "ember-lance",
+      "name": "Ember Lance",
+      "realm": "nexus",
+      "rarity": "uncommon",
+      "kind": "attack",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 10,
+          "to": "target"
+        },
+        {
+          "op": "when",
+          "by": "played",
+          "atMost": 0,
+          "ops": [
+            {
+              "op": "damage",
+              "amount": 3,
+              "to": "target"
+            }
+          ]
+        }
+      ],
+      "hero": "shaman",
+      "tags": [
+        "flame"
+      ],
+      "upgrade": "ember-lance+"
+    },
+    {
+      "id": "ember-lance+",
+      "name": "Ember Lance+",
+      "realm": "nexus",
+      "rarity": "uncommon",
+      "kind": "attack",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 13,
+          "to": "target"
+        },
+        {
+          "op": "when",
+          "by": "played",
+          "atMost": 0,
+          "ops": [
+            {
+              "op": "damage",
+              "amount": 3,
+              "to": "target"
+            }
+          ]
+        }
+      ],
+      "hero": "shaman",
+      "tags": [
+        "flame"
+      ]
+    },
+    {
+      "id": "spirit-lance",
+      "name": "Spirit Lance",
+      "realm": "nexus",
+      "rarity": "uncommon",
+      "kind": "attack",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 7,
+          "to": "target",
+          "scale": {
+            "by": "spirit"
+          }
+        }
+      ],
+      "hero": "shaman",
+      "tags": [
+        "flame"
+      ],
+      "upgrade": "spirit-lance+"
+    },
+    {
+      "id": "spirit-lance+",
+      "name": "Spirit Lance+",
+      "realm": "nexus",
+      "rarity": "uncommon",
+      "kind": "attack",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 10,
+          "to": "target",
+          "scale": {
+            "by": "spirit"
+          }
+        }
+      ],
+      "hero": "shaman",
+      "tags": [
+        "flame"
+      ]
+    },
+    {
+      "id": "phoenix-feather",
+      "name": "Phoenix Feather",
+      "realm": "nexus",
+      "rarity": "rare",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "status",
+          "status": "twinned",
+          "amount": 1,
+          "to": "self"
+        },
+        {
+          "op": "draw",
+          "amount": 1
+        }
+      ],
+      "hero": "shaman",
+      "tags": [
+        "flame"
+      ],
+      "upgrade": "phoenix-feather+"
+    },
+    {
+      "id": "phoenix-feather+",
+      "name": "Phoenix Feather+",
+      "realm": "nexus",
+      "rarity": "rare",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "status",
+          "status": "twinned",
+          "amount": 1,
+          "to": "self"
+        },
+        {
+          "op": "draw",
+          "amount": 2
+        }
+      ],
+      "hero": "shaman",
+      "tags": [
+        "flame"
+      ]
+    },
+    {
+      "id": "pyre-ward",
+      "name": "Pyre Ward",
+      "realm": "nexus",
+      "rarity": "uncommon",
+      "kind": "skill",
+      "cost": 2,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 12,
+          "to": "self"
+        },
+        {
+          "op": "status",
+          "status": "thorns",
+          "amount": 4,
+          "to": "self",
+          "temp": "theirs"
+        }
+      ],
+      "hero": "shaman",
+      "tags": [
+        "flame"
+      ],
+      "upgrade": "pyre-ward+"
+    },
+    {
+      "id": "pyre-ward+",
+      "name": "Pyre Ward+",
+      "realm": "nexus",
+      "rarity": "uncommon",
+      "kind": "skill",
+      "cost": 2,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 15,
+          "to": "self"
+        },
+        {
+          "op": "status",
+          "status": "thorns",
+          "amount": 5,
+          "to": "self",
+          "temp": "theirs"
+        }
+      ],
+      "hero": "shaman",
+      "tags": [
+        "flame"
+      ]
+    },
+    {
+      "id": "smoulder",
+      "name": "Smoulder",
+      "realm": "nexus",
+      "rarity": "uncommon",
+      "kind": "power",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "power",
+          "when": "play",
+          "ops": [
+            {
+              "op": "status",
+              "status": "burn",
+              "amount": 3,
+              "to": "randomFoe"
+            }
+          ],
+          "tag": "flame"
+        }
+      ],
+      "hero": "shaman",
+      "upgrade": "smoulder+"
+    },
+    {
+      "id": "smoulder+",
+      "name": "Smoulder+",
+      "realm": "nexus",
+      "rarity": "uncommon",
+      "kind": "power",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "power",
+          "when": "play",
+          "ops": [
+            {
+              "op": "status",
+              "status": "burn",
+              "amount": 4,
+              "to": "randomFoe"
+            }
+          ],
+          "tag": "flame"
+        }
+      ],
+      "hero": "shaman"
+    },
+    {
+      "id": "flash-burn",
+      "name": "Flashpoint",
+      "realm": "nexus",
+      "rarity": "rare",
+      "kind": "attack",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 4,
+          "to": "target",
+          "scale": {
+            "by": "burn",
+            "mult": 3,
+            "of": "target"
+          }
+        }
+      ],
+      "hero": "shaman",
+      "tags": [
+        "flame"
+      ],
+      "exhaust": true,
+      "upgrade": "flash-burn+"
+    },
+    {
+      "id": "flash-burn+",
+      "name": "Flashpoint+",
+      "realm": "nexus",
+      "rarity": "rare",
+      "kind": "attack",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 8,
+          "to": "target",
+          "scale": {
+            "by": "burn",
+            "mult": 3,
+            "of": "target"
+          }
+        }
+      ],
+      "hero": "shaman",
+      "tags": [
+        "flame"
+      ],
+      "exhaust": true
+    },
+    {
+      "id": "heart-of-the-pyre",
+      "name": "Heart of the Pyre",
+      "realm": "nexus",
+      "rarity": "rare",
+      "kind": "power",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "power",
+          "when": "play",
+          "ops": [
+            {
+              "op": "damage",
+              "amount": 5,
+              "to": "randomFoe"
+            }
+          ],
+          "tag": "flame"
+        }
+      ],
+      "hero": "shaman",
+      "upgrade": "heart-of-the-pyre+"
+    },
+    {
+      "id": "heart-of-the-pyre+",
+      "name": "Heart of the Pyre+",
+      "realm": "nexus",
+      "rarity": "rare",
+      "kind": "power",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "power",
+          "when": "play",
+          "ops": [
+            {
+              "op": "damage",
+              "amount": 6,
+              "to": "randomFoe"
+            }
+          ],
+          "tag": "flame"
+        }
+      ],
+      "hero": "shaman"
+    },
+    {
+      "id": "burning-aegis",
+      "name": "Burning Aegis",
+      "realm": "nexus",
+      "rarity": "rare",
+      "kind": "power",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "power",
+          "when": "turnStart",
+          "ops": [
+            {
+              "op": "status",
+              "status": "thorns",
+              "amount": 3,
+              "to": "self",
+              "temp": "theirs"
+            }
+          ]
+        }
+      ],
+      "hero": "shaman",
+      "upgrade": "burning-aegis+"
+    },
+    {
+      "id": "burning-aegis+",
+      "name": "Burning Aegis+",
+      "realm": "nexus",
+      "rarity": "rare",
+      "kind": "power",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "power",
+          "when": "turnStart",
+          "ops": [
+            {
+              "op": "status",
+              "status": "thorns",
+              "amount": 4,
+              "to": "self",
+              "temp": "theirs"
+            }
+          ]
+        }
+      ],
+      "hero": "shaman"
+    },
+    {
+      "id": "inferno",
+      "name": "Inferno",
+      "realm": "nexus",
+      "rarity": "rare",
+      "kind": "attack",
+      "cost": 3,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 30,
+          "to": "target"
+        },
+        {
+          "op": "status",
+          "status": "burn",
+          "amount": 3,
+          "to": "target"
+        }
+      ],
+      "hero": "shaman",
+      "tags": [
+        "flame"
+      ],
+      "upgrade": "inferno+"
+    },
+    {
+      "id": "inferno+",
+      "name": "Inferno+",
+      "realm": "nexus",
+      "rarity": "rare",
+      "kind": "attack",
+      "cost": 3,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 38,
+          "to": "target"
+        },
+        {
+          "op": "status",
+          "status": "burn",
+          "amount": 3,
+          "to": "target"
+        }
+      ],
+      "hero": "shaman",
+      "tags": [
+        "flame"
+      ]
+    },
+    {
+      "id": "frost-needle",
+      "name": "Frost Needle",
+      "realm": "nexus",
+      "rarity": "common",
+      "kind": "attack",
+      "cost": 0,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 4,
+          "to": "target"
+        },
+        {
+          "op": "when",
+          "by": "attacking",
+          "of": "target",
+          "atLeast": 1,
+          "ops": [
+            {
+              "op": "status",
+              "status": "faltering",
+              "amount": 1,
+              "to": "target"
+            }
+          ]
+        }
+      ],
+      "hero": "shaman",
+      "tags": [
+        "frost"
+      ],
+      "upgrade": "frost-needle+"
+    },
+    {
+      "id": "frost-needle+",
+      "name": "Frost Needle+",
+      "realm": "nexus",
+      "rarity": "common",
+      "kind": "attack",
+      "cost": 0,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 6,
+          "to": "target"
+        },
+        {
+          "op": "when",
+          "by": "attacking",
+          "of": "target",
+          "atLeast": 1,
+          "ops": [
+            {
+              "op": "status",
+              "status": "faltering",
+              "amount": 1,
+              "to": "target"
+            }
+          ]
+        }
+      ],
+      "hero": "shaman",
+      "tags": [
+        "frost"
+      ]
+    },
+    {
+      "id": "rime-shield",
+      "name": "Rime Shield",
+      "realm": "nexus",
+      "rarity": "common",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 7,
+          "to": "self"
+        },
+        {
+          "op": "when",
+          "by": "totemsOf",
+          "rune": "bear",
+          "atLeast": 1,
+          "ops": [
+            {
+              "op": "barrier",
+              "amount": 2,
+              "to": "self"
+            }
+          ]
+        }
+      ],
+      "hero": "shaman",
+      "tags": [
+        "frost"
+      ],
+      "upgrade": "rime-shield+"
+    },
+    {
+      "id": "rime-shield+",
+      "name": "Rime Shield+",
+      "realm": "nexus",
+      "rarity": "common",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 10,
+          "to": "self"
+        },
+        {
+          "op": "when",
+          "by": "totemsOf",
+          "rune": "bear",
+          "atLeast": 1,
+          "ops": [
+            {
+              "op": "barrier",
+              "amount": 2,
+              "to": "self"
+            }
+          ]
+        }
+      ],
+      "hero": "shaman",
+      "tags": [
+        "frost"
+      ]
+    },
+    {
+      "id": "chill-touch",
+      "name": "Chill Touch",
+      "realm": "nexus",
+      "rarity": "common",
+      "kind": "attack",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 6,
+          "to": "target"
+        },
+        {
+          "op": "status",
+          "status": "faltering",
+          "amount": 1,
+          "to": "target"
+        }
+      ],
+      "hero": "shaman",
+      "tags": [
+        "frost"
+      ],
+      "upgrade": "chill-touch+"
+    },
+    {
+      "id": "chill-touch+",
+      "name": "Chill Touch+",
+      "realm": "nexus",
+      "rarity": "common",
+      "kind": "attack",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 9,
+          "to": "target"
+        },
+        {
+          "op": "status",
+          "status": "faltering",
+          "amount": 1,
+          "to": "target"
+        }
+      ],
+      "hero": "shaman",
+      "tags": [
+        "frost"
+      ]
+    },
+    {
+      "id": "hoarfrost",
+      "name": "Hoarfrost",
+      "realm": "nexus",
+      "rarity": "common",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 5,
+          "to": "self"
+        },
+        {
+          "op": "status",
+          "status": "faltering",
+          "amount": 1,
+          "to": "allFoes"
+        }
+      ],
+      "hero": "shaman",
+      "tags": [
+        "frost"
+      ],
+      "upgrade": "hoarfrost+"
+    },
+    {
+      "id": "hoarfrost+",
+      "name": "Hoarfrost+",
+      "realm": "nexus",
+      "rarity": "common",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 8,
+          "to": "self"
+        },
+        {
+          "op": "status",
+          "status": "faltering",
+          "amount": 1,
+          "to": "allFoes"
+        }
+      ],
+      "hero": "shaman",
+      "tags": [
+        "frost"
+      ]
+    },
+    {
+      "id": "ice-wall",
+      "name": "Ice Wall",
+      "realm": "nexus",
+      "rarity": "uncommon",
+      "kind": "skill",
+      "cost": 2,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 16,
+          "to": "self"
+        }
+      ],
+      "hero": "shaman",
+      "tags": [
+        "frost"
+      ],
+      "upgrade": "ice-wall+"
+    },
+    {
+      "id": "ice-wall+",
+      "name": "Ice Wall+",
+      "realm": "nexus",
+      "rarity": "uncommon",
+      "kind": "skill",
+      "cost": 2,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 20,
+          "to": "self"
+        }
+      ],
+      "hero": "shaman",
+      "tags": [
+        "frost"
+      ]
+    },
+    {
+      "id": "glacier-guard",
+      "name": "Glacier Guard",
+      "realm": "nexus",
+      "rarity": "uncommon",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 6,
+          "to": "self"
+        },
+        {
+          "op": "barrierNext",
+          "amount": 4
+        }
+      ],
+      "hero": "shaman",
+      "tags": [
+        "frost"
+      ],
+      "upgrade": "glacier-guard+"
+    },
+    {
+      "id": "glacier-guard+",
+      "name": "Glacier Guard+",
+      "realm": "nexus",
+      "rarity": "uncommon",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 8,
+          "to": "self"
+        },
+        {
+          "op": "barrierNext",
+          "amount": 6
+        }
+      ],
+      "hero": "shaman",
+      "tags": [
+        "frost"
+      ]
+    },
+    {
+      "id": "frozen-grasp",
+      "name": "Frozen Grasp",
+      "realm": "nexus",
+      "rarity": "uncommon",
+      "kind": "skill",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "status",
+          "status": "faltering",
+          "amount": 2,
+          "to": "target"
+        },
+        {
+          "op": "barrier",
+          "amount": 4,
+          "to": "self"
+        }
+      ],
+      "hero": "shaman",
+      "tags": [
+        "frost"
+      ],
+      "upgrade": "frozen-grasp+"
+    },
+    {
+      "id": "frozen-grasp+",
+      "name": "Frozen Grasp+",
+      "realm": "nexus",
+      "rarity": "uncommon",
+      "kind": "skill",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "status",
+          "status": "faltering",
+          "amount": 2,
+          "to": "target"
+        },
+        {
+          "op": "barrier",
+          "amount": 7,
+          "to": "self"
+        }
+      ],
+      "hero": "shaman",
+      "tags": [
+        "frost"
+      ]
+    },
+    {
+      "id": "frost-shatter",
+      "name": "Ice Shatter",
+      "realm": "nexus",
+      "rarity": "uncommon",
+      "kind": "attack",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 6,
+          "to": "target",
+          "scale": {
+            "by": "faltering",
+            "mult": 3,
+            "of": "target"
+          }
+        }
+      ],
+      "hero": "shaman",
+      "tags": [
+        "frost"
+      ],
+      "upgrade": "frost-shatter+"
+    },
+    {
+      "id": "frost-shatter+",
+      "name": "Ice Shatter+",
+      "realm": "nexus",
+      "rarity": "uncommon",
+      "kind": "attack",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 9,
+          "to": "target",
+          "scale": {
+            "by": "faltering",
+            "mult": 3,
+            "of": "target"
+          }
+        }
+      ],
+      "hero": "shaman",
+      "tags": [
+        "frost"
+      ]
+    },
+    {
+      "id": "ice-mirror",
+      "name": "Ice Mirror",
+      "realm": "nexus",
+      "rarity": "uncommon",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 6,
+          "to": "self"
+        },
+        {
+          "op": "status",
+          "status": "reflect",
+          "amount": 1,
+          "to": "self"
+        }
+      ],
+      "hero": "shaman",
+      "tags": [
+        "frost"
+      ],
+      "upgrade": "ice-mirror+"
+    },
+    {
+      "id": "ice-mirror+",
+      "name": "Ice Mirror+",
+      "realm": "nexus",
+      "rarity": "uncommon",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 9,
+          "to": "self"
+        },
+        {
+          "op": "status",
+          "status": "reflect",
+          "amount": 1,
+          "to": "self"
+        }
+      ],
+      "hero": "shaman",
+      "tags": [
+        "frost"
+      ]
+    },
+    {
+      "id": "winters-embrace",
+      "name": "Winter's Embrace",
+      "realm": "nexus",
+      "rarity": "rare",
+      "kind": "skill",
+      "cost": 2,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 12,
+          "to": "self"
+        },
+        {
+          "op": "status",
+          "status": "faltering",
+          "amount": 2,
+          "to": "allFoes"
+        }
+      ],
+      "hero": "shaman",
+      "tags": [
+        "frost"
+      ],
+      "upgrade": "winters-embrace+"
+    },
+    {
+      "id": "winters-embrace+",
+      "name": "Winter's Embrace+",
+      "realm": "nexus",
+      "rarity": "rare",
+      "kind": "skill",
+      "cost": 2,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 15,
+          "to": "self"
+        },
+        {
+          "op": "status",
+          "status": "faltering",
+          "amount": 2,
+          "to": "allFoes"
+        }
+      ],
+      "hero": "shaman",
+      "tags": [
+        "frost"
+      ]
+    },
+    {
+      "id": "permafrost",
+      "name": "Hail Rite",
+      "realm": "nexus",
+      "rarity": "uncommon",
+      "kind": "power",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "power",
+          "when": "turnEnd",
+          "ops": [
+            {
+              "op": "when",
+              "by": "totemsOf",
+              "rune": "bear",
+              "atLeast": 1,
+              "ops": [
+                {
+                  "op": "barrier",
+                  "amount": 4,
+                  "to": "self"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "hero": "shaman",
+      "upgrade": "permafrost+"
+    },
+    {
+      "id": "permafrost+",
+      "name": "Hail Rite+",
+      "realm": "nexus",
+      "rarity": "uncommon",
+      "kind": "power",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "power",
+          "when": "turnEnd",
+          "ops": [
+            {
+              "op": "when",
+              "by": "totemsOf",
+              "rune": "bear",
+              "atLeast": 1,
+              "ops": [
+                {
+                  "op": "barrier",
+                  "amount": 5,
+                  "to": "self"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "hero": "shaman"
+    },
+    {
+      "id": "frostbound",
+      "name": "Frostbound",
+      "realm": "nexus",
+      "rarity": "rare",
+      "kind": "power",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "power",
+          "when": "debuffFoe",
+          "ops": [
+            {
+              "op": "barrier",
+              "amount": 3,
+              "to": "self"
+            }
+          ]
+        }
+      ],
+      "hero": "shaman",
+      "upgrade": "frostbound+"
+    },
+    {
+      "id": "frostbound+",
+      "name": "Frostbound+",
+      "realm": "nexus",
+      "rarity": "rare",
+      "kind": "power",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "power",
+          "when": "debuffFoe",
+          "ops": [
+            {
+              "op": "barrier",
+              "amount": 4,
+              "to": "self"
+            }
+          ]
+        }
+      ],
+      "hero": "shaman"
+    },
+    {
+      "id": "avalanche",
+      "name": "Avalanche",
+      "realm": "nexus",
+      "rarity": "rare",
+      "kind": "attack",
+      "cost": 2,
+      "target": "none",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 14,
+          "to": "allFoes"
+        },
+        {
+          "op": "status",
+          "status": "faltering",
+          "amount": 1,
+          "to": "allFoes"
+        }
+      ],
+      "hero": "shaman",
+      "tags": [
+        "frost"
+      ],
+      "upgrade": "avalanche+"
+    },
+    {
+      "id": "avalanche+",
+      "name": "Avalanche+",
+      "realm": "nexus",
+      "rarity": "rare",
+      "kind": "attack",
+      "cost": 2,
+      "target": "none",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 18,
+          "to": "allFoes"
+        },
+        {
+          "op": "status",
+          "status": "faltering",
+          "amount": 1,
+          "to": "allFoes"
+        }
+      ],
+      "hero": "shaman",
+      "tags": [
+        "frost"
+      ]
+    },
+    {
+      "id": "absolute-zero",
+      "name": "Absolute Zero",
+      "realm": "nexus",
+      "rarity": "rare",
+      "kind": "attack",
+      "cost": 2,
+      "target": "none",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 10,
+          "to": "allFoes",
+          "scale": {
+            "by": "faltering",
+            "mult": 3,
+            "of": "each"
+          }
+        },
+        {
+          "op": "status",
+          "status": "faltering",
+          "amount": 2,
+          "to": "allFoes"
+        }
+      ],
+      "hero": "shaman",
+      "tags": [
+        "frost"
+      ],
+      "upgrade": "absolute-zero+"
+    },
+    {
+      "id": "absolute-zero+",
+      "name": "Absolute Zero+",
+      "realm": "nexus",
+      "rarity": "rare",
+      "kind": "attack",
+      "cost": 2,
+      "target": "none",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 13,
+          "to": "allFoes",
+          "scale": {
+            "by": "faltering",
+            "mult": 3,
+            "of": "each"
+          }
+        },
+        {
+          "op": "status",
+          "status": "faltering",
+          "amount": 2,
+          "to": "allFoes"
+        }
+      ],
+      "hero": "shaman",
+      "tags": [
+        "frost"
+      ]
+    },
+    {
+      "id": "glacial-fortress",
+      "name": "Glacial Fortress",
+      "realm": "nexus",
+      "rarity": "rare",
+      "kind": "skill",
+      "cost": 3,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 22,
+          "to": "self"
+        },
+        {
+          "op": "status",
+          "status": "faltering",
+          "amount": 2,
+          "to": "allFoes"
+        }
+      ],
+      "hero": "shaman",
+      "tags": [
+        "frost"
+      ],
+      "upgrade": "glacial-fortress+"
+    },
+    {
+      "id": "glacial-fortress+",
+      "name": "Glacial Fortress+",
+      "realm": "nexus",
+      "rarity": "rare",
+      "kind": "skill",
+      "cost": 3,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 28,
+          "to": "self"
+        },
+        {
+          "op": "status",
+          "status": "faltering",
+          "amount": 2,
+          "to": "allFoes"
+        }
+      ],
+      "hero": "shaman",
+      "tags": [
+        "frost"
+      ]
+    },
+    {
+      "id": "gathering-storm",
+      "name": "Gathering Storm",
+      "realm": "nexus",
+      "rarity": "common",
+      "kind": "attack",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 4,
+          "to": "allFoes",
+          "scale": {
+            "by": "bonus"
+          }
+        },
+        {
+          "op": "forge",
+          "card": "gathering-storm",
+          "amount": 3
+        }
+      ],
+      "hero": "shaman",
+      "tags": [
+        "storm"
+      ],
+      "forgeWord": "Gather",
+      "upgrade": "gathering-storm+"
+    },
+    {
+      "id": "gathering-storm+",
+      "name": "Gathering Storm+",
+      "realm": "nexus",
+      "rarity": "common",
+      "kind": "attack",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 6,
+          "to": "allFoes",
+          "scale": {
+            "by": "bonus"
+          }
+        },
+        {
+          "op": "forge",
+          "card": "gathering-storm",
+          "amount": 3
+        }
+      ],
+      "hero": "shaman",
+      "tags": [
+        "storm"
+      ],
+      "forgeWord": "Gather"
+    },
+    {
+      "id": "spark-fork",
+      "name": "Spark Fork",
+      "realm": "nexus",
+      "rarity": "common",
+      "kind": "attack",
+      "cost": 0,
+      "target": "none",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 4,
+          "to": "randomFoe",
+          "hits": 2,
+          "distinct": true,
+          "lonePct": 25
+        }
+      ],
+      "hero": "shaman",
+      "tags": [
+        "storm"
+      ],
+      "upgrade": "spark-fork+"
+    },
+    {
+      "id": "spark-fork+",
+      "name": "Spark Fork+",
+      "realm": "nexus",
+      "rarity": "common",
+      "kind": "attack",
+      "cost": 0,
+      "target": "none",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 5,
+          "to": "randomFoe",
+          "hits": 2,
+          "distinct": true,
+          "lonePct": 25
+        }
+      ],
+      "hero": "shaman",
+      "tags": [
+        "storm"
+      ]
+    },
+    {
+      "id": "thunder-fork",
+      "name": "Thunder Fork",
+      "realm": "nexus",
+      "rarity": "uncommon",
+      "kind": "attack",
+      "cost": 2,
+      "target": "none",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 10,
+          "to": "randomFoe",
+          "hits": 3,
+          "distinct": true,
+          "lonePct": 25
+        }
+      ],
+      "hero": "shaman",
+      "tags": [
+        "storm"
+      ],
+      "upgrade": "thunder-fork+"
+    },
+    {
+      "id": "thunder-fork+",
+      "name": "Thunder Fork+",
+      "realm": "nexus",
+      "rarity": "uncommon",
+      "kind": "attack",
+      "cost": 2,
+      "target": "none",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 13,
+          "to": "randomFoe",
+          "hits": 3,
+          "distinct": true,
+          "lonePct": 25
+        }
+      ],
+      "hero": "shaman",
+      "tags": [
+        "storm"
+      ]
+    },
+    {
+      "id": "chain-lightning",
+      "name": "Chain Lightning",
+      "realm": "nexus",
+      "rarity": "common",
+      "kind": "attack",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 3,
+          "hits": 3,
+          "to": "randomFoe"
+        }
+      ],
+      "hero": "shaman",
+      "tags": [
+        "storm"
+      ],
+      "upgrade": "chain-lightning+"
+    },
+    {
+      "id": "chain-lightning+",
+      "name": "Chain Lightning+",
+      "realm": "nexus",
+      "rarity": "common",
+      "kind": "attack",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 4,
+          "hits": 3,
+          "to": "randomFoe"
+        }
+      ],
+      "hero": "shaman",
+      "tags": [
+        "storm"
+      ]
+    },
+    {
+      "id": "static-crackle",
+      "name": "Static Crackle",
+      "realm": "nexus",
+      "rarity": "common",
+      "kind": "attack",
+      "cost": 0,
+      "target": "none",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 4,
+          "to": "allFoes"
+        }
+      ],
+      "hero": "shaman",
+      "tags": [
+        "storm"
+      ],
+      "upgrade": "static-crackle+"
+    },
+    {
+      "id": "static-crackle+",
+      "name": "Static Crackle+",
+      "realm": "nexus",
+      "rarity": "common",
+      "kind": "attack",
+      "cost": 0,
+      "target": "none",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 5,
+          "to": "allFoes"
+        }
+      ],
+      "hero": "shaman",
+      "tags": [
+        "storm"
+      ]
+    },
+    {
+      "id": "gale-call",
+      "name": "Gale Call",
+      "realm": "nexus",
+      "rarity": "common",
+      "kind": "attack",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 5,
+          "to": "allFoes"
+        },
+        {
+          "op": "draw",
+          "amount": 1
+        }
+      ],
+      "hero": "shaman",
+      "tags": [
+        "storm"
+      ],
+      "upgrade": "gale-call+"
+    },
+    {
+      "id": "gale-call+",
+      "name": "Gale Call+",
+      "realm": "nexus",
+      "rarity": "common",
+      "kind": "attack",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 8,
+          "to": "allFoes"
+        },
+        {
+          "op": "draw",
+          "amount": 1
+        }
+      ],
+      "hero": "shaman",
+      "tags": [
+        "storm"
+      ]
+    },
+    {
+      "id": "thunderclap",
+      "name": "Thunderclap",
+      "realm": "nexus",
+      "rarity": "uncommon",
+      "kind": "attack",
+      "cost": 2,
+      "target": "none",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 15,
+          "to": "allFoes"
+        }
+      ],
+      "hero": "shaman",
+      "tags": [
+        "storm"
+      ],
+      "upgrade": "thunderclap+"
+    },
+    {
+      "id": "thunderclap+",
+      "name": "Thunderclap+",
+      "realm": "nexus",
+      "rarity": "uncommon",
+      "kind": "attack",
+      "cost": 2,
+      "target": "none",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 19,
+          "to": "allFoes"
+        }
+      ],
+      "hero": "shaman",
+      "tags": [
+        "storm"
+      ]
+    },
+    {
+      "id": "wind-wall",
+      "name": "Wind Wall",
+      "realm": "nexus",
+      "rarity": "common",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 5,
+          "to": "self"
+        },
+        {
+          "op": "status",
+          "status": "sapped",
+          "amount": 2,
+          "to": "allFoes",
+          "temp": "theirs"
+        }
+      ],
+      "hero": "shaman",
+      "tags": [
+        "storm"
+      ],
+      "upgrade": "wind-wall+"
+    },
+    {
+      "id": "wind-wall+",
+      "name": "Wind Wall+",
+      "realm": "nexus",
+      "rarity": "common",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 8,
+          "to": "self"
+        },
+        {
+          "op": "status",
+          "status": "sapped",
+          "amount": 2,
+          "to": "allFoes",
+          "temp": "theirs"
+        }
+      ],
+      "hero": "shaman",
+      "tags": [
+        "storm"
+      ]
+    },
+    {
+      "id": "squall",
+      "name": "Squall",
+      "realm": "nexus",
+      "rarity": "uncommon",
+      "kind": "attack",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 2,
+          "hits": 4,
+          "to": "randomFoe"
+        }
+      ],
+      "hero": "shaman",
+      "tags": [
+        "storm"
+      ],
+      "upgrade": "squall+"
+    },
+    {
+      "id": "squall+",
+      "name": "Squall+",
+      "realm": "nexus",
+      "rarity": "uncommon",
+      "kind": "attack",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 3,
+          "hits": 4,
+          "to": "randomFoe"
+        }
+      ],
+      "hero": "shaman",
+      "tags": [
+        "storm"
+      ]
+    },
+    {
+      "id": "storm-front",
+      "name": "Storm Front",
+      "realm": "nexus",
+      "rarity": "uncommon",
+      "kind": "attack",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 3,
+          "hits": 2,
+          "to": "allFoes"
+        },
+        {
+          "op": "draw",
+          "amount": 1
+        }
+      ],
+      "hero": "shaman",
+      "tags": [
+        "storm"
+      ],
+      "upgrade": "storm-front+"
+    },
+    {
+      "id": "storm-front+",
+      "name": "Storm Front+",
+      "realm": "nexus",
+      "rarity": "uncommon",
+      "kind": "attack",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 4,
+          "hits": 2,
+          "to": "allFoes"
+        },
+        {
+          "op": "draw",
+          "amount": 1
+        }
+      ],
+      "hero": "shaman",
+      "tags": [
+        "storm"
+      ]
+    },
+    {
+      "id": "tempest-call",
+      "name": "Tempest Call",
+      "realm": "nexus",
+      "rarity": "uncommon",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "forge",
+          "card": "gathering-storm",
+          "amount": 2
+        },
+        {
+          "op": "draw",
+          "amount": 1
+        }
+      ],
+      "hero": "shaman",
+      "tags": [
+        "storm"
+      ],
+      "upgrade": "tempest-call+"
+    },
+    {
+      "id": "tempest-call+",
+      "name": "Tempest Call+",
+      "realm": "nexus",
+      "rarity": "uncommon",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "forge",
+          "card": "gathering-storm",
+          "amount": 3
+        },
+        {
+          "op": "draw",
+          "amount": 1
+        }
+      ],
+      "hero": "shaman",
+      "tags": [
+        "storm"
+      ]
+    },
+    {
+      "id": "maelstrom",
+      "name": "Maelstrom",
+      "realm": "nexus",
+      "rarity": "rare",
+      "kind": "attack",
+      "cost": 2,
+      "target": "none",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 8,
+          "hits": 2,
+          "to": "allFoes"
+        }
+      ],
+      "hero": "shaman",
+      "tags": [
+        "storm"
+      ],
+      "upgrade": "maelstrom+"
+    },
+    {
+      "id": "maelstrom+",
+      "name": "Maelstrom+",
+      "realm": "nexus",
+      "rarity": "rare",
+      "kind": "attack",
+      "cost": 2,
+      "target": "none",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 10,
+          "hits": 2,
+          "to": "allFoes"
+        }
+      ],
+      "hero": "shaman",
+      "tags": [
+        "storm"
+      ]
+    },
+    {
+      "id": "charged-sky",
+      "name": "Charged Sky",
+      "realm": "nexus",
+      "rarity": "uncommon",
+      "kind": "attack",
+      "cost": 2,
+      "target": "none",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 10,
+          "to": "allFoes"
+        },
+        {
+          "op": "status",
+          "status": "exposed",
+          "amount": 2,
+          "to": "allFoes"
+        }
+      ],
+      "hero": "shaman",
+      "tags": [
+        "storm"
+      ],
+      "upgrade": "charged-sky+"
+    },
+    {
+      "id": "charged-sky+",
+      "name": "Charged Sky+",
+      "realm": "nexus",
+      "rarity": "uncommon",
+      "kind": "attack",
+      "cost": 2,
+      "target": "none",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 13,
+          "to": "allFoes"
+        },
+        {
+          "op": "status",
+          "status": "exposed",
+          "amount": 2,
+          "to": "allFoes"
+        }
+      ],
+      "hero": "shaman",
+      "tags": [
+        "storm"
+      ]
+    },
+    {
+      "id": "static-veil",
+      "name": "Static Veil",
+      "realm": "nexus",
+      "rarity": "uncommon",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 6,
+          "to": "self"
+        },
+        {
+          "op": "status",
+          "status": "sapped",
+          "amount": 3,
+          "to": "allFoes",
+          "temp": "theirs"
+        }
+      ],
+      "hero": "shaman",
+      "tags": [
+        "storm"
+      ],
+      "upgrade": "static-veil+"
+    },
+    {
+      "id": "static-veil+",
+      "name": "Static Veil+",
+      "realm": "nexus",
+      "rarity": "uncommon",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 9,
+          "to": "self"
+        },
+        {
+          "op": "status",
+          "status": "sapped",
+          "amount": 3,
+          "to": "allFoes",
+          "temp": "theirs"
+        }
+      ],
+      "hero": "shaman",
+      "tags": [
+        "storm"
+      ]
+    },
+    {
+      "id": "lightning-rod",
+      "name": "Lightning Rod",
+      "realm": "nexus",
+      "rarity": "uncommon",
+      "kind": "power",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "power",
+          "when": "play",
+          "ops": [
+            {
+              "op": "damage",
+              "amount": 3,
+              "to": "randomFoe"
+            }
+          ],
+          "tag": "storm"
+        }
+      ],
+      "hero": "shaman",
+      "upgrade": "lightning-rod+"
+    },
+    {
+      "id": "lightning-rod+",
+      "name": "Lightning Rod+",
+      "realm": "nexus",
+      "rarity": "uncommon",
+      "kind": "power",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "power",
+          "when": "play",
+          "ops": [
+            {
+              "op": "damage",
+              "amount": 4,
+              "to": "randomFoe"
+            }
+          ],
+          "tag": "storm"
+        }
+      ],
+      "hero": "shaman"
+    },
+    {
+      "id": "eye-of-the-tempest",
+      "name": "Eye of the Tempest",
+      "realm": "nexus",
+      "rarity": "rare",
+      "kind": "attack",
+      "cost": 2,
+      "target": "none",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 3,
+          "hits": 6,
+          "to": "randomFoe"
+        },
+        {
+          "op": "when",
+          "by": "totemsOf",
+          "rune": "thunderbird",
+          "atLeast": 1,
+          "ops": [
+            {
+              "op": "damage",
+              "amount": 3,
+              "to": "randomFoe"
+            }
+          ]
+        }
+      ],
+      "hero": "shaman",
+      "tags": [
+        "storm"
+      ],
+      "upgrade": "eye-of-the-tempest+"
+    },
+    {
+      "id": "eye-of-the-tempest+",
+      "name": "Eye of the Tempest+",
+      "realm": "nexus",
+      "rarity": "rare",
+      "kind": "attack",
+      "cost": 2,
+      "target": "none",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 4,
+          "hits": 6,
+          "to": "randomFoe"
+        },
+        {
+          "op": "when",
+          "by": "totemsOf",
+          "rune": "thunderbird",
+          "atLeast": 1,
+          "ops": [
+            {
+              "op": "damage",
+              "amount": 4,
+              "to": "randomFoe"
+            }
+          ]
+        }
+      ],
+      "hero": "shaman",
+      "tags": [
+        "storm"
+      ]
+    },
+    {
+      "id": "storm-sovereign",
+      "name": "Storm Sovereign",
+      "realm": "nexus",
+      "rarity": "rare",
+      "kind": "power",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "power",
+          "when": "command",
+          "ops": [
+            {
+              "op": "damage",
+              "amount": 3,
+              "to": "allFoes"
+            }
+          ]
+        }
+      ],
+      "hero": "shaman",
+      "upgrade": "storm-sovereign+"
+    },
+    {
+      "id": "storm-sovereign+",
+      "name": "Storm Sovereign+",
+      "realm": "nexus",
+      "rarity": "rare",
+      "kind": "power",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "power",
+          "when": "command",
+          "ops": [
+            {
+              "op": "damage",
+              "amount": 4,
+              "to": "allFoes"
+            }
+          ]
+        }
+      ],
+      "hero": "shaman"
+    },
+    {
+      "id": "calm-before-the-storm",
+      "name": "Calm Before the Storm",
+      "realm": "nexus",
+      "rarity": "rare",
+      "kind": "power",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "power",
+          "when": "turnStart",
+          "ops": [
+            {
+              "op": "status",
+              "status": "sapped",
+              "amount": 3,
+              "to": "allFoes",
+              "temp": "theirs"
+            }
+          ]
+        }
+      ],
+      "hero": "shaman",
+      "upgrade": "calm-before-the-storm+"
+    },
+    {
+      "id": "calm-before-the-storm+",
+      "name": "Calm Before the Storm+",
+      "realm": "nexus",
+      "rarity": "rare",
+      "kind": "power",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "power",
+          "when": "turnStart",
+          "ops": [
+            {
+              "op": "status",
+              "status": "sapped",
+              "amount": 4,
+              "to": "allFoes",
+              "temp": "theirs"
+            }
+          ]
+        }
+      ],
+      "hero": "shaman"
+    },
+    {
+      "id": "superstorm",
+      "name": "Superstorm",
+      "realm": "nexus",
+      "rarity": "rare",
+      "kind": "attack",
+      "cost": 3,
+      "target": "none",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 6,
+          "hits": 4,
+          "to": "allFoes"
+        }
+      ],
+      "hero": "shaman",
+      "tags": [
+        "storm"
+      ],
+      "upgrade": "superstorm+"
+    },
+    {
+      "id": "superstorm+",
+      "name": "Superstorm+",
+      "realm": "nexus",
+      "rarity": "rare",
+      "kind": "attack",
+      "cost": 3,
+      "target": "none",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 8,
+          "hits": 4,
+          "to": "allFoes"
+        }
+      ],
+      "hero": "shaman",
+      "tags": [
+        "storm"
+      ]
+    },
+    {
+      "id": "spirit-call",
+      "name": "Spirit Call",
+      "realm": "nexus",
+      "rarity": "basic",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "totemCommand",
+          "spirit": "choose"
+        }
+      ],
+      "hero": "shaman",
+      "upgrade": "spirit-call+"
+    },
+    {
+      "id": "spirit-call+",
+      "name": "Spirit Call+",
+      "realm": "nexus",
+      "rarity": "basic",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "totemCommand",
+          "spirit": "choose"
+        },
+        {
+          "op": "barrier",
+          "amount": 3,
+          "to": "self"
+        }
+      ],
+      "hero": "shaman"
+    },
+    {
+      "id": "hawks-dive",
+      "name": "Hawk's Dive",
+      "realm": "nexus",
+      "rarity": "common",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "totemCommand",
+          "spirit": "hawk",
+          "one": true
+        },
+        {
+          "op": "barrier",
+          "amount": 3,
+          "to": "self"
+        }
+      ],
+      "hero": "shaman",
+      "upgrade": "hawks-dive+"
+    },
+    {
+      "id": "hawks-dive+",
+      "name": "Hawk's Dive+",
+      "realm": "nexus",
+      "rarity": "common",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "totemCommand",
+          "spirit": "hawk",
+          "one": true
+        },
+        {
+          "op": "barrier",
+          "amount": 6,
+          "to": "self"
+        }
+      ],
+      "hero": "shaman"
+    },
+    {
+      "id": "bears-guard",
+      "name": "Bear's Guard",
+      "realm": "nexus",
+      "rarity": "common",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "totemCommand",
+          "spirit": "bear",
+          "one": true
+        }
+      ],
+      "hero": "shaman",
+      "upgrade": "bears-guard+"
+    },
+    {
+      "id": "bears-guard+",
+      "name": "Bear's Guard+",
+      "realm": "nexus",
+      "rarity": "common",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "totemCommand",
+          "spirit": "bear",
+          "one": true
+        },
+        {
+          "op": "barrier",
+          "amount": 3,
+          "to": "self"
+        }
+      ],
+      "hero": "shaman"
+    },
+    {
+      "id": "thunderbirds-cry",
+      "name": "Thunderbird's Cry",
+      "realm": "nexus",
+      "rarity": "common",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "totemCommand",
+          "spirit": "thunderbird",
+          "one": true
+        },
+        {
+          "op": "draw",
+          "amount": 1
+        }
+      ],
+      "hero": "shaman",
+      "upgrade": "thunderbirds-cry+"
+    },
+    {
+      "id": "thunderbirds-cry+",
+      "name": "Thunderbird's Cry+",
+      "realm": "nexus",
+      "rarity": "common",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "totemCommand",
+          "spirit": "thunderbird",
+          "one": true
+        },
+        {
+          "op": "damage",
+          "amount": 3,
+          "to": "allFoes"
+        },
+        {
+          "op": "draw",
+          "amount": 1
+        }
+      ],
+      "hero": "shaman"
+    },
+    {
+      "id": "spark-cast",
+      "name": "Hawk Call",
+      "realm": "nexus",
+      "rarity": "common",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "plant",
+          "spirit": "hawk"
+        },
+        {
+          "op": "totemCommand",
+          "spirit": "hawk",
+          "one": true
+        }
+      ],
+      "hero": "shaman",
+      "upgrade": "spark-cast+"
+    },
+    {
+      "id": "spark-cast+",
+      "name": "Hawk Call+",
+      "realm": "nexus",
+      "rarity": "common",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "plant",
+          "spirit": "hawk"
+        },
+        {
+          "op": "totemCommand",
+          "spirit": "hawk",
+          "one": true
+        },
+        {
+          "op": "barrier",
+          "amount": 3,
+          "to": "self"
+        }
+      ],
+      "hero": "shaman"
+    },
+    {
+      "id": "wardkeepers-pact",
+      "name": "Bear Call",
+      "realm": "nexus",
+      "rarity": "common",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "plant",
+          "spirit": "bear"
+        },
+        {
+          "op": "barrier",
+          "amount": 7,
+          "to": "self"
+        }
+      ],
+      "hero": "shaman",
+      "upgrade": "wardkeepers-pact+"
+    },
+    {
+      "id": "wardkeepers-pact+",
+      "name": "Bear Call+",
+      "realm": "nexus",
+      "rarity": "common",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "plant",
+          "spirit": "bear"
+        },
+        {
+          "op": "barrier",
+          "amount": 10,
+          "to": "self"
+        }
+      ],
+      "hero": "shaman"
+    },
+    {
+      "id": "thunderbird-call",
+      "name": "Thunderbird Call",
+      "realm": "nexus",
+      "rarity": "common",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "plant",
+          "spirit": "thunderbird"
+        },
+        {
+          "op": "damage",
+          "amount": 4,
+          "to": "allFoes"
+        },
+        {
+          "op": "barrier",
+          "amount": 3,
+          "to": "self"
+        }
+      ],
+      "hero": "shaman",
+      "upgrade": "thunderbird-call+"
+    },
+    {
+      "id": "thunderbird-call+",
+      "name": "Thunderbird Call+",
+      "realm": "nexus",
+      "rarity": "common",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "plant",
+          "spirit": "thunderbird"
+        },
+        {
+          "op": "damage",
+          "amount": 6,
+          "to": "allFoes"
+        },
+        {
+          "op": "barrier",
+          "amount": 4,
+          "to": "self"
+        }
+      ],
+      "hero": "shaman"
+    },
+    {
+      "id": "call-again",
+      "name": "Call Again",
+      "realm": "nexus",
+      "rarity": "common",
+      "kind": "skill",
+      "cost": 0,
+      "target": "none",
+      "effects": [
+        {
+          "op": "totemCommand",
+          "spirit": "random"
+        }
+      ],
+      "hero": "shaman",
+      "exhaust": true,
+      "upgrade": "call-again+"
+    },
+    {
+      "id": "call-again+",
+      "name": "Call Again+",
+      "realm": "nexus",
+      "rarity": "common",
+      "kind": "skill",
+      "cost": 0,
+      "target": "none",
+      "effects": [
+        {
+          "op": "totemCommand",
+          "spirit": "random"
+        },
+        {
+          "op": "barrier",
+          "amount": 2,
+          "to": "self"
+        }
+      ],
+      "hero": "shaman",
+      "exhaust": true
+    },
+    {
+      "id": "raise-the-pole",
+      "name": "Raise the Pole",
+      "realm": "nexus",
+      "rarity": "uncommon",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "totemSlot"
+        },
+        {
+          "op": "barrier",
+          "amount": 5,
+          "to": "self"
+        },
+        {
+          "op": "draw",
+          "amount": 1
+        }
+      ],
+      "hero": "shaman",
+      "upgrade": "raise-the-pole+"
+    },
+    {
+      "id": "raise-the-pole+",
+      "name": "Raise the Pole+",
+      "realm": "nexus",
+      "rarity": "uncommon",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "totemSlot"
+        },
+        {
+          "op": "barrier",
+          "amount": 8,
+          "to": "self"
+        },
+        {
+          "op": "draw",
+          "amount": 1
+        }
+      ],
+      "hero": "shaman"
+    },
+    {
+      "id": "carve-the-spirit-pole",
+      "name": "Carve the Spirit Pole",
+      "realm": "nexus",
+      "rarity": "rare",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "totemSlot"
+        },
+        {
+          "op": "plant",
+          "spirit": "*"
+        },
+        {
+          "op": "draw",
+          "amount": 2
+        }
+      ],
+      "hero": "shaman",
+      "upgrade": "carve-the-spirit-pole+"
+    },
+    {
+      "id": "carve-the-spirit-pole+",
+      "name": "Carve the Spirit Pole+",
+      "realm": "nexus",
+      "rarity": "rare",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "totemSlot"
+        },
+        {
+          "op": "plant",
+          "spirit": "*"
+        },
+        {
+          "op": "draw",
+          "amount": 3
+        }
+      ],
+      "hero": "shaman"
+    },
+    {
+      "id": "rally-the-spirits",
+      "name": "Rally the Spirits",
+      "realm": "nexus",
+      "rarity": "uncommon",
+      "kind": "skill",
+      "cost": 2,
+      "target": "none",
+      "effects": [
+        {
+          "op": "totemCommand",
+          "spirit": "choose",
+          "times": 2
+        },
+        {
+          "op": "barrier",
+          "amount": 4,
+          "to": "self"
+        }
+      ],
+      "hero": "shaman",
+      "upgrade": "rally-the-spirits+"
+    },
+    {
+      "id": "rally-the-spirits+",
+      "name": "Rally the Spirits+",
+      "realm": "nexus",
+      "rarity": "uncommon",
+      "kind": "skill",
+      "cost": 2,
+      "target": "none",
+      "effects": [
+        {
+          "op": "totemCommand",
+          "spirit": "choose",
+          "times": 2
+        },
+        {
+          "op": "barrier",
+          "amount": 7,
+          "to": "self"
+        }
+      ],
+      "hero": "shaman"
+    },
+    {
+      "id": "ancestral-exchange",
+      "name": "Ancestral Exchange",
+      "realm": "nexus",
+      "rarity": "uncommon",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "plant",
+          "spirit": "*",
+          "anywhere": true
+        },
+        {
+          "op": "when",
+          "by": "replacedNow",
+          "atLeast": 1,
+          "ops": [
+            {
+              "op": "status",
+              "status": "spirit",
+              "amount": 1,
+              "to": "self"
+            }
+          ]
+        },
+        {
+          "op": "draw",
+          "amount": 1
+        },
+        {
+          "op": "barrier",
+          "amount": 3,
+          "to": "self"
+        }
+      ],
+      "hero": "shaman",
+      "upgrade": "ancestral-exchange+"
+    },
+    {
+      "id": "ancestral-exchange+",
+      "name": "Ancestral Exchange+",
+      "realm": "nexus",
+      "rarity": "uncommon",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "plant",
+          "spirit": "*",
+          "anywhere": true
+        },
+        {
+          "op": "when",
+          "by": "replacedNow",
+          "atLeast": 1,
+          "ops": [
+            {
+              "op": "status",
+              "status": "spirit",
+              "amount": 1,
+              "to": "self"
+            }
+          ]
+        },
+        {
+          "op": "draw",
+          "amount": 1
+        },
+        {
+          "op": "barrier",
+          "amount": 6,
+          "to": "self"
+        }
+      ],
+      "hero": "shaman"
+    },
+    {
+      "id": "thunder-roost",
+      "name": "Thunder Roost",
+      "realm": "nexus",
+      "rarity": "uncommon",
+      "kind": "power",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "power",
+          "when": "turnStart",
+          "ops": [
+            {
+              "op": "when",
+              "by": "totemsOf",
+              "rune": "thunderbird",
+              "atLeast": 1,
+              "ops": [
+                {
+                  "op": "damage",
+                  "amount": 3,
+                  "to": "allFoes"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "hero": "shaman",
+      "upgrade": "thunder-roost+"
+    },
+    {
+      "id": "thunder-roost+",
+      "name": "Thunder Roost+",
+      "realm": "nexus",
+      "rarity": "uncommon",
+      "kind": "power",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "power",
+          "when": "turnStart",
+          "ops": [
+            {
+              "op": "when",
+              "by": "totemsOf",
+              "rune": "thunderbird",
+              "atLeast": 1,
+              "ops": [
+                {
+                  "op": "damage",
+                  "amount": 4,
+                  "to": "allFoes"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "hero": "shaman"
+    },
+    {
+      "id": "rune-carapace",
+      "name": "Bark Carapace",
+      "realm": "nexus",
+      "rarity": "rare",
+      "kind": "power",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "power",
+          "when": "turnStart",
+          "ops": [
+            {
+              "op": "barrier",
+              "amount": 1,
+              "to": "self",
+              "scale": {
+                "by": "totems"
+              }
+            }
+          ]
+        }
+      ],
+      "hero": "shaman",
+      "upgrade": "rune-carapace+"
+    },
+    {
+      "id": "rune-carapace+",
+      "name": "Bark Carapace+",
+      "realm": "nexus",
+      "rarity": "rare",
+      "kind": "power",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "power",
+          "when": "turnStart",
+          "ops": [
+            {
+              "op": "barrier",
+              "amount": 1,
+              "to": "self",
+              "scale": {
+                "by": "totems"
+              }
+            }
+          ]
+        }
+      ],
+      "hero": "shaman",
+      "innate": true
+    },
+    {
+      "id": "call-the-elder-tree",
+      "name": "Call the Elder Tree",
+      "realm": "nexus",
+      "rarity": "rare",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "plant",
+          "spirit": "elder"
+        }
+      ],
+      "hero": "shaman",
+      "upgrade": "call-the-elder-tree+"
+    },
+    {
+      "id": "call-the-elder-tree+",
+      "name": "Call the Elder Tree+",
+      "realm": "nexus",
+      "rarity": "rare",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "plant",
+          "spirit": "elder"
+        },
+        {
+          "op": "barrier",
+          "amount": 3,
+          "to": "self"
+        }
+      ],
+      "hero": "shaman"
+    },
+    {
+      "id": "call-the-moon-owl",
+      "name": "Call the Moon Owl",
+      "realm": "nexus",
+      "rarity": "rare",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "plant",
+          "spirit": "owl"
+        },
+        {
+          "op": "draw",
+          "amount": 1
+        }
+      ],
+      "hero": "shaman",
+      "upgrade": "call-the-moon-owl+"
+    },
+    {
+      "id": "call-the-moon-owl+",
+      "name": "Call the Moon Owl+",
+      "realm": "nexus",
+      "rarity": "rare",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "plant",
+          "spirit": "owl"
+        },
+        {
+          "op": "draw",
+          "amount": 2
+        }
+      ],
+      "hero": "shaman"
+    },
+    {
+      "id": "spirit-chorus",
+      "name": "Spirit Chorus",
+      "realm": "nexus",
+      "rarity": "rare",
+      "kind": "power",
+      "cost": 2,
+      "target": "none",
+      "effects": [
+        {
+          "op": "power",
+          "when": "turnStart",
+          "ops": [
+            {
+              "op": "totemCommand",
+              "spirit": "random"
+            },
+            {
+              "op": "barrier",
+              "amount": 2,
+              "to": "self"
+            }
+          ]
+        }
+      ],
+      "hero": "shaman",
+      "upgrade": "spirit-chorus+"
+    },
+    {
+      "id": "spirit-chorus+",
+      "name": "Spirit Chorus+",
+      "realm": "nexus",
+      "rarity": "rare",
+      "kind": "power",
+      "cost": 2,
+      "target": "none",
+      "effects": [
+        {
+          "op": "power",
+          "when": "turnStart",
+          "ops": [
+            {
+              "op": "totemCommand",
+              "spirit": "random"
+            },
+            {
+              "op": "barrier",
+              "amount": 2,
+              "to": "self"
+            }
+          ]
+        }
+      ],
+      "hero": "shaman",
+      "innate": true
+    },
+    {
+      "id": "great-spirits-call",
+      "name": "Great Spirit's Call",
+      "realm": "nexus",
+      "rarity": "rare",
+      "kind": "skill",
+      "cost": 3,
+      "target": "none",
+      "effects": [
+        {
+          "op": "totemCommand",
+          "spirit": "all"
+        },
+        {
+          "op": "barrier",
+          "amount": 5,
+          "to": "self"
+        }
+      ],
+      "hero": "shaman",
+      "upgrade": "great-spirits-call+"
+    },
+    {
+      "id": "great-spirits-call+",
+      "name": "Great Spirit's Call+",
+      "realm": "nexus",
+      "rarity": "rare",
+      "kind": "skill",
+      "cost": 3,
+      "target": "none",
+      "effects": [
+        {
+          "op": "totemCommand",
+          "spirit": "all"
+        },
+        {
+          "op": "barrier",
+          "amount": 9,
+          "to": "self"
+        }
+      ],
+      "hero": "shaman"
+    },
+    {
+      "id": "prism-spell",
+      "name": "Prism Spell",
+      "realm": "nexus",
+      "rarity": "uncommon",
+      "kind": "attack",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 4,
+          "to": "target"
+        },
+        {
+          "op": "barrier",
+          "amount": 3,
+          "to": "self"
+        }
+      ],
+      "hero": "shaman",
+      "tags": [
+        "prism"
+      ],
+      "upgrade": "prism-spell+"
+    },
+    {
+      "id": "prism-spell+",
+      "name": "Prism Spell+",
+      "realm": "nexus",
+      "rarity": "uncommon",
+      "kind": "attack",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 6,
+          "to": "target"
+        },
+        {
+          "op": "barrier",
+          "amount": 5,
+          "to": "self"
+        }
+      ],
+      "hero": "shaman",
+      "tags": [
+        "prism"
+      ]
+    },
+    {
+      "id": "spirit-surge",
+      "name": "Spirit Surge",
+      "realm": "nexus",
+      "rarity": "uncommon",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "status",
+          "status": "spirit",
+          "amount": 1,
+          "to": "self"
+        },
+        {
+          "op": "barrier",
+          "amount": 5,
+          "to": "self"
+        }
+      ],
+      "hero": "shaman",
+      "upgrade": "spirit-surge+"
+    },
+    {
+      "id": "spirit-surge+",
+      "name": "Spirit Surge+",
+      "realm": "nexus",
+      "rarity": "uncommon",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "status",
+          "status": "spirit",
+          "amount": 1,
+          "to": "self"
+        },
+        {
+          "op": "barrier",
+          "amount": 8,
+          "to": "self"
+        }
+      ],
+      "hero": "shaman"
+    },
+    {
+      "id": "tune-the-lattice",
+      "name": "Communion",
+      "realm": "nexus",
+      "rarity": "uncommon",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "status",
+          "status": "spirit",
+          "amount": 1,
+          "to": "self"
+        },
+        {
+          "op": "draw",
+          "amount": 1
+        },
+        {
+          "op": "barrier",
+          "amount": 3,
+          "to": "self"
+        }
+      ],
+      "hero": "shaman",
+      "upgrade": "tune-the-lattice+"
+    },
+    {
+      "id": "tune-the-lattice+",
+      "name": "Communion+",
+      "realm": "nexus",
+      "rarity": "uncommon",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "status",
+          "status": "spirit",
+          "amount": 1,
+          "to": "self"
+        },
+        {
+          "op": "draw",
+          "amount": 2
+        },
+        {
+          "op": "barrier",
+          "amount": 3,
+          "to": "self"
+        }
+      ],
+      "hero": "shaman"
+    },
+    {
+      "id": "spiritstorm",
+      "name": "Spiritstorm",
+      "realm": "nexus",
+      "rarity": "rare",
+      "kind": "attack",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 6,
+          "to": "allFoes",
+          "scale": {
+            "by": "spirit"
+          }
+        }
+      ],
+      "hero": "shaman",
+      "upgrade": "spiritstorm+"
+    },
+    {
+      "id": "spiritstorm+",
+      "name": "Spiritstorm+",
+      "realm": "nexus",
+      "rarity": "rare",
+      "kind": "attack",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 9,
+          "to": "allFoes",
+          "scale": {
+            "by": "spirit"
+          }
+        }
+      ],
+      "hero": "shaman"
+    },
+    {
+      "id": "harmony",
+      "name": "Harmony",
+      "realm": "nexus",
+      "rarity": "rare",
+      "kind": "power",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "power",
+          "when": "trinity",
+          "ops": [
+            {
+              "op": "barrier",
+              "amount": 6,
+              "to": "self"
+            },
+            {
+              "op": "draw",
+              "amount": 1
+            }
+          ]
+        }
+      ],
+      "hero": "shaman",
+      "upgrade": "harmony+"
+    },
+    {
+      "id": "harmony+",
+      "name": "Harmony+",
+      "realm": "nexus",
+      "rarity": "rare",
+      "kind": "power",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "power",
+          "when": "trinity",
+          "ops": [
+            {
+              "op": "barrier",
+              "amount": 9,
+              "to": "self"
+            },
+            {
+              "op": "draw",
+              "amount": 1
+            }
+          ]
+        }
+      ],
+      "hero": "shaman"
+    },
+    {
+      "id": "spirit-walk",
+      "name": "Spirit Walk",
+      "realm": "nexus",
+      "rarity": "rare",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "status",
+          "status": "spirit",
+          "amount": 2,
+          "to": "self"
+        },
+        {
+          "op": "draw",
+          "amount": 2
+        }
+      ],
+      "hero": "shaman",
+      "exhaust": true,
+      "upgrade": "spirit-walk+"
+    },
+    {
+      "id": "spirit-walk+",
+      "name": "Spirit Walk+",
+      "realm": "nexus",
+      "rarity": "rare",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "status",
+          "status": "spirit",
+          "amount": 2,
+          "to": "self"
+        },
+        {
+          "op": "draw",
+          "amount": 3
+        }
+      ],
+      "hero": "shaman",
+      "exhaust": true
+    },
+    {
+      "id": "stone-skin",
+      "name": "Stone Skin",
+      "realm": "nexus",
+      "rarity": "common",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 9,
+          "to": "self"
+        }
+      ],
+      "hero": "shaman",
+      "upgrade": "stone-skin+"
+    },
+    {
+      "id": "stone-skin+",
+      "name": "Stone Skin+",
+      "realm": "nexus",
+      "rarity": "common",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 12,
+          "to": "self"
+        }
+      ],
+      "hero": "shaman"
+    },
+    {
+      "id": "tidecaller",
+      "name": "Tidecaller",
+      "realm": "nexus",
+      "rarity": "common",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 7,
+          "to": "self"
+        },
+        {
+          "op": "manaNext",
+          "amount": 1
+        }
+      ],
+      "hero": "shaman",
+      "upgrade": "tidecaller+"
+    },
+    {
+      "id": "tidecaller+",
+      "name": "Tidecaller+",
+      "realm": "nexus",
+      "rarity": "common",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 10,
+          "to": "self"
+        },
+        {
+          "op": "manaNext",
+          "amount": 1
+        }
+      ],
+      "hero": "shaman"
+    },
+    {
+      "id": "spirit-memory",
+      "name": "Spirit Memory",
+      "realm": "nexus",
+      "rarity": "common",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 6,
+          "to": "self"
+        },
+        {
+          "op": "fetch",
+          "amount": 1,
+          "to": "hand"
+        }
+      ],
+      "hero": "shaman",
+      "upgrade": "spirit-memory+"
+    },
+    {
+      "id": "spirit-memory+",
+      "name": "Spirit Memory+",
+      "realm": "nexus",
+      "rarity": "common",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 9,
+          "to": "self"
+        },
+        {
+          "op": "fetch",
+          "amount": 1,
+          "to": "hand"
+        }
+      ],
+      "hero": "shaman"
+    },
+    {
+      "id": "read-the-winds",
+      "name": "Read the Winds",
+      "realm": "nexus",
+      "rarity": "common",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "scry",
+          "amount": 3
+        },
+        {
+          "op": "barrier",
+          "amount": 4,
+          "to": "self"
+        }
+      ],
+      "hero": "shaman",
+      "upgrade": "read-the-winds+"
+    },
+    {
+      "id": "read-the-winds+",
+      "name": "Read the Winds+",
+      "realm": "nexus",
+      "rarity": "common",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "scry",
+          "amount": 3
+        },
+        {
+          "op": "barrier",
+          "amount": 7,
+          "to": "self"
+        }
+      ],
+      "hero": "shaman"
+    },
+    {
+      "id": "clear-spring",
+      "name": "Clear Spring",
+      "realm": "nexus",
+      "rarity": "uncommon",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "draw",
+          "amount": 3
+        }
+      ],
+      "hero": "shaman",
+      "upgrade": "clear-spring+"
+    },
+    {
+      "id": "clear-spring+",
+      "name": "Clear Spring+",
+      "realm": "nexus",
+      "rarity": "uncommon",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "draw",
+          "amount": 4
+        }
+      ],
+      "hero": "shaman"
+    },
+    {
+      "id": "crystal-ward",
+      "name": "Crystal Ward",
+      "realm": "nexus",
+      "rarity": "uncommon",
+      "kind": "skill",
+      "cost": 0,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 10,
+          "to": "self"
+        }
+      ],
+      "hero": "shaman",
+      "innate": true,
+      "exhaust": true,
+      "upgrade": "crystal-ward+"
+    },
+    {
+      "id": "crystal-ward+",
+      "name": "Crystal Ward+",
+      "realm": "nexus",
+      "rarity": "uncommon",
+      "kind": "skill",
+      "cost": 0,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 13,
+          "to": "self"
+        }
+      ],
+      "hero": "shaman",
+      "innate": true,
+      "exhaust": true
+    },
+    {
+      "id": "ironbark",
+      "name": "Ironbark",
+      "realm": "nexus",
+      "rarity": "uncommon",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 13,
+          "to": "self"
+        },
+        {
+          "op": "addCard",
+          "card": "wound",
+          "to": "discard",
+          "side": "self",
+          "times": 2
+        }
+      ],
+      "hero": "shaman",
+      "upgrade": "ironbark+"
+    },
+    {
+      "id": "ironbark+",
+      "name": "Ironbark+",
+      "realm": "nexus",
+      "rarity": "uncommon",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "barrier",
+          "amount": 17,
+          "to": "self"
+        },
+        {
+          "op": "addCard",
+          "card": "wound",
+          "to": "discard",
+          "side": "self",
+          "times": 2
+        }
+      ],
+      "hero": "shaman"
+    },
+    {
+      "id": "shamans-insight",
+      "name": "Shaman's Insight",
+      "realm": "nexus",
+      "rarity": "uncommon",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "draw",
+          "amount": 1
+        },
+        {
+          "op": "barrier",
+          "amount": 3,
+          "to": "self"
+        },
+        {
+          "op": "status",
+          "status": "freespell",
+          "amount": 1,
+          "to": "self"
+        }
+      ],
+      "hero": "shaman",
+      "upgrade": "shamans-insight+"
+    },
+    {
+      "id": "shamans-insight+",
+      "name": "Shaman's Insight+",
+      "realm": "nexus",
+      "rarity": "uncommon",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "draw",
+          "amount": 2
+        },
+        {
+          "op": "barrier",
+          "amount": 3,
+          "to": "self"
+        },
+        {
+          "op": "status",
+          "status": "freespell",
+          "amount": 1,
+          "to": "self"
+        }
+      ],
+      "hero": "shaman"
+    },
+    {
+      "id": "smoke-offering",
+      "name": "Smoke Offering",
+      "realm": "nexus",
+      "rarity": "uncommon",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "exhaustCards",
+          "amount": 1
+        },
+        {
+          "op": "manaNext",
+          "amount": 2
+        },
+        {
+          "op": "draw",
+          "amount": 1
+        }
+      ],
+      "hero": "shaman",
+      "upgrade": "smoke-offering+"
+    },
+    {
+      "id": "smoke-offering+",
+      "name": "Smoke Offering+",
+      "realm": "nexus",
+      "rarity": "uncommon",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "exhaustCards",
+          "amount": 1
+        },
+        {
+          "op": "manaNext",
+          "amount": 2
+        },
+        {
+          "op": "draw",
+          "amount": 2
+        }
+      ],
+      "hero": "shaman"
+    },
+    {
+      "id": "skybreaker",
+      "name": "Skybreaker",
+      "realm": "nexus",
+      "rarity": "uncommon",
+      "kind": "attack",
+      "cost": 3,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 26,
+          "to": "target",
+          "onKill": [
+            {
+              "op": "mana",
+              "amount": 1
+            }
+          ]
+        }
+      ],
+      "hero": "shaman",
+      "upgrade": "skybreaker+"
+    },
+    {
+      "id": "skybreaker+",
+      "name": "Skybreaker+",
+      "realm": "nexus",
+      "rarity": "uncommon",
+      "kind": "attack",
+      "cost": 3,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 34,
+          "to": "target",
+          "onKill": [
+            {
+              "op": "mana",
+              "amount": 1
+            }
+          ]
+        }
+      ],
+      "hero": "shaman"
+    },
+    {
+      "id": "spirit-vision",
+      "name": "Spirit Vision",
+      "realm": "nexus",
+      "rarity": "rare",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "draw",
+          "amount": 3
+        },
+        {
+          "op": "status",
+          "status": "spirit",
+          "amount": 1,
+          "to": "self"
+        }
+      ],
+      "hero": "shaman",
+      "exhaust": true,
+      "upgrade": "spirit-vision+"
+    },
+    {
+      "id": "spirit-vision+",
+      "name": "Spirit Vision+",
+      "realm": "nexus",
+      "rarity": "rare",
+      "kind": "skill",
+      "cost": 1,
+      "target": "none",
+      "effects": [
+        {
+          "op": "draw",
+          "amount": 4
+        },
+        {
+          "op": "status",
+          "status": "spirit",
+          "amount": 1,
+          "to": "self"
+        }
+      ],
+      "hero": "shaman",
+      "exhaust": true
+    },
+    {
+      "id": "gale-strike",
+      "name": "Gale Strike",
+      "realm": "nexus",
+      "rarity": "common",
+      "kind": "attack",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 8,
+          "to": "target"
+        },
+        {
+          "op": "recost",
+          "amount": -1
+        }
+      ],
+      "hero": "shaman",
+      "upgrade": "gale-strike+"
+    },
+    {
+      "id": "gale-strike+",
+      "name": "Gale Strike+",
+      "realm": "nexus",
+      "rarity": "common",
+      "kind": "attack",
+      "cost": 1,
+      "target": "foe",
+      "effects": [
+        {
+          "op": "damage",
+          "amount": 11,
+          "to": "target"
+        },
+        {
+          "op": "recost",
+          "amount": -1
+        }
+      ],
+      "hero": "shaman"
+    }
+  ]
+}

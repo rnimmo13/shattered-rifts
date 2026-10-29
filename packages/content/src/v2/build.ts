@@ -369,15 +369,17 @@ export const STRIKING: { tags: string[] } = { tags: [STRIKING_TAG] };
 
 /** (DECISIONS #420) a totem position more */
 export const totemSlot: Op = { op: 'totemSlot' };
-/** (DECISIONS #421) totems act: every totem of a kind, 'choose' one, a 'random' one, or 'all' of them, `times` times */
-export const commandTotem = (spirit: string, times = 1, one = false): Op => ({
+/** (DECISIONS #430, the totem cycle) a totem acts `times` times and is consumed: the 'front' one, the 'newest', the first of a kind,
+ * or 'all' of them front to back */
+export const commandTotem = (spirit = 'front', times = 1): Op => ({
   op: 'totemCommand',
   spirit,
   ...(times > 1 ? { times } : {}),
-  ...(one ? { one } : {}),
 });
-/** one totem of a kind acts ("Command a Hawk"), not every one (DECISIONS #422) */
-export const commandOne = (spirit: string): Op => commandTotem(spirit, 1, true);
+/** the first totem of a kind acts and is consumed ("Command your first Hawk") */
+export const commandOne = (spirit: string): Op => commandTotem(spirit);
+/** the front totem moves to the back of the row (DECISIONS #430) */
+export const totemRotate: Op = { op: 'totemRotate' };
 /** the Shaman's element tags (a spell's `tags`) */
 export const FLAME: { tags: string[] } = { tags: ['flame'] };
 export const FROST: { tags: string[] } = { tags: ['frost'] };

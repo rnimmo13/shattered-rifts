@@ -92,6 +92,8 @@ export type StatusId =
   | 'rousing' // your next command this turn deals or gives this much more (it wears off at the end of your turn)
   | 'shelter' // this turn, your next command that aims at a friendly gives its Barrier to every friendly
   | 'freespell' // (the Shaman, DECISIONS #420) your next elemental spell costs 0, per stack
+  | 'spellcut' // (the Shaman's Moon Owl, DECISIONS #430) your next elemental spell this turn costs this much less; spent by it
+  | 'twinspell' // (the Shaman's Moon Owl, DECISIONS #430) your next elemental spell is played twice, per stack
   // (the Monk's Martial Forms, DECISIONS #419)
   | 'mastery'; // Mastery: at most MASTERY_MAX, kept between turns; earned by completing a form's technique, spent by techniques
 export const STATUS_IDS: readonly StatusId[] = [
@@ -758,8 +760,9 @@ export type Op =
   | { op: 'recast' }
   // --- the Shaman's totems (DECISIONS #418)
   /**
-   * plant a totem of `spirit` ('*': the player chooses the kind): into the first free position; with all taken, the player chooses
-   * one to replace or keeps them all (no plant). `anywhere`: the player chooses any position, free or taken (Hawk's Counsel).
+   * plant a totem of `spirit` ('*': a random kind that is not rare) at the back of the row (DECISIONS #430, the totem cycle): into the
+   * first free position; with all taken, the front totem is pushed out (its spirit acts as it goes) and the rest move up.
+   * (`anywhere` is retired: nothing chooses a position.)
    */
   | { op: 'plant'; spirit: string; anywhere?: boolean }
   /** uproot every totem you have (the `uprooted` metric counts them) */
@@ -767,11 +770,13 @@ export type Op =
   /** (DECISIONS #420) one more totem position (at most TOTEM_SLOTS), empty */
   | { op: 'totemSlot' }
   /**
-   * (DECISIONS #421) totems act, `times` times: every totem of the `spirit` kind; 'choose' one the player picks; 'random' a random
-   * one; 'all' every totem he has. `one` (with a kind): one totem of that kind, not every one (DECISIONS #422). The only way a totem
-   * acts: there is no free command.
+   * (DECISIONS #430, the totem cycle) a totem's spirit acts `times` times and the totem is consumed (it leaves the row, the rest move
+   * up): 'front' the oldest (the next in the cycle), 'newest' the last planted, a kind the front-most of that kind, 'all' every totem
+   * in order from the front ('random' / 'choose' are read as a random one / the front). Nothing else acts but a push-out.
    */
   | { op: 'totemCommand'; spirit: string; times?: number; one?: boolean }
+  /** (DECISIONS #430) the front totem moves to the back of the row (nothing acts) */
+  | { op: 'totemRotate' }
   // --- the Monk's Martial Forms (DECISIONS #419)
   /** change to this form ('*': the player may choose one, or keep the form they are in); the turn's progress starts again */
   | { op: 'form'; form: Form | '*' };
@@ -1040,8 +1045,11 @@ export interface TotemDef {
   /** its help each turn: the first spell of this element each turn ('any': the first spell of any element) deals or gives this much
    * more (each damage and Barrier number on it); every 2 Spirit add 1 */
   boost?: { element: Element | 'any'; amount: number };
-  /** what planting it does (the Elder Tree's Spirit) */
+  /** what planting it does */
   onPlant?: Op[];
+  /** (DECISIONS #430, the totem cycle) what it does every turn while it stands, at the start or the end of his turn (its numbers
+   * scale with Spirit through `per('spirit')` in the ops themselves; `command` is what its spirit does when it acts and leaves) */
+  passive?: { when: 'turnStart' | 'turnEnd'; ops: Op[] };
   /** what it does when Trinity triggers (the Moon Owl's Mana) */
   onTrinity?: Op[];
   /** a rare totem (the Elder Tree, the Moon Owl): only a card that names it plants it, never a "totem of your choice" */
@@ -1227,7 +1235,7 @@ export interface Pending {
   /** 'topdeck': the cards are chosen from the draw pile, not the hand */
   from?: 'draw';
   /** the card is played a second time when it finishes (a Reverb attack or Mirrored skill) */
-  again?: 'twinned' | 'mirrored' | 'boosted' | 'echo' | null;
+  again?: 'twinned' | 'mirrored' | 'boosted' | 'twinspell' | 'echo' | null;
   /** what the card cost when it was played (a "costs 2 or more" Aura reads it when the card finishes) */
   paid?: number;
 }

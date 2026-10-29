@@ -248,12 +248,11 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     realm: 'nexus',
     persona: 'Ilvane',
     role: 'Shaman',
-    // (rebuilt again 2026-10-29 to Robert's direction, docs/reworks/SHAMAN_ELEMENTS_PROPOSAL.md, DECISIONS #420)
+    // (rebuilt a third time 2026-10-29 to Robert's direction, DECISIONS #430: the totem cycle; Trinity and the totems' help are gone)
     trait: {
-      name: 'Spirit and Trinity',
-      text: "You start with a Hawk, a Bear and a Thunderbird totem; each helps your first spell of its element each turn, and cards command them to act. The first time each turn you cast a Flame, a Frost and a Storm spell, Trinity gives you 1 Spirit. Spirit never goes down: each point adds 1 to your totems' commands, and every 2 add 1 to their help.",
+      name: 'The Totem Cycle',
+      text: 'You start with a Hawk, a Bear and a Thunderbird totem, in that order. Each does something every turn while it stands. A command makes your front totem act and consumes it; planting into a full row pushes the front one out, and it acts as it goes. Spirit never goes down: each point adds 1 to every totem number (not the Elder Tree or the Moon Owl).',
       totems: 3,
-      trinity: true,
       fightStart: [plant('hawk'), plant('bear'), plant('thunderbird')],
     },
     hero: {
@@ -272,17 +271,17 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
       ...rep('forked-lightning', 2),
     ],
     blurb:
-      'An elder shaman who casts Flame, Frost and Storm. His Hawk, Bear and Thunderbird totems help his spells every turn, and he calls on their spirits to strike and shield for him. A spell of every element in one turn, Trinity, raises his Spirit for good.',
-    mechanics: ['Elements', 'Totems', 'Commands', 'Trinity', 'Spirit', 'Burn'],
+      'An elder shaman who casts Flame, Frost and Storm and keeps a row of totems. Each totem works every turn while it stands; when he commands it, its spirit acts once more and is gone, and a new one takes its place at the back of the row.',
+    mechanics: ['Elements', 'Totems', 'Commands', 'Spirit', 'Primed', 'Burn'],
     buildPaths: [
-      'Flame: single-target damage and Burn, with Thorns to guard',
+      'Flame: big single-target bursts, with Burn',
       'Frost: Barrier and Faltering',
-      'Storm: every enemy at once, with Sapped to guard',
+      'Storm: every enemy at once, or Forks',
     ],
     howTo: [
-      'His spells are Flame (one enemy), Frost (Barrier and Faltering) or Storm (every enemy). Each totem helps the first spell of its element each turn: the Hawk Flame, the Bear Frost, the Thunderbird Storm.',
-      "Cards such as Spirit Call and Hawk's Dive command your totems: the Hawk dives at a random enemy for 6, the Bear gives 5 Barrier, the Thunderbird hits every enemy for 3. A totem never acts unless a card commands it.",
-      "Cast a Flame, a Frost and a Storm spell in one turn for Trinity: 1 Spirit. Spirit never goes down; each point makes every command 1 stronger, and every 2 make every totem's help 1 stronger.",
+      'Your totems stand in a row (the Totems panel), oldest at the front. Each works every turn while it stands: the Hawk Primes your next attack, the Bear gives Barrier, the Thunderbird hits two random enemies.',
+      'A command (Spirit Call) makes your front totem act once more and consumes it: the Hawk gives 1 Spirit, the Bear 6 Barrier, the Thunderbird hits every enemy for 8. Planting a totem puts it at the back; in a full row the front one is pushed out and acts as it goes.',
+      'Spirit never goes down. Each point adds 1 to every totem number, so Hawks you command make every totem stronger. His spells are Flame (big hits on one enemy), Frost (Barrier and Faltering) and Storm (every enemy, or Forks).',
     ],
   },
 
@@ -730,7 +729,8 @@ export const CLASS_REWORKS: Partial<
   assassin: { version: 2, summary: 'back to his earlier cards', sameAsBefore: true },
   spellblade: { version: 2, summary: 'back to her earlier cards', sameAsBefore: true },
   // (the Shaman was rebuilt twice the same day: version 2 is the elements, totems and Trinity of DECISIONS #420)
-  shaman: { version: 2, summary: 'elements, totems and Trinity' },
+  // (version 3: the totem cycle, DECISIONS #430)
+  shaman: { version: 3, summary: 'the totem cycle' },
   monk: { version: 2, summary: 'back to his earlier cards', sameAsBefore: true },
 };
 

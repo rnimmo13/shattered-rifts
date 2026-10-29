@@ -1,21 +1,22 @@
-// The Shaman's hand prices (docs/reworks/shaman-ledger.md is generated from these), for the second rework (DECISIONS #420, #421). New
-// rates (docs/14_CARD_COSTING.md §15): an element tag 0 (the totems' help on the first spell of each element is the trait's); Spirit
-// gained 5 a point (it never goes down, +1 to every command and +1 per 2 to every totem's help, about a point of Might for the rest of
-// the fight); a command (only cards command, #421) is worth its spirit's act: a Hawk's dive 5.4 (6 at random), a Bear's 6 (5 Barrier),
-// a Thunderbird's 3.9 (3 to all), ~5.3 for a random totem, ~6 for one of your choice, plus the Spirit he has; a plant ~1.5 (he starts
-// with three totems, so a plant is usually a replacement); a totem position ~2; Thorns until the enemy turn ends 1.5 a stack; Sapped on
-// every enemy for a turn ~1.56 a point; Faltering on every enemy 3.9, on a random one 2.7; a random-enemy hit 0.9 a point; Burn as
-// Bleed by the guide. 'Whenever you cast a Flame / Storm spell' ~1.2 a turn; Trinity ~55% of turns in a deck built for it; 'whenever
-// you command' ~1.2 a turn. A command over a fight is weighed early 40% (one totem of the kind, 0 Spirit), mid 40% (two, 3 Spirit), late
-// 20% (3-4, 7 Spirit), so "a Hawk" ~7.7, "a Bear" ~9.1, "a Thunderbird" ~7.3, "one of your choice" ~8.2, "a random one" ~7.6, "every
-// totem" ~29 (DECISIONS #422). The help on a multi-hit or mixed spell: the first number is the trait's; each further hit or number is
-// the card's, at the help x0.6 (the chance it is the first spell of its element that turn).
+// The Shaman's hand prices (docs/reworks/shaman-ledger.md is generated from these), for the totem cycle (DECISIONS #430). Rates
+// (docs/14_CARD_COSTING.md §15): an element tag 0; Spirit gained ~10 a point (it never goes down and adds 1 to every totem number:
+// about 4 a turn with three totems standing, over the ~3 turns left after it is gained mid-fight); a totem's act at 0 Spirit: Hawk 1
+// Spirit 10, Bear 6 Barrier 7.2, Thunderbird 8 to ALL 10.4, Elder Tree 2 Mana 14, Moon Owl a doubled elemental spell ~9; at ~2 Spirit
+// the scaled ones are ~2 more. A command (it acts and is consumed) ~8: its act ~10.7 less the passive it no longer gives until the row
+// is filled again; a plant ~8 (into a full row its push-out acts; into a free position its passive works for the turns left), a
+// random kind 7.5. Passives a turn: Hawk 2 Primed ~2.1 (only if he is not Primed; Primed adds to every hit of his next attack), Bear
+// 2 Barrier 2.4, Thunderbird a Fork 2 of 3 ~5.1, Elder Tree 1 Mana 7, Moon Owl 1 off the first elemental spell ~5.4. A Fork 2 ~1.7x,
+// a Fork 3 ~1.95x, a Fork 4 ~1.95x its number. Burn as Bleed. "Whenever one of your totems acts" ~1.3 a turn.
 
 import type { Price } from './common';
 
 export const SHAMAN_PRICES: Record<string, Price> = {
-  // (the starter)
-  'ember-bolt': { pts: 7, up: 10, how: '7', role: 'the starter Flame spell' },
+  'ember-bolt': {
+    pts: 7,
+    up: 10,
+    how: '7',
+    role: 'the starter Flame spell',
+  },
   'frost-ward': {
     pts: 8.7,
     up: 12.3,
@@ -28,31 +29,23 @@ export const SHAMAN_PRICES: Record<string, Price> = {
     how: 'Fork 2 of 5: ~1.7 targets worth (40% of fights one enemy at +25%, 60% two or more: 0.4 x1.25 + 0.6 x2 = 1.7)',
     role: 'the starter Storm spell (DECISIONS #427): two enemies, or one harder',
   },
-  'gathering-storm': {
-    pts: 9.9,
-    up: 12.5,
-    how: '4 to ALL 5.2 + every copy +3 (3 x1.2 x1.3) 4.7',
-    role: 'Storm: the stacking spell, a common reward since #427 (it was a basic)',
+  'spirit-call': {
+    pts: 8,
+    up: 11.6,
+    how: 'command the front totem ~8 (its act ~10.7 at ~2 Spirit, less the passive it no longer gives)',
+    role: 'the starter command',
   },
-  'spark-fork': {
-    pts: 6.8,
-    up: 8.5,
-    how: 'Fork 2 of 4 (x1.7)',
-    role: 'Storm: a free Fork, the cheap Storm for Trinity',
+  'searing-lash': {
+    pts: 10,
+    up: 13,
+    how: '8 + 2 Burn 1.95',
+    role: 'Flame',
   },
-  'thunder-fork': {
-    pts: 20,
-    up: 26,
-    how: 'Fork 3 of 10: ~2.0 targets worth (0.4 x1.25 + 0.6 x ~2.4 enemies)',
-    role: 'Storm: the big Fork, three enemies or one hard',
-  },
-  // (Flame)
-  'searing-lash': { pts: 8.95, up: 11.95, how: '7 + 2 Bleed 1.95', role: 'Flame' },
   kindle: {
     pts: 6,
     up: 8,
-    how: '4 + 2 with a Hawk (he starts with one: certain)',
-    role: 'Flame: a free element',
+    how: '6',
+    role: 'Flame: a free hit',
   },
   firebrand: {
     pts: 9,
@@ -66,20 +59,36 @@ export const SHAMAN_PRICES: Record<string, Price> = {
     how: "4 x2 + the second hit's help when it is the first Flame spell (3 x0.6) 1.8",
     role: 'Flame',
   },
-  'flame-spear': { pts: 17, up: 22, how: '17', role: 'Flame: the heavy hit' },
-  'flame-shield': {
-    pts: 10.5,
-    up: 14.1,
-    how: '5 Barrier 6 + 3 Thorns 4.5',
-    role: 'Flame: the defence (Thorns)',
+  'flame-spear': {
+    pts: 18,
+    up: 23,
+    how: '18',
+    role: 'Flame: the heavy hit',
   },
-  immolate: { pts: 19.5, up: 23.5, how: '13 + 4 Bleed 6.5', role: 'Flame: Bleed' },
+  flare: {
+    pts: 10,
+    up: 13,
+    how: '10',
+    role: 'Flame: plain burst',
+  },
+  'talon-strike': {
+    pts: 19,
+    up: 22,
+    how: '11 + plant a Hawk 8',
+    role: 'Flame/totems: a hit that brings a Hawk',
+  },
+  immolate: {
+    pts: 20.5,
+    up: 24.5,
+    how: '14 + 4 Burn 6.5',
+    role: 'Flame: Burn',
+  },
   'spreading-flames': {
     pts: 12.9,
     up: 15.9,
-    consume: true,
     how: '9 + doubling ~3 Bleed already there (at most 10 more) ~3.9',
     role: 'Flame: Bleed payoff',
+    consume: true,
   },
   'ember-lance': {
     pts: 11,
@@ -93,17 +102,11 @@ export const SHAMAN_PRICES: Record<string, Price> = {
     how: '7 + Spirit (~3 over a fight)',
     role: 'Flame: grows with Spirit',
   },
-  'phoenix-feather': {
-    pts: 12,
-    up: 16,
-    how: 'Reverb (the next Flame attack twice ~9) + draw 3',
-    role: 'Flame: a big turn',
-  },
-  'pyre-ward': {
-    pts: 20.4,
-    up: 25.5,
-    how: '12 Barrier 14.4 + 4 Thorns 6',
-    role: 'Flame: heavy defence',
+  pyroclasm: {
+    pts: 20,
+    up: 25,
+    how: '16 + 8 if Burning (x0.5) 4',
+    role: 'Flame: the Burn payoff',
   },
   smoulder: {
     pts: 16.8,
@@ -111,12 +114,18 @@ export const SHAMAN_PRICES: Record<string, Price> = {
     how: '4 turns x ~1.2 Flame spells x 3 Bleed (~3.5 on a stack)',
     role: 'Flame: the Bleed engine',
   },
+  'phoenix-feather': {
+    pts: 12,
+    up: 16,
+    how: 'Reverb (the next Flame attack twice ~9) + draw 3',
+    role: 'Flame: a big turn',
+  },
   'flash-burn': {
     pts: 16,
     up: 20,
-    consume: true,
     how: '4 + 3 a Bleed (~4 in a Flame deck)',
     role: 'Flame: the Bleed finisher',
+    consume: true,
   },
   'heart-of-the-pyre': {
     pts: 21.6,
@@ -124,31 +133,60 @@ export const SHAMAN_PRICES: Record<string, Price> = {
     how: '4 turns x ~1.2 Flame spells x 5 to a random enemy (4.5)',
     role: 'Flame: pays for every Flame spell',
   },
-  'burning-aegis': {
-    pts: 18,
-    up: 24,
-    how: '4 turns x 3 Thorns (4.5)',
-    role: 'Flame: Thorns every turn',
+  inferno: {
+    pts: 33.9,
+    up: 41.9,
+    how: '30 + 3 Bleed 3.9',
+    role: 'Flame: the boss finisher',
   },
-  inferno: { pts: 33.9, up: 41.9, how: '30 + 3 Bleed 3.9', role: 'Flame: the boss finisher' },
-  // (Frost)
   'frost-needle': {
-    pts: 6.1,
-    up: 8.1,
-    how: '4 + 1 Faltering if attacking (3 x0.7)',
+    pts: 6,
+    up: 8,
+    how: '3 + 1 Faltering 3',
     role: 'Frost: a free element',
   },
   'rime-shield': {
-    pts: 10.8,
-    up: 14.4,
-    how: '7 Barrier 8.4 + 2 with a Bear (certain: he starts with one) 2.4; the help never adds to an "If" bonus',
+    pts: 9.6,
+    up: 13.2,
+    how: '8 Barrier',
     role: 'Frost',
   },
-  'chill-touch': { pts: 9, up: 12, how: '6 + 1 Faltering 3', role: 'Frost: offence that blunts' },
-  hoarfrost: { pts: 9.9, up: 13.5, how: '5 Barrier 6 + 1 Faltering on ALL 3.9', role: 'Frost' },
-  'ice-wall': { pts: 19.2, up: 24, how: '16 Barrier', role: 'Frost: heavy defence' },
-  'glacier-guard': { pts: 11.2, up: 15.6, how: '6 Barrier 7.2 + 4 next turn 4', role: 'Frost' },
-  'frozen-grasp': { pts: 10.8, up: 14.4, how: '2 Faltering 6 + 4 Barrier 4.8', role: 'Frost' },
+  'chill-touch': {
+    pts: 9,
+    up: 12,
+    how: '6 + 1 Faltering 3',
+    role: 'Frost: offence that blunts',
+  },
+  hoarfrost: {
+    pts: 9.9,
+    up: 13.5,
+    how: '5 Barrier 6 + 1 Faltering on ALL 3.9',
+    role: 'Frost',
+  },
+  'wardkeepers-pact': {
+    pts: 10.4,
+    up: 14,
+    how: 'plant a Bear 8 + 2 Barrier 2.4',
+    role: 'Frost/totems: the Bear',
+  },
+  'ice-wall': {
+    pts: 19.2,
+    up: 24,
+    how: '16 Barrier',
+    role: 'Frost: heavy defence',
+  },
+  'glacier-guard': {
+    pts: 11.2,
+    up: 15.6,
+    how: '6 Barrier 7.2 + 4 next turn 4',
+    role: 'Frost',
+  },
+  'frozen-grasp': {
+    pts: 10.8,
+    up: 14.4,
+    how: '2 Faltering 6 + 4 Barrier 4.8',
+    role: 'Frost',
+  },
   'frost-shatter': {
     pts: 11.4,
     up: 14.4,
@@ -161,17 +199,17 @@ export const SHAMAN_PRICES: Record<string, Price> = {
     how: '6 Barrier 7.2 + soaked damage dealt back ~4',
     role: 'Frost',
   },
-  'winters-embrace': {
-    pts: 22.2,
-    up: 25.8,
-    how: '12 Barrier 14.4 + 2 Faltering on ALL 7.8',
-    role: 'Frost: defence for a crowd',
-  },
   permafrost: {
     pts: 16.3,
     up: 20.4,
     how: '4 turns x a Bear (~85%) x 4 Barrier 4.8',
     role: 'Frost: steady defence',
+  },
+  'winters-embrace': {
+    pts: 22.2,
+    up: 25.8,
+    how: '12 Barrier 14.4 + 2 Faltering on ALL 7.8',
+    role: 'Frost: defence for a crowd',
   },
   frostbound: {
     pts: 21.6,
@@ -197,27 +235,53 @@ export const SHAMAN_PRICES: Record<string, Price> = {
     how: '22 Barrier 26.4 + 2 Faltering on ALL 7.8',
     role: 'Frost: the boss wall',
   },
-  // (Storm)
+  'gathering-storm': {
+    pts: 9.9,
+    up: 12.5,
+    how: '4 to ALL 5.2 + every copy +3 (3 x1.2 x1.3) 4.7',
+    role: 'Storm: the stacking spell',
+  },
+  'spark-fork': {
+    pts: 6.8,
+    up: 8.5,
+    how: 'Fork 2 of 4 (x1.7)',
+    role: 'Storm: a free Fork, the cheap Storm for Trinity',
+  },
   'chain-lightning': {
     pts: 10.3,
     up: 13,
     how: '3 x3 at random 8.1 + two more hits of help (2 x2 x0.9 x0.6) 2.2',
     role: 'Storm',
   },
-  'static-crackle': { pts: 5.2, up: 6.5, how: '4 to ALL', role: 'Storm: a free element' },
-  'gale-call': { pts: 9.5, up: 13.4, how: '5 to ALL 6.5 + draw 3', role: 'Storm' },
-  thunderclap: { pts: 19.5, up: 24.7, how: '15 to ALL', role: 'Storm: the heavy hit' },
+  'gale-call': {
+    pts: 9.5,
+    up: 13.4,
+    how: '5 to ALL 6.5 + draw 3',
+    role: 'Storm',
+  },
   'wind-wall': {
     pts: 9.1,
     up: 12.7,
     how: '5 Barrier 6 + 2 Sapped on ALL 3.1',
     role: 'Storm: the defence (Sapped)',
   },
-  squall: {
-    pts: 10.4,
-    up: 14,
-    how: '2 x4 at random 7.2 + three more hits of help (3 x2 x0.9 x0.6) 3.2',
-    role: 'Storm: multi-hit',
+  'thunderbird-call': {
+    pts: 18.4,
+    up: 22.3,
+    how: '8 to ALL 10.4 + plant a Thunderbird 8',
+    role: 'Storm/totems: the Thunderbird',
+  },
+  'thunder-fork': {
+    pts: 20,
+    up: 26,
+    how: 'Fork 3 of 10: ~2.0 targets worth (0.4 x1.25 + 0.6 x ~2.4 enemies)',
+    role: 'Storm: the big Fork, three enemies or one hard',
+  },
+  thunderclap: {
+    pts: 19.5,
+    up: 24.7,
+    how: '15 to ALL',
+    role: 'Storm: the heavy hit',
   },
   'storm-front': {
     pts: 12.4,
@@ -230,12 +294,6 @@ export const SHAMAN_PRICES: Record<string, Price> = {
     up: 14.7,
     how: 'Gathering Storms +2 (2 copies x ~1.5 casts x1.3) 7.8 + draw 3',
     role: 'Storm: the Gathering Storm builder',
-  },
-  maelstrom: {
-    pts: 22.4,
-    up: 27.6,
-    how: '8 x2 to ALL 20.8 + the second hit of help 1.6',
-    role: 'Storm',
   },
   'charged-sky': {
     pts: 20.8,
@@ -255,17 +313,23 @@ export const SHAMAN_PRICES: Record<string, Price> = {
     how: '4 turns x ~1.2 Storm spells x 3 at random (2.7)',
     role: 'Storm: pays for every Storm spell',
   },
-  'eye-of-the-tempest': {
-    pts: 24.3,
-    up: 30.6,
-    how: '3 x6 at random 16.2 + five more hits of help 5.4 + one with a Thunderbird (no help) 2.7',
-    role: 'Storm: many hits',
+  'thunder-roost': {
+    pts: 14,
+    up: 18.7,
+    how: '4 turns x a Thunderbird (~90%) x 3 to ALL 3.9',
+    role: 'totems/Storm',
   },
-  'storm-sovereign': {
-    pts: 18.7,
-    up: 25,
-    how: '4 turns x ~1.2 commands (a command card can command several) x 3 to ALL 3.9',
-    role: 'Storm/commands: the command payoff',
+  maelstrom: {
+    pts: 22.4,
+    up: 27.6,
+    how: '8 x2 to ALL 20.8 + the second hit of help 1.6',
+    role: 'Storm',
+  },
+  'eye-of-the-tempest': {
+    pts: 21.5,
+    up: 27.3,
+    how: 'Fork 4 of 11 (0.4 x1.25 + 0.6 x ~2.4 enemies = ~1.95)',
+    role: 'Storm: the big Fork (four hits at most: Primed adds to each)',
   },
   'calm-before-the-storm': {
     pts: 18.7,
@@ -274,90 +338,164 @@ export const SHAMAN_PRICES: Record<string, Price> = {
     role: 'Storm: defence every turn',
   },
   superstorm: {
-    pts: 35.9,
-    up: 46.3,
-    how: '6 x4 to ALL 31.2 + three more hits of help (3 x2 x1.3 x0.6) 4.7',
-    role: 'Storm: the finisher',
-  },
-  // (totems and commands)
-  'spirit-call': {
-    pts: 8.2,
-    up: 11.8,
-    how: 'a totem of your choice acts ~8.2 over a fight (early 6, mid 8.5, late 12)',
-    role: 'the starter command',
-  },
-  'hawks-dive': {
-    pts: 11.3,
-    up: 14.9,
-    how: 'a Hawk dives ~7.7 (early 5.4, mid 8.1, late 11.7) + 3 Barrier 3.6',
-    role: 'commands: the Hawk',
-  },
-  'bears-guard': {
-    pts: 9.1,
-    up: 12.7,
-    how: 'a Bear guards ~9.1 (early 6, mid 9.6, late 14.4)',
-    role: 'commands: the Bear',
-  },
-  'thunderbirds-cry': {
-    pts: 10.3,
-    up: 14.2,
-    how: 'a Thunderbird strikes ~7.3 (early 3.9, mid 7.8, late 13) + draw 3',
-    role: 'commands: the Thunderbird',
+    pts: 31.2,
+    up: 39,
+    how: '12 x2 to ALL (x1.3)',
+    role: 'Storm: the finisher (two hits: Primed adds to each)',
   },
   'spark-cast': {
-    pts: 9.2,
-    up: 12.8,
-    how: 'plant a Hawk 1.5 + a Hawk dives ~7.7',
-    role: 'totems: a second Hawk doubles the Flame help',
-  },
-  'wardkeepers-pact': {
-    pts: 9.9,
-    up: 13.5,
-    how: 'plant a Bear 1.5 + 7 Barrier 8.4',
-    role: 'totems',
-  },
-  'thunderbird-call': {
-    pts: 10.3,
-    up: 14.1,
-    how: 'plant a Thunderbird 1.5 + 4 to ALL 5.2 + 3 Barrier 3.6',
-    role: 'totems',
-  },
-  'call-again': {
-    pts: 7.6,
-    up: 10,
-    how: 'a random totem acts ~7.6 (early 5.3, mid 8, late 11.5); + 2 Barrier',
-    role: 'commands: the cheap one',
-    consume: true,
-  },
-  'raise-the-pole': {
     pts: 11,
     up: 14.6,
-    how: 'a totem position 2 + 5 Barrier 6 + draw 3',
-    role: 'totems: room for a fourth',
+    how: 'plant a Hawk 8 + draw 3',
+    role: 'totems: the Hawk',
+  },
+  'raise-a-totem': {
+    pts: 9.9,
+    up: 13.5,
+    how: 'plant a random totem 7.5 + 2 Barrier 2.4',
+    role: 'totems: any plant',
+  },
+  'hawk-feather': {
+    pts: 8,
+    up: 11.6,
+    how: 'plant a Hawk 8',
+    role: 'totems: the free Hawk',
+    consume: true,
+  },
+  'bear-hide': {
+    pts: 8,
+    up: 11.6,
+    how: 'plant a Bear 8',
+    role: 'totems: the free Bear',
+    consume: true,
+  },
+  'storm-feather': {
+    pts: 8,
+    up: 11.6,
+    how: 'plant a Thunderbird 8',
+    role: 'totems: the free Thunderbird',
+    consume: true,
+  },
+  'totem-circle': {
+    pts: 24,
+    up: 28.8,
+    how: 'three plants 3 x8',
+    role: 'totems: a whole row at once (three push-outs when full)',
+  },
+  'raise-the-pole': {
+    pts: 12,
+    up: 15.6,
+    how: 'a position ~3 (one more totem working) + 5 Barrier 6 + draw 3',
+    role: 'totems',
   },
   'carve-the-spirit-pole': {
-    pts: 11,
-    up: 15,
-    how: 'a position 2 + plant a totem of your choice 2 + draw 2 (7)',
-    role: 'totems: a fourth totem at once',
+    pts: 13.5,
+    up: 16.5,
+    how: 'a position 3 + plant a random totem 7.5 + draw 3',
+    role: 'totems',
   },
-  'rally-the-spirits': {
-    pts: 21.2,
-    up: 24.8,
-    how: 'a totem of your choice acts twice (2 x ~8.2) + 4 Barrier 4.8',
-    role: 'commands: the command turn',
+  'call-the-elder-tree': {
+    pts: 34,
+    up: 37,
+    how: 'plant 8 + 1 Mana a turn while it stands (~2.5 turns x7) 17.5 + its 2 Mana when it acts (14 x0.6) 8.4',
+    role: 'totems: the Mana totem',
+  },
+  'call-the-moon-owl': {
+    pts: 27,
+    up: 30,
+    how: 'plant 8 + 1 off the first elemental spell a turn (~2.5 x6 x0.9) 13.5 + its double spell when it acts (~9 x0.6) 5.4',
+    role: 'totems: the spell totem',
+  },
+  'spirit-strike': {
+    pts: 19,
+    up: 23,
+    how: '11 + command the front totem 8',
+    role: 'commands: a hit and a command',
+  },
+  'spirit-ward': {
+    pts: 10.4,
+    up: 14,
+    how: '2 Barrier 2.4 + command the front totem 8',
+    role: 'commands',
+  },
+  'call-again': {
+    pts: 8,
+    up: 11.6,
+    how: 'command the front totem 8',
+    role: 'commands: the free one',
+    consume: true,
+  },
+  'hawks-dive': {
+    pts: 10.4,
+    up: 14,
+    how: 'command the first Hawk: 1 Spirit 10, less its Primed 2 + 2 Barrier 2.4',
+    role: 'commands: Spirit',
+  },
+  'bears-guard': {
+    pts: 11.2,
+    up: 14.8,
+    how: 'command the first Bear: 6 + Spirit (~2) Barrier 9.6, less its passive 2 + 3 Barrier 3.6',
+    role: 'commands: Barrier',
+  },
+  'thunderbirds-cry': {
+    pts: 11,
+    up: 14,
+    how: 'command the first Thunderbird: 8 + Spirit (~2) to ALL 13, less its passive 2',
+    role: 'commands: every enemy',
+  },
+  'turn-the-wheel': {
+    pts: 6.1,
+    up: 8.5,
+    how: 'the front totem to the back ~1.5 (choose the next to act) + draw/discard ~1 + 3 Barrier 3.6',
+    role: 'commands: the cycle',
+  },
+  'last-called': {
+    pts: 11,
+    up: 15.8,
+    how: 'command the newest 8 + draw 3',
+    role: 'commands: the newest',
   },
   'ancestral-exchange': {
-    pts: 12.1,
-    up: 15.7,
-    how: 'plant any kind anywhere 2 + 1 Spirit if it changed (5 x0.7) + draw 3 + 3 Barrier 3.6',
-    role: 'totems: reshape the row',
+    pts: 19.6,
+    up: 23.2,
+    how: 'command the newest 8 + plant a random totem in its place 8 + 3 Barrier 3.6',
+    role: 'commands: renew the back of the row',
   },
-  'thunder-roost': {
+  'rally-the-spirits': {
+    pts: 24,
+    up: 27.6,
+    how: 'the front totem acts twice (2 x10.7, less its passive 2) 19.4 + 4 Barrier 4.8',
+    role: 'commands: twice, then gone',
+  },
+  'great-spirits-call': {
+    pts: 32,
+    up: 36.8,
+    how: 'every totem acts, front to back (~3 x10.7, less their passives 6) 26 + 5 Barrier 6',
+    role: 'commands: the whole row',
+  },
+  'totem-strike': {
+    pts: 10.1,
+    up: 13.1,
+    how: '2 + 3 per totem (~2.7)',
+    role: 'totems: payoff for a full row',
+  },
+  'totem-drum': {
     pts: 14,
     up: 18.7,
-    how: '4 turns x a Thunderbird (~90%) x 3 to ALL 3.9',
-    role: 'totems/Storm',
+    how: 'Aura: ~1.3 totem acts a turn x 3 to a random enemy (x0.9) x4',
+    role: 'Aura: stacks, every copy strikes',
+  },
+  harmony: {
+    pts: 18.7,
+    up: 25,
+    how: 'Aura: ~1.3 totem acts a turn x 3 Barrier 3.6 x4',
+    role: 'Aura: stacks',
+  },
+  'storm-sovereign': {
+    pts: 20.3,
+    up: 27,
+    how: 'Aura: ~1.3 totem acts a turn x 3 to ALL 3.9 x4',
+    role: 'Aura: stacks',
   },
   'rune-carapace': {
     pts: 20.6,
@@ -365,42 +503,16 @@ export const SHAMAN_PRICES: Record<string, Price> = {
     how: '4 turns x (1 Barrier a totem, ~3.3, + 1) x1.2; + Opening hand 3.5',
     role: 'totems: defence for a full row',
   },
-  'call-the-elder-tree': {
-    pts: 13,
-    up: 16.6,
-    how: '2 Spirit 10 + the Elder Tree in place of a basic totem ~3',
-    role: 'the rare totem: Spirit',
-  },
-  'call-the-moon-owl': {
-    pts: 13,
-    up: 17,
-    how: 'the Moon Owl: 1 Mana on ~55% of turns (~10 over a fight) + draw 3',
-    role: 'the rare totem: Mana on Trinity',
-  },
   'spirit-chorus': {
-    pts: 40,
-    up: 43.5,
-    how: '4 turns x (a random totem acts ~7.6 + 2 Barrier 2.4); + Opening hand 3.5',
-    role: 'commands: the command engine',
+    pts: 41.6,
+    up: 45,
+    how: 'Aura: each turn the front totem acts 8 + 2 Barrier 2.4, x4',
+    role: 'Aura: the cycle on its own',
   },
-  'great-spirits-call': {
-    pts: 35.3,
-    up: 40.1,
-    how: 'every totem acts ~29.3 (early 3 totems 15.3, mid 3.5 at 3 Spirit 28, late 5 at 7 Spirit 60) + 5 Barrier 6',
-    role: 'commands: the duplicate-totem payoff',
-  },
-  // (Trinity and Spirit)
-  'prism-spell': {
-    pts: 11.2,
-    up: 15.6,
-    how: "4 + 3 Barrier 3.6 + the second number's help (~2.7 x0.6) 1.6 + the missing element ~2",
-    role: 'Trinity: the wildcard',
-  },
-  'spirit-surge': { pts: 11, up: 14.6, how: '1 Spirit 5 + 5 Barrier 6', role: 'Spirit' },
-  'tune-the-lattice': {
-    pts: 11.6,
-    up: 15.6,
-    how: '1 Spirit 5 + draw 3 + 3 Barrier 3.6',
+  'spirit-surge': {
+    pts: 19.6,
+    up: 24.4,
+    how: '1 Spirit 10 + 8 Barrier 9.6',
     role: 'Spirit',
   },
   spiritstorm: {
@@ -409,21 +521,19 @@ export const SHAMAN_PRICES: Record<string, Price> = {
     how: '(6 + Spirit ~3.5) to ALL x1.3',
     role: 'Spirit: the payoff',
   },
-  harmony: {
-    pts: 22.4,
-    up: 30.4,
-    how: '4 turns x Trinity ~55% x (6 Barrier 7.2 + draw 3)',
-    role: 'Trinity: the payoff',
-  },
   'spirit-walk': {
-    pts: 17,
-    up: 21,
-    how: '2 Spirit 10 + draw 2 (7)',
+    pts: 16,
+    up: 19,
+    how: '1 Spirit 10 + draw 6',
     role: 'Spirit',
     consume: true,
   },
-  // (utility)
-  'stone-skin': { pts: 10.8, up: 14.4, how: '9 Barrier', role: 'utility' },
+  'stone-skin': {
+    pts: 10.8,
+    up: 14.4,
+    how: '9 Barrier',
+    role: 'utility',
+  },
   tidecaller: {
     pts: 12.4,
     up: 16,
@@ -431,17 +541,18 @@ export const SHAMAN_PRICES: Record<string, Price> = {
     role: 'utility',
     why: 'the guide’s own worked example (§9), kept',
   },
-  'spirit-memory': {
-    pts: 10.2,
-    up: 13.8,
-    how: '6 Barrier 7.2 + a random card back 3',
-    role: 'utility',
-  },
   'read-the-winds': {
     pts: 8.8,
     up: 12.4,
     how: 'Foresee 3 (3 + 1) + 4 Barrier 4.8',
     role: 'utility: find the missing element',
+  },
+  'wind-whisper': {
+    pts: 5.1,
+    up: 7.5,
+    how: 'draw 1, discard 1 ~1.5 + 3 Barrier 3.6',
+    role: 'utility: free cycling',
+    why: 'the free cycle card the brief asked for: it may never replace itself for nothing (balance guard rails)',
   },
   'clear-spring': {
     pts: 11,
@@ -449,34 +560,10 @@ export const SHAMAN_PRICES: Record<string, Price> = {
     how: 'draw 3 (3 + 4 + 4); + a 4th at half',
     role: 'utility',
   },
-  'crystal-ward': {
-    pts: 15.5,
-    up: 19.1,
-    how: '10 Barrier 12 + Opening hand 3.5',
-    role: 'utility',
-    consume: true,
-    why: 'the guide’s example (§6) of a 0-cost Consume Opening-hand card carrying a 1-cost budget, unchanged',
-  },
-  ironbark: { pts: 11.6, up: 16.4, how: '13 Barrier 15.6 - 2 Wounds 4', role: 'utility' },
   'shamans-insight': {
     pts: 12.6,
     up: 16.6,
     how: 'draw 3 + 3 Barrier 3.6 + the next spell free ~6',
     role: 'utility',
   },
-  'smoke-offering': {
-    pts: 11,
-    up: 14.5,
-    how: '2 Mana next turn 8 + draw 3 (a card consumed: thinning against a card lost, ~0)',
-    role: 'utility: a big next turn',
-  },
-  skybreaker: { pts: 28, up: 36, how: '26 + if fatal 1 Mana ~2', role: 'utility: the heavy hit' },
-  'spirit-vision': {
-    pts: 16,
-    up: 18,
-    how: 'draw 3 (11) + 1 Spirit 5',
-    role: 'utility',
-    consume: true,
-  },
-  'gale-strike': { pts: 11, up: 14, how: '8 + costs 1 less for the fight 3', role: 'utility' },
 };

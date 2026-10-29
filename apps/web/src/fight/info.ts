@@ -414,6 +414,19 @@ export const STATUS_INFO: Record<
     tone: 'good',
     text: 'Your next Flame, Frost, Storm or Prism spell costs 0.',
   },
+  // (the Moon Owl's, DECISIONS #430)
+  spellcut: {
+    name: 'Moonlit',
+    glyph: '☽',
+    tone: 'good',
+    text: 'Your first elemental spell this turn costs this much less (the Moon Owl).',
+  },
+  twinspell: {
+    name: 'Owl Echo',
+    glyph: '❂',
+    tone: 'good',
+    text: 'Your next elemental spell is played twice (the Moon Owl’s command).',
+  },
   // (the Monk's, DECISIONS #419)
   mastery: {
     name: 'Mastery',
@@ -426,7 +439,7 @@ export const STATUS_INFO: Record<
     name: 'Spirit',
     glyph: '◉',
     tone: 'good',
-    text: 'The Shaman’s Spirit never goes down. Each point adds 1 to every command; every 2 add 1 to every totem’s help. Trinity and some cards give it.',
+    text: 'The Shaman’s Spirit never goes down. Each point adds 1 to every totem number (not the Elder Tree’s or the Moon Owl’s). A commanded Hawk and some cards give it.',
   },
   rousing: {
     name: 'Rousing',
@@ -542,12 +555,12 @@ export const KEYWORD_INFO: Record<string, { name: string; text: string }> = {
   // (the Shaman's, DECISIONS #418)
   command: {
     name: 'Command',
-    text: 'A card such as Spirit Call or Hawk’s Dive commands a totem, and its spirit acts by itself: the Hawk dives at a random enemy for 6, the Bear gives 5 Barrier, the Thunderbird hits every enemy for 3. Every Spirit adds 1. A totem never acts on its own.',
+    text: 'A command makes your front totem (or the one the card names) act and consumes it: the Hawk gives 1 Spirit, the Bear 6 Barrier, the Thunderbird 8 to every enemy, the Elder Tree 2 Mana, the Moon Owl plays your next elemental spell twice. Every Spirit adds 1 (not to the Hawk’s Spirit, the Elder’s or the Owl’s). Planting into a full row pushes the front one out, and it acts too.',
   },
   // (the Shaman's elements and Trinity, DECISIONS #420)
   element: {
     name: 'Flame, Frost, Storm',
-    text: 'The Shaman’s spells. Flame: one enemy, Burn and Thorns. Frost: Barrier and Faltering. Storm: every enemy, or random ones, and Sapped. Each totem helps the first spell of its element each turn.',
+    text: 'The Shaman’s spells. Flame: big hits on one enemy, and Burn. Frost: Barrier and Faltering. Storm: every enemy, or Forks (different random enemies, 25% more when only one stands), and Sapped.',
   },
   trinity: {
     name: 'Trinity',
@@ -749,11 +762,9 @@ export function keywordsOf(
     }
   }
   if (c.tags?.includes('defensive') || c.tags?.includes('striking')) add(KEYWORD_INFO['technique']);
-  // (the Shaman's spells: their element, and Trinity)
-  if (c.tags?.some((t) => t === 'flame' || t === 'frost' || t === 'storm' || t === 'prism')) {
+  // (the Shaman's spells: their element)
+  if (c.tags?.some((t) => t === 'flame' || t === 'frost' || t === 'storm' || t === 'prism'))
     add(KEYWORD_INFO['element']);
-    add(KEYWORD_INFO['trinity']);
-  }
   if (c.exhaust || c.kind === 'power') add(KEYWORD_INFO['exhaust']);
   if (c.retain) add(KEYWORD_INFO['retain']);
   if (c.innate) add(KEYWORD_INFO['innate']);

@@ -1,7 +1,7 @@
-// The Shaman's totems on the battle screen (DECISIONS #420, #421): his positions (three to start, up to five) and his Spirit. A totem
-// helps the first spell of its element each turn and acts only when a card commands it. When a card asks which totem acts, or where
-// a new one goes, the choice is made here, on the panel itself (DECISIONS #427: no pop-up): the totems that can be chosen light up
-// as buttons, the rest dim. The carved totems are pictures where one is drawn (DECISIONS #429; they fill the panel, so they grow when
+// The Shaman's totems on the battle screen (DECISIONS #430, the totem cycle): his row (three positions to start, up to five), front
+// first, and his Spirit. Each totem works every turn while it stands; a command makes the front one (marked "Next") act and consumes
+// it, and a plant into a full row pushes it out. Its tip shows its numbers with his Spirit counted. (The pick mode, a choice of
+// totem, is kept for a card that would ask one; no card does since the cycle.) The carved totems are pictures where one is drawn (DECISIONS #429; they fill the panel, so they grow when
 // it is resized), and a commanded totem's spirit rises out of it. Presentation only: the totems and the choice come from the combat view.
 
 import { useEffect, useRef } from 'react';
@@ -40,7 +40,6 @@ export function TotemPanel(props: {
 }) {
   const pick = props.pick ?? null;
   const art = useTotemArt();
-  const help = Math.floor(props.spirit / 2);
   const first = useRef<HTMLButtonElement>(null);
   const ids = pick ? pick.ids.join() : '';
   const asking = pick ? `${pick.prompt}|${ids}` : '';
@@ -80,13 +79,23 @@ export function TotemPanel(props: {
         {props.totems.map((kind, i) => {
           const def = kind ? props.db.totems?.[kind] : undefined;
           const look = kind ? totemLook(kind) : null;
+          // (its numbers as they are now: "2 (+1 per Spirit)" reads 2 + Spirit)
+          const live = def
+            ? def.text.replace(/(\d+) \(\+1 per Spirit\)/g, (_, n: string) =>
+                String(Number(n) + props.spirit),
+              )
+            : '';
           const label =
             look && def
-              ? `${look.name} totem, position ${i + 1}. ${def.text}`
+              ? `${look.name} totem, ${i === 0 ? 'next to act' : `position ${i + 1}`}. ${live}`
               : `Position ${i + 1}: no totem`;
           const tip =
             look && def
-              ? tipAttrs({ kicker: 'Totem', title: look.name, text: def.text })
+              ? tipAttrs({
+                  kicker: i === 0 ? 'Totem · next to act' : 'Totem',
+                  title: look.name,
+                  text: live,
+                })
               : tipAttrs({
                   kicker: 'Totem position',
                   title: 'Empty',
@@ -117,6 +126,11 @@ export function TotemPanel(props: {
                 <kbd className="totem__key" aria-hidden="true">
                   {i + 1}
                 </kbd>
+              )}
+              {!pick && i === 0 && kind && (
+                <em className="totem__next" aria-hidden="true">
+                  Next
+                </em>
               )}
             </>
           );
@@ -156,11 +170,11 @@ export function TotemPanel(props: {
       )}
       <div
         className={`totems__spirit${props.spirit > 0 ? ' is-lit' : ''}`}
-        aria-label={`Spirit ${props.spirit}: every command +${props.spirit}, every totem's help +${help}`}
+        aria-label={`Spirit ${props.spirit}: every totem number +${props.spirit}`}
         {...tipAttrs({
           kicker: 'Spirit',
           title: `${props.spirit} Spirit`,
-          text: 'Never goes down. Each point adds 1 to every command; every 2 add 1 to every totem’s help. Trinity gives 1 each turn it triggers.',
+          text: 'Never goes down. Each point adds 1 to every totem number (what they do each turn, and when they act), but not the Elder Tree’s or the Moon Owl’s. A commanded Hawk gives 1.',
         })}
       >
         <span className="totems__orb" aria-hidden="true">
@@ -168,9 +182,7 @@ export function TotemPanel(props: {
         </span>
         <span className="totems__spiritText" aria-hidden="true">
           <b>Spirit</b>
-          <small>
-            Commands +{props.spirit} · Help +{help}
-          </small>
+          <small>Every totem +{props.spirit}</small>
         </span>
       </div>
     </div>

@@ -24,10 +24,11 @@ describe('runs saved before a class rework', () => {
     // (through the first rework's ids to the second's, DECISIONS #420: twin-evocation > guided-talon > ember-bolt)
     expect(back!.deck).toContain('ember-bolt');
     expect(back!.deck).toContain('rune-carapace+');
-    expect(back!.deck).toContain('prism-spell');
+    // (and on through the totem cycle's, DECISIONS #430: harmonic-wave > prism-spell > totem-strike)
+    expect(back!.deck).toContain('totem-strike');
     for (const id of back!.deck)
       expect(COMBAT_DB.cards[id.replace(/^(hi|lo)~/, '')], id).toBeDefined();
-    expect(back!.reworkNotice).toMatch(/^The Shaman was rebuilt \(elements, totems and Trinity\)/);
+    expect(back!.reworkNotice).toMatch(/^The Shaman was rebuilt \(the totem cycle\)/);
   });
 
   // (DECISIONS #428: the Knight, Assassin, Spellblade and Monk reworks were reverted; a run saved under one comes back to the
