@@ -426,8 +426,8 @@ describe('Grave Chill raises a Thrall every turn (DECISIONS #397)', () => {
       b: { enemies: ['squire'] },
     }).state;
 
-  it('turn 1: the starting Thrall and a new one with 2 HP', () => {
-    expect(thralls(start()).map((u) => u.maxHp)).toEqual([2, 2]);
+  it('turn 1: one Thrall with 2 HP, from Grave Chill (no second starting one, DECISIONS #431)', () => {
+    expect(thralls(start()).map((u) => u.maxHp)).toEqual([2]);
     expect(cardText(db, db.cards['raise-thrall']!)).toBe('Raise 5.');
     expect(RIFTWALKERS.necromancer.trait.text).toMatch(/^At the start of your turn, Raise 2./);
   });

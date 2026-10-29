@@ -432,8 +432,8 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
       maxHp: 70,
       mana: 3,
       handSize: 5,
-      // (2 HP: DECISIONS #411)
-      startUnits: [{ unit: 'bone-thrall', hp: 2 }],
+      // (no starting Thrall of its own: Grave Chill's Raise 2 at the start of his first turn is the one he begins with; with both he
+      // began with two, DECISIONS #431)
     },
     starter: [...rep('strike', 4), ...rep('defend', 4), 'raise-thrall', 'off-the-leash'],
     blurb:
