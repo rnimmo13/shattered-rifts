@@ -1,0 +1,5496 @@
+{
+ "hero": {
+  "id": "necromancer",
+  "name": "Necromancer",
+  "maxHp": 70,
+  "mana": 3,
+  "handSize": 5,
+  "startUnits": [
+   {
+    "unit": "bone-thrall",
+    "hp": 2
+   }
+  ]
+ },
+ "persona": "Dorian Blackthorn",
+ "role": "Necromancer",
+ "realm": "gloomfen",
+ "trait": {
+  "name": "Grave Chill",
+  "text": "At the start of your turn, Raise 2. Whenever one of your allies dies, curse a random enemy with 2 Fate; whenever a card is consumed, with 3.",
+  "turnStart": [
+   {
+    "op": "raise",
+    "unit": "bone-thrall",
+    "amount": 2
+   }
+  ],
+  "triggers": [
+   {
+    "op": "power",
+    "when": "allyDies",
+    "ops": [
+     {
+      "op": "status",
+      "status": "doom",
+      "amount": 2,
+      "to": "randomFoe"
+     }
+    ]
+   },
+   {
+    "op": "power",
+    "when": "exhaust",
+    "ops": [
+     {
+      "op": "status",
+      "status": "doom",
+      "amount": 3,
+      "to": "randomFoe"
+     }
+    ]
+   }
+  ]
+ },
+ "blurb": "A warden of the drowned dead. His Bone Thralls stand between him and harm and strike when he commands; his enemies are cursed with Fate.",
+ "mechanics": [
+  "Thralls",
+  "Fate",
+  "Souls",
+  "Fleeting"
+ ],
+ "buildPaths": [
+  "Fate: curse, then cash it in",
+  "Thralls: raise them, grow them, command them",
+  "Souls: Gravesouls and Fleeting cards"
+ ],
+ "howTo": [
+  "You start with a Bone Thrall. Thralls stand in front of you and take the hits meant for you, but they never act on their own.",
+  "Raise N brings a new Bone Thrall with N HP (up to three). With three already standing, your weakest Thrall gains N max HP instead.",
+  "Command cards (Knucklebone, Off the Leash...) make each of your Thralls strike. Off the Leash adds each Thrall’s own HP to its blow.",
+  "Cursed with Fate, an enemy dies at the end of its turn if its HP is at or below its Fate.",
+  "Gravesouls are free cards that draw 2 and are consumed; Fleeting cards are consumed if you still hold them when your turn ends, and some of your cards grow with every one you play.",
+  "Grave Chill: Raise 2 at the start of every turn; whenever one of your allies dies or a card is consumed, a random enemy is cursed with 3 Fate."
+ ],
+ "starter": [
+  "strike",
+  "strike",
+  "strike",
+  "strike",
+  "defend",
+  "defend",
+  "defend",
+  "defend",
+  "raise-thrall",
+  "off-the-leash"
+ ],
+ "starterText": [
+  {
+   "id": "strike",
+   "text": "Deal 6 damage."
+  },
+  {
+   "id": "strike",
+   "text": "Deal 6 damage."
+  },
+  {
+   "id": "strike",
+   "text": "Deal 6 damage."
+  },
+  {
+   "id": "strike",
+   "text": "Deal 6 damage."
+  },
+  {
+   "id": "defend",
+   "text": "Gain 5 Barrier."
+  },
+  {
+   "id": "defend",
+   "text": "Gain 5 Barrier."
+  },
+  {
+   "id": "defend",
+   "text": "Gain 5 Barrier."
+  },
+  {
+   "id": "defend",
+   "text": "Gain 5 Barrier."
+  },
+  {
+   "id": "raise-thrall",
+   "text": "Raise 5."
+  },
+  {
+   "id": "off-the-leash",
+   "text": "Your companions each deal 6 damage, plus their own HP."
+  }
+ ],
+ "startUnits": [
+  {
+   "entry": {
+    "unit": "bone-thrall",
+    "hp": 2
+   },
+   "unit": {
+    "id": "bone-thrall",
+    "name": "Bone Thrall",
+    "maxHp": 5,
+    "brain": {
+     "kind": "ally",
+     "act": []
+    }
+   }
+  }
+ ],
+ "counts": {
+  "basic": 2,
+  "common": 20,
+  "token/special": 2,
+  "uncommon": 36,
+  "rare": 27
+ },
+ "cards": [
+  {
+   "id": "off-the-leash",
+   "name": "Off the Leash",
+   "kind": "attack",
+   "rarity": "basic",
+   "cost": "1",
+   "text": "Your companions each deal 6 damage, plus their own HP.",
+   "def": {
+    "id": "off-the-leash",
+    "name": "Off the Leash",
+    "realm": "gloomfen",
+    "rarity": "basic",
+    "kind": "attack",
+    "cost": 1,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "command",
+      "ops": [
+       {
+        "op": "damage",
+        "amount": 6,
+        "to": "target",
+        "scale": {
+         "by": "hp"
+        }
+       }
+      ]
+     }
+    ],
+    "hero": "necromancer",
+    "tags": [
+     "command"
+    ],
+    "upgrade": "off-the-leash+"
+   },
+   "upgrade": {
+    "id": "off-the-leash+",
+    "cost": "1",
+    "text": "Your companions each deal 9 damage, plus their own HP.",
+    "def": {
+     "id": "off-the-leash+",
+     "name": "Off the Leash+",
+     "realm": "gloomfen",
+     "rarity": "basic",
+     "kind": "attack",
+     "cost": 1,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "command",
+       "ops": [
+        {
+         "op": "damage",
+         "amount": 9,
+         "to": "target",
+         "scale": {
+          "by": "hp"
+         }
+        }
+       ]
+      }
+     ],
+     "hero": "necromancer",
+     "tags": [
+      "command"
+     ]
+    }
+   }
+  },
+  {
+   "id": "raise-thrall",
+   "name": "Raise Thrall",
+   "kind": "skill",
+   "rarity": "basic",
+   "cost": "1",
+   "text": "Raise 5.",
+   "def": {
+    "id": "raise-thrall",
+    "name": "Raise Thrall",
+    "realm": "gloomfen",
+    "rarity": "basic",
+    "kind": "skill",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "raise",
+      "unit": "bone-thrall",
+      "amount": 5
+     }
+    ],
+    "hero": "necromancer",
+    "upgrade": "raise-thrall+"
+   },
+   "upgrade": {
+    "id": "raise-thrall+",
+    "cost": "1",
+    "text": "Raise 7.",
+    "def": {
+     "id": "raise-thrall+",
+     "name": "Raise Thrall+",
+     "realm": "gloomfen",
+     "rarity": "basic",
+     "kind": "skill",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "raise",
+       "unit": "bone-thrall",
+       "amount": 7
+      }
+     ],
+     "hero": "necromancer"
+    }
+   }
+  },
+  {
+   "id": "after-the-end",
+   "name": "After the End",
+   "kind": "skill",
+   "rarity": "common",
+   "cost": "1",
+   "text": "Raise 6. Consume.",
+   "def": {
+    "id": "after-the-end",
+    "name": "After the End",
+    "realm": "gloomfen",
+    "rarity": "common",
+    "kind": "skill",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "raise",
+      "unit": "bone-thrall",
+      "amount": 6
+     }
+    ],
+    "hero": "necromancer",
+    "exhaust": true,
+    "upgrade": "after-the-end+"
+   },
+   "upgrade": {
+    "id": "after-the-end+",
+    "cost": "1",
+    "text": "Raise 9. Consume.",
+    "def": {
+     "id": "after-the-end+",
+     "name": "After the End+",
+     "realm": "gloomfen",
+     "rarity": "common",
+     "kind": "skill",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "raise",
+       "unit": "bone-thrall",
+       "amount": 9
+      }
+     ],
+     "hero": "necromancer",
+     "exhaust": true
+    }
+   }
+  },
+  {
+   "id": "baleful-glance",
+   "name": "Baleful Glance",
+   "kind": "attack",
+   "rarity": "common",
+   "cost": "0",
+   "text": "Your companions each deal 10 damage to a random enemy. Consume. Fleeting.",
+   "def": {
+    "id": "baleful-glance",
+    "name": "Baleful Glance",
+    "realm": "gloomfen",
+    "rarity": "common",
+    "kind": "attack",
+    "cost": 0,
+    "target": "none",
+    "effects": [
+     {
+      "op": "command",
+      "ops": [
+       {
+        "op": "damage",
+        "amount": 10,
+        "to": "randomFoe"
+       }
+      ]
+     }
+    ],
+    "hero": "necromancer",
+    "exhaust": true,
+    "ethereal": true,
+    "source": "token",
+    "tags": [
+     "command"
+    ]
+   },
+   "upgrade": null
+  },
+  {
+   "id": "barrow-keeper",
+   "name": "Barrow Keeper",
+   "kind": "skill",
+   "rarity": "common",
+   "cost": "1",
+   "text": "Gain 8 Barrier. Add a Gravesoul to your draw pile.",
+   "def": {
+    "id": "barrow-keeper",
+    "name": "Barrow Keeper",
+    "realm": "gloomfen",
+    "rarity": "common",
+    "kind": "skill",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "barrier",
+      "amount": 8,
+      "to": "self"
+     },
+     {
+      "op": "addCard",
+      "card": "gravesoul",
+      "to": "draw",
+      "side": "self"
+     }
+    ],
+    "hero": "necromancer",
+    "upgrade": "barrow-keeper+"
+   },
+   "upgrade": {
+    "id": "barrow-keeper+",
+    "cost": "1",
+    "text": "Gain 11 Barrier. Add a Gravesoul to your draw pile.",
+    "def": {
+     "id": "barrow-keeper+",
+     "name": "Barrow Keeper+",
+     "realm": "gloomfen",
+     "rarity": "common",
+     "kind": "skill",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "barrier",
+       "amount": 11,
+       "to": "self"
+      },
+      {
+       "op": "addCard",
+       "card": "gravesoul",
+       "to": "draw",
+       "side": "self"
+      }
+     ],
+     "hero": "necromancer"
+    }
+   }
+  },
+  {
+   "id": "bone-bulwark",
+   "name": "Bone Bulwark",
+   "kind": "skill",
+   "rarity": "common",
+   "cost": "2",
+   "text": "Raise 5. Gain 8 Barrier.",
+   "def": {
+    "id": "bone-bulwark",
+    "name": "Bone Bulwark",
+    "realm": "gloomfen",
+    "rarity": "common",
+    "kind": "skill",
+    "cost": 2,
+    "target": "none",
+    "effects": [
+     {
+      "op": "raise",
+      "unit": "bone-thrall",
+      "amount": 5
+     },
+     {
+      "op": "barrier",
+      "amount": 8,
+      "to": "self"
+     }
+    ],
+    "hero": "necromancer",
+    "upgrade": "bone-bulwark+"
+   },
+   "upgrade": {
+    "id": "bone-bulwark+",
+    "cost": "2",
+    "text": "Raise 6. Gain 10 Barrier.",
+    "def": {
+     "id": "bone-bulwark+",
+     "name": "Bone Bulwark+",
+     "realm": "gloomfen",
+     "rarity": "common",
+     "kind": "skill",
+     "cost": 2,
+     "target": "none",
+     "effects": [
+      {
+       "op": "raise",
+       "unit": "bone-thrall",
+       "amount": 6
+      },
+      {
+       "op": "barrier",
+       "amount": 10,
+       "to": "self"
+      }
+     ],
+     "hero": "necromancer"
+    }
+   }
+  },
+  {
+   "id": "bone-crush",
+   "name": "Bone Crush",
+   "kind": "attack",
+   "rarity": "common",
+   "cost": "2",
+   "text": "Costs 0 if your companions have struck this turn. Your companions each deal 12 damage.",
+   "def": {
+    "id": "bone-crush",
+    "name": "Bone Crush",
+    "realm": "gloomfen",
+    "rarity": "common",
+    "kind": "attack",
+    "cost": 2,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "command",
+      "ops": [
+       {
+        "op": "damage",
+        "amount": 12,
+        "to": "target"
+       }
+      ]
+     }
+    ],
+    "hero": "necromancer",
+    "tags": [
+     "command"
+    ],
+    "freeIf": {
+     "by": "allyStrikes",
+     "atLeast": 1
+    },
+    "upgrade": "bone-crush+"
+   },
+   "upgrade": {
+    "id": "bone-crush+",
+    "cost": "2",
+    "text": "Costs 0 if your companions have struck this turn. Your companions each deal 16 damage.",
+    "def": {
+     "id": "bone-crush+",
+     "name": "Bone Crush+",
+     "realm": "gloomfen",
+     "rarity": "common",
+     "kind": "attack",
+     "cost": 2,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "command",
+       "ops": [
+        {
+         "op": "damage",
+         "amount": 16,
+         "to": "target"
+        }
+       ]
+      }
+     ],
+     "hero": "necromancer",
+     "tags": [
+      "command"
+     ],
+     "freeIf": {
+      "by": "allyStrikes",
+      "atLeast": 1
+     }
+    }
+   }
+  },
+  {
+   "id": "bone-snap",
+   "name": "Bone Snap",
+   "kind": "attack",
+   "rarity": "common",
+   "cost": "1",
+   "text": "Your companions each deal 7 damage. A random card in your hand gains Hold.",
+   "def": {
+    "id": "bone-snap",
+    "name": "Bone Snap",
+    "realm": "gloomfen",
+    "rarity": "common",
+    "kind": "attack",
+    "cost": 1,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "command",
+      "ops": [
+       {
+        "op": "damage",
+        "amount": 7,
+        "to": "target"
+       }
+      ]
+     },
+     {
+      "op": "mark",
+      "flag": "retain"
+     }
+    ],
+    "hero": "necromancer",
+    "tags": [
+     "command"
+    ],
+    "upgrade": "bone-snap+"
+   },
+   "upgrade": {
+    "id": "bone-snap+",
+    "cost": "1",
+    "text": "Your companions each deal 10 damage. A random card in your hand gains Hold.",
+    "def": {
+     "id": "bone-snap+",
+     "name": "Bone Snap+",
+     "realm": "gloomfen",
+     "rarity": "common",
+     "kind": "attack",
+     "cost": 1,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "command",
+       "ops": [
+        {
+         "op": "damage",
+         "amount": 10,
+         "to": "target"
+        }
+       ]
+      },
+      {
+       "op": "mark",
+       "flag": "retain"
+      }
+     ],
+     "hero": "necromancer",
+     "tags": [
+      "command"
+     ]
+    }
+   }
+  },
+  {
+   "id": "call-at-dusk",
+   "name": "Call at Dusk",
+   "kind": "skill",
+   "rarity": "common",
+   "cost": "1",
+   "text": "Next turn: Raise 2. Gain 2 Mana.",
+   "def": {
+    "id": "call-at-dusk",
+    "name": "Call at Dusk",
+    "realm": "gloomfen",
+    "rarity": "common",
+    "kind": "skill",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "power",
+      "when": "turnStart",
+      "ops": [
+       {
+        "op": "raise",
+        "unit": "bone-thrall",
+        "amount": 2
+       },
+       {
+        "op": "mana",
+        "amount": 2
+       }
+      ],
+      "times": 1
+     }
+    ],
+    "hero": "necromancer",
+    "upgrade": "call-at-dusk+"
+   },
+   "upgrade": {
+    "id": "call-at-dusk+",
+    "cost": "1",
+    "text": "Next turn: Raise 3. Gain 3 Mana.",
+    "def": {
+     "id": "call-at-dusk+",
+     "name": "Call at Dusk+",
+     "realm": "gloomfen",
+     "rarity": "common",
+     "kind": "skill",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "power",
+       "when": "turnStart",
+       "ops": [
+        {
+         "op": "raise",
+         "unit": "bone-thrall",
+         "amount": 3
+        },
+        {
+         "op": "mana",
+         "amount": 3
+        }
+       ],
+       "times": 1
+      }
+     ],
+     "hero": "necromancer"
+    }
+   }
+  },
+  {
+   "id": "cold-dread",
+   "name": "Cold Dread",
+   "kind": "attack",
+   "rarity": "common",
+   "cost": "1",
+   "text": "Deal 7 damage. Apply 1 Exposed. Fleeting.",
+   "def": {
+    "id": "cold-dread",
+    "name": "Cold Dread",
+    "realm": "gloomfen",
+    "rarity": "common",
+    "kind": "attack",
+    "cost": 1,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 7,
+      "to": "target"
+     },
+     {
+      "op": "status",
+      "status": "exposed",
+      "amount": 1,
+      "to": "target"
+     }
+    ],
+    "hero": "necromancer",
+    "ethereal": true,
+    "upgrade": "cold-dread+"
+   },
+   "upgrade": {
+    "id": "cold-dread+",
+    "cost": "1",
+    "text": "Deal 8 damage. Apply 2 Exposed. Fleeting.",
+    "def": {
+     "id": "cold-dread+",
+     "name": "Cold Dread+",
+     "realm": "gloomfen",
+     "rarity": "common",
+     "kind": "attack",
+     "cost": 1,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 8,
+       "to": "target"
+      },
+      {
+       "op": "status",
+       "status": "exposed",
+       "amount": 2,
+       "to": "target"
+      }
+     ],
+     "hero": "necromancer",
+     "ethereal": true
+    }
+   }
+  },
+  {
+   "id": "creeping-end",
+   "name": "Creeping End",
+   "kind": "skill",
+   "rarity": "common",
+   "cost": "1",
+   "text": "Gain 5 Barrier. Curse ALL enemies with 7 Fate.",
+   "def": {
+    "id": "creeping-end",
+    "name": "Creeping End",
+    "realm": "gloomfen",
+    "rarity": "common",
+    "kind": "skill",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "barrier",
+      "amount": 5,
+      "to": "self"
+     },
+     {
+      "op": "status",
+      "status": "doom",
+      "amount": 7,
+      "to": "allFoes"
+     }
+    ],
+    "hero": "necromancer",
+    "upgrade": "creeping-end+"
+   },
+   "upgrade": {
+    "id": "creeping-end+",
+    "cost": "1",
+    "text": "Gain 6 Barrier. Curse ALL enemies with 11 Fate.",
+    "def": {
+     "id": "creeping-end+",
+     "name": "Creeping End+",
+     "realm": "gloomfen",
+     "rarity": "common",
+     "kind": "skill",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "barrier",
+       "amount": 6,
+       "to": "self"
+      },
+      {
+       "op": "status",
+       "status": "doom",
+       "amount": 11,
+       "to": "allFoes"
+      }
+     ],
+     "hero": "necromancer"
+    }
+   }
+  },
+  {
+   "id": "desecrate",
+   "name": "Desecrate",
+   "kind": "attack",
+   "rarity": "common",
+   "cost": "1",
+   "text": "Deal 13 damage. Fleeting.",
+   "def": {
+    "id": "desecrate",
+    "name": "Desecrate",
+    "realm": "gloomfen",
+    "rarity": "common",
+    "kind": "attack",
+    "cost": 1,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 13,
+      "to": "target"
+     }
+    ],
+    "hero": "necromancer",
+    "ethereal": true,
+    "upgrade": "desecrate+"
+   },
+   "upgrade": {
+    "id": "desecrate+",
+    "cost": "1",
+    "text": "Deal 17 damage. Fleeting.",
+    "def": {
+     "id": "desecrate+",
+     "name": "Desecrate+",
+     "realm": "gloomfen",
+     "rarity": "common",
+     "kind": "attack",
+     "cost": 1,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 17,
+       "to": "target"
+      }
+     ],
+     "hero": "necromancer",
+     "ethereal": true
+    }
+   }
+  },
+  {
+   "id": "grave-defiance",
+   "name": "Grave Defiance",
+   "kind": "skill",
+   "rarity": "common",
+   "cost": "1",
+   "text": "Gain 6 Barrier. Apply 1 Faltering. Fleeting.",
+   "def": {
+    "id": "grave-defiance",
+    "name": "Grave Defiance",
+    "realm": "gloomfen",
+    "rarity": "common",
+    "kind": "skill",
+    "cost": 1,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "barrier",
+      "amount": 6,
+      "to": "self"
+     },
+     {
+      "op": "status",
+      "status": "faltering",
+      "amount": 1,
+      "to": "target"
+     }
+    ],
+    "hero": "necromancer",
+    "ethereal": true,
+    "upgrade": "grave-defiance+"
+   },
+   "upgrade": {
+    "id": "grave-defiance+",
+    "cost": "1",
+    "text": "Gain 9 Barrier. Apply 1 Faltering. Fleeting.",
+    "def": {
+     "id": "grave-defiance+",
+     "name": "Grave Defiance+",
+     "realm": "gloomfen",
+     "rarity": "common",
+     "kind": "skill",
+     "cost": 1,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "barrier",
+       "amount": 9,
+       "to": "self"
+      },
+      {
+       "op": "status",
+       "status": "faltering",
+       "amount": 1,
+       "to": "target"
+      }
+     ],
+     "hero": "necromancer",
+     "ethereal": true
+    }
+   }
+  },
+  {
+   "id": "grave-robbery",
+   "name": "Grave Robbery",
+   "kind": "attack",
+   "rarity": "common",
+   "cost": "1",
+   "text": "Deal 6 damage. Return a random card from your discard pile to your hand. Consume.",
+   "def": {
+    "id": "grave-robbery",
+    "name": "Grave Robbery",
+    "realm": "gloomfen",
+    "rarity": "common",
+    "kind": "attack",
+    "cost": 1,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 6,
+      "to": "target"
+     },
+     {
+      "op": "fetch",
+      "amount": 1,
+      "to": "hand"
+     }
+    ],
+    "hero": "necromancer",
+    "exhaust": true,
+    "upgrade": "grave-robbery+"
+   },
+   "upgrade": {
+    "id": "grave-robbery+",
+    "cost": "1",
+    "text": "Deal 8 damage. Return a random card from your discard pile to your hand.",
+    "def": {
+     "id": "grave-robbery+",
+     "name": "Grave Robbery+",
+     "realm": "gloomfen",
+     "rarity": "common",
+     "kind": "attack",
+     "cost": 1,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 8,
+       "to": "target"
+      },
+      {
+       "op": "fetch",
+       "amount": 1,
+       "to": "hand"
+      }
+     ],
+     "hero": "necromancer",
+     "exhaust": false
+    }
+   }
+  },
+  {
+   "id": "gravesoul",
+   "name": "Gravesoul",
+   "kind": "skill",
+   "rarity": "common",
+   "cost": "0",
+   "text": "Draw 2 cards. Consume.",
+   "def": {
+    "id": "gravesoul",
+    "name": "Gravesoul",
+    "realm": "gloomfen",
+    "rarity": "common",
+    "kind": "skill",
+    "cost": 0,
+    "target": "none",
+    "effects": [
+     {
+      "op": "draw",
+      "amount": 2
+     }
+    ],
+    "hero": "necromancer",
+    "exhaust": true,
+    "source": "token",
+    "tags": [
+     "soul"
+    ],
+    "upgrade": "gravesoul+"
+   },
+   "upgrade": {
+    "id": "gravesoul+",
+    "cost": "0",
+    "text": "Draw 3 cards. Consume.",
+    "def": {
+     "id": "gravesoul+",
+     "name": "Gravesoul+",
+     "realm": "gloomfen",
+     "rarity": "common",
+     "kind": "skill",
+     "cost": 0,
+     "target": "none",
+     "effects": [
+      {
+       "op": "draw",
+       "amount": 3
+      }
+     ],
+     "hero": "necromancer",
+     "exhaust": true,
+     "source": "token",
+     "tags": [
+      "soul"
+     ]
+    }
+   }
+  },
+  {
+   "id": "harvest",
+   "name": "Harvest",
+   "kind": "attack",
+   "rarity": "common",
+   "cost": "3",
+   "text": "Deal 27 damage. Hold.",
+   "def": {
+    "id": "harvest",
+    "name": "Harvest",
+    "realm": "gloomfen",
+    "rarity": "common",
+    "kind": "attack",
+    "cost": 3,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 27,
+      "to": "target"
+     }
+    ],
+    "hero": "necromancer",
+    "retain": true,
+    "upgrade": "harvest+"
+   },
+   "upgrade": {
+    "id": "harvest+",
+    "cost": "3",
+    "text": "Deal 33 damage. Hold.",
+    "def": {
+     "id": "harvest+",
+     "name": "Harvest+",
+     "realm": "gloomfen",
+     "rarity": "common",
+     "kind": "attack",
+     "cost": 3,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 33,
+       "to": "target"
+      }
+     ],
+     "hero": "necromancer",
+     "retain": true
+    }
+   }
+  },
+  {
+   "id": "knucklebone",
+   "name": "Knucklebone",
+   "kind": "attack",
+   "rarity": "common",
+   "cost": "0",
+   "text": "Your companions each deal 6 damage.",
+   "def": {
+    "id": "knucklebone",
+    "name": "Knucklebone",
+    "realm": "gloomfen",
+    "rarity": "common",
+    "kind": "attack",
+    "cost": 0,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "command",
+      "ops": [
+       {
+        "op": "damage",
+        "amount": 6,
+        "to": "target"
+       }
+      ]
+     }
+    ],
+    "hero": "necromancer",
+    "tags": [
+     "command"
+    ],
+    "upgrade": "knucklebone+"
+   },
+   "upgrade": {
+    "id": "knucklebone+",
+    "cost": "0",
+    "text": "Your companions each deal 9 damage.",
+    "def": {
+     "id": "knucklebone+",
+     "name": "Knucklebone+",
+     "realm": "gloomfen",
+     "rarity": "common",
+     "kind": "attack",
+     "cost": 0,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "command",
+       "ops": [
+        {
+         "op": "damage",
+         "amount": 9,
+         "to": "target"
+        }
+       ]
+      }
+     ],
+     "hero": "necromancer",
+     "tags": [
+      "command"
+     ]
+    }
+   }
+  },
+  {
+   "id": "leech-lore",
+   "name": "Leech Lore",
+   "kind": "attack",
+   "rarity": "common",
+   "cost": "1",
+   "text": "Deal 10 damage. Upgrade 2 random cards in your discard pile for this fight.",
+   "def": {
+    "id": "leech-lore",
+    "name": "Leech Lore",
+    "realm": "gloomfen",
+    "rarity": "common",
+    "kind": "attack",
+    "cost": 1,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 10,
+      "to": "target"
+     },
+     {
+      "op": "upgrade",
+      "scope": "discard",
+      "amount": 2
+     }
+    ],
+    "hero": "necromancer",
+    "upgrade": "leech-lore+"
+   },
+   "upgrade": {
+    "id": "leech-lore+",
+    "cost": "1",
+    "text": "Deal 12 damage. Upgrade 3 random cards in your discard pile for this fight.",
+    "def": {
+     "id": "leech-lore+",
+     "name": "Leech Lore+",
+     "realm": "gloomfen",
+     "rarity": "common",
+     "kind": "attack",
+     "cost": 1,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 12,
+       "to": "target"
+      },
+      {
+       "op": "upgrade",
+       "scope": "discard",
+       "amount": 3
+      }
+     ],
+     "hero": "necromancer"
+    }
+   }
+  },
+  {
+   "id": "marsh-light",
+   "name": "Marsh Light",
+   "kind": "skill",
+   "rarity": "common",
+   "cost": "0",
+   "text": "Gain 1 Mana. Consume.",
+   "def": {
+    "id": "marsh-light",
+    "name": "Marsh Light",
+    "realm": "gloomfen",
+    "rarity": "common",
+    "kind": "skill",
+    "cost": 0,
+    "target": "none",
+    "effects": [
+     {
+      "op": "mana",
+      "amount": 1
+     }
+    ],
+    "hero": "necromancer",
+    "exhaust": true,
+    "upgrade": "marsh-light+"
+   },
+   "upgrade": {
+    "id": "marsh-light+",
+    "cost": "0",
+    "text": "Gain 1 Mana. Consume. Hold.",
+    "def": {
+     "id": "marsh-light+",
+     "name": "Marsh Light+",
+     "realm": "gloomfen",
+     "rarity": "common",
+     "kind": "skill",
+     "cost": 0,
+     "target": "none",
+     "effects": [
+      {
+       "op": "mana",
+       "amount": 1
+      }
+     ],
+     "hero": "necromancer",
+     "exhaust": true,
+     "retain": true
+    }
+   }
+  },
+  {
+   "id": "rot-strike",
+   "name": "Rot Strike",
+   "kind": "attack",
+   "rarity": "common",
+   "cost": "1",
+   "text": "Deal 8 damage. Curse the target with Fate equal to the damage dealt.",
+   "def": {
+    "id": "rot-strike",
+    "name": "Rot Strike",
+    "realm": "gloomfen",
+    "rarity": "common",
+    "kind": "attack",
+    "cost": 1,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 8,
+      "to": "target"
+     },
+     {
+      "op": "status",
+      "status": "doom",
+      "amount": 0,
+      "to": "target",
+      "scale": {
+       "by": "dealt"
+      }
+     }
+    ],
+    "hero": "necromancer",
+    "upgrade": "rot-strike+"
+   },
+   "upgrade": {
+    "id": "rot-strike+",
+    "cost": "1",
+    "text": "Deal 10 damage. Curse the target with Fate equal to the damage dealt.",
+    "def": {
+     "id": "rot-strike+",
+     "name": "Rot Strike+",
+     "realm": "gloomfen",
+     "rarity": "common",
+     "kind": "attack",
+     "cost": 1,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 10,
+       "to": "target"
+      },
+      {
+       "op": "status",
+       "status": "doom",
+       "amount": 0,
+       "to": "target",
+       "scale": {
+        "by": "dealt"
+       }
+      }
+     ],
+     "hero": "necromancer"
+    }
+   }
+  },
+  {
+   "id": "scatter-ashes",
+   "name": "Scatter Ashes",
+   "kind": "attack",
+   "rarity": "common",
+   "cost": "1",
+   "text": "Deal 8 damage to ALL enemies. Hold.",
+   "def": {
+    "id": "scatter-ashes",
+    "name": "Scatter Ashes",
+    "realm": "gloomfen",
+    "rarity": "common",
+    "kind": "attack",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 8,
+      "to": "allFoes"
+     }
+    ],
+    "hero": "necromancer",
+    "retain": true,
+    "upgrade": "scatter-ashes+"
+   },
+   "upgrade": {
+    "id": "scatter-ashes+",
+    "cost": "1",
+    "text": "Deal 11 damage to ALL enemies. Hold.",
+    "def": {
+     "id": "scatter-ashes+",
+     "name": "Scatter Ashes+",
+     "realm": "gloomfen",
+     "rarity": "common",
+     "kind": "attack",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 11,
+       "to": "allFoes"
+      }
+     ],
+     "hero": "necromancer",
+     "retain": true
+    }
+   }
+  },
+  {
+   "id": "soul-rend",
+   "name": "Soul Rend",
+   "kind": "attack",
+   "rarity": "common",
+   "cost": "1",
+   "text": "Deal 9 damage. Add a Gravesoul to your draw pile.",
+   "def": {
+    "id": "soul-rend",
+    "name": "Soul Rend",
+    "realm": "gloomfen",
+    "rarity": "common",
+    "kind": "attack",
+    "cost": 1,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 9,
+      "to": "target"
+     },
+     {
+      "op": "addCard",
+      "card": "gravesoul",
+      "to": "draw",
+      "side": "self"
+     }
+    ],
+    "hero": "necromancer",
+    "upgrade": "soul-rend+"
+   },
+   "upgrade": {
+    "id": "soul-rend+",
+    "cost": "1",
+    "text": "Deal 11 damage. Add a Gravesoul+ to your draw pile.",
+    "def": {
+     "id": "soul-rend+",
+     "name": "Soul Rend+",
+     "realm": "gloomfen",
+     "rarity": "common",
+     "kind": "attack",
+     "cost": 1,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 11,
+       "to": "target"
+      },
+      {
+       "op": "addCard",
+       "card": "gravesoul+",
+       "to": "draw",
+       "side": "self"
+      }
+     ],
+     "hero": "necromancer"
+    }
+   }
+  },
+  {
+   "id": "tolling-bell",
+   "name": "Tolling Bell",
+   "kind": "skill",
+   "rarity": "common",
+   "cost": "1",
+   "text": "Curse the target with 13 Fate. Draw 1 card.",
+   "def": {
+    "id": "tolling-bell",
+    "name": "Tolling Bell",
+    "realm": "gloomfen",
+    "rarity": "common",
+    "kind": "skill",
+    "cost": 1,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "status",
+      "status": "doom",
+      "amount": 13,
+      "to": "target"
+     },
+     {
+      "op": "draw",
+      "amount": 1
+     }
+    ],
+    "hero": "necromancer",
+    "upgrade": "tolling-bell+"
+   },
+   "upgrade": {
+    "id": "tolling-bell+",
+    "cost": "1",
+    "text": "Curse the target with 16 Fate. Draw 2 cards.",
+    "def": {
+     "id": "tolling-bell+",
+     "name": "Tolling Bell+",
+     "realm": "gloomfen",
+     "rarity": "common",
+     "kind": "skill",
+     "cost": 1,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "status",
+       "status": "doom",
+       "amount": 16,
+       "to": "target"
+      },
+      {
+       "op": "draw",
+       "amount": 2
+      }
+     ],
+     "hero": "necromancer"
+    }
+   }
+  },
+  {
+   "id": "wraith-strike",
+   "name": "Wraith Strike",
+   "kind": "attack",
+   "rarity": "common",
+   "cost": "1",
+   "text": "Deal 9 damage. A random card in your hand gains Fleeting.",
+   "def": {
+    "id": "wraith-strike",
+    "name": "Wraith Strike",
+    "realm": "gloomfen",
+    "rarity": "common",
+    "kind": "attack",
+    "cost": 1,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 9,
+      "to": "target"
+     },
+     {
+      "op": "mark",
+      "flag": "ethereal"
+     }
+    ],
+    "hero": "necromancer",
+    "upgrade": "wraith-strike+"
+   },
+   "upgrade": {
+    "id": "wraith-strike+",
+    "cost": "1",
+    "text": "Deal 12 damage. A random card in your hand gains Fleeting.",
+    "def": {
+     "id": "wraith-strike+",
+     "name": "Wraith Strike+",
+     "realm": "gloomfen",
+     "rarity": "common",
+     "kind": "attack",
+     "cost": 1,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 12,
+       "to": "target"
+      },
+      {
+       "op": "mark",
+       "flag": "ethereal"
+      }
+     ],
+     "hero": "necromancer"
+    }
+   }
+  },
+  {
+   "id": "army-of-the-drowned",
+   "name": "Army of the Drowned",
+   "kind": "skill",
+   "rarity": "uncommon",
+   "cost": "2",
+   "text": "Raise 6 twice. Consume.",
+   "def": {
+    "id": "army-of-the-drowned",
+    "name": "Army of the Drowned",
+    "realm": "gloomfen",
+    "rarity": "uncommon",
+    "kind": "skill",
+    "cost": 2,
+    "target": "none",
+    "effects": [
+     {
+      "op": "raise",
+      "unit": "bone-thrall",
+      "amount": 6,
+      "times": 2
+     }
+    ],
+    "hero": "necromancer",
+    "exhaust": true,
+    "upgrade": "army-of-the-drowned+"
+   },
+   "upgrade": {
+    "id": "army-of-the-drowned+",
+    "cost": "2",
+    "text": "Raise 8 twice. Consume.",
+    "def": {
+     "id": "army-of-the-drowned+",
+     "name": "Army of the Drowned+",
+     "realm": "gloomfen",
+     "rarity": "uncommon",
+     "kind": "skill",
+     "cost": 2,
+     "target": "none",
+     "effects": [
+      {
+       "op": "raise",
+       "unit": "bone-thrall",
+       "amount": 8,
+       "times": 2
+      }
+     ],
+     "hero": "necromancer",
+     "exhaust": true
+    }
+   }
+  },
+  {
+   "id": "at-the-threshold",
+   "name": "At the Threshold",
+   "kind": "skill",
+   "rarity": "uncommon",
+   "cost": "1",
+   "text": "Gain 6 Barrier. If you have cursed an enemy with Fate this turn: Gain 6 Barrier twice.",
+   "def": {
+    "id": "at-the-threshold",
+    "name": "At the Threshold",
+    "realm": "gloomfen",
+    "rarity": "uncommon",
+    "kind": "skill",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "barrier",
+      "amount": 6,
+      "to": "self"
+     },
+     {
+      "op": "when",
+      "by": "doomedTurn",
+      "atLeast": 1,
+      "ops": [
+       {
+        "op": "barrier",
+        "amount": 6,
+        "to": "self"
+       },
+       {
+        "op": "barrier",
+        "amount": 6,
+        "to": "self"
+       }
+      ]
+     }
+    ],
+    "hero": "necromancer",
+    "upgrade": "at-the-threshold+"
+   },
+   "upgrade": {
+    "id": "at-the-threshold+",
+    "cost": "1",
+    "text": "Gain 7 Barrier. If you have cursed an enemy with Fate this turn: Gain 7 Barrier twice.",
+    "def": {
+     "id": "at-the-threshold+",
+     "name": "At the Threshold+",
+     "realm": "gloomfen",
+     "rarity": "uncommon",
+     "kind": "skill",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "barrier",
+       "amount": 7,
+       "to": "self"
+      },
+      {
+       "op": "when",
+       "by": "doomedTurn",
+       "atLeast": 1,
+       "ops": [
+        {
+         "op": "barrier",
+         "amount": 7,
+         "to": "self"
+        },
+        {
+         "op": "barrier",
+         "amount": 7,
+         "to": "self"
+        }
+       ]
+      }
+     ],
+     "hero": "necromancer"
+    }
+   }
+  },
+  {
+   "id": "bonded-dead",
+   "name": "Bonded Dead",
+   "kind": "power",
+   "rarity": "uncommon",
+   "cost": "1",
+   "text": "Gain 2 Sapped. At the start of your turn: Gain 1 Mana.",
+   "def": {
+    "id": "bonded-dead",
+    "name": "Bonded Dead",
+    "realm": "gloomfen",
+    "rarity": "uncommon",
+    "kind": "power",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "status",
+      "status": "sapped",
+      "amount": 2,
+      "to": "self"
+     },
+     {
+      "op": "power",
+      "when": "turnStart",
+      "ops": [
+       {
+        "op": "mana",
+        "amount": 1
+       }
+      ]
+     }
+    ],
+    "hero": "necromancer",
+    "upgrade": "bonded-dead+"
+   },
+   "upgrade": {
+    "id": "bonded-dead+",
+    "cost": "1",
+    "text": "Gain 1 Sapped. At the start of your turn: Gain 1 Mana.",
+    "def": {
+     "id": "bonded-dead+",
+     "name": "Bonded Dead+",
+     "realm": "gloomfen",
+     "rarity": "uncommon",
+     "kind": "power",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "status",
+       "status": "sapped",
+       "amount": 1,
+       "to": "self"
+      },
+      {
+       "op": "power",
+       "when": "turnStart",
+       "ops": [
+        {
+         "op": "mana",
+         "amount": 1
+        }
+       ]
+      }
+     ],
+     "hero": "necromancer"
+    }
+   }
+  },
+  {
+   "id": "bone-rain",
+   "name": "Bone Rain",
+   "kind": "attack",
+   "rarity": "uncommon",
+   "cost": "1",
+   "text": "Gain Barrier equal to 9 times the number of your allies. Your companions each deal 9 damage to ALL enemies. Then they die.",
+   "def": {
+    "id": "bone-rain",
+    "name": "Bone Rain",
+    "realm": "gloomfen",
+    "rarity": "uncommon",
+    "kind": "attack",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "barrier",
+      "amount": 0,
+      "to": "self",
+      "scale": {
+       "by": "allies",
+       "mult": 9
+      }
+     },
+     {
+      "op": "command",
+      "ops": [
+       {
+        "op": "damage",
+        "amount": 9,
+        "to": "allFoes"
+       },
+       {
+        "op": "sacrifice",
+        "self": true
+       }
+      ]
+     }
+    ],
+    "hero": "necromancer",
+    "tags": [
+     "command"
+    ],
+    "upgrade": "bone-rain+"
+   },
+   "upgrade": {
+    "id": "bone-rain+",
+    "cost": "1",
+    "text": "Gain Barrier equal to 12 times the number of your allies. Your companions each deal 12 damage to ALL enemies. Then they die.",
+    "def": {
+     "id": "bone-rain+",
+     "name": "Bone Rain+",
+     "realm": "gloomfen",
+     "rarity": "uncommon",
+     "kind": "attack",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "barrier",
+       "amount": 0,
+       "to": "self",
+       "scale": {
+        "by": "allies",
+        "mult": 12
+       }
+      },
+      {
+       "op": "command",
+       "ops": [
+        {
+         "op": "damage",
+         "amount": 12,
+         "to": "allFoes"
+        },
+        {
+         "op": "sacrifice",
+         "self": true
+        }
+       ]
+      }
+     ],
+     "hero": "necromancer",
+     "tags": [
+      "command"
+     ]
+    }
+   }
+  },
+  {
+   "id": "bone-sift",
+   "name": "Bone Sift",
+   "kind": "skill",
+   "rarity": "uncommon",
+   "cost": "1",
+   "text": "Raise 5. Consume the top card of your draw pile.",
+   "def": {
+    "id": "bone-sift",
+    "name": "Bone Sift",
+    "realm": "gloomfen",
+    "rarity": "uncommon",
+    "kind": "skill",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "raise",
+      "unit": "bone-thrall",
+      "amount": 5
+     },
+     {
+      "op": "exhaustTop",
+      "amount": 1
+     }
+    ],
+    "hero": "necromancer",
+    "upgrade": "bone-sift+"
+   },
+   "upgrade": {
+    "id": "bone-sift+",
+    "cost": "1",
+    "text": "Raise 7. Consume the top card of your draw pile.",
+    "def": {
+     "id": "bone-sift+",
+     "name": "Bone Sift+",
+     "realm": "gloomfen",
+     "rarity": "uncommon",
+     "kind": "skill",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "raise",
+       "unit": "bone-thrall",
+       "amount": 7
+      },
+      {
+       "op": "exhaustTop",
+       "amount": 1
+      }
+     ],
+     "hero": "necromancer"
+    }
+   }
+  },
+  {
+   "id": "bone-toss",
+   "name": "Bone Toss",
+   "kind": "attack",
+   "rarity": "uncommon",
+   "cost": "0",
+   "text": "Your companions each deal 3 damage. If this is the first time you play it this turn: Draw 1 card.",
+   "def": {
+    "id": "bone-toss",
+    "name": "Bone Toss",
+    "realm": "gloomfen",
+    "rarity": "uncommon",
+    "kind": "attack",
+    "cost": 0,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "command",
+      "ops": [
+       {
+        "op": "damage",
+        "amount": 3,
+        "to": "target"
+       }
+      ]
+     },
+     {
+      "op": "when",
+      "by": "samePlayed",
+      "atMost": 0,
+      "ops": [
+       {
+        "op": "draw",
+        "amount": 1
+       }
+      ]
+     }
+    ],
+    "hero": "necromancer",
+    "tags": [
+     "command"
+    ],
+    "upgrade": "bone-toss+"
+   },
+   "upgrade": {
+    "id": "bone-toss+",
+    "cost": "0",
+    "text": "Your companions each deal 6 damage. If this is the first time you play it this turn: Draw 1 card.",
+    "def": {
+     "id": "bone-toss+",
+     "name": "Bone Toss+",
+     "realm": "gloomfen",
+     "rarity": "uncommon",
+     "kind": "attack",
+     "cost": 0,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "command",
+       "ops": [
+        {
+         "op": "damage",
+         "amount": 6,
+         "to": "target"
+        }
+       ]
+      },
+      {
+       "op": "when",
+       "by": "samePlayed",
+       "atMost": 0,
+       "ops": [
+        {
+         "op": "draw",
+         "amount": 1
+        }
+       ]
+      }
+     ],
+     "hero": "necromancer",
+     "tags": [
+      "command"
+     ]
+    }
+   }
+  },
+  {
+   "id": "bottled-soul",
+   "name": "Bottled Soul",
+   "kind": "skill",
+   "rarity": "uncommon",
+   "cost": "1",
+   "text": "The target loses 3 HP. Add 3 Gravesouls to your draw pile.",
+   "def": {
+    "id": "bottled-soul",
+    "name": "Bottled Soul",
+    "realm": "gloomfen",
+    "rarity": "uncommon",
+    "kind": "skill",
+    "cost": 1,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "loseHp",
+      "amount": 3,
+      "to": "target"
+     },
+     {
+      "op": "addCard",
+      "card": "gravesoul",
+      "to": "draw",
+      "side": "self",
+      "times": 3
+     }
+    ],
+    "hero": "necromancer",
+    "upgrade": "bottled-soul+"
+   },
+   "upgrade": {
+    "id": "bottled-soul+",
+    "cost": "1",
+    "text": "The target loses 4 HP. Add 4 Gravesouls to your draw pile.",
+    "def": {
+     "id": "bottled-soul+",
+     "name": "Bottled Soul+",
+     "realm": "gloomfen",
+     "rarity": "uncommon",
+     "kind": "skill",
+     "cost": 1,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "loseHp",
+       "amount": 4,
+       "to": "target"
+      },
+      {
+       "op": "addCard",
+       "card": "gravesoul",
+       "to": "draw",
+       "side": "self",
+       "times": 4
+      }
+     ],
+     "hero": "necromancer"
+    }
+   }
+  },
+  {
+   "id": "burial-shroud",
+   "name": "Burial Shroud",
+   "kind": "power",
+   "rarity": "uncommon",
+   "cost": "1",
+   "text": "Whenever you curse an enemy with Fate: Gain 2 Barrier.",
+   "def": {
+    "id": "burial-shroud",
+    "name": "Burial Shroud",
+    "realm": "gloomfen",
+    "rarity": "uncommon",
+    "kind": "power",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "power",
+      "when": "doomFoe",
+      "ops": [
+       {
+        "op": "barrier",
+        "amount": 2,
+        "to": "self"
+       }
+      ]
+     }
+    ],
+    "hero": "necromancer",
+    "upgrade": "burial-shroud+"
+   },
+   "upgrade": {
+    "id": "burial-shroud+",
+    "cost": "1",
+    "text": "Whenever you curse an enemy with Fate: Gain 3 Barrier.",
+    "def": {
+     "id": "burial-shroud+",
+     "name": "Burial Shroud+",
+     "realm": "gloomfen",
+     "rarity": "uncommon",
+     "kind": "power",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "power",
+       "when": "doomFoe",
+       "ops": [
+        {
+         "op": "barrier",
+         "amount": 3,
+         "to": "self"
+        }
+       ]
+      }
+     ],
+     "hero": "necromancer"
+    }
+   }
+  },
+  {
+   "id": "calcify",
+   "name": "Ossify",
+   "kind": "power",
+   "rarity": "uncommon",
+   "cost": "1",
+   "text": "Your companions’ attacks deal 4 more damage for the rest of the fight.",
+   "def": {
+    "id": "calcify",
+    "name": "Ossify",
+    "realm": "gloomfen",
+    "rarity": "uncommon",
+    "kind": "power",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "status",
+      "status": "marrow",
+      "amount": 4,
+      "to": "self"
+     }
+    ],
+    "hero": "necromancer",
+    "upgrade": "calcify+"
+   },
+   "upgrade": {
+    "id": "calcify+",
+    "cost": "1",
+    "text": "Your companions’ attacks deal 6 more damage for the rest of the fight.",
+    "def": {
+     "id": "calcify+",
+     "name": "Ossify+",
+     "realm": "gloomfen",
+     "rarity": "uncommon",
+     "kind": "power",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "status",
+       "status": "marrow",
+       "amount": 6,
+       "to": "self"
+      }
+     ],
+     "hero": "necromancer"
+    }
+   }
+  },
+  {
+   "id": "dance-of-bones",
+   "name": "Dance of Bones",
+   "kind": "power",
+   "rarity": "uncommon",
+   "cost": "1",
+   "text": "Whenever you play a card that costs 2 or more: Gain 4 Barrier.",
+   "def": {
+    "id": "dance-of-bones",
+    "name": "Dance of Bones",
+    "realm": "gloomfen",
+    "rarity": "uncommon",
+    "kind": "power",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "power",
+      "when": "play",
+      "ops": [
+       {
+        "op": "barrier",
+        "amount": 4,
+        "to": "self"
+       }
+      ],
+      "minCost": 2
+     }
+    ],
+    "hero": "necromancer",
+    "upgrade": "dance-of-bones+"
+   },
+   "upgrade": {
+    "id": "dance-of-bones+",
+    "cost": "1",
+    "text": "Whenever you play a card that costs 2 or more: Gain 6 Barrier.",
+    "def": {
+     "id": "dance-of-bones+",
+     "name": "Dance of Bones+",
+     "realm": "gloomfen",
+     "rarity": "uncommon",
+     "kind": "power",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "power",
+       "when": "play",
+       "ops": [
+        {
+         "op": "barrier",
+         "amount": 6,
+         "to": "self"
+        }
+       ],
+       "minCost": 2
+      }
+     ],
+     "hero": "necromancer"
+    }
+   }
+  },
+  {
+   "id": "dirge",
+   "name": "Lament",
+   "kind": "skill",
+   "rarity": "uncommon",
+   "cost": "X",
+   "text": "Raise 3 X times. Add Gravesouls to your draw pile equal to the Mana spent. Consume.",
+   "def": {
+    "id": "dirge",
+    "name": "Lament",
+    "realm": "gloomfen",
+    "rarity": "uncommon",
+    "kind": "skill",
+    "cost": 0,
+    "target": "none",
+    "effects": [
+     {
+      "op": "raise",
+      "unit": "bone-thrall",
+      "amount": 3,
+      "times": 0,
+      "scale": {
+       "by": "x"
+      }
+     },
+     {
+      "op": "addCard",
+      "card": "gravesoul",
+      "to": "draw",
+      "side": "self",
+      "times": 0,
+      "scale": {
+       "by": "x"
+      }
+     }
+    ],
+    "hero": "necromancer",
+    "x": true,
+    "exhaust": true,
+    "upgrade": "dirge+"
+   },
+   "upgrade": {
+    "id": "dirge+",
+    "cost": "X",
+    "text": "X is 1 higher. Raise 3 X times. Add Gravesouls to your draw pile equal to the Mana spent. Consume.",
+    "def": {
+     "id": "dirge+",
+     "name": "Lament+",
+     "realm": "gloomfen",
+     "rarity": "uncommon",
+     "kind": "skill",
+     "cost": 0,
+     "target": "none",
+     "effects": [
+      {
+       "op": "raise",
+       "unit": "bone-thrall",
+       "amount": 3,
+       "times": 0,
+       "scale": {
+        "by": "x"
+       }
+      },
+      {
+       "op": "addCard",
+       "card": "gravesoul",
+       "to": "draw",
+       "side": "self",
+       "times": 0,
+       "scale": {
+        "by": "x"
+       }
+      }
+     ],
+     "hero": "necromancer",
+     "x": true,
+     "exhaust": true,
+     "xBonus": 1
+    }
+   }
+  },
+  {
+   "id": "drag-under",
+   "name": "Drag Under",
+   "kind": "attack",
+   "rarity": "uncommon",
+   "cost": "1",
+   "text": "Deal damage equal to 5 times the Fleeting cards played this fight.",
+   "def": {
+    "id": "drag-under",
+    "name": "Drag Under",
+    "realm": "gloomfen",
+    "rarity": "uncommon",
+    "kind": "attack",
+    "cost": 1,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 0,
+      "to": "target",
+      "scale": {
+       "by": "etherealPlayed",
+       "mult": 5
+      }
+     }
+    ],
+    "hero": "necromancer",
+    "upgrade": "drag-under+"
+   },
+   "upgrade": {
+    "id": "drag-under+",
+    "cost": "1",
+    "text": "Deal damage equal to 7 times the Fleeting cards played this fight.",
+    "def": {
+     "id": "drag-under+",
+     "name": "Drag Under+",
+     "realm": "gloomfen",
+     "rarity": "uncommon",
+     "kind": "attack",
+     "cost": 1,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 0,
+       "to": "target",
+       "scale": {
+        "by": "etherealPlayed",
+        "mult": 7
+       }
+      }
+     ],
+     "hero": "necromancer"
+    }
+   }
+  },
+  {
+   "id": "dredge",
+   "name": "Grave Digging",
+   "kind": "skill",
+   "rarity": "uncommon",
+   "cost": "1",
+   "text": "Return 3 random cards from your discard pile to your hand. Consume.",
+   "def": {
+    "id": "dredge",
+    "name": "Grave Digging",
+    "realm": "gloomfen",
+    "rarity": "uncommon",
+    "kind": "skill",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "fetch",
+      "amount": 3,
+      "to": "hand"
+     }
+    ],
+    "hero": "necromancer",
+    "exhaust": true,
+    "upgrade": "dredge+"
+   },
+   "upgrade": {
+    "id": "dredge+",
+    "cost": "1",
+    "text": "Return 3 random cards from your discard pile to your hand. Consume. Hold.",
+    "def": {
+     "id": "dredge+",
+     "name": "Grave Digging+",
+     "realm": "gloomfen",
+     "rarity": "uncommon",
+     "kind": "skill",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "fetch",
+       "amount": 3,
+       "to": "hand"
+      }
+     ],
+     "hero": "necromancer",
+     "exhaust": true,
+     "retain": true
+    }
+   }
+  },
+  {
+   "id": "entomb",
+   "name": "Entomb",
+   "kind": "attack",
+   "rarity": "uncommon",
+   "cost": "4",
+   "text": "Deal 52 damage.",
+   "def": {
+    "id": "entomb",
+    "name": "Entomb",
+    "realm": "gloomfen",
+    "rarity": "uncommon",
+    "kind": "attack",
+    "cost": 4,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 52,
+      "to": "target"
+     }
+    ],
+    "hero": "necromancer",
+    "upgrade": "entomb+"
+   },
+   "upgrade": {
+    "id": "entomb+",
+    "cost": "4",
+    "text": "Deal 63 damage.",
+    "def": {
+     "id": "entomb+",
+     "name": "Entomb+",
+     "realm": "gloomfen",
+     "rarity": "uncommon",
+     "kind": "attack",
+     "cost": 4,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 63,
+       "to": "target"
+      }
+     ],
+     "hero": "necromancer"
+    }
+   }
+  },
+  {
+   "id": "fester",
+   "name": "Fester",
+   "kind": "skill",
+   "rarity": "uncommon",
+   "cost": "1",
+   "text": "Apply 2 Faltering. Apply 2 Exposed. Consume.",
+   "def": {
+    "id": "fester",
+    "name": "Fester",
+    "realm": "gloomfen",
+    "rarity": "uncommon",
+    "kind": "skill",
+    "cost": 1,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "status",
+      "status": "faltering",
+      "amount": 2,
+      "to": "target"
+     },
+     {
+      "op": "status",
+      "status": "exposed",
+      "amount": 2,
+      "to": "target"
+     }
+    ],
+    "hero": "necromancer",
+    "exhaust": true,
+    "upgrade": "fester+"
+   },
+   "upgrade": {
+    "id": "fester+",
+    "cost": "1",
+    "text": "Apply 3 Faltering. Apply 3 Exposed. Consume.",
+    "def": {
+     "id": "fester+",
+     "name": "Fester+",
+     "realm": "gloomfen",
+     "rarity": "uncommon",
+     "kind": "skill",
+     "cost": 1,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "status",
+       "status": "faltering",
+       "amount": 3,
+       "to": "target"
+      },
+      {
+       "op": "status",
+       "status": "exposed",
+       "amount": 3,
+       "to": "target"
+      }
+     ],
+     "hero": "necromancer",
+     "exhaust": true
+    }
+   }
+  },
+  {
+   "id": "fleshcraft",
+   "name": "Fleshcraft",
+   "kind": "power",
+   "rarity": "uncommon",
+   "cost": "2",
+   "text": "Whenever you put a debuff on an enemy: Deal 9 damage to that enemy.",
+   "def": {
+    "id": "fleshcraft",
+    "name": "Fleshcraft",
+    "realm": "gloomfen",
+    "rarity": "uncommon",
+    "kind": "power",
+    "cost": 2,
+    "target": "none",
+    "effects": [
+     {
+      "op": "power",
+      "when": "debuffFoe",
+      "ops": [
+       {
+        "op": "damage",
+        "amount": 9,
+        "to": "target"
+       }
+      ]
+     }
+    ],
+    "hero": "necromancer",
+    "upgrade": "fleshcraft+"
+   },
+   "upgrade": {
+    "id": "fleshcraft+",
+    "cost": "2",
+    "text": "Whenever you put a debuff on an enemy: Deal 13 damage to that enemy.",
+    "def": {
+     "id": "fleshcraft+",
+     "name": "Fleshcraft+",
+     "realm": "gloomfen",
+     "rarity": "uncommon",
+     "kind": "power",
+     "cost": 2,
+     "target": "none",
+     "effects": [
+      {
+       "op": "power",
+       "when": "debuffFoe",
+       "ops": [
+        {
+         "op": "damage",
+         "amount": 13,
+         "to": "target"
+        }
+       ]
+      }
+     ],
+     "hero": "necromancer"
+    }
+   }
+  },
+  {
+   "id": "funeral-march",
+   "name": "Funeral March",
+   "kind": "attack",
+   "rarity": "uncommon",
+   "cost": "1",
+   "text": "Deal 8 (+4 per card drawn this turn) damage.",
+   "def": {
+    "id": "funeral-march",
+    "name": "Funeral March",
+    "realm": "gloomfen",
+    "rarity": "uncommon",
+    "kind": "attack",
+    "cost": 1,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 8,
+      "to": "target",
+      "scale": {
+       "by": "drawnTurn",
+       "mult": 4
+      }
+     }
+    ],
+    "hero": "necromancer",
+    "upgrade": "funeral-march+"
+   },
+   "upgrade": {
+    "id": "funeral-march+",
+    "cost": "1",
+    "text": "Deal 8 (+6 per card drawn this turn) damage.",
+    "def": {
+     "id": "funeral-march+",
+     "name": "Funeral March+",
+     "realm": "gloomfen",
+     "rarity": "uncommon",
+     "kind": "attack",
+     "cost": 1,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 8,
+       "to": "target",
+       "scale": {
+        "by": "drawnTurn",
+        "mult": 6
+       }
+      }
+     ],
+     "hero": "necromancer"
+    }
+   }
+  },
+  {
+   "id": "goad",
+   "name": "Goad",
+   "kind": "skill",
+   "rarity": "uncommon",
+   "cost": "1",
+   "text": "Raise 3. Your companions gain 5 max HP. Hold.",
+   "def": {
+    "id": "goad",
+    "name": "Goad",
+    "realm": "gloomfen",
+    "rarity": "uncommon",
+    "kind": "skill",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "raise",
+      "unit": "bone-thrall",
+      "amount": 3
+     },
+     {
+      "op": "growHp",
+      "amount": 5,
+      "to": "allAllies"
+     }
+    ],
+    "hero": "necromancer",
+    "retain": true,
+    "upgrade": "goad+"
+   },
+   "upgrade": {
+    "id": "goad+",
+    "cost": "1",
+    "text": "Raise 5. Your companions gain 7 max HP. Hold.",
+    "def": {
+     "id": "goad+",
+     "name": "Goad+",
+     "realm": "gloomfen",
+     "rarity": "uncommon",
+     "kind": "skill",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "raise",
+       "unit": "bone-thrall",
+       "amount": 5
+      },
+      {
+       "op": "growHp",
+       "amount": 7,
+       "to": "allAllies"
+      }
+     ],
+     "hero": "necromancer",
+     "retain": true
+    }
+   }
+  },
+  {
+   "id": "grasping-hands",
+   "name": "Grasping Hands",
+   "kind": "attack",
+   "rarity": "uncommon",
+   "cost": "2",
+   "text": "Your companions each deal 11 damage to ALL enemies. Apply 2 Exposed to ALL enemies.",
+   "def": {
+    "id": "grasping-hands",
+    "name": "Grasping Hands",
+    "realm": "gloomfen",
+    "rarity": "uncommon",
+    "kind": "attack",
+    "cost": 2,
+    "target": "none",
+    "effects": [
+     {
+      "op": "command",
+      "ops": [
+       {
+        "op": "damage",
+        "amount": 11,
+        "to": "allFoes"
+       }
+      ]
+     },
+     {
+      "op": "status",
+      "status": "exposed",
+      "amount": 2,
+      "to": "allFoes"
+     }
+    ],
+    "hero": "necromancer",
+    "tags": [
+     "command"
+    ],
+    "upgrade": "grasping-hands+"
+   },
+   "upgrade": {
+    "id": "grasping-hands+",
+    "cost": "2",
+    "text": "Your companions each deal 13 damage to ALL enemies. Apply 3 Exposed to ALL enemies.",
+    "def": {
+     "id": "grasping-hands+",
+     "name": "Grasping Hands+",
+     "realm": "gloomfen",
+     "rarity": "uncommon",
+     "kind": "attack",
+     "cost": 2,
+     "target": "none",
+     "effects": [
+      {
+       "op": "command",
+       "ops": [
+        {
+         "op": "damage",
+         "amount": 13,
+         "to": "allFoes"
+        }
+       ]
+      },
+      {
+       "op": "status",
+       "status": "exposed",
+       "amount": 3,
+       "to": "allFoes"
+      }
+     ],
+     "hero": "necromancer",
+     "tags": [
+      "command"
+     ]
+    }
+   }
+  },
+  {
+   "id": "grimoire-gale",
+   "name": "Grimoire Gale",
+   "kind": "power",
+   "rarity": "uncommon",
+   "cost": "1",
+   "text": "Whenever you draw a Fleeting card: Draw 1 card.",
+   "def": {
+    "id": "grimoire-gale",
+    "name": "Grimoire Gale",
+    "realm": "gloomfen",
+    "rarity": "uncommon",
+    "kind": "power",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "power",
+      "when": "draw",
+      "ops": [
+       {
+        "op": "draw",
+        "amount": 1
+       }
+      ],
+      "ethereal": true
+     }
+    ],
+    "hero": "necromancer",
+    "upgrade": "grimoire-gale+"
+   },
+   "upgrade": {
+    "id": "grimoire-gale+",
+    "cost": "0",
+    "text": "Whenever you draw a Fleeting card: Draw 1 card.",
+    "def": {
+     "id": "grimoire-gale+",
+     "name": "Grimoire Gale+",
+     "realm": "gloomfen",
+     "rarity": "uncommon",
+     "kind": "power",
+     "cost": 0,
+     "target": "none",
+     "effects": [
+      {
+       "op": "power",
+       "when": "draw",
+       "ops": [
+        {
+         "op": "draw",
+         "amount": 1
+        }
+       ],
+       "ethereal": true
+      }
+     ],
+     "hero": "necromancer"
+    }
+   }
+  },
+  {
+   "id": "helping-hand",
+   "name": "Helping Hand",
+   "kind": "attack",
+   "rarity": "uncommon",
+   "cost": "0",
+   "text": "Whenever you play a card that costs 2 or more, this returns from your discard pile to your hand. Your companions each deal 4 damage.",
+   "def": {
+    "id": "helping-hand",
+    "name": "Helping Hand",
+    "realm": "gloomfen",
+    "rarity": "uncommon",
+    "kind": "attack",
+    "cost": 0,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "command",
+      "ops": [
+       {
+        "op": "damage",
+        "amount": 4,
+        "to": "target"
+       }
+      ]
+     }
+    ],
+    "hero": "necromancer",
+    "tags": [
+     "command"
+    ],
+    "recallOnCost": 2,
+    "upgrade": "helping-hand+"
+   },
+   "upgrade": {
+    "id": "helping-hand+",
+    "cost": "0",
+    "text": "Whenever you play a card that costs 2 or more, this returns from your discard pile to your hand. Your companions each deal 6 damage.",
+    "def": {
+     "id": "helping-hand+",
+     "name": "Helping Hand+",
+     "realm": "gloomfen",
+     "rarity": "uncommon",
+     "kind": "attack",
+     "cost": 0,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "command",
+       "ops": [
+        {
+         "op": "damage",
+         "amount": 6,
+         "to": "target"
+        }
+       ]
+      }
+     ],
+     "hero": "necromancer",
+     "tags": [
+      "command"
+     ],
+     "recallOnCost": 2
+    }
+   }
+  },
+  {
+   "id": "inevitable",
+   "name": "Inevitable",
+   "kind": "power",
+   "rarity": "uncommon",
+   "cost": "1",
+   "text": "At the start of your turn: Curse a random enemy with 6 Fate.",
+   "def": {
+    "id": "inevitable",
+    "name": "Inevitable",
+    "realm": "gloomfen",
+    "rarity": "uncommon",
+    "kind": "power",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "power",
+      "when": "turnStart",
+      "ops": [
+       {
+        "op": "status",
+        "status": "doom",
+        "amount": 6,
+        "to": "randomFoe"
+       }
+      ]
+     }
+    ],
+    "hero": "necromancer",
+    "upgrade": "inevitable+"
+   },
+   "upgrade": {
+    "id": "inevitable+",
+    "cost": "1",
+    "text": "At the start of your turn: Curse a random enemy with 9 Fate.",
+    "def": {
+     "id": "inevitable+",
+     "name": "Inevitable+",
+     "realm": "gloomfen",
+     "rarity": "uncommon",
+     "kind": "power",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "power",
+       "when": "turnStart",
+       "ops": [
+        {
+         "op": "status",
+         "status": "doom",
+         "amount": 9,
+         "to": "randomFoe"
+        }
+       ]
+      }
+     ],
+     "hero": "necromancer"
+    }
+   }
+  },
+  {
+   "id": "killing-chill",
+   "name": "Killing Chill",
+   "kind": "power",
+   "rarity": "uncommon",
+   "cost": "1",
+   "text": "For the rest of the fight, your first Attack each turn deals 50% more damage. Fleeting.",
+   "def": {
+    "id": "killing-chill",
+    "name": "Killing Chill",
+    "realm": "gloomfen",
+    "rarity": "uncommon",
+    "kind": "power",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "status",
+      "status": "lethality",
+      "amount": 50,
+      "to": "self"
+     }
+    ],
+    "hero": "necromancer",
+    "ethereal": true,
+    "upgrade": "killing-chill+"
+   },
+   "upgrade": {
+    "id": "killing-chill+",
+    "cost": "1",
+    "text": "For the rest of the fight, your first Attack each turn deals 75% more damage. Fleeting.",
+    "def": {
+     "id": "killing-chill+",
+     "name": "Killing Chill+",
+     "realm": "gloomfen",
+     "rarity": "uncommon",
+     "kind": "power",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "status",
+       "status": "lethality",
+       "amount": 75,
+       "to": "self"
+      }
+     ],
+     "hero": "necromancer",
+     "ethereal": true
+    }
+   }
+  },
+  {
+   "id": "last-rites",
+   "name": "Last Rites",
+   "kind": "skill",
+   "rarity": "uncommon",
+   "cost": "1",
+   "text": "Curse the target with 10 (+5 per 10 Fate on the target) Fate.",
+   "def": {
+    "id": "last-rites",
+    "name": "Last Rites",
+    "realm": "gloomfen",
+    "rarity": "uncommon",
+    "kind": "skill",
+    "cost": 1,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "status",
+      "status": "doom",
+      "amount": 10,
+      "to": "target",
+      "scale": {
+       "by": "doom",
+       "mult": 5,
+       "of": "target",
+       "step": 10
+      }
+     }
+    ],
+    "hero": "necromancer",
+    "upgrade": "last-rites+"
+   },
+   "upgrade": {
+    "id": "last-rites+",
+    "cost": "1",
+    "text": "Curse the target with 15 (+5 per 10 Fate on the target) Fate.",
+    "def": {
+     "id": "last-rites+",
+     "name": "Last Rites+",
+     "realm": "gloomfen",
+     "rarity": "uncommon",
+     "kind": "skill",
+     "cost": 1,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "status",
+       "status": "doom",
+       "amount": 15,
+       "to": "target",
+       "scale": {
+        "by": "doom",
+        "mult": 5,
+        "of": "target",
+        "step": 10
+       }
+      }
+     ],
+     "hero": "necromancer"
+    }
+   }
+  },
+  {
+   "id": "mourning",
+   "name": "Mourning",
+   "kind": "skill",
+   "rarity": "uncommon",
+   "cost": "3",
+   "text": "Costs 1 less for each death this fight. Gain 13 Barrier.",
+   "def": {
+    "id": "mourning",
+    "name": "Mourning",
+    "realm": "gloomfen",
+    "rarity": "uncommon",
+    "kind": "skill",
+    "cost": 3,
+    "target": "none",
+    "effects": [
+     {
+      "op": "barrier",
+      "amount": 13,
+      "to": "self"
+     }
+    ],
+    "hero": "necromancer",
+    "cheaperPer": {
+     "by": "deaths",
+     "mult": 1
+    },
+    "upgrade": "mourning+"
+   },
+   "upgrade": {
+    "id": "mourning+",
+    "cost": "3",
+    "text": "Costs 1 less for each death this fight. Gain 17 Barrier.",
+    "def": {
+     "id": "mourning+",
+     "name": "Mourning+",
+     "realm": "gloomfen",
+     "rarity": "uncommon",
+     "kind": "skill",
+     "cost": 3,
+     "target": "none",
+     "effects": [
+      {
+       "op": "barrier",
+       "amount": 17,
+       "to": "self"
+      }
+     ],
+     "hero": "necromancer",
+     "cheaperPer": {
+      "by": "deaths",
+      "mult": 1
+     }
+    }
+   }
+  },
+  {
+   "id": "rattle-the-bones",
+   "name": "Rattle the Bones",
+   "kind": "attack",
+   "rarity": "uncommon",
+   "cost": "1",
+   "text": "Your companions each deal 7 damage, 1 more time per time your companions have struck this turn.",
+   "def": {
+    "id": "rattle-the-bones",
+    "name": "Rattle the Bones",
+    "realm": "gloomfen",
+    "rarity": "uncommon",
+    "kind": "attack",
+    "cost": 1,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "command",
+      "ops": [
+       {
+        "op": "damage",
+        "amount": 7,
+        "to": "target",
+        "scale": {
+         "by": "allyStrikes",
+         "into": "hits"
+        }
+       }
+      ]
+     }
+    ],
+    "hero": "necromancer",
+    "tags": [
+     "command"
+    ],
+    "upgrade": "rattle-the-bones+"
+   },
+   "upgrade": {
+    "id": "rattle-the-bones+",
+    "cost": "1",
+    "text": "Your companions each deal 9 damage, 1 more time per time your companions have struck this turn.",
+    "def": {
+     "id": "rattle-the-bones+",
+     "name": "Rattle the Bones+",
+     "realm": "gloomfen",
+     "rarity": "uncommon",
+     "kind": "attack",
+     "cost": 1,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "command",
+       "ops": [
+        {
+         "op": "damage",
+         "amount": 9,
+         "to": "target",
+         "scale": {
+          "by": "allyStrikes",
+          "into": "hits"
+         }
+        }
+       ]
+      }
+     ],
+     "hero": "necromancer",
+     "tags": [
+      "command"
+     ]
+    }
+   }
+  },
+  {
+   "id": "restless-spirits",
+   "name": "Restless Spirits",
+   "kind": "power",
+   "rarity": "uncommon",
+   "cost": "1",
+   "text": "Whenever you play a Gravesoul: A random enemy loses 6 HP.",
+   "def": {
+    "id": "restless-spirits",
+    "name": "Restless Spirits",
+    "realm": "gloomfen",
+    "rarity": "uncommon",
+    "kind": "power",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "power",
+      "when": "play",
+      "ops": [
+       {
+        "op": "loseHp",
+        "amount": 6,
+        "to": "randomFoe"
+       }
+      ],
+      "tag": "soul"
+     }
+    ],
+    "hero": "necromancer",
+    "upgrade": "restless-spirits+"
+   },
+   "upgrade": {
+    "id": "restless-spirits+",
+    "cost": "1",
+    "text": "Whenever you play a Gravesoul: A random enemy loses 8 HP.",
+    "def": {
+     "id": "restless-spirits+",
+     "name": "Restless Spirits+",
+     "realm": "gloomfen",
+     "rarity": "uncommon",
+     "kind": "power",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "power",
+       "when": "play",
+       "ops": [
+        {
+         "op": "loseHp",
+         "amount": 8,
+         "to": "randomFoe"
+        }
+       ],
+       "tag": "soul"
+      }
+     ],
+     "hero": "necromancer"
+    }
+   }
+  },
+  {
+   "id": "seize-them",
+   "name": "Seize Them",
+   "kind": "attack",
+   "rarity": "uncommon",
+   "cost": "1",
+   "text": "Your companions each deal 5 damage. Apply 3 Quarry until the end of your turn.",
+   "def": {
+    "id": "seize-them",
+    "name": "Seize Them",
+    "realm": "gloomfen",
+    "rarity": "uncommon",
+    "kind": "attack",
+    "cost": 1,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "command",
+      "ops": [
+       {
+        "op": "damage",
+        "amount": 5,
+        "to": "target"
+       }
+      ]
+     },
+     {
+      "op": "status",
+      "status": "quarry",
+      "amount": 3,
+      "to": "target",
+      "temp": true
+     }
+    ],
+    "hero": "necromancer",
+    "tags": [
+     "command"
+    ],
+    "upgrade": "seize-them+"
+   },
+   "upgrade": {
+    "id": "seize-them+",
+    "cost": "1",
+    "text": "Your companions each deal 6 damage. Apply 4 Quarry until the end of your turn.",
+    "def": {
+     "id": "seize-them+",
+     "name": "Seize Them+",
+     "realm": "gloomfen",
+     "rarity": "uncommon",
+     "kind": "attack",
+     "cost": 1,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "command",
+       "ops": [
+        {
+         "op": "damage",
+         "amount": 6,
+         "to": "target"
+        }
+       ]
+      },
+      {
+       "op": "status",
+       "status": "quarry",
+       "amount": 4,
+       "to": "target",
+       "temp": true
+      }
+     ],
+     "hero": "necromancer",
+     "tags": [
+      "command"
+     ]
+    }
+   }
+  },
+  {
+   "id": "sever-the-thread",
+   "name": "Sever the Thread",
+   "kind": "attack",
+   "rarity": "uncommon",
+   "cost": "2",
+   "text": "Deal 13 damage. Add a Gravesoul to your draw pile. Add a Gravesoul to your hand. Add a Gravesoul to your discard pile.",
+   "def": {
+    "id": "sever-the-thread",
+    "name": "Sever the Thread",
+    "realm": "gloomfen",
+    "rarity": "uncommon",
+    "kind": "attack",
+    "cost": 2,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 13,
+      "to": "target"
+     },
+     {
+      "op": "addCard",
+      "card": "gravesoul",
+      "to": "draw",
+      "side": "self"
+     },
+     {
+      "op": "addCard",
+      "card": "gravesoul",
+      "to": "hand",
+      "side": "self"
+     },
+     {
+      "op": "addCard",
+      "card": "gravesoul",
+      "to": "discard",
+      "side": "self"
+     }
+    ],
+    "hero": "necromancer",
+    "upgrade": "sever-the-thread+"
+   },
+   "upgrade": {
+    "id": "sever-the-thread+",
+    "cost": "2",
+    "text": "Deal 18 damage. Add a Gravesoul to your draw pile. Add a Gravesoul to your hand. Add a Gravesoul to your discard pile.",
+    "def": {
+     "id": "sever-the-thread+",
+     "name": "Sever the Thread+",
+     "realm": "gloomfen",
+     "rarity": "uncommon",
+     "kind": "attack",
+     "cost": 2,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 18,
+       "to": "target"
+      },
+      {
+       "op": "addCard",
+       "card": "gravesoul",
+       "to": "draw",
+       "side": "self"
+      },
+      {
+       "op": "addCard",
+       "card": "gravesoul",
+       "to": "hand",
+       "side": "self"
+      },
+      {
+       "op": "addCard",
+       "card": "gravesoul",
+       "to": "discard",
+       "side": "self"
+      }
+     ],
+     "hero": "necromancer"
+    }
+   }
+  },
+  {
+   "id": "spectral-ledger",
+   "name": "Spectral Ledger",
+   "kind": "skill",
+   "rarity": "uncommon",
+   "cost": "1",
+   "text": "Draw 3 cards. Fleeting.",
+   "def": {
+    "id": "spectral-ledger",
+    "name": "Spectral Ledger",
+    "realm": "gloomfen",
+    "rarity": "uncommon",
+    "kind": "skill",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "draw",
+      "amount": 3
+     }
+    ],
+    "hero": "necromancer",
+    "ethereal": true,
+    "upgrade": "spectral-ledger+"
+   },
+   "upgrade": {
+    "id": "spectral-ledger+",
+    "cost": "1",
+    "text": "Draw 4 cards. Fleeting.",
+    "def": {
+     "id": "spectral-ledger+",
+     "name": "Spectral Ledger+",
+     "realm": "gloomfen",
+     "rarity": "uncommon",
+     "kind": "skill",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "draw",
+       "amount": 4
+      }
+     ],
+     "hero": "necromancer",
+     "ethereal": true
+    }
+   }
+  },
+  {
+   "id": "stay-of-execution",
+   "name": "Stay of Execution",
+   "kind": "skill",
+   "rarity": "uncommon",
+   "cost": "2",
+   "text": "Gain 11 Barrier. Next turn, gain 1 extra Mana.",
+   "def": {
+    "id": "stay-of-execution",
+    "name": "Stay of Execution",
+    "realm": "gloomfen",
+    "rarity": "uncommon",
+    "kind": "skill",
+    "cost": 2,
+    "target": "none",
+    "effects": [
+     {
+      "op": "barrier",
+      "amount": 11,
+      "to": "self"
+     },
+     {
+      "op": "manaNext",
+      "amount": 1
+     }
+    ],
+    "hero": "necromancer",
+    "upgrade": "stay-of-execution+"
+   },
+   "upgrade": {
+    "id": "stay-of-execution+",
+    "cost": "2",
+    "text": "Gain 13 Barrier. Next turn, gain 2 extra Mana.",
+    "def": {
+     "id": "stay-of-execution+",
+     "name": "Stay of Execution+",
+     "realm": "gloomfen",
+     "rarity": "uncommon",
+     "kind": "skill",
+     "cost": 2,
+     "target": "none",
+     "effects": [
+      {
+       "op": "barrier",
+       "amount": 13,
+       "to": "self"
+      },
+      {
+       "op": "manaNext",
+       "amount": 2
+      }
+     ],
+     "hero": "necromancer"
+    }
+   }
+  },
+  {
+   "id": "the-final-hour",
+   "name": "The Final Hour",
+   "kind": "skill",
+   "rarity": "uncommon",
+   "cost": "2",
+   "text": "Curse ALL enemies with 21 Fate. Apply 1 Faltering to ALL enemies.",
+   "def": {
+    "id": "the-final-hour",
+    "name": "The Final Hour",
+    "realm": "gloomfen",
+    "rarity": "uncommon",
+    "kind": "skill",
+    "cost": 2,
+    "target": "none",
+    "effects": [
+     {
+      "op": "status",
+      "status": "doom",
+      "amount": 21,
+      "to": "allFoes"
+     },
+     {
+      "op": "status",
+      "status": "faltering",
+      "amount": 1,
+      "to": "allFoes"
+     }
+    ],
+    "hero": "necromancer",
+    "upgrade": "the-final-hour+"
+   },
+   "upgrade": {
+    "id": "the-final-hour+",
+    "cost": "2",
+    "text": "Curse ALL enemies with 26 Fate. Apply 1 Faltering to ALL enemies.",
+    "def": {
+     "id": "the-final-hour+",
+     "name": "The Final Hour+",
+     "realm": "gloomfen",
+     "rarity": "uncommon",
+     "kind": "skill",
+     "cost": 2,
+     "target": "none",
+     "effects": [
+      {
+       "op": "status",
+       "status": "doom",
+       "amount": 26,
+       "to": "allFoes"
+      },
+      {
+       "op": "status",
+       "status": "faltering",
+       "amount": 1,
+       "to": "allFoes"
+      }
+     ],
+     "hero": "necromancer"
+    }
+   }
+  },
+  {
+   "id": "toll-in-advance",
+   "name": "Toll in Advance",
+   "kind": "skill",
+   "rarity": "uncommon",
+   "cost": "1",
+   "text": "Gain 5 Mana. Cards cost 1 more this turn.",
+   "def": {
+    "id": "toll-in-advance",
+    "name": "Toll in Advance",
+    "realm": "gloomfen",
+    "rarity": "uncommon",
+    "kind": "skill",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "mana",
+      "amount": 5
+     },
+     {
+      "op": "costTax",
+      "amount": 1
+     }
+    ],
+    "hero": "necromancer",
+    "upgrade": "toll-in-advance+"
+   },
+   "upgrade": {
+    "id": "toll-in-advance+",
+    "cost": "1",
+    "text": "Gain 7 Mana. Cards cost 1 more this turn.",
+    "def": {
+     "id": "toll-in-advance+",
+     "name": "Toll in Advance+",
+     "realm": "gloomfen",
+     "rarity": "uncommon",
+     "kind": "skill",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "mana",
+       "amount": 7
+      },
+      {
+       "op": "costTax",
+       "amount": 1
+      }
+     ],
+     "hero": "necromancer"
+    }
+   }
+  },
+  {
+   "id": "veilpiercer",
+   "name": "Soul Lance",
+   "kind": "attack",
+   "rarity": "uncommon",
+   "cost": "1",
+   "text": "Deal 10 damage. Your next Fleeting card costs 0.",
+   "def": {
+    "id": "veilpiercer",
+    "name": "Soul Lance",
+    "realm": "gloomfen",
+    "rarity": "uncommon",
+    "kind": "attack",
+    "cost": 1,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 10,
+      "to": "target"
+     },
+     {
+      "op": "status",
+      "status": "freeethereal",
+      "amount": 1,
+      "to": "self"
+     }
+    ],
+    "hero": "necromancer",
+    "upgrade": "veilpiercer+"
+   },
+   "upgrade": {
+    "id": "veilpiercer+",
+    "cost": "1",
+    "text": "Deal 13 damage. Your next Fleeting card costs 0.",
+    "def": {
+     "id": "veilpiercer+",
+     "name": "Soul Lance+",
+     "realm": "gloomfen",
+     "rarity": "uncommon",
+     "kind": "attack",
+     "cost": 1,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 13,
+       "to": "target"
+      },
+      {
+       "op": "status",
+       "status": "freeethereal",
+       "amount": 1,
+       "to": "self"
+      }
+     ],
+     "hero": "necromancer"
+    }
+   }
+  },
+  {
+   "id": "wither",
+   "name": "Wither",
+   "kind": "attack",
+   "rarity": "uncommon",
+   "cost": "1",
+   "text": "Deal 10 damage. Apply 2 Debilitated.",
+   "def": {
+    "id": "wither",
+    "name": "Wither",
+    "realm": "gloomfen",
+    "rarity": "uncommon",
+    "kind": "attack",
+    "cost": 1,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 10,
+      "to": "target"
+     },
+     {
+      "op": "status",
+      "status": "debilitated",
+      "amount": 2,
+      "to": "target"
+     }
+    ],
+    "hero": "necromancer",
+    "upgrade": "wither+"
+   },
+   "upgrade": {
+    "id": "wither+",
+    "cost": "1",
+    "text": "Deal 12 damage. Apply 3 Debilitated.",
+    "def": {
+     "id": "wither+",
+     "name": "Wither+",
+     "realm": "gloomfen",
+     "rarity": "uncommon",
+     "kind": "attack",
+     "cost": 1,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 12,
+       "to": "target"
+      },
+      {
+       "op": "status",
+       "status": "debilitated",
+       "amount": 3,
+       "to": "target"
+      }
+     ],
+     "hero": "necromancer"
+    }
+   }
+  },
+  {
+   "id": "withering-touch",
+   "name": "Withering Touch",
+   "kind": "skill",
+   "rarity": "uncommon",
+   "cost": "1",
+   "text": "Apply 8 Sapped until the end of their next turn. Fleeting.",
+   "def": {
+    "id": "withering-touch",
+    "name": "Withering Touch",
+    "realm": "gloomfen",
+    "rarity": "uncommon",
+    "kind": "skill",
+    "cost": 1,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "status",
+      "status": "sapped",
+      "amount": 8,
+      "to": "target",
+      "temp": "theirs"
+     }
+    ],
+    "hero": "necromancer",
+    "ethereal": true,
+    "upgrade": "withering-touch+"
+   },
+   "upgrade": {
+    "id": "withering-touch+",
+    "cost": "1",
+    "text": "Apply 11 Sapped until the end of their next turn. Fleeting.",
+    "def": {
+     "id": "withering-touch+",
+     "name": "Withering Touch+",
+     "realm": "gloomfen",
+     "rarity": "uncommon",
+     "kind": "skill",
+     "cost": 1,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "status",
+       "status": "sapped",
+       "amount": 11,
+       "to": "target",
+       "temp": "theirs"
+      }
+     ],
+     "hero": "necromancer",
+     "ethereal": true
+    }
+   }
+  },
+  {
+   "id": "ashfall",
+   "name": "Ashfall",
+   "kind": "power",
+   "rarity": "rare",
+   "cost": "1",
+   "text": "Whenever you play a Fleeting card: Gain 4 Barrier.",
+   "def": {
+    "id": "ashfall",
+    "name": "Ashfall",
+    "realm": "gloomfen",
+    "rarity": "rare",
+    "kind": "power",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "power",
+      "when": "play",
+      "ops": [
+       {
+        "op": "barrier",
+        "amount": 4,
+        "to": "self"
+       }
+      ],
+      "ethereal": true
+     }
+    ],
+    "hero": "necromancer",
+    "upgrade": "ashfall+"
+   },
+   "upgrade": {
+    "id": "ashfall+",
+    "cost": "1",
+    "text": "Whenever you play a Fleeting card: Gain 5 Barrier.",
+    "def": {
+     "id": "ashfall+",
+     "name": "Ashfall+",
+     "realm": "gloomfen",
+     "rarity": "rare",
+     "kind": "power",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "power",
+       "when": "play",
+       "ops": [
+        {
+         "op": "barrier",
+         "amount": 5,
+         "to": "self"
+        }
+       ],
+       "ethereal": true
+      }
+     ],
+     "hero": "necromancer"
+    }
+   }
+  },
+  {
+   "id": "call-the-departed",
+   "name": "Call the Departed",
+   "kind": "skill",
+   "rarity": "rare",
+   "cost": "1",
+   "text": "Turn a random card in your draw pile into a Gravesoul. Fleeting.",
+   "def": {
+    "id": "call-the-departed",
+    "name": "Call the Departed",
+    "realm": "gloomfen",
+    "rarity": "rare",
+    "kind": "skill",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "transform",
+      "into": "gravesoul",
+      "from": "draw",
+      "amount": 1
+     }
+    ],
+    "hero": "necromancer",
+    "ethereal": true,
+    "upgrade": "call-the-departed+"
+   },
+   "upgrade": {
+    "id": "call-the-departed+",
+    "cost": "0",
+    "text": "Turn a random card in your draw pile into a Gravesoul. Fleeting.",
+    "def": {
+     "id": "call-the-departed+",
+     "name": "Call the Departed+",
+     "realm": "gloomfen",
+     "rarity": "rare",
+     "kind": "skill",
+     "cost": 0,
+     "target": "none",
+     "effects": [
+      {
+       "op": "transform",
+       "into": "gravesoul",
+       "from": "draw",
+       "amount": 1
+      }
+     ],
+     "hero": "necromancer",
+     "ethereal": true
+    }
+   }
+  },
+  {
+   "id": "common-grave",
+   "name": "Common Grave",
+   "kind": "skill",
+   "rarity": "rare",
+   "cost": "0",
+   "text": "Gain 2 Sapped. Apply 2 Sapped. Consume.",
+   "def": {
+    "id": "common-grave",
+    "name": "Common Grave",
+    "realm": "gloomfen",
+    "rarity": "rare",
+    "kind": "skill",
+    "cost": 0,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "status",
+      "status": "sapped",
+      "amount": 2,
+      "to": "self"
+     },
+     {
+      "op": "status",
+      "status": "sapped",
+      "amount": 2,
+      "to": "target"
+     }
+    ],
+    "hero": "necromancer",
+    "exhaust": true,
+    "upgrade": "common-grave+"
+   },
+   "upgrade": {
+    "id": "common-grave+",
+    "cost": "0",
+    "text": "Gain 2 Sapped. Apply 3 Sapped. Consume.",
+    "def": {
+     "id": "common-grave+",
+     "name": "Common Grave+",
+     "realm": "gloomfen",
+     "rarity": "rare",
+     "kind": "skill",
+     "cost": 0,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "status",
+       "status": "sapped",
+       "amount": 2,
+       "to": "self"
+      },
+      {
+       "op": "status",
+       "status": "sapped",
+       "amount": 3,
+       "to": "target"
+      }
+     ],
+     "hero": "necromancer",
+     "exhaust": true
+    }
+   }
+  },
+  {
+   "id": "death-grip",
+   "name": "Death Grip",
+   "kind": "attack",
+   "rarity": "rare",
+   "cost": "3",
+   "text": "Your companions each deal 20 (+5 per Command card in your deck) damage.",
+   "def": {
+    "id": "death-grip",
+    "name": "Death Grip",
+    "realm": "gloomfen",
+    "rarity": "rare",
+    "kind": "attack",
+    "cost": 3,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "command",
+      "ops": [
+       {
+        "op": "damage",
+        "amount": 20,
+        "to": "target",
+        "scale": {
+         "by": "tagDeck",
+         "tag": "command",
+         "mult": 5
+        }
+       }
+      ]
+     }
+    ],
+    "hero": "necromancer",
+    "tags": [
+     "command"
+    ],
+    "upgrade": "death-grip+"
+   },
+   "upgrade": {
+    "id": "death-grip+",
+    "cost": "3",
+    "text": "Your companions each deal 24 (+6 per Command card in your deck) damage.",
+    "def": {
+     "id": "death-grip+",
+     "name": "Death Grip+",
+     "realm": "gloomfen",
+     "rarity": "rare",
+     "kind": "attack",
+     "cost": 3,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "command",
+       "ops": [
+        {
+         "op": "damage",
+         "amount": 24,
+         "to": "target",
+         "scale": {
+          "by": "tagDeck",
+          "tag": "command",
+          "mult": 6
+         }
+        }
+       ]
+      }
+     ],
+     "hero": "necromancer",
+     "tags": [
+      "command"
+     ]
+    }
+   }
+  },
+  {
+   "id": "echo-of-the-dead",
+   "name": "Echo of the Dead",
+   "kind": "skill",
+   "rarity": "rare",
+   "cost": "1",
+   "text": "A random card in your hand gains Replay (it is played one more time) and costs 1 more for this fight. Consume.",
+   "def": {
+    "id": "echo-of-the-dead",
+    "name": "Echo of the Dead",
+    "realm": "gloomfen",
+    "rarity": "rare",
+    "kind": "skill",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "mark",
+      "flag": "replay",
+      "costUp": 1
+     }
+    ],
+    "hero": "necromancer",
+    "exhaust": true,
+    "upgrade": "echo-of-the-dead+"
+   },
+   "upgrade": {
+    "id": "echo-of-the-dead+",
+    "cost": "1",
+    "text": "A random card in your hand gains Replay (it is played one more time) and costs 1 more for this fight.",
+    "def": {
+     "id": "echo-of-the-dead+",
+     "name": "Echo of the Dead+",
+     "realm": "gloomfen",
+     "rarity": "rare",
+     "kind": "skill",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "mark",
+       "flag": "replay",
+       "costUp": 1
+      }
+     ],
+     "hero": "necromancer",
+     "exhaust": false
+    }
+   }
+  },
+  {
+   "id": "ever-watchful",
+   "name": "Ever Watchful",
+   "kind": "power",
+   "rarity": "rare",
+   "cost": "2",
+   "text": "At the start of your turn: Add a Baleful Glance to your hand.",
+   "def": {
+    "id": "ever-watchful",
+    "name": "Ever Watchful",
+    "realm": "gloomfen",
+    "rarity": "rare",
+    "kind": "power",
+    "cost": 2,
+    "target": "none",
+    "effects": [
+     {
+      "op": "power",
+      "when": "turnStart",
+      "ops": [
+       {
+        "op": "addCard",
+        "card": "baleful-glance",
+        "to": "hand",
+        "side": "self"
+       }
+      ]
+     }
+    ],
+    "hero": "necromancer",
+    "upgrade": "ever-watchful+"
+   },
+   "upgrade": {
+    "id": "ever-watchful+",
+    "cost": "1",
+    "text": "At the start of your turn: Add a Baleful Glance to your hand.",
+    "def": {
+     "id": "ever-watchful+",
+     "name": "Ever Watchful+",
+     "realm": "gloomfen",
+     "rarity": "rare",
+     "kind": "power",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "power",
+       "when": "turnStart",
+       "ops": [
+        {
+         "op": "addCard",
+         "card": "baleful-glance",
+         "to": "hand",
+         "side": "self"
+        }
+       ]
+      }
+     ],
+     "hero": "necromancer"
+    }
+   }
+  },
+  {
+   "id": "fen-offering",
+   "name": "Fen Offering",
+   "kind": "skill",
+   "rarity": "rare",
+   "cost": "1",
+   "text": "Gain Barrier equal to 2 times the target's max HP. Sacrifice the chosen ally. Hold.",
+   "def": {
+    "id": "fen-offering",
+    "name": "Fen Offering",
+    "realm": "gloomfen",
+    "rarity": "rare",
+    "kind": "skill",
+    "cost": 1,
+    "target": "ally",
+    "effects": [
+     {
+      "op": "barrier",
+      "amount": 0,
+      "to": "self",
+      "scale": {
+       "by": "maxHp",
+       "mult": 2,
+       "of": "target"
+      }
+     },
+     {
+      "op": "sacrifice"
+     }
+    ],
+    "hero": "necromancer",
+    "retain": true,
+    "upgrade": "fen-offering+"
+   },
+   "upgrade": {
+    "id": "fen-offering+",
+    "cost": "0",
+    "text": "Gain Barrier equal to 2 times the target's max HP. Sacrifice the chosen ally. Hold.",
+    "def": {
+     "id": "fen-offering+",
+     "name": "Fen Offering+",
+     "realm": "gloomfen",
+     "rarity": "rare",
+     "kind": "skill",
+     "cost": 0,
+     "target": "ally",
+     "effects": [
+      {
+       "op": "barrier",
+       "amount": 0,
+       "to": "self",
+       "scale": {
+        "by": "maxHp",
+        "mult": 2,
+        "of": "target"
+       }
+      },
+      {
+       "op": "sacrifice"
+      }
+     ],
+     "hero": "necromancer",
+     "retain": true
+    }
+   }
+  },
+  {
+   "id": "final-reckoning",
+   "name": "Final Reckoning",
+   "kind": "attack",
+   "rarity": "rare",
+   "cost": "2",
+   "text": "Deal damage equal to the target's Fate. Consume.",
+   "def": {
+    "id": "final-reckoning",
+    "name": "Final Reckoning",
+    "realm": "gloomfen",
+    "rarity": "rare",
+    "kind": "attack",
+    "cost": 2,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 0,
+      "to": "target",
+      "scale": {
+       "by": "doom",
+       "of": "target"
+      }
+     }
+    ],
+    "hero": "necromancer",
+    "exhaust": true,
+    "upgrade": "final-reckoning+"
+   },
+   "upgrade": {
+    "id": "final-reckoning+",
+    "cost": "2",
+    "text": "Deal damage equal to the target's Fate. Consume. Hold.",
+    "def": {
+     "id": "final-reckoning+",
+     "name": "Final Reckoning+",
+     "realm": "gloomfen",
+     "rarity": "rare",
+     "kind": "attack",
+     "cost": 2,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 0,
+       "to": "target",
+       "scale": {
+        "by": "doom",
+        "of": "target"
+       }
+      }
+     ],
+     "hero": "necromancer",
+     "exhaust": true,
+     "retain": true
+    }
+   }
+  },
+  {
+   "id": "gallows",
+   "name": "Gallows",
+   "kind": "attack",
+   "rarity": "rare",
+   "cost": "1",
+   "text": "Deal 10 damage. Apply 1 Noose.",
+   "def": {
+    "id": "gallows",
+    "name": "Gallows",
+    "realm": "gloomfen",
+    "rarity": "rare",
+    "kind": "attack",
+    "cost": 1,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 10,
+      "to": "target"
+     },
+     {
+      "op": "status",
+      "status": "noose",
+      "amount": 1,
+      "to": "target"
+     }
+    ],
+    "hero": "necromancer",
+    "tags": [
+     "noose"
+    ],
+    "upgrade": "gallows+"
+   },
+   "upgrade": {
+    "id": "gallows+",
+    "cost": "1",
+    "text": "Deal 13 damage. Apply 1 Noose.",
+    "def": {
+     "id": "gallows+",
+     "name": "Gallows+",
+     "realm": "gloomfen",
+     "rarity": "rare",
+     "kind": "attack",
+     "cost": 1,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 13,
+       "to": "target"
+      },
+      {
+       "op": "status",
+       "status": "noose",
+       "amount": 1,
+       "to": "target"
+      }
+     ],
+     "hero": "necromancer",
+     "tags": [
+      "noose"
+     ]
+    }
+   }
+  },
+  {
+   "id": "gather-souls",
+   "name": "Gather Souls",
+   "kind": "skill",
+   "rarity": "rare",
+   "cost": "1",
+   "text": "Add 3 Gravesouls to your draw pile. Consume.",
+   "def": {
+    "id": "gather-souls",
+    "name": "Gather Souls",
+    "realm": "gloomfen",
+    "rarity": "rare",
+    "kind": "skill",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "addCard",
+      "card": "gravesoul",
+      "to": "draw",
+      "side": "self",
+      "times": 3
+     }
+    ],
+    "hero": "necromancer",
+    "exhaust": true,
+    "upgrade": "gather-souls+"
+   },
+   "upgrade": {
+    "id": "gather-souls+",
+    "cost": "1",
+    "text": "Add 4 Gravesouls to your draw pile. Consume.",
+    "def": {
+     "id": "gather-souls+",
+     "name": "Gather Souls+",
+     "realm": "gloomfen",
+     "rarity": "rare",
+     "kind": "skill",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "addCard",
+       "card": "gravesoul",
+       "to": "draw",
+       "side": "self",
+       "times": 4
+      }
+     ],
+     "hero": "necromancer",
+     "exhaust": true
+    }
+   }
+  },
+  {
+   "id": "ghostform",
+   "name": "Spirit Walk",
+   "kind": "skill",
+   "rarity": "rare",
+   "cost": "2",
+   "text": "Consume your hand. If 6 or more cards were consumed this way: Gain 2 Ghostly.",
+   "def": {
+    "id": "ghostform",
+    "name": "Spirit Walk",
+    "realm": "gloomfen",
+    "rarity": "rare",
+    "kind": "skill",
+    "cost": 2,
+    "target": "none",
+    "effects": [
+     {
+      "op": "exhaustCards",
+      "amount": 99
+     },
+     {
+      "op": "when",
+      "by": "exhaustedNow",
+      "atLeast": 6,
+      "ops": [
+       {
+        "op": "status",
+        "status": "ghostly",
+        "amount": 2,
+        "to": "self"
+       }
+      ]
+     }
+    ],
+    "hero": "necromancer",
+    "upgrade": "ghostform+"
+   },
+   "upgrade": {
+    "id": "ghostform+",
+    "cost": "1",
+    "text": "Consume your hand. If 6 or more cards were consumed this way: Gain 2 Ghostly.",
+    "def": {
+     "id": "ghostform+",
+     "name": "Spirit Walk+",
+     "realm": "gloomfen",
+     "rarity": "rare",
+     "kind": "skill",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "exhaustCards",
+       "amount": 99
+      },
+      {
+       "op": "when",
+       "by": "exhaustedNow",
+       "atLeast": 6,
+       "ops": [
+        {
+         "op": "status",
+         "status": "ghostly",
+         "amount": 2,
+         "to": "self"
+        }
+       ]
+      }
+     ],
+     "hero": "necromancer"
+    }
+   }
+  },
+  {
+   "id": "grave-colossus",
+   "name": "Grave Colossus",
+   "kind": "skill",
+   "rarity": "rare",
+   "cost": "3",
+   "text": "Raise 20. Consume.",
+   "def": {
+    "id": "grave-colossus",
+    "name": "Grave Colossus",
+    "realm": "gloomfen",
+    "rarity": "rare",
+    "kind": "skill",
+    "cost": 3,
+    "target": "none",
+    "effects": [
+     {
+      "op": "raise",
+      "unit": "bone-thrall",
+      "amount": 20
+     }
+    ],
+    "hero": "necromancer",
+    "exhaust": true,
+    "upgrade": "grave-colossus+"
+   },
+   "upgrade": {
+    "id": "grave-colossus+",
+    "cost": "3",
+    "text": "Raise 25. Consume.",
+    "def": {
+     "id": "grave-colossus+",
+     "name": "Grave Colossus+",
+     "realm": "gloomfen",
+     "rarity": "rare",
+     "kind": "skill",
+     "cost": 3,
+     "target": "none",
+     "effects": [
+      {
+       "op": "raise",
+       "unit": "bone-thrall",
+       "amount": 25
+      }
+     ],
+     "hero": "necromancer",
+     "exhaust": true
+    }
+   }
+  },
+  {
+   "id": "mark-of-ending",
+   "name": "Mark of Ending",
+   "kind": "skill",
+   "rarity": "rare",
+   "cost": "0",
+   "text": "This turn, whenever you play a card: Curse the target with 3 Fate.",
+   "def": {
+    "id": "mark-of-ending",
+    "name": "Mark of Ending",
+    "realm": "gloomfen",
+    "rarity": "rare",
+    "kind": "skill",
+    "cost": 0,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "power",
+      "when": "play",
+      "ops": [
+       {
+        "op": "status",
+        "status": "doom",
+        "amount": 3,
+        "to": "target"
+       }
+      ],
+      "temp": true,
+      "pin": true
+     }
+    ],
+    "hero": "necromancer",
+    "upgrade": "mark-of-ending+"
+   },
+   "upgrade": {
+    "id": "mark-of-ending+",
+    "cost": "0",
+    "text": "This turn, whenever you play a card: Curse the target with 4 Fate.",
+    "def": {
+     "id": "mark-of-ending+",
+     "name": "Mark of Ending+",
+     "realm": "gloomfen",
+     "rarity": "rare",
+     "kind": "skill",
+     "cost": 0,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "power",
+       "when": "play",
+       "ops": [
+        {
+         "op": "status",
+         "status": "doom",
+         "amount": 4,
+         "to": "target"
+        }
+       ],
+       "temp": true,
+       "pin": true
+      }
+     ],
+     "hero": "necromancer"
+    }
+   }
+  },
+  {
+   "id": "oblivion",
+   "name": "Unmaking",
+   "kind": "attack",
+   "rarity": "rare",
+   "cost": "X",
+   "text": "Deal 11 damage X times. Hold.",
+   "def": {
+    "id": "oblivion",
+    "name": "Unmaking",
+    "realm": "gloomfen",
+    "rarity": "rare",
+    "kind": "attack",
+    "cost": 0,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 11,
+      "hits": 0,
+      "to": "target",
+      "scale": {
+       "by": "x",
+       "into": "hits"
+      }
+     }
+    ],
+    "hero": "necromancer",
+    "x": true,
+    "retain": true,
+    "upgrade": "oblivion+"
+   },
+   "upgrade": {
+    "id": "oblivion+",
+    "cost": "X",
+    "text": "X is 1 higher. Deal 11 damage X times. Hold.",
+    "def": {
+     "id": "oblivion+",
+     "name": "Unmaking+",
+     "realm": "gloomfen",
+     "rarity": "rare",
+     "kind": "attack",
+     "cost": 0,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 11,
+       "hits": 0,
+       "to": "target",
+       "scale": {
+        "by": "x",
+        "into": "hits"
+       }
+      }
+     ],
+     "hero": "necromancer",
+     "x": true,
+     "retain": true,
+     "xBonus": 1
+    }
+   }
+  },
+  {
+   "id": "phylactery",
+   "name": "Phylactery",
+   "kind": "power",
+   "rarity": "rare",
+   "cost": "3",
+   "text": "At the start of your turn: Gain 1 Mana. Draw 1 card. Fleeting.",
+   "def": {
+    "id": "phylactery",
+    "name": "Phylactery",
+    "realm": "gloomfen",
+    "rarity": "rare",
+    "kind": "power",
+    "cost": 3,
+    "target": "none",
+    "effects": [
+     {
+      "op": "power",
+      "when": "turnStart",
+      "ops": [
+       {
+        "op": "mana",
+        "amount": 1
+       },
+       {
+        "op": "draw",
+        "amount": 1
+       }
+      ]
+     }
+    ],
+    "hero": "necromancer",
+    "ethereal": true,
+    "upgrade": "phylactery+"
+   },
+   "upgrade": {
+    "id": "phylactery+",
+    "cost": "2",
+    "text": "At the start of your turn: Gain 1 Mana. Draw 1 card. Fleeting.",
+    "def": {
+     "id": "phylactery+",
+     "name": "Phylactery+",
+     "realm": "gloomfen",
+     "rarity": "rare",
+     "kind": "power",
+     "cost": 2,
+     "target": "none",
+     "effects": [
+      {
+       "op": "power",
+       "when": "turnStart",
+       "ops": [
+        {
+         "op": "mana",
+         "amount": 1
+        },
+        {
+         "op": "draw",
+         "amount": 1
+        }
+       ]
+      }
+     ],
+     "hero": "necromancer",
+     "ethereal": true
+    }
+   }
+  },
+  {
+   "id": "reapers-mantle",
+   "name": "Reaper's Mantle",
+   "kind": "power",
+   "rarity": "rare",
+   "cost": "3",
+   "text": "For the rest of the fight, whenever your Attacks take HP off an enemy, curse it with that much Fate.",
+   "def": {
+    "id": "reapers-mantle",
+    "name": "Reaper's Mantle",
+    "realm": "gloomfen",
+    "rarity": "rare",
+    "kind": "power",
+    "cost": 3,
+    "target": "none",
+    "effects": [
+     {
+      "op": "status",
+      "status": "reaping",
+      "amount": 1,
+      "to": "self"
+     }
+    ],
+    "hero": "necromancer",
+    "upgrade": "reapers-mantle+"
+   },
+   "upgrade": {
+    "id": "reapers-mantle+",
+    "cost": "3",
+    "text": "For the rest of the fight, whenever your Attacks take HP off an enemy, curse it with that much Fate. Hold.",
+    "def": {
+     "id": "reapers-mantle+",
+     "name": "Reaper's Mantle+",
+     "realm": "gloomfen",
+     "rarity": "rare",
+     "kind": "power",
+     "cost": 3,
+     "target": "none",
+     "effects": [
+      {
+       "op": "status",
+       "status": "reaping",
+       "amount": 1,
+       "to": "self"
+      }
+     ],
+     "hero": "necromancer",
+     "retain": true
+    }
+   }
+  },
+  {
+   "id": "reaping-scythe",
+   "name": "Reaping Scythe",
+   "kind": "attack",
+   "rarity": "rare",
+   "cost": "2",
+   "text": "Deal 13 damage, plus all it has grown. Every copy of this card gains 4 damage for the rest of the fight. Consume.",
+   "def": {
+    "id": "reaping-scythe",
+    "name": "Reaping Scythe",
+    "realm": "gloomfen",
+    "rarity": "rare",
+    "kind": "attack",
+    "cost": 2,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 13,
+      "to": "target",
+      "scale": {
+       "by": "bonus"
+      }
+     },
+     {
+      "op": "forge",
+      "card": "reaping-scythe",
+      "amount": 4
+     }
+    ],
+    "hero": "necromancer",
+    "exhaust": true,
+    "upgrade": "reaping-scythe+"
+   },
+   "upgrade": {
+    "id": "reaping-scythe+",
+    "cost": "2",
+    "text": "Deal 13 damage, plus all it has grown. Every copy of this card gains 5 damage for the rest of the fight. Consume.",
+    "def": {
+     "id": "reaping-scythe+",
+     "name": "Reaping Scythe+",
+     "realm": "gloomfen",
+     "rarity": "rare",
+     "kind": "attack",
+     "cost": 2,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 13,
+       "to": "target",
+       "scale": {
+        "by": "bonus"
+       }
+      },
+      {
+       "op": "forge",
+       "card": "reaping-scythe",
+       "amount": 5
+      }
+     ],
+     "hero": "necromancer",
+     "exhaust": true
+    }
+   }
+  },
+  {
+   "id": "requiem",
+   "name": "Requiem",
+   "kind": "attack",
+   "rarity": "rare",
+   "cost": "1",
+   "text": "Deal 9 (+2 per consumed Gravesoul) damage.",
+   "def": {
+    "id": "requiem",
+    "name": "Requiem",
+    "realm": "gloomfen",
+    "rarity": "rare",
+    "kind": "attack",
+    "cost": 1,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 9,
+      "to": "target",
+      "scale": {
+       "by": "tagExhausted",
+       "tag": "soul",
+       "mult": 2
+      }
+     }
+    ],
+    "hero": "necromancer",
+    "upgrade": "requiem+"
+   },
+   "upgrade": {
+    "id": "requiem+",
+    "cost": "1",
+    "text": "Deal 9 (+3 per consumed Gravesoul) damage.",
+    "def": {
+     "id": "requiem+",
+     "name": "Requiem+",
+     "realm": "gloomfen",
+     "rarity": "rare",
+     "kind": "attack",
+     "cost": 1,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 9,
+       "to": "target",
+       "scale": {
+        "by": "tagExhausted",
+        "tag": "soul",
+        "mult": 3
+       }
+      }
+     ],
+     "hero": "necromancer"
+    }
+   }
+  },
+  {
+   "id": "shared-agony",
+   "name": "Shared Agony",
+   "kind": "power",
+   "rarity": "rare",
+   "cost": "2",
+   "text": "Raise 5. Whenever one of your companions loses HP: ALL enemies lose HP equal to the HP it lost.",
+   "def": {
+    "id": "shared-agony",
+    "name": "Shared Agony",
+    "realm": "gloomfen",
+    "rarity": "rare",
+    "kind": "power",
+    "cost": 2,
+    "target": "none",
+    "effects": [
+     {
+      "op": "raise",
+      "unit": "bone-thrall",
+      "amount": 5
+     },
+     {
+      "op": "power",
+      "when": "allyHurt",
+      "ops": [
+       {
+        "op": "loseHp",
+        "amount": 0,
+        "to": "allFoes",
+        "scale": {
+         "by": "lost"
+        }
+       }
+      ]
+     }
+    ],
+    "hero": "necromancer",
+    "upgrade": "shared-agony+"
+   },
+   "upgrade": {
+    "id": "shared-agony+",
+    "cost": "2",
+    "text": "Raise 8. Whenever one of your companions loses HP: ALL enemies lose HP equal to the HP it lost.",
+    "def": {
+     "id": "shared-agony+",
+     "name": "Shared Agony+",
+     "realm": "gloomfen",
+     "rarity": "rare",
+     "kind": "power",
+     "cost": 2,
+     "target": "none",
+     "effects": [
+      {
+       "op": "raise",
+       "unit": "bone-thrall",
+       "amount": 8
+      },
+      {
+       "op": "power",
+       "when": "allyHurt",
+       "ops": [
+        {
+         "op": "loseHp",
+         "amount": 0,
+         "to": "allFoes",
+         "scale": {
+          "by": "lost"
+         }
+        }
+       ]
+      }
+     ],
+     "hero": "necromancer"
+    }
+   }
+  },
+  {
+   "id": "soul-harvest",
+   "name": "Soul Harvest",
+   "kind": "power",
+   "rarity": "rare",
+   "cost": "1",
+   "text": "Whenever you play a Gravesoul: Raise 1.",
+   "def": {
+    "id": "soul-harvest",
+    "name": "Soul Harvest",
+    "realm": "gloomfen",
+    "rarity": "rare",
+    "kind": "power",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "power",
+      "when": "play",
+      "ops": [
+       {
+        "op": "raise",
+        "unit": "bone-thrall",
+        "amount": 1
+       }
+      ],
+      "tag": "soul"
+     }
+    ],
+    "hero": "necromancer",
+    "upgrade": "soul-harvest+"
+   },
+   "upgrade": {
+    "id": "soul-harvest+",
+    "cost": "1",
+    "text": "Whenever you play a Gravesoul: Raise 2.",
+    "def": {
+     "id": "soul-harvest+",
+     "name": "Soul Harvest+",
+     "realm": "gloomfen",
+     "rarity": "rare",
+     "kind": "power",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "power",
+       "when": "play",
+       "ops": [
+        {
+         "op": "raise",
+         "unit": "bone-thrall",
+         "amount": 2
+        }
+       ],
+       "tag": "soul"
+      }
+     ],
+     "hero": "necromancer"
+    }
+   }
+  },
+  {
+   "id": "soul-tithe",
+   "name": "Soul Tithe",
+   "kind": "power",
+   "rarity": "rare",
+   "cost": "0",
+   "text": "Gain 3 Mana. Draw 2 cards. At the start of your turn: Curse yourself with 3 Fate.",
+   "def": {
+    "id": "soul-tithe",
+    "name": "Soul Tithe",
+    "realm": "gloomfen",
+    "rarity": "rare",
+    "kind": "power",
+    "cost": 0,
+    "target": "none",
+    "effects": [
+     {
+      "op": "mana",
+      "amount": 3
+     },
+     {
+      "op": "draw",
+      "amount": 2
+     },
+     {
+      "op": "power",
+      "when": "turnStart",
+      "ops": [
+       {
+        "op": "status",
+        "status": "doom",
+        "amount": 3,
+        "to": "self"
+       }
+      ]
+     }
+    ],
+    "hero": "necromancer",
+    "upgrade": "soul-tithe+"
+   },
+   "upgrade": {
+    "id": "soul-tithe+",
+    "cost": "0",
+    "text": "Gain 4 Mana. Draw 2 cards. At the start of your turn: Curse yourself with 3 Fate.",
+    "def": {
+     "id": "soul-tithe+",
+     "name": "Soul Tithe+",
+     "realm": "gloomfen",
+     "rarity": "rare",
+     "kind": "power",
+     "cost": 0,
+     "target": "none",
+     "effects": [
+      {
+       "op": "mana",
+       "amount": 4
+      },
+      {
+       "op": "draw",
+       "amount": 2
+      },
+      {
+       "op": "power",
+       "when": "turnStart",
+       "ops": [
+        {
+         "op": "status",
+         "status": "doom",
+         "amount": 3,
+         "to": "self"
+        }
+       ]
+      }
+     ],
+     "hero": "necromancer"
+    }
+   }
+  },
+  {
+   "id": "spreading-rot",
+   "name": "Spreading Rot",
+   "kind": "attack",
+   "rarity": "rare",
+   "cost": "0",
+   "text": "Deal 7 damage. Put the target's debuffs on every other enemy too.",
+   "def": {
+    "id": "spreading-rot",
+    "name": "Spreading Rot",
+    "realm": "gloomfen",
+    "rarity": "rare",
+    "kind": "attack",
+    "cost": 0,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 7,
+      "to": "target"
+     },
+     {
+      "op": "spreadDebuffs"
+     }
+    ],
+    "hero": "necromancer",
+    "upgrade": "spreading-rot+"
+   },
+   "upgrade": {
+    "id": "spreading-rot+",
+    "cost": "0",
+    "text": "Deal 9 damage. Put the target's debuffs on every other enemy too. Hold.",
+    "def": {
+     "id": "spreading-rot+",
+     "name": "Spreading Rot+",
+     "realm": "gloomfen",
+     "rarity": "rare",
+     "kind": "attack",
+     "cost": 0,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 9,
+       "to": "target"
+      },
+      {
+       "op": "spreadDebuffs"
+      }
+     ],
+     "hero": "necromancer",
+     "retain": true
+    }
+   }
+  },
+  {
+   "id": "the-drowned-king",
+   "name": "The Drowned King",
+   "kind": "attack",
+   "rarity": "rare",
+   "cost": "1",
+   "text": "Your companions each deal 10 damage, plus their own max HP.",
+   "def": {
+    "id": "the-drowned-king",
+    "name": "The Drowned King",
+    "realm": "gloomfen",
+    "rarity": "rare",
+    "kind": "attack",
+    "cost": 1,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "command",
+      "ops": [
+       {
+        "op": "damage",
+        "amount": 10,
+        "to": "target",
+        "scale": {
+         "by": "maxHp"
+        }
+       }
+      ]
+     }
+    ],
+    "hero": "necromancer",
+    "tags": [
+     "command"
+    ],
+    "upgrade": "the-drowned-king+"
+   },
+   "upgrade": {
+    "id": "the-drowned-king+",
+    "cost": "0",
+    "text": "Your companions each deal 15 damage, plus their own max HP.",
+    "def": {
+     "id": "the-drowned-king+",
+     "name": "The Drowned King+",
+     "realm": "gloomfen",
+     "rarity": "rare",
+     "kind": "attack",
+     "cost": 0,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "command",
+       "ops": [
+        {
+         "op": "damage",
+         "amount": 15,
+         "to": "target",
+         "scale": {
+          "by": "maxHp"
+         }
+        }
+       ]
+      }
+     ],
+     "hero": "necromancer",
+     "tags": [
+      "command"
+     ]
+    }
+   }
+  },
+  {
+   "id": "the-last-toll",
+   "name": "The Last Toll",
+   "kind": "skill",
+   "rarity": "rare",
+   "cost": "3",
+   "text": "Curse ALL enemies with 29 Fate. Every enemy whose HP is at or below its Fate dies now.",
+   "def": {
+    "id": "the-last-toll",
+    "name": "The Last Toll",
+    "realm": "gloomfen",
+    "rarity": "rare",
+    "kind": "skill",
+    "cost": 3,
+    "target": "none",
+    "effects": [
+     {
+      "op": "status",
+      "status": "doom",
+      "amount": 29,
+      "to": "allFoes"
+     },
+     {
+      "op": "doomNow",
+      "to": "allFoes"
+     }
+    ],
+    "hero": "necromancer",
+    "upgrade": "the-last-toll+"
+   },
+   "upgrade": {
+    "id": "the-last-toll+",
+    "cost": "3",
+    "text": "Curse ALL enemies with 37 Fate. Every enemy whose HP is at or below its Fate dies now.",
+    "def": {
+     "id": "the-last-toll+",
+     "name": "The Last Toll+",
+     "realm": "gloomfen",
+     "rarity": "rare",
+     "kind": "skill",
+     "cost": 3,
+     "target": "none",
+     "effects": [
+      {
+       "op": "status",
+       "status": "doom",
+       "amount": 37,
+       "to": "allFoes"
+      },
+      {
+       "op": "doomNow",
+       "to": "allFoes"
+      }
+     ],
+     "hero": "necromancer"
+    }
+   }
+  },
+  {
+   "id": "unquiet-rest",
+   "name": "Unquiet Rest",
+   "kind": "skill",
+   "rarity": "rare",
+   "cost": "0",
+   "text": "Gain 7 Barrier. Add a copy of this card to your discard pile.",
+   "def": {
+    "id": "unquiet-rest",
+    "name": "Unquiet Rest",
+    "realm": "gloomfen",
+    "rarity": "rare",
+    "kind": "skill",
+    "cost": 0,
+    "target": "none",
+    "effects": [
+     {
+      "op": "barrier",
+      "amount": 7,
+      "to": "self"
+     },
+     {
+      "op": "copySelf",
+      "to": "discard"
+     }
+    ],
+    "hero": "necromancer",
+    "upgrade": "unquiet-rest+"
+   },
+   "upgrade": {
+    "id": "unquiet-rest+",
+    "cost": "0",
+    "text": "Gain 9 Barrier. Add a copy of this card to your discard pile.",
+    "def": {
+     "id": "unquiet-rest+",
+     "name": "Unquiet Rest+",
+     "realm": "gloomfen",
+     "rarity": "rare",
+     "kind": "skill",
+     "cost": 0,
+     "target": "none",
+     "effects": [
+      {
+       "op": "barrier",
+       "amount": 9,
+       "to": "self"
+      },
+      {
+       "op": "copySelf",
+       "to": "discard"
+      }
+     ],
+     "hero": "necromancer"
+    }
+   }
+  },
+  {
+   "id": "wailing-cry",
+   "name": "Wailing Cry",
+   "kind": "attack",
+   "rarity": "rare",
+   "cost": "9",
+   "text": "Costs 2 less for each Fleeting card played this fight. Deal 33 damage to ALL enemies.",
+   "def": {
+    "id": "wailing-cry",
+    "name": "Wailing Cry",
+    "realm": "gloomfen",
+    "rarity": "rare",
+    "kind": "attack",
+    "cost": 9,
+    "target": "none",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 33,
+      "to": "allFoes"
+     }
+    ],
+    "hero": "necromancer",
+    "cheaperPer": {
+     "by": "etherealPlayed",
+     "mult": 2
+    },
+    "upgrade": "wailing-cry+"
+   },
+   "upgrade": {
+    "id": "wailing-cry+",
+    "cost": "7",
+    "text": "Costs 2 less for each Fleeting card played this fight. Deal 33 damage to ALL enemies.",
+    "def": {
+     "id": "wailing-cry+",
+     "name": "Wailing Cry+",
+     "realm": "gloomfen",
+     "rarity": "rare",
+     "kind": "attack",
+     "cost": 7,
+     "target": "none",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 33,
+       "to": "allFoes"
+      }
+     ],
+     "hero": "necromancer",
+     "cheaperPer": {
+      "by": "etherealPlayed",
+      "mult": 2
+     }
+    }
+   }
+  },
+  {
+   "id": "whispers-beyond",
+   "name": "Whispers Beyond",
+   "kind": "power",
+   "rarity": "rare",
+   "cost": "1",
+   "text": "At the start of your turn: Add a random card from your pool to your hand. It is Fleeting.",
+   "def": {
+    "id": "whispers-beyond",
+    "name": "Whispers Beyond",
+    "realm": "gloomfen",
+    "rarity": "rare",
+    "kind": "power",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "power",
+      "when": "turnStart",
+      "ops": [
+       {
+        "op": "discover",
+        "ethereal": true
+       }
+      ]
+     }
+    ],
+    "hero": "necromancer",
+    "upgrade": "whispers-beyond+"
+   },
+   "upgrade": {
+    "id": "whispers-beyond+",
+    "cost": "1",
+    "text": "At the start of your turn: Add a random card from your pool to your hand. It is Fleeting. Opening hand.",
+    "def": {
+     "id": "whispers-beyond+",
+     "name": "Whispers Beyond+",
+     "realm": "gloomfen",
+     "rarity": "rare",
+     "kind": "power",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "power",
+       "when": "turnStart",
+       "ops": [
+        {
+         "op": "discover",
+         "ethereal": true
+        }
+       ]
+      }
+     ],
+     "hero": "necromancer",
+     "innate": true
+    }
+   }
+  }
+ ]
+}

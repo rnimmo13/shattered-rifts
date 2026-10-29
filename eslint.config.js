@@ -36,7 +36,17 @@ const purityRules = {
 };
 
 export default tseslint.config(
-  { ignores: ['**/dist/**', '**/coverage/**', '**/node_modules/**', '**/.wrangler/**', '.claude/**'] },
+  {
+    ignores: [
+      '**/dist/**',
+      '**/coverage/**',
+      '**/node_modules/**',
+      '**/.wrangler/**',
+      '.claude/**',
+      // (frozen balance archives are never linted or reformatted: their hashes are recorded)
+      'reviews/balance-baselines/**',
+    ],
+  },
   js.configs.recommended,
   ...tseslint.configs.recommendedTypeChecked,
   {

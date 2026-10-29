@@ -1,0 +1,4989 @@
+{
+ "hero": {
+  "id": "knight",
+  "name": "Knight",
+  "maxHp": 80,
+  "mana": 3,
+  "handSize": 5
+ },
+ "persona": "Valeria",
+ "role": "Knight",
+ "realm": "aurelion",
+ "trait": {
+  "name": "Oathkeeper",
+  "text": "Start every fight with 6 Barrier and 6 Plating: your Barrier survives each turn up to your Plating, which shrinks by 1 a turn.",
+  "fightStart": [
+   {
+    "op": "barrier",
+    "amount": 6,
+    "to": "self"
+   },
+   {
+    "op": "status",
+    "status": "plating",
+    "amount": 6,
+    "to": "self"
+   }
+  ]
+ },
+ "blurb": "A knight of the Gilded Order. No companions: Might, Barrier and a deck that burns down to a point.",
+ "mechanics": [
+  "Barrier",
+  "Might",
+  "Exposed",
+  "Consume",
+  "Self-damage"
+ ],
+ "buildPaths": [
+  "Bulwark: hit with your Barrier",
+  "Might: hit many times, harder and harder",
+  "Consume: burn your own cards for value",
+  "Blood: pay HP for Mana, cards and Might"
+ ],
+ "howTo": [
+  "Barrier soaks damage, but it falls away at the start of your next turn. Your Plating keeps some of it through the first turns.",
+  "Exposed enemies take 50% more from your attacks: Sundering Blow sets it up.",
+  "Your cards come in many shapes: hit with your Barrier, pile up Might and hit many times, consume your own cards for value, or pay HP for Mana, cards and Might."
+ ],
+ "starter": [
+  "strike",
+  "strike",
+  "strike",
+  "strike",
+  "strike",
+  "defend",
+  "defend",
+  "defend",
+  "defend",
+  "sundering-blow"
+ ],
+ "starterText": [
+  {
+   "id": "strike",
+   "text": "Deal 6 damage."
+  },
+  {
+   "id": "strike",
+   "text": "Deal 6 damage."
+  },
+  {
+   "id": "strike",
+   "text": "Deal 6 damage."
+  },
+  {
+   "id": "strike",
+   "text": "Deal 6 damage."
+  },
+  {
+   "id": "strike",
+   "text": "Deal 6 damage."
+  },
+  {
+   "id": "defend",
+   "text": "Gain 5 Barrier."
+  },
+  {
+   "id": "defend",
+   "text": "Gain 5 Barrier."
+  },
+  {
+   "id": "defend",
+   "text": "Gain 5 Barrier."
+  },
+  {
+   "id": "defend",
+   "text": "Gain 5 Barrier."
+  },
+  {
+   "id": "sundering-blow",
+   "text": "Deal 8 damage. Apply 2 Exposed."
+  }
+ ],
+ "startUnits": [],
+ "counts": {
+  "basic": 1,
+  "common": 20,
+  "token/special": 1,
+  "uncommon": 35,
+  "rare": 26
+ },
+ "cards": [
+  {
+   "id": "sundering-blow",
+   "name": "Sundering Blow",
+   "kind": "attack",
+   "rarity": "basic",
+   "cost": "2",
+   "text": "Deal 8 damage. Apply 2 Exposed.",
+   "def": {
+    "id": "sundering-blow",
+    "name": "Sundering Blow",
+    "realm": "aurelion",
+    "rarity": "basic",
+    "kind": "attack",
+    "cost": 2,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 8,
+      "to": "target"
+     },
+     {
+      "op": "status",
+      "status": "exposed",
+      "amount": 2,
+      "to": "target"
+     }
+    ],
+    "hero": "knight",
+    "upgrade": "sundering-blow+"
+   },
+   "upgrade": {
+    "id": "sundering-blow+",
+    "cost": "2",
+    "text": "Deal 11 damage. Apply 3 Exposed.",
+    "def": {
+     "id": "sundering-blow+",
+     "name": "Sundering Blow+",
+     "realm": "aurelion",
+     "rarity": "basic",
+     "kind": "attack",
+     "cost": 2,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 11,
+       "to": "target"
+      },
+      {
+       "op": "status",
+       "status": "exposed",
+       "amount": 3,
+       "to": "target"
+      }
+     ],
+     "hero": "knight"
+    }
+   }
+  },
+  {
+   "id": "blood-plate",
+   "name": "Blood Plate",
+   "kind": "skill",
+   "rarity": "common",
+   "cost": "2",
+   "text": "Lose 2 HP. Gain 16 Barrier.",
+   "def": {
+    "id": "blood-plate",
+    "name": "Blood Plate",
+    "realm": "aurelion",
+    "rarity": "common",
+    "kind": "skill",
+    "cost": 2,
+    "target": "none",
+    "effects": [
+     {
+      "op": "loseHp",
+      "amount": 2,
+      "to": "self"
+     },
+     {
+      "op": "barrier",
+      "amount": 16,
+      "to": "self"
+     }
+    ],
+    "hero": "knight",
+    "upgrade": "blood-plate+"
+   },
+   "upgrade": {
+    "id": "blood-plate+",
+    "cost": "2",
+    "text": "Lose 1 HP. Gain 19 Barrier.",
+    "def": {
+     "id": "blood-plate+",
+     "name": "Blood Plate+",
+     "realm": "aurelion",
+     "rarity": "common",
+     "kind": "skill",
+     "cost": 2,
+     "target": "none",
+     "effects": [
+      {
+       "op": "loseHp",
+       "amount": 1,
+       "to": "self"
+      },
+      {
+       "op": "barrier",
+       "amount": 19,
+       "to": "self"
+      }
+     ],
+     "hero": "knight"
+    }
+   }
+  },
+  {
+   "id": "braced-strike",
+   "name": "Braced Strike",
+   "kind": "attack",
+   "rarity": "common",
+   "cost": "1",
+   "text": "Deal 7 damage. Gain 2 Might until the end of your turn.",
+   "def": {
+    "id": "braced-strike",
+    "name": "Braced Strike",
+    "realm": "aurelion",
+    "rarity": "common",
+    "kind": "attack",
+    "cost": 1,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 7,
+      "to": "target"
+     },
+     {
+      "op": "status",
+      "status": "might",
+      "amount": 2,
+      "to": "self",
+      "temp": true
+     }
+    ],
+    "hero": "knight",
+    "upgrade": "braced-strike+"
+   },
+   "upgrade": {
+    "id": "braced-strike+",
+    "cost": "1",
+    "text": "Deal 10 damage. Gain 3 Might until the end of your turn.",
+    "def": {
+     "id": "braced-strike+",
+     "name": "Braced Strike+",
+     "realm": "aurelion",
+     "rarity": "common",
+     "kind": "attack",
+     "cost": 1,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 10,
+       "to": "target"
+      },
+      {
+       "op": "status",
+       "status": "might",
+       "amount": 3,
+       "to": "self",
+       "temp": true
+      }
+     ],
+     "hero": "knight"
+    }
+   }
+  },
+  {
+   "id": "breach",
+   "name": "Breach",
+   "kind": "attack",
+   "rarity": "common",
+   "cost": "1",
+   "text": "Lose 1 HP. Deal 9 damage to ALL enemies.",
+   "def": {
+    "id": "breach",
+    "name": "Breach",
+    "realm": "aurelion",
+    "rarity": "common",
+    "kind": "attack",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "loseHp",
+      "amount": 1,
+      "to": "self"
+     },
+     {
+      "op": "damage",
+      "amount": 9,
+      "to": "allFoes"
+     }
+    ],
+    "hero": "knight",
+    "upgrade": "breach+"
+   },
+   "upgrade": {
+    "id": "breach+",
+    "cost": "1",
+    "text": "Lose 1 HP. Deal 12 damage to ALL enemies.",
+    "def": {
+     "id": "breach+",
+     "name": "Breach+",
+     "realm": "aurelion",
+     "rarity": "common",
+     "kind": "attack",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "loseHp",
+       "amount": 1,
+       "to": "self"
+      },
+      {
+       "op": "damage",
+       "amount": 12,
+       "to": "allFoes"
+      }
+     ],
+     "hero": "knight"
+    }
+   }
+  },
+  {
+   "id": "bulwark-blow",
+   "name": "Bulwark Blow",
+   "kind": "attack",
+   "rarity": "common",
+   "cost": "1",
+   "text": "Deal damage equal to your Barrier.",
+   "def": {
+    "id": "bulwark-blow",
+    "name": "Bulwark Blow",
+    "realm": "aurelion",
+    "rarity": "common",
+    "kind": "attack",
+    "cost": 1,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 0,
+      "to": "target",
+      "scale": {
+       "by": "barrier"
+      }
+     }
+    ],
+    "hero": "knight",
+    "upgrade": "bulwark-blow+"
+   },
+   "upgrade": {
+    "id": "bulwark-blow+",
+    "cost": "1",
+    "text": "Deal 3 (+1 per Barrier) damage.",
+    "def": {
+     "id": "bulwark-blow+",
+     "name": "Bulwark Blow+",
+     "realm": "aurelion",
+     "rarity": "common",
+     "kind": "attack",
+     "cost": 1,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 3,
+       "to": "target",
+       "scale": {
+        "by": "barrier"
+       }
+      }
+     ],
+     "hero": "knight"
+    }
+   }
+  },
+  {
+   "id": "clarion-clap",
+   "name": "Clarion Clap",
+   "kind": "attack",
+   "rarity": "common",
+   "cost": "1",
+   "text": "Deal 4 damage to ALL enemies. Apply 1 Exposed to ALL enemies.",
+   "def": {
+    "id": "clarion-clap",
+    "name": "Clarion Clap",
+    "realm": "aurelion",
+    "rarity": "common",
+    "kind": "attack",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 4,
+      "to": "allFoes"
+     },
+     {
+      "op": "status",
+      "status": "exposed",
+      "amount": 1,
+      "to": "allFoes"
+     }
+    ],
+    "hero": "knight",
+    "upgrade": "clarion-clap+"
+   },
+   "upgrade": {
+    "id": "clarion-clap+",
+    "cost": "1",
+    "text": "Deal 7 damage to ALL enemies. Apply 2 Exposed to ALL enemies.",
+    "def": {
+     "id": "clarion-clap+",
+     "name": "Clarion Clap+",
+     "realm": "aurelion",
+     "rarity": "common",
+     "kind": "attack",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 7,
+       "to": "allFoes"
+      },
+      {
+       "op": "status",
+       "status": "exposed",
+       "amount": 2,
+       "to": "allFoes"
+      }
+     ],
+     "hero": "knight"
+    }
+   }
+  },
+  {
+   "id": "cleaving-throws",
+   "name": "Cleaving Throws",
+   "kind": "attack",
+   "rarity": "common",
+   "cost": "1",
+   "text": "Deal 3 damage to a random enemy 3 times.",
+   "def": {
+    "id": "cleaving-throws",
+    "name": "Cleaving Throws",
+    "realm": "aurelion",
+    "rarity": "common",
+    "kind": "attack",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 3,
+      "hits": 3,
+      "to": "randomFoe"
+     }
+    ],
+    "hero": "knight",
+    "upgrade": "cleaving-throws+"
+   },
+   "upgrade": {
+    "id": "cleaving-throws+",
+    "cost": "1",
+    "text": "Deal 4 damage to a random enemy 3 times.",
+    "def": {
+     "id": "cleaving-throws+",
+     "name": "Cleaving Throws+",
+     "realm": "aurelion",
+     "rarity": "common",
+     "kind": "attack",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 4,
+       "hits": 3,
+       "to": "randomFoe"
+      }
+     ],
+     "hero": "knight"
+    }
+   }
+  },
+  {
+   "id": "dawn-smite",
+   "name": "Dawn Smite",
+   "kind": "attack",
+   "rarity": "common",
+   "cost": "1",
+   "text": "Deal 5 damage. Gain 5 Barrier.",
+   "def": {
+    "id": "dawn-smite",
+    "name": "Dawn Smite",
+    "realm": "aurelion",
+    "rarity": "common",
+    "kind": "attack",
+    "cost": 1,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 5,
+      "to": "target"
+     },
+     {
+      "op": "barrier",
+      "amount": 5,
+      "to": "self"
+     }
+    ],
+    "hero": "knight",
+    "upgrade": "dawn-smite+"
+   },
+   "upgrade": {
+    "id": "dawn-smite+",
+    "cost": "1",
+    "text": "Deal 8 damage. Gain 8 Barrier.",
+    "def": {
+     "id": "dawn-smite+",
+     "name": "Dawn Smite+",
+     "realm": "aurelion",
+     "rarity": "common",
+     "kind": "attack",
+     "cost": 1,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 8,
+       "to": "target"
+      },
+      {
+       "op": "barrier",
+       "amount": 8,
+       "to": "self"
+      }
+     ],
+     "hero": "knight"
+    }
+   }
+  },
+  {
+   "id": "draw-blood",
+   "name": "Draw Blood",
+   "kind": "skill",
+   "rarity": "common",
+   "cost": "0",
+   "text": "Lose 3 HP. Gain 2 Mana. Consume.",
+   "def": {
+    "id": "draw-blood",
+    "name": "Draw Blood",
+    "realm": "aurelion",
+    "rarity": "common",
+    "kind": "skill",
+    "cost": 0,
+    "target": "none",
+    "effects": [
+     {
+      "op": "loseHp",
+      "amount": 3,
+      "to": "self"
+     },
+     {
+      "op": "mana",
+      "amount": 2
+     }
+    ],
+    "hero": "knight",
+    "exhaust": true,
+    "upgrade": "draw-blood+"
+   },
+   "upgrade": {
+    "id": "draw-blood+",
+    "cost": "0",
+    "text": "Lose 2 HP. Gain 2 Mana. Consume.",
+    "def": {
+     "id": "draw-blood+",
+     "name": "Draw Blood+",
+     "realm": "aurelion",
+     "rarity": "common",
+     "kind": "skill",
+     "cost": 0,
+     "target": "none",
+     "effects": [
+      {
+       "op": "loseHp",
+       "amount": 2,
+       "to": "self"
+      },
+      {
+       "op": "mana",
+       "amount": 2
+      }
+     ],
+     "hero": "knight",
+     "exhaust": true
+    }
+   }
+  },
+  {
+   "id": "field-repairs",
+   "name": "Field Repairs",
+   "kind": "skill",
+   "rarity": "common",
+   "cost": "1",
+   "text": "Gain 5 Barrier. Upgrade a random card in your hand for this fight.",
+   "def": {
+    "id": "field-repairs",
+    "name": "Field Repairs",
+    "realm": "aurelion",
+    "rarity": "common",
+    "kind": "skill",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "barrier",
+      "amount": 5,
+      "to": "self"
+     },
+     {
+      "op": "upgrade",
+      "scope": "random"
+     }
+    ],
+    "hero": "knight",
+    "upgrade": "field-repairs+"
+   },
+   "upgrade": {
+    "id": "field-repairs+",
+    "cost": "1",
+    "text": "Gain 8 Barrier. Upgrade a random card in your hand for this fight.",
+    "def": {
+     "id": "field-repairs+",
+     "name": "Field Repairs+",
+     "realm": "aurelion",
+     "rarity": "common",
+     "kind": "skill",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "barrier",
+       "amount": 8,
+       "to": "self"
+      },
+      {
+       "op": "upgrade",
+       "scope": "random"
+      }
+     ],
+     "hero": "knight"
+    }
+   }
+  },
+  {
+   "id": "giant-rock",
+   "name": "Giant Rock",
+   "kind": "attack",
+   "rarity": "common",
+   "cost": "1",
+   "text": "Deal 16 damage.",
+   "def": {
+    "id": "giant-rock",
+    "name": "Giant Rock",
+    "realm": "aurelion",
+    "rarity": "common",
+    "kind": "attack",
+    "cost": 1,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 16,
+      "to": "target"
+     }
+    ],
+    "hero": "knight",
+    "source": "token"
+   },
+   "upgrade": null
+  },
+  {
+   "id": "hilt-strike",
+   "name": "Hilt Strike",
+   "kind": "attack",
+   "rarity": "common",
+   "cost": "1",
+   "text": "Deal 9 damage. Draw 1 card.",
+   "def": {
+    "id": "hilt-strike",
+    "name": "Hilt Strike",
+    "realm": "aurelion",
+    "rarity": "common",
+    "kind": "attack",
+    "cost": 1,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 9,
+      "to": "target"
+     },
+     {
+      "op": "draw",
+      "amount": 1
+     }
+    ],
+    "hero": "knight",
+    "upgrade": "hilt-strike+"
+   },
+   "upgrade": {
+    "id": "hilt-strike+",
+    "cost": "1",
+    "text": "Deal 12 damage. Draw 2 cards.",
+    "def": {
+     "id": "hilt-strike+",
+     "name": "Hilt Strike+",
+     "realm": "aurelion",
+     "rarity": "common",
+     "kind": "attack",
+     "cost": 1,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 12,
+       "to": "target"
+      },
+      {
+       "op": "draw",
+       "amount": 2
+      }
+     ],
+     "hero": "knight"
+    }
+   }
+  },
+  {
+   "id": "hot-temper",
+   "name": "Hot Temper",
+   "kind": "attack",
+   "rarity": "common",
+   "cost": "0",
+   "text": "Deal 6 damage. Add a copy of this card to your discard pile.",
+   "def": {
+    "id": "hot-temper",
+    "name": "Hot Temper",
+    "realm": "aurelion",
+    "rarity": "common",
+    "kind": "attack",
+    "cost": 0,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 6,
+      "to": "target"
+     },
+     {
+      "op": "copySelf",
+      "to": "discard"
+     }
+    ],
+    "hero": "knight",
+    "upgrade": "hot-temper+"
+   },
+   "upgrade": {
+    "id": "hot-temper+",
+    "cost": "0",
+    "text": "Deal 9 damage. Add a copy of this card to your discard pile.",
+    "def": {
+     "id": "hot-temper+",
+     "name": "Hot Temper+",
+     "realm": "aurelion",
+     "rarity": "common",
+     "kind": "attack",
+     "cost": 0,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 9,
+       "to": "target"
+      },
+      {
+       "op": "copySelf",
+       "to": "discard"
+      }
+     ],
+     "hero": "knight"
+    }
+   }
+  },
+  {
+   "id": "mastered-strike",
+   "name": "Mastered Strike",
+   "kind": "attack",
+   "rarity": "common",
+   "cost": "2",
+   "text": "Deal 6 (+2 per Strike card in your deck) damage.",
+   "def": {
+    "id": "mastered-strike",
+    "name": "Mastered Strike",
+    "realm": "aurelion",
+    "rarity": "common",
+    "kind": "attack",
+    "cost": 2,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 6,
+      "to": "target",
+      "scale": {
+       "by": "strikes",
+       "mult": 2
+      }
+     }
+    ],
+    "hero": "knight",
+    "upgrade": "mastered-strike+"
+   },
+   "upgrade": {
+    "id": "mastered-strike+",
+    "cost": "2",
+    "text": "Deal 9 (+2 per Strike card in your deck) damage.",
+    "def": {
+     "id": "mastered-strike+",
+     "name": "Mastered Strike+",
+     "realm": "aurelion",
+     "rarity": "common",
+     "kind": "attack",
+     "cost": 2,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 9,
+       "to": "target",
+       "scale": {
+        "by": "strikes",
+        "mult": 2
+       }
+      }
+     ],
+     "hero": "knight"
+    }
+   }
+  },
+  {
+   "id": "oath-of-iron",
+   "name": "Oath of Iron",
+   "kind": "skill",
+   "rarity": "common",
+   "cost": "1",
+   "text": "Gain 8 Barrier. Draw 1 card.",
+   "def": {
+    "id": "oath-of-iron",
+    "name": "Oath of Iron",
+    "realm": "aurelion",
+    "rarity": "common",
+    "kind": "skill",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "barrier",
+      "amount": 8,
+      "to": "self"
+     },
+     {
+      "op": "draw",
+      "amount": 1
+     }
+    ],
+    "hero": "knight",
+    "upgrade": "oath-of-iron+"
+   },
+   "upgrade": {
+    "id": "oath-of-iron+",
+    "cost": "1",
+    "text": "Gain 11 Barrier. Draw 2 cards.",
+    "def": {
+     "id": "oath-of-iron+",
+     "name": "Oath of Iron+",
+     "realm": "aurelion",
+     "rarity": "common",
+     "kind": "skill",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "barrier",
+       "amount": 11,
+       "to": "self"
+      },
+      {
+       "op": "draw",
+       "amount": 2
+      }
+     ],
+     "hero": "knight"
+    }
+   }
+  },
+  {
+   "id": "ram-home",
+   "name": "Ram Home",
+   "kind": "attack",
+   "rarity": "common",
+   "cost": "1",
+   "text": "Deal 9 damage. Put a random card from your discard pile on top of your draw pile.",
+   "def": {
+    "id": "ram-home",
+    "name": "Ram Home",
+    "realm": "aurelion",
+    "rarity": "common",
+    "kind": "attack",
+    "cost": 1,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 9,
+      "to": "target"
+     },
+     {
+      "op": "fetch",
+      "amount": 1,
+      "to": "draw"
+     }
+    ],
+    "hero": "knight",
+    "upgrade": "ram-home+"
+   },
+   "upgrade": {
+    "id": "ram-home+",
+    "cost": "1",
+    "text": "Deal 12 damage. Put 2 random cards from your discard pile on top of your draw pile.",
+    "def": {
+     "id": "ram-home+",
+     "name": "Ram Home+",
+     "realm": "aurelion",
+     "rarity": "common",
+     "kind": "attack",
+     "cost": 1,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 12,
+       "to": "target"
+      },
+      {
+       "op": "fetch",
+       "amount": 2,
+       "to": "draw"
+      }
+     ],
+     "hero": "knight"
+    }
+   }
+  },
+  {
+   "id": "rattle",
+   "name": "Rattle",
+   "kind": "skill",
+   "rarity": "common",
+   "cost": "1",
+   "text": "Apply 3 Exposed. Consume.",
+   "def": {
+    "id": "rattle",
+    "name": "Rattle",
+    "realm": "aurelion",
+    "rarity": "common",
+    "kind": "skill",
+    "cost": 1,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "status",
+      "status": "exposed",
+      "amount": 3,
+      "to": "target"
+     }
+    ],
+    "hero": "knight",
+    "exhaust": true,
+    "upgrade": "rattle+"
+   },
+   "upgrade": {
+    "id": "rattle+",
+    "cost": "1",
+    "text": "Apply 4 Exposed. Consume.",
+    "def": {
+     "id": "rattle+",
+     "name": "Rattle+",
+     "realm": "aurelion",
+     "rarity": "common",
+     "kind": "skill",
+     "cost": 1,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "status",
+       "status": "exposed",
+       "amount": 4,
+       "to": "target"
+      }
+     ],
+     "hero": "knight",
+     "exhaust": true
+    }
+   }
+  },
+  {
+   "id": "sacrificial-guard",
+   "name": "Sacrificial Guard",
+   "kind": "skill",
+   "rarity": "common",
+   "cost": "1",
+   "text": "Gain 7 Barrier. Consume 1 random card.",
+   "def": {
+    "id": "sacrificial-guard",
+    "name": "Sacrificial Guard",
+    "realm": "aurelion",
+    "rarity": "common",
+    "kind": "skill",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "barrier",
+      "amount": 7,
+      "to": "self"
+     },
+     {
+      "op": "exhaustCards",
+      "amount": 1,
+      "random": true
+     }
+    ],
+    "hero": "knight",
+    "upgrade": "sacrificial-guard+"
+   },
+   "upgrade": {
+    "id": "sacrificial-guard+",
+    "cost": "1",
+    "text": "Gain 10 Barrier. Consume 1 random card.",
+    "def": {
+     "id": "sacrificial-guard+",
+     "name": "Sacrificial Guard+",
+     "realm": "aurelion",
+     "rarity": "common",
+     "kind": "skill",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "barrier",
+       "amount": 10,
+       "to": "self"
+      },
+      {
+       "op": "exhaustCards",
+       "amount": 1,
+       "random": true
+      }
+     ],
+     "hero": "knight"
+    }
+   }
+  },
+  {
+   "id": "scorching-blow",
+   "name": "Scorching Blow",
+   "kind": "attack",
+   "rarity": "common",
+   "cost": "2",
+   "text": "Deal 17 damage. Consume 1 random card.",
+   "def": {
+    "id": "scorching-blow",
+    "name": "Scorching Blow",
+    "realm": "aurelion",
+    "rarity": "common",
+    "kind": "attack",
+    "cost": 2,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 17,
+      "to": "target"
+     },
+     {
+      "op": "exhaustCards",
+      "amount": 1,
+      "random": true
+     }
+    ],
+    "hero": "knight",
+    "upgrade": "scorching-blow+"
+   },
+   "upgrade": {
+    "id": "scorching-blow+",
+    "cost": "2",
+    "text": "Deal 20 damage. Consume 1 random card.",
+    "def": {
+     "id": "scorching-blow+",
+     "name": "Scorching Blow+",
+     "realm": "aurelion",
+     "rarity": "common",
+     "kind": "attack",
+     "cost": 2,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 20,
+       "to": "target"
+      },
+      {
+       "op": "exhaustCards",
+       "amount": 1,
+       "random": true
+      }
+     ],
+     "hero": "knight"
+    }
+   }
+  },
+  {
+   "id": "searing-fist",
+   "name": "Searing Fist",
+   "kind": "attack",
+   "rarity": "common",
+   "cost": "1",
+   "text": "Deal 10 damage. Double the Exposed on the target (at most +3). Consume.",
+   "def": {
+    "id": "searing-fist",
+    "name": "Searing Fist",
+    "realm": "aurelion",
+    "rarity": "common",
+    "kind": "attack",
+    "cost": 1,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 10,
+      "to": "target"
+     },
+     {
+      "op": "scaleStatus",
+      "status": "exposed",
+      "mult": 2,
+      "to": "target",
+      "max": 3
+     }
+    ],
+    "hero": "knight",
+    "exhaust": true,
+    "upgrade": "searing-fist+"
+   },
+   "upgrade": {
+    "id": "searing-fist+",
+    "cost": "1",
+    "text": "Deal 13 damage. Double the Exposed on the target (at most +5). Consume.",
+    "def": {
+     "id": "searing-fist+",
+     "name": "Searing Fist+",
+     "realm": "aurelion",
+     "rarity": "common",
+     "kind": "attack",
+     "cost": 1,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 13,
+       "to": "target"
+      },
+      {
+       "op": "scaleStatus",
+       "status": "exposed",
+       "mult": 2,
+       "to": "target",
+       "max": 5
+      }
+     ],
+     "hero": "knight",
+     "exhaust": true
+    }
+   }
+  },
+  {
+   "id": "twin-cut",
+   "name": "Twin Cut",
+   "kind": "attack",
+   "rarity": "common",
+   "cost": "1",
+   "text": "Deal 5 damage 2 times.",
+   "def": {
+    "id": "twin-cut",
+    "name": "Twin Cut",
+    "realm": "aurelion",
+    "rarity": "common",
+    "kind": "attack",
+    "cost": 1,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 5,
+      "hits": 2,
+      "to": "target"
+     }
+    ],
+    "hero": "knight",
+    "upgrade": "twin-cut+"
+   },
+   "upgrade": {
+    "id": "twin-cut+",
+    "cost": "1",
+    "text": "Deal 6 damage 2 times.",
+    "def": {
+     "id": "twin-cut+",
+     "name": "Twin Cut+",
+     "realm": "aurelion",
+     "rarity": "common",
+     "kind": "attack",
+     "cost": 1,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 6,
+       "hits": 2,
+       "to": "target"
+      }
+     ],
+     "hero": "knight"
+    }
+   }
+  },
+  {
+   "id": "wild-gamble",
+   "name": "Wild Gamble",
+   "kind": "skill",
+   "rarity": "common",
+   "cost": "1",
+   "text": "Play the top card of your draw pile and consume it.",
+   "def": {
+    "id": "wild-gamble",
+    "name": "Wild Gamble",
+    "realm": "aurelion",
+    "rarity": "common",
+    "kind": "skill",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "playPile",
+      "from": "draw",
+      "exhaust": true
+     }
+    ],
+    "hero": "knight",
+    "upgrade": "wild-gamble+"
+   },
+   "upgrade": {
+    "id": "wild-gamble+",
+    "cost": "0",
+    "text": "Play the top card of your draw pile and consume it.",
+    "def": {
+     "id": "wild-gamble+",
+     "name": "Wild Gamble+",
+     "realm": "aurelion",
+     "rarity": "common",
+     "kind": "skill",
+     "cost": 0,
+     "target": "none",
+     "effects": [
+      {
+       "op": "playPile",
+       "from": "draw",
+       "exhaust": true
+      }
+     ],
+     "hero": "knight"
+    }
+   }
+  },
+  {
+   "id": "berserkers-rage",
+   "name": "Berserker's Rage",
+   "kind": "skill",
+   "rarity": "uncommon",
+   "cost": "0",
+   "text": "This turn, whenever you play an Attack: Gain 3 Barrier.",
+   "def": {
+    "id": "berserkers-rage",
+    "name": "Berserker's Rage",
+    "realm": "aurelion",
+    "rarity": "uncommon",
+    "kind": "skill",
+    "cost": 0,
+    "target": "none",
+    "effects": [
+     {
+      "op": "power",
+      "when": "play",
+      "ops": [
+       {
+        "op": "barrier",
+        "amount": 3,
+        "to": "self"
+       }
+      ],
+      "filter": "attack",
+      "temp": true
+     }
+    ],
+    "hero": "knight",
+    "upgrade": "berserkers-rage+"
+   },
+   "upgrade": {
+    "id": "berserkers-rage+",
+    "cost": "0",
+    "text": "This turn, whenever you play an Attack: Gain 3 Barrier. Hold.",
+    "def": {
+     "id": "berserkers-rage+",
+     "name": "Berserker's Rage+",
+     "realm": "aurelion",
+     "rarity": "uncommon",
+     "kind": "skill",
+     "cost": 0,
+     "target": "none",
+     "effects": [
+      {
+       "op": "power",
+       "when": "play",
+       "ops": [
+        {
+         "op": "barrier",
+         "amount": 3,
+         "to": "self"
+        }
+       ],
+       "filter": "attack",
+       "temp": true
+      }
+     ],
+     "hero": "knight",
+     "retain": true
+    }
+   }
+  },
+  {
+   "id": "bitter-breath",
+   "name": "Bitter Breath",
+   "kind": "skill",
+   "rarity": "uncommon",
+   "cost": "1",
+   "text": "Consume every card in your hand that is not an Attack. Gain Barrier equal to 5 times the cards consumed this way.",
+   "def": {
+    "id": "bitter-breath",
+    "name": "Bitter Breath",
+    "realm": "aurelion",
+    "rarity": "uncommon",
+    "kind": "skill",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "exhaustCards",
+      "amount": 99,
+      "not": "attack"
+     },
+     {
+      "op": "barrier",
+      "amount": 0,
+      "to": "self",
+      "scale": {
+       "by": "exhaustedNow",
+       "mult": 5
+      }
+     }
+    ],
+    "hero": "knight",
+    "upgrade": "bitter-breath+"
+   },
+   "upgrade": {
+    "id": "bitter-breath+",
+    "cost": "1",
+    "text": "Consume every card in your hand that is not an Attack. Gain 3 (+5 per card consumed this way) Barrier.",
+    "def": {
+     "id": "bitter-breath+",
+     "name": "Bitter Breath+",
+     "realm": "aurelion",
+     "rarity": "uncommon",
+     "kind": "skill",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "exhaustCards",
+       "amount": 99,
+       "not": "attack"
+      },
+      {
+       "op": "barrier",
+       "amount": 3,
+       "to": "self",
+       "scale": {
+        "by": "exhaustedNow",
+        "mult": 5
+       }
+      }
+     ],
+     "hero": "knight"
+    }
+   }
+  },
+  {
+   "id": "blood-fire",
+   "name": "Blood Fire",
+   "kind": "power",
+   "rarity": "uncommon",
+   "cost": "1",
+   "text": "At the start of your turn: Lose 1 HP. Whenever you lose HP to your own cards: Deal 6 damage to ALL enemies.",
+   "def": {
+    "id": "blood-fire",
+    "name": "Blood Fire",
+    "realm": "aurelion",
+    "rarity": "uncommon",
+    "kind": "power",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "power",
+      "when": "turnStart",
+      "ops": [
+       {
+        "op": "loseHp",
+        "amount": 1,
+        "to": "self"
+       }
+      ]
+     },
+     {
+      "op": "power",
+      "when": "loseHp",
+      "ops": [
+       {
+        "op": "damage",
+        "amount": 6,
+        "to": "allFoes"
+       }
+      ]
+     }
+    ],
+    "hero": "knight",
+    "upgrade": "blood-fire+"
+   },
+   "upgrade": {
+    "id": "blood-fire+",
+    "cost": "0",
+    "text": "At the start of your turn: Lose 1 HP. Whenever you lose HP to your own cards: Deal 6 damage to ALL enemies.",
+    "def": {
+     "id": "blood-fire+",
+     "name": "Blood Fire+",
+     "realm": "aurelion",
+     "rarity": "uncommon",
+     "kind": "power",
+     "cost": 0,
+     "target": "none",
+     "effects": [
+      {
+       "op": "power",
+       "when": "turnStart",
+       "ops": [
+        {
+         "op": "loseHp",
+         "amount": 1,
+         "to": "self"
+        }
+       ]
+      },
+      {
+       "op": "power",
+       "when": "loseHp",
+       "ops": [
+        {
+         "op": "damage",
+         "amount": 6,
+         "to": "allFoes"
+        }
+       ]
+      }
+     ],
+     "hero": "knight"
+    }
+   }
+  },
+  {
+   "id": "borrowed-blade",
+   "name": "Borrowed Blade",
+   "kind": "skill",
+   "rarity": "uncommon",
+   "cost": "1",
+   "text": "Add a random Attack card from your pool to your hand (it costs 0 the next time you play it). Consume.",
+   "def": {
+    "id": "borrowed-blade",
+    "name": "Borrowed Blade",
+    "realm": "aurelion",
+    "rarity": "uncommon",
+    "kind": "skill",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "discover",
+      "kind": "attack",
+      "free": true
+     }
+    ],
+    "hero": "knight",
+    "exhaust": true,
+    "upgrade": "borrowed-blade+"
+   },
+   "upgrade": {
+    "id": "borrowed-blade+",
+    "cost": "1",
+    "text": "Add 2 random Attack cards from your pool to your hand (they cost 0 the next time you play them). Consume.",
+    "def": {
+     "id": "borrowed-blade+",
+     "name": "Borrowed Blade+",
+     "realm": "aurelion",
+     "rarity": "uncommon",
+     "kind": "skill",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "discover",
+       "kind": "attack",
+       "count": 2,
+       "free": true
+      }
+     ],
+     "hero": "knight",
+     "exhaust": true
+    }
+   }
+  },
+  {
+   "id": "brace-for-battle",
+   "name": "Brace for Battle",
+   "kind": "skill",
+   "rarity": "uncommon",
+   "cost": "2",
+   "text": "Gain Mana equal to the number of Attacks in your hand. No more Mana can be gained this turn.",
+   "def": {
+    "id": "brace-for-battle",
+    "name": "Brace for Battle",
+    "realm": "aurelion",
+    "rarity": "uncommon",
+    "kind": "skill",
+    "cost": 2,
+    "target": "none",
+    "effects": [
+     {
+      "op": "mana",
+      "amount": 0,
+      "scale": {
+       "by": "attacksInHand"
+      }
+     },
+     {
+      "op": "manaLock"
+     }
+    ],
+    "hero": "knight",
+    "upgrade": "brace-for-battle+"
+   },
+   "upgrade": {
+    "id": "brace-for-battle+",
+    "cost": "1",
+    "text": "Gain Mana equal to the number of Attacks in your hand. No more Mana can be gained this turn.",
+    "def": {
+     "id": "brace-for-battle+",
+     "name": "Brace for Battle+",
+     "realm": "aurelion",
+     "rarity": "uncommon",
+     "kind": "skill",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "mana",
+       "amount": 0,
+       "scale": {
+        "by": "attacksInHand"
+       }
+      },
+      {
+       "op": "manaLock"
+      }
+     ],
+     "hero": "knight"
+    }
+   }
+  },
+  {
+   "id": "break-guard",
+   "name": "Break Guard",
+   "kind": "attack",
+   "rarity": "uncommon",
+   "cost": "1",
+   "text": "Deal 8 damage. If the target is Exposed: Deal 8 damage.",
+   "def": {
+    "id": "break-guard",
+    "name": "Break Guard",
+    "realm": "aurelion",
+    "rarity": "uncommon",
+    "kind": "attack",
+    "cost": 1,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 8,
+      "to": "target"
+     },
+     {
+      "op": "when",
+      "by": "exposed",
+      "atLeast": 1,
+      "of": "target",
+      "ops": [
+       {
+        "op": "damage",
+        "amount": 8,
+        "to": "target"
+       }
+      ]
+     }
+    ],
+    "hero": "knight",
+    "upgrade": "break-guard+"
+   },
+   "upgrade": {
+    "id": "break-guard+",
+    "cost": "1",
+    "text": "Deal 11 damage. If the target is Exposed: Deal 11 damage.",
+    "def": {
+     "id": "break-guard+",
+     "name": "Break Guard+",
+     "realm": "aurelion",
+     "rarity": "uncommon",
+     "kind": "attack",
+     "cost": 1,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 11,
+       "to": "target"
+      },
+      {
+       "op": "when",
+       "by": "exposed",
+       "atLeast": 1,
+       "of": "target",
+       "ops": [
+        {
+         "op": "damage",
+         "amount": 11,
+         "to": "target"
+        }
+       ]
+      }
+     ],
+     "hero": "knight"
+    }
+   }
+  },
+  {
+   "id": "challenge",
+   "name": "Challenge",
+   "kind": "attack",
+   "rarity": "uncommon",
+   "cost": "2",
+   "text": "Deal 5 damage 2 times. Gain 2 Might. Apply 1 Might.",
+   "def": {
+    "id": "challenge",
+    "name": "Challenge",
+    "realm": "aurelion",
+    "rarity": "uncommon",
+    "kind": "attack",
+    "cost": 2,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 5,
+      "hits": 2,
+      "to": "target"
+     },
+     {
+      "op": "status",
+      "status": "might",
+      "amount": 2,
+      "to": "self"
+     },
+     {
+      "op": "status",
+      "status": "might",
+      "amount": 1,
+      "to": "target"
+     }
+    ],
+    "hero": "knight",
+    "upgrade": "challenge+"
+   },
+   "upgrade": {
+    "id": "challenge+",
+    "cost": "2",
+    "text": "Deal 5 damage 2 times. Gain 3 Might. Apply 1 Might.",
+    "def": {
+     "id": "challenge+",
+     "name": "Challenge+",
+     "realm": "aurelion",
+     "rarity": "uncommon",
+     "kind": "attack",
+     "cost": 2,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 5,
+       "hits": 2,
+       "to": "target"
+      },
+      {
+       "op": "status",
+       "status": "might",
+       "amount": 3,
+       "to": "self"
+      },
+      {
+       "op": "status",
+       "status": "might",
+       "amount": 1,
+       "to": "target"
+      }
+     ],
+     "hero": "knight"
+    }
+   }
+  },
+  {
+   "id": "charging-herd",
+   "name": "Charging Herd",
+   "kind": "power",
+   "rarity": "uncommon",
+   "cost": "2",
+   "text": "At the end of your turn: Play a random Attack from your hand against a random enemy.",
+   "def": {
+    "id": "charging-herd",
+    "name": "Charging Herd",
+    "realm": "aurelion",
+    "rarity": "uncommon",
+    "kind": "power",
+    "cost": 2,
+    "target": "none",
+    "effects": [
+     {
+      "op": "power",
+      "when": "turnEnd",
+      "ops": [
+       {
+        "op": "playPile",
+        "from": "hand",
+        "kind": "attack"
+       }
+      ]
+     }
+    ],
+    "hero": "knight",
+    "upgrade": "charging-herd+"
+   },
+   "upgrade": {
+    "id": "charging-herd+",
+    "cost": "1",
+    "text": "At the end of your turn: Play a random Attack from your hand against a random enemy.",
+    "def": {
+     "id": "charging-herd+",
+     "name": "Charging Herd+",
+     "realm": "aurelion",
+     "rarity": "uncommon",
+     "kind": "power",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "power",
+       "when": "turnEnd",
+       "ops": [
+        {
+         "op": "playPile",
+         "from": "hand",
+         "kind": "attack"
+        }
+       ]
+      }
+     ],
+     "hero": "knight"
+    }
+   }
+  },
+  {
+   "id": "cold-stare",
+   "name": "Cold Stare",
+   "kind": "skill",
+   "rarity": "uncommon",
+   "cost": "1",
+   "text": "Gain 8 Barrier. If you have consumed a card this turn: Gain 8 Barrier.",
+   "def": {
+    "id": "cold-stare",
+    "name": "Cold Stare",
+    "realm": "aurelion",
+    "rarity": "uncommon",
+    "kind": "skill",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "barrier",
+      "amount": 8,
+      "to": "self"
+     },
+     {
+      "op": "when",
+      "by": "exhaustedTurn",
+      "atLeast": 1,
+      "ops": [
+       {
+        "op": "barrier",
+        "amount": 8,
+        "to": "self"
+       }
+      ]
+     }
+    ],
+    "hero": "knight",
+    "upgrade": "cold-stare+"
+   },
+   "upgrade": {
+    "id": "cold-stare+",
+    "cost": "1",
+    "text": "Gain 11 Barrier. If you have consumed a card this turn: Gain 11 Barrier.",
+    "def": {
+     "id": "cold-stare+",
+     "name": "Cold Stare+",
+     "realm": "aurelion",
+     "rarity": "uncommon",
+     "kind": "skill",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "barrier",
+       "amount": 11,
+       "to": "self"
+      },
+      {
+       "op": "when",
+       "by": "exhaustedTurn",
+       "atLeast": 1,
+       "ops": [
+        {
+         "op": "barrier",
+         "amount": 11,
+         "to": "self"
+        }
+       ]
+      }
+     ],
+     "hero": "knight"
+    }
+   }
+  },
+  {
+   "id": "ember-ward",
+   "name": "Ember Ward",
+   "kind": "skill",
+   "rarity": "uncommon",
+   "cost": "2",
+   "text": "Gain 12 Barrier. Gain 4 Thorns until the enemy turn is over.",
+   "def": {
+    "id": "ember-ward",
+    "name": "Ember Ward",
+    "realm": "aurelion",
+    "rarity": "uncommon",
+    "kind": "skill",
+    "cost": 2,
+    "target": "none",
+    "effects": [
+     {
+      "op": "barrier",
+      "amount": 12,
+      "to": "self"
+     },
+     {
+      "op": "status",
+      "status": "thorns",
+      "amount": 4,
+      "to": "self",
+      "temp": "theirs"
+     }
+    ],
+    "hero": "knight",
+    "upgrade": "ember-ward+"
+   },
+   "upgrade": {
+    "id": "ember-ward+",
+    "cost": "2",
+    "text": "Gain 15 Barrier. Gain 5 Thorns until the enemy turn is over.",
+    "def": {
+     "id": "ember-ward+",
+     "name": "Ember Ward+",
+     "realm": "aurelion",
+     "rarity": "uncommon",
+     "kind": "skill",
+     "cost": 2,
+     "target": "none",
+     "effects": [
+      {
+       "op": "barrier",
+       "amount": 15,
+       "to": "self"
+      },
+      {
+       "op": "status",
+       "status": "thorns",
+       "amount": 5,
+       "to": "self",
+       "temp": "theirs"
+      }
+     ],
+     "hero": "knight"
+    }
+   }
+  },
+  {
+   "id": "giants-stance",
+   "name": "Giant's Stance",
+   "kind": "skill",
+   "rarity": "uncommon",
+   "cost": "1",
+   "text": "Gain 5 Barrier. Gain 1 Sturdy.",
+   "def": {
+    "id": "giants-stance",
+    "name": "Giant's Stance",
+    "realm": "aurelion",
+    "rarity": "uncommon",
+    "kind": "skill",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "barrier",
+      "amount": 5,
+      "to": "self"
+     },
+     {
+      "op": "status",
+      "status": "sturdy",
+      "amount": 1,
+      "to": "self"
+     }
+    ],
+    "hero": "knight",
+    "upgrade": "giants-stance+"
+   },
+   "upgrade": {
+    "id": "giants-stance+",
+    "cost": "1",
+    "text": "Gain 8 Barrier. Gain 1 Sturdy.",
+    "def": {
+     "id": "giants-stance+",
+     "name": "Giant's Stance+",
+     "realm": "aurelion",
+     "rarity": "uncommon",
+     "kind": "skill",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "barrier",
+       "amount": 8,
+       "to": "self"
+      },
+      {
+       "op": "status",
+       "status": "sturdy",
+       "amount": 1,
+       "to": "self"
+      }
+     ],
+     "hero": "knight"
+    }
+   }
+  },
+  {
+   "id": "grim-focus",
+   "name": "Grim Focus",
+   "kind": "skill",
+   "rarity": "uncommon",
+   "cost": "0",
+   "text": "Draw 3 cards. You cannot draw more cards this turn.",
+   "def": {
+    "id": "grim-focus",
+    "name": "Grim Focus",
+    "realm": "aurelion",
+    "rarity": "uncommon",
+    "kind": "skill",
+    "cost": 0,
+    "target": "none",
+    "effects": [
+     {
+      "op": "draw",
+      "amount": 3
+     },
+     {
+      "op": "drawLock"
+     }
+    ],
+    "hero": "knight",
+    "upgrade": "grim-focus+"
+   },
+   "upgrade": {
+    "id": "grim-focus+",
+    "cost": "0",
+    "text": "Draw 4 cards. You cannot draw more cards this turn.",
+    "def": {
+     "id": "grim-focus+",
+     "name": "Grim Focus+",
+     "realm": "aurelion",
+     "rarity": "uncommon",
+     "kind": "skill",
+     "cost": 0,
+     "target": "none",
+     "effects": [
+      {
+       "op": "draw",
+       "amount": 4
+      },
+      {
+       "op": "drawLock"
+      }
+     ],
+     "hero": "knight"
+    }
+   }
+  },
+  {
+   "id": "hammer-fall",
+   "name": "Hammer Fall",
+   "kind": "attack",
+   "rarity": "uncommon",
+   "cost": "3",
+   "text": "Deal 32 damage.",
+   "def": {
+    "id": "hammer-fall",
+    "name": "Hammer Fall",
+    "realm": "aurelion",
+    "rarity": "uncommon",
+    "kind": "attack",
+    "cost": 3,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 32,
+      "to": "target"
+     }
+    ],
+    "hero": "knight",
+    "upgrade": "hammer-fall+"
+   },
+   "upgrade": {
+    "id": "hammer-fall+",
+    "cost": "3",
+    "text": "Deal 35 damage.",
+    "def": {
+     "id": "hammer-fall+",
+     "name": "Hammer Fall+",
+     "realm": "aurelion",
+     "rarity": "uncommon",
+     "kind": "attack",
+     "cost": 3,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 35,
+       "to": "target"
+      }
+     ],
+     "hero": "knight"
+    }
+   }
+  },
+  {
+   "id": "howl-of-the-fallen",
+   "name": "Howl of the Fallen",
+   "kind": "attack",
+   "rarity": "uncommon",
+   "cost": "3",
+   "text": "At the start of your turn, if this is consumed, it is played for free and goes back. Deal 16 damage to ALL enemies. Consume.",
+   "def": {
+    "id": "howl-of-the-fallen",
+    "name": "Howl of the Fallen",
+    "realm": "aurelion",
+    "rarity": "uncommon",
+    "kind": "attack",
+    "cost": 3,
+    "target": "none",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 16,
+      "to": "allFoes"
+     }
+    ],
+    "hero": "knight",
+    "exhaust": true,
+    "replayFromExhaust": true,
+    "upgrade": "howl-of-the-fallen+"
+   },
+   "upgrade": {
+    "id": "howl-of-the-fallen+",
+    "cost": "3",
+    "text": "At the start of your turn, if this is consumed, it is played for free and goes back. Deal 19 damage to ALL enemies. Consume.",
+    "def": {
+     "id": "howl-of-the-fallen+",
+     "name": "Howl of the Fallen+",
+     "realm": "aurelion",
+     "rarity": "uncommon",
+     "kind": "attack",
+     "cost": 3,
+     "target": "none",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 19,
+       "to": "allFoes"
+      }
+     ],
+     "hero": "knight",
+     "exhaust": true,
+     "replayFromExhaust": true
+    }
+   }
+  },
+  {
+   "id": "intimidate",
+   "name": "Intimidate",
+   "kind": "skill",
+   "rarity": "uncommon",
+   "cost": "1",
+   "text": "Apply 1 Exposed. Gain Might equal to the target's Exposed. Consume.",
+   "def": {
+    "id": "intimidate",
+    "name": "Intimidate",
+    "realm": "aurelion",
+    "rarity": "uncommon",
+    "kind": "skill",
+    "cost": 1,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "status",
+      "status": "exposed",
+      "amount": 1,
+      "to": "target"
+     },
+     {
+      "op": "status",
+      "status": "might",
+      "amount": 0,
+      "to": "self",
+      "scale": {
+       "by": "exposed",
+       "of": "target"
+      }
+     }
+    ],
+    "hero": "knight",
+    "exhaust": true,
+    "upgrade": "intimidate+"
+   },
+   "upgrade": {
+    "id": "intimidate+",
+    "cost": "1",
+    "text": "Apply 2 Exposed. Gain Might equal to the target's Exposed. Consume.",
+    "def": {
+     "id": "intimidate+",
+     "name": "Intimidate+",
+     "realm": "aurelion",
+     "rarity": "uncommon",
+     "kind": "skill",
+     "cost": 1,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "status",
+       "status": "exposed",
+       "amount": 2,
+       "to": "target"
+      },
+      {
+       "op": "status",
+       "status": "might",
+       "amount": 0,
+       "to": "self",
+       "scale": {
+        "by": "exposed",
+        "of": "target"
+       }
+      }
+     ],
+     "hero": "knight",
+     "exhaust": true
+    }
+   }
+  },
+  {
+   "id": "jugglers-rhythm",
+   "name": "Juggler's Rhythm",
+   "kind": "power",
+   "rarity": "uncommon",
+   "cost": "1",
+   "text": "Whenever you play an Attack: If this is your third Attack this turn: Add a copy of that card to your hand.",
+   "def": {
+    "id": "jugglers-rhythm",
+    "name": "Juggler's Rhythm",
+    "realm": "aurelion",
+    "rarity": "uncommon",
+    "kind": "power",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "power",
+      "when": "play",
+      "ops": [
+       {
+        "op": "when",
+        "by": "attacksPlayed",
+        "atLeast": 3,
+        "atMost": 3,
+        "ops": [
+         {
+          "op": "copyPlayed"
+         }
+        ]
+       }
+      ],
+      "filter": "attack"
+     }
+    ],
+    "hero": "knight",
+    "upgrade": "jugglers-rhythm+"
+   },
+   "upgrade": {
+    "id": "jugglers-rhythm+",
+    "cost": "0",
+    "text": "Whenever you play an Attack: If this is your third Attack this turn: Add a copy of that card to your hand.",
+    "def": {
+     "id": "jugglers-rhythm+",
+     "name": "Juggler's Rhythm+",
+     "realm": "aurelion",
+     "rarity": "uncommon",
+     "kind": "power",
+     "cost": 0,
+     "target": "none",
+     "effects": [
+      {
+       "op": "power",
+       "when": "play",
+       "ops": [
+        {
+         "op": "when",
+         "by": "attacksPlayed",
+         "atLeast": 3,
+         "atMost": 3,
+         "ops": [
+          {
+           "op": "copyPlayed"
+          }
+         ]
+        }
+       ],
+       "filter": "attack"
+      }
+     ],
+     "hero": "knight"
+    }
+   }
+  },
+  {
+   "id": "mounting-fury",
+   "name": "Mounting Fury",
+   "kind": "attack",
+   "rarity": "uncommon",
+   "cost": "1",
+   "text": "Deal 9 damage, plus all it has grown. Every copy of this card gains 5 damage for the rest of the fight.",
+   "def": {
+    "id": "mounting-fury",
+    "name": "Mounting Fury",
+    "realm": "aurelion",
+    "rarity": "uncommon",
+    "kind": "attack",
+    "cost": 1,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 9,
+      "to": "target",
+      "scale": {
+       "by": "bonus"
+      }
+     },
+     {
+      "op": "forge",
+      "card": "mounting-fury",
+      "amount": 5
+     }
+    ],
+    "hero": "knight",
+    "upgrade": "mounting-fury+"
+   },
+   "upgrade": {
+    "id": "mounting-fury+",
+    "cost": "1",
+    "text": "Deal 9 damage, plus all it has grown. Every copy of this card gains 8 damage for the rest of the fight.",
+    "def": {
+     "id": "mounting-fury+",
+     "name": "Mounting Fury+",
+     "realm": "aurelion",
+     "rarity": "uncommon",
+     "kind": "attack",
+     "cost": 1,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 9,
+       "to": "target",
+       "scale": {
+        "by": "bonus"
+       }
+      },
+      {
+       "op": "forge",
+       "card": "mounting-fury",
+       "amount": 8
+      }
+     ],
+     "hero": "knight"
+    }
+   }
+  },
+  {
+   "id": "numbing-rite",
+   "name": "Numbing Rite",
+   "kind": "power",
+   "rarity": "uncommon",
+   "cost": "1",
+   "text": "Whenever a card is consumed: Gain 3 Barrier.",
+   "def": {
+    "id": "numbing-rite",
+    "name": "Numbing Rite",
+    "realm": "aurelion",
+    "rarity": "uncommon",
+    "kind": "power",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "power",
+      "when": "exhaust",
+      "ops": [
+       {
+        "op": "barrier",
+        "amount": 3,
+        "to": "self"
+       }
+      ]
+     }
+    ],
+    "hero": "knight",
+    "upgrade": "numbing-rite+"
+   },
+   "upgrade": {
+    "id": "numbing-rite+",
+    "cost": "0",
+    "text": "Whenever a card is consumed: Gain 3 Barrier.",
+    "def": {
+     "id": "numbing-rite+",
+     "name": "Numbing Rite+",
+     "realm": "aurelion",
+     "rarity": "uncommon",
+     "kind": "power",
+     "cost": 0,
+     "target": "none",
+     "effects": [
+      {
+       "op": "power",
+       "when": "exhaust",
+       "ops": [
+        {
+         "op": "barrier",
+         "amount": 3,
+         "to": "self"
+        }
+       ]
+      }
+     ],
+     "hero": "knight"
+    }
+   }
+  },
+  {
+   "id": "pact-of-embers",
+   "name": "Pact of Embers",
+   "kind": "skill",
+   "rarity": "uncommon",
+   "cost": "1",
+   "text": "Consume 1 card. Draw 2 cards.",
+   "def": {
+    "id": "pact-of-embers",
+    "name": "Pact of Embers",
+    "realm": "aurelion",
+    "rarity": "uncommon",
+    "kind": "skill",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "exhaustCards",
+      "amount": 1
+     },
+     {
+      "op": "draw",
+      "amount": 2
+     }
+    ],
+    "hero": "knight",
+    "upgrade": "pact-of-embers+"
+   },
+   "upgrade": {
+    "id": "pact-of-embers+",
+    "cost": "1",
+    "text": "Consume 1 card. Draw 3 cards.",
+    "def": {
+     "id": "pact-of-embers+",
+     "name": "Pact of Embers+",
+     "realm": "aurelion",
+     "rarity": "uncommon",
+     "kind": "skill",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "exhaustCards",
+       "amount": 1
+      },
+      {
+       "op": "draw",
+       "amount": 3
+      }
+     ],
+     "hero": "knight"
+    }
+   }
+  },
+  {
+   "id": "pile-on",
+   "name": "Pile On",
+   "kind": "attack",
+   "rarity": "uncommon",
+   "cost": "0",
+   "text": "Deal 4 (+2 per Exposed on the target) damage.",
+   "def": {
+    "id": "pile-on",
+    "name": "Pile On",
+    "realm": "aurelion",
+    "rarity": "uncommon",
+    "kind": "attack",
+    "cost": 0,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 4,
+      "to": "target",
+      "scale": {
+       "by": "exposed",
+       "mult": 2,
+       "of": "target"
+      }
+     }
+    ],
+    "hero": "knight",
+    "upgrade": "pile-on+"
+   },
+   "upgrade": {
+    "id": "pile-on+",
+    "cost": "0",
+    "text": "Deal 7 (+2 per Exposed on the target) damage.",
+    "def": {
+     "id": "pile-on+",
+     "name": "Pile On+",
+     "realm": "aurelion",
+     "rarity": "uncommon",
+     "kind": "attack",
+     "cost": 0,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 7,
+       "to": "target",
+       "scale": {
+        "by": "exposed",
+        "mult": 2,
+        "of": "target"
+       }
+      }
+     ],
+     "hero": "knight"
+    }
+   }
+  },
+  {
+   "id": "plunder",
+   "name": "Plunder",
+   "kind": "attack",
+   "rarity": "uncommon",
+   "cost": "1",
+   "text": "Deal 6 damage. Draw cards until you draw a card that is not an Attack.",
+   "def": {
+    "id": "plunder",
+    "name": "Plunder",
+    "realm": "aurelion",
+    "rarity": "uncommon",
+    "kind": "attack",
+    "cost": 1,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 6,
+      "to": "target"
+     },
+     {
+      "op": "drawUntil",
+      "not": "attack"
+     }
+    ],
+    "hero": "knight",
+    "upgrade": "plunder+"
+   },
+   "upgrade": {
+    "id": "plunder+",
+    "cost": "1",
+    "text": "Deal 9 damage. Draw cards until you draw a card that is not an Attack.",
+    "def": {
+     "id": "plunder+",
+     "name": "Plunder+",
+     "realm": "aurelion",
+     "rarity": "uncommon",
+     "kind": "attack",
+     "cost": 1,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 9,
+       "to": "target"
+      },
+      {
+       "op": "drawUntil",
+       "not": "attack"
+      }
+     ],
+     "hero": "knight"
+    }
+   }
+  },
+  {
+   "id": "provoke",
+   "name": "Provoke",
+   "kind": "skill",
+   "rarity": "uncommon",
+   "cost": "1",
+   "text": "Gain 7 Barrier. Apply 1 Exposed.",
+   "def": {
+    "id": "provoke",
+    "name": "Provoke",
+    "realm": "aurelion",
+    "rarity": "uncommon",
+    "kind": "skill",
+    "cost": 1,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "barrier",
+      "amount": 7,
+      "to": "self"
+     },
+     {
+      "op": "status",
+      "status": "exposed",
+      "amount": 1,
+      "to": "target"
+     }
+    ],
+    "hero": "knight",
+    "upgrade": "provoke+"
+   },
+   "upgrade": {
+    "id": "provoke+",
+    "cost": "1",
+    "text": "Gain 10 Barrier. Apply 2 Exposed.",
+    "def": {
+     "id": "provoke+",
+     "name": "Provoke+",
+     "realm": "aurelion",
+     "rarity": "uncommon",
+     "kind": "skill",
+     "cost": 1,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "barrier",
+       "amount": 10,
+       "to": "self"
+      },
+      {
+       "op": "status",
+       "status": "exposed",
+       "amount": 2,
+       "to": "target"
+      }
+     ],
+     "hero": "knight"
+    }
+   }
+  },
+  {
+   "id": "reckless-smite",
+   "name": "Reckless Smite",
+   "kind": "attack",
+   "rarity": "uncommon",
+   "cost": "1",
+   "text": "Lose 2 HP. Deal 15 damage.",
+   "def": {
+    "id": "reckless-smite",
+    "name": "Reckless Smite",
+    "realm": "aurelion",
+    "rarity": "uncommon",
+    "kind": "attack",
+    "cost": 1,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "loseHp",
+      "amount": 2,
+      "to": "self"
+     },
+     {
+      "op": "damage",
+      "amount": 15,
+      "to": "target"
+     }
+    ],
+    "hero": "knight",
+    "upgrade": "reckless-smite+"
+   },
+   "upgrade": {
+    "id": "reckless-smite+",
+    "cost": "1",
+    "text": "Lose 1 HP. Deal 18 damage.",
+    "def": {
+     "id": "reckless-smite+",
+     "name": "Reckless Smite+",
+     "realm": "aurelion",
+     "rarity": "uncommon",
+     "kind": "attack",
+     "cost": 1,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "loseHp",
+       "amount": 1,
+       "to": "self"
+      },
+      {
+       "op": "damage",
+       "amount": 18,
+       "to": "target"
+      }
+     ],
+     "hero": "knight"
+    }
+   }
+  },
+  {
+   "id": "relentless-push",
+   "name": "Relentless Push",
+   "kind": "attack",
+   "rarity": "uncommon",
+   "cost": "2",
+   "text": "Deal 12 damage. Gain 1 Free Attack.",
+   "def": {
+    "id": "relentless-push",
+    "name": "Relentless Push",
+    "realm": "aurelion",
+    "rarity": "uncommon",
+    "kind": "attack",
+    "cost": 2,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 12,
+      "to": "target"
+     },
+     {
+      "op": "status",
+      "status": "freeattack",
+      "amount": 1,
+      "to": "self"
+     }
+    ],
+    "hero": "knight",
+    "upgrade": "relentless-push+"
+   },
+   "upgrade": {
+    "id": "relentless-push+",
+    "cost": "2",
+    "text": "Deal 15 damage. Gain 1 Free Attack.",
+    "def": {
+     "id": "relentless-push+",
+     "name": "Relentless Push+",
+     "realm": "aurelion",
+     "rarity": "uncommon",
+     "kind": "attack",
+     "cost": 2,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 15,
+       "to": "target"
+      },
+      {
+       "op": "status",
+       "status": "freeattack",
+       "amount": 1,
+       "to": "self"
+      }
+     ],
+     "hero": "knight"
+    }
+   }
+  },
+  {
+   "id": "rising-fist",
+   "name": "Rising Fist",
+   "kind": "attack",
+   "rarity": "uncommon",
+   "cost": "2",
+   "text": "Deal 13 damage. Apply 1 Faltering. Apply 1 Exposed.",
+   "def": {
+    "id": "rising-fist",
+    "name": "Rising Fist",
+    "realm": "aurelion",
+    "rarity": "uncommon",
+    "kind": "attack",
+    "cost": 2,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 13,
+      "to": "target"
+     },
+     {
+      "op": "status",
+      "status": "faltering",
+      "amount": 1,
+      "to": "target"
+     },
+     {
+      "op": "status",
+      "status": "exposed",
+      "amount": 1,
+      "to": "target"
+     }
+    ],
+    "hero": "knight",
+    "upgrade": "rising-fist+"
+   },
+   "upgrade": {
+    "id": "rising-fist+",
+    "cost": "2",
+    "text": "Deal 16 damage. Apply 2 Faltering. Apply 2 Exposed.",
+    "def": {
+     "id": "rising-fist+",
+     "name": "Rising Fist+",
+     "realm": "aurelion",
+     "rarity": "uncommon",
+     "kind": "attack",
+     "cost": 2,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 16,
+       "to": "target"
+      },
+      {
+       "op": "status",
+       "status": "faltering",
+       "amount": 2,
+       "to": "target"
+      },
+      {
+       "op": "status",
+       "status": "exposed",
+       "amount": 2,
+       "to": "target"
+      }
+     ],
+     "hero": "knight"
+    }
+   }
+  },
+  {
+   "id": "ritual-of-ash",
+   "name": "Ritual of Ash",
+   "kind": "skill",
+   "rarity": "uncommon",
+   "cost": "1",
+   "text": "If you have consumed a card this turn: Gain 3 Mana. Consume.",
+   "def": {
+    "id": "ritual-of-ash",
+    "name": "Ritual of Ash",
+    "realm": "aurelion",
+    "rarity": "uncommon",
+    "kind": "skill",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "when",
+      "by": "exhaustedTurn",
+      "atLeast": 1,
+      "ops": [
+       {
+        "op": "mana",
+        "amount": 3
+       }
+      ]
+     }
+    ],
+    "hero": "knight",
+    "exhaust": true,
+    "upgrade": "ritual-of-ash+"
+   },
+   "upgrade": {
+    "id": "ritual-of-ash+",
+    "cost": "0",
+    "text": "If you have consumed a card this turn: Gain 3 Mana. Consume.",
+    "def": {
+     "id": "ritual-of-ash+",
+     "name": "Ritual of Ash+",
+     "realm": "aurelion",
+     "rarity": "uncommon",
+     "kind": "skill",
+     "cost": 0,
+     "target": "none",
+     "effects": [
+      {
+       "op": "when",
+       "by": "exhaustedTurn",
+       "atLeast": 1,
+       "ops": [
+        {
+         "op": "mana",
+         "amount": 3
+        }
+       ]
+      }
+     ],
+     "hero": "knight",
+     "exhaust": true
+    }
+   }
+  },
+  {
+   "id": "scar-over",
+   "name": "Scar Over",
+   "kind": "power",
+   "rarity": "uncommon",
+   "cost": "1",
+   "text": "Whenever you lose HP to your own cards: Gain 1 Might.",
+   "def": {
+    "id": "scar-over",
+    "name": "Scar Over",
+    "realm": "aurelion",
+    "rarity": "uncommon",
+    "kind": "power",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "power",
+      "when": "loseHp",
+      "ops": [
+       {
+        "op": "status",
+        "status": "might",
+        "amount": 1,
+        "to": "self"
+       }
+      ]
+     }
+    ],
+    "hero": "knight",
+    "upgrade": "scar-over+"
+   },
+   "upgrade": {
+    "id": "scar-over+",
+    "cost": "0",
+    "text": "Whenever you lose HP to your own cards: Gain 1 Might.",
+    "def": {
+     "id": "scar-over+",
+     "name": "Scar Over+",
+     "realm": "aurelion",
+     "rarity": "uncommon",
+     "kind": "power",
+     "cost": 0,
+     "target": "none",
+     "effects": [
+      {
+       "op": "power",
+       "when": "loseHp",
+       "ops": [
+        {
+         "op": "status",
+         "status": "might",
+         "amount": 1,
+         "to": "self"
+        }
+       ]
+      }
+     ],
+     "hero": "knight"
+    }
+   }
+  },
+  {
+   "id": "scent-of-weakness",
+   "name": "Scent of Weakness",
+   "kind": "power",
+   "rarity": "uncommon",
+   "cost": "1",
+   "text": "Whenever you apply Exposed to an enemy: Draw 1 card.",
+   "def": {
+    "id": "scent-of-weakness",
+    "name": "Scent of Weakness",
+    "realm": "aurelion",
+    "rarity": "uncommon",
+    "kind": "power",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "power",
+      "when": "exposeFoe",
+      "ops": [
+       {
+        "op": "draw",
+        "amount": 1
+       }
+      ]
+     }
+    ],
+    "hero": "knight",
+    "upgrade": "scent-of-weakness+"
+   },
+   "upgrade": {
+    "id": "scent-of-weakness+",
+    "cost": "0",
+    "text": "Whenever you apply Exposed to an enemy: Draw 1 card.",
+    "def": {
+     "id": "scent-of-weakness+",
+     "name": "Scent of Weakness+",
+     "realm": "aurelion",
+     "rarity": "uncommon",
+     "kind": "power",
+     "cost": 0,
+     "target": "none",
+     "effects": [
+      {
+       "op": "power",
+       "when": "exposeFoe",
+       "ops": [
+        {
+         "op": "draw",
+         "amount": 1
+        }
+       ]
+      }
+     ],
+     "hero": "knight"
+    }
+   }
+  },
+  {
+   "id": "smoldering-blow",
+   "name": "Smoldering Blow",
+   "kind": "attack",
+   "rarity": "uncommon",
+   "cost": "1",
+   "text": "Deal 6 (+1 per consumed card) damage.",
+   "def": {
+    "id": "smoldering-blow",
+    "name": "Smoldering Blow",
+    "realm": "aurelion",
+    "rarity": "uncommon",
+    "kind": "attack",
+    "cost": 1,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 6,
+      "to": "target",
+      "scale": {
+       "by": "exhausted"
+      }
+     }
+    ],
+    "hero": "knight",
+    "upgrade": "smoldering-blow+"
+   },
+   "upgrade": {
+    "id": "smoldering-blow+",
+    "cost": "1",
+    "text": "Deal 9 (+1 per consumed card) damage.",
+    "def": {
+     "id": "smoldering-blow+",
+     "name": "Smoldering Blow+",
+     "realm": "aurelion",
+     "rarity": "uncommon",
+     "kind": "attack",
+     "cost": 1,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 9,
+       "to": "target",
+       "scale": {
+        "by": "exhausted"
+       }
+      }
+     ],
+     "hero": "knight"
+    }
+   }
+  },
+  {
+   "id": "spiteful-jab",
+   "name": "Spiteful Jab",
+   "kind": "attack",
+   "rarity": "uncommon",
+   "cost": "0",
+   "text": "Deal 6 damage. If you have lost HP this turn: Deal 6 damage.",
+   "def": {
+    "id": "spiteful-jab",
+    "name": "Spiteful Jab",
+    "realm": "aurelion",
+    "rarity": "uncommon",
+    "kind": "attack",
+    "cost": 0,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 6,
+      "to": "target"
+     },
+     {
+      "op": "when",
+      "by": "hpLostTurn",
+      "atLeast": 1,
+      "ops": [
+       {
+        "op": "damage",
+        "amount": 6,
+        "to": "target"
+       }
+      ]
+     }
+    ],
+    "hero": "knight",
+    "upgrade": "spiteful-jab+"
+   },
+   "upgrade": {
+    "id": "spiteful-jab+",
+    "cost": "0",
+    "text": "Deal 9 damage. If you have lost HP this turn: Deal 9 damage.",
+    "def": {
+     "id": "spiteful-jab+",
+     "name": "Spiteful Jab+",
+     "realm": "aurelion",
+     "rarity": "uncommon",
+     "kind": "attack",
+     "cost": 0,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 9,
+       "to": "target"
+      },
+      {
+       "op": "when",
+       "by": "hpLostTurn",
+       "atLeast": 1,
+       "ops": [
+        {
+         "op": "damage",
+         "amount": 9,
+         "to": "target"
+        }
+       ]
+      }
+     ],
+     "hero": "knight"
+    }
+   }
+  },
+  {
+   "id": "steel-resolve",
+   "name": "Steel Resolve",
+   "kind": "power",
+   "rarity": "uncommon",
+   "cost": "1",
+   "text": "Gain 2 Might for the rest of the fight.",
+   "def": {
+    "id": "steel-resolve",
+    "name": "Steel Resolve",
+    "realm": "aurelion",
+    "rarity": "uncommon",
+    "kind": "power",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "status",
+      "status": "might",
+      "amount": 2,
+      "to": "self"
+     }
+    ],
+    "hero": "knight",
+    "upgrade": "steel-resolve+"
+   },
+   "upgrade": {
+    "id": "steel-resolve+",
+    "cost": "1",
+    "text": "Gain 3 Might for the rest of the fight.",
+    "def": {
+     "id": "steel-resolve+",
+     "name": "Steel Resolve+",
+     "realm": "aurelion",
+     "rarity": "uncommon",
+     "kind": "power",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "status",
+       "status": "might",
+       "amount": 3,
+       "to": "self"
+      }
+     ],
+     "hero": "knight"
+    }
+   }
+  },
+  {
+   "id": "stoneskin",
+   "name": "Stoneskin",
+   "kind": "power",
+   "rarity": "uncommon",
+   "cost": "1",
+   "text": "Gain 4 Plating.",
+   "def": {
+    "id": "stoneskin",
+    "name": "Stoneskin",
+    "realm": "aurelion",
+    "rarity": "uncommon",
+    "kind": "power",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "status",
+      "status": "plating",
+      "amount": 4,
+      "to": "self"
+     }
+    ],
+    "hero": "knight",
+    "upgrade": "stoneskin+"
+   },
+   "upgrade": {
+    "id": "stoneskin+",
+    "cost": "1",
+    "text": "Gain 6 Plating.",
+    "def": {
+     "id": "stoneskin+",
+     "name": "Stoneskin+",
+     "realm": "aurelion",
+     "rarity": "uncommon",
+     "kind": "power",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "status",
+       "status": "plating",
+       "amount": 6,
+       "to": "self"
+      }
+     ],
+     "hero": "knight"
+    }
+   }
+  },
+  {
+   "id": "trampling-charge",
+   "name": "Trampling Charge",
+   "kind": "attack",
+   "rarity": "uncommon",
+   "cost": "3",
+   "text": "Costs 1 less for each Attack played this turn. Deal 12 damage to ALL enemies.",
+   "def": {
+    "id": "trampling-charge",
+    "name": "Trampling Charge",
+    "realm": "aurelion",
+    "rarity": "uncommon",
+    "kind": "attack",
+    "cost": 3,
+    "target": "none",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 12,
+      "to": "allFoes"
+     }
+    ],
+    "hero": "knight",
+    "cheaperPerAttack": 1,
+    "upgrade": "trampling-charge+"
+   },
+   "upgrade": {
+    "id": "trampling-charge+",
+    "cost": "3",
+    "text": "Costs 1 less for each Attack played this turn. Deal 15 damage to ALL enemies.",
+    "def": {
+     "id": "trampling-charge+",
+     "name": "Trampling Charge+",
+     "realm": "aurelion",
+     "rarity": "uncommon",
+     "kind": "attack",
+     "cost": 3,
+     "target": "none",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 15,
+       "to": "allFoes"
+      }
+     ],
+     "hero": "knight",
+     "cheaperPerAttack": 1
+    }
+   }
+  },
+  {
+   "id": "war-drums",
+   "name": "War Drums",
+   "kind": "power",
+   "rarity": "uncommon",
+   "cost": "0",
+   "text": "Draw 2 cards. At the start of your turn: Consume the top card of your draw pile.",
+   "def": {
+    "id": "war-drums",
+    "name": "War Drums",
+    "realm": "aurelion",
+    "rarity": "uncommon",
+    "kind": "power",
+    "cost": 0,
+    "target": "none",
+    "effects": [
+     {
+      "op": "draw",
+      "amount": 2
+     },
+     {
+      "op": "power",
+      "when": "turnStart",
+      "ops": [
+       {
+        "op": "exhaustTop",
+        "amount": 1
+       }
+      ]
+     }
+    ],
+    "hero": "knight",
+    "upgrade": "war-drums+"
+   },
+   "upgrade": {
+    "id": "war-drums+",
+    "cost": "0",
+    "text": "Draw 3 cards. At the start of your turn: Consume the top card of your draw pile.",
+    "def": {
+     "id": "war-drums+",
+     "name": "War Drums+",
+     "realm": "aurelion",
+     "rarity": "uncommon",
+     "kind": "power",
+     "cost": 0,
+     "target": "none",
+     "effects": [
+      {
+       "op": "draw",
+       "amount": 3
+      },
+      {
+       "op": "power",
+       "when": "turnStart",
+       "ops": [
+        {
+         "op": "exhaustTop",
+         "amount": 1
+        }
+       ]
+      }
+     ],
+     "hero": "knight"
+    }
+   }
+  },
+  {
+   "id": "whirling-blade",
+   "name": "Whirling Blade",
+   "kind": "attack",
+   "rarity": "uncommon",
+   "cost": "X",
+   "text": "Deal 5 damage X times to ALL enemies.",
+   "def": {
+    "id": "whirling-blade",
+    "name": "Whirling Blade",
+    "realm": "aurelion",
+    "rarity": "uncommon",
+    "kind": "attack",
+    "cost": 0,
+    "target": "none",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 5,
+      "hits": 0,
+      "to": "allFoes",
+      "scale": {
+       "by": "x",
+       "into": "hits"
+      }
+     }
+    ],
+    "hero": "knight",
+    "x": true,
+    "upgrade": "whirling-blade+"
+   },
+   "upgrade": {
+    "id": "whirling-blade+",
+    "cost": "X",
+    "text": "X is 1 higher. Deal 5 damage X times to ALL enemies.",
+    "def": {
+     "id": "whirling-blade+",
+     "name": "Whirling Blade+",
+     "realm": "aurelion",
+     "rarity": "uncommon",
+     "kind": "attack",
+     "cost": 0,
+     "target": "none",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 5,
+       "hits": 0,
+       "to": "allFoes",
+       "scale": {
+        "by": "x",
+        "into": "hits"
+       }
+      }
+     ],
+     "hero": "knight",
+     "x": true,
+     "xBonus": 1
+    }
+   }
+  },
+  {
+   "id": "ashen-reckoning",
+   "name": "Ashen Reckoning",
+   "kind": "attack",
+   "rarity": "rare",
+   "cost": "0",
+   "text": "Only playable with 3 or more cards consumed. Deal 17 damage to ALL enemies.",
+   "def": {
+    "id": "ashen-reckoning",
+    "name": "Ashen Reckoning",
+    "realm": "aurelion",
+    "rarity": "rare",
+    "kind": "attack",
+    "cost": 0,
+    "target": "none",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 17,
+      "to": "allFoes"
+     }
+    ],
+    "hero": "knight",
+    "needsExhausted": 3,
+    "upgrade": "ashen-reckoning+"
+   },
+   "upgrade": {
+    "id": "ashen-reckoning+",
+    "cost": "0",
+    "text": "Only playable with 3 or more cards consumed. Deal 20 damage to ALL enemies.",
+    "def": {
+     "id": "ashen-reckoning+",
+     "name": "Ashen Reckoning+",
+     "realm": "aurelion",
+     "rarity": "rare",
+     "kind": "attack",
+     "cost": 0,
+     "target": "none",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 20,
+       "to": "allFoes"
+      }
+     ],
+     "hero": "knight",
+     "needsExhausted": 3
+    }
+   }
+  },
+  {
+   "id": "bastion-engine",
+   "name": "Bastion Engine",
+   "kind": "power",
+   "rarity": "rare",
+   "cost": "2",
+   "text": "Whenever you gain Barrier: Deal 5 damage to a random enemy.",
+   "def": {
+    "id": "bastion-engine",
+    "name": "Bastion Engine",
+    "realm": "aurelion",
+    "rarity": "rare",
+    "kind": "power",
+    "cost": 2,
+    "target": "none",
+    "effects": [
+     {
+      "op": "power",
+      "when": "barrier",
+      "ops": [
+       {
+        "op": "damage",
+        "amount": 5,
+        "to": "randomFoe"
+       }
+      ]
+     }
+    ],
+    "hero": "knight",
+    "upgrade": "bastion-engine+"
+   },
+   "upgrade": {
+    "id": "bastion-engine+",
+    "cost": "1",
+    "text": "Whenever you gain Barrier: Deal 5 damage to a random enemy.",
+    "def": {
+     "id": "bastion-engine+",
+     "name": "Bastion Engine+",
+     "realm": "aurelion",
+     "rarity": "rare",
+     "kind": "power",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "power",
+       "when": "barrier",
+       "ops": [
+        {
+         "op": "damage",
+         "amount": 5,
+         "to": "randomFoe"
+        }
+       ]
+      }
+     ],
+     "hero": "knight"
+    }
+   }
+  },
+  {
+   "id": "bloodfeast",
+   "name": "Bloodfeast",
+   "kind": "attack",
+   "rarity": "rare",
+   "cost": "1",
+   "text": "Deal 10 damage. If this is fatal: Raise your max HP by 3 for good. Consume.",
+   "def": {
+    "id": "bloodfeast",
+    "name": "Bloodfeast",
+    "realm": "aurelion",
+    "rarity": "rare",
+    "kind": "attack",
+    "cost": 1,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 10,
+      "to": "target",
+      "onKill": [
+       {
+        "op": "maxHp",
+        "amount": 3,
+        "to": "self"
+       }
+      ]
+     }
+    ],
+    "hero": "knight",
+    "exhaust": true,
+    "upgrade": "bloodfeast+"
+   },
+   "upgrade": {
+    "id": "bloodfeast+",
+    "cost": "1",
+    "text": "Deal 13 damage. If this is fatal: Raise your max HP by 3 for good. Consume.",
+    "def": {
+     "id": "bloodfeast+",
+     "name": "Bloodfeast+",
+     "realm": "aurelion",
+     "rarity": "rare",
+     "kind": "attack",
+     "cost": 1,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 13,
+       "to": "target",
+       "onKill": [
+        {
+         "op": "maxHp",
+         "amount": 3,
+         "to": "self"
+        }
+       ]
+      }
+     ],
+     "hero": "knight",
+     "exhaust": true
+    }
+   }
+  },
+  {
+   "id": "bloodied-plate",
+   "name": "Bloodied Plate",
+   "kind": "power",
+   "rarity": "rare",
+   "cost": "1",
+   "text": "At the start of your turn: Lose 1 HP. Gain 8 Barrier.",
+   "def": {
+    "id": "bloodied-plate",
+    "name": "Bloodied Plate",
+    "realm": "aurelion",
+    "rarity": "rare",
+    "kind": "power",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "power",
+      "when": "turnStart",
+      "ops": [
+       {
+        "op": "loseHp",
+        "amount": 1,
+        "to": "self"
+       },
+       {
+        "op": "barrier",
+        "amount": 8,
+        "to": "self"
+       }
+      ]
+     }
+    ],
+    "hero": "knight",
+    "upgrade": "bloodied-plate+"
+   },
+   "upgrade": {
+    "id": "bloodied-plate+",
+    "cost": "0",
+    "text": "At the start of your turn: Lose 1 HP. Gain 8 Barrier.",
+    "def": {
+     "id": "bloodied-plate+",
+     "name": "Bloodied Plate+",
+     "realm": "aurelion",
+     "rarity": "rare",
+     "kind": "power",
+     "cost": 0,
+     "target": "none",
+     "effects": [
+      {
+       "op": "power",
+       "when": "turnStart",
+       "ops": [
+        {
+         "op": "loseHp",
+         "amount": 1,
+         "to": "self"
+        },
+        {
+         "op": "barrier",
+         "amount": 8,
+         "to": "self"
+        }
+       ]
+      }
+     ],
+     "hero": "knight"
+    }
+   }
+  },
+  {
+   "id": "burn-it-all",
+   "name": "Burn It All",
+   "kind": "attack",
+   "rarity": "rare",
+   "cost": "2",
+   "text": "Deal damage equal to 7 times the number of cards in your hand. Consume your hand. Consume.",
+   "def": {
+    "id": "burn-it-all",
+    "name": "Burn It All",
+    "realm": "aurelion",
+    "rarity": "rare",
+    "kind": "attack",
+    "cost": 2,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 0,
+      "to": "target",
+      "scale": {
+       "by": "hand",
+       "mult": 7
+      }
+     },
+     {
+      "op": "exhaustCards",
+      "amount": 99
+     }
+    ],
+    "hero": "knight",
+    "exhaust": true,
+    "upgrade": "burn-it-all+"
+   },
+   "upgrade": {
+    "id": "burn-it-all+",
+    "cost": "2",
+    "text": "Deal damage equal to 10 times the number of cards in your hand. Consume your hand. Consume.",
+    "def": {
+     "id": "burn-it-all+",
+     "name": "Burn It All+",
+     "realm": "aurelion",
+     "rarity": "rare",
+     "kind": "attack",
+     "cost": 2,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 0,
+       "to": "target",
+       "scale": {
+        "by": "hand",
+        "mult": 10
+       }
+      },
+      {
+       "op": "exhaustCards",
+       "amount": 99
+      }
+     ],
+     "hero": "knight",
+     "exhaust": true
+    }
+   }
+  },
+  {
+   "id": "crimson-offering",
+   "name": "Crimson Offering",
+   "kind": "skill",
+   "rarity": "rare",
+   "cost": "0",
+   "text": "Lose 6 HP. Gain 2 Mana. Draw 3 cards. Consume.",
+   "def": {
+    "id": "crimson-offering",
+    "name": "Crimson Offering",
+    "realm": "aurelion",
+    "rarity": "rare",
+    "kind": "skill",
+    "cost": 0,
+    "target": "none",
+    "effects": [
+     {
+      "op": "loseHp",
+      "amount": 6,
+      "to": "self"
+     },
+     {
+      "op": "mana",
+      "amount": 2
+     },
+     {
+      "op": "draw",
+      "amount": 3
+     }
+    ],
+    "hero": "knight",
+    "exhaust": true,
+    "upgrade": "crimson-offering+"
+   },
+   "upgrade": {
+    "id": "crimson-offering+",
+    "cost": "0",
+    "text": "Lose 5 HP. Gain 2 Mana. Draw 4 cards. Consume.",
+    "def": {
+     "id": "crimson-offering+",
+     "name": "Crimson Offering+",
+     "realm": "aurelion",
+     "rarity": "rare",
+     "kind": "skill",
+     "cost": 0,
+     "target": "none",
+     "effects": [
+      {
+       "op": "loseHp",
+       "amount": 5,
+       "to": "self"
+      },
+      {
+       "op": "mana",
+       "amount": 2
+      },
+      {
+       "op": "draw",
+       "amount": 4
+      }
+     ],
+     "hero": "knight",
+     "exhaust": true
+    }
+   }
+  },
+  {
+   "id": "crippling-blow",
+   "name": "Crippling Blow",
+   "kind": "attack",
+   "rarity": "rare",
+   "cost": "3",
+   "text": "Deal 15 damage. Apply 10 Sapped until the end of their next turn.",
+   "def": {
+    "id": "crippling-blow",
+    "name": "Crippling Blow",
+    "realm": "aurelion",
+    "rarity": "rare",
+    "kind": "attack",
+    "cost": 3,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 15,
+      "to": "target"
+     },
+     {
+      "op": "status",
+      "status": "sapped",
+      "amount": 10,
+      "to": "target",
+      "temp": "theirs"
+     }
+    ],
+    "hero": "knight",
+    "upgrade": "crippling-blow+"
+   },
+   "upgrade": {
+    "id": "crippling-blow+",
+    "cost": "3",
+    "text": "Deal 18 damage. Apply 12 Sapped until the end of their next turn.",
+    "def": {
+     "id": "crippling-blow+",
+     "name": "Crippling Blow+",
+     "realm": "aurelion",
+     "rarity": "rare",
+     "kind": "attack",
+     "cost": 3,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 18,
+       "to": "target"
+      },
+      {
+       "op": "status",
+       "status": "sapped",
+       "amount": 12,
+       "to": "target",
+       "temp": "theirs"
+      }
+     ],
+     "hero": "knight"
+    }
+   }
+  },
+  {
+   "id": "cruel-streak",
+   "name": "Cruel Streak",
+   "kind": "power",
+   "rarity": "rare",
+   "cost": "1",
+   "text": "Gain 1 Cruelty.",
+   "def": {
+    "id": "cruel-streak",
+    "name": "Cruel Streak",
+    "realm": "aurelion",
+    "rarity": "rare",
+    "kind": "power",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "status",
+      "status": "cruelty",
+      "amount": 1,
+      "to": "self"
+     }
+    ],
+    "hero": "knight",
+    "upgrade": "cruel-streak+"
+   },
+   "upgrade": {
+    "id": "cruel-streak+",
+    "cost": "0",
+    "text": "Gain 1 Cruelty.",
+    "def": {
+     "id": "cruel-streak+",
+     "name": "Cruel Streak+",
+     "realm": "aurelion",
+     "rarity": "rare",
+     "kind": "power",
+     "cost": 0,
+     "target": "none",
+     "effects": [
+      {
+       "op": "status",
+       "status": "cruelty",
+       "amount": 1,
+       "to": "self"
+      }
+     ],
+     "hero": "knight"
+    }
+   }
+  },
+  {
+   "id": "double-down",
+   "name": "Double Down",
+   "kind": "skill",
+   "rarity": "rare",
+   "cost": "1",
+   "text": "Gain 1 Reverb.",
+   "def": {
+    "id": "double-down",
+    "name": "Double Down",
+    "realm": "aurelion",
+    "rarity": "rare",
+    "kind": "skill",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "status",
+      "status": "twinned",
+      "amount": 1,
+      "to": "self"
+     }
+    ],
+    "hero": "knight",
+    "upgrade": "double-down+"
+   },
+   "upgrade": {
+    "id": "double-down+",
+    "cost": "1",
+    "text": "Gain 2 Reverb.",
+    "def": {
+     "id": "double-down+",
+     "name": "Double Down+",
+     "realm": "aurelion",
+     "rarity": "rare",
+     "kind": "skill",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "status",
+       "status": "twinned",
+       "amount": 2,
+       "to": "self"
+      }
+     ],
+     "hero": "knight"
+    }
+   }
+  },
+  {
+   "id": "fan-the-flames",
+   "name": "Fan the Flames",
+   "kind": "skill",
+   "rarity": "rare",
+   "cost": "1",
+   "text": "Consume your hand. Add a random card from your pool to your hand for each card consumed this way.",
+   "def": {
+    "id": "fan-the-flames",
+    "name": "Fan the Flames",
+    "realm": "aurelion",
+    "rarity": "rare",
+    "kind": "skill",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "exhaustCards",
+      "amount": 99
+     },
+     {
+      "op": "discover",
+      "count": 0,
+      "scale": {
+       "by": "exhaustedNow"
+      }
+     }
+    ],
+    "hero": "knight",
+    "upgrade": "fan-the-flames+"
+   },
+   "upgrade": {
+    "id": "fan-the-flames+",
+    "cost": "1",
+    "text": "Consume your hand. Add a random card from your pool to your hand for each card consumed this way. Hold.",
+    "def": {
+     "id": "fan-the-flames+",
+     "name": "Fan the Flames+",
+     "realm": "aurelion",
+     "rarity": "rare",
+     "kind": "skill",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "exhaustCards",
+       "amount": 99
+      },
+      {
+       "op": "discover",
+       "count": 0,
+       "scale": {
+        "by": "exhaustedNow"
+       }
+      }
+     ],
+     "hero": "knight",
+     "retain": true
+    }
+   }
+  },
+  {
+   "id": "flailing-blows",
+   "name": "Flailing Blows",
+   "kind": "attack",
+   "rarity": "rare",
+   "cost": "1",
+   "text": "Consume a random Attack in your hand. Deal 4 damage 2 times. Deal damage equal to the damage of the Attacks consumed this way.",
+   "def": {
+    "id": "flailing-blows",
+    "name": "Flailing Blows",
+    "realm": "aurelion",
+    "rarity": "rare",
+    "kind": "attack",
+    "cost": 1,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "exhaustCards",
+      "amount": 1,
+      "random": true,
+      "only": "attack"
+     },
+     {
+      "op": "damage",
+      "amount": 4,
+      "hits": 2,
+      "to": "target"
+     },
+     {
+      "op": "damage",
+      "amount": 0,
+      "to": "target",
+      "scale": {
+       "by": "exhaustedDamage"
+      }
+     }
+    ],
+    "hero": "knight",
+    "upgrade": "flailing-blows+"
+   },
+   "upgrade": {
+    "id": "flailing-blows+",
+    "cost": "1",
+    "text": "Consume a random Attack in your hand. Deal 5 damage 2 times. Deal 3 (+1 per damage of the Attacks consumed this way) damage.",
+    "def": {
+     "id": "flailing-blows+",
+     "name": "Flailing Blows+",
+     "realm": "aurelion",
+     "rarity": "rare",
+     "kind": "attack",
+     "cost": 1,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "exhaustCards",
+       "amount": 1,
+       "random": true,
+       "only": "attack"
+      },
+      {
+       "op": "damage",
+       "amount": 5,
+       "hits": 2,
+       "to": "target"
+      },
+      {
+       "op": "damage",
+       "amount": 3,
+       "to": "target",
+       "scale": {
+        "by": "exhaustedDamage"
+       }
+      }
+     ],
+     "hero": "knight"
+    }
+   }
+  },
+  {
+   "id": "forsake",
+   "name": "Forsake",
+   "kind": "skill",
+   "rarity": "rare",
+   "cost": "0",
+   "text": "Lose 1 HP. Consume 1 card. Gain 1 Might.",
+   "def": {
+    "id": "forsake",
+    "name": "Forsake",
+    "realm": "aurelion",
+    "rarity": "rare",
+    "kind": "skill",
+    "cost": 0,
+    "target": "none",
+    "effects": [
+     {
+      "op": "loseHp",
+      "amount": 1,
+      "to": "self"
+     },
+     {
+      "op": "exhaustCards",
+      "amount": 1
+     },
+     {
+      "op": "status",
+      "status": "might",
+      "amount": 1,
+      "to": "self"
+     }
+    ],
+    "hero": "knight",
+    "upgrade": "forsake+"
+   },
+   "upgrade": {
+    "id": "forsake+",
+    "cost": "0",
+    "text": "Lose 1 HP. Consume 1 card. Gain 2 Might.",
+    "def": {
+     "id": "forsake+",
+     "name": "Forsake+",
+     "realm": "aurelion",
+     "rarity": "rare",
+     "kind": "skill",
+     "cost": 0,
+     "target": "none",
+     "effects": [
+      {
+       "op": "loseHp",
+       "amount": 1,
+       "to": "self"
+      },
+      {
+       "op": "exhaustCards",
+       "amount": 1
+      },
+      {
+       "op": "status",
+       "status": "might",
+       "amount": 2,
+       "to": "self"
+      }
+     ],
+     "hero": "knight"
+    }
+   }
+  },
+  {
+   "id": "immovable-oath",
+   "name": "Immovable Oath",
+   "kind": "skill",
+   "rarity": "rare",
+   "cost": "2",
+   "text": "Gain 30 Barrier. Consume.",
+   "def": {
+    "id": "immovable-oath",
+    "name": "Immovable Oath",
+    "realm": "aurelion",
+    "rarity": "rare",
+    "kind": "skill",
+    "cost": 2,
+    "target": "none",
+    "effects": [
+     {
+      "op": "barrier",
+      "amount": 30,
+      "to": "self"
+     }
+    ],
+    "hero": "knight",
+    "exhaust": true,
+    "upgrade": "immovable-oath+"
+   },
+   "upgrade": {
+    "id": "immovable-oath+",
+    "cost": "2",
+    "text": "Gain 33 Barrier. Consume.",
+    "def": {
+     "id": "immovable-oath+",
+     "name": "Immovable Oath+",
+     "realm": "aurelion",
+     "rarity": "rare",
+     "kind": "skill",
+     "cost": 2,
+     "target": "none",
+     "effects": [
+      {
+       "op": "barrier",
+       "amount": 33,
+       "to": "self"
+      }
+     ],
+     "hero": "knight",
+     "exhaust": true
+    }
+   }
+  },
+  {
+   "id": "inner-furnace",
+   "name": "Inner Furnace",
+   "kind": "power",
+   "rarity": "rare",
+   "cost": "2",
+   "text": "At the start of your turn: Gain 1 Mana.",
+   "def": {
+    "id": "inner-furnace",
+    "name": "Inner Furnace",
+    "realm": "aurelion",
+    "rarity": "rare",
+    "kind": "power",
+    "cost": 2,
+    "target": "none",
+    "effects": [
+     {
+      "op": "power",
+      "when": "turnStart",
+      "ops": [
+       {
+        "op": "mana",
+        "amount": 1
+       }
+      ]
+     }
+    ],
+    "hero": "knight",
+    "upgrade": "inner-furnace+"
+   },
+   "upgrade": {
+    "id": "inner-furnace+",
+    "cost": "1",
+    "text": "At the start of your turn: Gain 1 Mana.",
+    "def": {
+     "id": "inner-furnace+",
+     "name": "Inner Furnace+",
+     "realm": "aurelion",
+     "rarity": "rare",
+     "kind": "power",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "power",
+       "when": "turnStart",
+       "ops": [
+        {
+         "op": "mana",
+         "amount": 1
+        }
+       ]
+      }
+     ],
+     "hero": "knight"
+    }
+   }
+  },
+  {
+   "id": "raised-hell",
+   "name": "Raised Hell",
+   "kind": "power",
+   "rarity": "rare",
+   "cost": "2",
+   "text": "Whenever you draw a card: Play it against a random enemy if it is a Strike card.",
+   "def": {
+    "id": "raised-hell",
+    "name": "Raised Hell",
+    "realm": "aurelion",
+    "rarity": "rare",
+    "kind": "power",
+    "cost": 2,
+    "target": "none",
+    "effects": [
+     {
+      "op": "power",
+      "when": "draw",
+      "ops": [
+       {
+        "op": "playPile",
+        "from": "drawn",
+        "match": "strike"
+       }
+      ]
+     }
+    ],
+    "hero": "knight",
+    "upgrade": "raised-hell+"
+   },
+   "upgrade": {
+    "id": "raised-hell+",
+    "cost": "1",
+    "text": "Whenever you draw a card: Play it against a random enemy if it is a Strike card.",
+    "def": {
+     "id": "raised-hell+",
+     "name": "Raised Hell+",
+     "realm": "aurelion",
+     "rarity": "rare",
+     "kind": "power",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "power",
+       "when": "draw",
+       "ops": [
+        {
+         "op": "playPile",
+         "from": "drawn",
+         "match": "strike"
+        }
+       ]
+      }
+     ],
+     "hero": "knight"
+    }
+   }
+  },
+  {
+   "id": "rally",
+   "name": "Rally",
+   "kind": "skill",
+   "rarity": "rare",
+   "cost": "2",
+   "text": "Heal 10. Consume.",
+   "def": {
+    "id": "rally",
+    "name": "Rally",
+    "realm": "aurelion",
+    "rarity": "rare",
+    "kind": "skill",
+    "cost": 2,
+    "target": "none",
+    "effects": [
+     {
+      "op": "heal",
+      "amount": 10,
+      "to": "self"
+     }
+    ],
+    "hero": "knight",
+    "exhaust": true,
+    "upgrade": "rally+"
+   },
+   "upgrade": {
+    "id": "rally+",
+    "cost": "2",
+    "text": "Heal 13. Consume.",
+    "def": {
+     "id": "rally+",
+     "name": "Rally+",
+     "realm": "aurelion",
+     "rarity": "rare",
+     "kind": "skill",
+     "cost": 2,
+     "target": "none",
+     "effects": [
+      {
+       "op": "heal",
+       "amount": 13,
+       "to": "self"
+      }
+     ],
+     "hero": "knight",
+     "exhaust": true
+    }
+   }
+  },
+  {
+   "id": "rending-fury",
+   "name": "Rending Fury",
+   "kind": "attack",
+   "rarity": "rare",
+   "cost": "2",
+   "text": "Deal 5 damage, 1 more time per time you lost HP this fight.",
+   "def": {
+    "id": "rending-fury",
+    "name": "Rending Fury",
+    "realm": "aurelion",
+    "rarity": "rare",
+    "kind": "attack",
+    "cost": 2,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 5,
+      "to": "target",
+      "scale": {
+       "by": "hpLostFight",
+       "into": "hits"
+      }
+     }
+    ],
+    "hero": "knight",
+    "upgrade": "rending-fury+"
+   },
+   "upgrade": {
+    "id": "rending-fury+",
+    "cost": "2",
+    "text": "Deal 6 damage, 1 more time per time you lost HP this fight.",
+    "def": {
+     "id": "rending-fury+",
+     "name": "Rending Fury+",
+     "realm": "aurelion",
+     "rarity": "rare",
+     "kind": "attack",
+     "cost": 2,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 6,
+       "to": "target",
+       "scale": {
+        "by": "hpLostFight",
+        "into": "hits"
+       }
+      }
+     ],
+     "hero": "knight"
+    }
+   }
+  },
+  {
+   "id": "rite-of-recall",
+   "name": "Rite of Recall",
+   "kind": "power",
+   "rarity": "rare",
+   "cost": "2",
+   "text": "Whenever a card is consumed: Draw 1 card.",
+   "def": {
+    "id": "rite-of-recall",
+    "name": "Rite of Recall",
+    "realm": "aurelion",
+    "rarity": "rare",
+    "kind": "power",
+    "cost": 2,
+    "target": "none",
+    "effects": [
+     {
+      "op": "power",
+      "when": "exhaust",
+      "ops": [
+       {
+        "op": "draw",
+        "amount": 1
+       }
+      ]
+     }
+    ],
+    "hero": "knight",
+    "upgrade": "rite-of-recall+"
+   },
+   "upgrade": {
+    "id": "rite-of-recall+",
+    "cost": "1",
+    "text": "Whenever a card is consumed: Draw 1 card.",
+    "def": {
+     "id": "rite-of-recall+",
+     "name": "Rite of Recall+",
+     "realm": "aurelion",
+     "rarity": "rare",
+     "kind": "power",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "power",
+       "when": "exhaust",
+       "ops": [
+        {
+         "op": "draw",
+         "amount": 1
+        }
+       ]
+      }
+     ],
+     "hero": "knight"
+    }
+   }
+  },
+  {
+   "id": "stone-fury",
+   "name": "Stone Fury",
+   "kind": "skill",
+   "rarity": "rare",
+   "cost": "0",
+   "text": "Turn every Attack in your hand into a Giant Rock.",
+   "def": {
+    "id": "stone-fury",
+    "name": "Stone Fury",
+    "realm": "aurelion",
+    "rarity": "rare",
+    "kind": "skill",
+    "cost": 0,
+    "target": "none",
+    "effects": [
+     {
+      "op": "transform",
+      "kind": "attack",
+      "into": "giant-rock"
+     }
+    ],
+    "hero": "knight",
+    "upgrade": "stone-fury+"
+   },
+   "upgrade": {
+    "id": "stone-fury+",
+    "cost": "0",
+    "text": "Turn every Attack in your hand into a Giant Rock. Hold.",
+    "def": {
+     "id": "stone-fury+",
+     "name": "Stone Fury+",
+     "realm": "aurelion",
+     "rarity": "rare",
+     "kind": "skill",
+     "cost": 0,
+     "target": "none",
+     "effects": [
+      {
+       "op": "transform",
+       "kind": "attack",
+       "into": "giant-rock"
+      }
+     ],
+     "hero": "knight",
+     "retain": true
+    }
+   }
+  },
+  {
+   "id": "stone-stance",
+   "name": "Stone Stance",
+   "kind": "power",
+   "rarity": "rare",
+   "cost": "2",
+   "text": "Gain 1 Unmovable.",
+   "def": {
+    "id": "stone-stance",
+    "name": "Stone Stance",
+    "realm": "aurelion",
+    "rarity": "rare",
+    "kind": "power",
+    "cost": 2,
+    "target": "none",
+    "effects": [
+     {
+      "op": "status",
+      "status": "unmovable",
+      "amount": 1,
+      "to": "self"
+     }
+    ],
+    "hero": "knight",
+    "upgrade": "stone-stance+"
+   },
+   "upgrade": {
+    "id": "stone-stance+",
+    "cost": "1",
+    "text": "Gain 1 Unmovable.",
+    "def": {
+     "id": "stone-stance+",
+     "name": "Stone Stance+",
+     "realm": "aurelion",
+     "rarity": "rare",
+     "kind": "power",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "status",
+       "status": "unmovable",
+       "amount": 1,
+       "to": "self"
+      }
+     ],
+     "hero": "knight"
+    }
+   }
+  },
+  {
+   "id": "unbroken-wall",
+   "name": "Unbroken Wall",
+   "kind": "power",
+   "rarity": "rare",
+   "cost": "3",
+   "text": "Gain Fortified for the rest of the fight.",
+   "def": {
+    "id": "unbroken-wall",
+    "name": "Unbroken Wall",
+    "realm": "aurelion",
+    "rarity": "rare",
+    "kind": "power",
+    "cost": 3,
+    "target": "none",
+    "effects": [
+     {
+      "op": "status",
+      "status": "fortified",
+      "amount": 1,
+      "to": "self"
+     }
+    ],
+    "hero": "knight",
+    "upgrade": "unbroken-wall+"
+   },
+   "upgrade": {
+    "id": "unbroken-wall+",
+    "cost": "2",
+    "text": "Gain Fortified for the rest of the fight.",
+    "def": {
+     "id": "unbroken-wall+",
+     "name": "Unbroken Wall+",
+     "realm": "aurelion",
+     "rarity": "rare",
+     "kind": "power",
+     "cost": 2,
+     "target": "none",
+     "effects": [
+      {
+       "op": "status",
+       "status": "fortified",
+       "amount": 1,
+       "to": "self"
+      }
+     ],
+     "hero": "knight"
+    }
+   }
+  },
+  {
+   "id": "unforgiving-drill",
+   "name": "Unforgiving Drill",
+   "kind": "power",
+   "rarity": "rare",
+   "cost": "1",
+   "text": "At the start of your turn: Return a random Attack card from your discard pile to your hand. It is upgraded.",
+   "def": {
+    "id": "unforgiving-drill",
+    "name": "Unforgiving Drill",
+    "realm": "aurelion",
+    "rarity": "rare",
+    "kind": "power",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "power",
+      "when": "turnStart",
+      "ops": [
+       {
+        "op": "fetch",
+        "amount": 1,
+        "to": "hand",
+        "kind": "attack",
+        "upgrade": true
+       }
+      ]
+     }
+    ],
+    "hero": "knight",
+    "upgrade": "unforgiving-drill+"
+   },
+   "upgrade": {
+    "id": "unforgiving-drill+",
+    "cost": "0",
+    "text": "At the start of your turn: Return a random Attack card from your discard pile to your hand. It is upgraded.",
+    "def": {
+     "id": "unforgiving-drill+",
+     "name": "Unforgiving Drill+",
+     "realm": "aurelion",
+     "rarity": "rare",
+     "kind": "power",
+     "cost": 0,
+     "target": "none",
+     "effects": [
+      {
+       "op": "power",
+       "when": "turnStart",
+       "ops": [
+        {
+         "op": "fetch",
+         "amount": 1,
+         "to": "hand",
+         "kind": "attack",
+         "upgrade": true
+        }
+       ]
+      }
+     ],
+     "hero": "knight"
+    }
+   }
+  },
+  {
+   "id": "unholy-pact",
+   "name": "Unholy Pact",
+   "kind": "power",
+   "rarity": "rare",
+   "cost": "3",
+   "text": "Gain 1 Unbound.",
+   "def": {
+    "id": "unholy-pact",
+    "name": "Unholy Pact",
+    "realm": "aurelion",
+    "rarity": "rare",
+    "kind": "power",
+    "cost": 3,
+    "target": "none",
+    "effects": [
+     {
+      "op": "status",
+      "status": "unbound",
+      "amount": 1,
+      "to": "self"
+     }
+    ],
+    "hero": "knight",
+    "upgrade": "unholy-pact+"
+   },
+   "upgrade": {
+    "id": "unholy-pact+",
+    "cost": "2",
+    "text": "Gain 1 Unbound.",
+    "def": {
+     "id": "unholy-pact+",
+     "name": "Unholy Pact+",
+     "realm": "aurelion",
+     "rarity": "rare",
+     "kind": "power",
+     "cost": 2,
+     "target": "none",
+     "effects": [
+      {
+       "op": "status",
+       "status": "unbound",
+       "amount": 1,
+       "to": "self"
+      }
+     ],
+     "hero": "knight"
+    }
+   }
+  },
+  {
+   "id": "unravel",
+   "name": "Unravel",
+   "kind": "skill",
+   "rarity": "rare",
+   "cost": "X",
+   "text": "Play the top X cards of your draw pile.",
+   "def": {
+    "id": "unravel",
+    "name": "Unravel",
+    "realm": "aurelion",
+    "rarity": "rare",
+    "kind": "skill",
+    "cost": 0,
+    "target": "none",
+    "effects": [
+     {
+      "op": "playPile",
+      "from": "draw",
+      "amount": 0,
+      "scale": {
+       "by": "x"
+      }
+     }
+    ],
+    "hero": "knight",
+    "x": true,
+    "upgrade": "unravel+"
+   },
+   "upgrade": {
+    "id": "unravel+",
+    "cost": "X",
+    "text": "X is 1 higher. Play the top X cards of your draw pile.",
+    "def": {
+     "id": "unravel+",
+     "name": "Unravel+",
+     "realm": "aurelion",
+     "rarity": "rare",
+     "kind": "skill",
+     "cost": 0,
+     "target": "none",
+     "effects": [
+      {
+       "op": "playPile",
+       "from": "draw",
+       "amount": 0,
+       "scale": {
+        "by": "x"
+       }
+      }
+     ],
+     "hero": "knight",
+     "x": true,
+     "xBonus": 1
+    }
+   }
+  },
+  {
+   "id": "warlords-oath",
+   "name": "Warlord's Oath",
+   "kind": "power",
+   "rarity": "rare",
+   "cost": "3",
+   "text": "At the start of your turn: Gain 2 Might.",
+   "def": {
+    "id": "warlords-oath",
+    "name": "Warlord's Oath",
+    "realm": "aurelion",
+    "rarity": "rare",
+    "kind": "power",
+    "cost": 3,
+    "target": "none",
+    "effects": [
+     {
+      "op": "power",
+      "when": "turnStart",
+      "ops": [
+       {
+        "op": "status",
+        "status": "might",
+        "amount": 2,
+        "to": "self"
+       }
+      ]
+     }
+    ],
+    "hero": "knight",
+    "upgrade": "warlords-oath+"
+   },
+   "upgrade": {
+    "id": "warlords-oath+",
+    "cost": "2",
+    "text": "At the start of your turn: Gain 2 Might.",
+    "def": {
+     "id": "warlords-oath+",
+     "name": "Warlord's Oath+",
+     "realm": "aurelion",
+     "rarity": "rare",
+     "kind": "power",
+     "cost": 2,
+     "target": "none",
+     "effects": [
+      {
+       "op": "power",
+       "when": "turnStart",
+       "ops": [
+        {
+         "op": "status",
+         "status": "might",
+         "amount": 2,
+         "to": "self"
+        }
+       ]
+      }
+     ],
+     "hero": "knight"
+    }
+   }
+  },
+  {
+   "id": "wildfire",
+   "name": "Wildfire",
+   "kind": "attack",
+   "rarity": "rare",
+   "cost": "1",
+   "text": "Deal 8 (+2 per Attack played this turn) damage to ALL enemies.",
+   "def": {
+    "id": "wildfire",
+    "name": "Wildfire",
+    "realm": "aurelion",
+    "rarity": "rare",
+    "kind": "attack",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 8,
+      "to": "allFoes",
+      "scale": {
+       "by": "attacksPlayed",
+       "mult": 2
+      }
+     }
+    ],
+    "hero": "knight",
+    "upgrade": "wildfire+"
+   },
+   "upgrade": {
+    "id": "wildfire+",
+    "cost": "1",
+    "text": "Deal 11 (+2 per Attack played this turn) damage to ALL enemies.",
+    "def": {
+     "id": "wildfire+",
+     "name": "Wildfire+",
+     "realm": "aurelion",
+     "rarity": "rare",
+     "kind": "attack",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 11,
+       "to": "allFoes",
+       "scale": {
+        "by": "attacksPlayed",
+        "mult": 2
+       }
+      }
+     ],
+     "hero": "knight"
+    }
+   }
+  }
+ ]
+}

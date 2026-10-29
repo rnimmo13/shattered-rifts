@@ -1,0 +1,54 @@
+# Archive validation
+
+Run 2026-10-29T11:31:26.452Z on the archive of commit 82867b06861f3fc666323bd97483548239514b91 (archived 2026-10-29T11:31:23.301Z), by `tools/src/baselineVerify.ts`.
+It reads only the archive's own files. Everything passed.
+
+- PASS: knight: 83 cards, as the summary says
+- PASS: knight: the rarity counts add up to the card count ({"basic":1,"common":20,"token/special":1,"uncommon":35,"rare":26})
+- PASS: knight: every starter card (10) is in the archived database
+- PASS: knight: all 82 upgrades resolve to an archived "+" card
+- PASS: knight: every card in knight.json matches combat-db.json exactly
+- PASS: knight: the hero definition is archived
+- PASS: shaman: 84 cards, as the summary says
+- PASS: shaman: the rarity counts add up to the card count ({"basic":2,"common":20,"token/special":1,"uncommon":36,"rare":25})
+- PASS: shaman: every starter card (10) is in the archived database
+- PASS: shaman: all 84 upgrades resolve to an archived "+" card
+- PASS: shaman: every card in shaman.json matches combat-db.json exactly
+- PASS: shaman: the hero definition is archived
+- PASS: assassin: 84 cards, as the summary says
+- PASS: assassin: the rarity counts add up to the card count ({"basic":2,"common":20,"token/special":2,"uncommon":35,"rare":25})
+- PASS: assassin: every starter card (12) is in the archived database
+- PASS: assassin: all 83 upgrades resolve to an archived "+" card
+- PASS: assassin: every card in assassin.json matches combat-db.json exactly
+- PASS: assassin: the hero definition is archived
+- PASS: spellblade: 86 cards, as the summary says
+- PASS: spellblade: the rarity counts add up to the card count ({"basic":2,"common":20,"token/special":4,"uncommon":36,"rare":24})
+- PASS: spellblade: every starter card (10) is in the archived database
+- PASS: spellblade: all 85 upgrades resolve to an archived "+" card
+- PASS: spellblade: every card in spellblade.json matches combat-db.json exactly
+- PASS: spellblade: the hero definition is archived
+- PASS: necromancer: 87 cards, as the summary says
+- PASS: necromancer: the rarity counts add up to the card count ({"basic":2,"common":20,"token/special":2,"uncommon":36,"rare":27})
+- PASS: necromancer: every starter card (10) is in the archived database
+- PASS: necromancer: all 86 upgrades resolve to an archived "+" card
+- PASS: necromancer: every card in necromancer.json matches combat-db.json exactly
+- PASS: necromancer: the hero definition is archived
+- PASS: monk: 80 cards, as the summary says
+- PASS: monk: the rarity counts add up to the card count ({"basic":2,"common":20,"uncommon":30,"rare":28})
+- PASS: monk: every starter card (10) is in the archived database
+- PASS: monk: all 80 upgrades resolve to an archived "+" card
+- PASS: monk: every card in monk.json matches combat-db.json exactly
+- PASS: monk: the hero definition is archived
+- PASS: knight Sundering Blow: 2 Mana, 8 damage, 2 Exposed
+- PASS: knight Sundering Blow+: 11 damage, 3 Exposed
+- PASS: knight Oath of Iron: 8 Barrier, draw 1; + 11 Barrier, draw 2
+- PASS: knight Ember Ward: 12 Barrier, 4 Thorns until the enemy turn ends
+- PASS: assassin Dagger (sleeve-knife): 0 Mana, 4 damage; + 6
+- PASS: assassin Hobbling Jab: 3 + 1 Faltering; + 4 + 2
+- PASS: shaman Hawk Call plants a Hawk (spark)
+- PASS: spellblade Cinderfall: 0+2 Arcana, 8 damage; + 12
+- PASS: spellblade Obsidian Blade: 2 Mana, 10 damage plus its Sharpen
+- PASS: necromancer Raise Thrall: Raise 5
+- PASS: monk Kindle Fury: 2 Mana, 9 damage, enter Fury
+- PASS: totems: Hawk, Bear, Elder, Owl, Splinter archived
+- PASS: every archived starter has 10+ cards, all in the database

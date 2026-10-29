@@ -1,0 +1,135 @@
+{
+ "knight": {
+  "counts": {
+   "basic": 1,
+   "common": 20,
+   "token/special": 1,
+   "uncommon": 35,
+   "rare": 26
+  },
+  "cards": 83,
+  "starter": [
+   "strike",
+   "strike",
+   "strike",
+   "strike",
+   "strike",
+   "defend",
+   "defend",
+   "defend",
+   "defend",
+   "sundering-blow"
+  ]
+ },
+ "shaman": {
+  "counts": {
+   "basic": 2,
+   "common": 20,
+   "token/special": 1,
+   "uncommon": 36,
+   "rare": 25
+  },
+  "cards": 84,
+  "starter": [
+   "strike",
+   "strike",
+   "strike",
+   "strike",
+   "defend",
+   "defend",
+   "defend",
+   "defend",
+   "spark-cast",
+   "twin-evocation"
+  ]
+ },
+ "assassin": {
+  "counts": {
+   "basic": 2,
+   "common": 20,
+   "token/special": 2,
+   "uncommon": 35,
+   "rare": 25
+  },
+  "cards": 84,
+  "starter": [
+   "strike",
+   "strike",
+   "strike",
+   "strike",
+   "strike",
+   "defend",
+   "defend",
+   "defend",
+   "defend",
+   "defend",
+   "hobbling-jab",
+   "duck-and-weave"
+  ]
+ },
+ "spellblade": {
+  "counts": {
+   "basic": 2,
+   "common": 20,
+   "token/special": 4,
+   "uncommon": 36,
+   "rare": 24
+  },
+  "cards": 86,
+  "starter": [
+   "strike",
+   "strike",
+   "strike",
+   "strike",
+   "defend",
+   "defend",
+   "defend",
+   "defend",
+   "meteor-jab",
+   "gather-light"
+  ]
+ },
+ "necromancer": {
+  "counts": {
+   "basic": 2,
+   "common": 20,
+   "token/special": 2,
+   "uncommon": 36,
+   "rare": 27
+  },
+  "cards": 87,
+  "starter": [
+   "strike",
+   "strike",
+   "strike",
+   "strike",
+   "defend",
+   "defend",
+   "defend",
+   "defend",
+   "raise-thrall",
+   "off-the-leash"
+  ]
+ },
+ "monk": {
+  "counts": {
+   "basic": 2,
+   "common": 20,
+   "uncommon": 30,
+   "rare": 28
+  },
+  "cards": 80,
+  "starter": [
+   "strike",
+   "strike",
+   "strike",
+   "strike",
+   "defend",
+   "defend",
+   "defend",
+   "defend",
+   "kindle-fury",
+   "still-guard"
+  ]
+ }
+}

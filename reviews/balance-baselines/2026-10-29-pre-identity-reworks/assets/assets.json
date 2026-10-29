@@ -1,0 +1,2698 @@
+{
+ "knight": {
+  "figure": {
+   "id": "hero:knight",
+   "path": "apps/web/public/art/figures/hero-knight.png",
+   "sha256": "04d40f9e5c01348f34b3dbdd55497bd4367e54bd088a79e2f95302c788a6ea6a"
+  },
+  "skins": [
+   {
+    "id": "knight-gender-female",
+    "path": "apps/web/public/art/figures/skins/knight-gender-female.png",
+    "sha256": "82bf1cf6902b1e58815909339773e3d82f0f62a2800a6f1808d439b9772bc7ba"
+   },
+   {
+    "id": "knight-sunwarden",
+    "path": "apps/web/public/art/figures/skins/knight-sunwarden.png",
+    "sha256": "9b9e85ab8a213208ec538aa96816e430785e8bc10f010b379eb767422849ac12"
+   }
+  ],
+  "cards": [
+   {
+    "id": "sundering-blow",
+    "path": "apps/web/public/art/cards/sundering-blow.jpg",
+    "sha256": "af6341cd445b873c55df748e9314eff3a41910da3963a4af9559496d3eb6dfb5"
+   },
+   {
+    "id": "blood-plate",
+    "path": "apps/web/public/art/cards/blood-plate.jpg",
+    "sha256": "d487604eb0a3e1a0afefc0e45be98204df27ce146a9ff8c4e43189d17b46ed4a"
+   },
+   {
+    "id": "braced-strike",
+    "path": "apps/web/public/art/cards/braced-strike.jpg",
+    "sha256": "b486e47b8fa98a69304524d25965eb7f1ed13e391cbbd0a54dc3ab5f0ccae04e"
+   },
+   {
+    "id": "breach",
+    "path": "apps/web/public/art/cards/breach.jpg",
+    "sha256": "54b1f2ec947838f187adaf8804a9cac1c9398934b78e3b37d1032c89ca96e21b"
+   },
+   {
+    "id": "bulwark-blow",
+    "path": "apps/web/public/art/cards/bulwark-blow.jpg",
+    "sha256": "13692ce29d446bb585a2f1942af4c1976e2e8b6eacd39eded9a23e3059359295"
+   },
+   {
+    "id": "clarion-clap",
+    "path": "apps/web/public/art/cards/clarion-clap.jpg",
+    "sha256": "849df2d18dbe552be76aa3bdbfa5a1613f381b44634ac48b687837e05a9d0db7"
+   },
+   {
+    "id": "cleaving-throws",
+    "path": "apps/web/public/art/cards/cleaving-throws.jpg",
+    "sha256": "2510c9f61c347caa09e1e87c2d04de6bb95e6cce7c3530b703f37da515d29656"
+   },
+   {
+    "id": "dawn-smite",
+    "path": "apps/web/public/art/cards/dawn-smite.jpg",
+    "sha256": "dfca57612ddc0bea26df3ca6d0dea3151ce662f4d6ecd0c3c8e91b5e40a9bb51"
+   },
+   {
+    "id": "draw-blood",
+    "path": "apps/web/public/art/cards/draw-blood.jpg",
+    "sha256": "7104108285ca229379a32e260984b1e33970e73248535baffe7f41bffd1c0b5b"
+   },
+   {
+    "id": "field-repairs",
+    "path": "apps/web/public/art/cards/field-repairs.jpg",
+    "sha256": "bda3715cefebe86c7a4d9f64e3e15a73c6ea63cece4bbe85c86e487e3ead390e"
+   },
+   {
+    "id": "giant-rock",
+    "path": "apps/web/public/art/cards/giant-rock.jpg",
+    "sha256": "58bccd39b4e60fed786e47e71839e8ba51a18b9d426feccb31134a72d6297507"
+   },
+   {
+    "id": "hilt-strike",
+    "path": "apps/web/public/art/cards/hilt-strike.jpg",
+    "sha256": "38fa346fc72553ea8601528707599298220ef1f847586ffc2c035d9efdc04b86"
+   },
+   {
+    "id": "hot-temper",
+    "path": "apps/web/public/art/cards/hot-temper.jpg",
+    "sha256": "fdbeb6f33cc32aaa3dcaf074601c13e91e5f9dadafd8775e50194a5da2030e66"
+   },
+   {
+    "id": "mastered-strike",
+    "path": "apps/web/public/art/cards/mastered-strike.jpg",
+    "sha256": "fd27c5a648c9fc991ea467363f758cb675ae4d202a5b73eeadf9afb59c7bd98b"
+   },
+   {
+    "id": "oath-of-iron",
+    "path": "apps/web/public/art/cards/oath-of-iron.jpg",
+    "sha256": "40cd73c3ead0e17a92f348a071e01dd6b9162aa5ef227de41e08bd58bfab898a"
+   },
+   {
+    "id": "ram-home",
+    "path": "apps/web/public/art/cards/ram-home.jpg",
+    "sha256": "150225375e42a9e0c54ef63efd13701e0898e7036b77cf53124a02c5962cdb82"
+   },
+   {
+    "id": "rattle",
+    "path": "apps/web/public/art/cards/rattle.jpg",
+    "sha256": "0d883f31fbf589a253b182f82578dc023686063bec2557a4c422d12b72baa56c"
+   },
+   {
+    "id": "sacrificial-guard",
+    "path": "apps/web/public/art/cards/sacrificial-guard.jpg",
+    "sha256": "ccdf7bfbd65b5eecb39c405176ac87792c67e935467bbef8d175bbc5a0277844"
+   },
+   {
+    "id": "scorching-blow",
+    "path": "apps/web/public/art/cards/scorching-blow.jpg",
+    "sha256": "3111e08004de955f4a8c3b43b911f0a70e4d02bda0ee946956a0dc2ecbaf5d90"
+   },
+   {
+    "id": "searing-fist",
+    "path": "apps/web/public/art/cards/searing-fist.jpg",
+    "sha256": "b9409c528b776d1be0f3646ddbf48defed8938b53e8a65c8cecd47df0cd909e7"
+   },
+   {
+    "id": "twin-cut",
+    "path": "apps/web/public/art/cards/twin-cut.jpg",
+    "sha256": "de7150645de60118e4a0f713fd55363d14fb1e9b37fe30abb64786cff022eae7"
+   },
+   {
+    "id": "wild-gamble",
+    "path": "apps/web/public/art/cards/wild-gamble.jpg",
+    "sha256": "79572efe3706929519634a835692940164b1daeb152ac9b263dd50980f23ee51"
+   },
+   {
+    "id": "berserkers-rage",
+    "path": "apps/web/public/art/cards/berserkers-rage.jpg",
+    "sha256": "5db158ff9d556fb5d5dd45c383dce5a7c70ba4732434d9e777d07d42105e4519"
+   },
+   {
+    "id": "bitter-breath",
+    "path": "apps/web/public/art/cards/bitter-breath.jpg",
+    "sha256": "c0930932bfed970ea93d8c807b4ff70a3d460a0fa8f2dbddbe16310e3b868bee"
+   },
+   {
+    "id": "blood-fire",
+    "path": "apps/web/public/art/cards/blood-fire.jpg",
+    "sha256": "bc75150e9b1f7236696dc1bb97c427e94fce13bb34042505cf3212efe2d02c53"
+   },
+   {
+    "id": "borrowed-blade",
+    "path": "apps/web/public/art/cards/borrowed-blade.jpg",
+    "sha256": "b1ab3d6a4b661aba1041cc431eda4f993b5442dc7bc81203d0149fa59dbdfc68"
+   },
+   {
+    "id": "brace-for-battle",
+    "path": "apps/web/public/art/cards/brace-for-battle.jpg",
+    "sha256": "5cb76d4af13f804810f1e7387d9068b232eebaff80522d9984173ac498965daf"
+   },
+   {
+    "id": "break-guard",
+    "path": "apps/web/public/art/cards/break-guard.jpg",
+    "sha256": "43e0baa38d4aa4a581094e0dfc49bcd305c12f9d4dfd529bf0d2afab9614a06f"
+   },
+   {
+    "id": "challenge",
+    "path": "apps/web/public/art/cards/challenge.jpg",
+    "sha256": "db9d97fbd1adc797a464dabbcc0d55c8175ccae2c9d95167d651467ec4095f99"
+   },
+   {
+    "id": "charging-herd",
+    "path": "apps/web/public/art/cards/charging-herd.jpg",
+    "sha256": "66cdb6e5b7f676e939a512a3fb5250fb04d573108eec17e1cdcae3136576f6d4"
+   },
+   {
+    "id": "cold-stare",
+    "path": "apps/web/public/art/cards/cold-stare.jpg",
+    "sha256": "dc5f1a07590994a7487de56297e3bf23fc590c9ea1284d07757d79d8f60d8ac8"
+   },
+   {
+    "id": "ember-ward",
+    "path": "apps/web/public/art/cards/ember-ward.jpg",
+    "sha256": "e115e27e81ecbe16ae0c041298d5b662bdef62604d83ebda1c1f232cad2f2349"
+   },
+   {
+    "id": "giants-stance",
+    "path": "apps/web/public/art/cards/giants-stance.jpg",
+    "sha256": "6af0adf7ed20c0235d33d53f162644e045f41d72568bf1362e4bcbc2c47d49fe"
+   },
+   {
+    "id": "grim-focus",
+    "path": "apps/web/public/art/cards/grim-focus.jpg",
+    "sha256": "e1883e1b35ec8406ef8cea3adf6b5609ba25defd6b8edad607dd15d62bc0effa"
+   },
+   {
+    "id": "hammer-fall",
+    "path": "apps/web/public/art/cards/hammer-fall.jpg",
+    "sha256": "6fd55e973ae445c7277b6debc13f3d44c77835db0f48ae5c5d13a195f25ee005"
+   },
+   {
+    "id": "howl-of-the-fallen",
+    "path": "apps/web/public/art/cards/howl-of-the-fallen.jpg",
+    "sha256": "b3c0494015256efe6b80f36a253c43dca65fa260c126347e6b64db58c0c0a308"
+   },
+   {
+    "id": "intimidate",
+    "path": "apps/web/public/art/cards/intimidate.jpg",
+    "sha256": "43d1b0a8be1b74ba6844c8295ddde5a1828525fe0643474275b77d03adef13f6"
+   },
+   {
+    "id": "jugglers-rhythm",
+    "path": "apps/web/public/art/cards/jugglers-rhythm.jpg",
+    "sha256": "85a1ee7e9d2c644a14f7a21706d89931c68430fa87c19e98390f8d9ac170ee51"
+   },
+   {
+    "id": "mounting-fury",
+    "path": "apps/web/public/art/cards/mounting-fury.jpg",
+    "sha256": "1d2b5e60756d3cc99b28448e4570c08710a9c46c3bf895779101b3d94a79d875"
+   },
+   {
+    "id": "numbing-rite",
+    "path": "apps/web/public/art/cards/numbing-rite.jpg",
+    "sha256": "345eb2d2471cc5753a4218dfacfcfd6d6df4ceeb53ff36bbf49124c5a148b87a"
+   },
+   {
+    "id": "pact-of-embers",
+    "path": "apps/web/public/art/cards/pact-of-embers.jpg",
+    "sha256": "061efb1e93b904bd56ca42b7c84b443fd931bc90d0172da49742d1c1da778aa3"
+   },
+   {
+    "id": "pile-on",
+    "path": "apps/web/public/art/cards/pile-on.jpg",
+    "sha256": "f172a0a4d899c57beaca9dc812fefaa80c5d898752fa38024eef788bc0e085d7"
+   },
+   {
+    "id": "plunder",
+    "path": "apps/web/public/art/cards/plunder.jpg",
+    "sha256": "a50ab6365c097d8db47a98e5d3868ad7cf1e006f27d697b577fe10d432ecc018"
+   },
+   {
+    "id": "provoke",
+    "path": "apps/web/public/art/cards/provoke.jpg",
+    "sha256": "e599ca01e2202b622c7bf4636c79205ffcc3eff04ce42e2874080f2009055bc0"
+   },
+   {
+    "id": "reckless-smite",
+    "path": "apps/web/public/art/cards/reckless-smite.jpg",
+    "sha256": "55cf6e1e13c7f2173b24c2109606baec9182878602d8e0195e28e4ef362d8f5f"
+   },
+   {
+    "id": "relentless-push",
+    "path": "apps/web/public/art/cards/relentless-push.jpg",
+    "sha256": "0d8a0fc7035a40f3b63a8b4d76241f92aed4b3f3b5d0e4e2193e7b8e173a2ce5"
+   },
+   {
+    "id": "rising-fist",
+    "path": "apps/web/public/art/cards/rising-fist.jpg",
+    "sha256": "c40429fbcb25c597b68f9dd431d47c6dd6295cf107218a886def96c52fffc136"
+   },
+   {
+    "id": "ritual-of-ash",
+    "path": "apps/web/public/art/cards/ritual-of-ash.jpg",
+    "sha256": "077ebea5a89dc32c61cc8d4f5751953d443190f86419cd66e1d4cc98d3bb326a"
+   },
+   {
+    "id": "scar-over",
+    "path": "apps/web/public/art/cards/scar-over.jpg",
+    "sha256": "f4e889a9ad196cdc58a22d80ecd1e34721ecbf2e51de43a166f458b649c8d978"
+   },
+   {
+    "id": "scent-of-weakness",
+    "path": "apps/web/public/art/cards/scent-of-weakness.jpg",
+    "sha256": "b8b0e8875092cd65be9e50f55f65b2e43454a196df185ab6498549bdffd72dbf"
+   },
+   {
+    "id": "smoldering-blow",
+    "path": "apps/web/public/art/cards/smoldering-blow.jpg",
+    "sha256": "520bb6e0a63d88f5b9037f9cf839be1d04ffb2700fe95c851c78b7570119a190"
+   },
+   {
+    "id": "spiteful-jab",
+    "path": "apps/web/public/art/cards/spiteful-jab.jpg",
+    "sha256": "27e0a1f8f26663633690371a866ce0b96d90d906af894abd56674b4f41158127"
+   },
+   {
+    "id": "steel-resolve",
+    "path": "apps/web/public/art/cards/steel-resolve.jpg",
+    "sha256": "f9bba6c511452c54495a06e97fb8caeb9283e50eef112cb2778f75691523eec7"
+   },
+   {
+    "id": "stoneskin",
+    "path": "apps/web/public/art/cards/stoneskin.jpg",
+    "sha256": "7cfff6c4b93438b3d6fd7fde17d85f20f9b0aa083b344f33f43508312fde7f64"
+   },
+   {
+    "id": "trampling-charge",
+    "path": "apps/web/public/art/cards/trampling-charge.jpg",
+    "sha256": "7808f33a964b677330024f46835f5242a983ad6d30b7d5a1c897c888b1fb03fb"
+   },
+   {
+    "id": "war-drums",
+    "path": "apps/web/public/art/cards/war-drums.jpg",
+    "sha256": "de8b66dc743bc8938de5f2efd12f9c0a0dc52091ac91ad3f4dfcb52b3604eb74"
+   },
+   {
+    "id": "whirling-blade",
+    "path": "apps/web/public/art/cards/whirling-blade.jpg",
+    "sha256": "af03dc60d444591d4bd7792aaab0884fff0234da5b1426529499738ca5baaa58"
+   },
+   {
+    "id": "ashen-reckoning",
+    "path": "apps/web/public/art/cards/ashen-reckoning.jpg",
+    "sha256": "616acc9a77c15cc2f9e31b649bb7cd65818c58b7d7e9dfe1e000d5f473b18bc0"
+   },
+   {
+    "id": "bastion-engine",
+    "path": "apps/web/public/art/cards/bastion-engine.jpg",
+    "sha256": "fb6598243410ad1f4652ab5b9c955fbc79e97d015cf2b2dca1019945d1d3e631"
+   },
+   {
+    "id": "bloodfeast",
+    "path": "apps/web/public/art/cards/bloodfeast.jpg",
+    "sha256": "7a728996a3b00c460a35e3d33f778cefb15fda4e5c3e876844ec83caf696f240"
+   },
+   {
+    "id": "bloodied-plate",
+    "path": "apps/web/public/art/cards/bloodied-plate.jpg",
+    "sha256": "375c9682c129aef132afa70792a95576dd4df5ce0d3d2fcc47327afc57a9bd8c"
+   },
+   {
+    "id": "burn-it-all",
+    "path": "apps/web/public/art/cards/burn-it-all.jpg",
+    "sha256": "7d134d04116dd78c8a604357fb6a86cd45dba91584b155bbf9c81602ee634ea4"
+   },
+   {
+    "id": "crimson-offering",
+    "path": "apps/web/public/art/cards/crimson-offering.jpg",
+    "sha256": "953540af13876d7beecfefe5992bff96bdd3d7001a0a29eb40d21277d56d7085"
+   },
+   {
+    "id": "crippling-blow",
+    "path": "apps/web/public/art/cards/crippling-blow.jpg",
+    "sha256": "5b19b9088f2c4437f80eea6b5a48b84174c980448a6fafa9f22cf1c103b40d50"
+   },
+   {
+    "id": "cruel-streak",
+    "path": "apps/web/public/art/cards/cruel-streak.jpg",
+    "sha256": "8ed8b61aa845863d01cd1a3bdd9251d1a4725a6c0201362d8be64143c591abbf"
+   },
+   {
+    "id": "double-down",
+    "path": "apps/web/public/art/cards/double-down.jpg",
+    "sha256": "6d209db9aa745c1c0ec76d199827ec0e6c5d13c396e6c7c28c81a7bfdc1616da"
+   },
+   {
+    "id": "fan-the-flames",
+    "path": "apps/web/public/art/cards/fan-the-flames.jpg",
+    "sha256": "00b2d5a49da58aa4c453f1cffa05a33545a8087750bd4eae0c7d153671ad4ee6"
+   },
+   {
+    "id": "flailing-blows",
+    "path": "apps/web/public/art/cards/flailing-blows.jpg",
+    "sha256": "9e7dc4b258a0b2fe8d7c14f38ff548c01411fea514d8a13e1fdf5832d5748622"
+   },
+   {
+    "id": "forsake",
+    "path": "apps/web/public/art/cards/forsake.jpg",
+    "sha256": "f49e6e8281e61ec0a9ab1fe1c9a8fef2cac32a086b2332ed44ea21a2b6377be7"
+   },
+   {
+    "id": "immovable-oath",
+    "path": "apps/web/public/art/cards/immovable-oath.jpg",
+    "sha256": "639c60fac1c9f62039e9e45e4df71c0fab68087b09eec4ce614b27fea331c7d7"
+   },
+   {
+    "id": "inner-furnace",
+    "path": "apps/web/public/art/cards/inner-furnace.jpg",
+    "sha256": "062b667211ad77bce29914d9693e6ef593a5be1f429bc44e5617d4a0738be51b"
+   },
+   {
+    "id": "raised-hell",
+    "path": "apps/web/public/art/cards/raised-hell.jpg",
+    "sha256": "7931a055baaa50aa6903012c517367eec60e9edc9bd38647c3f94fe11f70ef5e"
+   },
+   {
+    "id": "rally",
+    "path": "apps/web/public/art/cards/rally.jpg",
+    "sha256": "ce59cc73fdfbab950b922007b0451f5584e82f72078032d038399470fbea7aa6"
+   },
+   {
+    "id": "rending-fury",
+    "path": "apps/web/public/art/cards/rending-fury.jpg",
+    "sha256": "a26e79e9e02f51b8f0b78e49afc76350951f7223874adbd440302dd390ca10f3"
+   },
+   {
+    "id": "rite-of-recall",
+    "path": "apps/web/public/art/cards/rite-of-recall.jpg",
+    "sha256": "361f9a8414b86531c9e4367aa0bbf9ea635fb5e0784f390991ea44805e3029e9"
+   },
+   {
+    "id": "stone-fury",
+    "path": "apps/web/public/art/cards/stone-fury.jpg",
+    "sha256": "8a63ae52cc8fd908c91baadee089f4c82595a68816d52758f7ffb6121fe1e78f"
+   },
+   {
+    "id": "stone-stance",
+    "path": "apps/web/public/art/cards/stone-stance.jpg",
+    "sha256": "e76594f230246240c7cc44ca84697864990fcfe7d239defc552337ac1926957b"
+   },
+   {
+    "id": "unbroken-wall",
+    "path": "apps/web/public/art/cards/unbroken-wall.jpg",
+    "sha256": "3c79a737d5624300afa47ca90c177a5e9b05e25f5bc7695db48293cc1490d3ad"
+   },
+   {
+    "id": "unforgiving-drill",
+    "path": "apps/web/public/art/cards/unforgiving-drill.jpg",
+    "sha256": "7b9a3c4bcf264c9473667677b2c8a031ce3649e51ae55bf4318ec3cdd93da0c5"
+   },
+   {
+    "id": "unholy-pact",
+    "path": "apps/web/public/art/cards/unholy-pact.jpg",
+    "sha256": "f781a14bffb9018e1e195195d1bdcd9e38154201a4084fa7d9eada72c7e256eb"
+   },
+   {
+    "id": "unravel",
+    "path": "apps/web/public/art/cards/unravel.jpg",
+    "sha256": "14806c01f3a7c1731f80a08c653c72af6397f9f57a8e5d7128cf63f2ad68ff10"
+   },
+   {
+    "id": "warlords-oath",
+    "path": "apps/web/public/art/cards/warlords-oath.jpg",
+    "sha256": "54b6cd75b4efa20784951e1c6a7569f3b8a3041348c87b0f528c9daa400a876c"
+   },
+   {
+    "id": "wildfire",
+    "path": "apps/web/public/art/cards/wildfire.jpg",
+    "sha256": "d87f9282cfef4beedd3781dbc815a4d2bb9fdf548f06795bd9c3931ec863cdb8"
+   }
+  ]
+ },
+ "shaman": {
+  "figure": {
+   "id": "hero:shaman",
+   "path": "apps/web/public/art/figures/hero-shaman.png",
+   "sha256": "d20db989388635838a7c09a2f685a5294ef026bed4d911197552643022d78735"
+  },
+  "skins": [
+   {
+    "id": "shaman-autumn-oracle",
+    "path": "apps/web/public/art/figures/skins/shaman-autumn-oracle.png",
+    "sha256": "57f989861a886f709493628b3dc777773504cfa7028fd644067cd92188ac6710"
+   },
+   {
+    "id": "shaman-gender-female",
+    "path": "apps/web/public/art/figures/skins/shaman-gender-female.png",
+    "sha256": "97695d1301adf0e080280a4b6f9432586b0aacb00667c2c6b64459ccd9f4f034"
+   }
+  ],
+  "cards": [
+   {
+    "id": "spark-cast",
+    "path": "apps/web/public/art/cards/spark-cast.jpg",
+    "sha256": "a560ed7b129fb87420c8acf769b1ba8db79cf42fd2c24fe0f911c2b396ef95d4"
+   },
+   {
+    "id": "twin-evocation",
+    "path": "apps/web/public/art/cards/twin-evocation.jpg",
+    "sha256": "37079c42142e97a3414a21ee2a0a985b0d39b1243b705d5da96e0c33fb065630"
+   },
+   {
+    "id": "arc-flash",
+    "path": "apps/web/public/art/cards/arc-flash.jpg",
+    "sha256": "0adb80df18f80f6546e01bcdfa8da726e6a3db4511d221f6c735247799ecf2b9"
+   },
+   {
+    "id": "charged-blow",
+    "path": "apps/web/public/art/cards/charged-blow.jpg",
+    "sha256": "1121153c5ec86a4d97d4a1ec12b15adcd42e4d77eec8b8e71a29c4ac31c488d4"
+   },
+   {
+    "id": "chilled-focus",
+    "path": "apps/web/public/art/cards/chilled-focus.jpg",
+    "sha256": "c4c43f06c4cc018ee727125bf811cf671b4c408d07ac7494e26502c9720c9aed"
+   },
+   {
+    "id": "driver-of-runes",
+    "path": "apps/web/public/art/cards/driver-of-runes.jpg",
+    "sha256": "bfef84c78d010f141ebe2feafacb5a6ac33d197da83134686625bacc49628b8c"
+   },
+   {
+    "id": "elemental-focus",
+    "path": "apps/web/public/art/cards/elemental-focus.jpg",
+    "sha256": "1b0a86e8bf94e5bd9c9d363911dbe806619992fe5a3cf1163b4213d9c63e477b"
+   },
+   {
+    "id": "ember-toss",
+    "path": "apps/web/public/art/cards/ember-toss.jpg",
+    "sha256": "0f41b1008ca5e8887e116944ea59176caac327a0b62f2d834daa938281b25e8c"
+   },
+   {
+    "id": "frost-needle",
+    "path": "apps/web/public/art/cards/frost-needle.jpg",
+    "sha256": "ca3a3ce55d24f44d56acaed348e4cd836ea3d1aae7dd05bb4d53d33bf643afee"
+   },
+   {
+    "id": "gale-strike",
+    "path": "apps/web/public/art/cards/gale-strike.jpg",
+    "sha256": "63204ed2b755023f848a06cebe3adb131e5d5c6c1cc696d737f4e8e42acc572b"
+   },
+   {
+    "id": "gathering-storm",
+    "path": "apps/web/public/art/cards/gathering-storm.jpg",
+    "sha256": "18808a43e87efeebb9dc6d8a0cd0916a9613efe37d1e694621abea9fcba03b1e"
+   },
+   {
+    "id": "gust-step",
+    "path": "apps/web/public/art/cards/gust-step.jpg",
+    "sha256": "f1e267cb681f08e6f40e0df454e4fc9bb2d1f4a590db9751a58232356e81aed5"
+   },
+   {
+    "id": "inner-flame",
+    "path": "apps/web/public/art/cards/inner-flame.jpg",
+    "sha256": "ff0e8c093ced80777969d51ac15760d4473dac8dd93fd84e51db68f5a46cc77a"
+   },
+   {
+    "id": "kindling",
+    "path": "apps/web/public/art/cards/kindling.jpg",
+    "sha256": "cbf7ab58d7af203f5330e0fcb92bc70e0671a18a4c5ea594d51baaec0bc41e0e"
+   },
+   {
+    "id": "mudslide",
+    "path": "apps/web/public/art/cards/mudslide.jpg",
+    "sha256": "11fadc2d0ae48eca4c2792f679b7a6309eddbce0ed87be8e41317d03f6c59a6d"
+   },
+   {
+    "id": "resonant-strike",
+    "path": "apps/web/public/art/cards/resonant-strike.jpg",
+    "sha256": "4436d3e08bf822823a7116ebfbd32336ad4aca919308d0fb968f24f00f56f01b"
+   },
+   {
+    "id": "rime-strike",
+    "path": "apps/web/public/art/cards/rime-strike.jpg",
+    "sha256": "b0fe8dbec23eb539a30bd2a8fea2f4357b0b44631eb76422d7ceb26fc0c9eb5f"
+   },
+   {
+    "id": "spark-lash",
+    "path": "apps/web/public/art/cards/spark-lash.jpg",
+    "sha256": "f2391c1029520f6547663ba8ba9423fe0e6f56b099e75ac87c9e86709dfd4d35"
+   },
+   {
+    "id": "spirit-memory",
+    "path": "apps/web/public/art/cards/spirit-memory.jpg",
+    "sha256": "95e95189671eec399cdbc2aafb43cbc72bdb4e8ed51a46725b8ef38d5f9913eb"
+   },
+   {
+    "id": "stone-skin",
+    "path": "apps/web/public/art/cards/stone-skin.jpg",
+    "sha256": "7560404d48bbaa7c17a7589f255b72d8d22969b87e4e44f79732586964143ee0"
+   },
+   {
+    "id": "storm-call",
+    "path": "apps/web/public/art/cards/storm-call.jpg",
+    "sha256": "7175cfd52934013ecc0939725f22dad20f1ec1d5cc5fe01592b135413f820064"
+   },
+   {
+    "id": "storm-pole",
+    "path": "apps/web/public/art/cards/storm-pole.jpg",
+    "sha256": "b535e53c5614abbde1d6a8767264f1bc709ec16fafd515adf231deef3d302e1d"
+   },
+   {
+    "id": "tidecaller",
+    "path": "apps/web/public/art/cards/tidecaller.jpg",
+    "sha256": "712a41b23b378552cbbb56ad3b20a07147ed1d8af74e961d4d5cf60d45899bf5"
+   },
+   {
+    "id": "arc-lightning",
+    "path": "apps/web/public/art/cards/arc-lightning.jpg",
+    "sha256": "2dbe925b2f65d3349485141e7b7f4556c0aa609a646fdfbc4dea7fad458160ec"
+   },
+   {
+    "id": "boulder-fist",
+    "path": "apps/web/public/art/cards/boulder-fist.jpg",
+    "sha256": "a1b60b2c483bdaac1d20c5b2004c0bd6d962b4c2b72c59dd59704e30b49a01b1"
+   },
+   {
+    "id": "chorus-of-glyphs",
+    "path": "apps/web/public/art/cards/chorus-of-glyphs.jpg",
+    "sha256": "6ea5b896b87ea983a47571f9fb38ddbdb46ab02c400e6bbbfb6fead8cf024f67"
+   },
+   {
+    "id": "clear-spring",
+    "path": "apps/web/public/art/cards/clear-spring.jpg",
+    "sha256": "1637c4e5c5b4f9d3fe3bb9f0d7cd51c1afb7de56472f363a863364ef484f90b7"
+   },
+   {
+    "id": "cold-snap",
+    "path": "apps/web/public/art/cards/cold-snap.jpg",
+    "sha256": "2f1e9eb227be09531b2c40748db5d3b4373645a42dbf00817ae0facb18a8ade6"
+   },
+   {
+    "id": "crystal-ward",
+    "path": "apps/web/public/art/cards/crystal-ward.jpg",
+    "sha256": "ab8bedc6c08fde2acf75cbd47401a8ec87afe24b3a7df47b44f9d106826864d2"
+   },
+   {
+    "id": "earthen-might",
+    "path": "apps/web/public/art/cards/earthen-might.jpg",
+    "sha256": "c0e43417615541988c12406b14eb6bd1e0a92dd2bbdddd0d466fbed9c377478f"
+   },
+   {
+    "id": "echoing-loop",
+    "path": "apps/web/public/art/cards/echoing-loop.jpg",
+    "sha256": "232ed5eed3132d8cb463ccfce48598a272cb1b4acb03060f760351d00f3d6768"
+   },
+   {
+    "id": "feed-the-fire",
+    "path": "apps/web/public/art/cards/feed-the-fire.jpg",
+    "sha256": "01eb02a6db724474b47fb796b41bf1d64d5893d00bfdf651df88fa1a9c0807df"
+   },
+   {
+    "id": "fire-bloom",
+    "path": "apps/web/public/art/cards/fire-bloom.jpg",
+    "sha256": "4fb200587579d41b13617562cbd08dbdf4c26d05041452ca55c2491a0253d078"
+   },
+   {
+    "id": "frostglass",
+    "path": "apps/web/public/art/cards/frostglass.jpg",
+    "sha256": "2839ba20a071d9a331d7b13edf7cc7c7f011875bd2d59d93a004aa1bce9a2a67"
+   },
+   {
+    "id": "gather-kindling",
+    "path": "apps/web/public/art/cards/gather-kindling.jpg",
+    "sha256": "dec7d20310c8a6f0b77e88ad857fb1f18ac06d466001056c376ede018bf911da"
+   },
+   {
+    "id": "gathering-dusk",
+    "path": "apps/web/public/art/cards/gathering-dusk.jpg",
+    "sha256": "3de93d010f8ed2e45c6db7563f11e72af0fec1f30786f89405dde8175e42ee46"
+   },
+   {
+    "id": "glacial-memory",
+    "path": "apps/web/public/art/cards/glacial-memory.jpg",
+    "sha256": "9ac6b92fb84f87671915ef59b25e2a29a8a748913a61cc722626944bc5c9d4e6"
+   },
+   {
+    "id": "glyph-lattice",
+    "path": "apps/web/public/art/cards/glyph-lattice.jpg",
+    "sha256": "95d509dc29b58488d385d6a9005052d8aa266ccaa912a702ef8c3b64c8d5b691"
+   },
+   {
+    "id": "ironbark",
+    "path": "apps/web/public/art/cards/ironbark.jpg",
+    "sha256": "d22146095fa7d153527aef691d96808e93c6d4cbf4080d4593702fa6049c709e"
+   },
+   {
+    "id": "kindled-rite",
+    "path": "apps/web/public/art/cards/kindled-rite.jpg",
+    "sha256": "2f08e627b4aced22e324f2768473bacce7520ccc055e110d7f1082411d28c9e3"
+   },
+   {
+    "id": "leyline-tap",
+    "path": "apps/web/public/art/cards/leyline-tap.jpg",
+    "sha256": "e477a961b9c9858d25fa1b2f90bbf1076208c2748904886d0c3db84dcee4a4e5"
+   },
+   {
+    "id": "night-veil",
+    "path": "apps/web/public/art/cards/night-veil.jpg",
+    "sha256": "4378d0e23cb8f00e8f7f43f929f26a6f85680dd9d7b43a5aba553ad44c35bfb2"
+   },
+   {
+    "id": "permafrost",
+    "path": "apps/web/public/art/cards/permafrost.jpg",
+    "sha256": "14eb2341b876e000c0fff38b7d643737750ada9a163dde34c183c6a5b5b08038"
+   },
+   {
+    "id": "prism-cut",
+    "path": "apps/web/public/art/cards/prism-cut.jpg",
+    "sha256": "ff62817383a70ed099feee049e42ff132d0dc1ba6693d92c0dada18753720618"
+   },
+   {
+    "id": "prismatic-cascade",
+    "path": "apps/web/public/art/cards/prismatic-cascade.jpg",
+    "sha256": "b72baa340d4735aeefdc4897c5926d4ff6ab5cb8704b8ef63ebcdbfaaf109c0b"
+   },
+   {
+    "id": "rapids",
+    "path": "apps/web/public/art/cards/rapids.jpg",
+    "sha256": "e8ce65a6aaece356da68a459c3a82a2bef2e4022358a0cffc58d75762e071d0e"
+   },
+   {
+    "id": "river-scour",
+    "path": "apps/web/public/art/cards/river-scour.jpg",
+    "sha256": "a42c83a1ecc994c48fb958d7e95528720ad74ee1d2363434e7064c53a8ca6b17"
+   },
+   {
+    "id": "shard-chorus",
+    "path": "apps/web/public/art/cards/shard-chorus.jpg",
+    "sha256": "a58592ab6b2e15db899bb16f8a5ae755d509d0206b01035844e3f25005930be2"
+   },
+   {
+    "id": "skybreaker",
+    "path": "apps/web/public/art/cards/skybreaker.jpg",
+    "sha256": "20470b3b2617e8b830dcfe439c2d8126b61a048a34727d324baddf0eb75f3d4b"
+   },
+   {
+    "id": "smoke-offering",
+    "path": "apps/web/public/art/cards/smoke-offering.jpg",
+    "sha256": "6616aa3c2f9a8e6f17aad7f21fc3c76e8b28f54045c883efaf2f981ef2c4df8a"
+   },
+   {
+    "id": "sparkstorm",
+    "path": "apps/web/public/art/cards/sparkstorm.jpg",
+    "sha256": "8136bceb07428438e8a38630b5829405a3e0399377f5c15735b449fcb213a148"
+   },
+   {
+    "id": "stormcrown",
+    "path": "apps/web/public/art/cards/stormcrown.jpg",
+    "sha256": "99903a0ef2aacd4518229fc1f634abc63ab07d2765301825d09c8e46cca3aff0"
+   },
+   {
+    "id": "thundercall",
+    "path": "apps/web/public/art/cards/thundercall.jpg",
+    "sha256": "9c1699009b172fc0fbbc4b304a6fa2dca6253c1230af29e0cd470c9d8e8b206a"
+   },
+   {
+    "id": "tidal-surge",
+    "path": "apps/web/public/art/cards/tidal-surge.jpg",
+    "sha256": "1a0a3fb290de4b151f3597de4fd9ab9e1406f7f54d0df785b1c3a9dcc4bebdba"
+   },
+   {
+    "id": "tuning-fork",
+    "path": "apps/web/public/art/cards/tuning-fork.jpg",
+    "sha256": "573a5dcdfd4f47149b1dfb35d77cffd4dd03ecefe75e1354dde074a0d8faf22a"
+   },
+   {
+    "id": "void-pulse",
+    "path": "apps/web/public/art/cards/void-pulse.jpg",
+    "sha256": "cd98fbc296ccb41827387844b8963f8b2a180f0f9e1e0d82321bd8679ff71ccb"
+   },
+   {
+    "id": "white-noise",
+    "path": "apps/web/public/art/cards/white-noise.jpg",
+    "sha256": "2d18615967f54c0fc6434623376b13b12d89b44a53e92bd3d74fe3c5657ca6bf"
+   },
+   {
+    "id": "wild-call",
+    "path": "apps/web/public/art/cards/wild-call.jpg",
+    "sha256": "23e9c5c596ba440f3436cd80ebfa5a76f32c1405472412ec57bf750eae80f514"
+   },
+   {
+    "id": "wild-heart",
+    "path": "apps/web/public/art/cards/wild-heart.jpg",
+    "sha256": "9460bcce806564e4f2b88b560da7412d1c12bb9e1143340179f89936563f0813"
+   },
+   {
+    "id": "aegis-array",
+    "path": "apps/web/public/art/cards/aegis-array.jpg",
+    "sha256": "6cc1e1e88343f0c7145a443a34e49087eea9716046899c7243d54c0092c52ce2"
+   },
+   {
+    "id": "biased-weave",
+    "path": "apps/web/public/art/cards/biased-weave.jpg",
+    "sha256": "e6fd597051cb53332edc13bf5b665ddfb6e425ad59a048d12000bab82e26f171"
+   },
+   {
+    "id": "blazing-aperture",
+    "path": "apps/web/public/art/cards/blazing-aperture.jpg",
+    "sha256": "a8b37470bec36153e6a245b6a03666454972399a14a2c176205bf2d1670c97c4"
+   },
+   {
+    "id": "carve-a-notch",
+    "path": "apps/web/public/art/cards/carve-a-notch.jpg",
+    "sha256": "986f0b3154d957b9dc5a330fc54fb492ae1c038f2e415aef1fec666866d551cc"
+   },
+   {
+    "id": "deep-freeze",
+    "path": "apps/web/public/art/cards/deep-freeze.jpg",
+    "sha256": "dc924af6bd916046f920d2709c7af91dd8eb769477c7f76c724e7c951028a2ed"
+   },
+   {
+    "id": "echo-cascade",
+    "path": "apps/web/public/art/cards/echo-cascade.jpg",
+    "sha256": "ea52101b865fb629fd31402a45a2ad666250b163bef3ebcacd0ccb08f1f3de47"
+   },
+   {
+    "id": "echoing-form",
+    "path": "apps/web/public/art/cards/echoing-form.jpg",
+    "sha256": "703063b6e0b7ea8f823bbc9d88feb4cd8bb7a099708b1c42a3e2251a0afa2612"
+   },
+   {
+    "id": "falling-star",
+    "path": "apps/web/public/art/cards/falling-star.jpg",
+    "sha256": "ae335457b6bb0ce62e6d1e4acd0f0473fb7a179cb3309055830ba51a6e019932"
+   },
+   {
+    "id": "firestorm",
+    "path": "apps/web/public/art/cards/firestorm.jpg",
+    "sha256": "217c2ec8979c378957e347fd4596787d9607b4cf246f8c0944077ac6660e6aff"
+   },
+   {
+    "id": "gathering-dark",
+    "path": "apps/web/public/art/cards/gathering-dark.jpg",
+    "sha256": "ed2f106ce2953e46e4af324ff9b9406e01d2afbe8b2588eb1ce45fa8a24e5dd0"
+   },
+   {
+    "id": "harmonic-wave",
+    "path": "apps/web/public/art/cards/harmonic-wave.jpg",
+    "sha256": "870c87cf19b5ece4df74abac9f3266829f9451a6920e1f4ff6719ae13303c475"
+   },
+   {
+    "id": "hyperbeam",
+    "path": "apps/web/public/art/cards/hyperbeam.jpg",
+    "sha256": "523d033ca9ca75db3381ebf786a3a12f95d9c3e0b4ff0069b43891162f28a8b8"
+   },
+   {
+    "id": "machine-learning",
+    "path": "apps/web/public/art/cards/machine-learning.jpg",
+    "sha256": "7b63db0286ab1ab36e5216d443c9e948cbf244a6b829705bfc383eba0feb1781"
+   },
+   {
+    "id": "many-voices",
+    "path": "apps/web/public/art/cards/many-voices.jpg",
+    "sha256": "f2e00db7c3eaf0f9d97f71cf8bcca1d77fb15cb06236f10f554ce353749f9296"
+   },
+   {
+    "id": "overtune",
+    "path": "apps/web/public/art/cards/overtune.jpg",
+    "sha256": "6435b07f819dab80c3156a4ff8a481793ad720a886dce0f82d1790333d4d8bb6"
+   },
+   {
+    "id": "retune",
+    "path": "apps/web/public/art/cards/retune.jpg",
+    "sha256": "9f6c1dee967e059a574a48a2be761a1e7ae7a12ed165cbf447e4607e43c4eb0d"
+   },
+   {
+    "id": "rune-carapace",
+    "path": "apps/web/public/art/cards/rune-carapace.jpg",
+    "sha256": "50b439d07082b35713cd57aa72f53251fbae89f774eddbe3db1dbff772181480"
+   },
+   {
+    "id": "sentinel-sigil",
+    "path": "apps/web/public/art/cards/sentinel-sigil.jpg",
+    "sha256": "67eba03282446f38720981c5d428af4bffb5d0019ab25e1ac21a59a92b15eb3e"
+   },
+   {
+    "id": "shatter-the-row",
+    "path": "apps/web/public/art/cards/shatter-the-row.jpg",
+    "sha256": "3f7a9ebeaa6e12ac4ae85aa241c38be291ab5729d79143a5762867f2127048c6"
+   },
+   {
+    "id": "shifting-strike",
+    "path": "apps/web/public/art/cards/shifting-strike.jpg",
+    "sha256": "fe174f6793a870d910b2ca8b422d22724e853b6eb8a3a1798eda56d7b9fe1a21"
+   },
+   {
+    "id": "spiritfont",
+    "path": "apps/web/public/art/cards/spiritfont.jpg",
+    "sha256": "4390d149e790e0c9a09ecf8fe780d32a3d76a0237013b362d97a567b0a06ede0"
+   },
+   {
+    "id": "splinter-wheel",
+    "path": "apps/web/public/art/cards/splinter-wheel.jpg",
+    "sha256": "c2f7a05641be5ed65dddf9d2b941470731d1025e9b2efc19d02283e535238a5a"
+   },
+   {
+    "id": "tune-the-lattice",
+    "path": "apps/web/public/art/cards/tune-the-lattice.jpg",
+    "sha256": "96f0f342db8ef5d7b212b741f89d31502c85b92639ccc8796c94e8ca23bb02a0"
+   },
+   {
+    "id": "whirlpool",
+    "path": "apps/web/public/art/cards/whirlpool.jpg",
+    "sha256": "a70f64d30cd4a878ed89939e4e80e8791787d3a6746b3b34083780e9bbe6c6aa"
+   },
+   {
+    "id": "winds-favor",
+    "path": "apps/web/public/art/cards/winds-favor.jpg",
+    "sha256": "ee3f2a458a490fa2d1be9ed24f5b293145f871b689812ca24818d299374df46e"
+   }
+  ]
+ },
+ "assassin": {
+  "figure": {
+   "id": "hero:assassin",
+   "path": "apps/web/public/art/figures/hero-assassin.png",
+   "sha256": "78e7c7bf289474d74f4734e7fcf32f811e4b2d55c0c1a2b10d7388388ce588eb"
+  },
+  "skins": [
+   {
+    "id": "assassin-gender-female",
+    "path": "apps/web/public/art/figures/skins/assassin-gender-female.png",
+    "sha256": "18446a9ec0e6f9b8177119bc7392be58ecc286b3df7d794cab767de6a866d4af"
+   },
+   {
+    "id": "assassin-gilded-corsair",
+    "path": "apps/web/public/art/figures/skins/assassin-gilded-corsair.png",
+    "sha256": "02b121a864b3ddb3bf9f52008d9ed4711a6c78fa12a5e8918ebf5cc255990646"
+   }
+  ],
+  "cards": [
+   {
+    "id": "duck-and-weave",
+    "path": "apps/web/public/art/cards/duck-and-weave.jpg",
+    "sha256": "e038453499327641af09d208316d4c184ff2bcec7c06f65d8b478b82a7c96aa8"
+   },
+   {
+    "id": "hobbling-jab",
+    "path": "apps/web/public/art/cards/hobbling-jab.jpg",
+    "sha256": "1d7541f01a4872a125e8519e052dd171ba84ae99bec1eb1103f13b55934b0b93"
+   },
+   {
+    "id": "backspring",
+    "path": "apps/web/public/art/cards/backspring.jpg",
+    "sha256": "890ea236a2180ccc4a295b360bfb196b3f87eab37bbe7a91d467d0a12721bac4"
+   },
+   {
+    "id": "barbed-stab",
+    "path": "apps/web/public/art/cards/barbed-stab.jpg",
+    "sha256": "a3d4af9e4aff86963a19f81757d8952c21a88a2825066487ecc2818ba39fdbef"
+   },
+   {
+    "id": "blade-flurry",
+    "path": "apps/web/public/art/cards/blade-flurry.jpg",
+    "sha256": "5ba23068d547fc49792c5a4ec70a03d662313adc9fb5c20514b41f8acc827707"
+   },
+   {
+    "id": "cartwheel-cut",
+    "path": "apps/web/public/art/cards/cartwheel-cut.jpg",
+    "sha256": "d3430f15f4c16495407c38863b991a27bf5a3322ef8a5a2a8b4cc8213558bf59"
+   },
+   {
+    "id": "chilling-shriek",
+    "path": "apps/web/public/art/cards/chilling-shriek.jpg",
+    "sha256": "02164131dca78ef15985ac40244a36e5455a3a541b4d71360de8d1d85cd9138d"
+   },
+   {
+    "id": "dirty-hit",
+    "path": "apps/web/public/art/cards/dirty-hit.jpg",
+    "sha256": "63cb88f0622ea58225a98d6e38e911b0f2f73b3a14345e9e6b9f8950ec02e0b1"
+   },
+   {
+    "id": "feint-strike",
+    "path": "apps/web/public/art/cards/feint-strike.jpg",
+    "sha256": "c1d148d56162b8fb2c9d0717be9d560071e90a9881a1d9130b5fb1e2499a4633"
+   },
+   {
+    "id": "flick-knife",
+    "path": "apps/web/public/art/cards/flick-knife.jpg",
+    "sha256": "2e12446b4bd88be77b0891aec96c11bc021f396d4a160da4f38d766b8070b480"
+   },
+   {
+    "id": "glancing-knives",
+    "path": "apps/web/public/art/cards/glancing-knives.jpg",
+    "sha256": "250d76d37ef25fd21f7c174d33b145042284e88c319ef35bbf6f13deef98d4ec"
+   },
+   {
+    "id": "inked-knife",
+    "path": "apps/web/public/art/cards/inked-knife.jpg",
+    "sha256": "c7a6553875653af47639b53847611e7176ed086f5cb13b803b7e3d78345ff422"
+   },
+   {
+    "id": "knife-juggle",
+    "path": "apps/web/public/art/cards/knife-juggle.jpg",
+    "sha256": "eb9a77652bd3af98d7c07219e3a4ab01589aa3e0bac52207b0a733e0748a53fb"
+   },
+   {
+    "id": "open-vein",
+    "path": "apps/web/public/art/cards/open-vein.jpg",
+    "sha256": "3d3958407778a85b4671f006ab3ad66fceaf53c472917b11118cba5b877c7ec2"
+   },
+   {
+    "id": "quick-slash",
+    "path": "apps/web/public/art/cards/quick-slash.jpg",
+    "sha256": "52d9593064b77fafc89b52946c729433ab91eb9f49873e1b5316080b510a4428"
+   },
+   {
+    "id": "roll-away",
+    "path": "apps/web/public/art/cards/roll-away.jpg",
+    "sha256": "81ef9475409b8994c4d338f1ba311b20a567df7e4833e7ce157ad616d3b9a48b"
+   },
+   {
+    "id": "sense-the-blow",
+    "path": "apps/web/public/art/cards/sense-the-blow.jpg",
+    "sha256": "7bb537fbea0fb8648355ccd801e096e9f5cef70bc70e4970b44c93faed5e6ee5"
+   },
+   {
+    "id": "shroud-and-shank",
+    "path": "apps/web/public/art/cards/shroud-and-shank.jpg",
+    "sha256": "97b56b246c37215257e19012cccbda9b7cd88616384bb0c6a1d940daf6f02fcf"
+   },
+   {
+    "id": "shuffle-up",
+    "path": "apps/web/public/art/cards/shuffle-up.jpg",
+    "sha256": "42e07a11348aa06e9890adb780274407dae31b0487dabec9474e73a6127134e6"
+   },
+   {
+    "id": "sleeve-knife",
+    "path": "apps/web/public/art/cards/sleeve-knife.jpg",
+    "sha256": "771939ffda12f63c928249977579b7b68953b3f46137fef06c1c732d1f857492"
+   },
+   {
+    "id": "slip-the-blow",
+    "path": "apps/web/public/art/cards/slip-the-blow.jpg",
+    "sha256": "83abc00bccc82085b7eca9ecd5f946a0cf1984c49c8467575d00271a433f6d51"
+   },
+   {
+    "id": "stalkers-lunge",
+    "path": "apps/web/public/art/cards/stalkers-lunge.jpg",
+    "sha256": "4874846af37043232c40abe3840fb77719437308e988f11742011196b6978726"
+   },
+   {
+    "id": "turn-aside",
+    "path": "apps/web/public/art/cards/turn-aside.jpg",
+    "sha256": "573d08a20f526f8ad95bbb30d18b8a767dfb26045ece16194461774f4f6a60fe"
+   },
+   {
+    "id": "vipers-kiss",
+    "path": "apps/web/public/art/cards/vipers-kiss.jpg",
+    "sha256": "0dd6bf76c5593e270184f1cc886b6f55dfca940d0d08a990c0c2fed57d6d16d4"
+   },
+   {
+    "id": "all-or-nothing",
+    "path": "apps/web/public/art/cards/all-or-nothing.jpg",
+    "sha256": "ea5cd365ab718fb501c458d07875993c9558c8a675b3fd314875ffccb8118ec9"
+   },
+   {
+    "id": "blood-mist",
+    "path": "apps/web/public/art/cards/blood-mist.jpg",
+    "sha256": "453d6c29fad75b6fc744ec98ef85f8541b6bf2120ec44ca18490d76fb5d49fc4"
+   },
+   {
+    "id": "bolt-hole",
+    "path": "apps/web/public/art/cards/bolt-hole.jpg",
+    "sha256": "0f5bd65435a4cb5ff2a975d9b1174bc13d709c5c720a9a3921a54caf31d66f90"
+   },
+   {
+    "id": "bottomless-sleeves",
+    "path": "apps/web/public/art/cards/bottomless-sleeves.jpg",
+    "sha256": "fc39873324310c08b7b6b12f2516d8263de01143da295ecd60a56e6e435f2d55"
+   },
+   {
+    "id": "clean-cut",
+    "path": "apps/web/public/art/cards/clean-cut.jpg",
+    "sha256": "fa1994837f41815259eed0e9a94615f9477f0d26f38365a1bad1e611005fb443"
+   },
+   {
+    "id": "cool-head",
+    "path": "apps/web/public/art/cards/cool-head.jpg",
+    "sha256": "ef422fe33644664bf1ca266d51c29935b708707d0231f5f7037ffa5adbccfd97"
+   },
+   {
+    "id": "darting-strike",
+    "path": "apps/web/public/art/cards/darting-strike.jpg",
+    "sha256": "b33b754c302dc9ccdca9e5d63e799d3ab86abfac7dd535ef361e3d3f3fdd03fb"
+   },
+   {
+    "id": "final-flourish",
+    "path": "apps/web/public/art/cards/final-flourish.jpg",
+    "sha256": "438f36cc4a6691924c23c6fd340008d434b01878731a22f42e8aa533336dfc78"
+   },
+   {
+    "id": "fleet-fingers",
+    "path": "apps/web/public/art/cards/fleet-fingers.jpg",
+    "sha256": "8ab30a044a0d7789de3e7b4da4ddd94709b9efe98c2a8c274d74f30f27851cd2"
+   },
+   {
+    "id": "fleet-step",
+    "path": "apps/web/public/art/cards/fleet-step.jpg",
+    "sha256": "e20db6fadf7f2015e541eb6cde635519581ee7e3183923381afc693f3df6dd5d"
+   },
+   {
+    "id": "garrote",
+    "path": "apps/web/public/art/cards/garrote.jpg",
+    "sha256": "e3883bc4776595e7071297ea5354e9d8d0be1d22299386234242332f904ba4c4"
+   },
+   {
+    "id": "ghost-knives",
+    "path": "apps/web/public/art/cards/ghost-knives.jpg",
+    "sha256": "d8900f03cd29b82a9f3523bbeb399c791d40a96c3209d8141569b326422c3b17"
+   },
+   {
+    "id": "graveside-cut",
+    "path": "apps/web/public/art/cards/graveside-cut.jpg",
+    "sha256": "71dde69e16af918eabf6cce21700a25e9f849028ab162ec747257fa8bd2c4d94"
+   },
+   {
+    "id": "knife-in-the-back",
+    "path": "apps/web/public/art/cards/knife-in-the-back.jpg",
+    "sha256": "194d4ea0e41b863aaaa281145a010a5f396674926bec6d9f89fdc6423b259a6d"
+   },
+   {
+    "id": "lay-bare",
+    "path": "apps/web/public/art/cards/lay-bare.jpg",
+    "sha256": "7687943869aa320a81a4153ee5e3ba4377e9eab91553cbd8850eed7cdd7a3bd3"
+   },
+   {
+    "id": "needle-rain",
+    "path": "apps/web/public/art/cards/needle-rain.jpg",
+    "sha256": "8b33c9a15a60764db6374ba695347aa156d6482a89798ecede81443efb831511"
+   },
+   {
+    "id": "nerve-strike",
+    "path": "apps/web/public/art/cards/nerve-strike.jpg",
+    "sha256": "d61323e9d4c44128432eb40bc8cad51e279c2122031e0f6da702158a37454bd8"
+   },
+   {
+    "id": "nimble-deal",
+    "path": "apps/web/public/art/cards/nimble-deal.jpg",
+    "sha256": "fd9d88f80c36b02d4d7d749f90854fa73778d35a3cefc583a33497f147352686"
+   },
+   {
+    "id": "palm-switch",
+    "path": "apps/web/public/art/cards/palm-switch.jpg",
+    "sha256": "2b2f43ca7e1bba3dc5a67bec0b4ec0822ec1e36d03467654db6250e259bc6ab5"
+   },
+   {
+    "id": "practiced-hands",
+    "path": "apps/web/public/art/cards/practiced-hands.jpg",
+    "sha256": "a6b4329abb3356a46d667b332eab11f62f112bfd9e79ef57af4e2f1220723f70"
+   },
+   {
+    "id": "quick-reflexes",
+    "path": "apps/web/public/art/cards/quick-reflexes.jpg",
+    "sha256": "e5218948072c573627642174c1b8a01bf54735297f4b9dd5569446f29cc2c92e"
+   },
+   {
+    "id": "red-mirage",
+    "path": "apps/web/public/art/cards/red-mirage.jpg",
+    "sha256": "cfb59393402f2085e1dc02999ff79af1f5035148d704a7533ce5dfd684ed9b66"
+   },
+   {
+    "id": "reopen-the-wound",
+    "path": "apps/web/public/art/cards/reopen-the-wound.jpg",
+    "sha256": "94b0790354716ab7d515a31262257d7102f8a330c639b1d8a10643a1750c4484"
+   },
+   {
+    "id": "rippling-cut",
+    "path": "apps/web/public/art/cards/rippling-cut.jpg",
+    "sha256": "b47e04d31f52e3b3f71ef7b135dc9f69c2e98922f9a5232eac55ef935fb3347a"
+   },
+   {
+    "id": "run-through",
+    "path": "apps/web/public/art/cards/run-through.jpg",
+    "sha256": "b546cad111781c6729b274f213d37d9223637d52bcdffd5cdf1a69b73ceee48e"
+   },
+   {
+    "id": "side-slip",
+    "path": "apps/web/public/art/cards/side-slip.jpg",
+    "sha256": "beec1e839956eaf802831c09fb30b77f47898e338d8bf7c24fbb7c20de65ae26"
+   },
+   {
+    "id": "sleeve-drop",
+    "path": "apps/web/public/art/cards/sleeve-drop.jpg",
+    "sha256": "cc25cc600651420f6423c42e69dba3c2cd8253ee016d45680a0eca7a61b0f697"
+   },
+   {
+    "id": "smoke-veil",
+    "path": "apps/web/public/art/cards/smoke-veil.jpg",
+    "sha256": "6daac920390c5cd54ad66c18f69d82bde1afeda9d56b83cac232a254546adf68"
+   },
+   {
+    "id": "spare-blades",
+    "path": "apps/web/public/art/cards/spare-blades.jpg",
+    "sha256": "3e018429c2db1ce90178c19119d653b1617053492c7ba92fed2894f8d147e83a"
+   },
+   {
+    "id": "spring-attack",
+    "path": "apps/web/public/art/cards/spring-attack.jpg",
+    "sha256": "f72122f4fcc3a88e8e9c127034216ed029d553d8fada833237baed2454e2f4de"
+   },
+   {
+    "id": "sweep-the-leg",
+    "path": "apps/web/public/art/cards/sweep-the-leg.jpg",
+    "sha256": "225ec83fc4878030fb76547f90fe0fc07c53fc2abfafcce528daa4808a885f76"
+   },
+   {
+    "id": "thin-the-blood",
+    "path": "apps/web/public/art/cards/thin-the-blood.jpg",
+    "sha256": "d8da91854e706529ce69a706fa245a439d29e1e1e29be13aaf3008cb7c70b6f1"
+   },
+   {
+    "id": "tossed-vials",
+    "path": "apps/web/public/art/cards/tossed-vials.jpg",
+    "sha256": "96241f2dc14380dfd196755fdf6b7d4a3856f29fbc4d83ed2ef3c4c2adeaee4c"
+   },
+   {
+    "id": "weeping-cuts",
+    "path": "apps/web/public/art/cards/weeping-cuts.jpg",
+    "sha256": "47f5c64b271134932b2b0d875b4980b8baa5e72c004fe4c1630fa50f2e1e6d07"
+   },
+   {
+    "id": "whetted-edge",
+    "path": "apps/web/public/art/cards/whetted-edge.jpg",
+    "sha256": "5e169b21fb39aef4398384ee07f0dec5bdd516c6cf4745bfe2d6324ed9f01db5"
+   },
+   {
+    "id": "blood-scent",
+    "path": "apps/web/public/art/cards/blood-scent.jpg",
+    "sha256": "8ab2fcb7b90d31e71c3b4210ea7b38addc488ac614872a37fa767003b25e70f7"
+   },
+   {
+    "id": "bloodburst",
+    "path": "apps/web/public/art/cards/bloodburst.jpg",
+    "sha256": "8f9f37fd259d50471bab8174a7d6eb4bbc3230007770266e15d2fea9e1dcc23a"
+   },
+   {
+    "id": "double-trick",
+    "path": "apps/web/public/art/cards/double-trick.jpg",
+    "sha256": "99d0a5fbf60a0eff8c049d21a0bd78b0a065d96e51df67de0de36539c146fe26"
+   },
+   {
+    "id": "final-bow",
+    "path": "apps/web/public/art/cards/final-bow.jpg",
+    "sha256": "4fd0a1ebf6c11fcd14e1ffd3ecff5d0266e6d72729558198bb1964326ff01c55"
+   },
+   {
+    "id": "grand-scheme",
+    "path": "apps/web/public/art/cards/grand-scheme.jpg",
+    "sha256": "5e08d079a8c0917412ced7eecfdaa2bf54e7ab71dfbf90f94c67c2e8c8115cc9"
+   },
+   {
+    "id": "hemorrhage",
+    "path": "apps/web/public/art/cards/hemorrhage.jpg",
+    "sha256": "c68e0e0a0041da7c29bb55f5174a2698b3420f788383b86f8baa335a9deb3d1f"
+   },
+   {
+    "id": "inked-blades",
+    "path": "apps/web/public/art/cards/inked-blades.jpg",
+    "sha256": "046dfda0218aba618bee5d031a407da536c0b7d75bdea11c3d2a134596f608d0"
+   },
+   {
+    "id": "into-the-shadows",
+    "path": "apps/web/public/art/cards/into-the-shadows.jpg",
+    "sha256": "e9e0432df8c47ef76cb8f585a14a3810fe8e51bcb1c59bfa0cb5e1ff3ba103bc"
+   },
+   {
+    "id": "killing-stroke",
+    "path": "apps/web/public/art/cards/killing-stroke.jpg",
+    "sha256": "80c88e3650e05dbc17ab964d1681fe5ff28cae4736daca4a14d1892b09f7cb8b"
+   },
+   {
+    "id": "mantle-of-night",
+    "path": "apps/web/public/art/cards/mantle-of-night.jpg",
+    "sha256": "0e457efdc7ecdb67c61cfeffc1419ad3a2e467a418db866c3566b3e837bdc550"
+   },
+   {
+    "id": "marked-for-death",
+    "path": "apps/web/public/art/cards/marked-for-death.jpg",
+    "sha256": "8e6ef49791d0fec31d603f5fe82d7db307c045b76a4ba31c12819a0ae85d6bbe"
+   },
+   {
+    "id": "nimble-routine",
+    "path": "apps/web/public/art/cards/nimble-routine.jpg",
+    "sha256": "87a9d9efff53ad12859dd045b41d05d3e2540468edb42bead33e3e66f974602b"
+   },
+   {
+    "id": "patient-hands",
+    "path": "apps/web/public/art/cards/patient-hands.jpg",
+    "sha256": "36553e8ab5d25cc850fc605dd49bfaba16178d2020945addd13b64b2c022e2e0"
+   },
+   {
+    "id": "razor-skin",
+    "path": "apps/web/public/art/cards/razor-skin.jpg",
+    "sha256": "c4cc3aed023bfac1741988d163f248f6f8d2d975dac013154e541f1b00c354f0"
+   },
+   {
+    "id": "recall-the-blades",
+    "path": "apps/web/public/art/cards/recall-the-blades.jpg",
+    "sha256": "2d43254a12ff1e459db6500f3bc4a6bab0dd3c841ed2d7809fc9802b71946550"
+   },
+   {
+    "id": "recurring-dream",
+    "path": "apps/web/public/art/cards/recurring-dream.jpg",
+    "sha256": "46e2b92500bcb20abf944f029377b25151903de5c240ce405a1b324573bbd2fe"
+   },
+   {
+    "id": "rush-of-blood",
+    "path": "apps/web/public/art/cards/rush-of-blood.jpg",
+    "sha256": "20514dc3988a3de4ca05dba5e16ca29c9e325800456ac79cec0d24e858ba72bf"
+   },
+   {
+    "id": "sapping-wound",
+    "path": "apps/web/public/art/cards/sapping-wound.jpg",
+    "sha256": "c5703f048e28ed13e7743662c25e6d2915d514ef39007bf74fbf522a8acbeb7c"
+   },
+   {
+    "id": "serpents-coil",
+    "path": "apps/web/public/art/cards/serpents-coil.jpg",
+    "sha256": "429bbcbd4494d898f58b48a4f9645556588979fcbdb8efcc45f83360f47a7461"
+   },
+   {
+    "id": "serrated-edges",
+    "path": "apps/web/public/art/cards/serrated-edges.jpg",
+    "sha256": "cabaedbc6af860c0de2bedb4b64496848ed3cdb63a1fef1d55dcd16c45d30113"
+   },
+   {
+    "id": "shadow-echo",
+    "path": "apps/web/public/art/cards/shadow-echo.jpg",
+    "sha256": "dde3d92343f7c04d0714d95e7efcba33111553c303c221ad0487976a48aa5b18"
+   },
+   {
+    "id": "slow-murder",
+    "path": "apps/web/public/art/cards/slow-murder.jpg",
+    "sha256": "04fac663847df416030915f229fa7621db9f5bddeec9a0e0312276b4d85c214f"
+   },
+   {
+    "id": "steel-monsoon",
+    "path": "apps/web/public/art/cards/steel-monsoon.jpg",
+    "sha256": "992daf689c6eb99559e09af8719efdc4d73bab225dc1b217cf9078b8bea2a1b4"
+   },
+   {
+    "id": "stilled-time",
+    "path": "apps/web/public/art/cards/stilled-time.jpg",
+    "sha256": "7a108b7ffe575f766ff09cf581d5ef86f670bf2186540c5c9d7c65369bcaaba1"
+   },
+   {
+    "id": "wide-arc",
+    "path": "apps/web/public/art/cards/wide-arc.jpg",
+    "sha256": "e07785216a8e1a7477498af3be33d62303aa70253c9e36b78bb9f1aa490e6707"
+   }
+  ]
+ },
+ "spellblade": {
+  "figure": {
+   "id": "hero:spellblade",
+   "path": "apps/web/public/art/figures/hero-spellblade.png",
+   "sha256": "d15ae7550ecc4aef951d9c89b5e09a4f2a0f8267196441e299d3f2188ffa6130"
+  },
+  "skins": [
+   {
+    "id": "spellblade-aurora-empress",
+    "path": "apps/web/public/art/figures/skins/spellblade-aurora-empress.png",
+    "sha256": "117edab2079a0570052b2e281e2cc3bbd454d33c14eb3b5f1f6c4d82ec856873"
+   },
+   {
+    "id": "spellblade-gender-male",
+    "path": "apps/web/public/art/figures/skins/spellblade-gender-male.png",
+    "sha256": "151d91a740f89bfad7b070483e92babbfcc3cfe596b021b528718e1f2aff4c6a"
+   }
+  ],
+  "cards": [
+   {
+    "id": "gather-light",
+    "path": "apps/web/public/art/cards/gather-light.jpg",
+    "sha256": "44266ac2d8970c03f63bdcaee7343f88a5731ec174c02582ae01c792fcf1aafa"
+   },
+   {
+    "id": "meteor-jab",
+    "path": "apps/web/public/art/cards/meteor-jab.jpg",
+    "sha256": "32c955c3e043c0605383b58f01aa55dd31548f63c3ecdcc6bfecd738ce32907a"
+   },
+   {
+    "id": "astral-pulse",
+    "path": "apps/web/public/art/cards/astral-pulse.jpg",
+    "sha256": "a5a85a525b154946d2231db4595faaabce620475ae184b386e686348ae2874b5"
+   },
+   {
+    "id": "cosmic-lance",
+    "path": "apps/web/public/art/cards/cosmic-lance.jpg",
+    "sha256": "1f1507a1f46e558fd2ddf0421c598bbad1d75ced0a3b0b84cbb715b81c01f696"
+   },
+   {
+    "id": "ember-cache",
+    "path": "apps/web/public/art/cards/ember-cache.jpg",
+    "sha256": "70a1cd35b04820c940c240e990deaa93293300cff3317552a758158e6521e1c6"
+   },
+   {
+    "id": "faint-glow",
+    "path": "apps/web/public/art/cards/faint-glow.jpg",
+    "sha256": "90b7c09ec12b3fd3c220dc809282e67c9172ee35e298508f8d5336bdb64c0986"
+   },
+   {
+    "id": "feint",
+    "path": "apps/web/public/art/cards/feint.jpg",
+    "sha256": "4bf1dd9b0889da82a8fa38e3207cf754246b674b4822eb97fb24eadea46fbfaa"
+   },
+   {
+    "id": "forged-in-fury",
+    "path": "apps/web/public/art/cards/forged-in-fury.jpg",
+    "sha256": "99b062d56bb28dd136f8849283b4ec92834fd9fc8d0f602ad085de2be65220d4"
+   },
+   {
+    "id": "glass-veil",
+    "path": "apps/web/public/art/cards/glass-veil.jpg",
+    "sha256": "0bd18f3bc717eb483e2d91edf33e305ce2c46263e0c25c4bc1fdb5c2cc055df9"
+   },
+   {
+    "id": "gleam",
+    "path": "apps/web/public/art/cards/gleam.jpg",
+    "sha256": "b4594059663d7540feaa466d9100b4dcae1c6b5f97201610e33f4d5d3fdf4e63"
+   },
+   {
+    "id": "hollow-gaze",
+    "path": "apps/web/public/art/cards/hollow-gaze.jpg",
+    "sha256": "19ab0db879f14f5a57f8c004782d0356c0c4eb9b52917e7ce7b2cba7c7dbd856"
+   },
+   {
+    "id": "humble",
+    "path": "apps/web/public/art/cards/humble.jpg",
+    "sha256": "c0bc2b936af86f8c397e5fd468266c2b67e339fee445d50b708cc30885906a79"
+   },
+   {
+    "id": "magma-crash",
+    "path": "apps/web/public/art/cards/magma-crash.jpg",
+    "sha256": "81b59521266c5cfeedbf4fa6fa16092e8e0c9d30309fd962868f35c076ac3b37"
+   },
+   {
+    "id": "molten-weight",
+    "path": "apps/web/public/art/cards/molten-weight.jpg",
+    "sha256": "65f15347d1b944d7e90abfe2c53f4ad5408940c9775b6c9d393340b6903d3d96"
+   },
+   {
+    "id": "obsidian-flurry",
+    "path": "apps/web/public/art/cards/obsidian-flurry.jpg",
+    "sha256": "bce0f352b50f767106eea1fc9743961c09532e1f10de22daf2f081f9fdfa6ddb"
+   },
+   {
+    "id": "out-of-my-sight",
+    "path": "apps/web/public/art/cards/out-of-my-sight.jpg",
+    "sha256": "cbf1c333c03683755b98fa5fe6dbfda89fabf749fc8e396925d42c0b0915d453"
+   },
+   {
+    "id": "pale-beacon",
+    "path": "apps/web/public/art/cards/pale-beacon.jpg",
+    "sha256": "89f2ffcd86637c4dff9de68106fb14128707a7d2612abc3ed3553fd77194ac5f"
+   },
+   {
+    "id": "retainer-dive",
+    "path": "apps/web/public/art/cards/retainer-dive.jpg",
+    "sha256": "ff17227538012c02f9602388fd82234ad82f07025d1beadb511c5df128824498"
+   },
+   {
+    "id": "retainer-guard",
+    "path": "apps/web/public/art/cards/retainer-guard.jpg",
+    "sha256": "d2df4c433dcef159df13ee4060d754e8212a9f526417de81c6c17658b9cbea0a"
+   },
+   {
+    "id": "retainer-strike",
+    "path": "apps/web/public/art/cards/retainer-strike.jpg",
+    "sha256": "349a3bbe0ecdcc32d54588fb7d357391b8c6188c80260cf7c9a85d92008932bc"
+   },
+   {
+    "id": "skybolt",
+    "path": "apps/web/public/art/cards/skybolt.jpg",
+    "sha256": "0de4f8a7ec0d9b4984f401ccc31472c1ab66670339eb4b6fba4d39ea935063af"
+   },
+   {
+    "id": "spoils",
+    "path": "apps/web/public/art/cards/spoils.jpg",
+    "sha256": "746a456821c5cee048d7054f44b4fc91be300c7e2713b92192100350481aa471"
+   },
+   {
+    "id": "star-barrier",
+    "path": "apps/web/public/art/cards/star-barrier.jpg",
+    "sha256": "f20506ce8db31577a5df220d5e48ed66c818fc0118d33977a887ecd9aa4edad4"
+   },
+   {
+    "id": "starforged-blade",
+    "path": "apps/web/public/art/cards/starforged-blade.jpg",
+    "sha256": "301cf0e8d27afd8c206e3512fdc2b0db25a42a4f931ef528e6a8ec8e7d246d3a"
+   },
+   {
+    "id": "sunstrike",
+    "path": "apps/web/public/art/cards/sunstrike.jpg",
+    "sha256": "96a29fc9b82701548bc933d71341aa556073dc97dbb34617617a8e612fff819c"
+   },
+   {
+    "id": "whetstone",
+    "path": "apps/web/public/art/cards/whetstone.jpg",
+    "sha256": "2e0631ef41128afd83d89f5c93c3033f88355d57e4f20b096bb547d64fb70d7d"
+   },
+   {
+    "id": "banked-embers",
+    "path": "apps/web/public/art/cards/banked-embers.jpg",
+    "sha256": "50b2cb1fceb75b49e072ba550a57bcbc76c8ba628d1b6174c2e37570c94a08d5"
+   },
+   {
+    "id": "bladewall",
+    "path": "apps/web/public/art/cards/bladewall.jpg",
+    "sha256": "82b314bef5aca1c3791f4d3a369fda13e5d4dd17793f84d30110ad84cd352255"
+   },
+   {
+    "id": "call-the-blade",
+    "path": "apps/web/public/art/cards/call-the-blade.jpg",
+    "sha256": "ced20bfa09707c55ba18ef400f1607e5bbcd30e0b11a32095be44405c8b871ba"
+   },
+   {
+    "id": "chart-the-orbit",
+    "path": "apps/web/public/art/cards/chart-the-orbit.jpg",
+    "sha256": "7d9a71e5590754972712e9fbd7694f43993f266b4cd32aacfd52d6e6a3f8229f"
+   },
+   {
+    "id": "collapsing-star",
+    "path": "apps/web/public/art/cards/collapsing-star.jpg",
+    "sha256": "f9d2a0f60b27d069aefa7c4151b94be4c586ab02a9a3753f69409501296c98bd"
+   },
+   {
+    "id": "conqueror",
+    "path": "apps/web/public/art/cards/conqueror.jpg",
+    "sha256": "0271e1a11e252322e9d0795dcaf4d18455ad247d54f886b2e773d4013dc5d012"
+   },
+   {
+    "id": "crowned-fist",
+    "path": "apps/web/public/art/cards/crowned-fist.jpg",
+    "sha256": "e8393f4123501ca46af5666ffa9e7fc59a4586b305a20e8e20566cd2eaa9b39a"
+   },
+   {
+    "id": "crowns-weight",
+    "path": "apps/web/public/art/cards/crowns-weight.jpg",
+    "sha256": "d5824ef1ba2ca21e5df0d94e498526ac9693bd79ca556b1bf901b0a307c7d9e5"
+   },
+   {
+    "id": "cygnus",
+    "path": "apps/web/public/art/cards/cygnus.jpg",
+    "sha256": "82c9258bb6228e0bbad7c5f6ead9e729908f88471fe207b4f230aed2a0ab59f4"
+   },
+   {
+    "id": "devastate",
+    "path": "apps/web/public/art/cards/devastate.jpg",
+    "sha256": "9f098a26adf3a9cf9e0381eeb35b1805ba274d6c6568f427be1f6eea4b780f8b"
+   },
+   {
+    "id": "distant-ember",
+    "path": "apps/web/public/art/cards/distant-ember.jpg",
+    "sha256": "8d89bd75f0b535b1af128689671b7361e75d29c3dd64e382c57f5f007eb03227"
+   },
+   {
+    "id": "falling-sky",
+    "path": "apps/web/public/art/cards/falling-sky.jpg",
+    "sha256": "7ebe9f8f352066ad58c2d714e07e91cf37c5d6256c42b61f1005f94453f0c3e3"
+   },
+   {
+    "id": "final-shatter",
+    "path": "apps/web/public/art/cards/final-shatter.jpg",
+    "sha256": "83f519c2c0460a1b22f542772cc0a7e87accd55811d89b4f6d6230fd4d4168b2"
+   },
+   {
+    "id": "forge-heat",
+    "path": "apps/web/public/art/cards/forge-heat.jpg",
+    "sha256": "3179939925dc452bb24c686000186ad3f61cacad9078ed9d120a171d0181604c"
+   },
+   {
+    "id": "gamma-burst",
+    "path": "apps/web/public/art/cards/gamma-burst.jpg",
+    "sha256": "a3d839db45eb4fde0a266d6d6992d41b97b2f8f37462ea402ddcea4a623a8e52"
+   },
+   {
+    "id": "glass-wall",
+    "path": "apps/web/public/art/cards/glass-wall.jpg",
+    "sha256": "c3e6f98478f8caf6a56b9c4e8ff7ce3c27c0a4b793886b697c35aa3c58dc4e06"
+   },
+   {
+    "id": "grand-speech",
+    "path": "apps/web/public/art/cards/grand-speech.jpg",
+    "sha256": "a078790d220ed40a9faa3f7fdb0c80c7c0032b41d3ac2731a7c045c0c90b826f"
+   },
+   {
+    "id": "gravity-well",
+    "path": "apps/web/public/art/cards/gravity-well.jpg",
+    "sha256": "a548ff1e74a3294880cc95e3368ec67a2bb5093b3464b98af1664bfc3583da6a"
+   },
+   {
+    "id": "hex-volley",
+    "path": "apps/web/public/art/cards/hex-volley.jpg",
+    "sha256": "60f0cf74fa4baeeb0c8949794211c984b29a17319dbdba30644747f0572972bb"
+   },
+   {
+    "id": "mirror-glass",
+    "path": "apps/web/public/art/cards/mirror-glass.jpg",
+    "sha256": "1ba987f0fcbf1de733f4b105c2e366b309b72c97965a6064b5345868dcfaf9d4"
+   },
+   {
+    "id": "orbit",
+    "path": "apps/web/public/art/cards/orbit.jpg",
+    "sha256": "bbb1026470c1965a93035929b637e73888cdc5dcbcc676c55749c90d514d01ad"
+   },
+   {
+    "id": "parry",
+    "path": "apps/web/public/art/cards/parry.jpg",
+    "sha256": "affe9ea21ec21eadb3f985f8e606f3a30a78cdeb45d7f04f749f432ba2a7f126"
+   },
+   {
+    "id": "pillar-of-light",
+    "path": "apps/web/public/art/cards/pillar-of-light.jpg",
+    "sha256": "a2b41ae0b9e6710e17f08dfb2bc9a7840eda4410946cbbf9c79253792f5029b9"
+   },
+   {
+    "id": "radiance",
+    "path": "apps/web/public/art/cards/radiance.jpg",
+    "sha256": "cb54ff545b89b7f2ddf1d21d88a62a460f918dbef463323386ef24d38aa29342"
+   },
+   {
+    "id": "read-the-embers",
+    "path": "apps/web/public/art/cards/read-the-embers.jpg",
+    "sha256": "d9557593af58db05db5a6ce579c2041055d5a7bfd67d5c17dfbd69e3fb27135e"
+   },
+   {
+    "id": "royal-decree",
+    "path": "apps/web/public/art/cards/royal-decree.jpg",
+    "sha256": "895b1e023d6fc00b98a329114dbe8a116934c0560b57cda0d73f73eaeb6765a9"
+   },
+   {
+    "id": "scheme",
+    "path": "apps/web/public/art/cards/scheme.jpg",
+    "sha256": "7202f7d7654f78bafc6b012f064cc0b248abd4866c2a55916c53ee8f5a3b2c05"
+   },
+   {
+    "id": "shard-strike",
+    "path": "apps/web/public/art/cards/shard-strike.jpg",
+    "sha256": "caaf4da8d227f5a4709dae0cc60d13202003b7df8ceade07093094a969c57e9b"
+   },
+   {
+    "id": "sigil-of-wandering",
+    "path": "apps/web/public/art/cards/sigil-of-wandering.jpg",
+    "sha256": "19336d2fbd4c3e4d34f4a139c6f273c74e80d523fca35c114ff32b54bde8e32c"
+   },
+   {
+    "id": "sovereign-strike",
+    "path": "apps/web/public/art/cards/sovereign-strike.jpg",
+    "sha256": "821fc1ddc5cd35af68ac67c588f607f6ac2030ef3af6ed5d4c0c3ab83c7d6777"
+   },
+   {
+    "id": "starburst",
+    "path": "apps/web/public/art/cards/starburst.jpg",
+    "sha256": "c530551358362189481d2e964fb603a817f8ca39f1f54d3a4f917c6216fe528b"
+   },
+   {
+    "id": "stellar-wind",
+    "path": "apps/web/public/art/cards/stellar-wind.jpg",
+    "sha256": "9a854aeb405c7eb8e61ce598b7969dae43cc40ddcbadf80e8e7fdf42c8bec5c1"
+   },
+   {
+    "id": "to-arms",
+    "path": "apps/web/public/art/cards/to-arms.jpg",
+    "sha256": "c469dedfb069a0d2ab5f53da3b80fed0a7a9eaa4fa16c06144fe99ec93bd3d7e"
+   },
+   {
+    "id": "tyrants-stomp",
+    "path": "apps/web/public/art/cards/tyrants-stomp.jpg",
+    "sha256": "818f68dd808fa978284713b975d6454d2d7b30978b0eb6af886925077a6fa966"
+   },
+   {
+    "id": "warm-anvil",
+    "path": "apps/web/public/art/cards/warm-anvil.jpg",
+    "sha256": "0e74d049f8b87c13cc651b21c6392cc18164ff8af2251907662bf556c5f41332"
+   },
+   {
+    "id": "wild-spark",
+    "path": "apps/web/public/art/cards/wild-spark.jpg",
+    "sha256": "11196ac1623834608daa42fcbd1410897a29c104f05d6687ed42ac0b6c598d95"
+   },
+   {
+    "id": "big-bang",
+    "path": "apps/web/public/art/cards/big-bang.jpg",
+    "sha256": "fb83a97817a355340cedbd4962cfcbdeeed1b28c3ffa86300d20a4f95e3d055a"
+   },
+   {
+    "id": "by-decree",
+    "path": "apps/web/public/art/cards/by-decree.jpg",
+    "sha256": "243f3979af633bd5e79b32b86e0904ba5925003ab608dc8bd3ea303575834dbe"
+   },
+   {
+    "id": "call-the-guard",
+    "path": "apps/web/public/art/cards/call-the-guard.jpg",
+    "sha256": "ebfbac210166bc06255a2415d466e0654a03e99bf45508487bd290a6e1a56020"
+   },
+   {
+    "id": "cleaving-edge",
+    "path": "apps/web/public/art/cards/cleaving-edge.jpg",
+    "sha256": "24a9ba3ba1890f9130a0fbc396fff9f2cc322483e498b542100419338b9eef57"
+   },
+   {
+    "id": "comet",
+    "path": "apps/web/public/art/cards/comet.jpg",
+    "sha256": "6d0e5d42e3ad8b11d466391bd56c47a2872ff43a9350ece655ebefb499496f42"
+   },
+   {
+    "id": "dying-star",
+    "path": "apps/web/public/art/cards/dying-star.jpg",
+    "sha256": "0d538731c568500265293785b0b8d8ea91828c9fd0fc776e581f23984a70abd3"
+   },
+   {
+    "id": "echoing-blade",
+    "path": "apps/web/public/art/cards/echoing-blade.jpg",
+    "sha256": "1b79561626c6ea0cf49fd698ec964f3c289bf9a01a103af5040aca6f97ec3c9f"
+   },
+   {
+    "id": "endless-barrage",
+    "path": "apps/web/public/art/cards/endless-barrage.jpg",
+    "sha256": "9711f8fba436b9fd8ac00e1e253affe322af017ec6872354a8665d17a59b6601"
+   },
+   {
+    "id": "fated-hand",
+    "path": "apps/web/public/art/cards/fated-hand.jpg",
+    "sha256": "91662d80715dacb887c5d098e9ad314d49198685393ccb32fe341ec0f548539a"
+   },
+   {
+    "id": "glass-armory",
+    "path": "apps/web/public/art/cards/glass-armory.jpg",
+    "sha256": "076948a52d73d67c0092fab5f6b1f9b470202b504430a5f4f8a3a8321cc8baef"
+   },
+   {
+    "id": "hammer-and-anvil",
+    "path": "apps/web/public/art/cards/hammer-and-anvil.jpg",
+    "sha256": "4804cb4b6d2516720b48f4a51e60c82883dcd761da702850f6b4d06d6edd6e29"
+   },
+   {
+    "id": "heirloom-maul",
+    "path": "apps/web/public/art/cards/heirloom-maul.jpg",
+    "sha256": "86f83eb65e3948cd216ee8b92f856c4989d0a66fc84bbe30fd8ef74da38798d8"
+   },
+   {
+    "id": "hollow-form",
+    "path": "apps/web/public/art/cards/hollow-form.jpg",
+    "sha256": "6d1ef9c9a81f49cda0a36046e20e5425931aa97184d9e47c4817ffc77d345239"
+   },
+   {
+    "id": "iron-rule",
+    "path": "apps/web/public/art/cards/iron-rule.jpg",
+    "sha256": "8b24a03010786cb214a0a484ff4bdb6b76844cb8df58e1e13ed3c01e8e201091"
+   },
+   {
+    "id": "obsidian-aegis",
+    "path": "apps/web/public/art/cards/obsidian-aegis.jpg",
+    "sha256": "78d99b3fb15ac6aa59de7c0ca6f36346e0f75ce3732d12af1b2465b4952624ea"
+   },
+   {
+    "id": "obsidian-drill",
+    "path": "apps/web/public/art/cards/obsidian-drill.jpg",
+    "sha256": "c674ef9653cd042166833b8b5ea5f2cf65c499c04ac7c840a9459ddd27fb7559"
+   },
+   {
+    "id": "orion",
+    "path": "apps/web/public/art/cards/orion.jpg",
+    "sha256": "6d6dcd61dc950ed3452ddce03dbe492fe6e555f884ef2871d0dea88981372ab2"
+   },
+   {
+    "id": "rift-gifts",
+    "path": "apps/web/public/art/cards/rift-gifts.jpg",
+    "sha256": "80abff709c25f3021a6712efa6c1723f9dfdd7da75de82a7e17b7dc4bdf34d27"
+   },
+   {
+    "id": "seven-shards",
+    "path": "apps/web/public/art/cards/seven-shards.jpg",
+    "sha256": "887b344ca61e8ef02fea4494184f74590497485ec529678f30d2ab6c1102656e"
+   },
+   {
+    "id": "supernova",
+    "path": "apps/web/public/art/cards/supernova.jpg",
+    "sha256": "20c987a90d039b889432a8b3a82e3439a25cdd2f1038d835949d8c65c7ca3e5b"
+   },
+   {
+    "id": "the-forgemaster",
+    "path": "apps/web/public/art/cards/the-forgemaster.jpg",
+    "sha256": "0c4e0a754c0786b7caed422ad33337e5282aea257fe6d6f99141c48f3a55afd7"
+   },
+   {
+    "id": "tyrants-gaze",
+    "path": "apps/web/public/art/cards/tyrants-gaze.jpg",
+    "sha256": "ad6dd8a958d3a9f50e1d6111c620373225b9cf24addf4a472223ad8fe257a80e"
+   },
+   {
+    "id": "unbreakable-crown",
+    "path": "apps/web/public/art/cards/unbreakable-crown.jpg",
+    "sha256": "dd261e5d671d126a08f2932475e857d429ffc9ba02ebccb3cd95e7cbb52fad1c"
+   },
+   {
+    "id": "weigh-the-crown",
+    "path": "apps/web/public/art/cards/weigh-the-crown.jpg",
+    "sha256": "610d92bb7efa2ff416112f84ad92a0ff56d51c411062bcda5a0783bbf767a893"
+   }
+  ]
+ },
+ "necromancer": {
+  "figure": {
+   "id": "hero:necromancer",
+   "path": "apps/web/public/art/figures/hero-necromancer.png",
+   "sha256": "359416a5831d4d15de633ae467d8a7f7bd3aca16f2d0d9f353191ce9494b60ef"
+  },
+  "skins": [
+   {
+    "id": "necromancer-frostbound-warden",
+    "path": "apps/web/public/art/figures/skins/necromancer-frostbound-warden.png",
+    "sha256": "da9d31e3c3eee584ee9e81738cc280505a1efdad1cbfd150e9effeb9a39c147c"
+   },
+   {
+    "id": "necromancer-gender-female",
+    "path": "apps/web/public/art/figures/skins/necromancer-gender-female.png",
+    "sha256": "bce787b0efa2d3d8a5369b5b155950c1335bdd3f8111427b7ecace8131ab6ffd"
+   }
+  ],
+  "cards": [
+   {
+    "id": "off-the-leash",
+    "path": "apps/web/public/art/cards/off-the-leash.jpg",
+    "sha256": "d8ad8a32b015eda95320cba73d41dc1670ee695fb2afaa8e106c07edce2b9638"
+   },
+   {
+    "id": "raise-thrall",
+    "path": "apps/web/public/art/cards/raise-thrall.jpg",
+    "sha256": "3bb00fa01daba70f0d0cddcce2c536e77a2bbfc8c357e2221493e83e4da73c99"
+   },
+   {
+    "id": "after-the-end",
+    "path": "apps/web/public/art/cards/after-the-end.jpg",
+    "sha256": "1a6fe8c6c707895ee4137aeffd7839bb999ba60a0af513b3b4353a84167d686c"
+   },
+   {
+    "id": "baleful-glance",
+    "path": "apps/web/public/art/cards/baleful-glance.jpg",
+    "sha256": "f42589e3dca7f556556deafdae59c933e2bea1378a3dbae044443140921a64d4"
+   },
+   {
+    "id": "barrow-keeper",
+    "path": "apps/web/public/art/cards/barrow-keeper.jpg",
+    "sha256": "077615e87ebaa0cfe153518ccb80d309c451753b9d8e1dd20c4f07f72089f9ca"
+   },
+   {
+    "id": "bone-bulwark",
+    "path": "apps/web/public/art/cards/bone-bulwark.jpg",
+    "sha256": "1f8b430b0b2bb6160c684da80c55db6f455f45d2ae9594ee10284e08cd818b2d"
+   },
+   {
+    "id": "bone-crush",
+    "path": "apps/web/public/art/cards/bone-crush.jpg",
+    "sha256": "4f8b3df0a2f97df54873c8844a2c8d8e8bf4034a9cc2a707f439c463064e73c6"
+   },
+   {
+    "id": "bone-snap",
+    "path": "apps/web/public/art/cards/bone-snap.jpg",
+    "sha256": "0b5ebd37725f56201cdad087f8da58b14163755bd0a8bb41f94a6b0da61747f4"
+   },
+   {
+    "id": "call-at-dusk",
+    "path": "apps/web/public/art/cards/call-at-dusk.jpg",
+    "sha256": "322ce2293a33251eb4f29aaff631761d37b15485106638c053fada67e765f593"
+   },
+   {
+    "id": "cold-dread",
+    "path": "apps/web/public/art/cards/cold-dread.jpg",
+    "sha256": "a272ece3ac86b111a77310245e604ba00aec4854c13b420dfc5381011bde0461"
+   },
+   {
+    "id": "creeping-end",
+    "path": "apps/web/public/art/cards/creeping-end.jpg",
+    "sha256": "6344d4cc7b0e0defa187cc70557c655dde63cabdb11b839db9736131ef9fc449"
+   },
+   {
+    "id": "desecrate",
+    "path": "apps/web/public/art/cards/desecrate.jpg",
+    "sha256": "366e81d4050832fd5bb4cf8ee72bf46d5ef066335aa675b341940dc634c8d2a7"
+   },
+   {
+    "id": "grave-defiance",
+    "path": "apps/web/public/art/cards/grave-defiance.jpg",
+    "sha256": "bc11d72061d28b77c18f91c9110b73129b8d53d6589492550df27ae6d5f8e74a"
+   },
+   {
+    "id": "grave-robbery",
+    "path": "apps/web/public/art/cards/grave-robbery.jpg",
+    "sha256": "f1962bd086632b61efaa88981aed1fc794cc77101582727bc94b1d4b09028b99"
+   },
+   {
+    "id": "gravesoul",
+    "path": "apps/web/public/art/cards/gravesoul.jpg",
+    "sha256": "909b0b4ab3e8954ee845350d778a6e0526cbfdd4b2576379d6277a514e6f1d0c"
+   },
+   {
+    "id": "harvest",
+    "path": "apps/web/public/art/cards/harvest.jpg",
+    "sha256": "24d706b8222baedbfe22623391d1d32fdd69252de4c1595ae0d4dd119fe87a00"
+   },
+   {
+    "id": "knucklebone",
+    "path": "apps/web/public/art/cards/knucklebone.jpg",
+    "sha256": "597064b167e56558d1989d191dacef9443887fc00181a8c13c7e796318aafbd6"
+   },
+   {
+    "id": "leech-lore",
+    "path": "apps/web/public/art/cards/leech-lore.jpg",
+    "sha256": "7ec9d9bbd24f3a1dff05267b08be020fcc4b4620db87a6ae79f93515ada6a901"
+   },
+   {
+    "id": "marsh-light",
+    "path": "apps/web/public/art/cards/marsh-light.jpg",
+    "sha256": "a2ce3ef06785fb20b4e32380e326d6d558bcbb76863afc34bd275e39fd2e8229"
+   },
+   {
+    "id": "rot-strike",
+    "path": "apps/web/public/art/cards/rot-strike.jpg",
+    "sha256": "033656c4b635101cbc3e6613f20367dba8d94883b3ac1161d12816b3e475eb31"
+   },
+   {
+    "id": "scatter-ashes",
+    "path": "apps/web/public/art/cards/scatter-ashes.jpg",
+    "sha256": "792f191f25a6517af3b4814b9b3b23a7c8b98cadd7fc8ffcf1ec91db1aae4856"
+   },
+   {
+    "id": "soul-rend",
+    "path": "apps/web/public/art/cards/soul-rend.jpg",
+    "sha256": "8038f2bde90345b82cce414b487a05fafd1afb204df6144fe40924c4e84bac20"
+   },
+   {
+    "id": "tolling-bell",
+    "path": "apps/web/public/art/cards/tolling-bell.jpg",
+    "sha256": "6342228315f05cf46b3ed625f138a4c67f1b1ac421d1da356d01c13eaf10cb02"
+   },
+   {
+    "id": "wraith-strike",
+    "path": "apps/web/public/art/cards/wraith-strike.jpg",
+    "sha256": "51700fa58aa59c1574112db36d8bda431e0cb49bb5ba263398cb68861fa30bf4"
+   },
+   {
+    "id": "army-of-the-drowned",
+    "path": "apps/web/public/art/cards/army-of-the-drowned.jpg",
+    "sha256": "2f38969ed76d5a4ecf56d37a0fa81bb6368f2c7b52ef338da7765bd88faf53b3"
+   },
+   {
+    "id": "at-the-threshold",
+    "path": "apps/web/public/art/cards/at-the-threshold.jpg",
+    "sha256": "fe0e9c1cbe88bd49582648e2ee83c934f8e39fa75ec6c8fece8b042e2ad90c01"
+   },
+   {
+    "id": "bonded-dead",
+    "path": "apps/web/public/art/cards/bonded-dead.jpg",
+    "sha256": "bfbba472b723785b17046834f03b774ca2809f280277665a9b7b6e628aa8cbf3"
+   },
+   {
+    "id": "bone-rain",
+    "path": "apps/web/public/art/cards/bone-rain.jpg",
+    "sha256": "bded5abfe5258549f4b369542061853a7574b395bdda9b6c0ec4b033d40da6ac"
+   },
+   {
+    "id": "bone-sift",
+    "path": "apps/web/public/art/cards/bone-sift.jpg",
+    "sha256": "c6f703d0320b530a8dbd70897a16f791f02ee7808d0abb09a0d1ccad5fad0666"
+   },
+   {
+    "id": "bone-toss",
+    "path": "apps/web/public/art/cards/bone-toss.jpg",
+    "sha256": "0ff466eafe39540269da4744832575a5f468a54b71f62575359b82643938bbe9"
+   },
+   {
+    "id": "bottled-soul",
+    "path": "apps/web/public/art/cards/bottled-soul.jpg",
+    "sha256": "70deb5e68f1b83e25b5c2cfe4f0ea9c4cf03dcd642b83342b1d3523499595052"
+   },
+   {
+    "id": "burial-shroud",
+    "path": "apps/web/public/art/cards/burial-shroud.jpg",
+    "sha256": "2c6f869e857de1e2e0b260087d91bcc468535b49deca32f46fc434e373e80390"
+   },
+   {
+    "id": "calcify",
+    "path": "apps/web/public/art/cards/calcify.jpg",
+    "sha256": "a232469d83a6dc4a39804ac36296bee591e77e77e4a1d2a698af3998cb2c7e9c"
+   },
+   {
+    "id": "dance-of-bones",
+    "path": "apps/web/public/art/cards/dance-of-bones.jpg",
+    "sha256": "9a492864f79a5e8f84932bece52580ec56e5aea91cf1de72a6cee192712cd61c"
+   },
+   {
+    "id": "dirge",
+    "path": "apps/web/public/art/cards/dirge.jpg",
+    "sha256": "c328e6a205cb9342b917a5e0fe620d2ae5b91f5ca2573daab06cb45fdb939722"
+   },
+   {
+    "id": "drag-under",
+    "path": "apps/web/public/art/cards/drag-under.jpg",
+    "sha256": "bd4473d924959b93de3a0ce609b834758d51240b33f341006ec7471cc4719503"
+   },
+   {
+    "id": "dredge",
+    "path": "apps/web/public/art/cards/dredge.jpg",
+    "sha256": "5de49a37ecb8369fd7fb5fcb4096e1aac9c747e9383dcb821520452c16000942"
+   },
+   {
+    "id": "entomb",
+    "path": "apps/web/public/art/cards/entomb.jpg",
+    "sha256": "395b3c86fef50efa306a5c21aeac772a3a8d8aee92516fa599a2508e8f1eb408"
+   },
+   {
+    "id": "fester",
+    "path": "apps/web/public/art/cards/fester.jpg",
+    "sha256": "29ace8de2b394f11390dc1eef7d4ebbea5daee260ff71ae798234eabf6d9b90d"
+   },
+   {
+    "id": "fleshcraft",
+    "path": "apps/web/public/art/cards/fleshcraft.jpg",
+    "sha256": "1d2a7ba4cc0c07458c66135fc8b434cce91562a0266edd0d1e09df9e4d9cc544"
+   },
+   {
+    "id": "funeral-march",
+    "path": "apps/web/public/art/cards/funeral-march.jpg",
+    "sha256": "755bbf805cd59c2d084a15c04b5158c861dbe6ca72f0fd832fe3bdb2f79e43e2"
+   },
+   {
+    "id": "goad",
+    "path": "apps/web/public/art/cards/goad.jpg",
+    "sha256": "0c1649826ed4e07d91c3332c1cced944d7af5a27555b6a6c3cef31186be93558"
+   },
+   {
+    "id": "grasping-hands",
+    "path": "apps/web/public/art/cards/grasping-hands.jpg",
+    "sha256": "40533321dd74b4e9ab2db4560e0dd6597273e3db9e4ac41fe047511c17a9a551"
+   },
+   {
+    "id": "grimoire-gale",
+    "path": "apps/web/public/art/cards/grimoire-gale.jpg",
+    "sha256": "3d05cb45e3eeeed3ac36cc620cc664c43e56a4d8066f3bf9521c23d1adda8b25"
+   },
+   {
+    "id": "helping-hand",
+    "path": "apps/web/public/art/cards/helping-hand.jpg",
+    "sha256": "caeb9c1d0f7c29a192c3ab176565ab69a0f0649c7c0320cc176cb9de1c8b5f7e"
+   },
+   {
+    "id": "inevitable",
+    "path": "apps/web/public/art/cards/inevitable.jpg",
+    "sha256": "7eaa3f6aa9bb2b5619e920e21896c5a316098765290ea79e8701358a98e7434e"
+   },
+   {
+    "id": "killing-chill",
+    "path": "apps/web/public/art/cards/killing-chill.jpg",
+    "sha256": "8d11289a30d34bb98bcbed00119938755092bbad62c8351b4aaf457d8a82da25"
+   },
+   {
+    "id": "last-rites",
+    "path": "apps/web/public/art/cards/last-rites.jpg",
+    "sha256": "4306d71328b5e97ea62879dff5200b877d671ec2d26eea7098137399c80c54ab"
+   },
+   {
+    "id": "mourning",
+    "path": "apps/web/public/art/cards/mourning.jpg",
+    "sha256": "4815e10aeda15ff235a9485627c55c145961b3a88297bb326d8de11036a21866"
+   },
+   {
+    "id": "rattle-the-bones",
+    "path": "apps/web/public/art/cards/rattle-the-bones.jpg",
+    "sha256": "637e5ce1d76d6b5ae2b8cdd96b20df629f4720d552616e7f600263c45abb7db1"
+   },
+   {
+    "id": "restless-spirits",
+    "path": "apps/web/public/art/cards/restless-spirits.jpg",
+    "sha256": "82e480520aebd0b152073d56c1f9094609f72199727bc4e9d3809163fe49f714"
+   },
+   {
+    "id": "seize-them",
+    "path": "apps/web/public/art/cards/seize-them.jpg",
+    "sha256": "85a2be027e9913b84f61bb619691b2f0d721e0760f24cd70d4e1d38bb29bae79"
+   },
+   {
+    "id": "sever-the-thread",
+    "path": "apps/web/public/art/cards/sever-the-thread.jpg",
+    "sha256": "2cb203835da0111a7ffe955809ee71f8db48d2551e95081d19c4f8e79665dd3e"
+   },
+   {
+    "id": "spectral-ledger",
+    "path": "apps/web/public/art/cards/spectral-ledger.jpg",
+    "sha256": "d360e1c92d124193d73062f63a7fbb9f3d58bc8684ebf9b5fdf91df2361cf7ba"
+   },
+   {
+    "id": "stay-of-execution",
+    "path": "apps/web/public/art/cards/stay-of-execution.jpg",
+    "sha256": "085bf4f709a93bc0eaf41376eb293cb951961362b024757f39f93c901738b97f"
+   },
+   {
+    "id": "the-final-hour",
+    "path": "apps/web/public/art/cards/the-final-hour.jpg",
+    "sha256": "677fc054ea75512023e6eb01e2038788724502a0d66e5cd60a2b61e31843720f"
+   },
+   {
+    "id": "toll-in-advance",
+    "path": "apps/web/public/art/cards/toll-in-advance.jpg",
+    "sha256": "f8e76f67222b08d4719f03757d18f7dfb314ea7f5f9fb9584aa39e1ab80f977c"
+   },
+   {
+    "id": "veilpiercer",
+    "path": "apps/web/public/art/cards/veilpiercer.jpg",
+    "sha256": "1d8c99223a947fb2abd667f5e707b26d3b267f7a6139c185e1a11d8f16a8c264"
+   },
+   {
+    "id": "wither",
+    "path": "apps/web/public/art/cards/wither.jpg",
+    "sha256": "26f2a84d67411d7a607ddeabcc3253df26159e247d1a612f46513e7c917251a5"
+   },
+   {
+    "id": "withering-touch",
+    "path": "apps/web/public/art/cards/withering-touch.jpg",
+    "sha256": "3a300bb955c0b28ea715fc3a70a23afaa923b6e5accecd8539f81bdfaaf61a21"
+   },
+   {
+    "id": "ashfall",
+    "path": "apps/web/public/art/cards/ashfall.jpg",
+    "sha256": "771ec40c5e62a1f64d18be823d4a33fc44610a93057027576a1eddc08eec56b2"
+   },
+   {
+    "id": "call-the-departed",
+    "path": "apps/web/public/art/cards/call-the-departed.jpg",
+    "sha256": "f8dd325b7736bf5b2f78d5114edfb170987bda894f85d07a9fbc9b35440b9d7c"
+   },
+   {
+    "id": "common-grave",
+    "path": "apps/web/public/art/cards/common-grave.jpg",
+    "sha256": "61e0ba0bf9f18ec27891c7103f3125b299d8bc836d14e6605b75e25ab4e34c68"
+   },
+   {
+    "id": "death-grip",
+    "path": "apps/web/public/art/cards/death-grip.jpg",
+    "sha256": "c5957911cbf37da693b7253161080e9e0a59aaf5b15b1eba0130ddb1e9624149"
+   },
+   {
+    "id": "echo-of-the-dead",
+    "path": "apps/web/public/art/cards/echo-of-the-dead.jpg",
+    "sha256": "f1499d8cb3cc588e58abf823e93aedcda8595f47a2d6d92ef145c0c69fab55d0"
+   },
+   {
+    "id": "ever-watchful",
+    "path": "apps/web/public/art/cards/ever-watchful.jpg",
+    "sha256": "2a575cc668f42123a7a6a46ec788d8499081ed675916b83c6a4aa32b377df011"
+   },
+   {
+    "id": "fen-offering",
+    "path": "apps/web/public/art/cards/fen-offering.jpg",
+    "sha256": "0b37ec981e408124745925ecc8182ddba5d86005eee75329d94f56ffa02cb766"
+   },
+   {
+    "id": "final-reckoning",
+    "path": "apps/web/public/art/cards/final-reckoning.jpg",
+    "sha256": "cafdde1b1de0b2b4ef71e957555b9093639a87ff4c719752787be6138717703a"
+   },
+   {
+    "id": "gallows",
+    "path": "apps/web/public/art/cards/gallows.jpg",
+    "sha256": "0413ad3b2a15fb9eb2b4318a4b187f7be414ca9f81fc22d32a883b72f22bb7f2"
+   },
+   {
+    "id": "gather-souls",
+    "path": "apps/web/public/art/cards/gather-souls.jpg",
+    "sha256": "33a7439848314f8268df61ac85dc9d69f07da0a6aa93142ae6fca86b2d0ac3f6"
+   },
+   {
+    "id": "ghostform",
+    "path": "apps/web/public/art/cards/ghostform.jpg",
+    "sha256": "c5c06c95c8250ef782587aafcbf8b9282af40f8bbd0d573c86755fb5d113bd94"
+   },
+   {
+    "id": "grave-colossus",
+    "path": "apps/web/public/art/cards/grave-colossus.jpg",
+    "sha256": "165bc6017797d8c8bb018c5174665cc62bffaea04041950691f31945777ffb41"
+   },
+   {
+    "id": "mark-of-ending",
+    "path": "apps/web/public/art/cards/mark-of-ending.jpg",
+    "sha256": "f49087c2c0bda79eb03a0d76067965b56bfd66036191a3879d508fc485e8953f"
+   },
+   {
+    "id": "oblivion",
+    "path": "apps/web/public/art/cards/oblivion.jpg",
+    "sha256": "011d2919a29053e75a6b3b300aed986eb1ef502d9d9e46d47d7202f56e2c6ccf"
+   },
+   {
+    "id": "phylactery",
+    "path": "apps/web/public/art/cards/phylactery.jpg",
+    "sha256": "862068b9bb5136f97d883b9ccf066ccc4e84ee24b9c6b7afe90413fea42dfdd1"
+   },
+   {
+    "id": "reapers-mantle",
+    "path": "apps/web/public/art/cards/reapers-mantle.jpg",
+    "sha256": "7326da08b722d4a14988d07099f8d4f8d3435419f10098c06cb5ab762a3962e9"
+   },
+   {
+    "id": "reaping-scythe",
+    "path": "apps/web/public/art/cards/reaping-scythe.jpg",
+    "sha256": "c389ca429355332c598ced130dea8137103b621dcb7fd777eb9cdd622ac27e5b"
+   },
+   {
+    "id": "requiem",
+    "path": "apps/web/public/art/cards/requiem.jpg",
+    "sha256": "884f8716d7fa339641869ba96024ee6ee46367982cc04018eb6629445d908c96"
+   },
+   {
+    "id": "shared-agony",
+    "path": "apps/web/public/art/cards/shared-agony.jpg",
+    "sha256": "9bea11ef84f1728804b072b2df2c34423531cb4cb9bdccd05e60b50a9f999960"
+   },
+   {
+    "id": "soul-harvest",
+    "path": "apps/web/public/art/cards/soul-harvest.jpg",
+    "sha256": "7c9476217d0de0818f126f59f94c0bffc6f00ea3bd72be479d3255abb0e90054"
+   },
+   {
+    "id": "soul-tithe",
+    "path": "apps/web/public/art/cards/soul-tithe.jpg",
+    "sha256": "e8fa720ce1b5c2bcbe35a7d1d87a90b9419e62242d64c64d71cf5d3551b68634"
+   },
+   {
+    "id": "spreading-rot",
+    "path": "apps/web/public/art/cards/spreading-rot.jpg",
+    "sha256": "dca958c7aaa15a6a0f62528e5c4091502c7d17f14cd20d90ef83096314c8ff2a"
+   },
+   {
+    "id": "the-drowned-king",
+    "path": "apps/web/public/art/cards/the-drowned-king.jpg",
+    "sha256": "1f6f203e9c55a0a0d3e60f23d1d0311260f2764ea9d352848113e5c1bd9485e2"
+   },
+   {
+    "id": "the-last-toll",
+    "path": "apps/web/public/art/cards/the-last-toll.jpg",
+    "sha256": "7404d64a6358dd9ea05dc1a59744a667b8e5f84b107aab1e0da70c6512ca3880"
+   },
+   {
+    "id": "unquiet-rest",
+    "path": "apps/web/public/art/cards/unquiet-rest.jpg",
+    "sha256": "9c430c26f4485dfc416e3a512d2543d29146dbb4d8cafce8afedd5870baf2e85"
+   },
+   {
+    "id": "wailing-cry",
+    "path": "apps/web/public/art/cards/wailing-cry.jpg",
+    "sha256": "3c0440045bd7eddc8b0688514d21e49eeb5ea077173a9b76c8d7569c2aa44de9"
+   },
+   {
+    "id": "whispers-beyond",
+    "path": "apps/web/public/art/cards/whispers-beyond.jpg",
+    "sha256": "37cabf4841abd13359a630d0d205a3494a02f6d5a38dc56fa61489a2bf621471"
+   }
+  ]
+ },
+ "monk": {
+  "figure": {
+   "id": "hero:monk",
+   "path": "apps/web/public/art/figures/hero-monk.png",
+   "sha256": "8cb99afc16586caf7e3ebd67bb95e9e409324ce8859e7567e5aad99ef3e50895"
+  },
+  "skins": [
+   {
+    "id": "monk-eclipse-ascetic",
+    "path": "apps/web/public/art/figures/skins/monk-eclipse-ascetic.png",
+    "sha256": "05e3e0501da5cfcf2b5ff04a6dcc8458f60dfaa9624e9c25f0c55ab579adc1ae"
+   },
+   {
+    "id": "monk-gender-female",
+    "path": "apps/web/public/art/figures/skins/monk-gender-female.png",
+    "sha256": "6d2976761e8cecf95edacb0d2127af117c529a39892c0286adceb1dca1b41ab6"
+   }
+  ],
+  "cards": [
+   {
+    "id": "kindle-fury",
+    "path": "apps/web/public/art/cards/kindle-fury.jpg",
+    "sha256": "86fc463faaa699c4f86913d5ec4f77c73e42a1c62893ac852fe7b23ae5074108"
+   },
+   {
+    "id": "still-guard",
+    "path": "apps/web/public/art/cards/still-guard.jpg",
+    "sha256": "0de2c5f88cf37b68a0f78191d69729aa60c3da66d079bbcda20a727db3445cfe"
+   },
+   {
+    "id": "angry-palm",
+    "path": "apps/web/public/art/cards/angry-palm.jpg",
+    "sha256": "a4b8b4e08424906116d7417d1c0382459966f7af9d2da7931908874a5e3e8eb2"
+   },
+   {
+    "id": "ashen-fist",
+    "path": "apps/web/public/art/cards/ashen-fist.jpg",
+    "sha256": "93e2695ddfc745b1e2ceb47f86f704b6afd262538835ec7d76899aacee1daade"
+   },
+   {
+    "id": "bowing-low",
+    "path": "apps/web/public/art/cards/bowing-low.jpg",
+    "sha256": "8cbab33ae1799b00fef0f31acd35b8aeb6d237ade3dd82d73db955bfd3a8220c"
+   },
+   {
+    "id": "centre-yourself",
+    "path": "apps/web/public/art/cards/centre-yourself.jpg",
+    "sha256": "6b2f5d08793226acb7adabbe3f21ae1474b3e5145a4deaa5ce1023c69086e150"
+   },
+   {
+    "id": "crushing-palm",
+    "path": "apps/web/public/art/cards/crushing-palm.jpg",
+    "sha256": "a14ddd5799ab4da510ee0b993f6aa65653da77c76c1eb9e21bf60c53a2602395"
+   },
+   {
+    "id": "empty-fist",
+    "path": "apps/web/public/art/cards/empty-fist.jpg",
+    "sha256": "7f55ad733705ef0e3677bbba2508caee451aee8143ae260f7cd21354fab0136d"
+   },
+   {
+    "id": "faith-kept",
+    "path": "apps/web/public/art/cards/faith-kept.jpg",
+    "sha256": "129fcb2cac5220a33874a9c1f3fdfa93973e67aa6c54820763f1fabacf2c3491"
+   },
+   {
+    "id": "flurry-of-palms",
+    "path": "apps/web/public/art/cards/flurry-of-palms.jpg",
+    "sha256": "888688f3d7ae03e17d78cac2c326aaaa25e792ad913b0cf5bc977872f140339e"
+   },
+   {
+    "id": "hushed-stillness",
+    "path": "apps/web/public/art/cards/hushed-stillness.jpg",
+    "sha256": "779a1a6948c536baf0d8e69309fbddedc798f6cdcc050f1811c134d82df57a28"
+   },
+   {
+    "id": "prostrate",
+    "path": "apps/web/public/art/cards/prostrate.jpg",
+    "sha256": "2a769947a1666e062a3f61408dbabe43ca03b60e1695309e56df1236b6f64a5c"
+   },
+   {
+    "id": "quick-palms",
+    "path": "apps/web/public/art/cards/quick-palms.jpg",
+    "sha256": "a397371105ec4079c785a3910ec4026b74b8a78aa81f0cdddd129afa827a20a1"
+   },
+   {
+    "id": "reading-the-signs",
+    "path": "apps/web/public/art/cards/reading-the-signs.jpg",
+    "sha256": "29a3abdef1f109ed279398f8a6a506ff0b26100f5e3adcea9d5fe6603bbdf485"
+   },
+   {
+    "id": "red-mist",
+    "path": "apps/web/public/art/cards/red-mist.jpg",
+    "sha256": "7d6fc4dc5d3998371d5b0b0eb0cc884591c68c1f1fad277bdd57c7484b6997b0"
+   },
+   {
+    "id": "rising-ire",
+    "path": "apps/web/public/art/cards/rising-ire.jpg",
+    "sha256": "227d0cf30e546d5fa9bd72a0b46e0d430e5e25efebb7db7b87f5c975689fbdac"
+   },
+   {
+    "id": "sunlit-blade",
+    "path": "apps/web/public/art/cards/sunlit-blade.jpg",
+    "sha256": "f888d562231372b7092a561769111e8cff6c8f15e2f0af524a102e087b5fe111"
+   },
+   {
+    "id": "thread-cutter",
+    "path": "apps/web/public/art/cards/thread-cutter.jpg",
+    "sha256": "c604c1af3d18a46c41fd6f654785d9d48343b0f986878d150a95f7b9e9f0ec29"
+   },
+   {
+    "id": "unburdened-guard",
+    "path": "apps/web/public/art/cards/unburdened-guard.jpg",
+    "sha256": "d485b33f2d4516436f05d33fa80b45fb93084b10b5a60b8cdf3464515775e743"
+   },
+   {
+    "id": "unleashed-roar",
+    "path": "apps/web/public/art/cards/unleashed-roar.jpg",
+    "sha256": "4ba01866e3c892b98b406b8105109d053fed5d165f6dd8ed02fcebbc41035d78"
+   },
+   {
+    "id": "vigilance",
+    "path": "apps/web/public/art/cards/vigilance.jpg",
+    "sha256": "477bcc5fec6d6ee42bcdb2aa06b51d35e7f41a44715e704770f0c2ee7d9ea2c6"
+   },
+   {
+    "id": "whispered-vow",
+    "path": "apps/web/public/art/cards/whispered-vow.jpg",
+    "sha256": "416ea6378516872419e257c9997072bd5239a8f7395b240c833d6a8f4088f01a"
+   },
+   {
+    "id": "berserk-tide",
+    "path": "apps/web/public/art/cards/berserk-tide.jpg",
+    "sha256": "5557c924e7a570885e4759d560af128bf0c0735f97db07c292483f366f5191a0"
+   },
+   {
+    "id": "blood-on-the-sand",
+    "path": "apps/web/public/art/cards/blood-on-the-sand.jpg",
+    "sha256": "b51e9a7b6da70487ceac372059adf434e14757daed2758e569ac894e945c2d9a"
+   },
+   {
+    "id": "cornered-beast",
+    "path": "apps/web/public/art/cards/cornered-beast.jpg",
+    "sha256": "f0c9e8a6439bab44394199d11a725c1c869ce81d69512baf3ff5f79c88c02f16"
+   },
+   {
+    "id": "daily-rite",
+    "path": "apps/web/public/art/cards/daily-rite.jpg",
+    "sha256": "86811b91cc1f70e9c5266baef5206868928d4c593d048dd1783e1eb1b00cf318"
+   },
+   {
+    "id": "deep-breath",
+    "path": "apps/web/public/art/cards/deep-breath.jpg",
+    "sha256": "2c6fe50dd8301bc0f025965536136ffdb09d0b8c2c714d3cdff0882aaee28e8f"
+   },
+   {
+    "id": "devotion",
+    "path": "apps/web/public/art/cards/devotion.jpg",
+    "sha256": "77af22ad22772d612e52b943e19e00c19b7ce94020da084628739b6815280240"
+   },
+   {
+    "id": "exhale",
+    "path": "apps/web/public/art/cards/exhale.jpg",
+    "sha256": "926275e845217f93296c55b2fc73f0ae67c8c92ec67d8c2bc65150cabdb5fd48"
+   },
+   {
+    "id": "fearless",
+    "path": "apps/web/public/art/cards/fearless.jpg",
+    "sha256": "c9400040b8b08db8aef612bbd191b85035eb0c8c5948bb807833cc285aad3203"
+   },
+   {
+    "id": "foretold-flame",
+    "path": "apps/web/public/art/cards/foretold-flame.jpg",
+    "sha256": "6839514874617252e2c7fae14e4fe48f424186ae1b96370fa517a2fe9377be64"
+   },
+   {
+    "id": "held-breath",
+    "path": "apps/web/public/art/cards/held-breath.jpg",
+    "sha256": "6025e981ccacbadb04c899f2764434c168bed18484ddc670a9ad5a4eb38e7074"
+   },
+   {
+    "id": "hot-blooded",
+    "path": "apps/web/public/art/cards/hot-blooded.jpg",
+    "sha256": "8a9539496d88aad32f84fa64c8373b7c2ee110735ea32eb96131a879ed58c382"
+   },
+   {
+    "id": "inner-calm",
+    "path": "apps/web/public/art/cards/inner-calm.jpg",
+    "sha256": "ee95cc50320a3dcef9600d15584a5c3980a8069c3cb8d6329eb739aeae70dd06"
+   },
+   {
+    "id": "inner-sight",
+    "path": "apps/web/public/art/cards/inner-sight.jpg",
+    "sha256": "8d7d031d3a43ac582e5a777a0ace49197ad91d439c5ce83d37a769cca62d7963"
+   },
+   {
+    "id": "mantra-engine",
+    "path": "apps/web/public/art/cards/mantra-engine.jpg",
+    "sha256": "4e00088db25472cb617390c7ff6728f8eaf6b2a0895a62186927da98f062b85b"
+   },
+   {
+    "id": "mirror-pool",
+    "path": "apps/web/public/art/cards/mirror-pool.jpg",
+    "sha256": "9c5ac28b85fc21c5e7ed1e759cceb66a9999fcc230fdc7825dcbb7317bef6aae"
+   },
+   {
+    "id": "open-palm",
+    "path": "apps/web/public/art/cards/open-palm.jpg",
+    "sha256": "3f1d5b2a4e24f647cbc30e19d01ab5478eb347785b249482668acec68ba8d615"
+   },
+   {
+    "id": "poise",
+    "path": "apps/web/public/art/cards/poise.jpg",
+    "sha256": "9114a099abdc7d899d8e396f9a8bdf302605493fa3bbda739d0026a9c017f07e"
+   },
+   {
+    "id": "rending-hands",
+    "path": "apps/web/public/art/cards/rending-hands.jpg",
+    "sha256": "0c794001153687dac72d5dd500667e65fb6d118fd3660431b707e0bca5f821f7"
+   },
+   {
+    "id": "sanctity",
+    "path": "apps/web/public/art/cards/sanctity.jpg",
+    "sha256": "79085991f6eb526de3ef409bb85de9b0d9dd683d7486009d722264dba362567d"
+   },
+   {
+    "id": "settled-mind",
+    "path": "apps/web/public/art/cards/settled-mind.jpg",
+    "sha256": "ec780fac0b5133f7548763a0a0d0a39554f0900fe9908c9778cfe3c6ca7545cd"
+   },
+   {
+    "id": "shield-of-faith",
+    "path": "apps/web/public/art/cards/shield-of-faith.jpg",
+    "sha256": "fbaee738ba899585c6381e532b37a6a9b2ead0c3f256bab2cc623a94fd7705e8"
+   },
+   {
+    "id": "still-water",
+    "path": "apps/web/public/art/cards/still-water.jpg",
+    "sha256": "a5cca80f6f86376f5941be2610c03c443f86c9c8fde219a3e833e21424c7bbc0"
+   },
+   {
+    "id": "swift-step",
+    "path": "apps/web/public/art/cards/swift-step.jpg",
+    "sha256": "b12ab81310fcc3f1b1d0367f8bf9b23331d69d040927473c3ed8cc5d9f8a3351"
+   },
+   {
+    "id": "temper-flare",
+    "path": "apps/web/public/art/cards/temper-flare.jpg",
+    "sha256": "9da718a0e843ff34bd05ddd96ab04f81b5b9ea02e5a38397b8dc5a951e1ff74b"
+   },
+   {
+    "id": "the-offering",
+    "path": "apps/web/public/art/cards/the-offering.jpg",
+    "sha256": "3023ebb266900631517a1e682e0dbb0db8a1adad15857ac50ef1a5ffdc214b81"
+   },
+   {
+    "id": "unmoved-mind",
+    "path": "apps/web/public/art/cards/unmoved-mind.jpg",
+    "sha256": "ee828c907a52ba7af8d5ae686217dfa4e2bf5afebfade05b7715edca2842737f"
+   },
+   {
+    "id": "wheel-kick",
+    "path": "apps/web/public/art/cards/wheel-kick.jpg",
+    "sha256": "6ba8e47a3d37942ab55be366950ad33e594e0418b39542de209929b9fb2c051b"
+   },
+   {
+    "id": "worship",
+    "path": "apps/web/public/art/cards/worship.jpg",
+    "sha256": "d3a6457b366ec8fea3002f9922bb597f7b59723c90439c899259f9d2563b9ca0"
+   },
+   {
+    "id": "wrathful-guard",
+    "path": "apps/web/public/art/cards/wrathful-guard.jpg",
+    "sha256": "7a6fdfa92d44701c836d556ecb4ea8b8e96ba00d1d8bd5be08881dea9b683e28"
+   },
+   {
+    "id": "wreath-of-flame",
+    "path": "apps/web/public/art/cards/wreath-of-flame.jpg",
+    "sha256": "4f32e26ddf539487954ae9af0c981cffc9209aabc8928998476b4dbee14f917e"
+   },
+   {
+    "id": "all-seeing",
+    "path": "apps/web/public/art/cards/all-seeing.jpg",
+    "sha256": "333592f816bd81c84ce2aa554224e2d987ad4ec97261201e64c54798e3cd8e9e"
+   },
+   {
+    "id": "ascendant-form",
+    "path": "apps/web/public/art/cards/ascendant-form.jpg",
+    "sha256": "90f34ade7237cb20fcca9fa4e43ac021ad8dec8ad6c61750196b2a941a72f145"
+   },
+   {
+    "id": "ashes-of-restraint",
+    "path": "apps/web/public/art/cards/ashes-of-restraint.jpg",
+    "sha256": "97c0c4e1aae96c351a845f8a23c468126d5834bfe443c811f69033118f98a2c0"
+   },
+   {
+    "id": "breath-between-blows",
+    "path": "apps/web/public/art/cards/breath-between-blows.jpg",
+    "sha256": "e89c665e63dca8f4cf1851397377a535c0007b3b313f9b7f5cb5409a3c0149c3"
+   },
+   {
+    "id": "burning-litany",
+    "path": "apps/web/public/art/cards/burning-litany.jpg",
+    "sha256": "9482244f0b36ed216f0d71ea721b83f55e39fafee623e31d8105cbec979a6ebc"
+   },
+   {
+    "id": "eye-of-the-storm",
+    "path": "apps/web/public/art/cards/eye-of-the-storm.jpg",
+    "sha256": "5168e1d6d14302586830d10c7b443926b38f1639c411abfa8b23f637ce660fc3"
+   },
+   {
+    "id": "final-account",
+    "path": "apps/web/public/art/cards/final-account.jpg",
+    "sha256": "74b4d8a2409f75bd24ba168fb73e8141fcd4d00a78525c678c73331d25679312"
+   },
+   {
+    "id": "gentle-return",
+    "path": "apps/web/public/art/cards/gentle-return.jpg",
+    "sha256": "550319de44cdcebc108395dd0c9424d9bc3b5217708a80561abb4f0972de5c06"
+   },
+   {
+    "id": "last-rites-of-flame",
+    "path": "apps/web/public/art/cards/last-rites-of-flame.jpg",
+    "sha256": "3982774844c48079dd39e49587b08bf5c53e1c3a4b9f363abc33aad9cb825a00"
+   },
+   {
+    "id": "litany",
+    "path": "apps/web/public/art/cards/litany.jpg",
+    "sha256": "f45f92696fbe3331bf6dee67e789f000683233fdde0f3f49e56beebd822370ff"
+   },
+   {
+    "id": "meditate",
+    "path": "apps/web/public/art/cards/meditate.jpg",
+    "sha256": "bc6247e471f7e7c536c13489fe68702104f1ae79c9b4b719515bcd8367bae57f"
+   },
+   {
+    "id": "perfect-balance",
+    "path": "apps/web/public/art/cards/perfect-balance.jpg",
+    "sha256": "ad70c6e45905b7018780b9cfae091daaa8250ea5e3eff93fead09ae58f0bbf0c"
+   },
+   {
+    "id": "perfect-calm",
+    "path": "apps/web/public/art/cards/perfect-calm.jpg",
+    "sha256": "3aa8db041b619b4ca0fd93b601eff98576876fcca37d8191b1e3274bc6d93534"
+   },
+   {
+    "id": "radiant-heart",
+    "path": "apps/web/public/art/cards/radiant-heart.jpg",
+    "sha256": "22d7bef0e69858058f2fdc2a625f9c8f9fec4ddf1cd146ddf930ae175479db1c"
+   },
+   {
+    "id": "rage-of-ages",
+    "path": "apps/web/public/art/cards/rage-of-ages.jpg",
+    "sha256": "b041e78ab87b8b239e6e56d27a0a37f14e89f53879f274bb5dfb6cad014eac29"
+   },
+   {
+    "id": "rage-unbound",
+    "path": "apps/web/public/art/cards/rage-unbound.jpg",
+    "sha256": "c9d33ce78a2eb43d6ea232df9d65a12bdde97fe90603c76233b86608ff72a162"
+   },
+   {
+    "id": "rampage-of-ire",
+    "path": "apps/web/public/art/cards/rampage-of-ire.jpg",
+    "sha256": "421652a0a424c9ccd1416d438725be8c1edf88b2cba6c9b199ef949c10990424"
+   },
+   {
+    "id": "rise-radiant",
+    "path": "apps/web/public/art/cards/rise-radiant.jpg",
+    "sha256": "7dafd4aa2fa68f2b8422aa0c36766ff1b874a994f191081cd29c8c2064c32b5d"
+   },
+   {
+    "id": "scrawl",
+    "path": "apps/web/public/art/cards/scrawl.jpg",
+    "sha256": "4ee0e36308578891f4e25f379301adb100a513983a8df797ebb0ab965bb198d0"
+   },
+   {
+    "id": "serenity-incarnate",
+    "path": "apps/web/public/art/cards/serenity-incarnate.jpg",
+    "sha256": "8bf89260a3c0b41c884966b6a4b09862c99afa71dca1779eea09ca4b2be07a4c"
+   },
+   {
+    "id": "spirit-shield",
+    "path": "apps/web/public/art/cards/spirit-shield.jpg",
+    "sha256": "d8a659244b64184fefea7be2c37997795d41d32eaf611ed3178e6a1d76027244"
+   },
+   {
+    "id": "still-flame-ascendant",
+    "path": "apps/web/public/art/cards/still-flame-ascendant.jpg",
+    "sha256": "c4347fa766e92f4cd14e91140c3cf47b86d2cec0bd79ce3f53d55dc0790b0eff"
+   },
+   {
+    "id": "surge-of-ire",
+    "path": "apps/web/public/art/cards/surge-of-ire.jpg",
+    "sha256": "6bd44bc63581c62bb7496160bab11d6377acdd1100e9b8327ce7931ab456d644"
+   },
+   {
+    "id": "thousand-palms",
+    "path": "apps/web/public/art/cards/thousand-palms.jpg",
+    "sha256": "16881e8dff9c8bb3ac80fb8216c42a90abc2f2c62d2a2618784c327625fc01c8"
+   },
+   {
+    "id": "tide-of-peace",
+    "path": "apps/web/public/art/cards/tide-of-peace.jpg",
+    "sha256": "9fa7d4db845b7fe3e3eec27d0503291960e88eee717fd780403e2547e96e72fc"
+   },
+   {
+    "id": "unbroken-calm",
+    "path": "apps/web/public/art/cards/unbroken-calm.jpg",
+    "sha256": "52a275a26289f7840fd288d273bf1336822b22d7591db557ace85658f97b356f"
+   },
+   {
+    "id": "unwavering",
+    "path": "apps/web/public/art/cards/unwavering.jpg",
+    "sha256": "75c9b33023117f38d0d166e9297257b0325eeeb81690e59642c30dda5f3b738c"
+   },
+   {
+    "id": "wrath-incarnate",
+    "path": "apps/web/public/art/cards/wrath-incarnate.jpg",
+    "sha256": "98f432270d09c8ea6662d51bb7a298581220d92153552cafd164a311741602eb"
+   }
+  ]
+ },
+ "weapons": {
+  "sword": {
+   "path": "apps/web/public/art/weapons/sword.png",
+   "sha256": "47e5cd4200bd64772fff483e4010a216096717021d6d33a89c676d30a5de7a3c"
+  },
+  "shield": {
+   "path": "apps/web/public/art/weapons/shield.png",
+   "sha256": "2844d311bd620899e3ce67a9d09c7941fdb7bbd8be885fc73375ce2301fbaf05"
+  },
+  "wrench": {
+   "path": "apps/web/public/art/weapons/wrench.png",
+   "sha256": "a80c5352a196c5a18611fde4c4c116eaa72613d2013e0db586ff4ab535c10ac1"
+  },
+  "cleaver": {
+   "path": "apps/web/public/art/weapons/cleaver.png",
+   "sha256": "a1aa42f035890ff23935a389d76298424778b3ab500487381b200717085aa32d"
+  },
+  "stiletto": {
+   "path": "apps/web/public/art/weapons/stiletto.png",
+   "sha256": "6e5edac62a29d7642a0e1fe81b09952d41d25c6a2ef00664d9520550ca45c857"
+  },
+  "throwing-knife": {
+   "path": "apps/web/public/art/weapons/throwing-knife.png",
+   "sha256": "54f5c5ec0c8c3baf9abe38ec4dcff835b5c2174f55ab6f1245a13cf607d12826"
+  },
+  "totem-staff": {
+   "path": "apps/web/public/art/weapons/totem-staff.png",
+   "sha256": "f4231169abaad458b7594ffb4d7bd0297a2ad07f7cb03bc52df929dfdd4282d3"
+  },
+  "flame-blade": {
+   "path": "apps/web/public/art/weapons/flame-blade.png",
+   "sha256": "27a04dfbf8d3be9be45878fc69b3ebc00d68c5473f8485340d2d10236a8000d6"
+  },
+  "obsidian-blade": {
+   "path": "apps/web/public/art/weapons/obsidian-blade.png",
+   "sha256": "f67bf29fd10e1f17cf59ec5e0fef55a87d913bd71485b30f519c16f6a34ec906"
+  },
+  "grave-lantern": {
+   "path": "apps/web/public/art/weapons/grave-lantern.png",
+   "sha256": "a5114f71c814550703674fd414e8ade940a4f7f69010c8d7b3e04b5bf2a25662"
+  },
+  "hammer": {
+   "path": "apps/web/public/art/weapons/hammer.png",
+   "sha256": "15b6e15ad9c944023394e461aefe1b58120df2a593c64b9dfe6746c8c8d19c00"
+  },
+  "shotgun": {
+   "path": "apps/web/public/art/weapons/shotgun.png",
+   "sha256": "668cb467ee2c152d10e23de491fa1ee8aa450df6289c8961ffeaff3b31569341"
+  }
+ }
+}

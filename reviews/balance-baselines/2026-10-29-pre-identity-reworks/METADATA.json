@@ -1,0 +1,15 @@
+{
+ "archived": "2026-10-29T11:31:23.301Z",
+ "purpose": "Frozen hand-balance reference for the five baseline classes (and the Monk) before the 2026-10-29 identity reworks (docs/BASE_CLASS_REWORKS.md).",
+ "commit": "82867b06861f3fc666323bd97483548239514b91",
+ "branch": "main",
+ "dirty": "?? docs/BASE_CLASS_REWORKS.md\n?? reviews/balance-baselines/\n?? tools/src/baselineArchive.ts\n?? tools/src/baselineVerify.ts",
+ "dirtyNote": "The only uncommitted file was docs/BASE_CLASS_REWORKS.md (the rework brief, untracked, copied into docs/ here). No source file differed from the commit, so source/ is an exact git archive of it.",
+ "gameVersion": "0.121.0",
+ "rulesVersion": 33,
+ "runSaveVersion": 2,
+ "node": "v22.21.1",
+ "lockfileSha256": "f993e5d409f95563e24626f22c83515e4592ff2a4aba1074884999b9624f8f20",
+ "schema": "resolved/*.json: CardDef / HeroDef / RuneDef / UnitDef as in packages/combat/src/types.ts at this commit (also inside source/).",
+ "regenerate": "git checkout <commit>; pnpm install; pnpm --filter @sr/tools exec tsx src/baselineArchive.ts <dir>; then baselineVerify.ts <dir> --write. Never rerun into this folder: make a new, dated one."
+}

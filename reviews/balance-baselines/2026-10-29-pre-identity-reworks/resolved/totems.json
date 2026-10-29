@@ -1,0 +1,112 @@
+{
+ "spark": {
+  "id": "spark",
+  "name": "Hawk",
+  "text": "Passive: 3 damage to a random enemy at the end of your turn. Awaken: 8 damage to a random enemy.",
+  "passive": [
+   {
+    "op": "damage",
+    "amount": 3,
+    "to": "randomFoe"
+   }
+  ],
+  "evoke": [
+   {
+    "op": "damage",
+    "amount": 8,
+    "to": "randomFoe"
+   }
+  ]
+ },
+ "splinter": {
+  "id": "splinter",
+  "name": "Splinter",
+  "text": "Planted with a charge of 4. Passive: damage equal to its charge to ALL enemies at the end of your turn, then its charge falls by 1. Awaken: twice its charge to ALL enemies.",
+  "start": 4,
+  "decay": 1,
+  "passive": [
+   {
+    "op": "when",
+    "by": "charge",
+    "atLeast": 1,
+    "ops": [
+     {
+      "op": "damage",
+      "amount": 0,
+      "to": "allFoes",
+      "scale": {
+       "by": "charge"
+      }
+     }
+    ]
+   }
+  ],
+  "evoke": [
+   {
+    "op": "damage",
+    "amount": 0,
+    "to": "allFoes",
+    "scale": {
+     "by": "charge",
+     "mult": 2
+    }
+   }
+  ]
+ },
+ "ward": {
+  "id": "ward",
+  "name": "Bear",
+  "text": "Passive: 2 Barrier at the end of your turn. Awaken: 5 Barrier.",
+  "passive": [
+   {
+    "op": "barrier",
+    "amount": 2,
+    "to": "self"
+   }
+  ],
+  "evoke": [
+   {
+    "op": "barrier",
+    "amount": 5,
+    "to": "self"
+   }
+  ]
+ },
+ "hollow": {
+  "id": "hollow",
+  "name": "Elder",
+  "text": "Planted with a charge of 6; charges by 6 more at the end of each of your turns (Spirit adds to that). Awaken: damage equal to its charge to the enemy with the least HP.",
+  "start": 6,
+  "grow": 6,
+  "plainEvoke": true,
+  "passive": [],
+  "evoke": [
+   {
+    "op": "damage",
+    "amount": 0,
+    "to": "weakestFoe",
+    "scale": {
+     "by": "charge"
+    }
+   }
+  ]
+ },
+ "prism": {
+  "id": "prism",
+  "name": "Owl",
+  "text": "Passive: gain 1 Mana at the start of your turn. Awaken: gain 2 Mana.",
+  "atStart": true,
+  "passive": [
+   {
+    "op": "mana",
+    "amount": 1
+   }
+  ],
+  "evoke": [
+   {
+    "op": "mana",
+    "amount": 2
+   }
+  ]
+ }
+}

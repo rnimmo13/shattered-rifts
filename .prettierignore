@@ -5,3 +5,5 @@ pnpm-lock.yaml
 # Design docs are hand-formatted
 docs
 *.md
+# Frozen balance-baseline archives: never reformat (their hashes are recorded)
+reviews/balance-baselines

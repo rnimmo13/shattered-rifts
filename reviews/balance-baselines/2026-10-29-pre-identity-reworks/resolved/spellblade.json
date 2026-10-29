@@ -1,0 +1,5143 @@
+{
+ "hero": {
+  "id": "spellblade",
+  "name": "Spellblade",
+  "maxHp": 75,
+  "mana": 3,
+  "handSize": 5,
+  "sigil": [
+   {
+    "op": "stars",
+    "amount": 3
+   }
+  ]
+ },
+ "persona": "Obsidia",
+ "role": "Spellblade",
+ "realm": "starfall",
+ "trait": {
+  "name": "Kindled",
+  "text": "At the start of your turn, gain 1 Arcana and Sharpen your Obsidian Blade by 1.",
+  "turnStart": [
+   {
+    "op": "stars",
+    "amount": 1
+   },
+   {
+    "op": "forge",
+    "card": "starforged-blade",
+    "amount": 1
+   }
+  ]
+ },
+ "blurb": "A spellblade of black glass and ember. Spends Arcana on her biggest cards, calls an Obsidian Blade that every Sharpen improves for good, and fills her hand with Retainers and borrowed cards.",
+ "mechanics": [
+  "Arcana",
+  "Sharpen",
+  "Created cards",
+  "Auras"
+ ],
+ "buildPaths": [
+  "Blade: sharpen the Obsidian Blade and swing it",
+  "Arcana: gain it, then spend it on big cards",
+  "Court: create cards and play many"
+ ],
+ "howTo": [
+  "Arcana is a second resource that lasts the whole fight. You start every fight with 3 and gain 1 more each turn. Cards with an orange orb spend it; others gain it.",
+  "The Obsidian Blade (2 Mana, Hold) comes to your hand on your first turn. Every Sharpen makes it hit harder for the rest of the fight, and some Auras make it strike every enemy or strike twice.",
+  "Court cards create cards: Retainers (free Attacks and guards), Neutral cards, Rubble. Created cards feed the Auras that count them."
+ ],
+ "starter": [
+  "strike",
+  "strike",
+  "strike",
+  "strike",
+  "defend",
+  "defend",
+  "defend",
+  "defend",
+  "meteor-jab",
+  "gather-light"
+ ],
+ "starterText": [
+  {
+   "id": "strike",
+   "text": "Deal 6 damage."
+  },
+  {
+   "id": "strike",
+   "text": "Deal 6 damage."
+  },
+  {
+   "id": "strike",
+   "text": "Deal 6 damage."
+  },
+  {
+   "id": "strike",
+   "text": "Deal 6 damage."
+  },
+  {
+   "id": "defend",
+   "text": "Gain 5 Barrier."
+  },
+  {
+   "id": "defend",
+   "text": "Gain 5 Barrier."
+  },
+  {
+   "id": "defend",
+   "text": "Gain 5 Barrier."
+  },
+  {
+   "id": "defend",
+   "text": "Gain 5 Barrier."
+  },
+  {
+   "id": "meteor-jab",
+   "text": "Deal 8 damage. Apply 1 Faltering. Apply 1 Exposed."
+  },
+  {
+   "id": "gather-light",
+   "text": "Gain 2 Arcana."
+  }
+ ],
+ "startUnits": [],
+ "counts": {
+  "basic": 2,
+  "common": 20,
+  "token/special": 4,
+  "uncommon": 36,
+  "rare": 24
+ },
+ "cards": [
+  {
+   "id": "gather-light",
+   "name": "Gather Arcana",
+   "kind": "skill",
+   "rarity": "basic",
+   "cost": "1",
+   "text": "Gain 2 Arcana.",
+   "def": {
+    "id": "gather-light",
+    "name": "Gather Arcana",
+    "realm": "starfall",
+    "rarity": "basic",
+    "kind": "skill",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "stars",
+      "amount": 2
+     }
+    ],
+    "hero": "spellblade",
+    "upgrade": "gather-light+"
+   },
+   "upgrade": {
+    "id": "gather-light+",
+    "cost": "1",
+    "text": "Gain 3 Arcana.",
+    "def": {
+     "id": "gather-light+",
+     "name": "Gather Arcana+",
+     "realm": "starfall",
+     "rarity": "basic",
+     "kind": "skill",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "stars",
+       "amount": 3
+      }
+     ],
+     "hero": "spellblade"
+    }
+   }
+  },
+  {
+   "id": "meteor-jab",
+   "name": "Cinderfall",
+   "kind": "attack",
+   "rarity": "basic",
+   "cost": "0+2 Arcana",
+   "text": "Deal 8 damage. Apply 1 Faltering. Apply 1 Exposed.",
+   "def": {
+    "id": "meteor-jab",
+    "name": "Cinderfall",
+    "realm": "starfall",
+    "rarity": "basic",
+    "kind": "attack",
+    "cost": 0,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 8,
+      "to": "target"
+     },
+     {
+      "op": "status",
+      "status": "faltering",
+      "amount": 1,
+      "to": "target"
+     },
+     {
+      "op": "status",
+      "status": "exposed",
+      "amount": 1,
+      "to": "target"
+     }
+    ],
+    "hero": "spellblade",
+    "starCost": 2,
+    "upgrade": "meteor-jab+"
+   },
+   "upgrade": {
+    "id": "meteor-jab+",
+    "cost": "0+2 Arcana",
+    "text": "Deal 12 damage. Apply 1 Faltering. Apply 1 Exposed.",
+    "def": {
+     "id": "meteor-jab+",
+     "name": "Cinderfall+",
+     "realm": "starfall",
+     "rarity": "basic",
+     "kind": "attack",
+     "cost": 0,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 12,
+       "to": "target"
+      },
+      {
+       "op": "status",
+       "status": "faltering",
+       "amount": 1,
+       "to": "target"
+      },
+      {
+       "op": "status",
+       "status": "exposed",
+       "amount": 1,
+       "to": "target"
+      }
+     ],
+     "hero": "spellblade",
+     "starCost": 2
+    }
+   }
+  },
+  {
+   "id": "astral-pulse",
+   "name": "Arcane Pulse",
+   "kind": "attack",
+   "rarity": "common",
+   "cost": "0+3 Arcana",
+   "text": "Deal 6 damage 2 times to ALL enemies.",
+   "def": {
+    "id": "astral-pulse",
+    "name": "Arcane Pulse",
+    "realm": "starfall",
+    "rarity": "common",
+    "kind": "attack",
+    "cost": 0,
+    "target": "none",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 6,
+      "hits": 2,
+      "to": "allFoes"
+     }
+    ],
+    "hero": "spellblade",
+    "starCost": 3,
+    "upgrade": "astral-pulse+"
+   },
+   "upgrade": {
+    "id": "astral-pulse+",
+    "cost": "0+3 Arcana",
+    "text": "Deal 8 damage 2 times to ALL enemies.",
+    "def": {
+     "id": "astral-pulse+",
+     "name": "Arcane Pulse+",
+     "realm": "starfall",
+     "rarity": "common",
+     "kind": "attack",
+     "cost": 0,
+     "target": "none",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 8,
+       "hits": 2,
+       "to": "allFoes"
+      }
+     ],
+     "hero": "spellblade",
+     "starCost": 3
+    }
+   }
+  },
+  {
+   "id": "cosmic-lance",
+   "name": "Obsidian Lance",
+   "kind": "attack",
+   "rarity": "common",
+   "cost": "1+1 Arcana",
+   "text": "Deal 8 (+2 per card with an Arcana cost in your deck) damage.",
+   "def": {
+    "id": "cosmic-lance",
+    "name": "Obsidian Lance",
+    "realm": "starfall",
+    "rarity": "common",
+    "kind": "attack",
+    "cost": 1,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 8,
+      "to": "target",
+      "scale": {
+       "by": "starCards",
+       "mult": 2
+      }
+     }
+    ],
+    "hero": "spellblade",
+    "starCost": 1,
+    "upgrade": "cosmic-lance+"
+   },
+   "upgrade": {
+    "id": "cosmic-lance+",
+    "cost": "1+1 Arcana",
+    "text": "Deal 8 (+3 per card with an Arcana cost in your deck) damage.",
+    "def": {
+     "id": "cosmic-lance+",
+     "name": "Obsidian Lance+",
+     "realm": "starfall",
+     "rarity": "common",
+     "kind": "attack",
+     "cost": 1,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 8,
+       "to": "target",
+       "scale": {
+        "by": "starCards",
+        "mult": 3
+       }
+      }
+     ],
+     "hero": "spellblade",
+     "starCost": 1
+    }
+   }
+  },
+  {
+   "id": "ember-cache",
+   "name": "Ember Cache",
+   "kind": "skill",
+   "rarity": "common",
+   "cost": "1",
+   "text": "Gain 1 Arcana. Next turn, gain 3 Arcana.",
+   "def": {
+    "id": "ember-cache",
+    "name": "Ember Cache",
+    "realm": "starfall",
+    "rarity": "common",
+    "kind": "skill",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "stars",
+      "amount": 1
+     },
+     {
+      "op": "starsNext",
+      "amount": 3
+     }
+    ],
+    "hero": "spellblade",
+    "upgrade": "ember-cache+"
+   },
+   "upgrade": {
+    "id": "ember-cache+",
+    "cost": "1",
+    "text": "Gain 1 Arcana. Next turn, gain 4 Arcana.",
+    "def": {
+     "id": "ember-cache+",
+     "name": "Ember Cache+",
+     "realm": "starfall",
+     "rarity": "common",
+     "kind": "skill",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "stars",
+       "amount": 1
+      },
+      {
+       "op": "starsNext",
+       "amount": 4
+      }
+     ],
+     "hero": "spellblade"
+    }
+   }
+  },
+  {
+   "id": "faint-glow",
+   "name": "Faint Ember",
+   "kind": "skill",
+   "rarity": "common",
+   "cost": "1",
+   "text": "Gain 1 Arcana. Draw 1 card. Next turn, draw 1 extra card.",
+   "def": {
+    "id": "faint-glow",
+    "name": "Faint Ember",
+    "realm": "starfall",
+    "rarity": "common",
+    "kind": "skill",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "stars",
+      "amount": 1
+     },
+     {
+      "op": "draw",
+      "amount": 1
+     },
+     {
+      "op": "drawNext",
+      "amount": 1
+     }
+    ],
+    "hero": "spellblade",
+    "upgrade": "faint-glow+"
+   },
+   "upgrade": {
+    "id": "faint-glow+",
+    "cost": "1",
+    "text": "Gain 2 Arcana. Draw 1 card. Next turn, draw 1 extra card.",
+    "def": {
+     "id": "faint-glow+",
+     "name": "Faint Ember+",
+     "realm": "starfall",
+     "rarity": "common",
+     "kind": "skill",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "stars",
+       "amount": 2
+      },
+      {
+       "op": "draw",
+       "amount": 1
+      },
+      {
+       "op": "drawNext",
+       "amount": 1
+      }
+     ],
+     "hero": "spellblade"
+    }
+   }
+  },
+  {
+   "id": "feint",
+   "name": "Feint",
+   "kind": "skill",
+   "rarity": "common",
+   "cost": "1",
+   "text": "Gain 8 Barrier. Gain 2 Primed.",
+   "def": {
+    "id": "feint",
+    "name": "Feint",
+    "realm": "starfall",
+    "rarity": "common",
+    "kind": "skill",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "barrier",
+      "amount": 8,
+      "to": "self"
+     },
+     {
+      "op": "status",
+      "status": "vigor",
+      "amount": 2,
+      "to": "self"
+     }
+    ],
+    "hero": "spellblade",
+    "upgrade": "feint+"
+   },
+   "upgrade": {
+    "id": "feint+",
+    "cost": "1",
+    "text": "Gain 10 Barrier. Gain 3 Primed.",
+    "def": {
+     "id": "feint+",
+     "name": "Feint+",
+     "realm": "starfall",
+     "rarity": "common",
+     "kind": "skill",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "barrier",
+       "amount": 10,
+       "to": "self"
+      },
+      {
+       "op": "status",
+       "status": "vigor",
+       "amount": 3,
+       "to": "self"
+      }
+     ],
+     "hero": "spellblade"
+    }
+   }
+  },
+  {
+   "id": "forged-in-fury",
+   "name": "Forged in Fury",
+   "kind": "attack",
+   "rarity": "common",
+   "cost": "1",
+   "text": "Deal 7 damage. Sharpen 7 (Obsidian Blade gains 7 damage).",
+   "def": {
+    "id": "forged-in-fury",
+    "name": "Forged in Fury",
+    "realm": "starfall",
+    "rarity": "common",
+    "kind": "attack",
+    "cost": 1,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 7,
+      "to": "target"
+     },
+     {
+      "op": "forge",
+      "card": "starforged-blade",
+      "amount": 7
+     }
+    ],
+    "hero": "spellblade",
+    "upgrade": "forged-in-fury+"
+   },
+   "upgrade": {
+    "id": "forged-in-fury+",
+    "cost": "1",
+    "text": "Deal 9 damage. Sharpen 9 (Obsidian Blade gains 9 damage).",
+    "def": {
+     "id": "forged-in-fury+",
+     "name": "Forged in Fury+",
+     "realm": "starfall",
+     "rarity": "common",
+     "kind": "attack",
+     "cost": 1,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 9,
+       "to": "target"
+      },
+      {
+       "op": "forge",
+       "card": "starforged-blade",
+       "amount": 9
+      }
+     ],
+     "hero": "spellblade"
+    }
+   }
+  },
+  {
+   "id": "glass-veil",
+   "name": "Glass Veil",
+   "kind": "skill",
+   "rarity": "common",
+   "cost": "2",
+   "text": "Gain 11 Barrier. Next turn, gain 5 Barrier.",
+   "def": {
+    "id": "glass-veil",
+    "name": "Glass Veil",
+    "realm": "starfall",
+    "rarity": "common",
+    "kind": "skill",
+    "cost": 2,
+    "target": "none",
+    "effects": [
+     {
+      "op": "barrier",
+      "amount": 11,
+      "to": "self"
+     },
+     {
+      "op": "barrierNext",
+      "amount": 5
+     }
+    ],
+    "hero": "spellblade",
+    "upgrade": "glass-veil+"
+   },
+   "upgrade": {
+    "id": "glass-veil+",
+    "cost": "2",
+    "text": "Gain 13 Barrier. Next turn, gain 7 Barrier.",
+    "def": {
+     "id": "glass-veil+",
+     "name": "Glass Veil+",
+     "realm": "starfall",
+     "rarity": "common",
+     "kind": "skill",
+     "cost": 2,
+     "target": "none",
+     "effects": [
+      {
+       "op": "barrier",
+       "amount": 13,
+       "to": "self"
+      },
+      {
+       "op": "barrierNext",
+       "amount": 7
+      }
+     ],
+     "hero": "spellblade"
+    }
+   }
+  },
+  {
+   "id": "gleam",
+   "name": "Glint",
+   "kind": "attack",
+   "rarity": "common",
+   "cost": "1",
+   "text": "Deal 10 damage. Draw 1 card. Put a card from your hand on top of your draw pile.",
+   "def": {
+    "id": "gleam",
+    "name": "Glint",
+    "realm": "starfall",
+    "rarity": "common",
+    "kind": "attack",
+    "cost": 1,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 10,
+      "to": "target"
+     },
+     {
+      "op": "draw",
+      "amount": 1
+     },
+     {
+      "op": "topdeck",
+      "amount": 1
+     }
+    ],
+    "hero": "spellblade",
+    "upgrade": "gleam+"
+   },
+   "upgrade": {
+    "id": "gleam+",
+    "cost": "1",
+    "text": "Deal 13 damage. Draw 2 cards. Put a card from your hand on top of your draw pile.",
+    "def": {
+     "id": "gleam+",
+     "name": "Glint+",
+     "realm": "starfall",
+     "rarity": "common",
+     "kind": "attack",
+     "cost": 1,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 13,
+       "to": "target"
+      },
+      {
+       "op": "draw",
+       "amount": 2
+      },
+      {
+       "op": "topdeck",
+       "amount": 1
+      }
+     ],
+     "hero": "spellblade"
+    }
+   }
+  },
+  {
+   "id": "hollow-gaze",
+   "name": "Hollow Gaze",
+   "kind": "skill",
+   "rarity": "common",
+   "cost": "1",
+   "text": "Gain 6 Barrier. Put a random card from your discard pile on top of your draw pile.",
+   "def": {
+    "id": "hollow-gaze",
+    "name": "Hollow Gaze",
+    "realm": "starfall",
+    "rarity": "common",
+    "kind": "skill",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "barrier",
+      "amount": 6,
+      "to": "self"
+     },
+     {
+      "op": "fetch",
+      "amount": 1,
+      "to": "draw"
+     }
+    ],
+    "hero": "spellblade",
+    "upgrade": "hollow-gaze+"
+   },
+   "upgrade": {
+    "id": "hollow-gaze+",
+    "cost": "1",
+    "text": "Gain 9 Barrier. Put a random card from your discard pile on top of your draw pile.",
+    "def": {
+     "id": "hollow-gaze+",
+     "name": "Hollow Gaze+",
+     "realm": "starfall",
+     "rarity": "common",
+     "kind": "skill",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "barrier",
+       "amount": 9,
+       "to": "self"
+      },
+      {
+       "op": "fetch",
+       "amount": 1,
+       "to": "draw"
+      }
+     ],
+     "hero": "spellblade"
+    }
+   }
+  },
+  {
+   "id": "humble",
+   "name": "Humble",
+   "kind": "skill",
+   "rarity": "common",
+   "cost": "0",
+   "text": "Apply 1 Faltering. Apply 1 Exposed. Consume.",
+   "def": {
+    "id": "humble",
+    "name": "Humble",
+    "realm": "starfall",
+    "rarity": "common",
+    "kind": "skill",
+    "cost": 0,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "status",
+      "status": "faltering",
+      "amount": 1,
+      "to": "target"
+     },
+     {
+      "op": "status",
+      "status": "exposed",
+      "amount": 1,
+      "to": "target"
+     }
+    ],
+    "hero": "spellblade",
+    "exhaust": true,
+    "upgrade": "humble+"
+   },
+   "upgrade": {
+    "id": "humble+",
+    "cost": "0",
+    "text": "Apply 1 Faltering. Apply 1 Exposed.",
+    "def": {
+     "id": "humble+",
+     "name": "Humble+",
+     "realm": "starfall",
+     "rarity": "common",
+     "kind": "skill",
+     "cost": 0,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "status",
+       "status": "faltering",
+       "amount": 1,
+       "to": "target"
+      },
+      {
+       "op": "status",
+       "status": "exposed",
+       "amount": 1,
+       "to": "target"
+      }
+     ],
+     "hero": "spellblade",
+     "exhaust": false
+    }
+   }
+  },
+  {
+   "id": "magma-crash",
+   "name": "Magma Crash",
+   "kind": "attack",
+   "rarity": "common",
+   "cost": "0",
+   "text": "Deal 10 damage. Add a Rubble to your hand.",
+   "def": {
+    "id": "magma-crash",
+    "name": "Magma Crash",
+    "realm": "starfall",
+    "rarity": "common",
+    "kind": "attack",
+    "cost": 0,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 10,
+      "to": "target"
+     },
+     {
+      "op": "addCard",
+      "card": "rubble",
+      "to": "hand",
+      "side": "self"
+     }
+    ],
+    "hero": "spellblade",
+    "upgrade": "magma-crash+"
+   },
+   "upgrade": {
+    "id": "magma-crash+",
+    "cost": "0",
+    "text": "Deal 14 damage. Add a Rubble to your hand.",
+    "def": {
+     "id": "magma-crash+",
+     "name": "Magma Crash+",
+     "realm": "starfall",
+     "rarity": "common",
+     "kind": "attack",
+     "cost": 0,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 14,
+       "to": "target"
+      },
+      {
+       "op": "addCard",
+       "card": "rubble",
+       "to": "hand",
+       "side": "self"
+      }
+     ],
+     "hero": "spellblade"
+    }
+   }
+  },
+  {
+   "id": "molten-weight",
+   "name": "Molten Weight",
+   "kind": "attack",
+   "rarity": "common",
+   "cost": "1",
+   "text": "Deal 8 damage to ALL enemies. Apply 1 Sapped to ALL enemies until the end of their next turn.",
+   "def": {
+    "id": "molten-weight",
+    "name": "Molten Weight",
+    "realm": "starfall",
+    "rarity": "common",
+    "kind": "attack",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 8,
+      "to": "allFoes"
+     },
+     {
+      "op": "status",
+      "status": "sapped",
+      "amount": 1,
+      "to": "allFoes",
+      "temp": "theirs"
+     }
+    ],
+    "hero": "spellblade",
+    "upgrade": "molten-weight+"
+   },
+   "upgrade": {
+    "id": "molten-weight+",
+    "cost": "1",
+    "text": "Deal 9 damage to ALL enemies. Apply 2 Sapped to ALL enemies until the end of their next turn.",
+    "def": {
+     "id": "molten-weight+",
+     "name": "Molten Weight+",
+     "realm": "starfall",
+     "rarity": "common",
+     "kind": "attack",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 9,
+       "to": "allFoes"
+      },
+      {
+       "op": "status",
+       "status": "sapped",
+       "amount": 2,
+       "to": "allFoes",
+       "temp": "theirs"
+      }
+     ],
+     "hero": "spellblade"
+    }
+   }
+  },
+  {
+   "id": "obsidian-flurry",
+   "name": "Obsidian Flurry",
+   "kind": "attack",
+   "rarity": "common",
+   "cost": "2",
+   "text": "Deal 6 damage 3 times.",
+   "def": {
+    "id": "obsidian-flurry",
+    "name": "Obsidian Flurry",
+    "realm": "starfall",
+    "rarity": "common",
+    "kind": "attack",
+    "cost": 2,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 6,
+      "hits": 3,
+      "to": "target"
+     }
+    ],
+    "hero": "spellblade",
+    "upgrade": "obsidian-flurry+"
+   },
+   "upgrade": {
+    "id": "obsidian-flurry+",
+    "cost": "2",
+    "text": "Deal 6 damage 4 times.",
+    "def": {
+     "id": "obsidian-flurry+",
+     "name": "Obsidian Flurry+",
+     "realm": "starfall",
+     "rarity": "common",
+     "kind": "attack",
+     "cost": 2,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 6,
+       "hits": 4,
+       "to": "target"
+      }
+     ],
+     "hero": "spellblade"
+    }
+   }
+  },
+  {
+   "id": "out-of-my-sight",
+   "name": "Out of My Sight!",
+   "kind": "skill",
+   "rarity": "common",
+   "cost": "1",
+   "text": "Turn a card in your hand into a Retainer Strike.",
+   "def": {
+    "id": "out-of-my-sight",
+    "name": "Out of My Sight!",
+    "realm": "starfall",
+    "rarity": "common",
+    "kind": "skill",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "transform",
+      "into": "retainer-strike",
+      "amount": 1,
+      "choose": true
+     }
+    ],
+    "hero": "spellblade",
+    "upgrade": "out-of-my-sight+"
+   },
+   "upgrade": {
+    "id": "out-of-my-sight+",
+    "cost": "1",
+    "text": "Turn a card in your hand into a Retainer Strike+.",
+    "def": {
+     "id": "out-of-my-sight+",
+     "name": "Out of My Sight!+",
+     "realm": "starfall",
+     "rarity": "common",
+     "kind": "skill",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "transform",
+       "into": "retainer-strike+",
+       "amount": 1,
+       "choose": true
+      }
+     ],
+     "hero": "spellblade"
+    }
+   }
+  },
+  {
+   "id": "pale-beacon",
+   "name": "Pale Ward",
+   "kind": "skill",
+   "rarity": "common",
+   "cost": "1",
+   "text": "Gain 8 Barrier. Gain 1 Arcana.",
+   "def": {
+    "id": "pale-beacon",
+    "name": "Pale Ward",
+    "realm": "starfall",
+    "rarity": "common",
+    "kind": "skill",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "barrier",
+      "amount": 8,
+      "to": "self"
+     },
+     {
+      "op": "stars",
+      "amount": 1
+     }
+    ],
+    "hero": "spellblade",
+    "upgrade": "pale-beacon+"
+   },
+   "upgrade": {
+    "id": "pale-beacon+",
+    "cost": "1",
+    "text": "Gain 11 Barrier. Gain 1 Arcana.",
+    "def": {
+     "id": "pale-beacon+",
+     "name": "Pale Ward+",
+     "realm": "starfall",
+     "rarity": "common",
+     "kind": "skill",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "barrier",
+       "amount": 11,
+       "to": "self"
+      },
+      {
+       "op": "stars",
+       "amount": 1
+      }
+     ],
+     "hero": "spellblade"
+    }
+   }
+  },
+  {
+   "id": "retainer-dive",
+   "name": "Retainer Dive",
+   "kind": "attack",
+   "rarity": "common",
+   "cost": "0",
+   "text": "Deal 13 damage. Consume.",
+   "def": {
+    "id": "retainer-dive",
+    "name": "Retainer Dive",
+    "realm": "starfall",
+    "rarity": "common",
+    "kind": "attack",
+    "cost": 0,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 13,
+      "to": "target"
+     }
+    ],
+    "hero": "spellblade",
+    "exhaust": true,
+    "source": "token",
+    "upgrade": "retainer-dive+"
+   },
+   "upgrade": {
+    "id": "retainer-dive+",
+    "cost": "0",
+    "text": "Deal 16 damage. Consume.",
+    "def": {
+     "id": "retainer-dive+",
+     "name": "Retainer Dive+",
+     "realm": "starfall",
+     "rarity": "common",
+     "kind": "attack",
+     "cost": 0,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 16,
+       "to": "target"
+      }
+     ],
+     "hero": "spellblade",
+     "exhaust": true,
+     "source": "token"
+    }
+   }
+  },
+  {
+   "id": "retainer-guard",
+   "name": "Retainer Guard",
+   "kind": "skill",
+   "rarity": "common",
+   "cost": "0",
+   "text": "Gain 7 Barrier. Consume.",
+   "def": {
+    "id": "retainer-guard",
+    "name": "Retainer Guard",
+    "realm": "starfall",
+    "rarity": "common",
+    "kind": "skill",
+    "cost": 0,
+    "target": "none",
+    "effects": [
+     {
+      "op": "barrier",
+      "amount": 7,
+      "to": "self"
+     }
+    ],
+    "hero": "spellblade",
+    "exhaust": true,
+    "source": "token",
+    "upgrade": "retainer-guard+"
+   },
+   "upgrade": {
+    "id": "retainer-guard+",
+    "cost": "0",
+    "text": "Gain 10 Barrier. Consume.",
+    "def": {
+     "id": "retainer-guard+",
+     "name": "Retainer Guard+",
+     "realm": "starfall",
+     "rarity": "common",
+     "kind": "skill",
+     "cost": 0,
+     "target": "none",
+     "effects": [
+      {
+       "op": "barrier",
+       "amount": 10,
+       "to": "self"
+      }
+     ],
+     "hero": "spellblade",
+     "exhaust": true,
+     "source": "token"
+    }
+   }
+  },
+  {
+   "id": "retainer-strike",
+   "name": "Retainer Strike",
+   "kind": "attack",
+   "rarity": "common",
+   "cost": "0",
+   "text": "Deal 6 damage. Draw 1 card. Consume.",
+   "def": {
+    "id": "retainer-strike",
+    "name": "Retainer Strike",
+    "realm": "starfall",
+    "rarity": "common",
+    "kind": "attack",
+    "cost": 0,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 6,
+      "to": "target"
+     },
+     {
+      "op": "draw",
+      "amount": 1
+     }
+    ],
+    "hero": "spellblade",
+    "exhaust": true,
+    "source": "token",
+    "upgrade": "retainer-strike+"
+   },
+   "upgrade": {
+    "id": "retainer-strike+",
+    "cost": "0",
+    "text": "Deal 9 damage. Draw 1 card. Consume.",
+    "def": {
+     "id": "retainer-strike+",
+     "name": "Retainer Strike+",
+     "realm": "starfall",
+     "rarity": "common",
+     "kind": "attack",
+     "cost": 0,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 9,
+       "to": "target"
+      },
+      {
+       "op": "draw",
+       "amount": 1
+      }
+     ],
+     "hero": "spellblade",
+     "exhaust": true,
+     "source": "token"
+    }
+   }
+  },
+  {
+   "id": "skybolt",
+   "name": "Spellbolt",
+   "kind": "attack",
+   "rarity": "common",
+   "cost": "1+2 Arcana",
+   "text": "Deal 12 damage. Next turn, draw 2 extra cards.",
+   "def": {
+    "id": "skybolt",
+    "name": "Spellbolt",
+    "realm": "starfall",
+    "rarity": "common",
+    "kind": "attack",
+    "cost": 1,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 12,
+      "to": "target"
+     },
+     {
+      "op": "drawNext",
+      "amount": 2
+     }
+    ],
+    "hero": "spellblade",
+    "starCost": 2,
+    "upgrade": "skybolt+"
+   },
+   "upgrade": {
+    "id": "skybolt+",
+    "cost": "1+2 Arcana",
+    "text": "Deal 13 damage. Next turn, draw 3 extra cards.",
+    "def": {
+     "id": "skybolt+",
+     "name": "Spellbolt+",
+     "realm": "starfall",
+     "rarity": "common",
+     "kind": "attack",
+     "cost": 1,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 13,
+       "to": "target"
+      },
+      {
+       "op": "drawNext",
+       "amount": 3
+      }
+     ],
+     "hero": "spellblade",
+     "starCost": 2
+    }
+   }
+  },
+  {
+   "id": "spoils",
+   "name": "Spoils",
+   "kind": "skill",
+   "rarity": "common",
+   "cost": "1",
+   "text": "Sharpen 6 (Obsidian Blade gains 6 damage). Draw 2 cards.",
+   "def": {
+    "id": "spoils",
+    "name": "Spoils",
+    "realm": "starfall",
+    "rarity": "common",
+    "kind": "skill",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "forge",
+      "card": "starforged-blade",
+      "amount": 6
+     },
+     {
+      "op": "draw",
+      "amount": 2
+     }
+    ],
+    "hero": "spellblade",
+    "upgrade": "spoils+"
+   },
+   "upgrade": {
+    "id": "spoils+",
+    "cost": "1",
+    "text": "Sharpen 9 (Obsidian Blade gains 9 damage). Draw 2 cards.",
+    "def": {
+     "id": "spoils+",
+     "name": "Spoils+",
+     "realm": "starfall",
+     "rarity": "common",
+     "kind": "skill",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "forge",
+       "card": "starforged-blade",
+       "amount": 9
+      },
+      {
+       "op": "draw",
+       "amount": 2
+      }
+     ],
+     "hero": "spellblade"
+    }
+   }
+  },
+  {
+   "id": "star-barrier",
+   "name": "Arcane Barrier",
+   "kind": "skill",
+   "rarity": "common",
+   "cost": "0+1 Arcana",
+   "text": "Gain 7 Barrier.",
+   "def": {
+    "id": "star-barrier",
+    "name": "Arcane Barrier",
+    "realm": "starfall",
+    "rarity": "common",
+    "kind": "skill",
+    "cost": 0,
+    "target": "none",
+    "effects": [
+     {
+      "op": "barrier",
+      "amount": 7,
+      "to": "self"
+     }
+    ],
+    "hero": "spellblade",
+    "starCost": 1,
+    "upgrade": "star-barrier+"
+   },
+   "upgrade": {
+    "id": "star-barrier+",
+    "cost": "0+1 Arcana",
+    "text": "Gain 10 Barrier.",
+    "def": {
+     "id": "star-barrier+",
+     "name": "Arcane Barrier+",
+     "realm": "starfall",
+     "rarity": "common",
+     "kind": "skill",
+     "cost": 0,
+     "target": "none",
+     "effects": [
+      {
+       "op": "barrier",
+       "amount": 10,
+       "to": "self"
+      }
+     ],
+     "hero": "spellblade",
+     "starCost": 1
+    }
+   }
+  },
+  {
+   "id": "starforged-blade",
+   "name": "Obsidian Blade",
+   "kind": "attack",
+   "rarity": "common",
+   "cost": "2",
+   "text": "Deal 10 (+1 per point of sharpening) damage. Hold.",
+   "def": {
+    "id": "starforged-blade",
+    "name": "Obsidian Blade",
+    "realm": "starfall",
+    "rarity": "common",
+    "kind": "attack",
+    "cost": 2,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 10,
+      "to": "target",
+      "scale": {
+       "by": "bonus"
+      }
+     }
+    ],
+    "hero": "spellblade",
+    "retain": true,
+    "tags": [
+     "blade"
+    ],
+    "source": "token",
+    "weapon": true
+   },
+   "upgrade": null
+  },
+  {
+   "id": "sunstrike",
+   "name": "Emberstrike",
+   "kind": "attack",
+   "rarity": "common",
+   "cost": "1",
+   "text": "Deal 9 damage. Gain 1 Arcana.",
+   "def": {
+    "id": "sunstrike",
+    "name": "Emberstrike",
+    "realm": "starfall",
+    "rarity": "common",
+    "kind": "attack",
+    "cost": 1,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 9,
+      "to": "target"
+     },
+     {
+      "op": "stars",
+      "amount": 1
+     }
+    ],
+    "hero": "spellblade",
+    "upgrade": "sunstrike+"
+   },
+   "upgrade": {
+    "id": "sunstrike+",
+    "cost": "1",
+    "text": "Deal 10 damage. Gain 2 Arcana.",
+    "def": {
+     "id": "sunstrike+",
+     "name": "Emberstrike+",
+     "realm": "starfall",
+     "rarity": "common",
+     "kind": "attack",
+     "cost": 1,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 10,
+       "to": "target"
+      },
+      {
+       "op": "stars",
+       "amount": 2
+      }
+     ],
+     "hero": "spellblade"
+    }
+   }
+  },
+  {
+   "id": "whetstone",
+   "name": "Whetstone",
+   "kind": "skill",
+   "rarity": "common",
+   "cost": "1",
+   "text": "Sharpen 8 (Obsidian Blade gains 8 damage). Next turn, gain 1 extra Mana.",
+   "def": {
+    "id": "whetstone",
+    "name": "Whetstone",
+    "realm": "starfall",
+    "rarity": "common",
+    "kind": "skill",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "forge",
+      "card": "starforged-blade",
+      "amount": 8
+     },
+     {
+      "op": "manaNext",
+      "amount": 1
+     }
+    ],
+    "hero": "spellblade",
+    "upgrade": "whetstone+"
+   },
+   "upgrade": {
+    "id": "whetstone+",
+    "cost": "1",
+    "text": "Sharpen 12 (Obsidian Blade gains 12 damage). Next turn, gain 1 extra Mana.",
+    "def": {
+     "id": "whetstone+",
+     "name": "Whetstone+",
+     "realm": "starfall",
+     "rarity": "common",
+     "kind": "skill",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "forge",
+       "card": "starforged-blade",
+       "amount": 12
+      },
+      {
+       "op": "manaNext",
+       "amount": 1
+      }
+     ],
+     "hero": "spellblade"
+    }
+   }
+  },
+  {
+   "id": "banked-embers",
+   "name": "Banked Embers",
+   "kind": "skill",
+   "rarity": "uncommon",
+   "cost": "1",
+   "text": "Next turn, gain 1 extra Mana. Next turn, gain 1 Arcana. Gain 1 Holdfast.",
+   "def": {
+    "id": "banked-embers",
+    "name": "Banked Embers",
+    "realm": "starfall",
+    "rarity": "uncommon",
+    "kind": "skill",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "manaNext",
+      "amount": 1
+     },
+     {
+      "op": "starsNext",
+      "amount": 1
+     },
+     {
+      "op": "status",
+      "status": "holdfast",
+      "amount": 1,
+      "to": "self"
+     }
+    ],
+    "hero": "spellblade",
+    "upgrade": "banked-embers+"
+   },
+   "upgrade": {
+    "id": "banked-embers+",
+    "cost": "1",
+    "text": "Next turn, gain 1 extra Mana. Next turn, gain 2 Arcana. Gain 1 Holdfast.",
+    "def": {
+     "id": "banked-embers+",
+     "name": "Banked Embers+",
+     "realm": "starfall",
+     "rarity": "uncommon",
+     "kind": "skill",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "manaNext",
+       "amount": 1
+      },
+      {
+       "op": "starsNext",
+       "amount": 2
+      },
+      {
+       "op": "status",
+       "status": "holdfast",
+       "amount": 1,
+       "to": "self"
+      }
+     ],
+     "hero": "spellblade"
+    }
+   }
+  },
+  {
+   "id": "bladewall",
+   "name": "Bladewall",
+   "kind": "skill",
+   "rarity": "uncommon",
+   "cost": "2",
+   "text": "Gain 12 Barrier. Sharpen 10 (Obsidian Blade gains 10 damage).",
+   "def": {
+    "id": "bladewall",
+    "name": "Bladewall",
+    "realm": "starfall",
+    "rarity": "uncommon",
+    "kind": "skill",
+    "cost": 2,
+    "target": "none",
+    "effects": [
+     {
+      "op": "barrier",
+      "amount": 12,
+      "to": "self"
+     },
+     {
+      "op": "forge",
+      "card": "starforged-blade",
+      "amount": 10
+     }
+    ],
+    "hero": "spellblade",
+    "upgrade": "bladewall+"
+   },
+   "upgrade": {
+    "id": "bladewall+",
+    "cost": "2",
+    "text": "Gain 15 Barrier. Sharpen 13 (Obsidian Blade gains 13 damage).",
+    "def": {
+     "id": "bladewall+",
+     "name": "Bladewall+",
+     "realm": "starfall",
+     "rarity": "uncommon",
+     "kind": "skill",
+     "cost": 2,
+     "target": "none",
+     "effects": [
+      {
+       "op": "barrier",
+       "amount": 15,
+       "to": "self"
+      },
+      {
+       "op": "forge",
+       "card": "starforged-blade",
+       "amount": 13
+      }
+     ],
+     "hero": "spellblade"
+    }
+   }
+  },
+  {
+   "id": "call-the-blade",
+   "name": "Call the Blade",
+   "kind": "skill",
+   "rarity": "uncommon",
+   "cost": "1",
+   "text": "Put your Obsidian Blade into your hand from wherever it is. Sharpen 8 (Obsidian Blade gains 8 damage).",
+   "def": {
+    "id": "call-the-blade",
+    "name": "Call the Blade",
+    "realm": "starfall",
+    "rarity": "uncommon",
+    "kind": "skill",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "fetch",
+      "amount": 1,
+      "to": "hand",
+      "tag": "blade",
+      "anywhere": true
+     },
+     {
+      "op": "forge",
+      "card": "starforged-blade",
+      "amount": 8
+     }
+    ],
+    "hero": "spellblade",
+    "upgrade": "call-the-blade+"
+   },
+   "upgrade": {
+    "id": "call-the-blade+",
+    "cost": "1",
+    "text": "Put your Obsidian Blade into your hand from wherever it is. Sharpen 11 (Obsidian Blade gains 11 damage).",
+    "def": {
+     "id": "call-the-blade+",
+     "name": "Call the Blade+",
+     "realm": "starfall",
+     "rarity": "uncommon",
+     "kind": "skill",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "fetch",
+       "amount": 1,
+       "to": "hand",
+       "tag": "blade",
+       "anywhere": true
+      },
+      {
+       "op": "forge",
+       "card": "starforged-blade",
+       "amount": 11
+      }
+     ],
+     "hero": "spellblade"
+    }
+   }
+  },
+  {
+   "id": "chart-the-orbit",
+   "name": "Ley Line",
+   "kind": "skill",
+   "rarity": "uncommon",
+   "cost": "0+3 Arcana",
+   "text": "Gain 2 Mana.",
+   "def": {
+    "id": "chart-the-orbit",
+    "name": "Ley Line",
+    "realm": "starfall",
+    "rarity": "uncommon",
+    "kind": "skill",
+    "cost": 0,
+    "target": "none",
+    "effects": [
+     {
+      "op": "mana",
+      "amount": 2
+     }
+    ],
+    "hero": "spellblade",
+    "starCost": 3,
+    "upgrade": "chart-the-orbit+"
+   },
+   "upgrade": {
+    "id": "chart-the-orbit+",
+    "cost": "0+3 Arcana",
+    "text": "Gain 3 Mana.",
+    "def": {
+     "id": "chart-the-orbit+",
+     "name": "Ley Line+",
+     "realm": "starfall",
+     "rarity": "uncommon",
+     "kind": "skill",
+     "cost": 0,
+     "target": "none",
+     "effects": [
+      {
+       "op": "mana",
+       "amount": 3
+      }
+     ],
+     "hero": "spellblade",
+     "starCost": 3
+    }
+   }
+  },
+  {
+   "id": "collapsing-star",
+   "name": "Collapsing Vein",
+   "kind": "attack",
+   "rarity": "uncommon",
+   "cost": "1",
+   "text": "Deal 5 (+2 per card created this fight) damage.",
+   "def": {
+    "id": "collapsing-star",
+    "name": "Collapsing Vein",
+    "realm": "starfall",
+    "rarity": "uncommon",
+    "kind": "attack",
+    "cost": 1,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 5,
+      "to": "target",
+      "scale": {
+       "by": "created",
+       "mult": 2
+      }
+     }
+    ],
+    "hero": "spellblade",
+    "upgrade": "collapsing-star+"
+   },
+   "upgrade": {
+    "id": "collapsing-star+",
+    "cost": "1",
+    "text": "Deal 8 (+2 per card created this fight) damage.",
+    "def": {
+     "id": "collapsing-star+",
+     "name": "Collapsing Vein+",
+     "realm": "starfall",
+     "rarity": "uncommon",
+     "kind": "attack",
+     "cost": 1,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 8,
+       "to": "target",
+       "scale": {
+        "by": "created",
+        "mult": 2
+       }
+      }
+     ],
+     "hero": "spellblade"
+    }
+   }
+  },
+  {
+   "id": "conqueror",
+   "name": "Crowned Edge",
+   "kind": "skill",
+   "rarity": "uncommon",
+   "cost": "1",
+   "text": "Sharpen 3 (Obsidian Blade gains 3 damage). Your Obsidian Blade deals double damage to the target this turn.",
+   "def": {
+    "id": "conqueror",
+    "name": "Crowned Edge",
+    "realm": "starfall",
+    "rarity": "uncommon",
+    "kind": "skill",
+    "cost": 1,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "forge",
+      "card": "starforged-blade",
+      "amount": 3
+     },
+     {
+      "op": "status",
+      "status": "bladebane",
+      "amount": 1,
+      "to": "target",
+      "temp": true
+     }
+    ],
+    "hero": "spellblade",
+    "upgrade": "conqueror+"
+   },
+   "upgrade": {
+    "id": "conqueror+",
+    "cost": "1",
+    "text": "Sharpen 5 (Obsidian Blade gains 5 damage). Your Obsidian Blade deals double damage to the target this turn.",
+    "def": {
+     "id": "conqueror+",
+     "name": "Crowned Edge+",
+     "realm": "starfall",
+     "rarity": "uncommon",
+     "kind": "skill",
+     "cost": 1,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "forge",
+       "card": "starforged-blade",
+       "amount": 5
+      },
+      {
+       "op": "status",
+       "status": "bladebane",
+       "amount": 1,
+       "to": "target",
+       "temp": true
+      }
+     ],
+     "hero": "spellblade"
+    }
+   }
+  },
+  {
+   "id": "crowned-fist",
+   "name": "Crowned Fist",
+   "kind": "attack",
+   "rarity": "uncommon",
+   "cost": "1",
+   "text": "Deal 8 damage, plus all it has grown. When you draw this: This card deals 4 more damage for the rest of the fight.",
+   "def": {
+    "id": "crowned-fist",
+    "name": "Crowned Fist",
+    "realm": "starfall",
+    "rarity": "uncommon",
+    "kind": "attack",
+    "cost": 1,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 8,
+      "to": "target",
+      "scale": {
+       "by": "bonus"
+      }
+     }
+    ],
+    "hero": "spellblade",
+    "onDraw": [
+     {
+      "op": "growSelf",
+      "amount": 4
+     }
+    ],
+    "upgrade": "crowned-fist+"
+   },
+   "upgrade": {
+    "id": "crowned-fist+",
+    "cost": "1",
+    "text": "Deal 10 damage, plus all it has grown. When you draw this: This card deals 6 more damage for the rest of the fight.",
+    "def": {
+     "id": "crowned-fist+",
+     "name": "Crowned Fist+",
+     "realm": "starfall",
+     "rarity": "uncommon",
+     "kind": "attack",
+     "cost": 1,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 10,
+       "to": "target",
+       "scale": {
+        "by": "bonus"
+       }
+      }
+     ],
+     "hero": "spellblade",
+     "onDraw": [
+      {
+       "op": "growSelf",
+       "amount": 6
+      }
+     ]
+    }
+   }
+  },
+  {
+   "id": "crowns-weight",
+   "name": "Weight of the Crown",
+   "kind": "skill",
+   "rarity": "uncommon",
+   "cost": "1+2 Arcana",
+   "text": "Gain 1 Might. Apply 1 Sapped to ALL enemies.",
+   "def": {
+    "id": "crowns-weight",
+    "name": "Weight of the Crown",
+    "realm": "starfall",
+    "rarity": "uncommon",
+    "kind": "skill",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "status",
+      "status": "might",
+      "amount": 1,
+      "to": "self"
+     },
+     {
+      "op": "status",
+      "status": "sapped",
+      "amount": 1,
+      "to": "allFoes"
+     }
+    ],
+    "hero": "spellblade",
+    "starCost": 2,
+    "upgrade": "crowns-weight+"
+   },
+   "upgrade": {
+    "id": "crowns-weight+",
+    "cost": "1+2 Arcana",
+    "text": "Gain 2 Might. Apply 1 Sapped to ALL enemies.",
+    "def": {
+     "id": "crowns-weight+",
+     "name": "Weight of the Crown+",
+     "realm": "starfall",
+     "rarity": "uncommon",
+     "kind": "skill",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "status",
+       "status": "might",
+       "amount": 2,
+       "to": "self"
+      },
+      {
+       "op": "status",
+       "status": "sapped",
+       "amount": 1,
+       "to": "allFoes"
+      }
+     ],
+     "hero": "spellblade",
+     "starCost": 2
+    }
+   }
+  },
+  {
+   "id": "cygnus",
+   "name": "Sigil of Glass",
+   "kind": "power",
+   "rarity": "uncommon",
+   "cost": "1",
+   "text": "Whenever you spend Arcana: Gain Barrier equal to 2 times the Arcana spent.",
+   "def": {
+    "id": "cygnus",
+    "name": "Sigil of Glass",
+    "realm": "starfall",
+    "rarity": "uncommon",
+    "kind": "power",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "power",
+      "when": "arcana",
+      "ops": [
+       {
+        "op": "barrier",
+        "amount": 0,
+        "to": "self",
+        "scale": {
+         "by": "spent",
+         "mult": 2
+        }
+       }
+      ]
+     }
+    ],
+    "hero": "spellblade",
+    "upgrade": "cygnus+"
+   },
+   "upgrade": {
+    "id": "cygnus+",
+    "cost": "1",
+    "text": "Whenever you spend Arcana: Gain Barrier equal to 3 times the Arcana spent.",
+    "def": {
+     "id": "cygnus+",
+     "name": "Sigil of Glass+",
+     "realm": "starfall",
+     "rarity": "uncommon",
+     "kind": "power",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "power",
+       "when": "arcana",
+       "ops": [
+        {
+         "op": "barrier",
+         "amount": 0,
+         "to": "self",
+         "scale": {
+          "by": "spent",
+          "mult": 3
+         }
+        }
+       ]
+      }
+     ],
+     "hero": "spellblade"
+    }
+   }
+  },
+  {
+   "id": "devastate",
+   "name": "Molten Ruin",
+   "kind": "attack",
+   "rarity": "uncommon",
+   "cost": "1+4 Arcana",
+   "text": "Deal 35 damage.",
+   "def": {
+    "id": "devastate",
+    "name": "Molten Ruin",
+    "realm": "starfall",
+    "rarity": "uncommon",
+    "kind": "attack",
+    "cost": 1,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 35,
+      "to": "target"
+     }
+    ],
+    "hero": "spellblade",
+    "starCost": 4,
+    "upgrade": "devastate+"
+   },
+   "upgrade": {
+    "id": "devastate+",
+    "cost": "1+4 Arcana",
+    "text": "Deal 45 damage.",
+    "def": {
+     "id": "devastate+",
+     "name": "Molten Ruin+",
+     "realm": "starfall",
+     "rarity": "uncommon",
+     "kind": "attack",
+     "cost": 1,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 45,
+       "to": "target"
+      }
+     ],
+     "hero": "spellblade",
+     "starCost": 4
+    }
+   }
+  },
+  {
+   "id": "distant-ember",
+   "name": "Distant Ember",
+   "kind": "power",
+   "rarity": "uncommon",
+   "cost": "1",
+   "text": "At the end of your turn: If you have played 5 or more cards this turn: Next turn, draw 1 extra card.",
+   "def": {
+    "id": "distant-ember",
+    "name": "Distant Ember",
+    "realm": "starfall",
+    "rarity": "uncommon",
+    "kind": "power",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "power",
+      "when": "turnEnd",
+      "ops": [
+       {
+        "op": "when",
+        "by": "played",
+        "atLeast": 5,
+        "ops": [
+         {
+          "op": "drawNext",
+          "amount": 1
+         }
+        ]
+       }
+      ]
+     }
+    ],
+    "hero": "spellblade",
+    "upgrade": "distant-ember+"
+   },
+   "upgrade": {
+    "id": "distant-ember+",
+    "cost": "1",
+    "text": "At the end of your turn: If you have played 5 or more cards this turn: Next turn, draw 2 extra cards.",
+    "def": {
+     "id": "distant-ember+",
+     "name": "Distant Ember+",
+     "realm": "starfall",
+     "rarity": "uncommon",
+     "kind": "power",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "power",
+       "when": "turnEnd",
+       "ops": [
+        {
+         "op": "when",
+         "by": "played",
+         "atLeast": 5,
+         "ops": [
+          {
+           "op": "drawNext",
+           "amount": 2
+          }
+         ]
+        }
+       ]
+      }
+     ],
+     "hero": "spellblade"
+    }
+   }
+  },
+  {
+   "id": "falling-sky",
+   "name": "Falling Shards",
+   "kind": "attack",
+   "rarity": "uncommon",
+   "cost": "0+X Arcana",
+   "text": "Spend all your Arcana: X is the Arcana spent. Deal 5 damage to a random enemy X times.",
+   "def": {
+    "id": "falling-sky",
+    "name": "Falling Shards",
+    "realm": "starfall",
+    "rarity": "uncommon",
+    "kind": "attack",
+    "cost": 0,
+    "target": "none",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 5,
+      "hits": 0,
+      "to": "randomFoe",
+      "scale": {
+       "by": "x",
+       "into": "hits"
+      }
+     }
+    ],
+    "hero": "spellblade",
+    "starX": true,
+    "upgrade": "falling-sky+"
+   },
+   "upgrade": {
+    "id": "falling-sky+",
+    "cost": "0+X Arcana",
+    "text": "Spend all your Arcana: X is the Arcana spent. Deal 7 damage to a random enemy X times.",
+    "def": {
+     "id": "falling-sky+",
+     "name": "Falling Shards+",
+     "realm": "starfall",
+     "rarity": "uncommon",
+     "kind": "attack",
+     "cost": 0,
+     "target": "none",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 7,
+       "hits": 0,
+       "to": "randomFoe",
+       "scale": {
+        "by": "x",
+        "into": "hits"
+       }
+      }
+     ],
+     "hero": "spellblade",
+     "starX": true
+    }
+   }
+  },
+  {
+   "id": "final-shatter",
+   "name": "Final Shatter",
+   "kind": "attack",
+   "rarity": "uncommon",
+   "cost": "3",
+   "text": "Deal 30 damage. If this is fatal: Gain 5 Arcana.",
+   "def": {
+    "id": "final-shatter",
+    "name": "Final Shatter",
+    "realm": "starfall",
+    "rarity": "uncommon",
+    "kind": "attack",
+    "cost": 3,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 30,
+      "to": "target",
+      "onKill": [
+       {
+        "op": "stars",
+        "amount": 5
+       }
+      ]
+     }
+    ],
+    "hero": "spellblade",
+    "upgrade": "final-shatter+"
+   },
+   "upgrade": {
+    "id": "final-shatter+",
+    "cost": "3",
+    "text": "Deal 38 damage. If this is fatal: Gain 5 Arcana.",
+    "def": {
+     "id": "final-shatter+",
+     "name": "Final Shatter+",
+     "realm": "starfall",
+     "rarity": "uncommon",
+     "kind": "attack",
+     "cost": 3,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 38,
+       "to": "target",
+       "onKill": [
+        {
+         "op": "stars",
+         "amount": 5
+        }
+       ]
+      }
+     ],
+     "hero": "spellblade"
+    }
+   }
+  },
+  {
+   "id": "forge-heat",
+   "name": "Heat of the Forge",
+   "kind": "skill",
+   "rarity": "uncommon",
+   "cost": "1",
+   "text": "Gain 7 Primed.",
+   "def": {
+    "id": "forge-heat",
+    "name": "Heat of the Forge",
+    "realm": "starfall",
+    "rarity": "uncommon",
+    "kind": "skill",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "status",
+      "status": "vigor",
+      "amount": 7,
+      "to": "self"
+     }
+    ],
+    "hero": "spellblade",
+    "upgrade": "forge-heat+"
+   },
+   "upgrade": {
+    "id": "forge-heat+",
+    "cost": "1",
+    "text": "Gain 10 Primed.",
+    "def": {
+     "id": "forge-heat+",
+     "name": "Heat of the Forge+",
+     "realm": "starfall",
+     "rarity": "uncommon",
+     "kind": "skill",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "status",
+       "status": "vigor",
+       "amount": 10,
+       "to": "self"
+      }
+     ],
+     "hero": "spellblade"
+    }
+   }
+  },
+  {
+   "id": "gamma-burst",
+   "name": "Glass Burst",
+   "kind": "attack",
+   "rarity": "uncommon",
+   "cost": "0+3 Arcana",
+   "text": "Deal 13 damage. Apply 2 Faltering. Apply 2 Exposed.",
+   "def": {
+    "id": "gamma-burst",
+    "name": "Glass Burst",
+    "realm": "starfall",
+    "rarity": "uncommon",
+    "kind": "attack",
+    "cost": 0,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 13,
+      "to": "target"
+     },
+     {
+      "op": "status",
+      "status": "faltering",
+      "amount": 2,
+      "to": "target"
+     },
+     {
+      "op": "status",
+      "status": "exposed",
+      "amount": 2,
+      "to": "target"
+     }
+    ],
+    "hero": "spellblade",
+    "starCost": 3,
+    "upgrade": "gamma-burst+"
+   },
+   "upgrade": {
+    "id": "gamma-burst+",
+    "cost": "0+3 Arcana",
+    "text": "Deal 18 damage. Apply 2 Faltering. Apply 2 Exposed.",
+    "def": {
+     "id": "gamma-burst+",
+     "name": "Glass Burst+",
+     "realm": "starfall",
+     "rarity": "uncommon",
+     "kind": "attack",
+     "cost": 0,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 18,
+       "to": "target"
+      },
+      {
+       "op": "status",
+       "status": "faltering",
+       "amount": 2,
+       "to": "target"
+      },
+      {
+       "op": "status",
+       "status": "exposed",
+       "amount": 2,
+       "to": "target"
+      }
+     ],
+     "hero": "spellblade",
+     "starCost": 3
+    }
+   }
+  },
+  {
+   "id": "glass-wall",
+   "name": "Glass Wall",
+   "kind": "skill",
+   "rarity": "uncommon",
+   "cost": "0+2 Arcana",
+   "text": "Gain 9 Barrier. It goes back to your hand after you play it.",
+   "def": {
+    "id": "glass-wall",
+    "name": "Glass Wall",
+    "realm": "starfall",
+    "rarity": "uncommon",
+    "kind": "skill",
+    "cost": 0,
+    "target": "none",
+    "effects": [
+     {
+      "op": "barrier",
+      "amount": 9,
+      "to": "self"
+     }
+    ],
+    "hero": "spellblade",
+    "starCost": 2,
+    "after": "hand",
+    "upgrade": "glass-wall+"
+   },
+   "upgrade": {
+    "id": "glass-wall+",
+    "cost": "0+2 Arcana",
+    "text": "Gain 12 Barrier. It goes back to your hand after you play it.",
+    "def": {
+     "id": "glass-wall+",
+     "name": "Glass Wall+",
+     "realm": "starfall",
+     "rarity": "uncommon",
+     "kind": "skill",
+     "cost": 0,
+     "target": "none",
+     "effects": [
+      {
+       "op": "barrier",
+       "amount": 12,
+       "to": "self"
+      }
+     ],
+     "hero": "spellblade",
+     "starCost": 2,
+     "after": "hand"
+    }
+   }
+  },
+  {
+   "id": "grand-speech",
+   "name": "Grand Speech",
+   "kind": "skill",
+   "rarity": "uncommon",
+   "cost": "0",
+   "text": "This turn, whenever you play a card: Gain 1 Might until the end of your turn.",
+   "def": {
+    "id": "grand-speech",
+    "name": "Grand Speech",
+    "realm": "starfall",
+    "rarity": "uncommon",
+    "kind": "skill",
+    "cost": 0,
+    "target": "none",
+    "effects": [
+     {
+      "op": "power",
+      "when": "play",
+      "ops": [
+       {
+        "op": "status",
+        "status": "might",
+        "amount": 1,
+        "to": "self",
+        "temp": true
+       }
+      ],
+      "temp": true
+     }
+    ],
+    "hero": "spellblade",
+    "upgrade": "grand-speech+"
+   },
+   "upgrade": {
+    "id": "grand-speech+",
+    "cost": "0",
+    "text": "This turn, whenever you play a card: Gain 1 Might until the end of your turn. Hold.",
+    "def": {
+     "id": "grand-speech+",
+     "name": "Grand Speech+",
+     "realm": "starfall",
+     "rarity": "uncommon",
+     "kind": "skill",
+     "cost": 0,
+     "target": "none",
+     "effects": [
+      {
+       "op": "power",
+       "when": "play",
+       "ops": [
+        {
+         "op": "status",
+         "status": "might",
+         "amount": 1,
+         "to": "self",
+         "temp": true
+        }
+       ],
+       "temp": true
+      }
+     ],
+     "hero": "spellblade",
+     "retain": true
+    }
+   }
+  },
+  {
+   "id": "gravity-well",
+   "name": "Hungering Void",
+   "kind": "power",
+   "rarity": "uncommon",
+   "cost": "1",
+   "text": "Whenever you gain Arcana: Deal 3 damage to ALL enemies. Whenever you spend Arcana: Deal 3 damage to ALL enemies.",
+   "def": {
+    "id": "gravity-well",
+    "name": "Hungering Void",
+    "realm": "starfall",
+    "rarity": "uncommon",
+    "kind": "power",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "power",
+      "when": "gainArcana",
+      "ops": [
+       {
+        "op": "damage",
+        "amount": 3,
+        "to": "allFoes"
+       }
+      ]
+     },
+     {
+      "op": "power",
+      "when": "arcana",
+      "ops": [
+       {
+        "op": "damage",
+        "amount": 3,
+        "to": "allFoes"
+       }
+      ]
+     }
+    ],
+    "hero": "spellblade",
+    "upgrade": "gravity-well+"
+   },
+   "upgrade": {
+    "id": "gravity-well+",
+    "cost": "1",
+    "text": "Whenever you gain Arcana: Deal 4 damage to ALL enemies. Whenever you spend Arcana: Deal 4 damage to ALL enemies.",
+    "def": {
+     "id": "gravity-well+",
+     "name": "Hungering Void+",
+     "realm": "starfall",
+     "rarity": "uncommon",
+     "kind": "power",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "power",
+       "when": "gainArcana",
+       "ops": [
+        {
+         "op": "damage",
+         "amount": 4,
+         "to": "allFoes"
+        }
+       ]
+      },
+      {
+       "op": "power",
+       "when": "arcana",
+       "ops": [
+        {
+         "op": "damage",
+         "amount": 4,
+         "to": "allFoes"
+        }
+       ]
+      }
+     ],
+     "hero": "spellblade"
+    }
+   }
+  },
+  {
+   "id": "hex-volley",
+   "name": "Hex Volley",
+   "kind": "attack",
+   "rarity": "uncommon",
+   "cost": "0",
+   "text": "Deal 4 damage for each Skill played this turn.",
+   "def": {
+    "id": "hex-volley",
+    "name": "Hex Volley",
+    "realm": "starfall",
+    "rarity": "uncommon",
+    "kind": "attack",
+    "cost": 0,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 4,
+      "hits": 0,
+      "to": "target",
+      "scale": {
+       "by": "skillsPlayed",
+       "into": "hits"
+      }
+     }
+    ],
+    "hero": "spellblade",
+    "upgrade": "hex-volley+"
+   },
+   "upgrade": {
+    "id": "hex-volley+",
+    "cost": "0",
+    "text": "Deal 5 damage for each Skill played this turn.",
+    "def": {
+     "id": "hex-volley+",
+     "name": "Hex Volley+",
+     "realm": "starfall",
+     "rarity": "uncommon",
+     "kind": "attack",
+     "cost": 0,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 5,
+       "hits": 0,
+       "to": "target",
+       "scale": {
+        "by": "skillsPlayed",
+        "into": "hits"
+       }
+      }
+     ],
+     "hero": "spellblade"
+    }
+   }
+  },
+  {
+   "id": "mirror-glass",
+   "name": "Mirror Glass",
+   "kind": "skill",
+   "rarity": "uncommon",
+   "cost": "1+3 Arcana",
+   "text": "Gain 15 Barrier. Until your next turn, attack damage your Barrier soaks is dealt back to the attacker.",
+   "def": {
+    "id": "mirror-glass",
+    "name": "Mirror Glass",
+    "realm": "starfall",
+    "rarity": "uncommon",
+    "kind": "skill",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "barrier",
+      "amount": 15,
+      "to": "self"
+     },
+     {
+      "op": "status",
+      "status": "reflect",
+      "amount": 1,
+      "to": "self"
+     }
+    ],
+    "hero": "spellblade",
+    "starCost": 3,
+    "upgrade": "mirror-glass+"
+   },
+   "upgrade": {
+    "id": "mirror-glass+",
+    "cost": "1+3 Arcana",
+    "text": "Gain 20 Barrier. Until your next turn, attack damage your Barrier soaks is dealt back to the attacker.",
+    "def": {
+     "id": "mirror-glass+",
+     "name": "Mirror Glass+",
+     "realm": "starfall",
+     "rarity": "uncommon",
+     "kind": "skill",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "barrier",
+       "amount": 20,
+       "to": "self"
+      },
+      {
+       "op": "status",
+       "status": "reflect",
+       "amount": 1,
+       "to": "self"
+      }
+     ],
+     "hero": "spellblade",
+     "starCost": 3
+    }
+   }
+  },
+  {
+   "id": "orbit",
+   "name": "Sigil of Momentum",
+   "kind": "power",
+   "rarity": "uncommon",
+   "cost": "2",
+   "text": "For the rest of the fight, every 4 Mana you spend gives 1 Mana back.",
+   "def": {
+    "id": "orbit",
+    "name": "Sigil of Momentum",
+    "realm": "starfall",
+    "rarity": "uncommon",
+    "kind": "power",
+    "cost": 2,
+    "target": "none",
+    "effects": [
+     {
+      "op": "status",
+      "status": "orbit",
+      "amount": 1,
+      "to": "self"
+     }
+    ],
+    "hero": "spellblade",
+    "upgrade": "orbit+"
+   },
+   "upgrade": {
+    "id": "orbit+",
+    "cost": "1",
+    "text": "For the rest of the fight, every 4 Mana you spend gives 1 Mana back.",
+    "def": {
+     "id": "orbit+",
+     "name": "Sigil of Momentum+",
+     "realm": "starfall",
+     "rarity": "uncommon",
+     "kind": "power",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "status",
+       "status": "orbit",
+       "amount": 1,
+       "to": "self"
+      }
+     ],
+     "hero": "spellblade"
+    }
+   }
+  },
+  {
+   "id": "parry",
+   "name": "Glass Guard",
+   "kind": "power",
+   "rarity": "uncommon",
+   "cost": "1",
+   "text": "Whenever you play an Obsidian Blade: Gain 10 Barrier.",
+   "def": {
+    "id": "parry",
+    "name": "Glass Guard",
+    "realm": "starfall",
+    "rarity": "uncommon",
+    "kind": "power",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "power",
+      "when": "play",
+      "ops": [
+       {
+        "op": "barrier",
+        "amount": 10,
+        "to": "self"
+       }
+      ],
+      "tag": "blade"
+     }
+    ],
+    "hero": "spellblade",
+    "upgrade": "parry+"
+   },
+   "upgrade": {
+    "id": "parry+",
+    "cost": "1",
+    "text": "Whenever you play an Obsidian Blade: Gain 14 Barrier.",
+    "def": {
+     "id": "parry+",
+     "name": "Glass Guard+",
+     "realm": "starfall",
+     "rarity": "uncommon",
+     "kind": "power",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "power",
+       "when": "play",
+       "ops": [
+        {
+         "op": "barrier",
+         "amount": 14,
+         "to": "self"
+        }
+       ],
+       "tag": "blade"
+      }
+     ],
+     "hero": "spellblade"
+    }
+   }
+  },
+  {
+   "id": "pillar-of-light",
+   "name": "Pillar of Glass",
+   "kind": "power",
+   "rarity": "uncommon",
+   "cost": "1",
+   "text": "Whenever a card is created: Gain 2 Barrier.",
+   "def": {
+    "id": "pillar-of-light",
+    "name": "Pillar of Glass",
+    "realm": "starfall",
+    "rarity": "uncommon",
+    "kind": "power",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "power",
+      "when": "created",
+      "ops": [
+       {
+        "op": "barrier",
+        "amount": 2,
+        "to": "self"
+       }
+      ]
+     }
+    ],
+    "hero": "spellblade",
+    "upgrade": "pillar-of-light+"
+   },
+   "upgrade": {
+    "id": "pillar-of-light+",
+    "cost": "1",
+    "text": "Whenever a card is created: Gain 3 Barrier.",
+    "def": {
+     "id": "pillar-of-light+",
+     "name": "Pillar of Glass+",
+     "realm": "starfall",
+     "rarity": "uncommon",
+     "kind": "power",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "power",
+       "when": "created",
+       "ops": [
+        {
+         "op": "barrier",
+         "amount": 3,
+         "to": "self"
+        }
+       ]
+      }
+     ],
+     "hero": "spellblade"
+    }
+   }
+  },
+  {
+   "id": "radiance",
+   "name": "Arcane Flood",
+   "kind": "attack",
+   "rarity": "uncommon",
+   "cost": "0",
+   "text": "Deal 3 damage for each Arcana gained this turn to ALL enemies.",
+   "def": {
+    "id": "radiance",
+    "name": "Arcane Flood",
+    "realm": "starfall",
+    "rarity": "uncommon",
+    "kind": "attack",
+    "cost": 0,
+    "target": "none",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 3,
+      "hits": 0,
+      "to": "allFoes",
+      "scale": {
+       "by": "starsGained",
+       "into": "hits"
+      }
+     }
+    ],
+    "hero": "spellblade",
+    "upgrade": "radiance+"
+   },
+   "upgrade": {
+    "id": "radiance+",
+    "cost": "0",
+    "text": "Deal 4 damage for each Arcana gained this turn to ALL enemies.",
+    "def": {
+     "id": "radiance+",
+     "name": "Arcane Flood+",
+     "realm": "starfall",
+     "rarity": "uncommon",
+     "kind": "attack",
+     "cost": 0,
+     "target": "none",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 4,
+       "hits": 0,
+       "to": "allFoes",
+       "scale": {
+        "by": "starsGained",
+        "into": "hits"
+       }
+      }
+     ],
+     "hero": "spellblade"
+    }
+   }
+  },
+  {
+   "id": "read-the-embers",
+   "name": "Read the Embers",
+   "kind": "skill",
+   "rarity": "uncommon",
+   "cost": "2",
+   "text": "Draw 6 cards.",
+   "def": {
+    "id": "read-the-embers",
+    "name": "Read the Embers",
+    "realm": "starfall",
+    "rarity": "uncommon",
+    "kind": "skill",
+    "cost": 2,
+    "target": "none",
+    "effects": [
+     {
+      "op": "draw",
+      "amount": 6
+     }
+    ],
+    "hero": "spellblade",
+    "upgrade": "read-the-embers+"
+   },
+   "upgrade": {
+    "id": "read-the-embers+",
+    "cost": "2",
+    "text": "Draw 9 cards.",
+    "def": {
+     "id": "read-the-embers+",
+     "name": "Read the Embers+",
+     "realm": "starfall",
+     "rarity": "uncommon",
+     "kind": "skill",
+     "cost": 2,
+     "target": "none",
+     "effects": [
+      {
+       "op": "draw",
+       "amount": 9
+      }
+     ],
+     "hero": "spellblade"
+    }
+   }
+  },
+  {
+   "id": "royal-decree",
+   "name": "Royal Decree",
+   "kind": "skill",
+   "rarity": "uncommon",
+   "cost": "1",
+   "text": "Gain 7 Barrier. Add a random Neutral card to your hand.",
+   "def": {
+    "id": "royal-decree",
+    "name": "Royal Decree",
+    "realm": "starfall",
+    "rarity": "uncommon",
+    "kind": "skill",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "barrier",
+      "amount": 7,
+      "to": "self"
+     },
+     {
+      "op": "discover",
+      "neutral": true
+     }
+    ],
+    "hero": "spellblade",
+    "upgrade": "royal-decree+"
+   },
+   "upgrade": {
+    "id": "royal-decree+",
+    "cost": "1",
+    "text": "Gain 8 Barrier. Add a random upgraded Neutral card to your hand.",
+    "def": {
+     "id": "royal-decree+",
+     "name": "Royal Decree+",
+     "realm": "starfall",
+     "rarity": "uncommon",
+     "kind": "skill",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "barrier",
+       "amount": 8,
+       "to": "self"
+      },
+      {
+       "op": "discover",
+       "neutral": true,
+       "upgraded": true
+      }
+     ],
+     "hero": "spellblade"
+    }
+   }
+  },
+  {
+   "id": "scheme",
+   "name": "Scheme",
+   "kind": "skill",
+   "rarity": "uncommon",
+   "cost": "1",
+   "text": "Next turn, draw 2 extra cards.",
+   "def": {
+    "id": "scheme",
+    "name": "Scheme",
+    "realm": "starfall",
+    "rarity": "uncommon",
+    "kind": "skill",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "drawNext",
+      "amount": 2
+     }
+    ],
+    "hero": "spellblade",
+    "upgrade": "scheme+"
+   },
+   "upgrade": {
+    "id": "scheme+",
+    "cost": "1",
+    "text": "Next turn, draw 3 extra cards.",
+    "def": {
+     "id": "scheme+",
+     "name": "Scheme+",
+     "realm": "starfall",
+     "rarity": "uncommon",
+     "kind": "skill",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "drawNext",
+       "amount": 3
+      }
+     ],
+     "hero": "spellblade"
+    }
+   }
+  },
+  {
+   "id": "shard-strike",
+   "name": "Shard Strike",
+   "kind": "attack",
+   "rarity": "uncommon",
+   "cost": "1",
+   "text": "Deal 8 damage. Gain 2 Arcana. It goes on top of your draw pile after you play it.",
+   "def": {
+    "id": "shard-strike",
+    "name": "Shard Strike",
+    "realm": "starfall",
+    "rarity": "uncommon",
+    "kind": "attack",
+    "cost": 1,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 8,
+      "to": "target"
+     },
+     {
+      "op": "stars",
+      "amount": 2
+     }
+    ],
+    "hero": "spellblade",
+    "after": "drawTop",
+    "upgrade": "shard-strike+"
+   },
+   "upgrade": {
+    "id": "shard-strike+",
+    "cost": "1",
+    "text": "Deal 11 damage. Gain 2 Arcana. It goes on top of your draw pile after you play it.",
+    "def": {
+     "id": "shard-strike+",
+     "name": "Shard Strike+",
+     "realm": "starfall",
+     "rarity": "uncommon",
+     "kind": "attack",
+     "cost": 1,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 11,
+       "to": "target"
+      },
+      {
+       "op": "stars",
+       "amount": 2
+      }
+     ],
+     "hero": "spellblade",
+     "after": "drawTop"
+    }
+   }
+  },
+  {
+   "id": "sigil-of-wandering",
+   "name": "Sigil of Wandering",
+   "kind": "power",
+   "rarity": "uncommon",
+   "cost": "2",
+   "text": "At the start of your turn: Add a random Neutral card to your hand.",
+   "def": {
+    "id": "sigil-of-wandering",
+    "name": "Sigil of Wandering",
+    "realm": "starfall",
+    "rarity": "uncommon",
+    "kind": "power",
+    "cost": 2,
+    "target": "none",
+    "effects": [
+     {
+      "op": "power",
+      "when": "turnStart",
+      "ops": [
+       {
+        "op": "discover",
+        "neutral": true
+       }
+      ]
+     }
+    ],
+    "hero": "spellblade",
+    "upgrade": "sigil-of-wandering+"
+   },
+   "upgrade": {
+    "id": "sigil-of-wandering+",
+    "cost": "1",
+    "text": "At the start of your turn: Add a random Neutral card to your hand.",
+    "def": {
+     "id": "sigil-of-wandering+",
+     "name": "Sigil of Wandering+",
+     "realm": "starfall",
+     "rarity": "uncommon",
+     "kind": "power",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "power",
+       "when": "turnStart",
+       "ops": [
+        {
+         "op": "discover",
+         "neutral": true
+        }
+       ]
+      }
+     ],
+     "hero": "spellblade"
+    }
+   }
+  },
+  {
+   "id": "sovereign-strike",
+   "name": "Tyrant Strike",
+   "kind": "attack",
+   "rarity": "uncommon",
+   "cost": "2",
+   "text": "Deal 15 damage. Next turn, gain 2 extra Mana.",
+   "def": {
+    "id": "sovereign-strike",
+    "name": "Tyrant Strike",
+    "realm": "starfall",
+    "rarity": "uncommon",
+    "kind": "attack",
+    "cost": 2,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 15,
+      "to": "target"
+     },
+     {
+      "op": "manaNext",
+      "amount": 2
+     }
+    ],
+    "hero": "spellblade",
+    "upgrade": "sovereign-strike+"
+   },
+   "upgrade": {
+    "id": "sovereign-strike+",
+    "cost": "2",
+    "text": "Deal 18 damage. Next turn, gain 3 extra Mana.",
+    "def": {
+     "id": "sovereign-strike+",
+     "name": "Tyrant Strike+",
+     "realm": "starfall",
+     "rarity": "uncommon",
+     "kind": "attack",
+     "cost": 2,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 18,
+       "to": "target"
+      },
+      {
+       "op": "manaNext",
+       "amount": 3
+      }
+     ],
+     "hero": "spellblade"
+    }
+   }
+  },
+  {
+   "id": "starburst",
+   "name": "Arcane Burst",
+   "kind": "skill",
+   "rarity": "uncommon",
+   "cost": "0+5 Arcana",
+   "text": "Gain 9 Arcana. Consume.",
+   "def": {
+    "id": "starburst",
+    "name": "Arcane Burst",
+    "realm": "starfall",
+    "rarity": "uncommon",
+    "kind": "skill",
+    "cost": 0,
+    "target": "none",
+    "effects": [
+     {
+      "op": "stars",
+      "amount": 9
+     }
+    ],
+    "hero": "spellblade",
+    "starCost": 5,
+    "exhaust": true,
+    "upgrade": "starburst+"
+   },
+   "upgrade": {
+    "id": "starburst+",
+    "cost": "0+5 Arcana",
+    "text": "Gain 9 Arcana. Consume. Hold.",
+    "def": {
+     "id": "starburst+",
+     "name": "Arcane Burst+",
+     "realm": "starfall",
+     "rarity": "uncommon",
+     "kind": "skill",
+     "cost": 0,
+     "target": "none",
+     "effects": [
+      {
+       "op": "stars",
+       "amount": 9
+      }
+     ],
+     "hero": "spellblade",
+     "starCost": 5,
+     "exhaust": true,
+     "retain": true
+    }
+   }
+  },
+  {
+   "id": "stellar-wind",
+   "name": "Ash Wind",
+   "kind": "skill",
+   "rarity": "uncommon",
+   "cost": "1",
+   "text": "Draw 3 cards. Put a card from your hand on top of your draw pile.",
+   "def": {
+    "id": "stellar-wind",
+    "name": "Ash Wind",
+    "realm": "starfall",
+    "rarity": "uncommon",
+    "kind": "skill",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "draw",
+      "amount": 3
+     },
+     {
+      "op": "topdeck",
+      "amount": 1
+     }
+    ],
+    "hero": "spellblade",
+    "upgrade": "stellar-wind+"
+   },
+   "upgrade": {
+    "id": "stellar-wind+",
+    "cost": "1",
+    "text": "Draw 4 cards. Put a card from your hand on top of your draw pile.",
+    "def": {
+     "id": "stellar-wind+",
+     "name": "Ash Wind+",
+     "realm": "starfall",
+     "rarity": "uncommon",
+     "kind": "skill",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "draw",
+       "amount": 4
+      },
+      {
+       "op": "topdeck",
+       "amount": 1
+      }
+     ],
+     "hero": "spellblade"
+    }
+   }
+  },
+  {
+   "id": "to-arms",
+   "name": "To Arms!",
+   "kind": "skill",
+   "rarity": "uncommon",
+   "cost": "1",
+   "text": "Turn 2 random cards in your draw pile into Retainer Dives.",
+   "def": {
+    "id": "to-arms",
+    "name": "To Arms!",
+    "realm": "starfall",
+    "rarity": "uncommon",
+    "kind": "skill",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "transform",
+      "into": "retainer-dive",
+      "amount": 2,
+      "from": "draw"
+     }
+    ],
+    "hero": "spellblade",
+    "upgrade": "to-arms+"
+   },
+   "upgrade": {
+    "id": "to-arms+",
+    "cost": "1",
+    "text": "Turn 2 random cards in your draw pile into upgraded Retainer Dives.",
+    "def": {
+     "id": "to-arms+",
+     "name": "To Arms!+",
+     "realm": "starfall",
+     "rarity": "uncommon",
+     "kind": "skill",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "transform",
+       "into": "retainer-dive+",
+       "amount": 2,
+       "from": "draw"
+      }
+     ],
+     "hero": "spellblade"
+    }
+   }
+  },
+  {
+   "id": "tyrants-stomp",
+   "name": "Tyrant's Stomp",
+   "kind": "attack",
+   "rarity": "uncommon",
+   "cost": "4",
+   "text": "Deal 27 damage. When you draw this: This card costs 1 less until you play it.",
+   "def": {
+    "id": "tyrants-stomp",
+    "name": "Tyrant's Stomp",
+    "realm": "starfall",
+    "rarity": "uncommon",
+    "kind": "attack",
+    "cost": 4,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 27,
+      "to": "target"
+     }
+    ],
+    "hero": "spellblade",
+    "onDraw": [
+     {
+      "op": "cheapen",
+      "amount": 1,
+      "scope": "self"
+     }
+    ],
+    "upgrade": "tyrants-stomp+"
+   },
+   "upgrade": {
+    "id": "tyrants-stomp+",
+    "cost": "4",
+    "text": "Deal 35 damage. When you draw this: This card costs 1 less until you play it.",
+    "def": {
+     "id": "tyrants-stomp+",
+     "name": "Tyrant's Stomp+",
+     "realm": "starfall",
+     "rarity": "uncommon",
+     "kind": "attack",
+     "cost": 4,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 35,
+       "to": "target"
+      }
+     ],
+     "hero": "spellblade",
+     "onDraw": [
+      {
+       "op": "cheapen",
+       "amount": 1,
+       "scope": "self"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "id": "warm-anvil",
+   "name": "Warm Anvil",
+   "kind": "power",
+   "rarity": "uncommon",
+   "cost": "1",
+   "text": "At the start of your turn: Sharpen 5 (Obsidian Blade gains 5 damage).",
+   "def": {
+    "id": "warm-anvil",
+    "name": "Warm Anvil",
+    "realm": "starfall",
+    "rarity": "uncommon",
+    "kind": "power",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "power",
+      "when": "turnStart",
+      "ops": [
+       {
+        "op": "forge",
+        "card": "starforged-blade",
+        "amount": 5
+       }
+      ]
+     }
+    ],
+    "hero": "spellblade",
+    "upgrade": "warm-anvil+"
+   },
+   "upgrade": {
+    "id": "warm-anvil+",
+    "cost": "1",
+    "text": "At the start of your turn: Sharpen 7 (Obsidian Blade gains 7 damage).",
+    "def": {
+     "id": "warm-anvil+",
+     "name": "Warm Anvil+",
+     "realm": "starfall",
+     "rarity": "uncommon",
+     "kind": "power",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "power",
+       "when": "turnStart",
+       "ops": [
+        {
+         "op": "forge",
+         "card": "starforged-blade",
+         "amount": 7
+        }
+       ]
+      }
+     ],
+     "hero": "spellblade"
+    }
+   }
+  },
+  {
+   "id": "wild-spark",
+   "name": "Wild Spark",
+   "kind": "skill",
+   "rarity": "uncommon",
+   "cost": "0+2 Arcana",
+   "text": "Add a random Neutral card to your hand.",
+   "def": {
+    "id": "wild-spark",
+    "name": "Wild Spark",
+    "realm": "starfall",
+    "rarity": "uncommon",
+    "kind": "skill",
+    "cost": 0,
+    "target": "none",
+    "effects": [
+     {
+      "op": "discover",
+      "neutral": true
+     }
+    ],
+    "hero": "spellblade",
+    "starCost": 2,
+    "upgrade": "wild-spark+"
+   },
+   "upgrade": {
+    "id": "wild-spark+",
+    "cost": "0+2 Arcana",
+    "text": "Add a random upgraded Neutral card to your hand.",
+    "def": {
+     "id": "wild-spark+",
+     "name": "Wild Spark+",
+     "realm": "starfall",
+     "rarity": "uncommon",
+     "kind": "skill",
+     "cost": 0,
+     "target": "none",
+     "effects": [
+      {
+       "op": "discover",
+       "neutral": true,
+       "upgraded": true
+      }
+     ],
+     "hero": "spellblade",
+     "starCost": 2
+    }
+   }
+  },
+  {
+   "id": "big-bang",
+   "name": "Magma Surge",
+   "kind": "skill",
+   "rarity": "rare",
+   "cost": "0",
+   "text": "Draw 1 card. Gain 1 Mana. Gain 1 Arcana. Sharpen 5 (Obsidian Blade gains 5 damage). Consume.",
+   "def": {
+    "id": "big-bang",
+    "name": "Magma Surge",
+    "realm": "starfall",
+    "rarity": "rare",
+    "kind": "skill",
+    "cost": 0,
+    "target": "none",
+    "effects": [
+     {
+      "op": "draw",
+      "amount": 1
+     },
+     {
+      "op": "mana",
+      "amount": 1
+     },
+     {
+      "op": "stars",
+      "amount": 1
+     },
+     {
+      "op": "forge",
+      "card": "starforged-blade",
+      "amount": 5
+     }
+    ],
+    "hero": "spellblade",
+    "exhaust": true,
+    "upgrade": "big-bang+"
+   },
+   "upgrade": {
+    "id": "big-bang+",
+    "cost": "0",
+    "text": "Draw 1 card. Gain 1 Mana. Gain 1 Arcana. Sharpen 5 (Obsidian Blade gains 5 damage). Consume. Opening hand.",
+    "def": {
+     "id": "big-bang+",
+     "name": "Magma Surge+",
+     "realm": "starfall",
+     "rarity": "rare",
+     "kind": "skill",
+     "cost": 0,
+     "target": "none",
+     "effects": [
+      {
+       "op": "draw",
+       "amount": 1
+      },
+      {
+       "op": "mana",
+       "amount": 1
+      },
+      {
+       "op": "stars",
+       "amount": 1
+      },
+      {
+       "op": "forge",
+       "card": "starforged-blade",
+       "amount": 5
+      }
+     ],
+     "hero": "spellblade",
+     "exhaust": true,
+     "innate": true
+    }
+   }
+  },
+  {
+   "id": "by-decree",
+   "name": "By Decree",
+   "kind": "attack",
+   "rarity": "rare",
+   "cost": "0",
+   "text": "Deal 6 damage. Every 3 Skills you play in a turn, it comes back to your hand.",
+   "def": {
+    "id": "by-decree",
+    "name": "By Decree",
+    "realm": "starfall",
+    "rarity": "rare",
+    "kind": "attack",
+    "cost": 0,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 6,
+      "to": "target"
+     }
+    ],
+    "hero": "spellblade",
+    "returnEvery": {
+     "kind": "skill",
+     "n": 3
+    },
+    "upgrade": "by-decree+"
+   },
+   "upgrade": {
+    "id": "by-decree+",
+    "cost": "0",
+    "text": "Deal 9 damage. Every 3 Skills you play in a turn, it comes back to your hand.",
+    "def": {
+     "id": "by-decree+",
+     "name": "By Decree+",
+     "realm": "starfall",
+     "rarity": "rare",
+     "kind": "attack",
+     "cost": 0,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 9,
+       "to": "target"
+      }
+     ],
+     "hero": "spellblade",
+     "returnEvery": {
+      "kind": "skill",
+      "n": 3
+     }
+    }
+   }
+  },
+  {
+   "id": "call-the-guard",
+   "name": "Call the Guard!",
+   "kind": "skill",
+   "rarity": "rare",
+   "cost": "2",
+   "text": "Turn any number of cards in your hand into Retainer Guards. Consume.",
+   "def": {
+    "id": "call-the-guard",
+    "name": "Call the Guard!",
+    "realm": "starfall",
+    "rarity": "rare",
+    "kind": "skill",
+    "cost": 2,
+    "target": "none",
+    "effects": [
+     {
+      "op": "transform",
+      "into": "retainer-guard",
+      "choose": true
+     }
+    ],
+    "hero": "spellblade",
+    "exhaust": true,
+    "upgrade": "call-the-guard+"
+   },
+   "upgrade": {
+    "id": "call-the-guard+",
+    "cost": "2",
+    "text": "Turn any number of cards in your hand into upgraded Retainer Guards. Consume.",
+    "def": {
+     "id": "call-the-guard+",
+     "name": "Call the Guard!+",
+     "realm": "starfall",
+     "rarity": "rare",
+     "kind": "skill",
+     "cost": 2,
+     "target": "none",
+     "effects": [
+      {
+       "op": "transform",
+       "into": "retainer-guard+",
+       "choose": true
+      }
+     ],
+     "hero": "spellblade",
+     "exhaust": true
+    }
+   }
+  },
+  {
+   "id": "cleaving-edge",
+   "name": "Cleaving Edge",
+   "kind": "power",
+   "rarity": "rare",
+   "cost": "1",
+   "text": "Sharpen 7 (Obsidian Blade gains 7 damage). Your Obsidian Blade strikes ALL enemies for the rest of the fight.",
+   "def": {
+    "id": "cleaving-edge",
+    "name": "Cleaving Edge",
+    "realm": "starfall",
+    "rarity": "rare",
+    "kind": "power",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "forge",
+      "card": "starforged-blade",
+      "amount": 7
+     },
+     {
+      "op": "status",
+      "status": "bladesweep",
+      "amount": 1,
+      "to": "self"
+     }
+    ],
+    "hero": "spellblade",
+    "upgrade": "cleaving-edge+"
+   },
+   "upgrade": {
+    "id": "cleaving-edge+",
+    "cost": "1",
+    "text": "Sharpen 11 (Obsidian Blade gains 11 damage). Your Obsidian Blade strikes ALL enemies for the rest of the fight.",
+    "def": {
+     "id": "cleaving-edge+",
+     "name": "Cleaving Edge+",
+     "realm": "starfall",
+     "rarity": "rare",
+     "kind": "power",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "forge",
+       "card": "starforged-blade",
+       "amount": 11
+      },
+      {
+       "op": "status",
+       "status": "bladesweep",
+       "amount": 1,
+       "to": "self"
+      }
+     ],
+     "hero": "spellblade"
+    }
+   }
+  },
+  {
+   "id": "comet",
+   "name": "Lava Bomb",
+   "kind": "attack",
+   "rarity": "rare",
+   "cost": "0+5 Arcana",
+   "text": "Deal 33 damage. Apply 3 Faltering. Apply 3 Exposed.",
+   "def": {
+    "id": "comet",
+    "name": "Lava Bomb",
+    "realm": "starfall",
+    "rarity": "rare",
+    "kind": "attack",
+    "cost": 0,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 33,
+      "to": "target"
+     },
+     {
+      "op": "status",
+      "status": "faltering",
+      "amount": 3,
+      "to": "target"
+     },
+     {
+      "op": "status",
+      "status": "exposed",
+      "amount": 3,
+      "to": "target"
+     }
+    ],
+    "hero": "spellblade",
+    "starCost": 5,
+    "upgrade": "comet+"
+   },
+   "upgrade": {
+    "id": "comet+",
+    "cost": "0+5 Arcana",
+    "text": "Deal 44 damage. Apply 3 Faltering. Apply 3 Exposed.",
+    "def": {
+     "id": "comet+",
+     "name": "Lava Bomb+",
+     "realm": "starfall",
+     "rarity": "rare",
+     "kind": "attack",
+     "cost": 0,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 44,
+       "to": "target"
+      },
+      {
+       "op": "status",
+       "status": "faltering",
+       "amount": 3,
+       "to": "target"
+      },
+      {
+       "op": "status",
+       "status": "exposed",
+       "amount": 3,
+       "to": "target"
+      }
+     ],
+     "hero": "spellblade",
+     "starCost": 5
+    }
+   }
+  },
+  {
+   "id": "dying-star",
+   "name": "Dying Ember",
+   "kind": "attack",
+   "rarity": "rare",
+   "cost": "1+3 Arcana",
+   "text": "Deal 9 damage to ALL enemies. Apply 9 Sapped to ALL enemies until the end of their next turn. Fleeting.",
+   "def": {
+    "id": "dying-star",
+    "name": "Dying Ember",
+    "realm": "starfall",
+    "rarity": "rare",
+    "kind": "attack",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 9,
+      "to": "allFoes"
+     },
+     {
+      "op": "status",
+      "status": "sapped",
+      "amount": 9,
+      "to": "allFoes",
+      "temp": "theirs"
+     }
+    ],
+    "hero": "spellblade",
+    "starCost": 3,
+    "ethereal": true,
+    "upgrade": "dying-star+"
+   },
+   "upgrade": {
+    "id": "dying-star+",
+    "cost": "1+3 Arcana",
+    "text": "Deal 11 damage to ALL enemies. Apply 11 Sapped to ALL enemies until the end of their next turn. Fleeting.",
+    "def": {
+     "id": "dying-star+",
+     "name": "Dying Ember+",
+     "realm": "starfall",
+     "rarity": "rare",
+     "kind": "attack",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 11,
+       "to": "allFoes"
+      },
+      {
+       "op": "status",
+       "status": "sapped",
+       "amount": 11,
+       "to": "allFoes",
+       "temp": "theirs"
+      }
+     ],
+     "hero": "spellblade",
+     "starCost": 3,
+     "ethereal": true
+    }
+   }
+  },
+  {
+   "id": "echoing-blade",
+   "name": "Echoing Blade",
+   "kind": "power",
+   "rarity": "rare",
+   "cost": "2",
+   "text": "Your Obsidian Blade is played one more time for the rest of the fight.",
+   "def": {
+    "id": "echoing-blade",
+    "name": "Echoing Blade",
+    "realm": "starfall",
+    "rarity": "rare",
+    "kind": "power",
+    "cost": 2,
+    "target": "none",
+    "effects": [
+     {
+      "op": "status",
+      "status": "bladeecho",
+      "amount": 1,
+      "to": "self"
+     }
+    ],
+    "hero": "spellblade",
+    "upgrade": "echoing-blade+"
+   },
+   "upgrade": {
+    "id": "echoing-blade+",
+    "cost": "1",
+    "text": "Your Obsidian Blade is played one more time for the rest of the fight.",
+    "def": {
+     "id": "echoing-blade+",
+     "name": "Echoing Blade+",
+     "realm": "starfall",
+     "rarity": "rare",
+     "kind": "power",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "status",
+       "status": "bladeecho",
+       "amount": 1,
+       "to": "self"
+      }
+     ],
+     "hero": "spellblade"
+    }
+   }
+  },
+  {
+   "id": "endless-barrage",
+   "name": "Endless Barrage",
+   "kind": "attack",
+   "rarity": "rare",
+   "cost": "3",
+   "text": "At the start of your turn, if this is consumed, it is played for free and goes back. Deal 18 damage. Consume.",
+   "def": {
+    "id": "endless-barrage",
+    "name": "Endless Barrage",
+    "realm": "starfall",
+    "rarity": "rare",
+    "kind": "attack",
+    "cost": 3,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 18,
+      "to": "target"
+     }
+    ],
+    "hero": "spellblade",
+    "exhaust": true,
+    "replayFromExhaust": true,
+    "upgrade": "endless-barrage+"
+   },
+   "upgrade": {
+    "id": "endless-barrage+",
+    "cost": "3",
+    "text": "At the start of your turn, if this is consumed, it is played for free and goes back. Deal 24 damage. Consume.",
+    "def": {
+     "id": "endless-barrage+",
+     "name": "Endless Barrage+",
+     "realm": "starfall",
+     "rarity": "rare",
+     "kind": "attack",
+     "cost": 3,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 24,
+       "to": "target"
+      }
+     ],
+     "hero": "spellblade",
+     "exhaust": true,
+     "replayFromExhaust": true
+    }
+   }
+  },
+  {
+   "id": "fated-hand",
+   "name": "Fated Hand",
+   "kind": "skill",
+   "rarity": "rare",
+   "cost": "1",
+   "text": "Choose 2 cards in your draw pile and put them on top. Next turn, draw 2 extra cards.",
+   "def": {
+    "id": "fated-hand",
+    "name": "Fated Hand",
+    "realm": "starfall",
+    "rarity": "rare",
+    "kind": "skill",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "topdeck",
+      "amount": 2,
+      "from": "draw"
+     },
+     {
+      "op": "drawNext",
+      "amount": 2
+     }
+    ],
+    "hero": "spellblade",
+    "upgrade": "fated-hand+"
+   },
+   "upgrade": {
+    "id": "fated-hand+",
+    "cost": "1",
+    "text": "Choose 3 cards in your draw pile and put them on top. Next turn, draw 3 extra cards.",
+    "def": {
+     "id": "fated-hand+",
+     "name": "Fated Hand+",
+     "realm": "starfall",
+     "rarity": "rare",
+     "kind": "skill",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "topdeck",
+       "amount": 3,
+       "from": "draw"
+      },
+      {
+       "op": "drawNext",
+       "amount": 3
+      }
+     ],
+     "hero": "spellblade"
+    }
+   }
+  },
+  {
+   "id": "glass-armory",
+   "name": "Glass Armory",
+   "kind": "power",
+   "rarity": "rare",
+   "cost": "1",
+   "text": "Whenever a card is created: Gain 1 Might.",
+   "def": {
+    "id": "glass-armory",
+    "name": "Glass Armory",
+    "realm": "starfall",
+    "rarity": "rare",
+    "kind": "power",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "power",
+      "when": "created",
+      "ops": [
+       {
+        "op": "status",
+        "status": "might",
+        "amount": 1,
+        "to": "self"
+       }
+      ]
+     }
+    ],
+    "hero": "spellblade",
+    "upgrade": "glass-armory+"
+   },
+   "upgrade": {
+    "id": "glass-armory+",
+    "cost": "1",
+    "text": "Whenever a card is created: Gain 1 Might. Opening hand.",
+    "def": {
+     "id": "glass-armory+",
+     "name": "Glass Armory+",
+     "realm": "starfall",
+     "rarity": "rare",
+     "kind": "power",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "power",
+       "when": "created",
+       "ops": [
+        {
+         "op": "status",
+         "status": "might",
+         "amount": 1,
+         "to": "self"
+        }
+       ]
+      }
+     ],
+     "hero": "spellblade",
+     "innate": true
+    }
+   }
+  },
+  {
+   "id": "hammer-and-anvil",
+   "name": "Hammer and Anvil",
+   "kind": "attack",
+   "rarity": "rare",
+   "cost": "1",
+   "text": "Sharpen 5 (+5 per time the target was hit this turn). Deal 5 damage.",
+   "def": {
+    "id": "hammer-and-anvil",
+    "name": "Hammer and Anvil",
+    "realm": "starfall",
+    "rarity": "rare",
+    "kind": "attack",
+    "cost": 1,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "forge",
+      "card": "starforged-blade",
+      "amount": 5,
+      "scale": {
+       "by": "hitsTaken",
+       "mult": 5,
+       "of": "target"
+      }
+     },
+     {
+      "op": "damage",
+      "amount": 5,
+      "to": "target"
+     }
+    ],
+    "hero": "spellblade",
+    "upgrade": "hammer-and-anvil+"
+   },
+   "upgrade": {
+    "id": "hammer-and-anvil+",
+    "cost": "1",
+    "text": "Sharpen 5 (+7 per time the target was hit this turn). Deal 7 damage.",
+    "def": {
+     "id": "hammer-and-anvil+",
+     "name": "Hammer and Anvil+",
+     "realm": "starfall",
+     "rarity": "rare",
+     "kind": "attack",
+     "cost": 1,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "forge",
+       "card": "starforged-blade",
+       "amount": 5,
+       "scale": {
+        "by": "hitsTaken",
+        "mult": 7,
+        "of": "target"
+       }
+      },
+      {
+       "op": "damage",
+       "amount": 7,
+       "to": "target"
+      }
+     ],
+     "hero": "spellblade"
+    }
+   }
+  },
+  {
+   "id": "heirloom-maul",
+   "name": "Heirloom Maul",
+   "kind": "attack",
+   "rarity": "rare",
+   "cost": "2",
+   "text": "Deal 20 damage. Add a copy of a random Neutral card in your hand to your hand.",
+   "def": {
+    "id": "heirloom-maul",
+    "name": "Heirloom Maul",
+    "realm": "starfall",
+    "rarity": "rare",
+    "kind": "attack",
+    "cost": 2,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 20,
+      "to": "target"
+     },
+     {
+      "op": "copyInHand",
+      "neutral": true
+     }
+    ],
+    "hero": "spellblade",
+    "upgrade": "heirloom-maul+"
+   },
+   "upgrade": {
+    "id": "heirloom-maul+",
+    "cost": "2",
+    "text": "Deal 25 damage. Add a copy of a random Neutral card in your hand to your hand.",
+    "def": {
+     "id": "heirloom-maul+",
+     "name": "Heirloom Maul+",
+     "realm": "starfall",
+     "rarity": "rare",
+     "kind": "attack",
+     "cost": 2,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 25,
+       "to": "target"
+      },
+      {
+       "op": "copyInHand",
+       "neutral": true
+      }
+     ],
+     "hero": "spellblade"
+    }
+   }
+  },
+  {
+   "id": "hollow-form",
+   "name": "Hollow Form",
+   "kind": "power",
+   "rarity": "rare",
+   "cost": "3",
+   "text": "End your turn. The first 2 cards you play each turn cost no Mana. Fleeting.",
+   "def": {
+    "id": "hollow-form",
+    "name": "Hollow Form",
+    "realm": "starfall",
+    "rarity": "rare",
+    "kind": "power",
+    "cost": 3,
+    "target": "none",
+    "effects": [
+     {
+      "op": "endTurn"
+     },
+     {
+      "op": "status",
+      "status": "freeplay",
+      "amount": 2,
+      "to": "self"
+     }
+    ],
+    "hero": "spellblade",
+    "ethereal": true,
+    "upgrade": "hollow-form+"
+   },
+   "upgrade": {
+    "id": "hollow-form+",
+    "cost": "3",
+    "text": "End your turn. The first 2 cards you play each turn cost no Mana.",
+    "def": {
+     "id": "hollow-form+",
+     "name": "Hollow Form+",
+     "realm": "starfall",
+     "rarity": "rare",
+     "kind": "power",
+     "cost": 3,
+     "target": "none",
+     "effects": [
+      {
+       "op": "endTurn"
+      },
+      {
+       "op": "status",
+       "status": "freeplay",
+       "amount": 2,
+       "to": "self"
+      }
+     ],
+     "hero": "spellblade",
+     "ethereal": false
+    }
+   }
+  },
+  {
+   "id": "iron-rule",
+   "name": "Iron Rule",
+   "kind": "power",
+   "rarity": "rare",
+   "cost": "1",
+   "text": "At the start of your turn: Draw 1 card. Consume 1 random card.",
+   "def": {
+    "id": "iron-rule",
+    "name": "Iron Rule",
+    "realm": "starfall",
+    "rarity": "rare",
+    "kind": "power",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "power",
+      "when": "turnStart",
+      "ops": [
+       {
+        "op": "draw",
+        "amount": 1
+       },
+       {
+        "op": "exhaustCards",
+        "amount": 1,
+        "random": true
+       }
+      ]
+     }
+    ],
+    "hero": "spellblade",
+    "upgrade": "iron-rule+"
+   },
+   "upgrade": {
+    "id": "iron-rule+",
+    "cost": "1",
+    "text": "At the start of your turn: Draw 1 card. Consume 1 random card. Opening hand.",
+    "def": {
+     "id": "iron-rule+",
+     "name": "Iron Rule+",
+     "realm": "starfall",
+     "rarity": "rare",
+     "kind": "power",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "power",
+       "when": "turnStart",
+       "ops": [
+        {
+         "op": "draw",
+         "amount": 1
+        },
+        {
+         "op": "exhaustCards",
+         "amount": 1,
+         "random": true
+        }
+       ]
+      }
+     ],
+     "hero": "spellblade",
+     "innate": true
+    }
+   }
+  },
+  {
+   "id": "obsidian-aegis",
+   "name": "Obsidian Aegis",
+   "kind": "power",
+   "rarity": "rare",
+   "cost": "1+5 Arcana",
+   "text": "Gain 8 Plating.",
+   "def": {
+    "id": "obsidian-aegis",
+    "name": "Obsidian Aegis",
+    "realm": "starfall",
+    "rarity": "rare",
+    "kind": "power",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "status",
+      "status": "plating",
+      "amount": 8,
+      "to": "self"
+     }
+    ],
+    "hero": "spellblade",
+    "starCost": 5,
+    "upgrade": "obsidian-aegis+"
+   },
+   "upgrade": {
+    "id": "obsidian-aegis+",
+    "cost": "1+5 Arcana",
+    "text": "Gain 11 Plating.",
+    "def": {
+     "id": "obsidian-aegis+",
+     "name": "Obsidian Aegis+",
+     "realm": "starfall",
+     "rarity": "rare",
+     "kind": "power",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "status",
+       "status": "plating",
+       "amount": 11,
+       "to": "self"
+      }
+     ],
+     "hero": "spellblade",
+     "starCost": 5
+    }
+   }
+  },
+  {
+   "id": "obsidian-drill",
+   "name": "Obsidian Drill",
+   "kind": "attack",
+   "rarity": "rare",
+   "cost": "X",
+   "text": "Deal 8 damage X times. If X is 4 or more: Deal 8 damage X times.",
+   "def": {
+    "id": "obsidian-drill",
+    "name": "Obsidian Drill",
+    "realm": "starfall",
+    "rarity": "rare",
+    "kind": "attack",
+    "cost": 0,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 8,
+      "hits": 0,
+      "to": "target",
+      "scale": {
+       "by": "x",
+       "into": "hits"
+      }
+     },
+     {
+      "op": "when",
+      "by": "x",
+      "atLeast": 4,
+      "ops": [
+       {
+        "op": "damage",
+        "amount": 8,
+        "hits": 0,
+        "to": "target",
+        "scale": {
+         "by": "x",
+         "into": "hits"
+        }
+       }
+      ]
+     }
+    ],
+    "hero": "spellblade",
+    "x": true,
+    "upgrade": "obsidian-drill+"
+   },
+   "upgrade": {
+    "id": "obsidian-drill+",
+    "cost": "X",
+    "text": "X is 1 higher. Deal 8 damage X times. If X is 4 or more: Deal 8 damage X times.",
+    "def": {
+     "id": "obsidian-drill+",
+     "name": "Obsidian Drill+",
+     "realm": "starfall",
+     "rarity": "rare",
+     "kind": "attack",
+     "cost": 0,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 8,
+       "hits": 0,
+       "to": "target",
+       "scale": {
+        "by": "x",
+        "into": "hits"
+       }
+      },
+      {
+       "op": "when",
+       "by": "x",
+       "atLeast": 4,
+       "ops": [
+        {
+         "op": "damage",
+         "amount": 8,
+         "hits": 0,
+         "to": "target",
+         "scale": {
+          "by": "x",
+          "into": "hits"
+         }
+        }
+       ]
+      }
+     ],
+     "hero": "spellblade",
+     "x": true,
+     "xBonus": 1
+    }
+   }
+  },
+  {
+   "id": "orion",
+   "name": "Sigil of Kindling",
+   "kind": "power",
+   "rarity": "rare",
+   "cost": "2",
+   "text": "At the start of your turn: Gain 2 Arcana.",
+   "def": {
+    "id": "orion",
+    "name": "Sigil of Kindling",
+    "realm": "starfall",
+    "rarity": "rare",
+    "kind": "power",
+    "cost": 2,
+    "target": "none",
+    "effects": [
+     {
+      "op": "power",
+      "when": "turnStart",
+      "ops": [
+       {
+        "op": "stars",
+        "amount": 2
+       }
+      ]
+     }
+    ],
+    "hero": "spellblade",
+    "upgrade": "orion+"
+   },
+   "upgrade": {
+    "id": "orion+",
+    "cost": "2",
+    "text": "At the start of your turn: Gain 3 Arcana.",
+    "def": {
+     "id": "orion+",
+     "name": "Sigil of Kindling+",
+     "realm": "starfall",
+     "rarity": "rare",
+     "kind": "power",
+     "cost": 2,
+     "target": "none",
+     "effects": [
+      {
+       "op": "power",
+       "when": "turnStart",
+       "ops": [
+        {
+         "op": "stars",
+         "amount": 3
+        }
+       ]
+      }
+     ],
+     "hero": "spellblade"
+    }
+   }
+  },
+  {
+   "id": "rift-gifts",
+   "name": "Rift Gifts",
+   "kind": "skill",
+   "rarity": "rare",
+   "cost": "1",
+   "text": "Add 3 random Neutral cards to your hand. Consume.",
+   "def": {
+    "id": "rift-gifts",
+    "name": "Rift Gifts",
+    "realm": "starfall",
+    "rarity": "rare",
+    "kind": "skill",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "discover",
+      "neutral": true,
+      "count": 3
+     }
+    ],
+    "hero": "spellblade",
+    "exhaust": true,
+    "upgrade": "rift-gifts+"
+   },
+   "upgrade": {
+    "id": "rift-gifts+",
+    "cost": "1",
+    "text": "Add 4 random Neutral cards to your hand. Consume.",
+    "def": {
+     "id": "rift-gifts+",
+     "name": "Rift Gifts+",
+     "realm": "starfall",
+     "rarity": "rare",
+     "kind": "skill",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "discover",
+       "neutral": true,
+       "count": 4
+      }
+     ],
+     "hero": "spellblade",
+     "exhaust": true
+    }
+   }
+  },
+  {
+   "id": "seven-shards",
+   "name": "Seven Shards",
+   "kind": "attack",
+   "rarity": "rare",
+   "cost": "2+7 Arcana",
+   "text": "Deal 7 damage 7 times to ALL enemies.",
+   "def": {
+    "id": "seven-shards",
+    "name": "Seven Shards",
+    "realm": "starfall",
+    "rarity": "rare",
+    "kind": "attack",
+    "cost": 2,
+    "target": "none",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 7,
+      "hits": 7,
+      "to": "allFoes"
+     }
+    ],
+    "hero": "spellblade",
+    "starCost": 7,
+    "upgrade": "seven-shards+"
+   },
+   "upgrade": {
+    "id": "seven-shards+",
+    "cost": "1+7 Arcana",
+    "text": "Deal 7 damage 7 times to ALL enemies.",
+    "def": {
+     "id": "seven-shards+",
+     "name": "Seven Shards+",
+     "realm": "starfall",
+     "rarity": "rare",
+     "kind": "attack",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 7,
+       "hits": 7,
+       "to": "allFoes"
+      }
+     ],
+     "hero": "spellblade",
+     "starCost": 7
+    }
+   }
+  },
+  {
+   "id": "supernova",
+   "name": "Cataclysm",
+   "kind": "attack",
+   "rarity": "rare",
+   "cost": "1",
+   "text": "Deal 21 damage to ALL enemies. Add Rubbles to your hand equal to the room left in your hand.",
+   "def": {
+    "id": "supernova",
+    "name": "Cataclysm",
+    "realm": "starfall",
+    "rarity": "rare",
+    "kind": "attack",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 21,
+      "to": "allFoes"
+     },
+     {
+      "op": "addCard",
+      "card": "rubble",
+      "to": "hand",
+      "side": "self",
+      "times": 0,
+      "scale": {
+       "by": "handRoom"
+      }
+     }
+    ],
+    "hero": "spellblade",
+    "upgrade": "supernova+"
+   },
+   "upgrade": {
+    "id": "supernova+",
+    "cost": "1",
+    "text": "Deal 26 damage to ALL enemies. Add Rubbles to your hand equal to the room left in your hand.",
+    "def": {
+     "id": "supernova+",
+     "name": "Cataclysm+",
+     "realm": "starfall",
+     "rarity": "rare",
+     "kind": "attack",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 26,
+       "to": "allFoes"
+      },
+      {
+       "op": "addCard",
+       "card": "rubble",
+       "to": "hand",
+       "side": "self",
+       "times": 0,
+       "scale": {
+        "by": "handRoom"
+       }
+      }
+     ],
+     "hero": "spellblade"
+    }
+   }
+  },
+  {
+   "id": "the-forgemaster",
+   "name": "The Forgemaster",
+   "kind": "skill",
+   "rarity": "rare",
+   "cost": "1+4 Arcana",
+   "text": "Sharpen 30 (Obsidian Blade gains 30 damage).",
+   "def": {
+    "id": "the-forgemaster",
+    "name": "The Forgemaster",
+    "realm": "starfall",
+    "rarity": "rare",
+    "kind": "skill",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "forge",
+      "card": "starforged-blade",
+      "amount": 30
+     }
+    ],
+    "hero": "spellblade",
+    "starCost": 4,
+    "upgrade": "the-forgemaster+"
+   },
+   "upgrade": {
+    "id": "the-forgemaster+",
+    "cost": "1+4 Arcana",
+    "text": "Sharpen 40 (Obsidian Blade gains 40 damage).",
+    "def": {
+     "id": "the-forgemaster+",
+     "name": "The Forgemaster+",
+     "realm": "starfall",
+     "rarity": "rare",
+     "kind": "skill",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "forge",
+       "card": "starforged-blade",
+       "amount": 40
+      }
+     ],
+     "hero": "spellblade",
+     "starCost": 4
+    }
+   }
+  },
+  {
+   "id": "tyrants-gaze",
+   "name": "Tyrant's Gaze",
+   "kind": "power",
+   "rarity": "rare",
+   "cost": "2",
+   "text": "Whenever you play an Attack: Apply 1 Sapped until the end of their next turn.",
+   "def": {
+    "id": "tyrants-gaze",
+    "name": "Tyrant's Gaze",
+    "realm": "starfall",
+    "rarity": "rare",
+    "kind": "power",
+    "cost": 2,
+    "target": "none",
+    "effects": [
+     {
+      "op": "power",
+      "when": "play",
+      "ops": [
+       {
+        "op": "status",
+        "status": "sapped",
+        "amount": 1,
+        "to": "target",
+        "temp": "theirs"
+       }
+      ],
+      "filter": "attack"
+     }
+    ],
+    "hero": "spellblade",
+    "upgrade": "tyrants-gaze+"
+   },
+   "upgrade": {
+    "id": "tyrants-gaze+",
+    "cost": "1",
+    "text": "Whenever you play an Attack: Apply 1 Sapped until the end of their next turn.",
+    "def": {
+     "id": "tyrants-gaze+",
+     "name": "Tyrant's Gaze+",
+     "realm": "starfall",
+     "rarity": "rare",
+     "kind": "power",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "power",
+       "when": "play",
+       "ops": [
+        {
+         "op": "status",
+         "status": "sapped",
+         "amount": 1,
+         "to": "target",
+         "temp": "theirs"
+        }
+       ],
+       "filter": "attack"
+      }
+     ],
+     "hero": "spellblade"
+    }
+   }
+  },
+  {
+   "id": "unbreakable-crown",
+   "name": "Unbreakable Crown",
+   "kind": "skill",
+   "rarity": "rare",
+   "cost": "1",
+   "text": "Gain 10 Barrier. At the end of your turn, if this is on top of your draw pile, it is played.",
+   "def": {
+    "id": "unbreakable-crown",
+    "name": "Unbreakable Crown",
+    "realm": "starfall",
+    "rarity": "rare",
+    "kind": "skill",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "barrier",
+      "amount": 10,
+      "to": "self"
+     }
+    ],
+    "hero": "spellblade",
+    "playFromTop": true,
+    "upgrade": "unbreakable-crown+"
+   },
+   "upgrade": {
+    "id": "unbreakable-crown+",
+    "cost": "1",
+    "text": "Gain 13 Barrier. At the end of your turn, if this is on top of your draw pile, it is played.",
+    "def": {
+     "id": "unbreakable-crown+",
+     "name": "Unbreakable Crown+",
+     "realm": "starfall",
+     "rarity": "rare",
+     "kind": "skill",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "barrier",
+       "amount": 13,
+       "to": "self"
+      }
+     ],
+     "hero": "spellblade",
+     "playFromTop": true
+    }
+   }
+  },
+  {
+   "id": "weigh-the-crown",
+   "name": "Weigh the Crown",
+   "kind": "skill",
+   "rarity": "rare",
+   "cost": "0+6 Arcana",
+   "text": "Draw 3 cards. Play a random Skill from your hand 3 times. Consume.",
+   "def": {
+    "id": "weigh-the-crown",
+    "name": "Weigh the Crown",
+    "realm": "starfall",
+    "rarity": "rare",
+    "kind": "skill",
+    "cost": 0,
+    "target": "none",
+    "effects": [
+     {
+      "op": "draw",
+      "amount": 3
+     },
+     {
+      "op": "playPile",
+      "from": "hand",
+      "kind": "skill",
+      "repeat": 3
+     }
+    ],
+    "hero": "spellblade",
+    "starCost": 6,
+    "exhaust": true,
+    "upgrade": "weigh-the-crown+"
+   },
+   "upgrade": {
+    "id": "weigh-the-crown+",
+    "cost": "0+6 Arcana",
+    "text": "Draw 5 cards. Play a random Skill from your hand 3 times. Consume.",
+    "def": {
+     "id": "weigh-the-crown+",
+     "name": "Weigh the Crown+",
+     "realm": "starfall",
+     "rarity": "rare",
+     "kind": "skill",
+     "cost": 0,
+     "target": "none",
+     "effects": [
+      {
+       "op": "draw",
+       "amount": 5
+      },
+      {
+       "op": "playPile",
+       "from": "hand",
+       "kind": "skill",
+       "repeat": 3
+      }
+     ],
+     "hero": "spellblade",
+     "starCost": 6,
+     "exhaust": true
+    }
+   }
+  }
+ ]
+}

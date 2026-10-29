@@ -1,0 +1,4986 @@
+{
+ "hero": {
+  "id": "shaman",
+  "name": "Shaman",
+  "maxHp": 75,
+  "mana": 3,
+  "handSize": 5
+ },
+ "persona": "Ilvane",
+ "role": "Shaman",
+ "realm": "nexus",
+ "trait": {
+  "name": "Totem-bound",
+  "text": "Start every fight with three different totems: Hawk, Bear and Splinter.",
+  "fightStart": [
+   {
+    "op": "channel",
+    "rune": "spark"
+   },
+   {
+    "op": "channel",
+    "rune": "ward"
+   },
+   {
+    "op": "channel",
+    "rune": "splinter"
+   }
+  ]
+ },
+ "blurb": "An elder shaman of the old spirits, who plants totems and wakes them. Starts every fight with three totems (Hawk, Bear and Splinter).",
+ "mechanics": [
+  "Totems",
+  "Spirit",
+  "Auras",
+  "Status cards",
+  "0-cost cards"
+ ],
+ "buildPaths": [
+  "Totems: plant, add slots, awaken",
+  "Elements: storm, ice and fire strikes, 0-cost cards and status cards",
+  "Rites: Auras, Spirit and Mana"
+ ],
+ "howTo": [
+  "You start with a Hawk, a Bear and a Splinter totem. Totems stand in a row of 3 slots beside you and pulse at the end of your turn (the Owl at the start of it). A 4th pushes the oldest out, awakening it for its big effect.",
+  "Hawks strike a random enemy, Bears give Barrier, Elders charge up for one big blow on the weakest enemy, Owls give Mana, and Splinters hit every enemy but fade a little each turn.",
+  "Spirit makes every totem hit harder and guard more. Many of your Auras stay all fight and build on each other.",
+  "Some of your cards make status cards (Haze, Muck, Scorch, Drain, Wound) that clutter your deck; others pay off whenever you make one."
+ ],
+ "starter": [
+  "strike",
+  "strike",
+  "strike",
+  "strike",
+  "defend",
+  "defend",
+  "defend",
+  "defend",
+  "spark-cast",
+  "twin-evocation"
+ ],
+ "starterText": [
+  {
+   "id": "strike",
+   "text": "Deal 6 damage."
+  },
+  {
+   "id": "strike",
+   "text": "Deal 6 damage."
+  },
+  {
+   "id": "strike",
+   "text": "Deal 6 damage."
+  },
+  {
+   "id": "strike",
+   "text": "Deal 6 damage."
+  },
+  {
+   "id": "defend",
+   "text": "Gain 5 Barrier."
+  },
+  {
+   "id": "defend",
+   "text": "Gain 5 Barrier."
+  },
+  {
+   "id": "defend",
+   "text": "Gain 5 Barrier."
+  },
+  {
+   "id": "defend",
+   "text": "Gain 5 Barrier."
+  },
+  {
+   "id": "spark-cast",
+   "text": "Plant Hawk."
+  },
+  {
+   "id": "twin-evocation",
+   "text": "Awaken your first totem 2 times."
+  }
+ ],
+ "startUnits": [],
+ "counts": {
+  "basic": 2,
+  "common": 20,
+  "token/special": 1,
+  "uncommon": 36,
+  "rare": 25
+ },
+ "cards": [
+  {
+   "id": "spark-cast",
+   "name": "Hawk Call",
+   "kind": "skill",
+   "rarity": "basic",
+   "cost": "1",
+   "text": "Plant Hawk.",
+   "def": {
+    "id": "spark-cast",
+    "name": "Hawk Call",
+    "realm": "nexus",
+    "rarity": "basic",
+    "kind": "skill",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "channel",
+      "rune": "spark"
+     }
+    ],
+    "hero": "shaman",
+    "upgrade": "spark-cast+"
+   },
+   "upgrade": {
+    "id": "spark-cast+",
+    "cost": "0",
+    "text": "Plant Hawk.",
+    "def": {
+     "id": "spark-cast+",
+     "name": "Hawk Call+",
+     "realm": "nexus",
+     "rarity": "basic",
+     "kind": "skill",
+     "cost": 0,
+     "target": "none",
+     "effects": [
+      {
+       "op": "channel",
+       "rune": "spark"
+      }
+     ],
+     "hero": "shaman"
+    }
+   }
+  },
+  {
+   "id": "twin-evocation",
+   "name": "Twin Awakening",
+   "kind": "skill",
+   "rarity": "basic",
+   "cost": "1",
+   "text": "Awaken your first totem 2 times.",
+   "def": {
+    "id": "twin-evocation",
+    "name": "Twin Awakening",
+    "realm": "nexus",
+    "rarity": "basic",
+    "kind": "skill",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "evoke",
+      "times": 2
+     }
+    ],
+    "hero": "shaman",
+    "upgrade": "twin-evocation+"
+   },
+   "upgrade": {
+    "id": "twin-evocation+",
+    "cost": "0",
+    "text": "Awaken your first totem 2 times.",
+    "def": {
+     "id": "twin-evocation+",
+     "name": "Twin Awakening+",
+     "realm": "nexus",
+     "rarity": "basic",
+     "kind": "skill",
+     "cost": 0,
+     "target": "none",
+     "effects": [
+      {
+       "op": "evoke",
+       "times": 2
+      }
+     ],
+     "hero": "shaman"
+    }
+   }
+  },
+  {
+   "id": "arc-flash",
+   "name": "Arc Flash",
+   "kind": "attack",
+   "rarity": "common",
+   "cost": "0",
+   "text": "Deal 3 damage. Apply 1 Exposed.",
+   "def": {
+    "id": "arc-flash",
+    "name": "Arc Flash",
+    "realm": "nexus",
+    "rarity": "common",
+    "kind": "attack",
+    "cost": 0,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 3,
+      "to": "target"
+     },
+     {
+      "op": "status",
+      "status": "exposed",
+      "amount": 1,
+      "to": "target"
+     }
+    ],
+    "hero": "shaman",
+    "upgrade": "arc-flash+"
+   },
+   "upgrade": {
+    "id": "arc-flash+",
+    "cost": "0",
+    "text": "Deal 4 damage. Apply 2 Exposed.",
+    "def": {
+     "id": "arc-flash+",
+     "name": "Arc Flash+",
+     "realm": "nexus",
+     "rarity": "common",
+     "kind": "attack",
+     "cost": 0,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 4,
+       "to": "target"
+      },
+      {
+       "op": "status",
+       "status": "exposed",
+       "amount": 2,
+       "to": "target"
+      }
+     ],
+     "hero": "shaman"
+    }
+   }
+  },
+  {
+   "id": "charged-blow",
+   "name": "Totem Volley",
+   "kind": "attack",
+   "rarity": "common",
+   "cost": "1",
+   "text": "Deal 5 damage for each totem.",
+   "def": {
+    "id": "charged-blow",
+    "name": "Totem Volley",
+    "realm": "nexus",
+    "rarity": "common",
+    "kind": "attack",
+    "cost": 1,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 5,
+      "hits": 0,
+      "to": "target",
+      "scale": {
+       "by": "runes",
+       "into": "hits"
+      }
+     }
+    ],
+    "hero": "shaman",
+    "upgrade": "charged-blow+"
+   },
+   "upgrade": {
+    "id": "charged-blow+",
+    "cost": "1",
+    "text": "Deal 7 damage for each totem.",
+    "def": {
+     "id": "charged-blow+",
+     "name": "Totem Volley+",
+     "realm": "nexus",
+     "rarity": "common",
+     "kind": "attack",
+     "cost": 1,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 7,
+       "hits": 0,
+       "to": "target",
+       "scale": {
+        "by": "runes",
+        "into": "hits"
+       }
+      }
+     ],
+     "hero": "shaman"
+    }
+   }
+  },
+  {
+   "id": "chilled-focus",
+   "name": "Still Water",
+   "kind": "skill",
+   "rarity": "common",
+   "cost": "1",
+   "text": "Plant Bear. Draw 1 card.",
+   "def": {
+    "id": "chilled-focus",
+    "name": "Still Water",
+    "realm": "nexus",
+    "rarity": "common",
+    "kind": "skill",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "channel",
+      "rune": "ward"
+     },
+     {
+      "op": "draw",
+      "amount": 1
+     }
+    ],
+    "hero": "shaman",
+    "upgrade": "chilled-focus+"
+   },
+   "upgrade": {
+    "id": "chilled-focus+",
+    "cost": "1",
+    "text": "Plant Bear. Draw 2 cards.",
+    "def": {
+     "id": "chilled-focus+",
+     "name": "Still Water+",
+     "realm": "nexus",
+     "rarity": "common",
+     "kind": "skill",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "channel",
+       "rune": "ward"
+      },
+      {
+       "op": "draw",
+       "amount": 2
+      }
+     ],
+     "hero": "shaman"
+    }
+   }
+  },
+  {
+   "id": "driver-of-runes",
+   "name": "Totem Driver",
+   "kind": "attack",
+   "rarity": "common",
+   "cost": "1",
+   "text": "Deal 7 damage. Draw cards equal to the number of different totems you have.",
+   "def": {
+    "id": "driver-of-runes",
+    "name": "Totem Driver",
+    "realm": "nexus",
+    "rarity": "common",
+    "kind": "attack",
+    "cost": 1,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 7,
+      "to": "target"
+     },
+     {
+      "op": "draw",
+      "amount": 0,
+      "scale": {
+       "by": "runeKinds"
+      }
+     }
+    ],
+    "hero": "shaman",
+    "upgrade": "driver-of-runes+"
+   },
+   "upgrade": {
+    "id": "driver-of-runes+",
+    "cost": "1",
+    "text": "Deal 10 damage. Draw cards equal to the number of different totems you have.",
+    "def": {
+     "id": "driver-of-runes+",
+     "name": "Totem Driver+",
+     "realm": "nexus",
+     "rarity": "common",
+     "kind": "attack",
+     "cost": 1,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 10,
+       "to": "target"
+      },
+      {
+       "op": "draw",
+       "amount": 0,
+       "scale": {
+        "by": "runeKinds"
+       }
+      }
+     ],
+     "hero": "shaman"
+    }
+   }
+  },
+  {
+   "id": "elemental-focus",
+   "name": "Elemental Focus",
+   "kind": "skill",
+   "rarity": "common",
+   "cost": "0",
+   "text": "Gain 2 Spirit until the end of your turn. Consume.",
+   "def": {
+    "id": "elemental-focus",
+    "name": "Elemental Focus",
+    "realm": "nexus",
+    "rarity": "common",
+    "kind": "skill",
+    "cost": 0,
+    "target": "none",
+    "effects": [
+     {
+      "op": "status",
+      "status": "resonance",
+      "amount": 2,
+      "to": "self",
+      "temp": true
+     }
+    ],
+    "hero": "shaman",
+    "exhaust": true,
+    "upgrade": "elemental-focus+"
+   },
+   "upgrade": {
+    "id": "elemental-focus+",
+    "cost": "0",
+    "text": "Gain 2 Spirit until the end of your turn.",
+    "def": {
+     "id": "elemental-focus+",
+     "name": "Elemental Focus+",
+     "realm": "nexus",
+     "rarity": "common",
+     "kind": "skill",
+     "cost": 0,
+     "target": "none",
+     "effects": [
+      {
+       "op": "status",
+       "status": "resonance",
+       "amount": 2,
+       "to": "self",
+       "temp": true
+      }
+     ],
+     "hero": "shaman",
+     "exhaust": false
+    }
+   }
+  },
+  {
+   "id": "ember-toss",
+   "name": "Ember Toss",
+   "kind": "attack",
+   "rarity": "common",
+   "cost": "1",
+   "text": "Deal 6 damage to ALL enemies. Draw 1 card.",
+   "def": {
+    "id": "ember-toss",
+    "name": "Ember Toss",
+    "realm": "nexus",
+    "rarity": "common",
+    "kind": "attack",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 6,
+      "to": "allFoes"
+     },
+     {
+      "op": "draw",
+      "amount": 1
+     }
+    ],
+    "hero": "shaman",
+    "upgrade": "ember-toss+"
+   },
+   "upgrade": {
+    "id": "ember-toss+",
+    "cost": "1",
+    "text": "Deal 9 damage to ALL enemies. Draw 1 card.",
+    "def": {
+     "id": "ember-toss+",
+     "name": "Ember Toss+",
+     "realm": "nexus",
+     "rarity": "common",
+     "kind": "attack",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 9,
+       "to": "allFoes"
+      },
+      {
+       "op": "draw",
+       "amount": 1
+      }
+     ],
+     "hero": "shaman"
+    }
+   }
+  },
+  {
+   "id": "frost-needle",
+   "name": "Frost Needle",
+   "kind": "attack",
+   "rarity": "common",
+   "cost": "0",
+   "text": "Deal 3 damage. If the enemy means to attack: Apply 1 Faltering.",
+   "def": {
+    "id": "frost-needle",
+    "name": "Frost Needle",
+    "realm": "nexus",
+    "rarity": "common",
+    "kind": "attack",
+    "cost": 0,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 3,
+      "to": "target"
+     },
+     {
+      "op": "when",
+      "by": "attacking",
+      "of": "target",
+      "atLeast": 1,
+      "ops": [
+       {
+        "op": "status",
+        "status": "faltering",
+        "amount": 1,
+        "to": "target"
+       }
+      ]
+     }
+    ],
+    "hero": "shaman",
+    "upgrade": "frost-needle+"
+   },
+   "upgrade": {
+    "id": "frost-needle+",
+    "cost": "0",
+    "text": "Deal 4 damage. If the enemy means to attack: Apply 2 Faltering.",
+    "def": {
+     "id": "frost-needle+",
+     "name": "Frost Needle+",
+     "realm": "nexus",
+     "rarity": "common",
+     "kind": "attack",
+     "cost": 0,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 4,
+       "to": "target"
+      },
+      {
+       "op": "when",
+       "by": "attacking",
+       "of": "target",
+       "atLeast": 1,
+       "ops": [
+        {
+         "op": "status",
+         "status": "faltering",
+         "amount": 2,
+         "to": "target"
+        }
+       ]
+      }
+     ],
+     "hero": "shaman"
+    }
+   }
+  },
+  {
+   "id": "gale-strike",
+   "name": "Gale Strike",
+   "kind": "attack",
+   "rarity": "common",
+   "cost": "1",
+   "text": "Deal 11 damage. This card costs 1 less for the rest of the fight.",
+   "def": {
+    "id": "gale-strike",
+    "name": "Gale Strike",
+    "realm": "nexus",
+    "rarity": "common",
+    "kind": "attack",
+    "cost": 1,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 11,
+      "to": "target"
+     },
+     {
+      "op": "recost",
+      "amount": -1
+     }
+    ],
+    "hero": "shaman",
+    "upgrade": "gale-strike+"
+   },
+   "upgrade": {
+    "id": "gale-strike+",
+    "cost": "1",
+    "text": "Deal 15 damage. This card costs 1 less for the rest of the fight.",
+    "def": {
+     "id": "gale-strike+",
+     "name": "Gale Strike+",
+     "realm": "nexus",
+     "rarity": "common",
+     "kind": "attack",
+     "cost": 1,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 15,
+       "to": "target"
+      },
+      {
+       "op": "recost",
+       "amount": -1
+      }
+     ],
+     "hero": "shaman"
+    }
+   }
+  },
+  {
+   "id": "gathering-storm",
+   "name": "Gathering Storm",
+   "kind": "attack",
+   "rarity": "common",
+   "cost": "0",
+   "text": "Deal 3 damage, plus all it has grown. Every copy of this card gains 2 damage for the rest of the fight.",
+   "def": {
+    "id": "gathering-storm",
+    "name": "Gathering Storm",
+    "realm": "nexus",
+    "rarity": "common",
+    "kind": "attack",
+    "cost": 0,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 3,
+      "to": "target",
+      "scale": {
+       "by": "bonus"
+      }
+     },
+     {
+      "op": "forge",
+      "card": "gathering-storm",
+      "amount": 2
+     }
+    ],
+    "hero": "shaman",
+    "upgrade": "gathering-storm+"
+   },
+   "upgrade": {
+    "id": "gathering-storm+",
+    "cost": "0",
+    "text": "Deal 4 damage, plus all it has grown. Every copy of this card gains 3 damage for the rest of the fight.",
+    "def": {
+     "id": "gathering-storm+",
+     "name": "Gathering Storm+",
+     "realm": "nexus",
+     "rarity": "common",
+     "kind": "attack",
+     "cost": 0,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 4,
+       "to": "target",
+       "scale": {
+        "by": "bonus"
+       }
+      },
+      {
+       "op": "forge",
+       "card": "gathering-storm",
+       "amount": 3
+      }
+     ],
+     "hero": "shaman"
+    }
+   }
+  },
+  {
+   "id": "gust-step",
+   "name": "Gust Step",
+   "kind": "skill",
+   "rarity": "common",
+   "cost": "0",
+   "text": "Gain 6 Barrier. Add a Haze to your discard pile.",
+   "def": {
+    "id": "gust-step",
+    "name": "Gust Step",
+    "realm": "nexus",
+    "rarity": "common",
+    "kind": "skill",
+    "cost": 0,
+    "target": "none",
+    "effects": [
+     {
+      "op": "barrier",
+      "amount": 6,
+      "to": "self"
+     },
+     {
+      "op": "addCard",
+      "card": "haze",
+      "to": "discard",
+      "side": "self"
+     }
+    ],
+    "hero": "shaman",
+    "upgrade": "gust-step+"
+   },
+   "upgrade": {
+    "id": "gust-step+",
+    "cost": "0",
+    "text": "Gain 9 Barrier. Add a Haze to your discard pile.",
+    "def": {
+     "id": "gust-step+",
+     "name": "Gust Step+",
+     "realm": "nexus",
+     "rarity": "common",
+     "kind": "skill",
+     "cost": 0,
+     "target": "none",
+     "effects": [
+      {
+       "op": "barrier",
+       "amount": 9,
+       "to": "self"
+      },
+      {
+       "op": "addCard",
+       "card": "haze",
+       "to": "discard",
+       "side": "self"
+      }
+     ],
+     "hero": "shaman"
+    }
+   }
+  },
+  {
+   "id": "inner-flame",
+   "name": "Inner Flame",
+   "kind": "skill",
+   "rarity": "common",
+   "cost": "0",
+   "text": "Gain 2 Mana. Add a Drain to your discard pile. Consume.",
+   "def": {
+    "id": "inner-flame",
+    "name": "Inner Flame",
+    "realm": "nexus",
+    "rarity": "common",
+    "kind": "skill",
+    "cost": 0,
+    "target": "none",
+    "effects": [
+     {
+      "op": "mana",
+      "amount": 2
+     },
+     {
+      "op": "addCard",
+      "card": "void-drain",
+      "to": "discard",
+      "side": "self"
+     }
+    ],
+    "hero": "shaman",
+    "exhaust": true,
+    "upgrade": "inner-flame+"
+   },
+   "upgrade": {
+    "id": "inner-flame+",
+    "cost": "0",
+    "text": "Gain 3 Mana. Add a Drain to your discard pile. Consume.",
+    "def": {
+     "id": "inner-flame+",
+     "name": "Inner Flame+",
+     "realm": "nexus",
+     "rarity": "common",
+     "kind": "skill",
+     "cost": 0,
+     "target": "none",
+     "effects": [
+      {
+       "op": "mana",
+       "amount": 3
+      },
+      {
+       "op": "addCard",
+       "card": "void-drain",
+       "to": "discard",
+       "side": "self"
+      }
+     ],
+     "hero": "shaman",
+     "exhaust": true
+    }
+   }
+  },
+  {
+   "id": "kindling",
+   "name": "Kindling",
+   "kind": "skill",
+   "rarity": "common",
+   "cost": "0",
+   "text": "Gain 1 Mana. Consume.",
+   "def": {
+    "id": "kindling",
+    "name": "Kindling",
+    "realm": "nexus",
+    "rarity": "common",
+    "kind": "skill",
+    "cost": 0,
+    "target": "none",
+    "effects": [
+     {
+      "op": "mana",
+      "amount": 1
+     }
+    ],
+    "hero": "shaman",
+    "exhaust": true,
+    "source": "token",
+    "upgrade": "kindling+"
+   },
+   "upgrade": {
+    "id": "kindling+",
+    "cost": "0",
+    "text": "Gain 2 Mana. Consume.",
+    "def": {
+     "id": "kindling+",
+     "name": "Kindling+",
+     "realm": "nexus",
+     "rarity": "common",
+     "kind": "skill",
+     "cost": 0,
+     "target": "none",
+     "effects": [
+      {
+       "op": "mana",
+       "amount": 2
+      }
+     ],
+     "hero": "shaman",
+     "exhaust": true,
+     "source": "token"
+    }
+   }
+  },
+  {
+   "id": "mudslide",
+   "name": "Mudslide",
+   "kind": "attack",
+   "rarity": "common",
+   "cost": "1",
+   "text": "Deal 4 damage 3 times. Add a Muck to your discard pile.",
+   "def": {
+    "id": "mudslide",
+    "name": "Mudslide",
+    "realm": "nexus",
+    "rarity": "common",
+    "kind": "attack",
+    "cost": 1,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 4,
+      "hits": 3,
+      "to": "target"
+     },
+     {
+      "op": "addCard",
+      "card": "muck",
+      "to": "discard",
+      "side": "self"
+     }
+    ],
+    "hero": "shaman",
+    "upgrade": "mudslide+"
+   },
+   "upgrade": {
+    "id": "mudslide+",
+    "cost": "1",
+    "text": "Deal 5 damage 3 times. Add a Muck to your discard pile.",
+    "def": {
+     "id": "mudslide+",
+     "name": "Mudslide+",
+     "realm": "nexus",
+     "rarity": "common",
+     "kind": "attack",
+     "cost": 1,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 5,
+       "hits": 3,
+       "to": "target"
+      },
+      {
+       "op": "addCard",
+       "card": "muck",
+       "to": "discard",
+       "side": "self"
+      }
+     ],
+     "hero": "shaman"
+    }
+   }
+  },
+  {
+   "id": "resonant-strike",
+   "name": "Spirit Strike",
+   "kind": "attack",
+   "rarity": "common",
+   "cost": "1",
+   "text": "Deal 9 damage. Gain 1 Spirit until the end of your turn.",
+   "def": {
+    "id": "resonant-strike",
+    "name": "Spirit Strike",
+    "realm": "nexus",
+    "rarity": "common",
+    "kind": "attack",
+    "cost": 1,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 9,
+      "to": "target"
+     },
+     {
+      "op": "status",
+      "status": "resonance",
+      "amount": 1,
+      "to": "self",
+      "temp": true
+     }
+    ],
+    "hero": "shaman",
+    "upgrade": "resonant-strike+"
+   },
+   "upgrade": {
+    "id": "resonant-strike+",
+    "cost": "1",
+    "text": "Deal 11 damage. Gain 2 Spirit until the end of your turn.",
+    "def": {
+     "id": "resonant-strike+",
+     "name": "Spirit Strike+",
+     "realm": "nexus",
+     "rarity": "common",
+     "kind": "attack",
+     "cost": 1,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 11,
+       "to": "target"
+      },
+      {
+       "op": "status",
+       "status": "resonance",
+       "amount": 2,
+       "to": "self",
+       "temp": true
+      }
+     ],
+     "hero": "shaman"
+    }
+   }
+  },
+  {
+   "id": "rime-strike",
+   "name": "Rime Strike",
+   "kind": "attack",
+   "rarity": "common",
+   "cost": "1",
+   "text": "Deal 6 damage. Plant Bear.",
+   "def": {
+    "id": "rime-strike",
+    "name": "Rime Strike",
+    "realm": "nexus",
+    "rarity": "common",
+    "kind": "attack",
+    "cost": 1,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 6,
+      "to": "target"
+     },
+     {
+      "op": "channel",
+      "rune": "ward"
+     }
+    ],
+    "hero": "shaman",
+    "upgrade": "rime-strike+"
+   },
+   "upgrade": {
+    "id": "rime-strike+",
+    "cost": "1",
+    "text": "Deal 9 damage. Plant Bear.",
+    "def": {
+     "id": "rime-strike+",
+     "name": "Rime Strike+",
+     "realm": "nexus",
+     "rarity": "common",
+     "kind": "attack",
+     "cost": 1,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 9,
+       "to": "target"
+      },
+      {
+       "op": "channel",
+       "rune": "ward"
+      }
+     ],
+     "hero": "shaman"
+    }
+   }
+  },
+  {
+   "id": "spark-lash",
+   "name": "Spark Lash",
+   "kind": "attack",
+   "rarity": "common",
+   "cost": "1",
+   "text": "Deal 7 damage. Plant Hawk.",
+   "def": {
+    "id": "spark-lash",
+    "name": "Spark Lash",
+    "realm": "nexus",
+    "rarity": "common",
+    "kind": "attack",
+    "cost": 1,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 7,
+      "to": "target"
+     },
+     {
+      "op": "channel",
+      "rune": "spark"
+     }
+    ],
+    "hero": "shaman",
+    "upgrade": "spark-lash+"
+   },
+   "upgrade": {
+    "id": "spark-lash+",
+    "cost": "1",
+    "text": "Deal 10 damage. Plant Hawk.",
+    "def": {
+     "id": "spark-lash+",
+     "name": "Spark Lash+",
+     "realm": "nexus",
+     "rarity": "common",
+     "kind": "attack",
+     "cost": 1,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 10,
+       "to": "target"
+      },
+      {
+       "op": "channel",
+       "rune": "spark"
+      }
+     ],
+     "hero": "shaman"
+    }
+   }
+  },
+  {
+   "id": "spirit-memory",
+   "name": "Spirit Memory",
+   "kind": "skill",
+   "rarity": "common",
+   "cost": "1",
+   "text": "Gain 3 Barrier. Return a random card from your discard pile to your hand. Consume.",
+   "def": {
+    "id": "spirit-memory",
+    "name": "Spirit Memory",
+    "realm": "nexus",
+    "rarity": "common",
+    "kind": "skill",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "barrier",
+      "amount": 3,
+      "to": "self"
+     },
+     {
+      "op": "fetch",
+      "amount": 1,
+      "to": "hand"
+     }
+    ],
+    "hero": "shaman",
+    "exhaust": true,
+    "upgrade": "spirit-memory+"
+   },
+   "upgrade": {
+    "id": "spirit-memory+",
+    "cost": "1",
+    "text": "Gain 5 Barrier. Return a random card from your discard pile to your hand.",
+    "def": {
+     "id": "spirit-memory+",
+     "name": "Spirit Memory+",
+     "realm": "nexus",
+     "rarity": "common",
+     "kind": "skill",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "barrier",
+       "amount": 5,
+       "to": "self"
+      },
+      {
+       "op": "fetch",
+       "amount": 1,
+       "to": "hand"
+      }
+     ],
+     "hero": "shaman",
+     "exhaust": false
+    }
+   }
+  },
+  {
+   "id": "stone-skin",
+   "name": "Stone Skin",
+   "kind": "skill",
+   "rarity": "common",
+   "cost": "1",
+   "text": "Gain 9 Barrier.",
+   "def": {
+    "id": "stone-skin",
+    "name": "Stone Skin",
+    "realm": "nexus",
+    "rarity": "common",
+    "kind": "skill",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "barrier",
+      "amount": 9,
+      "to": "self"
+     }
+    ],
+    "hero": "shaman",
+    "upgrade": "stone-skin+"
+   },
+   "upgrade": {
+    "id": "stone-skin+",
+    "cost": "1",
+    "text": "Gain 12 Barrier.",
+    "def": {
+     "id": "stone-skin+",
+     "name": "Stone Skin+",
+     "realm": "nexus",
+     "rarity": "common",
+     "kind": "skill",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "barrier",
+       "amount": 12,
+       "to": "self"
+      }
+     ],
+     "hero": "shaman"
+    }
+   }
+  },
+  {
+   "id": "storm-call",
+   "name": "Storm Call",
+   "kind": "attack",
+   "rarity": "common",
+   "cost": "2",
+   "text": "Deal 6 damage 2 times. Play a random Attack from your draw pile against a random enemy.",
+   "def": {
+    "id": "storm-call",
+    "name": "Storm Call",
+    "realm": "nexus",
+    "rarity": "common",
+    "kind": "attack",
+    "cost": 2,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 6,
+      "hits": 2,
+      "to": "target"
+     },
+     {
+      "op": "playPile",
+      "from": "draw",
+      "kind": "attack"
+     }
+    ],
+    "hero": "shaman",
+    "upgrade": "storm-call+"
+   },
+   "upgrade": {
+    "id": "storm-call+",
+    "cost": "2",
+    "text": "Deal 8 damage 2 times. Play a random Attack from your draw pile against a random enemy.",
+    "def": {
+     "id": "storm-call+",
+     "name": "Storm Call+",
+     "realm": "nexus",
+     "rarity": "common",
+     "kind": "attack",
+     "cost": 2,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 8,
+       "hits": 2,
+       "to": "target"
+      },
+      {
+       "op": "playPile",
+       "from": "draw",
+       "kind": "attack"
+      }
+     ],
+     "hero": "shaman"
+    }
+   }
+  },
+  {
+   "id": "storm-pole",
+   "name": "Storm Pole",
+   "kind": "skill",
+   "rarity": "common",
+   "cost": "1",
+   "text": "Gain 4 Barrier. For the next 2 turns, at the start of your turn: Plant Hawk.",
+   "def": {
+    "id": "storm-pole",
+    "name": "Storm Pole",
+    "realm": "nexus",
+    "rarity": "common",
+    "kind": "skill",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "barrier",
+      "amount": 4,
+      "to": "self"
+     },
+     {
+      "op": "power",
+      "when": "turnStart",
+      "ops": [
+       {
+        "op": "channel",
+        "rune": "spark"
+       }
+      ],
+      "times": 2
+     }
+    ],
+    "hero": "shaman",
+    "upgrade": "storm-pole+"
+   },
+   "upgrade": {
+    "id": "storm-pole+",
+    "cost": "1",
+    "text": "Gain 7 Barrier. For the next 2 turns, at the start of your turn: Plant Hawk.",
+    "def": {
+     "id": "storm-pole+",
+     "name": "Storm Pole+",
+     "realm": "nexus",
+     "rarity": "common",
+     "kind": "skill",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "barrier",
+       "amount": 7,
+       "to": "self"
+      },
+      {
+       "op": "power",
+       "when": "turnStart",
+       "ops": [
+        {
+         "op": "channel",
+         "rune": "spark"
+        }
+       ],
+       "times": 2
+      }
+     ],
+     "hero": "shaman"
+    }
+   }
+  },
+  {
+   "id": "tidecaller",
+   "name": "Tidecaller",
+   "kind": "skill",
+   "rarity": "common",
+   "cost": "1",
+   "text": "Gain 7 Barrier. Next turn, gain 1 extra Mana.",
+   "def": {
+    "id": "tidecaller",
+    "name": "Tidecaller",
+    "realm": "nexus",
+    "rarity": "common",
+    "kind": "skill",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "barrier",
+      "amount": 7,
+      "to": "self"
+     },
+     {
+      "op": "manaNext",
+      "amount": 1
+     }
+    ],
+    "hero": "shaman",
+    "upgrade": "tidecaller+"
+   },
+   "upgrade": {
+    "id": "tidecaller+",
+    "cost": "1",
+    "text": "Gain 10 Barrier. Next turn, gain 1 extra Mana.",
+    "def": {
+     "id": "tidecaller+",
+     "name": "Tidecaller+",
+     "realm": "nexus",
+     "rarity": "common",
+     "kind": "skill",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "barrier",
+       "amount": 10,
+       "to": "self"
+      },
+      {
+       "op": "manaNext",
+       "amount": 1
+      }
+     ],
+     "hero": "shaman"
+    }
+   }
+  },
+  {
+   "id": "arc-lightning",
+   "name": "Arc Lightning",
+   "kind": "attack",
+   "rarity": "uncommon",
+   "cost": "0",
+   "text": "Deal 3 damage. Trigger the passive of every Hawk you have, against the target.",
+   "def": {
+    "id": "arc-lightning",
+    "name": "Arc Lightning",
+    "realm": "nexus",
+    "rarity": "uncommon",
+    "kind": "attack",
+    "cost": 0,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 3,
+      "to": "target"
+     },
+     {
+      "op": "pulse",
+      "rune": "spark",
+      "aim": true
+     }
+    ],
+    "hero": "shaman",
+    "upgrade": "arc-lightning+"
+   },
+   "upgrade": {
+    "id": "arc-lightning+",
+    "cost": "0",
+    "text": "Deal 4 damage. Trigger the passive of every Hawk you have 2 times, against the target.",
+    "def": {
+     "id": "arc-lightning+",
+     "name": "Arc Lightning+",
+     "realm": "nexus",
+     "rarity": "uncommon",
+     "kind": "attack",
+     "cost": 0,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 4,
+       "to": "target"
+      },
+      {
+       "op": "pulse",
+       "rune": "spark",
+       "aim": true,
+       "times": 2
+      }
+     ],
+     "hero": "shaman"
+    }
+   }
+  },
+  {
+   "id": "boulder-fist",
+   "name": "Boulder Fist",
+   "kind": "attack",
+   "rarity": "uncommon",
+   "cost": "2",
+   "text": "Deal 13 damage. Draw 1 card. Whenever you create a Status card, this costs 1 less until played.",
+   "def": {
+    "id": "boulder-fist",
+    "name": "Boulder Fist",
+    "realm": "nexus",
+    "rarity": "uncommon",
+    "kind": "attack",
+    "cost": 2,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 13,
+      "to": "target"
+     },
+     {
+      "op": "draw",
+      "amount": 1
+     }
+    ],
+    "hero": "shaman",
+    "cheaperOnCreate": "status",
+    "upgrade": "boulder-fist+"
+   },
+   "upgrade": {
+    "id": "boulder-fist+",
+    "cost": "2",
+    "text": "Deal 14 damage. Draw 2 cards. Whenever you create a Status card, this costs 1 less until played.",
+    "def": {
+     "id": "boulder-fist+",
+     "name": "Boulder Fist+",
+     "realm": "nexus",
+     "rarity": "uncommon",
+     "kind": "attack",
+     "cost": 2,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 14,
+       "to": "target"
+      },
+      {
+       "op": "draw",
+       "amount": 2
+      }
+     ],
+     "hero": "shaman",
+     "cheaperOnCreate": "status"
+    }
+   }
+  },
+  {
+   "id": "chorus-of-glyphs",
+   "name": "Chorus of Totems",
+   "kind": "skill",
+   "rarity": "uncommon",
+   "cost": "1",
+   "text": "Gain Spirit equal to the number of different totems you have until the end of your turn.",
+   "def": {
+    "id": "chorus-of-glyphs",
+    "name": "Chorus of Totems",
+    "realm": "nexus",
+    "rarity": "uncommon",
+    "kind": "skill",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "status",
+      "status": "resonance",
+      "amount": 0,
+      "to": "self",
+      "temp": true,
+      "scale": {
+       "by": "runeKinds"
+      }
+     }
+    ],
+    "hero": "shaman",
+    "upgrade": "chorus-of-glyphs+"
+   },
+   "upgrade": {
+    "id": "chorus-of-glyphs+",
+    "cost": "1",
+    "text": "Gain Spirit equal to 2 times the number of different totems you have until the end of your turn.",
+    "def": {
+     "id": "chorus-of-glyphs+",
+     "name": "Chorus of Totems+",
+     "realm": "nexus",
+     "rarity": "uncommon",
+     "kind": "skill",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "status",
+       "status": "resonance",
+       "amount": 0,
+       "to": "self",
+       "temp": true,
+       "scale": {
+        "by": "runeKinds",
+        "mult": 2
+       }
+      }
+     ],
+     "hero": "shaman"
+    }
+   }
+  },
+  {
+   "id": "clear-spring",
+   "name": "Clear Spring",
+   "kind": "skill",
+   "rarity": "uncommon",
+   "cost": "1",
+   "text": "Draw 3 cards.",
+   "def": {
+    "id": "clear-spring",
+    "name": "Clear Spring",
+    "realm": "nexus",
+    "rarity": "uncommon",
+    "kind": "skill",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "draw",
+      "amount": 3
+     }
+    ],
+    "hero": "shaman",
+    "upgrade": "clear-spring+"
+   },
+   "upgrade": {
+    "id": "clear-spring+",
+    "cost": "1",
+    "text": "Draw 4 cards.",
+    "def": {
+     "id": "clear-spring+",
+     "name": "Clear Spring+",
+     "realm": "nexus",
+     "rarity": "uncommon",
+     "kind": "skill",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "draw",
+       "amount": 4
+      }
+     ],
+     "hero": "shaman"
+    }
+   }
+  },
+  {
+   "id": "cold-snap",
+   "name": "Bear Pack",
+   "kind": "skill",
+   "rarity": "uncommon",
+   "cost": "0",
+   "text": "Plant Bear once per enemy. Consume.",
+   "def": {
+    "id": "cold-snap",
+    "name": "Bear Pack",
+    "realm": "nexus",
+    "rarity": "uncommon",
+    "kind": "skill",
+    "cost": 0,
+    "target": "none",
+    "effects": [
+     {
+      "op": "channel",
+      "rune": "ward",
+      "times": 0,
+      "scale": {
+       "by": "foes"
+      }
+     }
+    ],
+    "hero": "shaman",
+    "exhaust": true,
+    "upgrade": "cold-snap+"
+   },
+   "upgrade": {
+    "id": "cold-snap+",
+    "cost": "0",
+    "text": "Plant Bear once per enemy.",
+    "def": {
+     "id": "cold-snap+",
+     "name": "Bear Pack+",
+     "realm": "nexus",
+     "rarity": "uncommon",
+     "kind": "skill",
+     "cost": 0,
+     "target": "none",
+     "effects": [
+      {
+       "op": "channel",
+       "rune": "ward",
+       "times": 0,
+       "scale": {
+        "by": "foes"
+       }
+      }
+     ],
+     "hero": "shaman",
+     "exhaust": false
+    }
+   }
+  },
+  {
+   "id": "crystal-ward",
+   "name": "Crystal Ward",
+   "kind": "skill",
+   "rarity": "uncommon",
+   "cost": "0",
+   "text": "Gain 10 Barrier. Consume. Opening hand.",
+   "def": {
+    "id": "crystal-ward",
+    "name": "Crystal Ward",
+    "realm": "nexus",
+    "rarity": "uncommon",
+    "kind": "skill",
+    "cost": 0,
+    "target": "none",
+    "effects": [
+     {
+      "op": "barrier",
+      "amount": 10,
+      "to": "self"
+     }
+    ],
+    "hero": "shaman",
+    "innate": true,
+    "exhaust": true,
+    "upgrade": "crystal-ward+"
+   },
+   "upgrade": {
+    "id": "crystal-ward+",
+    "cost": "0",
+    "text": "Gain 13 Barrier. Consume. Opening hand.",
+    "def": {
+     "id": "crystal-ward+",
+     "name": "Crystal Ward+",
+     "realm": "nexus",
+     "rarity": "uncommon",
+     "kind": "skill",
+     "cost": 0,
+     "target": "none",
+     "effects": [
+      {
+       "op": "barrier",
+       "amount": 13,
+       "to": "self"
+      }
+     ],
+     "hero": "shaman",
+     "innate": true,
+     "exhaust": true
+    }
+   }
+  },
+  {
+   "id": "earthen-might",
+   "name": "Earthen Might",
+   "kind": "power",
+   "rarity": "uncommon",
+   "cost": "2",
+   "text": "Lose 1 totem slot. Gain 2 Might. Gain 2 Bracing.",
+   "def": {
+    "id": "earthen-might",
+    "name": "Earthen Might",
+    "realm": "nexus",
+    "rarity": "uncommon",
+    "kind": "power",
+    "cost": 2,
+    "target": "none",
+    "effects": [
+     {
+      "op": "runeSlots",
+      "amount": -1
+     },
+     {
+      "op": "status",
+      "status": "might",
+      "amount": 2,
+      "to": "self"
+     },
+     {
+      "op": "status",
+      "status": "bracing",
+      "amount": 2,
+      "to": "self"
+     }
+    ],
+    "hero": "shaman",
+    "upgrade": "earthen-might+"
+   },
+   "upgrade": {
+    "id": "earthen-might+",
+    "cost": "2",
+    "text": "Lose 1 totem slot. Gain 3 Might. Gain 3 Bracing.",
+    "def": {
+     "id": "earthen-might+",
+     "name": "Earthen Might+",
+     "realm": "nexus",
+     "rarity": "uncommon",
+     "kind": "power",
+     "cost": 2,
+     "target": "none",
+     "effects": [
+      {
+       "op": "runeSlots",
+       "amount": -1
+      },
+      {
+       "op": "status",
+       "status": "might",
+       "amount": 3,
+       "to": "self"
+      },
+      {
+       "op": "status",
+       "status": "bracing",
+       "amount": 3,
+       "to": "self"
+      }
+     ],
+     "hero": "shaman"
+    }
+   }
+  },
+  {
+   "id": "echoing-loop",
+   "name": "Unending Call",
+   "kind": "power",
+   "rarity": "uncommon",
+   "cost": "1",
+   "text": "At the start of your turn: Trigger the passive of your first totem.",
+   "def": {
+    "id": "echoing-loop",
+    "name": "Unending Call",
+    "realm": "nexus",
+    "rarity": "uncommon",
+    "kind": "power",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "power",
+      "when": "turnStart",
+      "ops": [
+       {
+        "op": "pulse",
+        "first": true
+       }
+      ]
+     }
+    ],
+    "hero": "shaman",
+    "upgrade": "echoing-loop+"
+   },
+   "upgrade": {
+    "id": "echoing-loop+",
+    "cost": "1",
+    "text": "At the start of your turn: Trigger the passive of your first totem 2 times.",
+    "def": {
+     "id": "echoing-loop+",
+     "name": "Unending Call+",
+     "realm": "nexus",
+     "rarity": "uncommon",
+     "kind": "power",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "power",
+       "when": "turnStart",
+       "ops": [
+        {
+         "op": "pulse",
+         "first": true,
+         "times": 2
+        }
+       ]
+      }
+     ],
+     "hero": "shaman"
+    }
+   }
+  },
+  {
+   "id": "feed-the-fire",
+   "name": "Feed the Fire",
+   "kind": "skill",
+   "rarity": "uncommon",
+   "cost": "0",
+   "text": "Draw 2 cards. Add a Scorch to your discard pile. Consume.",
+   "def": {
+    "id": "feed-the-fire",
+    "name": "Feed the Fire",
+    "realm": "nexus",
+    "rarity": "uncommon",
+    "kind": "skill",
+    "cost": 0,
+    "target": "none",
+    "effects": [
+     {
+      "op": "draw",
+      "amount": 2
+     },
+     {
+      "op": "addCard",
+      "card": "scorch",
+      "to": "discard",
+      "side": "self"
+     }
+    ],
+    "hero": "shaman",
+    "exhaust": true,
+    "upgrade": "feed-the-fire+"
+   },
+   "upgrade": {
+    "id": "feed-the-fire+",
+    "cost": "0",
+    "text": "Draw 3 cards. Add a Scorch to your discard pile. Consume.",
+    "def": {
+     "id": "feed-the-fire+",
+     "name": "Feed the Fire+",
+     "realm": "nexus",
+     "rarity": "uncommon",
+     "kind": "skill",
+     "cost": 0,
+     "target": "none",
+     "effects": [
+      {
+       "op": "draw",
+       "amount": 3
+      },
+      {
+       "op": "addCard",
+       "card": "scorch",
+       "to": "discard",
+       "side": "self"
+      }
+     ],
+     "hero": "shaman",
+     "exhaust": true
+    }
+   }
+  },
+  {
+   "id": "fire-bloom",
+   "name": "Fire Bloom",
+   "kind": "attack",
+   "rarity": "uncommon",
+   "cost": "2",
+   "text": "Deal 14 damage. Your next Aura costs 0.",
+   "def": {
+    "id": "fire-bloom",
+    "name": "Fire Bloom",
+    "realm": "nexus",
+    "rarity": "uncommon",
+    "kind": "attack",
+    "cost": 2,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 14,
+      "to": "target"
+     },
+     {
+      "op": "status",
+      "status": "freepower",
+      "amount": 1,
+      "to": "self"
+     }
+    ],
+    "hero": "shaman",
+    "upgrade": "fire-bloom+"
+   },
+   "upgrade": {
+    "id": "fire-bloom+",
+    "cost": "2",
+    "text": "Deal 20 damage. Your next Aura costs 0.",
+    "def": {
+     "id": "fire-bloom+",
+     "name": "Fire Bloom+",
+     "realm": "nexus",
+     "rarity": "uncommon",
+     "kind": "attack",
+     "cost": 2,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 20,
+       "to": "target"
+      },
+      {
+       "op": "status",
+       "status": "freepower",
+       "amount": 1,
+       "to": "self"
+      }
+     ],
+     "hero": "shaman"
+    }
+   }
+  },
+  {
+   "id": "frostglass",
+   "name": "Frostbark",
+   "kind": "skill",
+   "rarity": "uncommon",
+   "cost": "2",
+   "text": "Gain 6 Barrier. Plant Bear 2 times.",
+   "def": {
+    "id": "frostglass",
+    "name": "Frostbark",
+    "realm": "nexus",
+    "rarity": "uncommon",
+    "kind": "skill",
+    "cost": 2,
+    "target": "none",
+    "effects": [
+     {
+      "op": "barrier",
+      "amount": 6,
+      "to": "self"
+     },
+     {
+      "op": "channel",
+      "rune": "ward",
+      "times": 2
+     }
+    ],
+    "hero": "shaman",
+    "upgrade": "frostglass+"
+   },
+   "upgrade": {
+    "id": "frostglass+",
+    "cost": "2",
+    "text": "Gain 9 Barrier. Plant Bear 2 times.",
+    "def": {
+     "id": "frostglass+",
+     "name": "Frostbark+",
+     "realm": "nexus",
+     "rarity": "uncommon",
+     "kind": "skill",
+     "cost": 2,
+     "target": "none",
+     "effects": [
+      {
+       "op": "barrier",
+       "amount": 9,
+       "to": "self"
+      },
+      {
+       "op": "channel",
+       "rune": "ward",
+       "times": 2
+      }
+     ],
+     "hero": "shaman"
+    }
+   }
+  },
+  {
+   "id": "gather-kindling",
+   "name": "Gather Kindling",
+   "kind": "skill",
+   "rarity": "uncommon",
+   "cost": "1",
+   "text": "Gain 6 Barrier. Turn every Status card in your hand into a Kindling.",
+   "def": {
+    "id": "gather-kindling",
+    "name": "Gather Kindling",
+    "realm": "nexus",
+    "rarity": "uncommon",
+    "kind": "skill",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "barrier",
+      "amount": 6,
+      "to": "self"
+     },
+     {
+      "op": "transform",
+      "tag": "status",
+      "into": "kindling"
+     }
+    ],
+    "hero": "shaman",
+    "upgrade": "gather-kindling+"
+   },
+   "upgrade": {
+    "id": "gather-kindling+",
+    "cost": "1",
+    "text": "Gain 7 Barrier. Turn every Status card in your hand into a Kindling+.",
+    "def": {
+     "id": "gather-kindling+",
+     "name": "Gather Kindling+",
+     "realm": "nexus",
+     "rarity": "uncommon",
+     "kind": "skill",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "barrier",
+       "amount": 7,
+       "to": "self"
+      },
+      {
+       "op": "transform",
+       "tag": "status",
+       "into": "kindling+"
+      }
+     ],
+     "hero": "shaman"
+    }
+   }
+  },
+  {
+   "id": "gathering-dusk",
+   "name": "Gathering Dusk",
+   "kind": "skill",
+   "rarity": "uncommon",
+   "cost": "1",
+   "text": "Plant Elder. Trigger the passive of every Elder you have.",
+   "def": {
+    "id": "gathering-dusk",
+    "name": "Gathering Dusk",
+    "realm": "nexus",
+    "rarity": "uncommon",
+    "kind": "skill",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "channel",
+      "rune": "hollow"
+     },
+     {
+      "op": "pulse",
+      "rune": "hollow"
+     }
+    ],
+    "hero": "shaman",
+    "upgrade": "gathering-dusk+"
+   },
+   "upgrade": {
+    "id": "gathering-dusk+",
+    "cost": "1",
+    "text": "Plant Elder. Trigger the passive of every Elder you have 2 times.",
+    "def": {
+     "id": "gathering-dusk+",
+     "name": "Gathering Dusk+",
+     "realm": "nexus",
+     "rarity": "uncommon",
+     "kind": "skill",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "channel",
+       "rune": "hollow"
+      },
+      {
+       "op": "pulse",
+       "rune": "hollow",
+       "times": 2
+      }
+     ],
+     "hero": "shaman"
+    }
+   }
+  },
+  {
+   "id": "glacial-memory",
+   "name": "Smoke Reading",
+   "kind": "power",
+   "rarity": "uncommon",
+   "cost": "1",
+   "text": "The first time you draw a Status card each turn: Draw 2 cards.",
+   "def": {
+    "id": "glacial-memory",
+    "name": "Smoke Reading",
+    "realm": "nexus",
+    "rarity": "uncommon",
+    "kind": "power",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "power",
+      "when": "draw",
+      "ops": [
+       {
+        "op": "draw",
+        "amount": 2
+       }
+      ],
+      "tag": "status",
+      "once": true
+     }
+    ],
+    "hero": "shaman",
+    "upgrade": "glacial-memory+"
+   },
+   "upgrade": {
+    "id": "glacial-memory+",
+    "cost": "1",
+    "text": "The first time you draw a Status card each turn: Draw 3 cards.",
+    "def": {
+     "id": "glacial-memory+",
+     "name": "Smoke Reading+",
+     "realm": "nexus",
+     "rarity": "uncommon",
+     "kind": "power",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "power",
+       "when": "draw",
+       "ops": [
+        {
+         "op": "draw",
+         "amount": 3
+        }
+       ],
+       "tag": "status",
+       "once": true
+      }
+     ],
+     "hero": "shaman"
+    }
+   }
+  },
+  {
+   "id": "glyph-lattice",
+   "name": "Totem Row",
+   "kind": "power",
+   "rarity": "uncommon",
+   "cost": "1",
+   "text": "Gain 2 totem slots.",
+   "def": {
+    "id": "glyph-lattice",
+    "name": "Totem Row",
+    "realm": "nexus",
+    "rarity": "uncommon",
+    "kind": "power",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "runeSlots",
+      "amount": 2
+     }
+    ],
+    "hero": "shaman",
+    "upgrade": "glyph-lattice+"
+   },
+   "upgrade": {
+    "id": "glyph-lattice+",
+    "cost": "1",
+    "text": "Gain 3 totem slots.",
+    "def": {
+     "id": "glyph-lattice+",
+     "name": "Totem Row+",
+     "realm": "nexus",
+     "rarity": "uncommon",
+     "kind": "power",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "runeSlots",
+       "amount": 3
+      }
+     ],
+     "hero": "shaman"
+    }
+   }
+  },
+  {
+   "id": "ironbark",
+   "name": "Ironbark",
+   "kind": "skill",
+   "rarity": "uncommon",
+   "cost": "1",
+   "text": "Gain 13 Barrier. Add 2 Wounds to your discard pile.",
+   "def": {
+    "id": "ironbark",
+    "name": "Ironbark",
+    "realm": "nexus",
+    "rarity": "uncommon",
+    "kind": "skill",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "barrier",
+      "amount": 13,
+      "to": "self"
+     },
+     {
+      "op": "addCard",
+      "card": "wound",
+      "to": "discard",
+      "side": "self",
+      "times": 2
+     }
+    ],
+    "hero": "shaman",
+    "upgrade": "ironbark+"
+   },
+   "upgrade": {
+    "id": "ironbark+",
+    "cost": "1",
+    "text": "Gain 17 Barrier. Add 2 Wounds to your discard pile.",
+    "def": {
+     "id": "ironbark+",
+     "name": "Ironbark+",
+     "realm": "nexus",
+     "rarity": "uncommon",
+     "kind": "skill",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "barrier",
+       "amount": 17,
+       "to": "self"
+      },
+      {
+       "op": "addCard",
+       "card": "wound",
+       "to": "discard",
+       "side": "self",
+       "times": 2
+      }
+     ],
+     "hero": "shaman"
+    }
+   }
+  },
+  {
+   "id": "kindled-rite",
+   "name": "Kindled Rite",
+   "kind": "power",
+   "rarity": "uncommon",
+   "cost": "1",
+   "text": "Whenever you create a Status card: Deal 5 damage to ALL enemies.",
+   "def": {
+    "id": "kindled-rite",
+    "name": "Kindled Rite",
+    "realm": "nexus",
+    "rarity": "uncommon",
+    "kind": "power",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "power",
+      "when": "created",
+      "ops": [
+       {
+        "op": "damage",
+        "amount": 5,
+        "to": "allFoes"
+       }
+      ],
+      "tag": "status"
+     }
+    ],
+    "hero": "shaman",
+    "upgrade": "kindled-rite+"
+   },
+   "upgrade": {
+    "id": "kindled-rite+",
+    "cost": "1",
+    "text": "Whenever you create a Status card: Deal 7 damage to ALL enemies.",
+    "def": {
+     "id": "kindled-rite+",
+     "name": "Kindled Rite+",
+     "realm": "nexus",
+     "rarity": "uncommon",
+     "kind": "power",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "power",
+       "when": "created",
+       "ops": [
+        {
+         "op": "damage",
+         "amount": 7,
+         "to": "allFoes"
+        }
+       ],
+       "tag": "status"
+      }
+     ],
+     "hero": "shaman"
+    }
+   }
+  },
+  {
+   "id": "leyline-tap",
+   "name": "Root Tap",
+   "kind": "skill",
+   "rarity": "uncommon",
+   "cost": "1",
+   "text": "Gain Mana equal to your Mana. Consume.",
+   "def": {
+    "id": "leyline-tap",
+    "name": "Root Tap",
+    "realm": "nexus",
+    "rarity": "uncommon",
+    "kind": "skill",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "mana",
+      "amount": 0,
+      "scale": {
+       "by": "mana"
+      }
+     }
+    ],
+    "hero": "shaman",
+    "exhaust": true,
+    "upgrade": "leyline-tap+"
+   },
+   "upgrade": {
+    "id": "leyline-tap+",
+    "cost": "0",
+    "text": "Gain Mana equal to your Mana. Consume.",
+    "def": {
+     "id": "leyline-tap+",
+     "name": "Root Tap+",
+     "realm": "nexus",
+     "rarity": "uncommon",
+     "kind": "skill",
+     "cost": 0,
+     "target": "none",
+     "effects": [
+      {
+       "op": "mana",
+       "amount": 0,
+       "scale": {
+        "by": "mana"
+       }
+      }
+     ],
+     "hero": "shaman",
+     "exhaust": true
+    }
+   }
+  },
+  {
+   "id": "night-veil",
+   "name": "Night Veil",
+   "kind": "attack",
+   "rarity": "uncommon",
+   "cost": "2",
+   "text": "Deal 10 damage. Apply 1 Faltering. Plant Elder.",
+   "def": {
+    "id": "night-veil",
+    "name": "Night Veil",
+    "realm": "nexus",
+    "rarity": "uncommon",
+    "kind": "attack",
+    "cost": 2,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 10,
+      "to": "target"
+     },
+     {
+      "op": "status",
+      "status": "faltering",
+      "amount": 1,
+      "to": "target"
+     },
+     {
+      "op": "channel",
+      "rune": "hollow"
+     }
+    ],
+    "hero": "shaman",
+    "upgrade": "night-veil+"
+   },
+   "upgrade": {
+    "id": "night-veil+",
+    "cost": "2",
+    "text": "Deal 13 damage. Apply 2 Faltering. Plant Elder.",
+    "def": {
+     "id": "night-veil+",
+     "name": "Night Veil+",
+     "realm": "nexus",
+     "rarity": "uncommon",
+     "kind": "attack",
+     "cost": 2,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 13,
+       "to": "target"
+      },
+      {
+       "op": "status",
+       "status": "faltering",
+       "amount": 2,
+       "to": "target"
+      },
+      {
+       "op": "channel",
+       "rune": "hollow"
+      }
+     ],
+     "hero": "shaman"
+    }
+   }
+  },
+  {
+   "id": "permafrost",
+   "name": "Hail Rite",
+   "kind": "power",
+   "rarity": "uncommon",
+   "cost": "1",
+   "text": "At the end of your turn: If you have a Bear: Deal 6 damage to ALL enemies.",
+   "def": {
+    "id": "permafrost",
+    "name": "Hail Rite",
+    "realm": "nexus",
+    "rarity": "uncommon",
+    "kind": "power",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "power",
+      "when": "turnEnd",
+      "ops": [
+       {
+        "op": "when",
+        "by": "runesOf",
+        "rune": "ward",
+        "atLeast": 1,
+        "ops": [
+         {
+          "op": "damage",
+          "amount": 6,
+          "to": "allFoes"
+         }
+        ]
+       }
+      ]
+     }
+    ],
+    "hero": "shaman",
+    "upgrade": "permafrost+"
+   },
+   "upgrade": {
+    "id": "permafrost+",
+    "cost": "1",
+    "text": "At the end of your turn: If you have a Bear: Deal 8 damage to ALL enemies.",
+    "def": {
+     "id": "permafrost+",
+     "name": "Hail Rite+",
+     "realm": "nexus",
+     "rarity": "uncommon",
+     "kind": "power",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "power",
+       "when": "turnEnd",
+       "ops": [
+        {
+         "op": "when",
+         "by": "runesOf",
+         "rune": "ward",
+         "atLeast": 1,
+         "ops": [
+          {
+           "op": "damage",
+           "amount": 8,
+           "to": "allFoes"
+          }
+         ]
+        }
+       ]
+      }
+     ],
+     "hero": "shaman"
+    }
+   }
+  },
+  {
+   "id": "prism-cut",
+   "name": "Owl Call",
+   "kind": "skill",
+   "rarity": "uncommon",
+   "cost": "1",
+   "text": "Plant Owl. Consume.",
+   "def": {
+    "id": "prism-cut",
+    "name": "Owl Call",
+    "realm": "nexus",
+    "rarity": "uncommon",
+    "kind": "skill",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "channel",
+      "rune": "prism"
+     }
+    ],
+    "hero": "shaman",
+    "exhaust": true,
+    "upgrade": "prism-cut+"
+   },
+   "upgrade": {
+    "id": "prism-cut+",
+    "cost": "1",
+    "text": "Plant Owl.",
+    "def": {
+     "id": "prism-cut+",
+     "name": "Owl Call+",
+     "realm": "nexus",
+     "rarity": "uncommon",
+     "kind": "skill",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "channel",
+       "rune": "prism"
+      }
+     ],
+     "hero": "shaman",
+     "exhaust": false
+    }
+   }
+  },
+  {
+   "id": "prismatic-cascade",
+   "name": "Prismatic Cascade",
+   "kind": "attack",
+   "rarity": "uncommon",
+   "cost": "3",
+   "text": "Deal 10 damage 2 times. Plant Splinter 2 times.",
+   "def": {
+    "id": "prismatic-cascade",
+    "name": "Prismatic Cascade",
+    "realm": "nexus",
+    "rarity": "uncommon",
+    "kind": "attack",
+    "cost": 3,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 10,
+      "hits": 2,
+      "to": "target"
+     },
+     {
+      "op": "channel",
+      "rune": "splinter",
+      "times": 2
+     }
+    ],
+    "hero": "shaman",
+    "upgrade": "prismatic-cascade+"
+   },
+   "upgrade": {
+    "id": "prismatic-cascade+",
+    "cost": "3",
+    "text": "Deal 13 damage 2 times. Plant Splinter 2 times.",
+    "def": {
+     "id": "prismatic-cascade+",
+     "name": "Prismatic Cascade+",
+     "realm": "nexus",
+     "rarity": "uncommon",
+     "kind": "attack",
+     "cost": 3,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 13,
+       "hits": 2,
+       "to": "target"
+      },
+      {
+       "op": "channel",
+       "rune": "splinter",
+       "times": 2
+      }
+     ],
+     "hero": "shaman"
+    }
+   }
+  },
+  {
+   "id": "rapids",
+   "name": "Rapids",
+   "kind": "attack",
+   "rarity": "uncommon",
+   "cost": "0",
+   "text": "Deal 5 damage. If you have played 2 or fewer other cards this turn: Draw 1 card.",
+   "def": {
+    "id": "rapids",
+    "name": "Rapids",
+    "realm": "nexus",
+    "rarity": "uncommon",
+    "kind": "attack",
+    "cost": 0,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 5,
+      "to": "target"
+     },
+     {
+      "op": "when",
+      "by": "played",
+      "atMost": 2,
+      "ops": [
+       {
+        "op": "draw",
+        "amount": 1
+       }
+      ]
+     }
+    ],
+    "hero": "shaman",
+    "upgrade": "rapids+"
+   },
+   "upgrade": {
+    "id": "rapids+",
+    "cost": "0",
+    "text": "Deal 6 damage. If you have played 3 or fewer other cards this turn: Draw 1 card.",
+    "def": {
+     "id": "rapids+",
+     "name": "Rapids+",
+     "realm": "nexus",
+     "rarity": "uncommon",
+     "kind": "attack",
+     "cost": 0,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 6,
+       "to": "target"
+      },
+      {
+       "op": "when",
+       "by": "played",
+       "atMost": 3,
+       "ops": [
+        {
+         "op": "draw",
+         "amount": 1
+        }
+       ]
+      }
+     ],
+     "hero": "shaman"
+    }
+   }
+  },
+  {
+   "id": "river-scour",
+   "name": "Riverscour",
+   "kind": "attack",
+   "rarity": "uncommon",
+   "cost": "1",
+   "text": "Deal 7 damage. Draw 4 cards. Discard the ones drawn this way that cost more than 0.",
+   "def": {
+    "id": "river-scour",
+    "name": "Riverscour",
+    "realm": "nexus",
+    "rarity": "uncommon",
+    "kind": "attack",
+    "cost": 1,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 7,
+      "to": "target"
+     },
+     {
+      "op": "draw",
+      "amount": 4,
+      "keepCost": 0
+     }
+    ],
+    "hero": "shaman",
+    "upgrade": "river-scour+"
+   },
+   "upgrade": {
+    "id": "river-scour+",
+    "cost": "1",
+    "text": "Deal 10 damage. Draw 5 cards. Discard the ones drawn this way that cost more than 0.",
+    "def": {
+     "id": "river-scour+",
+     "name": "Riverscour+",
+     "realm": "nexus",
+     "rarity": "uncommon",
+     "kind": "attack",
+     "cost": 1,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 10,
+       "to": "target"
+      },
+      {
+       "op": "draw",
+       "amount": 5,
+       "keepCost": 0
+      }
+     ],
+     "hero": "shaman"
+    }
+   }
+  },
+  {
+   "id": "shard-chorus",
+   "name": "Splinter Ward",
+   "kind": "skill",
+   "rarity": "uncommon",
+   "cost": "1",
+   "text": "Gain 5 Barrier. Plant Splinter.",
+   "def": {
+    "id": "shard-chorus",
+    "name": "Splinter Ward",
+    "realm": "nexus",
+    "rarity": "uncommon",
+    "kind": "skill",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "barrier",
+      "amount": 5,
+      "to": "self"
+     },
+     {
+      "op": "channel",
+      "rune": "splinter"
+     }
+    ],
+    "hero": "shaman",
+    "upgrade": "shard-chorus+"
+   },
+   "upgrade": {
+    "id": "shard-chorus+",
+    "cost": "1",
+    "text": "Gain 8 Barrier. Plant Splinter.",
+    "def": {
+     "id": "shard-chorus+",
+     "name": "Splinter Ward+",
+     "realm": "nexus",
+     "rarity": "uncommon",
+     "kind": "skill",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "barrier",
+       "amount": 8,
+       "to": "self"
+      },
+      {
+       "op": "channel",
+       "rune": "splinter"
+      }
+     ],
+     "hero": "shaman"
+    }
+   }
+  },
+  {
+   "id": "skybreaker",
+   "name": "Skybreaker",
+   "kind": "attack",
+   "rarity": "uncommon",
+   "cost": "3",
+   "text": "Deal 26 damage. If this is fatal: Gain 1 Mana.",
+   "def": {
+    "id": "skybreaker",
+    "name": "Skybreaker",
+    "realm": "nexus",
+    "rarity": "uncommon",
+    "kind": "attack",
+    "cost": 3,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 26,
+      "to": "target",
+      "onKill": [
+       {
+        "op": "mana",
+        "amount": 1
+       }
+      ]
+     }
+    ],
+    "hero": "shaman",
+    "upgrade": "skybreaker+"
+   },
+   "upgrade": {
+    "id": "skybreaker+",
+    "cost": "3",
+    "text": "Deal 34 damage. If this is fatal: Gain 1 Mana.",
+    "def": {
+     "id": "skybreaker+",
+     "name": "Skybreaker+",
+     "realm": "nexus",
+     "rarity": "uncommon",
+     "kind": "attack",
+     "cost": 3,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 34,
+       "to": "target",
+       "onKill": [
+        {
+         "op": "mana",
+         "amount": 1
+        }
+       ]
+      }
+     ],
+     "hero": "shaman"
+    }
+   }
+  },
+  {
+   "id": "smoke-offering",
+   "name": "Smoke Offering",
+   "kind": "skill",
+   "rarity": "uncommon",
+   "cost": "1",
+   "text": "Consume 1 card. Next turn, gain 2 extra Mana.",
+   "def": {
+    "id": "smoke-offering",
+    "name": "Smoke Offering",
+    "realm": "nexus",
+    "rarity": "uncommon",
+    "kind": "skill",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "exhaustCards",
+      "amount": 1
+     },
+     {
+      "op": "manaNext",
+      "amount": 2
+     }
+    ],
+    "hero": "shaman",
+    "upgrade": "smoke-offering+"
+   },
+   "upgrade": {
+    "id": "smoke-offering+",
+    "cost": "1",
+    "text": "Consume 1 card. Next turn, gain 3 extra Mana.",
+    "def": {
+     "id": "smoke-offering+",
+     "name": "Smoke Offering+",
+     "realm": "nexus",
+     "rarity": "uncommon",
+     "kind": "skill",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "exhaustCards",
+       "amount": 1
+      },
+      {
+       "op": "manaNext",
+       "amount": 3
+      }
+     ],
+     "hero": "shaman"
+    }
+   }
+  },
+  {
+   "id": "sparkstorm",
+   "name": "Hawkstorm",
+   "kind": "skill",
+   "rarity": "uncommon",
+   "cost": "X",
+   "text": "Plant Hawk X times.",
+   "def": {
+    "id": "sparkstorm",
+    "name": "Hawkstorm",
+    "realm": "nexus",
+    "rarity": "uncommon",
+    "kind": "skill",
+    "cost": 0,
+    "target": "none",
+    "effects": [
+     {
+      "op": "channel",
+      "rune": "spark",
+      "times": 0,
+      "scale": {
+       "by": "x"
+      }
+     }
+    ],
+    "hero": "shaman",
+    "x": true,
+    "upgrade": "sparkstorm+"
+   },
+   "upgrade": {
+    "id": "sparkstorm+",
+    "cost": "X",
+    "text": "X is 1 higher. Plant Hawk X times.",
+    "def": {
+     "id": "sparkstorm+",
+     "name": "Hawkstorm+",
+     "realm": "nexus",
+     "rarity": "uncommon",
+     "kind": "skill",
+     "cost": 0,
+     "target": "none",
+     "effects": [
+      {
+       "op": "channel",
+       "rune": "spark",
+       "times": 0,
+       "scale": {
+        "by": "x"
+       }
+      }
+     ],
+     "hero": "shaman",
+     "x": true,
+     "xBonus": 1
+    }
+   }
+  },
+  {
+   "id": "stormcrown",
+   "name": "Stormcrown",
+   "kind": "power",
+   "rarity": "uncommon",
+   "cost": "1",
+   "text": "Whenever a Hawk awakens: Deal 8 damage to each enemy it struck.",
+   "def": {
+    "id": "stormcrown",
+    "name": "Stormcrown",
+    "realm": "nexus",
+    "rarity": "uncommon",
+    "kind": "power",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "power",
+      "when": "evoke",
+      "ops": [
+       {
+        "op": "damage",
+        "amount": 8,
+        "to": "target"
+       }
+      ],
+      "rune": "spark"
+     }
+    ],
+    "hero": "shaman",
+    "upgrade": "stormcrown+"
+   },
+   "upgrade": {
+    "id": "stormcrown+",
+    "cost": "1",
+    "text": "Whenever a Hawk awakens: Deal 11 damage to each enemy it struck.",
+    "def": {
+     "id": "stormcrown+",
+     "name": "Stormcrown+",
+     "realm": "nexus",
+     "rarity": "uncommon",
+     "kind": "power",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "power",
+       "when": "evoke",
+       "ops": [
+        {
+         "op": "damage",
+         "amount": 11,
+         "to": "target"
+        }
+       ],
+       "rune": "spark"
+      }
+     ],
+     "hero": "shaman"
+    }
+   }
+  },
+  {
+   "id": "thundercall",
+   "name": "Thunder Rite",
+   "kind": "power",
+   "rarity": "uncommon",
+   "cost": "1",
+   "text": "Whenever you play an Aura: Plant Hawk.",
+   "def": {
+    "id": "thundercall",
+    "name": "Thunder Rite",
+    "realm": "nexus",
+    "rarity": "uncommon",
+    "kind": "power",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "power",
+      "when": "play",
+      "ops": [
+       {
+        "op": "channel",
+        "rune": "spark"
+       }
+      ],
+      "filter": "power"
+     }
+    ],
+    "hero": "shaman",
+    "upgrade": "thundercall+"
+   },
+   "upgrade": {
+    "id": "thundercall+",
+    "cost": "1",
+    "text": "Whenever you play an Aura: Plant Hawk 2 times.",
+    "def": {
+     "id": "thundercall+",
+     "name": "Thunder Rite+",
+     "realm": "nexus",
+     "rarity": "uncommon",
+     "kind": "power",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "power",
+       "when": "play",
+       "ops": [
+        {
+         "op": "channel",
+         "rune": "spark",
+         "times": 2
+        }
+       ],
+       "filter": "power"
+      }
+     ],
+     "hero": "shaman"
+    }
+   }
+  },
+  {
+   "id": "tidal-surge",
+   "name": "Tidal Surge",
+   "kind": "skill",
+   "rarity": "uncommon",
+   "cost": "1",
+   "text": "Gain 2 Mana. Consume.",
+   "def": {
+    "id": "tidal-surge",
+    "name": "Tidal Surge",
+    "realm": "nexus",
+    "rarity": "uncommon",
+    "kind": "skill",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "mana",
+      "amount": 2
+     }
+    ],
+    "hero": "shaman",
+    "exhaust": true,
+    "upgrade": "tidal-surge+"
+   },
+   "upgrade": {
+    "id": "tidal-surge+",
+    "cost": "1",
+    "text": "Gain 3 Mana. Consume.",
+    "def": {
+     "id": "tidal-surge+",
+     "name": "Tidal Surge+",
+     "realm": "nexus",
+     "rarity": "uncommon",
+     "kind": "skill",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "mana",
+       "amount": 3
+      }
+     ],
+     "hero": "shaman",
+     "exhaust": true
+    }
+   }
+  },
+  {
+   "id": "tuning-fork",
+   "name": "Spirit Drum",
+   "kind": "power",
+   "rarity": "uncommon",
+   "cost": "1",
+   "text": "Whenever you play an Aura: Gain 1 Mana.",
+   "def": {
+    "id": "tuning-fork",
+    "name": "Spirit Drum",
+    "realm": "nexus",
+    "rarity": "uncommon",
+    "kind": "power",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "power",
+      "when": "play",
+      "ops": [
+       {
+        "op": "mana",
+        "amount": 1
+       }
+      ],
+      "filter": "power"
+     }
+    ],
+    "hero": "shaman",
+    "upgrade": "tuning-fork+"
+   },
+   "upgrade": {
+    "id": "tuning-fork+",
+    "cost": "0",
+    "text": "Whenever you play an Aura: Gain 1 Mana.",
+    "def": {
+     "id": "tuning-fork+",
+     "name": "Spirit Drum+",
+     "realm": "nexus",
+     "rarity": "uncommon",
+     "kind": "power",
+     "cost": 0,
+     "target": "none",
+     "effects": [
+      {
+       "op": "power",
+       "when": "play",
+       "ops": [
+        {
+         "op": "mana",
+         "amount": 1
+        }
+       ],
+       "filter": "power"
+      }
+     ],
+     "hero": "shaman"
+    }
+   }
+  },
+  {
+   "id": "void-pulse",
+   "name": "Elder's Shelter",
+   "kind": "skill",
+   "rarity": "uncommon",
+   "cost": "2",
+   "text": "Gain 11 Barrier. Plant Elder.",
+   "def": {
+    "id": "void-pulse",
+    "name": "Elder's Shelter",
+    "realm": "nexus",
+    "rarity": "uncommon",
+    "kind": "skill",
+    "cost": 2,
+    "target": "none",
+    "effects": [
+     {
+      "op": "barrier",
+      "amount": 11,
+      "to": "self"
+     },
+     {
+      "op": "channel",
+      "rune": "hollow"
+     }
+    ],
+    "hero": "shaman",
+    "upgrade": "void-pulse+"
+   },
+   "upgrade": {
+    "id": "void-pulse+",
+    "cost": "2",
+    "text": "Gain 15 Barrier. Plant Elder.",
+    "def": {
+     "id": "void-pulse+",
+     "name": "Elder's Shelter+",
+     "realm": "nexus",
+     "rarity": "uncommon",
+     "kind": "skill",
+     "cost": 2,
+     "target": "none",
+     "effects": [
+      {
+       "op": "barrier",
+       "amount": 15,
+       "to": "self"
+      },
+      {
+       "op": "channel",
+       "rune": "hollow"
+      }
+     ],
+     "hero": "shaman"
+    }
+   }
+  },
+  {
+   "id": "white-noise",
+   "name": "Spirit Whisper",
+   "kind": "skill",
+   "rarity": "uncommon",
+   "cost": "1",
+   "text": "Add a random Aura card from your pool to your hand (it costs 0 the next time you play it). Consume.",
+   "def": {
+    "id": "white-noise",
+    "name": "Spirit Whisper",
+    "realm": "nexus",
+    "rarity": "uncommon",
+    "kind": "skill",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "discover",
+      "kind": "power",
+      "free": true
+     }
+    ],
+    "hero": "shaman",
+    "exhaust": true,
+    "upgrade": "white-noise+"
+   },
+   "upgrade": {
+    "id": "white-noise+",
+    "cost": "0",
+    "text": "Add a random Aura card from your pool to your hand (it costs 0 the next time you play it). Consume.",
+    "def": {
+     "id": "white-noise+",
+     "name": "Spirit Whisper+",
+     "realm": "nexus",
+     "rarity": "uncommon",
+     "kind": "skill",
+     "cost": 0,
+     "target": "none",
+     "effects": [
+      {
+       "op": "discover",
+       "kind": "power",
+       "free": true
+      }
+     ],
+     "hero": "shaman",
+     "exhaust": true
+    }
+   }
+  },
+  {
+   "id": "wild-call",
+   "name": "Wild Call",
+   "kind": "skill",
+   "rarity": "uncommon",
+   "cost": "1",
+   "text": "Plant a random totem.",
+   "def": {
+    "id": "wild-call",
+    "name": "Wild Call",
+    "realm": "nexus",
+    "rarity": "uncommon",
+    "kind": "skill",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "channel",
+      "rune": "*"
+     }
+    ],
+    "hero": "shaman",
+    "upgrade": "wild-call+"
+   },
+   "upgrade": {
+    "id": "wild-call+",
+    "cost": "1",
+    "text": "Plant a random totem 2 times.",
+    "def": {
+     "id": "wild-call+",
+     "name": "Wild Call+",
+     "realm": "nexus",
+     "rarity": "uncommon",
+     "kind": "skill",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "channel",
+       "rune": "*",
+       "times": 2
+      }
+     ],
+     "hero": "shaman"
+    }
+   }
+  },
+  {
+   "id": "wild-heart",
+   "name": "Wild Heart",
+   "kind": "power",
+   "rarity": "uncommon",
+   "cost": "2",
+   "text": "The first time you play a 0-cost Attack each turn: Return it to your hand.",
+   "def": {
+    "id": "wild-heart",
+    "name": "Wild Heart",
+    "realm": "nexus",
+    "rarity": "uncommon",
+    "kind": "power",
+    "cost": 2,
+    "target": "none",
+    "effects": [
+     {
+      "op": "power",
+      "when": "play",
+      "ops": [
+       {
+        "op": "returnPlayed"
+       }
+      ],
+      "filter": "attack",
+      "maxCost": 0,
+      "once": true
+     }
+    ],
+    "hero": "shaman",
+    "upgrade": "wild-heart+"
+   },
+   "upgrade": {
+    "id": "wild-heart+",
+    "cost": "1",
+    "text": "The first time you play a 0-cost Attack each turn: Return it to your hand.",
+    "def": {
+     "id": "wild-heart+",
+     "name": "Wild Heart+",
+     "realm": "nexus",
+     "rarity": "uncommon",
+     "kind": "power",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "power",
+       "when": "play",
+       "ops": [
+        {
+         "op": "returnPlayed"
+        }
+       ],
+       "filter": "attack",
+       "maxCost": 0,
+       "once": true
+      }
+     ],
+     "hero": "shaman"
+    }
+   }
+  },
+  {
+   "id": "aegis-array",
+   "name": "Circle of Spirits",
+   "kind": "skill",
+   "rarity": "rare",
+   "cost": "2",
+   "text": "Plant Hawk. Plant Bear. Plant Elder. Consume.",
+   "def": {
+    "id": "aegis-array",
+    "name": "Circle of Spirits",
+    "realm": "nexus",
+    "rarity": "rare",
+    "kind": "skill",
+    "cost": 2,
+    "target": "none",
+    "effects": [
+     {
+      "op": "channel",
+      "rune": "spark"
+     },
+     {
+      "op": "channel",
+      "rune": "ward"
+     },
+     {
+      "op": "channel",
+      "rune": "hollow"
+     }
+    ],
+    "hero": "shaman",
+    "exhaust": true,
+    "upgrade": "aegis-array+"
+   },
+   "upgrade": {
+    "id": "aegis-array+",
+    "cost": "2",
+    "text": "Plant Hawk. Plant Bear. Plant Elder.",
+    "def": {
+     "id": "aegis-array+",
+     "name": "Circle of Spirits+",
+     "realm": "nexus",
+     "rarity": "rare",
+     "kind": "skill",
+     "cost": 2,
+     "target": "none",
+     "effects": [
+      {
+       "op": "channel",
+       "rune": "spark"
+      },
+      {
+       "op": "channel",
+       "rune": "ward"
+      },
+      {
+       "op": "channel",
+       "rune": "hollow"
+      }
+     ],
+     "hero": "shaman",
+     "exhaust": false
+    }
+   }
+  },
+  {
+   "id": "biased-weave",
+   "name": "Ash to Spirits",
+   "kind": "power",
+   "rarity": "rare",
+   "cost": "1",
+   "text": "Whenever you create a Status card: Plant a random totem.",
+   "def": {
+    "id": "biased-weave",
+    "name": "Ash to Spirits",
+    "realm": "nexus",
+    "rarity": "rare",
+    "kind": "power",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "power",
+      "when": "created",
+      "ops": [
+       {
+        "op": "channel",
+        "rune": "*"
+       }
+      ],
+      "tag": "status"
+     }
+    ],
+    "hero": "shaman",
+    "upgrade": "biased-weave+"
+   },
+   "upgrade": {
+    "id": "biased-weave+",
+    "cost": "0",
+    "text": "Whenever you create a Status card: Plant a random totem.",
+    "def": {
+     "id": "biased-weave+",
+     "name": "Ash to Spirits+",
+     "realm": "nexus",
+     "rarity": "rare",
+     "kind": "power",
+     "cost": 0,
+     "target": "none",
+     "effects": [
+      {
+       "op": "power",
+       "when": "created",
+       "ops": [
+        {
+         "op": "channel",
+         "rune": "*"
+        }
+       ],
+       "tag": "status"
+      }
+     ],
+     "hero": "shaman"
+    }
+   }
+  },
+  {
+   "id": "blazing-aperture",
+   "name": "Blazing Eye",
+   "kind": "attack",
+   "rarity": "rare",
+   "cost": "2",
+   "text": "Consume every Status card in your hand, draw pile and discard pile. Deal 8 damage to a random enemy for each card consumed this way.",
+   "def": {
+    "id": "blazing-aperture",
+    "name": "Blazing Eye",
+    "realm": "nexus",
+    "rarity": "rare",
+    "kind": "attack",
+    "cost": 2,
+    "target": "none",
+    "effects": [
+     {
+      "op": "exhaustCards",
+      "amount": 99,
+      "tag": "status",
+      "everywhere": true
+     },
+     {
+      "op": "damage",
+      "amount": 8,
+      "hits": 0,
+      "to": "randomFoe",
+      "scale": {
+       "by": "exhaustedNow",
+       "into": "hits"
+      }
+     }
+    ],
+    "hero": "shaman",
+    "upgrade": "blazing-aperture+"
+   },
+   "upgrade": {
+    "id": "blazing-aperture+",
+    "cost": "2",
+    "text": "Consume every Status card in your hand, draw pile and discard pile. Deal 11 damage to a random enemy for each card consumed this way.",
+    "def": {
+     "id": "blazing-aperture+",
+     "name": "Blazing Eye+",
+     "realm": "nexus",
+     "rarity": "rare",
+     "kind": "attack",
+     "cost": 2,
+     "target": "none",
+     "effects": [
+      {
+       "op": "exhaustCards",
+       "amount": 99,
+       "tag": "status",
+       "everywhere": true
+      },
+      {
+       "op": "damage",
+       "amount": 11,
+       "hits": 0,
+       "to": "randomFoe",
+       "scale": {
+        "by": "exhaustedNow",
+        "into": "hits"
+       }
+      }
+     ],
+     "hero": "shaman"
+    }
+   }
+  },
+  {
+   "id": "carve-a-notch",
+   "name": "Carve a Notch",
+   "kind": "skill",
+   "rarity": "rare",
+   "cost": "0",
+   "text": "Gain 1 totem slot. Draw 1 card. This card costs 1 more for the rest of the fight.",
+   "def": {
+    "id": "carve-a-notch",
+    "name": "Carve a Notch",
+    "realm": "nexus",
+    "rarity": "rare",
+    "kind": "skill",
+    "cost": 0,
+    "target": "none",
+    "effects": [
+     {
+      "op": "runeSlots",
+      "amount": 1
+     },
+     {
+      "op": "draw",
+      "amount": 1
+     },
+     {
+      "op": "recost",
+      "amount": 1
+     }
+    ],
+    "hero": "shaman",
+    "upgrade": "carve-a-notch+"
+   },
+   "upgrade": {
+    "id": "carve-a-notch+",
+    "cost": "0",
+    "text": "Gain 1 totem slot. Draw 2 cards. This card costs 1 more for the rest of the fight.",
+    "def": {
+     "id": "carve-a-notch+",
+     "name": "Carve a Notch+",
+     "realm": "nexus",
+     "rarity": "rare",
+     "kind": "skill",
+     "cost": 0,
+     "target": "none",
+     "effects": [
+      {
+       "op": "runeSlots",
+       "amount": 1
+      },
+      {
+       "op": "draw",
+       "amount": 2
+      },
+      {
+       "op": "recost",
+       "amount": 1
+      }
+     ],
+     "hero": "shaman"
+    }
+   }
+  },
+  {
+   "id": "deep-freeze",
+   "name": "Deep Freeze",
+   "kind": "attack",
+   "rarity": "rare",
+   "cost": "3",
+   "text": "Deal 19 damage. Plant Bear 3 times.",
+   "def": {
+    "id": "deep-freeze",
+    "name": "Deep Freeze",
+    "realm": "nexus",
+    "rarity": "rare",
+    "kind": "attack",
+    "cost": 3,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 19,
+      "to": "target"
+     },
+     {
+      "op": "channel",
+      "rune": "ward",
+      "times": 3
+     }
+    ],
+    "hero": "shaman",
+    "upgrade": "deep-freeze+"
+   },
+   "upgrade": {
+    "id": "deep-freeze+",
+    "cost": "3",
+    "text": "Deal 24 damage. Plant Bear 3 times.",
+    "def": {
+     "id": "deep-freeze+",
+     "name": "Deep Freeze+",
+     "realm": "nexus",
+     "rarity": "rare",
+     "kind": "attack",
+     "cost": 3,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 24,
+       "to": "target"
+      },
+      {
+       "op": "channel",
+       "rune": "ward",
+       "times": 3
+      }
+     ],
+     "hero": "shaman"
+    }
+   }
+  },
+  {
+   "id": "echo-cascade",
+   "name": "Endless Storm",
+   "kind": "skill",
+   "rarity": "rare",
+   "cost": "3",
+   "text": "Plant Hawk once for every Hawk you have planted this fight. Consume.",
+   "def": {
+    "id": "echo-cascade",
+    "name": "Endless Storm",
+    "realm": "nexus",
+    "rarity": "rare",
+    "kind": "skill",
+    "cost": 3,
+    "target": "none",
+    "effects": [
+     {
+      "op": "channel",
+      "rune": "spark",
+      "times": 0,
+      "scale": {
+       "by": "channeledOf",
+       "rune": "spark"
+      }
+     }
+    ],
+    "hero": "shaman",
+    "exhaust": true,
+    "upgrade": "echo-cascade+"
+   },
+   "upgrade": {
+    "id": "echo-cascade+",
+    "cost": "3",
+    "text": "Plant Hawk once for every Hawk you have planted this fight.",
+    "def": {
+     "id": "echo-cascade+",
+     "name": "Endless Storm+",
+     "realm": "nexus",
+     "rarity": "rare",
+     "kind": "skill",
+     "cost": 3,
+     "target": "none",
+     "effects": [
+      {
+       "op": "channel",
+       "rune": "spark",
+       "times": 0,
+       "scale": {
+        "by": "channeledOf",
+        "rune": "spark"
+       }
+      }
+     ],
+     "hero": "shaman",
+     "exhaust": false
+    }
+   }
+  },
+  {
+   "id": "echoing-form",
+   "name": "Echoing Chant",
+   "kind": "power",
+   "rarity": "rare",
+   "cost": "3",
+   "text": "The first card you play each turn is played an extra time. Fleeting.",
+   "def": {
+    "id": "echoing-form",
+    "name": "Echoing Chant",
+    "realm": "nexus",
+    "rarity": "rare",
+    "kind": "power",
+    "cost": 3,
+    "target": "none",
+    "effects": [
+     {
+      "op": "status",
+      "status": "echoing",
+      "amount": 1,
+      "to": "self"
+     }
+    ],
+    "hero": "shaman",
+    "ethereal": true,
+    "upgrade": "echoing-form+"
+   },
+   "upgrade": {
+    "id": "echoing-form+",
+    "cost": "3",
+    "text": "The first card you play each turn is played an extra time.",
+    "def": {
+     "id": "echoing-form+",
+     "name": "Echoing Chant+",
+     "realm": "nexus",
+     "rarity": "rare",
+     "kind": "power",
+     "cost": 3,
+     "target": "none",
+     "effects": [
+      {
+       "op": "status",
+       "status": "echoing",
+       "amount": 1,
+       "to": "self"
+      }
+     ],
+     "hero": "shaman",
+     "ethereal": false
+    }
+   }
+  },
+  {
+   "id": "falling-star",
+   "name": "Falling Star",
+   "kind": "attack",
+   "rarity": "rare",
+   "cost": "5",
+   "text": "Deal 24 damage. Plant Owl 3 times.",
+   "def": {
+    "id": "falling-star",
+    "name": "Falling Star",
+    "realm": "nexus",
+    "rarity": "rare",
+    "kind": "attack",
+    "cost": 5,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 24,
+      "to": "target"
+     },
+     {
+      "op": "channel",
+      "rune": "prism",
+      "times": 3
+     }
+    ],
+    "hero": "shaman",
+    "upgrade": "falling-star+"
+   },
+   "upgrade": {
+    "id": "falling-star+",
+    "cost": "5",
+    "text": "Deal 30 damage. Plant Owl 3 times.",
+    "def": {
+     "id": "falling-star+",
+     "name": "Falling Star+",
+     "realm": "nexus",
+     "rarity": "rare",
+     "kind": "attack",
+     "cost": 5,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 30,
+       "to": "target"
+      },
+      {
+       "op": "channel",
+       "rune": "prism",
+       "times": 3
+      }
+     ],
+     "hero": "shaman"
+    }
+   }
+  },
+  {
+   "id": "firestorm",
+   "name": "Heart of Flame",
+   "kind": "skill",
+   "rarity": "rare",
+   "cost": "0",
+   "text": "Gain 4 Mana. Consume.",
+   "def": {
+    "id": "firestorm",
+    "name": "Heart of Flame",
+    "realm": "nexus",
+    "rarity": "rare",
+    "kind": "skill",
+    "cost": 0,
+    "target": "none",
+    "effects": [
+     {
+      "op": "mana",
+      "amount": 4
+     }
+    ],
+    "hero": "shaman",
+    "exhaust": true,
+    "upgrade": "firestorm+"
+   },
+   "upgrade": {
+    "id": "firestorm+",
+    "cost": "0",
+    "text": "Gain 6 Mana. Consume.",
+    "def": {
+     "id": "firestorm+",
+     "name": "Heart of Flame+",
+     "realm": "nexus",
+     "rarity": "rare",
+     "kind": "skill",
+     "cost": 0,
+     "target": "none",
+     "effects": [
+      {
+       "op": "mana",
+       "amount": 6
+      }
+     ],
+     "hero": "shaman",
+     "exhaust": true
+    }
+   }
+  },
+  {
+   "id": "gathering-dark",
+   "name": "Devouring Night",
+   "kind": "power",
+   "rarity": "rare",
+   "cost": "2",
+   "text": "Plant Elder 2 times. At the end of your turn: Awaken your newest totem.",
+   "def": {
+    "id": "gathering-dark",
+    "name": "Devouring Night",
+    "realm": "nexus",
+    "rarity": "rare",
+    "kind": "power",
+    "cost": 2,
+    "target": "none",
+    "effects": [
+     {
+      "op": "channel",
+      "rune": "hollow",
+      "times": 2
+     },
+     {
+      "op": "power",
+      "when": "turnEnd",
+      "ops": [
+       {
+        "op": "evoke",
+        "last": true
+       }
+      ]
+     }
+    ],
+    "hero": "shaman",
+    "upgrade": "gathering-dark+"
+   },
+   "upgrade": {
+    "id": "gathering-dark+",
+    "cost": "2",
+    "text": "Plant Elder 3 times. At the end of your turn: Awaken your newest totem.",
+    "def": {
+     "id": "gathering-dark+",
+     "name": "Devouring Night+",
+     "realm": "nexus",
+     "rarity": "rare",
+     "kind": "power",
+     "cost": 2,
+     "target": "none",
+     "effects": [
+      {
+       "op": "channel",
+       "rune": "hollow",
+       "times": 3
+      },
+      {
+       "op": "power",
+       "when": "turnEnd",
+       "ops": [
+        {
+         "op": "evoke",
+         "last": true
+        }
+       ]
+      }
+     ],
+     "hero": "shaman"
+    }
+   }
+  },
+  {
+   "id": "harmonic-wave",
+   "name": "Spirit Wave",
+   "kind": "attack",
+   "rarity": "rare",
+   "cost": "2",
+   "text": "Deal 10 damage. Return every card that costs 0 from your discard pile to your hand.",
+   "def": {
+    "id": "harmonic-wave",
+    "name": "Spirit Wave",
+    "realm": "nexus",
+    "rarity": "rare",
+    "kind": "attack",
+    "cost": 2,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 10,
+      "to": "target"
+     },
+     {
+      "op": "fetch",
+      "amount": 99,
+      "to": "hand",
+      "maxCost": 0
+     }
+    ],
+    "hero": "shaman",
+    "upgrade": "harmonic-wave+"
+   },
+   "upgrade": {
+    "id": "harmonic-wave+",
+    "cost": "2",
+    "text": "Deal 14 damage. Return every card that costs 0 from your discard pile to your hand.",
+    "def": {
+     "id": "harmonic-wave+",
+     "name": "Spirit Wave+",
+     "realm": "nexus",
+     "rarity": "rare",
+     "kind": "attack",
+     "cost": 2,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 14,
+       "to": "target"
+      },
+      {
+       "op": "fetch",
+       "amount": 99,
+       "to": "hand",
+       "maxCost": 0
+      }
+     ],
+     "hero": "shaman"
+    }
+   }
+  },
+  {
+   "id": "hyperbeam",
+   "name": "Skyfall",
+   "kind": "attack",
+   "rarity": "rare",
+   "cost": "2",
+   "text": "Deal 24 damage to ALL enemies. Lose 3 Spirit until the end of your turn.",
+   "def": {
+    "id": "hyperbeam",
+    "name": "Skyfall",
+    "realm": "nexus",
+    "rarity": "rare",
+    "kind": "attack",
+    "cost": 2,
+    "target": "none",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 24,
+      "to": "allFoes"
+     },
+     {
+      "op": "status",
+      "status": "resonance",
+      "amount": -3,
+      "to": "self",
+      "temp": true
+     }
+    ],
+    "hero": "shaman",
+    "upgrade": "hyperbeam+"
+   },
+   "upgrade": {
+    "id": "hyperbeam+",
+    "cost": "2",
+    "text": "Deal 30 damage to ALL enemies. Lose 3 Spirit until the end of your turn.",
+    "def": {
+     "id": "hyperbeam+",
+     "name": "Skyfall+",
+     "realm": "nexus",
+     "rarity": "rare",
+     "kind": "attack",
+     "cost": 2,
+     "target": "none",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 30,
+       "to": "allFoes"
+      },
+      {
+       "op": "status",
+       "status": "resonance",
+       "amount": -3,
+       "to": "self",
+       "temp": true
+      }
+     ],
+     "hero": "shaman"
+    }
+   }
+  },
+  {
+   "id": "machine-learning",
+   "name": "Ancestral Learning",
+   "kind": "power",
+   "rarity": "rare",
+   "cost": "1",
+   "text": "At the start of your turn: Draw 1 card.",
+   "def": {
+    "id": "machine-learning",
+    "name": "Ancestral Learning",
+    "realm": "nexus",
+    "rarity": "rare",
+    "kind": "power",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "power",
+      "when": "turnStart",
+      "ops": [
+       {
+        "op": "draw",
+        "amount": 1
+       }
+      ]
+     }
+    ],
+    "hero": "shaman",
+    "upgrade": "machine-learning+"
+   },
+   "upgrade": {
+    "id": "machine-learning+",
+    "cost": "1",
+    "text": "At the start of your turn: Draw 1 card. Opening hand.",
+    "def": {
+     "id": "machine-learning+",
+     "name": "Ancestral Learning+",
+     "realm": "nexus",
+     "rarity": "rare",
+     "kind": "power",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "power",
+       "when": "turnStart",
+       "ops": [
+        {
+         "op": "draw",
+         "amount": 1
+        }
+       ]
+      }
+     ],
+     "hero": "shaman",
+     "innate": true
+    }
+   }
+  },
+  {
+   "id": "many-voices",
+   "name": "Many Voices",
+   "kind": "skill",
+   "rarity": "rare",
+   "cost": "X",
+   "text": "Awaken your first totem X times.",
+   "def": {
+    "id": "many-voices",
+    "name": "Many Voices",
+    "realm": "nexus",
+    "rarity": "rare",
+    "kind": "skill",
+    "cost": 0,
+    "target": "none",
+    "effects": [
+     {
+      "op": "evoke",
+      "times": 0,
+      "scale": {
+       "by": "x"
+      }
+     }
+    ],
+    "hero": "shaman",
+    "x": true,
+    "upgrade": "many-voices+"
+   },
+   "upgrade": {
+    "id": "many-voices+",
+    "cost": "X",
+    "text": "X is 1 higher. Awaken your first totem X times.",
+    "def": {
+     "id": "many-voices+",
+     "name": "Many Voices+",
+     "realm": "nexus",
+     "rarity": "rare",
+     "kind": "skill",
+     "cost": 0,
+     "target": "none",
+     "effects": [
+      {
+       "op": "evoke",
+       "times": 0,
+       "scale": {
+        "by": "x"
+       }
+      }
+     ],
+     "hero": "shaman",
+     "x": true,
+     "xBonus": 1
+    }
+   }
+  },
+  {
+   "id": "overtune",
+   "name": "Resounding Call",
+   "kind": "skill",
+   "rarity": "rare",
+   "cost": "1",
+   "text": "Your next Aura is played an extra time. Consume.",
+   "def": {
+    "id": "overtune",
+    "name": "Resounding Call",
+    "realm": "nexus",
+    "rarity": "rare",
+    "kind": "skill",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "status",
+      "status": "boosted",
+      "amount": 1,
+      "to": "self"
+     }
+    ],
+    "hero": "shaman",
+    "exhaust": true,
+    "upgrade": "overtune+"
+   },
+   "upgrade": {
+    "id": "overtune+",
+    "cost": "0",
+    "text": "Your next Aura is played an extra time. Consume.",
+    "def": {
+     "id": "overtune+",
+     "name": "Resounding Call+",
+     "realm": "nexus",
+     "rarity": "rare",
+     "kind": "skill",
+     "cost": 0,
+     "target": "none",
+     "effects": [
+      {
+       "op": "status",
+       "status": "boosted",
+       "amount": 1,
+       "to": "self"
+      }
+     ],
+     "hero": "shaman",
+     "exhaust": true
+    }
+   }
+  },
+  {
+   "id": "retune",
+   "name": "Retune",
+   "kind": "skill",
+   "rarity": "rare",
+   "cost": "0",
+   "text": "Shuffle your hand and discard pile into your draw pile. Draw 4 cards. Consume.",
+   "def": {
+    "id": "retune",
+    "name": "Retune",
+    "realm": "nexus",
+    "rarity": "rare",
+    "kind": "skill",
+    "cost": 0,
+    "target": "none",
+    "effects": [
+     {
+      "op": "reshuffle"
+     },
+     {
+      "op": "draw",
+      "amount": 4
+     }
+    ],
+    "hero": "shaman",
+    "exhaust": true,
+    "upgrade": "retune+"
+   },
+   "upgrade": {
+    "id": "retune+",
+    "cost": "0",
+    "text": "Shuffle your hand and discard pile into your draw pile. Draw 6 cards. Consume.",
+    "def": {
+     "id": "retune+",
+     "name": "Retune+",
+     "realm": "nexus",
+     "rarity": "rare",
+     "kind": "skill",
+     "cost": 0,
+     "target": "none",
+     "effects": [
+      {
+       "op": "reshuffle"
+      },
+      {
+       "op": "draw",
+       "amount": 6
+      }
+     ],
+     "hero": "shaman",
+     "exhaust": true
+    }
+   }
+  },
+  {
+   "id": "rune-carapace",
+   "name": "Bark Carapace",
+   "kind": "power",
+   "rarity": "rare",
+   "cost": "1",
+   "text": "At the start of your turn: Gain Barrier equal to 2 times the number of different totems you have.",
+   "def": {
+    "id": "rune-carapace",
+    "name": "Bark Carapace",
+    "realm": "nexus",
+    "rarity": "rare",
+    "kind": "power",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "power",
+      "when": "turnStart",
+      "ops": [
+       {
+        "op": "barrier",
+        "amount": 0,
+        "to": "self",
+        "scale": {
+         "by": "runeKinds",
+         "mult": 2
+        }
+       }
+      ]
+     }
+    ],
+    "hero": "shaman",
+    "upgrade": "rune-carapace+"
+   },
+   "upgrade": {
+    "id": "rune-carapace+",
+    "cost": "1",
+    "text": "At the start of your turn: Gain Barrier equal to 3 times the number of different totems you have.",
+    "def": {
+     "id": "rune-carapace+",
+     "name": "Bark Carapace+",
+     "realm": "nexus",
+     "rarity": "rare",
+     "kind": "power",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "power",
+       "when": "turnStart",
+       "ops": [
+        {
+         "op": "barrier",
+         "amount": 0,
+         "to": "self",
+         "scale": {
+          "by": "runeKinds",
+          "mult": 3
+         }
+        }
+       ]
+      }
+     ],
+     "hero": "shaman"
+    }
+   }
+  },
+  {
+   "id": "sentinel-sigil",
+   "name": "Spirit Ward",
+   "kind": "power",
+   "rarity": "rare",
+   "cost": "2",
+   "text": "Gain 1 Shielded.",
+   "def": {
+    "id": "sentinel-sigil",
+    "name": "Spirit Ward",
+    "realm": "nexus",
+    "rarity": "rare",
+    "kind": "power",
+    "cost": 2,
+    "target": "none",
+    "effects": [
+     {
+      "op": "status",
+      "status": "shielded",
+      "amount": 1,
+      "to": "self"
+     }
+    ],
+    "hero": "shaman",
+    "upgrade": "sentinel-sigil+"
+   },
+   "upgrade": {
+    "id": "sentinel-sigil+",
+    "cost": "2",
+    "text": "Gain 2 Shielded.",
+    "def": {
+     "id": "sentinel-sigil+",
+     "name": "Spirit Ward+",
+     "realm": "nexus",
+     "rarity": "rare",
+     "kind": "power",
+     "cost": 2,
+     "target": "none",
+     "effects": [
+      {
+       "op": "status",
+       "status": "shielded",
+       "amount": 2,
+       "to": "self"
+      }
+     ],
+     "hero": "shaman"
+    }
+   }
+  },
+  {
+   "id": "shatter-the-row",
+   "name": "Shatter the Row",
+   "kind": "attack",
+   "rarity": "rare",
+   "cost": "1",
+   "text": "Deal 7 damage to ALL enemies. Awaken all your totems 2 times. Consume.",
+   "def": {
+    "id": "shatter-the-row",
+    "name": "Shatter the Row",
+    "realm": "nexus",
+    "rarity": "rare",
+    "kind": "attack",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 7,
+      "to": "allFoes"
+     },
+     {
+      "op": "evoke",
+      "count": 10,
+      "times": 2
+     }
+    ],
+    "hero": "shaman",
+    "exhaust": true,
+    "upgrade": "shatter-the-row+"
+   },
+   "upgrade": {
+    "id": "shatter-the-row+",
+    "cost": "1",
+    "text": "Deal 11 damage to ALL enemies. Awaken all your totems 2 times. Consume.",
+    "def": {
+     "id": "shatter-the-row+",
+     "name": "Shatter the Row+",
+     "realm": "nexus",
+     "rarity": "rare",
+     "kind": "attack",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 11,
+       "to": "allFoes"
+      },
+      {
+       "op": "evoke",
+       "count": 10,
+       "times": 2
+      }
+     ],
+     "hero": "shaman",
+     "exhaust": true
+    }
+   }
+  },
+  {
+   "id": "shifting-strike",
+   "name": "Shifting Strike",
+   "kind": "attack",
+   "rarity": "rare",
+   "cost": "2",
+   "text": "Deal 18 damage. Add a 0-cost copy of this card to your discard pile.",
+   "def": {
+    "id": "shifting-strike",
+    "name": "Shifting Strike",
+    "realm": "nexus",
+    "rarity": "rare",
+    "kind": "attack",
+    "cost": 2,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 18,
+      "to": "target"
+     },
+     {
+      "op": "copySelf",
+      "to": "discard",
+      "free": true
+     }
+    ],
+    "hero": "shaman",
+    "upgrade": "shifting-strike+"
+   },
+   "upgrade": {
+    "id": "shifting-strike+",
+    "cost": "2",
+    "text": "Deal 23 damage. Add a 0-cost copy of this card to your discard pile.",
+    "def": {
+     "id": "shifting-strike+",
+     "name": "Shifting Strike+",
+     "realm": "nexus",
+     "rarity": "rare",
+     "kind": "attack",
+     "cost": 2,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 23,
+       "to": "target"
+      },
+      {
+       "op": "copySelf",
+       "to": "discard",
+       "free": true
+      }
+     ],
+     "hero": "shaman"
+    }
+   }
+  },
+  {
+   "id": "spiritfont",
+   "name": "Spiritfont",
+   "kind": "power",
+   "rarity": "rare",
+   "cost": "3",
+   "text": "At the start of your turn: Add a random Aura card from your pool to your hand.",
+   "def": {
+    "id": "spiritfont",
+    "name": "Spiritfont",
+    "realm": "nexus",
+    "rarity": "rare",
+    "kind": "power",
+    "cost": 3,
+    "target": "none",
+    "effects": [
+     {
+      "op": "power",
+      "when": "turnStart",
+      "ops": [
+       {
+        "op": "discover",
+        "kind": "power"
+       }
+      ]
+     }
+    ],
+    "hero": "shaman",
+    "upgrade": "spiritfont+"
+   },
+   "upgrade": {
+    "id": "spiritfont+",
+    "cost": "2",
+    "text": "At the start of your turn: Add a random Aura card from your pool to your hand.",
+    "def": {
+     "id": "spiritfont+",
+     "name": "Spiritfont+",
+     "realm": "nexus",
+     "rarity": "rare",
+     "kind": "power",
+     "cost": 2,
+     "target": "none",
+     "effects": [
+      {
+       "op": "power",
+       "when": "turnStart",
+       "ops": [
+        {
+         "op": "discover",
+         "kind": "power"
+        }
+       ]
+      }
+     ],
+     "hero": "shaman"
+    }
+   }
+  },
+  {
+   "id": "splinter-wheel",
+   "name": "Splinter Wheel",
+   "kind": "power",
+   "rarity": "rare",
+   "cost": "1",
+   "text": "At the start of your turn: Plant Splinter.",
+   "def": {
+    "id": "splinter-wheel",
+    "name": "Splinter Wheel",
+    "realm": "nexus",
+    "rarity": "rare",
+    "kind": "power",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "power",
+      "when": "turnStart",
+      "ops": [
+       {
+        "op": "channel",
+        "rune": "splinter"
+       }
+      ]
+     }
+    ],
+    "hero": "shaman",
+    "upgrade": "splinter-wheel+"
+   },
+   "upgrade": {
+    "id": "splinter-wheel+",
+    "cost": "1",
+    "text": "Plant Splinter. At the start of your turn: Plant Splinter.",
+    "def": {
+     "id": "splinter-wheel+",
+     "name": "Splinter Wheel+",
+     "realm": "nexus",
+     "rarity": "rare",
+     "kind": "power",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "channel",
+       "rune": "splinter"
+      },
+      {
+       "op": "power",
+       "when": "turnStart",
+       "ops": [
+        {
+         "op": "channel",
+         "rune": "splinter"
+        }
+       ]
+      }
+     ],
+     "hero": "shaman"
+    }
+   }
+  },
+  {
+   "id": "tune-the-lattice",
+   "name": "Tune the Spirits",
+   "kind": "power",
+   "rarity": "rare",
+   "cost": "1",
+   "text": "Gain 1 Spirit for the rest of the fight.",
+   "def": {
+    "id": "tune-the-lattice",
+    "name": "Tune the Spirits",
+    "realm": "nexus",
+    "rarity": "rare",
+    "kind": "power",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "status",
+      "status": "resonance",
+      "amount": 1,
+      "to": "self"
+     }
+    ],
+    "hero": "shaman",
+    "upgrade": "tune-the-lattice+"
+   },
+   "upgrade": {
+    "id": "tune-the-lattice+",
+    "cost": "1",
+    "text": "Gain 2 Spirit for the rest of the fight.",
+    "def": {
+     "id": "tune-the-lattice+",
+     "name": "Tune the Spirits+",
+     "realm": "nexus",
+     "rarity": "rare",
+     "kind": "power",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "status",
+       "status": "resonance",
+       "amount": 2,
+       "to": "self"
+      }
+     ],
+     "hero": "shaman"
+    }
+   }
+  },
+  {
+   "id": "whirlpool",
+   "name": "Whirlpool",
+   "kind": "attack",
+   "rarity": "rare",
+   "cost": "0",
+   "text": "Deal damage equal to 3 times the Mana you have spent this turn.",
+   "def": {
+    "id": "whirlpool",
+    "name": "Whirlpool",
+    "realm": "nexus",
+    "rarity": "rare",
+    "kind": "attack",
+    "cost": 0,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 0,
+      "to": "target",
+      "scale": {
+       "by": "manaSpent",
+       "mult": 3
+      }
+     }
+    ],
+    "hero": "shaman",
+    "upgrade": "whirlpool+"
+   },
+   "upgrade": {
+    "id": "whirlpool+",
+    "cost": "0",
+    "text": "Deal damage equal to 5 times the Mana you have spent this turn.",
+    "def": {
+     "id": "whirlpool+",
+     "name": "Whirlpool+",
+     "realm": "nexus",
+     "rarity": "rare",
+     "kind": "attack",
+     "cost": 0,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 0,
+       "to": "target",
+       "scale": {
+        "by": "manaSpent",
+        "mult": 5
+       }
+      }
+     ],
+     "hero": "shaman"
+    }
+   }
+  },
+  {
+   "id": "winds-favor",
+   "name": "Wind's Favor",
+   "kind": "power",
+   "rarity": "rare",
+   "cost": "1",
+   "text": "Your 0-cost Attacks deal 3 more damage for the rest of the fight.",
+   "def": {
+    "id": "winds-favor",
+    "name": "Wind's Favor",
+    "realm": "nexus",
+    "rarity": "rare",
+    "kind": "power",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "status",
+      "status": "deftness",
+      "amount": 3,
+      "to": "self"
+     }
+    ],
+    "hero": "shaman",
+    "upgrade": "winds-favor+"
+   },
+   "upgrade": {
+    "id": "winds-favor+",
+    "cost": "1",
+    "text": "Your 0-cost Attacks deal 4 more damage for the rest of the fight.",
+    "def": {
+     "id": "winds-favor+",
+     "name": "Wind's Favor+",
+     "realm": "nexus",
+     "rarity": "rare",
+     "kind": "power",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "status",
+       "status": "deftness",
+       "amount": 4,
+       "to": "self"
+      }
+     ],
+     "hero": "shaman"
+    }
+   }
+  }
+ ]
+}

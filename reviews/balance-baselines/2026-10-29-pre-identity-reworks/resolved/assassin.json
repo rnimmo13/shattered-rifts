@@ -1,0 +1,4879 @@
+{
+ "hero": {
+  "id": "assassin",
+  "name": "Assassin",
+  "maxHp": 70,
+  "mana": 3,
+  "handSize": 5
+ },
+ "persona": "Sylas",
+ "role": "Assassin",
+ "realm": "umbral",
+ "trait": {
+  "name": "Hidden Blades",
+  "text": "At the start of your turn, add a Dagger to your hand.",
+  "turnStart": [
+   {
+    "op": "addCard",
+    "card": "sleeve-knife",
+    "to": "hand",
+    "side": "self"
+   }
+  ]
+ },
+ "blurb": "A cutpurse with a sleeve full of blades: a Dagger finds its way into his hand every turn. Daggers, Bleed and sleight of hand.",
+ "mechanics": [
+  "Daggers",
+  "Bleed",
+  "Discard",
+  "Sly",
+  "Faltering"
+ ],
+ "buildPaths": [
+  "Daggers: Daggers, and the attacks around them",
+  "Bleed: stack it, make it burn harder",
+  "Sleight: draw, discard and dodge"
+ ],
+ "howTo": [
+  "Every turn a Dagger comes to your hand (Hidden Blades): a 0-cost Attack that is consumed when played. Many cards make more of them, and Edge makes each one hit harder.",
+  "Bleed hurts for its stacks at the start of the enemy’s turn and then shrinks by 1. Pile it on and let it work.",
+  "Discarding is a resource: a card with Sly is played for free when a card makes you discard it."
+ ],
+ "starter": [
+  "strike",
+  "strike",
+  "strike",
+  "strike",
+  "strike",
+  "defend",
+  "defend",
+  "defend",
+  "defend",
+  "defend",
+  "hobbling-jab",
+  "duck-and-weave"
+ ],
+ "starterText": [
+  {
+   "id": "strike",
+   "text": "Deal 6 damage."
+  },
+  {
+   "id": "strike",
+   "text": "Deal 6 damage."
+  },
+  {
+   "id": "strike",
+   "text": "Deal 6 damage."
+  },
+  {
+   "id": "strike",
+   "text": "Deal 6 damage."
+  },
+  {
+   "id": "strike",
+   "text": "Deal 6 damage."
+  },
+  {
+   "id": "defend",
+   "text": "Gain 5 Barrier."
+  },
+  {
+   "id": "defend",
+   "text": "Gain 5 Barrier."
+  },
+  {
+   "id": "defend",
+   "text": "Gain 5 Barrier."
+  },
+  {
+   "id": "defend",
+   "text": "Gain 5 Barrier."
+  },
+  {
+   "id": "defend",
+   "text": "Gain 5 Barrier."
+  },
+  {
+   "id": "hobbling-jab",
+   "text": "Deal 3 damage. Apply 1 Faltering."
+  },
+  {
+   "id": "duck-and-weave",
+   "text": "Gain 8 Barrier. Discard 1 card."
+  }
+ ],
+ "startUnits": [],
+ "counts": {
+  "basic": 2,
+  "common": 20,
+  "token/special": 2,
+  "uncommon": 35,
+  "rare": 25
+ },
+ "cards": [
+  {
+   "id": "duck-and-weave",
+   "name": "Duck and Weave",
+   "kind": "skill",
+   "rarity": "basic",
+   "cost": "1",
+   "text": "Gain 8 Barrier. Discard 1 card.",
+   "def": {
+    "id": "duck-and-weave",
+    "name": "Duck and Weave",
+    "realm": "umbral",
+    "rarity": "basic",
+    "kind": "skill",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "barrier",
+      "amount": 8,
+      "to": "self"
+     },
+     {
+      "op": "discard",
+      "amount": 1
+     }
+    ],
+    "hero": "assassin",
+    "upgrade": "duck-and-weave+"
+   },
+   "upgrade": {
+    "id": "duck-and-weave+",
+    "cost": "1",
+    "text": "Gain 11 Barrier. Discard 1 card.",
+    "def": {
+     "id": "duck-and-weave+",
+     "name": "Duck and Weave+",
+     "realm": "umbral",
+     "rarity": "basic",
+     "kind": "skill",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "barrier",
+       "amount": 11,
+       "to": "self"
+      },
+      {
+       "op": "discard",
+       "amount": 1
+      }
+     ],
+     "hero": "assassin"
+    }
+   }
+  },
+  {
+   "id": "hobbling-jab",
+   "name": "Hobbling Jab",
+   "kind": "attack",
+   "rarity": "basic",
+   "cost": "0",
+   "text": "Deal 3 damage. Apply 1 Faltering.",
+   "def": {
+    "id": "hobbling-jab",
+    "name": "Hobbling Jab",
+    "realm": "umbral",
+    "rarity": "basic",
+    "kind": "attack",
+    "cost": 0,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 3,
+      "to": "target"
+     },
+     {
+      "op": "status",
+      "status": "faltering",
+      "amount": 1,
+      "to": "target"
+     }
+    ],
+    "hero": "assassin",
+    "upgrade": "hobbling-jab+"
+   },
+   "upgrade": {
+    "id": "hobbling-jab+",
+    "cost": "0",
+    "text": "Deal 4 damage. Apply 2 Faltering.",
+    "def": {
+     "id": "hobbling-jab+",
+     "name": "Hobbling Jab+",
+     "realm": "umbral",
+     "rarity": "basic",
+     "kind": "attack",
+     "cost": 0,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 4,
+       "to": "target"
+      },
+      {
+       "op": "status",
+       "status": "faltering",
+       "amount": 2,
+       "to": "target"
+      }
+     ],
+     "hero": "assassin"
+    }
+   }
+  },
+  {
+   "id": "backspring",
+   "name": "Backspring",
+   "kind": "skill",
+   "rarity": "common",
+   "cost": "1",
+   "text": "Gain 5 Barrier. Draw 2 cards.",
+   "def": {
+    "id": "backspring",
+    "name": "Backspring",
+    "realm": "umbral",
+    "rarity": "common",
+    "kind": "skill",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "barrier",
+      "amount": 5,
+      "to": "self"
+     },
+     {
+      "op": "draw",
+      "amount": 2
+     }
+    ],
+    "hero": "assassin",
+    "upgrade": "backspring+"
+   },
+   "upgrade": {
+    "id": "backspring+",
+    "cost": "1",
+    "text": "Gain 8 Barrier. Draw 2 cards.",
+    "def": {
+     "id": "backspring+",
+     "name": "Backspring+",
+     "realm": "umbral",
+     "rarity": "common",
+     "kind": "skill",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "barrier",
+       "amount": 8,
+       "to": "self"
+      },
+      {
+       "op": "draw",
+       "amount": 2
+      }
+     ],
+     "hero": "assassin"
+    }
+   }
+  },
+  {
+   "id": "barbed-stab",
+   "name": "Barbed Stab",
+   "kind": "attack",
+   "rarity": "common",
+   "cost": "1",
+   "text": "Deal 6 damage. Apply 3 Bleed.",
+   "def": {
+    "id": "barbed-stab",
+    "name": "Barbed Stab",
+    "realm": "umbral",
+    "rarity": "common",
+    "kind": "attack",
+    "cost": 1,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 6,
+      "to": "target"
+     },
+     {
+      "op": "status",
+      "status": "seared",
+      "amount": 3,
+      "to": "target"
+     }
+    ],
+    "hero": "assassin",
+    "upgrade": "barbed-stab+"
+   },
+   "upgrade": {
+    "id": "barbed-stab+",
+    "cost": "1",
+    "text": "Deal 8 damage. Apply 4 Bleed.",
+    "def": {
+     "id": "barbed-stab+",
+     "name": "Barbed Stab+",
+     "realm": "umbral",
+     "rarity": "common",
+     "kind": "attack",
+     "cost": 1,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 8,
+       "to": "target"
+      },
+      {
+       "op": "status",
+       "status": "seared",
+       "amount": 4,
+       "to": "target"
+      }
+     ],
+     "hero": "assassin"
+    }
+   }
+  },
+  {
+   "id": "blade-flurry",
+   "name": "Blade Flurry",
+   "kind": "attack",
+   "rarity": "common",
+   "cost": "1",
+   "text": "Deal 4 damage 2 times to ALL enemies.",
+   "def": {
+    "id": "blade-flurry",
+    "name": "Blade Flurry",
+    "realm": "umbral",
+    "rarity": "common",
+    "kind": "attack",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 4,
+      "hits": 2,
+      "to": "allFoes"
+     }
+    ],
+    "hero": "assassin",
+    "upgrade": "blade-flurry+"
+   },
+   "upgrade": {
+    "id": "blade-flurry+",
+    "cost": "1",
+    "text": "Deal 6 damage 2 times to ALL enemies.",
+    "def": {
+     "id": "blade-flurry+",
+     "name": "Blade Flurry+",
+     "realm": "umbral",
+     "rarity": "common",
+     "kind": "attack",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 6,
+       "hits": 2,
+       "to": "allFoes"
+      }
+     ],
+     "hero": "assassin"
+    }
+   }
+  },
+  {
+   "id": "cartwheel-cut",
+   "name": "Cartwheel Cut",
+   "kind": "attack",
+   "rarity": "common",
+   "cost": "1",
+   "text": "Sly. Deal 7 damage to ALL enemies.",
+   "def": {
+    "id": "cartwheel-cut",
+    "name": "Cartwheel Cut",
+    "realm": "umbral",
+    "rarity": "common",
+    "kind": "attack",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 7,
+      "to": "allFoes"
+     }
+    ],
+    "hero": "assassin",
+    "sly": true,
+    "upgrade": "cartwheel-cut+"
+   },
+   "upgrade": {
+    "id": "cartwheel-cut+",
+    "cost": "1",
+    "text": "Sly. Deal 9 damage to ALL enemies.",
+    "def": {
+     "id": "cartwheel-cut+",
+     "name": "Cartwheel Cut+",
+     "realm": "umbral",
+     "rarity": "common",
+     "kind": "attack",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 9,
+       "to": "allFoes"
+      }
+     ],
+     "hero": "assassin",
+     "sly": true
+    }
+   }
+  },
+  {
+   "id": "chilling-shriek",
+   "name": "Chilling Shriek",
+   "kind": "skill",
+   "rarity": "common",
+   "cost": "1",
+   "text": "Apply 6 Sapped to ALL enemies until the end of their next turn. Consume.",
+   "def": {
+    "id": "chilling-shriek",
+    "name": "Chilling Shriek",
+    "realm": "umbral",
+    "rarity": "common",
+    "kind": "skill",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "status",
+      "status": "sapped",
+      "amount": 6,
+      "to": "allFoes",
+      "temp": "theirs"
+     }
+    ],
+    "hero": "assassin",
+    "exhaust": true,
+    "upgrade": "chilling-shriek+"
+   },
+   "upgrade": {
+    "id": "chilling-shriek+",
+    "cost": "1",
+    "text": "Apply 8 Sapped to ALL enemies until the end of their next turn. Consume.",
+    "def": {
+     "id": "chilling-shriek+",
+     "name": "Chilling Shriek+",
+     "realm": "umbral",
+     "rarity": "common",
+     "kind": "skill",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "status",
+       "status": "sapped",
+       "amount": 8,
+       "to": "allFoes",
+       "temp": "theirs"
+      }
+     ],
+     "hero": "assassin",
+     "exhaust": true
+    }
+   }
+  },
+  {
+   "id": "dirty-hit",
+   "name": "Dirty Hit",
+   "kind": "attack",
+   "rarity": "common",
+   "cost": "1",
+   "text": "Deal 8 damage. Apply 1 Faltering.",
+   "def": {
+    "id": "dirty-hit",
+    "name": "Dirty Hit",
+    "realm": "umbral",
+    "rarity": "common",
+    "kind": "attack",
+    "cost": 1,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 8,
+      "to": "target"
+     },
+     {
+      "op": "status",
+      "status": "faltering",
+      "amount": 1,
+      "to": "target"
+     }
+    ],
+    "hero": "assassin",
+    "upgrade": "dirty-hit+"
+   },
+   "upgrade": {
+    "id": "dirty-hit+",
+    "cost": "1",
+    "text": "Deal 10 damage. Apply 2 Faltering.",
+    "def": {
+     "id": "dirty-hit+",
+     "name": "Dirty Hit+",
+     "realm": "umbral",
+     "rarity": "common",
+     "kind": "attack",
+     "cost": 1,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 10,
+       "to": "target"
+      },
+      {
+       "op": "status",
+       "status": "faltering",
+       "amount": 2,
+       "to": "target"
+      }
+     ],
+     "hero": "assassin"
+    }
+   }
+  },
+  {
+   "id": "feint-strike",
+   "name": "Feint Strike",
+   "kind": "attack",
+   "rarity": "common",
+   "cost": "1",
+   "text": "Deal 3 damage. Add 2 Daggers to your hand.",
+   "def": {
+    "id": "feint-strike",
+    "name": "Feint Strike",
+    "realm": "umbral",
+    "rarity": "common",
+    "kind": "attack",
+    "cost": 1,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 3,
+      "to": "target"
+     },
+     {
+      "op": "addCard",
+      "card": "sleeve-knife",
+      "to": "hand",
+      "side": "self",
+      "times": 2
+     }
+    ],
+    "hero": "assassin",
+    "upgrade": "feint-strike+"
+   },
+   "upgrade": {
+    "id": "feint-strike+",
+    "cost": "1",
+    "text": "Deal 6 damage. Add 2 Daggers to your hand.",
+    "def": {
+     "id": "feint-strike+",
+     "name": "Feint Strike+",
+     "realm": "umbral",
+     "rarity": "common",
+     "kind": "attack",
+     "cost": 1,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 6,
+       "to": "target"
+      },
+      {
+       "op": "addCard",
+       "card": "sleeve-knife",
+       "to": "hand",
+       "side": "self",
+       "times": 2
+      }
+     ],
+     "hero": "assassin"
+    }
+   }
+  },
+  {
+   "id": "flick-knife",
+   "name": "Flick Knife",
+   "kind": "attack",
+   "rarity": "common",
+   "cost": "1",
+   "text": "Deal 9 damage. Draw 1 card. Discard 1 card.",
+   "def": {
+    "id": "flick-knife",
+    "name": "Flick Knife",
+    "realm": "umbral",
+    "rarity": "common",
+    "kind": "attack",
+    "cost": 1,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 9,
+      "to": "target"
+     },
+     {
+      "op": "draw",
+      "amount": 1
+     },
+     {
+      "op": "discard",
+      "amount": 1
+     }
+    ],
+    "hero": "assassin",
+    "upgrade": "flick-knife+"
+   },
+   "upgrade": {
+    "id": "flick-knife+",
+    "cost": "1",
+    "text": "Deal 12 damage. Draw 1 card. Discard 1 card.",
+    "def": {
+     "id": "flick-knife+",
+     "name": "Flick Knife+",
+     "realm": "umbral",
+     "rarity": "common",
+     "kind": "attack",
+     "cost": 1,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 12,
+       "to": "target"
+      },
+      {
+       "op": "draw",
+       "amount": 1
+      },
+      {
+       "op": "discard",
+       "amount": 1
+      }
+     ],
+     "hero": "assassin"
+    }
+   }
+  },
+  {
+   "id": "glancing-knives",
+   "name": "Glancing Knives",
+   "kind": "attack",
+   "rarity": "common",
+   "cost": "2",
+   "text": "Sly. Deal 3 damage to a random enemy 4 times.",
+   "def": {
+    "id": "glancing-knives",
+    "name": "Glancing Knives",
+    "realm": "umbral",
+    "rarity": "common",
+    "kind": "attack",
+    "cost": 2,
+    "target": "none",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 3,
+      "hits": 4,
+      "to": "randomFoe"
+     }
+    ],
+    "hero": "assassin",
+    "sly": true,
+    "upgrade": "glancing-knives+"
+   },
+   "upgrade": {
+    "id": "glancing-knives+",
+    "cost": "2",
+    "text": "Sly. Deal 3 damage to a random enemy 5 times.",
+    "def": {
+     "id": "glancing-knives+",
+     "name": "Glancing Knives+",
+     "realm": "umbral",
+     "rarity": "common",
+     "kind": "attack",
+     "cost": 2,
+     "target": "none",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 3,
+       "hits": 5,
+       "to": "randomFoe"
+      }
+     ],
+     "hero": "assassin",
+     "sly": true
+    }
+   }
+  },
+  {
+   "id": "inked-knife",
+   "name": "Inked Dagger",
+   "kind": "attack",
+   "rarity": "common",
+   "cost": "0",
+   "text": "Deal 5 damage. Apply 1 Faltering. Consume.",
+   "def": {
+    "id": "inked-knife",
+    "name": "Inked Dagger",
+    "realm": "umbral",
+    "rarity": "common",
+    "kind": "attack",
+    "cost": 0,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 5,
+      "to": "target"
+     },
+     {
+      "op": "status",
+      "status": "faltering",
+      "amount": 1,
+      "to": "target"
+     }
+    ],
+    "hero": "assassin",
+    "exhaust": true,
+    "tags": [
+     "knife"
+    ],
+    "source": "token"
+   },
+   "upgrade": null
+  },
+  {
+   "id": "knife-juggle",
+   "name": "Knife Juggle",
+   "kind": "skill",
+   "rarity": "common",
+   "cost": "1",
+   "text": "Add 3 Daggers to your hand. Consume.",
+   "def": {
+    "id": "knife-juggle",
+    "name": "Knife Juggle",
+    "realm": "umbral",
+    "rarity": "common",
+    "kind": "skill",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "addCard",
+      "card": "sleeve-knife",
+      "to": "hand",
+      "side": "self",
+      "times": 3
+     }
+    ],
+    "hero": "assassin",
+    "exhaust": true,
+    "upgrade": "knife-juggle+"
+   },
+   "upgrade": {
+    "id": "knife-juggle+",
+    "cost": "1",
+    "text": "Add 4 Daggers to your hand. Consume.",
+    "def": {
+     "id": "knife-juggle+",
+     "name": "Knife Juggle+",
+     "realm": "umbral",
+     "rarity": "common",
+     "kind": "skill",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "addCard",
+       "card": "sleeve-knife",
+       "to": "hand",
+       "side": "self",
+       "times": 4
+      }
+     ],
+     "hero": "assassin",
+     "exhaust": true
+    }
+   }
+  },
+  {
+   "id": "open-vein",
+   "name": "Open Vein",
+   "kind": "skill",
+   "rarity": "common",
+   "cost": "1",
+   "text": "Apply 5 Bleed.",
+   "def": {
+    "id": "open-vein",
+    "name": "Open Vein",
+    "realm": "umbral",
+    "rarity": "common",
+    "kind": "skill",
+    "cost": 1,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "status",
+      "status": "seared",
+      "amount": 5,
+      "to": "target"
+     }
+    ],
+    "hero": "assassin",
+    "upgrade": "open-vein+"
+   },
+   "upgrade": {
+    "id": "open-vein+",
+    "cost": "1",
+    "text": "Apply 7 Bleed.",
+    "def": {
+     "id": "open-vein+",
+     "name": "Open Vein+",
+     "realm": "umbral",
+     "rarity": "common",
+     "kind": "skill",
+     "cost": 1,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "status",
+       "status": "seared",
+       "amount": 7,
+       "to": "target"
+      }
+     ],
+     "hero": "assassin"
+    }
+   }
+  },
+  {
+   "id": "quick-slash",
+   "name": "Quick Slash",
+   "kind": "attack",
+   "rarity": "common",
+   "cost": "0",
+   "text": "Deal 6 damage.",
+   "def": {
+    "id": "quick-slash",
+    "name": "Quick Slash",
+    "realm": "umbral",
+    "rarity": "common",
+    "kind": "attack",
+    "cost": 0,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 6,
+      "to": "target"
+     }
+    ],
+    "hero": "assassin",
+    "upgrade": "quick-slash+"
+   },
+   "upgrade": {
+    "id": "quick-slash+",
+    "cost": "0",
+    "text": "Deal 9 damage.",
+    "def": {
+     "id": "quick-slash+",
+     "name": "Quick Slash+",
+     "realm": "umbral",
+     "rarity": "common",
+     "kind": "attack",
+     "cost": 0,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 9,
+       "to": "target"
+      }
+     ],
+     "hero": "assassin"
+    }
+   }
+  },
+  {
+   "id": "roll-away",
+   "name": "Roll Away",
+   "kind": "skill",
+   "rarity": "common",
+   "cost": "1",
+   "text": "Gain 4 Barrier. Gain 4 Guarded.",
+   "def": {
+    "id": "roll-away",
+    "name": "Roll Away",
+    "realm": "umbral",
+    "rarity": "common",
+    "kind": "skill",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "barrier",
+      "amount": 4,
+      "to": "self"
+     },
+     {
+      "op": "status",
+      "status": "guarded",
+      "amount": 4,
+      "to": "self"
+     }
+    ],
+    "hero": "assassin",
+    "upgrade": "roll-away+"
+   },
+   "upgrade": {
+    "id": "roll-away+",
+    "cost": "1",
+    "text": "Gain 6 Barrier. Gain 6 Guarded.",
+    "def": {
+     "id": "roll-away+",
+     "name": "Roll Away+",
+     "realm": "umbral",
+     "rarity": "common",
+     "kind": "skill",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "barrier",
+       "amount": 6,
+       "to": "self"
+      },
+      {
+       "op": "status",
+       "status": "guarded",
+       "amount": 6,
+       "to": "self"
+      }
+     ],
+     "hero": "assassin"
+    }
+   }
+  },
+  {
+   "id": "sense-the-blow",
+   "name": "Sense the Blow",
+   "kind": "skill",
+   "rarity": "common",
+   "cost": "0",
+   "text": "Gain 2 Bracing until the end of your turn.",
+   "def": {
+    "id": "sense-the-blow",
+    "name": "Sense the Blow",
+    "realm": "umbral",
+    "rarity": "common",
+    "kind": "skill",
+    "cost": 0,
+    "target": "none",
+    "effects": [
+     {
+      "op": "status",
+      "status": "bracing",
+      "amount": 2,
+      "to": "self",
+      "temp": true
+     }
+    ],
+    "hero": "assassin",
+    "upgrade": "sense-the-blow+"
+   },
+   "upgrade": {
+    "id": "sense-the-blow+",
+    "cost": "0",
+    "text": "Gain 4 Bracing until the end of your turn.",
+    "def": {
+     "id": "sense-the-blow+",
+     "name": "Sense the Blow+",
+     "realm": "umbral",
+     "rarity": "common",
+     "kind": "skill",
+     "cost": 0,
+     "target": "none",
+     "effects": [
+      {
+       "op": "status",
+       "status": "bracing",
+       "amount": 4,
+       "to": "self",
+       "temp": true
+      }
+     ],
+     "hero": "assassin"
+    }
+   }
+  },
+  {
+   "id": "shroud-and-shank",
+   "name": "Shroud and Shank",
+   "kind": "skill",
+   "rarity": "common",
+   "cost": "1",
+   "text": "Gain 6 Barrier. Add a Dagger to your hand.",
+   "def": {
+    "id": "shroud-and-shank",
+    "name": "Shroud and Shank",
+    "realm": "umbral",
+    "rarity": "common",
+    "kind": "skill",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "barrier",
+      "amount": 6,
+      "to": "self"
+     },
+     {
+      "op": "addCard",
+      "card": "sleeve-knife",
+      "to": "hand",
+      "side": "self"
+     }
+    ],
+    "hero": "assassin",
+    "upgrade": "shroud-and-shank+"
+   },
+   "upgrade": {
+    "id": "shroud-and-shank+",
+    "cost": "1",
+    "text": "Gain 6 Barrier. Add 2 Daggers to your hand.",
+    "def": {
+     "id": "shroud-and-shank+",
+     "name": "Shroud and Shank+",
+     "realm": "umbral",
+     "rarity": "common",
+     "kind": "skill",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "barrier",
+       "amount": 6,
+       "to": "self"
+      },
+      {
+       "op": "addCard",
+       "card": "sleeve-knife",
+       "to": "hand",
+       "side": "self",
+       "times": 2
+      }
+     ],
+     "hero": "assassin"
+    }
+   }
+  },
+  {
+   "id": "shuffle-up",
+   "name": "Shuffle Up",
+   "kind": "skill",
+   "rarity": "common",
+   "cost": "0",
+   "text": "Draw 1 card. Discard 1 card.",
+   "def": {
+    "id": "shuffle-up",
+    "name": "Shuffle Up",
+    "realm": "umbral",
+    "rarity": "common",
+    "kind": "skill",
+    "cost": 0,
+    "target": "none",
+    "effects": [
+     {
+      "op": "draw",
+      "amount": 1
+     },
+     {
+      "op": "discard",
+      "amount": 1
+     }
+    ],
+    "hero": "assassin",
+    "upgrade": "shuffle-up+"
+   },
+   "upgrade": {
+    "id": "shuffle-up+",
+    "cost": "0",
+    "text": "Draw 2 cards. Discard 2 cards.",
+    "def": {
+     "id": "shuffle-up+",
+     "name": "Shuffle Up+",
+     "realm": "umbral",
+     "rarity": "common",
+     "kind": "skill",
+     "cost": 0,
+     "target": "none",
+     "effects": [
+      {
+       "op": "draw",
+       "amount": 2
+      },
+      {
+       "op": "discard",
+       "amount": 2
+      }
+     ],
+     "hero": "assassin"
+    }
+   }
+  },
+  {
+   "id": "sleeve-knife",
+   "name": "Dagger",
+   "kind": "attack",
+   "rarity": "common",
+   "cost": "0",
+   "text": "Deal 4 damage. Consume.",
+   "def": {
+    "id": "sleeve-knife",
+    "name": "Dagger",
+    "realm": "umbral",
+    "rarity": "common",
+    "kind": "attack",
+    "cost": 0,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 4,
+      "to": "target"
+     }
+    ],
+    "hero": "assassin",
+    "exhaust": true,
+    "tags": [
+     "knife"
+    ],
+    "source": "token",
+    "upgrade": "sleeve-knife+"
+   },
+   "upgrade": {
+    "id": "sleeve-knife+",
+    "cost": "0",
+    "text": "Deal 6 damage. Consume.",
+    "def": {
+     "id": "sleeve-knife+",
+     "name": "Dagger+",
+     "realm": "umbral",
+     "rarity": "common",
+     "kind": "attack",
+     "cost": 0,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 6,
+       "to": "target"
+      }
+     ],
+     "hero": "assassin",
+     "exhaust": true,
+     "tags": [
+      "knife"
+     ],
+     "source": "token"
+    }
+   }
+  },
+  {
+   "id": "slip-the-blow",
+   "name": "Slip the Blow",
+   "kind": "skill",
+   "rarity": "common",
+   "cost": "2",
+   "text": "Sly. Gain 6 Barrier.",
+   "def": {
+    "id": "slip-the-blow",
+    "name": "Slip the Blow",
+    "realm": "umbral",
+    "rarity": "common",
+    "kind": "skill",
+    "cost": 2,
+    "target": "none",
+    "effects": [
+     {
+      "op": "barrier",
+      "amount": 6,
+      "to": "self"
+     }
+    ],
+    "hero": "assassin",
+    "sly": true,
+    "upgrade": "slip-the-blow+"
+   },
+   "upgrade": {
+    "id": "slip-the-blow+",
+    "cost": "2",
+    "text": "Sly. Gain 9 Barrier.",
+    "def": {
+     "id": "slip-the-blow+",
+     "name": "Slip the Blow+",
+     "realm": "umbral",
+     "rarity": "common",
+     "kind": "skill",
+     "cost": 2,
+     "target": "none",
+     "effects": [
+      {
+       "op": "barrier",
+       "amount": 9,
+       "to": "self"
+      }
+     ],
+     "hero": "assassin",
+     "sly": true
+    }
+   }
+  },
+  {
+   "id": "stalkers-lunge",
+   "name": "Stalker's Lunge",
+   "kind": "attack",
+   "rarity": "common",
+   "cost": "2",
+   "text": "Deal 15 damage. Next turn, draw 2 extra cards.",
+   "def": {
+    "id": "stalkers-lunge",
+    "name": "Stalker's Lunge",
+    "realm": "umbral",
+    "rarity": "common",
+    "kind": "attack",
+    "cost": 2,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 15,
+      "to": "target"
+     },
+     {
+      "op": "drawNext",
+      "amount": 2
+     }
+    ],
+    "hero": "assassin",
+    "upgrade": "stalkers-lunge+"
+   },
+   "upgrade": {
+    "id": "stalkers-lunge+",
+    "cost": "2",
+    "text": "Deal 20 damage. Next turn, draw 2 extra cards.",
+    "def": {
+     "id": "stalkers-lunge+",
+     "name": "Stalker's Lunge+",
+     "realm": "umbral",
+     "rarity": "common",
+     "kind": "attack",
+     "cost": 2,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 20,
+       "to": "target"
+      },
+      {
+       "op": "drawNext",
+       "amount": 2
+      }
+     ],
+     "hero": "assassin"
+    }
+   }
+  },
+  {
+   "id": "turn-aside",
+   "name": "Turn Aside",
+   "kind": "skill",
+   "rarity": "common",
+   "cost": "0",
+   "text": "Gain 4 Barrier.",
+   "def": {
+    "id": "turn-aside",
+    "name": "Turn Aside",
+    "realm": "umbral",
+    "rarity": "common",
+    "kind": "skill",
+    "cost": 0,
+    "target": "none",
+    "effects": [
+     {
+      "op": "barrier",
+      "amount": 4,
+      "to": "self"
+     }
+    ],
+    "hero": "assassin",
+    "upgrade": "turn-aside+"
+   },
+   "upgrade": {
+    "id": "turn-aside+",
+    "cost": "0",
+    "text": "Gain 7 Barrier.",
+    "def": {
+     "id": "turn-aside+",
+     "name": "Turn Aside+",
+     "realm": "umbral",
+     "rarity": "common",
+     "kind": "skill",
+     "cost": 0,
+     "target": "none",
+     "effects": [
+      {
+       "op": "barrier",
+       "amount": 7,
+       "to": "self"
+      }
+     ],
+     "hero": "assassin"
+    }
+   }
+  },
+  {
+   "id": "vipers-kiss",
+   "name": "Viper's Kiss",
+   "kind": "skill",
+   "rarity": "common",
+   "cost": "2",
+   "text": "Apply 7 Bleed. Hold.",
+   "def": {
+    "id": "vipers-kiss",
+    "name": "Viper's Kiss",
+    "realm": "umbral",
+    "rarity": "common",
+    "kind": "skill",
+    "cost": 2,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "status",
+      "status": "seared",
+      "amount": 7,
+      "to": "target"
+     }
+    ],
+    "hero": "assassin",
+    "retain": true,
+    "upgrade": "vipers-kiss+"
+   },
+   "upgrade": {
+    "id": "vipers-kiss+",
+    "cost": "2",
+    "text": "Apply 10 Bleed. Hold.",
+    "def": {
+     "id": "vipers-kiss+",
+     "name": "Viper's Kiss+",
+     "realm": "umbral",
+     "rarity": "common",
+     "kind": "skill",
+     "cost": 2,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "status",
+       "status": "seared",
+       "amount": 10,
+       "to": "target"
+      }
+     ],
+     "hero": "assassin",
+     "retain": true
+    }
+   }
+  },
+  {
+   "id": "all-or-nothing",
+   "name": "All or Nothing",
+   "kind": "skill",
+   "rarity": "uncommon",
+   "cost": "0",
+   "text": "Discard your hand. Draw cards equal to the cards discarded this way. Consume.",
+   "def": {
+    "id": "all-or-nothing",
+    "name": "All or Nothing",
+    "realm": "umbral",
+    "rarity": "uncommon",
+    "kind": "skill",
+    "cost": 0,
+    "target": "none",
+    "effects": [
+     {
+      "op": "discard",
+      "amount": 99
+     },
+     {
+      "op": "draw",
+      "amount": 0,
+      "scale": {
+       "by": "discardedNow"
+      }
+     }
+    ],
+    "hero": "assassin",
+    "exhaust": true,
+    "upgrade": "all-or-nothing+"
+   },
+   "upgrade": {
+    "id": "all-or-nothing+",
+    "cost": "0",
+    "text": "Discard your hand. Draw cards equal to the cards discarded this way. Consume. Hold.",
+    "def": {
+     "id": "all-or-nothing+",
+     "name": "All or Nothing+",
+     "realm": "umbral",
+     "rarity": "uncommon",
+     "kind": "skill",
+     "cost": 0,
+     "target": "none",
+     "effects": [
+      {
+       "op": "discard",
+       "amount": 99
+      },
+      {
+       "op": "draw",
+       "amount": 0,
+       "scale": {
+        "by": "discardedNow"
+       }
+      }
+     ],
+     "hero": "assassin",
+     "exhaust": true,
+     "retain": true
+    }
+   }
+  },
+  {
+   "id": "blood-mist",
+   "name": "Blood Mist",
+   "kind": "skill",
+   "rarity": "uncommon",
+   "cost": "2",
+   "text": "Apply 4 Bleed to ALL enemies. Apply 1 Faltering to ALL enemies.",
+   "def": {
+    "id": "blood-mist",
+    "name": "Blood Mist",
+    "realm": "umbral",
+    "rarity": "uncommon",
+    "kind": "skill",
+    "cost": 2,
+    "target": "none",
+    "effects": [
+     {
+      "op": "status",
+      "status": "seared",
+      "amount": 4,
+      "to": "allFoes"
+     },
+     {
+      "op": "status",
+      "status": "faltering",
+      "amount": 1,
+      "to": "allFoes"
+     }
+    ],
+    "hero": "assassin",
+    "upgrade": "blood-mist+"
+   },
+   "upgrade": {
+    "id": "blood-mist+",
+    "cost": "2",
+    "text": "Apply 6 Bleed to ALL enemies. Apply 2 Faltering to ALL enemies.",
+    "def": {
+     "id": "blood-mist+",
+     "name": "Blood Mist+",
+     "realm": "umbral",
+     "rarity": "uncommon",
+     "kind": "skill",
+     "cost": 2,
+     "target": "none",
+     "effects": [
+      {
+       "op": "status",
+       "status": "seared",
+       "amount": 6,
+       "to": "allFoes"
+      },
+      {
+       "op": "status",
+       "status": "faltering",
+       "amount": 2,
+       "to": "allFoes"
+      }
+     ],
+     "hero": "assassin"
+    }
+   }
+  },
+  {
+   "id": "bolt-hole",
+   "name": "Bolt Hole",
+   "kind": "skill",
+   "rarity": "uncommon",
+   "cost": "0",
+   "text": "Draw 1 card. If you drew a Skill: Gain 3 Barrier. Consume.",
+   "def": {
+    "id": "bolt-hole",
+    "name": "Bolt Hole",
+    "realm": "umbral",
+    "rarity": "uncommon",
+    "kind": "skill",
+    "cost": 0,
+    "target": "none",
+    "effects": [
+     {
+      "op": "draw",
+      "amount": 1
+     },
+     {
+      "op": "when",
+      "by": "skillsDrawnNow",
+      "atLeast": 1,
+      "ops": [
+       {
+        "op": "barrier",
+        "amount": 3,
+        "to": "self"
+       }
+      ]
+     }
+    ],
+    "hero": "assassin",
+    "exhaust": true,
+    "upgrade": "bolt-hole+"
+   },
+   "upgrade": {
+    "id": "bolt-hole+",
+    "cost": "0",
+    "text": "Draw 1 card. If you drew a Skill: Gain 5 Barrier. Consume.",
+    "def": {
+     "id": "bolt-hole+",
+     "name": "Bolt Hole+",
+     "realm": "umbral",
+     "rarity": "uncommon",
+     "kind": "skill",
+     "cost": 0,
+     "target": "none",
+     "effects": [
+      {
+       "op": "draw",
+       "amount": 1
+      },
+      {
+       "op": "when",
+       "by": "skillsDrawnNow",
+       "atLeast": 1,
+       "ops": [
+        {
+         "op": "barrier",
+         "amount": 5,
+         "to": "self"
+        }
+       ]
+      }
+     ],
+     "hero": "assassin",
+     "exhaust": true
+    }
+   }
+  },
+  {
+   "id": "bottomless-sleeves",
+   "name": "Bottomless Sleeves",
+   "kind": "power",
+   "rarity": "uncommon",
+   "cost": "1",
+   "text": "At the start of your turn: Add a Dagger to your hand.",
+   "def": {
+    "id": "bottomless-sleeves",
+    "name": "Bottomless Sleeves",
+    "realm": "umbral",
+    "rarity": "uncommon",
+    "kind": "power",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "power",
+      "when": "turnStart",
+      "ops": [
+       {
+        "op": "addCard",
+        "card": "sleeve-knife",
+        "to": "hand",
+        "side": "self"
+       }
+      ]
+     }
+    ],
+    "hero": "assassin",
+    "upgrade": "bottomless-sleeves+"
+   },
+   "upgrade": {
+    "id": "bottomless-sleeves+",
+    "cost": "1",
+    "text": "At the start of your turn: Add a Dagger to your hand. Opening hand.",
+    "def": {
+     "id": "bottomless-sleeves+",
+     "name": "Bottomless Sleeves+",
+     "realm": "umbral",
+     "rarity": "uncommon",
+     "kind": "power",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "power",
+       "when": "turnStart",
+       "ops": [
+        {
+         "op": "addCard",
+         "card": "sleeve-knife",
+         "to": "hand",
+         "side": "self"
+        }
+       ]
+      }
+     ],
+     "hero": "assassin",
+     "innate": true
+    }
+   }
+  },
+  {
+   "id": "clean-cut",
+   "name": "Clean Cut",
+   "kind": "attack",
+   "rarity": "uncommon",
+   "cost": "0",
+   "text": "Deal 13 (-2 per card in hand) damage.",
+   "def": {
+    "id": "clean-cut",
+    "name": "Clean Cut",
+    "realm": "umbral",
+    "rarity": "uncommon",
+    "kind": "attack",
+    "cost": 0,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 13,
+      "to": "target",
+      "scale": {
+       "by": "hand",
+       "mult": -2
+      }
+     }
+    ],
+    "hero": "assassin",
+    "upgrade": "clean-cut+"
+   },
+   "upgrade": {
+    "id": "clean-cut+",
+    "cost": "0",
+    "text": "Deal 16 (-2 per card in hand) damage.",
+    "def": {
+     "id": "clean-cut+",
+     "name": "Clean Cut+",
+     "realm": "umbral",
+     "rarity": "uncommon",
+     "kind": "attack",
+     "cost": 0,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 16,
+       "to": "target",
+       "scale": {
+        "by": "hand",
+        "mult": -2
+       }
+      }
+     ],
+     "hero": "assassin"
+    }
+   }
+  },
+  {
+   "id": "cool-head",
+   "name": "Cool Head",
+   "kind": "skill",
+   "rarity": "uncommon",
+   "cost": "3",
+   "text": "Sly. Gain 1 Mana.",
+   "def": {
+    "id": "cool-head",
+    "name": "Cool Head",
+    "realm": "umbral",
+    "rarity": "uncommon",
+    "kind": "skill",
+    "cost": 3,
+    "target": "none",
+    "effects": [
+     {
+      "op": "mana",
+      "amount": 1
+     }
+    ],
+    "hero": "assassin",
+    "sly": true,
+    "upgrade": "cool-head+"
+   },
+   "upgrade": {
+    "id": "cool-head+",
+    "cost": "3",
+    "text": "Sly. Gain 2 Mana.",
+    "def": {
+     "id": "cool-head+",
+     "name": "Cool Head+",
+     "realm": "umbral",
+     "rarity": "uncommon",
+     "kind": "skill",
+     "cost": 3,
+     "target": "none",
+     "effects": [
+      {
+       "op": "mana",
+       "amount": 2
+      }
+     ],
+     "hero": "assassin",
+     "sly": true
+    }
+   }
+  },
+  {
+   "id": "darting-strike",
+   "name": "Darting Strike",
+   "kind": "attack",
+   "rarity": "uncommon",
+   "cost": "2",
+   "text": "Gain 10 Barrier. Deal 10 damage.",
+   "def": {
+    "id": "darting-strike",
+    "name": "Darting Strike",
+    "realm": "umbral",
+    "rarity": "uncommon",
+    "kind": "attack",
+    "cost": 2,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "barrier",
+      "amount": 10,
+      "to": "self"
+     },
+     {
+      "op": "damage",
+      "amount": 10,
+      "to": "target"
+     }
+    ],
+    "hero": "assassin",
+    "upgrade": "darting-strike+"
+   },
+   "upgrade": {
+    "id": "darting-strike+",
+    "cost": "2",
+    "text": "Gain 13 Barrier. Deal 13 damage.",
+    "def": {
+     "id": "darting-strike+",
+     "name": "Darting Strike+",
+     "realm": "umbral",
+     "rarity": "uncommon",
+     "kind": "attack",
+     "cost": 2,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "barrier",
+       "amount": 13,
+       "to": "self"
+      },
+      {
+       "op": "damage",
+       "amount": 13,
+       "to": "target"
+      }
+     ],
+     "hero": "assassin"
+    }
+   }
+  },
+  {
+   "id": "final-flourish",
+   "name": "Final Flourish",
+   "kind": "attack",
+   "rarity": "uncommon",
+   "cost": "1",
+   "text": "Deal damage equal to 6 times the Attacks played this turn.",
+   "def": {
+    "id": "final-flourish",
+    "name": "Final Flourish",
+    "realm": "umbral",
+    "rarity": "uncommon",
+    "kind": "attack",
+    "cost": 1,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 0,
+      "to": "target",
+      "scale": {
+       "by": "attacksPlayed",
+       "mult": 6
+      }
+     }
+    ],
+    "hero": "assassin",
+    "upgrade": "final-flourish+"
+   },
+   "upgrade": {
+    "id": "final-flourish+",
+    "cost": "1",
+    "text": "Deal damage equal to 8 times the Attacks played this turn.",
+    "def": {
+     "id": "final-flourish+",
+     "name": "Final Flourish+",
+     "realm": "umbral",
+     "rarity": "uncommon",
+     "kind": "attack",
+     "cost": 1,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 0,
+       "to": "target",
+       "scale": {
+        "by": "attacksPlayed",
+        "mult": 8
+       }
+      }
+     ],
+     "hero": "assassin"
+    }
+   }
+  },
+  {
+   "id": "fleet-fingers",
+   "name": "Fleet Fingers",
+   "kind": "power",
+   "rarity": "uncommon",
+   "cost": "2",
+   "text": "Whenever you draw a card during your turn: Deal 2 damage to ALL enemies.",
+   "def": {
+    "id": "fleet-fingers",
+    "name": "Fleet Fingers",
+    "realm": "umbral",
+    "rarity": "uncommon",
+    "kind": "power",
+    "cost": 2,
+    "target": "none",
+    "effects": [
+     {
+      "op": "power",
+      "when": "drawMidTurn",
+      "ops": [
+       {
+        "op": "damage",
+        "amount": 2,
+        "to": "allFoes"
+       }
+      ]
+     }
+    ],
+    "hero": "assassin",
+    "upgrade": "fleet-fingers+"
+   },
+   "upgrade": {
+    "id": "fleet-fingers+",
+    "cost": "2",
+    "text": "Whenever you draw a card during your turn: Deal 2 damage to ALL enemies. Opening hand.",
+    "def": {
+     "id": "fleet-fingers+",
+     "name": "Fleet Fingers+",
+     "realm": "umbral",
+     "rarity": "uncommon",
+     "kind": "power",
+     "cost": 2,
+     "target": "none",
+     "effects": [
+      {
+       "op": "power",
+       "when": "drawMidTurn",
+       "ops": [
+        {
+         "op": "damage",
+         "amount": 2,
+         "to": "allFoes"
+        }
+       ]
+      }
+     ],
+     "hero": "assassin",
+     "innate": true
+    }
+   }
+  },
+  {
+   "id": "fleet-step",
+   "name": "Fleet Step",
+   "kind": "power",
+   "rarity": "uncommon",
+   "cost": "1",
+   "text": "Gain 2 Bracing for the rest of the fight.",
+   "def": {
+    "id": "fleet-step",
+    "name": "Fleet Step",
+    "realm": "umbral",
+    "rarity": "uncommon",
+    "kind": "power",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "status",
+      "status": "bracing",
+      "amount": 2,
+      "to": "self"
+     }
+    ],
+    "hero": "assassin",
+    "upgrade": "fleet-step+"
+   },
+   "upgrade": {
+    "id": "fleet-step+",
+    "cost": "1",
+    "text": "Gain 3 Bracing for the rest of the fight.",
+    "def": {
+     "id": "fleet-step+",
+     "name": "Fleet Step+",
+     "realm": "umbral",
+     "rarity": "uncommon",
+     "kind": "power",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "status",
+       "status": "bracing",
+       "amount": 3,
+       "to": "self"
+      }
+     ],
+     "hero": "assassin"
+    }
+   }
+  },
+  {
+   "id": "garrote",
+   "name": "Garrote",
+   "kind": "attack",
+   "rarity": "uncommon",
+   "cost": "1",
+   "text": "Deal 8 damage. Apply 2 Strangled until the end of your turn.",
+   "def": {
+    "id": "garrote",
+    "name": "Garrote",
+    "realm": "umbral",
+    "rarity": "uncommon",
+    "kind": "attack",
+    "cost": 1,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 8,
+      "to": "target"
+     },
+     {
+      "op": "status",
+      "status": "strangled",
+      "amount": 2,
+      "to": "target",
+      "temp": true
+     }
+    ],
+    "hero": "assassin",
+    "upgrade": "garrote+"
+   },
+   "upgrade": {
+    "id": "garrote+",
+    "cost": "1",
+    "text": "Deal 10 damage. Apply 3 Strangled until the end of your turn.",
+    "def": {
+     "id": "garrote+",
+     "name": "Garrote+",
+     "realm": "umbral",
+     "rarity": "uncommon",
+     "kind": "attack",
+     "cost": 1,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 10,
+       "to": "target"
+      },
+      {
+       "op": "status",
+       "status": "strangled",
+       "amount": 3,
+       "to": "target",
+       "temp": true
+      }
+     ],
+     "hero": "assassin"
+    }
+   }
+  },
+  {
+   "id": "ghost-knives",
+   "name": "Ghost Knives",
+   "kind": "power",
+   "rarity": "uncommon",
+   "cost": "1",
+   "text": "Gain 9 Honed.",
+   "def": {
+    "id": "ghost-knives",
+    "name": "Ghost Knives",
+    "realm": "umbral",
+    "rarity": "uncommon",
+    "kind": "power",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "status",
+      "status": "honed",
+      "amount": 9,
+      "to": "self"
+     }
+    ],
+    "hero": "assassin",
+    "upgrade": "ghost-knives+"
+   },
+   "upgrade": {
+    "id": "ghost-knives+",
+    "cost": "1",
+    "text": "Gain 12 Honed.",
+    "def": {
+     "id": "ghost-knives+",
+     "name": "Ghost Knives+",
+     "realm": "umbral",
+     "rarity": "uncommon",
+     "kind": "power",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "status",
+       "status": "honed",
+       "amount": 12,
+       "to": "self"
+      }
+     ],
+     "hero": "assassin"
+    }
+   }
+  },
+  {
+   "id": "graveside-cut",
+   "name": "Graveside Cut",
+   "kind": "attack",
+   "rarity": "uncommon",
+   "cost": "1",
+   "text": "Deal 9 (+4 per card discarded this turn) damage.",
+   "def": {
+    "id": "graveside-cut",
+    "name": "Graveside Cut",
+    "realm": "umbral",
+    "rarity": "uncommon",
+    "kind": "attack",
+    "cost": 1,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 9,
+      "to": "target",
+      "scale": {
+       "by": "discarded",
+       "mult": 4
+      }
+     }
+    ],
+    "hero": "assassin",
+    "upgrade": "graveside-cut+"
+   },
+   "upgrade": {
+    "id": "graveside-cut+",
+    "cost": "1",
+    "text": "Deal 11 (+5 per card discarded this turn) damage.",
+    "def": {
+     "id": "graveside-cut+",
+     "name": "Graveside Cut+",
+     "realm": "umbral",
+     "rarity": "uncommon",
+     "kind": "attack",
+     "cost": 1,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 11,
+       "to": "target",
+       "scale": {
+        "by": "discarded",
+        "mult": 5
+       }
+      }
+     ],
+     "hero": "assassin"
+    }
+   }
+  },
+  {
+   "id": "knife-in-the-back",
+   "name": "Knife in the Back",
+   "kind": "attack",
+   "rarity": "uncommon",
+   "cost": "0",
+   "text": "Deal 11 damage. Consume. Opening hand.",
+   "def": {
+    "id": "knife-in-the-back",
+    "name": "Knife in the Back",
+    "realm": "umbral",
+    "rarity": "uncommon",
+    "kind": "attack",
+    "cost": 0,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 11,
+      "to": "target"
+     }
+    ],
+    "hero": "assassin",
+    "innate": true,
+    "exhaust": true,
+    "upgrade": "knife-in-the-back+"
+   },
+   "upgrade": {
+    "id": "knife-in-the-back+",
+    "cost": "0",
+    "text": "Deal 15 damage. Consume. Opening hand.",
+    "def": {
+     "id": "knife-in-the-back+",
+     "name": "Knife in the Back+",
+     "realm": "umbral",
+     "rarity": "uncommon",
+     "kind": "attack",
+     "cost": 0,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 15,
+       "to": "target"
+      }
+     ],
+     "hero": "assassin",
+     "innate": true,
+     "exhaust": true
+    }
+   }
+  },
+  {
+   "id": "lay-bare",
+   "name": "Lay Bare",
+   "kind": "skill",
+   "rarity": "uncommon",
+   "cost": "0",
+   "text": "Remove all Barrier and Steadfast from the target. Apply 2 Exposed. Consume.",
+   "def": {
+    "id": "lay-bare",
+    "name": "Lay Bare",
+    "realm": "umbral",
+    "rarity": "uncommon",
+    "kind": "skill",
+    "cost": 0,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "strip",
+      "to": "target"
+     },
+     {
+      "op": "status",
+      "status": "exposed",
+      "amount": 2,
+      "to": "target"
+     }
+    ],
+    "hero": "assassin",
+    "exhaust": true,
+    "upgrade": "lay-bare+"
+   },
+   "upgrade": {
+    "id": "lay-bare+",
+    "cost": "0",
+    "text": "Remove all Barrier and Steadfast from the target. Apply 3 Exposed. Consume.",
+    "def": {
+     "id": "lay-bare+",
+     "name": "Lay Bare+",
+     "realm": "umbral",
+     "rarity": "uncommon",
+     "kind": "skill",
+     "cost": 0,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "strip",
+       "to": "target"
+      },
+      {
+       "op": "status",
+       "status": "exposed",
+       "amount": 3,
+       "to": "target"
+      }
+     ],
+     "hero": "assassin",
+     "exhaust": true
+    }
+   }
+  },
+  {
+   "id": "needle-rain",
+   "name": "Needle Rain",
+   "kind": "attack",
+   "rarity": "uncommon",
+   "cost": "1",
+   "text": "Deal 5 damage for each Skill in your hand.",
+   "def": {
+    "id": "needle-rain",
+    "name": "Needle Rain",
+    "realm": "umbral",
+    "rarity": "uncommon",
+    "kind": "attack",
+    "cost": 1,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 5,
+      "hits": 0,
+      "to": "target",
+      "scale": {
+       "by": "skillsInHand",
+       "into": "hits"
+      }
+     }
+    ],
+    "hero": "assassin",
+    "upgrade": "needle-rain+"
+   },
+   "upgrade": {
+    "id": "needle-rain+",
+    "cost": "1",
+    "text": "Deal 7 damage for each Skill in your hand.",
+    "def": {
+     "id": "needle-rain+",
+     "name": "Needle Rain+",
+     "realm": "umbral",
+     "rarity": "uncommon",
+     "kind": "attack",
+     "cost": 1,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 7,
+       "hits": 0,
+       "to": "target",
+       "scale": {
+        "by": "skillsInHand",
+        "into": "hits"
+       }
+      }
+     ],
+     "hero": "assassin"
+    }
+   }
+  },
+  {
+   "id": "nerve-strike",
+   "name": "Nerve Strike",
+   "kind": "attack",
+   "rarity": "uncommon",
+   "cost": "3",
+   "text": "Costs 1 less for each Skill played this turn. Deal 15 damage.",
+   "def": {
+    "id": "nerve-strike",
+    "name": "Nerve Strike",
+    "realm": "umbral",
+    "rarity": "uncommon",
+    "kind": "attack",
+    "cost": 3,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 15,
+      "to": "target"
+     }
+    ],
+    "hero": "assassin",
+    "cheaperPerSkill": 1,
+    "upgrade": "nerve-strike+"
+   },
+   "upgrade": {
+    "id": "nerve-strike+",
+    "cost": "3",
+    "text": "Costs 1 less for each Skill played this turn. Deal 19 damage.",
+    "def": {
+     "id": "nerve-strike+",
+     "name": "Nerve Strike+",
+     "realm": "umbral",
+     "rarity": "uncommon",
+     "kind": "attack",
+     "cost": 3,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 19,
+       "to": "target"
+      }
+     ],
+     "hero": "assassin",
+     "cheaperPerSkill": 1
+    }
+   }
+  },
+  {
+   "id": "nimble-deal",
+   "name": "Nimble Deal",
+   "kind": "skill",
+   "rarity": "uncommon",
+   "cost": "1",
+   "text": "Draw 3 cards. Discard 1 card.",
+   "def": {
+    "id": "nimble-deal",
+    "name": "Nimble Deal",
+    "realm": "umbral",
+    "rarity": "uncommon",
+    "kind": "skill",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "draw",
+      "amount": 3
+     },
+     {
+      "op": "discard",
+      "amount": 1
+     }
+    ],
+    "hero": "assassin",
+    "upgrade": "nimble-deal+"
+   },
+   "upgrade": {
+    "id": "nimble-deal+",
+    "cost": "1",
+    "text": "Draw 4 cards. Discard 1 card.",
+    "def": {
+     "id": "nimble-deal+",
+     "name": "Nimble Deal+",
+     "realm": "umbral",
+     "rarity": "uncommon",
+     "kind": "skill",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "draw",
+       "amount": 4
+      },
+      {
+       "op": "discard",
+       "amount": 1
+      }
+     ],
+     "hero": "assassin"
+    }
+   }
+  },
+  {
+   "id": "palm-switch",
+   "name": "Palm Switch",
+   "kind": "skill",
+   "rarity": "uncommon",
+   "cost": "1",
+   "text": "Gain 7 Barrier. A random Skill in your hand gains Sly this turn.",
+   "def": {
+    "id": "palm-switch",
+    "name": "Palm Switch",
+    "realm": "umbral",
+    "rarity": "uncommon",
+    "kind": "skill",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "barrier",
+      "amount": 7,
+      "to": "self"
+     },
+     {
+      "op": "giveSly"
+     }
+    ],
+    "hero": "assassin",
+    "upgrade": "palm-switch+"
+   },
+   "upgrade": {
+    "id": "palm-switch+",
+    "cost": "1",
+    "text": "Gain 10 Barrier. A random Skill in your hand gains Sly this turn.",
+    "def": {
+     "id": "palm-switch+",
+     "name": "Palm Switch+",
+     "realm": "umbral",
+     "rarity": "uncommon",
+     "kind": "skill",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "barrier",
+       "amount": 10,
+       "to": "self"
+      },
+      {
+       "op": "giveSly"
+      }
+     ],
+     "hero": "assassin"
+    }
+   }
+  },
+  {
+   "id": "practiced-hands",
+   "name": "Practiced Hands",
+   "kind": "skill",
+   "rarity": "uncommon",
+   "cost": "1",
+   "text": "Draw 2 cards. They Hold this turn.",
+   "def": {
+    "id": "practiced-hands",
+    "name": "Practiced Hands",
+    "realm": "umbral",
+    "rarity": "uncommon",
+    "kind": "skill",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "draw",
+      "amount": 2,
+      "hold": true
+     }
+    ],
+    "hero": "assassin",
+    "upgrade": "practiced-hands+"
+   },
+   "upgrade": {
+    "id": "practiced-hands+",
+    "cost": "1",
+    "text": "Draw 3 cards. They Hold this turn.",
+    "def": {
+     "id": "practiced-hands+",
+     "name": "Practiced Hands+",
+     "realm": "umbral",
+     "rarity": "uncommon",
+     "kind": "skill",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "draw",
+       "amount": 3,
+       "hold": true
+      }
+     ],
+     "hero": "assassin"
+    }
+   }
+  },
+  {
+   "id": "quick-reflexes",
+   "name": "Quick Reflexes",
+   "kind": "skill",
+   "rarity": "uncommon",
+   "cost": "3",
+   "text": "Sly. Draw 2 cards.",
+   "def": {
+    "id": "quick-reflexes",
+    "name": "Quick Reflexes",
+    "realm": "umbral",
+    "rarity": "uncommon",
+    "kind": "skill",
+    "cost": 3,
+    "target": "none",
+    "effects": [
+     {
+      "op": "draw",
+      "amount": 2
+     }
+    ],
+    "hero": "assassin",
+    "sly": true,
+    "upgrade": "quick-reflexes+"
+   },
+   "upgrade": {
+    "id": "quick-reflexes+",
+    "cost": "3",
+    "text": "Sly. Draw 3 cards.",
+    "def": {
+     "id": "quick-reflexes+",
+     "name": "Quick Reflexes+",
+     "realm": "umbral",
+     "rarity": "uncommon",
+     "kind": "skill",
+     "cost": 3,
+     "target": "none",
+     "effects": [
+      {
+       "op": "draw",
+       "amount": 3
+      }
+     ],
+     "hero": "assassin",
+     "sly": true
+    }
+   }
+  },
+  {
+   "id": "red-mirage",
+   "name": "Red Mirage",
+   "kind": "skill",
+   "rarity": "uncommon",
+   "cost": "1",
+   "text": "Gain Barrier equal to the Bleed on ALL enemies. Consume.",
+   "def": {
+    "id": "red-mirage",
+    "name": "Red Mirage",
+    "realm": "umbral",
+    "rarity": "uncommon",
+    "kind": "skill",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "barrier",
+      "amount": 0,
+      "to": "self",
+      "scale": {
+       "by": "foesSeared"
+      }
+     }
+    ],
+    "hero": "assassin",
+    "exhaust": true,
+    "upgrade": "red-mirage+"
+   },
+   "upgrade": {
+    "id": "red-mirage+",
+    "cost": "1",
+    "text": "Gain Barrier equal to the Bleed on ALL enemies.",
+    "def": {
+     "id": "red-mirage+",
+     "name": "Red Mirage+",
+     "realm": "umbral",
+     "rarity": "uncommon",
+     "kind": "skill",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "barrier",
+       "amount": 0,
+       "to": "self",
+       "scale": {
+        "by": "foesSeared"
+       }
+      }
+     ],
+     "hero": "assassin",
+     "exhaust": false
+    }
+   }
+  },
+  {
+   "id": "reopen-the-wound",
+   "name": "Reopen the Wound",
+   "kind": "skill",
+   "rarity": "uncommon",
+   "cost": "1",
+   "text": "If the target has Bleed: Apply 9 Bleed.",
+   "def": {
+    "id": "reopen-the-wound",
+    "name": "Reopen the Wound",
+    "realm": "umbral",
+    "rarity": "uncommon",
+    "kind": "skill",
+    "cost": 1,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "when",
+      "by": "seared",
+      "atLeast": 1,
+      "of": "target",
+      "ops": [
+       {
+        "op": "status",
+        "status": "seared",
+        "amount": 9,
+        "to": "target"
+       }
+      ]
+     }
+    ],
+    "hero": "assassin",
+    "upgrade": "reopen-the-wound+"
+   },
+   "upgrade": {
+    "id": "reopen-the-wound+",
+    "cost": "1",
+    "text": "If the target has Bleed: Apply 12 Bleed.",
+    "def": {
+     "id": "reopen-the-wound+",
+     "name": "Reopen the Wound+",
+     "realm": "umbral",
+     "rarity": "uncommon",
+     "kind": "skill",
+     "cost": 1,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "when",
+       "by": "seared",
+       "atLeast": 1,
+       "of": "target",
+       "ops": [
+        {
+         "op": "status",
+         "status": "seared",
+         "amount": 12,
+         "to": "target"
+        }
+       ]
+      }
+     ],
+     "hero": "assassin"
+    }
+   }
+  },
+  {
+   "id": "rippling-cut",
+   "name": "Rippling Cut",
+   "kind": "attack",
+   "rarity": "uncommon",
+   "cost": "1",
+   "text": "Deal 10 damage to ALL enemies. Repeat this for each enemy it kills.",
+   "def": {
+    "id": "rippling-cut",
+    "name": "Rippling Cut",
+    "realm": "umbral",
+    "rarity": "uncommon",
+    "kind": "attack",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 10,
+      "to": "allFoes",
+      "repeatOnKill": true
+     }
+    ],
+    "hero": "assassin",
+    "upgrade": "rippling-cut+"
+   },
+   "upgrade": {
+    "id": "rippling-cut+",
+    "cost": "1",
+    "text": "Deal 13 damage to ALL enemies. Repeat this for each enemy it kills.",
+    "def": {
+     "id": "rippling-cut+",
+     "name": "Rippling Cut+",
+     "realm": "umbral",
+     "rarity": "uncommon",
+     "kind": "attack",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 13,
+       "to": "allFoes",
+       "repeatOnKill": true
+      }
+     ],
+     "hero": "assassin"
+    }
+   }
+  },
+  {
+   "id": "run-through",
+   "name": "Run Through",
+   "kind": "attack",
+   "rarity": "uncommon",
+   "cost": "X",
+   "text": "Deal 8 damage X times.",
+   "def": {
+    "id": "run-through",
+    "name": "Run Through",
+    "realm": "umbral",
+    "rarity": "uncommon",
+    "kind": "attack",
+    "cost": 0,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 8,
+      "hits": 0,
+      "to": "target",
+      "scale": {
+       "by": "x",
+       "into": "hits"
+      }
+     }
+    ],
+    "hero": "assassin",
+    "x": true,
+    "upgrade": "run-through+"
+   },
+   "upgrade": {
+    "id": "run-through+",
+    "cost": "X",
+    "text": "X is 1 higher. Deal 8 damage X times.",
+    "def": {
+     "id": "run-through+",
+     "name": "Run Through+",
+     "realm": "umbral",
+     "rarity": "uncommon",
+     "kind": "attack",
+     "cost": 0,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 8,
+       "hits": 0,
+       "to": "target",
+       "scale": {
+        "by": "x",
+        "into": "hits"
+       }
+      }
+     ],
+     "hero": "assassin",
+     "x": true,
+     "xBonus": 1
+    }
+   }
+  },
+  {
+   "id": "side-slip",
+   "name": "Side Slip",
+   "kind": "skill",
+   "rarity": "uncommon",
+   "cost": "0",
+   "text": "Next turn, gain 1 extra Mana.",
+   "def": {
+    "id": "side-slip",
+    "name": "Side Slip",
+    "realm": "umbral",
+    "rarity": "uncommon",
+    "kind": "skill",
+    "cost": 0,
+    "target": "none",
+    "effects": [
+     {
+      "op": "manaNext",
+      "amount": 1
+     }
+    ],
+    "hero": "assassin",
+    "upgrade": "side-slip+"
+   },
+   "upgrade": {
+    "id": "side-slip+",
+    "cost": "0",
+    "text": "Next turn, gain 2 extra Mana.",
+    "def": {
+     "id": "side-slip+",
+     "name": "Side Slip+",
+     "realm": "umbral",
+     "rarity": "uncommon",
+     "kind": "skill",
+     "cost": 0,
+     "target": "none",
+     "effects": [
+      {
+       "op": "manaNext",
+       "amount": 2
+      }
+     ],
+     "hero": "assassin"
+    }
+   }
+  },
+  {
+   "id": "sleeve-drop",
+   "name": "Sleeve Drop",
+   "kind": "skill",
+   "rarity": "uncommon",
+   "cost": "0",
+   "text": "Discard 2 cards. Add 2 Daggers to your hand.",
+   "def": {
+    "id": "sleeve-drop",
+    "name": "Sleeve Drop",
+    "realm": "umbral",
+    "rarity": "uncommon",
+    "kind": "skill",
+    "cost": 0,
+    "target": "none",
+    "effects": [
+     {
+      "op": "discard",
+      "amount": 2
+     },
+     {
+      "op": "addCard",
+      "card": "sleeve-knife",
+      "to": "hand",
+      "side": "self",
+      "times": 2
+     }
+    ],
+    "hero": "assassin",
+    "upgrade": "sleeve-drop+"
+   },
+   "upgrade": {
+    "id": "sleeve-drop+",
+    "cost": "0",
+    "text": "Discard 2 cards. Add 2 upgraded Daggers to your hand.",
+    "def": {
+     "id": "sleeve-drop+",
+     "name": "Sleeve Drop+",
+     "realm": "umbral",
+     "rarity": "uncommon",
+     "kind": "skill",
+     "cost": 0,
+     "target": "none",
+     "effects": [
+      {
+       "op": "discard",
+       "amount": 2
+      },
+      {
+       "op": "addCard",
+       "card": "sleeve-knife+",
+       "to": "hand",
+       "side": "self",
+       "times": 2
+      }
+     ],
+     "hero": "assassin"
+    }
+   }
+  },
+  {
+   "id": "smoke-veil",
+   "name": "Smoke Veil",
+   "kind": "skill",
+   "rarity": "uncommon",
+   "cost": "1",
+   "text": "Gain 5 Barrier. Gain 1 Blur.",
+   "def": {
+    "id": "smoke-veil",
+    "name": "Smoke Veil",
+    "realm": "umbral",
+    "rarity": "uncommon",
+    "kind": "skill",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "barrier",
+      "amount": 5,
+      "to": "self"
+     },
+     {
+      "op": "status",
+      "status": "blur",
+      "amount": 1,
+      "to": "self"
+     }
+    ],
+    "hero": "assassin",
+    "upgrade": "smoke-veil+"
+   },
+   "upgrade": {
+    "id": "smoke-veil+",
+    "cost": "1",
+    "text": "Gain 8 Barrier. Gain 1 Blur.",
+    "def": {
+     "id": "smoke-veil+",
+     "name": "Smoke Veil+",
+     "realm": "umbral",
+     "rarity": "uncommon",
+     "kind": "skill",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "barrier",
+       "amount": 8,
+       "to": "self"
+      },
+      {
+       "op": "status",
+       "status": "blur",
+       "amount": 1,
+       "to": "self"
+      }
+     ],
+     "hero": "assassin"
+    }
+   }
+  },
+  {
+   "id": "spare-blades",
+   "name": "Spare Blades",
+   "kind": "skill",
+   "rarity": "uncommon",
+   "cost": "2",
+   "text": "Add 3 Daggers to your hand. This card costs 1 less for the rest of the fight.",
+   "def": {
+    "id": "spare-blades",
+    "name": "Spare Blades",
+    "realm": "umbral",
+    "rarity": "uncommon",
+    "kind": "skill",
+    "cost": 2,
+    "target": "none",
+    "effects": [
+     {
+      "op": "addCard",
+      "card": "sleeve-knife",
+      "to": "hand",
+      "side": "self",
+      "times": 3
+     },
+     {
+      "op": "selfCost",
+      "amount": 1
+     }
+    ],
+    "hero": "assassin",
+    "upgrade": "spare-blades+"
+   },
+   "upgrade": {
+    "id": "spare-blades+",
+    "cost": "2",
+    "text": "Add 4 Daggers to your hand. This card costs 1 less for the rest of the fight.",
+    "def": {
+     "id": "spare-blades+",
+     "name": "Spare Blades+",
+     "realm": "umbral",
+     "rarity": "uncommon",
+     "kind": "skill",
+     "cost": 2,
+     "target": "none",
+     "effects": [
+      {
+       "op": "addCard",
+       "card": "sleeve-knife",
+       "to": "hand",
+       "side": "self",
+       "times": 4
+      },
+      {
+       "op": "selfCost",
+       "amount": 1
+      }
+     ],
+     "hero": "assassin"
+    }
+   }
+  },
+  {
+   "id": "spring-attack",
+   "name": "Spring Attack",
+   "kind": "attack",
+   "rarity": "uncommon",
+   "cost": "2",
+   "text": "Deal 14 damage. Gain 1 Free Skill.",
+   "def": {
+    "id": "spring-attack",
+    "name": "Spring Attack",
+    "realm": "umbral",
+    "rarity": "uncommon",
+    "kind": "attack",
+    "cost": 2,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 14,
+      "to": "target"
+     },
+     {
+      "op": "status",
+      "status": "freeskill",
+      "amount": 1,
+      "to": "self"
+     }
+    ],
+    "hero": "assassin",
+    "upgrade": "spring-attack+"
+   },
+   "upgrade": {
+    "id": "spring-attack+",
+    "cost": "2",
+    "text": "Deal 20 damage. Gain 1 Free Skill.",
+    "def": {
+     "id": "spring-attack+",
+     "name": "Spring Attack+",
+     "realm": "umbral",
+     "rarity": "uncommon",
+     "kind": "attack",
+     "cost": 2,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 20,
+       "to": "target"
+      },
+      {
+       "op": "status",
+       "status": "freeskill",
+       "amount": 1,
+       "to": "self"
+      }
+     ],
+     "hero": "assassin"
+    }
+   }
+  },
+  {
+   "id": "sweep-the-leg",
+   "name": "Sweep the Leg",
+   "kind": "skill",
+   "rarity": "uncommon",
+   "cost": "2",
+   "text": "Apply 2 Faltering. Gain 11 Barrier.",
+   "def": {
+    "id": "sweep-the-leg",
+    "name": "Sweep the Leg",
+    "realm": "umbral",
+    "rarity": "uncommon",
+    "kind": "skill",
+    "cost": 2,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "status",
+      "status": "faltering",
+      "amount": 2,
+      "to": "target"
+     },
+     {
+      "op": "barrier",
+      "amount": 11,
+      "to": "self"
+     }
+    ],
+    "hero": "assassin",
+    "upgrade": "sweep-the-leg+"
+   },
+   "upgrade": {
+    "id": "sweep-the-leg+",
+    "cost": "2",
+    "text": "Apply 3 Faltering. Gain 14 Barrier.",
+    "def": {
+     "id": "sweep-the-leg+",
+     "name": "Sweep the Leg+",
+     "realm": "umbral",
+     "rarity": "uncommon",
+     "kind": "skill",
+     "cost": 2,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "status",
+       "status": "faltering",
+       "amount": 3,
+       "to": "target"
+      },
+      {
+       "op": "barrier",
+       "amount": 14,
+       "to": "self"
+      }
+     ],
+     "hero": "assassin"
+    }
+   }
+  },
+  {
+   "id": "thin-the-blood",
+   "name": "Thin the Blood",
+   "kind": "power",
+   "rarity": "uncommon",
+   "cost": "1",
+   "text": "Gain 1 Virulent.",
+   "def": {
+    "id": "thin-the-blood",
+    "name": "Thin the Blood",
+    "realm": "umbral",
+    "rarity": "uncommon",
+    "kind": "power",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "status",
+      "status": "virulent",
+      "amount": 1,
+      "to": "self"
+     }
+    ],
+    "hero": "assassin",
+    "upgrade": "thin-the-blood+"
+   },
+   "upgrade": {
+    "id": "thin-the-blood+",
+    "cost": "1",
+    "text": "Gain 2 Virulent.",
+    "def": {
+     "id": "thin-the-blood+",
+     "name": "Thin the Blood+",
+     "realm": "umbral",
+     "rarity": "uncommon",
+     "kind": "power",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "status",
+       "status": "virulent",
+       "amount": 2,
+       "to": "self"
+      }
+     ],
+     "hero": "assassin"
+    }
+   }
+  },
+  {
+   "id": "tossed-vials",
+   "name": "Tossed Vials",
+   "kind": "skill",
+   "rarity": "uncommon",
+   "cost": "2",
+   "text": "Apply 3 Bleed to a random enemy 3 times.",
+   "def": {
+    "id": "tossed-vials",
+    "name": "Tossed Vials",
+    "realm": "umbral",
+    "rarity": "uncommon",
+    "kind": "skill",
+    "cost": 2,
+    "target": "none",
+    "effects": [
+     {
+      "op": "status",
+      "status": "seared",
+      "amount": 3,
+      "to": "randomFoe"
+     },
+     {
+      "op": "status",
+      "status": "seared",
+      "amount": 3,
+      "to": "randomFoe"
+     },
+     {
+      "op": "status",
+      "status": "seared",
+      "amount": 3,
+      "to": "randomFoe"
+     }
+    ],
+    "hero": "assassin",
+    "upgrade": "tossed-vials+"
+   },
+   "upgrade": {
+    "id": "tossed-vials+",
+    "cost": "2",
+    "text": "Apply 3 Bleed to a random enemy 4 times.",
+    "def": {
+     "id": "tossed-vials+",
+     "name": "Tossed Vials+",
+     "realm": "umbral",
+     "rarity": "uncommon",
+     "kind": "skill",
+     "cost": 2,
+     "target": "none",
+     "effects": [
+      {
+       "op": "status",
+       "status": "seared",
+       "amount": 3,
+       "to": "randomFoe"
+      },
+      {
+       "op": "status",
+       "status": "seared",
+       "amount": 3,
+       "to": "randomFoe"
+      },
+      {
+       "op": "status",
+       "status": "seared",
+       "amount": 3,
+       "to": "randomFoe"
+      },
+      {
+       "op": "status",
+       "status": "seared",
+       "amount": 3,
+       "to": "randomFoe"
+      }
+     ],
+     "hero": "assassin"
+    }
+   }
+  },
+  {
+   "id": "weeping-cuts",
+   "name": "Weeping Cuts",
+   "kind": "power",
+   "rarity": "uncommon",
+   "cost": "1",
+   "text": "At the start of your turn: Apply 2 Bleed to ALL enemies.",
+   "def": {
+    "id": "weeping-cuts",
+    "name": "Weeping Cuts",
+    "realm": "umbral",
+    "rarity": "uncommon",
+    "kind": "power",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "power",
+      "when": "turnStart",
+      "ops": [
+       {
+        "op": "status",
+        "status": "seared",
+        "amount": 2,
+        "to": "allFoes"
+       }
+      ]
+     }
+    ],
+    "hero": "assassin",
+    "upgrade": "weeping-cuts+"
+   },
+   "upgrade": {
+    "id": "weeping-cuts+",
+    "cost": "1",
+    "text": "At the start of your turn: Apply 3 Bleed to ALL enemies.",
+    "def": {
+     "id": "weeping-cuts+",
+     "name": "Weeping Cuts+",
+     "realm": "umbral",
+     "rarity": "uncommon",
+     "kind": "power",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "power",
+       "when": "turnStart",
+       "ops": [
+        {
+         "op": "status",
+         "status": "seared",
+         "amount": 3,
+         "to": "allFoes"
+        }
+       ]
+      }
+     ],
+     "hero": "assassin"
+    }
+   }
+  },
+  {
+   "id": "whetted-edge",
+   "name": "Whetted Edge",
+   "kind": "power",
+   "rarity": "uncommon",
+   "cost": "1",
+   "text": "Gain 4 Edge: your Daggers deal 4 more damage for the rest of the fight.",
+   "def": {
+    "id": "whetted-edge",
+    "name": "Whetted Edge",
+    "realm": "umbral",
+    "rarity": "uncommon",
+    "kind": "power",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "status",
+      "status": "edge",
+      "amount": 4,
+      "to": "self"
+     }
+    ],
+    "hero": "assassin",
+    "upgrade": "whetted-edge+"
+   },
+   "upgrade": {
+    "id": "whetted-edge+",
+    "cost": "1",
+    "text": "Gain 6 Edge: your Daggers deal 6 more damage for the rest of the fight.",
+    "def": {
+     "id": "whetted-edge+",
+     "name": "Whetted Edge+",
+     "realm": "umbral",
+     "rarity": "uncommon",
+     "kind": "power",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "status",
+       "status": "edge",
+       "amount": 6,
+       "to": "self"
+      }
+     ],
+     "hero": "assassin"
+    }
+   }
+  },
+  {
+   "id": "blood-scent",
+   "name": "Blood Scent",
+   "kind": "power",
+   "rarity": "rare",
+   "cost": "2",
+   "text": "Gain 1 Tracking.",
+   "def": {
+    "id": "blood-scent",
+    "name": "Blood Scent",
+    "realm": "umbral",
+    "rarity": "rare",
+    "kind": "power",
+    "cost": 2,
+    "target": "none",
+    "effects": [
+     {
+      "op": "status",
+      "status": "tracking",
+      "amount": 1,
+      "to": "self"
+     }
+    ],
+    "hero": "assassin",
+    "upgrade": "blood-scent+"
+   },
+   "upgrade": {
+    "id": "blood-scent+",
+    "cost": "1",
+    "text": "Gain 1 Tracking.",
+    "def": {
+     "id": "blood-scent+",
+     "name": "Blood Scent+",
+     "realm": "umbral",
+     "rarity": "rare",
+     "kind": "power",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "status",
+       "status": "tracking",
+       "amount": 1,
+       "to": "self"
+      }
+     ],
+     "hero": "assassin"
+    }
+   }
+  },
+  {
+   "id": "bloodburst",
+   "name": "Bloodburst",
+   "kind": "skill",
+   "rarity": "rare",
+   "cost": "1",
+   "text": "Apply 9 Bleed to ALL enemies. The Bleed on ALL enemies deals its damage now.",
+   "def": {
+    "id": "bloodburst",
+    "name": "Bloodburst",
+    "realm": "umbral",
+    "rarity": "rare",
+    "kind": "skill",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "status",
+      "status": "seared",
+      "amount": 9,
+      "to": "allFoes"
+     },
+     {
+      "op": "tick",
+      "to": "allFoes"
+     }
+    ],
+    "hero": "assassin",
+    "upgrade": "bloodburst+"
+   },
+   "upgrade": {
+    "id": "bloodburst+",
+    "cost": "1",
+    "text": "Apply 12 Bleed to ALL enemies. The Bleed on ALL enemies deals its damage now.",
+    "def": {
+     "id": "bloodburst+",
+     "name": "Bloodburst+",
+     "realm": "umbral",
+     "rarity": "rare",
+     "kind": "skill",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "status",
+       "status": "seared",
+       "amount": 12,
+       "to": "allFoes"
+      },
+      {
+       "op": "tick",
+       "to": "allFoes"
+      }
+     ],
+     "hero": "assassin"
+    }
+   }
+  },
+  {
+   "id": "double-trick",
+   "name": "Double Trick",
+   "kind": "skill",
+   "rarity": "rare",
+   "cost": "1",
+   "text": "Gain 1 Mirrored.",
+   "def": {
+    "id": "double-trick",
+    "name": "Double Trick",
+    "realm": "umbral",
+    "rarity": "rare",
+    "kind": "skill",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "status",
+      "status": "mirrored",
+      "amount": 1,
+      "to": "self"
+     }
+    ],
+    "hero": "assassin",
+    "upgrade": "double-trick+"
+   },
+   "upgrade": {
+    "id": "double-trick+",
+    "cost": "1",
+    "text": "Gain 2 Mirrored.",
+    "def": {
+     "id": "double-trick+",
+     "name": "Double Trick+",
+     "realm": "umbral",
+     "rarity": "rare",
+     "kind": "skill",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "status",
+       "status": "mirrored",
+       "amount": 2,
+       "to": "self"
+      }
+     ],
+     "hero": "assassin"
+    }
+   }
+  },
+  {
+   "id": "final-bow",
+   "name": "Final Bow",
+   "kind": "attack",
+   "rarity": "rare",
+   "cost": "0",
+   "text": "Only playable while your draw pile is empty. Deal 60 damage to ALL enemies.",
+   "def": {
+    "id": "final-bow",
+    "name": "Final Bow",
+    "realm": "umbral",
+    "rarity": "rare",
+    "kind": "attack",
+    "cost": 0,
+    "target": "none",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 60,
+      "to": "allFoes"
+     }
+    ],
+    "hero": "assassin",
+    "needsEmptyDraw": true,
+    "upgrade": "final-bow+"
+   },
+   "upgrade": {
+    "id": "final-bow+",
+    "cost": "0",
+    "text": "Only playable while your draw pile is empty. Deal 75 damage to ALL enemies.",
+    "def": {
+     "id": "final-bow+",
+     "name": "Final Bow+",
+     "realm": "umbral",
+     "rarity": "rare",
+     "kind": "attack",
+     "cost": 0,
+     "target": "none",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 75,
+       "to": "allFoes"
+      }
+     ],
+     "hero": "assassin",
+     "needsEmptyDraw": true
+    }
+   }
+  },
+  {
+   "id": "grand-scheme",
+   "name": "Grand Scheme",
+   "kind": "power",
+   "rarity": "rare",
+   "cost": "2",
+   "text": "Gain 1 Planner.",
+   "def": {
+    "id": "grand-scheme",
+    "name": "Grand Scheme",
+    "realm": "umbral",
+    "rarity": "rare",
+    "kind": "power",
+    "cost": 2,
+    "target": "none",
+    "effects": [
+     {
+      "op": "status",
+      "status": "planner",
+      "amount": 1,
+      "to": "self"
+     }
+    ],
+    "hero": "assassin",
+    "upgrade": "grand-scheme+"
+   },
+   "upgrade": {
+    "id": "grand-scheme+",
+    "cost": "1",
+    "text": "Gain 1 Planner.",
+    "def": {
+     "id": "grand-scheme+",
+     "name": "Grand Scheme+",
+     "realm": "umbral",
+     "rarity": "rare",
+     "kind": "power",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "status",
+       "status": "planner",
+       "amount": 1,
+       "to": "self"
+      }
+     ],
+     "hero": "assassin"
+    }
+   }
+  },
+  {
+   "id": "hemorrhage",
+   "name": "Hemorrhage",
+   "kind": "skill",
+   "rarity": "rare",
+   "cost": "1",
+   "text": "This turn, whenever you draw a card: Apply 2 Bleed to ALL enemies.",
+   "def": {
+    "id": "hemorrhage",
+    "name": "Hemorrhage",
+    "realm": "umbral",
+    "rarity": "rare",
+    "kind": "skill",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "power",
+      "when": "draw",
+      "ops": [
+       {
+        "op": "status",
+        "status": "seared",
+        "amount": 2,
+        "to": "allFoes"
+       }
+      ],
+      "temp": true
+     }
+    ],
+    "hero": "assassin",
+    "upgrade": "hemorrhage+"
+   },
+   "upgrade": {
+    "id": "hemorrhage+",
+    "cost": "1",
+    "text": "This turn, whenever you draw a card: Apply 3 Bleed to ALL enemies.",
+    "def": {
+     "id": "hemorrhage+",
+     "name": "Hemorrhage+",
+     "realm": "umbral",
+     "rarity": "rare",
+     "kind": "skill",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "power",
+       "when": "draw",
+       "ops": [
+        {
+         "op": "status",
+         "status": "seared",
+         "amount": 3,
+         "to": "allFoes"
+        }
+       ],
+       "temp": true
+      }
+     ],
+     "hero": "assassin"
+    }
+   }
+  },
+  {
+   "id": "inked-blades",
+   "name": "Inked Blades",
+   "kind": "skill",
+   "rarity": "rare",
+   "cost": "1",
+   "text": "Add 2 Inked Daggers to your hand.",
+   "def": {
+    "id": "inked-blades",
+    "name": "Inked Blades",
+    "realm": "umbral",
+    "rarity": "rare",
+    "kind": "skill",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "addCard",
+      "card": "inked-knife",
+      "to": "hand",
+      "side": "self",
+      "times": 2
+     }
+    ],
+    "hero": "assassin",
+    "upgrade": "inked-blades+"
+   },
+   "upgrade": {
+    "id": "inked-blades+",
+    "cost": "1",
+    "text": "Add 3 Inked Daggers to your hand.",
+    "def": {
+     "id": "inked-blades+",
+     "name": "Inked Blades+",
+     "realm": "umbral",
+     "rarity": "rare",
+     "kind": "skill",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "addCard",
+       "card": "inked-knife",
+       "to": "hand",
+       "side": "self",
+       "times": 3
+      }
+     ],
+     "hero": "assassin"
+    }
+   }
+  },
+  {
+   "id": "into-the-shadows",
+   "name": "Into the Shadows",
+   "kind": "skill",
+   "rarity": "rare",
+   "cost": "1",
+   "text": "Discard your hand. Gain 1 Poised.",
+   "def": {
+    "id": "into-the-shadows",
+    "name": "Into the Shadows",
+    "realm": "umbral",
+    "rarity": "rare",
+    "kind": "skill",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "discard",
+      "amount": 99
+     },
+     {
+      "op": "status",
+      "status": "poised",
+      "amount": 1,
+      "to": "self"
+     }
+    ],
+    "hero": "assassin",
+    "upgrade": "into-the-shadows+"
+   },
+   "upgrade": {
+    "id": "into-the-shadows+",
+    "cost": "0",
+    "text": "Discard your hand. Gain 1 Poised.",
+    "def": {
+     "id": "into-the-shadows+",
+     "name": "Into the Shadows+",
+     "realm": "umbral",
+     "rarity": "rare",
+     "kind": "skill",
+     "cost": 0,
+     "target": "none",
+     "effects": [
+      {
+       "op": "discard",
+       "amount": 99
+      },
+      {
+       "op": "status",
+       "status": "poised",
+       "amount": 1,
+       "to": "self"
+      }
+     ],
+     "hero": "assassin"
+    }
+   }
+  },
+  {
+   "id": "killing-stroke",
+   "name": "Killing Stroke",
+   "kind": "attack",
+   "rarity": "rare",
+   "cost": "0",
+   "text": "Deal 10 damage. Apply 1 Exposed. Consume. Opening hand.",
+   "def": {
+    "id": "killing-stroke",
+    "name": "Killing Stroke",
+    "realm": "umbral",
+    "rarity": "rare",
+    "kind": "attack",
+    "cost": 0,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 10,
+      "to": "target"
+     },
+     {
+      "op": "status",
+      "status": "exposed",
+      "amount": 1,
+      "to": "target"
+     }
+    ],
+    "hero": "assassin",
+    "innate": true,
+    "exhaust": true,
+    "upgrade": "killing-stroke+"
+   },
+   "upgrade": {
+    "id": "killing-stroke+",
+    "cost": "0",
+    "text": "Deal 13 damage. Apply 2 Exposed. Consume. Opening hand.",
+    "def": {
+     "id": "killing-stroke+",
+     "name": "Killing Stroke+",
+     "realm": "umbral",
+     "rarity": "rare",
+     "kind": "attack",
+     "cost": 0,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 13,
+       "to": "target"
+      },
+      {
+       "op": "status",
+       "status": "exposed",
+       "amount": 2,
+       "to": "target"
+      }
+     ],
+     "hero": "assassin",
+     "innate": true,
+     "exhaust": true
+    }
+   }
+  },
+  {
+   "id": "mantle-of-night",
+   "name": "Mantle of Night",
+   "kind": "skill",
+   "rarity": "rare",
+   "cost": "1",
+   "text": "Gain 1 Meld until the end of your turn.",
+   "def": {
+    "id": "mantle-of-night",
+    "name": "Mantle of Night",
+    "realm": "umbral",
+    "rarity": "rare",
+    "kind": "skill",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "status",
+      "status": "meld",
+      "amount": 1,
+      "to": "self",
+      "temp": true
+     }
+    ],
+    "hero": "assassin",
+    "upgrade": "mantle-of-night+"
+   },
+   "upgrade": {
+    "id": "mantle-of-night+",
+    "cost": "0",
+    "text": "Gain 1 Meld until the end of your turn.",
+    "def": {
+     "id": "mantle-of-night+",
+     "name": "Mantle of Night+",
+     "realm": "umbral",
+     "rarity": "rare",
+     "kind": "skill",
+     "cost": 0,
+     "target": "none",
+     "effects": [
+      {
+       "op": "status",
+       "status": "meld",
+       "amount": 1,
+       "to": "self",
+       "temp": true
+      }
+     ],
+     "hero": "assassin"
+    }
+   }
+  },
+  {
+   "id": "marked-for-death",
+   "name": "Marked for Death",
+   "kind": "attack",
+   "rarity": "rare",
+   "cost": "1",
+   "text": "Deal 10 damage. If this is fatal: Gain an extra card reward after this fight. Consume.",
+   "def": {
+    "id": "marked-for-death",
+    "name": "Marked for Death",
+    "realm": "umbral",
+    "rarity": "rare",
+    "kind": "attack",
+    "cost": 1,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 10,
+      "to": "target",
+      "onKill": [
+       {
+        "op": "extraReward",
+        "amount": 1
+       }
+      ]
+     }
+    ],
+    "hero": "assassin",
+    "exhaust": true,
+    "upgrade": "marked-for-death+"
+   },
+   "upgrade": {
+    "id": "marked-for-death+",
+    "cost": "1",
+    "text": "Deal 15 damage. If this is fatal: Gain an extra card reward after this fight. Consume.",
+    "def": {
+     "id": "marked-for-death+",
+     "name": "Marked for Death+",
+     "realm": "umbral",
+     "rarity": "rare",
+     "kind": "attack",
+     "cost": 1,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 15,
+       "to": "target",
+       "onKill": [
+        {
+         "op": "extraReward",
+         "amount": 1
+        }
+       ]
+      }
+     ],
+     "hero": "assassin",
+     "exhaust": true
+    }
+   }
+  },
+  {
+   "id": "nimble-routine",
+   "name": "Nimble Routine",
+   "kind": "power",
+   "rarity": "rare",
+   "cost": "1",
+   "text": "At the start of your turn: Draw 1 card. Discard 1 random card.",
+   "def": {
+    "id": "nimble-routine",
+    "name": "Nimble Routine",
+    "realm": "umbral",
+    "rarity": "rare",
+    "kind": "power",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "power",
+      "when": "turnStart",
+      "ops": [
+       {
+        "op": "draw",
+        "amount": 1
+       },
+       {
+        "op": "discard",
+        "amount": 1,
+        "random": true
+       }
+      ]
+     }
+    ],
+    "hero": "assassin",
+    "upgrade": "nimble-routine+"
+   },
+   "upgrade": {
+    "id": "nimble-routine+",
+    "cost": "0",
+    "text": "At the start of your turn: Draw 1 card. Discard 1 random card.",
+    "def": {
+     "id": "nimble-routine+",
+     "name": "Nimble Routine+",
+     "realm": "umbral",
+     "rarity": "rare",
+     "kind": "power",
+     "cost": 0,
+     "target": "none",
+     "effects": [
+      {
+       "op": "power",
+       "when": "turnStart",
+       "ops": [
+        {
+         "op": "draw",
+         "amount": 1
+        },
+        {
+         "op": "discard",
+         "amount": 1,
+         "random": true
+        }
+       ]
+      }
+     ],
+     "hero": "assassin"
+    }
+   }
+  },
+  {
+   "id": "patient-hands",
+   "name": "Patient Hands",
+   "kind": "power",
+   "rarity": "rare",
+   "cost": "1",
+   "text": "At the end of your turn: Gain 1 Holdfast.",
+   "def": {
+    "id": "patient-hands",
+    "name": "Patient Hands",
+    "realm": "umbral",
+    "rarity": "rare",
+    "kind": "power",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "power",
+      "when": "turnEnd",
+      "ops": [
+       {
+        "op": "status",
+        "status": "holdfast",
+        "amount": 1,
+        "to": "self"
+       }
+      ]
+     }
+    ],
+    "hero": "assassin",
+    "upgrade": "patient-hands+"
+   },
+   "upgrade": {
+    "id": "patient-hands+",
+    "cost": "0",
+    "text": "At the end of your turn: Gain 1 Holdfast.",
+    "def": {
+     "id": "patient-hands+",
+     "name": "Patient Hands+",
+     "realm": "umbral",
+     "rarity": "rare",
+     "kind": "power",
+     "cost": 0,
+     "target": "none",
+     "effects": [
+      {
+       "op": "power",
+       "when": "turnEnd",
+       "ops": [
+        {
+         "op": "status",
+         "status": "holdfast",
+         "amount": 1,
+         "to": "self"
+        }
+       ]
+      }
+     ],
+     "hero": "assassin"
+    }
+   }
+  },
+  {
+   "id": "razor-skin",
+   "name": "Razor Skin",
+   "kind": "power",
+   "rarity": "rare",
+   "cost": "3",
+   "text": "Sly. Gain 1 Bracing. Gain 4 Thorns. These last the rest of the fight.",
+   "def": {
+    "id": "razor-skin",
+    "name": "Razor Skin",
+    "realm": "umbral",
+    "rarity": "rare",
+    "kind": "power",
+    "cost": 3,
+    "target": "none",
+    "effects": [
+     {
+      "op": "status",
+      "status": "bracing",
+      "amount": 1,
+      "to": "self"
+     },
+     {
+      "op": "status",
+      "status": "thorns",
+      "amount": 4,
+      "to": "self"
+     }
+    ],
+    "hero": "assassin",
+    "sly": true,
+    "upgrade": "razor-skin+"
+   },
+   "upgrade": {
+    "id": "razor-skin+",
+    "cost": "3",
+    "text": "Sly. Gain 1 Bracing. Gain 6 Thorns. These last the rest of the fight.",
+    "def": {
+     "id": "razor-skin+",
+     "name": "Razor Skin+",
+     "realm": "umbral",
+     "rarity": "rare",
+     "kind": "power",
+     "cost": 3,
+     "target": "none",
+     "effects": [
+      {
+       "op": "status",
+       "status": "bracing",
+       "amount": 1,
+       "to": "self"
+      },
+      {
+       "op": "status",
+       "status": "thorns",
+       "amount": 6,
+       "to": "self"
+      }
+     ],
+     "hero": "assassin",
+     "sly": true
+    }
+   }
+  },
+  {
+   "id": "recall-the-blades",
+   "name": "Recall the Blades",
+   "kind": "skill",
+   "rarity": "rare",
+   "cost": "2",
+   "text": "Play every Dagger in your consumed pile against the target; they go back there.",
+   "def": {
+    "id": "recall-the-blades",
+    "name": "Recall the Blades",
+    "realm": "umbral",
+    "rarity": "rare",
+    "kind": "skill",
+    "cost": 2,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "playPile",
+      "from": "exhaust",
+      "tag": "knife",
+      "all": true,
+      "aim": "target"
+     }
+    ],
+    "hero": "assassin",
+    "upgrade": "recall-the-blades+"
+   },
+   "upgrade": {
+    "id": "recall-the-blades+",
+    "cost": "2",
+    "text": "Upgrade and play every Dagger in your consumed pile against the target; they go back there.",
+    "def": {
+     "id": "recall-the-blades+",
+     "name": "Recall the Blades+",
+     "realm": "umbral",
+     "rarity": "rare",
+     "kind": "skill",
+     "cost": 2,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "playPile",
+       "from": "exhaust",
+       "tag": "knife",
+       "all": true,
+       "aim": "target",
+       "upgrade": true
+      }
+     ],
+     "hero": "assassin"
+    }
+   }
+  },
+  {
+   "id": "recurring-dream",
+   "name": "Recurring Dream",
+   "kind": "skill",
+   "rarity": "rare",
+   "cost": "3",
+   "text": "Choose a card in your hand. Next turn, add 3 copies of it to your hand. Consume.",
+   "def": {
+    "id": "recurring-dream",
+    "name": "Recurring Dream",
+    "realm": "umbral",
+    "rarity": "rare",
+    "kind": "skill",
+    "cost": 3,
+    "target": "none",
+    "effects": [
+     {
+      "op": "copyNext",
+      "times": 3
+     }
+    ],
+    "hero": "assassin",
+    "exhaust": true,
+    "upgrade": "recurring-dream+"
+   },
+   "upgrade": {
+    "id": "recurring-dream+",
+    "cost": "2",
+    "text": "Choose a card in your hand. Next turn, add 3 copies of it to your hand. Consume.",
+    "def": {
+     "id": "recurring-dream+",
+     "name": "Recurring Dream+",
+     "realm": "umbral",
+     "rarity": "rare",
+     "kind": "skill",
+     "cost": 2,
+     "target": "none",
+     "effects": [
+      {
+       "op": "copyNext",
+       "times": 3
+      }
+     ],
+     "hero": "assassin",
+     "exhaust": true
+    }
+   }
+  },
+  {
+   "id": "rush-of-blood",
+   "name": "Rush of Blood",
+   "kind": "skill",
+   "rarity": "rare",
+   "cost": "0",
+   "text": "Gain 1 Mana. Draw 2 cards. Consume.",
+   "def": {
+    "id": "rush-of-blood",
+    "name": "Rush of Blood",
+    "realm": "umbral",
+    "rarity": "rare",
+    "kind": "skill",
+    "cost": 0,
+    "target": "none",
+    "effects": [
+     {
+      "op": "mana",
+      "amount": 1
+     },
+     {
+      "op": "draw",
+      "amount": 2
+     }
+    ],
+    "hero": "assassin",
+    "exhaust": true,
+    "upgrade": "rush-of-blood+"
+   },
+   "upgrade": {
+    "id": "rush-of-blood+",
+    "cost": "0",
+    "text": "Gain 2 Mana. Draw 2 cards. Consume.",
+    "def": {
+     "id": "rush-of-blood+",
+     "name": "Rush of Blood+",
+     "realm": "umbral",
+     "rarity": "rare",
+     "kind": "skill",
+     "cost": 0,
+     "target": "none",
+     "effects": [
+      {
+       "op": "mana",
+       "amount": 2
+      },
+      {
+       "op": "draw",
+       "amount": 2
+      }
+     ],
+     "hero": "assassin",
+     "exhaust": true
+    }
+   }
+  },
+  {
+   "id": "sapping-wound",
+   "name": "Sapping Wound",
+   "kind": "skill",
+   "rarity": "rare",
+   "cost": "X",
+   "text": "Apply Sapped equal to the Mana spent. Apply Faltering equal to the Mana spent. Consume.",
+   "def": {
+    "id": "sapping-wound",
+    "name": "Sapping Wound",
+    "realm": "umbral",
+    "rarity": "rare",
+    "kind": "skill",
+    "cost": 0,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "status",
+      "status": "sapped",
+      "amount": 0,
+      "to": "target",
+      "scale": {
+       "by": "x"
+      }
+     },
+     {
+      "op": "status",
+      "status": "faltering",
+      "amount": 0,
+      "to": "target",
+      "scale": {
+       "by": "x"
+      }
+     }
+    ],
+    "hero": "assassin",
+    "x": true,
+    "exhaust": true,
+    "upgrade": "sapping-wound+"
+   },
+   "upgrade": {
+    "id": "sapping-wound+",
+    "cost": "X",
+    "text": "X is 1 higher. Apply Sapped equal to the Mana spent. Apply Faltering equal to the Mana spent. Consume.",
+    "def": {
+     "id": "sapping-wound+",
+     "name": "Sapping Wound+",
+     "realm": "umbral",
+     "rarity": "rare",
+     "kind": "skill",
+     "cost": 0,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "status",
+       "status": "sapped",
+       "amount": 0,
+       "to": "target",
+       "scale": {
+        "by": "x"
+       }
+      },
+      {
+       "op": "status",
+       "status": "faltering",
+       "amount": 0,
+       "to": "target",
+       "scale": {
+        "by": "x"
+       }
+      }
+     ],
+     "hero": "assassin",
+     "x": true,
+     "exhaust": true,
+     "xBonus": 1
+    }
+   }
+  },
+  {
+   "id": "serpents-coil",
+   "name": "Serpent's Coil",
+   "kind": "power",
+   "rarity": "rare",
+   "cost": "3",
+   "text": "Whenever you play a card: Deal 4 damage to a random enemy.",
+   "def": {
+    "id": "serpents-coil",
+    "name": "Serpent's Coil",
+    "realm": "umbral",
+    "rarity": "rare",
+    "kind": "power",
+    "cost": 3,
+    "target": "none",
+    "effects": [
+     {
+      "op": "power",
+      "when": "play",
+      "ops": [
+       {
+        "op": "damage",
+        "amount": 4,
+        "to": "randomFoe"
+       }
+      ]
+     }
+    ],
+    "hero": "assassin",
+    "upgrade": "serpents-coil+"
+   },
+   "upgrade": {
+    "id": "serpents-coil+",
+    "cost": "3",
+    "text": "Whenever you play a card: Deal 6 damage to a random enemy.",
+    "def": {
+     "id": "serpents-coil+",
+     "name": "Serpent's Coil+",
+     "realm": "umbral",
+     "rarity": "rare",
+     "kind": "power",
+     "cost": 3,
+     "target": "none",
+     "effects": [
+      {
+       "op": "power",
+       "when": "play",
+       "ops": [
+        {
+         "op": "damage",
+         "amount": 6,
+         "to": "randomFoe"
+        }
+       ]
+      }
+     ],
+     "hero": "assassin"
+    }
+   }
+  },
+  {
+   "id": "serrated-edges",
+   "name": "Serrated Edges",
+   "kind": "power",
+   "rarity": "rare",
+   "cost": "2",
+   "text": "Whenever an Attack of yours deals damage to an enemy’s HP: Apply 1 Bleed.",
+   "def": {
+    "id": "serrated-edges",
+    "name": "Serrated Edges",
+    "realm": "umbral",
+    "rarity": "rare",
+    "kind": "power",
+    "cost": 2,
+    "target": "none",
+    "effects": [
+     {
+      "op": "power",
+      "when": "hitFoe",
+      "ops": [
+       {
+        "op": "status",
+        "status": "seared",
+        "amount": 1,
+        "to": "target"
+       }
+      ]
+     }
+    ],
+    "hero": "assassin",
+    "upgrade": "serrated-edges+"
+   },
+   "upgrade": {
+    "id": "serrated-edges+",
+    "cost": "2",
+    "text": "Whenever an Attack of yours deals damage to an enemy’s HP: Apply 2 Bleed.",
+    "def": {
+     "id": "serrated-edges+",
+     "name": "Serrated Edges+",
+     "realm": "umbral",
+     "rarity": "rare",
+     "kind": "power",
+     "cost": 2,
+     "target": "none",
+     "effects": [
+      {
+       "op": "power",
+       "when": "hitFoe",
+       "ops": [
+        {
+         "op": "status",
+         "status": "seared",
+         "amount": 2,
+         "to": "target"
+        }
+       ]
+      }
+     ],
+     "hero": "assassin"
+    }
+   }
+  },
+  {
+   "id": "shadow-echo",
+   "name": "Shadow Echo",
+   "kind": "power",
+   "rarity": "rare",
+   "cost": "1",
+   "text": "Whenever you play a card: Gain 1 Barrier.",
+   "def": {
+    "id": "shadow-echo",
+    "name": "Shadow Echo",
+    "realm": "umbral",
+    "rarity": "rare",
+    "kind": "power",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "power",
+      "when": "play",
+      "ops": [
+       {
+        "op": "barrier",
+        "amount": 1,
+        "to": "self"
+       }
+      ]
+     }
+    ],
+    "hero": "assassin",
+    "upgrade": "shadow-echo+"
+   },
+   "upgrade": {
+    "id": "shadow-echo+",
+    "cost": "1",
+    "text": "Whenever you play a card: Gain 1 Barrier. Opening hand.",
+    "def": {
+     "id": "shadow-echo+",
+     "name": "Shadow Echo+",
+     "realm": "umbral",
+     "rarity": "rare",
+     "kind": "power",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "power",
+       "when": "play",
+       "ops": [
+        {
+         "op": "barrier",
+         "amount": 1,
+         "to": "self"
+        }
+       ]
+      }
+     ],
+     "hero": "assassin",
+     "innate": true
+    }
+   }
+  },
+  {
+   "id": "slow-murder",
+   "name": "Slow Murder",
+   "kind": "attack",
+   "rarity": "rare",
+   "cost": "3",
+   "text": "Deal 1 (+1 per card drawn this fight) damage.",
+   "def": {
+    "id": "slow-murder",
+    "name": "Slow Murder",
+    "realm": "umbral",
+    "rarity": "rare",
+    "kind": "attack",
+    "cost": 3,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 1,
+      "to": "target",
+      "scale": {
+       "by": "drawn"
+      }
+     }
+    ],
+    "hero": "assassin",
+    "upgrade": "slow-murder+"
+   },
+   "upgrade": {
+    "id": "slow-murder+",
+    "cost": "2",
+    "text": "Deal 1 (+1 per card drawn this fight) damage.",
+    "def": {
+     "id": "slow-murder+",
+     "name": "Slow Murder+",
+     "realm": "umbral",
+     "rarity": "rare",
+     "kind": "attack",
+     "cost": 2,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 1,
+       "to": "target",
+       "scale": {
+        "by": "drawn"
+       }
+      }
+     ],
+     "hero": "assassin"
+    }
+   }
+  },
+  {
+   "id": "steel-monsoon",
+   "name": "Steel Monsoon",
+   "kind": "skill",
+   "rarity": "rare",
+   "cost": "1",
+   "text": "Discard your hand. Add Daggers to your hand equal to the cards discarded this way.",
+   "def": {
+    "id": "steel-monsoon",
+    "name": "Steel Monsoon",
+    "realm": "umbral",
+    "rarity": "rare",
+    "kind": "skill",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "discard",
+      "amount": 99
+     },
+     {
+      "op": "addCard",
+      "card": "sleeve-knife",
+      "to": "hand",
+      "side": "self",
+      "times": 0,
+      "scale": {
+       "by": "discardedNow"
+      }
+     }
+    ],
+    "hero": "assassin",
+    "upgrade": "steel-monsoon+"
+   },
+   "upgrade": {
+    "id": "steel-monsoon+",
+    "cost": "1",
+    "text": "Discard your hand. Add upgraded Daggers to your hand equal to the cards discarded this way.",
+    "def": {
+     "id": "steel-monsoon+",
+     "name": "Steel Monsoon+",
+     "realm": "umbral",
+     "rarity": "rare",
+     "kind": "skill",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "discard",
+       "amount": 99
+      },
+      {
+       "op": "addCard",
+       "card": "sleeve-knife+",
+       "to": "hand",
+       "side": "self",
+       "times": 0,
+       "scale": {
+        "by": "discardedNow"
+       }
+      }
+     ],
+     "hero": "assassin"
+    }
+   }
+  },
+  {
+   "id": "stilled-time",
+   "name": "Stilled Time",
+   "kind": "skill",
+   "rarity": "rare",
+   "cost": "3",
+   "text": "You cannot draw more cards this turn. Every card in your hand costs 0 this turn.",
+   "def": {
+    "id": "stilled-time",
+    "name": "Stilled Time",
+    "realm": "umbral",
+    "rarity": "rare",
+    "kind": "skill",
+    "cost": 3,
+    "target": "none",
+    "effects": [
+     {
+      "op": "drawLock"
+     },
+     {
+      "op": "freeHand"
+     }
+    ],
+    "hero": "assassin",
+    "upgrade": "stilled-time+"
+   },
+   "upgrade": {
+    "id": "stilled-time+",
+    "cost": "2",
+    "text": "You cannot draw more cards this turn. Every card in your hand costs 0 this turn.",
+    "def": {
+     "id": "stilled-time+",
+     "name": "Stilled Time+",
+     "realm": "umbral",
+     "rarity": "rare",
+     "kind": "skill",
+     "cost": 2,
+     "target": "none",
+     "effects": [
+      {
+       "op": "drawLock"
+      },
+      {
+       "op": "freeHand"
+      }
+     ],
+     "hero": "assassin"
+    }
+   }
+  },
+  {
+   "id": "wide-arc",
+   "name": "Wide Arc",
+   "kind": "power",
+   "rarity": "rare",
+   "cost": "2",
+   "text": "Gain 1 Fanned. Add 4 Daggers to your hand.",
+   "def": {
+    "id": "wide-arc",
+    "name": "Wide Arc",
+    "realm": "umbral",
+    "rarity": "rare",
+    "kind": "power",
+    "cost": 2,
+    "target": "none",
+    "effects": [
+     {
+      "op": "status",
+      "status": "fanned",
+      "amount": 1,
+      "to": "self"
+     },
+     {
+      "op": "addCard",
+      "card": "sleeve-knife",
+      "to": "hand",
+      "side": "self",
+      "times": 4
+     }
+    ],
+    "hero": "assassin",
+    "upgrade": "wide-arc+"
+   },
+   "upgrade": {
+    "id": "wide-arc+",
+    "cost": "2",
+    "text": "Gain 1 Fanned. Add 5 Daggers to your hand.",
+    "def": {
+     "id": "wide-arc+",
+     "name": "Wide Arc+",
+     "realm": "umbral",
+     "rarity": "rare",
+     "kind": "power",
+     "cost": 2,
+     "target": "none",
+     "effects": [
+      {
+       "op": "status",
+       "status": "fanned",
+       "amount": 1,
+       "to": "self"
+      },
+      {
+       "op": "addCard",
+       "card": "sleeve-knife",
+       "to": "hand",
+       "side": "self",
+       "times": 5
+      }
+     ],
+     "hero": "assassin"
+    }
+   }
+  }
+ ]
+}

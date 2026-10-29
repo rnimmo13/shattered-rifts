@@ -1,0 +1,5058 @@
+{
+ "hero": {
+  "id": "monk",
+  "name": "Monk",
+  "maxHp": 82,
+  "mana": 3,
+  "handSize": 5,
+  "sigil": [
+   {
+    "op": "stance",
+    "stance": "calm"
+   }
+  ]
+ },
+ "persona": "Solen",
+ "role": "Monk",
+ "realm": "aurelion",
+ "trait": {
+  "name": "Inner Fire",
+  "text": "Whenever you enter a stance, gain 1 Fervor. The first time each turn you leave Serene, gain 2 Mana. Whenever you leave Fury, gain 2 Primed.",
+  "triggers": [
+   {
+    "op": "power",
+    "when": "stance",
+    "ops": [
+     {
+      "op": "status",
+      "status": "mantra",
+      "amount": 1,
+      "to": "self"
+     }
+    ]
+   },
+   {
+    "op": "power",
+    "when": "stanceLeft",
+    "ops": [
+     {
+      "op": "mana",
+      "amount": 2
+     }
+    ],
+    "stance": "calm",
+    "once": true
+   },
+   {
+    "op": "power",
+    "when": "stanceLeft",
+    "ops": [
+     {
+      "op": "status",
+      "status": "vigor",
+      "amount": 2,
+      "to": "self"
+     }
+    ],
+    "stance": "wrath"
+   }
+  ]
+ },
+ "blurb": "A monk who fights in stances. Starts every fight Serene, and every stance he enters stokes his Fervor towards Radiance.",
+ "mechanics": [
+  "Stances",
+  "Fervor",
+  "Foresee",
+  "Self-damage"
+ ],
+ "buildPaths": [
+  "Fury: get in, hit hard, live through it",
+  "Flow: change stance again and again; every change pays",
+  "Radiant: build Fervor to 10 for a triple-damage turn"
+ ],
+ "howTo": [
+  "You start Serene. You are in at most one stance at a time, and every stance you enter gives 1 Fervor (Inner Fire); leaving Fury gives 2 Primed for your next attack.",
+  "Fury doubles the damage you deal, but you take 50% more. Leaving Serene gives you 2 Mana (once a turn).",
+  "Fervor builds to 10, then you enter Radiant: triple damage until your turn ends.",
+  "Burst in Fury, dance between stances, or build Fervor towards Radiant."
+ ],
+ "starter": [
+  "strike",
+  "strike",
+  "strike",
+  "strike",
+  "defend",
+  "defend",
+  "defend",
+  "defend",
+  "kindle-fury",
+  "still-guard"
+ ],
+ "starterText": [
+  {
+   "id": "strike",
+   "text": "Deal 6 damage."
+  },
+  {
+   "id": "strike",
+   "text": "Deal 6 damage."
+  },
+  {
+   "id": "strike",
+   "text": "Deal 6 damage."
+  },
+  {
+   "id": "strike",
+   "text": "Deal 6 damage."
+  },
+  {
+   "id": "defend",
+   "text": "Gain 5 Barrier."
+  },
+  {
+   "id": "defend",
+   "text": "Gain 5 Barrier."
+  },
+  {
+   "id": "defend",
+   "text": "Gain 5 Barrier."
+  },
+  {
+   "id": "defend",
+   "text": "Gain 5 Barrier."
+  },
+  {
+   "id": "kindle-fury",
+   "text": "Deal 9 damage. Enter Fury."
+  },
+  {
+   "id": "still-guard",
+   "text": "Gain 3 Barrier. Enter Serene."
+  }
+ ],
+ "startUnits": [],
+ "counts": {
+  "basic": 2,
+  "common": 20,
+  "uncommon": 30,
+  "rare": 28
+ },
+ "cards": [
+  {
+   "id": "kindle-fury",
+   "name": "Kindle Fury",
+   "kind": "attack",
+   "rarity": "basic",
+   "cost": "2",
+   "text": "Deal 9 damage. Enter Fury.",
+   "def": {
+    "id": "kindle-fury",
+    "name": "Kindle Fury",
+    "realm": "aurelion",
+    "rarity": "basic",
+    "kind": "attack",
+    "cost": 2,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 9,
+      "to": "target"
+     },
+     {
+      "op": "stance",
+      "stance": "wrath"
+     }
+    ],
+    "hero": "monk",
+    "upgrade": "kindle-fury+"
+   },
+   "upgrade": {
+    "id": "kindle-fury+",
+    "cost": "2",
+    "text": "Deal 12 damage. Enter Fury.",
+    "def": {
+     "id": "kindle-fury+",
+     "name": "Kindle Fury+",
+     "realm": "aurelion",
+     "rarity": "basic",
+     "kind": "attack",
+     "cost": 2,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 12,
+       "to": "target"
+      },
+      {
+       "op": "stance",
+       "stance": "wrath"
+      }
+     ],
+     "hero": "monk"
+    }
+   }
+  },
+  {
+   "id": "still-guard",
+   "name": "Still Guard",
+   "kind": "skill",
+   "rarity": "basic",
+   "cost": "1",
+   "text": "Gain 3 Barrier. Enter Serene.",
+   "def": {
+    "id": "still-guard",
+    "name": "Still Guard",
+    "realm": "aurelion",
+    "rarity": "basic",
+    "kind": "skill",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "barrier",
+      "amount": 3,
+      "to": "self"
+     },
+     {
+      "op": "stance",
+      "stance": "calm"
+     }
+    ],
+    "hero": "monk",
+    "upgrade": "still-guard+"
+   },
+   "upgrade": {
+    "id": "still-guard+",
+    "cost": "1",
+    "text": "Gain 6 Barrier. Enter Serene.",
+    "def": {
+     "id": "still-guard+",
+     "name": "Still Guard+",
+     "realm": "aurelion",
+     "rarity": "basic",
+     "kind": "skill",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "barrier",
+       "amount": 6,
+       "to": "self"
+      },
+      {
+       "op": "stance",
+       "stance": "calm"
+      }
+     ],
+     "hero": "monk"
+    }
+   }
+  },
+  {
+   "id": "angry-palm",
+   "name": "Angry Palm",
+   "kind": "attack",
+   "rarity": "common",
+   "cost": "1",
+   "text": "Deal 7 (+6 per Fury) damage.",
+   "def": {
+    "id": "angry-palm",
+    "name": "Angry Palm",
+    "realm": "aurelion",
+    "rarity": "common",
+    "kind": "attack",
+    "cost": 1,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 7,
+      "to": "target",
+      "scale": {
+       "by": "wrath",
+       "mult": 6
+      }
+     }
+    ],
+    "hero": "monk",
+    "upgrade": "angry-palm+"
+   },
+   "upgrade": {
+    "id": "angry-palm+",
+    "cost": "1",
+    "text": "Deal 10 (+6 per Fury) damage.",
+    "def": {
+     "id": "angry-palm+",
+     "name": "Angry Palm+",
+     "realm": "aurelion",
+     "rarity": "common",
+     "kind": "attack",
+     "cost": 1,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 10,
+       "to": "target",
+       "scale": {
+        "by": "wrath",
+        "mult": 6
+       }
+      }
+     ],
+     "hero": "monk"
+    }
+   }
+  },
+  {
+   "id": "ashen-fist",
+   "name": "Ashen Fist",
+   "kind": "attack",
+   "rarity": "common",
+   "cost": "2",
+   "text": "Deal 14 damage. Enter Fury.",
+   "def": {
+    "id": "ashen-fist",
+    "name": "Ashen Fist",
+    "realm": "aurelion",
+    "rarity": "common",
+    "kind": "attack",
+    "cost": 2,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 14,
+      "to": "target"
+     },
+     {
+      "op": "stance",
+      "stance": "wrath"
+     }
+    ],
+    "hero": "monk",
+    "upgrade": "ashen-fist+"
+   },
+   "upgrade": {
+    "id": "ashen-fist+",
+    "cost": "2",
+    "text": "Deal 17 damage. Enter Fury.",
+    "def": {
+     "id": "ashen-fist+",
+     "name": "Ashen Fist+",
+     "realm": "aurelion",
+     "rarity": "common",
+     "kind": "attack",
+     "cost": 2,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 17,
+       "to": "target"
+      },
+      {
+       "op": "stance",
+       "stance": "wrath"
+      }
+     ],
+     "hero": "monk"
+    }
+   }
+  },
+  {
+   "id": "bowing-low",
+   "name": "Bowing Low",
+   "kind": "skill",
+   "rarity": "common",
+   "cost": "0",
+   "text": "Gain 2 Fervor. Gain 2 Barrier.",
+   "def": {
+    "id": "bowing-low",
+    "name": "Bowing Low",
+    "realm": "aurelion",
+    "rarity": "common",
+    "kind": "skill",
+    "cost": 0,
+    "target": "none",
+    "effects": [
+     {
+      "op": "status",
+      "status": "mantra",
+      "amount": 2,
+      "to": "self"
+     },
+     {
+      "op": "barrier",
+      "amount": 2,
+      "to": "self"
+     }
+    ],
+    "hero": "monk",
+    "upgrade": "bowing-low+"
+   },
+   "upgrade": {
+    "id": "bowing-low+",
+    "cost": "0",
+    "text": "Gain 3 Fervor. Gain 2 Barrier.",
+    "def": {
+     "id": "bowing-low+",
+     "name": "Bowing Low+",
+     "realm": "aurelion",
+     "rarity": "common",
+     "kind": "skill",
+     "cost": 0,
+     "target": "none",
+     "effects": [
+      {
+       "op": "status",
+       "status": "mantra",
+       "amount": 3,
+       "to": "self"
+      },
+      {
+       "op": "barrier",
+       "amount": 2,
+       "to": "self"
+      }
+     ],
+     "hero": "monk"
+    }
+   }
+  },
+  {
+   "id": "centre-yourself",
+   "name": "Centre Yourself",
+   "kind": "skill",
+   "rarity": "common",
+   "cost": "1",
+   "text": "Draw 1 card. Enter Serene.",
+   "def": {
+    "id": "centre-yourself",
+    "name": "Centre Yourself",
+    "realm": "aurelion",
+    "rarity": "common",
+    "kind": "skill",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "draw",
+      "amount": 1
+     },
+     {
+      "op": "stance",
+      "stance": "calm"
+     }
+    ],
+    "hero": "monk",
+    "upgrade": "centre-yourself+"
+   },
+   "upgrade": {
+    "id": "centre-yourself+",
+    "cost": "1",
+    "text": "Draw 2 cards. Enter Serene.",
+    "def": {
+     "id": "centre-yourself+",
+     "name": "Centre Yourself+",
+     "realm": "aurelion",
+     "rarity": "common",
+     "kind": "skill",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "draw",
+       "amount": 2
+      },
+      {
+       "op": "stance",
+       "stance": "calm"
+      }
+     ],
+     "hero": "monk"
+    }
+   }
+  },
+  {
+   "id": "crushing-palm",
+   "name": "Crushing Palm",
+   "kind": "attack",
+   "rarity": "common",
+   "cost": "1",
+   "text": "Deal 8 damage. Apply 1 Exposed.",
+   "def": {
+    "id": "crushing-palm",
+    "name": "Crushing Palm",
+    "realm": "aurelion",
+    "rarity": "common",
+    "kind": "attack",
+    "cost": 1,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 8,
+      "to": "target"
+     },
+     {
+      "op": "status",
+      "status": "exposed",
+      "amount": 1,
+      "to": "target"
+     }
+    ],
+    "hero": "monk",
+    "upgrade": "crushing-palm+"
+   },
+   "upgrade": {
+    "id": "crushing-palm+",
+    "cost": "1",
+    "text": "Deal 11 damage. Apply 1 Exposed.",
+    "def": {
+     "id": "crushing-palm+",
+     "name": "Crushing Palm+",
+     "realm": "aurelion",
+     "rarity": "common",
+     "kind": "attack",
+     "cost": 1,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 11,
+       "to": "target"
+      },
+      {
+       "op": "status",
+       "status": "exposed",
+       "amount": 1,
+       "to": "target"
+      }
+     ],
+     "hero": "monk"
+    }
+   }
+  },
+  {
+   "id": "empty-fist",
+   "name": "Settling Fist",
+   "kind": "attack",
+   "rarity": "common",
+   "cost": "1",
+   "text": "Deal 7 damage. Leave your stance.",
+   "def": {
+    "id": "empty-fist",
+    "name": "Settling Fist",
+    "realm": "aurelion",
+    "rarity": "common",
+    "kind": "attack",
+    "cost": 1,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 7,
+      "to": "target"
+     },
+     {
+      "op": "stance",
+      "stance": "none"
+     }
+    ],
+    "hero": "monk",
+    "upgrade": "empty-fist+"
+   },
+   "upgrade": {
+    "id": "empty-fist+",
+    "cost": "1",
+    "text": "Deal 10 damage. Leave your stance.",
+    "def": {
+     "id": "empty-fist+",
+     "name": "Settling Fist+",
+     "realm": "aurelion",
+     "rarity": "common",
+     "kind": "attack",
+     "cost": 1,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 10,
+       "to": "target"
+      },
+      {
+       "op": "stance",
+       "stance": "none"
+      }
+     ],
+     "hero": "monk"
+    }
+   }
+  },
+  {
+   "id": "faith-kept",
+   "name": "Faith Kept",
+   "kind": "skill",
+   "rarity": "common",
+   "cost": "1",
+   "text": "Gain 3 Fervor. Hold. If consumed: Gain 3 Fervor.",
+   "def": {
+    "id": "faith-kept",
+    "name": "Faith Kept",
+    "realm": "aurelion",
+    "rarity": "common",
+    "kind": "skill",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "status",
+      "status": "mantra",
+      "amount": 3,
+      "to": "self"
+     }
+    ],
+    "hero": "monk",
+    "retain": true,
+    "onExhaust": [
+     {
+      "op": "status",
+      "status": "mantra",
+      "amount": 3,
+      "to": "self"
+     }
+    ],
+    "upgrade": "faith-kept+"
+   },
+   "upgrade": {
+    "id": "faith-kept+",
+    "cost": "1",
+    "text": "Gain 4 Fervor. Hold. If consumed: Gain 4 Fervor.",
+    "def": {
+     "id": "faith-kept+",
+     "name": "Faith Kept+",
+     "realm": "aurelion",
+     "rarity": "common",
+     "kind": "skill",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "status",
+       "status": "mantra",
+       "amount": 4,
+       "to": "self"
+      }
+     ],
+     "hero": "monk",
+     "retain": true,
+     "onExhaust": [
+      {
+       "op": "status",
+       "status": "mantra",
+       "amount": 4,
+       "to": "self"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "id": "flurry-of-palms",
+   "name": "Flurry of Palms",
+   "kind": "attack",
+   "rarity": "common",
+   "cost": "0",
+   "text": "Deal 3 damage 2 times.",
+   "def": {
+    "id": "flurry-of-palms",
+    "name": "Flurry of Palms",
+    "realm": "aurelion",
+    "rarity": "common",
+    "kind": "attack",
+    "cost": 0,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 3,
+      "hits": 2,
+      "to": "target"
+     }
+    ],
+    "hero": "monk",
+    "upgrade": "flurry-of-palms+"
+   },
+   "upgrade": {
+    "id": "flurry-of-palms+",
+    "cost": "0",
+    "text": "Deal 4 damage 2 times.",
+    "def": {
+     "id": "flurry-of-palms+",
+     "name": "Flurry of Palms+",
+     "realm": "aurelion",
+     "rarity": "common",
+     "kind": "attack",
+     "cost": 0,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 4,
+       "hits": 2,
+       "to": "target"
+      }
+     ],
+     "hero": "monk"
+    }
+   }
+  },
+  {
+   "id": "hushed-stillness",
+   "name": "Hushed Stillness",
+   "kind": "skill",
+   "rarity": "common",
+   "cost": "0",
+   "text": "Enter Serene. Draw 1 card. Consume.",
+   "def": {
+    "id": "hushed-stillness",
+    "name": "Hushed Stillness",
+    "realm": "aurelion",
+    "rarity": "common",
+    "kind": "skill",
+    "cost": 0,
+    "target": "none",
+    "effects": [
+     {
+      "op": "stance",
+      "stance": "calm"
+     },
+     {
+      "op": "draw",
+      "amount": 1
+     }
+    ],
+    "hero": "monk",
+    "exhaust": true,
+    "upgrade": "hushed-stillness+"
+   },
+   "upgrade": {
+    "id": "hushed-stillness+",
+    "cost": "0",
+    "text": "Enter Serene. Draw 2 cards. Consume.",
+    "def": {
+     "id": "hushed-stillness+",
+     "name": "Hushed Stillness+",
+     "realm": "aurelion",
+     "rarity": "common",
+     "kind": "skill",
+     "cost": 0,
+     "target": "none",
+     "effects": [
+      {
+       "op": "stance",
+       "stance": "calm"
+      },
+      {
+       "op": "draw",
+       "amount": 2
+      }
+     ],
+     "hero": "monk",
+     "exhaust": true
+    }
+   }
+  },
+  {
+   "id": "prostrate",
+   "name": "Kneel",
+   "kind": "skill",
+   "rarity": "common",
+   "cost": "0",
+   "text": "Gain 2 Fervor. Draw 1 card. Consume.",
+   "def": {
+    "id": "prostrate",
+    "name": "Kneel",
+    "realm": "aurelion",
+    "rarity": "common",
+    "kind": "skill",
+    "cost": 0,
+    "target": "none",
+    "effects": [
+     {
+      "op": "status",
+      "status": "mantra",
+      "amount": 2,
+      "to": "self"
+     },
+     {
+      "op": "draw",
+      "amount": 1
+     }
+    ],
+    "hero": "monk",
+    "exhaust": true,
+    "upgrade": "prostrate+"
+   },
+   "upgrade": {
+    "id": "prostrate+",
+    "cost": "0",
+    "text": "Gain 3 Fervor. Draw 1 card. Consume.",
+    "def": {
+     "id": "prostrate+",
+     "name": "Kneel+",
+     "realm": "aurelion",
+     "rarity": "common",
+     "kind": "skill",
+     "cost": 0,
+     "target": "none",
+     "effects": [
+      {
+       "op": "status",
+       "status": "mantra",
+       "amount": 3,
+       "to": "self"
+      },
+      {
+       "op": "draw",
+       "amount": 1
+      }
+     ],
+     "hero": "monk",
+     "exhaust": true
+    }
+   }
+  },
+  {
+   "id": "quick-palms",
+   "name": "Quick Palms",
+   "kind": "attack",
+   "rarity": "common",
+   "cost": "0",
+   "text": "Deal 4 damage. Gain 1 Fervor.",
+   "def": {
+    "id": "quick-palms",
+    "name": "Quick Palms",
+    "realm": "aurelion",
+    "rarity": "common",
+    "kind": "attack",
+    "cost": 0,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 4,
+      "to": "target"
+     },
+     {
+      "op": "status",
+      "status": "mantra",
+      "amount": 1,
+      "to": "self"
+     }
+    ],
+    "hero": "monk",
+    "upgrade": "quick-palms+"
+   },
+   "upgrade": {
+    "id": "quick-palms+",
+    "cost": "0",
+    "text": "Deal 7 damage. Gain 1 Fervor.",
+    "def": {
+     "id": "quick-palms+",
+     "name": "Quick Palms+",
+     "realm": "aurelion",
+     "rarity": "common",
+     "kind": "attack",
+     "cost": 0,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 7,
+       "to": "target"
+      },
+      {
+       "op": "status",
+       "status": "mantra",
+       "amount": 1,
+       "to": "self"
+      }
+     ],
+     "hero": "monk"
+    }
+   }
+  },
+  {
+   "id": "reading-the-signs",
+   "name": "Reading the Signs",
+   "kind": "power",
+   "rarity": "common",
+   "cost": "1",
+   "text": "Whenever you discard a card: Gain 1 Fervor.",
+   "def": {
+    "id": "reading-the-signs",
+    "name": "Reading the Signs",
+    "realm": "aurelion",
+    "rarity": "common",
+    "kind": "power",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "power",
+      "when": "discard",
+      "ops": [
+       {
+        "op": "status",
+        "status": "mantra",
+        "amount": 1,
+        "to": "self"
+       }
+      ]
+     }
+    ],
+    "hero": "monk",
+    "upgrade": "reading-the-signs+"
+   },
+   "upgrade": {
+    "id": "reading-the-signs+",
+    "cost": "1",
+    "text": "Whenever you discard a card: Gain 1 Fervor. Opening hand.",
+    "def": {
+     "id": "reading-the-signs+",
+     "name": "Reading the Signs+",
+     "realm": "aurelion",
+     "rarity": "common",
+     "kind": "power",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "power",
+       "when": "discard",
+       "ops": [
+        {
+         "op": "status",
+         "status": "mantra",
+         "amount": 1,
+         "to": "self"
+        }
+       ]
+      }
+     ],
+     "hero": "monk",
+     "innate": true
+    }
+   }
+  },
+  {
+   "id": "red-mist",
+   "name": "Burning Breath",
+   "kind": "attack",
+   "rarity": "common",
+   "cost": "1",
+   "text": "Deal 4 damage to ALL enemies. Enter Fury.",
+   "def": {
+    "id": "red-mist",
+    "name": "Burning Breath",
+    "realm": "aurelion",
+    "rarity": "common",
+    "kind": "attack",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 4,
+      "to": "allFoes"
+     },
+     {
+      "op": "stance",
+      "stance": "wrath"
+     }
+    ],
+    "hero": "monk",
+    "upgrade": "red-mist+"
+   },
+   "upgrade": {
+    "id": "red-mist+",
+    "cost": "1",
+    "text": "Deal 7 damage to ALL enemies. Enter Fury.",
+    "def": {
+     "id": "red-mist+",
+     "name": "Burning Breath+",
+     "realm": "aurelion",
+     "rarity": "common",
+     "kind": "attack",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 7,
+       "to": "allFoes"
+      },
+      {
+       "op": "stance",
+       "stance": "wrath"
+      }
+     ],
+     "hero": "monk"
+    }
+   }
+  },
+  {
+   "id": "rising-ire",
+   "name": "Rising Ire",
+   "kind": "skill",
+   "rarity": "common",
+   "cost": "0",
+   "text": "Enter Fury. Draw 1 card. Consume.",
+   "def": {
+    "id": "rising-ire",
+    "name": "Rising Ire",
+    "realm": "aurelion",
+    "rarity": "common",
+    "kind": "skill",
+    "cost": 0,
+    "target": "none",
+    "effects": [
+     {
+      "op": "stance",
+      "stance": "wrath"
+     },
+     {
+      "op": "draw",
+      "amount": 1
+     }
+    ],
+    "hero": "monk",
+    "exhaust": true,
+    "upgrade": "rising-ire+"
+   },
+   "upgrade": {
+    "id": "rising-ire+",
+    "cost": "0",
+    "text": "Enter Fury. Draw 2 cards. Consume.",
+    "def": {
+     "id": "rising-ire+",
+     "name": "Rising Ire+",
+     "realm": "aurelion",
+     "rarity": "common",
+     "kind": "skill",
+     "cost": 0,
+     "target": "none",
+     "effects": [
+      {
+       "op": "stance",
+       "stance": "wrath"
+      },
+      {
+       "op": "draw",
+       "amount": 2
+      }
+     ],
+     "hero": "monk",
+     "exhaust": true
+    }
+   }
+  },
+  {
+   "id": "sunlit-blade",
+   "name": "Sunlit Blade",
+   "kind": "attack",
+   "rarity": "common",
+   "cost": "1",
+   "text": "Deal 9 damage. Gain 1 Fervor.",
+   "def": {
+    "id": "sunlit-blade",
+    "name": "Sunlit Blade",
+    "realm": "aurelion",
+    "rarity": "common",
+    "kind": "attack",
+    "cost": 1,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 9,
+      "to": "target"
+     },
+     {
+      "op": "status",
+      "status": "mantra",
+      "amount": 1,
+      "to": "self"
+     }
+    ],
+    "hero": "monk",
+    "upgrade": "sunlit-blade+"
+   },
+   "upgrade": {
+    "id": "sunlit-blade+",
+    "cost": "1",
+    "text": "Deal 12 damage. Gain 2 Fervor.",
+    "def": {
+     "id": "sunlit-blade+",
+     "name": "Sunlit Blade+",
+     "realm": "aurelion",
+     "rarity": "common",
+     "kind": "attack",
+     "cost": 1,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 12,
+       "to": "target"
+      },
+      {
+       "op": "status",
+       "status": "mantra",
+       "amount": 2,
+       "to": "self"
+      }
+     ],
+     "hero": "monk"
+    }
+   }
+  },
+  {
+   "id": "thread-cutter",
+   "name": "Thread-Cutter",
+   "kind": "attack",
+   "rarity": "common",
+   "cost": "1",
+   "text": "Deal 3 damage. Enter Fury. Enter Serene.",
+   "def": {
+    "id": "thread-cutter",
+    "name": "Thread-Cutter",
+    "realm": "aurelion",
+    "rarity": "common",
+    "kind": "attack",
+    "cost": 1,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 3,
+      "to": "target"
+     },
+     {
+      "op": "stance",
+      "stance": "wrath"
+     },
+     {
+      "op": "stance",
+      "stance": "calm"
+     }
+    ],
+    "hero": "monk",
+    "upgrade": "thread-cutter+"
+   },
+   "upgrade": {
+    "id": "thread-cutter+",
+    "cost": "1",
+    "text": "Deal 6 damage. Enter Fury. Enter Serene.",
+    "def": {
+     "id": "thread-cutter+",
+     "name": "Thread-Cutter+",
+     "realm": "aurelion",
+     "rarity": "common",
+     "kind": "attack",
+     "cost": 1,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 6,
+       "to": "target"
+      },
+      {
+       "op": "stance",
+       "stance": "wrath"
+      },
+      {
+       "op": "stance",
+       "stance": "calm"
+      }
+     ],
+     "hero": "monk"
+    }
+   }
+  },
+  {
+   "id": "unburdened-guard",
+   "name": "Shifting Guard",
+   "kind": "skill",
+   "rarity": "common",
+   "cost": "1",
+   "text": "Gain 2 Barrier. Enter Fury. Enter Serene.",
+   "def": {
+    "id": "unburdened-guard",
+    "name": "Shifting Guard",
+    "realm": "aurelion",
+    "rarity": "common",
+    "kind": "skill",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "barrier",
+      "amount": 2,
+      "to": "self"
+     },
+     {
+      "op": "stance",
+      "stance": "wrath"
+     },
+     {
+      "op": "stance",
+      "stance": "calm"
+     }
+    ],
+    "hero": "monk",
+    "upgrade": "unburdened-guard+"
+   },
+   "upgrade": {
+    "id": "unburdened-guard+",
+    "cost": "1",
+    "text": "Gain 4 Barrier. Enter Fury. Enter Serene.",
+    "def": {
+     "id": "unburdened-guard+",
+     "name": "Shifting Guard+",
+     "realm": "aurelion",
+     "rarity": "common",
+     "kind": "skill",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "barrier",
+       "amount": 4,
+       "to": "self"
+      },
+      {
+       "op": "stance",
+       "stance": "wrath"
+      },
+      {
+       "op": "stance",
+       "stance": "calm"
+      }
+     ],
+     "hero": "monk"
+    }
+   }
+  },
+  {
+   "id": "unleashed-roar",
+   "name": "Unleashed Roar",
+   "kind": "skill",
+   "rarity": "common",
+   "cost": "1",
+   "text": "Apply 1 Exposed to ALL enemies. Enter Fury.",
+   "def": {
+    "id": "unleashed-roar",
+    "name": "Unleashed Roar",
+    "realm": "aurelion",
+    "rarity": "common",
+    "kind": "skill",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "status",
+      "status": "exposed",
+      "amount": 1,
+      "to": "allFoes"
+     },
+     {
+      "op": "stance",
+      "stance": "wrath"
+     }
+    ],
+    "hero": "monk",
+    "upgrade": "unleashed-roar+"
+   },
+   "upgrade": {
+    "id": "unleashed-roar+",
+    "cost": "1",
+    "text": "Apply 2 Exposed to ALL enemies. Enter Fury.",
+    "def": {
+     "id": "unleashed-roar+",
+     "name": "Unleashed Roar+",
+     "realm": "aurelion",
+     "rarity": "common",
+     "kind": "skill",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "status",
+       "status": "exposed",
+       "amount": 2,
+       "to": "allFoes"
+      },
+      {
+       "op": "stance",
+       "stance": "wrath"
+      }
+     ],
+     "hero": "monk"
+    }
+   }
+  },
+  {
+   "id": "vigilance",
+   "name": "Watchful Calm",
+   "kind": "skill",
+   "rarity": "common",
+   "cost": "1",
+   "text": "Gain 2 Barrier. Enter Serene. Foresee 2.",
+   "def": {
+    "id": "vigilance",
+    "name": "Watchful Calm",
+    "realm": "aurelion",
+    "rarity": "common",
+    "kind": "skill",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "barrier",
+      "amount": 2,
+      "to": "self"
+     },
+     {
+      "op": "stance",
+      "stance": "calm"
+     },
+     {
+      "op": "scry",
+      "amount": 2
+     }
+    ],
+    "hero": "monk",
+    "upgrade": "vigilance+"
+   },
+   "upgrade": {
+    "id": "vigilance+",
+    "cost": "1",
+    "text": "Gain 5 Barrier. Enter Serene. Foresee 2.",
+    "def": {
+     "id": "vigilance+",
+     "name": "Watchful Calm+",
+     "realm": "aurelion",
+     "rarity": "common",
+     "kind": "skill",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "barrier",
+       "amount": 5,
+       "to": "self"
+      },
+      {
+       "op": "stance",
+       "stance": "calm"
+      },
+      {
+       "op": "scry",
+       "amount": 2
+      }
+     ],
+     "hero": "monk"
+    }
+   }
+  },
+  {
+   "id": "whispered-vow",
+   "name": "Whispered Vow",
+   "kind": "skill",
+   "rarity": "common",
+   "cost": "1",
+   "text": "Gain 3 Fervor. Foresee 2.",
+   "def": {
+    "id": "whispered-vow",
+    "name": "Whispered Vow",
+    "realm": "aurelion",
+    "rarity": "common",
+    "kind": "skill",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "status",
+      "status": "mantra",
+      "amount": 3,
+      "to": "self"
+     },
+     {
+      "op": "scry",
+      "amount": 2
+     }
+    ],
+    "hero": "monk",
+    "upgrade": "whispered-vow+"
+   },
+   "upgrade": {
+    "id": "whispered-vow+",
+    "cost": "1",
+    "text": "Gain 4 Fervor. Foresee 3.",
+    "def": {
+     "id": "whispered-vow+",
+     "name": "Whispered Vow+",
+     "realm": "aurelion",
+     "rarity": "common",
+     "kind": "skill",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "status",
+       "status": "mantra",
+       "amount": 4,
+       "to": "self"
+      },
+      {
+       "op": "scry",
+       "amount": 3
+      }
+     ],
+     "hero": "monk"
+    }
+   }
+  },
+  {
+   "id": "berserk-tide",
+   "name": "Storm of Fists",
+   "kind": "attack",
+   "rarity": "uncommon",
+   "cost": "X",
+   "text": "Deal 4 damage X times. Enter Fury.",
+   "def": {
+    "id": "berserk-tide",
+    "name": "Storm of Fists",
+    "realm": "aurelion",
+    "rarity": "uncommon",
+    "kind": "attack",
+    "cost": 0,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 4,
+      "hits": 0,
+      "to": "target",
+      "scale": {
+       "by": "x",
+       "into": "hits"
+      }
+     },
+     {
+      "op": "stance",
+      "stance": "wrath"
+     }
+    ],
+    "hero": "monk",
+    "x": true,
+    "upgrade": "berserk-tide+"
+   },
+   "upgrade": {
+    "id": "berserk-tide+",
+    "cost": "X",
+    "text": "X is 1 higher. Deal 4 damage X times. Enter Fury.",
+    "def": {
+     "id": "berserk-tide+",
+     "name": "Storm of Fists+",
+     "realm": "aurelion",
+     "rarity": "uncommon",
+     "kind": "attack",
+     "cost": 0,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 4,
+       "hits": 0,
+       "to": "target",
+       "scale": {
+        "by": "x",
+        "into": "hits"
+       }
+      },
+      {
+       "op": "stance",
+       "stance": "wrath"
+      }
+     ],
+     "hero": "monk",
+     "x": true,
+     "xBonus": 1
+    }
+   }
+  },
+  {
+   "id": "blood-on-the-sand",
+   "name": "Iron Body",
+   "kind": "power",
+   "rarity": "uncommon",
+   "cost": "1",
+   "text": "Whenever you enter Fury: Lose 2 HP. Gain 3 Primed.",
+   "def": {
+    "id": "blood-on-the-sand",
+    "name": "Iron Body",
+    "realm": "aurelion",
+    "rarity": "uncommon",
+    "kind": "power",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "power",
+      "when": "stance",
+      "ops": [
+       {
+        "op": "loseHp",
+        "amount": 2,
+        "to": "self"
+       },
+       {
+        "op": "status",
+        "status": "vigor",
+        "amount": 3,
+        "to": "self"
+       }
+      ],
+      "stance": "wrath"
+     }
+    ],
+    "hero": "monk",
+    "upgrade": "blood-on-the-sand+"
+   },
+   "upgrade": {
+    "id": "blood-on-the-sand+",
+    "cost": "1",
+    "text": "Whenever you enter Fury: Lose 1 HP. Gain 3 Primed.",
+    "def": {
+     "id": "blood-on-the-sand+",
+     "name": "Iron Body+",
+     "realm": "aurelion",
+     "rarity": "uncommon",
+     "kind": "power",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "power",
+       "when": "stance",
+       "ops": [
+        {
+         "op": "loseHp",
+         "amount": 1,
+         "to": "self"
+        },
+        {
+         "op": "status",
+         "status": "vigor",
+         "amount": 3,
+         "to": "self"
+        }
+       ],
+       "stance": "wrath"
+      }
+     ],
+     "hero": "monk"
+    }
+   }
+  },
+  {
+   "id": "cornered-beast",
+   "name": "Coiled Serpent",
+   "kind": "snare",
+   "rarity": "uncommon",
+   "cost": "1",
+   "text": "When you lose 5+ HP at once: Deal 8 damage to the attacker. Gain 4 Primed. Enter Fury.",
+   "def": {
+    "id": "cornered-beast",
+    "name": "Coiled Serpent",
+    "realm": "aurelion",
+    "rarity": "uncommon",
+    "kind": "snare",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 8,
+      "to": "attacker"
+     },
+     {
+      "op": "status",
+      "status": "vigor",
+      "amount": 4,
+      "to": "self"
+     },
+     {
+      "op": "stance",
+      "stance": "wrath"
+     }
+    ],
+    "hero": "monk",
+    "trigger": {
+     "on": "hpLost",
+     "min": 5
+    },
+    "upgrade": "cornered-beast+"
+   },
+   "upgrade": {
+    "id": "cornered-beast+",
+    "cost": "1",
+    "text": "When you lose 5+ HP at once: Deal 11 damage to the attacker. Gain 5 Primed. Enter Fury.",
+    "def": {
+     "id": "cornered-beast+",
+     "name": "Coiled Serpent+",
+     "realm": "aurelion",
+     "rarity": "uncommon",
+     "kind": "snare",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 11,
+       "to": "attacker"
+      },
+      {
+       "op": "status",
+       "status": "vigor",
+       "amount": 5,
+       "to": "self"
+      },
+      {
+       "op": "stance",
+       "stance": "wrath"
+      }
+     ],
+     "hero": "monk",
+     "trigger": {
+      "on": "hpLost",
+      "min": 5
+     }
+    }
+   }
+  },
+  {
+   "id": "daily-rite",
+   "name": "Daily Rite",
+   "kind": "power",
+   "rarity": "uncommon",
+   "cost": "1",
+   "text": "At the start of your turn: Gain 2 Fervor.",
+   "def": {
+    "id": "daily-rite",
+    "name": "Daily Rite",
+    "realm": "aurelion",
+    "rarity": "uncommon",
+    "kind": "power",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "power",
+      "when": "turnStart",
+      "ops": [
+       {
+        "op": "status",
+        "status": "mantra",
+        "amount": 2,
+        "to": "self"
+       }
+      ]
+     }
+    ],
+    "hero": "monk",
+    "upgrade": "daily-rite+"
+   },
+   "upgrade": {
+    "id": "daily-rite+",
+    "cost": "1",
+    "text": "At the start of your turn: Gain 3 Fervor.",
+    "def": {
+     "id": "daily-rite+",
+     "name": "Daily Rite+",
+     "realm": "aurelion",
+     "rarity": "uncommon",
+     "kind": "power",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "power",
+       "when": "turnStart",
+       "ops": [
+        {
+         "op": "status",
+         "status": "mantra",
+         "amount": 3,
+         "to": "self"
+        }
+       ]
+      }
+     ],
+     "hero": "monk"
+    }
+   }
+  },
+  {
+   "id": "deep-breath",
+   "name": "Gather Breath",
+   "kind": "skill",
+   "rarity": "uncommon",
+   "cost": "1",
+   "text": "Next turn, gain 2 extra Mana. Draw 2 cards. Consume.",
+   "def": {
+    "id": "deep-breath",
+    "name": "Gather Breath",
+    "realm": "aurelion",
+    "rarity": "uncommon",
+    "kind": "skill",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "manaNext",
+      "amount": 2
+     },
+     {
+      "op": "draw",
+      "amount": 2
+     }
+    ],
+    "hero": "monk",
+    "exhaust": true,
+    "upgrade": "deep-breath+"
+   },
+   "upgrade": {
+    "id": "deep-breath+",
+    "cost": "1",
+    "text": "Next turn, gain 2 extra Mana. Draw 3 cards. Consume.",
+    "def": {
+     "id": "deep-breath+",
+     "name": "Gather Breath+",
+     "realm": "aurelion",
+     "rarity": "uncommon",
+     "kind": "skill",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "manaNext",
+       "amount": 2
+      },
+      {
+       "op": "draw",
+       "amount": 3
+      }
+     ],
+     "hero": "monk",
+     "exhaust": true
+    }
+   }
+  },
+  {
+   "id": "devotion",
+   "name": "Morning Prayer",
+   "kind": "power",
+   "rarity": "uncommon",
+   "cost": "1",
+   "text": "At the start of your turn: Gain 1 Fervor. Gain 2 Barrier.",
+   "def": {
+    "id": "devotion",
+    "name": "Morning Prayer",
+    "realm": "aurelion",
+    "rarity": "uncommon",
+    "kind": "power",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "power",
+      "when": "turnStart",
+      "ops": [
+       {
+        "op": "status",
+        "status": "mantra",
+        "amount": 1,
+        "to": "self"
+       },
+       {
+        "op": "barrier",
+        "amount": 2,
+        "to": "self"
+       }
+      ]
+     }
+    ],
+    "hero": "monk",
+    "upgrade": "devotion+"
+   },
+   "upgrade": {
+    "id": "devotion+",
+    "cost": "1",
+    "text": "At the start of your turn: Gain 1 Fervor. Gain 4 Barrier.",
+    "def": {
+     "id": "devotion+",
+     "name": "Morning Prayer+",
+     "realm": "aurelion",
+     "rarity": "uncommon",
+     "kind": "power",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "power",
+       "when": "turnStart",
+       "ops": [
+        {
+         "op": "status",
+         "status": "mantra",
+         "amount": 1,
+         "to": "self"
+        },
+        {
+         "op": "barrier",
+         "amount": 4,
+         "to": "self"
+        }
+       ]
+      }
+     ],
+     "hero": "monk"
+    }
+   }
+  },
+  {
+   "id": "exhale",
+   "name": "Exhale",
+   "kind": "skill",
+   "rarity": "uncommon",
+   "cost": "0",
+   "text": "Leave your stance. Gain 1 Mana. Consume.",
+   "def": {
+    "id": "exhale",
+    "name": "Exhale",
+    "realm": "aurelion",
+    "rarity": "uncommon",
+    "kind": "skill",
+    "cost": 0,
+    "target": "none",
+    "effects": [
+     {
+      "op": "stance",
+      "stance": "none"
+     },
+     {
+      "op": "mana",
+      "amount": 1
+     }
+    ],
+    "hero": "monk",
+    "exhaust": true,
+    "upgrade": "exhale+"
+   },
+   "upgrade": {
+    "id": "exhale+",
+    "cost": "0",
+    "text": "Leave your stance. Gain 1 Mana. Consume. Hold.",
+    "def": {
+     "id": "exhale+",
+     "name": "Exhale+",
+     "realm": "aurelion",
+     "rarity": "uncommon",
+     "kind": "skill",
+     "cost": 0,
+     "target": "none",
+     "effects": [
+      {
+       "op": "stance",
+       "stance": "none"
+      },
+      {
+       "op": "mana",
+       "amount": 1
+      }
+     ],
+     "hero": "monk",
+     "exhaust": true,
+     "retain": true
+    }
+   }
+  },
+  {
+   "id": "fearless",
+   "name": "Unafraid",
+   "kind": "attack",
+   "rarity": "uncommon",
+   "cost": "1",
+   "text": "Deal 6 damage. Enter Serene.",
+   "def": {
+    "id": "fearless",
+    "name": "Unafraid",
+    "realm": "aurelion",
+    "rarity": "uncommon",
+    "kind": "attack",
+    "cost": 1,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 6,
+      "to": "target"
+     },
+     {
+      "op": "stance",
+      "stance": "calm"
+     }
+    ],
+    "hero": "monk",
+    "upgrade": "fearless+"
+   },
+   "upgrade": {
+    "id": "fearless+",
+    "cost": "1",
+    "text": "Deal 9 damage. Enter Serene.",
+    "def": {
+     "id": "fearless+",
+     "name": "Unafraid+",
+     "realm": "aurelion",
+     "rarity": "uncommon",
+     "kind": "attack",
+     "cost": 1,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 9,
+       "to": "target"
+      },
+      {
+       "op": "stance",
+       "stance": "calm"
+      }
+     ],
+     "hero": "monk"
+    }
+   }
+  },
+  {
+   "id": "foretold-flame",
+   "name": "Foretold Flame",
+   "kind": "attack",
+   "rarity": "uncommon",
+   "cost": "1",
+   "text": "Deal 5 (+1 per Fervor) damage. Foresee 2.",
+   "def": {
+    "id": "foretold-flame",
+    "name": "Foretold Flame",
+    "realm": "aurelion",
+    "rarity": "uncommon",
+    "kind": "attack",
+    "cost": 1,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 5,
+      "to": "target",
+      "scale": {
+       "by": "mantra"
+      }
+     },
+     {
+      "op": "scry",
+      "amount": 2
+     }
+    ],
+    "hero": "monk",
+    "upgrade": "foretold-flame+"
+   },
+   "upgrade": {
+    "id": "foretold-flame+",
+    "cost": "1",
+    "text": "Deal 8 (+1 per Fervor) damage. Foresee 3.",
+    "def": {
+     "id": "foretold-flame+",
+     "name": "Foretold Flame+",
+     "realm": "aurelion",
+     "rarity": "uncommon",
+     "kind": "attack",
+     "cost": 1,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 8,
+       "to": "target",
+       "scale": {
+        "by": "mantra"
+       }
+      },
+      {
+       "op": "scry",
+       "amount": 3
+      }
+     ],
+     "hero": "monk"
+    }
+   }
+  },
+  {
+   "id": "held-breath",
+   "name": "Held Breath",
+   "kind": "skill",
+   "rarity": "uncommon",
+   "cost": "1",
+   "text": "Gain 1 Holdfast.",
+   "def": {
+    "id": "held-breath",
+    "name": "Held Breath",
+    "realm": "aurelion",
+    "rarity": "uncommon",
+    "kind": "skill",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "status",
+      "status": "holdfast",
+      "amount": 1,
+      "to": "self"
+     }
+    ],
+    "hero": "monk",
+    "upgrade": "held-breath+"
+   },
+   "upgrade": {
+    "id": "held-breath+",
+    "cost": "1",
+    "text": "Gain 2 Holdfast.",
+    "def": {
+     "id": "held-breath+",
+     "name": "Held Breath+",
+     "realm": "aurelion",
+     "rarity": "uncommon",
+     "kind": "skill",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "status",
+       "status": "holdfast",
+       "amount": 2,
+       "to": "self"
+      }
+     ],
+     "hero": "monk"
+    }
+   }
+  },
+  {
+   "id": "hot-blooded",
+   "name": "Hot-Blooded",
+   "kind": "attack",
+   "rarity": "uncommon",
+   "cost": "1",
+   "text": "Deal 4 (+1 per 6% HP missing) damage. Enter Fury.",
+   "def": {
+    "id": "hot-blooded",
+    "name": "Hot-Blooded",
+    "realm": "aurelion",
+    "rarity": "uncommon",
+    "kind": "attack",
+    "cost": 1,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 4,
+      "to": "target",
+      "scale": {
+       "by": "missingPct",
+       "mult": 0.16666666666666666
+      }
+     },
+     {
+      "op": "stance",
+      "stance": "wrath"
+     }
+    ],
+    "hero": "monk",
+    "upgrade": "hot-blooded+"
+   },
+   "upgrade": {
+    "id": "hot-blooded+",
+    "cost": "1",
+    "text": "Deal 7 (+1 per 6% HP missing) damage. Enter Fury.",
+    "def": {
+     "id": "hot-blooded+",
+     "name": "Hot-Blooded+",
+     "realm": "aurelion",
+     "rarity": "uncommon",
+     "kind": "attack",
+     "cost": 1,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 7,
+       "to": "target",
+       "scale": {
+        "by": "missingPct",
+        "mult": 0.16666666666666666
+       }
+      },
+      {
+       "op": "stance",
+       "stance": "wrath"
+      }
+     ],
+     "hero": "monk"
+    }
+   }
+  },
+  {
+   "id": "inner-calm",
+   "name": "Wheel of Motion",
+   "kind": "power",
+   "rarity": "uncommon",
+   "cost": "2",
+   "text": "Whenever you enter a stance: Deal 3 damage to ALL enemies.",
+   "def": {
+    "id": "inner-calm",
+    "name": "Wheel of Motion",
+    "realm": "aurelion",
+    "rarity": "uncommon",
+    "kind": "power",
+    "cost": 2,
+    "target": "none",
+    "effects": [
+     {
+      "op": "power",
+      "when": "stance",
+      "ops": [
+       {
+        "op": "damage",
+        "amount": 3,
+        "to": "allFoes"
+       }
+      ]
+     }
+    ],
+    "hero": "monk",
+    "upgrade": "inner-calm+"
+   },
+   "upgrade": {
+    "id": "inner-calm+",
+    "cost": "2",
+    "text": "Whenever you enter a stance: Deal 4 damage to ALL enemies.",
+    "def": {
+     "id": "inner-calm+",
+     "name": "Wheel of Motion+",
+     "realm": "aurelion",
+     "rarity": "uncommon",
+     "kind": "power",
+     "cost": 2,
+     "target": "none",
+     "effects": [
+      {
+       "op": "power",
+       "when": "stance",
+       "ops": [
+        {
+         "op": "damage",
+         "amount": 4,
+         "to": "allFoes"
+        }
+       ]
+      }
+     ],
+     "hero": "monk"
+    }
+   }
+  },
+  {
+   "id": "inner-sight",
+   "name": "Inner Sight",
+   "kind": "skill",
+   "rarity": "uncommon",
+   "cost": "1",
+   "text": "Gain 5 Barrier. Foresee 4.",
+   "def": {
+    "id": "inner-sight",
+    "name": "Inner Sight",
+    "realm": "aurelion",
+    "rarity": "uncommon",
+    "kind": "skill",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "barrier",
+      "amount": 5,
+      "to": "self"
+     },
+     {
+      "op": "scry",
+      "amount": 4
+     }
+    ],
+    "hero": "monk",
+    "upgrade": "inner-sight+"
+   },
+   "upgrade": {
+    "id": "inner-sight+",
+    "cost": "1",
+    "text": "Gain 8 Barrier. Foresee 6.",
+    "def": {
+     "id": "inner-sight+",
+     "name": "Inner Sight+",
+     "realm": "aurelion",
+     "rarity": "uncommon",
+     "kind": "skill",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "barrier",
+       "amount": 8,
+       "to": "self"
+      },
+      {
+       "op": "scry",
+       "amount": 6
+      }
+     ],
+     "hero": "monk"
+    }
+   }
+  },
+  {
+   "id": "mantra-engine",
+   "name": "Mantra Engine",
+   "kind": "power",
+   "rarity": "uncommon",
+   "cost": "1",
+   "text": "At the end of your turn: Gain Barrier equal to your Fervor.",
+   "def": {
+    "id": "mantra-engine",
+    "name": "Mantra Engine",
+    "realm": "aurelion",
+    "rarity": "uncommon",
+    "kind": "power",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "power",
+      "when": "turnEnd",
+      "ops": [
+       {
+        "op": "barrier",
+        "amount": 0,
+        "to": "self",
+        "scale": {
+         "by": "mantra"
+        }
+       }
+      ]
+     }
+    ],
+    "hero": "monk",
+    "upgrade": "mantra-engine+"
+   },
+   "upgrade": {
+    "id": "mantra-engine+",
+    "cost": "0",
+    "text": "At the end of your turn: Gain Barrier equal to your Fervor.",
+    "def": {
+     "id": "mantra-engine+",
+     "name": "Mantra Engine+",
+     "realm": "aurelion",
+     "rarity": "uncommon",
+     "kind": "power",
+     "cost": 0,
+     "target": "none",
+     "effects": [
+      {
+       "op": "power",
+       "when": "turnEnd",
+       "ops": [
+        {
+         "op": "barrier",
+         "amount": 0,
+         "to": "self",
+         "scale": {
+          "by": "mantra"
+         }
+        }
+       ]
+      }
+     ],
+     "hero": "monk"
+    }
+   }
+  },
+  {
+   "id": "mirror-pool",
+   "name": "Mirror Pool",
+   "kind": "skill",
+   "rarity": "uncommon",
+   "cost": "1",
+   "text": "Gain Barrier equal to 3 times your Mana. Enter Serene. Hold.",
+   "def": {
+    "id": "mirror-pool",
+    "name": "Mirror Pool",
+    "realm": "aurelion",
+    "rarity": "uncommon",
+    "kind": "skill",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "barrier",
+      "amount": 0,
+      "to": "self",
+      "scale": {
+       "by": "mana",
+       "mult": 3
+      }
+     },
+     {
+      "op": "stance",
+      "stance": "calm"
+     }
+    ],
+    "hero": "monk",
+    "retain": true,
+    "upgrade": "mirror-pool+"
+   },
+   "upgrade": {
+    "id": "mirror-pool+",
+    "cost": "1",
+    "text": "Gain 3 (+3 per Mana left) Barrier. Enter Serene. Hold.",
+    "def": {
+     "id": "mirror-pool+",
+     "name": "Mirror Pool+",
+     "realm": "aurelion",
+     "rarity": "uncommon",
+     "kind": "skill",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "barrier",
+       "amount": 3,
+       "to": "self",
+       "scale": {
+        "by": "mana",
+        "mult": 3
+       }
+      },
+      {
+       "op": "stance",
+       "stance": "calm"
+      }
+     ],
+     "hero": "monk",
+     "retain": true
+    }
+   }
+  },
+  {
+   "id": "open-palm",
+   "name": "Open Palm",
+   "kind": "attack",
+   "rarity": "uncommon",
+   "cost": "1",
+   "text": "Deal 5 damage 2 times. Leave your stance.",
+   "def": {
+    "id": "open-palm",
+    "name": "Open Palm",
+    "realm": "aurelion",
+    "rarity": "uncommon",
+    "kind": "attack",
+    "cost": 1,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 5,
+      "hits": 2,
+      "to": "target"
+     },
+     {
+      "op": "stance",
+      "stance": "none"
+     }
+    ],
+    "hero": "monk",
+    "upgrade": "open-palm+"
+   },
+   "upgrade": {
+    "id": "open-palm+",
+    "cost": "1",
+    "text": "Deal 6 damage 2 times. Leave your stance.",
+    "def": {
+     "id": "open-palm+",
+     "name": "Open Palm+",
+     "realm": "aurelion",
+     "rarity": "uncommon",
+     "kind": "attack",
+     "cost": 1,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 6,
+       "hits": 2,
+       "to": "target"
+      },
+      {
+       "op": "stance",
+       "stance": "none"
+      }
+     ],
+     "hero": "monk"
+    }
+   }
+  },
+  {
+   "id": "poise",
+   "name": "Poise",
+   "kind": "power",
+   "rarity": "uncommon",
+   "cost": "1",
+   "text": "Gain 3 Bracing for the rest of the fight.",
+   "def": {
+    "id": "poise",
+    "name": "Poise",
+    "realm": "aurelion",
+    "rarity": "uncommon",
+    "kind": "power",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "status",
+      "status": "bracing",
+      "amount": 3,
+      "to": "self"
+     }
+    ],
+    "hero": "monk",
+    "upgrade": "poise+"
+   },
+   "upgrade": {
+    "id": "poise+",
+    "cost": "1",
+    "text": "Gain 4 Bracing for the rest of the fight.",
+    "def": {
+     "id": "poise+",
+     "name": "Poise+",
+     "realm": "aurelion",
+     "rarity": "uncommon",
+     "kind": "power",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "status",
+       "status": "bracing",
+       "amount": 4,
+       "to": "self"
+      }
+     ],
+     "hero": "monk"
+    }
+   }
+  },
+  {
+   "id": "rending-hands",
+   "name": "Rending Hands",
+   "kind": "attack",
+   "rarity": "uncommon",
+   "cost": "1",
+   "text": "Deal 6 damage 2 times. Lose 1 HP.",
+   "def": {
+    "id": "rending-hands",
+    "name": "Rending Hands",
+    "realm": "aurelion",
+    "rarity": "uncommon",
+    "kind": "attack",
+    "cost": 1,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 6,
+      "hits": 2,
+      "to": "target"
+     },
+     {
+      "op": "loseHp",
+      "amount": 1,
+      "to": "self"
+     }
+    ],
+    "hero": "monk",
+    "upgrade": "rending-hands+"
+   },
+   "upgrade": {
+    "id": "rending-hands+",
+    "cost": "1",
+    "text": "Deal 7 damage 2 times. Lose 1 HP.",
+    "def": {
+     "id": "rending-hands+",
+     "name": "Rending Hands+",
+     "realm": "aurelion",
+     "rarity": "uncommon",
+     "kind": "attack",
+     "cost": 1,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 7,
+       "hits": 2,
+       "to": "target"
+      },
+      {
+       "op": "loseHp",
+       "amount": 1,
+       "to": "self"
+      }
+     ],
+     "hero": "monk"
+    }
+   }
+  },
+  {
+   "id": "sanctity",
+   "name": "Let Go",
+   "kind": "skill",
+   "rarity": "uncommon",
+   "cost": "1",
+   "text": "Draw 2 cards. Leave your stance.",
+   "def": {
+    "id": "sanctity",
+    "name": "Let Go",
+    "realm": "aurelion",
+    "rarity": "uncommon",
+    "kind": "skill",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "draw",
+      "amount": 2
+     },
+     {
+      "op": "stance",
+      "stance": "none"
+     }
+    ],
+    "hero": "monk",
+    "upgrade": "sanctity+"
+   },
+   "upgrade": {
+    "id": "sanctity+",
+    "cost": "1",
+    "text": "Draw 3 cards. Leave your stance.",
+    "def": {
+     "id": "sanctity+",
+     "name": "Let Go+",
+     "realm": "aurelion",
+     "rarity": "uncommon",
+     "kind": "skill",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "draw",
+       "amount": 3
+      },
+      {
+       "op": "stance",
+       "stance": "none"
+      }
+     ],
+     "hero": "monk"
+    }
+   }
+  },
+  {
+   "id": "settled-mind",
+   "name": "Settled Mind",
+   "kind": "skill",
+   "rarity": "uncommon",
+   "cost": "1",
+   "text": "Draw cards equal to 3 times your Serene. Enter Serene.",
+   "def": {
+    "id": "settled-mind",
+    "name": "Settled Mind",
+    "realm": "aurelion",
+    "rarity": "uncommon",
+    "kind": "skill",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "draw",
+      "amount": 0,
+      "scale": {
+       "by": "calm",
+       "mult": 3
+      }
+     },
+     {
+      "op": "stance",
+      "stance": "calm"
+     }
+    ],
+    "hero": "monk",
+    "upgrade": "settled-mind+"
+   },
+   "upgrade": {
+    "id": "settled-mind+",
+    "cost": "1",
+    "text": "Draw 1 (+3 per Serene) cards. Enter Serene.",
+    "def": {
+     "id": "settled-mind+",
+     "name": "Settled Mind+",
+     "realm": "aurelion",
+     "rarity": "uncommon",
+     "kind": "skill",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "draw",
+       "amount": 1,
+       "scale": {
+        "by": "calm",
+        "mult": 3
+       }
+      },
+      {
+       "op": "stance",
+       "stance": "calm"
+      }
+     ],
+     "hero": "monk"
+    }
+   }
+  },
+  {
+   "id": "shield-of-faith",
+   "name": "Shield of Faith",
+   "kind": "skill",
+   "rarity": "uncommon",
+   "cost": "1",
+   "text": "Gain 7 Barrier. Gain 1 Fervor.",
+   "def": {
+    "id": "shield-of-faith",
+    "name": "Shield of Faith",
+    "realm": "aurelion",
+    "rarity": "uncommon",
+    "kind": "skill",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "barrier",
+      "amount": 7,
+      "to": "self"
+     },
+     {
+      "op": "status",
+      "status": "mantra",
+      "amount": 1,
+      "to": "self"
+     }
+    ],
+    "hero": "monk",
+    "upgrade": "shield-of-faith+"
+   },
+   "upgrade": {
+    "id": "shield-of-faith+",
+    "cost": "1",
+    "text": "Gain 10 Barrier. Gain 1 Fervor.",
+    "def": {
+     "id": "shield-of-faith+",
+     "name": "Shield of Faith+",
+     "realm": "aurelion",
+     "rarity": "uncommon",
+     "kind": "skill",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "barrier",
+       "amount": 10,
+       "to": "self"
+      },
+      {
+       "op": "status",
+       "status": "mantra",
+       "amount": 1,
+       "to": "self"
+      }
+     ],
+     "hero": "monk"
+    }
+   }
+  },
+  {
+   "id": "still-water",
+   "name": "Still Water",
+   "kind": "skill",
+   "rarity": "uncommon",
+   "cost": "1",
+   "text": "Gain 4 (+6 per Serene) Barrier. Draw 1 card.",
+   "def": {
+    "id": "still-water",
+    "name": "Still Water",
+    "realm": "aurelion",
+    "rarity": "uncommon",
+    "kind": "skill",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "barrier",
+      "amount": 4,
+      "to": "self",
+      "scale": {
+       "by": "calm",
+       "mult": 6
+      }
+     },
+     {
+      "op": "draw",
+      "amount": 1
+     }
+    ],
+    "hero": "monk",
+    "upgrade": "still-water+"
+   },
+   "upgrade": {
+    "id": "still-water+",
+    "cost": "1",
+    "text": "Gain 7 (+6 per Serene) Barrier. Draw 1 card.",
+    "def": {
+     "id": "still-water+",
+     "name": "Still Water+",
+     "realm": "aurelion",
+     "rarity": "uncommon",
+     "kind": "skill",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "barrier",
+       "amount": 7,
+       "to": "self",
+       "scale": {
+        "by": "calm",
+        "mult": 6
+       }
+      },
+      {
+       "op": "draw",
+       "amount": 1
+      }
+     ],
+     "hero": "monk"
+    }
+   }
+  },
+  {
+   "id": "swift-step",
+   "name": "Swift Step",
+   "kind": "skill",
+   "rarity": "uncommon",
+   "cost": "1",
+   "text": "Enter Fury. Gain 4 Primed.",
+   "def": {
+    "id": "swift-step",
+    "name": "Swift Step",
+    "realm": "aurelion",
+    "rarity": "uncommon",
+    "kind": "skill",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "stance",
+      "stance": "wrath"
+     },
+     {
+      "op": "status",
+      "status": "vigor",
+      "amount": 4,
+      "to": "self"
+     }
+    ],
+    "hero": "monk",
+    "upgrade": "swift-step+"
+   },
+   "upgrade": {
+    "id": "swift-step+",
+    "cost": "1",
+    "text": "Enter Fury. Gain 5 Primed.",
+    "def": {
+     "id": "swift-step+",
+     "name": "Swift Step+",
+     "realm": "aurelion",
+     "rarity": "uncommon",
+     "kind": "skill",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "stance",
+       "stance": "wrath"
+      },
+      {
+       "op": "status",
+       "status": "vigor",
+       "amount": 5,
+       "to": "self"
+      }
+     ],
+     "hero": "monk"
+    }
+   }
+  },
+  {
+   "id": "temper-flare",
+   "name": "Temper Flare",
+   "kind": "attack",
+   "rarity": "uncommon",
+   "cost": "1",
+   "text": "Deal 2 damage 3 times. Enter Fury.",
+   "def": {
+    "id": "temper-flare",
+    "name": "Temper Flare",
+    "realm": "aurelion",
+    "rarity": "uncommon",
+    "kind": "attack",
+    "cost": 1,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 2,
+      "hits": 3,
+      "to": "target"
+     },
+     {
+      "op": "stance",
+      "stance": "wrath"
+     }
+    ],
+    "hero": "monk",
+    "upgrade": "temper-flare+"
+   },
+   "upgrade": {
+    "id": "temper-flare+",
+    "cost": "1",
+    "text": "Deal 3 damage 3 times. Enter Fury.",
+    "def": {
+     "id": "temper-flare+",
+     "name": "Temper Flare+",
+     "realm": "aurelion",
+     "rarity": "uncommon",
+     "kind": "attack",
+     "cost": 1,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 3,
+       "hits": 3,
+       "to": "target"
+      },
+      {
+       "op": "stance",
+       "stance": "wrath"
+      }
+     ],
+     "hero": "monk"
+    }
+   }
+  },
+  {
+   "id": "the-offering",
+   "name": "The Offering",
+   "kind": "skill",
+   "rarity": "uncommon",
+   "cost": "1",
+   "text": "Gain 5 Fervor. Hold.",
+   "def": {
+    "id": "the-offering",
+    "name": "The Offering",
+    "realm": "aurelion",
+    "rarity": "uncommon",
+    "kind": "skill",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "status",
+      "status": "mantra",
+      "amount": 5,
+      "to": "self"
+     }
+    ],
+    "hero": "monk",
+    "retain": true,
+    "upgrade": "the-offering+"
+   },
+   "upgrade": {
+    "id": "the-offering+",
+    "cost": "1",
+    "text": "Gain 7 Fervor. Hold.",
+    "def": {
+     "id": "the-offering+",
+     "name": "The Offering+",
+     "realm": "aurelion",
+     "rarity": "uncommon",
+     "kind": "skill",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "status",
+       "status": "mantra",
+       "amount": 7,
+       "to": "self"
+      }
+     ],
+     "hero": "monk",
+     "retain": true
+    }
+   }
+  },
+  {
+   "id": "unmoved-mind",
+   "name": "Unmoved Mind",
+   "kind": "power",
+   "rarity": "uncommon",
+   "cost": "2",
+   "text": "Whenever you enter a stance: Gain 2 Barrier. Deal 2 damage to a random enemy.",
+   "def": {
+    "id": "unmoved-mind",
+    "name": "Unmoved Mind",
+    "realm": "aurelion",
+    "rarity": "uncommon",
+    "kind": "power",
+    "cost": 2,
+    "target": "none",
+    "effects": [
+     {
+      "op": "power",
+      "when": "stance",
+      "ops": [
+       {
+        "op": "barrier",
+        "amount": 2,
+        "to": "self"
+       },
+       {
+        "op": "damage",
+        "amount": 2,
+        "to": "randomFoe"
+       }
+      ]
+     }
+    ],
+    "hero": "monk",
+    "upgrade": "unmoved-mind+"
+   },
+   "upgrade": {
+    "id": "unmoved-mind+",
+    "cost": "2",
+    "text": "Whenever you enter a stance: Gain 3 Barrier. Deal 3 damage to a random enemy.",
+    "def": {
+     "id": "unmoved-mind+",
+     "name": "Unmoved Mind+",
+     "realm": "aurelion",
+     "rarity": "uncommon",
+     "kind": "power",
+     "cost": 2,
+     "target": "none",
+     "effects": [
+      {
+       "op": "power",
+       "when": "stance",
+       "ops": [
+        {
+         "op": "barrier",
+         "amount": 3,
+         "to": "self"
+        },
+        {
+         "op": "damage",
+         "amount": 3,
+         "to": "randomFoe"
+        }
+       ]
+      }
+     ],
+     "hero": "monk"
+    }
+   }
+  },
+  {
+   "id": "wheel-kick",
+   "name": "Spinning Heel",
+   "kind": "attack",
+   "rarity": "uncommon",
+   "cost": "2",
+   "text": "Deal 12 damage. Apply 2 Exposed. Draw 1 card.",
+   "def": {
+    "id": "wheel-kick",
+    "name": "Spinning Heel",
+    "realm": "aurelion",
+    "rarity": "uncommon",
+    "kind": "attack",
+    "cost": 2,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 12,
+      "to": "target"
+     },
+     {
+      "op": "status",
+      "status": "exposed",
+      "amount": 2,
+      "to": "target"
+     },
+     {
+      "op": "draw",
+      "amount": 1
+     }
+    ],
+    "hero": "monk",
+    "upgrade": "wheel-kick+"
+   },
+   "upgrade": {
+    "id": "wheel-kick+",
+    "cost": "2",
+    "text": "Deal 15 damage. Apply 3 Exposed. Draw 2 cards.",
+    "def": {
+     "id": "wheel-kick+",
+     "name": "Spinning Heel+",
+     "realm": "aurelion",
+     "rarity": "uncommon",
+     "kind": "attack",
+     "cost": 2,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 15,
+       "to": "target"
+      },
+      {
+       "op": "status",
+       "status": "exposed",
+       "amount": 3,
+       "to": "target"
+      },
+      {
+       "op": "draw",
+       "amount": 2
+      }
+     ],
+     "hero": "monk"
+    }
+   }
+  },
+  {
+   "id": "worship",
+   "name": "Hymn of Embers",
+   "kind": "skill",
+   "rarity": "uncommon",
+   "cost": "2",
+   "text": "Gain 5 Fervor. Gain 8 Barrier.",
+   "def": {
+    "id": "worship",
+    "name": "Hymn of Embers",
+    "realm": "aurelion",
+    "rarity": "uncommon",
+    "kind": "skill",
+    "cost": 2,
+    "target": "none",
+    "effects": [
+     {
+      "op": "status",
+      "status": "mantra",
+      "amount": 5,
+      "to": "self"
+     },
+     {
+      "op": "barrier",
+      "amount": 8,
+      "to": "self"
+     }
+    ],
+    "hero": "monk",
+    "upgrade": "worship+"
+   },
+   "upgrade": {
+    "id": "worship+",
+    "cost": "2",
+    "text": "Gain 7 Fervor. Gain 11 Barrier.",
+    "def": {
+     "id": "worship+",
+     "name": "Hymn of Embers+",
+     "realm": "aurelion",
+     "rarity": "uncommon",
+     "kind": "skill",
+     "cost": 2,
+     "target": "none",
+     "effects": [
+      {
+       "op": "status",
+       "status": "mantra",
+       "amount": 7,
+       "to": "self"
+      },
+      {
+       "op": "barrier",
+       "amount": 11,
+       "to": "self"
+      }
+     ],
+     "hero": "monk"
+    }
+   }
+  },
+  {
+   "id": "wrathful-guard",
+   "name": "Wrathful Guard",
+   "kind": "skill",
+   "rarity": "uncommon",
+   "cost": "1",
+   "text": "Gain 6 Barrier. Enter Fury.",
+   "def": {
+    "id": "wrathful-guard",
+    "name": "Wrathful Guard",
+    "realm": "aurelion",
+    "rarity": "uncommon",
+    "kind": "skill",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "barrier",
+      "amount": 6,
+      "to": "self"
+     },
+     {
+      "op": "stance",
+      "stance": "wrath"
+     }
+    ],
+    "hero": "monk",
+    "upgrade": "wrathful-guard+"
+   },
+   "upgrade": {
+    "id": "wrathful-guard+",
+    "cost": "1",
+    "text": "Gain 9 Barrier. Enter Fury.",
+    "def": {
+     "id": "wrathful-guard+",
+     "name": "Wrathful Guard+",
+     "realm": "aurelion",
+     "rarity": "uncommon",
+     "kind": "skill",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "barrier",
+       "amount": 9,
+       "to": "self"
+      },
+      {
+       "op": "stance",
+       "stance": "wrath"
+      }
+     ],
+     "hero": "monk"
+    }
+   }
+  },
+  {
+   "id": "wreath-of-flame",
+   "name": "Crown of Embers",
+   "kind": "skill",
+   "rarity": "uncommon",
+   "cost": "1",
+   "text": "Gain 6 Primed. Gain 2 Fervor.",
+   "def": {
+    "id": "wreath-of-flame",
+    "name": "Crown of Embers",
+    "realm": "aurelion",
+    "rarity": "uncommon",
+    "kind": "skill",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "status",
+      "status": "vigor",
+      "amount": 6,
+      "to": "self"
+     },
+     {
+      "op": "status",
+      "status": "mantra",
+      "amount": 2,
+      "to": "self"
+     }
+    ],
+    "hero": "monk",
+    "upgrade": "wreath-of-flame+"
+   },
+   "upgrade": {
+    "id": "wreath-of-flame+",
+    "cost": "1",
+    "text": "Gain 8 Primed. Gain 3 Fervor.",
+    "def": {
+     "id": "wreath-of-flame+",
+     "name": "Crown of Embers+",
+     "realm": "aurelion",
+     "rarity": "uncommon",
+     "kind": "skill",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "status",
+       "status": "vigor",
+       "amount": 8,
+       "to": "self"
+      },
+      {
+       "op": "status",
+       "status": "mantra",
+       "amount": 3,
+       "to": "self"
+      }
+     ],
+     "hero": "monk"
+    }
+   }
+  },
+  {
+   "id": "all-seeing",
+   "name": "All-Seeing",
+   "kind": "skill",
+   "rarity": "rare",
+   "cost": "2",
+   "text": "Add 2 random cards from your pool to your hand (they cost 0 the next time you play them). Consume.",
+   "def": {
+    "id": "all-seeing",
+    "name": "All-Seeing",
+    "realm": "aurelion",
+    "rarity": "rare",
+    "kind": "skill",
+    "cost": 2,
+    "target": "none",
+    "effects": [
+     {
+      "op": "discover",
+      "count": 2,
+      "free": true
+     }
+    ],
+    "hero": "monk",
+    "exhaust": true,
+    "upgrade": "all-seeing+"
+   },
+   "upgrade": {
+    "id": "all-seeing+",
+    "cost": "1",
+    "text": "Add 2 random cards from your pool to your hand (they cost 0 the next time you play them). Consume.",
+    "def": {
+     "id": "all-seeing+",
+     "name": "All-Seeing+",
+     "realm": "aurelion",
+     "rarity": "rare",
+     "kind": "skill",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "discover",
+       "count": 2,
+       "free": true
+      }
+     ],
+     "hero": "monk",
+     "exhaust": true
+    }
+   }
+  },
+  {
+   "id": "ascendant-form",
+   "name": "Ascendant Form",
+   "kind": "power",
+   "rarity": "rare",
+   "cost": "2",
+   "text": "At the start of your turn: Gain 1 Mana.",
+   "def": {
+    "id": "ascendant-form",
+    "name": "Ascendant Form",
+    "realm": "aurelion",
+    "rarity": "rare",
+    "kind": "power",
+    "cost": 2,
+    "target": "none",
+    "effects": [
+     {
+      "op": "power",
+      "when": "turnStart",
+      "ops": [
+       {
+        "op": "mana",
+        "amount": 1
+       }
+      ]
+     }
+    ],
+    "hero": "monk",
+    "upgrade": "ascendant-form+"
+   },
+   "upgrade": {
+    "id": "ascendant-form+",
+    "cost": "1",
+    "text": "At the start of your turn: Gain 1 Mana.",
+    "def": {
+     "id": "ascendant-form+",
+     "name": "Ascendant Form+",
+     "realm": "aurelion",
+     "rarity": "rare",
+     "kind": "power",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "power",
+       "when": "turnStart",
+       "ops": [
+        {
+         "op": "mana",
+         "amount": 1
+        }
+       ]
+      }
+     ],
+     "hero": "monk"
+    }
+   }
+  },
+  {
+   "id": "ashes-of-restraint",
+   "name": "Ashes of Restraint",
+   "kind": "attack",
+   "rarity": "rare",
+   "cost": "2",
+   "text": "Deal 9 (+2 per consumed card) damage. Enter Fury.",
+   "def": {
+    "id": "ashes-of-restraint",
+    "name": "Ashes of Restraint",
+    "realm": "aurelion",
+    "rarity": "rare",
+    "kind": "attack",
+    "cost": 2,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 9,
+      "to": "target",
+      "scale": {
+       "by": "exhausted",
+       "mult": 2
+      }
+     },
+     {
+      "op": "stance",
+      "stance": "wrath"
+     }
+    ],
+    "hero": "monk",
+    "upgrade": "ashes-of-restraint+"
+   },
+   "upgrade": {
+    "id": "ashes-of-restraint+",
+    "cost": "2",
+    "text": "Deal 12 (+2 per consumed card) damage. Enter Fury.",
+    "def": {
+     "id": "ashes-of-restraint+",
+     "name": "Ashes of Restraint+",
+     "realm": "aurelion",
+     "rarity": "rare",
+     "kind": "attack",
+     "cost": 2,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 12,
+       "to": "target",
+       "scale": {
+        "by": "exhausted",
+        "mult": 2
+       }
+      },
+      {
+       "op": "stance",
+       "stance": "wrath"
+      }
+     ],
+     "hero": "monk"
+    }
+   }
+  },
+  {
+   "id": "breath-between-blows",
+   "name": "Breath Between Blows",
+   "kind": "power",
+   "rarity": "rare",
+   "cost": "1",
+   "text": "Whenever you play a Skill: Gain 2 Barrier.",
+   "def": {
+    "id": "breath-between-blows",
+    "name": "Breath Between Blows",
+    "realm": "aurelion",
+    "rarity": "rare",
+    "kind": "power",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "power",
+      "when": "play",
+      "ops": [
+       {
+        "op": "barrier",
+        "amount": 2,
+        "to": "self"
+       }
+      ],
+      "filter": "skill"
+     }
+    ],
+    "hero": "monk",
+    "upgrade": "breath-between-blows+"
+   },
+   "upgrade": {
+    "id": "breath-between-blows+",
+    "cost": "1",
+    "text": "Whenever you play a Skill: Gain 3 Barrier.",
+    "def": {
+     "id": "breath-between-blows+",
+     "name": "Breath Between Blows+",
+     "realm": "aurelion",
+     "rarity": "rare",
+     "kind": "power",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "power",
+       "when": "play",
+       "ops": [
+        {
+         "op": "barrier",
+         "amount": 3,
+         "to": "self"
+        }
+       ],
+       "filter": "skill"
+      }
+     ],
+     "hero": "monk"
+    }
+   }
+  },
+  {
+   "id": "burning-litany",
+   "name": "Burning Litany",
+   "kind": "skill",
+   "rarity": "rare",
+   "cost": "3",
+   "text": "Deal damage equal to your Fervor to ALL enemies. Enter Radiant. Consume.",
+   "def": {
+    "id": "burning-litany",
+    "name": "Burning Litany",
+    "realm": "aurelion",
+    "rarity": "rare",
+    "kind": "skill",
+    "cost": 3,
+    "target": "none",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 0,
+      "to": "allFoes",
+      "scale": {
+       "by": "mantra"
+      }
+     },
+     {
+      "op": "stance",
+      "stance": "radiant"
+     }
+    ],
+    "hero": "monk",
+    "exhaust": true,
+    "upgrade": "burning-litany+"
+   },
+   "upgrade": {
+    "id": "burning-litany+",
+    "cost": "3",
+    "text": "Deal 3 (+1 per Fervor) damage to ALL enemies. Enter Radiant. Consume.",
+    "def": {
+     "id": "burning-litany+",
+     "name": "Burning Litany+",
+     "realm": "aurelion",
+     "rarity": "rare",
+     "kind": "skill",
+     "cost": 3,
+     "target": "none",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 3,
+       "to": "allFoes",
+       "scale": {
+        "by": "mantra"
+       }
+      },
+      {
+       "op": "stance",
+       "stance": "radiant"
+      }
+     ],
+     "hero": "monk",
+     "exhaust": true
+    }
+   }
+  },
+  {
+   "id": "eye-of-the-storm",
+   "name": "Eye of the Storm",
+   "kind": "power",
+   "rarity": "rare",
+   "cost": "2",
+   "text": "At the start of your turn: Enter Fury. Deal 4 damage to ALL enemies. Gain 4 Barrier.",
+   "def": {
+    "id": "eye-of-the-storm",
+    "name": "Eye of the Storm",
+    "realm": "aurelion",
+    "rarity": "rare",
+    "kind": "power",
+    "cost": 2,
+    "target": "none",
+    "effects": [
+     {
+      "op": "power",
+      "when": "turnStart",
+      "ops": [
+       {
+        "op": "stance",
+        "stance": "wrath"
+       },
+       {
+        "op": "damage",
+        "amount": 4,
+        "to": "allFoes"
+       },
+       {
+        "op": "barrier",
+        "amount": 4,
+        "to": "self"
+       }
+      ]
+     }
+    ],
+    "hero": "monk",
+    "upgrade": "eye-of-the-storm+"
+   },
+   "upgrade": {
+    "id": "eye-of-the-storm+",
+    "cost": "2",
+    "text": "At the start of your turn: Enter Fury. Deal 6 damage to ALL enemies. Gain 6 Barrier.",
+    "def": {
+     "id": "eye-of-the-storm+",
+     "name": "Eye of the Storm+",
+     "realm": "aurelion",
+     "rarity": "rare",
+     "kind": "power",
+     "cost": 2,
+     "target": "none",
+     "effects": [
+      {
+       "op": "power",
+       "when": "turnStart",
+       "ops": [
+        {
+         "op": "stance",
+         "stance": "wrath"
+        },
+        {
+         "op": "damage",
+         "amount": 6,
+         "to": "allFoes"
+        },
+        {
+         "op": "barrier",
+         "amount": 6,
+         "to": "self"
+        }
+       ]
+      }
+     ],
+     "hero": "monk"
+    }
+   }
+  },
+  {
+   "id": "final-account",
+   "name": "Final Account",
+   "kind": "attack",
+   "rarity": "rare",
+   "cost": "2",
+   "text": "Deal 14 (+10 per Fury) damage.",
+   "def": {
+    "id": "final-account",
+    "name": "Final Account",
+    "realm": "aurelion",
+    "rarity": "rare",
+    "kind": "attack",
+    "cost": 2,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 14,
+      "to": "target",
+      "scale": {
+       "by": "wrath",
+       "mult": 10
+      }
+     }
+    ],
+    "hero": "monk",
+    "upgrade": "final-account+"
+   },
+   "upgrade": {
+    "id": "final-account+",
+    "cost": "2",
+    "text": "Deal 17 (+10 per Fury) damage.",
+    "def": {
+     "id": "final-account+",
+     "name": "Final Account+",
+     "realm": "aurelion",
+     "rarity": "rare",
+     "kind": "attack",
+     "cost": 2,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 17,
+       "to": "target",
+       "scale": {
+        "by": "wrath",
+        "mult": 10
+       }
+      }
+     ],
+     "hero": "monk"
+    }
+   }
+  },
+  {
+   "id": "gentle-return",
+   "name": "Gentle Return",
+   "kind": "power",
+   "rarity": "rare",
+   "cost": "1",
+   "text": "Whenever you enter Serene: Heal 1. Gain 3 Barrier.",
+   "def": {
+    "id": "gentle-return",
+    "name": "Gentle Return",
+    "realm": "aurelion",
+    "rarity": "rare",
+    "kind": "power",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "power",
+      "when": "stance",
+      "ops": [
+       {
+        "op": "heal",
+        "amount": 1,
+        "to": "self"
+       },
+       {
+        "op": "barrier",
+        "amount": 3,
+        "to": "self"
+       }
+      ],
+      "stance": "calm"
+     }
+    ],
+    "hero": "monk",
+    "upgrade": "gentle-return+"
+   },
+   "upgrade": {
+    "id": "gentle-return+",
+    "cost": "1",
+    "text": "Whenever you enter Serene: Heal 1. Gain 5 Barrier.",
+    "def": {
+     "id": "gentle-return+",
+     "name": "Gentle Return+",
+     "realm": "aurelion",
+     "rarity": "rare",
+     "kind": "power",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "power",
+       "when": "stance",
+       "ops": [
+        {
+         "op": "heal",
+         "amount": 1,
+         "to": "self"
+        },
+        {
+         "op": "barrier",
+         "amount": 5,
+         "to": "self"
+        }
+       ],
+       "stance": "calm"
+      }
+     ],
+     "hero": "monk"
+    }
+   }
+  },
+  {
+   "id": "last-rites-of-flame",
+   "name": "Last Rites of the Flame",
+   "kind": "attack",
+   "rarity": "rare",
+   "cost": "3",
+   "text": "Deal 16 damage to ALL enemies. Gain 5 Fervor.",
+   "def": {
+    "id": "last-rites-of-flame",
+    "name": "Last Rites of the Flame",
+    "realm": "aurelion",
+    "rarity": "rare",
+    "kind": "attack",
+    "cost": 3,
+    "target": "none",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 16,
+      "to": "allFoes"
+     },
+     {
+      "op": "status",
+      "status": "mantra",
+      "amount": 5,
+      "to": "self"
+     }
+    ],
+    "hero": "monk",
+    "upgrade": "last-rites-of-flame+"
+   },
+   "upgrade": {
+    "id": "last-rites-of-flame+",
+    "cost": "3",
+    "text": "Deal 19 damage to ALL enemies. Gain 7 Fervor.",
+    "def": {
+     "id": "last-rites-of-flame+",
+     "name": "Last Rites of the Flame+",
+     "realm": "aurelion",
+     "rarity": "rare",
+     "kind": "attack",
+     "cost": 3,
+     "target": "none",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 19,
+       "to": "allFoes"
+      },
+      {
+       "op": "status",
+       "status": "mantra",
+       "amount": 7,
+       "to": "self"
+      }
+     ],
+     "hero": "monk"
+    }
+   }
+  },
+  {
+   "id": "litany",
+   "name": "Litany",
+   "kind": "power",
+   "rarity": "rare",
+   "cost": "1",
+   "text": "Whenever you play a Skill: Gain 1 Fervor.",
+   "def": {
+    "id": "litany",
+    "name": "Litany",
+    "realm": "aurelion",
+    "rarity": "rare",
+    "kind": "power",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "power",
+      "when": "play",
+      "ops": [
+       {
+        "op": "status",
+        "status": "mantra",
+        "amount": 1,
+        "to": "self"
+       }
+      ],
+      "filter": "skill"
+     }
+    ],
+    "hero": "monk",
+    "upgrade": "litany+"
+   },
+   "upgrade": {
+    "id": "litany+",
+    "cost": "0",
+    "text": "Whenever you play a Skill: Gain 1 Fervor.",
+    "def": {
+     "id": "litany+",
+     "name": "Litany+",
+     "realm": "aurelion",
+     "rarity": "rare",
+     "kind": "power",
+     "cost": 0,
+     "target": "none",
+     "effects": [
+      {
+       "op": "power",
+       "when": "play",
+       "ops": [
+        {
+         "op": "status",
+         "status": "mantra",
+         "amount": 1,
+         "to": "self"
+        }
+       ],
+       "filter": "skill"
+      }
+     ],
+     "hero": "monk"
+    }
+   }
+  },
+  {
+   "id": "meditate",
+   "name": "Recollect",
+   "kind": "skill",
+   "rarity": "rare",
+   "cost": "1",
+   "text": "Return a random card from your discard pile to your hand. Enter Serene. Hold.",
+   "def": {
+    "id": "meditate",
+    "name": "Recollect",
+    "realm": "aurelion",
+    "rarity": "rare",
+    "kind": "skill",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "fetch",
+      "amount": 1,
+      "to": "hand"
+     },
+     {
+      "op": "stance",
+      "stance": "calm"
+     }
+    ],
+    "hero": "monk",
+    "retain": true,
+    "upgrade": "meditate+"
+   },
+   "upgrade": {
+    "id": "meditate+",
+    "cost": "1",
+    "text": "Return 2 random cards from your discard pile to your hand. Enter Serene. Hold.",
+    "def": {
+     "id": "meditate+",
+     "name": "Recollect+",
+     "realm": "aurelion",
+     "rarity": "rare",
+     "kind": "skill",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "fetch",
+       "amount": 2,
+       "to": "hand"
+      },
+      {
+       "op": "stance",
+       "stance": "calm"
+      }
+     ],
+     "hero": "monk",
+     "retain": true
+    }
+   }
+  },
+  {
+   "id": "perfect-balance",
+   "name": "Perfect Balance",
+   "kind": "power",
+   "rarity": "rare",
+   "cost": "2",
+   "text": "Whenever you enter a stance: Draw 1 card. Gain 2 Barrier.",
+   "def": {
+    "id": "perfect-balance",
+    "name": "Perfect Balance",
+    "realm": "aurelion",
+    "rarity": "rare",
+    "kind": "power",
+    "cost": 2,
+    "target": "none",
+    "effects": [
+     {
+      "op": "power",
+      "when": "stance",
+      "ops": [
+       {
+        "op": "draw",
+        "amount": 1
+       },
+       {
+        "op": "barrier",
+        "amount": 2,
+        "to": "self"
+       }
+      ]
+     }
+    ],
+    "hero": "monk",
+    "upgrade": "perfect-balance+"
+   },
+   "upgrade": {
+    "id": "perfect-balance+",
+    "cost": "2",
+    "text": "Whenever you enter a stance: Draw 1 card. Gain 4 Barrier.",
+    "def": {
+     "id": "perfect-balance+",
+     "name": "Perfect Balance+",
+     "realm": "aurelion",
+     "rarity": "rare",
+     "kind": "power",
+     "cost": 2,
+     "target": "none",
+     "effects": [
+      {
+       "op": "power",
+       "when": "stance",
+       "ops": [
+        {
+         "op": "draw",
+         "amount": 1
+        },
+        {
+         "op": "barrier",
+         "amount": 4,
+         "to": "self"
+        }
+       ]
+      }
+     ],
+     "hero": "monk"
+    }
+   }
+  },
+  {
+   "id": "perfect-calm",
+   "name": "Perfect Calm",
+   "kind": "skill",
+   "rarity": "rare",
+   "cost": "2",
+   "text": "Gain 12 Barrier. Enter Serene. Draw 1 card.",
+   "def": {
+    "id": "perfect-calm",
+    "name": "Perfect Calm",
+    "realm": "aurelion",
+    "rarity": "rare",
+    "kind": "skill",
+    "cost": 2,
+    "target": "none",
+    "effects": [
+     {
+      "op": "barrier",
+      "amount": 12,
+      "to": "self"
+     },
+     {
+      "op": "stance",
+      "stance": "calm"
+     },
+     {
+      "op": "draw",
+      "amount": 1
+     }
+    ],
+    "hero": "monk",
+    "upgrade": "perfect-calm+"
+   },
+   "upgrade": {
+    "id": "perfect-calm+",
+    "cost": "2",
+    "text": "Gain 15 Barrier. Enter Serene. Draw 2 cards.",
+    "def": {
+     "id": "perfect-calm+",
+     "name": "Perfect Calm+",
+     "realm": "aurelion",
+     "rarity": "rare",
+     "kind": "skill",
+     "cost": 2,
+     "target": "none",
+     "effects": [
+      {
+       "op": "barrier",
+       "amount": 15,
+       "to": "self"
+      },
+      {
+       "op": "stance",
+       "stance": "calm"
+      },
+      {
+       "op": "draw",
+       "amount": 2
+      }
+     ],
+     "hero": "monk"
+    }
+   }
+  },
+  {
+   "id": "radiant-heart",
+   "name": "Radiant Heart",
+   "kind": "power",
+   "rarity": "rare",
+   "cost": "1",
+   "text": "Whenever you enter Radiant: Draw 3 cards.",
+   "def": {
+    "id": "radiant-heart",
+    "name": "Radiant Heart",
+    "realm": "aurelion",
+    "rarity": "rare",
+    "kind": "power",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "power",
+      "when": "stance",
+      "ops": [
+       {
+        "op": "draw",
+        "amount": 3
+       }
+      ],
+      "stance": "radiant"
+     }
+    ],
+    "hero": "monk",
+    "upgrade": "radiant-heart+"
+   },
+   "upgrade": {
+    "id": "radiant-heart+",
+    "cost": "1",
+    "text": "Whenever you enter Radiant: Draw 4 cards.",
+    "def": {
+     "id": "radiant-heart+",
+     "name": "Radiant Heart+",
+     "realm": "aurelion",
+     "rarity": "rare",
+     "kind": "power",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "power",
+       "when": "stance",
+       "ops": [
+        {
+         "op": "draw",
+         "amount": 4
+        }
+       ],
+       "stance": "radiant"
+      }
+     ],
+     "hero": "monk"
+    }
+   }
+  },
+  {
+   "id": "rage-of-ages",
+   "name": "Rage of Ages",
+   "kind": "attack",
+   "rarity": "rare",
+   "cost": "3",
+   "text": "Deal 8 damage 3 times to ALL enemies.",
+   "def": {
+    "id": "rage-of-ages",
+    "name": "Rage of Ages",
+    "realm": "aurelion",
+    "rarity": "rare",
+    "kind": "attack",
+    "cost": 3,
+    "target": "none",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 8,
+      "hits": 3,
+      "to": "allFoes"
+     }
+    ],
+    "hero": "monk",
+    "upgrade": "rage-of-ages+"
+   },
+   "upgrade": {
+    "id": "rage-of-ages+",
+    "cost": "3",
+    "text": "Deal 9 damage 3 times to ALL enemies.",
+    "def": {
+     "id": "rage-of-ages+",
+     "name": "Rage of Ages+",
+     "realm": "aurelion",
+     "rarity": "rare",
+     "kind": "attack",
+     "cost": 3,
+     "target": "none",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 9,
+       "hits": 3,
+       "to": "allFoes"
+      }
+     ],
+     "hero": "monk"
+    }
+   }
+  },
+  {
+   "id": "rage-unbound",
+   "name": "Rage Unbound",
+   "kind": "skill",
+   "rarity": "rare",
+   "cost": "0",
+   "text": "Enter Fury. Gain 1 Mana. Lose 3 HP. Consume.",
+   "def": {
+    "id": "rage-unbound",
+    "name": "Rage Unbound",
+    "realm": "aurelion",
+    "rarity": "rare",
+    "kind": "skill",
+    "cost": 0,
+    "target": "none",
+    "effects": [
+     {
+      "op": "stance",
+      "stance": "wrath"
+     },
+     {
+      "op": "mana",
+      "amount": 1
+     },
+     {
+      "op": "loseHp",
+      "amount": 3,
+      "to": "self"
+     }
+    ],
+    "hero": "monk",
+    "exhaust": true,
+    "upgrade": "rage-unbound+"
+   },
+   "upgrade": {
+    "id": "rage-unbound+",
+    "cost": "0",
+    "text": "Enter Fury. Gain 1 Mana. Lose 2 HP. Consume.",
+    "def": {
+     "id": "rage-unbound+",
+     "name": "Rage Unbound+",
+     "realm": "aurelion",
+     "rarity": "rare",
+     "kind": "skill",
+     "cost": 0,
+     "target": "none",
+     "effects": [
+      {
+       "op": "stance",
+       "stance": "wrath"
+      },
+      {
+       "op": "mana",
+       "amount": 1
+      },
+      {
+       "op": "loseHp",
+       "amount": 2,
+       "to": "self"
+      }
+     ],
+     "hero": "monk",
+     "exhaust": true
+    }
+   }
+  },
+  {
+   "id": "rampage-of-ire",
+   "name": "Rampage of Ire",
+   "kind": "power",
+   "rarity": "rare",
+   "cost": "2",
+   "text": "Whenever you enter Fury: Deal 6 damage to ALL enemies.",
+   "def": {
+    "id": "rampage-of-ire",
+    "name": "Rampage of Ire",
+    "realm": "aurelion",
+    "rarity": "rare",
+    "kind": "power",
+    "cost": 2,
+    "target": "none",
+    "effects": [
+     {
+      "op": "power",
+      "when": "stance",
+      "ops": [
+       {
+        "op": "damage",
+        "amount": 6,
+        "to": "allFoes"
+       }
+      ],
+      "stance": "wrath"
+     }
+    ],
+    "hero": "monk",
+    "upgrade": "rampage-of-ire+"
+   },
+   "upgrade": {
+    "id": "rampage-of-ire+",
+    "cost": "2",
+    "text": "Whenever you enter Fury: Deal 9 damage to ALL enemies.",
+    "def": {
+     "id": "rampage-of-ire+",
+     "name": "Rampage of Ire+",
+     "realm": "aurelion",
+     "rarity": "rare",
+     "kind": "power",
+     "cost": 2,
+     "target": "none",
+     "effects": [
+      {
+       "op": "power",
+       "when": "stance",
+       "ops": [
+        {
+         "op": "damage",
+         "amount": 9,
+         "to": "allFoes"
+        }
+       ],
+       "stance": "wrath"
+      }
+     ],
+     "hero": "monk"
+    }
+   }
+  },
+  {
+   "id": "rise-radiant",
+   "name": "Rise Radiant",
+   "kind": "skill",
+   "rarity": "rare",
+   "cost": "2",
+   "text": "Enter Radiant. Consume.",
+   "def": {
+    "id": "rise-radiant",
+    "name": "Rise Radiant",
+    "realm": "aurelion",
+    "rarity": "rare",
+    "kind": "skill",
+    "cost": 2,
+    "target": "none",
+    "effects": [
+     {
+      "op": "stance",
+      "stance": "radiant"
+     }
+    ],
+    "hero": "monk",
+    "exhaust": true,
+    "upgrade": "rise-radiant+"
+   },
+   "upgrade": {
+    "id": "rise-radiant+",
+    "cost": "1",
+    "text": "Enter Radiant. Consume.",
+    "def": {
+     "id": "rise-radiant+",
+     "name": "Rise Radiant+",
+     "realm": "aurelion",
+     "rarity": "rare",
+     "kind": "skill",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "stance",
+       "stance": "radiant"
+      }
+     ],
+     "hero": "monk",
+     "exhaust": true
+    }
+   }
+  },
+  {
+   "id": "scrawl",
+   "name": "Flood of Visions",
+   "kind": "skill",
+   "rarity": "rare",
+   "cost": "1",
+   "text": "Draw 5 cards. Gain 2 Fervor. Consume.",
+   "def": {
+    "id": "scrawl",
+    "name": "Flood of Visions",
+    "realm": "aurelion",
+    "rarity": "rare",
+    "kind": "skill",
+    "cost": 1,
+    "target": "none",
+    "effects": [
+     {
+      "op": "draw",
+      "amount": 5
+     },
+     {
+      "op": "status",
+      "status": "mantra",
+      "amount": 2,
+      "to": "self"
+     }
+    ],
+    "hero": "monk",
+    "exhaust": true,
+    "upgrade": "scrawl+"
+   },
+   "upgrade": {
+    "id": "scrawl+",
+    "cost": "1",
+    "text": "Draw 6 cards. Gain 3 Fervor. Consume.",
+    "def": {
+     "id": "scrawl+",
+     "name": "Flood of Visions+",
+     "realm": "aurelion",
+     "rarity": "rare",
+     "kind": "skill",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "draw",
+       "amount": 6
+      },
+      {
+       "op": "status",
+       "status": "mantra",
+       "amount": 3,
+       "to": "self"
+      }
+     ],
+     "hero": "monk",
+     "exhaust": true
+    }
+   }
+  },
+  {
+   "id": "serenity-incarnate",
+   "name": "Serenity Incarnate",
+   "kind": "power",
+   "rarity": "rare",
+   "cost": "3",
+   "text": "At the end of your turn: Heal 3. Gain 6 Barrier.",
+   "def": {
+    "id": "serenity-incarnate",
+    "name": "Serenity Incarnate",
+    "realm": "aurelion",
+    "rarity": "rare",
+    "kind": "power",
+    "cost": 3,
+    "target": "none",
+    "effects": [
+     {
+      "op": "power",
+      "when": "turnEnd",
+      "ops": [
+       {
+        "op": "heal",
+        "amount": 3,
+        "to": "self"
+       },
+       {
+        "op": "barrier",
+        "amount": 6,
+        "to": "self"
+       }
+      ]
+     }
+    ],
+    "hero": "monk",
+    "upgrade": "serenity-incarnate+"
+   },
+   "upgrade": {
+    "id": "serenity-incarnate+",
+    "cost": "3",
+    "text": "At the end of your turn: Heal 3. Gain 9 Barrier.",
+    "def": {
+     "id": "serenity-incarnate+",
+     "name": "Serenity Incarnate+",
+     "realm": "aurelion",
+     "rarity": "rare",
+     "kind": "power",
+     "cost": 3,
+     "target": "none",
+     "effects": [
+      {
+       "op": "power",
+       "when": "turnEnd",
+       "ops": [
+        {
+         "op": "heal",
+         "amount": 3,
+         "to": "self"
+        },
+        {
+         "op": "barrier",
+         "amount": 9,
+         "to": "self"
+        }
+       ]
+      }
+     ],
+     "hero": "monk"
+    }
+   }
+  },
+  {
+   "id": "spirit-shield",
+   "name": "Mountain's Stillness",
+   "kind": "skill",
+   "rarity": "rare",
+   "cost": "2",
+   "text": "Gain 6 (+3 per card in hand) Barrier.",
+   "def": {
+    "id": "spirit-shield",
+    "name": "Mountain's Stillness",
+    "realm": "aurelion",
+    "rarity": "rare",
+    "kind": "skill",
+    "cost": 2,
+    "target": "none",
+    "effects": [
+     {
+      "op": "barrier",
+      "amount": 6,
+      "to": "self",
+      "scale": {
+       "by": "hand",
+       "mult": 3
+      }
+     }
+    ],
+    "hero": "monk",
+    "upgrade": "spirit-shield+"
+   },
+   "upgrade": {
+    "id": "spirit-shield+",
+    "cost": "2",
+    "text": "Gain 9 (+3 per card in hand) Barrier.",
+    "def": {
+     "id": "spirit-shield+",
+     "name": "Mountain's Stillness+",
+     "realm": "aurelion",
+     "rarity": "rare",
+     "kind": "skill",
+     "cost": 2,
+     "target": "none",
+     "effects": [
+      {
+       "op": "barrier",
+       "amount": 9,
+       "to": "self",
+       "scale": {
+        "by": "hand",
+        "mult": 3
+       }
+      }
+     ],
+     "hero": "monk"
+    }
+   }
+  },
+  {
+   "id": "still-flame-ascendant",
+   "name": "Still Flame Ascendant",
+   "kind": "skill",
+   "rarity": "rare",
+   "cost": "3",
+   "text": "Enter Radiant. Gain 4 Primed. Draw 2 cards. Consume.",
+   "def": {
+    "id": "still-flame-ascendant",
+    "name": "Still Flame Ascendant",
+    "realm": "aurelion",
+    "rarity": "rare",
+    "kind": "skill",
+    "cost": 3,
+    "target": "none",
+    "effects": [
+     {
+      "op": "stance",
+      "stance": "radiant"
+     },
+     {
+      "op": "status",
+      "status": "vigor",
+      "amount": 4,
+      "to": "self"
+     },
+     {
+      "op": "draw",
+      "amount": 2
+     }
+    ],
+    "hero": "monk",
+    "exhaust": true,
+    "upgrade": "still-flame-ascendant+"
+   },
+   "upgrade": {
+    "id": "still-flame-ascendant+",
+    "cost": "3",
+    "text": "Enter Radiant. Gain 5 Primed. Draw 3 cards. Consume.",
+    "def": {
+     "id": "still-flame-ascendant+",
+     "name": "Still Flame Ascendant+",
+     "realm": "aurelion",
+     "rarity": "rare",
+     "kind": "skill",
+     "cost": 3,
+     "target": "none",
+     "effects": [
+      {
+       "op": "stance",
+       "stance": "radiant"
+      },
+      {
+       "op": "status",
+       "status": "vigor",
+       "amount": 5,
+       "to": "self"
+      },
+      {
+       "op": "draw",
+       "amount": 3
+      }
+     ],
+     "hero": "monk",
+     "exhaust": true
+    }
+   }
+  },
+  {
+   "id": "surge-of-ire",
+   "name": "Surge of Ire",
+   "kind": "power",
+   "rarity": "rare",
+   "cost": "2",
+   "text": "The first time each turn you enter Fury: Gain 6 Barrier. Draw 1 card.",
+   "def": {
+    "id": "surge-of-ire",
+    "name": "Surge of Ire",
+    "realm": "aurelion",
+    "rarity": "rare",
+    "kind": "power",
+    "cost": 2,
+    "target": "none",
+    "effects": [
+     {
+      "op": "power",
+      "when": "stance",
+      "ops": [
+       {
+        "op": "barrier",
+        "amount": 6,
+        "to": "self"
+       },
+       {
+        "op": "draw",
+        "amount": 1
+       }
+      ],
+      "stance": "wrath",
+      "once": true
+     }
+    ],
+    "hero": "monk",
+    "upgrade": "surge-of-ire+"
+   },
+   "upgrade": {
+    "id": "surge-of-ire+",
+    "cost": "2",
+    "text": "The first time each turn you enter Fury: Gain 9 Barrier. Draw 1 card.",
+    "def": {
+     "id": "surge-of-ire+",
+     "name": "Surge of Ire+",
+     "realm": "aurelion",
+     "rarity": "rare",
+     "kind": "power",
+     "cost": 2,
+     "target": "none",
+     "effects": [
+      {
+       "op": "power",
+       "when": "stance",
+       "ops": [
+        {
+         "op": "barrier",
+         "amount": 9,
+         "to": "self"
+        },
+        {
+         "op": "draw",
+         "amount": 1
+        }
+       ],
+       "stance": "wrath",
+       "once": true
+      }
+     ],
+     "hero": "monk"
+    }
+   }
+  },
+  {
+   "id": "thousand-palms",
+   "name": "Thousand Palms",
+   "kind": "attack",
+   "rarity": "rare",
+   "cost": "2",
+   "text": "Deal 3 damage 7 times.",
+   "def": {
+    "id": "thousand-palms",
+    "name": "Thousand Palms",
+    "realm": "aurelion",
+    "rarity": "rare",
+    "kind": "attack",
+    "cost": 2,
+    "target": "foe",
+    "effects": [
+     {
+      "op": "damage",
+      "amount": 3,
+      "hits": 7,
+      "to": "target"
+     }
+    ],
+    "hero": "monk",
+    "upgrade": "thousand-palms+"
+   },
+   "upgrade": {
+    "id": "thousand-palms+",
+    "cost": "2",
+    "text": "Deal 4 damage 7 times.",
+    "def": {
+     "id": "thousand-palms+",
+     "name": "Thousand Palms+",
+     "realm": "aurelion",
+     "rarity": "rare",
+     "kind": "attack",
+     "cost": 2,
+     "target": "foe",
+     "effects": [
+      {
+       "op": "damage",
+       "amount": 4,
+       "hits": 7,
+       "to": "target"
+      }
+     ],
+     "hero": "monk"
+    }
+   }
+  },
+  {
+   "id": "tide-of-peace",
+   "name": "Tide of Peace",
+   "kind": "skill",
+   "rarity": "rare",
+   "cost": "X",
+   "text": "Gain Barrier equal to 4 times the Mana spent. Draw 2 cards. Enter Serene.",
+   "def": {
+    "id": "tide-of-peace",
+    "name": "Tide of Peace",
+    "realm": "aurelion",
+    "rarity": "rare",
+    "kind": "skill",
+    "cost": 0,
+    "target": "none",
+    "effects": [
+     {
+      "op": "barrier",
+      "amount": 0,
+      "to": "self",
+      "scale": {
+       "by": "x",
+       "mult": 4
+      }
+     },
+     {
+      "op": "draw",
+      "amount": 2
+     },
+     {
+      "op": "stance",
+      "stance": "calm"
+     }
+    ],
+    "hero": "monk",
+    "x": true,
+    "upgrade": "tide-of-peace+"
+   },
+   "upgrade": {
+    "id": "tide-of-peace+",
+    "cost": "X",
+    "text": "X is 1 higher. Gain Barrier equal to 4 times the Mana spent. Draw 2 cards. Enter Serene.",
+    "def": {
+     "id": "tide-of-peace+",
+     "name": "Tide of Peace+",
+     "realm": "aurelion",
+     "rarity": "rare",
+     "kind": "skill",
+     "cost": 0,
+     "target": "none",
+     "effects": [
+      {
+       "op": "barrier",
+       "amount": 0,
+       "to": "self",
+       "scale": {
+        "by": "x",
+        "mult": 4
+       }
+      },
+      {
+       "op": "draw",
+       "amount": 2
+      },
+      {
+       "op": "stance",
+       "stance": "calm"
+      }
+     ],
+     "hero": "monk",
+     "x": true,
+     "xBonus": 1
+    }
+   }
+  },
+  {
+   "id": "unbroken-calm",
+   "name": "Unbroken Calm",
+   "kind": "power",
+   "rarity": "rare",
+   "cost": "2",
+   "text": "At the start of your turn: Gain 4 Barrier. Draw 1 card.",
+   "def": {
+    "id": "unbroken-calm",
+    "name": "Unbroken Calm",
+    "realm": "aurelion",
+    "rarity": "rare",
+    "kind": "power",
+    "cost": 2,
+    "target": "none",
+    "effects": [
+     {
+      "op": "power",
+      "when": "turnStart",
+      "ops": [
+       {
+        "op": "barrier",
+        "amount": 4,
+        "to": "self"
+       },
+       {
+        "op": "draw",
+        "amount": 1
+       }
+      ]
+     }
+    ],
+    "hero": "monk",
+    "upgrade": "unbroken-calm+"
+   },
+   "upgrade": {
+    "id": "unbroken-calm+",
+    "cost": "2",
+    "text": "At the start of your turn: Gain 6 Barrier. Draw 1 card.",
+    "def": {
+     "id": "unbroken-calm+",
+     "name": "Unbroken Calm+",
+     "realm": "aurelion",
+     "rarity": "rare",
+     "kind": "power",
+     "cost": 2,
+     "target": "none",
+     "effects": [
+      {
+       "op": "power",
+       "when": "turnStart",
+       "ops": [
+        {
+         "op": "barrier",
+         "amount": 6,
+         "to": "self"
+        },
+        {
+         "op": "draw",
+         "amount": 1
+        }
+       ]
+      }
+     ],
+     "hero": "monk"
+    }
+   }
+  },
+  {
+   "id": "unwavering",
+   "name": "Unwavering",
+   "kind": "power",
+   "rarity": "rare",
+   "cost": "2",
+   "text": "Whenever you discard a card: Gain 4 Barrier. Gain 1 Fervor. Whenever a card is consumed: Gain 4 Barrier. Gain 1 Fervor.",
+   "def": {
+    "id": "unwavering",
+    "name": "Unwavering",
+    "realm": "aurelion",
+    "rarity": "rare",
+    "kind": "power",
+    "cost": 2,
+    "target": "none",
+    "effects": [
+     {
+      "op": "power",
+      "when": "discard",
+      "ops": [
+       {
+        "op": "barrier",
+        "amount": 4,
+        "to": "self"
+       },
+       {
+        "op": "status",
+        "status": "mantra",
+        "amount": 1,
+        "to": "self"
+       }
+      ]
+     },
+     {
+      "op": "power",
+      "when": "exhaust",
+      "ops": [
+       {
+        "op": "barrier",
+        "amount": 4,
+        "to": "self"
+       },
+       {
+        "op": "status",
+        "status": "mantra",
+        "amount": 1,
+        "to": "self"
+       }
+      ]
+     }
+    ],
+    "hero": "monk",
+    "upgrade": "unwavering+"
+   },
+   "upgrade": {
+    "id": "unwavering+",
+    "cost": "2",
+    "text": "Whenever you discard a card: Gain 6 Barrier. Gain 1 Fervor. Whenever a card is consumed: Gain 6 Barrier. Gain 1 Fervor.",
+    "def": {
+     "id": "unwavering+",
+     "name": "Unwavering+",
+     "realm": "aurelion",
+     "rarity": "rare",
+     "kind": "power",
+     "cost": 2,
+     "target": "none",
+     "effects": [
+      {
+       "op": "power",
+       "when": "discard",
+       "ops": [
+        {
+         "op": "barrier",
+         "amount": 6,
+         "to": "self"
+        },
+        {
+         "op": "status",
+         "status": "mantra",
+         "amount": 1,
+         "to": "self"
+        }
+       ]
+      },
+      {
+       "op": "power",
+       "when": "exhaust",
+       "ops": [
+        {
+         "op": "barrier",
+         "amount": 6,
+         "to": "self"
+        },
+        {
+         "op": "status",
+         "status": "mantra",
+         "amount": 1,
+         "to": "self"
+        }
+       ]
+      }
+     ],
+     "hero": "monk"
+    }
+   }
+  },
+  {
+   "id": "wrath-incarnate",
+   "name": "Wrath Incarnate",
+   "kind": "power",
+   "rarity": "rare",
+   "cost": "2",
+   "text": "At the start of your turn: Enter Fury.",
+   "def": {
+    "id": "wrath-incarnate",
+    "name": "Wrath Incarnate",
+    "realm": "aurelion",
+    "rarity": "rare",
+    "kind": "power",
+    "cost": 2,
+    "target": "none",
+    "effects": [
+     {
+      "op": "power",
+      "when": "turnStart",
+      "ops": [
+       {
+        "op": "stance",
+        "stance": "wrath"
+       }
+      ]
+     }
+    ],
+    "hero": "monk",
+    "upgrade": "wrath-incarnate+"
+   },
+   "upgrade": {
+    "id": "wrath-incarnate+",
+    "cost": "1",
+    "text": "At the start of your turn: Enter Fury.",
+    "def": {
+     "id": "wrath-incarnate+",
+     "name": "Wrath Incarnate+",
+     "realm": "aurelion",
+     "rarity": "rare",
+     "kind": "power",
+     "cost": 1,
+     "target": "none",
+     "effects": [
+      {
+       "op": "power",
+       "when": "turnStart",
+       "ops": [
+        {
+         "op": "stance",
+         "stance": "wrath"
+        }
+       ]
+      }
+     ],
+     "hero": "monk"
+    }
+   }
+  }
+ ]
+}
