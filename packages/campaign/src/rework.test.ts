@@ -25,9 +25,22 @@ describe('runs saved before a class rework', () => {
     expect(back!.deck).toContain('return-the-blow');
     expect(back!.deck).toContain('iron-cadence+');
     expect(back!.deck).toContain('hi~masterstroke');
-    for (const id of back!.deck) expect(COMBAT_DB.cards[id.replace(/^(hi|lo)~/, '')], id).toBeDefined();
+    for (const id of back!.deck)
+      expect(COMBAT_DB.cards[id.replace(/^(hi|lo)~/, '')], id).toBeDefined();
     expect(back!.reworkNotice).toMatch(/^The Knight was rebuilt \(Guard, Riposte and Thorns\)/);
     expect(back!.reworkNotice).toMatch(/starts again from its first turn/);
+  });
+
+  it('an older Assassin run swaps its Daggers and Sly cards and says so', () => {
+    const run = newRun('assassin', 'rework-old-a');
+    delete run.reworked;
+    run.deck = [...run.deck, 'grand-scheme', 'bottomless-sleeves+'];
+    const back = parseRun(serializeRun(run));
+    expect(back!.deck).toContain('eyes-in-the-dark');
+    expect(back!.deck).toContain('whetted-edge+');
+    expect(back!.reworkNotice).toMatch(
+      /^The Assassin was rebuilt \(Preparation and embedded knives\)/,
+    );
   });
 
   it('a run of a class that was not rebuilt is left alone', () => {

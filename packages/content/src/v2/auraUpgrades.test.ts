@@ -28,10 +28,6 @@ const COST_CUT_AURAS = [
   'spiritfont',
   'tuning-fork',
   'wild-heart',
-  'blood-scent',
-  'grand-scheme',
-  'nimble-routine',
-  'patient-hands',
   // on/off, a Mana engine, or a card or machine every turn
   'dutch-courage',
   'rolling-thunder',

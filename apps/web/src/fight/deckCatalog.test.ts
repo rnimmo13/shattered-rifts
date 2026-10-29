@@ -29,7 +29,7 @@ describe('the practice deck builder', () => {
     const pools = new Set(all.map((c) => c.pool));
     for (const h of HEROES) expect(pools.has(h), h).toBe(true);
     for (const p of ['neutral', 'wardens', 'tokens']) expect(pools.has(p), p).toBe(true);
-    expect(poolOf(db.cards['sleeve-knife']!)).toBe('tokens');
+    expect(poolOf(db.cards['retainer-strike']!)).toBe('tokens');
     expect(poolOf(db.cards['bell-of-judgment']!)).toBe('wardens');
     expect(poolOf(db.cards['strike']!)).toBe('neutral');
   });

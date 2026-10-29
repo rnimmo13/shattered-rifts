@@ -351,6 +351,9 @@ const STATUS_NAME: Record<string, string> = {
   freepower: 'Free Aura',
   // (the Knight's Guard)
   opening: 'Opening',
+  // (the Assassin's)
+  prep: 'Preparation',
+  knives: 'Knives',
 };
 const sname = (s: string): string => STATUS_NAME[s] ?? cap(s);
 /** a card kind by its player-facing name, for effects that pick cards by kind */
@@ -527,6 +530,12 @@ const METRIC_WORDS: Record<Metric, { per: string; equal: string }> = {
     per: 'enemy that means to attack',
     equal: 'the number of enemies that mean to attack',
   },
+  // (the Assassin)
+  knives: { per: 'knife in it', equal: 'the knives in it' },
+  knivesAll: { per: 'knife in your enemies', equal: 'the knives in your enemies' },
+  prep: { per: 'Preparation', equal: 'your Preparation' },
+  extracted: { per: 'knife pulled', equal: 'the knives pulled' },
+  prepSpent: { per: 'Preparation spent', equal: 'the Preparation spent' },
 };
 const UNIT_METRICS: readonly Metric[] = [
   'barrier',
@@ -548,6 +557,8 @@ const UNIT_METRICS: readonly Metric[] = [
   'hitsTaken',
   'maxHp',
   'opening',
+  'knives',
+  'prep',
 ];
 
 /** Text for a number that may depend on the board: "6", "6 (+2 per Barrier)" or "equal to your Barrier". */
@@ -663,6 +674,10 @@ const WHEN_TEXT: Record<string, string> = {
   opening: 'Whenever you earn an Opening',
   riposte: 'Whenever you spend an Opening',
   thorns: 'Whenever your Thorns strike an attacker',
+  // (the Assassin)
+  embed: 'Whenever you embed a knife',
+  extract: 'Whenever you pull a knife',
+  spend: 'Whenever you spend a resource',
 };
 
 const ORDINAL = ['zeroth', 'first', 'second', 'third', 'fourth', 'fifth', 'sixth'];
@@ -714,6 +729,12 @@ function whenText(o: Extract<Op, { op: 'when' }>, db?: CombatDb): string {
   if (o.by === 'foesOpen' && (lo ?? 0) >= 1 && hi === undefined)
     return lo === 1 ? 'an enemy is Open' : `${lo} or more enemies are Open`;
   if (o.by === 'thorns' && (lo ?? 0) >= 1 && hi === undefined && !o.of) return 'you have Thorns';
+  // (the Assassin)
+  if (o.by === 'knives' && o.of === 'target' && lo !== undefined && hi === undefined)
+    return lo === 1 ? 'the target has a knife in it' : `the target has ${lo} knives in it`;
+  if (o.by === 'prep' && lo !== undefined && hi === undefined && !o.of)
+    return `you have ${lo} or more Preparation`;
+  if (o.by === 'extracted' && (lo ?? 0) >= 1 && hi === undefined) return 'you pulled a knife';
   const w = METRIC_WORDS[o.by].equal;
   if (lo !== undefined && hi !== undefined) return `${w} is ${lo === hi ? lo : `${lo}-${hi}`}`;
   if (lo !== undefined) return `${w} is ${lo} or more`;
@@ -1047,21 +1068,23 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
             ? 'Whenever you draw a Fleeting card'
             : o.when === 'stance'
               ? `${o.once ? 'The first time each turn you enter' : 'Whenever you enter'} ${o.stance ? sname(o.stance) : 'a stance'}`
-              : o.when === 'stanceLeft'
-                ? `${o.once ? 'The first time each turn you leave' : 'Whenever you leave'} ${o.stance ? sname(o.stance) : 'a stance'}`
-                : o.when === 'evoke'
-                  ? `Whenever ${rune ? `${article(rune)} ${rune}` : 'a totem'} awakens`
-                  : (o.when === 'created' || o.when === 'draw') && (o.tag || o.filter)
-                    ? `${o.once ? 'The first time' : 'Whenever'} you ${o.when === 'draw' ? 'draw' : 'create'} ${what}${o.once ? ' each turn' : ''}`
-                    : nextTurn
-                      ? 'Next turn'
-                      : o.once
-                        ? // ("Whenever one of your allies dies" answered once a turn: Backup Core)
-                          (WHEN_TEXT[o.when] ?? o.when).replace(
-                            /^Whenever /,
-                            'The first time each turn ',
-                          )
-                        : (WHEN_TEXT[o.when] ?? o.when);
+              : o.when === 'spend' && o.status
+                ? `${o.once ? 'The first time each turn you spend' : 'Whenever you spend'} ${sname(o.status)}`
+                : o.when === 'stanceLeft'
+                  ? `${o.once ? 'The first time each turn you leave' : 'Whenever you leave'} ${o.stance ? sname(o.stance) : 'a stance'}`
+                  : o.when === 'evoke'
+                    ? `Whenever ${rune ? `${article(rune)} ${rune}` : 'a totem'} awakens`
+                    : (o.when === 'created' || o.when === 'draw') && (o.tag || o.filter)
+                      ? `${o.once ? 'The first time' : 'Whenever'} you ${o.when === 'draw' ? 'draw' : 'create'} ${what}${o.once ? ' each turn' : ''}`
+                      : nextTurn
+                        ? 'Next turn'
+                        : o.once
+                          ? // ("Whenever one of your allies dies" answered once a turn: Backup Core)
+                            (WHEN_TEXT[o.when] ?? o.when).replace(
+                              /^Whenever /,
+                              'The first time each turn ',
+                            )
+                          : (WHEN_TEXT[o.when] ?? o.when);
       // ("the next time you earn an Opening": an answer that happens once, not a number of turns)
       const once1 = o.times === 1 && o.when !== 'turnStart' && o.when !== 'turnEnd';
       const when = once1
@@ -1077,7 +1100,9 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
               o.when === 'debuffFoe' ||
               o.when === 'opening' ||
               o.when === 'riposte' ||
-              o.when === 'thorns'
+              o.when === 'thorns' ||
+              o.when === 'embed' ||
+              o.when === 'extract'
             ? { ...who, target: ' to that enemy' }
             : who;
       return `${o.temp ? `This turn, ${when.charAt(0).toLowerCase()}${when.slice(1)}` : when}: ${o.ops.map((x) => opText(db, x, inner)).join(' ')}`;
@@ -1360,6 +1385,42 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
       const t = sayRepeats(o.ops.map((x) => opText(db, x, who))).join(' ');
       return `Riposte: ${t.charAt(0).toLowerCase()}${t.slice(1)}`;
     }
+    // (the Assassin's knives and Preparation)
+    case 'embed': {
+      const n = o.amount === 1 ? 'a knife' : `${o.amount} knives`;
+      const where =
+        (o.to ?? 'target') === 'allFoes'
+          ? 'each enemy'
+          : o.to === 'randomFoe'
+            ? 'a random enemy'
+            : who.target === ''
+              ? 'the target'
+              : who.target.replace(/^ to /, '');
+      return `Embed ${n} in ${where}.`;
+    }
+    case 'extract': {
+      const all = o.amount >= 9;
+      const from =
+        (o.to ?? 'target') === 'allFoes'
+          ? 'every enemy'
+          : who.target === ''
+            ? 'the target'
+            : who.target.replace(/^ to /, '');
+      const what = all
+        ? `every knife from ${from}`
+        : `up to ${o.amount === 1 ? 'a knife' : `${o.amount} knives`} from ${from}`;
+      const each = o.ops?.length
+        ? `: for each, ${o.ops
+            .map((x) => opText(db, x, { ...who, target: ' to that enemy' }))
+            .join(' ')
+            .replace(/^./, (c) => c.toLowerCase())}`
+        : '.';
+      return `Pull ${what}${each}`;
+    }
+    case 'spend':
+      return o.amount >= 9
+        ? `Spend all your ${sname(o.status)}.`
+        : `Spend up to ${o.amount} ${sname(o.status)}.`;
   }
 }
 
@@ -1406,7 +1467,11 @@ function liveDamageText(text: string, o: Extract<Op, { op: 'damage' }>, l: LiveD
           : 'calc';
   // (a sharpened weapon's "+1 per point of sharpening" is already in the live number, so it goes)
   const printed = new RegExp(`^Deal ${o.amount}( \\([^)]*\\))? damage`);
-  return printed.test(text) ? text.replace(printed, `Deal [[live:${dir}:${num}]] damage`) : text;
+  // (the live number already counts the Riposte bonus: the clause says so instead of reading as more on top)
+  const body = l.riposte
+    ? text.replace(/ Riposte: \+\d+ damage( each hit)?\./, ' (Riposte counted.)')
+    : text;
+  return printed.test(body) ? body.replace(printed, `Deal [[live:${dir}:${num}]] damage`) : body;
 }
 
 /**

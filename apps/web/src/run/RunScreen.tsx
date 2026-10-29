@@ -109,7 +109,8 @@ export default function RunScreen() {
       const notice = saved.reworkNotice;
       delete saved.reworkNotice;
       clearFightLog(duelKey(saved));
-      return { run: saved, slot, loaded: null as RunState | null, notice };
+      clearGhostLog(duelKey(saved));
+      return { run: settleInterrupted(saved).run, slot, loaded: null as RunState | null, notice };
     }
     // ... and so does a trial that was begun: it is spent, and the run moves on
     const settled = saved ? settleInterrupted(saved) : null;
@@ -370,6 +371,7 @@ export default function RunScreen() {
     delete parsed.reworkNotice;
     if (notice) {
       clearFightLog(duelKey(parsed));
+      clearGhostLog(duelKey(parsed));
       say(notice);
     }
     begin(settleInterrupted(parsed).run);

@@ -257,6 +257,8 @@ export const on = (
     maxCost?: number;
     times?: number;
     rune?: string;
+    /** 'spend': only this status (the Assassin's Preparation) */
+    status?: StatusId;
   } = {},
 ): Extract<Op, { op: 'power' }> => ({ op: 'power', when, ops, ...narrow });
 
@@ -299,6 +301,25 @@ export const counter = (amount: number, bonus: number, to: Sel = 'target', hits?
 export const riposte = (...ops: Op[]): Op => ({ op: 'riposte', ops });
 /** The target (or every enemy...) is left Open: an Opening a card gives, not one earned by Guard. */
 export const leaveOpen = (to: Sel = 'target'): Op => status('opening', 1, to);
+
+// --- the Assassin's knives and Preparation (DECISIONS #416) ----------------------------------------------------------
+/** Embed knives (at most 3 in an enemy) after the card's attack, in the target unless said otherwise. */
+export const embed = (amount = 1, to?: 'allFoes' | 'randomFoe'): Op => ({
+  op: 'embed',
+  amount,
+  ...(to ? { to } : {}),
+});
+/** Pull up to `amount` knives from the target (99: all of them); `each` runs once per knife pulled, aimed at that enemy. */
+export const pull = (amount: number, each?: Op[], to?: 'allFoes'): Op => ({
+  op: 'extract',
+  amount,
+  ...(to ? { to } : {}),
+  ...(each?.length ? { ops: each } : {}),
+});
+/** Gain Preparation (at most 3). */
+export const prepare = (n = 1): Op => status('prep', n);
+/** Spend up to `n` Preparation (99: all of it); read how much with per('prepSpent'). */
+export const spendPrep = (n = 3): Op => ({ op: 'spend', status: 'prep', amount: n });
 export const returnPlayed: Op = { op: 'returnPlayed' };
 /** a status card's tag (Wound, Haze, Scorch, Muck, Drain): the cards that pay off when you make one look for it */
 export const STATUS_TAG = 'status';
@@ -503,6 +524,9 @@ export function plus(c: CardDef): CardDef {
       case 'riposte':
         // (the Knight's) what a Riposte gives improves like any other
         return { ...o, ops: o.ops.map(upOp) };
+      case 'extract':
+        // (the Assassin's) what each knife pulled gives improves like any other
+        return o.ops ? { ...o, ops: o.ops.map(upOp) } : o;
       case 'raise':
         changed = true;
         return { ...o, amount: o.amount + 2 };

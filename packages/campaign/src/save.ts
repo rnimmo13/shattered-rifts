@@ -420,7 +420,8 @@ export function parseRun(text: string): RunState | null {
   // the player is told, and the screen starts any fight that was in progress again (its move log belongs to the old rules)
   const rework = CLASS_REWORKS[r.character];
   if (r.reworked !== undefined && !isInt(r.reworked, 0, 99)) return null;
-  if (typeof r.reworkNotice !== 'string') delete r.reworkNotice;
+  // (a notice is only ever made here, by this load: one that came in with the text is dropped)
+  delete r.reworkNotice;
   if (rework && (r.reworked ?? 0) < rework.version) {
     r.reworked = rework.version;
     const name = RIFTWALKERS[r.character].hero.name;

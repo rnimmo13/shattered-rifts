@@ -88,11 +88,31 @@ describe('fetching cards back from the discard pile', () => {
 });
 
 describe('draw, created and Skills-played hooks', () => {
-  it('"Whenever you draw a card during your turn" (Fleet Fingers) hits every enemy for each card drawn', () => {
-    let s = fight('assassin', ['fleet-fingers', 'backspring']);
-    s = play(s, 'T0');
+  it('"Whenever you draw a card during your turn" hits every enemy for each card drawn (a test Aura: Fleet Fingers went with the Silent copy)', () => {
+    const tdb = {
+      ...db,
+      cards: {
+        ...db.cards,
+        'test-fingers': {
+          id: 'test-fingers',
+          name: 'Test Fingers',
+          kind: 'power' as const,
+          cost: 0,
+          target: 'none' as const,
+          effects: [
+            {
+              op: 'power' as const,
+              when: 'drawMidTurn' as const,
+              ops: [{ op: 'damage' as const, amount: 2, to: 'allFoes' as const }],
+            },
+          ],
+        },
+      },
+    };
+    let s = fight('assassin', ['test-fingers', 'backspring']);
+    s = applyAction(tdb, s, { type: 'play', card: 'T0' }).state;
     const hp = foe(s).hp;
-    s = play(s, 'T1'); // Backspring: draw 2, so two hits of 2
+    s = applyAction(tdb, s, { type: 'play', card: 'T1' }).state; // Backspring: draw 2, so two hits of 2
     expect(foe(s).hp).toBe(hp - 4);
   });
 
@@ -106,12 +126,27 @@ describe('draw, created and Skills-played hooks', () => {
     expect(hero(s).barrier).toBe(barrier + 6);
   });
 
-  it('Nerve Strike costs 1 less for each Skill played this turn', () => {
-    let s = fight('assassin', ['turn-aside', 'turn-aside', 'nerve-strike']);
-    s = play(s, 'T0');
-    s = play(s, 'T1');
+  it('a card can cost 1 less for each Skill played this turn (a test card: Nerve Strike went with the Silent copy)', () => {
+    const tdb = {
+      ...db,
+      cards: {
+        ...db.cards,
+        'test-nerve': {
+          id: 'test-nerve',
+          name: 'Test Nerve',
+          kind: 'attack' as const,
+          cost: 3,
+          target: 'foe' as const,
+          cheaperPerSkill: 1,
+          effects: [{ op: 'damage' as const, amount: 15, to: 'target' as const }],
+        },
+      },
+    };
+    let s = fight('assassin', ['turn-aside', 'turn-aside', 'test-nerve']);
+    s = applyAction(tdb, s, { type: 'play', card: 'T0' }).state;
+    s = applyAction(tdb, s, { type: 'play', card: 'T1' }).state;
     const mana = s.sides.a.mana;
-    s = play(s, 'T2');
+    s = applyAction(tdb, s, { type: 'play', card: 'T2', target: foe(s).id }).state;
     expect(mana - s.sides.a.mana).toBe(1);
   });
 

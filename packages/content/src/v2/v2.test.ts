@@ -14,9 +14,9 @@ describe('Combat v2 content', () => {
     expect(validateDb(db)).toEqual([]);
   });
 
-  it('has the Riftwalkers with 10-card starters of valid cards (12 for Sylas, the Silent shape)', () => {
+  it('has the Riftwalkers with 10-card starters of valid cards (11 for the Assassin, DECISIONS #416)', () => {
     for (const [id, r] of Object.entries(RIFTWALKERS)) {
-      expect(r.starter, id).toHaveLength(id === 'assassin' ? 12 : 10);
+      expect(r.starter, id).toHaveLength(id === 'assassin' ? 11 : 10);
       for (const c of r.starter) expect(db.cards[c], `${id}: ${c}`).toBeDefined();
     }
   });

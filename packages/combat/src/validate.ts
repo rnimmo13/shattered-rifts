@@ -91,6 +91,15 @@ export function validateDb(db: CombatDb): string[] {
       }
       if (o.op === 'damage' && o.riposte && o.to !== 'target')
         errs.push(`${where}: a Riposte bonus needs a damage effect aimed at the target`);
+      // (the Assassin's knives: in the target needs one; a pull's ops are aimed at the enemy each knife came from)
+      if (
+        (o.op === 'embed' || o.op === 'extract') &&
+        (o.to ?? 'target') === 'target' &&
+        !opts.aimed
+      )
+        errs.push(`${where}: "${o.op}" into the target needs a target`);
+      if (o.op === 'extract' && o.ops)
+        checkOps(`${where}.extract`, o.ops, { ...opts, aimed: true });
       if (o.op === 'raise' && !db.units[o.unit])
         errs.push(`${where}: raises unknown unit "${o.unit}"`);
       if (o.op === 'power') {
@@ -108,6 +117,9 @@ export function validateDb(db: CombatDb): string[] {
             o.when === 'opening' ||
             o.when === 'riposte' ||
             o.when === 'thorns' ||
+            // (the Assassin's: the enemy a knife went into or came out of)
+            o.when === 'embed' ||
+            o.when === 'extract' ||
             !!o.pin,
           snare: false,
           attacker: o.when === 'allyDies' || o.when === 'allyLost' || o.when === 'thorns',
@@ -203,7 +215,10 @@ export function validateDb(db: CombatDb): string[] {
           (o.op === 'playPile' && o.aim === 'target') ||
           (o.op === 'command' && usesTarget(o.ops)) ||
           (o.op === 'power' && !!o.pin) ||
-          o.op === 'spreadDebuffs',
+          o.op === 'spreadDebuffs' ||
+          // (the Knight's Riposte reads the target; the Assassin's knives go into it or come out of it)
+          o.op === 'riposte' ||
+          ((o.op === 'embed' || o.op === 'extract') && (o.to ?? 'target') === 'target'),
       );
     // (a cost can only read the side counters costOf knows)
     const COUNTERS = [
@@ -297,7 +312,21 @@ export function validateDb(db: CombatDb): string[] {
     if (h.trait?.triggers)
       for (const t of h.trait.triggers) {
         if (t.op !== 'power') errs.push(`hero ${id}: a trait trigger must be a power op`);
-        else checkOps(`hero ${id} trait`, t.ops, { aimed: false, snare: false });
+        // (a trait trigger that answers something done to one enemy aims at it, as an Aura's does: the Assassin's pulls)
+        else
+          checkOps(`hero ${id} trait`, t.ops, {
+            aimed: [
+              'opening',
+              'riposte',
+              'thorns',
+              'embed',
+              'extract',
+              'doomFoe',
+              'debuffFoe',
+              'hitFoe',
+            ].includes(t.when),
+            snare: false,
+          });
       }
     for (const e of h.startUnits ?? []) {
       const s = typeof e === 'string' ? e : e.unit;

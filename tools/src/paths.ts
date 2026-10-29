@@ -44,11 +44,12 @@ const HEADS: Record<HeroId, [RegExp, number | null][]> = {
     [/suits/i, 2],
     [/basics|glue/i, null],
   ],
+  // (the identity rework, DECISIONS #416)
   assassin: [
-    [/shivs/i, 0],
-    [/bleed|seared/i, 1],
-    [/sleight/i, 2],
-    [/basics/i, null],
+    [/execution/i, 0],
+    [/knives/i, 1],
+    [/shadow/i, 2],
+    [/basics|glue/i, null],
   ],
   shaman: [
     [/totems/i, 0],

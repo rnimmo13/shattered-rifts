@@ -74,8 +74,15 @@ export const TIP_RULES: TipRule[] = [
     // (the Knight's Guard, DECISIONS #415)
     id: 'opening',
     title: 'Openings',
-    text: 'Your Barrier stopped an attack completely, so that enemy is Open (the gold mark). A Riposte against it, such as Sundering Blow, spends the Opening for its bonus; other attacks leave it. It goes at the end of your turn, and each enemy can only have one.',
+    text: 'An enemy is Open (the gold mark): your Barrier stopped its attack completely, or a card opened it. A Riposte against it, such as Sundering Blow, spends the Opening for its bonus; other attacks leave it. It goes at the end of your turn, and each enemy can only have one.',
     when: (v) => v.sides.b.units.some((u) => !!u.statuses.opening),
+  },
+  {
+    // (the Assassin's, DECISIONS #416)
+    id: 'knives',
+    title: 'Knives and Preparation',
+    text: 'Knife cards leave a knife in the enemy they hit (up to 3 each). Cards such as Draw Steel pull them out for a payoff, and each one pulled deals 3 more damage. Preparation (up to 3) stays from turn to turn until a finisher spends it.',
+    when: (v) => v.sides.b.units.some((u) => !!u.statuses.knives) || !!hero(v)?.statuses.prep,
   },
   {
     id: 'doom',

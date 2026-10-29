@@ -80,7 +80,10 @@ export type StatusId =
   | 'freepower' // your next Aura costs 0, per stack
   | 'deftness' // your 0-cost Attacks deal this much more damage
   // (the Knight's Guard, DECISIONS #415)
-  | 'opening'; // Open: a hit of its was fully stopped by a Guard hero's Barrier (at most 1); a Riposte against it spends it
+  | 'opening' // Open: a hit of its was fully stopped by a Guard hero's Barrier (at most 1); a Riposte against it spends it
+  // (the Assassin's knives and Preparation, DECISIONS #416)
+  | 'knives' // knives embedded in it by the other side (at most KNIFE_MAX); a card pulls them for a payoff
+  | 'prep'; // Preparation: the Assassin's setup, at most PREP_MAX, kept between turns; finishers spend it
 export const STATUS_IDS: readonly StatusId[] = [
   'exposed',
   'faltering',
@@ -146,6 +149,8 @@ export const STATUS_IDS: readonly StatusId[] = [
   'freepower',
   'deftness',
   'opening',
+  'knives',
+  'prep',
 ];
 /** Debuffs: a Steadfast unit ignores the next one put on it. */
 export const DEBUFFS: readonly StatusId[] = [
@@ -166,6 +171,9 @@ export type Stance = (typeof STANCES)[number];
 export const MANTRA_GOAL = 10;
 /** Attacks from cards with this tag gain the Edge status's bonus damage. */
 export const EDGE_TAG = 'knife';
+/** The most knives one unit can have embedded, and the most Preparation a hero can hold (the Assassin, DECISIONS #416). */
+export const KNIFE_MAX = 3;
+export const PREP_MAX = 3;
 /** Cards with this tag are "the blade" for Blade Sweep, Blade Echo and Bladebane (Obsidia's Obsidian Blade). */
 export const BLADE_TAG = 'blade';
 /** Orbit pays out for every this much Mana spent. */
@@ -296,7 +304,13 @@ export type Metric =
   // (the Knight's Guard, DECISIONS #415)
   | 'opening' // (about a unit) 1 while it is Open
   | 'foesOpen' // enemies that are Open
-  | 'foesAttacking'; // enemies that mean to attack this turn
+  | 'foesAttacking' // enemies that mean to attack this turn
+  // (the Assassin, DECISIONS #416)
+  | 'knives' // (about a unit) knives embedded in it
+  | 'knivesAll' // knives embedded in all enemies together
+  | 'prep' // (about a unit) its Preparation
+  | 'extracted' // knives the card being played has pulled so far
+  | 'prepSpent'; // Preparation the card being played has spent
 export interface Scale {
   by: Metric;
   mult?: number;
@@ -342,7 +356,11 @@ export type TriggerWhen =
   // (the Knight's Guard, DECISIONS #415; the target is that enemy)
   | 'opening' // your Barrier fully stopped an enemy's attack hit and left it Open (an Opening earned, not one a card gives)
   | 'riposte' // you spent an enemy's Opening with a Riposte
-  | 'thorns'; // your Thorns struck an attacker
+  | 'thorns' // your Thorns struck an attacker
+  // (the Assassin's knives, DECISIONS #416; the target is that enemy)
+  | 'embed' // you embedded a knife in an enemy
+  | 'extract' // you pulled a knife from an enemy
+  | 'spend'; // you spent stacks of a status of your own (`status` narrows which: Preparation)
 
 export type Op =
   /** `lonePct`: Point Blank, this much more damage (percent) when it hits only one enemy */
@@ -445,6 +463,8 @@ export type Op =
       times?: number;
       /** 'evoke': only this totem */
       rune?: string;
+      /** 'spend': only spending this status */
+      status?: StatusId;
     }
   // --- runes
   /** `rune: '*'` plants a random totem (any of them) */
@@ -617,7 +637,17 @@ export type Op =
   | { op: 'returnPlayed' }
   // --- the Knight's Guard (DECISIONS #415)
   /** Riposte: if the target is Open, spend its Opening and run these */
-  | { op: 'riposte'; ops: Op[] };
+  | { op: 'riposte'; ops: Op[] }
+  // --- the Assassin's knives and Preparation (DECISIONS #416)
+  /**
+   * embed `amount` knives (at most KNIFE_MAX in a unit) in the target (or each enemy, or a random one), after the card's attack: an
+   * enemy the card attacked gets them only if a hit of it landed (not one a Trap or Shielded stopped); a dead one gets none
+   */
+  | { op: 'embed'; amount: number; to?: 'target' | 'allFoes' | 'randomFoe' }
+  /** pull up to `amount` knives from the target (or every enemy): each knife pulled runs `ops` once, aimed at that enemy, and is gone */
+  | { op: 'extract'; amount: number; to?: 'target' | 'allFoes'; ops?: Op[] }
+  /** spend up to `amount` stacks of a status of your own (Preparation): the `prepSpent` metric says how many were spent */
+  | { op: 'spend'; status: StatusId; amount: number };
 
 export type CardKind = 'attack' | 'skill' | 'power' | 'summon' | 'snare';
 /** foe = an enemy; friend = any unit of yours (hero or ally); ally = one of your allies, never the hero */
@@ -981,6 +1011,8 @@ export interface PowerState {
   /** answers left before it goes */
   left?: number;
   rune?: string;
+  /** 'spend': only spending this status */
+  status?: StatusId;
   /** the turn it last answered (for `once`) */
   firedTurn?: number;
 }

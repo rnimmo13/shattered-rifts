@@ -126,13 +126,13 @@ Percentage debuffs (Exposed, Faltering, Debilitated) are worth more as numbers g
 | **Draw 1** as an extra (the card replaces itself) | **3** | Hilt Strike 9 + draw = 12; Oath of Iron 8 Barrier + draw. |
 | Each further card drawn | **4** (halve past the 3rd extra card in a turn: no Mana left to play them) | Catch Breath (draw 2) = 7, Clear Spring (draw 3) = 11, Read the Embers (draw 6, 2 cost) ≈ 17. |
 | Extra draw next turn | **3.5** each | Scheme, Stalker's Lunge. |
-| Discard 1 (yours, as a cost) | **-2**, or **+2** with Sly / discard payoffs in the deck | Duck and Weave, Flick Knife. In the Assassin's pool call it 0. |
+| Discard 1 (yours, as a cost) | **-2**, or **+2** with Sly / discard payoffs in the deck | Duck and Weave, Flick Knife. *(legacy: "in the Assassin's pool call it 0" held for his Sly engine, gone since #416; it is -2 for him now)* |
 | Put a card on top of your draw pile | **+1.5** | Ram Home, Glint. |
 | Foresee N (look at the top N, draw the one you choose, discard the rest) | a draw (**3** as an extra, **4** on its own) **+0.5 per card past the first** (at most +2) | Cold Read (0: Foresee 4) ≈ 5.5. |
 | Reverb (your next Attack is played twice) | the next Attack's value, **~12** in an ordinary deck | Second Act. Check it against the best Attack in its build path (§8). |
 | Return a random card from discard to hand | **+3** (a draw); a chosen card **+4** | |
 | Add a random card to your hand | **+4** (Neutral), **~9** if it is from your pool and costs 0 (Consume) | Royal Decree, Borrowed Blade, Rift Windfall. |
-| A Dagger | **4** (its damage) + Edge | Knife Juggle 3 knives + Consume; Feint Strike 3 + 2 knives. |
+| A Dagger | **4** (its damage) + Edge | *(legacy: the Assassin's Dagger tokens and Edge, gone since #416; his knives are embedded markers now, §15)* |
 | **Arcana gained** | **2.5** each | Gather Arcana 2, Emberstrike 9 + 1, Pale Ward 8 Barrier + 1. |
 | **Arcana spent** (a ◆ cost) | each ◆ buys **~6** points on top of the Mana budget | Molten Ruin 1+4◆ = 10 + 24 = 34 → 35 damage. Glass Burst 0+3◆ = 6 + 18 = 24 → 13 + 2 Faltering + 2 Exposed. Gaining is cheap and spending is rich: the gap is what the class pays for needing both halves. |
 | Sharpen N | **0.8** per point if played early, ~0.5 late | The Blade costs 2 and comes back a few times a fight. Forged in Fury 7 + Sharpen 7, Whetstone 8 + Mana next turn, Bladewall 12 Barrier + 10. |
@@ -158,7 +158,7 @@ Percentage debuffs (Exposed, Faltering, Debilitated) are worth more as numbers g
 | **Fleeting** | **+15%** on a card you would always play when drawn; more on one you'd rather keep | Desecrate 13 (Fleeting) vs ~11. Necromancer payoffs make it upside for him. |
 | **Hold** | **+1**, **+2-3** on a big or conditional card you want to time | Steady Guard 8 + Hold vs Stone Skin 9. |
 | **Opening hand** | **+3-4** | With Consume on a 0-cost card it may carry a 1-cost card's budget: Knife in the Back 11, Crystal Ward 10 Barrier, Killing Stroke 10 + 1 Exposed. |
-| **Sly** | price the free play on discard at **7-10**; the printed cost is there to stop you casting it | Slip the Blow (2 cost, 6 Barrier), Quick Reflexes (3 cost, draw 2), Cool Head (3 cost, +1 Mana). Sly on a card that is fine to cast anyway (Cartwheel Cut) ≈ +1. |
+| **Sly** | price the free play on discard at **7-10**; the printed cost is there to stop you casting it | *(legacy: the archived Assassin's Slip the Blow, Quick Reflexes, Cool Head; no live Assassin card has Sly since #416)* Sly on a card that is fine to cast anyway ≈ +1. |
 | Lose N HP (yours) | **-1.5** per HP (it carries through the run) | Reckless Smite 15 for 2 HP. In a Blood build the payoffs (Scar Over, Blood Fire, Spiteful Jab) make it upside; price the card for the deck that doesn't have them. |
 | A junk card into your deck (Wound, Haze, Muck...) | **-2** into the draw or discard pile, **-3** into your hand | Mudslide 4 x3 + Muck, Ironbark 13 Barrier + 2 Wounds. Shaman Status payoffs flip it. |
 | A copy of itself into the discard pile | **+2** | Hot Temper, Needling Blow. On a 0-cost card it is a combo risk (§8). |
@@ -396,3 +396,20 @@ Ghostly, cancelled or overflow hit). One per enemy; it goes at the end of her ne
 The trait, **Hold and Answer** (6 Barrier at the start, Guard, and 3 Barrier the first time each turn an Opening is earned), prices at
 7.2 + 2.5 earned Openings x 3.6 = ~16, plus what Guard lets her Riposte cards do (about +5 in the starter, through Sundering Blow): ~21,
 level with the middle of the roster. It no longer starts with Plating.
+
+### The Assassin: Preparation and embedded knives (DECISIONS #416)
+
+Two resources priced so a package is never counted twice: the **producer** is paid for what it stores, the **consumer** for what it
+does with it *minus* what it uses up.
+
+| Thing | Rate | Why |
+|---|---|---|
+| A **knife embedded** (`embed`) | **2** | its producer's share. A knife pays nothing while it sits there; about 70% are pulled before their enemy dies or the fight ends, for a typical pull payoff of 4-6 (card) + 3 (Knife Work). Quiet Incision (1: 6 + a knife) = 8. |
+| A **pull** (`pull`) | the payoff a knife **minus 2**, times the knives there usually are | 1.5 on one target for "up to 2", 2 for "every" or "up to 3", 0.8 for "a knife". The 2 is the knife's stored value, moved from producer to consumer. Draw Steel (1: 4 + 4 a knife, up to 2) = 4 + 2 x1.5 = 7. |
+| **Preparation** gained | **1.5** a point | its producer's share: a finisher turns a point into ~4-6 damage, but only on the turn you choose, and the cap of 3 wastes some. Patient Footwork (1: 5 Barrier, 1 Preparation) = 7.5. |
+| **Preparation** spent | the payoff a point **minus 1.5**, at the Preparation there usually is | ~2 for "up to 3" or "all", 1.5 for "up to 2". Finishing Thrust (2: 8 + 4 a point) = 8 + 2.5 x2 = 13. |
+| "Whenever you embed / pull a knife" | per knife: ~1.2 pulls and ~1.5 embeds a turn in a knife deck | "the first time each turn": 0.8-0.85 a turn. |
+| "Whenever you spend Preparation" (once a turn) | **2.4** answers over four turns | a finisher about every other turn, more in an Execution deck. |
+
+The trait, **Knife Work** (1 Preparation and a knife in every enemy at the start; 1 Preparation the first time each turn you embed;
+3 damage to an enemy for every knife pulled from it): ~14 in the starter (one embed and one pull card in 11), ~24 in a knife deck.

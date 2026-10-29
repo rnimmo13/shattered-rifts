@@ -109,6 +109,14 @@ describe('the Knight: Guard, Riposte and Thorns', () => {
       expect(open(foe(s, 0))).toBe(0);
     });
 
+    it('does not come from a hit that deals nothing (Sapped down to 0)', () => {
+      let s = fight([]);
+      hero(s).barrier = 30;
+      foe(s, 0).statuses.sapped = 20;
+      s = enemyTurn(s, 'slash', 0);
+      expect(open(foe(s, 0))).toBe(0);
+    });
+
     it('does not come from a hit Shielded cancels, a hit on a Ghostly Knight, or a hit her own Trap stops', () => {
       let s = fight([]);
       hero(s).barrier = 30;
@@ -236,6 +244,25 @@ describe('the Knight: Guard, Riposte and Thorns', () => {
       const hp = foe(s, 0).hp;
       const after = play(s, 'return-the-blow', foe(s, 0).id);
       expect(hp - foe(after, 0).hp).toBe(12);
+    });
+
+    it('a Riposte spends the Opening as its attack begins, even when Shielded stops the hit (DECISIONS #415)', () => {
+      let s = opened(['return-the-blow']);
+      foe(s, 0).statuses.shielded = 1;
+      const hp = foe(s, 0).hp;
+      s = play(s, 'return-the-blow', foe(s, 0).id);
+      expect(foe(s, 0).hp).toBe(hp);
+      expect(open(foe(s, 0))).toBe(0);
+    });
+
+    it('the live card text counts the bonus once against an Open target', () => {
+      const s = opened(['sundering-blow']);
+      const id = s.sides.a.hand[0]!.id;
+      const live = previewCardDamage(db, s, id, foe(s, 0).id);
+      const text = cardText(db, db.cards['sundering-blow']!, live);
+      expect(text).toContain('[[live:up:15]]');
+      expect(text).toContain('(Riposte counted.)');
+      expect(text).not.toContain('Riposte: +6');
     });
 
     it('reads plainly on the card', () => {

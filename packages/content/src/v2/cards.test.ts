@@ -65,8 +65,6 @@ function setup(card: CardDef, hero: HeroId): CombatState {
     { id: 'X1', card: 'strike' },
     { id: 'X2', card: 'strike' },
     { id: 'X3', card: 'defend' },
-    // (a spent Sleeve Knife, for the cards that play them again: Knife Trap)
-    { id: 'X4', card: 'sleeve-knife' },
   ];
   // (a card that needs an empty draw pile gets one: Grand Finale)
   if (card.needsEmptyDraw) sd.draw = [];
@@ -177,28 +175,24 @@ describe('second resources have a way in and a way out from the first hand', () 
 });
 
 describe('real card data, end to end', () => {
-  it('Whetted Edge (Edge) makes Daggers hit harder (and only knives)', () => {
+  it('Whetted Edge: every knife pulled deals 2 more and gives 1 Barrier (DECISIONS #416)', () => {
     const s0 = setup(db.cards['whetted-edge']!, 'assassin');
     s0.sides.a.hand = [
       { id: 'K', card: 'whetted-edge' },
-      { id: 'N', card: 'sleeve-knife' },
-      { id: 'S', card: 'strike' },
+      { id: 'D', card: 'draw-steel' },
     ];
-    const foeId = s0.sides.b.units[0]!.id;
-    const dealt = (s: CombatState, card: string): number => {
-      const before = s.sides.b.units[0]!.hp + s.sides.b.units[0]!.barrier;
-      const r = applyAction(db, s, { type: 'play', card, target: foeId });
-      const u = r.state.sides.b.units[0];
-      return before - (u ? u.hp + u.barrier : 0);
-    };
-    s0.sides.b.units[0]!.hp = 99;
-    s0.sides.b.units[0]!.maxHp = 99;
-    // (a trait could have touched the foe at the start of the turn; this test is about Edge alone)
-    delete s0.sides.b.units[0]!.statuses.exposed;
-    const base = dealt(s0, 'N');
-    const buffed = applyAction(db, s0, { type: 'play', card: 'K' }).state;
-    expect(dealt(buffed, 'N')).toBe(base + 4);
-    expect(dealt(buffed, 'S')).toBe(dealt(s0, 'S'));
+    const foe = s0.sides.b.units[0]!;
+    foe.hp = foe.maxHp = 99;
+    foe.statuses = { knives: 2 };
+    let s = applyAction(db, s0, { type: 'play', card: 'K' }).state;
+    const hero = s.sides.a.units.find((u) => u.kind === 'hero')!;
+    hero.barrier = 0;
+    // (the lived-in board gave the hero Might and the like: this test is about the pulls alone)
+    hero.statuses = {};
+    s = applyAction(db, s, { type: 'play', card: 'D', target: foe.id }).state;
+    // Draw Steel 4 + 4 a knife, Knife Work 3 a knife, Whetted Edge 2 a knife
+    expect(99 - s.sides.b.units[0]!.hp).toBe(4 + 2 * 4 + 2 * 3 + 2 * 2);
+    expect(s.sides.a.units.find((u) => u.kind === 'hero')!.barrier).toBe(2);
   });
 
   it('Mire starts with a Bone Thrall and Doom kills at the end of an enemy turn', () => {

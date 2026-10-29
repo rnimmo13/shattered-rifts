@@ -13,11 +13,13 @@ import {
   channel,
   dmg,
   draw,
+  embed,
   forge,
   heal,
   mana,
   on,
   per,
+  prepare,
   raise,
   scaled,
   stance,
@@ -218,12 +220,13 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     realm: 'umbral',
     persona: 'Sylas',
     role: 'Assassin',
+    // (rebuilt 2026-10-29, docs/BASE_CLASS_REWORKS.md §6, DECISIONS #416: Preparation and embedded knives; the Silent copy is archived)
     trait: {
-      name: 'Hidden Blades',
-      text: 'At the start of your turn, add a Dagger to your hand.',
-      turnStart: [addTo('sleeve-knife')],
+      name: 'Knife Work',
+      text: 'Start every fight with 1 Preparation and a knife in every enemy. The first time each turn you embed a knife, gain 1 Preparation. Whenever you pull a knife, deal 3 damage to that enemy.',
+      fightStart: [prepare(1), embed(1, 'allFoes')],
+      triggers: [on('embed', [prepare(1)], { once: true }), on('extract', [dmg(3, 'target')])],
     },
-    // (the Silent's shape, DECISIONS #368: 70 HP, 5 Strikes, 5 Defends, Neutralize and Survivor)
     hero: {
       id: 'assassin',
       name: 'Assassin',
@@ -231,19 +234,26 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
       mana: 3,
       handSize: 5,
     },
-    starter: [...rep('strike', 5), ...rep('defend', 5), 'hobbling-jab', 'duck-and-weave'],
+    starter: [
+      ...rep('strike', 4),
+      ...rep('defend', 3),
+      'quiet-incision',
+      'draw-steel',
+      'finishing-thrust',
+      'patient-footwork',
+    ],
     blurb:
-      'A cutpurse with a sleeve full of blades: a Dagger finds its way into his hand every turn. Daggers, Bleed and sleight of hand.',
-    mechanics: ['Daggers', 'Bleed', 'Discard', 'Sly', 'Faltering'],
+      'A killer who sets up the perfect strike: he plants knives in his enemies, builds Preparation, and chooses the moment to pull them and finish the job.',
+    mechanics: ['Preparation', 'Knives', 'Faltering', 'Barrier'],
     buildPaths: [
-      'Daggers: Daggers, and the attacks around them',
-      'Bleed: stack it, make it burn harder',
-      'Sleight: draw, discard and dodge',
+      'Execution: build Preparation, then spend it on a finisher',
+      'Knives: spread knives over the enemies, then pull them',
+      'Shadow: defence and cycling on the move',
     ],
     howTo: [
-      'Every turn a Dagger comes to your hand (Hidden Blades): a 0-cost Attack that is consumed when played. Many cards make more of them, and Edge makes each one hit harder.',
-      'Bleed hurts for its stacks at the start of the enemy’s turn and then shrinks by 1. Pile it on and let it work.',
-      'Discarding is a resource: a card with Sly is played for free when a card makes you discard it.',
+      'Preparation (up to 3) stays from turn to turn. Setup cards and your trait give it; finishers such as Finishing Thrust spend it for more damage.',
+      'Knife cards leave a knife in the enemy they hit (up to 3 each). Cards such as Draw Steel pull them out for a payoff, and every knife you pull deals 3 more damage.',
+      'A knife does nothing while it is in an enemy, and is lost if that enemy dies: pull them while they count.',
     ],
   },
   shaman: {
@@ -711,6 +721,7 @@ export function canonicalCard(id: string): string {
  */
 export const CLASS_REWORKS: Partial<Record<HeroId, { version: number; summary: string }>> = {
   knight: { version: 1, summary: 'Guard, Riposte and Thorns' },
+  assassin: { version: 1, summary: 'Preparation and embedded knives' },
 };
 
 /** A Riftwalker id as it is now: an old id becomes its class id, and anything else comes back as it was. */

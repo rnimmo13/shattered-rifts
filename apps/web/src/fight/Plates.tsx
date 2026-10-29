@@ -222,7 +222,14 @@ export function UnitPlates({ items, targetable, hover, preview, heroId, sharp }:
                     >
                       {id === 'thorns' ? <ThornIcon /> : info.glyph}
                       {/* (an Opening is on or off: it reads "Open", not a count, DECISIONS #415) */}
-                      <b>{id === 'opening' ? 'Open' : n}</b>
+                      {/* (Preparation and knives say their cap, DECISIONS #416) */}
+                      <b>
+                        {id === 'opening'
+                          ? 'Open'
+                          : id === 'prep' || id === 'knives'
+                            ? `${n}/3`
+                            : n}
+                      </b>
                     </span>
                   );
                 })}

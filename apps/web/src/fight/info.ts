@@ -382,6 +382,19 @@ export const STATUS_INFO: Record<
     tone: 'good',
     text: 'Your 0-cost Attacks deal this much more damage.',
   },
+  // (the Assassin's, DECISIONS #416)
+  knives: {
+    name: 'Knives',
+    glyph: '†',
+    tone: 'bad',
+    text: 'Knives embedded in it by the Assassin (at most 3). They do nothing on their own: his cards pull them out for a payoff, and each one pulled deals 3 damage. They are lost if it dies.',
+  },
+  prep: {
+    name: 'Preparation',
+    glyph: '◔',
+    tone: 'good',
+    text: 'The Assassin’s setup, at most 3, kept from turn to turn. Finishers spend it for more damage; ordinary attacks leave it.',
+  },
   // (the Knight's Guard, DECISIONS #415)
   opening: {
     name: 'Opening',
@@ -488,7 +501,15 @@ export const KEYWORD_INFO: Record<string, { name: string; text: string }> = {
     name: 'Sharpen',
     text: 'Every copy of your weapon (the Obsidian Blade or the Old Twelve Gauge) permanently gains damage. If you have none, you get one.',
   },
-  'sleeve-knife': { name: 'Dagger', text: 'A 0-cost Attack that is consumed.' },
+  // (the Assassin's, DECISIONS #416)
+  knives: {
+    name: 'Knives',
+    text: 'Embed: leave a knife in the enemy the attack hit (up to 3 in each; none if the hit was stopped or the enemy died). Pull: take knives out for the payoff the card names; each one pulled also deals 3 damage (Knife Work). A pulled knife is gone.',
+  },
+  prep: {
+    name: 'Preparation',
+    text: 'Up to 3, kept from turn to turn. Setup cards and Knife Work give it; a finisher spends it ("spend up to 3 Preparation") for its bonus.',
+  },
   sly: {
     name: 'Sly',
     text: 'When a card makes you discard it, it is played for free (not when you end your turn).',
@@ -600,7 +621,8 @@ export function keywordsOf(
     if (o.ops?.some((x) => x.op === 'riposte')) add(KEYWORD_INFO['riposte']);
     if (o.op === 'stars') add(KEYWORD_INFO['stars']);
     if (o.op === 'forge') add(sharpenInfo(weapon));
-    if (o.op === 'addCard' && o.card === 'sleeve-knife') add(KEYWORD_INFO['sleeve-knife']);
+    if (o.op === 'embed' || o.op === 'extract') add(KEYWORD_INFO['knives']);
+    if (o.op === 'spend' || (o.op === 'status' && o.status === 'prep')) add(KEYWORD_INFO['prep']);
     if (o.op === 'addCard' && o.card === 'buckshot-shell') add(KEYWORD_INFO['buckshot-shell']);
     if (o.op === 'summon' && o.unit && taunting(o.unit)) add(KEYWORD_INFO['taunt']);
     if (o.op === 'status' && o.status) {
@@ -624,7 +646,8 @@ export function keywordsOf(
     if (names(hay, 'Sharpen') || names(hay, 'Precision')) add(sharpenInfo(weapon));
     for (const s of Object.values(STATUS_INFO)) if (names(hay, s.name)) add(s);
     // ("left Open", "If the target is Open": the Knight's Opening, DECISIONS #415)
-    if (/\bOpen\b/.test(hay)) add({ name: STATUS_INFO.opening.name, text: STATUS_INFO.opening.text });
+    if (/\bOpen\b/.test(hay))
+      add({ name: STATUS_INFO.opening.name, text: STATUS_INFO.opening.text });
     for (const k of Object.values(KEYWORD_INFO)) if (names(hay, k.name)) add(k);
   }
   // ...and what those explanations name in turn (Fervor ends in "enter Radiant": so Radiant is explained too)

@@ -201,7 +201,6 @@ export type DealStep =
 /** What an event does to a card you choose from your deck. */
 export type DeckChoice = 'upgrade' | 'remove' | 'transform' | 'copy' | 'mark';
 
-
 /** One thing a prelude option does. Amounts are fixed; "random" ones are rolled when the option is taken. */
 export type PreludeEffect =
   | { k: 'maxHp'; n: number }

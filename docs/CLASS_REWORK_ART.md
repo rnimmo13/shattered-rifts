@@ -36,3 +36,21 @@ sword answering through the gap, briars on the pauldron) would serve Sundering B
 
 In code: the Opening chip on an enemy (`chip--open`, a gold ring and the word "Open", so it reads without colour), the Riposte and Guard
 tooltips, and the shield animation for Riposte cards (`weaponArt.ts`).
+
+## Assassin (Preparation and embedded knives)
+
+Portrait: keep (`figures/hero-assassin.png` and his two skins).
+
+| Kind | Cards |
+|---|---|
+| Kept with their picture, still fitting | Hobbling Jab, Dirty Hit, Quick Slash, Barbed Stab, Cartwheel Cut, Stalker's Lunge, Darting Strike, Backspring, Turn Aside, Roll Away, Smoke Veil, Sweep the Leg, Nimble Deal, Marked for Death, Lay Bare, Side Slip |
+| Kept picture, effect changed: **review** (most show airborne daggers or a Sly trick, the brief's concern) | Knife Juggle (now embeds two knives), Feint Strike, Shroud and Shank, Blade Flurry, Flick Knife, Whetted Edge (pulls pay), Recall the Blades (pull every knife), Knife in the Back and Killing Stroke (Preparation finishers), Duck and Weave, Practiced Hands |
+| New, placeholder until drawn (28) | Quiet Incision, Draw Steel, Finishing Thrust, Patient Footwork, Read the Guard, Severing Finish, Throat Cut, Prepared Ambush, Final Cut, Eyes in the Dark, Pinning Throw, Twist the Blade, Pincushion, Harvest the Field, Scatter Knives, Worry the Wound, Executioner's Mark, Flurry of Steel, Twist and Pull, Thread the Needle, Reap the Steel, Leave No Trace, Cut and Run, Disarm, Fade Out, Hidden in Plain Sight, Vanishing Act, Bladestorm Ward |
+| Pictures of removed cards that might fit (**look first**) | Garrote -> Throat Cut; Serrated Edges -> Pincushion; Steel Monsoon -> Harvest the Field; Into the Shadows / Mantle of Night -> Vanishing Act; Slow Murder -> Final Cut; Inked Blades -> Executioner's Mark |
+| Retired (unused now) | the 57 removed Assassin cards' pictures, including the Dagger token's |
+
+Signature illustration (priority 3): a hand drawing a knife from a still-standing target, others planted in it, a quiet pause before
+the finish: for Draw Steel or Final Cut. Not made.
+
+In code: the Knives chip on an enemy (†, "n/3"), the Preparation chip on the hero (◔, "n/3"), tooltips, a teaching tip, and the dagger
+icon and flurry animation for cards that plant or pull knives (`art.ts`).

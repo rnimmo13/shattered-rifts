@@ -26,7 +26,10 @@ const SIGNATURE_WORDS = [
   'stance',
   'stars',
   'forge',
-  'sleeve-knife',
+  'knives',
+  'prep',
+  'riposte',
+  'guard',
   'buckshot-shell',
   'stagger',
 ];

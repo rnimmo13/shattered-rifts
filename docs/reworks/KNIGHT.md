@@ -16,7 +16,7 @@ no Consume engine, no Might-and-multihit package.
 | One per enemy | An Opening is on or off (capped at 1). A multi-hit attack earns at most one. |
 | How long | Until the end of the turn of the side that can spend it: an Opening earned on the enemy turn lasts through her next turn and goes as it ends; one a card gives on her turn goes at the end of that turn. Units that die take theirs with them; a summoned or replaced unit is a new unit with none. |
 | Whose | An Opening is spent only by attacks of the other side (in the Arena, the other hero is the one left Open; the hero who holds it can never spend it). |
-| Riposte | `counter(n, bonus)`: a damage effect aimed at the target; if the target is Open when it begins, the Opening is spent and every hit deals `bonus` more. `riposte(...ops)`: if the target is Open, spend it and do the ops. An ordinary attack never spends an Opening. A Riposte on a target killed earlier in the card finds nothing ("no loot from the dead"). |
+| Riposte | `counter(n, bonus)`: a damage effect aimed at the target; if the target is Open when it begins, the Opening is spent and every hit deals `bonus` more. `riposte(...ops)`: if the target is Open, spend it and do the ops. An ordinary attack never spends an Opening. A Riposte on a target killed earlier in the card finds nothing ("no loot from the dead"). The Opening is spent as the Riposte attack begins: a Shielded target or a Trap that stops the hit still uses it up (tested). The bonus is only for the Open target: hits that move to another enemy after it dies do not get it. |
 | Earned vs given | "Whenever you earn an Opening" (Bastion Engine, Stoneskin, Iron Cadence, Measured Guard, the trait) answers only Guard. Cards that open an enemy (Draw Them In, Challenge, Last Bastion, Warlord's Oath, Duelist's Focus, Thornwake) never set those off, so no card loop can feed them. |
 | Thorns | Temporary Thorns as before (`statusTheirs`): direct damage back per attack hit, until the enemy turn is over. They never make an Opening by themselves; Thornwake (an Aura) does, once a turn. |
 | Previews | The live damage on a Riposte card counts the bonus against an Open target and agrees with what it deals (tested). |
@@ -87,7 +87,9 @@ Focus), not her payoff chain.
   and Aegis Eternal keep up; flat Thorns shrink against big enemies). A balance assumption to watch in play.
 - **Bosses and single targets:** every strategy works against one enemy (Openings come from its attacks; Draw Them In, Challenge and
   Warlord's Oath open it on its buff turns). No kill trigger is needed.
-- **Arena:** the Opening is visible to both players (a gold "Open" chip); it is a status on the other hero.
+- **Arena:** the Opening is visible to both players (a gold "Open" chip); it is a status on the other hero. A hero has no intent, so
+  "if the target means to attack" (Giant's Stance, Deflecting Blow) and Sentinel's Patience read 0 against one: those cards are a little
+  weaker in the Arena (a known gap, left as it is).
 - **Stall:** nothing heals or loops on defence alone; Guard pays Barrier, cards and next-turn Mana, and only damage ends a fight.
 
 ## Saves, decks and replays

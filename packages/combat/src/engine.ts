@@ -21,6 +21,8 @@ import {
   SUDDEN_DEATH_STEP,
   TRAIT_POWER,
   MAX_SNARES,
+  KNIFE_MAX,
+  PREP_MAX,
   RADIANT_ENTER_MANA,
   RulesError,
   STANCES,
@@ -108,6 +110,11 @@ interface Act {
   dealt: number;
   /** in an 'allyHurt' trigger: the HP the companion lost */
   lost: number;
+  /** (the Assassin) the units this card's attack hits were aimed at, and whether one of them landed on each (a knife embeds only then) */
+  struck: Map<UnitId, boolean>;
+  /** knives this card has pulled so far, and the stacks of a status it has spent (Preparation) */
+  extracted: number;
+  spentBy: Partial<Record<StatusId, number>>;
 }
 
 const mkAct = (actor: Unit, extra: Partial<Act> = {}): Act => ({
@@ -131,6 +138,9 @@ const mkAct = (actor: Unit, extra: Partial<Act> = {}): Act => ({
   spent: 0,
   dealt: 0,
   lost: 0,
+  struck: new Map(),
+  extracted: 0,
+  spentBy: {},
   ...extra,
 });
 
@@ -193,6 +203,9 @@ function addStatus(r: Run, u: Unit, st: StatusId, amount: number): boolean {
   }
   // Fortified is on or off: a second source adds nothing (DECISIONS #347); so is an Opening, one per enemy (#415)
   if (st === 'fortified' || st === 'opening') total = Math.min(total, 1);
+  // (the Assassin, DECISIONS #416) a unit holds at most KNIFE_MAX knives and a hero PREP_MAX Preparation: more is simply lost
+  if (st === 'knives') total = Math.min(total, KNIFE_MAX);
+  if (st === 'prep') total = Math.min(total, PREP_MAX);
   // Hangover stops at HANGOVER_MAX, so the cards that grow with it stay in reach (DECISIONS #354)
   if (st === 'hangover') total = Math.min(total, HANGOVER_MAX);
   if (total <= 0) delete u.statuses[st];
@@ -433,6 +446,8 @@ function isAttackAct(a: Act): boolean {
 function attackHit(r: Run, a: Act, t: Unit, base: number, single = false): number {
   if (t.hp <= 0) return 0;
   const attacked = isAttackAct(a);
+  // (the Assassin's knives: the card aimed a hit at this unit; whether one landed is set below)
+  if (!a.struck.has(t.id)) a.struck.set(t.id, false);
   if (attacked && t.side !== a.actor.side) {
     const hit = { prevented: false };
     fireSnare(r, t.side, { on: 'attacked', victim: t, attacker: a.actor, hit });
@@ -443,6 +458,8 @@ function attackHit(r: Run, a: Act, t: Unit, base: number, single = false): numbe
     }
   }
   let amount = modifiedDamage(base, a.actor, t, attacked);
+  // (a hit Shielded cancels does not land; one Barrier soaks does)
+  if (!(attacked && amount > 0 && stacks(t, 'shielded') > 0)) a.struck.set(t.id, true);
   // Bladebane: the blade strikes it twice as hard
   if (a.card?.tags?.includes(BLADE_TAG) && stacks(t, 'bladebane') > 0) amount *= 2;
   const room = t.hp + t.barrier;
@@ -847,6 +864,20 @@ function metricValue(
         .length;
     case 'foesAttacking':
       return r.s.sides[other(sd.id)].units.filter((x) => x.hp > 0 && meansToAttack(r, x)).length;
+    // (the Assassin)
+    case 'knives':
+      return u ? stacks(u, 'knives') : 0;
+    case 'knivesAll':
+      return r.s.sides[other(sd.id)].units.reduce(
+        (n, x) => n + (x.hp > 0 ? stacks(x, 'knives') : 0),
+        0,
+      );
+    case 'prep':
+      return u ? stacks(u, 'prep') : 0;
+    case 'extracted':
+      return a.extracted;
+    case 'prepSpent':
+      return a.spentBy.prep ?? 0;
   }
 }
 
@@ -988,6 +1019,7 @@ function execOp(r: Run, a: Act, op: Op): void {
       // Riposte (the Knight): against an Open target the Opening is spent and every hit deals more (DECISIONS #415)
       const riposte =
         op.riposte && to === 'target' && spendOpening(r, side, a.target) ? op.riposte : 0;
+      const ripTarget = riposte ? a.target : null;
       for (let i = 0; i < hits; i++) {
         // (a hit that wins the fight still pays its Lifesteal below: HP carries on in a run)
         if (r.s.winner) break;
@@ -1023,7 +1055,7 @@ function execOp(r: Run, a: Act, op: Op): void {
                 honed +
                 vigor +
                 deft +
-                riposte +
+                (t === ripTarget ? riposte : 0) +
                 resonanceOf(a) +
                 marrow) *
                 lone *
@@ -1351,6 +1383,7 @@ function execOp(r: Run, a: Act, op: Op): void {
         ...(op.maxCost !== undefined ? { maxCost: op.maxCost } : {}),
         ...(op.times ? { left: op.times } : {}),
         ...(op.rune ? { rune: op.rune } : {}),
+        ...(op.status ? { status: op.status } : {}),
       });
       r.ev.push({ type: 'power', side: side.id, card: a.card?.id ?? '' });
       return;
@@ -1957,6 +1990,42 @@ function execOp(r: Run, a: Act, op: Op): void {
     case 'riposte':
       if (spendOpening(r, side, a.target)) runOps(r, a, op.ops);
       return;
+    // --- the Assassin's knives and Preparation (DECISIONS #416)
+    case 'embed': {
+      const to = op.to ?? 'target';
+      for (const t of resolve(r, a, to)) {
+        // a living enemy, and one this card attacked only if a hit of it landed (an embed with no attack before it always does)
+        if (t.hp <= 0 || t.side === a.actor.side || a.struck.get(t.id) === false) continue;
+        const room = Math.max(0, KNIFE_MAX - stacks(t, 'knives'));
+        const n = Math.min(room, Math.max(0, op.amount));
+        if (n <= 0) continue;
+        addStatus(r, t, 'knives', n);
+        for (let k = 0; k < n && !r.s.winner; k++) fireTriggers(r, side, 'embed', { target: t });
+      }
+      return;
+    }
+    case 'extract': {
+      for (const t of resolve(r, a, op.to ?? 'target')) {
+        // no loot from the dead, and only your own knives (the other side's): a unit of your side never holds them
+        if (t.hp <= 0 || t.side === a.actor.side) continue;
+        const n = Math.min(stacks(t, 'knives'), Math.max(0, op.amount));
+        if (n <= 0) continue;
+        addStatus(r, t, 'knives', -n);
+        a.extracted += n;
+        for (let k = 0; k < n && !r.s.winner && t.hp > 0; k++) {
+          if (op.ops?.length) runOps(r, { ...a, target: t }, op.ops);
+          if (!r.s.winner) fireTriggers(r, side, 'extract', { target: t });
+        }
+      }
+      return;
+    }
+    case 'spend': {
+      const n = Math.min(stacks(a.actor, op.status), Math.max(0, op.amount));
+      if (n > 0) addStatus(r, a.actor, op.status, -n);
+      a.spentBy[op.status] = (a.spentBy[op.status] ?? 0) + n;
+      if (n > 0 && a.actor.kind === 'hero') fireTriggers(r, side, 'spend', { status: op.status });
+      return;
+    }
   }
 }
 
@@ -2491,6 +2560,8 @@ function fireTriggers(
     cost?: number;
     /** 'evoke': the totem that awakened */
     rune?: string;
+    /** 'spend': the status spent */
+    status?: StatusId;
   } = {},
 ): void {
   const played = ctx.card;
@@ -2528,6 +2599,7 @@ function fireTriggers(
     if (p.once && p.firedTurn === r.s.turn) continue;
     if ((when === 'stance' || when === 'stanceLeft') && p.stance && p.stance !== ctx.stance)
       continue;
+    if (when === 'spend' && p.status && p.status !== ctx.status) continue;
     // an Aura that answers "an ally dies" by striking its attacker does nothing when nothing attacked it (a sacrifice, a Trap, Doom)
     if (
       when === 'allyDies' &&
@@ -2940,6 +3012,7 @@ function beginHeroTurn(r: Run, side: Side): void {
         ...(t.maxCost !== undefined ? { maxCost: t.maxCost } : {}),
         ...(t.times ? { left: t.times } : {}),
         ...(t.rune ? { rune: t.rune } : {}),
+        ...(t.status ? { status: t.status } : {}),
       });
   }
   {
@@ -3827,6 +3900,8 @@ export interface LiveDamage {
   printed: number;
   /** the printed amount is a formula (per Barrier, per card...): the live number is shown beside it rather than in its place */
   calc: boolean;
+  /** (the Knight) the live number already counts a Riposte bonus, against an Open target */
+  riposte?: boolean;
 }
 
 /**
@@ -3874,7 +3949,18 @@ export function previewCardDamage(
   // (Vigor goes into the first damage effect only, as the engine spends it)
   let vigor = def.kind === 'attack' ? stacks(hero, 'vigor') : 0;
   let earlier = false;
+  // (the Assassin: a Preparation spend or a knife pull before the damage is worked out as the engine will do it, DECISIONS #416)
+  let pull = 0;
+  let riposted = false;
   def.effects.forEach((op, i) => {
+    if (op.op === 'spend' && !earlier) {
+      a.spentBy[op.status] = Math.min(stacks(hero, op.status), Math.max(0, op.amount));
+      return;
+    }
+    if (op.op === 'extract' && (op.to ?? 'target') === 'target' && !op.ops?.length && !earlier) {
+      pull = Math.max(0, op.amount);
+      return;
+    }
     if (op.op !== 'damage') {
       // an effect before the damage (Barrier gained, cards consumed, Exposed applied...) can change it: no guess, the printed text
       earlier = true;
@@ -3902,10 +3988,14 @@ export function previewCardDamage(
     vigor = 0;
     const one = (t: Unit | null): number => {
       // (with no target chosen yet, a card that reads "the target's Bleed" reads each enemy's in turn)
-      const at = op.to === 'target' && !chosen ? { ...a, target: t } : a;
+      const at = { ...a, target: op.to === 'target' && !chosen ? t : a.target };
+      // (the knives a pull before this takes from the card's target)
+      const from = at.target;
+      at.extracted = pull && from ? Math.min(stacks(from, 'knives'), pull) : 0;
       // (Riposte: an Open target takes the bonus on every hit, as the engine spends it)
       const rip =
         op.riposte && op.to === 'target' && t && stacks(t, 'opening') > 0 ? op.riposte : 0;
+      if (rip && chosen) riposted = true;
       const n = modifiedDamage(
         Math.round((amountOf(r, at, op.amount, op.scale, t) + edge + v + rip) * lone),
         hero,
@@ -3923,7 +4013,9 @@ export function previewCardDamage(
       printed: op.amount,
       // (Sharpen is not a formula to the player: the sharpened total simply replaces the printed number)
       calc: !!op.scale && op.scale.into !== 'hits' && op.scale.by !== 'bonus',
+      ...(riposted ? { riposte: true } : {}),
     });
+    riposted = false;
   });
   return out;
 }

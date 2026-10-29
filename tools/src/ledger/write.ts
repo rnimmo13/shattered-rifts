@@ -7,10 +7,12 @@ import { writeFileSync } from 'node:fs';
 import { cardText } from '@sr/combat';
 import { COMBAT_DB as db, pathOf, pathName, RIFTWALKERS, type HeroId } from '@sr/content/v2';
 import { budgetOf, pct, type Price } from './common';
+import { ASSASSIN_PRICES } from './assassin';
 import { KNIGHT_PRICES } from './knight';
 
 const PRICES: Partial<Record<HeroId, Record<string, Price>>> = {
   knight: KNIGHT_PRICES,
+  assassin: ASSASSIN_PRICES,
 };
 
 const hero = process.argv[2] as HeroId;
