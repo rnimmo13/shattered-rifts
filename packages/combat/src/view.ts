@@ -1733,9 +1733,18 @@ function liveDamageText(text: string, o: Extract<Op, { op: 'damage' }>, l: LiveD
   // (a sharpened weapon's "+1 per point of sharpening" is already in the live number, so it goes)
   const printed = new RegExp(`^Deal ${o.amount}( \\([^)]*\\))? damage`);
   // (the live number already counts the Riposte bonus: the clause says so instead of reading as more on top)
-  const body = l.riposte
+  const ripText = l.riposte
     ? text.replace(/ Riposte: \+\d+ damage( each hit)?\./, ' (Riposte counted.)')
     : text;
+  // (DECISIONS #432) a lone-enemy bonus that is already in the number says so, instead of reading as 25% more on top
+  const body = l.lone
+    ? ripText
+        .replace(
+          / Point Blank: (\d+)% more when only one enemy is left\./,
+          ' (Point Blank +$1% counted.)',
+        )
+        .replace(/ \((\d+)% more when only one enemy stands\)/, ' (+$1% counted: one enemy)')
+    : ripText;
   const done = printed.test(body)
     ? body.replace(printed, `Deal [[live:${dir}:${num}]] damage`)
     : body;

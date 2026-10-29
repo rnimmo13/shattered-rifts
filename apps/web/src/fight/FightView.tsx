@@ -1611,8 +1611,16 @@ export function FightView(props: {
         text: dealt.lethal ? `−${dealt.total} LETHAL` : `−${dealt.total}`,
       };
   }
+  // (DECISIONS #432) how each damage number on the hovered card is made, step by step, when it is one number against one enemy
+  const hoverLive = hoverCard ? liveDamage.get(hoverCard.inst.id) : undefined;
+  const damageSteps = hoverLive
+    ? [...hoverLive.values()]
+        .filter((l) => l.how && l.how.length > 1)
+        .map((l) => ({ name: 'Damage', text: l.how!.join(' → ') }))
+    : [];
   const keywords = hoverCard
     ? [
+        ...damageSteps,
         ...[sanctifiedNote(db, hoverCard.def)].filter((x) => x !== null),
         ...keywordsOf(
           hoverCard.def,

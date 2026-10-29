@@ -5,6 +5,7 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **Damage you can read:** a card's number already includes Point Blank, Clutch Genes, Might, Exposed and the rest; the Old Twelve Gauge now says "(Point Blank +25% counted.)" when it is, and hovering a card shows the exact number step by step ("5 → Point Blank +25% = 6 → +2 Might = 8 → …").
 - **The Necromancer starts a fight with one Bone Thrall** (2 HP), not two.
 - **The Shaman's totems are drawn:** the Hawk, Bear and Elder Tree show as carved totems on the totem panel (they grow when you resize it), and a commanded totem's spirit rises out of it. Spirit shows as a glowing number with what it adds. **Clutch Genes** now gives 1% more attack damage for every 1% of your HP you are missing (it was 1% per HP).
 - **The Knight, Assassin, Spellblade and Monk are back to their earlier cards** (the reworks are undone; the Shaman keeps his). A run saved with one of the reworked classes gets the nearest earlier cards in place of the rework's and is told so; a fight that was under way starts again.

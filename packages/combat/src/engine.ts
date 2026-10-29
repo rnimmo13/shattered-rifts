@@ -325,7 +325,11 @@ export function modifiedDamage(
   attacker: Unit | null,
   target: Unit | null,
   attack = true,
+  /** (DECISIONS #432) what changed the number, in order, for the card's breakdown ("+2 Might", "Exposed +50%") */
+  steps?: string[],
 ): number {
+  // (each step with the number it leaves: "Exposed +50% = 21")
+  const note = (x: string): void => void steps?.push(`${x} = ${n}`);
   if (!attack) {
     const flat = Math.max(0, base);
     return attacker && attacker.dmgPct !== 100 && flat > 0
@@ -336,40 +340,96 @@ export function modifiedDamage(
     0,
     base + (attacker ? stacks(attacker, 'might') - stacks(attacker, 'sapped') : 0),
   );
-  if (attacker && stacks(attacker, 'clutch') > 0)
+  const might = attacker ? stacks(attacker, 'might') : 0;
+  const sapped = attacker ? stacks(attacker, 'sapped') : 0;
+  if (might || sapped)
+    note(
+      [might ? `+${might} Might` : '', sapped ? `−${sapped} Sapped` : ''].filter(Boolean).join(' '),
+    );
+  if (attacker && stacks(attacker, 'clutch') > 0) {
     n = Math.floor((n * (100 + stacks(attacker, 'clutch'))) / 100);
+    note(`Clutch Genes +${stacks(attacker, 'clutch')}%`);
+  }
   // (Stunned counts as Faltering, Exposed and Brittle at once, never on top of them: DECISIONS #310)
   // (Debilitated: Faltering and Exposed on it count double)
-  if (attacker && (stacks(attacker, 'faltering') > 0 || stacks(attacker, 'stunned') > 0))
-    n = Math.floor(n * (stacks(attacker, 'debilitated') > 0 ? 0.5 : 0.75));
-  if (attacker && stacks(attacker, 'radiant') > 0) n *= 3;
-  else if (attacker && stacks(attacker, 'wrath') > 0) n *= 2;
-  if (target && stacks(target, 'wrath') > 0) n = Math.floor(n * 1.5);
+  if (attacker && (stacks(attacker, 'faltering') > 0 || stacks(attacker, 'stunned') > 0)) {
+    const deb = stacks(attacker, 'debilitated') > 0;
+    n = Math.floor(n * (deb ? 0.5 : 0.75));
+    note(`Faltering −${deb ? 50 : 25}%`);
+  }
+  if (attacker && stacks(attacker, 'radiant') > 0) {
+    n *= 3;
+    note('Radiant ×3');
+  } else if (attacker && stacks(attacker, 'wrath') > 0) {
+    n *= 2;
+    note('Fury ×2');
+  }
+  if (target && stacks(target, 'wrath') > 0) {
+    n = Math.floor(n * 1.5);
+    note('target in Fury +50%');
+  }
   if (target && (stacks(target, 'exposed') > 0 || stacks(target, 'stunned') > 0)) {
-    n = Math.floor(n * (stacks(target, 'debilitated') > 0 ? 2 : 1.5));
+    const deb = stacks(target, 'debilitated') > 0;
+    n = Math.floor(n * (deb ? 2 : 1.5));
+    note(`Exposed +${deb ? 100 : 50}%`);
     // Cruelty: an Exposed enemy takes a quarter more from you
-    if (attacker && stacks(attacker, 'cruelty') > 0) n = Math.floor(n * 1.25);
+    if (attacker && stacks(attacker, 'cruelty') > 0) {
+      n = Math.floor(n * 1.25);
+      note('Cruelty +25%');
+    }
   }
   // (assassin) Shadow Step's Empowered doubles; Tracking: a Faltering enemy takes half as much again
-  if (attacker && stacks(attacker, 'empowered') > 0) n *= 2;
+  if (attacker && stacks(attacker, 'empowered') > 0) {
+    n *= 2;
+    note('Empowered ×2');
+  }
   if (
     target &&
     attacker &&
     stacks(attacker, 'tracking') > 0 &&
     (stacks(target, 'faltering') > 0 || stacks(target, 'stunned') > 0)
-  )
+  ) {
     n = Math.floor(n * 1.5);
+    note('Tracking +50%');
+  }
   // Colossus: an Exposed enemy's blows land at half strength for the turn
   if (
     target &&
     attacker &&
     stacks(target, 'sturdy') > 0 &&
     (stacks(attacker, 'exposed') > 0 || stacks(attacker, 'stunned') > 0)
-  )
+  ) {
     n = Math.floor(n * 0.5);
-  if (attacker && attacker.dmgPct !== 100 && n > 0)
+    note('Sturdy −50%');
+  }
+  if (attacker && attacker.dmgPct !== 100 && n > 0) {
     n = Math.max(1, Math.floor((n * attacker.dmgPct) / 100));
+    note(`${attacker.dmgPct}% damage`);
+  }
   return Math.max(0, n);
+}
+
+/** (DECISIONS #432) the word for the scaled part of a damage number in a card's breakdown */
+const SCALE_WORDS: Partial<Record<string, string>> = {
+  missingPct: '% HP missing',
+  missingHp: 'HP missing',
+  thorns: 'Thorns',
+  barrier: 'Barrier',
+  hand: 'cards in hand',
+  exhausted: 'cards consumed',
+  hangover: 'Hangover',
+  strikes: 'Strikes',
+  allies: 'allies',
+  doom: 'Fate',
+  knives: 'knives',
+  opening: 'Opening',
+  foesOpen: 'Open enemies',
+  thornsSpent: 'Thorns shed',
+  x: 'X',
+};
+function scaleWord(def: CardDef, by: string | undefined): string {
+  if (by === 'bonus') return def.forgeWord ?? 'Sharpen';
+  return (by && SCALE_WORDS[by]) ?? 'scaling';
 }
 
 /** The innate trait of the hero on `side` (none for a side of enemies). */
@@ -4669,6 +4729,10 @@ export interface LiveDamage {
   calc: boolean;
   /** (the Knight) the live number already counts a Riposte bonus, against an Open target */
   riposte?: boolean;
+  /** (DECISIONS #432) a "more against a lone enemy" bonus (Point Blank, a Fork) is in the number */
+  lone?: boolean;
+  /** (DECISIONS #432) how the number is made, step by step, when it is one number against one enemy: "5", "+4 Precision", ... */
+  how?: string[];
   /** (the Spellblade) a discharged Ember's damage on the first hit only, of an attack that hits more than once (lo-hi: by the choice) */
   first?: { lo: number; hi: number };
 }
@@ -4818,23 +4882,50 @@ export function previewCardDamage(
           ? op.riposte
           : 0;
       if (rip && chosen) riposted = true;
+      const amt = amountOf(r, at, op.amount, op.scale, t);
+      // (each step with the number it leaves, as the engine works it out: additions, then the lone-enemy bonus, then the rest)
+      const how: string[] = [String(op.amount)];
+      let run = op.amount;
+      const add = (k: number, word: string): void => {
+        if (!k) return;
+        run += k;
+        how.push(`${k > 0 ? '+' : '−'}${Math.abs(k)} ${word} = ${run}`);
+      };
+      add(amt - op.amount, scaleWord(def, op.scale?.by));
+      add(edge, 'bonus');
+      add(v, 'Primed');
+      add(rip, 'Riposte');
+      add(ember, 'Ember');
+      if (lone !== 1)
+        how.push(
+          `${def.tags?.includes('gun') ? 'Point Blank' : 'one enemy'} +${op.lonePct}% = ${Math.round(run * lone)}`,
+        );
       const n = modifiedDamage(
-        Math.round((amountOf(r, at, op.amount, op.scale, t) + edge + v + rip + ember) * lone),
+        Math.round((amt + edge + v + rip + ember) * lone),
         hero,
         t,
         def.kind === 'attack',
+        how,
       );
+      lastHow = how;
       // Ghostly lets 1 through, Shielded none
       // (a pull before the attack hits first, so its own damage takes the Shield off: Knife Work's)
       if (t && stacks(t, 'shielded') > 0 && !(at.extracted > 0)) return 0;
       return t && stacks(t, 'ghostly') > 0 && n > 1 ? 1 : n;
     };
     const targets = pool.length ? pool : [null];
+    let lastHow: string[] = [];
     const vals = [...targets.map((t) => one(t, eLo)), ...targets.map((t) => one(t, eHi))];
+    const lo = Math.min(...vals);
+    const hi = Math.max(...vals);
+    // (the steps are shown only when they are the one answer: one enemy it can hit, no choice left open)
+    const single = targets.length === 1 && lo === hi;
     out.set(i, {
-      lo: Math.min(...vals),
-      hi: Math.max(...vals),
+      lo,
+      hi,
       ...(firstBonus ? { first: firstBonus } : {}),
+      ...(lone !== 1 ? { lone: true } : {}),
+      ...(single && lastHow.length > 1 ? { how: lastHow } : {}),
       printed: op.amount,
       // (Sharpen is not a formula to the player: the sharpened total simply replaces the printed number)
       calc: !!op.scale && op.scale.into !== 'hits' && op.scale.by !== 'bonus',

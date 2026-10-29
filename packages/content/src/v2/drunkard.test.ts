@@ -1,10 +1,23 @@
 // KP's Old Twelve Gauge (a weapon you Sharpen that hits every enemy) and the Mana tools everyone can reach.
 
 import { describe, expect, it } from 'vitest';
-import { applyAction, clone, createCombat, legalActions, type CombatState } from '@sr/combat';
+import {
+  applyAction,
+  cardText,
+  clone,
+  createCombat,
+  legalActions,
+  previewCardDamage,
+  type CombatState,
+} from '@sr/combat';
 import { COMBAT_DB as db, RIFTWALKERS, type HeroId } from './index';
 
-function fight(hero: HeroId, hand: string[], hp?: number): CombatState {
+function fight(
+  hero: HeroId,
+  hand: string[],
+  hp?: number,
+  enemies: string[] = ['squire', 'squire'],
+): CombatState {
   const { state } = createCombat(db, {
     seed: 'kp-test',
     a: {
@@ -12,7 +25,7 @@ function fight(hero: HeroId, hand: string[], hp?: number): CombatState {
       deck: [...RIFTWALKERS[hero].starter, ...RIFTWALKERS[hero].starter],
       ...(hp ? { hp } : {}),
     },
-    b: { enemies: ['squire', 'squire'] },
+    b: { enemies },
   });
   const s = clone(state);
   s.sides.a.hand = hand.map((card, i) => ({ id: `T${i}`, card }));
@@ -217,5 +230,46 @@ describe('Sharpen carries over to new copies (DECISIONS #399)', () => {
     expect(guns().map((c) => c.bonus)).toEqual([3]);
     s = playCard(s, 'T1'); // Double Tap: another Old Twelve Gauge
     expect(guns().map((c) => c.bonus)).toEqual([3, 3]);
+  });
+});
+
+describe('the damage breakdown on a card (DECISIONS #432)', () => {
+  it("the Old Twelve Gauge's Point Blank is counted in the live number, and the steps add up to it", () => {
+    const one = fight('drunkard', ['old-twelve-gauge'], 19, ['squire']);
+    const hero = one.sides.a.units[one.sides.a.units.length - 1]!;
+    hero.statuses.might = 2;
+    const foe = one.sides.b.units[0]!;
+    foe.statuses = { exposed: 1 };
+    const live = previewCardDamage(db, one, 'T0', foe.id);
+    const l = [...live.values()][0]!;
+    expect(l.lone).toBe(true);
+    // 5, Point Blank x1.25 = 6, +2 Might = 8, Clutch Genes (19 of 88: 78%) = 14, Exposed x1.5 = 21
+    expect(l.how).toEqual([
+      '5',
+      'Point Blank +25% = 6',
+      '+2 Might = 8',
+      'Clutch Genes +78% = 14',
+      'Exposed +50% = 21',
+    ]);
+    expect(l.lo).toBe(21);
+    expect(cardText(db, db.cards['old-twelve-gauge']!, live)).toContain(
+      '(Point Blank +25% counted.)',
+    );
+    const before = foe.hp;
+    const after = playCard(one, 'T0');
+    expect(before - after.sides.b.units[0]!.hp).toBe(21);
+  });
+
+  it('with two enemies Point Blank is not counted, and the card says when it would be', () => {
+    const two = fight('drunkard', ['old-twelve-gauge'], RIFTWALKERS.drunkard.hero.maxHp, [
+      'squire',
+      'squire',
+    ]);
+    const live = previewCardDamage(db, two, 'T0', null);
+    const l = [...live.values()][0]!;
+    expect(l.lone).toBeUndefined();
+    expect(cardText(db, db.cards['old-twelve-gauge']!, live)).toContain(
+      'Point Blank: 25% more when only one enemy is left.',
+    );
   });
 });

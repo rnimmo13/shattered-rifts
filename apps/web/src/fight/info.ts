@@ -871,6 +871,14 @@ export const UI_TIPS = {
 /** The tooltip for a status chip: buff or debuff, with what it does. */
 export function statusTip(id: StatusId, n: number): TipContent {
   const s = STATUS_INFO[id];
+  // (DECISIONS #432) Clutch Genes reads as the exact bonus, not a bare number
+  if (id === 'clutch')
+    return {
+      kicker: 'Buff',
+      title: `${s.name} +${n}%`,
+      tone: s.tone,
+      text: `Your attacks deal ${n}% more damage (1% for every 1% of your HP you are missing). Every damage number on your cards already counts it.`,
+    };
   return {
     kicker: s.tone === 'good' ? 'Buff' : 'Debuff',
     title: `${s.name} ${n}`,
