@@ -124,10 +124,10 @@ describe("the Mana Reserves trait", () => {
 });
 
 describe('the Reserves cards', () => {
-  it('Stand Fast: 5 Barrier and 1 Plating, and 2 more Max Reserves for this turn only, so more Mana is kept', () => {
+  it('Stand Fast: 5 Barrier and 2 Plating, and 2 more Max Reserves for this turn only, so more Mana is kept', () => {
     let s = play(fight('knight', ['stand-fast']), 'stand-fast');
     expect(hero(s).barrier).toBe(5);
-    expect(hero(s).statuses.plating).toBe(1);
+    expect(hero(s).statuses.plating).toBe(2);
     expect(s.sides.a.mana).toBe(2);
     s.sides.a.mana = 5;
     s = endTurn(s);
@@ -259,20 +259,29 @@ describe('the Reserves cards', () => {
     expect(cardText(db, db.cards['scarred-hide']!)).toBe("Whenever you lose HP: Apply 3 Sapped to a random enemy until the end of the enemy's turn.");
   });
 
-  it('some Barrier cards split their Barrier with Plating (2 Barrier for 1 Plating)', () => {
+  it('some Barrier cards split their Barrier with Plating (and have one more Plating on top)', () => {
     const s = play(fight('knight', ['oath-of-iron']), 'oath-of-iron');
     expect(hero(s).barrier).toBe(6);
-    expect(hero(s).statuses.plating).toBe(1);
+    expect(hero(s).statuses.plating).toBe(2);
     const text = (id: string): string => cardText(db, db.cards[id]!);
-    expect(text('oath-of-iron')).toContain('Gain 6 Barrier. Gain 1 Plating.');
-    expect(text('ember-ward')).toContain('Gain 8 Barrier. Gain 2 Plating.');
-    expect(text('blood-plate')).toContain('Gain 12 Barrier. Gain 2 Plating.');
-    expect(text('dawn-smite')).toContain('Gain 3 Barrier. Gain 1 Plating.');
+    expect(text('oath-of-iron')).toContain('Gain 6 Barrier. Gain 2 Plating.');
+    expect(text('ember-ward')).toContain('Gain 8 Barrier. Gain 3 Plating.');
+    expect(text('blood-plate')).toContain('Gain 12 Barrier. Gain 3 Plating.');
+    expect(text('dawn-smite')).toContain('Gain 3 Barrier. Gain 2 Plating.');
+  });
+
+  it('Brace and Press, the Knight\'s second basic: 3 Barrier, 2 Plating and 1 Exposed', () => {
+    const s = play(fight('knight', ['brace-and-press']), 'brace-and-press');
+    expect(hero(s).barrier).toBe(3);
+    expect(hero(s).statuses.plating).toBe(2);
+    expect(s.sides.b.units[0]!.statuses.exposed).toBe(1);
+    expect(db.cards['brace-and-press']!.rarity).toBe('basic');
+    expect(RIFTWALKERS.knight.starter).toHaveLength(10);
   });
 
   it('the cards say it', () => {
     const text = (id: string): string => cardText(db, db.cards[id]!);
-    expect(text('stand-fast')).toBe('Gain 5 Barrier. Gain 1 Plating. Max Reserves +2 this turn.');
+    expect(text('stand-fast')).toBe('Gain 5 Barrier. Gain 2 Plating. Max Reserves +2 this turn.');
     expect(text('blood-oath')).toBe('Lose 3 HP. Gain 3 Reserves.');
     expect(text('oath-unbroken')).toContain('Max Reserves +2 for the rest of the fight.');
     expect(text('unyielding-line')).toContain('Gain 2 Reserves.');

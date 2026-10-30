@@ -5,6 +5,7 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **A stronger start for the Knight:** a second basic, Brace and Press (3 Barrier, 2 Plating, 1 Exposed) in place of one Defend, and 1 more Plating on every Knight card that gives it. More mechanics (Plating, Sapped, Hangover, Fate, Virulent...) are highlighted in card text.
 - **Mana Reserves for the Knight:** unspent Mana is kept as Reserves (Max Reserves 3, shown beside the Mana gem; cards spend Mana first), with twelve new Knight cards, Plating on some Barrier cards, and Scarred Hide. 58 cards without art of their own use borrowed art for now.
 - Card artwork now follows the current hero base models and card actions; the Shaman gains 55 dedicated card illustrations. Thunderbird and Moon Owl now have carved totem and spirit artwork.
 - **The Assassin defers:** a new keyword, Defer (a card waits a turn and comes back costing 1 less); Stalker’s Lunge, Side Slip, Palm Switch, Quick Reflexes, Cartwheel Cut, Slip the Blow, Glancing Knives and Into the Shadows use it.

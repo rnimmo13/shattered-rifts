@@ -1,6 +1,6 @@
 # Placeholder card art (2026-10-30)
 
-The 58 cards that had no art (they showed the fallback painting) now use **borrowed art of cards that are no longer in the game**.
+The 59 cards that had no art (they showed the fallback painting) now use **borrowed art of cards that are no longer in the game**.
 It is a stopgap: **every card below needs its own illustration in the next batch of card art updates.** Machine-readable list:
 `docs/card-art/placeholders.json` (card, borrowed source, why).
 
@@ -17,7 +17,7 @@ Things to know:
 - The Shaman and status placeholders show the current Shaman model, but the subject is only loosely related to the card.
 - Several pictures are used on two cards at once (the placeholder and the retired card it came from, which is out of the game).
 
-### Knight (12)
+### Knight (13)
 
 | Card | Borrowed art | Why it fits |
 |---|---|---|
@@ -25,6 +25,7 @@ Things to know:
 | Patient Wall (`patient-wall`) | `exec-362a068a` (assets-src/cards/individual) | the Knight resting (current Knight model) |
 | Measured Strike (`measured-strike`) | `exec-f7e79926` (assets-src/cards/individual) | a spinning slash (current Knight model) |
 | Cast the Shield (`cast-the-shield`) | `exec-06900b74` (assets-src/cards/individual) | hurling stone and cards (current Knight model) |
+| Brace and Press (`brace-and-press`) | `plate-discipline` | a shield dome (added when the basic was made) |
 | Stand Fast (`stand-fast`) | `tower-shield` | a tall shield |
 | Unyielding Line (`unyielding-line`) | `rampart` | a line of shields |
 | Gilded Bulwark (`gilded-bulwark`) | `gilded-wall` | gilded barrier panels |

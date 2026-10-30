@@ -78,7 +78,7 @@ So `Deal 10` = `Deal 7, Apply 1 Exposed` = `Deal 4, Apply 2 Exposed` = `Deal 7, 
 |---|---|---|
 | Barrier, now | **1.2** per point | 9 Barrier = 10 damage. Defend 5 = Strike 6. Stone Skin 9, Dawn Smite 5 + 5 Barrier = 11. |
 | Barrier next turn (Guarded, "next turn gain N") | **1.0** per point | Can't be aimed at a known intent. Roll Away 4 + 4 Guarded, Glass Veil 11 + 5. |
-| Plating N | **~2.5** per stack | Only keeps Barrier you already have; shrinks each turn. Stoneskin (4) is a 1-cost uncommon. A Barrier card that gives Plating swaps **2 Barrier for 1 Plating** (2.4 against 2.5): Oath of Iron 8 Barrier became 6 + 1 Plating. |
+| Plating N | **~2.5** per stack | Only keeps Barrier you already have; shrinks each turn. Stoneskin (5) is a 1-cost uncommon. A Barrier card that gives Plating swaps **2 Barrier for 1 Plating** (2.4 against 2.5): Oath of Iron 8 Barrier became 6 + 2 Plating (the second Plating is extra, DECISIONS #457). |
 | Blur | the Barrier you expect to carry over (~4-5) | Smoke Veil: 5 Barrier + Blur. |
 | Shielded | **~one enemy hit** (10-12 at Tier I) | Great against one big hit, nearly nothing against chip damage. |
 | Cancel a hit (a Trap's "cancel that attack") | **~12**, one Tier I hit | The Trap springs on the first hit of a move and stops that hit only. Mirror Veil, Bait and Switch. |

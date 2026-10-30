@@ -60,13 +60,22 @@ export const KNIGHT: CardDef[] = [
     status('exposed', 2, 'target'),
   ]),
 
+  // (a Barrier and Plating card that sets up Exposed too: the Knight's defence and offence in one, Robert 2026-10-30)
+  m('basic', 'brace-and-press', 'Brace and Press', 'skill', 1, 'foe', [
+    barrier(3),
+    status('plating', 2),
+    status('exposed', 1, 'target'),
+  ], {
+    up: { effects: [barrier(5), status('plating', 3), status('exposed', 1, 'target')] },
+  }),
+
   // --- Bulwark ---
   // (Body Slam: your Barrier, as damage)
   m('common', 'bulwark-blow', 'Bulwark Blow', 'attack', 1, 'foe', [
     scaled(dmg(0), per('barrier', 1)),
   ]),
   // (Shrug It Off)
-  m('common', 'oath-of-iron', 'Oath of Iron', 'skill', 1, 'none', [barrier(6), status('plating', 1), draw(1)]),
+  m('common', 'oath-of-iron', 'Oath of Iron', 'skill', 1, 'none', [barrier(6), status('plating', 2), draw(1)]),
   // (Armaments: a little Barrier, and one card in your hand is upgraded for the fight)
   m('common', 'field-repairs', 'Field Repairs', 'skill', 1, 'none', [
     barrier(5),
@@ -80,12 +89,12 @@ export const KNIGHT: CardDef[] = [
   // (Taunt)
   m('uncommon', 'provoke', 'Provoke', 'skill', 1, 'foe', [
     barrier(5),
-    status('plating', 1),
+    status('plating', 2),
     status('exposed', 1, 'target'),
   ]),
   // (Stone Armor)
-  m('uncommon', 'stoneskin', 'Stoneskin', 'power', 1, 'none', [status('plating', 4)], {
-    up: { effects: [status('plating', 6)] },
+  m('uncommon', 'stoneskin', 'Stoneskin', 'power', 1, 'none', [status('plating', 5)], {
+    up: { effects: [status('plating', 7)] },
   }),
   // (Colossus: Exposed enemies hit you half as hard until your next turn)
   m('uncommon', 'giants-stance', "Giant's Stance", 'skill', 1, 'none', [
@@ -109,7 +118,7 @@ export const KNIGHT: CardDef[] = [
   // (Flame Barrier: hits back for 4 through the enemy turn, as Thorns that then wear off)
   m('uncommon', 'ember-ward', 'Ember Ward', 'skill', 2, 'none', [
     barrier(8),
-    status('plating', 2),
+    status('plating', 3),
     statusTheirs('thorns', 4, 'self'),
   ]),
 
@@ -408,7 +417,7 @@ export const KNIGHT: CardDef[] = [
     exhaust: true,
   }),
   // (Blood Wall)
-  m('common', 'blood-plate', 'Blood Plate', 'skill', 2, 'none', [lose(2), barrier(12), status('plating', 2)]),
+  m('common', 'blood-plate', 'Blood Plate', 'skill', 2, 'none', [lose(2), barrier(12), status('plating', 3)]),
   // (Breakthrough)
   m('common', 'breach', 'Breach', 'attack', 1, 'none', [lose(1), dmg(9, 'allFoes')]),
   // (Hemokinesis)
@@ -451,7 +460,7 @@ export const KNIGHT: CardDef[] = [
 
   // --- glue ---
   // (Iron Wave)
-  m('common', 'dawn-smite', 'Dawn Smite', 'attack', 1, 'foe', [dmg(5), barrier(3), status('plating', 1)]),
+  m('common', 'dawn-smite', 'Dawn Smite', 'attack', 1, 'foe', [dmg(5), barrier(3), status('plating', 2)]),
   // (Anger)
   m('common', 'hot-temper', 'Hot Temper', 'attack', 0, 'foe', [dmg(6), copySelf('discard')]),
   // (Burning Pact)
@@ -461,8 +470,8 @@ export const KNIGHT: CardDef[] = [
 
   // --- the Mana Reserves trait: Reserves, held Barrier, blood for Reserves ---
   // (a Barrier card for a quiet turn that lets the bank grow past its limit)
-  m('common', 'stand-fast', 'Stand Fast', 'skill', 1, 'none', [barrier(5), status('plating', 1), maxReserves(2, true)], {
-    up: { effects: [barrier(7), status('plating', 1), maxReserves(2, true)] },
+  m('common', 'stand-fast', 'Stand Fast', 'skill', 1, 'none', [barrier(5), status('plating', 2), maxReserves(2, true)], {
+    up: { effects: [barrier(7), status('plating', 2), maxReserves(2, true)] },
   }),
   m('common', 'measured-strike', 'Measured Strike', 'attack', 1, 'foe', [dmg(7), when('reserves', { atLeast: 2 }, [dmg(5)])], {
     up: { effects: [dmg(9), when('reserves', { atLeast: 2 }, [dmg(6)])] },

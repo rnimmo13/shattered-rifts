@@ -81,7 +81,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
       maxReserves: 3,
     },
     hero: { id: 'knight', name: 'Knight', maxHp: 80, mana: 3, handSize: 5 },
-    starter: [...rep('strike', 5), ...rep('defend', 4), 'sundering-blow'],
+    starter: [...rep('strike', 5), ...rep('defend', 3), 'sundering-blow', 'brace-and-press'],
     blurb:
       'A knight of the Gilded Order. No companions: Might, Barrier and a deck that burns down to a point.',
     mechanics: ['Barrier', 'Might', 'Exposed', 'Consume', 'Self-damage'],

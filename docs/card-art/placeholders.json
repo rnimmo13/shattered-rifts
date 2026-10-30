@@ -346,5 +346,11 @@
   "name": "Take It on the Chin",
   "source": "stained-glass",
   "why": "a glass shield"
+ },
+ {
+  "id": "brace-and-press",
+  "name": "Brace and Press",
+  "source": "plate-discipline",
+  "why": "a shield dome"
  }
 ]

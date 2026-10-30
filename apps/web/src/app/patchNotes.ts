@@ -29,6 +29,27 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.137.0',
+    date: '2026-10-30',
+    title: 'A stronger start for the Knight',
+    summary: 'The Knight gets a second basic card and more Plating.',
+    notes: [
+      {
+        kind: 'new',
+        text: 'Brace and Press: a new basic that gives 3 Barrier, 2 Plating and 1 Exposed. It takes the place of one Defend in the Knight’s starting deck.',
+      },
+      {
+        kind: 'balance',
+        text: 'Every Knight card that gives Plating gives 1 more: Oath of Iron 2, Dawn Smite 2, Provoke 2, Ember Ward 3, Blood Plate 3, Stand Fast 2 and Stoneskin 5.',
+      },
+      {
+        kind: 'fixed',
+        text: 'More mechanics are highlighted in card text, so you can hover them: Plating, Sapped, Hangover, Fate, Virulent, Premeditate, Steadfast, Brittle and the rest.',
+      },
+    ],
+    heads: 'The rules changed: reload to play the new cards, and old Arena games and replays no longer play.',
+  },
+  {
     version: '0.136.0',
     date: '2026-10-30',
     title: 'Mana Reserves for the Knight',
