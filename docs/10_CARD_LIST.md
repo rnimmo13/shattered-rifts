@@ -411,9 +411,9 @@ Starter: Strike, Strike, Strike, Strike, Strike, Defend, Defend, Defend, Defend,
 | Blade Flurry | 1 | attack | common | Deal 4 damage 2 times to ALL enemies. |
 | Quick Slash | 0 | attack | common | Deal 6 damage. |
 | Dirty Hit | 1 | attack | common | Deal 8 damage. Apply 1 Faltering. |
-| Stalker's Lunge | 2 | attack | common | Deal 15 damage. Next turn, draw 2 extra cards. |
-| Glancing Knives | 2 | attack | common | Premeditate. Deal 3 damage to a random enemy 4 times. |
-| Cartwheel Cut | 1 | attack | common | Premeditate. Deal 7 damage to ALL enemies. |
+| Stalker's Lunge | 2 | attack | common | Deal 15 damage. Defer a card. |
+| Glancing Knives | 2 | attack | common | Premeditate. Deal 3 damage to a random enemy 4 times. Defer a card. |
+| Cartwheel Cut | 1 | attack | common | Premeditate. Deal 5 damage to ALL enemies. Defer a card. |
 | Open Vein | 1 | skill | common | Apply 5 Bleed. |
 | Barbed Stab | 1 | attack | common | Deal 6 damage. Apply 3 Bleed. |
 | Viper's Kiss | 2 | skill | common | Apply 7 Bleed. Hold. |
@@ -424,7 +424,7 @@ Starter: Strike, Strike, Strike, Strike, Strike, Defend, Defend, Defend, Defend,
 | Turn Aside | 0 | skill | common | Gain 4 Barrier. |
 | Roll Away | 1 | skill | common | Gain 4 Barrier. Gain 4 Guarded. |
 | Shuffle Up | 0 | skill | common | Draw 1 card. Discard 1 card. |
-| Slip the Blow | 2 | skill | common | Premeditate. Gain 6 Barrier. |
+| Slip the Blow | 2 | skill | common | Premeditate. Gain 6 Barrier. Defer a card. |
 | Whetted Edge | 1 | aura | uncommon | Gain 4 Edge: your Daggers deal 4 more damage for the rest of the fight. |
 | Knife in the Back | 0 | attack | uncommon | Deal 11 damage. Consume. Opening hand. |
 | Sleeve Drop | 0 | skill | uncommon | Discard 2 cards. Add 2 Daggers to your hand. |
@@ -453,11 +453,11 @@ Starter: Strike, Strike, Strike, Strike, Strike, Defend, Defend, Defend, Defend,
 | Lay Bare | 0 | skill | uncommon | Remove all Barrier and Steadfast from the target. Apply 2 Exposed. Consume. |
 | Needle Rain | 1 | attack | uncommon | Deal 5 damage for each Skill in your hand. |
 | Fleet Step | 1 | aura | uncommon | Gain 2 Bracing for the rest of the fight. |
-| Palm Switch | 1 | skill | uncommon | Gain 7 Barrier. A random Skill in your hand gains Premeditate this turn. |
+| Palm Switch | 1 | skill | uncommon | Gain 7 Barrier. Defer a card. |
 | Sweep the Leg | 2 | skill | uncommon | Apply 2 Faltering. Gain 11 Barrier. |
 | Graveside Cut | 1 | attack | uncommon | Deal 9 (+4 per card discarded this turn) damage. |
-| Quick Reflexes | 3 | skill | uncommon | Premeditate. Draw 2 cards. |
-| Side Slip | 0 | skill | uncommon | Next turn, gain 1 extra Mana. |
+| Quick Reflexes | 3 | skill | uncommon | Premeditate. Draw 1 card. Defer a card. |
+| Side Slip | 0 | skill | uncommon | Defer a card. |
 | Fleet Fingers | 2 | aura | uncommon | Whenever you draw a card during your turn: Deal 2 damage to ALL enemies. |
 | Cool Head | 3 | skill | uncommon | Premeditate. Gain 1 Mana. |
 | Killing Stroke | 0 | attack | rare | Deal 10 damage. Apply 1 Exposed. Consume. Opening hand. |
@@ -465,7 +465,7 @@ Starter: Strike, Strike, Strike, Strike, Strike, Defend, Defend, Defend, Defend,
 | Wide Arc | 2 | aura | rare | Gain 1 Fanned. Add 4 Daggers to your hand. |
 | Recall the Blades | 2 | skill | rare | Play every Dagger in your consumed pile against the target; they go back there. |
 | Serpent's Coil | 3 | aura | rare | Whenever you play a card: Deal 4 damage to a random enemy. |
-| Into the Shadows | 1 | skill | rare | Discard your hand. Gain 1 Poised. |
+| Into the Shadows | 2 | skill | rare | Defer up to 3 cards. Discard your hand. Gain 1 Poised. |
 | Steel Monsoon | 1 | skill | rare | Discard your hand. Add Daggers to your hand equal to the cards discarded this way. |
 | Marked for Death | 1 | attack | rare | Deal 10 damage. If this is fatal: Gain an extra card reward after this fight. Consume. |
 | Final Bow | 0 | attack | rare | Only playable while your draw pile is empty. Deal 60 damage to ALL enemies. |

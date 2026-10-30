@@ -204,7 +204,7 @@ describe('Premeditate (was Sly, DECISIONS #433) and discarding', () => {
     const mana = t.sides.a.mana;
     t = play(t, 'cartwheel-cut');
     expect(t.sides.a.mana).toBe(mana);
-    expect(foeHp(t, 0)).toBe(193);
+    expect(foeHp(t, 0)).toBe(195);
     const played = t.sides.a.discard.find((c) => c.card === 'cartwheel-cut');
     expect(played?.premeditated).toBeUndefined();
     expect(costOf(db, t.sides.a, played!)).toBe(db.cards['cartwheel-cut']!.cost);
@@ -214,29 +214,21 @@ describe('Premeditate (was Sly, DECISIONS #433) and discarding', () => {
     expect(foe(s2).hp).toBe(200);
   });
 
-  it('Palm Switch (Hand Trick) gives a Skill in hand Sly for the turn; Grand Scheme (Master Planner) for good', () => {
-    let s = play(fight(['palm-switch', 'turn-aside', 'strike']), 'palm-switch');
-    expect(s.sides.a.hand.find((c) => c.card === 'turn-aside')?.sly).toBe('turn');
-    s = endTurn(s);
-    expect(s.sides.a.discard.find((c) => c.card === 'turn-aside')?.sly).toBeUndefined();
+  it('Palm Switch (Hand Trick) defers a card (see defer.test.ts); Grand Scheme (Master Planner) gives Skills Premeditate for good', () => {
     let p = play(fight(['grand-scheme', 'turn-aside']), 'grand-scheme');
     p = play(p, 'turn-aside');
     expect(p.sides.a.discard.find((c) => c.card === 'turn-aside')?.sly).toBe('fight');
   });
 
-  it('a Skill Palm Switch gave Premeditate comes back next turn at 0 when a card discards it', () => {
-    let s = play(fight(['palm-switch', 'duck-and-weave', 'turn-aside']), 'palm-switch');
-    s = play(s, 'duck-and-weave');
-    // (not played now: only Palm Switch's 7 and Duck and Weave's Barrier)
-    expect(hero(s).barrier).toBe(7 + 8);
-    expect(s.sides.a.premeditating?.map((c) => c.card)).toEqual(['turn-aside']);
+  it('a Premeditate Skill that a card discards comes back next turn at 0 (Slip the Blow)', () => {
+    let s = play(fight(['duck-and-weave', 'slip-the-blow']), 'duck-and-weave');
+    // (Slip the Blow was discarded by Duck and Weave: not played now, and it is not in the discard pile)
+    expect(s.sides.a.premeditating?.map((c) => c.card)).toEqual(['slip-the-blow']);
     s = endTurn(s);
-    const back = s.sides.a.hand.find((c) => c.card === 'turn-aside');
+    const back = s.sides.a.hand.find((c) => c.card === 'slip-the-blow');
     expect(back?.premeditated).toBe(true);
-    // (its Premeditate was for that turn only: it does not come back again)
-    expect(back?.sly).toBeUndefined();
+    expect(costOf(db, s.sides.a, back!)).toBe(0);
   });
-
   it('All or Nothing (Calculated Gamble) discards the hand and draws as many', () => {
     const s = play(fight(['all-or-nothing', 'strike', 'strike', 'strike']), 'all-or-nothing');
     expect(s.sides.a.hand.map((c) => c.card)).toEqual(['defend', 'defend', 'defend']);

@@ -2411,6 +2411,35 @@ function execOp(r: Run, a: Act, op: Op): void {
       r.ev.push({ type: 'pending', side: side.id, kind: 'copy' });
       return;
     }
+    case 'defer': {
+      // (assassin) Defer: a card of your hand waits a turn and comes back cheaper. A card that costs 0 and an X card gain nothing
+      // from it, so they are not offered (and a Defer with nothing to take does nothing).
+      const eligible = side.hand.filter((c) => deferrable(r.db, side, c));
+      const n = Math.min(op.count, eligible.length);
+      if (n <= 0) return;
+      if (!a.pick || (!op.upTo && n >= eligible.length)) {
+        // (no choice to make, or no one to ask: the dearest cards)
+        const dear = [...eligible].sort((x, y) => costOf(r.db, side, y) - costOf(r.db, side, x)).slice(0, n);
+        for (const c of dear) {
+          side.hand = side.hand.filter((x) => x.id !== c.id);
+          deferCard(r, side, c);
+        }
+        return;
+      }
+      r.s.pending = {
+        kind: 'defer',
+        pool: eligible.map((c) => c.id),
+        min: op.upTo ? 0 : n,
+        max: n,
+        rest: [],
+        actor: a.actor.id,
+        target: a.target?.id ?? null,
+        finish: null,
+        x: a.x,
+      };
+      r.ev.push({ type: 'pending', side: side.id, kind: 'defer' });
+      return;
+    }
     case 'revive': {
       const def = (side.fallen ??= []).pop();
       if (!def) return;
@@ -2983,6 +3012,8 @@ function transformCard(r: Run, sd: SideState, c: CardInst, into: CardId): void {
     'replay',
     'costUp',
     'costDown',
+    'deferred',
+    'premeditated',
   ] as const)
     delete c[k];
   r.ev.push({ type: 'transform', side: sd.id, card: c.id, def: c.card });
@@ -3095,6 +3126,20 @@ function moveFromHand(
     }
     fireTriggers(r, sd, 'discard');
   } else exhaustCard(r, sd, c);
+}
+
+/** (assassin) Defer can take this card: it costs 1 or more right now and is not an X card (nothing to take off) or unplayable */
+function deferrable(db: CombatDb, sd: SideState, c: CardInst): boolean {
+  const cd = cardDef(db, c.card);
+  return !cd.x && !cd.unplayable && costOf(db, sd, c) >= 1;
+}
+
+/** (assassin) Defer: the card (already out of the hand) waits and comes back at the start of the next turn. It is set aside, not
+ * discarded: nothing that answers a discard hears of it. It shows in the discard pile until it returns, as a Premeditate card does. */
+function deferCard(r: Run, sd: SideState, c: CardInst): void {
+  clearTurnFlags(c);
+  (sd.deferring ??= []).push(c);
+  r.ev.push({ type: 'discard', side: sd.id, card: c.id, def: c.card });
 }
 
 /** (assassin) what a copy had only for this turn (free, Held, Sly) ends when it leaves the hand */
@@ -3779,6 +3824,15 @@ function beginHeroTurn(r: Run, side: Side): void {
       r.ev.push({ type: 'addCard', side: sd.id, card: c.id, def: c.card, to: 'hand' });
     } else sd.discard.push(c);
   }
+  // (Defer) what was set aside last turn arrives costing 1 less until it is played. A full hand never discards it: it goes on top of
+  // the draw pile instead, still cheaper, and comes with the next draw (Robert, 2026-10-30)
+  for (const c of (sd.deferring ?? []).splice(0)) {
+    c.deferred = true;
+    if (sd.hand.length < MAX_HAND) {
+      sd.hand.push(c);
+      r.ev.push({ type: 'addCard', side: sd.id, card: c.id, def: c.card, to: 'hand' });
+    } else putOnTop(r, sd, c);
+  }
   for (const nc of (sd.nextCopies ?? []).splice(0))
     for (let i = 0; i < nc.times; i++) addCardTo(r, sd, nc.card, 'hand');
   const guard = stacks(hero, 'guarded');
@@ -4218,6 +4272,7 @@ export function costOf(
       (c.costUp ?? 0) +
       (sd.costTax ?? 0) -
       (c.costDown ?? 0) -
+      (c.deferred ? 1 : 0) -
       (cd.cheaperPerAttack ?? 0) * (sd.attacksPlayed ?? 0) -
       (cd.cheaperPerSkill ?? 0) * (sd.skillsPlayed ?? 0) -
       (cd.cheaperPer ? Math.floor(cd.cheaperPer.mult * sideCount(sd, cd.cheaperPer.by)) : 0) -
@@ -4413,6 +4468,8 @@ function finishCard(
   else sd.discard.push(inst);
   // (DECISIONS #433) a card back through Premeditate is played: its 0 is used up
   delete inst.premeditated;
+  // (Defer) its 1 off is used up
+  delete inst.deferred;
   // (assassin) Master Planner: a Skill you play keeps Premeditate for the rest of the fight
   const lead = heroOf(sd);
   if (cd.kind === 'skill' && lead && stacks(lead, 'planner') > 0) inst.sly = 'fight';
@@ -4694,6 +4751,7 @@ function pickCards(r: Run, action: Extract<Action, { type: 'pick' }>): void {
     }
   else if (p.kind === 'discard' || p.kind === 'exhaust')
     for (const c of picked) moveFromHand(r, sd, c, p.kind);
+  else if (p.kind === 'defer') for (const c of picked) deferCard(r, sd, c);
   const hero = findUnit(r.s, p.actor);
   const fin = p.finish;
   const cd = fin ? cardDef(r.db, fin.card) : null;

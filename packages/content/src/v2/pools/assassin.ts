@@ -21,10 +21,9 @@ import {
   dmg,
   draw,
   drawLock,
-  drawNext,
+  defer,
   extraReward,
   mana,
-  manaNext,
   on,
   onKill,
   per,
@@ -130,18 +129,18 @@ export const ASSASSIN: CardDef[] = [
     },
   ),
   // (Predator)
-  q('common', 'stalkers-lunge', "Stalker's Lunge", 'attack', 2, 'foe', [dmg(15), drawNext(2)], {
-    up: { effects: [dmg(20), drawNext(2)] },
+  q('common', 'stalkers-lunge', "Stalker's Lunge", 'attack', 2, 'foe', [dmg(15), defer()], {
+    up: { effects: [dmg(20), defer()] },
   }),
   // (Ricochet: Sly)
-  q('common', 'glancing-knives', 'Glancing Knives', 'attack', 2, 'none', [dmg(3, 'randomFoe', 4)], {
+  q('common', 'glancing-knives', 'Glancing Knives', 'attack', 2, 'none', [dmg(3, 'randomFoe', 4), defer()], {
     sly: true,
-    up: { effects: [dmg(3, 'randomFoe', 5)] },
+    up: { effects: [dmg(3, 'randomFoe', 5), defer()] },
   }),
   // (Flick-Flack: Sly)
-  q('common', 'cartwheel-cut', 'Cartwheel Cut', 'attack', 1, 'none', [dmg(7, 'allFoes')], {
+  q('common', 'cartwheel-cut', 'Cartwheel Cut', 'attack', 1, 'none', [dmg(5, 'allFoes'), defer()], {
     sly: true,
-    up: { effects: [dmg(9, 'allFoes')] },
+    up: { effects: [dmg(7, 'allFoes'), defer()] },
   }),
   // (Accuracy: Edge is the knives' extra damage)
   q('uncommon', 'whetted-edge', 'Whetted Edge', 'power', 1, 'none', [status('edge', 4)], {
@@ -268,11 +267,11 @@ export const ASSASSIN: CardDef[] = [
     'into-the-shadows',
     'Into the Shadows',
     'skill',
-    1,
+    2,
     'none',
-    [discard(99), status('poised', 1)],
+    [defer(3, true), discard(99), status('poised', 1)],
     {
-      up: { cost: 0 },
+      up: { effects: [defer(4, true), discard(99), status('poised', 1)] },
     },
   ),
   // (Storm of Steel: a knife for every card discarded; upgraded knives when upgraded)
@@ -510,7 +509,7 @@ export const ASSASSIN: CardDef[] = [
     up: { effects: [draw(2), discard(2)] },
   }),
   // (Untouchable: Sly)
-  q('common', 'slip-the-blow', 'Slip the Blow', 'skill', 2, 'none', [barrier(6)], { sly: true }),
+  q('common', 'slip-the-blow', 'Slip the Blow', 'skill', 2, 'none', [barrier(6), defer()], { sly: true }),
   // (Acrobatics)
   q('uncommon', 'nimble-deal', 'Nimble Deal', 'skill', 1, 'none', [draw(3), discard(1)], {
     up: { effects: [draw(4), discard(1)] },
@@ -565,8 +564,8 @@ export const ASSASSIN: CardDef[] = [
   }),
   // (Footwork)
   q('uncommon', 'fleet-step', 'Fleet Step', 'power', 1, 'none', [status('bracing', 2)]),
-  // (Hand Trick: a random Skill, not a chosen one)
-  q('uncommon', 'palm-switch', 'Palm Switch', 'skill', 1, 'none', [barrier(7), { op: 'giveSly' }]),
+  // (Hand Trick: you choose the card, and it comes back cheaper next turn)
+  q('uncommon', 'palm-switch', 'Palm Switch', 'skill', 1, 'none', [barrier(7), defer()]),
   // (Leg Sweep)
   q('uncommon', 'sweep-the-leg', 'Sweep the Leg', 'skill', 2, 'foe', [
     status('faltering', 2, 'target'),
@@ -584,9 +583,9 @@ export const ASSASSIN: CardDef[] = [
     { up: { effects: [scaled(dmg(11), per('discarded', 5))] } },
   ),
   // (Reflex: Sly)
-  q('uncommon', 'quick-reflexes', 'Quick Reflexes', 'skill', 3, 'none', [draw(2)], { sly: true }),
-  // (Sidestep)
-  q('uncommon', 'side-slip', 'Side Slip', 'skill', 0, 'none', [manaNext(1)]),
+  q('uncommon', 'quick-reflexes', 'Quick Reflexes', 'skill', 3, 'none', [draw(1), defer()], { sly: true }),
+  // (Sidestep: a card of your hand waits a turn and comes back cheaper)
+  q('uncommon', 'side-slip', 'Side Slip', 'skill', 0, 'none', [defer()]),
   // (Speedster: the draw that starts your turn does not count; the upgrade is in your opening hand)
   q(
     'uncommon',

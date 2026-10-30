@@ -704,6 +704,8 @@ export type Op =
   | { op: 'freeHand' }
   /** a random Skill in your hand gains Sly this turn */
   | { op: 'giveSly' }
+  /** (assassin) Defer: choose `count` cards in your hand (`upTo`: any number up to it) that cost 1 or more and are not X cards: they leave now and come back at the start of your next turn costing 1 less until played */
+  | { op: 'defer'; count: number; upTo?: boolean }
   /** choose a card in your hand: at the start of your next turn, add this many copies of it to your hand */
   | { op: 'copyNext'; times: number }
   // --- the Regent's pieces (Obsidia, the spellblade)
@@ -1161,6 +1163,8 @@ export interface CardInst {
   sly?: 'turn' | 'fight';
   /** (DECISIONS #433) it came back through Premeditate: it costs 0 until it is played */
   premeditated?: boolean;
+  /** it came back through Defer: it costs 1 less until it is played */
+  deferred?: boolean;
   /** keywords a card gave this copy (Sculpting Strike, Snap, Transfigure): Fleeting, Hold, played this many more times */
   ethereal?: boolean;
   retain?: boolean;
@@ -1221,7 +1225,8 @@ export interface Pending {
     | 'plantKind'
     | 'plantAt'
     | 'form'
-    | 'commandPick';
+    | 'commandPick'
+    | 'defer';
   /** (the Shaman's: 'plantKind' which spirit to plant, pool the totem ids; 'plantAt' which position, pool 't0'-'t4', none = keep) */
   spirit?: string;
   /** (the Shaman) the totem boost the card's first play got, carried over the choice */
@@ -1320,6 +1325,8 @@ export interface SideState {
   nextCopies?: { card: CardId; times: number }[];
   /** (DECISIONS #433) Premeditate: cards an effect discarded this turn, coming back to the hand next turn at 0 */
   premeditating?: CardInst[];
+  /** Defer: cards set aside this turn, coming back to the hand next turn costing 1 less */
+  deferring?: CardInst[];
   honedUsed?: boolean;
   /** Mana spent on cards this turn; totems planted this fight, by kind */
   spentTurn?: number;

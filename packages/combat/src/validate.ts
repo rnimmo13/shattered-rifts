@@ -60,6 +60,7 @@ export function validateDb(db: CombatDb): string[] {
           (o.op === 'exhaustCards' && !o.random) ||
           o.op === 'scry' ||
           o.op === 'topdeck' ||
+          o.op === 'defer' ||
           (o.op === 'transform' && o.choose)) &&
         !opts.pick
       )

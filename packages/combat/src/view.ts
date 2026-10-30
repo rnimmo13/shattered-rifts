@@ -1274,6 +1274,12 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
         : o.any
           ? 'Discard any number of cards.'
           : `Discard ${o.amount} card${o.amount === 1 ? '' : 's'}.`;
+    case 'defer':
+      return o.upTo
+        ? `Defer up to ${o.count} card${o.count === 1 ? '' : 's'}.`
+        : o.count === 1
+          ? 'Defer a card.'
+          : `Defer ${o.count} cards.`;
     case 'exhaustCards':
       if (o.everywhere && o.tag)
         return `Consume every ${TAG_NAMES[o.tag] ?? o.tag} in your hand, draw pile and discard pile.`;

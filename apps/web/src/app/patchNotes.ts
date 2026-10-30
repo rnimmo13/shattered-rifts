@@ -29,6 +29,23 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.135.0',
+    date: '2026-10-30',
+    title: 'The Assassin defers',
+    summary: 'A new Assassin keyword, Defer: set a card aside and it comes back next turn costing 1 less.',
+    notes: [
+      {
+        kind: 'new',
+        text: 'Defer: choose a card in your hand that costs 1 or more (not a 0-cost or X card). It leaves now and comes back at the start of your next turn, on top of your draw, costing 1 less until you play it. It is not discarded, so discard payoffs do not trigger. With a full hand it waits on top of your draw pile.',
+      },
+      {
+        kind: 'changed',
+        text: 'Stalker’s Lunge, Side Slip and Palm Switch now Defer a card (Stalker’s Lunge: 15 damage, 20 upgraded). Quick Reflexes draws 1 and Defers 1. Cartwheel Cut deals 5 to all (7 upgraded) and Defers a card. Slip the Blow and Glancing Knives also Defer a card. Into the Shadows Defers up to 3 cards, discards the rest of your hand, gives Poised, and costs 2 (it defers up to 4 upgraded).',
+      },
+    ],
+    heads: 'The rules changed: reload to play the new cards, and old Arena games and replays no longer play.',
+  },
+  {
     version: '0.134.0',
     date: '2026-10-30',
     title: 'Shaman pool trimmed again',

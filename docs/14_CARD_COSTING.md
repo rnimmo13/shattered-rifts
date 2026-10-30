@@ -23,7 +23,7 @@ Every effect converts into points. A card's points, added up, should land on its
 |---|---|---|
 | 0 | **6** | Quick Slash (6), Arc Flash (3 + 1 Exposed), Turn Aside (4 Barrier) |
 | 1 | **10** | Hilt Strike (9 + draw 1), Twin Cut (5 x2), Dirty Hit (8 + 1 Faltering), Stone Skin (9 Barrier), Emberstrike (9 + 1 Arcana) |
-| 2 | **19** | Obsidian Flurry (6 x3), Glass Veil (11 + 5 next turn), Stalker's Lunge (15 + 2 cards next turn) |
+| 2 | **19** | Obsidian Flurry (6 x3), Glass Veil (11 + 5 next turn), Stalker's Lunge (15 + Defer a card) |
 | 3 | **28** | Harvest (27, Hold), Skybreaker (26, +1 Mana on a kill), Hammer Fall (32, uncommon) |
 | 4 | **37** | |
 
@@ -125,7 +125,8 @@ Percentage debuffs (Exposed, Faltering, Debilitated) are worth more as numbers g
 | "Costs N less for each X this turn" | price at the cost you will usually pay | Trampling Charge, Nerve Strike. |
 | **Draw 1** as an extra (the card replaces itself) | **3** | Hilt Strike 9 + draw = 12; Oath of Iron 8 Barrier + draw. |
 | Each further card drawn | **4** (halve past the 3rd extra card in a turn: no Mana left to play them) | Catch Breath (draw 2) = 7, Clear Spring (draw 3) = 11, Read the Embers (draw 6, 2 cost) ≈ 17. |
-| Extra draw next turn | **3.5** each | Scheme, Stalker's Lunge. |
+| Extra draw next turn | **3.5** each | Scheme. |
+| **Defer a card** (Assassin, 2026-10-30) | **3.5** each | A card of your hand that costs 1+ (never a 0-cost or X card) waits a turn and comes back costing 1 less until it is played: about +1 Mana next turn (4) less ~12% for the wait, and it needs a card to take. It is set aside, not discarded, so discard payoffs do not hear of it. Stalker's Lunge 15 + Defer = 18.5, Palm Switch 7 Barrier + Defer = 11.9, Side Slip = 3.5. *Up to N* (Into the Shadows) is priced at 3.5 x the cards you will usually have to give (~3 of 3), a little less. |
 | Discard 1 (yours, as a cost) | **-2**, or **+2** with Premeditate / discard payoffs in the deck | Duck and Weave, Flick Knife. *(legacy: "in the Assassin's pool call it 0" held for his Sly engine, gone since #416; it is -2 for him now)* |
 | Put a card on top of your draw pile | **+1.5** | Ram Home, Glint. |
 | Foresee N (look at the top N, draw the one you choose, discard the rest) | a draw (**3** as an extra, **4** on its own) **+0.5 per card past the first** (at most +2) | Cold Read (0: Foresee 4) ≈ 5.5. |

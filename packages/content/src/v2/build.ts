@@ -137,6 +137,8 @@ export const revive: Op = { op: 'revive' };
 export const manaNext = (amount: number): Op => ({ op: 'manaNext', amount });
 export const maxMana = (amount: number): Op => ({ op: 'maxMana', amount });
 export const drawNext = (amount: number): Op => ({ op: 'drawNext', amount });
+/** Defer a card (or `count`, or up to `count`): it comes back next turn costing 1 less */
+export const defer = (count = 1, upTo = false): Op => ({ op: 'defer', count, ...(upTo ? { upTo: true } : {}) });
 export const discoverOp = (kind?: CardKind, count = 1, free = false, scale?: Scale): Op => ({
   op: 'discover',
   ...(kind ? { kind } : {}),

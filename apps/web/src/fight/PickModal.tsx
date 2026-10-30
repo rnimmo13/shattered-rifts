@@ -25,6 +25,7 @@ const TITLE: Record<PendingView['kind'], string> = {
   // (the Monk's, DECISIONS #419)
   form: 'Change form',
   commandPick: 'Command',
+  defer: 'Defer',
 };
 
 function prompt(p: PendingView): string {
@@ -45,6 +46,10 @@ function prompt(p: PendingView): string {
   const many = p.max > 1 ? `${p.max} cards` : 'a card';
   if (p.kind === 'scry') return 'Choose a card to draw. The rest are discarded.';
   if (p.kind === 'copy') return 'Choose a card: copies of it come to your hand next turn.';
+  if (p.kind === 'defer')
+    return p.min === 0
+      ? `Defer up to ${p.max} cards: they come back next turn costing 1 less.`
+      : `Choose ${many} to defer: ${p.max > 1 ? 'they come' : 'it comes'} back next turn costing 1 less.`;
   if (p.kind === 'topdeck' && p.from === 'draw')
     return `Choose ${many} from your draw pile to put on top of it.`;
   if (p.kind === 'topdeck') return `Put ${many} on top of your draw pile.`;

@@ -550,6 +550,10 @@ export const KEYWORD_INFO: Record<string, { name: string; text: string }> = {
     text: 'After you play it, it is removed from the rest of this fight.',
   },
   retain: { name: 'Hold', text: 'It stays in your hand when you end your turn.' },
+  defer: {
+    name: 'Defer',
+    text: 'Choose a card in your hand that costs 1 or more (not an X card). It leaves now and comes back at the start of your next turn, on top of the cards you draw, costing 1 less until you play it, even if that takes a few turns. It is set aside, not discarded; with a full hand it waits on top of your draw pile instead.',
+  },
   // (the Knight's Guard, DECISIONS #415)
   riposte: {
     name: 'Riposte',
