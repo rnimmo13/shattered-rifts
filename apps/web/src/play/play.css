@@ -26,6 +26,13 @@
 .setup__back {
   justify-self: start;
 }
+/* a phone held upright: the page keeps its width for what is on it (DECISIONS #443) */
+@media (max-width: 32rem) {
+  .setup {
+    padding-inline: 0.6rem;
+    gap: 1.1rem;
+  }
+}
 
 /* setup / sanctum (and every screen laid out like it): centred, with room for the character details. These live here, with .setup,
    because every such screen loads this file; they were in run.css, which only loads once a run is opened, so before that a screen
@@ -1878,6 +1885,21 @@
 .grim--view .grim__cards {
   gap: 12px 14px;
   align-content: start;
+}
+/* a phone (DECISIONS #443): slimmer edges and page-turn buttons (NARROW_BOOK_SIDES, NARROW_PAGE_SIDES in grimoireData.ts) */
+.grim--view.grim--narrow .grim__book {
+  grid-template-columns: 26px minmax(0, 1fr) 26px;
+  padding: 12px 4px;
+}
+.grim--view.grim--narrow .grim__flip {
+  width: 24px;
+  font-size: 1.3rem;
+}
+.grim--view.grim--narrow .grim__page {
+  padding: 10px 8px 24px;
+}
+.grim--view.grim--narrow .grim__cards {
+  padding: 0;
 }
 /* fill: the book takes all the height of the box it sits in, and the cards are fitted to it */
 .grim--fill {

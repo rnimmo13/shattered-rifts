@@ -10,7 +10,7 @@ import { COMBAT_DB } from '@sr/content/v2';
 import { HeroIcon } from '../ui/HeroIcon';
 import { CardHover, type Anchor } from './CardHover';
 import { FightCard } from './FightCard';
-import { fitBook, useSize, type CardSize, type GrimoireCard } from './grimoireData';
+import { NARROW_BELOW, fitBook, useSize, type CardSize, type GrimoireCard } from './grimoireData';
 import { TABS, paginate, poolOf, sortCards, tabOf, type CatalogCard } from './deckCatalog';
 
 export interface GrimoireProps {
@@ -52,6 +52,8 @@ export function Grimoire(props: GrimoireProps) {
     [props.cards],
   );
   // sized for every card in the book (not just the open ribbon's), so turning to another realm never resizes the cards
+  // (a phone: the book's edges are slimmer, so two cards fit across a page, DECISIONS #443)
+  const narrow = window.innerWidth < NARROW_BELOW;
   const { spread, cols, rows, cardWidth } = fitBook(
     box.w,
     grow ? Infinity : box.h,
@@ -61,6 +63,7 @@ export function Grimoire(props: GrimoireProps) {
       ...(props.spread ? { spread: props.spread } : {}),
       ...(props.cols ? { cols: props.cols } : {}),
       ...(props.rows ? { rows: props.rows } : {}),
+      ...(narrow ? { narrow } : {}),
     },
   );
   const tabs = useMemo(() => {
@@ -95,7 +98,9 @@ export function Grimoire(props: GrimoireProps) {
   const total = entries.length;
   const tabCount = (id: string): number => entries.filter((e) => tabOf(e.def) === id).length;
   return (
-    <div className={`grim grim--view grim--${grow ? 'grow' : 'fill'}`}>
+    <div
+      className={`grim grim--view grim--${grow ? 'grow' : 'fill'}${narrow ? ' grim--narrow' : ''}`}
+    >
       <div className="grim__main">
         {tabs.length > 1 && (
           <div className="grim__tabs" role="tablist" aria-label="Realms">

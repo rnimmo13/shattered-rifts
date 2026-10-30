@@ -5,6 +5,7 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **Fight with your phone upright:** enemies stand on a row behind you, your Boons and Auras open from a button, the top bar's buttons sit in a Menu, and a tap on a card shows it big (tap again to play it, then tap a target). On a phone on its side or a tablet, figures, plates and cards are smaller and the board sits higher. The run map runs top to bottom on an upright screen, and reward cards and the card book fit two across on a phone.
 - The map's Arena button turns red when your deck as it stands could not be brought to the Arena (too big, too small, over a card limit), and its tip says why.
 - Enemies stand back toward their edge of the battlefield. Damage numbers are bigger, in the card font, with a black outline. A new Old Twelve Gauge or Obsidian Blade made mid-fight starts unsharpened: Sharpen only goes on the copies you already have.
 - **The Shaman's totems stand in an arc beside him**, numbered in order with the next one lit, each showing exactly what it does every turn and when it acts (with your Spirit counted).

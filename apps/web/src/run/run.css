@@ -236,6 +236,12 @@
   justify-content: center;
   gap: 1.4rem;
 }
+/* a phone: two cards a row (Pickers.tsx fitWidth) */
+@media (max-width: 600px) {
+  .offers {
+    gap: 0.9rem 0.6rem;
+  }
+}
 .pick {
   display: grid;
   justify-items: center;
@@ -648,6 +654,11 @@
   background: rgb(8 10 20 / 0.55);
   border: 1px solid rgb(212 168 75 / 0.25);
   text-align: left;
+}
+@media (max-width: 32rem) {
+  .picker__detail {
+    padding: 0.8rem 0.5rem;
+  }
 }
 .picker__title {
   margin: 0;
@@ -1781,4 +1792,22 @@
   gap: 0.5rem;
   align-items: center;
   font-size: 0.92rem;
+}
+
+/* the map held upright (DECISIONS #443): smaller stops, top to bottom */
+.map--tall .mapnode {
+  width: 3.6rem;
+  height: 3.6rem;
+}
+.map--tall .mapnode svg {
+  width: 1.9rem;
+  height: 1.9rem;
+}
+.map--tall .mapnode--warden {
+  width: 4.6rem;
+  height: 4.6rem;
+}
+.mapwrap:has(.map--tall) {
+  min-height: 0;
+  padding: 0.5rem 0 1.5rem;
 }

@@ -64,6 +64,10 @@ function CrossTag(props: { def: CardDef; own?: string | undefined }) {
   );
 }
 
+/** On a phone, two cards side by side: a card is never wider than half the screen (DECISIONS #443). */
+const fitWidth = (w: number): number =>
+  window.innerWidth < 600 ? Math.min(w, Math.floor((window.innerWidth - 56) / 2)) : w;
+
 /** A card you can hover to read at full size. */
 function Pickable(props: {
   id: string;
@@ -82,6 +86,7 @@ function Pickable(props: {
 }) {
   const def = defOf(props.id);
   if (!def) return null;
+  const width = fitWidth(props.width);
   if (props.preview)
     return (
       <div className="pick">
@@ -94,7 +99,7 @@ function Pickable(props: {
           onBlur={() => props.onHover(null)}
           aria-label={`${def.name}, cost ${def.cost}`}
         >
-          <FightCard db={COMBAT_DB} def={def} width={props.width} />
+          <FightCard db={COMBAT_DB} def={def} width={width} />
           {props.badge && <span className="pick__badge">{props.badge}</span>}
         </div>
         <CrossTag def={def} own={props.own} />
@@ -117,7 +122,7 @@ function Pickable(props: {
         <FightCard
           db={COMBAT_DB}
           def={def}
-          width={props.width}
+          width={width}
           playable={!!props.onClick && !props.disabled}
         />
         {props.badge && <span className="pick__badge">{props.badge}</span>}

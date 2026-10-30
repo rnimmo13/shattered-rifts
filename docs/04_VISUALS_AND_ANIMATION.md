@@ -163,6 +163,11 @@ On the board, units are **tokens**, not full cards: readable at a glance, with f
 - **Chain panel** (right, slides in when a chain exists, 260 px wide): links stacked bottom-up and numbered.
 - **Log** (left, collapsed by default): a text log of every event, hoverable to highlight the cards involved.
 - **Hand fan:** arc radius 1400 px, max spread 60°, card overlap adaptive (1–9 cards).
+- **Small screens (DECISIONS #443, `fight/stageLayout.ts`):** the layout is chosen from the window's size. *Compact* (a phone on its
+  side, a tablet held sideways): figures ~80%, plates 80%, sky cropped (frame y 300-960), smaller hand. *Portrait* (taller than wide):
+  enemies on a row behind (stage y 580), your side in front (y 1040), the camera frames x 550-1370 / y 130-1120 under a 46 px top bar;
+  below the board a strip (potions, the Boons and Auras drawer button) and a controls row (Mana, piles, End turn) on the hand; tap a card
+  to see it big, tap again to play.
 - The **Arena background** (boss/realm specific) sits behind the board at 40% brightness with slow ambient
   motion (motes, steam, spores). It must never compete with the board: keep it low contrast, with a 12 px blur at the edges.
 

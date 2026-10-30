@@ -46,4 +46,11 @@ describe('fitBook', () => {
     expect(f.rows).toBe(2);
     expect(f.cardWidth).toBeGreaterThanOrEqual(CARD_SIZES.small.min);
   });
+
+  it('on a phone the slimmer book fits two cards across a page (DECISIONS #443)', () => {
+    expect(fitBook(330, Infinity, 10, 'small', { spread: 1 }).cols).toBe(1);
+    const f = fitBook(330, Infinity, 10, 'small', { spread: 1, narrow: true });
+    expect(f.cols).toBe(2);
+    expect(f.cardWidth).toBeGreaterThanOrEqual(CARD_SIZES.small.min);
+  });
 });

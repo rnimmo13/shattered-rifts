@@ -167,6 +167,11 @@ export const BOOK_ENDS = 40;
 export const PAGE_SIDES = 36;
 /** a page's head, top padding and folio, px */
 export const PAGE_ENDS = 92;
+/** (DECISIONS #443) on a phone the book's chrome is slimmer (play.css, .grim--narrow), so two cards fit across a page */
+export const NARROW_BOOK_SIDES = 68;
+export const NARROW_PAGE_SIDES = 20;
+/** below this window width the book is narrow */
+export const NARROW_BELOW = 520;
 export const COL_GAP = 14;
 export const ROW_GAP = 12;
 const ASPECT = 1.4;
@@ -189,14 +194,18 @@ export function fitBook(
   h: number,
   n: number,
   size: CardSize,
-  fixed: { spread?: 1 | 2; cols?: number; rows?: number } = {},
+  fixed: { spread?: 1 | 2; cols?: number; rows?: number; narrow?: boolean } = {},
 ): BookFit {
-  const { min, max } = CARD_SIZES[size];
+  const bookSides = fixed.narrow ? NARROW_BOOK_SIDES : BOOK_SIDES;
+  const pageSides = fixed.narrow ? NARROW_PAGE_SIDES : PAGE_SIDES;
+  // (a phone: cards may be smaller, so two fit across a page; a tap shows one big)
+  const min = fixed.narrow ? Math.min(CARD_SIZES[size].min, 110) : CARD_SIZES[size].min;
+  const { max } = CARD_SIZES[size];
   if (w <= 0) return { spread: 1, cols: fixed.cols ?? 3, rows: fixed.rows ?? 2, cardWidth: min };
   const cards = Math.max(1, n);
   let best: (BookFit & { spreads: number; spare: number }) | null = null;
   for (const spread of fixed.spread ? [fixed.spread] : ([1, 2] as const)) {
-    const pageW = (w - BOOK_SIDES) / spread - PAGE_SIDES;
+    const pageW = (w - bookSides) / spread - pageSides;
     const pageH = h - BOOK_ENDS - PAGE_ENDS;
     for (let cols = fixed.cols ?? 1; cols <= (fixed.cols ?? 8); cols++) {
       const byW = Math.floor((pageW - (cols - 1) * COL_GAP) / cols);

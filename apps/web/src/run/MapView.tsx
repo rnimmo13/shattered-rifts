@@ -1,4 +1,5 @@
-// The stage map: floors run left to right, the Warden at the end. Click a glowing node to go there.
+// The stage map: floors run left to right, the Warden at the end. Click a glowing node to go there. On a screen taller than it is wide
+// (a phone held upright) the floors run top to bottom instead (DECISIONS #443).
 
 import type { MapNode, NodeKind, StageMap } from '@sr/campaign';
 import { RIFTWALKERS, encounter } from '@sr/content/v2';
@@ -109,6 +110,9 @@ function labelOf(n: MapNode): string {
   return KIND_LABEL[n.kind];
 }
 
+/** Whether the map runs top to bottom: a screen taller than it is wide. */
+export const mapIsTall = (): boolean => window.innerHeight > window.innerWidth;
+
 export function MapView(props: {
   map: StageMap;
   at: string | null;
@@ -117,6 +121,7 @@ export function MapView(props: {
   onEnter: (id: string) => void;
 }) {
   const { map } = props;
+  if (mapIsTall()) return <TallMap {...props} />;
   // fill the screen: the spacing grows with the window. PAD is the room left and right of the first and last floor, so the
   // map sits dead centre and a hovered node's glow is never cut off.
   const PAD = 90;
@@ -161,38 +166,7 @@ export function MapView(props: {
       {map.nodes.map((n) => {
         const p = pos.get(n.id);
         if (!p) return null;
-        const open = props.available.has(n.id);
-        const done = props.cleared.includes(n.id);
-        const here = props.at === n.id;
-        return (
-          <button
-            key={n.id}
-            className={`mapnode mapnode--${n.kind}${open ? ' is-open' : ''}${done ? ' is-done' : ''}${here ? ' is-here' : ''}`}
-            style={{ left: p.x, top: p.y }}
-            disabled={!open}
-            onClick={() => props.onEnter(n.id)}
-            aria-label={`${KIND_LABEL[n.kind]}: ${labelOf(n)}${n.crossed ? ` (Rift-crossed: sells ${RIFTWALKERS[n.crossed as keyof typeof RIFTWALKERS] ? `the ${RIFTWALKERS[n.crossed as keyof typeof RIFTWALKERS].hero.name}` : 'another Riftwalker'}'s cards)` : ''}${n.ghost && n.ghostDeck ? " (a ghost: another player's deck from the Arena, played by the computer)" : ''}${done ? ' (cleared)' : ''}`}
-          >
-            <NodeIcon kind={n.kind} />
-            {n.crossed && (
-              <span
-                className="mapnode__crossed"
-                title="Rift-crossed merchant: sells another Riftwalker's cards"
-              >
-                <HeroIcon hero={n.crossed} size={26} />
-              </span>
-            )}
-            {n.kind === 'warden' && n.ghost && n.ghostDeck && (
-              <span
-                className="mapnode__ghost"
-                title="Ghost Warden: another player's deck from the Arena, played by the computer (if none can be found, the usual Warden stands here)"
-              >
-                <GhostGlyph />
-              </span>
-            )}
-            <span className="mapnode__label">{labelOf(n)}</span>
-          </button>
-        );
+        return <MapButton key={n.id} n={n} p={p} {...props} />;
       })}
     </div>
   );
@@ -219,5 +193,85 @@ export function MapLegend() {
         </li>
       ))}
     </ul>
+  );
+}
+
+type MapProps = Parameters<typeof MapView>[0];
+
+/** One stop on the map, wherever the layout puts it. */
+function MapButton(props: MapProps & { n: MapNode; p: { x: number; y: number } }) {
+  const { n, p } = props;
+  const open = props.available.has(n.id);
+  const done = props.cleared.includes(n.id);
+  const here = props.at === n.id;
+  return (
+    <button
+      className={`mapnode mapnode--${n.kind}${open ? ' is-open' : ''}${done ? ' is-done' : ''}${here ? ' is-here' : ''}`}
+      style={{ left: p.x, top: p.y }}
+      disabled={!open}
+      onClick={() => props.onEnter(n.id)}
+      aria-label={`${KIND_LABEL[n.kind]}: ${labelOf(n)}${n.crossed ? ` (Rift-crossed: sells ${RIFTWALKERS[n.crossed as keyof typeof RIFTWALKERS] ? `the ${RIFTWALKERS[n.crossed as keyof typeof RIFTWALKERS].hero.name}` : 'another Riftwalker'}'s cards)` : ''}${n.ghost && n.ghostDeck ? " (a ghost: another player's deck from the Arena, played by the computer)" : ''}${done ? ' (cleared)' : ''}`}
+    >
+      <NodeIcon kind={n.kind} />
+      {n.crossed && (
+        <span
+          className="mapnode__crossed"
+          title="Rift-crossed merchant: sells another Riftwalker's cards"
+        >
+          <HeroIcon hero={n.crossed} size={26} />
+        </span>
+      )}
+      {n.kind === 'warden' && n.ghost && n.ghostDeck && (
+        <span
+          className="mapnode__ghost"
+          title="Ghost Warden: another player's deck from the Arena, played by the computer (if none can be found, the usual Warden stands here)"
+        >
+          <GhostGlyph />
+        </span>
+      )}
+      <span className="mapnode__label">{labelOf(n)}</span>
+    </button>
+  );
+}
+
+/** Held upright: floor 1 at the top, the Warden at the bottom; each floor's stops spread across the width. */
+function TallMap(props: MapProps) {
+  const { map } = props;
+  const W = Math.max(260, Math.min(520, window.innerWidth - 40));
+  const ROW_H = 118;
+  const PAD = 56;
+  const H = Math.max(1, map.floors - 1) * ROW_H + 2 * PAD;
+  const pos = new Map<string, { x: number; y: number }>();
+  for (let f = 1; f <= map.floors; f++) {
+    const row = map.nodes.filter((n) => n.floor === f);
+    row.forEach((n, i) => {
+      pos.set(n.id, { x: ((i + 1) / (row.length + 1)) * W, y: PAD + (f - 1) * ROW_H });
+    });
+  }
+  return (
+    <div className="map map--tall" style={{ width: W, height: H }}>
+      <svg className="map__lines" width={W} height={H} aria-hidden>
+        {map.nodes.flatMap((n) =>
+          n.next.map((t) => {
+            const a = pos.get(n.id);
+            const b = pos.get(t);
+            if (!a || !b) return null;
+            const done =
+              props.cleared.includes(n.id) && (props.cleared.includes(t) || props.at === n.id);
+            return (
+              <path
+                key={`${n.id}>${t}`}
+                d={`M ${a.x} ${a.y} C ${a.x} ${a.y + 50}, ${b.x} ${b.y - 50}, ${b.x} ${b.y}`}
+                className={done ? 'map__edge is-walked' : 'map__edge'}
+              />
+            );
+          }),
+        )}
+      </svg>
+      {map.nodes.map((n) => {
+        const p = pos.get(n.id);
+        return p ? <MapButton key={n.id} n={n} p={p} {...props} /> : null;
+      })}
+    </div>
   );
 }

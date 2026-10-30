@@ -501,6 +501,17 @@ export function FightView(props: {
   const modeRef = useRef(mode);
   const [sideOpen, setSideOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  // a press anywhere else closes the menu and the drawer
+  useEffect(() => {
+    if (!menuOpen && !sideOpen) return;
+    const away = (e: PointerEvent): void => {
+      const t = e.target as HTMLElement | null;
+      if (menuOpen && !t?.closest('.fight__menu, .fight__menuBtn')) setMenuOpen(false);
+      if (sideOpen && !t?.closest('.fight__drawer, .fight__sideToggle')) setSideOpen(false);
+    };
+    window.addEventListener('pointerdown', away);
+    return () => window.removeEventListener('pointerdown', away);
+  }, [menuOpen, sideOpen]);
   const [pointer, setPointer] = useState({ x: 0, y: 0 });
   /** the last press was a finger: there is no pointer to draw the aiming arrow to, the targets glow instead (DECISIONS #443) */
   const [touch, setTouch] = useState(false);
