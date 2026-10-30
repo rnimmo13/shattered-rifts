@@ -45,6 +45,8 @@ export {
   availableNodes,
   bank,
   buyBoon,
+  discardLegendBoon,
+  answerLegendOffer,
   buyPotion,
   potionSellPrice,
   sellPotion,

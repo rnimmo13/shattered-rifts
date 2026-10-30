@@ -5,6 +5,7 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **Bigger machines, Engineer ceiling, Legendary swaps:** Full Throttle, Critical Mass and Final Volley for the Engineer; Heavy and Colossal machines have more HP and damage; Defer lasts only the turn the card returns; Foresee needs no Confirm; a Legendary Boon can be given up (X) or swapped when another is offered; the campaign board re-links a player whose name the server did not know.
 - **Ten-card starts, Arena minimum, fixes:** every class starts with ten cards; Arena decks need 15; totem cap 8; Aegis of Ages gives 1 Shielded (Ward Stone removed); Backup Core revives once; a card that damages every enemy then costs HP now takes the HP even when it ends the fight.
 - **Starting decks are ten cards with three or four class basics:** the Knight, Assassin, Monk and Shaman get new or fewer basics (Press the Attack, Heavy Swing, Fang and Claw, Pocket Blades, Mindful Palm), and the Drunkard has one Hammer Swing, not two.
 - **A stronger start for the Knight:** a second basic, Brace and Press (3 Barrier, 2 Plating, 1 Exposed) in place of one Defend, and 1 more Plating on every Knight card that gives it. More mechanics (Plating, Sapped, Hangover, Fate, Virulent...) are highlighted in card text.

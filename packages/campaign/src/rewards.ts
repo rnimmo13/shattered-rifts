@@ -233,8 +233,10 @@ export function boonOfRarity(
   rng: RngState,
   owned: readonly string[],
   rarity: 'common' | 'uncommon' | 'rare' | 'legendary',
+  /** a Legendary may be offered although one is held: the player swaps one for the other */
+  swap = false,
 ): string | null {
-  const legendOk = !holdsLegendBoon(owned);
+  const legendOk = swap || !holdsLegendBoon(owned);
   const left = BOONS.filter((b) => !owned.includes(b.id) && (legendOk || b.rarity !== 'legendary'));
   if (left.length === 0) return null;
   const same = left.filter((b) => b.rarity === rarity);
@@ -298,8 +300,10 @@ export function offerBoon(
   quality: OfferQuality,
   /** a shop never sells a Legendary Boon */
   noLegend = false,
+  /** a Legendary may be offered although one is held: the player swaps one for the other */
+  swap = false,
 ): string | null {
-  noLegend = noLegend || holdsLegendBoon(owned);
+  noLegend = noLegend || (!swap && holdsLegendBoon(owned));
   const left = BOONS.filter(
     (b) => !owned.includes(b.id) && !(noLegend && b.rarity === 'legendary'),
   );

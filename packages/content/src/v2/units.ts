@@ -26,6 +26,7 @@ const RAW_ALLIES: UnitDef[] = [
   // Nexus: machines
   // (the costing pass and frames, DECISIONS #383: Light takes 1 of the 3 companion slots, Heavy 2, Colossal 3; a companion is
   // worth 1.2 x HP + 3 + its hit x its acts, less 2 for each slot past the first; docs/ENGINEER_REVIEW.md)
+  // (Heavy and Colossal machines got a little more HP and damage, Robert 2026-10-30: the frame penalty left the big ones behind)
   ally('drone', 'Drone', 8, [dmg(3)]),
   ally('patrol-drone', 'Patrol Drone', 4, [dmg(3)]),
   ally('sentry-turret', 'Sentry Turret', 5, [dmg(2), barrier(2, 'hero')], { taunt: true }),
@@ -33,12 +34,12 @@ const RAW_ALLIES: UnitDef[] = [
   ally('repair-bot', 'Repair Bot', 4, [heal(2, 'hero')]),
   ally('spotter-drone', 'Spotter Drone', 4, [status('exposed', 1, 'target')]),
   ally('micro-drone', 'Micro Drone', 3, [dmg(2)]),
-  ally('enforcer', 'Enforcer Mk.II', 11, [dmg(6)], { slots: 2 }),
-  ally('siege-engine', 'Siege Engine', 12, [dmg(3, 'target', 2)], { slots: 2 }),
-  ally('bulwark-walker', 'Bulwark Walker', 12, [barrier(3, 'hero')], { taunt: true, slots: 2 }),
-  ally('war-engine', 'War Engine', 20, [dmg(4, 'target', 2)], { slots: 3 }),
-  ally('scrap-golem', 'Scrap Golem', 12, [dmg(5)], { slots: 3 }),
-  ally('dreadnought', 'Dreadnought', 18, [dmg(5, 'allFoes')], { slots: 3 }),
+  ally('enforcer', 'Enforcer Mk.II', 12, [dmg(7)], { slots: 2 }),
+  ally('siege-engine', 'Siege Engine', 12, [dmg(4, 'target', 2)], { slots: 2 }),
+  ally('bulwark-walker', 'Bulwark Walker', 14, [barrier(4, 'hero')], { taunt: true, slots: 2 }),
+  ally('war-engine', 'War Engine', 22, [dmg(5, 'target', 2)], { slots: 3 }),
+  ally('scrap-golem', 'Scrap Golem', 14, [dmg(7)], { slots: 3 }),
+  ally('dreadnought', 'Dreadnought', 22, [dmg(6, 'allFoes')], { slots: 3 }),
   // (the Engineer's Mana engine: a Light machine that powers next turn, DECISIONS #384)
   ally('generator', 'Generator', 8, [manaNext(1)]),
   // Wyldmaw: the pack
@@ -68,8 +69,8 @@ const RAW_ALLIES: UnitDef[] = [
 const PLUS_STATS: Record<string, { hp: number; hit: number }> = {
   pup: { hp: 7, hit: 3 },
   // (machines that strike twice gain 1 a hit, as a multi-hit attack card does: +2 a hit doubled their upgrade; DECISIONS #385)
-  'siege-engine': { hp: 16, hit: 4 },
-  'war-engine': { hp: 24, hit: 5 },
+  'siege-engine': { hp: 16, hit: 5 },
+  'war-engine': { hp: 26, hit: 6 },
 };
 
 /** The "+" companion a "+" summon card brings: tougher and hits or guards harder. */

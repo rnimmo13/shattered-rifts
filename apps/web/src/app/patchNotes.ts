@@ -29,6 +29,21 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.139.0',
+    date: '2026-10-30',
+    title: 'Bigger machines and Legendary swaps',
+    summary: 'The Engineer gets a higher damage ceiling, Foresee is one click, and a Legendary Boon can be given up or swapped.',
+    notes: [
+      { kind: 'new', text: 'Engineer: Full Throttle (your companions act twice), Critical Mass (damage grows with Might) and Final Volley (damage grows with your companions). Each is spent after one use.' },
+      { kind: 'balance', text: 'Heavy and Colossal machines have a little more HP and damage: Enforcer, Siege Engine, Bulwark Walker, War Engine, Scrap Golem and Dreadnought.' },
+      { kind: 'balance', text: 'Defer: the card comes back costing 1 less for that turn only. Not played, it is full price again.' },
+      { kind: 'new', text: 'A Legendary Boon has a small X on the map to give it up. A Legendary offered while you hold one lets you swap or keep yours.' },
+      { kind: 'changed', text: 'Foresee picks the card you click, with no Confirm button.' },
+      { kind: 'fixed', text: 'A campaign run the board did not recognise as yours is now re-linked to your username, or you are asked for one again.' },
+    ],
+    heads: 'The rules version went up: old Arena games and replays from before this patch will not play.',
+  },
+  {
     version: '0.138.0',
     date: '2026-10-30',
     title: 'Ten-card starts and tighter rules',

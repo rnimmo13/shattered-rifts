@@ -150,13 +150,13 @@ describe('Salvage', () => {
     const engine = allies(s).find((u) => u.def === 'war-engine')!;
     expect(engine.statuses.might).toBe(2);
     expect(engine.statuses.vigor).toBe(4);
-    expect(engine.maxHp).toBe(20 + Math.floor(hp / 2));
+    expect(engine.maxHp).toBe(22 + Math.floor(hp / 2));
     expect(engine.hp).toBe(engine.maxHp);
   });
 
   it('a summon with room to spare takes nothing', () => {
     const s = play(fight(['build-enforcer']), 'T0');
-    expect(allies(s).find((u) => u.def === 'enforcer')!.maxHp).toBe(11);
+    expect(allies(s).find((u) => u.def === 'enforcer')!.maxHp).toBe(12);
   });
 
   it('"dies or is scrapped" Auras hear of a scrapped companion (Salvage Rights)', () => {
@@ -182,7 +182,7 @@ describe('the new Engineer cards', () => {
     let s = play(fight(['build-enforcer', 'welding-arc']), 'T0');
     const drone = allies(s).find((u) => u.def === 'drone')!.maxHp;
     s = applyAction(db, s, { type: 'play', card: 'T1', target: s.sides.b.units[0]!.id }).state;
-    expect(allies(s).find((u) => u.def === 'enforcer')!.maxHp).toBe(14);
+    expect(allies(s).find((u) => u.def === 'enforcer')!.maxHp).toBe(15);
     expect(allies(s).find((u) => u.def === 'drone')!.maxHp).toBe(drone);
   });
 
@@ -218,7 +218,7 @@ describe('the new Engineer cards', () => {
     expect(allies(s).find((u) => u.def === 'bulwark-walker')?.taunt).toBe(true);
     const events = applyAction(db, s, { type: 'endTurn' }).events;
     const hero = s.sides.a.units.find((u) => u.kind === 'hero')!;
-    expect(events.some((e) => e.type === 'barrier' && e.target === hero.id && e.amount === 3)).toBe(
+    expect(events.some((e) => e.type === 'barrier' && e.target === hero.id && e.amount === 4)).toBe(
       true,
     );
   });
@@ -236,7 +236,7 @@ describe('the new Engineer cards', () => {
     const events = applyAction(db, s, { type: 'endTurn' }).events;
     const struck = new Set(
       events
-        .filter((e) => e.type === 'damage' && e.amount === 5)
+        .filter((e) => e.type === 'damage' && e.amount === 6)
         .map((e) => 'target' in e && e.target),
     );
     for (const foe of s.sides.b.units) expect(struck.has(foe.id)).toBe(true);

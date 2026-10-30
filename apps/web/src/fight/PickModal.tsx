@@ -79,6 +79,8 @@ export function PickModal(props: {
     });
   const ok = chosen.length >= p.min && chosen.length <= p.max;
   const title = p.kind === 'topdeck' && p.from === 'draw' ? 'Choose' : TITLE[p.kind];
+  // Foresee is exactly one card out of a few: a click is the choice, no Confirm needed
+  const instant = p.kind === 'scry' && p.min === 1 && p.max === 1;
 
   return (
     <div className="fight__modal fight__modal--pick" role="dialog" aria-label={title}>
@@ -87,19 +89,21 @@ export function PickModal(props: {
           <h3>
             {title} <small>{prompt(p)}</small>
           </h3>
-          <button
-            className="btn btn--primary btn--small"
-            disabled={!ok}
-            onClick={() => props.onSubmit(chosen)}
-          >
-            <span>
-              {chosen.length === 0 && p.min === 0
-                ? p.kind === 'form'
-                  ? 'Keep this form'
-                  : 'Keep them all'
-                : 'Confirm'}
-            </span>
-          </button>
+          {!instant && (
+            <button
+              className="btn btn--primary btn--small"
+              disabled={!ok}
+              onClick={() => props.onSubmit(chosen)}
+            >
+              <span>
+                {chosen.length === 0 && p.min === 0
+                  ? p.kind === 'form'
+                    ? 'Keep this form'
+                    : 'Keep them all'
+                  : 'Confirm'}
+              </span>
+            </button>
+          )}
         </header>
         <div className="fight__grid">
           {/* (enchantments to choose among, not cards: DECISIONS #417) */}
@@ -181,7 +185,7 @@ export function PickModal(props: {
                 key={c.id}
                 className={`pick${on ? ' is-on' : ''}`}
                 aria-pressed={on}
-                onClick={() => toggle(c.id)}
+                onClick={() => (instant ? props.onSubmit([c.id]) : toggle(c.id))}
               >
                 <FightCard
                   db={props.db}

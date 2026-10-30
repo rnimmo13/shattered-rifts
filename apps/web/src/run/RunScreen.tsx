@@ -9,6 +9,8 @@ import {
   RunError,
   availableNodes,
   buyBoon,
+  discardLegendBoon,
+  answerLegendOffer,
   buyCard,
   holdCard,
   releaseHold,
@@ -143,6 +145,7 @@ export default function RunScreen() {
   }, [showMap]);
   // Boons that just arrived, waiting to be shown (one banner at a time)
   const [gained, setGained] = useState<string[]>([]);
+  const [confirmDrop, setConfirmDrop] = useState(false);
   const setRun = useCallback((r: RunState | null) => {
     const had = runRef.current?.boons ?? [];
     const fresh = r ? r.boons.filter((b) => !had.includes(b)) : [];
@@ -644,6 +647,7 @@ export default function RunScreen() {
         arenaProblem={arenaProblem(run)}
         onHome={goHome}
         onAbandon={() => setConfirmAbandon(true)}
+        onDropLegend={() => setConfirmDrop(true)}
       />
       {notice && (
         <Toast tone={noticeGood ? 'good' : 'bad'} onDismiss={() => say(null)}>
@@ -693,6 +697,38 @@ export default function RunScreen() {
       {showDeck && (
         <DeckModal deck={run.deck} title="Your deck" onClose={() => setShowDeck(false)} />
       )}
+      {run.legendOffer && (
+        <LegendDialog
+          held={run.boons.find((id) => COMBAT_DB.boons[id]?.rarity === 'legendary')}
+          offered={run.legendOffer}
+          onAnswer={(swap) => act((r) => answerLegendOffer(r, swap))}
+        />
+      )}
+      {confirmDrop && !run.legendOffer && run.phase === 'map' && (
+        <div className="modal" role="alertdialog" aria-label="Give up this Legendary Boon?">
+          <div className="modal__panel">
+            <h2 className="modal__title">Give up this Legendary Boon?</h2>
+            <p className="modal__hint">
+              It is gone for the rest of the run. A Legendary Boon may be offered again later, but
+              nothing promises it will be this one, or any.
+            </p>
+            <div className="modal__row">
+              <button
+                className="btn"
+                onClick={() => {
+                  setConfirmDrop(false);
+                  act(discardLegendBoon);
+                }}
+              >
+                <span>Give it up</span>
+              </button>
+              <button className="btn btn--ghost" onClick={() => setConfirmDrop(false)}>
+                <span>Keep it</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
       {confirmAbandon && (
         <AbandonDialog
           midFight={run.phase === 'duel'}
@@ -701,6 +737,32 @@ export default function RunScreen() {
         />
       )}
     </main>
+  );
+}
+
+/** A Legendary Boon was offered while one is held: a run holds one, so swap them or keep the one held. */
+function LegendDialog(props: {
+  held: string | undefined;
+  offered: string;
+  onAnswer: (swap: boolean) => void;
+}) {
+  return (
+    <div className="modal" role="alertdialog" aria-label="A Legendary Boon is offered">
+      <div className="modal__panel">
+        <h2 className="modal__title">A Legendary Boon is offered</h2>
+        <p className="modal__hint">A run holds one Legendary Boon. Swap, or keep yours.</p>
+        {props.held && <BoonCard id={props.held} note="Yours now" />}
+        <BoonCard id={props.offered} note="Offered" />
+        <div className="modal__row">
+          <button className="btn" onClick={() => props.onAnswer(true)}>
+            <span>Swap</span>
+          </button>
+          <button className="btn btn--ghost" onClick={() => props.onAnswer(false)}>
+            <span>Keep mine</span>
+          </button>
+        </div>
+      </div>
+    </div>
   );
 }
 
@@ -797,6 +859,7 @@ function RunBar(props: {
   arenaProblem: string | null;
   onHome: () => void;
   onAbandon: () => void;
+  onDropLegend: () => void;
 }) {
   const { run } = props;
   return (
@@ -819,7 +882,20 @@ function RunBar(props: {
         {run.boons.length > 0 && (
           <span className="boons" aria-label="Boons">
             {run.boons.map((id) => (
-              <BoonChip key={id} id={id} />
+              <span key={id} className="boonwrap">
+                <BoonChip id={id} />
+                {/* (a Legendary can be put down, to make room for another that may be offered later) */}
+                {COMBAT_DB.boons[id]?.rarity === 'legendary' && run.phase === 'map' && (
+                  <button
+                    type="button"
+                    className="boonwrap__x"
+                    aria-label={`Give up ${COMBAT_DB.boons[id]?.name ?? 'the Legendary Boon'}`}
+                    onClick={props.onDropLegend}
+                  >
+                    ×
+                  </button>
+                )}
+              </span>
             ))}
           </span>
         )}

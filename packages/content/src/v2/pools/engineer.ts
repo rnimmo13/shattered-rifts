@@ -251,6 +251,37 @@ export const ENGINEER: CardDef[] = [
   ),
   r('rare', 'full-salvo', 'Full Salvo', 'skill', 2, 'none', [primeAll(5), ACT]),
 
+  // Ceiling cards (Robert, 2026-10-30: "he is just steady sustained damage, nothing game breaking"). Both are spent after one use and
+  // read the board the deck builds, so a built-up crew or a pile of Might is worth far more than the sticker price (guard rails,
+  // balance.test.ts: a consumed payoff may scale 3 per Might).
+  // Full Throttle: the crew acts twice (Robert 2026-10-30: "a card or two with allies act twice"; the other act-now cards act once). 2 Mana
+  // rare = ~24. Primed 3 (~4.5) + two rounds of acts (2 x ~8 at 1-2 companions) = ~20.5; a full board of Heavy machines doubles into 40+,
+  // and it is spent after one use.
+  r('rare', 'full-throttle', 'Full Throttle', 'skill', 2, 'none', [prime(3), ACT, ACT], { exhaust: true }),
+  // Final Volley: 3 Mana rare = ~35. 6 + 10 per companion (the 3 slots are the cap): 3 companions = 36, 2 = 26, 1 = 16, so it only
+  // pays for a crew that is still standing. (Not an "act now" card: those each act once, DECISIONS #361.)
+  r(
+    'rare',
+    'final-volley',
+    'Final Volley',
+    'attack',
+    3,
+    'foe',
+    [scaled(dmg(6), per('allies', 10))],
+    { exhaust: true },
+  ),
+  // Critical Mass: 3 Mana rare = ~35. 10 + 3 per Might, and the Might adds again on the hit: 6 Might = 10 + 18 + 6 = 34, 9 Might = 49.
+  r(
+    'rare',
+    'critical-mass',
+    'Critical Mass',
+    'attack',
+    3,
+    'foe',
+    [scaled(dmg(10), per('might', 3))],
+    { exhaust: true },
+  ),
+
   // --- Core ---
   r('common', 'repair-bot', 'Repair Bot', 'summon', 1, 'none', [summon('repair-bot')]),
   r('common', 'build-enforcer', 'Build Enforcer', 'summon', 2, 'none', [summon('enforcer')]),

@@ -409,6 +409,13 @@ export function parseRun(text: string): RunState | null {
   const signed = (r as { ledger?: unknown }).ledger;
   if (signed !== undefined && !isInt(signed, 0, 1000)) return null;
   // (a Warden's Heart: one that is in the game, or none)
+  const legendOffer = (r as { legendOffer?: unknown }).legendOffer;
+  if (
+    legendOffer !== undefined &&
+    !(typeof legendOffer === 'string' && COMBAT_DB.boons[legendOffer]?.rarity === 'legendary')
+  )
+    delete (r as { legendOffer?: unknown }).legendOffer;
+  // (a Warden's Heart: one that is in the game, or none)
   const heart = (r as { heart?: unknown }).heart;
   if (heart !== undefined && !(typeof heart === 'string' && COMBAT_DB.boons[heart]?.heart === true))
     delete (r as { heart?: unknown }).heart;

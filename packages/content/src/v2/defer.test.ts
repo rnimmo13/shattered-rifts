@@ -1,4 +1,4 @@
-// Defer (Robert, 2026-10-30): a card of your hand waits a turn and comes back costing 1 less until it is played. A card that costs 0
+// Defer (Robert, 2026-10-30): a card of your hand waits a turn and comes back costing 1 less for that turn. A card that costs 0
 // and an X card are not offered; a deferred card is set aside, not discarded; the 1 off stacks with other cost cuts.
 
 import { describe, expect, it } from 'vitest';
@@ -73,12 +73,14 @@ describe('Defer', () => {
     expect(costOf(db, s.sides.a, played!)).toBe(1);
   });
 
-  it('it keeps its 1 off until it is played, even through a turn it is not', () => {
+  it('its 1 off is for the turn it comes back: unplayed, it is full price again', () => {
     let s = pick(play(fight(['stalkers-lunge', 'sweep-the-leg', 'strike']), 'stalkers-lunge'), 'T1');
     s = endTurn(s);
+    expect(s.sides.a.hand.find((c) => c.id === 'T1')?.deferred).toBe(true);
     s = endTurn(s);
     const card = [...s.sides.a.hand, ...s.sides.a.discard, ...s.sides.a.draw].find((c) => c.id === 'T1');
-    expect(card?.deferred).toBe(true);
+    expect(card?.deferred).toBeUndefined();
+    expect(costOf(db, s.sides.a, card!)).toBe(db.cards['sweep-the-leg']!.cost);
   });
 
   it('a card that costs 0 and an X card are not offered; with nothing to take it does nothing', () => {

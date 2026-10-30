@@ -1171,7 +1171,7 @@ export interface CardInst {
   sly?: 'turn' | 'fight';
   /** (DECISIONS #433) it came back through Premeditate: it costs 0 until it is played */
   premeditated?: boolean;
-  /** it came back through Defer: it costs 1 less until it is played */
+  /** it came back through Defer: it costs 1 less on the turn it returns, until it is played or that turn ends */
   deferred?: boolean;
   /** keywords a card gave this copy (Sculpting Strike, Snap, Transfigure): Fleeting, Hold, played this many more times */
   ethereal?: boolean;

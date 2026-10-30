@@ -64,6 +64,7 @@ import {
   ancestralPool,
   offerPotion,
   boonOfRarity,
+  holdsLegendBoon,
   canAdd,
   cardOfRarity,
   giftOffers,
@@ -226,6 +227,50 @@ function gainBoon(r: RunState, id: string): void {
     r.maxHp += b.maxHp;
     r.hp += b.maxHp;
   }
+}
+
+/** Give a Boon the player earned: a Legendary one while another is held waits as an offer to swap instead (`legendOffer`). */
+function giveBoon(r: RunState, id: string): void {
+  if (COMBAT_DB.boons[id]?.rarity === 'legendary' && holdsLegendBoon(r.boons)) r.legendOffer = id;
+  else gainBoon(r, id);
+}
+
+/** The Legendary Boon the run holds, if any. */
+function heldLegend(r: RunState): string | undefined {
+  return r.boons.find((id) => COMBAT_DB.boons[id]?.rarity === 'legendary');
+}
+
+/** Put down the Legendary Boon held (its Max HP goes with it; HP is never raised), so another can be offered later. */
+function dropLegend(r: RunState): void {
+  const id = heldLegend(r);
+  need(id, 'You hold no Legendary Boon');
+  r.boons = r.boons.filter((b) => b !== id);
+  const hp = COMBAT_DB.boons[id]?.maxHp ?? 0;
+  if (hp) {
+    r.maxHp = Math.max(1, r.maxHp - hp);
+    r.hp = Math.min(r.hp, r.maxHp);
+  }
+}
+
+/** The X on a Legendary Boon: give it up for good, hoping a better one is offered. */
+export function discardLegendBoon(run: RunState): RunState {
+  need(heldLegend(run), 'You hold no Legendary Boon');
+  const r = clone(run);
+  dropLegend(r);
+  return r;
+}
+
+/** Answer a Legendary Boon offered while one is held: swap it in for the one held, or keep the one held. */
+export function answerLegendOffer(run: RunState, swap: boolean): RunState {
+  const id = run.legendOffer;
+  need(id, 'No Legendary Boon is on offer');
+  const r = clone(run);
+  delete r.legendOffer;
+  if (swap) {
+    dropLegend(r);
+    gainBoon(r, id);
+  }
+  return r;
 }
 
 /** Two Warden's Hearts to offer (never the one the run holds). */
@@ -754,10 +799,11 @@ export function finishDuel(
   // A fight an event started pays the spoils it promised instead (node.bonus, set even when empty), so no second Boon.
   const fromEvent = node.bonus !== undefined;
   if (node.kind === 'elite' && !fromEvent) {
-    const id = offerBoon(r.rng, r.boons, 'elite');
+    const id = offerBoon(r.rng, r.boons, 'elite', false, true);
     if (id) {
-      gainBoon(r, id);
-      boonGained = id;
+      giveBoon(r, id);
+      // (a Legendary left as an offer is not gained yet: the player answers it on the map)
+      if (r.legendOffer !== id) boonGained = id;
     }
   }
   if (node.kind === 'elite') heal(r, (r.maxHp * ELITE_HEAL_PCT) / 100); // an elite leaves you a little breathing room
@@ -773,10 +819,10 @@ export function finishDuel(
     if (r.stage >= FINAL_STAGE) {
       // the Heart of the Rift sometimes leaves something behind: a Legendary Boon you do not have yet
       if (nextInt(r.rng, 100) < LOOP_LEGEND_CHANCE) {
-        const legend = boonOfRarity(r.rng, r.boons, 'legendary');
+        const legend = boonOfRarity(r.rng, r.boons, 'legendary', true);
         if (legend && COMBAT_DB.boons[legend]?.rarity === 'legendary') {
-          gainBoon(r, legend);
-          r.eventResult = `${r.eventResult} The Heart of the Rift leaves something behind: the Legendary Boon ${COMBAT_DB.boons[legend]?.name ?? legend}.`;
+          giveBoon(r, legend);
+          r.eventResult = `${r.eventResult} The Heart of the Rift ${r.legendOffer === legend ? 'offers' : 'leaves something behind:'} the Legendary Boon ${COMBAT_DB.boons[legend]?.name ?? legend}.`;
         }
       }
     }

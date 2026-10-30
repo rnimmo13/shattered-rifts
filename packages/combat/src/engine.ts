@@ -3877,7 +3877,7 @@ function beginHeroTurn(r: Run, side: Side): void {
       r.ev.push({ type: 'addCard', side: sd.id, card: c.id, def: c.card, to: 'hand' });
     } else sd.discard.push(c);
   }
-  // (Defer) what was set aside last turn arrives costing 1 less until it is played. A full hand never discards it: it goes on top of
+  // (Defer) what was set aside last turn arrives costing 1 less for that turn (or until it is played). A full hand never discards it: it goes on top of
   // the draw pile instead, still cheaper, and comes with the next draw (Robert, 2026-10-30)
   for (const c of (sd.deferring ?? []).splice(0)) {
     c.deferred = true;
@@ -4107,6 +4107,8 @@ function endTurn(r: Run): void {
       (honedKnives && cd.tags?.includes(EDGE_TAG) === true);
     delete c.held;
     delete c.freeTurn;
+    // (Defer) the 1 off is for the turn the card comes back: left unplayed, it is a full price card again (Robert, 2026-10-30)
+    delete c.deferred;
     if (c.sly === 'turn') delete c.sly;
     if (isEthereal(cd, c) && !held) exhaustCard(r, sd, c);
     else if (held || holdAll) keep.push(c);

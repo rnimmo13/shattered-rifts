@@ -364,6 +364,8 @@ export interface RunState {
   shards: number;
   /** Run passives (Boons) are part of the design but not built yet. */
   boons: string[];
+  /** a Legendary Boon that was offered while another is held: swap it in, or keep the one held (it waits until the player answers) */
+  legendOffer?: string;
   /** Potions carried (up to MAX_POTIONS); a lost fight does not use them up */
   potions: string[];
   /** The run's four realms, shuffled: stages 1 and 2 are the first two, the Rift (stage 3) draws on the last two. */

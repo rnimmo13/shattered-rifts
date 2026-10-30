@@ -300,7 +300,7 @@ export async function reportRun(run: {
   stage: number;
   name: string;
 }): Promise<unknown> {
-  const body = {
+  const body: Record<string, unknown> = {
     run: run.seed.slice(0, 64),
     hero: run.hero,
     tier: run.tier,
@@ -310,8 +310,22 @@ export async function reportRun(run: {
   // a report that did not get through (a dropped connection, a busy server) is tried again a few times: the server only moves a run
   // forward, so a repeat is harmless, and a missed report would leave the board behind until the next time the app opens
   const waits = [2_000, 10_000, 40_000];
+  let healed = false;
   for (let i = 0; ; i++) {
     const answer = await post('run', body);
+    // the server does not know a username for this player (signed in on another address, a different Vault code, site data cleared): the
+    // run was not counted, whatever this browser believes. Take the name the server has for them, or forget the stale claim so the game asks
+    // for one again (Robert, 2026-10-30: a player whose runs never reached the board)
+    if (answer && answer['error'] === 'no-name' && !healed) {
+      healed = true;
+      const name = await restoreUsername();
+      if (name) {
+        body.name = name;
+        continue;
+      }
+      setClaimed('');
+      return answer;
+    }
     if (answer && answer['limited'] !== true) return answer;
     const wait = waits[i];
     if (wait === undefined) return answer;
