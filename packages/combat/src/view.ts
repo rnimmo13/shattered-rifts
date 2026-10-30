@@ -422,6 +422,9 @@ const STATUS_NAME: Record<string, string> = {
   noose: 'Noose',
   quarry: 'Quarry',
   freeethereal: 'Free Fleeting',
+  umbra: 'Owl Charge',
+  stunned: 'Shocked',
+  buffer: 'Buffer',
   // (the Defect copy, shaman)
   echoing: 'Echo',
   boosted: 'Resound',
@@ -452,6 +455,13 @@ const plural = (word: string): string =>
       : `${word}s`;
 const article = (word: string): string => (/^[aeiou]/i.test(word) ? 'an' : 'a');
 /** What players call the cards with a tag ("Whenever you play a Carving"). */
+const TOTEM_WORDS: Record<string, string> = {
+  hawk: 'Hawk',
+  bear: 'Bear',
+  thunderbird: 'Thunderbird',
+  elder: 'Elder Tree',
+  owl: 'Moon Owl',
+};
 const TAG_NAMES: Record<string, string> = {
   knife: 'Dagger',
   blade: 'Obsidian Blade',
@@ -701,7 +711,12 @@ function amountText(n: number, sc: Scale | undefined): { num: string; equal: boo
       ? { per: `consumed ${tagged}`, equal: `the number of consumed ${plural(tagged)}` }
       : tagged && sc.by === 'tagDeck'
         ? { per: `${tagged} in your deck`, equal: `the number of ${plural(tagged)} in your deck` }
-        : sc.by === 'hitsTaken'
+        : sc.by === 'totemsOf' && sc.rune
+          ? {
+              per: `${TOTEM_WORDS[sc.rune] ?? cap(sc.rune)} you have`,
+              equal: `the number of ${plural(TOTEM_WORDS[sc.rune] ?? cap(sc.rune))} you have`,
+            }
+          : sc.by === 'hitsTaken'
           ? // (who was hit is part of the phrase: "per time the target was hit this turn")
             sc.of === 'target'
             ? {
@@ -1098,7 +1113,7 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
       }
       if (o.status === 'shelter' && o.amount > 0 && o.to === 'self')
         return 'This turn, your next command that gives Barrier gives it to every friendly.';
-      // a Stun is counted in turns (DECISIONS #310): "Stun the attacker for 2 turns."
+      // a Shock is counted in turns (DECISIONS #310): "Shock the attacker for 2 turns."
       if (o.status === 'stunned' && o.amount > 0 && !o.scale) {
         const whom =
           o.to === 'target'
@@ -1108,7 +1123,7 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
                 ? ' yourself'
                 : ' itself'
               : who[o.to].replace(/^ to /, ' ');
-        return `Stun${whom} for ${o.amount} turn${o.amount === 1 ? '' : 's'}.`;
+        return `Shock${whom} for ${o.amount} turn${o.amount === 1 ? '' : 's'}.`;
       }
       // Edge is what makes Sleeve Knives hit harder: say so on the card instead of leaving it to a tooltip
       if (o.status === 'edge' && o.to === 'self' && !o.scale && o.amount > 0)
@@ -1161,6 +1176,12 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
             : `The first ${o.amount} cards you play each turn are played an extra time.`;
         if (o.status === 'deftness')
           return `Your 0-cost Attacks deal ${o.amount} more damage for the rest of the fight.`;
+        if (o.status === 'umbra')
+          return `Gain ${o.amount} Owl Charge: a commanded Moon Owl hits the enemy with the least HP for 6 plus all the charge, and the charge is spent.`;
+        if (o.status === 'buffer')
+          return o.amount === 1
+            ? 'The next time you would lose HP, you lose none instead.'
+            : `The next ${o.amount} times you would lose HP, you lose none instead.`;
       }
       // (on your own cards a status you put on yourself is gained or lost, not "applied")
       const mine = o.to === 'self' && who.self === WHO.self;
@@ -1479,8 +1500,13 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
           ? (KIND_WORD2[o.kind] ?? o.kind)
           : 'card';
       const pile = o.from === 'draw' ? 'your draw pile' : 'your hand';
+      const made = db.cards[o.into];
+      const what =
+        made && made.hero === 'junk' && !made.tags?.includes('status')
+          ? ` (${made.cost}-cost: ${cardText(db, made).replace(/\.\s*$/, '')})`
+          : '';
       if (o.amount === undefined && !o.choose)
-        return `Turn every ${kindWord} in ${pile} into ${article(into)} ${into}.`;
+        return `Turn every ${kindWord} in ${pile} into ${article(into)} ${into}${what}.`;
       if (o.amount === undefined)
         return `Turn any number of cards in ${pile} into ${plural(into)}.`;
       const n =
@@ -1675,8 +1701,11 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
     // (the Shaman's totems)
     // (the totem cycle, DECISIONS #430: a plant goes to the back; a command makes a totem act and consumes it)
     case 'plant': {
-      if (o.spirit === '*') return 'Plant a random totem.';
+      const count = !o.scale && (o.times ?? 1) > 1 ? (o.times as number) : 1;
+      if (o.spirit === '*')
+        return count > 1 ? `Plant ${count} random totems.` : 'Plant a random totem.';
       const nm = db.totems?.[o.spirit]?.name ?? o.spirit;
+      if (count > 1) return `Plant ${count} ${plural(nm)}.`;
       if (o.scale?.by === 'x') return `Plant ${article(nm)} ${nm} X${o.times ? ` + ${o.times}` : ''} times.`;
       if (o.scale?.by === 'foes') return `Plant ${article(nm)} ${nm} for each enemy.`;
       if (o.scale?.by === 'channeledOf') {
@@ -1688,9 +1717,15 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
     case 'uproot':
       return 'Uproot all your totems.';
     case 'totemSlot':
-      return (o.amount ?? 1) < 0
+      return (o.amount ?? 1) > 1
+        ? `Gain ${o.amount} totem positions.`
+        : (o.amount ?? 1) < 0
         ? 'Lose a totem position (your front totem is pushed out if the row is full).'
         : 'Gain a totem position.';
+    case 'totemBoost': {
+      const nm = TOTEM_WORDS[o.rune] ?? cap(o.rune);
+      return `For the rest of the fight, a ${nm} you command deals ${o.amount} more damage (its end-of-turn effect is not changed).`;
+    }
     case 'totemPulse':
       return `Your front totem's end-of-turn effect happens now${(o.times ?? 1) > 1 ? ` ${o.times} times` : ''}.`;
     case 'sweep':

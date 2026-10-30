@@ -891,4 +891,17 @@ export const TRIMMED_CARDS: Readonly<Record<string, string>> = {
   kindle: 'twin-cinders',
   flare: 'firebrand',
   'stone-sling': 'hasty-ward',
+  // the next pass (2026-10-30): merged or cut
+  'rapid-sift': 'spirit-lance',
+  'thunder-roost': 'thunder-chant',
+  'totem-strike': 'spirit-strike',
+  'rally-the-spirits': 'spirit-ward',
+  pyroclasm: 'immolate',
+  'thunder-fork': 'eye-of-the-tempest',
+  skullsplitter: 'flame-spear',
+  'hardened-resolve': 'ward-of-the-spirits',
+  'ruin-fist': 'immolate',
+  'tempest-call': 'gathering-storm',
+  'ice-wall': 'frostbound-hide',
+  'ice-mirror': 'moonshade-ward',
 };

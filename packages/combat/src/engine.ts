@@ -901,7 +901,7 @@ function leaveRow(
       target: null,
       empowered: pushed,
     });
-    runOps(r, mkAct(hero), d.command);
+    runOps(r, mkAct(hero, { plus: sd.totemBoost?.[kind] ?? 0 }), d.command);
     if (!r.s.winner) fireTriggers(r, sd, 'command', { rune: kind });
   }
   const list = sd.totems;
@@ -2691,7 +2691,7 @@ function execOp(r: Run, a: Act, op: Op): void {
     // --- the Shaman's totems (DECISIONS #418)
     case 'plant': {
       // (an X card plants once per X: `scale` reads it, `times` is what is added)
-      const n = op.scale ? Math.max(0, amountOf(r, a, op.times ?? 0, op.scale, null)) : 1;
+      const n = op.scale ? Math.max(0, amountOf(r, a, op.times ?? 0, op.scale, null)) : Math.max(1, op.times ?? 1);
       for (let k = 0; k < n && !r.s.winner; k++) plant(r, a, side, op.spirit);
       return;
     }
@@ -2738,11 +2738,13 @@ function execOp(r: Run, a: Act, op: Op): void {
         r.ev.push({ type: 'totems', side: side.id, totems: [...(side.totems ?? [])] });
         return;
       }
-      if (list.length >= TOTEM_SLOTS) return;
-      list.push(null);
+      for (let k = 0; k < (op.amount ?? 1) && list.length < TOTEM_SLOTS; k++) list.push(null);
       r.ev.push({ type: 'totems', side: side.id, totems: [...list] });
       return;
     }
+    case 'totemBoost':
+      (side.totemBoost ??= {})[op.rune] = (side.totemBoost[op.rune] ?? 0) + op.amount;
+      return;
     case 'totemPulse': {
       // (Loop) the oldest totem's passive, now
       packTotems(side);

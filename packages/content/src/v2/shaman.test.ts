@@ -115,14 +115,6 @@ describe('the Shaman: the totem cycle (DECISIONS #430)', () => {
     expect(lost(t)).toEqual([7]);
   });
 
-  it('Rally the Spirits commands the front totem twice, then it is consumed', () => {
-    let w = fight(['rally-the-spirits']);
-    w.sides.a.totems = ['bear', 'hawk', null];
-    w = play(w, 'rally-the-spirits');
-    expect(hero(w).barrier).toBe(6 + 6 + 4);
-    expect(row(w)).toEqual(['hawk', null, null]);
-  });
-
   it('a command finds nothing in an empty row', () => {
     let s = fight(['spirit-call']);
     s.sides.a.totems = [null, null, null];
@@ -338,10 +330,10 @@ describe('the Shaman: the totem cycle (DECISIONS #430)', () => {
     expect(hero(u).statuses.spirit).toBe(1);
     u = endTurn(u);
     expect(hero(u).barrier).toBeGreaterThanOrEqual(6);
-    // (Spark Strike: 3, and 6 more with a Thunderbird standing)
+    // (Spark Strike: 3, and 4 more for each Thunderbird standing)
     let w = fight(['spark-strike']);
     w = play(w, 'spark-strike', foe(w).id);
-    expect(lost(w)).toEqual([9]);
+    expect(lost(w)).toEqual([7]);
     // (Grim Ward: 13 Barrier and two Wounds in your discard)
     let x = fight(['grim-ward']);
     x = play(x, 'grim-ward');
@@ -367,7 +359,7 @@ describe('the Shaman: the totem cycle (DECISIONS #430)', () => {
     expect(row(t)).toEqual(['bear', 'thunderbird', null]);
   });
 
-  it('the Defect Powers with their own engine: Buffer, Bulk Up, Loop, Salvage Spirit, Iteration, Feral, Dream Weaving', () => {
+  it('the Defect Powers with their own engine: Buffer, Loop, Salvage Spirit, Iteration, Feral, Dream Weaving', () => {
     // (Ward of the Spirits: the next HP loss is none; Barrier still soaks first)
     let b = fight(['ward-of-the-spirits']);
     b = play(b, 'ward-of-the-spirits');
@@ -377,13 +369,6 @@ describe('the Shaman: the totem cycle (DECISIONS #430)', () => {
     b = applyAction(db, b, { type: 'endTurn' }).state;
     expect(hero(b).hp).toBe(hp);
     expect(hero(b).statuses.buffer ?? 0).toBe(0);
-    // (Hardened Resolve: a totem position fewer; with the row full the front totem is pushed out and acts; +2 Might, +2 Bracing)
-    let h = fight(['hardened-resolve']);
-    h = play(h, 'hardened-resolve');
-    expect(row(h)).toEqual(['bear', 'thunderbird']);
-    expect(lost(h)).toEqual([7]);
-    expect(hero(h).statuses.might).toBe(2);
-    expect(hero(h).statuses.bracing).toBe(2);
     // (Turning Wheel: the front totem's passive fires at the start of each turn, without consuming it)
     let l = fight(['turning-wheel']);
     l.sides.a.totems = ['bear', null, null];
@@ -429,12 +414,6 @@ describe('the Shaman: the totem cycle (DECISIONS #430)', () => {
     c.sides.a.totems = [null, null, null];
     c = play(c, 'cold-breath');
     expect(row(c).filter((k) => k === 'bear')).toHaveLength(2);
-    // (Skullsplitter: 3 Mana when it kills)
-    let k1 = fight(['skullsplitter'], ['squire', 'squire']);
-    foe(k1).hp = 10;
-    const before = k1.sides.a.mana;
-    k1 = play(k1, 'skullsplitter', foe(k1).id);
-    expect(k1.sides.a.mana).toBe(before - 3 + 3);
     // (Kindling Ward: Void and Wound cards in your hand become Tinder, which gives a Mana)
     let w = fight(['kindling-ward']);
     w.sides.a.hand.push({ id: 'V', card: 'void-drain' }, { id: 'W', card: 'wound' });
@@ -507,6 +486,21 @@ describe('the Shaman: the totem cycle (DECISIONS #430)', () => {
     expect(w.sides.a.discard.filter((x) => x.card === 'wound' || x.card === 'void-drain')).toHaveLength(2);
   });
 
+  it('Thunder Chant: a commanded Thunderbird deals 5 more; its end-of-turn effect does not change; Spirit Lance draws', () => {
+    let s = fight(['thunder-chant', 'spirit-call'], ['squire', 'squire']);
+    s.sides.a.totems = ['thunderbird', null, null];
+    s = play(s, 'thunder-chant');
+    s = play(s, 'spirit-call');
+    // (Spirit Call acts it twice: 8 + 5 to every enemy, each time)
+    expect(lost(s)).toEqual([26, 26]);
+    let l = fight(['spirit-lance']);
+    l.sides.a.draw = Array.from({ length: 6 }, (_, n) => ({ id: 'L' + n, card: n < 2 ? 'strike' : 'spark-strike' }));
+    l.sides.a.hand = [{ id: 'SL', card: 'spirit-lance' }];
+    l = play(l, 'spirit-lance', foe(l).id);
+    // (4 drawn: the 1-cost Strikes are discarded, the free Spark Strikes stay)
+    expect(l.sides.a.hand.every((c) => c.card === 'spark-strike')).toBe(true);
+  });
+
   it('the rare totems are planted by their own cards, for 3 and 2 Mana', () => {
     let s = fight(['call-the-elder-tree', 'call-the-moon-owl']);
     s = play(s, 'call-the-elder-tree');
@@ -532,11 +526,11 @@ describe('the Shaman: the totem cycle (DECISIONS #430)', () => {
     }
   });
 
-  it('pool: about 139 reward-eligible cards, 31 Auras, three element paths of 14 or more', () => {
+  it('pool: about 127 reward-eligible cards, 29 Auras, three element paths of 14 or more', () => {
     const own = rewardPool('shaman').filter((id) => db.cards[id]?.hero === 'shaman');
     expect(own.length).toBeGreaterThanOrEqual(110);
     expect(own.length).toBeLessThanOrEqual(145);
-    expect(own.filter((id) => db.cards[id]?.kind === 'power')).toHaveLength(31);
+    expect(own.filter((id) => db.cards[id]?.kind === 'power')).toHaveLength(29);
     expect(pathSizes('shaman').every((n) => n >= 14)).toBe(true);
   });
 

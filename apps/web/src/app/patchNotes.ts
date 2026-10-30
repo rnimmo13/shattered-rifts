@@ -29,6 +29,31 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.132.0',
+    date: '2026-10-30',
+    title: 'Shaman trim, Shocked',
+    summary: 'Stunned is now Shocked, and the Shaman’s pool is trimmed and tidied.',
+    notes: [
+      {
+        kind: 'changed',
+        text: 'Stunned is now called Shocked. It works exactly as before.',
+      },
+      {
+        kind: 'changed',
+        text: 'Thunder Chant now makes every Thunderbird you command deal more damage (it replaces Thunder Roost). Spirit Lance also draws cards, as Rapid Sift did. Wildfire has no limit on the Burn it doubles. Ember Lance, Ash Chant and Spark Strike are reworked, and Hail Chant is a rare that weakens every enemy while you have a Bear.',
+      },
+      {
+        kind: 'changed',
+        text: 'Cards that did the same thing several times now say it once ("Plant 2 Bears", "Add 3 Wounds to your discard pile"). Tinder, Owl Charge, Burn, Wound, Void and the totems are highlighted like other mechanics, and Kindling Ward and Deepening Night explain themselves.',
+      },
+      {
+        kind: 'changed',
+        text: 'Retired: Rapid Sift, Thunder Roost, Totem Strike, Rally the Spirits, Pyroclasm, Thunder Fork, Skullsplitter, Hardened Resolve, Ruin Fist, Tempest Call, Ice Wall and Ice Mirror. Old copies turn into a nearby card.',
+      },
+    ],
+    heads: 'The rules changed: reload to play the new cards, and old Arena games and replays no longer play.',
+  },
+  {
     version: '0.131.0',
     date: '2026-10-30',
     title: 'Shaman pool, big pass',

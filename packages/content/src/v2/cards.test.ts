@@ -135,7 +135,8 @@ describe('every card plays', () => {
         after.sides.a.runeSlots !== s0.sides.a.runeSlots ||
         after.sides.a.nextMana !== s0.sides.a.nextMana ||
         after.sides.a.nextDraw !== s0.sides.a.nextDraw ||
-        (c.effects.some((o) => o.op === 'sweep') && after.sides.a.discard.some((x) => x.id === 'SW0'));
+        (c.effects.some((o) => o.op === 'sweep') && after.sides.a.discard.some((x) => x.id === 'SW0')) ||
+        Object.keys(after.sides.a.totemBoost ?? {}).length > 0;
       expect(
         stateChange || fx.some((e) => !['exhaust', 'discard'].includes(e.type)),
         `${c.id} did nothing`,

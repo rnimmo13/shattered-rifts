@@ -178,7 +178,7 @@ export function createDescriber(c: LogContext): (e: CombatEvent) => Omit<LogLine
           : null;
       case 'skip':
         return {
-          text: `${verb(c.nameOf(e.unit), 'are', 'is')} stunned and lose${c.nameOf(e.unit) === 'You' ? '' : 's'} the turn`,
+          text: `${verb(c.nameOf(e.unit), 'are', 'is')} shocked and lose${c.nameOf(e.unit) === 'You' ? '' : 's'} the turn`,
           tone: tone(c.sideOf(e.unit)),
         };
       case 'damage': {

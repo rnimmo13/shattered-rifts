@@ -70,7 +70,7 @@ describe('balance guard rails', () => {
       if (c.kind === 'power' || !c.exhaust) bad.push(`${c.id} (not consumed)`);
       for (const o of c.effects)
         // (Slip the Leash doubles all your Might with no cap, Robert 2026-10-30)
-        if (o.op === 'scaleStatus' && o.max === undefined && c.id !== 'slip-the-leash' && c.id !== 'slip-the-leash+')
+        if (o.op === 'scaleStatus' && o.max === undefined && c.id !== 'slip-the-leash' && c.id !== 'slip-the-leash+' && c.id !== 'spreading-flames' && c.id !== 'spreading-flames+')
           bad.push(`${c.id} (no cap)`);
     }
     expect(bad).toEqual([]);

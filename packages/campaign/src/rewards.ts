@@ -94,6 +94,8 @@ const readsOwnerOnly = (o: Op): boolean =>
   o.op === 'uproot' ||
   o.op === 'totemSlot' ||
   o.op === 'totemCommand' ||
+  o.op === 'totemBoost' ||
+  o.op === 'totemPulse' ||
   o.op === 'totemRotate' ||
   o.op === 'form' ||
   ((o.op === 'spend' || o.op === 'status') && OWNER_STATUS.has(o.status)) ||

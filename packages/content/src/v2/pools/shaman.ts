@@ -63,6 +63,10 @@ const fork = (n: number, targets: number): Op => ({
   distinct: true,
   lonePct: 25,
 });
+/** plant `n` of a totem at once (the card says "Plant 2 Bears", not the same sentence twice) */
+const plantN = (spirit: string, n: number): Op => ({ op: 'plant', spirit, times: n });
+/** add `n` Wounds to your discard pile in one line */
+const woundN = (n: number): Op => ({ op: 'addCard', card: 'wound', to: 'discard', side: 'self', times: n });
 /** a totem number: +1 for each Spirit he has */
 const sp = <T extends Op>(o: T): T => scaled(o, per('spirit'));
 
@@ -121,8 +125,8 @@ const i = pool('shaman', 'nexus');
 /** Sapped on every enemy until the end of their next turn (a Storm ward) */
 const sapAll = (n: number): Op => statusTheirs('sapped', n, 'allFoes');
 const ifBurning = (ops: Op[]): Op => ({ op: 'when', by: 'burn', of: 'target', atLeast: 1, ops });
-/** doubles the target's Burn, at most 10 more (balance.test: a multiplier Consumes and is capped) */
-const doubleBurn: Op = { op: 'scaleStatus', status: 'burn', mult: 2, to: 'target', max: 10 };
+/** doubles the target's Burn with no limit (Robert, 2026-10-30; balance.test lets Wildfire off the cap rule, it Consumes) */
+const doubleBurn: Op = { op: 'scaleStatus', status: 'burn', mult: 2, to: 'target' };
 const gatheringStorm = (n: number, grow: number): Op[] => [
   scaled(fork(n, 2), per('bonus')),
   forge('gathering-storm', grow),
@@ -200,8 +204,8 @@ export const SHAMAN: CardDef[] = [
     'attack',
     1,
     'foe',
-    [dmg(10), when('played', { atMost: 0 }, [dmg(3)])],
-    { ...FLAME, up: { effects: [dmg(13), when('played', { atMost: 0 }, [dmg(3)])] } },
+    [dmg(10), when('played', { atMost: 0 }, [status('burn', 3, 'target')])],
+    { ...FLAME, up: { effects: [dmg(13), when('played', { atMost: 0 }, [status('burn', 3, 'target')])] } },
   ),
   i(
     'uncommon',
@@ -210,16 +214,12 @@ export const SHAMAN: CardDef[] = [
     'attack',
     1,
     'foe',
-    [scaled(dmg(7), per('spirit'))],
+    [scaled(dmg(7), per('spirit')), { op: 'draw', amount: 4, keepCost: 0 }],
     {
       ...FLAME,
-      up: { effects: [scaled(dmg(10), per('spirit'))] },
+      up: { effects: [scaled(dmg(10), per('spirit')), { op: 'draw', amount: 5, keepCost: 0 }] },
     },
   ),
-  i('uncommon', 'pyroclasm', 'Pyroclasm', 'attack', 2, 'foe', [dmg(16), ifBurning([dmg(8)])], {
-    ...FLAME,
-    up: { effects: [dmg(21), ifBurning([dmg(8)])] },
-  }),
   i(
     'uncommon',
     'smoulder',
@@ -306,10 +306,6 @@ export const SHAMAN: CardDef[] = [
     ...FROST,
     up: { effects: [plant('bear'), barrier(7)] },
   }),
-  i('uncommon', 'ice-wall', 'Ice Wall', 'skill', 2, 'none', [barrier(16)], {
-    ...FROST,
-    up: { effects: [barrier(20)] },
-  }),
   i(
     'uncommon',
     'glacier-guard',
@@ -339,16 +335,6 @@ export const SHAMAN: CardDef[] = [
     'foe',
     [scaled(dmg(6), per('faltering', 3, 'target'))],
     { ...FROST, up: { effects: [scaled(dmg(9), per('faltering', 3, 'target'))] } },
-  ),
-  i(
-    'uncommon',
-    'ice-mirror',
-    'Ice Mirror',
-    'skill',
-    1,
-    'none',
-    [barrier(6), status('reflect', 1)],
-    { ...FROST, up: { effects: [barrier(9), status('reflect', 1)] } },
   ),
   i(
     'uncommon',
@@ -438,10 +424,6 @@ export const SHAMAN: CardDef[] = [
     [dmg(8, 'allFoes'), plant('thunderbird')],
     { ...STORM, up: { effects: [dmg(11, 'allFoes'), plant('thunderbird')] } },
   ),
-  i('uncommon', 'thunder-fork', 'Thunder Fork', 'attack', 2, 'none', [fork(10, 3)], {
-    ...STORM,
-    up: { effects: [fork(13, 3)] },
-  }),
   i('uncommon', 'thunderclap', 'Thunderclap', 'attack', 2, 'none', [dmg(15, 'allFoes')], {
     ...STORM,
     up: { effects: [dmg(19, 'allFoes')] },
@@ -455,16 +437,6 @@ export const SHAMAN: CardDef[] = [
     'none',
     [dmg(3, 'allFoes', 2), draw(1)],
     { ...STORM, up: { effects: [dmg(4, 'allFoes', 2), draw(1)] } },
-  ),
-  i(
-    'uncommon',
-    'tempest-call',
-    'Tempest Call',
-    'skill',
-    1,
-    'none',
-    [forge('gathering-storm', 2), draw(1)],
-    { ...STORM, up: { effects: [forge('gathering-storm', 3), draw(1)] } },
   ),
   i(
     'uncommon',
@@ -489,16 +461,6 @@ export const SHAMAN: CardDef[] = [
     'none',
     [on('play', [dmg(3, 'randomFoe')], { tag: 'storm' })],
     { up: { effects: [on('play', [dmg(4, 'randomFoe')], { tag: 'storm' })] } },
-  ),
-  i(
-    'uncommon',
-    'thunder-roost',
-    'Thunder Roost',
-    'power',
-    1,
-    'none',
-    [on('turnStart', [ifTotem('thunderbird', [dmg(3, 'allFoes')])])],
-    { up: { effects: [on('turnStart', [ifTotem('thunderbird', [dmg(4, 'allFoes')])])] } },
   ),
   i('rare', 'maelstrom', 'Maelstrom', 'attack', 2, 'none', [dmg(8, 'allFoes', 2)], {
     ...STORM,
@@ -618,26 +580,6 @@ export const SHAMAN: CardDef[] = [
   i('common', 'hawks-dive', "Hawk's Dive", 'attack', 1, 'foe', [dmg(7), plant('hawk')], {
     up: { effects: [dmg(10), plant('hawk')] },
   }),
-  i(
-    'uncommon',
-    'rally-the-spirits',
-    'Rally the Spirits',
-    'skill',
-    2,
-    'none',
-    [commandTotem('front', 2), barrier(4)],
-    { up: { effects: [commandTotem('front', 2), barrier(7)] } },
-  ),
-  i(
-    'uncommon',
-    'totem-strike',
-    'Totem Strike',
-    'attack',
-    1,
-    'foe',
-    [scaled(dmg(2), per('totems', 3))],
-    { up: { effects: [scaled(dmg(5), per('totems', 3))] } },
-  ),
 
   // --- glue: Auras that stack (every copy answers on its own) ---
   i(
@@ -748,15 +690,6 @@ export const SHAMAN: CardDef[] = [
     ...FLAME,
     up: { effects: [scaled(dmg(18), { by: 'tagDeck', tag: STATUS_TAG, mult: 3 })] },
   }),
-  i('uncommon', 'skullsplitter', 'Skullsplitter', 'attack', 3, 'foe', [{ ...dmg(24), onKill: [mana(3)] } as Op], {
-    ...FLAME,
-    up: { effects: [{ ...dmg(30), onKill: [mana(3)] } as Op] },
-  }),
-  i('uncommon', 'ruin-fist', 'Ruin Fist', 'attack', 2, 'foe', [dmg(13), draw(1)], {
-    ...FLAME,
-    cheaperOnCreate: STATUS_TAG,
-    up: { effects: [dmg(14), draw(2)] },
-  }),
   i('rare', 'echoing-strike', 'Echoing Strike', 'attack', 2, 'foe', [dmg(18), { op: 'copySelf', to: 'discard', free: true }], {
     ...FLAME,
     up: { effects: [dmg(23), { op: 'copySelf', to: 'discard', free: true }] },
@@ -765,13 +698,13 @@ export const SHAMAN: CardDef[] = [
     ...FLAME,
     up: { effects: [dmg(14), { op: 'fetch', amount: 99, to: 'hand', maxCost: 0 }] },
   }),
-  i('rare', 'meteor-fall', 'Meteor Fall', 'attack', 5, 'foe', [dmg(24), plant('elder'), plant('elder'), plant('elder')], {
+  i('rare', 'meteor-fall', 'Meteor Fall', 'attack', 5, 'foe', [dmg(24), plantN('elder', 3)], {
     ...FLAME,
-    up: { effects: [dmg(30), plant('elder'), plant('elder'), plant('elder')] },
+    up: { effects: [dmg(30), plantN('elder', 3)] },
   }),
-  i('uncommon', 'twin-talons', 'Twin Talons', 'attack', 3, 'foe', [dmg(9, 'target', 2), plant('hawk'), plant('hawk')], {
+  i('uncommon', 'twin-talons', 'Twin Talons', 'attack', 3, 'foe', [dmg(9, 'target', 2), plantN('hawk', 2)], {
     ...FLAME,
-    up: { effects: [dmg(12, 'target', 2), plant('hawk'), plant('hawk')] },
+    up: { effects: [dmg(12, 'target', 2), plantN('hawk', 2)] },
   }),
   i('uncommon', 'boon-strike', 'Boon Strike', 'attack', 2, 'foe', [dmg(14), status('freepower', 1)], {
     ...FLAME,
@@ -812,9 +745,9 @@ export const SHAMAN: CardDef[] = [
     ...FROST,
     up: { effects: [barrier(8), plant('hawk')] },
   }),
-  i('uncommon', 'frostbound-hide', 'Frostbound Hide', 'skill', 2, 'none', [barrier(6), plant('bear'), plant('bear')], {
+  i('uncommon', 'frostbound-hide', 'Frostbound Hide', 'skill', 2, 'none', [barrier(6), plantN('bear', 2)], {
     ...FROST,
-    up: { effects: [barrier(9), plant('bear'), plant('bear')] },
+    up: { effects: [barrier(9), plantN('bear', 2)] },
   }),
   i('uncommon', 'moonshade-ward', 'Moonshade Ward', 'skill', 2, 'none', [barrier(11), plant('owl')], {
     ...FROST,
@@ -837,8 +770,8 @@ export const SHAMAN: CardDef[] = [
     'skill',
     1,
     'none',
-    [barrier(13), wound('self'), wound('self')],
-    { ...FROST, up: { effects: [barrier(17), wound('self'), wound('self')] } },
+    [barrier(13), woundN(2)],
+    { ...FROST, up: { effects: [barrier(17), woundN(2)] } },
   ),
   i('uncommon', 'dawn-ward', 'Dawn Ward', 'skill', 0, 'none', [barrier(10)], {
     ...FROST,
@@ -853,8 +786,8 @@ export const SHAMAN: CardDef[] = [
     'attack',
     3,
     'foe',
-    [dmg(19), plant('bear'), plant('bear'), plant('bear')],
-    { ...FROST, up: { effects: [dmg(24), plant('bear'), plant('bear'), plant('bear')] } },
+    [dmg(19), plantN('bear', 3)],
+    { ...FROST, up: { effects: [dmg(24), plantN('bear', 3)] } },
   ),
   i(
     'rare',
@@ -870,14 +803,18 @@ export const SHAMAN: CardDef[] = [
     up: { effects: [plant('owl'), status('umbra', 9)] },
   }),
   i(
-    'uncommon',
+    'rare',
     'hail-chant',
     'Hail Chant',
     'power',
     1,
     'none',
-    [on('turnEnd', [ifTotem('bear', [dmg(6, 'allFoes')])])],
-    { up: { effects: [on('turnEnd', [ifTotem('bear', [dmg(8, 'allFoes')])])] } },
+    [on('turnEnd', [ifTotem('bear', [status('faltering', 1, 'allFoes'), barrier(4)])])],
+    {
+      up: {
+        effects: [on('turnEnd', [ifTotem('bear', [status('faltering', 2, 'allFoes'), barrier(6)])])],
+      },
+    },
   ),
   i(
     'rare',
@@ -886,8 +823,8 @@ export const SHAMAN: CardDef[] = [
     'power',
     2,
     'none',
-    [plant('owl'), plant('owl'), on('turnEnd', [commandTotem('front')])],
-    { up: { effects: [plant('owl'), plant('owl'), plant('owl'), on('turnEnd', [commandTotem('front')])] } },
+    [plantN('owl', 2), on('turnEnd', [commandTotem('front')])],
+    { up: { effects: [plantN('owl', 3), on('turnEnd', [commandTotem('front')])] } },
   ),
   i(
     'rare',
@@ -926,9 +863,9 @@ export const SHAMAN: CardDef[] = [
     ...STORM,
     x: true,
   }),
-  i('uncommon', 'spark-strike', 'Spark Strike', 'attack', 0, 'foe', [dmg(3), ifTotem('thunderbird', [dmg(6)])], {
+  i('uncommon', 'spark-strike', 'Spark Strike', 'attack', 0, 'foe', [scaled(dmg(3), { by: 'totemsOf', rune: 'thunderbird', mult: 4 })], {
     ...STORM,
-    up: { effects: [dmg(5), ifTotem('thunderbird', [dmg(8)])] },
+    up: { effects: [scaled(dmg(5), { by: 'totemsOf', rune: 'thunderbird', mult: 6 })] },
   }),
   i('rare', 'thunder-beam', 'Thunder Beam', 'attack', 2, 'none', [dmg(28, 'allFoes'), status('spirit', -3)], {
     ...STORM,
@@ -945,11 +882,11 @@ export const SHAMAN: CardDef[] = [
     'power',
     1,
     'none',
-    [on('command', [dmg(6, 'allFoes')], { rune: 'thunderbird' })],
-    { up: { effects: [on('command', [dmg(8, 'allFoes')], { rune: 'thunderbird' })] } },
+    [{ op: 'totemBoost', rune: 'thunderbird', amount: 5 }],
+    { up: { effects: [{ op: 'totemBoost', rune: 'thunderbird', amount: 8 }] } },
   ),
   i('uncommon', 'storm-chant', 'Storm Chant', 'power', 1, 'none', [on('play', [plant('thunderbird')], { filter: 'power' })], {
-    up: { effects: [on('play', [plant('thunderbird'), plant('thunderbird')], { filter: 'power' })] },
+    up: { effects: [on('play', [plantN('thunderbird', 2)], { filter: 'power' })] },
   }),
 
   // --- glue: more Powers and utilities (from the Defect, mapped onto totems) ---
@@ -957,9 +894,9 @@ export const SHAMAN: CardDef[] = [
     exhaust: true,
     up: { effects: [draw(3), wound('self', 'void-drain')] },
   }),
-  i('uncommon', 'wider-circle', 'Wider Circle', 'skill', 1, 'none', [totemSlot, totemSlot], {
+  i('uncommon', 'wider-circle', 'Wider Circle', 'skill', 1, 'none', [{ op: 'totemSlot', amount: 2 }], {
     exhaust: true,
-    up: { effects: [totemSlot, totemSlot, totemSlot] },
+    up: { effects: [{ op: 'totemSlot', amount: 3 }] },
   }),
   i('uncommon', 'awakening-chant', 'Awakening Chant', 'power', 1, 'none', [on('play', [mana(1)], { filter: 'power' })], {
     up: { effects: [on('play', [mana(1)], { filter: 'power' })], cost: 0 },
@@ -981,19 +918,9 @@ export const SHAMAN: CardDef[] = [
   i('uncommon', 'burnt-offering', 'Burnt Offering', 'skill', 1, 'none', [exhaustN(1), manaNext(2)], {
     up: { effects: [exhaustN(1), manaNext(3)] },
   }),
-  i('uncommon', 'ash-chant', 'Ash Chant', 'power', 1, 'none', [on('created', [dmg(5, 'allFoes')])], {
-    up: { effects: [on('created', [dmg(7, 'allFoes')])] },
+  i('uncommon', 'ash-chant', 'Ash Chant', 'power', 1, 'none', [on('created', [status('burn', 5, 'allFoes')])], {
+    up: { effects: [on('created', [status('burn', 7, 'allFoes')])] },
   }),
-  i(
-    'uncommon',
-    'rapid-sift',
-    'Rapid Sift',
-    'attack',
-    1,
-    'foe',
-    [dmg(7), { op: 'draw', amount: 4, keepCost: 0 }],
-    { up: { effects: [dmg(10), { op: 'draw', amount: 5, keepCost: 0 }] } },
-  ),
   i('rare', 'awakened-spirit', 'Awakened Spirit', 'power', 1, 'none', [gainSpirit(1)], {
     up: { effects: [gainSpirit(2)] },
   }),
@@ -1041,9 +968,6 @@ export const SHAMAN: CardDef[] = [
   i('rare', 'ward-of-the-spirits', 'Ward of the Spirits', 'power', 2, 'none', [status('buffer', 1)], {
     up: { effects: [status('buffer', 2)] },
   }),
-  i('uncommon', 'hardened-resolve', 'Hardened Resolve', 'power', 2, 'none', [{ op: 'totemSlot', amount: -1 }, status('might', 2), status('bracing', 2)], {
-    up: { effects: [{ op: 'totemSlot', amount: -1 }, status('might', 3), status('bracing', 3)] },
-  }),
   i('uncommon', 'wild-vision', 'Wild Vision', 'skill', 1, 'none', [{ op: 'discover', kind: 'power', count: 1, turn: true }], {
     exhaust: true,
     up: { cost: 0 },
@@ -1056,7 +980,7 @@ export const SHAMAN: CardDef[] = [
     up: { exhaust: false },
   }),
   i('uncommon', 'wild-spirits', 'Wild Spirits', 'skill', 1, 'none', [plant('*')], {
-    up: { effects: [plant('*'), plant('*')] },
+    up: { effects: [plantN('*', 2)] },
   }),
   i('rare', 'grow-the-pole', 'Grow the Pole', 'skill', 0, 'none', [totemSlot, draw(1), recost(1)], {
     up: { effects: [totemSlot, draw(2), recost(1)] },
@@ -1073,8 +997,8 @@ export const SHAMAN: CardDef[] = [
     up: { exhaust: false },
   }),
   // (the supply: three Wounds into your discard pile, and a hand to play them with; each one is a Status card for the payoffs, and Ash Chant, Salvage Spirit and Bitter Lesson answer every one)
-  i('uncommon', 'harvest-of-ruin', 'Harvest of Ruin', 'skill', 1, 'none', [wound('self'), wound('self'), wound('self'), draw(2)], {
-    up: { effects: [wound('self'), wound('self'), wound('self'), draw(3)] },
+  i('uncommon', 'harvest-of-ruin', 'Harvest of Ruin', 'skill', 1, 'none', [woundN(3), draw(2)], {
+    up: { effects: [woundN(3), draw(3)] },
   }),
 ];
 

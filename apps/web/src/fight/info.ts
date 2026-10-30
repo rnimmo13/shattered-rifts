@@ -42,7 +42,7 @@ export const STATUS_INFO: Record<
     text: 'Bleeding: takes damage equal to its stacks at the start of its turn, then loses 1 stack.',
   },
   stunned: {
-    name: 'Stunned',
+    name: 'Shocked',
     glyph: '✖',
     tone: 'bad',
     text: 'Counts as Exposed, Faltering and Brittle at once (it never adds to them) until it wears off: takes 50% more attack damage, deals 25% less, and gains 25% less Barrier. It wears off at the end of its own turns, one each.',
@@ -522,6 +522,9 @@ const MADE_CARDS: readonly string[] = (() => {
       const o = x as Record<string, unknown>;
       if (o['op'] === 'addCard' && typeof o['card'] === 'string')
         ids.add(o['card'].replace(/\+$/, ''));
+      // (Kindling Ward: Status cards become Tinder, which the hover explains)
+      if (o['op'] === 'transform' && typeof o['into'] === 'string')
+        ids.add(o['into'].replace(/\+$/, ''));
       Object.values(o).forEach(walk);
     }
   };

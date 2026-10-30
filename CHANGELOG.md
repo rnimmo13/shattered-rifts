@@ -5,6 +5,7 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **Stunned is now Shocked** (same rules). Shaman trim: Thunder Chant boosts a commanded Thunderbird, Spirit Lance draws, Wildfire is uncapped, Hail Chant is a rare, repeated card lines read once ("Plant 2 Bears"), more mechanics highlighted, and twelve cards retired.
 - **Shaman pool pass:** about 60 new uncommons and rares (X-cost totem cards, Status payoffs, Buffer, Loop), the Moon Owl as a growing charge, new Status cards (Blight, Venom, Smudge, Scrap) and a Void that costs Mana to draw, Slip the Leash with no cap, enemies pulled in from the screen edge, scrolling Boon/Omen/Aura columns, and a ghost opponent's name in the fight.
 - **Shaman totem pass:** the Hawk hits a random enemy each turn (more when commanded) and the Moon Owl gives Spirit; Spirit Call commands twice; new cards Spirit Rush, Spirit Offering, Hasty Ward, Stone Sling and Raise the Hawk; a dozen cards retired; Burn on the Flame commons; Void is a 1-cost draw-a-card status card.
 - Hovering a card explains the cards it makes (Daggers, Gravesouls, Buckshot Shells...) with their real cost and text, and any totem it plants or names. The Totem explanation describes how totems work now.

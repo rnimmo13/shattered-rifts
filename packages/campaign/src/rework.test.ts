@@ -25,7 +25,7 @@ describe('runs saved before a class rework', () => {
     expect(back!.deck).toContain('raise-the-hawk');
     expect(back!.deck).toContain('rune-carapace+');
     // (and on through the totem cycle's, DECISIONS #430: harmonic-wave > prism-spell > totem-strike)
-    expect(back!.deck).toContain('totem-strike');
+    expect(back!.deck).toContain('spirit-strike');
     for (const id of back!.deck)
       expect(COMBAT_DB.cards[id.replace(/^(hi|lo)~/, '')], id).toBeDefined();
     expect(back!.reworkNotice).toMatch(/^The Shaman was rebuilt \(the totem cycle\)/);
@@ -91,7 +91,7 @@ describe('runs saved before a class rework', () => {
 describe('Rift-crossed offers (DECISIONS #418)', () => {
   it('never offer a card that only the Shaman can use to anyone else', async () => {
     const { deadElsewhere } = await import('./rewards');
-    for (const id of ['storm-sovereign', 'rally-the-spirits', 'spirit-surge', 'harmony', 'raise-the-hawk'])
+    for (const id of ['storm-sovereign', 'thunder-chant', 'spirit-surge', 'harmony', 'raise-the-hawk'])
       expect(deadElsewhere(id), id).toBe(true);
     for (const id of ['stone-skin', 'iron-shirt'])
       expect(deadElsewhere(id), id).toBe(false);

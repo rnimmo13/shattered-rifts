@@ -67,10 +67,10 @@ describe('the Shaman: Forks (DECISIONS #427)', () => {
     foe(s, 1).hp = 3;
     s = play(s, 'forked-lightning');
     expect(s.sides.b.units).toHaveLength(0);
-    let t = fight('shaman', ['thunder-fork'], ['squire', 'squire']);
-    t = play(t, 'thunder-fork');
-    // two enemies: each takes 10 once (a third hit finds no fresh enemy), no bonus
-    expect(t.sides.b.units.map((u) => 200 - u.hp)).toEqual([10, 10]);
+    let t = fight('shaman', ['eye-of-the-tempest'], ['squire', 'squire']);
+    t = play(t, 'eye-of-the-tempest');
+    // two enemies: each takes 11 once (more hits find no fresh enemy), no bonus
+    expect(t.sides.b.units.map((u) => 200 - u.hp)).toEqual([11, 11]);
   });
 
   it('a Fork is a Storm spell, and a totem no longer adds to it (the help went with the totem cycle, DECISIONS #430)', () => {
@@ -82,18 +82,18 @@ describe('the Shaman: Forks (DECISIONS #427)', () => {
   });
 
   it('the preview shows the lone bonus against one enemy, and plain damage against several', () => {
-    const one = fight('shaman', ['thunder-fork']);
-    expect(previewCardDamage(db, one, 'T0', null).get(0)?.lo).toBe(13);
-    const two = fight('shaman', ['thunder-fork'], ['squire', 'squire']);
-    expect(previewCardDamage(db, two, 'T0', null).get(0)?.lo).toBe(10);
+    const one = fight('shaman', ['eye-of-the-tempest']);
+    expect(previewCardDamage(db, one, 'T0', null).get(0)?.lo).toBe(14);
+    const two = fight('shaman', ['eye-of-the-tempest'], ['squire', 'squire']);
+    expect(previewCardDamage(db, two, 'T0', null).get(0)?.lo).toBe(11);
   });
 
-  it('Thunder Fork (2) is a reward; the text names the bonus', () => {
+  it('Eye of the Tempest is a reward; the text names the bonus', () => {
     expect(cardText(db, db.cards['forked-lightning']!)).toBe(
       'Storm. Deal 5 damage to 2 different random enemies (25% more when only one enemy stands).',
     );
     const pool = rewardPool('shaman');
-    expect(pool).toContain('thunder-fork');
+    expect(pool).toContain('eye-of-the-tempest');
   });
 
   it('Gathering Storm is a common reward now, and he starts with two Forked Lightning instead', () => {

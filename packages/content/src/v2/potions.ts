@@ -71,10 +71,10 @@ export const POTIONS: PotionDef[] = [
   },
   {
     id: 'stun-tonic',
-    name: 'Stun Tonic',
+    name: 'Shock Tonic',
     rarity: 'uncommon',
     // (Stun already counts as Exposed: DECISIONS #314)
-    text: 'Stun an enemy for 1 turn.',
+    text: 'Shock an enemy for 1 turn.',
     target: 'foe',
     effects: [status('stunned', 1, 'target')],
   },

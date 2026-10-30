@@ -664,7 +664,7 @@ export function FightView(props: {
         case 'skip':
           reduceEvent(db, d, e);
           sc.fighters.pulse(e.unit, '#9aa3c4');
-          float(e.unit, 'Stunned', 'bad');
+          float(e.unit, 'Shocked', 'bad');
           await wait(320);
           return;
         case 'damage': {

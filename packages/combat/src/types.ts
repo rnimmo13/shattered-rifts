@@ -785,6 +785,8 @@ export type Op =
   | { op: 'totemSlot'; amount?: number }
   /** (the Defect's Loop) the oldest totem's passive fires now, `times` times, whatever its timing */
   | { op: 'totemPulse'; times?: number }
+  /** for the rest of the fight, a commanded (or pushed-out) totem of this kind does `amount` more in each of its damage and Barrier numbers (its end-of-turn effect is not changed) */
+  | { op: 'totemBoost'; rune: string; amount: number }
   /**
    * (DECISIONS #430, the totem cycle) a totem's spirit acts `times` times and the totem is consumed (it leaves the row, the rest move
    * up): 'front' the oldest (the next in the cycle), 'newest' the last planted, a kind the front-most of that kind, 'all' every totem
@@ -1322,6 +1324,8 @@ export interface SideState {
   /** Mana spent on cards this turn; totems planted this fight, by kind */
   spentTurn?: number;
   channeledBy?: Record<string, number>;
+  /** (the Shaman) standing boosts to a kind of totem's command, by totem id */
+  totemBoost?: Record<string, number>;
   /** counters for the whole fight */
   drawn: number;
   created: number;
