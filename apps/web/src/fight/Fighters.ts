@@ -77,6 +77,8 @@ export interface FighterSpec {
   count: number;
   /** where it stands (stage x), from the side's measured layout; without one the fixed slots (slotX) are used */
   x?: number;
+  /** the row it stands on (stage y of its feet); LINE_Y without one. A phone held upright puts the enemies on a row behind (DECISIONS #443) */
+  y?: number;
   canvas: HTMLCanvasElement;
   /** figure height in stage px */
   height: number;
@@ -106,6 +108,8 @@ interface Fighter {
   ring: Sprite;
   aura: Sprite;
   x: number;
+  /** the row it stands on (stage y) */
+  y: number;
   width: number;
   phase: number;
   dying: boolean;
@@ -197,7 +201,7 @@ export class Fighters {
     return f
       ? {
           x: f.x,
-          y: LINE_Y,
+          y: f.y,
           h: f.spec.height + (f.spec.hover ?? 0),
           w: f.width,
           hover: f.spec.hover ?? 0,
@@ -256,6 +260,15 @@ export class Fighters {
           if (opts.instant || this.h.profile().still) f.root.x = x;
           else this.track(gsap.to(f.root, { x, duration: 0.35, ease: ease.out.gsap }));
         }
+        // (a new row: the screen was turned, and the line moves to the layout for it)
+        const y = spec.y ?? LINE_Y;
+        if (Math.abs(f.y - y) > 1) {
+          f.y = y;
+          f.root.zIndex = y + (spec.hover ? 1 : 0);
+          gsap.killTweensOf(f.root, 'y');
+          if (opts.instant || this.h.profile().still) f.root.y = y;
+          else this.track(gsap.to(f.root, { y, duration: 0.35, ease: ease.out.gsap }));
+        }
       }
     }
   }
@@ -264,8 +277,9 @@ export class Fighters {
     const k = spec.height / spec.canvas.height;
     const tex = Texture.from(spec.canvas);
     const root = new Container();
-    root.position.set(x, LINE_Y);
-    root.zIndex = LINE_Y + (spec.hover ? 1 : 0);
+    const y = spec.y ?? LINE_Y;
+    root.position.set(x, y);
+    root.zIndex = y + (spec.hover ? 1 : 0);
 
     const hover = spec.hover ?? 0;
     const w = spec.canvas.width * k;
@@ -341,6 +355,7 @@ export class Fighters {
       ring,
       aura,
       x,
+      y,
       width: w,
       phase: (this.all.size * 1.7) % 6.28,
       dying: false,
@@ -541,7 +556,7 @@ export class Fighters {
         gsap.timeline({
           onComplete: () => {
             f.busy--;
-            f.root.zIndex = LINE_Y + (f.spec.hover ? 1 : 0);
+            f.root.zIndex = f.y + (f.spec.hover ? 1 : 0);
             resolve(); // (already resolved at contact; harmless)
           },
         }),

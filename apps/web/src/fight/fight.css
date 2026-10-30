@@ -78,6 +78,8 @@
 .plate {
   position: absolute;
   transform: translateX(-50%);
+  /* (drawn smaller on a small screen with `scale`, from the point it hangs from: DECISIONS #443) */
+  transform-origin: 0 0;
   display: grid;
   gap: 0.2rem;
   text-align: center;
@@ -178,6 +180,7 @@
 .intent {
   position: absolute;
   transform: translate(-50%, -100%);
+  transform-origin: 0 0;
   display: grid;
   justify-items: center;
   gap: 0.05rem;
@@ -1817,33 +1820,6 @@
   text-shadow: 0 0 20px rgb(255 80 100 / 0.7);
 }
 
-/* a phone held upright: fights are played sideways */
-.fight__rotate {
-  display: none;
-}
-@media (orientation: portrait) and (max-width: 700px) and (pointer: coarse) {
-  .fight__rotate {
-    position: fixed;
-    inset: 0;
-    z-index: 300;
-    display: grid;
-    place-content: center;
-    gap: 1rem;
-    padding: 2rem;
-    text-align: center;
-    background: #070914;
-    color: var(--c-ivory);
-  }
-  .fight__rotate span {
-    font-size: 4rem;
-    color: var(--c-gold-light);
-  }
-  .fight__rotate p {
-    margin: 0;
-    font-size: 1.3rem;
-  }
-}
-
 /* the stance as a line of the player's name tag (PvP) */
 .stance__chip {
   --c: 255 255 255;
@@ -3172,4 +3148,382 @@ button.totem:disabled {
 }
 .totemarc__spiritBadge.is-lit .totemarc__orb {
   box-shadow: 0 0 12px rgb(127 233 245 / 0.75);
+}
+
+/* ==== small screens (DECISIONS #443): 'compact' is a phone on its side or a tablet held sideways, 'portrait' any screen taller
+   than it is wide. The layout class is set on .fight by the window's size (stageLayout.ts), so it looks the same with a finger or a
+   mouse. ==== */
+
+/* the side columns: on a wide screen the wrapper is not a box at all */
+.fight__sides {
+  display: contents;
+}
+/* the button that opens the drawer of Boons and Auras (their counts on it) */
+.fight__sideToggle {
+  position: absolute;
+  z-index: 31;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  min-height: 2.4rem;
+  padding: 0.25rem 0.7rem;
+  border-radius: 999px;
+  border: 1px solid var(--c-gold-dark);
+  background: rgb(8 10 20 / 0.85);
+  color: var(--c-gold-light);
+  font: inherit;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+.fight__sideToggle b {
+  color: var(--c-ivory);
+}
+.fight__sideToggle .is-foe {
+  color: #ff9aa9;
+}
+.fight__sideToggle.is-open {
+  border-color: var(--c-gold);
+  box-shadow: var(--glow-gold);
+}
+/* the drawer: both columns in one scrolling sheet over the board */
+.fight__drawer {
+  position: absolute;
+  z-index: 58;
+  display: grid;
+  gap: 0.6rem;
+  align-content: start;
+  max-height: 62vh;
+  overflow-y: auto;
+  padding: 0.6rem;
+  border-radius: 12px;
+  border: 1px solid var(--c-gold-dark);
+  background: rgb(8 10 20 / 0.95);
+  box-shadow: 0 10px 30px rgb(0 0 0 / 0.7);
+  pointer-events: auto;
+}
+.fight__drawer .fight__side,
+.fight__drawer .fight__side--foe {
+  position: static;
+  justify-items: stretch;
+  pointer-events: auto;
+}
+.fight__drawer .fight__side--foe {
+  padding-top: 0.5rem;
+  border-top: 1px solid rgb(255 255 255 / 0.12);
+}
+.fight__drawer .fight__omens {
+  justify-content: flex-start;
+  max-width: none;
+}
+.fight__drawer .fight__side--foe .fight__aux--auras,
+.fight__drawer .fight__side--foe .fight__aux--auras .aux--powers {
+  justify-items: start;
+  text-align: left;
+}
+/* (a panel moved by hand stays in the drawer: it has nowhere else to go on a small screen) */
+.fight__drawer .fpanel,
+.fight__drawer .fpanel.is-moved {
+  position: static !important;
+  inset: auto !important;
+  width: auto !important;
+  height: auto !important;
+  max-width: none;
+}
+.fight__drawer .fight__boons {
+  max-width: none;
+}
+.fight__drawer .aux--scroll {
+  max-height: none;
+}
+
+/* ---- a phone on its side, a tablet held sideways ---- */
+.fight--compact .fight__sideToggle {
+  left: 0.8rem;
+  top: 3.6rem;
+}
+/* the battle log goes up to the top right (the other side's column is in the drawer), clear of the enemies' plates */
+.fight--compact .fight__log {
+  top: 3.4rem;
+  bottom: auto;
+  right: 0.8rem;
+}
+.fight--compact .fight__drawer {
+  left: 0.8rem;
+  top: 6.4rem;
+  width: min(24rem, 46vw);
+}
+.fight--compact .fight__top {
+  inset: 0.5rem 0.8rem auto 0.8rem;
+  gap: 0.6rem;
+}
+
+/* ---- held upright ---- */
+.fight--portrait .fight__top {
+  inset: 0.35rem 0.4rem auto 0.4rem;
+  gap: 0.35rem;
+}
+.fight--portrait .fight__top .btn--small {
+  padding: 0.3rem 0.55rem;
+  font-size: 0.78rem;
+}
+/* (the buttons are in the menu: the title has the bar, short of the menu button on either side) */
+.fight--portrait .fight__title {
+  max-width: calc(100% - 13rem);
+  gap: 0.4rem;
+}
+.fight--portrait .fight__title b {
+  font-size: 0.85rem;
+}
+.fight--portrait .fight__title span {
+  font-size: 0.85rem;
+}
+.fight--portrait .fight__stakes {
+  padding: 0.15rem 0.6rem;
+  font-size: 0.72rem;
+}
+.fight--portrait .fight__opts {
+  gap: 0.3rem;
+}
+
+/* the row of controls that sits on the hand: Mana and the draw pile on the left, End turn in the middle, the discard pile right
+   (its bottom clear of the hand's band, so the fan may use the whole width) */
+.fight--portrait {
+  --ctl-bottom: calc(var(--cw, 82px) * 1.4 + 0.9rem);
+  --strip-bottom: calc(var(--ctl-bottom) + 3.6rem + 0.5rem);
+}
+.fight--portrait .fight__mana {
+  left: 0.5rem;
+  bottom: var(--ctl-bottom);
+  width: 3.4rem;
+  height: 3.4rem;
+  border-width: 2px;
+}
+.fight--portrait .fight__mana b {
+  font-size: 1.35rem;
+}
+.fight--portrait .fight__mana small {
+  font-size: 0.7rem;
+}
+.fight--portrait .pile {
+  bottom: var(--ctl-bottom);
+  width: 2.8rem;
+  height: 3.4rem;
+  padding: 0.15rem;
+  font-size: 0.55rem;
+  letter-spacing: 0.05em;
+  box-shadow:
+    2px 2px 0 -1px rgb(20 32 74 / 0.9),
+    4px 4px 0 -2px rgb(12 19 48 / 0.9);
+}
+.fight--portrait .pile b {
+  font-size: 1.1rem;
+}
+.fight--portrait .pile--draw {
+  left: 4.4rem;
+}
+.fight--portrait .pile--discard {
+  right: 0.5rem;
+}
+.fight--portrait .pile--exhaust {
+  right: 3.9rem;
+}
+.fight--portrait .fight__end {
+  left: 50%;
+  right: auto;
+  bottom: calc(var(--ctl-bottom) + 0.35rem);
+  translate: -50% 0;
+  padding: 0.45rem 0.9rem;
+  font-size: 0.9rem;
+}
+.fight--portrait .fight__end kbd {
+  display: none;
+}
+
+/* the strip between the board and the controls: the potion belt on the left, the drawer's button on the right */
+.fight--portrait .fight__potions {
+  left: 0.5rem;
+  top: auto;
+  bottom: var(--strip-bottom);
+  width: auto;
+  padding: 0.2rem 0.35rem;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+.fight--portrait .fight__beltLabel {
+  display: none;
+}
+.fight--portrait .fight__potions .fight__belt {
+  flex-direction: row;
+  gap: 0.3rem;
+}
+.fight--portrait .fight__potions .potionbtn,
+.fight--portrait .fight__potions .potionslot {
+  width: 2.6rem;
+  height: 2.6rem;
+}
+.fight--portrait .fight__sideToggle {
+  right: 0.5rem;
+  bottom: var(--strip-bottom);
+}
+.fight--portrait .fight__drawer {
+  left: 0.4rem;
+  right: 0.4rem;
+  top: 2.9rem;
+  max-height: calc(100% - var(--strip-bottom) - 6rem);
+}
+/* the battle log: folded, in the strip above the drawer's button */
+.fight--portrait .fight__log {
+  right: 0.5rem;
+  bottom: calc(var(--strip-bottom) + 3rem);
+  width: min(15rem, 62vw);
+  font-size: 1rem;
+}
+/* the teaching tip: across the screen over the floor, clear of the enemies and their next moves */
+.fight--portrait .fight__tip {
+  left: 0.4rem;
+  right: 0.4rem;
+  top: auto;
+  bottom: calc(var(--strip-bottom) + 3.2rem);
+  width: auto;
+  padding: 0.5rem 0.7rem;
+}
+.fight--portrait .fight__tip p {
+  font-size: 0.85rem;
+}
+.fight--portrait .fight__aimbar {
+  top: 2.9rem;
+  max-width: calc(100% - 1rem);
+  padding: 0.3rem 0.7rem;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+}
+.fight--portrait .fight__banner span {
+  font-size: 1.4rem;
+}
+
+/* held upright: the card under the finger, big, above the hand (in place of the lift a mouse gives), with its notes under it */
+.fight__peek {
+  position: fixed;
+  left: 50%;
+  /* (above the lifted card: it rises 0.4 of its width and grows to 1.28, fanLayout) */
+  bottom: calc(var(--cw, 82px) * (1.4 * 1.28 + 0.4) + 0.5rem);
+  translate: -50% 0;
+  z-index: 210;
+  display: grid;
+  justify-items: center;
+  gap: 0.4rem;
+  width: min(22rem, 94vw);
+  pointer-events: none;
+  filter: drop-shadow(0 10px 30px rgb(0 0 0 / 0.75));
+}
+.fight__peekKeys {
+  list-style: none;
+  margin: 0;
+  padding: 0.45rem 0.6rem;
+  display: grid;
+  gap: 0.25rem;
+  width: 100%;
+  box-sizing: border-box;
+  border-radius: 10px;
+  background: rgb(8 10 22 / 0.95);
+  border: 1px solid var(--c-gold-dark);
+  font-size: 0.8rem;
+  line-height: 1.3;
+  color: var(--c-ivory);
+}
+.fight__peekKeys b {
+  color: var(--c-gold-light);
+}
+.fight--portrait .fight__aimbar {
+  white-space: nowrap;
+}
+/* held upright: the top bar's buttons in a menu under its button */
+.fight__menu {
+  position: absolute;
+  left: 0;
+  top: calc(100% + 0.35rem);
+  z-index: 70;
+  display: grid;
+  gap: 0.4rem;
+  justify-items: stretch;
+  min-width: 11rem;
+  padding: 0.5rem;
+  border-radius: 12px;
+  border: 1px solid var(--c-gold-dark);
+  background: rgb(8 10 20 / 0.96);
+  box-shadow: 0 10px 30px rgb(0 0 0 / 0.7);
+}
+.fight__menu .fight__opts {
+  display: grid;
+  gap: 0.4rem;
+}
+.fight__menu .btn--small {
+  min-height: 2.4rem;
+}
+.fight__menuBtn.is-on {
+  border-color: var(--c-gold);
+}
+/* a phone on its side: Mana and End turn come down beside the piles, so the board's lower edge (the enemies' plates) is clear */
+@media (max-height: 600px) {
+  .fight--compact .fight__mana {
+    left: calc(1.4rem + 5.2rem + 0.6rem);
+    bottom: 0.8rem;
+  }
+  .fight--compact .fight__end {
+    right: calc(1.4rem + 5.2rem + 0.6rem);
+    bottom: 1.2rem;
+  }
+  .fight--compact .fight__potions {
+    bottom: calc(0.8rem + 7.28rem + 0.6rem);
+  }
+  .fight--compact .fight__lumen {
+    left: calc(1.4rem + 2 * (5.2rem + 0.6rem));
+    bottom: calc(0.8rem + 0.6rem);
+  }
+}
+/* a tablet held sideways: Mana and End turn sit on the hand's top edge (not in its band, so the fan keeps its width), and the
+   potion belt is a row beside Mana, clear of the hero */
+@media (min-height: 600px) {
+  .fight--compact {
+    --ctl-bottom: calc(var(--cw, 154px) * 1.4 + 0.9rem);
+  }
+  .fight--compact .fight__mana,
+  .fight--compact .fight__end {
+    bottom: var(--ctl-bottom);
+  }
+  .fight--compact .fight__lumen {
+    bottom: calc(var(--ctl-bottom) + 0.6rem);
+  }
+  .fight--compact .fight__potions {
+    left: calc(1.4rem + 5.2rem + 0.6rem);
+    bottom: var(--ctl-bottom);
+    width: auto;
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+  }
+  .fight--compact .fight__beltLabel {
+    display: none;
+  }
+  .fight--compact .fight__potions .fight__belt {
+    flex-direction: row;
+  }
+  .fight--compact .fight__potions:has(~ .fight__lumen) {
+    left: calc(1.4rem + 5.2rem + 0.6rem + 4rem + 0.6rem);
+  }
+}
+/* held upright: Arcana in the strip, after the potion belt */
+.fight--portrait .fight__lumen {
+  left: 10.2rem;
+  bottom: var(--strip-bottom);
+  width: 2.8rem;
+  height: 2.8rem;
+  border-width: 2px;
+}
+.fight--portrait .fight__lumen b {
+  font-size: 1.1rem;
+}
+.fight--portrait .fight__lumen small {
+  display: none;
 }

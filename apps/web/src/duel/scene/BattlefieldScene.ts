@@ -82,6 +82,17 @@ export interface SceneStats {
   resolution: number;
 }
 
+/** The part of the stage the camera must show (stage px). */
+export interface BoardFrame {
+  x0: number;
+  x1: number;
+  top: number;
+  bottom: number;
+  /** when the screen is taller than the frame needs: hang it from the top of its room instead of centring it */
+  hang?: boolean;
+}
+const DEFAULT_FRAME: BoardFrame = { x0: 0, x1: stage.width, top: 150, bottom: 960 };
+
 export class BattlefieldScene {
   private readonly app: Application;
   private readonly world = new Container();
@@ -118,6 +129,9 @@ export class BattlefieldScene {
   /** called after the board is refitted to its host (DOM overlays must be placed again) */
   onFit: () => void = () => undefined;
   private bottomReserve = 0;
+  private topReserve = 0;
+  /** the part of the stage that must be seen (DECISIONS #443: a phone held upright frames a narrower, taller part) */
+  private frame: BoardFrame = DEFAULT_FRAME;
   private baseX = 0;
   private baseY = 0;
   private shakeAmp = 0;
@@ -486,22 +500,43 @@ export class BattlefieldScene {
     this.fit();
   }
 
+  /** Screen px at the top that something else (the top bar, on a small screen) covers; the board is fitted below it. */
+  setTopReserve(px: number): void {
+    this.topReserve = Math.max(0, px);
+    this.fit();
+  }
+
+  /** Which part of the stage must be seen, and the strips at the top and bottom that other things cover, all at once. */
+  setFrame(frame: BoardFrame, reserve: { top: number; bottom: number }): void {
+    this.frame = frame;
+    this.topReserve = Math.max(0, reserve.top);
+    this.bottomReserve = Math.max(0, reserve.bottom);
+    this.fit();
+  }
+
   /**
-   * Fit the board into the host above the reserved strip. The playable rows (stage y 150..960) are what must
+   * Fit the board into the host between the reserved strips. The frame's rows (by default stage y 150..960) are what must
    * stay visible; the sky above can be cropped, and the backdrops extend past the stage so nothing shows bars.
    */
   private fit(): void {
     const w = this.host.clientWidth || this.app.screen.width;
     const h = this.host.clientHeight || this.app.screen.height;
-    const avail = Math.max(100, h - this.bottomReserve);
-    const top = 150;
-    const bottom = 960;
-    const sx = w / stage.width;
+    const { x0, x1, top, bottom } = this.frame;
+    const avail = Math.max(100, h - this.bottomReserve - this.topReserve);
+    const sx = w / (x1 - x0);
     const sy = avail / (bottom - top);
     const s = Math.min(sx, sy);
     this.world.scale.set(s);
-    this.baseX = (w - stage.width * s) / 2;
-    this.baseY = sy <= sx ? avail - bottom * s : (avail - (bottom - top) * s) / 2 - top * s;
+    this.baseX = (w - (x1 - x0) * s) / 2 - x0 * s;
+    // (too short for the frame: its bottom sits on the hand and the sky is cropped; too narrow: the frame is centred in its room,
+    // or hung from the top of it when the frame asks, leaving the room under it for the controls)
+    this.baseY =
+      this.topReserve +
+      (sy <= sx
+        ? avail - bottom * s
+        : this.frame.hang
+          ? -top * s
+          : (avail - (bottom - top) * s) / 2 - top * s);
     this.world.position.set(this.baseX, this.baseY);
     this.vignette.width = w;
     this.vignette.height = h;

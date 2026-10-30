@@ -27,6 +27,10 @@ export interface PlatesProps {
   sharp?: { weapon: string; word: string; amount: number } | null;
   /** the damage the card being aimed would do to this unit */
   preview?: { id: string; text: string } | null;
+  /** how big the plates and intents are drawn (a small screen draws them smaller, DECISIONS #443); 1 when absent */
+  scale?: number;
+  /** the highest an intent may sit (CSS length): below the top bar */
+  intentTop?: string;
 }
 
 /** Thorns: a bramble stem with barbs, drawn instead of a text glyph so it reads at chip size. */
@@ -48,7 +52,17 @@ function ThornIcon() {
   );
 }
 
-export function UnitPlates({ items, targetable, hover, preview, heroId, sharp }: PlatesProps) {
+export function UnitPlates({
+  items,
+  targetable,
+  hover,
+  preview,
+  heroId,
+  sharp,
+  scale = 1,
+  intentTop = '7.8rem',
+}: PlatesProps) {
+  const k = scale;
   // plates that would run into their neighbours get narrower, and a crowd staggers up and down, so no two ever overlap
   const lane = new Map<string, { width: number; dy: number }>();
   for (const side of ['a', 'b'] as const) {
@@ -61,12 +75,15 @@ export function UnitPlates({ items, targetable, hover, preview, heroId, sharp }:
         const prev = row[idx - 1];
         const next = row[idx + 1];
         const gap = Math.min(prev ? it.x - prev.x : Infinity, next ? next.x - it.x : Infinity);
-        const want = Math.max(165, Math.min(215, it.w * 1.05));
-        const tight = gap < want + 8;
+        // (screen px; a plate drawn smaller (scale) is as wide on screen as it is set here)
+        const want = Math.max(165 * k, Math.min(215 * k, it.w * 1.05));
+        const tight = gap < want + 8 * k;
+        // (drawn smaller, a plate may also get narrower before it drops a line: a small screen has no room for two rows)
+        const narrowest = k === 1 ? 118 : 80 * k;
         lane.set(it.unit.id, {
-          width: tight ? Math.max(118, Math.min(want, gap - 8)) : want,
+          width: tight ? Math.max(narrowest, Math.min(want, gap - 8 * k)) : want,
           // when even the narrow plates would touch, every other one drops a line
-          dy: gap < 126 && idx % 2 === 1 ? 54 : 0,
+          dy: gap < narrowest + 8 * k && idx % 2 === 1 ? 54 * k : 0,
         });
       });
     }
@@ -84,14 +101,23 @@ export function UnitPlates({ items, targetable, hover, preview, heroId, sharp }:
         const pct = Math.max(0, Math.min(100, (u.hp / u.maxHp) * 100));
         const iv = u.intentView;
         const incoming = u.hp > 0 ? sweeps(u.side) : [];
-        const slot = lane.get(u.id) ?? { width: Math.max(165, Math.min(215, w * 1.05)), dy: 0 };
-        const width = slot.width;
-        const style: CSSProperties = { left: x, top: y + 10 + slot.dy, width };
+        const slot = lane.get(u.id) ?? {
+          width: Math.max(165 * k, Math.min(215 * k, w * 1.05)),
+          dy: 0,
+        };
+        const width = slot.width / k;
+        const style: CSSProperties = {
+          left: x,
+          top: y + 10 * k + slot.dy,
+          width,
+          ...(k !== 1 ? { scale: String(k) } : {}),
+        };
         // (a tall figure never pushes its next move off the screen: it stops below the title bar, over the figure's head if it must, and
         // an enemy at the side of the screen keeps it, and its words, inside the edges)
         const intentStyle: CSSProperties = {
-          left: `clamp(7.2rem, ${x}px, calc(100% - 7.2rem))`,
-          top: `max(${y - h - 8}px, 7.8rem)`,
+          left: `clamp(${7.2 * k}rem, ${x}px, calc(100% - ${7.2 * k}rem))`,
+          top: `max(${y - h - 8 * k}px, ${intentTop})`,
+          ...(k !== 1 ? { scale: String(k) } : {}),
         };
         return (
           <div key={u.id}>

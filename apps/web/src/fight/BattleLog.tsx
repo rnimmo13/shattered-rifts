@@ -52,7 +52,7 @@ export function BattleLog(props: { lines: readonly LogLine[]; db: CombatDb }) {
         className="fight__log"
         title="Battle log"
         // (folded on a phone, where the screen is better spent on the board)
-        startFolded={window.innerHeight < 600}
+        startFolded={window.innerHeight < 600 || window.innerHeight > window.innerWidth}
         extra={
           <button
             type="button"

@@ -49,3 +49,14 @@ export function packLine(items: LineItem[], near: number, far: number): LineFit 
   const scale = Math.max(MIN_SCALE, room / full.used);
   return { xs: place(scale).xs, scale };
 }
+
+/** A line packed from `near` towards `far` (left to right), then slid so the group sits in the middle of that span. */
+export function centredLine(items: LineItem[], near: number, far: number): LineFit {
+  const fit = packLine(items, near, far);
+  const last = items.length - 1;
+  if (last < 0) return fit;
+  const first = (fit.xs[0] as number) - ((items[0] as LineItem).fw * fit.scale) / 2;
+  const end = (fit.xs[last] as number) + ((items[last] as LineItem).fw * fit.scale) / 2;
+  const shift = (near + far) / 2 - (first + end) / 2;
+  return { ...fit, xs: fit.xs.map((x) => x + shift) };
+}

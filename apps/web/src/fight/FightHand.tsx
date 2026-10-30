@@ -55,6 +55,8 @@ export interface FightHandProps {
   onHover: (card: HandCard | null, rect?: DOMRect) => void;
   /** the centre (client px) of the figure the card is aimed at, for the arrow to lock onto */
   lockAt?: { x: number; y: number } | null;
+  /** the fan may use the whole width (held upright, the controls sit above the hand: DECISIONS #443) */
+  fill?: boolean;
 }
 
 interface Drag {
@@ -126,10 +128,9 @@ export function FightHand(p: FightHandProps) {
   const clear = window.innerWidth - 2 * reserve - p.cardWidth;
   const layout = {
     cardWidth: p.cardWidth,
-    maxSpread: Math.max(
-      p.cardWidth * 3,
-      Math.min(window.innerWidth * 0.72, p.cardWidth * 0.8 * 9, clear),
-    ),
+    maxSpread: p.fill
+      ? window.innerWidth - p.cardWidth - 12
+      : Math.max(p.cardWidth * 3, Math.min(window.innerWidth * 0.72, p.cardWidth * 0.8 * 9, clear)),
   };
   const slots = fanLayout(n, {
     ...layout,

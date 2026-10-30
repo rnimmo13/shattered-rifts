@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { MIN_SCALE, packLine, TUCK } from './lineLayout';
+import { MIN_SCALE, centredLine, packLine, TUCK } from './lineLayout';
 
 describe('packLine', () => {
   it('stands figures left to right without touching when there is room', () => {
@@ -68,5 +68,29 @@ describe('packLine', () => {
 
   it('handles an empty side', () => {
     expect(packLine([], 1000, 1800)).toEqual({ xs: [], scale: 1 });
+  });
+});
+
+describe('centredLine (the upright layout, DECISIONS #443)', () => {
+  it('sits the group in the middle of its span', () => {
+    const r = centredLine(
+      [
+        { fw: 200, tier: 0 },
+        { fw: 200, tier: 0 },
+      ],
+      500,
+      1500,
+    );
+    expect(r.xs).toEqual([900, 1100]);
+  });
+  it('fills the span when it has to shrink, and handles an empty side', () => {
+    const r = centredLine(
+      Array.from({ length: 4 }, () => ({ fw: 250, tier: 0 })),
+      500,
+      1300,
+    );
+    expect(r.scale).toBeLessThan(1);
+    expect(r.xs[0]! - (250 * r.scale) / 2).toBeCloseTo(500, 0);
+    expect(centredLine([], 500, 1300)).toEqual({ xs: [], scale: 1 });
   });
 });

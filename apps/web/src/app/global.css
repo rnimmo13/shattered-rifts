@@ -827,12 +827,13 @@ body:has(.learn) {
 }
 
 /* ---- phones: everything sized in rem shrinks with the window, so a short landscape screen is not crowded out ---- */
-@media (max-height: 600px) and (pointer: coarse) {
+/* (by the window's size alone, not the kind of pointer: a small window looks the same on any device, DECISIONS #443) */
+@media (max-height: 600px) {
   html {
     font-size: max(10px, 2.7vh);
   }
 }
-@media (max-width: 600px) and (min-height: 601px) and (pointer: coarse) {
+@media (max-width: 600px) and (min-height: 601px) {
   html {
     font-size: max(12px, 3.4vw);
   }
