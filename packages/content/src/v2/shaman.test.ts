@@ -15,7 +15,7 @@ import {
   type CombatState,
   type Unit,
 } from '@sr/combat';
-import { COMBAT_DB as db, RIFTWALKERS, pathSizes, rewardPool } from './index';
+import { COMBAT_DB as db, RIFTWALKERS, rewardPool } from './index';
 
 /** a fight on his turn with the given hand, his three starting totems planted, and one enemy (or the ones named) at 200 HP */
 function fight(hand: string[], enemies: string[] = ['squire']): CombatState {
@@ -258,24 +258,24 @@ describe('the Shaman: the totem cycle (DECISIONS #430)', () => {
     expect(lost(t)).toEqual([5]);
   });
 
-  it('Auras stack: two Totem Drums each strike when a totem acts; Storm Sovereign answers a push-out too', () => {
-    let s = fight(['totem-drum', 'totem-drum', 'storm-sovereign', 'hawks-dive']);
-    for (const id of ['totem-drum', 'totem-drum', 'storm-sovereign']) s = play(s, id);
+  it('Auras stack: two Storm Sovereigns each answer when a totem acts, a push-out too', () => {
+    let s = fight(['storm-sovereign', 'storm-sovereign', 'hawks-dive']);
+    for (const id of ['storm-sovereign', 'storm-sovereign']) s = play(s, id);
     const hp = foe(s).hp;
     s = play(s, 'hawks-dive', foe(s).id);
-    // (the Hawk pushed out hits for 7, 3 + 3 from the Drums, 3 from the Sovereign, and its 3 Barrier)
-    expect(hp - foe(s).hp).toBe(7 + 7 + 3 + 3 + 3);
-    expect(hero(s).barrier).toBe(3);
+    // (the Hawk pushed out hits for 7, and each Sovereign adds 3 damage and 3 Barrier)
+    expect(hp - foe(s).hp).toBe(7 + 7 + 3 + 3);
+    expect(hero(s).barrier).toBe(6);
   });
 
   it('the new plant and command cards do what they say', () => {
     let s = fight(
-      ['talon-strike', 'thunderbird-call', 'totem-circle', 'raise-a-totem'],
+      ['hawks-dive', 'thunderbird-call', 'totem-circle', 'raise-a-totem'],
       ['squire', 'squire'],
     );
-    s = play(s, 'talon-strike', foe(s).id);
-    // (11, and the Hawk pushed out hits a random enemy for 7)
-    expect(lost(s).reduce((a, b) => a + b, 0)).toBe(11 + 7);
+    s = play(s, 'hawks-dive', foe(s).id);
+    // (7, and the Hawk pushed out hits a random enemy for 7)
+    expect(lost(s).reduce((a, b) => a + b, 0)).toBe(7 + 7);
     expect(row(s)).toEqual(['bear', 'thunderbird', 'hawk']);
     s = play(s, 'thunderbird-call');
     // (4 to all, the Bear pushed out: 6 Barrier)
@@ -311,13 +311,16 @@ describe('the Shaman: the totem cycle (DECISIONS #430)', () => {
     t = play(t, 'thunder-beam');
     expect(lost(t)).toEqual([28, 28]);
     expect(hero(t).statuses.spirit ?? 0).toBe(0);
-    // (Totem Mantle: 2 Barrier per kind of totem at the start of each turn; Awakened Spirit: a point of Spirit)
-    let u = fight(['totem-mantle', 'awakened-spirit']);
-    u = play(u, 'totem-mantle');
-    u = play(u, 'awakened-spirit');
-    expect(hero(u).statuses.spirit).toBe(1);
-    u = endTurn(u);
-    expect(hero(u).barrier).toBeGreaterThanOrEqual(6);
+    // (Spirit Surge: 2 Spirit and 8 Barrier)
+    let u = fight(['spirit-surge']);
+    u = play(u, 'spirit-surge');
+    expect(hero(u).statuses.spirit).toBe(2);
+    // (Hail Chant: with a Bear standing, the end of turn gives 4 Barrier and 1 Faltering to every enemy)
+    let hc = fight(['hail-chant']);
+    hc = play(hc, 'hail-chant');
+    hc.sides.a.totems = ['bear', null, null];
+    const res = applyAction(db, hc, { type: 'endTurn' });
+    expect(res.events.some((e) => e.type === 'status' && e.status === 'faltering' && e.amount > 0)).toBe(true);
     // (Spark Strike: 3, and 4 more for each Thunderbird standing)
     let w = fight(['spark-strike']);
     w = play(w, 'spark-strike', foe(w).id);
@@ -384,11 +387,6 @@ describe('the Shaman: the totem cycle (DECISIONS #430)', () => {
     ];
     d = play(d, 'swift-study');
     expect(d.sides.a.hand).toHaveLength(5);
-    // (Dream Weaving: a random Power joins your hand at the start of each turn)
-    let w = fight(['dream-weaving']);
-    w = play(w, 'dream-weaving');
-    w = endTurn(w);
-    expect(w.sides.a.hand.some((c) => db.cards[c.card]?.kind === 'power')).toBe(true);
     // (Snap Back: the first 0-cost Attack each turn returns to your hand)
     let f = fight(['snap-back', 'spark-strike']);
     f = play(f, 'snap-back');
@@ -397,20 +395,11 @@ describe('the Shaman: the totem cycle (DECISIONS #430)', () => {
   });
 
   it('the rest of the Defect copies: Chill, Sunder, Compact, Modded, Reboot, Voltaic, Shatter, All for One, Adaptive Strike', () => {
-    // (Cold Breath: a Bear for each enemy)
-    let c = fight(['cold-breath'], ['squire', 'squire']);
-    c.sides.a.totems = [null, null, null];
-    c = play(c, 'cold-breath');
-    expect(row(c).filter((k) => k === 'bear')).toHaveLength(2);
     // (Kindling Ward: Void and Wound cards in your hand become Tinder, which gives a Mana)
     let w = fight(['kindling-ward']);
     w.sides.a.hand.push({ id: 'V', card: 'void-drain' }, { id: 'W', card: 'wound' });
     w = play(w, 'kindling-ward');
     expect(w.sides.a.hand.filter((x) => x.card === 'tinder')).toHaveLength(2);
-    // (Grow the Pole: a position, a card, and it costs 1 more for the rest of the fight)
-    let g = fight(['grow-the-pole']);
-    g = play(g, 'grow-the-pole');
-    expect(g.sides.a.totems).toHaveLength(4);
     // (Fresh Start: every card goes back into the draw pile, then 4 are drawn)
     let f = fight(['fresh-start']);
     f.sides.a.discard = [{ id: 'X1', card: 'strike' }, { id: 'X2', card: 'defend' }];
@@ -446,13 +435,11 @@ describe('the Shaman: the totem cycle (DECISIONS #430)', () => {
     expect(power!.freeTurn).toBe(true);
   });
 
-  it('status payoffs: Sorrow\'s Hammer and Blighted Chorus grow with the Status cards in your deck, Harvest of Ruin feeds them, Sweep Away clears the draw pile of them', () => {
-    // (3 Wounds from Harvest of Ruin: Sorrow's Hammer is 12 + 3 for each Status card in the deck)
-    let h = fight(['harvest-of-ruin', 'sorrows-hammer']);
+  it('status payoffs: Blighted Chorus grows with the Status cards in your deck, Harvest of Ruin feeds them, Sweep Away clears the draw pile of them', () => {
+    // (3 Wounds from Harvest of Ruin go to the discard pile)
+    let h = fight(['harvest-of-ruin']);
     h = play(h, 'harvest-of-ruin');
     expect(h.sides.a.discard.filter((x) => x.card === 'wound')).toHaveLength(3);
-    h = play(h, 'sorrows-hammer', foe(h).id);
-    expect(lost(h)).toEqual([12 + 3 * 3]);
     // (Blighted Chorus: 2 hits, one more per Status card)
     let b = fight(['blighted-chorus']);
     b.sides.a.discard = [
@@ -514,12 +501,11 @@ describe('the Shaman: the totem cycle (DECISIONS #430)', () => {
     }
   });
 
-  it('pool: about 108 reward-eligible cards, 24 Auras, three element paths of 14 or more', () => {
+  it('pool: about 88 reward-eligible cards, 19 Auras', () => {
     const own = rewardPool('shaman').filter((id) => db.cards[id]?.hero === 'shaman');
-    expect(own.length).toBeGreaterThanOrEqual(100);
+    expect(own.length).toBeGreaterThanOrEqual(80);
     expect(own.length).toBeLessThanOrEqual(145);
-    expect(own.filter((id) => db.cards[id]?.kind === 'power')).toHaveLength(24);
-    expect(pathSizes('shaman').every((n) => n >= 14)).toBe(true);
+    expect(own.filter((id) => db.cards[id]?.kind === 'power')).toHaveLength(19);
   });
 
   it('no loop: an 8-card deck of free plants, commands, the Elder and the Owl plays a bounded number of cards a turn', () => {

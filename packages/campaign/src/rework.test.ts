@@ -23,7 +23,7 @@ describe('runs saved before a class rework', () => {
     expect(back!.reworked).toBe(CLASS_REWORKS.shaman?.version);
     // (through the first rework's ids to the second's, DECISIONS #420: twin-evocation > guided-talon > ember-bolt)
     expect(back!.deck).toContain('raise-the-hawk');
-    expect(back!.deck).toContain('totem-mantle+');
+    expect(back!.deck).toContain('hail-chant+');
     // (and on through the totem cycle's, DECISIONS #430: harmonic-wave > prism-spell > totem-strike)
     expect(back!.deck).toContain('spirit-strike');
     for (const id of back!.deck)

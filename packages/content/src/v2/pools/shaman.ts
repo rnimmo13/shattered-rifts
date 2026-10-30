@@ -42,7 +42,6 @@ import {
   returnPlayed,
   scaled,
   reshuffle,
-  recost,
   scry,
   status,
   statusTheirs,
@@ -123,7 +122,6 @@ export const TOTEMS: TotemDef[] = [
 const i = pool('shaman', 'nexus');
 /** Sapped on every enemy until the end of their next turn (a Storm ward) */
 const sapAll = (n: number): Op => statusTheirs('sapped', n, 'allFoes');
-const ifBurning = (ops: Op[]): Op => ({ op: 'when', by: 'burn', of: 'target', atLeast: 1, ops });
 /** doubles the target's Burn with no limit (Robert, 2026-10-30; balance.test lets Wildfire off the cap rule, it Consumes) */
 const doubleBurn: Op = { op: 'scaleStatus', status: 'burn', mult: 2, to: 'target' };
 const gatheringStorm = (n: number, grow: number): Op[] => [
@@ -158,16 +156,6 @@ export const SHAMAN: CardDef[] = [
   }),
 
   // --- Flame: big single-target bursts; Burn is a small extra ---
-  i(
-    'common',
-    'firebrand',
-    'Firebrand',
-    'attack',
-    1,
-    'foe',
-    [dmg(7), ifBurning([dmg(4)]), status('burn', 1, 'target')],
-    { ...FLAME, up: { effects: [dmg(10), ifBurning([dmg(4)]), status('burn', 1, 'target')] } },
-  ),
   i('common', 'twin-cinders', 'Twin Cinders', 'attack', 1, 'foe', [dmg(4, 'target', 2), status('burn', 2, 'target')], {
     ...FLAME,
     up: { effects: [dmg(6, 'target', 2), status('burn', 2, 'target')] },
@@ -176,21 +164,6 @@ export const SHAMAN: CardDef[] = [
     ...FLAME,
     up: { effects: [dmg(19), status('burn', 5, 'target')] },
   }),
-  // (a Flame attack that brings a Hawk)
-  i('common', 'talon-strike', 'Talon Strike', 'attack', 2, 'foe', [dmg(11), plant('hawk')], {
-    ...FLAME,
-    up: { effects: [dmg(14), plant('hawk')] },
-  }),
-  i(
-    'uncommon',
-    'immolate',
-    'Immolate',
-    'attack',
-    2,
-    'foe',
-    [dmg(14), status('burn', 4, 'target')],
-    { ...FLAME, up: { effects: [dmg(18), status('burn', 4, 'target')] } },
-  ),
   i('uncommon', 'spreading-flames', 'Wildfire', 'attack', 1, 'foe', [dmg(9), doubleBurn], {
     ...FLAME,
     exhaust: true,
@@ -325,16 +298,6 @@ export const SHAMAN: CardDef[] = [
     [scaled(dmg(6), per('faltering', 3, 'target'))],
     { ...FROST, up: { effects: [scaled(dmg(9), per('faltering', 3, 'target'))] } },
   ),
-  i(
-    'rare',
-    'winters-embrace',
-    "Winter's Embrace",
-    'skill',
-    2,
-    'none',
-    [barrier(12), status('faltering', 2, 'allFoes')],
-    { ...FROST, up: { effects: [barrier(15), status('faltering', 2, 'allFoes')] } },
-  ),
   i('rare', 'frostbound', 'Frostbound', 'power', 1, 'none', [on('debuffFoe', [barrier(3)])], {
     up: { effects: [on('debuffFoe', [barrier(4)])] },
   }),
@@ -385,16 +348,6 @@ export const SHAMAN: CardDef[] = [
   ),
   i(
     'uncommon',
-    'storm-front',
-    'Storm Front',
-    'attack',
-    1,
-    'none',
-    [dmg(3, 'allFoes', 2), draw(1)],
-    { ...STORM, up: { effects: [dmg(4, 'allFoes', 2), draw(1)] } },
-  ),
-  i(
-    'uncommon',
     'charged-sky',
     'Charged Sky',
     'attack',
@@ -417,15 +370,6 @@ export const SHAMAN: CardDef[] = [
     [on('play', [dmg(3, 'randomFoe')], { tag: 'storm' })],
     { up: { effects: [on('play', [dmg(4, 'randomFoe')], { tag: 'storm' })] } },
   ),
-  i('rare', 'maelstrom', 'Maelstrom', 'attack', 2, 'none', [dmg(8, 'allFoes', 2)], {
-    ...STORM,
-    up: { effects: [dmg(10, 'allFoes', 2)] },
-  }),
-  // (a Fork of four, not six random hits: Primed adds to every hit, so many-hit Storm spells are kept few)
-  i('rare', 'eye-of-the-tempest', 'Eye of the Tempest', 'attack', 2, 'none', [fork(11, 4)], {
-    ...STORM,
-    up: { effects: [fork(14, 4)] },
-  }),
   i(
     'rare',
     'calm-before-the-storm',
@@ -471,18 +415,6 @@ export const SHAMAN: CardDef[] = [
     'none',
     [plant('hawk'), plant('bear'), plant('thunderbird')],
     { up: { effects: [plant('hawk'), plant('bear'), plant('thunderbird'), barrier(4)] } },
-  ),
-  i(
-    'uncommon',
-    'raise-the-pole',
-    'Raise the Pole',
-    'skill',
-    2,
-    'none',
-    [{ op: 'totemSlot', amount: 2 }, barrier(5), draw(1)],
-    {
-      up: { effects: [{ op: 'totemSlot', amount: 2 }, barrier(8), draw(1)] },
-    },
   ),
   i(
     'rare',
@@ -534,16 +466,6 @@ export const SHAMAN: CardDef[] = [
 
   // --- glue: Auras that stack (every copy answers on its own) ---
   i(
-    'uncommon',
-    'totem-drum',
-    'Totem Drum',
-    'power',
-    1,
-    'none',
-    [on('command', [dmg(3, 'randomFoe')])],
-    { up: { effects: [on('command', [dmg(4, 'randomFoe')])] } },
-  ),
-  i(
     'rare',
     'storm-sovereign',
     'Storm Sovereign',
@@ -559,16 +481,6 @@ export const SHAMAN: CardDef[] = [
   i('uncommon', 'spirit-surge', 'Spirit Surge', 'skill', 2, 'none', [gainSpirit(2), barrier(8)], {
     up: { effects: [gainSpirit(3), barrier(12)] },
   }),
-  i(
-    'rare',
-    'spiritstorm',
-    'Spiritstorm',
-    'attack',
-    1,
-    'none',
-    [scaled(dmg(6, 'allFoes'), per('spirit'))],
-    { up: { effects: [scaled(dmg(9, 'allFoes'), per('spirit'))] } },
-  ),
   i('rare', 'spirit-walk', 'Spirit Walk', 'skill', 1, 'none', [gainSpirit(1), draw(2)], {
     exhaust: true,
     up: { effects: [gainSpirit(1), draw(3)] },
@@ -616,11 +528,6 @@ export const SHAMAN: CardDef[] = [
   i('uncommon', 'ash-chant', 'Ash Chant', 'power', 1, 'none', [on('created', [status('burn', 5, 'allFoes')])], {
     up: { effects: [on('created', [status('burn', 7, 'allFoes')])] },
   }),
-  // (the status payoffs, to rival the Drunkard's Haymaker: 3 per Status card anywhere in your deck, as his is 3 per Hangover, which tops out at 10)
-  i('rare', 'sorrows-hammer', "Sorrow's Hammer", 'attack', 2, 'foe', [scaled(dmg(12), { by: 'tagDeck', tag: STATUS_TAG, mult: 3 })], {
-    ...FLAME,
-    up: { effects: [scaled(dmg(18), { by: 'tagDeck', tag: STATUS_TAG, mult: 3 })] },
-  }),
   i('rare', 'echoing-strike', 'Echoing Strike', 'attack', 2, 'foe', [dmg(18), { op: 'copySelf', to: 'discard', free: true }], {
     ...FLAME,
     up: { effects: [dmg(23), { op: 'copySelf', to: 'discard', free: true }] },
@@ -663,11 +570,6 @@ export const SHAMAN: CardDef[] = [
   ),
 
   // --- Frost (more) ---
-  i('uncommon', 'cold-breath', 'Cold Breath', 'skill', 0, 'none', [{ op: 'plant', spirit: 'bear', scale: per('foes') }], {
-    ...FROST,
-    exhaust: true,
-    up: { exhaust: false },
-  }),
   i('uncommon', 'frostbound-hide', 'Frostbound Hide', 'skill', 2, 'none', [barrier(6), plantN('bear', 2)], {
     ...FROST,
     up: { effects: [barrier(9), plantN('bear', 2)] },
@@ -688,26 +590,6 @@ export const SHAMAN: CardDef[] = [
     exhaust: true,
     up: { effects: [barrier(13)] },
   }),
-  i(
-    'rare',
-    'glacial-lance',
-    'Glacial Lance',
-    'attack',
-    3,
-    'foe',
-    [dmg(19), plantN('bear', 3)],
-    { ...FROST, up: { effects: [dmg(24), plantN('bear', 3)] } },
-  ),
-  i(
-    'rare',
-    'totem-mantle',
-    'Totem Mantle',
-    'power',
-    1,
-    'none',
-    [on('turnStart', [scaled(barrier(0), per('totemKinds', 2))])],
-    { up: { effects: [on('turnStart', [scaled(barrier(0), per('totemKinds', 3))])] } },
-  ),
   i(
     'rare',
     'hail-chant',
@@ -731,16 +613,6 @@ export const SHAMAN: CardDef[] = [
     'none',
     [plantN('owl', 2), on('turnEnd', [commandTotem('front')])],
     { up: { effects: [plantN('owl', 3), on('turnEnd', [commandTotem('front')])] } },
-  ),
-  i(
-    'rare',
-    'three-winds',
-    'Three Winds',
-    'skill',
-    2,
-    'none',
-    [plant('thunderbird'), plant('bear'), plant('owl')],
-    { exhaust: true, up: { cost: 1 } },
   ),
 
   // --- Storm (more) ---
@@ -817,15 +689,9 @@ export const SHAMAN: CardDef[] = [
   i('uncommon', 'burnt-offering', 'Burnt Offering', 'skill', 1, 'none', [exhaustN(1), manaNext(2)], {
     up: { effects: [exhaustN(1), manaNext(3)] },
   }),
-  i('rare', 'awakened-spirit', 'Awakened Spirit', 'power', 1, 'none', [gainSpirit(1)], {
-    up: { effects: [gainSpirit(2)] },
-  }),
   i('rare', 'echoing-spirit', 'Echoing Spirit', 'power', 3, 'none', [status('echoing', 1)], {
     ethereal: true,
     up: { ethereal: false },
-  }),
-  i('rare', 'elder-recall', 'Elder Recall', 'power', 1, 'none', [on('turnStart', [draw(1)])], {
-    up: { innate: true },
   }),
   i('rare', 'hawk-banner', 'Hawk Banner', 'power', 1, 'none', [on('turnStart', [plant('hawk')])], {
     up: { effects: [plant('hawk'), on('turnStart', [plant('hawk')])] },
@@ -849,9 +715,6 @@ export const SHAMAN: CardDef[] = [
   i('rare', 'salvage-spirit', 'Salvage Spirit', 'power', 1, 'none', [on('created', [plant('*')], { tag: STATUS_TAG })], {
     up: { cost: 0 },
   }),
-  i('rare', 'dream-weaving', 'Dream Weaving', 'power', 3, 'none', [on('turnStart', [{ op: 'discover', kind: 'power', count: 1 }])], {
-    up: { cost: 2 },
-  }),
   i('uncommon', 'snap-back', 'Snap Back', 'power', 2, 'none', [on('play', [returnPlayed], { filter: 'attack', maxCost: 0, once: true })], {
     up: { cost: 1 },
   }),
@@ -870,9 +733,6 @@ export const SHAMAN: CardDef[] = [
   }),
   i('uncommon', 'kindling-ward', 'Kindling Ward', 'skill', 1, 'none', [barrier(6), { op: 'transform', tag: STATUS_TAG, into: 'tinder' }], {
     up: { effects: [barrier(7), { op: 'transform', tag: STATUS_TAG, into: 'dry-tinder' }] },
-  }),
-  i('rare', 'grow-the-pole', 'Grow the Pole', 'skill', 0, 'none', [totemSlot, draw(1), recost(1)], {
-    up: { effects: [totemSlot, draw(2), recost(1)] },
   }),
   i('rare', 'fresh-start', 'Fresh Start', 'skill', 0, 'none', [reshuffle, draw(4)], {
     exhaust: true,

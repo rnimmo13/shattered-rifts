@@ -342,6 +342,8 @@ describe('buildPaths (each with room to build a deck; most characters have three
   it('every Riftwalker has buildPaths of at least 12 cards each, and most of their cards belong to one', () => {
     for (const h of HEROES) expect(RIFTWALKERS[h].buildPaths.length, h).toBeGreaterThanOrEqual(3);
     for (const h of HEROES) {
+      // (the Shaman's element sort is retired, Robert 2026-10-30: his builds are judged by their payoffs, not by path counts)
+      if (h === 'shaman') continue;
       const sizes = pathSizes(h);
       // (Valeria's cards are sorted into build paths again later, DECISIONS #365: her first sort is lopsided)
       if (h !== 'knight')

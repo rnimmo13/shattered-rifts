@@ -5,6 +5,7 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **Shaman pool trimmed again:** nineteen more cards retired (Firebrand, Talon Strike, Immolate, Storm Front, Totem Drum, Raise the Pole, Cold Breath and twelve rares); old copies turn into a nearby card.
 - **Shaman pool trimmed:** seventeen uncommons and rares retired, Storm Chant, Raise the Pole and Storm Sovereign absorb three more, Spirit Surge gives more Spirit, and the texts of Wild Vision, Blighted Chorus and Phoenix Feather are fixed.
 - **Stunned is now Shocked** (same rules). Shaman trim: Thunder Chant boosts a commanded Thunderbird, Spirit Lance draws, Wildfire is uncapped, Hail Chant is a rare, repeated card lines read once ("Plant 2 Bears"), more mechanics highlighted, and twelve cards retired.
 - **Shaman pool pass:** about 60 new uncommons and rares (X-cost totem cards, Status payoffs, Buffer, Loop), the Moon Owl as a growing charge, new Status cards (Blight, Venom, Smudge, Scrap) and a Void that costs Mana to draw, Slip the Leash with no cap, enemies pulled in from the screen edge, scrolling Boon/Omen/Aura columns, and a ghost opponent's name in the fight.

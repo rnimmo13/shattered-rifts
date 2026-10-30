@@ -29,6 +29,19 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.134.0',
+    date: '2026-10-30',
+    title: 'Shaman pool trimmed again',
+    summary: 'Nineteen more Shaman cards are retired, and the Shaman is down to 88 reward cards.',
+    notes: [
+      {
+        kind: 'changed',
+        text: 'Retired commons: Firebrand and Talon Strike. Retired uncommons: Immolate, Storm Front, Totem Drum, Raise the Pole and Cold Breath. Retired rares: Winter’s Embrace, Maelstrom, Eye of the Tempest, Grow the Pole, Spiritstorm, Elder Recall, Totem Mantle, Sorrow’s Hammer, Glacial Lance, Three Winds, Dream Weaving and Awakened Spirit. Old copies turn into a nearby card (for example Immolate into Flame Spear, Storm Front into Gale Call, Totem Drum into Storm Sovereign).',
+      },
+    ],
+    heads: 'The rules changed: reload to play the new cards, and old Arena games and replays no longer play.',
+  },
+  {
     version: '0.133.0',
     date: '2026-10-30',
     title: 'Shaman pool trimmed',
