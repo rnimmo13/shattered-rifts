@@ -1,5 +1,13 @@
 import { forwardRef, memo, useMemo, useState, type CSSProperties } from 'react';
-import { cardText, forgeLabel, type CardDef, type CombatDb, type LiveDamage } from '@sr/combat';
+import {
+  ELEMENTS,
+  cardText,
+  forgeLabel,
+  type CardDef,
+  type CombatDb,
+  type Element,
+  type LiveDamage,
+} from '@sr/combat';
 import { CARD_H, CARD_W } from '../cards/size';
 import { markRollDiff, parseRules } from '../cards/cardText';
 import { BUILD_PATHS_SHOWN, RIFTWALKERS, pathName, pathOf, type HeroId } from '@sr/content/v2';
@@ -8,6 +16,7 @@ import { cardArtV2, paintedCardArt } from './art';
 import '../cards/card.css';
 import { Arrow, WithArrows } from '../ui/Arrow';
 import { STATUS_INFO } from './info';
+import { tipAttrs } from '../ui/tip';
 
 const KIND_LABEL: Record<CardDef['kind'], string> = {
   attack: 'Attack',
@@ -63,7 +72,35 @@ function rulesFor(db: CombatDb, c: CardDef, live?: ReadonlyMap<number, LiveDamag
     const parts = markRollDiff(text.replace(LIVE, HOLD), base).split(HOLD);
     text = parts.map((p, k) => p + (k < parts.length - 1 ? (held[k] ?? '') : '')).join('');
   }
+  // (the element is the badge in the top right, with its own tip: the word is left off the face, DECISIONS #447)
+  // (only the word standing as its own sentence: "Add a Gathering Storm." keeps its Storm)
+  text = text.replace(/(^|[.)]\s)(?:Flame|Frost|Storm)\.(?:\s|$)/g, '$1').trim();
   return text.replace(KEYWORDS, '**$1**');
+}
+
+/** The Shaman's elements as a coloured badge in the card's top right (DECISIONS #447): a flame, a snowflake, a bolt. */
+const ELEMENT_NAME: Record<Element, string> = { flame: 'Flame', frost: 'Frost', storm: 'Storm' };
+const ELEMENT_TEXT: Record<Element, string> = {
+  flame: 'Big hits on one enemy, and Burn.',
+  frost: 'Barrier and Faltering.',
+  storm:
+    'Every enemy, or Forks (different random enemies, 25% more when only one stands), and Sapped.',
+};
+function ElementIcon({ el }: { el: Element }) {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden>
+      {el === 'flame' ? (
+        <path d="M12 2c1 3.5 5 6 5 11a5 5 0 0 1-10 0c0-2.4 1.2-4 2.4-5.2.2 1.7 1 2.9 2.1 3.4C11 8.7 11.2 5.4 12 2Z" />
+      ) : el === 'frost' ? (
+        <g strokeWidth="2.2" strokeLinecap="round" fill="none" stroke="currentColor">
+          <path d="M12 2v20M3.3 7l17.4 10M3.3 17 20.7 7" />
+          <path d="m9 3.5 3 2.5 3-2.5M9 20.5l3-2.5 3 2.5M3.6 10.6l3.7-.7-1.2-3.6M17.9 17.7l-1.2-3.6 3.7-.7M6.1 17.7l1.2-3.6-3.7-.7M20.4 10.6l-3.7-.7 1.2-3.6" />
+        </g>
+      ) : (
+        <path d="M13.5 2 5 13.5h5.5L9 22l9-12h-5.6L13.5 2Z" />
+      )}
+    </svg>
+  );
 }
 
 export interface FightCardProps {
@@ -109,6 +146,7 @@ export const FightCard = memo(
     const size = n <= 55 ? 's' : n <= 110 ? 'm' : n <= 170 ? 'l' : 'xl';
     // how far the cost now is from the printed one (a cost change from a card, a Boon or Unbound): shown on the gem itself
     const costDelta = def.x || cost === undefined ? 0 : cost - def.cost;
+    const element = ELEMENTS.find((e) => def.tags?.includes(e));
     const rarity = def.rarity === 'basic' || !def.rarity ? 'common' : def.rarity;
     const rarityRaw = def.rarity ?? 'common';
     const upgraded = def.id.endsWith('+');
@@ -124,7 +162,7 @@ export const FightCard = memo(
     return (
       <div
         ref={ref}
-        className={`card card--${realm}${owner ? ` card--hero-${owner}` : ''} card--${rarity} card--rar-${rarityRaw}${upgraded ? ' card--upgraded' : ''}${bonus ? ' card--sharpened' : ''}${playable ? ' is-playable' : ''}${dimmed ? ' is-dimmed' : ''}`}
+        className={`card card--${realm}${owner ? ` card--hero-${owner}` : ''} card--${rarity} card--rar-${rarityRaw}${upgraded ? ' card--upgraded' : ''}${element ? ' card--element' : ''}${bonus ? ' card--sharpened' : ''}${playable ? ' is-playable' : ''}${dimmed ? ' is-dimmed' : ''}`}
         style={style}
         data-card={def.id}
       >
@@ -161,6 +199,19 @@ export const FightCard = memo(
               </i>
             )}
           </div>
+          {element && (
+            <div
+              className={`card__element card__element--${element}`}
+              aria-label={`${ELEMENT_NAME[element]} spell`}
+              {...tipAttrs({
+                kicker: 'Shaman element',
+                title: `${ELEMENT_NAME[element]} spell`,
+                text: ELEMENT_TEXT[element],
+              })}
+            >
+              <ElementIcon el={element} />
+            </div>
+          )}
           {def.starCost || def.starX ? (
             <div
               className="card__stars"

@@ -901,3 +901,54 @@
   letter-spacing: 0.08em;
   color: #f2c46b;
 }
+
+/* the Shaman's element, a coloured badge in the top right opposite the cost (DECISIONS #447) */
+.card--element .card__banner {
+  right: 100px;
+}
+.card__element {
+  --el-hi: #fff;
+  --el: #888;
+  --el-lo: #222;
+  position: absolute;
+  right: 4px;
+  top: 4px;
+  width: 96px;
+  height: 96px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  border: 6px solid var(--trim-hi);
+  background: radial-gradient(circle at 35% 28%, var(--el-hi), var(--el) 45%, var(--el-lo) 95%);
+  box-shadow:
+    0 0 0 4px rgb(0 0 0 / 0.6),
+    0 6px 14px rgb(0 0 0 / 0.6),
+    0 0 18px var(--el),
+    inset 0 -8px 16px rgb(0 0 0 / 0.25);
+  color: #fff;
+  z-index: 3;
+}
+.card__element svg {
+  width: 58px;
+  height: 58px;
+  fill: currentColor;
+  filter: drop-shadow(0 2px 2px rgb(0 0 0 / 0.55));
+}
+.card__element--flame {
+  --el-hi: #ffe2a6;
+  --el: #ff7a1f;
+  --el-lo: #8a1a06;
+  color: #fff6d8;
+}
+.card__element--frost {
+  --el-hi: #ecfbff;
+  --el: #5fcdf5;
+  --el-lo: #0d4f80;
+  color: #ffffff;
+}
+.card__element--storm {
+  --el-hi: #f1e3ff;
+  --el: #9b6bff;
+  --el-lo: #2e1170;
+  color: #ffe75a;
+}

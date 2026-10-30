@@ -5,6 +5,7 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- The Shaman's Flame, Frost and Storm cards show their element as a coloured icon in the top right (hover it for what the element does), instead of a word in the text.
 - The Card library's book stays the full width of the screen, with cards the same size, whatever you filter by.
 - A big Thrall (the Grave Colossus card's, or one you have fed to 18 HP) now stands as the Grave Colossus, and grows into it mid-fight.
 - The hand follows your mouse along the fan: the card you point at is the one that lifts, with no more sticking on the wrong card. The targeting arrow shows as soon as you drag a card out of your hand.
