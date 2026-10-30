@@ -129,8 +129,8 @@ describe('Heavy Hitter', () => {
     foe().hp = foe().maxHp = 200;
     foe().barrier = 0;
     const crew = () => s.sides.a.units.filter((u) => u.kind === 'ally');
-    const enforcer = crew().find((u) => u.maxHp === 12)!;
-    const drone = crew().find((u) => u.maxHp !== 12)!;
+    const enforcer = crew().find((u) => u.maxHp === 11)!;
+    const drone = crew().find((u) => u.maxHp !== 11)!;
     // the Enforcer has fallen (it is still in the list at 0 HP, as when an attack has just killed it)
     enforcer.hp = 0;
     play2('T1');

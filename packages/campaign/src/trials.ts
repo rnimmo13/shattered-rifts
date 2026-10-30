@@ -257,7 +257,7 @@ export function buildElite(spec: EliteSpec, r: RunState): EventCtx {
     options: [
       {
         id: 'trial',
-        label: `Spin the reel, the first spin free: take what it stops on, or pay ${ROLL_COST} shards to spin again`,
+        label: 'Spin To Win',
       },
       { id: 'leave', label: 'Walk away' },
     ],

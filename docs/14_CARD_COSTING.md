@@ -295,9 +295,10 @@ their place) is not priced into the summon card; it is the reason to play Light 
 | Companion | Points | Reads as |
 |---|---|---|
 | Enforcer Mk.II (Heavy, 11 HP, hits 6) | 13.2 + 3 + 6 - 2 = 20.2 | a 2-cost common |
-| Siege Engine (Heavy, 12 HP, hits 3 twice) | 14.4 + 3 + (6 - 1) x 2 - 2 = 25.4 | a 2-cost rare |
-| War Engine (Colossal, 20 HP, hits 4 twice) | 24 + 3 + (8 - 1) x 2 - 4 = 37 | a 3-cost rare |
-| Dreadnought (Colossal, 18 HP, 5 to ALL) | 21.6 + 3 + 6.5 x 2 - 4 = 33.6 | a 3-cost rare |
+| Siege Engine (Heavy, 12 HP, hits 4 twice) | 14.4 + 3 + (8 - 1) x 2 - 2 = 29.4 | a 2-cost rare, a little over on purpose (DECISIONS #468) |
+| War Engine (Colossal, 22 HP, hits 4 three times) | 26.4 + 3 + (12 - 2) x 2 - 4 = 45.4 | past a 3-cost rare (~35) on purpose: Might and Primed go on every hit, so a Colossal needs the hits a swarm has (DECISIONS #469) |
+| Dreadnought (Colossal, 22 HP, 4 to ALL twice) | 26.4 + 3 + (10.4 - 1) x 2 - 4 = 44.2 | the same (DECISIONS #469) |
+| Scrap Golem (Colossal, 12 HP, hits 3 twice) | 14.4 + 3 + (6 - 1) x 2 - 4 = 23.4 | a 2-cost uncommon (DECISIONS #469) |
 
 ---
 

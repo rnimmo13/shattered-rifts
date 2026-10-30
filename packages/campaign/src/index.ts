@@ -10,8 +10,6 @@ export {
   PRICE,
   priceOf,
   REMOVE_PRICE,
-  REMOVE_STEP,
-  REMOVE_MAX,
   removePrice,
   SALE_OFF,
   UPGRADE_PRICE,

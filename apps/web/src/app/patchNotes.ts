@@ -29,6 +29,20 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.140.0',
+    date: '2026-10-30',
+    title: 'Big machines hit more often',
+    summary: 'The Engineer\u2019s 3-slot machines hit several times, scrapping a machine has its own buttons, and event cards sit in their option boxes.',
+    notes: [
+      { kind: 'balance', text: 'War Engine hits 4 three times, Dreadnought hits everyone for 4 twice, and Scrap Golem hits 3 twice, so Might and Primed reward them as they do a swarm.' },
+      { kind: 'balance', text: 'Enforcer, Bulwark Walker and Scrap Golem go back to their HP from before 0.139.0, and Enforcer and Bulwark Walker to their damage and Barrier.' },
+      { kind: 'balance', text: 'Removing a card at a merchant now doubles in price each time: 40, 80, 160 and so on through the run.' },
+      { kind: 'changed', text: 'When a summon has no room, there is a button to scrap each machine. Play anyway is gone when it would only waste the card.' },
+      { kind: 'changed', text: 'Rift Cache, the Ancestors\u2019 Offering, the traveller and the bonfire show their card inside the option box. The elite event button says Spin To Win.' },
+    ],
+    heads: 'The rules version went up: old Arena games and replays from before this patch will not play.',
+  },
+  {
     version: '0.139.0',
     date: '2026-10-30',
     title: 'Bigger machines and Legendary swaps',

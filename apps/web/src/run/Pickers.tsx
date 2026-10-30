@@ -718,7 +718,8 @@ export function MerchantView(props: {
               icon={<span className="shoprow__glyph">✂</span>}
               name="Remove a card"
               kind="service"
-              text={`Cut one card from your deck for good. A thinner deck draws its best cards more often. Each removal bought this run makes the next dearer (${shopPrice(props.run, removePrice((props.run.removals ?? 0) + 1))} after this one).`}
+              text={`Cut one card from your deck for good. A thinner deck draws its best cards more often. Each removal bought this run doubles the price of the next (${shopPrice(props.run, // (a removal bought at this visit is already counted)
+                removePrice((props.run.removals ?? 0) + (m.removed ? 0 : 1)))} after this one).`}
               price={m.removed ? null : m.removePrice}
               button={
                 m.removed ? 'Done' : shards < m.removePrice ? 'Too expensive' : 'Choose a card'
@@ -879,7 +880,11 @@ export function EventView(props: {
       short: p.short ?? p.label,
       label: p.label,
     })) ?? [];
-  const card = ev.cardOffer ? defOf(ev.cardOffer) : undefined;
+  // (an option that shows the event's card has it in its box; only an event saved by an older build still lays it out on its own)
+  const inABox = ev.options.some(
+    (o) => o.shows?.gain.includes(ev.cardOffer) || o.shows?.lose.includes(ev.cardOffer),
+  );
+  const card = ev.cardOffer && !inABox ? defOf(ev.cardOffer) : undefined;
   return (
     <section className="stage-panel" aria-label="Event">
       <h2 className="stage-panel__title">{ev.title}</h2>
@@ -1069,7 +1074,7 @@ export function EventView(props: {
                     <b className="eventopt__name">{head}</b>
                     {detail && <span className="eventopt__text">{detail}</span>}
                   </span>
-                  <OptionCards shows={o.shows} onHover={setHover} />
+                  <OptionCards shows={o.shows} onHover={setHover} own={props.run.character} />
                 </>
               ) : (
                 <>
@@ -1128,6 +1133,8 @@ const OPTCARD_TAG = { lose: 'Removed', gain: 'Added', from: 'Out', to: 'In' } as
 function OptionCards(props: {
   shows: { lose: string[]; gain: string[] };
   onHover: (def: CardDef | null) => void;
+  /** the player's own Riftwalker: a card from another one gets a "Rift-crossed" tag */
+  own: string;
 }) {
   const { lose, gain } = props.shows;
   const card = (id: string, mark: 'lose' | 'gain' | 'from' | 'to', key: string, tag?: string) => {
@@ -1141,6 +1148,7 @@ function OptionCards(props: {
         onPointerLeave={() => props.onHover(null)}
       >
         <FightCard db={COMBAT_DB} def={def} width={124} />
+        <CrossTag def={def} own={props.own} />
         <b className="optcard__tag">{tag ?? OPTCARD_TAG[mark]}</b>
         {mark === 'lose' && (
           <i className="optcard__mark" aria-label="leaves your deck">

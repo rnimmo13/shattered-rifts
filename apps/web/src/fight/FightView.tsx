@@ -51,6 +51,7 @@ import { handCardWidth } from '../hand/fanLayout';
 import { reduceEvent, startingDisplay } from './display';
 import { heroFigure, heroProp, hoverOf, unitFigure, unitHeight } from './art';
 import { FightHand, type HandCard } from './FightHand';
+import { playAnywayHelps, scrapChoices } from './scrapChoices';
 import { FightCard } from './FightCard';
 import { GrimoireModal } from './Grimoire';
 import { AimArrow } from './AimArrow';
@@ -1316,11 +1317,14 @@ export function FightView(props: {
         : [],
     [releaseCard, releasing],
   );
-  // a card whose only way in is to scrap every companion (a Colossal on a full board) asks once, with a button
-  const scrapAll =
-    releaseCard && releaseCard.releases.length === 1 && (releaseCard.releases[0]?.length ?? 0) > 1
-      ? (releaseCard.releases[0] ?? null)
-      : null;
+  // a button for each way to make room, as well as clicking the companion itself (Robert, 2026-10-30: "i thought i would be able to scrap one")
+  const scrapButtons = useMemo(() => {
+    const crew = live?.sides[mySide].units ?? [];
+    return scrapChoices(releaseFits, (id) => {
+      const u = crew.find((x) => x.id === id);
+      return u ? `${db.units[u.def]?.name ?? 'companion'} (${u.hp} HP)` : 'companion';
+    });
+  }, [releaseFits, live, mySide, db]);
   const sendRelease = useCallback(
     (set: string[]) => {
       if (!releasing) return;
@@ -1987,24 +1991,34 @@ export function FightView(props: {
           {releasing && (
             <div className="fight__banner fight__banner--info" role="status">
               <span>
-                {scrapAll
-                  ? 'There is no room: making room scraps every companion you have.'
-                  : releasing.picked.length > 0
-                    ? 'Still not enough room. Choose another companion to scrap.'
-                    : 'Not enough room. Choose a companion to scrap to make room.'}{' '}
+                {releasing.picked.length > 0
+                  ? 'Still not enough room. Scrap another companion.'
+                  : 'Not enough room. Scrap a companion to make room.'}{' '}
                 {releaseFit &&
+                  releaseCard &&
+                  playAnywayHelps(releaseCard.def, releaseFit.fit) &&
                   (releaseFit.fit === 0
-                    ? `Or play it anyway: ${releaseFit.total === 1 ? 'its companion does not come' : 'none of its companions come'}.`
-                    : `Or play it anyway: only ${releaseFit.fit} of its ${releaseFit.total} companions ${releaseFit.fit === 1 ? 'comes' : 'come'}.`)}
+                    ? `Or play it without ${releaseFit.total === 1 ? 'its companion' : 'its companions'}.`
+                    : `Or play it with only ${releaseFit.fit} of its ${releaseFit.total} companions.`)}
               </span>
-              {scrapAll && (
-                <button className="btn btn--small" onClick={() => sendRelease(scrapAll)}>
-                  <span>Scrap them</span>
+              {scrapButtons.map((c) => (
+                <button
+                  key={c.label}
+                  className="btn btn--small btn--primary"
+                  onClick={() => sendRelease(c.set)}
+                >
+                  <span>{c.label}</span>
                 </button>
-              )}
-              {releaseFit && (
+              ))}
+              {releaseFit && releaseCard && playAnywayHelps(releaseCard.def, releaseFit.fit) && (
                 <button className="btn btn--small" onClick={playAnyway}>
-                  <span>Play anyway</span>
+                  <span>
+                    {releaseFit.fit > 0
+                      ? 'Play anyway'
+                      : releaseFit.total === 1
+                        ? 'Play without it'
+                        : 'Play without them'}
+                  </span>
                 </button>
               )}
               <button className="btn btn--small" onClick={() => setReleasing(null)}>

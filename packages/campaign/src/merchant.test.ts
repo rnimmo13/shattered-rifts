@@ -2,9 +2,7 @@
 
 import { describe, expect, it } from 'vitest';
 import {
-  REMOVE_MAX,
   REMOVE_PRICE,
-  REMOVE_STEP,
   SALE_OFF,
   availableNodes,
   buyRemoval,
@@ -39,16 +37,17 @@ function atMerchant(seed: string, prev?: RunState, deck?: string[]): RunState {
 }
 
 describe('card removal at the merchant', () => {
-  it('costs more for each removal already bought this run, up to a cap', () => {
+  it('doubles for each removal already bought this run', () => {
     expect(removePrice(0)).toBe(REMOVE_PRICE);
-    expect(removePrice(1)).toBe(REMOVE_PRICE + REMOVE_STEP);
-    expect(removePrice(99)).toBe(REMOVE_MAX);
+    expect(removePrice(1)).toBe(REMOVE_PRICE * 2);
+    expect(removePrice(3)).toBe(REMOVE_PRICE * 8);
+    expect(removePrice(99)).toBe(removePrice(20));
     let m = atMerchant('remove-1');
     expect(m.context!.merchant!.removePrice).toBe(REMOVE_PRICE);
     m = buyRemoval(m, m.deck[0]!);
     expect(m.removals).toBe(1);
     const next = atMerchant('remove-2', leaveMerchant(m));
-    expect(next.context!.merchant!.removePrice).toBe(REMOVE_PRICE + REMOVE_STEP);
+    expect(next.context!.merchant!.removePrice).toBe(REMOVE_PRICE * 2);
   });
 
   it('remembers the count through a save', () => {

@@ -5,6 +5,7 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **Big machines hit more often:** War Engine 4x3, Dreadnought 4x2 to all, Scrap Golem 3x2; Enforcer, Bulwark Walker and Scrap Golem back to their earlier HP; merchant removal doubles in price each time; scrap buttons on the no-room prompt; named event cards in their option boxes; the elite event button says Spin To Win.
 - **Bigger machines, Engineer ceiling, Legendary swaps:** Full Throttle, Critical Mass and Final Volley for the Engineer; Heavy and Colossal machines have more HP and damage; Defer lasts only the turn the card returns; Foresee needs no Confirm; a Legendary Boon can be given up (X) or swapped when another is offered; the campaign board re-links a player whose name the server did not know.
 - **Ten-card starts, Arena minimum, fixes:** every class starts with ten cards; Arena decks need 15; totem cap 8; Aegis of Ages gives 1 Shielded (Ward Stone removed); Backup Core revives once; a card that damages every enemy then costs HP now takes the HP even when it ends the fight.
 - **Starting decks are ten cards with three or four class basics:** the Knight, Assassin, Monk and Shaman get new or fewer basics (Press the Attack, Heavy Swing, Fang and Claw, Pocket Blades, Mindful Palm), and the Drunkard has one Hammer Swing, not two.

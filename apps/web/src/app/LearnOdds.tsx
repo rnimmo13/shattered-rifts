@@ -93,7 +93,7 @@ export function LearnOdds() {
         <li>A Warden&apos;s Gift offers rare cards of your class.</li>
         <li>
           Merchant cards cost {PRICE['common']} (common), {PRICE['uncommon']} (uncommon),{' '}
-          {PRICE['rare']} (rare) shards. Taking a card out of your deck costs {REMOVE_PRICE}.
+          {PRICE['rare']} (rare) shards. Taking a card out of your deck costs {REMOVE_PRICE}, and each one doubles the price of the next.
         </li>
         <li>
           Potions cost {POTION_PRICE['common']} / {POTION_PRICE['uncommon']} /{' '}

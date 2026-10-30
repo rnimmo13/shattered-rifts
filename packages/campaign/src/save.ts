@@ -132,7 +132,7 @@ function validContext(r: RunState): boolean {
             hasCard(it['cardId']) &&
             isInt(it['price'], 0, 100000),
         ) &&
-        isInt(m['removePrice'], 0, 100000) &&
+        isInt(m['removePrice'], 0, 1_000_000_000) &&
         (m['upgrades'] === undefined || isInt(m['upgrades'], 0, 1000)) &&
         (m['potions'] === undefined ||
           (Array.isArray(m['potions']) &&

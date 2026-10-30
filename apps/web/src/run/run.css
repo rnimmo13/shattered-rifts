@@ -1663,6 +1663,17 @@
   color: #ff4d62;
   text-shadow: 0 2px 6px #000;
 }
+/* a Rift-crossed card in an option box: the class icon alone, in the corner of the card (its name is on the option and on hover) */
+.optcard .pick__cross {
+  position: absolute;
+  top: 0.25rem;
+  left: 0.25rem;
+  margin: 0;
+  padding: 0.1rem;
+}
+.optcard .pick__cross > span:last-child {
+  display: none;
+}
 /* a strip along the bottom of each card naming what happens to it */
 .optcard__tag {
   position: absolute;

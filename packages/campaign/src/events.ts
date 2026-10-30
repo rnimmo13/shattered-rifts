@@ -349,14 +349,18 @@ export function rollEvent(r: RunState): EventCtx {
  * The hand-written options that touch a random card (an upgrade, a copy, a card thrown away, a transform) pick it now, when the event
  * is laid out, so the player sees which card before choosing (DECISIONS #273). resolveEvent then uses exactly those cards.
  */
-function pinOptions(r: RunState, ev: EventCtx): EventCtx {
+export function pinOptions(r: RunState, ev: EventCtx): EventCtx {
   const pickOf = (xs: readonly string[]): string | undefined =>
     xs.length ? xs[nextInt(r.rng, xs.length)] : undefined;
   const upOf = (id: string): string => COMBAT_DB.cards[id]?.upgrade ?? id;
   for (const o of ev.options) {
     if (o.deal) continue;
     let shows: EventOption['shows'] | undefined;
-    if (o.id === 'upgrade') {
+    // (the card the event already named goes in the box of the option that takes or gives it, Robert 2026-10-30: the rift cache)
+    if (ev.cardOffer && (o.id === 'card' || o.id === 'ancestor' || o.id === 'cross'))
+      shows = { lose: [], gain: [ev.cardOffer] };
+    else if (ev.cardOffer && o.id === 'burn') shows = { lose: [ev.cardOffer], gain: [] };
+    else if (o.id === 'upgrade') {
       const pick = pickOf(upgradable(r.deck));
       if (pick) shows = { lose: [pick], gain: [upOf(pick)] };
     } else if (o.id === 'temper') {
