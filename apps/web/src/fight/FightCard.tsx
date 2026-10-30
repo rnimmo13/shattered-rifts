@@ -74,7 +74,11 @@ function rulesFor(db: CombatDb, c: CardDef, live?: ReadonlyMap<number, LiveDamag
   }
   // (the element is the badge in the top right, with its own tip: the word is left off the face, DECISIONS #447)
   // (only the word standing as its own sentence: "Add a Gathering Storm." keeps its Storm)
-  text = text.replace(/(^|[.)]\s)(?:Flame|Frost|Storm)\.(?:\s|$)/g, '$1').trim();
+  const el = ELEMENTS.find((e) => c.tags?.includes(e));
+  if (el) {
+    const word = el[0]!.toUpperCase() + el.slice(1);
+    text = text.replace(new RegExp(`(^|[.)]\\s)${word}\\.(?:\\s|$)`), '$1').trim();
+  }
   return text.replace(KEYWORDS, '**$1**');
 }
 

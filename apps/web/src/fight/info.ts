@@ -514,7 +514,8 @@ const MADE_CARDS: readonly string[] = (() => {
     }
   };
   for (const c of Object.values(COMBAT_DB.cards)) walk(c.effects);
-  return [...ids].filter((id) => COMBAT_DB.cards[id]);
+  // (not a weapon: a card that names the Old Twelve Gauge is about its Sharpen, which sharpenInfo explains)
+  return [...ids].filter((id) => COMBAT_DB.cards[id] && !COMBAT_DB.cards[id].weapon);
 })();
 
 /** A totem by its own words (the Hawk: "At the end of your turn..."), for a card that plants or names it (DECISIONS #448). */
@@ -732,9 +733,11 @@ export function keywordsOf(
   text?: string,
 ): { name: string; text: string }[] {
   const out: { name: string; text: string }[] = [];
-  const self = c.id?.replace(/\+$/, '');
+  // (a sanctified copy, "hi~gathering-storm", is still itself)
+  const self = c.id?.replace(/^(hi|lo)~/, '').replace(/\+$/, '');
   const add = (k: { name: string; text: string } | undefined) => {
-    if (k && !out.some((x) => x.name === k.name)) out.push(k);
+    // (a made card already listed upgraded, "Dagger+", is not listed again plain)
+    if (k && !out.some((x) => x.name === k.name || x.name === `${k.name}+`)) out.push(k);
   };
   // the weapon a Sharpen on this card names: from its forge op (an Aura's too), else from what its text names
   const weapon =
@@ -851,7 +854,8 @@ export function keywordsOf(
     // ("Whenever you play a Gravesoul": a made card it names, by its singular or plural name)
     for (const id of MADE_CARDS) {
       const nm = COMBAT_DB.cards[id]!.name;
-      if (names(hay, nm) || names(hay, `${nm}s`)) add(createdInfo(id));
+      // (an upgraded maker already lists "Dagger+": its text's "upgraded Daggers" is not a second one)
+      if (names(hay, nm) && !out.some((k) => k.name === `${nm}+`)) add(createdInfo(id));
     }
     // ("If you have a Thunderbird": the totem it names)
     for (const t of Object.values(COMBAT_DB.totems ?? {}))

@@ -91,3 +91,30 @@ describe('a card says what the cards it makes and the totems it plants are (DECI
     expect(t?.text).not.toMatch(/first spell of its element/);
   });
 });
+
+describe('the made-card hovers stay tidy (review of #448)', () => {
+  const names = (id: string) => {
+    const def = db.cards[id]!;
+    return keywordsOf(def, () => false, cardText(db, def)).map((k) => k.name);
+  };
+  it('an upgraded maker lists the upgraded card once, not the base too', () => {
+    const id = Object.values(db.cards).find(
+      (c) => c.id.endsWith('+') && JSON.stringify(c.effects).includes('"card":"sleeve-knife+"'),
+    )!.id;
+    expect(names(id)).toContain('Dagger+');
+    expect(names(id)).not.toContain('Dagger');
+  });
+  it('a sanctified card does not explain itself', () => {
+    expect(names('hi~gathering-storm')).not.toContain('Gathering Storm');
+  });
+  it('a card that only names the Old Twelve Gauge does not list the gun as a made card', () => {
+    const id = Object.values(db.cards).find(
+      (c) =>
+        c.hero === 'drunkard' &&
+        !c.id.includes('~') &&
+        !JSON.stringify(c.effects).includes('old-twelve-gauge') &&
+        cardText(db, c).includes('Old Twelve Gauge'),
+    );
+    if (id) expect(names(id.id)).not.toContain('Old Twelve Gauge');
+  });
+});
