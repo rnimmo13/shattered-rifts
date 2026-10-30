@@ -88,7 +88,12 @@ function cornerReserve(handHeight: number): number {
 }
 
 export function FightHand(p: FightHandProps) {
-  const [hover, setHover] = useState<number | null>(null);
+  const [hovered, setHover] = useState<number | null>(null);
+  const hoverRef = useRef<number | null>(null);
+  /** each card's invisible stand-in, for the rect a tooltip sits beside */
+  const hitRefs = useRef<(HTMLDivElement | null)[]>([]);
+  /** where the cards rest (x from the hand's centre) and how wide they are, for the pointer test */
+  const restRef = useRef<{ xs: number[]; w: number; pitch: number }>({ xs: [], w: 0, pitch: 0 });
   const [drag, setDrag] = useState<Drag | null>(null);
   const dragRef = useRef<Drag | null>(null);
   /** on a touch screen a first tap only lifts a card to read it; the card previewed this way plays on the next tap */
@@ -117,6 +122,8 @@ export function FightHand(p: FightHandProps) {
   }, []);
 
   const n = p.cards.length;
+  // (a hand that shrinks under the hovered card lets it go)
+  const hover = hovered !== null && hovered < n ? hovered : null;
   const focusIdx = drag
     ? p.cards.findIndex((c) => c.inst.id === drag.id)
     : p.selectedId
@@ -139,13 +146,72 @@ export function FightHand(p: FightHandProps) {
   // where each card rests when nothing is lifted: the pointer is tested against THIS, so a card that lifts or grows
   // never moves out from under the pointer (which made it twitch up and down)
   const rest = fanLayout(n, { ...layout, focus: null });
+  const restNow = {
+    xs: rest.map((r) => r.x),
+    w: p.cardWidth,
+    pitch:
+      rest.length > 1
+        ? Math.abs((rest[1] as { x: number }).x - (rest[0] as { x: number }).x)
+        : p.cardWidth,
+  };
+  useEffect(() => {
+    hoverRef.current = hover;
+    restRef.current = restNow;
+  });
 
-  const aboveHand = (y: number): boolean => y < window.innerHeight - p.cardWidth * 1.5;
+  // (DECISIONS #444) a mouse hovers the card whose resting centre is nearest along the fan, not whichever tilted, overlapping box
+  // the pointer is in: the lifted card no longer holds on past its own edge, and a neighbour takes over at the midpoint between
+  // them (with a little slack so the hover does not flicker on the line). The lifted card's raised top still counts as on it.
+  useEffect(() => {
+    const onMove = (e: PointerEvent): void => {
+      if (e.pointerType === 'touch' || dragRef.current) return;
+      const { xs, w, pitch } = restRef.current;
+      const cur = hoverRef.current;
+      let next: number | null = null;
+      if (xs.length > 0) {
+        const x = e.clientX - window.innerWidth / 2;
+        const h = w * 1.4;
+        const bandTop = window.innerHeight - h * 0.97;
+        // the lifted card reaches higher, over its own width only
+        const liftTop = window.innerHeight - h * 1.75;
+        const curX = cur !== null ? xs[cur] : undefined;
+        const onLifted =
+          curX !== undefined && e.clientY >= liftTop && Math.abs(x - curX) <= (w * 1.28) / 2;
+        const inFan =
+          e.clientY >= bandTop &&
+          x >= (xs[0] as number) - w / 2 &&
+          x <= (xs[xs.length - 1] as number) + w / 2;
+        if (inFan) {
+          let best = 0;
+          for (let i = 1; i < xs.length; i++)
+            if (Math.abs(x - (xs[i] as number)) < Math.abs(x - (xs[best] as number))) best = i;
+          next =
+            curX !== undefined &&
+            Math.abs(x - curX) <= Math.abs(x - (xs[best] as number)) + pitch * 0.12
+              ? cur
+              : best;
+        } else if (onLifted) next = cur;
+      }
+      if (next === cur) return;
+      setHover(next);
+      const pr = propsRef.current;
+      const c = next !== null ? pr.cards[next] : undefined;
+      if (c) pr.onHover(c, hitRefs.current[next as number]?.getBoundingClientRect());
+      else pr.onHover(null);
+    };
+    window.addEventListener('pointermove', onMove);
+    return () => window.removeEventListener('pointermove', onMove);
+  }, []);
+
+  // (the top of the resting hand: a card let go above it plays, and an aimed card turns into the arrow there, DECISIONS #444)
+  const handTop = window.innerHeight - p.cardWidth * 1.35;
+  const aboveHand = (y: number): boolean => y < handTop;
   /**
    * A card that is aimed (several targets), dragged up out of the hand towards the enemies, turns into the targeting arrow: the
    * card waits, lifted, above its place, and an arrow runs from it to the pointer, so the figure under the pointer is plain to see.
    */
-  const aimLine = window.innerHeight - p.cardWidth * 1.4 * 1.9;
+  // (it waited until nearly two card heights up before, so the arrow came late)
+  const aimLine = handTop;
   const aimingCard = (() => {
     if (!drag?.moved || drag.y >= aimLine) return null;
     const c = p.cards.find((x) => x.inst.id === drag.id);
@@ -278,21 +344,29 @@ export function FightHand(p: FightHandProps) {
             <div
               className={`fhand__hit${dragging ? ' is-dragging' : ''}`}
               style={dragging ? { ...hitStyle, pointerEvents: 'none' } : hitStyle}
+              ref={(el) => {
+                hitRefs.current[i] = el;
+              }}
               onPointerEnter={(e) => {
+                // (a mouse's hover follows the pointer along the fan, above; a finger lifts the card it touches)
+                if (e.pointerType !== 'touch') return;
                 setHover(i);
                 p.onHover(c, e.currentTarget.getBoundingClientRect());
               }}
               onPointerLeave={(e) => {
                 // a finger leaves the moment it lifts: the card it chose stays lifted until the player taps elsewhere
-                if (e.pointerType === 'touch' && previewRef.current === c.inst.id) return;
+                if (e.pointerType !== 'touch' || previewRef.current === c.inst.id) return;
                 setHover((h) => (h === i ? null : h));
                 p.onHover(null);
               }}
               onPointerDown={(e) => {
                 if (p.locked || e.button !== 0) return;
                 e.preventDefault();
+                // a mouse picks up the card that is lifted, whichever stand-in is under the pointer
+                const picked =
+                  e.pointerType !== 'touch' && hover !== null ? (p.cards[hover] ?? c) : c;
                 const d: Drag = {
-                  id: c.inst.id,
+                  id: picked.inst.id,
                   x: e.clientX,
                   y: e.clientY,
                   moved: false,

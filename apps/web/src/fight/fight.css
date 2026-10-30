@@ -480,8 +480,8 @@
 /* while a card is lifted, the area it was lifted into still counts as "on the card" */
 .fhand__zone {
   position: absolute;
-  left: -30%;
-  right: -30%;
+  left: -14%;
+  right: -14%;
   top: -70%;
   bottom: 100%;
   pointer-events: auto;
